@@ -2,1388 +2,694 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6ED3FA92F
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 07:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E83993FA930
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 07:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbhH2FJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 01:09:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58706 "EHLO mail.kernel.org"
+        id S233899AbhH2FJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 01:09:51 -0400
+Received: from mga12.intel.com ([192.55.52.136]:46933 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhH2FJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 01:09:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5805E60ED8;
-        Sun, 29 Aug 2021 05:08:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630213701;
-        bh=wgS8fyizTRitjX77P/RKKO8L0gk7tazv8+ZJ1asJWh8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=Rmp//pFz2dG6M4kaTQj+v0xbQNBdhUTLjx0KwVsCaVIRaDgJHh9ry2V1Ro16tfbm5
-         E346bUqgSEHsjifhyMqOKft5nUYBQrN0t+8809ZGEuk77ZK18KBuk4ttHh63zrli6Z
-         a9b36iKAawatqKqo54XVFH1UqEcVk5A2Ti5FSi1l76+SwC776bsrWItjsKojBYjZh1
-         sORqyZbFmlNvmjKH9Sk/gDM7gP+26HOhFqAQV0F7xLHwSAOD6e87aMznE1srbp89T8
-         M57pFrPA9tARl4Y6HnN0+iOAxjRMZ6y+tUL21mUNY9zxGXhJc1+nkTtt5Ty8lMaHl+
-         Ir4wDz5ryA0yg==
-Content-Type: text/plain; charset="utf-8"
+        id S229634AbhH2FJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 01:09:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10090"; a="197700666"
+X-IronPort-AV: E=Sophos;i="5.84,360,1620716400"; 
+   d="gz'50?scan'50,208,50";a="197700666"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2021 22:08:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,360,1620716400"; 
+   d="gz'50?scan'50,208,50";a="688536209"
+Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 28 Aug 2021 22:08:52 -0700
+Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mKD3r-00042a-RC; Sun, 29 Aug 2021 05:08:51 +0000
+Date:   Sun, 29 Aug 2021 13:08:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Megha Dey <megha.dey@intel.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: [meghadey-crypto:d_msix 1/1] drivers/pci/msi.c:805: warning:
+ expecting prototype for msix_capability_init(). Prototype was for
+ msix_setup_table() instead
+Message-ID: <202108291318.E0dEhedA-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210804092244.390376-4-nobuhiro1.iwamatsu@toshiba.co.jp>
-References: <20210804092244.390376-1-nobuhiro1.iwamatsu@toshiba.co.jp> <20210804092244.390376-4-nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: Re: [PATCH v4 3/4] clk: visconti: Add support common clock driver and reset driver
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Rob Herring <robh+dt@kernel.org>
-Date:   Sat, 28 Aug 2021 22:08:20 -0700
-Message-ID: <163021370000.2676726.5709178579074165441@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: multipart/mixed; boundary="ZGiS0Q5IWpPtfppv"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Nobuhiro Iwamatsu (2021-08-04 02:22:43)
-> diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-> index 5f06879d7fe9..dbf70fdecfc8 100644
-> --- a/drivers/clk/Makefile
-> +++ b/drivers/clk/Makefile
-> @@ -116,6 +116,7 @@ obj-y                                       +=3D ti/
->  obj-$(CONFIG_CLK_UNIPHIER)             +=3D uniphier/
->  obj-$(CONFIG_ARCH_U8500)               +=3D ux500/
->  obj-y                                  +=3D versatile/
-> +obj-$(CONFIG_ARCH_VISCONTI)            +=3D visconti/
 
-Can we have an actual Kconfig symbol for this so we can compile test the
-driver?
-
->  ifeq ($(CONFIG_COMMON_CLK), y)
->  obj-$(CONFIG_X86)                      +=3D x86/
->  endif
-> diff --git a/drivers/clk/visconti/Makefile b/drivers/clk/visconti/Makefile
-> new file mode 100644
-> index 000000000000..c1254fd52b31
-> --- /dev/null
-> +++ b/drivers/clk/visconti/Makefile
-> @@ -0,0 +1,5 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +# Makefile for Toshiba Visconti clock
-> +
-> +obj-y  +=3D clkc.o pll.o reset.o
-> +obj-y  +=3D pll-tmpv770x.o clkc-tmpv770x.o
-> diff --git a/drivers/clk/visconti/clkc-tmpv770x.c b/drivers/clk/visconti/=
-clkc-tmpv770x.c
-> new file mode 100644
-> index 000000000000..6ee5c5179f7c
-> --- /dev/null
-> +++ b/drivers/clk/visconti/clkc-tmpv770x.c
-> @@ -0,0 +1,232 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Toshiba Visconti clock controller
-> + *
-> + * Copyright (c) 2021 TOSHIBA CORPORATION
-> + * Copyright (c) 2021 Toshiba Electronic Devices & Storage Corporation
-> + *
-> + * Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> + */
-> +
-> +#include <dt-bindings/clock/toshiba,tmpv770x.h>
-> +#include <dt-bindings/reset/toshiba,tmpv770x.h>
-
-Please include these after linux headers.
-
-> +#include <linux/clk.h>
-
-Is it a clk provider or a clk consumer? Hopefully it's a clk provider,
-and thus this should be clk-provider.h instead of clk.h for the
-consumer.
-
-> +#include <linux/platform_device.h>
-> +
-> +#include "clkc.h"
-> +#include "reset.h"
-> +
-> +static DEFINE_SPINLOCK(tmpv770x_clk_lock);
-> +static DEFINE_SPINLOCK(tmpv770x_rst_lock);
-> +
-> +static const struct visconti_fixed_clk fixed_clk_tables[] =3D {
-> +       /* PLL1 */
-> +       /* PICMPT0/1, PITSC, PIUWDT, PISWDT, PISBUS, PIPMU, PIGPMU, PITMU=
- */
-> +       /* PIEMM, PIMISC, PIGCOMM, PIDCOMM, PIMBUS, PIGPIO, PIPGM */
-> +       { TMPV770X_CLK_PIPLL1_DIV4, "pipll1_div4", "pipll1", 0, 1, 4, },
-> +       /* PISBUS */
-> +       { TMPV770X_CLK_PIPLL1_DIV2, "pipll1_div2", "pipll1", 0, 1, 2, },
-> +       /* PICOBUS_CLK */
-> +       { TMPV770X_CLK_PIPLL1_DIV1, "pipll1_div1", "pipll1", 0, 1, 1, },
-> +       /* PIDNNPLL */
-> +       /* CONN_CLK, PIMBUS, PICRC0/1 */
-> +       { TMPV770X_CLK_PIDNNPLL_DIV1, "pidnnpll_div1", "pidnnpll", 0, 1, =
-1, },
-> +       { TMPV770X_CLK_PIREFCLK, "pirefclk", "osc2-clk", 0, 1, 1, },
-> +       { TMPV770X_CLK_WDTCLK, "wdtclk", "osc2-clk", 0, 1, 1, },
-> +};
-> +
-> +static const struct visconti_clk_gate_table pietherpll_clk_gate_tables[]=
- =3D {
-> +       /* pietherpll */
-> +       { TMPV770X_CLK_PIETHER_2P5M, "piether_2p5m", "pietherpll",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x34, 0x134, 4, =
-200,
-
-There's quite a lot of CLK_IGNORE_UNUSED. Should these be
-CLK_IS_CRITICAL instead, and then only the ones that are truly critical
-to the system still running should be marked as critical along with a
-comment explaining what they're clocking and why that device isn't
-probing and enabling the clks itself.
-
-> +               TMPV770X_RESET_PIETHER_2P5M, },
-> +       { TMPV770X_CLK_PIETHER_25M, "piether_25m", "pietherpll",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x34, 0x134, 5, =
-20,
-> +               TMPV770X_RESET_PIETHER_25M, },
-> +       { TMPV770X_CLK_PIETHER_50M, "piether_50m", "pietherpll",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x34, 0x134, 6, =
-10,
-> +               TMPV770X_RESET_PIETHER_50M, },
-> +       { TMPV770X_CLK_PIETHER_125M, "piether_125m", "pietherpll",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x34, 0x134, 7, =
-4,
-> +               TMPV770X_RESET_PIETHER_125M, },
-> +};
-> +
-> +static const struct visconti_clk_gate_table clk_gate_tables[] =3D {
-> +       { TMPV770X_CLK_HOX, "hox", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x4C, 0x14C, 0, =
-1,
-
-Lowercase hex please.
-
-> +               TMPV770X_RESET_HOX, },
-> +       { TMPV770X_CLK_PCIE_MSTR, "pcie_mstr", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x38, 0x138, 0, =
-1,
-> +               TMPV770X_RESET_PCIE_MSTR, },
-> +       { TMPV770X_CLK_PCIE_AUX, "pcie_aux", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x38, 0x138, 1, =
-24,
-> +               TMPV770X_RESET_PCIE_AUX, },
-> +       { TMPV770X_CLK_PIINTC, "piintc", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x8, 0x108, 0, 2,
-> +               TMPV770X_RESET_PIINTC,},
-> +       { TMPV770X_CLK_PIETHER_BUS, "piether_bus", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x34, 0x134, 0, =
-2,
-> +               TMPV770X_RESET_PIETHER_BUS, }, /* BUS_CLK */
-> +       { TMPV770X_CLK_PISPI0, "pispi0", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x28, 0x128, 0, =
-2,
-> +               TMPV770X_RESET_PISPI0, },
-> +       { TMPV770X_CLK_PISPI1, "pispi1", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x28, 0x128, 1, =
-2,
-> +               TMPV770X_RESET_PISPI1, },
-> +       { TMPV770X_CLK_PISPI2, "pispi2", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x28, 0x128, 2, =
-2,
-> +               TMPV770X_RESET_PISPI2, },
-> +       { TMPV770X_CLK_PISPI3, "pispi3", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x28, 0x128, 3, =
-2,
-> +               TMPV770X_RESET_PISPI3,},
-> +       { TMPV770X_CLK_PISPI4, "pispi4", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x28, 0x128, 4, =
-2,
-> +               TMPV770X_RESET_PISPI4, },
-> +       { TMPV770X_CLK_PISPI5, "pispi5", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x28, 0x128, 5, =
-2,
-> +               TMPV770X_RESET_PISPI5},
-> +       { TMPV770X_CLK_PISPI6, "pispi6", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x28, 0x128, 6, =
-2,
-> +               TMPV770X_RESET_PISPI6,},
-> +       { TMPV770X_CLK_PIUART0, "piuart0", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x2C, 0x12C, 0, =
-4,
-> +               TMPV770X_RESET_PIUART0,},
-> +       { TMPV770X_CLK_PIUART1, "piuart1", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x2C, 0x12C, 1, =
-4,
-> +               TMPV770X_RESET_PIUART1, },
-> +       { TMPV770X_CLK_PIUART2, "piuart2", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x2C, 0x12C, 2, =
-4,
-> +               TMPV770X_RESET_PIUART2, },
-> +       { TMPV770X_CLK_PIUART3, "piuart3", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x2C, 0x12C, 3, =
-4,
-> +               TMPV770X_RESET_PIUART3, },
-> +       { TMPV770X_CLK_PII2C0, "pii2c0", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x30, 0x130, 0, =
-4,
-> +               TMPV770X_RESET_PII2C0, },
-> +       { TMPV770X_CLK_PII2C1, "pii2c1", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x30, 0x130, 1, =
-4,
-> +               TMPV770X_RESET_PII2C1, },
-> +       { TMPV770X_CLK_PII2C2, "pii2c2", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x30, 0x130, 2, =
-4,
-> +               TMPV770X_RESET_PII2C2, },
-> +       { TMPV770X_CLK_PII2C3, "pii2c3", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x30, 0x130, 3, =
-4,
-> +               TMPV770X_RESET_PII2C3,},
-> +       { TMPV770X_CLK_PII2C4, "pii2c4", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x30, 0x130, 4, =
-4,
-> +               TMPV770X_RESET_PII2C4, },
-> +       { TMPV770X_CLK_PII2C5, "pii2c5", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x30, 0x130, 5, =
-4,
-> +               TMPV770X_RESET_PII2C5, },
-> +       { TMPV770X_CLK_PII2C6, "pii2c6", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x30, 0x130, 6, =
-4,
-> +               TMPV770X_RESET_PII2C6, },
-> +       { TMPV770X_CLK_PII2C7, "pii2c7", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x30, 0x130, 7, =
-4,
-> +               TMPV770X_RESET_PII2C7, },
-> +       { TMPV770X_CLK_PII2C8, "pii2c8", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x30, 0x130, 8, =
-4,
-> +               TMPV770X_RESET_PII2C8, },
-> +       /* PIPCMIF */
-> +       { TMPV770X_CLK_PIPCMIF, "pipcmif", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x64, 0x164, 0, =
-4,
-> +               TMPV770X_RESET_PIPCMIF, },
-> +       /* PISYSTEM */
-> +       { TMPV770X_CLK_WRCK, "wrck", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x68, 0x168, 9, =
-32,
-> +               -1, }, /* No reset */
-> +       { TMPV770X_CLK_PICKMON, "pickmon", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x10, 0x110, 8, =
-4,
-> +               TMPV770X_RESET_PICKMON, },
-> +       { TMPV770X_CLK_SBUSCLK, "sbusclk", "pipll1",
-> +               CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0x14, 0x114, 0, =
-4,
-> +               TMPV770X_RESET_SBUSCLK, },
-> +};
-> +
-> +static const struct visconti_reset_data clk_reset_data[] =3D {
-> +       [TMPV770X_RESET_PIETHER_2P5M]   =3D { 0x434, 0x534, 4, },
-> +       [TMPV770X_RESET_PIETHER_25M]    =3D { 0x434, 0x534, 5, },
-> +       [TMPV770X_RESET_PIETHER_50M]    =3D { 0x434, 0x534, 6, },
-> +       [TMPV770X_RESET_PIETHER_125M]   =3D { 0x434, 0x534, 7, },
-> +       [TMPV770X_RESET_HOX]            =3D { 0x44C, 0x54C, 0, },
-> +       [TMPV770X_RESET_PCIE_MSTR]      =3D { 0x438, 0x538, 0, },
-> +       [TMPV770X_RESET_PCIE_AUX]       =3D { 0x438, 0x538, 1, },
-> +       [TMPV770X_RESET_PIINTC]         =3D { 0x408, 0x508, 0, },
-> +       [TMPV770X_RESET_PIETHER_BUS]    =3D { 0x434, 0x534, 0, },
-> +       [TMPV770X_RESET_PISPI0]         =3D { 0x428, 0x528, 0, },
-> +       [TMPV770X_RESET_PISPI1]         =3D { 0x428, 0x528, 1, },
-> +       [TMPV770X_RESET_PISPI2]         =3D { 0x428, 0x528, 2, },
-> +       [TMPV770X_RESET_PISPI3]         =3D { 0x428, 0x528, 3, },
-> +       [TMPV770X_RESET_PISPI4]         =3D { 0x428, 0x528, 4, },
-> +       [TMPV770X_RESET_PISPI5]         =3D { 0x428, 0x528, 5, },
-> +       [TMPV770X_RESET_PISPI6]         =3D { 0x428, 0x528, 6, },
-> +       [TMPV770X_RESET_PIUART0]        =3D { 0x42C, 0x52C, 0, },
-> +       [TMPV770X_RESET_PIUART1]        =3D { 0x42C, 0x52C, 1, },
-> +       [TMPV770X_RESET_PIUART2]        =3D { 0x42C, 0x52C, 2, },
-> +       [TMPV770X_RESET_PIUART3]        =3D { 0x42C, 0x52C, 3, },
-> +       [TMPV770X_RESET_PII2C0]         =3D { 0x430, 0x530, 0, },
-> +       [TMPV770X_RESET_PII2C1]         =3D { 0x430, 0x530, 1, },
-> +       [TMPV770X_RESET_PII2C2]         =3D { 0x430, 0x530, 2, },
-> +       [TMPV770X_RESET_PII2C3]         =3D { 0x430, 0x530, 3, },
-> +       [TMPV770X_RESET_PII2C4]         =3D { 0x430, 0x530, 4, },
-> +       [TMPV770X_RESET_PII2C5]         =3D { 0x430, 0x530, 5, },
-> +       [TMPV770X_RESET_PII2C6]         =3D { 0x430, 0x530, 6, },
-> +       [TMPV770X_RESET_PII2C7]         =3D { 0x430, 0x530, 7, },
-> +       [TMPV770X_RESET_PII2C8]         =3D { 0x430, 0x530, 8, },
-> +       [TMPV770X_RESET_PIPCMIF]        =3D { 0x464, 0x564, 0, },
-> +       [TMPV770X_RESET_PICKMON]        =3D { 0x410, 0x510, 8, },
-> +       [TMPV770X_RESET_SBUSCLK]        =3D { 0x414, 0x514, 0, },
-> +};
-> +
-> +static void __init tmpv770x_clkc_setup_clks(struct device_node *np)
-> +{
-> +       struct visconti_clk_provider *ctx;
-> +       struct regmap *regmap;
-> +       int ret, i;
-> +
-> +       regmap =3D device_node_to_regmap(np);
-
-Is it inside a syscon?
-
-> +       if (IS_ERR(regmap))
-> +               return;
-> +
-> +       ctx =3D visconti_init_clk(np, regmap, TMPV770X_NR_CLK);
-> +       if (IS_ERR(ctx))
-> +               return;
-> +
-> +       ret =3D visconti_register_reset_controller(np, regmap, clk_reset_=
-data,
-> +                                                TMPV770X_NR_RESET,
-> +                                                &visconti_reset_ops,
-> +                                                &tmpv770x_rst_lock);
-> +       if (ret) {
-> +               pr_err("Failed to register reset controller: %d\n", ret);
-> +               return;
-> +       }
-> +
-> +       for (i =3D 0; i < (ARRAY_SIZE(fixed_clk_tables)); i++)
-> +               ctx->clk_data.clks[fixed_clk_tables[i].id] =3D
-> +                       clk_register_fixed_factor(NULL,
-> +                                               fixed_clk_tables[i].name,
-> +                                               fixed_clk_tables[i].paren=
-t,
-> +                                               fixed_clk_tables[i].flag,
-> +                                               fixed_clk_tables[i].mult,
-> +                                               fixed_clk_tables[i].div);
-> +
-> +       ret =3D visconti_clk_register_gates(ctx, clk_gate_tables,
-> +                                   ARRAY_SIZE(clk_gate_tables), clk_rese=
-t_data,
-> +                                   &tmpv770x_clk_lock);
-> +       if (ret) {
-> +               pr_err("Failed to register main clock gate: %d\n", ret);
-> +               return;
-> +       }
-> +
-> +       ret =3D visconti_clk_register_gates(ctx, pietherpll_clk_gate_tabl=
-es,
-> +                                   ARRAY_SIZE(pietherpll_clk_gate_tables=
-),
-> +                                   clk_reset_data, &tmpv770x_clk_lock);
-> +       if (ret) {
-> +               pr_err("Failed to register pietherpll clock gate: %d\n", =
-ret);
-> +               return;
-> +       }
-> +
-> +       of_clk_add_provider(np, of_clk_src_onecell_get, &ctx->clk_data);
-> +}
-> +
-> +CLK_OF_DECLARE_DRIVER(tmpv770x_clkc, "toshiba,tmpv7708-pismu", tmpv770x_=
-clkc_setup_clks);
-
-Any chance this can be a platform driver?
-
-> diff --git a/drivers/clk/visconti/clkc.c b/drivers/clk/visconti/clkc.c
-> new file mode 100644
-> index 000000000000..32b6f6266154
-> --- /dev/null
-> +++ b/drivers/clk/visconti/clkc.c
-> @@ -0,0 +1,220 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Toshiba Visconti clock controller
-> + *
-> + * Copyright (c) 2021 TOSHIBA CORPORATION
-> + * Copyright (c) 2021 Toshiba Electronic Devices & Storage Corporation
-> + *
-> + * Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> + */
-> +#include <linux/clk-provider.h>
-> +#include <linux/delay.h>
-> +#include <linux/io.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/regmap.h>
-> +#include <linux/slab.h>
-> +#include <linux/string.h>
-> +
-> +#include "clkc.h"
-> +
-> +static inline struct visconti_clk_gate *to_visconti_clk_gate(struct clk_=
-hw *hw)
-> +{
-> +       return container_of(hw, struct visconti_clk_gate, hw);
-> +}
-> +
-> +static int visconti_gate_clk_is_enabled(struct clk_hw *hw)
-> +{
-> +       struct visconti_clk_gate *gate =3D to_visconti_clk_gate(hw);
-> +       u32 clk =3D BIT(gate->ck_idx);
-> +       u32 val;
-> +
-> +       regmap_read(gate->regmap, gate->ckon_offset, &val);
-> +       return (val & clk) ? 1 : 0;
-> +}
-> +
-> +static void visconti_gate_clk_disable(struct clk_hw *hw)
-> +{
-> +       struct visconti_clk_gate *gate =3D to_visconti_clk_gate(hw);
-> +       u32 clk =3D BIT(gate->ck_idx);
-> +       u32 rst =3D BIT(gate->rs_idx);
-> +       unsigned long flags;
-> +
-> +       spin_lock_irqsave(gate->lock, flags);
-> +
-> +       if (visconti_gate_clk_is_enabled(hw)) {
-
-So we never disable the clk?
-
-> +               spin_unlock_irqrestore(gate->lock, flags);
-> +               return;
-> +       }
-> +
-> +       /* Reset release */
-> +       regmap_update_bits(gate->regmap, gate->rson_offset, rst, 1);
-> +
-> +       udelay(100);
-> +
-> +       /* Disable clock */
-> +       regmap_update_bits(gate->regmap, gate->ckoff_offset, clk, 1);
-> +       spin_unlock_irqrestore(gate->lock, flags);
-> +}
-> +
-> +static int visconti_gate_clk_enable(struct clk_hw *hw)
-> +{
-> +       struct visconti_clk_gate *gate =3D to_visconti_clk_gate(hw);
-> +       u32 clk =3D BIT(gate->ck_idx);
-> +       u32 rst =3D BIT(gate->rs_idx);
-> +       unsigned long flags;
-> +       u32 val;
-> +
-> +       spin_lock_irqsave(gate->lock, flags);
-> +
-> +       if (visconti_gate_clk_is_enabled(hw)) {
-
-The core framework should only call down to here if the clk is actually
-disabled. This check can be removed.
-
-> +               spin_unlock_irqrestore(gate->lock, flags);
-> +               return 0;
-> +       }
-> +
-> +       regmap_update_bits(gate->regmap, gate->ckon_offset, clk, 1);
-> +       /* Need read back */
-
-Why? Please indicate why instead of just saying what the code is doing.
-
-> +       regmap_read(gate->regmap, gate->ckon_offset, &val);
-> +
-> +       udelay(100);
-> +       /* Reset release */
-> +       regmap_update_bits(gate->regmap, gate->rsoff_offset, rst, 1);
-> +       /* Need read back */
-> +       regmap_read(gate->regmap, gate->ckoff_offset, &val);
-> +       spin_unlock_irqrestore(gate->lock, flags);
-> +
-> +       return 0;
-> +}
-> +
-> +static const struct clk_ops visconti_clk_gate_ops =3D {
-> +       .enable =3D visconti_gate_clk_enable,
-> +       .disable =3D visconti_gate_clk_disable,
-> +       .is_enabled =3D visconti_gate_clk_is_enabled,
-> +};
-> +
-> +static struct clk_hw *visconti_clk_register_gate(struct device *dev,
-> +                                                const char *name,
-> +                                                const char *parent_name,
-> +                                                struct regmap *regmap,
-> +                                                const struct visconti_cl=
-k_gate_table *clks,
-> +                                                u32    rson_offset,
-> +                                                u32    rsoff_offset,
-> +                                                u8     rs_idx,
-> +                                                spinlock_t *lock)
-> +{
-> +       struct visconti_clk_gate *gate;
-> +       struct clk_init_data init;
-> +       struct clk_hw *hw;
-> +       int ret;
-> +
-> +       gate =3D kzalloc(sizeof(*gate), GFP_KERNEL);
-> +       if (!gate)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       init.name =3D name;
-> +       init.ops =3D &visconti_clk_gate_ops;
-> +       init.flags =3D clks->flags;
-> +       init.parent_names =3D parent_name ? &parent_name : NULL;
-> +       init.num_parents =3D parent_name ? 1 : 0;
-
-Do some clks have parents and other clks don't? Or do they always have
-parents? Preferably it's one or the other. And if there are parents,
-please use clk_parent_data instead of parent_names.
-
-> +
-> +       gate->regmap =3D regmap;
-> +       gate->ckon_offset =3D clks->ckon_offset;
-> +       gate->ckoff_offset =3D clks->ckoff_offset;
-> +       gate->ck_idx =3D clks->ck_idx;
-> +       gate->rson_offset =3D rson_offset;
-> +       gate->rsoff_offset =3D rsoff_offset;
-> +       gate->rs_idx =3D rs_idx;
-> +       gate->lock =3D lock;
-> +       gate->hw.init =3D &init;
-> +
-> +       hw =3D &gate->hw;
-> +       ret =3D clk_hw_register(dev, hw);
-
-Is the dev non-NULL? If yes then can devm be used?
-
-> +       if (ret) {
-> +               kfree(gate);
-> +               hw =3D ERR_PTR(ret);
-> +       }
-> +
-> +       return hw;
-> +}
-> +
-> +int visconti_clk_register_gates(struct visconti_clk_provider *data,
-> +                                const struct visconti_clk_gate_table *cl=
-ks,
-> +                                int num_gate, const struct visconti_rese=
-t_data *reset,
-> +                                spinlock_t *lock)
-> +{
-> +       u32 rson_offset, rsoff_offset;
-> +       struct clk_hw *hw_clk;
-> +       u8 rs_idx;
-> +       int i;
-> +
-> +       for (i =3D 0; i < num_gate; i++) {
-> +               struct clk *clk;
-> +               char *div_name;
-> +
-> +               div_name =3D kasprintf(GFP_KERNEL, "%s_div", clks[i].name=
-);
-> +               if (!div_name)
-> +                       return -ENOMEM;
-> +
-> +               if (clks[i].rs_id >=3D 0) {
-> +                       rson_offset =3D reset[clks[i].rs_id].rson_offset;
-> +                       rsoff_offset =3D reset[clks[i].rs_id].rsoff_offse=
-t;
-> +                       rs_idx =3D reset[clks[i].rs_id].rs_idx;
-> +               } else {
-> +                       rson_offset =3D rsoff_offset =3D rs_idx =3D -1;
-> +               }
-> +
-> +               clk =3D clk_register_fixed_factor(NULL, div_name, clks[i]=
-.parent,
-> +                                               0, 1, clks[i].div);
-> +               if (IS_ERR(clk))
-> +                       return PTR_ERR(clk);
-> +
-> +               hw_clk =3D visconti_clk_register_gate(NULL,
-
-Oh it's always NULL? Sad
-
-> +                                               clks[i].name,
-> +                                               div_name,
-> +                                               data->regmap,
-> +                                               &clks[i],
-> +                                               rson_offset,
-> +                                               rsoff_offset,
-> +                                               rs_idx,
-> +                                               lock);
-> +               kfree(div_name);
-> +               if (IS_ERR(hw_clk)) {
-> +                       pr_err("%s: failed to register clock %s\n",
-> +                              __func__, clks[i].name);
-> +                       return PTR_ERR(hw_clk);
-> +               }
-> +
-> +               data->clk_data.clks[clks[i].id] =3D hw_clk->clk;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +struct visconti_clk_provider *visconti_init_clk(struct device_node *np,
-> +                                               struct regmap *regmap,
-> +                                               unsigned long nr_clks)
-> +{
-> +       struct visconti_clk_provider *ctx;
-> +       struct clk **clk_table;
-> +       int i;
-> +
-> +       ctx =3D kzalloc(sizeof(struct visconti_clk_provider), GFP_KERNEL);
-
-sizeof(*ctx)?
-
-> +       if (!ctx)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       clk_table =3D kcalloc(nr_clks, sizeof(struct clk *), GFP_KERNEL);
-
-sizeof(*clk_table)?
-
-> +       if (!clk_table)
-> +               goto err;
-> +
-> +       for (i =3D 0; i < nr_clks; ++i)
-> +               clk_table[i] =3D ERR_PTR(-ENOENT);
-> +       ctx->node =3D np;
-> +       ctx->regmap =3D regmap;
-> +       ctx->clk_data.clks =3D clk_table;
-> +       ctx->clk_data.clk_num =3D nr_clks;
-> +
-> +       return ctx;
-> +err:
-> +       kfree(ctx);
-> +       return ERR_PTR(-ENOMEM);
-> +}
-> diff --git a/drivers/clk/visconti/clkc.h b/drivers/clk/visconti/clkc.h
-> new file mode 100644
-> index 000000000000..4df8788d635a
-> --- /dev/null
-> +++ b/drivers/clk/visconti/clkc.h
-> @@ -0,0 +1,75 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Toshiba Visconti clock controller
-> + *
-> + * Copyright (c) 2021 TOSHIBA CORPORATION
-> + * Copyright (c) 2021 Toshiba Electronic Devices & Storage Corporation
-> + *
-> + * Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> + */
-> +
-> +#ifndef _VISCONTI_CLKC_H_
-> +#define _VISCONTI_CLKC_H_
-> +
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/delay.h>
-> +#include <linux/regmap.h>
-> +#include <linux/slab.h>
-> +#include <linux/string.h>
-> +#include <linux/io.h>
-> +#include <linux/spinlock.h>
-> +
-> +#include "reset.h"
-> +
-> +struct visconti_clk_provider {
-> +       struct device_node      *node;
-> +       struct regmap           *regmap;
-> +       struct clk_onecell_data clk_data;
-> +};
-> +
-> +struct visconti_clk_gate_table {
-> +       unsigned int    id;
-> +       const char      *name;
-> +       const char      *parent;
-> +       u8              flags;
-> +       u32             ckon_offset;
-> +       u32             ckoff_offset;
-> +       u8              ck_idx;
-> +       unsigned int    div;
-> +       u8              rs_id;
-> +};
-> +
-> +struct visconti_fixed_clk {
-> +       unsigned int    id;
-> +       const char      *name;
-> +       const char      *parent;
-> +       unsigned long   flag;
-> +       unsigned int    mult;
-> +       unsigned int    div;
-> +};
-> +
-> +struct visconti_clk_gate {
-> +       struct clk_hw   hw;
-> +       struct regmap   *regmap;
-> +       u32             ckon_offset;
-> +       u32             ckoff_offset;
-> +       u8              ck_idx;
-> +       u8              flags;
-> +       u32             rson_offset;
-> +       u32             rsoff_offset;
-> +       u8              rs_idx;
-> +       spinlock_t      *lock;
-> +};
-> +
-> +struct visconti_clk_provider *visconti_init_clk(struct device_node *np,
-> +                                               struct regmap *regmap,
-> +                                               unsigned long nr_clks);
-> +int visconti_clk_register_gates(struct visconti_clk_provider *data,
-> +                                const struct visconti_clk_gate_table *cl=
-ks,
-> +                                int num_gate,
-> +                                const struct visconti_reset_data *reset,
-> +                                spinlock_t *lock);
-> +#endif /* _VISCONTI_CLKC_H_ */
-> diff --git a/drivers/clk/visconti/pll-tmpv770x.c b/drivers/clk/visconti/p=
-ll-tmpv770x.c
-> new file mode 100644
-> index 000000000000..a0874cb6a67b
-> --- /dev/null
-> +++ b/drivers/clk/visconti/pll-tmpv770x.c
-> @@ -0,0 +1,85 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Toshiba Visconti PLL controller
-> + *
-> + * Copyright (c) 2021 TOSHIBA CORPORATION
-> + * Copyright (c) 2021 Toshiba Electronic Devices & Storage Corporation
-> + *
-> + * Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> + */
-> +
-> +#include <dt-bindings/clock/toshiba,tmpv770x.h>
-> +#include <linux/clk.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/of_address.h>
-> +#include <linux/slab.h>
-> +
-> +#include "pll.h"
-> +
-> +static DEFINE_SPINLOCK(tmpv770x_pll_lock);
-> +
-> +static const struct visconti_pll_rate_table pipll0_rates[] __initconst =
-=3D {
-> +       VISCONTI_PLL_RATE(840000000, 0x1, 0x0, 0x1, 0x54, 0x000000, 0x2, =
-0x1),
-> +       VISCONTI_PLL_RATE(780000000, 0x1, 0x0, 0x1, 0x4E, 0x000000, 0x2, =
-0x1),
-> +       VISCONTI_PLL_RATE(600000000, 0x1, 0x0, 0x1, 0x3C, 0x000000, 0x2, =
-0x1),
-> +       { /* sentinel */ },
-> +};
-> +
-> +static const struct visconti_pll_rate_table piddrcpll_rates[] __initcons=
-t =3D {
-> +       VISCONTI_PLL_RATE(780000000, 0x1, 0x0, 0x1, 0x4E, 0x000000, 0x2, =
-0x1),
-> +       VISCONTI_PLL_RATE(760000000, 0x1, 0x0, 0x1, 0x4C, 0x000000, 0x2, =
-0x1),
-> +       { /* sentinel */ },
-> +};
-> +
-> +static const struct visconti_pll_rate_table pivoifpll_rates[] __initcons=
-t =3D {
-> +       VISCONTI_PLL_RATE(165000000, 0x1, 0x0, 0x1, 0x42, 0x000000, 0x4, =
-0x2),
-> +       VISCONTI_PLL_RATE(148500000, 0x1, 0x1, 0x1, 0x3B, 0x666666, 0x4, =
-0x2),
-> +       VISCONTI_PLL_RATE(96000000, 0x1, 0x0, 0x1, 0x30, 0x000000, 0x5, 0=
-x2),
-> +       VISCONTI_PLL_RATE(74250000, 0x1, 0x1, 0x1, 0x3B, 0x666666, 0x4, 0=
-x4),
-> +       VISCONTI_PLL_RATE(54000000, 0x1, 0x0, 0x1, 0x36, 0x000000, 0x5, 0=
-x4),
-> +       VISCONTI_PLL_RATE(48000000, 0x1, 0x0, 0x1, 0x30, 0x000000, 0x5, 0=
-x4),
-> +       VISCONTI_PLL_RATE(35750000, 0x1, 0x1, 0x1, 0x32, 0x0CCCCC, 0x7, 0=
-x4),
-> +       { /* sentinel */ },
-> +};
-> +
-> +static const struct visconti_pll_rate_table piimgerpll_rates[] __initcon=
-st =3D {
-> +       VISCONTI_PLL_RATE(165000000, 0x1, 0x0, 0x1, 0x42, 0x000000, 0x4, =
-0x2),
-> +       VISCONTI_PLL_RATE(96000000, 0x1, 0x0, 0x1, 0x30, 0x000000, 0x5, 0=
-x2),
-> +       VISCONTI_PLL_RATE(54000000, 0x1, 0x0, 0x1, 0x36, 0x000000, 0x5, 0=
-x4),
-> +       VISCONTI_PLL_RATE(48000000, 0x1, 0x0, 0x1, 0x30, 0x000000, 0x5, 0=
-x4),
-> +       { /* sentinel */ },
-> +};
-> +
-> +static const struct visconti_pll_info pll_info[] __initconst =3D {
-> +       { TMPV770X_PLL_PIPLL0, "pipll0", "osc2-clk", 0, 0x0, pipll0_rates=
- },
-> +       { TMPV770X_PLL_PIDDRCPLL, "piddrcpll", "osc2-clk", 0, 0x500, pidd=
-rcpll_rates },
-> +       { TMPV770X_PLL_PIVOIFPLL, "pivoifpll", "osc2-clk", 0, 0x600, pivo=
-ifpll_rates },
-> +       { TMPV770X_PLL_PIIMGERPLL, "piimgerpll", "osc2-clk", 0, 0x700, pi=
-imgerpll_rates },
-> +};
-> +
-> +static void __init tmpv770x_setup_plls(struct device_node *np)
-> +{
-> +       struct visconti_pll_provider *ctx;
-> +       void __iomem *reg_base;
-> +
-> +       reg_base =3D of_iomap(np, 0);
-> +       if (!reg_base)
-> +               return;
-> +
-> +       ctx =3D visconti_init_pll(np, reg_base, TMPV770X_NR_PLL);
-> +       if (IS_ERR(ctx)) {
-> +               iounmap(reg_base);
-> +               return;
-> +       }
-> +
-> +       ctx->clk_data.clks[TMPV770X_PLL_PIPLL1] =3D
-> +               clk_register_fixed_rate(NULL, "pipll1", NULL, 0, 60000000=
-0);
-> +       ctx->clk_data.clks[TMPV770X_PLL_PIDNNPLL] =3D
-> +               clk_register_fixed_rate(NULL, "pidnnpll", NULL, 0, 500000=
-000);
-> +       ctx->clk_data.clks[TMPV770X_PLL_PIETHERPLL] =3D
-> +               clk_register_fixed_rate(NULL, "pietherpll", NULL, 0, 5000=
-00000);
-> +
-> +       visconti_register_plls(ctx, pll_info, ARRAY_SIZE(pll_info), &tmpv=
-770x_pll_lock);
-> +}
-> +
-> +CLK_OF_DECLARE_DRIVER(tmpv770x_plls, "toshiba,tmpv7708-pipllct", tmpv770=
-x_setup_plls);
-
-DECLARE_DRIVER is for when more than one device needs to probe the node
-in DT. Is that happening here? If so, please add a comment indicating
-what the other driver is.
-
-> diff --git a/drivers/clk/visconti/pll.c b/drivers/clk/visconti/pll.c
-> new file mode 100644
-> index 000000000000..7baa9512fad9
-> --- /dev/null
-> +++ b/drivers/clk/visconti/pll.c
-> @@ -0,0 +1,369 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Toshiba Visconti PLL driver
-> + *
-> + * Copyright (c) 2021 TOSHIBA CORPORATION
-> + * Copyright (c) 2021 Toshiba Electronic Devices & Storage Corporation
-> + *
-> + * Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/delay.h>
-> +#include <linux/slab.h>
-> +#include <linux/io.h>
-> +
-> +#include "pll.h"
-> +
-> +struct visconti_pll {
-> +       struct clk_hw   hw;
-> +       void __iomem    *pll_base;
-> +       spinlock_t      *lock;
-> +       int rate_count;
-
-size_t? And then place next to rate_table so we know they're related
-please.
-
-> +       unsigned long flags;
-> +       const struct visconti_pll_rate_table *rate_table;
-> +       struct visconti_pll_provider *ctx;
-> +};
-> +
-> +#define PLL_CONF_REG           0x0000
-> +#define PLL_CTRL_REG           0x0004
-> +#define PLL_FRACMODE_REG       0x0010
-> +#define PLL_INTIN_REG          0x0014
-> +#define PLL_FRACIN_REG         0x0018
-> +#define PLL_REFDIV_REG         0x001C
-> +#define PLL_POSTDIV_REG                0x0020
-> +
-> +#define PLL_CONFIG_SEL         BIT(0)
-> +#define PLL_PLLEN              BIT(4)
-> +#define PLL_BYPASS             BIT(16)
-> +#define PLL_INTIN_MASK         GENMASK(11, 0)
-> +#define PLL_FRACIN_MASK                GENMASK(23, 0)
-> +#define PLL_REFDIV_MASK                GENMASK(5, 0)
-> +#define PLL_POSTDIV_MASK       GENMASK(2, 0)
-> +
-> +static inline struct visconti_pll *to_visconti_pll(struct clk_hw *hw)
-> +{
-> +       return container_of(hw, struct visconti_pll, hw);
-> +}
-> +
-> +static void visconti_pll_get_params(struct visconti_pll *pll,
-> +                                   struct visconti_pll_rate_table *rate_=
-table)
-> +{
-> +       u32 postdiv, val;
-> +
-> +       val =3D readl(pll->pll_base + PLL_FRACMODE_REG);
-> +       rate_table->dacen =3D (val >> 4) & 0x1;
-
-What is 0x1? Some bitfield? Can it be a #define at least? Same for 4.
-Better yet, use GENMASK and FIELD_PREP() and FIELD_GET() macros.
-
-> +       rate_table->dsmen =3D val & 0x1;
-> +       rate_table->fracin =3D readl(pll->pll_base + PLL_FRACIN_REG) & PL=
-L_FRACIN_MASK;
-> +       rate_table->intin =3D readl(pll->pll_base + PLL_INTIN_REG) & PLL_=
-INTIN_MASK;
-> +       rate_table->refdiv =3D readl(pll->pll_base + PLL_REFDIV_REG) & PL=
-L_REFDIV_MASK;
-> +
-> +       postdiv =3D readl(pll->pll_base + PLL_POSTDIV_REG);
-> +       rate_table->postdiv1 =3D postdiv & PLL_POSTDIV_MASK;
-> +       rate_table->postdiv2 =3D (postdiv >> 4) & PLL_POSTDIV_MASK;
-> +}
-> +
-> +static const struct visconti_pll_rate_table *visconti_get_pll_settings(s=
-truct visconti_pll *pll,
-> +                                                                      un=
-signed long rate)
-> +{
-> +       const struct visconti_pll_rate_table *rate_table =3D pll->rate_ta=
-ble;
-> +       int i;
-> +
-> +       for (i =3D 0; i < pll->rate_count; i++) {
-> +               if (rate =3D=3D rate_table[i].rate)
-> +                       return &rate_table[i];
-> +       }
-
-Drop braces please.
-
-> +
-> +       return NULL;
-> +}
-> +
-> +static unsigned long visconti_get_pll_rate_from_data(struct visconti_pll=
- *pll,
-> +                                                    struct visconti_pll_=
-rate_table *rate)
-
-const pointers?
-
-> +{
-> +       const struct visconti_pll_rate_table *rate_table =3D pll->rate_ta=
-ble;
-> +       int i;
-> +
-> +       for (i =3D 0; i < pll->rate_count; i++) {
-> +               if (rate_table[i].dacen =3D=3D rate->dacen &&
-> +                       rate_table[i].dsmen =3D=3D rate->dsmen &&
-> +                       rate_table[i].fracin =3D=3D rate->fracin &&
-> +                       rate_table[i].intin =3D=3D rate->intin &&
-> +                       rate_table[i].refdiv =3D=3D rate->refdiv &&
-> +                       rate_table[i].postdiv1 =3D=3D rate->postdiv1 &&
-> +                       rate_table[i].postdiv2 =3D=3D rate->postdiv2)
-
-Is it not the same table? Can we just compare the two pointers instead
-of each member?
-
-> +                       return rate_table[i].rate;
-> +       }
-> +
-> +       /* set default */
-> +       return rate_table[0].rate;
-> +}
-> +
-> +static long visconti_pll_round_rate(struct clk_hw *hw,
-> +                           unsigned long rate, unsigned long *prate)
-> +{
-> +       struct visconti_pll *pll =3D to_visconti_pll(hw);
-> +       const struct visconti_pll_rate_table *rate_table =3D pll->rate_ta=
-ble;
-> +       int i;
-> +
-> +       /* Assumming rate_table is in descending order */
-> +       for (i =3D 0; i < pll->rate_count; i++) {
-> +               if (rate >=3D rate_table[i].rate)
-> +                       return rate_table[i].rate;
-> +       }
-
-Drop braces please.
-
-> +
-> +       /* return minimum supported value */
-> +       return rate_table[i - 1].rate;
-> +}
-> +
-> +static unsigned long visconti_pll_recalc_rate(struct clk_hw *hw,
-> +                                             unsigned long parent_rate)
-> +{
-> +       struct visconti_pll *pll =3D to_visconti_pll(hw);
-> +       struct visconti_pll_rate_table rate_table;
-> +
-> +       memset(&rate_table, 0, sizeof(rate_table));
-> +       visconti_pll_get_params(pll, &rate_table);
-> +
-> +       return visconti_get_pll_rate_from_data(pll, &rate_table);
-
-Oh. Can we do math instead?
-
-> +}
-> +
-> +static int visconti_pll_set_params(struct visconti_pll *pll,
-> +                               const struct visconti_pll_rate_table *rat=
-e_table)
-> +{
-> +       /* update pll values */
-
-This comment is worthless. Please remove.
-
-> +       writel(((rate_table->dacen << 4) | rate_table->dsmen),
-
-One too many parenthesis here. Please clean it up.
-
-> +                       pll->pll_base + PLL_FRACMODE_REG);
-> +       writel(((rate_table->postdiv2 << 4) | rate_table->postdiv1),
-
-Same.
-
-> +                       pll->pll_base + PLL_POSTDIV_REG);
-> +       writel(rate_table->intin, pll->pll_base + PLL_INTIN_REG);
-> +       writel(rate_table->fracin, pll->pll_base + PLL_FRACIN_REG);
-> +       writel(rate_table->refdiv, pll->pll_base + PLL_REFDIV_REG);
-> +
-> +       return 0;
-> +}
-> +
-> +static int visconti_pll_set_rate(struct clk_hw *hw, unsigned long rate,
-> +                           unsigned long parent_rate)
-> +{
-> +       struct visconti_pll *pll =3D to_visconti_pll(hw);
-> +       const struct visconti_pll_rate_table *rate_table;
-> +
-> +       /* Get required rate settings from table */
-
-This comment is worthless, please remove.
-
-> +       rate_table =3D visconti_get_pll_settings(pll, rate);
-> +       if (!rate_table) {
-> +               pr_err("Invalid rate : %lu for pll clk %s\n",
-
-Please don't print anything during set_rate. It can be quite noisy if
-something like a cpufreq driver keeps calling this with the incorrect
-frequency.
-
-> +                       parent_rate, __clk_get_name(hw->clk));
-> +               return -EINVAL;
-> +       }
-> +
-> +       return visconti_pll_set_params(pll, rate_table);
-> +}
-> +
-> +static int visconti_pll_is_enabled(struct clk_hw *hw)
-> +{
-> +       struct visconti_pll *pll =3D to_visconti_pll(hw);
-> +       unsigned long flags;
-> +       u32 reg;
-> +
-> +       spin_lock_irqsave(pll->lock, flags);
-> +       reg =3D readl(pll->pll_base + PLL_CTRL_REG);
-> +       spin_unlock_irqrestore(pll->lock, flags);
-
-Don't think we need a spinlock to read a register. After this unlocks it
-can be disabled anyway, so what's the point to locking here?
-
-> +
-> +       return (reg & PLL_PLLEN);
-> +}
-> +
-> +static int visconti_pll_enable(struct clk_hw *hw)
-> +{
-> +       struct visconti_pll *pll =3D to_visconti_pll(hw);
-> +       const struct visconti_pll_rate_table *rate_table =3D pll->rate_ta=
-ble;
-> +       unsigned long flags;
-> +       u32 reg;
-> +
-> +       if (visconti_pll_is_enabled(hw))
-> +               return 0;
-
-Drop.
-
-> +
-> +       spin_lock_irqsave(pll->lock, flags);
-> +
-> +       /* Change to access via register */
-> +       writel(PLL_CONFIG_SEL, pll->pll_base + PLL_CONF_REG);
-> +
-> +       /* Change to BYPASS mode */
-> +       reg =3D readl(pll->pll_base + PLL_CTRL_REG);
-> +       reg |=3D PLL_BYPASS;
-> +       writel(reg, pll->pll_base + PLL_CTRL_REG);
-> +
-> +       /* Set DIV register .....*/
-> +       visconti_pll_set_params(pll, &rate_table[0]);
-> +
-> +       /* Disable  PLL register */
-> +       reg =3D readl(pll->pll_base + PLL_CTRL_REG);
-> +       reg &=3D ~PLL_PLLEN;
-> +       writel(reg, pll->pll_base + PLL_CTRL_REG);
-> +
-> +       /* Wait 1us */
-> +       udelay(1);
-> +
-> +       /* Enable PLL register */
-> +       reg =3D readl(pll->pll_base + PLL_CTRL_REG);
-> +       reg |=3D PLL_PLLEN;
-> +       writel(reg, pll->pll_base + PLL_CTRL_REG);
-> +
-> +       /* Wait 40us */
-> +       udelay(40);
-> +
-> +       /* Change to PLL mode */
-
-Every comment in here is saying what the code is doing. Please remove
-them.
-
-> +       reg =3D readl(pll->pll_base + PLL_CTRL_REG);
-> +       reg &=3D ~PLL_BYPASS;
-> +       writel(reg, pll->pll_base + PLL_CTRL_REG);
-> +
-> +       spin_unlock_irqrestore(pll->lock, flags);
-> +
-> +       return 0;
-> +}
-> +
-> +static void visconti_pll_disable(struct clk_hw *hw)
-> +{
-> +       struct visconti_pll *pll =3D to_visconti_pll(hw);
-> +       unsigned long flags;
-> +       u32 reg;
-> +
-> +       if (!visconti_pll_is_enabled(hw))
-> +               return;
-> +
-> +       spin_lock_irqsave(pll->lock, flags);
-> +
-> +       /* Change to access via register */
-
-This comment is almost useful, except I don't know why we need to change
-access, which is the important part.
-
-> +       writel(PLL_CONFIG_SEL, pll->pll_base + PLL_CONF_REG);
-> +
-> +       /* Change to BYPASS mode */
-> +       reg =3D readl(pll->pll_base + PLL_CTRL_REG);
-> +       reg |=3D PLL_BYPASS;
-> +       writel(reg, pll->pll_base + PLL_CTRL_REG);
-> +
-> +       /* PLL disable */
-> +       reg =3D readl(pll->pll_base + PLL_CTRL_REG);
-> +       reg &=3D ~PLL_PLLEN;
-> +       writel(reg, pll->pll_base + PLL_CTRL_REG);
-> +
-> +       spin_unlock_irqrestore(pll->lock, flags);
-> +}
-> +
-> +static const struct clk_ops visconti_pll_ops =3D {
-> +       .enable =3D visconti_pll_enable,
-> +       .disable =3D visconti_pll_disable,
-> +       .is_enabled =3D visconti_pll_is_enabled,
-> +       .round_rate =3D visconti_pll_round_rate,
-> +       .recalc_rate =3D visconti_pll_recalc_rate,
-> +       .set_rate =3D visconti_pll_set_rate,
-> +};
-> +
-> +static struct clk *visconti_register_pll(struct visconti_pll_provider *c=
-tx,
-> +                                        const char *name,
-> +                                        const char *parent_name,
-> +                                        int offset,
-> +                                        const struct visconti_pll_rate_t=
-able *rate_table,
-> +                                        u8 clk_pll_flags,
-
-Are the flags used?
-
-> +                                        spinlock_t *lock)
-> +{
-> +       struct clk_init_data init;
-> +       struct visconti_pll *pll;
-> +       struct clk *pll_clk;
-> +       int len;
-> +
-> +       pll =3D kzalloc(sizeof(*pll), GFP_KERNEL);
-> +       if (!pll)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       /* Create the actual pll */
-
-Worthless comment.
-
-> +       init.name =3D name;
-> +       init.flags =3D CLK_IGNORE_UNUSED;
-> +       init.parent_names =3D &parent_name;
-> +       init.num_parents =3D 1;
-> +
-> +       for (len =3D 0; rate_table[len].rate !=3D 0; )
-> +               len++;
-> +       pll->rate_count =3D len;
-> +       pll->rate_table =3D kmemdup(rate_table,
-> +                                 pll->rate_count * sizeof(struct viscont=
-i_pll_rate_table),
-> +                                 GFP_KERNEL);
-
-Do we need to duplicate the table? Can't that be const?
-
-> +       WARN(!pll->rate_table, "%s: could not allocate rate table for %s\=
-n", __func__, name);
-> +
-> +       init.ops =3D &visconti_pll_ops;
-> +       pll->hw.init =3D &init;
-> +       pll->pll_base =3D ctx->reg_base + offset;
-> +       pll->flags =3D clk_pll_flags;
-> +       pll->lock =3D lock;
-> +       pll->ctx =3D ctx;
-> +
-> +       pll_clk =3D clk_register(NULL, &pll->hw);
-
-Please use clk_hw_register().
-
-> +       if (IS_ERR(pll_clk)) {
-> +               pr_err("failed to register pll clock %s : %ld\n", name, P=
-TR_ERR(pll_clk));
-> +               kfree(pll);
-> +       }
-> +
-> +       return pll_clk;
-> +}
-> +
-> +static void visconti_pll_add_lookup(struct visconti_pll_provider *ctx, s=
-truct clk *clk,
-> +                                   unsigned int id)
-> +{
-> +       if (ctx->clk_data.clks && id)
-> +               ctx->clk_data.clks[id] =3D clk;
-> +}
-> +
-> +void __init visconti_register_plls(struct visconti_pll_provider *ctx,
-> +                                  const struct visconti_pll_info *list,
-> +                                  unsigned int nr_plls,
-> +                                  spinlock_t *lock)
-> +{
-> +       int idx;
-> +
-> +       for (idx =3D 0; idx < nr_plls; idx++, list++) {
-> +               struct clk *clk;
-> +
-> +               clk =3D visconti_register_pll(ctx,
-> +                                           list->name,
-> +                                           list->parent,
-> +                                           list->base_reg,
-> +                                           list->rate_table,
-> +                                           list->flags,
-> +                                           lock);
-> +               if (IS_ERR(clk)) {
-> +                       pr_err("failed to register clock %s\n", list->nam=
-e);
-> +                       continue;
-> +               }
-> +
-> +               visconti_pll_add_lookup(ctx, clk, list->id);
-> +       }
-> +}
-> +
-> +struct visconti_pll_provider * __init visconti_init_pll(struct device_no=
-de *np,
-> +                                                       void __iomem *bas=
-e,
-> +                                                       unsigned long nr_=
-plls)
-> +{
-> +       struct visconti_pll_provider *ctx;
-> +       struct clk **clk_table;
-> +       int i;
-> +
-> +       ctx =3D kzalloc(sizeof(struct visconti_pll_provider), GFP_KERNEL);
-> +       if (!ctx)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       clk_table =3D kcalloc(nr_plls, sizeof(struct clk *), GFP_KERNEL);
-> +       if (!clk_table)
-> +               goto err;
-> +
-> +       for (i =3D 0; i < nr_plls; ++i)
-> +               clk_table[i] =3D ERR_PTR(-ENOENT);
-> +
-> +       ctx->node =3D np;
-> +       ctx->reg_base =3D base;
-> +       ctx->clk_data.clks =3D clk_table;
-> +       ctx->clk_data.clk_num =3D nr_plls;
-> +
-> +       return ctx;
-> +
-> +err:
-> +       kfree(ctx);
-> +       return ERR_PTR(-ENOMEM);
-> +}
-> diff --git a/drivers/clk/visconti/pll.h b/drivers/clk/visconti/pll.h
-> new file mode 100644
-> index 000000000000..ce0ce1d8cd88
-> --- /dev/null
-> +++ b/drivers/clk/visconti/pll.h
-> @@ -0,0 +1,63 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2021 TOSHIBA CORPORATION
-> + * Copyright (c) 2021 Toshiba Electronic Devices & Storage Corporation
-> + *
-> + * Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> + */
-> +
-> +#ifndef _VISCONTI_PLL_H_
-> +#define _VISCONTI_PLL_H_
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/regmap.h>
-> +#include <linux/spinlock.h>
-> +
-> +struct visconti_pll_provider {
-> +       void __iomem *reg_base;
-> +       struct regmap *regmap;
-> +       struct clk_onecell_data clk_data;
-> +       struct device_node *node;
-> +};
-> +
-> +#define VISCONTI_PLL_RATE(_rate, _dacen, _dsmen, \
-> +       _refdiv, _intin, _fracin, _postdiv1, _postdiv2) \
-> +{                              \
-> +       .rate =3D _rate,          \
-> +       .dacen =3D _dacen,        \
-> +       .dsmen =3D _dsmen,        \
-> +       .refdiv =3D _refdiv,      \
-> +       .intin =3D _intin,        \
-> +       .fracin =3D _fracin,      \
-> +       .postdiv1 =3D _postdiv1,  \
-> +       .postdiv2 =3D _postdiv2   \
-> +}
-> +
-> +struct visconti_pll_rate_table {
-> +       unsigned long rate;
-> +       unsigned int dacen;
-> +       unsigned int dsmen;
-> +       unsigned int refdiv;
-> +       unsigned long intin;
-> +       unsigned long fracin;
-> +       unsigned int postdiv1;
-> +       unsigned int postdiv2;
-> +};
-> +
-> +struct visconti_pll_info {
-> +       unsigned int id;
-> +       const char *name;
-> +       const char *parent;
-> +       u8 flags;
-> +       unsigned long base_reg;
-> +       const struct visconti_pll_rate_table *rate_table;
-> +};
-> +
-> +struct visconti_pll_provider * __init visconti_init_pll(struct device_no=
-de *np,
-> +                                                       void __iomem *bas=
-e,
-> +                                                       unsigned long nr_=
-plls);
-> +void __init visconti_register_plls(struct visconti_pll_provider *ctx,
-
-__init can be dropped from header files. It serves no purpose.
-
-> +                                  const struct visconti_pll_info *list,
-> +                                  unsigned int nr_plls, spinlock_t *lock=
-);
-> +
-> +#endif /* _VISCONTI_PLL_H_ */
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+tree:   https://github.com/meghadey/crypto d_msix
+head:   2c80823a6d6f4430df957092cbd837b55d52e3ae
+commit: 2c80823a6d6f4430df957092cbd837b55d52e3ae [1/1] PCI/MSI: Dynamic allocation of MSI-X vectors
+config: arm64-randconfig-r001-20210829 (attached as .config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 510e106fa8635e7f9c51c896180b971de6309b2f)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm64 cross compiling tool for clang build
+        # apt-get install binutils-aarch64-linux-gnu
+        # https://github.com/meghadey/crypto/commit/2c80823a6d6f4430df957092cbd837b55d52e3ae
+        git remote add meghadey-crypto https://github.com/meghadey/crypto
+        git fetch --no-tags meghadey-crypto d_msix
+        git checkout 2c80823a6d6f4430df957092cbd837b55d52e3ae
+        # save the attached .config to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/pci/
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+   drivers/pci/msi.c:801: warning: Incorrect use of kernel-doc format:  * msix_setup_table - Setup the MSI-X table of the device
+>> drivers/pci/msi.c:805: warning: expecting prototype for msix_capability_init(). Prototype was for msix_setup_table() instead
+
+
+vim +805 drivers/pci/msi.c
+
+75cb3426878d47 Hidetoshi Seto  2009-08-06  788  
+^1da177e4c3f41 Linus Torvalds  2005-04-16  789  /**
+^1da177e4c3f41 Linus Torvalds  2005-04-16  790   * msix_capability_init - configure device's MSI-X capability
+^1da177e4c3f41 Linus Torvalds  2005-04-16  791   * @dev: pointer to the pci_dev data structure of MSI-X device function
+8f7020d36374dd Randy Dunlap    2005-10-23  792   * @entries: pointer to an array of struct msix_entry entries
+8f7020d36374dd Randy Dunlap    2005-10-23  793   * @nvec: number of @entries
+f6b6aefee70aa5 Bjorn Helgaas   2019-05-30  794   * @affd: Optional pointer to enable automatic affinity assignment
+^1da177e4c3f41 Linus Torvalds  2005-04-16  795   *
+eaae4b3a84a378 Steven Cole     2005-05-03  796   * Setup the MSI-X capability structure of device function with a
+f6b6aefee70aa5 Bjorn Helgaas   2019-05-30  797   * single MSI-X IRQ. A return of zero indicates the successful setup of
+f6b6aefee70aa5 Bjorn Helgaas   2019-05-30  798   * requested MSI-X entries with allocated IRQs or non-zero for otherwise.
+^1da177e4c3f41 Linus Torvalds  2005-04-16  799   **/
+2c80823a6d6f44 Megha Dey       2021-08-26  800  /**
+2c80823a6d6f44 Megha Dey       2021-08-26  801   * msix_setup_table - Setup the MSI-X table of the device
+2c80823a6d6f44 Megha Dey       2021-08-26  802   * @dev: pointer to the pci_dev data structure of MSI-X device function
+2c80823a6d6f44 Megha Dey       2021-08-26  803   */
+2c80823a6d6f44 Megha Dey       2021-08-26  804  static int msix_setup_table(struct pci_dev *dev)
+^1da177e4c3f41 Linus Torvalds  2005-04-16 @805  {
+2c80823a6d6f44 Megha Dey       2021-08-26  806  	int tsize;
+7d5ec3d3612396 Thomas Gleixner 2021-07-29  807  	u16 control;
+^1da177e4c3f41 Linus Torvalds  2005-04-16  808  
+438553958ba192 Thomas Gleixner 2021-07-29  809  	/*
+438553958ba192 Thomas Gleixner 2021-07-29  810  	 * Some devices require MSI-X to be enabled before the MSI-X
+438553958ba192 Thomas Gleixner 2021-07-29  811  	 * registers can be accessed.  Mask all the vectors to prevent
+438553958ba192 Thomas Gleixner 2021-07-29  812  	 * interrupts coming in before they're fully set up.
+438553958ba192 Thomas Gleixner 2021-07-29  813  	 */
+438553958ba192 Thomas Gleixner 2021-07-29  814  	pci_msix_clear_and_set_ctrl(dev, 0, PCI_MSIX_FLAGS_MASKALL |
+438553958ba192 Thomas Gleixner 2021-07-29  815  					PCI_MSIX_FLAGS_ENABLE);
+66f0d0c40c08c1 Yijing Wang     2014-06-19  816  	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &control);
+^1da177e4c3f41 Linus Torvalds  2005-04-16  817  	/* Request & Map MSI-X table region */
+7d5ec3d3612396 Thomas Gleixner 2021-07-29  818  	tsize = msix_table_size(control);
+2c80823a6d6f44 Megha Dey       2021-08-26  819  	dev->msix_table_base = msix_map_region(dev, tsize);
+2c80823a6d6f44 Megha Dey       2021-08-26  820  	if (!dev->msix_table_base) {
+2c80823a6d6f44 Megha Dey       2021-08-26  821  		pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
+2c80823a6d6f44 Megha Dey       2021-08-26  822  		return -ENOMEM;
+438553958ba192 Thomas Gleixner 2021-07-29  823  	}
+^1da177e4c3f41 Linus Torvalds  2005-04-16  824  
+7d5ec3d3612396 Thomas Gleixner 2021-07-29  825  	/* Ensure that all table entries are masked. */
+2c80823a6d6f44 Megha Dey       2021-08-26  826  	msix_mask_all(dev->msix_table_base, tsize);
+2c80823a6d6f44 Megha Dey       2021-08-26  827  	return 0;
+2c80823a6d6f44 Megha Dey       2021-08-26  828  }
+2c80823a6d6f44 Megha Dey       2021-08-26  829  
+
+:::::: The code at line 805 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--ZGiS0Q5IWpPtfppv
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+
+--ZGiS0Q5IWpPtfppv--
