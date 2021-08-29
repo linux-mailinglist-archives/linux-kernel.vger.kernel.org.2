@@ -2,73 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656563FAC65
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260363FAC71
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235546AbhH2PGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 11:06:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235501AbhH2PGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 11:06:43 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFDBB60F36;
-        Sun, 29 Aug 2021 15:05:45 +0000 (UTC)
-Date:   Sun, 29 Aug 2021 16:08:56 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
-        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <BMC-SW@aspeedtech.com>
-Subject: Re: [RESEND v4 03/15] iio: adc: aspeed: set driver data when adc
- probe.
-Message-ID: <20210829160856.12dd9395@jic23-huawei>
-In-Reply-To: <20210824091243.9393-4-billy_tsai@aspeedtech.com>
-References: <20210824091243.9393-1-billy_tsai@aspeedtech.com>
-        <20210824091243.9393-4-billy_tsai@aspeedtech.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S235524AbhH2POe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 11:14:34 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:49116 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhH2POd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 11:14:33 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKMSw-00H4Kj-Iq; Sun, 29 Aug 2021 15:11:22 +0000
+Date:   Sun, 29 Aug 2021 15:11:22 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Caleb D.S. Brzezinski" <calebdsb@protonmail.com>
+Cc:     hirofumi@mail.parknet.co.jp, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/3] fat: add the msdos_format_name() filename cache
+Message-ID: <YSujmt9vman41ecj@zeniv-ca.linux.org.uk>
+References: <20210829142459.56081-1-calebdsb@protonmail.com>
+ <20210829142459.56081-3-calebdsb@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210829142459.56081-3-calebdsb@protonmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 17:12:31 +0800
-Billy Tsai <billy_tsai@aspeedtech.com> wrote:
-
-> Fix the issue when adc remove will get the null driver data.
+On Sun, Aug 29, 2021 at 02:25:29PM +0000, Caleb D.S. Brzezinski wrote:
+> Implement the main msdos_format_name() filename cache. If used as a
+> module, all memory allocated for the cache is freed when the module is
+> de-registered.
 > 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-
-This is a fix that we should probably backport.  Please add a fixes tag and move
-it to the start of the series so I can pick it during this kernel
-cycle rather than waiting for the next one.
-
-Thanks,
-
-Jonathan
-
+> Signed-off-by: Caleb D.S. Brzezinski <calebdsb@protonmail.com>
 > ---
->  drivers/iio/adc/aspeed_adc.c | 1 +
->  1 file changed, 1 insertion(+)
+>  fs/fat/namei_msdos.c | 35 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 35 insertions(+)
 > 
-> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-> index 7010d56ac3b9..20462cf659e4 100644
-> --- a/drivers/iio/adc/aspeed_adc.c
-> +++ b/drivers/iio/adc/aspeed_adc.c
-> @@ -201,6 +201,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  
->  	data = iio_priv(indio_dev);
->  	data->dev = &pdev->dev;
-> +	platform_set_drvdata(pdev, indio_dev);
->  
->  	data->base = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(data->base))
+> diff --git a/fs/fat/namei_msdos.c b/fs/fat/namei_msdos.c
+> index 7561674b1..f9d4f63c3 100644
+> --- a/fs/fat/namei_msdos.c
+> +++ b/fs/fat/namei_msdos.c
+> @@ -124,6 +124,16 @@ static int msdos_format_name(const unsigned char *name, int len,
+>  	unsigned char *walk;
+>  	unsigned char c;
+>  	int space;
+> +	u64 hash;
+> +	struct msdos_name_node *node;
+> +
+> +	/* check if the name is already in the cache */
+> +
+> +	hash = msdos_fname_hash(name);
+> +	if (find_fname_in_cache(res, hash))
+> +		return 0;
 
+Huh?  How could that possibly work, seeing that
+	* your hash function only looks at the first 8 characters
+	* your find_fname_in_cache() assumes that hash collisions
+are impossible, which is... unlikely, considering the nature of
+that hash function
+	* find_fname_in_cache(res, hash) copies at most 8 characters
+into res in case of match.  Where does the extension come from?
+
+Out of curiosity, how have you tested that thing?
