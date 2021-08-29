@@ -2,135 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82B83FA97A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 08:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833B23FA97E
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 08:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234644AbhH2G0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 02:26:11 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53074 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229889AbhH2G0J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 02:26:09 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17T6AmIN007798;
-        Sun, 29 Aug 2021 02:25:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=1Vk1w6N7Defqj+no473Bhai+LgvnPPAardePIMhLEqg=;
- b=UliAjHYkgfx7GIJ340DpMgDMGWxfJmVz6rMQ3DGkuris0Omp0Q7JhkkYKaRdfCkUVAar
- 3bdtRkxBFvj2AgXnloKCXc0icPqfZ24jeP3xLAfZcrjDZ3nsz84gtOq5ugXpKHZAIfLS
- 2clZ3lFmWnD4CH0rviVLc9Ylcut0HfAmJSlS0xDY5sE9tJccp0vRpNUTi/dW+tOUBE1v
- 2ab7Cxnw4x/D0xFrG5MQN8wtv/LV7CNXlcBOkqzSRh/FRWi02OxkzbG9yKAM3e7WUAS3
- 1FnBPvUyucpW95FlaM4EuOkE/kovCia5XZIG34JGkKKykDakWpwJYbusdHugkY4BlRAH gQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ar2es2ghj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 29 Aug 2021 02:25:17 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17T6BSOM008921;
-        Sun, 29 Aug 2021 02:25:17 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ar2es2gh1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 29 Aug 2021 02:25:16 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17T6IO1K021309;
-        Sun, 29 Aug 2021 06:25:15 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 3aqcs8sekk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 29 Aug 2021 06:25:15 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17T6PBKU53543382
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 29 Aug 2021 06:25:11 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 368A74C059;
-        Sun, 29 Aug 2021 06:25:11 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C07CA4C04E;
-        Sun, 29 Aug 2021 06:25:10 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.11.228])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sun, 29 Aug 2021 06:25:10 +0000 (GMT)
-Subject: Re: [PATCH 1/1] KVM: s390: index kvm->arch.idle_mask by vcpu_idx
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Mueller <mimu@linux.ibm.com>
-References: <20210827125429.1912577-1-pasic@linux.ibm.com>
- <20210827160616.532d6699@p-imbrenda>
- <e9d2f79c-b784-bc6b-88dc-2d0f7cc08dbe@de.ibm.com>
- <20210827232344.431e3114.pasic@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <be84123f-4f1b-2efb-fba2-e8d644b71b8f@de.ibm.com>
-Date:   Sun, 29 Aug 2021 08:25:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234644AbhH2GdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 02:33:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229889AbhH2GdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 02:33:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71DE860F25;
+        Sun, 29 Aug 2021 06:32:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630218748;
+        bh=9WoeREgQDoa++TTSBGwxbm8Eom0G+AloHwO/mnc4fao=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vFLBfN+N/G50kteXygCag4tY25j0vvaOJNOxXXktHNnX2VqgDx+qerNopkPGjGGVE
+         ITQO3fUYIMYVsjzLJUFKMnN0aEYb7VmCmjFJAH9VcXqNdxFc1jMPVHZ5EmKDllcOT5
+         kSsKNyDInhnauXzlkXnlsHqx0ydSgP/TN2TlJBGs=
+Date:   Sun, 29 Aug 2021 08:32:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        fabioaiuto83@gmail.com, straube.linux@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        saurav.girepunje@hotmail.com
+Subject: Re: [PATCH v2] staging: r8188eu: core: remove null check before vfree
+Message-ID: <YSsp98CJVHLR7vQB@kroah.com>
+References: <YSsnK7Wepn1Dv+oy@user>
 MIME-Version: 1.0
-In-Reply-To: <20210827232344.431e3114.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: xAyEYvN7uL_jCRx0oMwn9daTi7Atj7gv
-X-Proofpoint-GUID: X3ggBqi7uCAlhN0_PllS0UEzYJo54Krk
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-29_02:2021-08-27,2021-08-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0
- malwarescore=0 bulkscore=0 clxscore=1015 mlxlogscore=999 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108290035
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSsnK7Wepn1Dv+oy@user>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 29, 2021 at 11:50:27AM +0530, Saurav Girepunje wrote:
+> Remove NULL check. NULL check before freeing function is not needed.
+> Correct the indentation.
+> 
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> ---
+>  drivers/staging/r8188eu/core/rtw_sta_mgt.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+> index f6dffed53a60..c3600cb1790a 100644
+> --- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+> +++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
+> @@ -155,9 +155,8 @@ u32	_rtw_free_sta_priv(struct	sta_priv *pstapriv)
+>  		spin_unlock_bh(&pstapriv->sta_hash_lock);
+>  		/*===============================*/
+> 
+> -		if (pstapriv->pallocated_stainfo_buf)
+> -			vfree(pstapriv->pallocated_stainfo_buf);
+> -		}
+> +		vfree(pstapriv->pallocated_stainfo_buf);
+> +	}
+> 
+>  	return _SUCCESS;
+>  }
+> --
+> 2.32.0
+> 
+> 
 
+Hi,
 
-On 27.08.21 23:23, Halil Pasic wrote:
-> On Fri, 27 Aug 2021 18:36:48 +0200
-> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
-> 
->> On 27.08.21 16:06, Claudio Imbrenda wrote:
->>> On Fri, 27 Aug 2021 14:54:29 +0200
->>> Halil Pasic <pasic@linux.ibm.com> wrote:
->>>    
->>>> While in practice vcpu->vcpu_idx ==  vcpu->vcp_id is often true,
-> 
-> s/vcp_id/vcpu_id/
-> 
->>>> it may not always be, and we must not rely on this.
->>>
->>> why?
->>>
->>> maybe add a simple explanation of why vcpu_idx and vcpu_id can be
->>> different, namely:
->>> KVM decides the vcpu_idx, userspace decides the vcpu_id, thus the two
->>> might not match
->>>    
->>>>
->>>> Currently kvm->arch.idle_mask is indexed by vcpu_id, which implies
->>>> that code like
->>>> for_each_set_bit(vcpu_id, kvm->arch.idle_mask, online_vcpus) {
->>>>                   vcpu = kvm_get_vcpu(kvm, vcpu_id);
->>>
->>> you can also add a sentence to clarify that kvm_get_vcpu expects an
->>> vcpu_idx, not an vcpu_id.
->>>    
->>>> 		do_stuff(vcpu);
->>
->> I will modify the patch description accordingly before sending to Paolo.
->> Thanks for noticing.
-> 
-> Can you also please fix the typo I pointed out above (in the first line
-> of the long description).
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-I already queued, but I think this is not a big deal.
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
