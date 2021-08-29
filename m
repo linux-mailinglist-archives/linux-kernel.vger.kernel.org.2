@@ -2,69 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F763FA95C
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 07:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8213FA95E
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 07:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234644AbhH2F2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 01:28:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36308 "EHLO mail.kernel.org"
+        id S234325AbhH2F33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 01:29:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233657AbhH2F2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 01:28:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53E0560F3A;
-        Sun, 29 Aug 2021 05:27:18 +0000 (UTC)
+        id S229634AbhH2F30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 01:29:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 297AC60F36;
+        Sun, 29 Aug 2021 05:28:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630214838;
-        bh=RIBMzmRwll8XYCReqJmjVkP9457awMYlTmM3N/i1+Es=;
+        s=k20201202; t=1630214915;
+        bh=d9x09IXoGPv8OxxwYSFTT3FSxVPusg18qTaIMyUUiPc=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=XC/LslHREKwza4nUVtqQj1BQX+zdtEWUN9LQwKpvl6K/6xCMIVQ1M/RXGiDOXhRBz
-         iz4RVspHJyaLPQw72NOMxySwHAN888NbXfZx7AYKA6QM6wUY3+lIlnJXPNhLqMblaZ
-         HiTQ2N0uje/aCGXDtIVWnvaUXiMg6vrFxO7Zlv+fBRC1T4vndHiwlxX4tIXjzuyQf4
-         Zs1ln2Xjxsb0geH0xm+BgbESt5kYt7lQngBfzMjvWNYTj0R3gBBEtwgDNzelTB2I+W
-         81MVQzjnlbgBOxUsZjlqW6fp3EiyQjuxoWuBq9XMWq0S2d61dYVt1P0KfnbSJzPjRD
-         ZUX32IzVot1DQ==
+        b=hmlhwSYPz4321xRyh9tQBvsJ1MOydibjEjWRHVwnKNzy9jrskG05C8gZrGAhfnxbf
+         dwS8GAkanizh1ArCWUi/rm+UMhDRkw0dwgc/+NG33CuxR5h0Ha1YCAH+7PoJYcJn3T
+         MrP/n2dad5mFGG5AfjSK+JE1g1HQacm5qTCOpmhcxP5MEyfd6FkeGBeGCCMbg65ogF
+         owyC+N5Z672/yHA6lBLnhtRWdEpNveLIeH3pZw+y3Of/emYJJZ61G2EMsRZPuG3STZ
+         gei1q6Rqk40K/VBxb8UwTKqwZ0odTFiTSPIQcteQWrZBkFjx/9rJ0YFn8bAL54YjHU
+         ocMIZ1ng6TDww==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <545df946044fc1fc05a4217cdf0054be7a79e49e.1619161112.git.christophe.jaillet@wanadoo.fr>
-References: <545df946044fc1fc05a4217cdf0054be7a79e49e.1619161112.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] clk: mvebu: ap-cpu-clk: Fix a memory leak in error handling paths
+In-Reply-To: <20210707131213.3283509-1-codrin.ciubotariu@microchip.com>
+References: <20210707131213.3283509-1-codrin.ciubotariu@microchip.com>
+Subject: Re: [PATCH] clk: at91: clk-generated: Limit the requested rate to our range
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Julia.Lawall@inria.fr, gregory.clement@bootlin.com,
-        lee.jones@linaro.org, mturquette@baylibre.com
-Date:   Sat, 28 Aug 2021 22:27:17 -0700
-Message-ID: <163021483704.2676726.2051426762011017819@swboyd.mtv.corp.google.com>
+Cc:     mturquette@baylibre.com, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
+        claudiu.beznea@microchip.com,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sat, 28 Aug 2021 22:28:33 -0700
+Message-ID: <163021491397.2676726.7633391558529179439@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Christophe JAILLET (2021-04-23 00:02:26)
-> If we exit the for_each_of_cpu_node loop early, the reference on the
-> current node must be decremented, otherwise there is a leak.
+Quoting Codrin Ciubotariu (2021-07-07 06:12:13)
+> On clk_generated_determine_rate(), the requested rate could be outside
+> of clk's range. Limit the rate to the clock's range to not return an
+> error.
 >=20
-> Fixes: f756e362d938 ("clk: mvebu: add CPU clock driver for Armada 7K/8K")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Fixes: df70aeef6083 ("clk: at91: add generated clock driver")
+> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 > ---
-> Also, I wonder if the drivers in drivers/clk/mvebu are used by anyone.
-> In order to compile-test the changes, I also had to change the 'bool' in =
-Kconfig
-> by 'bool "blah"'. Without this change, it was not possible to set
-> CONFIG_ARMADA_AP_CPU_CLK required by Makefile.
->=20
-> I don't know if I did something wrong, if it is an issue only on my envir=
-onment
-> or if something got broken at some time in the build chain but it looks
-> spurious.
->=20
-> If I'm right and that these drivers never compile and no-one noticed it,
-> maybe removing them is better than fixing some unlikely issues and style.
-> If these drivers should stay, Kconfig may need some love from someone.
 
-Nobody has said anything on this patch. So I'm not really sure what's
-going on. Probably we never take the error path, or the whole system
-fails to boot?
+Applied to clk-next
