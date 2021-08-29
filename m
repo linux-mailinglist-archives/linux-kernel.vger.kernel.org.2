@@ -2,145 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E41C3FAA76
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECF33FAA74
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234984AbhH2JbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 05:31:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40758 "EHLO mail.kernel.org"
+        id S234965AbhH2Jat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 05:30:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234889AbhH2JbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 05:31:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4710D60E94;
-        Sun, 29 Aug 2021 09:30:03 +0000 (UTC)
-From:   Huacai Chen <chenhuacai@loongson.cn>
-To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@loongson.cn>, stable@vger.kernel.org
-Subject: [PATCH] irqchip/loongson-pch-msi: Fix hwirq setting problem
-Date:   Sun, 29 Aug 2021 17:29:33 +0800
-Message-Id: <20210829092933.4061429-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234889AbhH2Jas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 05:30:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CEA160C51;
+        Sun, 29 Aug 2021 09:29:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630229396;
+        bh=UxZL4W6qGDlr0ioRS9G59aeJGyhhQ/D/YpRN4g/VwXM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=p1zAteKQLFZqfChd33F+XzeOOHyHl0gnhYXw/XkT58wAiNLEWFkWI4LIDyM381Myg
+         2CevjM6T49rkCT+Jc52pWWhXPx8Tbap4Ce/kVaP46qB6qzNw8dC9nujI7GO8MC5n5n
+         oA+oqiaVHik75McLjDlhBPSULJ0nvNrM7FcVpcLOgAzRQ9BQCnFwatYF1KMLrwZr78
+         5gzNULJYNVvvdFPtkdinvLBfaUj1TUC8huPoB+LUCMtE4pU8QbgfuRp83OTaea+bye
+         6OHzZnD/5DcFU+szByA3LNsWWYLqxy9p4/uPGxP9sOAmH0KXtKHmgTYxoMI/VVsF5x
+         h74GO09Zqm2ZA==
+Date:   Sun, 29 Aug 2021 18:29:53 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     wuqiang <wuqiang.matt@bytedance.com>
+Cc:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, mingo@kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, mattwu@163.com
+Subject: Re: [PATCH 0/2] *** kretprobe scalability improvement ***
+Message-Id: <20210829182953.1a05f40bdc5c82ff3a997d69@kernel.org>
+In-Reply-To: <20210807185417.9209-1-wuqiang.matt@bytedance.com>
+References: <20210807185417.9209-1-wuqiang.matt@bytedance.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default msi_domain_ops_init() doesn't set hwirq for irq_data,
-which causes the hwirq displayed in /proc/interrupts very strange.
-We fix this by providing a custom msi_domain_ops_init().
+Hi,
 
-Before this patch:
+On Sun,  8 Aug 2021 02:54:15 +0800
+wuqiang <wuqiang.matt@bytedance.com> wrote:
 
-root@loongson-pc:~# cat /proc/interrupts
-           CPU0       CPU1
- 30:          0          0      PCH PIC  47  acpi
- 42:      80020          0      LIOINTC  10  ttyS0
- 44:          1          0      PCH PIC  49  ohci_hcd:usb3
- 45:          0          0      PCH PIC  48  ehci_hcd:usb1
- 46:          1          0      PCH PIC  51  ohci_hcd:usb4
- 47:          0          0      PCH PIC  50  ehci_hcd:usb2
- 54:          0          0      PCH PIC  16  ahci[0000:00:08.0]
- 55:       4364          0      PCH PIC  17  ahci[0000:00:08.1]
- 56:        103          0      PCH PIC  18  ahci[0000:00:08.2]
- 57:          0          0     PCH PCI MSI 1048576  ahci[0000:02:00.0]
- 58:          0          0     PCH PCI MSI 524288  xhci_hcd
- 59:          0          0     PCH PCI MSI 524289  xhci_hcd
- 60:          0          0     PCH PCI MSI 524290  xhci_hcd
- 61:          0          0     PCH PCI MSI 524291  xhci_hcd
- 62:          1          0     PCH PCI MSI 1572864  enp3s0f0
- 63:          6        173     PCH PCI MSI 1572865  enp3s0f0-rx-0
- 64:          6        151     PCH PCI MSI 1572866  enp3s0f0-rx-1
- 65:          6        151     PCH PCI MSI 1572867  enp3s0f0-rx-2
- 66:         20          0     PCH PCI MSI 1572868  enp3s0f0-tx-0
- 67:         20          0     PCH PCI MSI 1572869  enp3s0f0-tx-1
- 68:        170          0     PCH PCI MSI 1572870  enp3s0f0-tx-2
+> kretprobe is using freelist to manage return instances, but freelist as
+> a LIFO queue based on singly linked list, scales badly and thus lowers
+> throughput of kretprobed routines, especially for high parallelization.
+> Here's a typical result (XEON 8260: 2 sockets/48 cores/96 threads):
+> 
+>       1X       2X       4X       6X       8X      12X     16X
+> 10880312 18121228 23214783 13155457 11190217 10991228 9623992
+>      24X      32X      48X      64X      96X     128X    192X
+>  8484455  8376786  6766684  5698349  4113405  4528009 4081401
+> 
+> This patch implements a scalabe, lock-less and numa-aware object pool
+> and as a result improves kretprobe to achieve near-linear scalability.
+> Tests of kretprobe throughput show the biggest gain as 181.5x of the
+> original freelist. Tge extreme tests of raw queue throughput can be up
+> to 282.8 of gain. The comparison results are the followings:
+> 
+>                   1X         2X         4X         8X        16X
+> freelist:  237911411  163596418   33048459   15506757   10640043
+> objpool:   234799081  294086132  585290693 1164205947 2334923746
+>                  24X        32X        48X        64X        96X
+> freelist:    9025299    7965531    6800225    5507639    4284752
+> objpool:  3508905695 1106760339 1101385147 1221763856 1211654038
+> 
+> The object pool is a percpu-extended version of original freelist,
+> with compact memory footprints and balanced performance results for
+> 3 test caess: nonblockable retrieval (most kertprobe cases), bulk
+> retrieval in a row (multiple-threaded blockable kretprobe), huge
+> misses (preallocated objects much less than required).
 
-After this patch:
+Sorry, I missed this series.
+I'm OK for the code, but please combine these 2 patches into 1 because
+those are not bisectable.
 
-root@loongson-pc:~# cat /proc/interrupts
-           CPU0       CPU1
- 30:          0          0      PCH PIC  47  acpi
- 42:      83960          0      LIOINTC  10  ttyS0
- 44:          1          0      PCH PIC  49  ohci_hcd:usb3
- 45:          0          0      PCH PIC  48  ehci_hcd:usb1
- 46:          1          0      PCH PIC  51  ohci_hcd:usb4
- 47:          0          0      PCH PIC  50  ehci_hcd:usb2
- 54:          0          0      PCH PIC  16  ahci[0000:00:08.0]
- 55:       6688         13      PCH PIC  17  ahci[0000:00:08.1]
- 56:        113          2      PCH PIC  18  ahci[0000:00:08.2]
- 57:          0          0     PCH PCI MSI  67  ahci[0000:02:00.0]
- 58:          0          0     PCH PCI MSI  68  xhci_hcd
- 59:          0          0     PCH PCI MSI  69  xhci_hcd
- 60:          0          0     PCH PCI MSI  70  xhci_hcd
- 61:          0          0     PCH PCI MSI  71  xhci_hcd
- 62:          1          0     PCH PCI MSI  72  enp3s0f0
- 63:         12          4     PCH PCI MSI  73  enp3s0f0-rx-0
- 64:         12          4     PCH PCI MSI  74  enp3s0f0-rx-1
- 65:         12          0     PCH PCI MSI  75  enp3s0f0-rx-2
- 66:         16          0     PCH PCI MSI  76  enp3s0f0-tx-0
- 67:         22          0     PCH PCI MSI  77  enp3s0f0-tx-1
- 68:         12          0     PCH PCI MSI  78  enp3s0f0-tx-2
+Thank you,
 
-Fixes: 632dcc2c75ef6de327 ("irqchip: Add Loongson PCH MSI controller")
-Cc: stable@vger.kernel.org
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
- drivers/irqchip/irq-loongson-pch-msi.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+> 
+> wuqiang (2):
+>   scalable lock-less object pool implementation
+>   kretprobe: manage instances with scalable object pool
+> 
+>  include/linux/freelist.h | 521 ++++++++++++++++++++++++++++++++++++---
+>  include/linux/kprobes.h  |   2 +-
+>  kernel/kprobes.c         |  83 ++++---
+>  3 files changed, 536 insertions(+), 70 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
 
-diff --git a/drivers/irqchip/irq-loongson-pch-msi.c b/drivers/irqchip/irq-loongson-pch-msi.c
-index 32562b7e681b..c91a731abd99 100644
---- a/drivers/irqchip/irq-loongson-pch-msi.c
-+++ b/drivers/irqchip/irq-loongson-pch-msi.c
-@@ -81,10 +81,25 @@ static void pch_msi_compose_msi_msg(struct irq_data *data,
- 	msg->data = data->hwirq;
- }
- 
-+static int msi_domain_ops_init(struct irq_domain *domain,
-+				struct msi_domain_info *info,
-+				unsigned int virq, irq_hw_number_t hwirq,
-+				msi_alloc_info_t *arg)
-+{
-+	irq_domain_set_hwirq_and_chip(domain, virq, arg->hwirq, info->chip,
-+					info->chip_data);
-+	return 0;
-+}
-+
-+static struct msi_domain_ops pch_msi_domain_ops = {
-+	.msi_init	= msi_domain_ops_init,
-+};
-+
- static struct msi_domain_info pch_msi_domain_info = {
- 	.flags	= MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
- 		  MSI_FLAG_MULTI_PCI_MSI | MSI_FLAG_PCI_MSIX,
- 	.chip	= &pch_msi_irq_chip,
-+	.ops	= &pch_msi_domain_ops,
- };
- 
- static struct irq_chip middle_irq_chip = {
-@@ -112,8 +127,9 @@ static int pch_msi_middle_domain_alloc(struct irq_domain *domain,
- 					   unsigned int virq,
- 					   unsigned int nr_irqs, void *args)
- {
--	struct pch_msi_data *priv = domain->host_data;
- 	int hwirq, err, i;
-+	struct pch_msi_data *priv = domain->host_data;
-+	msi_alloc_info_t *info = (msi_alloc_info_t *)args;
- 
- 	hwirq = pch_msi_allocate_hwirq(priv, nr_irqs);
- 	if (hwirq < 0)
-@@ -127,6 +143,7 @@ static int pch_msi_middle_domain_alloc(struct irq_domain *domain,
- 		irq_domain_set_hwirq_and_chip(domain, virq + i, hwirq + i,
- 					      &middle_irq_chip, priv);
- 	}
-+	info->hwirq = hwirq;
- 
- 	return 0;
- 
+
 -- 
-2.27.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
