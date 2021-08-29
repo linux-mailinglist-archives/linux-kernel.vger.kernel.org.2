@@ -2,140 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFE43FAC68
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB9A3FAC75
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235524AbhH2PLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 11:11:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231216AbhH2PLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 11:11:01 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A3E06054F;
-        Sun, 29 Aug 2021 15:10:04 +0000 (UTC)
-Date:   Sun, 29 Aug 2021 16:13:18 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
-        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <BMC-SW@aspeedtech.com>
-Subject: Re: [RESEND v4 05/15] iio: adc: aspeed: Refactory model data
- structure
-Message-ID: <20210829161318.54997151@jic23-huawei>
-In-Reply-To: <20210824091243.9393-6-billy_tsai@aspeedtech.com>
-References: <20210824091243.9393-1-billy_tsai@aspeedtech.com>
-        <20210824091243.9393-6-billy_tsai@aspeedtech.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S235553AbhH2PPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 11:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhH2PPb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 11:15:31 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDE6C061575;
+        Sun, 29 Aug 2021 08:14:39 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id 37so6325830uau.13;
+        Sun, 29 Aug 2021 08:14:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CE5DJ6I0bkqbGScS9NHu7P+t4w7mOT4FbVurC5+UIKw=;
+        b=K3bPJ2wK1Ok8UQJoPWFjDCOt5KkMvjpWTPPSd9kxvWAMw+Nj4rDoLHfDJ0fbbOkvAe
+         4nWdOKLhtdcPZjm+XVRqzhVjbwCgHFH0FfycB1Gsv5uYILSKGJE0shs1IWZnX9HaFC6l
+         OWsz/iqcv8ei2cQ5PyNRRBIPlu2plTUnUhSBIkpl+GCChA5MTPJ5WKlK7pO5bNWvE1oA
+         2DcsUGoMzwh+tnuO26O5hK34zvoPauqqO+VvOA6kP1gWWR2p1v1uwr7GcnXJjKzNn3DW
+         QNxECArl3/9SL9vmAn/KkS3O2NyXCf8vB1Ud3hiKMRxk9mQu0C7HUV8SrtQXFPyZKBc0
+         BjcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CE5DJ6I0bkqbGScS9NHu7P+t4w7mOT4FbVurC5+UIKw=;
+        b=tPnX25dCSzxEfD92vvtvoMaYnAF7owfIznkvzMFsqnEKfSPlHiVen4R6mhjp3BWaf6
+         bBuMNduXc4uu7E3II7LaBjhLJpoFZNykZ9WkLZnA4Ou86EUpyAQivyxrcpSrdF33Ysar
+         nxtVNP2n3cINppdYgsTRGrTNBDruiRx7ctU4Py4FHtRZQ7udYVl1oEbOhldKqxAxv8o+
+         nOI4aYEFLu4Ze3ilvXdQMoF7ZfvVdrZ3mnGQgW1dx42FrvtmzfVMIjY45DrwqQGfsujM
+         TJp/2qS9RpWePjB08n/jTSZRjWLyT87E9p178R0Qyz7Gj5zOaeEkmQC2NcoS8bzFooQT
+         VXug==
+X-Gm-Message-State: AOAM532edVovH8sOm5aSvqUgNJMmGEXuNxhRZ2tz56QyU9P89WBJgFYK
+        G3xGudMQVOMXlBYtHDhthJL/t/J6emcb0FfpoZg=
+X-Google-Smtp-Source: ABdhPJxNSz5alZOAE48+fiABe+l62fCRif3TJvSSlHYrT6MwKcd1hDeR6n/NQU69bkZyVPpmgdcFW9QTxYeo0z62LWY=
+X-Received: by 2002:ab0:26cd:: with SMTP id b13mr12684124uap.98.1630250078925;
+ Sun, 29 Aug 2021 08:14:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210822161005.22467-1-sergio.paracuellos@gmail.com>
+ <20210822161005.22467-4-sergio.paracuellos@gmail.com> <YSip4/kMNOG4uYC3@kroah.com>
+In-Reply-To: <YSip4/kMNOG4uYC3@kroah.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Sun, 29 Aug 2021 17:14:27 +0200
+Message-ID: <CAMhs-H_0ytYCoBLj9GJDjHSPPHLC6_oBsm-V9s4FjhE7NY8TCw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] staging: mt7621-pci: set end limit for 'ioport_resource'
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 17:12:33 +0800
-Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+On Fri, Aug 27, 2021 at 11:01 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Sun, Aug 22, 2021 at 06:10:05PM +0200, Sergio Paracuellos wrote:
+> > We have increase IO_SPACE_LIMIT for ralink platform to get PCI IO resources
+> > properly handled using PCI core APIs. To align those changes with driver
+> > code we have to set 'ioport_resource' end limit to IO_SPACE_LIMIT to avoid
+> > errors.
+> >
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+>
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-> This patch refactory the model data structure to distinguish the
-> function form differnet version of aspeed adc.
+Thanks. Since I am planning to move 'mt7621-pci' from staging to
+'drivers/pci/controller' and send v3 after the next merge window, I
+prefer this patch to go through the staging tree. For the other two I
+don't have any preference and it is ok for me to go through mips or
+pci trees. So, Bjorn and Thomas is up to you if you are ok with the
+changes.
 
-from different versions 
+Thanks in advance for your time.
 
-> - Rename the vref_voltag to vref_fixed and add vref driver data
-
-vref_voltage
-
-> When driver probe will check vref_fixed value and store it
-> to vref which isn't const value.
-> - Add num_channels
-> Make num_channles of iio device can be changed by differnet model_data
-
-different
-
-> - Add need_prescaler flag and scaler_bit_width
-> The need_prescaler flag used to tell the driver the clock divider needs
-> another prescaler and the scaler_bit_width to set the clock divider
-> bitfiled width.
-
-bitfield?
-
-> 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> ---
->  drivers/iio/adc/aspeed_adc.c | 18 ++++++++++++++----
->  1 file changed, 14 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-> index d85aa31ee3b1..f03c7921d534 100644
-> --- a/drivers/iio/adc/aspeed_adc.c
-> +++ b/drivers/iio/adc/aspeed_adc.c
-> @@ -63,8 +63,11 @@ struct aspeed_adc_model_data {
->  	const char *model_name;
->  	unsigned int min_sampling_rate;	// Hz
->  	unsigned int max_sampling_rate;	// Hz
-> -	unsigned int vref_voltage;	// mV
-> +	unsigned int vref_fixed;	// mV
-
-Whilst here, you could make the name carry the information of the units.
-e.g. vref_fixed_mv;  That way we always know what the units are without having
-to spot this comment.
-
->  	bool wait_init_sequence;
-> +	bool need_prescaler;
-> +	u8 scaler_bit_width;
-> +	unsigned int num_channels;
->  };
->  
->  struct aspeed_adc_data {
-> @@ -75,6 +78,7 @@ struct aspeed_adc_data {
->  	struct clk_hw		*clk_prescaler;
->  	struct clk_hw		*clk_scaler;
->  	struct reset_control	*rst;
-> +	int			vref;
-vref_mv as above perhaps?
->  };
->  
->  #define ASPEED_CHAN(_idx, _data_reg_addr) {			\
-> @@ -118,7 +122,7 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
->  		return IIO_VAL_INT;
->  
->  	case IIO_CHAN_INFO_SCALE:
-> -		*val = data->model_data->vref_voltage;
-> +		*val = data->model_data->vref_fixed;
->  		*val2 = ASPEED_RESOLUTION_BITS;
->  		return IIO_VAL_FRACTIONAL_LOG2;
->  
-> @@ -312,17 +316,23 @@ static int aspeed_adc_remove(struct platform_device *pdev)
->  
->  static const struct aspeed_adc_model_data ast2400_model_data = {
->  	.model_name = "ast2400-adc",
-> -	.vref_voltage = 2500, // mV
-> +	.vref_fixed = 2500, // mV
->  	.min_sampling_rate = 10000,
->  	.max_sampling_rate = 500000,
-> +	.need_prescaler = true,
-> +	.scaler_bit_width = 10,
-> +	.num_channels = 16,
->  };
->  
->  static const struct aspeed_adc_model_data ast2500_model_data = {
->  	.model_name = "ast2500-adc",
-> -	.vref_voltage = 1800, // mV
-> +	.vref_fixed = 1800, // mV
->  	.min_sampling_rate = 1,
->  	.max_sampling_rate = 1000000,
->  	.wait_init_sequence = true,
-> +	.need_prescaler = true,
-> +	.scaler_bit_width = 10,
-> +	.num_channels = 16,
->  };
->  
->  static const struct of_device_id aspeed_adc_matches[] = {
-
+Best regards,
+    Sergio Paracuellos
