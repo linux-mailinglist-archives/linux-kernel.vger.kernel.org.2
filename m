@@ -2,197 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B34A3FAD0E
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 18:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32C93FAD19
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 18:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235684AbhH2QR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 12:17:27 -0400
-Received: from mout.gmx.net ([212.227.17.20]:39999 "EHLO mout.gmx.net"
+        id S235731AbhH2QSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 12:18:51 -0400
+Received: from mga18.intel.com ([134.134.136.126]:11013 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231422AbhH2QRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 12:17:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630253771;
-        bh=QVHyvI9KdhzZcQz94YWSC2j89Kyz4s6qibr9Q6OcfAE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=h7+gWvn/EwWsQR9BzyfsTXwwR9sd0RsBYNX/qM/DpFFRJI0XAdK103KFD8N8/XMy7
-         Yn8PWhHDJ2uWFdA8w3rUhQ9QZazPLr/VeUHeMwgpkDALUKey9KGaCCslqwL/5VPKPL
-         uH1WoECpn6HazQvUY0/com/dz1pbWupSJ/CsnW+o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MSbx3-1mQkK33xIv-00T0FD; Sun, 29 Aug 2021 18:16:11 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        id S235624AbhH2QSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 12:18:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10091"; a="205298898"
+X-IronPort-AV: E=Sophos;i="5.84,361,1620716400"; 
+   d="scan'208";a="205298898"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2021 09:17:55 -0700
+X-IronPort-AV: E=Sophos;i="5.84,361,1620716400"; 
+   d="scan'208";a="509319308"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.238.58]) ([10.212.238.58])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2021 09:17:54 -0700
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
         Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>, Joe Perches <joe@perches.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5] EDAC/mc: Prefer strscpy or scnprintf over strcpy
-Date:   Sun, 29 Aug 2021 18:15:47 +0200
-Message-Id: <20210829161547.6069-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210823195409-mutt-send-email-mst@kernel.org>
+ <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
+ <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
+ <d992b5af-8d57-6aa6-bd49-8e2b8d832b19@linux.intel.com>
+ <20210824053830-mutt-send-email-mst@kernel.org>
+ <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
+ <20210829112105-mutt-send-email-mst@kernel.org>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
+Date:   Sun, 29 Aug 2021 09:17:53 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5DOd5SPyXVynGrL5JbOHhRVSwiZMbWyJhivQ6XgY1E9falei9Wu
- Au8xhZoi8Zvn3EfUfefktauECPl9vEkvr9hALYkGsisU0f6lHSY4q24f/h2KN/1FasD/IG5
- DZ4hz/JvBHCzlw/zjFbFBjUPPz1evj0uscN9kUcUYivlJJBbjABvMGLYENFqnQIYwoemUTm
- Npjs8vEzsrPnei5Za9Efw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:T6D9FN3N/Wc=:OQxThfh4CmI+ZBcZaMd3QK
- U7v0rdegaeFedfXVs7dJSXjML4/c1zYeRMw3CZnoWTyhxBObLeXMXX6iWtTEzhRRNI4+EQLx8
- Xy574m/QUxTiknTCmNx4LkAftQmuRr/D2JOJg3iLwMPCurO1QBtNHDt+VQltzXhS4nH4mLqMw
- XtobF12uBoStk0T2oWFdbfeOk5dY3pGe75c9q4OKPKp/JzqgqkoifcCU4ndUlEXca+IAuVANA
- /GRRHuN4AJCq0Dlz33cv8yU8KbJRgj3BGZ3MuQJyHeMSRqjQB6Fji3+2khka9YDtv0iCepE47
- 39j7e7Dh30sNv8W0AthXNmY123WIex8Fd/ofq9mfy6A3EgFPDHaBPe5W3xeY1PgfexuvCz9sV
- wY2GM1xR4EQ+3nQQ4ExeAHkTcrRqOR0NVDrmTkoFQOLsGNwKzGSD039G0OfQwqmrf7RQh5uTp
- eHaHXRlBSMGHU2Q3id4FYAfwyB3hak5ubG4dBUqLNw1Fh21a4ZzHoBGrYoTLoYG62FiF/IdDD
- P0RND/LLewNo69cLjmmDegserwCNfUdGMs8lNSesRq0jZ8ZEkI02FLiDEWulVmtWvtn00xd4q
- c3ZUTnkqr+2dgQx76VtDDye7GdV/WIDmJbyfuVi2ydm2gir9vKQLvRzGUg/9u48fcrXnETUtg
- l5uPiDJSyhQtumcq5704gtCJaEWfPKaBEdnjAbzU5aMTMU2BO/5XA4HupyTJWQdiHqNImomub
- 0MsVD2645RBoOi9xZ4igUEBcWQ1UGet/YG9Pf93QGzStPW7eeHl/IhUp0cDJN6G0gR4j72G94
- Ov0FpjNwOM5yWRDmfmgnQawSNqHgByW3RgDuJyMsCy0ZynopODmZbLSDRMRPWg9QkmSeenu+l
- U3py6V/vjGGKUniD6M2Xn16sCFQTIoGbKL/2wMdxhB6mUYZ6KvHNetpnT6QouHqOmwTxaZKvC
- T96ZAUQPmSWsj6SITtDjlH+/v1+gT7hL+WM9ZCh9JDYCNO2emFmZWvr5VXFhK/d4lhhNLwUj3
- ZdGbUBJOnO7bjC9XEi1rNEbdycDq6HIgST2oOZiu9IaYSRmSUAwgm/wcTuGk2+zMhN0uTnIXu
- w1eY2blscCZ1I5k3fWVudeqKneQVh4HDAw3dIk2QJL0i4DOoS3Kc36k3g==
+In-Reply-To: <20210829112105-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strcpy() performs no bounds checking on the destination buffer. This
-could result in linear overflows beyond the end of the buffer, leading
-to all kinds of misbehaviors. The safe replacement is strscpy() [1].
 
-However, to simplify and clarify the code, to concatenate labels use
-the scnprintf() function. This way it is not necessary to check the
-return value of strscpy (-E2BIG if the parameter count is 0 or the src
-was truncated) since the scnprintf returns always the number of chars
-written into the buffer. This function returns always a nul-terminated
-string even if it needs to be truncated.
+> Let's be frank, even without encryption disabling most drivers -
+> especially weird ones that poke at hardware before probe -
+> is far safer than keeping them, but one loses a bunch of features.
 
-The main reason behind this patch is to remove all the strcpy() uses
-from the kernel with the purpose to clean up the proliferation of
-str*cpy() functions. Later on, the next step will be remove all the
-strcpy implementations [2].
+Usually we don't lose features at all. None of the legacy drivers are 
+needed on a guest (or even a modern native system). It's all just all 
+for old hardware. Maybe in 20+ years it can be all removed, but we can't 
+wait that long.
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
-[2] https://github.com/KSPP/linux/issues/88
+> IOW all this hardening is nice but which security/feature tradeoff
+> to take it a policy decision, not something kernel should do
+> imho.
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-Hi,
+There's no mechanism to push this kind of policy to user space. Users 
+don't have control what initcalls run. At the time they execute there 
+isn't even any user space yet.
 
-Next try. I hope this version will be accepted. Anyway, thanks for
-the reviews and patience ;)
+Even if they could somehow control them it's very unlikely they would 
+understand them and make an informed decision.
 
-Thanks,
-Len
+Doing it at build time is not feasible either since we want to run on 
+standard distribution kernels.
 
-Changelog v1 -> v2
-- Use the strscpy() instead of scnprintf() to add labels and follow a
-  code pattern more similar to the current one (advance "p" and
-  decrement "left") (Robert Richter).
+For modules we have a policy mechanism (prevent udev probing by 
+preventing enumeration), and that is implemented, but only handling 
+modules is not enough. The compiled in drivers have to be handled too, 
+otherwise you have gaping holes in the protection. We don't prevent 
+users manually loading modules that might probe, but that is a policy 
+decision that users actually sensibly make in user space.
 
-Changelog v2 -> v3
-- Rename the "left" variable to "len" (Robert Richter).
-- Use strlen(p) instead of strlen(OTHER_LABEL) to decrement "len" and
-  increment "p" as otherwise "left" could underflow and p overflow
-  (Robert Richter).
+Also I changing this single call really that bad? It's not that we 
+changing anything drastic here, just give the low level subsystem a 
+better hint about the intention. If you don't like the function name, 
+could make it an argument instead?
 
-Changelog v3 -> v4
-- Change the commit subject (Joe Perches).
-- Fix broken logic (Robert Richter).
-- Rebase against v5.14-rc5.
+-Andi
 
-Changelog v4 -> v5
-- Change the commit subject.
-- Clarify why the change is being made by adding more info to the
-  commit message (Borislav Petkov).
-- Use scnprintf instead of strscpy (Joe Perches).
-- Rebase against v5.14-rc7.
 
-Previous versions:
 
-v1
-https://lore.kernel.org/linux-hardening/20210725162954.9861-1-len.baker@gm=
-x.com/
-
-v2
-https://lore.kernel.org/linux-hardening/20210801143558.12674-1-len.baker@g=
-mx.com/
-
-v3
-https://lore.kernel.org/linux-hardening/20210807155957.10069-1-len.baker@g=
-mx.com/
-
-v4
-https://lore.kernel.org/linux-hardening/20210814075527.5999-1-len.baker@gm=
-x.com/
-
- drivers/edac/edac_mc.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
-index f6d462d0be2d..4fe1286ad7a2 100644
-=2D-- a/drivers/edac/edac_mc.c
-+++ b/drivers/edac/edac_mc.c
-@@ -1032,6 +1032,8 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
-_type type,
- 	int i, n_labels =3D 0;
- 	struct edac_raw_error_desc *e =3D &mci->error_desc;
- 	bool any_memory =3D true;
-+	size_t len;
-+	int n;
-
- 	edac_dbg(3, "MC%d\n", mci->mc_idx);
-
-@@ -1086,6 +1088,7 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
-_type type,
- 	 */
- 	p =3D e->label;
- 	*p =3D '\0';
-+	len =3D sizeof(e->label);
-
- 	mci_for_each_dimm(mci, dimm) {
- 		if (top_layer >=3D 0 && top_layer !=3D dimm->location[0])
-@@ -1113,12 +1116,11 @@ void edac_mc_handle_error(const enum hw_event_mc_e=
-rr_type type,
- 			p =3D e->label;
- 			*p =3D '\0';
- 		} else {
--			if (p !=3D e->label) {
--				strcpy(p, OTHER_LABEL);
--				p +=3D strlen(OTHER_LABEL);
--			}
--			strcpy(p, dimm->label);
--			p +=3D strlen(p);
-+			const char *or =3D (p !=3D e->label) ? OTHER_LABEL : "";
-+
-+			n =3D scnprintf(p, len, "%s%s", or, dimm->label);
-+			len -=3D n;
-+			p +=3D n;
- 		}
-
- 		/*
-@@ -1140,9 +1142,9 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
-_type type,
- 	}
-
- 	if (any_memory)
--		strcpy(e->label, "any memory");
-+		strscpy(e->label, "any memory", sizeof(e->label));
- 	else if (!*e->label)
--		strcpy(e->label, "unknown memory");
-+		strscpy(e->label, "unknown memory", sizeof(e->label));
-
- 	edac_inc_csrow(e, row, chan);
-
-=2D-
-2.25.1
-
+>
