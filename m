@@ -2,80 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7593FAC9A
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B6B3FAC9D
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235611AbhH2P3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 11:29:06 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:48766
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235561AbhH2P3F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 11:29:05 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S235633AbhH2P30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 11:29:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235561AbhH2P3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 11:29:24 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id AD4BB3F339;
-        Sun, 29 Aug 2021 15:28:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630250891;
-        bh=gqWXc3i3SzkWPvLgtgv3WIqDOFamnAqAjp2Txwu5dQg=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=k8/wq/0SIHgDBR4R6/Zhu4Z50CubNdLU4lPFeErPqovkNTBRElPzgunSrsqo+eJPG
-         VJV3a36tEs98rVxR+q4MUmD3b/CNTFcb4UJRah8+5OKOTzGwwD2i3NDDrlmSYK/MdE
-         AbQlJKdt5tQaak4iQpdI9ZEJyHPd8ACKVSHjR6HCVnMHUcYIFHKllTHpF1/Bql1WEc
-         ndWO0qWljnmeeT99HTPcl4rRQp3SQV54olWP9INV4gnni9h1JanVfHMnTpN77TMWol
-         qVbiW5Ug0+F2XRECojsc4T2Lo+ygDG+KmbTjRrhqBV59JXfoEwpwr0ib54dR7iywj/
-         93EoRVB/seeiQ==
-From:   Colin King <colin.king@canonical.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        dmaengine@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] dmaengine: sh: Fix unused initialization of pointer lmdesc
-Date:   Sun, 29 Aug 2021 16:28:11 +0100
-Message-Id: <20210829152811.529766-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        by mail.kernel.org (Postfix) with ESMTPSA id A60D460F42;
+        Sun, 29 Aug 2021 15:28:26 +0000 (UTC)
+Date:   Sun, 29 Aug 2021 16:31:37 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
+        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <BMC-SW@aspeedtech.com>
+Subject: Re: [RESEND v4 10/15] iio: adc: aspeed: Support ast2600 adc.
+Message-ID: <20210829163137.4c0ce7b0@jic23-huawei>
+In-Reply-To: <20210824091243.9393-11-billy_tsai@aspeedtech.com>
+References: <20210824091243.9393-1-billy_tsai@aspeedtech.com>
+        <20210824091243.9393-11-billy_tsai@aspeedtech.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, 24 Aug 2021 17:12:38 +0800
+Billy Tsai <billy_tsai@aspeedtech.com> wrote:
 
-Pointer lmdesc is being inintialized with a value that is never read,
-it is later being re-assigned a new value. Fix this by initializing
-it with the latter value.
+> Make driver to support ast2600 adc device.
+> - Use shared reset controller
+> - Complete the vref configure function
+> - Add the model data for ast2600 adc
+> 
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+Hi Billy,
 
-Addresses-Coverity: ("Unused value")
-Fixes: 550c591a89a1 ("dmaengine: sh: Add DMAC driver for RZ/G2L SoC")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/dma/sh/rz-dmac.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+A few minor things inline,
 
-diff --git a/drivers/dma/sh/rz-dmac.c b/drivers/dma/sh/rz-dmac.c
-index 11986a8d22fc..3d1c239de306 100644
---- a/drivers/dma/sh/rz-dmac.c
-+++ b/drivers/dma/sh/rz-dmac.c
-@@ -308,12 +308,10 @@ static void rz_dmac_prepare_desc_for_memcpy(struct rz_dmac_chan *channel)
- {
- 	struct dma_chan *chan = &channel->vc.chan;
- 	struct rz_dmac *dmac = to_rz_dmac(chan->device);
--	struct rz_lmdesc *lmdesc = channel->lmdesc.base;
-+	struct rz_lmdesc *lmdesc = channel->lmdesc.tail;
- 	struct rz_dmac_desc *d = channel->desc;
- 	u32 chcfg = CHCFG_MEM_COPY;
- 
--	lmdesc = channel->lmdesc.tail;
--
- 	/* prepare descriptor */
- 	lmdesc->sa = d->src;
- 	lmdesc->da = d->dest;
--- 
-2.32.0
+Jonathan
+
+> ---
+>  drivers/iio/adc/aspeed_adc.c | 106 +++++++++++++++++++++++++++++++++--
+>  1 file changed, 100 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
+> index 1c87e12a0cab..ea3e9a52fcc9 100644
+> --- a/drivers/iio/adc/aspeed_adc.c
+> +++ b/drivers/iio/adc/aspeed_adc.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+>  /*
+> - * Aspeed AST2400/2500 ADC
+> + * Aspeed AST2400/2500/2600 ADC
+>   *
+>   * Copyright (C) 2017 Google, Inc.
+>   * Copyright (C) 2021 Aspeed Technology Inc.
+> @@ -14,6 +14,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/regulator/consumer.h>
+>  #include <linux/reset.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/types.h>
+> @@ -73,6 +74,7 @@ struct aspeed_adc_model_data {
+>  struct aspeed_adc_data {
+>  	struct device		*dev;
+>  	const struct aspeed_adc_model_data *model_data;
+> +	struct regulator	*regulator;
+>  	void __iomem		*base;
+>  	spinlock_t		clk_lock;
+>  	struct clk_hw		*clk_prescaler;
+> @@ -208,14 +210,80 @@ static void aspeed_adc_clk_disable_unprepare(void *data)
+>  	clk_disable_unprepare(clk);
+>  }
+>  
+> +static void aspeed_adc_reg_disable(void *data)
+> +{
+> +	struct regulator *reg = data;
+> +
+> +	regulator_disable(reg);
+> +}
+> +
+>  static int aspeed_adc_vref_config(struct iio_dev *indio_dev)
+>  {
+>  	struct aspeed_adc_data *data = iio_priv(indio_dev);
+> +	int ret;
+> +	u32 adc_engine_control_reg_val =
+> +		readl(data->base + ASPEED_REG_ENGINE_CONTROL);
+
+Given you aren't going to use this if vref_fixed is set, move the read
+until after that.
+
+>  
+>  	if (data->model_data->vref_fixed) {
+>  		data->vref = data->model_data->vref_fixed;
+>  		return 0;
+>  	}
+> +
+> +	data->regulator = devm_regulator_get_optional(data->dev, "vref");
+> +	if (!IS_ERR(data->regulator)) {
+> +		ret = regulator_enable(data->regulator);
+> +		if (ret)
+> +			return ret;
+> +		ret = devm_add_action_or_reset(
+> +			data->dev, aspeed_adc_reg_disable, data->regulator);
+> +		if (ret)
+> +			return ret;
+> +		data->vref = regulator_get_voltage(data->regulator);
+> +		/* Conversion from uV to mV */
+> +		data->vref /= 1000;
+> +		if ((data->vref >= 1550) && (data->vref <= 2700))
+> +			writel(adc_engine_control_reg_val |
+> +				       FIELD_PREP(
+> +					       ASPEED_ADC_REF_VOLTAGE,
+> +					       ASPEED_ADC_REF_VOLTAGE_EXT_HIGH),
+> +			       data->base + ASPEED_REG_ENGINE_CONTROL);
+> +		else if ((data->vref >= 900) && (data->vref <= 1650))
+> +			writel(adc_engine_control_reg_val |
+> +				       FIELD_PREP(
+> +					       ASPEED_ADC_REF_VOLTAGE,
+> +					       ASPEED_ADC_REF_VOLTAGE_EXT_LOW),
+> +			       data->base + ASPEED_REG_ENGINE_CONTROL);
+> +		else {
+> +			dev_err(data->dev, "Regulator voltage %d not support",
+> +				data->vref);
+> +			return -EOPNOTSUPP;
+> +		}
+> +	} else {
+> +		if (PTR_ERR(data->regulator) != -ENODEV)
+> +			return PTR_ERR(data->regulator);
+> +		ret = of_property_read_u32(data->dev->of_node,
+> +					   "aspeed,int_vref_mv", &data->vref);
+> +		if (ret < 0) {
+> +			dev_warn(data->dev,
+> +				 "Using default vref: internal 2500 mv");
+
+Perhaps document that as default in the dt-binding, then you can remove this warning and
+handle this as:
+
+		data->vref = 2500;
+		of_property_read_u32(data->dev->of_node,
+				     "aspeed,int-vref-mvolts", &data->vref);
+etc
+
+> +			data->vref = 2500;
+> +		}
+> +		if (data->vref == 2500)
+> +			writel(adc_engine_control_reg_val |
+> +				       FIELD_PREP(ASPEED_ADC_REF_VOLTAGE,
+> +						  ASPEED_ADC	writel(adc_engine_control_reg_val,
+		data->base + ASPEED_REG_ENGINE_CONTROL);_REF_VOLTAGE_2500mV),
+> +			       data->base + ASPEED_REG_ENGINE_CONTROL);
+> +		else if (data->vref == 1200)
+> +			writel(adc_engine_control_reg_val |
+> +				       FIELD_PREP(ASPEED_ADC_REF_VOLTAGE,
+> +						  ASPEED_ADC_REF_VOLTAGE_1200mV),
+> +			       data->base + ASPEED_REG_ENGINE_CONTROL);
+> +		else {
+> +			dev_err(data->dev, "Voltage %d not support", data->vref);
+> +			return -EOPNOTSUPP;
+> +		}
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> @@ -279,7 +347,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>  
+> -	data->rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> +	data->rst = devm_reset_control_get_shared(&pdev->dev, NULL);
+>  	if (IS_ERR(data->rst)) {
+>  		dev_err(&pdev->dev,
+>  			"invalid or missing reset controller device tree entry");
+> @@ -297,10 +365,14 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  		return ret;
+>  
+>  	if (data->model_data->wait_init_sequence) {
+> +		adc_engine_control_reg_val =
+> +			readl(data->base + ASPEED_REG_ENGINE_CONTROL);
+> +		adc_engine_control_reg_val |=
+> +			FIELD_PREP(ASPEED_ADC_OP_MODE,
+> +				   ASPEED_ADC_OP_MODE_NORMAL) |
+> +			ASPEED_ADC_ENGINE_ENABLE;
+>  		/* Enable engine in normal mode. */
+> -		writel(FIELD_PREP(ASPEED_ADC_OP_MODE,
+> -				  ASPEED_ADC_OP_MODE_NORMAL) |
+> -			       ASPEED_ADC_ENGINE_ENABLE,
+> +		writel(adc_engine_control_reg_val,
+>  		       data->base + ASPEED_REG_ENGINE_CONTROL);
+>  
+>  		/* Wait for initial sequence complete. */
+> @@ -326,6 +398,8 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  		return ret;
+>  
+>  	adc_engine_control_reg_val =
+> +		readl(data->base + ASPEED_REG_ENGINE_CONTROL);
+> +	adc_engine_control_reg_val |=
+>  		ASPEED_ADC_CTRL_CHANNEL |
+>  		FIELD_PREP(ASPEED_ADC_OP_MODE, ASPEED_ADC_OP_MODE_NORMAL) |
+>  		ASPEED_ADC_ENGINE_ENABLE;
+> @@ -376,9 +450,29 @@ static const struct aspeed_adc_model_data ast2500_model_data = {
+>  	.num_channels = 16,
+>  };
+>  
+> +static const struct aspeed_adc_model_data ast2600_adc0_model_data = {
+> +	.model_name = "ast2600-adc0",
+> +	.min_sampling_rate = 10000,
+> +	.max_sampling_rate = 500000,
+> +	.wait_init_sequence = true,
+> +	.scaler_bit_width = 16,
+> +	.num_channels = 8,
+> +};
+> +
+> +static const struct aspeed_adc_model_data ast2600_adc1_model_data = {
+> +	.model_name = "ast2600-adc1",
+> +	.min_sampling_rate = 10000,
+> +	.max_sampling_rate = 500000,
+> +	.wait_init_sequence = true,
+> +	.scaler_bit_width = 16,
+> +	.num_channels = 8,
+> +};
+> +
+>  static const struct of_device_id aspeed_adc_matches[] = {
+>  	{ .compatible = "aspeed,ast2400-adc", .data = &ast2400_model_data },
+>  	{ .compatible = "aspeed,ast2500-adc", .data = &ast2500_model_data },
+> +	{ .compatible = "aspeed,ast2600-adc0", .data = &ast2600_adc0_model_data },
+> +	{ .compatible = "aspeed,ast2600-adc1", .data = &ast2600_adc1_model_data },
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, aspeed_adc_matches);
+> @@ -395,5 +489,5 @@ static struct platform_driver aspeed_adc_driver = {
+>  module_platform_driver(aspeed_adc_driver);
+>  
+>  MODULE_AUTHOR("Rick Altherr <raltherr@google.com>");
+> -MODULE_DESCRIPTION("Aspeed AST2400/2500 ADC Driver");
+> +MODULE_DESCRIPTION("Aspeed AST2400/2500/2600 ADC Driver");
+>  MODULE_LICENSE("GPL");
 
