@@ -2,86 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EF83FAD71
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 19:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBBB3FAD6E
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 19:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235292AbhH2RQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 13:16:48 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:52386
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229706AbhH2RQr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 13:16:47 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S235876AbhH2RNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 13:13:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229706AbhH2RNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 13:13:52 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id A99C63F232;
-        Sun, 29 Aug 2021 17:15:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630257353;
-        bh=L0cf0NjF33stKTs19OGzzZa1hPrIN3qceVlEcaV1VHI=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=GUpZLZcJJgEiVEMdZQAdfGUIlElVrVH3hzTJGGFCBAQ3QWs5zujv569+wkkWCBatf
-         sd282FNyIX1QjNp7G+HiSNgPxDAXiuo15hWX4eAzhX9r74qe2WGsdfvKzYl+SLBqS1
-         U2SvWRyxtv1c+goNWhgswT9fczZImDFUNNZ1uAb+82Yx79PvcnH1mmSNfn8oSRLzmN
-         ffLhvaXr00xia6PqTYPpg6CUSpab8gJZm6KS2LOwYgdHpx8h0i4SBEuLl0LJJj7qlc
-         ppv4JSqSR2RhWsf7Ziu2MFY7aV003wv/+lEe31fPn16zK+Bhjug198Cv29l9olXgfv
-         6eo2f8SrVcMQw==
-From:   Colin King <colin.king@canonical.com>
-To:     Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-cxl@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] cxl/core: Fix a deference of a pointer cxl_port before it is null checked
-Date:   Sun, 29 Aug 2021 18:15:53 +0100
-Message-Id: <20210829171553.532596-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 9798760F38;
+        Sun, 29 Aug 2021 17:12:57 +0000 (UTC)
+Date:   Sun, 29 Aug 2021 18:16:12 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     lars@metafoo.de, ardeleanalex@gmail.com, andy.shevchenko@gmail.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v3] iio: adc128s052: Simplify 'adc128_probe()'
+Message-ID: <20210829181612.0b366561@jic23-huawei>
+In-Reply-To: <4fa7fcc59c40e27af0569138d656c698a53dbd44.1630002770.git.christophe.jaillet@wanadoo.fr>
+References: <4fa7fcc59c40e27af0569138d656c698a53dbd44.1630002770.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, 26 Aug 2021 20:36:22 +0200
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-The assignment of pointer port with a dereference of pointer cxl_port
-occurs before cxl_port is null checked. Fix this by only assigning port
-once cxl_port has been null checked.
+> Turn 'adc128_probe()' into a full resource managed function to simplify the
+> code.
+> 
+> This way, the .remove function can be removed.
+> Doing so, the only 'spi_get_drvdata()' call is removed and the
+> corresponding 'spi_set_drvdata()' can be removed as well.
+> 
+> Suggested-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Looks good to me, but as mentioned this will need to wait for the
+fix to go upstream.
 
-Addresses-Coverity: ("Dereference before null check")
-Fixes: b7ca54b62551 ("cxl/core: Split decoder setup into alloc + add")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/cxl/core/bus.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Give me a poke if I seem to have lost it once that's true.
 
-diff --git a/drivers/cxl/core/bus.c b/drivers/cxl/core/bus.c
-index 0b85351be6bf..55db46ba8a18 100644
---- a/drivers/cxl/core/bus.c
-+++ b/drivers/cxl/core/bus.c
-@@ -494,7 +494,7 @@ EXPORT_SYMBOL_GPL(cxl_decoder_alloc);
- int devm_cxl_add_decoder(struct device *host, struct cxl_decoder *cxld,
- 			 int *target_map)
- {
--	struct cxl_port *port = to_cxl_port(cxld->dev.parent);
-+	struct cxl_port *port;
- 	struct device *dev;
- 	int rc = 0, i;
- 
-@@ -509,6 +509,7 @@ int devm_cxl_add_decoder(struct device *host, struct cxl_decoder *cxld,
- 		goto err;
- 	}
- 
-+	port = to_cxl_port(cxld->dev.parent);
- 	device_lock(&port->dev);
- 	if (list_empty(&port->dports))
- 		rc = -EINVAL;
--- 
-2.32.0
+Thanks,
+
+Jonathan
+
+> ---
+> Compile tested only.
+> 
+> When reviewing, pay special attention to the 'spi_set_drvdata()' call
+> removal. I recently introduced a regression with a too aggressive cleanup
+> like that.
+> 
+> This patch should be applied after
+> https://lore.kernel.org/linux-iio/f33069f0-601b-4bbb-3766-026f7a161912-39ZsbGIQGT5GWvitb5QawA@public.gmane.org/T/#meb792dcd6540f87d9ae041660ca4738a776e924a
+> 
+> v1 --> v2: just garbage --> ignore
+> v1 --> v3: Simplify 'adc128_disable_regulator()'
+> ---
+>  drivers/iio/adc/ti-adc128s052.c | 26 +++++++++-----------------
+>  1 file changed, 9 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ti-adc128s052.c b/drivers/iio/adc/ti-adc128s052.c
+> index 3143f35a6509..ce0cfe40b219 100644
+> --- a/drivers/iio/adc/ti-adc128s052.c
+> +++ b/drivers/iio/adc/ti-adc128s052.c
+> @@ -132,6 +132,11 @@ static const struct iio_info adc128_info = {
+>  	.read_raw = adc128_read_raw,
+>  };
+>  
+> +static void adc128_disable_regulator(void *reg)
+> +{
+> +	regulator_disable(reg);
+> +}
+> +
+>  static int adc128_probe(struct spi_device *spi)
+>  {
+>  	struct iio_dev *indio_dev;
+> @@ -151,8 +156,6 @@ static int adc128_probe(struct spi_device *spi)
+>  	adc = iio_priv(indio_dev);
+>  	adc->spi = spi;
+>  
+> -	spi_set_drvdata(spi, indio_dev);
+> -
+>  	indio_dev->name = spi_get_device_id(spi)->name;
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  	indio_dev->info = &adc128_info;
+> @@ -167,23 +170,13 @@ static int adc128_probe(struct spi_device *spi)
+>  	ret = regulator_enable(adc->reg);
+>  	if (ret < 0)
+>  		return ret;
+> +	ret = devm_add_action_or_reset(&spi->dev, adc128_disable_regulator, adc->reg);
+> +	if (ret)
+> +		return ret;
+>  
+>  	mutex_init(&adc->lock);
+>  
+> -	ret = iio_device_register(indio_dev);
+> -
+> -	return ret;
+> -}
+> -
+> -static int adc128_remove(struct spi_device *spi)
+> -{
+> -	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+> -	struct adc128 *adc = iio_priv(indio_dev);
+> -
+> -	iio_device_unregister(indio_dev);
+> -	regulator_disable(adc->reg);
+> -
+> -	return 0;
+> +	return devm_iio_device_register(&spi->dev, indio_dev);
+>  }
+>  
+>  static const struct of_device_id adc128_of_match[] = {
+> @@ -225,7 +218,6 @@ static struct spi_driver adc128_driver = {
+>  		.acpi_match_table = ACPI_PTR(adc128_acpi_match),
+>  	},
+>  	.probe = adc128_probe,
+> -	.remove = adc128_remove,
+>  	.id_table = adc128_id,
+>  };
+>  module_spi_driver(adc128_driver);
 
