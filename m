@@ -2,117 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236DB3FAC47
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0683FAC4B
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 16:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235416AbhH2Og2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 10:36:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhH2Og0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 10:36:26 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D28C6023D;
-        Sun, 29 Aug 2021 14:35:30 +0000 (UTC)
-Date:   Sun, 29 Aug 2021 15:38:45 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Liam Beguin" <liambeguin@gmail.com>
-Cc:     "Andy Shevchenko" <andy.shevchenko@gmail.com>,
-        "Lars-Peter Clausen" <lars@metafoo.de>,
-        "Michael Hennerich" <Michael.Hennerich@analog.com>,
-        "Charles-Antoine Couret" <charles-antoine.couret@essensium.com>,
-        Nuno =?UTF-8?B?U8Oh?= <Nuno.Sa@analog.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "linux-iio" <linux-iio@vger.kernel.org>,
-        "devicetree" <devicetree@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>
-Subject: Re: [PATCH v6 0/5] AD7949 Fixes
-Message-ID: <20210829153845.0c7eda30@jic23-huawei>
-In-Reply-To: <CDKYEMJOURHJ.2U1JRK17FRGD0@shaak>
-References: <20210815213309.2847711-1-liambeguin@gmail.com>
-        <CAHp75VdOMg-7xX+KbdaDt5tduPhorujFwvpMPmdHKMVg=vj2Ew@mail.gmail.com>
-        <CDKYEMJOURHJ.2U1JRK17FRGD0@shaak>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S235454AbhH2On5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 10:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229824AbhH2On4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 10:43:56 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26953C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 07:43:04 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id p38so25767586lfa.0
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 07:43:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vi12hNY0vhgn8mLCqZgcRjNvZYn/ptAUd78nem7zDq4=;
+        b=cTQuN78djINDAQssTLQIH/74drUr9Hb0HB8nJyPEd4+B1hbL8eWMDDQwJ7dMMUyaZj
+         U499KSS2J+AR7bQDpgVK3XxR62dw/7gq1apwvIyqLJrMrk4JNeTOjZjLlhKIFN+eaMTv
+         7hhuibxe/4Stkmi6UUt47lm5zsiX2TL1EXw8AJIYTCQFUoel32qsTaPeQIAfp8HJ5jtb
+         S8ZUT6g4omL96B+lsAMr7zdpPcXxi1F1TR7DiZIQYqCumD+hijjkC63Hs2HhbnCzwrhg
+         cjGFuqRt25efc+/lxuJJ0mRNkTBkj7JNRBg7ldt9aoG0UFogbLrR10O/vmvfV8bXHZYh
+         OLlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vi12hNY0vhgn8mLCqZgcRjNvZYn/ptAUd78nem7zDq4=;
+        b=UyI6kTANtB0erGH6uyaBzstg8BMkG7qKnFLr8jDzHpL3S64MiqksDWYpCR3TG9Eu1o
+         5KFSVHHiErHPAxP4ysn5nmHpDM7IDy+3PFaySB/Q8BqcExt74S3ltNsHhP+YRxKwI5j8
+         WU7JnLZw8/YUB3eq7pZ2xUDaHLGT6P0DyHCjhTkHvGvaRAG1IVGMfdn/S0fqmdGS7Mfv
+         BOamIYj4kYOZc0Liv0cCio1r8y10O5086wGlEVdCvDPpOEi7FI4MK2Sh6hibNK0vMzyi
+         xlGQD33EKr1YGFLQ0UhYBQ2jPgISZqCb/p2snhdf0i1WxLMb90VFcReJuglKjsVs8H+o
+         pRFw==
+X-Gm-Message-State: AOAM533Pi0SXOoAnVz6que82qv4H4c077CN63RSoTdXr+Xy9IlPczLnG
+        ECbxbp+28JkR3vzVM/kTfR4V8i8mOCDXlg==
+X-Google-Smtp-Source: ABdhPJw/4PUswN4lra3ZqGZzoe9lPY2QQLqYXBn22OYOKWmGo4+MWq8Fzrvo9ygtCXLex8We+z/a6A==
+X-Received: by 2002:a05:6512:3407:: with SMTP id i7mr2831754lfr.254.1630248182388;
+        Sun, 29 Aug 2021 07:43:02 -0700 (PDT)
+Received: from localhost.localdomain (37-33-245-172.bb.dnainternet.fi. [37.33.245.172])
+        by smtp.gmail.com with ESMTPSA id q9sm1243403lfn.170.2021.08.29.07.43.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Aug 2021 07:43:01 -0700 (PDT)
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev
+Cc:     Kari Argillander <kari.argillander@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] fs/ntfs3: Change how module init/info messages are displayed
+Date:   Sun, 29 Aug 2021 17:42:39 +0300
+Message-Id: <20210829144239.58213-1-kari.argillander@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 08:59:28 -0400
-"Liam Beguin" <liambeguin@gmail.com> wrote:
+Usually in file system init() messages are only displayed in info level.
+Change level from notice to info, but keep CONFIG_NTFS3_64BIT_CLUSTER in
+notice level. Also this need even more attention so let's put big
+warning here so that nobody will not try accidentally use it.
 
-> On Mon Aug 16, 2021 at 4:08 AM EDT, Andy Shevchenko wrote:
-> > On Mon, Aug 16, 2021 at 12:35 AM Liam Beguin <liambeguin@gmail.com>
-> > wrote:  
-> > >
-> > > While working on another series[1] I ran into issues where my SPI
-> > > controller would fail to handle 14-bit and 16-bit SPI messages. This
-> > > addresses that issue and adds support for selecting a different voltage
-> > > reference source from the devicetree.
-> > >
-> > > v1 was base on a series[2] that seems to not have made it all the way,
-> > > and was tested on an ad7689.
-> > >
-> > > v6 drops support for per channel vref selection.
-> > > After switching the voltage reference, readings take a little while to
-> > > stabilize, invalidating consecutive readings.
-> > >
-> > > This could've been addressed by adding more dummy cycles at the expense
-> > > of speed, but discussing the issue with colleagues more involved in
-> > > hardware design, it turns out these circuits are usually designed with a
-> > > single vref in mind.
-> > >
-> > > [1] https://patchwork.kernel.org/project/linux-iio/list/?series=511545
-> > > [2] https://patchwork.kernel.org/project/linux-iio/list/?series=116971&state=%2A&archive=both
-> > >
-> > > Changes since v5:
-> > > - rename defines: s/AD7949_CFG_BIT_/AD7949_CFG_MASK_/g
-> > > - rename AD7949_MASK_TOTAL to match other defines  
-> >  
-> > > - make vref selection global instead of per channel, and update
-> > >   dt-bindings  
-> 
-> Hi Andy,
-> 
-> >
-> > Same as per v5: is it a hardware limitation?
-> > It's unclear to me what happened here.  
-> 
-> I tried to provide more details in the last paragraph above.
-> 
-> After switching the voltage reference, readings take a little while to
-> stabilize invalidating consecutive readings.
-> 
-> One option was to add more dummy cycles, but in addition to making
-> things slower it was brought to my attention that this kind of circuit
-> is usually designed with a single vref in mind.
-> 
-> For those reasons and because I didn't have an explicit need for it, I
-> decided to drop that part.
+There is also no good reason to display internal stuff like binary tree
+search. This is always on option which can only disabled for debugging
+purposes by developer. Also this message does not even check if
+developer has disabled it or not so it is useless info.
 
-It's not 'impossible' to add it back in later if someone needs it, but
-until then this works for me.
+Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+---
+ fs/ntfs3/super.c | 27 ++++++++-------------------
+ 1 file changed, 8 insertions(+), 19 deletions(-)
 
-Series applied with tweaks as described in individual patch replies.
-
-Thanks,
-
-Jonathan
-
-> 
-> Liam
-> 
-> >  
-> > > - reword commits 2/5, 3/5, and 4/5
-> > > - move bits_per_word configuration to struct spi_device, and switch to
-> > >   spi_{read,write}.  
-> >
-> > --
-> > With Best Regards,
-> > Andy Shevchenko  
-> 
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index 17ee715ab539..7895039cf673 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -1430,21 +1430,14 @@ static int __init init_ntfs_fs(void)
+ {
+ 	int err;
+ 
+-	pr_notice("ntfs3: Index binary search\n");
+-	pr_notice("ntfs3: Hot fix free clusters\n");
+-	pr_notice("ntfs3: Max link count %u\n", NTFS_LINK_MAX);
++	pr_info("ntfs3: Max link count %u\n", NTFS_LINK_MAX);
+ 
+-#ifdef CONFIG_NTFS3_FS_POSIX_ACL
+-	pr_notice("ntfs3: Enabled Linux POSIX ACLs support\n");
+-#endif
+-#ifdef CONFIG_NTFS3_64BIT_CLUSTER
+-	pr_notice("ntfs3: Activated 64 bits per cluster\n");
+-#else
+-	pr_notice("ntfs3: Activated 32 bits per cluster\n");
+-#endif
+-#ifdef CONFIG_NTFS3_LZX_XPRESS
+-	pr_notice("ntfs3: Read-only lzx/xpress compression included\n");
+-#endif
++	if (IS_ENABLED(CONFIG_NTFS3_FS_POSIX_ACL))
++		pr_info("ntfs3: Enabled Linux POSIX ACLs support\n");
++	if (IS_ENABLED(CONFIG_NTFS3_64BIT_CLUSTER))
++		pr_notice("ntfs3: Warning: Activated 64 bits per cluster. Windows does not support this\n");
++	if (IS_ENABLED(CONFIG_NTFS3_LZX_XPRESS))
++		pr_info("ntfs3: Read-only LZX/Xpress compression included\n");
+ 
+ 	err = ntfs3_init_bitmap();
+ 	if (err)
+@@ -1484,15 +1477,11 @@ static void __exit exit_ntfs_fs(void)
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("ntfs3 read/write filesystem");
+-MODULE_INFO(behaviour, "Index binary search");
+-MODULE_INFO(behaviour, "Hot fix free clusters");
+ #ifdef CONFIG_NTFS3_FS_POSIX_ACL
+ MODULE_INFO(behaviour, "Enabled Linux POSIX ACLs support");
+ #endif
+ #ifdef CONFIG_NTFS3_64BIT_CLUSTER
+-MODULE_INFO(cluster, "Activated 64 bits per cluster");
+-#else
+-MODULE_INFO(cluster, "Activated 32 bits per cluster");
++MODULE_INFO(cluster, "Warning: Activated 64 bits per cluster. Windows does not support this");
+ #endif
+ #ifdef CONFIG_NTFS3_LZX_XPRESS
+ MODULE_INFO(compression, "Read-only lzx/xpress compression included");
+-- 
+2.30.2
 
