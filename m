@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E35C3FAF00
+	by mail.lfdr.de (Postfix) with ESMTP id E77D03FAF01
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 00:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236134AbhH2WjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 18:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
+        id S236141AbhH2WjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 18:39:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236089AbhH2WjN (ORCPT
+        with ESMTP id S236092AbhH2WjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 18:39:13 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D571C061575;
-        Sun, 29 Aug 2021 15:38:20 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id o39-20020a05600c512700b002e74638b567so8187236wms.2;
-        Sun, 29 Aug 2021 15:38:20 -0700 (PDT)
+        Sun, 29 Aug 2021 18:39:14 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BCEC061575;
+        Sun, 29 Aug 2021 15:38:21 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id b6so19706291wrh.10;
+        Sun, 29 Aug 2021 15:38:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+EcoqQrjH+X3WH9ltlbLmxW1lqGbR5DG6LpDcnY7UDY=;
-        b=nIaf2PZZOnYOo3ftrezk1GDHR794g0SHml537B/jrr6SeD/KvBJ5gsMp+/SQMUiXk6
-         Up4dZWidPQzQ0qkyMjhKv+Y27zELXyMKSuppI8modTbnJeC6MvAvbecbuXn7ce274Iis
-         znDCwG2xMJCsnQ1+N4xqn6sTfHIEeUBXE5Q1om60eA0XiKlKZj/MO80T9Rhcn1JwLtZX
-         wYMqa0VkHs/w02iIl4/7gAuxcwfi9fGmwkLcgY8vuxUd7AtcYlbj+Tzq3D3Mbqnuj6ST
-         1oZ7IDknTOqQhj838ge0lW+DTxDTc8oUyRUWcbA+3D9OTmijYge6w2uhC37YNF09V3da
-         9IuA==
+        bh=Xhl34rJgOQWwrBzBPeRLlml5a/SkLfCn6IrH4KZYgxQ=;
+        b=ikgiLI/gtXHHZZj4e+XH11Q9nvpa4aAgfqG0tkaPotHDBQApMpQvs9ulOY2bznOETy
+         06+eek16EXEwYfGTln9rBdx4pNeb+licdyZyaLJynVub6l+PaVUMZXpfRA9FytKDl8lC
+         LHLI6CboNvnpYLsiD8VsWDhNS8lIrGWlMzVWLVXiMxAp6wJx+JW0QAzJBGf6V00qHgO7
+         m2hVIQGzdHxeFc28JvEgTUdAXRCgW4B6XwzGTkD5ZbsQYjvap2vVUqZI6asnVzJYNa7i
+         jL3tOXUHL3l9fKTTFQCp3tMNyoKQDBTkAN1sMd01bHkPlOIZeaGJYO8K0cOBTy0xcRQK
+         +a4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+EcoqQrjH+X3WH9ltlbLmxW1lqGbR5DG6LpDcnY7UDY=;
-        b=Rxa7QSeOkoMgPZ2vddf490XkfCiWmW5yElx+k74jTN+lXFLdxmjtZwvMJRmB1z3gCp
-         1mVW8L7zNcM6c+BWFaQEY58jVNJtdSxWDsCrQXkelggcGjhBNtEDoadXhvhzmHUuCVIW
-         heRB8hnYAc/1WGAOT10Bv7hzsS9tIcee3HDu9h3mb4uQhyUtiL2J3N7prZE7w45wq7jj
-         lbmgIG9Y6/eD1IjpezO9WmBSMyfHn30Ms0EyJsLSYXjlt9aN9dmcIhpeD6JqtVFjNYMT
-         ipziF2uSbL4+I2jFhUibKe3Ac9KAsc7+Ur2TauEX+4+SPjqnMkmyeWyEqyGzDmisgxs8
-         9ajA==
-X-Gm-Message-State: AOAM532G5v67UCSn0uRAUd4AkkMm7i8IhFqaYGjVBR9lCyeNVxITgP32
-        fY47Dvn4C2pZ22k/wp5Cg0E=
-X-Google-Smtp-Source: ABdhPJxylKgFqODswN/SRmP/Ql0l6ZMSgZislcRGn+ymy6qeEfOLSlVWZwJjLnbSX24Cml4b+KxD5A==
-X-Received: by 2002:a05:600c:a05:: with SMTP id z5mr19736675wmp.73.1630276698899;
-        Sun, 29 Aug 2021 15:38:18 -0700 (PDT)
+        bh=Xhl34rJgOQWwrBzBPeRLlml5a/SkLfCn6IrH4KZYgxQ=;
+        b=Lgw7DpciZ5RHvnv8BAgLn4S+JImvSCLxAXERnmuJ93WHI5noz3AQlxMcjiETfFGXOu
+         bs+zeFCIA8dqrpNhXwXbMsN1jZ4xGl3YDfyu5JzjzTxXgdLzvDVS325tPxWbSsZQMQPa
+         qpXrbG6mv3q1DRnhpSWowcnvdAdC8mjTSuEqf6j+oFk0WqzczWfs4KKsFZraiE7QBO2D
+         N5NKYAP+AC72LIAoabx+aJv2H4O3eJaXRA2NLIctI0GKpxqLuWeFef/9zcnI0k8XdEko
+         zhjfO4Ik1h4IHQ2+08T1G7JSPmaxivTFtJfkza/66vcqOYhTbEpBY1O/9JI6CIzxu6qf
+         XRMQ==
+X-Gm-Message-State: AOAM533SGHDkhLkRy/gnZABhseY1H8h6le7Tn2ZlYnAexGjmgUUm2/Cd
+        RxJXKjfUF1JK62CYMNaodxQ=
+X-Google-Smtp-Source: ABdhPJy3j8fRkwqM4gJvHRQPbYhrbG8zz480EEJa/1Uoup3BbUi9tUlqFftijnXGqz22oSY+5tDOrw==
+X-Received: by 2002:adf:c18d:: with SMTP id x13mr4038215wre.83.1630276699882;
+        Sun, 29 Aug 2021 15:38:19 -0700 (PDT)
 Received: from oci-gb-a1.vcn08061408.oraclevcn.com ([2603:c020:c001:7eff:7c7:9b76:193f:d476])
-        by smtp.googlemail.com with ESMTPSA id s7sm13603878wra.75.2021.08.29.15.38.18
+        by smtp.googlemail.com with ESMTPSA id s7sm13603878wra.75.2021.08.29.15.38.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 15:38:18 -0700 (PDT)
+        Sun, 29 Aug 2021 15:38:19 -0700 (PDT)
 From:   Matthew Hagan <mnhagan88@gmail.com>
 Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         Andrew Lunn <andrew@lunn.ch>,
@@ -56,9 +56,9 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         Scott Branden <sbranden@broadcom.com>,
         bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/5] ARM: dts: NSP: Fix MX64/MX65 eeprom node name
-Date:   Sun, 29 Aug 2021 22:37:50 +0000
-Message-Id: <20210829223752.2748091-4-mnhagan88@gmail.com>
+Subject: [PATCH v2 5/5] ARM: dts: NSP: Fix MX65 MDIO mux warnings
+Date:   Sun, 29 Aug 2021 22:37:51 +0000
+Message-Id: <20210829223752.2748091-5-mnhagan88@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210829223752.2748091-1-mnhagan88@gmail.com>
 References: <20210829223752.2748091-1-mnhagan88@gmail.com>
@@ -69,30 +69,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running dtbs_check yields the following message when checking the
-MX64/MX65 devicetree:
-at24@50: $nodename:0: 'at24@50' does not match '^eeprom@[0-9a-f]{1,2}$'
+The naming of this node is based upon that of the initial EA9500 dts[1].
+However this does not conform with the mdio-mux format, yielding the
+following message when running dtbs_check:
+mdio-mii-mux: $nodename:0: 'mdio-mii-mux' does not match '^mdio-mux[\\-@]?'
 
-This patch fixes the issue by renaming the at24 node appropriately.
+Secondly, this node should be moved to within the axi node and given the
+appropriate unit address. This also requires exposing the axi node via a
+label in bcm-nsp.dtsi. This fixes the following warning:
+Warning (unit_address_vs_reg): /mdio-mii-mux: node has a reg or ranges property, but no unit name
+
+[1]https://patchwork.ozlabs.org/project/linux-imx/patch/20180618174159.86150-1-npcomplete13@gmail.com/#1941353
 
 Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
 ---
- arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/bcm-nsp.dtsi                | 2 +-
+ arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi | 6 ++++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi b/arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi
-index bcdd38954f1d..6519b7c61af1 100644
---- a/arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi
-+++ b/arch/arm/boot/dts/bcm958625-meraki-mx6x-common.dtsi
-@@ -48,7 +48,7 @@ &ehci0 {
- &i2c0 {
- 	status = "okay";
+diff --git a/arch/arm/boot/dts/bcm-nsp.dtsi b/arch/arm/boot/dts/bcm-nsp.dtsi
+index 180827500f25..1c08daa18858 100644
+--- a/arch/arm/boot/dts/bcm-nsp.dtsi
++++ b/arch/arm/boot/dts/bcm-nsp.dtsi
+@@ -166,7 +166,7 @@ periph_clk: periph_clk {
+ 		};
+ 	};
  
--	at24@50 {
-+	eeprom@50 {
- 		compatible = "atmel,24c64";
- 		reg = <0x50>;
- 		pagesize = <32>;
+-	axi@18000000 {
++	axi: axi@18000000 {
+ 		compatible = "simple-bus";
+ 		ranges = <0x00000000 0x18000000 0x0011c40c>;
+ 		#address-cells = <1>;
+diff --git a/arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi b/arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi
+index 57d0c5eb9749..102acd85fab2 100644
+--- a/arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi
++++ b/arch/arm/boot/dts/bcm958625-meraki-alamo.dtsi
+@@ -70,10 +70,12 @@ led-5 {
+ 			gpios = <&gpioa 31 GPIO_ACTIVE_HIGH>;
+ 		};
+ 	};
++};
+ 
+-	mdio-mii-mux {
++&axi {
++	mdio-mux@3f1c0 {
+ 		compatible = "mdio-mux-mmioreg", "mdio-mux";
+-		reg = <0x1803f1c0 0x4>;
++		reg = <0x3f1c0 0x4>;
+ 		mux-mask = <0x2000>;
+ 		mdio-parent-bus = <&mdio_ext>;
+ 		#address-cells = <1>;
 -- 
 2.27.0
 
