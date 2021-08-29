@@ -2,218 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A4F3FAC88
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09A63FAC8A
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 17:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235577AbhH2PXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 11:23:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231216AbhH2PXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 11:23:33 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E53660F45;
-        Sun, 29 Aug 2021 15:22:35 +0000 (UTC)
-Date:   Sun, 29 Aug 2021 16:25:48 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
-        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <BMC-SW@aspeedtech.com>
-Subject: Re: [RESEND v4 09/15] iio: adc: aspeed: Use
- devm_add_action_or_reset.
-Message-ID: <20210829162548.40aa9f91@jic23-huawei>
-In-Reply-To: <202108250004.17P04FdD094082@twspam01.aspeedtech.com>
-References: <20210824091243.9393-1-billy_tsai@aspeedtech.com>
-        <202108250004.17P04FdD094082@twspam01.aspeedtech.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S235568AbhH2P1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 11:27:15 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:49322 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhH2P1M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 11:27:12 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKMhL-00H4Vs-T2; Sun, 29 Aug 2021 15:26:16 +0000
+Date:   Sun, 29 Aug 2021 15:26:15 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Caleb D.S. Brzezinski" <calebdsb@protonmail.com>
+Cc:     hirofumi@mail.parknet.co.jp, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/3] fat: add the msdos_format_name() filename cache
+Message-ID: <YSunFyR1f9+MTmsk@zeniv-ca.linux.org.uk>
+References: <20210829142459.56081-1-calebdsb@protonmail.com>
+ <20210829142459.56081-3-calebdsb@protonmail.com>
+ <YSujmt9vman41ecj@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSujmt9vman41ecj@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 17:12:37 +0800
-Billy Tsai <billy_tsai@aspeedtech.com> wrote:
-
-> This patch use devm_add_action_or_reset to handle the error in probe
-> phase.
+On Sun, Aug 29, 2021 at 03:11:22PM +0000, Al Viro wrote:
+> On Sun, Aug 29, 2021 at 02:25:29PM +0000, Caleb D.S. Brzezinski wrote:
+> > Implement the main msdos_format_name() filename cache. If used as a
+> > module, all memory allocated for the cache is freed when the module is
+> > de-registered.
+> > 
+> > Signed-off-by: Caleb D.S. Brzezinski <calebdsb@protonmail.com>
+> > ---
+> >  fs/fat/namei_msdos.c | 35 +++++++++++++++++++++++++++++++++++
+> >  1 file changed, 35 insertions(+)
+> > 
+> > diff --git a/fs/fat/namei_msdos.c b/fs/fat/namei_msdos.c
+> > index 7561674b1..f9d4f63c3 100644
+> > --- a/fs/fat/namei_msdos.c
+> > +++ b/fs/fat/namei_msdos.c
+> > @@ -124,6 +124,16 @@ static int msdos_format_name(const unsigned char *name, int len,
+> >  	unsigned char *walk;
+> >  	unsigned char c;
+> >  	int space;
+> > +	u64 hash;
+> > +	struct msdos_name_node *node;
+> > +
+> > +	/* check if the name is already in the cache */
+> > +
+> > +	hash = msdos_fname_hash(name);
+> > +	if (find_fname_in_cache(res, hash))
+> > +		return 0;
 > 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> ---
->  drivers/iio/adc/aspeed_adc.c | 92 +++++++++++++++++++++---------------
->  1 file changed, 55 insertions(+), 37 deletions(-)
+> Huh?  How could that possibly work, seeing that
+> 	* your hash function only looks at the first 8 characters
+> 	* your find_fname_in_cache() assumes that hash collisions
+> are impossible, which is... unlikely, considering the nature of
+> that hash function
+> 	* find_fname_in_cache(res, hash) copies at most 8 characters
+> into res in case of match.  Where does the extension come from?
 > 
-> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-> index 52db38be9699..1c87e12a0cab 100644
-> --- a/drivers/iio/adc/aspeed_adc.c
-> +++ b/drivers/iio/adc/aspeed_adc.c
-> @@ -187,6 +187,27 @@ static const struct iio_info aspeed_adc_iio_info = {
->  	.debugfs_reg_access = aspeed_adc_reg_access,
->  };
->  
-> +static void aspeed_adc_unregister_divider(void *data)
-> +{
-> +	struct clk_hw *clk = data;
-> +
-> +	clk_hw_unregister_divider(clk);
-> +}
-> +
-> +static void aspeed_adc_reset_assert(void *data)
-> +{
-> +	struct reset_control *rst = data;
-> +
-> +	reset_control_assert(rst);
-> +}
-> +
-> +static void aspeed_adc_clk_disable_unprepare(void *data)
-> +{
-> +	struct clk *clk = data;
-> +
-> +	clk_disable_unprepare(clk);
-> +}
-> +
->  static int aspeed_adc_vref_config(struct iio_dev *indio_dev)
->  {
->  	struct aspeed_adc_data *data = iio_priv(indio_dev);
-> @@ -232,6 +253,12 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  			&data->clk_lock);
->  		if (IS_ERR(data->clk_prescaler))
->  			return PTR_ERR(data->clk_prescaler);
-> +
-> +		ret = devm_add_action_or_reset(data->dev,
-> +					       aspeed_adc_unregister_divider,
-> +					       data->clk_prescaler);
-> +		if (ret)
-> +			return ret;
->  		snprintf(clk_parent_name, 32, clk_name);
->  		scaler_flags = CLK_SET_RATE_PARENT;
->  	}
-> @@ -244,23 +271,30 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  		&pdev->dev, clk_name, clk_parent_name, scaler_flags,
->  		data->base + ASPEED_REG_CLOCK_CONTROL, 0,
->  		data->model_data->scaler_bit_width, 0, &data->clk_lock);
-> -	if (IS_ERR(data->clk_scaler)) {
-> -		ret = PTR_ERR(data->clk_scaler);
-> -		goto scaler_error;
-> -	}
-> +	if (IS_ERR(data->clk_scaler))
-> +		return PTR_ERR(data->clk_scaler);
-> +
-> +	ret = devm_add_action_or_reset(data->dev, aspeed_adc_unregister_divider,
-> +				       data->clk_scaler);
-> +	if (ret)
-> +		return ret;
->  
->  	data->rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
->  	if (IS_ERR(data->rst)) {
->  		dev_err(&pdev->dev,
->  			"invalid or missing reset controller device tree entry");
-> -		ret = PTR_ERR(data->rst);
-> -		goto reset_error;
-> +		return PTR_ERR(data->rst);
->  	}
->  	reset_control_deassert(data->rst);
->  
-> +	ret = devm_add_action_or_reset(data->dev, aspeed_adc_reset_assert,
-> +				       data->rst);
-> +	if (ret)
-> +		return ret;
-> +
->  	ret = aspeed_adc_vref_config(indio_dev);
->  	if (ret)
-> -		goto vref_config_error;
-> +		return ret;
->  
->  	if (data->model_data->wait_init_sequence) {
->  		/* Enable engine in normal mode. */
-> @@ -277,13 +311,19 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  					 ASPEED_ADC_INIT_POLLING_TIME,
->  					 ASPEED_ADC_INIT_TIMEOUT);
->  		if (ret)
-> -			goto poll_timeout_error;
-> +			return ret;
->  	}
->  
->  	/* Start all channels in normal mode. */
->  	ret = clk_prepare_enable(data->clk_scaler->clk);
->  	if (ret)
-> -		goto clk_enable_error;
-> +		return ret;
-> +
-> +	ret = devm_add_action_or_reset(data->dev,
-> +				       aspeed_adc_clk_disable_unprepare,
-> +				       data->clk_scaler->clk);
-> +	if (ret)
-> +		return ret;
->  
->  	adc_engine_control_reg_val =
->  		ASPEED_ADC_CTRL_CHANNEL |
-> @@ -299,41 +339,19 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  	indio_dev->num_channels = data->model_data->num_channels;
->  
->  	ret = iio_device_register(indio_dev);
-> -	if (ret)
-> -		goto iio_register_error;
-> -
-> +	if (ret) {
-> +		writel(FIELD_PREP(ASPEED_ADC_OP_MODE,
-> +				  ASPEED_ADC_OP_MODE_PWR_DOWN),
-> +		       data->base + ASPEED_REG_ENGINE_CONTROL);
-> +		return ret;
-> +	}
->  	return 0;
-> -
-> -iio_register_error:
-> -	writel(FIELD_PREP(ASPEED_ADC_OP_MODE, ASPEED_ADC_OP_MODE_PWR_DOWN),
-> -	       data->base + ASPEED_REG_ENGINE_CONTROL);
-> -	clk_disable_unprepare(data->clk_scaler->clk);
-> -clk_enable_error:
-> -poll_timeout_error:
-> -vref_config_error:
-> -	reset_control_assert(data->rst);
-> -reset_error:
-> -	clk_hw_unregister_divider(data->clk_scaler);
-> -scaler_error:
-> -	if (data->model_data->need_prescaler)
-> -		clk_hw_unregister_divider(data->clk_prescaler);
-> -	return ret;
->  }
->  
->  static int aspeed_adc_remove(struct platform_device *pdev)
->  {
->  	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
-> -	struct aspeed_adc_data *data = iio_priv(indio_dev);
-> -
->  	iio_device_unregister(indio_dev);
+> Out of curiosity, how have you tested that thing?
 
-Given there is no longer anything here, you should be safe to call
-devm_iio_device_unregister() and get rid of this function entirely.
-
-
-> -	writel(FIELD_PREP(ASPEED_ADC_OP_MODE, ASPEED_ADC_OP_MODE_PWR_DOWN),
-> -	       data->base + ASPEED_REG_ENGINE_CONTROL);
-
-Unless I'm missing something this is not handled via any of the
-devm_add_action_or_reset() callbacks. You handle it in the error paths manually
-but if you move this to managed as well you can drop that handling and still
-have it automatically called on remove.
-
-
-> -	clk_disable_unprepare(data->clk_scaler->clk);
-> -	reset_control_assert(data->rst);
-> -	clk_hw_unregister_divider(data->clk_scaler);
-> -	if (data->model_data->need_prescaler)
-> -		clk_hw_unregister_divider(data->clk_prescaler);
-> -
->  	return 0;
->  }
->  
-
+While we are at it, your "fast path" doesn't even look at opts
+argument...
