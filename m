@@ -2,177 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC813FADEA
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 20:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E83283FADEC
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 20:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235283AbhH2So7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 14:44:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:47652 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhH2So6 (ORCPT
+        id S235770AbhH2SrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 14:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233327AbhH2SrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 14:44:58 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630262645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YIcamjfwVlhaadFlylOQXRTn4w1QtmfouqqV1RahVbw=;
-        b=Yxx1XZH1ocDdYENRnIydThdIkPVnGlUQuJzkqDi41wn938xsOxxdTwbvQdqpmk/BiCP5OQ
-        3jTdZDOZR7cN6HSrDI79eSuuCQKm7VUFajUIC6WfRMktyxDycvlnNzTNJO56njXVdRIwd6
-        K+pLVqIx3L3SK8Rp0XEMrcMm+M3RQIocxeyK5z4pA7fjlhiwy0jDMOGWA5ln/tbKkFYL+P
-        2w1fVgKGElxzJiSoegryOCx8VKLlPob7vpBxuUlRn/jhTEna/xrC12D6YRZkQZ6T45AONU
-        Q/oNnKaKzhN+wEmd4k+gLhsSPkuo+8HJuoydkl5UcddGrnb9z1Ic8zYvafB3DA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630262645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YIcamjfwVlhaadFlylOQXRTn4w1QtmfouqqV1RahVbw=;
-        b=+68crkmN56/F2OSP3PsrBPbiDxChhQm5zydU53mgC3MPIVgGUASMWQzJ4DKvstyANPp7hN
-        tk6rhJocJEofJuAg==
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Subject: Re: [PATCH v7 05/19] iov_iter: Introduce fault_in_iov_iter_writeable
-In-Reply-To: <YSq93XetyaUuAsY7@zeniv-ca.linux.org.uk>
-References: <YSk7xfcHVc7CxtQO@zeniv-ca.linux.org.uk>
- <CAHk-=wjMyZLH+ta5SohAViSc10iPj-hRnHc-KPDoj1XZCmxdBg@mail.gmail.com>
- <YSk+9cTMYi2+BFW7@zeniv-ca.linux.org.uk>
- <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
- <YSlftta38M4FsWUq@zeniv-ca.linux.org.uk>
- <20210827232246.GA1668365@agluck-desk2.amr.corp.intel.com>
- <87r1edgs2w.ffs@tglx> <YSqy+U/3lnF6K0ia@zeniv-ca.linux.org.uk>
- <YSq0mPAIBfqFC/NE@zeniv-ca.linux.org.uk>
- <YSq2WJindB0pJPRb@zeniv-ca.linux.org.uk>
- <YSq93XetyaUuAsY7@zeniv-ca.linux.org.uk>
-Date:   Sun, 29 Aug 2021 20:44:04 +0200
-Message-ID: <87k0k4gkgb.ffs@tglx>
+        Sun, 29 Aug 2021 14:47:20 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5379BC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 11:46:28 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id 18so10388012pfh.9
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 11:46:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zeO+3lPYMNGwRKEtHxPKV6qic32UC3XQu55qWVNaf2E=;
+        b=U7d9nH4JbXRkR8k66XIJtrEg3hUF2Dpv4j+11w8V5qWfuG08pY9cfMGuXJ3QX4yhlj
+         mSBnQZRrSVT9vR0Thw7BoIw52rug0qAW/Ua2GGulnx0x/TNnKOSCT39Tt9LJnFCVq1iN
+         D7rR8k7u61/VaXSr+9+WfpYyOJ5+LbK6Bx+QAXYO9BabGfD5cMGswoPXrqGVqcYdwg+x
+         9yowIXRW1yk80xTIhF5JtV9IvLIJLbKnR54A4Swf1TycPcgKWXi7XPA9Kj+poql+9ul5
+         Vif1g2Z4uuy83kgPVI1ZdxKrq3aecutMX18vAoRRehQrr2pyGt9eWfiUqCgKwAu7Xdzk
+         4cOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zeO+3lPYMNGwRKEtHxPKV6qic32UC3XQu55qWVNaf2E=;
+        b=ITIVyA7NIAbTfSKoKicaNy6xNHQuzfsYHOBKfyMOJgN9CrDOR2ANpkoZyQbdWaBD7O
+         Q6e8cyGJrIz1UiK/DeGLl/C62yW/VsKPjqvGe6x6ozuO/GYbnGwBSlYB5LAHkqk+Z+jp
+         9mJ0x8ezetZoHcRFhtmGc2PkG4qR4bBthsyIf2PckzlcIZlIPGlq31AK/y+VkrpcBYIM
+         pc3LycqYW92a1JCCL6lLeB0DwPAYC2yApObwH/D1teB6SVHwhqhW4cF2cLWqJyyLyQuo
+         2FZANIwijVdvK6yqLqbWtC4hCkjWhbzRJjjqM6vaDnIp4uS/2ZgLipsjkRzmca/a8+Fq
+         tVHw==
+X-Gm-Message-State: AOAM533Y/JjCatPqPgN4HzuS6wPiyj3ElK+KU2CC/YFeKPAi4VkSW94l
+        51Y9v86wA0YEwj326iLhSLvnX3bNxoR7No9JRtk=
+X-Google-Smtp-Source: ABdhPJybaFeJBQl9UxNtQLetqb4u2+i/Q3sHs+GdoECA4rLSiC5LjxQoBDAZyKH1Q2fmYyuJ9i/IudQNfa1PIUuO/U8=
+X-Received: by 2002:aa7:9d02:0:b0:3f3:df3b:81ae with SMTP id
+ k2-20020aa79d02000000b003f3df3b81aemr13380855pfp.19.1630262787711; Sun, 29
+ Aug 2021 11:46:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210829144531.c2syu4vv4s22dlg7@h510> <CAPGkw+xTFBeH-x-=dsQK-K5KjZZ7JKmQggz2s26=p7g+71kZjA@mail.gmail.com>
+ <20210829164921.u5ntqk5jz2v3hlgr@h510> <CAPGkw+ypKOVsJF_Guna+9+q-+cApYzdBGHMPKKr6MAzGQtqy2g@mail.gmail.com>
+ <CAPGkw+wGn1oTAO7JXXApDMm4cFfxXam913hOGnnup1nSOpcVPA@mail.gmail.com>
+In-Reply-To: <CAPGkw+wGn1oTAO7JXXApDMm4cFfxXam913hOGnnup1nSOpcVPA@mail.gmail.com>
+From:   Krish Jain <krishjain02939@gmail.com>
+Date:   Sun, 29 Aug 2021 20:46:16 +0200
+Message-ID: <CAPGkw+xroJmxa9i6X++un6tQFQ-3F5uMRCatzufWsdfw7cQ2LQ@mail.gmail.com>
+Subject: Re: [PATCH] Declare the file_operations struct as const
+To:     Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28 2021 at 22:51, Al Viro wrote:
-> @@ -345,7 +346,7 @@ static inline int xsave_to_user_sigframe(struct xregs_state __user *buf)
->  	 */
->  	err = __clear_user(&buf->header, sizeof(buf->header));
->  	if (unlikely(err))
-> -		return -EFAULT;
-> +		return -X86_TRAP_PF;
+Keeping you updated. Small win. The "Symbol version dump
+"Module.symvers" is missing. " error disappeared. Now I still don't
+know why
 
-This clear_user can be lifted into copy_fpstate_to_sigframe(). Something
-like the below.
-  
-Thanks,
+ERROR: Kernel configuration is invalid."; \
+echo >&2 "         include/generated/autoconf.h or
+include/config/auto.conf are missing.";\
+echo >&2 "         Run 'make oldconfig && make prepare' on kernel src
+to fix it."; \
 
-        tglx
----
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -135,18 +135,12 @@ static inline int save_xstate_epilog(voi
- 
- static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf)
- {
--	int err;
--
- 	if (use_xsave())
--		err = xsave_to_user_sigframe(buf);
--	else if (use_fxsr())
--		err = fxsave_to_user_sigframe((struct fxregs_state __user *) buf);
-+		return xsave_to_user_sigframe(buf);
-+	if (use_fxsr())
-+		return fxsave_to_user_sigframe((struct fxregs_state __user *) buf);
- 	else
--		err = fnsave_to_user_sigframe((struct fregs_state __user *) buf);
--
--	if (unlikely(err) && __clear_user(buf, fpu_user_xstate_size))
--		err = -EFAULT;
--	return err;
-+		return fnsave_to_user_sigframe((struct fregs_state __user *) buf);
- }
- 
- /*
-@@ -188,6 +182,16 @@ int copy_fpstate_to_sigframe(void __user
- 
- 	if (!access_ok(buf, size))
- 		return -EACCES;
-+
-+	if (use_xsave()) {
-+		/*
-+		 * Clear the xsave header first, so that reserved fields are
-+		 * initialized to zero.
-+		 */
-+		ret = __clear_user(&buf->header, sizeof(buf->header));
-+		if (unlikely(ret))
-+			return ret;
-+	}
- retry:
- 	/*
- 	 * Load the FPU registers if they are not valid for the current task.
-@@ -205,9 +209,10 @@ int copy_fpstate_to_sigframe(void __user
- 	fpregs_unlock();
- 
- 	if (ret) {
--		if (!fault_in_pages_writeable(buf_fx, fpu_user_xstate_size))
-+		if (!__clear_user(buf_fx, fpu_user_xstate_size) &&
-+		    ret == -X86_TRAP_PF)
- 			goto retry;
--		return -EFAULT;
-+		return -1;
- 	}
- 
- 	/* Save the fsave header for the 32-bit frames. */
-@@ -275,7 +280,7 @@ static int restore_fpregs_from_user(void
- 		fpregs_unlock();
- 
- 		/* Try to handle #PF, but anything else is fatal. */
--		if (ret != -EFAULT)
-+		if (ret != -X86_TRAP_PF)
- 			return -EINVAL;
- 
- 		ret = fault_in_pages_readable(buf, size);
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -323,9 +323,12 @@ static inline void os_xrstor(struct xreg
-  * We don't use modified optimization because xrstor/xrstors might track
-  * a different application.
-  *
-- * We don't use compacted format xsave area for
-- * backward compatibility for old applications which don't understand
-- * compacted format of xsave area.
-+ * We don't use compacted format xsave area for backward compatibility for
-+ * old applications which don't understand the compacted format of the
-+ * xsave area.
-+ *
-+ * The caller has to zero buf::header before calling this because XSAVE*
-+ * does not touch them.
-  */
- static inline int xsave_to_user_sigframe(struct xregs_state __user *buf)
- {
-@@ -339,14 +342,6 @@ static inline int xsave_to_user_sigframe
- 	u32 hmask = mask >> 32;
- 	int err;
- 
--	/*
--	 * Clear the xsave header first, so that reserved fields are
--	 * initialized to zero.
--	 */
--	err = __clear_user(&buf->header, sizeof(buf->header));
--	if (unlikely(err))
--		return -EFAULT;
--
- 	stac();
- 	XSTATE_OP(XSAVE, buf, lmask, hmask, err);
- 	clac();
+
+is still present.
+
+How can I fix this?
+
+
+Best Regards
+
+On Sun, Aug 29, 2021 at 8:28 PM Krish Jain <krishjain02939@gmail.com> wrote=
+:
+>
+> Basically it says "you must have a prebuilt kernel available that
+> contains the configuration and header files used in the build." Since
+> for the staging kernel  "make oldconfig" asked me for  more
+> configurations apart from my old configuration file (as it reads the
+> existing .config file that was used for an old kernel and prompts the
+> user for options in the current kernel source that are not found in
+> the file) . So I *don't* currently have a prebuilt kernel that
+> contains all the configuration in my staging kernel's .config file. So
+> do I have to build the kernel once before I can just build the module
+> with "make CCFLAGS=3D-Werror W=3D1 M=3Ddrivers/staging/android" ?
+>
+>
+> Thanks again
+>
+> On Sun, Aug 29, 2021 at 6:56 PM Krish Jain <krishjain02939@gmail.com> wro=
+te:
+> >
+> > On Sun, Aug 29, 2021 at 6:49 PM Bryan Brattlof <hello@bryanbrattlof.com=
+> wrote:
+> > >
+> > > On this day, August 29, 2021, thus sayeth Krish Jain:
+> > > > > >
+> > > > > > Hi, what option do you mean?  I already ran make allmodconfig a=
+nd sudo
+> > > > > > make modules_install install and then make   "CCFLAGS=3D-Werror=
+ W=3D1
+> > > > > > M=3Ddrivers/staging/android/" and now I do get output but one l=
+ine
+> > > > > > "WARNING: Symbol version dump "Module.symvers" is missing. Modu=
+les may
+> > > > > > not have dependencies or modversions. You may get many unresolv=
+ed
+> > > > > > symbol warnings." . Then I tried "make CCFLAGS=3D-Werror V=3D1
+> > > > > > M=3Ddrivers/staging/android/" and that outputted the following:
+> > > > > >
+> > > > >
+> > > > > Most of the answers you're asking for are going to get vague resp=
+onses
+> > > > > (if any) on the mailing lists. The idea being (and I agree with) =
+that
+> > > > > giving out the answers will steal your opportunity to explore and=
+ learn
+> > > > > the material yourself.
+> > > > >
+> > > > > Yes, it would be faster if we told you the answer, but ultimately=
+, we
+> > > > > would be doing a disservice to you.
+> > > > >
+> > > > > Besides, more times than not we (me especially) don't have the an=
+swer.
+> > > > >
+> > > > > With that said, I will give a (generous) hint. :)
+> > > > >
+> > > >
+> > > > Hi. Do I have to build the kernel once before this works? Or can I
+> > > > just build a module directly?
+> > > >
+> > >
+> > > Again, do not allow others to rob you of learning how to solve these
+> > > issues yourself. I *strongly* encourage you to familiarize yourself w=
+ith
+> > > the Kernel Build System in the Documentation.
+> > >
+> > >   https://www.kernel.org/doc/html/latest/kbuild/modules.html
+> > >
+> > > Specifically the first paragraph of "2. How to Build External Modules=
+"
+> > >
+> > > It may seem like a lot for such a simple issue but it *is* worth it.
+> > > ~Bryan
+> > >
+> >
+> >
+> >
+> > That section says
+> >
+> >
+> > "To build external modules, *you must have a prebuilt kernel
+> > available* that contains the configuration and header files used in
+> > the build. Also, the kernel must have been built with modules enabled.
+> > If you are using a distribution kernel, there will be a package for
+> > the kernel you are running provided by your distribution.
+> >
+> > An alternative is to use the =E2=80=9Cmake=E2=80=9D target =E2=80=9Cmod=
+ules_prepare.=E2=80=9D This
+> > will make sure the kernel contains the information required. The
+> > target exists solely as a simple way to prepare a kernel source tree
+> > for building external modules.
+> >
+> > NOTE: =E2=80=9Cmodules_prepare=E2=80=9D will not build Module.symvers e=
+ven if
+> > CONFIG_MODVERSIONS is set; therefore, *a full kernel build needs to be
+> > executed to make module versioning work.*"
+> >
+> > So I am just trying to confirm with you whether I have to first build
+> > the kernel with like "make" or not? As you can imagine my hardware
+> > takes *very* long to build a kernel as I did in my last attempt so I
+> > am asking whether it is needed. Hope you understand.
+> >
+> > Best Regards
