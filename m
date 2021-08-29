@@ -2,173 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603283FADC7
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 20:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7D33FADDC
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 20:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235283AbhH2SfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 14:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
+        id S236006AbhH2Sho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 14:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhH2SfI (ORCPT
+        with ESMTP id S235951AbhH2Shj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 14:35:08 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2DDC061575;
-        Sun, 29 Aug 2021 11:34:15 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id v123so10373913pfb.11;
-        Sun, 29 Aug 2021 11:34:15 -0700 (PDT)
+        Sun, 29 Aug 2021 14:37:39 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709B9C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 11:36:46 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id s10so1688025lfr.11
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 11:36:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qQjfu8WxFIS1DldFoOXKxC6q+BF0Msctmm3ppp/j+9E=;
-        b=PdstMbCe4wjuo5XTSUGYKYi1BVmCnR99/SE8rnzloUFya9CUn0Q0UWnnUwkeTAtGlK
-         KdVMdAW3K6iI30gAgQLiqxG0J4Lhrkk/+9e0GrYuANkTEyn9Ci0j6ARC9wv5zt+pglKD
-         LmV3Yic5HXawqwvi0Se/b26JQTvqoYkdSAg4h/0HjN59st2FjO/rfp8SWEVganyz3bER
-         Fztc3dXgYup9dN3VHhcLMnxK5HqciUpaqiKXh068wdyQu0rwSKZMjBGRco7iH4KMEFAj
-         lJQSprDZAiMUKISUAAjfs087noBXsxCiJ6EMEbHEPRFORrjcDdPVJ3e1YPwP7sICu6+q
-         1eKA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=m7TWMTgfTxT7/7EG4LyyaJdKNT+SzQbfeGl2On3Ben0=;
+        b=JQ3HYwdgVvoPpGPUramb0TGGe61AeJS8g+Pqi8hjJhZnI8qBalEUMEajfzTkQs3PPJ
+         aKKJ/wJvPdaN/+xrBveH0+/CgeSLuyUOmcfvSjmRbAiGn6ANrzQi+TwXoYfNql8oJwEi
+         SVDpXyo2+jJ8LYlaIdi6VWydSd6gd4rW61D9uQ9BB2fCrY8/wTtEcN0esYiwlSrjpY5w
+         8g2AroIOZpZPLQwpUiNPZIGgjHY181s1AEfzahC1A5ZZMK1inhsNnkyZZS1vg4fTdHzO
+         J7hhOkEc1UxOBk4cv0vefIrnqxmaPJbnyFJU6sJYm4djP2f30bHsWtqPDjqcRnL1BB7j
+         Yasw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qQjfu8WxFIS1DldFoOXKxC6q+BF0Msctmm3ppp/j+9E=;
-        b=cx+a+Pfe3IsThiY7nyFIPzvt/6aCTji/lYSqYJ9U5qjYelqdQ55CeF/tu0+CJVswmN
-         bBAy/tW+3AFIWflAIvn9d17kdBJRamzL+hXErAJfS+ev6dkwsoEEXadx4H7YMJ8mvM1w
-         +fSiReiTvNtMOtt2CseOIV29D0/6VOAvtLg3qv8r9YA4Ea8iwKt8dH6NnS2RElXaWPsW
-         +JbwYZx8UtN2SLQmtknweAXFxM0+F8YccbWI1IpVncLKtTh6qDzTYL7VlEx9qUIFgPwF
-         Bbg0IM0fVPxDdmMom5YV0EtruoXaGo0Qnc8I3qIWLA1bTyvB96dFsJ8STBwRgS8bXHNJ
-         +YAQ==
-X-Gm-Message-State: AOAM531msAPjGeuTyWM62xCkxFavan0ORQpmli80CQ8S1VKa8AKqsxZd
-        6wHInZ+xCb2tAgqI8O/D27CppTf385lsJt1v
-X-Google-Smtp-Source: ABdhPJw5Y1hp+771Qtd5cnbZNHkPbmIHd31FTBkvleSwXsgCTpYYESo+fEkJmbBKMFykEd/CjX7MfQ==
-X-Received: by 2002:aa7:978d:0:b0:3f2:526b:f247 with SMTP id o13-20020aa7978d000000b003f2526bf247mr17938617pfp.68.1630262055191;
-        Sun, 29 Aug 2021 11:34:15 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id k12sm18478793pjg.6.2021.08.29.11.34.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Aug 2021 11:34:14 -0700 (PDT)
-Subject: Re: [syzbot] KASAN: use-after-free Write in sco_sock_timeout
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+2bef95d3ab4daa10155b@syzkaller.appspotmail.com>
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.von.dentz@intel.com, syzkaller-bugs@googlegroups.com
-References: <000000000000b2725705ca78de29@google.com>
- <20210827011931.2323-1-hdanton@sina.com>
- <20210829082929.2897-1-hdanton@sina.com>
- <11a30bc1-574f-aa1a-21d6-b886de9fc981@gmail.com>
-Message-ID: <9b1afb1f-45d5-8664-eeb6-e8373d95cad3@gmail.com>
-Date:   Mon, 30 Aug 2021 02:34:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m7TWMTgfTxT7/7EG4LyyaJdKNT+SzQbfeGl2On3Ben0=;
+        b=LynuDtRXaO+8bqlwocNsuaqqJsALeaoUtX8BWv7Rdw02tx5JtTeIP7e1/1cwacUtfv
+         c15p84Hon7s2Et0C86WzUZIiJAiV0stcHz6Dt4tOo2hBguWlBYGp2yGUg/m68SKifHjk
+         8WojiGnAlfB0rb80grqfgyHRTQyLzFkGuJR4gy/WU0vJGqPZOMoJfeu47bxjcdFjvUYx
+         Zy+wrUTzHHdKgmWQTwBGnyLYPuZSNCJX9mzlgSGPKsO6+bh6tv9ILRzs9NmsL3G0YTJN
+         Difq68TgtHb/iyZexo2pPYPF9374j2BF4HynWsWyKdrEwVcrW+wxWyWZgSEW9lhOtgd5
+         Y7Gg==
+X-Gm-Message-State: AOAM533Nyx3xEfHzViCHFVMIiEKa8CAjT1pKp1oplWElh7OyCdincVzb
+        fu+GK/qy66yYWAicHRtDtL4=
+X-Google-Smtp-Source: ABdhPJxYCUPgZSYc5epJ+WPhXSFNm/VKSXCbNN6B1UPueZ38rsAAozV16DJm6AehLCFFyy598d4g3Q==
+X-Received: by 2002:a05:6512:3f1a:: with SMTP id y26mr14486247lfa.263.1630262204716;
+        Sun, 29 Aug 2021 11:36:44 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id z5sm1533509ljc.123.2021.08.29.11.36.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Aug 2021 11:36:44 -0700 (PDT)
+Date:   Sun, 29 Aug 2021 21:36:42 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: Ntfs3 git repo in github should not back merge
+Message-ID: <20210829183642.xatnwsqfmmq6vxx7@kari-VirtualBox>
+References: <20210825192746.ryi2vzn5gz4myxri@kari-VirtualBox>
+ <3e3b8facf46c4d68afeb0346dee66f5b@paragon-software.com>
 MIME-Version: 1.0
-In-Reply-To: <11a30bc1-574f-aa1a-21d6-b886de9fc981@gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e3b8facf46c4d68afeb0346dee66f5b@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/8/21 10:53 pm, Desmond Cheong Zhi Xi wrote:
-> On 29/8/21 4:29 pm, Hillf Danton wrote:
->> On Fri, 27 Aug 2021 15:58:34 +0800 Desmond Cheong Zhi Xi wrote:
->>> On 27/8/21 9:19 am, Hillf Danton wrote:
->>>> On Thu, 26 Aug 2021 09:29:24 -0700
->>>>> syzbot found the following issue on:
->>>>>
->>>>> HEAD commit:    e3f30ab28ac8 Merge branch 'pktgen-samples-next'
->>>>> git tree:       net-next
->>>>> console output: 
->>>>> https://syzkaller.appspot.com/x/log.txt?x=13249c96300000
->>>>> kernel config:  
->>>>> https://syzkaller.appspot.com/x/.config?x=ef482942966bf763
->>>>> dashboard link: 
->>>>> https://syzkaller.appspot.com/bug?extid=2bef95d3ab4daa10155b
->>>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU 
->>>>> Binutils for Debian) 2.35.1
->>>>> syz repro:      
->>>>> https://syzkaller.appspot.com/x/repro.syz?x=16a29ea9300000
->>>>>
->>>>> The issue was bisected to:
->>>>>
->>>>> commit e1dee2c1de2b4dd00eb44004a4bda6326ed07b59
->>>>> Author: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->>>>> Date:   Tue Aug 10 04:14:10 2021 +0000
->>>>>
->>>>>       Bluetooth: fix repeated calls to sco_sock_kill
->>
->> To fix the uaf, grab another hold to sock to make the timeout work safe.
->>
->> #syz test: 
->> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git 
->> e3f30ab28ac8
->>
->> --- a/net/bluetooth/sco.c
->> +++ b/net/bluetooth/sco.c
->> @@ -190,15 +190,14 @@ static void sco_conn_del(struct hci_conn
->>       sco_conn_unlock(conn);
->>       if (sk) {
->> -        sock_hold(sk);
->>           lock_sock(sk);
->>           sco_sock_clear_timer(sk);
->>           sco_chan_del(sk, err);
->>           release_sock(sk);
->> -        sock_put(sk);
->>           /* Ensure no more work items will run before freeing conn. */
->>           cancel_delayed_work_sync(&conn->timeout_work);
->> +        sock_put(sk);
+On Fri, Aug 27, 2021 at 06:27:47PM +0000, Konstantin Komarov wrote:
+> > From: Kari Argillander <kari.argillander@gmail.com>
+> > Sent: Wednesday, August 25, 2021 10:28 PM
+> > To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>; ntfs3@lists.linux.dev
+> > Cc: linux-kernel@vger.kernel.org; Stephen Rothwell <sfr@canb.auug.org.au>
+> > Subject: Ntfs3 git repo in github should not back merge
+> > 
+> > Hello Konstantin.
+> > 
+> > I notice that you have made back-merge in ntfs3 git repo in github.
+> > This should not be done without good reason and there is none in this
+> > case. If there is reason you should also write good merge commit for it.
+> > As you are just coming to maintener I will write little info about how
+> > this stuff works. I'm not maintainer, but I have study about how kernel
+> > is maintained.
+> > 
+> > Here is link which you can read about back-merges. If you have any
+> > questions you can always ask.
+> > 
+> > 01.org/linuxgraphics/gfx-docs/drm/maintainer/rebasing-and-merging.html#merging-from-sibling-or-upstream-trees
+> > 
 > 
-> Hi Hillf,
+> Hi Kari!
+> Thanks a lot for this piece of information. It is really important to know.
+> Apologies for messing the back-merge up, we'll study the provided documentation
+> and will follow it in future (and won't be back merging again).
+> There is really a LOT of information to handle there.
+
+I think we should fix this before sending pr to Linus. I think he will
+not be happy to see it. You are allowed to force push in situations like
+this.
+
+> > You could also go check some other trees how they do it. Usually there
+> > is next/master/main/for-next which will be repo which will contain stuff
+> > for next-merge window. This is usually based on rc1, rc2, rc3 depending
+> > when you put first patches to next merge window. As you based your
+> > branch top of the rc5.
+> > 
+> > https://git.kernel.org/?s=idle
+> > 
+> > Because your master branch is  for next you could have rebased your
+> > branch top of the rc7 if you want to but that is kinda pointless. You
+> > could always fix little mistakes in next branch with rebase, but you
+> > should propably info this action to ntfs3 mailing list.
+> > 
+> > The idea is that this repo has very clean history always when it get
+> > merged to Linus tree. Also developers who work with ntfs3 can see
+> > everything in one eye.
+> > 
+> > Example take a look Ext4 dev (for-next) branch
+> > https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/log/?h=dev
+> > You see that this is based on rc2. Theodore will create pull-request
+> > based on this when he creates pull-request. Very clean history and no
+> > back-merges.
+> > 
+> > If you wonder how should you do development then if you can't back
+> > merge. You should do develompent in linux-next branch. This way you
+> > always know if others break something reletad to ntfs3. Then you check
+> > who was it and send email about it and you solve it together. It can be
+> > tricky some times who will take which patches but help is given if you
+> > ask.
+> > 
+> This last paragraph actually is not very clear. Can you please refer couple of
+> examples of such activity?
+
+Good that you ask.
+
+Example if you now we are trying to get ntfs3 in to 5.15. Linux-next is
+kinda snapshot what 5.15 will look like. It is not absolute truth but
+close. Our master branch will included linux-next every day and so are
+everyone else trees. If you develop something new you should do this in
+linux-next so you will notice right away if something breaks. It is good
+happit to rebase current work top that if not everyday at least once a
+week.
+
+When something breaks you will know that something needs to be resolved
+before you make pr. Or at least you need to info Linus that this kind of
+situation will happend with tree X. If build breaks you will probably
+get email from Stephen about it. But there is situations which can break
+ntfs3 without breaking the build.
+
+One another thing with linux-next is that if you use it you will help
+others. If something breaks you can info other maintainer that something
+is wrong. Same thing will happend other way around. 
+
+Little off topic but, I will in near future make CI system which will
+test ntfs3 in linux-next everytime new linux-next tag comes up. 
+
+So using linux-next is not absolute necessary, but will benefit
+everyone. There will also be times when someone send you patch and that
+patch will only apply example to last stable Linux version. Then you ask
+to rebase top of the linux-next or ntfs3/master. This is also reason why
+development should be done in linux-next.
+
 > 
-> Saw that this passed the reproducer. But on closer inspection, I think 
-> what's happening is that sco_conn_del is never run.
+> > There is lot of small info what I did not include here and hopefully
+> > everything is correct. Hopefully you will also in near future respond
+> > patches which are sent to you. There is already quite lot. If you need
+> > any help how to maintainer should handle those I can assisntant you best
+> > I can. There will be example little bit work howto make all fixes tags
+> > right because you will have to rebase your current commits as they do
+> > not have example reviewed-tags.
+> > 
+> We've just applied several patches proposed for past ~month. Please have a look
+> on them - we tried to stick to the patch acception guidelines. Hopefully, they
+> are good from this point of view.
+
+They are ok :) Only wrong thing which I found was that with one patch
+you first apply v1 and then v2. v1 was not needed. These where patches
+
+v1:
+ be87e821fdb5 ("fs/ntfs3: Fix one none utf8 char in source file")
+v2:
+ 24516d481dfc ("fs/ntfs3: Restyle comment block in ni_parse_reparse()")
+
+But this mistake where ok and did not do any harm.
+
+I notice that you also made devel branch to github. I can help you with
+these things that you first made changes to devel and then send email to
+ntfs3 list or directly to me and I can check that it is ok and then you
+push it to master. This way no messing up "public" branch. Just for
+starter so that we get these things going.
+
+I also advice you to not only applying patches, but also replying emails
+to thouse which you did not apply. Usually people will resend in week or
+two if nobody haven't respond.
+
+> > I also CC linux-next maintainer as he knows this stuff and can say if I
+> > say something wrong. And I feel like new maintainer can have little help
+> > from gurus.
+> > 
+> > Kari Argillander
 > 
-> So the extra sock_hold prevents a UAF, but that's because now the 
-> reference count never goes to 0. In my opinion, something closer to your 
-> previous proposal (+ also addressing other calls to __sco_sock_close) 
-> where we call cancel_delayed_work_sync after the channel is deleted 
-> would address the root cause better.
-> 
-> Just my two cents.
-> 
+> Thanks a lot once again, Kari! Really great help here.
 
-Ok I went back to make a more thorough audit. Even without calling
-cancel_delayed_work_sync, sco_sock_timeout should not cause a UAF.
+Happy to help.
 
-I believe the real issue is that we can allocate a connection twice in
-sco_connect. This means that the first connection gets lost and we're
-unable to clean it up properly.
-
-Thoughts on this?
-
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git e3f30ab28ac8
-
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -578,9 +578,6 @@ static int sco_sock_connect(struct socket *sock, struct sockaddr *addr, int alen
-  	    addr->sa_family != AF_BLUETOOTH)
-  		return -EINVAL;
-  
--	if (sk->sk_state != BT_OPEN && sk->sk_state != BT_BOUND)
--		return -EBADFD;
--
-  	if (sk->sk_type != SOCK_SEQPACKET)
-  		return -EINVAL;
-  
-@@ -591,6 +588,13 @@ static int sco_sock_connect(struct socket *sock, struct sockaddr *addr, int alen
-  
-  	lock_sock(sk);
-  
-+	if (sk->sk_state != BT_OPEN && sk->sk_state != BT_BOUND) {
-+		hci_dev_unlock(hdev);
-+		hci_dev_put(hdev);
-+		err = -EBADFD;
-+		goto done;
-+	}
-+
-  	/* Set destination address and psm */
-  	bacpy(&sco_pi(sk)->dst, &sa->sco_bdaddr);
-  
+> Best regards,
+> Konstantin
