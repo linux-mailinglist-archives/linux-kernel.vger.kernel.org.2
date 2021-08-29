@@ -2,91 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526A63FA972
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 08:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82B83FA97A
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 08:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbhH2GV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 02:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbhH2GV0 (ORCPT
+        id S234644AbhH2G0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 02:26:11 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53074 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229889AbhH2G0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 02:21:26 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5B2C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 23:20:35 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id fs6so7350970pjb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 28 Aug 2021 23:20:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=Q/72TZxviiCkwWN8QnZlclMQc+rmLTuqlV6J9W/56aY=;
-        b=sf+r7DBnlFt5Zpw82wTMGqkUBgenr2o2QmZrXK7+eSoyMgsB/gWWeRbCEwo7TU4Vex
-         JgCU9v3TwSRQ8mQVlND8ZN4wF+Le7SqeX6HN4gXWHRgQpGKf4jVz3p6TUZ1DAS0fVqdU
-         xfEHiiMTJGoPHwxSBu2MKfS4GROZdHJJ0jdPouwPDuoBaOD9htpgl/Q/eXGGPrF2jqnV
-         0XbZ0VAzLqTibnCnTx1z+E8r6M3dn6rRJub/BOMBQSquDiukvV6Blgv+2qn3kCPQvvw1
-         ARG5J9CbO1hI44S9zruW4KVxq5ezIz8vniatIL5zXCTh5tw9JO1sslhrBQafCH3I5+VK
-         X4+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=Q/72TZxviiCkwWN8QnZlclMQc+rmLTuqlV6J9W/56aY=;
-        b=YwuyAdRVD3YFxj8vo5wgpPya2zH+mY2mmSws8R2w4dGmZRSn39latFR+6+cRe/qP4o
-         L2JslrnWThfIpRX34+Zi+j0eU8Fx7YJvb7uySFCahH1CfMI6+keU441TxHmDArSS35dG
-         Ub4W3jg51Aq3A1DU+MOH6FtTtbRGd/RWV7SImH3tl8bhYbiGRHqjlX8SsJptHDMhGDT2
-         OdhiAxtMYRyLXq0/prgfD4NAxqV4nVmK3fBIX+bFbXvqbUhuwqHCbsQovnXzg5N1++U9
-         mmBRXK+96Y9g3/0OGNsx5mllp1GeHRGDF7hy96oWKhdIke+Gyjw1y4ALeLc4M2h9wvKz
-         abMQ==
-X-Gm-Message-State: AOAM531P8mi6VqaV26X4QQ+iZHflC14sMHpvsrjPdSocrtebIxlT9Sdz
-        5/TzlW9drXXb7HMvaSut3neP+wN1wT4=
-X-Google-Smtp-Source: ABdhPJxGNI2aLBh/vHAYvxzY2Z3gU/cJ0ZivsaolkROrZlqdKSSNEUenujlZNnSd/RRlscFVyhPM8A==
-X-Received: by 2002:a17:902:b190:b029:12d:487:dddc with SMTP id s16-20020a170902b190b029012d0487dddcmr16321536plr.24.1630218032949;
-        Sat, 28 Aug 2021 23:20:32 -0700 (PDT)
-Received: from user ([117.98.200.228])
-        by smtp.gmail.com with ESMTPSA id u21sm12639086pgk.57.2021.08.28.23.20.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 23:20:32 -0700 (PDT)
-Date:   Sun, 29 Aug 2021 11:50:27 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        straube.linux@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH v2] staging: r8188eu: core: remove null check before vfree
-Message-ID: <YSsnK7Wepn1Dv+oy@user>
+        Sun, 29 Aug 2021 02:26:09 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17T6AmIN007798;
+        Sun, 29 Aug 2021 02:25:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=1Vk1w6N7Defqj+no473Bhai+LgvnPPAardePIMhLEqg=;
+ b=UliAjHYkgfx7GIJ340DpMgDMGWxfJmVz6rMQ3DGkuris0Omp0Q7JhkkYKaRdfCkUVAar
+ 3bdtRkxBFvj2AgXnloKCXc0icPqfZ24jeP3xLAfZcrjDZ3nsz84gtOq5ugXpKHZAIfLS
+ 2clZ3lFmWnD4CH0rviVLc9Ylcut0HfAmJSlS0xDY5sE9tJccp0vRpNUTi/dW+tOUBE1v
+ 2ab7Cxnw4x/D0xFrG5MQN8wtv/LV7CNXlcBOkqzSRh/FRWi02OxkzbG9yKAM3e7WUAS3
+ 1FnBPvUyucpW95FlaM4EuOkE/kovCia5XZIG34JGkKKykDakWpwJYbusdHugkY4BlRAH gQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ar2es2ghj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Aug 2021 02:25:17 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17T6BSOM008921;
+        Sun, 29 Aug 2021 02:25:17 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ar2es2gh1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Aug 2021 02:25:16 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17T6IO1K021309;
+        Sun, 29 Aug 2021 06:25:15 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 3aqcs8sekk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 Aug 2021 06:25:15 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17T6PBKU53543382
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 29 Aug 2021 06:25:11 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 368A74C059;
+        Sun, 29 Aug 2021 06:25:11 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C07CA4C04E;
+        Sun, 29 Aug 2021 06:25:10 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.11.228])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 29 Aug 2021 06:25:10 +0000 (GMT)
+Subject: Re: [PATCH 1/1] KVM: s390: index kvm->arch.idle_mask by vcpu_idx
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Mueller <mimu@linux.ibm.com>
+References: <20210827125429.1912577-1-pasic@linux.ibm.com>
+ <20210827160616.532d6699@p-imbrenda>
+ <e9d2f79c-b784-bc6b-88dc-2d0f7cc08dbe@de.ibm.com>
+ <20210827232344.431e3114.pasic@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <be84123f-4f1b-2efb-fba2-e8d644b71b8f@de.ibm.com>
+Date:   Sun, 29 Aug 2021 08:25:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210827232344.431e3114.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: xAyEYvN7uL_jCRx0oMwn9daTi7Atj7gv
+X-Proofpoint-GUID: X3ggBqi7uCAlhN0_PllS0UEzYJo54Krk
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-29_02:2021-08-27,2021-08-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0
+ malwarescore=0 bulkscore=0 clxscore=1015 mlxlogscore=999 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108290035
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove NULL check. NULL check before freeing function is not needed.
-Correct the indentation.
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_sta_mgt.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_sta_mgt.c b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-index f6dffed53a60..c3600cb1790a 100644
---- a/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-+++ b/drivers/staging/r8188eu/core/rtw_sta_mgt.c
-@@ -155,9 +155,8 @@ u32	_rtw_free_sta_priv(struct	sta_priv *pstapriv)
- 		spin_unlock_bh(&pstapriv->sta_hash_lock);
- 		/*===============================*/
+On 27.08.21 23:23, Halil Pasic wrote:
+> On Fri, 27 Aug 2021 18:36:48 +0200
+> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+> 
+>> On 27.08.21 16:06, Claudio Imbrenda wrote:
+>>> On Fri, 27 Aug 2021 14:54:29 +0200
+>>> Halil Pasic <pasic@linux.ibm.com> wrote:
+>>>    
+>>>> While in practice vcpu->vcpu_idx ==  vcpu->vcp_id is often true,
+> 
+> s/vcp_id/vcpu_id/
+> 
+>>>> it may not always be, and we must not rely on this.
+>>>
+>>> why?
+>>>
+>>> maybe add a simple explanation of why vcpu_idx and vcpu_id can be
+>>> different, namely:
+>>> KVM decides the vcpu_idx, userspace decides the vcpu_id, thus the two
+>>> might not match
+>>>    
+>>>>
+>>>> Currently kvm->arch.idle_mask is indexed by vcpu_id, which implies
+>>>> that code like
+>>>> for_each_set_bit(vcpu_id, kvm->arch.idle_mask, online_vcpus) {
+>>>>                   vcpu = kvm_get_vcpu(kvm, vcpu_id);
+>>>
+>>> you can also add a sentence to clarify that kvm_get_vcpu expects an
+>>> vcpu_idx, not an vcpu_id.
+>>>    
+>>>> 		do_stuff(vcpu);
+>>
+>> I will modify the patch description accordingly before sending to Paolo.
+>> Thanks for noticing.
+> 
+> Can you also please fix the typo I pointed out above (in the first line
+> of the long description).
 
--		if (pstapriv->pallocated_stainfo_buf)
--			vfree(pstapriv->pallocated_stainfo_buf);
--		}
-+		vfree(pstapriv->pallocated_stainfo_buf);
-+	}
-
- 	return _SUCCESS;
- }
---
-2.32.0
-
+I already queued, but I think this is not a big deal.
