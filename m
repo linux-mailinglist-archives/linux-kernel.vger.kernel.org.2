@@ -2,341 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7BD3FAE96
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 22:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2313FAE9A
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 22:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234243AbhH2Uz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 16:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbhH2Uz5 (ORCPT
+        id S235316AbhH2U4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 16:56:34 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:42283 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232989AbhH2U4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 16:55:57 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746E7C061760
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 13:55:04 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id n11so18514106edv.11
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 13:55:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AqtMNiioIDL4ACYgjDdzLfylmCCKYY7rQn1WqTkUY6Y=;
-        b=rmfs+0kqWuZFMMLTXE8SLLVEW9bJ1Rp4S64dAmsmAVdh59PY5jk/DK0MSCunjolYQX
-         8b/c1VqVPdZQIu3k2T9myVQUKLpndM9dnvvunRH1i2J20WnlMAkV46DD38xdGvGERsBm
-         JFyjObQobsdg18+I9xZ57Q4u4HLVmTx9FWz9umwcWHZwM0oV7c8a+OCJV68fx//7yWG0
-         sIUwHbfL8JWpeBVEzaojdjQoZ07u0nuaxWqDBZuZFZrh+otrbHBqfuBKcdt+dtuyiqXv
-         OVE3dWC8lDS/dDbO5qb5OVybSWRDQ38elFgPGDKfqm9cQE/JT1VG0xqjaNSZLeKxNsVY
-         oulw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AqtMNiioIDL4ACYgjDdzLfylmCCKYY7rQn1WqTkUY6Y=;
-        b=exmU8oJCmAMMRIfpYJmXg4evnsKYPnDl30zD3UKcqbSo8GHFTVS0mBzvaD3iYXKbXe
-         sZHPrwEe6Rb5812M0T/2S12NhNbQ2Yd9oSqSmOzC67Ne0K9DPV5hf0Lb3H6Uf8baxUEh
-         xqYN400FTOP8DPP5uk/kEZujOeMF8bncI6kfW05sHVttyZ6Aoy2JFIHeT+2hpYZpICwB
-         Rf1FXpjtMaq6x9veY9EjfwNT4QSejjYu12TmxeeE6g/blovGKKoVbABUcebx+23yV56w
-         hnQtcnBNxgwK2qHoa8weKuDrVxPXhPFvP8aQaPnUmCX+Un0JlVo1AYUiWuRAtxdry3gk
-         0sww==
-X-Gm-Message-State: AOAM5311JvlcQXDo4heFpGA6Pf85n5Cnfr4G00ShBPiLCfp5RIRuWGb2
-        OzzpbrtBu8csJxavxiH0h+PcR0YihW0MOacX6pYmRxo7RrY=
-X-Google-Smtp-Source: ABdhPJxigLoyQLS8ZtoXqPvF+AjahKw1yZIoMxRbzGTNv9xpSOeNeo6pCPyZ5XLu0Kp4T/DC4Ul/kgsSkSWC7NJopcI=
-X-Received: by 2002:a05:6402:11c9:: with SMTP id j9mr20372184edw.134.1630270502889;
- Sun, 29 Aug 2021 13:55:02 -0700 (PDT)
+        Sun, 29 Aug 2021 16:56:32 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id EB63C5C00AD;
+        Sun, 29 Aug 2021 16:55:39 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 29 Aug 2021 16:55:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=NcQg4S
+        QF/ZIoqi7h9T6xv7ula+TxR9mC6WKm/upv5HE=; b=ntHKrdp64sQQKrIu1xmCla
+        z+E5Vb3mJDX1PsDuk9U/As/rL16YpXfAnGLlRwRPB1MzJjXZcj3iTHVoeNWgf9d9
+        tPBetAyCjBR2M0CZSRW2ljUzH1/vOrmaa8MEVUMQKfKwQgc6sZmco9VGd62PqTE7
+        Bs9N8hyQmCQiUcrtrIg6R25y7K3xBchRTcsXCJPmc+jps5N1hEJ9KKk8+gqYX5du
+        nSDNfsEzK+qMAo5AKIqNPOnjX/uGJW1nPr+q61vmbEHJRAyJkEIpetlf7XicVXDi
+        tnapZPdajA6AmnqGxbqHo2CYR9r4Kp2zsmNBfjDkP18aw3iEAUNKT4UMHjykqtjQ
+        ==
+X-ME-Sender: <xms:S_QrYS-ZMmziEytmMzzQ6rl6CF7hjN5nvjpx2U4v-X3ZeI3LO_l8jA>
+    <xme:S_QrYSuPdcic43SExEE59h9F50vuWSxMW8CayZpiXv7lzFVsUsX9_agWMjsRbug2O
+    p3w7DJk7IK4NpsVH-o>
+X-ME-Received: <xmr:S_QrYYDvsjWApgdJVI5UUESPcrbXU1QjzBmlonStLDXfRVDAgEgmyvRaKgsRqh5FIZSgZw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddujedgudehfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffuvffkjghfofggtgesthdtredtredtvdenucfhrhhomhepnfhukhgv
+    ucflohhnvghsuceolhhukhgvsehljhhonhgvshdruggvvheqnecuggftrfgrthhtvghrnh
+    epgfeffedufffhgfeuheegffffgeegveeifeeutefhieejffetudfgueevteehtdetnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvse
+    hljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:S_QrYadlQK8CNDSjq5jedkRPfIJ7FLe-ncmow5O9f_3-_l0iQtla5g>
+    <xmx:S_QrYXMW9z3m-86wVaOmh3Hr6TsTdOU3fgJqLypl68PsMFt1kkmUaw>
+    <xmx:S_QrYUl9Sk2ulEahl4qHniKRrA0pilf2sd7cebcR8Ol6_z64vNdzNQ>
+    <xmx:S_QrYQZfNdyioMrjUE2Bv5fqgxclr4Tg-z42CDGW2QdLtT8LRRvx2Q>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 29 Aug 2021 16:55:33 -0400 (EDT)
+Date:   Mon, 30 Aug 2021 08:55:17 +1200
+From:   Luke Jones <luke@ljones.dev>
+Subject: Re: [PATCH v6 0/1] asus-wmi: Add support for custom fan curves
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org,
+        pobrn@protonmail.com, platform-driver-x86@vger.kernel.org
+Message-Id: <5SCMYQ.7F7995ZKI2HT3@ljones.dev>
+In-Reply-To: <2af6628e-118f-6a75-8074-2f4144c7f8e7@roeck-us.net>
+References: <20210829071402.576380-1-luke@ljones.dev>
+        <cf42ddd7-29ed-ff8b-7d03-958187863b70@redhat.com>
+        <RLILYQ.0GH3JY7UCTPI2@ljones.dev>
+        <2af6628e-118f-6a75-8074-2f4144c7f8e7@roeck-us.net>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-References: <20210811025801.21597-1-yunfei.dong@mediatek.com>
- <20210811025801.21597-14-yunfei.dong@mediatek.com> <YRQQBL8AN0925zj9@pendragon.ideasonboard.com>
- <952c219de7595f7f814d3006fbe25b8089a35212.camel@mediatek.com>
-In-Reply-To: <952c219de7595f7f814d3006fbe25b8089a35212.camel@mediatek.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Sun, 29 Aug 2021 17:54:50 -0300
-Message-ID: <CAAEAJfB_qZtVpxk8P=26GkZ1j66v+RzzJTqf3UrfMkWNJ1fmFg@mail.gmail.com>
-Subject: Re: [PATCH v5, 13/15] dt-bindings: media: mtk-vcodec: Adds decoder
- dt-bindings for mt8192
-To:     "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        George Sun <george.sun@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Aug 2021 at 00:52, yunfei.dong@mediatek.com
-<yunfei.dong@mediatek.com> wrote:
->
-> Hi Laurent,
->
-> Thanks for your detail suggestion.
->
-> On Wed, 2021-08-11 at 20:59 +0300, Laurent Pinchart wrote:
-> > Hi Yunfei,
-> >
-> > Thank you for the patch.
-> >
-> > On Wed, Aug 11, 2021 at 10:57:59AM +0800, Yunfei Dong wrote:
-> > > Adds decoder dt-bindings for mt8192.
-> > >
-> > > Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> > > ---
-> > > v5: no changes
-> > >
-> > > This patch depends on "Mediatek MT8192 clock support"[1].
-> > >
-> > > The definition of decoder clocks are in mt8192-clk.h, need to
-> > > include them in case of build fail [1].
-> > >
-> > > [1]
-> > > https://patchwork.kernel.org/project/linux-mediatek/list/?series=511175
-> > > ---
-> > >  .../media/mediatek,vcodec-comp-decoder.yaml   | 172
-> > > ++++++++++++++++++
-> > >  1 file changed, 172 insertions(+)
-> > >  create mode 100644
-> > > Documentation/devicetree/bindings/media/mediatek,vcodec-comp-
-> > > decoder.yaml
-> > >
-> > > diff --git
-> > > a/Documentation/devicetree/bindings/media/mediatek,vcodec-comp-
-> > > decoder.yaml
-> > > b/Documentation/devicetree/bindings/media/mediatek,vcodec-comp-
-> > > decoder.yaml
-> > > new file mode 100644
-> > > index 000000000000..083c89933917
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/media/mediatek,vcodec-comp-
-> > > decoder.yaml
-> > > @@ -0,0 +1,172 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id:
-> > > http://devicetree.org/schemas/iommu/mediatek,vcodec-comp-decoder.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Mediatek Video Decode Accelerator With Component
-> > > +
-> > > +maintainers:
-> > > +  - Yunfei Dong <yunfei.dong@mediatek.com>
-> > > +
-> > > +description: |+
-> > > +  Mediatek Video Decode is the video decode hardware present in
-> > > Mediatek
-> > > +  SoCs which supports high resolution decoding functionalities.
-> > > Required
-> > > +  master and component node.
-> >
-> > This should explain how the three IP cores relate to each other.
-> >
-> I will explain it in next patch.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    oneOf:
-> > > +      - enum:
-> > > +          - mediatek,mt8192-vcodec-dec  # for lat hardware
-> > > +          - mediatek,mtk-vcodec-lat     # for core hardware
-> > > +          - mediatek,mtk-vcodec-core
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  interrupts:
-> > > +    maxItems: 1
-> > > +
-> > > +  clocks:
-> > > +    maxItems: 5
-> > > +
-> > > +  clock-names:
-> > > +    items:
-> > > +      - const: vdec-sel
-> > > +      - const: vdec-soc-vdec
-> > > +      - const: vdec-soc-lat
-> > > +      - const: vdec-vdec
-> > > +      - const: vdec-top
-> > > +
-> > > +  assigned-clocks: true
-> > > +
-> > > +  assigned-clock-parents: true
-> > > +
-> > > +  power-domains:
-> > > +    maxItems: 1
-> > > +
-> > > +  iommus:
-> > > +    minItems: 1
-> > > +    maxItems: 32
-> > > +    description: |
-> > > +      List of the hardware port in respective IOMMU block for
-> > > current Socs.
-> > > +      Refer to bindings/iommu/mediatek,iommu.yaml.
-> > > +
-> > > +  dma-ranges:
-> > > +    maxItems: 1
-> > > +    description: |
-> > > +      Describes the physical address space of IOMMU maps to
-> > > memory.
-> > > +
-> > > +  mediatek,scp:
-> > > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > > +    maxItems: 1
-> > > +    description:
-> > > +      Describes point to scp.
-> > > +
-> > > +required:
-> > > +      - compatible
-> > > +      - reg
-> > > +      - iommus
-> > > +      - dma-ranges
-> > > +
-> > > +allOf:
-> > > +  - if: #master node
-> > > +      properties:
-> > > +        compatible:
-> > > +          contains:
-> > > +            enum:
-> > > +              - mediatek,mt8192-vcodec-dec  # for lat hardware
-> > > +
-> > > +    then:
-> > > +      required:
-> > > +        - mediatek,scp
-> > > +
-> > > +  - if: #component node
-> > > +      properties:
-> > > +        compatible:
-> > > +          contains:
-> > > +            enum:
-> > > +              - mediatek,mtk-vcodec-lat     # for core hardware
-> > > +              - mediatek,mtk-vcodec-core
-> > > +
-> > > +    then:
-> > > +      required:
-> > > +        - interrupts
-> > > +        - clocks
-> > > +        - clock-names
-> > > +        - assigned-clocks
-> > > +        - assigned-clock-parents
-> > > +        - power-domains
-> > > +
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > > +    #include <dt-bindings/memory/mt8192-larb-port.h>
-> > > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > > +    #include <dt-bindings/clock/mt8192-clk.h>
-> > > +    #include <dt-bindings/power/mt8192-power.h>
-> > > +
-> > > +    vcodec_dec: vcodec_dec@16000000 {
-> > > +        compatible = "mediatek,mt8192-vcodec-dec";
-> > > +        reg = <0 0x16000000 0 0x1000>;             /* VDEC_SYS */
-> > > +        mediatek,scp = <&scp>;
-> > > +        iommus = <&iommu0 M4U_PORT_L4_VDEC_MC_EXT>;
-> > > +        dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
-> > > +    };
-> > > +
-> > > +    vcodec_lat: vcodec_lat@0x16010000 {
-> > > +        compatible = "mediatek,mtk-vcodec-lat";
-> > > +        reg = <0 0x16010000 0 0x800>;              /* VDEC_MISC */
-> > > +        interrupts = <GIC_SPI 426 IRQ_TYPE_LEVEL_HIGH 0>;
-> > > +        iommus = <&iommu0 M4U_PORT_L5_VDEC_LAT0_VLD_EXT>,
-> > > +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_VLD2_EXT>,
-> > > +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_AVC_MV_EXT>,
-> > > +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_PRED_RD_EXT>,
-> > > +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_TILE_EXT>,
-> > > +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_WDMA_EXT>,
-> > > +             <&iommu0 M4U_PORT_L5_VDEC_LAT0_RG_CTRL_DMA_EXT>,
-> > > +             <&iommu0 M4U_PORT_L5_VDEC_UFO_ENC_EXT>;
-> > > +        dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
-> > > +        clocks = <&topckgen CLK_TOP_VDEC_SEL>,
-> > > +             <&vdecsys_soc CLK_VDEC_SOC_VDEC>,
-> > > +             <&vdecsys_soc CLK_VDEC_SOC_LAT>,
-> > > +             <&vdecsys_soc CLK_VDEC_SOC_LARB1>,
-> > > +             <&topckgen CLK_TOP_MAINPLL_D4>;
-> > > +        clock-names = "vdec-sel", "vdec-soc-vdec", "vdec-soc-lat",
-> > > +              "vdec-vdec", "vdec-top";
-> > > +        assigned-clocks = <&topckgen CLK_TOP_VDEC_SEL>;
-> > > +        assigned-clock-parents = <&topckgen CLK_TOP_MAINPLL_D4>;
-> > > +        power-domains = <&spm MT8192_POWER_DOMAIN_VDEC>;
-> > > +    };
-> > > +
-> > > +    vcodec_core: vcodec_core@0x16025000 {
-> > > +        compatible = "mediatek,mtk-vcodec-core";
-> > > +        reg = <0 0x16025000 0 0x1000>;             /*
-> > > VDEC_CORE_MISC */
-> > > +        interrupts = <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH 0>;
-> > > +        iommus = <&iommu0 M4U_PORT_L4_VDEC_MC_EXT>,
-> > > +             <&iommu0 M4U_PORT_L4_VDEC_UFO_EXT>,
-> > > +             <&iommu0 M4U_PORT_L4_VDEC_PP_EXT>,
-> > > +             <&iommu0 M4U_PORT_L4_VDEC_PRED_RD_EXT>,
-> > > +             <&iommu0 M4U_PORT_L4_VDEC_PRED_WR_EXT>,
-> > > +             <&iommu0 M4U_PORT_L4_VDEC_PPWRAP_EXT>,
-> > > +             <&iommu0 M4U_PORT_L4_VDEC_TILE_EXT>,
-> > > +             <&iommu0 M4U_PORT_L4_VDEC_VLD_EXT>,
-> > > +             <&iommu0 M4U_PORT_L4_VDEC_VLD2_EXT>,
-> > > +             <&iommu0 M4U_PORT_L4_VDEC_AVC_MV_EXT>,
-> > > +             <&iommu0 M4U_PORT_L4_VDEC_RG_CTRL_DMA_EXT>;
-> > > +        dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
-> > > +        clocks = <&topckgen CLK_TOP_VDEC_SEL>,
-> > > +             <&vdecsys CLK_VDEC_VDEC>,
-> > > +             <&vdecsys CLK_VDEC_LAT>,
-> > > +             <&vdecsys CLK_VDEC_LARB1>,
-> > > +             <&topckgen CLK_TOP_MAINPLL_D4>;
-> > > +        clock-names = "vdec-sel", "vdec-soc-vdec", "vdec-soc-lat",
-> > > +              "vdec-vdec", "vdec-top";
-> > > +        assigned-clocks = <&topckgen CLK_TOP_VDEC_SEL>;
-> > > +        assigned-clock-parents = <&topckgen CLK_TOP_MAINPLL_D4>;
-> > > +        power-domains = <&spm MT8192_POWER_DOMAIN_VDEC2>;
-> > > +    };
-> >
-> > I'm a bit late in the game, reviewing v5 only, but I'm wondering if
-> > those IP cores need to be modelled in separate nodes. It would be
-> > much
-> > easier, from a software point of view, to have a single node, with
-> > multiple register ranges.
-> >
-> > Are some of those IP cores used in different SoCs, combined in
-> > different
-> > ways, that make a modular design better ?
-> >
-> Different platform has different hardware, for mt8192 only has three
-> nodes. but mt8195 will has five nodes. and the clk/power/irq/iommu are
-> different. It is not easy to manage all hardware at the same time in
-> one node, need to enable different hardware at the same time, the logic
-> will be very complex.
-> It is much easier to handle different hardware using component, enable
-> different hardware when we need it.
->
->
 
-You can still have one device-tree node for each device, which means
-you can still manage your resources (clk/power/irq/iommu) easily, but doing
-this so that it avoids an async framework to pull the parts together.
 
-I gave you this feedback several times, and you have been objecting it
-every time  without even trying to consider a different approach.
+On Sun, Aug 29 2021 at 08:18:01 -0700, Guenter Roeck 
+<linux@roeck-us.net> wrote:
+> On 8/29/21 3:03 AM, Luke Jones wrote:
+>> 
+>> 
+>> On Sun, Aug 29 2021 at 11:57:55 +0200, Hans de Goede 
+>> <hdegoede@redhat.com> wrote:
+>>> Hi Luke,
+>>> 
+>>> On 8/29/21 9:14 AM, Luke D. Jones wrote:
+>>>>  Add support for custom fan curves found on some ASUS ROG laptops.
+>>>> 
+>>>>  - V1
+>>>>    + Initial patch work
+>>>>  - V2
+>>>>    + Don't fail and remove wmi driver if error from
+>>>>      asus_wmi_evaluate_method_buf() if error is -ENODEV
+>>>>  - V3
+>>>>    + Store the "default" fan curves
+>>>>    + Call throttle_thermal_policy_write() if a curve is erased to 
+>>>> ensure
+>>>>      that the factory default for a profile is applied again
+>>>>  - V4
+>>>>    + Do not apply default curves by default. Testers have found 
+>>>> that the
+>>>>      default curves don't quite match actual no-curve behaviours
+>>>>    + Add method to enable/disable curves for each profile
+>>>>  - V5
+>>>>    + Remove an unrequired function left over from previous 
+>>>> iterations
+>>>>    + Ensure default curves are applied if user writes " " to a 
+>>>> curve path
+>>>>    + Rename "active_fan_curve_profiles" to 
+>>>> "enabled_fan_curve_profiles" to
+>>>>      better reflect the behavious of this setting
+>>>>    + Move throttle_thermal_policy_write_*pu_curves() and rename to
+>>>>      fan_curve_*pu_write()
+>>>>    + Merge fan_curve_check_valid() and fan_curve_write()
+>>>>    + Remove some leftover debug statements
+>>>>  - V6
+>>>>    + Refactor data structs to store  array or u8 instead of 
+>>>> strings.
+>>>>      This affects the entire patch except the enabled_fan_curves 
+>>>> block
+>>>>    + Use sysfs_match_string in enabled_fan_curve block
+>>>>    + Add some extra comments to describe things
+>>>>    + Allow some variation in how fan curve input can be formatted
+>>>>    + Use SENSOR_DEVICE_ATTR_2_RW() to reduce the amount of lines 
+>>>> per
+>>>>      fan+profile combo drastically
+>>> 
+>>> Thank you for your continued work on this. I read in the discussin 
+>>> of v5
+>>> that you discussed using the standard auto_point#_pwm, 
+>>> auto_point#_temp
+>>> pairs. I see here that you have decided to not go that route, may I 
+>>> ask
+>>> why ?
+>> 
+>> Sure, primary reason is because the RPM for the fans is in 
+>> percentage so it didn't really make sense to me to use that format.
+>> 
+>> Also if the max for that is 255 then I'd need to introduce scaling 
+>> to make match what the ACPI method expects (max 100). But yeah, 
+>> auto_point#_pwm changes the meaning.
+>> 
+> 
+> Bad argument. That is true for other controllers as well. You could
+> just scale it up and down as needed.
+> 
+> The whole point of an ABI is that it is standardized.
+> If others would [be permitted to] follow your line of argument,
+> we would not have a useful ABI because "my chip provides/needs
+> data in some other format".
+> 
+> Guenter
 
-Thanks,
-Ezequiel
+Understood. But lets see if I understand fully:
+
+The key part is "pwmX_auto_pointN_temp and pwmX_auto_pointN_pwm", with 
+X being a profile, and N the point in the curve graph. If I use this 
+format I have:
+
+- 3 profiles
+- each profile has two fans
+- each fan has 8 points on it
+- each point has 2 integers
+
+so that makes for a total of 96 individual sysfs paths. Is that really 
+okay? And where would the new paths god?
+- Under /sys/devices/platform/asus-nb-wmi/ still, or
+- /sys/devices/platform/asus-nb-wmi/hwmon/ ?
+
+I'm currently using SENSOR_DEVICE_ATTR_2_RW with index = profile, nr = 
+fan. If there weren't profiles involved then I could see it being 
+easily achieved with that.. Maybe I could use the index(profile) with a 
+mask to get the fan number.
+
+I've done all the groundwork for it at least, so it can certainly be 
+done. My only worry is that because of the sheer number of sysfs paths 
+being added (96) it could become unwieldy to use.
+
+Could I use the existing method + the above?
+
+Many thanks,
+Luke.
+
+
