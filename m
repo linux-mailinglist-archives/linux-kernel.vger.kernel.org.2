@@ -2,95 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535F93FAB85
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 14:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28393FAB7E
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 14:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235352AbhH2Mzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 08:55:39 -0400
-Received: from mengyan1223.wang ([89.208.246.23]:50802 "EHLO mengyan1223.wang"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235271AbhH2Mzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 08:55:37 -0400
-X-Greylist: delayed 330 seconds by postgrey-1.27 at vger.kernel.org; Sun, 29 Aug 2021 08:55:35 EDT
-Received: from localhost.localdomain (localhost [127.0.0.1])
+        id S235356AbhH2Muz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 08:50:55 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:42262
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235124AbhH2Muy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 08:50:54 -0400
+Received: from workstation5.fritz.box (ip-88-152-144-157.hsi03.unitymediagroup.de [88.152.144.157])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@mengyan1223.wang)
-        by mengyan1223.wang (Postfix) with ESMTPSA id 6DEEE65A34;
-        Sun, 29 Aug 2021 08:49:11 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
-        s=mail; t=1630241352;
-        bh=4VT7HsleXnyApJ065hiHgYH7fPmSKGhjsjtBFnJBnfM=;
-        h=Subject:From:To:Cc:Date:From;
-        b=D2ZrwHnGztEQHojfa7/y/m3YPEfHzW2H1+IATuHJsWw/0wb5cQmgdE5QxZTFlMZ2O
-         Jtx0IXiQkh9lJ+ThDLXZZhe7/vyw+xD/84B8dKxUeG1VurVafV02pCdfBMzDNHekjD
-         jjIpMsgXGcJFe8AlTs5BQYfpaE3KX1qv81Rx4vYeDDwnpjig0wtgnQVvN7gpI0d5e7
-         Vj6deJSVJZxf63lvyLDr8yRauR/RBCNVkV0bMh90uvBVs3R4dfLhN3ftOwjrEVINV5
-         sUR26iZKn+Sg6w5uWOeuWsBJBt9H088uFckgvwo1HAsMOrgMKWhb/oLPSPSPeWIEgy
-         m8JFF6H/oYEjQ==
-Message-ID: <0b7c9431efb12c2d957fcc53ec8f0743725d61b3.camel@mengyan1223.wang>
-Subject: [PATCH] mips: remove reference to "newer Loongson-3"
-From:   Xi Ruoyao <xry111@mengyan1223.wang>
-To:     linux-mips@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
-Date:   Sun, 29 Aug 2021 20:49:09 +0800
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id A486C3F232;
+        Sun, 29 Aug 2021 12:50:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630241400;
+        bh=ec9ejvL3UxKr94M+EKJMH+mi9gqyGvaor8NJmZDmCrM=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=hqwjzK8Pk1HHHiiCbqdMmZ8ZXDheXoRjjaaTRZtkgyVIy2p325O1Rn+SuMGUT4hFn
+         ht+Yn4+NM1xBjPsrvE5sa36FPsya60mvtva9nCp70rABOaCyVdSfrCUumtQZYDYYjD
+         aQ6YcqbC0O6Dnxr1CgutUBJ/JxiMeJ5aFhL0NBaczTU2WsZFMMeLhrdVU6n8DvXSMW
+         j8Jdw2OB4SicG0S1/TGVi4iWX0fTLFX4HP+5QpkiCfb8wLtke4qvBx8WB/2yBT5ytM
+         BgORcTIiAyZFdPBA7FIqcjL3bTGoOrzMGhEmE12NOYzaugRTHxOod4IkTpx1WCTy6q
+         dmSWBc3ZCJjnQ==
+From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Heinrich Schuchardt <xypron.gpk@gmx.de>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Subject: [PATCH] efi/libstub: "Exiting bootservices" message
+Date:   Sun, 29 Aug 2021 14:49:55 +0200
+Message-Id: <20210829124955.74429-1-heinrich.schuchardt@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Newest Loongson-3 processors have moved to use LoongArch architecture.
-Sadly, the LL/SC issue is still existing on both latest Loongson-3
-processors using MIPS64 (Loongson-3A4000) and LoongArch
-(Loongson-3A5000).
+The message
 
-As it's very unlikely there will be new Loongson-3 processors using
-MIPS64, let's stop people from false hoping.
+    "Exiting boot services and installing virtual address map...\n"
 
-Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
-Cc: Huacai Chen <chenhuacai@kernel.org>
+is even shown if we have efi=novamap on the command line or the firmware
+does not provide EFI_RT_SUPPORTED_SET_VIRTUAL_ADDRESS_MAP.
+
+To avoid confusion we should print
+
+    "Exiting boot services...\n"
+
+in this case.
+
+Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
 ---
+ drivers/firmware/efi/libstub/fdt.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Huacai: how's the status of LL/SC issue on Loongson-2K?  If
-the issue exists on it as well, we can just force
-CPU_LOONGSON3_WORKAROUNDS when CONFIG_CPU_LOONGSON64 and
-CONFIG_SMP are both selected.
-
- arch/mips/Kconfig | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 6dfb27d531dd..ff5f344a371e 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1433,19 +1433,14 @@ config LOONGSON3_ENHANCEMENT
- 	  new Loongson-3 machines only, please say 'Y' here.
+diff --git a/drivers/firmware/efi/libstub/fdt.c b/drivers/firmware/efi/libstub/fdt.c
+index 365c3a43a198..d871b1ac4d8b 100644
+--- a/drivers/firmware/efi/libstub/fdt.c
++++ b/drivers/firmware/efi/libstub/fdt.c
+@@ -271,7 +271,10 @@ efi_status_t allocate_new_fdt_and_exit_boot(void *handle,
+ 		return status;
+ 	}
  
- config CPU_LOONGSON3_WORKAROUNDS
--	bool "Old Loongson-3 LLSC Workarounds"
-+	bool "Loongson-3 LLSC Workarounds"
- 	default y if SMP
- 	depends on CPU_LOONGSON64
- 	help
- 	  Loongson-3 processors have the llsc issues which require workarounds.
- 	  Without workarounds the system may hang unexpectedly.
+-	efi_info("Exiting boot services and installing virtual address map...\n");
++	if (efi_novamap)
++		efi_info("Exiting boot services...\n");
++	else
++		efi_info("Exiting boot services and installing virtual address map...\n");
  
--	  Newer Loongson-3 will fix these issues and no workarounds are needed.
--	  The workarounds have no significant side effect on them but may
--	  decrease the performance of the system so this option should be
--	  disabled unless the kernel is intended to be run on old systems.
--
--	  If unsure, please say Y.
-+	  Say Y, unless you know what you are doing.
- 
- config CPU_LOONGSON3_CPUCFG_EMULATION
- 	bool "Emulate the CPUCFG instruction on older Loongson cores"
+ 	map.map = &memory_map;
+ 	status = efi_allocate_pages(MAX_FDT_SIZE, new_fdt_addr, ULONG_MAX);
 -- 
-2.33.0
-
+2.30.2
 
