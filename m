@@ -2,92 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9B93FABF7
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 15:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2279C3FABF8
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 15:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235795AbhH2NY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 09:24:56 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:55372 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235439AbhH2NYs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 09:24:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UmS9Nax_1630243433;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UmS9Nax_1630243433)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 29 Aug 2021 21:23:54 +0800
-Subject: Re: [PATCH linux-next] ocfs2: fix bugon.cocci warnings
-To:     CGEL <cgel.zte@gmail.com>, Mark Fasheh <mark@fasheh.com>,
-        akpm <akpm@linux-foundation.org>
-Cc:     Joel Becker <jlbec@evilplan.org>, ocfs2-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20210828010432.11100-1-deng.changcheng@zte.com.cn>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <2800786e-dba1-c1fe-158d-92bee8f06acf@linux.alibaba.com>
-Date:   Sun, 29 Aug 2021 21:23:52 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S235350AbhH2NhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 09:37:15 -0400
+Received: from mga03.intel.com ([134.134.136.65]:23171 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235323AbhH2NhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 09:37:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10090"; a="218198565"
+X-IronPort-AV: E=Sophos;i="5.84,361,1620716400"; 
+   d="scan'208";a="218198565"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2021 06:36:21 -0700
+X-IronPort-AV: E=Sophos;i="5.84,361,1620716400"; 
+   d="scan'208";a="445465619"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2021 06:36:19 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mKKyr-00F2pb-RG; Sun, 29 Aug 2021 16:36:13 +0300
+Date:   Sun, 29 Aug 2021 16:36:13 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lib/vsprintf: add __putchar()
+Message-ID: <YSuNTVh17CxUNxtC@smile.fi.intel.com>
+References: <20210827171155.700434-1-yury.norov@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210828010432.11100-1-deng.changcheng@zte.com.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827171155.700434-1-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 8/28/21 9:04 AM, CGEL wrote:
-> From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On Fri, Aug 27, 2021 at 10:11:55AM -0700, Yury Norov wrote:
+> There are 26 occurrences of the code snippet like this in the file :
+> 	if (buf < end)
+> 	        *buf = separator;
+> 	++buf;
 > 
-> Use BUG_ON instead of if condition followed by BUG.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+> This patch adds a helper function __putchar() to replace opencoding.
+> It adds a lot to readability, and also saves 43 bytes of text on x86.
 
-Acked-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Last time I tried similar it failed the compilation.
 
-BTW, could you send out a series to clean all in ocfs2?
+Anyway, while you remove a lot of code I'm not sure it makes the code better
+to read and understand. Also, we use the same idiom outside of this file.
 
-> ---
->  fs/ocfs2/journal.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
-> index 4f15750..2305aa5 100644
-> --- a/fs/ocfs2/journal.c
-> +++ b/fs/ocfs2/journal.c
-> @@ -974,8 +974,7 @@ void ocfs2_journal_shutdown(struct ocfs2_super *osb)
->  		goto done;
->  
->  	/* need to inc inode use count - jbd2_journal_destroy will iput. */
-> -	if (!igrab(inode))
-> -		BUG();
-> +	BUG_ON(!igrab(inode));
->  
->  	num_running_trans = atomic_read(&(osb->journal->j_num_trans));
->  	trace_ocfs2_journal_shutdown(num_running_trans);
-> @@ -1656,8 +1655,7 @@ static int ocfs2_replay_journal(struct ocfs2_super *osb,
->  	status = jbd2_journal_load(journal);
->  	if (status < 0) {
->  		mlog_errno(status);
-> -		if (!igrab(inode))
-> -			BUG();
-> +		BUG_ON(!igrab(inode));
->  		jbd2_journal_destroy(journal);
->  		goto done;
->  	}
-> @@ -1686,8 +1684,7 @@ static int ocfs2_replay_journal(struct ocfs2_super *osb,
->  	if (status < 0)
->  		mlog_errno(status);
->  
-> -	if (!igrab(inode))
-> -		BUG();
-> +	BUG_ON(!igrab(inode));
->  
->  	jbd2_journal_destroy(journal);
->  
-> 
+I would ask Rasmus' opinion on this.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
