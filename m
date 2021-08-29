@@ -2,227 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A763FAA77
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC383FAA79
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 11:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235033AbhH2JeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 05:34:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235020AbhH2JeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 05:34:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8D8A6023D;
-        Sun, 29 Aug 2021 09:33:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630229608;
-        bh=jjSdn7MeCWicxB3r+uzR04O6FYyUZ82gieELujrVEAk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=W8lGqlfFj30s1oHx1dHRsUS/Z1ZW1kE+sBrRv+mI1z3MDgTMqzsfcVsmRF173qb1B
-         MO3gro4wazYPM3UAM5qsBhtZJCTOD35Pmvf6tUwLFu3498njN4WFdHvq8hrz/Uvif2
-         uRuqGiEzkt8OGg75sUoMWruT8Uo4ZbX+VvYXCj1uzZmqDXJPaTj/2xicd61bbqkoXz
-         i4B748Ks6CME+RkAr9wTdKDqNoE/1RogII5yEsBRT4pqxOW5EMUAEF8hWD13R3pKqT
-         4EXF8pupzNdl/2gjEqS9uJo9n0BzVtsDXBNGeSOn6y3wMUAMdoPYsNprOeiD6g9akA
-         I7+jbZYzixw5A==
-Date:   Sun, 29 Aug 2021 12:33:23 +0300
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, jgg@mellanox.com,
-        daniel.vetter@ffwll.ch, torvalds@linux-foundation.org,
-        airlied@gmail.com
-Subject: [git pull v2] habanalabs pull request for kernel 5.15
-Message-ID: <20210829093323.GA29743@ogabbay-vm2.habana-labs.com>
+        id S234931AbhH2Jiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 05:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234835AbhH2Jix (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 05:38:53 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF80C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:38:01 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id x137so465334vsx.1
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 02:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RbVkSv+VOm23+fR9cD+C7ExtLf1mHTCxQubzmdp2peU=;
+        b=QTjHsCOucILQF2jqKwQIFSdkMfXHRUaKZhyWZ0YLQbsCfbHyo+1W201WoCo/2TXm6R
+         2P6SmTDEc+sEziBTXP9splrGBuhzvz/F1WEWkz7yu6wsZqtZN03l5r71tY0h27uW1Bp4
+         eHMJ/nQ6Rm7aRJQlgVhnHDN4iWzjT+XlkwTRc6JkJIADr697Z+70fdQ8XTb/0F3vcKST
+         4lpmLMiowOlSx+vdICc4oQCK4mwLXiUScub4JUydsmyESc7D/Y5ui9JMw6ByPeAp9gZ1
+         xsE7gDzcCwGp2mnZ0h9YavYM30muKzYDNVOoXxsZL6uL7c5YsUjdKcUAUigq8nyWQe1j
+         sWdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RbVkSv+VOm23+fR9cD+C7ExtLf1mHTCxQubzmdp2peU=;
+        b=b9LwBpHuodihg9jCUjtDICOQBoLLHBT2sTGE01rWlhTQdFEgHhdy9zz5U1WJLaDRaV
+         Y3GgvTFbU+EwSVPXWKgzgUXWwBzppTRA9tzg3J9gkkeXYUsGF37ZhpCVGxLteJiiB3Pb
+         pXuEdmrnA/H8W53k4pWGiwrRZdS/oF/gf7OMd7kbr1cDnyMHc1ByjI32uLE2KeFLlNZ/
+         sFzEAcZdxra8QXGV0ewH00mf47xpCuy/JMHsJ21CJhg0zt+NeTQuBivvr5gd9TZz/MNx
+         ng/Fxh9W5vt+PepEDdAmSaeaGFz7zDEVE88zCrM1mBhXylN76C5kbGLoKJAux/8LbLiP
+         VX9g==
+X-Gm-Message-State: AOAM533/WX8Dsw1dcK38kdnwsvve3y+dhV1W2IXWuLICKHKHF6SaFcm4
+        4W+l9v+zAop26ncc5NI3sAN9uAGj7Oxraia7ln0=
+X-Google-Smtp-Source: ABdhPJy/KzKL4+iaDMtPiMR1/lTSHNNXWaLvXVSEAAuEvx0p8LEO7gTYC60u6l0l/9fIO3Y0UQY9rhuftUPkIBUWZCY=
+X-Received: by 2002:a67:e3a7:: with SMTP id j7mr12528346vsm.4.1630229880048;
+ Sun, 29 Aug 2021 02:38:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210825061152.3396398-1-chenhuacai@loongson.cn>
+ <20210825061152.3396398-9-chenhuacai@loongson.cn> <87pmu1q5ms.wl-maz@kernel.org>
+ <CAAhV-H5yadRbTt9a-i-65Mvd6mBxm58R_+mWLfJrauuAe3+qyg@mail.gmail.com> <87v93pddzu.wl-maz@kernel.org>
+In-Reply-To: <87v93pddzu.wl-maz@kernel.org>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Sun, 29 Aug 2021 17:37:48 +0800
+Message-ID: <CAAhV-H41rridOo_3Eq5t9LPz-mefketAKNdhgbguFtZ0Cqz5Ng@mail.gmail.com>
+Subject: Re: [PATCH V3 08/10] irqchip: Add LoongArch CPU interrupt controller support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi, Marc,
 
-Resending habanalabs pull request for for the merge window of kernel 5.15.
-I removed the 2 patches concerning DMA-BUF for now, and hopefully we will
-have a follow-up discussion on this issue when you get back from your
-vacation.
+On Sat, Aug 28, 2021 at 7:07 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> Huacai,
+>
+> On Sat, 28 Aug 2021 11:07:16 +0100,
+> Huacai Chen <chenhuacai@gmail.com> wrote:
+> >
+> > Hi, Marc,
+> >
+> > On Wed, Aug 25, 2021 at 4:40 PM Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > On Wed, 25 Aug 2021 07:11:50 +0100,
+> > > Huacai Chen <chenhuacai@loongson.cn> wrote:
+> > > >
+> > > > We are preparing to add new Loongson (based on LoongArch, not MIPS)
+> > >
+> > > You keep saying "not MIPS", and yet all I see is a blind copy of the
+> > > MIPS code.
+> > >
+> > > > support. This patch add LoongArch CPU interrupt controller support.
+> > > >
+> > > > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> > > > ---
+> > > >  drivers/irqchip/Kconfig             | 10 ++++
+> > > >  drivers/irqchip/Makefile            |  1 +
+> > > >  drivers/irqchip/irq-loongarch-cpu.c | 76 +++++++++++++++++++++++++++++
+> > > >  3 files changed, 87 insertions(+)
+> > > >  create mode 100644 drivers/irqchip/irq-loongarch-cpu.c
+> > > >
+> > > > diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> > > > index 084bc4c2eebd..443c3a7a0cc1 100644
+> > > > --- a/drivers/irqchip/Kconfig
+> > > > +++ b/drivers/irqchip/Kconfig
+> > > > @@ -528,6 +528,16 @@ config EXYNOS_IRQ_COMBINER
+> > > >         Say yes here to add support for the IRQ combiner devices embedded
+> > > >         in Samsung Exynos chips.
+> > > >
+> > > > +config IRQ_LOONGARCH_CPU
+> > > > +     bool
+> > > > +     select GENERIC_IRQ_CHIP
+> > > > +     select IRQ_DOMAIN
+> > > > +     select GENERIC_IRQ_EFFECTIVE_AFF_MASK
+> > > > +     help
+> > > > +       Support for the LoongArch CPU Interrupt Controller. For details of
+> > > > +       irq chip hierarchy on LoongArch platforms please read the document
+> > > > +       Documentation/loongarch/irq-chip-model.rst.
+> > > > +
+> > > >  config LOONGSON_LIOINTC
+> > > >       bool "Loongson Local I/O Interrupt Controller"
+> > > >       depends on MACH_LOONGSON64
+> > > > diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+> > > > index f88cbf36a9d2..4e34eebe180b 100644
+> > > > --- a/drivers/irqchip/Makefile
+> > > > +++ b/drivers/irqchip/Makefile
+> > > > @@ -105,6 +105,7 @@ obj-$(CONFIG_LS1X_IRQ)                    += irq-ls1x.o
+> > > >  obj-$(CONFIG_TI_SCI_INTR_IRQCHIP)    += irq-ti-sci-intr.o
+> > > >  obj-$(CONFIG_TI_SCI_INTA_IRQCHIP)    += irq-ti-sci-inta.o
+> > > >  obj-$(CONFIG_TI_PRUSS_INTC)          += irq-pruss-intc.o
+> > > > +obj-$(CONFIG_IRQ_LOONGARCH_CPU)              += irq-loongarch-cpu.o
+> > > >  obj-$(CONFIG_LOONGSON_LIOINTC)               += irq-loongson-liointc.o
+> > > >  obj-$(CONFIG_LOONGSON_HTPIC)         += irq-loongson-htpic.o
+> > > >  obj-$(CONFIG_LOONGSON_HTVEC)         += irq-loongson-htvec.o
+> > > > diff --git a/drivers/irqchip/irq-loongarch-cpu.c b/drivers/irqchip/irq-loongarch-cpu.c
+> > > > new file mode 100644
+> > > > index 000000000000..8e9e8d39cb22
+> > > > --- /dev/null
+> > > > +++ b/drivers/irqchip/irq-loongarch-cpu.c
+> > > > @@ -0,0 +1,76 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +/*
+> > > > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
+> > > > + */
+> > > > +
+> > > > +#include <linux/init.h>
+> > > > +#include <linux/kernel.h>
+> > > > +#include <linux/interrupt.h>
+> > > > +#include <linux/irq.h>
+> > > > +#include <linux/irqchip.h>
+> > > > +#include <linux/irqdomain.h>
+> > > > +
+> > > > +#include <asm/loongarch.h>
+> > > > +#include <asm/setup.h>
+> > > > +
+> > > > +static struct irq_domain *irq_domain;
+> > > > +
+> > > > +static inline void enable_loongarch_irq(struct irq_data *d)
+> > >
+> > > Why 'inline' given that it is used as a function pointer?
+> > >
+> > > > +{
+> > > > +     set_csr_ecfg(ECFGF(d->hwirq));
+> > > > +}
+> > > > +
+> > > > +#define eoi_loongarch_irq enable_loongarch_irq
+> > >
+> > > NAK. EOI and enable cannot be the same operation.
+> > >
+> > > > +
+> > > > +static inline void disable_loongarch_irq(struct irq_data *d)
+> > > > +{
+> > > > +     clear_csr_ecfg(ECFGF(d->hwirq));
+> > > > +}
+> > > > +
+> > > > +#define ack_loongarch_irq disable_loongarch_irq
+> > >
+> > > Same thing. Either you have different operations, or this only
+> > > supports mask/unmask.
+> > >
+> > > > +
+> > > > +static struct irq_chip loongarch_cpu_irq_controller = {
+> > > > +     .name           = "LoongArch",
+> > > > +     .irq_ack        = ack_loongarch_irq,
+> > > > +     .irq_eoi        = eoi_loongarch_irq,
+> > > > +     .irq_enable     = enable_loongarch_irq,
+> > > > +     .irq_disable    = disable_loongarch_irq,
+> > > > +};
+> > > > +
+> > > > +asmlinkage void default_handle_irq(int irq)
+> > > > +{
+> > > > +     do_IRQ(irq_linear_revmap(irq_domain, irq));
+> > >
+> > > This looks both wrong and short sighted:
+> > >
+> > > - irq_linear_revmap() is now another name for irq_find_mapping().
+> > >   Which means it uses a RCU read critical section. If, as I expect,
+> > >   this is just a blind copy of the MIPS code, do_IRQ() will not do
+> > >   anything with respect to irq_enter()/irq_exit(), which will result
+> > >   in something pretty bad on the exit from idle path. Lockdep will
+> > >   probably shout at you pretty loudly.
+> > >
+> > > - A single root interrupt controller is, in my modest experience,
+> > >   something that rarely happen. You will eventually have a variety of
+> > >   them, and you will have to join the other arches such as arm, arm64,
+> > >   riscv and csky that use CONFIG_GENERIC_IRQ_MULTI_HANDLER instead of
+> > >   following the existing MIPS model.
+> > I try to use CONFIG_GENERIC_IRQ_MULTI_HANDLER and
+> > set_handle_irq()/handle_arch_irq() as arm64, riscv and csky do. But I
+> > found a problem:
+> > The main handler (e.g., handle_arch_irq()) take only one argument
+> > (i.e., struct pt_regs *regs) and polling all interrupts, but we want
+> > to use vectored interrupts which take a "irq" argument (as
+> > default_handle_irq() does) which can directly handle it.
+>
+> Are you saying that there is no way for the interrupt controller
+> driver to figure out the hwirq number on its own?  That would seem
+> pretty odd (even the MIPS GIC has that). Worse case, you can provide
+> an arch-specific helper that exposes the current hwirq based on the
+> vector that triggered.
+We can get the hwirq number by reading CSR.ESTAT register, but in this
+way "vectored interrupts" is meaningless.
 
-The commits divide roughly 50/50 between adding new features, such
-as signaling from within a graph and waiting for multiple workloads,
-and between fixing various bugs, small improvements, etc.
-
-I also fixed the issue you told me about, regarding copy_from_user from
-inside a spinlock. I missed it while doing the CR, sorry.
-
-Full details are in the tag.
-
-Thanks,
-Oded
-
-The following changes since commit 0dc3ad3f859d3a65b335c861ec342d31d91e8bc8:
-
-  Revert "bus: mhi: Add inbound buffers allocation flag" (2021-08-27 21:24:09 +0200)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-next-2021-08-29
-
-for you to fetch changes up to 35309eb3de1b1df9d85da4b2991b58e3c0cd45d0:
-
-  habanalabs/gaudi: hwmon default card name (2021-08-29 12:18:22 +0300)
-
-----------------------------------------------------------------
-This tag contains habanalabs driver changes for v5.15:
-
-- Add a new uAPI (under the cs ioctl) to enable to user to reserve
-  signals and signal them from within its workloads, while the driver
-  performs the waiting. This allows finer granularity of pipelining
-  between the different engines and resource utilization.
-
-- Add a new uAPI (under the wait_for_cs ioctl) to allow waiting
-  on multiple command submissions (workloads) at the same time. This
-  is an optimization for the user process so it won't need to call
-  multiple times to the wait_for_cs ioctl.
-
-- Add new feature of "state dump", which can be triggered through new
-  debugfs node. This is a similar concept to the kernel panic dump.
-  This new mechanism retrieves information from the device in case
-  one of the workloads that was sent by the user got stuck. This is
-  very helpful for debugging the hang.
-
-- Add a new debugfs node to perform lookup of user pointers that are
-  mapped to habana device's pmmu.
-
-- Fix to the tracking of user process when running inside a container.
-
-- Allow user to map more than 4GB of memory to the device MMU in single
-  IOCTL call.
-
-- Minimize number of register reads done in GAUDI during user operation.
-
-- Allow user to retrieve the device's server type that the device is
-  connected to.
-
-- Several fixes to the code of waiting on interrupts on behalf of the
-  user.
-
-- Fixes and improvements to the hint mechanism in our VA allocation.
-
-- Update the firmware header files to the latest version while
-  maintaining backward compatibility with older firmware versions.
-
-- Multiple fixes to various bugs.
-
-----------------------------------------------------------------
-Alon Mizrahi (1):
-      habanalabs/gaudi: add monitored SOBs to state dump
-
-Koby Elbaz (2):
-      habanalabs: fix race between soft reset and heartbeat
-      habanalabs: clear msg_to_cpu_reg to avoid misread after reset
-
-Oded Gabbay (29):
-      habanalabs: rename enum vm_type_t to vm_type
-      habanalabs: re-init completion object upon retry
-      habanalabs: release pending user interrupts on device fini
-      habanalabs: handle case of interruptable wait
-      habanalabs: user mappings can be 64-bit
-      habanalabs: allow disabling huge page use
-      habanalabs: use get_task_pid() to take PID
-      habanalabs: fix type of variable
-      habanalabs: add asic property of host dma offset
-      habanalabs: set dma max segment size
-      habanalabs/gaudi: fix information printed on SM event
-      habanalabs: update firmware header to latest version
-      habanalabs/goya: add missing initialization
-      habanalabs: revise prints on FD close
-      habanalabs: remove redundant warning message
-      habanalabs: expose server type in INFO IOCTL
-      habanalabs/gaudi: move scrubbing to late init
-      habanalabs/gaudi: minimize number of register reads
-      habanalabs: update to latest firmware headers
-      habanalabs/gaudi: increase boot fit timeout
-      habanalabs/gaudi: restore user registers when context opens
-      habanalabs/gaudi: define DC POWER for secured PMC
-      habanalabs/gaudi: size should be printed in decimal
-      habanalabs/gaudi: invalidate PMMU mem cache on init
-      habanalabs: disable IRQ in user interrupts spinlock
-      habanalabs: remove unnecessary device status check
-      habanalabs: never copy_from_user inside spinlock
-      habanalabs/gaudi: block ICACHE_BASE_ADDERESS_HIGH in TPC
-      habanalabs: add support for f/w reset
-
-Ofir Bitton (6):
-      habanalabs: update firmware header files
-      habanalabs: missing mutex_unlock in process kill procedure
-      habanalabs/gaudi: trigger state dump in case of SM errors
-      habanalabs: add validity check for event ID received from F/W
-      habanalabs/gaudi: scrub HBM to a specific value
-      habanalabs/gaudi: fetch TPC/MME ECC errors from F/W
-
-Ohad Sharabi (5):
-      habanalabs: get multiple fences under same cs_lock
-      habanalabs: add wait-for-multi-CS uAPI
-      habanalabs: convert PCI BAR offset to u64
-      habanalabs: make set_pci_regions asic function
-      habanalabs: modify multi-CS to wait on stream masters
-
-Omer Shpigelman (1):
-      habanalabs: add "in device creation" status
-
-Rajaravi Krishna Katta (1):
-      habanalabs/gaudi: hwmon default card name
-
-Tomer Tayar (3):
-      habanalabs: fix nullifying of destroyed mmu pgt pool
-      habanalabs: mark linux image as not loaded after hw_fini
-      habanalabs/gaudi: unmask out of bounds SLM access interrupt
-
-Yuri Nudelman (7):
-      habanalabs: allow fail on inability to respect hint
-      habanalabs: expose state dump
-      habanalabs: state dump monitors and fences infrastructure
-      habanalabs/gaudi: implement state dump
-      habanalabs: save pid per userptr
-      habanalabs: fix mmu node address resolution in debugfs
-      habanalabs: add userptr_lookup node in debugfs
-
-Zvika Yehudai (1):
-      habanalabs: rename cb_mmap to mmap
-
-farah kassabri (5):
-      habanalabs: support hint addresses range reservation
-      habanalabs: signal/wait change sync object reset flow
-      habanalabs: add support for encapsulated signals reservation
-      habanalabs: add support for encapsulated signals submission
-      habanalabs: cannot sleep while holding spinlock
-
- .../ABI/testing/debugfs-driver-habanalabs          |   19 +
- drivers/misc/habanalabs/common/Makefile            |    3 +-
- drivers/misc/habanalabs/common/command_buffer.c    |    4 +-
- .../misc/habanalabs/common/command_submission.c    | 1387 +++++++++++++++-----
- drivers/misc/habanalabs/common/context.c           |  146 ++-
- drivers/misc/habanalabs/common/debugfs.c           |  184 ++-
- drivers/misc/habanalabs/common/device.c            |  163 +--
- drivers/misc/habanalabs/common/firmware_if.c       |   56 +-
- drivers/misc/habanalabs/common/habanalabs.h        |  421 +++++-
- drivers/misc/habanalabs/common/habanalabs_drv.c    |   13 +-
- drivers/misc/habanalabs/common/habanalabs_ioctl.c  |    2 +
- drivers/misc/habanalabs/common/hw_queue.c          |  198 ++-
- drivers/misc/habanalabs/common/memory.c            |  169 ++-
- drivers/misc/habanalabs/common/mmu/mmu_v1.c        |   12 +-
- drivers/misc/habanalabs/common/pci/pci.c           |    2 +
- drivers/misc/habanalabs/common/state_dump.c        |  718 ++++++++++
- drivers/misc/habanalabs/common/sysfs.c             |   20 +-
- drivers/misc/habanalabs/gaudi/gaudi.c              |  716 ++++++++--
- drivers/misc/habanalabs/gaudi/gaudiP.h             |   19 +-
- drivers/misc/habanalabs/gaudi/gaudi_coresight.c    |    5 -
- drivers/misc/habanalabs/gaudi/gaudi_security.c     |    8 +
- drivers/misc/habanalabs/goya/goya.c                |  102 +-
- drivers/misc/habanalabs/include/common/cpucp_if.h  |  115 +-
- .../misc/habanalabs/include/common/hl_boot_if.h    |   62 +-
- .../habanalabs/include/gaudi/asic_reg/gaudi_regs.h |    3 +
- .../misc/habanalabs/include/gaudi/gaudi_masks.h    |   17 +
- .../misc/habanalabs/include/gaudi/gaudi_reg_map.h  |    2 -
- include/uapi/misc/habanalabs.h                     |  187 ++-
- 28 files changed, 3919 insertions(+), 834 deletions(-)
- create mode 100644 drivers/misc/habanalabs/common/state_dump.c
+Huacai
+>
+> do_IRQ() is a terrible abstraction, and only outlines that your arch
+> code is badly structured. What does the arch code have to do with a
+> Linux irq number? It shouldn't care at all, because as a value it has
+> no significance to the arch code at all. You just go back there
+> because the management of your interrupt context is upside down, and
+> it really shouldn't matter *what interrupt fired*.
+>
+> > This seems that if I want to use vectored interrupts, then I will fall
+> > to the MIPS model.
+>
+> Not happening, I'm afraid.
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
