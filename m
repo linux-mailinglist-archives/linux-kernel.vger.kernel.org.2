@@ -2,154 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B91E3FA841
-	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 04:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2DA3FA846
+	for <lists+linux-kernel@lfdr.de>; Sun, 29 Aug 2021 04:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233257AbhH2Cvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 28 Aug 2021 22:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230334AbhH2Cvs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 28 Aug 2021 22:51:48 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2683CC061756;
-        Sat, 28 Aug 2021 19:50:57 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id 14so11799961qkc.4;
-        Sat, 28 Aug 2021 19:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bSFSnBg/LwKqVLw8WSTQhnXu1cC1HTBzcNRsDCdhXyI=;
-        b=c3HwxsSoQzxR7C7XPdiJn7TnB3h6Rw+zH+o53xB6LeH+idmoMcQ5mjKM+7naWUdcz/
-         IwuqKtUp47+JXfhdSbpOCZiVCtl9wTgFJJXQ+YVb7IbF+6IGqan0OvqXmP+LphfvgFJI
-         Uvo3nZvSz6uvOSh2NflY+aIAZMl/QU1KVNHd4pt4uwO7uSfA6YbcIs1vGEx6IzSBP/Op
-         egsndoLfw+l15zJzmeHet8iqCf9cWlFnS6Uvo0VleAKXcMlqZsB/GnRORTwDHUkS7UbJ
-         8qGFsfNVQZXg2sRO9agEyWHr8SORcWGHPiVmlPOUExgqmGYDyGC/8CYhIPxhSv5L8gbU
-         FqTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bSFSnBg/LwKqVLw8WSTQhnXu1cC1HTBzcNRsDCdhXyI=;
-        b=hufaiQB0d+BWTbhGIlyXfyxIo+SBnSpTPKrz4F3vEp4b2D2//+5VgZ6sUIi+/BDAg8
-         FbrBWpHpJBLw9Dl1ZMiECeNTAqUjdPoZcBNgz6mk/0xVtr1HsehOdIz7L4bSEUGKsJ21
-         XvLoMIp0GhJjJcwwaQaKLfcC/b5hA+1Laim+eb3xLhELRHjLqtCkMXTb0usAhlOMnY9R
-         GaRSdHJN5t3BTlJlLdQHsN0+KNFYO2PfDQ7YiAgE46l2U/IZNYyqviUjMKPwFixMCu/n
-         9TprFFTIQAATpyLh8jjlYzO230spZLxAOIT8jctKrAuQdMhCLlgjhjSiygXlnu324BbU
-         LAoA==
-X-Gm-Message-State: AOAM531tgbifdhyj/WGRL7CqJ/3QiX8GfGE+8yOhSZ+HfEiizOGnWDYc
-        Wgp9CvpP2ie2P8kpP+TmI8A=
-X-Google-Smtp-Source: ABdhPJyiZN8wYO8oICNnUqI378WPKn09ZIn3CET5t1Fi6X+35hGpvFdAIGqJi3Kfye8bbYeDcvFBkg==
-X-Received: by 2002:a05:620a:675:: with SMTP id a21mr16184628qkh.421.1630205456157;
-        Sat, 28 Aug 2021 19:50:56 -0700 (PDT)
-Received: from shaak (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id d78sm8180916qkg.92.2021.08.28.19.50.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Aug 2021 19:50:55 -0700 (PDT)
-Date:   Sat, 28 Aug 2021 22:50:53 -0400
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     jic23@kernel.org, lars@metafoo.de, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org
-Subject: Re: [PATCH v8 05/14] iio: afe: rescale: add INT_PLUS_{MICRO,NANO}
- support
-Message-ID: <YSr2DSnyB205FnTI@shaak>
-References: <20210820191714.69898-1-liambeguin@gmail.com>
- <20210820191714.69898-6-liambeguin@gmail.com>
- <9a7aa55f-0dd0-3fc7-13a4-5cb9c5d0a252@axentia.se>
+        id S233657AbhH2C5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 28 Aug 2021 22:57:53 -0400
+Received: from vps.xff.cz ([195.181.215.36]:38356 "EHLO vps.xff.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233430AbhH2C5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 28 Aug 2021 22:57:53 -0400
+X-Greylist: delayed 315 seconds by postgrey-1.27 at vger.kernel.org; Sat, 28 Aug 2021 22:57:52 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+        t=1630205504; bh=E3TX1uiaCCo6JfafnOTAiv2GSkpdyPupucanyUViILw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HxffAQce1C4GrbdZuSfvWQ6+DfavBnHR8xKIsPIslQG3FhoFGGbRlrteInNazk00O
+         WOkbtalW52HnlvgKym4wERSuB+ypwNPltSMgWmRct2JI+2z4PolTGC4XFkcIdjIZp2
+         MiEPTtMX+JdF29gbECu3Jw/gL4SQe70/odNFijmw=
+From:   Ondrej Jirman <megous@megous.com>
+To:     Heiko Stuebner <heiko@sntech.de>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Rockchip SoC
+        support),
+        linux-rockchip@lists.infradead.org (open list:ARM/Rockchip SoC support),
+        linux-i2c@vger.kernel.org (open list:I2C SUBSYSTEM HOST DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Ondrej Jirman <megous@megous.com>
+Subject: [PATCH] i2c: rk3x: Handle a spurious start completion interrupt flag
+Date:   Sun, 29 Aug 2021 04:51:30 +0200
+Message-Id: <20210829025130.1058877-1-megous@megous.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9a7aa55f-0dd0-3fc7-13a4-5cb9c5d0a252@axentia.se>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 10:11:18AM +0200, Peter Rosin wrote:
-> On 2021-08-20 21:17, Liam Beguin wrote:
-> > From: Liam Beguin <lvb@xiphos.com>
-> > 
-> > Some ADCs use IIO_VAL_INT_PLUS_{NANO,MICRO} scale types.
-> > Add support for these to allow using the iio-rescaler with them.
-> > 
-> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> > ---
-> >  drivers/iio/afe/iio-rescale.c | 35 +++++++++++++++++++++++++++++++++++
-> >  1 file changed, 35 insertions(+)
-> > 
-> > diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
-> > index d0669fd8eac5..8488f1d83527 100644
-> > --- a/drivers/iio/afe/iio-rescale.c
-> > +++ b/drivers/iio/afe/iio-rescale.c
-> > @@ -22,6 +22,9 @@ int rescale_process_scale(struct rescale *rescale, int scale_type,
-> >  			  int *val, int *val2)
-> >  {
-> >  	unsigned long long tmp;
-> > +	s32 rem;
-> > +	u32 mult;
-> > +	u32 neg;
-> >  
-> >  	switch (scale_type) {
-> >  	case IIO_VAL_FRACTIONAL:
-> > @@ -40,6 +43,38 @@ int rescale_process_scale(struct rescale *rescale, int scale_type,
-> >  		tmp *= rescale->numerator;
-> >  		do_div(tmp, 1000000000LL);
-> >  		*val = tmp;
-> > +		return scale_type;
-> > +	case IIO_VAL_INT_PLUS_NANO:
-> > +	case IIO_VAL_INT_PLUS_MICRO:
-> > +		if (scale_type == IIO_VAL_INT_PLUS_NANO)
-> > +			mult = 1000000000LL;
-> > +		else
-> > +			mult = 1000000LL;
-> > +		/*
-> > +		 * For IIO_VAL_INT_PLUS_{MICRO,NANO} scale types if *val OR
-> > +		 * *val2 is negative the schan scale is negative
-> 
-> The last line doesn't parse for me. It doesn't end with a period either, so
-> it looks like you moved on before you finished it?
+In a typical read transfer, start completion flag is being set after
+read finishes (notice ipd bit 4 being set):
 
-I meant to warn that IIO_VAL_INT_PLUS_{MICRO,NANO} are a little odd, and
-that if either one *val or *val2 is negative, the result will be
-negative.
+trasnfer poll=0
+i2c start
+rk3x-i2c fdd40000.i2c: IRQ: state 1, ipd: 10
+i2c read
+rk3x-i2c fdd40000.i2c: IRQ: state 2, ipd: 1b
+i2c stop
+rk3x-i2c fdd40000.i2c: IRQ: state 4, ipd: 33
 
-i.e. *val = 1 and *val2 = -0.5 gives -1.5 and not 0.5.
+This causes I2C transfer being aborted in polled mode from a stop completion
+handler:
 
-I'll give it another try and will add the period.
+trasnfer poll=1
+i2c start
+rk3x-i2c fdd40000.i2c: IRQ: state 1, ipd: 10
+i2c read
+rk3x-i2c fdd40000.i2c: IRQ: state 2, ipd: 0
+rk3x-i2c fdd40000.i2c: IRQ: state 2, ipd: 1b
+i2c stop
+rk3x-i2c fdd40000.i2c: IRQ: state 4, ipd: 13
+i2c stop
+rk3x-i2c fdd40000.i2c: unexpected irq in STOP: 0x10
 
-Thanks,
-Liam
+Clearing the START flag after read fixes the issue without any obvious
+side effects.
 
-> 
-> Cheers,
-> Peter
-> 
-> > +		 */
-> > +		neg = *val < 0 || *val2 < 0;
-> > +
-> > +		tmp = (s64)abs(*val) * abs(rescale->numerator);
-> > +		*val = div_s64_rem(tmp, abs(rescale->denominator), &rem);
-> > +
-> > +		tmp = (s64)rem * mult + (s64)abs(*val2) * abs(rescale->numerator);
-> > +		tmp = div_s64(tmp, abs(rescale->denominator));
-> > +
-> > +		*val += div_s64_rem(tmp, mult, val2);
-> > +
-> > +		/*
-> > +		 * If only one of the rescaler elements or the schan scale is
-> > +		 * negative, the combined scale is negative.
-> > +		 */
-> > +		if (neg ^ ((rescale->numerator < 0) ^ (rescale->denominator < 0))) {
-> > +			if (*val)
-> > +				*val = -*val;
-> > +			else
-> > +				*val2 = -*val2;
-> > +		}
-> > +
-> >  		return scale_type;
-> >  	default:
-> >  		return -EOPNOTSUPP;
-> > 
+This issue was dicovered on RK3566 when adding support for powering
+off the RK817 PMIC.
+
+Signed-off-by: Ondrej Jirman <megous@megous.com>
+---
+ drivers/i2c/busses/i2c-rk3x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
+index 819ab4ee517e..02ddb237f69a 100644
+--- a/drivers/i2c/busses/i2c-rk3x.c
++++ b/drivers/i2c/busses/i2c-rk3x.c
+@@ -423,8 +423,8 @@ static void rk3x_i2c_handle_read(struct rk3x_i2c *i2c, unsigned int ipd)
+ 	if (!(ipd & REG_INT_MBRF))
+ 		return;
+ 
+-	/* ack interrupt */
+-	i2c_writel(i2c, REG_INT_MBRF, REG_IPD);
++	/* ack interrupt (read also produces a spurious START flag, clear it too) */
++	i2c_writel(i2c, REG_INT_MBRF | REG_INT_START, REG_IPD);
+ 
+ 	/* Can only handle a maximum of 32 bytes at a time */
+ 	if (len > 32)
+-- 
+2.33.0
+
