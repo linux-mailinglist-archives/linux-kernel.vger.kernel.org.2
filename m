@@ -2,154 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F793FBF40
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6C73FBF3F
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 01:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239079AbhH3XDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 19:03:31 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:60475 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239004AbhH3XDZ (ORCPT
+        id S239045AbhH3XD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 19:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238933AbhH3XDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 19:03:25 -0400
-Received: (Authenticated sender: contact@artur-rojek.eu)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id D9EA0200002;
-        Mon, 30 Aug 2021 23:02:27 +0000 (UTC)
-From:   Artur Rojek <contact@artur-rojek.eu>
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Pavel Nadein <pavelnadein@gmail.com>
-Cc:     Pavel Nadein <pasha-net@narod.ru>, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, Artur Rojek <contact@artur-rojek.eu>
-Subject: [5.16][PATCH 3/3] MIPS: JZ4780: CI20: DTS: add SPI controller config
-Date:   Tue, 31 Aug 2021 01:01:39 +0200
-Message-Id: <20210830230139.21476-4-contact@artur-rojek.eu>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210830230139.21476-1-contact@artur-rojek.eu>
-References: <20210830230139.21476-1-contact@artur-rojek.eu>
+        Mon, 30 Aug 2021 19:03:21 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD45C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 16:02:27 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so20450640otg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 16:02:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=eWM4/3yTwD02gfJC9rFF7KdMYiNQBXaOsLgx6akWtD8=;
+        b=PM1pNMQtWGrH46anjSbXZmaMSIzKWW6VD0gew5jdrK3kFfDUleakCbx5IVbIJtpEYa
+         Oh2WMagW6w4u+oKA422fnZP3Su+eKmPeqyu/nEjhX0qewMS2UGVT87y/fgLyFFBp6t0D
+         cTjAAYsEkR5GZ2oMR36LIt3oLM45RquoPiOqo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=eWM4/3yTwD02gfJC9rFF7KdMYiNQBXaOsLgx6akWtD8=;
+        b=OVhRp+CYG7/VmOo/B4CQBJcXVTg2Ksw3/BgPCPdE8OcEBmKwFepibUElLOtMOdCbnj
+         nn+TukDpJigY4Smb7uPsgyvqtfZvesPjQBMud+Iez48KqbL5fxlpkcCdU+25fMM8R07f
+         YGFj1HC/O5gBJfZ+GHfuEGijnGrL4VkHkD6IB/crWiJDm12y8nm6oWejvIooLFWqVS+x
+         W9dZ8seE1djpg98dJJREN9u3iD80iSN0WrE7rVkZEHcwLg4U+d7VQLyDouJ6XQXM+9di
+         HsBg0cffPChcm/CCiNXn4aHHIiYryuAPN9wXCjfSeqYC7a72ryKroCIzz20GLEWsrwGZ
+         ZTuw==
+X-Gm-Message-State: AOAM530Rq2vfKJ7frb2AO2KpuCNn0rqLvJkte3q99v5gApSNAMWk7wUG
+        0MO9L4EX4SYz/V9scTaLIcSWXmCMuM6PWxaTmfXPpg==
+X-Google-Smtp-Source: ABdhPJyyuZmtDRvRnkmfPxPxg0ZfrKKxpTrd0LDO62OHgk8HUhCwm2cmZKKyWMG7q9pTFPFaQCbn6/Fld+sjB6K1R4o=
+X-Received: by 2002:a9d:123:: with SMTP id 32mr22341511otu.124.1630364546432;
+ Mon, 30 Aug 2021 16:02:26 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 30 Aug 2021 16:02:26 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1630323451-7160-3-git-send-email-deesin@codeaurora.org>
+References: <1630323451-7160-1-git-send-email-deesin@codeaurora.org> <1630323451-7160-3-git-send-email-deesin@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 30 Aug 2021 16:02:26 -0700
+Message-ID: <CAE-0n500=1tF2V8nTTfPH3P-wCm8xs-J+9pLK=xfeOc1p=PB5A@mail.gmail.com>
+Subject: Re: [PATCH V7 2/2] soc: qcom: aoss: Add debugfs entry
+To:     Deepak Kumar Singh <deesin@codeaurora.org>,
+        bjorn.andersson@linaro.org, clew@codeaurora.org,
+        sibis@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. Add nodes for the two SPI controllers found in MIPS Creator CI20.
-2. Reparent SPI clock source to effectively use MPLL and set its clock
-   rate to 54MHz.
+Quoting Deepak Kumar Singh (2021-08-30 04:37:31)
+> Some user space clients may require to change power states of various
+> parts of hardware. Add a debugfs node for qmp so messages can be sent
+> to aoss from user space.
+>
+> Signed-off-by: Chris Lew <clew@codeaurora.org>
+> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> ---
 
-NOTE: To use the SPI controllers, `pinctrl-0` property must be set in
-order to configure the used pins. As SPI functionality is multiplexed on
-multiple pin groups, this choice is left to the user.
-
-An example configuration:
-```
- &spi0 {
-         pinctrl-0 = <&pins_spi0>;
- }
-
- pins_spi0: spi0 {
-         function = "ssi0";
-         groups = "ssi0-dt-e", "ssi0-dr-e", "ssi0-clk-e",
-                  "ssi0-ce0-e", "ssi0-ce1-e";
-         bias-disable;
- };
-```
-Consult the CI20 pinout description for more details.
-
-Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
----
- arch/mips/boot/dts/ingenic/ci20.dts    |  9 ++++--
- arch/mips/boot/dts/ingenic/jz4780.dtsi | 44 +++++++++++++++++++-------
- 2 files changed, 38 insertions(+), 15 deletions(-)
-
-diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-index a688809beebc..b249a4f0f6b6 100644
---- a/arch/mips/boot/dts/ingenic/ci20.dts
-+++ b/arch/mips/boot/dts/ingenic/ci20.dts
-@@ -113,9 +113,12 @@ &cgu {
- 	 * Use the 32.768 kHz oscillator as the parent of the RTC for a higher
- 	 * precision.
- 	 */
--	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>, <&cgu JZ4780_CLK_RTC>;
--	assigned-clock-parents = <0>, <&cgu JZ4780_CLK_RTCLK>;
--	assigned-clock-rates = <48000000>;
-+	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>, <&cgu JZ4780_CLK_RTC>,
-+			  <&cgu JZ4780_CLK_SSIPLL>, <&cgu JZ4780_CLK_SSI>;
-+	assigned-clock-parents = <0>, <&cgu JZ4780_CLK_RTCLK>,
-+				 <&cgu JZ4780_CLK_MPLL>,
-+				 <&cgu JZ4780_CLK_SSIPLL>;
-+	assigned-clock-rates = <48000000>, <0>, <54000000>;
- };
- 
- &tcu {
-diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-index 9e34f433b9b5..28adc3d93975 100644
---- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-@@ -255,22 +255,23 @@ gpf: gpio@5 {
- 		};
- 	};
- 
--	spi_gpio {
--		compatible = "spi-gpio";
-+	spi0: spi@10043000 {
-+		compatible = "ingenic,jz4780-spi";
-+		reg = <0x10043000 0x1c>;
- 		#address-cells = <1>;
- 		#size-cells = <0>;
--		num-chipselects = <2>;
- 
--		gpio-miso = <&gpe 14 0>;
--		gpio-sck = <&gpe 15 0>;
--		gpio-mosi = <&gpe 17 0>;
--		cs-gpios = <&gpe 16 0>, <&gpe 18 0>;
-+		interrupt-parent = <&intc>;
-+		interrupts = <8>;
- 
--		spidev@0 {
--			compatible = "spidev";
--			reg = <0>;
--			spi-max-frequency = <1000000>;
--		};
-+		clocks = <&cgu JZ4780_CLK_SSI0>;
-+		clock-names = "spi";
-+
-+		dmas = <&dma JZ4780_DMA_SSI0_RX 0xffffffff>,
-+		       <&dma JZ4780_DMA_SSI0_TX 0xffffffff>;
-+		dma-names = "rx", "tx";
-+
-+		status = "disabled";
- 	};
- 
- 	uart0: serial@10030000 {
-@@ -338,6 +339,25 @@ uart4: serial@10034000 {
- 		status = "disabled";
- 	};
- 
-+	spi1: spi@10044000 {
-+		compatible = "ingenic,jz4780-spi";
-+		reg = <0x10044000 0x1c>;
-+		#address-cells = <1>;
-+		#size-sells = <0>;
-+
-+		interrupt-parent = <&intc>;
-+		interrupts = <7>;
-+
-+		clocks = <&cgu JZ4780_CLK_SSI1>;
-+		clock-names = "spi";
-+
-+		dmas = <&dma JZ4780_DMA_SSI1_RX 0xffffffff>,
-+		       <&dma JZ4780_DMA_SSI1_TX 0xffffffff>;
-+		dma-names = "rx", "tx";
-+
-+		status = "disabled";
-+	};
-+
- 	i2c0: i2c@10050000 {
- 		compatible = "ingenic,jz4780-i2c", "ingenic,jz4770-i2c";
- 		#address-cells = <1>;
--- 
-2.33.0
-
+NAK. We don't want userspace to treat debugfs as an ABI. See
+https://lore.kernel.org/r/CAE-0n52YXvTzvK4B3Aggg1fcRyjy=+HzNADP315-J0iJ8bMWUQ@mail.gmail.com
