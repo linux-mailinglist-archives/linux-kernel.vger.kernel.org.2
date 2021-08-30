@@ -2,157 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA5F3FB69F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451D53FB6A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbhH3NB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 09:01:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24932 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229809AbhH3NBZ (ORCPT
+        id S236314AbhH3NCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 09:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231531AbhH3NCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 09:01:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630328431;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1QISg/NYFf78v9zEJ28Xkat7ENRrNVQvUvLwRsOOvUY=;
-        b=ZT4S9t69ckiluezF90bq1ki4DesPMC3V9lOVVv+bsnN/pcnCg1g2Va7o/uUz3EGCffZe0S
-        NHpd+zLTCVYHFbHzLelqzviFhiATcRiT7jm2xiBFpMgm1w2k2dh2tpDj4nYAy5p1z34qfL
-        GeUu7fin5B77iN4GdBE21kw2DaV/TS0=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-zStq2wEbO2GjtwoYW_mhxA-1; Mon, 30 Aug 2021 09:00:29 -0400
-X-MC-Unique: zStq2wEbO2GjtwoYW_mhxA-1
-Received: by mail-wr1-f72.google.com with SMTP id p10-20020a5d68ca000000b001552bf8b9daso3277733wrw.22
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 06:00:29 -0700 (PDT)
+        Mon, 30 Aug 2021 09:02:22 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BB1C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 06:01:29 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id w8so13369951pgf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 06:01:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DGaqXG6bmi3iDyt8AzR1s/ABOXV7ZXOmSecZ1y9/9wY=;
+        b=csbAoxpCpxOJoE4m82GuH7cz1Mh3v8wmls/HWACe+CGA03gjcBZGObcIo/UODNm8rD
+         0fL7MK0LDmSt8xtf8q8OjTL/Pps9wz//qmMy8oxTlwuHLUbK2U1frxGMLoeWITVLuRiv
+         7NuWp6QWNrRBE5iikayQ08dJheunreYoFcYB2Oy7kuYmoQjYIVWKt0U+AW22jQxvDs3x
+         v2g5uhxEWd5wLNBjabggwXNguUnyg+I8/NesnF41Ht6qjQZdtQ4IppE9zltxh+JRusXz
+         ZuuIg9HYs8zi6cPEmuNBx+HC/ERmtOmbTQynEC56NkMVVToHP5eh+aNQFj+ThDSMHJ+3
+         UKkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=1QISg/NYFf78v9zEJ28Xkat7ENRrNVQvUvLwRsOOvUY=;
-        b=Y6F5Xx4nn7zeidmOEyQ+Zh6PMkp4Q249opqcc45LdsLTFaHmI2CTSmnJniFo+zIK0k
-         uulZNImMTHJcV+yWSJ9BCizKahrDYTPEuOcpLaP1mjtWUZ7/5mYwfAHztDh8DK9WUzfz
-         O0uU2bwgnsYp8h6hVRxfsNIhviKlomZoa25Qj60nEoEDpiS/cHejsm3jcwmaSon93nj4
-         H3qMEmvGHbWrOsVrEfd9nBYzx9bj22uGth0ONc9mU6YK3CppBwyypjIlUuD7EKVEqND/
-         KhkQ3EgjhJmuuVCMcxHx897QT18GBrtZJtgbvzavmRyTC8taxoCbYm0kv9Mp5bMquxYI
-         TTTQ==
-X-Gm-Message-State: AOAM531Z1bTyBfzsq4TEP+ULVinhMNrt2qpjpg7Dvkxs47CAH3IJHXY/
-        3PB6nzXkp4XRtyNe9CKSi+i7EcqdF3gODC/2OEGhvH8vkThgQ+jnJfwaVT35F+yD/BjP3GUG4iH
-        4ky5KxZ3pl2rT/mQoynqCF4Y4
-X-Received: by 2002:adf:c785:: with SMTP id l5mr26059318wrg.360.1630328428657;
-        Mon, 30 Aug 2021 06:00:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxyeAnddxexwyxt1smSb+6mGbFViWKJvMPrKjdmL3RSq68uOI2M94yMRhQNQnLliA2dnz6zTA==
-X-Received: by 2002:adf:c785:: with SMTP id l5mr26059292wrg.360.1630328428469;
-        Mon, 30 Aug 2021 06:00:28 -0700 (PDT)
-Received: from ?IPv6:2a0c:5a80:3c08:b500:afb2:5ebc:3fd2:26de? ([2a0c:5a80:3c08:b500:afb2:5ebc:3fd2:26de])
-        by smtp.gmail.com with ESMTPSA id c14sm15263203wrr.58.2021.08.30.06.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 06:00:28 -0700 (PDT)
-Message-ID: <72210d6eb3e50254f0808a8040bd4bcd471cc87e.camel@redhat.com>
-Subject: Re: [RFC PATCH vs 2/4] drivers/input/joystick: sensehat: Raspberry
- Pi Sense HAT joystick driver
-From:   nsaenzju@redhat.com
-To:     Charles Mirabile <cmirabil@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org,
-        Serge Schneider <serge@raspberrypi.org>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        linux-rpi-kernel@lists.infradead.org, fedora-rpi@googlegroups.com,
-        Mwesigwa Guma <mguma@redhat.com>,
-        Joel Savitz <jsavitz@redhat.com>
-Date:   Mon, 30 Aug 2021 15:00:26 +0200
-In-Reply-To: <20210820180801.561119-3-cmirabil@redhat.com>
-References: <20210820180801.561119-1-cmirabil@redhat.com>
-         <20210820180801.561119-3-cmirabil@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DGaqXG6bmi3iDyt8AzR1s/ABOXV7ZXOmSecZ1y9/9wY=;
+        b=Pf6k7OT0eWO92mxYXfqIVuC9p8yccOlqY2FBnCPNDurlKTLYGE9prF+d9KOh9WZ+x7
+         OHNO9AEA1F8+6tPCeyitnHzy0dq8NbaRLjs6T3EqvS8Q00Ft+LBw3JoOqohPrEL7OTMl
+         q1wepWHLOf7D3LD48IBOF9Ovo1EetrqQuRWsALpCVG6Gwm1Sa3+RaQi3HYW+fpaWmu8q
+         FELoFVS3JY6p5lBebx+pkJoJV50e73GQyRhXrD+c8HsfozZaZsa4Q9qEMoo937Jn8mlB
+         x9QXUYGRgYeR5eU6EjZVciak3DxY6Na6QH4dYxvI25d2F54v6W21zysXYIksElMhFJXR
+         bekw==
+X-Gm-Message-State: AOAM532ibIRwb/2przhdWIiCVnQQLxLhMf7GrZ5eCBmjIoiqT3q6/fQ3
+        AU0fwi167v0NYyVOI/sAt4IGAH1f/VqINk1vT7o=
+X-Google-Smtp-Source: ABdhPJz+WaPuEBqNyIA4EiSxTAhrZIgVEL2LfqLsWD1D7oOLA0T/oWYmNsOq31aeWVKvFJunt494YXvc1uJyN8cxtWw=
+X-Received: by 2002:a62:1d94:0:b0:3eb:321d:671a with SMTP id
+ d142-20020a621d94000000b003eb321d671amr22978720pfd.2.1630328488609; Mon, 30
+ Aug 2021 06:01:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210829144531.c2syu4vv4s22dlg7@h510> <CAPGkw+xTFBeH-x-=dsQK-K5KjZZ7JKmQggz2s26=p7g+71kZjA@mail.gmail.com>
+ <20210829164921.u5ntqk5jz2v3hlgr@h510> <CAPGkw+ypKOVsJF_Guna+9+q-+cApYzdBGHMPKKr6MAzGQtqy2g@mail.gmail.com>
+ <CAPGkw+wGn1oTAO7JXXApDMm4cFfxXam913hOGnnup1nSOpcVPA@mail.gmail.com>
+ <CAPGkw+xroJmxa9i6X++un6tQFQ-3F5uMRCatzufWsdfw7cQ2LQ@mail.gmail.com>
+ <20210829205953.63ebc32xlyudsqzg@h510> <CAPGkw+wtE0HMQmYsMkFEt_BPqqB2j_TQ6zwATp6zyXLyxxwTOA@mail.gmail.com>
+ <CAPGkw+w=A1ZBQrmSR2mCgXnfEvhG9tbuJjQ+q1-=Tedwb_XhOA@mail.gmail.com>
+In-Reply-To: <CAPGkw+w=A1ZBQrmSR2mCgXnfEvhG9tbuJjQ+q1-=Tedwb_XhOA@mail.gmail.com>
+From:   Krish Jain <krishjain02939@gmail.com>
+Date:   Mon, 30 Aug 2021 15:01:17 +0200
+Message-ID: <CAPGkw+xzAZxEXBvsFuBLiCRfNvjBxwds7Q-CWeo8RM4Rxmabcw@mail.gmail.com>
+Subject: Re: [PATCH] Declare the file_operations struct as const
+To:     Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-08-20 at 14:07 -0400, Charles Mirabile wrote:
-> This patch implements support for the joystick.
-> It supports left/right/up/down/enter attached via i2c
-> 
-> Signed-off-by: Charles Mirabile <cmirabil@redhat.com>
-> Signed-off-by: Mwesigwa Guma <mguma@redhat.com>
-> Signed-off-by: Joel Savitz <jsavitz@redhat.com>
-> ---
->  drivers/input/joystick/Kconfig             |   8 ++
->  drivers/input/joystick/Makefile            |   1 +
->  drivers/input/joystick/sensehat-joystick.c | 124 +++++++++++++++++++++
->  3 files changed, 133 insertions(+)
->  create mode 100644 drivers/input/joystick/sensehat-joystick.c
-> 
-> diff --git a/drivers/input/joystick/Kconfig b/drivers/input/joystick/Kconfig
-> index 3b23078bc7b5..d2f78353b74c 100644
-> --- a/drivers/input/joystick/Kconfig
-> +++ b/drivers/input/joystick/Kconfig
-> @@ -399,4 +399,12 @@ config JOYSTICK_N64
->  	  Say Y here if you want enable support for the four
->  	  built-in controller ports on the Nintendo 64 console.
->  
-> +config JOYSTICK_SENSEHAT
-> +	tristate "Raspberry Pi Sense HAT joystick"
-> +	depends on GPIOLIB && INPUT
-> +	select MFD_SENSEHAT_CORE
-> +
-> +	help
-> +	  This is the joystick driver for the Raspberry Pi Sense HAT
-> +
->  endif
-> diff --git a/drivers/input/joystick/Makefile b/drivers/input/joystick/Makefile
-> index 5174b8aba2dd..39c8b5c6e5ae 100644
-> --- a/drivers/input/joystick/Makefile
-> +++ b/drivers/input/joystick/Makefile
-> @@ -28,6 +28,7 @@ obj-$(CONFIG_JOYSTICK_N64)		+= n64joy.o
->  obj-$(CONFIG_JOYSTICK_PSXPAD_SPI)	+= psxpad-spi.o
->  obj-$(CONFIG_JOYSTICK_PXRC)		+= pxrc.o
->  obj-$(CONFIG_JOYSTICK_QWIIC)		+= qwiic-joystick.o
-> +obj-$(CONFIG_JOYSTICK_SENSEHAT)         += sensehat-joystick.o
->  obj-$(CONFIG_JOYSTICK_SIDEWINDER)	+= sidewinder.o
->  obj-$(CONFIG_JOYSTICK_SPACEBALL)	+= spaceball.o
->  obj-$(CONFIG_JOYSTICK_SPACEORB)		+= spaceorb.o
-> diff --git a/drivers/input/joystick/sensehat-joystick.c b/drivers/input/joystick/sensehat-joystick.c
-> new file mode 100644
-> index 000000000000..4aca125bc29d
-> --- /dev/null
-> +++ b/drivers/input/joystick/sensehat-joystick.c
-> @@ -0,0 +1,124 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Raspberry Pi Sense HAT joystick driver
-> + * http://raspberrypi.org
-> + *
-> + * Copyright (C) 2015 Raspberry Pi
-> + * Copyright (C) 2021 Charles Mirabile, Mwesigwa Guma, Joel Savitz
-> + *
-> + * Original Author: Serge Schneider
-> + * Revised for upstream Linux by: Charles Mirabile, Mwesigwa Guma, Joel Savitz
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/input.h>
-> +#include <linux/i2c.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/platform_device.h>
-> +
-> +#include <linux/mfd/sensehat.h>
-> +
-> +static unsigned char keymap[] = {KEY_DOWN, KEY_RIGHT, KEY_UP, KEY_ENTER, KEY_LEFT,};
+One sec this got even more confusing. I saw
+https://stackoverflow.com/questions/23184181/error-while-running-make-insta=
+ll-include-generated-autoconf-h-or-include-confi
+and it says
 
-I'm not sure devices outputing KEY_* events fits input/joystick. Maybe
-input/misc or input/keyboard? Or else use 'BTN_DPAD_UP/DOWN/LEFT/RIGHT'. Which
-is what game controllers seem to do.
+-------
+You are including the V=3D1 which causes Make to show the commands as
+they're being run. From the looks of it, you're not actually seeing
+the error itself, but you're seeing the test that it's running to
+check if those files exist:
 
-Regards,
-Nicolas
+test -e include/generated/autoconf.h -a -e include/config/auto.conf ||
+( \ ... echo error messages here ... \ )
+
+That test is being run, and if it fails, it would echo those messages
+to standard error, which it's not. If your module isn't building it's
+probably due to some other issue.
+------
+
+So where is it going all wrong? Messing up the file ashmem.c does not
+print the errors.
 
 
+Best Regards
+
+On Mon, Aug 30, 2021 at 2:40 PM Krish Jain <krishjain02939@gmail.com> wrote=
+:
+>
+> Hi.
+>
+> https://pastebin.com/NuvqMUWu is the link to the .config file.
+> The error I get is https://imgur.com/gkwh7Sb .
+>
+>
+> Best Regards
+>
+>
+> On Mon, Aug 30, 2021 at 12:11 AM Krish Jain <krishjain02939@gmail.com> wr=
+ote:
+> >
+> > On Sun, Aug 29, 2021 at 11:00 PM Bryan Brattlof <hello@bryanbrattlof.co=
+m> wrote:
+> > >
+> > > On this day, August 29, 2021, thus sayeth Krish Jain:
+> > > > Keeping you updated. Small win. The "Symbol version dump
+> > > > "Module.symvers" is missing. " error disappeared. Now I still don't
+> > > > know why
+> > > >
+> > >
+> > > Whoop! Any win, no matter their size, always feel great. I ran around
+> > > the house yesterday after cross compiling DOOM! for an armel chip. It=
+'s
+> > > that "win" feeling you get that keeps me involved.
+> > >
+> > > It is important that you find out why though. What is the importance =
+to
+> > > having Module.symvers? and why is it a WARNING and not an ERROR?
+> >
+> >  When a module is loaded/used, the values contained in the kernel are
+> > compared with similar values in the module; if they are not equal, the
+> > kernel refuses to load the module. I don't need it in my case.
+> >
+> > > What would happen if we didn't have the proper symbols when compiling=
+ or
+> > > installing this driver?
+> > > How and what generates the Module.symvers file when we *do* need it?
+> >
+> > The kernel would refuse to load the module.
+> >
+> >
+> >
+> >
+> >
+> > > How can we turn this warning off when we don't need it?
+> > >
+> > > This is covered in chapter "6. Module Versioning"
+> > >
+> > >   https://www.kernel.org/doc/html/latest/kbuild/modules.html
+> > >
+> > > >
+> > > > ERROR: Kernel configuration is invalid."; \
+> > > > echo >&2 "         include/generated/autoconf.h or
+> > > > include/config/auto.conf are missing.";\
+> > > > echo >&2 "         Run 'make oldconfig && make prepare' on kernel s=
+rc
+> > > > to fix it."; \
+> > > >
+> > > >
+> > > > is still present.
+> > > >
+> > > > How can I fix this?
+> > > >
+> > >
+> > > Are there any other 'make *config' options we could try?
+> >
+> > Yes, like main menuconfig. I tried it but it still doesn't work.
+> >
+> > > What does 'make prepare' even do?
+> >
+> >
+> > Prepares for different architectures etc.
+> >
+> >
+> > > Why do we even need a configuration file?
+> > >
+> > >   https://www.kernel.org/doc/html/latest/kbuild/kconfig.html
+> > >
+> > > >
+> > > > Best Regards
+> > > >
+> > > > On Sun, Aug 29, 2021 at 8:28 PM Krish Jain <krishjain02939@gmail.co=
+m> wrote:
+> > > > >
+> > > > > Basically it says "you must have a prebuilt kernel available that
+> > > > > contains the configuration and header files used in the build." S=
+ince
+> > > > > for the staging kernel  "make oldconfig" asked me for  more
+> > > > > configurations apart from my old configuration file (as it reads =
+the
+> > > > > existing .config file that was used for an old kernel and prompts=
+ the
+> > > > > user for options in the current kernel source that are not found =
+in
+> > > > > the file) . So I *don't* currently have a prebuilt kernel that
+> > > > > contains all the configuration in my staging kernel's .config fil=
+e. So
+> > > > > do I have to build the kernel once before I can just build the mo=
+dule
+> > > > > with "make CCFLAGS=3D-Werror W=3D1 M=3Ddrivers/staging/android" ?
+> > > > >
+> > >
+> > > What do all these other configuration settings turn on and off anyway=
+?
+> > >
+> > > Do we really need CONFIG_INFINIBAND turned on if we're working in the
+> > > drivers/staging tree of the kernel?
+> >
+> >
+> > No, we don't. I removed it.
+> >
+> > > What would we gain from having a compiled kernel if we want to test a
+> > > single staging driver?
+> >
+> > No need to compile the entire kernel I guess for my use case. But
+> > after all this reading :( I still don't get why " sudo make
+> > CCFLAGS=3D-Werror W=3D1 M=3Ddrivers/staging/android/  V=3D1" worked for=
+ you
+> > but not for me. I still get the following errors
+> >
+> >
+> > test -e include/generated/autoconf.h -a -e include/config/auto.conf || =
+( \
+> > echo >&2; \
+> > echo >&2 "  ERROR: Kernel configuration is invalid."; \
+> > echo >&2 "         include/generated/autoconf.h or
+> > include/config/auto.conf are missing.";\
+> > echo >&2 "         Run 'make oldconfig && make prepare' on kernel src
+> > to fix it."; \
+> > echo >&2 ; \
+> > /bin/false)
+> > .....
+> >
+> >
+> > How can I fix this?
+> >
+> >
+> >
+> >
+> > > If you found what Module.symvers does, you should know this.
+> > >
+> > > > > > >
+> > > > > > > Again, do not allow others to rob you of learning how to solv=
+e these
+> > > > > > > issues yourself. I *strongly* encourage you to familiarize yo=
+urself with
+> > > > > > > the Kernel Build System in the Documentation.
+> > > > > > >
+> > > > > > >   https://www.kernel.org/doc/html/latest/kbuild/modules.html
+> > > > > > >
+> > > > > > > Specifically the first paragraph of "2. How to Build External=
+ Modules"
+> > > > > > >
+> > > > > > > It may seem like a lot for such a simple issue but it *is* wo=
+rth it.
+> > > > > > > ~Bryan
+> > > > > > >
+> > > > > >
+> > > > > > That section says
+> > > > > >
+> > > > > >
+> > > > > > "To build external modules, *you must have a prebuilt kernel
+> > > > > > available* that contains the configuration and header files use=
+d in
+> > > > > > the build. Also, the kernel must have been built with modules e=
+nabled.
+> > > > > > If you are using a distribution kernel, there will be a package=
+ for
+> > > > > > the kernel you are running provided by your distribution.
+> > > > > >
+> > > > > > An alternative is to use the =E2=80=9Cmake=E2=80=9D target =E2=
+=80=9Cmodules_prepare.=E2=80=9D This
+> > > > > > will make sure the kernel contains the information required. Th=
+e
+> > > > > > target exists solely as a simple way to prepare a kernel source=
+ tree
+> > > > > > for building external modules.
+> > > > > >
+> > > > > > NOTE: =E2=80=9Cmodules_prepare=E2=80=9D will not build Module.s=
+ymvers even if
+> > > > > > CONFIG_MODVERSIONS is set; therefore, *a full kernel build need=
+s to be
+> > > > > > executed to make module versioning work.*"
+> > > > > >
+> > > > > > So I am just trying to confirm with you whether I have to first=
+ build
+> > > > > > the kernel with like "make" or not? As you can imagine my hardw=
+are
+> > > > > > takes *very* long to build a kernel as I did in my last attempt=
+ so I
+> > > > > > am asking whether it is needed. Hope you understand.
+> > > > > >
+> > >
+> > > I understand. Though I still don't wish to rob you of this opportunit=
+y.
+> > >
+> > > Your ability to come up with these questions and answer them yourself=
+ is
+> > > what will make you a better programmer and developer.
+> > >
+> > > Don't get me wrong. Greg knows all too well the garbage I can shovel =
+his
+> > > way. It's not about knowing the answer. It about knowing how to find =
+the
+> > > answer yourself.
+> > >
+> > > ~Bryan
+> > >
