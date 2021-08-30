@@ -2,263 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310CA3FBCA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7395D3FBCA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbhH3Sqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:46:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54634 "EHLO mail.kernel.org"
+        id S232138AbhH3SrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:47:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232138AbhH3Sqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:46:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C973260C40;
-        Mon, 30 Aug 2021 18:45:57 +0000 (UTC)
+        id S232695AbhH3SrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 14:47:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71A9960E98;
+        Mon, 30 Aug 2021 18:46:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630349158;
-        bh=uBSqmFdAAvqpL3av2pDy+f24B29zTi1og4QtJoIO2H0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pcYMTZXAnWMKj9vjjcRqhotfgJYr53vL80894AcY5P3YpMtYgM2shKtoaghzTgevl
-         SkBFVEhGw/DC7OWG8s8tjOr1Stje0//T2aaevB3yj1/2RwgiRX+Uf3/IY5tBc+2HST
-         Hz3iZaY17x8wAHrFDZnJ8ii+Dm8eLJHwgaCUC6im2HdOO2dD2ArfVNdp8R1stsKtJF
-         9eVmLeipkbi7J/oU2/SR7Tucz9QNhymF5FOzlB33cCM+mf6os+0zc4GC5pvgsCyx3p
-         pqzfN0Z2bZgf0Dg1lcR950n/TJLQ7+TZu0UHjhYL5O7BI1wPozY/XMaEiOjk39HdY6
-         PFdULeR92V/iA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8E83C4007E; Mon, 30 Aug 2021 15:45:54 -0300 (-03)
-Date:   Mon, 30 Aug 2021 15:45:54 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andreas Gerstmayr <agerstmayr@redhat.com>
-Cc:     linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf: flamegraph.py script improvements
-Message-ID: <YS0nYpDjPJwT1XYo@kernel.org>
-References: <20210830164729.116049-1-agerstmayr@redhat.com>
+        s=k20201202; t=1630349170;
+        bh=J23JT3g5G0Rq/agAJPJs93+AxpcQHeDG5rGcBdcVQmw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=AESHqYHp5trjKc05XVKr0DmGCOB4OApA5VeZrTR7vguCf3WEoazddObwXaYtaXoaP
+         P3df2vVNJdsdWCKI4NUR0E+HcCxM134uwomPCnYGrTM5cu77AAh057E/ax5p+W4i3W
+         1q5NbXta4J1mi3ngNvH7LcZwkMQI4A5ZXwk1T+0uK0Kr3dlzWyXKR23RizWn00kfxj
+         MxTFvuRAZAOWe1b2Ix4Yd0e6egDQAMASER45suA2o9yKdCZ0Atls4b0n1kgIZu57el
+         IqaDtYMRYpHuBQ2XubFzClv5ll0eaUYmpbp4myR6n0PIL8+puu/XH1CNPLswpAkSjr
+         fndMhomjaiF0A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3CFAF5C0566; Mon, 30 Aug 2021 11:46:10 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 11:46:10 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH] rcu: Avoid unneeded function call in rcu_read_unlock()
+Message-ID: <20210830184610.GX4156@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210827022122.15816-1-longman@redhat.com>
+ <20210827183455.GP4156@paulmck-ThinkPad-P17-Gen-1>
+ <CAEf4BzZ+OauJV_O5VDSM_WydA-xxLKcmx0vzT3P02CESzrJcnw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210830164729.116049-1-agerstmayr@redhat.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAEf4BzZ+OauJV_O5VDSM_WydA-xxLKcmx0vzT3P02CESzrJcnw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Aug 30, 2021 at 06:47:27PM +0200, Andreas Gerstmayr escreveu:
-> * display perf.data header
-> * display PIDs of user stacks
-> * added option to change color scheme
-> * default to blue/green color scheme to improve accessibility
-> * correctly identify kernel stacks when kernel-debuginfo is installed
-
-I'll apply this but please next time split these changes in separate
-patches, this way we can find and fix problems faster by using 'git
-bisect'.
-
-- Arnaldo
- 
-> Signed-off-by: Andreas Gerstmayr <agerstmayr@redhat.com>
-> ---
-> Tested with Fedora 34, RHEL 8.5 & 9-beta, and Ubuntu 20.04.
+On Mon, Aug 30, 2021 at 11:36:51AM -0700, Andrii Nakryiko wrote:
+> On Fri, Aug 27, 2021 at 11:34 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Thu, Aug 26, 2021 at 10:21:22PM -0400, Waiman Long wrote:
+> > > Since commit aa40c138cc8f3 ("rcu: Report QS for outermost
+> > > PREEMPT=n rcu_read_unlock() for strict GPs"). A real function call
+> > > rcu_read_unlock_strict() is added to the inlined rcu_read_unlock().
+> > > The rcu_read_unlock_strict() call is only needed if the performance
+> > > sagging CONFIG_RCU_STRICT_GRACE_PERIOD option is set. This config
+> > > option isn't set for most production kernels while the function call
+> > > overhead remains.
+> > >
+> > > To provide a slight performance improvement, the
+> > > CONFIG_RCU_STRICT_GRACE_PERIOD config check is moved from
+> > > rcu_read_unlock_strict() to __rcu_read_unlock() so that the function
+> > > call can be compiled out in most cases.
+> > >
+> > > Besides, the GPL exported rcu_read_unlock_strict() also impact the
+> > > the compilation of non-GPL kernel modules as rcu_read_unlock() is a
+> > > frequently used kernel API.
+> > >
+> > > Signed-off-by: Waiman Long <longman@redhat.com>
+> >
+> > Nice, and good eyes!!!
+> >
+> > I have queued this for v5.16, that is, not the upcoming merge window
+> > but the one after that.
+> >
+> > I did my usual wordsmithing, so please check the following in case I
+> > messed something up.  I intentionally omitted the EXPORT_SYMBOL_GPL()
+> > discussion because:
+> >
+> > 1.      Kernels built with CONFIG_PREEMPT=y have the same issue
+> >         with the __rcu_read_lock() and __rcu_read_unlock() functions.
+> >
+> > 2.      Many other RCU functions are EXPORT_SYMBOL_GPL() and have
+> >         been for almost two decades.
+> >
+> > But if someone does use RCU readers within CONFIG_PREEMPT=n kernels from
+> > a binary module, I will happily refer them to you for any RCU issues
+> > that they encounter.  ;-)
+> >
+> > I am also CCing the BPF guys in case my interpretation of the code in
+> > the BPF verifier is incorrect.
+> >
 > 
-> The updated flamegraph.py script works with the current d3-flame-graph template, but in order to use the new features (perf header, new color scheme), please run `wget -O /usr/share/d3-flame-graph/d3-flamegraph-base.html https://gist.githubusercontent.com/andreasgerstmayr/1f84a6ac04e6391bfc653a546cf3e1aa/raw/f67accc1873be66d14e90360c9b8cd15faa551f6/d3-flamegraph-base.html`
-> I'll update the js-d3-flame-graph package soon.
-> 
-> 
->  tools/perf/scripts/python/flamegraph.py | 108 ++++++++++++++++++------
->  1 file changed, 81 insertions(+), 27 deletions(-)
-> 
-> diff --git a/tools/perf/scripts/python/flamegraph.py b/tools/perf/scripts/python/flamegraph.py
-> index 65780013f745..b6af1dd5f816 100755
-> --- a/tools/perf/scripts/python/flamegraph.py
-> +++ b/tools/perf/scripts/python/flamegraph.py
-> @@ -13,6 +13,10 @@
->  # Written by Andreas Gerstmayr <agerstmayr@redhat.com>
->  # Flame Graphs invented by Brendan Gregg <bgregg@netflix.com>
->  # Works in tandem with d3-flame-graph by Martin Spier <mspier@netflix.com>
-> +#
-> +# pylint: disable=missing-module-docstring
-> +# pylint: disable=missing-class-docstring
-> +# pylint: disable=missing-function-docstring
->  
->  from __future__ import print_function
->  import sys
-> @@ -20,16 +24,19 @@ import os
->  import io
->  import argparse
->  import json
-> +import subprocess
->  
-> -
-> +# pylint: disable=too-few-public-methods
->  class Node:
-> -    def __init__(self, name, libtype=""):
-> +    def __init__(self, name, libtype):
->          self.name = name
-> +        # "root" | "kernel" | ""
-> +        # "" indicates user space
->          self.libtype = libtype
->          self.value = 0
->          self.children = []
->  
-> -    def toJSON(self):
-> +    def to_json(self):
->          return {
->              "n": self.name,
->              "l": self.libtype,
-> @@ -41,7 +48,7 @@ class Node:
->  class FlameGraphCLI:
->      def __init__(self, args):
->          self.args = args
-> -        self.stack = Node("root")
-> +        self.stack = Node("all", "root")
->  
->          if self.args.format == "html" and \
->                  not os.path.isfile(self.args.template):
-> @@ -53,13 +60,21 @@ class FlameGraphCLI:
->                    file=sys.stderr)
->              sys.exit(1)
->  
-> -    def find_or_create_node(self, node, name, dso):
-> -        libtype = "kernel" if dso == "[kernel.kallsyms]" else ""
-> -        if name is None:
-> -            name = "[unknown]"
-> +    @staticmethod
-> +    def get_libtype_from_dso(dso):
-> +        """
-> +        when kernel-debuginfo is installed,
-> +        dso points to /usr/lib/debug/lib/modules/*/vmlinux
-> +        """
-> +        if dso and (dso == "[kernel.kallsyms]" or dso.endswith("/vmlinux")):
-> +            return "kernel"
->  
-> +        return ""
-> +
-> +    @staticmethod
-> +    def find_or_create_node(node, name, libtype):
->          for child in node.children:
-> -            if child.name == name and child.libtype == libtype:
-> +            if child.name == name:
->                  return child
->  
->          child = Node(name, libtype)
-> @@ -67,30 +82,65 @@ class FlameGraphCLI:
->          return child
->  
->      def process_event(self, event):
-> -        node = self.find_or_create_node(self.stack, event["comm"], None)
-> +        pid = event.get("sample", {}).get("pid", 0)
-> +        # event["dso"] sometimes contains /usr/lib/debug/lib/modules/*/vmlinux
-> +        # for user-space processes; let's use pid for kernel or user-space distinction
-> +        if pid == 0:
-> +            comm = event["comm"]
-> +            libtype = "kernel"
-> +        else:
-> +            comm = "{} ({})".format(event["comm"], pid)
-> +            libtype = ""
-> +        node = self.find_or_create_node(self.stack, comm, libtype)
-> +
->          if "callchain" in event:
-> -            for entry in reversed(event['callchain']):
-> -                node = self.find_or_create_node(
-> -                    node, entry.get("sym", {}).get("name"), event.get("dso"))
-> +            for entry in reversed(event["callchain"]):
-> +                name = entry.get("sym", {}).get("name", "[unknown]")
-> +                libtype = self.get_libtype_from_dso(entry.get("dso"))
-> +                node = self.find_or_create_node(node, name, libtype)
->          else:
-> -            node = self.find_or_create_node(
-> -                node, entry.get("symbol"), event.get("dso"))
-> +            name = event.get("symbol", "[unknown]")
-> +            libtype = self.get_libtype_from_dso(event.get("dso"))
-> +            node = self.find_or_create_node(node, name, libtype)
->          node.value += 1
->  
-> +    def get_report_header(self):
-> +        if self.args.input == "-":
-> +            # when this script is invoked with "perf script flamegraph",
-> +            # no perf.data is created and we cannot read the header of it
-> +            return ""
-> +
-> +        try:
-> +            output = subprocess.check_output(["perf", "report", "--header-only"])
-> +            return output.decode("utf-8")
-> +        except Exception as err:  # pylint: disable=broad-except
-> +            print("Error reading report header: {}".format(err), file=sys.stderr)
-> +            return ""
-> +
->      def trace_end(self):
-> -        json_str = json.dumps(self.stack, default=lambda x: x.toJSON())
-> +        stacks_json = json.dumps(self.stack, default=lambda x: x.to_json())
->  
->          if self.args.format == "html":
-> +            report_header = self.get_report_header()
-> +            options = {
-> +                "colorscheme": self.args.colorscheme,
-> +                "context": report_header
-> +            }
-> +            options_json = json.dumps(options)
-> +
->              try:
-> -                with io.open(self.args.template, encoding="utf-8") as f:
-> -                    output_str = f.read().replace("/** @flamegraph_json **/",
-> -                                                  json_str)
-> -            except IOError as e:
-> -                print("Error reading template file: {}".format(e), file=sys.stderr)
-> +                with io.open(self.args.template, encoding="utf-8") as template:
-> +                    output_str = (
-> +                        template.read()
-> +                        .replace("/** @options_json **/", options_json)
-> +                        .replace("/** @flamegraph_json **/", stacks_json)
-> +                    )
-> +            except IOError as err:
-> +                print("Error reading template file: {}".format(err), file=sys.stderr)
->                  sys.exit(1)
->              output_fn = self.args.output or "flamegraph.html"
->          else:
-> -            output_str = json_str
-> +            output_str = stacks_json
->              output_fn = self.args.output or "stacks.json"
->  
->          if output_fn == "-":
-> @@ -101,8 +151,8 @@ class FlameGraphCLI:
->              try:
->                  with io.open(output_fn, "w", encoding="utf-8") as out:
->                      out.write(output_str)
-> -            except IOError as e:
-> -                print("Error writing output file: {}".format(e), file=sys.stderr)
-> +            except IOError as err:
-> +                print("Error writing output file: {}".format(err), file=sys.stderr)
->                  sys.exit(1)
->  
->  
-> @@ -115,12 +165,16 @@ if __name__ == "__main__":
->                          help="output file name")
->      parser.add_argument("--template",
->                          default="/usr/share/d3-flame-graph/d3-flamegraph-base.html",
-> -                        help="path to flamegraph HTML template")
-> +                        help="path to flame graph HTML template")
-> +    parser.add_argument("--colorscheme",
-> +                        default="blue-green",
-> +                        help="flame graph color scheme",
-> +                        choices=["blue-green", "orange"])
->      parser.add_argument("-i", "--input",
->                          help=argparse.SUPPRESS)
->  
-> -    args = parser.parse_args()
-> -    cli = FlameGraphCLI(args)
-> +    cli_args = parser.parse_args()
-> +    cli = FlameGraphCLI(cli_args)
->  
->      process_event = cli.process_event
->      trace_end = cli.trace_end
-> -- 
-> 2.31.1
+> LGTM from the BPF side, nothing really changed about when
+> rcu_read_unlock_strict is an actual function vs no-op macro. It's also
+> important to minimize the number of function calls in the context of
+> recent LBR on-demand work done by Song, so this is a great
+> improvement!
 
--- 
+Thank you for looking this over!  May I add your Acked-by or similar?
 
-- Arnaldo
+                                                         Thanx, Paul
+
+> > ------------------------------------------------------------------------
+> >
+> > commit 4a9f53b997b809c0256838e31c604aeeded2345a
+> > Author: Waiman Long <longman@redhat.com>
+> > Date:   Thu Aug 26 22:21:22 2021 -0400
+> >
+> >     rcu: Avoid unneeded function call in rcu_read_unlock()
+> >
+> >     Since commit aa40c138cc8f3 ("rcu: Report QS for outermost PREEMPT=n
+> >     rcu_read_unlock() for strict GPs") the function rcu_read_unlock_strict()
+> >     is invoked by the inlined rcu_read_unlock() function.  However,
+> >     rcu_read_unlock_strict() is an empty function in production kernels,
+> >     which are built with CONFIG_RCU_STRICT_GRACE_PERIOD=n.
+> >
+> >     There is a mention of rcu_read_unlock_strict() in the BPF verifier,
+> >     but this is in a deny-list, meaning that BPF does not care whether
+> >     rcu_read_unlock_strict() is ever called.
+> >
+> >     This commit therefore provides a slight performance improvement
+> >     by hoisting the check of CONFIG_RCU_STRICT_GRACE_PERIOD from
+> >     rcu_read_unlock_strict() into rcu_read_unlock(), thus avoiding the
+> >     pointless call to an empty function.
+> >
+> >     Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> >     Cc: Andrii Nakryiko <andrii@kernel.org>
+> >     Signed-off-by: Waiman Long <longman@redhat.com>
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >
+> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > index 434d12fe2d4f..5e0beb5c5659 100644
+> > --- a/include/linux/rcupdate.h
+> > +++ b/include/linux/rcupdate.h
+> > @@ -71,7 +71,8 @@ static inline void __rcu_read_lock(void)
+> >  static inline void __rcu_read_unlock(void)
+> >  {
+> >         preempt_enable();
+> > -       rcu_read_unlock_strict();
+> > +       if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
+> > +               rcu_read_unlock_strict();
+> >  }
+> >
+> >  static inline int rcu_preempt_depth(void)
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index 7a4876a3a882..0b55c647ab80 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -814,8 +814,7 @@ void rcu_read_unlock_strict(void)
+> >  {
+> >         struct rcu_data *rdp;
+> >
+> > -       if (!IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ||
+> > -          irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
+> > +       if (irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
+> >                 return;
+> >         rdp = this_cpu_ptr(&rcu_data);
+> >         rcu_report_qs_rdp(rdp);
