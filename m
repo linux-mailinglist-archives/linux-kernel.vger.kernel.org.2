@@ -2,144 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CC63FBC84
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15213FBC88
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbhH3Sfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
+        id S233527AbhH3SgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbhH3Sfv (ORCPT
+        with ESMTP id S233704AbhH3SgK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:35:51 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9EDC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 11:34:58 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so85930pjc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 11:34:58 -0700 (PDT)
+        Mon, 30 Aug 2021 14:36:10 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92B5C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 11:35:16 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id e15so9047290plh.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 11:35:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=K3k7s0tk5eH6iPVl7FoiuOgyi60Lr2QqZx1htKYsqdo=;
-        b=Zll8QDHW5Z29yxm1dJ36mXm8hA/F92MyD8wzv5OlJM77C3FFV/YuajMXfv0fTnSJxm
-         ilQm43Dfo8Ktc4DvoctzUitEOlW4bDwMMNVF0yQTRjmyazG0ZSo54kPAyhut57BeAojR
-         0rwR5NnZ2xvAhg0XkNQ6nwsoRoMt7c3BpG3KKCejGmaAZbxjtvWJ+rLtLEbelImB2+/S
-         bTPk3SxRgLnqPEAycisuW3/keMaOlrWjMYKli33Btj6NL7SUblQHc81pWpLIGjw1UpYM
-         aRzBfbwE9HSdSUQdeXsWuB0ca0wV0sHvHHrMZr8yHSicvLDheT1Jmkw7y5lUKLqD5MLe
-         mUnw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4lObGbOH7wYXLZts3Wjag1RVJ/fSvvfuumDMeXOvamY=;
+        b=Q7lSvLugEcsO6jz/dsvEvqZfD5CfuPaFmPsqDAtVPqSs20Jd/6dgCj3+ylqcIr1EnF
+         jwLepnTsPsP/+QPpe0p2M4mjvLGTJj0BWKxHTP9O7z1aO2tFiTY3aHcZlUOb+a6XlQXM
+         ATUXIgkDyHiUBCYrZWUoo8y35gJiW/5N5IyhGJ73fequBefUKl85zNfhuYdjRjOwkFFO
+         DMcbXDNdSqX8SPThW2njxQagVjwPbOA5wHbxiKMLnrCe3jWHierYYo0BcKop19CuPfp+
+         rkjM8Q2Fg/hZzBzo1IglI+E+uAlQI1OjhJFzgdnkDt7bDMl3n3HYnvg6BBlII8/6fxOb
+         eN4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=K3k7s0tk5eH6iPVl7FoiuOgyi60Lr2QqZx1htKYsqdo=;
-        b=cKQgSWq9WHOgvqvCQZ5RL+LN1D1z7+x5nXMtF/sob2FZCqtMUVRowAGO53HwSy7sGW
-         rMjoH8EzDFu36kocr3lO0CVHColJ9+mWa8UlO8XPA1Csv4e5wR2RpPh7nChIZaJNyp6d
-         hmWzIP8cTYZCsQZeUioAVfVHMmewf5BJSqLTqbjpb1viu+g7Ay+jz+VGUGOidIqR4KyM
-         WN2NP+oaqdn+G7h/iRs/U5OT7SVi7zJtvcHuEB1B2Y5IOJ1p7yK05TMyQKIphCpDcNbJ
-         WDWYyPEpTwPnz33dRCMF54GlS+EvBBgpkdS8koqPvIvsif70X7h1Ci7IHsPP44ge+elG
-         3x2w==
-X-Gm-Message-State: AOAM531dd8eUv6lUQyB7GlzCtQn9jdpdeJF6AVME6uldYApX9Jgt9mSB
-        +316MEl4gVx4tE0u4nb/3MzKLw==
-X-Google-Smtp-Source: ABdhPJyFbCGQkBJrHEYGqFicAoIw2y3LiDyPSfY74cnJhCzbjJ93dkAFlZHwQspdYcSmoLPdksybJA==
-X-Received: by 2002:a17:902:c410:b0:138:ad8f:865b with SMTP id k16-20020a170902c41000b00138ad8f865bmr872993plk.79.1630348497479;
-        Mon, 30 Aug 2021 11:34:57 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id w188sm14566273pfd.32.2021.08.30.11.34.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 30 Aug 2021 11:34:56 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <8FEED5A6-DABE-4F29-9C1F-95A1B2E20190@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_CEB5A37B-2F31-4800-8BF9-FF29B194CBBA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: Discontiguous folios/pagesets
-Date:   Mon, 30 Aug 2021 12:35:05 -0600
-In-Reply-To: <20210830182818.GA9892@magnolia>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-To:     "Darrick J. Wong" <djwong@kernel.org>
-References: <YSqIry5dKg+kqAxJ@casper.infradead.org>
- <1FC3646C-259F-4AA4-B7E0-B13E19EDC595@dilger.ca>
- <20210830182818.GA9892@magnolia>
-X-Mailer: Apple Mail (2.3273)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4lObGbOH7wYXLZts3Wjag1RVJ/fSvvfuumDMeXOvamY=;
+        b=HdzjpBDlLWMVPScSFEggR32k05nCpPfzhImcHNlSBC9R5H7yCq6Odf+1XrJLqAGpm9
+         Co/ddZfwt+6UvD6u8oqUrsXS5AePKUKBkXxtG4S4Em3+snWmcZBeWcNGLXszPWIu+X+V
+         YwZupbcq/BRL/LjNrf2PSn58btJyYg1f5wVzVm+pbLk3+EzQLeckEF24PVG0BVOqFrx3
+         t56c0pzjw6ZxXlgSvsUDdIWxhcvH2fWgCzE3dOIqlGzAydltvGWw3XxW1nBo49Cv8/4m
+         OuDrXBXPF7dTBOZDOSDZom+2/kaIltEZGHJcOMsCBDgk640SeguIXFc2ONKbTS4mEO1a
+         uYbQ==
+X-Gm-Message-State: AOAM533ha4ucgvOaEVIpmHzv8jsqaETJnsZUyLcV8F65lRkoCUJA2TYR
+        uhgUoO3XNTzQ6/JwCF6pjFGP7yKuCw8n
+X-Google-Smtp-Source: ABdhPJymp1hhLxI4Bg+PenRAv5ZqZvFwlomKc4Z90s9V466OSSk/8nDL72VECdaY3v0GglRuL8taGg==
+X-Received: by 2002:a17:90a:940e:: with SMTP id r14mr497274pjo.208.1630348516218;
+        Mon, 30 Aug 2021 11:35:16 -0700 (PDT)
+Received: from thinkpad ([2409:4072:6e8f:10da:9c90:a2f4:77aa:6f51])
+        by smtp.gmail.com with ESMTPSA id n14sm208169pjm.5.2021.08.30.11.35.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 11:35:15 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 00:05:08 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        robh@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, smohanad@codeaurora.org,
+        bjorn.andersson@linaro.org, sallenki@codeaurora.org,
+        skananth@codeaurora.org, vpernami@codeaurora.org,
+        vbadigan@codeaurora.org
+Subject: Re: [PATCH v7 0/3] Add Qualcomm PCIe Endpoint driver support
+Message-ID: <20210830183508.GA50238@thinkpad>
+References: <20210722121242.47838-1-manivannan.sadhasivam@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722121242.47838-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---Apple-Mail=_CEB5A37B-2F31-4800-8BF9-FF29B194CBBA
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
-
-
-> On Aug 30, 2021, at 12:28 PM, Darrick J. Wong <djwong@kernel.org> wrote:
+On Thu, Jul 22, 2021 at 05:42:39PM +0530, Manivannan Sadhasivam wrote:
+> Hello,
 > 
-> On Sat, Aug 28, 2021 at 01:27:29PM -0600, Andreas Dilger wrote:
->> On Aug 28, 2021, at 1:04 PM, Matthew Wilcox <willy@infradead.org> wrote:
->>> 
->>> The current folio work is focused on permitting the VM to use
->>> physically contiguous chunks of memory.  Both Darrick and Johannes
->>> have pointed out the advantages of supporting logically-contiguous,
->>> physically-discontiguous chunks of memory.  Johannes wants to be able to
->>> use order-0 allocations to allocate larger folios, getting the benefit
->>> of managing the memory in larger chunks without requiring the memory
->>> allocator to be able to find contiguous chunks.  Darrick wants to support
->>> non-power-of-two block sizes.
->> 
->> What is the use case for non-power-of-two block sizes?  The main question
->> is whether that use case is important enough to add the complexity and
->> overhead in order to support it?
+> This series adds support for Qualcomm PCIe Endpoint controller found
+> in platforms like SDX55. The Endpoint controller is based on the designware
+> core with additional Qualcomm wrappers around the core.
 > 
-> For copy-on-write to a XFS realtime volume where the allocation extent
-> size (we support bigalloc too! :P) is not a power of two (e.g. you set
-> up a 4 disk raid5 with 64k stripes, now the extent size is 192k).
+> The driver is added separately unlike other Designware based drivers that
+> combine RC and EP in a single driver. This is done to avoid complexity and
+> to maintain this driver autonomously.
 > 
-> Granted, I don't think folios handling 192k chunks is absolutely
-> *required* for folios; the only hard requirement is that if any page in
-> a 192k extent becomes dirty, the rest have to get written out all the
-> same time, and the cow remap can only happen after the last page
-> finishes writeback.
+> The driver has been validated with an out of tree MHI function driver on
+> SDX55 based Telit FN980 EVB connected to x86 host machine over PCIe.
+> 
 
-OK, they are still multiples of PAGE_SIZE.  That wasn't clear, I thought
-these were byte-granular IOs or something...
+Any chance this driver could make v5.15?
 
-Cheers, Andreas
+Thanks,
+Mani
 
-
-
-
-
-
---Apple-Mail=_CEB5A37B-2F31-4800-8BF9-FF29B194CBBA
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmEtJNkACgkQcqXauRfM
-H+BMbg//WkPjoSqpO0uyJFtCnuPsruBwvQiUx/noIiD9R/7TPNFhjVPixtkm/LM9
-yx09eEuDtlHFZs3j4ZCD/mBpyy8GR6nXi7pE7nXv6PgMMweEQ5vkyc+G5IwMLgyD
-GQoDKAt5GG4yVvcYsNbd6jn6AFhj0nIZKD//OQL7oCqoqd6i9n7/W+pRt8nvOY/N
-Lr6eOjRNwdg1jWCkr5FgO+F4zl1OG1NXZ5UCLOGNlT3KhQpVjfxyvsZCyhjQxpjx
-reNZX3g2H6/6WWnBV+FAwlqh9G5mt8Fyh4Oqvt3i3nmYhwfJCIeMxM2i5i2O8EJG
-2Gy8vxRRxFaBi2Nwh8R7Ne2BEL3YGwRPQzkWmC9s1ju6QhNdYjK62ZIHT34veBRE
-3ehtF/xA0UISzVBwEkbY6HOVdfTVfUBxzKJwFsoceeerc4EdIymfeesANm31uLT8
-yKFng+ZKBDodH6YhvxODf+wARzDBkrfXP1jMCvdvcvvab/uCYFpV2zeKBbj4DiAm
-9d2MKIhbqXQiXjieAiJaXbAdg3zat8ajF9yuE1GM6I2bfXvBAhxdMnTwNtBKeZml
-5vRNMlDiYMht0rdQY/aHPnTll6L7kExd9R5PjeVg75x57D3mdsVl/9N3Y9VVUAEr
-8xWBdJ4RAuF3BON4LApuIFLEicxejOJo+8zKgEZNJGoSpGgCD8Y=
-=dDZs
------END PGP SIGNATURE-----
-
---Apple-Mail=_CEB5A37B-2F31-4800-8BF9-FF29B194CBBA--
+> Thanks,
+> Mani
+> 
+> Changes in v7:
+> 
+> * Used existing naming convention for callback functions
+> * Used active low state for PERST# gpio
+> 
+> Changes in v6:
+> 
+> * Removed status property in DT and added reviewed tag from Rob
+> * Switched to _relaxed variants as suggested by Rob
+> 
+> Changes in v5:
+> 
+> * Removed the DBI register settings that are not needed
+> * Used the standard definitions available in pci_regs.h
+> * Added defines for all the register fields
+> * Removed the left over code from previous iteration
+> 
+> Changes in v4:
+> 
+> * Removed the active_config settings needed for IPA integration
+> * Switched to writel for couple of relaxed versions that sneaked in
+> 
+> Changes in v3:
+> 
+> * Lot of minor cleanups to the driver patch based on review from Bjorn and Stan.
+> * Noticeable changes are:
+>   - Got rid of _relaxed calls and used readl/writel
+>   - Got rid of separate TCSR memory region and used syscon for getting the
+>     register offsets for Perst registers
+>   - Changed the wake gpio handling logic
+>   - Added remove() callback and removed "suppress_bind_attrs"
+>   - stop_link() callback now just disables PERST IRQ
+> * Added MMIO region and doorbell interrupt to the binding
+> * Added logic to write MMIO physicall address to MHI base address as it is
+>   for the function driver to work
+> 
+> Changes in v2:
+> 
+> * Addressed the comments from Rob on bindings patch
+> * Modified the driver as per binding change
+> * Fixed the warnings reported by Kbuild bot
+> * Removed the PERST# "enable_irq" call from probe()
+> 
+> Manivannan Sadhasivam (3):
+>   dt-bindings: pci: Add devicetree binding for Qualcomm PCIe EP
+>     controller
+>   PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver
+>   MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
+> 
+>  .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 158 ++++
+>  MAINTAINERS                                   |  10 +-
+>  drivers/pci/controller/dwc/Kconfig            |  10 +
+>  drivers/pci/controller/dwc/Makefile           |   1 +
+>  drivers/pci/controller/dwc/pcie-qcom-ep.c     | 710 ++++++++++++++++++
+>  5 files changed, 888 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+>  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-ep.c
+> 
+> -- 
+> 2.25.1
+> 
