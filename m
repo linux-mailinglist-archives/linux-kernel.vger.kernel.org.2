@@ -2,309 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799F53FB45B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972E03FB463
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236465AbhH3LIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 07:08:51 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:12264 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236431AbhH3LIt (ORCPT
+        id S236437AbhH3LL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 07:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236335AbhH3LLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 07:08:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630321675; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=Ufyok/aH9tGPfi2EYJsOgR/DUTgY52iPpHzB01j6vvc=; b=Mw6AwxCG2ddvrvEZ6cGalgRpapr/ZEWo1jAHBZqhIoGJPGBDCG1HTcuHhn/0bho9xE2iuo8n
- WwJcYuPKFpPF0u8hkTJqRLo7eeeLHbNRz8KeVC5T2aDXktVceuRd0+BATptNquKt5kXUyOGd
- HpvKZbxNLjl62Kd1edtaS83EKMA=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 612cbc0b6fc2cf7ad9caf61f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Aug 2021 11:07:55
- GMT
-Sender: luoj=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B1849C4360D; Mon, 30 Aug 2021 11:07:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from akronite-sh-dev02.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 686EDC4338F;
-        Mon, 30 Aug 2021 11:07:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 686EDC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Luo Jie <luoj@codeaurora.org>
-To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org, Luo Jie <luoj@codeaurora.org>
-Subject: [PATCH v1 3/3] net: phy: add cdt feature of qca8081 phy
-Date:   Mon, 30 Aug 2021 19:07:33 +0800
-Message-Id: <20210830110733.8964-4-luoj@codeaurora.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210830110733.8964-1-luoj@codeaurora.org>
-References: <20210830110733.8964-1-luoj@codeaurora.org>
+        Mon, 30 Aug 2021 07:11:52 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1974DC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 04:10:59 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id lc21so30291797ejc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 04:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MI9eImtV3JH8nNzI3Rjc2fShmqiaX13ZfYFOv7am00M=;
+        b=SHEkU1Xx9MHblQ1FF5Z/pom2Bw84hCdzzqgkHelabKKS3ZOvorVnfUeB7m0HEg/u3J
+         sso7O+QcqqBoweCR+KlwWMKNN4KOqRmpuPKUZmpM7R/KISlqwTQrrPb+UG8RQJcOI3BT
+         LQ/dD9SmcUY+2gkSlERoJLzhrHNdEaXq1WBheVJWftiLM+65IBm7QgclFzxFOJIikR/F
+         HSRZ8lg47yDdGvMvWbSC7QCezv2UNzZo0hzyA302ypHkv6cBj6E5Fl36NJKIMIuCOBYb
+         CPU/ElzIUoFBx3/g7oG9g/eVn2Pp0kYP/FevZ7uzWAzjpNa3MmhcJNqEtQv2DdO8xXEA
+         +pFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MI9eImtV3JH8nNzI3Rjc2fShmqiaX13ZfYFOv7am00M=;
+        b=r76I2vpxEGjFJyw+hkY7xXxO6Y1U3VR06PP9Hg1xpoI/aeDH5ykqDpFCwRvhA/wK1w
+         E9m9S2kQL6sDEghQ7f5b00HGaC18x9I/GWPyAq3Vwx8qPBSgxSvVt4RWkI7Fiy+wU7+h
+         iZCnFqVHmz2+o6/oPanJsIg8KjOLnZ1ktwSAC11yVaCRABjYZds1b603qpQSYcUUrUQn
+         IMUbBFrW00/JgX6A0+xghdNpVQ2aoijslQCYmyfifOhkxvoOMg828KEBf35QumgLUbLI
+         rYob9XI3Bl+/6MOSJidbkHpsUPwcmeSfuC71dGkrgaqewoy5zZxrMNSmkep8vHoiwlby
+         sfCA==
+X-Gm-Message-State: AOAM531VRwOhVGKsMpmkrPLC8UwoEoPRCtEcb7JeW30JpO93wOjWPI5w
+        xlOWOiKlozhNfnc+bmseJ1Y=
+X-Google-Smtp-Source: ABdhPJw6yOvQ5HMSz6OWRemKjGMiVONs3hccLmw5KoaevSrm5AXs3rlL16qd1wcGVFMAK1HS7nSC1w==
+X-Received: by 2002:a17:906:6445:: with SMTP id l5mr24590756ejn.194.1630321857251;
+        Mon, 30 Aug 2021 04:10:57 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id n2sm7640337edi.32.2021.08.30.04.10.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 04:10:56 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v4] staging: greybus: Convert uart.c from IDR to XArray
+Date:   Mon, 30 Aug 2021 13:10:54 +0200
+Message-ID: <2879439.WEJLM9RBEh@localhost.localdomain>
+In-Reply-To: <YSyg/Db1So0LDGR+@hovoldconsulting.com>
+References: <20210829092250.25379-1-fmdefrancesco@gmail.com> <YSyg/Db1So0LDGR+@hovoldconsulting.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To perform CDT of qca8081 phy:
-1. disable hibernation.
-2. force phy working in MDI mode.
-3. force phy working in 1000BASE-T mode.
-4. configure the related thresholds.
+On Monday, August 30, 2021 11:12:28 AM CEST Johan Hovold wrote:
+> On Sun, Aug 29, 2021 at 11:22:50AM +0200, Fabio M. De Francesco wrote:
+> > Convert greybus/uart.c from IDR to XArray. The abstract data type XArray
+> > is more memory-efficient, parallelisable, and cache friendly. It takes
+> > advantage of RCU to perform lookups without locking. Furthermore, IDR is
+> > deprecated because XArray has a better (cleaner and more consistent) API.
+> 
+> Where does it say that IDR is deprecated? Almost all drivers use IDR/IDA
+> and its interfaces are straight-forward. In most cases we don't care
+> about a possible slight increase in efficiency either, and so also in
+> this case. Correctness is what matters and doing these conversions risks
+> introducing regressions.
+> 
+> And I believe IDR use XArray internally these days anyway.
 
-Signed-off-by: Luo Jie <luoj@codeaurora.org>
----
- drivers/net/phy/at803x.c | 193 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 190 insertions(+), 3 deletions(-)
+Please read the following message by Matthew Wilcox for an authoritative response to your
+doubts about efficiency of XArray and IDR deprecation:
+https://lore.kernel.org/lkml/20210503182629.GE1847222@casper.infradead.org/
 
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index 2b3563ae152f..131dca926bbe 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -173,6 +173,32 @@
- #define QCA808X_SS_SPEED_MASK			GENMASK(9, 7)
- #define QCA808X_SS_SPEED_2500			4
- 
-+/* Hibernation yields lower power consumpiton in contrast with normal operation mode.
-+ * when the copper cable is unplugged, the PHY enters into hibernation mode in about 10s.
-+ */
-+#define QCA808X_DBG_AN_TEST			0xb
-+#define QCA808X_HIBERNATION_EN			BIT(15)
-+
-+#define QCA808X_CDT_ENABLE_TEST			BIT(15)
-+#define QCA808X_CDT_INTER_CHECK_DIS		BIT(13)
-+#define QCA808X_CDT_LENGTH_UNIT			BIT(10)
-+
-+#define QCA808X_MMD3_CDT_STATUS			0x8064
-+#define QCA808X_MMD3_CDT_DIAG_PAIR_A		0x8065
-+#define QCA808X_MMD3_CDT_DIAG_PAIR_B		0x8066
-+#define QCA808X_MMD3_CDT_DIAG_PAIR_C		0x8067
-+#define QCA808X_MMD3_CDT_DIAG_PAIR_D		0x8068
-+#define QCA808X_CDT_DIAG_LENGTH			GENMASK(7, 0)
-+
-+#define QCA808X_CDT_CODE_PAIR_A			GENMASK(15, 12)
-+#define QCA808X_CDT_CODE_PAIR_B			GENMASK(11, 8)
-+#define QCA808X_CDT_CODE_PAIR_C			GENMASK(7, 4)
-+#define QCA808X_CDT_CODE_PAIR_D			GENMASK(3, 0)
-+#define QCA808X_CDT_STATUS_STAT_FAIL		0
-+#define QCA808X_CDT_STATUS_STAT_NORMAL		1
-+#define QCA808X_CDT_STATUS_STAT_OPEN		2
-+#define QCA808X_CDT_STATUS_STAT_SHORT		3
-+
- /* Conifg seed */
- #define QCA808X_PHY_DEBUG_LOCAL_SEED		9
- #define QCA808X_MASTER_SLAVE_SEED_ENABLE	BIT(1)
-@@ -1302,8 +1328,14 @@ static int at803x_cdt_start(struct phy_device *phydev, int pair)
- {
- 	u16 cdt;
- 
--	cdt = FIELD_PREP(AT803X_CDT_MDI_PAIR_MASK, pair) |
--	      AT803X_CDT_ENABLE_TEST;
-+	/* qca8081 takes the different bit 15 to enable CDT test */
-+	if (at803x_match_phy_id(phydev, QCA8081_PHY_ID))
-+		cdt = QCA808X_CDT_ENABLE_TEST |
-+			QCA808X_CDT_LENGTH_UNIT |
-+			QCA808X_CDT_INTER_CHECK_DIS;
-+	else
-+		cdt = FIELD_PREP(AT803X_CDT_MDI_PAIR_MASK, pair) |
-+			AT803X_CDT_ENABLE_TEST;
- 
- 	return phy_write(phydev, AT803X_CDT, cdt);
- }
-@@ -1311,10 +1343,16 @@ static int at803x_cdt_start(struct phy_device *phydev, int pair)
- static int at803x_cdt_wait_for_completion(struct phy_device *phydev)
- {
- 	int val, ret;
-+	u16 cdt_en;
-+
-+	if (at803x_match_phy_id(phydev, QCA8081_PHY_ID))
-+		cdt_en = QCA808X_CDT_ENABLE_TEST;
-+	else
-+		cdt_en = AT803X_CDT_ENABLE_TEST;
- 
- 	/* One test run takes about 25ms */
- 	ret = phy_read_poll_timeout(phydev, AT803X_CDT, val,
--				    !(val & AT803X_CDT_ENABLE_TEST),
-+				    !(val & cdt_en),
- 				    30000, 100000, true);
- 
- 	return ret < 0 ? ret : 0;
-@@ -1438,6 +1476,153 @@ static int qca83xx_config_init(struct phy_device *phydev)
- 	return 0;
- }
- 
-+static bool qca808x_cdt_fault_length_valid(int cdt_code)
-+{
-+	switch (cdt_code) {
-+	case QCA808X_CDT_STATUS_STAT_SHORT:
-+	case QCA808X_CDT_STATUS_STAT_OPEN:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static int qca808x_cable_test_result_trans(int cdt_code)
-+{
-+	switch (cdt_code) {
-+	case QCA808X_CDT_STATUS_STAT_NORMAL:
-+		return ETHTOOL_A_CABLE_RESULT_CODE_OK;
-+	case QCA808X_CDT_STATUS_STAT_SHORT:
-+		return ETHTOOL_A_CABLE_RESULT_CODE_SAME_SHORT;
-+	case QCA808X_CDT_STATUS_STAT_OPEN:
-+		return ETHTOOL_A_CABLE_RESULT_CODE_OPEN;
-+	case QCA808X_CDT_STATUS_STAT_FAIL:
-+	default:
-+		return ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC;
-+	}
-+}
-+
-+static int qca808x_cdt_fault_length(struct phy_device *phydev, int pair)
-+{
-+	int val;
-+	u32 cdt_length_reg = 0;
-+
-+	switch (pair) {
-+	case ETHTOOL_A_CABLE_PAIR_A:
-+		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_A;
-+		break;
-+	case ETHTOOL_A_CABLE_PAIR_B:
-+		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_B;
-+		break;
-+	case ETHTOOL_A_CABLE_PAIR_C:
-+		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_C;
-+		break;
-+	case ETHTOOL_A_CABLE_PAIR_D:
-+		cdt_length_reg = QCA808X_MMD3_CDT_DIAG_PAIR_D;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	val = phy_read_mmd(phydev, MDIO_MMD_PCS, cdt_length_reg);
-+	if (val < 0)
-+		return val;
-+
-+	return (FIELD_GET(QCA808X_CDT_DIAG_LENGTH, val) * 824) / 10;
-+}
-+
-+static int qca808x_cable_test_start(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	/* perform CDT with the following configs:
-+	 * 1. disable hibernation.
-+	 * 2. force PHY working in MDI mode.
-+	 * 3. for PHY working in 1000BaseT.
-+	 * 4. configure the threshold.
-+	 */
-+
-+	ret = at803x_debug_reg_mask(phydev, QCA808X_DBG_AN_TEST, QCA808X_HIBERNATION_EN, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = at803x_config_mdix(phydev, ETH_TP_MDI);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Force 1000base-T needs to configure PMA/PMD and MII_BMCR */
-+	phydev->duplex = DUPLEX_FULL;
-+	phydev->speed = SPEED_1000;
-+	ret = genphy_c45_pma_setup_forced(phydev);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = genphy_setup_forced(phydev);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* configure the thresholds for open, short, pair ok test */
-+	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8074, 0xc040);
-+	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8076, 0xc040);
-+	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8077, 0xa060);
-+	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8078, 0xc050);
-+	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807a, 0xc060);
-+	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807e, 0xb060);
-+
-+	return 0;
-+}
-+
-+static int qca808x_cable_test_get_status(struct phy_device *phydev, bool *finished)
-+{
-+	int ret, val;
-+	int pair_a, pair_b, pair_c, pair_d;
-+
-+	*finished = false;
-+
-+	ret = at803x_cdt_start(phydev, 0);
-+	if (ret)
-+		return ret;
-+
-+	ret = at803x_cdt_wait_for_completion(phydev);
-+	if (ret)
-+		return ret;
-+
-+	val = phy_read_mmd(phydev, MDIO_MMD_PCS, QCA808X_MMD3_CDT_STATUS);
-+	if (val < 0)
-+		return val;
-+
-+	pair_a = FIELD_GET(QCA808X_CDT_CODE_PAIR_A, val);
-+	pair_b = FIELD_GET(QCA808X_CDT_CODE_PAIR_B, val);
-+	pair_c = FIELD_GET(QCA808X_CDT_CODE_PAIR_C, val);
-+	pair_d = FIELD_GET(QCA808X_CDT_CODE_PAIR_D, val);
-+
-+	ethnl_cable_test_result(phydev, ETHTOOL_A_CABLE_PAIR_A,
-+				qca808x_cable_test_result_trans(pair_a));
-+	ethnl_cable_test_result(phydev, ETHTOOL_A_CABLE_PAIR_B,
-+				qca808x_cable_test_result_trans(pair_b));
-+	ethnl_cable_test_result(phydev, ETHTOOL_A_CABLE_PAIR_C,
-+				qca808x_cable_test_result_trans(pair_c));
-+	ethnl_cable_test_result(phydev, ETHTOOL_A_CABLE_PAIR_D,
-+				qca808x_cable_test_result_trans(pair_d));
-+
-+	if (qca808x_cdt_fault_length_valid(pair_a))
-+		ethnl_cable_test_fault_length(phydev, ETHTOOL_A_CABLE_PAIR_A,
-+				qca808x_cdt_fault_length(phydev, ETHTOOL_A_CABLE_PAIR_A));
-+	if (qca808x_cdt_fault_length_valid(pair_b))
-+		ethnl_cable_test_fault_length(phydev, ETHTOOL_A_CABLE_PAIR_B,
-+				qca808x_cdt_fault_length(phydev, ETHTOOL_A_CABLE_PAIR_B));
-+	if (qca808x_cdt_fault_length_valid(pair_c))
-+		ethnl_cable_test_fault_length(phydev, ETHTOOL_A_CABLE_PAIR_C,
-+				qca808x_cdt_fault_length(phydev, ETHTOOL_A_CABLE_PAIR_C));
-+	if (qca808x_cdt_fault_length_valid(pair_d))
-+		ethnl_cable_test_fault_length(phydev, ETHTOOL_A_CABLE_PAIR_D,
-+				qca808x_cdt_fault_length(phydev, ETHTOOL_A_CABLE_PAIR_D));
-+
-+	*finished = true;
-+
-+	return 0;
-+}
-+
- static int qca808x_phy_fast_retrain_cfg(struct phy_device *phydev)
- {
- 	int ret;
-@@ -1714,6 +1899,8 @@ static struct phy_driver at803x_driver[] = {
- 	.set_tunable		= at803x_set_tunable,
- 	.set_wol		= at803x_set_wol,
- 	.get_wol		= at803x_get_wol,
-+	.cable_test_start	= qca808x_cable_test_start,
-+	.cable_test_get_status	= qca808x_cable_test_get_status,
- 	.config_init		= qca808x_config_init,
- 	.read_status		= qca808x_read_status,
- 	.soft_reset		= qca808x_soft_reset,
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+In particular he says that "[] The advantage of the XArray over the IDR is that it has a better 
+API (and the IDR interface is deprecated).".
+
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> > 
+> > v3->v4: 
+> > 	Remove mutex_lock/unlock around xa_load(). These locks seem to
+> > 	be unnecessary because there is a 1:1 correspondence between
+> > 	a specific minor and its gb_tty and there is no reference
+> > 	counting. I think that the RCU locks used inside xa_load()
+> > 	are sufficient to protect this API from returning an invalid
+> > 	gb_tty in case of concurrent access. Some more considerations 
+> > 	on this topic are in the following message to linux-kernel list:
+> > 	https://lore.kernel.org/lkml/3554184.2JXonMZcNW@localhost.localdomain/
+> 
+> This just doesn't make sense (and a valid motivation would need to go in
+> the commit message if there was one).
+
+OK, I'll take your words on it. Alex Elder wrote that he guess the mutex_lock/unlock()
+around xa_load() are probably not necessary. As I said I don't yet have knowledge of 
+this kind of topics, so I was just attempting to find out a reason why. Now I know that 
+my v1 was correct in having those Mutexes as the original code with IDR had.
+>
+> > [...]
+> 
+> You can't just drop the locking here since you'd introduce a potential
+> use-after-free in case gb_tty is freed after the lookup but before the
+> port reference is taken.
+> 
+> That said, this driver is already broken since it can currently free the
+> gb_tty while there are references to the port. I'll try to fix it up...
+> 
+> >  	return gb_tty;
+> >  }
+> 
+> But as you may have gathered, I don't think doing these conversions is a
+> good idea.
+> 
+> Johan
+> 
+
+Thanks for your review,
+
+Fabio
+
+
 
