@@ -2,162 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51A53FB477
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057143FB472
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236445AbhH3LWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 07:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236397AbhH3LWf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 07:22:35 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BFFC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 04:21:41 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id bq28so30460460lfb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 04:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endian-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=BBg9bJPAKsPXjH24q/caKv/SOb7ax9p2YE/h3kXz+jQ=;
-        b=dZfQwxsYdV4KLMNWS9wu8HLRwZchYs2zAIMWHU8QRPdjnodVc4BDoiAVN4CbHpGlOj
-         lrHDG79dVFhQC9mVgL8yz9wQYqYjGEDH6giGOTcjBTSCwFFONHTPAaMMeRPSxzWjf94R
-         4f2ZWd09Iv5l8aF1wFn6iuSb8hdf7C+U9LyNszg154HzztXkdA1UnrRzY2w79PHTNuI6
-         kUVCtGShlrzc3VwS7vNgWH8dP62ViHOIU2W49K98gYFsZjLGXTgjZMkLQAoOJcSy1L6A
-         ZuwFM/akSVAmipqP2taKg88tpJK2rDeZ3sPZ8Fw1T/dvNhl5BnbYBMR0CzW9SCRe71gD
-         Hxmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=BBg9bJPAKsPXjH24q/caKv/SOb7ax9p2YE/h3kXz+jQ=;
-        b=lnxkCXgRHlJi6M4tqiCDhCaFlpxeIQnnNNt4nnjNHAS0UNYnjXmOVFXhJhp41rjbCw
-         kfXRDAavGomF/Irb50RngHg3ziPlmW07JSznsbsOIWhgwf1MCdOBAjwaQCRn+WZiwi3B
-         /CGE5WpuRLI7ziOwPsYHgUoDd6rWuR68TkIdYi3fsgz46NfJgxCA3royVPbE4dhEDCsf
-         vi2g6e9EBjmrryt8U5rEg8zNl9D4duvcLI9XH0UD0x6e0YLa/uvr8JXF5902hS58xDhz
-         z0naRXWTYoltXBj6NzKQtho+wBRh9QjLjU6NqbTKymCoRwQxYBsmEb2lYIweYgZZAfR6
-         GGLQ==
-X-Gm-Message-State: AOAM531Gbc/C6Q5ltFc/8knPHI8y5/avGZ3etzHGkDCxEkAtWcqMRJOD
-        xFCo84xoQ6+bbrHAVni436zD+A==
-X-Google-Smtp-Source: ABdhPJyf2qHIgOQh9TwRKYBKsF2jcobQWWQtrZyYMJEXLEG+MHFGQAtlKGgZtR413ZXXO18/sj2Z9A==
-X-Received: by 2002:a05:6512:3593:: with SMTP id m19mr16577137lfr.624.1630322499594;
-        Mon, 30 Aug 2021 04:21:39 -0700 (PDT)
-Received: from gmail.com ([185.213.154.232])
-        by smtp.gmail.com with ESMTPSA id s4sm1792085ljp.115.2021.08.30.04.21.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 04:21:39 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 13:21:32 +0200
-From:   Fredrik Yhlen <fredrik.yhlen@endian.se>
-To:     horia.geanta@nxp.com
-Cc:     aymen.sghaier@nxp.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andrew.smirnov@gmail.com
-Subject: HRNG in CAAM isn't working properly on IMX6 SoloX
-Message-ID: <YSy/PFrem+a7npBy@gmail.com>
+        id S236456AbhH3LUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 07:20:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235387AbhH3LUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 07:20:10 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 741396112D;
+        Mon, 30 Aug 2021 11:19:14 +0000 (UTC)
+Date:   Mon, 30 Aug 2021 12:22:24 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Peter Rosin <peda@axentia.se>
+Cc:     Liam Beguin <liambeguin@gmail.com>, lars@metafoo.de,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v8 09/14] iio: afe: rescale: fix accuracy for small
+ fractional scales
+Message-ID: <20210830122224.3efc5a63@jic23-huawei>
+In-Reply-To: <2d028a60-d1fe-7fa1-da4a-0d80f8d468ea@axentia.se>
+References: <20210820191714.69898-1-liambeguin@gmail.com>
+        <20210820191714.69898-10-liambeguin@gmail.com>
+        <2d028a60-d1fe-7fa1-da4a-0d80f8d468ea@axentia.se>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 23 Aug 2021 00:18:55 +0200
+Peter Rosin <peda@axentia.se> wrote:
 
-We're having problems with hwrng on a board with imx6sx (soloX) running Linux
-5.10.x. mainline, and I have tracked it down to this commit
-'358ba762d9f1d4ba99ab31ef12bc28014b22f4c9' as being the culprit.
+> [I started to write an answer to your plans in the v7 thread, but didn't
+> have time to finish before v8 appeared...]
+> 
+> On 2021-08-20 21:17, Liam Beguin wrote:
+> > From: Liam Beguin <lvb@xiphos.com>
+> > 
+> > The approximation caused by integer divisions can be costly on smaller
+> > scale values since the decimal part is significant compared to the
+> > integer part. Switch to an IIO_VAL_INT_PLUS_NANO scale type in such
+> > cases to maintain accuracy.  
+> 
+> The conversion to int-plus-nano may also carry a cost of accuracy.
+> 
+> 90/1373754273 scaled by 261/509 is 3.359e-8, the old code returns 3.348e-8,
+> but the new one gets you 3.3e-8 (0.000000033, it simply cannot provide more
+> digits). So, in this case you lose precision with the new code.
+> 
+> Similar problem with 100 / 2^30 scaled by 3782/7000. It is 5.032e-8, the old
+> code returns 5.029e-8, but the new one gets you the inferior 5.0e-8.
+> 
+> I'm also wondering if it is wise to not always return the same scale type?
+> What happens if we want to extend this driver to scale a buffered channel?
+> Honest question! I don't know, but I fear that this patch may make that
+> step more difficult to take??
+> 
+> Jonathan, do you have any input on that?
 
-The caam_jr driver spits out lots of messages when attempting to read from /dev/hwrng:
-```
-[29717.629041] hwrng: no data available
-[29727.859008] caam_jr 2101000.jr: 20003c5b: CCB: desc idx 60: RNG: Hardware error
-```
+I'm a bit lost.  As things currently stand IIO buffered data flows all use
+_RAW.  It's either up to userspace or the inkernel user to query scale
+and use that to compute the appropriate _processed values.  There have been
+various discussions over the years on how to add metadata but it's tricky
+without adding significant complexity and for vast majority of usecases not
+necessary.  Given the rescaler copes with _raw and _processed inputs, we
+would only support buffered flows if using the _raw ones.
 
-```
-caam_jr 2101000.jr0: 2000025b: CCB: desc idx 2: RNG: Hardware error.
-caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
-caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
-caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
-caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
-caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
-```
+If nothing changes in configuration of the rescaler, the scale should be
+static for a given device.  What format that 'scale' takes is something
+that userspace code or inkernel users should cope fine with given they
+need to do that anyway for different devices.
 
-This also happens on Boundary's Nitrogen6_soloX board when running the same
-kernel, and likewise with their latest Yocto release that uses 5.4.100 linux-imx kernel.
-
-```
-root@nitrogen6sx:~# dd if=/dev/hwrng of=/tmp/random bs=256 count=10
-[  113.940735] caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error
-dd: /dev/hwrng: Invalid argument
-root@nitrogen6sx:~# rm /tmp/random
-root@nitrogen6sx:~# dd if=/dev/hwrng of=/tmp/random bs=256 count=10
-[  125.300823] caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error
-dd: /dev/hwrng: Invalid argument
-root@nitrogen6sx:~# du -hs /tmp/random
-0       /tmp/random
-root@nitrogen6sx:~# ls -l /tmp/random
--rw-r--r--    1 root     root             0 Dec 16 17:27 /tmp/random
-root@nitrogen6sx:~#
-```
-
-And then no data is available from /dev/hwrng.
-
-The problem occurs when adding OP_ALG_PR_ON(prediction resistance) when setting up
-job descriptor for reading new random data in caamrng.c. There are also
-some confusing parts about this commit that I'm not too sure about.
-
-1. It's adding a conditional variable named 'pr_support', but I guess this only
-indicates if the MC(Management Complex) supports prediction resistance,
-since the following check can be bypassed when 'pr_support' is false.
-
-    /*
-     * If SEC has RNG version >= 4 and RNG state handle has not been
-     * already instantiated, do RNG instantiation
-     * In case of SoCs with Management Complex, RNG is managed by MC f/w.
-     */
-    if (!(ctrlpriv->mc_en && pr_support) && rng_vid >= 4) {
+Jonathan
 
 
-This will eventually lead to the following chain call: caam_probe() -> instantiate_rng() ->
-build_instantiation_desc(), where OP_ALG_PR_ON will be used through DECO.
+> 
+> Some more examples of problematic properties of this patch:
+> 
+> 21837/24041 scaled by 427/24727 is 0.01568544672, you get 0.015685446. Ok.
+> But if you reduce the input number, gcd(21837, 24041) -> 29, you have:
+> 753/829 scaled by 427/24727 which still is 0.01568544672 of course, but in
+> this case you get 0.01568154403. Which is less precise. It is unfortunate
+> that input that should be easier to scale may yield worse results.
+> 
+> 760/1373754273 scaled by 427/2727 is 8.662580e-8, and 8.662393e-8 is
+> returned. Which is perhaps not great accuracy, but such is life. However.
+> 761/1373754273 scaled by 427/2727 is 8.673978e-8, which is of course
+> greater, but 8.6e-8 is returned. Which is less than what was returned for
+> the smaller 760/1373754273 value above.
+> 
+> Some of these objections are related to what I talked about in v7, i.e.:
+> 
+>     Also, changing the calculation so that you get more precision whenever that is
+>     possible feels dangerous. I fear linearity breaks and that bigger input cause
+>     smaller output due to rounding if the bigger value has to be rounded down, but
+>     that this isn't done carefully enough. I.e. attempting to return an exact
+>     fraction and only falling back to the old code when that is not possible is
+>     still not safe since the old code isn't careful enough about rounding. I think
+>     it is really important that bigger input cause bigger (or equal) output.
+>     Otherwise you might trigger instability in feedback loops should a rescaler be
+>     involved in a some regulator function.
+> 
+> Sadly, I see no elegant solution to your problem.
+> 
+> One way forward may be to somehow provide information on the expected
+> input range, and then determine the scaling method based on that
+> instead of the individual values. But, as indicated, there's no real
+> elegance in that. It can't be automated...
+> 
+> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > ---
+> >  drivers/iio/afe/iio-rescale.c | 27 +++++++++++++++++++++++++--
+> >  1 file changed, 25 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
+> > index c408c4057c08..7304306c9806 100644
+> > --- a/drivers/iio/afe/iio-rescale.c
+> > +++ b/drivers/iio/afe/iio-rescale.c
+> > @@ -22,7 +22,7 @@ int rescale_process_scale(struct rescale *rescale, int scale_type,
+> >  			  int *val, int *val2)
+> >  {
+> >  	s64 tmp;
+> > -	s32 rem;
+> > +	s32 rem, rem2;
+> >  	u32 mult;
+> >  	u32 neg;
+> >  
+> > @@ -38,8 +38,31 @@ int rescale_process_scale(struct rescale *rescale, int scale_type,
+> >  		tmp = (s64)*val * 1000000000LL;
+> >  		tmp = div_s64(tmp, rescale->denominator);
+> >  		tmp *= rescale->numerator;
+> > -		tmp = div_s64(tmp, 1000000000LL);
+> > +
+> > +		tmp = div_s64_rem(tmp, 1000000000LL, &rem);
+> >  		*val = tmp;
+> > +
+> > +		/*
+> > +		 * For small values, the approximation can be costly,
+> > +		 * change scale type to maintain accuracy.
+> > +		 *
+> > +		 * 100 vs. 10000000 NANO caps the error to about 100 ppm.
+> > +		 */
+> > +		if (scale_type == IIO_VAL_FRACTIONAL)
+> > +			tmp = *val2;
+> > +		else
+> > +			tmp = 1 << *val2;
+> > +
+> > +		 if (abs(rem) > 10000000 && abs(*val / tmp) < 100) {
+> > +			 *val = div_s64_rem(*val, tmp, &rem2);
+> > +
+> > +			 *val2 = div_s64(rem, tmp);
+> > +			 if (rem2)
+> > +				 *val2 += div_s64(rem2 * 1000000000LL, tmp);  
+> 
+> rem2 is 32-bit. Might 1000000000LL also be 32-bit on a small machine
+> where 64-bit arithmetic is really expensive? In that case, the above
+> is broken. The safe route is to do these things as in the existing
+> code with a cast to s64. But maybe that's just cargo cult crap?
+> 
+> Cheers,
+> Peter
+> 
+> > +
+> > +			 return IIO_VAL_INT_PLUS_NANO;
+> > +		 }
+> > +
+> >  		return scale_type;
+> >  	case IIO_VAL_INT_PLUS_NANO:
+> >  	case IIO_VAL_INT_PLUS_MICRO:
+> >   
 
-static void build_instantiation_desc(u32 *desc, int handle, int do_sk)
-{
-    u32 *jump_cmd, op_flags;
-
-    init_job_desc(desc, 0);
-
-    op_flags = OP_TYPE_CLASS1_ALG | OP_ALG_ALGSEL_RNG |
-            (handle << OP_ALG_AAI_SHIFT) | OP_ALG_AS_INIT |
-            OP_ALG_PR_ON;
-    ...
-    ...
-    ...
-
-Shouldn't it be named 'mc_pr_support' instead, or something similar?
-
-2. PR is unconditionally used in caamrng.c(caam_jr module) when
-reading new RNG data. Should this be the case?
-
-Removing OP_ALG_PR_ON in caam_init_desc() from drivers/crypto/caam/caamrng.c
-seems to fix the problem we're experiencing, here's an example:
-```
-diff --git a/drivers/crypto/caam/caamrng.c b/drivers/crypto/caam/caamrng.c
-index 77d048dfe5d0..f085a80b1b3c 100644
---- a/drivers/crypto/caam/caamrng.c
-+++ b/drivers/crypto/caam/caamrng.c
-@@ -67,8 +67,7 @@ static u32 *caam_init_desc(u32 *desc, dma_addr_t dst_dma)
- {
-        init_job_desc(desc, 0); /* + 1 cmd_sz */
-        /* Generate random bytes: + 1 cmd_sz */
--       append_operation(desc, OP_ALG_ALGSEL_RNG | OP_TYPE_CLASS1_ALG |
--                        OP_ALG_PR_ON);
-+       append_operation(desc, OP_ALG_ALGSEL_RNG | OP_TYPE_CLASS1_ALG);
-        /* Store bytes: + 1 cmd_sz + caam_ptr_sz  */
-        append_fifo_store(desc, dst_dma,
-                          CAAM_RNG_MAX_FIFO_STORE_SIZE, FIFOST_TYPE_RNGSTORE);
-```
-
-Best regards,
-Fredrik
