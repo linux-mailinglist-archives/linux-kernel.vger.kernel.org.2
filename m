@@ -2,132 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA773FB65E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088203FB675
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236598AbhH3MtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:49:21 -0400
-Received: from mail-bn8nam12on2086.outbound.protection.outlook.com ([40.107.237.86]:19297
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234622AbhH3MtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:49:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PdnrRHQrmQZdCqqz8rPZ42+lcmmgHZZP8rqFT1YIPLiYDVDtmyySh75Ji4IGcEN2hLFnKLAQmv8dO/lbF8x30RaQojn1VxuAhCiLhNcpxlzAHiRdPzvYe8IjZPpii+zvS2lvA9FIt6oFsPCyX36NTVNLo/jJatk26jF0gqFeKHvhy7x8ra99uGerDZd42rW0C/UktmpafqrQe5Q2DxyNnQYqtCbaTUfVdJFGfO87XwAdyw5Ukr/DeTXslPeUbs+Kv38Snx0vz1SzyBeUWztm031STuN63blSCfJgKWiY+i33MjMaL4aEdUYBjdc5jyiWBugEHqANRBfJuoVUl+IKxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l8B+sPJfdxcQXkDX/NTqw/Jrz3nFpz0eXYkQ26WxUBA=;
- b=OeyLkQvFcTdBsAcKD7RNyfurORxOy7Ta2zg/jX3UrlHyn/G21v/YyvQitSHs18F2rysVxc19LTYZDZlVWBluOkx1Nvf5Z2LrY2cMKpEICpzVUPzoqjfxcnFASG0fRmttTun1xU+9gcZEqj5WdP7XmVLus7QhiK8IPIEpyjNklA8pst4YFu+M7HKqq2+hRpq9QBdjfVREuwkGyoQLKO/9ouH33i/8RPvSnsDnEB/dzr/8RnBFU02JxzPkdHLtcxBhbhiZQbxdb1QqsGifJkXGwu6FDZhXXnUqqA1YBLuPuyvGc+9QedKOm4hmBVerNBU3c0GIA76bflvejr+JDRRlMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l8B+sPJfdxcQXkDX/NTqw/Jrz3nFpz0eXYkQ26WxUBA=;
- b=NuWjqyKuH0mihkuYq50RA28c/2pHUk9LPykvz0MQWsQHs1/AjbYwj+mxaVmEPxG4SaCagjg2D2Y1ugYE50iYh5PfU5YC2dUFfTGjySnwf0kEia//yQejwwzx5SLSrNIpaETRMPgxNmE3lyvNtdPKcGgL3AnL1itk9qy5wHlKrYtRHRBufdpu1KEdTL7jY+TENRj2tDxcJUS9xNP/PS+kqIGG3diGB1wZLHfhuLRx9pmTDIpQj92I+wdh4i6S81k0/oZG6KdtUZpJhMlOwUIJUj5aoJoN9q/skZ7U9so7DrWZ0p94swJ8LqcI48IAUeYzECRNiW9PGAofttRfEbFDbQ==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5351.namprd12.prod.outlook.com (2603:10b6:208:317::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Mon, 30 Aug
- 2021 12:48:23 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%6]) with mapi id 15.20.4457.024; Mon, 30 Aug 2021
- 12:48:23 +0000
-Date:   Mon, 30 Aug 2021 09:48:22 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Lior Nahmanson <liorna@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Meir Lichtinger <meirl@nvidia.com>
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: Relax DCS QP creation checks
-Message-ID: <20210830124822.GA1675935@nvidia.com>
-References: <3e7b3363fd73686176cc584295e86832a7cf99b2.1630320354.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3e7b3363fd73686176cc584295e86832a7cf99b2.1630320354.git.leonro@nvidia.com>
-X-ClientProxiedBy: MN2PR20CA0001.namprd20.prod.outlook.com
- (2603:10b6:208:e8::14) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S236797AbhH3Mum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236764AbhH3Muk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 08:50:40 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA78C061575;
+        Mon, 30 Aug 2021 05:49:46 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id fs6so9402412pjb.4;
+        Mon, 30 Aug 2021 05:49:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RBa6XNcbe4ciTI3q+7e6ZHUg6UZgMEgwHfZfyY6RHE8=;
+        b=RbuuaXgZdVejw9R0ZYT7ymT15yDRi0AGA3s6fyI/6kZV+oAQ5NIOS7osvI7TeKHxx2
+         orHBDXE02J34qEA8uONT22Ih2Wuw7WP83FzCzvVvtSR+VtK0gLF4HWotGc2e75YaPAXb
+         0IvzYM4O0dmo+ZyCWmxWrggr+QS+a0V3ZMPvuyzjFzrdI3TFz8c4D78t9SjFiygc33st
+         IsDu3aCe3lJtrIqQY0ozF3zZ+ilLOOl+QjMFA83CBXhsXRYSARAy15gngtW+ArwdK/KW
+         PbqJjpE86Pv7UuR/KPput7vAOV08LYOvvp1adXx1vTwzMgNMu8O7/QNZQk6RCR0TmzG5
+         BnYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RBa6XNcbe4ciTI3q+7e6ZHUg6UZgMEgwHfZfyY6RHE8=;
+        b=K2GxL9Mw9jf8oFV5NOv68t4tXodSavVV6kv7ofEH0uoN2w4w02qiuhZuWe7heK3M7Z
+         tBxZp6Ghqupdp/RzSTVtJcY/enPaLjX33aj7JdUiFVjwpQSMdDjmHmINFqD/UlOyqhCx
+         HU7Tqp+YSizIr74WZ9D6NEkHx0iLh2QxcjkSxWG1fytDp0rq9KOSGPJp+69bu7bBWX/e
+         H8NwqaLIqh7edN8+422Mq9NZwgMyFtL3GeOuMdE/VI9iHVJLWkxwtcvX81XF1sTlFAqq
+         KpomV0XC+6EOZH4LuC5K4kRwn90hhx+ek1hrbdpu8pAqQRMRqN1yiq6nEUAh/gW4pGVf
+         fzog==
+X-Gm-Message-State: AOAM530ZWkbKF5qCtmWpK6KBkuLWFzuQkpYy4pshGYa5xDNJ3D+G+4rb
+        CqN7a5vNAatreTXuSDYLdeCr5/2JJGeNaTfem0g=
+X-Google-Smtp-Source: ABdhPJzlagPfk+4rGPg3hrq6YFcqGyr6ThU2PHxTPXyomt5BdcUT47bJylEVd8JAum6mmpkmJxqDL70MUp3Sgt4KLMg=
+X-Received: by 2002:a17:90a:6502:: with SMTP id i2mr39415492pjj.129.1630327786006;
+ Mon, 30 Aug 2021 05:49:46 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR20CA0001.namprd20.prod.outlook.com (2603:10b6:208:e8::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18 via Frontend Transport; Mon, 30 Aug 2021 12:48:22 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mKgi6-0071zq-30; Mon, 30 Aug 2021 09:48:22 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a1c2f834-abd4-4a65-055e-08d96bb473b1
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5351:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB53519204B0CD9FFA80D5DD59C2CB9@BL1PR12MB5351.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lCUQbXHtJS7SR3PEQV3DxROPQtiPPLDZTTVsRDjSYWDpdJ1optjfw9Xv5w7xnlnH7XhoVB3pdQwb/VrxE2IAAowpxUzrcSU9RU5emlZ1wzvXdbyWAbj/lXBwXrYOI1zdMpsCtt/DDBo2AYqz82PoNIFdKmnqwIYE764XcwgsaavLKSrBse24obeNBsWdcznYbTH1u6u1nXOfaTmmayt2dMKYL2GwT68zG7mSYi5c2EJw86tcXajggRdkHocRc7tc8sBSgxAPSl7EUnbOIa+cBC3L0Y3rgCPld/t9pahVzC54Ck9Azyhm67t4yhBqe7NGa8DJYy4pU9tWTAj0E4ZF/9aMCxzON3pGcBpitxewZ1c+Y+fsgf0pEn5oe59kZjtceLVq/6yiZ7Ff98haYNDOUZjd/QbJJb27+P0Xf982qIXSr1lAe7i18w4xGNHFEl9Zbglst4sotBt55FiQBXuOJa1T/01Q7D2gBj1gOqoKB8/CbPOhdK+QC+2jQubn2HRXK+Z3cjr65o3spNfnYwismWH7gzsS1HzETghfoPsKgsQAxjLHpk9ms3Nf0PinAX9sBoI431SsiywNNa48S4sxjXd6C7WKbaw+Otibr6wJx+hGF/lvvj3tlG9zqNYtD5hcLGaicfr4uiO4m3/c82KXNw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(136003)(346002)(376002)(186003)(478600001)(4744005)(2616005)(2906002)(5660300002)(107886003)(9746002)(66556008)(8676002)(86362001)(8936002)(6916009)(1076003)(4326008)(9786002)(26005)(33656002)(54906003)(66476007)(83380400001)(36756003)(66946007)(38100700002)(316002)(426003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yfCBk1tHeQ55zEHlGD7Abbadmz9pBNG8KAEqk8GSsjWA8tHxaz0FA8gDCDv/?=
- =?us-ascii?Q?4kqCKF8wVIWiTJ1GsSWCATX4upiooYnJZ5Bc6QgFnZSDAFalG1hWivNOSkFD?=
- =?us-ascii?Q?nJ7GfMZn0bQK+X62y/ovB6D/1YfBX/RFHaEtdIEGT2c7O9mLTjGkcon152jx?=
- =?us-ascii?Q?CQXcjcuYFGsbMzJpxa8vQ+LsoThg1Dnw9zIvkRrQksu0Gveezc1MdhGxQsoC?=
- =?us-ascii?Q?lq82TCnL+i/xUisALkhQmun0uB5Ot6v8eOEsGCDCGLy1PE6fRjlx3Tbn+IR5?=
- =?us-ascii?Q?DIfMp1QKh9MQuenlKoXm4rHnRsftwQwVC3FLOntHMefKcWzaSymwGkG1wH+q?=
- =?us-ascii?Q?ZVzTjFAWFJTfAZhAGxuC/XzDQ3UyqS6Gr7IMb+M4bNQ8KGBr4X7uERJsSHBz?=
- =?us-ascii?Q?gQdpKlXqVSjLFsBnKMoAaCeHwADgt9xmQQiiq93KJKaDbbsBDyqM9GmowxLF?=
- =?us-ascii?Q?64Kw2RyK4RqUVWVAUQ44AOinJijwtaGVEVvjTFGcT2FGs2ZJJKVDbsnfiY/q?=
- =?us-ascii?Q?pWfJfiv/x0TkizUWaJuSU8h+fD37vggo48ad+LOvy9w6WdMhjFOz7ThTBLQP?=
- =?us-ascii?Q?gVASXfO4BnnrLoqqMgyaqJBOK6ALPT1w2qBKriW8LB5HfC7psK/CKfBXlYdF?=
- =?us-ascii?Q?qI5+Dw0pUBly8SPLy7QtM9zCOdbI8rnJvPzdIut937lPXVETWCniOonjpsM1?=
- =?us-ascii?Q?sJE/V8efVzVf2lgboTMhXnATHSQcz0TruFV+7LysrL7b4lhtyRKXMpYvBc3R?=
- =?us-ascii?Q?+Mzr0T1S2kerUoHgvShoFnV2V4f+DR8KUGMFRFXU6sZgcoFp8GOdRS2AdOuu?=
- =?us-ascii?Q?C90S99wK4hrpDqGN7PilRUWEZ9xhCm/FJoXGtA4m5RaRicp+0n+2qc5FVdbp?=
- =?us-ascii?Q?XXmQkEfN79OIsVtoh6pAwvgBlbsSt3LOKe35oY+pmXgB7+aJfSA4FyPSDWCV?=
- =?us-ascii?Q?IXgzdLsB3Xm7FscUk4h87Dc0blyNxjSvJWxl23IW+K8Kr4UO+w8veBUHMDaZ?=
- =?us-ascii?Q?VKMBL7rfgV5Meby21+YHM8IgYPL5mTWwlCmKh4xZWclcaNmWU46Q8Zr1ReUS?=
- =?us-ascii?Q?WgF0gVFwHfVcV5qvyH/T+mdHbPHDyrCbniwBEQ9sum8a3oFrsv4EI+PMp8Ra?=
- =?us-ascii?Q?PEaKnmTVxKw8/Yq87gOlfwmj9zg8cE+//OKGjajNrgybcDvQlXSU/ffxf5mF?=
- =?us-ascii?Q?3wGm8xw1uV7KL5wGsLed027DwUPTOEQgfmhWVIxuOynT43xK4wiU3eLgMICG?=
- =?us-ascii?Q?7r3XFw4658tfEn2oyyN02yB34QblKH3gxx/CUZ2oK/yv5+by71lB221EaOtX?=
- =?us-ascii?Q?VTM0iB24HIWBpUCRvrSQOuyG?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1c2f834-abd4-4a65-055e-08d96bb473b1
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2021 12:48:23.0405
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8xCYvJDDQNNo6WPoNjXWDOeJNRWsNIqJDyg45ZVf6pALj+YJ8KKYPB59YRJFbLUu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5351
+References: <20210830123704.221494-1-verdre@v0yd.nl> <20210830123704.221494-2-verdre@v0yd.nl>
+In-Reply-To: <20210830123704.221494-2-verdre@v0yd.nl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 30 Aug 2021 15:49:09 +0300
+Message-ID: <CAHp75VeAKs=nFw4E20etKc3C_Cszyz9AqN=mLsum7F-BdVK5Rg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
+To:     =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 01:48:49PM +0300, Leon Romanovsky wrote:
-> From: Lior Nahmanson <liorna@nvidia.com>
-> 
-> In order to create DCS QPs, we don't need to rely on both
-> log_max_dci_stream_channels and log_max_dci_errored_streams capabilities.
-> 
-> Fixes: 11656f593a86 ("RDMA/mlx5: Add DCS offload support")
-> Signed-off-by: Lior Nahmanson <liorna@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
-> Jason,
-> 
-> Please add this patch in the upcoming PR for the feature that was
-> accepted in this cycle.
-> 
-> Thanks
-> ---
->  drivers/infiniband/hw/mlx5/qp.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+On Mon, Aug 30, 2021 at 3:38 PM Jonas Dre=C3=9Fler <verdre@v0yd.nl> wrote:
+>
+> On the 88W8897 card it's very important the TX ring write pointer is
+> updated correctly to its new value before setting the TX ready
+> interrupt, otherwise the firmware appears to crash (probably because
+> it's trying to DMA-read from the wrong place).
+>
+> Since PCI uses "posted writes" when writing to a register, it's not
+> guaranteed that a write will happen immediately. That means the pointer
+> might be outdated when setting the TX ready interrupt, leading to
+> firmware crashes especially when ASPM L1 and L1 substates are enabled
+> (because of the higher link latency, the write will probably take
+> longer).
+>
+> So fix those firmware crashes by always forcing non-posted writes. We do
+> that by simply reading back the register after writing it, just as a lot
+> of other drivers do.
+>
+> There are two reproducers that are fixed with this patch:
+>
+> 1) During rx/tx traffic and with ASPM L1 substates enabled (the enabled
+> substates are platform dependent), the firmware crashes and eventually a
+> command timeout appears in the logs. That crash is fixed by using a
+> non-posted write in mwifiex_pcie_send_data().
+>
+> 2) When sending lots of commands to the card, waking it up from sleep in
+> very quick intervals, the firmware eventually crashes. That crash
+> appears to be fixed by some other non-posted write included here.
 
-Applied to for-next, thanks
+Thanks for all this work!
 
-Jason
+Nevertheless, do we have any commits that may be a good candidate to
+be in the Fixes tag here?
+
+> Signed-off-by: Jonas Dre=C3=9Fler <verdre@v0yd.nl>
+> ---
+>  drivers/net/wireless/marvell/mwifiex/pcie.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wi=
+reless/marvell/mwifiex/pcie.c
+> index c6ccce426b49..bfd6e135ed99 100644
+> --- a/drivers/net/wireless/marvell/mwifiex/pcie.c
+> +++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
+> @@ -237,6 +237,12 @@ static int mwifiex_write_reg(struct mwifiex_adapter =
+*adapter, int reg, u32 data)
+>
+>         iowrite32(data, card->pci_mmap1 + reg);
+>
+> +       /* Do a read-back, which makes the write non-posted, ensuring the
+> +        * completion before returning.
+
+> +        * The firmware of the 88W8897 card is buggy and this avoids cras=
+hes.
+
+Any firmware version reference? Would be nice to have just for the
+sake of record.
+
+> +        */
+> +       ioread32(card->pci_mmap1 + reg);
+> +
+>         return 0;
+>  }
+
+
+--=20
+With Best Regards,
+Andy Shevchenko
