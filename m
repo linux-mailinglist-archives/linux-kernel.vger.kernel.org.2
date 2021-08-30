@@ -2,202 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3143FB9CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DB13FB9C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237988AbhH3QIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237983AbhH3QIj (ORCPT
+        id S237957AbhH3QHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:07:40 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:42980 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237682AbhH3QHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:08:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C08C061575;
-        Mon, 30 Aug 2021 09:07:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Eg5dRL4ThP5A+i9mC7RmGG1asnzaM0TTAEYM53xu7aw=; b=PwFAy3Jg2pKL70AY35Bj6q79Ls
-        P6glow5EbR+riL8YlzMK8ePgvAcMWs4IJUs6t5l3sjsHRq60LFon8lMxAWmghV/mrAtNFdQu/2m11
-        +K/Jcl/9A/S3LNxIq0xb5OXcuUDHWlPYZwnyVQAHtnF4VmqIazoHfFXGbc9lD/6MOTRuABXsFkVgT
-        3JEXx8aN0kZOl2rIdXsnNcdskwGomdGurslg1WxHuNWbjcK+oORtZZpXrTLbsxMeyFw4x3OdO9GQm
-        hXr+Cy1F2ygwfkRHfQ4z0Wt79pj1IzcLWU9vxLMb8AYrFGSNOFXRSjTmegPPS6hSw5de2rQHQfR5w
-        J9Jzm4Lg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKjns-000J5U-4D; Mon, 30 Aug 2021 16:06:59 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1DF963002BA;
-        Mon, 30 Aug 2021 18:06:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 063F92C7F610C; Mon, 30 Aug 2021 18:06:31 +0200 (CEST)
-Date:   Mon, 30 Aug 2021 18:06:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        kajoljain <kjain@linux.ibm.com>, Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 1/3] perf: enable branch record for software
- events
-Message-ID: <YS0CBphTuIdTWEXF@hirez.programming.kicks-ass.net>
-References: <20210826221306.2280066-1-songliubraving@fb.com>
- <20210826221306.2280066-2-songliubraving@fb.com>
- <20210830102258.GI4353@worktop.programming.kicks-ass.net>
- <F70BD5BE-C698-4C53-9ECD-A4805CB2D659@fb.com>
+        Mon, 30 Aug 2021 12:07:39 -0400
+Received: by mail-wm1-f46.google.com with SMTP id k20-20020a05600c0b5400b002e87ad6956eso360329wmr.1;
+        Mon, 30 Aug 2021 09:06:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=lI18TvRw73yAlqH1vs/eUgEBLdxdcJZcXEoVMwFprjI=;
+        b=rSsbxR0v5E9vbQZVvumlFzppX2zFeUwCELMo1F+jDZrau/JtAomkir8p2Ed299RPoz
+         8S+UnYcrJ0Ij6A5X4ZWLg9Ds+fdmXMMowNq8H17O3hEizSkq9iEhJSD7lvDFSt1VICdU
+         bwhzbhci+UQodMO8cTK7UoBNduc+v8qAQODbX+NLpefSlf4dVhAfi8/UFUXe7M6WRENo
+         3heuuzpg/eGTqnFyIe+YYQXmtLsN+7T4eHCR3CiEy/y1JHnWm2ulujmipCBwWGdC2AG9
+         rIEE8wQizUFcfsxr9wTYhTWjFyuZu8qe0QwJb9jx0O30EWWUQMnDSfetbi6j5mwXHuFV
+         ThlQ==
+X-Gm-Message-State: AOAM532J12pRNJPM+Iy7dCJ9H/HTtLk6pFxTQymV466BZnR2bfkgZhJe
+        4unKg/Bfa6ObaCjtfVLApx5Kmo/r83eflw==
+X-Google-Smtp-Source: ABdhPJz4UbbvQLnrjjaJud6LBo7F3PB+mQ+z+4aSK5uL+M3DxshWfrxVtfQpGM5RVMwk0cbImrxirA==
+X-Received: by 2002:a7b:cc16:: with SMTP id f22mr33124661wmh.99.1630339604953;
+        Mon, 30 Aug 2021 09:06:44 -0700 (PDT)
+Received: from Johanness-MBP.fritz.box ([2001:a62:1533:3701:9cbd:e8f2:43f7:60cc])
+        by smtp.gmail.com with ESMTPSA id s1sm9933008wrs.53.2021.08.30.09.06.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 09:06:44 -0700 (PDT)
+Subject: Re: [PATCH] mcb: fix error handling in mcb_alloc_bus()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andreas Werner <andreas.werner@men.de>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <YLX7bAD4UPCpIBmq@mwanda>
+ <c4cffc84-be11-6558-60aa-a5217963b1f6@kernel.org>
+ <20210830140856.GX7722@kadam>
+From:   Johannes Thumshirn <jth@kernel.org>
+Message-ID: <c2fe69bd-316a-b255-9957-9beab6ed60fe@kernel.org>
+Date:   Mon, 30 Aug 2021 18:06:43 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <F70BD5BE-C698-4C53-9ECD-A4805CB2D659@fb.com>
+In-Reply-To: <20210830140856.GX7722@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 03:25:44PM +0000, Song Liu wrote:
-> Thanks for these information! I did get confused these macros for quite a 
-> while. Let me try with the _RET0 version.
+Am 30.08.21 um 16:08 schrieb Dan Carpenter:
+> On Tue, Jun 01, 2021 at 03:23:55PM +0200, Johannes Thumshirn wrote:
+>>
+>> Am 01.06.21 um 11:18 schrieb Dan Carpenter:
+>>> There are two bugs:
+>>> 1) If ida_simple_get() fails then this code calls put_device(carrier)
+>>>    but we haven't yet called get_device(carrier) and probably that
+>>>    leads to a use after free.
+>>> 2) After device_initialize() then we need to use put_device() to
+>>>    release the bus.  This will free the internal resources tied to the
+>>>    device and call mcb_free_bus() which will free the rest.
+>>>
+>>> Fixes: 5d9e2ab9fea4 ("mcb: Implement bus->dev.release callback")
+>>> Fixes: 18d288198099 ("mcb: Correctly initialize the bus's device")
+>>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>>>
+>> Thanks applied
+> This is still not in linux-next.
+>
+> regards,
+> dan carpenter
 
-Does you kernel have:
+Hi Dan,
 
-  9ae6ab27f44e ("static_call: Update API documentation")
+Greg asked me to resend the patch with Cc stable and I totally forgot to
+do that, my bad.
 
-?
+I'll do that ASAP once the merge window opens again or earlier if Greg
+is OK with it.
 
-With that included, the comment at the top of static_call.h reads like
-the below. Please let me know where you think this can be improved.
-
-
-/*
- * Static call support
- *
- * Static calls use code patching to hard-code function pointers into direct
- * branch instructions. They give the flexibility of function pointers, but
- * with improved performance. This is especially important for cases where
- * retpolines would otherwise be used, as retpolines can significantly impact
- * performance.
- *
- *
- * API overview:
- *
- *   DECLARE_STATIC_CALL(name, func);
- *   DEFINE_STATIC_CALL(name, func);
- *   DEFINE_STATIC_CALL_NULL(name, typename);
- *   DEFINE_STATIC_CALL_RET0(name, typename);
- *
- *   __static_call_return0;
- *
- *   static_call(name)(args...);
- *   static_call_cond(name)(args...);
- *   static_call_update(name, func);
- *   static_call_query(name);
- *
- *   EXPORT_STATIC_CALL{,_TRAMP}{,_GPL}()
- *
- * Usage example:
- *
- *   # Start with the following functions (with identical prototypes):
- *   int func_a(int arg1, int arg2);
- *   int func_b(int arg1, int arg2);
- *
- *   # Define a 'my_name' reference, associated with func_a() by default
- *   DEFINE_STATIC_CALL(my_name, func_a);
- *
- *   # Call func_a()
- *   static_call(my_name)(arg1, arg2);
- *
- *   # Update 'my_name' to point to func_b()
- *   static_call_update(my_name, &func_b);
- *
- *   # Call func_b()
- *   static_call(my_name)(arg1, arg2);
- *
- *
- * Implementation details:
- *
- *   This requires some arch-specific code (CONFIG_HAVE_STATIC_CALL).
- *   Otherwise basic indirect calls are used (with function pointers).
- *
- *   Each static_call() site calls into a trampoline associated with the name.
- *   The trampoline has a direct branch to the default function.  Updates to a
- *   name will modify the trampoline's branch destination.
- *
- *   If the arch has CONFIG_HAVE_STATIC_CALL_INLINE, then the call sites
- *   themselves will be patched at runtime to call the functions directly,
- *   rather than calling through the trampoline.  This requires objtool or a
- *   compiler plugin to detect all the static_call() sites and annotate them
- *   in the .static_call_sites section.
- *
- *
- * Notes on NULL function pointers:
- *
- *   Static_call()s support NULL functions, with many of the caveats that
- *   regular function pointers have.
- *
- *   Clearly calling a NULL function pointer is 'BAD', so too for
- *   static_call()s (although when HAVE_STATIC_CALL it might not be immediately
- *   fatal). A NULL static_call can be the result of:
- *
- *     DECLARE_STATIC_CALL_NULL(my_static_call, void (*)(int));
- *
- *   which is equivalent to declaring a NULL function pointer with just a
- *   typename:
- *
- *     void (*my_func_ptr)(int arg1) = NULL;
- *
- *   or using static_call_update() with a NULL function. In both cases the
- *   HAVE_STATIC_CALL implementation will patch the trampoline with a RET
- *   instruction, instead of an immediate tail-call JMP. HAVE_STATIC_CALL_INLINE
- *   architectures can patch the trampoline call to a NOP.
- *
- *   In all cases, any argument evaluation is unconditional. Unlike a regular
- *   conditional function pointer call:
- *
- *     if (my_func_ptr)
- *         my_func_ptr(arg1)
- *
- *   where the argument evaludation also depends on the pointer value.
- *
- *   When calling a static_call that can be NULL, use:
- *
- *     static_call_cond(name)(arg1);
- *
- *   which will include the required value tests to avoid NULL-pointer
- *   dereferences.
- *
- *   To query which function is currently set to be called, use:
- *
- *   func = static_call_query(name);
- *
- *
- * DEFINE_STATIC_CALL_RET0 / __static_call_return0:
- *
- *   Just like how DEFINE_STATIC_CALL_NULL() / static_call_cond() optimize the
- *   conditional void function call, DEFINE_STATIC_CALL_RET0 /
- *   __static_call_return0 optimize the do nothing return 0 function.
- *
- *   This feature is strictly UB per the C standard (since it casts a function
- *   pointer to a different signature) and relies on the architecture ABI to
- *   make things work. In particular it relies on Caller Stack-cleanup and the
- *   whole return register being clobbered for short return values. All normal
- *   CDECL style ABIs conform.
- *
- *   In particular the x86_64 implementation replaces the 5 byte CALL
- *   instruction at the callsite with a 5 byte clear of the RAX register,
- *   completely eliding any function call overhead.
- *
- *   Notably argument setup is unconditional.
- *
- *
- * EXPORT_STATIC_CALL() vs EXPORT_STATIC_CALL_TRAMP():
- *
- *   The difference is that the _TRAMP variant tries to only export the
- *   trampoline with the result that a module can use static_call{,_cond}() but
- *   not static_call_update().
- *
- */
+Byte,
+    Johannes
