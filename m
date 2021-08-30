@@ -2,132 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4B53FBD9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CD53FBDAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235846AbhH3Uuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52728 "EHLO
+        id S235412AbhH3U6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 16:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhH3Uue (ORCPT
+        with ESMTP id S233969AbhH3U6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:50:34 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42BDC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:49:40 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id u3so33819384ejz.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:49:40 -0700 (PDT)
+        Mon, 30 Aug 2021 16:58:15 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE8BC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:57:21 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id ml19-20020a17090b361300b00196588f5090so263067pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:57:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QwGrx3DZXcDFxxZinjWxnatOl75Xen4FtkBd/Z3DLhI=;
-        b=Sl9vplX5DLdVbrtFEFZTDDYKI71oUji9/VLjm7L93tkMzl54Dx7zV8IHdaz7/uHsrN
-         /d/7Pkm0zAexE22PnCkp1aoy24E5IojeuEFTPSBbJTi2V3NrC53iUIN4f0fwUc2mJDU2
-         rD+IO2iRyOiETDEuhuZ8G1AQZhUP0UfO/ZcS8+KDZ5uZNJV/7t6j7AhzZXQCeVCgJ4Jo
-         RkH2C/8vfbu6CU7ZM77JbnWa2CCzTZHrMR8Rj4po1uUYMi2NDfi9ryo4Tj2xBdcwzqWM
-         tigAIC3LAL2KkcRmz5NBmPGticq33ya88WtHaSPBs5F1RqjTYaZU36mSNu9usE4OZfqI
-         012g==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=qQlkZxCZKnPJMcE0Oq5p1b0zS1PuedDR0ng2hng3Vck=;
+        b=URLkGxYvi4dBsZzh96zP2kS+YcEDsz3DGH6wz7BYGUfXshLjwU1mhGJWiWu2oHYcf4
+         WhwdD1CHVOh/yBtaJ7Bx+gDMZyEnqFttVGrHccs8WkSGbmS+QkbCk7FGHP2mwpCoANSW
+         Btbg+akgj3u6dioHCLAPaMQhMEQZfY+ambjPjtN6imFnVsDb5hSRPv8513n1YALFO2Q3
+         c3xzxgG0It4Wlq4WVkIQssCbhrsnkHiJcdoPlKXaDp4Uyod+7alcbfJ5yyEZXmFcG616
+         GhkEQBvh9zmRLVqUXPWGtx9P5/voI2XIZiYlNJby7IqS/HFrRO91Ru3avPdaIqCxgWH3
+         ShRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QwGrx3DZXcDFxxZinjWxnatOl75Xen4FtkBd/Z3DLhI=;
-        b=MI4+hK7XY1ki+qEZ3Oi6PqdHrXOvaeZthHcqUkFGunSKW6qHkNKiHwsOtGGKDCeRAm
-         adGJaHF2IXFKcDQ2ZcqoxGAs4A+SC+PNAJ4FRn9WGGUp++jMYZAXt5M9dPdJDbNSFBgO
-         CrQ9mYp3iGeQ6GBKIe7q6EG+zH7wlGHIhX9Gqr/8WfHX7JmHbclvaGvQVZDoAUi9Wuu7
-         7p4KNtLc/m3caBkWDxwqM4p57H452rDAHjBge+u80JKKakKJcSyTQ/OyirGmpkGcOgHv
-         gIjqGmHmRE2RtXjeo7k3pYjz5PiD1iEi3sSuoBwpjK/MSM3MKTycKPREqa5gk6OxIchs
-         Bgsg==
-X-Gm-Message-State: AOAM532HMAMrKI8WQCN9veDsYvP7Mj4+JG7g1su5rq1b1HalX64CXrs4
-        V5DwYHd8rqpVCN0LSovOGZw=
-X-Google-Smtp-Source: ABdhPJyH022G1mTKT1wDyArDNInyC7uX4awGVpVzyYmdox3yySaa0R+0EfEbw3xseEJ2hRSFG9TGEw==
-X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr27593494ejc.494.1630356579251;
-        Mon, 30 Aug 2021 13:49:39 -0700 (PDT)
-Received: from jernej-laptop.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id s23sm8345620eds.12.2021.08.30.13.49.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 13:49:38 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        =?utf-8?B?Q2zDqW1lbnQgQsWTc2No?= <u@pkh.me>
-Cc:     Willy Liu <willy.liu@realtek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?B?Q2zDqW1lbnQgQsWTc2No?= <u@pkh.me>
-Subject: Re: [PATCH] arm64: dts: sun50i: h5: NanoPI Neo 2: phy-mode rgmii-id
-Date:   Mon, 30 Aug 2021 22:49:37 +0200
-Message-ID: <116454729.UZi3dMzWh7@jernej-laptop>
-In-Reply-To: <20210830151645.18018-1-u@pkh.me>
-References: <20210830151645.18018-1-u@pkh.me>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=qQlkZxCZKnPJMcE0Oq5p1b0zS1PuedDR0ng2hng3Vck=;
+        b=lhwpxv7AY1owItkvaITRJ3H8qrdJuUdTcwTIC7Al1GRvJ6RB7hGY/5tExyx9StJmBx
+         zs0eP/rL34p/PajkvOjR85n1H1pDuIYIfDW19uB8yX8+8yCQsXxhkAN2TzX8VNcRjdS3
+         ApccmyIQNLJ0e86qfjYyEW0hNwJ7/tIRoBi4hwkfAFzzICL+4V5LUXFzgNp7QuBeS36B
+         NkOyXpCMRGZ7inb2Fld0s2mJQheQcUrJ/aWdMMNVw3D66n8WI7TXr6rEVh/XnUS+QnHU
+         ByUr5ajTF6gACzDGGRG+uKjCn+xaeA+EqO0p92IWW8nYCY4fCLpUTqeDrOGeaNpeQ/vb
+         IqBw==
+X-Gm-Message-State: AOAM531fE3GRRv5UbjrkcE5Ax6ieUa3tF2wRycBTIPNLz8QTsKCHSRlg
+        xjrBFwKk0C3zwYQx249YrwKMVh9qrLg=
+X-Google-Smtp-Source: ABdhPJy3d63pj/GuNIeIvbohTcbMiChxRm64WcL3v5zRARS2U6xfUqQhkHq05xHNnh0dqQm1+DtipePdDl8=
+X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:e552:6d5e:b69d:968c])
+ (user=pgonda job=sendgmr) by 2002:a05:6a00:b4e:b0:3eb:1c8d:d5d8 with SMTP id
+ p14-20020a056a000b4e00b003eb1c8dd5d8mr24459675pfo.67.1630357040822; Mon, 30
+ Aug 2021 13:57:20 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 13:57:14 -0700
+Message-Id: <20210830205717.3530483-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+Subject: [PATCH 0/2 V6] Add AMD SEV and SEV-ES intra host migration support
+From:   Peter Gonda <pgonda@google.com>
+To:     kvm@vger.kernel.org
+Cc:     Peter Gonda <pgonda@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Intra host migration provides a low-cost mechanism for userspace VMM
+upgrades.  It is an alternative to traditional (i.e., remote) live
+migration. Whereas remote migration handles moving a guest to a new host,
+intra host migration only handles moving a guest to a new userspace VMM
+within a host.  This can be used to update, rollback, change flags of the
+VMM, etc. The lower cost compared to live migration comes from the fact
+that the guest's memory does not need to be copied between processes. A
+handle to the guest memory simply gets passed to the new VMM, this could
+be done via /dev/shm with share=on or similar feature.
 
-Dne ponedeljek, 30. avgust 2021 ob 17:16:45 CEST je Cl=C3=A9ment B=C5=93sch=
- napisal(a):
-> Since commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
-> config") network is broken on the NanoPi Neo 2.
->=20
-> This patch changes the phy-mode to use internal delays both for RX and
-> TX as has been done for other boards affected by the same commit.
->=20
-> Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
+The guest state can be transferred from an old VMM to a new VMM as follows:
+1. Export guest state from KVM to the old user-space VMM via a getter
+user-space/kernel API 2. Transfer guest state from old VMM to new VMM via
+IPC communication 3. Import guest state into KVM from the new user-space
+VMM via a setter user-space/kernel API VMMs by exporting from KVM using
+getters, sending that data to the new VMM, then setting it again in KVM.
 
-This commit fixes DT issue, so "fixes" tag should be:
-=46ixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
+In the common case for intra host migration, we can rely on the normal
+ioctls for passing data from one VMM to the next. SEV, SEV-ES, and other
+confidential compute environments make most of this information opaque, and
+render KVM ioctls such as "KVM_GET_REGS" irrelevant.  As a result, we need
+the ability to pass this opaque metadata from one VMM to the next. The
+easiest way to do this is to leave this data in the kernel, and transfer
+ownership of the metadata from one KVM VM (or vCPU) to the next. For
+example, we need to move the SEV enabled ASID, VMSAs, and GHCB metadata
+from one VMM to the next.  In general, we need to be able to hand off any
+data that would be unsafe/impossible for the kernel to hand directly to
+userspace (and cannot be reproduced using data that can be handed safely to
+userspace).
 
-Here, a node with wrong phy-mode property was added to NanoPi Neo 2 board D=
-T. =20
+For the intra host operation the SEV required metadata, the source VM FD is
+sent to the target VMM. The target VMM calls the new cap ioctl with the
+source VM FD, KVM then moves all the SEV state to the target VM from the
+source VM.
 
-Other than that, this patch is fine and once fixes tag is fixed, you can ad=
-d:
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+V6
+ * Add selftest.
 
-=46or next version, you should:
-=2D change fixed tag
-=2D add my review-by tag right above your signed-off-by tag
-=2D mark patch as v2 (add "-v2" parameter to git format-patch)
-=2D describe change right under "---" line
+V5:
+ * Fix up locking scheme
+ * Address marcorr@ comments.
 
-Note, if you borked something when sending, you should mark patch or patch=
-=20
-series as "RESEND", so recipients don't look for changes in two subsequent =
-e-
-mails (--subject-prefix=3D"RESEND PATCH").
+V4:
+ * Move to seanjc@'s suggestion of source VM FD based single ioctl design.
 
-Thanks for the fix!
+v3:
+ * Fix memory leak found by dan.carpenter@
 
-Best regards,
-Jernej
+v2:
+ * Added marcorr@ reviewed by tag
+ * Renamed function introduced in 1/3
+ * Edited with seanjc@'s review comments
+ ** Cleaned up WARN usage
+ ** Userspace makes random token now
+ * Edited with brijesh.singh@'s review comments
+ ** Checks for different LAUNCH_* states in send function
 
-> Signed-off-by: Cl=C3=A9ment B=C5=93sch <u@pkh.me>
-> ---
->  arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts
-> b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts index
-> 02f8e72f0cad..05486cccee1c 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo2.dts
-> @@ -75,7 +75,7 @@ &emac {
->  	pinctrl-0 =3D <&emac_rgmii_pins>;
->  	phy-supply =3D <&reg_gmac_3v3>;
->  	phy-handle =3D <&ext_rgmii_phy>;
-> -	phy-mode =3D "rgmii";
-> +	phy-mode =3D "rgmii-id";
->  	status =3D "okay";
->  };
+v1: https://lore.kernel.org/kvm/20210621163118.1040170-1-pgonda@google.com/
 
+Peter Gonda (2):
+  KVM, SEV: Add support for SEV intra host migration
+  KVM, SEV: Add support for SEV-ES intra host migration
 
+ Documentation/virt/kvm/api.rst  |  15 +++
+ arch/x86/include/asm/kvm_host.h |   1 +
+ arch/x86/kvm/svm/sev.c          | 157 ++++++++++++++++++++++++++++++++
+ arch/x86/kvm/svm/svm.c          |   1 +
+ arch/x86/kvm/svm/svm.h          |   2 +
+ arch/x86/kvm/x86.c              |   5 +
+ include/uapi/linux/kvm.h        |   1 +
+ 7 files changed, 182 insertions(+)
 
+base-commit: a3e0b8bd99ab
+
+Peter Gonda (3):
+  KVM, SEV: Add support for SEV intra host migration
+  KVM, SEV: Add support for SEV-ES intra host migration
+  selftesting
+
+ Documentation/virt/kvm/api.rst                |  15 ++
+ arch/x86/include/asm/kvm_host.h               |   1 +
+ arch/x86/kvm/svm/sev.c                        | 157 ++++++++++++++++++
+ arch/x86/kvm/svm/svm.c                        |   1 +
+ arch/x86/kvm/svm/svm.h                        |   2 +
+ arch/x86/kvm/x86.c                            |   5 +
+ include/uapi/linux/kvm.h                      |   1 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/x86_64/sev_vm_tests.c       | 152 +++++++++++++++++
+ 9 files changed, 335 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Wanpeng Li <wanpengli@tencent.com>
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+-- 
+2.33.0.259.gc128427fd7-goog
 
