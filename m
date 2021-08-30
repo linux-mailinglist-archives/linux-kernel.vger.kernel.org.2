@@ -2,101 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2CE3FBDC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C19D3FBDCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236664AbhH3VAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 17:00:25 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:42707 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236036AbhH3VAX (ORCPT
+        id S236266AbhH3VA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:00:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46670 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236056AbhH3VAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:00:23 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id EC747806A8;
-        Tue, 31 Aug 2021 08:59:24 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1630357164;
-        bh=Cj1HC74r2MPnEw4CyvStNz4uRXJHeNzHPBcHLUfpNZE=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=T8Xc44Z//GszkNCuXlwN0Irp4bnzGh2E2ndOw5cmbn9wFZANJdRz2WzBYPiFJerbQ
-         cug2FKJA6j7vaQzflpPZR9nXQG7BvTJC3t2cqikyKBGlClR3ZFAYC6PdyV9yZO6xza
-         BLhAi1jmw22NL7of+OXjn/Ak1E8NyBEFVX4ZTugDS0Esg9YfaOkbvZGT7H0vc3UxdC
-         V4w1u2RVngFwS1gyHOcDfj7BuZVY/t5qPIUucvPf34aDS8SXWjmBrs2gGhUcXWJSjI
-         CFOvRwL+T06HY+7xK6GRSO1qI+5qnXPURie7Gglhd5h8d+64rC06HkIDqquuHMnpgo
-         tnm3mMDt9HUTQ==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B612d46ac0001>; Tue, 31 Aug 2021 08:59:24 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Tue, 31 Aug 2021 08:59:24 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.023; Tue, 31 Aug 2021 08:59:24 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/4] hwmon: (adt7470) Use standard update_interval
- property
-Thread-Topic: [PATCH v2 4/4] hwmon: (adt7470) Use standard update_interval
- property
-Thread-Index: AQHXmiPcXguJzdIxPU+IRgUO+WiCqKuHF9kAgAMe8gCAATVTgIAAWkGA
-Date:   Mon, 30 Aug 2021 20:59:24 +0000
-Message-ID: <dace3f40-8038-2867-dc20-596f8bc0ebe2@alliedtelesis.co.nz>
-References: <20210826024121.15665-1-chris.packham@alliedtelesis.co.nz>
- <20210826024121.15665-5-chris.packham@alliedtelesis.co.nz>
- <20210827212942.GA716764@roeck-us.net>
- <fe6cf9f3-f15e-065c-aaf8-cc018edf12e8@alliedtelesis.co.nz>
- <e467a3b2-d7c7-0920-9287-fb3e7abd5fae@roeck-us.net>
-In-Reply-To: <e467a3b2-d7c7-0920-9287-fb3e7abd5fae@roeck-us.net>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CAE07E19B1FDC048B04C68A1D8B96635@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Mon, 30 Aug 2021 17:00:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630357199;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZDgZoaGxuF8+VxsBt8mWUj6L6RMapnQD42kDmE3TNZQ=;
+        b=GH03Om/445Kfh0spCpfgBXGkgopeKaJKIqsbbIqGNoDmAlnZTvAthA2tI2dz9Aq5cuTnHb
+        S/4bNzDF2aRH+g5BXDAau4HDRE6CwBE5H4ZiUVX0kxknRtFixsmYk2gTkESXfR+1kQusEc
+        NugrIp20O33foRVdV+QJ3G9RR3jW/9o=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-1KZ7eZtjPpmJHm4R-BtFEA-1; Mon, 30 Aug 2021 16:59:57 -0400
+X-MC-Unique: 1KZ7eZtjPpmJHm4R-BtFEA-1
+Received: by mail-wm1-f71.google.com with SMTP id m16-20020a7bca50000000b002ee5287d4bfso447337wml.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:59:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ZDgZoaGxuF8+VxsBt8mWUj6L6RMapnQD42kDmE3TNZQ=;
+        b=D/ZWcYIgyt4xYbVTY4KIE15WIP+We/vQld08taCpmS5Na0X1kn2KBWCrslTDd/FZvN
+         Qt9mRQpP4IOg1TQyny2LHotfxV8wentRV/guy6pJmn8eEXcgrQmjkmhR+TmTWXEBZXrG
+         P4BN0dsogUu57++CmrsSoD2f/l0Nz6bm9kgEEm9SNEqEuSIoDTHIkXop77LKed6zzAEC
+         kKz4KmfjW8dZ8QzSDGgbupFwQ21lYo9d9wq8XL2xYYkGXNxMNT26v78TN96RPpDQNCEY
+         CYYlwTEmV8XoomSnGEf8dD9YWugZNF9I6MSPearuqZ+V5DVVvCTqSHSsjUHplFGbtks+
+         c6Gw==
+X-Gm-Message-State: AOAM531bnYlhyChD5MQ0PEKF2Nw3fXEhcu67WxCq92/kSpDucc5gQW8D
+        RXGUSU8ZwM3jzVvJvAYJPnFDNH7InxyWwKvNs067T8ZS1U4i6WgiF5Y/wBSzMPhEwNgFtEy+gpy
+        t+sNj+uVnRPs3P3EdTFM1wJu8
+X-Received: by 2002:a1c:7f48:: with SMTP id a69mr887122wmd.166.1630357196518;
+        Mon, 30 Aug 2021 13:59:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxjS6eag15Cf7xmVDHk/qvmWoQLzIdnk7dLXkY7XjvOHcTw6SiXs3ksmYcUzh73pyrAtLIGDA==
+X-Received: by 2002:a1c:7f48:: with SMTP id a69mr887093wmd.166.1630357196296;
+        Mon, 30 Aug 2021 13:59:56 -0700 (PDT)
+Received: from redhat.com ([2.55.138.60])
+        by smtp.gmail.com with ESMTPSA id z9sm12277068wre.11.2021.08.30.13.59.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 13:59:55 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 16:59:50 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+Message-ID: <20210830163723-mutt-send-email-mst@kernel.org>
+References: <20210823195409-mutt-send-email-mst@kernel.org>
+ <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
+ <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
+ <d992b5af-8d57-6aa6-bd49-8e2b8d832b19@linux.intel.com>
+ <20210824053830-mutt-send-email-mst@kernel.org>
+ <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
+ <20210829112105-mutt-send-email-mst@kernel.org>
+ <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
+ <20210829181635-mutt-send-email-mst@kernel.org>
+ <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=aqTM9hRV c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=MhDmnRu9jo8A:10 a=IuYHxPiwz1Cm0btsGcYA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAzMS8wOC8yMSAzOjM2IGFtLCBHdWVudGVyIFJvZWNrIHdyb3RlOg0KPiBPbiA4LzI5LzIx
-IDI6MDkgUE0sIENocmlzIFBhY2toYW0gd3JvdGU6DQo+Pg0KPj4gT24gMjgvMDgvMjEgOToyOSBh
-bSwgR3VlbnRlciBSb2VjayB3cm90ZToNCj4+PiBPbiBUaHUsIEF1ZyAyNiwgMjAyMSBhdCAwMjo0
-MToyMVBNICsxMjAwLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPj4+PiBJbnN0ZWFkIG9mIHRoZSBu
-b24tc3RhbmRhcmQgYXV0b191cGRhdGVfaW50ZXJ2YWwgbWFrZSB1c2Ugb2YgdGhlDQo+Pj4+IHVw
-ZGF0ZV9pbnRlcnZhbCBwcm9wZXJ0eSB0aGF0IGlzIHN1cHBvcnRlZCBieSB0aGUgaHdtb24gY29y
-ZS4NCj4+Pj4NCj4+Pj4gU2lnbmVkLW9mZi1ieTogQ2hyaXMgUGFja2hhbSA8Y2hyaXMucGFja2hh
-bUBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KPj4+PiAtLS0NCj4+Pj4NCj4+Pj4gTm90ZXM6DQo+Pj4+
-IMKgwqDCoMKgwqAgSSBraW5kIG9mIGFudGljaXBhdGUgYSBOQUsgb24gdGhpcyBiZWNhdXNlIGl0
-IGFmZmVjdHMgdGhlIA0KPj4+PiBBQkkuIEJ1dCBJIGZpZ3VyZWQNCj4+Pj4gwqDCoMKgwqDCoCBJ
-J2QgcnVuIGl0IHBhc3QgdGhlIE1MIHRvIHNlZSBpZiBtb3ZpbmcgdG93YXJkcyB0aGUgaHdtb24g
-DQo+Pj4+IGNvcmUgaXMgd29ydGggdGhlIGhpdA0KPj4+PiDCoMKgwqDCoMKgIGluIEFCSSBjb21w
-YXRpYmlsaXR5Lg0KPj4+IEkgcGVyc29uYWxseSBkb24ndCBtaW5kIChtb3N0IGxpa2VseSBubyBv
-bmUgaXMgdXNpbmcgaXQgYW55d2F5KSwgYnV0IA0KPj4+IGxldCdzDQo+Pj4gd2FpdCB1bnRpbCBh
-ZnRlciB0aGUgdXBjb21pbmcgY29tbWl0IHdpbmRvdyBjbG9zZXMgdG8gZ2l2ZSBwZW9wbGUgDQo+
-Pj4gdGltZSB0bw0KPj4+IGNvbXBsYWluLg0KPj4NCj4+IEkga25vdyBvZiBvbmUgYXBwbGljYXRp
-b24gdXNpbmcgdGhpcyBzeXNmcyBlbnRyeS4gQnV0IGl0J3Mgb3VyIGluLWhvdXNlDQo+PiBlbnZp
-cm9ubWVudGFsIG1vbml0b3JpbmcgY29kZSBzbyBpZiB0aGlzIGdldHMgbWVyZ2VkIEknbGwganVz
-dCB1cGRhdGUgaXQNCj4+IHRvIHVzZSB0aGUgbmV3IHBhdGguDQo+Pg0KPj4gT25lIHRob3VnaHQg
-SSBoYWQgd2FzIHdlIGNvdWxkIGRvIGJvdGguIGkuZS4gaGF2ZSBhbiBlbnRyeSB0aGF0IGNvbmZv
-cm1zDQo+PiB0byB0aGUgaHdtb24gY29yZSBhbmQgYSBiYWNrd2FyZHMgY29tcGF0aWJsZSBlbnRy
-eSB0aGF0IGp1c3QgYWxpYXNlcyB0aGUNCj4+IG5ldyBwYXRoLg0KPj4NCj4gTm93IHlvdSBhbG1v
-c3QgY29udmluY2VkIG1lIHRvIGluZGVlZCByZWplY3QgdGhpcyBwYXRjaC4gVGhlIGlkZWEgb2Yg
-DQo+IHRoZSBuZXcgQVBJDQo+IGlzIHRvIHNpbXBsaWZ5IGRyaXZlciBjb2RlLCBub3QgdG8gbWFr
-ZSBpdCBtb3JlIGNvbXBsaWNhdGVkLiBJZiB3ZSANCj4gY2FuJ3Qgc2ltcGxpZnkNCj4gdGhlIGNv
-ZGUsIGl0IGlzIGJldHRlciB0byBsZWF2ZSBpdCBhbG9uZS4NClNvbGQuIEkgYWdyZWUgd2hhdCBJ
-J3ZlIGp1c3Qgc3VnZ2VzdGVkIGlzIGFkZGluZyBtb3JlIGNvbXBsZXhpdHkgd2l0aG91dCANCm11
-Y2ggZ2Fpbi4gSWYgc29tZXRoaW5nIGRvZXMgc3RhcnQgdG8gY2FyZSBhYm91dCBoYXZpbmcgYSBz
-dGFuZGFyZCANCnVwZGF0ZV9pbnRlcnZhbCBwcm9wZXJ0eSB3ZSBjb3VsZCByZXN1cnJlY3QgdGhp
-cy4NCj4NCj4gR3VlbnRlcg==
+On Sun, Aug 29, 2021 at 10:11:46PM -0700, Andi Kleen wrote:
+> 
+> On 8/29/2021 3:26 PM, Michael S. Tsirkin wrote:
+> > On Sun, Aug 29, 2021 at 09:17:53AM -0700, Andi Kleen wrote:
+> > > Also I changing this single call really that bad? It's not that we changing
+> > > anything drastic here, just give the low level subsystem a better hint about
+> > > the intention. If you don't like the function name, could make it an
+> > > argument instead?
+> > My point however is that the API should say that the
+> > driver has been audited,
+> 
+> We have that status in the struct device. If you want to tie the ioremap to
+> that we could define a ioremap_device() with a device argument and decide
+> based on that.
+
+But it's not the device that is audited. And it's not the device
+that might be secure or insecure. It's the driver.
+
+> Or we can add _audited to the name. ioremap_shared_audited?
+
+But it's not the mapping that has to be done in handled special way.
+It's any data we get from device, not all of it coming from IO, e.g.
+there's DMA and interrupts that all have to be validated.
+Wouldn't you say that what is really wanted is just not running
+unaudited drivers in the first place?
+
+> 
+> > not that the mapping has been
+> > done in some special way. For example the mapping can be
+> > in some kind of wrapper, not directly in the driver.
+> > However you want the driver validated, not the wrapper.
+> > 
+> > Here's an idea:
+> 
+> 
+> I don't think magic differences of API behavior based on some define are a
+> good idea.  That's easy to miss.
+
+Well ... my point is that actually there is no difference in API
+behaviour. the map is the same map, exactly same data goes to device. If
+anything any non-shared map is special in that encrypted data goes to
+device.
+
+> 
+> That's a "COME FROM" in API design.
+> 
+> Also it wouldn't handle the case that a driver has both private and shared
+> ioremaps, e.g. for BIOS structures.
+
+Hmm. Interesting.  It's bios maps that are unusual and need to be private though ...
+
+> And we've been avoiding that drivers can self declare auditing, we've been
+> trying to have a separate centralized list so that it's easier to enforce
+> and avoids any cut'n'paste mistakes.
+> 
+> -Andi
+
+Now I'm confused. What is proposed here seems to be basically that,
+drivers need to declare auditing by replacing ioremap with
+ioremap_shared.
+
+-- 
+MST
+
