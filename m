@@ -2,121 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87563FAFC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 04:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B1D3FAFCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 04:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234830AbhH3Ccu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 22:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231310AbhH3Cct (ORCPT
+        id S235073AbhH3CdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 22:33:13 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:41629 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234922AbhH3CdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 22:32:49 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4791AC061756;
-        Sun, 29 Aug 2021 19:31:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Jxx+nBbp11l5ZDB/Fk4qIsZNM8MYtLgBg6pRgatfv2Q=; b=0lAb7dUTSjUGFtdCGkJOZ7T/lY
-        KH+e0MnHt1mVLY6h/bVnvC/KqQGrzhwYPlKnlmDexWxewc7yo/QA88YW9DY5V93maaPvL4PNyHiRr
-        +Qq7StwlBbBTQRJNIO4VGFfJ+Ba2Fo2aVVmXgGeHfFYThnk1xYptq00qbI4Gt5EpwpPb+At++T/x0
-        tyP6XIXG/O/e9NVbEZnjs4bDMVHBIisPsnP+Z4K4x4MSXllhMZyppdthzXFG1XGodCKbOrG+V0cV1
-        g8gXa0NCkv58VffaMGBmgmBlMDlUUTxHVXLCj1azyJ/OKUdkpO8yRToQqYH8gabWWABaNZVaU2VzA
-        geiF3xew==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKX5W-00GJAa-62; Mon, 30 Aug 2021 02:31:54 +0000
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in
- vga16fb_fillrect
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, b.zolnierkie@samsung.com,
-        colin.king@canonical.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        masahiroy@kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000815b9605c70e74f8@google.com>
- <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
- <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <339bfb21-8e80-c7d9-46dd-c416f87c50c0@infradead.org>
-Date:   Sun, 29 Aug 2021 19:31:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Sun, 29 Aug 2021 22:33:05 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 480C75C0085;
+        Sun, 29 Aug 2021 22:32:11 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Sun, 29 Aug 2021 22:32:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=v
+        3f6jPzzBipbSiu4aVjPCilgneHFN9knpU6Krm+kjSo=; b=tukNWEtaWbA8o+Fjz
+        FoTU9WTAqtl2aDhMVPweMspb92x2AlreH5LSTg8iJN5YLfoIlDblsGUofdVYDvVz
+        XauQMF0uRCc6kE+vTamf3BtXFze8AQw+XznflsYBM2ueCu/n2f0Bi+C6VLYCq/l2
+        rDsOy7WHsGPRf/+mcInGiZo+cnAyIt4nVZy3XfN3EL3LevaK1A39cPaP5TgauLu9
+        CBUfGGFLJq2e/BuuOEgcmGgOviuGds0tCuJE/G2fZpCrQrYYzn8UFvEjju6KwMiM
+        0iiby2ffzWQKaAE56bJc07e9tl16j5kvj5ejmHyXIxaDkqUO1p7zoWfYwkdRGzGq
+        WHR+Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=v3f6jPzzBipbSiu4aVjPCilgneHFN9knpU6Krm+kj
+        So=; b=mKgrGGxuRadgm9g6e3ZPiruUZ41o5lpZ+PtBW5zNm1ccFwPTBCFM2GYf3
+        gk0cRqaKiH91FUhB48UQmPvIyovsAD9JAk1BOROjYgx9CqPRdIrMi6QDX7MASCxH
+        4ha/OyaH5eyyiPWz6tPkkxw3kJhU7H7UoEKpCxt1WaebJXk6QVw8uk68vyus1AnJ
+        6wffj5vSS7WNq+wt6vR+YTXBBaFg6HKURcaP2/yb+ZKoVOSOWsQhp27A1x/Y1jZx
+        1jvh3sar4NYFCzm1cZHb+S3gry7TYpI/+1waZQP2rwNHJtBSChWR0+JTlwvHIREk
+        iTmidX0fGY5PypyO40ibPrC3YCm4A==
+X-ME-Sender: <xms:KkMsYVweyrwT_4P_TngacbzysJVsc7Rm1SbDZbGOEx3vEda4o3GBUQ>
+    <xme:KkMsYVSxGwYM0Rl43ORSlKVhIIW8gIbc1HwfvW8h3y2VBOyn6g6yNYo8TkG9Wovv4
+    sZ6eXK61Erf7BdVcgI>
+X-ME-Received: <xmr:KkMsYfVQ7MOXlOG2TaMU4rCBKdvbnBuyhJ9qUGWctk67k8Im9gC5PNKQKLyRtxidMqi1wg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddukedgiedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeeihffghfeikedugeejvefgffevgeevgeehfffhudeiieffffev
+    ffeugeevfefgfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:KkMsYXgCGhm53jNy0YZvA25HawSeYsyvMy2Hs-LIsJ0R2-KgMHLuaA>
+    <xmx:KkMsYXChLqEmHfRc_ngn6828B-MXCTAUdTEO7YfyMR_wj2WJFkqC7g>
+    <xmx:KkMsYQL5C_owCsno6-HreeUhsfysYungOrALSIRB48XktDvtoRLQmA>
+    <xmx:K0MsYeO8JcyuQFYRrEUvyy4AxIlLv09793SxZX9j7LbZM68fMKWURA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 29 Aug 2021 22:32:07 -0400 (EDT)
+Subject: Re: [PATCH] mips: remove reference to "newer Loongson-3"
+To:     Xi Ruoyao <xry111@mengyan1223.wang>, linux-mips@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
+References: <0b7c9431efb12c2d957fcc53ec8f0743725d61b3.camel@mengyan1223.wang>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <b32c0d64-77b2-d054-afcf-7d006eba3418@flygoat.com>
+Date:   Mon, 30 Aug 2021 10:32:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
+In-Reply-To: <0b7c9431efb12c2d957fcc53ec8f0743725d61b3.camel@mengyan1223.wang>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/21 7:27 PM, Tetsuo Handa wrote:
-> On 2021/08/30 9:24, Randy Dunlap wrote:
->> Note that yres_virtual is set to 0x10000000. Is there no practical limit
->> (hence limit check) that can be used here?
->>
->> Also, in vga16fb_check_var(), beginning at line 404:
->>
->>    404        if (yres > vyres)
->>    405            vyres = yres;
->>    406        if (vxres * vyres > maxmem) {
->>    407            vyres = maxmem / vxres;
->>    408            if (vyres < yres)
->>    409                return -ENOMEM;
->>    410        }
->>
->> At line 406, the product of vxres * vyres overflows 32 bits (is 0 in this
->> case/example), so any protection from this block is lost.
-> 
-> OK. Then, we can check overflow like below.
-> 
-> diff --git a/drivers/video/fbdev/vga16fb.c b/drivers/video/fbdev/vga16fb.c
-> index e2757ff1c23d..e483a3f5fd47 100644
-> --- a/drivers/video/fbdev/vga16fb.c
-> +++ b/drivers/video/fbdev/vga16fb.c
-> @@ -403,7 +403,7 @@ static int vga16fb_check_var(struct fb_var_screeninfo *var,
+
+在 2021/8/29 20:49, Xi Ruoyao 写道:
+> Newest Loongson-3 processors have moved to use LoongArch architecture.
+> Sadly, the LL/SC issue is still existing on both latest Loongson-3
+> processors using MIPS64 (Loongson-3A4000) and LoongArch
+> (Loongson-3A5000).
+LLSC is fixed on Loongson-3A4000 as per CPUCFG report.
+>
+> As it's very unlikely there will be new Loongson-3 processors using
+> MIPS64, let's stop people from false hoping.
+>
+> Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
+> Cc: Huacai Chen <chenhuacai@kernel.org>
+> ---
+>
+> Huacai: how's the status of LL/SC issue on Loongson-2K?  If
+> the issue exists on it as well, we can just force
+> CPU_LOONGSON3_WORKAROUNDS when CONFIG_CPU_LOONGSON64 and
+> CONFIG_SMP are both selected.
+
+Loongson-2K do need LLSC workaround, although the reason behind the 
+workaround seems different...
+
+Thanks.
+
+- Jiaxun
+
+>
+>   arch/mips/Kconfig | 9 ++-------
+>   1 file changed, 2 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 6dfb27d531dd..ff5f344a371e 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -1433,19 +1433,14 @@ config LOONGSON3_ENHANCEMENT
+>   	  new Loongson-3 machines only, please say 'Y' here.
 >   
->   	if (yres > vyres)
->   		vyres = yres;
-> -	if (vxres * vyres > maxmem) {
-> +	if ((u64) vxres * vyres > (u64) maxmem) {
->   		vyres = maxmem / vxres;
->   		if (vyres < yres)
->   			return -ENOMEM;
-> 
-> But I think we can check overflow in the common code like below. (Both patch fixed the oops.)
-
-OK, great. Thanks.
-
-> diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
-> index 1c855145711b..8899679bbc46 100644
-> --- a/drivers/video/fbdev/core/fbmem.c
-> +++ b/drivers/video/fbdev/core/fbmem.c
-> @@ -1008,6 +1008,11 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
->   	if (var->xres < 8 || var->yres < 8)
->   		return -EINVAL;
+>   config CPU_LOONGSON3_WORKAROUNDS
+> -	bool "Old Loongson-3 LLSC Workarounds"
+> +	bool "Loongson-3 LLSC Workarounds"
+>   	default y if SMP
+>   	depends on CPU_LOONGSON64
+>   	help
+>   	  Loongson-3 processors have the llsc issues which require workarounds.
+>   	  Without workarounds the system may hang unexpectedly.
 >   
-> +	/* Don't allow u32 * u32 to overflow. */
-> +	if ((u64) var->xres * var->yres > (u64) UINT_MAX ||
-> +	    (u64) var->xres_virtual * var->yres_virtual > (u64) UINT_MAX)
-> +		return -EINVAL;
-> +
->   	ret = info->fbops->fb_check_var(var, info);
+> -	  Newer Loongson-3 will fix these issues and no workarounds are needed.
+> -	  The workarounds have no significant side effect on them but may
+> -	  decrease the performance of the system so this option should be
+> -	  disabled unless the kernel is intended to be run on old systems.
+> -
+> -	  If unsure, please say Y.
+> +	  Say Y, unless you know what you are doing.
 >   
->   	if (ret)
-> 
->>
->> But even if yres_virtual (aka vyres) is "only" 0x01000000, so no
->> multiplication overflow occurs, the resulting value of vyres "seems"
->> to still be too large and can cause an error [I'm not sure about this
->> last part -- I need to use a new gcc so that KASAN will work.]
-> 
-
-
--- 
-~Randy
-
+>   config CPU_LOONGSON3_CPUCFG_EMULATION
+>   	bool "Emulate the CPUCFG instruction on older Loongson cores"
