@@ -2,1005 +2,699 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F16F3FB862
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DAD13FB871
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237195AbhH3Oly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 10:41:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44258 "EHLO mail.kernel.org"
+        id S237180AbhH3Oqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 10:46:33 -0400
+Received: from mga17.intel.com ([192.55.52.151]:21638 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231757AbhH3Olx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 10:41:53 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81C136023E;
-        Mon, 30 Aug 2021 14:40:56 +0000 (UTC)
-Date:   Mon, 30 Aug 2021 15:44:08 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     <Eugen.Hristev@microchip.com>
-Cc:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <Nicolas.Ferre@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <Ludovic.Desroches@microchip.com>
-Subject: Re: [PATCH v2 04/10] iio: adc: at91-sama5d2_adc: convert to
- platform specific data structures
-Message-ID: <20210830154408.4ffdef1a@jic23-huawei>
-In-Reply-To: <1688eb0e-5ea1-3bcc-3af0-7ba4c4601306@microchip.com>
-References: <20210824115441.681253-1-eugen.hristev@microchip.com>
-        <20210824115441.681253-5-eugen.hristev@microchip.com>
-        <1688eb0e-5ea1-3bcc-3af0-7ba4c4601306@microchip.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231757AbhH3Oqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 10:46:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="198524275"
+X-IronPort-AV: E=Sophos;i="5.84,363,1620716400"; 
+   d="gz'50?scan'50,208,50";a="198524275"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 07:45:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,363,1620716400"; 
+   d="gz'50?scan'50,208,50";a="459412999"
+Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Aug 2021 07:45:33 -0700
+Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mKiXV-0005Ci-24; Mon, 30 Aug 2021 14:45:33 +0000
+Date:   Mon, 30 Aug 2021 22:44:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: pci-xtalk-bridge.c:undefined reference to `crc16'
+Message-ID: <202108302229.0GH53j6w-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="GvXjxJ+pjyke8COw"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 12:31:46 +0000
-<Eugen.Hristev@microchip.com> wrote:
 
-> On 8/24/21 2:54 PM, Eugen Hristev wrote:
-> > Convert the driver to platform specific structures. This means:
-> > - create a register layout struct that will hold offsets for registers
-> > - create a platform struct that will hold platform information (number of
-> > channels, indexes for different channels and pointer to layout struct)
-> > - convert specific macros that are platform dependent into platform variables
-> > 
-> > This step is in fact a no-op, but allows the driver to be more flexible
-> > and for future enhancement including adding new platforms that are partly
-> > compatible with the current driver and differ slightly in register layout
-> > or capabilities for example.
-> > 
-> > Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> > ---
-> >   drivers/iio/adc/at91-sama5d2_adc.c | 410 +++++++++++++++++------------
-> >   1 file changed, 247 insertions(+), 163 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
-> > index 9d71dcffcf93..8ede18b8d789 100644
-> > --- a/drivers/iio/adc/at91-sama5d2_adc.c
-> > +++ b/drivers/iio/adc/at91-sama5d2_adc.c
-> > @@ -27,8 +27,9 @@
-> >   #include <linux/pinctrl/consumer.h>
-> >   #include <linux/regulator/consumer.h>
-> >   
-> > +struct at91_adc_reg_layout {
-> >   /* Control Register */
-> > -#define AT91_SAMA5D2_CR		0x00
-> > +	u16				CR;
-> >   /* Software Reset */
-> >   #define	AT91_SAMA5D2_CR_SWRST		BIT(0)
-> >   /* Start Conversion */
-> > @@ -39,7 +40,7 @@
-> >   #define	AT91_SAMA5D2_CR_CMPRST		BIT(4)
-> >   
-> >   /* Mode Register */
-> > -#define AT91_SAMA5D2_MR		0x04
-> > +	u16				MR;
-> >   /* Trigger Selection */
-> >   #define	AT91_SAMA5D2_MR_TRGSEL(v)	((v) << 1)
-> >   /* ADTRG */
-> > @@ -82,19 +83,19 @@
-> >   #define	AT91_SAMA5D2_MR_USEQ		BIT(31)
-> >   
-> >   /* Channel Sequence Register 1 */
-> > -#define AT91_SAMA5D2_SEQR1	0x08
-> > +	u16				SEQR1;
-> >   /* Channel Sequence Register 2 */
-> > -#define AT91_SAMA5D2_SEQR2	0x0c
-> > +	u16				SEQR2;
-> >   /* Channel Enable Register */
-> > -#define AT91_SAMA5D2_CHER	0x10
-> > +	u16				CHER;
-> >   /* Channel Disable Register */
-> > -#define AT91_SAMA5D2_CHDR	0x14
-> > +	u16				CHDR;
-> >   /* Channel Status Register */
-> > -#define AT91_SAMA5D2_CHSR	0x18
-> > +	u16				CHSR;
-> >   /* Last Converted Data Register */
-> > -#define AT91_SAMA5D2_LCDR	0x20
-> > +	u16				LCDR;
-> >   /* Interrupt Enable Register */
-> > -#define AT91_SAMA5D2_IER	0x24
-> > +	u16				IER;
-> >   /* Interrupt Enable Register - TS X measurement ready */
-> >   #define AT91_SAMA5D2_IER_XRDY   BIT(20)
-> >   /* Interrupt Enable Register - TS Y measurement ready */
-> > @@ -109,22 +110,23 @@
-> >   #define AT91_SAMA5D2_IER_PEN    BIT(29)
-> >   /* Interrupt Enable Register - No pen detect */
-> >   #define AT91_SAMA5D2_IER_NOPEN  BIT(30)
-> > +
-> >   /* Interrupt Disable Register */
-> > -#define AT91_SAMA5D2_IDR	0x28
-> > +	u16				IDR;
-> >   /* Interrupt Mask Register */
-> > -#define AT91_SAMA5D2_IMR	0x2c
-> > +	u16				IMR;
-> >   /* Interrupt Status Register */
-> > -#define AT91_SAMA5D2_ISR	0x30
-> > +	u16				ISR;
-> >   /* Interrupt Status Register - Pen touching sense status */
-> >   #define AT91_SAMA5D2_ISR_PENS   BIT(31)
-> >   /* Last Channel Trigger Mode Register */
-> > -#define AT91_SAMA5D2_LCTMR	0x34
-> > +	u16				LCTMR;
-> >   /* Last Channel Compare Window Register */
-> > -#define AT91_SAMA5D2_LCCWR	0x38
-> > +	u16				LCCWR;
-> >   /* Overrun Status Register */
-> > -#define AT91_SAMA5D2_OVER	0x3c
-> > +	u16				OVER;
-> >   /* Extended Mode Register */
-> > -#define AT91_SAMA5D2_EMR	0x40
-> > +	u16				EMR;
-> >   /* Extended Mode Register - Oversampling rate */
-> >   #define AT91_SAMA5D2_EMR_OSR(V)			((V) << 16)
-> >   #define AT91_SAMA5D2_EMR_OSR_MASK		GENMASK(17, 16)
-> > @@ -134,22 +136,22 @@
-> >   
-> >   /* Extended Mode Register - Averaging on single trigger event */
-> >   #define AT91_SAMA5D2_EMR_ASTE(V)		((V) << 20)
-> > +
-> >   /* Compare Window Register */
-> > -#define AT91_SAMA5D2_CWR	0x44
-> > +	u16				CWR;
-> >   /* Channel Gain Register */
-> > -#define AT91_SAMA5D2_CGR	0x48
-> > -
-> > +	u16				CGR;
-> >   /* Channel Offset Register */
-> > -#define AT91_SAMA5D2_COR	0x4c
-> > +	u16				COR;
-> >   #define AT91_SAMA5D2_COR_DIFF_OFFSET	16
-> >   
-> >   /* Analog Control Register */
-> > -#define AT91_SAMA5D2_ACR	0x94
-> > +	u16				ACR;
-> >   /* Analog Control Register - Pen detect sensitivity mask */
-> >   #define AT91_SAMA5D2_ACR_PENDETSENS_MASK        GENMASK(1, 0)
-> >   
-> >   /* Touchscreen Mode Register */
-> > -#define AT91_SAMA5D2_TSMR	0xb0
-> > +	u16				TSMR;
-> >   /* Touchscreen Mode Register - No touch mode */
-> >   #define AT91_SAMA5D2_TSMR_TSMODE_NONE           0
-> >   /* Touchscreen Mode Register - 4 wire screen, no pressure measurement */
-> > @@ -178,13 +180,13 @@
-> >   #define AT91_SAMA5D2_TSMR_PENDET_ENA            BIT(24)
-> >   
-> >   /* Touchscreen X Position Register */
-> > -#define AT91_SAMA5D2_XPOSR	0xb4
-> > +	u16				XPOSR;
-> >   /* Touchscreen Y Position Register */
-> > -#define AT91_SAMA5D2_YPOSR	0xb8
-> > +	u16				YPOSR;
-> >   /* Touchscreen Pressure Register */
-> > -#define AT91_SAMA5D2_PRESSR	0xbc
-> > +	u16				PRESSR;
-> >   /* Trigger Register */
-> > -#define AT91_SAMA5D2_TRGR	0xc0
-> > +	u16				TRGR;
-> >   /* Mask for TRGMOD field of TRGR register */
-> >   #define AT91_SAMA5D2_TRGR_TRGMOD_MASK GENMASK(2, 0)
-> >   /* No trigger, only software trigger can start conversions */
-> > @@ -203,30 +205,52 @@
-> >   #define AT91_SAMA5D2_TRGR_TRGPER(x)             ((x) << 16)
-> >   
-> >   /* Correction Select Register */
-> > -#define AT91_SAMA5D2_COSR	0xd0
-> > +	u16				COSR;
-> >   /* Correction Value Register */
-> > -#define AT91_SAMA5D2_CVR	0xd4
-> > +	u16				CVR;
-> >   /* Channel Error Correction Register */
-> > -#define AT91_SAMA5D2_CECR	0xd8
-> > +	u16				CECR;
-> >   /* Write Protection Mode Register */
-> > -#define AT91_SAMA5D2_WPMR	0xe4
-> > +	u16				WPMR;
-> >   /* Write Protection Status Register */
-> > -#define AT91_SAMA5D2_WPSR	0xe8
-> > +	u16				WPSR;
-> >   /* Version Register */
-> > -#define AT91_SAMA5D2_VERSION	0xfc
-> > -
-> > -#define AT91_SAMA5D2_HW_TRIG_CNT 3
-> > -#define AT91_SAMA5D2_SINGLE_CHAN_CNT 12
-> > -#define AT91_SAMA5D2_DIFF_CHAN_CNT 6
-> > -
-> > -#define AT91_SAMA5D2_TIMESTAMP_CHAN_IDX (AT91_SAMA5D2_SINGLE_CHAN_CNT + \
-> > -					 AT91_SAMA5D2_DIFF_CHAN_CNT + 1)
-> > +	u16				VERSION;
-> > +};
-> >   
-> > -#define AT91_SAMA5D2_TOUCH_X_CHAN_IDX (AT91_SAMA5D2_SINGLE_CHAN_CNT + \
-> > -					 AT91_SAMA5D2_DIFF_CHAN_CNT * 2)  
-> 
-> Hi Jonathan,
-> 
-> While we are here, regarding the above line, I cannot tell why did I 
-> multiply by two the differential channel count. This makes some gaps in 
-> the number of channels when we put them all in the same table.
-> 
-> I did not change this as it would break the ABI regarding the bindings 
-> for the touchscreen #adc-cells phandle references.
+--GvXjxJ+pjyke8COw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Really?  Xlate is based off scan_index, not these values I think...
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   7d2a07b769330c34b4deabeed939325c77a7ec2f
+commit: 302fdadeafe4be539f247abf25f61822e4a5a577 ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead of selecting it
+date:   7 months ago
+config: mips-buildonly-randconfig-r005-20210830 (attached as .config)
+compiler: mips64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=302fdadeafe4be539f247abf25f61822e4a5a577
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 302fdadeafe4be539f247abf25f61822e4a5a577
+        # save the attached .config to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=mips SHELL=/bin/bash
 
-> 
-> However, I am thinking if there was a reason for it or it was a slip 
-> when I initially wrote this.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-I've no idea :)  I can't immediately see why we'd need the padding.
+All errors (new ones prefixed by >>):
 
-> 
-> Do you think there is any reason to change it and tighten the holes in 
-> the indexes list ?
+   mips64-linux-ld: arch/mips/pci/pci-xtalk-bridge.o: in function `bridge_get_partnum':
+>> pci-xtalk-bridge.c:(.text+0x7e0): undefined reference to `crc16'
+>> mips64-linux-ld: pci-xtalk-bridge.c:(.text+0x804): undefined reference to `crc16'
 
-I don't think it matters. As far as I can tell they are used mostly (possibly
-entirely) for internal management and not exposed to any of the ABIs etc.
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-Jonathan
+--GvXjxJ+pjyke8COw
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
-> 
-> 
-> Eugen
-> 
-> > -#define AT91_SAMA5D2_TOUCH_Y_CHAN_IDX   (AT91_SAMA5D2_TOUCH_X_CHAN_IDX + 1)
-> > -#define AT91_SAMA5D2_TOUCH_P_CHAN_IDX   (AT91_SAMA5D2_TOUCH_Y_CHAN_IDX + 1)
-> > -#define AT91_SAMA5D2_MAX_CHAN_IDX	AT91_SAMA5D2_TOUCH_P_CHAN_IDX
-> > +static const struct at91_adc_reg_layout sama5d2_layout = {
-> > +	.CR =			0x00,
-> > +	.MR =			0x04,
-> > +	.SEQR1 =		0x08,
-> > +	.SEQR2 =		0x0c,
-> > +	.CHER =			0x10,
-> > +	.CHDR =			0x14,
-> > +	.CHSR =			0x18,
-> > +	.LCDR =			0x20,
-> > +	.IER =			0x24,
-> > +	.IDR =			0x28,
-> > +	.IMR =			0x2c,
-> > +	.ISR =			0x30,
-> > +	.LCTMR =		0x34,
-> > +	.LCCWR =		0x38,
-> > +	.OVER =			0x3c,
-> > +	.EMR =			0x40,
-> > +	.CWR =			0x44,
-> > +	.CGR =			0x48,
-> > +	.COR =			0x4c,
-> > +	.ACR =			0x94,
-> > +	.TSMR =			0xb0,
-> > +	.XPOSR =		0xb4,
-> > +	.YPOSR =		0xb8,
-> > +	.PRESSR =		0xbc,
-> > +	.TRGR =			0xc0,
-> > +	.COSR =			0xd0,
-> > +	.CVR =			0xd4,
-> > +	.CECR =			0xd8,
-> > +	.WPMR =			0xe4,
-> > +	.WPSR =			0xe8,
-> > +	.VERSION =		0xfc,
-> > +};
-> >   
-> >   #define AT91_SAMA5D2_TOUCH_SAMPLE_PERIOD_US          2000    /* 2ms */
-> >   #define AT91_SAMA5D2_TOUCH_PEN_DETECT_DEBOUNCE_US    200
-> > @@ -235,18 +259,6 @@
-> >   
-> >   #define AT91_SAMA5D2_MAX_POS_BITS			12
-> >   
-> > -/*
-> > - * Maximum number of bytes to hold conversion from all channels
-> > - * without the timestamp.
-> > - */
-> > -#define AT91_BUFFER_MAX_CONVERSION_BYTES ((AT91_SAMA5D2_SINGLE_CHAN_CNT + \
-> > -					 AT91_SAMA5D2_DIFF_CHAN_CNT) * 2)
-> > -
-> > -/* This total must also include the timestamp */
-> > -#define AT91_BUFFER_MAX_BYTES (AT91_BUFFER_MAX_CONVERSION_BYTES + 8)
-> > -
-> > -#define AT91_BUFFER_MAX_HWORDS (AT91_BUFFER_MAX_BYTES / 2)
-> > -
-> >   #define AT91_HWFIFO_MAX_SIZE_STR	"128"
-> >   #define AT91_HWFIFO_MAX_SIZE		128
-> >   
-> > @@ -255,12 +267,12 @@
-> >   #define AT91_OSR_4SAMPLES		4
-> >   #define AT91_OSR_16SAMPLES		16
-> >   
-> > -#define AT91_SAMA5D2_CHAN_SINGLE(num, addr)				\
-> > +#define AT91_SAMA5D2_CHAN_SINGLE(index, num, addr)			\
-> >   	{								\
-> >   		.type = IIO_VOLTAGE,					\
-> >   		.channel = num,						\
-> >   		.address = addr,					\
-> > -		.scan_index = num,					\
-> > +		.scan_index = index,					\
-> >   		.scan_type = {						\
-> >   			.sign = 'u',					\
-> >   			.realbits = 14,					\
-> > @@ -274,14 +286,14 @@
-> >   		.indexed = 1,						\
-> >   	}
-> >   
-> > -#define AT91_SAMA5D2_CHAN_DIFF(num, num2, addr)				\
-> > +#define AT91_SAMA5D2_CHAN_DIFF(index, num, num2, addr)			\
-> >   	{								\
-> >   		.type = IIO_VOLTAGE,					\
-> >   		.differential = 1,					\
-> >   		.channel = num,						\
-> >   		.channel2 = num2,					\
-> >   		.address = addr,					\
-> > -		.scan_index = num + AT91_SAMA5D2_SINGLE_CHAN_CNT,	\
-> > +		.scan_index = index,					\
-> >   		.scan_type = {						\
-> >   			.sign = 's',					\
-> >   			.realbits = 14,					\
-> > @@ -328,13 +340,48 @@
-> >   		.datasheet_name = name,					\
-> >   	}
-> >   
-> > -#define at91_adc_readl(st, reg)		readl_relaxed(st->base + reg)
-> > -#define at91_adc_writel(st, reg, val)	writel_relaxed(val, st->base + reg)
-> > +#define at91_adc_readl(st, reg)						\
-> > +	readl_relaxed((st)->base + (st)->soc_info.platform->layout->reg)
-> > +#define at91_adc_read_chan(st, reg)					\
-> > +	readl_relaxed((st)->base + reg)
-> > +#define at91_adc_writel(st, reg, val)					\
-> > +	writel_relaxed(val, (st)->base + (st)->soc_info.platform->layout->reg)
-> > +
-> > +/**
-> > + * struct at91_adc_platform - at91-sama5d2 platform information struct
-> > + * @layout:		pointer to the reg layout struct
-> > + * @adc_channels:	pointer to an array of channels for registering in
-> > + *			the iio subsystem
-> > + * @nr_channels:	number of physical channels available
-> > + * @touch_chan_x:	index of the touchscreen X channel
-> > + * @touch_chan_y:	index of the touchscreen Y channel
-> > + * @touch_chan_p:	index of the touchscreen P channel
-> > + * @max_channels:	number of total channels
-> > + * @hw_trig_cnt:	number of possible hardware triggers
-> > + */
-> > +struct at91_adc_platform {
-> > +	const struct at91_adc_reg_layout	*layout;
-> > +	const struct iio_chan_spec		(*adc_channels)[];
-> > +	unsigned int				nr_channels;
-> > +	unsigned int				touch_chan_x;
-> > +	unsigned int				touch_chan_y;
-> > +	unsigned int				touch_chan_p;
-> > +	unsigned int				max_channels;
-> > +	unsigned int				hw_trig_cnt;
-> > +};
-> >   
-> > +/**
-> > + * struct at91_adc_soc_info - at91-sama5d2 soc information struct
-> > + * @startup_time:	device startup time
-> > + * @min_sample_rate:	minimum sample rate in Hz
-> > + * @max_sample_rate:	maximum sample rate in Hz
-> > + * @platform:		pointer to the platform structure
-> > + */
-> >   struct at91_adc_soc_info {
-> >   	unsigned			startup_time;
-> >   	unsigned			min_sample_rate;
-> >   	unsigned			max_sample_rate;
-> > +	const struct at91_adc_platform	*platform;
-> >   };
-> >   
-> >   struct at91_adc_trigger {
-> > @@ -382,6 +429,15 @@ struct at91_adc_touch {
-> >   	struct work_struct		workq;
-> >   };
-> >   
-> > +/*
-> > + * Buffer size requirements:
-> > + * No channels * bytes_per_channel(2) + timestamp bytes (8)
-> > + * Divided by 2 because we need half words.
-> > + * We assume 32 channels for now, has to be increased if needed.
-> > + * Nobody minds a buffer being too big.
-> > + */
-> > +#define AT91_BUFFER_MAX_HWORDS ((32 * 2 + 8) / 2)
-> > +
-> >   struct at91_adc_state {
-> >   	void __iomem			*base;
-> >   	int				irq;
-> > @@ -437,29 +493,49 @@ static const struct at91_adc_trigger at91_adc_trigger_list[] = {
-> >   	},
-> >   };
-> >   
-> > -static const struct iio_chan_spec at91_adc_channels[] = {
-> > -	AT91_SAMA5D2_CHAN_SINGLE(0, 0x50),
-> > -	AT91_SAMA5D2_CHAN_SINGLE(1, 0x54),
-> > -	AT91_SAMA5D2_CHAN_SINGLE(2, 0x58),
-> > -	AT91_SAMA5D2_CHAN_SINGLE(3, 0x5c),
-> > -	AT91_SAMA5D2_CHAN_SINGLE(4, 0x60),
-> > -	AT91_SAMA5D2_CHAN_SINGLE(5, 0x64),
-> > -	AT91_SAMA5D2_CHAN_SINGLE(6, 0x68),
-> > -	AT91_SAMA5D2_CHAN_SINGLE(7, 0x6c),
-> > -	AT91_SAMA5D2_CHAN_SINGLE(8, 0x70),
-> > -	AT91_SAMA5D2_CHAN_SINGLE(9, 0x74),
-> > -	AT91_SAMA5D2_CHAN_SINGLE(10, 0x78),
-> > -	AT91_SAMA5D2_CHAN_SINGLE(11, 0x7c),
-> > -	AT91_SAMA5D2_CHAN_DIFF(0, 1, 0x50),
-> > -	AT91_SAMA5D2_CHAN_DIFF(2, 3, 0x58),
-> > -	AT91_SAMA5D2_CHAN_DIFF(4, 5, 0x60),
-> > -	AT91_SAMA5D2_CHAN_DIFF(6, 7, 0x68),
-> > -	AT91_SAMA5D2_CHAN_DIFF(8, 9, 0x70),
-> > -	AT91_SAMA5D2_CHAN_DIFF(10, 11, 0x78),
-> > -	IIO_CHAN_SOFT_TIMESTAMP(AT91_SAMA5D2_TIMESTAMP_CHAN_IDX),
-> > -	AT91_SAMA5D2_CHAN_TOUCH(AT91_SAMA5D2_TOUCH_X_CHAN_IDX, "x", IIO_MOD_X),
-> > -	AT91_SAMA5D2_CHAN_TOUCH(AT91_SAMA5D2_TOUCH_Y_CHAN_IDX, "y", IIO_MOD_Y),
-> > -	AT91_SAMA5D2_CHAN_PRESSURE(AT91_SAMA5D2_TOUCH_P_CHAN_IDX, "pressure"),
-> > +static const struct iio_chan_spec at91_sama5d2_adc_channels[] = {
-> > +	AT91_SAMA5D2_CHAN_SINGLE(0, 0, 0x50),
-> > +	AT91_SAMA5D2_CHAN_SINGLE(1, 1, 0x54),
-> > +	AT91_SAMA5D2_CHAN_SINGLE(2, 2, 0x58),
-> > +	AT91_SAMA5D2_CHAN_SINGLE(3, 3, 0x5c),
-> > +	AT91_SAMA5D2_CHAN_SINGLE(4, 4, 0x60),
-> > +	AT91_SAMA5D2_CHAN_SINGLE(5, 5, 0x64),
-> > +	AT91_SAMA5D2_CHAN_SINGLE(6, 6, 0x68),
-> > +	AT91_SAMA5D2_CHAN_SINGLE(7, 7, 0x6c),
-> > +	AT91_SAMA5D2_CHAN_SINGLE(8, 8, 0x70),
-> > +	AT91_SAMA5D2_CHAN_SINGLE(9, 9, 0x74),
-> > +	AT91_SAMA5D2_CHAN_SINGLE(10, 10, 0x78),
-> > +	AT91_SAMA5D2_CHAN_SINGLE(11, 11, 0x7c),
-> > +	AT91_SAMA5D2_CHAN_DIFF(12, 0, 1, 0x50),
-> > +	AT91_SAMA5D2_CHAN_DIFF(13, 2, 3, 0x58),
-> > +	AT91_SAMA5D2_CHAN_DIFF(14, 4, 5, 0x60),
-> > +	AT91_SAMA5D2_CHAN_DIFF(15, 6, 7, 0x68),
-> > +	AT91_SAMA5D2_CHAN_DIFF(16, 8, 9, 0x70),
-> > +	AT91_SAMA5D2_CHAN_DIFF(17, 10, 11, 0x78),
-> > +	IIO_CHAN_SOFT_TIMESTAMP(18),
-> > +	AT91_SAMA5D2_CHAN_TOUCH(19, "x", IIO_MOD_X),
-> > +	AT91_SAMA5D2_CHAN_TOUCH(20, "y", IIO_MOD_Y),
-> > +	AT91_SAMA5D2_CHAN_PRESSURE(21, "pressure"),
-> > +};
-> > +
-> > +static const struct at91_adc_platform sama5d2_platform = {
-> > +	.layout = &sama5d2_layout,
-> > +	.adc_channels = &at91_sama5d2_adc_channels,
-> > +#define AT91_SAMA5D2_SINGLE_CHAN_CNT 12
-> > +#define AT91_SAMA5D2_DIFF_CHAN_CNT 6
-> > +	.nr_channels = AT91_SAMA5D2_SINGLE_CHAN_CNT +
-> > +		       AT91_SAMA5D2_DIFF_CHAN_CNT,
-> > +#define AT91_SAMA5D2_TOUCH_X_CHAN_IDX	(AT91_SAMA5D2_SINGLE_CHAN_CNT + \
-> > +					AT91_SAMA5D2_DIFF_CHAN_CNT * 2)
-> > +	.touch_chan_x = AT91_SAMA5D2_TOUCH_X_CHAN_IDX,
-> > +#define AT91_SAMA5D2_TOUCH_Y_CHAN_IDX	(AT91_SAMA5D2_TOUCH_X_CHAN_IDX + 1)
-> > +	.touch_chan_y = AT91_SAMA5D2_TOUCH_Y_CHAN_IDX,
-> > +#define AT91_SAMA5D2_TOUCH_P_CHAN_IDX	(AT91_SAMA5D2_TOUCH_Y_CHAN_IDX + 1)
-> > +	.touch_chan_p = AT91_SAMA5D2_TOUCH_P_CHAN_IDX,
-> > +#define AT91_SAMA5D2_MAX_CHAN_IDX	AT91_SAMA5D2_TOUCH_P_CHAN_IDX
-> > +	.max_channels = ARRAY_SIZE(at91_sama5d2_adc_channels),
-> > +#define AT91_SAMA5D2_HW_TRIG_CNT	3
-> > +	.hw_trig_cnt = AT91_SAMA5D2_HW_TRIG_CNT,
-> >   };
-> >   
-> >   static int at91_adc_chan_xlate(struct iio_dev *indio_dev, int chan)
-> > @@ -493,6 +569,7 @@ static unsigned int at91_adc_active_scan_mask_to_reg(struct iio_dev *indio_dev)
-> >   {
-> >   	u32 mask = 0;
-> >   	u8 bit;
-> > +	struct at91_adc_state *st = iio_priv(indio_dev);
-> >   
-> >   	for_each_set_bit(bit, indio_dev->active_scan_mask,
-> >   			 indio_dev->num_channels) {
-> > @@ -501,13 +578,13 @@ static unsigned int at91_adc_active_scan_mask_to_reg(struct iio_dev *indio_dev)
-> >   		mask |= BIT(chan->channel);
-> >   	}
-> >   
-> > -	return mask & GENMASK(11, 0);
-> > +	return mask & GENMASK(st->soc_info.platform->nr_channels, 0);
-> >   }
-> >   
-> >   static void at91_adc_config_emr(struct at91_adc_state *st)
-> >   {
-> >   	/* configure the extended mode register */
-> > -	unsigned int emr = at91_adc_readl(st, AT91_SAMA5D2_EMR);
-> > +	unsigned int emr = at91_adc_readl(st, EMR);
-> >   
-> >   	/* select oversampling per single trigger event */
-> >   	emr |= AT91_SAMA5D2_EMR_ASTE(1);
-> > @@ -531,7 +608,7 @@ static void at91_adc_config_emr(struct at91_adc_state *st)
-> >   		break;
-> >   	}
-> >   
-> > -	at91_adc_writel(st, AT91_SAMA5D2_EMR, emr);
-> > +	at91_adc_writel(st, EMR, emr);
-> >   }
-> >   
-> >   static int at91_adc_adjust_val_osr(struct at91_adc_state *st, int *val)
-> > @@ -584,9 +661,9 @@ static int at91_adc_configure_touch(struct at91_adc_state *st, bool state)
-> >   
-> >   	if (!state) {
-> >   		/* disabling touch IRQs and setting mode to no touch enabled */
-> > -		at91_adc_writel(st, AT91_SAMA5D2_IDR,
-> > +		at91_adc_writel(st, IDR,
-> >   				AT91_SAMA5D2_IER_PEN | AT91_SAMA5D2_IER_NOPEN);
-> > -		at91_adc_writel(st, AT91_SAMA5D2_TSMR, 0);
-> > +		at91_adc_writel(st, TSMR, 0);
-> >   		return 0;
-> >   	}
-> >   	/*
-> > @@ -612,19 +689,19 @@ static int at91_adc_configure_touch(struct at91_adc_state *st, bool state)
-> >   	tsmr |= AT91_SAMA5D2_TSMR_PENDET_ENA;
-> >   	tsmr |= AT91_SAMA5D2_TSMR_TSFREQ(2) & AT91_SAMA5D2_TSMR_TSFREQ_MASK;
-> >   
-> > -	at91_adc_writel(st, AT91_SAMA5D2_TSMR, tsmr);
-> > +	at91_adc_writel(st, TSMR, tsmr);
-> >   
-> > -	acr =  at91_adc_readl(st, AT91_SAMA5D2_ACR);
-> > +	acr =  at91_adc_readl(st, ACR);
-> >   	acr &= ~AT91_SAMA5D2_ACR_PENDETSENS_MASK;
-> >   	acr |= 0x02 & AT91_SAMA5D2_ACR_PENDETSENS_MASK;
-> > -	at91_adc_writel(st, AT91_SAMA5D2_ACR, acr);
-> > +	at91_adc_writel(st, ACR, acr);
-> >   
-> >   	/* Sample Period Time = (TRGPER + 1) / ADCClock */
-> >   	st->touch_st.sample_period_val =
-> >   				 round_up((AT91_SAMA5D2_TOUCH_SAMPLE_PERIOD_US *
-> >   				 clk_khz / 1000) - 1, 1);
-> >   	/* enable pen detect IRQ */
-> > -	at91_adc_writel(st, AT91_SAMA5D2_IER, AT91_SAMA5D2_IER_PEN);
-> > +	at91_adc_writel(st, IER, AT91_SAMA5D2_IER_PEN);
-> >   
-> >   	return 0;
-> >   }
-> > @@ -640,7 +717,11 @@ static u16 at91_adc_touch_pos(struct at91_adc_state *st, int reg)
-> >   	 * max = 2^AT91_SAMA5D2_MAX_POS_BITS - 1
-> >   	 */
-> >   	/* first half of register is the x or y, second half is the scale */
-> > -	val = at91_adc_readl(st, reg);
-> > +	if (reg == st->soc_info.platform->layout->XPOSR)
-> > +		val = at91_adc_readl(st, XPOSR);
-> > +	else if (reg == st->soc_info.platform->layout->YPOSR)
-> > +		val = at91_adc_readl(st, YPOSR);
-> > +
-> >   	if (!val)
-> >   		dev_dbg(&st->indio_dev->dev, "pos is 0\n");
-> >   
-> > @@ -658,13 +739,13 @@ static u16 at91_adc_touch_pos(struct at91_adc_state *st, int reg)
-> >   
-> >   static u16 at91_adc_touch_x_pos(struct at91_adc_state *st)
-> >   {
-> > -	st->touch_st.x_pos = at91_adc_touch_pos(st, AT91_SAMA5D2_XPOSR);
-> > +	st->touch_st.x_pos = at91_adc_touch_pos(st, st->soc_info.platform->layout->XPOSR);
-> >   	return st->touch_st.x_pos;
-> >   }
-> >   
-> >   static u16 at91_adc_touch_y_pos(struct at91_adc_state *st)
-> >   {
-> > -	return at91_adc_touch_pos(st, AT91_SAMA5D2_YPOSR);
-> > +	return at91_adc_touch_pos(st, st->soc_info.platform->layout->YPOSR);
-> >   }
-> >   
-> >   static u16 at91_adc_touch_pressure(struct at91_adc_state *st)
-> > @@ -676,7 +757,7 @@ static u16 at91_adc_touch_pressure(struct at91_adc_state *st)
-> >   	u32 factor = 1000;
-> >   
-> >   	/* calculate the pressure */
-> > -	val = at91_adc_readl(st, AT91_SAMA5D2_PRESSR);
-> > +	val = at91_adc_readl(st, PRESSR);
-> >   	z1 = val & AT91_SAMA5D2_XYZ_MASK;
-> >   	z2 = (val >> 16) & AT91_SAMA5D2_XYZ_MASK;
-> >   
-> > @@ -700,9 +781,9 @@ static int at91_adc_read_position(struct at91_adc_state *st, int chan, u16 *val)
-> >   	*val = 0;
-> >   	if (!st->touch_st.touching)
-> >   		return -ENODATA;
-> > -	if (chan == AT91_SAMA5D2_TOUCH_X_CHAN_IDX)
-> > +	if (chan == st->soc_info.platform->touch_chan_x)
-> >   		*val = at91_adc_touch_x_pos(st);
-> > -	else if (chan == AT91_SAMA5D2_TOUCH_Y_CHAN_IDX)
-> > +	else if (chan == st->soc_info.platform->touch_chan_y)
-> >   		*val = at91_adc_touch_y_pos(st);
-> >   	else
-> >   		return -ENODATA;
-> > @@ -715,7 +796,7 @@ static int at91_adc_read_pressure(struct at91_adc_state *st, int chan, u16 *val)
-> >   	*val = 0;
-> >   	if (!st->touch_st.touching)
-> >   		return -ENODATA;
-> > -	if (chan == AT91_SAMA5D2_TOUCH_P_CHAN_IDX)
-> > +	if (chan == st->soc_info.platform->touch_chan_y)
-> >   		*val = at91_adc_touch_pressure(st);
-> >   	else
-> >   		return -ENODATA;
-> > @@ -727,7 +808,7 @@ static int at91_adc_configure_trigger(struct iio_trigger *trig, bool state)
-> >   {
-> >   	struct iio_dev *indio = iio_trigger_get_drvdata(trig);
-> >   	struct at91_adc_state *st = iio_priv(indio);
-> > -	u32 status = at91_adc_readl(st, AT91_SAMA5D2_TRGR);
-> > +	u32 status = at91_adc_readl(st, TRGR);
-> >   
-> >   	/* clear TRGMOD */
-> >   	status &= ~AT91_SAMA5D2_TRGR_TRGMOD_MASK;
-> > @@ -736,7 +817,7 @@ static int at91_adc_configure_trigger(struct iio_trigger *trig, bool state)
-> >   		status |= st->selected_trig->trgmod_value;
-> >   
-> >   	/* set/unset hw trigger */
-> > -	at91_adc_writel(st, AT91_SAMA5D2_TRGR, status);
-> > +	at91_adc_writel(st, TRGR, status);
-> >   
-> >   	return 0;
-> >   }
-> > @@ -753,7 +834,7 @@ static void at91_adc_reenable_trigger(struct iio_trigger *trig)
-> >   	enable_irq(st->irq);
-> >   
-> >   	/* Needed to ACK the DRDY interruption */
-> > -	at91_adc_readl(st, AT91_SAMA5D2_LCDR);
-> > +	at91_adc_readl(st, LCDR);
-> >   }
-> >   
-> >   static const struct iio_trigger_ops at91_adc_trigger_ops = {
-> > @@ -848,7 +929,7 @@ static int at91_adc_dma_start(struct iio_dev *indio_dev)
-> >   	}
-> >   
-> >   	/* enable general overrun error signaling */
-> > -	at91_adc_writel(st, AT91_SAMA5D2_IER, AT91_SAMA5D2_IER_GOVRE);
-> > +	at91_adc_writel(st, IER, AT91_SAMA5D2_IER_GOVRE);
-> >   	/* Issue pending DMA requests */
-> >   	dma_async_issue_pending(st->dma_st.dma_chan);
-> >   
-> > @@ -878,7 +959,7 @@ static bool at91_adc_current_chan_is_touch(struct iio_dev *indio_dev)
-> >   
-> >   	return !!bitmap_subset(indio_dev->active_scan_mask,
-> >   			       &st->touch_st.channels_bitmask,
-> > -			       AT91_SAMA5D2_MAX_CHAN_IDX + 1);
-> > +			       st->soc_info.platform->max_channels + 1);
-> >   }
-> >   
-> >   static int at91_adc_buffer_prepare(struct iio_dev *indio_dev)
-> > @@ -915,7 +996,7 @@ static int at91_adc_buffer_prepare(struct iio_dev *indio_dev)
-> >   		    chan->type == IIO_PRESSURE)
-> >   			continue;
-> >   
-> > -		cor = at91_adc_readl(st, AT91_SAMA5D2_COR);
-> > +		cor = at91_adc_readl(st, COR);
-> >   
-> >   		if (chan->differential)
-> >   			cor |= (BIT(chan->channel) | BIT(chan->channel2)) <<
-> > @@ -924,13 +1005,13 @@ static int at91_adc_buffer_prepare(struct iio_dev *indio_dev)
-> >   			cor &= ~(BIT(chan->channel) <<
-> >   			       AT91_SAMA5D2_COR_DIFF_OFFSET);
-> >   
-> > -		at91_adc_writel(st, AT91_SAMA5D2_COR, cor);
-> > +		at91_adc_writel(st, COR, cor);
-> >   
-> > -		at91_adc_writel(st, AT91_SAMA5D2_CHER, BIT(chan->channel));
-> > +		at91_adc_writel(st, CHER, BIT(chan->channel));
-> >   	}
-> >   
-> >   	if (at91_adc_buffer_check_use_irq(indio_dev, st))
-> > -		at91_adc_writel(st, AT91_SAMA5D2_IER, AT91_SAMA5D2_IER_DRDY);
-> > +		at91_adc_writel(st, IER, AT91_SAMA5D2_IER_DRDY);
-> >   
-> >   	return 0;
-> >   }
-> > @@ -966,17 +1047,17 @@ static int at91_adc_buffer_postdisable(struct iio_dev *indio_dev)
-> >   		    chan->type == IIO_PRESSURE)
-> >   			continue;
-> >   
-> > -		at91_adc_writel(st, AT91_SAMA5D2_CHDR, BIT(chan->channel));
-> > +		at91_adc_writel(st, CHDR, BIT(chan->channel));
-> >   
-> >   		if (st->dma_st.dma_chan)
-> > -			at91_adc_readl(st, chan->address);
-> > +			at91_adc_read_chan(st, chan->address);
-> >   	}
-> >   
-> >   	if (at91_adc_buffer_check_use_irq(indio_dev, st))
-> > -		at91_adc_writel(st, AT91_SAMA5D2_IDR, AT91_SAMA5D2_IER_DRDY);
-> > +		at91_adc_writel(st, IDR, AT91_SAMA5D2_IER_DRDY);
-> >   
-> >   	/* read overflow register to clear possible overflow status */
-> > -	at91_adc_readl(st, AT91_SAMA5D2_OVER);
-> > +	at91_adc_readl(st, OVER);
-> >   
-> >   	/* if we are using DMA we must clear registers and end DMA */
-> >   	if (st->dma_st.dma_chan)
-> > @@ -1024,7 +1105,7 @@ static void at91_adc_trigger_handler_nodma(struct iio_dev *indio_dev,
-> >   	 * Check if the conversion is ready. If not, wait a little bit, and
-> >   	 * in case of timeout exit with an error.
-> >   	 */
-> > -	while ((at91_adc_readl(st, AT91_SAMA5D2_ISR) & mask) != mask &&
-> > +	while ((at91_adc_readl(st, ISR) & mask) != mask &&
-> >   	       timeout) {
-> >   		usleep_range(50, 100);
-> >   		timeout--;
-> > @@ -1052,7 +1133,7 @@ static void at91_adc_trigger_handler_nodma(struct iio_dev *indio_dev,
-> >   		 * Thus, emit a warning.
-> >   		 */
-> >   		if (chan->type == IIO_VOLTAGE) {
-> > -			val = at91_adc_readl(st, chan->address);
-> > +			val = at91_adc_read_chan(st, chan->address);
-> >   			at91_adc_adjust_val_osr(st, &val);
-> >   			st->buffer[i] = val;
-> >   		} else {
-> > @@ -1073,7 +1154,7 @@ static void at91_adc_trigger_handler_dma(struct iio_dev *indio_dev)
-> >   	s64 interval;
-> >   	int sample_index = 0, sample_count, sample_size;
-> >   
-> > -	u32 status = at91_adc_readl(st, AT91_SAMA5D2_ISR);
-> > +	u32 status = at91_adc_readl(st, ISR);
-> >   	/* if we reached this point, we cannot sample faster */
-> >   	if (status & AT91_SAMA5D2_IER_GOVRE)
-> >   		pr_info_ratelimited("%s: conversion overrun detected\n",
-> > @@ -1125,7 +1206,7 @@ static irqreturn_t at91_adc_trigger_handler(int irq, void *p)
-> >   	 * actually polling the trigger now.
-> >   	 */
-> >   	if (iio_trigger_validate_own_device(indio_dev->trig, indio_dev))
-> > -		at91_adc_writel(st, AT91_SAMA5D2_CR, AT91_SAMA5D2_CR_START);
-> > +		at91_adc_writel(st, CR, AT91_SAMA5D2_CR_START);
-> >   
-> >   	if (st->dma_st.dma_chan)
-> >   		at91_adc_trigger_handler_dma(indio_dev);
-> > @@ -1172,11 +1253,11 @@ static void at91_adc_setup_samp_freq(struct iio_dev *indio_dev, unsigned freq)
-> >   	startup = at91_adc_startup_time(st->soc_info.startup_time,
-> >   					freq / 1000);
-> >   
-> > -	mr = at91_adc_readl(st, AT91_SAMA5D2_MR);
-> > +	mr = at91_adc_readl(st, MR);
-> >   	mr &= ~(AT91_SAMA5D2_MR_STARTUP_MASK | AT91_SAMA5D2_MR_PRESCAL_MASK);
-> >   	mr |= AT91_SAMA5D2_MR_STARTUP(startup);
-> >   	mr |= AT91_SAMA5D2_MR_PRESCAL(prescal);
-> > -	at91_adc_writel(st, AT91_SAMA5D2_MR, mr);
-> > +	at91_adc_writel(st, MR, mr);
-> >   
-> >   	dev_dbg(&indio_dev->dev, "freq: %u, startup: %u, prescal: %u\n",
-> >   		freq, startup, prescal);
-> > @@ -1196,7 +1277,7 @@ static void at91_adc_touch_data_handler(struct iio_dev *indio_dev)
-> >   	int i = 0;
-> >   
-> >   	for_each_set_bit(bit, indio_dev->active_scan_mask,
-> > -			 AT91_SAMA5D2_MAX_CHAN_IDX + 1) {
-> > +			 st->soc_info.platform->max_channels + 1) {
-> >   		struct iio_chan_spec const *chan =
-> >   					 at91_adc_chan_get(indio_dev, bit);
-> >   
-> > @@ -1222,12 +1303,11 @@ static void at91_adc_touch_data_handler(struct iio_dev *indio_dev)
-> >   
-> >   static void at91_adc_pen_detect_interrupt(struct at91_adc_state *st)
-> >   {
-> > -	at91_adc_writel(st, AT91_SAMA5D2_IDR, AT91_SAMA5D2_IER_PEN);
-> > -	at91_adc_writel(st, AT91_SAMA5D2_IER, AT91_SAMA5D2_IER_NOPEN |
-> > +	at91_adc_writel(st, IDR, AT91_SAMA5D2_IER_PEN);
-> > +	at91_adc_writel(st, IER, AT91_SAMA5D2_IER_NOPEN |
-> >   			AT91_SAMA5D2_IER_XRDY | AT91_SAMA5D2_IER_YRDY |
-> >   			AT91_SAMA5D2_IER_PRDY);
-> > -	at91_adc_writel(st, AT91_SAMA5D2_TRGR,
-> > -			AT91_SAMA5D2_TRGR_TRGMOD_PERIODIC |
-> > +	at91_adc_writel(st, TRGR, AT91_SAMA5D2_TRGR_TRGMOD_PERIODIC |
-> >   			AT91_SAMA5D2_TRGR_TRGPER(st->touch_st.sample_period_val));
-> >   	st->touch_st.touching = true;
-> >   }
-> > @@ -1236,16 +1316,15 @@ static void at91_adc_no_pen_detect_interrupt(struct iio_dev *indio_dev)
-> >   {
-> >   	struct at91_adc_state *st = iio_priv(indio_dev);
-> >   
-> > -	at91_adc_writel(st, AT91_SAMA5D2_TRGR,
-> > -			AT91_SAMA5D2_TRGR_TRGMOD_NO_TRIGGER);
-> > -	at91_adc_writel(st, AT91_SAMA5D2_IDR, AT91_SAMA5D2_IER_NOPEN |
-> > +	at91_adc_writel(st, TRGR, AT91_SAMA5D2_TRGR_TRGMOD_NO_TRIGGER);
-> > +	at91_adc_writel(st, IDR, AT91_SAMA5D2_IER_NOPEN |
-> >   			AT91_SAMA5D2_IER_XRDY | AT91_SAMA5D2_IER_YRDY |
-> >   			AT91_SAMA5D2_IER_PRDY);
-> >   	st->touch_st.touching = false;
-> >   
-> >   	at91_adc_touch_data_handler(indio_dev);
-> >   
-> > -	at91_adc_writel(st, AT91_SAMA5D2_IER, AT91_SAMA5D2_IER_PEN);
-> > +	at91_adc_writel(st, IER, AT91_SAMA5D2_IER_PEN);
-> >   }
-> >   
-> >   static void at91_adc_workq_handler(struct work_struct *workq)
-> > @@ -1263,8 +1342,8 @@ static irqreturn_t at91_adc_interrupt(int irq, void *private)
-> >   {
-> >   	struct iio_dev *indio = private;
-> >   	struct at91_adc_state *st = iio_priv(indio);
-> > -	u32 status = at91_adc_readl(st, AT91_SAMA5D2_ISR);
-> > -	u32 imr = at91_adc_readl(st, AT91_SAMA5D2_IMR);
-> > +	u32 status = at91_adc_readl(st, ISR);
-> > +	u32 imr = at91_adc_readl(st, IMR);
-> >   	u32 rdy_mask = AT91_SAMA5D2_IER_XRDY | AT91_SAMA5D2_IER_YRDY |
-> >   			AT91_SAMA5D2_IER_PRDY;
-> >   
-> > @@ -1285,9 +1364,9 @@ static irqreturn_t at91_adc_interrupt(int irq, void *private)
-> >   		 * touching, but the measurements are not ready yet.
-> >   		 * read and ignore.
-> >   		 */
-> > -		status = at91_adc_readl(st, AT91_SAMA5D2_XPOSR);
-> > -		status = at91_adc_readl(st, AT91_SAMA5D2_YPOSR);
-> > -		status = at91_adc_readl(st, AT91_SAMA5D2_PRESSR);
-> > +		status = at91_adc_readl(st, XPOSR);
-> > +		status = at91_adc_readl(st, YPOSR);
-> > +		status = at91_adc_readl(st, PRESSR);
-> >   	} else if (iio_buffer_enabled(indio) &&
-> >   		   (status & AT91_SAMA5D2_IER_DRDY)) {
-> >   		/* triggered buffer without DMA */
-> > @@ -1299,7 +1378,7 @@ static irqreturn_t at91_adc_interrupt(int irq, void *private)
-> >   		WARN(true, "Unexpected irq occurred\n");
-> >   	} else if (!iio_buffer_enabled(indio)) {
-> >   		/* software requested conversion */
-> > -		st->conversion_value = at91_adc_readl(st, st->chan->address);
-> > +		st->conversion_value = at91_adc_read_chan(st, st->chan->address);
-> >   		st->conversion_done = true;
-> >   		wake_up_interruptible(&st->wq_data_available);
-> >   	}
-> > @@ -1360,10 +1439,10 @@ static int at91_adc_read_info_raw(struct iio_dev *indio_dev,
-> >   		cor = (BIT(chan->channel) | BIT(chan->channel2)) <<
-> >   		      AT91_SAMA5D2_COR_DIFF_OFFSET;
-> >   
-> > -	at91_adc_writel(st, AT91_SAMA5D2_COR, cor);
-> > -	at91_adc_writel(st, AT91_SAMA5D2_CHER, BIT(chan->channel));
-> > -	at91_adc_writel(st, AT91_SAMA5D2_IER, BIT(chan->channel));
-> > -	at91_adc_writel(st, AT91_SAMA5D2_CR, AT91_SAMA5D2_CR_START);
-> > +	at91_adc_writel(st, COR, cor);
-> > +	at91_adc_writel(st, CHER, BIT(chan->channel));
-> > +	at91_adc_writel(st, IER, BIT(chan->channel));
-> > +	at91_adc_writel(st, CR, AT91_SAMA5D2_CR_START);
-> >   
-> >   	ret = wait_event_interruptible_timeout(st->wq_data_available,
-> >   					       st->conversion_done,
-> > @@ -1379,11 +1458,11 @@ static int at91_adc_read_info_raw(struct iio_dev *indio_dev,
-> >   		st->conversion_done = false;
-> >   	}
-> >   
-> > -	at91_adc_writel(st, AT91_SAMA5D2_IDR, BIT(chan->channel));
-> > -	at91_adc_writel(st, AT91_SAMA5D2_CHDR, BIT(chan->channel));
-> > +	at91_adc_writel(st, IDR, BIT(chan->channel));
-> > +	at91_adc_writel(st, CHDR, BIT(chan->channel));
-> >   
-> >   	/* Needed to ACK the DRDY interruption */
-> > -	at91_adc_readl(st, AT91_SAMA5D2_LCDR);
-> > +	at91_adc_readl(st, LCDR);
-> >   
-> >   	mutex_unlock(&st->lock);
-> >   
-> > @@ -1455,14 +1534,15 @@ static void at91_adc_dma_init(struct platform_device *pdev)
-> >   	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
-> >   	struct at91_adc_state *st = iio_priv(indio_dev);
-> >   	struct dma_slave_config config = {0};
-> > +	/* we have 2 bytes for each channel */
-> > +	unsigned int sample_size = st->soc_info.platform->nr_channels * 2;
-> >   	/*
-> >   	 * We make the buffer double the size of the fifo,
-> >   	 * such that DMA uses one half of the buffer (full fifo size)
-> >   	 * and the software uses the other half to read/write.
-> >   	 */
-> >   	unsigned int pages = DIV_ROUND_UP(AT91_HWFIFO_MAX_SIZE *
-> > -					  AT91_BUFFER_MAX_CONVERSION_BYTES * 2,
-> > -					  PAGE_SIZE);
-> > +					  sample_size * 2, PAGE_SIZE);
-> >   
-> >   	if (st->dma_st.dma_chan)
-> >   		return;
-> > @@ -1486,7 +1566,7 @@ static void at91_adc_dma_init(struct platform_device *pdev)
-> >   	/* Configure DMA channel to read data register */
-> >   	config.direction = DMA_DEV_TO_MEM;
-> >   	config.src_addr = (phys_addr_t)(st->dma_st.phys_addr
-> > -			  + AT91_SAMA5D2_LCDR);
-> > +			  + st->soc_info.platform->layout->LCDR);
-> >   	config.src_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-> >   	config.src_maxburst = 1;
-> >   	config.dst_maxburst = 1;
-> > @@ -1515,9 +1595,10 @@ static void at91_adc_dma_disable(struct platform_device *pdev)
-> >   {
-> >   	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
-> >   	struct at91_adc_state *st = iio_priv(indio_dev);
-> > +	/* we have 2 bytes for each channel */
-> > +	unsigned int sample_size = st->soc_info.platform->nr_channels * 2;
-> >   	unsigned int pages = DIV_ROUND_UP(AT91_HWFIFO_MAX_SIZE *
-> > -					  AT91_BUFFER_MAX_CONVERSION_BYTES * 2,
-> > -					  PAGE_SIZE);
-> > +					  sample_size * 2, PAGE_SIZE);
-> >   
-> >   	/* if we are not using DMA, just return */
-> >   	if (!st->dma_st.dma_chan)
-> > @@ -1578,14 +1659,14 @@ static int at91_adc_update_scan_mode(struct iio_dev *indio_dev,
-> >   	struct at91_adc_state *st = iio_priv(indio_dev);
-> >   
-> >   	if (bitmap_subset(scan_mask, &st->touch_st.channels_bitmask,
-> > -			  AT91_SAMA5D2_MAX_CHAN_IDX + 1))
-> > +			  st->soc_info.platform->max_channels + 1))
-> >   		return 0;
-> >   	/*
-> >   	 * if the new bitmap is a combination of touchscreen and regular
-> >   	 * channels, then we are not fine
-> >   	 */
-> >   	if (bitmap_intersects(&st->touch_st.channels_bitmask, scan_mask,
-> > -			      AT91_SAMA5D2_MAX_CHAN_IDX + 1))
-> > +			      st->soc_info.platform->max_channels + 1))
-> >   		return -EINVAL;
-> >   	return 0;
-> >   }
-> > @@ -1594,13 +1675,13 @@ static void at91_adc_hw_init(struct iio_dev *indio_dev)
-> >   {
-> >   	struct at91_adc_state *st = iio_priv(indio_dev);
-> >   
-> > -	at91_adc_writel(st, AT91_SAMA5D2_CR, AT91_SAMA5D2_CR_SWRST);
-> > -	at91_adc_writel(st, AT91_SAMA5D2_IDR, 0xffffffff);
-> > +	at91_adc_writel(st, CR, AT91_SAMA5D2_CR_SWRST);
-> > +	at91_adc_writel(st, IDR, 0xffffffff);
-> >   	/*
-> >   	 * Transfer field must be set to 2 according to the datasheet and
-> >   	 * allows different analog settings for each channel.
-> >   	 */
-> > -	at91_adc_writel(st, AT91_SAMA5D2_MR,
-> > +	at91_adc_writel(st, MR,
-> >   			AT91_SAMA5D2_MR_TRANSFER(2) | AT91_SAMA5D2_MR_ANACH);
-> >   
-> >   	at91_adc_setup_samp_freq(indio_dev, st->soc_info.min_sample_rate);
-> > @@ -1716,21 +1797,23 @@ static int at91_adc_probe(struct platform_device *pdev)
-> >   	if (!indio_dev)
-> >   		return -ENOMEM;
-> >   
-> > +	st = iio_priv(indio_dev);
-> > +	st->indio_dev = indio_dev;
-> > +
-> > +	st->soc_info.platform = of_device_get_match_data(&pdev->dev);
-> > +
-> >   	indio_dev->name = dev_name(&pdev->dev);
-> >   	indio_dev->modes = INDIO_DIRECT_MODE | INDIO_BUFFER_SOFTWARE;
-> >   	indio_dev->info = &at91_adc_info;
-> > -	indio_dev->channels = at91_adc_channels;
-> > -	indio_dev->num_channels = ARRAY_SIZE(at91_adc_channels);
-> > -
-> > -	st = iio_priv(indio_dev);
-> > -	st->indio_dev = indio_dev;
-> > +	indio_dev->channels = *st->soc_info.platform->adc_channels;
-> > +	indio_dev->num_channels = st->soc_info.platform->max_channels;
-> >   
-> >   	bitmap_set(&st->touch_st.channels_bitmask,
-> > -		   AT91_SAMA5D2_TOUCH_X_CHAN_IDX, 1);
-> > +		   st->soc_info.platform->touch_chan_x, 1);
-> >   	bitmap_set(&st->touch_st.channels_bitmask,
-> > -		   AT91_SAMA5D2_TOUCH_Y_CHAN_IDX, 1);
-> > +		   st->soc_info.platform->touch_chan_y, 1);
-> >   	bitmap_set(&st->touch_st.channels_bitmask,
-> > -		   AT91_SAMA5D2_TOUCH_P_CHAN_IDX, 1);
-> > +		   st->soc_info.platform->touch_chan_p, 1);
-> >   
-> >   	st->oversampling_ratio = AT91_OSR_1SAMPLES;
-> >   
-> > @@ -1770,7 +1853,7 @@ static int at91_adc_probe(struct platform_device *pdev)
-> >   	st->selected_trig = NULL;
-> >   
-> >   	/* find the right trigger, or no trigger at all */
-> > -	for (i = 0; i < AT91_SAMA5D2_HW_TRIG_CNT + 1; i++)
-> > +	for (i = 0; i < st->soc_info.platform->hw_trig_cnt + 1; i++)
-> >   		if (at91_adc_trigger_list[i].edge_type == edge_type) {
-> >   			st->selected_trig = &at91_adc_trigger_list[i];
-> >   			break;
-> > @@ -1855,7 +1938,7 @@ static int at91_adc_probe(struct platform_device *pdev)
-> >   			 st->selected_trig->name);
-> >   
-> >   	dev_info(&pdev->dev, "version: %x\n",
-> > -		 readl_relaxed(st->base + AT91_SAMA5D2_VERSION));
-> > +		 readl_relaxed(st->base + st->soc_info.platform->layout->VERSION));
-> >   
-> >   	return 0;
-> >   
-> > @@ -1898,7 +1981,7 @@ static __maybe_unused int at91_adc_suspend(struct device *dev)
-> >   	 * and can be used by for other devices.
-> >   	 * Otherwise, ADC will hog them and we can't go to suspend mode.
-> >   	 */
-> > -	at91_adc_writel(st, AT91_SAMA5D2_CR, AT91_SAMA5D2_CR_SWRST);
-> > +	at91_adc_writel(st, CR, AT91_SAMA5D2_CR_SWRST);
-> >   
-> >   	clk_disable_unprepare(st->per_clk);
-> >   	regulator_disable(st->vref);
-> > @@ -1958,6 +2041,7 @@ static SIMPLE_DEV_PM_OPS(at91_adc_pm_ops, at91_adc_suspend, at91_adc_resume);
-> >   static const struct of_device_id at91_adc_dt_match[] = {
-> >   	{
-> >   		.compatible = "atmel,sama5d2-adc",
-> > +		.data = (const void *)&sama5d2_platform,
-> >   	}, {
-> >   		/* sentinel */
-> >   	}
-> >   
-> 
+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
+AA==
 
+--GvXjxJ+pjyke8COw--
