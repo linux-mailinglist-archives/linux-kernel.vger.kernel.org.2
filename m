@@ -2,67 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061BD3FB864
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C7C3FB86F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237199AbhH3OnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 10:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237156AbhH3OnJ (ORCPT
+        id S237182AbhH3Oon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 10:44:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47001 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233798AbhH3Ooc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 10:43:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF77C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 07:42:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EZA4oxuCnUaen/bj4k8tdkq2jibgifMiILkBMqfWID0=; b=tyx99hhd0HIIPh8tn7k1fWYyLz
-        1790ARWjQCLnsX1HowT/oGgasjvtR91zrZKFVXrg5XElgmIKyOhRzf+t1PDvF5cmsp94He91DRPEQ
-        YgvFNRZPiybebXKXQtVs6ofG0aLAEf6JM39vjgaOCWwLJmOSz46v0zvv2K3c64DzB2TiUahTlNUZQ
-        8niY5SFpHmxIkc4YNJXUl6O1PkrZvGArOgK05bgbIP+4r9xa9GF0MH1IlHOphl+gLVuE5F61/fhmF
-        TPvPnIxwy6pMLDmRLD6WJXCUKjjA6vcRycu9njcUkqkfIcmP1k3LWeN/Q9p9xmFiJBCGFbmZiCemV
-        xqjOE1Pw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKiTt-000FAi-4s; Mon, 30 Aug 2021 14:41:55 +0000
-Date:   Mon, 30 Aug 2021 15:41:49 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Mikko Rantalainen <mikko.rantalainen@peda.net>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: Why is Shmem included in Cached in /proc/meminfo?
-Message-ID: <YSzuLbHr7fHshafX@casper.infradead.org>
-References: <5a42eb2b-fd7b-6296-f5d6-619661ad1418@peda.net>
- <0d11f620-0562-e150-259d-85de8d10cd7a@infradead.org>
+        Mon, 30 Aug 2021 10:44:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630334617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2mUEVGaDHklyh6ZR9nxnq1+fJDzLMjt6bOsluGTQ+48=;
+        b=UGzIQPAnh7280ocXrO/hjh6qA0hO9J5gm/Gh/wIdut0cw2wgro3pcUQiniQI9eni+UtTEh
+        Bfeaba8ukmjutVR4bHc8r3gL7TmuKjEF7oFYq4WNTOlVmj5SpZygg77HUwzGSgxP6sIlwX
+        NdEz9omrLClBy8l/6CpqOPnXReqcMSo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-JHArCordPU6lSo82J9H1QA-1; Mon, 30 Aug 2021 10:43:36 -0400
+X-MC-Unique: JHArCordPU6lSo82J9H1QA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 50D6587D558;
+        Mon, 30 Aug 2021 14:43:35 +0000 (UTC)
+Received: from fedora-t480.redhat.com (unknown [10.39.192.244])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0BC5E5DEB8;
+        Mon, 30 Aug 2021 14:43:27 +0000 (UTC)
+From:   Kate Hsuan <hpa@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>, Hans de Goede <hdegoede@redhat.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kate Hsuan <hpa@redhat.com>
+Subject: [PATCH v3 0/1] libata: Add ATA_HORKAGE_NONCQ_ON_AMD for Samsung 860 and 870 SSD.
+Date:   Mon, 30 Aug 2021 10:42:52 -0400
+Message-Id: <20210830144253.289542-1-hpa@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d11f620-0562-e150-259d-85de8d10cd7a@infradead.org>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 07:34:38AM -0700, Randy Dunlap wrote:
-> [add linux-mm mailing list]
-> 
-> On 8/30/21 12:44 AM, Mikko Rantalainen wrote:
-> > It's not immediately obvious from fs/proc/meminfo.c function
-> > meminfo_proc_show() but the output of Cached: field seems to always
-> > include all of Shmem: field, too.
-> > 
-> > Is this intentional? Usually cache is something that can be discarded if
-> > needed but shared memory (e.g. used to contain files in tmpfs) cannot be
-> > discarded without a data-loss. As such, I'd argue that it shouldn't be
-> > included in the Cached: output.
+Many users reported the issue when running the system with Samsung 860,
+870 SSD, and AMD chipset. Therefore, completely disabling the NCQ can
+avoid this issue.
 
-That's a reasonable position to take.
+Entire disabling NCQ for Samsung 860/870 SSD will cause I/O performance
+drop. In this case, a flag ATA_HORKAGE_NONCQ_ON_AMD is introduced to
+used to perform an additional check for these SSDs. If it finds its parent
+ATA controller is AMD, the NCQ will be disabled. Otherwise, the NCQ is kept
+to enable.
 
-Another point of view is that everything in tmpfs is part of the page
-cache and can be written out to swap, so keeping it as part of Cached
-is not misleading.
+Changes since v3
+* Modified the flag from ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL to
+  ATA_HORKAGE_NONCQ_ON_AMD.
+* Modified and fixed the code to completely disable NCQ on AMD controller.
 
-I can see it both ways, and personally, I'd lean towards clarifying
-the documentation about how shmem is accounted rather than changing
-how the memory usage is reported.
+
+Kate Hsuan (1):
+  libata: Add ATA_HORKAGE_NONCQ_ON_AMD for Samsung 860 and 870 SSD.
+
+ drivers/ata/libata-core.c | 24 ++++++++++++++++++++++--
+ include/linux/libata.h    |  1 +
+ 2 files changed, 23 insertions(+), 2 deletions(-)
+
+-- 
+2.31.1
+
