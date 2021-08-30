@@ -2,389 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C91E3FBDBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2CE3FBDC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236577AbhH3VAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 17:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236056AbhH3VAK (ORCPT
+        id S236664AbhH3VAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:00:25 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:42707 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236036AbhH3VAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:00:10 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5C2C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:59:16 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so390512pjw.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:59:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JJoUozkPIM0tHgfyfc1fK8sPmq/Hal6Zt+HEvfIoLUg=;
-        b=jzvaif2xRQ2CuslZJky0053RJlv8i5jneBUOikqGQvjt7hZJayC2D40PiT0kZctnWm
-         togR+oKcgJYWHL77WZBVe0au/miX9lEhbf+dT/hii7rSuTAqiNnCAP+4pEJoR9oy89C8
-         EmoSYflHAuEzwHxuB1JJ5uYIXxTKudMHwJVg0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JJoUozkPIM0tHgfyfc1fK8sPmq/Hal6Zt+HEvfIoLUg=;
-        b=syuAzxdgZsoiPrbRYaNTAaG8BS/2lgVdc5jgJM9K3p1uWeCvnmc+frqSVpLBioGpDZ
-         ///wlXF4Zt2hu/liQ4K4iOeNir+30cLiVkHU3UnQVlWSDARP0xHgYXta4wI0JEOjOKAk
-         EQNDikJUzUuHnm0MLQgpvUzrTPOkx97xr0i6wSOaZ8SK95iwbsXP+dQfmBC9hD0wRiOI
-         qdG1EL3rSJ1krNtNXpTKyTzbkq1ZosL5uBwYZhatNjFVpE+xGQ1BJDB/qUrrJmigtnBK
-         x7WH77Y9M1bXewIANjLCjcNeGl2LxPeH/iusz2hQCz79JMH8G62ALpjq06RXsq/lSyQu
-         3n4A==
-X-Gm-Message-State: AOAM530mOUk8dAel1HEe0iG5PYqWviqeoUVhIYbZZbsZAEphzYtmhQdT
-        7e4BIvJyGeWZiI16yIXCqw4sfA==
-X-Google-Smtp-Source: ABdhPJxFLrpR8SqpNrVEqK8cEbVUhggyOrcwbh8zHqXG6wKCkQ3hLvNx1IJldMIfLVNq6TMKw8jjkA==
-X-Received: by 2002:a17:903:228a:b0:133:305f:2dd2 with SMTP id b10-20020a170903228a00b00133305f2dd2mr1355290plh.21.1630357155600;
-        Mon, 30 Aug 2021 13:59:15 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:b658:7113:70a2:ea])
-        by smtp.gmail.com with ESMTPSA id o10sm349241pjg.34.2021.08.30.13.59.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 13:59:15 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     mka@chromium.org, swboyd@chromium.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: sc7180: Base dynamic CPU power coefficients in reality
-Date:   Mon, 30 Aug 2021 13:59:07 -0700
-Message-Id: <20210830135904.1.I049b30065f3c715234b6303f55d72c059c8625eb@changeid>
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+        Mon, 30 Aug 2021 17:00:23 -0400
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id EC747806A8;
+        Tue, 31 Aug 2021 08:59:24 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1630357164;
+        bh=Cj1HC74r2MPnEw4CyvStNz4uRXJHeNzHPBcHLUfpNZE=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=T8Xc44Z//GszkNCuXlwN0Irp4bnzGh2E2ndOw5cmbn9wFZANJdRz2WzBYPiFJerbQ
+         cug2FKJA6j7vaQzflpPZR9nXQG7BvTJC3t2cqikyKBGlClR3ZFAYC6PdyV9yZO6xza
+         BLhAi1jmw22NL7of+OXjn/Ak1E8NyBEFVX4ZTugDS0Esg9YfaOkbvZGT7H0vc3UxdC
+         V4w1u2RVngFwS1gyHOcDfj7BuZVY/t5qPIUucvPf34aDS8SXWjmBrs2gGhUcXWJSjI
+         CFOvRwL+T06HY+7xK6GRSO1qI+5qnXPURie7Gglhd5h8d+64rC06HkIDqquuHMnpgo
+         tnm3mMDt9HUTQ==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B612d46ac0001>; Tue, 31 Aug 2021 08:59:24 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Tue, 31 Aug 2021 08:59:24 +1200
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.023; Tue, 31 Aug 2021 08:59:24 +1200
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/4] hwmon: (adt7470) Use standard update_interval
+ property
+Thread-Topic: [PATCH v2 4/4] hwmon: (adt7470) Use standard update_interval
+ property
+Thread-Index: AQHXmiPcXguJzdIxPU+IRgUO+WiCqKuHF9kAgAMe8gCAATVTgIAAWkGA
+Date:   Mon, 30 Aug 2021 20:59:24 +0000
+Message-ID: <dace3f40-8038-2867-dc20-596f8bc0ebe2@alliedtelesis.co.nz>
+References: <20210826024121.15665-1-chris.packham@alliedtelesis.co.nz>
+ <20210826024121.15665-5-chris.packham@alliedtelesis.co.nz>
+ <20210827212942.GA716764@roeck-us.net>
+ <fe6cf9f3-f15e-065c-aaf8-cc018edf12e8@alliedtelesis.co.nz>
+ <e467a3b2-d7c7-0920-9287-fb3e7abd5fae@roeck-us.net>
+In-Reply-To: <e467a3b2-d7c7-0920-9287-fb3e7abd5fae@roeck-us.net>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <CAE07E19B1FDC048B04C68A1D8B96635@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=aqTM9hRV c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=MhDmnRu9jo8A:10 a=IuYHxPiwz1Cm0btsGcYA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sc7180's dynamic-power-coefficient violates the device tree bindings.
-The bindings (arm/cpus.yaml) say that the units for the
-dynamic-power-coefficient are supposed to be "uW/MHz/V^2". The ones for
-sc7180 aren't this. Qualcomm arbitrarily picked 100 for the "little" CPUs
-and then picked a number for the big CPU based on this.
-
-At the time, there was a giant dicussion about this. Apparently Qualcomm
-Engineers were instructed not to share the actual numbers here. As part
-of the discussion, I pointed out [1] that these numbers shouldn't really
-be secret since once a device is shipping anyone can just run a script
-and produce them. This patch is the result of running the script I posted
-in that discussion on sc7180-trogdor-coachz, which is currently available
-for purchase by consumers.
-
-[1] https://lore.kernel.org/r/CAD=FV=U1FP0e3_AVHpauUUZtD-5X3XCwh5aT9fH_8S_FFML2Uw@mail.gmail.com/
-
-I ran the script four times, measuring little, big, little, big. I used
-the 64-bit version of dhrystone 2.2 in my test. I got these results:
-
-576 kHz, 596 mV, 20 mW, 88 Cx
-768 kHz, 596 mV, 32 mW, 122 Cx
-1017 kHz, 660 mV, 45 mW, 97 Cx
-1248 kHz, 720 mV, 87 mW, 139 Cx
-1324 kHz, 756 mV, 109 mW, 148 Cx
-1516 kHz, 828 mV, 150 mW, 148 Cx
-1612 kHz, 884 mV, 182 mW, 147 Cx
-1708 kHz, 884 mV, 192 mW, 146 Cx
-1804 kHz, 884 mV, 207 mW, 149 Cx
-Your dynamic-power-coefficient for cpu 0: 132
-
-825 kHz, 596 mV, 142 mW, 401 Cx
-979 kHz, 628 mV, 183 mW, 427 Cx
-1113 kHz, 656 mV, 224 mW, 433 Cx
-1267 kHz, 688 mV, 282 mW, 449 Cx
-1555 kHz, 812 mV, 475 mW, 450 Cx
-1708 kHz, 828 mV, 566 mW, 478 Cx
-1843 kHz, 884 mV, 692 mW, 476 Cx
-1900 kHz, 884 mV, 722 mW, 482 Cx
-1996 kHz, 916 mV, 814 mW, 482 Cx
-2112 kHz, 916 mV, 862 mW, 483 Cx
-2208 kHz, 916 mV, 962 mW, 521 Cx
-2323 kHz, 940 mV, 1060 mW, 517 Cx
-2400 kHz, 956 mV, 1133 mW, 518 Cx
-Your dynamic-power-coefficient for cpu 6: 471
-
-576 kHz, 596 mV, 26 mW, 103 Cx
-768 kHz, 596 mV, 40 mW, 147 Cx
-1017 kHz, 660 mV, 54 mW, 114 Cx
-1248 kHz, 720 mV, 97 mW, 151 Cx
-1324 kHz, 756 mV, 113 mW, 150 Cx
-1516 kHz, 828 mV, 154 mW, 148 Cx
-1612 kHz, 884 mV, 194 mW, 155 Cx
-1708 kHz, 884 mV, 203 mW, 152 Cx
-1804 kHz, 884 mV, 219 mW, 155 Cx
-Your dynamic-power-coefficient for cpu 0: 142
-
-825 kHz, 596 mV, 148 mW, 530 Cx
-979 kHz, 628 mV, 189 mW, 475 Cx
-1113 kHz, 656 mV, 230 mW, 461 Cx
-1267 kHz, 688 mV, 287 mW, 466 Cx
-1555 kHz, 812 mV, 469 mW, 445 Cx
-1708 kHz, 828 mV, 567 mW, 480 Cx
-1843 kHz, 884 mV, 699 mW, 482 Cx
-1900 kHz, 884 mV, 719 mW, 480 Cx
-1996 kHz, 916 mV, 814 mW, 484 Cx
-2112 kHz, 916 mV, 861 mW, 483 Cx
-2208 kHz, 916 mV, 963 mW, 522 Cx
-2323 kHz, 940 mV, 1063 mW, 520 Cx
-2400 kHz, 956 mV, 1135 mW, 519 Cx
-Your dynamic-power-coefficient for cpu 6: 489
-
-As you can see, the calculations aren't perfectly consistent but
-roughly you could say about 480 for big and 137 for little.
-
-The ratio between these numbers isn't quite the same as the
-ratio between the two numbers that Qualcomm used. Presumably
-this is because Qualcomm measured something slightly different
-than the 64-bit version of dhrystone 2.2, though it might also
-be that they fudged the numbers a little. In any case, these
-numbers don't need to be perfectly exact. In fact, they can't
-be since the CPU power depends a lot on what's being run on
-the CPU and the big/little CPUs are each more or less efficient
-in different operations. Historically running the 32-bit vs.
-64-bit versions of dhrystone produced notably different numbers,
-though I didn't test this time. In any case, let's keep the
-existing ratio but scale it based on the above so we're at
-least _somewhat_ based in the correct units. I'll pick:
-* little: 130
-* big:    527
-...which basically means we're scaling the old numbers by 30%.
-
-We also need to scale all of the sustainable-power numbers by
-the same amount.
-
-Fixes: 71f873169a80 ("arm64: dts: qcom: sc7180: Add dynamic CPU power coefficients")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
- .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi  |  2 +-
- .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  |  8 ++---
- arch/arm64/boot/dts/qcom/sc7180.dtsi          | 36 +++++++++----------
- 3 files changed, 23 insertions(+), 23 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-index a758e4d22612..4ba687dc850f 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-@@ -33,7 +33,7 @@ skin_temp_thermal: skin-temp-thermal {
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&pm6150_adc_tm 1>;
--			sustainable-power = <814>;
-+			sustainable-power = <1058>;
- 
- 			trips {
- 				skin_temp_alert0: trip-point0 {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-index a246dbd74cc1..e066bce768c7 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-@@ -44,7 +44,7 @@ &cpu6_alert1 {
- };
- 
- &cpu6_thermal {
--	sustainable-power = <948>;
-+	sustainable-power = <1232>;
- };
- 
- &cpu7_alert0 {
-@@ -56,7 +56,7 @@ &cpu7_alert1 {
- };
- 
- &cpu7_thermal {
--	sustainable-power = <948>;
-+	sustainable-power = <1232>;
- };
- 
- &cpu8_alert0 {
-@@ -68,7 +68,7 @@ &cpu8_alert1 {
- };
- 
- &cpu8_thermal {
--	sustainable-power = <948>;
-+	sustainable-power = <1232>;
- };
- 
- &cpu9_alert0 {
-@@ -80,7 +80,7 @@ &cpu9_alert1 {
- };
- 
- &cpu9_thermal {
--	sustainable-power = <948>;
-+	sustainable-power = <1232>;
- };
- 
- &gpio_keys {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 47b20ba69057..e2c92dae580a 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -138,7 +138,7 @@ CPU0: cpu@0 {
- 					   &LITTLE_CPU_SLEEP_1
- 					   &CLUSTER_SLEEP_0>;
- 			capacity-dmips-mhz = <1024>;
--			dynamic-power-coefficient = <100>;
-+			dynamic-power-coefficient = <130>;
- 			operating-points-v2 = <&cpu0_opp_table>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
-@@ -163,7 +163,7 @@ CPU1: cpu@100 {
- 					   &LITTLE_CPU_SLEEP_1
- 					   &CLUSTER_SLEEP_0>;
- 			capacity-dmips-mhz = <1024>;
--			dynamic-power-coefficient = <100>;
-+			dynamic-power-coefficient = <130>;
- 			next-level-cache = <&L2_100>;
- 			operating-points-v2 = <&cpu0_opp_table>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-@@ -185,7 +185,7 @@ CPU2: cpu@200 {
- 					   &LITTLE_CPU_SLEEP_1
- 					   &CLUSTER_SLEEP_0>;
- 			capacity-dmips-mhz = <1024>;
--			dynamic-power-coefficient = <100>;
-+			dynamic-power-coefficient = <130>;
- 			next-level-cache = <&L2_200>;
- 			operating-points-v2 = <&cpu0_opp_table>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-@@ -207,7 +207,7 @@ CPU3: cpu@300 {
- 					   &LITTLE_CPU_SLEEP_1
- 					   &CLUSTER_SLEEP_0>;
- 			capacity-dmips-mhz = <1024>;
--			dynamic-power-coefficient = <100>;
-+			dynamic-power-coefficient = <130>;
- 			next-level-cache = <&L2_300>;
- 			operating-points-v2 = <&cpu0_opp_table>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-@@ -229,7 +229,7 @@ CPU4: cpu@400 {
- 					   &LITTLE_CPU_SLEEP_1
- 					   &CLUSTER_SLEEP_0>;
- 			capacity-dmips-mhz = <1024>;
--			dynamic-power-coefficient = <100>;
-+			dynamic-power-coefficient = <130>;
- 			next-level-cache = <&L2_400>;
- 			operating-points-v2 = <&cpu0_opp_table>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-@@ -251,7 +251,7 @@ CPU5: cpu@500 {
- 					   &LITTLE_CPU_SLEEP_1
- 					   &CLUSTER_SLEEP_0>;
- 			capacity-dmips-mhz = <1024>;
--			dynamic-power-coefficient = <100>;
-+			dynamic-power-coefficient = <130>;
- 			next-level-cache = <&L2_500>;
- 			operating-points-v2 = <&cpu0_opp_table>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-@@ -273,7 +273,7 @@ CPU6: cpu@600 {
- 					   &BIG_CPU_SLEEP_1
- 					   &CLUSTER_SLEEP_0>;
- 			capacity-dmips-mhz = <1740>;
--			dynamic-power-coefficient = <405>;
-+			dynamic-power-coefficient = <527>;
- 			next-level-cache = <&L2_600>;
- 			operating-points-v2 = <&cpu6_opp_table>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-@@ -295,7 +295,7 @@ CPU7: cpu@700 {
- 					   &BIG_CPU_SLEEP_1
- 					   &CLUSTER_SLEEP_0>;
- 			capacity-dmips-mhz = <1740>;
--			dynamic-power-coefficient = <405>;
-+			dynamic-power-coefficient = <527>;
- 			next-level-cache = <&L2_700>;
- 			operating-points-v2 = <&cpu6_opp_table>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-@@ -3592,7 +3592,7 @@ cpu0_thermal: cpu0-thermal {
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens0 1>;
--			sustainable-power = <768>;
-+			sustainable-power = <998>;
- 
- 			trips {
- 				cpu0_alert0: trip-point0 {
-@@ -3641,7 +3641,7 @@ cpu1_thermal: cpu1-thermal {
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens0 2>;
--			sustainable-power = <768>;
-+			sustainable-power = <998>;
- 
- 			trips {
- 				cpu1_alert0: trip-point0 {
-@@ -3690,7 +3690,7 @@ cpu2_thermal: cpu2-thermal {
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens0 3>;
--			sustainable-power = <768>;
-+			sustainable-power = <998>;
- 
- 			trips {
- 				cpu2_alert0: trip-point0 {
-@@ -3739,7 +3739,7 @@ cpu3_thermal: cpu3-thermal {
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens0 4>;
--			sustainable-power = <768>;
-+			sustainable-power = <998>;
- 
- 			trips {
- 				cpu3_alert0: trip-point0 {
-@@ -3788,7 +3788,7 @@ cpu4_thermal: cpu4-thermal {
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens0 5>;
--			sustainable-power = <768>;
-+			sustainable-power = <998>;
- 
- 			trips {
- 				cpu4_alert0: trip-point0 {
-@@ -3837,7 +3837,7 @@ cpu5_thermal: cpu5-thermal {
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens0 6>;
--			sustainable-power = <768>;
-+			sustainable-power = <998>;
- 
- 			trips {
- 				cpu5_alert0: trip-point0 {
-@@ -3886,7 +3886,7 @@ cpu6_thermal: cpu6-thermal {
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens0 9>;
--			sustainable-power = <1202>;
-+			sustainable-power = <1563>;
- 
- 			trips {
- 				cpu6_alert0: trip-point0 {
-@@ -3927,7 +3927,7 @@ cpu7_thermal: cpu7-thermal {
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens0 10>;
--			sustainable-power = <1202>;
-+			sustainable-power = <1563>;
- 
- 			trips {
- 				cpu7_alert0: trip-point0 {
-@@ -3968,7 +3968,7 @@ cpu8_thermal: cpu8-thermal {
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens0 11>;
--			sustainable-power = <1202>;
-+			sustainable-power = <1563>;
- 
- 			trips {
- 				cpu8_alert0: trip-point0 {
-@@ -4009,7 +4009,7 @@ cpu9_thermal: cpu9-thermal {
- 			polling-delay = <0>;
- 
- 			thermal-sensors = <&tsens0 12>;
--			sustainable-power = <1202>;
-+			sustainable-power = <1563>;
- 
- 			trips {
- 				cpu9_alert0: trip-point0 {
--- 
-2.33.0.259.gc128427fd7-goog
-
+DQpPbiAzMS8wOC8yMSAzOjM2IGFtLCBHdWVudGVyIFJvZWNrIHdyb3RlOg0KPiBPbiA4LzI5LzIx
+IDI6MDkgUE0sIENocmlzIFBhY2toYW0gd3JvdGU6DQo+Pg0KPj4gT24gMjgvMDgvMjEgOToyOSBh
+bSwgR3VlbnRlciBSb2VjayB3cm90ZToNCj4+PiBPbiBUaHUsIEF1ZyAyNiwgMjAyMSBhdCAwMjo0
+MToyMVBNICsxMjAwLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPj4+PiBJbnN0ZWFkIG9mIHRoZSBu
+b24tc3RhbmRhcmQgYXV0b191cGRhdGVfaW50ZXJ2YWwgbWFrZSB1c2Ugb2YgdGhlDQo+Pj4+IHVw
+ZGF0ZV9pbnRlcnZhbCBwcm9wZXJ0eSB0aGF0IGlzIHN1cHBvcnRlZCBieSB0aGUgaHdtb24gY29y
+ZS4NCj4+Pj4NCj4+Pj4gU2lnbmVkLW9mZi1ieTogQ2hyaXMgUGFja2hhbSA8Y2hyaXMucGFja2hh
+bUBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KPj4+PiAtLS0NCj4+Pj4NCj4+Pj4gTm90ZXM6DQo+Pj4+
+IMKgwqDCoMKgwqAgSSBraW5kIG9mIGFudGljaXBhdGUgYSBOQUsgb24gdGhpcyBiZWNhdXNlIGl0
+IGFmZmVjdHMgdGhlIA0KPj4+PiBBQkkuIEJ1dCBJIGZpZ3VyZWQNCj4+Pj4gwqDCoMKgwqDCoCBJ
+J2QgcnVuIGl0IHBhc3QgdGhlIE1MIHRvIHNlZSBpZiBtb3ZpbmcgdG93YXJkcyB0aGUgaHdtb24g
+DQo+Pj4+IGNvcmUgaXMgd29ydGggdGhlIGhpdA0KPj4+PiDCoMKgwqDCoMKgIGluIEFCSSBjb21w
+YXRpYmlsaXR5Lg0KPj4+IEkgcGVyc29uYWxseSBkb24ndCBtaW5kIChtb3N0IGxpa2VseSBubyBv
+bmUgaXMgdXNpbmcgaXQgYW55d2F5KSwgYnV0IA0KPj4+IGxldCdzDQo+Pj4gd2FpdCB1bnRpbCBh
+ZnRlciB0aGUgdXBjb21pbmcgY29tbWl0IHdpbmRvdyBjbG9zZXMgdG8gZ2l2ZSBwZW9wbGUgDQo+
+Pj4gdGltZSB0bw0KPj4+IGNvbXBsYWluLg0KPj4NCj4+IEkga25vdyBvZiBvbmUgYXBwbGljYXRp
+b24gdXNpbmcgdGhpcyBzeXNmcyBlbnRyeS4gQnV0IGl0J3Mgb3VyIGluLWhvdXNlDQo+PiBlbnZp
+cm9ubWVudGFsIG1vbml0b3JpbmcgY29kZSBzbyBpZiB0aGlzIGdldHMgbWVyZ2VkIEknbGwganVz
+dCB1cGRhdGUgaXQNCj4+IHRvIHVzZSB0aGUgbmV3IHBhdGguDQo+Pg0KPj4gT25lIHRob3VnaHQg
+SSBoYWQgd2FzIHdlIGNvdWxkIGRvIGJvdGguIGkuZS4gaGF2ZSBhbiBlbnRyeSB0aGF0IGNvbmZv
+cm1zDQo+PiB0byB0aGUgaHdtb24gY29yZSBhbmQgYSBiYWNrd2FyZHMgY29tcGF0aWJsZSBlbnRy
+eSB0aGF0IGp1c3QgYWxpYXNlcyB0aGUNCj4+IG5ldyBwYXRoLg0KPj4NCj4gTm93IHlvdSBhbG1v
+c3QgY29udmluY2VkIG1lIHRvIGluZGVlZCByZWplY3QgdGhpcyBwYXRjaC4gVGhlIGlkZWEgb2Yg
+DQo+IHRoZSBuZXcgQVBJDQo+IGlzIHRvIHNpbXBsaWZ5IGRyaXZlciBjb2RlLCBub3QgdG8gbWFr
+ZSBpdCBtb3JlIGNvbXBsaWNhdGVkLiBJZiB3ZSANCj4gY2FuJ3Qgc2ltcGxpZnkNCj4gdGhlIGNv
+ZGUsIGl0IGlzIGJldHRlciB0byBsZWF2ZSBpdCBhbG9uZS4NClNvbGQuIEkgYWdyZWUgd2hhdCBJ
+J3ZlIGp1c3Qgc3VnZ2VzdGVkIGlzIGFkZGluZyBtb3JlIGNvbXBsZXhpdHkgd2l0aG91dCANCm11
+Y2ggZ2Fpbi4gSWYgc29tZXRoaW5nIGRvZXMgc3RhcnQgdG8gY2FyZSBhYm91dCBoYXZpbmcgYSBz
+dGFuZGFyZCANCnVwZGF0ZV9pbnRlcnZhbCBwcm9wZXJ0eSB3ZSBjb3VsZCByZXN1cnJlY3QgdGhp
+cy4NCj4NCj4gR3VlbnRlcg==
