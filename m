@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D983FB7A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212B33FB7B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237004AbhH3OPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 10:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236934AbhH3OPR (ORCPT
+        id S236877AbhH3ORA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 10:17:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52266 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233490AbhH3OQ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 10:15:17 -0400
-Received: from mxout2.routing.net (mxout2.routing.net [IPv6:2a03:2900:1:a::b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D463C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 07:14:24 -0700 (PDT)
-Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
-        by mxout2.routing.net (Postfix) with ESMTP id 7923F5FF41;
-        Mon, 30 Aug 2021 14:14:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
-        s=20200217; t=1630332861;
+        Mon, 30 Aug 2021 10:16:59 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630332964;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HqkVrWRC7EKt3KrlDJ9BJiUPJ234vCZbFseBVJRV4fM=;
-        b=fdxDAbJhGI9SoJ1fk0YpSQfdxuCBKGd4SAmo+gTHWxuI/TAgHXQbrBdeKvo/kQ7Yg1zw2R
-        9wPCg+6DlLNLrlV0lzy0zG5XIAWqftV41+5pmQX/bnCuoxgomtQYO8dx2DEO3KN0q88WWI
-        Hlg0lgyCkWwbyNdb17zRdLK2x4efIzY=
-Received: from localhost.localdomain (fttx-pool-157.180.227.230.bambit.de [157.180.227.230])
-        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 9EB44100822;
-        Mon, 30 Aug 2021 14:14:20 +0000 (UTC)
-From:   Frank Wunderlich <linux@fw-web.de>
-To:     linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=073eqyzHweFONwPKlUX6YC53nwom5iKA5BNznEMqcYA=;
+        b=efdIncqPOcSTFwwXsw6lO5YK8kZTGZvW7y8+PTDq/2MNfrORcd/EgJZf3C1FGXPNTNCKVo
+        YW7uw5N4onek3nJpe/Mz213ZZJlxl/KeFXAyQC/5zF+BHJCV/bt28R/K660/earMt/jwCY
+        NBxdKUiL5Q+QJOhQsjzTjHKpnPd6yeZ39iOI2G7vlkeM3Zumsj9wVM6y2yR85ckEoQK1vA
+        5coTixyAC2ZaLYPYdl/lxpEzByWTmR6N3cLEw/qS1+uYfJ64xfBlFuLjSs7BW6UmenNIBm
+        7/2GrZr4TguHIN5njgYXmXBHhCfXJHL4Tczd51tyVs2PTqDFRyoQD/TySQOlAg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630332964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=073eqyzHweFONwPKlUX6YC53nwom5iKA5BNznEMqcYA=;
+        b=KaSts1bYuZ9YLgrXvfIVa5RSimOBgB2ufh3ZcVI+4uwlZAwsa3OVu2j2LtN4XE/HCuZyPn
+        bfNI4MwyrF00smAg==
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Lee Jones <lee.jones@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Biwen Li <biwen.li@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] arm: dts: mt7623: add otg nodes for bpi-r2
-Date:   Mon, 30 Aug 2021 16:14:15 +0200
-Message-Id: <20210830141415.106136-1-linux@fw-web.de>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH 1/2] regmap: teach regmap to use raw spinlocks if
+ requested in the config
+In-Reply-To: <YSzM5S3VKOBXniRu@sirena.org.uk>
+References: <20210825205041.927788-1-vladimir.oltean@nxp.com>
+ <20210825205041.927788-2-vladimir.oltean@nxp.com> <875yvr3j5c.ffs@tglx>
+ <YSzM5S3VKOBXniRu@sirena.org.uk>
+Date:   Mon, 30 Aug 2021 16:16:04 +0200
+Message-ID: <87bl5fggrf.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mail-ID: db1bf837-c379-4f08-aad1-a948eac37616
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Wunderlich <frank-w@public-files.de>
+On Mon, Aug 30 2021 at 13:19, Mark Brown wrote:
+> On Fri, Aug 27, 2021 at 01:01:35AM +0200, Thomas Gleixner wrote:
+>> On Wed, Aug 25 2021 at 23:50, Vladimir Oltean wrote:
+>
+>> > It seems reasonable for regmap to have an option use a raw spinlock too,
+>> > so add that in the config such that drivers can request it.
+>
+>> What's reasonable about that?
+>
+>> What exactly prevents the regmap locking to use a raw spinlock
+>> unconditionally?
+>
+> We definitely can't use a raw spinlock unconditionally since we
+> support register maps on devices connected via buses which can't
+> be accessed atomically so we need the option of doing mutexes.
 
-Add OTG-Nodes for BananaPi-R2
+The mutex part is fine. For slow busses this is obviously required.
 
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
----
-patch is based on
+>> Even for the case where the regmap is not dealing with irq chips it does
+>> not make any sense to protect low level operations on shared register
+>> with a regular spinlock. I might be missing something though...
+>
+> That probably does make sense, I think we're just using regular
+> spinlocks for spinlocks mainly because they're the default rather
+> than because anyone put huge amounts of thought into it.  IIRC
+> the first users were using spinlocks for their locking when they
+> were converted.
 
-"arm: dts: mt7623: add musb device nodes"
+So if the actual spinlock protected operations are not doing any other
+business than accessing preallocated cache memory and a few MMIO
+operations then converting them to raw spinlocks should have no real
+impact on RT.
 
-https://patchwork.kernel.org/project/linux-mediatek/patch/20210822041333.5264-2-mans0n@gorani.run/
----
- arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts | 25 +++++++++++++++++++
- 1 file changed, 25 insertions(+)
+One way to do that is obviously starting with the patch from Vladimir
+and then convert them one by one, so the assumption that they are not
+doing anything nasty (in the RT sense) can be validated.
 
-diff --git a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-index 8d22aeec91e1..729bc055ffcd 100644
---- a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-+++ b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-@@ -374,7 +374,14 @@ adie {
- 				bias-disable;
- 		};
- 	};
-+
-+	musb_pins: musb {
-+		pins-musb {
-+			pinmux = <MT7623_PIN_237_EXT_SDIO2_FUNC_DRV_VBUS>;
-+		};
-+	};
- };
-+
- &consys {
- 	mediatek,pwrap-regmap = <&pwrap>;
- 	pinctrl-names = "default";
-@@ -462,3 +469,21 @@ &u3phy1 {
- &u3phy2 {
- 	status = "okay";
- };
-+
-+&usb0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&musb_pins>;
-+	status = "okay";
-+	usb-role-switch;
-+
-+	connector {
-+		compatible = "gpio-usb-b-connector", "usb-b-connector";
-+		type = "micro";
-+		id-gpios = <&pio 44 GPIO_ACTIVE_HIGH>;
-+	};
-+};
-+
-+&u2phy1 {
-+	status = "okay";
-+};
-+
--- 
-2.25.1
+Thanks,
 
+        tglx
