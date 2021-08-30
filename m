@@ -2,223 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7884C3FB9F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1BE3FB9F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237822AbhH3QQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237684AbhH3QQB (ORCPT
+        id S237728AbhH3QQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:16:56 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:49529 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231725AbhH3QQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:16:01 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38C1C061575;
-        Mon, 30 Aug 2021 09:15:07 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id y3so16671165ilm.6;
-        Mon, 30 Aug 2021 09:15:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GhKUe4sY5cAgiX1Wxl3GBHv3n5YxRNpzvVmXtwnuGY4=;
-        b=lZ5JIDAIvMH1bn0GyyIwGJzjkKJly2L1NnX7D03RF5pWTooEsBq35Rwz2vDXePVYxV
-         ySrNPRN1A85RbqzGt2hnt9ebYCHdZ8dRFmITuOygDl0nR/FiHp9Osw8JXTHzSbWoiRvf
-         mq/yeCc4uLU1N0KwCF87Zk0ABXOK82p4zfov8FzE8WiYgx3RcO1Wo4rY9oMQyoE2PejT
-         kfu8hy0Jd4fcm3VPyrUIPuP7AUGeSnhN3C3mUd8+6ZfMYzLEYxDXMjc6QHc/Gbp087p+
-         sm0ktT40qSU7fbxjZHqlC3UE3V44VhLnM5Aj3jMnyc4jRD6C4Z1xDAbJTemyB2iano1O
-         QLAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GhKUe4sY5cAgiX1Wxl3GBHv3n5YxRNpzvVmXtwnuGY4=;
-        b=SlpTobIzprQ/7avnKA5EZp7hmeBQ6Qgv4F4qKXQAnh3VRmDx1sN9rCZ41cCd9/Sz7L
-         Oc427/GW6c+w5ShGYa/3U+8MBwWJkyzOW5KKBoeS6JETNhagcrwNK9a/MVUj4+U4VczU
-         eLJun5EGjgZt0kL9Vm8wGGDchILnG28nIpsPdVazuStJHvLW6ZjGe5G3GBb/AYKPd0C1
-         KbhFE6Ndm/KTot3JxBd363TRyxM4wAfhLGPQ60e1O4PeC7ov3pxLCZYffXRgBgRzWbVn
-         W8DsaDa7O0kWSHAfKB5krV3hwomRin5R7wQCVFkXG/y+Eubx91SQ6VTiSca36KbReYNY
-         2bLg==
-X-Gm-Message-State: AOAM530AWYfnl5kw7ZQpZO9JnL+kLUCfDPvSte1evM+bYFwPV7PQTIaC
-        MaI+WNV3JfHa1Aql4RI7zwA=
-X-Google-Smtp-Source: ABdhPJwxkbCyha7cYpvLZzKHL2Lfna1L4W4YWJVKcyWABsDUOERWY9jkBV1Blkt6UoLPnMuuz4Q21w==
-X-Received: by 2002:a92:c8c4:: with SMTP id c4mr13278453ilq.137.1630340107235;
-        Mon, 30 Aug 2021 09:15:07 -0700 (PDT)
-Received: from localhost ([12.28.44.171])
-        by smtp.gmail.com with ESMTPSA id f17sm8267384ion.51.2021.08.30.09.15.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 09:15:06 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 09:15:05 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrea Merello <andrea.merello@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 11/17] find: micro-optimize for_each_{set,clear}_bit()
-Message-ID: <YS0ECS2Lb4rwqJ4b@yury-ThinkPad>
-References: <20210814211713.180533-1-yury.norov@gmail.com>
- <20210814211713.180533-12-yury.norov@gmail.com>
- <YSeduU41Ef568xhS@alley>
- <YSgDI9NpC51GhB/2@yury-ThinkPad>
- <20210830121249.2fgyvf47py2tz5s5@pathway.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830121249.2fgyvf47py2tz5s5@pathway.suse.cz>
+        Mon, 30 Aug 2021 12:16:54 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id AC1A532009A8;
+        Mon, 30 Aug 2021 12:16:00 -0400 (EDT)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Mon, 30 Aug 2021 12:16:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samip.fi; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type:content-transfer-encoding; s=fm1; bh=+8dPI
+        MUavF3K1I+eZMILdJSDf0qvSIVs1NRCxmWwQIk=; b=OI1N3FXdCGulBCnzfCJFq
+        vF+Gh1ihrT/q6HexhcyuR6c+RC4vge2ceIpDEvY8hUxliHa+moVnfOQxG8TKiCNP
+        8jq5fs67kBGtae8NfXSS8OosOxKcVv+yU6RN2fwJrS8P2gbppkqu+jRa+MR8OTSi
+        twH2dWiFOz98Ik5kNzUdUepRYa04/VoJi/8PGYkG38/aucnBpbzgf2B9rs2LWLJm
+        qelcE3mte/8aw21qAifYFJLQavtHfKlu9eLNvyxHfEHyAcbdJGWtnL31TlIOALXc
+        g4eZtPzMjzRXxL+MwEJR/KfO8lFnsPWkqBFEn2HMa0qPvcOzMbUNeEijmMfu1zVP
+        Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=+8dPIMUavF3K1I+eZMILdJSDf0qvSIVs1NRCxmWwQ
+        Ik=; b=dH0hjmzdm04M7mh045qfMkLmr6dFUqQ+xHgVY58xe/UfSsBqlEbbw5B52
+        oMECJpmqZyipErD9qudTWutRM0jQqrWwT5ahnyJ+9zpEVFkZ//1PDywRubXUsOIV
+        f+9iYT3oT3FZdkjKKC2pRTNij+c0ssl84onzPPWMoNs2XBWxWS4NTjrmQFPDk3kj
+        vCez5MZSZNAorviUsvuR82pLNro9Te//W3/QtnI6m++wPNeGyVyhThjouQuyu6dP
+        SE+uo9MMWAHAEc3MKrwKFmASXSUU/lf18Fk4e53MRPs0/yfCR5hghNzqPPK2qWQf
+        cttqb8urPnVo+LvXXIXjk0aM2tYeA==
+X-ME-Sender: <xms:PwQtYXQx7abLcElndo9hZpdc_Z74KD_GjnjxwJOQJXNdv6GY72I3Qw>
+    <xme:PwQtYYxiUqQ7vjUSCpfCU0gLClRV6HcDzIT-sO1sHQMQzyLbIazN7aWm4S8eothXP
+    xIWbjjVkYjV9HMv3g4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduledgleelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpefukhih
+    lhgvrhgpofomnhhthihsrggrrhhiuceolhhishhtshesshgrmhhiphdrfhhiqeenucggtf
+    frrghtthgvrhhnpeefveekheevueelvddutddvgedvleejvdeigeekueehgeelgfeiffet
+    ueejudffkeenucffohhmrghinhepfhhrvggvuggvshhkthhophdrohhrghenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlihhsthhssehsrghm
+    ihhprdhfih
+X-ME-Proxy: <xmx:PwQtYc0VDjRqsYHUIQEkRp-g9tqothJ4eO-y69Tf1HfJRQ5pmoHCKQ>
+    <xmx:PwQtYXDidPUdMG32KJ08ydQ5ycarb_e9sxbMUCefbQ1oUoM4O-e3Nw>
+    <xmx:PwQtYQjOuKE1TaWXVSEP-yUO7Q8KfabKcQwKhmLVizMp4RP09gsrcw>
+    <xmx:QAQtYTuUvBwzFVv7rI9w61J9nweBX1rPU1acllHDABz033RpEkSyGw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 71161FA0AA4; Mon, 30 Aug 2021 12:15:59 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1125-g685cec594c-fm-20210825.001-g685cec59
+Mime-Version: 1.0
+Message-Id: <4d3fd1cb-9b33-4598-b351-54ea455c2a6e@www.fastmail.com>
+In-Reply-To: <20210829173448.3cwk4rz6wfxfxdpj@kari-VirtualBox>
+References: <4ada1100-fbce-44e4-b69d-0f5196f86bcb@www.fastmail.com>
+ <20210829173448.3cwk4rz6wfxfxdpj@kari-VirtualBox>
+Date:   Mon, 30 Aug 2021 19:15:29 +0300
+From:   =?UTF-8?Q?Skyler_M=C3=A4ntysaari?= <lists@samip.fi>
+To:     "Kari Argillander" <kari.argillander@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org
+Subject: Re: [drm/amdgpu] Driver crashes on 5.13.9 kernel
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 02:12:49PM +0200, Petr Mladek wrote:
-> On Thu 2021-08-26 14:09:55, Yury Norov wrote:
-> > On Thu, Aug 26, 2021 at 03:57:13PM +0200, Petr Mladek wrote:
-> > > On Sat 2021-08-14 14:17:07, Yury Norov wrote:
-> > > > The macros iterate thru all set/clear bits in a bitmap. They search a
-> > > > first bit using find_first_bit(), and the rest bits using find_next_bit().
-> > > > 
-> > > > Since find_next_bit() is called shortly after find_first_bit(), we can
-> > > > save few lines of I-cache by not using find_first_bit().
-> > > 
-> > > Is this only a speculation or does it fix a real performance problem?
-> > > 
-> > > The macro is used like:
-> > > 
-> > > 	for_each_set_bit(bit, addr, size) {
-> > > 		fn(bit);
-> > > 	}
-> > > 
-> > > IMHO, the micro-opimization does not help when fn() is non-trivial.
-> >  
-> > The effect is measurable:
-> > 
-> > Start testing for_each_bit()
-> > for_each_set_bit:                15296 ns,   1000 iterations
-> > for_each_set_bit_from:           15225 ns,   1000 iterations
-> > 
-> > Start testing for_each_bit() with cash flushing
-> > for_each_set_bit:               547626 ns,   1000 iterations
-> > for_each_set_bit_from:          497899 ns,   1000 iterations
-> > 
-> > Refer this:
-> > 
-> > https://www.mail-archive.com/dri-devel@lists.freedesktop.org/msg356151.html
-> 
-> I see. The results look convincing on the first look.
-> 
-> But I am still not sure. This patch is basically contradicting many
-> other patches from this patchset:
-> 
->   + 5th patch optimizes find_first_and_bit() and proves that it is
->     much faster:
-> 
->     Before (#define find_first_and_bit(...) find_next_and_bit(..., 0):
->     Start testing find_bit() with random-filled bitmap
->     [  140.291468] find_first_and_bit:           46890919 ns,  32671 iterations
->     Start testing find_bit() with sparse bitmap
->     [  140.295028] find_first_and_bit:               7103 ns,      1 iterations
-> 
->     After:
->     Start testing find_bit() with random-filled bitmap
->     [  162.574907] find_first_and_bit:           25045813 ns,  32846 iterations
->     Start testing find_bit() with sparse bitmap
->     [  162.578458] find_first_and_bit:               4900 ns,      1 iterations
-> 
->        => saves 46% in random bitmap
-> 	  saves 31% in sparse bitmap
-> 
-> 
->   + 6th, 7th, and 9th patch makes the code use find_first_bit()
->     because it is faster than find_next_bit(mask, size, 0);
-> 
->   + Now, 11th (this) patch replaces find_first_bit() with
->     find_next_bit(mask, size, 0) because find_first_bit()
->     makes things slower. It is suspicious at minimum.
-> 
-> 
-> By other words. The I-cache could safe 10% in one case.
-> But find_first_bit() might safe 46% in random case.
+I have tried kernel 5.13.13, without any difference and I haven't tried =
+with an older kernel, as this hardware is that new that I have very litt=
+le faith in less than 5.x kernel would even have support for the needed =
+GPU.
 
-Those are different cases. find_first_bit() is approximately twice
-faster than find_next_bit, and much smaller. The conclusion is simple:
-use 'first' version whenever possible if there's no other considerations.
+What do you mean with git bisect? I have checked that the crash happens =
+somewhere in the monitor connection code:
 
-In case of for_each_bit() macros, however, we have such a consideration.
-In contrast to regular pattern, where user calls either first, or next
-versions N times, here we call find_first_bit once, and then find_next_bit
-N-1 times.
+[ 9605.269927] Call Trace:
+[ 9605.269931]  core_link_enable_stream+0x746/0x870 [amdgpu]
+[ 9605.270038]  dce110_apply_ctx_to_hw+0x519/0x560 [amdgpu]
+[ 9605.270146]  dc_commit_state+0x2f6/0xa50 [amdgpu]
+[ 9605.270249]  amdgpu_dm_atomic_commit_tail+0x569/0x26a0 [amdgpu]
+[ 9605.270326]  ? kfree+0xc3/0x460
+[ 9605.270329]  ? dcn30_validate_bandwidth+0x11f/0x270 [amdgpu]
+[ 9605.270402]  ? dcn30_validate_bandwidth+0x11f/0x270 [amdgpu]
+[ 9605.270469]  ? dm_plane_helper_prepare_fb+0x19c/0x250 [amdgpu]
+[ 9605.270542]  ? __cond_resched+0x16/0x40
+[ 9605.270544]  ? __wait_for_common+0x3b/0x160
+[ 9605.270545]  ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
+[ 9605.270548]  commit_tail+0x94/0x130 [drm_kms_helper]
+[ 9605.270557]  drm_atomic_helper_commit+0x113/0x140 [drm_kms_helper]
+[ 9605.270562]  drm_atomic_helper_set_config+0x70/0xb0 [drm_kms_helper]
+[ 9605.270568]  drm_mode_setcrtc+0x1d3/0x6d0 [drm]
+[ 9605.270582]  ? drm_mode_getcrtc+0x180/0x180 [drm]
+[ 9605.270590]  drm_ioctl_kernel+0xaa/0xf0 [drm]
+[ 9605.270600]  drm_ioctl+0x220/0x3c0 [drm]
+[ 9605.270609]  ? drm_mode_getcrtc+0x180/0x180 [drm]
+[ 9605.270618]  amdgpu_drm_ioctl+0x49/0x80 [amdgpu]
+[ 9605.270673]  __x64_sys_ioctl+0x83/0xb0
+[ 9605.270675]  do_syscall_64+0x40/0xb0
+[ 9605.270677]  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Because we know for sure that we'll call find_next_bit shortly, we can
-benefit from locality under heavy pressure on I-cache, if replace 'first'
-with 'next'. Consider it as a prefetch mechanism for the following calls
-to find_next_bit().
 
-> Does I-cache cost more than the faster code?
- 
-In this case cache miss is more expensive.
-
-> Or was for_each_set_bit() tested only with a bitmap
-> where find_first_bit() optimization did not help much?
-
-I tried to ensure that the effect of I-cache is real and in this case
-more important than code performance, so in the test I called 'first'
-once and 'next' twice.
-
-> How would for_each_set_bit() work with random bitmap?
-
-It would work for all bitmaps.
-
-> How does it work with larger bitmaps?
-
-Percentage gain (but not absolute) will decrease proportionally to the
-number of calls of find_next_bit() for big N.
-
-Thanks,
-Yury
-
-> Best Regards,
-> Petr
+On Sun, Aug 29, 2021, at 20:34, Kari Argillander wrote:
+> On Sun, Aug 29, 2021 at 06:38:39PM +0300, Skyler M=C3=A4ntysaari wrote:
+> > Hello everyone on the list,
+>=20
+> This is universal kernel list and it is not read by many. I have added
+> hopefully right list (amd-gfx@lists.freedesktop.org).
+>=20
+> > Subject: Re: [drm/amdgpu] Driver crashes on 5.13.9 kernel
+>=20
+> I have no influence or knowledge about this driver, but I still try to
+> help because it seems good bug report. Have you test with 5.13.13 or
+> 5.14-rc7. Does this work with some other kernel? If needed can you git
+> bisect if needed? You will probably get some support for it if needed.
+>=20
+> Argillander
+>=20
+> > I thought that this should probably be discussed here,  so I came
+> > across weird issue to me which is driver crashing while trying to get
+> > one of my monitors working on Gentoo.  I would like to ask here how
+> > that would happen that the Display appears to jump from DisplayPort-6
+> > (physical port) to DisplayPort-7 (which doesn't exist physically)? H=
+as
+> > anyone else experienced this?
+> >=20
+> > It seems that the driver sees a rather large amount of inputs for the
+> > GPU, even though I only have 4, 3 of which are DisplayPort, and the
+> > issue monitor is also on DisplayPort.=20
+> >=20
+> > Hardware:
+> > CPU: AMD Ryzen 5800X
+> > GPU: AMD Radeon RX 6800
+> > System Memory: 32GB of DDR4 3200Mhz
+> > Display(s): BenQ Zowie XL2430 (1080p), DELL U2414H (1080p), DELL U24=
+15 (1920x1200)
+> > Type of Diplay Connection: All are connected via Display-Port
+> >=20
+> > Related DRM issue:
+> > https://gitlab.freedesktop.org/drm/amd/-/issues/1621 which includes
+> > logs too.
+> >=20
+> >=20
+> > Best regards,
+> > Skyler M=C3=A4ntysaari
