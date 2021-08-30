@@ -2,55 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483FA3FB07C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 06:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 557A93FB07F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 06:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbhH3Epa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 00:45:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
+        id S231299AbhH3Epd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 00:45:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhH3Ep1 (ORCPT
+        with ESMTP id S230374AbhH3Ep3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 00:45:27 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B1FC061756
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 21:44:35 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id z1-20020a17090a170100b001966f663358so1458676pjd.6
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 21:44:35 -0700 (PDT)
+        Mon, 30 Aug 2021 00:45:29 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEE8C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 21:44:36 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id c2-20020a63d5020000b029023ae853b72cso2286607pgg.18
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 21:44:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=oodor33zXZID7+EDPaMLdaXriO6EPtv4VT7suMCPUFc=;
-        b=vHTC72Qkrb6zBeLMMn3lBfhsXUQ9UQPyIyegWNN1JXe4ubCVcI3dJim5vcspN65HI4
-         jYRqR6eRgMFo2VgQfhPzt9CS66u/TR+Mz4D6jzj61p0bgXmD3ZGS5os4C6fX1EqjViWf
-         S7zb7KDy7oemZP4WYajHxwc5FCygHQjIC0PKS+LMY/3DEmU9gmUJfjIpS2MDwz4m5gTI
-         cb2UZDG6IRHcYTazEILvCJBP0XN6Yp7MqmPUfpMr4lXNJLB5TF/1UTgX6sRUiQwaWq+x
-         9XEga/8HZSLEjA7hiXTM5WD90JR9/7SZeqDDODXEDe7mLh4sEJCJC5MxHbJbWid/+E+S
-         iguQ==
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=ES6xeSpSzV2YKHVRVxZoTVRqNIvGyeamoedzW1dJrvM=;
+        b=ggumJgtmYk4ICrDAo34PyEkyOB9BcpVRP/TC2VOFMMHFgPyeJ6ene36dscpJ+3jo0F
+         wrORXhiGU0yYpwFLI7ktQUHCP8dTJmrWMQxK4TMgMClwsIhRtNtXFmz2imGAIdrTZGv9
+         u3p8KOzq9YD0PHCJJHPWfHUs+IMfgQDMxaGHITmvq/+vip82rPCmA+s/kodmsb5sgezk
+         RQ8ikKxOw4PTmUHeEtVKtpjiG0iq7x4pJrq62tGhCBTIoluGCM2DkVvadk6+VZX/a2gv
+         0Iu6f3z2ZnnkhLAbuY/vp01O4YzxNEEcJRPmBFlZW1DMyavMYKorys9KgNaOdBI1kTzF
+         Rgyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=oodor33zXZID7+EDPaMLdaXriO6EPtv4VT7suMCPUFc=;
-        b=kxO8mo1HYo687//zmc0LFO4ESyKoCmUQsML7J8xMro99tXDYoDGCuPwWN1zas7GC98
-         RAn/JDIZagdk93zZRQNv0UmiapgYXkIecwqVhfg7/uYS5jIlfq3Tta/iJENY/VQ7qV37
-         ARofWKkm0lrYDMzZTjfjRvOTISngMYS/eFxCTg90BQil1FAGibRDNR7t6RoZY6SF7t4S
-         tOlh0O51PcvY9KZW6SU+4rVnCcSJwvs/ALfnKO+iRxsKCcSmrGvVwDk5/AgSNDyjkk95
-         17loe7u5vJdJZjNSiam8cOsl9VCvSkvZBErUWWFyzFefP/gLatXjoJ5cm95eqWA9nDhB
-         i2mg==
-X-Gm-Message-State: AOAM532K5T26KpDJ3ltilVpXh7dXHNtXGrjzlK3sVHx8mH+1sMS90dgX
-        X32UP+H76mUG8Av+eGWgAaVJK+1d6etR
-X-Google-Smtp-Source: ABdhPJwN2yW+X7kXCpEB8IPaNYBNCohGFxevhPXdo2rvXvlrkSplvLC/qFABOYAceVkY7x7m7TkDWXK4+31/
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=ES6xeSpSzV2YKHVRVxZoTVRqNIvGyeamoedzW1dJrvM=;
+        b=W5QwcTs58VKNbwFmbP9FU7TcmyAfpSdZiDMFTsFUfM34EFZqRv+iUxtTylR7Gx+Mgj
+         dBnyJUhFguj+w9S5ykf5gWxBDFPd5V96D0sana6eeFuqzCrieJMetta2O/guJjfqoeCx
+         1L8XBcccV7eLQKQ2dwCfRfSx8kOFjb5/PjuJXyf3UAG4z0KOvVCzEmkp8dPU5zPVsp3v
+         m4SP+iOyufBQOTYfY8MwcfjxpHe6m6kRnv9HSsPWiURKNpp0/aacSddEoxjxobxem9E3
+         v8FExoWvLyCDnxBobwGhHa2z732Rn2gADcs9T/DOSi4ScLjgRzKlBblnk2UcD8oG0b3D
+         5YcA==
+X-Gm-Message-State: AOAM5303Df8zxoqHwB7l8AR+zLN8HEgXLETqsXfG2D8NXXoUqzzL+esO
+        WifI3YuA11QOC6RAc5AbkdlY1mjXX9jb
+X-Google-Smtp-Source: ABdhPJxeVvBApvmT3usQS4rQRRCqak/ucOyMJ/k6Uswl2w4Y4XMMj59Dgb6v//OKwT8DV/cxPVKnNaI0my7P
 X-Received: from mizhang-super.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1071])
- (user=mizhang job=sendgmr) by 2002:a05:6a00:1245:b029:30f:2098:fcf4 with SMTP
- id u5-20020a056a001245b029030f2098fcf4mr21279591pfi.66.1630298674441; Sun, 29
- Aug 2021 21:44:34 -0700 (PDT)
+ (user=mizhang job=sendgmr) by 2002:a17:902:6503:b0:138:8a3a:9949 with SMTP id
+ b3-20020a170902650300b001388a3a9949mr17621298plk.49.1630298676148; Sun, 29
+ Aug 2021 21:44:36 -0700 (PDT)
 Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Mon, 30 Aug 2021 04:44:23 +0000
-Message-Id: <20210830044425.2686755-1-mizhang@google.com>
+Date:   Mon, 30 Aug 2021 04:44:24 +0000
+In-Reply-To: <20210830044425.2686755-1-mizhang@google.com>
+Message-Id: <20210830044425.2686755-2-mizhang@google.com>
 Mime-Version: 1.0
+References: <20210830044425.2686755-1-mizhang@google.com>
 X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH v3 0/2] selftests: KVM: verify page stats in kvm x86/mmu
+Subject: [PATCH v3 1/2] selftests: KVM: align guest physical memory base
+ address to 1GB
 From:   Mingwei Zhang <mizhang@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -64,29 +68,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set leverages the existing dirty logging performance selftest to
-verify whether the page stats work correctly in KVM x86/mmu especially with
-the consequence of dirty logging.
+Existing selftest library function always allocates GPA range that aligns
+to the end of GPA address space, ie., the allocated GPA range guarantees to
+end at the last available GPA. This ends up with the fact that selftest
+programs cannot control the alignment of the base GPA. Depending on the
+size of the allocation, the base GPA may align only on a 4K based
+bounday.
 
-v2 -> v3:
- - fix the build error. [mizhang]
+The alignment of base GPA sometimes creates problems for dirty logging
+selftest where a 2MB-aligned or 1GB-aligned base GPA is needed to
+create NPT/EPT mappings for hugepages.
 
-v1 -> v2:
- - split the page alignment fix into a different commit [bgardon]
- - update the TEST_ASSERT conditions [bgardon]
+So, fix this issue and ensure all GPA allocation starts from a 1GB bounary
+in all architectures.
 
-Mingwei Zhang (2):
-  selftests: KVM: align guest physical memory base address to 1GB
-  selftests: KVM: use dirty logging to check if page stats work
-    correctly
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: David Matlack <dmatlack@google.com>
+Cc: Jing Zhang <jingzhangos@google.com>
+Cc: Peter Xu <peterx@redhat.com>
 
- .../selftests/kvm/dirty_log_perf_test.c       | 44 +++++++++++++++++++
- .../testing/selftests/kvm/include/test_util.h |  1 +
- .../selftests/kvm/include/x86_64/processor.h  |  7 +++
- .../selftests/kvm/lib/perf_test_util.c        |  8 ++--
- tools/testing/selftests/kvm/lib/test_util.c   | 29 ++++++++++++
- 5 files changed, 85 insertions(+), 4 deletions(-)
+Suggested-by: Ben Gardon <bgardon@google.com>
+Signed-off-by: Mingwei Zhang <mizhang@google.com>
+---
+ tools/testing/selftests/kvm/lib/perf_test_util.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---
+diff --git a/tools/testing/selftests/kvm/lib/perf_test_util.c b/tools/testing/selftests/kvm/lib/perf_test_util.c
+index 0ef80dbdc116..96c30b8d6593 100644
+--- a/tools/testing/selftests/kvm/lib/perf_test_util.c
++++ b/tools/testing/selftests/kvm/lib/perf_test_util.c
+@@ -93,10 +93,10 @@ struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
+ 	guest_test_phys_mem = (vm_get_max_gfn(vm) - guest_num_pages) *
+ 			      perf_test_args.guest_page_size;
+ 	guest_test_phys_mem &= ~(perf_test_args.host_page_size - 1);
+-#ifdef __s390x__
+-	/* Align to 1M (segment size) */
+-	guest_test_phys_mem &= ~((1 << 20) - 1);
+-#endif
++
++	/* Align to 1G for all architectures */
++	guest_test_phys_mem &= ~((1 << 30) - 1);
++
+ 	pr_info("guest physical test memory offset: 0x%lx\n", guest_test_phys_mem);
+ 
+ 	/* Add extra memory slots for testing */
+-- 
 2.33.0.259.gc128427fd7-goog
 
