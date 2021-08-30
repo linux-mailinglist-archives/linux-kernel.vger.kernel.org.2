@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57B93FB920
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53943FB92B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237633AbhH3Pjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:39:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24985 "EHLO
+        id S237638AbhH3PmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:42:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43790 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237621AbhH3Pjm (ORCPT
+        by vger.kernel.org with ESMTP id S237570AbhH3PmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:39:42 -0400
+        Mon, 30 Aug 2021 11:42:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630337928;
+        s=mimecast20190719; t=1630338073;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=KdkFWUiTMvtMsWJ6cUiIqcTp0RGUHhxr67y9qLSh0yM=;
-        b=b/JbEq5lZIQ9ZuAu0pIuz23OjFu91j4AMnWL2PgWugtGSFJKpytLtjGJBFpDbY9d9tz3s8
-        erfjpvPWCmM7FCKcvsWFlzEAC57wFUShkyC1JNa9vDdVtLknS59sRTjZwwzxSqBSQ+jEa1
-        2spIbojk/6qvLQYf587hG5fJPmcXbyQ=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520-cLeRINMHOZKtRRzscJRbVA-1; Mon, 30 Aug 2021 11:38:47 -0400
-X-MC-Unique: cLeRINMHOZKtRRzscJRbVA-1
-Received: by mail-lj1-f200.google.com with SMTP id b1-20020a05651c098100b001c3bda9881bso6823823ljq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:38:46 -0700 (PDT)
+        bh=gPbQCANsnrrCdrVSn7eLIOlLURUqitfm5ZSQa5OvEPY=;
+        b=hwkGAMvltCShRNFr/8eg5GqBGI5iYBOKyH9wxL/M4pTQylnRc6ndwD2LRHBRdjuc5m8pUA
+        Y7OOQ64+D8zFCKNZyYvE1mI2VaZaMiSTOBWfnCKOQQpLQOpsXM9oq4rl5UazZ9M9F4qd0Y
+        s669b0bFG+7PI18p63a4aEKJp2JRFbU=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-528-gttYDBTWNeitqfIx9sZq8w-1; Mon, 30 Aug 2021 11:41:11 -0400
+X-MC-Unique: gttYDBTWNeitqfIx9sZq8w-1
+Received: by mail-lf1-f71.google.com with SMTP id q5-20020ac25fc5000000b003d9227d9edcso2280664lfg.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:41:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KdkFWUiTMvtMsWJ6cUiIqcTp0RGUHhxr67y9qLSh0yM=;
-        b=Ig/di088n62VrpUZfyIlLQk53M72YWngyBRqSEINzjkF2rua4SR9kBwP+F8bUwRQxP
-         2w3U2DAUJ+uYnd2Qqqn8OEOqTb+nyAwRSLKggp6reTMvjd/OCLZBeGS574TYsAhLorhD
-         LjPSrPRlsE3AjmvrGMmAdJO1sUcSENaIhr+iawqxnkrZohblFo+yBBzg27t3OqrkaxvT
-         09PIFa0DKxLHFcvdrnL9ejQ7BwxzB9JrNvfXEFabfrhSZRnoeHzV7PDyEZbi04s6Ddnm
-         2PAG3Q/gpZjyeU6lMCOWn6kK81717MxQaNB5q1mSBuAVON1CA5G9U+S2RSr5IGfqcwvG
-         Qkhw==
-X-Gm-Message-State: AOAM530ydXzRl8EwLoPUbVS50khrbPk5eabnGhqoxxLmsCJXC9vFmJRB
-        kw3bTI2U+kzpreGLnABq6K3/aRgAwuDV+eXN4MotTYq0xrS8oJge8fHiC//+/I93nQi42JLXYAD
-        APCnIbEzGI72lKhYGy2zXsZquXHMmuUEw6nh7X8+S
-X-Received: by 2002:a05:6512:21cf:: with SMTP id d15mr17903798lft.548.1630337925482;
-        Mon, 30 Aug 2021 08:38:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9UCmwncJUGf9asGfLpNrRUo6X+riRIyjnBb/d3K1U2TWNrP/KHaZL8T3ppdBz1Ul2raBoQYGI5rUOmsEZhUQ=
-X-Received: by 2002:a05:6512:21cf:: with SMTP id d15mr17903733lft.548.1630337925258;
- Mon, 30 Aug 2021 08:38:45 -0700 (PDT)
+        bh=gPbQCANsnrrCdrVSn7eLIOlLURUqitfm5ZSQa5OvEPY=;
+        b=i4UQp+4Rqw5CfcuxUoHJE8RKEPW0LqNa7Y5E+l6Lq7rN+ExUGnREHOgWU2brxWvCow
+         SEZud1X+zeE1+GsCZDgipJKVS7Ll4+++xCrlAYKwaYKZZNq33gAwsXRulI6BoMEYpzTU
+         BAtBKnpDRC7VGtodPHezs9NQXIz7JZT4NQm54Naqbxp/NMo2oRw+ZB+TQyAcDFMUZ91S
+         Ad4tq4WwJXaur9EcupakD4CnwdwfZg6pw28kaPyVKh+xZfT0bN0lVk9wqs5fbVLHPfDU
+         pFCCi2HmNRW3HOjoW04uX86vMeES3CYiqq1ESnB3zbWkDdcGWWnhaixEpF+H16mwGMoi
+         +6Cg==
+X-Gm-Message-State: AOAM5328MYJeU72DjInbX8LlvtpQwaWq+iS4HOp4XmPfVgsl92Dt8xWW
+        tlsS/hah/YZstQlTChxMnerFdPeEmrbAJMXa8bHMc6+9PFZ8Jqg15wJlSTKUrMcc9yoqfgkyWDv
+        iR/N0f+bHfLUHN6vFAODEwg0/9afTh5BQH6j/JxbL
+X-Received: by 2002:a05:6512:31d1:: with SMTP id j17mr12619181lfe.252.1630338069518;
+        Mon, 30 Aug 2021 08:41:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyOA7eSQoAskt96OZEYv/uwT6xUpzuLtn/b7kPoWDczLLZXX82Grt6CyXuqBmavCZC7GNFgyKU16h8yzDCOqhU=
+X-Received: by 2002:a05:6512:31d1:: with SMTP id j17mr12619127lfe.252.1630338069329;
+ Mon, 30 Aug 2021 08:41:09 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210720232624.1493424-1-nitesh@redhat.com> <CAFki+LkNzk0ajUeuBnJZ6mp1kxB0+zZf60tw1Vfq+nPy-bvftQ@mail.gmail.com>
- <CAFki+LkyTNeorQ5e_6_Ud==X7dt27G38ZjhEewuhqGLfanjw_A@mail.gmail.com>
-In-Reply-To: <CAFki+LkyTNeorQ5e_6_Ud==X7dt27G38ZjhEewuhqGLfanjw_A@mail.gmail.com>
+ <CAFki+LkyTNeorQ5e_6_Ud==X7dt27G38ZjhEewuhqGLfanjw_A@mail.gmail.com> <CAFki+Lmbw=02iaYKs_a0jR1KWLisXQa1B-s0hc-Ej-8F8ryWDQ@mail.gmail.com>
+In-Reply-To: <CAFki+Lmbw=02iaYKs_a0jR1KWLisXQa1B-s0hc-Ej-8F8ryWDQ@mail.gmail.com>
 From:   Nitesh Lal <nilal@redhat.com>
-Date:   Mon, 30 Aug 2021 11:38:34 -0400
-Message-ID: <CAFki+Lmbw=02iaYKs_a0jR1KWLisXQa1B-s0hc-Ej-8F8ryWDQ@mail.gmail.com>
+Date:   Mon, 30 Aug 2021 11:40:57 -0400
+Message-ID: <CAFki+LmcagVgj+rNJqAw-LwM=rZFq_AB5QwL5itXvm-bHU8QoA@mail.gmail.com>
 Subject: Re: [PATCH v5 00/14] genirq: Cleanup the abuse of irq_set_affinity_hint()
 To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         davem@davemloft.net, ajit.khaparde@broadcom.com,
@@ -80,7 +80,7 @@ Cc:     linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
         shiraz.saleem@intel.com, tariqt@nvidia.com,
         Alaa Hleihel <ahleihel@redhat.com>,
         Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
-        saeedm@nvidia.com, Nitesh Lal <nilal@redhat.com>,
+        saeedm@nvidia.com,
         "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
         "Ismail, Mustafa" <mustafa.ismail@intel.com>,
         Al Stone <ahs3@redhat.com>,
@@ -107,41 +107,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 11:50 AM Nitesh Lal <nilal@redhat.com> wrote:
+On Mon, Aug 30, 2021 at 11:38 AM Nitesh Lal <nilal@redhat.com> wrote:
 >
-> On Mon, Aug 2, 2021 at 11:26 AM Nitesh Lal <nilal@redhat.com> wrote:
+> On Mon, Aug 16, 2021 at 11:50 AM Nitesh Lal <nilal@redhat.com> wrote:
 > >
-> > On Tue, Jul 20, 2021 at 7:26 PM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
+> > On Mon, Aug 2, 2021 at 11:26 AM Nitesh Lal <nilal@redhat.com> wrote:
 > > >
-> > > The drivers currently rely on irq_set_affinity_hint() to either set the
-> > > affinity_hint that is consumed by the userspace and/or to enforce a custom
-> > > affinity.
-> > >
+> > > On Tue, Jul 20, 2021 at 7:26 PM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
+> > > >
+> > > > The drivers currently rely on irq_set_affinity_hint() to either set the
+> > > > affinity_hint that is consumed by the userspace and/or to enforce a custom
+> > > > affinity.
+> > > >
+> >
 >
-
-[...]
-
+> [...]
 >
+> >
+> > Any comments on the following patches:
+> >
+> >   enic: Use irq_update_affinity_hint
+> >   be2net: Use irq_update_affinity_hint
+> >   mailbox: Use irq_update_affinity_hint
+> >   hinic: Use irq_set_affinity_and_hint
+> >
+> > or any other patches?
+> > Any help in testing will also be very useful.
+> >
+>
+> Gentle ping.
 > Any comments on the following patches:
 >
->   enic: Use irq_update_affinity_hint
 >   be2net: Use irq_update_affinity_hint
->   mailbox: Use irq_update_affinity_hint
 >   hinic: Use irq_set_affinity_and_hint
 >
 > or any other patches?
-> Any help in testing will also be very useful.
->
 
-Gentle ping.
-Any comments on the following patches:
 
-  be2net: Use irq_update_affinity_hint
-  hinic: Use irq_set_affinity_and_hint
+Also, I have been trying to reach Bin Luo who maintains the hinic driver
+but it seems his email ID has changed so if someone else can help in
+reviewing/testing the hinic patch, it would be really helpful.
 
-or any other patches?
-
---
+-- 
 Thanks
 Nitesh
 
