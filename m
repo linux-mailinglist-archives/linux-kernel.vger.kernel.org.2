@@ -2,124 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D863FB973
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7363F3FB97D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237780AbhH3P5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:57:13 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:17250 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237788AbhH3P5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:57:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630338977; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=U10YrBfczfj2F0eAJkorX2N74cH0fDyM7HdEotnpp4w=;
- b=BPkXMs3W9AzMq9el55NiQihM6G1JiwuAQrchuiWO02xrqsq4ZkOQZUQfJHjUiPmI/JzpoejH
- zrIVq2UETDtvB4MPV6oNK/j22/j2PlNN38NZcrHavJ5X2ejShA5c2DNb3kVJyu6Nunm7hP9f
- 8XhyxKBg0tMDGQBWY4lMDFsG1+w=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 612cff9340d2129ac1824453 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Aug 2021 15:56:03
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B1AA7C43619; Mon, 30 Aug 2021 15:56:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 48AA7C43460;
-        Mon, 30 Aug 2021 15:56:02 +0000 (UTC)
+        id S237732AbhH3P6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:58:01 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:23905 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237806AbhH3P5z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 11:57:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1630339023; x=1661875023;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tmkgJpbCT6y8GKQE7rLnZO9zRHzZfu1yMIwII7aSzhk=;
+  b=FlCxAGB0uyyTSG94Y+8Ec20+rbUl1sifX8uz89hm+fjFGKJtooTtwpvH
+   sVS+CFSr8ZZvlLmQUjiiifGN+9sy8wLFV9SqySuJEZZd6LQSkVzeZaPdr
+   yR6rghe2rD+ZIfBnfMz53NAh2gNEwXpw9Yeoqt5vwNAz6P1DN0nvLdbLw
+   8=;
+X-IronPort-AV: E=Sophos;i="5.84,363,1620691200"; 
+   d="scan'208";a="136277121"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-d0be17ee.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 30 Aug 2021 15:56:54 +0000
+Received: from EX13D46EUB004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-d0be17ee.us-west-2.amazon.com (Postfix) with ESMTPS id A5092A2030;
+        Mon, 30 Aug 2021 15:56:52 +0000 (UTC)
+Received: from u90cef543d0ab5a.ant.amazon.com (10.43.160.241) by
+ EX13D46EUB004.ant.amazon.com (10.43.166.65) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Mon, 30 Aug 2021 15:56:46 +0000
+Date:   Mon, 30 Aug 2021 18:56:41 +0300
+From:   George-Aurelian Popescu <popegeo@amazon.com>
+To:     Andra Paraschiv <andraprs@amazon.com>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexandru Ciobotaru <alcioa@amazon.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Kamal Mostafa <kamal@canonical.com>,
+        Alexandru Vasile <lexnv@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Stefan Hajnoczi" <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>
+Subject: Re: [PATCH v3 2/7] nitro_enclaves: Update documentation for Arm64
+ support
+Message-ID: <20210830155640.GF10224@u90cef543d0ab5a.ant.amazon.com>
+References: <20210827154930.40608-1-andraprs@amazon.com>
+ <20210827154930.40608-3-andraprs@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 30 Aug 2021 08:56:02 -0700
-From:   khsieh@codeaurora.org
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, rsubbia@codeaurora.org,
-        rnayak@codeaurora.org, freedreno@lists.freedesktop.org,
-        airlied@linux.ie, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] drm/dp_mst: Fix return code on sideband message
- failure
-In-Reply-To: <88b5fbe60c95bcdf42353bec9f8c48aefa864a31.camel@redhat.com>
-References: <1625585434-9562-1-git-send-email-khsieh@codeaurora.org>
- <87zguy7c5a.fsf@intel.com> <a514c19f712a6feeddf854dc17cb8eb5@codeaurora.org>
- <2da3949fa3504592da42c9d01dc060691c6a8b8b.camel@redhat.com>
- <d9ec812b4be57e32246735ca2f5e9560@codeaurora.org>
- <79c5a60fc189261b7a9ef611acd126a41f921593.camel@redhat.com>
- <696a009e2ab34747abd12bda03c103c7@codeaurora.org>
- <e725235a77935184cd20dab5af55da95b28d9e88.camel@redhat.com>
- <64049ef6c598910c1025e0e5802bb83e@codeaurora.org>
- <88b5fbe60c95bcdf42353bec9f8c48aefa864a31.camel@redhat.com>
-Message-ID: <f0fcfe7a73e87150a7a1f042269b76a3@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210827154930.40608-3-andraprs@amazon.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.43.160.241]
+X-ClientProxiedBy: EX13D44UWB001.ant.amazon.com (10.43.161.32) To
+ EX13D46EUB004.ant.amazon.com (10.43.166.65)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-25 09:26, Lyude Paul wrote:
-> The patch was pushed yes (was part of drm-misc-next-2021-07-29), seems 
-> like it
-> just hasn't trickled down to linus's branch quite yet.
-
-Hi Stephen B,
-
-Would you mind back porting this patch to V5.10 branch?
-It will have lots of helps for us to support display port MST case.
-Thanks,
-
-
-
+On Fri, Aug 27, 2021 at 06:49:25PM +0300, Andra Paraschiv wrote:
+> Add references for hugepages and booting steps for Arm64.
 > 
-> On Wed, 2021-08-25 at 09:06 -0700, khsieh@codeaurora.org wrote:
->> On 2021-07-27 15:44, Lyude Paul wrote:
->> > Nice timing, you literally got me as I was 2 minutes away from leaving
->> > work
->> > for the day :P. I will go ahead and push it now.
->> >
->> Hi Lyude,
->> 
->> Had you pushed this patch yet?
->> We still did not see this patch at msm-nex and v5.10 branch.
->> Thanks,
->> 
->> 
->> > BTW - in the future I recommend using dim to add Fixes: tags as it'll
->> > add Cc:
->> > to stable as appropriate (this patch in particular should be Cc:
->> > stable@vger.kernel.org # v5.3+). will add these tags when I push it
->> >
->> > On Tue, 2021-07-27 at 15:41 -0700, khsieh@codeaurora.org wrote:
->> > > On 2021-07-27 12:21, Lyude Paul wrote:
->> > > > On Thu, 2021-07-22 at 15:28 -0700, khsieh@codeaurora.org wrote:
->> > > > >
->> > > > > It looks like this patch is good to go (mainlined).
->> > > > > Anything needed from me to do?
->> > > > > Thanks,
->> > > >
->> > > > Do you have access for pushing this patch? If not let me know and I
->> > > > can
->> > > > go
->> > > > ahead and push it to drm-misc-next for you.
->> > > no, I do not have access to drm-misc-next.
->> > > Please push it for me.
->> > > Thanks a lots.
->> > >
->> 
+> Include info about the current supported architectures for the
+> NE kernel driver.
+> 
+> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+> ---
+> Changelog
+> 
+> v1 -> v2
+> 
+> * Add information about supported architectures for the NE kernel
+> driver.
+> 
+> v2 -> v3
+> 
+> * Move changelog after the "---" line.
+> ---
+>  Documentation/virt/ne_overview.rst | 21 +++++++++++++--------
+>  1 file changed, 13 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/virt/ne_overview.rst b/Documentation/virt/ne_overview.rst
+> index 39b0c8fe2654a..74c2f5919c886 100644
+> --- a/Documentation/virt/ne_overview.rst
+> +++ b/Documentation/virt/ne_overview.rst
+> @@ -14,12 +14,15 @@ instances [1].
+>  For example, an application that processes sensitive data and runs in a VM,
+>  can be separated from other applications running in the same VM. This
+>  application then runs in a separate VM than the primary VM, namely an enclave.
+> +It runs alongside the VM that spawned it. This setup matches low latency
+> +applications needs.
+>  
+> -An enclave runs alongside the VM that spawned it. This setup matches low latency
+> -applications needs. The resources that are allocated for the enclave, such as
+> -memory and CPUs, are carved out of the primary VM. Each enclave is mapped to a
+> -process running in the primary VM, that communicates with the NE driver via an
+> -ioctl interface.
+> +The current supported architectures for the NE kernel driver, available in the
+> +upstream Linux kernel, are x86 and ARM64.
+> +
+> +The resources that are allocated for the enclave, such as memory and CPUs, are
+> +carved out of the primary VM. Each enclave is mapped to a process running in the
+> +primary VM, that communicates with the NE kernel driver via an ioctl interface.
+>  
+>  In this sense, there are two components:
+>  
+> @@ -43,8 +46,8 @@ for the enclave VM. An enclave does not have persistent storage attached.
+>  The memory regions carved out of the primary VM and given to an enclave need to
+>  be aligned 2 MiB / 1 GiB physically contiguous memory regions (or multiple of
+>  this size e.g. 8 MiB). The memory can be allocated e.g. by using hugetlbfs from
+> -user space [2][3]. The memory size for an enclave needs to be at least 64 MiB.
+> -The enclave memory and CPUs need to be from the same NUMA node.
+> +user space [2][3][7]. The memory size for an enclave needs to be at least
+> +64 MiB. The enclave memory and CPUs need to be from the same NUMA node.
+>  
+>  An enclave runs on dedicated cores. CPU 0 and its CPU siblings need to remain
+>  available for the primary VM. A CPU pool has to be set for NE purposes by an
+> @@ -61,7 +64,7 @@ device is placed in memory below the typical 4 GiB.
+>  The application that runs in the enclave needs to be packaged in an enclave
+>  image together with the OS ( e.g. kernel, ramdisk, init ) that will run in the
+>  enclave VM. The enclave VM has its own kernel and follows the standard Linux
+> -boot protocol [6].
+> +boot protocol [6][8].
+>  
+>  The kernel bzImage, the kernel command line, the ramdisk(s) are part of the
+>  Enclave Image Format (EIF); plus an EIF header including metadata such as magic
+> @@ -93,3 +96,5 @@ enclave process can exit.
+>  [4] https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
+>  [5] https://man7.org/linux/man-pages/man7/vsock.7.html
+>  [6] https://www.kernel.org/doc/html/latest/x86/boot.html
+> +[7] https://www.kernel.org/doc/html/latest/arm64/hugetlbpage.html
+> +[8] https://www.kernel.org/doc/html/latest/arm64/booting.html
+> -- 
+> 2.20.1 (Apple Git-117)
+> 
+
+Reviewed-by: George-Aurelian Popescu <popegeo@amazon.com>
+
+Looks good,
+George
+
+
+
+Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+
