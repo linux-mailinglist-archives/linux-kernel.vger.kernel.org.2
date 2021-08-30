@@ -2,73 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10543FB49F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BB73FB4A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236475AbhH3LeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 07:34:10 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38584 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232579AbhH3LeJ (ORCPT
+        id S236522AbhH3LfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 07:35:07 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:39607 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232579AbhH3LfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 07:34:09 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C4FBF220FD;
-        Mon, 30 Aug 2021 11:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630323194; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qbtIM/v0tAoR2oZYjGEg40bXhpo80BebKdAbqKmN8do=;
-        b=Lp5XNbGdjWfYGvXx9OPoXj2ke48ZaSuF4sCVstvFcEQAql7EY7rBKIXyX6KCkgj5MuWvH2
-        N+pQsDJPwmhl0OpHeDYBDhJc3RaliARw8U4lsUcOSmfFuRrl8iQHGvX0uhSfcLe2l/fybS
-        tTTtVLsoEJNMY1lA6UyIV2yZnYGLpz8=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 67799A3B8C;
-        Mon, 30 Aug 2021 11:33:14 +0000 (UTC)
-Date:   Mon, 30 Aug 2021 13:33:10 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        stable@kernel.org, Chris Down <chris@chrisdown.name>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH] mm,vmscan: fix divide by zero in get_scan_count
-Message-ID: <YSzB9q1kVjKce7ly@dhcp22.suse.cz>
-References: <20210826220149.058089c6@imladris.surriel.com>
+        Mon, 30 Aug 2021 07:35:05 -0400
+Received: by mail-il1-f198.google.com with SMTP id y8-20020a92c748000000b00224811cb945so8837723ilp.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 04:34:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=8yu2qDi/W61ruhvfPtnck6J11ryx5e7EXsUOpCFvzG4=;
+        b=FMPLq0rurkWIKShYurAi4QquJe9r6WDYG+eevDq9IR6jZDkVsg1mZt2VqL8Q9fdwBZ
+         vtDbItGeFo2K1Cef9lky2g+08ledakdzqM6Ip454kcnuBXXmSjnsHEMOSybktKtic45A
+         P7ZDrr3/gDdeaeFQtHJwoT5c/828h6DtgJJEBACjgIl7xAtjE9ienlqk+nsLw+50WTHu
+         AvvcwsXdG9OFvrtBDw+O0MoLT8i/TD09aVWv3jEIwD3l8GO/zakHztdiugmVyIcPTbYr
+         u/FbIUrYihpSeeOKLsKw+SmZfeDpTNL8u0wdlFirWH3z+Xbl9yJj8oa6D7ZrA0J7N6Hn
+         5x1Q==
+X-Gm-Message-State: AOAM532c6ePuDCzTVTV0yGoo9Mkd1VPeqvThm5Q4CGQMGFO4xRyoHd7b
+        +7A6pM9wCAsMvEkTZNeWnHZKVIUnEFZc+/R217AKXMmGZJwA
+X-Google-Smtp-Source: ABdhPJw8R8S4wtILrC6Pgi4rcp0GnFmahcRcIzqC11+AgCnvk1l/mVz8zSjhYlwRKul0FOFQlHJqw0U8ywdoT7sMIsTAZe4Odi3M
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826220149.058089c6@imladris.surriel.com>
+X-Received: by 2002:a6b:5911:: with SMTP id n17mr17250394iob.180.1630323252380;
+ Mon, 30 Aug 2021 04:34:12 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 04:34:12 -0700
+In-Reply-To: <00000000000022acbf05c06d9f0d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000053c98205cac53625@google.com>
+Subject: Re: [syzbot] WARNING in io_poll_double_wake
+From:   syzbot <syzbot+f2aca089e6f77e5acd46@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, haoxu@linux.alibaba.com,
+        hdanton@sina.com, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 26-08-21 22:01:49, Rik van Riel wrote:
-> Changeset f56ce412a59d ("mm: memcontrol: fix occasional OOMs due to
-> proportional memory.low reclaim") introduced a divide by zero corner
-> case when oomd is being used in combination with cgroup memory.low
-> protection.
-> 
-> When oomd decides to kill a cgroup, it will force the cgroup memory
-> to be reclaimed after killing the tasks, by writing to the memory.max
-> file for that cgroup, forcing the remaining page cache and reclaimable
-> slab to be reclaimed down to zero.
-> 
-> Previously, on cgroups with some memory.low protection that would result
-> in the memory being reclaimed down to the memory.low limit, or likely not
-> at all, having the page cache reclaimed asynchronously later.
-> 
-> With f56ce412a59d the oomd write to memory.max tries to reclaim all the
-> way down to zero, which may race with another reclaimer, to the point of
-> ending up with the divide by zero below.
-> 
-> This patch implements the obvious fix.
+syzbot suspects this issue was fixed by commit:
 
-I must be missing something but how can cgroup_size be ever 0 when it is
-max(cgroup_size, protection) and protection != 0?
--- 
-Michal Hocko
-SUSE Labs
+commit a890d01e4ee016978776e45340e521b3bbbdf41f
+Author: Hao Xu <haoxu@linux.alibaba.com>
+Date:   Wed Jul 28 03:03:22 2021 +0000
+
+    io_uring: fix poll requests leaking second poll entries
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15d8819d300000
+start commit:   98f7fdced2e0 Merge tag 'irq-urgent-2021-07-11' of git://gi..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=139b08f9b7481d26
+dashboard link: https://syzkaller.appspot.com/bug?extid=f2aca089e6f77e5acd46
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11650180300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1510c6b0300000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: io_uring: fix poll requests leaking second poll entries
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
