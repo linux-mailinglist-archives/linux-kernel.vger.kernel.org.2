@@ -2,101 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887FF3FB2FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A993FB2FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235525AbhH3JSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 05:18:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235042AbhH3JSE (ORCPT
+        id S235597AbhH3JS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 05:18:27 -0400
+Received: from mail-ej1-f51.google.com ([209.85.218.51]:44794 "EHLO
+        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235464AbhH3JSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 05:18:04 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2805EC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:17:10 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:99a5:7017:6f3e:f1d2])
-        by xavier.telenet-ops.be with bizsmtp
-        id nlH82500V30rvgn01lH8FE; Mon, 30 Aug 2021 11:17:08 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mKdPf-000UMV-LU; Mon, 30 Aug 2021 11:17:07 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mKdPf-007mWC-1i; Mon, 30 Aug 2021 11:17:07 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for 5.15
-Date:   Mon, 30 Aug 2021 11:17:05 +0200
-Message-Id: <20210830091705.1854757-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 30 Aug 2021 05:18:24 -0400
+Received: by mail-ej1-f51.google.com with SMTP id me10so29648420ejb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:17:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=LV1Dv/lfaMGckmLJ6U2h2Nf+rA41Zasx4c2yrKkh8eM=;
+        b=WA/A77eGuKlXoNo9jlZSGRPNJJ//XLMOJI+kRi68zS2sCI75KTbdoahVqSx00gqZDX
+         kWSZ6zQkEGC4u4tviUtbjnECWrk6H+N7KB/UTSErU3b7gQs+cR1njF49vgq9j0FgQUbh
+         FqmHACwsI0IXdla8s2n/04ARQL4v/an6tch9Zl/L2MoVgkbmM9wd952j4BDRukEa2AJ0
+         gEPN8OaMwwt2mwlgAVhQ+Krf8jfkKwBmQ/quQDzZ/7teTwYmSWRPww2Ue3UYg5tCay/p
+         yHrzs9IxB4UUHzXSuyaKvYxjIee7tqiqByWiqmKmRYWfCosWp7+7+0k6cDLUkjaF+MwI
+         Y+BQ==
+X-Gm-Message-State: AOAM5301iSNpwA40w3bbT/yJGo37GRN4JqrexNYosGx8K7h1djNUL7Jo
+        SXwfyFZClja/wXFKCS2roDRGKTAqMf4=
+X-Google-Smtp-Source: ABdhPJxCzi9kIMhJPmZqJYEsqEC4SIp8vLKbuWd8Mq1RkXcy59VaaWTwODD8qjMqgj3eJ/z2e0y7uQ==
+X-Received: by 2002:a17:906:720e:: with SMTP id m14mr24061578ejk.500.1630315050675;
+        Mon, 30 Aug 2021 02:17:30 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with UTF8SMTPSA id oy14sm6087650ejb.66.2021.08.30.02.17.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 02:17:30 -0700 (PDT)
+Message-ID: <0f094eb9-11d4-1bd5-0a1b-823317ad4f7d@kernel.org>
+Date:   Mon, 30 Aug 2021 11:17:29 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH] console: consume APC, DM, DCS
+Content-Language: en-US
+To:     nick black <dankamongmen@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <YSydL0q8iaUfkphg@schwarzgerat.orthanc>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <YSydL0q8iaUfkphg@schwarzgerat.orthanc>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Hi Linus,
+On 30. 08. 21, 10:56, nick black wrote:
+> console: consume APC, DM, DCS
+> 
+> The Linux console's VT102 implementation already
+> consumes OSC ("Operating System Command") sequences,
+> probably because that's how palette changes are
+> transmitted. In addition to OSC, there are three other
+> major clases of ANSI control strings: APC ("Application
+> Program Command"), PM ("Privacy Message", and DCS
+> ("Device Control String"). They are handled similarly
+> to OSC in terms of termination.
+> 
+> Source: vt100.net
+> 
+> Add three new enumerated states, one for each of these
+> types. All three are handled the same way right now--they
+> simply consume input until terminated. I hope to expand
+> upon this firmament in the future. Add new predicate
+> ansi_control_string(), returning true for any of these
+> states. Replace explicit checks against ESosc with calls
+> to this function. Transition to these states appropriately
+> from the escape initiation (ESesc) state.
+> 
+> This was motivated by the following Notcurses bugs:
+> 
+>   https://github.com/dankamongmen/notcurses/issues/2050
+>   https://github.com/dankamongmen/notcurses/issues/1828
+>   https://github.com/dankamongmen/notcurses/issues/2069
+> 
+> where standard VT sequences are not consumed by the
+> Linux console. It's not necessary that the Linux console
+> *support* these sequences, but it ought *consume* these
+> well-specified classes of sequences.
+> 
+> Tested by sending a variety of escape sequences to the
+> console, and verifying that they still worked, or were
+> now properly consumed. Verified that the escapes were
+> properly terminated at a generic level. Verified that
+> the Notcurses tools continued to show expected output on
+> the Linux console, except now without escape bleedthrough.
+> 
+> Signed-off-by: nick black <dankamongmen@gmail.com>
+> ---
+> diff --git drivers/tty/vt/vt.c drivers/tty/vt/vt.c
+> index ef981d3b7bb4..62b77ee3f8d1 100644
+> --- a/drivers/tty/vt/vt.c
+> +++ b/drivers/tty/vt/vt.c
+> @@ -2059,7 +2059,7 @@ static void restore_cur(struct vc_data *vc)
+>   
+>   enum { ESnormal, ESesc, ESsquare, ESgetpars, ESfunckey,
+>   	EShash, ESsetG0, ESsetG1, ESpercent, EScsiignore, ESnonstd,
+> -	ESpalette, ESosc };
+> +	ESpalette, ESosc, ESapc, ESpm, ESdcs };
+>   
+>   /* console_lock is held (except via vc_init()) */
+>   static void reset_terminal(struct vc_data *vc, int do_clear)
+> @@ -2133,20 +2133,28 @@ static void vc_setGx(struct vc_data *vc, unsigned int which, int c)
+>   		vc->vc_translate = set_translate(*charset, vc);
+>   }
+>   
+> +/* is this state an ANSI control string? */
+> +static bool ansi_control_string(unsigned int state)
+> +{
+> +	if (state == ESosc || state == ESapc || state == ESpm || state == ESdcs)
+> +		return true;
+> +	return false;
 
-The following changes since commit 21ed49265986931b8921a2404394426870245bd2:
+So simply:
+return state == ESosc || state == ESapc || state == ESpm || state == ESdcs;
 
-  m68k: MAC should select HAVE_PATA_PLATFORM (2021-07-19 12:18:42 +0200)
+I wonder if we can simply hide them all behind single ESignore?
 
-are available in the Git repository at:
+> +}
+> +
+>   /* console_lock is held */
+>   static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
+>   {
+>   	/*
+>   	 *  Control characters can be used in the _middle_
+> -	 *  of an escape sequence.
+> +	 *  of an escape sequence, aside from ANSI control strings.
+>   	 */
+> -	if (vc->vc_state == ESosc && c>=8 && c<=13) /* ... except for OSC */
+> +	if (ansi_control_string(vc->vc_state) && c >= 8 && c <= 13)
+>   		return;
+>   	switch (c) {
+>   	case 0:
+>   		return;
+>   	case 7:
+> -		if (vc->vc_state == ESosc)
+> +		if (ansi_control_string(vc->vc_state))
+>   			vc->vc_state = ESnormal;
+>   		else if (vc->vc_bell_duration)
+>   			kd_mksound(vc->vc_bell_pitch, vc->vc_bell_duration);
+> @@ -2207,6 +2215,12 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
+>   		case ']':
+>   			vc->vc_state = ESnonstd;
+>   			return;
+> +		case '_':
+> +			vc->vc_state = ESapc;
+> +			return;
+> +		case '^':
+> +			vc->vc_state = ESpm;
+> +			return;
+>   		case '%':
+>   			vc->vc_state = ESpercent;
+>   			return;
+> @@ -2224,6 +2238,9 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
+>   			if (vc->state.x < VC_TABSTOPS_COUNT)
+>   				set_bit(vc->state.x, vc->vc_tab_stop);
+>   			return;
+> +		case 'P':
+> +			vc->vc_state = ESdcs;
+> +			return;
+>   		case 'Z':
+>   			respond_ID(tty);
+>   			return;
+> @@ -2520,8 +2537,14 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
+>   		vc_setGx(vc, 1, c);
+>   		vc->vc_state = ESnormal;
+>   		return;
+> +	case ESapc:
+> +		return;
+>   	case ESosc:
+>   		return;
+> +	case ESpm:
+> +		return;
+> +	case ESdcs:
+> +		return;
+>   	default:
+>   		vc->vc_state = ESnormal;
+>   	}
+> 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.15-tag1
 
-for you to fetch changes up to 87d93029fe83e326d5b906e12e95600b157d2c0d:
-
-  m68k: Fix asm register constraints for atomic ops (2021-08-23 13:23:57 +0200)
-
-----------------------------------------------------------------
-m68k updates for v5.15
-
-  - Miscellaneous fixes,
-  - Defconfig updates.
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Geert Uytterhoeven (3):
-      m68k: defconfig: Update defconfigs for v5.14-rc1
-      m68k: Fix invalid RMW_INSNS on CPUs that lack CAS
-      m68k: Fix asm register constraints for atomic ops
-
-Pavel Skripkin (1):
-      m68k: emu: Fix invalid free in nfeth_cleanup()
-
- arch/m68k/Kconfig.cpu                | 8 +++++++-
- arch/m68k/configs/amiga_defconfig    | 6 ++++--
- arch/m68k/configs/apollo_defconfig   | 4 +++-
- arch/m68k/configs/atari_defconfig    | 6 ++++--
- arch/m68k/configs/bvme6000_defconfig | 4 +++-
- arch/m68k/configs/hp300_defconfig    | 4 +++-
- arch/m68k/configs/mac_defconfig      | 6 ++++--
- arch/m68k/configs/multi_defconfig    | 6 ++++--
- arch/m68k/configs/mvme147_defconfig  | 4 +++-
- arch/m68k/configs/mvme16x_defconfig  | 4 +++-
- arch/m68k/configs/q40_defconfig      | 6 ++++--
- arch/m68k/configs/sun3_defconfig     | 4 +++-
- arch/m68k/configs/sun3x_defconfig    | 4 +++-
- arch/m68k/emu/nfeth.c                | 4 ++--
- arch/m68k/include/asm/atomic.h       | 4 ++--
- 15 files changed, 52 insertions(+), 22 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+js
+suse labs
