@@ -2,256 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8D33FBD6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3783FBD6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235743AbhH3UZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
+        id S236174AbhH3U0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 16:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbhH3UZ4 (ORCPT
+        with ESMTP id S232906AbhH3U0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:25:56 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D258C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:25:02 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso20000710ots.5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:25:02 -0700 (PDT)
+        Mon, 30 Aug 2021 16:26:12 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962DBC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:25:18 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id bk29so17115009qkb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:25:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mj9BT4LOshPuqyHHIfEbkOv0XvAZyp9Ylo0oKr2+TdA=;
-        b=VRjf2IbBqn/w52uM6s5SxdUGKcYhnURm7AK44xCy84g83vWhFpYUZN5zDRP8Cu9sau
-         XJJXJoaqHAa1LOUu+nu+twVEi2kT7n4TUvJJiyMrKUxpj9CVqq4rzRfzUwPFPtfDx7KV
-         X/aKybQP733quAIMOKLdvtxYE6hxmOCBKbZMyC+sYF45tBzfEhVId1IUJfBR1dTmdWNS
-         UJvArXSxGtU3E/++vUXN9IZDGhaGIp1pIR7V+hSvd9iY+U52CtieSI8rkL2K5Tc7il+e
-         WLsMf9il2OF3NwECJPyT/UpPttjIke7qytWGdYtnUhAyPkVkMZuDc47VGwW86hyulWip
-         orpA==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WEDPxaMsWJ5gP5fQ8qam5s8wdHZgTYnI4eKK6CIfTAo=;
+        b=ApIeOltmzuoi/aa14OwPw1CExc2AvQyNaHG6txxC1YM0FYKiMMH3yf+DULo8LWfxUr
+         6dy4hYt8s+wEbPgAOBPw+k2ZYmhhb5+a6a7cfb/eMV/hpkM74gyO9AcJWvPxmr6uFpFO
+         z7DvDfKKcCByg2dDYZd2hSzuzKCPg+hSSdnSVhbag6iCIF7NiMVEnbE9Z2hhh0+N0wIJ
+         rqIhc3JYnxEI2zy0NxW1mmRU7Yn3dlB8/dfyHevuLoikK0zMpcJ6A5XC2H/zMirpseSA
+         XnG3vP+yXYQTEXWs8ugqjc3gZ8FlDm5DQwot6lXkoKh2Fu1vEjZ3B1brXveinSov8oa3
+         x9lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mj9BT4LOshPuqyHHIfEbkOv0XvAZyp9Ylo0oKr2+TdA=;
-        b=cR8VT/yJUz5NcYGjw73MI6lHCK8LTkjidHwXUn18Q4h2WMXFFbzX0SioZD5PdPjx+Q
-         C3kuAkuVuTIgbcJu47BGW/Tavt2R2ZQ64HVB2lhyUwvCTirIITz4tuCBdiRx1NJ6/kbe
-         ToDwH/HEH+PjCAkL9E/HmoxNAzCTwcRkVdo/gpt2SXG4RFzRK22/s+7B14+ff9FDjBi4
-         wfbawLNgOtBR4UWYh1zp801bDnnNmJsWFT5a8NP8akwZVRcKq46vd6Ygkz7P7g55hozN
-         7v2T0Kfm+78onEMLAoi+n4N0EXr98fopb2gom88HmsuqI/bvcjgMwM2xO6JAEYgaiCnw
-         2Dtg==
-X-Gm-Message-State: AOAM531X1mHiM3+1x+YT131YTxOI5A8dKrez+TS9SFxCYCqKPF3vfE/e
-        V0bkafRKAHXk/K8gmFS76Ng4jcfuf8qdkrOJIR+RDw==
-X-Google-Smtp-Source: ABdhPJyNyszlVhhT9yMeBxuaF5beCw8rpOulNbB2uk8xQbYOhvsRxoaTnQCLSWXhooC+iD78tZcC0v3PK7W3BXsktno=
-X-Received: by 2002:a9d:450b:: with SMTP id w11mr20846874ote.254.1630355101327;
- Mon, 30 Aug 2021 13:25:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WEDPxaMsWJ5gP5fQ8qam5s8wdHZgTYnI4eKK6CIfTAo=;
+        b=Pg+CiVXZ9SjAbLV74dmaNTGvYlp0XNESmIMdjxjCoL1Tx5uUFf+Bc7lsfCeY9auOId
+         kqkClrgnuYMwqN2kpUjDo+6Gqnqn84599VSuBenhUdl+NHDe2rAf/duS5rrpL6O1gctf
+         DacJ0Cesq4TV14er+RAfMBWqEibDcxwIcLPg1JjlkY/4D1ALW9kg6fGcCyKbV9Yh2hpx
+         A5hH9T/WJIh2UN9Oi0uG3z7s+hipDxaOENItzNLyeZKiOF+16zqIAm0TY4Tz2u9w2fOi
+         CN9viy5WfP9r+I1aCgjGZvv+dZ7rWtVh/jvRYqGv9S4DHT3t7Kd6EJbL6J2YB2bwP/il
+         hALA==
+X-Gm-Message-State: AOAM532McSckDb3hXvAqEv6VlV6EyESW1MRHPp8X+jpB18WlxrvXDztd
+        TJ+vKj4iUcQ99JHFZiMlh7yjyA==
+X-Google-Smtp-Source: ABdhPJw5mmxkfdAmR2Jd/SSEUI01x1XqVbWdcJJBOtHvkP47EX9pszaf6dzYTJF1dAi6SsTZw5rvZg==
+X-Received: by 2002:a37:e301:: with SMTP id y1mr24808255qki.475.1630355117772;
+        Mon, 30 Aug 2021 13:25:17 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id p22sm11821341qkj.16.2021.08.30.13.25.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 13:25:17 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 16:27:04 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YS0/GHBG15+2Mglk@cmpxchg.org>
+References: <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <YSQeFPTMn5WpwyAa@casper.infradead.org>
+ <YSU7WCYAY+ZRy+Ke@cmpxchg.org>
+ <YSVMAS2pQVq+xma7@casper.infradead.org>
+ <YSZeKfHxOkEAri1q@cmpxchg.org>
+ <20210826004555.GF12597@magnolia>
+ <YSjxlNl9jeEX2Yff@cmpxchg.org>
+ <YSkyjcX9Ih816mB9@casper.infradead.org>
+ <YS0WR38gCSrd6r41@cmpxchg.org>
+ <YS0h4cFhwYoW3MBI@casper.infradead.org>
 MIME-Version: 1.0
-References: <000000000000ec256905ca2e1915@google.com>
-In-Reply-To: <000000000000ec256905ca2e1915@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 30 Aug 2021 22:24:49 +0200
-Message-ID: <CACT4Y+a2-iR6E+a=YwXHOBPio19ag9q+fWqpVASkohemTUiQBQ@mail.gmail.com>
-Subject: Re: [syzbot] WARNING: Unsupported flag value(s) of 0x%x in
- DT_FLAGS_1. (2)
-To:     syzbot <syzbot+5e1d2ee57b07877e2439@syzkaller.appspotmail.com>,
-        syzkaller <syzkaller@googlegroups.com>,
-        Aleksandr Nogikh <nogikh@google.com>
-Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YS0h4cFhwYoW3MBI@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Aug 2021 at 01:17, syzbot
-<syzbot+5e1d2ee57b07877e2439@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    614cb2751d31 Merge tag 'trace-v5.14-rc6' of git://git.ker=
-n..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D176cf74130000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D3205625db2f96=
-ac9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D5e1d2ee57b07877=
-e2439
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binuti=
-ls for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D14482731300=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D13be58ce30000=
-0
->
-> Bisection is inconclusive: the issue happens on the oldest tested release=
-.
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1050081e30=
-0000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D1250081e30=
-0000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D1450081e30000=
-0
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+5e1d2ee57b07877e2439@syzkaller.appspotmail.com
+On Mon, Aug 30, 2021 at 07:22:25PM +0100, Matthew Wilcox wrote:
+> On Mon, Aug 30, 2021 at 01:32:55PM -0400, Johannes Weiner wrote:
+> > > The mistake you're making is coupling "minimum mapping granularity" with
+> > > "minimum allocation granularity".  We can happily build a system which
+> > > only allocates memory on 2MB boundaries and yet lets you map that memory
+> > > to userspace in 4kB granules.
+> > 
+> > Yeah, but I want to do it without allocating 4k granule descriptors
+> > statically at boot time for the entirety of available memory.
+> 
+> Even that is possible when bumping the PAGE_SIZE to 16kB.  It needs a
+> bit of fiddling:
+> 
+> static int insert_page_into_pte_locked(struct mm_struct *mm, pte_t *pte,
+>                         unsigned long addr, struct page *page, pgprot_t prot)
+> {
+>         if (!pte_none(*pte))
+>                 return -EBUSY;
+>         /* Ok, finally just insert the thing.. */
+>         get_page(page);
+>         inc_mm_counter_fast(mm, mm_counter_file(page));
+>         page_add_file_rmap(page, false);
+>         set_pte_at(mm, addr, pte, mk_pte(page, prot));
+>         return 0;
+> }
+> 
+> mk_pte() assumes that a struct page refers to a single pte.  If we
+> revamped it to take (page, offset, prot), it could construct the
+> appropriate pte for the offset within that page.
 
-+syzkaller mailing list
+Right, page tables only need a pfn. The struct page is for us to
+maintain additional state about the object.
 
-Fun. Fuzzer managed to corrupt syz-executor to force it to print
-.strings section (?).
-This is a warning printed by glibc.
-+Aleksandr, please add it to the ignore list (and add a test with this
-crash, I see there other suspicious strings like "BUG" that can
-trigger pkg/report as well).
+For the objects that are subpage sized, we should be able to hold that
+state (shrinker lru linkage, referenced bit, dirtiness, ...) inside
+ad-hoc allocated descriptors.
 
-// elf/get-dynamic-info.h
-if (__builtin_expect (GLRO(dl_debug_mask) & DL_DEBUG_FILES, 0)
-&& l->l_flags_1 & ~DT_1_SUPPORTED_MASK)
-_dl_debug_printf ("\nWARNING: Unsupported flag value(s) of 0x%x in
-DT_FLAGS_1.\n",
-l->l_flags_1 & ~DT_1_SUPPORTED_MASK);
+Descriptors which could well be what struct folio {} is today, IMO. As
+long as it doesn't innately assume, or will assume, in the API the
+1:1+ mapping to struct page that is inherent to the compound page.
 
+> Independent of _that_, the biggest problem we face (I think) in getting
+> rid of memmap is that it offers the pfn_to_page() lookup.  If we move to a
+> dynamically allocated descriptor for our arbitrarily-sized memory objects,
+> we need a tree to store them in.  Given the trees we currently have,
+> our best bet is probably the radix tree, but I dislike its glass jaws.
+> I'm hoping that (again) the maple tree becomes stable soon enough for
+> us to dynamically allocate memory descriptors and store them in it.
+> And that we don't discover a bootstrapping problem between kmalloc()
+> (for tree nodes) and memmap (to look up the page associated with a node).
+> 
+> But that's all a future problem and if we can't even take a first step
+> to decouple filesystems from struct page then working towards that would
+> be wasted effort.
 
+Agreed. Again, I'm just advocating to keep the doors open on that, and
+avoid the situation where the filesystem folks run off and convert to
+a flexible folio data structure, and the MM people run off and convert
+all compound pages to folio and in the process hardcode assumptions
+and turn it basically into struct page again that can't easily change.
 
->  resolv_context.c current->__from_res current->__refcount > 0 ctx->conf =
-=3D=3D NULL current =3D=3D ctx ctx->__refcount > 0              __resolv_co=
-ntext_put    maybe_init      context_reuse resolv_conf.c conf->__refcount >=
- 0 /etc/resolv.conf conf =3D=3D ptr   init->nameserver_list[i]->sa_family =
-=3D=3D AF_INET6 !alloc_buffer_has_failed (&buffer)      global_copy->free_l=
-ist_start =3D=3D 0 || global_copy->free_list_start & 1   conf->nameserver_l=
-ist[i]->sa_family =3D=3D AF_INET6 resolv_conf_matches (resp, conf)        c=
-onf_decrement  update_from_conf                __resolv_conf_attach        =
-    __resolv_conf_allocate          resolv_conf_get_1               __resol=
-v_conf_get_current       cannot allocate memory for thread-local data: ABOR=
-T
->     Failed loading %lu audit modules, %lu are supported.
->    result <=3D GL(dl_tls_max_dtv_idx) + 1    result =3D=3D GL(dl_tls_max_=
-dtv_idx) + 1    listp->slotinfo[cnt].gen <=3D GL(dl_tls_generation)       m=
-ap->l_tls_modid =3D=3D total + cnt map->l_tls_blocksize >=3D map->l_tls_ini=
-timage_size       (size_t) map->l_tls_offset >=3D map->l_tls_blocksize     =
- cannot create TLS data structures ../elf/dl-tls.c listp !=3D NULL idx =3D=
-=3D 0 dlopen         _dl_add_to_slotinfo             _dl_allocate_tls_init =
-          _dl_next_tls_modid GLIBC_TUNABLES /etc/suid-debug glibc.rtld.nns =
-glibc.malloc.trim_threshold MALLOC_TRIM_THRESHOLD_ glibc.malloc.perturb MAL=
-LOC_PERTURB_ glibc.elision.tries glibc.elision.enable glibc.malloc.mxfast g=
-libc.elision.skip_lock_busy glibc.malloc.top_pad MALLOC_TOP_PAD_ glibc.cpu.=
-x86_shstk glibc.cpu.hwcap_mask LD_HWCAP_MASK glibc.malloc.mmap_max MALLOC_M=
-MAP_MAX_ glibc.cpu.x86_ibt glibc.cpu.hwcaps glibc.malloc.arena_max MALLOC_A=
-RENA_MAX glibc.malloc.mmap_threshold MALLOC_MMAP_THRESHOLD_ glibc.cpu.x86_d=
-ata_cache_size glibc.malloc.tcache_count glibc.malloc.arena_test MALLOC_ARE=
-NA_TEST glibc.malloc.tcache_max glibc.malloc.check MALLOC_CHECK_  sbrk() fa=
-ilure while processing tunables
->        glibc.elision.skip_lock_after_retries   glibc.cpu.x86_shared_cache=
-_size glibc.cpu.x86_non_temporal_threshold    glibc.elision.skip_trylock_in=
-ternal_abort       glibc.malloc.tcache_unsorted_limit      glibc.elision.sk=
-ip_lock_internal_abort  glibc.pthread.mutex_spin_count  glibc.rtld.optional=
-_static_tls  p =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BDP =EF=BF=BD=EF=
-=BF=BD  =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=
-=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD  =EF=BF=
-=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=
-=BD =EF=BF=BD=EF=BF=BDx =EF=BF=BD=EF=BF=BDP =EF=BF=BD=EF=BF=BD( =EF=BF=BD=
-=EF=BF=BD  =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=
-=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=
-=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BDx =EF=BF=BD=EF=BF=BD=EF=
-=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=
-=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=
-=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD/var=
-/tmp /var/profile               GCONV_PATH GETCONF_DIR HOSTALIASES LD_AUDIT=
- LD_DEBUG LD_DEBUG_OUTPUT LD_DYNAMIC_WEAK LD_HWCAP_MASK LD_LIBRARY_PATH LD_=
-ORIGIN_PATH LD_PRELOAD LD_PROFILE LD_SHOW_AUXV LD_USE_LOAD_BIAS LOCALDOMAIN=
- LOCPATH MALLOC_TRACE NIS_PATH NLSPATH RESOLV_HOST_CONF RES_OPTIONS TMPDIR =
-TZDIR LD_PREFER_MAP_32BIT_EXEC                      i586     i686     haswe=
-ll  xeon_phi             sse2     x86_64   avx512_1 LD_WARN setup-vdso.h ph=
-->p_type !=3D PT_TLS get-dynamic-info.h out of memory
->  LINUX_2.6 __vdso_clock_gettime __vdso_gettimeofday __vdso_time __vdso_ge=
-tcpu __vdso_clock_getres LD_LIBRARY_PATH LD_BIND_NOW LD_BIND_NOT LD_DYNAMIC=
-_WEAK LD_PROFILE_OUTPUT LD_ASSUME_KERNEL      info[DT_PLTREL]->d_un.d_val =
-=3D=3D DT_RELA  info[DT_RELAENT]->d_un.d_val =3D=3D sizeof (ElfW(Rela))
-> WARNING: Unsupported flag value(s) of 0x%x in DT_FLAGS_1.
->      setup_vdso              elf_get_dynamic_info AVX CX8 FMA HTT IBT RTM=
- AVX2 BMI1 BMI2 CMOV FMA4 SSE2 I586 I686 LZCNT MOVBE SHSTK SSSE3 POPCNT SSE=
-4_1 AVX512F OSXSAVE AVX512CD AVX512BW AVX512DQ AVX512ER AVX512PF AVX512VL A=
-VX_Usable FMA_Usable AVX2_Usable FMA4_Usable Slow_SSE4_2 XSAVEC_Usable AVX5=
-12F_Usable AVX512DQ_Usable Fast_Copy_Backward Fast_Unaligned_Copy Prefer_No=
-_VZEROUPPER Prefer_MAP_32BIT_EXEC AVX_Fast_Unaligned_Load MathVec_Prefer_No=
-_AVX512 Prefer_PMINUB_for_stringop Slow_BSF Prefer_ERMS Fast_Rep_String Pre=
-fer_FSRM /proc/sys/kernel/osrelease   + =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=
-=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BDQ =EF=
-=BF=BD=EF=BF=BDl =EF=BF=BD=EF=BF=BD  =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=
-=EF=BF=BDl =EF=BF=BD=EF=BF=BD=EF=BF=BD"=EF=BF=BD=EF=BF=BD=EF=BF=BD"=EF=BF=
-=BD=EF=BF=BDv"=EF=BF=BD=EF=BF=BD1"=EF=BF=BD=EF=BF=BDl =EF=BF=BD=EF=BF=BD=EF=
-=BF=BD!=EF=BF=BD=EF=BF=BD=EF=BF=BD!=EF=BF=BD=EF=BF=BDn!=EF=BF=BD=EF=BF=BD/!=
-=EF=BF=BD=EF=BF=BDl =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD=
- =EF=BF=BD=EF=BF=BDl =EF=BF=BD=EF=BF=BD` =EF=BF=BD=EF=BF=BDb#=EF=BF=BD=EF=
-=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BDo =EF=BF=BD=
-=EF=BF=BD7 =EF=BF=BD=EF=BF=BD7#=EF=BF=BD=EF=BF=BD  =EF=BF=BD=EF=BF=BD=EF=BF=
-=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD"=EF=BF=BD=EF=BF=BD  =EF=BF=BD=EF=BF=BD=EF=
-=BF=BD"=EF=BF=BD=EF=BF=BD\"=EF=BF=BD=EF=BF=BD #=EF=BF=BD=EF=BF=BD=EF=BF=BD!=
-=EF=BF=BD=EF=BF=BD  =EF=BF=BD=EF=BF=BD=EF=BF=BD!=EF=BF=BD=EF=BF=BDZ!=EF=BF=
-=BD=EF=BF=BD !=EF=BF=BD=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD  =EF=BF=BD=EF=
-=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BDL =EF=BF=BD=EF=BF=BD  =EF=BF=BD=EF=BF=BD =
- =EF=BF=BD=EF=BF=BD<program name unknown> %s: %s: %s%s%s%s%s
->  DYNAMIC LINKER BUG!!!        error while loading shared libraries gconv.=
-c irreversible !=3D NULL       outbuf !=3D NULL && *outbuf !=3D NULL       =
-__gconv gconv_db.c step->__end_fct =3D=3D NULL              __gconv_release=
-_step gconv_conf.c result =3D=3D NULL elem !=3D NULL cwd !=3D NULL alias mo=
-dule ISO-10646/UCS4/ =3DINTERNAL->ucs4 =3Ducs4->INTERNAL UCS-4LE// =3DINTER=
-NAL->ucs4le =3Ducs4le->INTERNAL ISO-10646/UTF8/ =3DINTERNAL->utf8 =3Dutf8->=
-INTERNAL ISO-10646/UCS2/ =3Ducs2->INTERNAL =3DINTERNAL->ucs2 ANSI_X3.4-1968=
-// =3Dascii->INTERNAL =3DINTERNAL->ascii UNICODEBIG// =3Ducs2reverse->INTER=
-NAL =3DINTERNAL->ucs2reverse .so          __gconv_get_path                U=
-CS4// ISO-10646/UCS4/ UCS-4// ISO-10646/UCS4/ UCS-4BE// ISO-10646/UCS4/ CSU=
-CS4// ISO-10646/UCS4/ ISO-10646// ISO-10646/UCS4/ 10646-1:1993// ISO-10646/=
-UCS4/ 10646-1:1993/UCS4/ ISO-10646/UCS4/ OSF00010104// ISO-10646/UCS4/ OSF0=
-0010105// ISO-10646/UCS4/ OSF00010106// ISO-10646/UCS4/ WCHAR_T// INTERNAL =
-UTF8// ISO-10646/UTF8/ UTF-8// ISO-10646/UTF8/ ISO-IR-193// ISO-10646/UTF8/=
- OSF05010001// ISO-10646/UTF8/ ISO-10646/UTF-8/ ISO-10646/UTF8/ UCS2// ISO-=
-10646/UCS2/ UCS-2// ISO-10646/UCS2/ OSF00010100// ISO-10646/UCS2/ OSF000101=
-01// ISO-10646/UCS2/ OSF00010102// ISO-10646/UCS2/ ANSI_X3.4// ANSI_X3.4-19=
-68// ISO-IR-6// ANSI_X3.4-1968// ANSI_X3.4-1986// ANSI_X3.4-1968// ISO_646.=
-IRV:1991// ANSI_X3.4-1968// ASCII// ANSI_X3.4-1968// ISO646-US// ANSI_X3.4-=
-1968// US-ASCII// ANSI_X3.4-1968// US// ANSI_X3.4-1968// IBM367// ANSI_X3.4=
--1968// CP367// ANSI_X3.4-1968// CSASCII// ANSI_X3.4-1968// OSF00010020// A=
-NSI_X3.4-1968// UNICODELITTLE// ISO-10646/UCS2/ UCS-2LE// ISO-10646/UCS2/ U=
-CS-2BE// UNICODEBIG//   gconv-modules                                      =
-     /usr/lib/x86_64-linux-gnu/gconv gconv_builtin.c cnt < sizeof (map) / s=
-izeof (map[0])            __gconv_get_builtin_trans ../iconv/skeleton.c out=
-bufstart =3D=3D NULL outbuf =3D=3D outerr inend - *inptrp < 4 gconv_simple.=
-c *outptrp + 4 > outend ../iconv/loop.c ch !=3D 0xc0 && ch !=3D 0xc1 =EF=BF=
-=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD      nstatus =3D=3D __GCONV_FULL_OU=
-TPUT  (state->__count & 7) <=3D sizeof (state->__value) inptr - bytebuf > (=
-state->__count & 7)  inend !=3D &bytebuf[MAX_NEEDED_INPUT]     inend - inpt=
-r > (state->__count & ~7)   inend - inptr <=3D sizeof (state->__value)     =
-           internal_ucs2reverse_loop_single                                =
-__gconv_transform_internal_ucs2reverse                          ucs2reverse=
-_internal_loop_single                                __gconv_transform_ucs2=
-reverse_internal                          __gconv_transform_internal_ucs2 _=
-_gconv_transform_ucs2_internal __gconv_transform_utf8_internal __gconv_tran=
-sform_internal_utf8 __gconv_transform_internal_ascii                       =
-         __gconv_transform_ascii_internal                                __=
-gconv_transform_ucs4le_internal                               __gconv_trans=
-form_internal_ucs4le                               __gconv_transform_ucs4_i=
-nternal __gconv_transform_internal_ucs4 internal_ucs2_loop_single       ucs=
-2_internal_loop_single       utf8_internal_loop_single       internal_utf8_=
-loop_single       internal_ascii_loop_single      ucs4le_internal_loop GCON=
-V_PATH /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache gconv_dl.c obj->=
-counter > 0 found->handle =3D=3D NULL gconv gconv_init gconv_end           =
-     do_release_shlib                __gconv_find_shlib ,TRANSLIT /IGNORE ,=
-IGNORE LOCPATH
->
->
->                +  3 ?HP[hw                   LC_COLLATE LC_CTYPE LC_MONET=
-ARY LC_NUMERIC LC_TIME LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE=
- LC_MEASUREMENT LC_IDENTIFICATION LC_ALL LANG findlocale.c locale_codeset !=
-=3D NULL /../   _nl_find_locale /usr/lib/locale         n       -          =
-                        loadlocale.c category =3D=3D LC_CTYPE           =EF=
-=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
-=BD=EF=BF=BD=EF=BF=BD=EF=BF=BDp=EF=BF=BD=EF=BF=BD=EF=BF=BDX=EF=BF=BD=EF=BF=
-=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
-=EF=BF=BD8=EF=BF=BD=EF=BF=BD=EF=BF=BD(=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
-=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
-=BF=BD=EF=BF=BD=EF=BF=BDH=EF=BF=BD=EF=BF=BD=EF=BF=BD
+> > > > Willy says he has future ideas to make compound pages scale. But we
+> > > > have years of history saying this is incredibly hard to achieve - and
+> > > > it certainly wasn't for a lack of constant trying.
+> > > 
+> > > I genuinely don't understand.  We have five primary users of memory
+> > > in Linux (once we're in a steady state after boot):
+> > > 
+> > >  - Anonymous memory
+> > >  - File-backed memory
+> > >  - Slab
+> > >  - Network buffers
+> > >  - Page tables
+> > > 
+> > > The relative importance of each one very much depends on your workload.
+> > > Slab already uses medium order pages and can be made to use larger.
+> > > Folios should give us large allocations of file-backed memory and
+> > > eventually anonymous memory.  Network buffers seem to be headed towards
+> > > larger allocations too.  Page tables will need some more thought, but
+> > > once we're no longer interleaving file cache pages, anon pages and
+> > > page tables, they become less of a problem to deal with.
+> > > 
+> > > Once everybody's allocating order-4 pages, order-4 pages become easy
+> > > to allocate.  When everybody's allocating order-0 pages, order-4 pages
+> > > require the right 16 pages to come available, and that's really freaking
+> > > hard.
+> > 
+> > Well yes, once (and iff) everybody is doing that. But for the
+> > foreseeable future we're expecting to stay in a world where the
+> > *majority* of memory is in larger chunks, while we continue to see 4k
+> > cache entries, anon pages, and corresponding ptes, yes?
+> 
+> No.  4k page table entries are demanded by the architecture, and there's
+> little we can do about that.
+
+I wasn't claiming otherwise..?
+
+> > Memory is dominated by larger allocations from the main workloads, but
+> > we'll continue to have a base system that does logging, package
+> > upgrades, IPC stuff, has small config files, small libraries, small
+> > executables. It'll be a while until we can raise the floor on those
+> > much smaller allocations - if ever.
+> > 
+> > So we need a system to manage them living side by side.
+> > 
+> > The slab allocator has proven to be an excellent solution to this
+> > problem, because the mailing lists are not flooded with OOM reports
+> > where smaller allocations fragmented the 4k page space. And even large
+> > temporary slab explosions (inodes, dentries etc.) are usually pushed
+> > back with fairly reasonable CPU overhead.
+> 
+> You may not see the bug reports, but they exist.  Right now, we have
+> a service that is echoing 2 to drop_caches every hour on systems which
+> are lightly loaded, otherwise the dcache swamps the entire machine and
+> takes hours or days to come back under control.
+
+Sure, but compare that to the number of complaints about higher-order
+allocations failing or taking too long (THP in the fault path e.g.)...
+
+Typegrouping isn't infallible for fighting fragmentation, but it seems
+to be good enough for most cases. Unlike the buddy allocator.
