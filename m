@@ -2,165 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CD43FB302
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBA73FB308
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235621AbhH3JT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 05:19:57 -0400
-Received: from mail-eopbgr40104.outbound.protection.outlook.com ([40.107.4.104]:22287
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235073AbhH3JTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 05:19:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hVToKsii9XoctuemjbYNCT2G7c9JK6vTSrv9x+iq2OhO5jOIwXEmAVRVbsg+LDIp1GuSrEH0TZ2cIURMy4wE0rzCmWunwKFi3IuZVUhVhi/1Ttpx44MmVL6VRD0CbCDokfID5kzMJpfWrT5iVK93VquVidS+ot0unwxaF+Qm+rQpB3AA4hDfMFGhW/GWogNdIbM/q/wgZ6+f9eWKLpYYQTdrt5UQ/xL/pyHJP0BBZ/ogSvHDk/yMp49b0u9MuiLM4Q/A9jMY0cAN5uWwMPfCpXuCMMoloFuVMM7p/y//9PZ+OGlEV648DyA+w9rP3vMWIAQnFMksiaku+aIyaMjHpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7/Q1lquckZwWjCsDJGAavPtnhQ31G9Ab8GOEqq2vf0Y=;
- b=LNeSPqKosHqZN1fmuG5YzY1YK+85J5uuKJC93x/BqQb+l0TRGid0R5A4tTRM524Apjdnzxr5QVMMS0WAJCiqebfMBd7vBGEM8tnBX97QySaYDQ848zlLWvoqDuCPxxJdqndi/cvGCIckVxhemiX8l9liRRpObGfT5XkSENQ/H8u+DLAB9+3Z6syfsfjlLirAJ+iuaeMChtNP3oZYvbckKuyOUzbxb1OwJONzE+lloDTewqh4iYJE8P6UVmIzEiSVtFl1Bau/rJig5BcdXqIBVQqFgMJZLll4p5+3p1lmfezc/vsoAyY8MAEiqGbKls/4vxRY2GT43n1yBrMQem91+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7/Q1lquckZwWjCsDJGAavPtnhQ31G9Ab8GOEqq2vf0Y=;
- b=YAcgfSy18BynM0YiGmHBaxNkfxQZvp72yrz4tnttbcFUnWTkqb6fi9+3IF3sK7RHvMwymrkiuitds/wE7SuasNh/mto+iitObi9BVlaF7rntDGLFn1k+hpfmRYCD6JAfCNujVPO6O2ekHWQ3lK9nhhr86MkcBDodtat39rdNPnA=
-Authentication-Results: mxic.com.tw; dkim=none (message not signed)
- header.d=none;mxic.com.tw; dmarc=none action=none header.from=kontron.de;
-Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
- by AM0PR10MB2724.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:12f::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Mon, 30 Aug
- 2021 09:18:52 +0000
-Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::a468:e307:d46:63a]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::a468:e307:d46:63a%4]) with mapi id 15.20.4457.024; Mon, 30 Aug 2021
- 09:18:51 +0000
-Subject: Re: [RESEND PATCH 5.10.x] mtd: spinand: Fix incorrect parameters for
- on-die ECC
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Frieder Schrempf <frieder@fris.de>
-Cc:     stable@vger.kernel.org,
-        voice INTER connect GmbH <developer@voiceinterconnect.de>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Felix Fietkau <nbd@nbd.name>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Richard Weinberger <richard@nod.at>,
-        YouChing Lin <ycllin@mxic.com.tw>
-References: <20210830072108.13770-1-frieder@fris.de>
- <20210830104122.58f9cdaf@xps13>
-From:   Frieder Schrempf <frieder.schrempf@kontron.de>
-Message-ID: <35e30f69-c6f8-ac9c-2314-f566190ac2cb@kontron.de>
-Date:   Mon, 30 Aug 2021 11:18:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20210830104122.58f9cdaf@xps13>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM3PR07CA0072.eurprd07.prod.outlook.com
- (2603:10a6:207:4::30) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:157::14)
+        id S235733AbhH3JUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 05:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235387AbhH3JUu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 05:20:50 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D14CC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:19:56 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id p38so30024305lfa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:19:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Pzw+rQU/7LroOYAK+nS9BT5tTrKS/NZABtpjiR6i+Uw=;
+        b=g4n0e6KkqstYAYXfLtVZ6z8ps9mcdXxZDMemgfR1mW5RcHBXZKTUzzJlaEHHnrpmV4
+         UeVptvlCBTKk4y25Rmgx86kEzCP/NPkNL2ZTBmZhpswN4QV+Rjz5ESvbYCpqk1uL5Fw4
+         zlWkn6orfLBpW5BK5UWjguRL+PfBK8T0oNYKiLf5XpGhy+cdUK4LyflIaLprVKMp1umn
+         YJo0SsY4qIzaaCBM52wYdtanJZMBpPjvcIlJiIS+yzBYHyqyvbdKEjPmy91T9T/NC0lV
+         JN9tPHJE6zBTc0pe+RRZBOPux/wEq08uJCJj0MuOMPWZ1bC8GEnNKvGMBTW/xlA7RH3S
+         E1UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Pzw+rQU/7LroOYAK+nS9BT5tTrKS/NZABtpjiR6i+Uw=;
+        b=niWywbuJMW4zFWV1aGZNRrPiJI96X9mCzZgPIH9U8tvK9fYJanVs4a1TpHlQh6mvWT
+         a86bkeFXibW6NDx6MI2uRJoR+Edfd+5Ch42vgmgpfwuqk/apbI6V5RZQjPvKck+HnsUl
+         koSPNV9qQfnSld2irPuTjrYJMm3JYuVBig2BLcOsenv+fsf4yPKk5sbBuKHRi2ZkLiTL
+         lR/XnLWluUuvSHlGhCJnTWReAt39CPG/XNQGLedBiBWzq+cu7qRez/NABLaOV+eny1vv
+         DMlNon7ls7qU2Bt9xxJQUdiAbeWOQOQurXUTCZXRCx97ggIq0ZTxAVIfA23l1+S8qQuH
+         tfGw==
+X-Gm-Message-State: AOAM530zbMwUcImsYaP+FweFmeYQVTklcbke5FO+6dnnahyN/0nRpm9F
+        IirPLrESVAty8YlZVFSE4yj0OzGbyzO3Kam8HagZuQ==
+X-Google-Smtp-Source: ABdhPJxWT8YcQ5s4ung2OKaPoLPad/GV7TbG07i+HNSy4hgGpxV5yAOOK5PYz6GGvKpQq/NBq+zCJ+CeQG7zx8Bld/Y=
+X-Received: by 2002:a05:6512:3094:: with SMTP id z20mr8728652lfd.584.1630315194536;
+ Mon, 30 Aug 2021 02:19:54 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.30.113] (80.147.118.32) by AM3PR07CA0072.eurprd07.prod.outlook.com (2603:10a6:207:4::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.6 via Frontend Transport; Mon, 30 Aug 2021 09:18:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7a95a9ce-9309-4f74-f559-08d96b972eaa
-X-MS-TrafficTypeDiagnostic: AM0PR10MB2724:
-X-Microsoft-Antispam-PRVS: <AM0PR10MB2724975C05AA36FB81F421D5E9CB9@AM0PR10MB2724.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uF7E/ZCxRROWdwEStKDyblNoLQbqeHsnwtJdl9cL536ZrH7hDbdBBj6ugKySdGIY2DvTpWtUIdOV0Yu7kzqinwcF52oPz1XR7JLYjb/20zSRC8Np2PrtOWQm9uIEeBTzF7vTfTLOrqaADUKX9DXS65A9VqiKeCJarCOrNhHQYhJbRfbe3CakuIfcNcPbifYy+I6mDYSAhyb7DUvku/Jfoze7XVJnqw4uJm2R8v6RHIz21pzqQBJuqdFdSIcVBOKkLyvN/S6B4uNtj7Mb0TrMJuA/1PYICPSOysZLmK/x59Dd/RbEGLuQPNRoS+TwFFbkf9/LEJmjF0jx3PGGDjHVdW65X0LpRmfrTFv+FPoY0Rd+ktHZ6eNpOB01OZ9RCKhp5qnFWyKD4V/j1DAiJUf/XbDptHBa4BbgtT4BnEwsteNSMZiGPERZWmmUfT0wNNuNWrehtXt+GoaWkrhNZiG60y4aeBxwEbYNbuNnmeoacsZR1XAl5+eHT7pbNj7M9FZo8R9Pb1GGLOAsWgt6DlPE4130L7CJ86+vDXCFa1D4TademqoiW1Xsy/Y0/AIjrPOFV52B/8JvqvwgYp7e4o+ecBz6tICMlNJJrbT/vBRSYtb57bekb0c9LBegiVsgyKrDoimS9v6E+Ep/QoxTQYGlsJrwYNF5Xrdb9f7Dub+Kp7rr87K6TpX/EYUh66XsnGM+fCduPYRc0r5KNK9bCstUJxbjnY7G5Re08h3yFQj6V0g=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(136003)(39860400002)(396003)(8936002)(7416002)(110136005)(83380400001)(66476007)(31686004)(66946007)(66556008)(53546011)(956004)(5660300002)(86362001)(36756003)(478600001)(16576012)(66574015)(8676002)(2616005)(44832011)(38100700002)(31696002)(2906002)(4326008)(186003)(316002)(26005)(6486002)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cnpVc1REeExUbTZvajdkOGRpa0VWOUxVaUxHamVuV3pwNFV2TzBvYzlzcTJn?=
- =?utf-8?B?SlYrWUFET2NaN1lZM0VVSU9lSUUyMFB6TW1CZnhWdTYrVFF6cjJrcHIzTVNJ?=
- =?utf-8?B?VngyeEt4MHp6NW9HdDRXd1EvNzVMdHM1WWU5ZTZDaUF1N1JDWTgrU1BIVEUw?=
- =?utf-8?B?eExNVFNROFE4a2l0b2ErK3NCWHRwbWhENnB5RHJXM1lrRGJHNHJROEhqWDc3?=
- =?utf-8?B?ZFNVejBkRUgrRDJ5UXlnYkRINzM2Vm1uZmFDZXRJQkxONnpRNnhWYTdBOHJt?=
- =?utf-8?B?ODhBRDBIZTBQUXErRjhXT1REbGFwWDl5T3ZUOTN6eGY3dkh6SXJzb0JucjNM?=
- =?utf-8?B?YXZGcVdaT3d3SldnQ2d3dDVubk52ZXBFL3A2RXRFV3Y2RUJhd3dGREhZYzYr?=
- =?utf-8?B?dVUyUFFFTTBDMDdja2poSTl2ZFlKRkp3QlFyQ0ZzMUtzRElmdFRzdnNoOWpz?=
- =?utf-8?B?b1BKbWU0UHpZRzcySVArRVczYk9uYlRxRmJ1bFRHSDlZVjJZeDFJT0VQVXNT?=
- =?utf-8?B?T3U1MGdkRVlOZkFXalBMa1NUOW5vbkt2T3ZhL0pmanFlRUxsUlRBd0F1Ym0v?=
- =?utf-8?B?ZDgxYmYxVkV1TThjN0FOb1lRamM4MEhwUzV1U29DazNQZVNhdUF2dzFRaC83?=
- =?utf-8?B?c3BxQ1V2WElhTkg3SWprRDVuTHYwOCtnU050cFpVZG1zREROYk5iY3pRMWdR?=
- =?utf-8?B?ekFZb0hPakQ1ZFNESjd3cGQ4MDNkMWYwMVRWbklrRUpuQUxFYllNK3R0MEFr?=
- =?utf-8?B?djNpdmtxOWFXSDhLQVpnVDVER3JFZkllMkR0Wm9NSDNKOVkyYVJ2Qm9IY0cw?=
- =?utf-8?B?RDE0Tk9SekJXSHBVWDNpM3hnOVNLWUYvWjlhV3JBN1lPZ3B4dWV5TEtIN0tp?=
- =?utf-8?B?MDNwcmVQS09kUkl4Y0JVK3pFMTEzc29CcC96UTh5MHp4R0w0cjV0ekJsRDZv?=
- =?utf-8?B?RnViUU9qeGRxSHZDdFJPS0w3T0RXcnA0STRiMHhFdEs2V2ZsUnQzbmpNdkMv?=
- =?utf-8?B?eDh5aHlrYjBMaFpSOU5wMGdMeEV0Ulk0Wm5QUHlieXhPdEVrblMyVnRMWWkz?=
- =?utf-8?B?c0FNaFhsd2pyNTljREE2ZVppNFdseCtyTXRwODAzOUs4bmV5RlV5TmZ5R21r?=
- =?utf-8?B?UzRybHlxVTJLUFJ2MmFEUjRrMThlQXB2WUcxc09LQmRzWit2aUJRaHJ1WTZu?=
- =?utf-8?B?VndiRmRJcFBzNWNrL1dpNHhuSHRoQVJWYWIzNER0OXpmY3A1NjZ0amRkaHkw?=
- =?utf-8?B?WjFadGh5VGdBSFJBdmFTYzZyWVUvTjdOaThQUFVaRmNXME9PVGxuQ0JhVkdI?=
- =?utf-8?B?cXJVYXYwa2owQjhMU0N6M0I3dWoyNW44am5qeUV1aWFjeDRzdGx0NHY3UFpR?=
- =?utf-8?B?ZDdUdkZjQVowb2p6Qy8zS2ZNaTdJL09SRU9ObXBRU2FiUjlWQ1NLd3lWS2x2?=
- =?utf-8?B?dTRxUUF4aVNGbkVXWWlmWkx5RllPQVJteFFoMXZXYWNGV05jRncwYWlHYTdC?=
- =?utf-8?B?a2JFZnhZRmlZbktnMWljVlZpVTlENDJCVGoxc1BGc0l0YXd3UEZMcjBMckd6?=
- =?utf-8?B?Zlh4cXRLSTlLamZwcFh0OHpLeTZ3RUllcktoekh4K2o5WnBLYmhqbkdudmlK?=
- =?utf-8?B?eXVKMEVjNjQxcWJ1UzJMRndzYWE4K3JnL2lQYUVTMHY3TVJ2VlFpaiszdThW?=
- =?utf-8?B?ZE93aCtjZTZrLzRjTjJYam9mVmNIbk5MSVhzNlNOV3NUekVXL2Y2Y3llaHNN?=
- =?utf-8?Q?EgQM39NbuxtlVRmCCuOEqv5Ogv8DVx49BR3JkRh?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a95a9ce-9309-4f74-f559-08d96b972eaa
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2021 09:18:51.7854
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PfoA9cTpXZM/fw0022MbSCziLE+NJZ3psgY6djxRxKqRtiOS4KGQ3Uf3xWQX+MKNOePzr6nPM6mem9R9HqY7bUzBrIfSiiAMiWKVq7D+4q8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB2724
+References: <20210827013415.24027-1-digetx@gmail.com> <20210827013415.24027-5-digetx@gmail.com>
+ <CAPDyKFqYWxY9znP1BEzogu0k7J1KRMXoSkUOeN4xHRq=gCHvTw@mail.gmail.com> <de5b2730-3032-f279-671a-b26c256b28f8@gmail.com>
+In-Reply-To: <de5b2730-3032-f279-671a-b26c256b28f8@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 30 Aug 2021 11:19:18 +0200
+Message-ID: <CAPDyKFo=SFpm+uJYH4UDfKWLVnkP2cKkBcbOQeVhU5hRxHUMCw@mail.gmail.com>
+Subject: Re: [PATCH v9 4/8] PM: domains: Add get_performance_state() callback
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.08.21 10:41, Miquel Raynal wrote:
-> Hi Frieder,
-> 
-> Frieder Schrempf <frieder@fris.de> wrote on Mon, 30 Aug 2021 09:21:07
-> +0200:
-> 
->> From: Frieder Schrempf <frieder.schrempf@kontron.de>
->>
->> The new generic NAND ECC framework stores the configuration and requirements
->> in separate places since commit 93ef92f6f422 (" mtd: nand: Use the new generic ECC object ").
->> In 5.10.x The SPI NAND layer still uses only the requirements to track the ECC
->> properties. This mismatch leads to values of zero being used for ECC strength
->> and step_size in the SPI NAND layer wherever nanddev_get_ecc_conf() is used and
->> therefore breaks the SPI NAND on-die ECC support in 5.10.x.
->>
->> By using nanddev_get_ecc_requirements() instead of nanddev_get_ecc_conf() for
->> SPI NAND, we make sure that the correct parameters for the detected chip are
->> used. In later versions (5.11.x) this is fixed anyway with the implementation
->> of the SPI NAND on-die ECC engine.
->>
->> Cc: stable@vger.kernel.org # 5.10.x
->> Reported-by: voice INTER connect GmbH <developer@voiceinterconnect.de>
->> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-> 
-> Why not just reverting 9a333a72c1d0 ("mtd: spinand: Use
-> nanddev_get_ecc_conf() when relevant")? I think using this "new"
-> nanddev_get_ecc_requirements() helper because it fits the purpose even
-> if it is wrong [1] doesn't bring the right information. I know it is
-> strictly equivalent but I would personally prefer keeping the old
-> writing "nand->eccreq.xxxx".
++ Dmitry Baryshkov, Bjorn Andersson
 
-I think reverting 9a333a72c1d0 to use nand->eccreq.xxxx doesn't work as the eccreq member has already been removed in 93ef92f6f422 ("mtd: nand: Use the new generic ECC object"). So we would need to revert this commit, too. That would work for the SPI NAND layer, but might have implications on RAW NAND as it already uses the new generic ECC object with 'ctx.conf' and 'requirements'. At least I can't tell how this would affect the RAW NAND layer.
+On Fri, 27 Aug 2021 at 17:50, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 27.08.2021 17:23, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Fri, 27 Aug 2021 at 03:37, Dmitry Osipenko <digetx@gmail.com> wrote:
+> >>
+> >> Add get_performance_state() callback that retrieves and initializes
+> >> performance state of a device attached to a power domain. This removes
+> >> inconsistency of the performance state with hardware state.
+> >
+> > Can you please try to elaborate a bit more on the use case. Users need
+> > to know when it makes sense to implement the callback - and so far we
+> > tend to document this through detailed commit messages.
+> >
+> > Moreover, please state that implementing the callback is optional.
+>
+> Noted
+>
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> >>  drivers/base/power/domain.c | 32 +++++++++++++++++++++++++++++---
+> >>  include/linux/pm_domain.h   |  2 ++
+> >>  2 files changed, 31 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> >> index 3a13a942d012..8b828dcdf7f8 100644
+> >> --- a/drivers/base/power/domain.c
+> >> +++ b/drivers/base/power/domain.c
+> >> @@ -2700,15 +2700,41 @@ static int __genpd_dev_pm_attach(struct device=
+ *dev, struct device *base_dev,
+> >>                 goto err;
+> >>         } else if (pstate > 0) {
+> >>                 ret =3D dev_pm_genpd_set_performance_state(dev, pstate=
+);
+> >> -               if (ret)
+> >> +               if (ret) {
+> >> +                       dev_err(dev, "failed to set required performan=
+ce state for power-domain %s: %d\n",
+> >> +                               pd->name, ret);
+> >
+> > Moving the dev_err() here, leads to that we won't print an error if
+> > of_get_required_opp_performance_state() fails, a few lines above, is
+> > that intentional?
+>
+> Not intentional, I'll add another message.
+>
+> >>                         goto err;
+> >> +               }
+> >>                 dev_gpd_data(dev)->default_pstate =3D pstate;
+> >>         }
+> >> +
+> >> +       if (pd->get_performance_state && !dev_gpd_data(dev)->default_p=
+state) {
+> >> +               bool dev_suspended =3D false;
+> >> +
+> >> +               ret =3D pd->get_performance_state(pd, base_dev, &dev_s=
+uspended);
+> >> +               if (ret < 0) {
+> >> +                       dev_err(dev, "failed to get performance state =
+for power-domain %s: %d\n",
+> >> +                               pd->name, ret);
+> >> +                       goto err;
+> >> +               }
+> >> +
+> >> +               pstate =3D ret;
+> >> +
+> >> +               if (dev_suspended) {
+> >
+> > The dev_suspended thing looks weird.
+> >
+> > Perhaps it was needed before dev_pm_genpd_set_performance_state()
+> > didn't check pm_runtime_disabled()?
+>
+> There are two possible variants here:
+>
+> 1. Device is suspended
+> 2. Device is active
+>
+> If device is suspended, then it will be activated on RPM-resume and h/w
+> state will require a specific performance state when resumed. Hence only
+> the the rpm_pstate should be set, otherwise SoC may start to consume
+> extra power if device won't be resumed by a consumer driver and
+> performance state is bumped without a real need.
+>
+> If device is known to be active, then the performance state should be
+> updated immediately, otherwise we have inconsistent state with hardware.
+>
+> For Tegra dev_suspended=3Dtrue because in general it should be safe to
+> assume that hardware is suspended since it's either stopped by the PD
+> driver on initial power_on or it's assumed to be disabled by a consumer
+> driver during probe. Technically it's possible to check clock and reset
+> state of an attached device from the get_performance_state() to find the
+> real state of device, but it's not necessary to do so far.
 
-> 
-> [1] We don't want the requirements but the actual current configuration
-> here, which was the primary purpose of the initial patch which ended
-> being a mistake at that point in time because the SPI-NAND core was not
-> ready yet.
-> 
-> Thanks,
-> Miquèl
+I follow your reasoning above, but I fail to understand your point, sorry.
+
+Your recent patch ("PM: domains: Improve runtime PM performance state
+handling"), made dev_pm_genpd_set_performance_state() to call
+pm_runtime_suspended(), to check whether it should assign
+dev_gpd_data(dev)->rpm_pstate, which postpones the vote until the
+device gets runtime resumed - or call genpd_set_performance_state() to
+immediately vote for a new performance state.
+
+That updated behaviour of dev_pm_genpd_set_performance_state should be
+sufficient, I think.
+
+In other words, please drop the "dev_suspended" parameter from the
+->get_performance_state() callback, as it doesn't make sense to me.
+
+>
+> I'll add comment to the code.
+>
+> >> +                       dev_gpd_data(dev)->rpm_pstate =3D pstate;
+> >> +               } else if (pstate > 0) {
+> >> +                       ret =3D dev_pm_genpd_set_performance_state(dev=
+, pstate);
+> >> +                       if (ret) {
+> >> +                               dev_err(dev, "failed to set required p=
+erformance state for power-domain %s: %d\n",
+> >> +                                       pd->name, ret);
+> >> +                               goto err;
+> >> +                       }
+> >> +               }
+> >> +       }
+> >
+> > Overall, what we seem to be doing here, is to retrieve a value for an
+> > initial/default performance state for a device and then we want to set
+> > it to make sure the vote becomes aggregated and finally set for the
+> > genpd.
+> >
+> > With your suggested change, there are now two ways to get the
+> > initial/default state. One is through the existing
+> > of_get_required_opp_performance_state() and the other is by using a
+> > new genpd callback.
+> >
+> > That said, perhaps we would get a bit cleaner code by moving the "get
+> > initial/default performance state" thingy, into a separate function
+> > and then call it from here. If this function returns a valid
+> > performance state, then we should continue to set the state, by
+> > calling dev_pm_genpd_set_performance_state() and update
+> > dev_gpd_data(dev)->default_pstate accordingly.
+> >
+> > Would that work, do you think?
+>
+> To be honest, I'm now confused by
+> of_get_required_opp_performance_state(). It assumes that device is
+> active all the time while attached and that device is stopped on detach.
+>
+> If hardware is always-on, then it should be wrong to drop the
+> performance state on detach.
+>
+> If hardware isn't always-on, then it might be suspended during
+> attachment, and thus, only the rpm_pstate should be set. It's also not
+> guaranteed that consumer driver will suspend device on unbind, leaving
+> it active on detach, thus it should be wrong to drop performance state
+> on detach.
+
+I assume the new behaviour in dev_pm_genpd_set_performance_state()
+should address most of your concerns above, no?
+
+When it comes to the detaching, the best we can do is to drop the
+performance state vote for the device, no matter if it's an always on
+HW or not. Simply because after a detach, genpd loses track of the
+device, which means it can't account for performance states votes for
+it anyway.
+
+>
+> Hence I think the default_pstate is a bit out of touch. If this
+> attach/detach behaviour is specific to QCOM driver/hardware, then maybe
+> of_get_required_opp_performance_state() should be moved out to a
+> get_performance_state() of the QCOM PD driver?
+
+That may work, but I hope it's unnecessary.
+
+Overall, the important part is the updated path in
+dev_pm_genpd_set_performance_state() where we now call
+pm_runtime_suspended(). I am pretty sure this should work fine for
+Qcom platforms/drivers too, but let's see if Rajendra, Dmitry or Bjorn
+have some concerns about this.
+
+>
+> I added Rajendra Nayak to explain.
+>
+> For now we're bailing out if default_pstate is set because it conflicts
+> with get_performance_state().
+>
+> But we can factor out the code into a separate function anyways to make
+> it cleaner a tad.
+
+Yes, please.
+
+[...]
+
+Kind regards
+Uffe
