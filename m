@@ -2,161 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FC73FB390
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619ED3FB399
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236297AbhH3KFn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Aug 2021 06:05:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229901AbhH3KFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:05:40 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CC0A610A2;
-        Mon, 30 Aug 2021 10:04:44 +0000 (UTC)
-Date:   Mon, 30 Aug 2021 11:07:56 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
- samples
-Message-ID: <20210830110756.733d5201@jic23-huawei>
-In-Reply-To: <SJ0PR03MB6359415E120CFD3EFAF417F599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
-References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
-        <20210818111139.330636-4-miquel.raynal@bootlin.com>
-        <SJ0PR03MB6359415E120CFD3EFAF417F599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S236276AbhH3KIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 06:08:53 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:40096 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236068AbhH3KIw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 06:08:52 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R631e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UmapD6V_1630318076;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UmapD6V_1630318076)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 30 Aug 2021 18:07:57 +0800
+To:     Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:HWPOISON MEMORY FAILURE HANDLING" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Subject: [PATCH] mm: fix panic caused by __page_handle_poison()
+Message-ID: <58b6b733-b021-7eb8-4226-1b98d50c8c82@linux.alibaba.com>
+Date:   Mon, 30 Aug 2021 18:07:56 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 07:10:48 +0000
-"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+By commit 510d25c92ec4 ("mm/hwpoison: disable pcp for
+page_handle_poison()"), __page_handle_poison() was
+introduced, and if we mark:
 
-> > -----Original Message-----
-> > From: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Sent: Wednesday, August 18, 2021 1:11 PM
-> > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
-> > <lars@metafoo.de>
-> > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>; linux-
-> > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel Raynal
-> > <miquel.raynal@bootlin.com>
-> > Subject: [PATCH 03/16] iio: adc: max1027: Push only the requested
-> > samples
-> > 
-> > [External]
-> > 
-> > When a triggered scan occurs, the identity of the desired channels is
-> > known in indio_dev->active_scan_mask. Instead of reading and
-> > pushing to
-> > the IIO buffers all channels each time, scan the minimum amount of
-> > channels (0 to maximum requested chan, to be exact) and only
-> > provide the
-> > samples requested by the user.
-> > 
-> > For example, if the user wants channels 1, 4 and 5, all channels from
-> > 0 to 5 will be scanned but only the desired channels will be pushed to
-> > the IIO buffers.
-> > 
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> >  drivers/iio/adc/max1027.c | 25 +++++++++++++++++++++----
-> >  1 file changed, 21 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
-> > index b753658bb41e..8ab660f596b5 100644
-> > --- a/drivers/iio/adc/max1027.c
-> > +++ b/drivers/iio/adc/max1027.c
-> > @@ -360,6 +360,9 @@ static int max1027_set_trigger_state(struct
-> > iio_trigger *trig, bool state)
-> >  	struct max1027_state *st = iio_priv(indio_dev);
-> >  	int ret;
-> > 
-> > +	if (bitmap_empty(indio_dev->active_scan_mask, indio_dev-  
-> > >masklength))  
-> > +		return -EINVAL;
-> > +  
-> 
-> I'm not sure this can actually happen. If you try to enable the buffer
-> with no scan element, it should give you an error before you reach
-> this point...
-> 
-> >  	if (state) {
-> >  		/* Start acquisition on cnvst */
-> >  		st->reg = MAX1027_SETUP_REG |
-> > MAX1027_CKS_MODE0 |
-> > @@ -368,9 +371,12 @@ static int max1027_set_trigger_state(struct
-> > iio_trigger *trig, bool state)
-> >  		if (ret < 0)
-> >  			return ret;
-> > 
-> > -		/* Scan from 0 to max */
-> > -		st->reg = MAX1027_CONV_REG | MAX1027_CHAN(0) |
-> > -			  MAX1027_SCAN_N_M | MAX1027_TEMP;
-> > +		/*
-> > +		 * Scan from 0 to the highest requested channel. The
-> > temperature
-> > +		 * could be avoided but it simplifies a bit the logic.
-> > +		 */
-> > +		st->reg = MAX1027_CONV_REG |
-> > MAX1027_SCAN_0_N | MAX1027_TEMP;
-> > +		st->reg |= MAX1027_CHAN(fls(*indio_dev-  
-> > >active_scan_mask) - 2);  
-> >  		ret = spi_write(st->spi, &st->reg, 1);
-> >  		if (ret < 0)
-> >  			return ret;
-> > @@ -391,11 +397,22 @@ static irqreturn_t
-> > max1027_trigger_handler(int irq, void *private)
-> >  	struct iio_poll_func *pf = private;
-> >  	struct iio_dev *indio_dev = pf->indio_dev;
-> >  	struct max1027_state *st = iio_priv(indio_dev);
-> > +	unsigned int scanned_chans = fls(*indio_dev-  
-> > >active_scan_mask);  
-> > +	u16 *buf = st->buffer;  
-> 
-> I think sparse will complain here. buffer is a __be16 restricted
-> type so you should not mix those... 
-> > +	unsigned int bit;
-> > 
-> >  	pr_debug("%s(irq=%d, private=0x%p)\n", __func__, irq,
-> > private);in/20210818_miquel_raynal_bring_software_triggers_support_to_max1027_like_adcs.mbx
-> > 
-> >  	/* fill buffer with all channel */
-> > -	spi_read(st->spi, st->buffer, indio_dev->masklength * 2);
-> > +	spi_read(st->spi, st->buffer, scanned_chans * 2);
-> > +
-> > +	/* Only keep the channels selected by the user */
-> > +	for_each_set_bit(bit, indio_dev->active_scan_mask,
-> > +			 indio_dev->masklength) {
-> > +		if (buf[0] != st->buffer[bit])
-> > +			buf[0] = st->buffer[bit];  
-> 
-> Since we are here, when looking into the driver, I realized
-> that st->buffer is not DMA safe. In IIO, we kind of want to enforce
-> that all buffers that are passed to spi/i2c buses are safe... Maybe
-> this is something you can include in your series.
+RET_A = dissolve_free_huge_page();
+RET_B = take_page_off_buddy();
 
-Why is it not?  st->buffer is result of a devm_kmalloc_array() call and
-that should provide a DMA safe buffer as I understand it.
+then __page_handle_poison was supposed to return TRUE When
+RET_A == 0 && RET_B == TRUE
 
-> 
-> - Nuno Sá
-> 
->  > +		buf++;
-> > +	}
-> > 
-> >  	iio_push_to_buffers(indio_dev, st->buffer);
-> > 
-> > --
-> > 2.27.0  
-> 
+But since it failed to take care the case when RET_A is
+-EBUSY or -ENOMEM, and just return the ret as a bool which
+actually become TRUE, it break the original logical.
+
+The following result is a huge page in freelist but was
+referenced as poisoned, and lead into the final panic:
+
+  kernel BUG at mm/internal.h:95!
+  invalid opcode: 0000 [#1] SMP PTI
+  skip...
+  RIP: 0010:set_page_refcounted mm/internal.h:95 [inline]
+  RIP: 0010:remove_hugetlb_page+0x23c/0x240 mm/hugetlb.c:1371
+  skip...
+  Call Trace:
+   remove_pool_huge_page+0xe4/0x110 mm/hugetlb.c:1892
+   return_unused_surplus_pages+0x8d/0x150 mm/hugetlb.c:2272
+   hugetlb_acct_memory.part.91+0x524/0x690 mm/hugetlb.c:4017
+
+This patch replace 'bool' with 'int' to handle RET_A correctly.
+
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+---
+ mm/memory-failure.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 470400c..0fff717 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -68,7 +68,7 @@
+
+ static bool __page_handle_poison(struct page *page)
+ {
+-	bool ret;
++	int ret;
+
+ 	zone_pcp_disable(page_zone(page));
+ 	ret = dissolve_free_huge_page(page);
+@@ -76,7 +76,7 @@ static bool __page_handle_poison(struct page *page)
+ 		ret = take_page_off_buddy(page);
+ 	zone_pcp_enable(page_zone(page));
+
+-	return ret;
++	return ret > 0;
+ }
+
+ static bool page_handle_poison(struct page *page, bool hugepage_or_freepage, bool release)
+-- 
+1.8.3.1
 
