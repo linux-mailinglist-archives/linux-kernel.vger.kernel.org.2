@@ -2,74 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8AA3FBDD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084133FBDE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236176AbhH3VCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 17:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhH3VCW (ORCPT
+        id S236702AbhH3VHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:07:50 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:44674 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236258AbhH3VHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:02:22 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18734C061575;
-        Mon, 30 Aug 2021 14:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YLeyIh36W9KZ0EdnGoneLXaI1P2Sf43R5mGsowkdW0g=; b=rHUGs8PC9SNCLr8+68pmjJ6j+O
-        LtaWTZh9Q5B1+nQ2hrTGPF1fcfbSR3Bc4MaZvFu5VphNn3uzQki+n35xkL0bVrh1LapvtJXCTf9x2
-        aX8wRYUgYbB46/sh+IyauBD/d0v+EUJxIYc5tPiQ59XAdDbtIw4Bl5TuloVoTzanjLZH6B4zEyu9Z
-        cJfxaSEUPDqzy73KINJtfXG3JQEC+OVcdV8NY+mlstsLgVUnda0SZf0UpWRWmmrSNYHh6ccI4qX6Q
-        jujgcYNbGhmMrYwBPve3x8mENOXlAOUdzlGIdtNTAxg2GKSXah81G/vdsWSHpKSkvVupm5BhcGwQl
-        0RhmffIA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKoOo-000ZII-6j; Mon, 30 Aug 2021 21:00:58 +0000
-Date:   Mon, 30 Aug 2021 14:00:58 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
-        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
-        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
-        josef@toxicpanda.com, hare@suse.de, bvanassche@acm.org,
-        ming.lei@redhat.com, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
-        dm-devel@redhat.com, nbd@other.debian.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/10] dm: add add_disk() error handling
-Message-ID: <YS1HCgP/XdWmMtFN@bombadil.infradead.org>
-References: <20210823202930.137278-1-mcgrof@kernel.org>
- <20210823202930.137278-9-mcgrof@kernel.org>
- <YSSP6ujNQttGN2sZ@infradead.org>
- <YSk1EhUIr9OjIoVv@bombadil.infradead.org>
- <YSnnXdKLvxEY8yay@infradead.org>
+        Mon, 30 Aug 2021 17:07:49 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKoQB-00HOd6-C5; Mon, 30 Aug 2021 21:02:23 +0000
+Date:   Mon, 30 Aug 2021 21:02:23 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
+ restore_fpregs_from_user()
+Message-ID: <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
+References: <20210830154702.247681585@linutronix.de>
+ <20210830162545.374070793@linutronix.de>
+ <YS0ylo9nTHD9NiAp@zn.tnic>
+ <87zgsyg0eg.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YSnnXdKLvxEY8yay@infradead.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <87zgsyg0eg.ffs@tglx>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 08:35:57AM +0100, Christoph Hellwig wrote:
-> On Fri, Aug 27, 2021 at 11:55:14AM -0700, Luis Chamberlain wrote:
-> > > I think the add_disk should just return r.  If you look at the
-> > > callers they eventualy end up in dm_table_destroy, which does
-> > > this cleanup.
-> > 
-> > I don't see it. What part of dm_table_destroy() does this?
-> 
-> Sorry, dm_destroy, not dm_table_destroy.  For dm_early_create it's
-> trivial as that calls both dm_table_destroy and dm_destroy in the error
-> path.  The normal table_load case is a separate ioctl, but if that
-> fails userspace needs to call the DM_DEV_REMOVE_CMD to cleanup
-> the state - similar to any other failure.
+On Mon, Aug 30, 2021 at 10:09:27PM +0200, Thomas Gleixner wrote:
 
-I see, ok sure I'll document this on the commit log as its not so
-obvious.
+> +++ b/arch/x86/include/asm/fpu/internal.h
+> @@ -88,7 +88,11 @@ static inline void fpstate_init_soft(str
+>  #endif
+>  extern void save_fpregs_to_fpstate(struct fpu *fpu);
+>  
+> -/* Returns 0 or the negated trap number, which results in -EFAULT for #PF */
+> +/*
+> + * Returns 0 on success or the negated trap number when the operation
+> + * raises an exception (The exception fixup function ex_handler_fault()
+> + * stores the trap number in EAX).
+> + */
+>  #define user_insn(insn, output, input...)				\
+>  ({									\
+>  	int err;							\
+> @@ -199,7 +203,8 @@ static inline void fxsave(struct fxregs_
+>  
+>  /*
+>   * After this @err contains 0 on success or the negated trap number when
+> - * the operation raises an exception. For faults this results in -EFAULT.
+> + * the operation raises an exception (The exception fixup function
+> + * ex_handler_fault() stores the trap number in EAX).
+>   */
+>  #define XSTATE_OP(op, st, lmask, hmask, err)				\
+>  	asm volatile("1:" op "\n\t"					\
 
-  Luis
+Incidentally, why do we bother with negation in those?  Why not have
+user_insn(), XSTATE_OP() and kernel_insn_err() return 0 or trap number...
