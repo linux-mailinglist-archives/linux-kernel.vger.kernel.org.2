@@ -2,63 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64F93FB017
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 05:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3173FB018
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 05:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhH3DvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 23:51:09 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:47079 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbhH3DvE (ORCPT
+        id S229876AbhH3D5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 23:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhH3D5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 23:51:04 -0400
-Received: by mail-io1-f70.google.com with SMTP id s6-20020a5ec646000000b005b7f88ffdd3so7805928ioo.13
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 20:50:11 -0700 (PDT)
+        Sun, 29 Aug 2021 23:57:34 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9418C061575;
+        Sun, 29 Aug 2021 20:56:41 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id u6so10501066pfi.0;
+        Sun, 29 Aug 2021 20:56:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=HjNZBedsFuw0ZBtpjYkbCXssQyv/l8LUL4tzZE4plgI=;
+        b=WPpNjWJF3y1ylaD51PRZQslkWjArPxnR1/UkWWF4HGyTEJLeXd3TV2sVEym+d//J4K
+         A9Qaq7OYohA3fykEG79ZQk/z2vDjK20UrYUCzA7luG+85cjzXttmBD6oTSVo7YRXoL9k
+         bfqrlM983ARFP0m1o98v8u7CBpT59pHEfk5gmHeLiu/MgeMWKsjC5Y8KdRWdSOq5kywN
+         WXA1SJ4iqMMamIMvnr2qeHfmEVI2yRsGOZVSynfGHRziXeZCtc7z8Os/3Aq/Lc/aceI+
+         Ovk1Cybxpuxdgqe7O5qlJuxMbOl0RofnumsuscX+4EzMlLQ8sotTA+hER63A7TfqmKhx
+         Y55g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=aPj2TWnuDlBBweogJjWY/JGFaEJrBHfPmSKpxgNvZiU=;
-        b=YhmnRqF2dzyCGiz4x8hAY+J4i54MFzEITDq03rbJv2q/8DAARUPJ9NAFWDGYf7LMG6
-         +Bfus+144KDbrvC6OTf35IKhv6eVF6u2DEzcmcdYZ8OZRqNy5sCGqO2M7QifqF3NuHqQ
-         zNAjuPJllHm/6FoYO1o/uPvlAIbvjxQrSp5ZVwjv+6hmJGaDJ5a7ArQXMAnT6lFYy/QB
-         PS4dp5Hwtc/zyuLwWq+AH0FYmjuuQ3oXJ7Z4a4khItvlwZW6RpLdMo5KNIw622U4RwrD
-         2+1+w4b6vCHmuUWh1FNRxYo39vWDGo/q1FupQvkZp9DZ1q/EBTlWNhR1wPxkqDWwZ7xu
-         Mibg==
-X-Gm-Message-State: AOAM532ZKmNkj5gtNOPGkGAVeWU6yzD0IDB6PySmaeH2WikQjOWRLlv4
-        MbyfGWIEmjKWnoASusApvnHRB7o5Aam3j1dKTh/XkqPO3ZoG
-X-Google-Smtp-Source: ABdhPJy+Gj4J94WdetktCJfOEdZLLQt7q/2b2MyG4vRH7zjuGJWFiubLKIITRmf5mdwjudyvT2VLSHlhjDXPPZ6V+hAs6E7qGM0+
+        h=x-gm-message-state:from:to:subject:cc:message-id:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=HjNZBedsFuw0ZBtpjYkbCXssQyv/l8LUL4tzZE4plgI=;
+        b=TeqLlhFRzxTHqSIK4TL4iDFLAyTeEPlePXdL2rdNX0Pwsn6fdf31IBVvLNkUdr194y
+         VQJz2+TG8SLGrpqCu2Aj6SMh8W+cjDv2f86sjh7Xl/YcA8Mi9Wz1FdBhWgVFhYfm+yy1
+         4kQxMWrpRO8mTz7Hw0+U+0jxT0o2GKOIJdFkyjDV/0KtRlJzDwB+s5Iu2FF9U3gQbIU1
+         tu8dcdgrC01E2O+8A69tihuZWy4RX1lIhbQRHInp+ajxoMHNvFfa2plMDyTMu3zZu6Qn
+         rXFSuXwMoP5Ara9DIN0lYWOrPqTkjW5bUmxJJW253GtzqPTKyGtzzSFtqN5tgvXiD26Y
+         SxQA==
+X-Gm-Message-State: AOAM5329PfoPoQxu8lTcl1kOjWrJBsTgmDV5FtQZo1VSIintN8SpSj9r
+        RroY2J1F8+jpJv1MneYhqgRIDHVehDs=
+X-Google-Smtp-Source: ABdhPJx+ICg/wDcPdZwcJYPqUHuw95JkOO+wR4etB0VRCSJ2UsDiE4PxE+7IXanOA/Wk/M/VFnH0HA==
+X-Received: by 2002:a65:62c4:: with SMTP id m4mr20121584pgv.453.1630295801294;
+        Sun, 29 Aug 2021 20:56:41 -0700 (PDT)
+Received: from [192.168.1.111] ([211.72.215.15])
+        by smtp.gmail.com with ESMTPSA id w11sm5810872pfj.65.2021.08.29.20.56.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Aug 2021 20:56:40 -0700 (PDT)
+From:   Yu-Tung Chang <mtwget@gmail.com>
+To:     mtwget@gmail.com, a.zummo@towertech.it,
+        alexandre.belloni@bootlin.com
+Subject: [PATCH] rtc: rx8010: select REGMAP_I2C
+Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
+Message-ID: <f58c6a58-86a6-1b37-7cec-6a9d801189ed@gmail.com>
+Date:   Mon, 30 Aug 2021 11:56:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:5c0c:: with SMTP id z12mr10646897ioh.171.1630295411206;
- Sun, 29 Aug 2021 20:50:11 -0700 (PDT)
-Date:   Sun, 29 Aug 2021 20:50:11 -0700
-In-Reply-To: <9b1afb1f-45d5-8664-eeb6-e8373d95cad3@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dd337505cabebaab@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Write in sco_sock_timeout
-From:   syzbot <syzbot+2bef95d3ab4daa10155b@syzkaller.appspotmail.com>
-To:     desmondcheongzx@gmail.com, hdanton@sina.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.von.dentz@intel.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From 45801967ad80578161485937a0833b27b90210f9 Mon Sep 17 00:00:00 2001
+From: Yu-Tung Chang <mtwget@gmail.com>
+Date: Mon, 30 Aug 2021 10:59:17 +0800
+Subject: [PATCH] rtc: rx8010: select REGMAP_I2C
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+The rtc-rx8010 uses the I2C regmap but doesn't select it in Kconfig so
+depending on the configuration the build may fail. Fix it.
 
-Reported-and-tested-by: syzbot+2bef95d3ab4daa10155b@syzkaller.appspotmail.com
+Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
+---
+ drivers/rtc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Tested on:
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index 12153d5801ce..f7bf87097a9f 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -624,6 +624,7 @@ config RTC_DRV_FM3130
 
-commit:         e3f30ab2 Merge branch 'pktgen-samples-next'
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ef482942966bf763
-dashboard link: https://syzkaller.appspot.com/bug?extid=2bef95d3ab4daa10155b
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=12580a25300000
-
-Note: testing is done by a robot and is best-effort only.
+ config RTC_DRV_RX8010
+        tristate "Epson RX8010SJ"
++       select REGMAP_I2C
+        help
+          If you say yes here you get support for the Epson RX8010SJ RTC
+          chip.
+--
+2.33.0
