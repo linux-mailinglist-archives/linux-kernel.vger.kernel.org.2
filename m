@@ -2,120 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F753FBA12
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FF93FBA0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237755AbhH3Q0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:26:31 -0400
-Received: from mengyan1223.wang ([89.208.246.23]:36108 "EHLO mengyan1223.wang"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237734AbhH3Q03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:26:29 -0400
-Received: from [IPv6:240e:35a:10e9:a200:dc73:854d:832e:2] (unknown [IPv6:240e:35a:10e9:a200:dc73:854d:832e:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@mengyan1223.wang)
-        by mengyan1223.wang (Postfix) with ESMTPSA id D7E0C65B15;
-        Mon, 30 Aug 2021 12:25:27 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
-        s=mail; t=1630340735;
-        bh=V9KPj1l200pe8lvrcwheafYz+NbTIXwaozb+aPY+BSE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Fqrh/qF+X3n/+zQXnNn+7tjXVNEFnrUVO1Qflwd0i5G2GH4A2jkbApWcQhTi+VyG5
-         qO4I5sItnmPNSC1PKnv1t57DqNF071cp1MWSVeHlfne6Q97uIcgDnHcGLkb6Zl/q50
-         XO3Z+GxVdMZrjCvcHoIEaaO3YglzsegxQ6EeXAoo0yyxVMAkyhxNG8WynqxnbokiHh
-         5f4qkXuDvSppBg1rK0OXBblglXkUO65JvJ+AuGEHZQH5Xc1iqwnpqXgclzFPfi4fqo
-         jVJiigqJbpjm2hBX4XKFSOPl/NCmrrghSVxBAj4pPAkq2u/hag1b8PBfvlKdjOA3sM
-         eZtBEnUkSGxEg==
-Message-ID: <40948c12746cbef5d5c2262d69a157f9b609845b.camel@mengyan1223.wang>
-Subject: Re: [PATCH] mips: remove reference to "newer Loongson-3"
-From:   Xi Ruoyao <xry111@mengyan1223.wang>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
-Date:   Tue, 31 Aug 2021 00:25:17 +0800
-In-Reply-To: <1d49da11-51d5-e148-cb02-9bd0ee57fae6@flygoat.com>
-References: <0b7c9431efb12c2d957fcc53ec8f0743725d61b3.camel@mengyan1223.wang>
-         <b32c0d64-77b2-d054-afcf-7d006eba3418@flygoat.com>
-         <086f60d6ef4395db5da7ee22c4f352d5c901d396.camel@mengyan1223.wang>
-         <1d49da11-51d5-e148-cb02-9bd0ee57fae6@flygoat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        id S237714AbhH3Q01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231181AbhH3Q00 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 12:26:26 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610EAC061575;
+        Mon, 30 Aug 2021 09:25:32 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id j13so17164791edv.13;
+        Mon, 30 Aug 2021 09:25:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nM2mQX3CjHoVvQzXA9QRVqQGDAbVu2Bb047tmbqXsXo=;
+        b=bA1E1KgWEDH/JcQBubmzNzyWUytl4cFe1kH1PHzTekCt2/yQWDd9CgouzSCv4R5Vi4
+         EAAT69bmH3esYn8vAL2aDmmP0bTIOyhneMcIKUrz/BGD9oiHxicw70vvihG98A9qa/qc
+         keNzwt5MF1V7X099AZ2XqHRnAKPBeXfaXlZaBMQCydYPuTQVE6Lqqanx0X9VRfP+suuQ
+         uMjyKJ0lRrurDG5/5T1+XuL9kAQal6psuSclzLdI540j58xR/20m8n0N8uEMb3mYL8dn
+         H7PyCSmpnrntHaDQgdvamIsORLZVaJXj4guatB/MWW+Qcj4uLzMMs8fFK/zsKrcHxkEj
+         fGuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nM2mQX3CjHoVvQzXA9QRVqQGDAbVu2Bb047tmbqXsXo=;
+        b=h45xocemoznMeBhN3chUIVd6XVb0HB3A/kO22Owt6+JYnN0IYxj/FBlxp3oXhbifA7
+         wypu6roiMX1d9LL3RwfOgmWVjt77cHRwXMdDG2Q8f9IgxtR4NjzIJxbsrSm3ZO6F4M4y
+         0jjAKsSQLggWE0K7/UTxAU5JMeNTGv19TXp2UBuUOlg8gPv7IRTr4HbEltR//kgDsjkf
+         rcL+3+pmcHt1db9CFCST9breypTEe4e5AAczHrJ4zFHR+BZA+racch8kt7LdB7nb+gbH
+         eO/Tja+V7Z+aujG8spAvfFHqCgYUBnokaKwPASSB+7MMxka9eCDTlMqHDBAxELhpQy8f
+         8bjQ==
+X-Gm-Message-State: AOAM530Eh2l05HR5NQitdbbWlmEYBy8xCNMGfXrk0TgfCPf/hBeZKRr1
+        RKIEstVjuWsj6poe6dq4e0GTgwPUDVTcw4jD//Q=
+X-Google-Smtp-Source: ABdhPJxFVwH5a9vwpgHr69uleyHJFXry4tEBhgWEqP3jLJ2yNeNcN8OYKvlGgPaWD3RXyoBlU+G/vqMKDepmDLjCHqM=
+X-Received: by 2002:a05:6402:2050:: with SMTP id bc16mr5209767edb.92.1630340730956;
+ Mon, 30 Aug 2021 09:25:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAOuPNLhqSpaTm3u4kFsnuZ0PLDKuX8wsxuF=vUJ1TEG0EP+L1g@mail.gmail.com>
+ <alpine.LRH.2.02.2107200737510.19984@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAOuPNLhh_LkLQ8mSA4eoUDLCLzHo5zHXsiQZXUB_-T_F1_v6-g@mail.gmail.com>
+ <alpine.LRH.2.02.2107211300520.10897@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAOuPNLi-xz_4P+v45CHLx00ztbSwU3_maf4tuuyso5RHyeOytg@mail.gmail.com>
+In-Reply-To: <CAOuPNLi-xz_4P+v45CHLx00ztbSwU3_maf4tuuyso5RHyeOytg@mail.gmail.com>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Mon, 30 Aug 2021 21:55:19 +0530
+Message-ID: <CAOuPNLg0m-Q7Vhp4srbQrjXHsxVhOr-K2dvnNqzdR6Dr4kioqA@mail.gmail.com>
+Subject: Re: Kernel 4.14: Using dm-verity with squashfs rootfs - mounting issue
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>, dm-devel@redhat.com,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>, agk@redhat.com,
+        snitzer@redhat.com, Sami Tolvanen <samitolvanen@google.com>,
+        thomas.petazzoni@bootlin.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-31 at 00:14 +0800, Jiaxun Yang wrote:
-> 
-> 
-> 在 2021/8/30 下午8:28, Xi Ruoyao 写道:
-> > On Mon, 2021-08-30 at 10:32 +0800, Jiaxun Yang wrote:
-> > > 在 2021/8/29 20:49, Xi Ruoyao 写道:
-> > > > Newest Loongson-3 processors have moved to use LoongArch
-> > > > architecture.
-> > > > Sadly, the LL/SC issue is still existing on both latest
-> > > > Loongson-3
-> > > > processors using MIPS64 (Loongson-3A4000) and LoongArch
-> > > > (Loongson-3A5000).
-> > > LLSC is fixed on Loongson-3A4000 as per CPUCFG report.
-> > If I don't enable LL/SC fix, GCC libgomp tests fail on both 3A4000
-> > and
-> > 3A5000 (using github.com/loongson/gcc for the latter) with "invalid
-> > access to 0x00000049" or "0x00000005".  This is a race condition: it
-> > does not happen at all with OMP_NUM_THREADS=1, happens with about
-> > 10%
-> > possibility with OMP_NUM_THREADS=2, and about 90% possibility with
-> > OMP_NUM_THREAD=4 (on 3A5000, on 3A4000 the possibility is lower).
+On Wed, 21 Jul 2021 at 22:59, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+>
+> On Wed, 21 Jul 2021 at 22:40, Mikulas Patocka <mpatocka@redhat.com> wrote:
+>
+> > > >
+> > > > Try to set up dm-verity with block size 512 bytes.
+> > > >
+> > > > I don't know what block size does squashfs use, but if the filesystem
+> > > > block size is smaller than dm-verity block size, it doesn't work.
+> > > >
+> > > Okay thank you so much for this clue,
+> > > It seems we are using 65536 as the squashfs block size:
+> >
+> > 65536 is the compression block size - it is unrelated to I/O block size.
+> >
+> > There's a config option SQUASHFS_4K_DEVBLK_SIZE. The documentation says
+> > that it uses by default 1K block size and if you enable this option, it
+> > uses 4K block size.
+> >
+> Okay it seems this config is set in our case:
+> CONFIG_SQUASHFS_4K_DEVBLK_SIZE=y
+> So, with this the squashfs and dm-verity block size exactly matches (4K)
+>
+> > So, try to set it. Or try to reduce dm-verity block size down to 1K.
+> >
+Hi,
 
-> Apologize for the false report, yes, you are right. I had checked with
-> Loongson guys
-> and they confirmed that the workaround still needs to be applied to 
-> latest 3A4000
-> processors, including 3A4000 for MIPS and 3A5000 for LoongArch.
-> 
-> Though, the reason behind the workaround varies with the evaluation of
-> their uArch,
-> for GS464V based core, barrier is required as the uArch design allows 
-> regular load
-> to be reordered after an atomic linked load, and that would break 
-> assumption of compiler
-> atomic constraints.
+Sorry for coming back to this again..
+Unfortunately, none of the options is working for us with squashfs
+(bootloader, initramfs).
+initramfs have different kinds of challenges because of the partition
+size issue.
+So, our preferred option is still the bootloader command line approach..
 
-> For GS464E, barrier is required to flush the Store Fill Buffer and
-> land 
-> all the cachelines
-> to L1 cache, otherwise a linked load to a cacheline located at SFB may
-> cause deadlock.
-> 
-> For original GS464, barrier is required to deal with some kind of 
-> pipeline hazard to
-> ensure store condition won't be shorted to success.
+Is there a proven and working solution of dm-verity with squashfs ?
+If yes, please share some references.
 
-This explains the different (mis)behavior of LL/SC on those uarchs.  I
-remember the original report of LL/SC issue said it can cause a deadlock
-on earlier model of 3As, but I didn't observed any deadlock on 3A4000.
+The current problem with squashfs is that we could not append the
+verity-metadata to squashfs, so we store it on a separate volume and
+access it.
+By specifying it like : /dev/mtdblock53
 
-(That's I why didn't tried the workaround immediately after spotting
-libgomp failure, but debugged the code from 00:00 AM to 04:00 :( )
+Then we get the error like this:
+{
+[    4.950276] device-mapper: init: attempting early device configuration.
+[    4.957577] device-mapper: init: adding target '0 95384 verity 1
+/dev/ubiblock0_0 /dev/mtdblock53 4096 4096 11923 8 sha256
+16da5e4bbc706e5d90511d2a3dae373b5d878f9aebd522cd614a4faaace6baa3
+aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 10
+restart_on_corruption ignore_zero_blocks use_fec_from_device
+/dev/mtdblock53 fec_roots 2 fec_blocks 12026 fec_start 12026'
+[    4.975283] device-mapper: verity: sha256 using implementation
+"sha256-generic"
+[    4.998728] device-mapper: init: dm-0 is ready
 
-Thanks for your detailed explanation!
+[    5.614498] 1f35            1736 mtdblock53
+[    5.614502]  (driver?)
+[    5.621098] fc00           61504 ubiblock0_0
+[    5.621102]  (driver?)
+[    5.627661] fd00           47692 dm-0
+[    5.627665]  (driver?)
+[    5.633663] No filesystem could mount root, tried:
+[    5.633667]  squashfs
+[    5.636009]
+[    5.643215] Kernel panic - not syncing: VFS: Unable to mount root
+fs on unknown-block(253,0)
+}
 
-> Patch LGTM. The config symbol looks ambiguous and I'd agree with your 
-> idea of renaming.
-> 
-> Thanks,
-> 
-> - Jiaxun
+Do you see any other problem here with dm-verity cmdline or with squashfs ?
 
-> > Or these are two different erratas and I misunderstand them as the
-> > same one?
+Is squashfs ever proved to be working with dm-verity on higher kernel version ?
+Currently our kernel version is 4.14.
 
-So basically this is true :).  They just happen to share one workaround.
+Or, another option is to use the new concept from 5.1 kernel that is:
+dm-mod.create = ?
+But, currently I don't know how to use it with squashfs either...
+Any reference example will be helpful..
 
--- 
-Xi Ruoyao <xry111@mengyan1223.wang>
-School of Aerospace Science and Technology, Xidian University
-
+Thanks,
+Pintu
