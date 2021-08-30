@@ -2,96 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619ED3FB399
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC443FB39B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236276AbhH3KIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 06:08:53 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:40096 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236068AbhH3KIw (ORCPT
+        id S236321AbhH3KJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 06:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236068AbhH3KJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:08:52 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R631e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UmapD6V_1630318076;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UmapD6V_1630318076)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 30 Aug 2021 18:07:57 +0800
-To:     Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:HWPOISON MEMORY FAILURE HANDLING" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Subject: [PATCH] mm: fix panic caused by __page_handle_poison()
-Message-ID: <58b6b733-b021-7eb8-4226-1b98d50c8c82@linux.alibaba.com>
-Date:   Mon, 30 Aug 2021 18:07:56 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Mon, 30 Aug 2021 06:09:55 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757CCC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 03:09:01 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id g13so30070811lfj.12
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 03:09:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YnGp5XaY7ZHqLVWmH/snqm4N1oXNH1vIvABIY33EwNg=;
+        b=lTtd+mi0DHlkFG5JfYWhv9jduG36oLneKzLl09Li4JQEpFXiBPLrq1oV/flmcWoGnT
+         H7pZeFC/2K7P9RfRtR6GA2eWQD/K0Ku4F/WLRaH+ykO+FJXMqwGAhWpbwJJtu09ipBFG
+         b5Eu3Tn/tyrha244Da35tnnaqa27oEdZEyXzawi6rSGjMQXxnf/Uv9z4sdYJ1OIEHF4J
+         RVG+/tXF0afQOOgU3ziEgqkQANdlTZVSyemRWfgCsLncpX9ZBz2Pm0X/JX8NS+CmRSDi
+         20/nB6yQfn49rDiFvZc5T3gEVlLcIRaLHCQgVCocQUB01/ppB1tw09UiEszl1a+LPHsH
+         KXEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YnGp5XaY7ZHqLVWmH/snqm4N1oXNH1vIvABIY33EwNg=;
+        b=rWL6cLbVKhGigkFZ8uHWO59q+01VQAo7M/BErlzMD7b+Nz0NCEyCQtrFmryf/7ctlE
+         eactgZdJ7N47Go41yoPbyjcofhhO0GjhSib1Gt0KTfW95igkeUVBPgH5bzWCrlNkMMRk
+         8uftBAZqQaxpAEd3UJu3tN0cv7UlMGOETsYO+pJWIADSnsedecNCP83pBjQdtjCvgn05
+         kCsp4KQyH2JZsbiE+wa9B3ukVAIOJd03JG3MBIbVSpAl3AOG1pQ32JbtP9A5GrO8jr+O
+         Pq+ih8ytZXWLzV+Va7N1mAC57pCVLTHkn8mfWI7+6tRQ34sJPo5K56cv3DGiD8VgLjYI
+         XiUQ==
+X-Gm-Message-State: AOAM530UO/zMb7o9q73ndE9tkIbOGw+xL8l5SOwEHMS+XuHDBi60fLUx
+        IjJOs+KmiJ9CmaGHODSYQiGrHQ==
+X-Google-Smtp-Source: ABdhPJw8LIk+z1MqKCusb5z2r0Vwg6tbPsWSyvYUD42tmMVGQ3Tm9s25ysh/QsUI+idnEiSAt2Ur2A==
+X-Received: by 2002:ac2:4e0f:: with SMTP id e15mr12439517lfr.262.1630318138031;
+        Mon, 30 Aug 2021 03:08:58 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id f29sm1348429lfj.119.2021.08.30.03.08.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 03:08:57 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [GIT PULL] MMC and MEMSTICK updates for v5.15
+Date:   Mon, 30 Aug 2021 12:08:56 +0200
+Message-Id: <20210830100856.512711-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By commit 510d25c92ec4 ("mm/hwpoison: disable pcp for
-page_handle_poison()"), __page_handle_poison() was
-introduced, and if we mark:
+Hi Linus,
 
-RET_A = dissolve_free_huge_page();
-RET_B = take_page_off_buddy();
+Here's the pull-request with updates for MMC and MEMSTICK for v5.15. Details
+about the highlights are as usual found in the signed tag.
 
-then __page_handle_poison was supposed to return TRUE When
-RET_A == 0 && RET_B == TRUE
+Please pull this in!
 
-But since it failed to take care the case when RET_A is
--EBUSY or -ENOMEM, and just return the ret as a bool which
-actually become TRUE, it break the original logical.
+Kind regards
+Ulf Hansson
 
-The following result is a huge page in freelist but was
-referenced as poisoned, and lead into the final panic:
 
-  kernel BUG at mm/internal.h:95!
-  invalid opcode: 0000 [#1] SMP PTI
-  skip...
-  RIP: 0010:set_page_refcounted mm/internal.h:95 [inline]
-  RIP: 0010:remove_hugetlb_page+0x23c/0x240 mm/hugetlb.c:1371
-  skip...
-  Call Trace:
-   remove_pool_huge_page+0xe4/0x110 mm/hugetlb.c:1892
-   return_unused_surplus_pages+0x8d/0x150 mm/hugetlb.c:2272
-   hugetlb_acct_memory.part.91+0x524/0x690 mm/hugetlb.c:4017
+The following changes since commit 885814a97f5a1a2daf66bde5f2076f0bf632c174:
 
-This patch replace 'bool' with 'int' to handle RET_A correctly.
+  Revert "mmc: sdhci-iproc: Set SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN on BCM2711" (2021-08-27 16:30:36 +0200)
 
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
----
- mm/memory-failure.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+are available in the Git repository at:
 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 470400c..0fff717 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -68,7 +68,7 @@
+  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.15
 
- static bool __page_handle_poison(struct page *page)
- {
--	bool ret;
-+	int ret;
+for you to fetch changes up to a75c956162978097c0a60d95971c97ae486a68d7:
 
- 	zone_pcp_disable(page_zone(page));
- 	ret = dissolve_free_huge_page(page);
-@@ -76,7 +76,7 @@ static bool __page_handle_poison(struct page *page)
- 		ret = take_page_off_buddy(page);
- 	zone_pcp_enable(page_zone(page));
+  Merge branch 'fixes' into next (2021-08-27 16:35:55 +0200)
 
--	return ret;
-+	return ret > 0;
- }
+----------------------------------------------------------------
+MMC core:
+ - Return a proper response in case of an ioctl error
+ - Issue HPI to interrupt BKOPS for eMMC if it timed out
+ - Avoid hogging the CPU while polling for busy
+ - Extend sd8787 pwrseq to support the wilc1000 SDIO
+ - Remove a couple of confusing warning messages
+ - Clarify comment for ->card_busy() host ops
 
- static bool page_handle_poison(struct page *page, bool hugepage_or_freepage, bool release)
--- 
-1.8.3.1
+MMC host:
+ - dw_mmc: Add data CRC error injection
+ - mmci: De-assert reset during ->probe()
+ - rtsx_pci: Fix long reads when clock is pre-scaled
+ - sdhci: Correct the tuning command handle for PIO mode
+ - sdhci-esdhc-imx: Improve support for auto tuning
+ - sdhci-msm: Add support for the sc7280
+ - sdhci-of-arasan: Don't auto tune for DDR50 mode for ZynqMP
+ - sdhci-of-arasan: Enable support for auto cmd12
+ - sdhci-of-arasan: Use 19MHz for SD default speed for ZynqMP for level shifter
+ - usdhi6rol0: Implement the ->card_busy() host ops
 
+MEMSTICK:
+ - A couple of minor cleanups.
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      mmc: mmc_spi: Simplify busy loop in mmc_spi_skip()
+
+Bean Huo (1):
+      mmc: core: Issue HPI in case the BKOPS timed out
+
+Biju Das (2):
+      dt-bindings: mmc: renesas,sdhi: Fix dtbs-check warning
+      dt-bindings: mmc: renesas,sdhi: Document RZ/G2L bindings
+
+ChanWoo Lee (2):
+      mmc: queue: Match the data type of max_segments
+      mmc: queue: Remove unused parameters(request_queue)
+
+Christophe JAILLET (3):
+      memstick: r592: Change the name of the 'pci_driver' structure to be consistent
+      memstick: switch from 'pci_' to 'dma_' API
+      mmc: switch from 'pci_' to 'dma_' API
+
+Claudiu Beznea (4):
+      dt-bindings: mmc: Extend pwrseq-sd8787 binding for wilc1000
+      mmc: pwrseq: sd8787: add support for wilc1000
+      mmc: pwrseq: add wilc1000_sdio dependency for pwrseq_sd8787
+      mmc: pwrseq: sd8787: fix compilation warning
+
+Colin Ian King (1):
+      memstick: ms_block: Fix spelling contraction "cant" -> "can't"
+
+Eric Biggers (1):
+      mmc: core: Store pointer to bio_crypt_ctx in mmc_request
+
+Fabio Estevam (1):
+      mmc: sdhci-esdhc-imx: Remove unneeded mmc-esdhc-imx.h header
+
+Haibo Chen (5):
+      mmc: sdhci: Correct the tuning command handle for PIO mode
+      dt-bindings: mmc: fsl-imx-esdhc: add a new compatible string
+      dt-bindings: mmc: fsl-imx-esdhc: change the pinctrl-names rule
+      mmc: sdhci-esdhc-imx: Remove redundant code for manual tuning
+      mmc: sdhci-esdhc-imx: Select the correct mode for auto tuning
+
+Linus Walleij (1):
+      mmc: mmci: De-assert reset on probe
+
+Manish Narani (6):
+      mmc: sdhci-of-arasan: Modified SD default speed to 19MHz for ZynqMP
+      mmc: sdhci-of-arasan: Add "SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12" quirk.
+      mmc: sdhci-of-arasan: Skip Auto tuning for DDR50 mode in ZynqMP platform
+      mmc: sdhci-of-arasan: Check return value of non-void funtions
+      mmc: sdhci-of-arasan: Use appropriate type of division macro
+      mmc: sdhci-of-arasan: Modify data type of the clk_phase array
+
+Mårten Lindahl (2):
+      mmc: usdhi6rol0: Implement card_busy function
+      mmc: core: Update ->card_busy() callback comment
+
+Nishad Kamdar (1):
+      mmc: core: Return correct emmc response in case of ioctl error
+
+Sahitya Tummala (1):
+      mmc: sdhci-msm: Use maximum possible data timeout value
+
+Sai Krishna Potthuri (1):
+      mmc: arasan: Fix the issue in reading tap values from DT
+
+Sarthak Garg (1):
+      mmc: sdhci: Introduce max_timeout_count variable in sdhci_host
+
+Sean Anderson (2):
+      mmc: sdio: Don't warn about vendor CIS tuples
+      mmc: sdio: Print contents of unknown CIS tuples
+
+Shaik Sajida Bhanu (1):
+      dt-bindings: mmc: sdhci-msm: Add compatible string for sc7280
+
+Thomas Hebb (1):
+      mmc: rtsx_pci: Fix long reads when clock is prescaled
+
+Tony Lindgren (3):
+      mmc: sdhci: Fix issue with uninitialized dma_slave_config
+      mmc: dw_mmc: Fix issue with uninitialized dma_slave_config
+      mmc: moxart: Fix issue with uninitialized dma_slave_config
+
+Ulf Hansson (4):
+      mmc: core: Avoid hogging the CPU while polling for busy in the I/O err path
+      mmc: core: Avoid hogging the CPU while polling for busy for mmc ioctls
+      mmc: core: Avoid hogging the CPU while polling for busy after I/O writes
+      Merge branch 'fixes' into next
+
+Vincent Whitchurch (1):
+      mmc: dw_mmc: Add data CRC error injection
+
+Wolfram Sang (6):
+      mmc: host: add kdoc for mmc_retune_{en|dis}able
+      mmc: host: factor out clearing the retune state
+      mmc: renesas_sdhi_sys_dmac: use proper DMAENGINE API for termination
+      mmc: sh_mmcif: use proper DMAENGINE API for termination
+      mmc: usdhi6rol0: use proper DMAENGINE API for termination
+      mmc: core: Only print retune error when we don't check for card removal
+
+Yoshihiro Shimoda (1):
+      mmc: renesas_sdhi: Refactor renesas_sdhi_probe()
+
+ .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml     |  18 ++-
+ .../devicetree/bindings/mmc/mmc-pwrseq-sd8787.yaml |   4 +-
+ .../devicetree/bindings/mmc/renesas,sdhi.yaml      | 133 +++++++++++++-------
+ .../devicetree/bindings/mmc/sdhci-msm.txt          |   1 +
+ drivers/memstick/core/ms_block.c                   |   2 +-
+ drivers/memstick/host/r592.c                       |   9 +-
+ drivers/memstick/host/tifm_ms.c                    |  12 +-
+ drivers/mmc/core/Kconfig                           |   2 +-
+ drivers/mmc/core/block.c                           |  77 +++++-------
+ drivers/mmc/core/core.c                            |  13 +-
+ drivers/mmc/core/crypto.c                          |  15 +--
+ drivers/mmc/core/host.c                            |  13 +-
+ drivers/mmc/core/host.h                            |   6 +
+ drivers/mmc/core/mmc_ops.c                         |  16 ++-
+ drivers/mmc/core/mmc_ops.h                         |   1 +
+ drivers/mmc/core/pwrseq_sd8787.c                   |  14 ++-
+ drivers/mmc/core/queue.c                           |  34 ++----
+ drivers/mmc/core/sdio_cis.c                        |  22 +++-
+ drivers/mmc/host/cqhci-crypto.h                    |   7 +-
+ drivers/mmc/host/dw_mmc.c                          |  74 +++++++++++
+ drivers/mmc/host/dw_mmc.h                          |   7 ++
+ drivers/mmc/host/mmc_spi.c                         |  15 +--
+ drivers/mmc/host/mmci.c                            |   3 +
+ drivers/mmc/host/moxart-mmc.c                      |   1 +
+ drivers/mmc/host/renesas_sdhi.h                    |   9 +-
+ drivers/mmc/host/renesas_sdhi_core.c               |  90 +-------------
+ drivers/mmc/host/renesas_sdhi_internal_dmac.c      | 135 +++++++++++++++++++--
+ drivers/mmc/host/renesas_sdhi_sys_dmac.c           |   7 +-
+ drivers/mmc/host/rtsx_pci_sdmmc.c                  |  36 ++++--
+ drivers/mmc/host/sdhci-esdhc-imx.c                 |  78 ++++++++++--
+ drivers/mmc/host/sdhci-msm.c                       |   3 +
+ drivers/mmc/host/sdhci-of-arasan.c                 |  51 ++++++--
+ drivers/mmc/host/sdhci.c                           |  27 +++--
+ drivers/mmc/host/sdhci.h                           |   1 +
+ drivers/mmc/host/sh_mmcif.c                        |   4 +-
+ drivers/mmc/host/tifm_sd.c                         |  16 +--
+ drivers/mmc/host/usdhi6rol0.c                      |  14 ++-
+ drivers/mmc/host/via-sdmmc.c                       |   4 +-
+ include/linux/mmc/core.h                           |   3 +-
+ include/linux/mmc/host.h                           |   2 +-
+ include/linux/platform_data/mmc-esdhc-imx.h        |  42 -------
+ 41 files changed, 647 insertions(+), 374 deletions(-)
+ delete mode 100644 include/linux/platform_data/mmc-esdhc-imx.h
