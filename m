@@ -2,276 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7D13FBDF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D843FBDF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237184AbhH3VLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 17:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236628AbhH3VLL (ORCPT
+        id S235835AbhH3VLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:11:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52227 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237167AbhH3VLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:11:11 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD9AC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 14:10:17 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id v2so17698335ilg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 14:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mshXpQmgJqaKCCPtHDuq2mytpmp0ymqRBmmUPpIBMnM=;
-        b=iPoqcoDZrM3zUVajQE1RAnOBnq5O494juPqB3MEnBNJHNCeqs5UZzq9X4mxaGuCEZA
-         S2RccgEzJle0jyTEHB1iglKT3J7cFdWGUTjeIE/zweiERExFTRRYWdFKRrOXZ6fsSuXd
-         nGNU85oV9s2ast3U6WeXeCbD/LLBGy/nxvIyOgOlIHbp8/dMpjwUp1QWWnEI5v0ZkyeS
-         hQFKtIyIt+OiUtk/tzH8A+ChquxQz/lufrHQVSvsaJUjWbTiVZ7MJmSpMUpELzq9excS
-         lbAzY9lFqACmiuVG+tdCiJ7TSyzJagqXJ6Dyr24EIvrMBgRKy9sDjGNGb5Rj/+kf1nPT
-         nDPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mshXpQmgJqaKCCPtHDuq2mytpmp0ymqRBmmUPpIBMnM=;
-        b=UMBoqcJSp8wEN0oyHbXZnUa4dARl/Rwr43l62SY9eYsg0KTZrH9cYO1bQ89UZn5Wnk
-         nZ9Qxw83HnvO/OTZVEZMA8X6FdHy3NbyDQH3sBegwVgZDj5/Q392WGZSiP7xcPFZk4bW
-         jdYg/hFCx0FBSuFHLrrE5PFWmStgtZvC3kURQcwBU+BToAsPowZeQtQvsK5HWje9GFLG
-         A9NfSABoDotv35eFKl97jN48mp2hDo+TtQz66GWDlf+65kU5ddbXnS02Vl6exCEuDlbE
-         WxWkPYGBl2+BLBZP9vZ/WqdssLqKYWkjZjIGV50l5FcaYgvLRkqBTsM6aCeeUhi/OKYw
-         OuOA==
-X-Gm-Message-State: AOAM532T2H3QR3mDNbVY+q1FU31lIrATZE0pzGKR49bpxIvDIx9cVLG7
-        mF6ipfYBFudU2NtmrXSewJdkPVBPDSi0VncXi5SZCw==
-X-Google-Smtp-Source: ABdhPJwQNvIPMfGNWsL3SqGcwMhma+WRFEs2goX7S2bzgtxrYSsGflpUwtiDZdJQfZR9T0errwnsgU1Bk9FhSSkWYh8=
-X-Received: by 2002:a05:6e02:524:: with SMTP id h4mr17765149ils.203.1630357816519;
- Mon, 30 Aug 2021 14:10:16 -0700 (PDT)
+        Mon, 30 Aug 2021 17:11:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630357840;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=WHA3d8nwpZi2BxeKNZ2Ew6q2P/W2+26A7H/gSGc9/d4=;
+        b=Xfy06lq7qGUMbf0bKVDjs/jOZPjlAX9H1nEgN0p2lFT74vkFl1I/3p7AhId56zG+Usfs1l
+        HKRF4iDZw/LGaeUEHF85iBY8qVADWNYvfSlWkSdud+kkzuTSFG50X213mvzs4j3pm1DfgM
+        Qrfpzz5NtZWY8DROABduqF/hl7myoGg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-291-ui6cTRQ4N1mNCWqGGx21Kw-1; Mon, 30 Aug 2021 17:10:38 -0400
+X-MC-Unique: ui6cTRQ4N1mNCWqGGx21Kw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D82AA101965B;
+        Mon, 30 Aug 2021 21:10:36 +0000 (UTC)
+Received: from max.com (unknown [10.40.194.206])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B71F21000186;
+        Mon, 30 Aug 2021 21:10:35 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] gfs2 fixes for 5.15
+Date:   Mon, 30 Aug 2021 23:10:33 +0200
+Message-Id: <20210830211033.1825127-1-agruenba@redhat.com>
 MIME-Version: 1.0
-References: <20210830044425.2686755-1-mizhang@google.com> <20210830044425.2686755-3-mizhang@google.com>
-In-Reply-To: <20210830044425.2686755-3-mizhang@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 30 Aug 2021 14:10:05 -0700
-Message-ID: <CANgfPd_46=V24r5Qu8cDuOCwVRSEF9RFHuD-1sPpKrBCjWOA2w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] selftests: KVM: use dirty logging to check if page
- stats work correctly
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Peter Xu <peterx@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 9:44 PM Mingwei Zhang <mizhang@google.com> wrote:
->
-> When dirty logging is enabled, KVM splits the hugepage mapping in NPT/EPT
-> into the smallest 4K size after guest VM writes to it. This property could
-> be used to check if the page stats metrics work properly in KVM x86/mmu. At
-> the same time, this logic might be used the other way around: using page
-> stats to verify if dirty logging really splits all huge pages after guest
-> VM writes to all memory.
->
-> So add page stats checking in dirty logging performance selftest. In
-> particular, add checks in three locations:
->  - just after vm is created;
->  - after populating memory into vm without turning on dirty logging;
->  - after guest vm writing to all memory again with dirty logging turned on.
->
-> Tested using commands:
->  - ./dirty_log_perf_test -s anonymous_hugetlb_1gb
->  - ./dirty_log_perf_test -s anonymous_hugetlb_2mb
->  - ./dirty_log_perf_test -s anonymous_thp
->
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: David Matlack <dmatlack@google.com>
-> Cc: Jing Zhang <jingzhangos@google.com>
-> Cc: Peter Xu <peterx@redhat.com>
->
-> Suggested-by: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> ---
->  .../selftests/kvm/dirty_log_perf_test.c       | 44 +++++++++++++++++++
->  .../testing/selftests/kvm/include/test_util.h |  1 +
->  .../selftests/kvm/include/x86_64/processor.h  |  7 +++
->  tools/testing/selftests/kvm/lib/test_util.c   | 29 ++++++++++++
->  4 files changed, 81 insertions(+)
->
-> diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-> index 3c30d0045d8d..bc598e07b295 100644
-> --- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
-> +++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-> @@ -19,6 +19,10 @@
->  #include "perf_test_util.h"
->  #include "guest_modes.h"
->
-> +#ifdef __x86_64__
-> +#include "processor.h"
-> +#endif
-> +
+Hi Linus,
 
-I know this is only needed for x86_64, but I don't think it needs to
-be ifdef in order for everything to work.
+please consider pulling the following gfs2 fixes for 5.15, which are all
+unrelated to the deadlock avoidance patch queue we've been discussing.
 
->  /* How many host loops to run by default (one KVM_GET_DIRTY_LOG for each loop)*/
->  #define TEST_HOST_LOOP_N               2UL
->
-> @@ -166,6 +170,18 @@ static void run_test(enum vm_guest_mode mode, void *arg)
->         vm = perf_test_create_vm(mode, nr_vcpus, guest_percpu_mem_size,
->                                  p->slots, p->backing_src);
->
-> +#ifdef __x86_64__
-> +       /*
-> +        * No vCPUs have been started yet, so KVM should not have created any
-> +        * mapping at this moment.
-> +        */
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) == 0,
-> +                   "4K page is non zero");
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) == 0,
-> +                   "2M page is non zero");
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) == 0,
-> +                   "1G page is non zero");
-> +#endif
->         perf_test_args.wr_fract = p->wr_fract;
->
->         guest_num_pages = (nr_vcpus * guest_percpu_mem_size) >> vm_get_page_shift(vm);
-> @@ -211,6 +227,22 @@ static void run_test(enum vm_guest_mode mode, void *arg)
->         pr_info("Populate memory time: %ld.%.9lds\n",
->                 ts_diff.tv_sec, ts_diff.tv_nsec);
->
-> +#ifdef __x86_64__
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) != 0,
-> +                   "4K page is zero");
-> +       /* Ensure THP page stats is non-zero to minimize the flakiness. */
-> +       if (p->backing_src == VM_MEM_SRC_ANONYMOUS_THP)
-> +               TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) > 0,
-> +                       "2M page number is zero");
+Thanks,
+Andreas
 
-Nice. Thanks for handling this case. It's very frustrating when THP
-makes test assertions flaky.
+The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
 
-> +       else if (p->backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB_2MB)
-> +               TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) ==
-> +                       (guest_percpu_mem_size * nr_vcpus) >> X86_PAGE_2M_SHIFT,
-> +                       "2M page number does not match");
-> +       else if (p->backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB_1GB)
-> +               TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) ==
-> +                       (guest_percpu_mem_size * nr_vcpus) >> X86_PAGE_1G_SHIFT,
-> +                       "1G page number does not match");
-> +#endif
->         /* Enable dirty logging */
->         clock_gettime(CLOCK_MONOTONIC, &start);
->         enable_dirty_logging(vm, p->slots);
-> @@ -256,6 +288,18 @@ static void run_test(enum vm_guest_mode mode, void *arg)
->                                 iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
->                 }
->         }
-> +#ifdef __x86_64__
-> +       /*
-> +        * When vCPUs writes to all memory again with dirty logging enabled, we
-> +        * should see only 4K page mappings exist in KVM mmu.
-> +        */
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) != 0,
-> +                   "4K page is zero after dirtying memory");
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) == 0,
-> +                   "2M page is non-zero after dirtying memory");
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) == 0,
-> +                   "1G page is non-zero  after dirtying memory");
-> +#endif
->
->         /* Disable dirty logging */
->         clock_gettime(CLOCK_MONOTONIC, &start);
-> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-> index d79be15dd3d2..dca5fcf7aa87 100644
-> --- a/tools/testing/selftests/kvm/include/test_util.h
-> +++ b/tools/testing/selftests/kvm/include/test_util.h
-> @@ -102,6 +102,7 @@ const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i);
->  size_t get_backing_src_pagesz(uint32_t i);
->  void backing_src_help(void);
->  enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
-> +size_t get_page_stats(uint32_t page_level);
->
->  /*
->   * Whether or not the given source type is shared memory (as opposed to
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
-> index 242ae8e09a65..9749319821a3 100644
-> --- a/tools/testing/selftests/kvm/include/x86_64/processor.h
-> +++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
-> @@ -39,6 +39,13 @@
->  #define X86_CR4_SMAP           (1ul << 21)
->  #define X86_CR4_PKE            (1ul << 22)
->
-> +#define X86_PAGE_4K_SHIFT      12
-> +#define X86_PAGE_4K            (1ul << X86_PAGE_4K_SHIFT)
-> +#define X86_PAGE_2M_SHIFT      21
-> +#define X86_PAGE_2M            (1ul << X86_PAGE_2M_SHIFT)
-> +#define X86_PAGE_1G_SHIFT      30
-> +#define X86_PAGE_1G            (1ul << X86_PAGE_1G_SHIFT)
-> +
+  Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
 
-It would be a nice follow up to use these to clean up the magic
-numbers in __virt_pg_map:
+are available in the Git repository at:
 
-const uint64_t pg_size = 1ull << ((page_size * 9) + 12);
+  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.14-rc2-fixes
 
-:(
+for you to fetch changes up to 08d736667185dca2751cf47eabb0830cecdeb160:
 
->  /* CPUID.1.ECX */
->  #define CPUID_VMX              (1ul << 5)
->  #define CPUID_SMX              (1ul << 6)
-> diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-> index af1031fed97f..07eb6b5c125e 100644
-> --- a/tools/testing/selftests/kvm/lib/test_util.c
-> +++ b/tools/testing/selftests/kvm/lib/test_util.c
-> @@ -15,6 +15,13 @@
->  #include "linux/kernel.h"
->
->  #include "test_util.h"
-> +#include "processor.h"
-> +
-> +static const char * const pagestat_filepaths[] = {
-> +       "/sys/kernel/debug/kvm/pages_4k",
-> +       "/sys/kernel/debug/kvm/pages_2m",
-> +       "/sys/kernel/debug/kvm/pages_1g",
-> +};
+  gfs2: Remove redundant check from gfs2_glock_dq (2021-08-20 09:03:46 -0500)
 
-I think these should only be defined for x86_64 too. Is this the right
-file for these definitions or is there an arch specific file they
-should go in?
+----------------------------------------------------------------
+Changes in gfs2:
+* Various withdraw related fixes (freeze glock recursion, thread
+  initialization / destruction order, journal recovery, glock cleanup,
+  withdraw under journal lock).
+* Some error message improvements.
+* Various minor cleanups.
 
->
->  /*
->   * Parses "[0-9]+[kmgt]?".
-> @@ -141,6 +148,28 @@ size_t get_trans_hugepagesz(void)
->         return size;
->  }
->
-> +#ifdef __x86_64__
-> +size_t get_stats_from_file(const char *path)
-> +{
-> +       size_t value;
-> +       FILE *f;
-> +
-> +       f = fopen(path, "r");
-> +       TEST_ASSERT(f != NULL, "Error in opening file: %s\n", path);
-> +
-> +       fscanf(f, "%ld", &value);
-> +       fclose(f);
-> +
-> +       return value;
-> +}
-> +
-> +size_t get_page_stats(uint32_t page_level)
-> +{
-> +       TEST_ASSERT(page_level <= X86_PAGE_SIZE_1G, "page type error.");
-> +       return get_stats_from_file(pagestat_filepaths[page_level]);
-> +}
-> +#endif
-> +
->  size_t get_def_hugetlb_pagesz(void)
->  {
->         char buf[64];
-> --
-> 2.33.0.259.gc128427fd7-goog
->
+----------------------------------------------------------------
+Bob Peterson (14):
+      gfs2: Fix glock recursion in freeze_go_xmote_bh
+      gfs2: be more verbose replaying invalid rgrp blocks
+      gfs2: trivial clean up of gfs2_ail_error
+      gfs2: tiny cleanup in gfs2_log_reserve
+      gfs2: init system threads before freeze lock
+      gfs2: Don't release and reacquire local statfs bh
+      gfs2: Make recovery error more readable
+      gfs2: Eliminate vestigial HIF_FIRST
+      gfs2: nit: gfs2_drop_inode shouldn't return bool
+      gfs2: Mark journal inodes as "don't cache"
+      gfs2: don't stop reads while withdraw in progress
+      gfs2: Don't call dlm after protocol is unmounted
+      gfs2: Delay withdraw from atomic context
+      gfs2: Remove redundant check from gfs2_glock_dq
+
+Colin Ian King (1):
+      gfs2: Fix memory leak of object lsi on error return path
+
+ fs/gfs2/aops.c       |   9 +----
+ fs/gfs2/glock.c      |  13 +++----
+ fs/gfs2/glops.c      |  27 +++++++------
+ fs/gfs2/incore.h     |   2 +-
+ fs/gfs2/lock_dlm.c   |   5 +++
+ fs/gfs2/log.c        |   2 +-
+ fs/gfs2/lops.c       |  44 +++++++++++++--------
+ fs/gfs2/meta_io.c    |   7 ++--
+ fs/gfs2/ops_fstype.c |  53 +++++++++++++++++++++++++
+ fs/gfs2/super.c      | 107 +++++++++------------------------------------------
+ fs/gfs2/super.h      |   3 +-
+ fs/gfs2/util.c       |   3 +-
+ fs/gfs2/util.h       |   5 +++
+ 13 files changed, 139 insertions(+), 141 deletions(-)
+
