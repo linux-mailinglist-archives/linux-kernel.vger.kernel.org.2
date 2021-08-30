@@ -2,107 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6893FBC5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8C53FBC68
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238775AbhH3SZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:25:54 -0400
-Received: from relay05.th.seeweb.it ([5.144.164.166]:60027 "EHLO
-        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238759AbhH3SZw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:25:52 -0400
-Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 8115B3E83E;
-        Mon, 30 Aug 2021 20:24:56 +0200 (CEST)
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     phone-devel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
-Subject: [PATCH v2 2/2] clk: qcom: gcc-sdm660: Remove transient global "xo" clock
-Date:   Mon, 30 Aug 2021 20:24:45 +0200
-Message-Id: <20210830182445.167527-3-marijn.suijten@somainline.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210830182445.167527-1-marijn.suijten@somainline.org>
-References: <20210830182445.167527-1-marijn.suijten@somainline.org>
+        id S238618AbhH3S1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:27:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238280AbhH3S1t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 14:27:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9BA160E98;
+        Mon, 30 Aug 2021 18:26:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630348015;
+        bh=8tUSjnr7H3PoBoLy0ZN0FF3bzIzyWoa6mO5HoG79dZc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aGysZSQSmRhXl9MzPNSZy5H4pIPbHZfQyvZiuDdc+QmanI7H9JYXKHko8cHFaD6GT
+         MY8U8DYhC2r4LUCAzNySMWidPasMQIxU1ZNATOo4bXx060x9vO0r+kXEKnXTQZLeOh
+         hNvkPlVMeDSgKohJzrV4o+Ni5Ylon2DSr1QaU/k3Kf6UFhLxTXq8BXGmyqifcOY45u
+         WNrXARu2Gqn0ySve1D3aoYy3pRJQxvb6o+5M9HUhl2Xfi2wDgKQzc5Tp0SUa7qfWeC
+         e+zPXTbHWb8nY0948rvn59Y5LcIgIFhGNEObAIc7hlrMzW6jf6vPOQjR6HiEQ7ZQCo
+         oJplxMt8qESww==
+Date:   Mon, 30 Aug 2021 11:26:53 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     zhaoxiao <zhaoxiao@uniontech.com>
+Cc:     davem@davemloft.net, mcoquelin.stm32@gmail.com,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] stmmac: dwmac-loongson: change the pr_info() to
+ dev_err() in loongson_dwmac_probe()
+Message-ID: <20210830112653.450eab49@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210830012417.14872-1-zhaoxiao@uniontech.com>
+References: <20210830012417.14872-1-zhaoxiao@uniontech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DSI PHY/PLL was relying on a global "xo" clock to be found, but the
-real clock is named "xo_board" in the DT.  The standard nowadays is to
-never use global clock names anymore but require the firmware (DT) to
-provide every clock binding explicitly with .fw_name.  The DSI PLLs have
-since been converted to this mechanism (specifically 14nm for SDM660)
-and this transient clock can now be removed.
+On Mon, 30 Aug 2021 09:24:17 +0800 zhaoxiao wrote:
+> @@ -69,6 +68,7 @@ static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id
+>  	if (!plat)
+>  		return -ENOMEM;
+>  
+> +
+>  	if (plat->mdio_node) {
+>  		dev_err(&pdev->dev, "Found MDIO subnode\n");
+>  		mdio = true;
+> @@ -111,6 +111,7 @@ static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id
+>  	phy_mode = device_get_phy_mode(&pdev->dev);
+>  	if (phy_mode < 0)
+>  		dev_err(&pdev->dev, "phy_mode not found\n");
+> +	
+>  
+>  	plat->phy_interface = phy_mode;
+>  	plat->interface = PHY_INTERFACE_MODE_GMII;
 
-This issue was originally discovered in:
-https://lore.kernel.org/linux-arm-msm/386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org/
-and prevented the removal of "xo" at that time.
-
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
----
- drivers/clk/qcom/gcc-sdm660.c | 14 --------------
- 1 file changed, 14 deletions(-)
-
-diff --git a/drivers/clk/qcom/gcc-sdm660.c b/drivers/clk/qcom/gcc-sdm660.c
-index 9b97425008ce..16fd16351f95 100644
---- a/drivers/clk/qcom/gcc-sdm660.c
-+++ b/drivers/clk/qcom/gcc-sdm660.c
-@@ -37,19 +37,6 @@ enum {
- 	P_GPLL1_EARLY_DIV,
- };
- 
--static struct clk_fixed_factor xo = {
--	.mult = 1,
--	.div = 1,
--	.hw.init = &(struct clk_init_data){
--		.name = "xo",
--		.parent_data = &(const struct clk_parent_data) {
--			.fw_name = "xo"
--		},
--		.num_parents = 1,
--		.ops = &clk_fixed_factor_ops,
--	},
--};
--
- static struct clk_alpha_pll gpll0_early = {
- 	.offset = 0x0,
- 	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
-@@ -2281,7 +2268,6 @@ static struct gdsc pcie_0_gdsc = {
- };
- 
- static struct clk_hw *gcc_sdm660_hws[] = {
--	&xo.hw,
- 	&gpll0_early_div.hw,
- 	&gpll1_early_div.hw,
- };
--- 
-2.33.0
-
+Please remove these changes from the patch.
