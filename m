@@ -2,149 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3A83FB8B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B913FB8BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237311AbhH3PGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237123AbhH3PGY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:06:24 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D57C061575;
-        Mon, 30 Aug 2021 08:05:30 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id me10so31805226ejb.11;
-        Mon, 30 Aug 2021 08:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lYmhCndv6D6zxy0kLorHB0ixdkNzSVX/DeO0ZDxZWts=;
-        b=T1IBEaTTOs3gGFWRmAvGYFhPXFFPtOTlhqCafMZjZiGUZ7hkdEp78j4orgS7F0E6fW
-         hCxzyzxfB4t9wlGhZEZOn3aQs3sDHuQdXf8TLVDfmKX+Ql0UJY6gUY/4lA6PMUKBKUHp
-         O+cB+onUrkSWUMQ5BYvdFmL/ytnXa275kOcbc9DQZ+ahP2RCugldxeB2ho73A2QDRphK
-         8JwWUR58qX9KBvd+2dZRXVJJ8FD+Rzlwqn25obzHr6uGKwVVFQzIKti6VGqHqR3O8N2d
-         SS1+TdxyCutQqUZenZpVH8jXlCPVIOZYVO1Z2PN+Lu15QUXOhPUzO/w0yKv7B2ROKbDH
-         OJlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lYmhCndv6D6zxy0kLorHB0ixdkNzSVX/DeO0ZDxZWts=;
-        b=So5sycRDF4rIYqkxYpgbI9Rp8GYgdiSooXN1Rvl2cqZRaxvLEw+JXalrUcamHFz7y4
-         LKKiTt+IQGh2B5ceROA3FoPjMef1BPurSK8TCSIauCJqotECMvTmUIGZGzYXmVaT6QEp
-         V17vqRE29NbOfQos3O+DBleD3P/ZO0kpfteBeSaXnBMAKbWEv7kFqkl2ZrA5RbGT53xJ
-         nXB6zqd42HBazz2je7o3/7QUzZIXBw9vrga8a9NiNy10UoWQm8riySbStwXU+1UdY8YU
-         laRBbQquFasgVv6bk/FI1biqko/JlaC0GdzUmFvIzyfZLm5/syyRHvovdPQnVHoO3+lm
-         vo/A==
-X-Gm-Message-State: AOAM530jy69d7xGjXsWm1tN4plM2ePJTAsPZqLE1GRvyjv8uEaWO22vG
-        kjLf8tevt+HEkq44mmAWkuOKs3qQUTbxl0bf1y4=
-X-Google-Smtp-Source: ABdhPJzZIFeSC+BDivYn/eXHJWH7fe+C3I1QxEZnu8JWh2pMJSceYo/Jr62j5E8itu50ljXAZdqXRJLbxyaNOFNhFwM=
-X-Received: by 2002:a17:907:764f:: with SMTP id kj15mr11537950ejc.473.1630335928716;
- Mon, 30 Aug 2021 08:05:28 -0700 (PDT)
+        id S237489AbhH3PGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:06:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237123AbhH3PG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 11:06:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE6EE60F45;
+        Mon, 30 Aug 2021 15:05:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630335932;
+        bh=+w96EgfxB/OnIF4TZZubblNzgSY24akfalBQTQOBFSQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kCwB0oJQhw9Sx58A5G93DB0VLM6imlaIM/sb/B7vDMY7X22XPdqQnS7BWCZ5Sqq6y
+         Dq8la0BAuDSPiVjYNY6UBGJb2ScyD1ph+kvF7IyVV//+RDgNrUkvFhq784DXfF+I1Q
+         0xCG0FaUen2RMwYJbNQ9TY3zYh3YTBOP7P7PYGPhwk6b3cVyo1UL3hwb9ELWPw58vt
+         /tZ1Pfszrlnx2ouCcpZrhhsSRk0HVjq9R9L+tcuf8+uEEX1tDJkQOLDYDqbnpEL728
+         pbGAx2Q0KhCCyCbEat8PcupTItksBdrDKJRwBM6Wgb1eDc/MQZ4CQIzmpw9657m+yI
+         LN/w1gYFdT5yQ==
+Received: by mail-ej1-f49.google.com with SMTP id n27so31859346eja.5;
+        Mon, 30 Aug 2021 08:05:32 -0700 (PDT)
+X-Gm-Message-State: AOAM531ojrIBQXt9LJ5uOtprpvOhP6wgljssPrR8S5Oxk1/IZhm4GLsy
+        B/9m8V43gxDCRgCguIafKKn1LCUD4HtDIew/6g==
+X-Google-Smtp-Source: ABdhPJyF3KMiFYr5oMzxYuwKYn4Ft/XJo6sPgysJQrJltM5HoP9Y3XlZs6D0letv4tX1E+fvnmMyrNrRlEjQqFfRe20=
+X-Received: by 2002:a17:906:b4d:: with SMTP id v13mr26149139ejg.468.1630335931267;
+ Mon, 30 Aug 2021 08:05:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <1630286290-43714-1-git-send-email-linyunsheng@huawei.com> <1630286290-43714-2-git-send-email-linyunsheng@huawei.com>
-In-Reply-To: <1630286290-43714-2-git-send-email-linyunsheng@huawei.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 30 Aug 2021 08:05:17 -0700
-Message-ID: <CAKgT0UfNFw+jwoDr_xx6kX_OoCVgrq2rCSc4zdXRMSZLBmbA8Q@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] page_pool: support non-split page with PP_FLAG_PAGE_FRAG
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
-        hawk@kernel.org, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
-        Marco Elver <elver@google.com>, memxor@gmail.com,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>
+References: <20210824100027.25989-1-moudy.ho@mediatek.com> <20210824100027.25989-4-moudy.ho@mediatek.com>
+ <YSU0TrfFCsaI1TqV@robh.at.kernel.org> <0092244acd520acac81208b8863b15fba58f4193.camel@mediatek.com>
+In-Reply-To: <0092244acd520acac81208b8863b15fba58f4193.camel@mediatek.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 30 Aug 2021 10:05:19 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ_cProt35pdd2MjoHsSKtd+0n1Dwq6ooV+CJH5sfOFWg@mail.gmail.com>
+Message-ID: <CAL_JsqJ_cProt35pdd2MjoHsSKtd+0n1Dwq6ooV+CJH5sfOFWg@mail.gmail.com>
+Subject: Re: [PATCH v7 3/5] dt-binding: mt8183: Add Mediatek MDP3 dt-bindings
+To:     moudy ho <moudy.ho@mediatek.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Landley <rob@landley.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>, menghui.lin@mediatek.com,
+        Sj Huang <sj.huang@mediatek.com>, ben.lok@mediatek.com,
+        randy.wu@mediatek.com,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 6:19 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+On Mon, Aug 30, 2021 at 2:58 AM moudy ho <moudy.ho@mediatek.com> wrote:
 >
-> Currently when PP_FLAG_PAGE_FRAG is set, the caller is not
-> expected to call page_pool_alloc_pages() directly because of
-> the PP_FLAG_PAGE_FRAG checking in __page_pool_put_page().
->
-> The patch removes the above checking to enable non-split page
-> support when PP_FLAG_PAGE_FRAG is set.
->
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
->  include/net/page_pool.h |  6 ++++++
->  net/core/page_pool.c    | 12 +++++++-----
->  2 files changed, 13 insertions(+), 5 deletions(-)
->
-> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> index a408240..2ad0706 100644
-> --- a/include/net/page_pool.h
-> +++ b/include/net/page_pool.h
-> @@ -238,6 +238,9 @@ static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
->
->  static inline void page_pool_set_frag_count(struct page *page, long nr)
->  {
-> +       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
-> +               return;
-> +
->         atomic_long_set(&page->pp_frag_count, nr);
->  }
->
-> @@ -246,6 +249,9 @@ static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
->  {
->         long ret;
->
-> +       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
-> +               return 0;
-> +
->         /* As suggested by Alexander, atomic_long_read() may cover up the
->          * reference count errors, so avoid calling atomic_long_read() in
->          * the cases of freeing or draining the page_frags, where we would
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 1a69784..ba9f14d 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -313,11 +313,14 @@ struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp)
->
->         /* Fast-path: Get a page from cache */
->         page = __page_pool_get_cached(pool);
-> -       if (page)
-> -               return page;
->
->         /* Slow-path: cache empty, do real allocation */
-> -       page = __page_pool_alloc_pages_slow(pool, gfp);
-> +       if (!page)
-> +               page = __page_pool_alloc_pages_slow(pool, gfp);
-> +
-> +       if (likely(page))
-> +               page_pool_set_frag_count(page, 1);
-> +
->         return page;
->  }
->  EXPORT_SYMBOL(page_pool_alloc_pages);
-> @@ -426,8 +429,7 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
->                      unsigned int dma_sync_size, bool allow_direct)
->  {
->         /* It is not the last user for the page frag case */
-> -       if (pool->p.flags & PP_FLAG_PAGE_FRAG &&
-> -           page_pool_atomic_sub_frag_count_return(page, 1))
-> +       if (page_pool_atomic_sub_frag_count_return(page, 1))
->                 return NULL;
+> On Tue, 2021-08-24 at 13:02 -0500, Rob Herring wrote:
+> > On Tue, Aug 24, 2021 at 06:00:25PM +0800, Moudy Ho wrote:
+> > > This patch adds DT binding document for Media Data Path 3 (MDP3)
+> > > a unit in multimedia system used for scaling and color format
+> > > convert.
+> > >
+> > > Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+> > > ---
+> > >  .../bindings/media/mediatek,mdp3-ccorr.yaml   |  57 +++++
+> > >  .../bindings/media/mediatek,mdp3-rdma.yaml    | 207
+> > > ++++++++++++++++++
+> > >  .../bindings/media/mediatek,mdp3-rsz.yaml     |  65 ++++++
+> > >  .../bindings/media/mediatek,mdp3-wdma.yaml    |  71 ++++++
+> > >  .../bindings/media/mediatek,mdp3-wrot.yaml    |  71 ++++++
+> > >  5 files changed, 471 insertions(+)
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/media/mediatek,mdp3-ccorr.yaml
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/media/mediatek,mdp3-rsz.yaml
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/media/mediatek,mdp3-wdma.yaml
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/media/mediatek,mdp3-wrot.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/media/mediatek,mdp3-
+> > > ccorr.yaml b/Documentation/devicetree/bindings/media/mediatek,mdp3-
+> > > ccorr.yaml
+> > > new file mode 100644
+> > > index 000000000000..59fd68b46022
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/media/mediatek,mdp3-
+> > > ccorr.yaml
+> > > @@ -0,0 +1,57 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id:
+> > > https://urldefense.com/v3/__http://devicetree.org/schemas/media/mediatek,mdp3-ccorr.yaml*__;Iw!!CTRNKA9wMg0ARbw!1C0ChLqzi7Zq8D2d4_S4IqCEei4GXdgy3_VCQg8MdsJP7n8TlxbGyajipusfH8hi$
+> > >
+> > > +$schema:
+> > > https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml*__;Iw!!CTRNKA9wMg0ARbw!1C0ChLqzi7Zq8D2d4_S4IqCEei4GXdgy3_VCQg8MdsJP7n8TlxbGyajipi-OInix$
+> > >
+> > > +
+> > > +title: Mediatek Media Data Path 3 CCORR Device Tree Bindings
+> > > +
+> > > +maintainers:
+> > > +  - Daoyuan Huang <daoyuan.huang@mediatek.com>
+> > > +  - Moudy Ho <moudy.ho@mediatek.com>
+> > > +
+> > > +description: |
+> > > +  One of Media Data Path 3 (MDP3) components used to do color
+> > > correction with 3X3 matrix.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    items:
+> > > +      - enum:
+> > > +        - mediatek,mt8183-mdp3-ccorr
+> > > +
+> > > +  mediatek,mdp3-id:
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > +    maxItems: 1
+> > > +    description: |
+> > > +      HW index to distinguish same functionality modules.
+> >
+> > If we wanted h/w indexes in DT, we'd have a standard property. Why
+> > do
+> > you need this?
+> >
+> I'm sorry not quite sure what HW indexes means (something like
+> aliases?)
 
-Isn't this going to have a negative performance impact on page pool
-pages in general? Essentially you are adding an extra atomic operation
-for all the non-frag pages.
+It means whatever you said in your description.
 
-It would work better if this was doing a check against 1 to determine
-if it is okay for this page to be freed here and only if the check
-fails then you perform the atomic sub_return.
+And no, I'm not suggesting you use aliases.
+
+> It was originally used to mark multiple identical modules in the MDP
+> data path algorithm, so that appropriate paths can be dynamically
+> dispatched.
+
+If they are identical, then why do you need to distinguish them in DT?
+If there's some difference you need to know about such as connections
+to other blocks, then describe that. Another common example is needing
+to know what bits/registers to access in a syscon phandle. For that,
+make the register offset or bits be args to the phandle property.
+
+Rob
