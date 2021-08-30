@@ -2,112 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A243FBC93
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4B13FBC95
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhH3Sjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:39:36 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:36162
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229738AbhH3Sje (ORCPT
+        id S230158AbhH3Sme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:42:34 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:45694 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhH3Smd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:39:34 -0400
-Received: from mussarela (201-69-234-220.dial-up.telesp.net.br [201.69.234.220])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 093D340178;
-        Mon, 30 Aug 2021 18:38:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630348719;
-        bh=dP2bWFnr904Q3phxdSJFO6HdgfMSWA65sEUBMQrG98c=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Type:In-Reply-To;
-        b=tEEdtAHGeXWPANZY9GSNFafDKT6z1GKu2nWOlfBIS5uxclCTIR+OK6BAg4Or0lddr
-         7eM/MOYbnRMI5cy14s8OTfzI3xxyCdrpWicFgGEmp7NF6tDKlRXWzrSj9R525VyKXY
-         HWGPF9TAWc7iCr/1oDyPbxDz9t0FApF31/RyuLlsG7z8NijAQBbfUa5pwF/hIsltuK
-         dCHv/HjFi6HCXmZgfdKFZPxT7KpfIKDHbyW/XA0MLwQnFn6HwuJhPQiLtu5SF28/gZ
-         hvxsKGH9U8JRSo6Jkhe7JH+B0fo94WfYDbFxmE+l73jzJu78L+rEdssvswM0inoqzc
-         6xPnmnMin+MHg==
-Date:   Mon, 30 Aug 2021 15:38:34 -0300
-From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     stable@vger.kernel.org, kernel list <linux-kernel@vger.kernel.org>,
-        daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org
-Subject: Re: CVE-2021-3600 aka bpf: Fix 32 bit src register truncation on
- div/mod
-Message-ID: <YS0lqmZg5Lq0scVv@mussarela>
-References: <20210826102337.GA7362@duo.ucw.cz>
+        Mon, 30 Aug 2021 14:42:33 -0400
+Received: by mail-ot1-f54.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso19536412otv.12;
+        Mon, 30 Aug 2021 11:41:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=a12sAAWnY24FkYzNdYZv9eBHcuK5LgwU3aNcX710ZsI=;
+        b=B2kfkJMR4NBwSS6TWHolHC697fP5y9uccF6i9dVMz8sOnEulCC700zfmFcgHf+ekY5
+         pmuI4/K+qosCBOhOt92qP7Ve+OtkIh3Omo4l2zqObAXlTfw7ZelmyyeXbH7kARmj5oaO
+         lPInwU8vjsHgUga1VhdS9k/mI/1v6BL0+hULkuiAIvj4nPr40VdCEWg5gFs+vmlp0jJw
+         47SOpH2fqFNJLGLh5LRs6ztb6SIE86K47vjvkTAnJFYwz/QVJBfcrlGTzO1LzmvLJ2a7
+         XGNHKRxeyvgzYvqHf9D+o8losGo34DT7ZsGOliJhnD+7wcvBrC9+hhcyGeuLR0ORIszM
+         CVJw==
+X-Gm-Message-State: AOAM533wYfab0vFe/29FRTCOVIp1p6b+j399oGKft67H+0X9yu7anL+T
+        XPMdraRowEafVyTBVQSyzSpcy7pcN6LNHaDU+dZhFg7zmi6kHQ==
+X-Google-Smtp-Source: ABdhPJwcZiH6LamUWb2y07rVGxWqwk/8+DbNlrfz5Ml0h/YCe3gtfgbDOi1QnBjglu2qiKBV6we3cRU+H22h1VI4+V0=
+X-Received: by 2002:a9d:7115:: with SMTP id n21mr15526909otj.321.1630348899304;
+ Mon, 30 Aug 2021 11:41:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826102337.GA7362@duo.ucw.cz>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 30 Aug 2021 20:41:28 +0200
+Message-ID: <CAJZ5v0hqMbLjTO71URfxCiKv6+Ha9BMA0ive1tEcjP7VqA1XZg@mail.gmail.com>
+Subject: [GIT PULL] Power management updates for v5.15-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 12:23:37PM +0200, Pavel Machek wrote:
-> Hi!
-> 
-> As far as I can tell, CVE-2021-3600 is still a problem for 4.14 and
-> 4.19.
-> 
-> Unfortunately, those kernels lack BPF_JMP32 support, and that support
-> is too big and intrusive to backport.
-> 
-> So I tried to come up with solution without JMP32 support... only to
-> end up with not seeing the bug in the affected code.
-> 
-> Changelog says:
-> 
->     bpf: Fix 32 bit src register truncation on div/mod
->     
->     While reviewing a different fix, John and I noticed an oddity in one of the
->     BPF program dumps that stood out, for example:
->     
->       # bpftool p d x i 13
->        0: (b7) r0 = 808464450
->        1: (b4) w4 = 808464432
->        2: (bc) w0 = w0
->        3: (15) if r0 == 0x0 goto pc+1
->        4: (9c) w4 %= w0
->       [...]
->     
->     In line 2 we noticed that the mov32 would 32 bit truncate the original src
->     register for the div/mod operation. While for the two operations the dst
->     register is typically marked unknown e.g. from adjust_scalar_min_max_vals()
->     the src register is not, and thus verifier keeps tracking original bounds,
->     simplified:
-> 
-> So this explains "mov32 w0, w0" is problematic, and fixes the bug by
-> replacing it with jmp32. Unfortunately, I can't do that in 4.19; plus
-> I don't really see how the bug is solved -- we avoided adding mov32
-> sequence that triggers the problem, but the problematic sequence could
-> still be produced by the userspace, no?
-> 
-> Does adjust_scalar_min_max_vals still need fixing?
-> 
-> Do you have any hints how to solve this in 4.19?
-> 
-> Best regards,
-> 								Pavel
-> -- 
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Hi Linus,
 
-Hi, Pavel.
+Please pull from the tag
 
-I have just sent the fixes for 4.14. I sent fixes for 4.19 last Friday.
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-5.15-rc1
 
-The problem here is that the verifier assumes the source register has a given
-value, but the fixups change that value to something else when it is truncated.
+with top-most commit fe583359ddf0d509275b87b635fa8b2e3794321e
 
-The fixups run after the verifier, so a similar sequence produced by userspace
-will be correctly verified, so no fixes are necessary on adjust_scalar_min_max
-for this specific issue. The fixed-up code is not verified again.
+ Merge branches 'pm-pci', 'pm-sleep', 'pm-domains' and 'powercap'
 
-The challenge in providing those fixes to 4.14 and 4.19 is the absence of JMP32
-in those kernels. So, AX was taken as a temporary, so it would still work on
-JITs.
+on top of commit 7ee5fd12e8cac91bdec6de8417b030ed05d5d7ee
 
-Cascardo.
+ Merge branch 'pm-opp'
+
+to receive power management updates for 5.15-rc1.
+
+These address some PCI device power management issues, add new
+hardware support to the RAPL power capping driver, add HWP guaranteed
+performance change notification support to the intel_pstate driver,
+replace deprecated CPU-hotplug functions in a few places, update CPU
+PM notifiers to use raw spinlocks, update the PM domains framework
+(new DT property support, Kconfig fix), do a couple of cleanups in
+code related to system sleep, and improve the energy model and
+the schedutil cpufreq governor.
+
+Specifics:
+
+ - Address 3 PCI device power management issues (Rafael Wysocki).
+
+ - Add Power Limit4 support for Alder Lake to the Intel RAPL power
+   capping driver (Sumeet Pawnikar).
+
+ - Add HWP guaranteed performance change notification support to
+   the intel_pstate driver (Srinivas Pandruvada).
+
+ - Replace deprecated CPU-hotplug functions in code related to power
+   management (Sebastian Andrzej Siewior).
+
+ - Update CPU PM notifiers to use raw spinlocks (Valentin Schneider).
+
+ - Add support for 'required-opps' DT property to the generic power
+   domains (genpd) framework and use this property for I2C on ARM64
+   sc7180 (Rajendra Nayak).
+
+ - Fix Kconfig issue related to genpd (Geert Uytterhoeven).
+
+ - Increase energy calculation precision in the Energy Model (Lukasz
+   Luba).
+
+ - Fix kobject deletion in the exit code of the schedutil cpufreq
+   governor (Kevin Hao).
+
+ - Unmark some functions as kernel-doc in the PM core to avoid
+   false-positive documentation build warnings (Randy Dunlap).
+
+ - Check RTC features instead of ops in suspend_test Alexandre
+   Belloni).
+
+Thanks!
+
+
+---------------
+
+Alexandre Belloni (1):
+      PM: sleep: check RTC features instead of ops in suspend_test
+
+Geert Uytterhoeven (1):
+      PM: domains: Fix domain attach for CONFIG_PM_OPP=n
+
+Kevin Hao (1):
+      cpufreq: schedutil: Use kobject release() method to free sugov_tunables
+
+Lukasz Luba (1):
+      PM: EM: Increase energy calculation precision
+
+Rafael J. Wysocki (3):
+      PCI: Use pci_update_current_state() in pci_enable_device_flags()
+      PCI: PM: Avoid forcing PCI_D0 for wakeup reasons inconsistently
+      PCI: PM: Enable PME if it can be signaled from D3cold
+
+Rajendra Nayak (3):
+      opp: Don't print an error if required-opps is missing
+      PM: domains: Add support for 'required-opps' to set default perf state
+      arm64: dts: sc7180: Add required-opps for i2c
+
+Randy Dunlap (1):
+      PM: sleep: unmark 'state' functions as kernel-doc
+
+Sebastian Andrzej Siewior (3):
+      powercap: intel_rapl: Replace deprecated CPU-hotplug functions
+      cpufreq: Replace deprecated CPU-hotplug functions
+      PM: sleep: s2idle: Replace deprecated CPU-hotplug functions
+
+Srinivas Pandruvada (2):
+      thermal: intel: Allow processing of HWP interrupt
+      cpufreq: intel_pstate: Process HWP Guaranteed change notification
+
+Sumeet Pawnikar (1):
+      powercap: Add Power Limit4 support for Alder Lake SoC
+
+Valentin Schneider (2):
+      PM: cpu: Make notifier chain use a raw_spinlock_t
+      notifier: Remove atomic_notifier_call_chain_robust()
+
+---------------
+
+ arch/arm64/boot/dts/qcom/sc7180.dtsi      | 24 +++++++++++++++
+ drivers/base/power/domain.c               | 30 +++++++++++++++++--
+ drivers/cpufreq/acpi-cpufreq.c            |  4 +--
+ drivers/cpufreq/cpufreq.c                 |  6 ++--
+ drivers/cpufreq/cpufreq_ondemand.c        |  4 +--
+ drivers/cpufreq/intel_pstate.c            | 43 ++++++++++++++++++++++++--
+ drivers/cpufreq/powernow-k8.c             |  6 ++--
+ drivers/cpufreq/powernv-cpufreq.c         |  4 +--
+ drivers/opp/of.c                          | 12 ++------
+ drivers/pci/pci.c                         | 31 +++++++++++--------
+ drivers/powercap/intel_rapl_common.c      | 50 +++++++++++++++----------------
+ drivers/powercap/intel_rapl_msr.c         |  2 ++
+ drivers/thermal/intel/therm_throt.c       |  7 ++++-
+ drivers/thermal/intel/thermal_interrupt.h |  3 ++
+ include/linux/energy_model.h              | 16 ++++++++++
+ include/linux/notifier.h                  |  2 --
+ include/linux/pm_domain.h                 |  1 +
+ kernel/cpu_pm.c                           | 50 +++++++++++++++++++++++--------
+ kernel/notifier.c                         | 19 ------------
+ kernel/power/energy_model.c               |  4 ++-
+ kernel/power/main.c                       |  2 +-
+ kernel/power/suspend.c                    |  4 +--
+ kernel/power/suspend_test.c               |  2 +-
+ kernel/sched/cpufreq_schedutil.c          | 16 ++++++----
+ 24 files changed, 235 insertions(+), 107 deletions(-)
