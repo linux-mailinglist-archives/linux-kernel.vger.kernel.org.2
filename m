@@ -2,108 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976733FB1EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 09:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3782E3FB1ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 09:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233627AbhH3H3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 03:29:32 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:48742 "EHLO m43-7.mailgun.net"
+        id S233830AbhH3HbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 03:31:19 -0400
+Received: from mga03.intel.com ([134.134.136.65]:7720 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233318AbhH3H3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 03:29:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630308518; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=1W6zz4vLpLWuK7so4fW2z298+DlEPxFPAHJwtsdQLvo=;
- b=Jwk4ZweBgMyrmoiOQTAqbxKQ4yfBl6UVDxdll3uMxNYUIIOfNu4JX1uwRGoNqc2eTM3aL+9S
- ik21FCbQbvonZm+qU5uwZygWEusodFdrM2NAEjVq84fwcFLViv4uwG1olHl9aSIIHJzFy/6g
- Ur3VrOmnUD1W+H9H8EW73wMGkjY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 612c88936fc2cf7ad91af158 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Aug 2021 07:28:19
- GMT
-Sender: dikshita=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C260CC43460; Mon, 30 Aug 2021 07:28:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: dikshita)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 410E3C4338F;
-        Mon, 30 Aug 2021 07:28:18 +0000 (UTC)
+        id S233318AbhH3HbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 03:31:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10091"; a="218266452"
+X-IronPort-AV: E=Sophos;i="5.84,362,1620716400"; 
+   d="scan'208";a="218266452"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 00:30:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,362,1620716400"; 
+   d="scan'208";a="459196497"
+Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Aug 2021 00:30:21 -0700
+Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mKbkL-0004xM-0p; Mon, 30 Aug 2021 07:30:21 +0000
+Date:   Mon, 30 Aug 2021 15:30:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/core] BUILD SUCCESS
+ 47fb0cfdb7a71a8a0ff8fe1d117363dc81f6ca77
+Message-ID: <612c8900.6LKOWI2XHLKc+qvd%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 30 Aug 2021 12:58:18 +0530
-From:   dikshita@codeaurora.org
-To:     stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v4 0/7] media: venus: Enable venus support on sc7280
-In-Reply-To: <1628588875-23790-1-git-send-email-dikshita@codeaurora.org>
-References: <1628588875-23790-1-git-send-email-dikshita@codeaurora.org>
-Message-ID: <22c9b9b2183fce1f426a7b82d71999ad@codeaurora.org>
-X-Sender: dikshita@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stan,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+branch HEAD: 47fb0cfdb7a71a8a0ff8fe1d117363dc81f6ca77  Merge tag 'irqchip-5.15' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
 
-Could you pls review and ack this series.
+elapsed time: 725m
 
-Thanks,
-Dikshita
+configs tested: 125
+configs skipped: 4
 
-On 2021-08-10 15:17, Dikshita Agarwal wrote:
-> This series enables support for 6xx venus encode/decode on sc7280.
-> 
-> The driver changes are dependent on [1]yaml and [2]dts patches.
-> 
-> [1] 
-> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=484019
-> [2] 
-> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=484727
-> 
-> Changes since v3:
->  - addressed comments on v3 (stanimir).
->  - rebased the changes on latest media tree.
-> 
-> Dikshita Agarwal (7):
->   venus: firmware: enable no tz fw loading for sc7280
->   media: venus: core: Add sc7280 DT compatible and resource data
->   media: venus: Add num_vpp_pipes to resource structure
->   media: venus: hfi: Skip AON register programming for V6 1pipe
->   venus: vdec: set work route to fw
->   media: venus: helpers: update NUM_MBS macro calculation
->   media: venus: Set buffer to FW based on FW min count requirement.
-> 
->  drivers/media/platform/qcom/venus/core.c           | 54 
-> ++++++++++++++++++++++
->  drivers/media/platform/qcom/venus/core.h           |  2 +
->  drivers/media/platform/qcom/venus/firmware.c       | 42 
-> ++++++++++++-----
->  drivers/media/platform/qcom/venus/helpers.c        | 23 +++++----
->  drivers/media/platform/qcom/venus/hfi_cmds.c       |  7 +++
->  drivers/media/platform/qcom/venus/hfi_helper.h     | 14 ++++++
->  drivers/media/platform/qcom/venus/hfi_msgs.c       |  7 +++
->  .../media/platform/qcom/venus/hfi_plat_bufs_v6.c   |  6 ++-
->  drivers/media/platform/qcom/venus/hfi_platform.c   | 13 ------
->  drivers/media/platform/qcom/venus/hfi_platform.h   |  2 -
->  .../media/platform/qcom/venus/hfi_platform_v6.c    |  6 ---
->  drivers/media/platform/qcom/venus/hfi_venus.c      |  4 ++
->  drivers/media/platform/qcom/venus/hfi_venus_io.h   |  2 +
->  drivers/media/platform/qcom/venus/vdec.c           | 42 
-> ++++++++++++++---
->  14 files changed, 175 insertions(+), 49 deletions(-)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210829
+mips                        qi_lb60_defconfig
+sparc64                          alldefconfig
+arm                          iop32x_defconfig
+sh                           sh2007_defconfig
+arm                          ixp4xx_defconfig
+powerpc                    sam440ep_defconfig
+alpha                            alldefconfig
+m68k                            q40_defconfig
+arm                         mv78xx0_defconfig
+arm                          simpad_defconfig
+arm                          collie_defconfig
+mips                         tb0219_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                           sunxi_defconfig
+sh                          r7780mp_defconfig
+arm                          badge4_defconfig
+mips                  decstation_64_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                 mpc8315_rdb_defconfig
+um                           x86_64_defconfig
+openrisc                            defconfig
+arm                         vf610m4_defconfig
+xtensa                          iss_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                   rts7751r2dplus_defconfig
+sh                        edosk7760_defconfig
+powerpc                  storcenter_defconfig
+powerpc                          allmodconfig
+s390                                defconfig
+powerpc                      makalu_defconfig
+powerpc                     powernv_defconfig
+m68k                        m5307c3_defconfig
+powerpc                mpc7448_hpc2_defconfig
+mips                         tb0226_defconfig
+sh                           se7780_defconfig
+nios2                               defconfig
+mips                           jazz_defconfig
+powerpc                    gamecube_defconfig
+powerpc                     mpc512x_defconfig
+mips                         rt305x_defconfig
+arc                     haps_hs_smp_defconfig
+arm                        shmobile_defconfig
+mips                           rs90_defconfig
+arm                            hisi_defconfig
+x86_64                              defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a014-20210829
+x86_64               randconfig-a016-20210829
+x86_64               randconfig-a015-20210829
+x86_64               randconfig-a012-20210829
+x86_64               randconfig-a013-20210829
+x86_64               randconfig-a011-20210829
+i386                 randconfig-a011-20210829
+i386                 randconfig-a016-20210829
+i386                 randconfig-a012-20210829
+i386                 randconfig-a014-20210829
+i386                 randconfig-a013-20210829
+i386                 randconfig-a015-20210829
+arc                  randconfig-r043-20210829
+riscv                randconfig-r042-20210829
+s390                 randconfig-r044-20210829
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+s390                 randconfig-c005-20210829
+i386                 randconfig-c001-20210829
+arm                  randconfig-c002-20210829
+riscv                randconfig-c006-20210829
+x86_64               randconfig-c007-20210829
+powerpc              randconfig-c003-20210829
+mips                 randconfig-c004-20210829
+x86_64               randconfig-a001-20210829
+x86_64               randconfig-a006-20210829
+x86_64               randconfig-a005-20210829
+x86_64               randconfig-a003-20210829
+x86_64               randconfig-a004-20210829
+x86_64               randconfig-a002-20210829
+i386                 randconfig-a001-20210829
+i386                 randconfig-a006-20210829
+i386                 randconfig-a005-20210829
+i386                 randconfig-a004-20210829
+i386                 randconfig-a003-20210829
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
