@@ -2,158 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50073FBAD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51E53FBAE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238234AbhH3RXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 13:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238090AbhH3RWx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 13:22:53 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A011C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:21:59 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id h1so27183287ljl.9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5o5eVa/D65IWc/Wg+t5VxQlOGV9cF34rB+LJ57J/HX4=;
-        b=AbT4fQMY8evNioe7bS2ZgMPICkmZO9rlEmyhbhH3DQ7H+k51ox2zQE9b3J4+71mO3w
-         lJmLaifpqmNxKzP/IB+N0sXlWuJ5xdboJu2esOvhmWMZzhmN+xAONOEOqDHy436zUrtP
-         1WRbVKYpcD45qWUnYvzXOgh+RmcJ8ja80XcSRXno6QccXCkLsMiXS4D0lLlTsz6BMn07
-         Bg8rvVKOd8TkS0IPlIsp0lrSVaAVk/AIWeTHtcO3/mH/9/xoolvOljxm1XVichI8jnJM
-         p5/hbgjP6DSlAGUCj4YuG7bnfrMd7q9bKfM5t2bXZ8HPrPYyX2/p0w7XOgPoffHOHxHQ
-         KWxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5o5eVa/D65IWc/Wg+t5VxQlOGV9cF34rB+LJ57J/HX4=;
-        b=AQ9wU95SDUojcSU/ylNAmpMZqrlkMjD/5W8DJk226geMxAThMprlBzul9FbOSSjB6v
-         RYqWZsPsuYOuwh43MafzZMg9POP1aCk4ffV4wxgxSBLNmCvb9NV7JNTe5j1Xy/2GWz8e
-         UOiJGbr3JuIes+so1kM67fDCubywfp6SfZcSW7vk0oPfK5swTeUEuhZj7ru63cfcZV2r
-         hg+M6ycbZth7veGshuLSswWP6gWH/WvP6QrN1NiSv2Kse+sa6jUusR52Js23WUl+hQcr
-         lKOfnRP1C1CX8XqoHWX6gC+dmm4639c7+YAr7LulT0z3Ol+tVPCHle7kOhPuAQlMm8jq
-         QETg==
-X-Gm-Message-State: AOAM530aLb9En0jGG/YNYOpw1bV/H3sWlOo/isap2mbhHJjHYRX1UIJv
-        zSSYGFK/j5d2AFXjVjW5gOVK93oLMYM47A==
-X-Google-Smtp-Source: ABdhPJwe7w9zR7dTsLfXrKe0TgaGffJeGK5jHfKncxWRV5n3Z5R7VcKHIA9UP37tCJ8VQK28vqLrvQ==
-X-Received: by 2002:a2e:8001:: with SMTP id j1mr21871927ljg.9.1630344117445;
-        Mon, 30 Aug 2021 10:21:57 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id t19sm1449850lfr.204.2021.08.30.10.21.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 10:21:56 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 20:21:55 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Skyler =?utf-8?Q?M=C3=A4ntysaari?= <lists@samip.fi>
-Cc:     linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org
-Subject: Re: [drm/amdgpu] Driver crashes on 5.13.9 kernel
-Message-ID: <20210830172155.dxwdeh6em2smg2on@kari-VirtualBox>
-References: <4ada1100-fbce-44e4-b69d-0f5196f86bcb@www.fastmail.com>
- <20210829173448.3cwk4rz6wfxfxdpj@kari-VirtualBox>
- <4d3fd1cb-9b33-4598-b351-54ea455c2a6e@www.fastmail.com>
+        id S237949AbhH3R1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 13:27:17 -0400
+Received: from lb1.peda.net ([130.234.6.152]:35069 "EHLO lb1.peda.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229709AbhH3R1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 13:27:15 -0400
+Received: from [84.251.221.37] (dsl-jklbng12-54fbdd-37.dhcp.inet.fi [84.251.221.37])
+        by lb1.peda.net (Postfix) with ESMTPSA id 08CFF60001C;
+        Mon, 30 Aug 2021 20:26:20 +0300 (EEST)
+Subject: Re: Why is Shmem included in Cached in /proc/meminfo?
+To:     Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <5a42eb2b-fd7b-6296-f5d6-619661ad1418@peda.net>
+ <0d11f620-0562-e150-259d-85de8d10cd7a@infradead.org>
+ <YSzuLbHr7fHshafX@casper.infradead.org>
+ <14465cfe-281a-0f67-dc17-ead34ec48365@suse.cz>
+ <YS0Eq+tNe4Pr7O0X@casper.infradead.org>
+From:   Mikko Rantalainen <mikko.rantalainen@peda.net>
+Message-ID: <0cdd0624-fcc3-386e-c651-7173dc3cbb59@peda.net>
+Date:   Mon, 30 Aug 2021 20:26:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <YS0Eq+tNe4Pr7O0X@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4d3fd1cb-9b33-4598-b351-54ea455c2a6e@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 07:15:29PM +0300, Skyler Mäntysaari wrote:
-> I have tried kernel 5.13.13, without any difference and I haven't
-> tried with an older kernel, as this hardware is that new that I have
-> very little faith in less than 5.x kernel would even have support for
-> the needed GPU.
-
-Yeah might be. 
-
-> What do you mean with git bisect? I have checked that the crash
-> happens somewhere in the monitor connection code:
-
-If we found some older version which work. Then with git bisect we can
-track which patch made this bug. But if it never work then git bisect
-won't help.
-
-You may still want to test with 5.14 as it was released today.
-
-If that does not work then I cannot help more. It is still very
-important to know if it is also broken in 5.14. Hopefully someone will
-able to help you. 
-
-  Argillander
-
-> [ 9605.269927] Call Trace:
-> [ 9605.269931]  core_link_enable_stream+0x746/0x870 [amdgpu]
-> [ 9605.270038]  dce110_apply_ctx_to_hw+0x519/0x560 [amdgpu]
-> [ 9605.270146]  dc_commit_state+0x2f6/0xa50 [amdgpu]
-> [ 9605.270249]  amdgpu_dm_atomic_commit_tail+0x569/0x26a0 [amdgpu]
-> [ 9605.270326]  ? kfree+0xc3/0x460
-> [ 9605.270329]  ? dcn30_validate_bandwidth+0x11f/0x270 [amdgpu]
-> [ 9605.270402]  ? dcn30_validate_bandwidth+0x11f/0x270 [amdgpu]
-> [ 9605.270469]  ? dm_plane_helper_prepare_fb+0x19c/0x250 [amdgpu]
-> [ 9605.270542]  ? __cond_resched+0x16/0x40
-> [ 9605.270544]  ? __wait_for_common+0x3b/0x160
-> [ 9605.270545]  ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
-> [ 9605.270548]  commit_tail+0x94/0x130 [drm_kms_helper]
-> [ 9605.270557]  drm_atomic_helper_commit+0x113/0x140 [drm_kms_helper]
-> [ 9605.270562]  drm_atomic_helper_set_config+0x70/0xb0 [drm_kms_helper]
-> [ 9605.270568]  drm_mode_setcrtc+0x1d3/0x6d0 [drm]
-> [ 9605.270582]  ? drm_mode_getcrtc+0x180/0x180 [drm]
-> [ 9605.270590]  drm_ioctl_kernel+0xaa/0xf0 [drm]
-> [ 9605.270600]  drm_ioctl+0x220/0x3c0 [drm]
-> [ 9605.270609]  ? drm_mode_getcrtc+0x180/0x180 [drm]
-> [ 9605.270618]  amdgpu_drm_ioctl+0x49/0x80 [amdgpu]
-> [ 9605.270673]  __x64_sys_ioctl+0x83/0xb0
-> [ 9605.270675]  do_syscall_64+0x40/0xb0
-> [ 9605.270677]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+Matthew Wilcox (2021-08-30 19:17 Europe/Helsinki):
+> On Mon, Aug 30, 2021 at 06:05:58PM +0200, Vlastimil Babka wrote:
+>> On 8/30/21 16:41, Matthew Wilcox wrote:
+>>> Another point of view is that everything in tmpfs is part of the page
+>>> cache and can be written out to swap, so keeping it as part of Cached
+>>> is not misleading.
+>>
+>> Yeah, but with that view, anonymous memory can be also written out to swap. But
+>> it's non-intuitive that something called "Cached" will contain something that
+>> (if not dirty) can't be just dropped.
 > 
+> That's equally true for normal filesystems & shmem though.  Consider shmem
+> written to swap, then brought back in by a read.  Now it can be dropped
+> without being swapped out.  Or even a file on shmem ftruncated to a
+> large size, then only read.  The pages will be clean and full of zeroes.
+> They can be dropped under memory pressure without being written out.
 > 
-> On Sun, Aug 29, 2021, at 20:34, Kari Argillander wrote:
-> > On Sun, Aug 29, 2021 at 06:38:39PM +0300, Skyler Mäntysaari wrote:
-> > > Hello everyone on the list,
-> > 
-> > This is universal kernel list and it is not read by many. I have added
-> > hopefully right list (amd-gfx@lists.freedesktop.org).
-> > 
-> > > Subject: Re: [drm/amdgpu] Driver crashes on 5.13.9 kernel
-> > 
-> > I have no influence or knowledge about this driver, but I still try to
-> > help because it seems good bug report. Have you test with 5.13.13 or
-> > 5.14-rc7. Does this work with some other kernel? If needed can you git
-> > bisect if needed? You will probably get some support for it if needed.
-> > 
-> > Argillander
-> > 
-> > > I thought that this should probably be discussed here,  so I came
-> > > across weird issue to me which is driver crashing while trying to get
-> > > one of my monitors working on Gentoo.  I would like to ask here how
-> > > that would happen that the Display appears to jump from DisplayPort-6
-> > > (physical port) to DisplayPort-7 (which doesn't exist physically)? Has
-> > > anyone else experienced this?
-> > > 
-> > > It seems that the driver sees a rather large amount of inputs for the
-> > > GPU, even though I only have 4, 3 of which are DisplayPort, and the
-> > > issue monitor is also on DisplayPort. 
-> > > 
-> > > Hardware:
-> > > CPU: AMD Ryzen 5800X
-> > > GPU: AMD Radeon RX 6800
-> > > System Memory: 32GB of DDR4 3200Mhz
-> > > Display(s): BenQ Zowie XL2430 (1080p), DELL U2414H (1080p), DELL U2415 (1920x1200)
-> > > Type of Diplay Connection: All are connected via Display-Port
-> > > 
-> > > Related DRM issue:
-> > > https://gitlab.freedesktop.org/drm/amd/-/issues/1621 which includes
-> > > logs too.
-> > > 
-> > > 
-> > > Best regards,
-> > > Skyler Mäntysaari
+>> I've had to point this Shmem oddity out a
+>> number of times to someone, so I would say that it would be much better if it
+>> was not part of Cached.
+>> However, if we change it now, we might create even larger confusion. People
+>> looking at the output for the first time (and IIRC also the 'free' command uses
+>> it) on a new kernel wouldn't be misled anymore. But people working with both old
+>> and new kernels will now have to take in account that it changed at some
+>> point... not good.
+> 
+> Another good point.
+
+I agree that backwards compatibility is a huge point to consider.
+
+That said, I always assumed that Shmem was in *addition* to Cached and I
+was happy to see lots of Cached on all my systems. However, when I
+started to run into OOM situations with 10+ GB of Cached I guessed that
+something was not working correctly with memory reclaim - it turned out
+that the problem was that over 95% of my "Cached" was actually Shmem.
+
+Do you know any existing software where it's important to have the
+behavior of Cached and Shmem that the current kernel has?
+
+Without backwards compatibility issues I'd prefer following fields:
+
+- Dirty: total amount of RAM used to buffer data to be written on
+permanent storage (dirty). Gets converted to Cached when write is
+complete. (Actually I would call this "Buffers" but Dirty is okay, too.)
+- Cached: total amount of RAM used to improve *performance* that can be
+*immediately dropped* without any data-loss â€“ note that this includes
+all untouched RAM backed by swap.
+- Shared: total amount of RAM shared between multiple process that
+cannot be freed even if any single process gets killed. (If this is even
+possible to know - note that this would *only* contain COW pages in
+practice. We already have Committed_AS which is about as good for real
+world heuristics.)
+- RamDrive: total amount of RAM used for tmpfs storage and similar. Note
+that this would tend towards zero when tmpfs storage is written to swap.
+- Committed_RamDrive: virtual amount of space used for tmpfs (e.g. large
+truncated files that, if written, will require to be backed for real).
+- Swapped_RamDrive: the amount of swap backing tmpfs and similar.
+- LegacyIPCS: all stuff reported by ipcs.
+
+That is, I would declare "Cached" as true cache and split Shmem into
+separate parts that are easier to understand. The Shmem currently seems
+to be catch-all class for more and more stuff. Obviously the Shmem field
+could be kept as precomputed sum of the separate parts for backwards
+compatibility. Does Shmem nowadays include other big memory users but
+ipcs and tmpfs?
+
+My point is that it's currently too hard to understand (at least) tmpfs
+and ipcs load on RAM and swap.
+
+I guess the important thing to decide is if "Cached" should represent
+actual cache size or is backwards compatibility more important? My guess
+is that the backwards compability would affect statistics and heuristics
+only but that's obviously just a guess.
+
+Of course one possible solution is to keep "Cached" as is and introduce
+"Cache" with the real cache semantics (that is, it includes sum of
+(Cached - Shmem) and memory backed RAM). That way system administrators
+would at least see two different fields with unique values and look for
+the documentation.
+
+-- 
+Mikko
