@@ -2,134 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A11A83FB251
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2B03FB256
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234742AbhH3IRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 04:17:13 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:51671 "EHLO pegase2.c-s.fr"
+        id S234529AbhH3ITn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 04:19:43 -0400
+Received: from mout.gmx.net ([212.227.15.19]:37297 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234225AbhH3IRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 04:17:12 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Gyjns04wcz9sTM;
-        Mon, 30 Aug 2021 10:16:17 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id iERx5sgHHfDy; Mon, 30 Aug 2021 10:16:16 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gyjnr67xkz9sTL;
-        Mon, 30 Aug 2021 10:16:16 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9AB998B787;
-        Mon, 30 Aug 2021 10:16:16 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Orv0LjfgKuUK; Mon, 30 Aug 2021 10:16:16 +0200 (CEST)
-Received: from [172.25.230.100] (po15451.idsi0.si.c-s.fr [172.25.230.100])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5D64F8B784;
-        Mon, 30 Aug 2021 10:16:16 +0200 (CEST)
-Subject: Re: [PATCH v4 4/4] powerpc/ptdump: Convert powerpc to GENERIC_PTDUMP
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <b864a92693ca8413ef0b19f0c12065c212899b6e.1625762905.git.christophe.leroy@csgroup.eu>
- <03166d569526be70214fe9370a7bad219d2f41c8.1625762907.git.christophe.leroy@csgroup.eu>
- <YSvYFTSwP5EkXQZ0@Ryzen-9-3900X.localdomain>
- <5c479866-f31a-3579-9d71-357c85b777d0@csgroup.eu>
- <87tuj7e5e5.fsf@mpe.ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <2bd9fa19-07b0-c187-c7dd-c6d544e34739@csgroup.eu>
-Date:   Mon, 30 Aug 2021 10:16:15 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233318AbhH3ITm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 04:19:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630311518;
+        bh=Xp1OJEHV+WZa1v1ObG+jmrRjA+bQ8meQdy/52KVciko=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=E8Da9OeHcdQTEcThIxAVsa1/lR37O8OG/ifbR+Z5wOxFrzzond03WCDOgxvFQHrjV
+         UKLuHhuRqincfxjJnN0dKbfXD9WxMcSnd8OYDNsaWtafO0YQvn8zCrYRkflskTay9D
+         YlY0VTJF8vsqc4g3kqAg6bJAXmKqWNV0fFZtZ9Kw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.146.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MIdeR-1mFPRL2H01-00EajI; Mon, 30
+ Aug 2021 10:18:38 +0200
+Subject: Re: linux-next: manual merge of the tty tree with the parisc-hd tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Greg KH <greg@kroah.com>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Jiri Slaby <jslaby@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210830154605.2abe717e@canb.auug.org.au>
+ <17384403-c428-70a9-4930-390869a45405@gmx.de>
+ <20210830173309.630f47c0@canb.auug.org.au>
+From:   Helge Deller <deller@gmx.de>
+Message-ID: <eae99b8e-530e-d777-d323-ff4cb8a1ee94@gmx.de>
+Date:   Mon, 30 Aug 2021 10:17:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <87tuj7e5e5.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210830173309.630f47c0@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:heGvdh3xUjQXzaFBuSJY11MAMDOI2tBHhIv2NCal1ZeAnNX51aW
+ USpKjzmptXdb7bHuEzf7roLbVg2CRl9IbIQzqjKDGpOafYT9XHA4d7b7ZRT/hvH2tu4XIRu
+ CTSxkfKbR+rNUojyCEHJjofddXRCQOKylbGs0ZpesNvRI5WxUJx4ZA/qXobABCGTBftX4tI
+ 13tfPIPB+VLyMk5nSNiEA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:L5k49yeVlL0=:bODBQSFDQGH3oj2h9VKPgD
+ EHfCVwkTq5LoTnZ31767Oq0MbU75zi7fMuznMEOK6524Ge8IGEU6PChegxj2ICeWXNxEQiPdA
+ J6+yb793FRHEri6ZQ3CrkPmLfQP9wVJgLLA/I8aS+xw6iBc29fn2/XxUPZ+bJNGZ74YLS46gQ
+ O0KDta+rdhGRmsB395X4vcoblKCDD9tTR6Ev9B3iVrKwqk6dyh5u2Ji4MfgWsr/3oHy8hiTcZ
+ poB8FAIAUQW/oR6oPXgg1yFMvSokYC49y6FoQN/c1Ul1ADmrDphw4eeXCEgRtsc5EcebGcjnH
+ OPTGYVecm5HruxXAvO8YwOGE5wQmIFANwCJEfzOnhiCcC+4ahnlfCrdvxB310A2+pGclStVi3
+ J0M5pi7DQE8crrWS9yjgLZPhPZCXGqlPZM3T52tg07CCnVy+IyIwd+zEt+WCk2MPoQgF9R/Wp
+ 7exiJ2ds42QwTy4MeRBQTwAuv13ieENBxVpPM4kaxLJkk3Z/tL1o++gGHD51PTriaUPnGJwVF
+ GiD3gVe7xs6U0ei6v2w+u1TbREYjwDjk2aCl4HjkuYOittcmyTpUaqjFOOkzcsPV/0/IRci3N
+ EaV4W7PtW3lvpz0x0DPbuwqpBuQknsYVXXhIRqkzX7yV0xem58/33L+YpIznNp5SUqoHVDxe6
+ TvQ0lZ1peslHqexksxzIgZDZkfRU72m3ZJDMUqx/khIMg++cElwar8vJ15Rhr/WPuYq86PW3T
+ fdgad/zyboVEU436F8HUS0gzIWDaGhhG9MA+ioo7xS6PMZbCf2Fh04d/31nd7+bppxgbHA4vW
+ Os5xxIG0sJa6ZsAHzUMRyhREhMHVCxaf+yV3tAY4B7YlYlGxwh7Ho74S/ULShpYJZiU+MrtOt
+ dpHlaqAw4Ce1ZFI/CiViQoAmsw0iZqiOU2ZsCiryG6B7GG0OVBMHgPEpvomXCityW9xzY/nCm
+ /ykrFfJ1D+eBhy/wFW+6wj2MfATK3bq3flQoWnnkQeAIn7rFGJ37jeYqVSVHavnSh78qdmjts
+ m5AWBJQMg0Sy/spCQ6ssIaOz8OZbF5SnvjyZ9TKMaL/pNivloHtNJ+4783EBgZINvSc0F7eg0
+ kEtaK/HdnPnCfVGUDjSAHUhyPeTuBgk5wyy
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 30/08/2021 à 09:52, Michael Ellerman a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->> Hi Nathan,
+On 8/30/21 9:33 AM, Stephen Rothwell wrote:
+> Hi Helge,
+>
+> On Mon, 30 Aug 2021 09:14:33 +0200 Helge Deller <deller@gmx.de> wrote:
 >>
->> Le 29/08/2021 à 20:55, Nathan Chancellor a écrit :
->>> Hi Christophe,
+>> On 8/30/21 7:46 AM, Stephen Rothwell wrote:
+>>> Today's linux-next merge of the tty tree got a conflict in:
 >>>
->>> On Thu, Jul 08, 2021 at 04:49:43PM +0000, Christophe Leroy wrote:
->>>> This patch converts powerpc to the generic PTDUMP implementation.
->>>>
->>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>>     arch/parisc/kernel/pdc_cons.c
 >>>
->>> This patch as commit e084728393a5 ("powerpc/ptdump: Convert powerpc to
->>> GENERIC_PTDUMP") in powerpc/next causes a panic with Fedora's ppc64le
->>> config [1] when booting up in QEMU with [2]:
+>>> between commit:
 >>>
->>> [    1.621864] BUG: Unable to handle kernel data access on read at 0xc0eeff7f00000000
->>> [    1.623058] Faulting instruction address: 0xc00000000045e5fc
->>> [    1.623832] Oops: Kernel access of bad area, sig: 11 [#1]
->>> [    1.624318] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA PowerNV
->>> [    1.625015] Modules linked in:
->>> [    1.625463] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc7-next-20210827 #16
->>> [    1.626237] NIP:  c00000000045e5fc LR: c00000000045e580 CTR: c000000000518220
->>> [    1.626839] REGS: c00000000752b820 TRAP: 0380   Not tainted  (5.14.0-rc7-next-20210827)
->>> [    1.627528] MSR:  9000000002009033 <SF,HV,VEC,EE,ME,IR,DR,RI,LE>  CR: 84002482  XER: 20000000
->>> [    1.628449] CFAR: c000000000518300 IRQMASK: 0
->>> [    1.628449] GPR00: c00000000045e580 c00000000752bac0 c0000000028a9300 0000000000000000
->>> [    1.628449] GPR04: c200800000000000 ffffffffffffffff 000000000000000a 0000000000000001
->>> [    1.628449] GPR08: c0eeff7f00000000 0000000000000012 0000000000000000 0000000000000000
->>> [    1.628449] GPR12: 0000000000000000 c000000002b20000 fffffffffffffffe c000000002971a70
->>> [    1.628449] GPR16: c000000002960040 c0000000011a8f98 c00000000752bbf0 ffffffffffffffff
->>> [    1.628449] GPR20: c2008fffffffffff c0eeff7f00000000 c000000002971a68 c00a0003ff000000
->>> [    1.628449] GPR24: c000000002971a78 0000000000000002 0000000000000001 c0000000011a8f98
->>> [    1.628449] GPR28: c0000000011a8f98 c0000000028daef8 c200800000000000 c200900000000000
->>> [    1.634090] NIP [c00000000045e5fc] __walk_page_range+0x2bc/0xce0
->>> [    1.635117] LR [c00000000045e580] __walk_page_range+0x240/0xce0
->>> [    1.635755] Call Trace:
->>> [    1.636018] [c00000000752bac0] [c00000000045e580] __walk_page_range+0x240/0xce0 (unreliable)
->>> [    1.636811] [c00000000752bbd0] [c00000000045f234] walk_page_range_novma+0x74/0xb0
->>> [    1.637459] [c00000000752bc20] [c000000000518448] ptdump_walk_pgd+0x98/0x170
->>> [    1.638138] [c00000000752bc70] [c0000000000aa988] ptdump_check_wx+0x88/0xd0
->>> [    1.638738] [c00000000752bd50] [c00000000008d6d8] mark_rodata_ro+0x48/0x80
->>> [    1.639299] [c00000000752bdb0] [c000000000012a34] kernel_init+0x74/0x1a0
->>> [    1.639842] [c00000000752be10] [c00000000000cfd4] ret_from_kernel_thread+0x5c/0x64
->>> [    1.640597] Instruction dump:
->>> [    1.641021] 38e7ffff 39490010 7ce707b4 7fca5436 79081564 7d4a3838 7908f082 794a1f24
->>> [    1.641740] 78a8f00e 30e6ffff 7ea85214 7ce73110 <7d48502a> 78f90fa4 2c2a0000 39290010
->>> [    1.642771] ---[ end trace 6cf72b085097ad52 ]---
->>> [    1.643220]
->>> [    2.644228] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
->>> [    2.645523] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+>>>     9613b0cb3eb4 ("tty: pdc_cons, free tty_driver upon failure")
 >>>
->>> This is not compiler specific, I can reproduce it with GCC 11.2.0 and
->>> binutils 2.37. If there is any additional information I can provide,
->>> please let me know.
+>>> from the parisc-hd tree and commits:
+>>>
+>>>     0524513afe45 ("tty: don't store semi-state into tty drivers")
+>>>     72fdb403008c ("tty: pdc_cons, free tty_driver upon failure")
+>>>
+>>> from the tty tree.
+>>>
+>>> I fixed it up (I just used the latter version) ...
 >>
->> Can you provide a dissassembly of __walk_page_range() ? Or provide your vmlinux binary.
-> 
-> It seems to be walking of the end of the pgd.
-> 
-> [    3.373800] walk_p4d_range: addr c00fff0000000000 end c00fff8000000000
-> [    3.373852] walk_p4d_range: addr c00fff8000000000 end c010000000000000	<- end of pgd at PAGE_OFFSET + 4PB
-> [    3.373905] walk_p4d_range: addr c010000000000000 end c010008000000000
+>> The latter version triggers build errors.
+>> Jiri's patch needs fixing. Instead of:
+>> +               tty_driver_kref_put(driver);
+>> it needs to be:
+>> +               tty_driver_kref_put(pdc_console_tty_driver);
+>>
+>> Jiri, maybe you can fix it in your tree?
+>> I'm happy to drop the patch from my tree.
+>
+> The tty tree commits first create a "driver" variable that is used
+> until it is clear everything works and then it is assigned to
+> pdc_console_tty_driver.
 
-Yes, I want it to walk from TASK_SIZE_MAX up to 0xffffffffffffffff :)
+Ah, right. I didn't checked. Looks good and compiles cleanly.
+I'll drop the patch from my tree, so everything is OK now.
 
-static struct ptdump_range ptdump_range[] __ro_after_init = {
-	{TASK_SIZE_MAX, ~0UL},
-	{0, 0}
-};
-
-
-Ok, well, ppc32 go up to 0xffffffff
-
-What's the top address to be used for ppc64 ?
+Helge
