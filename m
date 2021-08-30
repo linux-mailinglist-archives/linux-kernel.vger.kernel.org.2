@@ -2,83 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBDBE3FBEC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 00:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 518EC3FBEDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 00:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238907AbhH3WLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 18:11:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
+        id S238793AbhH3WNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 18:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238554AbhH3WLY (ORCPT
+        with ESMTP id S238480AbhH3WNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 18:11:24 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC07C061796;
-        Mon, 30 Aug 2021 15:10:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=hX7HRTcv4QfX8vcdgUwPONffQyFjE2f8SSCFViSYJH8=; b=0e8f1gVleL+xeNyRndnSQ8MsoM
-        R7hquXfqn2bRJ9h/SwbMOe57+vv9uBmTnONlUMrGcoWlLzaS/TZiRJPGLY56cGFwKyT8grpYK8AJg
-        EkU2q1IqxEEYrfKdG6umd2+I+3djwPkGRnPJRHRvu4xnZ54P+elZThpyn2dUD8QKDeukkhDmMrW75
-        Ii26qjx31okgyenvglZfgJ1y8nxSRxY8VI4nlqGuewquUECgwZwlvhbuJtl/gPYn46yryIDd6UF1X
-        ffLroqGM9MtGzBhDqcDaFPf3/8p3VxMZ6Z/dzRSuFkNfFjA1FH3J3t1uSat5boFMD5DdNGhrd4hon
-        YviAMKxw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKpTk-000khk-DF; Mon, 30 Aug 2021 22:10:08 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org,
-        ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org,
-        philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
-        jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
-        johannes.berg@intel.com, chris.obbard@collabora.com,
-        krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com,
-        chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
-Cc:     linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 15/15] pd: add error handling support for add_disk()
-Date:   Mon, 30 Aug 2021 15:10:00 -0700
-Message-Id: <20210830221000.179369-16-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
-References: <20210830221000.179369-1-mcgrof@kernel.org>
+        Mon, 30 Aug 2021 18:13:12 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3637C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 15:12:17 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id w4so28379765ljh.13
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 15:12:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K/wJoxG+i27oKrP3cLakziJxV0qVvhUy/gmxpm7mduk=;
+        b=MAt9ZAiyMAMatDdPJvAfiKfJJXabP2nn30Sq/tL3gFwRDEMkaw/Ao71akLjCtsx/de
+         fkZENWkXI4qiIv/TVIrKCgurVEQaY9eGRALaN+kPCUUXgK1tqxqCQWkLhK7QObP6eGME
+         sgONDssS2VOy6f32TGrqfUxG0cUNOal0g4Xcs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K/wJoxG+i27oKrP3cLakziJxV0qVvhUy/gmxpm7mduk=;
+        b=GBSJhFOap3E4H8uVADLIArp9PqtiC1M4vLxZpVfaTayqMOekauu75BRrrJURXN6Yzj
+         vcZRxg1dDSMh+aIQ6SVhxzFm4j1sWSRnGU0gNRa4FsR6O/dA3RTWuTLRWOlM6ev+9OiR
+         jFHq/gexYEe4orbxAUOcbtrnv4v8d0OyJ+EmW7mASDoc0cj1V4s5blRAzxo4Lr6B4ghZ
+         BwCwXX+BGGTp0GtIchRsfpUXDzSvkDBAiYlBY6wDRKXy2BypvMkxnyLo7CCylYGpvSlJ
+         d4j0Bvr5F3GiKPrrKXkqrc+BbEL7INIP45mv+8gkPxwS4q5sXuNYLtlO9PEaZDZA6t9G
+         q7QQ==
+X-Gm-Message-State: AOAM533GotnThy6/w5RVvvmtHVFjA21W4c/EJ7UEzh+Fdmf57ym4IL/C
+        IPYL05MVHJVbl8kGhXcU7b4/D870Sxg7bJNMirM=
+X-Google-Smtp-Source: ABdhPJzwuvPpJClwtUg+3EVrIa08hexpNvsztA9Dts11Afq8ectND4l0vwbD271xDsL3gc89UuzbJQ==
+X-Received: by 2002:a05:651c:1121:: with SMTP id e1mr22020349ljo.468.1630361535910;
+        Mon, 30 Aug 2021 15:12:15 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id bt42sm1516093lfb.118.2021.08.30.15.12.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 15:12:15 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id q21so28381535ljj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 15:12:15 -0700 (PDT)
+X-Received: by 2002:a2e:84c7:: with SMTP id q7mr21908833ljh.61.1630361535140;
+ Mon, 30 Aug 2021 15:12:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <20210830154702.247681585@linutronix.de> <20210830162545.374070793@linutronix.de>
+ <YS0ylo9nTHD9NiAp@zn.tnic> <87zgsyg0eg.ffs@tglx> <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
+ <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com> <87r1eafv7k.ffs@tglx>
+In-Reply-To: <87r1eafv7k.ffs@tglx>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 30 Aug 2021 15:11:59 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgJPH2fQOckAK0+ZThMgHSsXvAG+iYk7C9+zsnqMWUbrw@mail.gmail.com>
+Message-ID: <CAHk-=wgJPH2fQOckAK0+ZThMgHSsXvAG+iYk7C9+zsnqMWUbrw@mail.gmail.com>
+Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in restore_fpregs_from_user()
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+On Mon, Aug 30, 2021 at 3:01 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> So yes, the negation does not matter, but the ability to check whether
+> the fail was caused by #PF or not matters.
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/block/paride/pd.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+See my secopd email with a note on access granularity, and why this
+kind of model doesn't seem to work in general and seems dangerous.
 
-diff --git a/drivers/block/paride/pd.c b/drivers/block/paride/pd.c
-index 500b89a4bdaf..226ed5c93b68 100644
---- a/drivers/block/paride/pd.c
-+++ b/drivers/block/paride/pd.c
-@@ -938,8 +938,12 @@ static int pd_probe_drive(struct pd_unit *disk, int autoprobe, int port,
- 	if (ret)
- 		goto put_disk;
- 	set_capacity(disk->gd, disk->capacity);
--	add_disk(disk->gd);
-+	ret = add_disk(disk->gd);
-+	if (ret)
-+		goto cleanup_disk;
- 	return 0;
-+cleanup_disk:
-+	blk_cleanup_disk(&disk);
- put_disk:
- 	put_disk(p);
- 	disk->gd = NULL;
--- 
-2.30.2
-
+             Linus
