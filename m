@@ -2,133 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0DC3FBB56
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5B13FBB5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238342AbhH3SAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:00:41 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51556 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238134AbhH3SAk (ORCPT
+        id S238386AbhH3SBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238200AbhH3SBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:00:40 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4B61222121;
-        Mon, 30 Aug 2021 17:59:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630346385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fjtm8tVefXUCT0rdTzMn/o5zpc91NrF6pXy1z50nDUM=;
-        b=TyI+3u+QEneileBnDmwJhe/7GU/cZ4f+Sj8PsvZ9ugakdDVaT8ur0+WioUJKotS8fyURo0
-        Mm12eWM1b0hCFWGb0F0M+ECUj56MCl6ARx+3TzD2Y8ZHaqgpxOq8DgRVIyvlvXxef349Py
-        dUMXeDS74InyxljMGcbhds/MtAMoLJk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D6D6F13A98;
-        Mon, 30 Aug 2021 17:59:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 74kZM5AcLWEBdAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 30 Aug 2021 17:59:44 +0000
-Date:   Mon, 30 Aug 2021 19:59:43 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Message-ID: <YS0cj+0thCHmXw/M@blackbook>
-References: <20210825213750.6933-1-longman@redhat.com>
- <20210825213750.6933-6-longman@redhat.com>
- <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
- <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
- <YShjb2WwvuB4s4gX@slm.duckdns.org>
- <d22ea3be-2429-5923-a80c-5af3b384def9@redhat.com>
- <YSlY0H/qeXQIGOfk@slm.duckdns.org>
- <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
+        Mon, 30 Aug 2021 14:01:50 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B640EC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 11:00:56 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id m4so9035438pll.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 11:00:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oq9MDxzCjWgZNcYhm/uX+EK+PnOXVXPhzQM6wZgcoeE=;
+        b=kVBExtZHras/dMW0XEphzWaLdTNxWjkXTTLPnwH7jY/ARGID45chscVl7ZCR9lfpyk
+         HgKvgVhfHJZOeZERjcOz3Hus0M5AuPSD7lDTX53cYDz1+fRBzbjxaRBuW/6jOKZ0YFox
+         TMQsi++O2uym7RWWbvuazzO8B7CQ/DtWNVrW4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oq9MDxzCjWgZNcYhm/uX+EK+PnOXVXPhzQM6wZgcoeE=;
+        b=qA/rW08EVUl+11LEqVJTmfTPHbzM7h0Z4d6V7tkg3lFwgx3R+F688XIgZ8WuySS09m
+         Ftcl9qFgCG2ccWOnDDG0MxAiKvhH0AFn8+g0vV+KbUI/a7fTEAnESJAdxK6Kywr/XQl3
+         2zNGT0RIEkGWNNtT829ARm65Ya2IIUZCy1VYAzFexPpVsP5hg0vtqdmxRhrnhcjgWgsN
+         i9Nka1xvLyG2gXydgCLAG4buV5tNq+XeSPXZkwYMJgTfMoGr1UTXlkjROCsigxE4arM1
+         hAEGzlEukKwclxCTWrUF0eKX0AOvjH06cD4lLiRwY9gmLB1EJtcBVgw3nqfkKGQAJyXj
+         qiSg==
+X-Gm-Message-State: AOAM531jktDYniy9E/+P4xPCPOVFJwPdumRvvRdPii+W5C8/J3MHE8rI
+        aQBV/WBaUGFzNmbum4b6b+i/c6h7/eybiQ==
+X-Google-Smtp-Source: ABdhPJyglnQy5wqZONmvuUL5Li8U/nvxCT3THsHP2Hv0vubdhGRNoAcqUtb64IAfjN0K3WmEmLI3EQ==
+X-Received: by 2002:a17:902:bb91:b0:138:7c08:b412 with SMTP id m17-20020a170902bb9100b001387c08b412mr776911pls.25.1630346456226;
+        Mon, 30 Aug 2021 11:00:56 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:17e6:fae1:31c8:850b])
+        by smtp.gmail.com with UTF8SMTPSA id p9sm15402978pfn.97.2021.08.30.11.00.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 11:00:55 -0700 (PDT)
+From:   Gwendal Grignou <gwendal@chromium.org>
+To:     bleung@chromium.org, enric.balletbo@collabora.com,
+        groeck@chromium.org
+Cc:     linux-kernel@vger.kernel.org,
+        Gwendal Grignou <gwendal@chromium.org>
+Subject: [PATCH v3] platform/chrome: cros_ec_trace: Fix format warnings
+Date:   Mon, 30 Aug 2021 11:00:50 -0700
+Message-Id: <20210830180050.2077261-1-gwendal@chromium.org>
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+Fix printf format issues in new tracing events.
 
-On Fri, Aug 27, 2021 at 06:50:10PM -0400, Waiman Long <llong@redhat.com> wrote:
-> So the new rules will be:
+Fixes: 814318242 ("platform/chrome: cros_ec_trace: Add fields to command traces")
 
-When I followed the thread, it seemed to me you're talking past each
-other a bit. I'd suggest the following terminology:
+Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+---
+Changes since v2:
+- Use %u instead of %d for sample timestamp it is presented as a u32 as
+  well.
+- Use %u instead of %d for ec_sensor_num, index is unsigned.
+Changes since v1:
+- Use %u instead of %d for ec timestamp, it is presented as a u32.
 
-- config space: what's written by the user and saved,
+ drivers/platform/chrome/cros_ec_trace.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-- reality space: what's currently available (primarily subject to
-  on-/offlinng but I think it'd be helpful to consider here also what's
-  given by the parent),
+diff --git a/drivers/platform/chrome/cros_ec_trace.h b/drivers/platform/chrome/cros_ec_trace.h
+index f50b9f9b8610..7e7cfc98657a 100644
+--- a/drivers/platform/chrome/cros_ec_trace.h
++++ b/drivers/platform/chrome/cros_ec_trace.h
+@@ -92,7 +92,7 @@ TRACE_EVENT(cros_ec_sensorhub_timestamp,
+ 		__entry->current_time = current_time;
+ 		__entry->delta = current_timestamp - current_time;
+ 	),
+-	TP_printk("ec_ts: %12lld, ec_fifo_ts: %12lld, fifo_ts: %12lld, curr_ts: %12lld, curr_time: %12lld, delta %12lld",
++	TP_printk("ec_ts: %9u, ec_fifo_ts: %9u, fifo_ts: %12lld, curr_ts: %12lld, curr_time: %12lld, delta %12lld",
+ 		  __entry->ec_sample_timestamp,
+ 		__entry->ec_fifo_timestamp,
+ 		__entry->fifo_timestamp,
+@@ -122,7 +122,7 @@ TRACE_EVENT(cros_ec_sensorhub_data,
+ 		__entry->current_time = current_time;
+ 		__entry->delta = current_timestamp - current_time;
+ 	),
+-	TP_printk("ec_num: %4d, ec_fifo_ts: %12lld, fifo_ts: %12lld, curr_ts: %12lld, curr_time: %12lld, delta %12lld",
++	TP_printk("ec_num: %4u, ec_fifo_ts: %9u, fifo_ts: %12lld, curr_ts: %12lld, curr_time: %12lld, delta %12lld",
+ 		  __entry->ec_sensor_num,
+ 		__entry->ec_fifo_timestamp,
+ 		__entry->fifo_timestamp,
+@@ -153,7 +153,7 @@ TRACE_EVENT(cros_ec_sensorhub_filter,
+ 		__entry->x = state->x_offset;
+ 		__entry->y = state->y_offset;
+ 	),
+-	TP_printk("dx: %12lld. dy: %12lld median_m: %12lld median_error: %12lld len: %d x: %12lld y: %12lld",
++	TP_printk("dx: %12lld. dy: %12lld median_m: %12lld median_error: %12lld len: %lld x: %12lld y: %12lld",
+ 		  __entry->dx,
+ 		__entry->dy,
+ 		__entry->median_m,
+-- 
+2.33.0.259.gc128427fd7-goog
 
-- effect space: what's actually possible and happening.
-
-Not all elements of config_space x reality_space (Cartesian product) can
-be represented in the effect_space (e.g. root partition with no
-(effective) cpus).
-
-IIUC, Waiman's "high bar" is supposed to be defined over transitions in
-the config_space. However, there can be independent changes in the
-reality_space so the rules should be actually formulated in the
-effect_space:
-
-The conditions for being a valid partition root rewritten into the effect
-space:
-
-> 1) The "cpuset.cpus" is not empty and the list of CPUs are exclusive.
-- effective CPUs are non-empty and exclusive wrt siblings
-- (E.g. setting empty cpuset.cpus might be possible but it invalidates
-  the partition root, same as offlining or removal by an ancestor.)
-
-> 2) The parent cgroup is a partition root (can be an invalid one).
-- parent cgroup is a (valid) partition
-- (Being valid partition means owning "stolen" cpus from the parent, if
-  the parent is not valid partition itself, you can't steal what is not
-  owned.)
-- (And I think it's OK that: "the child partitions will stay invalid
-  forever unless the parent become a valid partition again" [1].)
-
-> 3) The "cpuset.cpus" is a subset of the parent's cpuset.cpus.allowed.
-- I'm not sure what is the use of this condition (together with the
-  rewrite of the 1st condition which covers effective cpus). I think it
-  would make sense if being a valid parition root guaranteed that all
-  configured cpuset.cpus will be available, however, that's not the case
-  IIUC (e.g. due to offlining).
-
-> 4) No child cgroup with cpuset enabled.
-- A child cgroup with cpuset enabled is OK in the effect space
-  (achievable by switching first and creating children later).
-- For technical reasons this may be a condition on the transitions in
-  the config_space.
-
-Generally, most config changes should succeed and user should check (or
-watch) how they landed in combination with the reality_space.
-
-Regards,
-Michal
-
-[1] This follows the general model where ancestors can "preempt"
-resources from their subtree.
