@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769913FB242
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 396703FB246
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234344AbhH3INS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 04:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234173AbhH3INQ (ORCPT
+        id S234651AbhH3IOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 04:14:41 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:52594
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234529AbhH3IOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 04:13:16 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16742C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:12:22 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id j4so29560903lfg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:12:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=37NPYMAcAJ2zN2cJYUDeD0UMO7gOVKhQ3wSJbKTk4Y4=;
-        b=GCDOzcNzVhs4IQ7426ZVN03J0Ko2sEjG9cQEZGeMHf7zHH0uTul5FY+dMxWAJAq77p
-         j+8i+7QJbELQPKI4PT+dLeghPh3S68CXIvvm52+XXL80drAEs96e4nX4qMjOTIzgJVC8
-         cARoPXDw1opzv8Bt2MuT5eD6UsHeTs6ZLJSBo=
+        Mon, 30 Aug 2021 04:14:40 -0400
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A046F407A1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:13:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630311226;
+        bh=eSx3NUMPq83UK+z5+YBa3OObfzdkGkOX4S8bufFEz/Y=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=uEs3c3XaIrWd7WC+tPWJ45z5sYhMy6uLbBtZDqircY0A8aflGyqix0UpTy55CNbpj
+         45aX2Ss+RfrlYxXgnNQbrZ1Kn0QFcD74PwEQ10iuFkhD7b8p131hd2pDTeYF42+n2r
+         rZ4m3SCR+pn362X/UCMAyPOzTslhAWtLSkbu0WE64R9Dmk5JJPCZBherh2an5phK0+
+         FJg4cEwsQ6cyI2bUpczr3/RIO+5LrHvcTjPYYB2ZeHuBS8NikYUFA9/zWeyqQ/Eii9
+         Ym6wl+FmlHwKQuksD39x/M2nx1poWX8kqxR7ECN5kzGeMSUBpj/BRDlRqgoYRgqktj
+         Q5lgI9kV8NGwQ==
+Received: by mail-wm1-f72.google.com with SMTP id s197-20020a1ca9ce000000b002e72ba822dcso2778913wme.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:13:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=37NPYMAcAJ2zN2cJYUDeD0UMO7gOVKhQ3wSJbKTk4Y4=;
-        b=WrAbFH/NBdkf7umSNsnpQR0sc87hS45BkXUe73T81ntSqhun3yySEqhYy4cdHtCQB8
-         E76cKh/FD1/lAtWugElz3AkOn24AjET57HwBzfB2/j6469/QSGqyKCdw/8W9m+nOO7Fs
-         qLYAhHaxCpHqSQqSsEi497ZumHcV/YC/Tgc9RC3+fDqy1FUvnQ6eDD33AR3WzrGJPzPb
-         LBz2/vz2obReXoWyU3xbzcdesg5LlYrdcu+TqQMtYNRGeM2NY1lVOwZ+5SHnSKD0sMp2
-         wHLS88C/wHTLbOcqHtIL2rHLH3ble78Vz7bDy2oPxHAtnnjJn6k+SOyzEMk7PI1Wr6Nt
-         jsRQ==
-X-Gm-Message-State: AOAM533Gj5/nK2cO3cSkc5wmd4PWiJU5Sj8Z/2nT2xe5xodCAqc/MCVy
-        J/mpe5t8H5CWHedWSXBYqkS+uw==
-X-Google-Smtp-Source: ABdhPJyqK6pQ4ZHjxX58026zqbgeQvpstiUZ8XlEC+qgCUJQtVIYIg6u5NRiRukkzgIJZHyRGY3uhA==
-X-Received: by 2002:a05:6512:1686:: with SMTP id bu6mr16774526lfb.168.1630311141001;
-        Mon, 30 Aug 2021 01:12:21 -0700 (PDT)
-Received: from [172.16.11.1] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id e4sm676505lfc.141.2021.08.30.01.12.18
+        bh=eSx3NUMPq83UK+z5+YBa3OObfzdkGkOX4S8bufFEz/Y=;
+        b=gSMISIgeODlCMHArED/NlOGSrAfGgtZwBwX5dOxxgYihThYXAe8EhqY2RAoJPEQM2F
+         prz//9FgbHZ61nuo+DfVN435kQJ6jGYS9/TZlBu2LdX5ZtcjrJTdWMmXi8xUfxRq+lWW
+         BzmW0Zkf/HpCd+RUzPzsC0KCLNi4mNcFRDdb4+6BMXVz+yMye/HwRW6fTlowpOv0v/+4
+         Y0RfgQcjngwId1QyaYXm6TJx+O3vNXqQGH/n2FEBig2CoW7n9bK7lcmv7BMBp3Y6UT90
+         UKRiBjlFYMc94nZdbf3Bn3hFgGCZ8zQ+/f/glRtkJ/GxX1ynIUpIuq3ytWj1psSwzwY3
+         zPUQ==
+X-Gm-Message-State: AOAM5319uxj2Q67QDXC9WJKw9DaCg3znA532alziOeObxCY6OHyEplWm
+        LO+Q74J/DnGj2jagFagPbfYwyo0mCvnaJsr8pRQz6cBf51qOrDZjb1TabaqAVDnAfIfZpSmKlAJ
+        OqvVEwtWc/i0AhLS2vXsX/GjVUz0ATsdvtvWPQdPWoA==
+X-Received: by 2002:a05:600c:428a:: with SMTP id v10mr31271909wmc.25.1630311223590;
+        Mon, 30 Aug 2021 01:13:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz6olxhDfz1lLDwfzLkp8OUNUr1AoxOLKW23LNJzBGbO3TIlKX5j+QsdumWOsvWLwaJ3ofS5Q==
+X-Received: by 2002:a05:600c:428a:: with SMTP id v10mr31271886wmc.25.1630311223430;
+        Mon, 30 Aug 2021 01:13:43 -0700 (PDT)
+Received: from [192.168.3.211] ([79.98.112.211])
+        by smtp.gmail.com with ESMTPSA id l1sm12582917wrb.15.2021.08.30.01.13.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 01:12:20 -0700 (PDT)
-Subject: Re: [PATCH v8 2/3] mm: add a field to store names for private
- anonymous memory
-To:     Suren Baghdasaryan <surenb@google.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org, eb@emlix.com,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        thomascedeno@google.com, sashal@kernel.org, cxfcosmos@gmail.com,
-        linux@rasmusvillemoes.dk, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-References: <20210827191858.2037087-1-surenb@google.com>
- <20210827191858.2037087-3-surenb@google.com>
- <YSmVl+DEPrU6oUR4@casper.infradead.org> <202108272228.7D36F0373@keescook>
- <CAJuCfpEWc+eTLYp_Xf9exMJCO_cFtvBUzi39+WbcSKZBXHe3SQ@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <f7117620-28ba-cfa5-b2c6-21812f15e4d6@rasmusvillemoes.dk>
-Date:   Mon, 30 Aug 2021 10:12:18 +0200
+        Mon, 30 Aug 2021 01:13:43 -0700 (PDT)
+Subject: Re: [PATCH] ASoC: samsung: s3c24xx_simtec: fix spelling mistake
+ "devicec" -> "device"
+To:     Colin King <colin.king@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210827185003.507006-1-colin.king@canonical.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <db203d28-5a90-401a-962a-aaebae5b6cb2@canonical.com>
+Date:   Mon, 30 Aug 2021 10:13:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAJuCfpEWc+eTLYp_Xf9exMJCO_cFtvBUzi39+WbcSKZBXHe3SQ@mail.gmail.com>
+In-Reply-To: <20210827185003.507006-1-colin.king@canonical.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -106,63 +79,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/08/2021 23.47, Suren Baghdasaryan wrote:
-> On Fri, Aug 27, 2021 at 10:52 PM Kees Cook <keescook@chromium.org> wrote:
->>
->>>> +   case PR_SET_VMA_ANON_NAME:
->>>> +           name = strndup_user((const char __user *)arg,
->>>> +                               ANON_VMA_NAME_MAX_LEN);
->>>> +
->>>> +           if (IS_ERR(name))
->>>> +                   return PTR_ERR(name);
->>>> +
->>>> +           for (pch = name; *pch != '\0'; pch++) {
->>>> +                   if (!isprint(*pch)) {
->>>> +                           kfree(name);
->>>> +                           return -EINVAL;
->>>
->>> I think isprint() is too weak a check.  For example, I would suggest
->>> forbidding the following characters: ':', ']', '[', ' '.  Perhaps
-
-Indeed. There's also the issue that the kernel's ctype actually
-implements some almost-but-not-quite latin1, so (some) chars above 0x7f
-would also pass isprint() - while everybody today expects utf-8, so the
-ability to put almost arbitrary sequences of chars with the high bit set
-could certainly confuse some parsers. IOW, don't use isprint() at all,
-just explicitly check for the byte values that we and up agreeing to
-allow/forbid.
-
->>> isalnum() would be better?  (permit a-zA-Z0-9)  I wouldn't necessarily
->>> be opposed to some punctuation characters, but let's avoid creating
->>> confusion.  Do you happen to know which characters are actually in use
->>> today?
->>
->> There's some sense in refusing [, ], and :, but removing " " seems
->> unhelpful for reasonable descriptors. As long as weird stuff is escaped,
->> I think it's fine. Any parser can just extract with m|\[anon:(.*)\]$|
+On 27/08/2021 20:50, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> I see no issue in forbidding '[' and ']' but whitespace and ':' are
-> currently used by Android. Would forbidding or escaping '[' and ']' be
-> enough?
+> There is a spelling mistake in a dev_err error message. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  sound/soc/samsung/s3c24xx_simtec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-how about allowing [0x20, 0x7e] except [0x5b, 0x5d], i.e. all printable
-(including space) ascii characters, except [ \ ] - the brackets as
-already discussed, and backslash because then there's nobody who can get
-confused about whether there's some (and then which?) escaping mechanism
-in play - "\n" is simply never going to appear. Simple rules, easy to
-implement, easy to explain in a man page.
 
->>
->> For example, just escape it here instead of refusing to take it. Something
->> like:
->>
->>         name = strndup_user((const char __user *)arg,
->>                             ANON_VMA_NAME_MAX_LEN);
->>         escaped = kasprintf(GFP_KERNEL, "%pE", name);
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-I would not go down that road. First, it makes it much harder to explain
-the rules for what are allowed and not allowed. Second, parsers become
-much more complicated. Third, does the length limit then apply to the
-escaped or unescaped string?
 
-Rasmus
+Best regards,
+Krzysztof
