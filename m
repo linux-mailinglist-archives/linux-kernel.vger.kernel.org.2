@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 396703FB246
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7BF3FB247
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234651AbhH3IOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 04:14:41 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:52594
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234529AbhH3IOk (ORCPT
+        id S234714AbhH3IP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 04:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234337AbhH3IP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 04:14:40 -0400
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A046F407A1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:13:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630311226;
-        bh=eSx3NUMPq83UK+z5+YBa3OObfzdkGkOX4S8bufFEz/Y=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=uEs3c3XaIrWd7WC+tPWJ45z5sYhMy6uLbBtZDqircY0A8aflGyqix0UpTy55CNbpj
-         45aX2Ss+RfrlYxXgnNQbrZ1Kn0QFcD74PwEQ10iuFkhD7b8p131hd2pDTeYF42+n2r
-         rZ4m3SCR+pn362X/UCMAyPOzTslhAWtLSkbu0WE64R9Dmk5JJPCZBherh2an5phK0+
-         FJg4cEwsQ6cyI2bUpczr3/RIO+5LrHvcTjPYYB2ZeHuBS8NikYUFA9/zWeyqQ/Eii9
-         Ym6wl+FmlHwKQuksD39x/M2nx1poWX8kqxR7ECN5kzGeMSUBpj/BRDlRqgoYRgqktj
-         Q5lgI9kV8NGwQ==
-Received: by mail-wm1-f72.google.com with SMTP id s197-20020a1ca9ce000000b002e72ba822dcso2778913wme.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:13:46 -0700 (PDT)
+        Mon, 30 Aug 2021 04:15:26 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E64C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:14:32 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id v20-20020a1cf714000000b002e71f4d2026so10936604wmh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:14:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=C9dk2+VCltyEEkDv8wQBAPoWCNIY69Z823DPo+nBLdc=;
+        b=afedxgOLpJNwFJh2CpeczYHooEtygK+OZpghWQFMhQGKW9f3oosVxuKQLfw5yjFfAu
+         P+i3LEQUik40cXAYmtKtVyR06ugLIxkhi1/lvSkLJZIEi/DuRMdvhkAuRUrrx8BCPLo2
+         86RryPT6y780RZHFx2BvFpnkYDCW3RBF12ca/1v8ChI4veUxBn4wOfksU4CgxN//9XY5
+         1GyUjzKHWgVCNggPOgI98e6ygM2dnmVld6lIcYI+Vao2z7AM/PeWJP4XGyY1u5oHQwoD
+         /3JdZ+OsGq9IjAbO1eqzO48/BUYV03HZncUUQwrGeI+68W3s3/eCkT2SZ8M2P3IuicI2
+         dPuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eSx3NUMPq83UK+z5+YBa3OObfzdkGkOX4S8bufFEz/Y=;
-        b=gSMISIgeODlCMHArED/NlOGSrAfGgtZwBwX5dOxxgYihThYXAe8EhqY2RAoJPEQM2F
-         prz//9FgbHZ61nuo+DfVN435kQJ6jGYS9/TZlBu2LdX5ZtcjrJTdWMmXi8xUfxRq+lWW
-         BzmW0Zkf/HpCd+RUzPzsC0KCLNi4mNcFRDdb4+6BMXVz+yMye/HwRW6fTlowpOv0v/+4
-         Y0RfgQcjngwId1QyaYXm6TJx+O3vNXqQGH/n2FEBig2CoW7n9bK7lcmv7BMBp3Y6UT90
-         UKRiBjlFYMc94nZdbf3Bn3hFgGCZ8zQ+/f/glRtkJ/GxX1ynIUpIuq3ytWj1psSwzwY3
-         zPUQ==
-X-Gm-Message-State: AOAM5319uxj2Q67QDXC9WJKw9DaCg3znA532alziOeObxCY6OHyEplWm
-        LO+Q74J/DnGj2jagFagPbfYwyo0mCvnaJsr8pRQz6cBf51qOrDZjb1TabaqAVDnAfIfZpSmKlAJ
-        OqvVEwtWc/i0AhLS2vXsX/GjVUz0ATsdvtvWPQdPWoA==
-X-Received: by 2002:a05:600c:428a:: with SMTP id v10mr31271909wmc.25.1630311223590;
-        Mon, 30 Aug 2021 01:13:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz6olxhDfz1lLDwfzLkp8OUNUr1AoxOLKW23LNJzBGbO3TIlKX5j+QsdumWOsvWLwaJ3ofS5Q==
-X-Received: by 2002:a05:600c:428a:: with SMTP id v10mr31271886wmc.25.1630311223430;
-        Mon, 30 Aug 2021 01:13:43 -0700 (PDT)
-Received: from [192.168.3.211] ([79.98.112.211])
-        by smtp.gmail.com with ESMTPSA id l1sm12582917wrb.15.2021.08.30.01.13.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 01:13:43 -0700 (PDT)
-Subject: Re: [PATCH] ASoC: samsung: s3c24xx_simtec: fix spelling mistake
- "devicec" -> "device"
-To:     Colin King <colin.king@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210827185003.507006-1-colin.king@canonical.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <db203d28-5a90-401a-962a-aaebae5b6cb2@canonical.com>
-Date:   Mon, 30 Aug 2021 10:13:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=C9dk2+VCltyEEkDv8wQBAPoWCNIY69Z823DPo+nBLdc=;
+        b=FOzgvBqgmqHsfgnAe1PD6Q2ebNv7X7UFa4ICROSnCy05yQoqjIBpyYi6NgiDOLfE/N
+         rezW7Mu34ho0vOIW0GwdqSdvgza4FOqwWNmNqlEfHJQgIPZT3UvSh5Ch6c3qHmhSjxG/
+         v47PqCy9s0TFGKMSV184RJ3LWfODxITh2UP1gd3UMocXGXw2h6bJEFyvGaWT+5SKNlvL
+         PrK9C3b41peGuM6Kn5rs103NCKb+RuPhtLpY5jw6rFUpveqffsN/benHGM0ByVfNsv2B
+         orZpViESQZziwR4657A+vJcRfIH0AtaM63rNKwO5SaWoqrLrf45sl/BW7xygpOhA/9vT
+         q1bA==
+X-Gm-Message-State: AOAM532YB3X3YKmNuAt1TzBnGvOCn4Vov6YU50KNN3v7l2kqKvM5Hxyj
+        XJwBGdLf6AZXXZ8rdbJFetE=
+X-Google-Smtp-Source: ABdhPJy2gFfXJviteh0Qp5UT5bwpI3yQrfsp5IyTjhc7I+bLutyE7Y7JsTiGBbvVRhPAv/AmiaWQtg==
+X-Received: by 2002:a05:600c:4999:: with SMTP id h25mr31317552wmp.175.1630311271439;
+        Mon, 30 Aug 2021 01:14:31 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.86])
+        by smtp.gmail.com with ESMTPSA id l124sm14381278wml.8.2021.08.30.01.14.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 01:14:31 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 10:14:29 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] staging: rtl8723bs: remove lockdep warning
+Message-ID: <20210830081428.GB1416@agape.jhs>
+References: <cover.1630307025.git.fabioaiuto83@gmail.com>
+ <85ef4038-24e7-fdd4-fe42-35416f705b99@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210827185003.507006-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85ef4038-24e7-fdd4-fe42-35416f705b99@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/08/2021 20:50, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+Hello Hans,
+
+On Mon, Aug 30, 2021 at 09:44:01AM +0200, Hans de Goede wrote:
+> Hi,
 > 
-> There is a spelling mistake in a dev_err error message. Fix it.
+> On 8/30/21 9:09 AM, Fabio Aiuto wrote:
+> > This patchseries removes a lockdep warning that turned out to
+> > be a false positive.
+> > 
+> > All "lockable" queues in the driver are initialized by
+> > a single function. This confuses lockdep which puts all
+> > locks in the same unexistent class.
+> > 
+> > Fixed it by doing the initalization of queues in place.
+> > 
+> > Done a small code cleaning and removed the no more
+> > used function.
+> > 
+> > Tested-on: Lenovo ideapad Miix 300-10IBY
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  sound/soc/samsung/s3c24xx_simtec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Thank you so much for fixing this.
+> 
+> The entire series looks good to me:
+> 
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> For the series.
 
+Thank you,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+fabio
 
-
-Best regards,
-Krzysztof
+> 
+> Regards,
+> 
+> Hans
+> 
