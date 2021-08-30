@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F374C3FB547
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0031C3FB583
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237260AbhH3MCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:02:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237098AbhH3MB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:01:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DD5D6103C;
-        Mon, 30 Aug 2021 12:01:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630324865;
-        bh=iXpu1rZYqTQ8qW3DgHWk59bPPAIlagU1NrgtNKQ30MY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ptyf8xsUGPuvcRUuD1pajKORBWl8CNEfq7UiAUvrCoi5jBR35XDJiBxQM7mMnfTtG
-         PJsMJmocBezBxzkH2Fk4lJjhU6Bw/52CE1P+zEyUpedUz/hvLxhutLKBb24DG4YlYw
-         MulSfFAj74W+qUwZCfMvX1PunkVnqm5/Vb1dlZIdfNYUyiFBf57tKAoPn+coF57yve
-         zSJb9pwB/ii31goBb9AadHV4Ic/8c/YPZr9gGz5ulRZsu2kuywDpnDLMoH3YliIXOf
-         5rpdp1POJoQvNPxB7i6ubLxHwErk1Bp8UGPwNVDveC0E8XxanxgWQPZmwUrOVKu/DX
-         BqpFf8NkfV/mg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>, linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 3/3] cryptoloop: add a deprecation warning
-Date:   Mon, 30 Aug 2021 08:01:01 -0400
-Message-Id: <20210830120101.1018298-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210830120101.1018298-1-sashal@kernel.org>
-References: <20210830120101.1018298-1-sashal@kernel.org>
+        id S237347AbhH3MFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236859AbhH3MF2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 08:05:28 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DD2C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 05:04:35 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id v10so22097194wrd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 05:04:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0TkptHSvoyjCQEisDx9uEyo0ZmIqb3gk+9GGlP5MHlM=;
+        b=i+kjTY2N8tJPsbKc6Led8NFV5ziB6zvieZn+TlOtdg9yR/c0riXLO91TzscPgxqdin
+         OXgI2sEiR0MDPRccP/h8WJ1zalnN8jJx71B7OidOeKyVjYnIGg/eyp9I9d32f94CPHeg
+         8bDFq7CTh+FD4ETCgon78Fy0NgGGYlE2Y8URshST9xCjiyIwR1uXpdVPwZ3swCzhVxQd
+         m1RMDe+nY84j7BZ0XOdYLRAY4pCySruQrDEowx/Ipsuiz3nwAdE1whbWdEYkyJPV8BAe
+         KSyrQjt7rIFL8++8wRZOTIEr64Cb4dtv7u0sr5MyB3j72jbgirZDYAukrRJkZ+th3E5d
+         5Nlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0TkptHSvoyjCQEisDx9uEyo0ZmIqb3gk+9GGlP5MHlM=;
+        b=CIXCE3NB1iREwna22ISijVZSjGm/rX4foc+yxiXdxpELygrE1hBafvgshXmGArXLra
+         slwnkw3nLvxd2a06MQfVMdITpH9fKfMkMVMUuw9rtssGNSRpvknAuM61nSrtrc5pJreb
+         ygYkze7O7miKsxZxQWzm+Av9KqI3avEGzMZtwnhUsTiYtzefRn54Nzp0oVQWghTeHLI2
+         xGk0k2uTwN/67DK1lIEN9Ay91nRsaQr9D38RHyB9LgIjm38L2bKQlYsPlAkNwfvrvVAW
+         /dZww/ajl87k1uwibiW5aIMn0/LjGFRPtdYp7IeG5cYoyGyMXrfAt4V2/8LpcDkbp28p
+         BgUQ==
+X-Gm-Message-State: AOAM531DNEORt01WbvFZxxuW1ccNwVNMkLdvd2Nvy0DmDej3PjT2TFhO
+        ImMh3Ebz+Jn6gkz5SNmNNZA=
+X-Google-Smtp-Source: ABdhPJyumtCqQ7rtPQ4iaxfHgjuS49AAfjb54Enay087+RlBwzs7gUWHUuyeLgfa6YbbSpAQWqp7xw==
+X-Received: by 2002:adf:de09:: with SMTP id b9mr24931868wrm.314.1630325073759;
+        Mon, 30 Aug 2021 05:04:33 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::16fa])
+        by smtp.gmail.com with ESMTPSA id f18sm13184195wmc.6.2021.08.30.05.04.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 05:04:33 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 0/8] staging: r8188eu: refactor rtw_macaddr_cfg()
+Date:   Mon, 30 Aug 2021 14:04:12 +0200
+Message-Id: <20210830120420.5287-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+This series refactors rtw_macaddr_cfg().
+- use mac_pton() instead of custom approach
+- use *_ether_addr() functions to copy the mac address
+  and check if it is a broadcast or zero address
+- assign random default mac address instead of fixed one
+- clean up minor style issues
 
-[ Upstream commit 222013f9ac30b9cec44301daa8dbd0aae38abffb ]
+Michael Straube (8):
+  staging: r8188eu use mac_pton() in rtw_macaddr_cfg()
+  staging: r8188eu: ensure mac address buffer is properly aligned
+  staging: r8188eu: use ETH_ALEN
+  staging: r8188eu: use is_*_ether_addr() in rtw_macaddr_cfg()
+  staging: r8188eu: use random default mac address
+  staging: r8188eu: use ether_addr_copy() in rtw_macaddr_cfg()
+  staging: r8188eu: add missing blank line after declarations
+  staging: r8188eu: remove unnecessary parentheses
 
-Support for cryptoloop has been officially marked broken and deprecated
-in favor of dm-crypt (which supports the same broken algorithms if
-needed) in Linux 2.6.4 (released in March 2004), and support for it has
-been entirely removed from losetup in util-linux 2.23 (released in April
-2013).  Add a warning and a deprecation schedule.
+ drivers/staging/r8188eu/core/rtw_ieee80211.c | 33 +++++++-------------
+ drivers/staging/r8188eu/include/rtw_eeprom.h |  2 +-
+ 2 files changed, 12 insertions(+), 23 deletions(-)
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20210827163250.255325-1-hch@lst.de
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/block/Kconfig      | 4 ++--
- drivers/block/cryptoloop.c | 2 ++
- 2 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
-index c794e215ea3d..324abc8d53fa 100644
---- a/drivers/block/Kconfig
-+++ b/drivers/block/Kconfig
-@@ -267,7 +267,7 @@ config BLK_DEV_LOOP_MIN_COUNT
- 	  dynamically allocated with the /dev/loop-control interface.
- 
- config BLK_DEV_CRYPTOLOOP
--	tristate "Cryptoloop Support"
-+	tristate "Cryptoloop Support (DEPRECATED)"
- 	select CRYPTO
- 	select CRYPTO_CBC
- 	depends on BLK_DEV_LOOP
-@@ -279,7 +279,7 @@ config BLK_DEV_CRYPTOLOOP
- 	  WARNING: This device is not safe for journaled file systems like
- 	  ext3 or Reiserfs. Please use the Device Mapper crypto module
- 	  instead, which can be configured to be on-disk compatible with the
--	  cryptoloop device.
-+	  cryptoloop device.  cryptoloop support will be removed in Linux 5.16.
- 
- source "drivers/block/drbd/Kconfig"
- 
-diff --git a/drivers/block/cryptoloop.c b/drivers/block/cryptoloop.c
-index 99e773cb70d0..d3d1f24ca7a3 100644
---- a/drivers/block/cryptoloop.c
-+++ b/drivers/block/cryptoloop.c
-@@ -201,6 +201,8 @@ init_cryptoloop(void)
- 
- 	if (rc)
- 		printk(KERN_ERR "cryptoloop: loop_register_transfer failed\n");
-+	else
-+		pr_warn("the cryptoloop driver has been deprecated and will be removed in in Linux 5.16\n");
- 	return rc;
- }
- 
 -- 
-2.30.2
+2.33.0
 
