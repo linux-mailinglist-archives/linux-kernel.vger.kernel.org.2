@@ -2,153 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53943FB92B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB80F3FB92E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237638AbhH3PmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:42:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43790 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237570AbhH3PmH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:42:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630338073;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gPbQCANsnrrCdrVSn7eLIOlLURUqitfm5ZSQa5OvEPY=;
-        b=hwkGAMvltCShRNFr/8eg5GqBGI5iYBOKyH9wxL/M4pTQylnRc6ndwD2LRHBRdjuc5m8pUA
-        Y7OOQ64+D8zFCKNZyYvE1mI2VaZaMiSTOBWfnCKOQQpLQOpsXM9oq4rl5UazZ9M9F4qd0Y
-        s669b0bFG+7PI18p63a4aEKJp2JRFbU=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-528-gttYDBTWNeitqfIx9sZq8w-1; Mon, 30 Aug 2021 11:41:11 -0400
-X-MC-Unique: gttYDBTWNeitqfIx9sZq8w-1
-Received: by mail-lf1-f71.google.com with SMTP id q5-20020ac25fc5000000b003d9227d9edcso2280664lfg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:41:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gPbQCANsnrrCdrVSn7eLIOlLURUqitfm5ZSQa5OvEPY=;
-        b=i4UQp+4Rqw5CfcuxUoHJE8RKEPW0LqNa7Y5E+l6Lq7rN+ExUGnREHOgWU2brxWvCow
-         SEZud1X+zeE1+GsCZDgipJKVS7Ll4+++xCrlAYKwaYKZZNq33gAwsXRulI6BoMEYpzTU
-         BAtBKnpDRC7VGtodPHezs9NQXIz7JZT4NQm54Naqbxp/NMo2oRw+ZB+TQyAcDFMUZ91S
-         Ad4tq4WwJXaur9EcupakD4CnwdwfZg6pw28kaPyVKh+xZfT0bN0lVk9wqs5fbVLHPfDU
-         pFCCi2HmNRW3HOjoW04uX86vMeES3CYiqq1ESnB3zbWkDdcGWWnhaixEpF+H16mwGMoi
-         +6Cg==
-X-Gm-Message-State: AOAM5328MYJeU72DjInbX8LlvtpQwaWq+iS4HOp4XmPfVgsl92Dt8xWW
-        tlsS/hah/YZstQlTChxMnerFdPeEmrbAJMXa8bHMc6+9PFZ8Jqg15wJlSTKUrMcc9yoqfgkyWDv
-        iR/N0f+bHfLUHN6vFAODEwg0/9afTh5BQH6j/JxbL
-X-Received: by 2002:a05:6512:31d1:: with SMTP id j17mr12619181lfe.252.1630338069518;
-        Mon, 30 Aug 2021 08:41:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyOA7eSQoAskt96OZEYv/uwT6xUpzuLtn/b7kPoWDczLLZXX82Grt6CyXuqBmavCZC7GNFgyKU16h8yzDCOqhU=
-X-Received: by 2002:a05:6512:31d1:: with SMTP id j17mr12619127lfe.252.1630338069329;
- Mon, 30 Aug 2021 08:41:09 -0700 (PDT)
+        id S237642AbhH3Pmm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Aug 2021 11:42:42 -0400
+Received: from mga12.intel.com ([192.55.52.136]:48073 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237460AbhH3Pmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 11:42:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="197860326"
+X-IronPort-AV: E=Sophos;i="5.84,363,1620716400"; 
+   d="scan'208";a="197860326"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 08:41:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,363,1620716400"; 
+   d="scan'208";a="427871610"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga003.jf.intel.com with ESMTP; 30 Aug 2021 08:41:46 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Mon, 30 Aug 2021 08:41:45 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Mon, 30 Aug 2021 08:41:45 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
+ Mon, 30 Aug 2021 08:41:45 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        Borislav Petkov <bp@alien8.de>, X86-ML <x86@kernel.org>
+Subject: RE: [PATCH v7 05/19] iov_iter: Introduce fault_in_iov_iter_writeable
+Thread-Topic: [PATCH v7 05/19] iov_iter: Introduce fault_in_iov_iter_writeable
+Thread-Index: AQHXm5pzAH4qSaa/BkWiD/swcmZu0auJ6p2AgAAE7YCAAAHvAP//xYSWgAJ7rdA=
+Date:   Mon, 30 Aug 2021 15:41:45 +0000
+Message-ID: <65cdd5f19431423dac13fbb13719ba55@intel.com>
+References: <YSk7xfcHVc7CxtQO@zeniv-ca.linux.org.uk>
+ <CAHk-=wjMyZLH+ta5SohAViSc10iPj-hRnHc-KPDoj1XZCmxdBg@mail.gmail.com>
+ <YSk+9cTMYi2+BFW7@zeniv-ca.linux.org.uk>
+ <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
+ <YSlftta38M4FsWUq@zeniv-ca.linux.org.uk>
+ <20210827232246.GA1668365@agluck-desk2.amr.corp.intel.com>
+ <87r1edgs2w.ffs@tglx> <YSqy+U/3lnF6K0ia@zeniv-ca.linux.org.uk>
+ <YSq0mPAIBfqFC/NE@zeniv-ca.linux.org.uk>
+ <CA+8MBbLLze0siip=h-2hR3XiceBFQCN7uh5BPvqYRyBXgT318g@mail.gmail.com>
+ <YSrlq41Ytw7q8fCR@casper.infradead.org>
+In-Reply-To: <YSrlq41Ytw7q8fCR@casper.infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210720232624.1493424-1-nitesh@redhat.com> <CAFki+LkNzk0ajUeuBnJZ6mp1kxB0+zZf60tw1Vfq+nPy-bvftQ@mail.gmail.com>
- <CAFki+LkyTNeorQ5e_6_Ud==X7dt27G38ZjhEewuhqGLfanjw_A@mail.gmail.com> <CAFki+Lmbw=02iaYKs_a0jR1KWLisXQa1B-s0hc-Ej-8F8ryWDQ@mail.gmail.com>
-In-Reply-To: <CAFki+Lmbw=02iaYKs_a0jR1KWLisXQa1B-s0hc-Ej-8F8ryWDQ@mail.gmail.com>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Mon, 30 Aug 2021 11:40:57 -0400
-Message-ID: <CAFki+LmcagVgj+rNJqAw-LwM=rZFq_AB5QwL5itXvm-bHU8QoA@mail.gmail.com>
-Subject: Re: [PATCH v5 00/14] genirq: Cleanup the abuse of irq_set_affinity_hint()
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, ajit.khaparde@broadcom.com,
-        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
-        huangguangbin2@huawei.com, huangdaode@huawei.com,
-        luobin9@huawei.com
-Cc:     linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, rostedt@goodmis.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        akpm@linuxfoundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com,
-        Stefan Assmann <sassmann@redhat.com>,
-        Tomas Henzl <thenzl@redhat.com>, james.smart@broadcom.com,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Ken Cox <jkc@redhat.com>, faisal.latif@intel.com,
-        shiraz.saleem@intel.com, tariqt@nvidia.com,
-        Alaa Hleihel <ahleihel@redhat.com>,
-        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
-        saeedm@nvidia.com,
-        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        Al Stone <ahs3@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        bjorn.andersson@linaro.org, chunkuang.hu@kernel.org,
-        yongqiang.niu@mediatek.com, baolin.wang7@gmail.com,
-        Petr Oros <poros@redhat.com>, Ming Lei <minlei@redhat.com>,
-        Ewan Milne <emilne@redhat.com>, jejb@linux.ibm.com,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        kabel@kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>, kashyap.desai@broadcom.com,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        shivasharan.srikanteshwara@broadcom.com,
-        sathya.prakash@broadcom.com,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        suganath-prabu.subramani@broadcom.com,
-        Thomas Gleixner <tglx@linutronix.de>, ley.foon.tan@intel.com,
-        jbrunet@baylibre.com, johannes@sipsolutions.net,
-        snelson@pensando.io, lewis.hanly@microchip.com, benve@cisco.com,
-        _govind@gmx.com, jassisinghbrar@gmail.com
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 11:38 AM Nitesh Lal <nilal@redhat.com> wrote:
+>> No #MC on stores. Just on loads. Note that you can't clear poison
+>> state with a series of small writes to the cache line. But a single
+>> 64-byte store might do it (architects didn't want to guarantee that
+>> it would work when I asked about avx512 stores to clear poison
+>> many years ago).
 >
-> On Mon, Aug 16, 2021 at 11:50 AM Nitesh Lal <nilal@redhat.com> wrote:
-> >
-> > On Mon, Aug 2, 2021 at 11:26 AM Nitesh Lal <nilal@redhat.com> wrote:
-> > >
-> > > On Tue, Jul 20, 2021 at 7:26 PM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
-> > > >
-> > > > The drivers currently rely on irq_set_affinity_hint() to either set the
-> > > > affinity_hint that is consumed by the userspace and/or to enforce a custom
-> > > > affinity.
-> > > >
-> >
+> Dave Jiang thinks MOVDIR64B clears poison.
 >
-> [...]
->
-> >
-> > Any comments on the following patches:
-> >
-> >   enic: Use irq_update_affinity_hint
-> >   be2net: Use irq_update_affinity_hint
-> >   mailbox: Use irq_update_affinity_hint
-> >   hinic: Use irq_set_affinity_and_hint
-> >
-> > or any other patches?
-> > Any help in testing will also be very useful.
-> >
->
-> Gentle ping.
-> Any comments on the following patches:
->
->   be2net: Use irq_update_affinity_hint
->   hinic: Use irq_set_affinity_and_hint
->
-> or any other patches?
+> http://archive.lwn.net:8080/linux-kernel/157617505636.42350.1170110675242558018.stgit@djiang5-desk3.ch.intel.com/
 
+MOVDIR64B has some explicit guarantees (does a write-back invalidate if the target is already
+in the cache) that a 64-byte avx512 write doesn't.
 
-Also, I have been trying to reach Bin Luo who maintains the hinic driver
-but it seems his email ID has changed so if someone else can help in
-reviewing/testing the hinic patch, it would be really helpful.
+Of course it would stop working if some future CPU were to have a longer than 64 bytes cache line.
 
--- 
-Thanks
-Nitesh
+-Tony
 
