@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1233FB62C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964053FB631
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235173AbhH3Mg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:36:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234741AbhH3Mg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:36:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9875B61059;
-        Mon, 30 Aug 2021 12:36:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630326964;
-        bh=VSnG7ci/z6It+oL6KcTBEhuTf8u1sv3TMd5qXRIvpQw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Z9VrAPSYu3o1kLTK5GooxotaEz5m+jtqVGPk8x4/xsNs4xSvwITYKkramNk5d/Ds0
-         Teze/fJvUS5JD3p4PamiFqb8HZjoQyXqOhTqZWPGvRcsAursOrRZnb9c31yWhB6kP1
-         z7J2AvmUKIV07RunGf8O9elvEyIotC5c1kW9YeGN8AstPmq2X97tMbSCFduB4B7put
-         Gjvg/TCjEPgvqzH+1XqWBuZcnDX3l3ZBslHmIwBQ4ginqBAmsCLQGEUmFYThNrvgKJ
-         M0cHM01VOqLFW+6ei0XINX0sckimNyiqcvkXgF7RoCI43TdCyB0U20iL6wW7xeU/LQ
-         mw9nffcTzgXBA==
-Received: by mail-ed1-f50.google.com with SMTP id g22so21351310edy.12;
-        Mon, 30 Aug 2021 05:36:04 -0700 (PDT)
-X-Gm-Message-State: AOAM530DSbMjmc5MjOkDXS1OYoeo7WZcVt3YpP5IaDshUFjKfHpWyoHF
-        VAYwbc2U+1DDN535iAhbOgPBmeHMYn7lQq5aFA==
-X-Google-Smtp-Source: ABdhPJzKe9hTkHckfNaR1ucxYim8h6wVK9o1P5JmQEu+WRbO6Yl0Gq0AZ2KqnNnrX8JgVC8B7aRTlLvuFbVruyQ61UA=
-X-Received: by 2002:a05:6402:70c:: with SMTP id w12mr24307350edx.289.1630326963208;
- Mon, 30 Aug 2021 05:36:03 -0700 (PDT)
+        id S236582AbhH3Mid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233703AbhH3Mia (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 08:38:30 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BEEC06175F;
+        Mon, 30 Aug 2021 05:37:36 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:105:465:1:4:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4GyqbL1XCbzQkHL;
+        Mon, 30 Aug 2021 14:37:34 +0200 (CEST)
+Received: from spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125])
+        by smtp202.mailbox.org (Postfix) with ESMTP id 279A2271;
+        Mon, 30 Aug 2021 14:37:32 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp202.mailbox.org ([80.241.60.245])
+        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
+        with ESMTP id wikO-nnhKAt4; Mon, 30 Aug 2021 14:37:31 +0200 (CEST)
+Received: from suagaze.. (unknown [46.183.103.17])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp202.mailbox.org (Postfix) with ESMTPSA id 4CEE626F;
+        Mon, 30 Aug 2021 14:37:25 +0200 (CEST)
+From:   =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
+To:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 0/2] mwifiex: Work around firmware bugs on 88W8897 chip
+Date:   Mon, 30 Aug 2021 14:37:02 +0200
+Message-Id: <20210830123704.221494-1-verdre@v0yd.nl>
 MIME-Version: 1.0
-References: <20210819084144.18483-1-trevor.wu@mediatek.com> <20210819084144.18483-8-trevor.wu@mediatek.com>
-In-Reply-To: <20210819084144.18483-8-trevor.wu@mediatek.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 30 Aug 2021 07:35:51 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+bLVLqqVKfYuXDVYexMojMgZ5p34Pcx7_7LwU40b-2dA@mail.gmail.com>
-Message-ID: <CAL_Jsq+bLVLqqVKfYuXDVYexMojMgZ5p34Pcx7_7LwU40b-2dA@mail.gmail.com>
-Subject: Re: [PATCH v5 07/11] dt-bindings: mediatek: mt8195: add audio afe document
-To:     Trevor Wu <trevor.wu@mediatek.com>,
-        Mark Brown <broonie@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, bicycle.tsai@mediatek.com,
-        Jiaxin Yu <jiaxin.yu@mediatek.com>,
-        Jimmy Cheng-Yi Chiang <cychiang@google.com>,
-        Li-Yu Yu <aaronyu@google.com>,
-        Chen-Yu Tsai <wenst@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 279A2271
+X-Rspamd-UID: 3d0be0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 3:43 AM Trevor Wu <trevor.wu@mediatek.com> wrote:
->
-> This patch adds mt8195 audio afe document.
->
-> In order to support dynamic clock reparenting for ADDA and ETDM, PLL
-> and MUX clocks are requested even though they are not consumed by afe
-> directly.
->
-> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-> ---
-> This patch depends on the following series that have not been accepted.
->
-> [1] Mediatek MT8195 clock support
-> https://patchwork.kernel.org/project/linux-mediatek/list/?series=501923
-> (dt-bindings/clock/mt8195-clk.h is included)
+Two patches which should fix all the random resets of the Marvell 88W8897 PCIe chip.
+The first one works around a bug in the firmware that causes it to crash, the second
+one makes us try harder to wake up the firmware before we consider it non-responsive.
+More explanations in the commit messages.
 
-This dependency is still not applied, so the example fails. One of the
-following needs to happen: the dependency needs to be applied, this
-patch reverted, or drop the use of the defines in the example.
+Jonas Dreßler (2):
+  mwifiex: Use non-posted PCI register writes
+  mwifiex: Try waking the firmware until we get an interrupt
 
-Rob
+ drivers/net/wireless/marvell/mwifiex/pcie.c | 35 +++++++++++++++++----
+ 1 file changed, 29 insertions(+), 6 deletions(-)
+
+-- 
+2.31.1
+
