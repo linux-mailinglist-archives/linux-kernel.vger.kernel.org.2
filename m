@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B752D3FB5F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97F43FB5FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhH3MYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:24:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60632 "EHLO mail.kernel.org"
+        id S231536AbhH3M14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:27:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232442AbhH3MYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:24:21 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC01E61154;
-        Mon, 30 Aug 2021 12:23:24 +0000 (UTC)
-Date:   Mon, 30 Aug 2021 13:26:36 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nicolas.ferre@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <ludovic.desroches@microchip.com>
-Subject: Re: [PATCH v2 00/10] iio: adc: at91-sama5d2_adc: add support for
- sama7g5
-Message-ID: <20210830132636.16dde030@jic23-huawei>
-In-Reply-To: <20210824115441.681253-1-eugen.hristev@microchip.com>
-References: <20210824115441.681253-1-eugen.hristev@microchip.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S229828AbhH3M1t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 08:27:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07773610FC;
+        Mon, 30 Aug 2021 12:26:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630326416;
+        bh=8rxzpDDvLETpRjSW5EG7EPps6YmGomM3Beiqdp8hL8s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bFtCjuVnW9yirgFzqcJWAnYSkM1Lhlg9QSRerffQp7Rk4/9vUDaLoDmkVe7AD5/W2
+         bUICCo62D5Pr4nmPIOB12Kmdblx7xGuPR9EyAR719YykrxzWmMTVUtL3BARQxyxd68
+         pqfOOcBdthaH8nG6Qeq8fBIkIG9r9C6B5P0tksWUIiGBVPsfbYrqWMJvt/BbOl688Q
+         jGWUe4sLgO8TDeU//cLdVn/HaBI468J5mhJ/HzVNBUp/flXHaJMgJKSdqhSzrATgFs
+         PcTmfJXAePBo45Rrp5sLr3KVRv7A6gZ0H5CqJtwxeJVBI+z2uUnuKSiHSfWbrqPpCH
+         bACB2rQFuPRFw==
+Received: by mail-ed1-f46.google.com with SMTP id d6so21346372edt.7;
+        Mon, 30 Aug 2021 05:26:55 -0700 (PDT)
+X-Gm-Message-State: AOAM533eijbdjQJh8jMmbTIrNRit3in0OOdzZy80ywnJn91N0Q8ntG0O
+        ro+0k31ckFSeV5NEkZ/nJHGaKSPtxhuC+tWhWQ==
+X-Google-Smtp-Source: ABdhPJxmILhJYcc+mYeJ+zf9N2F64SRnxQUQWPiG90l8vhjyNKaMHpm3/aiXGIjG5vOQD6D9of/DicoxU1EewIR4qsE=
+X-Received: by 2002:a50:eb8a:: with SMTP id y10mr24087615edr.137.1630326414617;
+ Mon, 30 Aug 2021 05:26:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210819101020.26368-1-krzysztof.kozlowski@canonical.com> <YSQA/iR6D/Ej1kWx@ravnborg.org>
+In-Reply-To: <YSQA/iR6D/Ej1kWx@ravnborg.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 30 Aug 2021 07:26:43 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKaUTXda_E0FLsHSt523=Tib6z5AgyOpoZA6iBNCht2-A@mail.gmail.com>
+Message-ID: <CAL_JsqKaUTXda_E0FLsHSt523=Tib6z5AgyOpoZA6iBNCht2-A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: panel: ili9341: correct indentation
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dillon Min <dillon.minfei@gmail.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 14:54:31 +0300
-Eugen Hristev <eugen.hristev@microchip.com> wrote:
+On Mon, Aug 23, 2021 at 3:11 PM Sam Ravnborg <sam@ravnborg.org> wrote:
+>
+> On Thu, Aug 19, 2021 at 12:10:19PM +0200, Krzysztof Kozlowski wrote:
+> > Correct indentation warning:
+> >   ilitek,ili9341.yaml:25:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>
+> Thanks, applied to drm-misc-next, and the patch will show up in -next in
+> one to two weeks.
 
-> Hi,
-> 
-> This series adds support for sama7g5.
-> 
-> The sama7g5 is slightly different from sama5d2, but has the same basic
-> operations. The register map is a bit different, so, I added some primitives
-> to differentiate between the two classes of hardware blocks (sama5d2-sam9x60
-> and sama7g5).
-> 
-> Sama7g5 has 16 channels ADC, no resistive touch, and extra features
-> (FIFOs, better oversampling , not implemented yet).
-> 
-> It is a rework of the series initially sent here:
-> https://marc.info/?l=linux-iio&m=161461656807826&w=2
-> 
-> I reworked this according to review by Jonathan, meaning that first I created
-> a no-op patch that will convert the driver to a more platform specific data
-> dedicated type of driver. This adds various structures that hold things like
-> register layout and channel information.
-> After this I created few patches that implement the main differences between
-> sama7g5 and older products: the end-of-conversion new register. I added
-> helper functions to make code more easy to read and more simple.
-> One the last patches adds the layout and channels for sama7g5.
-> At this moment in linux-next, the DT for sama7g5 and sama7g5ek is present,
-> and the last patches add and enable this node in DT for this board.
-> 
-> Eugen
-0-8 applied with the minor tweak mentioned in a reply to relevant patch.
+This needs to go in fixes as it looks like commit 7dbdce806268
+("dt-bindings: display: panel: Add ilitek ili9341 panel bindings") is
+queued for 5.15.
 
-I'll assume 9-10 will got via normal soc related tree.
-
-Note that I'm queuing these up for the merge window after this one now
-(5.16).
-
-Thanks,
-
-Jonathan
-
-> 
-> 
-> 
-> Eugen Hristev (10):
->   dt-bindings: iio: adc: at91-sama5d2: add compatible for sama7g5-adc
->   iio: adc: at91-sama5d2_adc: initialize hardware after clock is started
->   iio: adc: at91-sama5d2_adc: remove unused definition
->   iio: adc: at91-sama5d2_adc: convert to platform specific data
->     structures
->   iio: adc: at91-sama5d2-adc: add support for separate end of conversion
->     registers
->   iio: adc: at91-sama5d2_adc: add helper for COR register
->   iio: adc: at91-sama5d2_adc: add support for sama7g5 device
->   iio: adc: at91-sama5d2_adc: update copyright and authors information
->   ARM: dts: at91: sama7g5: add node for the ADC
->   ARM: dts: at91: sama7g5ek: enable ADC on the board
-> 
->  .../bindings/iio/adc/atmel,sama5d2-adc.yaml   |   1 +
->  arch/arm/boot/dts/at91-sama7g5ek.dts          |   8 +
->  arch/arm/boot/dts/sama7g5.dtsi                |  16 +
->  drivers/iio/adc/at91-sama5d2_adc.c            | 586 ++++++++++++------
->  4 files changed, 425 insertions(+), 186 deletions(-)
-> 
-
+Rob
