@@ -2,86 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2425B3FB0C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 07:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551C03FB0CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 07:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbhH3F0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 01:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbhH3F0c (ORCPT
+        id S232063AbhH3F1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 01:27:10 -0400
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:20409 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229936AbhH3F1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 01:26:32 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03428C061575;
-        Sun, 29 Aug 2021 22:25:39 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id q21so7865160plq.3;
-        Sun, 29 Aug 2021 22:25:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5veyo9Ry0StfUWfoIo1uO4FnVWpRSgAmiP0O2/2xtyE=;
-        b=ja9nZVv5BY7tVqCB6oK4eLJbbjmEEvDjg/gmWnE8Ywgtan0f8J8fFZ6b8FeJOg+woT
-         JBN5Xb6LnKT7CZIakKApM99GgrgEDYZFxWDpd3XnhQ+L/blTnMMkNrT+vd+UcWwHPMgY
-         guu39XC6hFByRcxlPgKx9kMCNnWz56fW8sWLst0pe6Frv5q5PSI9IwtTNCpNEAB13177
-         nIHH4tt6ClO1D6EWClxsGQN5JGNBLieOVhf9gVka21m3EuuXWP+HzMR16pwmE0ULN+LD
-         d36r8+dt71E4o4fc4Pi1sECZ6JJxFDLhPPgiv3QC7QiYG7ykh6Xxm9O5RMg6HEQtEFm3
-         isTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5veyo9Ry0StfUWfoIo1uO4FnVWpRSgAmiP0O2/2xtyE=;
-        b=eQWUI5df2y5XKBpjMLlh86qy6x437G/KAHg1NYYVSAzq8hcOs32f8p05+8Ec5c8cHB
-         vMP88gg0D+UQEeoXa736OaRXq2dadtnDoHtxvj5rBywyQJd9VODJSMR7yHTGpNhxc+tg
-         MzFGotQuoUtYB/WNIYpHPENxL8bnFvWcorZGBqSkYeEp1yl0byuIHQK84Nn1pYYFrXM5
-         Dt2o9fs1sfS8ZQPcp6MbFIaxCPFqnx41hAYAcerdGhOdvYo+MkY6ZyN7p0BqayQcKce3
-         RcQFhZIr1wftJThXBVce9lIk5vRW+HO3y3asFm4ObIBdhhdQnpa7J0jQW5yvMGI67Mea
-         5YaQ==
-X-Gm-Message-State: AOAM530AfP8vdHmdu/iXbP5WqJn5BTmkxHViYxYRfaunkPxdbvO7yuJ5
-        syjsy3CRGgr8V13aOITIepSh+wKxD08=
-X-Google-Smtp-Source: ABdhPJy89kWy4Xf8qb/yfJ43BLanYchu9drlpTuSqq3PNXFGHxjV3Hhswkx/STNCnxdhL9JEssV3vQ==
-X-Received: by 2002:a17:90a:ae12:: with SMTP id t18mr17685626pjq.45.1630301139425;
-        Sun, 29 Aug 2021 22:25:39 -0700 (PDT)
-Received: from ruantu-linux-2.. ([211.72.215.15])
-        by smtp.gmail.com with ESMTPSA id k190sm4220804pgc.11.2021.08.29.22.25.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 22:25:38 -0700 (PDT)
-From:   Yu-Tung Chang <mtwget@gmail.com>
-To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
-Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Yu-Tung Chang <mtwget@gmail.com>
-Subject: [PATCH] rtc: rx8010: select REGMAP_I2C
-Date:   Mon, 30 Aug 2021 13:25:32 +0800
-Message-Id: <20210830052532.40356-1-mtwget@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Mon, 30 Aug 2021 01:27:09 -0400
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id E7D1D520CAF;
+        Mon, 30 Aug 2021 08:26:13 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1630301174;
+        bh=G/A08wErR8GWnTnK1CdgiTF5nygATzwelmcu0b9y9ro=;
+        h=Subject:From:To:Message-ID:Date:MIME-Version:Content-Type;
+        b=4AVjG71Lb7lM2JlsSOE98NhJsd2f6r2OEpN3SxSc+Q5yNTiXqcDUfFcevbXbuHB4r
+         3moNwB4A3FJuQz1Bm32+9TkOFE9lUZwH4/ElRRNxp6A5N+MGWzFXVEbRKdrhqLp2JL
+         9yzLN0G93YADJ9Wbi2sZLJmSCVVEL2Aob+7x8PXWG0tkrgfBKN3nuhQQso4GbchXOV
+         Sy6fmc6dCOLIkka0snugW2XtEpkVKMRlqcR+Kc47YaYy8N1M3owJJdoV/CcuOa0PE4
+         NsDTPsmJfOgQ8dF/exfeJigCrm91nQpj3FjPZDojEkdzPiMnr+WYtideZJftA0R/54
+         yoOkv+B2wu/fQ==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 046075214EE;
+        Mon, 30 Aug 2021 08:26:13 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 30
+ Aug 2021 08:26:12 +0300
+Subject: Re: [RFC PATCH v3 0/6] virtio/vsock: introduce MSG_EOR flag for
+ SEQPACKET
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210816085036.4173627-1-arseny.krasnov@kaspersky.com>
+ <3f3fc268-10fc-1917-32c2-dc0e7737dc48@kaspersky.com>
+ <20210824100523.yn5hgiycz2ysdnvm@steredhat>
+ <d28ff03e-c8ab-f7c6-68a2-90c9a400d029@kaspersky.com>
+ <20210824103137.v3fny2yc5ww46p33@steredhat>
+ <0c0a7b61-524e-ab44-7d7e-b35bd094c7ca@kaspersky.com>
+Message-ID: <f251d84e-558e-9618-403c-253a1c2a1ea3@kaspersky.com>
+Date:   Mon, 30 Aug 2021 08:26:12 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <0c0a7b61-524e-ab44-7d7e-b35bd094c7ca@kaspersky.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.64.121]
+X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/30/2021 05:09:14
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165837 [Aug 30 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 457 457 f9912fc467375383fbac52a53ade5bbe1c769e2a
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 08/30/2021 05:12:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 30.08.2021 3:54:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/08/30 03:39:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/08/30 03:40:00 #17126216
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rtc-rx8010 uses the I2C regmap but doesn't select it in Kconfig so
-depending on the configuration the build may fail. Fix it.
 
-Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
----
- drivers/rtc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+On 24.08.2021 14:35, Arseny Krasnov wrote:
+> On 24.08.2021 13:31, Stefano Garzarella wrote:
+>> Caution: This is an external email. Be cautious while opening links or attachments.
+>>
+>>
+>>
+>> On Tue, Aug 24, 2021 at 01:18:06PM +0300, Arseny Krasnov wrote:
+>>> On 24.08.2021 13:05, Stefano Garzarella wrote:
+>>>> Caution: This is an external email. Be cautious while opening links or attachments.
+>>>>
+>>>>
+>>>>
+>>>> Hi Arseny,
+>>>>
+>>>> On Mon, Aug 23, 2021 at 09:41:16PM +0300, Arseny Krasnov wrote:
+>>>>> Hello, please ping :)
+>>>>>
+>>>> Sorry, I was off last week.
+>>>> I left some minor comments in the patches.
+>>>>
+>>>> Let's wait a bit for other comments before next version, also on the
+>>>> spec, then I think you can send the next version without RFC tag.
+>>>> The target should be the net-next tree, since this is a new feature.
+>>> Hello,
+>>>
+>>> E.g. next version will be [net-next] instead of [RFC] for both
+>>> kernel and spec patches?
+>> Nope, net-next tag is useful only for kernel patches (net tree -
+>> Documentation/networking/netdev-FAQ.rst).
+> Ack
 
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 12153d5801ce..f7bf87097a9f 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -624,6 +624,7 @@ config RTC_DRV_FM3130
- 
- config RTC_DRV_RX8010
- 	tristate "Epson RX8010SJ"
-+	select REGMAP_I2C
- 	help
- 	  If you say yes here you get support for the Epson RX8010SJ RTC
- 	  chip.
--- 
-2.33.0
+Hello,
 
+as there are no new comments on this week, i can send
+
+new patchsets for both kernel and spec today. Kernel patches
+
+will be with 'net-next' tag instead of RFC, spec patches will be
+
+without RFC tag.
+
+
+Thank You
+
+>> Thanks,
+>> Stefano
+>>
+>>
