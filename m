@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4AB3FB677
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1360B3FB678
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236764AbhH3MwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:52:03 -0400
-Received: from heliosphere.sirena.org.uk ([172.104.155.198]:56004 "EHLO
+        id S236673AbhH3MwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:52:21 -0400
+Received: from heliosphere.sirena.org.uk ([172.104.155.198]:56062 "EHLO
         heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235904AbhH3MwB (ORCPT
+        with ESMTP id S236808AbhH3MwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:52:01 -0400
+        Mon, 30 Aug 2021 08:52:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=sirena.org.uk; s=20170815-heliosphere; h=Message-Id:Date:Subject:Cc:To:From
         :Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
         Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
         Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
         List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=m9m4DiyIrIFxEh+n4O/L4g0eFNv5wBJTwUjab/GLEBc=; b=AcnVhCwU0SUEtl8QzZjq20JCNk
-        nVbk5w0sl7WKDltkJp5Bp+WUvPi8s4vVsh17QBFVFEfYU7C1NhcwA3QYD1iyoeQH6Ua+I3FcTAh/H
-        J3FeIcR/A349kCYfkT1rZWAQL1UYDTvll175fRnmE5myjDdPEhDJHEjW+yF0q3CJxI/g=;
+        bh=wEoYeikY0StRk2SvP3ey2jsbDh9GW+8ZJeT3YgB92P0=; b=AG2S0KDycwRL8278BArYM4nSMg
+        uB5hMb5r8OBtjnPBSL0KKjUls5L0y/VL+kaNoT3UFxm/ioO3d4D2f9HPdh1LSeeVYeqFX4U6hySYx
+        O7ZihZizbb76bBc/9j5iVrkZq166VfpxIa5mHMPEZsKzA1+T9WDgDFs4kQRItB7d7HEE=;
 Received: from jack.einval.com ([84.45.184.145] helo=fitzroy.sirena.org.uk)
         by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <broonie@sirena.org.uk>)
-        id 1mKgkk-00H5GZ-6h; Mon, 30 Aug 2021 12:51:06 +0000
+        id 1mKgl2-00H5H6-2y; Mon, 30 Aug 2021 12:51:24 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
-        id DE356D1B482; Mon, 30 Aug 2021 13:51:04 +0100 (BST)
+        id B823CD1B482; Mon, 30 Aug 2021 13:51:23 +0100 (BST)
 From:   Mark Brown <broonie@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
         Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] regulator updates for v5.15
-Date:   Mon, 30 Aug 2021 13:50:53 +0100
-Message-Id: <20210830125104.DE356D1B482@fitzroy.sirena.org.uk>
+Subject: [GIT PULL] SPI updates for v5.15
+Date:   Mon, 30 Aug 2021 13:51:10 +0100
+Message-Id: <20210830125123.B823CD1B482@fitzroy.sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -45,132 +45,161 @@ The following changes since commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
 
 are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-v5.15
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-v5.15
 
-for you to fetch changes up to 7aa6d700b089d960a03f6459898c096f4346990c:
+for you to fetch changes up to 6e9c846aa0c53673c5d53925a6122aa0e53a9795:
 
-  Merge remote-tracking branch 'regulator/for-5.15' into regulator-next (2021-08-25 16:05:26 +0100)
-
-----------------------------------------------------------------
-regulator: Update for v5.15
-
-A very quiet releases, some fixes and cleanups but not really
-that many of them.  There were a couple of new driver specific
-pieces:
-
- - Support for controlling the over/under voltage protection on
-   BD718xx devices.
- - New drivers for Richtek RTQ2134, and RTQ6752.
+  Merge remote-tracking branch 'spi/for-5.15' into spi-next (2021-08-26 15:09:52 +0100)
 
 ----------------------------------------------------------------
-Alexandru Ardelean (3):
-      regulator: devres: remove devm_regulator_unregister() function
-      regulator: devres: remove devm_regulator_bulk_unregister_supply_alias()
-      regulator: devres: unexport devm_regulator_unregister_supply_alias()
+spi: Updates for v5.15
 
-Alistair Francis (4):
-      regulator: sy7636a: Remove the poll_enable_time
-      regulator: sy7636a: Use the parent driver data
-      regulator: sy7636a: Store the epd-pwr-good GPIO locally
-      regulator: sy7636a: Use the regmap directly
+A quiet release for SPI, some fixes and a couple of new drivers
+plus one small refactoring:
 
-Axel Lin (3):
-      regulator: mt6358: Remove shift fields from struct mt6358_regulator_info
-      regulator: mt6359: Remove shift fields from struct mt6359_regulator_info
-      regulator: mt6397: Remove modeset_shift from struct mt6397_regulator_info
+ - Move the chip select timing configuration from the controller
+   to the device to allow a bit more flexibility.
+ - New drivers for Rockchip SFC and Spreadtrum ADI.
 
-Chen-Yu Tsai (2):
-      regulator: vctrl: Use locked regulator_get_voltage in probe path
-      regulator: vctrl: Avoid lockdep warning in enable/disable ops
+----------------------------------------------------------------
+Alain Volmat (4):
+      spi: stm32: enable pm_runtime autosuspend
+      spi: stm32: Revert "properly handle 0 byte transfer"
+      spi: stm32h7: don't wait for EOT and flush fifo on disable
+      spi: stm32: finalize message either on dma callback or EOT
 
-ChiYuan Huang (9):
-      regulator: rt5033: Use linear ranges to map all voltage selection
-      regulator: rtq6752: Add binding document for Richtek RTQ6752
-      regulator: rt6752: Add support for Richtek RTQ6752
-      regulator: rtq6752: Refine binding document
-      regulator: rtq6752: Fix the typo for reg define and author name
-      regulator: rtq6752: fix reg reset behavior
-      regulator: rtq2134: Add binding document for Richtek RTQ2134 SubPMIC
-      regulator: rtq2134: Add support for Richtek RTQ2134 SubPMIC
-      regulator: rtq2134: Fix coding style
+Alexander Sverdlin (1):
+      spi: spi-ep93xx: Prepare clock before using it
 
-Chris Morgan (1):
-      regulator: fixed: use dev_err_probe for register
+Amelie Delaunay (1):
+      spi: stm32h7: rework rx fifo read function
 
-Colin Ian King (2):
-      regulator: rt6245: make a const array func_base static, makes object smaller
-      regulator: Fix a couple of spelling mistakes in Kconfig
+Andy Shevchenko (4):
+      spi: pxa2xx: Convert reset_sccr1() to use pxa2xx_spi_update()
+      spi: pxa2xx: Reset DMA bits in CR1 in reset_sccr1()
+      spi: pxa2xx: Reuse int_stop_and_reset() in couple of places
+      spi: pxa2xx: Adapt reset_sccr1() to the case when no message available
 
-Dmitry Osipenko (1):
-      regulator: tps65910: Silence deferred probe error
+Aswath Govindraju (1):
+      spi: omap-spi: Convert to json-schema
 
-Jinchao Wang (1):
-      regulator: Replace symbolic permissions with octal permissions
+Chris Morgan (2):
+      spi: rockchip-sfc: Bindings for Rockchip serial flash controller
+      spi: rockchip-sfc: add rockchip serial flash controller
 
-Jisheng Zhang (2):
-      regulator: sy8824x: Enable REGCACHE_FLAT
-      regulator: sy8827n: Enable REGCACHE_FLAT
+Christophe JAILLET (1):
+      spi: coldfire-qspi: Use clk_disable_unprepare in the remove function
 
-Kunihiko Hayashi (1):
-      regulator: Convert UniPhier regulator to json-schema
+Chunyan Zhang (7):
+      spi: sprd: Pass offset instead of physical address to adi_read/_write()
+      spi: sprd: Make sure offset not equal to slave address size
+      spi: sprd: fill offset only to RD_CMD register for reading from slave device
+      spi: sprd: Fix the wrong WDG_LOAD_VAL
+      spi: sprd: Add ADI r3 support
+      spi: Convert sprd ADI bindings to yaml
+      spi: add sprd ADI for sc9863 and ums512
+
+Colin Ian King (1):
+      spi: rockchip-sfc: Fix assigned but never used return error codes
+
+Dmitry Osipenko (2):
+      spi: tegra20-slink: Improve runtime PM usage
+      spi: tegra20-slink: Don't use resource-managed spi_register helper
+
+Douglas Anderson (1):
+      spi: spi-geni-qcom: Remove confusing comment about setting the watermark
+
+Eddie James (2):
+      spi: fsi: Reduce max transfer size to 8 bytes
+      dt-bindings: fsi: Remove ibm,fsi2spi-restricted compatible
+
+Jason Wang (1):
+      spi: bcm2835aux: use 'unsigned int' instead of 'unsigned'
+
+Jon Lin (1):
+      spi: rockchip-sfc: Remove redundant IO operations
 
 Mark Brown (6):
-      Merge existing fixes from regulator/for-5.14
-      Merge series "Move Hisilicon 6421v600 SPMI and USB drivers out of staging" from Mauro Carvalho Chehab <mchehab+huawei@kernel.org>:
-      Merge series "regulator: devres: remove unused device-managed unregister APIs" from Alexandru Ardelean <aardelean@deviqon.com>:
-      Merge branch 'regulator-5.14' into regulator-5.15
-      Merge remote-tracking branch 'regulator/for-5.14' into regulator-linus
-      Merge remote-tracking branch 'regulator/for-5.15' into regulator-next
+      Merge existing fixes from spi/for-5.14
+      Merge series "spi: stm32: various fixes & cleanup" from Alain Volmat <alain.volmat@foss.st.com>:
+      Merge series "spi: fsi: Reduce max transfer size to 8 bytes" from Eddie James <eajames@linux.ibm.com>:
+      Merge series "arm: ep93xx: CCF conversion" from Nikita Shubin <nikita.shubin@maquefel.me>:
+      Merge remote-tracking branch 'spi/for-5.14' into spi-linus
+      Merge remote-tracking branch 'spi/for-5.15' into spi-next
 
-Matti Vaittinen (3):
-      regulator: bd718x7: Suopport configuring UVP/OVP state
-      regulator: Minor regulator documentation fixes.
-      regulator: Documentation fix for regulator error notification helper
+Mason Zhang (6):
+      spi: mediatek: update spi master bingdings for MT6893 SOC
+      spi: mediatek: add no_need_unprepare support
+      spi: mediatek: add tick_delay support
+      spi: move cs spi_delay to spi_device
+      spi: modify set_cs_timing parameter
+      spi: mediatek: fix build warnning in set cs timing
 
-Mauro Carvalho Chehab (3):
-      regulator: hi6421v600-regulator: add a missing dot at copyright
-      regulator: hi6421v600: use lowercase for ldo
-      regulator: hi6421v600: rename voltage range arrays
+Matija Glavinic Pecotic (1):
+      spi: davinci: invoke chipselect callback
+
+Nathan Rossi (1):
+      spi: orion: Prevent incorrect chip select behaviour
+
+Quanyang Wang (1):
+      spi: spi-zynq-qspi: use wait_for_completion_timeout to make zynq_qspi_exec_mem_op not interruptible
 
 Randy Dunlap (1):
-      regulator: machine.h: fix kernel-doc "bad line"
+      spi: <linux/spi/spi.h>: add missing struct kernel-doc entry
 
-Vincent Pelletier (1):
-      regulator: da9063: Add support for full-current mode.
+Tony Lindgren (2):
+      spi: spi-fsl-dspi: Fix issue with uninitialized dma_slave_config
+      spi: spi-pic32: Fix issue with uninitialized dma_slave_config
 
- .../regulator/richtek,rtq2134-regulator.yaml       | 106 ++++++
- .../regulator/richtek,rtq6752-regulator.yaml       |  76 +++++
- .../regulator/socionext,uniphier-regulator.yaml    |  85 +++++
- .../bindings/regulator/uniphier-regulator.txt      |  58 ----
- drivers/regulator/Kconfig                          |  24 +-
- drivers/regulator/Makefile                         |   2 +
- drivers/regulator/bd718x7-regulator.c              | 369 ++++++++++++++------
- drivers/regulator/da9063-regulator.c               | 132 +++++++-
- drivers/regulator/dbx500-prcmu.c                   |   4 +-
- drivers/regulator/devres.c                         |  69 +---
- drivers/regulator/fixed.c                          |   5 +-
- drivers/regulator/hi6421v600-regulator.c           |  50 +--
- drivers/regulator/irq_helpers.c                    |   2 +-
- drivers/regulator/mt6358-regulator.c               |  87 +++--
- drivers/regulator/mt6359-regulator.c               |  19 +-
- drivers/regulator/mt6397-regulator.c               |  15 +-
- drivers/regulator/rt5033-regulator.c               |  21 +-
- drivers/regulator/rt6245-regulator.c               |   2 +-
- drivers/regulator/rtq2134-regulator.c              | 373 +++++++++++++++++++++
- drivers/regulator/rtq6752-regulator.c              | 289 ++++++++++++++++
- drivers/regulator/sy7636a-regulator.c              |  41 ++-
- drivers/regulator/sy8824x.c                        |  16 +-
- drivers/regulator/sy8827n.c                        |  14 +
- drivers/regulator/tps65910-regulator.c             |  10 +-
- drivers/regulator/vctrl-regulator.c                |  73 ++--
- include/linux/mfd/rt5033-private.h                 |   4 +-
- include/linux/regulator/consumer.h                 |  15 -
- include/linux/regulator/driver.h                   |  16 +-
- include/linux/regulator/machine.h                  |   2 +-
- 29 files changed, 1562 insertions(+), 417 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rtq2134-regulator.yaml
- create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rtq6752-regulator.yaml
- create mode 100644 Documentation/devicetree/bindings/regulator/socionext,uniphier-regulator.yaml
- delete mode 100644 Documentation/devicetree/bindings/regulator/uniphier-regulator.txt
- create mode 100644 drivers/regulator/rtq2134-regulator.c
- create mode 100644 drivers/regulator/rtq6752-regulator.c
+Uwe Kleine-König (2):
+      spi: imx: Simplify logic in spi_imx_push()
+      spi: imx: Implement support for CS_WORD
+
+Yang Yingliang (2):
+      spi: mxic: add missing braces
+      spi: tegra20-slink: remove spi_master_put() in tegra_slink_remove()
+
+Zhengxun Li (1):
+      spi: mxic: patch for octal DTR mode support
+
+kernel test robot (1):
+      spi: stm32: fix excluded_middle.cocci warnings
+
+ .../devicetree/bindings/fsi/ibm,fsi2spi.yaml       |   1 -
+ Documentation/devicetree/bindings/spi/omap-spi.txt |  48 --
+ .../devicetree/bindings/spi/omap-spi.yaml          | 117 ++++
+ .../devicetree/bindings/spi/rockchip-sfc.yaml      |  91 +++
+ .../devicetree/bindings/spi/spi-mt65xx.txt         |   1 +
+ .../devicetree/bindings/spi/spi-sprd-adi.txt       |  63 --
+ .../devicetree/bindings/spi/sprd,spi-adi.yaml      | 104 +++
+ drivers/spi/Kconfig                                |  12 +
+ drivers/spi/Makefile                               |   1 +
+ drivers/spi/spi-bcm2835aux.c                       |   4 +-
+ drivers/spi/spi-coldfire-qspi.c                    |   2 +-
+ drivers/spi/spi-davinci.c                          |   8 +-
+ drivers/spi/spi-ep93xx.c                           |   4 +-
+ drivers/spi/spi-fsi.c                              | 125 +---
+ drivers/spi/spi-fsl-dspi.c                         |   1 +
+ drivers/spi/spi-geni-qcom.c                        |   6 -
+ drivers/spi/spi-imx.c                              |  21 +-
+ drivers/spi/spi-mt65xx.c                           | 159 +++--
+ drivers/spi/spi-mxic.c                             |  44 +-
+ drivers/spi/spi-orion.c                            |  22 +-
+ drivers/spi/spi-pic32.c                            |   1 +
+ drivers/spi/spi-pxa2xx.c                           |  35 +-
+ drivers/spi/spi-rockchip-sfc.c                     | 694 +++++++++++++++++++++
+ drivers/spi/spi-sprd-adi.c                         | 287 ++++++---
+ drivers/spi/spi-stm32.c                            | 121 ++--
+ drivers/spi/spi-tegra114.c                         |   8 +-
+ drivers/spi/spi-tegra20-slink.c                    |  77 +--
+ drivers/spi/spi-zynq-qspi.c                        |   8 +-
+ drivers/spi/spi.c                                  |   6 +-
+ include/linux/platform_data/spi-mt65xx.h           |   1 +
+ include/linux/spi/spi.h                            |  26 +-
+ 31 files changed, 1520 insertions(+), 578 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/spi/omap-spi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/omap-spi.yaml
+ create mode 100644 Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-sprd-adi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml
+ create mode 100644 drivers/spi/spi-rockchip-sfc.c
