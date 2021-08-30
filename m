@@ -2,102 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBDC3FBA52
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B933FBA56
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237881AbhH3QsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237747AbhH3QsB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:48:01 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838F2C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:47:07 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id g22so22582813edy.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=Mo0vOQHyTSp8U2GisgH844mCZQb1S1hK0Xminq7fEIM=;
-        b=ftBHnfzgBrVL8mxltbLN+p7hBdAvELKkuY3k6DmTQK4gekVkfMEz769sG1Dy7Ha2FP
-         3q8Ye8BmIF/0+yWSjQcMx8OkLwuUs3NC6Y9DBRuULINUwQm57y5CwUcKMyStfE5vYqeh
-         F0hUqvbbe6OHiTbGpX0Zz37u9LhBBj8w66bXi9c1pLogdLbsvEkElWbYCf6/2w6rlTiz
-         gN/XfustHDbvjeCHIQcocYawQgdBdbjVsm7jfuBWscZMzbVEp15tvEQSCEMDy8knzQFg
-         O1jzy30xzysKnS3GmM4qIqRVlUamSvSY/GEuEhVy02U94xE1WMqobgdFXbLNdoJUFKzE
-         NcUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Mo0vOQHyTSp8U2GisgH844mCZQb1S1hK0Xminq7fEIM=;
-        b=e+SrVAzZjU6C/z2je+/kAU69c0zHip1Tf/kjbQC/pB7SRAN7/ui91k4sMBUhWowmJr
-         t3VjcHin7MRKQFqKQi4tP9mV5PTIZaFccNxIFhPZR0rovf8Lgx/2XnQNc5a5KvBscfV9
-         O2iHIV/gyA3RqhmetRBSOZvCc7g4Lemt66bW0DvIuD0hJiAgzCsRvaMoVw+tWGiZ8qKf
-         hgZuzOMbySa8+ng9psBfEuIhABB0f+KFHYxzhpUyubborR9O8mM0uXRUv5h2w8YQAyYj
-         T5RPQqTU8t5TDFA5r/K7rioz2JwVicF0TyhG3Mcmk1N0lbj4wjr8lujwAGipWtf1Y1la
-         nZSg==
-X-Gm-Message-State: AOAM530L59ufOPx/S6WgDL0oCGelV986i5yQSlVK3EfHwKPZ1TV0prCC
-        xdSBtwOwy5ZAPZZnvDdHrpx9Az1Z21uDTXZ+iuPJ
-X-Google-Smtp-Source: ABdhPJzFgczWFIdOsoArPl8oo0yfyYmDwqxMiF2Lpkj8LrH3JCsNSwjuh7fGnXubrmyNUwZ/kQzJSciSjgOldcUxejc=
-X-Received: by 2002:a05:6402:4cf:: with SMTP id n15mr25555674edw.269.1630342026004;
- Mon, 30 Aug 2021 09:47:06 -0700 (PDT)
-MIME-Version: 1.0
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 30 Aug 2021 12:46:55 -0400
-Message-ID: <CAHC9VhRwfin0DgQ3VOLcQfmxbZLLi8TExA4hStR0vCODktRJfw@mail.gmail.com>
-Subject: [GIT PULL] Audit patches for v5.15
+        id S237912AbhH3QsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:48:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237882AbhH3QsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 12:48:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E01B160F5B;
+        Mon, 30 Aug 2021 16:47:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630342039;
+        bh=/ZbEAxvBW5ig7WPYzIG6ftbGUGoR7j4+CJT1CyKUAgE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pPqSREqxmcM2xCHL9kODFPILmxDGalIsKDmDe4jGEPsUozDmh+ruX/O/LmhFODtxt
+         VIYvEwC66svykfXl46dTWe79Ys9le0rVp8NZQw7+j4+oAkLtIeqaBDdNerIXmXcYy2
+         DL1OPRMOsyyZ2q+lnCE7aOMpGrtF1gToEk+RLJeAnoj92vfbhp0ATxlcesE0t4ukna
+         UCMbyhEXzp4HW4Eeddf/2PerQXND5kpqT+osxua6VBfYadx7WWHEOBZqSUV18dXwku
+         NgpMAbi14Mi2x+cqbjH7Q8Ol9FNwDAMOZ5wOFyU3Kl+CO6fH5m7N17PykROLOlsM3a
+         try7iQyJi19Lg==
+Date:   Mon, 30 Aug 2021 09:47:17 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fscrypt updates for 5.15
+Message-ID: <YS0LlXIhvZc4r5Vt@sol.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The following changes since commit ff1176468d368232b684f75e82563369208bc371:
 
-Two patches in the audit pull request for v5.15; one is trivial
-("header protection") but the second is a real patch that fixes a
-refcounting problem.  The refcount fix normally would have been sent
-up during the -rcX cycle, but since we merged it less than a week
-before v5.14 proper I felt it was better to wait for the merge window
-to open; the patch is marked with the usual -stable markings.
-
-Both patches pass our tests and merge cleanly against your tree from
-earlier this morning, please merge for v5.15.
-
-Thanks,
--Paul
-
---
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
-
- Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
 
 are available in the Git repository at:
 
- git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git
-   tags/audit-pr-20210830
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-for you to fetch changes up to 67d69e9d1a6c889d98951c1d74b19332ce0565af:
+for you to fetch changes up to 38ef66b05cfa3560323344a0b3e09e583f1eb974:
 
- audit: move put_tree() to avoid trim_trees refcount underflow and UAF
-   (2021-08-24 18:52:36 -0400)
+  fscrypt: document struct fscrypt_operations (2021-07-28 21:40:36 -0700)
 
 ----------------------------------------------------------------
-audit/stable-5.15 PR 20210830
+
+Some small fixes and cleanups for fs/crypto/:
+
+- Fix ->getattr() for ext4, f2fs, and ubifs to report the correct
+  st_size for encrypted symlinks.
+
+- Use base64url instead of a custom Base64 variant.
+
+- Document struct fscrypt_operations.
 
 ----------------------------------------------------------------
-MaYuming (1):
-     audit: add header protection to kernel/audit.h
+Eric Biggers (7):
+      fscrypt: add fscrypt_symlink_getattr() for computing st_size
+      ext4: report correct st_size for encrypted symlinks
+      f2fs: report correct st_size for encrypted symlinks
+      ubifs: report correct st_size for encrypted symlinks
+      fscrypt: remove mention of symlink st_size quirk from documentation
+      fscrypt: align Base64 encoding with RFC 4648 base64url
+      fscrypt: document struct fscrypt_operations
 
-Richard Guy Briggs (1):
-     audit: move put_tree() to avoid trim_trees refcount underflow and UAF
-
-kernel/audit.h      | 5 +++++
-kernel/audit_tree.c | 2 +-
-2 files changed, 6 insertions(+), 1 deletion(-)
-
--- 
-paul moore
-www.paul-moore.com
+ Documentation/filesystems/fscrypt.rst |  15 ++---
+ fs/crypto/fname.c                     | 106 +++++++++++++++++++------------
+ fs/crypto/hooks.c                     |  44 +++++++++++++
+ fs/ext4/symlink.c                     |  12 +++-
+ fs/f2fs/namei.c                       |  12 +++-
+ fs/ubifs/file.c                       |  13 +++-
+ include/linux/fscrypt.h               | 116 ++++++++++++++++++++++++++++++++--
+ 7 files changed, 260 insertions(+), 58 deletions(-)
