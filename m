@@ -2,133 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3403FBA49
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C163FBA4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237049AbhH3Qn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:43:57 -0400
-Received: from mga07.intel.com ([134.134.136.100]:17177 "EHLO mga07.intel.com"
+        id S237841AbhH3QqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:46:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233637AbhH3Qn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:43:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="282025345"
-X-IronPort-AV: E=Sophos;i="5.84,363,1620716400"; 
-   d="scan'208";a="282025345"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 09:43:02 -0700
-X-IronPort-AV: E=Sophos;i="5.84,363,1620716400"; 
-   d="scan'208";a="530497798"
-Received: from jasauer1-mobl4.amr.corp.intel.com (HELO intel.com) ([10.255.38.180])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 09:43:00 -0700
-Date:   Mon, 30 Aug 2021 12:42:58 -0400
-From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
-To:     Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Imre Deak <imre.deak@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
-        <jose.souza@intel.com>, Sean Paul <seanpaul@chromium.org>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Intel-gfx] [PATCH v3] drm/i915/dp: Use max params for panels <
- eDP 1.4
-Message-ID: <YS0KkvYfvwbQTjfC@intel.com>
-References: <20210820075301.693099-1-kai.heng.feng@canonical.com>
- <YR/ltlF5jRTYzQ3F@intel.com>
- <YSfRXjuRWa57uxXN@intel.com>
+        id S233446AbhH3QqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 12:46:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E234060E90;
+        Mon, 30 Aug 2021 16:45:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630341926;
+        bh=1qZTcEvIsAXBUStNE8UgF9NAfGDDOJr5XumUMJdnFBY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hs71tLE/RxlvQj0tMheczqyzM4fDjXgScgYeTuHGXOdVOGdPDbfiIP9KF1dHstL9h
+         OBa6vxnPLnJrvd/x+BNRN4vCL+eokWpBIO7eAn0xej6wdvFXg2+p3DPSZdPUUplypi
+         IweUDAd2Hvb3pBlQW29I3cgXHLEBAGUmNwzHWbau7SLJhCtxEmzdIkQNxvkQk+6GDZ
+         2VWxLW2fYSD7B8gpNb6xhr9eSQJ519bsuTUhT9Cg0NW/eQHTVID9IQYRu21/hK/nXe
+         ng6+jNQsBxVg1Dm7RRW1BWtDWjervsuWQkwSDRXff99BMyXHVLlXT5JSpV/VMwKEkU
+         3WEB4rO7Nr5ZA==
+Date:   Mon, 30 Aug 2021 09:45:25 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net: fix NULL pointer reference in cipso_v4_doi_free
+Message-ID: <20210830094525.3c97e460@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAHC9VhTEs9E+ZeGGp96NnOhmr-6MZLXf6ckHeG8w5jh3AfgKiQ@mail.gmail.com>
+References: <c6864908-d093-1705-76ce-94d6af85e092@linux.alibaba.com>
+        <18f0171e-0cc8-6ae6-d04a-a69a2a3c1a39@linux.alibaba.com>
+        <CAHC9VhTEs9E+ZeGGp96NnOhmr-6MZLXf6ckHeG8w5jh3AfgKiQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YSfRXjuRWa57uxXN@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 01:37:34PM -0400, Rodrigo Vivi wrote:
-> On Fri, Aug 20, 2021 at 08:26:14PM +0300, Ville Syrjälä wrote:
-> > On Fri, Aug 20, 2021 at 03:52:59PM +0800, Kai-Heng Feng wrote:
-> > > Users reported that after commit 2bbd6dba84d4 ("drm/i915: Try to use
-> > > fast+narrow link on eDP again and fall back to the old max strategy on
-> > > failure"), the screen starts to have wobbly effect.
-> > > 
-> > > Commit a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for
-> > > everything") doesn't help either, that means the affected eDP 1.2 panels
-> > > only work with max params.
-> > > 
-> > > So use max params for panels < eDP 1.4 as Windows does to solve the
-> > > issue.
-> > > 
-> > > v3:
-> > >  - Do the eDP rev check in intel_edp_init_dpcd()
-> > > 
-> > > v2:
-> > >  - Check eDP 1.4 instead of DPCD 1.1 to apply max params
-> > > 
-> > > Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3714
-> > > Fixes: 2bbd6dba84d4 ("drm/i915: Try to use fast+narrow link on eDP again and fall back to the old max strategy on failure")
-> > > Fixes: a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for everything")
-> > > Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-> > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > 
-> > Slapped a cc:stable on it and pushed to drm-intel-next. Thanks.
-> 
-> Since I got a strange failure on CI_DIF_604 that I don't see on CI_DIF_603,
-> I'm avoiding the display patches. This one and also
-> dab1b47e57e0 ("drm/i915/dp: return proper DPRX link training result")
-> 
-> I know, it is probably the other one, but I had to remove both patches for
-> now and I'm not confident the CI will allow me to test with this one alone.
-> 
-> If we have -rc8 I will check again later. Otherwise we will have to send
-> to the stable mailing list later.
+On Mon, 30 Aug 2021 10:17:05 -0400 Paul Moore wrote:
+> On Mon, Aug 30, 2021 at 6:28 AM =E7=8E=8B=E8=B4=87 <yun.wang@linux.alibab=
+a.com> wrote:
+> >
+> > In netlbl_cipsov4_add_std() when 'doi_def->map.std' alloc
+> > failed, we sometime observe panic:
+> >
+> >   BUG: kernel NULL pointer dereference, address:
+> >   ...
+> >   RIP: 0010:cipso_v4_doi_free+0x3a/0x80
+> >   ...
+> >   Call Trace:
+> >    netlbl_cipsov4_add_std+0xf4/0x8c0
+> >    netlbl_cipsov4_add+0x13f/0x1b0
+> >    genl_family_rcv_msg_doit.isra.15+0x132/0x170
+> >    genl_rcv_msg+0x125/0x240
+> >
+> > This is because in cipso_v4_doi_free() there is no check
+> > on 'doi_def->map.std' when doi_def->type got value 1, which
+> > is possibe, since netlbl_cipsov4_add_std() haven't initialize
+> > it before alloc 'doi_def->map.std'.
+> >
+> > This patch just add the check to prevent panic happen in similar
+> > cases.
+> >
+> > Reported-by: Abaci <abaci@linux.alibaba.com>
+> > Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+> > ---
+> >  net/netlabel/netlabel_cipso_v4.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-) =20
+>=20
+> I see this was already merged, but it looks good to me, thanks for
+> making those changes.
 
-CI didn't run on TGL again, so I couldn't send this patch last week.
-And 5.14 got released.
+FWIW it looks like v1 was also merged:
 
-If this is important for 5.14 or any other stable release, please
-confirm this is not the one breaking linking training on TGL and then
-please send it to the stable mailing list.
-
-https://www.kernel.org/doc/Documentation/process/stable-kernel-rules.rst
-
-Sorry,
-Rodrigo.
-
-> 
-> > 
-> > > ---
-> > >  drivers/gpu/drm/i915/display/intel_dp.c | 5 ++++-
-> > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> > > index 75d4ebc669411..e0dbd35ae7bc0 100644
-> > > --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> > > +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> > > @@ -2445,11 +2445,14 @@ intel_edp_init_dpcd(struct intel_dp *intel_dp)
-> > >  	 */
-> > >  	if (drm_dp_dpcd_read(&intel_dp->aux, DP_EDP_DPCD_REV,
-> > >  			     intel_dp->edp_dpcd, sizeof(intel_dp->edp_dpcd)) ==
-> > > -			     sizeof(intel_dp->edp_dpcd))
-> > > +			     sizeof(intel_dp->edp_dpcd)) {
-> > >  		drm_dbg_kms(&dev_priv->drm, "eDP DPCD: %*ph\n",
-> > >  			    (int)sizeof(intel_dp->edp_dpcd),
-> > >  			    intel_dp->edp_dpcd);
-> > >  
-> > > +		intel_dp->use_max_params = intel_dp->edp_dpcd[0] < DP_EDP_14;
-> > > +	}
-> > > +
-> > >  	/*
-> > >  	 * This has to be called after intel_dp->edp_dpcd is filled, PSR checks
-> > >  	 * for SET_POWER_CAPABLE bit in intel_dp->edp_dpcd[1]
-> > > -- 
-> > > 2.32.0
-> > 
-> > -- 
-> > Ville Syrjälä
-> > Intel
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=
+=3D733c99ee8b
