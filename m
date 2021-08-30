@@ -2,110 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2B03FB256
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C733FB25D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234529AbhH3ITn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 04:19:43 -0400
-Received: from mout.gmx.net ([212.227.15.19]:37297 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233318AbhH3ITm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 04:19:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630311518;
-        bh=Xp1OJEHV+WZa1v1ObG+jmrRjA+bQ8meQdy/52KVciko=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=E8Da9OeHcdQTEcThIxAVsa1/lR37O8OG/ifbR+Z5wOxFrzzond03WCDOgxvFQHrjV
-         UKLuHhuRqincfxjJnN0dKbfXD9WxMcSnd8OYDNsaWtafO0YQvn8zCrYRkflskTay9D
-         YlY0VTJF8vsqc4g3kqAg6bJAXmKqWNV0fFZtZ9Kw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.146.54]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MIdeR-1mFPRL2H01-00EajI; Mon, 30
- Aug 2021 10:18:38 +0200
-Subject: Re: linux-next: manual merge of the tty tree with the parisc-hd tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Greg KH <greg@kroah.com>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Jiri Slaby <jslaby@suse.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210830154605.2abe717e@canb.auug.org.au>
- <17384403-c428-70a9-4930-390869a45405@gmx.de>
- <20210830173309.630f47c0@canb.auug.org.au>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <eae99b8e-530e-d777-d323-ff4cb8a1ee94@gmx.de>
-Date:   Mon, 30 Aug 2021 10:17:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234742AbhH3IWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 04:22:16 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:41483 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233318AbhH3IWP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 04:22:15 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 17U8Kbif032573;
+        Mon, 30 Aug 2021 17:20:37 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 17U8Kbif032573
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1630311638;
+        bh=LvEHmzb+X2W0U4SCLamG7StPrlQ4w4vUY1BuYtsNmWA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KJfxb4mzSIRA+4TrvISz2NYftBjyf2WC58Sihfmcqg57uI3wpyNQTLtvOghhC3ZWy
+         cNDhyJBKbWlEi1o9CadFRGcBO9ENzMebcYCRDjR64z9noy9uX2xXw7AVwa4+op9ygn
+         v9VCmJqzVzUdMaU4gFsinUcD+Cmt/L4GJYaUv9pbosbCClu/zDUVlyUnikrP/7VwkQ
+         1FuWg9749eQcKDZlSpRE4TrXUmw5H6bg590bt1Jgr8+gZxT1YRybK+G3KubrB4fobf
+         61OLQO8LYR1k4mRsVVYOPP+iYIkpLyX6TLd0nVVuaGZJacINHyvqvb6PcRo8+SPcIz
+         3rvAyOhe96C6w==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Nicolas Pitre <npitre@baylibre.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: redo fake deps at include/ksym/*.h
+Date:   Mon, 30 Aug 2021 17:20:33 +0900
+Message-Id: <20210830082033.1707588-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210830173309.630f47c0@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:heGvdh3xUjQXzaFBuSJY11MAMDOI2tBHhIv2NCal1ZeAnNX51aW
- USpKjzmptXdb7bHuEzf7roLbVg2CRl9IbIQzqjKDGpOafYT9XHA4d7b7ZRT/hvH2tu4XIRu
- CTSxkfKbR+rNUojyCEHJjofddXRCQOKylbGs0ZpesNvRI5WxUJx4ZA/qXobABCGTBftX4tI
- 13tfPIPB+VLyMk5nSNiEA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:L5k49yeVlL0=:bODBQSFDQGH3oj2h9VKPgD
- EHfCVwkTq5LoTnZ31767Oq0MbU75zi7fMuznMEOK6524Ge8IGEU6PChegxj2ICeWXNxEQiPdA
- J6+yb793FRHEri6ZQ3CrkPmLfQP9wVJgLLA/I8aS+xw6iBc29fn2/XxUPZ+bJNGZ74YLS46gQ
- O0KDta+rdhGRmsB395X4vcoblKCDD9tTR6Ev9B3iVrKwqk6dyh5u2Ji4MfgWsr/3oHy8hiTcZ
- poB8FAIAUQW/oR6oPXgg1yFMvSokYC49y6FoQN/c1Ul1ADmrDphw4eeXCEgRtsc5EcebGcjnH
- OPTGYVecm5HruxXAvO8YwOGE5wQmIFANwCJEfzOnhiCcC+4ahnlfCrdvxB310A2+pGclStVi3
- J0M5pi7DQE8crrWS9yjgLZPhPZCXGqlPZM3T52tg07CCnVy+IyIwd+zEt+WCk2MPoQgF9R/Wp
- 7exiJ2ds42QwTy4MeRBQTwAuv13ieENBxVpPM4kaxLJkk3Z/tL1o++gGHD51PTriaUPnGJwVF
- GiD3gVe7xs6U0ei6v2w+u1TbREYjwDjk2aCl4HjkuYOittcmyTpUaqjFOOkzcsPV/0/IRci3N
- EaV4W7PtW3lvpz0x0DPbuwqpBuQknsYVXXhIRqkzX7yV0xem58/33L+YpIznNp5SUqoHVDxe6
- TvQ0lZ1peslHqexksxzIgZDZkfRU72m3ZJDMUqx/khIMg++cElwar8vJ15Rhr/WPuYq86PW3T
- fdgad/zyboVEU436F8HUS0gzIWDaGhhG9MA+ioo7xS6PMZbCf2Fh04d/31nd7+bppxgbHA4vW
- Os5xxIG0sJa6ZsAHzUMRyhREhMHVCxaf+yV3tAY4B7YlYlGxwh7Ho74S/ULShpYJZiU+MrtOt
- dpHlaqAw4Ce1ZFI/CiViQoAmsw0iZqiOU2ZsCiryG6B7GG0OVBMHgPEpvomXCityW9xzY/nCm
- /ykrFfJ1D+eBhy/wFW+6wj2MfATK3bq3flQoWnnkQeAIn7rFGJ37jeYqVSVHavnSh78qdmjts
- m5AWBJQMg0Sy/spCQ6ssIaOz8OZbF5SnvjyZ9TKMaL/pNivloHtNJ+4783EBgZINvSc0F7eg0
- kEtaK/HdnPnCfVGUDjSAHUhyPeTuBgk5wyy
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/21 9:33 AM, Stephen Rothwell wrote:
-> Hi Helge,
->
-> On Mon, 30 Aug 2021 09:14:33 +0200 Helge Deller <deller@gmx.de> wrote:
->>
->> On 8/30/21 7:46 AM, Stephen Rothwell wrote:
->>> Today's linux-next merge of the tty tree got a conflict in:
->>>
->>>     arch/parisc/kernel/pdc_cons.c
->>>
->>> between commit:
->>>
->>>     9613b0cb3eb4 ("tty: pdc_cons, free tty_driver upon failure")
->>>
->>> from the parisc-hd tree and commits:
->>>
->>>     0524513afe45 ("tty: don't store semi-state into tty drivers")
->>>     72fdb403008c ("tty: pdc_cons, free tty_driver upon failure")
->>>
->>> from the tty tree.
->>>
->>> I fixed it up (I just used the latter version) ...
->>
->> The latter version triggers build errors.
->> Jiri's patch needs fixing. Instead of:
->> +               tty_driver_kref_put(driver);
->> it needs to be:
->> +               tty_driver_kref_put(pdc_console_tty_driver);
->>
->> Jiri, maybe you can fix it in your tree?
->> I'm happy to drop the patch from my tree.
->
-> The tty tree commits first create a "driver" variable that is used
-> until it is clear everything works and then it is assigned to
-> pdc_console_tty_driver.
+Commit 0e0345b77ac4 ("kbuild: redo fake deps at include/config/*.h")
+simplified the Kconfig/fixdep interaction a lot.
 
-Ah, right. I didn't checked. Looks good and compiles cleanly.
-I'll drop the patch from my tree, so everything is OK now.
+For CONFIG_FOO_BAR_BAZ, Kconfig now touches include/config/FOO_BAR_BAZ
+instead of the previous include/config/foo/bar/baz.h .
 
-Helge
+This commit simplifies the TRIM_UNUSED_KSYMS feature in a similar way:
+
+  - delete .h suffix
+  - delete tolower()
+  - put everything in 1 directory
+
+For EXPORT_SYMBOL(FOO_BAR_BAZ), scripts/adjust_autoksyms.sh now touches
+include/ksym/FOO_BAR_BAZ instead of include/ksym/foo/bar/baz.h .
+
+This is more precise, avoiding possibly unnecessary rebuilds.
+
+  EXPORT_SYMBOL(FOO_BAR_BAZ)
+  EXPORT_SYMBOL(_FOO_BAR_BAZ)
+  EXPORT_SYMBOL(__FOO_BAR_BAZ)
+
+were previously mapped to the same header, include/ksym/foo/bar/baz.h
+but now are handled separately.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/adjust_autoksyms.sh | 4 ++--
+ scripts/gen_ksymdeps.sh     | 5 ++---
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/scripts/adjust_autoksyms.sh b/scripts/adjust_autoksyms.sh
+index d8f6f9c63043..59fdb875e818 100755
+--- a/scripts/adjust_autoksyms.sh
++++ b/scripts/adjust_autoksyms.sh
+@@ -42,10 +42,10 @@ $CONFIG_SHELL $srctree/scripts/gen_autoksyms.sh "$new_ksyms_file"
+ changed=$(
+ count=0
+ sort "$cur_ksyms_file" "$new_ksyms_file" | uniq -u |
+-sed -n 's/^#define __KSYM_\(.*\) 1/\1/p' | tr "A-Z_" "a-z/" |
++sed -n 's/^#define __KSYM_\(.*\) 1/\1/p' |
+ while read sympath; do
+ 	if [ -z "$sympath" ]; then continue; fi
+-	depfile="include/ksym/${sympath}.h"
++	depfile="include/ksym/${sympath}"
+ 	mkdir -p "$(dirname "$depfile")"
+ 	touch "$depfile"
+ 	# Filesystems with coarse time precision may create timestamps
+diff --git a/scripts/gen_ksymdeps.sh b/scripts/gen_ksymdeps.sh
+index 725e8c9c1b53..8ee533f33659 100755
+--- a/scripts/gen_ksymdeps.sh
++++ b/scripts/gen_ksymdeps.sh
+@@ -10,7 +10,7 @@ set -e
+ # TODO:
+ #   Use -q instead of 2>/dev/null when we upgrade the minimum version of
+ #   binutils to 2.37, llvm to 13.0.0.
+-ksyms=$($NM $1 2>/dev/null | sed -n 's/.*__ksym_marker_\(.*\)/\1/p' | tr A-Z a-z)
++ksyms=$($NM $1 2>/dev/null | sed -n 's/.*__ksym_marker_\(.*\)/\1/p')
+ 
+ if [ -z "$ksyms" ]; then
+ 	exit 0
+@@ -21,8 +21,7 @@ echo "ksymdeps_$1 := \\"
+ 
+ for s in $ksyms
+ do
+-	echo $s | sed -e 's:^_*:    $(wildcard include/ksym/:' \
+-			-e 's:__*:/:g' -e 's/$/.h) \\/'
++	printf '    $(wildcard include/ksym/%s) \\\n' "$s"
+ done
+ 
+ echo
+-- 
+2.30.2
+
