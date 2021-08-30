@@ -2,185 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF853FB83D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE473FB851
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237499AbhH3O1m convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Aug 2021 10:27:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237522AbhH3O1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 10:27:41 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58EEE60F45;
-        Mon, 30 Aug 2021 14:26:45 +0000 (UTC)
-Date:   Mon, 30 Aug 2021 15:29:56 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
- samples
-Message-ID: <20210830152956.58331a8d@jic23-huawei>
-In-Reply-To: <MW4PR03MB6363FE3BAF40A383D244ADC399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
-References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
-        <20210818111139.330636-4-miquel.raynal@bootlin.com>
-        <SJ0PR03MB6359415E120CFD3EFAF417F599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
-        <20210830110756.733d5201@jic23-huawei>
-        <MW4PR03MB6363FE3BAF40A383D244ADC399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S237222AbhH3Obp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 10:31:45 -0400
+Received: from mail-vs1-f44.google.com ([209.85.217.44]:40615 "EHLO
+        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237181AbhH3Obm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 10:31:42 -0400
+Received: by mail-vs1-f44.google.com with SMTP id d6so4300973vsr.7;
+        Mon, 30 Aug 2021 07:30:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VgKhHizq2L8dQZoQcxBfufERxFjnVK3q48k2GBzHxbg=;
+        b=gHEekl3GLlnCmOd+FZFDoDl80NkQfMka975uFWQjgPFQ/lNnGYXkXtGwCXC+xGsnsf
+         pJE5ClOj7MEyDLhYoiKDNwPd/IZJb0OQ9uRDsUhS1vEayYV5cKkNrUy8wh0xO4N4M3kg
+         K3AKMSkO7mWf8JSNCqz/T7LyiWCgRair8f9pklBcm+1LNKsbhBMlBDfpJnzA3MJwlmaY
+         2wSnWm6QxR+H0mWlKEZ6Jel8GV4/Su/saBWUpH/Y3wCzbNjSS0I2hiIEkEFaJ6ByibOo
+         uWsY6zVEnYKpSsUYy5toRpnpaAs1f5/U+KOJZBKdxQ3RdFjuk4l0zVT6oTKcJS9ZmaOL
+         YjGw==
+X-Gm-Message-State: AOAM530ZRiWtKnVF1w4BQYd8QrFG/6FsJiAODizUFT9VD9KgiQlTajIp
+        7nYKOUeICmS67fm92WSWsu40YRMjHRnzNHsDN/c=
+X-Google-Smtp-Source: ABdhPJwXrGuINMzmLOeLoNvKrXr8kded9JMrOcZu3G8T8pbvFnWwxXU9kXJU7O9Mej5MH/LuttPsiK2qv0RDHBrX1gw=
+X-Received: by 2002:a67:cb0a:: with SMTP id b10mr14980584vsl.9.1630333847661;
+ Mon, 30 Aug 2021 07:30:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <000000000000815b9605c70e74f8@google.com> <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
+ <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
+ <CAMuHMdV=xVhEHLEoYt3OF+kmGrLOr6t7SP1sghSmp9JqXD+3Og@mail.gmail.com>
+ <20210830130000.GW7722@kadam> <8ed0ca59-226b-2d0e-b1ae-82305202558d@i-love.sakura.ne.jp>
+ <20210830134719.GI12231@kadam> <03d0f549-9731-8b06-1393-60d4bef27884@i-love.sakura.ne.jp>
+In-Reply-To: <03d0f549-9731-8b06-1393-60d4bef27884@i-love.sakura.ne.jp>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 30 Aug 2021 16:30:36 +0200
+Message-ID: <CAMuHMdXp7D02Z_Hs4wT9y4WeNzqdxHMgExiOzVauvpfgf4Veig@mail.gmail.com>
+Subject: Re: [syzbot] BUG: unable to handle kernel paging request in vga16fb_fillrect
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Colin King <colin.king@canonical.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 10:49:50 +0000
-"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+Hi Tetsuo,
 
-> > -----Original Message-----
-> > From: Jonathan Cameron <jic23@kernel.org>
-> > Sent: Monday, August 30, 2021 12:08 PM
-> > To: Sa, Nuno <Nuno.Sa@analog.com>
-> > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter Clausen
-> > <lars@metafoo.de>; Thomas Petazzoni
-> > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org; linux-
-> > kernel@vger.kernel.org
-> > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
-> > samples
-> > 
-> > [External]
-> > 
-> > On Fri, 20 Aug 2021 07:10:48 +0000
-> > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
-> >   
-> > > > -----Original Message-----
-> > > > From: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > > Sent: Wednesday, August 18, 2021 1:11 PM
-> > > > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
-> > > > <lars@metafoo.de>
-> > > > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>; linux-
-> > > > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel Raynal
-> > > > <miquel.raynal@bootlin.com>
-> > > > Subject: [PATCH 03/16] iio: adc: max1027: Push only the requested
-> > > > samples
-> > > >
-> > > > [External]
-> > > >
-> > > > When a triggered scan occurs, the identity of the desired channels  
-> > is  
-> > > > known in indio_dev->active_scan_mask. Instead of reading and
-> > > > pushing to
-> > > > the IIO buffers all channels each time, scan the minimum amount  
-> > of  
-> > > > channels (0 to maximum requested chan, to be exact) and only
-> > > > provide the
-> > > > samples requested by the user.
-> > > >
-> > > > For example, if the user wants channels 1, 4 and 5, all channels  
-> > from  
-> > > > 0 to 5 will be scanned but only the desired channels will be pushed  
-> > to  
-> > > > the IIO buffers.
-> > > >
-> > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > > ---
-> > > >  drivers/iio/adc/max1027.c | 25 +++++++++++++++++++++----
-> > > >  1 file changed, 21 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
-> > > > index b753658bb41e..8ab660f596b5 100644
-> > > > --- a/drivers/iio/adc/max1027.c
-> > > > +++ b/drivers/iio/adc/max1027.c
-> > > > @@ -360,6 +360,9 @@ static int max1027_set_trigger_state(struct
-> > > > iio_trigger *trig, bool state)
-> > > >  	struct max1027_state *st = iio_priv(indio_dev);
-> > > >  	int ret;
-> > > >
-> > > > +	if (bitmap_empty(indio_dev->active_scan_mask, indio_dev-  
-> > > > >masklength))  
-> > > > +		return -EINVAL;
-> > > > +  
-> > >
-> > > I'm not sure this can actually happen. If you try to enable the buffer
-> > > with no scan element, it should give you an error before you reach
-> > > this point...
-> > >  
-> > > >  	if (state) {
-> > > >  		/* Start acquisition on cnvst */
-> > > >  		st->reg = MAX1027_SETUP_REG |
-> > > > MAX1027_CKS_MODE0 |
-> > > > @@ -368,9 +371,12 @@ static int max1027_set_trigger_state(struct
-> > > > iio_trigger *trig, bool state)
-> > > >  		if (ret < 0)
-> > > >  			return ret;
-> > > >
-> > > > -		/* Scan from 0 to max */
-> > > > -		st->reg = MAX1027_CONV_REG | MAX1027_CHAN(0) |
-> > > > -			  MAX1027_SCAN_N_M | MAX1027_TEMP;
-> > > > +		/*
-> > > > +		 * Scan from 0 to the highest requested channel. The
-> > > > temperature
-> > > > +		 * could be avoided but it simplifies a bit the logic.
-> > > > +		 */
-> > > > +		st->reg = MAX1027_CONV_REG |
-> > > > MAX1027_SCAN_0_N | MAX1027_TEMP;
-> > > > +		st->reg |= MAX1027_CHAN(fls(*indio_dev-  
-> > > > >active_scan_mask) - 2);  
-> > > >  		ret = spi_write(st->spi, &st->reg, 1);
-> > > >  		if (ret < 0)
-> > > >  			return ret;
-> > > > @@ -391,11 +397,22 @@ static irqreturn_t
-> > > > max1027_trigger_handler(int irq, void *private)
-> > > >  	struct iio_poll_func *pf = private;
-> > > >  	struct iio_dev *indio_dev = pf->indio_dev;
-> > > >  	struct max1027_state *st = iio_priv(indio_dev);
-> > > > +	unsigned int scanned_chans = fls(*indio_dev-  
-> > > > >active_scan_mask);  
-> > > > +	u16 *buf = st->buffer;  
-> > >
-> > > I think sparse will complain here. buffer is a __be16 restricted
-> > > type so you should not mix those...  
-> > > > +	unsigned int bit;
-> > > >
-> > > >  	pr_debug("%s(irq=%d, private=0x%p)\n", __func__, irq,
-> > > >  
-> > private);in/20210818_miquel_raynal_bring_software_triggers_support
-> > _to_max1027_like_adcs.mbx  
-> > > >
-> > > >  	/* fill buffer with all channel */
-> > > > -	spi_read(st->spi, st->buffer, indio_dev->masklength * 2);
-> > > > +	spi_read(st->spi, st->buffer, scanned_chans * 2);
-> > > > +
-> > > > +	/* Only keep the channels selected by the user */
-> > > > +	for_each_set_bit(bit, indio_dev->active_scan_mask,
-> > > > +			 indio_dev->masklength) {
-> > > > +		if (buf[0] != st->buffer[bit])
-> > > > +			buf[0] = st->buffer[bit];  
-> > >
-> > > Since we are here, when looking into the driver, I realized
-> > > that st->buffer is not DMA safe. In IIO, we kind of want to enforce
-> > > that all buffers that are passed to spi/i2c buses are safe... Maybe
-> > > this is something you can include in your series.  
-> > 
-> > Why is it not?  st->buffer is result of a devm_kmalloc_array() call and
-> > that should provide a DMA safe buffer as I understand it.
-> >   
-> 
-> That's a good question. I'm not sure how I came to that conclusion which
-> is clearly wrong. Though I think the buffer might share the line with the
-> mutex...
-Pointer shares a line.  The buffer it points to doesn't as allocated
-by separate heap allocation.
+On Mon, Aug 30, 2021 at 4:26 PM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+> On 2021/08/30 22:47, Dan Carpenter wrote:
+> > On Mon, Aug 30, 2021 at 10:37:31PM +0900, Tetsuo Handa wrote:
+> >> On 2021/08/30 22:00, Dan Carpenter wrote:
+> >>>>> diff --git a/drivers/video/fbdev/vga16fb.c b/drivers/video/fbdev/vga16fb.c
+> >>>>> index e2757ff1c23d..e483a3f5fd47 100644
+> >>>>> --- a/drivers/video/fbdev/vga16fb.c
+> >>>>> +++ b/drivers/video/fbdev/vga16fb.c
+> >>>>> @@ -403,7 +403,7 @@ static int vga16fb_check_var(struct fb_var_screeninfo *var,
+> >>>>>
+> >>>>>         if (yres > vyres)
+> >>>>>                 vyres = yres;
+> >>>>> -       if (vxres * vyres > maxmem) {
+> >>>>> +       if ((u64) vxres * vyres > (u64) maxmem) {
+> >>>>
+> >>>> Mindlessly changing the sizes is not the solution.
+> >>>> Please use e.g. the array_size() helper from <linux/overflow.h>
+> >>>> instead.
+> >>>
+> >>> On a 64bit system the array_size() macro is going to do the exact same
+> >>> casts?  But I do think this code would be easier to understand if the
+> >>> integer overflow check were pull out separately and done first:
+> >>>
+> >>>     if (array_size(vxres, vyres) >= UINT_MAX)
+> >>>             return -EINVAL;
+> >>
+> >> This is wrong. array_size() returns ULONG_MAX on 64bits upon overflow and
+> >> returns UINT_MAX on 32bits upon overflow. However, UINT_MAX is a valid
+> >> value without overflow (e.g. vxres == UINT_MAX / 15 && vyres == 15).
+> >
+> > Huh...  I just assumed we didn't allow resolutions that high.
+>
+> Of course, we don't allow resolutions that high. ;-)
+>
+> Since I don't know possible max resolutions, I chose UINT_MAX + 1 as a common
+> limit for returning -EINVAL. Unless overflow happens, vga16fb_check_var() will
+> return -ENOMEM on such high resolutions.
 
-J
-> 
-> - Nuno Sá
-> 
+The highest possible value of maxmem inside vga16fb_check_var()
+is 65536.
 
+So I believe
+
+    if (array_size(vxres, vyres) > maxmem)
+
+should work fine.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
