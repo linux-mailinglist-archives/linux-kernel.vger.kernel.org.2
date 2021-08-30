@@ -2,170 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C19D3FBDCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B3C3FBDCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236266AbhH3VA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 17:00:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46670 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236056AbhH3VAy (ORCPT
+        id S236431AbhH3VBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234509AbhH3VBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:00:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630357199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZDgZoaGxuF8+VxsBt8mWUj6L6RMapnQD42kDmE3TNZQ=;
-        b=GH03Om/445Kfh0spCpfgBXGkgopeKaJKIqsbbIqGNoDmAlnZTvAthA2tI2dz9Aq5cuTnHb
-        S/4bNzDF2aRH+g5BXDAau4HDRE6CwBE5H4ZiUVX0kxknRtFixsmYk2gTkESXfR+1kQusEc
-        NugrIp20O33foRVdV+QJ3G9RR3jW/9o=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-1KZ7eZtjPpmJHm4R-BtFEA-1; Mon, 30 Aug 2021 16:59:57 -0400
-X-MC-Unique: 1KZ7eZtjPpmJHm4R-BtFEA-1
-Received: by mail-wm1-f71.google.com with SMTP id m16-20020a7bca50000000b002ee5287d4bfso447337wml.7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:59:57 -0700 (PDT)
+        Mon, 30 Aug 2021 17:01:14 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAB3C061575;
+        Mon, 30 Aug 2021 14:00:20 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id u14so33859620ejf.13;
+        Mon, 30 Aug 2021 14:00:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KWiHNXS+3DcOlsVpnDVjQ/m3C1IyjZ5owtbI17urlSs=;
+        b=bls3vPsE9/mpAehw9h8f0bfIKo/ur5D3gapsk6ABlwMpjeNlxnNftLg5NnlgKbrS4J
+         /sKHmCpb2siio/kdCeNycUZ/YaVbk+xwo5ZfnVTuL1OsnztQ4y3HVsto7kYb0mDWWMfq
+         8WvxYIJTIg9sE0Cfxp8919Ne5mZ0AxMthoZinPZFWWUC00ZrTYoNt8QeXuqlqGirttHG
+         k+ZwbnF6G40YvyJTJXblgBwpSjnNY3tWBrKGzhYGJRP8X2ebVIFiUH+zW4cD75T377Xz
+         la5A1p6W1yPx/RLEbxQqKeK2sbulJg1f+x+IjRuzhp187q928KQ6NyqQGyxu+URoxBD7
+         Su9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ZDgZoaGxuF8+VxsBt8mWUj6L6RMapnQD42kDmE3TNZQ=;
-        b=D/ZWcYIgyt4xYbVTY4KIE15WIP+We/vQld08taCpmS5Na0X1kn2KBWCrslTDd/FZvN
-         Qt9mRQpP4IOg1TQyny2LHotfxV8wentRV/guy6pJmn8eEXcgrQmjkmhR+TmTWXEBZXrG
-         P4BN0dsogUu57++CmrsSoD2f/l0Nz6bm9kgEEm9SNEqEuSIoDTHIkXop77LKed6zzAEC
-         kKz4KmfjW8dZ8QzSDGgbupFwQ21lYo9d9wq8XL2xYYkGXNxMNT26v78TN96RPpDQNCEY
-         CYYlwTEmV8XoomSnGEf8dD9YWugZNF9I6MSPearuqZ+V5DVVvCTqSHSsjUHplFGbtks+
-         c6Gw==
-X-Gm-Message-State: AOAM531bnYlhyChD5MQ0PEKF2Nw3fXEhcu67WxCq92/kSpDucc5gQW8D
-        RXGUSU8ZwM3jzVvJvAYJPnFDNH7InxyWwKvNs067T8ZS1U4i6WgiF5Y/wBSzMPhEwNgFtEy+gpy
-        t+sNj+uVnRPs3P3EdTFM1wJu8
-X-Received: by 2002:a1c:7f48:: with SMTP id a69mr887122wmd.166.1630357196518;
-        Mon, 30 Aug 2021 13:59:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjS6eag15Cf7xmVDHk/qvmWoQLzIdnk7dLXkY7XjvOHcTw6SiXs3ksmYcUzh73pyrAtLIGDA==
-X-Received: by 2002:a1c:7f48:: with SMTP id a69mr887093wmd.166.1630357196296;
-        Mon, 30 Aug 2021 13:59:56 -0700 (PDT)
-Received: from redhat.com ([2.55.138.60])
-        by smtp.gmail.com with ESMTPSA id z9sm12277068wre.11.2021.08.30.13.59.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 13:59:55 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 16:59:50 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
-Message-ID: <20210830163723-mutt-send-email-mst@kernel.org>
-References: <20210823195409-mutt-send-email-mst@kernel.org>
- <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
- <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
- <d992b5af-8d57-6aa6-bd49-8e2b8d832b19@linux.intel.com>
- <20210824053830-mutt-send-email-mst@kernel.org>
- <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
- <20210829112105-mutt-send-email-mst@kernel.org>
- <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
- <20210829181635-mutt-send-email-mst@kernel.org>
- <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KWiHNXS+3DcOlsVpnDVjQ/m3C1IyjZ5owtbI17urlSs=;
+        b=QyWx7lxddHyrmJJ1pgY/la0FPXouMksveAZZSrU6c2/qoW7O5RdPEVz6vwGoZPc2vA
+         c5ckT7OXYEVUwpi9d1kLvaaB9CuMJIy8Zi6UJMqmA+e4enhwcJinZzKxjr0BD2GahG3K
+         nMEnQF4U+B/BXCcGlyCP+qdaB9u5q6WM4tYg++WPtGaLhq7qLXysGnjFlUlLiMoIwYAF
+         ctWcTuI/UPh8JR6I6pjVb++V/Oyhi6HPvPM17IDirjkiXwCTxegQZlA0CGX7X9mmuAPf
+         LlzpTyni/m1N3Ta+CciOu71QTz0NnMTDMRdQeq+5aKD5L9CF7hPYevrF8fp/eZB2YaEI
+         QDQw==
+X-Gm-Message-State: AOAM530cyMuS748lHKcthIyovnXqigJChCnO30v/8UQAFQF/lQzT9a2q
+        hqipw9Hf7SwmK2im6JRIFQG2ji7iHwmcmyYc
+X-Google-Smtp-Source: ABdhPJwhD4PkYb6968XTC6ESe+L5tvt2UaX2SD+FMpytvd38l0rgpOZLeQtVZrtL5iuFcKST3zh7Iw==
+X-Received: by 2002:a17:906:1451:: with SMTP id q17mr27376832ejc.214.1630357219217;
+        Mon, 30 Aug 2021 14:00:19 -0700 (PDT)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id dk6sm8164992edb.14.2021.08.30.14.00.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 14:00:18 -0700 (PDT)
+Subject: Re: [PATCH v1 4/5] dt-bindings: phy: phy-rockchip-dphy-rx0: add
+ support for tx1rx1 phy
+To:     Mikhail Rudenko <mike.rudenko@gmail.com>,
+        linux-phy@lists.infradead.org
+Cc:     linux-media@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Helen Koike <helen.koike@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210830180758.251390-1-mike.rudenko@gmail.com>
+ <20210830180758.251390-5-mike.rudenko@gmail.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <60aa055c-d872-3e5c-3c85-09300215a60e@gmail.com>
+Date:   Mon, 30 Aug 2021 23:00:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
+In-Reply-To: <20210830180758.251390-5-mike.rudenko@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 10:11:46PM -0700, Andi Kleen wrote:
+Hi Mikhail,
+
+Some comments below. Have a look if it is useful.
+
+On 8/30/21 8:07 PM, Mikhail Rudenko wrote:
+> RK3399 TX1RX1 D-PHY is not a child of GRF and uses reg, thus add
+> corresponding properties conditionally. It also requires DSI clock to
+> operate, so check for it. Since we now support both rx0 and tx1rx1,
+> rename the schema to rockchip-mipi-dphy-rx.yaml.
 > 
-> On 8/29/2021 3:26 PM, Michael S. Tsirkin wrote:
-> > On Sun, Aug 29, 2021 at 09:17:53AM -0700, Andi Kleen wrote:
-> > > Also I changing this single call really that bad? It's not that we changing
-> > > anything drastic here, just give the low level subsystem a better hint about
-> > > the intention. If you don't like the function name, could make it an
-> > > argument instead?
-> > My point however is that the API should say that the
-> > driver has been audited,
+> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+> ---
+>  ...hy-rx0.yaml => rockchip-mipi-dphy-rx.yaml} | 39 +++++++++++++++++--
+>  1 file changed, 35 insertions(+), 4 deletions(-)
+>  rename Documentation/devicetree/bindings/phy/{rockchip-mipi-dphy-rx0.yaml => rockchip-mipi-dphy-rx.yaml} (65%)
 > 
-> We have that status in the struct device. If you want to tie the ioremap to
-> that we could define a ioremap_device() with a device argument and decide
-> based on that.
+> diff --git a/Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx0.yaml b/Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx.yaml
+> similarity index 65%
+> rename from Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx0.yaml
+> rename to Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx.yaml
+> index 7d888d358823..f42319448fc9 100644
+> --- a/Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx0.yaml
+> +++ b/Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx.yaml
+> @@ -1,10 +1,10 @@
+>  # SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>  %YAML 1.2
+>  ---
+> -$id: http://devicetree.org/schemas/phy/rockchip-mipi-dphy-rx0.yaml#
+> +$id: http://devicetree.org/schemas/phy/rockchip-mipi-dphy-rx.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Rockchip SoC MIPI RX0 D-PHY Device Tree Bindings
+> +title: Rockchip SoC MIPI RX0/TX1RX1 D-PHY Device Tree Bindings
+>  
+>  maintainers:
+>    - Helen Koike <helen.koike@collabora.com>
+> @@ -16,19 +16,28 @@ description: |
+>  
+>  properties:
+>    compatible:
+> -    const: rockchip,rk3399-mipi-dphy-rx0
+> +    enum:
+> +      - rockchip,rk3399-mipi-dphy-rx0
+> +      - rockchip,rk3399-mipi-dphy-tx1rx1
+> +
 
-But it's not the device that is audited. And it's not the device
-that might be secure or insecure. It's the driver.
+> +  reg:
+> +    maxItems: 1
 
-> Or we can add _audited to the name. ioremap_shared_audited?
+This allows every node to have a reg property.
 
-But it's not the mapping that has to be done in handled special way.
-It's any data we get from device, not all of it coming from IO, e.g.
-there's DMA and interrupts that all have to be validated.
-Wouldn't you say that what is really wanted is just not running
-unaudited drivers in the first place?
+>  
+>    clocks:
+> +    minItems: 3
+>      items:
+>        - description: MIPI D-PHY ref clock
+> -      - description: MIPI D-PHY RX0 cfg clock
+> +      - description: MIPI D-PHY RX0/TX1RX1 cfg clock
+>        - description: Video in/out general register file clock
+> +      - description: MIPI D-PHY DSI clock
+>  
+>    clock-names:
+> +    minItems: 3
+>      items:
+>        - const: dphy-ref
+>        - const: dphy-cfg
+>        - const: grf
+> +      - const: dsi
+>  
+>    '#phy-cells':
+>      const: 0
+> @@ -37,6 +46,12 @@ properties:
+>      description: Video in/out power domain.
+>      maxItems: 1
+>  
 
+> +  rockchip,grf:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      The phandle of the syscon node for the general register file
+> +      (GRF), required for TX1RX1 MIPI D-PHY on RK3399.
+
+This allows every node to have a rockchip,grf property.
+
+> +
+>  required:
+>    - compatible
+>    - clocks
+> @@ -44,6 +59,22 @@ required:
+>    - '#phy-cells'
+>    - power-domains
+>  
+> +if:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +          const: rockchip,rk3399-mipi-dphy-tx1rx1
+> +then:
+
+> +  required:
+
+Move/swap the properties section above the required section.
+
+> +    - reg
+> +    - rockchip,grf
+> +
+> +  properties:
+
+  reg:
+    maxItems: 1
+
+> +    clocks:
+> +      minItems: 4
+> +    clock-names:
+> +      minItems: 4
+
+  rockchip,grf:
+    $ref: /schemas/types.yaml#/definitions/phandle
+    description:
+      The phandle of the syscon node for the general register file(GRF).
+
+
+", required for TX1RX1 MIPI D-PHY on RK3399."
+
+This phrase is already said/done with the "required:" section above
+
+>  additionalProperties: false
+>  
+>  examples:
 > 
-> > not that the mapping has been
-> > done in some special way. For example the mapping can be
-> > in some kind of wrapper, not directly in the driver.
-> > However you want the driver validated, not the wrapper.
-> > 
-> > Here's an idea:
-> 
-> 
-> I don't think magic differences of API behavior based on some define are a
-> good idea.  That's easy to miss.
-
-Well ... my point is that actually there is no difference in API
-behaviour. the map is the same map, exactly same data goes to device. If
-anything any non-shared map is special in that encrypted data goes to
-device.
-
-> 
-> That's a "COME FROM" in API design.
-> 
-> Also it wouldn't handle the case that a driver has both private and shared
-> ioremaps, e.g. for BIOS structures.
-
-Hmm. Interesting.  It's bios maps that are unusual and need to be private though ...
-
-> And we've been avoiding that drivers can self declare auditing, we've been
-> trying to have a separate centralized list so that it's easier to enforce
-> and avoids any cut'n'paste mistakes.
-> 
-> -Andi
-
-Now I'm confused. What is proposed here seems to be basically that,
-drivers need to declare auditing by replacing ioremap with
-ioremap_shared.
-
--- 
-MST
-
