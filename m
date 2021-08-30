@@ -2,88 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE25F3FBEDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 00:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDEA3FBEE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 00:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238915AbhH3WN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 18:13:27 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55108 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238842AbhH3WN0 (ORCPT
+        id S238476AbhH3WQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 18:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230255AbhH3WQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 18:13:26 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630361551;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=D6uP0jH77Cf5U+rQ18KicmniIM74e6euw6V8hH0Ls/0=;
-        b=JpAbK37n7YhosWebfCKIRWKQUqdRVURN6rhEl+5xLKL3SFGgYfuhPSfnx45nySVquVYJwV
-        GGQp3kBmnBDVG75vFgPpl5jMtCw8OyyBrQ6EwuPE7RFWlqi0+LiPBGS20HnDwPG2sp4wfJ
-        DhKTumJvDc6zPn67p9TX8fCcKspvGqnVAwHey90LXdGl7BL3q010IVx5wyh36e3n1/y50q
-        3Dg53GjRPzfAKrHu4xTnK28NSiToRAv8keuKDq26H0Om3w5MthuLhy4rtzKn9nPGF2Fzu0
-        jkTdGTJ2OpXWiCor7gJ/offOiav0SN1JA1XTJYFM2auN3EEQjsfjkhZRhva+8Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630361551;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=D6uP0jH77Cf5U+rQ18KicmniIM74e6euw6V8hH0Ls/0=;
-        b=Zy/WzVRXoM8cSmmug6Q878ykEtxx5G5daNuSM9YF4rZDgGpaD6+7VRABdDtoyJ4/lA60/6
-        69dPWiEmkOd4IMDQ==
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
- restore_fpregs_from_user()
-In-Reply-To: <CAHk-=wh57tMaJxcH=kWE4xdKLjayKSDEVvMwHG4fKZ5tUHF6mg@mail.gmail.com>
-References: <20210830154702.247681585@linutronix.de>
- <20210830162545.374070793@linutronix.de> <YS0ylo9nTHD9NiAp@zn.tnic>
- <87zgsyg0eg.ffs@tglx> <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
- <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
- <YS1OE6FRi4ZwEF8j@zeniv-ca.linux.org.uk>
- <CAHk-=wh57tMaJxcH=kWE4xdKLjayKSDEVvMwHG4fKZ5tUHF6mg@mail.gmail.com>
-Date:   Tue, 31 Aug 2021 00:12:30 +0200
-Message-ID: <87o89efupd.ffs@tglx>
+        Mon, 30 Aug 2021 18:16:01 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49364C061575;
+        Mon, 30 Aug 2021 15:15:07 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id v19so17566484ybv.9;
+        Mon, 30 Aug 2021 15:15:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZFNvsjqGoOUvaOP1kexRv4qguktfVomTKA5112VDpAo=;
+        b=scQdVfYcAQVStZ2ycSE8XcE2y7omukO6oSDVj4IPGbtpT9EUIKlzs3u02kHT0Oy7+x
+         9IIFUlIZvMVbfjtkvFUxdTo9+uH2nK/ulqykXYC7dKosPhn1Ar/lpVo8a0cvUk8C0RzJ
+         p39BNZaxq9DzAgVUcmy4UPjL3SCxE0gdv+DJTT3aU8nR6gq0vS1M1vH314P05CTm10UC
+         GVFbaSLD1Du44opiIj0EzfqXfCEOl/VcoG6PD9EHgSb+pdVt/GsQUeijXSbFzJgnGWtZ
+         Kl+d8zXAXl4utwtas0b44QOin8fF41poWXIQxFUI8jniwNAUN6lGfb+aLh3suHhsy1W8
+         Mmpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZFNvsjqGoOUvaOP1kexRv4qguktfVomTKA5112VDpAo=;
+        b=WiTG4OqjjB/2U1umr9qS6ZuaZYVKcXprIaIVaL/GBqAWRRnnHhoxDYnFtlHtlBn/ta
+         EH0smXtGZALW4dj0S1aU7lWaS1BXaIHr360I0cC3O4yMobLOi+Axi4V9598Y/5Ic3cv7
+         FfeZKRcCoVo6ae7OnWD709KCRiU8g82U1RgsvSsirp8UkXrE/czerdIxpvOx7bKC4Gj8
+         cP+sz8zXPH7RO57cAcuCcC1hrIGfLvPNu8NSgT8C3mWU6yQj62suJ3aFGTXGfDSUozv8
+         Yf6pjpB3whSTL3SYe2ykCmqK8jZ5T3d26rEhKUCPPZaC+EJw1Qc9fnLSvuLqWbcUtTT1
+         dePQ==
+X-Gm-Message-State: AOAM531tBUc2Xnyz24qR6Sa2tXHvo41Lj9IVTV7rQpIXI7ZSrr7v5opr
+        mT8B2JErCqDDbr52h001zNOGlAO0bWGwf1rnJQI=
+X-Google-Smtp-Source: ABdhPJwaK0wRRyCPCTu5uynUif+6ia5s49XOmqYd+bu4Elir7aULt+9D2ZS3upSizmpPFWB6TaXmo5+cHbita0YLfbc=
+X-Received: by 2002:a25:16c6:: with SMTP id 189mr26345337ybw.27.1630361706519;
+ Mon, 30 Aug 2021 15:15:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210830214106.4142056-1-songliubraving@fb.com> <20210830214106.4142056-3-songliubraving@fb.com>
+In-Reply-To: <20210830214106.4142056-3-songliubraving@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 30 Aug 2021 15:14:55 -0700
+Message-ID: <CAEf4BzYuUTndYGb7-4q9=8s4PQUbTK+VHy=u9vOBqabZ08Yy-w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/3] bpf: introduce helper bpf_get_branch_snapshot
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30 2021 at 15:00, Linus Torvalds wrote:
-> On Mon, Aug 30, 2021 at 2:33 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->>
->> There's a place where we care about #PF vs. #MC (see upthread)...
+On Mon, Aug 30, 2021 at 2:42 PM Song Liu <songliubraving@fb.com> wrote:
 >
-> Interestingly (or perhaps not), that case is a problem case in general
-> for "fault_in_pages_readable()".
+> Introduce bpf_get_branch_snapshot(), which allows tracing pogram to get
+> branch trace from hardware (e.g. Intel LBR). To use the feature, the
+> user need to create perf_event with proper branch_record filtering
+> on each cpu, and then calls bpf_get_branch_snapshot in the bpf function.
+> On Intel CPUs, VLBR event (raw event 0x1b00) can be use for this.
 >
-> That function will only access data every PAGE_SIZE bytes, but if we
-> have other exceptions that can happen at a cacheline granularity, the
-> whole "retry after faulting pages in" may fail.
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  include/linux/bpf.h            |  2 ++
+>  include/linux/filter.h         |  3 ++-
+>  include/uapi/linux/bpf.h       | 16 +++++++++++++
+>  kernel/bpf/trampoline.c        | 13 ++++++++++
+>  kernel/bpf/verifier.c          | 12 ++++++++++
+>  kernel/trace/bpf_trace.c       | 43 ++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 16 +++++++++++++
+>  7 files changed, 104 insertions(+), 1 deletion(-)
 >
-> So that kind of
->
->  - try to copy from user space
->
->  - if that fails, do fault_in_pages_readable() and retry
->
-> loop can loop forever.
->
-> restore_fpregs_from_user() is odd and special in trying to deal with
-> it by looking at the error code. I'm n ot convinced it's the right
-> thing to do, since it just means that all the other places we do this
-> can be problematic.
 
-It's not only about #MC. *RSTOR can also trigger #GP in case that the
-user buffer contains garbage and we clearly don't want to loop forever
-on that either.
+[...]
 
-Thanks,
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 206c221453cfa..72e8b49da0bf9 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -6446,6 +6446,18 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>                 env->prog->call_get_func_ip = true;
+>         }
+>
+> +       if (func_id == BPF_FUNC_get_branch_snapshot) {
+> +               if (env->prog->aux->sleepable) {
+> +                       verbose(env, "sleepable progs cannot call get_branch_snapshot\n");
+> +                       return -ENOTSUPP;
+> +               }
+> +               if (!IS_ENABLED(CONFIG_PERF_EVENTS)) {
+> +                       verbose(env, "func %s#%d not supported without CONFIG_PERF_EVENTS\n",
+> +                               func_id_name(func_id), func_id);
+> +                       return -ENOTSUPP;
+> +               }
+> +               env->prog->call_get_branch = true;
+> +       }
+>         if (changes_data)
+>                 clear_all_pkt_pointers(env);
+>         return 0;
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 8e2eb950aa829..a01f26b7877e6 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1017,6 +1017,33 @@ static const struct bpf_func_proto bpf_get_attach_cookie_proto_pe = {
+>         .arg1_type      = ARG_PTR_TO_CTX,
+>  };
+>
+> +BPF_CALL_2(bpf_get_branch_snapshot, void *, buf, u32, size)
 
-        tglx
+I bet we'll need u64 flags over time, let's add it right now. It's
+similar to bpf_read_branch_records().
+
+> +{
+> +#ifdef CONFIG_PERF_EVENTS
+> +       u32 max_size;
+> +
+> +       if (this_cpu_ptr(&bpf_perf_branch_snapshot)->nr == 0)
+> +               return -EOPNOTSUPP;
+> +
+> +       max_size = this_cpu_ptr(&bpf_perf_branch_snapshot)->nr *
+> +               sizeof(struct perf_branch_entry);
+> +       memcpy(buf, this_cpu_ptr(&bpf_perf_branch_snapshot)->entries,
+> +              min_t(u32, size, max_size));
+> +
+
+Check bpf_read_branch_records() implementation and it's argument
+validation logic. Let's keep them consistent (e.g., it enforces that
+size is a multiple of sizeof(struct perf_branch_entry)). Another
+difference is that bpf_read_branch_records() returns number of bytes
+filled, not number of records. That's consistent with accepting size
+as number of bytes. Let's stick to this convention then, so bytes
+everywhere.
+
+
+> +       return this_cpu_ptr(&bpf_perf_branch_snapshot)->nr;
+> +#else
+> +       return -EOPNOTSUPP;
+> +#endif
+> +}
+> +
+> +static const struct bpf_func_proto bpf_get_branch_snapshot_proto = {
+> +       .func           = bpf_get_branch_snapshot,
+> +       .gpl_only       = true,
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_PTR_TO_UNINIT_MEM,
+> +       .arg2_type      = ARG_CONST_SIZE_OR_ZERO,
+> +};
+> +
+
+[...]
