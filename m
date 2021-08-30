@@ -2,88 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DB13FB9C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8E43FB9C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237957AbhH3QHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:07:40 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:42980 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237682AbhH3QHj (ORCPT
+        id S237961AbhH3QIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237682AbhH3QIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:07:39 -0400
-Received: by mail-wm1-f46.google.com with SMTP id k20-20020a05600c0b5400b002e87ad6956eso360329wmr.1;
-        Mon, 30 Aug 2021 09:06:45 -0700 (PDT)
+        Mon, 30 Aug 2021 12:08:05 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A341C061575;
+        Mon, 30 Aug 2021 09:07:11 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id x10-20020a056830408a00b004f26cead745so19011084ott.10;
+        Mon, 30 Aug 2021 09:07:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ruwp3iijqIwZVSgXNeIhFJbwgJtXDZCn8fxCLBnVSpo=;
+        b=s3cvyYzQ9YyjSHdAUvCw6BZcy4J6QWSJo6UK76LFVfTEVetuG5AwfDUCCvgJDsFYYo
+         ntx0y3ExhGaYY/ArvFblOVtM0WTYCj4/VLqaCfRiYIBhnVxwtwUeqe+79ygj+hUE6FEM
+         asWOBsNirtXtPkqWn3QF9ALTxodu+uy0f9/5wUPmWlt0Tc2+hVCBQi7jTnEHS0MQifRP
+         UFLc9SvrBJjMn/R23zohpAo+KOwbw+02Gqi2L5iUZldkYyZoBNZojfQwkyW4JKQJjj3g
+         Q8L9MaY1ORB4EvZeEC/DnMzyDchoFkLbSAAbk03jno2JWlEvnRs1qRYoLPr2GLG6FNQN
+         w7Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=lI18TvRw73yAlqH1vs/eUgEBLdxdcJZcXEoVMwFprjI=;
-        b=rSsbxR0v5E9vbQZVvumlFzppX2zFeUwCELMo1F+jDZrau/JtAomkir8p2Ed299RPoz
-         8S+UnYcrJ0Ij6A5X4ZWLg9Ds+fdmXMMowNq8H17O3hEizSkq9iEhJSD7lvDFSt1VICdU
-         bwhzbhci+UQodMO8cTK7UoBNduc+v8qAQODbX+NLpefSlf4dVhAfi8/UFUXe7M6WRENo
-         3heuuzpg/eGTqnFyIe+YYQXmtLsN+7T4eHCR3CiEy/y1JHnWm2ulujmipCBwWGdC2AG9
-         rIEE8wQizUFcfsxr9wTYhTWjFyuZu8qe0QwJb9jx0O30EWWUQMnDSfetbi6j5mwXHuFV
-         ThlQ==
-X-Gm-Message-State: AOAM532J12pRNJPM+Iy7dCJ9H/HTtLk6pFxTQymV466BZnR2bfkgZhJe
-        4unKg/Bfa6ObaCjtfVLApx5Kmo/r83eflw==
-X-Google-Smtp-Source: ABdhPJz4UbbvQLnrjjaJud6LBo7F3PB+mQ+z+4aSK5uL+M3DxshWfrxVtfQpGM5RVMwk0cbImrxirA==
-X-Received: by 2002:a7b:cc16:: with SMTP id f22mr33124661wmh.99.1630339604953;
-        Mon, 30 Aug 2021 09:06:44 -0700 (PDT)
-Received: from Johanness-MBP.fritz.box ([2001:a62:1533:3701:9cbd:e8f2:43f7:60cc])
-        by smtp.gmail.com with ESMTPSA id s1sm9933008wrs.53.2021.08.30.09.06.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 09:06:44 -0700 (PDT)
-Subject: Re: [PATCH] mcb: fix error handling in mcb_alloc_bus()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andreas Werner <andreas.werner@men.de>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <YLX7bAD4UPCpIBmq@mwanda>
- <c4cffc84-be11-6558-60aa-a5217963b1f6@kernel.org>
- <20210830140856.GX7722@kadam>
-From:   Johannes Thumshirn <jth@kernel.org>
-Message-ID: <c2fe69bd-316a-b255-9957-9beab6ed60fe@kernel.org>
-Date:   Mon, 30 Aug 2021 18:06:43 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ruwp3iijqIwZVSgXNeIhFJbwgJtXDZCn8fxCLBnVSpo=;
+        b=ICt+BIpMGEljdtx1ZRsSKaZuuRt+o2VExzflyEV4mkWgAQfikT6WAhn7t4HR8m8VG7
+         OQuACP0CVuGdYk0m/cttpIFiYjGzHRkKQDGjReo92b893pJyaM7rD2xajP1bYEJTugFD
+         xt7obdo9Es0Kl2fxWKMgKnUgg0sgqytC1CGcxcVZC+cCFjNV3I7lXWGXA1hUMSv9LKyB
+         o6W7oFCTZIIsCWJykAzYSd10VVGRIEIBZvEjfyXfoqmr/TnbbiUX+AJbkf4YoA7yMXqk
+         yiYh9OFNegmzdmlCu6HL2AtlxtYqNZevToZ26ky7p4aItlaNopvqh6v9HnTJ5/bi72Lz
+         oChw==
+X-Gm-Message-State: AOAM532FeYLJhvsUPCvJsvPhz2OSma6mMFdMwYxc+LxDEMZ85w0muSFj
+        13neSefvj4HflsQyBmTNiPe5pFSqcgjnZeAssUOd9+i2
+X-Google-Smtp-Source: ABdhPJzYjOG/T5oPCIUruDBmzAlPMcIH2mAh4iRhp/OybEGs5JtN4FWYzVB/ir1+/bJwtN0eKFAyVfymflI8BY45PxY=
+X-Received: by 2002:a9d:4c15:: with SMTP id l21mr19848810otf.311.1630339630660;
+ Mon, 30 Aug 2021 09:07:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210830140856.GX7722@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+References: <20210827185914.507508-1-colin.king@canonical.com>
+In-Reply-To: <20210827185914.507508-1-colin.king@canonical.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 30 Aug 2021 12:06:59 -0400
+Message-ID: <CADnq5_MFawF+Cq26-HxHAc1e2Pefrwg_95kYj9p=jHdpiBoRvA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu/swsmu: fix spelling mistake "minimun" -> "minimum"
+To:     Colin King <colin.king@canonical.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        xinhui pan <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 30.08.21 um 16:08 schrieb Dan Carpenter:
-> On Tue, Jun 01, 2021 at 03:23:55PM +0200, Johannes Thumshirn wrote:
->>
->> Am 01.06.21 um 11:18 schrieb Dan Carpenter:
->>> There are two bugs:
->>> 1) If ida_simple_get() fails then this code calls put_device(carrier)
->>>    but we haven't yet called get_device(carrier) and probably that
->>>    leads to a use after free.
->>> 2) After device_initialize() then we need to use put_device() to
->>>    release the bus.  This will free the internal resources tied to the
->>>    device and call mcb_free_bus() which will free the rest.
->>>
->>> Fixes: 5d9e2ab9fea4 ("mcb: Implement bus->dev.release callback")
->>> Fixes: 18d288198099 ("mcb: Correctly initialize the bus's device")
->>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
->>>
->> Thanks applied
-> This is still not in linux-next.
+Applied.  Thanks!
+
+Alex
+
+On Fri, Aug 27, 2021 at 2:59 PM Colin King <colin.king@canonical.com> wrote:
 >
-> regards,
-> dan carpenter
-
-Hi Dan,
-
-Greg asked me to resend the patch with Cc stable and I totally forgot to
-do that, my bad.
-
-I'll do that ASAP once the merge window opens again or earlier if Greg
-is OK with it.
-
-Byte,
-    Johannes
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There are three identical spelling mistakes in dev_err messages.
+> Fix these.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c     | 2 +-
+>  drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c      | 2 +-
+>  drivers/gpu/drm/amd/pm/swsmu/smu13/yellow_carp_ppt.c | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> index ad52f7ecfb87..629bb8e926fb 100644
+> --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> @@ -1869,7 +1869,7 @@ static int vangogh_od_edit_dpm_table(struct smu_context *smu, enum PP_OD_DPM_TAB
+>                 } else {
+>                         if (smu->gfx_actual_hard_min_freq > smu->gfx_actual_soft_max_freq) {
+>                                 dev_err(smu->adev->dev,
+> -                                       "The setting minimun sclk (%d) MHz is greater than the setting maximum sclk (%d) MHz\n",
+> +                                       "The setting minimum sclk (%d) MHz is greater than the setting maximum sclk (%d) MHz\n",
+>                                         smu->gfx_actual_hard_min_freq,
+>                                         smu->gfx_actual_soft_max_freq);
+>                                 return -EINVAL;
+> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
+> index b39138041141..5aa175e12a78 100644
+> --- a/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
+> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
+> @@ -426,7 +426,7 @@ static int renoir_od_edit_dpm_table(struct smu_context *smu,
+>                 } else {
+>                         if (smu->gfx_actual_hard_min_freq > smu->gfx_actual_soft_max_freq) {
+>                                 dev_err(smu->adev->dev,
+> -                                       "The setting minimun sclk (%d) MHz is greater than the setting maximum sclk (%d) MHz\n",
+> +                                       "The setting minimum sclk (%d) MHz is greater than the setting maximum sclk (%d) MHz\n",
+>                                         smu->gfx_actual_hard_min_freq,
+>                                         smu->gfx_actual_soft_max_freq);
+>                                 return -EINVAL;
+> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/yellow_carp_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/yellow_carp_ppt.c
+> index 0f17c2522c85..627ba2eec7fd 100644
+> --- a/drivers/gpu/drm/amd/pm/swsmu/smu13/yellow_carp_ppt.c
+> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/yellow_carp_ppt.c
+> @@ -731,7 +731,7 @@ static int yellow_carp_od_edit_dpm_table(struct smu_context *smu, enum PP_OD_DPM
+>                 } else {
+>                         if (smu->gfx_actual_hard_min_freq > smu->gfx_actual_soft_max_freq) {
+>                                 dev_err(smu->adev->dev,
+> -                                       "The setting minimun sclk (%d) MHz is greater than the setting maximum sclk (%d) MHz\n",
+> +                                       "The setting minimum sclk (%d) MHz is greater than the setting maximum sclk (%d) MHz\n",
+>                                         smu->gfx_actual_hard_min_freq,
+>                                         smu->gfx_actual_soft_max_freq);
+>                                 return -EINVAL;
+> --
+> 2.32.0
+>
