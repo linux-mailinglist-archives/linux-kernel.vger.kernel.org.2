@@ -2,113 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB713FBE4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527C53FBE4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238413AbhH3Va0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S237833AbhH3Va3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238447AbhH3Va0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 30 Aug 2021 17:30:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238487AbhH3VaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:30:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC4DA60F6B;
-        Mon, 30 Aug 2021 21:29:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630358968;
-        bh=/ZzvcQQRcd4ZkBiyfo3gJZBP2yDFIC6sed0Nv3ouAoA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k4BbWLzsmjRH0RdnXDYyq5tMra9z0BJJLqlczxgGdDtPkPOqXdfsXU8nM+Na/8fu+
-         A9E76d2bEYdJBt/BI5wDheqfaz000E1kNMTOKS3XGN0qoYu1e7MGWPfOcvSMU5Qa00
-         zBVU5LHX9JbPeKXlmU8lMfpbLD6Zn3hYNF4If/XRnEYmKHxZKWl29yl7G7wxkCKMV5
-         jON4vLAJCE0N+fUaZq/QK4s+zmOG4bzEA9y8nnJKfUdtEuxzkMl+COTiIXojFUrv1X
-         AQj96QNiU/Bf2nTpmFxEcNTcLfVyILG3XeRR2kn7v7fS51jentWpXlKFycPyeGdcX3
-         pWL0SQjR0Jflw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C55604007E; Mon, 30 Aug 2021 18:29:24 -0300 (-03)
-Date:   Mon, 30 Aug 2021 18:29:24 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com
-Subject: Re: [PATCH v2] perf bpf: Fix memory leaks relating to BTF.
-Message-ID: <YS1NtCLgQzB7GILt@kernel.org>
-References: <20210826184833.408563-1-irogers@google.com>
- <767e90d9-fb3e-93e2-ac67-940ab7e9ae28@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <767e90d9-fb3e-93e2-ac67-940ab7e9ae28@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8221DC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 14:29:32 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id u1-20020a25ab01000000b0059949024617so7264301ybi.17
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 14:29:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=eseI6U2kIEOPcPM9gI60D1kTKt4tS6rDtvNewr+avNc=;
+        b=ZtiiV9dThXWzS2SCR/2P/g4bV+3D1oXrC1Y4ceEyKTtixkPvU7pjUOytCDItuhzkDC
+         3NCzupEVHGQe9OpAOWQg2t0QsaKpjhmCaDtzVv94kBihBHAzDqp4oUd8gR7BVBiuKv43
+         KyKdkQL5IJ4OZrxSm1gl3tWnvrBMqRiX6OAdnK2j/K1m2cLAuHBrYKqGlSGoEK37fMo3
+         yyLrX0IIhoMjiJqCxr0rWToyCHO/cczfwdTDp6Kt87qRbPlNh/QToLBf4AconQRjCnTK
+         FxAy5ubjoCvWalIjjEdKlobXbOFBBQ5W4H7vc3amWbgOMlqdtDNqDOzIogTyTwJyX6PZ
+         TqtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=eseI6U2kIEOPcPM9gI60D1kTKt4tS6rDtvNewr+avNc=;
+        b=fTeTtSBvtrVvcm6t294/m7uiLyFglRUQbqO45hgVrannlbqxo/6zDxDQKawEjyDSt9
+         7tUJ7v7eEyXuGmsnGpDcwQy4MlF8G82DyXHPvdWGizpfZNoOwGE8YmcRM0sfcAw+2AxJ
+         aTRMtQ41l21fyfXDVVInVGqxl0IIyBkqOspHi7qntKx0qqRylWfp2ZJC8KQx3uA6UCNI
+         NMPaMwJtS8E8F+uu9FHHLIhLIgRy1wmiFlBwkZnl3cerEVn01qom10zi+5whb68tgRX3
+         PAAqTapzYtHBVbZw6mcrny7YetZoVPfuFZF9++bSMRckMjOUCe8HZ+ffX5O8I6SPEpvU
+         vLew==
+X-Gm-Message-State: AOAM530pdAfa9o28n4F4+kU/CGIBT/mzDsjROv8hw0Ege9DfhRNSTNYn
+        lScyiq9mFzM6G89iyj+xYLKa4dzFmeg=
+X-Google-Smtp-Source: ABdhPJzVjPSgM4mAhNdv+l0chONGunURNhFdW/RVHmYi4gNo666UZgH7s+/emcHsSqCDajMC/hNmxbZ1sb4=
+X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:e552:6d5e:b69d:968c])
+ (user=pgonda job=sendgmr) by 2002:a25:74ca:: with SMTP id p193mr26235340ybc.28.1630358971761;
+ Mon, 30 Aug 2021 14:29:31 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 14:29:27 -0700
+Message-Id: <20210830212927.3540045-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+Subject: [PATCH 3/3 V6] selftest: KVM: Add intra host migration
+From:   Peter Gonda <pgonda@google.com>
+To:     kvm@vger.kernel.org
+Cc:     Peter Gonda <pgonda@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Aug 27, 2021 at 12:58:09PM +0530, kajoljain escreveu:
-> Patch looks good me.
-> 
-> Reviewed-by: Kajol Jain<kjain@linux.ibm.com>
+Adds testcases for intra host migration for SEV and SEV-ES. Also adds
+locking test to confirm no deadlock exists.
 
-Thanks, applied.
+---
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/x86_64/sev_vm_tests.c       | 152 ++++++++++++++++++
+ 2 files changed, 153 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
 
-- Arnaldo
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Cc: Marc Orr <marcorr@google.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
- 
-> Thanks,
-> Kajol Jain
-> 
-> On 8/27/21 12:18 AM, Ian Rogers wrote:
-> > BTF needs to be freed with btf__free.
-> > 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/annotate.c  | 2 +-
-> >  tools/perf/util/bpf-event.c | 4 ++--
-> >  2 files changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-> > index d43f6b5e5169..0bae061b2d6d 100644
-> > --- a/tools/perf/util/annotate.c
-> > +++ b/tools/perf/util/annotate.c
-> > @@ -1833,7 +1833,7 @@ static int symbol__disassemble_bpf(struct symbol *sym,
-> >  	ret = 0;
-> >  out:
-> >  	free(prog_linfo);
-> > -	free(btf);
-> > +	btf__free(btf);
-> >  	fclose(s);
-> >  	bfd_close(bfdf);
-> >  	return ret;
-> > diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-> > index cdecda1ddd36..17a9844e4fbf 100644
-> > --- a/tools/perf/util/bpf-event.c
-> > +++ b/tools/perf/util/bpf-event.c
-> > @@ -296,7 +296,7 @@ static int perf_event__synthesize_one_bpf_prog(struct perf_session *session,
-> >  
-> >  out:
-> >  	free(info_linear);
-> > -	free(btf);
-> > +	btf__free(btf);
-> >  	return err ? -1 : 0;
-> >  }
-> >  
-> > @@ -486,7 +486,7 @@ static void perf_env__add_bpf_info(struct perf_env *env, u32 id)
-> >  	perf_env__fetch_btf(env, btf_id, btf);
-> >  
-> >  out:
-> > -	free(btf);
-> > +	btf__free(btf);
-> >  	close(fd);
-> >  }
-> >  
-> > 
-
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index 5832f510a16c..de6e64d5c9c4 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -71,6 +71,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
+ TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_msrs_test
+ TEST_GEN_PROGS_x86_64 += x86_64/xen_shinfo_test
+ TEST_GEN_PROGS_x86_64 += x86_64/xen_vmcall_test
++TEST_GEN_PROGS_x86_64 += x86_64/sev_vm_tests
+ TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
+ TEST_GEN_PROGS_x86_64 += demand_paging_test
+ TEST_GEN_PROGS_x86_64 += dirty_log_test
+diff --git a/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+new file mode 100644
+index 000000000000..50a770316628
+--- /dev/null
++++ b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+@@ -0,0 +1,150 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <linux/kvm.h>
++#include <linux/psp-sev.h>
++#include <stdio.h>
++#include <sys/ioctl.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <pthread.h>
++
++#include "test_util.h"
++#include "kvm_util.h"
++#include "processor.h"
++#include "svm_util.h"
++#include "kvm_util.h"
++#include "kselftest.h"
++#include "../lib/kvm_util_internal.h"
++
++#define SEV_DEV_PATH "/dev/sev"
++
++/*
++ * Open SEV_DEV_PATH if available, otherwise exit the entire program.
++ *
++ * Input Args:
++ *   flags - The flags to pass when opening SEV_DEV_PATH.
++ *
++ * Return:
++ *   The opened file descriptor of /dev/sev.
++ */
++static int open_sev_dev_path_or_exit(int flags)
++{
++	static int fd;
++
++	if (fd != 0)
++		return fd;
++
++	fd = open(SEV_DEV_PATH, flags);
++	if (fd < 0) {
++		print_skip("%s not available, is SEV not enabled? (errno: %d)",
++			   SEV_DEV_PATH, errno);
++		exit(KSFT_SKIP);
++	}
++
++	return fd;
++}
++
++static void sev_ioctl(int fd, int cmd_id, void *data)
++{
++	struct kvm_sev_cmd cmd = { 0 };
++	int ret;
++
++	TEST_ASSERT(cmd_id < KVM_SEV_NR_MAX, "Unknown SEV CMD : %d\n", cmd_id);
++
++	cmd.id = cmd_id;
++	cmd.sev_fd = open_sev_dev_path_or_exit(0);
++	cmd.data = (uint64_t)data;
++	ret = ioctl(fd, KVM_MEMORY_ENCRYPT_OP, &cmd);
++	TEST_ASSERT((ret == 0 || cmd.error == SEV_RET_SUCCESS),
++		    "%d failed: return code: %d, errno: %d, fw error: %d",
++		    cmd_id, ret, errno, cmd.error);
++}
++
++static struct kvm_vm *sev_vm_create(bool es)
++{
++	struct kvm_vm *vm;
++	struct kvm_sev_launch_start start = { 0 };
++	int i;
++
++	vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
++	sev_ioctl(vm->fd, es ? KVM_SEV_ES_INIT : KVM_SEV_INIT, NULL);
++	for (i = 0; i < 3; ++i)
++		vm_vcpu_add(vm, i);
++	start.policy |= (es) << 2;
++	sev_ioctl(vm->fd, KVM_SEV_LAUNCH_START, &start);
++	if (es)
++		sev_ioctl(vm->fd, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
++	return vm;
++}
++
++static void test_sev_migrate_from(bool es)
++{
++	struct kvm_vm *vms[3];
++	struct kvm_enable_cap cap = { 0 };
++	int i;
++
++	for (i = 0; i < sizeof(vms) / sizeof(struct kvm_vm *); ++i)
++		vms[i] = sev_vm_create(es);
++
++	cap.cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM;
++	for (i = 0; i < sizeof(vms) / sizeof(struct kvm_vm *) - 1; ++i) {
++		cap.args[0] = vms[i]->fd;
++		vm_enable_cap(vms[i + 1], &cap);
++	}
++}
++
++#define LOCK_TESTING_THREADS 3
++
++struct locking_thread_input {
++	struct kvm_vm *vm;
++	int source_fds[LOCK_TESTING_THREADS];
++};
++
++static void *locking_test_thread(void *arg)
++{
++	struct kvm_enable_cap cap = { 0 };
++	int i, j;
++	struct locking_thread_input *input = (struct locking_test_thread *)arg;
++
++	cap.cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM;
++
++	for (i = 0; i < 1000; ++i) {
++		j = input->source_fds[i % LOCK_TESTING_THREADS];
++		cap.args[0] = input->source_fds[j];
++		/*
++		 * Call IOCTL directly without checking return code. We are
++		 * simply trying to confirm there is no deadlock from userspace
++		 * not check correctness of migration here.
++		 */
++		ioctl(input->vm->fd, KVM_ENABLE_CAP, &cap);
++	}
++}
++
++static void test_sev_migrate_locking(void)
++{
++	struct locking_thread_input input[LOCK_TESTING_THREADS];
++	pthread_t pt[LOCK_TESTING_THREADS];
++	int i;
++
++	for (i = 0; i < LOCK_TESTING_THREADS; ++i) {
++		input[i].vm = sev_vm_create(/* es= */ false);
++		input[0].source_fds[i] = input[i].vm->fd;
++	}
++	memcpy(input[1].source_fds, input[0].source_fds,
++	       sizeof(input[1].source_fds));
++	memcpy(input[2].source_fds, input[0].source_fds,
++	       sizeof(input[2].source_fds));
++
++	for (i = 0; i < LOCK_TESTING_THREADS; ++i)
++		pthread_create(&pt[i], NULL, locking_test_thread, &input[i]);
++
++	for (i = 0; i < LOCK_TESTING_THREADS; ++i)
++		pthread_join(pt[i], NULL);
++}
++
++int main(int argc, char *argv[])
++{
++	test_sev_migrate_from(/* es= */ false);
++	test_sev_migrate_from(/* es= */ true);
++	test_sev_migrate_locking();
++	return 0;
++}
 -- 
+2.33.0.259.gc128427fd7-goog
 
-- Arnaldo
