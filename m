@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB1A3FB98C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249993FB991
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237811AbhH3P7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
+        id S237827AbhH3QAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237636AbhH3P7f (ORCPT
+        with ESMTP id S237542AbhH3QAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:59:35 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE072C061575;
-        Mon, 30 Aug 2021 08:58:41 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id bt14so32227877ejb.3;
-        Mon, 30 Aug 2021 08:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EzLND7Bopp3YFFk8qiP7F6kcwfQFWTuokrIXZ++/vhE=;
-        b=fWObb/2djR3cm5fTeSb9+LO040MhFz5L6dYeZV2JHwopgB9+uTVKX06+arqZaC/X/A
-         CieSqOlJb1rXXSJrzxaNkQgh8u3zzv/A4aEBrh2o1JhmOaeb6vwugLWOQlJsYiJIw8qS
-         tvHq6oG1/2ZJ274+HV+NShdq6LN2DQLgmxfNjjMaMFcYx//2fA862tSOQj5f/eZQ9DfX
-         b1gkzvAZtFQ9xT5v8M/Au7rrlv1090n1d+lzlw4QyHtMacgZE0HLJkoZFCQ3WBimy/7R
-         zt5JCF0eDOzbL0fjAB/CVVnoMQbx01IaCxBvsW0dA0TSgbbANhLMeSAQie1MFUoCqDbJ
-         DMFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EzLND7Bopp3YFFk8qiP7F6kcwfQFWTuokrIXZ++/vhE=;
-        b=TbVCBOCpgBDWFh0mU8UsPtSHGWUaVqj44NxJVX2qls4gZbqXDFVTOZCTKqU19rEvL3
-         20nT3/QuDUsQdvcpNkZftjdLA/2UnDuYjOW2+mNyX057g6CRRWQhHrf/D3imDm+hiYfo
-         dOBV7RZs13a4NrDFa504UvlnOvABKE5pTdhy8GHcfMjX5BvPtXzYqdXnQREPrkCma3pO
-         ROprc/TUqKPO/Dtl3i0nNFgniLwKuAKQdooVvVd/Q75LeXVJJsOk2X1yP7LqNcTWml+b
-         Uo32MCGrw8Rni0l8huK5hrpiIjeBxRtZYaIr98uo/873KvP/goUgr2ekcZpTtsYGrKtB
-         nFog==
-X-Gm-Message-State: AOAM533SOJ+dgtfRZR+EXztBA7/yfQLaWu5VjaG5dAv7cL0LAGfbzi7a
-        yk40jA9l6D6DjBbHR4WUZoei9VNQFDEKHPUepNs=
-X-Google-Smtp-Source: ABdhPJzLFV/rR6wo4yVk550MR8vklFxaVF9r2OFQz46oVJLdEyjG3JtCYPFfu2QJXiMKd5YRHHpxH9vLiBtmGZzmN1k=
-X-Received: by 2002:a17:906:3e10:: with SMTP id k16mr26711718eji.116.1630339120139;
- Mon, 30 Aug 2021 08:58:40 -0700 (PDT)
+        Mon, 30 Aug 2021 12:00:22 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4E4C061575;
+        Mon, 30 Aug 2021 08:59:28 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [80.241.60.245])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4Gyw4F4ZJzzQk2q;
+        Mon, 30 Aug 2021 17:59:25 +0200 (CEST)
+Received: from hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172])
+        by smtp202.mailbox.org (Postfix) with ESMTP id 510FC267;
+        Mon, 30 Aug 2021 17:59:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gorani.run; s=MBO0001;
+        t=1630339163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oveQHB7IdXcHl8AM8auAoNrl5xf6elidMDarRIPD7LM=;
+        b=mbIBYfAKmq80Tj5gKBTh65NDmq0ftaS60M9LbITsks9ppu/KvV+MjrV8aCxlOphFgwp/eM
+        WJblWMseT5Mt26siMj7PZz+FIDRfjnPLSQ6hHrra1gfBXTUuZl+/KqGHrErZwt4S+0Ihld
+        ZKtpHkj5LewiiF6qXwYGm91VNTjXg7KQ6n40+9jNYDJ1ZfmV3Tfq4EbSFvYaJAU3Z1j1Xy
+        fx+lMI8QSO2wfZDyIcITnymmaNRezx3FWLYdDOW6QHRvTUTGjB1du1zoIDWy13Mz2JeA/9
+        KACFsTKhb3e9JFl2REYhmZCUYmnDCUYUf6/Q+WbQTfOssOuOWh/CXGom6TFkxw==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp202.mailbox.org ([80.241.60.245])
+        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
+        with ESMTP id fWZT7BTQpqPS; Mon, 30 Aug 2021 17:59:22 +0200 (CEST)
+Received: from ms-v3.lan (unknown [211.58.59.88])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp202.mailbox.org (Postfix) with ESMTPSA id 4116A26B;
+        Mon, 30 Aug 2021 17:59:17 +0200 (CEST)
+From:   Sungbo Eo <mans0n@gorani.run>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bin Liu <b-liu@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sungbo Eo <mans0n@gorani.run>
+Subject: [PATCH v4 0/2] Add MUSB for MT7623
+Date:   Tue, 31 Aug 2021 00:59:01 +0900
+Message-Id: <20210830155903.13907-1-mans0n@gorani.run>
+In-Reply-To: <20210822041333.5264-1-mans0n@gorani.run>
+References: <20210822041333.5264-1-mans0n@gorani.run>
 MIME-Version: 1.0
-References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
- <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
- <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at> <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
- <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at> <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com>
- <CAFLxGvywv29u6DJZrJxnJJmUDSQ4xpbT0u5LNKY1uGKyQom+WA@mail.gmail.com>
- <CAAEAJfCY+X-G=7Oe9NqrJ4yQZ29DBA78jOFAX44GD0g6=s7qhg@mail.gmail.com>
- <1668790824.35266.1627559144878.JavaMail.zimbra@nod.at> <CAAEAJfDDtGcUquyP7Jn0Urttt4kSfAQbJ_qPQ90ROtWLavW9EA@mail.gmail.com>
- <CAOuPNLj+DSigRY_AgHQnGKCK-Vm4ykQBR8UfnTi2UObORTcBFg@mail.gmail.com>
- <CAOuPNLgfJGzp-RJBjydFDL1ZAvOd7=-MgXhnsb2eb_xFSLC66w@mail.gmail.com> <CAAEAJfBuut7VSbrrz6CxOC+Cke36eGGv8VUvfdbfLwvSBxOAAA@mail.gmail.com>
-In-Reply-To: <CAAEAJfBuut7VSbrrz6CxOC+Cke36eGGv8VUvfdbfLwvSBxOAAA@mail.gmail.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Mon, 30 Aug 2021 21:28:28 +0530
-Message-ID: <CAOuPNLjJMCyxK8mvnBo2aZQXSNqY47YeXCxWmtPECq-=csz6bQ@mail.gmail.com>
-Subject: Re: MTD: How to get actual image size from MTD partition
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        Greg KH <greg@kroah.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Sean Nyekjaer <sean@geanix.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 510FC267
+X-Rspamd-UID: 27d2ab
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 22 Aug 2021 at 19:51, Ezequiel Garcia
-<ezequiel@vanguardiasur.com.ar> wrote:
+These patches add support for the MUSB controller on Mediatek MT7623.
+Tested on Mercury RUSH-318AC Wi-Fi router.
 
-> In other words, IMO it's best to expose the NAND through UBI
-> for both read-only and read-write access, using a single UBI device,
-> and then creating UBI volumes as needed. This will allow UBI
-> to spread wear leveling across the whole device, which is expected
-> to increase the flash lifetime.
->
-> For instance, just as some silly example, you could have something like this:
->
->                                | RootFS SquashFS  |
->                                | UBI block        | UBIFS User R-W area
-> ------------------------------------------------------------------------
-> Kernel A | Kernel B | RootFS A | RootFS B         | User
-> ------------------------------------------------------------------------
->                                  UBIX
-> ------------------------------------------------------------------------
->                                  /dev/mtdX
->
-> This setup allows safe kernel and rootfs upgrading. The RootFS is read-only
-> via SquashFS and there's a read-write user area. UBI is supporting all
-> the volumes, handling bad blocks and wear leveling.
->
-Dear Ezequiel,
-Thank you so much for your reply.
+v4:
+* DTS
+  * add tested by Frank
+* musb
+  * add userspace control flag patch
 
-This is exactly what we are also doing :)
-In our system we have a mix of raw and ubi partitions.
-The ubi partitioning is done almost exactly the same way.
-Only for the rootfs (squashfs) I see we were using /mtd/block<id> to
-mount the rootfs.
-Now, I understood we should change it to use /dev/ubiblock<id>
-This might have several benefits, but one most important could be,
-using ubiblock can handle bad-blocks/wear-leveling automatically,
-whereas mtdblocks access the flash directly ?
-I found some references for these..
-So, this seems good for my proposal.
+v3:
+* dt-bindings
+  * remove the queued patch
+* DTS
+  * remove unnecessary status=okay from u2port2
 
-Another thing that is still open for us is:
-How do we calculate the exact image size from a raw mtd partition ?
-For example, support for one of the raw nand partitions, the size is
-defined as 15MB but we flash the actual image of size only 2.5MB.
-So, in the runtime how to determine the image size as ~2.5MB (at least
-roughly) ?
-Is it still possible ?
+v2:
+* dt-bindings
+  * add reviewed by Matthias
+* DTS
+  * rename usb3 label to usb0
+  * move usb0 & u2phy1 nodes to the right sorted place
+  * disable u2phy1 by default
+  * correct u2port2 node name to match its reg address
 
+Sungbo Eo (2):
+  arm: dts: mt7623: add musb device nodes
+  usb: musb: mediatek: Expose role-switch control to userspace
 
-Thanks,
-Pintu
+ arch/arm/boot/dts/mt7623.dtsi  | 33 +++++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/mt7623a.dtsi |  4 ++++
+ drivers/usb/musb/mediatek.c    |  1 +
+ 3 files changed, 38 insertions(+)
+
+-- 
+2.33.0
+
