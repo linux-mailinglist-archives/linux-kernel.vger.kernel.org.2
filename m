@@ -2,123 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673A13FB4B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8523FB4DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236517AbhH3LrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 07:47:14 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:39636 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232579AbhH3LrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 07:47:13 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id C2C034CF30;
-        Mon, 30 Aug 2021 11:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-transfer-encoding:mime-version:user-agent:content-type
-        :content-type:organization:references:in-reply-to:date:date:from
-        :from:subject:subject:message-id:received:received:received; s=
-        mta-01; t=1630323977; x=1632138378; bh=Y+CHmZ6B/AiXBxjVmkcFhf5gN
-        sJMUvq6Qut2MbLq3Qk=; b=nbsb7TYM+7pdfCDwL4vUjlPdobId+uNkjQtv08ft0
-        va0svHQNLFQ63YffC594TLc7o/Pg2vfSLE4fXBGjolZth95ORzDrolOXuLxIVygN
-        7XJT3ilS8mByVx57/19uNx0rEi14b5MIARySUV/iJzXWtCITue+Pq2CRIwZS4xCz
-        NU=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Bb4K68EkypwJ; Mon, 30 Aug 2021 14:46:17 +0300 (MSK)
-Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 107A24CF40;
-        Mon, 30 Aug 2021 14:46:16 +0300 (MSK)
-Received: from [10.199.0.170] (10.199.0.170) by T-EXCH-04.corp.yadro.com
- (172.17.100.104) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Mon, 30
- Aug 2021 14:46:16 +0300
-Message-ID: <ff8a8a78fefd2639fa0bcc68bbbb98ec9f1f2e4a.camel@yadro.com>
-Subject: Re: [PATCH 0/2] rtc: pch-rtc: add Intel Series PCH built-in
- read-only RTC
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Milton Miller II <miltonm@us.ibm.com>
-CC:     Paul Fertser <fercerpav@gmail.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        <openbmc@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-Date:   Mon, 30 Aug 2021 14:56:48 +0300
-In-Reply-To: <YRwWmeQiVC3dGAjH@piout.net>
-References: <YRhQJ4kdyu1Xs1Rb@piout.net>
-         <20210810154436.125678-1-i.mikhaylov@yadro.com>
-         <20210814224215.GX15173@home.paul.comp>
-         <OFBF96A764.75CCED3A-ON00258734.0062B30C-00258734.00634222@ibm.com>
-         <YRwWmeQiVC3dGAjH@piout.net>
-Organization: YADRO
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S236582AbhH3MAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:00:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236527AbhH3MAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 08:00:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25AD76112F;
+        Mon, 30 Aug 2021 11:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630324784;
+        bh=9kJQP3kDazEVJswsuuU6kyZ7aIsHLDddyN3en8ooMZA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rmGMSlgvbA+Q1BPAEGtA2vwm3iumlBSrPmC4GaprZybv0fWKKcJ4oXYq7NlnKkAD+
+         QdM2E5AS+OSvVA7IF0DDjUrnNTRhVARj4nj3eEjVGN1hKpMz32Ab/EXWLaNa2pXGBp
+         RHeaNMcVspeB+0e5olx22AJVSvPkW4i7Zl1vlEvKuiFLhwiSXg2qLv8Xj6Vr0D3wEe
+         bi1q+pVNVojWDG/huxx4RkxhHOKeJ2Ufe2bdKJ1+EvtUXy8PK0Ee+0emuFaNZrcpbJ
+         F+SVeK+XtMnCqERcGnsjQ7Scq20MeGXAPhbn0RpXELMbCXPyM2oVD14Sj09D2R7pyO
+         KHas/R+f3fUOQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     =?UTF-8?q?Krzysztof=20Ha=C5=82asa?= <khalasa@piap.pl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.13 01/14] gpu: ipu-v3: Fix i.MX IPU-v3 offset calculations for (semi)planar U/V formats
+Date:   Mon, 30 Aug 2021 07:59:29 -0400
+Message-Id: <20210830115942.1017300-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.199.0.170]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-04.corp.yadro.com (172.17.100.104)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-17 at 22:05 +0200, Alexandre Belloni wrote:
-> On 17/08/2021 18:04:09+0000, Milton Miller II wrote:
-> > 
-> > On Aug 16, 2021, Alexandre Belloni wrote:
-> > > On 15/08/2021 01:42:15+0300, Paul Fertser wrote:
-> > > > On Tue, Aug 10, 2021 at 06:44:34PM +0300, Ivan Mikhaylov wrote:
-> > > > > Add RTC driver with dt binding tree document. Also this driver
-> > > adds one sysfs
-> > > > > attribute for host power control which I think is odd for RTC
-> > > driver.
-> > > > > Need I cut it off and use I2C_SLAVE_FORCE? I2C_SLAVE_FORCE is not
-> > > good
-> > > > > way too from my point of view. Is there any better approach?
-> > > > 
-> > > > Reading the C620 datasheet I see this interface also allows other
-> > > > commands (wake up, watchdog feeding, reboot etc.) and reading
-> > > statuses
-> > > > (e.g Intruder Detect, POWER_OK_BAD).
-> > > > 
-> > > > I think if there's any plan to use anything other but RTC via this
-> > > > interface then the driver should be registered as an MFD.
-> > > > 
-> > > 
-> > > This is not the current thinking, if everything is integrated, then
-> > > there is no issue registering a watchdog from the RTC driver. I'll
-> > > let
-> > > you check with Lee...
-> > 
-> > I think the current statement is "if they are truly disjoint 
-> > hardware controls" then an MFD might suffice, but if they require 
-> > software cordination the new auxillary bus seems to be desired.
-> > 
-> 
-> Honestly, the auxiliary bus doesn't provide anything that you can't do
-> by registering a device in multiple subsystem from a single driver.
-> (Lee Jones, Mark Brown and I did complain at the time that this was yet
-> another back channel for misuses).
-> 
-> > > > However, I'm not sure what is the correct interface for
-> > > poweroff/reboot
-> > > control.
-> > 
-> > While there is a gpio interface to a simple regulator switch,
-> > the project to date has been asserting direct or indirect 
-> > gpios etc to control the host.   If these are events to 
-> > trigger a change in state and not a direct state change
-> > that some controller trys to follow, maybe a message delivery 
-> > model?   (this is not to reboot or cycle the bmc).
-> > 
-> > milton
-> 
+From: Krzysztof Hałasa <khalasa@piap.pl>
 
-Alexandre, gentle reminder about this one series. I can get rid off from sysfs
-attribute and put it like RO rtc without any additional things for now as
-starter.
+[ Upstream commit 7cca7c8096e2c8a4149405438329b5035d0744f0 ]
 
-Thanks.
+Video captured in 1400x1050 resolution (bytesperline aka stride = 1408
+bytes) is invalid. Fix it.
+
+Signed-off-by: Krzysztof Halasa <khalasa@piap.pl>
+Link: https://lore.kernel.org/r/m3y2bmq7a4.fsf@t19.piap.pl
+[p.zabel@pengutronix.de: added "gpu: ipu-v3:" prefix to commit description]
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/ipu-v3/ipu-cpmem.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/gpu/ipu-v3/ipu-cpmem.c b/drivers/gpu/ipu-v3/ipu-cpmem.c
+index a1c85d1521f5..82b244cb313e 100644
+--- a/drivers/gpu/ipu-v3/ipu-cpmem.c
++++ b/drivers/gpu/ipu-v3/ipu-cpmem.c
+@@ -585,21 +585,21 @@ static const struct ipu_rgb def_bgra_16 = {
+ 	.bits_per_pixel = 16,
+ };
+ 
+-#define Y_OFFSET(pix, x, y)	((x) + pix->width * (y))
+-#define U_OFFSET(pix, x, y)	((pix->width * pix->height) +		\
+-				 (pix->width * ((y) / 2) / 2) + (x) / 2)
+-#define V_OFFSET(pix, x, y)	((pix->width * pix->height) +		\
+-				 (pix->width * pix->height / 4) +	\
+-				 (pix->width * ((y) / 2) / 2) + (x) / 2)
+-#define U2_OFFSET(pix, x, y)	((pix->width * pix->height) +		\
+-				 (pix->width * (y) / 2) + (x) / 2)
+-#define V2_OFFSET(pix, x, y)	((pix->width * pix->height) +		\
+-				 (pix->width * pix->height / 2) +	\
+-				 (pix->width * (y) / 2) + (x) / 2)
+-#define UV_OFFSET(pix, x, y)	((pix->width * pix->height) +	\
+-				 (pix->width * ((y) / 2)) + (x))
+-#define UV2_OFFSET(pix, x, y)	((pix->width * pix->height) +	\
+-				 (pix->width * y) + (x))
++#define Y_OFFSET(pix, x, y)	((x) + pix->bytesperline * (y))
++#define U_OFFSET(pix, x, y)	((pix->bytesperline * pix->height) +	 \
++				 (pix->bytesperline * ((y) / 2) / 2) + (x) / 2)
++#define V_OFFSET(pix, x, y)	((pix->bytesperline * pix->height) +	 \
++				 (pix->bytesperline * pix->height / 4) + \
++				 (pix->bytesperline * ((y) / 2) / 2) + (x) / 2)
++#define U2_OFFSET(pix, x, y)	((pix->bytesperline * pix->height) +	 \
++				 (pix->bytesperline * (y) / 2) + (x) / 2)
++#define V2_OFFSET(pix, x, y)	((pix->bytesperline * pix->height) +	 \
++				 (pix->bytesperline * pix->height / 2) + \
++				 (pix->bytesperline * (y) / 2) + (x) / 2)
++#define UV_OFFSET(pix, x, y)	((pix->bytesperline * pix->height) +	 \
++				 (pix->bytesperline * ((y) / 2)) + (x))
++#define UV2_OFFSET(pix, x, y)	((pix->bytesperline * pix->height) +	 \
++				 (pix->bytesperline * y) + (x))
+ 
+ #define NUM_ALPHA_CHANNELS	7
+ 
+-- 
+2.30.2
 
