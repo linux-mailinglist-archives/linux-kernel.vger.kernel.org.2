@@ -2,112 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDC03FB326
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F373FB324
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235808AbhH3JcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 05:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235073AbhH3JcT (ORCPT
+        id S235787AbhH3JcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 05:32:01 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33944 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235652AbhH3Jb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 05:32:19 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEB4C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:31:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oHHxXfQ4s/sK6iYvTSSy1pAoUvbaKX/xTZYkOsjcAvc=; b=i16/66sUJhlmrvWrizI4izfrTT
-        x44vbCKs1PNHkg4efofgMwG+SA34W8M3a4GV3qXkUCYgOQiVmJEYTDy92Ut7L3/ho7VmhvVGXEykE
-        8iUJgCTH1ijJLFhovVOx6HW0zvIYjy7uQh7Qo5yITsvIxXapGxsNBXrcimKrEi6Jz5L/ibRk2Y3y7
-        gO6Sj01zrTb5IbWXWYVM1n/vGNseKkaET6Yv9ZPyLD/4V/cPtgOb6ndmW75FMJ8ZV7tJgx/SCFGpg
-        rO1sc3nlQ6zTJvFxaD2Tw89kQa3NZ/e86MkTp51QNpNEGlDyn/I4bbGoFZwQbSD7It1zXuu6uxEnP
-        436vEVIA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKddB-00EMwU-2T; Mon, 30 Aug 2021 09:31:05 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D90FA98186D; Mon, 30 Aug 2021 11:31:03 +0200 (CEST)
-Date:   Mon, 30 Aug 2021 11:31:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, juri.lelli@redhat.com, mtosatti@redhat.com,
-        nilal@redhat.com, frederic@kernel.org
-Subject: Re: [PATCH] sched/core: Bypass arch_scale_freq_tick() on nohz_full
- CPUs
-Message-ID: <20210830093103.GH4353@worktop.programming.kicks-ass.net>
-References: <20210827184910.2163948-1-nsaenzju@redhat.com>
+        Mon, 30 Aug 2021 05:31:57 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8A18C20081;
+        Mon, 30 Aug 2021 09:31:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630315863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fGw7X/4tGPPL8uwTZJfyYTN9c8KyFzMUk6wIEVD46Nw=;
+        b=lQZrv6O6EGP93LA2Du9cv9NXkWbMP2hKQPyCACGBqnScQw/EOgl0oWZphak0yxuA/90uxA
+        9OUtkpUURMHDr2tISrW7O+nI69ppWdlnEvoCASqXLR6ZbPbsqA7Ovy6LAePBu7+3+lxH0S
+        FKZlYl0ZcU2obwHdWdxG4qPi00DoGFo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630315863;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fGw7X/4tGPPL8uwTZJfyYTN9c8KyFzMUk6wIEVD46Nw=;
+        b=wk74GIDS/gN4iIYtq1CZkgWAhHRTQa9kUsUMNXoYHl0tvP48rY3VDMpYK3Y54OpLpDYAsh
+        LjlKqeCbWaGU1mCA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 794691365C;
+        Mon, 30 Aug 2021 09:31:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id p/8hHVelLGHYNgAAGKfGzw
+        (envelope-from <bp@suse.de>); Mon, 30 Aug 2021 09:31:03 +0000
+Date:   Mon, 30 Aug 2021 11:31:32 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-edac <linux-edac@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] EDAC updates for v5.15
+Message-ID: <YSyldBbc4ngIMUhS@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210827184910.2163948-1-nsaenzju@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 08:49:10PM +0200, Nicolas Saenz Julienne wrote:
-> arch_scale_freq_tick() calculations generally track the increment of
-> frequency performance counters in between scheduler ticks to provide
-> estimations on how DVFS swayed frequency on that CPU. This information
-> eventually allows for more precise scheduling decisions. It's all fine
-> and good, but nohz_full CPUs are capable of disabling the tick
-> indefinitely and potentially trigger overflows in
-> arch_scale_freq_tick()'s calculations once it's eventually re-enabled.
-> 
-> This will happen for both users of this interface: x86 and arm64. And
-> it's also relevant that the heuristic on what to do in case of
-> operations overflowing varies depending on the implementation. It goes
-> from fully disabling frequency invariance scaling on all CPUS, to
-> ignoring this is a possibility.
-> 
-> It's arguable that nohz_full CPUs are unlikely to benefit much from this
-> feature, since their aim is to allow for uninterrupted execution of a
-> single task, effectively getting the scheduler out of the way. Also,
-> DVFS itself is also unlikely be used on most nohz_full systems, given
-> its effects on latency.
-> 
-> So get around this by not calling arch_scale_freq_tick() on nohz_full
-> CPUs.
-> 
-> Note that tick_nohz_full_cpu() relies on a static branch, which avoids
-> degrading performance on the rest of systems.
-> 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
-> ---
->  kernel/sched/core.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 2fd623b2270d..8c04ec0e073a 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -5016,7 +5016,13 @@ void scheduler_tick(void)
->  	unsigned long thermal_pressure;
->  	u64 resched_latency;
->  
-> -	arch_scale_freq_tick();
-> +	/*
-> +	 * nohz_full CPUs are capable of disabling the scheduler tick
-> +	 * indefinitely, potentially overflowing arch_scale_freq_tick()
-> +	 * calculations once it's re-enabled.
-> +	 */
-> +	if (!tick_nohz_full_cpu(smp_processor_id()))
-> +		arch_scale_freq_tick();
->  	sched_clock_tick();
->  
->  	rq_lock(rq, &rf);
+Hi Linus,
 
-Hurmph,.. I'm not too happy with this.. Fundamentally the whole
-NOHZ_FULL state should be dynamic, it currently isn't but that's
-arguably a bug of the current implementation.
+here's the usual boring EDAC pull request of stuff which managed to
+trickle in for 5.15.
 
-As such the above doesn't really dtrt, since a CPU disabling NOHZ_FULL
-will then still suffer all them overflows you mentioned.
+Please pull,
+thx.
 
-Frederic, how should this be done right? Is there a place where upon
-entering/exiting NOHZ_FULL we can do fixups?
+---
+
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v5.15
+
+for you to fetch changes up to cf4e6d52f58399c777276172ec250502e19d5e63:
+
+  EDAC/i10nm: Retrieve and print retry_rd_err_log registers (2021-08-23 10:35:36 -0700)
+
+----------------------------------------------------------------
+- Add new HBM2 (High Bandwidth Memory Gen 2) type and add support for it
+to the Intel SKx drivers
+
+- Print additional useful per-channel error information on i10nm, like on SKL
+
+- Check whether the AMD decoder is loaded on a guest and if so, don't
+
+- The usual round of fixes and cleanups
+
+----------------------------------------------------------------
+Dwaipayan Ray (1):
+      EDAC/amd64: Use DEVICE_ATTR helper macros
+
+Krzysztof Kozlowski (1):
+      EDAC/altera: Skip defining unused structures for specific configs
+
+Naveen Krishna Chatradhi (1):
+      EDAC/mc: Add new HBM2 memory type
+
+Qiuxu Zhuo (2):
+      EDAC/skx_common: Set the memory type correctly for HBM memory
+      EDAC/i10nm: Fix NVDIMM detection
+
+Smita Koralahalli (1):
+      EDAC/mce_amd: Do not load edac_mce_amd module on guests
+
+Youquan Song (1):
+      EDAC/i10nm: Retrieve and print retry_rd_err_log registers
+
+ drivers/edac/altera_edac.c |  44 +++++++------
+ drivers/edac/amd64_edac.c  |  21 +++----
+ drivers/edac/edac_mc.c     |   1 +
+ drivers/edac/i10nm_base.c  | 152 ++++++++++++++++++++++++++++++++++++++++++++-
+ drivers/edac/mce_amd.c     |   3 +
+ drivers/edac/skx_base.c    |   3 +-
+ drivers/edac/skx_common.c  |   9 ++-
+ drivers/edac/skx_common.h  |   7 ++-
+ include/linux/edac.h       |   3 +
+ 9 files changed, 205 insertions(+), 38 deletions(-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
