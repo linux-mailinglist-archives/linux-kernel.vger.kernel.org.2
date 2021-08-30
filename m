@@ -2,140 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE433FBD25
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 21:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A31793FBD27
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 21:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234648AbhH3TsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 15:48:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22516 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234008AbhH3TsU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 15:48:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630352846;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7p/HFySufX7Ec/ARNQSZMmnEjbwiFtc+l8ArIs16Qfo=;
-        b=SngN1sL0nidh1Tprgw5hqvzJZjZbHYLO7fYYInpfRFgGwu2sK/v+5LwOy0hMUM5r6zPJ8c
-        3grLxcwegtItbVi/rcIyB4bi6TL9qyPgAMI9kbWXe6sbQexzlygE2XQzD2rX3WxZMXKrxR
-        aueuRo9mhRLHOzyihU6PYuxp5AV+R5M=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-273-eAy67iE3MxuG-Qtfa5Hlwg-1; Mon, 30 Aug 2021 15:47:24 -0400
-X-MC-Unique: eAy67iE3MxuG-Qtfa5Hlwg-1
-Received: by mail-lf1-f72.google.com with SMTP id q3-20020ac25283000000b003dedfdcf716so900673lfm.20
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 12:47:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7p/HFySufX7Ec/ARNQSZMmnEjbwiFtc+l8ArIs16Qfo=;
-        b=Ot1QLMEXy/KTQa2oQ2SvVfDsYB2YPyOHvHuJrWqCcySH8Xtzvj0qllAbOVycr9KcDG
-         q8JuEshQXXiLCCJ7wf9g3OKvpNLPf4CTOArhhcdbuuVFy3PVtPoHnBsRiJTrUYE/8HCA
-         xrcGF+xUb9hIqTFQUg1TWD0IBp1QCkuiziJEMehc9JfNr9hKqZMsfu8o/HX1cVGvmXNf
-         HlVqqVHOhqpntUeIk/mb0q7J6F7byrKA67q0Gq/2/93SQ6SnQuD5ctskOAXibO8Z64Sh
-         OapILUs0oFSi1kTLcwXa7vXB6Xc+6GhvUbjNfbyZ1j/hYWu3xov3G3Fdod8HcZ6ZuzYY
-         OJig==
-X-Gm-Message-State: AOAM531ir7zRiEMjZNzq1GKwmys5PlfZ6kfe+IOz5JTc9X2UfzOHgegV
-        E+jg8w5SwLF7eWCitkDDyaln49EZOwoAs95rwanmVtDc4zFHRfrFjiTG9QTemnmvsgq5su/hNdx
-        s+X6MOWPnt00DKNbZgjD84AdUeVgB7wZ1+qso5kXQ
-X-Received: by 2002:a2e:90cf:: with SMTP id o15mr22292319ljg.14.1630352843040;
-        Mon, 30 Aug 2021 12:47:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJznUIXAUwxaYc1pT3l5/1NatkQ/kD+6GtozwDSBVoxs81xARSWQiNaDWMLcZ+Vo/mr5xhfBG0iSCSHFvF5EYbQ=
-X-Received: by 2002:a2e:90cf:: with SMTP id o15mr22292305ljg.14.1630352842833;
- Mon, 30 Aug 2021 12:47:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210823143028.649818-1-vkuznets@redhat.com> <20210823143028.649818-5-vkuznets@redhat.com>
- <20210823185841.ov7ejn2thwebcwqk@habkost.net> <87mtp7jowv.fsf@vitty.brq.redhat.com>
- <CAOpTY_ot8teH5x5vVS2HvuMx5LSKLPtyen_ZUM1p7ncci4LFbA@mail.gmail.com>
- <87k0kakip9.fsf@vitty.brq.redhat.com> <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
-In-Reply-To: <2df0b6d18115fb7f2701587b7937d8ddae38e36a.camel@redhat.com>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Mon, 30 Aug 2021 15:47:10 -0400
-Message-ID: <CAFki+L=1UUbNVn21rh34FMk3sajb=6rUpsqSdrK82FyD+UKcTQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] KVM: x86: Fix stack-out-of-bounds memory access
- from ioapic_write_indirect()
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Eduardo Habkost <ehabkost@redhat.com>, kvm@vger.kernel.org,
+        id S234008AbhH3Ts7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 15:48:59 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:45054 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230451AbhH3Ts6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 15:48:58 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 17UJljLV016711
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Aug 2021 21:47:45 +0200
+Received: from [167.87.2.75] ([167.87.2.75])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 17UJli6b002067;
+        Mon, 30 Aug 2021 21:47:44 +0200
+Subject: Re: [PATCH] watchdog: iTCO_wdt: Fix detection of SMI-off case
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-watchdog@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Christian Storm <christian.storm@siemens.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?UTF-8?Q?Mantas_Mikul=c4=97nas?= <grawity@gmail.com>
+References: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
+ <1444efd5-b778-949b-34e8-99d2541350e9@siemens.com>
+Message-ID: <85c2c85e-147c-b54e-e84d-10b989610979@siemens.com>
+Date:   Mon, 30 Aug 2021 21:47:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <1444efd5-b778-949b-34e8-99d2541350e9@siemens.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 12:08 PM Maxim Levitsky <mlevitsk@redhat.com> wrote:
->
-> On Tue, 2021-08-24 at 16:42 +0200, Vitaly Kuznetsov wrote:
-> > Eduardo Habkost <ehabkost@redhat.com> writes:
-> >
-> > > On Tue, Aug 24, 2021 at 3:13 AM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
-> > > > Eduardo Habkost <ehabkost@redhat.com> writes:
-> > > >
-> > > > > On Mon, Aug 23, 2021 at 04:30:28PM +0200, Vitaly Kuznetsov wrote:
-> > > > > > KASAN reports the following issue:
-> > > > > >
-> > > > > >  BUG: KASAN: stack-out-of-bounds in kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-> > > > > >  Read of size 8 at addr ffffc9001364f638 by task qemu-kvm/4798
-> > > > > >
-> > > > > >  CPU: 0 PID: 4798 Comm: qemu-kvm Tainted: G               X --------- ---
-> > > > > >  Hardware name: AMD Corporation DAYTONA_X/DAYTONA_X, BIOS RYM0081C 07/13/2020
-> > > > > >  Call Trace:
-> > > > > >   dump_stack+0xa5/0xe6
-> > > > > >   print_address_description.constprop.0+0x18/0x130
-> > > > > >   ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-> > > > > >   __kasan_report.cold+0x7f/0x114
-> > > > > >   ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-> > > > > >   kasan_report+0x38/0x50
-> > > > > >   kasan_check_range+0xf5/0x1d0
-> > > > > >   kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-> > > > > >   kvm_make_scan_ioapic_request_mask+0x84/0xc0 [kvm]
-> > > > > >   ? kvm_arch_exit+0x110/0x110 [kvm]
-> > > > > >   ? sched_clock+0x5/0x10
-> > > > > >   ioapic_write_indirect+0x59f/0x9e0 [kvm]
-> > > > > >   ? static_obj+0xc0/0xc0
-> > > > > >   ? __lock_acquired+0x1d2/0x8c0
-> > > > > >   ? kvm_ioapic_eoi_inject_work+0x120/0x120 [kvm]
-> > > > > >
+On 20.08.21 15:45, Jan Kiszka wrote:
+> On 26.07.21 13:46, Jan Kiszka wrote:
+>> From: Jan Kiszka <jan.kiszka@siemens.com>
+>>
+>> Obviously, the test needs to run against the register content, not its
+>> address.
+>>
+>> Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
+>> Reported-by: Mantas Mikulėnas <grawity@gmail.com>
+>> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+>> ---
+>>  drivers/watchdog/iTCO_wdt.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
+>> index b3f604669e2c..643c6c2d0b72 100644
+>> --- a/drivers/watchdog/iTCO_wdt.c
+>> +++ b/drivers/watchdog/iTCO_wdt.c
+>> @@ -362,7 +362,7 @@ static int iTCO_wdt_set_timeout(struct watchdog_device *wd_dev, unsigned int t)
+>>  	 * Otherwise, the BIOS generally reboots when the SMI triggers.
+>>  	 */
+>>  	if (p->smi_res &&
+>> -	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+>> +	    (inl(SMI_EN(p)) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+>>  		tmrval /= 2;
+>>  
+>>  	/* from the specs: */
+>>
+> 
+> Ping, this is still missing in master. Stable kernels had the revert,
+> but 5.14 will need this.
+> 
 
-[...]
+Second reminder: 5.14 is out and now broken. Is the patch queued
+somewhere? I do not see it in the watchdog staging branch.
 
->
->
-> I also don't like that ioapic_write_indirect calls the kvm_bitmap_or_dest_vcpus twice,
-> and second time with 'old_dest_id'
->
-> I am not 100%  sure why old_dest_id/old_dest_mode are needed as I don't see anything in the
-> function changing them.
-> I think only the guest can change them, so maybe the code deals with the guest changing them
-> while the code is running from a different vcpu?
->
-> The commit that introduced this code is 7ee30bc132c683d06a6d9e360e39e483e3990708
-> Nitesh Narayan Lal, maybe you remember something about it?
->
-
-Apologies for the delay in responding, I just got back from my PTO and
-still clearing my inbox. Since you have reviewed this patch the only open
-question is the above so I will try to answer that. Please let me know
-in case I missed anything.
-
-IIRC IOAPIC can be reconfigured while the previous interrupt is pending or
-still processing. In this situation, ioapic_handeld_vectors may go out of
-sync as it only records the recently passed configuration. Since with this
-commit, we stopped generating requests for all vCPUs we need this chunk of
-code to keep ioapic_handled_vectors in sync.
-
-Having said that perhaps there could be a better way of handling this (?).
+Jan
 
 -- 
-Thanks
-Nitesh
-
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
