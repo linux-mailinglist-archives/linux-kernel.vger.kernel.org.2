@@ -2,122 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFB23FB81F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3B63FB83E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237583AbhH3OXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 10:23:52 -0400
-Received: from relay04.th.seeweb.it ([5.144.164.165]:44855 "EHLO
-        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237428AbhH3OXg (ORCPT
+        id S237563AbhH3O1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 10:27:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237211AbhH3O1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 10:23:36 -0400
-Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 910501F4B4;
-        Mon, 30 Aug 2021 16:22:39 +0200 (CEST)
-Date:   Mon, 30 Aug 2021 16:22:38 +0200
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] drm/msm/dsi: Use "ref" fw clock instead of global
- name for VCO parent
-Message-ID: <YSzprptcXt6hxYRt@Marijn-Arch-PC.localdomain>
-References: <20210829203027.276143-1-marijn.suijten@somainline.org>
- <20210829203027.276143-3-marijn.suijten@somainline.org>
- <CAA8EJppmBvohk3CC87N_P3m+CP=bRLWWknS7esDrYb-xArJFvg@mail.gmail.com>
- <a27b4e74-3856-8c5c-73af-05e976430ea2@somainline.org>
- <CAA8EJpp38fRff+j-+iG2pATSQ9e_R4zRxepmbGqpKP=gcOZotA@mail.gmail.com>
+        Mon, 30 Aug 2021 10:27:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018DEC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 07:26:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hAzEvoe8QavvyMY1614AsLbQz9LG+GuYVMMP3swKQBQ=; b=OsbZFW16L7Anah7yvA9S/TRG4l
+        ZE4sQbE4o0XlrwQfrxDWwfDXlca0r/eK54oQ0aKExFtKo1UeE7DHqxND+Gaz6qiN24vuyNvVE6R49
+        XLE/VfbhRMWIFMPhapJ8HJJhfIgwH1a6ECfOWQx/bomIGJ1U0o3ZkUQ8+ed6wQ+mpks+D0CJlL0aK
+        l3q5TI/ZJ04f3HFrHLhD+Dzr0513uvGFUwwURGebPx3OX6xOcWwFusK7Bsb1tmjBH0r5aXomdBQFz
+        Nt8xK6NxdjRnpBA9y7LRP7USgXBdnxFSTxiSfTqycGTrQvVfpN5bPx42ef4N6hRCjXCOaqrJWwvRT
+        39eN9IJA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKiCs-000E4Q-HJ; Mon, 30 Aug 2021 14:24:30 +0000
+Date:   Mon, 30 Aug 2021 15:24:14 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, vbabka@suse.cz, sfr@canb.auug.org.au,
+        peterz@infradead.org, mgorman@techsingularity.net,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] mm/page_alloc.c: avoid allocating highmem pages via
+ alloc_pages_exact_nid()
+Message-ID: <YSzqDt/13YbOAyo4@casper.infradead.org>
+References: <20210830141051.64090-1-linmiaohe@huawei.com>
+ <20210830141051.64090-7-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAA8EJpp38fRff+j-+iG2pATSQ9e_R4zRxepmbGqpKP=gcOZotA@mail.gmail.com>
+In-Reply-To: <20210830141051.64090-7-linmiaohe@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+On Mon, Aug 30, 2021 at 10:10:51PM +0800, Miaohe Lin wrote:
+> Don't use with __GFP_HIGHMEM because page_address() cannot represent
+> highmem pages without kmap(). Newly allocated pages would leak as
+> page_address() will return NULL for highmem pages here. But It works
+> now because the only caller does not specify __GFP_HIGHMEM now.
 
-On Mon, Aug 30, 2021 at 04:17:32AM +0300, Dmitry Baryshkov wrote:
-> On Mon, 30 Aug 2021 at 00:53, Marijn Suijten
-> <marijn.suijten@somainline.org> wrote:
-> >
-> > Hi Dmitry,
-> >
-> > On 8/29/21 10:39 PM, Dmitry Baryshkov wrote:
-> > > Hi,
-> > >
-> > > On Sun, 29 Aug 2021 at 23:30, Marijn Suijten
-> > > <marijn.suijten@somainline.org> wrote:
-> > >>
-> > >> All DSI PHY/PLL drivers were referencing their VCO parent clock by a
-> > >> global name, most of which don't exist or have been renamed.  These
-> > >> clock drivers seem to function fine without that except the 14nm driver
-> > >> for the sdm6xx [1].
-> > >>
-> > >> At the same time all DTs provide a "ref" clock as per the requirements
-> > >> of dsi-phy-common.yaml, but the clock is never used.  This patchset puts
-> > >> that clock to use without relying on a global clock name, so that all
-> > >> dependencies are explicitly defined in DT (the firmware) in the end.
-> > >
-> > > msm8974 (28nm-hpm) does not define the "ref" clock. So you'd have to:
-> > > 1) add ref clock to the dtsi (should come in a separate patch).
-> >
-> >
-> > Thanks for double-checking and noticing this!  I've queued up this patch
-> > for v2.
-> >
-> > > 2) add .name = "xo" as a fallback to the 28nm driver (to be compatible
-> > > with older devices)
-> >
-> >
-> > Are there msm8974 devices out there that might upgrade kernels, but not
-> > firmware (DT)?  On other boards (sdm630) I'm removing these from various
-> > drivers as to not have any possibility of relying on global names, in
-> > favour of having the clock dependencies fully specified in the DT.
-> 
-> IIUC it is a general policy of trying to be (somewhat)
-> backwards-compatible. For example because your dts might come from a
-> different source/be a part of different build process/etc.
+This is a misunderstanding of how alloc_pages_exact() /
+alloc_pages_exact_nid() work.  You simply can't call them with
+GFP_HIGHMEM.
 
-Good thinking; DT was after all intended to be used as firmware shipping
-on the device, when we're usually modifying and shipping it with the
-kernel in the end.
-
-Just to make sure other platforms aren't affected by these changes,
-every board currently providing a "ref" clock has done so since the DSI
-node was added, except these for these three patches that added them
-after the fact:
-
-    79e51645a1dd ("arm64: dts: qcom: msm8916: Set 'xo_board' as ref clock of the DSI PHY")
-    6969d1d9c615 ("ARM: dts: qcom-apq8064: Set 'cxo_board' as ref clock of the DSI PHY")
-    0c0e72705a33 ("arm64: dts: sdm845: Set 'bi_tcxo' as ref clock of the DSI PHYs")
-
-Their commit-messages confuse me.  They make it seem like the "ref"
-clock was previously used when this doesn't seem to be the case (hence
-my patch).  Has there possibly been a patchset like mine that removed
-the mentioned hardcoded clock, but ended up never being merged?
-
-Either way, perhaps it's worth mentioning those patches with Fixes: so
-that this commit can be backported (have to be careful that DT changes
-for the other drivers are also backported, or this patch is split per
-PHY file), and maybe it's worth cc-ing the original authors to ask for
-clarification or at least make them aware?
-
-- Marijn
+If you really must change anything here,
+s/__GFP_COMP/(__GFP_COMP|__GFP_HIGHMEM)/g throughout both
+alloc_pages_exact() and alloc_pages_exact_nid().
