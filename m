@@ -2,144 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE7D3FBDB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C91E3FBDBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236566AbhH3U7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:59:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235898AbhH3U7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:59:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D6E461008;
-        Mon, 30 Aug 2021 20:58:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630357121;
-        bh=sTRehZGcYy+Yc7uLDclFNF91ENgqtbr7oENyFmAL5TU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZW1NbJsaPxeE7G5eUXY+YvTgTHsC5BcI5HhA53AZnIUxN61WucGdEZyNOkwf43dus
-         x8CqUcZxfhKwamEa7FDiPFcDASHJJrVNzQdvXdngPulDRdguLJrxi3xukWuVJ0VP65
-         zC4ZleNjRs7uufQnxNxNkjNxlD3kzcdEEwFu2BSz8V6eX68/CLMyBDoZ6D6z7ZRzvG
-         LpCLXzfyAPGm0G2af9QzY47U1SeszKGDgZB64C1FFPR9hrFghX/Ez9FWIIqHIHU2+t
-         MLfckrP944o6IXWpOdb6UgCAga/4CD7xaxl6nsAm1bvT0Xh/+hbUGIyXjshbcD9FXW
-         JBYPSqD/arLoQ==
-Received: by mail-ej1-f51.google.com with SMTP id h9so33982445ejs.4;
-        Mon, 30 Aug 2021 13:58:41 -0700 (PDT)
-X-Gm-Message-State: AOAM530Pc01oLNv/fBgK8kSJfHvXHBbMV/7CYgJ1h/21R89uumfKQhTX
-        cOafhCTrwmAR/B/znj+VL855I8ah6o7n5BLfsA==
-X-Google-Smtp-Source: ABdhPJx4Ui5N1WjpN6yxDi75ZXSmB5EwI9nNo0eNIiVjqAZYoAy5aGYleTBanIMZJSY66PvSA9aHhTpsGnptDYTlga0=
-X-Received: by 2002:a17:906:1cd0:: with SMTP id i16mr26673334ejh.360.1630357119849;
- Mon, 30 Aug 2021 13:58:39 -0700 (PDT)
+        id S236577AbhH3VAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236056AbhH3VAK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 17:00:10 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5C2C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:59:16 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so390512pjw.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:59:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JJoUozkPIM0tHgfyfc1fK8sPmq/Hal6Zt+HEvfIoLUg=;
+        b=jzvaif2xRQ2CuslZJky0053RJlv8i5jneBUOikqGQvjt7hZJayC2D40PiT0kZctnWm
+         togR+oKcgJYWHL77WZBVe0au/miX9lEhbf+dT/hii7rSuTAqiNnCAP+4pEJoR9oy89C8
+         EmoSYflHAuEzwHxuB1JJ5uYIXxTKudMHwJVg0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JJoUozkPIM0tHgfyfc1fK8sPmq/Hal6Zt+HEvfIoLUg=;
+        b=syuAzxdgZsoiPrbRYaNTAaG8BS/2lgVdc5jgJM9K3p1uWeCvnmc+frqSVpLBioGpDZ
+         ///wlXF4Zt2hu/liQ4K4iOeNir+30cLiVkHU3UnQVlWSDARP0xHgYXta4wI0JEOjOKAk
+         EQNDikJUzUuHnm0MLQgpvUzrTPOkx97xr0i6wSOaZ8SK95iwbsXP+dQfmBC9hD0wRiOI
+         qdG1EL3rSJ1krNtNXpTKyTzbkq1ZosL5uBwYZhatNjFVpE+xGQ1BJDB/qUrrJmigtnBK
+         x7WH77Y9M1bXewIANjLCjcNeGl2LxPeH/iusz2hQCz79JMH8G62ALpjq06RXsq/lSyQu
+         3n4A==
+X-Gm-Message-State: AOAM530mOUk8dAel1HEe0iG5PYqWviqeoUVhIYbZZbsZAEphzYtmhQdT
+        7e4BIvJyGeWZiI16yIXCqw4sfA==
+X-Google-Smtp-Source: ABdhPJxFLrpR8SqpNrVEqK8cEbVUhggyOrcwbh8zHqXG6wKCkQ3hLvNx1IJldMIfLVNq6TMKw8jjkA==
+X-Received: by 2002:a17:903:228a:b0:133:305f:2dd2 with SMTP id b10-20020a170903228a00b00133305f2dd2mr1355290plh.21.1630357155600;
+        Mon, 30 Aug 2021 13:59:15 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:b658:7113:70a2:ea])
+        by smtp.gmail.com with ESMTPSA id o10sm349241pjg.34.2021.08.30.13.59.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 13:59:15 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     mka@chromium.org, swboyd@chromium.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sc7180: Base dynamic CPU power coefficients in reality
+Date:   Mon, 30 Aug 2021 13:59:07 -0700
+Message-Id: <20210830135904.1.I049b30065f3c715234b6303f55d72c059c8625eb@changeid>
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
 MIME-Version: 1.0
-References: <20210728230230.1911468-1-robh@kernel.org> <20210728230230.1911468-3-robh@kernel.org>
- <d720903c-926e-f57a-0862-4e5d76db763a@kernel.org> <CAL_JsqLRv9ugKJcn4dq_ps0JMt74Y7PKA=5yySYxvftdQWzzPA@mail.gmail.com>
- <de97454b-9b4d-492f-a435-6a5e33889219@www.fastmail.com> <CAL_JsqKpT93W6nBj68DykEJzjFYOPG=8PGShsh2QZVzHq5N3fQ@mail.gmail.com>
- <43b3a838-da8a-4733-9832-f3d5f990ec13@www.fastmail.com> <f3b72c71-f9c9-e1a8-4542-e248e8a5d769@maine.edu>
-In-Reply-To: <f3b72c71-f9c9-e1a8-4542-e248e8a5d769@maine.edu>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 30 Aug 2021 15:58:28 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLs9Wbdbso0_XdijME=zDK9=5yKpi1a1NQM6j1qNczWbg@mail.gmail.com>
-Message-ID: <CAL_JsqLs9Wbdbso0_XdijME=zDK9=5yKpi1a1NQM6j1qNczWbg@mail.gmail.com>
-Subject: Re: [RFC 2/3] perf/x86: Control RDPMC access from .enable() hook
-To:     Vince Weaver <vincent.weaver@maine.edu>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 10:06 PM Vince Weaver <vincent.weaver@maine.edu> wr=
-ote:
->
-> On Fri, 27 Aug 2021, Andy Lutomirski wrote:
->
-> > On Thu, Aug 26, 2021, at 12:09 PM, Rob Herring wrote:
->
-> > > After testing some scenarios and finding perf_event_tests[1], this
-> > > series isn't going to work for x86 unless rdpmc is restricted to task
-> > > events only or allowed to segfault on CPU events when read on the
-> > > wrong CPU rather than just returning garbage. It's been discussed
-> > > before here[2].
-> > >
-> > > Ultimately, I'm just trying to define the behavior for arm64 where we
-> > > don't have an existing ABI to maintain and don't have to recreate the
-> > > mistakes of x86 rdpmc ABI. Tying the access to mmap is messy. As we
-> > > explicitly request user access on perf_event_open(), I think it may b=
-e
-> > > better to just enable access when the event's context is active and
-> > > ignore mmap(). Maybe you have an opinion there since you added the
-> > > mmap() part?
-> >
-> > That makes sense to me. The mmap() part was always a giant kludge.
-> >
-> > There is fundamentally a race, at least if rseq isn=E2=80=99t used: if =
-you check
-> > that you=E2=80=99re on the right CPU, do RDPMC, and throw out the resul=
-t if you
-> > were on the wrong CPU (determined by looking at the mmap), you still
-> > would very much prefer not to fault.
-> >
-> > Maybe rseq or a vDSO helper is the right solution for ARM.
+The sc7180's dynamic-power-coefficient violates the device tree bindings.
+The bindings (arm/cpus.yaml) say that the units for the
+dynamic-power-coefficient are supposed to be "uW/MHz/V^2". The ones for
+sc7180 aren't this. Qualcomm arbitrarily picked 100 for the "little" CPUs
+and then picked a number for the big CPU based on this.
 
-There was a version using rseq[1]. AIUI, that would solve the reading
-from the wrong CPU problem. I don't think using rseq would change the
-kernel implementation other than whether we enable events on specific
-CPUs.
+At the time, there was a giant dicussion about this. Apparently Qualcomm
+Engineers were instructed not to share the actual numbers here. As part
+of the discussion, I pointed out [1] that these numbers shouldn't really
+be secret since once a device is shipping anyone can just run a script
+and produce them. This patch is the result of running the script I posted
+in that discussion on sc7180-trogdor-coachz, which is currently available
+for purchase by consumers.
 
-> as the author of those perf_event tests for rdpmc, I have to say if ARM
-> comes up with a cleaner implementation I'd be glad to have x86 transition
-> to something better.
+[1] https://lore.kernel.org/r/CAD=FV=U1FP0e3_AVHpauUUZtD-5X3XCwh5aT9fH_8S_FFML2Uw@mail.gmail.com/
 
-Thanks for chiming in.
+I ran the script four times, measuring little, big, little, big. I used
+the 64-bit version of dhrystone 2.2 in my test. I got these results:
 
-My plan is to be more restricted in terms of what works, and fail or
-disable user access for what's not supported. Unless I hear events on
-specific CPUs is really important, that means only monitoring of a
-thread on all (for big.LITTLE, all homogeneous) CPUs is supported.
-That doesn't require a better/cleaner interface. It just means cpu
-must be -1 for perf_event_open if you want rdpmc. The difference on
-Arm is just that we can enforce/indicate that.
+576 kHz, 596 mV, 20 mW, 88 Cx
+768 kHz, 596 mV, 32 mW, 122 Cx
+1017 kHz, 660 mV, 45 mW, 97 Cx
+1248 kHz, 720 mV, 87 mW, 139 Cx
+1324 kHz, 756 mV, 109 mW, 148 Cx
+1516 kHz, 828 mV, 150 mW, 148 Cx
+1612 kHz, 884 mV, 182 mW, 147 Cx
+1708 kHz, 884 mV, 192 mW, 146 Cx
+1804 kHz, 884 mV, 207 mW, 149 Cx
+Your dynamic-power-coefficient for cpu 0: 132
 
-We could also enable CPU events, but abort if read on the wrong CPU.
-The user in that case either has to control the thread affinity or
-possibly use rseq.
+825 kHz, 596 mV, 142 mW, 401 Cx
+979 kHz, 628 mV, 183 mW, 427 Cx
+1113 kHz, 656 mV, 224 mW, 433 Cx
+1267 kHz, 688 mV, 282 mW, 449 Cx
+1555 kHz, 812 mV, 475 mW, 450 Cx
+1708 kHz, 828 mV, 566 mW, 478 Cx
+1843 kHz, 884 mV, 692 mW, 476 Cx
+1900 kHz, 884 mV, 722 mW, 482 Cx
+1996 kHz, 916 mV, 814 mW, 482 Cx
+2112 kHz, 916 mV, 862 mW, 483 Cx
+2208 kHz, 916 mV, 962 mW, 521 Cx
+2323 kHz, 940 mV, 1060 mW, 517 Cx
+2400 kHz, 956 mV, 1133 mW, 518 Cx
+Your dynamic-power-coefficient for cpu 6: 471
 
-> The rdpmc code is a huge mess and has all kinds of corner cases.  I'm not
-> sure anyone besides the PAPI library tries to use it, and while it's a
-> nice performance improvement to use rdpmc it is really hard to get things
-> working right.
+576 kHz, 596 mV, 26 mW, 103 Cx
+768 kHz, 596 mV, 40 mW, 147 Cx
+1017 kHz, 660 mV, 54 mW, 114 Cx
+1248 kHz, 720 mV, 97 mW, 151 Cx
+1324 kHz, 756 mV, 113 mW, 150 Cx
+1516 kHz, 828 mV, 154 mW, 148 Cx
+1612 kHz, 884 mV, 194 mW, 155 Cx
+1708 kHz, 884 mV, 203 mW, 152 Cx
+1804 kHz, 884 mV, 219 mW, 155 Cx
+Your dynamic-power-coefficient for cpu 0: 142
 
-Yes, I've been reading thru the bugs you reported and related tests. I
-just wish I found them sooner...
+825 kHz, 596 mV, 148 mW, 530 Cx
+979 kHz, 628 mV, 189 mW, 475 Cx
+1113 kHz, 656 mV, 230 mW, 461 Cx
+1267 kHz, 688 mV, 287 mW, 466 Cx
+1555 kHz, 812 mV, 469 mW, 445 Cx
+1708 kHz, 828 mV, 567 mW, 480 Cx
+1843 kHz, 884 mV, 699 mW, 482 Cx
+1900 kHz, 884 mV, 719 mW, 480 Cx
+1996 kHz, 916 mV, 814 mW, 484 Cx
+2112 kHz, 916 mV, 861 mW, 483 Cx
+2208 kHz, 916 mV, 963 mW, 522 Cx
+2323 kHz, 940 mV, 1063 mW, 520 Cx
+2400 kHz, 956 mV, 1135 mW, 519 Cx
+Your dynamic-power-coefficient for cpu 6: 489
 
-> As a PAPI developer we actually have run into the issue where the CPU
-> switches and we were reporting the wrong results.  Also if I recall (it's
-> been a while) we were having issues where the setup lets you attach to a
-> process on another CPU for monitoring using the rdpmc interface and it
-> returns results even though I think that will rarely ever work in
-> practice.
+As you can see, the calculations aren't perfectly consistent but
+roughly you could say about 480 for big and 137 for little.
 
-Returning the wrong results is obviously bad for the user, but making
-that "work" also complicates the kernel implementation.
+The ratio between these numbers isn't quite the same as the
+ratio between the two numbers that Qualcomm used. Presumably
+this is because Qualcomm measured something slightly different
+than the 64-bit version of dhrystone 2.2, though it might also
+be that they fudged the numbers a little. In any case, these
+numbers don't need to be perfectly exact. In fact, they can't
+be since the CPU power depends a lot on what's being run on
+the CPU and the big/little CPUs are each more or less efficient
+in different operations. Historically running the 32-bit vs.
+64-bit versions of dhrystone produced notably different numbers,
+though I didn't test this time. In any case, let's keep the
+existing ratio but scale it based on the above so we're at
+least _somewhat_ based in the correct units. I'll pick:
+* little: 130
+* big:    527
+...which basically means we're scaling the old numbers by 30%.
 
-Rob
+We also need to scale all of the sustainable-power numbers by
+the same amount.
 
-[1] https://x-lore.kernel.org/all/20190611125315.18736-4-raphael.gault@arm.=
-com/
+Fixes: 71f873169a80 ("arm64: dts: qcom: sc7180: Add dynamic CPU power coefficients")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+ .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi  |  2 +-
+ .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  |  8 ++---
+ arch/arm64/boot/dts/qcom/sc7180.dtsi          | 36 +++++++++----------
+ 3 files changed, 23 insertions(+), 23 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+index a758e4d22612..4ba687dc850f 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+@@ -33,7 +33,7 @@ skin_temp_thermal: skin-temp-thermal {
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&pm6150_adc_tm 1>;
+-			sustainable-power = <814>;
++			sustainable-power = <1058>;
+ 
+ 			trips {
+ 				skin_temp_alert0: trip-point0 {
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
+index a246dbd74cc1..e066bce768c7 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
+@@ -44,7 +44,7 @@ &cpu6_alert1 {
+ };
+ 
+ &cpu6_thermal {
+-	sustainable-power = <948>;
++	sustainable-power = <1232>;
+ };
+ 
+ &cpu7_alert0 {
+@@ -56,7 +56,7 @@ &cpu7_alert1 {
+ };
+ 
+ &cpu7_thermal {
+-	sustainable-power = <948>;
++	sustainable-power = <1232>;
+ };
+ 
+ &cpu8_alert0 {
+@@ -68,7 +68,7 @@ &cpu8_alert1 {
+ };
+ 
+ &cpu8_thermal {
+-	sustainable-power = <948>;
++	sustainable-power = <1232>;
+ };
+ 
+ &cpu9_alert0 {
+@@ -80,7 +80,7 @@ &cpu9_alert1 {
+ };
+ 
+ &cpu9_thermal {
+-	sustainable-power = <948>;
++	sustainable-power = <1232>;
+ };
+ 
+ &gpio_keys {
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 47b20ba69057..e2c92dae580a 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -138,7 +138,7 @@ CPU0: cpu@0 {
+ 					   &LITTLE_CPU_SLEEP_1
+ 					   &CLUSTER_SLEEP_0>;
+ 			capacity-dmips-mhz = <1024>;
+-			dynamic-power-coefficient = <100>;
++			dynamic-power-coefficient = <130>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+ 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
+@@ -163,7 +163,7 @@ CPU1: cpu@100 {
+ 					   &LITTLE_CPU_SLEEP_1
+ 					   &CLUSTER_SLEEP_0>;
+ 			capacity-dmips-mhz = <1024>;
+-			dynamic-power-coefficient = <100>;
++			dynamic-power-coefficient = <130>;
+ 			next-level-cache = <&L2_100>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+@@ -185,7 +185,7 @@ CPU2: cpu@200 {
+ 					   &LITTLE_CPU_SLEEP_1
+ 					   &CLUSTER_SLEEP_0>;
+ 			capacity-dmips-mhz = <1024>;
+-			dynamic-power-coefficient = <100>;
++			dynamic-power-coefficient = <130>;
+ 			next-level-cache = <&L2_200>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+@@ -207,7 +207,7 @@ CPU3: cpu@300 {
+ 					   &LITTLE_CPU_SLEEP_1
+ 					   &CLUSTER_SLEEP_0>;
+ 			capacity-dmips-mhz = <1024>;
+-			dynamic-power-coefficient = <100>;
++			dynamic-power-coefficient = <130>;
+ 			next-level-cache = <&L2_300>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+@@ -229,7 +229,7 @@ CPU4: cpu@400 {
+ 					   &LITTLE_CPU_SLEEP_1
+ 					   &CLUSTER_SLEEP_0>;
+ 			capacity-dmips-mhz = <1024>;
+-			dynamic-power-coefficient = <100>;
++			dynamic-power-coefficient = <130>;
+ 			next-level-cache = <&L2_400>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+@@ -251,7 +251,7 @@ CPU5: cpu@500 {
+ 					   &LITTLE_CPU_SLEEP_1
+ 					   &CLUSTER_SLEEP_0>;
+ 			capacity-dmips-mhz = <1024>;
+-			dynamic-power-coefficient = <100>;
++			dynamic-power-coefficient = <130>;
+ 			next-level-cache = <&L2_500>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+@@ -273,7 +273,7 @@ CPU6: cpu@600 {
+ 					   &BIG_CPU_SLEEP_1
+ 					   &CLUSTER_SLEEP_0>;
+ 			capacity-dmips-mhz = <1740>;
+-			dynamic-power-coefficient = <405>;
++			dynamic-power-coefficient = <527>;
+ 			next-level-cache = <&L2_600>;
+ 			operating-points-v2 = <&cpu6_opp_table>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+@@ -295,7 +295,7 @@ CPU7: cpu@700 {
+ 					   &BIG_CPU_SLEEP_1
+ 					   &CLUSTER_SLEEP_0>;
+ 			capacity-dmips-mhz = <1740>;
+-			dynamic-power-coefficient = <405>;
++			dynamic-power-coefficient = <527>;
+ 			next-level-cache = <&L2_700>;
+ 			operating-points-v2 = <&cpu6_opp_table>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+@@ -3592,7 +3592,7 @@ cpu0_thermal: cpu0-thermal {
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 1>;
+-			sustainable-power = <768>;
++			sustainable-power = <998>;
+ 
+ 			trips {
+ 				cpu0_alert0: trip-point0 {
+@@ -3641,7 +3641,7 @@ cpu1_thermal: cpu1-thermal {
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 2>;
+-			sustainable-power = <768>;
++			sustainable-power = <998>;
+ 
+ 			trips {
+ 				cpu1_alert0: trip-point0 {
+@@ -3690,7 +3690,7 @@ cpu2_thermal: cpu2-thermal {
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 3>;
+-			sustainable-power = <768>;
++			sustainable-power = <998>;
+ 
+ 			trips {
+ 				cpu2_alert0: trip-point0 {
+@@ -3739,7 +3739,7 @@ cpu3_thermal: cpu3-thermal {
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 4>;
+-			sustainable-power = <768>;
++			sustainable-power = <998>;
+ 
+ 			trips {
+ 				cpu3_alert0: trip-point0 {
+@@ -3788,7 +3788,7 @@ cpu4_thermal: cpu4-thermal {
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 5>;
+-			sustainable-power = <768>;
++			sustainable-power = <998>;
+ 
+ 			trips {
+ 				cpu4_alert0: trip-point0 {
+@@ -3837,7 +3837,7 @@ cpu5_thermal: cpu5-thermal {
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 6>;
+-			sustainable-power = <768>;
++			sustainable-power = <998>;
+ 
+ 			trips {
+ 				cpu5_alert0: trip-point0 {
+@@ -3886,7 +3886,7 @@ cpu6_thermal: cpu6-thermal {
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 9>;
+-			sustainable-power = <1202>;
++			sustainable-power = <1563>;
+ 
+ 			trips {
+ 				cpu6_alert0: trip-point0 {
+@@ -3927,7 +3927,7 @@ cpu7_thermal: cpu7-thermal {
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 10>;
+-			sustainable-power = <1202>;
++			sustainable-power = <1563>;
+ 
+ 			trips {
+ 				cpu7_alert0: trip-point0 {
+@@ -3968,7 +3968,7 @@ cpu8_thermal: cpu8-thermal {
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 11>;
+-			sustainable-power = <1202>;
++			sustainable-power = <1563>;
+ 
+ 			trips {
+ 				cpu8_alert0: trip-point0 {
+@@ -4009,7 +4009,7 @@ cpu9_thermal: cpu9-thermal {
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 12>;
+-			sustainable-power = <1202>;
++			sustainable-power = <1563>;
+ 
+ 			trips {
+ 				cpu9_alert0: trip-point0 {
+-- 
+2.33.0.259.gc128427fd7-goog
+
