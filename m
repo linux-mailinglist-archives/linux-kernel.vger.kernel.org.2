@@ -2,754 +2,821 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAAE3FB408
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 043493FB40B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236441AbhH3KqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 06:46:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50972 "EHLO
+        id S236501AbhH3KqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 06:46:25 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50996 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236395AbhH3Kpm (ORCPT
+        with ESMTP id S236400AbhH3Kpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:45:42 -0400
+        Mon, 30 Aug 2021 06:45:43 -0400
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630320288;
+        s=2020; t=1630320289;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=ofgGHowRpdaRTH7qF9scJttI4iHLKMgGKmwtr/BC4i0=;
-        b=QM7AZOxENYyQoZilm7GTKX85uF2klSDVSWHRJqLOccGHuiYhzWxpplcQuHnrRJsRHA+LQV
-        Mhm/s5GTmvuYYcGYWKW0d0nlDi5oTlODFHLrsfak3G5opWET3cU8xPeX5nTsZhF6v5EODm
-        ZU6tmrm5/08gPa4xNQuMvIrcsvrZasHGT+4jkdpXyI/+C4J2rwqwBbTUKl04A2wwAlCR4B
-        cfGOm9t0YFJIScKCokncf/J0dNhLHihgqYok7zsVbT0eYDIvBRtlMVxPywjso8Iuz7+Z+F
-        pi2qLSE8yF4rCPi7aQF8B8JuTrGmk5fy8TkGJBsk0JPyIHTPP2eanDIgu8u/fw==
+        bh=BMnnJ+RALSv7JWUbrZC6uj3z90aTlaXyffKlpXlSWOs=;
+        b=0PtbyljH3y05wa/xeNgl8JIei6cEaK9fZqNIvj8+ciqw1vcCbQ4E+lD+m+jQ139FwitkuK
+        5rvTnWCVcAuv17eve1JOSzGLG2+d81+fsYh9c1aheOk5kaj81Bvba7y1BBlsBrS6tnYPAE
+        04AJh6ySh98UTkxayN18bl58aL4+C5nIK6Y14XHoMCaJdtqbSK0bPjGdGi3LVP5arW8f4X
+        QhllWOjdF0w32EmOsFTPONAuNPNRB1+/QuN2k6g1p6ZqYH+zcaPgRXcvTFbLNsurObZCpD
+        9ptpUrMPn5Oh0lde61KOCZjI4x3uBGdVLz/6fVPpjcKg+HcOtcDfDATJhGJITA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630320288;
+        s=2020e; t=1630320289;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=ofgGHowRpdaRTH7qF9scJttI4iHLKMgGKmwtr/BC4i0=;
-        b=zA4ftP9cj7j8rTV5i+PkHbwLiQGXLejG5GqLeS2lTMkEgHHHXIHD1wC7wISmDDxdMq4t88
-        IH4wf7/iMyEKJhBA==
+        bh=BMnnJ+RALSv7JWUbrZC6uj3z90aTlaXyffKlpXlSWOs=;
+        b=NyrlN38hVAzmuYGpP/PKir9WtPFJzoNcn+cHnZxNUOPy9NUOqcXKnhqrWecVTINDkbmdhk
+        K8Jq7v3lpOYD5DCA==
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] x86/cpu for v5.15-rc1
+Subject: [GIT pull] x86/irq for v5.15-rc1
 References: <163031993120.58256.1250660796395121952.tglx@xen13.tec.linutronix.de>
-Message-ID: <163031993742.58256.16683258988343657253.tglx@xen13.tec.linutronix.de>
+Message-ID: <163031993864.58256.5249475492261910047.tglx@xen13.tec.linutronix.de>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Date:   Mon, 30 Aug 2021 12:44:48 +0200 (CEST)
+Date:   Mon, 30 Aug 2021 12:44:49 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Linus,
 
-please pull the latest x86/cpu branch from:
+please pull the latest x86/irq branch from:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-cpu-2021-08-=
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-irq-2021-08-=
 30
 
-up to:  b7fe54f6c2d4: Documentation: Add L1D flushing Documentation
+up to:  34739a2809e1: x86: Fix typo s/ECLR/ELCR/ for the PIC register
 
 
-A reworked version of the opt-in L1D flush mechanism:
-
-  A stop gap for potential future speculation related hardware
-  vulnerabilities and a mechanism for truly security paranoid=20
-  applications.
-
-  It allows a task to request that the L1D cache is flushed when the kernel
-  switches to a different mm. This can be requested via prctl().
-
-  Changes vs. the previous versions:
-
-    - Get rid of the software flush fallback
-
-    - Make the handling consistent with other mitigations
-   =20
-    - Kill the task when it ends up on a SMT enabled core which defeats the
-      purpose of L1D flushing obviously
+A set of updates to support port 0x22/0x23 based PCI configuration space
+which can be found on various ALi chipsets and is also available on older
+Intel systems which expose a PIRQ router. While the Intel support is more
+or less nostalgia, the ALi chips are still in use on popular embedded
+boards used for routers.
 
 Thanks,
 
 	tglx
 
 ------------------>
-Balbir Singh (7):
-      x86/smp: Add a per-cpu view of SMT state
-      x86/mm: Refactor cond_ibpb() to support other use cases
-      sched: Add task_work callback for paranoid L1D flush
-      x86/process: Make room for TIF_SPEC_L1D_FLUSH
-      x86/mm: Prepare for opt-in based L1D flush in switch_mm()
-      x86, prctl: Hook L1D flushing in via prctl
-      Documentation: Add L1D flushing Documentation
+Maciej W. Rozycki (6):
+      x86: Add support for 0x22/0x23 port I/O configuration space
+      x86/PCI: Add support for the ALi M1487 (IBC) PIRQ router
+      x86/PCI: Add support for the Intel 82374EB/82374SB (ESC) PIRQ router
+      x86/PCI: Add support for the Intel 82426EX PIRQ router
+      x86: Avoid magic number with ELCR register accesses
+      x86: Fix typo s/ECLR/ELCR/ for the PIC register
 
 
- Documentation/admin-guide/hw-vuln/index.rst     |   1 +
- Documentation/admin-guide/hw-vuln/l1d_flush.rst |  69 +++++++++++++++
- Documentation/admin-guide/kernel-parameters.txt |  17 ++++
- Documentation/userspace-api/spec_ctrl.rst       |   8 ++
- arch/Kconfig                                    |   3 +
- arch/x86/Kconfig                                |   1 +
- arch/x86/include/asm/nospec-branch.h            |   2 +
- arch/x86/include/asm/processor.h                |   2 +
- arch/x86/include/asm/thread_info.h              |   6 +-
- arch/x86/include/asm/tlbflush.h                 |   2 +-
- arch/x86/kernel/cpu/bugs.c                      |  70 ++++++++++++++++
- arch/x86/kernel/smpboot.c                       |  10 ++-
- arch/x86/mm/tlb.c                               | 107 ++++++++++++++++++----=
---
- include/linux/sched.h                           |  10 +++
- include/uapi/linux/prctl.h                      |   1 +
- 15 files changed, 281 insertions(+), 28 deletions(-)
- create mode 100644 Documentation/admin-guide/hw-vuln/l1d_flush.rst
+ arch/x86/include/asm/i8259.h           |   2 +
+ arch/x86/include/asm/pc-conf-reg.h     |  33 ++++
+ arch/x86/include/asm/processor-cyrix.h |   8 +-
+ arch/x86/kernel/acpi/boot.c            |  12 +-
+ arch/x86/kernel/apic/apic.c            |   9 +-
+ arch/x86/kernel/apic/io_apic.c         |   2 +-
+ arch/x86/kernel/apic/vector.c          |   2 +-
+ arch/x86/kernel/i8259.c                |   8 +-
+ arch/x86/kernel/mpparse.c              |   3 +-
+ arch/x86/kvm/i8259.c                   |  20 +--
+ arch/x86/kvm/irq.h                     |   2 +-
+ arch/x86/lib/Makefile                  |   1 +
+ arch/x86/lib/pc-conf-reg.c             |  13 ++
+ arch/x86/pci/irq.c                     | 279 +++++++++++++++++++++++++++++++=
++-
+ include/linux/pci_ids.h                |   2 +
+ 15 files changed, 359 insertions(+), 37 deletions(-)
+ create mode 100644 arch/x86/include/asm/pc-conf-reg.h
+ create mode 100644 arch/x86/lib/pc-conf-reg.c
 
-diff --git a/Documentation/admin-guide/hw-vuln/index.rst b/Documentation/admi=
-n-guide/hw-vuln/index.rst
-index f12cda55538b..8cbc711cda93 100644
---- a/Documentation/admin-guide/hw-vuln/index.rst
-+++ b/Documentation/admin-guide/hw-vuln/index.rst
-@@ -16,3 +16,4 @@ are configurable at compile, boot or run time.
-    multihit.rst
-    special-register-buffer-data-sampling.rst
-    core-scheduling.rst
-+   l1d_flush.rst
-diff --git a/Documentation/admin-guide/hw-vuln/l1d_flush.rst b/Documentation/=
-admin-guide/hw-vuln/l1d_flush.rst
+diff --git a/arch/x86/include/asm/i8259.h b/arch/x86/include/asm/i8259.h
+index 89789e8c80f6..637fa1df3512 100644
+--- a/arch/x86/include/asm/i8259.h
++++ b/arch/x86/include/asm/i8259.h
+@@ -19,6 +19,8 @@ extern unsigned int cached_irq_mask;
+ #define PIC_MASTER_OCW3		PIC_MASTER_ISR
+ #define PIC_SLAVE_CMD		0xa0
+ #define PIC_SLAVE_IMR		0xa1
++#define PIC_ELCR1		0x4d0
++#define PIC_ELCR2		0x4d1
+=20
+ /* i8259A PIC related value */
+ #define PIC_CASCADE_IR		2
+diff --git a/arch/x86/include/asm/pc-conf-reg.h b/arch/x86/include/asm/pc-con=
+f-reg.h
 new file mode 100644
-index 000000000000..210020bc3f56
+index 000000000000..56bceceacf5f
 --- /dev/null
-+++ b/Documentation/admin-guide/hw-vuln/l1d_flush.rst
-@@ -0,0 +1,69 @@
-+L1D Flushing
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+With an increasing number of vulnerabilities being reported around data
-+leaks from the Level 1 Data cache (L1D) the kernel provides an opt-in
-+mechanism to flush the L1D cache on context switch.
-+
-+This mechanism can be used to address e.g. CVE-2020-0550. For applications
-+the mechanism keeps them safe from vulnerabilities, related to leaks
-+(snooping of) from the L1D cache.
-+
-+
-+Related CVEs
-+------------
-+The following CVEs can be addressed by this
-+mechanism
-+
-+    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D       =3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D     =3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+    CVE-2020-0550       Improper Data Forwarding     OS related aspects
-+    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D       =3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D     =3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+Usage Guidelines
-+----------------
-+
-+Please see document: :ref:`Documentation/userspace-api/spec_ctrl.rst
-+<set_spec_ctrl>` for details.
-+
-+**NOTE**: The feature is disabled by default, applications need to
-+specifically opt into the feature to enable it.
-+
-+Mitigation
-+----------
-+
-+When PR_SET_L1D_FLUSH is enabled for a task a flush of the L1D cache is
-+performed when the task is scheduled out and the incoming task belongs to a
-+different process and therefore to a different address space.
-+
-+If the underlying CPU supports L1D flushing in hardware, the hardware
-+mechanism is used, software fallback for the mitigation, is not supported.
-+
-+Mitigation control on the kernel command line
-+---------------------------------------------
-+
-+The kernel command line allows to control the L1D flush mitigations at boot
-+time with the option "l1d_flush=3D". The valid arguments for this option are:
-+
-+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+  on            Enables the prctl interface, applications trying to use
-+                the prctl() will fail with an error if l1d_flush is not
-+                enabled
-+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+By default the mechanism is disabled.
-+
-+Limitations
-+-----------
-+
-+The mechanism does not mitigate L1D data leaks between tasks belonging to
-+different processes which are concurrently executing on sibling threads of
-+a physical CPU core when SMT is enabled on the system.
-+
-+This can be addressed by controlled placement of processes on physical CPU
-+cores or by disabling SMT. See the relevant chapter in the L1TF mitigation
-+document: :ref:`Documentation/admin-guide/hw-vuln/l1tf.rst <smt_control>`.
-+
-+**NOTE** : The opt-in of a task for L1D flushing works only when the task's
-+affinity is limited to cores running in non-SMT mode. If a task which
-+requested L1D flushing is scheduled on a SMT-enabled core the kernel sends
-+a SIGBUS to the task.
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/=
-admin-guide/kernel-parameters.txt
-index bdb22006f713..b105db25f7a5 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2421,6 +2421,23 @@
- 			feature (tagged TLBs) on capable Intel chips.
- 			Default is 1 (enabled)
-=20
-+	l1d_flush=3D	[X86,INTEL]
-+			Control mitigation for L1D based snooping vulnerability.
-+
-+			Certain CPUs are vulnerable to an exploit against CPU
-+			internal buffers which can forward information to a
-+			disclosure gadget under certain conditions.
-+
-+			In vulnerable processors, the speculatively
-+			forwarded data can be used in a cache side channel
-+			attack, to access data to which the attacker does
-+			not have direct access.
-+
-+			This parameter controls the mitigation. The
-+			options are:
-+
-+			on         - enable the interface for the mitigation
-+
- 	l1tf=3D           [X86] Control mitigation of the L1TF vulnerability on
- 			      affected CPUs
-=20
-diff --git a/Documentation/userspace-api/spec_ctrl.rst b/Documentation/usersp=
-ace-api/spec_ctrl.rst
-index 7ddd8f667459..5e8ed9eef9aa 100644
---- a/Documentation/userspace-api/spec_ctrl.rst
-+++ b/Documentation/userspace-api/spec_ctrl.rst
-@@ -106,3 +106,11 @@ Speculation misfeature controls
-    * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_INDIRECT_BRANCH, PR_SPEC_ENABLE,=
- 0, 0);
-    * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_INDIRECT_BRANCH, PR_SPEC_DISABLE=
-, 0, 0);
-    * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_INDIRECT_BRANCH, PR_SPEC_FORCE_D=
-ISABLE, 0, 0);
-+
-+- PR_SPEC_L1D_FLUSH: Flush L1D Cache on context switch out of the task
-+                        (works only when tasks run on non SMT cores)
-+
-+  Invocations:
-+   * prctl(PR_GET_SPECULATION_CTRL, PR_SPEC_L1D_FLUSH, 0, 0, 0);
-+   * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_L1D_FLUSH, PR_SPEC_ENABLE, 0, 0);
-+   * prctl(PR_SET_SPECULATION_CTRL, PR_SPEC_L1D_FLUSH, PR_SPEC_DISABLE, 0, 0=
-);
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 129df498a8e1..98db63496bab 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1282,6 +1282,9 @@ config ARCH_SPLIT_ARG64
- config ARCH_HAS_ELFCORE_COMPAT
- 	bool
-=20
-+config ARCH_HAS_PARANOID_L1D_FLUSH
-+	bool
-+
- source "kernel/gcov/Kconfig"
-=20
- source "scripts/gcc-plugins/Kconfig"
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 49270655e827..d8a2c3fe492a 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -119,6 +119,7 @@ config X86
- 	select ARCH_WANT_HUGE_PMD_SHARE
- 	select ARCH_WANT_LD_ORPHAN_WARN
- 	select ARCH_WANTS_THP_SWAP		if X86_64
-+	select ARCH_HAS_PARANOID_L1D_FLUSH
- 	select BUILDTIME_TABLE_SORT
- 	select CLKEVT_I8253
- 	select CLOCKSOURCE_VALIDATE_LAST_CYCLE
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nosp=
-ec-branch.h
-index 3ad8c6d3cbb3..ec2d5c8c6694 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -252,6 +252,8 @@ DECLARE_STATIC_KEY_FALSE(switch_mm_always_ibpb);
- DECLARE_STATIC_KEY_FALSE(mds_user_clear);
- DECLARE_STATIC_KEY_FALSE(mds_idle_clear);
-=20
-+DECLARE_STATIC_KEY_FALSE(switch_mm_cond_l1d_flush);
-+
- #include <asm/segment.h>
-=20
- /**
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processo=
-r.h
-index f3020c54e2cb..1e0d13c9fda6 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -136,6 +136,8 @@ struct cpuinfo_x86 {
- 	u16			logical_die_id;
- 	/* Index into per_cpu list: */
- 	u16			cpu_index;
-+	/*  Is SMT active on this core? */
-+	bool			smt_active;
- 	u32			microcode;
- 	/* Address space bits used by the cache internally */
- 	u8			x86_cache_bits;
-diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread=
-_info.h
-index de406d93b515..cf132663c219 100644
---- a/arch/x86/include/asm/thread_info.h
-+++ b/arch/x86/include/asm/thread_info.h
-@@ -81,7 +81,7 @@ struct thread_info {
- #define TIF_SINGLESTEP		4	/* reenable singlestep on user return*/
- #define TIF_SSBD		5	/* Speculative store bypass disable */
- #define TIF_SPEC_IB		9	/* Indirect branch speculation mitigation */
--#define TIF_SPEC_FORCE_UPDATE	10	/* Force speculation MSR update in context =
-switch */
-+#define TIF_SPEC_L1D_FLUSH	10	/* Flush L1D on mm switches (processes) */
- #define TIF_USER_RETURN_NOTIFY	11	/* notify kernel of userspace return */
- #define TIF_UPROBE		12	/* breakpointed or singlestepping */
- #define TIF_PATCH_PENDING	13	/* pending live patching update */
-@@ -93,6 +93,7 @@ struct thread_info {
- #define TIF_MEMDIE		20	/* is terminating due to OOM killer */
- #define TIF_POLLING_NRFLAG	21	/* idle is polling for TIF_NEED_RESCHED */
- #define TIF_IO_BITMAP		22	/* uses I/O bitmap */
-+#define TIF_SPEC_FORCE_UPDATE	23	/* Force speculation MSR update in context =
-switch */
- #define TIF_FORCED_TF		24	/* true if TF in eflags artificially */
- #define TIF_BLOCKSTEP		25	/* set when we want DEBUGCTLMSR_BTF */
- #define TIF_LAZY_MMU_UPDATES	27	/* task is updating the mmu lazily */
-@@ -104,7 +105,7 @@ struct thread_info {
- #define _TIF_SINGLESTEP		(1 << TIF_SINGLESTEP)
- #define _TIF_SSBD		(1 << TIF_SSBD)
- #define _TIF_SPEC_IB		(1 << TIF_SPEC_IB)
--#define _TIF_SPEC_FORCE_UPDATE	(1 << TIF_SPEC_FORCE_UPDATE)
-+#define _TIF_SPEC_L1D_FLUSH	(1 << TIF_SPEC_L1D_FLUSH)
- #define _TIF_USER_RETURN_NOTIFY	(1 << TIF_USER_RETURN_NOTIFY)
- #define _TIF_UPROBE		(1 << TIF_UPROBE)
- #define _TIF_PATCH_PENDING	(1 << TIF_PATCH_PENDING)
-@@ -115,6 +116,7 @@ struct thread_info {
- #define _TIF_SLD		(1 << TIF_SLD)
- #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
- #define _TIF_IO_BITMAP		(1 << TIF_IO_BITMAP)
-+#define _TIF_SPEC_FORCE_UPDATE	(1 << TIF_SPEC_FORCE_UPDATE)
- #define _TIF_FORCED_TF		(1 << TIF_FORCED_TF)
- #define _TIF_BLOCKSTEP		(1 << TIF_BLOCKSTEP)
- #define _TIF_LAZY_MMU_UPDATES	(1 << TIF_LAZY_MMU_UPDATES)
-diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-index fa952eadbc2e..b587a9ee9cb2 100644
---- a/arch/x86/include/asm/tlbflush.h
-+++ b/arch/x86/include/asm/tlbflush.h
-@@ -83,7 +83,7 @@ struct tlb_state {
- 	/* Last user mm for optimizing IBPB */
- 	union {
- 		struct mm_struct	*last_user_mm;
--		unsigned long		last_user_mm_ibpb;
-+		unsigned long		last_user_mm_spec;
- 	};
-=20
- 	u16 loaded_mm_asid;
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index d41b70fe4918..ecfca3bbcd96 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -43,6 +43,7 @@ static void __init mds_select_mitigation(void);
- static void __init mds_print_mitigation(void);
- static void __init taa_select_mitigation(void);
- static void __init srbds_select_mitigation(void);
-+static void __init l1d_flush_select_mitigation(void);
-=20
- /* The base value of the SPEC_CTRL MSR that always has to be preserved. */
- u64 x86_spec_ctrl_base;
-@@ -76,6 +77,13 @@ EXPORT_SYMBOL_GPL(mds_user_clear);
- DEFINE_STATIC_KEY_FALSE(mds_idle_clear);
- EXPORT_SYMBOL_GPL(mds_idle_clear);
-=20
++++ b/arch/x86/include/asm/pc-conf-reg.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * Controls whether l1d flush based mitigations are enabled,
-+ * based on hw features and admin setting via boot parameter
-+ * defaults to false
++ * Support for the configuration register space at port I/O locations
++ * 0x22 and 0x23 variously used by PC architectures, e.g. the MP Spec,
++ * Cyrix CPUs, numerous chipsets.
 + */
-+DEFINE_STATIC_KEY_FALSE(switch_mm_cond_l1d_flush);
++#ifndef _ASM_X86_PC_CONF_REG_H
++#define _ASM_X86_PC_CONF_REG_H
 +
- void __init check_bugs(void)
- {
- 	identify_boot_cpu();
-@@ -111,6 +119,7 @@ void __init check_bugs(void)
- 	mds_select_mitigation();
- 	taa_select_mitigation();
- 	srbds_select_mitigation();
-+	l1d_flush_select_mitigation();
-=20
- 	/*
- 	 * As MDS and TAA mitigations are inter-related, print MDS
-@@ -491,6 +500,34 @@ static int __init srbds_parse_cmdline(char *str)
- }
- early_param("srbds", srbds_parse_cmdline);
-=20
-+#undef pr_fmt
-+#define pr_fmt(fmt)     "L1D Flush : " fmt
++#include <linux/io.h>
++#include <linux/spinlock.h>
++#include <linux/types.h>
 +
-+enum l1d_flush_mitigations {
-+	L1D_FLUSH_OFF =3D 0,
-+	L1D_FLUSH_ON,
-+};
++#define PC_CONF_INDEX		0x22
++#define PC_CONF_DATA		0x23
 +
-+static enum l1d_flush_mitigations l1d_flush_mitigation __initdata =3D L1D_FL=
-USH_OFF;
++#define PC_CONF_MPS_IMCR	0x70
 +
-+static void __init l1d_flush_select_mitigation(void)
++extern raw_spinlock_t pc_conf_lock;
++
++static inline u8 pc_conf_get(u8 reg)
 +{
-+	if (!l1d_flush_mitigation || !boot_cpu_has(X86_FEATURE_FLUSH_L1D))
-+		return;
-+
-+	static_branch_enable(&switch_mm_cond_l1d_flush);
-+	pr_info("Conditional flush on switch_mm() enabled\n");
++	outb(reg, PC_CONF_INDEX);
++	return inb(PC_CONF_DATA);
 +}
 +
-+static int __init l1d_flush_parse_cmdline(char *str)
++static inline void pc_conf_set(u8 reg, u8 data)
 +{
-+	if (!strcmp(str, "on"))
-+		l1d_flush_mitigation =3D L1D_FLUSH_ON;
-+
-+	return 0;
-+}
-+early_param("l1d_flush", l1d_flush_parse_cmdline);
-+
- #undef pr_fmt
- #define pr_fmt(fmt)     "Spectre V1 : " fmt
-=20
-@@ -1215,6 +1252,24 @@ static void task_update_spec_tif(struct task_struct *t=
-sk)
- 		speculation_ctrl_update_current();
- }
-=20
-+static int l1d_flush_prctl_set(struct task_struct *task, unsigned long ctrl)
-+{
-+
-+	if (!static_branch_unlikely(&switch_mm_cond_l1d_flush))
-+		return -EPERM;
-+
-+	switch (ctrl) {
-+	case PR_SPEC_ENABLE:
-+		set_ti_thread_flag(&task->thread_info, TIF_SPEC_L1D_FLUSH);
-+		return 0;
-+	case PR_SPEC_DISABLE:
-+		clear_ti_thread_flag(&task->thread_info, TIF_SPEC_L1D_FLUSH);
-+		return 0;
-+	default:
-+		return -ERANGE;
-+	}
++	outb(reg, PC_CONF_INDEX);
++	outb(data, PC_CONF_DATA);
 +}
 +
- static int ssb_prctl_set(struct task_struct *task, unsigned long ctrl)
- {
- 	if (ssb_mode !=3D SPEC_STORE_BYPASS_PRCTL &&
-@@ -1324,6 +1379,8 @@ int arch_prctl_spec_ctrl_set(struct task_struct *task, =
-unsigned long which,
- 		return ssb_prctl_set(task, ctrl);
- 	case PR_SPEC_INDIRECT_BRANCH:
- 		return ib_prctl_set(task, ctrl);
-+	case PR_SPEC_L1D_FLUSH:
-+		return l1d_flush_prctl_set(task, ctrl);
- 	default:
- 		return -ENODEV;
- 	}
-@@ -1340,6 +1397,17 @@ void arch_seccomp_spec_mitigate(struct task_struct *ta=
-sk)
- }
- #endif
-=20
-+static int l1d_flush_prctl_get(struct task_struct *task)
-+{
-+	if (!static_branch_unlikely(&switch_mm_cond_l1d_flush))
-+		return PR_SPEC_FORCE_DISABLE;
-+
-+	if (test_ti_thread_flag(&task->thread_info, TIF_SPEC_L1D_FLUSH))
-+		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
-+	else
-+		return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
-+}
-+
- static int ssb_prctl_get(struct task_struct *task)
- {
- 	switch (ssb_mode) {
-@@ -1390,6 +1458,8 @@ int arch_prctl_spec_ctrl_get(struct task_struct *task, =
-unsigned long which)
- 		return ssb_prctl_get(task);
- 	case PR_SPEC_INDIRECT_BRANCH:
- 		return ib_prctl_get(task);
-+	case PR_SPEC_L1D_FLUSH:
-+		return l1d_flush_prctl_get(task);
- 	default:
- 		return -ENODEV;
- 	}
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 9320285a5e29..85f6e242b6b4 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -610,6 +610,9 @@ void set_cpu_sibling_map(int cpu)
- 	if (threads > __max_smt_threads)
- 		__max_smt_threads =3D threads;
-=20
-+	for_each_cpu(i, topology_sibling_cpumask(cpu))
-+		cpu_data(i).smt_active =3D threads > 1;
-+
- 	/*
- 	 * This needs a separate iteration over the cpus because we rely on all
- 	 * topology_sibling_cpumask links to be set-up.
-@@ -1552,8 +1555,13 @@ static void remove_siblinginfo(int cpu)
-=20
- 	for_each_cpu(sibling, topology_die_cpumask(cpu))
- 		cpumask_clear_cpu(cpu, topology_die_cpumask(sibling));
--	for_each_cpu(sibling, topology_sibling_cpumask(cpu))
-+
-+	for_each_cpu(sibling, topology_sibling_cpumask(cpu)) {
- 		cpumask_clear_cpu(cpu, topology_sibling_cpumask(sibling));
-+		if (cpumask_weight(topology_sibling_cpumask(sibling)) =3D=3D 1)
-+			cpu_data(sibling).smt_active =3D false;
-+	}
-+
- 	for_each_cpu(sibling, cpu_llc_shared_mask(cpu))
- 		cpumask_clear_cpu(cpu, cpu_llc_shared_mask(sibling));
- 	cpumask_clear(cpu_llc_shared_mask(cpu));
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index cfe6b1e85fa6..59ba2968af1b 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -8,11 +8,13 @@
- #include <linux/export.h>
- #include <linux/cpu.h>
- #include <linux/debugfs.h>
-+#include <linux/sched/smt.h>
-=20
- #include <asm/tlbflush.h>
- #include <asm/mmu_context.h>
- #include <asm/nospec-branch.h>
- #include <asm/cache.h>
-+#include <asm/cacheflush.h>
- #include <asm/apic.h>
- #include <asm/perf_event.h>
-=20
-@@ -43,10 +45,15 @@
++#endif /* _ASM_X86_PC_CONF_REG_H */
+diff --git a/arch/x86/include/asm/processor-cyrix.h b/arch/x86/include/asm/pr=
+ocessor-cyrix.h
+index df700a6cc869..efe3e46e454b 100644
+--- a/arch/x86/include/asm/processor-cyrix.h
++++ b/arch/x86/include/asm/processor-cyrix.h
+@@ -5,14 +5,14 @@
+  * Access order is always 0x22 (=3Doffset), 0x23 (=3Dvalue)
   */
 =20
- /*
-- * Use bit 0 to mangle the TIF_SPEC_IB state into the mm pointer which is
-- * stored in cpu_tlb_state.last_user_mm_ibpb.
-+ * Bits to mangle the TIF_SPEC_* state into the mm pointer which is
-+ * stored in cpu_tlb_state.last_user_mm_spec.
++#include <asm/pc-conf-reg.h>
++
+ static inline u8 getCx86(u8 reg)
+ {
+-	outb(reg, 0x22);
+-	return inb(0x23);
++	return pc_conf_get(reg);
+ }
+=20
+ static inline void setCx86(u8 reg, u8 data)
+ {
+-	outb(reg, 0x22);
+-	outb(data, 0x23);
++	pc_conf_set(reg, data);
+ }
+diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+index e55e0c1fad8c..14bcd59bcdee 100644
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -558,10 +558,10 @@ acpi_parse_nmi_src(union acpi_subtable_headers * header=
+, const unsigned long end
+  * If a PIC-mode SCI is not recognized or gives spurious IRQ7's
+  * it may require Edge Trigger -- use "acpi_sci=3Dedge"
+  *
+- * Port 0x4d0-4d1 are ECLR1 and ECLR2, the Edge/Level Control Registers
++ * Port 0x4d0-4d1 are ELCR1 and ELCR2, the Edge/Level Control Registers
+  * for the 8259 PIC.  bit[n] =3D 1 means irq[n] is Level, otherwise Edge.
+- * ECLR1 is IRQs 0-7 (IRQ 0, 1, 2 must be 0)
+- * ECLR2 is IRQs 8-15 (IRQ 8, 13 must be 0)
++ * ELCR1 is IRQs 0-7 (IRQ 0, 1, 2 must be 0)
++ * ELCR2 is IRQs 8-15 (IRQ 8, 13 must be 0)
   */
- #define LAST_USER_MM_IBPB	0x1UL
-+#define LAST_USER_MM_L1D_FLUSH	0x2UL
-+#define LAST_USER_MM_SPEC_MASK	(LAST_USER_MM_IBPB | LAST_USER_MM_L1D_FLUSH)
-+
-+/* Bits to set when tlbstate and flush is (re)initialized */
-+#define LAST_USER_MM_INIT	LAST_USER_MM_IBPB
 =20
- /*
-  * The x86 feature is called PCID (Process Context IDentifier). It is similar
-@@ -317,20 +324,70 @@ void switch_mm(struct mm_struct *prev, struct mm_struct=
- *next,
- 	local_irq_restore(flags);
- }
+ void __init acpi_pic_sci_set_trigger(unsigned int irq, u16 trigger)
+@@ -570,7 +570,7 @@ void __init acpi_pic_sci_set_trigger(unsigned int irq, u1=
+6 trigger)
+ 	unsigned int old, new;
 =20
--static unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
-+/*
-+ * Invoked from return to user/guest by a task that opted-in to L1D
-+ * flushing but ended up running on an SMT enabled core due to wrong
-+ * affinity settings or CPU hotplug. This is part of the paranoid L1D flush
-+ * contract which this task requested.
-+ */
-+static void l1d_flush_force_sigbus(struct callback_head *ch)
-+{
-+	force_sig(SIGBUS);
-+}
-+
-+static void l1d_flush_evaluate(unsigned long prev_mm, unsigned long next_mm,
-+				struct task_struct *next)
-+{
-+	/* Flush L1D if the outgoing task requests it */
-+	if (prev_mm & LAST_USER_MM_L1D_FLUSH)
-+		wrmsrl(MSR_IA32_FLUSH_CMD, L1D_FLUSH);
-+
-+	/* Check whether the incoming task opted in for L1D flush */
-+	if (likely(!(next_mm & LAST_USER_MM_L1D_FLUSH)))
-+		return;
-+
-+	/*
-+	 * Validate that it is not running on an SMT sibling as this would
-+	 * make the excercise pointless because the siblings share L1D. If
-+	 * it runs on a SMT sibling, notify it with SIGBUS on return to
-+	 * user/guest
-+	 */
-+	if (this_cpu_read(cpu_info.smt_active)) {
-+		clear_ti_thread_flag(&next->thread_info, TIF_SPEC_L1D_FLUSH);
-+		next->l1d_flush_kill.func =3D l1d_flush_force_sigbus;
-+		task_work_add(next, &next->l1d_flush_kill, TWA_RESUME);
-+	}
-+}
-+
-+static unsigned long mm_mangle_tif_spec_bits(struct task_struct *next)
- {
- 	unsigned long next_tif =3D task_thread_info(next)->flags;
--	unsigned long ibpb =3D (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_IBPB;
-+	unsigned long spec_bits =3D (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_SPEC_M=
-ASK;
+ 	/* Real old ELCR mask */
+-	old =3D inb(0x4d0) | (inb(0x4d1) << 8);
++	old =3D inb(PIC_ELCR1) | (inb(PIC_ELCR2) << 8);
 =20
--	return (unsigned long)next->mm | ibpb;
-+	/*
-+	 * Ensure that the bit shift above works as expected and the two flags
-+	 * end up in bit 0 and 1.
-+	 */
-+	BUILD_BUG_ON(TIF_SPEC_L1D_FLUSH !=3D TIF_SPEC_IB + 1);
-+
-+	return (unsigned long)next->mm | spec_bits;
- }
-=20
--static void cond_ibpb(struct task_struct *next)
-+static void cond_mitigation(struct task_struct *next)
- {
-+	unsigned long prev_mm, next_mm;
-+
- 	if (!next || !next->mm)
+ 	/*
+ 	 * If we use ACPI to set PCI IRQs, then we should clear ELCR
+@@ -596,8 +596,8 @@ void __init acpi_pic_sci_set_trigger(unsigned int irq, u1=
+6 trigger)
  		return;
 =20
-+	next_mm =3D mm_mangle_tif_spec_bits(next);
-+	prev_mm =3D this_cpu_read(cpu_tlbstate.last_user_mm_spec);
-+
- 	/*
-+	 * Avoid user/user BTB poisoning by flushing the branch predictor
-+	 * when switching between processes. This stops one process from
-+	 * doing Spectre-v2 attacks on another.
-+	 *
- 	 * Both, the conditional and the always IBPB mode use the mm
- 	 * pointer to avoid the IBPB when switching between tasks of the
- 	 * same process. Using the mm pointer instead of mm->context.ctx_id
-@@ -340,8 +397,6 @@ static void cond_ibpb(struct task_struct *next)
- 	 * exposed data is not really interesting.
- 	 */
- 	if (static_branch_likely(&switch_mm_cond_ibpb)) {
--		unsigned long prev_mm, next_mm;
--
- 		/*
- 		 * This is a bit more complex than the always mode because
- 		 * it has to handle two cases:
-@@ -371,20 +426,14 @@ static void cond_ibpb(struct task_struct *next)
- 		 * Optimize this with reasonably small overhead for the
- 		 * above cases. Mangle the TIF_SPEC_IB bit into the mm
- 		 * pointer of the incoming task which is stored in
--		 * cpu_tlbstate.last_user_mm_ibpb for comparison.
--		 */
--		next_mm =3D mm_mangle_tif_spec_ib(next);
--		prev_mm =3D this_cpu_read(cpu_tlbstate.last_user_mm_ibpb);
--
--		/*
-+		 * cpu_tlbstate.last_user_mm_spec for comparison.
-+		 *
- 		 * Issue IBPB only if the mm's are different and one or
- 		 * both have the IBPB bit set.
- 		 */
- 		if (next_mm !=3D prev_mm &&
- 		    (next_mm | prev_mm) & LAST_USER_MM_IBPB)
- 			indirect_branch_prediction_barrier();
--
--		this_cpu_write(cpu_tlbstate.last_user_mm_ibpb, next_mm);
- 	}
-=20
- 	if (static_branch_unlikely(&switch_mm_always_ibpb)) {
-@@ -393,11 +442,22 @@ static void cond_ibpb(struct task_struct *next)
- 		 * different context than the user space task which ran
- 		 * last on this CPU.
- 		 */
--		if (this_cpu_read(cpu_tlbstate.last_user_mm) !=3D next->mm) {
-+		if ((prev_mm & ~LAST_USER_MM_SPEC_MASK) !=3D
-+					(unsigned long)next->mm)
- 			indirect_branch_prediction_barrier();
--			this_cpu_write(cpu_tlbstate.last_user_mm, next->mm);
--		}
- 	}
-+
-+	if (static_branch_unlikely(&switch_mm_cond_l1d_flush)) {
-+		/*
-+		 * Flush L1D when the outgoing task requested it and/or
-+		 * check whether the incoming task requested L1D flushing
-+		 * and ended up on an SMT sibling.
-+		 */
-+		if (unlikely((prev_mm | next_mm) & LAST_USER_MM_L1D_FLUSH))
-+			l1d_flush_evaluate(prev_mm, next_mm, next);
-+	}
-+
-+	this_cpu_write(cpu_tlbstate.last_user_mm_spec, next_mm);
+ 	pr_warn("setting ELCR to %04x (from %04x)\n", new, old);
+-	outb(new, 0x4d0);
+-	outb(new >> 8, 0x4d1);
++	outb(new, PIC_ELCR1);
++	outb(new >> 8, PIC_ELCR2);
  }
 =20
- #ifdef CONFIG_PERF_EVENTS
-@@ -531,11 +591,10 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct =
-mm_struct *next,
- 		need_flush =3D true;
- 	} else {
- 		/*
--		 * Avoid user/user BTB poisoning by flushing the branch
--		 * predictor when switching between processes. This stops
--		 * one process from doing Spectre-v2 attacks on another.
-+		 * Apply process to process speculation vulnerability
-+		 * mitigations if applicable.
- 		 */
--		cond_ibpb(tsk);
-+		cond_mitigation(tsk);
+ int acpi_gsi_to_irq(u32 gsi, unsigned int *irqp)
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index d262811ce14b..b70344bf6600 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -38,6 +38,7 @@
 =20
- 		/*
- 		 * Stop remote flushes for the previous mm.
-@@ -643,7 +702,7 @@ void initialize_tlbstate_and_flush(void)
- 	write_cr3(build_cr3(mm->pgd, 0));
+ #include <asm/trace/irq_vectors.h>
+ #include <asm/irq_remapping.h>
++#include <asm/pc-conf-reg.h>
+ #include <asm/perf_event.h>
+ #include <asm/x86_init.h>
+ #include <linux/atomic.h>
+@@ -132,18 +133,14 @@ static int enabled_via_apicbase __ro_after_init;
+  */
+ static inline void imcr_pic_to_apic(void)
+ {
+-	/* select IMCR register */
+-	outb(0x70, 0x22);
+ 	/* NMI and 8259 INTR go through APIC */
+-	outb(0x01, 0x23);
++	pc_conf_set(PC_CONF_MPS_IMCR, 0x01);
+ }
 =20
- 	/* Reinitialize tlbstate. */
--	this_cpu_write(cpu_tlbstate.last_user_mm_ibpb, LAST_USER_MM_IBPB);
-+	this_cpu_write(cpu_tlbstate.last_user_mm_spec, LAST_USER_MM_INIT);
- 	this_cpu_write(cpu_tlbstate.loaded_mm_asid, 0);
- 	this_cpu_write(cpu_tlbstate.next_asid, 1);
- 	this_cpu_write(cpu_tlbstate.ctxs[0].ctx_id, mm->context.ctx_id);
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index ec8d07d88641..c048e59d3fbd 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1400,6 +1400,16 @@ struct task_struct {
- 	struct llist_head               kretprobe_instances;
+ static inline void imcr_apic_to_pic(void)
+ {
+-	/* select IMCR register */
+-	outb(0x70, 0x22);
+ 	/* NMI and 8259 INTR go directly to BSP */
+-	outb(0x00, 0x23);
++	pc_conf_set(PC_CONF_MPS_IMCR, 0x00);
+ }
  #endif
 =20
-+#ifdef CONFIG_ARCH_HAS_PARANOID_L1D_FLUSH
-+	/*
-+	 * If L1D flush is supported on mm context switch
-+	 * then we use this callback head to queue kill work
-+	 * to kill tasks that are not running on SMT disabled
-+	 * cores
-+	 */
-+	struct callback_head		l1d_flush_kill;
-+#endif
+diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
+index d5c691a3208b..7846499c54ec 100644
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -764,7 +764,7 @@ static bool irq_active_low(int idx)
+ static bool EISA_ELCR(unsigned int irq)
+ {
+ 	if (irq < nr_legacy_irqs()) {
+-		unsigned int port =3D 0x4d0 + (irq >> 3);
++		unsigned int port =3D PIC_ELCR1 + (irq >> 3);
+ 		return (inb(port) >> (irq & 7)) & 1;
+ 	}
+ 	apic_printk(APIC_VERBOSE, KERN_INFO
+diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
+index fb67ed5e7e6a..c132daabe615 100644
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -1299,7 +1299,7 @@ static void __init print_PIC(void)
+=20
+ 	pr_debug("... PIC  ISR: %04x\n", v);
+=20
+-	v =3D inb(0x4d1) << 8 | inb(0x4d0);
++	v =3D inb(PIC_ELCR2) << 8 | inb(PIC_ELCR1);
+ 	pr_debug("... PIC ELCR: %04x\n", v);
+ }
+=20
+diff --git a/arch/x86/kernel/i8259.c b/arch/x86/kernel/i8259.c
+index 282b4ee1339f..15aefa3f3e18 100644
+--- a/arch/x86/kernel/i8259.c
++++ b/arch/x86/kernel/i8259.c
+@@ -235,15 +235,15 @@ static char irq_trigger[2];
+  */
+ static void restore_ELCR(char *trigger)
+ {
+-	outb(trigger[0], 0x4d0);
+-	outb(trigger[1], 0x4d1);
++	outb(trigger[0], PIC_ELCR1);
++	outb(trigger[1], PIC_ELCR2);
+ }
+=20
+ static void save_ELCR(char *trigger)
+ {
+ 	/* IRQ 0,1,2,8,13 are marked as reserved */
+-	trigger[0] =3D inb(0x4d0) & 0xF8;
+-	trigger[1] =3D inb(0x4d1) & 0xDE;
++	trigger[0] =3D inb(PIC_ELCR1) & 0xF8;
++	trigger[1] =3D inb(PIC_ELCR2) & 0xDE;
+ }
+=20
+ static void i8259A_resume(void)
+diff --git a/arch/x86/kernel/mpparse.c b/arch/x86/kernel/mpparse.c
+index 8f06449aab27..fed721f90116 100644
+--- a/arch/x86/kernel/mpparse.c
++++ b/arch/x86/kernel/mpparse.c
+@@ -19,6 +19,7 @@
+ #include <linux/smp.h>
+ #include <linux/pci.h>
+=20
++#include <asm/i8259.h>
+ #include <asm/io_apic.h>
+ #include <asm/acpi.h>
+ #include <asm/irqdomain.h>
+@@ -251,7 +252,7 @@ static int __init ELCR_trigger(unsigned int irq)
+ {
+ 	unsigned int port;
+=20
+-	port =3D 0x4d0 + (irq >> 3);
++	port =3D PIC_ELCR1 + (irq >> 3);
+ 	return (inb(port) >> (irq & 7)) & 1;
+ }
+=20
+diff --git a/arch/x86/kvm/i8259.c b/arch/x86/kvm/i8259.c
+index 629a09ca9860..0b80263d46d8 100644
+--- a/arch/x86/kvm/i8259.c
++++ b/arch/x86/kvm/i8259.c
+@@ -541,17 +541,17 @@ static int picdev_slave_read(struct kvm_vcpu *vcpu, str=
+uct kvm_io_device *dev,
+ 			    addr, len, val);
+ }
+=20
+-static int picdev_eclr_write(struct kvm_vcpu *vcpu, struct kvm_io_device *de=
+v,
++static int picdev_elcr_write(struct kvm_vcpu *vcpu, struct kvm_io_device *de=
+v,
+ 			     gpa_t addr, int len, const void *val)
+ {
+-	return picdev_write(container_of(dev, struct kvm_pic, dev_eclr),
++	return picdev_write(container_of(dev, struct kvm_pic, dev_elcr),
+ 			    addr, len, val);
+ }
+=20
+-static int picdev_eclr_read(struct kvm_vcpu *vcpu, struct kvm_io_device *dev,
++static int picdev_elcr_read(struct kvm_vcpu *vcpu, struct kvm_io_device *dev,
+ 			    gpa_t addr, int len, void *val)
+ {
+-	return picdev_read(container_of(dev, struct kvm_pic, dev_eclr),
++	return picdev_read(container_of(dev, struct kvm_pic, dev_elcr),
+ 			    addr, len, val);
+ }
+=20
+@@ -577,9 +577,9 @@ static const struct kvm_io_device_ops picdev_slave_ops =
+=3D {
+ 	.write    =3D picdev_slave_write,
+ };
+=20
+-static const struct kvm_io_device_ops picdev_eclr_ops =3D {
+-	.read     =3D picdev_eclr_read,
+-	.write    =3D picdev_eclr_write,
++static const struct kvm_io_device_ops picdev_elcr_ops =3D {
++	.read     =3D picdev_elcr_read,
++	.write    =3D picdev_elcr_write,
+ };
+=20
+ int kvm_pic_init(struct kvm *kvm)
+@@ -602,7 +602,7 @@ int kvm_pic_init(struct kvm *kvm)
+ 	 */
+ 	kvm_iodevice_init(&s->dev_master, &picdev_master_ops);
+ 	kvm_iodevice_init(&s->dev_slave, &picdev_slave_ops);
+-	kvm_iodevice_init(&s->dev_eclr, &picdev_eclr_ops);
++	kvm_iodevice_init(&s->dev_elcr, &picdev_elcr_ops);
+ 	mutex_lock(&kvm->slots_lock);
+ 	ret =3D kvm_io_bus_register_dev(kvm, KVM_PIO_BUS, 0x20, 2,
+ 				      &s->dev_master);
+@@ -613,7 +613,7 @@ int kvm_pic_init(struct kvm *kvm)
+ 	if (ret < 0)
+ 		goto fail_unreg_2;
+=20
+-	ret =3D kvm_io_bus_register_dev(kvm, KVM_PIO_BUS, 0x4d0, 2, &s->dev_eclr);
++	ret =3D kvm_io_bus_register_dev(kvm, KVM_PIO_BUS, 0x4d0, 2, &s->dev_elcr);
+ 	if (ret < 0)
+ 		goto fail_unreg_1;
+=20
+@@ -647,7 +647,7 @@ void kvm_pic_destroy(struct kvm *kvm)
+ 	mutex_lock(&kvm->slots_lock);
+ 	kvm_io_bus_unregister_dev(vpic->kvm, KVM_PIO_BUS, &vpic->dev_master);
+ 	kvm_io_bus_unregister_dev(vpic->kvm, KVM_PIO_BUS, &vpic->dev_slave);
+-	kvm_io_bus_unregister_dev(vpic->kvm, KVM_PIO_BUS, &vpic->dev_eclr);
++	kvm_io_bus_unregister_dev(vpic->kvm, KVM_PIO_BUS, &vpic->dev_elcr);
+ 	mutex_unlock(&kvm->slots_lock);
+=20
+ 	kvm->arch.vpic =3D NULL;
+diff --git a/arch/x86/kvm/irq.h b/arch/x86/kvm/irq.h
+index 9b64abf9b3f1..650642b18d15 100644
+--- a/arch/x86/kvm/irq.h
++++ b/arch/x86/kvm/irq.h
+@@ -55,7 +55,7 @@ struct kvm_pic {
+ 	int output;		/* intr from master PIC */
+ 	struct kvm_io_device dev_master;
+ 	struct kvm_io_device dev_slave;
+-	struct kvm_io_device dev_eclr;
++	struct kvm_io_device dev_elcr;
+ 	void (*ack_notifier)(void *opaque, int irq);
+ 	unsigned long irq_states[PIC_NUM_PINS];
+ };
+diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
+index bad4dee4f0e4..c6506c6a7092 100644
+--- a/arch/x86/lib/Makefile
++++ b/arch/x86/lib/Makefile
+@@ -44,6 +44,7 @@ obj-$(CONFIG_SMP) +=3D msr-smp.o cache-smp.o
+ lib-y :=3D delay.o misc.o cmdline.o cpu.o
+ lib-y +=3D usercopy_$(BITS).o usercopy.o getuser.o putuser.o
+ lib-y +=3D memcpy_$(BITS).o
++lib-y +=3D pc-conf-reg.o
+ lib-$(CONFIG_ARCH_HAS_COPY_MC) +=3D copy_mc.o copy_mc_64.o
+ lib-$(CONFIG_INSTRUCTION_DECODER) +=3D insn.o inat.o insn-eval.o
+ lib-$(CONFIG_RANDOMIZE_BASE) +=3D kaslr.o
+diff --git a/arch/x86/lib/pc-conf-reg.c b/arch/x86/lib/pc-conf-reg.c
+new file mode 100644
+index 000000000000..febb52749e8d
+--- /dev/null
++++ b/arch/x86/lib/pc-conf-reg.c
+@@ -0,0 +1,13 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Support for the configuration register space at port I/O locations
++ * 0x22 and 0x23 variously used by PC architectures, e.g. the MP Spec,
++ * Cyrix CPUs, numerous chipsets.  As the space is indirectly addressed
++ * it may have to be protected with a spinlock, depending on the context.
++ */
 +
- 	/*
- 	 * New fields for task_struct should be added above here, so that
- 	 * they are included in the randomized portion of task_struct.
-diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-index 967d9c55323d..964c41ed303e 100644
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -213,6 +213,7 @@ struct prctl_mm_map {
- /* Speculation control variants */
- # define PR_SPEC_STORE_BYPASS		0
- # define PR_SPEC_INDIRECT_BRANCH	1
-+# define PR_SPEC_L1D_FLUSH		2
- /* Return and control values for PR_SET/GET_SPECULATION_CTRL */
- # define PR_SPEC_NOT_AFFECTED		0
- # define PR_SPEC_PRCTL			(1UL << 0)
++#include <linux/spinlock.h>
++
++#include <asm/pc-conf-reg.h>
++
++DEFINE_RAW_SPINLOCK(pc_conf_lock);
+diff --git a/arch/x86/pci/irq.c b/arch/x86/pci/irq.c
+index d3a73f9335e1..97b63e35e152 100644
+--- a/arch/x86/pci/irq.c
++++ b/arch/x86/pci/irq.c
+@@ -13,9 +13,13 @@
+ #include <linux/dmi.h>
+ #include <linux/io.h>
+ #include <linux/smp.h>
++#include <linux/spinlock.h>
+ #include <asm/io_apic.h>
+ #include <linux/irq.h>
+ #include <linux/acpi.h>
++
++#include <asm/i8259.h>
++#include <asm/pc-conf-reg.h>
+ #include <asm/pci_x86.h>
+=20
+ #define PIRQ_SIGNATURE	(('$' << 0) + ('P' << 8) + ('I' << 16) + ('R' << 24))
+@@ -47,6 +51,8 @@ struct irq_router {
+ 	int (*get)(struct pci_dev *router, struct pci_dev *dev, int pirq);
+ 	int (*set)(struct pci_dev *router, struct pci_dev *dev, int pirq,
+ 		int new);
++	int (*lvl)(struct pci_dev *router, struct pci_dev *dev, int pirq,
++		int irq);
+ };
+=20
+ struct irq_router_handler {
+@@ -153,7 +159,7 @@ static void __init pirq_peer_trick(void)
+ void elcr_set_level_irq(unsigned int irq)
+ {
+ 	unsigned char mask =3D 1 << (irq & 7);
+-	unsigned int port =3D 0x4d0 + (irq >> 3);
++	unsigned int port =3D PIC_ELCR1 + (irq >> 3);
+ 	unsigned char val;
+ 	static u16 elcr_irq_mask;
+=20
+@@ -169,6 +175,139 @@ void elcr_set_level_irq(unsigned int irq)
+ 	}
+ }
+=20
++/*
++ *	PIRQ routing for the M1487 ISA Bus Controller (IBC) ASIC used
++ *	with the ALi FinALi 486 chipset.  The IBC is not decoded in the
++ *	PCI configuration space, so we identify it by the accompanying
++ *	M1489 Cache-Memory PCI Controller (CMP) ASIC.
++ *
++ *	There are four 4-bit mappings provided, spread across two PCI
++ *	INTx Routing Table Mapping Registers, available in the port I/O
++ *	space accessible indirectly via the index/data register pair at
++ *	0x22/0x23, located at indices 0x42 and 0x43 for the INT1/INT2
++ *	and INT3/INT4 lines respectively.  The INT1/INT3 and INT2/INT4
++ *	lines are mapped in the low and the high 4-bit nibble of the
++ *	corresponding register as follows:
++ *
++ *	0000 : Disabled
++ *	0001 : IRQ9
++ *	0010 : IRQ3
++ *	0011 : IRQ10
++ *	0100 : IRQ4
++ *	0101 : IRQ5
++ *	0110 : IRQ7
++ *	0111 : IRQ6
++ *	1000 : Reserved
++ *	1001 : IRQ11
++ *	1010 : Reserved
++ *	1011 : IRQ12
++ *	1100 : Reserved
++ *	1101 : IRQ14
++ *	1110 : Reserved
++ *	1111 : IRQ15
++ *
++ *	In addition to the usual ELCR register pair there is a separate
++ *	PCI INTx Sensitivity Register at index 0x44 in the same port I/O
++ *	space, whose bits 3:0 select the trigger mode for INT[4:1] lines
++ *	respectively.  Any bit set to 1 causes interrupts coming on the
++ *	corresponding line to be passed to ISA as edge-triggered and
++ *	otherwise they are passed as level-triggered.  Manufacturer's
++ *	documentation says this register has to be set consistently with
++ *	the relevant ELCR register.
++ *
++ *	Accesses to the port I/O space concerned here need to be unlocked
++ *	by writing the value of 0xc5 to the Lock Register at index 0x03
++ *	beforehand.  Any other value written to said register prevents
++ *	further accesses from reaching the register file, except for the
++ *	Lock Register being written with 0xc5 again.
++ *
++ *	References:
++ *
++ *	"M1489/M1487: 486 PCI Chip Set", Version 1.2, Acer Laboratories
++ *	Inc., July 1997
++ */
++
++#define PC_CONF_FINALI_LOCK		0x03u
++#define PC_CONF_FINALI_PCI_INTX_RT1	0x42u
++#define PC_CONF_FINALI_PCI_INTX_RT2	0x43u
++#define PC_CONF_FINALI_PCI_INTX_SENS	0x44u
++
++#define PC_CONF_FINALI_LOCK_KEY		0xc5u
++
++static u8 read_pc_conf_nybble(u8 base, u8 index)
++{
++	u8 reg =3D base + (index >> 1);
++	u8 x;
++
++	x =3D pc_conf_get(reg);
++	return index & 1 ? x >> 4 : x & 0xf;
++}
++
++static void write_pc_conf_nybble(u8 base, u8 index, u8 val)
++{
++	u8 reg =3D base + (index >> 1);
++	u8 x;
++
++	x =3D pc_conf_get(reg);
++	x =3D index & 1 ? (x & 0x0f) | (val << 4) : (x & 0xf0) | val;
++	pc_conf_set(reg, x);
++}
++
++static int pirq_finali_get(struct pci_dev *router, struct pci_dev *dev,
++			   int pirq)
++{
++	static const u8 irqmap[16] =3D {
++		0, 9, 3, 10, 4, 5, 7, 6, 0, 11, 0, 12, 0, 14, 0, 15
++	};
++	unsigned long flags;
++	u8 x;
++
++	raw_spin_lock_irqsave(&pc_conf_lock, flags);
++	pc_conf_set(PC_CONF_FINALI_LOCK, PC_CONF_FINALI_LOCK_KEY);
++	x =3D irqmap[read_pc_conf_nybble(PC_CONF_FINALI_PCI_INTX_RT1, pirq - 1)];
++	pc_conf_set(PC_CONF_FINALI_LOCK, 0);
++	raw_spin_unlock_irqrestore(&pc_conf_lock, flags);
++	return x;
++}
++
++static int pirq_finali_set(struct pci_dev *router, struct pci_dev *dev,
++			   int pirq, int irq)
++{
++	static const u8 irqmap[16] =3D {
++		0, 0, 0, 2, 4, 5, 7, 6, 0, 1, 3, 9, 11, 0, 13, 15
++	};
++	u8 val =3D irqmap[irq];
++	unsigned long flags;
++
++	if (!val)
++		return 0;
++
++	raw_spin_lock_irqsave(&pc_conf_lock, flags);
++	pc_conf_set(PC_CONF_FINALI_LOCK, PC_CONF_FINALI_LOCK_KEY);
++	write_pc_conf_nybble(PC_CONF_FINALI_PCI_INTX_RT1, pirq - 1, val);
++	pc_conf_set(PC_CONF_FINALI_LOCK, 0);
++	raw_spin_unlock_irqrestore(&pc_conf_lock, flags);
++	return 1;
++}
++
++static int pirq_finali_lvl(struct pci_dev *router, struct pci_dev *dev,
++			   int pirq, int irq)
++{
++	u8 mask =3D ~(1u << (pirq - 1));
++	unsigned long flags;
++	u8 trig;
++
++	elcr_set_level_irq(irq);
++	raw_spin_lock_irqsave(&pc_conf_lock, flags);
++	pc_conf_set(PC_CONF_FINALI_LOCK, PC_CONF_FINALI_LOCK_KEY);
++	trig =3D pc_conf_get(PC_CONF_FINALI_PCI_INTX_SENS);
++	trig &=3D mask;
++	pc_conf_set(PC_CONF_FINALI_PCI_INTX_SENS, trig);
++	pc_conf_set(PC_CONF_FINALI_LOCK, 0);
++	raw_spin_unlock_irqrestore(&pc_conf_lock, flags);
++	return 1;
++}
++
+ /*
+  * Common IRQ routing practice: nibbles in config space,
+  * offset by some magic constant.
+@@ -219,6 +358,74 @@ static int pirq_ali_set(struct pci_dev *router, struct p=
+ci_dev *dev, int pirq, i
+ 	return 0;
+ }
+=20
++/*
++ *	PIRQ routing for the 82374EB/82374SB EISA System Component (ESC)
++ *	ASIC used with the Intel 82420 and 82430 PCIsets.  The ESC is not
++ *	decoded in the PCI configuration space, so we identify it by the
++ *	accompanying 82375EB/82375SB PCI-EISA Bridge (PCEB) ASIC.
++ *
++ *	There are four PIRQ Route Control registers, available in the
++ *	port I/O space accessible indirectly via the index/data register
++ *	pair at 0x22/0x23, located at indices 0x60/0x61/0x62/0x63 for the
++ *	PIRQ0/1/2/3# lines respectively.  The semantics is the same as
++ *	with the PIIX router.
++ *
++ *	Accesses to the port I/O space concerned here need to be unlocked
++ *	by writing the value of 0x0f to the ESC ID Register at index 0x02
++ *	beforehand.  Any other value written to said register prevents
++ *	further accesses from reaching the register file, except for the
++ *	ESC ID Register being written with 0x0f again.
++ *
++ *	References:
++ *
++ *	"82374EB/82374SB EISA System Component (ESC)", Intel Corporation,
++ *	Order Number: 290476-004, March 1996
++ *
++ *	"82375EB/82375SB PCI-EISA Bridge (PCEB)", Intel Corporation, Order
++ *	Number: 290477-004, March 1996
++ */
++
++#define PC_CONF_I82374_ESC_ID			0x02u
++#define PC_CONF_I82374_PIRQ_ROUTE_CONTROL	0x60u
++
++#define PC_CONF_I82374_ESC_ID_KEY		0x0fu
++
++static int pirq_esc_get(struct pci_dev *router, struct pci_dev *dev, int pir=
+q)
++{
++	unsigned long flags;
++	int reg;
++	u8 x;
++
++	reg =3D pirq;
++	if (reg >=3D 1 && reg <=3D 4)
++		reg +=3D PC_CONF_I82374_PIRQ_ROUTE_CONTROL - 1;
++
++	raw_spin_lock_irqsave(&pc_conf_lock, flags);
++	pc_conf_set(PC_CONF_I82374_ESC_ID, PC_CONF_I82374_ESC_ID_KEY);
++	x =3D pc_conf_get(reg);
++	pc_conf_set(PC_CONF_I82374_ESC_ID, 0);
++	raw_spin_unlock_irqrestore(&pc_conf_lock, flags);
++	return (x < 16) ? x : 0;
++}
++
++static int pirq_esc_set(struct pci_dev *router, struct pci_dev *dev, int pir=
+q,
++		       int irq)
++{
++	unsigned long flags;
++	int reg;
++
++	reg =3D pirq;
++	if (reg >=3D 1 && reg <=3D 4)
++		reg +=3D PC_CONF_I82374_PIRQ_ROUTE_CONTROL - 1;
++
++	raw_spin_lock_irqsave(&pc_conf_lock, flags);
++	pc_conf_set(PC_CONF_I82374_ESC_ID, PC_CONF_I82374_ESC_ID_KEY);
++	pc_conf_set(reg, irq);
++	pc_conf_set(PC_CONF_I82374_ESC_ID, 0);
++	raw_spin_unlock_irqrestore(&pc_conf_lock, flags);
++	return 1;
++}
++
+ /*
+  * The Intel PIIX4 pirq rules are fairly simple: "pirq" is
+  * just a pointer to the config space.
+@@ -237,6 +444,50 @@ static int pirq_piix_set(struct pci_dev *router, struct =
+pci_dev *dev, int pirq,
+ 	return 1;
+ }
+=20
++/*
++ *	PIRQ routing for the 82426EX ISA Bridge (IB) ASIC used with the
++ *	Intel 82420EX PCIset.
++ *
++ *	There are only two PIRQ Route Control registers, available in the
++ *	combined 82425EX/82426EX PCI configuration space, at 0x66 and 0x67
++ *	for the PIRQ0# and PIRQ1# lines respectively.  The semantics is
++ *	the same as with the PIIX router.
++ *
++ *	References:
++ *
++ *	"82420EX PCIset Data Sheet, 82425EX PCI System Controller (PSC)
++ *	and 82426EX ISA Bridge (IB)", Intel Corporation, Order Number:
++ *	290488-004, December 1995
++ */
++
++#define PCI_I82426EX_PIRQ_ROUTE_CONTROL	0x66u
++
++static int pirq_ib_get(struct pci_dev *router, struct pci_dev *dev, int pirq)
++{
++	int reg;
++	u8 x;
++
++	reg =3D pirq;
++	if (reg >=3D 1 && reg <=3D 2)
++		reg +=3D PCI_I82426EX_PIRQ_ROUTE_CONTROL - 1;
++
++	pci_read_config_byte(router, reg, &x);
++	return (x < 16) ? x : 0;
++}
++
++static int pirq_ib_set(struct pci_dev *router, struct pci_dev *dev, int pirq,
++		       int irq)
++{
++	int reg;
++
++	reg =3D pirq;
++	if (reg >=3D 1 && reg <=3D 2)
++		reg +=3D PCI_I82426EX_PIRQ_ROUTE_CONTROL - 1;
++
++	pci_write_config_byte(router, reg, irq);
++	return 1;
++}
++
+ /*
+  * The VIA pirq rules are nibble-based, like ALI,
+  * but without the ugly irq number munging.
+@@ -549,6 +800,11 @@ static __init int intel_router_probe(struct irq_router *=
+r, struct pci_dev *route
+ 		return 0;
+=20
+ 	switch (device) {
++	case PCI_DEVICE_ID_INTEL_82375:
++		r->name =3D "PCEB/ESC";
++		r->get =3D pirq_esc_get;
++		r->set =3D pirq_esc_set;
++		return 1;
+ 	case PCI_DEVICE_ID_INTEL_82371FB_0:
+ 	case PCI_DEVICE_ID_INTEL_82371SB_0:
+ 	case PCI_DEVICE_ID_INTEL_82371AB_0:
+@@ -594,6 +850,11 @@ static __init int intel_router_probe(struct irq_router *=
+r, struct pci_dev *route
+ 		r->get =3D pirq_piix_get;
+ 		r->set =3D pirq_piix_set;
+ 		return 1;
++	case PCI_DEVICE_ID_INTEL_82425:
++		r->name =3D "PSC/IB";
++		r->get =3D pirq_ib_get;
++		r->set =3D pirq_ib_set;
++		return 1;
+ 	}
+=20
+ 	if ((device >=3D PCI_DEVICE_ID_INTEL_5_3400_SERIES_LPC_MIN &&=20
+@@ -745,6 +1006,12 @@ static __init int ite_router_probe(struct irq_router *r=
+, struct pci_dev *router,
+ static __init int ali_router_probe(struct irq_router *r, struct pci_dev *rou=
+ter, u16 device)
+ {
+ 	switch (device) {
++	case PCI_DEVICE_ID_AL_M1489:
++		r->name =3D "FinALi";
++		r->get =3D pirq_finali_get;
++		r->set =3D pirq_finali_set;
++		r->lvl =3D pirq_finali_lvl;
++		return 1;
+ 	case PCI_DEVICE_ID_AL_M1533:
+ 	case PCI_DEVICE_ID_AL_M1563:
+ 		r->name =3D "ALI";
+@@ -968,11 +1235,17 @@ static int pcibios_lookup_irq(struct pci_dev *dev, int=
+ assign)
+ 	} else if (r->get && (irq =3D r->get(pirq_router_dev, dev, pirq)) && \
+ 	((!(pci_probe & PCI_USE_PIRQ_MASK)) || ((1 << irq) & mask))) {
+ 		msg =3D "found";
+-		elcr_set_level_irq(irq);
++		if (r->lvl)
++			r->lvl(pirq_router_dev, dev, pirq, irq);
++		else
++			elcr_set_level_irq(irq);
+ 	} else if (newirq && r->set &&
+ 		(dev->class >> 8) !=3D PCI_CLASS_DISPLAY_VGA) {
+ 		if (r->set(pirq_router_dev, dev, pirq, newirq)) {
+-			elcr_set_level_irq(newirq);
++			if (r->lvl)
++				r->lvl(pirq_router_dev, dev, pirq, newirq);
++			else
++				elcr_set_level_irq(newirq);
+ 			msg =3D "assigned";
+ 			irq =3D newirq;
+ 		}
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 4bac1831de80..60e2101a009d 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -1121,6 +1121,7 @@
+ #define PCI_DEVICE_ID_3COM_3CR990SVR	0x990a
+=20
+ #define PCI_VENDOR_ID_AL		0x10b9
++#define PCI_DEVICE_ID_AL_M1489		0x1489
+ #define PCI_DEVICE_ID_AL_M1533		0x1533
+ #define PCI_DEVICE_ID_AL_M1535		0x1535
+ #define PCI_DEVICE_ID_AL_M1541		0x1541
+@@ -2643,6 +2644,7 @@
+ #define PCI_DEVICE_ID_INTEL_82375	0x0482
+ #define PCI_DEVICE_ID_INTEL_82424	0x0483
+ #define PCI_DEVICE_ID_INTEL_82378	0x0484
++#define PCI_DEVICE_ID_INTEL_82425	0x0486
+ #define PCI_DEVICE_ID_INTEL_MRST_SD0	0x0807
+ #define PCI_DEVICE_ID_INTEL_MRST_SD1	0x0808
+ #define PCI_DEVICE_ID_INTEL_MFD_SD	0x0820
 
