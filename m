@@ -2,150 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BBB3FBA82
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB6A3FBA93
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237978AbhH3Q7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:59:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36768 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231234AbhH3Q67 (ORCPT
+        id S237995AbhH3RE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 13:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237892AbhH3RET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:58:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630342685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=raISjzzXTZAIieU8nOzMirvpJSgfC59Ba/8FkbPMcHk=;
-        b=QnfkcBWlaK56XuTO6Aj5o9sRtOTJl7Er+R0ksQJs5YbbwTDJHW93GjIO3iZOKP5vkzJiBZ
-        C9piycuMPNzLhyNol5Q1sbyH4LlfuJZfOpizw+cIisMpkHZ2e5XtP2A+ZV3xQS8+qKFI+t
-        xiEq48IlWmEWDHWcfz/r9m5m20N/kaw=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-253--_D9OjgzMN6BgCvfl_wOBA-1; Mon, 30 Aug 2021 12:58:04 -0400
-X-MC-Unique: -_D9OjgzMN6BgCvfl_wOBA-1
-Received: by mail-qv1-f70.google.com with SMTP id t12-20020ad45bcc000000b003772069d04aso2546494qvt.19
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:58:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=raISjzzXTZAIieU8nOzMirvpJSgfC59Ba/8FkbPMcHk=;
-        b=hRNC5uhFDVW6XRzs+bzIVEhWRGWdBY9rq5VLjX6zxsxwcKL7yi1R0WR1zckL2jz8on
-         n+FvWpgXUKPQILoTfLxDSQGWXiVi643e8ucPi5MgL96RJrTxFOBGowu8Fv75+BcbGIvd
-         w7sKr4uk6S0D8BBepGN836Ag5VkIvJMTdn44xFy/ajzoLGKW472+bGomKSWAosk26lE6
-         eoLLs0xQkxKegpz5HI8ui6aVknWGtGOkiF1Uym0LuZpRgrAKZiD0p5z4yyMiBBFSUyTp
-         mv841FZbk9glnXqUM9anTTxeJxe21/wokB/oD/AHbuvtjOLPpy0X1oMMDGwLv0YNdIlp
-         EXdQ==
-X-Gm-Message-State: AOAM532B1REU8ezmjt74vp1B2IuRUgU8fvK+3aaoYwUHaLG49vZNMAFN
-        xCAs3J0Uzd2BKHr7mTI6iC8lOOrRG8maJUnnnPVbzCrXtMqzaiFkNSqBH+wIX+1K/PPFrD3Rnol
-        +ZvXUqxs1kSclohFkUrfJ2Fgn
-X-Received: by 2002:ac8:6601:: with SMTP id c1mr19178994qtp.179.1630342683866;
-        Mon, 30 Aug 2021 09:58:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwsd1fcEPuUUh06f8iCPwA7mKsjRLGfmhZzGrmlfV/DO+fudHXPuiEhJVxn8MES4Ogj/P+umw==
-X-Received: by 2002:ac8:6601:: with SMTP id c1mr19178971qtp.179.1630342683670;
-        Mon, 30 Aug 2021 09:58:03 -0700 (PDT)
-Received: from [192.168.8.104] (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id j3sm9152085qti.4.2021.08.30.09.58.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 09:58:03 -0700 (PDT)
-Message-ID: <db5ae1c8d070509580218a501cfa9caaf3f029e1.camel@redhat.com>
-Subject: Re: [PATCH v3] drm/dp_mst: Fix return code on sideband message
- failure
-From:   Lyude Paul <lyude@redhat.com>
-To:     khsieh@codeaurora.org
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, rsubbia@codeaurora.org,
-        rnayak@codeaurora.org, freedreno@lists.freedesktop.org,
-        airlied@linux.ie, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 30 Aug 2021 12:58:01 -0400
-In-Reply-To: <f0fcfe7a73e87150a7a1f042269b76a3@codeaurora.org>
-References: <1625585434-9562-1-git-send-email-khsieh@codeaurora.org>
-         <87zguy7c5a.fsf@intel.com>
-         <a514c19f712a6feeddf854dc17cb8eb5@codeaurora.org>
-         <2da3949fa3504592da42c9d01dc060691c6a8b8b.camel@redhat.com>
-         <d9ec812b4be57e32246735ca2f5e9560@codeaurora.org>
-         <79c5a60fc189261b7a9ef611acd126a41f921593.camel@redhat.com>
-         <696a009e2ab34747abd12bda03c103c7@codeaurora.org>
-         <e725235a77935184cd20dab5af55da95b28d9e88.camel@redhat.com>
-         <64049ef6c598910c1025e0e5802bb83e@codeaurora.org>
-         <88b5fbe60c95bcdf42353bec9f8c48aefa864a31.camel@redhat.com>
-         <f0fcfe7a73e87150a7a1f042269b76a3@codeaurora.org>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Mon, 30 Aug 2021 13:04:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB81C06175F;
+        Mon, 30 Aug 2021 10:03:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xoB9y/6gb5tvI+qqY/ALh9vMOrQQ9QlAyNC2IX3tc1Y=; b=pqZfVDzw4vekFytMGTd+nWCCR8
+        2YO5nnghGG2115wp916H67WC44RJL9F0/DeML/IkIabm+LR2wvHyAok6I3oHh6Axa9yufbd4+LYjx
+        doZkgz/i7MqsMhY8LYZePDVgGDNyXh947bd+P/ghJT/ePsYjVsJURruhNp4aEO5QqrLKmIIfyWudl
+        8eAY6GmK6ZhUo2HYv4dsXb5gIYpULHzMCdyK8iaEZb1wdlf1UGuYdTlO2yw0au6tLyxDKVBOcJtEm
+        vUeyPfSGhfyZEy+jr+e9eMOHZFqPagB/WsG4e4noe+wRFWjha8yZ3lCS5TlSiPaW4GZ3p5kChwJr7
+        sILUD6WQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKkci-000LX7-Qk; Mon, 30 Aug 2021 16:59:09 +0000
+Date:   Mon, 30 Aug 2021 17:59:04 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v8 2/3] mm: add a field to store names for private
+ anonymous memory
+Message-ID: <YS0OWFnzLHJViamF@casper.infradead.org>
+References: <20210827191858.2037087-1-surenb@google.com>
+ <20210827191858.2037087-3-surenb@google.com>
+ <YSmVl+DEPrU6oUR4@casper.infradead.org>
+ <202108272228.7D36F0373@keescook>
+ <CAJuCfpEWc+eTLYp_Xf9exMJCO_cFtvBUzi39+WbcSKZBXHe3SQ@mail.gmail.com>
+ <f7117620-28ba-cfa5-b2c6-21812f15e4d6@rasmusvillemoes.dk>
+ <CAJuCfpHXF34THa=zVcRozYiLA9QPeNyU09WvyJFKk=ZjCq0ZZw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpHXF34THa=zVcRozYiLA9QPeNyU09WvyJFKk=ZjCq0ZZw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-08-30 at 08:56 -0700, khsieh@codeaurora.org wrote:
-> On 2021-08-25 09:26, Lyude Paul wrote:
-> > The patch was pushed yes (was part of drm-misc-next-2021-07-29), seems 
-> > like it
-> > just hasn't trickled down to linus's branch quite yet.
+On Mon, Aug 30, 2021 at 09:16:14AM -0700, Suren Baghdasaryan wrote:
+> On Mon, Aug 30, 2021 at 1:12 AM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+> >
+> > On 28/08/2021 23.47, Suren Baghdasaryan wrote:
+> > > On Fri, Aug 27, 2021 at 10:52 PM Kees Cook <keescook@chromium.org> wrote:
+> > >>
+> > >>>> +   case PR_SET_VMA_ANON_NAME:
+> > >>>> +           name = strndup_user((const char __user *)arg,
+> > >>>> +                               ANON_VMA_NAME_MAX_LEN);
+> > >>>> +
+> > >>>> +           if (IS_ERR(name))
+> > >>>> +                   return PTR_ERR(name);
+> > >>>> +
+> > >>>> +           for (pch = name; *pch != '\0'; pch++) {
+> > >>>> +                   if (!isprint(*pch)) {
+> > >>>> +                           kfree(name);
+> > >>>> +                           return -EINVAL;
+> > >>>
+> > >>> I think isprint() is too weak a check.  For example, I would suggest
+> > >>> forbidding the following characters: ':', ']', '[', ' '.  Perhaps
+> >
+> > Indeed. There's also the issue that the kernel's ctype actually
+> > implements some almost-but-not-quite latin1, so (some) chars above 0x7f
+> > would also pass isprint() - while everybody today expects utf-8, so the
+> > ability to put almost arbitrary sequences of chars with the high bit set
+> > could certainly confuse some parsers. IOW, don't use isprint() at all,
+> > just explicitly check for the byte values that we and up agreeing to
+> > allow/forbid.
+> >
+> > >>> isalnum() would be better?  (permit a-zA-Z0-9)  I wouldn't necessarily
+> > >>> be opposed to some punctuation characters, but let's avoid creating
+> > >>> confusion.  Do you happen to know which characters are actually in use
+> > >>> today?
+> > >>
+> > >> There's some sense in refusing [, ], and :, but removing " " seems
+> > >> unhelpful for reasonable descriptors. As long as weird stuff is escaped,
+> > >> I think it's fine. Any parser can just extract with m|\[anon:(.*)\]$|
+> > >
+> > > I see no issue in forbidding '[' and ']' but whitespace and ':' are
+> > > currently used by Android. Would forbidding or escaping '[' and ']' be
+> > > enough?
+> >
+> > how about allowing [0x20, 0x7e] except [0x5b, 0x5d], i.e. all printable
+> > (including space) ascii characters, except [ \ ] - the brackets as
+> > already discussed, and backslash because then there's nobody who can get
+> > confused about whether there's some (and then which?) escaping mechanism
+> > in play - "\n" is simply never going to appear. Simple rules, easy to
+> > implement, easy to explain in a man page.
 > 
-> Hi Stephen B,
-> 
-> Would you mind back porting this patch to V5.10 branch?
-> It will have lots of helps for us to support display port MST case.
-> Thanks,
+> Thanks for the suggestion, Rasmus. I'm all for keeping it simple.
+> Kees, Matthew, would that be acceptable?
 
-I'm assuming you're talking to someone else? A little confused because I don't
-see a Stephen B in this thread
-
-> 
-> 
-> 
-> > 
-> > On Wed, 2021-08-25 at 09:06 -0700, khsieh@codeaurora.org wrote:
-> > > On 2021-07-27 15:44, Lyude Paul wrote:
-> > > > Nice timing, you literally got me as I was 2 minutes away from leaving
-> > > > work
-> > > > for the day :P. I will go ahead and push it now.
-> > > > 
-> > > Hi Lyude,
-> > > 
-> > > Had you pushed this patch yet?
-> > > We still did not see this patch at msm-nex and v5.10 branch.
-> > > Thanks,
-> > > 
-> > > 
-> > > > BTW - in the future I recommend using dim to add Fixes: tags as it'll
-> > > > add Cc:
-> > > > to stable as appropriate (this patch in particular should be Cc:
-> > > > stable@vger.kernel.org # v5.3+). will add these tags when I push it
-> > > > 
-> > > > On Tue, 2021-07-27 at 15:41 -0700, khsieh@codeaurora.org wrote:
-> > > > > On 2021-07-27 12:21, Lyude Paul wrote:
-> > > > > > On Thu, 2021-07-22 at 15:28 -0700, khsieh@codeaurora.org wrote:
-> > > > > > > 
-> > > > > > > It looks like this patch is good to go (mainlined).
-> > > > > > > Anything needed from me to do?
-> > > > > > > Thanks,
-> > > > > > 
-> > > > > > Do you have access for pushing this patch? If not let me know and
-> > > > > > I
-> > > > > > can
-> > > > > > go
-> > > > > > ahead and push it to drm-misc-next for you.
-> > > > > no, I do not have access to drm-misc-next.
-> > > > > Please push it for me.
-> > > > > Thanks a lots.
-> > > > > 
-> > > 
-> 
-
--- 
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
-
+Yes, I think so.  It permits all kinds of characters that might
+be confusing if passed on to something else, but we can't prohibit
+everything, and forbidding just these three should remove any confusion
+for any parser of /proc.  Little Bobby Tables thanks you.
