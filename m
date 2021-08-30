@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560013FBE0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD39F3FBE11
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237415AbhH3VXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 17:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbhH3VX3 (ORCPT
+        id S237366AbhH3V0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:26:20 -0400
+Received: from laubervilliers-656-1-228-164.w92-154.abo.wanadoo.fr ([92.154.28.164]:54092
+        "EHLO ssq0.pkh.me" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236603AbhH3V0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:23:29 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F579C061575;
-        Mon, 30 Aug 2021 14:22:35 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id q21so9328649plq.3;
-        Mon, 30 Aug 2021 14:22:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gx+f4gzusOR2tKDAjP+xRdZLA8qcZC7Zt4eF0MKqKkE=;
-        b=kSFwC6ghrMGuitpn0a8H2GVELVDGijuc5FFwWEaRdUGP7/BdPnxM5ROqRN4U/LxOhN
-         PPuEyeyQ+nEv6NHcrrxQbCHzVCiTtFYWOSqIZticf4p0otUb+TD7srPGdQcxnpE/GOom
-         4UtMwfupQ04OQq4CAukW8grcmsNIEeQ3TRv7bm/6yN6BSWcKBGfKqewBA9d6cUmMXJdm
-         Y3guRAILw6Vyggnk6alt3aNyvv8BNC/hkh7Kd/8ADnDFQijgSgji9w6ywK1KOl607p3i
-         jRvtCDwR0d6lEBC5ZrrJ/WsqBcdmeOYQcq7Diiub9UZC7Zrw8fhLkHkTAXnDiLZvQBrr
-         hHvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gx+f4gzusOR2tKDAjP+xRdZLA8qcZC7Zt4eF0MKqKkE=;
-        b=ntmogueqS2uYC0Pw6qZnC1ee9n+QeL4xbyRMrJACN/a0l1QCFEBZg+ZNeESboKk8eP
-         hTrwtZAgJoVF2irKu0SEQfyuepFe/4N6chUYC1ryjdpMGJiZHW9rigJ3OivW4IgatSS0
-         4kva85W/WDh1brja4AjxMsjYoK8szmpl2AXXgksX62n4RMceetRS8QnHaBydbBZLzgDh
-         /QnziYdjtBMJ4EuhmUJ+cWN/9moPNjbqblBk+cYVslWom/bB50++v7fldJkS3HdyWFTa
-         20ZCETr4vXxu/bwc1eYtBaGh8cQ97Pb+O+tv9Ct4X27MpHBTc7fpbPqCHiqA1CV2rPvi
-         frNQ==
-X-Gm-Message-State: AOAM531HQ2I2PBWXPNhbNZEl9wcYBiGQjKDoHj6G3RDnBTkGAC6fYYll
-        OOBIXxfTaVpUJ2X+fWdSnokpt7Forco=
-X-Google-Smtp-Source: ABdhPJyHyA632gLgZPODsAAy+mqta2nstfTR1ytg9szYz7gZ7lFT/QHuZ9+oomn8TCRoe5BsEf/5tQ==
-X-Received: by 2002:a17:90a:5b0f:: with SMTP id o15mr1174799pji.97.1630358554604;
-        Mon, 30 Aug 2021 14:22:34 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:771a:afc8:2e96:23dd])
-        by smtp.gmail.com with ESMTPSA id v6sm8417193pfu.0.2021.08.30.14.22.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 14:22:33 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 14:22:31 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-input@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] input: remove dead CSR Prima2 PWRC driver
-Message-ID: <YS1MFw+WTXk/6o2A@google.com>
-References: <20210817072842.8640-1-lukas.bulwahn@gmail.com>
+        Mon, 30 Aug 2021 17:26:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pkh.me; s=selector1;
+        t=1630358723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=80dDbRn6s3xamLCNiQaZpQpNPHOe0dgBpx21E820VCc=;
+        b=GJMSV+XbmrU20tdV0eonkDJXzerkk/8TS+odJm80wo/J2ZzdEAcLssoFk3si5lBAMuO5P7
+        VWWpBN5pbhcDyMBflyeuN0WV6lfpsE8MbulQK4AYuB6SWS7lemVn43fpkotpLXHSga83OF
+        byMDEsY3dEg1xb1QbdMVoMkk6uLoCwg=
+Received: from localhost (ssq0.pkh.me [local])
+        by ssq0.pkh.me (OpenSMTPD) with ESMTPA id 829422a9;
+        Mon, 30 Aug 2021 21:25:23 +0000 (UTC)
+Date:   Mon, 30 Aug 2021 23:25:23 +0200
+From:   =?utf-8?B?Q2zDqW1lbnQgQsWTc2No?= <u@pkh.me>
+To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Willy Liu <willy.liu@realtek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: sun50i: h5: NanoPI Neo 2: phy-mode rgmii-id
+Message-ID: <YS1Mwz+fT9P2qskW@ssq0.pkh.me>
+References: <20210830151645.18018-1-u@pkh.me>
+ <116454729.UZi3dMzWh7@jernej-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210817072842.8640-1-lukas.bulwahn@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <116454729.UZi3dMzWh7@jernej-laptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 09:28:42AM +0200, Lukas Bulwahn wrote:
-> Commit f3a732843acc ("ARM: remove sirf prima2/atlas platforms") removes
-> the config ARCH_SIRF in ./arch/arm/mach-prima2/Kconfig.
+On Mon, Aug 30, 2021 at 10:49:37PM +0200, Jernej Škrabec wrote:
+> Hi!
 > 
-> Hence, since then, the corresponding CSR Prima2 PWRC Driver is dead code.
-> Remove this dead driver.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Applied, thank you.
+Hi,
+
+> Dne ponedeljek, 30. avgust 2021 ob 17:16:45 CEST je Clément Bœsch napisal(a):
+> > Since commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
+> > config") network is broken on the NanoPi Neo 2.
+> > 
+> > This patch changes the phy-mode to use internal delays both for RX and
+> > TX as has been done for other boards affected by the same commit.
+> > 
+> > Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
+> 
+> This commit fixes DT issue, so "fixes" tag should be:
+> Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
+> 
+> Here, a node with wrong phy-mode property was added to NanoPi Neo 2 board DT.  
+
+Shouldn't I add it instead of replacing? I followed what I observed in
+`git log --grep bbc4d71d63` where all the commits pretty much follow this
+pattern: that commit is the one causing the actual observed regression,
+while 44a94c7ef989 is much older, and while it's wrong, it wasn't causing
+an issue in practice.
+
+Or did I misunderstand something?
+
+> Other than that, this patch is fine and once fixes tag is fixed, you can add:
+> Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> 
+> For next version, you should:
+> - change fixed tag
+> - add my review-by tag right above your signed-off-by tag
+> - mark patch as v2 (add "-v2" parameter to git format-patch)
+> - describe change right under "---" line
+> 
+
+Will do.
+
+> Note, if you borked something when sending, you should mark patch or patch 
+> series as "RESEND", so recipients don't look for changes in two subsequent e-
+> mails (--subject-prefix="RESEND PATCH").
+
+Not sure I follow you so before I disturb everyone with more noise I'd
+just like to confirm: you mean a git send-email in-reply-to=[broken patch
+attempt] (the one where I borked the --cc), right? But with what patch?
+I'm a bit confused here.
+
+> Thanks for the fix!
+
+No problem; I really think a scan of all the other boards would be
+meaningful though, it looks like a lot of them got fixed but there are
+many other candidates and the issue feels pretty critical to me
+(regression, and no network at all).
 
 -- 
-Dmitry
+Clément B.
