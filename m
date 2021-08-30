@@ -2,103 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C673FB3B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A453FB3B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236312AbhH3KPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 06:15:33 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:52873 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236287AbhH3KP0 (ORCPT
+        id S236352AbhH3KQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 06:16:07 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57914 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236268AbhH3KQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:15:26 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UmZX2wj_1630318469;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UmZX2wj_1630318469)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 30 Aug 2021 18:14:30 +0800
-Subject: Re: [PATCH] net: fix NULL pointer reference in cipso_v4_doi_free
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-To:     Paul Moore <paul@paul-moore.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <c6864908-d093-1705-76ce-94d6af85e092@linux.alibaba.com>
-Message-ID: <1bf8b84c-416a-8f74-c9de-49f26afbfb84@linux.alibaba.com>
-Date:   Mon, 30 Aug 2021 18:14:29 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Mon, 30 Aug 2021 06:16:03 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E406022114;
+        Mon, 30 Aug 2021 10:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630318508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wcriqiY1NMqpzuM9nXJtM0yN37QrMo+tW4/oy7RSsjk=;
+        b=YCvrOJCvdhnS8ZHXy7t3zr48YsWASt1Y6O/2n31UXD8xDxXAfMvNhHR3GdDPvNJHoIgysn
+        ye13micZVkNclGWDHom2fYEMGipLES3pwfd5NaoQFM1QFlOW77/iQ0kGRIC/2ooIW7/pjP
+        KxgCT0s1iQGMLgsNq51Xd/02HPDwmOk=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 9605113670;
+        Mon, 30 Aug 2021 10:15:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id Eh0YI6yvLGH2QgAAGKfGzw
+        (envelope-from <jgross@suse.com>); Mon, 30 Aug 2021 10:15:08 +0000
+Subject: Re: [PATCH] x86: xen: platform-pci-unplug: use pr_err() and pr_warn()
+ instead of raw printk()
+To:     zhaoxiao <zhaoxiao@uniontech.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org
+Cc:     hpa@zytor.com, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, boris.ostrovsky@oracle.com,
+        sstabellini@kernel.org
+References: <20210825114111.29009-1-zhaoxiao@uniontech.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <7a10253d-c549-5507-b672-7885509cb528@suse.com>
+Date:   Mon, 30 Aug 2021 12:15:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <c6864908-d093-1705-76ce-94d6af85e092@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210825114111.29009-1-zhaoxiao@uniontech.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="xT8aENdSD2swBm0FJXI7WFkcBHKeqBZPi"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just a ping... Should we fix this?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--xT8aENdSD2swBm0FJXI7WFkcBHKeqBZPi
+Content-Type: multipart/mixed; boundary="w04qN6hNey5BmQczBbjkgzsSDxCMr97ph";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: zhaoxiao <zhaoxiao@uniontech.com>, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, x86@kernel.org
+Cc: hpa@zytor.com, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org, boris.ostrovsky@oracle.com,
+ sstabellini@kernel.org
+Message-ID: <7a10253d-c549-5507-b672-7885509cb528@suse.com>
+Subject: Re: [PATCH] x86: xen: platform-pci-unplug: use pr_err() and pr_warn()
+ instead of raw printk()
+References: <20210825114111.29009-1-zhaoxiao@uniontech.com>
+In-Reply-To: <20210825114111.29009-1-zhaoxiao@uniontech.com>
 
-Regards,
-Michael Wang
+--w04qN6hNey5BmQczBbjkgzsSDxCMr97ph
+Content-Type: multipart/mixed;
+ boundary="------------46280C33D24262895ECB9970"
+Content-Language: en-US
 
-On 2021/8/26 上午11:42, 王贇 wrote:
-> In netlbl_cipsov4_add_std() when 'doi_def->map.std' alloc
-> failed, we sometime observe panic:
-> 
->   BUG: kernel NULL pointer dereference, address:
->   ...
->   RIP: 0010:cipso_v4_doi_free+0x3a/0x80
->   ...
->   Call Trace:
->    netlbl_cipsov4_add_std+0xf4/0x8c0
->    netlbl_cipsov4_add+0x13f/0x1b0
->    genl_family_rcv_msg_doit.isra.15+0x132/0x170
->    genl_rcv_msg+0x125/0x240
-> 
-> This is because in cipso_v4_doi_free() there is no check
-> on 'doi_def->map.std' when 'doi_def->type' equal 1, which
-> is possibe, since netlbl_cipsov4_add_std() haven't initialize
-> it before alloc 'doi_def->map.std'.
-> 
-> This patch just add the check to prevent panic happen for similar
-> cases.
-> 
-> Reported-by: Abaci <abaci@linux.alibaba.com>
-> Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
-> ---
-> 
->  net/ipv4/cipso_ipv4.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
-> 
-> diff --git a/net/ipv4/cipso_ipv4.c b/net/ipv4/cipso_ipv4.c
-> index 099259f..7fbd0b5 100644
-> --- a/net/ipv4/cipso_ipv4.c
-> +++ b/net/ipv4/cipso_ipv4.c
-> @@ -465,14 +465,16 @@ void cipso_v4_doi_free(struct cipso_v4_doi *doi_def)
->  	if (!doi_def)
->  		return;
-> 
-> -	switch (doi_def->type) {
-> -	case CIPSO_V4_MAP_TRANS:
-> -		kfree(doi_def->map.std->lvl.cipso);
-> -		kfree(doi_def->map.std->lvl.local);
-> -		kfree(doi_def->map.std->cat.cipso);
-> -		kfree(doi_def->map.std->cat.local);
-> -		kfree(doi_def->map.std);
-> -		break;
-> +	if (doi_def->map.std) {
-> +		switch (doi_def->type) {
-> +		case CIPSO_V4_MAP_TRANS:
-> +			kfree(doi_def->map.std->lvl.cipso);
-> +			kfree(doi_def->map.std->lvl.local);
-> +			kfree(doi_def->map.std->cat.cipso);
-> +			kfree(doi_def->map.std->cat.local);
-> +			kfree(doi_def->map.std);
-> +			break;
-> +		}
->  	}
->  	kfree(doi_def);
->  }
-> 
+This is a multi-part message in MIME format.
+--------------46280C33D24262895ECB9970
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 25.08.21 13:41, zhaoxiao wrote:
+> Since we have the nice helpers pr_err() and pr_warn(), use them instead=
+
+> of raw printk().
+>=20
+> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+
+Pushed to xen/tip.git for-linus-5.15 with a small fix (moved the
+"#define pr_fmt" before the first #include in order to avoid
+build warnings due to redefinition).
+
+
+Juergen
+
+--------------46280C33D24262895ECB9970
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------46280C33D24262895ECB9970--
+
+--w04qN6hNey5BmQczBbjkgzsSDxCMr97ph--
+
+--xT8aENdSD2swBm0FJXI7WFkcBHKeqBZPi
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmEsr6wFAwAAAAAACgkQsN6d1ii/Ey/8
+aAf/dE7Yyi2/6fpKCtUUGI5yM93HFk6brze0KwOO3WXctUSSi5fn2ouAzoPvZqZrv0Eg7U26Tqsv
+W4NDHIyXJL7XsSsgFxQrszPSc1PKLQhTHnK6hBv8WXjmwCRKQkWkubU67LxLH4+C5MvabP9qgVJz
+klG77aGaVWc/+OmnS1a9a4Us1XW+zt8cTrXNc11dJDRtrzEHHqrGhKIIxGVNFZYQedykaKzRNNjg
+fL/vc6FuVIPl4v/O9YXeFQ87LtQNBsa1OmzWJgfjTCdhYHKDLw3qIOI6ijhLp6JVZrGzijqwQYgK
+9oQNPyuF0p2z4N4TmnBbWZpHiNkViKZPl6l+hAVK9g==
+=4Ucr
+-----END PGP SIGNATURE-----
+
+--xT8aENdSD2swBm0FJXI7WFkcBHKeqBZPi--
