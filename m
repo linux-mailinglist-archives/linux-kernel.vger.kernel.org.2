@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897833FBC8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A243FBC93
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhH3SiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:38:04 -0400
-Received: from relay.sw.ru ([185.231.240.75]:50372 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230181AbhH3SiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:38:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=rNuHlF2j1NdIZb3G7lOsUUlHYfgunpEcyXX5fsl0zKY=; b=b6zPa7Hm4m2J9zvFy
-        kTsItz53p81tC193jsgr7lWHuMqISSpM7sdViYR1ieW68RjycKVTJq63e6Vbad0ftBzRY0SOfr2qE
-        kDEm2BSjZ65v624eUGMnUN8ynqPgER+u7Wr+ikUykh35SY/H8u+1YCHLLgz6M6/cy13B6znB6tf8g
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mKm9Z-000FoC-L8; Mon, 30 Aug 2021 21:37:05 +0300
-Subject: Re: [PATCH v2] skb_expand_head() adjust skb->truesize incorrectly
-From:   Vasily Averin <vvs@virtuozzo.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Christoph Paasch <christoph.paasch@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@openvz.org, Julian Wiedmann <jwi@linux.ibm.com>
-References: <CALMXkpZYGC5HNkJAi4wCuawC-9CVNjN1LqO073YJvUF5ONwupA@mail.gmail.com>
- <860513d5-fd02-832b-1c4c-ea2b17477d76@virtuozzo.com>
- <9f0c5e45-ad79-a9ea-dab1-aeb3bc3730ae@gmail.com>
- <c4373bb7-bb4f-2895-c692-e61a1a89e21f@virtuozzo.com>
-Message-ID: <7d13bd9a-9597-74b2-1c9e-5fb7f8c0678a@virtuozzo.com>
-Date:   Mon, 30 Aug 2021 21:37:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230301AbhH3Sjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:39:36 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:36162
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229738AbhH3Sje (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 14:39:34 -0400
+Received: from mussarela (201-69-234-220.dial-up.telesp.net.br [201.69.234.220])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 093D340178;
+        Mon, 30 Aug 2021 18:38:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630348719;
+        bh=dP2bWFnr904Q3phxdSJFO6HdgfMSWA65sEUBMQrG98c=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=tEEdtAHGeXWPANZY9GSNFafDKT6z1GKu2nWOlfBIS5uxclCTIR+OK6BAg4Or0lddr
+         7eM/MOYbnRMI5cy14s8OTfzI3xxyCdrpWicFgGEmp7NF6tDKlRXWzrSj9R525VyKXY
+         HWGPF9TAWc7iCr/1oDyPbxDz9t0FApF31/RyuLlsG7z8NijAQBbfUa5pwF/hIsltuK
+         dCHv/HjFi6HCXmZgfdKFZPxT7KpfIKDHbyW/XA0MLwQnFn6HwuJhPQiLtu5SF28/gZ
+         hvxsKGH9U8JRSo6Jkhe7JH+B0fo94WfYDbFxmE+l73jzJu78L+rEdssvswM0inoqzc
+         6xPnmnMin+MHg==
+Date:   Mon, 30 Aug 2021 15:38:34 -0300
+From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     stable@vger.kernel.org, kernel list <linux-kernel@vger.kernel.org>,
+        daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org
+Subject: Re: CVE-2021-3600 aka bpf: Fix 32 bit src register truncation on
+ div/mod
+Message-ID: <YS0lqmZg5Lq0scVv@mussarela>
+References: <20210826102337.GA7362@duo.ucw.cz>
 MIME-Version: 1.0
-In-Reply-To: <c4373bb7-bb4f-2895-c692-e61a1a89e21f@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826102337.GA7362@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/21 9:09 PM, Vasily Averin wrote:
-> On 8/30/21 7:01 PM, Eric Dumazet wrote:
->> On 8/29/21 5:59 AM, Vasily Averin wrote:
->>> Christoph Paasch reports [1] about incorrect skb->truesize
->>> after skb_expand_head() call in ip6_xmit.
->>> This may happen because of two reasons:
->>> - skb_set_owner_w() for newly cloned skb is called too early,
->>> before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
->>> - pskb_expand_head() does not adjust truesize in (skb->sk) case.
->>> In this case sk->sk_wmem_alloc should be adjusted too.
->>>
->>> [1] https://lkml.org/lkml/2021/8/20/1082
->>> @@ -1756,9 +1756,13 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
->>>  	 * For the moment, we really care of rx path, or
->>>  	 * when skb is orphaned (not attached to a socket).
->>>  	 */
->>> -	if (!skb->sk || skb->destructor == sock_edemux)
->>> -		skb->truesize += size - osize;
->>> -
->>> +	delta = size - osize;
->>> +	if (!skb->sk || skb->destructor == sock_edemux) {
->>> +		skb->truesize += delta;
->>> +	} else if (update_truesize) {
->>
->> Unfortunately we can not always do this sk_wmem_alloc change here.
->>
->> Some skb have skb->sk set, but the 'reference on socket' is not through sk_wmem_alloc
+On Thu, Aug 26, 2021 at 12:23:37PM +0200, Pavel Machek wrote:
+> Hi!
 > 
-> Could you please provide some example?
-> In past in all handeled cases we have cloned original skb and then unconditionally assigned skb sock_wfree destructor.
-> Do you want to say that it worked correctly somehow?
+> As far as I can tell, CVE-2021-3600 is still a problem for 4.14 and
+> 4.19.
 > 
-> I expected if we set sock_wfree, we have guarantee that old skb adjusted sk_wmem_alloc.
-> Am I wrong?
-> Could you please point on such case?
+> Unfortunately, those kernels lack BPF_JMP32 support, and that support
+> is too big and intrusive to backport.
+> 
+> So I tried to come up with solution without JMP32 support... only to
+> end up with not seeing the bug in the affected code.
+> 
+> Changelog says:
+> 
+>     bpf: Fix 32 bit src register truncation on div/mod
+>     
+>     While reviewing a different fix, John and I noticed an oddity in one of the
+>     BPF program dumps that stood out, for example:
+>     
+>       # bpftool p d x i 13
+>        0: (b7) r0 = 808464450
+>        1: (b4) w4 = 808464432
+>        2: (bc) w0 = w0
+>        3: (15) if r0 == 0x0 goto pc+1
+>        4: (9c) w4 %= w0
+>       [...]
+>     
+>     In line 2 we noticed that the mov32 would 32 bit truncate the original src
+>     register for the div/mod operation. While for the two operations the dst
+>     register is typically marked unknown e.g. from adjust_scalar_min_max_vals()
+>     the src register is not, and thus verifier keeps tracking original bounds,
+>     simplified:
+> 
+> So this explains "mov32 w0, w0" is problematic, and fixes the bug by
+> replacing it with jmp32. Unfortunately, I can't do that in 4.19; plus
+> I don't really see how the bug is solved -- we avoided adding mov32
+> sequence that triggers the problem, but the problematic sequence could
+> still be produced by the userspace, no?
+> 
+> Does adjust_scalar_min_max_vals still need fixing?
+> 
+> Do you have any hints how to solve this in 4.19?
+> 
+> Best regards,
+> 								Pavel
+> -- 
+> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-However if it is true -- it is not enough to adjust sk_wmem_alloc for proper destructors,
-because another destructors may require to do something else.
-In this case I can check destructor first and clone skb before pskb_expand_head() call,
-like it was happen before.
+Hi, Pavel.
 
->> It seems you need a helper to make sure skb->destructor is one of
->> the destructors that use skb->truesize and sk->sk_wmem_alloc
->>
->> For instance, skb_orphan_partial() could have been used.
-> 
-> Thank you, will investigate.
-> 	Vasily Averin
-> 
+I have just sent the fixes for 4.14. I sent fixes for 4.19 last Friday.
 
+The problem here is that the verifier assumes the source register has a given
+value, but the fixups change that value to something else when it is truncated.
+
+The fixups run after the verifier, so a similar sequence produced by userspace
+will be correctly verified, so no fixes are necessary on adjust_scalar_min_max
+for this specific issue. The fixed-up code is not verified again.
+
+The challenge in providing those fixes to 4.14 and 4.19 is the absence of JMP32
+in those kernels. So, AX was taken as a temporary, so it would still work on
+JITs.
+
+Cascardo.
