@@ -2,145 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838543FB4A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D68C3FB4A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236529AbhH3Li5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 07:38:57 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:39088 "EHLO m43-7.mailgun.net"
+        id S236498AbhH3Li2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 07:38:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236507AbhH3Li4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 07:38:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630323483; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=Y4PjTzSPjc8+XQXBog20KPGjuypXcaIwVdWyjxmkx1A=; b=dY6zKc4K1ASBmbXIqqdZ7y1fS4nwlcVPq1gXAcEziXDm1Pe+ixxJyvQOsBRIWEPqjrhesJHD
- jxbJYsA1JVNdkt460gFsPTL0t/JcUVUx/n/tR/DAeWzGTJzx9RZrhqfQMCV7utpFxxk0Yp5C
- RrSkjA4zVjuqP1MGLybV8YTSu8g=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 612cc31a4cd9015037be6203 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Aug 2021 11:38:02
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5F8FFC43460; Mon, 30 Aug 2021 11:38:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S232579AbhH3Li1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 07:38:27 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A9894C43617;
-        Mon, 30 Aug 2021 11:37:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A9894C43617
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-To:     bjorn.andersson@linaro.org, swboyd@chromium.org,
-        clew@codeaurora.org, sibis@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: [PATCH V7 2/2] soc: qcom: aoss: Add debugfs entry
-Date:   Mon, 30 Aug 2021 17:07:31 +0530
-Message-Id: <1630323451-7160-3-git-send-email-deesin@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1630323451-7160-1-git-send-email-deesin@codeaurora.org>
-References: <1630323451-7160-1-git-send-email-deesin@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E9E56112D;
+        Mon, 30 Aug 2021 11:37:34 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mKfbY-007zfP-03; Mon, 30 Aug 2021 12:37:32 +0100
+Date:   Mon, 30 Aug 2021 12:37:31 +0100
+Message-ID: <87pmtvcgec.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Kettenis <mark.kettenis@xs4all.nl>
+Cc:     devicetree@vger.kernel.org, alyssa@rosenzweig.io,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Jim Quinlan <jim2101024@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 4/4] arm64: apple: Add PCIe node
+In-Reply-To: <20210827171534.62380-5-mark.kettenis@xs4all.nl>
+References: <20210827171534.62380-1-mark.kettenis@xs4all.nl>
+        <20210827171534.62380-5-mark.kettenis@xs4all.nl>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mark.kettenis@xs4all.nl, devicetree@vger.kernel.org, alyssa@rosenzweig.io, kettenis@openbsd.org, tglx@linutronix.de, robh+dt@kernel.org, marcan@marcan.st, bhelgaas@google.com, nsaenz@kernel.org, jim2101024@gmail.com, f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com, daire.mcnamara@microchip.com, nsaenzjulienne@suse.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some user space clients may require to change power states of various
-parts of hardware. Add a debugfs node for qmp so messages can be sent
-to aoss from user space.
+Hi Mark,
 
-Signed-off-by: Chris Lew <clew@codeaurora.org>
-Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
----
- drivers/soc/qcom/qcom_aoss.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+On Fri, 27 Aug 2021 18:15:29 +0100,
+Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
+> 
+> From: Mark Kettenis <kettenis@openbsd.org>
+> 
+> Add node corresponding to the apcie,t8103 node in the
+> Apple device tree for the Mac mini (M1, 2020).
+> 
+> Clock references and DART (IOMMU) references are left out at the
+> moment and will be added once the appropriate bindings have been
+> settled upon.
+> 
+> Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> ---
+>  arch/arm64/boot/dts/apple/t8103.dtsi | 63 ++++++++++++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
+> index 503a76fc30e6..6e4677bdef44 100644
+> --- a/arch/arm64/boot/dts/apple/t8103.dtsi
+> +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
+> @@ -214,5 +214,68 @@ pinctrl_smc: pinctrl@23e820000 {
+>  				     <AIC_IRQ 396 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <AIC_IRQ 397 IRQ_TYPE_LEVEL_HIGH>;
+>  		};
+> +
+> +		pcie0: pcie@690000000 {
+> +			compatible = "apple,t8103-pcie", "apple,pcie";
+> +			device_type = "pci";
+> +
+> +			reg = <0x6 0x90000000 0x0 0x1000000>,
+> +			      <0x6 0x80000000 0x0 0x4000>,
+> +			      <0x6 0x81000000 0x0 0x8000>,
+> +			      <0x6 0x82000000 0x0 0x8000>,
+> +			      <0x6 0x83000000 0x0 0x8000>;
+> +			reg-names = "config", "rc", "port0", "port1", "port2";
+> +
+> +			interrupt-parent = <&aic>;
+> +			interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +			msi-controller;
+> +			msi-parent = <&pcie0>;
+> +			msi-ranges = <&aic AIC_IRQ 704 IRQ_TYPE_EDGE_RISING 32>;
+> +
+> +			bus-range = <0 3>;
+> +			#address-cells = <3>;
+> +			#size-cells = <2>;
+> +			ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
+> +				 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
+> +
+> +			pinctrl-0 = <&pcie_pins>;
+> +			pinctrl-names = "default";
+> +
+> +			pci@0,0 {
+> +				device_type = "pci";
+> +				reg = <0x0 0x0 0x0 0x0 0x0>;
+> +				reset-gpios = <&pinctrl_ap 152 0>;
+> +				max-link-speed = <2>;
+> +
+> +				#address-cells = <3>;
+> +				#size-cells = <2>;
+> +				ranges;
+> +			};
+> +
+> +			pci@1,0 {
+> +				device_type = "pci";
+> +				reg = <0x800 0x0 0x0 0x0 0x0>;
+> +				reset-gpios = <&pinctrl_ap 153 0>;
+> +				max-link-speed = <2>;
+> +
+> +				#address-cells = <3>;
+> +				#size-cells = <2>;
+> +				ranges;
+> +			};
+> +
+> +			pci@2,0 {
+> +				device_type = "pci";
+> +				reg = <0x1000 0x0 0x0 0x0 0x0>;
+> +				reset-gpios = <&pinctrl_ap 33 0>;
+> +				max-link-speed = <1>;
+> +
+> +				#address-cells = <3>;
+> +				#size-cells = <2>;
+> +				ranges;
+> +			};
+> +		};
+>  	};
+>  };
 
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index bf0a6280..4cd8670 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -4,6 +4,7 @@
-  */
- #include <dt-bindings/power/qcom-aoss-qmp.h>
- #include <linux/clk-provider.h>
-+#include <linux/debugfs.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/mailbox_client.h>
-@@ -86,6 +87,7 @@ struct qmp {
- 	struct clk_hw qdss_clk;
- 	struct genpd_onecell_data pd_data;
- 	struct qmp_cooling_device *cooling_devs;
-+	struct dentry *debugfs_file;
- };
- 
- struct qmp_pd {
-@@ -566,6 +568,31 @@ void qmp_put(struct qmp *qmp)
- }
- EXPORT_SYMBOL(qmp_put);
- 
-+static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
-+			      size_t len, loff_t *pos)
-+{
-+	struct qmp *qmp = file->private_data;
-+	char buf[QMP_MSG_LEN] = {};
-+	int ret;
-+
-+	if (!len || len >= QMP_MSG_LEN)
-+		return -EINVAL;
-+
-+	ret  = copy_from_user(buf, userstr, len);
-+	if (ret) {
-+		return -EFAULT;
-+	}
-+
-+	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
-+
-+	return ret ? ret : len;
-+}
-+
-+static const struct file_operations aoss_dbg_fops = {
-+	.open = simple_open,
-+	.write = aoss_dbg_write,
-+};
-+
- static int qmp_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
-@@ -620,6 +647,9 @@ static int qmp_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, qmp);
- 
-+	qmp->debugfs_file = debugfs_create_file("aoss_send_message", 0220, NULL,
-+						qmp, &aoss_dbg_fops);
-+
- 	return 0;
- 
- err_remove_qdss_clk:
-@@ -636,6 +666,8 @@ static int qmp_remove(struct platform_device *pdev)
- {
- 	struct qmp *qmp = platform_get_drvdata(pdev);
- 
-+	debugfs_remove(qmp->debugfs_file);
-+
- 	qmp_qdss_clk_remove(qmp);
- 	qmp_pd_remove(qmp);
- 	qmp_cooling_devices_remove(qmp);
+I have now implemented the MSI change on the Linux driver side, and it
+works nicely. So thumbs up from me on this front.
+
+I am now looking at the interrupts provided by each port:
+(1) a bunch of port-private interrupts (link up/down...)
+(2) INTx interrupts
+
+Given that the programming is per-port, I've implemented this as a
+per-port interrupt controller.
+
+(1) is dead easy to implement, and doesn't require any DT description.
+(2) is unfortunately exposing the limits of my DT knowledge, and I'm
+not clear how to model it. I came up with the following:
+
+	port00: pci@0,0 {
+		device_type = "pci";
+		reg = <0x0 0x0 0x0 0x0 0x0>;
+		reset-gpios = <&pinctrl_ap 152 0>;
+		max-link-speed = <2>;
+
+		#address-cells = <3>;
+		#size-cells = <2>;
+		ranges;
+
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		interrupt-parent = <&port00>;
+		interrupt-map-mask = <0 0 0 7>;
+		interrupt-map = <0 0 0 1 &port00 0>,
+				<0 0 0 2 &port00 1>,
+				<0 0 0 3 &port00 2>,
+				<0 0 0 4 &port00 3>;
+	};
+
+which vaguely seem to do the right thing for the devices behind root
+ports, but doesn't seem to work for INTx generated by the root ports
+themselves. Any clue? Alternatively, I could move it to something
+global to the whole PCIe controller, but that doesn't seem completely
+right.
+
+It also begs the question whether the per-port interrupt to the AIC
+should be moved into each root port, should my per-port approach hold
+any water.
+
+Thanks,
+
+	M.
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Without deviation from the norm, progress is not possible.
