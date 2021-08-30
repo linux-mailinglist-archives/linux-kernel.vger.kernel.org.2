@@ -2,55 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D23E3FBB67
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDD73FBB6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238393AbhH3SGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:06:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238265AbhH3SGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:06:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39C8660F92;
-        Mon, 30 Aug 2021 18:05:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630346752;
-        bh=yBsULqO69nDH7pZARuM9vk2OOZzs8KZhiDfM0e6XAro=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=i+OX2QV7oSmtpwBmVbZ0udwXH1exskmS6Q/mIbRTRJQcxk3CWCGOGMOaluCxEHlQs
-         Xov2lzYvp9lykUHI0+y93of+rZO++UkR/Ri/mjjsLZxO+TV5MxTr+U4ayapFSNJfvU
-         xGAewOA6zJ0rWJcNmQUxUsZ1EcOCExPCQFtvTCRg/4Y63fjYt3DidWBxFZGyE7Nk5X
-         U26A5hcX7KipknOaQeNi6h2svY0Z+NB33gkcA3vzOetyCk2IRstBmiTbpMVJ2MK+M2
-         L28LoCJS5mUVUOVLgQ8kvgn0QRHIGuB6wsbCpl0XB3HLSPLdkAPCnR86xtzamtPHao
-         f7Su5oTeza0Dg==
-Date:   Mon, 30 Aug 2021 11:05:51 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: sched: Fix qdisc_rate_table refcount leak when get
- tcf_block failed
-Message-ID: <20210830110551.730c34c4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1630252681-71588-1-git-send-email-xiyuyang19@fudan.edu.cn>
-References: <1630252681-71588-1-git-send-email-xiyuyang19@fudan.edu.cn>
+        id S238250AbhH3SJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229839AbhH3SJE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 14:09:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54610C061575;
+        Mon, 30 Aug 2021 11:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5nJ0B78IwLSywO3jWIuQ9w7tGOOIg6zRwu/EHc5ZzDg=; b=ZDXloUkb1RObwoIpzOvy2bgoSK
+        qU/4DqdaQdEXI2Nzt5VcKeHrBKGm56b1iJQl3hvI/o+n2l048zu4fUePr49KF8keRskUeimu2xNGE
+        mtPaKc4SwRaeLQ3qWntms3S4HdxUedEtZnyxyuUhUQ91ehStC0+VqIHE0iV2aibbhadebKy/jPWyP
+        5vvl+mPiVVZjed6kt016ulJagKSZQpPEHMawvV+aHdnd4efC1iJU1n/rwenuWYSICvOT69XsZ+tnd
+        M3cremX8Msu+t8yRrVHbdRSWONDHsbeBZzKA3cOcNxlJiOuNVAylbfSilLvS3K64+tcdmI6fDPG3L
+        QzPr5HOA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKlgs-000Oe8-0Y; Mon, 30 Aug 2021 18:07:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 58EF43001F6;
+        Mon, 30 Aug 2021 20:07:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4109C2C7F610C; Mon, 30 Aug 2021 20:07:24 +0200 (CEST)
+Date:   Mon, 30 Aug 2021 20:07:24 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] perf: enable branch record for software
+ events
+Message-ID: <YS0eXMd5Y5yV/m1m@hirez.programming.kicks-ass.net>
+References: <20210826221306.2280066-1-songliubraving@fb.com>
+ <20210826221306.2280066-2-songliubraving@fb.com>
+ <20210830102258.GI4353@worktop.programming.kicks-ass.net>
+ <719D2DC2-CC5D-4C6A-94F4-DBCADDA291CC@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <719D2DC2-CC5D-4C6A-94F4-DBCADDA291CC@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Aug 2021 23:58:01 +0800 Xiyu Yang wrote:
-> The reference counting issue happens in one exception handling path of
-> cbq_change_class(). When failing to get tcf_block, the function forgets
-> to decrease the refcount of "rtab" increased by qdisc_put_rtab(),
-> causing a refcount leak.
-> 
-> Fix this issue by jumping to "failure" label when get tcf_block failed.
-> 
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+On Mon, Aug 30, 2021 at 05:41:46PM +0000, Song Liu wrote:
+> DECLARE_STATIC_CALL(perf_snapshot_branch_stack,
+>                    int (*)(struct perf_branch_snapshot *));
 
-Fixes: 6529eaba33f0 ("net: sched: introduce tcf block infractructure")
+> Something like 
+> 
+> typedef int (perf_snapshot_branch_stack_t)(struct perf_branch_snapshot *);
+> DECLARE_STATIC_CALL(perf_snapshot_branch_stack, perf_snapshot_branch_stack_t);
+> 
+> seems to work fine. 
+
+Oh urg, indeed. It wants a function type, not a function pointer type.
+I've been bitten by that before. Go with the typedef, that's the sanest.
