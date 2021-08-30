@@ -2,74 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EF93FBB51
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0DC3FBB56
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238333AbhH3R6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 13:58:47 -0400
-Received: from relay05.th.seeweb.it ([5.144.164.166]:49037 "EHLO
-        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238305AbhH3R6q (ORCPT
+        id S238342AbhH3SAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:00:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51556 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238134AbhH3SAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 13:58:46 -0400
-Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        Mon, 30 Aug 2021 14:00:40 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 26FBF3E83C;
-        Mon, 30 Aug 2021 19:57:50 +0200 (CEST)
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Brian Masney <masneyb@onstation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm: dts: qcom-msm8974: Add xo_board reference clock to DSI0 PHY
-Date:   Mon, 30 Aug 2021 19:57:39 +0200
-Message-Id: <20210830175739.143401-1-marijn.suijten@somainline.org>
-X-Mailer: git-send-email 2.33.0
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4B61222121;
+        Mon, 30 Aug 2021 17:59:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630346385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fjtm8tVefXUCT0rdTzMn/o5zpc91NrF6pXy1z50nDUM=;
+        b=TyI+3u+QEneileBnDmwJhe/7GU/cZ4f+Sj8PsvZ9ugakdDVaT8ur0+WioUJKotS8fyURo0
+        Mm12eWM1b0hCFWGb0F0M+ECUj56MCl6ARx+3TzD2Y8ZHaqgpxOq8DgRVIyvlvXxef349Py
+        dUMXeDS74InyxljMGcbhds/MtAMoLJk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D6D6F13A98;
+        Mon, 30 Aug 2021 17:59:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 74kZM5AcLWEBdAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Mon, 30 Aug 2021 17:59:44 +0000
+Date:   Mon, 30 Aug 2021 19:59:43 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <YS0cj+0thCHmXw/M@blackbook>
+References: <20210825213750.6933-1-longman@redhat.com>
+ <20210825213750.6933-6-longman@redhat.com>
+ <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
+ <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
+ <YShjb2WwvuB4s4gX@slm.duckdns.org>
+ <d22ea3be-2429-5923-a80c-5af3b384def9@redhat.com>
+ <YSlY0H/qeXQIGOfk@slm.duckdns.org>
+ <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to YAML validation, and for a future patchset putting this
-xo_board reference clock to use as VCO reference parent, add the missing
-clock to dsi_phy0.
+Hello.
 
-Fixes: 5a9fc531f6ec ("ARM: dts: msm8974: add display support")
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
----
- arch/arm/boot/dts/qcom-msm8974.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Fri, Aug 27, 2021 at 06:50:10PM -0400, Waiman Long <llong@redhat.com> wrote:
+> So the new rules will be:
 
-diff --git a/arch/arm/boot/dts/qcom-msm8974.dtsi b/arch/arm/boot/dts/qcom-msm8974.dtsi
-index db4c06bf7888..96722172b064 100644
---- a/arch/arm/boot/dts/qcom-msm8974.dtsi
-+++ b/arch/arm/boot/dts/qcom-msm8974.dtsi
-@@ -1580,8 +1580,8 @@ dsi_phy0: dsi-phy@fd922a00 {
- 				#phy-cells = <0>;
- 				qcom,dsi-phy-index = <0>;
- 
--				clocks = <&mmcc MDSS_AHB_CLK>;
--				clock-names = "iface";
-+				clocks = <&mmcc MDSS_AHB_CLK>, <&xo_board>;
-+				clock-names = "iface", "ref";
- 			};
- 		};
- 
--- 
-2.33.0
+When I followed the thread, it seemed to me you're talking past each
+other a bit. I'd suggest the following terminology:
 
+- config space: what's written by the user and saved,
+
+- reality space: what's currently available (primarily subject to
+  on-/offlinng but I think it'd be helpful to consider here also what's
+  given by the parent),
+
+- effect space: what's actually possible and happening.
+
+Not all elements of config_space x reality_space (Cartesian product) can
+be represented in the effect_space (e.g. root partition with no
+(effective) cpus).
+
+IIUC, Waiman's "high bar" is supposed to be defined over transitions in
+the config_space. However, there can be independent changes in the
+reality_space so the rules should be actually formulated in the
+effect_space:
+
+The conditions for being a valid partition root rewritten into the effect
+space:
+
+> 1) The "cpuset.cpus" is not empty and the list of CPUs are exclusive.
+- effective CPUs are non-empty and exclusive wrt siblings
+- (E.g. setting empty cpuset.cpus might be possible but it invalidates
+  the partition root, same as offlining or removal by an ancestor.)
+
+> 2) The parent cgroup is a partition root (can be an invalid one).
+- parent cgroup is a (valid) partition
+- (Being valid partition means owning "stolen" cpus from the parent, if
+  the parent is not valid partition itself, you can't steal what is not
+  owned.)
+- (And I think it's OK that: "the child partitions will stay invalid
+  forever unless the parent become a valid partition again" [1].)
+
+> 3) The "cpuset.cpus" is a subset of the parent's cpuset.cpus.allowed.
+- I'm not sure what is the use of this condition (together with the
+  rewrite of the 1st condition which covers effective cpus). I think it
+  would make sense if being a valid parition root guaranteed that all
+  configured cpuset.cpus will be available, however, that's not the case
+  IIUC (e.g. due to offlining).
+
+> 4) No child cgroup with cpuset enabled.
+- A child cgroup with cpuset enabled is OK in the effect space
+  (achievable by switching first and creating children later).
+- For technical reasons this may be a condition on the transitions in
+  the config_space.
+
+Generally, most config changes should succeed and user should check (or
+watch) how they landed in combination with the reality_space.
+
+Regards,
+Michal
+
+[1] This follows the general model where ancestors can "preempt"
+resources from their subtree.
