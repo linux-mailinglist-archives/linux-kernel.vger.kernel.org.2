@@ -2,68 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A2B3FB2B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2C93FB2B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235204AbhH3Ivf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 04:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
+        id S235272AbhH3IxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 04:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbhH3Ive (ORCPT
+        with ESMTP id S234966AbhH3IxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 04:51:34 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C40C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:50:40 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id v28-20020a05622a189cb029028e697f617dso650844qtc.20
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:50:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=WCe88g7AXY9JlaaNfnczI9r0A/F6aA5ScCXXL8MQTbQ=;
-        b=bcC1OCRPm6wMd+6jhTq5ndmFY5wYcgLdbW9cCRTjWXi5sudLNVoDbGbmszS5ZJzTN4
-         P0Ttlmvrboav75fyWkQqJYv2RBsugznVtD0AmQyuRkwBG639Nx+E6mc6Iw58gbiMOPtD
-         9BIiZ8c+jRspSH1ARtAAGZTVHNneDAHl0EI+ke3SsptCcCho47mUs9ZXjsvBDskZ4BfR
-         ItS6VqxraY77c2an8hw0OFxOZl4bR1JXBl2QOk7pcGIm0NDHNhR7ESUA+93ZgCW7/UNd
-         PcJr4puGjLk3Umkn1OaYgzmMwOP7p0w51zB4IbF7G/m3crrgWYE6DtZNeGmkfQ8H86Fh
-         7xZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=WCe88g7AXY9JlaaNfnczI9r0A/F6aA5ScCXXL8MQTbQ=;
-        b=sLBDAUts3+cc1NL9cZd64gMgMbfB+frRLHzCddFxJovAS57pYCNQhZvLf4zvUXzUlD
-         2oIjd2GmzfbxwZKiI5OhwCyEKG6TkvF9ZvMMn+5Md8q6RMs9kBXEMeoZWtJP3dHS9e19
-         viXKSHW2WBFPN/+kHAQQz6EZ1XYHYhayoKrRkgP5gfxVYKwjDYkqy1zpbgdK/xSU/UPt
-         6CgTyLTrTJY99x6tF8qv58BjnD6YzgmeoZWv967/E2FQgyQ16/YBJ6dzBj/ZjUFxkaJp
-         Mh+RzlXusiZXftNgi0rTVKxdGhkiSUrL9fWxP4bX3pF6WYLz0qv97yLydQvDZT3nk7oo
-         dLTA==
-X-Gm-Message-State: AOAM533QS+ompitekTO4Y7rzxb+S4pJGHIeucAPph3kk3qZgcExoxt9R
-        qBS94IZ473fOryE3SRnkS2ev44EHxnJH
-X-Google-Smtp-Source: ABdhPJyd0GkGZ8FrrElrpCEdvAxN+QB+fxbOK8cNw07FbgGyQIOqvJXhwzj0C3etAbfFwqnahiDpkz8hp48f
-X-Received: from dvyukov-desk.muc.corp.google.com ([2a00:79e0:15:13:7e54:6e42:f267:120d])
- (user=dvyukov job=sendgmr) by 2002:a05:6214:104e:: with SMTP id
- l14mr21749227qvr.45.1630313440139; Mon, 30 Aug 2021 01:50:40 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 10:50:35 +0200
-In-Reply-To: <000000000000b6599705ca78de28@google.com>
-Message-Id: <20210830085035.2763839-1-dvyukov@google.com>
-Mime-Version: 1.0
-References: <000000000000b6599705ca78de28@google.com>
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [syzbot] BUG: please report to dccp@vger.kernel.org => prev = NUM,
- last = NUM at net/dccp/ccids/lib/packet_history.c:LINE/tfrc_rx
-From:   Dmitry Vyukov <dvyukov@google.com>
-To:     syzbot+d9bd66f8d352f7eb1955@syzkaller.appspotmail.com
-Cc:     syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
-        dccp@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 30 Aug 2021 04:53:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3203C061575;
+        Mon, 30 Aug 2021 01:52:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TGgrN/B0XD/DChleER3ZB1D526KLmomMww/bQlzMToQ=; b=pjZqlfF7WVcNo52wNqLl+hKAnc
+        Y2RvaotywmdFq6A5yDmYBHUcECw9SY1x1nvSqVeu7isAwuejrRc0844Qf9na6ef+rBExK36qRjf/+
+        FzYPKvjDyKJE06eTJE29ByVEeQcaQYyqJNMkagiB+sLBNLXIKPsYAV9pHElqQ7B07NpFwIWJvewIc
+        NuJBJGDhghCQ9HdLolkRJFky/ykNPXyxf4NkoeOUgee/vaJyvsRV/Ct0StJSCVm1NV5LQU89/XocC
+        pfZ0rd/UwmTNyZoddosD/B6+fLuCPgNSNJX8XGRSx3J+gYN30fOz54FfgAsljD1DMx7hQ6Wfp2F1L
+        xnRT4N7Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKd0V-00HWhD-QA; Mon, 30 Aug 2021 08:51:19 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4352098176A; Mon, 30 Aug 2021 10:51:06 +0200 (CEST)
+Date:   Mon, 30 Aug 2021 10:51:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vince Weaver <vincent.weaver@maine.edu>
+Cc:     Andy Lutomirski <luto@kernel.org>, Rob Herring <robh@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [RFC 2/3] perf/x86: Control RDPMC access from .enable() hook
+Message-ID: <20210830085106.GF4353@worktop.programming.kicks-ass.net>
+References: <20210728230230.1911468-1-robh@kernel.org>
+ <20210728230230.1911468-3-robh@kernel.org>
+ <d720903c-926e-f57a-0862-4e5d76db763a@kernel.org>
+ <CAL_JsqLRv9ugKJcn4dq_ps0JMt74Y7PKA=5yySYxvftdQWzzPA@mail.gmail.com>
+ <de97454b-9b4d-492f-a435-6a5e33889219@www.fastmail.com>
+ <CAL_JsqKpT93W6nBj68DykEJzjFYOPG=8PGShsh2QZVzHq5N3fQ@mail.gmail.com>
+ <43b3a838-da8a-4733-9832-f3d5f990ec13@www.fastmail.com>
+ <f3b72c71-f9c9-e1a8-4542-e248e8a5d769@maine.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f3b72c71-f9c9-e1a8-4542-e248e8a5d769@maine.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the same as:
+On Sun, Aug 29, 2021 at 11:05:55PM -0400, Vince Weaver wrote:
 
-#syz dup: BUG: please report to dccp@vger.kernel.org => prev = 0, last = 0 at net/dccp/ccids/lib/packet_history.c:LINE/tfrc_rx_hist_sample_rtt()
+> as the author of those perf_event tests for rdpmc, I have to say if ARM 
+> comes up with a cleaner implementation I'd be glad to have x86 transition 
+> to something better.
+> 
+> The rdpmc code is a huge mess and has all kinds of corner cases.  I'm not 
+> sure anyone besides the PAPI library tries to use it, and while it's a 
+> nice performance improvement to use rdpmc it is really hard to get things 
+> working right.
+> 
+> As a PAPI developer we actually have run into the issue where the CPU 
+> switches and we were reporting the wrong results.  Also if I recall (it's 
+> been a while) we were having issues where the setup lets you attach to a 
+> process on another CPU for monitoring using the rdpmc interface and it 
+> returns results even though I think that will rarely ever work in 
+> practice.
 
-https://syzkaller.appspot.com/bug?id=0881c535c265ca965edc49c0ac3d0a9850d26eb1
+There's just not much we can do to validate the usage, fundamentally at
+RDPMC time we're not running any kernel code, so we can't validate the
+conditions under which we're called.
+
+I suppose one way would be to create a mode where RDPMC is disabled but
+emulated -- which completely voids the reason for using RDPMC in the
+first place (performance), but would allow us to validate the usage.
+
+Fundamentally, we must call RDPMC only for events that are currently
+actuve on *this* CPU. Currently we rely on userspace to DTRT and if it
+doesn't we have no way of knowing and it gets to keep the pieces.
