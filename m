@@ -2,68 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C9F3FB796
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CBB3FB7A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237112AbhH3OLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 10:11:36 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8799 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237013AbhH3OLU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 10:11:20 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gysdh18HSzYvS8;
-        Mon, 30 Aug 2021 22:09:44 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by dggeme703-chm.china.huawei.com
- (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Mon, 30
- Aug 2021 22:10:23 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <vbabka@suse.cz>, <sfr@canb.auug.org.au>, <peterz@infradead.org>,
-        <mgorman@techsingularity.net>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH 6/6] mm/page_alloc.c: avoid allocating highmem pages via alloc_pages_exact_nid()
-Date:   Mon, 30 Aug 2021 22:10:51 +0800
-Message-ID: <20210830141051.64090-7-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210830141051.64090-1-linmiaohe@huawei.com>
-References: <20210830141051.64090-1-linmiaohe@huawei.com>
+        id S237078AbhH3OOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 10:14:30 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:33886 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237021AbhH3OOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 10:14:25 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mKi2T-0008I3-IP; Mon, 30 Aug 2021 16:13:29 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     linux-rockchip@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jacopo@jmondi.org, heiko@sntech.de,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Subject: [PATCH 1/2] arm64: dts: rockchip: add isp node for px30
+Date:   Mon, 30 Aug 2021 16:13:17 +0200
+Message-Id: <20210830141318.66744-1-heiko@sntech.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't use with __GFP_HIGHMEM because page_address() cannot represent
-highmem pages without kmap(). Newly allocated pages would leak as
-page_address() will return NULL for highmem pages here. But It works
-now because the only caller does not specify __GFP_HIGHMEM now.
+From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Add the rkisp1 node and iommu for the px30 soc.
+
+Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 ---
- mm/page_alloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/px30.dtsi | 41 ++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d87b7e6e9e6b..858fd45ecaea 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5639,7 +5639,7 @@ void * __meminit alloc_pages_exact_nid(int nid, size_t size, gfp_t gfp_mask)
- 	if (WARN_ON_ONCE(gfp_mask & __GFP_COMP))
- 		gfp_mask &= ~__GFP_COMP;
+diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
+index 64f643145688..500ef3af2a49 100644
+--- a/arch/arm64/boot/dts/rockchip/px30.dtsi
++++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
+@@ -1189,6 +1189,47 @@ vopl_mmu: iommu@ff470f00 {
+ 		status = "disabled";
+ 	};
  
--	p = alloc_pages_node(nid, gfp_mask, order);
-+	p = alloc_pages_node(nid, gfp_mask & ~__GFP_HIGHMEM, order);
- 	if (!p)
- 		return NULL;
- 	return make_alloc_exact((unsigned long)page_address(p), order, size);
++	isp: isp@ff4a0000 {
++		compatible = "rockchip,px30-cif-isp"; /*rk3326-rkisp1*/
++		reg = <0x0 0xff4a0000 0x0 0x8000>;
++		interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "isp", "mi", "mipi";
++		clocks = <&cru SCLK_ISP>,
++			 <&cru ACLK_ISP>,
++			 <&cru HCLK_ISP>,
++			 <&cru PCLK_ISP>;
++		clock-names = "isp", "aclk", "hclk", "pclk";
++		iommus = <&isp_mmu>;
++		phys = <&csi_dphy>;
++		phy-names = "dphy";
++		power-domains = <&power PX30_PD_VI>;
++		status = "disabled";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++			};
++		};
++	};
++
++	isp_mmu: iommu@ff4a8000 {
++		compatible = "rockchip,iommu";
++		reg = <0x0 0xff4a8000 0x0 0x100>;
++		interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru ACLK_ISP>, <&cru HCLK_ISP>;
++		clock-names = "aclk", "iface";
++		power-domains = <&power PX30_PD_VI>;
++		rockchip,disable-mmu-reset;
++		#iommu-cells = <0>;
++	};
++
+ 	qos_gmac: qos@ff518000 {
+ 		compatible = "rockchip,px30-qos", "syscon";
+ 		reg = <0x0 0xff518000 0x0 0x20>;
 -- 
-2.23.0
+2.29.2
 
