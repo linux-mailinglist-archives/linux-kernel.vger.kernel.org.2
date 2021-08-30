@@ -2,106 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2924B3FB8B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3A83FB8B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237421AbhH3PFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:05:43 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:50766 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237123AbhH3PFm (ORCPT
+        id S237311AbhH3PGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237123AbhH3PGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:05:42 -0400
-Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 40665CEC82;
-        Mon, 30 Aug 2021 17:04:47 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH 2/2] Bluetooth: btusb: Add protocol for MediaTek bluetooth
- devices(MT7922)
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210824154430.27689-2-mark-yw.chen@mediatek.com>
-Date:   Mon, 30 Aug 2021 17:04:47 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>, sean.wang@mediatek.com,
-        linux-bluetooth@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        michaelfsun@google.com, mcchou@chromium.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <3BC55188-B231-4F16-994F-BE0D6E1455B2@holtmann.org>
-References: <20210824154430.27689-1-mark-yw.chen@mediatek.com>
- <20210824154430.27689-2-mark-yw.chen@mediatek.com>
-To:     =?utf-8?B?Ik1hcmstWVcgQ2hlbiAo6Zmz5o+a5paHKSI=?= 
-        <Mark-YW.Chen@mediatek.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Mon, 30 Aug 2021 11:06:24 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D57C061575;
+        Mon, 30 Aug 2021 08:05:30 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id me10so31805226ejb.11;
+        Mon, 30 Aug 2021 08:05:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lYmhCndv6D6zxy0kLorHB0ixdkNzSVX/DeO0ZDxZWts=;
+        b=T1IBEaTTOs3gGFWRmAvGYFhPXFFPtOTlhqCafMZjZiGUZ7hkdEp78j4orgS7F0E6fW
+         hCxzyzxfB4t9wlGhZEZOn3aQs3sDHuQdXf8TLVDfmKX+Ql0UJY6gUY/4lA6PMUKBKUHp
+         O+cB+onUrkSWUMQ5BYvdFmL/ytnXa275kOcbc9DQZ+ahP2RCugldxeB2ho73A2QDRphK
+         8JwWUR58qX9KBvd+2dZRXVJJ8FD+Rzlwqn25obzHr6uGKwVVFQzIKti6VGqHqR3O8N2d
+         SS1+TdxyCutQqUZenZpVH8jXlCPVIOZYVO1Z2PN+Lu15QUXOhPUzO/w0yKv7B2ROKbDH
+         OJlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lYmhCndv6D6zxy0kLorHB0ixdkNzSVX/DeO0ZDxZWts=;
+        b=So5sycRDF4rIYqkxYpgbI9Rp8GYgdiSooXN1Rvl2cqZRaxvLEw+JXalrUcamHFz7y4
+         LKKiTt+IQGh2B5ceROA3FoPjMef1BPurSK8TCSIauCJqotECMvTmUIGZGzYXmVaT6QEp
+         V17vqRE29NbOfQos3O+DBleD3P/ZO0kpfteBeSaXnBMAKbWEv7kFqkl2ZrA5RbGT53xJ
+         nXB6zqd42HBazz2je7o3/7QUzZIXBw9vrga8a9NiNy10UoWQm8riySbStwXU+1UdY8YU
+         laRBbQquFasgVv6bk/FI1biqko/JlaC0GdzUmFvIzyfZLm5/syyRHvovdPQnVHoO3+lm
+         vo/A==
+X-Gm-Message-State: AOAM530jy69d7xGjXsWm1tN4plM2ePJTAsPZqLE1GRvyjv8uEaWO22vG
+        kjLf8tevt+HEkq44mmAWkuOKs3qQUTbxl0bf1y4=
+X-Google-Smtp-Source: ABdhPJzZIFeSC+BDivYn/eXHJWH7fe+C3I1QxEZnu8JWh2pMJSceYo/Jr62j5E8itu50ljXAZdqXRJLbxyaNOFNhFwM=
+X-Received: by 2002:a17:907:764f:: with SMTP id kj15mr11537950ejc.473.1630335928716;
+ Mon, 30 Aug 2021 08:05:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <1630286290-43714-1-git-send-email-linyunsheng@huawei.com> <1630286290-43714-2-git-send-email-linyunsheng@huawei.com>
+In-Reply-To: <1630286290-43714-2-git-send-email-linyunsheng@huawei.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 30 Aug 2021 08:05:17 -0700
+Message-ID: <CAKgT0UfNFw+jwoDr_xx6kX_OoCVgrq2rCSc4zdXRMSZLBmbA8Q@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/2] page_pool: support non-split page with PP_FLAG_PAGE_FRAG
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
+        hawk@kernel.org, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
+        Marco Elver <elver@google.com>, memxor@gmail.com,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-> The information in /sys/kernel/debug/usb/devices about the MT7922U
-> Bluetooth device is listed as the below.
-> 
-> T: Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 18 Spd=480 MxCh= 0
-> D: Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs= 1
-> P: Vendor=0e8d ProdID=7922 Rev= 1.00
-> S: Manufacturer=MediaTek Inc.
-> S: Product=Wireless_Device
-> S: SerialNumber=000000000
-> C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
-> A: FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
-> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E: Ad=81(I) Atr=03(Int.) MxPS= 16 Ivl=125us
-> E: Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E: Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E: Ad=83(I) Atr=01(Isoc) MxPS= 0 Ivl=1ms
-> E: Ad=03(O) Atr=01(Isoc) MxPS= 0 Ivl=1ms
-> I: If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E: Ad=83(I) Atr=01(Isoc) MxPS= 9 Ivl=1ms
-> E: Ad=03(O) Atr=01(Isoc) MxPS= 9 Ivl=1ms
-> I: If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E: Ad=83(I) Atr=01(Isoc) MxPS= 17 Ivl=1ms
-> E: Ad=03(O) Atr=01(Isoc) MxPS= 17 Ivl=1ms
-> I: If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E: Ad=83(I) Atr=01(Isoc) MxPS= 25 Ivl=1ms
-> E: Ad=03(O) Atr=01(Isoc) MxPS= 25 Ivl=1ms
-> I: If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E: Ad=83(I) Atr=01(Isoc) MxPS= 33 Ivl=1ms
-> E: Ad=03(O) Atr=01(Isoc) MxPS= 33 Ivl=1ms
-> I: If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E: Ad=83(I) Atr=01(Isoc) MxPS= 49 Ivl=1ms
-> E: Ad=03(O) Atr=01(Isoc) MxPS= 49 Ivl=1ms
-> I: If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E: Ad=83(I) Atr=01(Isoc) MxPS= 63 Ivl=1ms
-> E: Ad=03(O) Atr=01(Isoc) MxPS= 63 Ivl=1ms
-> I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-> E: Ad=8a(I) Atr=03(Int.) MxPS= 64 Ivl=125us
-> E: Ad=0a(O) Atr=03(Int.) MxPS= 64 Ivl=125us
-> I: If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-> E: Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
-> E: Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
-> 
-> Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
+On Sun, Aug 29, 2021 at 6:19 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> Currently when PP_FLAG_PAGE_FRAG is set, the caller is not
+> expected to call page_pool_alloc_pages() directly because of
+> the PP_FLAG_PAGE_FRAG checking in __page_pool_put_page().
+>
+> The patch removes the above checking to enable non-split page
+> support when PP_FLAG_PAGE_FRAG is set.
+>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 > ---
-> drivers/bluetooth/btusb.c | 2 ++
-> 1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index 41e7c9f28d82..fe52f7b9548e 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -2821,6 +2821,8 @@ static int btusb_mtk_setup(struct hci_dev *hdev)
-> 	case 0x7668:
-> 		fwname = FIRMWARE_MT7668;
-> 		break;
-> +	case 0x7922:
-> +		fallthrough;
+>  include/net/page_pool.h |  6 ++++++
+>  net/core/page_pool.c    | 12 +++++++-----
+>  2 files changed, 13 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> index a408240..2ad0706 100644
+> --- a/include/net/page_pool.h
+> +++ b/include/net/page_pool.h
+> @@ -238,6 +238,9 @@ static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+>
+>  static inline void page_pool_set_frag_count(struct page *page, long nr)
+>  {
+> +       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+> +               return;
+> +
+>         atomic_long_set(&page->pp_frag_count, nr);
+>  }
+>
+> @@ -246,6 +249,9 @@ static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+>  {
+>         long ret;
+>
+> +       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+> +               return 0;
+> +
+>         /* As suggested by Alexander, atomic_long_read() may cover up the
+>          * reference count errors, so avoid calling atomic_long_read() in
+>          * the cases of freeing or draining the page_frags, where we would
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index 1a69784..ba9f14d 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -313,11 +313,14 @@ struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp)
+>
+>         /* Fast-path: Get a page from cache */
+>         page = __page_pool_get_cached(pool);
+> -       if (page)
+> -               return page;
+>
+>         /* Slow-path: cache empty, do real allocation */
+> -       page = __page_pool_alloc_pages_slow(pool, gfp);
+> +       if (!page)
+> +               page = __page_pool_alloc_pages_slow(pool, gfp);
+> +
+> +       if (likely(page))
+> +               page_pool_set_frag_count(page, 1);
+> +
+>         return page;
+>  }
+>  EXPORT_SYMBOL(page_pool_alloc_pages);
+> @@ -426,8 +429,7 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
+>                      unsigned int dma_sync_size, bool allow_direct)
+>  {
+>         /* It is not the last user for the page frag case */
+> -       if (pool->p.flags & PP_FLAG_PAGE_FRAG &&
+> -           page_pool_atomic_sub_frag_count_return(page, 1))
+> +       if (page_pool_atomic_sub_frag_count_return(page, 1))
+>                 return NULL;
 
-The fallthrough is not needed. Multiple case labels in a row are fine.
+Isn't this going to have a negative performance impact on page pool
+pages in general? Essentially you are adding an extra atomic operation
+for all the non-frag pages.
 
-Regards
-
-Marcel
-
+It would work better if this was doing a check against 1 to determine
+if it is okay for this page to be freed here and only if the check
+fails then you perform the atomic sub_return.
