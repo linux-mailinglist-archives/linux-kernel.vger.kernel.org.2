@@ -2,144 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615AC3FAFCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 04:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258CF3FAFD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 04:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234881AbhH3CeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 22:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54740 "EHLO
+        id S235196AbhH3Cju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 22:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234830AbhH3CeI (ORCPT
+        with ESMTP id S235024AbhH3Cjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 22:34:08 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E708C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 19:33:15 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id t19so27930218ejr.8
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 19:33:15 -0700 (PDT)
+        Sun, 29 Aug 2021 22:39:49 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C0A1C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 19:38:57 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id 2so11001350pfo.8
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 19:38:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oYx5Ec4IK2H1rlO0tfRHMe+rUpApql3pIdTCBRWU9Y0=;
-        b=lVeP92XWxVUdO3zISWahAhck+QIHTQvsgVGZMSCprMFdaXVrbPwZj50vFw1A8pW4aO
-         Bi56I+s5RsYeo92XuEhFGqXy6sALdJlB+mD0DxVP2/mrrD5Rcg5s2UpkuggH1XvG+y+/
-         tUd+nLkk1fsJKD1hOCyZcM1rK8KiFsj3NIlMW2th+gjspuFNRhCzdDNlHlMvSoTJLSXJ
-         MM1lDskxqYVb6Zd0Yua3RoD4QVO9jvGI6fKWY2KSxKft9lJaphnWkTGYDcG/6FctAfA+
-         B8rh14m6TBGk1v+xUFZHWbB0E5mB3GVAyn6ngPzp4XJQDRaQtO0xoNd3YkdPaTVqXDA3
-         RB8w==
+        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VqeRjMhmJZnvzq8NRFzwezD8T9i12vRMn3+M5Ojy160=;
+        b=vBM2F2xHG2bkvPHfHeQLO6ooNyZfC1lnI89BEoY3Ui5mQZ3XPEUEfLiV27i1UNtZo0
+         9kGc6ml/6sPGK3JqCKVJkJbXVMh3AxKDqZhQL6wCqVIxBBq8M5zP1gvE7HmrqmrODQt+
+         ROcluGli4e3VaCMw0dVOvKfkBg1jxDcUV0Kj7ONzLdWeDVy47EvKYVPnk/SkLat7cMfY
+         AExAdB7OTVDmxHc7pnaW8C6OBUttzBb0HakPIS4hb3/KpPVgWfG6a7UUfC7OX4AlWtPz
+         0Kul9zhc/ctmMLzC0uzT21eYlN9y2IJlgJHv84DSvKve1uFX+UlpgHbyf1J2oxY83kE8
+         O2sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oYx5Ec4IK2H1rlO0tfRHMe+rUpApql3pIdTCBRWU9Y0=;
-        b=UY4zC1444de6p3bv9kgiguAzEQHpNdYoeFwRYzt3VsqRmMZQ7u/sOqZobFNuasbeFo
-         blAqyDZspNpUUJWHTeRkVRdYSJXcNn5iliWStR7GqIaJbTsTh2k69cGk+o/Dzk6Xk4tR
-         8cPOO52cYT42JjX8cd8rrqD21TMN6GI2YcZq+BSJeUhiZCWeEvvugPBz+sAe/IlkWpC4
-         YwdkDpcAiYNKlOqwtznWoPCnuAdhX7HRUZQ2Zb+m4rLKKXdBT27qaTPr4ICEhgor7q0o
-         vOAnVdHN0dxJDVFydSf571t7WV9gYz6WekDEW2yvlO+EWplM4G0CDOv/rbA9/5IaYPAJ
-         qPuQ==
-X-Gm-Message-State: AOAM531NlJAMzx5LLOEC6bgh+YHVnHzCT9Lr3xf2Hv9kAY4noT4i64Ry
-        v10myQOYok0+PuJYxRcZFN+ps5HAQtAIOLpQyaA=
-X-Google-Smtp-Source: ABdhPJzrr0+xJ2AS+8XzNZNi5nuLpctN2Xd7JoiI0l+yff4sczFKgIzQHeiIDvqp9QCTa+31K0SBW+TIQo2p2OeuO5I=
-X-Received: by 2002:a17:906:a3c3:: with SMTP id ca3mr22737772ejb.337.1630290794171;
- Sun, 29 Aug 2021 19:33:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VqeRjMhmJZnvzq8NRFzwezD8T9i12vRMn3+M5Ojy160=;
+        b=UW/xBcmSgQAALvA5/+A/jWMWTgZuWrm5jF7fLPXGELmZ3F19iERV9H4NRo6+VsjzSl
+         leGAyHP5fDaR8QluqOGv4jOGE4JQXikcNSU3HwoWLyEZ807w2jnMHxmww5MpODJ/TOmv
+         ew/+oqmKsisRtaUX2lmEUP8NalT6FfYIfyfNB0qYxSReVqV0r2VDSXbldIJh4ngmApfA
+         bYVGXmtFt6SVFZe2X8FUTZsq6JkfXed1yJylIUp250T2eC96eT60TRK5RZLST78V5JnT
+         qVSxG9HgzZf/zvgogjbdJ4o03UlI6Oh7WZ3qEbACTv/+35romihb1K0zriBM0hCfNXRE
+         tbAQ==
+X-Gm-Message-State: AOAM530liLMegfLot0WoHcKm1lvzfDavU9w03z6Y8xsskx2t7YH0o4fv
+        14/0XS1zgZCq0JKPL6U5URP4Sw2HQLbCRA==
+X-Google-Smtp-Source: ABdhPJw2x1+qhg9TcS8T6ndTpvoYCeMp8Baca9OpE+M5FQGpHd2THM2a9EOnc6WdUnCwUBBsRN/fyg==
+X-Received: by 2002:a62:f90d:0:b0:3e3:5739:d075 with SMTP id o13-20020a62f90d000000b003e35739d075mr21129479pfh.19.1630291136493;
+        Sun, 29 Aug 2021 19:38:56 -0700 (PDT)
+Received: from yc.huaqin.com ([101.78.151.213])
+        by smtp.gmail.com with ESMTPSA id g13sm906839pfi.176.2021.08.29.19.38.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Aug 2021 19:38:56 -0700 (PDT)
+From:   yangcong <yangcong5@huaqin.corp-partner.google.com>
+To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
+        daniel@ffwll.ch, dianders@google.com
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        yangcong <yangcong5@huaqin.corp-partner.google.com>
+Subject: [v4 0/4] drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
+Date:   Mon, 30 Aug 2021 10:38:45 +0800
+Message-Id: <20210830023849.258839-1-yangcong5@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210827094351.203328-1-mudongliangabcd@gmail.com>
- <YSi3rpsoL3UIuzFY@kroah.com> <CAD-N9QUveJWdK_zaAd6JTwWidMWap5Ri-bRe0n7QnCuBpMqbew@mail.gmail.com>
- <YSj1u1x7ruEysfNq@kroah.com> <CAD-N9QU-zPU6EVaytsN1bEYqHQc1cDcXa4aXrPqg6VTwDkXb5w@mail.gmail.com>
-In-Reply-To: <CAD-N9QU-zPU6EVaytsN1bEYqHQc1cDcXa4aXrPqg6VTwDkXb5w@mail.gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 30 Aug 2021 10:32:48 +0800
-Message-ID: <CAD-N9QUCkaFAGfJ3pzqNoBXqH6rgwg5aHxGqPgdChPRh0_-Lcw@mail.gmail.com>
-Subject: Re: [PATCH] ipack: tpci200: change pci_iounmap to iounmap
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        industrypack-devel@lists.sourceforge.net,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 9:22 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->
-> On Fri, Aug 27, 2021 at 10:25 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Aug 27, 2021 at 06:33:46PM +0800, Dongliang Mu wrote:
-> > > On Fri, Aug 27, 2021 at 6:00 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Fri, Aug 27, 2021 at 05:43:47PM +0800, Dongliang Mu wrote:
-> > > > > The deallocation api for ioremap should be iounmap, other than
-> > > > > pci_iounmap.
-> > > >
-> > > > why?
-> > >
-> > > Because the tpci200->info->cfg_regs/interface_regs is allocated by
-> > > ioremap. From my understanding, ioremap and iounmap are in pairs,
-> > > other than pci_iounmap.
-> > > See the code below.
-> > >
-> > > tpci200->info->interface_regs =
-> > > ioremap(pci_resource_start(tpci200->info->pdev,
-> > >   TPCI200_IP_INTERFACE_BAR),
-> > > TPCI200_IFACE_SIZE);
-> > >
-> > > https://elixir.bootlin.com/linux/latest/source/drivers/ipack/carriers/tpci200.c#L297
-> > >
-> > > tpci200->info->cfg_regs = ioremap(
-> > > pci_resource_start(pdev, TPCI200_CFG_MEM_BAR),
-> > > pci_resource_len(pdev, TPCI200_CFG_MEM_BAR));
-> > >
-> > > https://elixir.bootlin.com/linux/latest/source/drivers/ipack/carriers/tpci200.c#L546
-> > >
-> > > If there is any issue, please let me know
-> >
-> > The point is that the driver should be calling pci_iomap_bar() instead
-> > of ioremap(), and then the call to pci_ioumap() is correct here.
+Compared to v3, remove the "//9A" and modify boe_panel_prepare timing in 
+drm/panel: boe-tv101wum-nl6
+ 
+-       _INIT_DCS_CMD(0x5A, 0xBA),      //9A
++       _INIT_DCS_CMD(0x5A, 0xBA),
+...
+...
+...
 
-Hi gregkh,
+-       usleep_range(10000, 15000);
++       usleep_range(10000, 11000);
 
-For cfg_regs [1], it is fine to change from:
+Update commit message.
 
-tpci200->info->cfg_regs = ioremap(
-pci_resource_start(pdev, TPCI200_CFG_MEM_BAR),
-pci_resource_len(pdev, TPCI200_CFG_MEM_BAR));
+yangcong (4):
+  drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
+  dt-bindings: drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
+  drm/panel: support for BOE and INX video mode panel
+  dt-bindngs: display: panel: Add BOE and INX panel bindings
 
-to :
+ .../display/panel/boe,tv101wum-nl6.yaml       |   7 +
+ .../gpu/drm/panel/panel-boe-tv101wum-nl6.c    | 926 +++++++++++++++++-
+ 2 files changed, 930 insertions(+), 3 deletions(-)
 
-tpci200->info->cfg_regs = pci_ioremap_bar(pdev, TPCI200_CFG_MEM_BAR);
+-- 
+2.25.1
 
-But for interface_regs [2], I am not sure as TPCI200_IFACE_SIZE is a
-totally separate definition, not calculated by resouce_size or
-pci_resource_len(tpci200->info->pdev, TPCI200_IP_INTERFACE_BAR).
-
-tpci200->info->interface_regs =
-ioremap(pci_resource_start(tpci200->info->pdev,
-  TPCI200_IP_INTERFACE_BAR),
-TPCI200_IFACE_SIZE);
-
-#define TPCI200_IFACE_SIZE            0x100
-
-Any comment here?
-
-Note that, it is pci_ioremap_bar, not pci_iomap_bar.
-
-[1] https://elixir.bootlin.com/linux/v5.14/source/drivers/ipack/carriers/tpci200.c#L544
-[2] https://elixir.bootlin.com/linux/v5.14/source/drivers/ipack/carriers/tpci200.c#L295
-
-> >
-> > Please make that change instead.
->
-> No problem. I will modify the patch and send a v2 patch afterwards.
->
-> >
-> > thanks,
-> >
-> > greg k-h
