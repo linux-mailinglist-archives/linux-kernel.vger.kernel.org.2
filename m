@@ -2,103 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94DE3FB0E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 07:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07303FB0E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 07:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbhH3FrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 01:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
+        id S232358AbhH3Ftj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 01:49:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232521AbhH3FrT (ORCPT
+        with ESMTP id S232063AbhH3Fti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 01:47:19 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC6FC061575;
-        Sun, 29 Aug 2021 22:46:26 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GyfSr2PrLz9sWS;
-        Mon, 30 Aug 2021 15:46:19 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630302382;
-        bh=SnXBCriVNg8rndcjlU3Npsts9JLWsexSg+Kzt2t1PO8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=MSISmhZHSsfS8bwa0/tl8xufEyHq9aOGcaPh/Iufwi65GQLCX1KFraaMiL7E+Mk+e
-         izTqNILNmelIvB3Vp9RE8kGwKwgxvbIxAvxt8KkSkDdV2xf3xhJMXMX7VaIvqX6nOz
-         YZscPbqGwNgJh1Y9kAdL8/75q0UBRY+0pyikFCysgkaRv0qUfK04uuhY1MHH5FZZOy
-         kVWPni1XOpxxvwQPu4+P2pLaUEXFy4a60oOfwT/0iqPR47ex2cWpTMey5FDIjHIP9I
-         2GZlkrCtSxu8xoFSoe8389agJrVDkVI+/m0o+OsJIsHD8XtGCcLJQxi5fI5l5zT09O
-         OBXA6D/EAGYyQ==
-Date:   Mon, 30 Aug 2021 15:46:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, Greg KH <greg@kroah.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Phillip Potter <phil@philpotter.co.uk>
-Subject: linux-next: manual merge of the net-next tree with the iio-fixes,
- staging trees
-Message-ID: <20210830154618.204ac5c8@canb.auug.org.au>
+        Mon, 30 Aug 2021 01:49:38 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E18C061575;
+        Sun, 29 Aug 2021 22:48:44 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id m18so14785161lfl.10;
+        Sun, 29 Aug 2021 22:48:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=h6S1rlsuhQbbfaHSm0DcTq2usBWQ0P+C1lfcBqs7THk=;
+        b=HRqs6fFqwgiAASLA7HMs8CUA1JrGF+jhmv/z64PoGj6np49yf/Hl3Bra7AwI4B4mGF
+         s3h03mEszT4pbCPF7Puw3cTSpZqQcCXB+p4wOR+VMHANjRf/Iq6yy0ZemYBSzaRIoY+m
+         giZgqrA6e6bdndPM3VqYPibE6XuNIZKGxnBvn/e6SO4PMuz2+g5PKOUrVG6PRzqhBt6L
+         PXSCATFVLsypGl5ZWtTkSgXj2eGBWDIfFUbVsivKXk+xLv0JFgqtDNSkVM+ioU/aqCxM
+         9NTgTShQtxDJGBps/qMZejvTDVIr2Au/3Vu54y4JT+cOYHMbRKghrcR4HarQXXWzwtML
+         FQLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=h6S1rlsuhQbbfaHSm0DcTq2usBWQ0P+C1lfcBqs7THk=;
+        b=HLLj0RPAGbc9yzF0f11NWCa6nUg3HURQZet/WTi1yLJydI3G3++IZ+k8b4H7cc8Dpr
+         ZMtynVMwLAWyiWjjKGbtvN38w/oLNUlHi6IuFG4g1Q/vNsJNcv0e/D283kshzL+RZbZA
+         CXGesXMN83WkY2Hfm3j1EVC2ZX+I10Q4YYHAuZweJTEmEVp7vZtco0G2KDeRbkWAygGf
+         W+B4r8bdR6EZqblbJAZiHzV4ETPqNBTq6zvZy1siqLhicWIrstnLZeaDYiGWXsj9omLN
+         Ptd3zdl3vO9uhkkC0nFx0KNMvj3Ns+yg36yR+KT+SyUVqyBwz9g9SvIT0kiNeRL1SkM8
+         ZUqg==
+X-Gm-Message-State: AOAM53170LDjZO72Lhcvz8udqFQ7V4uJWX925xcjzqu5ACXySnUHWESR
+        3wwDFni0txy5LGLyH3ToKCySWLHakrqXplVh4e+c/KE19kg=
+X-Google-Smtp-Source: ABdhPJyEMOqW9hRCT7wE/paD34dFNcJyzGQtlqdvXb3TClR0gBFbheyVAOsgOXsaTpIl74cjxqwpxZMnczgzM06t29I=
+X-Received: by 2002:a19:c7c3:: with SMTP id x186mr12895274lff.175.1630302522939;
+ Sun, 29 Aug 2021 22:48:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ev9Apn7Ev0m7lSHRVv+K6bx";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+From:   Steve French <smfrench@gmail.com>
+Date:   Mon, 30 Aug 2021 00:48:32 -0500
+Message-ID: <CAH2r5mvVdBoUW-0BfsxiRAE6X30cqhBtNDvG7pwKdQwsu+wXfg@mail.gmail.com>
+Subject: [GIT PULL] cifs/smb3 client fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ev9Apn7Ev0m7lSHRVv+K6bx
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Please pull the following changes since commit
+e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
 
-Hi all,
+  Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
 
-Today's linux-next merge of the net-next tree got conflicts in:
+are available in the Git repository at:
 
-  drivers/staging/rtl8188eu/include/osdep_intf.h
-  drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-  drivers/staging/rtl8188eu/os_dep/os_intfs.c
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc-smb3-fixes-part1
 
-between commit:
+for you to fetch changes up to 3998f0b8bc49ec784990971dc1f16bf367b19078:
 
-  55dfa29b43d2 ("staging: rtl8188eu: remove rtl8188eu driver from staging d=
-ir")
+  cifs: Do not leak EDEADLK to dgetents64 for
+STATUS_USER_SESSION_DELETED (2021-08-25 16:08:38 -0500)
 
-from the iio-fixes, staging trees and commit:
+----------------------------------------------------------------
+11 cifs/smb3 client fixes:
+- mostly restructuring to allow disabling less secure algorithms (this
+will allow eventual removing rc4 and md4 from general use in the
+kernel)
+- 4 fixes, including 2 for stable
+- enable r/w support with fscache and cifs.ko
 
-  89939e890605 ("staging: rtlwifi: use siocdevprivate")
+Am working on a larger set of changes (the usual ... multichannel,
+auth and signing improvements), but wanted to get these in earlier to
+reduce chance of merge conflicts
+later in the merge window.
+----------------------------------------------------------------
+Ding Hui (1):
+      cifs: fix wrong release in sess_alloc_buffer() failed path
 
-from the net-next tree.
+Len Baker (1):
+      CIFS: Fix a potencially linear read overflow
 
-I fixed it up (I have removed these files) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
+Ronnie Sahlberg (4):
+      cifs: remove support for NTLM and weaker authentication algorithms
+      cifs: fork arc4 and create a separate module for it for cifs and
+other users
+      cifs: create a MD4 module and switch cifs.ko to use it
+      cifs: Do not leak EDEADLK to dgetents64 for STATUS_USER_SESSION_DELETED
 
---=20
-Cheers,
-Stephen Rothwell
+Shyam Prasad N (1):
+      cifs: enable fscache usage even for files opened as rw
 
---Sig_/ev9Apn7Ev0m7lSHRVv+K6bx
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Steve French (4):
+      smb3: fix posix extensions mount option
+      oid_registry: Add OIDs for missing Spnego auth mechanisms to Macs
+      cifs: cifs_md4 convert to SPDX identifier
+      cifs: add cifs_common directory to MAINTAINERS file
 
------BEGIN PGP SIGNATURE-----
+ MAINTAINERS                  |   1 +
+ fs/Kconfig                   |   7 ++
+ fs/Makefile                  |   1 +
+ fs/cifs/Kconfig              |  30 -------
+ fs/cifs/cifs_debug.c         |  11 ---
+ fs/cifs/cifs_swn.c           |   2 -
+ fs/cifs/cifs_unicode.c       |   9 +-
+ fs/cifs/cifsencrypt.c        |  89 +-------------------
+ fs/cifs/cifsfs.c             |   8 --
+ fs/cifs/cifsglob.h           |  32 +------
+ fs/cifs/cifspdu.h            |  28 -------
+ fs/cifs/cifsproto.h          |  10 ---
+ fs/cifs/cifssmb.c            | 107 +-----------------------
+ fs/cifs/connect.c            |  32 -------
+ fs/cifs/file.c               |  15 +++-
+ fs/cifs/fs_context.c         |  25 ++----
+ fs/cifs/fs_context.h         |   3 -
+ fs/cifs/fscache.c            |  41 +++++++--
+ fs/cifs/fscache.h            |  23 ++++++
+ fs/cifs/inode.c              |   6 ++
+ fs/cifs/readdir.c            |  23 +++++-
+ fs/cifs/sess.c               | 257
++--------------------------------------------------------
+ fs/cifs/smb2maperror.c       |   1 -
+ fs/cifs/smbencrypt.c         | 139 +++----------------------------
+ fs/cifs_common/Makefile      |   7 ++
+ fs/cifs_common/arc4.h        |  23 ++++++
+ fs/cifs_common/cifs_arc4.c   |  87 +++++++++++++++++++
+ fs/cifs_common/cifs_md4.c    | 197 +++++++++++++++++++++++++++++++++++++++++++
+ fs/cifs_common/md4.h         |  27 ++++++
+ include/linux/oid_registry.h |   7 ++
+ 30 files changed, 485 insertions(+), 763 deletions(-)
+ create mode 100644 fs/cifs_common/Makefile
+ create mode 100644 fs/cifs_common/arc4.h
+ create mode 100644 fs/cifs_common/cifs_arc4.c
+ create mode 100644 fs/cifs_common/cifs_md4.c
+ create mode 100644 fs/cifs_common/md4.h
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEscKoACgkQAVBC80lX
-0GwMSwf+J/FcrcpCqmECTRPuz6BsaF6fb7zh1keyak7Yg00fH5glirBv3qzpPXT/
-jIqBKZI883lvnI66cnSX3fvJc7TRBzddhwFwiLjmjQ5VNhggrteMEThbwTlf4XdV
-vz6XS/X7lLTliKJ63efbw66KClqD30r8qJw/fG6hbr3jFLphVZKlCbVdbwAXxtxd
-61PEvSujFhzdjGKYMX11kQp7vTaz24cW+nKmqrF55Nz4wos7kdkEsv4Ey+bHWI7e
-4tYN54KYCR2rJ1l7VqxyzP687zj0auWHVou8tkoDd/CXwr4/mLvmCX7RaORA33N1
-gTSlVVCPWwqW/KNPeS7fFieA9UaDJw==
-=uWps
------END PGP SIGNATURE-----
 
---Sig_/ev9Apn7Ev0m7lSHRVv+K6bx--
+-- 
+Thanks,
+
+Steve
