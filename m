@@ -2,153 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2193FBD2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 21:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA133FBD32
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 21:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbhH3Tww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 15:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231185AbhH3Twv (ORCPT
+        id S234122AbhH3T5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 15:57:12 -0400
+Received: from mail-qt1-f181.google.com ([209.85.160.181]:45848 "EHLO
+        mail-qt1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231775AbhH3T5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 15:52:51 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CECEC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 12:51:57 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id dv7-20020ad44ee7000000b0036fa79fd337so1275876qvb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 12:51:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=vlmH2FPTCreu/0JhtoQw1RSxIqcHbMmpEsPhqtnkEpI=;
-        b=Hu5Qb9P9tv4nw3UP2XEOSG1qwsgzvImOwJ97Q4XzlftJCvz42sL/HihtDA1evQXqp1
-         h6mioNwzuqarhT+QBmliJrncaKOzPfFD9VpEt1Ajr+0CIFpSLS13XTsDg1fpKUWMITZc
-         O2IJrwk9UdL4PsbiqBUIMIwGcnLIbhDmiCVaJCQ0bOXykhK2OhYOTA2wNyMkRx/u0Bji
-         7Rmi1se2ZguU7bH9XeycQ+aZBMGN/AAOwk25z4V68ObbBaQ0m/P3Ta5Rg5cqHbv8M9ql
-         6vytI4T9+jBnG+il60fClEX3juvtWDQniUUcHrwt5vOriDipNeI5DuQ4SxL4XGXAt3Ev
-         dO+g==
+        Mon, 30 Aug 2021 15:57:11 -0400
+Received: by mail-qt1-f181.google.com with SMTP id s32so12705852qtc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 12:56:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=vlmH2FPTCreu/0JhtoQw1RSxIqcHbMmpEsPhqtnkEpI=;
-        b=K4753+5+VlbHm1CGwiOExdSpJ/tNOv+oHTe0mXKAuj4IQRbUhi8yJ3m9GAa755kAFK
-         AxrpHWv4zzB6dwYyb4jFwJ3bB7SMYLrXFabFLuloxgsc+gCyCiv7OB5lHFjctWGnRnYu
-         /NyouMSWqdvZi+FaL8uriwWrHqG+RBhPIWRDOLpE//Tqq8dmGfkRD0git02kZ1nLUZ79
-         uvNXU9O8AnXDldMu4LMPu4bQqJgI0GKrjVLUrSNaeIUWevzAaL39UuLkz40URav/tML+
-         IPggfx3/rgF1EzXIeWsPVTT/1piVYYjf+QWKxZLtQy9JrvNg5ZUGl/WvbPjotWOssd7u
-         1Hyw==
-X-Gm-Message-State: AOAM532tfGXA6HVHt90sjnH8Dr8cMbd8Wjy9dQygvgq02iM4Yy0yBfti
-        irc0aJr5i8HlhtMH/4Vtdqev9s8tvg==
-X-Google-Smtp-Source: ABdhPJxypQStTHSuW+vYuUUGWnGVDGQv9PYEyN8B0RtmipOSC5YYG5ph1LGaqiJUYg1AwithU+Q625lwIw==
-X-Received: from ava-linux2.mtv.corp.google.com ([2620:15c:211:200:371e:b5b3:7633:f5cd])
- (user=tkjos job=sendgmr) by 2002:a0c:ff4b:: with SMTP id y11mr25342076qvt.50.1630353116285;
- Mon, 30 Aug 2021 12:51:56 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 12:51:46 -0700
-Message-Id: <20210830195146.587206-1-tkjos@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH] binder: make sure fd closes complete
-From:   Todd Kjos <tkjos@google.com>
-To:     tkjos@google.com, gregkh@linuxfoundation.org, christian@brauner.io,
-        arve@android.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, maco@google.com
-Cc:     joel@joelfernandes.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZDIiVhJpw7U6/4829fQy1iT9qkd/BhVJCgsXByFln68=;
+        b=DgAHYKcNxjqqR0lphU9MJah9oi3Q1EaZzbMiaXM2Q2A4QAnhA0dqR6ucQAIgkpx1u+
+         H8c060MG/wv8zlKsQbDuLLGo6jTitZZh2RycBGtQnlQ9+pFn2fVypp4NcDGvYda/H07g
+         Jq7o9qvqHm72s4oD0jFuKK8Uz7osds/mDL/q1K/JJNQ06R/dB2gfQrO7LtbN2SVVCfO6
+         mRkc7C56l6Zn38JbPYiH/a97vRhgg8U0POfRQHjS5y2osK7bEIEDShBb+SzyS6G7jyJE
+         COvVGc5DUK0SOkx75UMCWpywoP84RQ4Amdwxzj7Xb//PGLV8fLkRYMdmX2eCiF/K4rr5
+         F7Pg==
+X-Gm-Message-State: AOAM532REXP/2c1Ads5V4Jr/Yxqkj144I2tZF3jB9MNe0lIVRQ8F4jNU
+        hYMlVmTkjy2/yjCUpW131OU=
+X-Google-Smtp-Source: ABdhPJyhvdcVIOR/S68NWhNlu+UIay0Ma0FvPdWp2xeOZq97aaU6bW97RZl4T0J1Mh57CMJCshS+eA==
+X-Received: by 2002:ac8:4156:: with SMTP id e22mr129439qtm.308.1630353377034;
+        Mon, 30 Aug 2021 12:56:17 -0700 (PDT)
+Received: from MacBook-Pro.internal.carlosedp.com (201-68-134-150.dsl.telesp.net.br. [201.68.134.150])
+        by smtp.googlemail.com with ESMTPSA id m68sm12399944qkb.105.2021.08.30.12.56.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Aug 2021 12:56:16 -0700 (PDT)
+From:   Carlos de Paula <me@carlosedp.com>
+Cc:     me@carlosedp.com,
+        Support Opensource <support.opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] mfd: da9063: Add support for latest EA silicon revision
+Date:   Mon, 30 Aug 2021 16:53:45 -0300
+Message-Id: <20210830195345.71853-1-me@carlosedp.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During BC_FREE_BUFFER processing, the BINDER_TYPE_FDA object
-cleanup may close 1 or more fds. The close operations are
-completed using the task work mechanism -- which means the thread
-needs to return to userspace or the file object may never be
-dereferenced -- which can lead to hung processes.
+This update adds new regmap to support the latest EA silicon
+which will be selected based on the chip and variant
+information read from the device.
 
-Force the binder thread back to userspace if an fd is closed during
-BC_FREE_BUFFER handling.
-
-Signed-off-by: Todd Kjos <tkjos@google.com>
+Signed-off-by: Carlos de Paula <me@carlosedp.com>
 ---
- drivers/android/binder.c | 23 +++++++++++++++++------
- 1 file changed, 17 insertions(+), 6 deletions(-)
+ drivers/mfd/da9063-i2c.c        | 2 ++
+ include/linux/mfd/da9063/core.h | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index bcec598b89f2..c2823f0d588f 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -1852,6 +1852,7 @@ static void binder_deferred_fd_close(int fd)
- }
- 
- static void binder_transaction_buffer_release(struct binder_proc *proc,
-+					      struct binder_thread *thread,
- 					      struct binder_buffer *buffer,
- 					      binder_size_t failed_at,
- 					      bool is_failure)
-@@ -2011,8 +2012,16 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
- 						&proc->alloc, &fd, buffer,
- 						offset, sizeof(fd));
- 				WARN_ON(err);
--				if (!err)
-+				if (!err) {
- 					binder_deferred_fd_close(fd);
-+					/*
-+					 * Need to make sure the thread goes
-+					 * back to userspace to complete the
-+					 * deferred close
-+					 */
-+					if (thread)
-+						thread->looper_need_return = true;
-+				}
- 			}
- 		} break;
- 		default:
-@@ -3105,7 +3114,7 @@ static void binder_transaction(struct binder_proc *proc,
- err_copy_data_failed:
- 	binder_free_txn_fixups(t);
- 	trace_binder_transaction_failed_buffer_release(t->buffer);
--	binder_transaction_buffer_release(target_proc, t->buffer,
-+	binder_transaction_buffer_release(target_proc, NULL, t->buffer,
- 					  buffer_offset, true);
- 	if (target_node)
- 		binder_dec_node_tmpref(target_node);
-@@ -3184,7 +3193,9 @@ static void binder_transaction(struct binder_proc *proc,
-  * Cleanup buffer and free it.
-  */
- static void
--binder_free_buf(struct binder_proc *proc, struct binder_buffer *buffer)
-+binder_free_buf(struct binder_proc *proc,
-+		struct binder_thread *thread,
-+		struct binder_buffer *buffer)
- {
- 	binder_inner_proc_lock(proc);
- 	if (buffer->transaction) {
-@@ -3212,7 +3223,7 @@ binder_free_buf(struct binder_proc *proc, struct binder_buffer *buffer)
- 		binder_node_inner_unlock(buf_node);
- 	}
- 	trace_binder_transaction_buffer_release(buffer);
--	binder_transaction_buffer_release(proc, buffer, 0, false);
-+	binder_transaction_buffer_release(proc, thread, buffer, 0, false);
- 	binder_alloc_free_buf(&proc->alloc, buffer);
- }
- 
-@@ -3414,7 +3425,7 @@ static int binder_thread_write(struct binder_proc *proc,
- 				     proc->pid, thread->pid, (u64)data_ptr,
- 				     buffer->debug_id,
- 				     buffer->transaction ? "active" : "finished");
--			binder_free_buf(proc, buffer);
-+			binder_free_buf(proc, thread, buffer);
+diff --git a/drivers/mfd/da9063-i2c.c b/drivers/mfd/da9063-i2c.c
+index 4b7f707b7952..343ed6e96d87 100644
+--- a/drivers/mfd/da9063-i2c.c
++++ b/drivers/mfd/da9063-i2c.c
+@@ -391,6 +391,7 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
+ 				&da9063_bb_da_volatile_table;
  			break;
- 		}
+ 		case PMIC_DA9063_DA:
++		case PMIC_DA9063_EA:
+ 			da9063_regmap_config.rd_table =
+ 				&da9063_da_readable_table;
+ 			da9063_regmap_config.wr_table =
+@@ -416,6 +417,7 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
+ 				&da9063l_bb_da_volatile_table;
+ 			break;
+ 		case PMIC_DA9063_DA:
++		case PMIC_DA9063_EA:
+ 			da9063_regmap_config.rd_table =
+ 				&da9063l_da_readable_table;
+ 			da9063_regmap_config.wr_table =
+diff --git a/include/linux/mfd/da9063/core.h b/include/linux/mfd/da9063/core.h
+index fa7a43f02f27..8db52324f416 100644
+--- a/include/linux/mfd/da9063/core.h
++++ b/include/linux/mfd/da9063/core.h
+@@ -36,6 +36,7 @@ enum da9063_variant_codes {
+ 	PMIC_DA9063_BB = 0x5,
+ 	PMIC_DA9063_CA = 0x6,
+ 	PMIC_DA9063_DA = 0x7,
++	PMIC_DA9063_EA = 0x8,
+ };
  
-@@ -4107,7 +4118,7 @@ static int binder_thread_read(struct binder_proc *proc,
- 			buffer->transaction = NULL;
- 			binder_cleanup_transaction(t, "fd fixups failed",
- 						   BR_FAILED_REPLY);
--			binder_free_buf(proc, buffer);
-+			binder_free_buf(proc, thread, buffer);
- 			binder_debug(BINDER_DEBUG_FAILED_TRANSACTION,
- 				     "%d:%d %stransaction %d fd fixups failed %d/%d, line %d\n",
- 				     proc->pid, thread->pid,
+ /* Interrupts */
 -- 
-2.33.0.259.gc128427fd7-goog
+2.30.2
 
