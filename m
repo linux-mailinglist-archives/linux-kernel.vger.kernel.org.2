@@ -2,143 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973FB3FBD92
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328C23FBD97
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235749AbhH3UqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:46:17 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:39635 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhH3UqO (ORCPT
+        id S236529AbhH3UrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 16:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhH3UrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:46:14 -0400
-Received: by mail-io1-f70.google.com with SMTP id u22-20020a5d9f560000b02905058dc6c376so9285290iot.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:45:20 -0700 (PDT)
+        Mon, 30 Aug 2021 16:47:12 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56A5C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:46:17 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id l4so9108108qvl.12
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:46:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0pH8PpB5hRL0OIS0gYNC1zy+deykfUSq1lsoYqQwCuk=;
+        b=P6vrQqD/yhdsLPcZ5aGOHX4wuGa0FHILa+hIjGDnI76PBMAAEggZdpfH+smLsaWsf3
+         j/ZSkZ+gU27/mSVxuPWWw5UfazmBBnsDrrJgbwohYdBGLSTEq2LIqbQExtCKTC/8YuNk
+         BaykjXWWW1d1Sj4E/CPaayPEfGuDLBX6rnb0bybrdvBmpj6QU/aXgtpkUthfcRJUyOFC
+         WmdnXEG7YvVuFy3P7+H+MsqmLtTHI5k8AtV476eIP3JS/JxV8mEvwJ2gOM2A1jj1B4lX
+         WA1LRPjEVYaNCRN7W78bL3CAHzBwNSO2Tfpx87AQQb/76Xb0uTcv+kzxNQGmbPiaZ+00
+         n40Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=TUim2GYBMpqIAzadnnQg2XP/DUNHWp/cxvGn11BKvOI=;
-        b=ZNjx18lodMgQGhO2cle+qbM+QwM08Drv5vRTBvPEEmij3nX+XhWCtN6Ex9Iac9DLoE
-         9wu1ClntP4j0+gMayyGc7CEduS41V0u1aVR/VZL3kaEQHbAVsRofTOGFwGaJf+P8/0JD
-         4nmUtVyxbBM1hSJxi/XG/P6kOlVi26YR6lnqdQmdpHm8/TLq9eT02NL09e6Db9j0oD2r
-         j+r7ar9dILhjnd2B4l+miY6Ge9Djxi/zHeHXr8oOO1GVgFrrtUZr+YqIqdfeiXUMa/en
-         Pe6rZbTIrIPZrTz5F5/yJri2bqRsCnTznMg2VFqfYf2qbHL5vI/ERwRGSZk3mL+UHbzW
-         z/bA==
-X-Gm-Message-State: AOAM533+Crfq5tX3iNnJa97cpQH84mErhurRrOYSQxDTtWwdSzHb/vxY
-        ShPf26tKPTM8xrwmIESU0JjOPam2iXySl2gJxflMEtRWvJFP
-X-Google-Smtp-Source: ABdhPJzSGbUEzTyjHN5+24eSmWsDmN7IKM/+iirNVhvuKKfmTSSnB2perh5Ub1G9oppAErlA87kiVAj+QMTG9ZEjOkmBVTWoIp86
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0pH8PpB5hRL0OIS0gYNC1zy+deykfUSq1lsoYqQwCuk=;
+        b=Bf8eUqFXNGR3aHdojxIVhH4i50O6Renq9O3k5tBLHJvHvJALJyM0yGNwAwEqzt3t8g
+         hSS/ULev+/nhnjDL8mfP23yII9yxRjYoyN//GFeNerAIHSiv8flfEiKfrn3YPW3zMAFY
+         JpKqlaFlclIKjfIIcpu1rOFMJsLipVLHkDJ06JbiOfEFbVnNfr3f9WbTCIEC1ZkyFWEV
+         byTu5CYhzwAWMO0utXcfaJt2jaL+jKdkaXgiWT+n9zQPMsXlabKra9tds1s6vIdTCRCn
+         3qXXxg9tiJ8jxBDi4rwMYQn2WKxInLZElcHp0OM3FTdJuTcu1h/pBFm+ceanEquqxV9O
+         ifjg==
+X-Gm-Message-State: AOAM533Ok2XvinHrMdLFH9fALIaxzfca2WKeEP31ktKg/m240VPLz3pB
+        ux2XbS7hEe/IsWYtMqNjT9LS2w==
+X-Google-Smtp-Source: ABdhPJwXkK+L51++yr7RM8pfNjFd4a3l9YJECfFVcwm5mFyXsdyoIfpnsPwInPzhRFXrfbg5ltm2MA==
+X-Received: by 2002:a0c:b356:: with SMTP id a22mr25367456qvf.7.1630356376930;
+        Mon, 30 Aug 2021 13:46:16 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id b15sm11962348qka.107.2021.08.30.13.46.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 13:46:16 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 16:48:03 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        stable@kernel.org, Michal Hocko <mhocko@suse.com>,
+        Chris Down <chris@chrisdown.name>
+Subject: Re: [PATCH] mm,vmscan: fix divide by zero in get_scan_count
+Message-ID: <YS1EA3U4XXH7X0qz@cmpxchg.org>
+References: <20210826220149.058089c6@imladris.surriel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:dc02:: with SMTP id b2mr19708795iok.197.1630356320619;
- Mon, 30 Aug 2021 13:45:20 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 13:45:20 -0700
-In-Reply-To: <00000000000011360d05cacbb622@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000059117905cacce99e@google.com>
-Subject: Re: [syzbot] general protection fault in sock_from_file
-From:   syzbot <syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, asml.silence@gmail.com, ast@kernel.org,
-        axboe@kernel.dk, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, dvyukov@google.com, io-uring@vger.kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826220149.058089c6@imladris.surriel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Thu, Aug 26, 2021 at 10:01:49PM -0400, Rik van Riel wrote:
+> Changeset f56ce412a59d ("mm: memcontrol: fix occasional OOMs due to
+> proportional memory.low reclaim") introduced a divide by zero corner
+> case when oomd is being used in combination with cgroup memory.low
+> protection.
+> 
+> When oomd decides to kill a cgroup, it will force the cgroup memory
+> to be reclaimed after killing the tasks, by writing to the memory.max
+> file for that cgroup, forcing the remaining page cache and reclaimable
+> slab to be reclaimed down to zero.
+> 
+> Previously, on cgroups with some memory.low protection that would result
+> in the memory being reclaimed down to the memory.low limit, or likely not
+> at all, having the page cache reclaimed asynchronously later.
+> 
+> With f56ce412a59d the oomd write to memory.max tries to reclaim all the
+> way down to zero, which may race with another reclaimer, to the point of
+> ending up with the divide by zero below.
+> 
+> This patch implements the obvious fix.
+> 
+> Fixes: f56ce412a59d ("mm: memcontrol: fix occasional OOMs due to proportional memory.low reclaim")
+> Signed-off-by: Rik van Riel <riel@surriel.com>
 
-HEAD commit:    93717cde744f Add linux-next specific files for 20210830
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15200fad300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c643ef5289990dd1
-dashboard link: https://syzkaller.appspot.com/bug?extid=f9704d1878e290eddf73
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111f5f9d300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1651a415300000
+That took me a second.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com
+Before the patch, that sc->memcg_low_reclaim test was outside of that
+whole proportional reclaim branch. So if we were in low reclaim mode
+we wouldn't even check if a low setting is in place; if min is zero,
+we don't enter the proportional branch.
 
-general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
-CPU: 0 PID: 6548 Comm: syz-executor433 Not tainted 5.14.0-next-20210830-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
-Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
-RSP: 0018:ffffc90002caf8e8 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
-RBP: ffff888019fc0780 R08: ffffffff899aee40 R09: ffffffff81e21978
-R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
-R13: 1ffff110033f80f9 R14: 0000000000000003 R15: ffff888019fc0780
-FS:  00000000013b5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004ae0f0 CR3: 000000001d355000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_sendmsg+0x98/0x640 fs/io_uring.c:4681
- io_issue_sqe+0x14de/0x6ba0 fs/io_uring.c:6578
- __io_queue_sqe+0x90/0xb50 fs/io_uring.c:6864
- io_req_task_submit+0xbf/0x1b0 fs/io_uring.c:2218
- tctx_task_work+0x166/0x610 fs/io_uring.c:2143
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- tracehook_notify_signal include/linux/tracehook.h:212 [inline]
- handle_signal_work kernel/entry/common.c:146 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43fd49
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd6347b9d8 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: 0000000000001000 RBX: 0000000000000003 RCX: 000000000043fd49
-RDX: 0000000000000000 RSI: 000000000000688c RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004035d0
-R13: 431bde82d7b634db R14: 00000000004ae018 R15: 0000000000400488
-Modules linked in:
----[ end trace aa9bf60339277d03 ]---
-RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
-Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
-RSP: 0018:ffffc90002caf8e8 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
-RBP: ffff888019fc0780 R08: ffffffff899aee40 R09: ffffffff81e21978
-R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
-R13: 1ffff110033f80f9 R14: 0000000000000003 R15: ffff888019fc0780
-FS:  00000000013b5300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2cc6f84000 CR3: 000000001d355000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 3 bytes skipped:
-   0:	ff c3                	inc    %ebx
-   2:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
-   7:	41 54                	push   %r12
-   9:	53                   	push   %rbx
-   a:	48 89 fb             	mov    %rdi,%rbx
-   d:	e8 85 e9 62 fa       	callq  0xfa62e997
-  12:	48 8d 7b 28          	lea    0x28(%rbx),%rdi
-  16:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  1d:	fc ff df
-  20:	48 89 fa             	mov    %rdi,%rdx
-  23:	48 c1 ea 03          	shr    $0x3,%rdx
-* 27:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2b:	75 4f                	jne    0x7c
-  2d:	45 31 e4             	xor    %r12d,%r12d
-  30:	48 81 7b 28 80 f1 8a 	cmpq   $0xffffffff8a8af180,0x28(%rbx)
-  37:	8a
-  38:	74 0c                	je     0x46
-  3a:	e8                   	.byte 0xe8
-  3b:	58                   	pop    %rax
-  3c:	e9                   	.byte 0xe9
+Now we enter if low is set but ignored, and then end up with
+cgroup_size == min == 0 == divide by black hole.
 
+Good catch.
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index eeae2f6bc532..f1782b816c98 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -2592,7 +2592,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>  			cgroup_size = max(cgroup_size, protection);
+>  
+>  			scan = lruvec_size - lruvec_size * protection /
+> -				cgroup_size;
+> +				(cgroup_size + 1);
+
+I have no overly strong preferences, but if Michal prefers max(), how about:
+
+	cgroup_size = max3(cgroup_size, protection, 1);
+
+Or go back to not taking the branch in the first place when there is
+no protection in effect...
+
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 6247f6f4469a..9c200bb3ae51 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -2547,7 +2547,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+ 		mem_cgroup_protection(sc->target_mem_cgroup, memcg,
+ 				      &min, &low);
+ 
+-		if (min || low) {
++		if (min || (!sc->memcg_low_reclaim && low)) {
+ 			/*
+ 			 * Scale a cgroup's reclaim pressure by proportioning
+ 			 * its current usage to its memory.low or memory.min
