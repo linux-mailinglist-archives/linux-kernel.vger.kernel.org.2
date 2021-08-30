@@ -2,219 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB06D3FBA29
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71FAE3FBA2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237817AbhH3Q2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
+        id S237650AbhH3Q3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237962AbhH3Q2e (ORCPT
+        with ESMTP id S238039AbhH3Q3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:28:34 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD67C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:27:40 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id b7so20703067iob.4
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:27:40 -0700 (PDT)
+        Mon, 30 Aug 2021 12:29:07 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0E3C0613A3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:28:13 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id j4so32369996lfg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:28:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qRVc9wtgxEShcbmYz7OGhp8D0sYciRXHgYyK5WT21P8=;
-        b=FjDVBhD1aY+HZpb5KLAOQ8d8/zFAsh8IG+Qh3nQcebtxy7Z1ZafNhhqJmqb3e/EeMz
-         P9oGDXVXpzZw5/RQLnS0B25zvswQEGqITwtfxnlaZ1FNVqH6ivuP6opeokpejbJ0m5Sx
-         OcgNlFwqtwgCNlUp3hz9cJsioRylYPht90B8k=
+        d=endian-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bXWmPXIBFpIKCoBwxNxIccS5XZI//UXKKwzLo+PlVL0=;
+        b=m5McIEYOv/NMcr46yQXI4dAQFWWm8C0vOJ/UNjR+MF3fCYsOcJLDJeTJJCh9Zn2Ek2
+         zXxIZ/gogXj37MYPX8L8YQotbnfjRQ3PJUhTNrbUg/OKtSkIcAxmKL6v4gUuPqqq/Hli
+         8sdPjmWNofuAeCD9+vHIIfQGz9jyDNI9ZM8x7tEdTAC3vg7sDsUBhdec7WBzTzyC2+vb
+         xlwcVSPnth6d1jGpoWHz924WzeXLOFK/k/hwhsmYJZRd83bvp4aJKa/LaX9akpAXSuA7
+         REDzzXpUXxmf+ZNypjcTJ7JGiZ27UfpB9BKUT6u1hozNpd7IizKwyVlMcQp7TOfhhpYZ
+         VmZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qRVc9wtgxEShcbmYz7OGhp8D0sYciRXHgYyK5WT21P8=;
-        b=qHQB7ptJa6eswSwFe6fGWRshkAlaSyGrrEGkKKPVCql1f1zb67neO5KaWYtnV0jMRk
-         Daq+uo0Fnmpc0vX5W+i3wHvS7l6ErjN+NXZ0RZ9plYOiN5HVuEBTEBQJBunc+ThwR7K+
-         B50uewgXUnqdBQaRKGXKcgTvgtSzy9sSkFDUZx2Y68jVax3E3NCu42XYo1bUxGxQckqk
-         gKZDTD9P4aGAefJB587jd+lbcIIjG/xIP54nWHtDFKarZFAZ8fw5Jj+hktgtOHC/vj5T
-         /reCofaKTswhPORiiC6AGSOaTReqpeKGorJGcfK3m4YpbJTlk4SNj+/L/HNxCyV8M8eX
-         gmgw==
-X-Gm-Message-State: AOAM533XaHjmQTR6eIdrO5d8hNBBP+k1QBRwJ9L3sCrWTuOxEiy3rJwp
-        yM2L1TjeWOvgas6euhupkyQKJQ==
-X-Google-Smtp-Source: ABdhPJzt8s6WmO83TYamsF+iEKKAcL/GloVsQLb/1PxaYAUfX1llIFxLCphIyKjFQTJd9VwLgOmBkQ==
-X-Received: by 2002:a6b:f714:: with SMTP id k20mr18597658iog.148.1630340859991;
-        Mon, 30 Aug 2021 09:27:39 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id p15sm9445853ilc.12.2021.08.30.09.27.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 09:27:39 -0700 (PDT)
-Subject: Re: [PATCH] workqueue: Don't record workqueue stack holding
- raw_spin_lock
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>, walter-zh.wu@mediatek.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210827234910.40490-1-skhan@linuxfoundation.org>
- <CAJhGHyCLb2HJVkj5osdgUjrMEq9mWQ2J6bytyfZVs9d5ZHfwrw@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <ef440afd-504b-b49b-91ec-1c3d057c82ba@linuxfoundation.org>
-Date:   Mon, 30 Aug 2021 10:27:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bXWmPXIBFpIKCoBwxNxIccS5XZI//UXKKwzLo+PlVL0=;
+        b=qLWCKbYubyDV7CTWWe7j54DOmaCjrBjsHGoZ2oez8KqairKkToDHWwgEB7HKDY+vUS
+         4jlCREL+AwchxHvkSe1zBMFdWC+bALJXiXAYR1vlK2aMet4saBp7LULvXxyRoevWgOsB
+         A6bDF3WDkLRNxl4LLyrmSzN7Cq1kDSn3g/mHZkoI49pqFxGsxuZqIbGr3Ai7MMJWb7uS
+         6gN/CYO4XHq6I/vi3I+TTHqwjs2r/ES173FV6IMmctess8IsFw72e9RPdV0hfBI5mUo3
+         GzK6rQ3SsPgXmhID1iTyFBbp1XZbYnrT4aU8mdhscj4rUPBi9j9DObweugZ+Umqa5YL1
+         AApA==
+X-Gm-Message-State: AOAM531rLuQD3rdkcO++JY1eAvjunfua46HxvlTZUurT3pOMSz2KXYeI
+        xQ6KVhMC7USS+LsepJu7NwYNAQ==
+X-Google-Smtp-Source: ABdhPJwIGblZ49wcPP5zUHi6J4XpmKgwSx1Nwod6VuLR6HgRy6ikoogTaj3kQ8kCpQHIo2oh2llWXg==
+X-Received: by 2002:ac2:4c50:: with SMTP id o16mr18246474lfk.218.1630340891898;
+        Mon, 30 Aug 2021 09:28:11 -0700 (PDT)
+Received: from gmail.com ([185.213.154.232])
+        by smtp.gmail.com with ESMTPSA id y7sm1887382ljn.26.2021.08.30.09.28.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 09:28:11 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 18:28:04 +0200
+From:   Fredrik Yhlen <fredrik.yhlen@endian.se>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Horia Geanta Neag <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        Heiko Schocher <hs@denx.de>
+Subject: Re: HRNG in CAAM isn't working properly on IMX6 SoloX
+Message-ID: <YS0HFMtAHFuwkKnY@gmail.com>
+References: <YSy/PFrem+a7npBy@gmail.com>
+ <CAOMZO5D0m1xCfgFifKz1H+oYQSfxsfuZp4U39rPMACmzv1fvjQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJhGHyCLb2HJVkj5osdgUjrMEq9mWQ2J6bytyfZVs9d5ZHfwrw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5D0m1xCfgFifKz1H+oYQSfxsfuZp4U39rPMACmzv1fvjQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/21 8:18 PM, Lai Jiangshan wrote:
-> On Sat, Aug 28, 2021 at 7:49 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
->>
->> When CONFIG_PROVE_RAW_LOCK_NESTING and CONFIG_KASAN are enabled,
->> kasan_record_aux_stack() runs into "BUG: Invalid wait context" when
->> it tries to allocate memory attempting to acquire spinlock in page
->> allocation code while holding workqueue pool raw_spinlock.
->>
->> There are several instances of this problem when block layer tries
->> to __queue_work(). Call trace from one of these instances is below:
->>
->>      kblockd_mod_delayed_work_on()
->>        mod_delayed_work_on()
->>          __queue_delayed_work()
->>            __queue_work() (rcu_read_lock, raw_spin_lock pool->lock held)
->>              insert_work()
->>                kasan_record_aux_stack()
->>                  kasan_save_stack()
->>                    stack_depot_save()
->>                      alloc_pages()
->>                        __alloc_pages()
->>                          get_page_from_freelist()
->>                            rm_queue()
->>                              rm_queue_pcplist()
->>                                local_lock_irqsave(&pagesets.lock, flags);
->>                                [ BUG: Invalid wait context triggered ]
->>
->> Fix it by calling kasan_record_aux_stack() without holding pool lock.
->> There is no need to hold pool lock in this path.
->>
->> =============================
->>   [ BUG: Invalid wait context ]
->>   5.14.0-rc7+ #8 Not tainted
->>   -----------------------------
->>   snap/532 is trying to lock:
->>   ffff888374f32ba0 (lock#2){..-.}-{3:3}, at: get_page_from_freelist (mm/page_alloc.c:3665 mm/page_alloc.c:3703 mm/page_alloc.c:4165)
->>   other info that might help us debug this:
->>   context-{5:5}
->>   3 locks held by snap/532:
->>   #0: ffff888139fa4408 (&type->i_mutex_dir_key#10){.+.+}-{4:4}, at: walk_component (fs/namei.c:1663 fs/namei.c:1959)
->>   #1: ffffffffab870c40 (rcu_read_lock){....}-{1:3}, at: __queue_work (./arch/x86/include/asm/preempt.h:80 ./include/linux/rcupdate.h:68 ./include/linux/rcupdate.h:685 kernel/workqueue.c:1421)
->>   #2: ffff888374f36cd8 (&pool->lock){-.-.}-{2:2}, at: __queue_work (kernel/workqueue.c:1466)
->>   stack backtrace:
->>   CPU: 14 PID: 532 Comm: snap Not tainted 5.14.0-rc7+ #8
->>   Hardware name: LENOVO 90Q30008US/3728, BIOS O4ZKT1CA 09/16/2020
->>   Call Trace:
->>   dump_stack_lvl (lib/dump_stack.c:106 (discriminator 4))
->>   dump_stack (lib/dump_stack.c:113)
->>   __lock_acquire.cold (kernel/locking/lockdep.c:4666 kernel/locking/lockdep.c:4727 kernel/locking/lockdep.c:4965)
->>   ? lockdep_hardirqs_on_prepare (kernel/locking/lockdep.c:4873)
->>   ? lock_is_held_type (kernel/locking/lockdep.c:5368 kernel/locking/lockdep.c:5668)
->>   lock_acquire (kernel/locking/lockdep.c:438 kernel/locking/lockdep.c:5627 kernel/locking/lockdep.c:5590)
->>   ? get_page_from_freelist (mm/page_alloc.c:3665 mm/page_alloc.c:3703 mm/page_alloc.c:4165)
->>   ? lock_release (kernel/locking/lockdep.c:5593)
->>   ? __kasan_check_read (mm/kasan/shadow.c:32)
->>   ? __lock_acquire (kernel/locking/lockdep.c:5019)
->>   ? __zone_watermark_ok (./include/linux/list.h:282 ./include/linux/mmzone.h:111 mm/page_alloc.c:3908)
->>   get_page_from_freelist (./include/linux/local_lock_internal.h:43 mm/page_alloc.c:3665 mm/page_alloc.c:3703 mm/page_alloc.c:4165)
->>   ? get_page_from_freelist (mm/page_alloc.c:3665 mm/page_alloc.c:3703 mm/page_alloc.c:4165)
->>   ? lock_is_held_type (kernel/locking/lockdep.c:5368 kernel/locking/lockdep.c:5668)
->>   ? is_bpf_text_address (./arch/x86/include/asm/preempt.h:85 ./include/linux/rcupdate.h:73 ./include/linux/rcupdate.h:719 kernel/bpf/core.c:708)
->>   ? lock_downgrade (kernel/locking/lockdep.c:5633)
->>   ? __zone_watermark_ok (mm/page_alloc.c:4054)
->>   __alloc_pages (mm/page_alloc.c:5391)
->>   ? __alloc_pages_slowpath.constprop.0 (mm/page_alloc.c:5354)
->>   ? create_prof_cpu_mask (kernel/stacktrace.c:82)
->> ? _find_first_bit (lib/find_bit.c:83)
->>   alloc_pages (mm/mempolicy.c:2249)
->>   stack_depot_save (lib/stackdepot.c:304)
->>   ? lock_is_held_type (kernel/locking/lockdep.c:5368 kernel/locking/lockdep.c:5668)
->>   kasan_save_stack (mm/kasan/common.c:41)
->>   ? kasan_save_stack (mm/kasan/common.c:39)
->>   ? kasan_record_aux_stack (mm/kasan/generic.c:348)
->>   ? insert_work (./include/linux/instrumented.h:71 ./include/asm-generic/bitops/instrumented-non-atomic.h:134 kernel/workqueue.c:616 kernel/workqueue.c:623 kernel/workqueue.c:1335)
->>   ? __queue_work (kernel/workqueue.c:1501)
->>   ? __queue_delayed_work (kernel/workqueue.c:1657)
->>   ? mod_delayed_work_on (kernel/workqueue.c:1720)
->>   ? kblockd_mod_delayed_work_on (block/blk-core.c:1633)
->>   ? __blk_mq_delay_run_hw_queue (block/blk-mq.c:1567)
->>   ? blk_mq_run_hw_queue (block/blk-mq.c:1610)
->>   ? blk_mq_sched_insert_request (block/blk-mq-sched.c:480)
->>   ? blk_mq_submit_bio (block/blk-mq.c:2276)
->>
->> Fixes: e89a85d63fb2 ("workqueue: kasan: record workqueue stack")
->> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->> ---
->>   kernel/workqueue.c | 18 +++++++++++++++---
->>   1 file changed, 15 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
->> index f148eacda55a..e647b29b9fb0 100644
->> --- a/kernel/workqueue.c
->> +++ b/kernel/workqueue.c
->> @@ -1328,9 +1328,6 @@ static void insert_work(struct pool_workqueue *pwq, struct work_struct *work,
->>   {
->>          struct worker_pool *pool = pwq->pool;
->>
->> -       /* record the work call stack in order to print it in KASAN reports */
->> -       kasan_record_aux_stack(work);
->> -
->>          /* we own @work, set data and link */
->>          set_work_pwq(work, pwq, extra_flags);
->>          list_add_tail(&work->entry, head);
->> @@ -1499,6 +1496,14 @@ static void __queue_work(int cpu, struct workqueue_struct *wq,
->>
->>   out:
->>          raw_spin_unlock(&pwq->pool->lock);
->> +
->> +       /*
->> +        * record the work call stack in order to print it in KASAN reports
->> +        * Do this without pool raw_spinlock hold to avoid nesting raw
->> +        * spinlock with page allocation spinlock.
->> +        */
->> +       kasan_record_aux_stack(work);
->> +
+Hi Pablo,
+
+It seems to be working with your suggested change and PR enabled:
+```
+root@xxxx:/dev# dd bs=256 count=10 if=/dev/hwrng of=/dev/null
+10+0 records in
+10+0 records out
+2560 bytes (2.6 kB, 2.5 KiB) copied, 14.5987 s, 0.2 kB/s
+root@xxxx:/dev#
+```
+
+Thanks!
+
+Best regards,
+Fredrik
+
+On Mon, Aug 30, 2021 at 08:49:25AM -0300, Fabio Estevam wrote:
+> Hi Fredrik,
 > 
-> Hello
+> On Mon, Aug 30, 2021 at 8:22 AM Fredrik Yhlen <fredrik.yhlen@endian.se> wrote:
+> >
+> > Hi,
+> >
+> > We're having problems with hwrng on a board with imx6sx (soloX) running Linux
+> > 5.10.x. mainline, and I have tracked it down to this commit
+> > '358ba762d9f1d4ba99ab31ef12bc28014b22f4c9' as being the culprit.
+> >
+> > The caam_jr driver spits out lots of messages when attempting to read from /dev/hwrng:
+> > ```
+> > [29717.629041] hwrng: no data available
+> > [29727.859008] caam_jr 2101000.jr: 20003c5b: CCB: desc idx 60: RNG: Hardware error
+> > ```
+> >
+> > ```
+> > caam_jr 2101000.jr0: 2000025b: CCB: desc idx 2: RNG: Hardware error.
+> > caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
+> > caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
+> > caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
+> > caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
+> > caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
+> > ```
+> >
+> > This also happens on Boundary's Nitrogen6_soloX board when running the same
+> > kernel, and likewise with their latest Yocto release that uses 5.4.100 linux-imx kernel.
+> >
+> > ```
+> > root@nitrogen6sx:~# dd if=/dev/hwrng of=/tmp/random bs=256 count=10
+> > [  113.940735] caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error
+> > dd: /dev/hwrng: Invalid argument
+> > root@nitrogen6sx:~# rm /tmp/random
+> > root@nitrogen6sx:~# dd if=/dev/hwrng of=/tmp/random bs=256 count=10
+> > [  125.300823] caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error
+> > dd: /dev/hwrng: Invalid argument
+> > root@nitrogen6sx:~# du -hs /tmp/random
+> > 0       /tmp/random
+> > root@nitrogen6sx:~# ls -l /tmp/random
+> > -rw-r--r--    1 root     root             0 Dec 16 17:27 /tmp/random
+> > root@nitrogen6sx:~#
+> > ```
+> >
+> > And then no data is available from /dev/hwrng.
+> >
+> > The problem occurs when adding OP_ALG_PR_ON(prediction resistance) when setting up
+> > job descriptor for reading new random data in caamrng.c. There are also
+> > some confusing parts about this commit that I'm not too sure about.
+> >
+> > 1. It's adding a conditional variable named 'pr_support', but I guess this only
+> > indicates if the MC(Management Complex) supports prediction resistance,
+> > since the following check can be bypassed when 'pr_support' is false.
+> >
+> >     /*
+> >      * If SEC has RNG version >= 4 and RNG state handle has not been
+> >      * already instantiated, do RNG instantiation
+> >      * In case of SoCs with Management Complex, RNG is managed by MC f/w.
+> >      */
+> >     if (!(ctrlpriv->mc_en && pr_support) && rng_vid >= 4) {
+> >
+> >
+> > This will eventually lead to the following chain call: caam_probe() -> instantiate_rng() ->
+> > build_instantiation_desc(), where OP_ALG_PR_ON will be used through DECO.
+> >
+> > static void build_instantiation_desc(u32 *desc, int handle, int do_sk)
+> > {
+> >     u32 *jump_cmd, op_flags;
+> >
+> >     init_job_desc(desc, 0);
+> >
+> >     op_flags = OP_TYPE_CLASS1_ALG | OP_ALG_ALGSEL_RNG |
+> >             (handle << OP_ALG_AAI_SHIFT) | OP_ALG_AS_INIT |
+> >             OP_ALG_PR_ON;
+> >     ...
+> >     ...
+> >     ...
+> >
+> > Shouldn't it be named 'mc_pr_support' instead, or something similar?
+> >
+> > 2. PR is unconditionally used in caamrng.c(caam_jr module) when
+> > reading new RNG data. Should this be the case?
+> >
+> > Removing OP_ALG_PR_ON in caam_init_desc() from drivers/crypto/caam/caamrng.c
+> > seems to fix the problem we're experiencing, here's an example:
+> > ```
+> > diff --git a/drivers/crypto/caam/caamrng.c b/drivers/crypto/caam/caamrng.c
+> > index 77d048dfe5d0..f085a80b1b3c 100644
+> > --- a/drivers/crypto/caam/caamrng.c
+> > +++ b/drivers/crypto/caam/caamrng.c
+> > @@ -67,8 +67,7 @@ static u32 *caam_init_desc(u32 *desc, dma_addr_t dst_dma)
+> >  {
+> >         init_job_desc(desc, 0); /* + 1 cmd_sz */
+> >         /* Generate random bytes: + 1 cmd_sz */
+> > -       append_operation(desc, OP_ALG_ALGSEL_RNG | OP_TYPE_CLASS1_ALG |
+> > -                        OP_ALG_PR_ON);
+> > +       append_operation(desc, OP_ALG_ALGSEL_RNG | OP_TYPE_CLASS1_ALG);
+> >         /* Store bytes: + 1 cmd_sz + caam_ptr_sz  */
+> >         append_fifo_store(desc, dst_dma,
+> >                           CAAM_RNG_MAX_FIFO_STORE_SIZE, FIFOST_TYPE_RNGSTORE);
+> > ```
 > 
-> After the pool lock is released, the work item can be executed and be freed
-> before kasan_record_aux_stack() is called.  Is it Ok?
+> We also observe this issue.
 > 
-
-Right. That is a concern. As Dmitry pointed out there is a bug in the
-code that kasan_record_aux_stack() is in the "out:" path.
-
-> And I think queue_work() is allowed to be called with other raw_spin held.
-> If it is the case, kasan_record_aux_stack() is still in raw_spin held section.
+> Heiko on Cc tried increasing the RTSDCTL_ENT_DLY_MIN value
+> and this seems to help:
 > 
-
-I looked for queue_work() -> queue_work_on() -> __queue_work() and
-function header doc. I couldn't find any place it says it is okay to
-call queue_work() with raw spinlock held.
-
-I am thinking that is not the case, since __queue_work() acquires pool
-lock which is a raw spinlock. The lockdep warning will occur when the
-pool lock acquire happens. I haven't seen it. We have 1290 callers of
-queue_work() and we would have seen this before.
-
-thanks,
--- Shuah
-
-
-
-
-
-
-
-
+> diff --git a/drivers/crypto/caam/regs.h b/drivers/crypto/caam/regs.h
+> index af61f3a2c0d4..53c9fa04a24c 100644
+> --- a/drivers/crypto/caam/regs.h
+> +++ b/drivers/crypto/caam/regs.h
+> @@ -513,7 +513,7 @@ struct rng4tst {
+>   };
+>  #define RTSDCTL_ENT_DLY_SHIFT 16
+>  #define RTSDCTL_ENT_DLY_MASK (0xffff << RTSDCTL_ENT_DLY_SHIFT)
+> -#define RTSDCTL_ENT_DLY_MIN 3200
+> +#define RTSDCTL_ENT_DLY_MIN 4800
+>  #define RTSDCTL_ENT_DLY_MAX 12800
+>   u32 rtsdctl; /* seed control register */
+>   union {
+> 
+> Does this help in your case?
+> 
+> Thanks,
+> 
+> Fabio Estevam
