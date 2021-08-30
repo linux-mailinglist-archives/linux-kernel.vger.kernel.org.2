@@ -2,151 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE703FBB1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 103223FBB1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238287AbhH3RhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 13:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
+        id S238117AbhH3Rks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 13:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238117AbhH3RhW (ORCPT
+        with ESMTP id S234054AbhH3Rkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 13:37:22 -0400
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CB1C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:36:28 -0700 (PDT)
-Received: by mail-vs1-xe29.google.com with SMTP id e9so11151029vst.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:36:28 -0700 (PDT)
+        Mon, 30 Aug 2021 13:40:47 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6336CC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:39:53 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id s12so27366070ljg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:39:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2YdUdeUKZfBFzMR1jBM9RNC90FnM3wxYhfPH5nEI0FQ=;
-        b=LX9ib2ZyUcSD/ZaFz+8eAUshfQOAn/4woZAxZhLaESc5RNlCL/7SNuGmtjHlB8Ra8a
-         LYkHAy0oqhLyoAHQ/kFNQirR9PaGmx5S2gMPptsrRfGHJFRy0XPIcFTJMwD7Ebf4zMkp
-         +ICtUsKogy/NDpufwRoIImN521zHSHcy6j20E=
+        bh=HeMMnCp0nlu/Sde0gJcxD0ub3PJKeMYmTJeH/ribw2o=;
+        b=ciPa7I6WJu3/XM5+c+WaFTAVNWBLVA7Nqnv/66glKA+GWhiXOPLQhRl8U63zHWPjq0
+         fQ+GA6m2t8Navpa1IoNtZhfcmOhqcNw0UtnrRRjTWrRWHURarh+C3Cj43ajLhJd7uBFK
+         TPQ/GItuQ/8WBTsVN23YNvRQiKYvkPOYQUlco=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2YdUdeUKZfBFzMR1jBM9RNC90FnM3wxYhfPH5nEI0FQ=;
-        b=MybRu7yQpMIDzT035d4On2LBvIDjfArrlLh5ERQiQyI+qKaI2rQdhlnTSpbav8c4EA
-         lfVGiAGzFLUjEzw+idPEUu7p7rrigcfRsclw3RHZKQCzG8dusvQK7qHQV9FwBM73uaJn
-         Zxk7L2fmaythkjrnZok4ExBwuEwm/VRkveywp07Te8TbZ6gj3DPGCg2uwICq/BgLB7yl
-         jHnsMSDxkj3aemdR//gJPHAh3EF2Skow0lTgP7Q1xKbmmE7AYh7ZFrN/g6t27EpeXnr0
-         0bw1g2j5sAGrfxYXIo0FtFInF4jSzGi24HES1emApOV0g/nGBZfIsrzGW48bGosDw561
-         64uw==
-X-Gm-Message-State: AOAM5325701+tibvDWD1gC2QoEwXP4f9CqCVfvj+0pNHxPGJA8O3+V9W
-        1HcmYfQvq5djEkoWG2xLEAKH11g+YcC1YdnJ5DV5Cg==
-X-Google-Smtp-Source: ABdhPJwHwYOFG4pDjI/FzqFAeEptCPiadG2mKKA2G7M/xzR6URTq7cbu6NBgFZRZcR6Fj7zJzLpBXzKKJN97qEq8Mjw=
-X-Received: by 2002:a67:4c7:: with SMTP id 190mr16166130vse.0.1630344987923;
- Mon, 30 Aug 2021 10:36:27 -0700 (PDT)
+        bh=HeMMnCp0nlu/Sde0gJcxD0ub3PJKeMYmTJeH/ribw2o=;
+        b=LWrLywTdnfUz+9mEyjXiwENdGIVEKU8J05d4ydCzvTxtpdAAnO0Kave2/QOZW3SE/S
+         Cr0QRXdM++barGah6pcALtjHqsIsjxdjjM2xjK0WDJp8NzJZJ5+NE+1Oy4DVKyak3W0F
+         pZvqdIwFLvRn0R2doRPztkiczTZBeN1Yy4UM0Ow3v2KVjpdNxar8BcNHIKoddDhmmMYf
+         n6YULl+PeNKN6d0be9mj1IfkMq1896JtCx/BXLoBMdKilBpFdzQqTtvUQm+t28N3x0e7
+         4vlPZfkm8o11IWv0+JQ4VAKNZWah9AhEm8tKsFcuE8wIUU2VFCY7dPbr1FoH/COaOcNs
+         I0sw==
+X-Gm-Message-State: AOAM532NZ8dwuhXswsjRnzIh48btB3kc7Chjh6PyWmUwoZ4M0741d8AZ
+        8RZy9n3WFTCupWE4QFDdZkYyMrYQg0iCIUgX
+X-Google-Smtp-Source: ABdhPJz7YPOMEt0CzqU5C+LNJlOQ5Ktx2ayYg7kyJ8735WP6NWbfcLCVvPjqv2/IiUUtFLrGRrOBkA==
+X-Received: by 2002:a2e:91d0:: with SMTP id u16mr21692061ljg.324.1630345191219;
+        Mon, 30 Aug 2021 10:39:51 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id k27sm777810ljn.72.2021.08.30.10.39.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 10:39:50 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id p15so27262520ljn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:39:50 -0700 (PDT)
+X-Received: by 2002:a2e:8808:: with SMTP id x8mr21999393ljh.220.1630345190373;
+ Mon, 30 Aug 2021 10:39:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210520154654.1791183-1-groug@kaod.org> <20210520154654.1791183-6-groug@kaod.org>
- <CAOQ4uxh69ii5Yk-DgFAq+TrrvJ6xCv9s8sKLfo3aBCSWjJvp9Q@mail.gmail.com>
- <YRqEPjzHg9IlifBo@redhat.com> <YSpUgzG8rM5LeFDy@miu.piliscsaba.redhat.com> <YS0O2MlR2G2LJH/0@redhat.com>
-In-Reply-To: <YS0O2MlR2G2LJH/0@redhat.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 30 Aug 2021 19:36:17 +0200
-Message-ID: <CAJfpeguyBU3r+rUa9NvvNjaBwUno9O5PszAoriABStf5Fm3xfg@mail.gmail.com>
-Subject: Re: [PATCH v4 5/5] virtiofs: propagate sync() to file server
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Amir Goldstein <amir73il@gmail.com>, Greg Kurz <groug@kaod.org>,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Max Reitz <mreitz@redhat.com>, Robert Krawitz <rlk@redhat.com>
+References: <20210830154702.247681585@linutronix.de>
+In-Reply-To: <20210830154702.247681585@linutronix.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 30 Aug 2021 10:39:34 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiWxv7baa91W_0CXFtG+FW_Obp5Y=4BqZD7EZ+nqcRvqg@mail.gmail.com>
+Message-ID: <CAHk-=wiWxv7baa91W_0CXFtG+FW_Obp5Y=4BqZD7EZ+nqcRvqg@mail.gmail.com>
+Subject: Re: [patch 00/10] x86/fpu: Clean up error handling in sigframe
+ related code
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 at 19:01, Vivek Goyal <vgoyal@redhat.com> wrote:
-
-> >  static struct fuse_writepage_args *fuse_find_writeback(struct fuse_inode *fi,
-> > @@ -1608,6 +1609,9 @@ static void fuse_writepage_free(struct fuse_writepage_args *wpa)
-> >       struct fuse_args_pages *ap = &wpa->ia.ap;
-> >       int i;
-> >
-> > +     if (wpa->bucket && atomic_dec_and_test(&wpa->bucket->num_writepages))
+On Mon, Aug 30, 2021 at 9:27 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> Hi Miklos,
->
-> Wondering why this wpa->bucket check is there. Isn't every wpa is associated
-> bucket.  So when do we run into situation when wpa->bucket = NULL.
+> The following series cleans this up. As a side effect the resulting text
+> size of fpu/signal.o shrinks by about 150 bytes.
 
-In case fc->sync_fs is false.
-
-> > @@ -1871,6 +1875,19 @@ static struct fuse_writepage_args *fuse_writepage_args_alloc(void)
-> >
-> >  }
-> >
-> > +static void fuse_writepage_add_to_bucket(struct fuse_conn *fc,
-> > +                                      struct fuse_writepage_args *wpa)
-> > +{
-> > +     if (!fc->sync_fs)
-> > +             return;
-> > +
-> > +     rcu_read_lock();
-> > +     do {
-> > +             wpa->bucket = rcu_dereference(fc->curr_bucket);
-> > +     } while (unlikely(!atomic_inc_not_zero(&wpa->bucket->num_writepages)));
->
-> So this loop is there because fuse_sync_fs() might be replacing
-> fc->curr_bucket. And we are fetching this pointer under rcu. So it is
-> possible that fuse_fs_sync() dropped its reference and that led to
-> ->num_writepages 0 and we don't want to use this bucket.
->
-> What if fuse_sync_fs() dropped its reference but still there is another
-> wpa in progress and hence ->num_writepages is not zero. We still don't
-> want to use this bucket for new wpa, right?
-
-It's an unlikely race in which case the the write will go into the old
-bucket, and will be waited for, but that definitely should not be a
-problem.
-
-> > @@ -528,6 +542,31 @@ static int fuse_sync_fs(struct super_block *sb, int wait)
-> >       if (!fc->sync_fs)
-> >               return 0;
-> >
-> > +     new_bucket = fuse_sync_bucket_alloc();
-> > +     spin_lock(&fc->lock);
-> > +     bucket = fc->curr_bucket;
-> > +     if (atomic_read(&bucket->num_writepages) != 0) {
-> > +             /* One more for count completion of old bucket */
-> > +             atomic_inc(&new_bucket->num_writepages);
-> > +             rcu_assign_pointer(fc->curr_bucket, new_bucket);
-> > +             /* Drop initially added active count */
-> > +             atomic_dec(&bucket->num_writepages);
-> > +             spin_unlock(&fc->lock);
-> > +
-> > +             wait_event(bucket->waitq, atomic_read(&bucket->num_writepages) == 0);
-> > +             /*
-> > +              * Drop count on new bucket, possibly resulting in a completion
-> > +              * if more than one syncfs is going on
-> > +              */
-> > +             if (atomic_dec_and_test(&new_bucket->num_writepages))
-> > +                     wake_up(&new_bucket->waitq);
-> > +             kfree_rcu(bucket, rcu);
-> > +     } else {
-> > +             spin_unlock(&fc->lock);
-> > +             /* Free unused */
-> > +             kfree(new_bucket);
-> When can we run into the situation when fc->curr_bucket is num_writepages
-> == 0. When install a bucket it has count 1. And only time it can go to
-> 0 is when we have dropped the initial reference. And initial reference
-> can be dropped only after removing bucket from fc->curr_bucket.
->
-> IOW, we don't drop initial reference on a bucket if it is in
-> fc->curr_bucket. And that mean anything installed fc->curr_bucket should
-> not ever have a reference count of 0. What am I missing.
-
-You are correct.  I fixed it by warning on zero count and checking for
-count != 1.
-
-I have other fixes as well, will send v2.
+Well, some of the patches in the middle were confusing because of how
+0/ERROR was mixing with a success true/false thing, but the end result
+seems to be a whole lot more sensible.
 
 Thanks,
-Miklos
+
+             Linus
