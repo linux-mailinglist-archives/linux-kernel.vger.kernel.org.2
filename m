@@ -2,148 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B643FB63A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A31DE3FB63C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236589AbhH3Mis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50642 "EHLO
+        id S232454AbhH3MlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235173AbhH3Mip (ORCPT
+        with ESMTP id S230513AbhH3MlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:38:45 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C329BC061575;
-        Mon, 30 Aug 2021 05:37:51 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:105:465:1:4:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4Gyqbf3YV9zQkJ0;
-        Mon, 30 Aug 2021 14:37:50 +0200 (CEST)
-Received: from gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173])
-        by smtp202.mailbox.org (Postfix) with ESMTP id 7D554272;
-        Mon, 30 Aug 2021 14:37:48 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp202.mailbox.org ([80.241.60.245])
-        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
-        with ESMTP id ZmaoWW-eg1AL; Mon, 30 Aug 2021 14:37:47 +0200 (CEST)
-Received: from suagaze.. (unknown [46.183.103.17])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp202.mailbox.org (Postfix) with ESMTPSA id A1F423D0;
-        Mon, 30 Aug 2021 14:37:42 +0200 (CEST)
-From:   =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 2/2] mwifiex: Try waking the firmware until we get an interrupt
-Date:   Mon, 30 Aug 2021 14:37:04 +0200
-Message-Id: <20210830123704.221494-3-verdre@v0yd.nl>
-In-Reply-To: <20210830123704.221494-1-verdre@v0yd.nl>
-References: <20210830123704.221494-1-verdre@v0yd.nl>
+        Mon, 30 Aug 2021 08:41:05 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4607DC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 05:40:12 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id j4-20020a17090a734400b0018f6dd1ec97so9882965pjs.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 05:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ehJntOoC29/aDdVKocB/Ug4RX2L3GatBa1f/ygdqGyg=;
+        b=ZYLCtNbCKbpAUQOaPc+p0j2LMZGyRRdYh7qF0bZp22vhHvZML+XwXqLPfHYtPoZLaC
+         76KmNSwi3Ns5IvC4RmK2p5fKVsSRY2sbOxvOfyssL/I6EuBX6bDmtUnhXNFqvUKibOxA
+         5ayJTuqLgJG+iij8TqEWWTXbD7xXBlexCKSxXLJrst80RzOv6l5XngBpmdInTB0nIIC/
+         gyyBmV3Fb5Dtc7l08s0ddnXSb6I1Os4O7JCHm4Zv+fVmlujqT7P0O2VisU4A+oNzGNPh
+         cEzU5aBQKG9ENT6ePIwwpfTx2sH1kiqWzhLpFxm7LMPH8FpmwX4J1UjE+cJXBYDPzgKI
+         fqDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ehJntOoC29/aDdVKocB/Ug4RX2L3GatBa1f/ygdqGyg=;
+        b=MlxVI7tTDmfzTd42YNrtlkxH1aSu2BRpPqIMJw4UghYR11azDJvFwBHYYsmbGdrdD/
+         hIq5eAfpmHZmdqARCovbiBVINjLt/sQ5/DiS41A881E8aIRoFkJS8OiyLEihVFlK8nEU
+         5mpLgHx7BeSXgRY4ZR9h1Dl8wtiUJdzM9K/VvYXXC2DTAkiniK8Rwn2U0VZQoFUlchnc
+         F7aWup410p7TXfwOgjWfPcyjPH/ciK64Kpy2cUyD0y4EBnlbiSGXq6M/4MVbzuFSz2UU
+         2BUFFo/WOnir6sQKkf5SnQjO0PJ5gkHA6UGDvNYC+qPR7XK8Dz2rOctVaYxoIdkACL0b
+         Ae1w==
+X-Gm-Message-State: AOAM530vNpKW1TK0cwMclf0IwCHWuA/Whlt03YxUohJVhs/bZVuSHUWO
+        NQpaGN7iDlQ67LBqny9iF2p/EIKJhhHoWdD3SCg=
+X-Google-Smtp-Source: ABdhPJyfZeRUKmp0oSzKRpXfTfUvuwST6VnJdZjt7od5XKdJ8al7k7sATncio3/TZt/aNmh3h07YwmVcZMef8lW+42w=
+X-Received: by 2002:a17:90a:ec0a:: with SMTP id l10mr4552540pjy.26.1630327211750;
+ Mon, 30 Aug 2021 05:40:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 7D554272
-X-Rspamd-UID: 160a58
+References: <20210829144531.c2syu4vv4s22dlg7@h510> <CAPGkw+xTFBeH-x-=dsQK-K5KjZZ7JKmQggz2s26=p7g+71kZjA@mail.gmail.com>
+ <20210829164921.u5ntqk5jz2v3hlgr@h510> <CAPGkw+ypKOVsJF_Guna+9+q-+cApYzdBGHMPKKr6MAzGQtqy2g@mail.gmail.com>
+ <CAPGkw+wGn1oTAO7JXXApDMm4cFfxXam913hOGnnup1nSOpcVPA@mail.gmail.com>
+ <CAPGkw+xroJmxa9i6X++un6tQFQ-3F5uMRCatzufWsdfw7cQ2LQ@mail.gmail.com>
+ <20210829205953.63ebc32xlyudsqzg@h510> <CAPGkw+wtE0HMQmYsMkFEt_BPqqB2j_TQ6zwATp6zyXLyxxwTOA@mail.gmail.com>
+In-Reply-To: <CAPGkw+wtE0HMQmYsMkFEt_BPqqB2j_TQ6zwATp6zyXLyxxwTOA@mail.gmail.com>
+From:   Krish Jain <krishjain02939@gmail.com>
+Date:   Mon, 30 Aug 2021 14:40:00 +0200
+Message-ID: <CAPGkw+w=A1ZBQrmSR2mCgXnfEvhG9tbuJjQ+q1-=Tedwb_XhOA@mail.gmail.com>
+Subject: Re: [PATCH] Declare the file_operations struct as const
+To:     Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems that the firmware of the 88W8897 card sometimes ignores or
-misses when we try to wake it up by reading the firmware status
-register. This leads to the firmware wakeup timeout expiring and the
-driver resetting the card because we assume the firmware has hung up or
-crashed (unfortunately that's not unlikely with this card).
+Hi.
 
-Turns out that most of the time the firmware actually didn't hang up,
-but simply "missed" our wakeup request and doesn't send us an AWAKE
-event.
+https://pastebin.com/NuvqMUWu is the link to the .config file.
+The error I get is https://imgur.com/gkwh7Sb .
 
-Trying again to read the firmware status register after a short timeout
-usually makes the firmware wake we up as expected, so add a small retry
-loop to mwifiex_pm_wakeup_card() that looks at the interrupt status to
-check whether the card woke up.
 
-The number of tries and timeout lengths for this were determined
-experimentally: The firmware usually takes about 500 us to wake up
-after we attempt to read the status register. In some cases where the
-firmware is very busy (for example while doing a bluetooth scan) it
-might even miss our requests for multiple milliseconds, which is why
-after 15 tries the waiting time gets increased to 10 ms. The maximum
-number of tries it took to wake the firmware when testing this was
-around 20, so a maximum number of 50 tries should give us plenty of
-safety margin.
+Best Regards
 
-A good reproducer for this issue is letting the firmware sleep and wake
-up in very short intervals, for example by pinging an device on the
-network every 0.1 seconds.
 
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
----
- drivers/net/wireless/marvell/mwifiex/pcie.c | 29 ++++++++++++++++-----
- 1 file changed, 23 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
-index bfd6e135ed99..14742bdb96ef 100644
---- a/drivers/net/wireless/marvell/mwifiex/pcie.c
-+++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
-@@ -658,6 +658,7 @@ static int mwifiex_pm_wakeup_card(struct mwifiex_adapter *adapter)
- {
- 	struct pcie_service_card *card = adapter->card;
- 	const struct mwifiex_pcie_card_reg *reg = card->pcie.reg;
-+	int n_tries = 0;
- 
- 	mwifiex_dbg(adapter, EVENT,
- 		    "event: Wakeup device...\n");
-@@ -665,12 +666,28 @@ static int mwifiex_pm_wakeup_card(struct mwifiex_adapter *adapter)
- 	if (reg->sleep_cookie)
- 		mwifiex_pcie_dev_wakeup_delay(adapter);
- 
--	/* Accessing fw_status register will wakeup device */
--	if (mwifiex_write_reg(adapter, reg->fw_status, FIRMWARE_READY_PCIE)) {
--		mwifiex_dbg(adapter, ERROR,
--			    "Writing fw_status register failed\n");
--		return -1;
--	}
-+	/* Access the fw_status register to wake up the device.
-+	 * Since the 88W8897 firmware sometimes appears to ignore or miss
-+	 * that wakeup request, we continue trying until we receive an
-+	 * interrupt from the card.
-+	 */
-+	do {
-+		if (mwifiex_write_reg(adapter, reg->fw_status, FIRMWARE_READY_PCIE)) {
-+			mwifiex_dbg(adapter, ERROR,
-+				    "Writing fw_status register failed\n");
-+			return -1;
-+		}
-+
-+		n_tries++;
-+
-+		if (n_tries <= 15)
-+			usleep_range(400, 700);
-+		else
-+			msleep(10);
-+	} while (n_tries <= 50 && READ_ONCE(adapter->int_status) == 0);
-+
-+	mwifiex_dbg(adapter, EVENT,
-+		    "event: Tried %d times until firmware woke up\n", n_tries);
- 
- 	if (reg->sleep_cookie) {
- 		mwifiex_pcie_dev_wakeup_delay(adapter);
--- 
-2.31.1
-
+On Mon, Aug 30, 2021 at 12:11 AM Krish Jain <krishjain02939@gmail.com> wrot=
+e:
+>
+> On Sun, Aug 29, 2021 at 11:00 PM Bryan Brattlof <hello@bryanbrattlof.com>=
+ wrote:
+> >
+> > On this day, August 29, 2021, thus sayeth Krish Jain:
+> > > Keeping you updated. Small win. The "Symbol version dump
+> > > "Module.symvers" is missing. " error disappeared. Now I still don't
+> > > know why
+> > >
+> >
+> > Whoop! Any win, no matter their size, always feel great. I ran around
+> > the house yesterday after cross compiling DOOM! for an armel chip. It's
+> > that "win" feeling you get that keeps me involved.
+> >
+> > It is important that you find out why though. What is the importance to
+> > having Module.symvers? and why is it a WARNING and not an ERROR?
+>
+>  When a module is loaded/used, the values contained in the kernel are
+> compared with similar values in the module; if they are not equal, the
+> kernel refuses to load the module. I don't need it in my case.
+>
+> > What would happen if we didn't have the proper symbols when compiling o=
+r
+> > installing this driver?
+> > How and what generates the Module.symvers file when we *do* need it?
+>
+> The kernel would refuse to load the module.
+>
+>
+>
+>
+>
+> > How can we turn this warning off when we don't need it?
+> >
+> > This is covered in chapter "6. Module Versioning"
+> >
+> >   https://www.kernel.org/doc/html/latest/kbuild/modules.html
+> >
+> > >
+> > > ERROR: Kernel configuration is invalid."; \
+> > > echo >&2 "         include/generated/autoconf.h or
+> > > include/config/auto.conf are missing.";\
+> > > echo >&2 "         Run 'make oldconfig && make prepare' on kernel src
+> > > to fix it."; \
+> > >
+> > >
+> > > is still present.
+> > >
+> > > How can I fix this?
+> > >
+> >
+> > Are there any other 'make *config' options we could try?
+>
+> Yes, like main menuconfig. I tried it but it still doesn't work.
+>
+> > What does 'make prepare' even do?
+>
+>
+> Prepares for different architectures etc.
+>
+>
+> > Why do we even need a configuration file?
+> >
+> >   https://www.kernel.org/doc/html/latest/kbuild/kconfig.html
+> >
+> > >
+> > > Best Regards
+> > >
+> > > On Sun, Aug 29, 2021 at 8:28 PM Krish Jain <krishjain02939@gmail.com>=
+ wrote:
+> > > >
+> > > > Basically it says "you must have a prebuilt kernel available that
+> > > > contains the configuration and header files used in the build." Sin=
+ce
+> > > > for the staging kernel  "make oldconfig" asked me for  more
+> > > > configurations apart from my old configuration file (as it reads th=
+e
+> > > > existing .config file that was used for an old kernel and prompts t=
+he
+> > > > user for options in the current kernel source that are not found in
+> > > > the file) . So I *don't* currently have a prebuilt kernel that
+> > > > contains all the configuration in my staging kernel's .config file.=
+ So
+> > > > do I have to build the kernel once before I can just build the modu=
+le
+> > > > with "make CCFLAGS=3D-Werror W=3D1 M=3Ddrivers/staging/android" ?
+> > > >
+> >
+> > What do all these other configuration settings turn on and off anyway?
+> >
+> > Do we really need CONFIG_INFINIBAND turned on if we're working in the
+> > drivers/staging tree of the kernel?
+>
+>
+> No, we don't. I removed it.
+>
+> > What would we gain from having a compiled kernel if we want to test a
+> > single staging driver?
+>
+> No need to compile the entire kernel I guess for my use case. But
+> after all this reading :( I still don't get why " sudo make
+> CCFLAGS=3D-Werror W=3D1 M=3Ddrivers/staging/android/  V=3D1" worked for y=
+ou
+> but not for me. I still get the following errors
+>
+>
+> test -e include/generated/autoconf.h -a -e include/config/auto.conf || ( =
+\
+> echo >&2; \
+> echo >&2 "  ERROR: Kernel configuration is invalid."; \
+> echo >&2 "         include/generated/autoconf.h or
+> include/config/auto.conf are missing.";\
+> echo >&2 "         Run 'make oldconfig && make prepare' on kernel src
+> to fix it."; \
+> echo >&2 ; \
+> /bin/false)
+> .....
+>
+>
+> How can I fix this?
+>
+>
+>
+>
+> > If you found what Module.symvers does, you should know this.
+> >
+> > > > > >
+> > > > > > Again, do not allow others to rob you of learning how to solve =
+these
+> > > > > > issues yourself. I *strongly* encourage you to familiarize your=
+self with
+> > > > > > the Kernel Build System in the Documentation.
+> > > > > >
+> > > > > >   https://www.kernel.org/doc/html/latest/kbuild/modules.html
+> > > > > >
+> > > > > > Specifically the first paragraph of "2. How to Build External M=
+odules"
+> > > > > >
+> > > > > > It may seem like a lot for such a simple issue but it *is* wort=
+h it.
+> > > > > > ~Bryan
+> > > > > >
+> > > > >
+> > > > > That section says
+> > > > >
+> > > > >
+> > > > > "To build external modules, *you must have a prebuilt kernel
+> > > > > available* that contains the configuration and header files used =
+in
+> > > > > the build. Also, the kernel must have been built with modules ena=
+bled.
+> > > > > If you are using a distribution kernel, there will be a package f=
+or
+> > > > > the kernel you are running provided by your distribution.
+> > > > >
+> > > > > An alternative is to use the =E2=80=9Cmake=E2=80=9D target =E2=80=
+=9Cmodules_prepare.=E2=80=9D This
+> > > > > will make sure the kernel contains the information required. The
+> > > > > target exists solely as a simple way to prepare a kernel source t=
+ree
+> > > > > for building external modules.
+> > > > >
+> > > > > NOTE: =E2=80=9Cmodules_prepare=E2=80=9D will not build Module.sym=
+vers even if
+> > > > > CONFIG_MODVERSIONS is set; therefore, *a full kernel build needs =
+to be
+> > > > > executed to make module versioning work.*"
+> > > > >
+> > > > > So I am just trying to confirm with you whether I have to first b=
+uild
+> > > > > the kernel with like "make" or not? As you can imagine my hardwar=
+e
+> > > > > takes *very* long to build a kernel as I did in my last attempt s=
+o I
+> > > > > am asking whether it is needed. Hope you understand.
+> > > > >
+> >
+> > I understand. Though I still don't wish to rob you of this opportunity.
+> >
+> > Your ability to come up with these questions and answer them yourself i=
+s
+> > what will make you a better programmer and developer.
+> >
+> > Don't get me wrong. Greg knows all too well the garbage I can shovel hi=
+s
+> > way. It's not about knowing the answer. It about knowing how to find th=
+e
+> > answer yourself.
+> >
+> > ~Bryan
+> >
