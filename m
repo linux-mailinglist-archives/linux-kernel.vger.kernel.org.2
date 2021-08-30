@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1FF3FB069
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 06:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D223FB06B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 06:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232521AbhH3ETh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 00:19:37 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:45399 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232012AbhH3ETZ (ORCPT
+        id S232297AbhH3ETm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 00:19:42 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:24917 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231278AbhH3ET3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 00:19:25 -0400
+        Mon, 30 Aug 2021 00:19:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1630297112; x=1661833112;
+  t=1630297116; x=1661833116;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:content-transfer-encoding:mime-version;
-  bh=A0RiadUwWBnN6qLQ6baUXXxCN+i01fbrXSIW3KEH9u4=;
-  b=ARt83u9x1L1HCcS/jWn8dW+8L1obpBJn/nWS9AWtXxbNLVyX+0IJh5R2
-   f6b/xJcQbjiZCnrsgK++1l2kUvgHL/O2VFDZPHrnfcIEYVfeDmPyrbaX8
-   Ri9qIjBLUTUX9SCoV0wSx0f83iAXN+KklUqVPPuR7JMdoE/SZab25kD36
-   QMHn5h5iwn5HLcJUl96YQUy/73ahnsP88GnbdHd+TqAgtrtsBfXFO6kqY
-   vFmOSDmmMempiMyLGFDejtRYdj/LpEAECuDVkRTx3iTpgq1ukHki6mpq4
-   2gzvTsTiiacyGzlIIDUencyxCbqg4mC8S0oMFf882cSJGlQjW7S9pH0dh
-   w==;
+  bh=JiJChEtiazg7PmlZ9SxLm4HpyxFIb1Rgcy/ImlBAkGk=;
+  b=qPGfvA5O6otnf2lwjR3hQiLnD5c2cBNBYzYcBYEyNk4yZBlYfsaQTnV/
+   kgHxt5slgLnQjCKtoKY5kB268aITMv9fxtyQCXw16arN+etqb7ZW6rmL3
+   j0h9z2UjoeUV5uWuzEN+NgmScgocfGeq5tVqWBDQwBFRGMCNxNY+NpvWS
+   S3anb4zWwNEuGH3W09mZ9FL+hbVNNFl9ujKAHLZ9gJMng3QiSGYJY2XHM
+   Hg8+NlSef+rdPpci8WOVOvx0bF3fy3ZylpOKC/JzitprmznOcYDALRVtR
+   cjWhZ6IJbZ0CF9jmzl9zDuWjsusoDYp6i3QCennYCKQRM+hx7JTzFH+7Y
+   Q==;
 X-IronPort-AV: E=Sophos;i="5.84,362,1620662400"; 
-   d="scan'208";a="177841344"
-Received: from mail-bn8nam12lp2168.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.168])
-  by ob1.hgst.iphmx.com with ESMTP; 30 Aug 2021 12:18:29 +0800
+   d="scan'208";a="282519965"
+Received: from mail-bn7nam10lp2101.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.101])
+  by ob1.hgst.iphmx.com with ESMTP; 30 Aug 2021 12:18:33 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fUGI1i10X1BMUjREGThwhm9qm/r8d1W2XkhYEKLawk8HWwAmnXnm+dV9u+xr3nQlwzy///qyC1GwWcI305NmAC5bfhkT/JLMMeMaj5J14+HcqR9Jb5ksh9ChcVoc2hsgnkUBPH6tKuohbTv906HuaPJl34W177ULiJIt1TyRhT7nTrljE2tMZQFkyMWv/PeTyAChzw9m/o2cU3XfUL+uVzlj2tSfdixFRdEZ/NmsySAI9fkvJhRFkiWl1CeA3meBJdadi5qZZTAa/myrA1GPqhd1W9zsKgbUPnM79MX/MBVO7aK0OHEgiDL0Up7k2NZVtf+plApawEkAh1gT504cOQ==
+ b=XOEcS/+c8/B7cr02LVvEkm9VVW/29l6WVBQHMhjd2sXgzdxTB5KMjfhCOJvIB5+azqMXEzIHKt7bVbwqYhGurqnLKnpROhCce5QlMElcdakhrFmJkBNPTLGfVzyqInAuaioSZC0DbDR34PLwhTeQsOySOareO2s88g9mxKAsL1mof11EWVPMfSnxF8gIDMyDkCT6aplb1Q+tvH1bcXm7Rl64ewMuBMlBfc/HX3YamMHGf6XyHpnLvdBWHHTLwVFvXgzaOaXl9OQvd5EyaQbsYLKPUjkzi7ukYQTACs9hsFep5X1Ii7HIQ7LclGvUuVBjqP+HzS9DdloogK9ZAev6lQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QIiEX1BGg/RPcL4NTR0Io5dK6z9osq7SQaNwyA2Tmeg=;
- b=eVjnioVrMfDya6SwM4EiJS1uF0Dg/V11qZfd2c9iL1sx0WTtH3Hbdht+KGADQ3vcKRVHsfxpmfIDrH+igJcWq+5xQfUQJWC/unBxJJ6pooUcGqL3aFKHSQ/2RX4lVLsOnxuqHRrI7WAdoZeTqG88XEQmXuW/Y6TS2oW2Zp/V+bFdCZWa/xRjTKPQJTZ9rHsAwJeAqC16XEnMkzIm1ApXRkOIJh6GSeXDyAbSNO8Px1hsRu6PD7sxSjBXvtzuU9gumslz5Jk/BQvMUL0okdQ9oJ96nNzr1YLv+syZN76PIKv7bd+5DpiN2sSVfFSsGslb2eTLm7HlR68qn9rJIxihvw==
+ bh=6IS46CVB+KKHtfsLQ6z4JkvIjwuUhP4tVuZzo7zdbAg=;
+ b=ELiO+aFwz90ICsHKUAIAMLHaz5+AtNJPOLSgnnNVWA8JnMZ08bP8/FBp3NKp32k+xeMbg4GxaYbwMpwurrB2EASCrF7LlAyQjvAtMrUpqqe5hZCqgzFTOfQ7C82HoswmiH+68VUXr01unzuXVs6tS/zOuc1sQuOegDmy5znIDbNUDmOahPGwBm6JmxSStc80aVDAM8EZpfrmQ64mdtDg+WP27Rv4qrYBo10R7D8r1L13AaSCIuGpfZhh4jdZrJj7nrEptKzByO/DKyQ3GE+khoZ+TVqI41KdopzQCoEqiBjY+z/PUf00AIOSCbmbXR5WwC05Qwo7XCZmLhnrKKNmRg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QIiEX1BGg/RPcL4NTR0Io5dK6z9osq7SQaNwyA2Tmeg=;
- b=yj4/q9VyAnhjRR1V32RDHpWFzggHXNnjzIlkm0ube5S6hhWnkBdlkYQvt6JbTtmT19K55aaRzy9zMcosOc1R2Bzqb1Ydd3b8rtgk6DpwO2sCaIDKuIo3lZ1TO6sCpMm6zLzhAOvGZIeRXEwg7lv02mu2nAYLlbOGKqf0IrX7+qM=
+ bh=6IS46CVB+KKHtfsLQ6z4JkvIjwuUhP4tVuZzo7zdbAg=;
+ b=qk4dy5uajr1Pnz3Kal0VaPmkstafywTqc/tN5unNYTu6QnaiDkX08agjblKTLYivn/0lEuMGDEF70UeW4W1LAqfhwzugSyIC/UiXl5FxMRXo3aiVCMHcPFIN69kCIvCnNC0DAjSFOpA80JYkDzdXtG2rwmsDK+kEG29rijUSB08=
 Authentication-Results: dabbelt.com; dkim=none (message not signed)
  header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
 Received: from SJ0PR04MB7821.namprd04.prod.outlook.com (2603:10b6:a03:3ac::8)
- by SJ0PR04MB7870.namprd04.prod.outlook.com (2603:10b6:a03:37e::15) with
+ by SJ0PR04MB8273.namprd04.prod.outlook.com (2603:10b6:a03:3e4::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18; Mon, 30 Aug
- 2021 04:18:28 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Mon, 30 Aug
+ 2021 04:18:32 +0000
 Received: from SJ0PR04MB7821.namprd04.prod.outlook.com
  ([fe80::545a:34f7:53c5:6514]) by SJ0PR04MB7821.namprd04.prod.outlook.com
  ([fe80::545a:34f7:53c5:6514%8]) with mapi id 15.20.4457.024; Mon, 30 Aug 2021
- 04:18:28 +0000
+ 04:18:32 +0000
 From:   Anup Patel <anup.patel@wdc.com>
 To:     Palmer Dabbelt <palmer@dabbelt.com>,
         Palmer Dabbelt <palmerdabbelt@google.com>,
@@ -69,9 +69,9 @@ Cc:     Atish Patra <atish.patra@wdc.com>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Anup Patel <anup.patel@wdc.com>,
         Bin Meng <bmeng.cn@gmail.com>
-Subject: [RFC PATCH v3 08/11] RISC-V: Select ACLINT SWI driver for virt machine
-Date:   Mon, 30 Aug 2021 09:47:26 +0530
-Message-Id: <20210830041729.237252-9-anup.patel@wdc.com>
+Subject: [RFC PATCH v3 09/11] dt-bindings: timer: Add ACLINT MTIMER bindings
+Date:   Mon, 30 Aug 2021 09:47:27 +0530
+Message-Id: <20210830041729.237252-10-anup.patel@wdc.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210830041729.237252-1-anup.patel@wdc.com>
 References: <20210830041729.237252-1-anup.patel@wdc.com>
@@ -82,80 +82,144 @@ X-ClientProxiedBy: MA1PR0101CA0002.INDPRD01.PROD.OUTLOOK.COM
  (2603:10b6:a03:3ac::8)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from wdc.com (122.179.63.14) by MA1PR0101CA0002.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:21::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18 via Frontend Transport; Mon, 30 Aug 2021 04:18:24 +0000
+Received: from wdc.com (122.179.63.14) by MA1PR0101CA0002.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:21::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18 via Frontend Transport; Mon, 30 Aug 2021 04:18:28 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b176fd73-5e3e-4077-5d29-08d96b6d3795
-X-MS-TrafficTypeDiagnostic: SJ0PR04MB7870:
+X-MS-Office365-Filtering-Correlation-Id: 508bcfaa-508e-440a-c102-08d96b6d3a48
+X-MS-TrafficTypeDiagnostic: SJ0PR04MB8273:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR04MB7870F82A5CD058D8862CD2408DCB9@SJ0PR04MB7870.namprd04.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <SJ0PR04MB8273AD75634E773D7C0D7CA98DCB9@SJ0PR04MB8273.namprd04.prod.outlook.com>
 WDCIPOUTBOUND: EOP-TRUE
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XJd2jrA6oCdps8mZdbeychFGo1XbVGs0eiqX1i8brr6rdMYxich3zxPtn+aVu0z41vQ23sZCDiBWC98y/Yn4PBU1tAJ9izz5mSv4H/K+xsbz5xy509ziBTOvm//EdtkjhC0+SH6f84cz/lRaZ1smw6VcfeSGDLHSc5Qfwi5eRlUKkPAdYKfToCuO/EOQKpFEwpnLEV5Be3HgxXIIm0yWlsjis2JgQ8IvB8YI86TPllDHwblWXIVk1/9VxBjm2rHgMSRA2gyHf8vl3s4PBXoHrVx9KORmq43UaVXeQxHn4feyLAWlQmjvwPjFyDP+pn1C3i5Jvzx6HZ6ulqewMqDsAAcOGQ8iEH7fvScpjSQY8u/5z8HL90DAznVBVgIf8ZYKqnFccAknLe0N0W5z3h9nTB1Er8bfNDLVEYq1+0VqkJoctW9Xerf3iAvzHO5cbN4pDjF+N/Ludkxa//Dct1O9GF/zQDtfkjZ5YgJ6Xzj6F8y5r0CEXLjg/37gBImLbEWj4HdRLhZedFPVBLmexF80FHi/G1y/8CkQInrTsmt/oBAMC4QCEeeN0RgUIewHKaE3fZezJCuDdCMib1/lkCCpdMw1LP37E1+6Em9yes++IBZeXGOLNCLWr84vqc46/FNLnLKZ9XkU6BtQhKUr2Tz0Lnu5yFwfqU9rBbqBqvRs1z7bw0ijC829NR8URzzRznUe
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7821.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(396003)(366004)(136003)(55016002)(110136005)(66556008)(66476007)(54906003)(8936002)(7696005)(52116002)(956004)(316002)(66946007)(2616005)(44832011)(8676002)(2906002)(8886007)(5660300002)(186003)(86362001)(478600001)(7416002)(4326008)(38350700002)(38100700002)(26005)(4744005)(36756003)(1076003);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: GqOfYtlGVIrVWG+SSjTLHbuF0K3BGC/ADNs2AEmCabYqNvHxuwy2vsHbKIxoQkK2+fSkKx8oRGFyz4hVyZI9eYlEHOZiiCE43yml7puXoSlir2pamsxX0ieWz5x3hAjCU98pXqjg63pWw5F5057bBwTZXATscCFFuhX6cuDEJL6XTJY/UAIxAwIck0c3FJbT10b0S1gsJQsfJHQ3KZsTVI2VmEUlyVVFGVB95u14b/pINWfHgJORzB6QDNDXwN/83/0Xq3uK4b22FfZip1mw6WdYB9RCUPGV0UazFNCIipe2XkfRDbAvyoLqYPQBd1B9FobeTEg2ndm7JlRHRlwOR1F8mlEDJlpZfaOpOXxjRYWMzR5rcReknkF4fIWMN7acKpzRg8r0lcDvxBJ4xVkzr3W7wi+23xszTUkZrOB+4VCTr/V6uuKhGRqudJAm7mCKVsPH7PUSzG188U2t5O3Rr+ak4tAoKzdSVLAJXFWS/mUmlm8+3AI1zAmZDOCQlqIt+IiO+VSLDV+DLbHFcNmTZ0RHI7QiExyKVk1if5gcpe/8jqRxVCjg+iKF0kXl7hJaJDi6dd+dlwCWkYQcYVunV/GKLt9JzYLNpGvgONovt/8Tgm00z1An3Sssv2wfPFfw+ilGWtrdYyeG32GR/8wxid8dBu2LFqSxMj28Qg5tC1tPzjTg8HkmxyKdfqd2TlzEnvkBGT3BUOvIF1rzM7CZ9dpWNP6CFusPRLJJUr6jSkH+IpApsXNX3Dj698a/1K3SC4Py5otvMKBKw1PuiEJi9po3jRpOg54kcViosk6MRagWF6cLwgjLpNkisqfovdas
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7821.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(346002)(396003)(366004)(2616005)(966005)(186003)(110136005)(86362001)(316002)(66476007)(66556008)(956004)(26005)(54906003)(7416002)(36756003)(8886007)(66946007)(1076003)(44832011)(55016002)(4326008)(5660300002)(478600001)(83380400001)(8676002)(8936002)(38100700002)(52116002)(7696005)(2906002)(38350700002)(473944003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Vnvf2BJqoTbMNCQWhPIlxU60WQCriDqDvc38cI+DDDua9oAGUkkEsHRENH4X?=
- =?us-ascii?Q?AKjTeqkaFaNEr8+9U4fB22/PJc/3pPo3nUb4D6rx3khkwJyAq5JoXx2PW//5?=
- =?us-ascii?Q?f7v2184ObnpYtg0EQBc/W//ROSoER6GtrI07v/XMK2X4pI37S+3FyWgrGaXg?=
- =?us-ascii?Q?6GJPUevK+19hk8rGKAnpavrHZCfxEW9OVuMPIBDqmNIy62oLnG4c5HgKv5V2?=
- =?us-ascii?Q?0b6kTC6f2bKe9TLDZoh/hVN0THPPY/IdMSO7HM+eLa/WxxFIBl3XUeE4MaDK?=
- =?us-ascii?Q?T6De3JPLeZloRMG+t0Ggt4iUAtGj0FCMKbnr3PQ0WKScj+i+WXduDnKqkZzY?=
- =?us-ascii?Q?ZIsiJRrS+57/EMSkz0iYhFKZXkncuEepBQPhH0JWmyuoej0JabKATNBYmkks?=
- =?us-ascii?Q?EuO27vdmw7tWzuJ4VsfaYPtkzTXT1fWSXelmLAiUox1JPscvP3cFbUxbSSJi?=
- =?us-ascii?Q?FOiuRGODawr/zOpfUHKqrZT2DqDySGACrw/SevY+LD4YtuuaRJD00YWQjdxn?=
- =?us-ascii?Q?6XvOfHSOre9shg16kzBLA+dct6cb0VNdz+k7iO2wf95YauPygQs+/FcFXucv?=
- =?us-ascii?Q?xNrgdWdtkSG+h3EL1X6rjnLg/Nj2Jx+nASNfvLegm5XvBd1wicjwKSPDgkqD?=
- =?us-ascii?Q?5BtdrsfhoeKwfyEaVg6wOUe/wQ1prl+56UK0kPN9DUYqVYNJw+L58Fp/6McK?=
- =?us-ascii?Q?vvjS+h5mi0+W1rbJSfeDRTX9XVy87MtgEMU+vdiuHJlFQmGnPhAWLweK34HU?=
- =?us-ascii?Q?owcYHruXUmbtLc9nugehV0ZZQuj74afoMZK2T6rwQT2us/fKsILF6qzUlA7j?=
- =?us-ascii?Q?WW6DgW2+7Z6MYC2Ku8dBDSQmWZhqwSWP+rFjf+8qH8g0Y5Giqb2o95/j+XlE?=
- =?us-ascii?Q?oBl2tIFJMLo4Bk7gMEL2b8m5yr5B8Ut4EjdTAjgfqfzHiuLVt4zOQRncXVye?=
- =?us-ascii?Q?D2L87RCfnKQRpKtHHZyzLwqepMlWa3jx+nx3028ur3kIglnYSuCPHy230Q3q?=
- =?us-ascii?Q?HHAQqFDZgDwx7Vn0GnpdAqLxtogp6ASgkIohbkoTGhXutS8CWE9H3BxVCpHM?=
- =?us-ascii?Q?apuB1ZUXc4H7IuUoRZgniY7DHcSHZj84yv+dQx5daar8Js0eVV3m3uMgajUf?=
- =?us-ascii?Q?lOoPXE7B11fF/Yx7YYl054hTr6KvoS8whFD5o+Pr01dLDvkKajOKdx9H3Jib?=
- =?us-ascii?Q?DuVYJNEVSZGoWofk74YKwGUqlTsxkJCXSWioSGBLnbXB/Eqqqxr+QGO4ShKk?=
- =?us-ascii?Q?R3viTR/LHEkNM4TjFnHhzm5DBE3T7VapqFTBjJbaVyptbCzbK9UJELSnlR47?=
- =?us-ascii?Q?wzDb3RW4ZFnm+54+a2Btzj7T?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MHfv1FZoZN093pkoPxIPw2TSGQcqdXcsV9LjAkzXXAWFymvSSN6ALZDvRNY4?=
+ =?us-ascii?Q?+/HH/4cdTmUQQPHeWwydDYT9ONTmv0t7Yads5d8ddlnXgPOEhpLpo/EoMPpO?=
+ =?us-ascii?Q?s563NZcqcT7Y8oHAazjlYzOos/adoLmxDqRnlFoBFCIP0obcqXBp9+m8vXek?=
+ =?us-ascii?Q?JmrUj9vpkn7X5zHiTUBA4SxI65RwelHCrujUmM8EmLyVJ5734ZznKvqS+2hv?=
+ =?us-ascii?Q?Fu8EUNb6c4T1viutpCqi1j1HcJCvBEcZwszzhRvrGw8M0+mtk4dcwkSnGdv6?=
+ =?us-ascii?Q?WZW4XTjXUBAfT6q6WtwfvxK/fsNIchVZPFl9UphWUmmXpcREH2shW1Nhfiag?=
+ =?us-ascii?Q?JulmFuL6b3tVWLk6tKUGPpabtf8GiSK58lZue+rD+N442PnFqhgGzzCMv+rO?=
+ =?us-ascii?Q?JpVavzMTRbIpvD637xWjgYDMlUg39Qhheg1KYN3fZgdLvfZdat+KEb2bl523?=
+ =?us-ascii?Q?avSXKv57uqdZ1a/i45ffPyXf7i7XISGma9AjjiV3C35B4C9KC+oCIwaq972J?=
+ =?us-ascii?Q?57VWidUpl3N+atKgZrDJTtoOxC4b+yItE63qO70u8Zot4F91xgNEBK39jojZ?=
+ =?us-ascii?Q?61eYo/CfbYPmaRzW2s8oLyXnug10Ho0PEWAyJVzSa/XKc7KJ+OG00aDiIOPZ?=
+ =?us-ascii?Q?D/kxIU4UpLhbm8QJlU18rO0LAYk0ih7DDwtod10l1QnNcvyFjm3xDAI5McaL?=
+ =?us-ascii?Q?ecpvHhOdYZQixELt/EtFpHAPA3duc6ZbSSVK5ZiH1F/WFWrX9KGM5Lf5lANX?=
+ =?us-ascii?Q?nVzzLPr1eN8bnnNS0yCc6uCRwilst5Sn8x3g6s4zm+jTnUWdWLLgVU8M82H/?=
+ =?us-ascii?Q?6aa7wiJliAa2S73gn0+3EnL1ti9ZKdNZ2SPb+gYinGjt09EFqf+u2eMRw8Qy?=
+ =?us-ascii?Q?uvtwnCOzwAOOk+uHEO8uEtjL0r8n9S7V2FNMB90GDnOBERKAyYm5wet4yG9R?=
+ =?us-ascii?Q?Ed/eOU7m9r2On66ycf7DwXT6YK8LRQqDp282CWXz7YZWHaFdT4xNHsm/ZH8g?=
+ =?us-ascii?Q?fN6igRBlL4oHqqOt7cSiM7yJDLNv+QLRZYGYd5E3Fx8Vtn8n9Nop9Q+tqjA8?=
+ =?us-ascii?Q?BbZvQMOKgzM9cgLB1yd0vrL82UPJvpCAhMIyJeVJ3RzAqv2huSKrVr+QpFGG?=
+ =?us-ascii?Q?P6iWB/Uq9TDQv550BlZ0e7n6FaanQxKD3zREPQXVUY0imfNBW0abPNIa9m0U?=
+ =?us-ascii?Q?M5lB0Jak9BTK03c/Q4PID+ugD6mc2QGGN8aF017Fz6QzuQ7Z3ftF9tmhkg+V?=
+ =?us-ascii?Q?s8F87sqUaFlcmPiLglHGkCnX0LxpgaDwzs2a9eJElqyOXS3TElcXmARm/0XG?=
+ =?us-ascii?Q?81474J0M5Bm54ZusreM+MMrf?=
 X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b176fd73-5e3e-4077-5d29-08d96b6d3795
+X-MS-Exchange-CrossTenant-Network-Message-Id: 508bcfaa-508e-440a-c102-08d96b6d3a48
 X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7821.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2021 04:18:28.1611
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2021 04:18:32.6733
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9PJ6JJ9blRM8DFM0r62QRPx/DyTnVB3x79aQ6zaTbBedBkwoZTZEzYKpTYZn3IaiiuGTCN6WLLEffExXILlZow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7870
+X-MS-Exchange-CrossTenant-UserPrincipalName: P/OFSKoAf3PjXsJpmzsfCPa96DrI8uJUzcNQSrLV/6dtF6ILuNa/37lFnfVEcacKLpLwmAUJHM5JEnOzrsn3Ig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB8273
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The QEMU virt machine has provision to emulate ACLINT SWI device
-for supervisor-mode so let's select corresponding driver from
-SOC_VIRT kconfig option.
+We add DT bindings documentation for the ACLINT MTIMER device
+found on RISC-V SOCs.
 
 Signed-off-by: Anup Patel <anup.patel@wdc.com>
 Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
 ---
- arch/riscv/Kconfig.socs | 1 +
- 1 file changed, 1 insertion(+)
+ .../bindings/timer/riscv,aclint-mtimer.yaml   | 70 +++++++++++++++++++
+ 1 file changed, 70 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
 
-diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index 30676ebb16eb..651da2ed93bc 100644
---- a/arch/riscv/Kconfig.socs
-+++ b/arch/riscv/Kconfig.socs
-@@ -28,6 +28,7 @@ config SOC_VIRT
- 	select GOLDFISH
- 	select RTC_DRV_GOLDFISH if RTC_CLASS
- 	select SIFIVE_PLIC
-+	select RISCV_ACLINT_SWI
- 	help
- 	  This enables support for QEMU Virt Machine.
- 
+diff --git a/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml b/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
+new file mode 100644
+index 000000000000..b0b2ee6c761c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
+@@ -0,0 +1,70 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/timer/riscv,aclint-mtimer.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: RISC-V ACLINT M-level Timer
++
++maintainers:
++  - Anup Patel <anup.patel@wdc.com>
++
++description:
++  RISC-V SOCs include an implementation of the M-level timer (MTIMER) defined
++  in the RISC-V Advanced Core Local Interruptor (ACLINT) specification. The
++  ACLINT MTIMER device is documented in the RISC-V ACLINT specification found
++  at https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc.
++
++  The ACLINT MTIMER device directly connects to the M-level timer interrupt
++  lines of various HARTs (or CPUs) so the RISC-V per-HART (or per-CPU) local
++  interrupt controller is the parent interrupt controller for the ACLINT
++  MTIMER device.
++
++  The clock frequency of ACLINT is specified via "timebase-frequency" DT
++  property of "/cpus" DT node. The "timebase-frequency" DT property is
++  described in Documentation/devicetree/bindings/riscv/cpus.yaml
++
++properties:
++  compatible:
++    enum:
++      - riscv,aclint-mtimer
++
++    description:
++      Should be "riscv,aclint-mtimer" or "<vendor>,<chip>-aclint-mtimer".
++
++  reg:
++    description: |
++      Specifies base physical address(s) of the MTIME register and MTIMECMPx
++      registers. The 1st region is the MTIME register base and size. The 2nd
++      region is the MTIMECMPx registers base and size.
++    minItems: 2
++    maxItems: 2
++
++  interrupts-extended:
++    minItems: 1
++    maxItems: 4095
++
++  mtimer,no-64bit-mmio:
++    type: boolean
++    description: If present, the timer does not support 64-bit MMIO accesses
++      for both MTIME and MTIMECMP registers.
++
++additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts-extended
++
++examples:
++  - |
++    timer@2000000 {
++      compatible = "riscv,aclint-mtimer";
++      reg = <0x2000000 0x8>,
++            <0x2004000 0x7ff8>;
++      interrupts-extended = <&cpu1intc 7>,
++                            <&cpu2intc 7>,
++                            <&cpu3intc 7>,
++                            <&cpu4intc 7>;
++    };
++...
 -- 
 2.25.1
 
