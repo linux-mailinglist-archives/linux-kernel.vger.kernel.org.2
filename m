@@ -2,379 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7823FB6C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AEB3FB6CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236609AbhH3NNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 09:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236562AbhH3NNt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 09:13:49 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7382C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 06:12:55 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id w8so13404808pgf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 06:12:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xMiOKEABUuuYM/La3iWDzeHNFhRaUgMToSjKTRiBBs8=;
-        b=B5fV6Trc3RciA6eFtl/LMZgE6BHXs/tRBmlYMbHQ7I+PTA+8LINsf/bkJgdQ1q4Rgf
-         J6bLDwE+wYkO9RRSEvyrGr4KaISI1M0W1RnipJaztuJBkykYKN/UiZHE8Qkt3X8NWcja
-         1JgO8WwnPpgyQSmhSdaD8AQaowsMFovWEouLI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xMiOKEABUuuYM/La3iWDzeHNFhRaUgMToSjKTRiBBs8=;
-        b=RBeGfNKMlVYSec5Qp804A3FYMHjWsYqmy2BYfWbbmQbfvdzDv41YkSIZBGfyzZxmxy
-         63zqK9KCqHIa6jojtdkTrnOZdz4s03TmZOHV2D3xLf9+Or3spwO90RRMd4gJe142l5el
-         2K22InbqYL7JypNQ1TXOCYC40xEbMlayraEortsPXzH1PuO/SsviD+W8Q8QzoH+Iwt8Q
-         5B8kjs2e1I3OAqHLHGs+iKgC+njOnS+NG+FKUvI2w2rcuUkU/xHtYIPs0SsGpGKIc1Nz
-         dytYKMcWcmSwS2KbUzoSIuy9b8QYtXRTGIMoITRBZyyPcZJTi6k8z2ePFuj+2YgEGL5i
-         Q4oQ==
-X-Gm-Message-State: AOAM530cBYNYgWZH6JwNc5a1I3lJFePae91sihhU79kSgHuq79rCn6VT
-        qpZwFJdVjPVHv7XJ2mgKnH/r3w==
-X-Google-Smtp-Source: ABdhPJxNJ3ACvlMu0O0GiCAW/fOgZ2uj3pS0zjg11TfwtZ7gy/4duqkAiaCRYJkAoNixkJdkkvp44Q==
-X-Received: by 2002:a63:f501:: with SMTP id w1mr21739282pgh.57.1630329174213;
-        Mon, 30 Aug 2021 06:12:54 -0700 (PDT)
-Received: from chromium.org ([2401:fa00:8f:203:b6e4:322c:c468:357c])
-        by smtp.gmail.com with ESMTPSA id m64sm17617899pga.55.2021.08.30.06.12.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 06:12:53 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 22:12:50 +0900
-From:   Tomasz Figa <tfiga@chromium.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv5 8/8] videobuf2: handle non-contiguous DMA allocations
-Message-ID: <YSzZUjZvtW11AFGE@chromium.org>
-References: <20210823122235.116189-1-senozhatsky@chromium.org>
- <20210823122235.116189-9-senozhatsky@chromium.org>
+        id S232248AbhH3NQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 09:16:58 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:50587 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231126AbhH3NQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 09:16:56 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GyrRk0Shhz9sTS;
+        Mon, 30 Aug 2021 15:16:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jMCmx73LbZIa; Mon, 30 Aug 2021 15:16:01 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GyrRj6Vm0z9sTQ;
+        Mon, 30 Aug 2021 15:16:01 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B864E8B798;
+        Mon, 30 Aug 2021 15:16:01 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id I8dfxxDy3IZ2; Mon, 30 Aug 2021 15:16:01 +0200 (CEST)
+Received: from [172.25.230.100] (po15451.idsi0.si.c-s.fr [172.25.230.100])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7175C8B794;
+        Mon, 30 Aug 2021 15:16:01 +0200 (CEST)
+Subject: Re: [PATCH v4 4/4] powerpc/ptdump: Convert powerpc to GENERIC_PTDUMP
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <b864a92693ca8413ef0b19f0c12065c212899b6e.1625762905.git.christophe.leroy@csgroup.eu>
+ <03166d569526be70214fe9370a7bad219d2f41c8.1625762907.git.christophe.leroy@csgroup.eu>
+ <YSvYFTSwP5EkXQZ0@Ryzen-9-3900X.localdomain>
+ <5c479866-f31a-3579-9d71-357c85b777d0@csgroup.eu>
+ <87tuj7e5e5.fsf@mpe.ellerman.id.au>
+ <2bd9fa19-07b0-c187-c7dd-c6d544e34739@csgroup.eu>
+ <87r1ebdu4t.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <55783e78-3159-9ab2-7955-fb5aa8aa0ddd@csgroup.eu>
+Date:   Mon, 30 Aug 2021 15:16:01 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823122235.116189-9-senozhatsky@chromium.org>
+In-Reply-To: <87r1ebdu4t.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergey,
 
-On Mon, Aug 23, 2021 at 09:22:35PM +0900, Sergey Senozhatsky wrote:
-> This adds support for the new noncontiguous DMA API, which
-> requires allocators to have two execution branches: one
-> for the current API, and one for the new one.
+
+Le 30/08/2021 à 13:55, Michael Ellerman a écrit :
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>> Le 30/08/2021 à 09:52, Michael Ellerman a écrit :
+>>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>>>> Le 29/08/2021 à 20:55, Nathan Chancellor a écrit :
+>>>>> On Thu, Jul 08, 2021 at 04:49:43PM +0000, Christophe Leroy wrote:
+>>>>>> This patch converts powerpc to the generic PTDUMP implementation.
+>>>>>>
+>>>>>
+>>>>> This patch as commit e084728393a5 ("powerpc/ptdump: Convert powerpc to
+>>>>> GENERIC_PTDUMP") in powerpc/next causes a panic with Fedora's ppc64le
+>>>>> config [1] when booting up in QEMU with [2]:
+>>>>>
+>>>>> [    1.621864] BUG: Unable to handle kernel data access on read at 0xc0eeff7f00000000
+>>>>> [    1.623058] Faulting instruction address: 0xc00000000045e5fc
+>>>>> [    1.623832] Oops: Kernel access of bad area, sig: 11 [#1]
+>>>>> [    1.624318] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA PowerNV
+>>>>> [    1.625015] Modules linked in:
+>>>>> [    1.625463] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc7-next-20210827 #16
+>>>>> [    1.626237] NIP:  c00000000045e5fc LR: c00000000045e580 CTR: c000000000518220
+>>>>> [    1.626839] REGS: c00000000752b820 TRAP: 0380   Not tainted  (5.14.0-rc7-next-20210827)
+>>>>> [    1.627528] MSR:  9000000002009033 <SF,HV,VEC,EE,ME,IR,DR,RI,LE>  CR: 84002482  XER: 20000000
+>>>>> [    1.628449] CFAR: c000000000518300 IRQMASK: 0
+>>>>> [    1.628449] GPR00: c00000000045e580 c00000000752bac0 c0000000028a9300 0000000000000000
+>>>>> [    1.628449] GPR04: c200800000000000 ffffffffffffffff 000000000000000a 0000000000000001
+>>>>> [    1.628449] GPR08: c0eeff7f00000000 0000000000000012 0000000000000000 0000000000000000
+>>>>> [    1.628449] GPR12: 0000000000000000 c000000002b20000 fffffffffffffffe c000000002971a70
+>>>>> [    1.628449] GPR16: c000000002960040 c0000000011a8f98 c00000000752bbf0 ffffffffffffffff
+>>>>> [    1.628449] GPR20: c2008fffffffffff c0eeff7f00000000 c000000002971a68 c00a0003ff000000
+>>>>> [    1.628449] GPR24: c000000002971a78 0000000000000002 0000000000000001 c0000000011a8f98
+>>>>> [    1.628449] GPR28: c0000000011a8f98 c0000000028daef8 c200800000000000 c200900000000000
+>>>>> [    1.634090] NIP [c00000000045e5fc] __walk_page_range+0x2bc/0xce0
+>>>>> [    1.635117] LR [c00000000045e580] __walk_page_range+0x240/0xce0
+>>>>> [    1.635755] Call Trace:
+>>>>> [    1.636018] [c00000000752bac0] [c00000000045e580] __walk_page_range+0x240/0xce0 (unreliable)
+>>>>> [    1.636811] [c00000000752bbd0] [c00000000045f234] walk_page_range_novma+0x74/0xb0
+>>>>> [    1.637459] [c00000000752bc20] [c000000000518448] ptdump_walk_pgd+0x98/0x170
+>>>>> [    1.638138] [c00000000752bc70] [c0000000000aa988] ptdump_check_wx+0x88/0xd0
+>>>>> [    1.638738] [c00000000752bd50] [c00000000008d6d8] mark_rodata_ro+0x48/0x80
+>>>>> [    1.639299] [c00000000752bdb0] [c000000000012a34] kernel_init+0x74/0x1a0
+>>>>> [    1.639842] [c00000000752be10] [c00000000000cfd4] ret_from_kernel_thread+0x5c/0x64
+>>>>> [    1.640597] Instruction dump:
+>>>>> [    1.641021] 38e7ffff 39490010 7ce707b4 7fca5436 79081564 7d4a3838 7908f082 794a1f24
+>>>>> [    1.641740] 78a8f00e 30e6ffff 7ea85214 7ce73110 <7d48502a> 78f90fa4 2c2a0000 39290010
+>>>>> [    1.642771] ---[ end trace 6cf72b085097ad52 ]---
+>>>>> [    1.643220]
+>>>>> [    2.644228] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+>>>>> [    2.645523] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+>>>>>
+>>>>> This is not compiler specific, I can reproduce it with GCC 11.2.0 and
+>>>>> binutils 2.37. If there is any additional information I can provide,
+>>>>> please let me know.
+>>>>
+>>>> Can you provide a dissassembly of __walk_page_range() ? Or provide your vmlinux binary.
+>>>
+>>> It seems to be walking of the end of the pgd.
+>>>
+>>> [    3.373800] walk_p4d_range: addr c00fff0000000000 end c00fff8000000000
+>>> [    3.373852] walk_p4d_range: addr c00fff8000000000 end c010000000000000	<- end of pgd at PAGE_OFFSET + 4PB
+>>> [    3.373905] walk_p4d_range: addr c010000000000000 end c010008000000000
+>>
+>> Yes, I want it to walk from TASK_SIZE_MAX up to 0xffffffffffffffff :)
 > 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> Acked-by: Christoph Hellwig <hch@lst.de>
-> ---
->  .../common/videobuf2/videobuf2-dma-contig.c   | 164 +++++++++++++++---
->  1 file changed, 138 insertions(+), 26 deletions(-)
+> But the page table doesn't span that far? 0_o
 > 
+>> static struct ptdump_range ptdump_range[] __ro_after_init = {
+>> 	{TASK_SIZE_MAX, ~0UL},
+>> 	{0, 0}
+>> };
+>>
+>> Ok, well, ppc32 go up to 0xffffffff
+>>
+>> What's the top address to be used for ppc64 ?
+> 
+> It's different for (hash | radix) x page size.
+> 
+> The below works, and matches what we used to do.
+> 
+> Possibly we can come up with something cleaner, not sure.
+> 
+> cheers
+> 
+> 
+> diff --git a/arch/powerpc/mm/ptdump/ptdump.c b/arch/powerpc/mm/ptdump/ptdump.c
+> index 2d80d775d15e..3d3778a74969 100644
+> --- a/arch/powerpc/mm/ptdump/ptdump.c
+> +++ b/arch/powerpc/mm/ptdump/ptdump.c
+> @@ -359,6 +359,8 @@ static int __init ptdump_init(void)
+>   		ptdump_range[0].start = KERN_VIRT_START;
+>   	else
+>   		ptdump_range[0].start = PAGE_OFFSET;
+> +
+> +	ptdump_range[0].end = ptdump_range[0].start + (PGDIR_SIZE * PTRS_PER_PGD);
 
-Thanks a lot for the patch. Please see my comments inline.
+Hum ...
 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> index 1e218bc440c6..f1ad36b04e3a 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> @@ -17,6 +17,7 @@
->  #include <linux/sched.h>
->  #include <linux/slab.h>
->  #include <linux/dma-mapping.h>
-> +#include <linux/highmem.h>
->  
->  #include <media/videobuf2-v4l2.h>
->  #include <media/videobuf2-dma-contig.h>
-> @@ -42,6 +43,7 @@ struct vb2_dc_buf {
->  	struct dma_buf_attachment	*db_attach;
->  
->  	struct vb2_buffer		*vb;
-> +	bool				non_coherent_mem;
->  };
->  
->  /*********************************************/
-> @@ -75,17 +77,39 @@ static void *vb2_dc_cookie(struct vb2_buffer *vb, void *buf_priv)
->  	return &buf->dma_addr;
->  }
->  
-> +/*
-> + * This function may fail if:
-> + *
-> + * - dma_buf_vmap() fails
-> + *   E.g. due to lack of virtual mapping address space, or due to
-> + *   dmabuf->ops misconfiguration.
-> + *
-> + * - dma_vmap_noncontiguous() fails
-> + *   For instance, when requested buffer size is larger than totalram_pages().
-> + *   Relevant for buffers that use non-coherent memory.
-> + *
-> + * - Queue DMA attrs have DMA_ATTR_NO_KERNEL_MAPPING set
-> + *   Relevant for buffers that use coherent memory.
-> + */
->  static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
->  {
->  	struct vb2_dc_buf *buf = buf_priv;
-> -	struct dma_buf_map map;
-> -	int ret;
->  
-> -	if (!buf->vaddr && buf->db_attach) {
-> -		ret = dma_buf_vmap(buf->db_attach->dmabuf, &map);
-> -		buf->vaddr = ret ? NULL : map.vaddr;
-> +	if (buf->vaddr)
-> +		return buf->vaddr;
-> +
-> +	if (buf->db_attach) {
-> +		struct dma_buf_map map;
-> +
-> +		if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
-> +			buf->vaddr = map.vaddr;
-> +
-> +		return buf->vaddr;
->  	}
->  
-> +	if (buf->non_coherent_mem)
-> +		buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size,
-> +						    buf->dma_sgt);
->  	return buf->vaddr;
->  }
->  
-> @@ -101,13 +125,26 @@ static void vb2_dc_prepare(void *buf_priv)
->  	struct vb2_dc_buf *buf = buf_priv;
->  	struct sg_table *sgt = buf->dma_sgt;
->  
-> +	/* This takes care of DMABUF and user-enforced cache sync hint */
->  	if (buf->vb->skip_cache_sync_on_prepare)
->  		return;
->  
-> +	/*
-> +	 * Coherent MMAP buffers do not need to be synced, unlike USERPTR
-> +	 * and non-coherent MMAP buffers.
-> +	 */
-> +	if (buf->vb->memory == V4L2_MEMORY_MMAP && !buf->non_coherent_mem)
-> +		return;
+It was:
 
-nit: Would it make sense to also set buf->non_coherent_mem to 1 in
-vb2_dc_get_userptr() and simplify this check?
+	for (i = pgd_index(addr); i < PTRS_PER_PGD; i++, pgd++, addr += PGDIR_SIZE) {
 
-> +
->  	if (!sgt)
+And there is
 
-Is there a case when this would be true at this point?
+#define pgd_index(a)  (((a) >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1))
 
->  		return;
->  
-> +	/* For both USERPTR and non-coherent MMAP */
->  	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
-> +
-> +	/* Non-coherent MMAP only */
-> +	if (buf->non_coherent_mem && buf->vaddr)
 
-Then this could check only for buf->vaddr.
+Do we have the following ?
 
-> +		flush_kernel_vmap_range(buf->vaddr, buf->size);
->  }
->  
->  static void vb2_dc_finish(void *buf_priv)
-> @@ -115,13 +152,26 @@ static void vb2_dc_finish(void *buf_priv)
+	pgd_index(KERN_VIRT_START) == 0
 
-Same comments as for _prepare.
 
->  	struct vb2_dc_buf *buf = buf_priv;
->  	struct sg_table *sgt = buf->dma_sgt;
->  
-> +	/* This takes care of DMABUF and user-enforced cache sync hint */
->  	if (buf->vb->skip_cache_sync_on_finish)
->  		return;
->  
-> +	/*
-> +	 * Coherent MMAP buffers do not need to be synced, unlike USERPTR
-> +	 * and non-coherent MMAP buffers.
-> +	 */
-> +	if (buf->vb->memory == V4L2_MEMORY_MMAP && !buf->non_coherent_mem)
-> +		return;
-> +
->  	if (!sgt)
->  		return;
->  
-> +	/* For both USERPTR and non-coherent MMAP */
->  	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
-> +
-> +	/* Non-coherent MMAP only */
-> +	if (buf->non_coherent_mem && buf->vaddr)
-> +		invalidate_kernel_vmap_range(buf->vaddr, buf->size);
->  }
->  
->  /*********************************************/
-> @@ -139,17 +189,66 @@ static void vb2_dc_put(void *buf_priv)
->  		sg_free_table(buf->sgt_base);
->  		kfree(buf->sgt_base);
->  	}
-> -	dma_free_attrs(buf->dev, buf->size, buf->cookie, buf->dma_addr,
-> -		       buf->attrs);
-> +
-> +	if (buf->non_coherent_mem) {
-> +		if (buf->vaddr)
-> +			dma_vunmap_noncontiguous(buf->dev, buf->vaddr);
-> +		dma_free_noncontiguous(buf->dev, buf->size,
-> +				       buf->dma_sgt, buf->dma_dir);
-> +	} else {
-> +		dma_free_attrs(buf->dev, buf->size, buf->cookie,
-> +			       buf->dma_addr, buf->attrs);
-> +	}
->  	put_device(buf->dev);
->  	kfree(buf);
->  }
->  
-> +static int vb2_dc_alloc_coherent(struct vb2_dc_buf *buf)
-> +{
-> +	struct vb2_queue *q = buf->vb->vb2_queue;
-> +
-> +	buf->cookie = dma_alloc_attrs(buf->dev,
-> +				      buf->size,
-> +				      &buf->dma_addr,
-> +				      GFP_KERNEL | q->gfp_flags,
-> +				      buf->attrs);
-> +	if (!buf->cookie)
-> +		return -ENOMEM;
-> +
-> +	if (q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING)
-> +		return 0;
-> +
-> +	buf->vaddr = buf->cookie;
-> +	return 0;
-> +}
-> +
-> +static int vb2_dc_alloc_non_coherent(struct vb2_dc_buf *buf)
-> +{
-> +	struct vb2_queue *q = buf->vb->vb2_queue;
-> +
-> +	buf->dma_sgt = dma_alloc_noncontiguous(buf->dev,
-> +					       buf->size,
-> +					       buf->dma_dir,
-> +					       GFP_KERNEL | q->gfp_flags,
-> +					       buf->attrs);
-> +	if (!buf->dma_sgt)
-> +		return -ENOMEM;
-> +
-> +	buf->dma_addr = sg_dma_address(buf->dma_sgt->sgl);
-> +
-> +	/*
-> +	 * For requests that need kernel mapping (DMA_ATTR_NO_KERNEL_MAPPING
-> +	 * bit is cleared) we perform dma_vmap_noncontiguous() in vb2_dc_vaddr()
-> +	 */
+Shouldn't it be something like
 
-Current code now ignores the attribute, so this comment isn't entirely
-accurate. Maybe it's better to remove the mention of the attribute and
-instead say that for non_coherent buffers the kernel mapping is created on
-demand?
+	ptdump_range[0].end = PAGE_OFFSET + (PGDIR_SIZE * PTRS_PER_PGD);
 
-> +	return 0;
-> +}
-> +
->  static void *vb2_dc_alloc(struct vb2_buffer *vb,
->  			  struct device *dev,
->  			  unsigned long size)
->  {
->  	struct vb2_dc_buf *buf;
-> +	int ret;
->  
->  	if (WARN_ON(!dev))
->  		return ERR_PTR(-EINVAL);
-> @@ -159,27 +258,28 @@ static void *vb2_dc_alloc(struct vb2_buffer *vb,
->  		return ERR_PTR(-ENOMEM);
->  
->  	buf->attrs = vb->vb2_queue->dma_attrs;
-> -	buf->cookie = dma_alloc_attrs(dev, size, &buf->dma_addr,
-> -				      GFP_KERNEL | vb->vb2_queue->gfp_flags,
-> -				      buf->attrs);
-> -	if (!buf->cookie) {
-> -		dev_err(dev, "dma_alloc_coherent of size %ld failed\n", size);
-> -		kfree(buf);
-> -		return ERR_PTR(-ENOMEM);
-> -	}
-> -
-> -	if ((buf->attrs & DMA_ATTR_NO_KERNEL_MAPPING) == 0)
-> -		buf->vaddr = buf->cookie;
-> +	buf->dma_dir = vb->vb2_queue->dma_dir;
-> +	buf->vb = vb;
-> +	buf->non_coherent_mem = vb->vb2_queue->non_coherent_mem;
->  
-> +	buf->size = size;
->  	/* Prevent the device from being released while the buffer is used */
->  	buf->dev = get_device(dev);
-> -	buf->size = size;
-> -	buf->dma_dir = vb->vb2_queue->dma_dir;
-> +
-> +	if (buf->non_coherent_mem)
-> +		ret = vb2_dc_alloc_non_coherent(buf);
-> +	else
-> +		ret = vb2_dc_alloc_coherent(buf);
-> +
-> +	if (ret) {
-> +		dev_err(dev, "dma alloc of size %ld failed\n", size);
-> +		kfree(buf);
-> +		return ERR_PTR(-ENOMEM);
-> +	}
->  
->  	buf->handler.refcount = &buf->refcount;
->  	buf->handler.put = vb2_dc_put;
->  	buf->handler.arg = buf;
-> -	buf->vb = vb;
->  
->  	refcount_set(&buf->refcount, 1);
->  
-> @@ -196,9 +296,12 @@ static int vb2_dc_mmap(void *buf_priv, struct vm_area_struct *vma)
->  		return -EINVAL;
->  	}
->  
-> -	ret = dma_mmap_attrs(buf->dev, vma, buf->cookie,
-> -		buf->dma_addr, buf->size, buf->attrs);
-> -
-> +	if (buf->non_coherent_mem)
-> +		ret = dma_mmap_noncontiguous(buf->dev, vma, buf->size,
-> +					     buf->dma_sgt);
-> +	else
-> +		ret = dma_mmap_attrs(buf->dev, vma, buf->cookie, buf->dma_addr,
-> +				     buf->size, buf->attrs);
->  	if (ret) {
->  		pr_err("Remapping memory failed, error: %d\n", ret);
->  		return ret;
-> @@ -360,9 +463,15 @@ vb2_dc_dmabuf_ops_end_cpu_access(struct dma_buf *dbuf,
->  
->  static int vb2_dc_dmabuf_ops_vmap(struct dma_buf *dbuf, struct dma_buf_map *map)
->  {
-> -	struct vb2_dc_buf *buf = dbuf->priv;
-> +	struct vb2_dc_buf *buf;
-> +	void *vaddr;
-> +
-> +	buf = dbuf->priv;
-> +	vaddr = vb2_dc_vaddr(buf->vb, buf);
-> +	if (!vaddr)
-> +		return -EINVAL;
->  
-> -	dma_buf_map_set_vaddr(map, buf->vaddr);
-> +	dma_buf_map_set_vaddr(map, vaddr);
->  
->  	return 0;
->  }
-> @@ -390,6 +499,9 @@ static struct sg_table *vb2_dc_get_base_sgt(struct vb2_dc_buf *buf)
->  	int ret;
->  	struct sg_table *sgt;
->  
-> +	if (buf->non_coherent_mem)
-> +		return buf->dma_sgt;
 
-Wouldn't this lead to a double free in vb2_dc_put()?
-
-Best regards,
-Tomasz
+Christophe
