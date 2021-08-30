@@ -2,126 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D5D3FB93A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 444923FB93E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237311AbhH3PtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237526AbhH3PtI (ORCPT
+        id S237610AbhH3PuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:50:05 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:7548 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237589AbhH3Pto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:49:08 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503B5C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:48:14 -0700 (PDT)
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 14F33BC3384;
-        Mon, 30 Aug 2021 17:48:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1630338491;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W6OwYTHqyMN6IxAME1ujn3yNsxUf4Dt4pjg5xjlW1no=;
-        b=BbsNq347OIy9el2IFdXZ6v3xjHcOwTyAi+oP+ssH7qBfIzK461d+u3WvmlWP4hy5Nn0w9K
-        Vq3w+d/QFDEEoru2z6IVnxxhbGsqSZgNrxtrcLwxzf4YWn93SIdLJCwCPO5/dv3AcyQ/2K
-        lgRASMCEX+wHkpXkWlqCDb4NEVPf8Yk=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Michal Kubecek <mkubecek@suse.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: Re: [REGRESSION][BISECTED] flood of "hid-generic ... control queue full" since v5.14-rc1
-Date:   Mon, 30 Aug 2021 17:48:09 +0200
-Message-ID: <1954573.0n35tlyJVE@natalenko.name>
-In-Reply-To: <20210816191249.7g2mk5thwpio7cfc@lion.mk-sys.cz>
-References: <20210816130059.3yxtdvu2r7wo4uu3@lion.mk-sys.cz> <20210816143856.GA121345@rowland.harvard.edu> <20210816191249.7g2mk5thwpio7cfc@lion.mk-sys.cz>
+        Mon, 30 Aug 2021 11:49:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1630338531; x=1661874531;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=XeidnQ1zS/0jjphT1MthZFR5eQ57gcnbSDqgVeDiMcY=;
+  b=mT/GcTQ1OIfXeLev/UA6/se9aDMhM8UQYX0div2c8J3tjSrb8dO43xdH
+   WE9UKrMZpmdsB3cl6S848j3UWGnP7DFE8TGx+ML3kJC+arI/+PmJYrjsa
+   qcBLRcVN7eY0/wveMXBJETW7apuivTcXZRAdWdw2n0Oz0lANv6jLne2Yf
+   g=;
+X-IronPort-AV: E=Sophos;i="5.84,363,1620691200"; 
+   d="scan'208";a="133232067"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 30 Aug 2021 15:48:48 +0000
+Received: from EX13D46EUB004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com (Postfix) with ESMTPS id C7576A17EA;
+        Mon, 30 Aug 2021 15:48:46 +0000 (UTC)
+Received: from u90cef543d0ab5a.ant.amazon.com (10.43.162.186) by
+ EX13D46EUB004.ant.amazon.com (10.43.166.65) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Mon, 30 Aug 2021 15:48:40 +0000
+Date:   Mon, 30 Aug 2021 18:48:35 +0300
+From:   George-Aurelian Popescu <popegeo@amazon.com>
+To:     Andra Paraschiv <andraprs@amazon.com>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexandru Ciobotaru <alcioa@amazon.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Kamal Mostafa <kamal@canonical.com>,
+        Alexandru Vasile <lexnv@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Stefan Hajnoczi" <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>
+Subject: Re: [PATCH v3 5/7] nitro_enclaves: Add fixes for checkpatch match
+ open parenthesis reports
+Message-ID: <20210830154834.GC10224@u90cef543d0ab5a.ant.amazon.com>
+References: <20210827154930.40608-1-andraprs@amazon.com>
+ <20210827154930.40608-6-andraprs@amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210827154930.40608-6-andraprs@amazon.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.43.162.186]
+X-ClientProxiedBy: EX13D24UWB002.ant.amazon.com (10.43.161.159) To
+ EX13D46EUB004.ant.amazon.com (10.43.166.65)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+On Fri, Aug 27, 2021 at 06:49:28PM +0300, Andra Paraschiv wrote:
+> Update the codebase formatting to fix the reports from the checkpatch
+> script, to match the open parenthesis.
+> 
+> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+> ---
+> Changelog
+> 
+> v1 -> v2
+> 
+> * No codebase changes, it was split from the patch 3 in the v1 of the
+> patch series.
+> 
+> v2 -> v3
+> 
+> * Move changelog after the "---" line.
+> ---
+>  drivers/virt/nitro_enclaves/ne_misc_dev.c | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+> index e21e1e86ad15f..8939612ee0e08 100644
+> --- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
+> +++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+> + * Copyright 2020-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+>   */
+>  
+>  /**
+> @@ -284,8 +284,8 @@ static int ne_setup_cpu_pool(const char *ne_cpu_list)
+>  	ne_cpu_pool.nr_parent_vm_cores = nr_cpu_ids / ne_cpu_pool.nr_threads_per_core;
+>  
+>  	ne_cpu_pool.avail_threads_per_core = kcalloc(ne_cpu_pool.nr_parent_vm_cores,
+> -					     sizeof(*ne_cpu_pool.avail_threads_per_core),
+> -					     GFP_KERNEL);
+> +						     sizeof(*ne_cpu_pool.avail_threads_per_core),
+> +						     GFP_KERNEL);
+>  	if (!ne_cpu_pool.avail_threads_per_core) {
+>  		rc = -ENOMEM;
+>  
+> @@ -735,7 +735,7 @@ static int ne_add_vcpu_ioctl(struct ne_enclave *ne_enclave, u32 vcpu_id)
+>   * * Negative return value on failure.
+>   */
+>  static int ne_sanity_check_user_mem_region(struct ne_enclave *ne_enclave,
+> -	struct ne_user_memory_region mem_region)
+> +					   struct ne_user_memory_region mem_region)
+>  {
+>  	struct ne_mem_region *ne_mem_region = NULL;
+>  
+> @@ -771,7 +771,7 @@ static int ne_sanity_check_user_mem_region(struct ne_enclave *ne_enclave,
+>  		u64 userspace_addr = ne_mem_region->userspace_addr;
+>  
+>  		if ((userspace_addr <= mem_region.userspace_addr &&
+> -		    mem_region.userspace_addr < (userspace_addr + memory_size)) ||
+> +		     mem_region.userspace_addr < (userspace_addr + memory_size)) ||
+>  		    (mem_region.userspace_addr <= userspace_addr &&
+>  		    (mem_region.userspace_addr + mem_region.memory_size) > userspace_addr)) {
+>  			dev_err_ratelimited(ne_misc_dev.this_device,
+> @@ -836,7 +836,7 @@ static int ne_sanity_check_user_mem_region_page(struct ne_enclave *ne_enclave,
+>   * * Negative return value on failure.
+>   */
+>  static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
+> -	struct ne_user_memory_region mem_region)
+> +					   struct ne_user_memory_region mem_region)
+>  {
+>  	long gup_rc = 0;
+>  	unsigned long i = 0;
+> @@ -1014,7 +1014,7 @@ static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
+>   * * Negative return value on failure.
+>   */
+>  static int ne_start_enclave_ioctl(struct ne_enclave *ne_enclave,
+> -	struct ne_enclave_start_info *enclave_start_info)
+> +				  struct ne_enclave_start_info *enclave_start_info)
+>  {
+>  	struct ne_pci_dev_cmd_reply cmd_reply = {};
+>  	unsigned int cpu = 0;
+> @@ -1574,7 +1574,8 @@ static int ne_create_vm_ioctl(struct ne_pci_dev *ne_pci_dev, u64 __user *slot_ui
+>  	mutex_unlock(&ne_cpu_pool.mutex);
+>  
+>  	ne_enclave->threads_per_core = kcalloc(ne_enclave->nr_parent_vm_cores,
+> -		sizeof(*ne_enclave->threads_per_core), GFP_KERNEL);
+> +					       sizeof(*ne_enclave->threads_per_core),
+> +					       GFP_KERNEL);
+>  	if (!ne_enclave->threads_per_core) {
+>  		rc = -ENOMEM;
+>  
+> -- 
+> 2.20.1 (Apple Git-117)
+> 
 
-On pond=C4=9Bl=C3=AD 16. srpna 2021 21:12:49 CEST Michal Kubecek wrote:
-> On Mon, Aug 16, 2021 at 10:38:56AM -0400, Alan Stern wrote:
-> > On Mon, Aug 16, 2021 at 04:13:47PM +0200, Michal Kubecek wrote:
-> > > Looking at the code, the primary problem seems to be that the "else"
-> > > branch in hid_submit_ctrl() recalculates transfer_buffer_length to
-> > > a rounded up value but assigns the original length to wLength.
-> >=20
-> > Looks like you found the bug.  Fixing it might be as simple as setting
-> > len =3D padlen in that "else" branch.  You could then combine the
-> > transfer_buffer_length assignment with the one in the "if" branch and
-> > hoist them out after the entire "if" statement.
->=20
-> With the patch below, there are no errors and the UPS communication
-> works correctly and so do other HID devices. But I would prefere someone
-> familiar with HID code to confirm that this is what we want and what
-> would be the right way to handle usb_submit_urb() errors.
->=20
-> Michal
->=20
-> diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-> index 06130dc431a0..ef240ef63a66 100644
-> --- a/drivers/hid/usbhid/hid-core.c
-> +++ b/drivers/hid/usbhid/hid-core.c
-> @@ -377,27 +377,26 @@ static int hid_submit_ctrl(struct hid_device *hid)
->  	len =3D hid_report_len(report);
->  	if (dir =3D=3D USB_DIR_OUT) {
->  		usbhid->urbctrl->pipe =3D usb_sndctrlpipe(hid_to_usb_dev(hid),=20
-0);
-> -		usbhid->urbctrl->transfer_buffer_length =3D len;
->  		if (raw_report) {
->  			memcpy(usbhid->ctrlbuf, raw_report, len);
->  			kfree(raw_report);
->  			usbhid->ctrl[usbhid->ctrltail].raw_report =3D NULL;
->  		}
->  	} else {
-> -		int maxpacket, padlen;
-> +		int maxpacket;
->=20
->  		usbhid->urbctrl->pipe =3D usb_rcvctrlpipe(hid_to_usb_dev(hid),=20
-0);
->  		maxpacket =3D usb_maxpacket(hid_to_usb_dev(hid),
->  					  usbhid->urbctrl->pipe, 0);
->  		if (maxpacket > 0) {
-> -			padlen =3D DIV_ROUND_UP(len, maxpacket);
-> -			padlen *=3D maxpacket;
-> -			if (padlen > usbhid->bufsize)
-> -				padlen =3D usbhid->bufsize;
-> +			len =3D DIV_ROUND_UP(len, maxpacket);
-> +			len *=3D maxpacket;
-> +			if (len > usbhid->bufsize)
-> +				len =3D usbhid->bufsize;
->  		} else
-> -			padlen =3D 0;
-> -		usbhid->urbctrl->transfer_buffer_length =3D padlen;
-> +			len =3D 0;
->  	}
-> +	usbhid->urbctrl->transfer_buffer_length =3D len;
->  	usbhid->urbctrl->dev =3D hid_to_usb_dev(hid);
->=20
->  	usbhid->cr->bRequestType =3D USB_TYPE_CLASS | USB_RECIP_INTERFACE | dir;
+Reviewed-by: George-Aurelian Popescu <popegeo@amazon.com>
 
-Any luck with moving this forward please? I've got a similar issue with APC=
-=20
-UPS and v5.14 kernel, and this patch also solves the connectivity issue for=
-=20
-me.
+Looks ok,
+George
 
-Thanks.
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
 
+Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
 
