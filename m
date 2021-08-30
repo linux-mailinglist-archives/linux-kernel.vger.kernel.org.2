@@ -2,179 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B485B3FBCDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 21:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2FD3FBCDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 21:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234033AbhH3TXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 15:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
+        id S234160AbhH3TXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 15:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233527AbhH3TXl (ORCPT
+        with ESMTP id S233573AbhH3TXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 15:23:41 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E313C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 12:22:47 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso19731918ott.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 12:22:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rJKnuuFCd5awKtbgLO6rUtFjGmCb0A0Nsttc7G/tr2E=;
-        b=pPL3/DNYCxboctG6Wsloy2QPWQ4/dxzuXrSwx38sGQwSZnnHfpi+p6VbPhfoqKjssL
-         LhRbhNb6721xU3oOaxC3r9j/WbXZle6iG+RSeGdbnMxY0PvdseSpF/CxWQMcl6NYAGoq
-         bJL6btZq8B6yOWwJY2c0qeImbjuAni4R2zywEXVHmXXuePP2miwH1W/nRZUzto/9h1fv
-         /ZnI7LiRRXSiILpAgR1stvBJt6wsVOpzGeitcKdji+s9t00eesSHU38XriChB1Q44gT9
-         RA2h2krqH8g9QADTau6p7Zavtqn2srM+6QbuYFYKNzC8DxMFfDDgJYgAUj4GcGjIYCe+
-         nMLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rJKnuuFCd5awKtbgLO6rUtFjGmCb0A0Nsttc7G/tr2E=;
-        b=Zr4z+UsawitpNBzGC0Ym9do39CqQ6LZ/sBW0641Jdu7FEIfD5CYbrstA458DSQJAYy
-         zy3TUpfD1LvSw9faHwksJ/UUeBJkRLlXmT6nIPtUuF0ZPawqlP9MOmm5WKE0qXVSiYIh
-         AXy6LJqVoDOfdL1t7QlVqEe6bVxddWqMnACa2+kb/23tRDeJeO84VVyd7dAaqI27fAq+
-         nyiNndGeNXX4g5zaOilJSMod77t6E9QXXSPxUfgIcwg2HIIb9EKA1hCU1TZftrYkmzjc
-         fy/AwPQcLZbJMDT4RzQcv99WTQ1FpJZnCdgwHBvwHyRb3H78Gz28ePoy4K549F9AWB1g
-         AWvg==
-X-Gm-Message-State: AOAM532pM/Fw/6dFK9CEO/FBo4Vvx7BWKXAnced5FKnel7q+ST2pZALu
-        ADR+EOFlYNwjNp+D4WP+0gyYogXG+4z/5m7BjZ6jLw==
-X-Google-Smtp-Source: ABdhPJzqiUlmRzEF2xz9OpH5XCE0y9WV/7tue2/CzkPeL1qph/JCSKwrc6+lWdCWrwfRXEiiqPbr6U0BOES2NAR1zOs=
-X-Received: by 2002:a9d:450b:: with SMTP id w11mr20646252ote.254.1630351366100;
- Mon, 30 Aug 2021 12:22:46 -0700 (PDT)
+        Mon, 30 Aug 2021 15:23:43 -0400
+X-Greylist: delayed 12871 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 30 Aug 2021 12:22:45 PDT
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A266C061760;
+        Mon, 30 Aug 2021 12:22:45 -0700 (PDT)
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id CB281BC390B;
+        Mon, 30 Aug 2021 21:22:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1630351360;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aQUSrjXYDmFy5wo91A3BlmOanLGBJFlJUThDcUa6cIY=;
+        b=DTPGffspKIFV3EMr8m1fq7zzOJhTF3oWlsRiQNzIze8r/VrkCms0ecOdgzWidkAvCJLj0j
+        89cZ2wbLzltPNGEb761vENBjvgANtfuWAx+efROfY76c/VlW4Q24Z1DP7orHLU5d381GpG
+        hSpW7gJxd3bS5n4Z5FGPCdh2xrRkap4=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     benjamin.tissoires@redhat.com, jikos@kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, mkubecek@suse.cz,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
+Date:   Mon, 30 Aug 2021 21:22:39 +0200
+Message-ID: <2760703.iRigd37PT7@natalenko.name>
+In-Reply-To: <20210819195300.GA8613@rowland.harvard.edu>
+References: <20210819152626.GD228422@rowland.harvard.edu> <00000000000009e24705c9ecf9b3@google.com> <20210819195300.GA8613@rowland.harvard.edu>
 MIME-Version: 1.0
-References: <00000000000011360d05cacbb622@google.com>
-In-Reply-To: <00000000000011360d05cacbb622@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 30 Aug 2021 21:22:34 +0200
-Message-ID: <CACT4Y+a9gTY4Mr=UsGiNGL7oXDc5dtV6-WXf2fC_vP5dDdGXRQ@mail.gmail.com>
-Subject: Re: [syzbot] general protection fault in sock_from_file
-To:     syzbot <syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 at 21:19, syzbot
-<syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    93717cde744f Add linux-next specific files for 20210830
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15b851fe300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c643ef5289990dd1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f9704d1878e290eddf73
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com
+Hello.
 
-+io_uring maintainers as this looks io_uring-related
+On =C4=8Dtvrtek 19. srpna 2021 21:53:00 CEST Alan Stern wrote:
+> On Thu, Aug 19, 2021 at 10:35:11AM -0700, syzbot wrote:
+> > Hello,
+> >=20
+> > syzbot has tested the proposed patch but the reproducer is still
+> > triggering an issue: WARNING in hid_submit_ctrl/usb_submit_urb
+> >=20
+> > cm6533_jd 0003:0D8C:0022.0001: submit_ctrl: maxpacket 64 len 0 padlen 0
+> > ------------[ cut here ]------------
+> > usb 1-1: BOGUS control dir, pipe 80000280 doesn't match bRequestType a1
+>=20
+> Ah.   The padding code doesn't add anything if the length is
+> already a multiple of the maxpacket value, and of course 0 is such
+> a multiple.
+>=20
+> The following simplified variant of Michal's patch should fix the
+> problem.
+>=20
+> Alan Stern
+>=20
+> #syz test:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> 794c7931a242
+>=20
+> Index: usb-devel/drivers/hid/usbhid/hid-core.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- usb-devel.orig/drivers/hid/usbhid/hid-core.c
+> +++ usb-devel/drivers/hid/usbhid/hid-core.c
+> @@ -377,27 +377,23 @@ static int hid_submit_ctrl(struct hid_de
+>  	len =3D hid_report_len(report);
+>  	if (dir =3D=3D USB_DIR_OUT) {
+>  		usbhid->urbctrl->pipe =3D usb_sndctrlpipe(hid_to_usb_dev(hid),=20
+0);
+> -		usbhid->urbctrl->transfer_buffer_length =3D len;
+>  		if (raw_report) {
+>  			memcpy(usbhid->ctrlbuf, raw_report, len);
+>  			kfree(raw_report);
+>  			usbhid->ctrl[usbhid->ctrltail].raw_report =3D NULL;
+>  		}
+>  	} else {
+> -		int maxpacket, padlen;
+> +		int maxpacket;
+>=20
+>  		usbhid->urbctrl->pipe =3D usb_rcvctrlpipe(hid_to_usb_dev(hid),=20
+0);
+>  		maxpacket =3D usb_maxpacket(hid_to_usb_dev(hid),
+>  					  usbhid->urbctrl->pipe, 0);
+> -		if (maxpacket > 0) {
+> -			padlen =3D DIV_ROUND_UP(len, maxpacket);
+> -			padlen *=3D maxpacket;
+> -			if (padlen > usbhid->bufsize)
+> -				padlen =3D usbhid->bufsize;
+> -		} else
+> -			padlen =3D 0;
+> -		usbhid->urbctrl->transfer_buffer_length =3D padlen;
+> +		len +=3D (len =3D=3D 0);	/* Don't allow 0-length reports */
+> +		len =3D round_up(len, maxpacket);
+> +		if (len > usbhid->bufsize)
+> +			len =3D usbhid->bufsize;
+>  	}
+> +	usbhid->urbctrl->transfer_buffer_length =3D len;
+>  	usbhid->urbctrl->dev =3D hid_to_usb_dev(hid);
+>=20
+>  	usbhid->cr->bRequestType =3D USB_TYPE_CLASS | USB_RECIP_INTERFACE | dir;
 
-> general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
-> CPU: 1 PID: 6072 Comm: syz-executor.0 Not tainted 5.14.0-next-20210830-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
-> Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
-> RSP: 0018:ffffc9000a2df8e8 EFLAGS: 00010206
-> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90002f91000
-> RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
-> RBP: ffff8880983c2c80 R08: ffffffff899aee40 R09: ffffffff81e21978
-> R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
-> R13: 1ffff11013078599 R14: 0000000000000003 R15: ffff8880983c2c80
-> FS:  00007fe7b0454700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00005591dffa5180 CR3: 00000000974cb000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  io_sendmsg+0x98/0x640 fs/io_uring.c:4681
->  io_issue_sqe+0x14de/0x6ba0 fs/io_uring.c:6578
->  __io_queue_sqe+0x90/0xb50 fs/io_uring.c:6864
->  io_req_task_submit+0xbf/0x1b0 fs/io_uring.c:2218
->  tctx_task_work+0x166/0x610 fs/io_uring.c:2143
->  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
->  tracehook_notify_signal include/linux/tracehook.h:212 [inline]
->  handle_signal_work kernel/entry/common.c:146 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->  exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
->  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x4665f9
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fe7b0454188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-> RAX: 0000000000001000 RBX: 000000000056bf80 RCX: 00000000004665f9
-> RDX: 0000000000000000 RSI: 000000000000688c RDI: 0000000000000003
-> RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-> R13: 00007fffeee6585f R14: 00007fe7b0454300 R15: 0000000000022000
-> Modules linked in:
-> ---[ end trace 6f9e359dd487b8fa ]---
-> RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
-> Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
-> RSP: 0018:ffffc9000a2df8e8 EFLAGS: 00010206
-> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90002f91000
-> RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
-> RBP: ffff8880983c2c80 R08: ffffffff899aee40 R09: ffffffff81e21978
-> R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
-> R13: 1ffff11013078599 R14: 0000000000000003 R15: ffff8880983c2c80
-> FS:  00007fe7b0454700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fb81002c710 CR3: 00000000974cb000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> ----------------
-> Code disassembly (best guess), 3 bytes skipped:
->    0:   ff c3                   inc    %ebx
->    2:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
->    7:   41 54                   push   %r12
->    9:   53                      push   %rbx
->    a:   48 89 fb                mov    %rdi,%rbx
->    d:   e8 85 e9 62 fa          callq  0xfa62e997
->   12:   48 8d 7b 28             lea    0x28(%rbx),%rdi
->   16:   48 b8 00 00 00 00 00    movabs $0xdffffc0000000000,%rax
->   1d:   fc ff df
->   20:   48 89 fa                mov    %rdi,%rdx
->   23:   48 c1 ea 03             shr    $0x3,%rdx
-> * 27:   80 3c 02 00             cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
->   2b:   75 4f                   jne    0x7c
->   2d:   45 31 e4                xor    %r12d,%r12d
->   30:   48 81 7b 28 80 f1 8a    cmpq   $0xffffffff8a8af180,0x28(%rbx)
->   37:   8a
->   38:   74 0c                   je     0x46
->   3a:   e8                      .byte 0xe8
->   3b:   58                      pop    %rax
->   3c:   e9                      .byte 0xe9
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000011360d05cacbb622%40google.com.
+I've tried both Michal's patch as well as this one, and both work for me,=20
+hence feel free to add this:
+
+Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+
+once the fix is submitted.
+
+Thanks!
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+
+
