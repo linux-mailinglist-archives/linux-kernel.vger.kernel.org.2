@@ -2,136 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102E23FB01E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 06:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA54F3FB052
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 06:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbhH3EGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 00:06:06 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9383 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhH3EGB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 00:06:01 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gyc794bNRz8wXn;
-        Mon, 30 Aug 2021 12:00:53 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 30 Aug 2021 12:05:06 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 30 Aug 2021 12:05:05 +0800
-Subject: Re: [PATCH] arm64: kdump: Skip kmemleak scan reserved memory for
- kdump
-To:     Chen Wandun <chenwandun@huawei.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <ardb@kernel.org>, <rppt@kernel.org>,
-        <akpm@linux-foundation.org>, <nsaenz@kernel.org>,
-        <anshuman.khandual@arm.com>, <geert+renesas@glider.be>,
-        <rafael.j.wysocki@intel.com>, <robh@kernel.org>,
-        <kirill.shtuemov@linux.intel.com>, <sfr@canb.auug.org.au>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <weiyongjun1@huawei.com>, <guohanjun@huawei.com>,
-        "Linux Memory Management List" <linux-mm@kvack.org>
-References: <20210827092246.3565437-1-chenwandun@huawei.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <d2fce1a3-b87a-6a35-19b9-e5d5b2f723f5@huawei.com>
-Date:   Mon, 30 Aug 2021 12:05:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S229908AbhH3EPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 00:15:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229588AbhH3EPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 00:15:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E50C860F57;
+        Mon, 30 Aug 2021 04:14:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630296899;
+        bh=PwINkeEbqR5rqNMtjEpboGA4bTaEbuNc5uWlK64sV7E=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=qWZqBJZTqRGkobGXYXGaErXoK9AA5yHzGxSlV1YefuLLnfLVtFWexAX7LXSei8qCj
+         RIMELQsL8lhj+ZRH5dW7q1RUrRVKeCiL16q2t0UiAIlqYmNHZt5DEe/vS8dgHeeBGj
+         aqsqGym/TtPW+PiK3KNT0y9ROvoVUr3UTSr+nlGwU4kYsSW2GD1mbbnSRce3h5z7n8
+         x15uWkPH8GcUTKdwPqD1/SEwrXVAQMPciwTq2CtgXIpBeNBenFVo4L40AHlSOVX58m
+         AIaPQa9nq7Vn6UxuIjup4/5HDeXqf2cII0yk7JYDSsrZC23HcuCSfPWKyg9CT8vK8p
+         v122izN0eYkxQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B2FFC5C0813; Sun, 29 Aug 2021 21:14:59 -0700 (PDT)
+Date:   Sun, 29 Aug 2021 21:14:59 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        akiyks@gmail.com, unixbhaskar@gmail.com, frederic@kernel.org,
+        xiehaocheng.cn@gmail.com, jiangong.han@windriver.com,
+        joel@joelfernandes.org, jwi@linux.ibm.com, fishland@aliyun.com,
+        broonie@kernel.org, w@1wt.eu, bigeasy@linutronix.de,
+        senozhatsky@chromium.org, yanfei.xu@windriver.com,
+        zhouzhouyi@gmail.com
+Subject: [GIT PULL] RCU changes for v5.15
+Message-ID: <20210830041459.GA3067667@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20210827092246.3565437-1-chenwandun@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello, Linus,
 
-On 2021/8/27 17:22, Chen Wandun wrote:
-> Trying to boot with kdump + kmemleak, command will result in a crash:
-> "echo scan > /sys/kernel/debug/kmemleak"
->
-> crashkernel reserved: 0x0000000007c00000 - 0x0000000027c00000 (512 MB)
-> Kernel command line: BOOT_IMAGE=(hd1,gpt2)/vmlinuz-5.14.0-rc5-next-20210809+ root=/dev/mapper/ao-root ro rd.lvm.lv=ao/root rd.lvm.lv=ao/swap crashkernel=512M
-> Unable to handle kernel paging request at virtual address ffff000007c00000
-> Mem abort info:
->    ESR = 0x96000007
->    EC = 0x25: DABT (current EL), IL = 32 bits
->    SET = 0, FnV = 0
->    EA = 0, S1PTW = 0
->    FSC = 0x07: level 3 translation fault
-> Data abort info:
->    ISV = 0, ISS = 0x00000007
->    CM = 0, WnR = 0
-> swapper pgtable: 64k pages, 48-bit VAs, pgdp=00002024f0d80000
-> [ffff000007c00000] pgd=1800205ffffd0003, p4d=1800205ffffd0003, pud=1800205ffffd0003, pmd=1800205ffffc0003, pte=0068000007c00f06
-> Internal error: Oops: 96000007 [#1] SMP
-> pstate: 804000c9 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : scan_block+0x98/0x230
-> lr : scan_block+0x94/0x230
-> sp : ffff80008d6cfb70
-> x29: ffff80008d6cfb70 x28: 0000000000000000 x27: 0000000000000000
-> x26: 00000000000000c0 x25: 0000000000000001 x24: 0000000000000000
-> x23: ffffa88a6b18b398 x22: ffff000007c00ff9 x21: ffffa88a6ac7fc40
-> x20: ffffa88a6af6a830 x19: ffff000007c00000 x18: 0000000000000000
-> x17: 0000000000000000 x16: 0000000000000000 x15: ffffffffffffffff
-> x14: ffffffff00000000 x13: ffffffffffffffff x12: 0000000000000020
-> x11: 0000000000000000 x10: 0000000001080000 x9 : ffffa88a6951c77c
-> x8 : ffffa88a6a893988 x7 : ffff203ff6cfb3c0 x6 : ffffa88a6a52b3c0
-> x5 : ffff203ff6cfb3c0 x4 : 0000000000000000 x3 : 0000000000000000
-> x2 : 0000000000000001 x1 : ffff20226cb56a40 x0 : 0000000000000000
-> Call trace:
->   scan_block+0x98/0x230
->   scan_gray_list+0x120/0x270
->   kmemleak_scan+0x3a0/0x648
->   kmemleak_write+0x3ac/0x4c8
->   full_proxy_write+0x6c/0xa0
->   vfs_write+0xc8/0x2b8
->   ksys_write+0x70/0xf8
->   __arm64_sys_write+0x24/0x30
->   invoke_syscall+0x4c/0x110
->   el0_svc_common+0x9c/0x190
->   do_el0_svc+0x30/0x98
->   el0_svc+0x28/0xd8
->   el0t_64_sync_handler+0x90/0xb8
->   el0t_64_sync+0x180/0x184
->
-> The reserved memory for kdump will be looked up by kmemleak, this area
-> will be set invalid when kdump service is bring up. That will result in
-> crash when kmemleak scan this area.
->
-> Fixes: 461ef12c4375 ("memblock: make memblock_find_in_range method private")
-> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
-Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->   arch/arm64/mm/init.c | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index b16be52233c6..dc0c44622bfd 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -30,6 +30,7 @@
->   #include <linux/crash_dump.h>
->   #include <linux/hugetlb.h>
->   #include <linux/acpi_iort.h>
-> +#include <linux/kmemleak.h>
->   
->   #include <asm/boot.h>
->   #include <asm/fixmap.h>
-> @@ -101,6 +102,7 @@ static void __init reserve_crashkernel(void)
->   	pr_info("crashkernel reserved: 0x%016llx - 0x%016llx (%lld MB)\n",
->   		crash_base, crash_base + crash_size, crash_size >> 20);
->   
-> +	kmemleak_ignore_phys(crash_base);
->   	crashk_res.start = crash_base;
->   	crashk_res.end = crash_base + crash_size - 1;
->   }
+Please pull the latest RCU git tree from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git core-rcu.2021.08.28a
+  # HEAD: b770efc4608d24fb446b94e1087d9989425dd39b Merge branches 'doc.2021.07.20c', 'fixes.2021.08.06a', 'nocb.2021.07.20c', 'nolibc.2021.07.20c', 'tasks.2021.07.20c', 'torture.2021.07.27a' and 'torturescript.2021.07.27a' into HEAD
+
+RCU changes for this cycle were:
+
+o	Documentation updates.
+
+o	Miscellaneous fixes.
+
+o	Offloaded-callbacks updates
+
+o	Updates to the nolibc library.
+
+o	Tasks-RCU updates.
+
+o	In-kernel torture-test updates.
+
+o	Torture-test scripting, perhaps most notably the pinning of
+	torture-test guest OSes so as to force differences in memory
+	latency.  For example, in a two-socket system, a four-CPU guest
+	OS will have one pair of its CPUs pinned to threads in a single
+	core on one socket and the other pair pinned to threads in a
+	single core on the other socket.  This approach proved able
+	to force race conditions that earlier testing missed.  Some of
+	these race conditions are still being tracked down.
+
+							Thanx, Paul
+
+----------------------------------------------------------------
+Akira Yokosawa (2):
+      Documentation/RCU: Fix emphasis markers
+      Documentation/RCU: Fix nested inline markup
+
+Bhaskar Chowdhury (1):
+      tools: include: nolibc: Fix a typo occured to occurred in the file nolibc.h
+
+Frederic Weisbecker (4):
+      rcu/doc: Add a quick quiz to explain further why we need smp_mb__after_unlock_lock()
+      rcu/nocb: Start moving nocb code to its own plugin file
+      rcu/nocb: Remove NOCB deferred wakeup from rcutree_dead_cpu()
+      rcu: Explain why rcu_all_qs() is a stub in preemptible TREE RCU
+
+Haocheng Xie (1):
+      docs: Fix a typo in Documentation/RCU/stallwarn.rst
+
+Jiangong.Han (1):
+      rcuscale: Console output claims too few grace periods
+
+Joel Fernandes (Google) (1):
+      rcu: Remove special bit at the bottom of the ->dynticks counter
+
+Julian Wiedmann (1):
+      rculist: Unify documentation about missing list_empty_rcu()
+
+Liu Song (2):
+      rcu: Remove useless "ret" update in rcu_gp_fqs_loop()
+      rcu: Use per_cpu_ptr to get the pointer of per_cpu variable
+
+Mark Brown (1):
+      tools/nolibc: Implement msleep()
+
+Paul E. McKenney (41):
+      doc: Update stallwarn.rst with recent changes
+      rcu-tasks: Add comments explaining task_struct strategy
+      rcu-tasks: Mark ->trc_reader_nesting data races
+      rcu-tasks: Mark ->trc_reader_special.b.need_qs data races
+      rcu-tasks: Fix synchronize_rcu_rude() typo in comment
+      torture: Add clocksource-watchdog testing to torture.sh
+      torture: Make torture.sh accept --do-all and --donone
+      torture: Enable KCSAN summaries over groups of torture-test runs
+      torture: Create KCSAN summaries for torture.sh runs
+      torture: Make kvm-recheck-scf.sh tolerate qemu-cmd comments
+      torture: Make kvm-recheck-lock.sh tolerate qemu-cmd comments
+      torture: Log more kvm-remote.sh information
+      torture: Protect kvm-remote.sh directory trees from /tmp reaping
+      torture: Make kvm-recheck.sh skip kcsan.sum for build-only runs
+      torture: Move parse-console.sh call to PATH-aware scripts
+      torture: Put kvm.sh batch-creation awk script into a temp file
+      refscale: Add measurement of clock readout
+      rcutorture: Preempt rather than block when testing task stalls
+      locktorture: Mark statistics data races
+      locktorture: Count lock readers
+      scftorture: Add RPC-like IPI tests
+      scftorture: Avoid NULL pointer exception on early exit
+      torture: Make kvm.sh select per-scenario affinity masks
+      torture: Don't redirect qemu-cmd comment lines
+      torture: Make kvm-test-1-run-qemu.sh apply affinity
+      rcutorture: Upgrade two-CPU scenarios to four CPUs
+      torture: Use numeric taskset argument in jitter.sh
+      torture: Consistently name "qemu*" test output files
+      torture: Make kvm-test-1-run-batch.sh select per-scenario affinity masks
+      torture: Don't use "test" command's "-a" argument
+      torture: Add timestamps to kvm-test-1-run-qemu.sh output
+      torture: Make kvm-test-1-run-qemu.sh check for reboot loops
+      rcu: Weaken ->dynticks accesses and updates
+      rcu: Mark accesses to ->rcu_read_lock_nesting
+      rcu: Start timing stall repetitions after warning complete
+      srcutiny: Mark read-side data races
+      rcu: Mark lockless ->qsmask read in rcu_check_boost_fail()
+      rcu: Make rcu_gp_init() and rcu_gp_fqs_loop noinline to conserve stack
+      rcu: Mark accesses in tree_stall.h
+      rcu: Print human-readable message for schedule() in RCU reader
+      Merge branches 'doc.2021.07.20c', 'fixes.2021.08.06a', 'nocb.2021.07.20c', 'nolibc.2021.07.20c', 'tasks.2021.07.20c', 'torture.2021.07.27a' and 'torturescript.2021.07.27a' into HEAD
+
+Sebastian Andrzej Siewior (2):
+      rcu: Replace deprecated CPU-hotplug functions
+      torture: Replace deprecated CPU-hotplug functions.
+
+Sergey Senozhatsky (2):
+      rcu/tree: Handle VM stoppage in stall detection
+      rcu: Do not disable GP stall detection in rcu_cpu_stall_reset()
+
+Yanfei Xu (2):
+      rcu: Fix to include first blocked task in stall warning
+      rcu: Fix stall-warning deadlock due to non-release of rcu_node ->lock
+
+Zhouyi Zhou (1):
+      rcu: Fix macro name CONFIG_TASKS_RCU_TRACE
+
+ .../Memory-Ordering/Tree-RCU-Memory-Ordering.rst   |   29 +
+ .../RCU/Design/Requirements/Requirements.rst       |    8 +-
+ Documentation/RCU/checklist.rst                    |   24 +-
+ Documentation/RCU/rcu_dereference.rst              |    6 +-
+ Documentation/RCU/stallwarn.rst                    |   31 +-
+ include/linux/rculist.h                            |   35 +-
+ include/linux/rcupdate.h                           |    4 +-
+ include/linux/rcutiny.h                            |    3 -
+ include/linux/srcutiny.h                           |    8 +-
+ kernel/locking/locktorture.c                       |   25 +-
+ kernel/rcu/rcuscale.c                              |    4 +-
+ kernel/rcu/rcutorture.c                            |    7 +-
+ kernel/rcu/refscale.c                              |   36 +-
+ kernel/rcu/srcutiny.c                              |    2 +-
+ kernel/rcu/tasks.h                                 |   36 +-
+ kernel/rcu/tree.c                                  |  107 +-
+ kernel/rcu/tree_nocb.h                             | 1496 +++++++++++++++++++
+ kernel/rcu/tree_plugin.h                           | 1506 +-------------------
+ kernel/rcu/tree_stall.h                            |  111 +-
+ kernel/scftorture.c                                |   78 +-
+ kernel/sched/core.c                                |   11 +
+ kernel/torture.c                                   |    6 +-
+ tools/include/nolibc/nolibc.h                      |   15 +-
+ tools/testing/selftests/rcutorture/bin/jitter.sh   |   10 +-
+ .../selftests/rcutorture/bin/kcsan-collapse.sh     |    2 +-
+ .../testing/selftests/rcutorture/bin/kvm-again.sh  |    4 +-
+ .../selftests/rcutorture/bin/kvm-assign-cpus.sh    |  106 ++
+ .../rcutorture/bin/kvm-get-cpus-script.sh          |   88 ++
+ .../selftests/rcutorture/bin/kvm-recheck-lock.sh   |    2 +-
+ .../selftests/rcutorture/bin/kvm-recheck-scf.sh    |    2 +-
+ .../selftests/rcutorture/bin/kvm-recheck.sh        |    5 +-
+ .../selftests/rcutorture/bin/kvm-remote-noreap.sh  |   30 +
+ .../testing/selftests/rcutorture/bin/kvm-remote.sh |   20 +-
+ .../rcutorture/bin/kvm-test-1-run-batch.sh         |   24 +
+ .../rcutorture/bin/kvm-test-1-run-qemu.sh          |   49 +-
+ .../selftests/rcutorture/bin/kvm-test-1-run.sh     |    2 +
+ tools/testing/selftests/rcutorture/bin/kvm.sh      |   39 +-
+ tools/testing/selftests/rcutorture/bin/torture.sh  |   37 +-
+ .../selftests/rcutorture/configs/rcu/RUDE01        |    2 +-
+ .../selftests/rcutorture/configs/rcu/TASKS01       |    2 +-
+ .../selftests/rcutorture/configs/rcu/TASKS03       |    2 +-
+ 41 files changed, 2241 insertions(+), 1773 deletions(-)
+ create mode 100644 kernel/rcu/tree_nocb.h
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-assign-cpus.sh
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-get-cpus-script.sh
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-remote-noreap.sh
