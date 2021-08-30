@@ -2,197 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558C83FBC14
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024A53FBC16
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238830AbhH3SUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:20:31 -0400
-Received: from mga18.intel.com ([134.134.136.126]:44045 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239098AbhH3STP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:19:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="205460134"
-X-IronPort-AV: E=Sophos;i="5.84,364,1620716400"; 
-   d="scan'208";a="205460134"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 11:16:23 -0700
-X-IronPort-AV: E=Sophos;i="5.84,364,1620716400"; 
-   d="scan'208";a="530533383"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 11:16:23 -0700
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH v30 32/32] mm: Introduce PROT_SHADOW_STACK for shadow stack
-Date:   Mon, 30 Aug 2021 11:15:28 -0700
-Message-Id: <20210830181528.1569-33-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210830181528.1569-1-yu-cheng.yu@intel.com>
-References: <20210830181528.1569-1-yu-cheng.yu@intel.com>
+        id S238612AbhH3SVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238791AbhH3SVh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 14:21:37 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8C1C0604C7;
+        Mon, 30 Aug 2021 11:18:53 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id t19so33047944ejr.8;
+        Mon, 30 Aug 2021 11:18:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4nZc2m/dOqxmB1eKzo22dnXLX+VFfEl/hwdI2/cyoEM=;
+        b=A7h8ybB2P+VfxNJI8xfu7cEEl6RfK7GygfAovranOttjBmqnUVsfl9rZwsB0/8ueiQ
+         TbLaGdtZk1fV1H0FFIh3V5oL95D0uAw6tIhs2R9LHq+P45BwQfuIFJDU0VpbrpyWfDCw
+         Irv+4eEqcirZuczPZg/tUPVRLnjcnl+E0zbbvVkSHmr5R+iDQlxAcqrYFXEyQWEOqemX
+         9m9JMczC5/QBNSVhnSfD0IK8LiQC7DYhPZN1WUGN7en8Df4mqhQAB3zux9ia3wgo+WW/
+         iTWX99ISGeytT5+wDhptZuK/r2To5cSyF35/RZUU5E4sRg/A+2FGJNzn02BNAOVo3i5K
+         uu7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4nZc2m/dOqxmB1eKzo22dnXLX+VFfEl/hwdI2/cyoEM=;
+        b=RYfwICTJPp1J+oJVXyw5/bMqg7bquycVdcTMBzUFS/Fqffmrgqv0+29bv85U9ui2sQ
+         /UK76vdb9c6xO+5w58TQ3+Mha71xKaP52CpXsCXX/PEbr5Fl90aXP/2c47T3diGX35SF
+         2eEnAgPSSasC1jQRTB65LcOVks11kfBeNiY42WRT/riL9OmUW0j+eRHU2hgTnEZWsH+r
+         4yU3GiHEXGshU6ZQ5qzAydh1MlvBGW+n4Y4bTR9qV05i4eAl4/F6+TD6WBEx9IXIzpcI
+         vkfv/V5wiqh8wvJj53ph+/NqW1eOrRUor5S4RczpmSZFfPwpQ2BLzZY09f7wzKgHQIwm
+         J+Og==
+X-Gm-Message-State: AOAM533KxCjDqFVHFSTzceIcOQztaLC0JSO2ZKemmfer30RImoL0Ovzc
+        na58kmIAdIMDhfFOSrgT+l4aq5oUnjt5S7dNI6npAfSqIpzi8PU1
+X-Google-Smtp-Source: ABdhPJyQzW3MlAgCliu3WdiEbQ0YtZ+8ycOJa910u+zPDe/bD8bYKE5SakukZYmkGdvUYCdU8uIVUyt9VaN9BvcL3l4=
+X-Received: by 2002:a17:906:8cc:: with SMTP id o12mr18643103eje.252.1630347531529;
+ Mon, 30 Aug 2021 11:18:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAOuPNLhqSpaTm3u4kFsnuZ0PLDKuX8wsxuF=vUJ1TEG0EP+L1g@mail.gmail.com>
+ <alpine.LRH.2.02.2107200737510.19984@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAOuPNLhh_LkLQ8mSA4eoUDLCLzHo5zHXsiQZXUB_-T_F1_v6-g@mail.gmail.com>
+ <alpine.LRH.2.02.2107211300520.10897@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAOuPNLi-xz_4P+v45CHLx00ztbSwU3_maf4tuuyso5RHyeOytg@mail.gmail.com>
+ <CAOuPNLg0m-Q7Vhp4srbQrjXHsxVhOr-K2dvnNqzdR6Dr4kioqA@mail.gmail.com> <20210830185541.715f6a39@windsurf>
+In-Reply-To: <20210830185541.715f6a39@windsurf>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Mon, 30 Aug 2021 23:48:40 +0530
+Message-ID: <CAOuPNLhTidgLNWUbtUgdESYcKcE1C4SOdzKeQVhFGQvEoc0QEg@mail.gmail.com>
+Subject: Re: Kernel 4.14: Using dm-verity with squashfs rootfs - mounting issue
+To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc:     Mikulas Patocka <mpatocka@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>, dm-devel@redhat.com,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>, agk@redhat.com,
+        snitzer@redhat.com, Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are three possible options to create a shadow stack allocation API:
-an arch_prctl, a new syscall, or adding PROT_SHADOW_STACK to mmap() and
-mprotect().  Each has its advantages and compromises.
+On Mon, 30 Aug 2021 at 22:25, Thomas Petazzoni
+<thomas.petazzoni@bootlin.com> wrote:
+>
+> Hello,
+>
+> On Mon, 30 Aug 2021 21:55:19 +0530
+> Pintu Agarwal <pintu.ping@gmail.com> wrote:
+>
+> > Sorry for coming back to this again..
+> > Unfortunately, none of the options is working for us with squashfs
+> > (bootloader, initramfs).
+> > initramfs have different kinds of challenges because of the partition
+> > size issue.
+> > So, our preferred option is still the bootloader command line approach..
+> >
+> > Is there a proven and working solution of dm-verity with squashfs ?
+> > If yes, please share some references.
+> >
+> > The current problem with squashfs is that we could not append the
+> > verity-metadata to squashfs, so we store it on a separate volume and
+> > access it.
+>
+> Here, it definitely worked to append the hash tree to the squashfs
+> image and store them in the same partition.
+>
+> > By specifying it like : /dev/mtdblock53
+> >
+> > Then we get the error like this:
+> > {
+> > [    4.950276] device-mapper: init: attempting early device configuration.
+> > [    4.957577] device-mapper: init: adding target '0 95384 verity 1
+> > /dev/ubiblock0_0 /dev/mtdblock53 4096 4096 11923 8 sha256
+> > 16da5e4bbc706e5d90511d2a3dae373b5d878f9aebd522cd614a4faaace6baa3
+> > aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 10
+> > restart_on_corruption ignore_zero_blocks use_fec_from_device
+> > /dev/mtdblock53 fec_roots 2 fec_blocks 12026 fec_start 12026'
+> > [    4.975283] device-mapper: verity: sha256 using implementation
+> > "sha256-generic"
+> > [    4.998728] device-mapper: init: dm-0 is ready
+>
+> Could you show the full kernel command line ?
+Shared below
 
-An arch_prctl() is the least intrusive.  However, the existing x86
-arch_prctl() takes only two parameters.  Multiple parameters must be
-passed in a memory buffer.  There is a proposal to pass more parameters in
-registers [1], but no active discussion on that.
+> > Do you see any other problem here with dm-verity cmdline or with squashfs ?
+> >
+> > Is squashfs ever proved to be working with dm-verity on higher kernel version ?
+> > Currently our kernel version is 4.14.
+>
+> I confirm we used squashfs on dm-verity successfully. For sure on 4.19,
+> perhaps on older kernels as well.
 
-A new syscall minimizes compatibility issues and offers an extensible frame
-work to other architectures, but this will likely result in some overlap of
-mmap()/mprotect().
+ohh that means we already have a working reference.
+If possible can you share the details, even 4.19 or higher will be
+also a good reference.
 
-The introduction of PROT_SHADOW_STACK to mmap()/mprotect() takes advantage
-of existing APIs.  The x86-specific PROT_SHADOW_STACK is translated to
-VM_SHADOW_STACK and a shadow stack mapping is created without reinventing
-the wheel.  There are potential pitfalls though.  The most obvious one
-would be using this as a bypass to shadow stack protection.  However, the
-attacker would have to get to the syscall first.
+> > Or, another option is to use the new concept from 5.1 kernel that is:
+> > dm-mod.create = ?
+> How are you doing it today without dm-mod.create ?
+I think in 4.14 we don't have dm-mod.create right ?
 
-[1] https://lore.kernel.org/lkml/20200828121624.108243-1-hjl.tools@gmail.com/
+> Again, please give your complete kernel command line.
+>
+Here is our kernel command line:
 
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Kees Cook <keescook@chromium.org>
----
- arch/x86/include/asm/mman.h      | 60 +++++++++++++++++++++++++++++++-
- arch/x86/include/uapi/asm/mman.h |  2 ++
- include/linux/mm.h               |  1 +
- 3 files changed, 62 insertions(+), 1 deletion(-)
+[    0.000000] Kernel command line: ro rootwait
+console=ttyMSM0,115200,n8 ....  verity="95384 11923
+16da5e4bbc706e5d90511d2a3dae373b5d878f9aebd522cd614a4faaace6baa3 12026
+" rootfstype=squashfs ubi.mtd=40,0,30 ubi.block=0,0 root=/dev/dm-0
+.... init=/sbin/init root=/dev/dm-0 dm="rootfs none ro,0 95384 verity
+1 /dev/ubiblock0_0 /dev/mtdblock53 4096 4096 11923 8 sha256
+16da5e4bbc706e5d90511d2a3dae373b5d878f9aebd522cd614a4faaace6baa3
+aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 10
+restart_on_corruption ignore_zero_blocks use_fec_from_device
+/dev/mtdblock53 fec_roots 2 fec_blocks 12026 fec_start 12026" ...
 
-diff --git a/arch/x86/include/asm/mman.h b/arch/x86/include/asm/mman.h
-index 629f6c81263a..b77933923b9a 100644
---- a/arch/x86/include/asm/mman.h
-+++ b/arch/x86/include/asm/mman.h
-@@ -20,11 +20,69 @@
- 		((vm_flags) & VM_PKEY_BIT2 ? _PAGE_PKEY_BIT2 : 0) |	\
- 		((vm_flags) & VM_PKEY_BIT3 ? _PAGE_PKEY_BIT3 : 0))
- 
--#define arch_calc_vm_prot_bits(prot, key) (		\
-+#define pkey_vm_prot_bits(prot, key) (			\
- 		((key) & 0x1 ? VM_PKEY_BIT0 : 0) |      \
- 		((key) & 0x2 ? VM_PKEY_BIT1 : 0) |      \
- 		((key) & 0x4 ? VM_PKEY_BIT2 : 0) |      \
- 		((key) & 0x8 ? VM_PKEY_BIT3 : 0))
-+#else
-+#define pkey_vm_prot_bits(prot, key) (0)
- #endif
- 
-+static inline unsigned long arch_calc_vm_prot_bits(unsigned long prot,
-+						   unsigned long pkey)
-+{
-+	unsigned long vm_prot_bits = pkey_vm_prot_bits(prot, pkey);
-+
-+	if (prot & PROT_SHADOW_STACK)
-+		vm_prot_bits |= VM_SHADOW_STACK;
-+
-+	return vm_prot_bits;
-+}
-+
-+#define arch_calc_vm_prot_bits(prot, pkey) arch_calc_vm_prot_bits(prot, pkey)
-+
-+#ifdef CONFIG_X86_SHADOW_STACK
-+static inline bool arch_validate_prot(unsigned long prot, unsigned long addr)
-+{
-+	unsigned long valid = PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM |
-+			      PROT_SHADOW_STACK;
-+
-+	if (prot & ~valid)
-+		return false;
-+
-+	if (prot & PROT_SHADOW_STACK) {
-+		if (!current->thread.shstk.size)
-+			return false;
-+
-+		/*
-+		 * A shadow stack mapping is indirectly writable by only
-+		 * the CALL and WRUSS instructions, but not other write
-+		 * instructions).  PROT_SHADOW_STACK and PROT_WRITE are
-+		 * mutually exclusive.
-+		 */
-+		if (prot & PROT_WRITE)
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
-+#define arch_validate_prot arch_validate_prot
-+
-+static inline bool arch_validate_flags(struct vm_area_struct *vma, unsigned long vm_flags)
-+{
-+	/*
-+	 * Shadow stack must be anonymous and not shared.
-+	 */
-+	if ((vm_flags & VM_SHADOW_STACK) && !vma_is_anonymous(vma))
-+		return false;
-+
-+	return true;
-+}
-+
-+#define arch_validate_flags(vma, vm_flags) arch_validate_flags(vma, vm_flags)
-+
-+#endif /* CONFIG_X86_SHADOW_STACK */
-+
- #endif /* _ASM_X86_MMAN_H */
-diff --git a/arch/x86/include/uapi/asm/mman.h b/arch/x86/include/uapi/asm/mman.h
-index f28fa4acaeaf..4c36b263cf0a 100644
---- a/arch/x86/include/uapi/asm/mman.h
-+++ b/arch/x86/include/uapi/asm/mman.h
-@@ -4,6 +4,8 @@
- 
- #define MAP_32BIT	0x40		/* only give out 32bit addresses */
- 
-+#define PROT_SHADOW_STACK	0x10	/* shadow stack pages */
-+
- #include <asm-generic/mman.h>
- 
- #endif /* _UAPI_ASM_X86_MMAN_H */
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 07e642af59d3..041e7e8ff702 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -349,6 +349,7 @@ extern unsigned int kobjsize(const void *objp);
- 
- #if defined(CONFIG_X86)
- # define VM_PAT		VM_ARCH_1	/* PAT reserves whole VMA at once (x86) */
-+# define VM_ARCH_CLEAR	VM_SHADOW_STACK
- #elif defined(CONFIG_PPC)
- # define VM_SAO		VM_ARCH_1	/* Strong Access Ordering (powerpc) */
- #elif defined(CONFIG_PARISC)
--- 
-2.21.0
+Do you see any issue here ?
+Can you share your command line for squashfs to compare ?
 
+Thank you,
+Pintu
