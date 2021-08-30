@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A3A3FB457
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691B33FB45D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236411AbhH3LGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 07:06:11 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:56268 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235818AbhH3LGK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 07:06:10 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Umb.v-4_1630321514;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Umb.v-4_1630321514)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 30 Aug 2021 19:05:15 +0800
-Subject: Re: [PATCH v2] ocfs2: ocfs2_downconvert_lock failure results in
- deadlock
-To:     Gang He <ghe@suse.com>, mark@fasheh.com, jlbec@evilplan.org
-Cc:     linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        akpm@linux-foundation.org
-References: <20210830044621.12544-1-ghe@suse.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <471dd2b4-fb62-3f4a-dbf3-cbf2340aed6f@linux.alibaba.com>
-Date:   Mon, 30 Aug 2021 19:05:14 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210830044621.12544-1-ghe@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S236510AbhH3LJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 07:09:01 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43221 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236490AbhH3LI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 07:08:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630321686; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=VTpVB88JoWhs6rcQHMuqx5z/FcLJ56Q+UXtM0n9ltKk=; b=rYD0rpUhdgg7DGWtNVEXLKYuVe/f7IxzccUoU19E1H/w8j8aRFIfUtJSo+V7Fr8aJ6QbNGhD
+ NNhVFGchQ73FzdH400VBqBMrGVgs52jlHVbUJbU5OPezEOLXdwkEhxhWTbYxab6NWsI4D0xy
+ QraYlcnZxwauwIQlKiDtcOymJH8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 612cbc036fc2cf7ad9cac63b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Aug 2021 11:07:47
+ GMT
+Sender: luoj=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6D1D5C4338F; Mon, 30 Aug 2021 11:07:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from akronite-sh-dev02.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C6F15C4338F;
+        Mon, 30 Aug 2021 11:07:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C6F15C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Luo Jie <luoj@codeaurora.org>
+To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org, Luo Jie <luoj@codeaurora.org>
+Subject: [PATCH v1 0/3] net: phy: Add qca8081 ethernet phy driver
+Date:   Mon, 30 Aug 2021 19:07:30 +0800
+Message-Id: <20210830110733.8964-1-luoj@codeaurora.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series add the qca8081 ethernet phy driver support, which
+improve the wol feature, leverage at803x phy driver and add the cdt
+feature.
 
+Changes in v1:
+	* merge qca8081 phy driver into at803x.
+	* add cdt feature.
+	* leverage at803x phy driver helpers.
 
-On 8/30/21 12:46 PM, Gang He wrote:
-> Usually, ocfs2_downconvert_lock() function always downconverts
-> dlm lock to the expected level for satisfy dlm bast requests
-> from the other nodes.
-> But there is a rare situation. When dlm lock conversion is being
-> canceled, ocfs2_downconvert_lock() function will return -EBUSY.
-> You need to be aware that ocfs2_cancel_convert() function is
-> asynchronous in fsdlm implementation.
-> If we does not requeue this lockres entry, ocfs2 downconvert
-> thread no longer handles this dlm lock bast request. Then, the
-> other nodes will not get the dlm lock again, the current node's
-> process will be blocked when acquire this dlm lock again.
-> 
-> Signed-off-by: Gang He <ghe@suse.com>
+Luo Jie (3):
+  net: phy: improve the wol feature of at803x
+  net: phy: add qca8081 ethernet phy driver
+  net: phy: add cdt feature of qca8081 phy
 
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-> ---
-> v2: keep error print in ocfs2_downconvert_lock function, add more detailed
-> comments in code, add msleep to avoid repeated attempts. 
-> ---
->  fs/ocfs2/dlmglue.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/fs/ocfs2/dlmglue.c b/fs/ocfs2/dlmglue.c
-> index 48fd369c29a4..f8f561850470 100644
-> --- a/fs/ocfs2/dlmglue.c
-> +++ b/fs/ocfs2/dlmglue.c
-> @@ -16,6 +16,7 @@
->  #include <linux/debugfs.h>
->  #include <linux/seq_file.h>
->  #include <linux/time.h>
-> +#include <linux/delay.h>
->  #include <linux/quotaops.h>
->  #include <linux/sched/signal.h>
->  
-> @@ -3912,6 +3913,17 @@ static int ocfs2_unblock_lock(struct ocfs2_super *osb,
->  	spin_unlock_irqrestore(&lockres->l_lock, flags);
->  	ret = ocfs2_downconvert_lock(osb, lockres, new_level, set_lvb,
->  				     gen);
-> +	/* The dlm lock convert is being cancelled in background,
-> +	 * ocfs2_cancel_convert() is asynchronous in fs/dlm,
-> +	 * requeue it, try again later.
-> +	 */
-> +	if (ret == -EBUSY) {
-> +		ctl->requeue = 1;
-> +		mlog(ML_BASTS, "lockres %s, ReQ: Downconvert busy\n",
-> +		     lockres->l_name);
-> +		ret = 0;
-> +		msleep(20);
-> +	}
->  
->  leave:
->  	if (ret)
-> 
+ drivers/net/phy/at803x.c | 632 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 557 insertions(+), 75 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
