@@ -2,93 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05903FBC97
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC84E3FBC9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhH3SoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:44:04 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:50118 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229738AbhH3SoB (ORCPT
+        id S231375AbhH3Spd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:45:33 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:45587 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhH3Spc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:44:01 -0400
-X-UUID: 3c38feffae8d4552b46d08b8f31ad6cd-20210831
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=crEFcIJTwJOrLYU5quGGhCcTCYZ9VLSPd8BGPPPojGA=;
-        b=BSuZvyQw78QfkmkEI6Rrv5Klossyk2XJHBT8hKa5VpcgLWC5/9MyWDcOLQbRsXNSbIeW98kBGIUReWu90oudjM/gpS83yOUH6NGqPEpHldJtqByCwiPnen9ajEAWAd+KKheb1eU7+qCCX3uq9dtf7IwOYlo9VE325CvvfrBf+Hg=;
-X-UUID: 3c38feffae8d4552b46d08b8f31ad6cd-20210831
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1083142343; Tue, 31 Aug 2021 02:43:05 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 31 Aug 2021 02:43:04 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 31 Aug 2021 02:43:04 +0800
-Message-ID: <1630348984.24981.2.camel@mtkswgap22>
-Subject: Re: [RESEND PATCH 3/4] clk: mediatek: support COMMON_CLK_MT6779
- module build
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Stephen Boyd <sboyd@kernel.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Wendell Lin <wendell.lin@mediatek.com>,
-        "Hanks Chen" <hanks.chen@mediatek.com>,
-        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Lee Jones <lee.jones@linaro.org>
-Date:   Tue, 31 Aug 2021 02:43:04 +0800
-In-Reply-To: <163021049667.2676726.10138202396240942833@swboyd.mtv.corp.google.com>
-References: <20210813032429.14715-1-miles.chen@mediatek.com>
-         <20210813032429.14715-4-miles.chen@mediatek.com>
-         <163021049667.2676726.10138202396240942833@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Mon, 30 Aug 2021 14:45:32 -0400
+Received: by mail-ot1-f49.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso19547158otv.12;
+        Mon, 30 Aug 2021 11:44:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=MMPiX+M8m/mnPpiclZ7Dkh794b6tZKCldJgp5Yf1a70=;
+        b=Dm7YDCtZ1Hg5KzBoFC1QptrohUBh5XHHJ+CzUFRpkgmMvWZcRBjRksIl8C8DZ8nHe/
+         0A7F3ipzhGMyqB3csxbK5ZbSlGUZTAXOPWVH1dXRBnV1E+mYyai+W5aoef4eA+MVLUVC
+         CzvoZ+j0PkesorgmhkJjwaUH48AbPnhaHhTVEG1WI8P1GYvSlKvSiL6sg7vgBn0dhGcw
+         Y/KkZ1HFuw5Uz1SiLnM+6AlgprwJEreCdCs9CgYO4NRgkE+OxQGcKKIBoevjkgjgLJ/i
+         DBsntNeD1ou7rbplY7aPdpOgXcqyXWUXz1/Q4MZVzgJE3ZFotwJlbzC6NRgY6VpVzKpe
+         P0pQ==
+X-Gm-Message-State: AOAM5312sA7i/cR9HmgVFwppM6b6FTS1zYLUfUOhTLtBeOJVLRGgeYq1
+        jd453RwUQj9DPIX4ASNWJ/GP13vM2eylBFeEqE8pju1nfWqljQ==
+X-Google-Smtp-Source: ABdhPJxzVFLsOue37ehaRD7u+/UfRY3ZpRqcW6sQ3RZ+kBz12C37C4yIT1HSaZzqFyrDVlQ6NvU18k1QlH3f3oRGXRc=
+X-Received: by 2002:a9d:7115:: with SMTP id n21mr15536721otj.321.1630349077953;
+ Mon, 30 Aug 2021 11:44:37 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 30 Aug 2021 20:44:27 +0200
+Message-ID: <CAJZ5v0hydPvLrqEuHhxAOp3fUVqA6hiKGbGXgch5xADfQiM-Tg@mail.gmail.com>
+Subject: [GIT PULL] ACPI updates for v5.15-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIxLTA4LTI4IGF0IDIxOjE0IC0wNzAwLCBTdGVwaGVuIEJveWQgd3JvdGU6DQo+
-IFF1b3RpbmcgTWlsZXMgQ2hlbiAoMjAyMS0wOC0xMiAyMDoyNDoyOCkNCj4gPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10Njc3OS1hdWQuYyBiL2RyaXZlcnMvY2xrL21l
-ZGlhdGVrL2Nsay1tdDY3NzktYXVkLmMNCj4gPiBpbmRleCAxMWIyMDlmOTVlMjUuLjQzOWMwYmM5
-NGI3MyAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ2Nzc5LWF1
-ZC5jDQo+ID4gKysrIGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10Njc3OS1hdWQuYw0KPiA+
-IEBAIC00LDYgKzQsNyBAQA0KPiA+ICAgKiBBdXRob3I6IFdlbmRlbGwgTGluIDx3ZW5kZWxsLmxp
-bkBtZWRpYXRlay5jb20+DQo+ID4gICAqLw0KPiA+ICANCj4gPiArI2luY2x1ZGUgPGxpbnV4L21v
-ZHVsZS5oPg0KPiA+ICAjaW5jbHVkZSA8bGludXgvY2xrLXByb3ZpZGVyLmg+DQo+ID4gICNpbmNs
-dWRlIDxsaW51eC9vZi5oPg0KPiA+ICAjaW5jbHVkZSA8bGludXgvb2ZfYWRkcmVzcy5oPg0KPiA+
-IEBAIC0xMTUsMyArMTE2LDQgQEAgc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgY2xrX210
-Njc3OV9hdWRfZHJ2ID0gew0KPiA+ICB9Ow0KPiA+ICANCj4gPiAgYnVpbHRpbl9wbGF0Zm9ybV9k
-cml2ZXIoY2xrX210Njc3OV9hdWRfZHJ2KTsNCj4gPiArTU9EVUxFX0xJQ0VOU0UoIkdQTCIpOw0K
-PiANCj4gSG93IGRvZXMgdGhpcyB3b3JrPyBidWlsdGluX3BsYXRmb3JtX2RyaXZlcigpIG1lYW5z
-IHRoYXQgaXQncyBub3QNCj4gbW9kdWxhciBjb2RlLiBTaG91bGRuJ3QgdGhhdCBiZSBtb2R1bGVf
-cGxhdGZvcm1fZHJpdmVyKCk/IEhhdmUgeW91IHRyaWVkDQo+IGxvYWRpbmcgYW5kIHVubG9hZGlu
-ZyB0aGUgbW9kdWxlPw0KDQpzb3JyeSBmb3IgbXkgbGF0ZSByZXNwb25zZS4gDQoNClRoYW5rcyBm
-b3IgcG9pbnRpbmcgdGhpcyBvdXQuIEkgaGF2ZSB0aGUgc2FtZSBxdWVzdGlvbiB3aGVuIEkgd2Fz
-DQpidWlsZGluZyB0aGlzIHBhdGNoLiBUaGF0IHRpbWUgSSBmb3VuZCBzb21lIGV4YW1wbGVzIHdo
-ZXJlDQp0aGV5IGFyZSB1c2luZyBidWlsdGluX3BsYXRmb3JtX2RyaXZlciBhbmQgY2FuIGJlIGJ1
-aWx0IGFzIA0Ka2VybmVsIG1vZHVsZXM6DQoNCmNvbmZpZyBDTEtfSU1YOFFYUCAodHJpc3RhdGUp
-ICYmIGRyaXZlcnMvY2xrL2lteC9jbGstaW14OHF4cC1scGNnLmMNCmNvbmZpZyBDTEtfUkszMzk5
-ICh0cmlzdGF0ZSkgJiYgZHJpdmVycy9jbGsvcm9ja2NoaXAvY2xrLXJrMzM5OS5jDQoNCm15IGxv
-YWQgdGVzdDoNCmxvYWQgdGhlc2UgbW9kdWxlc3MgYW5kIGRvICdsc21vZCcgb24gdjUuMTQtcmMx
-L210Njc3OSBlbnZpcm9ubWVudDoNCg0KY2xrX210Njc3OV9hdWQgMTYzODQgMCBbcGVybWFuZW50
-XSwgTGl2ZSAweGZmZmY4MDAwMDhmZDgwMDANCmNsa19tdDY3NzlfbWZnIDE2Mzg0IDAgW3Blcm1h
-bmVudF0sIExpdmUgMHhmZmZmODAwMDA4ZmQwMDAwDQpjbGtfbXQ2Nzc5X3ZlbmMgMTYzODQgMCBb
-cGVybWFuZW50XSwgTGl2ZSAweGZmZmY4MDAwMDhmYzgwMDANCmNsa19tdDY3NzlfdmRlYyAxNjM4
-NCAwIFtwZXJtYW5lbnRdLCBMaXZlIDB4ZmZmZjgwMDAwOGZjMDAwMA0KY2xrX210Njc3OV9jYW0g
-MTYzODQgMCBbcGVybWFuZW50XSwgTGl2ZSAweGZmZmY4MDAwMDhmYjgwMDANCmNsa19tdDY3Nzlf
-aXBlIDE2Mzg0IDAgW3Blcm1hbmVudF0sIExpdmUgMHhmZmZmODAwMDA4ZmIwMDAwDQpjbGtfbXQ2
-Nzc5X2ltZyAxNjM4NCAwIFtwZXJtYW5lbnRdLCBMaXZlIDB4ZmZmZjgwMDAwOGZhODAwMA0KY2xr
-X210Njc3OV9tbSAxNjM4NCAwIFtwZXJtYW5lbnRdLCBMaXZlIDB4ZmZmZjgwMDAwOGZhMDAwMA0K
-DQpJIGRpZCBub3QgdGVzdCAndW5sb2FkJyBrZXJuZWwgbW9kdWxlcyBiZWNhdXNlIEkgZGlkIG5v
-dA0KZGVmaW5lIG1vZHVsZV9leGl0IGluIHRoaXMgcGF0Y2guDQoNCkJ1dCBhcyB5b3UgcG9pbnRl
-ZCBvdXQsIGl0IHNob3VsZCBiZSBtb2R1bGVfcGxhdGZvcm1fZHJpdmVyKCkuDQpJIHdpbGwgdXNl
-IG1vZHVsZV9wbGF0Zm9ybV9kcml2ZXIoKSBpbiB0aGUgbmV4dCBwYXRjaC4NCg0KDQpNaWxlcw0K
+Hi Linus,
 
+Please pull from the tag
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.15-rc1
+
+with top-most commit 2cbd40709a9d44b8b0d418589de12efad6f71c15
+
+ Merge branches 'acpi-osl', 'acpi-power' and 'acpi-misc'
+
+on top of commit 294c34e704e78d641b039064ce72d4531afe0088
+
+ media: ipu3-cio2: Drop reference on error path in cio2_bridge_connect_sensor()
+
+to receive ACPI updates for 5.15-rc1.
+
+These update the ACPICA kernel code to upstream revision 20210730,
+clean up the ACPI companion binding code, optimize the I2C handling
+in the XPower PMIC driver, add 16550-compatible Serial Port Subtype
+support to the SPCR parsing code, add a few LoongArch support bits,
+add a ne quirk to the button driver, add new PCH FIVR methods to
+the DPTF code, replace deprecated CPU-hotplug functions in the
+processor driver, improve the acpi_os_map_memory() handling on
+non-x86 and do some assorted cleanups.
+
+Specifics:
+
+ - Update ACPICA code in the kernel to upstream revision 20210730
+   including the following changes:
+   * Add support for the AEST table (data compiler) to iASL (Bob
+     Moore).
+   * Fix an if statement (add parens) (Bob Moore).
+   * Drop trailing semicolons from some macros (Bob Moore).
+   * Fix compilation of WPBT table with no command-line arguments
+     in iASL (Bob Moore).
+   * Add method name "_DIS" for use with aslmethod.c (Bob Moore).
+   * Add new DBG2 Serial Port Subtypes (Marcin Wojtas).
+
+ - Add new PCH FIVR methods to the DPTF code (Srinivas Pandruvada).
+
+ - Add support for the new 16550-compatible Serial Port Subtype to
+   the SPCR table parsing code (Marcin Wojtas).
+
+ - Add DMI quirk for Lenovo Yoga 9 (14INTL5) to the ACPI button
+   driver (Ulrich Huber).
+
+ - Add LoongArch support for ACPI_PROCESSOR/ACPI_NUMA (Huacai Chen).
+
+ - Add memory semantics to acpi_os_map_memory() (Lorenzo Pieralisi).
+
+ - Replace deprecated CPU-hotplug functions in the ACPI processor
+   driver (Sebastian Andrzej Siewior).
+
+ - Optimize I2C-bus handling in the XPower PMIC driver (Hans de Goede).
+
+ - Make platform-profile catch profile changes initiated by user space
+   and notify user processes of them (Hans de Goede).
+
+ - Clean up the ACPI companion binding and unbinding code and update
+   debug messaging in the ACPI power resources code (Rafael Wysocki).
+
+ - Clean up a couple of code pieces related to configfs (Andy
+   Shevchenko).
+
+ - Rearrange the FPDT table parsing code to avoid printing warning
+   messages for reserved record types (Adrian Huang).
+
+Thanks!
+
+
+---------------
+
+Adrian Huang (1):
+      ACPI: tables: FPDT: Do not print FW_BUG message if record types
+are reserved
+
+Andy Shevchenko (2):
+      ACPI: configfs: Use sysfs_emit() in "show" functions
+      ACPI: configfs: Make get_header() to return error pointer
+
+Bob Moore (6):
+      ACPICA: iASL: Add support for the AEST table (data compiler)
+      ACPICA: Fix an if statement (add parens)
+      ACPICA: Macros should not use a trailing semicolon
+      ACPICA: iASL: Fix for WPBT table with no command-line arguments
+      ACPICA: Add method name "_DIS" For use with aslmethod.c
+      ACPICA: Update version to 20210730
+
+Hans de Goede (3):
+      ACPI / PMIC: XPower: optimize I2C-bus accesses
+      ACPI / PMIC: XPower: optimize MIPI PMIQ sequence I2C-bus accesses
+      ACPI: platform-profile: call sysfs_notify() from platform_profile_store()
+
+Huacai Chen (1):
+      ACPI: Add LoongArch support for ACPI_PROCESSOR/ACPI_NUMA
+
+Lorenzo Pieralisi (1):
+      ACPI: Add memory semantics to acpi_os_map_memory()
+
+Marcin Wojtas (2):
+      ACPICA: Headers: Add new DBG2 Serial Port Subtypes
+      ACPI: SPCR: Add support for the new 16550-compatible Serial Port Subtype
+
+Rafael J. Wysocki (8):
+      ACPI: glue: Rearrange acpi_device_notify()
+      ACPI: glue: Change return type of two functions to void
+      ACPI: bus: Rename functions to avoid name collision
+      ACPI: glue: Eliminate acpi_platform_notify()
+      software nodes: Split software_node_notify()
+      driver core: Split device_platform_notify()
+      ACPI: power: Use acpi_handle_debug() to print debug messages
+      ACPI: power: Drop name from struct acpi_power_resource
+
+Sebastian Andrzej Siewior (1):
+      ACPI: processor: Replace deprecated CPU-hotplug functions
+
+Srinivas Pandruvada (1):
+      ACPI: DPTF: Add new PCH FIVR methods
+
+Ulrich Huber (1):
+      ACPI: button: Add DMI quirk for Lenovo Yoga 9 (14INTL5)
+
+---------------
+
+ Documentation/ABI/testing/sysfs-platform-dptf    |  40 ++++++
+ Documentation/ABI/testing/sysfs-platform_profile |   7 +
+ arch/arm64/include/asm/acpi.h                    |   3 +
+ arch/arm64/kernel/acpi.c                         |  19 ++-
+ drivers/acpi/Kconfig                             |   4 +-
+ drivers/acpi/acpi_configfs.c                     |  54 +++----
+ drivers/acpi/acpi_fpdt.c                         |   7 +-
+ drivers/acpi/acpi_pad.c                          |   4 +-
+ drivers/acpi/acpi_processor.c                    |   8 +-
+ drivers/acpi/acpica/dswexec.c                    |   5 +-
+ drivers/acpi/bus.c                               |  12 +-
+ drivers/acpi/button.c                            |  11 ++
+ drivers/acpi/dptf/dptf_pch_fivr.c                |   9 ++
+ drivers/acpi/glue.c                              |  51 ++-----
+ drivers/acpi/numa/Kconfig                        |   2 +-
+ drivers/acpi/numa/srat.c                         |   2 +-
+ drivers/acpi/osl.c                               |  23 ++-
+ drivers/acpi/platform_profile.c                  |   3 +
+ drivers/acpi/pmic/intel_pmic_xpower.c            |  47 ++++++-
+ drivers/acpi/power.c                             |  38 +++--
+ drivers/acpi/processor_idle.c                    |   4 +-
+ drivers/acpi/spcr.c                              |   1 +
+ drivers/base/base.h                              |   3 +
+ drivers/base/core.c                              |  35 +++--
+ drivers/base/swnode.c                            |  61 ++++----
+ include/acpi/acnames.h                           |   1 +
+ include/acpi/acoutput.h                          |   2 +-
+ include/acpi/acpi_io.h                           |   8 ++
+ include/acpi/acpixf.h                            |   2 +-
+ include/acpi/actbl1.h                            |  16 ++-
+ include/acpi/actbl2.h                            | 170 +++++++++++++++++++++++
+ include/acpi/actbl3.h                            |   4 +
+ include/linux/acpi.h                             |  12 +-
+ include/linux/property.h                         |   2 -
+ 34 files changed, 491 insertions(+), 179 deletions(-)
