@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8720F3FBAF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0FD3FBAF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238044AbhH3R2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 13:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34566 "EHLO
+        id S238125AbhH3R3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 13:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232236AbhH3R2v (ORCPT
+        with ESMTP id S232236AbhH3R3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 13:28:51 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49186C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:27:57 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id j4so32727034lfg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:27:57 -0700 (PDT)
+        Mon, 30 Aug 2021 13:29:18 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF50BC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:28:24 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id o76-20020a25414f000000b0059bb8130257so2417876yba.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:28:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d5bnBdYfK8MREsdQ2ulPLtMZ7uZ5lPMgodPXfNRRTrY=;
-        b=sVPP9eZBx+GLi2Ud3Dmd0T5Ee6ZUA8XOsanKSCCBp4laDJ0qalOCc2MlaEcf+TAaS+
-         Xci3FDlJ58w8KdFsQedMH40QB056SizVkwBm1jPeq/UHbRYcIZFKZ8uGF139Tl4IWBtP
-         z1mIqudvNvQsloBGfwfrQrn+QpaWs00T8br0O2ZCHW9gtJzd1q0k7KkvpscfwEFg4m4h
-         /6i00rHCrNyWvNYh9NczrUWgPS8t3UOohlBI0aavjGjCdYeNfvt2fPKqIO0X2td0iCRS
-         c2BqOrKsivcTV6NNkP3Bs85szaZXFqCLAq6eWn8Wb/j6Q/tVl0vGIvZ4Jzhu9yz7niaX
-         +8MA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=kodoJmi6WDuZJrPTFcRxRUB0Jbyp7ZG0JWBLCSvowuQ=;
+        b=DKia4FFu9QYBM6YQMGDmGO4N/gnhRt/zkglFnEQ+xM4/6x0Al+7Hcxn4C8V6UUEn0a
+         62/zA2l0mkTghgk7ZWmvHOx37VnFzLHWr1Gi52b6AaSky64RsYk54wzRjflBeLz6vKuS
+         NfkpxyeWzKPZfUkjixMkBLEHLemy00RYk+aKg9cTXp44Y4jGAZA26bjzbWHte0EvbZ+v
+         QqU+3SGuAY4zlVoKSMyT0rwr/raL3vig2z/oCHfuwmSHyuY+Rl/o1gQ7+Xo4lssrhYJJ
+         M371f0B1Iw0WA0d9ltb1wJ7PTg5ayA22zn1UiD+3KcVD6f7DO9XOSFNbSYDQIiSHje+8
+         z9nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d5bnBdYfK8MREsdQ2ulPLtMZ7uZ5lPMgodPXfNRRTrY=;
-        b=Y57T2d4T8XU/D8Msxk7GXBuBvg9ZrOivcJcP1eFaZrfEDrNR9nlt5JT8QeYunPWuZs
-         2xgUgbsjekhQ5JyCmj+T6vM2oFP/ciLOMbwCqIzBKNivpe+XrfqmA34np7cK0uHmt2WM
-         LlUoPnG+DgELxDDYC4PFlwrPa1neKt1LMx4Rl0gyKpnR+g+IiPM2BgxXOozOCcz80WSX
-         K3TbeHXeW07lTP/5LcLehk0fDXfO4HLg3sJiqjR++5CGUUq6OShcGgQz/T1PrnepokpG
-         SD1CBLNS+bxQYiSOezMHv2t6qUda7MSE6B/A47o5RvhSMmBp3Y7Y73JdyuZsc1ywMxgD
-         /qvQ==
-X-Gm-Message-State: AOAM531uVGx57DnYa/k0uoS01gceBEdu3IwbUFfXblRLB9s73DshUoVk
-        AJGURKYBupZzJsGMEaSaPQX96FnPzztVhS+7gFM=
-X-Google-Smtp-Source: ABdhPJwf0g2OZ7nDm0+I1Aa9jrPZsxH7AMSUcGIVCyJH5WFvCc49EYJ6RYuPBN97ASiAJ3Tg9HSYwufvfqD+qMUYVG0=
-X-Received: by 2002:a05:6512:a85:: with SMTP id m5mr10289356lfu.610.1630344474760;
- Mon, 30 Aug 2021 10:27:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210825185747.1627497-1-daeho43@gmail.com> <1f1e6d38-6bd1-17ea-b8ca-a45d1244728f@kernel.org>
- <CACOAw_yhgo1_wrejKskSm=Rsw27ogx=TS_A=z=-NGLcecA-gYA@mail.gmail.com> <335d5bb5-7055-c934-33df-a03885382034@kernel.org>
-In-Reply-To: <335d5bb5-7055-c934-33df-a03885382034@kernel.org>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Mon, 30 Aug 2021 10:27:43 -0700
-Message-ID: <CACOAw_wbK8qZ7kNxNXkyZqAdb9XJ7EqC2_GxnkzUDBr1oSwxkA@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: introduce fragment allocation mode
- mount option
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=kodoJmi6WDuZJrPTFcRxRUB0Jbyp7ZG0JWBLCSvowuQ=;
+        b=fn5Y5EjiQNxk96AwHPhaMn26jgn8WiqAaJw6P4RI8t1s3xhQv0ARZqa5vbhKBXUL6y
+         9XlOlKtfjNVlZSQXsbJ6mJii8JszY0aOHkGvFYkZHuPdLt3ZBzayZsC1BgNzwGHH4PQg
+         MdV41P8ZeOZmQ4UvWXHkFEeHJMGCJoWSFCs2i18SXYe3sKWTHOSfipW8XvhOHj2X92g4
+         6LVi0s7FCBmqDDFdYH0AGlnWjj5C5PU5KGRqKrnXd6ZB7aE02h+b4pFi79Z5y1ezVWe0
+         iZTP7r8wQ0tI5H0lAZZqPk4Om2ngF6mOU9bcRPZ/zkRUB/z367kRTFIdoa0qHvdgZ0nG
+         k0SA==
+X-Gm-Message-State: AOAM530TKEckXyXriHNxvTNpf5dK6oJzIcjAvJqU/0+NyEbFmj5MqTuF
+        2qdG/zjn9MlvYDIhkIgKn6SxadkCAt5O
+X-Google-Smtp-Source: ABdhPJy41DNEJQGZEl2tN6mjusExB81ZTXcD+ytTnMQGALzhVaEVC/yusnG6KvHirOSE1NUPuUvOOU3nq9dT
+X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:200:dd51:f64e:22ea:f5ac])
+ (user=jiancai job=sendgmr) by 2002:a25:9847:: with SMTP id
+ k7mr24040661ybo.170.1630344504154; Mon, 30 Aug 2021 10:28:24 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 10:28:19 -0700
+Message-Id: <20210830172820.2840433-1-jiancai@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+Subject: [PATCH v2] coresight: syscfg: fix compiler warnings
+From:   Jian Cai <jiancai@google.com>
+Cc:     mike.leach@linaro.org, linux@roeck-us.net, dianders@chromium.org,
+        mka@chromium.org, manojgupta@google.com, llozano@google.com,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        clang-built-linux@googlegroups.com, Jian Cai <jiancai@google.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 5:43 PM Chao Yu <chao@kernel.org> wrote:
->
-> On 2021/8/27 23:22, Daeho Jeong wrote:
-> >> I'd like to add a fixed chunk/hole fragmentation mode in addition, then
-> >> userspace can control the fragmented chunk/hole with fixed size.
-> >>
-> >> How do you think of renaming "fragment:block" to "fragment:rand_block", and
-> >> then I can add "fragment:fixed_block" option and its logic in addition?
-> >>
-> >
-> > The reason I added the randomness on these values is the segment
-> > selection in SSR mode.
-> > If all the segments have the same free block counts, f2fs will
-> > allocate a new segment sequentially in SSR.
->
-> I'm fine with this, since test program can customize different fragment
-> degree on segments by setting different chunk/hole size.
->
+This fixes warnings with -Wimplicit-function-declaration, e.g.
 
-Got it. Sounds good~
+drivers/hwtracing/coresight/coresight-syscfg.c:455:15: error:
+implicit declaration of function 'kzalloc' [-Werror,
+-Wimplicit-function-declaration]
+        csdev_item = kzalloc(sizeof(struct cscfg_registered_csdev),
+                             GFP_KERNEL);
 
-> > This was what I didn't want. Plus, in the real world, the size of hole
-> > and chunk will be different in different segments.
-> >
-> > But, if you think we need this "fragment:fixed_block" mode, I am happy
-> > to have it. :)
->
-> Thanks a lot. :)
->
-> As you said it needs to be aligned to real world fragmentation, I notice that:
-> with this way, we can't simulate similar fragment in FTL, due to its page
-> mapping architecture, all fragmented data/node in filesystem will be written
-> sequentially into its blocks.
->
-> In order to simulate fragment in FTL, we need to:
-> - write data (chunk size) with dummy pages (hole size) to devices
-> - issue discards on those holes
->
-> I guess fragmenting device (erase blocks) at the same time wouldn't be
-> original intention of this patch, right?
->
-> Thanks,
->
+Fixes: 85e2414c518a ("coresight: syscfg: Initial coresight system configuration")
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Jian Cai <jiancai@google.com>
+---
 
-Yes, I just meant filesystem fragmentation as I wrote in the comment.
+Changes v1 -> v2:
+  Format the commit message and add Fixes and Reviewed-by tag.
 
-> >
-> >> Do we need to consider multiple thread scenario? in such case,
-> >> .fragment_remained_chunk may update randomly.
-> >>
-> >> In addition, multiple log headers share one .fragment_remained_chunk,
-> >> it may cause unexpected result, it means there may be continuous holes
-> >> or chunks in locality due to swithing between different log headers.
-> >>
-> >> Thanks,
-> >>
-> >
-> > Oh, I overlooked that point. I am going to add the variable for each
-> > segment as you said before.
-> >
-> > Thanks,
-> >
+ drivers/hwtracing/coresight/coresight-syscfg.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
+index fc0760f55c53..43054568430f 100644
+--- a/drivers/hwtracing/coresight/coresight-syscfg.c
++++ b/drivers/hwtracing/coresight/coresight-syscfg.c
+@@ -5,6 +5,7 @@
+  */
+ 
+ #include <linux/platform_device.h>
++#include <linux/slab.h>
+ 
+ #include "coresight-config.h"
+ #include "coresight-etm-perf.h"
+-- 
+2.33.0.259.gc128427fd7-goog
+
