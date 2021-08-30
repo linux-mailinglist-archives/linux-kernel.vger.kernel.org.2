@@ -2,77 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B29DD3FBD87
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CA53FBD8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbhH3Uni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
+        id S235846AbhH3UpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 16:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235057AbhH3Ung (ORCPT
+        with ESMTP id S235057AbhH3UpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:43:36 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B8DC061575;
-        Mon, 30 Aug 2021 13:42:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=s8sN/nm91BxBuEePx1oK1Ip0xK3fNhEwWe4+zuk6ceg=; b=4v7ISjCjGyaDn8TkXmebdJ4hKv
-        PYx8skNRQRgbxfe4rRQMsvdVqvz6VsOfG9X+ROPMHVGQ4OJA5hAo5lE2j0lBIGhBMuJO1IOmg+FTW
-        Baz+6nCnSYe3ZmhnuxdkpAmokYK10l/Ya7AG5MqiR+lD1nmC8JOlQ969ZzIpbc1fur6demSAe5MMr
-        C2BQu/AgInu/iK6+i6nB3CZiOREMoI+7P48WwQrSYGGvuhP+V5R6VnsWpAN/CQqgW38xrJ61oM8JV
-        aPng4azQlAs9WpIqkFSGrCtxrK/b3zVILCxHQ9PBfuLp0BPIxBCinyxszKB9hpiE2mepEls2HYCFQ
-        4ovZX2pA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKo6Z-000Wv2-7h; Mon, 30 Aug 2021 20:42:07 +0000
-Date:   Mon, 30 Aug 2021 13:42:07 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
-        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
-        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
-        josef@toxicpanda.com, hare@suse.de, bvanassche@acm.org,
-        ming.lei@redhat.com, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
-        dm-devel@redhat.com, nbd@other.debian.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/10] mmc/core/block: add error handling support for
- add_disk()
-Message-ID: <YS1Cn6yMbpQGFOYe@bombadil.infradead.org>
-References: <20210823202930.137278-1-mcgrof@kernel.org>
- <20210823202930.137278-7-mcgrof@kernel.org>
- <YSSN+eac2aCFXTAA@infradead.org>
- <YSkyHINtV/djFEej@bombadil.infradead.org>
- <YSnme1mfHS/HCguW@infradead.org>
+        Mon, 30 Aug 2021 16:45:08 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E218FC061575;
+        Mon, 30 Aug 2021 13:44:14 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so670977pje.0;
+        Mon, 30 Aug 2021 13:44:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eGh7cTPum9ArbjWj3aWoT5S5YnpgVCZnC19NWxFTQLk=;
+        b=kecjsMdrD2/AjU3DPAqosecIEsW67GUtCIDIqtWjAa2c1qkHVuyhfc0qVpc927erO3
+         bu1d6En1rJnU+BK0LCWqspfjQzCy3hSPOmFIcAlAdaJLUjRgxGlDWvYxsLD/82Q8DvmS
+         N1mqkujoZljIDY7GNsE6xWNtVfUUj69ySY9oTBw/Kcn2KF1IKOAZHJy1OmTP6avKtqFy
+         YYAqut3MtiKmHIGXeD0br7za7M4+bNBhCBUUUC3QJ+O+ofeRd7IHYhDKlDRdZIOMpvkB
+         Hmni5Br7Wy70uDXgFwZybYerIkhAYpJlmJFNQviQM2Y9UiI49TGviGmv9EzM8O6LNhXB
+         goJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eGh7cTPum9ArbjWj3aWoT5S5YnpgVCZnC19NWxFTQLk=;
+        b=EDC/SixpibvUjW2hU5PcROu2IWX2EadoCA411cTjtJWklCSstSUWtd+FhN5xOOi/30
+         LN7mxUhUsoLFt7qwG3MR/rEhhWZNd/NFxUVe3QtIn9gghdltQfpG/vA9nO3YKJk/o93p
+         PEWMCQHl0rZhjMTywCYYTkdIoQGwiywmRjj2YKJy3f3TRRaBtSvApiXI94hnX9lHzKiH
+         blz55X/K1i2czRu2NECP1Q638q0hhFA2wxiEFO9ZoHRI24QAPbzzlsnSfo16zqeSkdVA
+         r4YLAssRIodjcmR8rtAcqKc61F3xcg0vv3lUZ4HO9pVzBTr1wGUl/1lsnAgzKb4L5oqk
+         3Vmg==
+X-Gm-Message-State: AOAM5321p/lfw39tWPiQYtapg6AkpXsJeJ9qooO7PDUfIWhO6ljQaZxC
+        XgGpWntX52Qw3hB7+G5uAUg=
+X-Google-Smtp-Source: ABdhPJx8ULqhhNMPgZHMuYaLMOjcgZe/T5ABiFmftMeO3GlTbOp+F6jT41DXnzXs6qJ6PgfZbjyFhw==
+X-Received: by 2002:a17:902:f541:b0:138:e3e0:a5f8 with SMTP id h1-20020a170902f54100b00138e3e0a5f8mr1328091plf.60.1630356254242;
+        Mon, 30 Aug 2021 13:44:14 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:771a:afc8:2e96:23dd])
+        by smtp.gmail.com with ESMTPSA id gg22sm338481pjb.19.2021.08.30.13.44.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 13:44:13 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 13:44:10 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alistair Francis <alistair@alistair23.me>, ping.cheng@wacom.com,
+        tatsunosuke.tobita@wacom.com
+Cc:     linux-input@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, pinglinux@gmail.com, junkpainting@gmail.com,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v10 05/12] Input: wacom_i2c - Read the descriptor values
+Message-ID: <YS1DGuTTAEKAd2Yr@google.com>
+References: <20210829091925.190-1-alistair@alistair23.me>
+ <20210829091925.190-7-alistair@alistair23.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YSnme1mfHS/HCguW@infradead.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20210829091925.190-7-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 08:32:11AM +0100, Christoph Hellwig wrote:
-> On Fri, Aug 27, 2021 at 11:42:36AM -0700, Luis Chamberlain wrote:
-> > > >  	if (area_type == MMC_BLK_DATA_AREA_MAIN)
-> > > >  		dev_set_drvdata(&card->dev, md);
-> > > > -	device_add_disk(md->parent, md->disk, mmc_disk_attr_groups);
-> > > > +	ret = device_add_disk(md->parent, md->disk, mmc_disk_attr_groups);
-> > > > +	if (ret)
-> > > > +		goto out;
-> > > 
-> > > This needs to do a blk_cleanup_queue and also te kfree of md.
-> > 
-> > If mmc_blk_alloc_parts() fails mmc_blk_remove_req() is called which
-> > does both for us?
+On Sun, Aug 29, 2021 at 07:19:18PM +1000, Alistair Francis wrote:
+> When we query the device let's also read the descriptor from the device.
+> This tells us useful information, including the version, which we use to
+> determine a generation.
 > 
-> Yes, but only for the main gendisk, and those parts already added to
-> the list which happens after device_add_disk succeeded.
+> This is based on the driver from Wacom.
+> 
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  drivers/input/touchscreen/wacom_i2c.c | 64 +++++++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+> 
+> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
+> index 28255c77d426..72ba4a36459b 100644
+> --- a/drivers/input/touchscreen/wacom_i2c.c
+> +++ b/drivers/input/touchscreen/wacom_i2c.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/of.h>
+>  #include <asm/unaligned.h>
+>  
+> +#define WACOM_DESC_REG	0x01
+>  #define WACOM_CMD_QUERY0	0x04
+>  #define WACOM_CMD_QUERY1	0x00
+>  #define WACOM_CMD_QUERY2	0x33
+> @@ -24,11 +25,46 @@
+>  #define WACOM_CMD_THROW1	0x00
+>  #define WACOM_QUERY_SIZE	19
+>  
+> +#define WACOM_MAX_DATA_SIZE_BG9     10
+> +#define WACOM_MAX_DATA_SIZE_G12     15
+> +#define WACOM_MAX_DATA_SIZE_AG14    17
+> +#define WACOM_MAX_DATA_SIZE         22
+> +
+> +/* Generation selction */
+> +/* Before and at G9 generation */
+> +#define WACOM_BG9	0
+> +/* G12 generation the IC supports "height"*/
+> +#define WACOM_G12	1
+> +/* After and at G14 generation the IC supports "height" and
+> + * it is defined as "Z" axis
+> + */
+> +#define WACOM_AG14	2
+> +
+> +struct wacom_desc {
+> +	u16 descLen;
+> +	u16 version;
+> +	u16 reportLen;
+> +	u16 reportReg;
+> +	u16 inputReg;
+> +	u16 maxInputLen;
+> +	u16 outputReg;
+> +	u16 maxOutputLen;
+> +	u16 commReg;
+> +	u16 dataReg;
+> +	u16 vendorID;
+> +	u16 productID;
+> +	u16 fwVersion;
+> +	u16 misc_high;
+> +	u16 misc_low;
+> +};
 
-Ah yes I see that now. Will fix up. The tag also needs to be cleaned up.
+This looks like I2C HID descriptor. Is the device actually I2C HID
+compatible? If so we should use that and abandon this driver.
 
-  Luis
+Ping, Tatsunosuke, please advise.
+
+Thanks.
+
+-- 
+Dmitry
