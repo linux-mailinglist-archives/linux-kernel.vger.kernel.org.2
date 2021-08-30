@@ -2,197 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99E53FB898
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADA73FB8A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237257AbhH3O6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 10:58:01 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:56498 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233162AbhH3O57 (ORCPT
+        id S237354AbhH3PAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:00:24 -0400
+Received: from mail-vk1-f178.google.com ([209.85.221.178]:36384 "EHLO
+        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233162AbhH3PAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 10:57:59 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id ef38839b;
-        Mon, 30 Aug 2021 16:57:02 +0200 (CEST)
-Date:   Mon, 30 Aug 2021 16:57:02 +0200 (CEST)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     devicetree@vger.kernel.org, alyssa@rosenzweig.io,
-        kettenis@openbsd.org, tglx@linutronix.de, robh+dt@kernel.org,
-        marcan@marcan.st, bhelgaas@google.com, nsaenz@kernel.org,
-        jim2101024@gmail.com, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        daire.mcnamara@microchip.com, nsaenzjulienne@suse.de,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
-In-Reply-To: <87pmtvcgec.wl-maz@kernel.org> (message from Marc Zyngier on Mon,
-        30 Aug 2021 12:37:31 +0100)
-Subject: Re: [PATCH v4 4/4] arm64: apple: Add PCIe node
-References: <20210827171534.62380-1-mark.kettenis@xs4all.nl>
- <20210827171534.62380-5-mark.kettenis@xs4all.nl> <87pmtvcgec.wl-maz@kernel.org>
-Message-ID: <56142808ad64dd79@bloch.sibelius.xs4all.nl>
+        Mon, 30 Aug 2021 11:00:23 -0400
+Received: by mail-vk1-f178.google.com with SMTP id s126so4082844vkd.3;
+        Mon, 30 Aug 2021 07:59:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vfdnjnEp4XpXIUeX6ZT76KgIhW9q66X8YC+x/oa8NO4=;
+        b=fgXVKDEUHqO6J0gddP5WlEP1rq5umP73PGVjqFlxL/8B6Amu9ZuuQtHA6CtCD8HE8L
+         iiWbmByDR2MGWlAwqQxek9ChtdkmhhWlZkyqM0IYHQC+Rw9i5u6pqGBK+qrogldLXLJ1
+         Dx2/vPXG0ghI0M8xJVtXUdz6i4qhGOGhES+zGM5sD+UJNrxxI54HUKV2taL9mRJCFwoy
+         WIuKMn/6BDsREup5RCAfuZ5PTUDHxpK2oyjXzogRS/af6+LKMn0K/yhURJem1z1sXjvP
+         95fDxjjFRSJMVEVV8Pw7+PSGUd5GB2JWvNoNOG0LK2sZTnK6gyh0YAFYlThgJLKZPvvg
+         fNwA==
+X-Gm-Message-State: AOAM530i/DDXf20yhPC0cmJcGyWMDPO60kBzytVgrjOTq3zvE/WH5EEj
+        kS+eW+t+hc9pkb3e5nMV+W+SEWkGv6Op2DnZq2o=
+X-Google-Smtp-Source: ABdhPJydLpFB2lNgVuMM9bZ4mnyHRiF4P8TW4Q5UiskyqqH0bqGTbirT4idHoa56DrU3sA/4b/qArusq4rnN12XhXmw=
+X-Received: by 2002:a05:6122:809:: with SMTP id 9mr14007873vkj.4.1630335569285;
+ Mon, 30 Aug 2021 07:59:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <1630294223-7225-1-git-send-email-tcs_kernel@tencent.com>
+ <YSyTzlUEhrxD7rU4@phenom.ffwll.local> <f9fda3fa-b2b7-57aa-8c37-69d93ae26045@i-love.sakura.ne.jp>
+In-Reply-To: <f9fda3fa-b2b7-57aa-8c37-69d93ae26045@i-love.sakura.ne.jp>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 30 Aug 2021 16:59:18 +0200
+Message-ID: <CAMuHMdV9cWSs0Hn2XJxj6HU1rAN0jYcOKLRn=1Z64nmGDp7bQQ@mail.gmail.com>
+Subject: Re: [PATCH V4] fbcon: fix fbcon out-of-bounds write in sys_imageblit
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, tcs.kernel@gmail.com,
+        Matthew Wilcox <willy@infradead.org>,
+        George Kennedy <george.kennedy@oracle.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Haimin Zhang <tcs_kernel@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Date: Mon, 30 Aug 2021 12:37:31 +0100
-> From: Marc Zyngier <maz@kernel.org>
-> 
-> Hi Mark,
+Hi Tetsuo,
 
-Hi Marc,
+On Mon, Aug 30, 2021 at 12:25 PM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+> On 2021/08/30 17:16, Daniel Vetter wrote:
+> > On Mon, Aug 30, 2021 at 11:30:23AM +0800, tcs.kernel@gmail.com wrote:
+> >> From: Haimin Zhang <tcs_kernel@tencent.com>
+> >>
+> >> yres and vyres can be controlled by user mode parameters, and cause
+> >> p->vrows to become a negative value. While this value be passed to real_y
+> >> function, the ypos will be out of screen range.This is an out-of-bounds
+> >> write bug.
+> >> some driver will check xres and yres in fb_check_var callback,but some not
+> >> so we add a common check after that callback.
+> >>
+> >> Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
+> >> Signed-off-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+>
+> Please s/Signed-off-by: Tetsuo Handa/Suggested-by: Tetsuo Handa/ .
+> It is Haimin who debugged this problem and wrote this patch.
+>
+> >
+> > Does this fix a syzbot crash or how was this discovered?
+>
+> Yes, Haimin's team is running syzkaller locally and found this bug.
+> Therefore, no Reported-by: syzbot tag for this patch.
+>
+>
+> -------- Forwarded Message --------
+> Subject: Re: [PATCH v2] fbcon: fix Out-Of-Bounds write in sys_imageblit
+> Message-ID: <33fc0e30-b94c-939f-a708-4b939af43100@gmail.com>
+> Date: Mon, 2 Aug 2021 14:50:24 +0800
+>
+> hi, Tetsuo Handa
+>
+> i made a test with your suggested code, it can block the out-of-bound bug.
+>
+> where to add this check logic, i suggest to add it after the driver's
+> fb_check_var callback.because what we plan to add is a common check by
+> framework,but some driver can fault-tolerant invalid parameters(like
+> yres_virtual > yres)
+>
+>         /* exist common check */
+>         if (var->xres < 8 || var->yres < 8)
+>                 return -EINVAL;
+>
+>         /* callback to drivers, some driver can fix invalid virtual
+> xres or virtual yres */
 
-> On Fri, 27 Aug 2021 18:15:29 +0100,
-> Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
-> > 
-> > From: Mark Kettenis <kettenis@openbsd.org>
-> > 
-> > Add node corresponding to the apcie,t8103 node in the
-> > Apple device tree for the Mac mini (M1, 2020).
-> > 
-> > Clock references and DART (IOMMU) references are left out at the
-> > moment and will be added once the appropriate bindings have been
-> > settled upon.
-> > 
-> > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
-> > ---
-> >  arch/arm64/boot/dts/apple/t8103.dtsi | 63 ++++++++++++++++++++++++++++
-> >  1 file changed, 63 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
-> > index 503a76fc30e6..6e4677bdef44 100644
-> > --- a/arch/arm64/boot/dts/apple/t8103.dtsi
-> > +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
-> > @@ -214,5 +214,68 @@ pinctrl_smc: pinctrl@23e820000 {
-> >  				     <AIC_IRQ 396 IRQ_TYPE_LEVEL_HIGH>,
-> >  				     <AIC_IRQ 397 IRQ_TYPE_LEVEL_HIGH>;
-> >  		};
-> > +
-> > +		pcie0: pcie@690000000 {
-> > +			compatible = "apple,t8103-pcie", "apple,pcie";
-> > +			device_type = "pci";
-> > +
-> > +			reg = <0x6 0x90000000 0x0 0x1000000>,
-> > +			      <0x6 0x80000000 0x0 0x4000>,
-> > +			      <0x6 0x81000000 0x0 0x8000>,
-> > +			      <0x6 0x82000000 0x0 0x8000>,
-> > +			      <0x6 0x83000000 0x0 0x8000>;
-> > +			reg-names = "config", "rc", "port0", "port1", "port2";
-> > +
-> > +			interrupt-parent = <&aic>;
-> > +			interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>;
-> > +
-> > +			msi-controller;
-> > +			msi-parent = <&pcie0>;
-> > +			msi-ranges = <&aic AIC_IRQ 704 IRQ_TYPE_EDGE_RISING 32>;
-> > +
-> > +			bus-range = <0 3>;
-> > +			#address-cells = <3>;
-> > +			#size-cells = <2>;
-> > +			ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
-> > +				 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
-> > +
-> > +			pinctrl-0 = <&pcie_pins>;
-> > +			pinctrl-names = "default";
-> > +
-> > +			pci@0,0 {
-> > +				device_type = "pci";
-> > +				reg = <0x0 0x0 0x0 0x0 0x0>;
-> > +				reset-gpios = <&pinctrl_ap 152 0>;
-> > +				max-link-speed = <2>;
-> > +
-> > +				#address-cells = <3>;
-> > +				#size-cells = <2>;
-> > +				ranges;
-> > +			};
-> > +
-> > +			pci@1,0 {
-> > +				device_type = "pci";
-> > +				reg = <0x800 0x0 0x0 0x0 0x0>;
-> > +				reset-gpios = <&pinctrl_ap 153 0>;
-> > +				max-link-speed = <2>;
-> > +
-> > +				#address-cells = <3>;
-> > +				#size-cells = <2>;
-> > +				ranges;
-> > +			};
-> > +
-> > +			pci@2,0 {
-> > +				device_type = "pci";
-> > +				reg = <0x1000 0x0 0x0 0x0 0x0>;
-> > +				reset-gpios = <&pinctrl_ap 33 0>;
-> > +				max-link-speed = <1>;
-> > +
-> > +				#address-cells = <3>;
-> > +				#size-cells = <2>;
-> > +				ranges;
-> > +			};
-> > +		};
-> >  	};
-> >  };
-> 
-> I have now implemented the MSI change on the Linux driver side, and it
-> works nicely. So thumbs up from me on this front.
-> 
-> I am now looking at the interrupts provided by each port:
-> (1) a bunch of port-private interrupts (link up/down...)
-> (2) INTx interrupts
-> 
-> Given that the programming is per-port, I've implemented this as a
-> per-port interrupt controller.
-> 
-> (1) is dead easy to implement, and doesn't require any DT description.
-> (2) is unfortunately exposing the limits of my DT knowledge, and I'm
-> not clear how to model it. I came up with the following:
-> 
-> 	port00: pci@0,0 {
-> 		device_type = "pci";
-> 		reg = <0x0 0x0 0x0 0x0 0x0>;
-> 		reset-gpios = <&pinctrl_ap 152 0>;
-> 		max-link-speed = <2>;
-> 
-> 		#address-cells = <3>;
-> 		#size-cells = <2>;
-> 		ranges;
-> 
-> 		interrupt-controller;
-> 		#interrupt-cells = <1>;
-> 		interrupt-parent = <&port00>;
-> 		interrupt-map-mask = <0 0 0 7>;
-> 		interrupt-map = <0 0 0 1 &port00 0>,
-> 				<0 0 0 2 &port00 1>,
-> 				<0 0 0 3 &port00 2>,
-> 				<0 0 0 4 &port00 3>;
-> 	};
-> 
-> which vaguely seem to do the right thing for the devices behind root
-> ports, but doesn't seem to work for INTx generated by the root ports
-> themselves. Any clue? Alternatively, I could move it to something
-> global to the whole PCIe controller, but that doesn't seem completely
-> right.
-> 
-> It also begs the question whether the per-port interrupt to the AIC
-> should be moved into each root port, should my per-port approach hold
-> any water.
+Yes. Fbdev drivers are supposed to round up invalid or unsupported
+values, or return -EINVAL.
 
-Must admit that I didn't entirely thinkthrough this aspect fo the
-hardware.  MSIs work just fine for the built-in hardware of the
-current generation of M1 Macs so I ignored INTx for now.
+>         ret = info->fbops->fb_check_var(var, info);
+>         if (ret)
+>                 return ret;
+>         /* we add a more check here, if some drivers can't fix invalid x,y
+> virtual values, we return a -EINVAL */
+>         if (var->yres_virtual < var->yres || var->xres_virtual < var->xres)
+>                 return -EINVAL;
+>
+> how about this fix ?  i can make a v3 patch.
+>
+>
+>
+> diff --git a/drivers/video/fbdev/core/fbmem.c
+> b/drivers/video/fbdev/core/fbmem.c
+> index 1c85514..9fb7e94 100644
+> --- a/drivers/video/fbdev/core/fbmem.c
+> +++ b/drivers/video/fbdev/core/fbmem.c
+> @@ -1012,6 +1012,10 @@ static int fb_check_caps(struct fb_info *info,
+> struct fb_var_screeninfo *var,
+>
+>         if (ret)
+>                 return ret;
+> +
+> +       /* Virtual resolution cannot be smaller than visible resolution. */
+> +       if (var->yres_virtual < var->yres || var->xres_virtual < var->xres)
+> +               return -EINVAL;
 
-It isn't entirely clear to me what properties are "allowed" on the
-individual pci device child nodes that correspond to the ports.  But
-"interrupt-map" and "interrupt-map-mask" are certainly among the
-allowed properties, so this approach makes sense to me.  I must say I
-don't see what the issue with the INTx generated by the root ports
-themselves would be.  
+So if this happens, it's a driver bug, not a userspace bug.
 
-I don't think we can move the interrupt property for the AIC to the
-ports though, since that property would actually represent the
-interrupt of the PCI bridge device according to the standard PCI
-bindings and that isn't the case here.
+>
+>         if ((var->activate & FB_ACTIVATE_MASK) != FB_ACTIVATE_NOW)
+>                 return 0;
 
-So this makes sense to me and might not even need changing to the
-binding for the Apple PCIe controller itself.
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
