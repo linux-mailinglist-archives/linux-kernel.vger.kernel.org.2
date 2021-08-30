@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5F93FB711
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1088E3FB715
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236791AbhH3Ni2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 09:38:28 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:62612 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231669AbhH3Ni1 (ORCPT
+        id S236763AbhH3Nkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 09:40:43 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:43829 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231669AbhH3Nkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 09:38:27 -0400
-Received: from fsav117.sakura.ne.jp (fsav117.sakura.ne.jp [27.133.134.244])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 17UDbXVr036143;
-        Mon, 30 Aug 2021 22:37:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav117.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp);
- Mon, 30 Aug 2021 22:37:33 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 17UDbWHJ036137
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 30 Aug 2021 22:37:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in
- vga16fb_fillrect
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Colin King <colin.king@canonical.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000815b9605c70e74f8@google.com>
- <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
- <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
- <CAMuHMdV=xVhEHLEoYt3OF+kmGrLOr6t7SP1sghSmp9JqXD+3Og@mail.gmail.com>
- <20210830130000.GW7722@kadam>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <8ed0ca59-226b-2d0e-b1ae-82305202558d@i-love.sakura.ne.jp>
-Date:   Mon, 30 Aug 2021 22:37:31 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 30 Aug 2021 09:40:42 -0400
+Received: by mail-ot1-f48.google.com with SMTP id x10-20020a056830408a00b004f26cead745so18375870ott.10;
+        Mon, 30 Aug 2021 06:39:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/HFidGIZmRuHY79xFNqRZ/4XxqjhggtR+nv+mqzgiS8=;
+        b=BBAKgFSpNP2ogRniyRzBuFL84KdWIOIRlQUxQL3SjrrM8ryBjQcqDMoJKyIWx1tgjX
+         xVtR77hFqtAH1r2I+SUiNFlWrMDozlaOJIuJSmYXSjvQz9mEuuleVrXu3NpMXeVHVN53
+         NvG9C82utv7zTUnT+iB6L6W7WwBqHwdmEg6LQrDjDZcSKnU9avvAoE6mYnvRJz+QxdPy
+         LPZILxZy9NaXtSYqDfkjVZwAxyrke2umjWGrUp5RzCc5ccYMN3ihbigZsi/aIoB1Ampl
+         aWIlsKLo5D0d1ZX4HNDwG1Ob3CuaYEWSN5D7k4tjGmUleOh1SIvvcGgvTLVY0rz0EKUf
+         HCPA==
+X-Gm-Message-State: AOAM533qwPPNUkAPJKFykG/ml53X3ZPX65ynxVjvjPM3oO3fjqyW8wG0
+        5WbpGJ9brUcF4oxNkB3Fi0DFTFlj8Q==
+X-Google-Smtp-Source: ABdhPJwGWHRyZL4/9mqDbTePFL9qlSiaIaKiiiJb2g4TRseDyP+CMpC9q72iesHesw51sVnXGiSG4Q==
+X-Received: by 2002:a9d:2ec:: with SMTP id 99mr19319698otl.46.1630330788769;
+        Mon, 30 Aug 2021 06:39:48 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id b24sm2954533oic.33.2021.08.30.06.39.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 06:39:48 -0700 (PDT)
+Received: (nullmailer pid 1929911 invoked by uid 1000);
+        Mon, 30 Aug 2021 13:39:47 -0000
+Date:   Mon, 30 Aug 2021 08:39:47 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc:     nsaenz@kernel.org, f.fainelli@gmail.com,
+        gregkh@linuxfoundation.org, devicetree@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stefan.wahren@i2se.com
+Subject: Re: [PATCH] ARM: dts: bcm2711-rpi-4-b: Fix pcie0's unit address
+Message-ID: <YSzfoyesEzAuLkSS@robh.at.kernel.org>
+References: <20210830103909.323356-1-nsaenzju@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210830130000.GW7722@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210830103909.323356-1-nsaenzju@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/08/30 22:00, Dan Carpenter wrote:
->>> diff --git a/drivers/video/fbdev/vga16fb.c b/drivers/video/fbdev/vga16fb.c
->>> index e2757ff1c23d..e483a3f5fd47 100644
->>> --- a/drivers/video/fbdev/vga16fb.c
->>> +++ b/drivers/video/fbdev/vga16fb.c
->>> @@ -403,7 +403,7 @@ static int vga16fb_check_var(struct fb_var_screeninfo *var,
->>>
->>>         if (yres > vyres)
->>>                 vyres = yres;
->>> -       if (vxres * vyres > maxmem) {
->>> +       if ((u64) vxres * vyres > (u64) maxmem) {
->>
->> Mindlessly changing the sizes is not the solution.
->> Please use e.g. the array_size() helper from <linux/overflow.h>
->> instead.
+On Mon, Aug 30, 2021 at 12:39:09PM +0200, Nicolas Saenz Julienne wrote:
+> dtbs_check currently complains that:
 > 
-> On a 64bit system the array_size() macro is going to do the exact same
-> casts?  But I do think this code would be easier to understand if the
-> integer overflow check were pull out separately and done first:
+> arch/arm/boot/dts/bcm2711-rpi-4-b.dts:220.10-231.4: Warning
+> (pci_device_reg): /scb/pcie@7d500000/pci@1,0: PCI unit address format
+> error, expected "0,0"
 > 
-> 	if (array_size(vxres, vyres) >= UINT_MAX)
-> 		return -EINVAL;
+> Unsurprisingly pci@0,0 is the right address, as illustrated by its reg
+> property:
+> 
+> 	&pcie0 {
+> 		pci@0,0 {
+> 			/*
+> 			 * As defined in the IEEE Std 1275-1994 document,
+> 			 * reg is a five-cell address encoded as (phys.hi
+> 			 * phys.mid phys.lo size.hi size.lo). phys.hi
+> 			 * should contain the device's BDF as 0b00000000
+> 			 * bbbbbbbb dddddfff 00000000. The other cells
+> 			 * should be zero.
+> 			 */
+> 			reg = <0 0 0 0 0>;
+> 		};
+> 	};
+> 
+> The bus is clearly 0. So fix it.
 
-This is wrong. array_size() returns ULONG_MAX on 64bits upon overflow and
-returns UINT_MAX on 32bits upon overflow. However, UINT_MAX is a valid
-value without overflow (e.g. vxres == UINT_MAX / 15 && vyres == 15).
-Comparing like "> (u64) UINT_MAX" is to detect only overflow.
+s/bus/device/
 
-array_size() would be helpful for forcing memory allocation to fail
-(instead of allocating smaller than actually required).
+The unit-address format is '<device>,<function>' (and function is 
+optional). The bus number is not part of the unit-address because that 
+is dynamic and then the path would not be fixed/known. The bus is part 
+of 'reg' for true OpenFirmware, but for FDT I think it should always be 
+0 as the DT is static. 
 
-> 
-> 	if (vxres * vyres > maxmem) {
-> 		...
-> 
-> The UINT_MAX is because vxres and vyres are u32.
-> 
-> This would maybe be the first time anyone ever did an integer overflow
-> check like this in the kernel.  It's a new idiom.
-> 
-> regards,
-> dan carpenter
-> 
+Looks like the child node is wrong (both unit-address and reg) as well:
 
+                usb@1,0 {
+                        reg = <0x10000 0 0 0 0>;
+                        resets = <&reset RASPBERRYPI_FIRMWARE_RESET_ID_USB>;
+                };
+
+It doesn't warn because the bridge node is also missing 'device_type = 
+"pci";'.
+
+This is all fairly hard to get right (see recent hikey970 patches for a 
+complex example). I'm thinking about writing a tool that generates a DT 
+with PCI nodes by reading the PCI hierachy from sysfs.
+
+Rob
