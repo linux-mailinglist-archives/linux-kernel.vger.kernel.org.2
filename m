@@ -2,215 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FAE3FBA2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D453FBA30
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237650AbhH3Q3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238039AbhH3Q3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:29:07 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0E3C0613A3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:28:13 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id j4so32369996lfg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endian-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bXWmPXIBFpIKCoBwxNxIccS5XZI//UXKKwzLo+PlVL0=;
-        b=m5McIEYOv/NMcr46yQXI4dAQFWWm8C0vOJ/UNjR+MF3fCYsOcJLDJeTJJCh9Zn2Ek2
-         zXxIZ/gogXj37MYPX8L8YQotbnfjRQ3PJUhTNrbUg/OKtSkIcAxmKL6v4gUuPqqq/Hli
-         8sdPjmWNofuAeCD9+vHIIfQGz9jyDNI9ZM8x7tEdTAC3vg7sDsUBhdec7WBzTzyC2+vb
-         xlwcVSPnth6d1jGpoWHz924WzeXLOFK/k/hwhsmYJZRd83bvp4aJKa/LaX9akpAXSuA7
-         REDzzXpUXxmf+ZNypjcTJ7JGiZ27UfpB9BKUT6u1hozNpd7IizKwyVlMcQp7TOfhhpYZ
-         VmZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bXWmPXIBFpIKCoBwxNxIccS5XZI//UXKKwzLo+PlVL0=;
-        b=qLWCKbYubyDV7CTWWe7j54DOmaCjrBjsHGoZ2oez8KqairKkToDHWwgEB7HKDY+vUS
-         4jlCREL+AwchxHvkSe1zBMFdWC+bALJXiXAYR1vlK2aMet4saBp7LULvXxyRoevWgOsB
-         A6bDF3WDkLRNxl4LLyrmSzN7Cq1kDSn3g/mHZkoI49pqFxGsxuZqIbGr3Ai7MMJWb7uS
-         6gN/CYO4XHq6I/vi3I+TTHqwjs2r/ES173FV6IMmctess8IsFw72e9RPdV0hfBI5mUo3
-         GzK6rQ3SsPgXmhID1iTyFBbp1XZbYnrT4aU8mdhscj4rUPBi9j9DObweugZ+Umqa5YL1
-         AApA==
-X-Gm-Message-State: AOAM531rLuQD3rdkcO++JY1eAvjunfua46HxvlTZUurT3pOMSz2KXYeI
-        xQ6KVhMC7USS+LsepJu7NwYNAQ==
-X-Google-Smtp-Source: ABdhPJwIGblZ49wcPP5zUHi6J4XpmKgwSx1Nwod6VuLR6HgRy6ikoogTaj3kQ8kCpQHIo2oh2llWXg==
-X-Received: by 2002:ac2:4c50:: with SMTP id o16mr18246474lfk.218.1630340891898;
-        Mon, 30 Aug 2021 09:28:11 -0700 (PDT)
-Received: from gmail.com ([185.213.154.232])
-        by smtp.gmail.com with ESMTPSA id y7sm1887382ljn.26.2021.08.30.09.28.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 09:28:11 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 18:28:04 +0200
-From:   Fredrik Yhlen <fredrik.yhlen@endian.se>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Horia Geanta Neag <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Heiko Schocher <hs@denx.de>
-Subject: Re: HRNG in CAAM isn't working properly on IMX6 SoloX
-Message-ID: <YS0HFMtAHFuwkKnY@gmail.com>
-References: <YSy/PFrem+a7npBy@gmail.com>
- <CAOMZO5D0m1xCfgFifKz1H+oYQSfxsfuZp4U39rPMACmzv1fvjQ@mail.gmail.com>
+        id S237714AbhH3QaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:30:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237589AbhH3QaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 12:30:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3CCF60F5B;
+        Mon, 30 Aug 2021 16:29:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630340964;
+        bh=KIS38HSL5S324U+X4e+2rl9sJee9NgV2uUMLDx/vPS8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=vF6Zy+cQLDdsvo1Nzrc+HB4djdR6og6ujIwvlfsUvb2P88VivxohcYNSHMXAri1uN
+         dWsiI2v/kcq5X61RUyujFcxKVk5li57qUE7SYagOiCaY8qREyyLKG0kFM/gbLoP3qs
+         xvpBAmhek5sfwwKTB415K179ClqtniTFKytPMse3FOlGiQIIZpAnwfOdQRs8Pi9bSE
+         0bmmeHYra8f0Sj5leEafVCV6d8dmh+3Y4u33zh/Mvwxj9I44l9UAPprvBgeEr3WIiG
+         ktVj4sudusIKVET26uBwZNkSnek40WwFrj4PNWkgrln8Ys8shwKQ7Q5JQoo/2a5Qy/
+         6QCuAlLqxpmeQ==
+Date:   Mon, 30 Aug 2021 11:29:22 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sergio =?iso-8859-1?Q?Migu=E9ns?= Iglesias <lonyelon@gmail.com>
+Cc:     konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, bhelgaas@google.com,
+        xen-devel@lists.xenproject.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergio =?iso-8859-1?Q?Migu=E9ns?= Iglesias <sergio@lony.xyz>
+Subject: Re: [PATCH v2] xen/pcifront: Removed unnecessary __ref annotation
+Message-ID: <20210830162922.GA4188989@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAOMZO5D0m1xCfgFifKz1H+oYQSfxsfuZp4U39rPMACmzv1fvjQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210830175305.13370-1-sergio@lony.xyz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pablo,
+On Mon, Aug 30, 2021 at 07:53:05PM +0200, Sergio Miguéns Iglesias wrote:
+> An unnecessary "__ref" annotation was removed from the
+> "drivers/pci/xen_pcifront.c" file. The function where the annotation
+> was used was "pcifront_backend_changed()", which does not call any
+> functions annotated as "__*init" nor "__*exit". This makes "__ref"
+> unnecessary since this annotation is used to make the compiler ignore
+> section miss-matches when they are not happening here in the first
+> place.
+> 
+> In addition to the aforementioned change, some code style issues were
+> fixed in the same file.
 
-It seems to be working with your suggested change and PR enabled:
-```
-root@xxxx:/dev# dd bs=256 count=10 if=/dev/hwrng of=/dev/null
-10+0 records in
-10+0 records out
-2560 bytes (2.6 kB, 2.5 KiB) copied, 14.5987 s, 0.2 kB/s
-root@xxxx:/dev#
-```
+One of the Xen folks may apply this, and they may not be as nit-picky
+as I am :)
 
-Thanks!
+If I were to apply this, I would suggest:
 
-Best regards,
-Fredrik
+  - Write subject line and commit message in imperative mood.  This is
+    a really good guide to this and other commit message this:
+    https://chris.beams.io/posts/git-commit/
 
-On Mon, Aug 30, 2021 at 08:49:25AM -0300, Fabio Estevam wrote:
-> Hi Fredrik,
+    For example, in the subject, say "Remove" (not "Removed").  Same
+    in the body.  In the body, I would mention the function but not
+    the filename since that's obvious from the diff.
+
+  - Split the __ref change into a separate patch from the style
+    changes.  The __ref removal should come first and be the absolute
+    minimal patch.  That makes it much easier to review, backport, and
+    revert if necessary.  And, if the maintainer isn't wild about
+    style patches, it's trivial to just ignore that patch.
+
+    Commit logs that say "Also, ..." or "In addition, ..." are always
+    red flags to me because they usually indicate the patch could be
+    split into two or more simpler patches.
+
+  - When reviewing changes like this, I assume __ref was added in the
+    first place for some good reason, so I want to know why, and I
+    want to know when that reason changed.  So I would look for the
+    commit that *introduced* __ref and for the commit that removed the
+    need for it.  It would save me time if the log said something
+    like:
+
+      956a9202cd12 ("xen-pcifront: Xen PCI frontend driver.") added
+      __initrefok because pcifront_backend_changed() called
+      pcifront_try_connect() and pcifront_attach_devices(), which were
+      both __devinit.
+
+      The __devinit annotations were removed by 15856ad50bf5 ("PCI:
+      Remove __dev* markings"), which made __initrefok unnecessary.
+
+      Finally, bd721ea73e1f ("treewide: replace obsolete _refok by
+      __ref") replaced __initrefok with __ref.
+
+    That might be too much for a commit log, but it shows that you've
+    done your homework and makes it easier to review (and helps people
+    make similar fixes elsewhere).  If it *is* too much, it's trivial
+    for a maintainer to cut it out.
+
+More notes about my idiosyncracies:
+https://lore.kernel.org/r/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
+
+> Signed-off-by: Sergio Miguéns Iglesias <sergio@lony.xyz>
+> ---
+>  drivers/pci/xen-pcifront.c | 30 +++++++++++++++++++-----------
+>  1 file changed, 19 insertions(+), 11 deletions(-)
 > 
-> On Mon, Aug 30, 2021 at 8:22 AM Fredrik Yhlen <fredrik.yhlen@endian.se> wrote:
-> >
-> > Hi,
-> >
-> > We're having problems with hwrng on a board with imx6sx (soloX) running Linux
-> > 5.10.x. mainline, and I have tracked it down to this commit
-> > '358ba762d9f1d4ba99ab31ef12bc28014b22f4c9' as being the culprit.
-> >
-> > The caam_jr driver spits out lots of messages when attempting to read from /dev/hwrng:
-> > ```
-> > [29717.629041] hwrng: no data available
-> > [29727.859008] caam_jr 2101000.jr: 20003c5b: CCB: desc idx 60: RNG: Hardware error
-> > ```
-> >
-> > ```
-> > caam_jr 2101000.jr0: 2000025b: CCB: desc idx 2: RNG: Hardware error.
-> > caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
-> > caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
-> > caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
-> > caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
-> > caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error.
-> > ```
-> >
-> > This also happens on Boundary's Nitrogen6_soloX board when running the same
-> > kernel, and likewise with their latest Yocto release that uses 5.4.100 linux-imx kernel.
-> >
-> > ```
-> > root@nitrogen6sx:~# dd if=/dev/hwrng of=/tmp/random bs=256 count=10
-> > [  113.940735] caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error
-> > dd: /dev/hwrng: Invalid argument
-> > root@nitrogen6sx:~# rm /tmp/random
-> > root@nitrogen6sx:~# dd if=/dev/hwrng of=/tmp/random bs=256 count=10
-> > [  125.300823] caam_jr 2101000.jr0: 20003c5b: CCB: desc idx 60: RNG: Hardware error
-> > dd: /dev/hwrng: Invalid argument
-> > root@nitrogen6sx:~# du -hs /tmp/random
-> > 0       /tmp/random
-> > root@nitrogen6sx:~# ls -l /tmp/random
-> > -rw-r--r--    1 root     root             0 Dec 16 17:27 /tmp/random
-> > root@nitrogen6sx:~#
-> > ```
-> >
-> > And then no data is available from /dev/hwrng.
-> >
-> > The problem occurs when adding OP_ALG_PR_ON(prediction resistance) when setting up
-> > job descriptor for reading new random data in caamrng.c. There are also
-> > some confusing parts about this commit that I'm not too sure about.
-> >
-> > 1. It's adding a conditional variable named 'pr_support', but I guess this only
-> > indicates if the MC(Management Complex) supports prediction resistance,
-> > since the following check can be bypassed when 'pr_support' is false.
-> >
-> >     /*
-> >      * If SEC has RNG version >= 4 and RNG state handle has not been
-> >      * already instantiated, do RNG instantiation
-> >      * In case of SoCs with Management Complex, RNG is managed by MC f/w.
-> >      */
-> >     if (!(ctrlpriv->mc_en && pr_support) && rng_vid >= 4) {
-> >
-> >
-> > This will eventually lead to the following chain call: caam_probe() -> instantiate_rng() ->
-> > build_instantiation_desc(), where OP_ALG_PR_ON will be used through DECO.
-> >
-> > static void build_instantiation_desc(u32 *desc, int handle, int do_sk)
-> > {
-> >     u32 *jump_cmd, op_flags;
-> >
-> >     init_job_desc(desc, 0);
-> >
-> >     op_flags = OP_TYPE_CLASS1_ALG | OP_ALG_ALGSEL_RNG |
-> >             (handle << OP_ALG_AAI_SHIFT) | OP_ALG_AS_INIT |
-> >             OP_ALG_PR_ON;
-> >     ...
-> >     ...
-> >     ...
-> >
-> > Shouldn't it be named 'mc_pr_support' instead, or something similar?
-> >
-> > 2. PR is unconditionally used in caamrng.c(caam_jr module) when
-> > reading new RNG data. Should this be the case?
-> >
-> > Removing OP_ALG_PR_ON in caam_init_desc() from drivers/crypto/caam/caamrng.c
-> > seems to fix the problem we're experiencing, here's an example:
-> > ```
-> > diff --git a/drivers/crypto/caam/caamrng.c b/drivers/crypto/caam/caamrng.c
-> > index 77d048dfe5d0..f085a80b1b3c 100644
-> > --- a/drivers/crypto/caam/caamrng.c
-> > +++ b/drivers/crypto/caam/caamrng.c
-> > @@ -67,8 +67,7 @@ static u32 *caam_init_desc(u32 *desc, dma_addr_t dst_dma)
-> >  {
-> >         init_job_desc(desc, 0); /* + 1 cmd_sz */
-> >         /* Generate random bytes: + 1 cmd_sz */
-> > -       append_operation(desc, OP_ALG_ALGSEL_RNG | OP_TYPE_CLASS1_ALG |
-> > -                        OP_ALG_PR_ON);
-> > +       append_operation(desc, OP_ALG_ALGSEL_RNG | OP_TYPE_CLASS1_ALG);
-> >         /* Store bytes: + 1 cmd_sz + caam_ptr_sz  */
-> >         append_fifo_store(desc, dst_dma,
-> >                           CAAM_RNG_MAX_FIFO_STORE_SIZE, FIFOST_TYPE_RNGSTORE);
-> > ```
+> diff --git a/drivers/pci/xen-pcifront.c b/drivers/pci/xen-pcifront.c
+> index b7a8f3a1921f..427041c1e408 100644
+> --- a/drivers/pci/xen-pcifront.c
+> +++ b/drivers/pci/xen-pcifront.c
+> @@ -115,7 +115,7 @@ static int do_pci_op(struct pcifront_device *pdev, struct xen_pci_op *op)
+>  	struct xen_pci_op *active_op = &pdev->sh_info->op;
+>  	unsigned long irq_flags;
+>  	evtchn_port_t port = pdev->evtchn;
+> -	unsigned irq = pdev->irq;
+> +	unsigned int irq = pdev->irq;
+>  	s64 ns, ns_timeout;
+>  
+>  	spin_lock_irqsave(&pdev->sh_info_lock, irq_flags);
+> @@ -153,10 +153,10 @@ static int do_pci_op(struct pcifront_device *pdev, struct xen_pci_op *op)
+>  	}
+>  
+>  	/*
+> -	* We might lose backend service request since we
+> -	* reuse same evtchn with pci_conf backend response. So re-schedule
+> -	* aer pcifront service.
+> -	*/
+> +	 * We might lose backend service request since we
+> +	 * reuse same evtchn with pci_conf backend response. So re-schedule
+> +	 * aer pcifront service.
+> +	 */
+>  	if (test_bit(_XEN_PCIB_active,
+>  			(unsigned long *)&pdev->sh_info->flags)) {
+>  		dev_err(&pdev->xdev->dev,
+> @@ -414,7 +414,8 @@ static int pcifront_scan_bus(struct pcifront_device *pdev,
+>  	struct pci_dev *d;
+>  	unsigned int devfn;
+>  
+> -	/* Scan the bus for functions and add.
+> +	/*
+> +	 * Scan the bus for functions and add.
+>  	 * We omit handling of PCI bridge attachment because pciback prevents
+>  	 * bridges from being exported.
+>  	 */
+> @@ -492,8 +493,10 @@ static int pcifront_scan_root(struct pcifront_device *pdev,
+>  
+>  	list_add(&bus_entry->list, &pdev->root_buses);
+>  
+> -	/* pci_scan_root_bus skips devices which do not have a
+> -	* devfn==0. The pcifront_scan_bus enumerates all devfn. */
+> +	/*
+> +	 * pci_scan_root_bus skips devices which do not have a
+> +	 * devfn==0. The pcifront_scan_bus enumerates all devfn.
+> +	 */
+>  	err = pcifront_scan_bus(pdev, domain, bus, b);
+>  
+>  	/* Claim resources before going "live" with our devices */
+> @@ -651,8 +654,10 @@ static void pcifront_do_aer(struct work_struct *data)
+>  	pci_channel_state_t state =
+>  		(pci_channel_state_t)pdev->sh_info->aer_op.err;
+>  
+> -	/*If a pci_conf op is in progress,
+> -		we have to wait until it is done before service aer op*/
+> +	/*
+> +	 * If a pci_conf op is in progress, we have to wait until it is done
+> +	 * before service aer op
+> +	 */
+>  	dev_dbg(&pdev->xdev->dev,
+>  		"pcifront service aer bus %x devfn %x\n",
+>  		pdev->sh_info->aer_op.bus, pdev->sh_info->aer_op.devfn);
+> @@ -676,6 +681,7 @@ static void pcifront_do_aer(struct work_struct *data)
+>  static irqreturn_t pcifront_handler_aer(int irq, void *dev)
+>  {
+>  	struct pcifront_device *pdev = dev;
+> +
+>  	schedule_pcifront_aer_op(pdev);
+>  	return IRQ_HANDLED;
+>  }
+> @@ -1027,6 +1033,7 @@ static int pcifront_detach_devices(struct pcifront_device *pdev)
+>  	/* Find devices being detached and remove them. */
+>  	for (i = 0; i < num_devs; i++) {
+>  		int l, state;
+> +
+>  		l = snprintf(str, sizeof(str), "state-%d", i);
+>  		if (unlikely(l >= (sizeof(str) - 1))) {
+>  			err = -ENOMEM;
+> @@ -1078,7 +1085,7 @@ static int pcifront_detach_devices(struct pcifront_device *pdev)
+>  	return err;
+>  }
+>  
+> -static void __ref pcifront_backend_changed(struct xenbus_device *xdev,
+> +static void pcifront_backend_changed(struct xenbus_device *xdev,
+>  						  enum xenbus_state be_state)
+>  {
+>  	struct pcifront_device *pdev = dev_get_drvdata(&xdev->dev);
+> @@ -1137,6 +1144,7 @@ static int pcifront_xenbus_probe(struct xenbus_device *xdev,
+>  static int pcifront_xenbus_remove(struct xenbus_device *xdev)
+>  {
+>  	struct pcifront_device *pdev = dev_get_drvdata(&xdev->dev);
+> +
+>  	if (pdev)
+>  		free_pdev(pdev);
+>  
+> -- 
+> 2.33.0
 > 
-> We also observe this issue.
-> 
-> Heiko on Cc tried increasing the RTSDCTL_ENT_DLY_MIN value
-> and this seems to help:
-> 
-> diff --git a/drivers/crypto/caam/regs.h b/drivers/crypto/caam/regs.h
-> index af61f3a2c0d4..53c9fa04a24c 100644
-> --- a/drivers/crypto/caam/regs.h
-> +++ b/drivers/crypto/caam/regs.h
-> @@ -513,7 +513,7 @@ struct rng4tst {
->   };
->  #define RTSDCTL_ENT_DLY_SHIFT 16
->  #define RTSDCTL_ENT_DLY_MASK (0xffff << RTSDCTL_ENT_DLY_SHIFT)
-> -#define RTSDCTL_ENT_DLY_MIN 3200
-> +#define RTSDCTL_ENT_DLY_MIN 4800
->  #define RTSDCTL_ENT_DLY_MAX 12800
->   u32 rtsdctl; /* seed control register */
->   union {
-> 
-> Does this help in your case?
-> 
-> Thanks,
-> 
-> Fabio Estevam
