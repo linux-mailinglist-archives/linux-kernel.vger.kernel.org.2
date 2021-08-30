@@ -2,144 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB293FBF46
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 01:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C843FBF4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 01:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238942AbhH3XLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 19:11:25 -0400
-Received: from relay03.th.seeweb.it ([5.144.164.164]:32807 "EHLO
-        relay03.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232217AbhH3XLY (ORCPT
+        id S239002AbhH3XNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 19:13:50 -0400
+Received: from mail-pl1-f179.google.com ([209.85.214.179]:34574 "EHLO
+        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238966AbhH3XNr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 19:11:24 -0400
-Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id F3FBB1F738;
-        Tue, 31 Aug 2021 01:10:27 +0200 (CEST)
-Date:   Tue, 31 Aug 2021 01:10:26 +0200
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCH v2 1/2] drm/msm/dsi: Use "ref" fw clock instead of global
- name for VCO parent
-Message-ID: <YS1lYui5aXadgkEr@Marijn-Arch-PC.localdomain>
-References: <20210830182445.167527-1-marijn.suijten@somainline.org>
- <20210830182445.167527-2-marijn.suijten@somainline.org>
- <163036177339.2676726.12271104951144475163@swboyd.mtv.corp.google.com>
- <YS1fllEswGQEGWPc@Marijn-Arch-PC.localdomain>
- <163036399040.2676726.5816296584899284140@swboyd.mtv.corp.google.com>
+        Mon, 30 Aug 2021 19:13:47 -0400
+Received: by mail-pl1-f179.google.com with SMTP id j2so9484440pll.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 16:12:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=v3IzYk5Cz+OUtPw+/T83szt+1CdCHRLLUCDNc9RQVcs=;
+        b=YcV2ddWuIrF2s1vGYe9HzAGnODRw5wnfJ5u2ELHYhdQRcHeO6542ekG0CExW5mtlHX
+         UqEC5wM0qhgLCEr9b4uj5dD99SlTvuqWUYfxwg8AkyBLquBCvLDBngtRxPd+yALzuL36
+         +zrvC+uQV5239SG8ObDcMp54Pfv1YtpP+I27kBAeBxrXKUneZJbmWOKBySQISnlmrZLJ
+         FnCqAA3oyLquzdH4MXa8Bcmo1o7Bi0R8HhI4Fa7s6z0a680cQ+/w39Kdfh2v6xSbXbtz
+         yIYalCvw9xtXpLxp6Fozb1e+HDe8Fw0csoccfsY7+NutnDNGIC0AZnrC6P+UXtVh1kMY
+         pBpg==
+X-Gm-Message-State: AOAM532foQkvQKJQzseJCFhCFbwWht25WKpdU8rMpVEhEU/HL3b0atPh
+        pfca1bzg62u7gEdiMSvhnes=
+X-Google-Smtp-Source: ABdhPJyM+xavDMy2nU5nHoZXItH9Z32dpIp3B6TEu9y18rZ8vFM4JFAMkb8gBzWR8C+1D3lMK1Vm+Q==
+X-Received: by 2002:a17:90a:3cc6:: with SMTP id k6mr1630328pjd.134.1630365173468;
+        Mon, 30 Aug 2021 16:12:53 -0700 (PDT)
+Received: from sultan-box.localdomain (static-198-54-131-119.cust.tzulo.com. [198.54.131.119])
+        by smtp.gmail.com with ESMTPSA id w11sm8448566pfj.65.2021.08.30.16.12.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 16:12:53 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 16:12:51 -0700
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+To:     linux-mm@kvack.org
+Cc:     mhocko@suse.com, mgorman@techsingularity.net,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Stuck looping on list_empty(list) in free_pcppages_bulk()
+Message-ID: <YS1l83lmwEYXuQsY@sultan-box.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <163036399040.2676726.5816296584899284140@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-30 15:53:10, Stephen Boyd wrote:
-> Quoting Marijn Suijten (2021-08-30 15:45:42)
-> > Hi Stephen,
-> > 
-> > On 2021-08-30 15:16:13, Stephen Boyd wrote:
-> > > Quoting Marijn Suijten (2021-08-30 11:24:44)
-> > > > All DSI PHY/PLL drivers were referencing their VCO parent clock by a
-> > > > global name, most of which don't exist or have been renamed.  These
-> > > > clock drivers seem to function fine without that except the 14nm driver
-> > > > for the sdm6xx [1].
-> > > > 
-> > > > At the same time all DTs provide a "ref" clock as per the requirements
-> > > > of dsi-phy-common.yaml, but the clock is never used.  This patchset puts
-> > > > that clock to use without relying on a global clock name, so that all
-> > > > dependencies are explicitly defined in DT (the firmware) in the end.
-> > > > 
-> > > > Note that msm8974 is the only board not providing this clock, and
-> > > > apq8064 was providing the wrong clock (19.2MHz cxo instead of 27MHz
-> > > > pxo).  Both have been been addressed in separate patches that are
-> > > > supposed to land well in advance of this patchset.
-> > > > 
-> > > > Furthermore not all board-DTs provided this clock initially but that
-> > > > deficiency has been addressed in followup patches (see the Fixes:
-> > > > below).  Those commits seem to assume that the clock was used, while
-> > > > nothing in history indicates that this "ref" clock was ever retrieved.
-> > > > 
-> > > > [1]: https://lore.kernel.org/linux-arm-msm/386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org/
-> > > > 
-> > > > Fixes: 79e51645a1dd ("arm64: dts: qcom: msm8916: Set 'xo_board' as ref clock of the DSI PHY")
-> > > > Fixes: 6969d1d9c615 ("ARM: dts: qcom-apq8064: Set 'cxo_board' as ref clock of the DSI PHY")
-> > > > Fixes: 0c0e72705a33 ("arm64: dts: sdm845: Set 'bi_tcxo' as ref clock of the DSI PHYs")
-> > > > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > > > ---
-> > > >  drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c      | 4 +++-
-> > > >  drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c      | 4 +++-
-> > > >  drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm.c      | 4 +++-
-> > > >  drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm_8960.c | 4 +++-
-> > > >  drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c       | 4 +++-
-> > > >  5 files changed, 15 insertions(+), 5 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c
-> > > > index e46b10fc793a..3cbb1f1475e8 100644
-> > > > --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c
-> > > > +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c
-> > > > @@ -562,7 +562,9 @@ static int pll_10nm_register(struct dsi_pll_10nm *pll_10nm, struct clk_hw **prov
-> > > >         char clk_name[32], parent[32], vco_name[32];
-> > > >         char parent2[32], parent3[32], parent4[32];
-> > > >         struct clk_init_data vco_init = {
-> > > > -               .parent_names = (const char *[]){ "xo" },
-> > > > +               .parent_data = &(const struct clk_parent_data) {
-> > > > +                       .fw_name = "ref",
-> > > 
-> > > Please also add .name as the old parent_names value so that newer
-> > > kernels can be used without having to use new DT.
-> > 
-> > We discussed that only msm8974 misses this "ref" clock at the time of
-> > writing.  Aforementioned Fixes: patches have all been merged about 3
-> > years ago, are those DTs still in use with a newer kernel?  I suppose
-> > this patch is only backported to kernels including those DT patches, is
-> > it reasonable to assume that at least that DT is in use there?
-> 
-> I have no idea.
-> 
-> > 
-> > Besides, not all clock trees provide this global "xo" or "bi_tcxo" clock
-> > in the first place.
-> > 
-> 
-> It doesn't hurt to also specify a .name to help migrate anything else
-> over. Unless you're confident it won't cause problems to rely on proper
-> DT being used?
+Hi,
 
-I'm 95% sure this shouldn't cause any problems given current DTs and
-their history, but that's probably not enough.  This might also impact
-DTs that have not yet been upstreamed, but afaik the general stance is
-to not care and actually serve as a fair hint/warning before new DTs
-make it to the list.
+I was recently given the following CPU stall splat and asked to look into it:
+----------------8<----------------
+ rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+ rcu:         44-...0: (1 GPs behind) idle=77e/1/0x4000000000000000 softirq=28480656/28480657 fqs=279939 
+         (detected by 62, t=1140032 jiffies, g=224165577, q=8883218)
+ Sending NMI from CPU 62 to CPUs 44:
+ NMI backtrace for cpu 44
+ CPU: 44 PID: 83957 Comm: perl Tainted: G             L    5.8.18-100.fc31.x86_64 #1
+ RIP: 0010:free_pcppages_bulk+0x63/0x2a0
+ RSP: 0018:ffffb3078698fb60 EFLAGS: 00000086
+ RAX: ffff8b647db30390 RBX: ffffee5fcab67f48 RCX: ffffee5f30c79980
+ RDX: 0000000000c31e66 RSI: 0000000000000007 RDI: 0000000000000007
+ RBP: 0000000000000000 R08: ffffb3078698fb80 R09: ffffb3078698fb80
+ R10: 00000000002ffa93 R11: 0000000000000000 R12: ffff8b647db30390
+ R13: 0000000000000000 R14: ffff8b647db30380 R15: 000000006a340084
+ FS:  0000000000000000(0000) GS:ffff8b647db00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007ff2b5200fa8 CR3: 00000034ada0a000 CR4: 0000000000340ee0
+ Call Trace:
+  free_unref_page_list+0x113/0x1a0
+  release_pages+0x3ad/0x450
+  tlb_flush_mmu+0x36/0x160
+  unmap_page_range+0xab6/0xee0
+  unmap_vmas+0x6a/0xd0
+  exit_mmap+0x97/0x170
+  mmput+0x61/0x140
+  do_exit+0x306/0xb80
+  ? syscall_trace_enter+0x160/0x290
+  do_group_exit+0x3a/0xa0
+  __x64_sys_exit_group+0x14/0x20
+  do_syscall_64+0x4d/0x90
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+---------------->8----------------
 
-If there is a protocol in place to deprecate, warn, and eventually
-remove this reliance on global clock names I'm more than happy to add
-.name as a temporary fallback, even if likely unneeded.  Otherwise we
-might never get rid of it.
+I apologize in advance for reporting a bug on an EOL kernel. I don't see any
+changes as of 5.14 that could address something like this, so I'm emailing in
+case whatever happened here may be a bug affecting newer kernels.
 
-- Marijn
+With gdb, it appears that the CPU got stuck in the list_empty(list) loop inside
+free_pcppages_bulk():
+----------------8<----------------
+	do {
+		batch_free++;
+		if (++migratetype == MIGRATE_PCPTYPES)
+			migratetype = 0;
+		list = &pcp->lists[migratetype];
+	} while (list_empty(list));
+---------------->8----------------
+
+Although this code snippet is slightly different in 5.14, it's still ultimately
+the same. Side note: I noticed that the way `migratetype` is incremented causes
+`&pcp->lists[1]` to get looked at first rather than `&pcp->lists[0]`, since
+`migratetype` will start out at 1. This quirk is still present in 5.14, though
+the variable in question is now called `pindex`.
+
+With some more gdb digging, I found that the `count` variable was stored in %ESI
+at the time of the stall. According to register dump in the splat, %ESI was 7.
+
+It looks like, for some reason, the pcp count was 7 higher than the number of
+pages actually present in the pcp lists.
+
+I tried to find some way that this could happen, but the only thing I could
+think of was that maybe an allocation had both __GFP_RECLAIMABLE and
+__GFP_MOVABLE set in its gfp mask, in which case the rmqueue() call in
+get_page_from_freelist() would pass in a migratetype equal to MIGRATE_PCPTYPES
+and then pages could be added to an out-of-bounds pcp list while still
+incrementing the overall pcp count. This seems pretty unlikely though. As
+another side note, it looks like there's nothing stopping this from occurring;
+there's only a VM_WARN_ON() in gfp_migratetype() that checks if both bits are
+set.
+
+Any ideas on what may have happened here, or a link to a commit that may have
+fixed this issue in newer kernels, would be much appreciated.
+
+Thanks,
+Sultan
