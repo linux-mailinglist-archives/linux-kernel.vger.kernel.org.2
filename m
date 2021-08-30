@@ -2,93 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43093FB011
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 05:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5DA3FB015
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 05:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhH3DsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 23:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43026 "EHLO
+        id S230202AbhH3Du3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 23:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhH3DsX (ORCPT
+        with ESMTP id S229660AbhH3Du2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 23:48:23 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93347C061575;
-        Sun, 29 Aug 2021 20:47:30 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id 18so11093879pfh.9;
-        Sun, 29 Aug 2021 20:47:30 -0700 (PDT)
+        Sun, 29 Aug 2021 23:50:28 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C25C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 20:49:35 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id fs6so8539168pjb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 20:49:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=fiESui1KRzGljhyjmIcy4FRTOq44ThwYFlFuxizW2lc=;
-        b=ljmrAOXKa2kEgYUcQsJnc64P7BcrrX9vyVgCH4j2yW6MHpWB2EmxUX03teNrQwLWu0
-         RHmjcOChoMsNZi4F6/Jfq6cqC4Vd/pomMVtwkXQfvluhHjFCw/3uITT1WjMKDifQHGFF
-         scQwdRslG/rJa2HuRNnk2CL4BFRxmeSrLbH9LQPYK+EGIJjOLhow+i7tOqRTMZnX67ur
-         dEYkSetfO4cIkRrGlzsHGtZ+ariCCNOtAlz2GfFhWFKe69LEC8MHNYAUs3YB0WwxMntc
-         DohNaR5BZqLjM9/om46MYgb3QzOsbiI8+pVlaCUPKfUtuSGLQV+xe8EP29zxa4IS5/La
-         OraA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Xd5yJwKt1hvq4WFoSQExGBW6PX7FM9F2aTtlw2PPNgY=;
+        b=ODVUQWj14e/o8PyewpgAxwqPLPtNZxpcvYC7MQqgubN1OZCRQtPlikZPOuHN8zA+IJ
+         AmMTMTtAN7CuB0VSOA/tB8UnW3E3LRwBSCrC4hUcaQenqGasINce2kIBeYcVbtSdJ9cu
+         1Q8b8N+K08CnfXfINsRxo+rpJvIGJR1Y7DLjM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=fiESui1KRzGljhyjmIcy4FRTOq44ThwYFlFuxizW2lc=;
-        b=giZccUkIGnV2uOpB64Af966Bb7o8+WrCYKSF9qX726AMUYl8Yl9QVDgP3TKlsXXR9b
-         4GEyTlWvjc/O8fETXarGyp4KTCEn+/1dm3KV9ynGpRjgwWEWPTLeaZrHzrmRt1ews/4o
-         RSiOmcQsTaCrgP/pBzhHSnsapxS45jaC7RZ4/DKeeNullIMPCjxne8qMK8rDri5d81Fd
-         1HKShcxOxDU+jJSATDenZCfNC7v6oOvvDH/t93mWQi8T6OhuxkHBNXT9lLI4R3HdgFfv
-         Ceo652sRSoAJifMmYiGFg0UPxHzL1guIHdpFUFGmge1/wTT/VLK8YeYhO7jK4sFwTnj/
-         Nt0w==
-X-Gm-Message-State: AOAM533Id5QTYG2ZkU1s05IFnFeRRSLNPv3SIJpTqmKrew9c4xwgNyeX
-        IwIR0XvbbhV+43lcwDvOIg4=
-X-Google-Smtp-Source: ABdhPJytAlDClDlFr40DlFnq54mEApl+e7N/GrajSnAU+2YbeEyWlbeZyBuld+pS21yFqOvNleTzrg==
-X-Received: by 2002:aa7:9e4d:0:b0:3f8:6326:a038 with SMTP id z13-20020aa79e4d000000b003f86326a038mr11280871pfq.73.1630295250030;
-        Sun, 29 Aug 2021 20:47:30 -0700 (PDT)
-Received: from localhost.localdomain ([162.14.21.36])
-        by smtp.gmail.com with ESMTPSA id x16sm15153114pgc.49.2021.08.29.20.47.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 29 Aug 2021 20:47:29 -0700 (PDT)
-From:   tcs.kernel@gmail.com
-X-Google-Original-From: tcs_kernel@tencent.com
-To:     vinicius.gomes@intel.com, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Haimin Zhang <tcs_kernel@tencent.com>
-Subject: [PATCH V2] fix array-index-out-of-bounds in taprio_change
-Date:   Mon, 30 Aug 2021 11:47:01 +0800
-Message-Id: <1630295221-9859-1-git-send-email-tcs_kernel@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Xd5yJwKt1hvq4WFoSQExGBW6PX7FM9F2aTtlw2PPNgY=;
+        b=C5rm+Dn4anDfJROeotcQKmnAbkByHRwNVAFHLO8qWk1yrHd0mJPcoLjKO5Mc3Z51IY
+         XhSDzV5jKSgeukqRbjkH/Wi4ojdLEFaKmMSgbbami6Mj/RcEaZQU+iB2JN1nIgoA59EX
+         PAs8PUtbHwm6HjU7hBGj3WPHbUj5dOKKLQKJxFuX27ixWrWiG6l/pwWCKUk19g3k70M5
+         oeabH9RccB//KMCq8uOcb8OPm7D+Ek9BLrhvUq5lhWg4wyuRXvz7mEYhpColN8Ts21+t
+         yabG7IQZkM2IOPO05tDbqAPzHEB1rq4ugbiFNHfuKFaMYCjdPwoAcAvsGHaHTp5VERW9
+         C3eA==
+X-Gm-Message-State: AOAM533ubbBdwsilic8DYAjb6s8wPph84ATUYTeot/3Q3tRfbKz+3Dg+
+        t0EIl0KV8G+dkT3bmnQ3tUiJtIwlSKKSsn7eH/vuHA==
+X-Google-Smtp-Source: ABdhPJxmwutWcvcGGTYek4J59y438R2Xw4VTIh9M3kBeplPDNHz99ge8PjQssGX5CCkpqjUVqqBAm7H1m2cmZJsH460=
+X-Received: by 2002:a17:902:8c83:b029:129:17e5:a1cc with SMTP id
+ t3-20020a1709028c83b029012917e5a1ccmr19994569plo.49.1630295374896; Sun, 29
+ Aug 2021 20:49:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210826025144.51992-1-chunfeng.yun@mediatek.com>
+ <20210826025144.51992-3-chunfeng.yun@mediatek.com> <CAATdQgBD+dTtBie-cNKRJbfxEpc3haqjfUu1k26mTk8pCSOEww@mail.gmail.com>
+ <72ee7a203d8a49e6e43a954b45133470ee6d5c16.camel@mediatek.com>
+ <CAATdQgA+4VC7J1LMZYOZMV-OTjMGjO=9bJZ7uaCu_MMF-20T1w@mail.gmail.com> <18cb18d7d0ea4a3bb46921aca88c53646f1b3764.camel@mediatek.com>
+In-Reply-To: <18cb18d7d0ea4a3bb46921aca88c53646f1b3764.camel@mediatek.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Mon, 30 Aug 2021 11:49:24 +0800
+Message-ID: <CAATdQgDKuO+bM7_tMy59ghhhjrgCp53kHgYbgEciriHNF3uKuA@mail.gmail.com>
+Subject: Re: [PATCH next v2 3/6] usb: xhci-mtk: update fs bus bandwidth by bw_budget_table
+To:     =?UTF-8?B?Q2h1bmZlbmcgWXVuICjkupHmmKXls7Ap?= 
+        <Chunfeng.Yun@mediatek.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        =?UTF-8?B?WWFxaWkgV3UgKOatpuS6muWlhyk=?= <Yaqii.Wu@mediatek.com>,
+        "mathias.nyman@intel.com" <mathias.nyman@intel.com>,
+        =?UTF-8?B?RWRkaWUgSHVuZyAo5rSq5q2j6ZGrKQ==?= 
+        <Eddie.Hung@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haimin Zhang <tcs_kernel@tencent.com>
+On Fri, Aug 27, 2021 at 5:49 PM Chunfeng Yun (=E4=BA=91=E6=98=A5=E5=B3=B0)
+<Chunfeng.Yun@mediatek.com> wrote:
+>
+> On Fri, 2021-08-27 at 17:14 +0800, Ikjoon Jang wrote:
+> > On Fri, Aug 27, 2021 at 2:49 PM Chunfeng Yun (=E4=BA=91=E6=98=A5=E5=B3=
+=B0)
+> > <Chunfeng.Yun@mediatek.com> wrote:
+> > >
+> > > On Thu, 2021-08-26 at 19:54 +0800, Ikjoon Jang wrote:
+> > > > Hi Chunfeng,
+> > > >
+> > > > On Thu, Aug 26, 2021 at 10:52 AM Chunfeng Yun <
+> > > > chunfeng.yun@mediatek.com> wrote:
+> > > > >
+> > > > > Use @bw_budget_table[] to update fs bus bandwidth due to
+> > > > > not all microframes consume @bw_cost_per_microframe, see
+> > > > > setup_sch_info().
+> > > > >
+> > > > > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> > > > > ---
+> > > > > v2: new patch, move from another series
+> > > > > ---
+> > > > >  drivers/usb/host/xhci-mtk-sch.c | 17 +++++++----------
+> > > > >  1 file changed, 7 insertions(+), 10 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/usb/host/xhci-mtk-sch.c
+> > > > > b/drivers/usb/host/xhci-mtk-sch.c
+> > > > > index cffcaf4dfa9f..83abd28269ca 100644
+> > > > > --- a/drivers/usb/host/xhci-mtk-sch.c
+> > > > > +++ b/drivers/usb/host/xhci-mtk-sch.c
+> > > > > @@ -458,8 +458,8 @@ static int check_fs_bus_bw(struct
+> > > > > mu3h_sch_ep_info *sch_ep, int offset)
+> > > > >                  * Compared with hs bus, no matter what ep
+> > > > > type,
+> > > > >                  * the hub will always delay one uframe to send
+> > > > > data
+> > > > >                  */
+> > > > > -               for (j =3D 0; j < sch_ep->cs_count; j++) {
+> > > > > -                       tmp =3D tt->fs_bus_bw[base + j] + sch_ep-
+> > > > > > bw_cost_per_microframe;
+> > > > >
+> > > > > +               for (j =3D 0; j < sch_ep->num_budget_microframes;
+> > > > > j++) {
+> > > > > +                       tmp =3D tt->fs_bus_bw[base + j] + sch_ep-
+> > > > > > bw_budget_table[j];
+> > > >
+> > > > I'm worrying about this case with two endpoints,
+> > > > * EP1OUT: isochronous, maxpacket=3D192: bw_budget_table[] =3D { 188=
+,
+> > > > 188,
+> > > > 0, ... }
+> > > > * EP2IN: interrupt, maxpacket=3D64: bw_budget_table[] =3D { 0, 0, 6=
+4,
+> > > > 64,
+> > > > ... }
+> > > > (Is this correct bw_budget_table contents for those eps?)
+> > >
+> > > Yes, ep1out isoc use two uframe, ep2in intr use a extra cs;
+> > > >
+> > > > I'm not sure if it's okay for those two endpoints to be allocated
+> > > > on the same u-frame slot.
+> > > > Can you please check if this is okay for xhci-mtk?
+> > >
+> > > Already test it this afternoon, can transfer data rightly on our
+> > > dvt
+> > > env.
+> > >
+> > > > (I feel like I already asked the same questions many times.)
+> > >
+> > > Yes, as said before, prefer to use bw_budget_table[], if there is
+> > > issue, we can fix it by building this table.
+> >
+> > So do you mean such an allocation shouldn't be a problem by IP
+> > design?
+> Yes, at least on our dvt platform
 
-syzbot report an array-index-out-of-bounds in taprio_change
-index 16 is out of range for type '__u16 [16]'
-that's because mqprio->num_tc is lager than TC_MAX_QUEUE,so we check
-the return value of netdev_set_num_tc.
+Did you check that your side also has a similar allocation
+(SSPLIT-all sits between SSPLIT-start ~ -end for another ep)?
+My audio headset doesn't work properly with this scheme.
 
-Reported-by: syzbot+2b3e5fb6c7ef285a94f6@syzkaller.appspotmail.com
-Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
----
- net/sched/sch_taprio.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> >
+> > This patch starts to allow such an allocation (again).
+> > But i remember my earlier tests showed that when those two eps
+> > in the above example are allocated on the same u-frame slot,
+> > xhci-mtk puts "SSPLIT for EP2" between
+> > "SSPLIT-start and SSPLIT-end for EP1OUT transaction",
+> > which is a spec violation.
+>
+> Which section in usb2.0 spec?
 
-diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
-index 9c79374..1ab2fc9 100644
---- a/net/sched/sch_taprio.c
-+++ b/net/sched/sch_taprio.c
-@@ -1513,7 +1513,9 @@ static int taprio_change(struct Qdisc *sch, struct nlattr *opt,
- 	taprio_set_picos_per_byte(dev, q);
- 
- 	if (mqprio) {
--		netdev_set_num_tc(dev, mqprio->num_tc);
-+		err = netdev_set_num_tc(dev, mqprio->num_tc);
-+		if (err)
-+			goto free_sched;
- 		for (i = 0; i < mqprio->num_tc; i++)
- 			netdev_set_tc_queue(dev, i,
- 					    mqprio->count[i],
--- 
-1.8.3.1
+I think that's just a basic rule - if software wants to send 192 bytes
+through a full-speed bus, HC should send OUT/DATA 192 bytes
+continuously without inserting any other packets during that 192 bytes.
+and usb2 11.14.2 mentions that TT has separated
+Start-Split and Complete-Split buffers
+but not tracked each transaction per endpoint basis.
 
+>
+> > Hub will generate bit stuffing errors on the
+> > full-speed bus.
+> which platform?
+
+I remember it was mt8173.
+
+And for bit stuffing errors I mentioned in the earlier mail.
+when I read the spec again, 11.21 mentions that bit stuffing error
+is generated when _a microframe_ should be passed without
+corresponding SSPLIT-mid/end. So this is not the case and also
+I'm not sure what will happen on the full-speed bus, sorry.
+In my case what I can be sure of is that the audio output was
+broken with those allotments.
+
+What is the xhci-mtk's policy when there are more than two EPs
+marked as the same u-frame offset like in the above example?
+
+>
+> >
+> >
+> > >
+> > > Thanks
+> > > >
+> > > >
+> > > > >                         if (tmp > FS_PAYLOAD_MAX)
+> > > > >                                 return -ESCH_BW_OVERFLOW;
+> > > > >                 }
+> > > > > @@ -534,21 +534,18 @@ static void update_sch_tt(struct
+> > > > > mu3h_sch_ep_info *sch_ep, bool used)
+> > > > >  {
+> > > > >         struct mu3h_sch_tt *tt =3D sch_ep->sch_tt;
+> > > > >         u32 base, num_esit;
+> > > > > -       int bw_updated;
+> > > > >         int i, j;
+> > > > >
+> > > > >         num_esit =3D XHCI_MTK_MAX_ESIT / sch_ep->esit;
+> > > > >
+> > > > > -       if (used)
+> > > > > -               bw_updated =3D sch_ep->bw_cost_per_microframe;
+> > > > > -       else
+> > > > > -               bw_updated =3D -sch_ep->bw_cost_per_microframe;
+> > > > > -
+> > > > >         for (i =3D 0; i < num_esit; i++) {
+> > > > >                 base =3D sch_ep->offset + i * sch_ep->esit;
+> > > > >
+> > > > > -               for (j =3D 0; j < sch_ep->cs_count; j++)
+> > > > > -                       tt->fs_bus_bw[base + j] +=3D bw_updated;
+> > > > > +               for (j =3D 0; j < sch_ep->num_budget_microframes;
+> > > > > j++)
+> > > > > +                       if (used)
+> > > > > +                               tt->fs_bus_bw[base + j] +=3D
+> > > > > sch_ep-
+> > > > > > bw_budget_table[j];
+> > > > >
+> > > > > +                       else
+> > > > > +                               tt->fs_bus_bw[base + j] -=3D
+> > > > > sch_ep-
+> > > > > > bw_budget_table[j];
+> > > > >
+> > > > >         }
+> > > > >
+> > > > >         if (used)
+> > > > > --
+> > > > > 2.18.0
+> > > > >
