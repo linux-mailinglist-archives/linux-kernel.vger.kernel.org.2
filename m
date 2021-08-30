@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97F43FB5FF
+	by mail.lfdr.de (Postfix) with ESMTP id A056F3FB5FE
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbhH3M14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:27:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40088 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229828AbhH3M1t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:27:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07773610FC;
-        Mon, 30 Aug 2021 12:26:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630326416;
-        bh=8rxzpDDvLETpRjSW5EG7EPps6YmGomM3Beiqdp8hL8s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bFtCjuVnW9yirgFzqcJWAnYSkM1Lhlg9QSRerffQp7Rk4/9vUDaLoDmkVe7AD5/W2
-         bUICCo62D5Pr4nmPIOB12Kmdblx7xGuPR9EyAR719YykrxzWmMTVUtL3BARQxyxd68
-         pqfOOcBdthaH8nG6Qeq8fBIkIG9r9C6B5P0tksWUIiGBVPsfbYrqWMJvt/BbOl688Q
-         jGWUe4sLgO8TDeU//cLdVn/HaBI468J5mhJ/HzVNBUp/flXHaJMgJKSdqhSzrATgFs
-         PcTmfJXAePBo45Rrp5sLr3KVRv7A6gZ0H5CqJtwxeJVBI+z2uUnuKSiHSfWbrqPpCH
-         bACB2rQFuPRFw==
-Received: by mail-ed1-f46.google.com with SMTP id d6so21346372edt.7;
-        Mon, 30 Aug 2021 05:26:55 -0700 (PDT)
-X-Gm-Message-State: AOAM533eijbdjQJh8jMmbTIrNRit3in0OOdzZy80ywnJn91N0Q8ntG0O
-        ro+0k31ckFSeV5NEkZ/nJHGaKSPtxhuC+tWhWQ==
-X-Google-Smtp-Source: ABdhPJxmILhJYcc+mYeJ+zf9N2F64SRnxQUQWPiG90l8vhjyNKaMHpm3/aiXGIjG5vOQD6D9of/DicoxU1EewIR4qsE=
-X-Received: by 2002:a50:eb8a:: with SMTP id y10mr24087615edr.137.1630326414617;
- Mon, 30 Aug 2021 05:26:54 -0700 (PDT)
+        id S231126AbhH3M1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:27:55 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47958 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhH3M1s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 08:27:48 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C365422125;
+        Mon, 30 Aug 2021 12:26:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630326413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8GTpwtrUyWO9XgpVlTZOkCC2qFNxtbNrsk7UywRyxcY=;
+        b=IiKxQxGSqSvsx87sUzydkrKMT2quQGaTHNUap9hixIkB5lGtPdLeXs48T+4OuBXquZZ9s2
+        9rAEOYC7vSLZdrP1WZHilueHAjBW7HXlMVie+Sqda4ExKnC4o2BJJW+iqbNOYfeOtxEiF5
+        9OomZg6un9qYoolKkA0zvT3mz++3ifc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630326413;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8GTpwtrUyWO9XgpVlTZOkCC2qFNxtbNrsk7UywRyxcY=;
+        b=uCuEtT3WqENb+c1xZUhlPwRagSoYeaonm0vEiUmwBT2OBcBciYdC2MlagTO/ZgUjgwvHkV
+        Z+9TquRtI2VBLtCw==
+Received: from suse.de (unknown [10.163.43.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 3083CA3B8C;
+        Mon, 30 Aug 2021 12:26:53 +0000 (UTC)
+Date:   Mon, 30 Aug 2021 13:26:51 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Bharata B Rao <bharata@amd.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, kamezawa.hiroyu@jp.fujitsu.com,
+        lee.schermerhorn@hp.com, Krupa.Ramakrishnan@amd.com,
+        Sadagopan.Srinivasan@amd.com
+Subject: Re: [FIX PATCH 1/2] mm/page_alloc: Print node fallback order
+Message-ID: <20210830122651.GB4060@suse.de>
+References: <20210830121603.1081-1-bharata@amd.com>
+ <20210830121603.1081-2-bharata@amd.com>
 MIME-Version: 1.0
-References: <20210819101020.26368-1-krzysztof.kozlowski@canonical.com> <YSQA/iR6D/Ej1kWx@ravnborg.org>
-In-Reply-To: <YSQA/iR6D/Ej1kWx@ravnborg.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 30 Aug 2021 07:26:43 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKaUTXda_E0FLsHSt523=Tib6z5AgyOpoZA6iBNCht2-A@mail.gmail.com>
-Message-ID: <CAL_JsqKaUTXda_E0FLsHSt523=Tib6z5AgyOpoZA6iBNCht2-A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: panel: ili9341: correct indentation
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dillon Min <dillon.minfei@gmail.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210830121603.1081-2-bharata@amd.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 3:11 PM Sam Ravnborg <sam@ravnborg.org> wrote:
->
-> On Thu, Aug 19, 2021 at 12:10:19PM +0200, Krzysztof Kozlowski wrote:
-> > Correct indentation warning:
-> >   ilitek,ili9341.yaml:25:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->
-> Thanks, applied to drm-misc-next, and the patch will show up in -next in
-> one to two weeks.
+On Mon, Aug 30, 2021 at 05:46:02PM +0530, Bharata B Rao wrote:
+> Print information message about the allocation fallback order
+> for each NUMA node during boot.
+> 
+> No functional changes here. This makes it easier to illustrate
+> the problem in the node fallback list generation, which the
+> next patch fixes.
+> 
+> Signed-off-by: Bharata B Rao <bharata@amd.com>
 
-This needs to go in fixes as it looks like commit 7dbdce806268
-("dt-bindings: display: panel: Add ilitek ili9341 panel bindings") is
-queued for 5.15.
+While the message is just informational, I think it's possible that the
+bug could have been found earlier if this message was present so...
 
-Rob
+Acked-by: Mel Gorman <mgorman@suse.de>
+
+-- 
+Mel Gorman
+SUSE Labs
