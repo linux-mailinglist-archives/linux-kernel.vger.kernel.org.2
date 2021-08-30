@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215A53FB7F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4303FB7FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237203AbhH3OW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 10:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
+        id S237246AbhH3OXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 10:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237029AbhH3OWw (ORCPT
+        with ESMTP id S237134AbhH3OWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 10:22:52 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E87C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 07:21:58 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id 18so12300618pfh.9
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 07:21:58 -0700 (PDT)
+        Mon, 30 Aug 2021 10:22:55 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE168C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 07:22:01 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id r13so11924556pff.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 07:22:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9VYKP4BtY52G/QfxOL4ci9LsSwqIuUiAxga6ojIUWhM=;
-        b=rX/n04t3hwSmIEK5sY0o788rpIpjsNj/ric5w+RL9Y5fd/jrKYfgCowq9OT4EPJXpk
-         WSehnR/Xk3PPjq51bpOHzx0/XcgTsukhRVdAIRbRcmIJAPf8qutfloXIY/3jQ53FkcVL
-         uwGwFmQP21tYDGlvAxMdHr7T41mY372Mjmfup9xPngYq8Z43+grlgY7MS7s1iD4/p0Te
-         +8mY7L2idpk4uVCt/dNg0r1w6tzsrVR+1eRlwcIdxQ3ekrh6djsf+qArQ9r5h2HE9vv5
-         jsSLq/DZd1qxkCzIjIlZR4dqRACGMiEOp+BtamDSNL5nugEl97bDkHPo0M8LPanXAhNC
-         JTmQ==
+        bh=/Vl3AHwuQDLe0ZGngtEfFx668CIPSygY8Oaw4ZN4vCo=;
+        b=rOdETcL4sxH6ECF/nEWQheSNSVqzE5EKTelanx7BQ2PKWpnXFO6rmcX6i+tCUi8Q32
+         AYhqQkRrQa8EM7Bg7uRVJpsWguCG/stc4586BP6z6HBxOgZA6tDWfdRMnIhAzki5h5Ae
+         A82GZnSP8cgEvspkQScLL8aSkhfVODJdv20wuKYROYhTPUQtHuCZ+ptiQo11dwBrvO6m
+         JnbAIlSoMDWh/dofuquvv4s679GbOun0rVEEBVvEugywnej8zFSKmn+WI+VcVePqAa9P
+         nSbFhH7u6iJ2ak14mt/Ka7JrjUwobfmDsaC4muwtLv2rse7bm0Cd65KsJK9uWREPsFly
+         Kfbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9VYKP4BtY52G/QfxOL4ci9LsSwqIuUiAxga6ojIUWhM=;
-        b=hojaDjZYR+C4gjq+FVQUeo2zzZOgFFodoLS7svULii+zqK3ICghIIpMrXY6od2UWiP
-         k0wcbBlVYyANOzFteGnxjkxAm6YlcLYD4rElO4qSlkiCgW4eYRyiRbCNMt0DIMGRM2Ei
-         3v3qLHVawq97tHBTkqQc5FuJly0OctBYNw8+EN9Z6oAEy+lS9ollFZrUunTEk9sXUUnm
-         Cb4uG1NIduN6Rjy2jSkmbm6jTdKQm5owW/YQImeJL33TNaZIAUwi4u8Ased23t5ysmK5
-         IUKWlYhLyGbkG8zLQWLM6u24yqxklQ6t75BWJhWMJ6O1QUfMalT0+qmw58g1+FJXFCBE
-         p8Hg==
-X-Gm-Message-State: AOAM531cXRzWYXPS5yebvYNN30eSc3SJx+J91NiJE9fh38wj6hw/clSU
-        icjjW8ut/1OOXW449n5Y4dzT
-X-Google-Smtp-Source: ABdhPJxsbkcgJHKC9l8Nzp6aGuWpGOLQSR5SX63hdPPAsp+Np9TJgCk3tFS4YemV8vWYWRm1YrsWxw==
-X-Received: by 2002:a63:4cd:: with SMTP id 196mr22087854pge.239.1630333317896;
-        Mon, 30 Aug 2021 07:21:57 -0700 (PDT)
+        bh=/Vl3AHwuQDLe0ZGngtEfFx668CIPSygY8Oaw4ZN4vCo=;
+        b=ehSL1POSKUJiEgRlDi4DWOokMlGEJA5qJoH+p8YQxs2h1wbdSeQJzEPH2FvLXdJmLY
+         9nsp5KFqEQ3dDdsMfjCLLakGQ8/wsD2IyYXXfkptv8m5lIyNnz7GibwYhlsRTtLtYzfW
+         5xJ5ktJlH+SH2d6Bpu7WwW429tRmnyHks7zQotLCq+jl02McJifunOQ6LU2NPcc5Ohbm
+         Ztc9r3Wq2fy+JHOvZSmKnUEabW0oegpWNropfWprvAz/+zFUpRUgdp/NjTzOL4OoiO4p
+         eFvw4C8VCyZF6tUAsaXInzi72P3i5Ffdl+30lVNJTYwC3HpA34PQ2ZUW59u6/rLTsZ/X
+         Y01A==
+X-Gm-Message-State: AOAM532gC3LG0V3vWtWG99AtTkW45ec+aPi7qbWfMChQMMyMD7zCI26n
+        cGwNWqHR1oBBoEMnEjGF5SLw
+X-Google-Smtp-Source: ABdhPJyuMdXMw+vCPINhRkPdClG/pBGJOxyP0dOUhBuVr8N6XWMqky+vJCs5bkogn8kzhLBwyta7lQ==
+X-Received: by 2002:aa7:8014:0:b029:3cd:b6f3:5dd6 with SMTP id j20-20020aa780140000b02903cdb6f35dd6mr23512141pfi.39.1630333321384;
+        Mon, 30 Aug 2021 07:22:01 -0700 (PDT)
 Received: from localhost ([139.177.225.237])
-        by smtp.gmail.com with ESMTPSA id gc20sm10539505pjb.17.2021.08.30.07.21.56
+        by smtp.gmail.com with ESMTPSA id b17sm4424962pfo.98.2021.08.30.07.22.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 07:21:57 -0700 (PDT)
+        Mon, 30 Aug 2021 07:22:01 -0700 (PDT)
 From:   Xie Yongji <xieyongji@bytedance.com>
 To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
         sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
@@ -62,9 +62,9 @@ Cc:     songmuchun@bytedance.com,
         virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v12 01/13] iova: Export alloc_iova_fast() and free_iova_fast()
-Date:   Mon, 30 Aug 2021 22:17:25 +0800
-Message-Id: <20210830141737.181-2-xieyongji@bytedance.com>
+Subject: [PATCH v12 02/13] eventfd: Export eventfd_wake_count to modules
+Date:   Mon, 30 Aug 2021 22:17:26 +0800
+Message-Id: <20210830141737.181-3-xieyongji@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210830141737.181-1-xieyongji@bytedance.com>
 References: <20210830141737.181-1-xieyongji@bytedance.com>
@@ -74,38 +74,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export alloc_iova_fast() and free_iova_fast() so that
-some modules can make use of the per-CPU cache to get
-rid of rbtree spinlock in alloc_iova() and free_iova()
-during IOVA allocation.
+Export eventfd_wake_count so that some modules can use
+the eventfd_signal_count() to check whether the
+eventfd_signal() call should be deferred to a safe context.
 
 Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Acked-by: Will Deacon <will@kernel.org>
 ---
- drivers/iommu/iova.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/eventfd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-index b6cf5f16123b..3941ed6bb99b 100644
---- a/drivers/iommu/iova.c
-+++ b/drivers/iommu/iova.c
-@@ -521,6 +521,7 @@ alloc_iova_fast(struct iova_domain *iovad, unsigned long size,
+diff --git a/fs/eventfd.c b/fs/eventfd.c
+index e265b6dd4f34..1b3130b8d6c1 100644
+--- a/fs/eventfd.c
++++ b/fs/eventfd.c
+@@ -26,6 +26,7 @@
+ #include <linux/uio.h>
  
- 	return new_iova->pfn_lo;
- }
-+EXPORT_SYMBOL_GPL(alloc_iova_fast);
+ DEFINE_PER_CPU(int, eventfd_wake_count);
++EXPORT_PER_CPU_SYMBOL_GPL(eventfd_wake_count);
  
- /**
-  * free_iova_fast - free iova pfn range into rcache
-@@ -538,6 +539,7 @@ free_iova_fast(struct iova_domain *iovad, unsigned long pfn, unsigned long size)
+ static DEFINE_IDA(eventfd_ida);
  
- 	free_iova(iovad, pfn);
- }
-+EXPORT_SYMBOL_GPL(free_iova_fast);
- 
- #define fq_ring_for_each(i, fq) \
- 	for ((i) = (fq)->head; (i) != (fq)->tail; (i) = ((i) + 1) % IOVA_FQ_SIZE)
 -- 
 2.11.0
 
