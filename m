@@ -2,152 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1BE3FB9F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73053FB9F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237728AbhH3QQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:16:56 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:49529 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231725AbhH3QQy (ORCPT
+        id S237827AbhH3QRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237767AbhH3QRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:16:54 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id AC1A532009A8;
-        Mon, 30 Aug 2021 12:16:00 -0400 (EDT)
-Received: from imap44 ([10.202.2.94])
-  by compute3.internal (MEProxy); Mon, 30 Aug 2021 12:16:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samip.fi; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type:content-transfer-encoding; s=fm1; bh=+8dPI
-        MUavF3K1I+eZMILdJSDf0qvSIVs1NRCxmWwQIk=; b=OI1N3FXdCGulBCnzfCJFq
-        vF+Gh1ihrT/q6HexhcyuR6c+RC4vge2ceIpDEvY8hUxliHa+moVnfOQxG8TKiCNP
-        8jq5fs67kBGtae8NfXSS8OosOxKcVv+yU6RN2fwJrS8P2gbppkqu+jRa+MR8OTSi
-        twH2dWiFOz98Ik5kNzUdUepRYa04/VoJi/8PGYkG38/aucnBpbzgf2B9rs2LWLJm
-        qelcE3mte/8aw21qAifYFJLQavtHfKlu9eLNvyxHfEHyAcbdJGWtnL31TlIOALXc
-        g4eZtPzMjzRXxL+MwEJR/KfO8lFnsPWkqBFEn2HMa0qPvcOzMbUNeEijmMfu1zVP
-        Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=+8dPIMUavF3K1I+eZMILdJSDf0qvSIVs1NRCxmWwQ
-        Ik=; b=dH0hjmzdm04M7mh045qfMkLmr6dFUqQ+xHgVY58xe/UfSsBqlEbbw5B52
-        oMECJpmqZyipErD9qudTWutRM0jQqrWwT5ahnyJ+9zpEVFkZ//1PDywRubXUsOIV
-        f+9iYT3oT3FZdkjKKC2pRTNij+c0ssl84onzPPWMoNs2XBWxWS4NTjrmQFPDk3kj
-        vCez5MZSZNAorviUsvuR82pLNro9Te//W3/QtnI6m++wPNeGyVyhThjouQuyu6dP
-        SE+uo9MMWAHAEc3MKrwKFmASXSUU/lf18Fk4e53MRPs0/yfCR5hghNzqPPK2qWQf
-        cttqb8urPnVo+LvXXIXjk0aM2tYeA==
-X-ME-Sender: <xms:PwQtYXQx7abLcElndo9hZpdc_Z74KD_GjnjxwJOQJXNdv6GY72I3Qw>
-    <xme:PwQtYYxiUqQ7vjUSCpfCU0gLClRV6HcDzIT-sO1sHQMQzyLbIazN7aWm4S8eothXP
-    xIWbjjVkYjV9HMv3g4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduledgleelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpefukhih
-    lhgvrhgpofomnhhthihsrggrrhhiuceolhhishhtshesshgrmhhiphdrfhhiqeenucggtf
-    frrghtthgvrhhnpeefveekheevueelvddutddvgedvleejvdeigeekueehgeelgfeiffet
-    ueejudffkeenucffohhmrghinhepfhhrvggvuggvshhkthhophdrohhrghenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlihhsthhssehsrghm
-    ihhprdhfih
-X-ME-Proxy: <xmx:PwQtYc0VDjRqsYHUIQEkRp-g9tqothJ4eO-y69Tf1HfJRQ5pmoHCKQ>
-    <xmx:PwQtYXDidPUdMG32KJ08ydQ5ycarb_e9sxbMUCefbQ1oUoM4O-e3Nw>
-    <xmx:PwQtYQjOuKE1TaWXVSEP-yUO7Q8KfabKcQwKhmLVizMp4RP09gsrcw>
-    <xmx:QAQtYTuUvBwzFVv7rI9w61J9nweBX1rPU1acllHDABz033RpEkSyGw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 71161FA0AA4; Mon, 30 Aug 2021 12:15:59 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1125-g685cec594c-fm-20210825.001-g685cec59
-Mime-Version: 1.0
-Message-Id: <4d3fd1cb-9b33-4598-b351-54ea455c2a6e@www.fastmail.com>
-In-Reply-To: <20210829173448.3cwk4rz6wfxfxdpj@kari-VirtualBox>
-References: <4ada1100-fbce-44e4-b69d-0f5196f86bcb@www.fastmail.com>
- <20210829173448.3cwk4rz6wfxfxdpj@kari-VirtualBox>
-Date:   Mon, 30 Aug 2021 19:15:29 +0300
-From:   =?UTF-8?Q?Skyler_M=C3=A4ntysaari?= <lists@samip.fi>
-To:     "Kari Argillander" <kari.argillander@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org
-Subject: Re: [drm/amdgpu] Driver crashes on 5.13.9 kernel
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Mon, 30 Aug 2021 12:17:20 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F14C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:16:26 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id z18so29199363ybg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:16:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=939bu+vC3jVVcLM9PeqTLcUxKeTQvKl0T/UCGWNALp8=;
+        b=ITcI2RF50tbf5jpbW8hW2EUztHNlrwGsnfhzC6mjwauuNvS7Ua57LXmxQsEnU6SN4T
+         lto0AKR9E+HNrA9uKZlePPX15hLOkKucpln1AUjIYkD7r7xSa3cKuEc7anPJF1svsnfO
+         i6BGb2efCdpIl7cKmaMjc0QMbb/duELn6Xi+FOJIky16dA00UFatdp/+ivybREcLter0
+         eVp/pctX4PieOXuJmI7pr65UDYdEmRdtGBnMrUvXdskwjfGi+hEO4yAY2WV23PIUXpod
+         3Xz7s5C5n7uMdSMZy2ShvmwViZLPojKgRtCfw/fWgP7Z7fPUiarooICeuhOQppGopW13
+         13yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=939bu+vC3jVVcLM9PeqTLcUxKeTQvKl0T/UCGWNALp8=;
+        b=mqG/Zv3htjir8Qx68bWruRP4Qjg6k5Rgtrmws1wGPEYccY/W+7Jxcpi/RUVkR3ruEM
+         nzYH6NKC3jeMeicBs91LdcGaHy8dQm9IUNGe3EZAvgGP2zhs4eZh1NAEo/DrnthtdFUR
+         Mf+roM9WRlEAlIBh3byAfxIrbDtQ6OwlSoGJDsX8fCjKKxtpWByFstUVTKSDiwLNGffP
+         0Hj5xIVBi1J11rPVxwVKDwqtz0kXzqd7UREdFplp0xYGBSo+hcUh6k5q5ZUv9C/iyPel
+         R/zr463SanK4rAo7Rmwb1D2PBoM0dm1S03J2GpFxzOwaUniPe3DaBiXqoQnrLvH8R/wu
+         dMmA==
+X-Gm-Message-State: AOAM533TLkL1B9w8vTkjv89JzqB0jCzgpp19TMEFbDsxFLtASkZVWK2a
+        MAEW3oFWhBDHZk+HJMiQ9131VLYfdEsX+VzovgaVfA==
+X-Google-Smtp-Source: ABdhPJxpO4KRrWzp9HPBWsZPHteLt3ldMMBKdPlVWSrBRAgXZx0fVjGjzTe9UARBxOQ2FzMofCcoEJhTK10UQiuzOkM=
+X-Received: by 2002:a25:2f84:: with SMTP id v126mr23529062ybv.397.1630340185705;
+ Mon, 30 Aug 2021 09:16:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210827191858.2037087-1-surenb@google.com> <20210827191858.2037087-3-surenb@google.com>
+ <YSmVl+DEPrU6oUR4@casper.infradead.org> <202108272228.7D36F0373@keescook>
+ <CAJuCfpEWc+eTLYp_Xf9exMJCO_cFtvBUzi39+WbcSKZBXHe3SQ@mail.gmail.com> <f7117620-28ba-cfa5-b2c6-21812f15e4d6@rasmusvillemoes.dk>
+In-Reply-To: <f7117620-28ba-cfa5-b2c6-21812f15e4d6@rasmusvillemoes.dk>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 30 Aug 2021 09:16:14 -0700
+Message-ID: <CAJuCfpHXF34THa=zVcRozYiLA9QPeNyU09WvyJFKk=ZjCq0ZZw@mail.gmail.com>
+Subject: Re: [PATCH v8 2/3] mm: add a field to store names for private
+ anonymous memory
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have tried kernel 5.13.13, without any difference and I haven't tried =
-with an older kernel, as this hardware is that new that I have very litt=
-le faith in less than 5.x kernel would even have support for the needed =
-GPU.
+On Mon, Aug 30, 2021 at 1:12 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> On 28/08/2021 23.47, Suren Baghdasaryan wrote:
+> > On Fri, Aug 27, 2021 at 10:52 PM Kees Cook <keescook@chromium.org> wrote:
+> >>
+> >>>> +   case PR_SET_VMA_ANON_NAME:
+> >>>> +           name = strndup_user((const char __user *)arg,
+> >>>> +                               ANON_VMA_NAME_MAX_LEN);
+> >>>> +
+> >>>> +           if (IS_ERR(name))
+> >>>> +                   return PTR_ERR(name);
+> >>>> +
+> >>>> +           for (pch = name; *pch != '\0'; pch++) {
+> >>>> +                   if (!isprint(*pch)) {
+> >>>> +                           kfree(name);
+> >>>> +                           return -EINVAL;
+> >>>
+> >>> I think isprint() is too weak a check.  For example, I would suggest
+> >>> forbidding the following characters: ':', ']', '[', ' '.  Perhaps
+>
+> Indeed. There's also the issue that the kernel's ctype actually
+> implements some almost-but-not-quite latin1, so (some) chars above 0x7f
+> would also pass isprint() - while everybody today expects utf-8, so the
+> ability to put almost arbitrary sequences of chars with the high bit set
+> could certainly confuse some parsers. IOW, don't use isprint() at all,
+> just explicitly check for the byte values that we and up agreeing to
+> allow/forbid.
+>
+> >>> isalnum() would be better?  (permit a-zA-Z0-9)  I wouldn't necessarily
+> >>> be opposed to some punctuation characters, but let's avoid creating
+> >>> confusion.  Do you happen to know which characters are actually in use
+> >>> today?
+> >>
+> >> There's some sense in refusing [, ], and :, but removing " " seems
+> >> unhelpful for reasonable descriptors. As long as weird stuff is escaped,
+> >> I think it's fine. Any parser can just extract with m|\[anon:(.*)\]$|
+> >
+> > I see no issue in forbidding '[' and ']' but whitespace and ':' are
+> > currently used by Android. Would forbidding or escaping '[' and ']' be
+> > enough?
+>
+> how about allowing [0x20, 0x7e] except [0x5b, 0x5d], i.e. all printable
+> (including space) ascii characters, except [ \ ] - the brackets as
+> already discussed, and backslash because then there's nobody who can get
+> confused about whether there's some (and then which?) escaping mechanism
+> in play - "\n" is simply never going to appear. Simple rules, easy to
+> implement, easy to explain in a man page.
 
-What do you mean with git bisect? I have checked that the crash happens =
-somewhere in the monitor connection code:
+Thanks for the suggestion, Rasmus. I'm all for keeping it simple.
+Kees, Matthew, would that be acceptable?
 
-[ 9605.269927] Call Trace:
-[ 9605.269931]  core_link_enable_stream+0x746/0x870 [amdgpu]
-[ 9605.270038]  dce110_apply_ctx_to_hw+0x519/0x560 [amdgpu]
-[ 9605.270146]  dc_commit_state+0x2f6/0xa50 [amdgpu]
-[ 9605.270249]  amdgpu_dm_atomic_commit_tail+0x569/0x26a0 [amdgpu]
-[ 9605.270326]  ? kfree+0xc3/0x460
-[ 9605.270329]  ? dcn30_validate_bandwidth+0x11f/0x270 [amdgpu]
-[ 9605.270402]  ? dcn30_validate_bandwidth+0x11f/0x270 [amdgpu]
-[ 9605.270469]  ? dm_plane_helper_prepare_fb+0x19c/0x250 [amdgpu]
-[ 9605.270542]  ? __cond_resched+0x16/0x40
-[ 9605.270544]  ? __wait_for_common+0x3b/0x160
-[ 9605.270545]  ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
-[ 9605.270548]  commit_tail+0x94/0x130 [drm_kms_helper]
-[ 9605.270557]  drm_atomic_helper_commit+0x113/0x140 [drm_kms_helper]
-[ 9605.270562]  drm_atomic_helper_set_config+0x70/0xb0 [drm_kms_helper]
-[ 9605.270568]  drm_mode_setcrtc+0x1d3/0x6d0 [drm]
-[ 9605.270582]  ? drm_mode_getcrtc+0x180/0x180 [drm]
-[ 9605.270590]  drm_ioctl_kernel+0xaa/0xf0 [drm]
-[ 9605.270600]  drm_ioctl+0x220/0x3c0 [drm]
-[ 9605.270609]  ? drm_mode_getcrtc+0x180/0x180 [drm]
-[ 9605.270618]  amdgpu_drm_ioctl+0x49/0x80 [amdgpu]
-[ 9605.270673]  __x64_sys_ioctl+0x83/0xb0
-[ 9605.270675]  do_syscall_64+0x40/0xb0
-[ 9605.270677]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-
-On Sun, Aug 29, 2021, at 20:34, Kari Argillander wrote:
-> On Sun, Aug 29, 2021 at 06:38:39PM +0300, Skyler M=C3=A4ntysaari wrote:
-> > Hello everyone on the list,
->=20
-> This is universal kernel list and it is not read by many. I have added
-> hopefully right list (amd-gfx@lists.freedesktop.org).
->=20
-> > Subject: Re: [drm/amdgpu] Driver crashes on 5.13.9 kernel
->=20
-> I have no influence or knowledge about this driver, but I still try to
-> help because it seems good bug report. Have you test with 5.13.13 or
-> 5.14-rc7. Does this work with some other kernel? If needed can you git
-> bisect if needed? You will probably get some support for it if needed.
->=20
-> Argillander
->=20
-> > I thought that this should probably be discussed here,  so I came
-> > across weird issue to me which is driver crashing while trying to get
-> > one of my monitors working on Gentoo.  I would like to ask here how
-> > that would happen that the Display appears to jump from DisplayPort-6
-> > (physical port) to DisplayPort-7 (which doesn't exist physically)? H=
-as
-> > anyone else experienced this?
-> >=20
-> > It seems that the driver sees a rather large amount of inputs for the
-> > GPU, even though I only have 4, 3 of which are DisplayPort, and the
-> > issue monitor is also on DisplayPort.=20
-> >=20
-> > Hardware:
-> > CPU: AMD Ryzen 5800X
-> > GPU: AMD Radeon RX 6800
-> > System Memory: 32GB of DDR4 3200Mhz
-> > Display(s): BenQ Zowie XL2430 (1080p), DELL U2414H (1080p), DELL U24=
-15 (1920x1200)
-> > Type of Diplay Connection: All are connected via Display-Port
-> >=20
-> > Related DRM issue:
-> > https://gitlab.freedesktop.org/drm/amd/-/issues/1621 which includes
-> > logs too.
-> >=20
-> >=20
-> > Best regards,
-> > Skyler M=C3=A4ntysaari
+>
+> >>
+> >> For example, just escape it here instead of refusing to take it. Something
+> >> like:
+> >>
+> >>         name = strndup_user((const char __user *)arg,
+> >>                             ANON_VMA_NAME_MAX_LEN);
+> >>         escaped = kasprintf(GFP_KERNEL, "%pE", name);
+>
+> I would not go down that road. First, it makes it much harder to explain
+> the rules for what are allowed and not allowed. Second, parsers become
+> much more complicated. Third, does the length limit then apply to the
+> escaped or unescaped string?
+>
+> Rasmus
