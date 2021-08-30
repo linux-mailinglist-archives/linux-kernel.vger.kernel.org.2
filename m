@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5BB3FBD58
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846633FBD5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233129AbhH3UQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
+        id S234837AbhH3URm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 16:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbhH3UQu (ORCPT
+        with ESMTP id S230213AbhH3URh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:16:50 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D26C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:15:55 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id j12so27921183ljg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:15:55 -0700 (PDT)
+        Mon, 30 Aug 2021 16:17:37 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE75C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:16:43 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id y23so14527621pgi.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:16:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RdkLBxeprc22pYzDrCGRhm5Mln6o/u5YuB0oLAShsfU=;
-        b=SvQjZPnrKDQjoOS7De5eX7kZmrBx8eC1vg6xlCXuICo8J1kvbzxn9dHJ8HcjngZPv4
-         gOe/9w6uT+FaAzMIiF3Oz/9mr9TlVU1tB1bUF9h/MPSHovgRZzP1BImuFmVtuvtc+2A6
-         yzZ1Obpw0jtxLiElMSWmEulWzxyPRVL66CIO4=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4Gjmh2khQtTIto6ydtTcLMQuTQMVcLm+SAujgODL3VA=;
+        b=UaZfjuIcymN1ROobWl/Af4JyhzjOTdxqDjeIoICTu9HvZvDDpP3iKwj1jJM8+5i4D4
+         7AG+wW1u6sruUD0zVcbMr9SHPUqfNCcS/YRiSO9irljKBdLgfyhrRTLU/QNPFA44gp7j
+         Xzyyw8BkHLJjSxN5nLG3KlasYTbMU/DV/8aKw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RdkLBxeprc22pYzDrCGRhm5Mln6o/u5YuB0oLAShsfU=;
-        b=bBysxpCJG9CxjcaZHVRVvLk4DD4IiZxCIaJk86VRBMUtrBrsKHcecE84HNWbdmHIEd
-         J3lMxx1o1fRso2G/gBqt+S2odJlLmhLl0sFU+hUikroR0KQzie2Gy/TDIkVyIGOugZfZ
-         4BHiC2y9PT6GAQE7WYSmUhloyFyiphg4b/x3jlmAmUyIDB8s+Rti0FxS+OIB5cos/TZl
-         QFYznLoqfPdQ0ciflaPV7ENiZOiS4vtfK7vNUbqq2pQEhb/DUvIuOu5/SZ96Um5urVqy
-         +maIiYh9oZGehnfBA2Cuu9xejuM6xEONRGaQKUyPyGzBMEYxxsWng324eLuPEa5No3v2
-         aEmw==
-X-Gm-Message-State: AOAM5338opLyp3LU37uLsa5M+b9rY5cIAdxYpDRayIpQ4HW5u4m8d/q7
-        P6Yqn26ePITiyhtSAubR4nistxQCsxgDf6h7oU0=
-X-Google-Smtp-Source: ABdhPJxfE6vJz8stIlXYZWAzUumcVl2wIq3NbzEFIOvU655AVmaokw1E53jN6SfkMnpgW7oOwxZ5kA==
-X-Received: by 2002:a2e:22c6:: with SMTP id i189mr21595378lji.144.1630354553932;
-        Mon, 30 Aug 2021 13:15:53 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id k20sm761422lfm.93.2021.08.30.13.15.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 13:15:53 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id m18so19517925lfl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:15:53 -0700 (PDT)
-X-Received: by 2002:a05:6512:228f:: with SMTP id f15mr6228220lfu.253.1630354553028;
- Mon, 30 Aug 2021 13:15:53 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4Gjmh2khQtTIto6ydtTcLMQuTQMVcLm+SAujgODL3VA=;
+        b=qXv9EFl/fr4bd/3EwsdqRReu3YlLRJClDwwMJ61Rnqfe69YlrpzV3BiwY2OCl3XYvJ
+         W136H/H4ffMfQRarU45r+eJADLke+GOy7hm9dFbg9ouyYIBcyRnTGmtCg9eWIhFcPShG
+         o/F3ow+KfqcFjXHcoFLJSGnkqldY2SgIB2GmF9yLSlFKIQ9OjbVcG3/fpErqNJ3jNLbY
+         7jjc13BEwQD7Ll0a3HSepy7vT5UmLSr/4hBfVjNA5VdQoevAQgrHdPe1hSbf+rMaieLT
+         gp/MJYZjwFbhu1ZC/Hx9TifF+uJ81w8m9IDBKOpfU+eL8ToITeVKatamVI8N6XR+JNRG
+         lXng==
+X-Gm-Message-State: AOAM5334Pb9d9IyMCMSdJsjhG64zyq8aAoCJm+SuZSEwol9qk4QKPF5Z
+        7qJc618KhVW+7eVjdtl7wwSmSNJAi1Tohg==
+X-Google-Smtp-Source: ABdhPJyfyfv0j5SsIb7SF7ruWGzc0JgMsZg+XrtwWeRgwZ1dqSmBiT4CuujRduBedSkB7IpGBLg0uw==
+X-Received: by 2002:a62:dd83:0:b029:2e8:e511:c32f with SMTP id w125-20020a62dd830000b02902e8e511c32fmr24825041pff.49.1630354602955;
+        Mon, 30 Aug 2021 13:16:42 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c123sm15588127pfc.50.2021.08.30.13.16.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 13:16:42 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 13:16:41 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Keith Packard <keithp@keithp.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        clang-built-linux@googlegroups.com,
+        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v3 0/5] Enable -Warray-bounds and -Wzero-length-bounds
+Message-ID: <202108301314.22B3CB015C@keescook>
+References: <20210827163015.3141722-1-keescook@chromium.org>
+ <YS0nJtNDCwfbaubZ@Ryzen-9-3900X.localdomain>
 MIME-Version: 1.0
-References: <CAHk-=wh75ELUu99yPkPNt+R166CK=-M4eoV+F62tW3TVgB7=4g@mail.gmail.com>
- <20210830201225.GA2671970@roeck-us.net>
-In-Reply-To: <20210830201225.GA2671970@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 30 Aug 2021 13:15:37 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi2-1PyGj94cb+jYWb4vCcJ3JG6s6Li7c12dPOhdTs1RA@mail.gmail.com>
-Message-ID: <CAHk-=wi2-1PyGj94cb+jYWb4vCcJ3JG6s6Li7c12dPOhdTs1RA@mail.gmail.com>
-Subject: Re: Linux 5.14
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YS0nJtNDCwfbaubZ@Ryzen-9-3900X.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 1:12 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> So far so good, but there is a brand new runtime warning, seen when booting
-> s390 images.
->
-> [    3.218816] ------------[ cut here ]------------
-> [    3.219010] WARNING: CPU: 1 PID: 0 at kernel/sched/core.c:5779 sched_core_cpu_starting+0x172/0x180
-> [    3.222845] Call Trace:
-> [    3.222992]  [<0000000000186e86>] sched_core_cpu_starting+0x176/0x180
-> [    3.223114] ([<0000000000186dc4>] sched_core_cpu_starting+0xb4/0x180)
-> [    3.223182]  [<00000000001963e4>] sched_cpu_starting+0x2c/0x68
-> [    3.223243]  [<000000000014f288>] cpuhp_invoke_callback+0x318/0x970
-> [    3.223304]  [<000000000014f970>] cpuhp_invoke_callback_range+0x90/0x108
-> [    3.223364]  [<000000000015123c>] notify_cpu_starting+0x84/0xa8
-> [    3.223426]  [<0000000000117bca>] smp_init_secondary+0x72/0xf0
-> [    3.223492]  [<0000000000117846>] smp_start_secondary+0x86/0x90
->
-> Commit 3c474b3239f12 ("sched: Fix Core-wide rq->lock for uninitialized
-> CPUs") seems to be the culprit. Indeed, the warning is gone after reverting
-> this commit.
+On Mon, Aug 30, 2021 at 11:44:54AM -0700, Nathan Chancellor wrote:
+> arch/powerpc/kernel/signal_32.c:780:2: error: array index 3 is past the end of the array (which contains 1 element) [-Werror,-Warray-bounds]
+>         unsafe_put_sigset_t(&frame->uc.uc_sigmask, oldset, failed);
+>         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ouch, not great timing.
+Or is this a Clang DCE failure?
 
-Adding the s390 people to the cc too, just to make sure everybody
-involved is aware.
+#define unsafe_put_compat_sigset(compat, set, label) do {               \
+        compat_sigset_t __user *__c = compat;                           \
+        const sigset_t *__s = set;                                      \
+                                                                        \
+        switch (_NSIG_WORDS) {                                          \
+        case 4:                                                         \
+                unsafe_put_user(__s->sig[3] >> 32, &__c->sig[7], label);        \
+                unsafe_put_user(__s->sig[3], &__c->sig[6], label);      \
+                fallthrough;                                            \
+        case 3:                                                         \
+                unsafe_put_user(__s->sig[2] >> 32, &__c->sig[5], label);        \
+                unsafe_put_user(__s->sig[2], &__c->sig[4], label);      \
+                fallthrough;                                            \
+        case 2:                                                         \
+                unsafe_put_user(__s->sig[1] >> 32, &__c->sig[3], label);        \
+                unsafe_put_user(__s->sig[1], &__c->sig[2], label);      \
+                fallthrough;                                            \
+        case 1:                                                         \
+                unsafe_put_user(__s->sig[0] >> 32, &__c->sig[1], label);        \
+                unsafe_put_user(__s->sig[0], &__c->sig[0], label);      \
+        }                                                               \
+} while (0)
 
-           Linus
+if "set" has only 1 element, then _NSIG_WORDS must be 1. The warnings
+are coming from cases 4 and 3. (But why not 2, which would also access
+beyond the end?)
+
+-- 
+Kees Cook
