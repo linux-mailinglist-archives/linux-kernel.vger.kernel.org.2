@@ -2,148 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D07303FB0E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 07:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CCD73FB0EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 07:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbhH3Ftj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 01:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232063AbhH3Fti (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 01:49:38 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E18C061575;
-        Sun, 29 Aug 2021 22:48:44 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id m18so14785161lfl.10;
-        Sun, 29 Aug 2021 22:48:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=h6S1rlsuhQbbfaHSm0DcTq2usBWQ0P+C1lfcBqs7THk=;
-        b=HRqs6fFqwgiAASLA7HMs8CUA1JrGF+jhmv/z64PoGj6np49yf/Hl3Bra7AwI4B4mGF
-         s3h03mEszT4pbCPF7Puw3cTSpZqQcCXB+p4wOR+VMHANjRf/Iq6yy0ZemYBSzaRIoY+m
-         giZgqrA6e6bdndPM3VqYPibE6XuNIZKGxnBvn/e6SO4PMuz2+g5PKOUrVG6PRzqhBt6L
-         PXSCATFVLsypGl5ZWtTkSgXj2eGBWDIfFUbVsivKXk+xLv0JFgqtDNSkVM+ioU/aqCxM
-         9NTgTShQtxDJGBps/qMZejvTDVIr2Au/3Vu54y4JT+cOYHMbRKghrcR4HarQXXWzwtML
-         FQLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=h6S1rlsuhQbbfaHSm0DcTq2usBWQ0P+C1lfcBqs7THk=;
-        b=HLLj0RPAGbc9yzF0f11NWCa6nUg3HURQZet/WTi1yLJydI3G3++IZ+k8b4H7cc8Dpr
-         ZMtynVMwLAWyiWjjKGbtvN38w/oLNUlHi6IuFG4g1Q/vNsJNcv0e/D283kshzL+RZbZA
-         CXGesXMN83WkY2Hfm3j1EVC2ZX+I10Q4YYHAuZweJTEmEVp7vZtco0G2KDeRbkWAygGf
-         W+B4r8bdR6EZqblbJAZiHzV4ETPqNBTq6zvZy1siqLhicWIrstnLZeaDYiGWXsj9omLN
-         Ptd3zdl3vO9uhkkC0nFx0KNMvj3Ns+yg36yR+KT+SyUVqyBwz9g9SvIT0kiNeRL1SkM8
-         ZUqg==
-X-Gm-Message-State: AOAM53170LDjZO72Lhcvz8udqFQ7V4uJWX925xcjzqu5ACXySnUHWESR
-        3wwDFni0txy5LGLyH3ToKCySWLHakrqXplVh4e+c/KE19kg=
-X-Google-Smtp-Source: ABdhPJyEMOqW9hRCT7wE/paD34dFNcJyzGQtlqdvXb3TClR0gBFbheyVAOsgOXsaTpIl74cjxqwpxZMnczgzM06t29I=
-X-Received: by 2002:a19:c7c3:: with SMTP id x186mr12895274lff.175.1630302522939;
- Sun, 29 Aug 2021 22:48:42 -0700 (PDT)
+        id S232583AbhH3Fxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 01:53:54 -0400
+Received: from relay.sw.ru ([185.231.240.75]:48032 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231741AbhH3Fxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 01:53:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=CZGtUolhje7Vsk3gbqjS0thLrINH1hLljA/H/12io0E=; b=H9wsO24Iz+sDH3ehq
+        0dj5woeHzyyWljn/zso5+TQ9UVplmy/Bi+okE788RCXG9cvxSog+zYK2vS92Fb9vkpv9Mf/VP9LEs
+        ZI2yN8jm66AhnqgOgLtoTJFmLuG+D70K9EeZcKdtqEE/tvuYlxh3DkDUNQa7V5saqrnidkr0p0ZTM
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mKaDx-000AK5-RU; Mon, 30 Aug 2021 08:52:49 +0300
+Subject: Re: [PATCH net-next v2] skb_expand_head() adjust skb->truesize
+ incorrectly
+From:   Vasily Averin <vvs@virtuozzo.com>
+To:     Christoph Paasch <christoph.paasch@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@openvz.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
+References: <CALMXkpZYGC5HNkJAi4wCuawC-9CVNjN1LqO073YJvUF5ONwupA@mail.gmail.com>
+ <860513d5-fd02-832b-1c4c-ea2b17477d76@virtuozzo.com>
+Message-ID: <835071d6-88e8-902e-4997-042bf4b84b6f@virtuozzo.com>
+Date:   Mon, 30 Aug 2021 08:52:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Mon, 30 Aug 2021 00:48:32 -0500
-Message-ID: <CAH2r5mvVdBoUW-0BfsxiRAE6X30cqhBtNDvG7pwKdQwsu+wXfg@mail.gmail.com>
-Subject: [GIT PULL] cifs/smb3 client fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <860513d5-fd02-832b-1c4c-ea2b17477d76@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
+1) I forgot to specify that the patch is intended fro net-next git
+2) I forgot to ad Alexey Kuznetsov in cc. I resend the patch to him 
+  in a separate letter and received his consent.
+3) I forgot to set Fixed mark
+Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
 
-  Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
+Thank you,
+	Vasily Averin
 
-are available in the Git repository at:
+On 8/29/21 3:59 PM, Vasily Averin wrote:
+> Christoph Paasch reports [1] about incorrect skb->truesize
+> after skb_expand_head() call in ip6_xmit.
+> This may happen because of two reasons:
+> - skb_set_owner_w() for newly cloned skb is called too early,
+> before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
+> - pskb_expand_head() does not adjust truesize in (skb->sk) case.
+> In this case sk->sk_wmem_alloc should be adjusted too.
+> 
+> [1] https://lkml.org/lkml/2021/8/20/1082
+> 
+> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> ---
+> v2: based on patch version from Eric Dumazet,
+>     added __pskb_expand_head() function, which can be forced
+>     to adjust skb->truesize and sk->sk_wmem_alloc.
+> ---
+>  net/core/skbuff.c | 43 +++++++++++++++++++++++++++++--------------
+>  1 file changed, 29 insertions(+), 14 deletions(-)
+> 
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index f931176..4691023 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -1681,10 +1681,10 @@ struct sk_buff *__pskb_copy_fclone(struct sk_buff *skb, int headroom,
+>   *	reloaded after call to this function.
+>   */
+>  
+> -int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
+> -		     gfp_t gfp_mask)
+> +static int __pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
+> +			      gfp_t gfp_mask, bool update_truesize)
+>  {
+> -	int i, osize = skb_end_offset(skb);
+> +	int delta, i, osize = skb_end_offset(skb);
+>  	int size = osize + nhead + ntail;
+>  	long off;
+>  	u8 *data;
+> @@ -1756,9 +1756,13 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
+>  	 * For the moment, we really care of rx path, or
+>  	 * when skb is orphaned (not attached to a socket).
+>  	 */
+> -	if (!skb->sk || skb->destructor == sock_edemux)
+> -		skb->truesize += size - osize;
+> -
+> +	delta = size - osize;
+> +	if (!skb->sk || skb->destructor == sock_edemux) {
+> +		skb->truesize += delta;
+> +	} else if (update_truesize) {
+> +		refcount_add(delta, &skb->sk->sk_wmem_alloc);
+> +		skb->truesize += delta;
+> +	}
+>  	return 0;
+>  
+>  nofrags:
+> @@ -1766,6 +1770,12 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
+>  nodata:
+>  	return -ENOMEM;
+>  }
+> +
+> +int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
+> +		     gfp_t gfp_mask)
+> +{
+> +	return __pskb_expand_head(skb, nhead, ntail, gfp_mask, false);
+> +}
+>  EXPORT_SYMBOL(pskb_expand_head);
+>  
+>  /* Make private copy of skb with writable head and some headroom */
+> @@ -1804,28 +1814,33 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
+>  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+>  {
+>  	int delta = headroom - skb_headroom(skb);
+> +	struct sk_buff *oskb = NULL;
+>  
+>  	if (WARN_ONCE(delta <= 0,
+>  		      "%s is expecting an increase in the headroom", __func__))
+>  		return skb;
+>  
+> +	delta = SKB_DATA_ALIGN(delta);
+>  	/* pskb_expand_head() might crash, if skb is shared */
+>  	if (skb_shared(skb)) {
+>  		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+>  
+> -		if (likely(nskb)) {
+> -			if (skb->sk)
+> -				skb_set_owner_w(nskb, skb->sk);
+> -			consume_skb(skb);
+> -		} else {
+> +		if (unlikely(!nskb)) {
+>  			kfree_skb(skb);
+> +			return NULL;
+>  		}
+> +		oskb = skb;
+>  		skb = nskb;
+>  	}
+> -	if (skb &&
+> -	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
+> +	if (__pskb_expand_head(skb, delta, 0, GFP_ATOMIC, true)) {
+>  		kfree_skb(skb);
+> -		skb = NULL;
+> +		kfree_skb(oskb);
+> +		return NULL;
+> +	}
+> +	if (oskb) {
+> +		if (oskb->sk)
+> +			skb_set_owner_w(skb, oskb->sk);
+> +		consume_skb(oskb);
+>  	}
+>  	return skb;
+>  }
+> 
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc-smb3-fixes-part1
-
-for you to fetch changes up to 3998f0b8bc49ec784990971dc1f16bf367b19078:
-
-  cifs: Do not leak EDEADLK to dgetents64 for
-STATUS_USER_SESSION_DELETED (2021-08-25 16:08:38 -0500)
-
-----------------------------------------------------------------
-11 cifs/smb3 client fixes:
-- mostly restructuring to allow disabling less secure algorithms (this
-will allow eventual removing rc4 and md4 from general use in the
-kernel)
-- 4 fixes, including 2 for stable
-- enable r/w support with fscache and cifs.ko
-
-Am working on a larger set of changes (the usual ... multichannel,
-auth and signing improvements), but wanted to get these in earlier to
-reduce chance of merge conflicts
-later in the merge window.
-----------------------------------------------------------------
-Ding Hui (1):
-      cifs: fix wrong release in sess_alloc_buffer() failed path
-
-Len Baker (1):
-      CIFS: Fix a potencially linear read overflow
-
-Ronnie Sahlberg (4):
-      cifs: remove support for NTLM and weaker authentication algorithms
-      cifs: fork arc4 and create a separate module for it for cifs and
-other users
-      cifs: create a MD4 module and switch cifs.ko to use it
-      cifs: Do not leak EDEADLK to dgetents64 for STATUS_USER_SESSION_DELETED
-
-Shyam Prasad N (1):
-      cifs: enable fscache usage even for files opened as rw
-
-Steve French (4):
-      smb3: fix posix extensions mount option
-      oid_registry: Add OIDs for missing Spnego auth mechanisms to Macs
-      cifs: cifs_md4 convert to SPDX identifier
-      cifs: add cifs_common directory to MAINTAINERS file
-
- MAINTAINERS                  |   1 +
- fs/Kconfig                   |   7 ++
- fs/Makefile                  |   1 +
- fs/cifs/Kconfig              |  30 -------
- fs/cifs/cifs_debug.c         |  11 ---
- fs/cifs/cifs_swn.c           |   2 -
- fs/cifs/cifs_unicode.c       |   9 +-
- fs/cifs/cifsencrypt.c        |  89 +-------------------
- fs/cifs/cifsfs.c             |   8 --
- fs/cifs/cifsglob.h           |  32 +------
- fs/cifs/cifspdu.h            |  28 -------
- fs/cifs/cifsproto.h          |  10 ---
- fs/cifs/cifssmb.c            | 107 +-----------------------
- fs/cifs/connect.c            |  32 -------
- fs/cifs/file.c               |  15 +++-
- fs/cifs/fs_context.c         |  25 ++----
- fs/cifs/fs_context.h         |   3 -
- fs/cifs/fscache.c            |  41 +++++++--
- fs/cifs/fscache.h            |  23 ++++++
- fs/cifs/inode.c              |   6 ++
- fs/cifs/readdir.c            |  23 +++++-
- fs/cifs/sess.c               | 257
-+--------------------------------------------------------
- fs/cifs/smb2maperror.c       |   1 -
- fs/cifs/smbencrypt.c         | 139 +++----------------------------
- fs/cifs_common/Makefile      |   7 ++
- fs/cifs_common/arc4.h        |  23 ++++++
- fs/cifs_common/cifs_arc4.c   |  87 +++++++++++++++++++
- fs/cifs_common/cifs_md4.c    | 197 +++++++++++++++++++++++++++++++++++++++++++
- fs/cifs_common/md4.h         |  27 ++++++
- include/linux/oid_registry.h |   7 ++
- 30 files changed, 485 insertions(+), 763 deletions(-)
- create mode 100644 fs/cifs_common/Makefile
- create mode 100644 fs/cifs_common/arc4.h
- create mode 100644 fs/cifs_common/cifs_arc4.c
- create mode 100644 fs/cifs_common/cifs_md4.c
- create mode 100644 fs/cifs_common/md4.h
-
-
--- 
-Thanks,
-
-Steve
