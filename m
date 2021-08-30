@@ -2,148 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B393FBAB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1AA3FBABC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237962AbhH3RO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 13:14:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43194 "EHLO mail.kernel.org"
+        id S238034AbhH3RSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 13:18:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229709AbhH3ROz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 13:14:55 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88C5860F57;
-        Mon, 30 Aug 2021 17:13:55 +0000 (UTC)
-Date:   Mon, 30 Aug 2021 18:17:06 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v16 00/14] Introduce the Counter character device
- interface
-Message-ID: <20210830181706.74e45cb8@jic23-huawei>
-In-Reply-To: <cover.1630031207.git.vilhelm.gray@gmail.com>
-References: <cover.1630031207.git.vilhelm.gray@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S237940AbhH3RSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 13:18:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3C1060F42;
+        Mon, 30 Aug 2021 17:17:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630343858;
+        bh=H1o1TvSjaRf9FmgrRYENSuesBwwYmr16JkVBndSyqWM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=eKpm45OEOc2RYw6pPy5L0eRx7GZb2p/bPUUHO7Frpwfxi9W0tuHQpFo2cLGVU00/X
+         4GnSd0ZQ7xsaZ5PEgVz/N+wf0uuoRj0XI45VRAsrkoabR+HQvCLvPPNgzBvH9yZX6n
+         vvdKtfDJvJTqgmYmosYatDwXv+7U/+1RlLatpHDPmCUFCT8Gb7yKKHKU2DaLhBvxni
+         l7QfSHiDAIBsRYy65zeFXTulsaR2DllPUNZgCb4XQ290m6yVT5rNte2NPkc0ItDlkv
+         S7adLu2hQqdMnWNe/ezYLu0x3NhlbTFwrsI4US39nTrnL5DMN8EcuUIoeRebzY+fD8
+         4EzdjDLaO05VA==
+Message-ID: <f683df669b9e4e844f801182dc405fc83a4d9099.camel@kernel.org>
+Subject: Re: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
+From:   nicolas saenz julienne <nsaenz@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        linux-pci@vger.kernel.org
+Cc:     lorenzo.pieralisi@arm.com, bhelgaas@google.com, rjw@rjwysocki.net,
+        lenb@kernel.org, robh@kernel.org, kw@linux.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Mon, 30 Aug 2021 19:17:32 +0200
+In-Reply-To: <f6860e38-c6fa-292d-f1a1-22b3e4b48f32@gmail.com>
+References: <20210826071557.29239-1-jeremy.linton@arm.com>
+         <20210826071557.29239-3-jeremy.linton@arm.com>
+         <44ad79081412af289c68e74cdecb6a2baa2e873c.camel@kernel.org>
+         <5c39cf29-a08f-48d1-b873-ce0fda763d66@arm.com>
+         <f6860e38-c6fa-292d-f1a1-22b3e4b48f32@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Aug 2021 12:47:44 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-
-> Changes in v16:
->  - Define magic numbers for stm32-lptimer-cnt clock polarities
->  - Define magic numbers for stm32-timer-cnt encoder modes
->  - Bump KernelVersion to 5.16 in sysfs-bus-counter ABI documentation
->  - Fix typos in driver API generic-counter.rst documentation file
+On Mon, 2021-08-30 at 09:27 -0700, Florian Fainelli wrote:
 > 
-> For convenience, this patchset is also available on my personal git
-> repo: https://gitlab.com/vilhelmgray/iio/-/tree/counter_chrdev_v16
+> On 8/30/2021 9:23 AM, Jeremy Linton wrote:
+> > Hi,
+> > 
+> > On 8/30/21 3:36 AM, nicolas saenz julienne wrote:
+> > > Hi Jeremy,
+> > > sorry for the late reply, I've been on vacation.
+> > > 
+> > > On Thu, 2021-08-26 at 02:15 -0500, Jeremy Linton wrote:
+> > > 
+> > > [...]
+> > > 
+> > > > +static void __iomem *brcm_pcie_map_conf2(struct pci_bus *bus,
+> > > > +                    unsigned int devfn, int where)
+> > > > +{
+> > > > +    struct pci_config_window *cfg = bus->sysdata;
+> > > > +    void __iomem *base = cfg->win;
+> > > > +    int idx;
+> > > > +    u32 up;
+> > > > +
+> > > > +    /* Accesses to the RC go right to the RC registers if slot==0 */
+> > > > +    if (pci_is_root_bus(bus))
+> > > > +        return PCI_SLOT(devfn) ? NULL : base + where;
+> > > > +
+> > > > +    /*
+> > > > +     * Assure the link is up before sending requests downstream. 
+> > > > This is done
+> > > > +     * to avoid sending transactions to EPs that don't exist. Link flap
+> > > > +     * conditions/etc make this race more probable. The resulting 
+> > > > unrecoverable
+> > > > +     * SERRORs will result in the machine crashing.
+> > > > +     */
+> > > > +    up = readl(base + PCIE_MISC_PCIE_STATUS);
+> > > > +    if (!(up & PCIE_MISC_PCIE_STATUS_PCIE_DL_ACTIVE_MASK))
+> > > > +        return NULL;
+> > > > +
+> > > > +    if (!(up & PCIE_MISC_PCIE_STATUS_PCIE_PHYLINKUP_MASK))
+> > > > +        return NULL;
+> > > 
+> > > Couldn't this be integrated in the original brcm_pcie_map_conf()? IIUC 
+> > > there is
+> > > nothing ACPI specific about it. It'd also make for less code duplication.
+> > 
+> > That is where I started with this, but it wasn't the linkup check/etc 
+> > which caused me to hoist it but the fact that if ACPI quirks are enabled 
+> > they end up statically built into the kernel. While if this host bridge 
+> > is enabled, it can end up being a module, and the resulting mess I 
+> > created trying to satisfy the CONFIG variations. I'm not much of a fan 
+> > of copy/paste programming, but that IMHO ended up being the cleanest here.
+> > 
 > 
-> The patches preceding "counter: Internalize sysfs interface code" are
-> primarily cleanup and fixes that can be picked up and applied now to the
-> IIO tree if so desired. The "counter: Internalize sysfs interface code"
-> patch as well may be considered for pickup because it is relatively safe
-> and makes no changes to the userspace interface.
-> 
-> To summarize the main points of this patchset: there are no changes to
-> the existing Counter sysfs userspace interface; a Counter character
-> device interface is introduced that allows Counter events and associated
-> data to be read() by userspace; the events_configure() and
-> watch_validate() driver callbacks are introduced to support Counter
-> events; and IRQ support is added to the 104-QUAD-8 driver, serving as an
-> example of how to support the new Counter events functionality.
+> Agreed, the open coding that is being done is reasonable IHMO, although 
+> we may have to update the link up code in both pcie-brcmstb.c and this 
+> file in the future if offsets/bits do change, nothing impossible though.
 
-Hi William,
+Fair enough.
 
-I'll aim to pick up the first part in a week (too tired today after a lot
-of reviewing to even manage the basic sanity check on the changes).
+Acked-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
 
-For the rest...
-
-What I'd really like to know is if anyone other than William and I is planning
-to review them in depth? (particularly 7 and 8 which are the new interface
-patch and docs)
-
-So if anyone reading this is in that category please let me know.  We can wait,
-but conversely if no one is going to get time / inclination to do it then I
-don't want to hold these up any longer and maximum time in linux-next may
-be more useful than sitting unloved on the mailing list.
-
-Jonathan
-
-> 
-> William Breathitt Gray (14):
->   counter: stm32-lptimer-cnt: Provide defines for clock polarities
->   counter: stm32-timer-cnt: Provide defines for slave mode selection
->   counter: Internalize sysfs interface code
->   counter: Update counter.h comments to reflect sysfs internalization
->   docs: counter: Update to reflect sysfs internalization
->   counter: Move counter enums to uapi header
->   counter: Add character device interface
->   docs: counter: Document character device interface
->   tools/counter: Create Counter tools
->   counter: Implement signalZ_action_component_id sysfs attribute
->   counter: Implement *_component_id sysfs attributes
->   counter: Implement events_queue_size sysfs attribute
->   counter: 104-quad-8: Replace mutex with spinlock
->   counter: 104-quad-8: Add IRQ support for the ACCES 104-QUAD-8
-> 
->  Documentation/ABI/testing/sysfs-bus-counter   |   38 +-
->  Documentation/driver-api/generic-counter.rst  |  358 +++-
->  .../userspace-api/ioctl/ioctl-number.rst      |    1 +
->  MAINTAINERS                                   |    3 +-
->  drivers/counter/104-quad-8.c                  |  699 ++++----
->  drivers/counter/Kconfig                       |    6 +-
->  drivers/counter/Makefile                      |    1 +
->  drivers/counter/counter-chrdev.c              |  553 ++++++
->  drivers/counter/counter-chrdev.h              |   14 +
->  drivers/counter/counter-core.c                |  191 +++
->  drivers/counter/counter-sysfs.c               |  960 +++++++++++
->  drivers/counter/counter-sysfs.h               |   13 +
->  drivers/counter/counter.c                     | 1496 -----------------
->  drivers/counter/ftm-quaddec.c                 |   60 +-
->  drivers/counter/intel-qep.c                   |  144 +-
->  drivers/counter/interrupt-cnt.c               |   62 +-
->  drivers/counter/microchip-tcb-capture.c       |   91 +-
->  drivers/counter/stm32-lptimer-cnt.c           |  212 ++-
->  drivers/counter/stm32-timer-cnt.c             |  195 +--
->  drivers/counter/ti-eqep.c                     |  180 +-
->  include/linux/counter.h                       |  715 ++++----
->  include/linux/counter_enum.h                  |   45 -
->  include/linux/mfd/stm32-lptimer.h             |    5 +
->  include/linux/mfd/stm32-timers.h              |    4 +
->  include/uapi/linux/counter.h                  |  154 ++
->  tools/Makefile                                |   13 +-
->  tools/counter/Build                           |    1 +
->  tools/counter/Makefile                        |   53 +
->  tools/counter/counter_example.c               |   93 +
->  29 files changed, 3569 insertions(+), 2791 deletions(-)
->  create mode 100644 drivers/counter/counter-chrdev.c
->  create mode 100644 drivers/counter/counter-chrdev.h
->  create mode 100644 drivers/counter/counter-core.c
->  create mode 100644 drivers/counter/counter-sysfs.c
->  create mode 100644 drivers/counter/counter-sysfs.h
->  delete mode 100644 drivers/counter/counter.c
->  delete mode 100644 include/linux/counter_enum.h
->  create mode 100644 include/uapi/linux/counter.h
->  create mode 100644 tools/counter/Build
->  create mode 100644 tools/counter/Makefile
->  create mode 100644 tools/counter/counter_example.c
-> 
-> 
-> base-commit: 5ffeb17c0d3dd44704b4aee83e297ec07666e4d6
+Regards,
+Nicolas
 
