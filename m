@@ -2,120 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D38A3FBD3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CAD3FBB8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234357AbhH3UBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41434 "EHLO
+        id S238489AbhH3SP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233423AbhH3UBT (ORCPT
+        with ESMTP id S238150AbhH3SP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:01:19 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE867C061575;
-        Mon, 30 Aug 2021 13:00:25 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso19914668ots.5;
-        Mon, 30 Aug 2021 13:00:25 -0700 (PDT)
+        Mon, 30 Aug 2021 14:15:28 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8EAC061575;
+        Mon, 30 Aug 2021 11:14:34 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id q3so22930993edt.5;
+        Mon, 30 Aug 2021 11:14:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mA95KUP0dYKYEnYZnEFeu7CCPib9IonakfUcwEE/oNw=;
-        b=pOjLWxcC6TZyp0PNKbMFVHrbtffNwVR+PSEUdvVN96tugh2yf6nPx4fuxjYjBknWxo
-         wIuG2VQoerR3QSoZ85GLtgByveplnptziB2bAxZOL9JVN245t71ZklyaB5XyGvHS+EJK
-         jYIkBnEHmkUvyJgmbJ85EM2L4/VDQ0C0mPQd8qBGklaI2LxM1hJcIiKWRKJ1PjHiEZ57
-         ojM67wIRS3PRPQojQQuIe9ePPEjmDIyuxtliAyMz0dR7gZZtO1bUddhKJyfxnpu98aAr
-         DakS/V2V7aj+d/ZshZU53eT+WKvBfGKTjj+J6XQzlyOrIdDxOXyBGMe561GyoGVrbpRi
-         8Q3Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=0j4HbXVAukqCvkqeiElajeZaQqhOfru+oix0tV+lQrI=;
+        b=QVUhEAZZ9HU15JpJ9CRyLHMIFOZ1jMD+Io0SA44k9zuJteTpy6xjFzlUQZVkkcSkAV
+         8THSnA5pErW9mh5pJyM+NbnYl7Pw651j82Rv9+L74mEpHDw71DdAC/F+7u9mhJOrEAVp
+         NajR+KTLYwgtN7wVhlmT8ko8uVqjccOkx8ogYtd9m7TZ809y5yL0WesSsInyR/yAeK28
+         eFRizHIseQzk1IK58Vs/HoFFHx2poJxRlKEsEqdJ+jKqtlRr8DK+2Oj+3H+0OX4mePK4
+         OB98P/mpsDnjicliInySQwE++/oZtWD2CEUUEBNwurI4C5HEa27VWGOOCPKWnWRtwBK4
+         4LaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mA95KUP0dYKYEnYZnEFeu7CCPib9IonakfUcwEE/oNw=;
-        b=KiYvjmkixOWzRs+hIYSMDOEg3y+ipn0LrEJFzIj2c3/1XFZ7VLf7SNBJcVkp6W7jlx
-         1A6Dpq5P1tM2GQwLMbQ0rNcQiypGUTy3a3j24Q+BwsF4adc1stnjB2NkpgHUa+Uppra/
-         UNwPSid/zis3woJ2MRrlm3ua2g8IIgIl9XfH+T1NOYvql/QUZ5t4yJvfz16axB70PZER
-         pwzCXEA6g3Le3VCp7Rl4VmGOVuX1l+vsYb4xIeB8An2s8Rx1ET87/hMfOgumB5bDkWMU
-         BX+rwqGk2QzdZ1921exPhStDqbJ/uIdgCUHTMO98u1SZuAC94LyUXcmDcZfjoMAJL4xC
-         jJAg==
-X-Gm-Message-State: AOAM530OZg+CxPJbdT2IoOj8dYi2e0K0kHy2ye6XTnXWFfgbDio3oo3R
-        kCaceV3RB2/3NBYxh4fWYpE=
-X-Google-Smtp-Source: ABdhPJzu9t6ULQDN9iPuR1EwZkartl+sZ7v42aI2K8dwtEpW2CpzhjgTbqrl3Dog7smMDFurjtOKzA==
-X-Received: by 2002:a05:6830:4124:: with SMTP id w36mr21016879ott.72.1630353625041;
-        Mon, 30 Aug 2021 13:00:25 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z78sm3106348ooa.29.2021.08.30.13.00.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 13:00:24 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] watchdog: iTCO_wdt: Fix detection of SMI-off case
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc:     linux-watchdog@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Christian Storm <christian.storm@siemens.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        =?UTF-8?Q?Mantas_Mikul=c4=97nas?= <grawity@gmail.com>
-References: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
- <1444efd5-b778-949b-34e8-99d2541350e9@siemens.com>
- <85c2c85e-147c-b54e-e84d-10b989610979@siemens.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <904ea225-e7de-a11a-419a-0c7ac05e9b6e@roeck-us.net>
-Date:   Mon, 30 Aug 2021 13:00:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0j4HbXVAukqCvkqeiElajeZaQqhOfru+oix0tV+lQrI=;
+        b=KnIuTWBGZj2wUF0w6NNUjifJIpR1tWCa2QzRWG2/XsAGlu/4gfNtkz6dIMf4X2YI3C
+         +TFWClusR0BNbYTvhXZCGp3qKsoAKo6menxygUPYYyFSvL/VbV7ti5TbYRW5G3ZkW8op
+         uUIrrkl5eV4YXUrNuJbsKkB0tm3Iu1HYJN2R6t/b1i0CYSQ0pCBe55syIRXtv9TcfEyV
+         tS0GKi896FLMF3bw2+hz/eBDoVTuonHgsiBZnd7jyjlnJR+q6sOeFtHIzOVBc+DO3bkN
+         UNOvkS/8IhgCil9/cNpJgUlgg20Pq/IgHMxVdeWfQXALc3OcrdqJMWgugzlqJ+2foOTu
+         04jQ==
+X-Gm-Message-State: AOAM531GupWIqGOYVIAinp3jdRN8YR1L6xboueQlpzgZJ9aRPC3tyGLW
+        GoeGgAUN8fzhZs8zCdTHEkc=
+X-Google-Smtp-Source: ABdhPJw4A9PXJGNP++AeWzylFWjXO6a0PeDAh3ff0+0VYFa/9G5+yu5ZZ7PL5Fqs++aDAAtRkCC1sQ==
+X-Received: by 2002:a05:6402:5108:: with SMTP id m8mr25755510edd.367.1630347272917;
+        Mon, 30 Aug 2021 11:14:32 -0700 (PDT)
+Received: from localhost (host-79-37-188-60.retail.telecomitalia.it. [79.37.188.60])
+        by smtp.gmail.com with ESMTPSA id i6sm6987518ejr.68.2021.08.30.11.14.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 11:14:32 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 22:14:26 +0200
+From:   Sergio =?utf-8?Q?Migu=C3=A9ns?= Iglesias <lonyelon@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, bhelgaas@google.com,
+        xen-devel@lists.xenproject.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergio =?utf-8?Q?Migu=C3=A9ns?= Iglesias <sergio@lony.xyz>
+Subject: Re: [PATCH v2] xen/pcifront: Removed unnecessary __ref annotation
+Message-ID: <20210830201426.g2vaxh6chqnprual@archlap>
+References: <20210830175305.13370-1-sergio@lony.xyz>
+ <20210830162922.GA4188989@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <85c2c85e-147c-b54e-e84d-10b989610979@siemens.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210830162922.GA4188989@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/21 12:47 PM, Jan Kiszka wrote:
-> On 20.08.21 15:45, Jan Kiszka wrote:
->> On 26.07.21 13:46, Jan Kiszka wrote:
->>> From: Jan Kiszka <jan.kiszka@siemens.com>
->>>
->>> Obviously, the test needs to run against the register content, not its
->>> address.
->>>
->>> Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
->>> Reported-by: Mantas MikulÄ—nas <grawity@gmail.com>
->>> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
->>> ---
->>>   drivers/watchdog/iTCO_wdt.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
->>> index b3f604669e2c..643c6c2d0b72 100644
->>> --- a/drivers/watchdog/iTCO_wdt.c
->>> +++ b/drivers/watchdog/iTCO_wdt.c
->>> @@ -362,7 +362,7 @@ static int iTCO_wdt_set_timeout(struct watchdog_device *wd_dev, unsigned int t)
->>>   	 * Otherwise, the BIOS generally reboots when the SMI triggers.
->>>   	 */
->>>   	if (p->smi_res &&
->>> -	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
->>> +	    (inl(SMI_EN(p)) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
->>>   		tmrval /= 2;
->>>   
->>>   	/* from the specs: */
->>>
->>
->> Ping, this is still missing in master. Stable kernels had the revert,
->> but 5.14 will need this.
->>
-> 
-> Second reminder: 5.14 is out and now broken. Is the patch queued
-> somewhere? I do not see it in the watchdog staging branch.
-> 
+Thanks again for you answers!
+I am lerning a lot from your replys and I really appreciate it. Should I
+make a v3 patch and split that one into 2 different patches or would it
+be confusing?
 
-I had it in my own watchdog-next branch for about a month.
-Usually Wim picks it up from there or from the mainling list;
-he handles all upstreaming. Wim ?
+I don't want to take more of your time with poor patches so I don't know
+if I should resend this one.
 
-Guenter
+Thanks again,
+Sergio M. Iglesias.
+
+On 21/08/30 11:29, Bjorn Helgaas wrote:
+> On Mon, Aug 30, 2021 at 07:53:05PM +0200, Sergio Miguéns Iglesias wrote:
+> > An unnecessary "__ref" annotation was removed from the
+> > "drivers/pci/xen_pcifront.c" file. The function where the annotation
+> > was used was "pcifront_backend_changed()", which does not call any
+> > functions annotated as "__*init" nor "__*exit". This makes "__ref"
+> > unnecessary since this annotation is used to make the compiler ignore
+> > section miss-matches when they are not happening here in the first
+> > place.
+> > 
+> > In addition to the aforementioned change, some code style issues were
+> > fixed in the same file.
+> 
+> One of the Xen folks may apply this, and they may not be as nit-picky
+> as I am :)
+> 
+> If I were to apply this, I would suggest:
+> 
+>   - Write subject line and commit message in imperative mood.  This is
+>     a really good guide to this and other commit message this:
+>     https://chris.beams.io/posts/git-commit/
+> 
+>     For example, in the subject, say "Remove" (not "Removed").  Same
+>     in the body.  In the body, I would mention the function but not
+>     the filename since that's obvious from the diff.
+> 
+>   - Split the __ref change into a separate patch from the style
+>     changes.  The __ref removal should come first and be the absolute
+>     minimal patch.  That makes it much easier to review, backport, and
+>     revert if necessary.  And, if the maintainer isn't wild about
+>     style patches, it's trivial to just ignore that patch.
+> 
+>     Commit logs that say "Also, ..." or "In addition, ..." are always
+>     red flags to me because they usually indicate the patch could be
+>     split into two or more simpler patches.
+> 
+>   - When reviewing changes like this, I assume __ref was added in the
+>     first place for some good reason, so I want to know why, and I
+>     want to know when that reason changed.  So I would look for the
+>     commit that *introduced* __ref and for the commit that removed the
+>     need for it.  It would save me time if the log said something
+>     like:
+> 
+>       956a9202cd12 ("xen-pcifront: Xen PCI frontend driver.") added
+>       __initrefok because pcifront_backend_changed() called
+>       pcifront_try_connect() and pcifront_attach_devices(), which were
+>       both __devinit.
+> 
+>       The __devinit annotations were removed by 15856ad50bf5 ("PCI:
+>       Remove __dev* markings"), which made __initrefok unnecessary.
+> 
+>       Finally, bd721ea73e1f ("treewide: replace obsolete _refok by
+>       __ref") replaced __initrefok with __ref.
+> 
+>     That might be too much for a commit log, but it shows that you've
+>     done your homework and makes it easier to review (and helps people
+>     make similar fixes elsewhere).  If it *is* too much, it's trivial
+>     for a maintainer to cut it out.
+> 
+> More notes about my idiosyncracies:
+> https://lore.kernel.org/r/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
+> 
+> > Signed-off-by: Sergio Miguéns Iglesias <sergio@lony.xyz>
+> > ---
+> >  drivers/pci/xen-pcifront.c | 30 +++++++++++++++++++-----------
+> >  1 file changed, 19 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/drivers/pci/xen-pcifront.c b/drivers/pci/xen-pcifront.c
+> > index b7a8f3a1921f..427041c1e408 100644
+> > --- a/drivers/pci/xen-pcifront.c
+> > +++ b/drivers/pci/xen-pcifront.c
+> > @@ -115,7 +115,7 @@ static int do_pci_op(struct pcifront_device *pdev, struct xen_pci_op *op)
+> >  	struct xen_pci_op *active_op = &pdev->sh_info->op;
+> >  	unsigned long irq_flags;
+> >  	evtchn_port_t port = pdev->evtchn;
+> > -	unsigned irq = pdev->irq;
+> > +	unsigned int irq = pdev->irq;
+> >  	s64 ns, ns_timeout;
+> >  
+> >  	spin_lock_irqsave(&pdev->sh_info_lock, irq_flags);
+> > @@ -153,10 +153,10 @@ static int do_pci_op(struct pcifront_device *pdev, struct xen_pci_op *op)
+> >  	}
+> >  
+> >  	/*
+> > -	* We might lose backend service request since we
+> > -	* reuse same evtchn with pci_conf backend response. So re-schedule
+> > -	* aer pcifront service.
+> > -	*/
+> > +	 * We might lose backend service request since we
+> > +	 * reuse same evtchn with pci_conf backend response. So re-schedule
+> > +	 * aer pcifront service.
+> > +	 */
+> >  	if (test_bit(_XEN_PCIB_active,
+> >  			(unsigned long *)&pdev->sh_info->flags)) {
+> >  		dev_err(&pdev->xdev->dev,
+> > @@ -414,7 +414,8 @@ static int pcifront_scan_bus(struct pcifront_device *pdev,
+> >  	struct pci_dev *d;
+> >  	unsigned int devfn;
+> >  
+> > -	/* Scan the bus for functions and add.
+> > +	/*
+> > +	 * Scan the bus for functions and add.
+> >  	 * We omit handling of PCI bridge attachment because pciback prevents
+> >  	 * bridges from being exported.
+> >  	 */
+> > @@ -492,8 +493,10 @@ static int pcifront_scan_root(struct pcifront_device *pdev,
+> >  
+> >  	list_add(&bus_entry->list, &pdev->root_buses);
+> >  
+> > -	/* pci_scan_root_bus skips devices which do not have a
+> > -	* devfn==0. The pcifront_scan_bus enumerates all devfn. */
+> > +	/*
+> > +	 * pci_scan_root_bus skips devices which do not have a
+> > +	 * devfn==0. The pcifront_scan_bus enumerates all devfn.
+> > +	 */
+> >  	err = pcifront_scan_bus(pdev, domain, bus, b);
+> >  
+> >  	/* Claim resources before going "live" with our devices */
+> > @@ -651,8 +654,10 @@ static void pcifront_do_aer(struct work_struct *data)
+> >  	pci_channel_state_t state =
+> >  		(pci_channel_state_t)pdev->sh_info->aer_op.err;
+> >  
+> > -	/*If a pci_conf op is in progress,
+> > -		we have to wait until it is done before service aer op*/
+> > +	/*
+> > +	 * If a pci_conf op is in progress, we have to wait until it is done
+> > +	 * before service aer op
+> > +	 */
+> >  	dev_dbg(&pdev->xdev->dev,
+> >  		"pcifront service aer bus %x devfn %x\n",
+> >  		pdev->sh_info->aer_op.bus, pdev->sh_info->aer_op.devfn);
+> > @@ -676,6 +681,7 @@ static void pcifront_do_aer(struct work_struct *data)
+> >  static irqreturn_t pcifront_handler_aer(int irq, void *dev)
+> >  {
+> >  	struct pcifront_device *pdev = dev;
+> > +
+> >  	schedule_pcifront_aer_op(pdev);
+> >  	return IRQ_HANDLED;
+> >  }
+> > @@ -1027,6 +1033,7 @@ static int pcifront_detach_devices(struct pcifront_device *pdev)
+> >  	/* Find devices being detached and remove them. */
+> >  	for (i = 0; i < num_devs; i++) {
+> >  		int l, state;
+> > +
+> >  		l = snprintf(str, sizeof(str), "state-%d", i);
+> >  		if (unlikely(l >= (sizeof(str) - 1))) {
+> >  			err = -ENOMEM;
+> > @@ -1078,7 +1085,7 @@ static int pcifront_detach_devices(struct pcifront_device *pdev)
+> >  	return err;
+> >  }
+> >  
+> > -static void __ref pcifront_backend_changed(struct xenbus_device *xdev,
+> > +static void pcifront_backend_changed(struct xenbus_device *xdev,
+> >  						  enum xenbus_state be_state)
+> >  {
+> >  	struct pcifront_device *pdev = dev_get_drvdata(&xdev->dev);
+> > @@ -1137,6 +1144,7 @@ static int pcifront_xenbus_probe(struct xenbus_device *xdev,
+> >  static int pcifront_xenbus_remove(struct xenbus_device *xdev)
+> >  {
+> >  	struct pcifront_device *pdev = dev_get_drvdata(&xdev->dev);
+> > +
+> >  	if (pdev)
+> >  		free_pdev(pdev);
+> >  
+> > -- 
+> > 2.33.0
+> > 
