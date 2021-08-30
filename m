@@ -2,80 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C513FB492
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10543FB49F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236503AbhH3LaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 07:30:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232579AbhH3LaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 07:30:02 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        id S236475AbhH3LeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 07:34:10 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38584 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232579AbhH3LeJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 07:34:09 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C4FBF220FD;
+        Mon, 30 Aug 2021 11:33:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630323194; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qbtIM/v0tAoR2oZYjGEg40bXhpo80BebKdAbqKmN8do=;
+        b=Lp5XNbGdjWfYGvXx9OPoXj2ke48ZaSuF4sCVstvFcEQAql7EY7rBKIXyX6KCkgj5MuWvH2
+        N+pQsDJPwmhl0OpHeDYBDhJc3RaliARw8U4lsUcOSmfFuRrl8iQHGvX0uhSfcLe2l/fybS
+        tTTtVLsoEJNMY1lA6UyIV2yZnYGLpz8=
+Received: from suse.cz (unknown [10.100.201.86])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 894EF6112D;
-        Mon, 30 Aug 2021 11:29:07 +0000 (UTC)
-Date:   Mon, 30 Aug 2021 12:32:20 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: adc: twl6030-gpadc: Use the defined variable to
- clean code
-Message-ID: <20210830123220.55980d62@jic23-huawei>
-In-Reply-To: <20210823095921.16828-1-tangbin@cmss.chinamobile.com>
-References: <20210823095921.16828-1-tangbin@cmss.chinamobile.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        by relay2.suse.de (Postfix) with ESMTPS id 67799A3B8C;
+        Mon, 30 Aug 2021 11:33:14 +0000 (UTC)
+Date:   Mon, 30 Aug 2021 13:33:10 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        stable@kernel.org, Chris Down <chris@chrisdown.name>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH] mm,vmscan: fix divide by zero in get_scan_count
+Message-ID: <YSzB9q1kVjKce7ly@dhcp22.suse.cz>
+References: <20210826220149.058089c6@imladris.surriel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826220149.058089c6@imladris.surriel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Aug 2021 17:59:21 +0800
-Tang Bin <tangbin@cmss.chinamobile.com> wrote:
-
-> Use the defined variable "dev" to make the code cleaner.
+On Thu 26-08-21 22:01:49, Rik van Riel wrote:
+> Changeset f56ce412a59d ("mm: memcontrol: fix occasional OOMs due to
+> proportional memory.low reclaim") introduced a divide by zero corner
+> case when oomd is being used in combination with cgroup memory.low
+> protection.
 > 
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-Applied.
-
-Thanks,
-
-> ---
->  drivers/iio/adc/twl6030-gpadc.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> When oomd decides to kill a cgroup, it will force the cgroup memory
+> to be reclaimed after killing the tasks, by writing to the memory.max
+> file for that cgroup, forcing the remaining page cache and reclaimable
+> slab to be reclaimed down to zero.
 > 
-> diff --git a/drivers/iio/adc/twl6030-gpadc.c b/drivers/iio/adc/twl6030-gpadc.c
-> index 0859f3f7d..5e4fbb033 100644
-> --- a/drivers/iio/adc/twl6030-gpadc.c
-> +++ b/drivers/iio/adc/twl6030-gpadc.c
-> @@ -897,7 +897,7 @@ static int twl6030_gpadc_probe(struct platform_device *pdev)
->  
->  	ret = pdata->calibrate(gpadc);
->  	if (ret < 0) {
-> -		dev_err(&pdev->dev, "failed to read calibration registers\n");
-> +		dev_err(dev, "failed to read calibration registers\n");
->  		return ret;
->  	}
->  
-> @@ -911,14 +911,14 @@ static int twl6030_gpadc_probe(struct platform_device *pdev)
->  
->  	ret = twl6030_gpadc_enable_irq(TWL6030_GPADC_RT_SW1_EOC_MASK);
->  	if (ret < 0) {
-> -		dev_err(&pdev->dev, "failed to enable GPADC interrupt\n");
-> +		dev_err(dev, "failed to enable GPADC interrupt\n");
->  		return ret;
->  	}
->  
->  	ret = twl_i2c_write_u8(TWL6030_MODULE_ID1, TWL6030_GPADCS,
->  					TWL6030_REG_TOGGLE1);
->  	if (ret < 0) {
-> -		dev_err(&pdev->dev, "failed to enable GPADC module\n");
-> +		dev_err(dev, "failed to enable GPADC module\n");
->  		return ret;
->  	}
->  
+> Previously, on cgroups with some memory.low protection that would result
+> in the memory being reclaimed down to the memory.low limit, or likely not
+> at all, having the page cache reclaimed asynchronously later.
+> 
+> With f56ce412a59d the oomd write to memory.max tries to reclaim all the
+> way down to zero, which may race with another reclaimer, to the point of
+> ending up with the divide by zero below.
+> 
+> This patch implements the obvious fix.
 
+I must be missing something but how can cgroup_size be ever 0 when it is
+max(cgroup_size, protection) and protection != 0?
+-- 
+Michal Hocko
+SUSE Labs
