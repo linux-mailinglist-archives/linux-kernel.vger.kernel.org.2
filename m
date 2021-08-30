@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E213FB37F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AF13FB386
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235950AbhH3J6C convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Aug 2021 05:58:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229901AbhH3J6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 05:58:00 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50A6660525;
-        Mon, 30 Aug 2021 09:57:03 +0000 (UTC)
-Date:   Mon, 30 Aug 2021 11:00:15 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH 02/16] iio: adc: max1027: Fix the number of max1X31
- channels
-Message-ID: <20210830110015.787e0abe@jic23-huawei>
-In-Reply-To: <SJ0PR03MB63596A655409A24A442977F199C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
-References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
-        <20210818111139.330636-3-miquel.raynal@bootlin.com>
-        <SJ0PR03MB63596A655409A24A442977F199C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231708AbhH3KCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 06:02:07 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:50626 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229901AbhH3KCD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 06:02:03 -0400
+X-UUID: bd3f7cf9dd6f49a9be901ad15ee81456-20210830
+X-UUID: bd3f7cf9dd6f49a9be901ad15ee81456-20210830
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1520126050; Mon, 30 Aug 2021 18:01:08 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 30 Aug 2021 18:01:07 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas07.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Mon, 30 Aug 2021 18:01:06 +0800
+From:   <guangming.cao@mediatek.com>
+To:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <linux-media@vger.kernel.org>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA-BUF HEAPS FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+CC:     <wsd_upstream@mediatek.com>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: [PATCH] dma-buf: heaps: remove duplicated cache sync
+Date:   Mon, 30 Aug 2021 18:01:38 +0800
+Message-ID: <20210830100139.15632-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 07:03:40 +0000
-"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-> > -----Original Message-----
-> > From: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Sent: Wednesday, August 18, 2021 1:11 PM
-> > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
-> > <lars@metafoo.de>
-> > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>; linux-
-> > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel Raynal
-> > <miquel.raynal@bootlin.com>; stable@vger.kernel.org
-> > Subject: [PATCH 02/16] iio: adc: max1027: Fix the number of max1X31
-> > channels
-> > 
-> > [External]
-> > 
-> > The macro MAX1X29_CHANNELS() already calls
-> > MAX1X27_CHANNELS().
-> > Calling MAX1X27_CHANNELS() before MAX1X29_CHANNELS() in the
-> > definition
-> > of MAX1X31_CHANNELS() declares the first 8 channels twice. So drop
-> > this
-> > extra call from the MAX1X31 channels list definition.
-> > 
-> > Fixes: 7af5257d8427 ("iio: adc: max1027: Prepare the introduction of
-> > different resolutions")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> >  drivers/iio/adc/max1027.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
-> > index 4a42d140a4b0..b753658bb41e 100644
-> > --- a/drivers/iio/adc/max1027.c
-> > +++ b/drivers/iio/adc/max1027.c
-> > @@ -142,7 +142,6 @@ MODULE_DEVICE_TABLE(of,
-> > max1027_adc_dt_ids);
-> >  	MAX1027_V_CHAN(11, depth)
-> > 
-> >  #define MAX1X31_CHANNELS(depth)			\
-> > -	MAX1X27_CHANNELS(depth),		\
-> >  	MAX1X29_CHANNELS(depth),		\
-> >  	MAX1027_V_CHAN(12, depth),		\
-> >  	MAX1027_V_CHAN(13, depth),		\
-> > --
-> > 2.27.0  
-> 
-> Reviewed-by: Nuno Sá <nuno.sa@analog.com>
-> 
-I guess we don't have many users of these devices as I would have expected
-this to blow up spectacularly.  Ah well.  
+Current flow, one dmabuf maybe call cache sync many times if
+it has beed mapped more than one time.
 
-Applied to the fixes-togreg branch of iio.git
+Is there any case that attachments of one dmabuf will points to
+different memory? If not, seems do sync only one time is more better.
 
-Thanks,
+Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+---
+ drivers/dma-buf/heaps/system_heap.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-Jonathan
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 23a7e74ef966..909ef652a8c8 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -162,9 +162,10 @@ static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+ 		invalidate_kernel_vmap_range(buffer->vaddr, buffer->len);
+ 
+ 	list_for_each_entry(a, &buffer->attachments, list) {
+-		if (!a->mapped)
+-			continue;
+-		dma_sync_sgtable_for_cpu(a->dev, a->table, direction);
++		if (a->mapped) {
++			dma_sync_sgtable_for_cpu(a->dev, a->table, direction);
++			break;
++		}
+ 	}
+ 	mutex_unlock(&buffer->lock);
+ 
+@@ -183,9 +184,10 @@ static int system_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
+ 		flush_kernel_vmap_range(buffer->vaddr, buffer->len);
+ 
+ 	list_for_each_entry(a, &buffer->attachments, list) {
+-		if (!a->mapped)
+-			continue;
+-		dma_sync_sgtable_for_device(a->dev, a->table, direction);
++		if (!a->mapped) {
++			dma_sync_sgtable_for_device(a->dev, a->table, direction);
++			break;
++		}
+ 	}
+ 	mutex_unlock(&buffer->lock);
+ 
+-- 
+2.17.1
+
