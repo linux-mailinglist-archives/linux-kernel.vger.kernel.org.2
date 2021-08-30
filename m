@@ -2,258 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC443FB39B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D9F3FB39F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236321AbhH3KJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 06:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236068AbhH3KJz (ORCPT
+        id S236326AbhH3KKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 06:10:32 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:47444 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236322AbhH3KKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:09:55 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757CCC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 03:09:01 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id g13so30070811lfj.12
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 03:09:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YnGp5XaY7ZHqLVWmH/snqm4N1oXNH1vIvABIY33EwNg=;
-        b=lTtd+mi0DHlkFG5JfYWhv9jduG36oLneKzLl09Li4JQEpFXiBPLrq1oV/flmcWoGnT
-         H7pZeFC/2K7P9RfRtR6GA2eWQD/K0Ku4F/WLRaH+ykO+FJXMqwGAhWpbwJJtu09ipBFG
-         b5Eu3Tn/tyrha244Da35tnnaqa27oEdZEyXzawi6rSGjMQXxnf/Uv9z4sdYJ1OIEHF4J
-         RVG+/tXF0afQOOgU3ziEgqkQANdlTZVSyemRWfgCsLncpX9ZBz2Pm0X/JX8NS+CmRSDi
-         20/nB6yQfn49rDiFvZc5T3gEVlLcIRaLHCQgVCocQUB01/ppB1tw09UiEszl1a+LPHsH
-         KXEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YnGp5XaY7ZHqLVWmH/snqm4N1oXNH1vIvABIY33EwNg=;
-        b=rWL6cLbVKhGigkFZ8uHWO59q+01VQAo7M/BErlzMD7b+Nz0NCEyCQtrFmryf/7ctlE
-         eactgZdJ7N47Go41yoPbyjcofhhO0GjhSib1Gt0KTfW95igkeUVBPgH5bzWCrlNkMMRk
-         8uftBAZqQaxpAEd3UJu3tN0cv7UlMGOETsYO+pJWIADSnsedecNCP83pBjQdtjCvgn05
-         kCsp4KQyH2JZsbiE+wa9B3ukVAIOJd03JG3MBIbVSpAl3AOG1pQ32JbtP9A5GrO8jr+O
-         Pq+ih8ytZXWLzV+Va7N1mAC57pCVLTHkn8mfWI7+6tRQ34sJPo5K56cv3DGiD8VgLjYI
-         XiUQ==
-X-Gm-Message-State: AOAM530UO/zMb7o9q73ndE9tkIbOGw+xL8l5SOwEHMS+XuHDBi60fLUx
-        IjJOs+KmiJ9CmaGHODSYQiGrHQ==
-X-Google-Smtp-Source: ABdhPJw8LIk+z1MqKCusb5z2r0Vwg6tbPsWSyvYUD42tmMVGQ3Tm9s25ysh/QsUI+idnEiSAt2Ur2A==
-X-Received: by 2002:ac2:4e0f:: with SMTP id e15mr12439517lfr.262.1630318138031;
-        Mon, 30 Aug 2021 03:08:58 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id f29sm1348429lfj.119.2021.08.30.03.08.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 03:08:57 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [GIT PULL] MMC and MEMSTICK updates for v5.15
-Date:   Mon, 30 Aug 2021 12:08:56 +0200
-Message-Id: <20210830100856.512711-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 30 Aug 2021 06:10:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1630318177; x=1661854177;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SoTCnikdgf21XcZdMwzYaqI+NZ+PtkhKdXux8qvsieo=;
+  b=toso2Eh5duTfs0KUx/FXkLngd0LvMXPd0367Hs+lGfakfkzHNMiDz9jT
+   ge0Hp/qm9aecAmYYo6vtlkkIY2IUKKGaf28yWUTIyy2UIijDHk834fyaZ
+   SzixES9g35cc1hwDicV+kCH+EEdW3xCIr8uVtxIMcv/jUhkhlB11dMdUo
+   ev/DDV+xjIVTOflBePsZ1STtQBN46j9sc5gQtcBhQnvvb7XPtQ5+GySjP
+   JNIYmukyq6q5klwKWcQBObkPfKUbhwnoL/3Yj76GngBpOL586HUYx5A4D
+   tqlV6zW19ZketNGtSAcefq87FHjFKj+xXR4wz1d32BUYTU7KtqA3bN4kF
+   Q==;
+IronPort-SDR: 4T4vwwYIncsecFxlp5h/c8QbNX4IxLSceq5/odL52lcreFdly7Vjax5UO79sXnoqjOakbH4QC+
+ RmEIZqpwFBqlYw3A1YB8jfOKYSQPcXI7QjlHrw7vHa8zUbSKnJar5HD+f+BSiXtM0/dm8v5bDt
+ C1OBPwlPCinNJO+iyr9226wmFxjCiJ19xElp+znInps3mVhy4fmQsno7BSC4leMoZvQy5y2+CY
+ ltzam7hoKa5+r4qY9N4nvJUDnTffzFAlFyN5bpHBY5DdRpQIqIzBUwsgrr1GM8OS1z+sxyjT6g
+ miDDPT+XhnRnF7OwfT3XgXlX
+X-IronPort-AV: E=Sophos;i="5.84,363,1620716400"; 
+   d="scan'208";a="127552924"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Aug 2021 03:09:35 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 30 Aug 2021 03:09:35 -0700
+Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Mon, 30 Aug 2021 03:09:34 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH] ARM: at91: pm: switch backup area to vbat in backup mode
+Date:   Mon, 30 Aug 2021 13:09:27 +0300
+Message-ID: <20210830100927.22711-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Backup area is now switched to VDDIN33 at boot (with the help of
+bootloader). When switching to backup mode we need to switch backup area
+to VBAT as all the other power sources are cut off. The resuming from
+backup mode is done with the help of bootloader, so there is no need to
+do something particular in Linux to restore backup area power source.
 
-Here's the pull-request with updates for MMC and MEMSTICK for v5.15. Details
-about the highlights are as usual found in the signed tag.
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
 
-Please pull this in!
+Hi Nicolas,
 
-Kind regards
-Ulf Hansson
+This applies clean on top of patch with title
+"ARM: at91: pm: do not panic if ram controllers are not enabled"
 
+Thank you,
+Claudiu Beznea
 
-The following changes since commit 885814a97f5a1a2daf66bde5f2076f0bf632c174:
+ arch/arm/mach-at91/pm.c | 52 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-  Revert "mmc: sdhci-iproc: Set SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN on BCM2711" (2021-08-27 16:30:36 +0200)
+diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
+index d92afca64b49..8711d6824c1f 100644
+--- a/arch/arm/mach-at91/pm.c
++++ b/arch/arm/mach-at91/pm.c
+@@ -47,12 +47,26 @@ struct at91_pm_bu {
+ 	unsigned long ddr_phy_calibration[BACKUP_DDR_PHY_CALIBRATION];
+ };
+ 
++/*
++ * struct at91_pm_sfrbu_offsets: registers mapping for SFRBU
++ * @pswbu: power switch BU control registers
++ */
++struct at91_pm_sfrbu_regs {
++	struct {
++		u32 key;
++		u32 ctrl;
++		u32 state;
++		u32 softsw;
++	} pswbu;
++};
++
+ /**
+  * struct at91_soc_pm - AT91 SoC power management data structure
+  * @config_shdwc_ws: wakeup sources configuration function for SHDWC
+  * @config_pmc_ws: wakeup srouces configuration function for PMC
+  * @ws_ids: wakup sources of_device_id array
+  * @data: PM data to be used on last phase of suspend
++ * @sfrbu_regs: SFRBU registers mapping
+  * @bu: backup unit mapped data (for backup mode)
+  * @memcs: memory chip select
+  */
+@@ -62,6 +76,7 @@ struct at91_soc_pm {
+ 	const struct of_device_id *ws_ids;
+ 	struct at91_pm_bu *bu;
+ 	struct at91_pm_data data;
++	struct at91_pm_sfrbu_regs sfrbu_regs;
+ 	void *memcs;
+ };
+ 
+@@ -356,9 +371,36 @@ static int at91_suspend_finish(unsigned long val)
+ 	return 0;
+ }
+ 
++static void at91_pm_switch_ba_to_vbat(void)
++{
++	unsigned int offset = offsetof(struct at91_pm_sfrbu_regs, pswbu);
++	unsigned int val;
++
++	/* Just for safety. */
++	if (!soc_pm.data.sfrbu)
++		return;
++
++	val = readl(soc_pm.data.sfrbu + offset);
++
++	/* Already on VBAT. */
++	if (!(val & soc_pm.sfrbu_regs.pswbu.state))
++		return;
++
++	val &= ~soc_pm.sfrbu_regs.pswbu.softsw;
++	val |= soc_pm.sfrbu_regs.pswbu.key | soc_pm.sfrbu_regs.pswbu.ctrl;
++	writel(val, soc_pm.data.sfrbu + offset);
++
++	/* Wait for update. */
++	val = readl(soc_pm.data.sfrbu + offset);
++	while (val & soc_pm.sfrbu_regs.pswbu.state)
++		val = readl(soc_pm.data.sfrbu + offset);
++}
++
+ static void at91_pm_suspend(suspend_state_t state)
+ {
+ 	if (soc_pm.data.mode == AT91_PM_BACKUP) {
++		at91_pm_switch_ba_to_vbat();
++
+ 		cpu_suspend(0, at91_suspend_finish);
+ 
+ 		/* The SRAM is lost between suspend cycles */
+@@ -1155,6 +1197,11 @@ void __init sama5d2_pm_init(void)
+ 	soc_pm.ws_ids = sama5d2_ws_ids;
+ 	soc_pm.config_shdwc_ws = at91_sama5d2_config_shdwc_ws;
+ 	soc_pm.config_pmc_ws = at91_sama5d2_config_pmc_ws;
++
++	soc_pm.sfrbu_regs.pswbu.key = (0x4BD20C << 8);
++	soc_pm.sfrbu_regs.pswbu.ctrl = BIT(0);
++	soc_pm.sfrbu_regs.pswbu.softsw = BIT(1);
++	soc_pm.sfrbu_regs.pswbu.state = BIT(3);
+ }
+ 
+ void __init sama7_pm_init(void)
+@@ -1185,6 +1232,11 @@ void __init sama7_pm_init(void)
+ 
+ 	soc_pm.ws_ids = sama7g5_ws_ids;
+ 	soc_pm.config_pmc_ws = at91_sam9x60_config_pmc_ws;
++
++	soc_pm.sfrbu_regs.pswbu.key = (0x4BD20C << 8);
++	soc_pm.sfrbu_regs.pswbu.ctrl = BIT(0);
++	soc_pm.sfrbu_regs.pswbu.softsw = BIT(1);
++	soc_pm.sfrbu_regs.pswbu.state = BIT(2);
+ }
+ 
+ static int __init at91_pm_modes_select(char *str)
+-- 
+2.25.1
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.15
-
-for you to fetch changes up to a75c956162978097c0a60d95971c97ae486a68d7:
-
-  Merge branch 'fixes' into next (2021-08-27 16:35:55 +0200)
-
-----------------------------------------------------------------
-MMC core:
- - Return a proper response in case of an ioctl error
- - Issue HPI to interrupt BKOPS for eMMC if it timed out
- - Avoid hogging the CPU while polling for busy
- - Extend sd8787 pwrseq to support the wilc1000 SDIO
- - Remove a couple of confusing warning messages
- - Clarify comment for ->card_busy() host ops
-
-MMC host:
- - dw_mmc: Add data CRC error injection
- - mmci: De-assert reset during ->probe()
- - rtsx_pci: Fix long reads when clock is pre-scaled
- - sdhci: Correct the tuning command handle for PIO mode
- - sdhci-esdhc-imx: Improve support for auto tuning
- - sdhci-msm: Add support for the sc7280
- - sdhci-of-arasan: Don't auto tune for DDR50 mode for ZynqMP
- - sdhci-of-arasan: Enable support for auto cmd12
- - sdhci-of-arasan: Use 19MHz for SD default speed for ZynqMP for level shifter
- - usdhi6rol0: Implement the ->card_busy() host ops
-
-MEMSTICK:
- - A couple of minor cleanups.
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      mmc: mmc_spi: Simplify busy loop in mmc_spi_skip()
-
-Bean Huo (1):
-      mmc: core: Issue HPI in case the BKOPS timed out
-
-Biju Das (2):
-      dt-bindings: mmc: renesas,sdhi: Fix dtbs-check warning
-      dt-bindings: mmc: renesas,sdhi: Document RZ/G2L bindings
-
-ChanWoo Lee (2):
-      mmc: queue: Match the data type of max_segments
-      mmc: queue: Remove unused parameters(request_queue)
-
-Christophe JAILLET (3):
-      memstick: r592: Change the name of the 'pci_driver' structure to be consistent
-      memstick: switch from 'pci_' to 'dma_' API
-      mmc: switch from 'pci_' to 'dma_' API
-
-Claudiu Beznea (4):
-      dt-bindings: mmc: Extend pwrseq-sd8787 binding for wilc1000
-      mmc: pwrseq: sd8787: add support for wilc1000
-      mmc: pwrseq: add wilc1000_sdio dependency for pwrseq_sd8787
-      mmc: pwrseq: sd8787: fix compilation warning
-
-Colin Ian King (1):
-      memstick: ms_block: Fix spelling contraction "cant" -> "can't"
-
-Eric Biggers (1):
-      mmc: core: Store pointer to bio_crypt_ctx in mmc_request
-
-Fabio Estevam (1):
-      mmc: sdhci-esdhc-imx: Remove unneeded mmc-esdhc-imx.h header
-
-Haibo Chen (5):
-      mmc: sdhci: Correct the tuning command handle for PIO mode
-      dt-bindings: mmc: fsl-imx-esdhc: add a new compatible string
-      dt-bindings: mmc: fsl-imx-esdhc: change the pinctrl-names rule
-      mmc: sdhci-esdhc-imx: Remove redundant code for manual tuning
-      mmc: sdhci-esdhc-imx: Select the correct mode for auto tuning
-
-Linus Walleij (1):
-      mmc: mmci: De-assert reset on probe
-
-Manish Narani (6):
-      mmc: sdhci-of-arasan: Modified SD default speed to 19MHz for ZynqMP
-      mmc: sdhci-of-arasan: Add "SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12" quirk.
-      mmc: sdhci-of-arasan: Skip Auto tuning for DDR50 mode in ZynqMP platform
-      mmc: sdhci-of-arasan: Check return value of non-void funtions
-      mmc: sdhci-of-arasan: Use appropriate type of division macro
-      mmc: sdhci-of-arasan: Modify data type of the clk_phase array
-
-Mårten Lindahl (2):
-      mmc: usdhi6rol0: Implement card_busy function
-      mmc: core: Update ->card_busy() callback comment
-
-Nishad Kamdar (1):
-      mmc: core: Return correct emmc response in case of ioctl error
-
-Sahitya Tummala (1):
-      mmc: sdhci-msm: Use maximum possible data timeout value
-
-Sai Krishna Potthuri (1):
-      mmc: arasan: Fix the issue in reading tap values from DT
-
-Sarthak Garg (1):
-      mmc: sdhci: Introduce max_timeout_count variable in sdhci_host
-
-Sean Anderson (2):
-      mmc: sdio: Don't warn about vendor CIS tuples
-      mmc: sdio: Print contents of unknown CIS tuples
-
-Shaik Sajida Bhanu (1):
-      dt-bindings: mmc: sdhci-msm: Add compatible string for sc7280
-
-Thomas Hebb (1):
-      mmc: rtsx_pci: Fix long reads when clock is prescaled
-
-Tony Lindgren (3):
-      mmc: sdhci: Fix issue with uninitialized dma_slave_config
-      mmc: dw_mmc: Fix issue with uninitialized dma_slave_config
-      mmc: moxart: Fix issue with uninitialized dma_slave_config
-
-Ulf Hansson (4):
-      mmc: core: Avoid hogging the CPU while polling for busy in the I/O err path
-      mmc: core: Avoid hogging the CPU while polling for busy for mmc ioctls
-      mmc: core: Avoid hogging the CPU while polling for busy after I/O writes
-      Merge branch 'fixes' into next
-
-Vincent Whitchurch (1):
-      mmc: dw_mmc: Add data CRC error injection
-
-Wolfram Sang (6):
-      mmc: host: add kdoc for mmc_retune_{en|dis}able
-      mmc: host: factor out clearing the retune state
-      mmc: renesas_sdhi_sys_dmac: use proper DMAENGINE API for termination
-      mmc: sh_mmcif: use proper DMAENGINE API for termination
-      mmc: usdhi6rol0: use proper DMAENGINE API for termination
-      mmc: core: Only print retune error when we don't check for card removal
-
-Yoshihiro Shimoda (1):
-      mmc: renesas_sdhi: Refactor renesas_sdhi_probe()
-
- .../devicetree/bindings/mmc/fsl-imx-esdhc.yaml     |  18 ++-
- .../devicetree/bindings/mmc/mmc-pwrseq-sd8787.yaml |   4 +-
- .../devicetree/bindings/mmc/renesas,sdhi.yaml      | 133 +++++++++++++-------
- .../devicetree/bindings/mmc/sdhci-msm.txt          |   1 +
- drivers/memstick/core/ms_block.c                   |   2 +-
- drivers/memstick/host/r592.c                       |   9 +-
- drivers/memstick/host/tifm_ms.c                    |  12 +-
- drivers/mmc/core/Kconfig                           |   2 +-
- drivers/mmc/core/block.c                           |  77 +++++-------
- drivers/mmc/core/core.c                            |  13 +-
- drivers/mmc/core/crypto.c                          |  15 +--
- drivers/mmc/core/host.c                            |  13 +-
- drivers/mmc/core/host.h                            |   6 +
- drivers/mmc/core/mmc_ops.c                         |  16 ++-
- drivers/mmc/core/mmc_ops.h                         |   1 +
- drivers/mmc/core/pwrseq_sd8787.c                   |  14 ++-
- drivers/mmc/core/queue.c                           |  34 ++----
- drivers/mmc/core/sdio_cis.c                        |  22 +++-
- drivers/mmc/host/cqhci-crypto.h                    |   7 +-
- drivers/mmc/host/dw_mmc.c                          |  74 +++++++++++
- drivers/mmc/host/dw_mmc.h                          |   7 ++
- drivers/mmc/host/mmc_spi.c                         |  15 +--
- drivers/mmc/host/mmci.c                            |   3 +
- drivers/mmc/host/moxart-mmc.c                      |   1 +
- drivers/mmc/host/renesas_sdhi.h                    |   9 +-
- drivers/mmc/host/renesas_sdhi_core.c               |  90 +-------------
- drivers/mmc/host/renesas_sdhi_internal_dmac.c      | 135 +++++++++++++++++++--
- drivers/mmc/host/renesas_sdhi_sys_dmac.c           |   7 +-
- drivers/mmc/host/rtsx_pci_sdmmc.c                  |  36 ++++--
- drivers/mmc/host/sdhci-esdhc-imx.c                 |  78 ++++++++++--
- drivers/mmc/host/sdhci-msm.c                       |   3 +
- drivers/mmc/host/sdhci-of-arasan.c                 |  51 ++++++--
- drivers/mmc/host/sdhci.c                           |  27 +++--
- drivers/mmc/host/sdhci.h                           |   1 +
- drivers/mmc/host/sh_mmcif.c                        |   4 +-
- drivers/mmc/host/tifm_sd.c                         |  16 +--
- drivers/mmc/host/usdhi6rol0.c                      |  14 ++-
- drivers/mmc/host/via-sdmmc.c                       |   4 +-
- include/linux/mmc/core.h                           |   3 +-
- include/linux/mmc/host.h                           |   2 +-
- include/linux/platform_data/mmc-esdhc-imx.h        |  42 -------
- 41 files changed, 647 insertions(+), 374 deletions(-)
- delete mode 100644 include/linux/platform_data/mmc-esdhc-imx.h
