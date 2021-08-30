@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EBE3FBEB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 00:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703FF3FBED8
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 00:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238813AbhH3WHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 18:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42618 "EHLO
+        id S238978AbhH3WMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 18:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbhH3WHn (ORCPT
+        with ESMTP id S238793AbhH3WLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 18:07:43 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7ECC061575;
-        Mon, 30 Aug 2021 15:06:49 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id i21so34354431ejd.2;
-        Mon, 30 Aug 2021 15:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dVz7KNxNw9dPiD9LMKJTxCQFFumEXaLDXEl8yIFI81o=;
-        b=oyV0YgMfgDuf0NQe8PGi/vWw6gTEujwa3IrPoPmXIGZYQ/6zTxalOVEeBHBAj3uFLZ
-         1Vg9Ae50Tv1j3tpP1wkmpVr1/Vz5baU6YKW97ZJdMgiPJkN9TWazrTHvMBRxkU0nw+kB
-         P0ExVIZGFQ1uamubwwBAfgg+Azwty/KZmIv0mLYvLSgbC+qMuPNBnyYCu8BOK6HylJEe
-         jbcCixzBOt3kwvYlY8SU9Sqtlqq4uhYAtH56XBFji277Sr/3ekOq3W7bCsMH94BhE4V1
-         bk23K/mjg6t0GpHPIJaqBJe1nutrH1YqJP9LJIv7tNI80VkPhF4OYGS5sOF6OI4FBj3H
-         CRZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dVz7KNxNw9dPiD9LMKJTxCQFFumEXaLDXEl8yIFI81o=;
-        b=KnYcEJxuLUg5itOYBrRb9LgWHGh1qkqYWMo5Qjh9f5rG9REoeaDyoOSLLPpZPlhsWz
-         GhkBGs55msjKF0IcDFLA+7ChoEpaeCBdPFkCtN0tnHI5qWPS8enyprqugFPMNja/ui9p
-         dJcVVHl6rx4+gW8o2yleGsqitZ+VIJVyjqUF8urGyvw5vP8UVcs5OB2OwTS+R2Kga+Kb
-         6RiJIje1zwEROhbmZOtDQgyyadCTiDCmEVPd9xN4Fwx0btBcMF+L0lD8jqUeBal6QiBF
-         rkAzxLrYX5F/P0SoHiLEymLgc2rXNiLsSNOv2lEiXRt0FeKEJ3Adjl6Lo4Luex9CaXMa
-         lvxQ==
-X-Gm-Message-State: AOAM532/oDkUD9XV83VvKxpjkx3GvN4mQ8v3bmI0/4D2AHAGjt7SxVPH
-        02wOFELJsGfDC93qJP6i5p6hlqigF6XZnF1l
-X-Google-Smtp-Source: ABdhPJw8aJhh+udRsP+f/0yjasvxRfiwvoKOJsTIHAwic+oU4cgejSuEQaa04/YieQ01NqaZvbqZHQ==
-X-Received: by 2002:a17:906:8481:: with SMTP id m1mr27749345ejx.459.1630361207997;
-        Mon, 30 Aug 2021 15:06:47 -0700 (PDT)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id r2sm8297876edv.78.2021.08.30.15.06.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 15:06:47 -0700 (PDT)
-Subject: Re: [PATCH v1 4/5] dt-bindings: phy: phy-rockchip-dphy-rx0: add
- support for tx1rx1 phy
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     Mikhail Rudenko <mike.rudenko@gmail.com>,
-        linux-phy@lists.infradead.org
-Cc:     linux-media@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Helen Koike <helen.koike@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210830180758.251390-1-mike.rudenko@gmail.com>
- <20210830180758.251390-5-mike.rudenko@gmail.com>
- <60aa055c-d872-3e5c-3c85-09300215a60e@gmail.com>
-Message-ID: <a9ce814a-d23e-2f5d-0299-4ffbb76609da@gmail.com>
-Date:   Tue, 31 Aug 2021 00:06:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 30 Aug 2021 18:11:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3C7C061292;
+        Mon, 30 Aug 2021 15:10:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=R3HkEdIHiJGxr3qjSmlIsWUqgZslXmlZn4O75MC8KaA=; b=17ZB/P3XkJ6X2AFl2We58UPTKh
+        3ORcVk2toSPLNMYedttXPKFCsdbviJeOSTIa3+3/xiqaO/eQZfrbVosHFo1Ho6DRP+2SNUq+6Fg4a
+        2fHKO/Hd11fm6w3qXCNc+7db1sFC9bibAV61DnYCCUJX33+82zIndMPT3jgrguhZCmJRZS3sfFOP8
+        A3Km4ANvZNLcdD7hNfgkXlYUWesUcmwS/LHMV3khtolzAoF5Vy5AaA8iReY2fd3LV/kq4ZiqrCr1O
+        /VMtgdxbym/znpSZ1oO8FpUU7cSB7lBRYssPfRQ+sRn0j41Y2iohJu45o44Z3aSZHKTitB/E2NrlK
+        5gDpnXAQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKpTj-000khC-Ha; Mon, 30 Aug 2021 22:10:07 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org,
+        ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org,
+        philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+        jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
+        johannes.berg@intel.com, chris.obbard@collabora.com,
+        krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com,
+        chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+Cc:     linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 00/15] block: third batch of add_disk() error handling conversions
+Date:   Mon, 30 Aug 2021 15:09:45 -0700
+Message-Id: <20210830221000.179369-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <60aa055c-d872-3e5c-3c85-09300215a60e@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mikhail,
+This is the third set of block drivers add_disk() error handling
+patches. It's a bit bigger set than the first two sets given the
+pcd/pf/pd drivers could use some love before the conversions.
 
-The file in the link below is in need for a YAML conversion.
-Could you help?
+Please let me know if you spot any issues.
 
-Documentation/devicetree/bindings/display/rockchip/dw_mipi_dsi_rockchip.txt
+The full set of changes can be found on my branch titled
+20210830-for-axboe-add-disk-error-handling-v2 [0].
 
-- compatible: one of
-	"rockchip,px30-mipi-dsi", "snps,dw-mipi-dsi"
-	"rockchip,rk3288-mipi-dsi", "snps,dw-mipi-dsi"
-	"rockchip,rk3399-mipi-dsi", "snps,dw-mipi-dsi"
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20210830-for-axboe-add-disk-error-handling-v2
 
-On 8/30/21 11:00 PM, Johan Jonker wrote:
+Christoph Hellwig (4):
+  pcd: move the identify buffer into pcd_identify
+  pcd: cleanup initialization
+  pf: cleanup initialization
+  pd: cleanup initialization
 
-> Some comments below. Have a look if it is useful.
-> 
+Luis Chamberlain (11):
+  z2ram: add error handling support for add_disk()
+  aoe: add error handling support for add_disk()
+  m68k/emu/nfblock: add error handling support for add_disk()
+  drbd: add error handling support for add_disk()
+  um/drivers/ubd_kern: add error handling support for add_disk()
+  xtensa/platforms/iss/simdisk: add error handling support for
+    add_disk()
+  n64cart: add error handling support for add_disk()
+  pcd: add error handling support for add_disk()
+  pcd: fix ordering of unregister_cdrom()
+  pcd: capture errors on cdrom_register()
+  pd: add error handling support for add_disk()
+
+ arch/m68k/emu/nfblock.c             |   9 +-
+ arch/um/drivers/ubd_kern.c          |  13 +-
+ arch/xtensa/platforms/iss/simdisk.c |  13 +-
+ drivers/block/aoe/aoeblk.c          |   6 +-
+ drivers/block/drbd/drbd_main.c      |   6 +-
+ drivers/block/n64cart.c             |  12 +-
+ drivers/block/paride/pcd.c          | 304 +++++++++++++---------------
+ drivers/block/paride/pd.c           | 146 ++++++-------
+ drivers/block/paride/pf.c           | 223 +++++++++-----------
+ drivers/block/z2ram.c               |   7 +-
+ 10 files changed, 365 insertions(+), 374 deletions(-)
+
+-- 
+2.30.2
+
