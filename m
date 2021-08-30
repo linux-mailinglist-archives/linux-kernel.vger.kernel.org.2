@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C233FB5F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B752D3FB5F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236875AbhH3MYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:24:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33414 "EHLO mail.kernel.org"
+        id S230119AbhH3MYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:24:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231165AbhH3MYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:24:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B1B5610E6;
-        Mon, 30 Aug 2021 12:23:51 +0000 (UTC)
-Date:   Mon, 30 Aug 2021 14:23:48 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>
-Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        casey@schaufler-ca.com, daniel@iogearbox.net, dhowells@redhat.com,
-        dvyukov@google.com, jmorris@namei.org, kafai@fb.com,
-        kpsingh@google.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-        paul@paul-moore.com, selinux@vger.kernel.org,
-        songliubraving@fb.com, stephen.smalley.work@gmail.com,
-        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com,
-        viro@zeniv.linux.org.uk, yhs@fb.com
-Subject: Re: [syzbot] general protection fault in legacy_parse_param
-Message-ID: <20210830122348.jffs5dmq6z25qzw5@wittgenstein>
-References: <0000000000004e5ec705c6318557@google.com>
- <0000000000008d2a0005ca951d94@google.com>
+        id S232442AbhH3MYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 08:24:21 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC01E61154;
+        Mon, 30 Aug 2021 12:23:24 +0000 (UTC)
+Date:   Mon, 30 Aug 2021 13:26:36 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <nicolas.ferre@microchip.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        <ludovic.desroches@microchip.com>
+Subject: Re: [PATCH v2 00/10] iio: adc: at91-sama5d2_adc: add support for
+ sama7g5
+Message-ID: <20210830132636.16dde030@jic23-huawei>
+In-Reply-To: <20210824115441.681253-1-eugen.hristev@microchip.com>
+References: <20210824115441.681253-1-eugen.hristev@microchip.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <0000000000008d2a0005ca951d94@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 07:11:18PM -0700, syzbot wrote:
-> syzbot has bisected this issue to:
+On Tue, 24 Aug 2021 14:54:31 +0300
+Eugen Hristev <eugen.hristev@microchip.com> wrote:
+
+> Hi,
 > 
-> commit 54261af473be4c5481f6196064445d2945f2bdab
-> Author: KP Singh <kpsingh@google.com>
-> Date:   Thu Apr 30 15:52:40 2020 +0000
+> This series adds support for sama7g5.
 > 
->     security: Fix the default value of fs_context_parse_param hook
+> The sama7g5 is slightly different from sama5d2, but has the same basic
+> operations. The register map is a bit different, so, I added some primitives
+> to differentiate between the two classes of hardware blocks (sama5d2-sam9x60
+> and sama7g5).
 > 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=160c5d75300000
-> start commit:   77dd11439b86 Merge tag 'drm-fixes-2021-08-27' of git://ano..
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=150c5d75300000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=110c5d75300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126d084d300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16216eb1300000
+> Sama7g5 has 16 channels ADC, no resistive touch, and extra features
+> (FIFOs, better oversampling , not implemented yet).
 > 
-> Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
-> Fixes: 54261af473be ("security: Fix the default value of fs_context_parse_param hook")
+> It is a rework of the series initially sent here:
+> https://marc.info/?l=linux-iio&m=161461656807826&w=2
 > 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> I reworked this according to review by Jonathan, meaning that first I created
+> a no-op patch that will convert the driver to a more platform specific data
+> dedicated type of driver. This adds various structures that hold things like
+> register layout and channel information.
+> After this I created few patches that implement the main differences between
+> sama7g5 and older products: the end-of-conversion new register. I added
+> helper functions to make code more easy to read and more simple.
+> One the last patches adds the layout and channels for sama7g5.
+> At this moment in linux-next, the DT for sama7g5 and sama7g5ek is present,
+> and the last patches add and enable this node in DT for this board.
+> 
+> Eugen
+0-8 applied with the minor tweak mentioned in a reply to relevant patch.
 
-So ok, this seems somewhat clear now. When smack and 
-CONFIG_BPF_LSM=y
-is selected the bpf LSM will register NOP handlers including
+I'll assume 9-10 will got via normal soc related tree.
 
-bpf_lsm_fs_context_fs_param()
+Note that I'm queuing these up for the merge window after this one now
+(5.16).
 
-for the
+Thanks,
 
-fs_context_fs_param
+Jonathan
 
-LSM hook. The bpf LSM runs last, i.e. after smack according to:
+> 
+> 
+> 
+> Eugen Hristev (10):
+>   dt-bindings: iio: adc: at91-sama5d2: add compatible for sama7g5-adc
+>   iio: adc: at91-sama5d2_adc: initialize hardware after clock is started
+>   iio: adc: at91-sama5d2_adc: remove unused definition
+>   iio: adc: at91-sama5d2_adc: convert to platform specific data
+>     structures
+>   iio: adc: at91-sama5d2-adc: add support for separate end of conversion
+>     registers
+>   iio: adc: at91-sama5d2_adc: add helper for COR register
+>   iio: adc: at91-sama5d2_adc: add support for sama7g5 device
+>   iio: adc: at91-sama5d2_adc: update copyright and authors information
+>   ARM: dts: at91: sama7g5: add node for the ADC
+>   ARM: dts: at91: sama7g5ek: enable ADC on the board
+> 
+>  .../bindings/iio/adc/atmel,sama5d2-adc.yaml   |   1 +
+>  arch/arm/boot/dts/at91-sama7g5ek.dts          |   8 +
+>  arch/arm/boot/dts/sama7g5.dtsi                |  16 +
+>  drivers/iio/adc/at91-sama5d2_adc.c            | 586 ++++++++++++------
+>  4 files changed, 425 insertions(+), 186 deletions(-)
+> 
 
-CONFIG_LSM="landlock,lockdown,yama,safesetid,integrity,tomoyo,smack,bpf"
-
-in the appended config. The smack hook runs and sets
-
-param->string = NULL
-
-then the bpf NOP handler runs returning -ENOPARM indicating to the vfs
-parameter parser that this is not a security module option so it should
-proceed processing the parameter subsequently causing the crash because
-param->string is not allowed to be NULL (Which the vfs parameter parser
-verifies early in fsconfig().).
-
-If you take the appended syzkaller config and additionally select
-kprobes you can observe this by registering bpf kretprobes for:
-security_fs_context_parse_param()
-smack_fs_context_parse_param()
-bpf_lsm_fs_context_parse_param()
-in different terminal windows and then running the syzkaller provided
-reproducer:
-
-root@f2-vm:~# bpftrace -e 'kretprobe:smack_fs_context_parse_param { printf("returned: %d\n", retval); }'
-Attaching 1 probe...
-returned: 0
-
-root@f2-vm:~# bpftrace -e 'kretprobe:bpf_lsm_fs_context_parse_param { printf("returned: %d\n", retval); }'
-Attaching 1 probe...
-returned: -519
-
-root@f2-vm:~# bpftrace -e 'kretprobe:security_fs_context_parse_param { printf("returned: %d\n", retval); }'
-Attaching 1 probe...
-returned: -519
-
-^^^^^
-This will ultimately tell the vfs to move on causing the crash because
-param->string is null at that point.
-
-Unless I missed something why that can't happen.
-
-Christian
