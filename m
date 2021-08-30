@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831EE3FB313
+	by mail.lfdr.de (Postfix) with ESMTP id CBF113FB314
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235901AbhH3JXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 05:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
+        id S235928AbhH3JXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 05:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235818AbhH3JW6 (ORCPT
+        with ESMTP id S235837AbhH3JXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 05:22:58 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5D4C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:22:05 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id e26so2904195wmk.2
+        Mon, 30 Aug 2021 05:23:00 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A623C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:22:06 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id m25-20020a7bcb99000000b002e751bcb5dbso8923063wmi.5
         for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:22:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FNazg38ZZpNIZO+mDQrkb2pijeBjr/Hr2yVsiJB4Qnk=;
-        b=eAXdYW0Tnzxd8Pwwd6rTIzIJfqCJ3y486QrbVsw36IDjbczTL7LmH29XmtGu1TBW1a
-         Zs6yMsOgY16tYAp0jqnsRAPKsuMsBsuVn73xb5GEFF1nOfvqMrJoYXD7evw9PXNLWrWs
-         3MaeGP7OfiA2bA5IgEe6S+3EpO6J+5nF2s0Ytb/6akxccJ4iUue5ICIt39FE1UbK+/hI
-         WjOwVGj/73aU3q+wzm2sThAviQDf/zc0ooy2zVdJyyffDu6ddiOAV/Nc9+b1O9mkrAXN
-         zLQ5wM6Xq1yzw3+1EgIo90lzWwx5b5+piyuznyC3TK93xi63q6yIpGDJLaqvc+iVWJ9E
-         Mrlw==
+        bh=1K2L0rfQcMA4bHPO7PeyHVg9f7MV/63zN9Cyy+Mz/1I=;
+        b=MwvbTUoXPFfHYJWBysVve6D22DaqF7WouBzXZ5uV6PcPKYzj7ouBPtBD0l9iJlMNCL
+         2B/EBUs4Yjv3lEFfV97CWZ7Tk+NCrg2tRxXEBMXU7z5FTBpEZnZcDp5ZZmWbDcL97Fkf
+         lE8Qj2Cjc4QAdUJE1BuP98eUMelnDo+5nT+cpggD9D3Y6sB6icNSaWOmkGcbUlClAWfj
+         j9heZk8m6n7UTEjI+1OBS2ObhkZi7PNjPG9b3prUfnii+oM7x6NvB4AeHRDJ2ith1jTm
+         jozWfr6ZT8g/ukJGIdSbdLNOS6gyYoJESB7rYBTPAanfTIfMjOGaTHUQE75k2VImnrFl
+         2rNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FNazg38ZZpNIZO+mDQrkb2pijeBjr/Hr2yVsiJB4Qnk=;
-        b=DSWA3sXihE1CYGlNqGy/3iaJjFqY8AMbnKrRamtMniUfXGh62Ma80sDfUuQBWsGzbu
-         HsPDCEXvGQF656NoPomg90vCG+rvBAYj392okVd5KTn/YcBF4wlgxnnpuSi2X+AK+dIp
-         1EizJ3wc+KH1KOLROSmC9woC+sBpHzlnIElxdBtA7b/UImNSK5Coi0X4XbSvIpBTpg+x
-         ccSyDVW6csRA9q/3oHAgD7pA/jzViV93YpiGQKQCmq3mR5ncFYWtuRtfmAFkrXaSxPYA
-         E04IRESztZAYt8L6QMJhNyG3NJMMSYK7LfMptC0xYB5DuwItBX+Bg0JdEdENeULhdqu4
-         TfOg==
-X-Gm-Message-State: AOAM5321uKCC/SqvEvjsF4qBjG0yJbK4x9/nPKISVDJOE/FR7DRKZ42P
-        ASAei+XikuQaTI6H/JQgK4Q=
-X-Google-Smtp-Source: ABdhPJxIxLwBRnalgfALKdQ3fmtcygPN4OzRcjO43qqueD9k68MMBL+vVIGr7lNMVXubi38dnVUOJQ==
-X-Received: by 2002:a1c:7dd0:: with SMTP id y199mr21564880wmc.148.1630315323729;
-        Mon, 30 Aug 2021 02:22:03 -0700 (PDT)
+        bh=1K2L0rfQcMA4bHPO7PeyHVg9f7MV/63zN9Cyy+Mz/1I=;
+        b=uRJ5XiEKDDOAKsHIlOMRL3rFi1xWoegFZqyPLfN9jatQ45BWJ8WxHHvCZiAh+FhMdq
+         V59f0YORkRhcPiyy0/oo9u1BFUZjl0F37kzgXmJIV4HQU6IWNwVtERMjpMW3zb0UmPt7
+         K7JGtxfoyz3Fnjrh0x0hVSsqTQ23sTqsgb5z2KrQImXRnLNS2Wngsd8MiagGYK8W5xjk
+         /8ZyN1Qzps9ZU9d/d1yiXx02svgchUx1sioligyPlbGiHvGiv4NJi7mdZ5lza5YB16ZH
+         ysR49atxX0cRvXRo8ihWpz6C6rQJo/XKW9UXNCVcPZ8UkDhdX3jYmPXqIXSEK0jnaF/f
+         U6Zw==
+X-Gm-Message-State: AOAM533xTEImNnG7L3+/zwpM2ZOcUCgLr2FU882/rAYrIyZV+5UtgPYo
+        Q5M78rSO4qNKA9+ppdXyZv8=
+X-Google-Smtp-Source: ABdhPJyg6F3CiC0oxDopjeuy116vYb8nYwo4z6r6St1P2iAILpwRb2/X03HxTdzGuOC9lHcBvksIng==
+X-Received: by 2002:a05:600c:8a4:: with SMTP id l36mr20861074wmp.128.1630315324621;
+        Mon, 30 Aug 2021 02:22:04 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::16fa])
-        by smtp.gmail.com with ESMTPSA id j1sm18378248wrd.50.2021.08.30.02.22.02
+        by smtp.gmail.com with ESMTPSA id j1sm18378248wrd.50.2021.08.30.02.22.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 02:22:03 -0700 (PDT)
+        Mon, 30 Aug 2021 02:22:04 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 3/4] staging: r8188eu: remove ICType from struct HAL_VERSION
-Date:   Mon, 30 Aug 2021 11:21:52 +0200
-Message-Id: <20210830092153.9283-4-straube.linux@gmail.com>
+Subject: [PATCH 4/4] staging: r8188eu: remove unused function SetBcnCtrlReg()
+Date:   Mon, 30 Aug 2021 11:21:53 +0200
+Message-Id: <20210830092153.9283-5-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210830092153.9283-1-straube.linux@gmail.com>
 References: <20210830092153.9283-1-straube.linux@gmail.com>
@@ -66,229 +66,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IC type is always 8188E. Remove ICType from struct HAL_VERSION,
-all macros that check it and related code.
+Remove unused function SetBcnCtrlReg().
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/hal/hal_com.c         | 13 +---
- .../staging/r8188eu/hal/rtl8188e_hal_init.c   |  1 -
- drivers/staging/r8188eu/hal/rtl8188e_mp.c     | 39 +++---------
- drivers/staging/r8188eu/hal/usb_halinit.c     |  2 +-
- drivers/staging/r8188eu/include/HalVerDef.h   | 61 -------------------
- 5 files changed, 11 insertions(+), 105 deletions(-)
+ .../staging/r8188eu/hal/rtl8188e_hal_init.c    | 18 ------------------
+ drivers/staging/r8188eu/include/rtl8188e_hal.h |  3 ---
+ 2 files changed, 21 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/hal/hal_com.c b/drivers/staging/r8188eu/hal/hal_com.c
-index f09d4d49b159..eee57cbd6dd2 100644
---- a/drivers/staging/r8188eu/hal/hal_com.c
-+++ b/drivers/staging/r8188eu/hal/hal_com.c
-@@ -15,18 +15,7 @@ void dump_chip_info(struct HAL_VERSION	chip_vers)
- 	uint cnt = 0;
- 	char buf[128];
- 
--	if (IS_81XXC(chip_vers)) {
--		cnt += sprintf((buf + cnt), "Chip Version Info: %s_",
--			       IS_92C_SERIAL(chip_vers) ?
--			       "CHIP_8192C" : "CHIP_8188C");
--	} else if (IS_92D(chip_vers)) {
--		cnt += sprintf((buf + cnt), "Chip Version Info: CHIP_8192D_");
--	} else if (IS_8723_SERIES(chip_vers)) {
--		cnt += sprintf((buf + cnt), "Chip Version Info: CHIP_8723A_");
--	} else if (IS_8188E(chip_vers)) {
--		cnt += sprintf((buf + cnt), "Chip Version Info: CHIP_8188E_");
--	}
--
-+	cnt += sprintf((buf + cnt), "Chip Version Info: CHIP_8188E_");
- 	cnt += sprintf((buf + cnt), "%s_", IS_NORMAL_CHIP(chip_vers) ?
- 		       "Normal_Chip" : "Test_Chip");
- 	cnt += sprintf((buf + cnt), "%s_", IS_CHIP_VENDOR_TSMC(chip_vers) ?
 diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index 14758361960c..3da5c27b6805 100644
+index 3da5c27b6805..1adaf472a116 100644
 --- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
 +++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-@@ -1698,7 +1698,6 @@ static struct HAL_VERSION ReadChipVersion8188E(struct adapter *padapter)
- 	pHalData = GET_HAL_DATA(padapter);
+@@ -2283,21 +2283,3 @@ bool HalDetectPwrDownMode88E(struct adapter *Adapter)
  
- 	value32 = rtw_read32(padapter, REG_SYS_CFG);
--	ChipVersion.ICType = CHIP_8188E;
- 	ChipVersion.ChipType = ((value32 & RTL_ID) ? TEST_CHIP : NORMAL_CHIP);
- 
- 	ChipVersion.RFType = RF_TYPE_1T1R;
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_mp.c b/drivers/staging/r8188eu/hal/rtl8188e_mp.c
-index ec1d7e90547e..ee0c96890cf3 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_mp.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_mp.c
-@@ -487,9 +487,6 @@ void Hal_SetSingleCarrierTx(struct adapter *pAdapter, u8 bStart)
- 
- void Hal_SetSingleToneTx(struct adapter *pAdapter, u8 bStart)
- {
--	struct hal_data_8188e	*pHalData = GET_HAL_DATA(pAdapter);
--	bool		is92C = IS_92C_SERIAL(pHalData->VersionID);
+ 	return pHalData->pwrdown;
+ }	/*  HalDetectPwrDownMode */
 -
- 	u8 rfPath;
- 	u32              reg58 = 0x0;
- 	switch (pAdapter->mppriv.antenna_tx) {
-@@ -518,21 +515,10 @@ void Hal_SetSingleToneTx(struct adapter *pAdapter, u8 bStart)
- 		PHY_SetBBReg(pAdapter, rFPGA0_RFMOD, bCCKEn, 0x0);
- 		PHY_SetBBReg(pAdapter, rFPGA0_RFMOD, bOFDMEn, 0x0);
- 
--		if (is92C) {
--			_write_rfreg(pAdapter, RF_PATH_A, 0x21, BIT(19), 0x01);
--			rtw_usleep_os(100);
--			if (rfPath == RF_PATH_A)
--				write_rfreg(pAdapter, RF_PATH_B, 0x00, 0x10000); /*  PAD all on. */
--			else if (rfPath == RF_PATH_B)
--				write_rfreg(pAdapter, RF_PATH_A, 0x00, 0x10000); /*  PAD all on. */
--			write_rfreg(pAdapter, rfPath, 0x00, 0x2001f); /*  PAD all on. */
--			rtw_usleep_os(100);
--		} else {
--			write_rfreg(pAdapter, rfPath, 0x21, 0xd4000);
--			rtw_usleep_os(100);
--			write_rfreg(pAdapter, rfPath, 0x00, 0x2001f); /*  PAD all on. */
--			rtw_usleep_os(100);
--		}
-+		write_rfreg(pAdapter, rfPath, 0x21, 0xd4000);
-+		rtw_usleep_os(100);
-+		write_rfreg(pAdapter, rfPath, 0x00, 0x2001f); /*  PAD all on. */
-+		rtw_usleep_os(100);
- 
- 		/* for dynamic set Power index. */
- 		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000500);
-@@ -549,18 +535,11 @@ void Hal_SetSingleToneTx(struct adapter *pAdapter, u8 bStart)
- 		}
- 		write_bbreg(pAdapter, rFPGA0_RFMOD, bCCKEn, 0x1);
- 		write_bbreg(pAdapter, rFPGA0_RFMOD, bOFDMEn, 0x1);
--		if (is92C) {
--			_write_rfreg(pAdapter, RF_PATH_A, 0x21, BIT(19), 0x00);
--			rtw_usleep_os(100);
--			write_rfreg(pAdapter, RF_PATH_A, 0x00, 0x32d75); /*  PAD all on. */
--			write_rfreg(pAdapter, RF_PATH_B, 0x00, 0x32d75); /*  PAD all on. */
--			rtw_usleep_os(100);
--		} else {
--			write_rfreg(pAdapter, rfPath, 0x21, 0x54000);
--			rtw_usleep_os(100);
--			write_rfreg(pAdapter, rfPath, 0x00, 0x30000); /*  PAD all on. */
--			rtw_usleep_os(100);
--		}
-+
-+		write_rfreg(pAdapter, rfPath, 0x21, 0x54000);
-+		rtw_usleep_os(100);
-+		write_rfreg(pAdapter, rfPath, 0x00, 0x30000); /*  PAD all on. */
-+		rtw_usleep_os(100);
- 
- 		/* Stop for dynamic set Power index. */
- 		write_bbreg(pAdapter, rFPGA0_XA_HSSIParameter1, bMaskDWord, 0x01000100);
-diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-index 5cdabf43d4fd..147c51255878 100644
---- a/drivers/staging/r8188eu/hal/usb_halinit.c
-+++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-@@ -1765,7 +1765,7 @@ static void SetHwReg8188EU(struct adapter *Adapter, u8 variable, u8 *val)
- 
- 			/*  Forece leave RF low power mode for 1T1R to prevent conficting setting in Fw power */
- 			/*  saving sequence. 2010.06.07. Added by tynli. Suggested by SD3 yschang. */
--			if ((psmode != PS_MODE_ACTIVE) && (!IS_92C_SERIAL(haldata->VersionID)))
-+			if (psmode != PS_MODE_ACTIVE)
- 				ODM_RF_Saving(podmpriv, true);
- 			rtl8188e_set_FwPwrMode_cmd(Adapter, psmode);
- 		}
-diff --git a/drivers/staging/r8188eu/include/HalVerDef.h b/drivers/staging/r8188eu/include/HalVerDef.h
-index a0f5bf52e75a..3a687f7c5b82 100644
---- a/drivers/staging/r8188eu/include/HalVerDef.h
-+++ b/drivers/staging/r8188eu/include/HalVerDef.h
-@@ -3,20 +3,6 @@
- #ifndef __HAL_VERSION_DEF_H__
- #define __HAL_VERSION_DEF_H__
- 
--enum HAL_IC_TYPE {
--	CHIP_8192S	=	0,
--	CHIP_8188C	=	1,
--	CHIP_8192C	=	2,
--	CHIP_8192D	=	3,
--	CHIP_8723A	=	4,
--	CHIP_8188E	=	5,
--	CHIP_8881A	=	6,
--	CHIP_8812A	=	7,
--	CHIP_8821A	=	8,
--	CHIP_8723B	=	9,
--	CHIP_8192E	=	10,
--};
+-/*  This function is used only for 92C to set REG_BCN_CTRL(0x550) register. */
+-/*  We just reserve the value of the register in variable pHalData->RegBcnCtrlVal and then operate */
+-/*  the value of the register via atomic operation. */
+-/*  This prevents from race condition when setting this register. */
+-/*  The value of pHalData->RegBcnCtrlVal is initialized in HwConfigureRTL8192CE() function. */
 -
- enum HAL_CHIP_TYPE {
- 	TEST_CHIP	=	0,
- 	NORMAL_CHIP	=	1,
-@@ -50,7 +36,6 @@ enum HAL_RF_TYPE {
- };
+-void SetBcnCtrlReg(struct adapter *padapter, u8 SetBits, u8 ClearBits)
+-{
+-	struct hal_data_8188e *pHalData;
+-
+-	pHalData = GET_HAL_DATA(padapter);
+-
+-	pHalData->RegBcnCtrlVal |= SetBits;
+-	pHalData->RegBcnCtrlVal &= ~ClearBits;
+-
+-	rtw_write8(padapter, REG_BCN_CTRL, (u8)pHalData->RegBcnCtrlVal);
+-}
+diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
+index 3939bf053de1..103991b6ec82 100644
+--- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
++++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
+@@ -437,9 +437,6 @@ bool HalDetectPwrDownMode88E(struct adapter *Adapter);
+ void Hal_InitChannelPlan(struct adapter *padapter);
+ void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc);
  
- struct HAL_VERSION {
--	enum HAL_IC_TYPE	ICType;
- 	enum HAL_CHIP_TYPE	ChipType;
- 	enum HAL_CUT_VERSION	CUTVersion;
- 	enum HAL_VENDOR		VendorType;
-@@ -59,7 +44,6 @@ struct HAL_VERSION {
- };
- 
- /*  Get element */
--#define GET_CVID_IC_TYPE(version)	(((version).ICType))
- #define GET_CVID_CHIP_TYPE(version)	(((version).ChipType))
- #define GET_CVID_RF_TYPE(version)	(((version).RFType))
- #define GET_CVID_MANUFACTUER(version)	(((version).VendorType))
-@@ -69,17 +53,6 @@ struct HAL_VERSION {
- /* Common Macro. -- */
- /* HAL_VERSION VersionID */
- 
--/*  HAL_IC_TYPE_E */
--#define IS_81XXC(version)				\
--	(((GET_CVID_IC_TYPE(version) == CHIP_8192C) ||	\
--	 (GET_CVID_IC_TYPE(version) == CHIP_8188C)) ? true : false)
--#define IS_8723_SERIES(version)				\
--	((GET_CVID_IC_TYPE(version) == CHIP_8723A) ? true : false)
--#define IS_92D(version)					\
--	((GET_CVID_IC_TYPE(version) == CHIP_8192D) ? true : false)
--#define IS_8188E(version)				\
--	((GET_CVID_IC_TYPE(version) == CHIP_8188E) ? true : false)
+-/*  register */
+-void SetBcnCtrlReg(struct adapter *padapter, u8 SetBits, u8 ClearBits);
 -
- /* HAL_CHIP_TYPE_E */
- #define IS_TEST_CHIP(version)				\
- 	((GET_CVID_CHIP_TYPE(version) == TEST_CHIP) ? true : false)
-@@ -112,38 +85,4 @@ struct HAL_VERSION {
- #define IS_2T2R(version)				\
- 	((GET_CVID_RF_TYPE(version) == RF_TYPE_2T2R) ? true : false)
- 
--/* Chip version Macro. -- */
--#define IS_81XXC_TEST_CHIP(version)			\
--	((IS_81XXC(version) && (!IS_NORMAL_CHIP(version))) ? true : false)
--
--#define IS_92C_SERIAL(version)				\
--	((IS_81XXC(version) && IS_2T2R(version)) ? true : false)
--#define IS_81xxC_VENDOR_UMC_A_CUT(version)		\
--	(IS_81XXC(version) ? (IS_CHIP_VENDOR_UMC(version) ?	\
--	(IS_A_CUT(version) ? true : false) : false) : false)
--#define IS_81xxC_VENDOR_UMC_B_CUT(version)		\
--	(IS_81XXC(version) ? (IS_CHIP_VENDOR_UMC(version) ?	\
--	(IS_B_CUT(version) ? true : false) : false) : false)
--#define IS_81xxC_VENDOR_UMC_C_CUT(version)		\
--	(IS_81XXC(version) ? (IS_CHIP_VENDOR_UMC(version) ? \
--	 (IS_C_CUT(version) ? true : false) : false) : false)
--
--#define IS_NORMAL_CHIP92D(version)			\
--	((IS_92D(version)) ?				\
--	((GET_CVID_CHIP_TYPE(version) == NORMAL_CHIP) ? true : false) : false)
--
--#define IS_92D_SINGLEPHY(version)			\
--	((IS_92D(version)) ? (IS_2T2R(version) ? true : false) : false)
--#define IS_92D_C_CUT(version)				\
--	((IS_92D(version)) ? (IS_C_CUT(version) ? true : false) : false)
--#define IS_92D_D_CUT(version)				\
--	((IS_92D(version)) ? (IS_D_CUT(version) ? true : false) : false)
--#define IS_92D_E_CUT(version)				\
--	((IS_92D(version)) ? (IS_E_CUT(version) ? true : false) : false)
--
--#define IS_8723A_A_CUT(version)				\
--	((IS_8723_SERIES(version)) ? (IS_A_CUT(version) ? true : false) : false)
--#define IS_8723A_B_CUT(version)				\
--	((IS_8723_SERIES(version)) ? (IS_B_CUT(version) ? true : false) : false)
--
- #endif
+ void rtl8188e_clone_haldata(struct adapter *dst, struct adapter *src);
+ void rtl8188e_start_thread(struct adapter *padapter);
+ void rtl8188e_stop_thread(struct adapter *padapter);
 -- 
 2.33.0
 
