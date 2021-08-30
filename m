@@ -2,145 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8533FB190
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 09:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEAE3FB1A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 09:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233318AbhH3HEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 03:04:43 -0400
-Received: from mx1.emlix.com ([136.243.223.33]:39192 "EHLO mx1.emlix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232358AbhH3HEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 03:04:38 -0400
-Received: from mailer.emlix.com (unknown [81.20.119.6])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id AD3BD5F830;
-        Mon, 30 Aug 2021 09:03:42 +0200 (CEST)
-From:   Rolf Eike Beer <eb@emlix.com>
-To:     akpm@linux-foundation.org, Suren Baghdasaryan <surenb@google.com>
-Cc:     ccross@google.com, sumit.semwal@linaro.org, mhocko@suse.com,
-        dave.hansen@intel.com, keescook@chromium.org, willy@infradead.org,
-        kirill.shutemov@linux.intel.com, vbabka@suse.cz,
-        hannes@cmpxchg.org, corbet@lwn.net, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, kaleshsingh@google.com, peterx@redhat.com,
-        rppt@kernel.org, peterz@infradead.org, catalin.marinas@arm.com,
-        vincenzo.frascino@arm.com, chinwen.chang@mediatek.com,
-        axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com,
-        will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com,
-        tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com,
-        pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk,
-        legion@kernel.org, songmuchun@bytedance.com,
-        viresh.kumar@linaro.org, thomascedeno@google.com,
-        sashal@kernel.org, cxfcosmos@gmail.com, linux@rasmusvillemoes.dk,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        kernel-team@android.com, surenb@google.com
-Subject: Re: [PATCH v8 3/3] mm: add anonymous vma name refcounting
-Date:   Mon, 30 Aug 2021 09:03:37 +0200
-Message-ID: <15537178.k4V9gYNSIy@devpool47>
-Organization: emlix GmbH
-In-Reply-To: <20210827191858.2037087-4-surenb@google.com>
-References: <20210827191858.2037087-1-surenb@google.com> <20210827191858.2037087-4-surenb@google.com>
+        id S233501AbhH3HLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 03:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233386AbhH3HLI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 03:11:08 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AC4C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 00:10:15 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id u16so20970364wrn.5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 00:10:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b7XgklqB8Vn+B2YoCcgc/2VGbqHKZvTCvhUGQR7Kyng=;
+        b=A19cEXqlQMRFb+jqfANOK/viqfpKJ+hehCInuILpSUt+d7JCq7KGwzISB0t6IM4sLI
+         0orQRYHCH1LwMj9QEO0Yar+yQagoxwI3wQoF6JA/XMd0fA14rOv51H/gPSsmKaO97kLu
+         3bSFtN9gHl6rC43IhuNXRs3WMvJ2DcNHvJoVSU5zl4fFS9pH6Ssf1xWSYVijfBjMOvIy
+         hNjxYrr+qfEyTSrAh1ay5aXmeY61N4Q1X6cPr+PUwwChjihShCXNNVWnvMZkPS13YJmx
+         VwG4MonA2t7dolh0wJqAXTzpRERFgDRZK6uP0wzp6j1gRQNSMlShOmZb3L3lU2CmYTIE
+         lS7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b7XgklqB8Vn+B2YoCcgc/2VGbqHKZvTCvhUGQR7Kyng=;
+        b=lw9qjPAV36nhUgmZoTWcO2JVUs2iWfcQgR96KWFZ3JOLVO6wIZgqvQNdVGWGhdga9Y
+         HU5owG06qAh5ki4uhb2Lb/LMvXlxNXCinvnx7vzlap8HQMT+gZ49C8P+ciVsZdShzc1c
+         77LG+tpkRD7mfHpfK7ex0Q4GETTAiXeBPTeOIGokt16HjVcd2nCu1UdHQD9m56SinM8p
+         +SVZ/lf4xRN1Dikw7pgtoDONQnaZQ2W8ZKe7ZSWDj+K1S8DxEvByPIUzPasHZ7u0hrBp
+         10YObaDqA0cailg+/DdCLdFkg42qofkgipwex4ROTavUQB+3URkP5uZgEtW8xoXTB/tv
+         WDHQ==
+X-Gm-Message-State: AOAM533QdA3Xx5s/a6LffS8bcA63wkTFCccCMueKwFArPCR8AsrVzOvO
+        h1lwercsGwD84ggYrz/cMwc=
+X-Google-Smtp-Source: ABdhPJwaet6WvxSmY+LhhHoWOgdBrAHShvs6Eyg13ez8tuJ1nN61/7K0kkxHz7V7v6B8RzBjq7EAVw==
+X-Received: by 2002:adf:8006:: with SMTP id 6mr24618832wrk.38.1630307413876;
+        Mon, 30 Aug 2021 00:10:13 -0700 (PDT)
+Received: from agape ([5.171.81.86])
+        by smtp.gmail.com with ESMTPSA id k25sm15397466wrd.42.2021.08.30.00.10.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 00:10:13 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: [PATCH 0/3] staging: rtl8723bs: remove lockdep warning
+Date:   Mon, 30 Aug 2021 09:09:22 +0200
+Message-Id: <cover.1630307025.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart7924556.MAaWd901kX"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart7924556.MAaWd901kX
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Rolf Eike Beer <eb@emlix.com>
-To: akpm@linux-foundation.org, Suren Baghdasaryan <surenb@google.com>
-Cc: ccross@google.com, sumit.semwal@linaro.org, mhocko@suse.com, dave.hansen@intel.com, keescook@chromium.org, willy@infradead.org, kirill.shutemov@linux.intel.com, vbabka@suse.cz, hannes@cmpxchg.org, corbet@lwn.net, viro@zeniv.linux.org.uk, rdunlap@infradead.org, kaleshsingh@google.com, peterx@redhat.com, rppt@kernel.org, peterz@infradead.org, catalin.marinas@arm.com, vincenzo.frascino@arm.com, chinwen.chang@mediatek.com, axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com, apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com, will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com, hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com, tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com, pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk, legion@kernel.org, songmuchun@bytedance.com, viresh.kumar@linaro.org, thomascedeno@google.com, sashal@kernel.org, cxfcosmos@gmail.com, linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-  linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org, kernel-team@android.com, surenb@google.com
-Subject: Re: [PATCH v8 3/3] mm: add anonymous vma name refcounting
-Date: Mon, 30 Aug 2021 09:03:37 +0200
-Message-ID: <15537178.k4V9gYNSIy@devpool47>
-Organization: emlix GmbH
-In-Reply-To: <20210827191858.2037087-4-surenb@google.com>
-References: <20210827191858.2037087-1-surenb@google.com> <20210827191858.2037087-4-surenb@google.com>
+This patchseries removes a lockdep warning that turned out to
+be a false positive.
 
-Am Freitag, 27. August 2021, 21:18:58 CEST schrieb Suren Baghdasaryan:
-> While forking a process with high number (64K) of named anonymous vmas the
-> overhead caused by strdup() is noticeable. Experiments with ARM64 Android
-> device show up to 40% performance regression when forking a process with
-> 64k unpopulated anonymous vmas using the max name lengths vs the same
-> process with the same number of anonymous vmas having no name.
-> Introduce anon_vma_name refcounted structure to avoid the overhead of
-> copying vma names during fork() and when splitting named anonymous vmas.
-> When a vma is duplicated, instead of copying the name we increment the
-> refcount of this structure. Multiple vmas can point to the same
-> anon_vma_name as long as they increment the refcount. The name member of
-> anon_vma_name structure is assigned at structure allocation time and is
-> never changed. If vma name changes then the refcount of the original
-> structure is dropped, a new anon_vma_name structure is allocated
-> to hold the new name and the vma pointer is updated to point to the new
-> structure.
-> With this approach the fork() performance regressions is reduced 3-4x
-> times and with usecases using more reasonable number of VMAs (a few
-> thousand) the regressions is not measurable.
->=20
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
->  include/linux/mm_types.h |  9 ++++++++-
->  mm/madvise.c             | 42 +++++++++++++++++++++++++++++++++-------
->  2 files changed, 43 insertions(+), 8 deletions(-)
->=20
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index bc029f3fca6a..32ac5dc5ebf3 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -63,6 +63,27 @@ static int madvise_need_mmap_write(int behavior)
->  	}
->  }
->=20
-> +static struct anon_vma_name *anon_vma_name_alloc(const char *name)
-> +{
-> +	struct anon_vma_name *anon_name;
-> +	size_t len =3D strlen(name);
-> +
-> +	/* Add 1 for NUL terminator at the end of the anon_name->name */
-> +	anon_name =3D kzalloc(sizeof(*anon_name) + len + 1,
-> +			    GFP_KERNEL);
-> +	kref_init(&anon_name->kref);
-> +	strcpy(anon_name->name, name);
-> +
-> +	return anon_name;
-> +}
+All "lockable" queues in the driver are initialized by
+a single function. This confuses lockdep which puts all
+locks in the same unexistent class.
 
-Given that you overwrite anything in that struct anyway this could be reduc=
-ed=20
-to kmalloc(), no? And it definitely needs a NULL check.
+Fixed it by doing the initalization of queues in place.
 
-Eike
-=2D-=20
-Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-=46on +49 551 30664-0, Fax +49 551 30664-11
-Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
-Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 3160
-Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-IdNr=
-=2E: DE 205 198 055
+Done a small code cleaning and removed the no more
+used function.
 
-emlix - smart embedded open source
+Tested-on: Lenovo ideapad Miix 300-10IBY
 
---nextPart7924556.MAaWd901kX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Fabio Aiuto (3):
+  staging: rtl8723bs: unwrap initialization of queues
+  staging: rtl8723bs: remove unnecessary parentheses
+  staging: rtl8723bs: remove unused _rtw_init_queue() function
 
------BEGIN PGP SIGNATURE-----
+ drivers/staging/rtl8723bs/core/rtw_ap.c       |  3 +-
+ drivers/staging/rtl8723bs/core/rtw_cmd.c      |  3 +-
+ drivers/staging/rtl8723bs/core/rtw_mlme.c     |  6 ++--
+ drivers/staging/rtl8723bs/core/rtw_recv.c     | 12 ++++---
+ drivers/staging/rtl8723bs/core/rtw_sta_mgt.c  | 15 ++++++---
+ drivers/staging/rtl8723bs/core/rtw_xmit.c     | 33 ++++++++++++-------
+ .../staging/rtl8723bs/hal/rtl8723bs_recv.c    |  6 ++--
+ .../staging/rtl8723bs/os_dep/osdep_service.c  |  7 ----
+ 8 files changed, 52 insertions(+), 33 deletions(-)
 
-iLMEAAEIAB0WIQQ/Uctzh31xzAxFCLur5FH7Xu2t/AUCYSyCyQAKCRCr5FH7Xu2t
-/NTBA/4w0Kyux1kZmQldKJbME0UYvkgufssyGT64trylJ9vimg5BqpnDovDsqJ95
-kkdFhKDf92sGd40RHaODdfH3ibw/VLG1mwXA1qYB00oGJLKu+Mp6RJqUrWiQoLSf
-9ejd24XMNMD0bdqxOCgb7uSm87o1PRDAfP8u6l6dgeyvk5mAgw==
-=fael
------END PGP SIGNATURE-----
-
---nextPart7924556.MAaWd901kX--
-
-
+-- 
+2.20.1
 
