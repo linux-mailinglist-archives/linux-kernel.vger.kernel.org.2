@@ -2,152 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019753FB9EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7884C3FB9F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237661AbhH3QPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:15:40 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:45341 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231181AbhH3QPj (ORCPT
+        id S237822AbhH3QQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237684AbhH3QQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:15:39 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 622035C018B;
-        Mon, 30 Aug 2021 12:14:45 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 30 Aug 2021 12:14:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=M
-        Ltfvsz5PBLhNxJJBnRudTcBEtVLLW8z4Z1VJJBgPmQ=; b=RfjYL7QJXJuAV77fw
-        wNtBdaedne47flkMKJqmLEdNvTstUMgPurWb329vt6LGE9KqnCnTIc9QV5XEYwgI
-        fv2kJF1ucl7HEYydu5ey1pCUQMjh197Aioy5b5hNElukuSJ/osm/Agb6Cv5FkUUQ
-        IlpuPewJfNk35Tan3hOTs7w1IYBqM20x4cgOt8TJa0/+xVdQVWq+sfJ0w6nevtMV
-        bGfnJA1CwqyzVijak9eGwNlpjFiL+5lPSFH6r8M8glB1VfTnoBdJtbAeZDd1GFPe
-        1Fnwt1bcY+aPowbXRzwraukTeyfHAkXTHiCwU5S3DolOe8xs9zg7rFL/Jvmby0B2
-        fMMFw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=MLtfvsz5PBLhNxJJBnRudTcBEtVLLW8z4Z1VJJBgP
-        mQ=; b=nZtYo64m2t+eMbihsW5H2bGwKPjs/Dnu5WLhsWB8ByIrsKW7YtYOLnpJz
-        MUbHk0MkZbInS0+/yH0ccGsX/DSb6h/k66sjTyISqKMVKJ1Lh0MQEnphuUTSa/VM
-        XSwVuNCgSZjvbqiXRbwo1xo2s0TTFMVhbhdpSAMQCFoyefnLYNKyK+ION/d/FyPv
-        08a+UyABrH6x8qNtIj6SSVk+i95Ww/RHNFLPfqqtyEpdnsMiEWkjuc0j9LJQfRrk
-        xWXosEOoM1Y6qHLcZqdIXCULB6hBgyvsMIgZPjaqbeaMPP6eegRqY2nmtlvqaMgX
-        C3ISZeJLxNmNfdjUJ0mrqvt/IyVfg==
-X-ME-Sender: <xms:9AMtYRqAZ6QmJH9tPn6q08gdG_FilNKvNQ_Niqv4FMo8QMHEve4COA>
-    <xme:9AMtYToDF-nD7QPYx3qw_yGb2sTCo7rAviYuuTL9EFbsXD-zQZkHCPL3olcxptF1A
-    TiHYxxJROtw83t793M>
-X-ME-Received: <xmr:9AMtYePTiigZgavZmd4DcSNjY3TpisZ4SxBztYECxy8O1cPcDLlv61MzT7kg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduledgleelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheplfhirgig
-    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeekieeghfffhfeuuddtvdegleeltdejgeevfeekteetheefhffg
-    vefhueetkeefieenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghes
-    fhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:9AMtYc6VoXHu7D5tMp7bYEKVNTc3YqC8cZAjr65yRFH1nrYDeXcQqA>
-    <xmx:9AMtYQ6hj4gpyVYeb7-zDGL5nOT1E54VQ4IoFPthDWOg6dDy_0DC3g>
-    <xmx:9AMtYUjDqE2mwvKoBd3XnMyff7pP68wW2Jt17iJC8nem1yvxxZfb0g>
-    <xmx:9QMtYelJG6tCaCizKp64mPVkBkvJEhmvRkcRlv8f1qyyKOyw0d325g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 30 Aug 2021 12:14:42 -0400 (EDT)
-Subject: Re: [PATCH] mips: remove reference to "newer Loongson-3"
-To:     Xi Ruoyao <xry111@mengyan1223.wang>, linux-mips@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
-References: <0b7c9431efb12c2d957fcc53ec8f0743725d61b3.camel@mengyan1223.wang>
- <b32c0d64-77b2-d054-afcf-7d006eba3418@flygoat.com>
- <086f60d6ef4395db5da7ee22c4f352d5c901d396.camel@mengyan1223.wang>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <1d49da11-51d5-e148-cb02-9bd0ee57fae6@flygoat.com>
-Date:   Tue, 31 Aug 2021 00:14:36 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 30 Aug 2021 12:16:01 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38C1C061575;
+        Mon, 30 Aug 2021 09:15:07 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id y3so16671165ilm.6;
+        Mon, 30 Aug 2021 09:15:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GhKUe4sY5cAgiX1Wxl3GBHv3n5YxRNpzvVmXtwnuGY4=;
+        b=lZ5JIDAIvMH1bn0GyyIwGJzjkKJly2L1NnX7D03RF5pWTooEsBq35Rwz2vDXePVYxV
+         ySrNPRN1A85RbqzGt2hnt9ebYCHdZ8dRFmITuOygDl0nR/FiHp9Osw8JXTHzSbWoiRvf
+         mq/yeCc4uLU1N0KwCF87Zk0ABXOK82p4zfov8FzE8WiYgx3RcO1Wo4rY9oMQyoE2PejT
+         kfu8hy0Jd4fcm3VPyrUIPuP7AUGeSnhN3C3mUd8+6ZfMYzLEYxDXMjc6QHc/Gbp087p+
+         sm0ktT40qSU7fbxjZHqlC3UE3V44VhLnM5Aj3jMnyc4jRD6C4Z1xDAbJTemyB2iano1O
+         QLAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GhKUe4sY5cAgiX1Wxl3GBHv3n5YxRNpzvVmXtwnuGY4=;
+        b=SlpTobIzprQ/7avnKA5EZp7hmeBQ6Qgv4F4qKXQAnh3VRmDx1sN9rCZ41cCd9/Sz7L
+         Oc427/GW6c+w5ShGYa/3U+8MBwWJkyzOW5KKBoeS6JETNhagcrwNK9a/MVUj4+U4VczU
+         eLJun5EGjgZt0kL9Vm8wGGDchILnG28nIpsPdVazuStJHvLW6ZjGe5G3GBb/AYKPd0C1
+         KbhFE6Ndm/KTot3JxBd363TRyxM4wAfhLGPQ60e1O4PeC7ov3pxLCZYffXRgBgRzWbVn
+         W8DsaDa7O0kWSHAfKB5krV3hwomRin5R7wQCVFkXG/y+Eubx91SQ6VTiSca36KbReYNY
+         2bLg==
+X-Gm-Message-State: AOAM530AWYfnl5kw7ZQpZO9JnL+kLUCfDPvSte1evM+bYFwPV7PQTIaC
+        MaI+WNV3JfHa1Aql4RI7zwA=
+X-Google-Smtp-Source: ABdhPJwxkbCyha7cYpvLZzKHL2Lfna1L4W4YWJVKcyWABsDUOERWY9jkBV1Blkt6UoLPnMuuz4Q21w==
+X-Received: by 2002:a92:c8c4:: with SMTP id c4mr13278453ilq.137.1630340107235;
+        Mon, 30 Aug 2021 09:15:07 -0700 (PDT)
+Received: from localhost ([12.28.44.171])
+        by smtp.gmail.com with ESMTPSA id f17sm8267384ion.51.2021.08.30.09.15.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 09:15:06 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 09:15:05 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrea Merello <andrea.merello@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Ben Gardon <bgardon@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Joe Perches <joe@perches.com>, Jonas Bonn <jonas@southpole.se>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 11/17] find: micro-optimize for_each_{set,clear}_bit()
+Message-ID: <YS0ECS2Lb4rwqJ4b@yury-ThinkPad>
+References: <20210814211713.180533-1-yury.norov@gmail.com>
+ <20210814211713.180533-12-yury.norov@gmail.com>
+ <YSeduU41Ef568xhS@alley>
+ <YSgDI9NpC51GhB/2@yury-ThinkPad>
+ <20210830121249.2fgyvf47py2tz5s5@pathway.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <086f60d6ef4395db5da7ee22c4f352d5c901d396.camel@mengyan1223.wang>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210830121249.2fgyvf47py2tz5s5@pathway.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 30, 2021 at 02:12:49PM +0200, Petr Mladek wrote:
+> On Thu 2021-08-26 14:09:55, Yury Norov wrote:
+> > On Thu, Aug 26, 2021 at 03:57:13PM +0200, Petr Mladek wrote:
+> > > On Sat 2021-08-14 14:17:07, Yury Norov wrote:
+> > > > The macros iterate thru all set/clear bits in a bitmap. They search a
+> > > > first bit using find_first_bit(), and the rest bits using find_next_bit().
+> > > > 
+> > > > Since find_next_bit() is called shortly after find_first_bit(), we can
+> > > > save few lines of I-cache by not using find_first_bit().
+> > > 
+> > > Is this only a speculation or does it fix a real performance problem?
+> > > 
+> > > The macro is used like:
+> > > 
+> > > 	for_each_set_bit(bit, addr, size) {
+> > > 		fn(bit);
+> > > 	}
+> > > 
+> > > IMHO, the micro-opimization does not help when fn() is non-trivial.
+> >  
+> > The effect is measurable:
+> > 
+> > Start testing for_each_bit()
+> > for_each_set_bit:                15296 ns,   1000 iterations
+> > for_each_set_bit_from:           15225 ns,   1000 iterations
+> > 
+> > Start testing for_each_bit() with cash flushing
+> > for_each_set_bit:               547626 ns,   1000 iterations
+> > for_each_set_bit_from:          497899 ns,   1000 iterations
+> > 
+> > Refer this:
+> > 
+> > https://www.mail-archive.com/dri-devel@lists.freedesktop.org/msg356151.html
+> 
+> I see. The results look convincing on the first look.
+> 
+> But I am still not sure. This patch is basically contradicting many
+> other patches from this patchset:
+> 
+>   + 5th patch optimizes find_first_and_bit() and proves that it is
+>     much faster:
+> 
+>     Before (#define find_first_and_bit(...) find_next_and_bit(..., 0):
+>     Start testing find_bit() with random-filled bitmap
+>     [  140.291468] find_first_and_bit:           46890919 ns,  32671 iterations
+>     Start testing find_bit() with sparse bitmap
+>     [  140.295028] find_first_and_bit:               7103 ns,      1 iterations
+> 
+>     After:
+>     Start testing find_bit() with random-filled bitmap
+>     [  162.574907] find_first_and_bit:           25045813 ns,  32846 iterations
+>     Start testing find_bit() with sparse bitmap
+>     [  162.578458] find_first_and_bit:               4900 ns,      1 iterations
+> 
+>        => saves 46% in random bitmap
+> 	  saves 31% in sparse bitmap
+> 
+> 
+>   + 6th, 7th, and 9th patch makes the code use find_first_bit()
+>     because it is faster than find_next_bit(mask, size, 0);
+> 
+>   + Now, 11th (this) patch replaces find_first_bit() with
+>     find_next_bit(mask, size, 0) because find_first_bit()
+>     makes things slower. It is suspicious at minimum.
+> 
+> 
+> By other words. The I-cache could safe 10% in one case.
+> But find_first_bit() might safe 46% in random case.
 
+Those are different cases. find_first_bit() is approximately twice
+faster than find_next_bit, and much smaller. The conclusion is simple:
+use 'first' version whenever possible if there's no other considerations.
 
-在 2021/8/30 下午8:28, Xi Ruoyao 写道:
-> On Mon, 2021-08-30 at 10:32 +0800, Jiaxun Yang wrote:
->> 在 2021/8/29 20:49, Xi Ruoyao 写道:
->>> Newest Loongson-3 processors have moved to use LoongArch
->>> architecture.
->>> Sadly, the LL/SC issue is still existing on both latest Loongson-3
->>> processors using MIPS64 (Loongson-3A4000) and LoongArch
->>> (Loongson-3A5000).
->> LLSC is fixed on Loongson-3A4000 as per CPUCFG report.
-> If I don't enable LL/SC fix, GCC libgomp tests fail on both 3A4000 and
-> 3A5000 (using github.com/loongson/gcc for the latter) with "invalid
-> access to 0x00000049" or "0x00000005".  This is a race condition: it
-> does not happen at all with OMP_NUM_THREADS=1, happens with about 10%
-> possibility with OMP_NUM_THREADS=2, and about 90% possibility with
-> OMP_NUM_THREAD=4 (on 3A5000, on 3A4000 the possibility is lower).
-Apologize for the false report, yes, you are right. I had checked with 
-Loongson guys
-and they confirmed that the workaround still needs to be applied to 
-latest 3A4000
-processors, including 3A4000 for MIPS and 3A5000 for LoongArch.
+In case of for_each_bit() macros, however, we have such a consideration.
+In contrast to regular pattern, where user calls either first, or next
+versions N times, here we call find_first_bit once, and then find_next_bit
+N-1 times.
 
-Though, the reason behind the workaround varies with the evaluation of 
-their uArch,
-for GS464V based core, barrier is required as the uArch design allows 
-regular load
-to be reordered after an atomic linked load, and that would break 
-assumption of compiler
-atomic constraints.
+Because we know for sure that we'll call find_next_bit shortly, we can
+benefit from locality under heavy pressure on I-cache, if replace 'first'
+with 'next'. Consider it as a prefetch mechanism for the following calls
+to find_next_bit().
 
-For GS464E, barrier is required to flush the Store Fill Buffer and land 
-all the cachelines
-to L1 cache, otherwise a linked load to a cacheline located at SFB may 
-cause deadlock.
+> Does I-cache cost more than the faster code?
+ 
+In this case cache miss is more expensive.
 
-For original GS464, barrier is required to deal with some kind of 
-pipeline hazard to
-ensure store condition won't be shorted to success.
+> Or was for_each_set_bit() tested only with a bitmap
+> where find_first_bit() optimization did not help much?
 
-Patch LGTM. The config symbol looks ambiguous and I'd agree with your 
-idea of renaming.
+I tried to ensure that the effect of I-cache is real and in this case
+more important than code performance, so in the test I called 'first'
+once and 'next' twice.
+
+> How would for_each_set_bit() work with random bitmap?
+
+It would work for all bitmaps.
+
+> How does it work with larger bitmaps?
+
+Percentage gain (but not absolute) will decrease proportionally to the
+number of calls of find_next_bit() for big N.
 
 Thanks,
+Yury
 
-- Jiaxun
-
->
-> My investigation suggests this means a GCC instrinic,
-> __atomic_compare_and_exchange_n is not really atomic as it should be.
->
-> If this is not a hardware issue in the GS464V/LA464 uarch, then it will
-> be very low-possibility coincidence: two unrelated code-generation bugs
-> for __atomic_compare_and_exchange_n (LA port has borrowed some code from
-> MIPS port, but the instrinics are of course newly coded).  And I've
-> inspected libgomp & gcc code about __atomic_compare_and_exchange_n
-> carefully, nothing wrong spotted except LoongArch GCC supports "-mfix-
-> loongson3-llsc" which adds a "dbar 0" (like "sync" on MIPS) instruction
-> after SC (only for instrinics).  Enabling this fixes the libgomp
-> failures. Likewisely, "-Wa,-mfix-loongson3-llsc" fixes it on 3A4000.
->
-> libgomp code has been verified with thread sanitizer on other
-> architectures (unfortunately libtsan is not available on MIPS or
-> LoongArch yet), so it's very unlikely to be a coding error leading to
-> the race.
->
-> And LL/SC fix is still in Huacai's 3A5000 kernel.  In a mail on linux-
-> arch Huacai said it's "not so easy to be fixed".
->
-> Or these are two different erratas and I misunderstand them as the same
-> one?
->
-
+> Best Regards,
+> Petr
