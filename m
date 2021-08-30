@@ -2,149 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADA73FB8A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB173FB8A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237354AbhH3PAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:00:24 -0400
-Received: from mail-vk1-f178.google.com ([209.85.221.178]:36384 "EHLO
-        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233162AbhH3PAX (ORCPT
+        id S237460AbhH3PBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:01:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237499AbhH3PBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:00:23 -0400
-Received: by mail-vk1-f178.google.com with SMTP id s126so4082844vkd.3;
-        Mon, 30 Aug 2021 07:59:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vfdnjnEp4XpXIUeX6ZT76KgIhW9q66X8YC+x/oa8NO4=;
-        b=fgXVKDEUHqO6J0gddP5WlEP1rq5umP73PGVjqFlxL/8B6Amu9ZuuQtHA6CtCD8HE8L
-         iiWbmByDR2MGWlAwqQxek9ChtdkmhhWlZkyqM0IYHQC+Rw9i5u6pqGBK+qrogldLXLJ1
-         Dx2/vPXG0ghI0M8xJVtXUdz6i4qhGOGhES+zGM5sD+UJNrxxI54HUKV2taL9mRJCFwoy
-         WIuKMn/6BDsREup5RCAfuZ5PTUDHxpK2oyjXzogRS/af6+LKMn0K/yhURJem1z1sXjvP
-         95fDxjjFRSJMVEVV8Pw7+PSGUd5GB2JWvNoNOG0LK2sZTnK6gyh0YAFYlThgJLKZPvvg
-         fNwA==
-X-Gm-Message-State: AOAM530i/DDXf20yhPC0cmJcGyWMDPO60kBzytVgrjOTq3zvE/WH5EEj
-        kS+eW+t+hc9pkb3e5nMV+W+SEWkGv6Op2DnZq2o=
-X-Google-Smtp-Source: ABdhPJydLpFB2lNgVuMM9bZ4mnyHRiF4P8TW4Q5UiskyqqH0bqGTbirT4idHoa56DrU3sA/4b/qArusq4rnN12XhXmw=
-X-Received: by 2002:a05:6122:809:: with SMTP id 9mr14007873vkj.4.1630335569285;
- Mon, 30 Aug 2021 07:59:29 -0700 (PDT)
+        Mon, 30 Aug 2021 11:01:02 -0400
+X-Greylist: delayed 2744 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 30 Aug 2021 08:00:08 PDT
+Received: from mxout3.routing.net (mxout3.routing.net [IPv6:2a03:2900:1:a::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748DBC0613D9;
+        Mon, 30 Aug 2021 08:00:08 -0700 (PDT)
+Received: from mxbox4.masterlogin.de (unknown [192.168.10.79])
+        by mxout3.routing.net (Postfix) with ESMTP id 5AFF5604DD;
+        Mon, 30 Aug 2021 15:00:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1630335606;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FB34z+C8sGX7ZZ7kAsjc/5fqFHG4raJPZ6x3LyD7ocE=;
+        b=hBakEaTBn9R0yk9TKrAV8B3L1JVUjd5HdThgCAOP1u7JJ2FoUwWJnR5ACemZrltDFDT4K1
+        WejpT517SruouMylAXEgg+91cgFnN2aI/sA/wKxMkLQ7D+ol6cvfkg3in5L/VA3YZJomJr
+        fpmNV55jQISDc0xI1ZHgsQWsh8X9Ew8=
+Received: from localhost.localdomain (fttx-pool-157.180.227.230.bambit.de [157.180.227.230])
+        by mxbox4.masterlogin.de (Postfix) with ESMTPSA id ADCE28008C;
+        Mon, 30 Aug 2021 15:00:05 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm: dts: mt7623: add otg nodes for bpi-r2
+Date:   Mon, 30 Aug 2021 16:59:58 +0200
+Message-Id: <20210830145958.108605-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1630294223-7225-1-git-send-email-tcs_kernel@tencent.com>
- <YSyTzlUEhrxD7rU4@phenom.ffwll.local> <f9fda3fa-b2b7-57aa-8c37-69d93ae26045@i-love.sakura.ne.jp>
-In-Reply-To: <f9fda3fa-b2b7-57aa-8c37-69d93ae26045@i-love.sakura.ne.jp>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 30 Aug 2021 16:59:18 +0200
-Message-ID: <CAMuHMdV9cWSs0Hn2XJxj6HU1rAN0jYcOKLRn=1Z64nmGDp7bQQ@mail.gmail.com>
-Subject: Re: [PATCH V4] fbcon: fix fbcon out-of-bounds write in sys_imageblit
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, tcs.kernel@gmail.com,
-        Matthew Wilcox <willy@infradead.org>,
-        George Kennedy <george.kennedy@oracle.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Haimin Zhang <tcs_kernel@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Mail-ID: a7d5b3dd-a653-44e9-8e1d-254951e06a6d
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tetsuo,
+From: Frank Wunderlich <frank-w@public-files.de>
 
-On Mon, Aug 30, 2021 at 12:25 PM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
-> On 2021/08/30 17:16, Daniel Vetter wrote:
-> > On Mon, Aug 30, 2021 at 11:30:23AM +0800, tcs.kernel@gmail.com wrote:
-> >> From: Haimin Zhang <tcs_kernel@tencent.com>
-> >>
-> >> yres and vyres can be controlled by user mode parameters, and cause
-> >> p->vrows to become a negative value. While this value be passed to real_y
-> >> function, the ypos will be out of screen range.This is an out-of-bounds
-> >> write bug.
-> >> some driver will check xres and yres in fb_check_var callback,but some not
-> >> so we add a common check after that callback.
-> >>
-> >> Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
-> >> Signed-off-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
->
-> Please s/Signed-off-by: Tetsuo Handa/Suggested-by: Tetsuo Handa/ .
-> It is Haimin who debugged this problem and wrote this patch.
->
-> >
-> > Does this fix a syzbot crash or how was this discovered?
->
-> Yes, Haimin's team is running syzkaller locally and found this bug.
-> Therefore, no Reported-by: syzbot tag for this patch.
->
->
-> -------- Forwarded Message --------
-> Subject: Re: [PATCH v2] fbcon: fix Out-Of-Bounds write in sys_imageblit
-> Message-ID: <33fc0e30-b94c-939f-a708-4b939af43100@gmail.com>
-> Date: Mon, 2 Aug 2021 14:50:24 +0800
->
-> hi, Tetsuo Handa
->
-> i made a test with your suggested code, it can block the out-of-bound bug.
->
-> where to add this check logic, i suggest to add it after the driver's
-> fb_check_var callback.because what we plan to add is a common check by
-> framework,but some driver can fault-tolerant invalid parameters(like
-> yres_virtual > yres)
->
->         /* exist common check */
->         if (var->xres < 8 || var->yres < 8)
->                 return -EINVAL;
->
->         /* callback to drivers, some driver can fix invalid virtual
-> xres or virtual yres */
+Add OTG-Nodes for BananaPi-R2
 
-Yes. Fbdev drivers are supposed to round up invalid or unsupported
-values, or return -EINVAL.
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+---
+patch is based on
 
->         ret = info->fbops->fb_check_var(var, info);
->         if (ret)
->                 return ret;
->         /* we add a more check here, if some drivers can't fix invalid x,y
-> virtual values, we return a -EINVAL */
->         if (var->yres_virtual < var->yres || var->xres_virtual < var->xres)
->                 return -EINVAL;
->
-> how about this fix ?  i can make a v3 patch.
->
->
->
-> diff --git a/drivers/video/fbdev/core/fbmem.c
-> b/drivers/video/fbdev/core/fbmem.c
-> index 1c85514..9fb7e94 100644
-> --- a/drivers/video/fbdev/core/fbmem.c
-> +++ b/drivers/video/fbdev/core/fbmem.c
-> @@ -1012,6 +1012,10 @@ static int fb_check_caps(struct fb_info *info,
-> struct fb_var_screeninfo *var,
->
->         if (ret)
->                 return ret;
-> +
-> +       /* Virtual resolution cannot be smaller than visible resolution. */
-> +       if (var->yres_virtual < var->yres || var->xres_virtual < var->xres)
-> +               return -EINVAL;
+"arm: dts: mt7623: add musb device nodes"
 
-So if this happens, it's a driver bug, not a userspace bug.
+https://patchwork.kernel.org/project/linux-mediatek/patch/20210822041333.5264-2-mans0n@gorani.run/
+---
+v2:
+	rebase on plain 5.14, v1 was based on some not upstreamed work
+---
+ arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts | 25 +++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
->
->         if ((var->activate & FB_ACTIVATE_MASK) != FB_ACTIVATE_NOW)
->                 return 0;
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
+index e96aa0ed1ebd..027c1b0c6a98 100644
+--- a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
++++ b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
+@@ -366,6 +366,14 @@ &pcie1_phy {
+ 	status = "okay";
+ };
+ 
++&pio {
++	musb_pins: musb {
++		pins-musb {
++			pinmux = <MT7623_PIN_237_EXT_SDIO2_FUNC_DRV_VBUS>;
++		};
++	};
++};
++
+ &pwm {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pwm_pins_a>;
+@@ -396,6 +404,19 @@ &uart2 {
+ 	status = "okay";
+ };
+ 
++&usb0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&musb_pins>;
++	status = "okay";
++	usb-role-switch;
++
++	connector {
++		compatible = "gpio-usb-b-connector", "usb-b-connector";
++		type = "micro";
++		id-gpios = <&pio 44 GPIO_ACTIVE_HIGH>;
++	};
++};
++
+ &usb1 {
+ 	vusb33-supply = <&reg_3p3v>;
+ 	vbus-supply = <&reg_5v>;
+@@ -408,6 +429,10 @@ &usb2 {
+ 	status = "okay";
+ };
+ 
++&u2phy1 {
++	status = "okay";
++};
++
+ &u3phy1 {
+ 	status = "okay";
+ };
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
