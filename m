@@ -2,132 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B1D3FAFCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 04:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 615AC3FAFCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 04:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235073AbhH3CdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 22:33:13 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:41629 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234922AbhH3CdF (ORCPT
+        id S234881AbhH3CeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 22:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234830AbhH3CeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 22:33:05 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 480C75C0085;
-        Sun, 29 Aug 2021 22:32:11 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sun, 29 Aug 2021 22:32:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=v
-        3f6jPzzBipbSiu4aVjPCilgneHFN9knpU6Krm+kjSo=; b=tukNWEtaWbA8o+Fjz
-        FoTU9WTAqtl2aDhMVPweMspb92x2AlreH5LSTg8iJN5YLfoIlDblsGUofdVYDvVz
-        XauQMF0uRCc6kE+vTamf3BtXFze8AQw+XznflsYBM2ueCu/n2f0Bi+C6VLYCq/l2
-        rDsOy7WHsGPRf/+mcInGiZo+cnAyIt4nVZy3XfN3EL3LevaK1A39cPaP5TgauLu9
-        CBUfGGFLJq2e/BuuOEgcmGgOviuGds0tCuJE/G2fZpCrQrYYzn8UFvEjju6KwMiM
-        0iiby2ffzWQKaAE56bJc07e9tl16j5kvj5ejmHyXIxaDkqUO1p7zoWfYwkdRGzGq
-        WHR+Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=v3f6jPzzBipbSiu4aVjPCilgneHFN9knpU6Krm+kj
-        So=; b=mKgrGGxuRadgm9g6e3ZPiruUZ41o5lpZ+PtBW5zNm1ccFwPTBCFM2GYf3
-        gk0cRqaKiH91FUhB48UQmPvIyovsAD9JAk1BOROjYgx9CqPRdIrMi6QDX7MASCxH
-        4ha/OyaH5eyyiPWz6tPkkxw3kJhU7H7UoEKpCxt1WaebJXk6QVw8uk68vyus1AnJ
-        6wffj5vSS7WNq+wt6vR+YTXBBaFg6HKURcaP2/yb+ZKoVOSOWsQhp27A1x/Y1jZx
-        1jvh3sar4NYFCzm1cZHb+S3gry7TYpI/+1waZQP2rwNHJtBSChWR0+JTlwvHIREk
-        iTmidX0fGY5PypyO40ibPrC3YCm4A==
-X-ME-Sender: <xms:KkMsYVweyrwT_4P_TngacbzysJVsc7Rm1SbDZbGOEx3vEda4o3GBUQ>
-    <xme:KkMsYVSxGwYM0Rl43ORSlKVhIIW8gIbc1HwfvW8h3y2VBOyn6g6yNYo8TkG9Wovv4
-    sZ6eXK61Erf7BdVcgI>
-X-ME-Received: <xmr:KkMsYfVQ7MOXlOG2TaMU4rCBKdvbnBuyhJ9qUGWctk67k8Im9gC5PNKQKLyRtxidMqi1wg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddukedgiedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheplfhirgig
-    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeeihffghfeikedugeejvefgffevgeevgeehfffhudeiieffffev
-    ffeugeevfefgfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:KkMsYXgCGhm53jNy0YZvA25HawSeYsyvMy2Hs-LIsJ0R2-KgMHLuaA>
-    <xmx:KkMsYXChLqEmHfRc_ngn6828B-MXCTAUdTEO7YfyMR_wj2WJFkqC7g>
-    <xmx:KkMsYQL5C_owCsno6-HreeUhsfysYungOrALSIRB48XktDvtoRLQmA>
-    <xmx:K0MsYeO8JcyuQFYRrEUvyy4AxIlLv09793SxZX9j7LbZM68fMKWURA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 29 Aug 2021 22:32:07 -0400 (EDT)
-Subject: Re: [PATCH] mips: remove reference to "newer Loongson-3"
-To:     Xi Ruoyao <xry111@mengyan1223.wang>, linux-mips@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
-References: <0b7c9431efb12c2d957fcc53ec8f0743725d61b3.camel@mengyan1223.wang>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <b32c0d64-77b2-d054-afcf-7d006eba3418@flygoat.com>
-Date:   Mon, 30 Aug 2021 10:32:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 29 Aug 2021 22:34:08 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E708C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 19:33:15 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id t19so27930218ejr.8
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 19:33:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oYx5Ec4IK2H1rlO0tfRHMe+rUpApql3pIdTCBRWU9Y0=;
+        b=lVeP92XWxVUdO3zISWahAhck+QIHTQvsgVGZMSCprMFdaXVrbPwZj50vFw1A8pW4aO
+         Bi56I+s5RsYeo92XuEhFGqXy6sALdJlB+mD0DxVP2/mrrD5Rcg5s2UpkuggH1XvG+y+/
+         tUd+nLkk1fsJKD1hOCyZcM1rK8KiFsj3NIlMW2th+gjspuFNRhCzdDNlHlMvSoTJLSXJ
+         MM1lDskxqYVb6Zd0Yua3RoD4QVO9jvGI6fKWY2KSxKft9lJaphnWkTGYDcG/6FctAfA+
+         B8rh14m6TBGk1v+xUFZHWbB0E5mB3GVAyn6ngPzp4XJQDRaQtO0xoNd3YkdPaTVqXDA3
+         RB8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oYx5Ec4IK2H1rlO0tfRHMe+rUpApql3pIdTCBRWU9Y0=;
+        b=UY4zC1444de6p3bv9kgiguAzEQHpNdYoeFwRYzt3VsqRmMZQ7u/sOqZobFNuasbeFo
+         blAqyDZspNpUUJWHTeRkVRdYSJXcNn5iliWStR7GqIaJbTsTh2k69cGk+o/Dzk6Xk4tR
+         8cPOO52cYT42JjX8cd8rrqD21TMN6GI2YcZq+BSJeUhiZCWeEvvugPBz+sAe/IlkWpC4
+         YwdkDpcAiYNKlOqwtznWoPCnuAdhX7HRUZQ2Zb+m4rLKKXdBT27qaTPr4ICEhgor7q0o
+         vOAnVdHN0dxJDVFydSf571t7WV9gYz6WekDEW2yvlO+EWplM4G0CDOv/rbA9/5IaYPAJ
+         qPuQ==
+X-Gm-Message-State: AOAM531NlJAMzx5LLOEC6bgh+YHVnHzCT9Lr3xf2Hv9kAY4noT4i64Ry
+        v10myQOYok0+PuJYxRcZFN+ps5HAQtAIOLpQyaA=
+X-Google-Smtp-Source: ABdhPJzrr0+xJ2AS+8XzNZNi5nuLpctN2Xd7JoiI0l+yff4sczFKgIzQHeiIDvqp9QCTa+31K0SBW+TIQo2p2OeuO5I=
+X-Received: by 2002:a17:906:a3c3:: with SMTP id ca3mr22737772ejb.337.1630290794171;
+ Sun, 29 Aug 2021 19:33:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0b7c9431efb12c2d957fcc53ec8f0743725d61b3.camel@mengyan1223.wang>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20210827094351.203328-1-mudongliangabcd@gmail.com>
+ <YSi3rpsoL3UIuzFY@kroah.com> <CAD-N9QUveJWdK_zaAd6JTwWidMWap5Ri-bRe0n7QnCuBpMqbew@mail.gmail.com>
+ <YSj1u1x7ruEysfNq@kroah.com> <CAD-N9QU-zPU6EVaytsN1bEYqHQc1cDcXa4aXrPqg6VTwDkXb5w@mail.gmail.com>
+In-Reply-To: <CAD-N9QU-zPU6EVaytsN1bEYqHQc1cDcXa4aXrPqg6VTwDkXb5w@mail.gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Mon, 30 Aug 2021 10:32:48 +0800
+Message-ID: <CAD-N9QUCkaFAGfJ3pzqNoBXqH6rgwg5aHxGqPgdChPRh0_-Lcw@mail.gmail.com>
+Subject: Re: [PATCH] ipack: tpci200: change pci_iounmap to iounmap
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Jens Taprogge <jens.taprogge@taprogge.org>,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Aditya Srivastava <yashsri421@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        industrypack-devel@lists.sourceforge.net,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/8/29 20:49, Xi Ruoyao 写道:
-> Newest Loongson-3 processors have moved to use LoongArch architecture.
-> Sadly, the LL/SC issue is still existing on both latest Loongson-3
-> processors using MIPS64 (Loongson-3A4000) and LoongArch
-> (Loongson-3A5000).
-LLSC is fixed on Loongson-3A4000 as per CPUCFG report.
+On Mon, Aug 30, 2021 at 9:22 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
 >
-> As it's very unlikely there will be new Loongson-3 processors using
-> MIPS64, let's stop people from false hoping.
->
-> Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
-> Cc: Huacai Chen <chenhuacai@kernel.org>
-> ---
->
-> Huacai: how's the status of LL/SC issue on Loongson-2K?  If
-> the issue exists on it as well, we can just force
-> CPU_LOONGSON3_WORKAROUNDS when CONFIG_CPU_LOONGSON64 and
-> CONFIG_SMP are both selected.
+> On Fri, Aug 27, 2021 at 10:25 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Fri, Aug 27, 2021 at 06:33:46PM +0800, Dongliang Mu wrote:
+> > > On Fri, Aug 27, 2021 at 6:00 PM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Fri, Aug 27, 2021 at 05:43:47PM +0800, Dongliang Mu wrote:
+> > > > > The deallocation api for ioremap should be iounmap, other than
+> > > > > pci_iounmap.
+> > > >
+> > > > why?
+> > >
+> > > Because the tpci200->info->cfg_regs/interface_regs is allocated by
+> > > ioremap. From my understanding, ioremap and iounmap are in pairs,
+> > > other than pci_iounmap.
+> > > See the code below.
+> > >
+> > > tpci200->info->interface_regs =
+> > > ioremap(pci_resource_start(tpci200->info->pdev,
+> > >   TPCI200_IP_INTERFACE_BAR),
+> > > TPCI200_IFACE_SIZE);
+> > >
+> > > https://elixir.bootlin.com/linux/latest/source/drivers/ipack/carriers/tpci200.c#L297
+> > >
+> > > tpci200->info->cfg_regs = ioremap(
+> > > pci_resource_start(pdev, TPCI200_CFG_MEM_BAR),
+> > > pci_resource_len(pdev, TPCI200_CFG_MEM_BAR));
+> > >
+> > > https://elixir.bootlin.com/linux/latest/source/drivers/ipack/carriers/tpci200.c#L546
+> > >
+> > > If there is any issue, please let me know
+> >
+> > The point is that the driver should be calling pci_iomap_bar() instead
+> > of ioremap(), and then the call to pci_ioumap() is correct here.
 
-Loongson-2K do need LLSC workaround, although the reason behind the 
-workaround seems different...
+Hi gregkh,
 
-Thanks.
+For cfg_regs [1], it is fine to change from:
 
-- Jiaxun
+tpci200->info->cfg_regs = ioremap(
+pci_resource_start(pdev, TPCI200_CFG_MEM_BAR),
+pci_resource_len(pdev, TPCI200_CFG_MEM_BAR));
 
+to :
+
+tpci200->info->cfg_regs = pci_ioremap_bar(pdev, TPCI200_CFG_MEM_BAR);
+
+But for interface_regs [2], I am not sure as TPCI200_IFACE_SIZE is a
+totally separate definition, not calculated by resouce_size or
+pci_resource_len(tpci200->info->pdev, TPCI200_IP_INTERFACE_BAR).
+
+tpci200->info->interface_regs =
+ioremap(pci_resource_start(tpci200->info->pdev,
+  TPCI200_IP_INTERFACE_BAR),
+TPCI200_IFACE_SIZE);
+
+#define TPCI200_IFACE_SIZE            0x100
+
+Any comment here?
+
+Note that, it is pci_ioremap_bar, not pci_iomap_bar.
+
+[1] https://elixir.bootlin.com/linux/v5.14/source/drivers/ipack/carriers/tpci200.c#L544
+[2] https://elixir.bootlin.com/linux/v5.14/source/drivers/ipack/carriers/tpci200.c#L295
+
+> >
+> > Please make that change instead.
 >
->   arch/mips/Kconfig | 9 ++-------
->   1 file changed, 2 insertions(+), 7 deletions(-)
+> No problem. I will modify the patch and send a v2 patch afterwards.
 >
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 6dfb27d531dd..ff5f344a371e 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -1433,19 +1433,14 @@ config LOONGSON3_ENHANCEMENT
->   	  new Loongson-3 machines only, please say 'Y' here.
->   
->   config CPU_LOONGSON3_WORKAROUNDS
-> -	bool "Old Loongson-3 LLSC Workarounds"
-> +	bool "Loongson-3 LLSC Workarounds"
->   	default y if SMP
->   	depends on CPU_LOONGSON64
->   	help
->   	  Loongson-3 processors have the llsc issues which require workarounds.
->   	  Without workarounds the system may hang unexpectedly.
->   
-> -	  Newer Loongson-3 will fix these issues and no workarounds are needed.
-> -	  The workarounds have no significant side effect on them but may
-> -	  decrease the performance of the system so this option should be
-> -	  disabled unless the kernel is intended to be run on old systems.
-> -
-> -	  If unsure, please say Y.
-> +	  Say Y, unless you know what you are doing.
->   
->   config CPU_LOONGSON3_CPUCFG_EMULATION
->   	bool "Emulate the CPUCFG instruction on older Loongson cores"
+> >
+> > thanks,
+> >
+> > greg k-h
