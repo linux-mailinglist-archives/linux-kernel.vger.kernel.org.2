@@ -2,76 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E8E3FB91C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57B93FB920
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237583AbhH3Pj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:39:28 -0400
-Received: from mail-ej1-f48.google.com ([209.85.218.48]:39519 "EHLO
-        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237460AbhH3Pj1 (ORCPT
+        id S237633AbhH3Pjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:39:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24985 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237621AbhH3Pjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:39:27 -0400
-Received: by mail-ej1-f48.google.com with SMTP id a25so32036858ejv.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:38:33 -0700 (PDT)
+        Mon, 30 Aug 2021 11:39:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630337928;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KdkFWUiTMvtMsWJ6cUiIqcTp0RGUHhxr67y9qLSh0yM=;
+        b=b/JbEq5lZIQ9ZuAu0pIuz23OjFu91j4AMnWL2PgWugtGSFJKpytLtjGJBFpDbY9d9tz3s8
+        erfjpvPWCmM7FCKcvsWFlzEAC57wFUShkyC1JNa9vDdVtLknS59sRTjZwwzxSqBSQ+jEa1
+        2spIbojk/6qvLQYf587hG5fJPmcXbyQ=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-cLeRINMHOZKtRRzscJRbVA-1; Mon, 30 Aug 2021 11:38:47 -0400
+X-MC-Unique: cLeRINMHOZKtRRzscJRbVA-1
+Received: by mail-lj1-f200.google.com with SMTP id b1-20020a05651c098100b001c3bda9881bso6823823ljq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:38:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GvG3BPkL8GDwWI4NDLg3xm7QcfwfDFAgBHT+PFB/gGg=;
-        b=gqkAUp23Lgb01d62FAbPFq7w5Q+2mA30V1j02NwJ0k9O+W3acZSuliYwFHa9X/gsYQ
-         KerqqEEjiyqXeFiwwf7HQXFHQ6RYPL2OYiuZgdbep6KPAWSxTceERYw2e8ArPP0Q0LbF
-         hyj1K+1IgAPfdUlHRc+znjXfYlAtOrmIL7WCRkDio84/GBC+HcOLlPwhv8g3MXWW0I9G
-         N+ony8wBA8dbfBO+nVSBXm2iWDan8TQlWfFaXDMo9NRAAQOIJmyl6s5pwC43MzGBaiCz
-         HW+MJZ/wk2frArSZjAgR/vzZIaWhYk6Y37VGLi+xwccmHNvwcvAqVBPjwFX5/3Nz14ZV
-         wk6g==
-X-Gm-Message-State: AOAM532dfkUY4/lPymaAtom3tBx7RGsdIgsdmNXKs3PsHAHUL8K8P0KR
-        VjTrS9kHAuFKzIpNWi3puSw=
-X-Google-Smtp-Source: ABdhPJyrm1XsokPNLWD+oHtckSQ0hd3ttotKOY58uBZuekNmj5lQ4O29XdqY/euXZd2Od/HXv6oJGQ==
-X-Received: by 2002:a17:906:2c5a:: with SMTP id f26mr10450012ejh.205.1630337911554;
-        Mon, 30 Aug 2021 08:38:31 -0700 (PDT)
-Received: from [10.100.102.14] (109-186-228-184.bb.netvision.net.il. [109.186.228.184])
-        by smtp.gmail.com with ESMTPSA id l18sm6000367edr.83.2021.08.30.08.38.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 08:38:31 -0700 (PDT)
-Subject: Re: [PATCH v6] nvme-tcp: Do not reset transport on data digest errors
-To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        yi.he@emc.com, kernel test robot <lkp@intel.com>
-References: <20210830133626.139828-1-dwagner@suse.de>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <462c31ae-446b-cc23-eb91-5e27ef04ec13@grimberg.me>
-Date:   Mon, 30 Aug 2021 18:38:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KdkFWUiTMvtMsWJ6cUiIqcTp0RGUHhxr67y9qLSh0yM=;
+        b=Ig/di088n62VrpUZfyIlLQk53M72YWngyBRqSEINzjkF2rua4SR9kBwP+F8bUwRQxP
+         2w3U2DAUJ+uYnd2Qqqn8OEOqTb+nyAwRSLKggp6reTMvjd/OCLZBeGS574TYsAhLorhD
+         LjPSrPRlsE3AjmvrGMmAdJO1sUcSENaIhr+iawqxnkrZohblFo+yBBzg27t3OqrkaxvT
+         09PIFa0DKxLHFcvdrnL9ejQ7BwxzB9JrNvfXEFabfrhSZRnoeHzV7PDyEZbi04s6Ddnm
+         2PAG3Q/gpZjyeU6lMCOWn6kK81717MxQaNB5q1mSBuAVON1CA5G9U+S2RSr5IGfqcwvG
+         Qkhw==
+X-Gm-Message-State: AOAM530ydXzRl8EwLoPUbVS50khrbPk5eabnGhqoxxLmsCJXC9vFmJRB
+        kw3bTI2U+kzpreGLnABq6K3/aRgAwuDV+eXN4MotTYq0xrS8oJge8fHiC//+/I93nQi42JLXYAD
+        APCnIbEzGI72lKhYGy2zXsZquXHMmuUEw6nh7X8+S
+X-Received: by 2002:a05:6512:21cf:: with SMTP id d15mr17903798lft.548.1630337925482;
+        Mon, 30 Aug 2021 08:38:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw9UCmwncJUGf9asGfLpNrRUo6X+riRIyjnBb/d3K1U2TWNrP/KHaZL8T3ppdBz1Ul2raBoQYGI5rUOmsEZhUQ=
+X-Received: by 2002:a05:6512:21cf:: with SMTP id d15mr17903733lft.548.1630337925258;
+ Mon, 30 Aug 2021 08:38:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210830133626.139828-1-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210720232624.1493424-1-nitesh@redhat.com> <CAFki+LkNzk0ajUeuBnJZ6mp1kxB0+zZf60tw1Vfq+nPy-bvftQ@mail.gmail.com>
+ <CAFki+LkyTNeorQ5e_6_Ud==X7dt27G38ZjhEewuhqGLfanjw_A@mail.gmail.com>
+In-Reply-To: <CAFki+LkyTNeorQ5e_6_Ud==X7dt27G38ZjhEewuhqGLfanjw_A@mail.gmail.com>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Mon, 30 Aug 2021 11:38:34 -0400
+Message-ID: <CAFki+Lmbw=02iaYKs_a0jR1KWLisXQa1B-s0hc-Ej-8F8ryWDQ@mail.gmail.com>
+Subject: Re: [PATCH v5 00/14] genirq: Cleanup the abuse of irq_set_affinity_hint()
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        davem@davemloft.net, ajit.khaparde@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+        huangguangbin2@huawei.com, huangdaode@huawei.com,
+        luobin9@huawei.com
+Cc:     linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, rostedt@goodmis.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        akpm@linuxfoundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com,
+        Stefan Assmann <sassmann@redhat.com>,
+        Tomas Henzl <thenzl@redhat.com>, james.smart@broadcom.com,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Ken Cox <jkc@redhat.com>, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, tariqt@nvidia.com,
+        Alaa Hleihel <ahleihel@redhat.com>,
+        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
+        saeedm@nvidia.com, Nitesh Lal <nilal@redhat.com>,
+        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Al Stone <ahs3@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        bjorn.andersson@linaro.org, chunkuang.hu@kernel.org,
+        yongqiang.niu@mediatek.com, baolin.wang7@gmail.com,
+        Petr Oros <poros@redhat.com>, Ming Lei <minlei@redhat.com>,
+        Ewan Milne <emilne@redhat.com>, jejb@linux.ibm.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        kabel@kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>, kashyap.desai@broadcom.com,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        suganath-prabu.subramani@broadcom.com,
+        Thomas Gleixner <tglx@linutronix.de>, ley.foon.tan@intel.com,
+        jbrunet@baylibre.com, johannes@sipsolutions.net,
+        snelson@pensando.io, lewis.hanly@microchip.com, benve@cisco.com,
+        _govind@gmx.com, jassisinghbrar@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 16, 2021 at 11:50 AM Nitesh Lal <nilal@redhat.com> wrote:
+>
+> On Mon, Aug 2, 2021 at 11:26 AM Nitesh Lal <nilal@redhat.com> wrote:
+> >
+> > On Tue, Jul 20, 2021 at 7:26 PM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
+> > >
+> > > The drivers currently rely on irq_set_affinity_hint() to either set the
+> > > affinity_hint that is consumed by the userspace and/or to enforce a custom
+> > > affinity.
+> > >
+>
 
-> @@ -485,6 +486,7 @@ static void nvme_tcp_error_recovery(struct nvme_ctrl *ctrl)
->   static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
->   		struct nvme_completion *cqe)
->   {
-> +	struct nvme_tcp_request *req;
->   	struct request *rq;
->   
->   	rq = nvme_find_rq(nvme_tcp_tagset(queue), cqe->command_id);
-> @@ -496,7 +498,11 @@ static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
->   		return -EINVAL;
->   	}
->   
-> -	if (!nvme_try_complete_req(rq, cqe->status, cqe->result))
-> +	req = blk_mq_rq_to_pdu(rq);
-> +	if (req->status == cpu_to_le16(NVME_SC_SUCCESS))
+[...]
 
-endian conversion a zero enum? looks weird..
+>
+> Any comments on the following patches:
+>
+>   enic: Use irq_update_affinity_hint
+>   be2net: Use irq_update_affinity_hint
+>   mailbox: Use irq_update_affinity_hint
+>   hinic: Use irq_set_affinity_and_hint
+>
+> or any other patches?
+> Any help in testing will also be very useful.
+>
 
-But,
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Gentle ping.
+Any comments on the following patches:
+
+  be2net: Use irq_update_affinity_hint
+  hinic: Use irq_set_affinity_and_hint
+
+or any other patches?
+
+--
+Thanks
+Nitesh
+
