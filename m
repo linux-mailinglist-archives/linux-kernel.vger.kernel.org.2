@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C99F3FBAFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FFE3FBAFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238126AbhH3RcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 13:32:06 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:51418 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229709AbhH3RcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 13:32:05 -0400
-Received: from zn.tnic (p200300ec2f0b3b00d8cdf5b388faf601.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3b00:d8cd:f5b3:88fa:f601])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BA53F1EC03FE;
-        Mon, 30 Aug 2021 19:31:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1630344666;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=F78NScsYpwqvpgPkUnjQEmzNw8vwPloEwqLWWWjPdIc=;
-        b=gHUjM8LYBihZBiKhxG8eUaIU3GxJ2Eiiesqv/h+xzfolzQ4oGd5/9WDhUZNADUJjEKo20k
-        FoL46yG1P5ScJPkMUGE45AcXKsGLgLoDSTKU2IGtfTE8269oCIeu7qFBnLBUPH6AIfDvg2
-        nFpd1lz9pomQDEy1g7pbJ0uop7cvML8=
-Date:   Mon, 30 Aug 2021 19:31:43 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Len Brown <lenb@kernel.org>
-Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        "Macieira, Thiago" <thiago.macieira@intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
- protect dynamic user state
-Message-ID: <YS0V//png0YVPWHG@zn.tnic>
-References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <20210730145957.7927-13-chang.seok.bae@intel.com>
- <YR00U19168BGoRB9@zn.tnic>
- <3181031.RqgVF4sTRC@tjmaciei-mobl5>
- <YR1HYRRN0HMTxXrw@zn.tnic>
- <BCC327C2-CF9F-4910-B626-315E515E9A3A@intel.com>
- <YR14zq2LaExjhFR+@zn.tnic>
- <CAJvTdKnhn8rOKUJ0VKvM08sFYkvmEsSWBsH2ynncxH9_z49bxA@mail.gmail.com>
+        id S238193AbhH3RdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 13:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234721AbhH3RdD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 13:33:03 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4928C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:32:09 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id u1so5155531plq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:32:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=epWKvD5razLbtGdMxCSBlYu5hXhP+qig9FZSIVuI3tE=;
+        b=G+Q7gtX70nbZ/LBCjYyjOz1aV5GGQ1isjpzbr+PXzvtB2/4iP/j0NqnV7xwI/FumTm
+         /iYzz8JW/fg5RDkv0PaLg8EyxQLmr/FK2ID0atZPyvp5oHA//X+4djFV61pgLqOuvCQI
+         xRkh4CMy8ztoRmz37kcvRA4WYC3WcwAVud73mwcbZatUFKII3B/jExPr0STb+0qhdA5z
+         rrxNFCnhFcr9HCKPoOFpGH8eJZtlbnzQe/2dLGaUDdR5+vqtdKh732ZZ9BCkX5gaS/3V
+         XEj74L2ltpg1E9FOqxc7kbkZimyxdRCJrX59w5wuBhiXkti2sSRvaFk5CXqLqNQZmdop
+         jS5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=epWKvD5razLbtGdMxCSBlYu5hXhP+qig9FZSIVuI3tE=;
+        b=MbCsMy5yQ4DfkbOoMumxSu2Hd5n/kVjxA+HyT1FLGzVIMKA2YdhLfeAbnsmP2qGUjQ
+         p9F13KAW/bEF+/J5d/AIe0urdyAmp74KA6sfhmUurqMHlHG2B2vrj1MwLIMqMgiyL6yN
+         FjqF2kUAcKxiGsO1RKmcvbjw3owYKmM5vf1XLdPA8LpBm5hnkcdHmeAsjZn/L04jiGo4
+         B4QsKAkBSHsHv6cbwa7ArP3E7ZmZWcMx8ErMj6oUxJuLhkrGGq1VBRK1C/0VN0S6wQaL
+         K3ln3w2V92tBsLzY4c+BSl2M5FdqhPnLWwq0Tmy5RHaE0ezm2lQTsBnlCoSYu//5K9v5
+         LeQg==
+X-Gm-Message-State: AOAM533UqjY37P5H7ZPAHi6pXggz8q052siVZtxUOgMiukQnIM5NxZc6
+        IJ97odyZqX3P1nUfF5veUgN+jPk65UsRdA==
+X-Google-Smtp-Source: ABdhPJyutONVOk+BjWisUL3/Xu58mBMWIUdp3+7cQncOldvlNCU1bCGJiTmJVJSJjOX0URjHmJq40g==
+X-Received: by 2002:a17:90a:d187:: with SMTP id fu7mr213232pjb.106.1630344729218;
+        Mon, 30 Aug 2021 10:32:09 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-44e6-6a58-44be-40a6.res6.spectrum.com. [2603:800c:1a02:1bae:44e6:6a58:44be:40a6])
+        by smtp.gmail.com with ESMTPSA id y3sm10665124pge.44.2021.08.30.10.32.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 10:32:08 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 30 Aug 2021 07:32:07 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Zhang Qiao <zhangqiao22@huawei.com>, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kernel/sched: Fix sched_fork() access an invalid
+ sched_task_group
+Message-ID: <YS0WF0sxr0ysb6Za@mtj.duckdns.org>
+References: <20210826112635.7404-1-zhangqiao22@huawei.com>
+ <YSztujInfNNXkG5/@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJvTdKnhn8rOKUJ0VKvM08sFYkvmEsSWBsH2ynncxH9_z49bxA@mail.gmail.com>
+In-Reply-To: <YSztujInfNNXkG5/@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 07:22:18PM -0400, Len Brown wrote:
-> We are forced to complicate their life for AMX (and subsequent features)
-> because of the legacy Linux signal ABI.
+Hello,
 
-No, we need to design this interface properly because you folks went and
-put this AMX thing in xstates. Where it doesn't belong at all.
+On Mon, Aug 30, 2021 at 04:39:54PM +0200, Peter Zijlstra wrote:
+> > When a new process is forked, cgroup_post_fork() associates it
+> > with the cgroup of its parent. Therefore this commit move the
+> > __set_task_cpu() and task_fork() that access some cgroup-related
+> > fields(sched_task_group and cfs_rq) to sched_post_fork() and
+> > call sched_post_fork() after cgroup_post_fork().
 
-> We require that new apps invoke a system call to tell us that they
-> are not indeed a legacy program, but that they are a program that
-> understands if they use an alt-sig-stack that it must be big enough to
-> handle whatever current hardware requires.
+I think this would allow cgroup migrations to take place before
+sched_post_fork() is run, which likely will break stuff. The right
+thing to do likely is taking sched_task_group (and whatever other
+fields) after cgroup_can_fork(), which fixates the cgroup memberships,
+is run. For other controllers, operations like this would be performed
+from cgroup_subsys->fork() callback but it's tricky for sched due to
+autogroup.
 
-Yes, because of the reason I gave above. If no additional 8K fat wasn't
-an xstate, we wouldn't be having this conversation.
+> > Fixes: 8323f26ce342 ("sched: Fix race in task_group")
+> > Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
+> 
+> Hmm, I think you're right. Did something recently chagne in cgroup land
+> to make this more visible? This code hasn't changed in like 9 years.
 
-> The secondary motivation for the system call is the desire to give the
-> kernel a hook so that it can refuse to give permission for some apps
-> to use AMX, should the need arise.
+I can't think of any remotely recent change either. I guess ppl just
+don't try to migrate the parent while fork is in progress.
 
-Yes.
-
-> > prctl(GET_FEATURES_WITH_KERNEL_ASSISTANCE);
->
-> The problem is that it adds zero value over the currently used xgetbv(XCR0).
-> As it adds no value, programmers will not use it.
-
-Bullsh*t.
-
-First of all, it is a new interface we're introducing and if it is
-there from the get-go along with examples how to use it and proper
-documentation, people will.
-
-Secondly, from a previous email of mine: "What if this modus operandi of
-features userspace can use with kernel assistance but need an explicit
-request and are off otherwise, gets extended beyond XSAVE-managed
-features?"
-
-In that case you can xgetbv() all you want but the new fat feature is
-not even in XCR0. So *then* you *have* to introduce a new prctl() to
-query supported features. And right then and there you wish you would've
-done that from the very beginning!
+Thanks.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+tejun
