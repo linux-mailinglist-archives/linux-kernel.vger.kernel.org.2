@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7B03FB2AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904273FB2B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235006AbhH3Ip0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 04:45:26 -0400
-Received: from ozlabs.org ([203.11.71.1]:51739 "EHLO ozlabs.org"
+        id S235115AbhH3IvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 04:51:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234824AbhH3IpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 04:45:25 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GykQQ54mvz9sT6;
-        Mon, 30 Aug 2021 18:44:30 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630313071;
-        bh=Oet/2ShYhw2WhmAox81rCS8HNSaRzTLzHbGsHoERplA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=MOgzxvVQe99BPFYZ8yJ0Cw/nIgdymyzYzxBRWdr8nu9xYKJCLKy6XZqq1hzd6WdAK
-         8f6D+oVY13WefjNvHcSkywmPSX/V64HZtK9AXZtmEUP13wxo8CB67BnaIEyCZtLCee
-         P0nqiu8ssOVVSWwUn22ttbhr16X4FiKT60yqB7wNQ9pk7cp8YbiWDJo+3Ve/TJqh07
-         SrC/NmY5DkV1rPTOipN4zPuFzZBgNpuICJYPG866ug9VmdHCMoK9sMw6B0tpUp/CcN
-         /qIAhHN+4+J7hN9hAJZDt1s1z+gJeDMD4rzc5MJS8+5dvPEMK1craUR1clSJVIrjyl
-         MXFMZlmRmZYDA==
-Date:   Mon, 30 Aug 2021 18:44:29 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: linux-next: build warning after merge of the kspp tree
-Message-ID: <20210830184429.1ee4b4d8@canb.auug.org.au>
+        id S232482AbhH3IvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 04:51:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DB1BF61008;
+        Mon, 30 Aug 2021 08:50:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630313408;
+        bh=DcbZHDnByRqTIoS8tib7jpimDjhbTVGqMhUBZNlyF/c=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=cqwRdBQGWzMMMxDUEqzuURYWruNNBj/VPfDSk/ab5sjHwWE29+FTxQFUN06FPyp2Y
+         xx58JtvPp6paW4M2gjo1JOKD6ZtueeISBKsZ6jLXYlEIxBn+C/nVSyL3e3Yog/HU4K
+         wfpHlqrzMNeALf1PORrTbaVeEuoGDK/NgsvUCc0FkO5i4KptRUh/d64XJJJrvvxV1j
+         s5PAz7kM0PkTQj2NKy7w0qag5eU+EZy8b+A/LeUpsziBFK8swegBPEvF5bJDcHJXov
+         yXfJjUKMUWnx0rJpvCUnMwaFqwP59PZp7KPWpw6oXKPl7GM3D+UoA/FjsdSyulHFUE
+         MqMrje8dlXL6g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D023660A6C;
+        Mon, 30 Aug 2021 08:50:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qEpE2bEw7=XPgc=TuN69q/w";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/7] net: hns3: add some cleanups
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163031340884.11172.2108264388873148600.git-patchwork-notify@kernel.org>
+Date:   Mon, 30 Aug 2021 08:50:08 +0000
+References: <1630303602-44870-1-git-send-email-huangguangbin2@huawei.com>
+In-Reply-To: <1630303602-44870-1-git-send-email-huangguangbin2@huawei.com>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lipeng321@huawei.com,
+        chenhao288@hisilicon.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qEpE2bEw7=XPgc=TuN69q/w
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-After merging the kspp tree, today's linux-next build (powerpc
-allyesconfig) produced this warning:
+On Mon, 30 Aug 2021 14:06:35 +0800 you wrote:
+> This series includes some cleanups for the HNS3 ethernet driver.
+> 
+> 
+> Guangbin Huang (2):
+>   net: hns3: reconstruct function hclge_ets_validate()
+>   net: hns3: refine function hclge_dbg_dump_tm_pri()
+> 
+> [...]
 
-drivers/gpu/drm/kmb/kmb_plane.c:135:20: warning: array subscript 3 is above=
- array bounds of 'struct layer_status[1]' [-Warray-bounds]
-  135 |   kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_GL2_ENABLE;
-      |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
-In file included from drivers/gpu/drm/kmb/kmb_plane.c:17:
-drivers/gpu/drm/kmb/kmb_drv.h:48:23: note: while referencing 'plane_status'
-   48 |  struct layer_status  plane_status[KMB_MAX_PLANES];
-      |                       ^~~~~~~~~~~~
-drivers/gpu/drm/kmb/kmb_plane.c:132:20: warning: array subscript 2 is above=
- array bounds of 'struct layer_status[1]' [-Warray-bounds]
-  132 |   kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_GL1_ENABLE;
-      |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
-In file included from drivers/gpu/drm/kmb/kmb_plane.c:17:
-drivers/gpu/drm/kmb/kmb_drv.h:48:23: note: while referencing 'plane_status'
-   48 |  struct layer_status  plane_status[KMB_MAX_PLANES];
-      |                       ^~~~~~~~~~~~
-drivers/gpu/drm/kmb/kmb_plane.c:129:20: warning: array subscript 1 is above=
- array bounds of 'struct layer_status[1]' [-Warray-bounds]
-  129 |   kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_VL2_ENABLE;
-      |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
-In file included from drivers/gpu/drm/kmb/kmb_plane.c:17:
-drivers/gpu/drm/kmb/kmb_drv.h:48:23: note: while referencing 'plane_status'
-   48 |  struct layer_status  plane_status[KMB_MAX_PLANES];
-      |                       ^~~~~~~~~~~~
+Here is the summary with links:
+  - [net-next,1/7] net: hns3: initialize each member of structure array on a separate line
+    https://git.kernel.org/netdev/net-next/c/60fe9ff9b7cb
+  - [net-next,2/7] net: hns3: reconstruct function hns3_self_test
+    https://git.kernel.org/netdev/net-next/c/4c8dab1c709c
+  - [net-next,3/7] net: hns3: reconstruct function hclge_ets_validate()
+    https://git.kernel.org/netdev/net-next/c/161ad669e6c2
+  - [net-next,4/7] net: hns3: refine function hclge_dbg_dump_tm_pri()
+    https://git.kernel.org/netdev/net-next/c/04d96139ddb3
+  - [net-next,5/7] net: hns3: modify a print format of hns3_dbg_queue_map()
+    https://git.kernel.org/netdev/net-next/c/5aea2da59303
+  - [net-next,6/7] net: hnss3: use max() to simplify code
+    https://git.kernel.org/netdev/net-next/c/38b99e1ede32
+  - [net-next,7/7] net: hns3: uniform parameter name of hclge_ptp_clean_tx_hwts()
+    https://git.kernel.org/netdev/net-next/c/52d89333d219
 
-Exposed by commit
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  656256c0d67c ("Makefile: Enable -Warray-bounds")
 
-Introduced by commit
-
-  7f7b96a8a0a1 ("drm/kmb: Add support for KeemBay Display")
-
-from v5.11-rc1.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/qEpE2bEw7=XPgc=TuN69q/w
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEsmm0ACgkQAVBC80lX
-0GyjoQf+MNK6gFevp/QNvKQHyjE4H/r0Q3ZowIhaN56dYwIaCO9ojOiD21DrvDQH
-+hY0/PpEiZrTZvP4Drvz7N/QvTinBWIo6tUwPDjm6/F6Y4No7JCQyaJlAD/3G4jF
-lWzfqS3YbQwBNr14fEAkrK9CBAPZEC/3NtzFttnZac+eMG1TF9OPDRrxZ3Z2lG4X
-vD+SUSzyo4KEsWbqLlQHoDQPNVeIr8c9qrf6bNVsrGEa6QLZkKEDwMNfGDeujBTK
-ErNUDQ47gnOnG9XvV+pmh9I68/6APNofvan3/9SFV+DsGRTYmodib6M4MHm2etu3
-jeCe6gzJWXPW6SEDd5yJbiMx0S5IgA==
-=IDCX
------END PGP SIGNATURE-----
-
---Sig_/qEpE2bEw7=XPgc=TuN69q/w--
