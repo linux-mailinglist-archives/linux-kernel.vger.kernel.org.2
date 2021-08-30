@@ -2,159 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBCC3FB6F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3183FB6F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235237AbhH3N35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 09:29:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57937 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229446AbhH3N3w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 09:29:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630330138;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ez+5k1TtNoI6nPh1V3dLHo3m+sJYYxw8V1zq35K1XHI=;
-        b=TY6K8hlT2vrz6V4K+M0EWNDjRSoEh7b2EbxjSdRZioM3pObHy439YBOhz27k0x5NbXqG9j
-        81y8Sb3fmp4yeg0sLU4Tm2oPtF4P5ssNDHPWXcKidYDtoSVQqgkVpwlO8XvOdIaQBmS5VK
-        1IeRUbfJ0sywlYyQfMu5rpVDlguuuNk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-209-VTVQhEtWMnmdertodZRWQw-1; Mon, 30 Aug 2021 09:28:56 -0400
-X-MC-Unique: VTVQhEtWMnmdertodZRWQw-1
-Received: by mail-wr1-f72.google.com with SMTP id h15-20020adff18f000000b001574654fbc2so3334430wro.10
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 06:28:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=ez+5k1TtNoI6nPh1V3dLHo3m+sJYYxw8V1zq35K1XHI=;
-        b=oQtvjpXmvVSbMSfpA6Z28oXeISn1pu8+TS7VPUnQDoR/pz+EjGG+dPLm+qTCv3ATFP
-         4Pru3LjLUPYOl0xnxPB9d+EwNCj5auw4aQqUSlE1XiH5Lkrka2yWBnykIPU6iH+XO6xT
-         LSQCuPbF+FXb2QzuwH/xVgi4NtGePKDSO6TwK+D0yksgIAUuxYJan0iT2WX1IQRzElfG
-         kCmMb0LXa4kjN4h1++tZlZyx+ow2YA3vr6f9wjIOxSyEFL83N1TVu66UIRuwiGYlwlZq
-         HyN+1joMbWcSWgMBXr4kk8kGIwLY2f2/hXGNpN0zXfJNQD8HAC1CdZR8rwSTWrLpkFjY
-         zFQA==
-X-Gm-Message-State: AOAM5329vcOtQ02vRiStSXRqbblqt7cDdTYPfLYvvmbJP3NjDsJBSSBE
-        JnR7XFUFjvtoukpoL9qcJCXxxPoNz74AuZwmXUakhWAiGnbP/CBD+u4/uEGvwJ7UNtWwSi2eKKE
-        K0rTFIR1mqYiEvRNmO0QNe3eS
-X-Received: by 2002:a1c:2289:: with SMTP id i131mr4000649wmi.179.1630330135714;
-        Mon, 30 Aug 2021 06:28:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+OujoBEbeY80CshwjTryhEU5GAUZs42gyK9zP8YR4b7TAWZsaMsMYLK4KfjVFVTq48leoTA==
-X-Received: by 2002:a1c:2289:: with SMTP id i131mr4000637wmi.179.1630330135566;
-        Mon, 30 Aug 2021 06:28:55 -0700 (PDT)
-Received: from ?IPv6:2a0c:5a80:3c08:b500:afb2:5ebc:3fd2:26de? ([2a0c:5a80:3c08:b500:afb2:5ebc:3fd2:26de])
-        by smtp.gmail.com with ESMTPSA id g136sm10584091wmg.30.2021.08.30.06.28.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 06:28:55 -0700 (PDT)
-Message-ID: <b7e9dc19babef0e6993fa95be183c598a2f49bbd.camel@redhat.com>
-Subject: Re: [RFC PATCH v2 3/4] drivers/auxdisplay: senshat Raspberry Pi
- Sense HAT display driver
-From:   nsaenzju@redhat.com
-To:     Charles Mirabile <cmirabil@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Serge Schneider <serge@raspberrypi.org>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        linux-rpi-kernel@lists.infradead.org, fedora-rpi@googlegroups.com,
-        Mwesigwa Guma <mguma@redhat.com>,
-        Joel Savitz <jsavitz@redhat.com>
-Date:   Mon, 30 Aug 2021 15:28:51 +0200
-In-Reply-To: <20210820180801.561119-4-cmirabil@redhat.com>
-References: <20210820180801.561119-1-cmirabil@redhat.com>
-         <20210820180801.561119-4-cmirabil@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        id S236631AbhH3Ncc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 09:32:32 -0400
+Received: from mail-dm6nam12on2041.outbound.protection.outlook.com ([40.107.243.41]:10337
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229446AbhH3Nca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 09:32:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C5e/Tw7F9LU3DqSMdqpza4jicjKzkH5FtHJz/zzO3UbdhXZpKeHYSFy1uAecVORjckMpg6mP04W0vrPTJ5qsUAht0LGb3R2hdlFbyodQ7av74ZH1blOpuxT9kbbkRe8dYqvJlVJFKIWqipDWu6QTpgjwYc4V1Aa8iULKy1LdGSTGdnVbitt2i1flx31UsmauFCLUdetdn2rmTdvl1R2pEzBuNLJShqtunEMF68t7uO36U2pyaCfmHLnk67Q7v8wOpybFZzZRiZkY5RLk1+ki1lomflR25tpf1sN65V2f16nQlBAn+1E93AqiE7WyCTe3kJb8pKP/kcDoMGhwwohDtg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ztOKym7ZQADMWE/PmEQ6wu8SLljLchUNhBlYQJ8cjic=;
+ b=JbIbhwbMgn9eh+s8tiiBAccjCbLnisvchOvk1k8jgptQse86VV/ARV4jfnosM0h+meXY1mG2PRg4ZUvk7Nm+dSeJhqT3aXi+xWwUNcBVVaQsEwQmW5kPuLUHvmCYz1DM2KBalMws4gAodnqCYDdYWPoBWc0TqfHLr/DvJMM0yJ9KvZMfV9pAuIb7Rx8WBFN7CHK5jQD9GFNIf56cGwYlMNQA/cB2DpMBjBLYNMAeEp4xqLWgIZ1i9u/SV8x8/3HWdhoWB1TeFvlWKk4U2YSMoLnluIrHFMPSmTG8gWPUEWUxs3kmhia8aOUZniBbKyYyA/u1i6BP0snOZgUo31Kekw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ztOKym7ZQADMWE/PmEQ6wu8SLljLchUNhBlYQJ8cjic=;
+ b=J9QGNkifro8nzmR85AYjsag3e9ipEKV+HQSLWlceI4lG1VJJx4pUxYFTDRsDoXLj9rVL4i1b6M3T3ZUwzS9D9iUCzi1Jsrf+mgfWtFR4MuzqkkgU4LiSj5iY/g/JH5ihT73VCiTlwQ4e/G9O06aiJb4U4ct+pQTVEnsk2dCc6DDP8oTOpgk7d3qTyDGX+36cI2+2hc0xwBhOEvxwA98Yw5i6Y5sjEDLuUxfsWFCi1uTyCs/j/3WSsM5T0QqPQDHF1nMUNATliOn4iSSCPqndMJs3fm0nBCU4tFYOka6hcdiZGvnbEeUp3lnaBDoQozvM9NemNCSIxmupuU2xf3c0Yw==
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5160.namprd12.prod.outlook.com (2603:10b6:208:311::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Mon, 30 Aug
+ 2021 13:31:30 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%6]) with mapi id 15.20.4457.024; Mon, 30 Aug 2021
+ 13:31:29 +0000
+Date:   Mon, 30 Aug 2021 10:31:28 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     Maor Gottlieb <maorg@nvidia.com>, dledford@redhat.com,
+        hch@infradead.org, aelior@marvell.com, daniel@ffwll.ch,
+        airlied@linux.ie, dennis.dalessandro@cornelisnetworks.com,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        mkalderon@marvell.com, mike.marciniszyn@cornelisnetworks.com,
+        mustafa.ismail@intel.com, rodrigo.vivi@intel.com,
+        sroland@vmware.com, shiraz.saleem@intel.com, tzimmermann@suse.de,
+        linux-graphics-maintainer@vmware.com, liweihang@huawei.com,
+        liangwenpeng@huawei.com, yishaih@nvidia.com, zackr@vmware.com,
+        zyjzyj2000@gmail.com
+Subject: Re: [PATCH rdma-next v4 0/3] SG fix together with update to RDMA umem
+Message-ID: <20210830133128.GY1721383@nvidia.com>
+References: <20210824142531.3877007-1-maorg@nvidia.com>
+ <YSyU7JLIlonJzRhe@unreal>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSyU7JLIlonJzRhe@unreal>
+X-ClientProxiedBy: BL1P223CA0029.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c4::34) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.113.129) by BL1P223CA0029.NAMP223.PROD.OUTLOOK.COM (2603:10b6:208:2c4::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.20 via Frontend Transport; Mon, 30 Aug 2021 13:31:29 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mKhNo-007Ccs-8U; Mon, 30 Aug 2021 10:31:28 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dd16bc3a-e1a8-4044-43bd-08d96bba7941
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5160:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB51608BA545878C4B2127FCEFC2CB9@BL1PR12MB5160.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Cpdmgebb58O2zkpRMQcIhyANxsANGNRqn/elAFA9ic78HBG9Te2EpJiFNM9GD42/iQY6voN/wUXDU81tsul+M3Mxh6c1USjtQqfnU4/efmCcq5Bz5j40s+c4w/N4B/gUjhHVmZZudjmWiJg0jRcXXjbRiDXk1Jb/LEc3O+kp/mCeNzRnrnxfoRh1C3Xi7umj0K2mN/UKDsEIDOsm9AlY+TK5kx6gh9jPxfwafvxLShi+O88TY6eZ8bGXHAb47CF31irdc0LbRmUVloeZsWDOLLC47UFpew/u9R/W0nntuN1rpWreyI9PbWx6XS8FIcdKu+MwjslCpkhI47MU0qf1+AmBV9s92ASZfAbU3qVSEhVSZwtEKmroVxzSy5s+BbL09EProCeoUGSyqK8naiFb76uEw3YzHV2OFDRUOCExENwUz2MF62vaPIa5rh+/8PQcv5lrJZTTWIs6Tsk12SOzM5r/Qw5pFLTkUWar7F/MzcI/wn9MQnTKRb3e2urjb9E3HxLQbkQJVEKE9o8zwW9l/WrdWqwIuuRlt8TSdceqqurSIt81YdzvleeWZnVFvGJD4XLzVWxY4EK/kKSXhwZn9LzVcDvYWBpORhr1mQhhzz37hEao3AFMBKgPqE5Z494nwao27cs872xy9NhxkoTw6oGctE6fxNKp0fGANezeXf4fDCvHnDRsP3lFmFRSKy3cz2pyTztGERXVTDXpqHl909tw4tQkhenpp79AjeRm4EcnVv/cciHhYh02zhtI/6v3RTkFqyeSl6shIvGMbwO6Bg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(366004)(33656002)(36756003)(26005)(5660300002)(6636002)(83380400001)(38100700002)(1076003)(316002)(15650500001)(4326008)(186003)(66556008)(66476007)(426003)(66946007)(8676002)(7416002)(9746002)(9786002)(2906002)(86362001)(966005)(2616005)(478600001)(8936002)(6862004)(37006003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OQCfr4nQ7TVKMr6Sc8pQWiNLT2xI7gp1NSJpl4F5UMDMdC+nxALw5sxHbcIe?=
+ =?us-ascii?Q?BTJ1uM8K4LghWh+PL7B9v4L6e7Kt+4uItjDLo+5/SQ+7CvenZJUn0JMzxsce?=
+ =?us-ascii?Q?7m/nm5NKsxA0+xXwudiXIrkz4xaoaR9835t7IE5u2kfuMWJFtj++V013qgqk?=
+ =?us-ascii?Q?KQnCaiRpCrz15f7oLq2H4Ggcvm1C84A5rOgLM9Zngv3bdVFFn7sTXlJzreZC?=
+ =?us-ascii?Q?g72puspwMjXGECKdnf2J5bPxnDtH8nUFPiJ/MYzmQZhn/F4jeT7UL3+JWuAt?=
+ =?us-ascii?Q?+AK6+zBi6Z2KSZNOv7FsqnpKUQftPlpXhmrR0LkCR4I5H6DLPVKb7fWCr+H6?=
+ =?us-ascii?Q?B0PrpCV2PUe0IMEF/lxKLsSCoDX2RgOaNALHDH8a9BScqpcCE9iLYZrTXdNY?=
+ =?us-ascii?Q?i4ldUEY3Gk0mx13Vjr28aX74lZWf/fTmVZbiPqyOEetBz04xYfNa9fj7JV97?=
+ =?us-ascii?Q?eE7RWdHh6MMHTJqxB273GTtDmNw/cmwmEZEG/BzIBexKiy+OTAfvjajeww8T?=
+ =?us-ascii?Q?xtQaSwmILMbcnu+QJBZ5CCCKf69WggD+OPIS1rs3TokE52XVfEb04Ld4l4mY?=
+ =?us-ascii?Q?vK9UEwTQaC+QakwUeuviwF9PAIHHdAnC7+r7oK02ZxoO24PxqmkkNC9fogE1?=
+ =?us-ascii?Q?QBAimm1aTno00erShjHZU/sx7pMqEJ1QRBw+ugLLE3trCVHNUW+aE2eSLWT7?=
+ =?us-ascii?Q?TmGEa9KZmyhno7+eCRtpQRSD7XHoaR1d5FNz4R0EoVSBvInG0O+nP27/+eJj?=
+ =?us-ascii?Q?tfVVcF0UZH+3cDuSAk8Mm0BUHwc0vW0x2UeULFsuGHUVTzuxkI2h+tOdUpNM?=
+ =?us-ascii?Q?6CARwDeT5S1ul8/D3LK52MeTHOYjplwiTIspzDqNJJljmnCQ5EUYZTHEBGem?=
+ =?us-ascii?Q?zMMXSaoOBhPD71vnSxjFLYQh43R4vDT2XRyQr9iyXZdcSmTU2q6hSTPpSqLM?=
+ =?us-ascii?Q?GGMWHL3ZofYQnRZAMyKktApJVhBRaunMzY4oAlTSMv0ugE3y3ikigf0RR6C0?=
+ =?us-ascii?Q?cNMPQdVd5MglufJbpke3q01tu9JxQIxcHWF3AEIQpMVr9EFidw5ry7BRZCpN?=
+ =?us-ascii?Q?NeO5SKJydAIwwCH3xhBKPaAxhksVZX9N0zVsRBVYSqgVHgGBoG4sVOmD7qaa?=
+ =?us-ascii?Q?O2nFimpGJkpAsXOYATK/NfSEOuIsVH+eEfxIo7q1c8SwajmUtWwO0eKJE3mM?=
+ =?us-ascii?Q?E7e/Gp8JhodjJIkvCpoBPfk9f1Ak7rlZuBW7WQFORwXCnsLApcfAXkIgteRS?=
+ =?us-ascii?Q?G3tzI9J/1GtFesMNMJcNpoRqmmzBiIJvmit4rPejXbrjiTjzKl9qIyf9eqlV?=
+ =?us-ascii?Q?3TEUwftqVwuL6P2DEqk/2eZV?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd16bc3a-e1a8-4044-43bd-08d96bba7941
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2021 13:31:29.4823
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: veL8n+XKavj0iNvpBfvmusPcigW8d3UEi++qRRCoZTXV6LtT+ISJ1LcDsYkkkG+q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5160
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Charles,
+On Mon, Aug 30, 2021 at 11:21:00AM +0300, Leon Romanovsky wrote:
+> On Tue, Aug 24, 2021 at 05:25:28PM +0300, Maor Gottlieb wrote:
+> > From: Maor Gottlieb <maorg@nvidia.com>
+> > 
+> > Changelog:
+> > v4:
+> >  * Unify sg_free_table_entries with __sg_free_table
+> > v3: https://lore.kernel.org/lkml/cover.1627551226.git.leonro@nvidia.com/
+> >  * Rewrote to new API suggestion
+> >  * Split for more patches
+> > v2: https://lore.kernel.org/lkml/cover.1626605893.git.leonro@nvidia.com
+> >  * Changed implementation of first patch, based on our discussion with
+> >  * Christoph.
+> >    https://lore.kernel.org/lkml/YNwaVTT0qmQdxaZz@infradead.org/
+> > v1: https://lore.kernel.org/lkml/cover.1624955710.git.leonro@nvidia.com/
+> >  * Fixed sg_page with a _dma_ API in the umem.c
+> > v0: https://lore.kernel.org/lkml/cover.1624361199.git.leonro@nvidia.com
+> > 
+> > Maor Gottlieb (3):
+> >   lib/scatterlist: Provide a dedicated function to support table append
+> >   lib/scatterlist: Fix wrong update of orig_nents
+> >   RDMA: Use the sg_table directly and remove the opencoded version from
+> >     umem
+> > 
+> >  drivers/gpu/drm/drm_prime.c                 |  13 +-
+> >  drivers/gpu/drm/i915/gem/i915_gem_userptr.c |  11 +-
+> >  drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c  |  14 +-
+> >  drivers/infiniband/core/umem.c              |  56 ++++---
+> >  drivers/infiniband/core/umem_dmabuf.c       |   5 +-
+> >  drivers/infiniband/hw/hns/hns_roce_db.c     |   4 +-
+> >  drivers/infiniband/hw/irdma/verbs.c         |   2 +-
+> >  drivers/infiniband/hw/mlx4/doorbell.c       |   3 +-
+> >  drivers/infiniband/hw/mlx4/mr.c             |   4 +-
+> >  drivers/infiniband/hw/mlx5/doorbell.c       |   3 +-
+> >  drivers/infiniband/hw/mlx5/mr.c             |   3 +-
+> >  drivers/infiniband/hw/qedr/verbs.c          |   2 +-
+> >  drivers/infiniband/sw/rdmavt/mr.c           |   2 +-
+> >  drivers/infiniband/sw/rxe/rxe_mr.c          |   2 +-
+> >  include/linux/scatterlist.h                 |  56 +++++--
+> >  include/rdma/ib_umem.h                      |  11 +-
+> >  include/rdma/ib_verbs.h                     |  28 ++++
+> >  lib/scatterlist.c                           | 155 ++++++++++++--------
+> >  lib/sg_pool.c                               |   3 +-
+> >  tools/testing/scatterlist/main.c            |  38 +++--
+> >  20 files changed, 258 insertions(+), 157 deletions(-)
+> 
+> Jason,
+> 
+> Did you add these patches to the -next? I can't find them.
 
-On Fri, 2021-08-20 at 14:08 -0400, Charles Mirabile wrote:
-> This patch implements control of the 8x8 RGB LED matrix display.
+They sat in linux-next for awhile outside the rdma-next tree
 
-It'd be nice to get a more information on the i2c interface, and what each byte
-is supposed to represent.
+All synced up now
 
-> Signed-off-by: Charles Mirabile <cmirabil@redhat.com>
-> Signed-off-by: Mwesigwa Guma <mguma@redhat.com>
-> Signed-off-by: Joel Savitz <jsavitz@redhat.com>
-> ---
-
-[...]
-
-> +static long sensehat_display_ioctl(struct file *filp, unsigned int cmd,
-> +			     unsigned long arg)
-> +{
-> +	struct sensehat *sensehat = container_of(filp->private_data, struct sensehat, display.mdev);
-> +	struct sensehat_display *sensehat_display = &sensehat->display;
-> +	void __user *user_ptr = (void __user *)arg;
-> +	u8 temp[GAMMA_SIZE];
-> +	int ret;
-> +
-> +	if (mutex_lock_interruptible(&sensehat_display->rw_mtx))
-> +		return -ERESTARTSYS;
-> +	switch (cmd) {
-> +	case SENSEDISP_IOGET_GAMMA:
-> +		if (copy_to_user(user_ptr, sensehat_display->gamma, GAMMA_SIZE)) {
-> +			ret = -EFAULT;
-> +			goto out_unlock;
-> +		}
-> +		ret = 0;
-> +		goto out_unlock;
-> +	case SENSEDISP_IOSET_GAMMA:
-> +		if (copy_from_user(temp, user_ptr, GAMMA_SIZE)) {
-> +			ret = -EFAULT;
-> +			goto out_unlock;
-> +		}
-> +		ret = 0;
-> +		goto out_update;
-> +	case SENSEDISP_IORESET_GAMMA:
-> +		if (arg < GAMMA_DEFAULT || arg >= GAMMA_PRESET_COUNT) {
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +		memcpy(temp, gamma_presets[arg], GAMMA_SIZE);
-> +		ret = 0;
-> +		goto out_update;
-> +	default:
-> +		ret = -EINVAL;
-> +		goto out_unlock;
-> +	}
-> +out_update:
-> +	memcpy(sensehat_display->gamma, temp, GAMMA_SIZE);
-> +	sensehat_update_display(sensehat);
-> +out_unlock:
-> +	mutex_unlock(&sensehat_display->rw_mtx);
-> +	return ret;
-> +}
-> +
-> +static const struct file_operations sensehat_display_fops = {
-> +	.owner		= THIS_MODULE,
-> +	.llseek		= sensehat_display_llseek,
-> +	.read		= sensehat_display_read,
-> +	.write		= sensehat_display_write,
-> +	.unlocked_ioctl	= sensehat_display_ioctl,
-> +};
-
-I doubt this approach will make it upstream. This should use an already
-existing kernel interface, or if not good enough, extend it. I'm sure this is
-not the first RGB led matrix to show up anyway. Maybe drivers/leds has
-infrastructure to deal with this. Or else a fb device?
-
-I presume you want to keep the IOCTL in order to be able to run RPi specific
-aplications/libraries. It'll be up to them to change once we settle on a proper
-way of handling this, not the other way around. Note that the RPi engineers
-have always preffered using official kernel interfaces when available, so I
-don't think this'll be problematic.
-
-Regards,
-Nicolas
-
+Jason
