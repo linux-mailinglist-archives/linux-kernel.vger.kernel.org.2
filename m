@@ -2,168 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098243FBE69
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 102A23FBE67
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbhH3Vjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 17:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
+        id S238468AbhH3Vjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238427AbhH3Vju (ORCPT
+        with ESMTP id S229887AbhH3Vjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:39:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24640C061575;
-        Mon, 30 Aug 2021 14:38:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BzSa/Xav9Mi+TvgtPf5PEb+bv34epRMNiJiGroKt5hY=; b=EQq8XZBvGzzaVQQkII1GFhV+pF
-        ufb0CpPaLNxgkq6Mha4e+V9EJXlzyEJQ0oWc9SGriOEaAsfJ2YXNkelEtuh3YbQvn2QpYgnL/vDxx
-        m7jZ2tbE/sVPY0MiysKVbrDfrJHW5oceX+95lE8gBJNtuP9HZmSMG9OFCS2s0T44VNl450KBGXjl5
-        puy6m/J/PmS5td/fkbjQEMJpk47V3qH41/uBxAcq6ukNoG+dlWiS7cGEhen50Cs5xhChebaVQJz19
-        poaL7o4VK7zhVHPRx0UcLdhntFcnr3KxuLJW8Dc+GMw0Pc0XvSIHIPzke2da9rmbEIbSu5mINQXTR
-        u/x4xwrQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKoyy-000YoT-QA; Mon, 30 Aug 2021 21:38:27 +0000
-Date:   Mon, 30 Aug 2021 22:38:20 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YS1PzKLr2AWenbHF@casper.infradead.org>
-References: <YSQeFPTMn5WpwyAa@casper.infradead.org>
- <YSU7WCYAY+ZRy+Ke@cmpxchg.org>
- <YSVMAS2pQVq+xma7@casper.infradead.org>
- <YSZeKfHxOkEAri1q@cmpxchg.org>
- <20210826004555.GF12597@magnolia>
- <YSjxlNl9jeEX2Yff@cmpxchg.org>
- <YSkyjcX9Ih816mB9@casper.infradead.org>
- <YS0WR38gCSrd6r41@cmpxchg.org>
- <YS0h4cFhwYoW3MBI@casper.infradead.org>
- <YS0/GHBG15+2Mglk@cmpxchg.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YS0/GHBG15+2Mglk@cmpxchg.org>
+        Mon, 30 Aug 2021 17:39:46 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E23C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 14:38:52 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id o76-20020a25414f000000b0059bb8130257so3164038yba.0
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 14:38:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=HL0bHPC7fRhw8NveiezJuSyRlf1c6pLI+gcpO0vq9Sg=;
+        b=Vw0YkpLrhfKJfwJ/o+LiWW8iYhrqyu75s/mnuCG5dXhDSWakhU7/UrE0jtlsGXxnwG
+         iXFjlGLD5voK5KlOSCK4ZCoSlj7CQb/vgAiUU20YSaLD1eCtY9Y8Y0MV1Z0BvQUN7ARe
+         1m4VWFO7TQ32kIW91EXtJG1/9i6D5BtObjDDH1vqFc97HUye4X8oEo977sE3ieasNCwJ
+         h1AY4zPaCQQkAR1W8AtIL1AFSHIAYEmD6Uu8sZREtW+Na0a/uHt6bCxqGuxezMU9dONu
+         ZA6yM9sdwleWHTm1cx4DQmqGcwuFbjnHsanXtMOk5PE79GHtMzBcZl/wlo19kVyeUtGD
+         eUPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=HL0bHPC7fRhw8NveiezJuSyRlf1c6pLI+gcpO0vq9Sg=;
+        b=GFlvAuXw/cLIrJJR5p+W9AdvmWx22p+qKtPPYWvtnPGtaRoGpfCXpnmwVXm9y3B7Kd
+         A0ARGoc14ociYGtz0maaS/a6HzB5blGoF042GY7Hto7NJ97Ti/C9R+aBmko+acal1zp7
+         PoV4Hz45GwKbWbhkmEw+6bgaFzB8go3+tf2ITiI4w1BfcsF1L9BdQ6G14cmHNMqWVzNZ
+         IYJ9eptramkghW/fq1AZaKQSZjRXMmD23B5LlYKv93vwiWFHR5cgxHXZOQ03Ka784VvH
+         vS8oFHyLGJJIkqCjEHKN6rq1Nu6UD+vvVpH8B9AjahtrtFzIfeuWuHK6UV2G7OevLCjP
+         g/IA==
+X-Gm-Message-State: AOAM533t4WeAS4EN5/hhf4veDI+B4+stSvTqLqZkQWUi4ffOOaZXgBm/
+        voI1Pwr+twwpaG1T5evPiQ/F0/KqdDcyGpjIJtw=
+X-Google-Smtp-Source: ABdhPJwIA5lJ67dNvJNzo05E+2L82lp32fjkWAPFbwD9w2A4+dtklq/RlB9I1vIcCowqPvM40IWGjkRYSiC3hSZi58c=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:266b:6ef5:38a3:394c])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:74cd:: with SMTP id
+ p196mr15254588ybc.454.1630359531173; Mon, 30 Aug 2021 14:38:51 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 14:38:43 -0700
+Message-Id: <20210830213846.2609349-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+Subject: [PATCH] ARM: select HAVE_FUTEX_CMPXCHG
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        "=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=" 
+        <u.kleine-koenig@pengutronix.de>, Mike Rapoport <rppt@kernel.org>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 04:27:04PM -0400, Johannes Weiner wrote:
-> Right, page tables only need a pfn. The struct page is for us to
-> maintain additional state about the object.
-> 
-> For the objects that are subpage sized, we should be able to hold that
-> state (shrinker lru linkage, referenced bit, dirtiness, ...) inside
-> ad-hoc allocated descriptors.
-> 
-> Descriptors which could well be what struct folio {} is today, IMO. As
-> long as it doesn't innately assume, or will assume, in the API the
-> 1:1+ mapping to struct page that is inherent to the compound page.
+tglx notes:
+  This function [futex_detect_cmpxchg] is only needed when an
+  architecture has to runtime discover whether the CPU supports it or
+  not.  ARM has unconditional support for this, so the obvious thing to
+  do is the below.
 
-Maybe this is where we fundamentally disagree.  I don't think there's
-any point in *managing* memory in a different size from that in which it
-is *allocated*.  There's no point in tracking dirtiness, LRU position,
-locked, etc, etc in different units from allocation size.  The point of
-tracking all these things is so we can allocate and free memory.  If
-a 'cache descriptor' reaches the end of the LRU and should be reclaimed,
-that's wasted effort in tracking if the rest of the 'cache descriptor'
-is dirty and heavily in use.  So a 'cache descriptor' should always be
-at least a 'struct page' in size (assuming you're using 'struct page'
-to mean "the size of the smallest allocation unit from the page
-allocator")
+Fixes linkage failure from Clang randconfigs:
+kernel/futex.o:(.text.fixup+0x5c): relocation truncated to fit: R_ARM_JUMP24 against `.init.text'
+and boot failures for CONFIG_THUMB2_KERNEL.
 
-> > > > I genuinely don't understand.  We have five primary users of memory
-> > > > in Linux (once we're in a steady state after boot):
-> > > > 
-> > > >  - Anonymous memory
-> > > >  - File-backed memory
-> > > >  - Slab
-> > > >  - Network buffers
-> > > >  - Page tables
-> > > > 
-> > > > The relative importance of each one very much depends on your workload.
-> > > > Slab already uses medium order pages and can be made to use larger.
-> > > > Folios should give us large allocations of file-backed memory and
-> > > > eventually anonymous memory.  Network buffers seem to be headed towards
-> > > > larger allocations too.  Page tables will need some more thought, but
-> > > > once we're no longer interleaving file cache pages, anon pages and
-> > > > page tables, they become less of a problem to deal with.
-> > > > 
-> > > > Once everybody's allocating order-4 pages, order-4 pages become easy
-> > > > to allocate.  When everybody's allocating order-0 pages, order-4 pages
-> > > > require the right 16 pages to come available, and that's really freaking
-> > > > hard.
-> > > 
-> > > Well yes, once (and iff) everybody is doing that. But for the
-> > > foreseeable future we're expecting to stay in a world where the
-> > > *majority* of memory is in larger chunks, while we continue to see 4k
-> > > cache entries, anon pages, and corresponding ptes, yes?
-> > 
-> > No.  4k page table entries are demanded by the architecture, and there's
-> > little we can do about that.
-> 
-> I wasn't claiming otherwise..?
+Link: https://github.com/ClangBuiltLinux/linux/issues/325
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ arch/arm/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-You snipped the part of my paragraph that made the 'No' make sense.
-I'm agreeing that page tables will continue to be a problem, but
-everything else (page cache, anon, networking, slab) I expect to be
-using higher order allocations within the next year.
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index fc196421b2ce..b760dd45b734 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -92,6 +92,7 @@ config ARM
+ 	select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
+ 	select HAVE_FUNCTION_GRAPH_TRACER if !THUMB2_KERNEL && !CC_IS_CLANG
+ 	select HAVE_FUNCTION_TRACER if !XIP_KERNEL
++	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_GCC_PLUGINS
+ 	select HAVE_HW_BREAKPOINT if PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+-- 
+2.33.0.259.gc128427fd7-goog
 
-> > > The slab allocator has proven to be an excellent solution to this
-> > > problem, because the mailing lists are not flooded with OOM reports
-> > > where smaller allocations fragmented the 4k page space. And even large
-> > > temporary slab explosions (inodes, dentries etc.) are usually pushed
-> > > back with fairly reasonable CPU overhead.
-> > 
-> > You may not see the bug reports, but they exist.  Right now, we have
-> > a service that is echoing 2 to drop_caches every hour on systems which
-> > are lightly loaded, otherwise the dcache swamps the entire machine and
-> > takes hours or days to come back under control.
-> 
-> Sure, but compare that to the number of complaints about higher-order
-> allocations failing or taking too long (THP in the fault path e.g.)...
-
-Oh, we have those bug reports too ...
-
-> Typegrouping isn't infallible for fighting fragmentation, but it seems
-> to be good enough for most cases. Unlike the buddy allocator.
-
-You keep saying that the buddy allocator isn't given enough information to
-do any better, but I think it is.  Page cache and anon memory are marked
-with GFP_MOVABLE.  Slab, network and page tables aren't.  Is there a
-reason that isn't enough?
-
-I think something that might actually help is if we added a pair of new
-GFP flags, __GFP_FAST and __GFP_DENSE.  Dense allocations are those which
-are expected to live for a long time, and so the page allocator should
-try to group them with other dense allocations.  Slab and page tables
-should use DENSE, along with things like superblocks, or fs bitmaps where
-the speed of allocation is almost unimportant, but attempting to keep
-them out of the way of other allocations is useful.  Fast allocations
-are for allocations which should not live for very long.  The speed of
-allocation dominates, and it's OK if the allocation gets in the way of
-defragmentation for a while.
-
-An example of another allocator that could care about DENSE vs FAST
-would be vmalloc.  Today, it does:
-
-        if (array_size > PAGE_SIZE) {
-                area->pages = __vmalloc_node(array_size, 1, nested_gfp, node,
-                                        area->caller);
-        } else {
-                area->pages = kmalloc_node(array_size, nested_gfp, node);
-        }
-
-That's actually pretty bad; if you have, say, a 768kB vmalloc space,
-you need a 12kB array.  We currently allocate 16kB for the array, when we
-could use alloc_pages_exact() to free the 4kB we're never going to use.
-If this is GFP_DENSE, we know it's a long-lived allocation and we can
-let somebody else use the extra 4kB.  If it's not, it's probably not
-worth bothering with.
