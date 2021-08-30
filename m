@@ -2,94 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4593FB891
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0B73FB893
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237203AbhH3Oy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 10:54:29 -0400
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:42905 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233162AbhH3Oy2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 10:54:28 -0400
-Received: by mail-ua1-f43.google.com with SMTP id m39so7954953uad.9;
-        Mon, 30 Aug 2021 07:53:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oOeLbxt57qZfv/yH8g9lzPrCzif+fnGpjQ2ymjIQjIU=;
-        b=fEwzRwfrXqJuIzVfDgMO6zU4BTor4bZ9k3/QcaB8ugT0p8eVn9eHsE9n7HhLW+u0P2
-         EF5CZ9K1jD8v3rBTdHvSVcsBuo8v8PboTNfp+ch2pdJDipgLAY16wIcUo71WcLKWIgPj
-         686GhOGHwz6SZLcuYYOhvBece7aQlo40BSyZBgLQUhQOhk01VM8+kCKKC3hDLCgD9plp
-         Uawoe9yZ864rXUNfk868FHPZSJplEezpRtIM+nsxWXUsVlhzRd/wM5Zt8nlcyUD3wS9M
-         RzB2/MPuNcFC9AOCRbc0ActXFXzAE7zdAgk7wkguxUXfCgAmhaAjOJEe7/krnTUfHPFj
-         gknw==
-X-Gm-Message-State: AOAM531Ck34x0TXjeqOTef8hGy8QoaUePTBk4zD6CApY1PjIyEWfhpo/
-        b9fCNc940DpEok0dn5uQBtWEX6l2AyXc04PT7f8=
-X-Google-Smtp-Source: ABdhPJwmIV0qCAzV0q/OlL0uB0+VpSyYfMSp3r7kqu0hk1TSfG7YyjO/GNRUbbaJH49YxcrYEA7rPFV89kbYrCQkZKU=
-X-Received: by 2002:ab0:209a:: with SMTP id r26mr15004025uak.14.1630335214663;
- Mon, 30 Aug 2021 07:53:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <000000000000815b9605c70e74f8@google.com> <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
- <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
- <CAMuHMdV=xVhEHLEoYt3OF+kmGrLOr6t7SP1sghSmp9JqXD+3Og@mail.gmail.com>
- <20210830130000.GW7722@kadam> <8ed0ca59-226b-2d0e-b1ae-82305202558d@i-love.sakura.ne.jp>
- <20210830134719.GI12231@kadam> <03d0f549-9731-8b06-1393-60d4bef27884@i-love.sakura.ne.jp>
- <CAMuHMdXp7D02Z_Hs4wT9y4WeNzqdxHMgExiOzVauvpfgf4Veig@mail.gmail.com> <ba78b9a5-08a5-36d3-7c6f-e26ee239d92f@i-love.sakura.ne.jp>
-In-Reply-To: <ba78b9a5-08a5-36d3-7c6f-e26ee239d92f@i-love.sakura.ne.jp>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 30 Aug 2021 16:53:23 +0200
-Message-ID: <CAMuHMdWLTPBatefOgdVpfcqQoBw-D1F-_+-+23WdoQfwBcrz6A@mail.gmail.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in vga16fb_fillrect
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Colin King <colin.king@canonical.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S237237AbhH3OzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 10:55:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:43410 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233162AbhH3OzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 10:55:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39C1E31B;
+        Mon, 30 Aug 2021 07:54:21 -0700 (PDT)
+Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 09DDA3F5A1;
+        Mon, 30 Aug 2021 07:54:16 -0700 (PDT)
+From:   Jia He <justin.he@arm.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia He <justin.he@arm.com>
+Subject: [PATCH] KVM: x86/mmu: Remove unused field mmio_cached in struct kvm_mmu_page
+Date:   Mon, 30 Aug 2021 22:53:36 +0800
+Message-Id: <20210830145336.27183-1-justin.he@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tetsuo,
+After reverting and restoring the fast tlb invalidation patch series,
+the mmio_cached is not removed. Hence a unused field is left in
+kvm_mmu_page.
 
-On Mon, Aug 30, 2021 at 4:38 PM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
-> On 2021/08/30 23:30, Geert Uytterhoeven wrote:
-> > The highest possible value of maxmem inside vga16fb_check_var()
-> > is 65536.
->
-> Yes.
->
-> >
-> > So I believe
-> >
-> >     if (array_size(vxres, vyres) > maxmem)
-> >
-> > should work fine.
->
-> My intent is to check at common path than individual module so that we don't
-> need to add same check to every module. Same approach is proposed at
-> https://lkml.kernel.org/r/1630294223-7225-1-git-send-email-tcs_kernel@tencent.com .
+Cc: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Jia He <justin.he@arm.com>
+---
+ arch/x86/kvm/mmu/mmu_internal.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-Which I believe is wrong.
-Thanks for the pointer, I will reply to the actual patch...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+index 35567293c1fd..3e6f21c1871a 100644
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -37,7 +37,6 @@ struct kvm_mmu_page {
+ 
+ 	bool unsync;
+ 	u8 mmu_valid_gen;
+-	bool mmio_cached;
+ 	bool lpage_disallowed; /* Can't be replaced by an equiv large page */
+ 
+ 	/*
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
