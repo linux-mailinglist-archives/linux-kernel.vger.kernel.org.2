@@ -2,193 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EEF3FB987
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB1A3FB98C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237796AbhH3P7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
+        id S237811AbhH3P7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237715AbhH3P7G (ORCPT
+        with ESMTP id S237636AbhH3P7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:59:06 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B16C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:58:12 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso18958113ott.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:58:12 -0700 (PDT)
+        Mon, 30 Aug 2021 11:59:35 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE072C061575;
+        Mon, 30 Aug 2021 08:58:41 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id bt14so32227877ejb.3;
+        Mon, 30 Aug 2021 08:58:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FY2VA2VPS0PFv3jNVx3v2krt3aMF9FEesDIXjv70sZY=;
-        b=qmKaHEDQEWijGlt9M6f2t5iEadeHD6W2gwpvcMOhMhprgbY3tbrV8V91B/E/MQHc27
-         u7AM5LHRvdGnlhcV4j9GV7EfRRzaj0Hlgi5AYtFRh1E84XNjartSn3Cld1l49/J4HRT/
-         pViRaCSyDKVqMzYm/r9GEY2oiuKNwMKihTLBgFSs5T5Ze70j2Q6SipESqpeySrOl0bhq
-         9wbfYwEtY8ZHeuS1AmgKw9SZkvZEVdKAoQTHuDCXQ1tarfaOtgeG8jTslXSx1SDmAQvd
-         UCVmResiMJx1dvY1JqJIG3WYLn2JhI0gAawvx3uUsj39w7FRTZwuhYD5GBRQUDX5SaxZ
-         KzDQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EzLND7Bopp3YFFk8qiP7F6kcwfQFWTuokrIXZ++/vhE=;
+        b=fWObb/2djR3cm5fTeSb9+LO040MhFz5L6dYeZV2JHwopgB9+uTVKX06+arqZaC/X/A
+         CieSqOlJb1rXXSJrzxaNkQgh8u3zzv/A4aEBrh2o1JhmOaeb6vwugLWOQlJsYiJIw8qS
+         tvHq6oG1/2ZJ274+HV+NShdq6LN2DQLgmxfNjjMaMFcYx//2fA862tSOQj5f/eZQ9DfX
+         b1gkzvAZtFQ9xT5v8M/Au7rrlv1090n1d+lzlw4QyHtMacgZE0HLJkoZFCQ3WBimy/7R
+         zt5JCF0eDOzbL0fjAB/CVVnoMQbx01IaCxBvsW0dA0TSgbbANhLMeSAQie1MFUoCqDbJ
+         DMFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FY2VA2VPS0PFv3jNVx3v2krt3aMF9FEesDIXjv70sZY=;
-        b=STG5YZGLOs0XqAVFTqoXk8ynHOJNR84h7jnPxkWHUt9Z7UeaMzktP/qv+5wdoBC9ti
-         JJwZMgBP80c4GCW8kBSTembaLcxDrPOmHSBaAziO/4aWxpWHk2R0YrMEHpUdq0ORyvRX
-         T8zMxIbfWciJlPPpPPvHK6mcroLeHQVWG/MYNXQR+p24wYVDR2gFVSrQz7lcdHcdi8Ye
-         LWbXNINswfU/o3M03nOberPOF9cLxZOCxdDqxhPZQ8zrM1F0i8P3UVCcZ8qPn0264vEl
-         3ncJ7HwqoCi96lwXpEWmJfWsQRc4PtBPw2zPQPA3mBT2lKJceJIVtlXUZqxtRH72iruk
-         6DUg==
-X-Gm-Message-State: AOAM532lUCMfv//nNAe6j47lVxAPfkxKOxzO5lcut+MqaUUYLdauikWt
-        3o6TlVdaC/StL64N5Pk2/NrRbf48OqHeRw==
-X-Google-Smtp-Source: ABdhPJxdyszdxt5Si2XTSb8nyAs1TDBREjU2cIHp64OHvdLDifuUoynPAUN7kq4KaGkq4BJdDfWkkQ==
-X-Received: by 2002:a05:6830:4117:: with SMTP id w23mr19635301ott.40.1630339091617;
-        Mon, 30 Aug 2021 08:58:11 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l3sm3271303otd.79.2021.08.30.08.58.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 08:58:11 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 10:58:09 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] arm: dts: qcom: apq8064: Use 27MHz PXO clock as DSI
- PLL reference
-Message-ID: <YS0AEZR7NhmDhHmk@yoga>
-References: <20210829203027.276143-1-marijn.suijten@somainline.org>
- <20210829203027.276143-2-marijn.suijten@somainline.org>
- <CAA8EJprQ03ipZzO+1vgt9W7jFbLXgsYR0n-oJxVB-142x8dgRA@mail.gmail.com>
- <17d19b93-dbe5-cc85-f302-b52cd8eeed56@somainline.org>
- <CAA8EJpqd7_5510TodALnX13Wo0MufYm2G=r6vw9sy=VURrewyw@mail.gmail.com>
- <YSznouVZ93sUd6xa@Marijn-Arch-PC.localdomain>
- <CAA8EJpoRo6rPgpUeT9X0K4UPu5d8-YBP=BJ3AAejD+wujhmv+g@mail.gmail.com>
- <YSzqR2yq3MtdPnIG@Marijn-Arch-PC.localdomain>
- <YSz2kVKv8jhz7/n8@yoga>
- <YSz7NZD7elH3+XgP@Marijn-Arch-PC.localdomain>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EzLND7Bopp3YFFk8qiP7F6kcwfQFWTuokrIXZ++/vhE=;
+        b=TbVCBOCpgBDWFh0mU8UsPtSHGWUaVqj44NxJVX2qls4gZbqXDFVTOZCTKqU19rEvL3
+         20nT3/QuDUsQdvcpNkZftjdLA/2UnDuYjOW2+mNyX057g6CRRWQhHrf/D3imDm+hiYfo
+         dOBV7RZs13a4NrDFa504UvlnOvABKE5pTdhy8GHcfMjX5BvPtXzYqdXnQREPrkCma3pO
+         ROprc/TUqKPO/Dtl3i0nNFgniLwKuAKQdooVvVd/Q75LeXVJJsOk2X1yP7LqNcTWml+b
+         Uo32MCGrw8Rni0l8huK5hrpiIjeBxRtZYaIr98uo/873KvP/goUgr2ekcZpTtsYGrKtB
+         nFog==
+X-Gm-Message-State: AOAM533SOJ+dgtfRZR+EXztBA7/yfQLaWu5VjaG5dAv7cL0LAGfbzi7a
+        yk40jA9l6D6DjBbHR4WUZoei9VNQFDEKHPUepNs=
+X-Google-Smtp-Source: ABdhPJzLFV/rR6wo4yVk550MR8vklFxaVF9r2OFQz46oVJLdEyjG3JtCYPFfu2QJXiMKd5YRHHpxH9vLiBtmGZzmN1k=
+X-Received: by 2002:a17:906:3e10:: with SMTP id k16mr26711718eji.116.1630339120139;
+ Mon, 30 Aug 2021 08:58:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSz7NZD7elH3+XgP@Marijn-Arch-PC.localdomain>
+References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
+ <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
+ <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at> <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
+ <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at> <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com>
+ <CAFLxGvywv29u6DJZrJxnJJmUDSQ4xpbT0u5LNKY1uGKyQom+WA@mail.gmail.com>
+ <CAAEAJfCY+X-G=7Oe9NqrJ4yQZ29DBA78jOFAX44GD0g6=s7qhg@mail.gmail.com>
+ <1668790824.35266.1627559144878.JavaMail.zimbra@nod.at> <CAAEAJfDDtGcUquyP7Jn0Urttt4kSfAQbJ_qPQ90ROtWLavW9EA@mail.gmail.com>
+ <CAOuPNLj+DSigRY_AgHQnGKCK-Vm4ykQBR8UfnTi2UObORTcBFg@mail.gmail.com>
+ <CAOuPNLgfJGzp-RJBjydFDL1ZAvOd7=-MgXhnsb2eb_xFSLC66w@mail.gmail.com> <CAAEAJfBuut7VSbrrz6CxOC+Cke36eGGv8VUvfdbfLwvSBxOAAA@mail.gmail.com>
+In-Reply-To: <CAAEAJfBuut7VSbrrz6CxOC+Cke36eGGv8VUvfdbfLwvSBxOAAA@mail.gmail.com>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Mon, 30 Aug 2021 21:28:28 +0530
+Message-ID: <CAOuPNLjJMCyxK8mvnBo2aZQXSNqY47YeXCxWmtPECq-=csz6bQ@mail.gmail.com>
+Subject: Re: MTD: How to get actual image size from MTD partition
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        Greg KH <greg@kroah.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Sean Nyekjaer <sean@geanix.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 30 Aug 10:37 CDT 2021, Marijn Suijten wrote:
+On Sun, 22 Aug 2021 at 19:51, Ezequiel Garcia
+<ezequiel@vanguardiasur.com.ar> wrote:
 
-> On Mon, Aug 30, 2021 at 10:17:37AM -0500, Bjorn Andersson wrote:
-> > On Mon 30 Aug 09:25 CDT 2021, Marijn Suijten wrote:
-> > 
-> > > On Mon, Aug 30, 2021 at 05:18:37PM +0300, Dmitry Baryshkov wrote:
-> > > > On Mon, 30 Aug 2021 at 17:14, Marijn Suijten
-> > > > <marijn.suijten@somainline.org> wrote:
-> > > > >
-> > > > > On Mon, Aug 30, 2021 at 04:24:58PM +0300, Dmitry Baryshkov wrote:
-> > > > > > On Mon, 30 Aug 2021 at 11:28, Marijn Suijten
-> > > > > > <marijn.suijten@somainline.org> wrote:
-> > > > > > >
-> > > > > > > Hi Dmitry,
-> > > > > > >
-> > > > > > > On 8/30/21 3:18 AM, Dmitry Baryshkov wrote:
-> > > > > > > > On Sun, 29 Aug 2021 at 23:30, Marijn Suijten
-> > > > > > > > <marijn.suijten@somainline.org> wrote:
-> > > > > > > >>
-> > > > > > > >> The 28NM DSI PLL driver for msm8960 calculates with a 27MHz reference
-> > > > > > > >> clock and should hence use PXO, not CXO which runs at 19.2MHz.
-> > > > > > > >>
-> > > > > > > >> Note that none of the DSI PHY/PLL drivers currently use this "ref"
-> > > > > > > >> clock; they all rely on (sometimes inexistant) global clock names and
-> > > > > > > >> usually function normally without a parent clock.  This discrepancy will
-> > > > > > > >> be corrected in a future patch, for which this change needs to be in
-> > > > > > > >> place first.
-> > > > > > > >>
-> > > > > > > >> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > > > > > >> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > > > > > > >
-> > > > > > > > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > > > > > >
-> > > > > > > > Checked the downstream driver, it always uses 27 MHz clock in calculations.
-> > > > > > >
-> > > > > > >
-> > > > > > > Given our concerns for msm8974 not updating DT in parallel with the
-> > > > > > > kernel (hence the need for a global-name fallback because "ref" is
-> > > > > > > missing from the DT), should we worry about the same for apq8064?  That
-> > > > > > > is, is there a chance that the kernel but not the firmware is upgraded
-> > > > > > > leading to the wrong parent clock being used?  The msm8960 variant of
-> > > > > > > the 28nm PLL driver uses parent_rate in a few places and might read
-> > > > > > > cxo's 19.2MHz erroneously instead of using pxo's 27MHz.
-> > > > > >
-> > > > > > Checked the code. It uses .parent_names =  "pxo", so changing ref
-> > > > > > clock should not matter. We'd need to fix ref clocks and after that we
-> > > > > > can switch parent names to fw_name.
-> > > > >
-> > > > > Correct, hence why this patch is ordered before the switch to .fw_name.
-> > > > > These patches can't go in the same series if apq8064 doesn't update its
-> > > > > firmware in parallel with the kernel just like msm8974.  Do you know if
-> > > > > this is the case?  If so, how much time do you think should be between
-> > > > > the DT fix (this patch) and migrating the drivers?
-> > > > 
-> > > > You can have parent_data with .fw_name and .name in it.  .name will be
-> > > > used as a fallback if .fw_name doesn't match.
-> > > 
-> > > The problem is that it will always find the "ref" clock which references
-> > > &cxo_board until the DT is updated with this patch to use &pxo_board
-> > > instead.  Question is, will the kernel and DT usually/always be updated
-> > > in parallel?
-> > > 
-> > 
-> > Afaik these devices all boots off a boot.img, which means that it's
-> > unlikely that a new kernel is installed on a device with an older DT.
-> > None of them would boot mainline off the DT that shipped with the
-> > original product.
-> 
-> That was my understanding as well, DT overlays are a "new thing" afaik
-> and most devices (at least all Sony's that I'm working with) use an
-> appended DTB that's always in-sync with the kernel image.
-> 
+> In other words, IMO it's best to expose the NAND through UBI
+> for both read-only and read-write access, using a single UBI device,
+> and then creating UBI volumes as needed. This will allow UBI
+> to spread wear leveling across the whole device, which is expected
+> to increase the flash lifetime.
+>
+> For instance, just as some silly example, you could have something like this:
+>
+>                                | RootFS SquashFS  |
+>                                | UBI block        | UBIFS User R-W area
+> ------------------------------------------------------------------------
+> Kernel A | Kernel B | RootFS A | RootFS B         | User
+> ------------------------------------------------------------------------
+>                                  UBIX
+> ------------------------------------------------------------------------
+>                                  /dev/mtdX
+>
+> This setup allows safe kernel and rootfs upgrading. The RootFS is read-only
+> via SquashFS and there's a read-write user area. UBI is supporting all
+> the volumes, handling bad blocks and wear leveling.
+>
+Dear Ezequiel,
+Thank you so much for your reply.
 
-I think that with the introduction of DT overlays the system becomes
-more flexible and as such more susceptible for bugs caused by unexpected
-DT versions.
+This is exactly what we are also doing :)
+In our system we have a mix of raw and ubi partitions.
+The ubi partitioning is done almost exactly the same way.
+Only for the rootfs (squashfs) I see we were using /mtd/block<id> to
+mount the rootfs.
+Now, I understood we should change it to use /dev/ubiblock<id>
+This might have several benefits, but one most important could be,
+using ubiblock can handle bad-blocks/wear-leveling automatically,
+whereas mtdblocks access the flash directly ?
+I found some references for these..
+So, this seems good for my proposal.
 
-I think in practice the real issues comes when the DTB is delivered
-separately (i.e. not by boot.img) or inbetween two kernel releases where
-the Qualcomm tree might not be in sync with the driver tree.
+Another thing that is still open for us is:
+How do we calculate the exact image size from a raw mtd partition ?
+For example, support for one of the raw nand partitions, the size is
+defined as 15MB but we flash the actual image of size only 2.5MB.
+So, in the runtime how to determine the image size as ~2.5MB (at least
+roughly) ?
+Is it still possible ?
 
-> > As such, if I pick this patch up as a fix for 5.15 you can respin the
-> > other two patches and they can land in 5.16 and I would be surprised if
-> > anyone will run into any issues with it.
-> > 
-> > I.e. I've applied this patch.
-> 
-> Sounds good, I'll leave this patch out from v2.  Should it have a Fixes:
-> tag to get backported too?
-> 
 
-Sounds good, I added to this:
-
-Fixes: 6969d1d9c615 ("ARM: dts: qcom-apq8064: Set 'cxo_board' as ref clock of the DSI PHY")
-
-> Since most review seems to be in I'll respin v2 shortly with the
-> addition of the "ref" clock to msm8974, that should probably get the
-> same treatment (added to 5.15 fixes) then we can land this patchset in
-> 5.16 (maybe without .name= fallback if Dmitry is okay with that).
-> 
-
-Sounds good.
-
-Regards,
-Bjorn
+Thanks,
+Pintu
