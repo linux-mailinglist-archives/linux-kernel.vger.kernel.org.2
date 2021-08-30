@@ -2,290 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CE43FB90B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E8E3FB91C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237533AbhH3Pfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:35:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237085AbhH3Pfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:35:41 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D044560E98;
-        Mon, 30 Aug 2021 15:34:44 +0000 (UTC)
-Date:   Mon, 30 Aug 2021 16:37:53 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Mihail Chindris <mihail.chindris@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>,
-        <alexandru.ardelean@analog.com>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 5/6] dt-bindings: iio: dac: Add adi,ad3552r.yaml
-Message-ID: <20210830163753.45b2ea6d@jic23-huawei>
-In-Reply-To: <20210820165927.4524-6-mihail.chindris@analog.com>
-References: <20210820165927.4524-1-mihail.chindris@analog.com>
-        <20210820165927.4524-6-mihail.chindris@analog.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S237583AbhH3Pj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:39:28 -0400
+Received: from mail-ej1-f48.google.com ([209.85.218.48]:39519 "EHLO
+        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237460AbhH3Pj1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 11:39:27 -0400
+Received: by mail-ej1-f48.google.com with SMTP id a25so32036858ejv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:38:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GvG3BPkL8GDwWI4NDLg3xm7QcfwfDFAgBHT+PFB/gGg=;
+        b=gqkAUp23Lgb01d62FAbPFq7w5Q+2mA30V1j02NwJ0k9O+W3acZSuliYwFHa9X/gsYQ
+         KerqqEEjiyqXeFiwwf7HQXFHQ6RYPL2OYiuZgdbep6KPAWSxTceERYw2e8ArPP0Q0LbF
+         hyj1K+1IgAPfdUlHRc+znjXfYlAtOrmIL7WCRkDio84/GBC+HcOLlPwhv8g3MXWW0I9G
+         N+ony8wBA8dbfBO+nVSBXm2iWDan8TQlWfFaXDMo9NRAAQOIJmyl6s5pwC43MzGBaiCz
+         HW+MJZ/wk2frArSZjAgR/vzZIaWhYk6Y37VGLi+xwccmHNvwcvAqVBPjwFX5/3Nz14ZV
+         wk6g==
+X-Gm-Message-State: AOAM532dfkUY4/lPymaAtom3tBx7RGsdIgsdmNXKs3PsHAHUL8K8P0KR
+        VjTrS9kHAuFKzIpNWi3puSw=
+X-Google-Smtp-Source: ABdhPJyrm1XsokPNLWD+oHtckSQ0hd3ttotKOY58uBZuekNmj5lQ4O29XdqY/euXZd2Od/HXv6oJGQ==
+X-Received: by 2002:a17:906:2c5a:: with SMTP id f26mr10450012ejh.205.1630337911554;
+        Mon, 30 Aug 2021 08:38:31 -0700 (PDT)
+Received: from [10.100.102.14] (109-186-228-184.bb.netvision.net.il. [109.186.228.184])
+        by smtp.gmail.com with ESMTPSA id l18sm6000367edr.83.2021.08.30.08.38.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 08:38:31 -0700 (PDT)
+Subject: Re: [PATCH v6] nvme-tcp: Do not reset transport on data digest errors
+To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        yi.he@emc.com, kernel test robot <lkp@intel.com>
+References: <20210830133626.139828-1-dwagner@suse.de>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <462c31ae-446b-cc23-eb91-5e27ef04ec13@grimberg.me>
+Date:   Mon, 30 Aug 2021 18:38:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210830133626.139828-1-dwagner@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 16:59:26 +0000
-Mihail Chindris <mihail.chindris@analog.com> wrote:
 
-> Add documentation for ad3552r
-> 
-> Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>
+> @@ -485,6 +486,7 @@ static void nvme_tcp_error_recovery(struct nvme_ctrl *ctrl)
+>   static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
+>   		struct nvme_completion *cqe)
+>   {
+> +	struct nvme_tcp_request *req;
+>   	struct request *rq;
+>   
+>   	rq = nvme_find_rq(nvme_tcp_tagset(queue), cqe->command_id);
+> @@ -496,7 +498,11 @@ static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
+>   		return -EINVAL;
+>   	}
+>   
+> -	if (!nvme_try_complete_req(rq, cqe->status, cqe->result))
+> +	req = blk_mq_rq_to_pdu(rq);
+> +	if (req->status == cpu_to_le16(NVME_SC_SUCCESS))
 
-+CC Mark for all the fun SPI stuff in here.
+endian conversion a zero enum? looks weird..
 
-> ---
->  .../bindings/iio/dac/adi,ad3552r.yaml         | 185 ++++++++++++++++++
->  1 file changed, 185 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
-> new file mode 100644
-> index 000000000000..82ad8335aed8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
-> @@ -0,0 +1,185 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2020 Analog Devices Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/dac/adi,ad3552r.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices AD2552R DAC device driver
-> +
-> +maintainers:
-> +  - Mihail Chindris <mihail.chindris@analog.com>
-> +
-> +description: |
-> +  Bindings for the Analog Devices AD3552R  DAC device. Datasheet can be
-> +  found here:
-> +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad3552r.pdf
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,ad3552r
-you could use
-
-       const: adi,ad3552r
-
-unless you are expecting to shortly add more compatibles to this binding.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  spi-max-frequency:
-> +    maximum: 30000000
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +
-> +  ldac-gpios:
-> +    description: |
-> +      If a LDAC gpio is specified it will generate a LDAC pulse each time the
-> +      trigger handler sends data to the chip.
-> +    maxItems: 1
-> +
-> +  adi,synch_channels: |
-> +      If set to true, data will be written to the input registers. When a pulse
-> +      is generated on the LDAC pin data will update the output voltage of both
-> +      channels if enabled. If ldac-gpios is specified the pulse will be
-> +      generated by the driver in the interrupt handler. If adi,synch_channels
-> +      is set to false, data will be written to the DAC registers and the output
-> +      is updated imediatly after each register is written.
-> +    type: bool
-
-This feels like policy to me rather than about device wiring.
-Annoyingly this would probably require custom ABI but I think we should still consider
-whether to expose it (with a sensible default which is probably synchronous if ldac-gpios
-is available).
-  
-> +
-> +  adi,vref-select:
-> +    description: Selection of the voltage reference.
-> +      The options are
-> +       - 0 internal source with Vref I/O floating
-> +       - 1 internal source with Vref I/O at 2.5V.
-> +       - 2 external source with Vref I/O as input.
-
-Normally we take the view that if
-vref-supply is present someone put down a high precision reference
-and will definitely want to use it.  So case 2 should be just dependent on
-such a regulator.
-
-Then this just becomes a control on whether to expose the internal vref if
-the supply isn't present.  Hence it should be an appropriately named flag
-rather than a set of 3 magic values which require people to look at the doc to
-understand what is going on.
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1, 2]
-> +
-> +  adi,spi-multi-io-mode:
-> +    description:  |
-> +      Select SPI operating mode:
-> +        - 0: standard.
-> +        - 1: dual.
-> +        - 2: quad.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1, 2]
-
-Interesting that there isn't a generic spi form of this given this is pretty
-common for fast SPI devices.  Oh well, this will have to do.
-Given we are using an enum, can we have
-enum: ["single", "dual", "quad"] perhaps to make it more human readable?
-
-Rob what do you think for this?  I can't immediately find precedence.
-
-> +
-> +  adi,ddr:
-> +    description: Enable or disable double data rate SPI
-> +    type: boolean
-> +
-> +  adi,synchronous-mode:
-> +    description: Enable or disable synchronous dual SPI mode
-> +    type: boolean
-
-Get's better and better.  Do we have any spi controller drivers
-that support these more 'exciting' modes?
-
-> +
-> +  adi,sdo-drive-strength:
-> +    description: |
-> +      Configure SDIO0 and SDIO1 strength levels:
-> +        - 0: low SDO drive strength.
-> +        - 1: medium low SDO drive strength.
-> +        - 2: medium high SDO drive strength.
-> +        - 3: high SDO drive strength
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1, 2, 3]
-> +
-> +patternProperties:
-> +  "^channel@([0-1])$":
-> +    type: object
-> +    description: Configurations of the DAC Channels
-> +    properties:
-> +      reg:
-> +          description: Channel number
-> +          minimum: 0
-> +          maximum: 1
-             enum: [0, 1] perhaps?
-> +
-> +      adi,output-range:
-> +        description: |
-> +          Output range of the channel
-> +            0: 0 V to 2.5 V
-> +            1: 0 V to 5 V
-> +            2: 0 V to 10 V
-> +            3: -5 V to 5 V
-> +            4: -10 V to 10 V
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        enum: [0, 1, 2, 3, 4]
-
-I rather dislike magic numbers, but it gets tricky to specify ranges.
-You could probably do something with 2 element arrays in millivolts though which
-would be nicer than this.
-
-> +
-> +      custom-output-range-config:
-> +        type: object
-> +        description: Configuration of custom range when adi,output-range is set
-> +                      to custom
-
-How do you do that? Seems from below that you mean it is not present.
-
-> +        properties:
-> +          adi,gain-offset:
-> +            description: Gain offset
-
-What does gain offset mean here?
-
-> +            $ref: /schemas/types.yaml#/definitions/int32
-> +            maximum: 511
-> +            minimum: -511
-> +          adi,gain-scaling-p:
-> +            description: |
-> +              Scaling p:
-> +               0: 1.0
-> +               1: 0.5
-> +               2: 0.25
-> +               3: 0.125
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +            enum: [0, 1, 2, 3]
-> +          adi,gain-scaling-n:
-> +            description: |
-> +              Scaling p:
-> +               0: 1.0
-> +               1: 0.5
-> +               2: 0.25
-> +               3: 0.125
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +            enum: [0, 1, 2, 3]
-> +          adi,rfb-ohms:
-> +            description: Feedback Resistor
-> +        required:
-> +          - adi,gain-offset
-> +          - adi,gain-sacling-p
-> +          - adi,gain-sacling-n
-> +          - adi,rfb-ohms
-> +    required:
-> +      - reg
-> +
-> +    oneOf:
-> +      # If adi,output-range is missing, custom-output-range-config must be used
-> +      - required:
-> +        - adi,output-range
-> +      - required:
-> +        - custom-output-range-config
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - spi-max-frequency
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    ad3552r {
-> +            compatible = "adi,ad3552r";
-> +            reg = <0 0 0 0>;
-> +            spi-max-frequency = <20000000>;
-> +            interrupt-parent = <&gpio0>;
-> +            interrupts = <87 0>;
-> +            pwms = <&axi_pwm 0 50>;
-> +            reset-gpios = <&gpio 86 0>;
-> +            adi,synch_channels;
-> +            adi,vref-select = <0>;
-> +            channel@0 {
-> +                    reg = <0>;
-> +                    adi,output-range = <0>;
-> +            };
-> +            channel@1 {
-> +                    reg = <1>;
-> +                    custom-output-range-config {
-> +                            adi,gain-offset = <5>;
-> +                            adi,gain-sacling-p = <1>;
-> +                            adi,gain-sacling-n = <2>;
-> +                            adi,rfb-ohms = <1>;
-> +                    };
-> +          };
-> +      };
-> +...
-
+But,
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
