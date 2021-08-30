@@ -2,316 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B833FB095
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 06:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CDD3FB09B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 06:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbhH3E4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 00:56:20 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50200 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbhH3E4T (ORCPT
+        id S230219AbhH3E7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 00:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229636AbhH3E7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 00:56:19 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 25CED20060;
-        Mon, 30 Aug 2021 04:55:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630299325; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hc6v1qvmceLEeAERPrQ8/V0IZDTxjfiq/geyYnfx82k=;
-        b=usBIe/c+my7o4ECqzWCTF3OKUluhQba28fcIuLsWwm+IOvoZ2Jnx2uEOvpzdf5FPyEzfWg
-        AOVGnUxB4A6uaOBh7ryfu1spVPKfDHMFYLPHBo42vqaUfsGjcBLqOrC+CfAVGGdgGNBp0q
-        qEneonCC2AJRWojKHE+KkWA2lDfcHQ8=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id BF6D31365E;
-        Mon, 30 Aug 2021 04:55:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id RfeQLLxkLGEDegAAGKfGzw
-        (envelope-from <jgross@suse.com>); Mon, 30 Aug 2021 04:55:24 +0000
-Subject: Re: [PATCH] xen/pcifront: Removed unnecessary __ref annotation
-To:     =?UTF-8?Q?Sergio_Migu=c3=a9ns_Iglesias?= <lonyelon@gmail.com>,
-        konrad.wilk@oracle.com
-Cc:     boris.ostrovsky@oracle.com, sstabellini@kernel.org,
-        bhelgaas@google.com, xen-devel@lists.xenproject.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Sergio_Migu=c3=a9ns_Iglesias?= <sergio@lony.xyz>
-References: <20210829221415.647744-1-sergio@lony.xyz>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <2df006a3-d232-c356-3402-888739835967@suse.com>
-Date:   Mon, 30 Aug 2021 06:55:24 +0200
+        Mon, 30 Aug 2021 00:59:32 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C820C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 21:58:39 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso16904176otv.3
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 21:58:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5pizk+/RHOyjwMdFuAoagsgfMzLs9LZCimmF/YW9Z50=;
+        b=uqA+8HdNddSWNsX/JFIPW5tJWN2C/WbnMuVONAYnD30i4c2aztz/r9LCscHP44EcCV
+         R/jfiwdph9P5MXUWPEmAdyPEScTZ3LPgWP31EXoGQNLUKf4oRqI9AxQT549lRoGTcB0S
+         By/jXL6zUgTxJZgEBzJPOGAjprzlFMX5W52TNAF+kUWriv6JgGAQ+VYW+QGRN3MEnYoe
+         ys/9YNX4NM1g7Yjp8whu6Q4vazNAuEO1MDE8JIhXGwj4ddpkqX9Drp2vhZ2CD2l5nWX4
+         /gEv1rq7Jni92f9Vw5VtuYDH1qP2yXm3mhuzON5Njyoh5xxpWyFUme/1Bx6XTMMnZVow
+         EYKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5pizk+/RHOyjwMdFuAoagsgfMzLs9LZCimmF/YW9Z50=;
+        b=KJZfWg//ukiFO54mNTLJ3AzYfs0dG1KtRS57Als4xmDei/HNbH0HI/tfX1DRKBpm66
+         Nz4nn12RRSY4kz+k42Yohcp2lwnUshyGCv5nmqWO8qG9A78sGga/KhwWs7tTVo3S9QaO
+         DYUHe+4vD/d89tSqkOhL3BHIUN9XxvIKCzQ7JT3UMl67wC28p7/CmYzlwyOXb6uT/fnk
+         UVjoxvUMA7KcCPflp5G1LpkC1o1NHxTxrprrGPdLMMDAs0Ti6GP0BdF5CIBDiKk6DT+6
+         7qehDcsNReQ5k3t23SJB6784XxacLlORQQuPZHyi2Hr0QP/XJvbZVzbJtMFdfO5u+rpg
+         8l8w==
+X-Gm-Message-State: AOAM532pQvMH/VXWy1GBpmnfhFU/ljRdd7/yMhv6r5iNK9S42Tl4Q/da
+        05R6CyUarZ7CVPNaZMGFmjDKpxFMxcE=
+X-Google-Smtp-Source: ABdhPJxD6P0oTAGM1qYoavU1CkMD2Cul3zSlLuPWmHGMuqfl9uOv5X7VeP8wsZPBNGK37N+ETZCfJg==
+X-Received: by 2002:a9d:4b86:: with SMTP id k6mr14000473otf.198.1630299518871;
+        Sun, 29 Aug 2021 21:58:38 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v11sm3048450oto.22.2021.08.29.21.58.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Aug 2021 21:58:38 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Andrew Jeffery <andrew@aj.id.au>,
+        =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Joel Stanley <joel@jms.id.au>
+References: <20210724224424.2085404-1-linus.walleij@linaro.org>
+ <20210724224424.2085404-2-linus.walleij@linaro.org>
+ <20210821042010.GA1759866@roeck-us.net>
+ <CACRpkdYObGTWni3sSa21iNsgikzj7t9MA6y4TNgkBTTYQt+coA@mail.gmail.com>
+ <4d87c7af-d2e3-9456-130a-b35b507ff3a2@roeck-us.net>
+ <567a65a8-077b-7394-c8e2-dbd9f063e02c@kaod.org>
+ <4c87cee3-2dfb-41e7-a18b-5ed4687a6f7a@www.fastmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 2/2]: Be stric clocksource/drivers/fttmr010ter on IRQs
+Message-ID: <f71cbfb9-b72c-39d2-6acb-dc83b6a496f8@roeck-us.net>
+Date:   Sun, 29 Aug 2021 21:58:36 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210829221415.647744-1-sergio@lony.xyz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="3OUz0Wy9HJufji2HpIjnsImkaZC9e888d"
+In-Reply-To: <4c87cee3-2dfb-41e7-a18b-5ed4687a6f7a@www.fastmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---3OUz0Wy9HJufji2HpIjnsImkaZC9e888d
-Content-Type: multipart/mixed; boundary="TRUuJTafEqklpTUbifwhTten2MeLBi8j8";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: =?UTF-8?Q?Sergio_Migu=c3=a9ns_Iglesias?= <lonyelon@gmail.com>,
- konrad.wilk@oracle.com
-Cc: boris.ostrovsky@oracle.com, sstabellini@kernel.org, bhelgaas@google.com,
- xen-devel@lists.xenproject.org, linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org, =?UTF-8?Q?Sergio_Migu=c3=a9ns_Iglesias?=
- <sergio@lony.xyz>
-Message-ID: <2df006a3-d232-c356-3402-888739835967@suse.com>
-Subject: Re: [PATCH] xen/pcifront: Removed unnecessary __ref annotation
-References: <20210829221415.647744-1-sergio@lony.xyz>
-In-Reply-To: <20210829221415.647744-1-sergio@lony.xyz>
+On 8/29/21 9:16 PM, Andrew Jeffery wrote:
+[ ... ]
+>>
+>>> I don't have the manuals, so I can't say what the correct behavior is,
+>>> but at least there is some evidence that TIMER_INTR_STATE may not exist
+>>> on ast2400 and ast2500 SOCs.
+>>
+>> On Aspeed SoCs AST2400 and AST2500, the TMC[34] register is a
+>> "control register #2" whereas on the AST2600 it is an "interruptarch/arm/boot/dts/ast2600-facebook-netbmc-common.dtsi:#include
+>> status register" with bits [0-7] holding the timers status.
+>>
+>> I would say that the patch simply should handle the "is_aspeed" case.
+> 
+> Well, is_aspeed is set true in the driver for all of the 2400, 2500 and
+> 2600. 0x34 behaves the way this patch expects on the 2600. So I think
+> we need something less coarse than is_aspeed?
+> 
 
---TRUuJTafEqklpTUbifwhTten2MeLBi8j8
-Content-Type: multipart/mixed;
- boundary="------------08AB25C0E8EF0DD9B25A51A8"
-Content-Language: en-US
+If I understand the code correctly, ast2400 and ast2500 execute
+fttmr010_timer_interrupt(), while ast2600 has its own interrupt handler.
+To make this work, it would probably be necessary to check for is_aspeed
+in fttmr010_timer_interrupt(), and only execute the new code if the flag
+is false. The existing flag in struct fttmr010 should be good enough
+for that.
 
-This is a multi-part message in MIME format.
---------------08AB25C0E8EF0DD9B25A51A8
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 30.08.21 00:14, Sergio Migu=C3=A9ns Iglesias wrote:
-> An unnecessary "__ref" annotation was removed from the
-> "drivers/pci/xen_pcifront.c" file. The function where the annotation
-> was used was "pcifront_backend_changed()", which does not call any
-> functions annotated as "__*init" nor "__*exit". This makes "__ref"
-> unnecessary since this annotation is used to make the compiler ignore
-> section miss-matches when they are not happening here in the first
-> place.
->=20
-> In addition to the aforementioned change, some code style issues were
-> fixed in the same file.
->=20
-> Signed-off-by: Sergio Migu=C3=A9ns Iglesias <sergio@lony.xyz>
-> ---
->   drivers/pci/xen-pcifront.c | 24 ++++++++++++++----------
->   1 file changed, 14 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/pci/xen-pcifront.c b/drivers/pci/xen-pcifront.c
-> index b7a8f3a1921f..f06661704f3a 100644
-> --- a/drivers/pci/xen-pcifront.c
-> +++ b/drivers/pci/xen-pcifront.c
-> @@ -115,7 +115,7 @@ static int do_pci_op(struct pcifront_device *pdev, =
-struct xen_pci_op *op)
->   	struct xen_pci_op *active_op =3D &pdev->sh_info->op;
->   	unsigned long irq_flags;
->   	evtchn_port_t port =3D pdev->evtchn;
-> -	unsigned irq =3D pdev->irq;
-> +	unsigned int irq =3D pdev->irq;
->   	s64 ns, ns_timeout;
->  =20
->   	spin_lock_irqsave(&pdev->sh_info_lock, irq_flags);
-> @@ -152,11 +152,10 @@ static int do_pci_op(struct pcifront_device *pdev=
-, struct xen_pci_op *op)
->   		}
->   	}
->  =20
-> -	/*
-> -	* We might lose backend service request since we
-> -	* reuse same evtchn with pci_conf backend response. So re-schedule
-> -	* aer pcifront service.
-> -	*/
-> +	/* We might lose backend service request since we
-
-This is no net or drivers/net file, so please keep the initial "/*"
-line and fixup the other multi-line comments accordingly.
-
-> +	 * reuse same evtchn with pci_conf backend response. So re-schedule
-> +	 * aer pcifront service.
-> +	 */
->   	if (test_bit(_XEN_PCIB_active,
->   			(unsigned long *)&pdev->sh_info->flags)) {
->   		dev_err(&pdev->xdev->dev,
-> @@ -493,7 +492,8 @@ static int pcifront_scan_root(struct pcifront_devic=
-e *pdev,
->   	list_add(&bus_entry->list, &pdev->root_buses);
->  =20
->   	/* pci_scan_root_bus skips devices which do not have a
-> -	* devfn=3D=3D0. The pcifront_scan_bus enumerates all devfn. */
-> +	 * devfn=3D=3D0. The pcifront_scan_bus enumerates all devfn.
-> +	 */
->   	err =3D pcifront_scan_bus(pdev, domain, bus, b);
->  =20
->   	/* Claim resources before going "live" with our devices */
-> @@ -651,8 +651,9 @@ static void pcifront_do_aer(struct work_struct *dat=
-a)
->   	pci_channel_state_t state =3D
->   		(pci_channel_state_t)pdev->sh_info->aer_op.err;
->  =20
-> -	/*If a pci_conf op is in progress,
-> -		we have to wait until it is done before service aer op*/
-> +	/* If a pci_conf op is in progress, we have to wait until it is done
-> +	 * before service aer op
-> +	 */
->   	dev_dbg(&pdev->xdev->dev,
->   		"pcifront service aer bus %x devfn %x\n",
->   		pdev->sh_info->aer_op.bus, pdev->sh_info->aer_op.devfn);
-> @@ -676,6 +677,7 @@ static void pcifront_do_aer(struct work_struct *dat=
-a)
->   static irqreturn_t pcifront_handler_aer(int irq, void *dev)
->   {
->   	struct pcifront_device *pdev =3D dev;
-> +
->   	schedule_pcifront_aer_op(pdev);
->   	return IRQ_HANDLED;
->   }
-> @@ -1027,6 +1029,7 @@ static int pcifront_detach_devices(struct pcifron=
-t_device *pdev)
->   	/* Find devices being detached and remove them. */
->   	for (i =3D 0; i < num_devs; i++) {
->   		int l, state;
-> +
->   		l =3D snprintf(str, sizeof(str), "state-%d", i);
->   		if (unlikely(l >=3D (sizeof(str) - 1))) {
->   			err =3D -ENOMEM;
-> @@ -1078,7 +1081,7 @@ static int pcifront_detach_devices(struct pcifron=
-t_device *pdev)
->   	return err;
->   }
->  =20
-> -static void __ref pcifront_backend_changed(struct xenbus_device *xdev,=
-
-> +static void pcifront_backend_changed(struct xenbus_device *xdev,
->   						  enum xenbus_state be_state)
->   {
->   	struct pcifront_device *pdev =3D dev_get_drvdata(&xdev->dev);
-> @@ -1137,6 +1140,7 @@ static int pcifront_xenbus_probe(struct xenbus_de=
-vice *xdev,
->   static int pcifront_xenbus_remove(struct xenbus_device *xdev)
->   {
->   	struct pcifront_device *pdev =3D dev_get_drvdata(&xdev->dev);
-> +
->   	if (pdev)
->   		free_pdev(pdev);
->  =20
->=20
-
-Juergen
-
---------------08AB25C0E8EF0DD9B25A51A8
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------08AB25C0E8EF0DD9B25A51A8--
-
---TRUuJTafEqklpTUbifwhTten2MeLBi8j8--
-
---3OUz0Wy9HJufji2HpIjnsImkaZC9e888d
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmEsZLwFAwAAAAAACgkQsN6d1ii/Ey98
-yQf/U0IJKnJ6YmrMtynOBIB1DEVuQ3Yt/RNO0/VkuP0fFvEkW/84CvJ+sRCNRQIQv/NP1d5LRTQs
-rN0wPozseBb0bNcMhhUhp7HUAlIIq8xG/f9unN+4As+7siiJLMid+ssz+Hbi6HW9p1XLb66SLr+q
-V58MMq0fjN8pvNGDM12NZrDoNsNcE4O6oKHIXUbNtG7ti85VBv2TfTge1qONUM2tXqDrwG2p3K4d
-cea6bu9Zs0KZUKBUgSTDaytHg3zAQd0aDCWvvhH6pYSpmNaHSUcTxnfLbUmGh4RBnUvJMHrfYlMb
-dvmXpsMWecM8xZgqVD9Jy6hXbgTUR13cMh+TBoDA+w==
-=io9f
------END PGP SIGNATURE-----
-
---3OUz0Wy9HJufji2HpIjnsImkaZC9e888d--
+Guenter
