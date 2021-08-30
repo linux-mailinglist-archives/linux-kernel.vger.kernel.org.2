@@ -2,80 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7999C3FBD75
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FCB3FBD7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234837AbhH3Udi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhH3Udh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:33:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFACC061575;
-        Mon, 30 Aug 2021 13:32:43 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630355562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=anwD3BTmBd6WQ25OCpAzllzeRhhNGOYOvouPH8galA8=;
-        b=oUtPiSyi/R5wlxNanUXkkVnS+Cw1CqMVdSbfChdcsnPgTYZQop9KAGTvp4/FhRVK8tJ8df
-        HKeUsYunTnq0eJDUPZe966WjornWv1qOMVBQN6MImOKANJqyXTHlTv28K5GMtXPZTaC1/V
-        iTK5Q93FHd9JGz8cjqzy47TH4nJFEqbh9AFkAO44epoMQsiuFEVRk786AqztCXGv0ezfne
-        TLtCprIvR6fOT6CxZrq4mchbjwLIILcllL2jI3McIxZQBACjyShhDysBym+zTDtznJjjTB
-        dKHjAFCe5uNlkYAZsBMQBiCKrjHx2UiAV9AEIAerQhoiQPyXVwR2h+OFOr14fA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630355562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=anwD3BTmBd6WQ25OCpAzllzeRhhNGOYOvouPH8galA8=;
-        b=TMw54Yt1x8cB/bBj0qSVl4rOG1hHVIWlZP8nWDYP7gujzVj9wLCFGCHwsME7LJuifJbnIJ
-        6kacEoKUL881SSDA==
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>
-Subject: Re: Linux 5.14
-In-Reply-To: <20210830201225.GA2671970@roeck-us.net>
-References: <CAHk-=wh75ELUu99yPkPNt+R166CK=-M4eoV+F62tW3TVgB7=4g@mail.gmail.com>
- <20210830201225.GA2671970@roeck-us.net>
-Date:   Mon, 30 Aug 2021 22:32:41 +0200
-Message-ID: <87wno2fzbq.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S235241AbhH3Ulj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 16:41:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229923AbhH3Ulh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 16:41:37 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F16360F8F;
+        Mon, 30 Aug 2021 20:40:43 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mKo5B-0085Bt-30; Mon, 30 Aug 2021 21:40:41 +0100
+Date:   Mon, 30 Aug 2021 21:40:40 +0100
+Message-ID: <87mtoyd5tj.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Kettenis <mark.kettenis@xs4all.nl>
+Cc:     devicetree@vger.kernel.org, alyssa@rosenzweig.io,
+        kettenis@openbsd.org, tglx@linutronix.de, robh+dt@kernel.org,
+        marcan@marcan.st, bhelgaas@google.com, nsaenz@kernel.org,
+        jim2101024@gmail.com, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        daire.mcnamara@microchip.com, nsaenzjulienne@suse.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 4/4] arm64: apple: Add PCIe node
+In-Reply-To: <56142808ad64dd79@bloch.sibelius.xs4all.nl>
+References: <20210827171534.62380-1-mark.kettenis@xs4all.nl>
+        <20210827171534.62380-5-mark.kettenis@xs4all.nl>
+        <87pmtvcgec.wl-maz@kernel.org>
+        <56142808ad64dd79@bloch.sibelius.xs4all.nl>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mark.kettenis@xs4all.nl, devicetree@vger.kernel.org, alyssa@rosenzweig.io, kettenis@openbsd.org, tglx@linutronix.de, robh+dt@kernel.org, marcan@marcan.st, bhelgaas@google.com, nsaenz@kernel.org, jim2101024@gmail.com, f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com, daire.mcnamara@microchip.com, nsaenzjulienne@suse.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30 2021 at 13:12, Guenter Roeck wrote:
-> On Sun, Aug 29, 2021 at 03:19:23PM -0700, Linus Torvalds wrote:
-> So far so good, but there is a brand new runtime warning, seen when booting
-> s390 images.
->
-> [    3.218816] ------------[ cut here ]------------
-> [    3.219010] WARNING: CPU: 1 PID: 0 at kernel/sched/core.c:5779 sched_core_cpu_starting+0x172/0x180
-> [    3.222992]  [<0000000000186e86>] sched_core_cpu_starting+0x176/0x180
-> [    3.223114] ([<0000000000186dc4>] sched_core_cpu_starting+0xb4/0x180)
-> [    3.223182]  [<00000000001963e4>] sched_cpu_starting+0x2c/0x68
-> [    3.223243]  [<000000000014f288>] cpuhp_invoke_callback+0x318/0x970
-> [    3.223304]  [<000000000014f970>] cpuhp_invoke_callback_range+0x90/0x108
-> [    3.223364]  [<000000000015123c>] notify_cpu_starting+0x84/0xa8
-> [    3.223426]  [<0000000000117bca>] smp_init_secondary+0x72/0xf0
-> [    3.223492]  [<0000000000117846>] smp_start_secondary+0x86/0x90
->
-> Commit 3c474b3239f12 ("sched: Fix Core-wide rq->lock for uninitialized
-> CPUs") sems to be the culprit. Indeed, the warning is gone after reverting
-> this commit.
+On Mon, 30 Aug 2021 15:57:02 +0100,
+Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
+> 
+> > Date: Mon, 30 Aug 2021 12:37:31 +0100
+> > From: Marc Zyngier <maz@kernel.org>
+> > 
+> > Hi Mark,
+> 
+> Hi Marc,
+> 
+> > On Fri, 27 Aug 2021 18:15:29 +0100,
+> > Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
+> > > 
+> > > From: Mark Kettenis <kettenis@openbsd.org>
+> > > 
+> > > Add node corresponding to the apcie,t8103 node in the
+> > > Apple device tree for the Mac mini (M1, 2020).
+> > > 
+> > > Clock references and DART (IOMMU) references are left out at the
+> > > moment and will be added once the appropriate bindings have been
+> > > settled upon.
+> > > 
+> > > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> > > ---
+> > >  arch/arm64/boot/dts/apple/t8103.dtsi | 63 ++++++++++++++++++++++++++++
+> > >  1 file changed, 63 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
+> > > index 503a76fc30e6..6e4677bdef44 100644
+> > > --- a/arch/arm64/boot/dts/apple/t8103.dtsi
+> > > +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
+> > > @@ -214,5 +214,68 @@ pinctrl_smc: pinctrl@23e820000 {
+> > >  				     <AIC_IRQ 396 IRQ_TYPE_LEVEL_HIGH>,
+> > >  				     <AIC_IRQ 397 IRQ_TYPE_LEVEL_HIGH>;
+> > >  		};
+> > > +
+> > > +		pcie0: pcie@690000000 {
+> > > +			compatible = "apple,t8103-pcie", "apple,pcie";
+> > > +			device_type = "pci";
+> > > +
+> > > +			reg = <0x6 0x90000000 0x0 0x1000000>,
+> > > +			      <0x6 0x80000000 0x0 0x4000>,
+> > > +			      <0x6 0x81000000 0x0 0x8000>,
+> > > +			      <0x6 0x82000000 0x0 0x8000>,
+> > > +			      <0x6 0x83000000 0x0 0x8000>;
+> > > +			reg-names = "config", "rc", "port0", "port1", "port2";
+> > > +
+> > > +			interrupt-parent = <&aic>;
+> > > +			interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
+> > > +				     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
+> > > +				     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>;
+> > > +
+> > > +			msi-controller;
+> > > +			msi-parent = <&pcie0>;
+> > > +			msi-ranges = <&aic AIC_IRQ 704 IRQ_TYPE_EDGE_RISING 32>;
+> > > +
+> > > +			bus-range = <0 3>;
+> > > +			#address-cells = <3>;
+> > > +			#size-cells = <2>;
+> > > +			ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
+> > > +				 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
+> > > +
+> > > +			pinctrl-0 = <&pcie_pins>;
+> > > +			pinctrl-names = "default";
+> > > +
+> > > +			pci@0,0 {
+> > > +				device_type = "pci";
+> > > +				reg = <0x0 0x0 0x0 0x0 0x0>;
+> > > +				reset-gpios = <&pinctrl_ap 152 0>;
+> > > +				max-link-speed = <2>;
+> > > +
+> > > +				#address-cells = <3>;
+> > > +				#size-cells = <2>;
+> > > +				ranges;
+> > > +			};
+> > > +
+> > > +			pci@1,0 {
+> > > +				device_type = "pci";
+> > > +				reg = <0x800 0x0 0x0 0x0 0x0>;
+> > > +				reset-gpios = <&pinctrl_ap 153 0>;
+> > > +				max-link-speed = <2>;
+> > > +
+> > > +				#address-cells = <3>;
+> > > +				#size-cells = <2>;
+> > > +				ranges;
+> > > +			};
+> > > +
+> > > +			pci@2,0 {
+> > > +				device_type = "pci";
+> > > +				reg = <0x1000 0x0 0x0 0x0 0x0>;
+> > > +				reset-gpios = <&pinctrl_ap 33 0>;
+> > > +				max-link-speed = <1>;
+> > > +
+> > > +				#address-cells = <3>;
+> > > +				#size-cells = <2>;
+> > > +				ranges;
+> > > +			};
+> > > +		};
+> > >  	};
+> > >  };
+> > 
+> > I have now implemented the MSI change on the Linux driver side, and it
+> > works nicely. So thumbs up from me on this front.
+> > 
+> > I am now looking at the interrupts provided by each port:
+> > (1) a bunch of port-private interrupts (link up/down...)
+> > (2) INTx interrupts
+> > 
+> > Given that the programming is per-port, I've implemented this as a
+> > per-port interrupt controller.
+> > 
+> > (1) is dead easy to implement, and doesn't require any DT description.
+> > (2) is unfortunately exposing the limits of my DT knowledge, and I'm
+> > not clear how to model it. I came up with the following:
+> > 
+> > 	port00: pci@0,0 {
+> > 		device_type = "pci";
+> > 		reg = <0x0 0x0 0x0 0x0 0x0>;
+> > 		reset-gpios = <&pinctrl_ap 152 0>;
+> > 		max-link-speed = <2>;
+> > 
+> > 		#address-cells = <3>;
+> > 		#size-cells = <2>;
+> > 		ranges;
+> > 
+> > 		interrupt-controller;
+> > 		#interrupt-cells = <1>;
+> > 		interrupt-parent = <&port00>;
+> > 		interrupt-map-mask = <0 0 0 7>;
+> > 		interrupt-map = <0 0 0 1 &port00 0>,
+> > 				<0 0 0 2 &port00 1>,
+> > 				<0 0 0 3 &port00 2>,
+> > 				<0 0 0 4 &port00 3>;
+> > 	};
+> > 
+> > which vaguely seem to do the right thing for the devices behind root
+> > ports, but doesn't seem to work for INTx generated by the root ports
+> > themselves. Any clue? Alternatively, I could move it to something
+> > global to the whole PCIe controller, but that doesn't seem completely
+> > right.
+> > 
+> > It also begs the question whether the per-port interrupt to the AIC
+> > should be moved into each root port, should my per-port approach hold
+> > any water.
+> 
+> Must admit that I didn't entirely thinkthrough this aspect fo the
+> hardware.  MSIs work just fine for the built-in hardware of the
+> current generation of M1 Macs so I ignored INTx for now.
 
-The warning is gone, but the underlying S390 problem persists:
+It isn't a big deal right now, but I sense that with only 32 MSIs per
+PCIe block, keeping the PCIe management interrupts (PME, AER...) as
+MSIs is going to waste valuable space once we have Thunderbolt up and
+running (one of these days). I certainly intent to stick a PCIe/PCIe
+bridge behind each of the ports, and each port is going to eat into
+that as well.
 
-S390 invokes notify_cpu_starting() _before_ updating the topology masks.
+> It isn't entirely clear to me what properties are "allowed" on the
+> individual pci device child nodes that correspond to the ports.  But
+> "interrupt-map" and "interrupt-map-mask" are certainly among the
+> allowed properties, so this approach makes sense to me.  I must say I
+> don't see what the issue with the INTx generated by the root ports
+> themselves would be.
 
-Thanks,
+I think this is just a Linux shortcoming (Rob pointed out something in
+his email).
 
-        tglx
+> I don't think we can move the interrupt property for the AIC to the
+> ports though, since that property would actually represent the
+> interrupt of the PCI bridge device according to the standard PCI
+> bindings and that isn't the case here.
+> 
+> So this makes sense to me and might not even need changing to the
+> binding for the Apple PCIe controller itself.
+
+I guess there is a great deal of ambiguity when it comes to what
+interrupt maps to what, to be honest. At this stage, I don't think
+that warrant a change in the current shape of the binding though.
+
+FWIW,
+
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+
+The current state of the Linux support is at [1]. I'll sync-up with
+Alyssa later this week to have a new posting after the current merge
+window.
+
+	M.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=hack/m1-pcie-v3
+
+-- 
+Without deviation from the norm, progress is not possible.
