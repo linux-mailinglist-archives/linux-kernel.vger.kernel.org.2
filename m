@@ -2,115 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6D63FB0BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 07:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2425B3FB0C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 07:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbhH3FMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 01:12:44 -0400
-Received: from mga14.intel.com ([192.55.52.115]:7792 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230191AbhH3FMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 01:12:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10091"; a="217926786"
-X-IronPort-AV: E=Sophos;i="5.84,362,1620716400"; 
-   d="scan'208";a="217926786"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2021 22:11:48 -0700
-X-IronPort-AV: E=Sophos;i="5.84,362,1620716400"; 
-   d="scan'208";a="497257549"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.238.58]) ([10.212.238.58])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2021 22:11:47 -0700
-Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210823195409-mutt-send-email-mst@kernel.org>
- <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
- <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
- <d992b5af-8d57-6aa6-bd49-8e2b8d832b19@linux.intel.com>
- <20210824053830-mutt-send-email-mst@kernel.org>
- <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
- <20210829112105-mutt-send-email-mst@kernel.org>
- <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
- <20210829181635-mutt-send-email-mst@kernel.org>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
-Date:   Sun, 29 Aug 2021 22:11:46 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231225AbhH3F0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 01:26:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229936AbhH3F0c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 01:26:32 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03428C061575;
+        Sun, 29 Aug 2021 22:25:39 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id q21so7865160plq.3;
+        Sun, 29 Aug 2021 22:25:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5veyo9Ry0StfUWfoIo1uO4FnVWpRSgAmiP0O2/2xtyE=;
+        b=ja9nZVv5BY7tVqCB6oK4eLJbbjmEEvDjg/gmWnE8Ywgtan0f8J8fFZ6b8FeJOg+woT
+         JBN5Xb6LnKT7CZIakKApM99GgrgEDYZFxWDpd3XnhQ+L/blTnMMkNrT+vd+UcWwHPMgY
+         guu39XC6hFByRcxlPgKx9kMCNnWz56fW8sWLst0pe6Frv5q5PSI9IwtTNCpNEAB13177
+         nIHH4tt6ClO1D6EWClxsGQN5JGNBLieOVhf9gVka21m3EuuXWP+HzMR16pwmE0ULN+LD
+         d36r8+dt71E4o4fc4Pi1sECZ6JJxFDLhPPgiv3QC7QiYG7ykh6Xxm9O5RMg6HEQtEFm3
+         isTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5veyo9Ry0StfUWfoIo1uO4FnVWpRSgAmiP0O2/2xtyE=;
+        b=eQWUI5df2y5XKBpjMLlh86qy6x437G/KAHg1NYYVSAzq8hcOs32f8p05+8Ec5c8cHB
+         vMP88gg0D+UQEeoXa736OaRXq2dadtnDoHtxvj5rBywyQJd9VODJSMR7yHTGpNhxc+tg
+         MzFGotQuoUtYB/WNIYpHPENxL8bnFvWcorZGBqSkYeEp1yl0byuIHQK84Nn1pYYFrXM5
+         Dt2o9fs1sfS8ZQPcp6MbFIaxCPFqnx41hAYAcerdGhOdvYo+MkY6ZyN7p0BqayQcKce3
+         RcQFhZIr1wftJThXBVce9lIk5vRW+HO3y3asFm4ObIBdhhdQnpa7J0jQW5yvMGI67Mea
+         5YaQ==
+X-Gm-Message-State: AOAM530AfP8vdHmdu/iXbP5WqJn5BTmkxHViYxYRfaunkPxdbvO7yuJ5
+        syjsy3CRGgr8V13aOITIepSh+wKxD08=
+X-Google-Smtp-Source: ABdhPJy89kWy4Xf8qb/yfJ43BLanYchu9drlpTuSqq3PNXFGHxjV3Hhswkx/STNCnxdhL9JEssV3vQ==
+X-Received: by 2002:a17:90a:ae12:: with SMTP id t18mr17685626pjq.45.1630301139425;
+        Sun, 29 Aug 2021 22:25:39 -0700 (PDT)
+Received: from ruantu-linux-2.. ([211.72.215.15])
+        by smtp.gmail.com with ESMTPSA id k190sm4220804pgc.11.2021.08.29.22.25.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Aug 2021 22:25:38 -0700 (PDT)
+From:   Yu-Tung Chang <mtwget@gmail.com>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
+Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Yu-Tung Chang <mtwget@gmail.com>
+Subject: [PATCH] rtc: rx8010: select REGMAP_I2C
+Date:   Mon, 30 Aug 2021 13:25:32 +0800
+Message-Id: <20210830052532.40356-1-mtwget@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210829181635-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The rtc-rx8010 uses the I2C regmap but doesn't select it in Kconfig so
+depending on the configuration the build may fail. Fix it.
 
-On 8/29/2021 3:26 PM, Michael S. Tsirkin wrote:
-> On Sun, Aug 29, 2021 at 09:17:53AM -0700, Andi Kleen wrote:
->> Also I changing this single call really that bad? It's not that we changing
->> anything drastic here, just give the low level subsystem a better hint about
->> the intention. If you don't like the function name, could make it an
->> argument instead?
-> My point however is that the API should say that the
-> driver has been audited,
+Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
+---
+ drivers/rtc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-We have that status in the struct device. If you want to tie the ioremap 
-to that we could define a ioremap_device() with a device argument and 
-decide based on that.
-
-Or we can add _audited to the name. ioremap_shared_audited?
-
-> not that the mapping has been
-> done in some special way. For example the mapping can be
-> in some kind of wrapper, not directly in the driver.
-> However you want the driver validated, not the wrapper.
->
-> Here's an idea:
-
-
-I don't think magic differences of API behavior based on some define are 
-a good idea.  That's easy to miss.
-
-That's a "COME FROM" in API design.
-
-Also it wouldn't handle the case that a driver has both private and 
-shared ioremaps, e.g. for BIOS structures.
-
-And we've been avoiding that drivers can self declare auditing, we've 
-been trying to have a separate centralized list so that it's easier to 
-enforce and avoids any cut'n'paste mistakes.
-
--Andi
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index 12153d5801ce..f7bf87097a9f 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -624,6 +624,7 @@ config RTC_DRV_FM3130
+ 
+ config RTC_DRV_RX8010
+ 	tristate "Epson RX8010SJ"
++	select REGMAP_I2C
+ 	help
+ 	  If you say yes here you get support for the Epson RX8010SJ RTC
+ 	  chip.
+-- 
+2.33.0
 
