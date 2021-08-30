@@ -2,31 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A673FB23B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 769913FB242
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234560AbhH3IJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 04:09:14 -0400
-Received: from thoth.sbs.de ([192.35.17.2]:52077 "EHLO thoth.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233318AbhH3IJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 04:09:12 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 17U88BLP018646
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Aug 2021 10:08:11 +0200
-Received: from [167.87.2.75] ([167.87.2.75])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 17U88AWF007376;
-        Mon, 30 Aug 2021 10:08:11 +0200
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Subject: [PATCH v2] PCI/portdrv: Do not setup up IRQs if there are no users
-To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-ID: <8f9a13ac-8ab1-15ac-06cb-c131b488a36f@siemens.com>
-Date:   Mon, 30 Aug 2021 10:08:10 +0200
+        id S234344AbhH3INS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 04:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234173AbhH3INQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 04:13:16 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16742C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:12:22 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id j4so29560903lfg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:12:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=37NPYMAcAJ2zN2cJYUDeD0UMO7gOVKhQ3wSJbKTk4Y4=;
+        b=GCDOzcNzVhs4IQ7426ZVN03J0Ko2sEjG9cQEZGeMHf7zHH0uTul5FY+dMxWAJAq77p
+         j+8i+7QJbELQPKI4PT+dLeghPh3S68CXIvvm52+XXL80drAEs96e4nX4qMjOTIzgJVC8
+         cARoPXDw1opzv8Bt2MuT5eD6UsHeTs6ZLJSBo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=37NPYMAcAJ2zN2cJYUDeD0UMO7gOVKhQ3wSJbKTk4Y4=;
+        b=WrAbFH/NBdkf7umSNsnpQR0sc87hS45BkXUe73T81ntSqhun3yySEqhYy4cdHtCQB8
+         E76cKh/FD1/lAtWugElz3AkOn24AjET57HwBzfB2/j6469/QSGqyKCdw/8W9m+nOO7Fs
+         qLYAhHaxCpHqSQqSsEi497ZumHcV/YC/Tgc9RC3+fDqy1FUvnQ6eDD33AR3WzrGJPzPb
+         LBz2/vz2obReXoWyU3xbzcdesg5LlYrdcu+TqQMtYNRGeM2NY1lVOwZ+5SHnSKD0sMp2
+         wHLS88C/wHTLbOcqHtIL2rHLH3ble78Vz7bDy2oPxHAtnnjJn6k+SOyzEMk7PI1Wr6Nt
+         jsRQ==
+X-Gm-Message-State: AOAM533Gj5/nK2cO3cSkc5wmd4PWiJU5Sj8Z/2nT2xe5xodCAqc/MCVy
+        J/mpe5t8H5CWHedWSXBYqkS+uw==
+X-Google-Smtp-Source: ABdhPJyqK6pQ4ZHjxX58026zqbgeQvpstiUZ8XlEC+qgCUJQtVIYIg6u5NRiRukkzgIJZHyRGY3uhA==
+X-Received: by 2002:a05:6512:1686:: with SMTP id bu6mr16774526lfb.168.1630311141001;
+        Mon, 30 Aug 2021 01:12:21 -0700 (PDT)
+Received: from [172.16.11.1] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id e4sm676505lfc.141.2021.08.30.01.12.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 01:12:20 -0700 (PDT)
+Subject: Re: [PATCH v8 2/3] mm: add a field to store names for private
+ anonymous memory
+To:     Suren Baghdasaryan <surenb@google.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org, eb@emlix.com,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        thomascedeno@google.com, sashal@kernel.org, cxfcosmos@gmail.com,
+        linux@rasmusvillemoes.dk, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+References: <20210827191858.2037087-1-surenb@google.com>
+ <20210827191858.2037087-3-surenb@google.com>
+ <YSmVl+DEPrU6oUR4@casper.infradead.org> <202108272228.7D36F0373@keescook>
+ <CAJuCfpEWc+eTLYp_Xf9exMJCO_cFtvBUzi39+WbcSKZBXHe3SQ@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <f7117620-28ba-cfa5-b2c6-21812f15e4d6@rasmusvillemoes.dk>
+Date:   Mon, 30 Aug 2021 10:12:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <CAJuCfpEWc+eTLYp_Xf9exMJCO_cFtvBUzi39+WbcSKZBXHe3SQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -34,95 +106,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+On 28/08/2021 23.47, Suren Baghdasaryan wrote:
+> On Fri, Aug 27, 2021 at 10:52 PM Kees Cook <keescook@chromium.org> wrote:
+>>
+>>>> +   case PR_SET_VMA_ANON_NAME:
+>>>> +           name = strndup_user((const char __user *)arg,
+>>>> +                               ANON_VMA_NAME_MAX_LEN);
+>>>> +
+>>>> +           if (IS_ERR(name))
+>>>> +                   return PTR_ERR(name);
+>>>> +
+>>>> +           for (pch = name; *pch != '\0'; pch++) {
+>>>> +                   if (!isprint(*pch)) {
+>>>> +                           kfree(name);
+>>>> +                           return -EINVAL;
+>>>
+>>> I think isprint() is too weak a check.  For example, I would suggest
+>>> forbidding the following characters: ':', ']', '[', ' '.  Perhaps
 
-Avoid registering service IRQs if there is no service that offers them
-or no driver to register a handler against them. This saves IRQ vectors
-when they are limited (e.g. on x86) and also avoids that spurious events
-could hit a missing handler. Such spurious events need to be generated
-by the Jailhouse hypervisor for active MSI vectors when enabling or
-disabling itself.
+Indeed. There's also the issue that the kernel's ctype actually
+implements some almost-but-not-quite latin1, so (some) chars above 0x7f
+would also pass isprint() - while everybody today expects utf-8, so the
+ability to put almost arbitrary sequences of chars with the high bit set
+could certainly confuse some parsers. IOW, don't use isprint() at all,
+just explicitly check for the byte values that we and up agreeing to
+allow/forbid.
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
----
+>>> isalnum() would be better?  (permit a-zA-Z0-9)  I wouldn't necessarily
+>>> be opposed to some punctuation characters, but let's avoid creating
+>>> confusion.  Do you happen to know which characters are actually in use
+>>> today?
+>>
+>> There's some sense in refusing [, ], and :, but removing " " seems
+>> unhelpful for reasonable descriptors. As long as weird stuff is escaped,
+>> I think it's fine. Any parser can just extract with m|\[anon:(.*)\]$|
+> 
+> I see no issue in forbidding '[' and ']' but whitespace and ':' are
+> currently used by Android. Would forbidding or escaping '[' and ']' be
+> enough?
 
-Changes in v2:
- - move initialization of irqs to address test bot finding
+how about allowing [0x20, 0x7e] except [0x5b, 0x5d], i.e. all printable
+(including space) ascii characters, except [ \ ] - the brackets as
+already discussed, and backslash because then there's nobody who can get
+confused about whether there's some (and then which?) escaping mechanism
+in play - "\n" is simply never going to appear. Simple rules, easy to
+implement, easy to explain in a man page.
 
- drivers/pci/pcie/portdrv_core.c | 47 +++++++++++++++++++++------------
- 1 file changed, 30 insertions(+), 17 deletions(-)
+>>
+>> For example, just escape it here instead of refusing to take it. Something
+>> like:
+>>
+>>         name = strndup_user((const char __user *)arg,
+>>                             ANON_VMA_NAME_MAX_LEN);
+>>         escaped = kasprintf(GFP_KERNEL, "%pE", name);
 
-diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
-index e1fed6649c41..0e2556269429 100644
---- a/drivers/pci/pcie/portdrv_core.c
-+++ b/drivers/pci/pcie/portdrv_core.c
-@@ -166,9 +166,6 @@ static int pcie_init_service_irqs(struct pci_dev *dev, int *irqs, int mask)
- {
- 	int ret, i;
- 
--	for (i = 0; i < PCIE_PORT_DEVICE_MAXSERVICES; i++)
--		irqs[i] = -1;
--
- 	/*
- 	 * If we support PME but can't use MSI/MSI-X for it, we have to
- 	 * fall back to INTx or other interrupts, e.g., a system shared
-@@ -312,8 +309,10 @@ static int pcie_device_init(struct pci_dev *pdev, int service, int irq)
-  */
- int pcie_port_device_register(struct pci_dev *dev)
- {
--	int status, capabilities, i, nr_service;
--	int irqs[PCIE_PORT_DEVICE_MAXSERVICES];
-+	int status, capabilities, irq_services, i, nr_service;
-+	int irqs[PCIE_PORT_DEVICE_MAXSERVICES] = {
-+		[0 ... PCIE_PORT_DEVICE_MAXSERVICES-1] = -1
-+	};
- 
- 	/* Enable PCI Express port device */
- 	status = pci_enable_device(dev);
-@@ -326,18 +325,32 @@ int pcie_port_device_register(struct pci_dev *dev)
- 		return 0;
- 
- 	pci_set_master(dev);
--	/*
--	 * Initialize service irqs. Don't use service devices that
--	 * require interrupts if there is no way to generate them.
--	 * However, some drivers may have a polling mode (e.g. pciehp_poll_mode)
--	 * that can be used in the absence of irqs.  Allow them to determine
--	 * if that is to be used.
--	 */
--	status = pcie_init_service_irqs(dev, irqs, capabilities);
--	if (status) {
--		capabilities &= PCIE_PORT_SERVICE_HP;
--		if (!capabilities)
--			goto error_disable;
-+
-+	irq_services = 0;
-+	if (IS_ENABLED(CONFIG_PCIE_PME))
-+		irq_services |= PCIE_PORT_SERVICE_PME;
-+	if (IS_ENABLED(CONFIG_PCIEAER))
-+		irq_services |= PCIE_PORT_SERVICE_AER;
-+	if (IS_ENABLED(CONFIG_HOTPLUG_PCI_PCIE))
-+		irq_services |= PCIE_PORT_SERVICE_HP;
-+	if (IS_ENABLED(CONFIG_PCIE_DPC))
-+		irq_services |= PCIE_PORT_SERVICE_DPC;
-+	irq_services &= capabilities;
-+
-+	if (irq_services) {
-+		/*
-+		 * Initialize service irqs. Don't use service devices that
-+		 * require interrupts if there is no way to generate them.
-+		 * However, some drivers may have a polling mode (e.g.
-+		 * pciehp_poll_mode) that can be used in the absence of irqs.
-+		 * Allow them to determine if that is to be used.
-+		 */
-+		status = pcie_init_service_irqs(dev, irqs, irq_services);
-+		if (status) {
-+			irq_services &= PCIE_PORT_SERVICE_HP;
-+			if (!irq_services)
-+				goto error_disable;
-+		}
- 	}
- 
- 	/* Allocate child services if any */
--- 
-2.31.1
+I would not go down that road. First, it makes it much harder to explain
+the rules for what are allowed and not allowed. Second, parsers become
+much more complicated. Third, does the length limit then apply to the
+escaped or unescaped string?
+
+Rasmus
