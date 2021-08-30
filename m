@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C63983FB0DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 07:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A15F3FB0E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 07:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbhH3FrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 01:47:05 -0400
-Received: from ozlabs.org ([203.11.71.1]:55985 "EHLO ozlabs.org"
+        id S232700AbhH3FrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 01:47:13 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:48851 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229936AbhH3FrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 01:47:03 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GyfSZ4MrFz9sWS;
-        Mon, 30 Aug 2021 15:46:06 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630302368;
-        bh=eh3cO90c1KedAIJjSl6KhOs8itt4bFhDPyslsaki+bg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=QnM00rPpxqrsnMXbwtoHmHkDteIgeugumsc/XoT3jOIHVJ2mMcFfl2APcwhta8Ov0
-         C077J3yxmbQIl6nZUHFqYJ6o/gVwzA+L5ETTvIQacv2rY0cSHxGdsoupRKJmdCdWWz
-         65WAyNR9tajJWXaXAhSC1Yp8eF3am4Y2UlFDaEW6NfUN9731OieVTXzU76enl7xBqK
-         +ublSzQbXKL+PGS4DEQuWXRfSz0WhXxh1HuJORKUEnQmAhOMbBevrG0h9DMqdhmJSX
-         azeNByre4P7oyKZ8vJKffAU8kFA1GCzJpbzMaYmLA3kLMfSwV3ekfpwPyXZH/ChCbw
-         8CYKskaHKTZrA==
-Date:   Mon, 30 Aug 2021 15:46:05 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Helge Deller <deller@gmx.de>,
-        Parisc List <linux-parisc@vger.kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Jiri Slaby <jslaby@suse.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the tty tree with the parisc-hd tree
-Message-ID: <20210830154605.2abe717e@canb.auug.org.au>
+        id S232460AbhH3FrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 01:47:08 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GyfSk1d5gz9sS4;
+        Mon, 30 Aug 2021 07:46:14 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zA3Iyf5HNa0c; Mon, 30 Aug 2021 07:46:14 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GyfSk0fGSz9sS3;
+        Mon, 30 Aug 2021 07:46:14 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id ED3FA8B772;
+        Mon, 30 Aug 2021 07:46:13 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 22uqgGtz1eIP; Mon, 30 Aug 2021 07:46:13 +0200 (CEST)
+Received: from [172.25.230.100] (po15451.idsi0.si.c-s.fr [172.25.230.100])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CD8998B763;
+        Mon, 30 Aug 2021 07:46:13 +0200 (CEST)
+Subject: Re: decompress.c:undefined reference to `__decompress'
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+References: <202105211642.tUeKonkw-lkp@intel.com>
+ <daa93504-5d42-a5f1-ae7a-3b802fd661f7@infradead.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <331a1d60-360a-0ba4-cd01-65ae3121e943@csgroup.eu>
+Date:   Mon, 30 Aug 2021 07:46:13 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/uVUbwi0.12Pg.+NH6XSljQ2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <daa93504-5d42-a5f1-ae7a-3b802fd661f7@infradead.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/uVUbwi0.12Pg.+NH6XSljQ2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the tty tree got a conflict in:
+Le 30/08/2021 à 04:30, Randy Dunlap a écrit :
+> On 5/21/21 1:20 AM, kernel test robot wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   79a106fc6585979022012e65a1e45e3d2d28b77b
+>> commit: 665d8d58761cba41147fe7e98e2ceed1cbf603a2 powerpc/akebono: Fix unmet dependency errors
+>> date:   3 months ago
+>> config: powerpc64-randconfig-r023-20210521 (attached as .config)
+>> compiler: powerpc-linux-gcc (GCC) 9.3.0
+>> reproduce (this is a W=1 build):
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O 
+>> ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=665d8d58761cba41147fe7e98e2ceed1cbf603a2 
+>>
+>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout 665d8d58761cba41147fe7e98e2ceed1cbf603a2
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc64
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>     powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
+>>>> decompress.c:(.text+0x1f0): undefined reference to `__decompress'
+>>
+>> ---
+> 
+> Hi Christophe,
+> 
+> Didn't you have a patch that adds boot support in Powerpc for
+> LZMA and LZO?  What happened to that patch?
+> 
 
-  arch/parisc/kernel/pdc_cons.c
+Yes it is still there
 
-between commit:
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/a74fce4dfc9fa32da6ce3470bbedcecf795de1ec.1591189069.git.christophe.leroy@csgroup.eu/
 
-  9613b0cb3eb4 ("tty: pdc_cons, free tty_driver upon failure")
+But as far as I remember it didn't pass CI build tests. Need to have a new look at it.
 
-from the parisc-hd tree and commits:
 
-  0524513afe45 ("tty: don't store semi-state into tty drivers")
-  72fdb403008c ("tty: pdc_cons, free tty_driver upon failure")
-
-from the tty tree.
-
-I fixed it up (I just used the latter version) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/uVUbwi0.12Pg.+NH6XSljQ2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEscJ0ACgkQAVBC80lX
-0Gz2wwf9EzoZZLXgVZXEOqIIY8e8do1BSIZz7CIxD2/674rEK/Tq3du0wpe3X3a4
-PJgW4uAso7V+6vxCYHXx6BdzM7gqYly1Grh2oxW3i0KeTqs08uxst3qZjYCfIduu
-2GorYxFuYVOcZpIxSOEoLaMYGkvxRE7V5QitRgaqO8SYguFYzVT6taVuJrC1CICU
-7aVndMGhlHU5ejSRcdWE8n6hKnXqRIpp8mOkjfJHQv2FCAtoRYd1fi6RadWMcWC3
-J/l9S6EMn/3xzHPkJunJN20Mc1jWpIFmCS0AY9mW4r7JoTJ3YsGwApi36ejZ0Dgf
-1taA8ciufj106PfavfhbuGKzmhhd3A==
-=VduB
------END PGP SIGNATURE-----
-
---Sig_/uVUbwi0.12Pg.+NH6XSljQ2--
