@@ -2,112 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73E63FB940
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF973FB941
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237636AbhH3Puh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:50:37 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:8749 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231725AbhH3Pue (ORCPT
+        id S237644AbhH3Pu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231725AbhH3Pu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:50:34 -0400
+        Mon, 30 Aug 2021 11:50:57 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A2DC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:50:04 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id t4so16122092qkb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:50:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1630338581; x=1661874581;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/c1llN9C4IquXz3bbhXpbJ6//ha+QcyeP4evN5K3J5A=;
-  b=Ha9ubgL1oE03cRRUjPH/ijC4lkfKosiMcKvaYwGSx1Lc5dYjoppDPyoK
-   ELrAUFqvtrIO9iO7v9EqKOEwWx+sWGUHyFzDBIerigLi3oE8feziMyxxA
-   ibyONyhd1xsw7IQb9l58RilS/lMMIcl5UQTabWb8m8GEZ8s8ccI7QJDYv
-   c=;
-X-IronPort-AV: E=Sophos;i="5.84,363,1620691200"; 
-   d="scan'208";a="133232323"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-41350382.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 30 Aug 2021 15:49:40 +0000
-Received: from EX13D46EUB004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-41350382.us-west-2.amazon.com (Postfix) with ESMTPS id D7444C09D6;
-        Mon, 30 Aug 2021 15:49:38 +0000 (UTC)
-Received: from u90cef543d0ab5a.ant.amazon.com (10.43.160.41) by
- EX13D46EUB004.ant.amazon.com (10.43.166.65) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Mon, 30 Aug 2021 15:49:32 +0000
-Date:   Mon, 30 Aug 2021 18:49:27 +0300
-From:   George-Aurelian Popescu <popegeo@amazon.com>
-To:     Andra Paraschiv <andraprs@amazon.com>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexandru Ciobotaru <alcioa@amazon.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Kamal Mostafa <kamal@canonical.com>,
-        Alexandru Vasile <lexnv@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-Subject: Re: [PATCH v3 4/7] nitro_enclaves: Update copyright statement to
- include 2021
-Message-ID: <20210830154926.GD10224@u90cef543d0ab5a.ant.amazon.com>
-References: <20210827154930.40608-1-andraprs@amazon.com>
- <20210827154930.40608-5-andraprs@amazon.com>
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3EjivDiNW5dAOyhrOMqEWL8a+PXeFCbzRwgo6qum9x8=;
+        b=oQZXiB4wg3hwg9pROFj1CoypHmcCfz4uSOZBMPOw/xjTn1PwskNdiAZ/vTxdS92iNc
+         1HD/EDIlpMW/dhprQTo1DzB/D3P7QvETxar+Gedl9J2hDunJdSk3gJJZHazGVJIkdf1a
+         Lf342kZ0S2V8+IXepRe5lGNz6535xTxR8R991bYdMBtyKjEdf7pyQBzRa6gALfw97g1k
+         WSerrn33LjuqjHnEzFXzE9MO5fQHDrpCRu/2ggL26yCod5jR6uUNibiKGasAVkJnGX/F
+         SAD5E0crVc5OgON5VR4F+OlqxD/8hJeXwHvILMqK2JBNZPbr6F20TWumUGkv/HFvBu5O
+         vEOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3EjivDiNW5dAOyhrOMqEWL8a+PXeFCbzRwgo6qum9x8=;
+        b=JJdy0l4fvXSYdUvwJKzopDxdxXO48qv+szYOGa1xaKsfsgg1c8D4ADB4xnwfwnVpd9
+         Y6z1ev2GplnPOUvmI1R+mE1iC4wq6neiRKqy4thh1caOHjMh9FSCe/u4XN24M9RIPklf
+         n1m/RPBpqub+a+xBXCjA9lRQ4EWzVpTJcGTrfyYDlafqSHw6ezNHbYzZtjEV/aj99cZt
+         FYrGiLLpgVXKYVcfI2k3QUYEqR4Rk8AMun1AsuzncKAqEKy7LojWOgPLL8Qp11a0kCOR
+         QsIOIOxZg7nvJ7BSIEhBx0AWIO6c/DA9gMfQ4nbBJDyNKgyrDBMLOSpVZc0b5Dwvavz5
+         BLoA==
+X-Gm-Message-State: AOAM531SZ+yrBbULzr9GoUgUrz0STOynvVa/f6tKY1JgflLNsGHWCCRk
+        +9J7IWSBVOPAtihIwNra1KMzJsSGDpI=
+X-Google-Smtp-Source: ABdhPJzWXWn+YQQ1fdQPNgufa2i+54nhHiOyLZOncNbYj+OEbg09OUaqVYm1Qs5NCHQ177vQ/KkCQw==
+X-Received: by 2002:a37:68d0:: with SMTP id d199mr23264888qkc.96.1630338603341;
+        Mon, 30 Aug 2021 08:50:03 -0700 (PDT)
+Received: from vps.qemfd.net (vps.qemfd.net. [173.230.130.29])
+        by smtp.gmail.com with ESMTPSA id q184sm11750482qkd.35.2021.08.30.08.50.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 08:50:02 -0700 (PDT)
+Received: from schwarzgerat.orthanc (schwarzgerat.danknet [192.168.128.2])
+        by vps.qemfd.net (Postfix) with ESMTP id 6757D2B361;
+        Mon, 30 Aug 2021 11:50:02 -0400 (EDT)
+Received: by schwarzgerat.orthanc (Postfix, from userid 1000)
+        id 57E756001F5; Mon, 30 Aug 2021 11:50:02 -0400 (EDT)
+Date:   Mon, 30 Aug 2021 11:50:02 -0400
+From:   nick black <dankamongmen@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] console: consume APC, DM, DCS
+Message-ID: <YSz+KnydjtIC3dtK@schwarzgerat.orthanc>
+References: <YSydL0q8iaUfkphg@schwarzgerat.orthanc>
+ <0f094eb9-11d4-1bd5-0a1b-823317ad4f7d@kernel.org>
+ <YSysHCQyN+brJLEj@schwarzgerat.orthanc>
+ <CAHk-=wg6-HbEPEC6-Fz0kqnHsB4nZryWi5TEZEN=NCWzBtg4iw@mail.gmail.com>
+ <CAHk-=whjqVuOL-0Ar85dapyU=jiVWASQnzoyxv=wL7ZEOwFUUw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210827154930.40608-5-andraprs@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.43.160.41]
-X-ClientProxiedBy: EX13D28UWB001.ant.amazon.com (10.43.161.98) To
- EX13D46EUB004.ant.amazon.com (10.43.166.65)
+In-Reply-To: <CAHk-=whjqVuOL-0Ar85dapyU=jiVWASQnzoyxv=wL7ZEOwFUUw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 06:49:27PM +0300, Andra Paraschiv wrote:
-> Update the copyright statement to include 2021, as a change has been
-> made over this year.
-> 
-> Check commit d874742f6a73 ("nitro_enclaves: Set Bus Master for the NE
-> PCI device") for the codebase update from this file (ne_pci_dev.c).
-> 
-> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-> ---
-> Changelog
-> 
-> v1 -> v2
-> 
-> * No codebase changes, it was split from the patch 3 in the v1 of the
-> patch series.
-> 
-> v2 -> v3
-> 
-> * Move changelog after the "---" line.
-> ---
->  drivers/virt/nitro_enclaves/ne_pci_dev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/virt/nitro_enclaves/ne_pci_dev.c b/drivers/virt/nitro_enclaves/ne_pci_dev.c
-> index 143207e9b9698..40b49ec8e30b1 100644
-> --- a/drivers/virt/nitro_enclaves/ne_pci_dev.c
-> +++ b/drivers/virt/nitro_enclaves/ne_pci_dev.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-> + * Copyright 2020-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
->   */
->  
->  /**
-> -- 
-> 2.20.1 (Apple Git-117)
-> 
+Linus Torvalds left as an exercise for the reader:
+> Side note: it would have been nice to see "v2: whitespace changes" or
+> something in the patch description, below the "---" that cuts off the
+> commit message.
+> I had your previous patch version pending, and had to check what had
+> changed in the re-send.
 
-Reviewed-by: George-Aurelian Popescu <popegeo@amazon.com>
+thanks for the feedback and heads-up. i'm looking to do some
+further work in this area over coming weeks, so i'm glad to hear
+you're interested in it =]. this patch was not just conformance
+for conformance's sake -- Notcurses is doing several queries
+which leave nastiness on the screen without this.
 
-Looks ok,
-George
+thanks for the merge! =]
 
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
-
+-- 
+nick black -=- https://www.nick-black.com
+to make an apple pie from scratch,
+you need first invent a universe.
