@@ -2,115 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F353FB9E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019753FB9EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237785AbhH3QN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:13:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231181AbhH3QN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:13:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3949060F5E;
-        Mon, 30 Aug 2021 16:13:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630339982;
-        bh=40inKDhWzSvdGsiJaHfcPhn4GTMQWygcBLFqeqAn4/g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NzTicYRYkcQru4sLkEttXtHEU1G2mK+qzPV//QJM+KiX9BKTip5JYE9M3m6jBzokj
-         jWrfOGUKySmn7oe5uU5PXq1vfJpwSD2dL46K14+ZvUTwHhRid4W9JYILYeBgH66bUn
-         7lCah/C3lQpIpxbNQRtB69JGMeAo0m+IwISOnPAP3Vmzafm1h2uyHbf+uIfiEpRrWR
-         ldywnKXG8xILvroo+EMzAQ4RpMMKWlfAqYLHATbCg84KgFFekl598B4cTR65PXCBKs
-         Lbte+tcrlHLINyZyLkCuvQDD18RkvV1lGwhG7FenBdKK1r79sl2PU5/Rygd+Dq8Dix
-         rh6gS3yxsIgfA==
-Received: by mail-ej1-f53.google.com with SMTP id e21so32220012ejz.12;
-        Mon, 30 Aug 2021 09:13:02 -0700 (PDT)
-X-Gm-Message-State: AOAM532xnnDsV47z/Eyo6VUFaALd8aO0rCTn3G22yn2r+Lsj7r8m8kWW
-        li2vILMbWgchdVjLWReDaRstqi2rj+gsyS8vFw==
-X-Google-Smtp-Source: ABdhPJzgx5cNjX+gTraGFHxZN+e1334aj9v6T19QNMRMy0fo5AFPAJt2/mH9BWnDA3HXjDRaNHV50rJYr6iuSxAiU4U=
-X-Received: by 2002:a17:906:b4d:: with SMTP id v13mr26478063ejg.468.1630339980797;
- Mon, 30 Aug 2021 09:13:00 -0700 (PDT)
+        id S237661AbhH3QPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:15:40 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:45341 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231181AbhH3QPj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 12:15:39 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 622035C018B;
+        Mon, 30 Aug 2021 12:14:45 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 30 Aug 2021 12:14:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=M
+        Ltfvsz5PBLhNxJJBnRudTcBEtVLLW8z4Z1VJJBgPmQ=; b=RfjYL7QJXJuAV77fw
+        wNtBdaedne47flkMKJqmLEdNvTstUMgPurWb329vt6LGE9KqnCnTIc9QV5XEYwgI
+        fv2kJF1ucl7HEYydu5ey1pCUQMjh197Aioy5b5hNElukuSJ/osm/Agb6Cv5FkUUQ
+        IlpuPewJfNk35Tan3hOTs7w1IYBqM20x4cgOt8TJa0/+xVdQVWq+sfJ0w6nevtMV
+        bGfnJA1CwqyzVijak9eGwNlpjFiL+5lPSFH6r8M8glB1VfTnoBdJtbAeZDd1GFPe
+        1Fnwt1bcY+aPowbXRzwraukTeyfHAkXTHiCwU5S3DolOe8xs9zg7rFL/Jvmby0B2
+        fMMFw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=MLtfvsz5PBLhNxJJBnRudTcBEtVLLW8z4Z1VJJBgP
+        mQ=; b=nZtYo64m2t+eMbihsW5H2bGwKPjs/Dnu5WLhsWB8ByIrsKW7YtYOLnpJz
+        MUbHk0MkZbInS0+/yH0ccGsX/DSb6h/k66sjTyISqKMVKJ1Lh0MQEnphuUTSa/VM
+        XSwVuNCgSZjvbqiXRbwo1xo2s0TTFMVhbhdpSAMQCFoyefnLYNKyK+ION/d/FyPv
+        08a+UyABrH6x8qNtIj6SSVk+i95Ww/RHNFLPfqqtyEpdnsMiEWkjuc0j9LJQfRrk
+        xWXosEOoM1Y6qHLcZqdIXCULB6hBgyvsMIgZPjaqbeaMPP6eegRqY2nmtlvqaMgX
+        C3ISZeJLxNmNfdjUJ0mrqvt/IyVfg==
+X-ME-Sender: <xms:9AMtYRqAZ6QmJH9tPn6q08gdG_FilNKvNQ_Niqv4FMo8QMHEve4COA>
+    <xme:9AMtYToDF-nD7QPYx3qw_yGb2sTCo7rAviYuuTL9EFbsXD-zQZkHCPL3olcxptF1A
+    TiHYxxJROtw83t793M>
+X-ME-Received: <xmr:9AMtYePTiigZgavZmd4DcSNjY3TpisZ4SxBztYECxy8O1cPcDLlv61MzT7kg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudduledgleelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeekieeghfffhfeuuddtvdegleeltdejgeevfeekteetheefhffg
+    vefhueetkeefieenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghes
+    fhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:9AMtYc6VoXHu7D5tMp7bYEKVNTc3YqC8cZAjr65yRFH1nrYDeXcQqA>
+    <xmx:9AMtYQ6hj4gpyVYeb7-zDGL5nOT1E54VQ4IoFPthDWOg6dDy_0DC3g>
+    <xmx:9AMtYUjDqE2mwvKoBd3XnMyff7pP68wW2Jt17iJC8nem1yvxxZfb0g>
+    <xmx:9QMtYelJG6tCaCizKp64mPVkBkvJEhmvRkcRlv8f1qyyKOyw0d325g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 30 Aug 2021 12:14:42 -0400 (EDT)
+Subject: Re: [PATCH] mips: remove reference to "newer Loongson-3"
+To:     Xi Ruoyao <xry111@mengyan1223.wang>, linux-mips@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
+References: <0b7c9431efb12c2d957fcc53ec8f0743725d61b3.camel@mengyan1223.wang>
+ <b32c0d64-77b2-d054-afcf-7d006eba3418@flygoat.com>
+ <086f60d6ef4395db5da7ee22c4f352d5c901d396.camel@mengyan1223.wang>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <1d49da11-51d5-e148-cb02-9bd0ee57fae6@flygoat.com>
+Date:   Tue, 31 Aug 2021 00:14:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210821031357.289-1-yuzenghui@huawei.com> <YSPuMqd1QgnRIVCB@robh.at.kernel.org>
- <YSddYSKvGneVKNjW@phenom.ffwll.local>
-In-Reply-To: <YSddYSKvGneVKNjW@phenom.ffwll.local>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 30 Aug 2021 11:12:48 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+gapHO79i1BY8AhCJX6H67FgLmZV7xXcjBn9yY4q=6iQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+gapHO79i1BY8AhCJX6H67FgLmZV7xXcjBn9yY4q=6iQ@mail.gmail.com>
-Subject: Re: [PATCH] drm: remove zxdrm driver
-To:     Zenghui Yu <yuzenghui@huawei.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Arnd Bergmann <arnd@arndb.de>, wanghaibin.wang@huawei.com,
-        Jun Nie <jun.nie@linaro.org>, David Airlie <airlied@linux.ie>,
-        Shawn Guo <shawnguo@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <086f60d6ef4395db5da7ee22c4f352d5c901d396.camel@mengyan1223.wang>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 4:22 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Mon, Aug 23, 2021 at 01:51:30PM -0500, Rob Herring wrote:
-> > On Sat, 21 Aug 2021 11:13:57 +0800, Zenghui Yu wrote:
-> > > The zte zx platform had been removed in commit 89d4f98ae90d ("ARM: remove
-> > > zte zx platform"), so this driver is no longer needed.
-> > >
-> > > Cc: Arnd Bergmann <arnd@arndb.de>
-> > > Cc: Jun Nie <jun.nie@linaro.org>
-> > > Cc: Shawn Guo <shawnguo@kernel.org>
-> > > Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> > > ---
-> > >  .../devicetree/bindings/display/zte,vou.txt   | 120 ---
-> > >  drivers/gpu/drm/Kconfig                       |   2 -
-> > >  drivers/gpu/drm/Makefile                      |   1 -
-> > >  drivers/gpu/drm/zte/Kconfig                   |  10 -
-> > >  drivers/gpu/drm/zte/Makefile                  |  10 -
-> > >  drivers/gpu/drm/zte/zx_common_regs.h          |  28 -
-> > >  drivers/gpu/drm/zte/zx_drm_drv.c              | 190 ----
-> > >  drivers/gpu/drm/zte/zx_drm_drv.h              |  34 -
-> > >  drivers/gpu/drm/zte/zx_hdmi.c                 | 760 ---------------
-> > >  drivers/gpu/drm/zte/zx_hdmi_regs.h            |  66 --
-> > >  drivers/gpu/drm/zte/zx_plane.c                | 537 ----------
-> > >  drivers/gpu/drm/zte/zx_plane.h                |  26 -
-> > >  drivers/gpu/drm/zte/zx_plane_regs.h           | 120 ---
-> > >  drivers/gpu/drm/zte/zx_tvenc.c                | 400 --------
-> > >  drivers/gpu/drm/zte/zx_tvenc_regs.h           |  27 -
-> > >  drivers/gpu/drm/zte/zx_vga.c                  | 527 ----------
-> > >  drivers/gpu/drm/zte/zx_vga_regs.h             |  33 -
-> > >  drivers/gpu/drm/zte/zx_vou.c                  | 921 ------------------
-> > >  drivers/gpu/drm/zte/zx_vou.h                  |  64 --
-> > >  drivers/gpu/drm/zte/zx_vou_regs.h             | 212 ----
-> > >  20 files changed, 4088 deletions(-)
-> > >  delete mode 100644 Documentation/devicetree/bindings/display/zte,vou.txt
-> > >  delete mode 100644 drivers/gpu/drm/zte/Kconfig
-> > >  delete mode 100644 drivers/gpu/drm/zte/Makefile
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_common_regs.h
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_drm_drv.c
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_drm_drv.h
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_hdmi.c
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_hdmi_regs.h
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_plane.c
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_plane.h
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_plane_regs.h
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_tvenc.c
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_tvenc_regs.h
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_vga.c
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_vga_regs.h
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_vou.c
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_vou.h
-> > >  delete mode 100644 drivers/gpu/drm/zte/zx_vou_regs.h
-> > >
-> >
-> > Acked-by: Rob Herring <robh@kernel.org>
->
-> I just merged another patch to delete the zte driver.
 
-Unfortunately, that one missed the binding doc, so please send me a
-patch removing the binding doc.
 
-Rob
+在 2021/8/30 下午8:28, Xi Ruoyao 写道:
+> On Mon, 2021-08-30 at 10:32 +0800, Jiaxun Yang wrote:
+>> 在 2021/8/29 20:49, Xi Ruoyao 写道:
+>>> Newest Loongson-3 processors have moved to use LoongArch
+>>> architecture.
+>>> Sadly, the LL/SC issue is still existing on both latest Loongson-3
+>>> processors using MIPS64 (Loongson-3A4000) and LoongArch
+>>> (Loongson-3A5000).
+>> LLSC is fixed on Loongson-3A4000 as per CPUCFG report.
+> If I don't enable LL/SC fix, GCC libgomp tests fail on both 3A4000 and
+> 3A5000 (using github.com/loongson/gcc for the latter) with "invalid
+> access to 0x00000049" or "0x00000005".  This is a race condition: it
+> does not happen at all with OMP_NUM_THREADS=1, happens with about 10%
+> possibility with OMP_NUM_THREADS=2, and about 90% possibility with
+> OMP_NUM_THREAD=4 (on 3A5000, on 3A4000 the possibility is lower).
+Apologize for the false report, yes, you are right. I had checked with 
+Loongson guys
+and they confirmed that the workaround still needs to be applied to 
+latest 3A4000
+processors, including 3A4000 for MIPS and 3A5000 for LoongArch.
+
+Though, the reason behind the workaround varies with the evaluation of 
+their uArch,
+for GS464V based core, barrier is required as the uArch design allows 
+regular load
+to be reordered after an atomic linked load, and that would break 
+assumption of compiler
+atomic constraints.
+
+For GS464E, barrier is required to flush the Store Fill Buffer and land 
+all the cachelines
+to L1 cache, otherwise a linked load to a cacheline located at SFB may 
+cause deadlock.
+
+For original GS464, barrier is required to deal with some kind of 
+pipeline hazard to
+ensure store condition won't be shorted to success.
+
+Patch LGTM. The config symbol looks ambiguous and I'd agree with your 
+idea of renaming.
+
+Thanks,
+
+- Jiaxun
+
+>
+> My investigation suggests this means a GCC instrinic,
+> __atomic_compare_and_exchange_n is not really atomic as it should be.
+>
+> If this is not a hardware issue in the GS464V/LA464 uarch, then it will
+> be very low-possibility coincidence: two unrelated code-generation bugs
+> for __atomic_compare_and_exchange_n (LA port has borrowed some code from
+> MIPS port, but the instrinics are of course newly coded).  And I've
+> inspected libgomp & gcc code about __atomic_compare_and_exchange_n
+> carefully, nothing wrong spotted except LoongArch GCC supports "-mfix-
+> loongson3-llsc" which adds a "dbar 0" (like "sync" on MIPS) instruction
+> after SC (only for instrinics).  Enabling this fixes the libgomp
+> failures. Likewisely, "-Wa,-mfix-loongson3-llsc" fixes it on 3A4000.
+>
+> libgomp code has been verified with thread sanitizer on other
+> architectures (unfortunately libtsan is not available on MIPS or
+> LoongArch yet), so it's very unlikely to be a coding error leading to
+> the race.
+>
+> And LL/SC fix is still in Huacai's 3A5000 kernel.  In a mail on linux-
+> arch Huacai said it's "not so easy to be fixed".
+>
+> Or these are two different erratas and I misunderstand them as the same
+> one?
+>
+
