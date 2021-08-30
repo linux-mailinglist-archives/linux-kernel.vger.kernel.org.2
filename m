@@ -2,179 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EDB3FB388
+	by mail.lfdr.de (Postfix) with ESMTP id 095193FB387
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236282AbhH3KCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 06:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhH3KCc (ORCPT
+        id S236263AbhH3KC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 06:02:29 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39894 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229901AbhH3KC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:02:32 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7311FC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 03:01:38 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id u14so29790388ejf.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 03:01:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=rL/KWoHVIOkxu32E107ymMHJoAMuK7HzP7/sGiSlvcw=;
-        b=eGfp7h265z5rg7qEzQDdQzxrp3Nly6ZRQoWgwkY4+7apQNZbvOfWe0/lms1BrG3xTC
-         s2XiNB0I5VcdtXfA769ePvt2vHgSRfWE6uJ2ML7bazEx8dM91q7BErht9sgTCfbWLnPn
-         8vpDYabT2TeEE+SnI5mPPuwTj3MoCHLLCVuC1z/NA+a9PzoqNQ037mnRDZg78or9T6D0
-         XeBU3XaG6UWBVZkHz27IxJdukbZpnCScztwpmRc2pchvdeuJZyBH6d4WvV/xAskbf508
-         EfHWNITcOLDgJt0MRTrsa170Br9qTeI0vo9DKp9OSUbURPayJsf0ZUNgo9m67mHGatKM
-         yj8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=rL/KWoHVIOkxu32E107ymMHJoAMuK7HzP7/sGiSlvcw=;
-        b=uVq4n7LXSfonbaTjE12RNRK2m1j433WAHW9P0gqktt6/WwY39HcX8Fa/HQCFoS1wab
-         GfirCupaHTCuDHp+CqAItd7EMKgvcut7uDdFuv2y3piUPjTfdo8K922rmNW510V//chF
-         ohBnP0kgZX0aX2pawwktSb09zEzm+uDNaSKrlH11UBrhJaxAo8pPT5VpgPEZe0P7Xx8P
-         NgDwYXPbtyKLy58oMWUHlibXM4li1mRsa/GYutjgi5RRQIESEyO0uAcSoO2TXRO4D6Y0
-         uthCqfR7B+bh1NW+Ba1NXvNppWNnJ3uZJ71sun7SEXYMgcFiodZXQU9tvOiROML34HQO
-         4ltg==
-X-Gm-Message-State: AOAM531phglineQqeHV65arGxHZnwts7hATSyxxvqhbMH+wBexpRzIJA
-        5sMtvqPHLDsnxodEDGw/jgVpbzHSGwU=
-X-Google-Smtp-Source: ABdhPJyGO+OiBV/EGr9sAYLKgklcOFY8KmXcxw3Q9jST61EHv8B3PluI6XM+pc/qtQEmKUPbDqLhUA==
-X-Received: by 2002:a17:906:a195:: with SMTP id s21mr24310026ejy.181.1630317696660;
-        Mon, 30 Aug 2021 03:01:36 -0700 (PDT)
-Received: from gmail.com (0526ECFD.dsl.pool.telekom.hu. [5.38.236.253])
-        by smtp.gmail.com with ESMTPSA id cr9sm7338965edb.17.2021.08.30.03.01.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 03:01:36 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 30 Aug 2021 12:01:34 +0200
-From:   Ingo Molnar <mingo@kernel.org>
+        Mon, 30 Aug 2021 06:02:28 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3D91B20081;
+        Mon, 30 Aug 2021 10:01:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630317694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oTuVfXzm/MgGyC3tsUz6RBO5XfYsGoiG5O0vuDQao5s=;
+        b=m0X7DbqEUsBZ/88k1gORh1kka/eLuFtfnLGLAMBOLNAnAIHWOAopC6SD7L9nG7fDRDFvQk
+        nYd+6zvdVWorr7NM2UkS0KEeuCRXTpSbEGdim/oB1tH07gFI9wmjiqdIVJKA9xYAPOqglI
+        yZ4p3sYSzQy6dQw+Kl8H1ZVlqt69T50=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630317694;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oTuVfXzm/MgGyC3tsUz6RBO5XfYsGoiG5O0vuDQao5s=;
+        b=hgdX79pCz6grGol20zcFvs3I29rxJk9veSSvSNBp7k7Nnl07Zu9GWVuiumPJIT3OQpNRpe
+        ck2Scl4WMmQuGlBw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 2CA6B1365C;
+        Mon, 30 Aug 2021 10:01:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id jjYACn6sLGFOPwAAGKfGzw
+        (envelope-from <bp@suse.de>); Mon, 30 Aug 2021 10:01:34 +0000
+Date:   Mon, 30 Aug 2021 12:02:15 +0200
+From:   Borislav Petkov <bp@suse.de>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>
-Subject: [GIT PULL] scheduler changes for v5.15
-Message-ID: <YSysfvjjG6UboKMD@gmail.com>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/cache for v5.15
+Message-ID: <YSysp4mh5rake4Vm@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi Linus,
 
-Please pull the latest sched/core git tree from:
+please pull the x86/resctrl changes for v5.15.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-core-2021-08-30
+Thx.
 
-   # HEAD: b542e383d8c005f06a131e2b40d5889b812f19c6 eventfd: Make signal recursion protection a task bit
+---
 
-Scheduler changes for v5.15 are:
+The following changes since commit 36a21d51725af2ce0700c6ebcb6b9594aac658a6:
 
-- The biggest change in this cycle is scheduler support for asymmetric
-  scheduling affinity, to support the execution of legacy 32-bit tasks on
-  AArch32 systems that also have 64-bit-only CPUs.
+  Linux 5.14-rc5 (2021-08-08 13:49:31 -0700)
 
-  Architectures can fill in this functionality by defining their
-  own task_cpu_possible_mask(p). When this is done, the scheduler will
-  make sure the task will only be scheduled on CPUs that support it.
+are available in the Git repository at:
 
-  (The actual arm64 specific changes are not part of this tree.)
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_cache_for_v5.15
 
-  For other architectures there will be no change in functionality.
+for you to fetch changes up to 111136e69c9df50c3ca7d4e3977344b8a2d0d947:
 
-- Add cgroup SCHED_IDLE support
+  x86/resctrl: Make resctrl_arch_get_config() return its value (2021-08-11 18:42:53 +0200)
 
-- Increase node-distance flexibility & delay determining it until a CPU
-  is brought online. (This enables platforms where node distance isn't
-  final until the CPU is only.)
+----------------------------------------------------------------
+- A first round of changes towards splitting the arch-specific bits from
+the filesystem bits of resctrl, the ultimate goal being to support ARM's
+equivalent technology MPAM, with the same fs interface (James Morse)
 
-- Deadline scheduler enhancements & fixes
+----------------------------------------------------------------
+James Morse (25):
+      x86/resctrl: Split struct rdt_resource
+      x86/resctrl: Split struct rdt_domain
+      x86/resctrl: Add a separate schema list for resctrl
+      x86/resctrl: Pass the schema in info dir's private pointer
+      x86/resctrl: Label the resources with their configuration type
+      x86/resctrl: Walk the resctrl schema list instead of an arch list
+      x86/resctrl: Store the effective num_closid in the schema
+      x86/resctrl: Add resctrl_arch_get_num_closid()
+      x86/resctrl: Pass the schema to resctrl filesystem functions
+      x86/resctrl: Swizzle rdt_resource and resctrl_schema in pseudo_lock_region
+      x86/resctrl: Add a helper to read/set the CDP configuration
+      x86/resctrl: Move the schemata names into struct resctrl_schema
+      x86/resctrl: Group staged configuration into a separate struct
+      x86/resctrl: Allow different CODE/DATA configurations to be staged
+      x86/resctrl: Rename update_domains() to resctrl_arch_update_domains()
+      x86/resctrl: Add a helper to read a closid's configuration
+      x86/resctrl: Pass configuration type to resctrl_arch_get_config()
+      x86/resctrl: Make ctrlval arrays the same size
+      x86/resctrl: Apply offset correction when config is staged
+      x86/resctrl: Calculate the index from the configuration type
+      x86/resctrl: Merge the ctrl_val arrays
+      x86/resctrl: Remove rdt_cdp_peer_get()
+      x86/resctrl: Expand resctrl_arch_update_domains()'s msr_param range
+      x86/resctrl: Merge the CDP resources
+      x86/resctrl: Make resctrl_arch_get_config() return its value
 
-- Misc fixes & cleanups.
+ arch/x86/kernel/cpu/resctrl/core.c        | 276 +++++++-----------
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 163 ++++++++---
+ arch/x86/kernel/cpu/resctrl/internal.h    | 231 +++++----------
+ arch/x86/kernel/cpu/resctrl/monitor.c     |  44 +--
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  12 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 461 +++++++++++++++++-------------
+ include/linux/resctrl.h                   | 184 ++++++++++++
+ 7 files changed, 776 insertions(+), 595 deletions(-)
 
- Thanks,
+-- 
+Regards/Gruss,
+    Boris.
 
-	Ingo
-
------------------->
-Dietmar Eggemann (1):
-      sched/deadline: Fix missing clock update in migrate_task_rq_dl()
-
-Hailong Liu (1):
-      sched/sysctl: Move extern sysctl declarations to sched.h
-
-Ingo Molnar (1):
-      sched/fair: Mark tg_is_idle() an inline in the !CONFIG_FAIR_GROUP_SCHED case
-
-Josh Don (1):
-      sched: Cgroup SCHED_IDLE support
-
-Julian Wiedmann (1):
-      wait: use LIST_HEAD_INIT() to initialize wait_queue_head
-
-Mel Gorman (2):
-      sched/fair: Use prev instead of new target as recent_used_cpu
-      sched/fair: Avoid a second scan of target in select_idle_cpu
-
-Mika Penttil� (1):
-      sched/numa: Fix is_core_idle()
-
-Quentin Perret (4):
-      sched/deadline: Fix reset_on_fork reporting of DL tasks
-      sched: Don't report SCHED_FLAG_SUGOV in sched_getattr()
-      sched: Fix UCLAMP_FLAG_IDLE setting
-      sched: Skip priority checks with SCHED_FLAG_KEEP_PARAMS
-
-Sebastian Andrzej Siewior (1):
-      sched: Replace deprecated CPU-hotplug functions.
-
-Thomas Gleixner (1):
-      eventfd: Make signal recursion protection a task bit
-
-Valentin Schneider (2):
-      sched/debug: Don't update sched_domain debug directories before sched_debug_init()
-      sched/topology: Skip updating masks for non-online nodes
-
-Wang Hui (1):
-      sched: remove redundant on_rq status change
-
-Will Deacon (9):
-      sched: Introduce task_cpu_possible_mask() to limit fallback rq selection
-      cpuset: Don't use the cpu_possible_mask as a last resort for cgroup v1
-      cpuset: Honour task_cpu_possible_mask() in guarantee_online_cpus()
-      cpuset: Cleanup cpuset_cpus_allowed_fallback() use in select_fallback_rq()
-      sched: Reject CPU affinity changes based on task_cpu_possible_mask()
-      sched: Introduce task_struct::user_cpus_ptr to track requested affinity
-      sched: Split the guts of sched_setaffinity() into a helper function
-      sched: Allow task CPU affinity to be restricted on asymmetric systems
-      sched: Introduce dl_task_check_affinity() to check proposed affinity
-
-Yuan ZhaoXiong (1):
-      sched: Optimize housekeeping_cpumask() in for_each_cpu_and()
-
-
- fs/aio.c                     |   2 +-
- fs/eventfd.c                 |  12 +-
- include/linux/cpuset.h       |   8 +-
- include/linux/eventfd.h      |  11 +-
- include/linux/mmu_context.h  |  14 ++
- include/linux/sched.h        |  25 +++
- include/linux/sched/sysctl.h |  18 --
- include/linux/wait.h         |   2 +-
- init/init_task.c             |   1 +
- kernel/cgroup/cpuset.c       |  59 ++++--
- kernel/fork.c                |   2 +
- kernel/sched/core.c          | 440 ++++++++++++++++++++++++++++++++++---------
- kernel/sched/deadline.c      |   8 +-
- kernel/sched/debug.c         |  10 +
- kernel/sched/fair.c          | 211 +++++++++++++++++----
- kernel/sched/sched.h         |  26 +++
- kernel/sched/topology.c      |  65 +++++++
- 17 files changed, 729 insertions(+), 185 deletions(-)
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
