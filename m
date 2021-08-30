@@ -2,131 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6213FBA47
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3403FBA49
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237836AbhH3Qnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237049AbhH3Qno (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:43:44 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1424C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:42:50 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso19139548ota.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:42:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fg2HLpc/Y8p5q8laKLvVJ4xOF+tJpAooiTCrFY/pd6I=;
-        b=Z2D6bmYnq2AdDuS4av1I2bsitXQ/9yS5Atvo/sSrCmIh+WxevwJHL1st3uHQJ5WZTF
-         qtVoD563PzsxSiXgsYnyGlWN+DPEd4URtAbuquCsqaEaa6NM8H/JGBtbNDDhFJuSQEK2
-         YWoSaYeVjXcICkP7bbqAiP0bS5TyzajwN6tDA/GfBsIhOrccGl+WuGWUv+DSKqgybZ1G
-         VoFxJAArNu7m/1fZIjAl8HB/MMkdZ2KpT48/MtUvWKMctYak7dVCGOHKWOcD42sfy25X
-         4FxXue1lU6jwXICH9sDFp3mlD9geD9cewwFRRgPNwNz+joO9Myw2Xh8xsn82L9a6eGWj
-         DCkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Fg2HLpc/Y8p5q8laKLvVJ4xOF+tJpAooiTCrFY/pd6I=;
-        b=A4KphBePpnUAhUp15T4NR60jeGT6OYMI9dcyppCyYN9rd+nwupgitXEbeUtJFz7XGM
-         jLl11taujjnyoSNe34ajF6jPQ64Mx1qCR864+r5DljdPeG/MYT/J1luUP/zv9oo4QIo8
-         /OJ6j5nuop8oaocNVpacUxuuq3osaZmn/W2EKM2AGsyyEtFnH961YBHoMktqJ3oR4HMm
-         +hojw53XstJLte/g5n8ZSVIa/5l3YWHC7TRULZ1qInb0v0do1DSZInGvE80NdD6r1JSB
-         k/JkAeaiDII1Z4e99Sd6unCWWC5N5i7Yb3KMTvI8rSL3C8huJku9IHj/54ibt1ZJx42C
-         p/rA==
-X-Gm-Message-State: AOAM530lly8EGQ3MRPbVwIlaVJHXYOSg5RK+xPv8q/uMrjFhuqsBanTz
-        +PHn9m60pmXXsC+zAGU0u+NCfnP1LwKODw==
-X-Google-Smtp-Source: ABdhPJyvKta1OiYK3+e/w+DuP1uVKJNNfWDs2FGCaFcRX82bigZprGpqn1FKCFOU3Tzsi0bSiZnRmg==
-X-Received: by 2002:a05:6830:4196:: with SMTP id r22mr21340006otu.231.1630341770017;
-        Mon, 30 Aug 2021 09:42:50 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id u18sm3009253ooi.40.2021.08.30.09.42.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 09:42:49 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 11:42:47 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Niklas Cassel <nks@flawful.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel test robot <lkp@intel.com>,
+        id S237049AbhH3Qn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:43:57 -0400
+Received: from mga07.intel.com ([134.134.136.100]:17177 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233637AbhH3Qn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 12:43:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="282025345"
+X-IronPort-AV: E=Sophos;i="5.84,363,1620716400"; 
+   d="scan'208";a="282025345"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 09:43:02 -0700
+X-IronPort-AV: E=Sophos;i="5.84,363,1620716400"; 
+   d="scan'208";a="530497798"
+Received: from jasauer1-mobl4.amr.corp.intel.com (HELO intel.com) ([10.255.38.180])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 09:43:00 -0700
+Date:   Mon, 30 Aug 2021 12:42:58 -0400
+From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
+To:     Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Imre Deak <imre.deak@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
+        <jose.souza@intel.com>, Sean Paul <seanpaul@chromium.org>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvmem: core: Add stubs for
- nvmem_cell_read_variable_le_u32/64 if !CONFIG_NVMEM
-Message-ID: <YS0Kh5ojnhuOZDer@yoga>
-References: <20210830083449.1.I38e95343209fe1f808c3b4860795a00a2b539701@changeid>
+Subject: Re: [Intel-gfx] [PATCH v3] drm/i915/dp: Use max params for panels <
+ eDP 1.4
+Message-ID: <YS0KkvYfvwbQTjfC@intel.com>
+References: <20210820075301.693099-1-kai.heng.feng@canonical.com>
+ <YR/ltlF5jRTYzQ3F@intel.com>
+ <YSfRXjuRWa57uxXN@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210830083449.1.I38e95343209fe1f808c3b4860795a00a2b539701@changeid>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YSfRXjuRWa57uxXN@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 30 Aug 10:35 CDT 2021, Douglas Anderson wrote:
-
-> When I added nvmem_cell_read_variable_le_u32() and
-> nvmem_cell_read_variable_le_u64() I forgot to add the "static inline"
-> stub functions for when CONFIG_NVMEM wasn't defined. Add them
-> now. This was causing problems with randconfig builds that compiled
-> `drivers/soc/qcom/cpr.c`.
+On Thu, Aug 26, 2021 at 01:37:34PM -0400, Rodrigo Vivi wrote:
+> On Fri, Aug 20, 2021 at 08:26:14PM +0300, Ville Syrjälä wrote:
+> > On Fri, Aug 20, 2021 at 03:52:59PM +0800, Kai-Heng Feng wrote:
+> > > Users reported that after commit 2bbd6dba84d4 ("drm/i915: Try to use
+> > > fast+narrow link on eDP again and fall back to the old max strategy on
+> > > failure"), the screen starts to have wobbly effect.
+> > > 
+> > > Commit a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for
+> > > everything") doesn't help either, that means the affected eDP 1.2 panels
+> > > only work with max params.
+> > > 
+> > > So use max params for panels < eDP 1.4 as Windows does to solve the
+> > > issue.
+> > > 
+> > > v3:
+> > >  - Do the eDP rev check in intel_edp_init_dpcd()
+> > > 
+> > > v2:
+> > >  - Check eDP 1.4 instead of DPCD 1.1 to apply max params
+> > > 
+> > > Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3714
+> > > Fixes: 2bbd6dba84d4 ("drm/i915: Try to use fast+narrow link on eDP again and fall back to the old max strategy on failure")
+> > > Fixes: a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for everything")
+> > > Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+> > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > 
+> > Slapped a cc:stable on it and pushed to drm-intel-next. Thanks.
 > 
-> Fixes: 6feba6a62c57 ("PM: AVS: qcom-cpr: Use nvmem_cell_read_variable_le_u32()")
-> Fixes: a28e824fb827 ("nvmem: core: Add functions to make number reading easy")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-> ---
-> It might be handy if this commit could somehow end up in the SoC tree
-> soon-ish to fix the build warning. I expect that the "qcom-cpr" patch
-> will be part of the pull requests send in the next merge window and
-> it'd be nice if we didn't end up with the build warning in -rc1.
+> Since I got a strange failure on CI_DIF_604 that I don't see on CI_DIF_603,
+> I'm avoiding the display patches. This one and also
+> dab1b47e57e0 ("drm/i915/dp: return proper DPRX link training result")
 > 
-
-Right, CPR is about to break some builds in -rc1, so it would be nice to
-get this in asap.
-
-That said, the qcom pull is in the pipes already, so pushing it through
-Srinivas tree will work just fine.
-
-Thanks,
-Bjorn
-
->  include/linux/nvmem-consumer.h | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+> I know, it is probably the other one, but I had to remove both patches for
+> now and I'm not confident the CI will allow me to test with this one alone.
 > 
-> diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
-> index 923dada24eb4..c0c0cefc3b92 100644
-> --- a/include/linux/nvmem-consumer.h
-> +++ b/include/linux/nvmem-consumer.h
-> @@ -150,6 +150,20 @@ static inline int nvmem_cell_read_u64(struct device *dev,
->  	return -EOPNOTSUPP;
->  }
->  
-> +static inline int nvmem_cell_read_variable_le_u32(struct device *dev,
-> +						 const char *cell_id,
-> +						 u32 *val)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static inline int nvmem_cell_read_variable_le_u64(struct device *dev,
-> +						  const char *cell_id,
-> +						  u64 *val)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
->  static inline struct nvmem_device *nvmem_device_get(struct device *dev,
->  						    const char *name)
->  {
-> -- 
-> 2.33.0.259.gc128427fd7-goog
+> If we have -rc8 I will check again later. Otherwise we will have to send
+> to the stable mailing list later.
+
+CI didn't run on TGL again, so I couldn't send this patch last week.
+And 5.14 got released.
+
+If this is important for 5.14 or any other stable release, please
+confirm this is not the one breaking linking training on TGL and then
+please send it to the stable mailing list.
+
+https://www.kernel.org/doc/Documentation/process/stable-kernel-rules.rst
+
+Sorry,
+Rodrigo.
+
 > 
+> > 
+> > > ---
+> > >  drivers/gpu/drm/i915/display/intel_dp.c | 5 ++++-
+> > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> > > index 75d4ebc669411..e0dbd35ae7bc0 100644
+> > > --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> > > +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> > > @@ -2445,11 +2445,14 @@ intel_edp_init_dpcd(struct intel_dp *intel_dp)
+> > >  	 */
+> > >  	if (drm_dp_dpcd_read(&intel_dp->aux, DP_EDP_DPCD_REV,
+> > >  			     intel_dp->edp_dpcd, sizeof(intel_dp->edp_dpcd)) ==
+> > > -			     sizeof(intel_dp->edp_dpcd))
+> > > +			     sizeof(intel_dp->edp_dpcd)) {
+> > >  		drm_dbg_kms(&dev_priv->drm, "eDP DPCD: %*ph\n",
+> > >  			    (int)sizeof(intel_dp->edp_dpcd),
+> > >  			    intel_dp->edp_dpcd);
+> > >  
+> > > +		intel_dp->use_max_params = intel_dp->edp_dpcd[0] < DP_EDP_14;
+> > > +	}
+> > > +
+> > >  	/*
+> > >  	 * This has to be called after intel_dp->edp_dpcd is filled, PSR checks
+> > >  	 * for SET_POWER_CAPABLE bit in intel_dp->edp_dpcd[1]
+> > > -- 
+> > > 2.32.0
+> > 
+> > -- 
+> > Ville Syrjälä
+> > Intel
