@@ -2,122 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F263FB958
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D863FB973
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237742AbhH3Pym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:54:42 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:53255 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237670AbhH3Pyj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:54:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1630338827; x=1661874827;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=AVofwnGJ4gDMssI008iwAyHL4iRR+umoM86t4CKuuDo=;
-  b=rVw5SAkrx5w6VXxoGCi2FEBQ6sunVhdH4xFr1352H1jyISxwpsPEtQL7
-   zIjNlmndibOoPqllaoCKq4htwyF3bicWqntPitaEUT1wuMPKCpbFCWR98
-   USuMQE5KtJ7p6dNvoQzy4pH6cdTzGJu9HkfBYvMdJXc5WfynJMxzzSUnb
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.84,363,1620691200"; 
-   d="scan'208";a="144737468"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 30 Aug 2021 15:53:38 +0000
-Received: from EX13D46EUB004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com (Postfix) with ESMTPS id 01B7AA0244;
-        Mon, 30 Aug 2021 15:53:36 +0000 (UTC)
-Received: from u90cef543d0ab5a.ant.amazon.com (10.43.160.41) by
- EX13D46EUB004.ant.amazon.com (10.43.166.65) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Mon, 30 Aug 2021 15:53:31 +0000
-Date:   Mon, 30 Aug 2021 18:53:25 +0300
-From:   George-Aurelian Popescu <popegeo@amazon.com>
-To:     Andra Paraschiv <andraprs@amazon.com>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexandru Ciobotaru <alcioa@amazon.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Kamal Mostafa <kamal@canonical.com>,
-        Alexandru Vasile <lexnv@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-Subject: Re: [PATCH v3 3/7] nitro_enclaves: Add fix for the kernel-doc report
-Message-ID: <20210830155324.GE10224@u90cef543d0ab5a.ant.amazon.com>
-References: <20210827154930.40608-1-andraprs@amazon.com>
- <20210827154930.40608-4-andraprs@amazon.com>
+        id S237780AbhH3P5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:57:13 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:17250 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237788AbhH3P5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 11:57:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630338977; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=U10YrBfczfj2F0eAJkorX2N74cH0fDyM7HdEotnpp4w=;
+ b=BPkXMs3W9AzMq9el55NiQihM6G1JiwuAQrchuiWO02xrqsq4ZkOQZUQfJHjUiPmI/JzpoejH
+ zrIVq2UETDtvB4MPV6oNK/j22/j2PlNN38NZcrHavJ5X2ejShA5c2DNb3kVJyu6Nunm7hP9f
+ 8XhyxKBg0tMDGQBWY4lMDFsG1+w=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 612cff9340d2129ac1824453 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Aug 2021 15:56:03
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B1AA7C43619; Mon, 30 Aug 2021 15:56:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 48AA7C43460;
+        Mon, 30 Aug 2021 15:56:02 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210827154930.40608-4-andraprs@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.43.160.41]
-X-ClientProxiedBy: EX13D08UWB002.ant.amazon.com (10.43.161.168) To
- EX13D46EUB004.ant.amazon.com (10.43.166.65)
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 30 Aug 2021 08:56:02 -0700
+From:   khsieh@codeaurora.org
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, rsubbia@codeaurora.org,
+        rnayak@codeaurora.org, freedreno@lists.freedesktop.org,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/dp_mst: Fix return code on sideband message
+ failure
+In-Reply-To: <88b5fbe60c95bcdf42353bec9f8c48aefa864a31.camel@redhat.com>
+References: <1625585434-9562-1-git-send-email-khsieh@codeaurora.org>
+ <87zguy7c5a.fsf@intel.com> <a514c19f712a6feeddf854dc17cb8eb5@codeaurora.org>
+ <2da3949fa3504592da42c9d01dc060691c6a8b8b.camel@redhat.com>
+ <d9ec812b4be57e32246735ca2f5e9560@codeaurora.org>
+ <79c5a60fc189261b7a9ef611acd126a41f921593.camel@redhat.com>
+ <696a009e2ab34747abd12bda03c103c7@codeaurora.org>
+ <e725235a77935184cd20dab5af55da95b28d9e88.camel@redhat.com>
+ <64049ef6c598910c1025e0e5802bb83e@codeaurora.org>
+ <88b5fbe60c95bcdf42353bec9f8c48aefa864a31.camel@redhat.com>
+Message-ID: <f0fcfe7a73e87150a7a1f042269b76a3@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 06:49:26PM +0300, Andra Paraschiv wrote:
-> Fix the reported issue from the kernel-doc script, to have a comment per
-> identifier.
-> 
-> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-> ---
-> Changelog
-> 
-> v1 -> v2
-> 
-> * Update comments for send / receive buffer sizes for the NE PCI device.
-> 
-> v2 -> v3
-> 
-> * Move changelog after the "---" line.
-> ---
->  drivers/virt/nitro_enclaves/ne_pci_dev.h | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/virt/nitro_enclaves/ne_pci_dev.h b/drivers/virt/nitro_enclaves/ne_pci_dev.h
-> index 8bfbc66078185..6e9f28971a4e0 100644
-> --- a/drivers/virt/nitro_enclaves/ne_pci_dev.h
-> +++ b/drivers/virt/nitro_enclaves/ne_pci_dev.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
->  /*
-> - * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-> + * Copyright 2020-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
->   */
->  
->  #ifndef _NE_PCI_DEV_H_
-> @@ -84,9 +84,13 @@
->   */
->  
->  /**
-> - * NE_SEND_DATA_SIZE / NE_RECV_DATA_SIZE - 240 bytes for send / recv buffer.
-> + * NE_SEND_DATA_SIZE - Size of the send buffer, in bytes.
->   */
->  #define NE_SEND_DATA_SIZE	(240)
-> +
-> +/**
-> + * NE_RECV_DATA_SIZE - Size of the receive buffer, in bytes.
-> + */
->  #define NE_RECV_DATA_SIZE	(240)
->  
->  /**
-> -- 
-> 2.20.1 (Apple Git-117)
-> 
+On 2021-08-25 09:26, Lyude Paul wrote:
+> The patch was pushed yes (was part of drm-misc-next-2021-07-29), seems 
+> like it
+> just hasn't trickled down to linus's branch quite yet.
 
-Reviewed-by: George-Aurelian Popescu <popegeo@amazon.com>
+Hi Stephen B,
 
-Looks good,
-George
+Would you mind back porting this patch to V5.10 branch?
+It will have lots of helps for us to support display port MST case.
+Thanks,
 
 
 
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
-
+> 
+> On Wed, 2021-08-25 at 09:06 -0700, khsieh@codeaurora.org wrote:
+>> On 2021-07-27 15:44, Lyude Paul wrote:
+>> > Nice timing, you literally got me as I was 2 minutes away from leaving
+>> > work
+>> > for the day :P. I will go ahead and push it now.
+>> >
+>> Hi Lyude,
+>> 
+>> Had you pushed this patch yet?
+>> We still did not see this patch at msm-nex and v5.10 branch.
+>> Thanks,
+>> 
+>> 
+>> > BTW - in the future I recommend using dim to add Fixes: tags as it'll
+>> > add Cc:
+>> > to stable as appropriate (this patch in particular should be Cc:
+>> > stable@vger.kernel.org # v5.3+). will add these tags when I push it
+>> >
+>> > On Tue, 2021-07-27 at 15:41 -0700, khsieh@codeaurora.org wrote:
+>> > > On 2021-07-27 12:21, Lyude Paul wrote:
+>> > > > On Thu, 2021-07-22 at 15:28 -0700, khsieh@codeaurora.org wrote:
+>> > > > >
+>> > > > > It looks like this patch is good to go (mainlined).
+>> > > > > Anything needed from me to do?
+>> > > > > Thanks,
+>> > > >
+>> > > > Do you have access for pushing this patch? If not let me know and I
+>> > > > can
+>> > > > go
+>> > > > ahead and push it to drm-misc-next for you.
+>> > > no, I do not have access to drm-misc-next.
+>> > > Please push it for me.
+>> > > Thanks a lots.
+>> > >
+>> 
