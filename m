@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0193FB900
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FBC3FB904
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237600AbhH3P2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
+        id S237489AbhH3Pci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237602AbhH3P2T (ORCPT
+        with ESMTP id S237085AbhH3Pcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:28:19 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AC4C061575;
-        Mon, 30 Aug 2021 08:27:25 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id l18so26525401lji.12;
-        Mon, 30 Aug 2021 08:27:25 -0700 (PDT)
+        Mon, 30 Aug 2021 11:32:36 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC299C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:31:42 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id c8so19464405lfi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:31:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7v0xGUniRMAaLr5lnK8CuaUQYawKvoIYmd2gIBcaU8w=;
-        b=D4S90DnfDBzpndOpBbJ6kbLOp9NHMBwDLEcOAiMq+ad/somop0xi8tqVwsxNh9+GOc
-         7xhleMcRUB0HjJHxW9FS98FJKaFNl7Ux2X04VsYYHxkUVs/eQ/mIO1v9SaRp1eVnOmKx
-         On/XugGzX6fIaeGAZtkNqnjicya5EFGQaJh35whyLCjookiz9c9lE6wnOw0FOrLbLDSk
-         yESz+qEuH0+Bq8+cXnxayLzRA3BxnE6xBNIRmrSKjd1uEFcPNA5N53495+RZwW875z96
-         xNKaXnFZ/L2SBGxQp+g8FwZ6xf6rwFxwy8mszz547yrbd7WG6oWpYOWYv9RyY8ial6iD
-         n8iA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p0kOZNrasloq0VyNOKkM6VkVzIYu/+jMAU4U9uSDKVQ=;
+        b=YERcgoTLA5AXdTVRuoawvzo7fkitkBZX7e6CVaUMsgF33ZBZjfsE+0Lu+IGYBKFQgR
+         C7Fir0FnEyxCZxlq/Cr9tP4I+u3XWNG+Uy1rNysPbFI9NO12/PbkXyuWneAG9vLBXk1g
+         aTEkQfk+NScRj3ASxntN07hkyehX6NUU9+N4c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7v0xGUniRMAaLr5lnK8CuaUQYawKvoIYmd2gIBcaU8w=;
-        b=U8mM/Bq0qBDX63RxLJLUBvIJHEB5P58Mw5trvaLfEa7pRTSa0UMhkQ7uOawRcSHrA2
-         0DpC6woKUaX/sArwJSK2IqyjAUJHBeznfZ0XbVBVzO9lAEo7R07X9xy6tyMTERhmy15T
-         UTje18wEToss5saLP1+mEw1rX3malSK29LWdYqNF/KJVfkeuiaynIYF0Op2JjQx5efug
-         y++Z9sf1H6TgGGnCcFWj7rRpNzQIXHsL/E7SNYiGjKIxey4wAXoCh/JFvri7pZ0fojCU
-         GJjhujsKs0a+dq6SoWMJpoi/Os2S4WuzQr4fwVhH5iHcRkbxxDOtCzNFRWieDQs8H6hT
-         17Fw==
-X-Gm-Message-State: AOAM531su0HJ9/gF2jo2dq5pHoYTbf2QG29mFhew0UaPMgzw5wRfVQHi
-        ihkRsDU15UZhBNybzpt5Vr4=
-X-Google-Smtp-Source: ABdhPJxaeCXzoZxaPJ/mXRRzN82IPZckzxV3SXID+xSSoA4Eg1+2QLyNRlSRlpLJTYdFSB75lzgYQA==
-X-Received: by 2002:a2e:b558:: with SMTP id a24mr20678346ljn.225.1630337244373;
-        Mon, 30 Aug 2021 08:27:24 -0700 (PDT)
-Received: from DESKTOP-5EKDQDN.localdomain (78-63-10-115.static.zebra.lt. [78.63.10.115])
-        by smtp.gmail.com with ESMTPSA id z3sm409300lfd.38.2021.08.30.08.27.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 08:27:23 -0700 (PDT)
-From:   =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>
-To:     jikos@kernel.org, benjamin.tissoires@redhat.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>
-Subject: [PATCH] HID: plantronics: Fix bare use of 'unsigned'
-Date:   Mon, 30 Aug 2021 18:27:11 +0300
-Message-Id: <20210830152711.991-1-aldas60@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p0kOZNrasloq0VyNOKkM6VkVzIYu/+jMAU4U9uSDKVQ=;
+        b=npeBwQWuabPfaDRX8Hw7agTe6bIc9ln8GBOHjIE/eHtfZboA3knGNBISFJ8HvTl9Gi
+         05nwK8rc0nQMzwBbETn43sjXYWJWEDNm5RBOy174sQi2Lb+HSzEedNgHfQABf43v6lRs
+         lroQnxSwbYnl/1lK8sAWPLJFv6gHloXksFUpe2ZjDbX7mqzw+0rx7knq7sVKBvi2Hurh
+         6XeW0Noa5ej2yZeqhsTdrlD6ININzVCLF3MJ0GW7HzhkgaeIxcaEpehDhG2gFUZI18eT
+         v0tCqnIIaTLUuqn9QiHfKBOe5z/Rf70ciGEJItV00DqHa5V7y97VEIifR/9UY6DqgO6H
+         ez3g==
+X-Gm-Message-State: AOAM530PPTpyQ8WqvgGaFqnbZLRL3Szw4cn/LDpjXvVvYgen0xlSMdyk
+        2K40oMhTR2gwFNz+XWFe60YfaGjdAtGi1Tkg
+X-Google-Smtp-Source: ABdhPJycavh25DgsB/gacP+5KXEa+jwlXeGtcPSn/lKAGjAIHRyT3fos7imkzl+4bXPiXAdBKN+YGA==
+X-Received: by 2002:ac2:482d:: with SMTP id 13mr5672324lft.120.1630337500717;
+        Mon, 30 Aug 2021 08:31:40 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id d13sm1420014lfk.232.2021.08.30.08.31.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 08:31:40 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id i28so26606027ljm.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:31:39 -0700 (PDT)
+X-Received: by 2002:a2e:7d0e:: with SMTP id y14mr20881081ljc.251.1630337499647;
+ Mon, 30 Aug 2021 08:31:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <YSydL0q8iaUfkphg@schwarzgerat.orthanc> <0f094eb9-11d4-1bd5-0a1b-823317ad4f7d@kernel.org>
+ <YSysHCQyN+brJLEj@schwarzgerat.orthanc>
+In-Reply-To: <YSysHCQyN+brJLEj@schwarzgerat.orthanc>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 30 Aug 2021 08:31:23 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg6-HbEPEC6-Fz0kqnHsB4nZryWi5TEZEN=NCWzBtg4iw@mail.gmail.com>
+Message-ID: <CAHk-=wg6-HbEPEC6-Fz0kqnHsB4nZryWi5TEZEN=NCWzBtg4iw@mail.gmail.com>
+Subject: Re: [PATCH] console: consume APC, DM, DCS
+To:     nick black <dankamongmen@gmail.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix checkpatch warning: Prefer 'unsigned int' to bare use of 'unsigned'
+On Mon, Aug 30, 2021 at 2:59 AM nick black <dankamongmen@gmail.com> wrote:
+>
+> Jiri Slaby left as an exercise for the reader:
+> > So simply:
+> > return state == ESosc || state == ESapc || state == ESpm || state == ESdcs;
+>
+> Sure, I can do this. Would you like me to recut the patch?
+>
+> > I wonder if we can simply hide them all behind single ESignore?
+>
+> I'd rather not--I have plans beyond this patch which will
+> require differentiating between them.
 
-Signed-off-by: Aldas Taraškevičius <aldas60@gmail.com>
----
- drivers/hid/hid-plantronics.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've applied the patch as-is since I'm starting my merge window work
+with "random patches in my queue".
 
-diff --git a/drivers/hid/hid-plantronics.c b/drivers/hid/hid-plantronics.c
-index e81b7cec2d12..4aae7569e353 100644
---- a/drivers/hid/hid-plantronics.c
-+++ b/drivers/hid/hid-plantronics.c
-@@ -143,7 +143,7 @@ static int plantronics_event(struct hid_device *hdev, struct hid_field *field,
- 
- static unsigned long plantronics_device_type(struct hid_device *hdev)
- {
--	unsigned i, col_page;
-+	unsigned int i, col_page;
- 	unsigned long plt_type = hdev->product;
- 
- 	/* multi-HID interfaces? - plt_type is PID */
--- 
-2.33.0
+I'm not 100% sure we care all that much about trying to make the
+console be more vt100-compatible, considering how long we've been at
+the current state.
 
+But I have to admit to being slightly emotionally attached to us doing
+reasonably well on this side. One of the original things Linux did was
+console emulation, even before it was an OS..
+
+                   Linus
