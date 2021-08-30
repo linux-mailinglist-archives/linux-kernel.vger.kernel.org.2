@@ -2,67 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E765F3FB1E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 09:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976733FB1EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 09:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbhH3HYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 03:24:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33670 "EHLO mail.kernel.org"
+        id S233627AbhH3H3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 03:29:32 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:48742 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233726AbhH3HYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 03:24:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F1FE60FC0;
-        Mon, 30 Aug 2021 07:23:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630308239;
-        bh=1kwa9P1J5AkDdW4mh3bIT4Z1ij9OVS1cy0X3yxbwL9c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rucou6W/LjoP+nNu9OGkzi4IhIavOi4IYQvmoxzMZOCxjEyXUQSMDKRZ9H4UQohTX
-         f6waQefsbF0Wj/XAPlc4wyfbLx0g38j6MXfx8BshQ797G1GVDEsTd9MYvSHhoRS2ec
-         qAVEXOSz0gunCbQlztFVjqwYPZE8EeN4CRPa210tCbA3N7kjlgsX6+sq51mmnjYPXT
-         b+O3ECFyEeE4zxx3BlfVDt7Rvx6GwLJVz0+y6RIYL8eGMAQI8c68VfiNhwyvjS1pzI
-         YfrycD/lk0WaUJ35nu0FhhBscnn6N/+Nm8ToKdrT85IyycHQ2+J4A1qXog4oBL/CoO
-         BekmV17GFo42A==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mKbe1-00057v-VW; Mon, 30 Aug 2021 09:23:50 +0200
-Date:   Mon, 30 Aug 2021 09:23:49 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] USB: serial: pl2303: fix GL type detection
-Message-ID: <YSyHhf0zH96qaI0W@hovoldconsulting.com>
-References: <20210826110239.5269-1-robert.marko@sartura.hr>
- <YSd2D92RL9pJMdQY@hovoldconsulting.com>
- <CA+HBbNFx45eapEZ3wiNCC5X+cvrJoCF01jaHTvj835P79AoN-Q@mail.gmail.com>
+        id S233318AbhH3H3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 03:29:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630308518; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=1W6zz4vLpLWuK7so4fW2z298+DlEPxFPAHJwtsdQLvo=;
+ b=Jwk4ZweBgMyrmoiOQTAqbxKQ4yfBl6UVDxdll3uMxNYUIIOfNu4JX1uwRGoNqc2eTM3aL+9S
+ ik21FCbQbvonZm+qU5uwZygWEusodFdrM2NAEjVq84fwcFLViv4uwG1olHl9aSIIHJzFy/6g
+ Ur3VrOmnUD1W+H9H8EW73wMGkjY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 612c88936fc2cf7ad91af158 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Aug 2021 07:28:19
+ GMT
+Sender: dikshita=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C260CC43460; Mon, 30 Aug 2021 07:28:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: dikshita)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 410E3C4338F;
+        Mon, 30 Aug 2021 07:28:18 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+HBbNFx45eapEZ3wiNCC5X+cvrJoCF01jaHTvj835P79AoN-Q@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 30 Aug 2021 12:58:18 +0530
+From:   dikshita@codeaurora.org
+To:     stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v4 0/7] media: venus: Enable venus support on sc7280
+In-Reply-To: <1628588875-23790-1-git-send-email-dikshita@codeaurora.org>
+References: <1628588875-23790-1-git-send-email-dikshita@codeaurora.org>
+Message-ID: <22c9b9b2183fce1f426a7b82d71999ad@codeaurora.org>
+X-Sender: dikshita@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 01:09:20PM +0200, Robert Marko wrote:
-> On Thu, Aug 26, 2021 at 1:08 PM Johan Hovold <johan@kernel.org> wrote:
-> >
-> > On Thu, Aug 26, 2021 at 01:02:39PM +0200, Robert Marko wrote:
-> > > At least some PL2303GL have a bcdDevice of 0x405 instead of 0x100 as the
-> > > datasheet claims. Add it to the list of known release numbers for the
-> > > HXN (G) type.
-> > >
-> > > Fixes: 894758d0571d ("USB: serial: pl2303: tighten type HXN (G) detection")
-> > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> >
-> > Thanks for the patch, looks good.
-> >
-> > Could you post the output of lsusb -v for your device as well for
-> > completeness?
+Hi Stan,
+
+Could you pls review and ack this series.
+
+Thanks,
+Dikshita
+
+On 2021-08-10 15:17, Dikshita Agarwal wrote:
+> This series enables support for 6xx venus encode/decode on sc7280.
 > 
-> Sure, here it is:
-> Bus 001 Device 003: ID 067b:23d3 Prolific Technology, Inc. USB-Serial Controller
-
-Thanks! Now applied.
-
-Johan
+> The driver changes are dependent on [1]yaml and [2]dts patches.
+> 
+> [1] 
+> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=484019
+> [2] 
+> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=484727
+> 
+> Changes since v3:
+>  - addressed comments on v3 (stanimir).
+>  - rebased the changes on latest media tree.
+> 
+> Dikshita Agarwal (7):
+>   venus: firmware: enable no tz fw loading for sc7280
+>   media: venus: core: Add sc7280 DT compatible and resource data
+>   media: venus: Add num_vpp_pipes to resource structure
+>   media: venus: hfi: Skip AON register programming for V6 1pipe
+>   venus: vdec: set work route to fw
+>   media: venus: helpers: update NUM_MBS macro calculation
+>   media: venus: Set buffer to FW based on FW min count requirement.
+> 
+>  drivers/media/platform/qcom/venus/core.c           | 54 
+> ++++++++++++++++++++++
+>  drivers/media/platform/qcom/venus/core.h           |  2 +
+>  drivers/media/platform/qcom/venus/firmware.c       | 42 
+> ++++++++++++-----
+>  drivers/media/platform/qcom/venus/helpers.c        | 23 +++++----
+>  drivers/media/platform/qcom/venus/hfi_cmds.c       |  7 +++
+>  drivers/media/platform/qcom/venus/hfi_helper.h     | 14 ++++++
+>  drivers/media/platform/qcom/venus/hfi_msgs.c       |  7 +++
+>  .../media/platform/qcom/venus/hfi_plat_bufs_v6.c   |  6 ++-
+>  drivers/media/platform/qcom/venus/hfi_platform.c   | 13 ------
+>  drivers/media/platform/qcom/venus/hfi_platform.h   |  2 -
+>  .../media/platform/qcom/venus/hfi_platform_v6.c    |  6 ---
+>  drivers/media/platform/qcom/venus/hfi_venus.c      |  4 ++
+>  drivers/media/platform/qcom/venus/hfi_venus_io.h   |  2 +
+>  drivers/media/platform/qcom/venus/vdec.c           | 42 
+> ++++++++++++++---
+>  14 files changed, 175 insertions(+), 49 deletions(-)
