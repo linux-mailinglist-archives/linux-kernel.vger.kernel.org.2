@@ -2,167 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B713FB938
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D5D3FB93A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237575AbhH3PsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:48:04 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:5148 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237311AbhH3PsB (ORCPT
+        id S237311AbhH3PtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237526AbhH3PtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:48:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1630338428; x=1661874428;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=L0syupxn/9GgxVlk0bl8f4Z5IqsanLBn8z9uCV847RQ=;
-  b=X5zyfPq21WQ0IlcPN4bRZtBfQMNKbqLNDZT6O3E5vxsfMQA6kUWF7pYh
-   8PuDSahQ6gGYqRlhWdvrVAhD4KwCK2s5sIa7o2cnyb1GmMhpX8fnlSWFd
-   SdqwXuuqseDDKJNCp8R9ZZUJdU0C2Y7qpAUDoyqBZih9WBXXCWCUnYqoU
-   k=;
-X-IronPort-AV: E=Sophos;i="5.84,363,1620691200"; 
-   d="scan'208";a="133231569"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-c6afef2e.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 30 Aug 2021 15:46:59 +0000
-Received: from EX13D46EUB004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2c-c6afef2e.us-west-2.amazon.com (Postfix) with ESMTPS id D7574A18B0;
-        Mon, 30 Aug 2021 15:46:57 +0000 (UTC)
-Received: from u90cef543d0ab5a.ant.amazon.com (10.43.161.229) by
- EX13D46EUB004.ant.amazon.com (10.43.166.65) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Mon, 30 Aug 2021 15:46:51 +0000
-Date:   Mon, 30 Aug 2021 18:46:46 +0300
-From:   George-Aurelian Popescu <popegeo@amazon.com>
-To:     Andra Paraschiv <andraprs@amazon.com>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexandru Ciobotaru <alcioa@amazon.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Kamal Mostafa <kamal@canonical.com>,
-        Alexandru Vasile <lexnv@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-Subject: Re: [PATCH v3 6/7] nitro_enclaves: Add fixes for checkpatch spell
- check reports
-Message-ID: <20210830154645.GB10224@u90cef543d0ab5a.ant.amazon.com>
-References: <20210827154930.40608-1-andraprs@amazon.com>
- <20210827154930.40608-7-andraprs@amazon.com>
+        Mon, 30 Aug 2021 11:49:08 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503B5C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:48:14 -0700 (PDT)
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 14F33BC3384;
+        Mon, 30 Aug 2021 17:48:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1630338491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W6OwYTHqyMN6IxAME1ujn3yNsxUf4Dt4pjg5xjlW1no=;
+        b=BbsNq347OIy9el2IFdXZ6v3xjHcOwTyAi+oP+ssH7qBfIzK461d+u3WvmlWP4hy5Nn0w9K
+        Vq3w+d/QFDEEoru2z6IVnxxhbGsqSZgNrxtrcLwxzf4YWn93SIdLJCwCPO5/dv3AcyQ/2K
+        lgRASMCEX+wHkpXkWlqCDb4NEVPf8Yk=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Michal Kubecek <mkubecek@suse.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: [REGRESSION][BISECTED] flood of "hid-generic ... control queue full" since v5.14-rc1
+Date:   Mon, 30 Aug 2021 17:48:09 +0200
+Message-ID: <1954573.0n35tlyJVE@natalenko.name>
+In-Reply-To: <20210816191249.7g2mk5thwpio7cfc@lion.mk-sys.cz>
+References: <20210816130059.3yxtdvu2r7wo4uu3@lion.mk-sys.cz> <20210816143856.GA121345@rowland.harvard.edu> <20210816191249.7g2mk5thwpio7cfc@lion.mk-sys.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210827154930.40608-7-andraprs@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.43.161.229]
-X-ClientProxiedBy: EX13D28UWC003.ant.amazon.com (10.43.162.48) To
- EX13D46EUB004.ant.amazon.com (10.43.166.65)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 06:49:29PM +0300, Andra Paraschiv wrote:
-> Fix the typos in the words spelling as per the checkpatch script
-> reports.
-> 
-> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-> ---
-> Changelog
-> 
-> v1 -> v2
-> 
-> * No codebase changes, it was split from the patch 3 in the v1 of the
-> patch series.
-> 
-> v2 -> v3
-> 
-> * Move changelog after the "---" line.
-> ---
->  include/uapi/linux/nitro_enclaves.h      | 10 +++++-----
->  samples/nitro_enclaves/ne_ioctl_sample.c |  4 ++--
->  2 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/uapi/linux/nitro_enclaves.h b/include/uapi/linux/nitro_enclaves.h
-> index b945073fe544d..e808f5ba124d4 100644
-> --- a/include/uapi/linux/nitro_enclaves.h
-> +++ b/include/uapi/linux/nitro_enclaves.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->  /*
-> - * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-> + * Copyright 2020-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
->   */
->  
->  #ifndef _UAPI_LINUX_NITRO_ENCLAVES_H_
-> @@ -60,7 +60,7 @@
->   *
->   * Context: Process context.
->   * Return:
-> - * * 0					- Logic succesfully completed.
-> + * * 0					- Logic successfully completed.
->   * *  -1				- There was a failure in the ioctl logic.
->   * On failure, errno is set to:
->   * * EFAULT				- copy_from_user() / copy_to_user() failure.
-> @@ -95,7 +95,7 @@
->   *
->   * Context: Process context.
->   * Return:
-> - * * 0				- Logic succesfully completed.
-> + * * 0				- Logic successfully completed.
->   * *  -1			- There was a failure in the ioctl logic.
->   * On failure, errno is set to:
->   * * EFAULT			- copy_from_user() / copy_to_user() failure.
-> @@ -118,7 +118,7 @@
->   *
->   * Context: Process context.
->   * Return:
-> - * * 0					- Logic succesfully completed.
-> + * * 0					- Logic successfully completed.
->   * *  -1				- There was a failure in the ioctl logic.
->   * On failure, errno is set to:
->   * * EFAULT				- copy_from_user() failure.
-> @@ -161,7 +161,7 @@
->   *
->   * Context: Process context.
->   * Return:
-> - * * 0					- Logic succesfully completed.
-> + * * 0					- Logic successfully completed.
->   * *  -1				- There was a failure in the ioctl logic.
->   * On failure, errno is set to:
->   * * EFAULT				- copy_from_user() / copy_to_user() failure.
-> diff --git a/samples/nitro_enclaves/ne_ioctl_sample.c b/samples/nitro_enclaves/ne_ioctl_sample.c
-> index 480b763142b34..6a60990b2e202 100644
-> --- a/samples/nitro_enclaves/ne_ioctl_sample.c
-> +++ b/samples/nitro_enclaves/ne_ioctl_sample.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-> + * Copyright 2020-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
->   */
->  
->  /**
-> @@ -638,7 +638,7 @@ static int ne_start_enclave(int enclave_fd,  struct ne_enclave_start_info *encla
->  }
->  
->  /**
-> - * ne_start_enclave_check_booted() - Start the enclave and wait for a hearbeat
-> + * ne_start_enclave_check_booted() - Start the enclave and wait for a heartbeat
->   *				     from it, on a newly created vsock channel,
->   *				     to check it has booted.
->   * @enclave_fd :	The file descriptor associated with the enclave.
-> -- 
-> 2.20.1 (Apple Git-117)
-> 
+Hello.
 
-Reviewed-by: George-Aurelian Popescu <popegeo@amazon.com>
+On pond=C4=9Bl=C3=AD 16. srpna 2021 21:12:49 CEST Michal Kubecek wrote:
+> On Mon, Aug 16, 2021 at 10:38:56AM -0400, Alan Stern wrote:
+> > On Mon, Aug 16, 2021 at 04:13:47PM +0200, Michal Kubecek wrote:
+> > > Looking at the code, the primary problem seems to be that the "else"
+> > > branch in hid_submit_ctrl() recalculates transfer_buffer_length to
+> > > a rounded up value but assigns the original length to wLength.
+> >=20
+> > Looks like you found the bug.  Fixing it might be as simple as setting
+> > len =3D padlen in that "else" branch.  You could then combine the
+> > transfer_buffer_length assignment with the one in the "if" branch and
+> > hoist them out after the entire "if" statement.
+>=20
+> With the patch below, there are no errors and the UPS communication
+> works correctly and so do other HID devices. But I would prefere someone
+> familiar with HID code to confirm that this is what we want and what
+> would be the right way to handle usb_submit_urb() errors.
+>=20
+> Michal
+>=20
+> diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
+> index 06130dc431a0..ef240ef63a66 100644
+> --- a/drivers/hid/usbhid/hid-core.c
+> +++ b/drivers/hid/usbhid/hid-core.c
+> @@ -377,27 +377,26 @@ static int hid_submit_ctrl(struct hid_device *hid)
+>  	len =3D hid_report_len(report);
+>  	if (dir =3D=3D USB_DIR_OUT) {
+>  		usbhid->urbctrl->pipe =3D usb_sndctrlpipe(hid_to_usb_dev(hid),=20
+0);
+> -		usbhid->urbctrl->transfer_buffer_length =3D len;
+>  		if (raw_report) {
+>  			memcpy(usbhid->ctrlbuf, raw_report, len);
+>  			kfree(raw_report);
+>  			usbhid->ctrl[usbhid->ctrltail].raw_report =3D NULL;
+>  		}
+>  	} else {
+> -		int maxpacket, padlen;
+> +		int maxpacket;
+>=20
+>  		usbhid->urbctrl->pipe =3D usb_rcvctrlpipe(hid_to_usb_dev(hid),=20
+0);
+>  		maxpacket =3D usb_maxpacket(hid_to_usb_dev(hid),
+>  					  usbhid->urbctrl->pipe, 0);
+>  		if (maxpacket > 0) {
+> -			padlen =3D DIV_ROUND_UP(len, maxpacket);
+> -			padlen *=3D maxpacket;
+> -			if (padlen > usbhid->bufsize)
+> -				padlen =3D usbhid->bufsize;
+> +			len =3D DIV_ROUND_UP(len, maxpacket);
+> +			len *=3D maxpacket;
+> +			if (len > usbhid->bufsize)
+> +				len =3D usbhid->bufsize;
+>  		} else
+> -			padlen =3D 0;
+> -		usbhid->urbctrl->transfer_buffer_length =3D padlen;
+> +			len =3D 0;
+>  	}
+> +	usbhid->urbctrl->transfer_buffer_length =3D len;
+>  	usbhid->urbctrl->dev =3D hid_to_usb_dev(hid);
+>=20
+>  	usbhid->cr->bRequestType =3D USB_TYPE_CLASS | USB_RECIP_INTERFACE | dir;
 
-Looks ok,
-George
+Any luck with moving this forward please? I've got a similar issue with APC=
+=20
+UPS and v5.14 kernel, and this patch also solves the connectivity issue for=
+=20
+me.
 
+Thanks.
 
+=2D-=20
+Oleksandr Natalenko (post-factum)
 
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
 
