@@ -2,257 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3F13FB080
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 06:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A083FB085
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 06:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231518AbhH3Epg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 00:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbhH3Epb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 00:45:31 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C88AC06175F
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 21:44:38 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id r1-20020a62e401000000b003f27c6ae031so1915178pfh.20
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 21:44:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=RoJ0LsLVs40o7Nox03dwwTrjHnUzwdc///UAgXfF3Tc=;
-        b=RF03EgJj3F24vcUGNvoG4Fh+n2kFhF1dlYTNKTong/NWfugW8QcnHaQAOodmweyrWW
-         OTWcGLn9VgFpufi8YlTXPZbXlRL0dcy9D9QiTdykURXnHQm6+vqtoo9/PmvlswCGkMI/
-         zH8OVGd2ywSruiGboumDNnm/Cn9ohVcsN2KjhTgc4pWYrNZBmquOxhLqVrCDnMvlWPoV
-         NWdJ3N4D/IAv3HG4euiZ/5SjNryM2sx2UWkgWDOLByPGWUdk6O7LhzUt14/CCfsznvON
-         Wi0YkrjRBZH23RYwBizZxVKAIp/UCyFBualBtzPaSCY2XExEVBL0SAesidMSdz2aiqaI
-         DVrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=RoJ0LsLVs40o7Nox03dwwTrjHnUzwdc///UAgXfF3Tc=;
-        b=qUtvCo9QrgnzElnBwiEKM/hGVJtc+q240K5UIJGHeOmTSQmtFEFwwCiurzUCUZTlgm
-         G1Zvk3HzsNLrFjDJ8ojHnf5rZaOKtXQAlODpsoQ3K+QMJSv8llu9xiR9FQGrLg/J1hLX
-         yu4C2KwyBIT/xaIJ/IYCKeW+PQJmiOW1ENxif2exSctey8zPXr04LPTQXFGj3dKE/d5g
-         ndkQUjm3WAp0sFa/5s+XVUAgqhQGfeW0QCeiM2ZkfTWXHUFV4Bs705+iotP3M8STOHqG
-         P7pZydes8rxFzrmR2FjzpgEj1RB8ilqYX/kZc/0pc7wLpqmRsYDuPSNmBXkmpiLEK1a/
-         RPYg==
-X-Gm-Message-State: AOAM530cFu6WPX3bkYFS8I970O1AZ7cQ+PenM0sRcy9DliXhoN++eom1
-        4XNnUZDB6ZDPUWz5YPQ7fbBfHcou+fRn
-X-Google-Smtp-Source: ABdhPJzmW1FSmqK8xT6hF9uY4CuQPY0a/lTVmlyKfrQpQsAljqAmAfv0zV7Qa3Wq7VNMB5YJP+18LZqbNNPh
-X-Received: from mizhang-super.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1071])
- (user=mizhang job=sendgmr) by 2002:a17:903:32cd:b0:138:9904:ef79 with SMTP id
- i13-20020a17090332cd00b001389904ef79mr14594852plr.27.1630298677755; Sun, 29
- Aug 2021 21:44:37 -0700 (PDT)
-Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Mon, 30 Aug 2021 04:44:25 +0000
-In-Reply-To: <20210830044425.2686755-1-mizhang@google.com>
-Message-Id: <20210830044425.2686755-3-mizhang@google.com>
-Mime-Version: 1.0
-References: <20210830044425.2686755-1-mizhang@google.com>
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH v3 2/2] selftests: KVM: use dirty logging to check if page
- stats work correctly
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Peter Xu <peterx@redhat.com>, Ben Gardon <bgardon@google.com>,
-        Mingwei Zhang <mizhang@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231404AbhH3EsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 00:48:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230506AbhH3Er6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 00:47:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EDF5604D7;
+        Mon, 30 Aug 2021 04:47:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630298825;
+        bh=EzNbbLzp89C4vwZ1VHzMWl9Ex04tosDHheiya+MiwzU=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=Bp7P8EHL35CXk34jRCKx/CRQ+4YsNxY0iG8ADCTlMfC/4eM7SjwV6gZo6rGy7rGgC
+         kUzsx/F19Xdxq2bcLUExWEp5YZW/bo4+6LL02XP61rJusoKLQHLF7Pl1idiWMyCKyh
+         B8H1lRlkJSPJYgnvc7R9udnCTKbwOwgBqx5LrN07MJlhTotLmmYH/QddQ9Znm8Bsln
+         6IAoYEH4NdhNEpPmuInGKme7m3dob+OIIRArrfISMjZsRl04kksdfXbsZqrKU+5y5S
+         lUxLHFxgY1VH3RqRW+0CPPxcgh3K11tzY3PIq8UPfYMjCAmxOZ5/cfJp/O6BKoF2Gc
+         jc970nR9qCeFg==
+References: <e34c8e16-6521-c6e4-f3ed-9d8520d4ece2@codeaurora.org>
+ <87bl63yqq8.fsf@kernel.org>
+ <eb975a76-1482-f502-4dc1-7993cc3f30d0@codeaurora.org>
+ <87eeaga39m.fsf@kernel.org>
+ <7a6bf94b-91cd-15d5-dd9c-798e7a927727@codeaurora.org>
+User-agent: mu4e 1.6.5; emacs 27.2
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pratham Pratap <prathampratap@codeaurora.org>,
+        Jack Pham <jackp@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Doug Anderson <dianders@chromium.org>
+Subject: Re: Regarding usb dwc3 core shutdown callback
+Date:   Mon, 30 Aug 2021 07:45:57 +0300
+In-reply-to: <7a6bf94b-91cd-15d5-dd9c-798e7a927727@codeaurora.org>
+Message-ID: <87r1ebczei.fsf@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When dirty logging is enabled, KVM splits the hugepage mapping in NPT/EPT
-into the smallest 4K size after guest VM writes to it. This property could
-be used to check if the page stats metrics work properly in KVM x86/mmu. At
-the same time, this logic might be used the other way around: using page
-stats to verify if dirty logging really splits all huge pages after guest
-VM writes to all memory.
 
-So add page stats checking in dirty logging performance selftest. In
-particular, add checks in three locations:
- - just after vm is created;
- - after populating memory into vm without turning on dirty logging;
- - after guest vm writing to all memory again with dirty logging turned on.
+Sandeep Maheswaram <sanm@codeaurora.org> writes:
 
-Tested using commands:
- - ./dirty_log_perf_test -s anonymous_hugetlb_1gb
- - ./dirty_log_perf_test -s anonymous_hugetlb_2mb
- - ./dirty_log_perf_test -s anonymous_thp
+> Hi,
+>
+> On 8/26/2021 4:13 PM, Felipe Balbi wrote:
+>> Hi,
+>>
+>> Sandeep Maheswaram <sanm@codeaurora.org> writes:
+>>>> (why isn't this email plain/text? Content Type was set to multipart
+>>>> alternative, please configure your email client correctly :-)
+>>>>
+>>>> While at that, also make sure to break lines at 80-columns)
+>>>>
+>>>> Sandeep Maheswaram <sanm@codeaurora.org> writes:
+>>>>> Hi,
+>>>>>
+>>>>> Earlier I have posted the patch for usb dwc3 core shutdown callback
+>>>>>
+>>>>> https://lore.kernel.org/linux-arm-msm/1618380209-20114-1-git-send-ema=
+il-sanm@codeaurora.org/
+>>>>>
+>>>>> and it was reverted due to issues.
+>>>> Right, as should be expected when we find regressions
+>>>>
+>>>>> https://lore.kernel.org/linux-usb/20210603151742.298243-1-alexandru.e=
+lisei@arm.com/
+>>>>>
+>>>>> As we already have shutdown callback in xhci plat driver where we halt
+>>>>> the controller, so there will be no transactions with usb devices.
+>>>>>
+>>>>> https://lore.kernel.org/linux-usb/20200306092328.41253-1-ran.wang_1@n=
+xp.com/
+>>>>>
+>>>>> So I think dwc3 core shutdown may not be required at least when we are
+>>>>> using host mode. Let me know your opinion about this.
+>>>> If that's the case, then sure. Please validate the condition, though,
+>>>> and kindly report back on your findings
+>>> I have enabled couple of logs in shutdown path and see no URBs
+>>> enqueued after xhci shut down.
+>>>
+>>> Hope this is enough for validation . Please suggest if anything more I
+>>> could do.
+>> how about writing a little script to kexec into another kernel for a few
+>> hundred iterations and make sure things still work after all that?
+>
+> Currently kexec is not supported on qcom devices.=C2=A0 Anything we can do
+> apart from kexec?
 
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: David Matlack <dmatlack@google.com>
-Cc: Jing Zhang <jingzhangos@google.com>
-Cc: Peter Xu <peterx@redhat.com>
+Sure about that? I've been using kexec with 8150 for quite a while.
 
-Suggested-by: Ben Gardon <bgardon@google.com>
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
----
- .../selftests/kvm/dirty_log_perf_test.c       | 44 +++++++++++++++++++
- .../testing/selftests/kvm/include/test_util.h |  1 +
- .../selftests/kvm/include/x86_64/processor.h  |  7 +++
- tools/testing/selftests/kvm/lib/test_util.c   | 29 ++++++++++++
- 4 files changed, 81 insertions(+)
-
-diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-index 3c30d0045d8d..bc598e07b295 100644
---- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-@@ -19,6 +19,10 @@
- #include "perf_test_util.h"
- #include "guest_modes.h"
- 
-+#ifdef __x86_64__
-+#include "processor.h"
-+#endif
-+
- /* How many host loops to run by default (one KVM_GET_DIRTY_LOG for each loop)*/
- #define TEST_HOST_LOOP_N		2UL
- 
-@@ -166,6 +170,18 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 	vm = perf_test_create_vm(mode, nr_vcpus, guest_percpu_mem_size,
- 				 p->slots, p->backing_src);
- 
-+#ifdef __x86_64__
-+	/*
-+	 * No vCPUs have been started yet, so KVM should not have created any
-+	 * mapping at this moment.
-+	 */
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) == 0,
-+		    "4K page is non zero");
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) == 0,
-+		    "2M page is non zero");
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) == 0,
-+		    "1G page is non zero");
-+#endif
- 	perf_test_args.wr_fract = p->wr_fract;
- 
- 	guest_num_pages = (nr_vcpus * guest_percpu_mem_size) >> vm_get_page_shift(vm);
-@@ -211,6 +227,22 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 	pr_info("Populate memory time: %ld.%.9lds\n",
- 		ts_diff.tv_sec, ts_diff.tv_nsec);
- 
-+#ifdef __x86_64__
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) != 0,
-+		    "4K page is zero");
-+	/* Ensure THP page stats is non-zero to minimize the flakiness. */
-+	if (p->backing_src == VM_MEM_SRC_ANONYMOUS_THP)
-+		TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) > 0,
-+			"2M page number is zero");
-+	else if (p->backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB_2MB)
-+		TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) ==
-+			(guest_percpu_mem_size * nr_vcpus) >> X86_PAGE_2M_SHIFT,
-+			"2M page number does not match");
-+	else if (p->backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB_1GB)
-+		TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) ==
-+			(guest_percpu_mem_size * nr_vcpus) >> X86_PAGE_1G_SHIFT,
-+			"1G page number does not match");
-+#endif
- 	/* Enable dirty logging */
- 	clock_gettime(CLOCK_MONOTONIC, &start);
- 	enable_dirty_logging(vm, p->slots);
-@@ -256,6 +288,18 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 				iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
- 		}
- 	}
-+#ifdef __x86_64__
-+	/*
-+	 * When vCPUs writes to all memory again with dirty logging enabled, we
-+	 * should see only 4K page mappings exist in KVM mmu.
-+	 */
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) != 0,
-+		    "4K page is zero after dirtying memory");
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) == 0,
-+		    "2M page is non-zero after dirtying memory");
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) == 0,
-+		    "1G page is non-zero  after dirtying memory");
-+#endif
- 
- 	/* Disable dirty logging */
- 	clock_gettime(CLOCK_MONOTONIC, &start);
-diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-index d79be15dd3d2..dca5fcf7aa87 100644
---- a/tools/testing/selftests/kvm/include/test_util.h
-+++ b/tools/testing/selftests/kvm/include/test_util.h
-@@ -102,6 +102,7 @@ const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i);
- size_t get_backing_src_pagesz(uint32_t i);
- void backing_src_help(void);
- enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
-+size_t get_page_stats(uint32_t page_level);
- 
- /*
-  * Whether or not the given source type is shared memory (as opposed to
-diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
-index 242ae8e09a65..9749319821a3 100644
---- a/tools/testing/selftests/kvm/include/x86_64/processor.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
-@@ -39,6 +39,13 @@
- #define X86_CR4_SMAP		(1ul << 21)
- #define X86_CR4_PKE		(1ul << 22)
- 
-+#define X86_PAGE_4K_SHIFT	12
-+#define X86_PAGE_4K		(1ul << X86_PAGE_4K_SHIFT)
-+#define X86_PAGE_2M_SHIFT	21
-+#define X86_PAGE_2M		(1ul << X86_PAGE_2M_SHIFT)
-+#define X86_PAGE_1G_SHIFT	30
-+#define X86_PAGE_1G		(1ul << X86_PAGE_1G_SHIFT)
-+
- /* CPUID.1.ECX */
- #define CPUID_VMX		(1ul << 5)
- #define CPUID_SMX		(1ul << 6)
-diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-index af1031fed97f..07eb6b5c125e 100644
---- a/tools/testing/selftests/kvm/lib/test_util.c
-+++ b/tools/testing/selftests/kvm/lib/test_util.c
-@@ -15,6 +15,13 @@
- #include "linux/kernel.h"
- 
- #include "test_util.h"
-+#include "processor.h"
-+
-+static const char * const pagestat_filepaths[] = {
-+	"/sys/kernel/debug/kvm/pages_4k",
-+	"/sys/kernel/debug/kvm/pages_2m",
-+	"/sys/kernel/debug/kvm/pages_1g",
-+};
- 
- /*
-  * Parses "[0-9]+[kmgt]?".
-@@ -141,6 +148,28 @@ size_t get_trans_hugepagesz(void)
- 	return size;
- }
- 
-+#ifdef __x86_64__
-+size_t get_stats_from_file(const char *path)
-+{
-+	size_t value;
-+	FILE *f;
-+
-+	f = fopen(path, "r");
-+	TEST_ASSERT(f != NULL, "Error in opening file: %s\n", path);
-+
-+	fscanf(f, "%ld", &value);
-+	fclose(f);
-+
-+	return value;
-+}
-+
-+size_t get_page_stats(uint32_t page_level)
-+{
-+	TEST_ASSERT(page_level <= X86_PAGE_SIZE_1G, "page type error.");
-+	return get_stats_from_file(pagestat_filepaths[page_level]);
-+}
-+#endif
-+
- size_t get_def_hugetlb_pagesz(void)
- {
- 	char buf[64];
--- 
-2.33.0.259.gc128427fd7-goog
-
+--=20
+balbi
