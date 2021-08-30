@@ -2,97 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EDE3FAFBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 04:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70AA3FAFBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 04:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236237AbhH3CXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 22:23:55 -0400
-Received: from mx.socionext.com ([202.248.49.38]:31272 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236202AbhH3CXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 22:23:53 -0400
-Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 30 Aug 2021 11:23:00 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id F318B2021820;
-        Mon, 30 Aug 2021 11:22:59 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Mon, 30 Aug 2021 11:22:59 +0900
-Received: from plum.e01.socionext.com (unknown [10.212.243.119])
-        by kinkan2.css.socionext.com (Postfix) with ESMTP id 24C7EB62B7;
-        Mon, 30 Aug 2021 11:22:59 +0900 (JST)
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: [PATCH v2 2/2] PCI: uniphier: Serialize INTx masking/unmasking
-Date:   Mon, 30 Aug 2021 11:22:38 +0900
-Message-Id: <1630290158-31264-3-git-send-email-hayashi.kunihiko@socionext.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1630290158-31264-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1630290158-31264-1-git-send-email-hayashi.kunihiko@socionext.com>
+        id S236226AbhH3C2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 22:28:24 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:62223 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235940AbhH3C2X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 29 Aug 2021 22:28:23 -0400
+Received: from fsav313.sakura.ne.jp (fsav313.sakura.ne.jp [153.120.85.144])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 17U2RT56028520;
+        Mon, 30 Aug 2021 11:27:29 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav313.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp);
+ Mon, 30 Aug 2021 11:27:29 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 17U2RS7V028517
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 30 Aug 2021 11:27:28 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [syzbot] BUG: unable to handle kernel paging request in
+ vga16fb_fillrect
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, b.zolnierkie@samsung.com,
+        colin.king@canonical.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        masahiroy@kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000815b9605c70e74f8@google.com>
+ <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
+Date:   Mon, 30 Aug 2021 11:27:27 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The condition register PCI_RCV_INTX is used in irq_mask() and irq_unmask()
-callbacks. Accesses to register can occur at the same time without a lock.
-Add a lock into each callback to prevent the issue.
+On 2021/08/30 9:24, Randy Dunlap wrote:
+> Note that yres_virtual is set to 0x10000000. Is there no practical limit
+> (hence limit check) that can be used here?
+> 
+> Also, in vga16fb_check_var(), beginning at line 404:
+> 
+>   404        if (yres > vyres)
+>   405            vyres = yres;
+>   406        if (vxres * vyres > maxmem) {
+>   407            vyres = maxmem / vxres;
+>   408            if (vyres < yres)
+>   409                return -ENOMEM;
+>   410        }
+> 
+> At line 406, the product of vxres * vyres overflows 32 bits (is 0 in this
+> case/example), so any protection from this block is lost.
 
-Fixes: 7e6d5cd88a6f ("PCI: uniphier: Add UniPhier PCIe host controller support")
-Suggested-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Acked-by: Pali Rohár <pali@kernel.org>
----
- drivers/pci/controller/dwc/pcie-uniphier.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+OK. Then, we can check overflow like below.
 
-diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
-index 26f630c..0ddeec0 100644
---- a/drivers/pci/controller/dwc/pcie-uniphier.c
-+++ b/drivers/pci/controller/dwc/pcie-uniphier.c
-@@ -186,11 +186,16 @@ static void uniphier_pcie_irq_mask(struct irq_data *d)
- 	struct pcie_port *pp = irq_data_get_irq_chip_data(d);
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
- 	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
-+	unsigned long flags;
- 	u32 val;
+diff --git a/drivers/video/fbdev/vga16fb.c b/drivers/video/fbdev/vga16fb.c
+index e2757ff1c23d..e483a3f5fd47 100644
+--- a/drivers/video/fbdev/vga16fb.c
++++ b/drivers/video/fbdev/vga16fb.c
+@@ -403,7 +403,7 @@ static int vga16fb_check_var(struct fb_var_screeninfo *var,
  
-+	raw_spin_lock_irqsave(&pp->lock, flags);
-+
- 	val = readl(priv->base + PCL_RCV_INTX);
- 	val |= BIT(irqd_to_hwirq(d) + PCL_RCV_INTX_MASK_SHIFT);
- 	writel(val, priv->base + PCL_RCV_INTX);
-+
-+	raw_spin_unlock_irqrestore(&pp->lock, flags);
- }
+ 	if (yres > vyres)
+ 		vyres = yres;
+-	if (vxres * vyres > maxmem) {
++	if ((u64) vxres * vyres > (u64) maxmem) {
+ 		vyres = maxmem / vxres;
+ 		if (vyres < yres)
+ 			return -ENOMEM;
+
+But I think we can check overflow in the common code like below. (Both patch fixed the oops.)
+
+diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+index 1c855145711b..8899679bbc46 100644
+--- a/drivers/video/fbdev/core/fbmem.c
++++ b/drivers/video/fbdev/core/fbmem.c
+@@ -1008,6 +1008,11 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
+ 	if (var->xres < 8 || var->yres < 8)
+ 		return -EINVAL;
  
- static void uniphier_pcie_irq_unmask(struct irq_data *d)
-@@ -198,11 +203,16 @@ static void uniphier_pcie_irq_unmask(struct irq_data *d)
- 	struct pcie_port *pp = irq_data_get_irq_chip_data(d);
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
- 	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
-+	unsigned long flags;
- 	u32 val;
- 
-+	raw_spin_lock_irqsave(&pp->lock, flags);
++	/* Don't allow u32 * u32 to overflow. */
++	if ((u64) var->xres * var->yres > (u64) UINT_MAX ||
++	    (u64) var->xres_virtual * var->yres_virtual > (u64) UINT_MAX)
++		return -EINVAL;
 +
- 	val = readl(priv->base + PCL_RCV_INTX);
- 	val &= ~BIT(irqd_to_hwirq(d) + PCL_RCV_INTX_MASK_SHIFT);
- 	writel(val, priv->base + PCL_RCV_INTX);
-+
-+	raw_spin_unlock_irqrestore(&pp->lock, flags);
- }
+ 	ret = info->fbops->fb_check_var(var, info);
  
- static struct irq_chip uniphier_pcie_irq_chip = {
--- 
-2.7.4
+ 	if (ret)
+
+> 
+> But even if yres_virtual (aka vyres) is "only" 0x01000000, so no
+> multiplication overflow occurs, the resulting value of vyres "seems"
+> to still be too large and can cause an error [I'm not sure about this
+> last part -- I need to use a new gcc so that KASAN will work.]
 
