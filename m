@@ -2,151 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B223FBDD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A4C3FBDDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236566AbhH3VFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 17:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236009AbhH3VFJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:05:09 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29234C061575;
-        Mon, 30 Aug 2021 14:04:15 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id fs6so10351146pjb.4;
-        Mon, 30 Aug 2021 14:04:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=DR2Bm1R7YKSILao3MIz9gdsriioL6L4Hdgm+Hq95yfk=;
-        b=ah+4CA5h+kOwFd9qrEibSKfYAPfYPA83e3z19xKkl0kEPGZHX9BjvNNIlNCmuCTkXX
-         OmMkgnLYCbXJFPMl/uNwnZ7tGJd9XFnyVK5rD+PPYOjgk9EhpGul2WjEs/kNX+h2CQix
-         bDevhwEQZAchriHqTe8K2o7x4pbEeMPBILP1vLOOSXFb8wGKzXjRJHqqB591CppFPJpS
-         7k7ACVFs9omrP3aTjkTx3K4LwCNocbanA6eC7hRPlw0/8xD6o2t3uJnBfKBeXbGJ1cEL
-         JvjGWRXh76BC39zDasi/DXiNmZwP/TCyXDbjekiUeEikZJrcl1u3AKpJbERDh9fuopj6
-         /92g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DR2Bm1R7YKSILao3MIz9gdsriioL6L4Hdgm+Hq95yfk=;
-        b=Qbv3t7Sp2ECZNr5WOA8FwEQK8OwTbwAOeLs4Ana1rDnrlaNHqyxEjjWXryZky6GG7w
-         Lkg66gQruRvBLLLdHunfXL3FPFAU6Mfl9cFD/2jApUC4LP23P6vdWlANXX179XUoSejS
-         mW/1aXnnmJDqFUmlrjthpepiMDwQ6XwLa4SqZ0mLPxynAZOwgbb+GjBcDkifeliZhqYG
-         WnAwBWzrQn9cWd5PO9hJOlWdi1ThtavTXeloTe0USQJt3bYWe0IYI/2G0yG+GZOomlPE
-         pBDDm8mJlxMsGs6P7/HjQnOFGqklE3WFlbPH9Lzv6RzRvhnU1ysu7cB5en5cU7CbtttP
-         9VKg==
-X-Gm-Message-State: AOAM530P+S/pkYyZj81BTRlQ5exokh5mUc/vsphmH+vh4Oxetaf9gzzc
-        N8hkmlD9h30MQfBsoYbeOtU=
-X-Google-Smtp-Source: ABdhPJyRz3j8yhGjQruBYt5HogHLyYwlaJCVaG/s7Dn3Fl+divZ4zxqIxw55Rs0lx0A5X/d1yV/xyQ==
-X-Received: by 2002:a17:902:9682:b0:138:e2f9:720d with SMTP id n2-20020a170902968200b00138e2f9720dmr1366038plp.57.1630357454505;
-        Mon, 30 Aug 2021 14:04:14 -0700 (PDT)
-Received: from [10.80.16.166] ([103.137.210.137])
-        by smtp.gmail.com with ESMTPSA id w4sm362753pjj.15.2021.08.30.14.04.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 14:04:13 -0700 (PDT)
-Subject: Re: [PATCH v8 3/7] drm: lock drm_global_mutex earlier in the ioctl
- handler
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        chris@chris-wilson.co.uk, ville.syrjala@linux.intel.com,
-        matthew.auld@intel.com, dan.carpenter@oracle.com,
-        tvrtko.ursulin@intel.com, matthew.d.roper@intel.com,
-        lucas.demarchi@intel.com, karthik.b.s@intel.com,
-        jose.souza@intel.com, manasi.d.navare@intel.com,
-        airlied@redhat.com, aditya.swarup@intel.com, andrescj@chromium.org,
-        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <20210826020122.1488002-1-desmondcheongzx@gmail.com>
- <20210826020122.1488002-4-desmondcheongzx@gmail.com>
- <YSdltHVQnIr+vkTn@phenom.ffwll.local>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <c9e08f10-035f-63dd-698c-faa93c935cd6@gmail.com>
-Date:   Tue, 31 Aug 2021 05:04:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YSdltHVQnIr+vkTn@phenom.ffwll.local>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S236842AbhH3VFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:05:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236009AbhH3VFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 17:05:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5960460FE8;
+        Mon, 30 Aug 2021 21:04:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630357458;
+        bh=QgSJAZd5/xth6ViX1Mg8LffXZO7upFj4cijUpibFqDo=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ggTlag5hhKzh6geuJ8W3dU9tE6jRSPANxhX1AbBM5zn0HXEp1UEQ+iOQCb2qVfd3v
+         uNdJAtIdZRTVeOR1JYIhkhe4+NjnqQ63EaE8YBXxtpKYAnBm1YLRjhkxrDhcj5hd8C
+         ISSXG7Pk+9ac2iYYKX6DKzIJp5vMQsKPQVsxhu0PDo6lFTj99JIP/TG+QxzQhIoq3i
+         pwawynilPPGjMhpcFM8Bww83eFUEgHr1eH8g3ngi/bR9raV7pYx/Xcs5s5XqbKyxVV
+         PReHYEqM7s76e6pPCnV1qpnL2FyqyEZWemKKLUkuKGI+XDEfh9JxXs/TDgEvZsW8Bc
+         0pas4qmP5/QzQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 486EA60A3C;
+        Mon, 30 Aug 2021 21:04:18 +0000 (UTC)
+Subject: Re: [GIT PULL] perf changes for v5.15
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YSytsSM2mOcpGHJq@gmail.com>
+References: <YSytsSM2mOcpGHJq@gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YSytsSM2mOcpGHJq@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-core-2021-08-30
+X-PR-Tracked-Commit-Id: 6a371bafe613b7746c3d3ac486bdb3035f77e029
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4a2b88eb0265a9d550982b188abf20618a0c1a84
+Message-Id: <163035745829.10236.15352619566864058246.pr-tracker-bot@kernel.org>
+Date:   Mon, 30 Aug 2021 21:04:18 +0000
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/8/21 5:58 pm, Daniel Vetter wrote:
-> On Thu, Aug 26, 2021 at 10:01:18AM +0800, Desmond Cheong Zhi Xi wrote:
->> In a future patch, a read lock on drm_device.master_rwsem is
->> held in the ioctl handler before the check for ioctl
->> permissions. However, this inverts the lock hierarchy of
->> drm_global_mutex --> master_rwsem.
->>
->> To avoid this, we do some prep work to grab the drm_global_mutex
->> before checking for ioctl permissions.
->>
->> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->> ---
->>   drivers/gpu/drm/drm_ioctl.c | 18 +++++++++---------
->>   1 file changed, 9 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
->> index d25713b09b80..158629d88319 100644
->> --- a/drivers/gpu/drm/drm_ioctl.c
->> +++ b/drivers/gpu/drm/drm_ioctl.c
->> @@ -772,19 +772,19 @@ long drm_ioctl_kernel(struct file *file, drm_ioctl_t *func, void *kdata,
->>   	if (drm_dev_is_unplugged(dev))
->>   		return -ENODEV;
->>   
->> +	/* Enforce sane locking for modern driver ioctls. */
->> +	if (unlikely(drm_core_check_feature(dev, DRIVER_LEGACY)) && !(flags & DRM_UNLOCKED))
-> 
-> Maybe have a local bool locked_ioctl for this so it's extremely clear it's
-> the same condition in both?
-> 
-> Either way: Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> 
+The pull request you sent on Mon, 30 Aug 2021 12:06:41 +0200:
 
-Thanks for the suggestion and review. Sounds good, I'll update and send 
-out a new version.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-core-2021-08-30
 
-(Sorry for delays, been busy with moving)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4a2b88eb0265a9d550982b188abf20618a0c1a84
 
->> +		mutex_lock(&drm_global_mutex);
->> +
->>   	retcode = drm_ioctl_permit(flags, file_priv);
->>   	if (unlikely(retcode))
->> -		return retcode;
->> +		goto out;
->>   
->> -	/* Enforce sane locking for modern driver ioctls. */
->> -	if (likely(!drm_core_check_feature(dev, DRIVER_LEGACY)) ||
->> -	    (flags & DRM_UNLOCKED))
->> -		retcode = func(dev, kdata, file_priv);
->> -	else {
->> -		mutex_lock(&drm_global_mutex);
->> -		retcode = func(dev, kdata, file_priv);
->> +	retcode = func(dev, kdata, file_priv);
->> +
->> +out:
->> +	if (unlikely(drm_core_check_feature(dev, DRIVER_LEGACY)) && !(flags & DRM_UNLOCKED))
->>   		mutex_unlock(&drm_global_mutex);
->> -	}
->>   	return retcode;
->>   }
->>   EXPORT_SYMBOL(drm_ioctl_kernel);
->> -- 
->> 2.25.1
->>
-> 
+Thank you!
 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
