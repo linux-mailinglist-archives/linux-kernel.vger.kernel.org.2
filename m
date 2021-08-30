@@ -2,87 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FA53FBFA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 01:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA51A3FBFC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 02:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239137AbhH3X6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 19:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233413AbhH3X57 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 19:57:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF56C061575;
-        Mon, 30 Aug 2021 16:57:05 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630367824;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=II7kr15IK3yVzn+wqs9ggAl0e2ITXLSBVCs7oul256g=;
-        b=UJB1BmN/GLRUpjfKiStlGPks9y33OJXh4aIazBHTPzmvfv4M0prAA4xBlqgXtHMlcWJqgG
-        TEKtGLfHWPJ+CjFYxzc5MNxi61kyqTxOWLpYrs2ahn/t6ZxwMO0sVH+km7MvA2/VEuIF/o
-        7Td7pNcLWVyGNPMLS6TFZgGwvwUvXz84W78JsohtW/FNIVJV02T8qjb3t6M+r/yQokqsGD
-        U4jTd4p1dr4iOVZP4b92IoB/jL8azc25f9KCrBvph7MX5y1S2DbDyzJyKumyi9A8CoMXhp
-        8I/e0GmF1PJqZFicaj5ulPla+D18vYEkMcOveENl7v0YgifeAuuJxJUZJTNx3A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630367824;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=II7kr15IK3yVzn+wqs9ggAl0e2ITXLSBVCs7oul256g=;
-        b=jW+3yxOxWsNazbUV71bYBpQpOtxBxmUYZjDNl9y+QHieHL4Xmr9Bs3f8+Jqt1snWyJG6zp
-        WZpTofMv5RDgh9Dg==
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: Linux 5.14
-In-Reply-To: <87wno2fzbq.ffs@tglx>
-References: <CAHk-=wh75ELUu99yPkPNt+R166CK=-M4eoV+F62tW3TVgB7=4g@mail.gmail.com>
- <20210830201225.GA2671970@roeck-us.net> <87wno2fzbq.ffs@tglx>
-Date:   Tue, 31 Aug 2021 01:57:03 +0200
-Message-ID: <8735qqfpv4.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S239143AbhHaAAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 20:00:53 -0400
+Received: from mga09.intel.com ([134.134.136.24]:50152 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233513AbhHaAAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 20:00:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="218381509"
+X-IronPort-AV: E=Sophos;i="5.84,364,1620716400"; 
+   d="scan'208";a="218381509"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 16:59:57 -0700
+X-IronPort-AV: E=Sophos;i="5.84,364,1620716400"; 
+   d="scan'208";a="530712788"
+Received: from ajinkyak-mobl2.amr.corp.intel.com (HELO rpedgeco-desk.amr.corp.intel.com) ([10.212.240.95])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 16:59:56 -0700
+From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
+To:     dave.hansen@intel.com, luto@kernel.org, peterz@infradead.org,
+        x86@kernel.org, akpm@linux-foundation.org, keescook@chromium.org,
+        shakeelb@google.com, vbabka@suse.cz, rppt@kernel.org
+Cc:     Rick Edgecombe <rick.p.edgecombe@intel.com>, linux-mm@kvack.org,
+        linux-hardening@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, ira.weiny@intel.com,
+        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v2 00/19] PKS write protected page tables
+Date:   Mon, 30 Aug 2021 16:59:08 -0700
+Message-Id: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30 2021 at 22:32, Thomas Gleixner wrote:
+Hi,
 
-> On Mon, Aug 30 2021 at 13:12, Guenter Roeck wrote:
->> On Sun, Aug 29, 2021 at 03:19:23PM -0700, Linus Torvalds wrote:
->> So far so good, but there is a brand new runtime warning, seen when booting
->> s390 images.
->>
->> [    3.218816] ------------[ cut here ]------------
->> [    3.219010] WARNING: CPU: 1 PID: 0 at kernel/sched/core.c:5779 sched_core_cpu_starting+0x172/0x180
->> [    3.222992]  [<0000000000186e86>] sched_core_cpu_starting+0x176/0x180
->> [    3.223114] ([<0000000000186dc4>] sched_core_cpu_starting+0xb4/0x180)
->> [    3.223182]  [<00000000001963e4>] sched_cpu_starting+0x2c/0x68
->> [    3.223243]  [<000000000014f288>] cpuhp_invoke_callback+0x318/0x970
->> [    3.223304]  [<000000000014f970>] cpuhp_invoke_callback_range+0x90/0x108
->> [    3.223364]  [<000000000015123c>] notify_cpu_starting+0x84/0xa8
->> [    3.223426]  [<0000000000117bca>] smp_init_secondary+0x72/0xf0
->> [    3.223492]  [<0000000000117846>] smp_start_secondary+0x86/0x90
->>
->> Commit 3c474b3239f12 ("sched: Fix Core-wide rq->lock for uninitialized
->> CPUs") sems to be the culprit. Indeed, the warning is gone after reverting
->> this commit.
->
-> The warning is gone, but the underlying S390 problem persists:
->
-> S390 invokes notify_cpu_starting() _before_ updating the topology masks.
+This is a second RFC for the PKS write protected tables concept. I'm sharing to
+show the progress to interested people. I'd also appreciate any comments,
+especially on the direct map page table protection solution (patch 17).
 
-And interestingly enough that very commit was tested on S390:
+Since v1[1], the improvements are:
+ - Fully handle direct map page tables, and handle hotplug/unplug path.
+ - Create a debug time checker that scans page tables and verifies 
+   their protection.
+ - Fix odds-and-ends kernel page tables that showed up with debug 
+   checker. At this point all of the typical normal page tables should be
+   protected.
+ - Fix toggling of writablility for odds-and-ends page table modifications found
+   that don't use the normal helpers.
+ - Create atomic context grouped page allocator, after finding some page table
+   allocations that are passing GFP_ATOMIC.
+ - Create "soft" mode that warns and disables protection on violation instead
+   of oopsing.
+ - Boot parameters for disabling pks tables
+ - Change PageTable set clear to ctor/dtor (peterz)
+ - Remove VM_BUG_ON_PAGE in alloc_table() (Shakeel Butt) 
+ - PeterZ/Vlastimil had suggested to also build a non-PKS mode for use in  
+   debugging. I skipped it for now because the series was too big.
+ - Rebased to latest PKS core v7 [2]
 
-  https://lore.kernel.org/r/yt9dy28o8q0o.fsf@linux.ibm.com
+Also, Mike Rapoport has been experimenting[3] with this usage to work on how to
+share caches of permissioned/broken pages between use cases. This RFCv2 still
+uses the "grouped pages" concept, where each usage would maintain its own
+cache, but should be able to integrate with a central solution if something is
+developed.
 
-Thanks,
+Next I was planning to look into characterizing/tuning the performance, although
+what page allocation scheme is ultimately used will probably impact that.
 
-        tglx
+This applies on top of the PKS core v7 series[2] and this patch[4]. Testing is
+still pretty light.
+
+This RFC has been acked by Dave Hansen.
+
+[1] https://lore.kernel.org/lkml/20210505003032.489164-1-rick.p.edgecombe@intel.com/
+[2] https://lore.kernel.org/lkml/20210804043231.2655537-1-ira.weiny@intel.com/
+[3] https://lore.kernel.org/lkml/20210823132513.15836-1-rppt@kernel.org/
+[4] https://lore.kernel.org/lkml/20210818221026.10794-1-rick.p.edgecombe@intel.com/
+
+Rick Edgecombe (19):
+  list: Support getting most recent element in list_lru
+  list: Support list head not in object for list_lru
+  x86/mm/cpa: Add grouped page allocations
+  mm: Explicitly zero page table lock ptr
+  x86, mm: Use cache of page tables
+  x86/mm/cpa: Add perm callbacks to grouped pages
+  x86/cpufeatures: Add feature for pks tables
+  x86/mm/cpa: Add get_grouped_page_atomic()
+  x86/mm: Support GFP_ATOMIC in alloc_table_node()
+  x86/mm: Use alloc_table() for fill_pte(), etc
+  mm/sparsemem: Use alloc_table() for table allocations
+  x86/mm: Use free_table in unmap path
+  mm/debug_vm_page_table: Use setters instead of WRITE_ONCE
+  x86/efi: Toggle table protections when copying
+  x86/mm/cpa: Add set_memory_pks()
+  x86/mm: Protect page tables with PKS
+  x86/mm/cpa: PKS protect direct map page tables
+  x86/mm: Add PKS table soft mode
+  x86/mm: Add PKS table debug checking
+
+ .../admin-guide/kernel-parameters.txt         |   4 +
+ arch/x86/boot/compressed/ident_map_64.c       |   5 +
+ arch/x86/include/asm/cpufeatures.h            |   2 +-
+ arch/x86/include/asm/pgalloc.h                |   6 +-
+ arch/x86/include/asm/pgtable.h                |  31 +-
+ arch/x86/include/asm/pgtable_64.h             |  33 +-
+ arch/x86/include/asm/pkeys_common.h           |   1 -
+ arch/x86/include/asm/set_memory.h             |  24 +
+ arch/x86/mm/init.c                            |  90 +++
+ arch/x86/mm/init_64.c                         |  29 +-
+ arch/x86/mm/pat/set_memory.c                  | 527 +++++++++++++++++-
+ arch/x86/mm/pgtable.c                         | 183 +++++-
+ arch/x86/mm/pkeys.c                           |   4 +
+ arch/x86/platform/efi/efi_64.c                |   8 +
+ include/asm-generic/pgalloc.h                 |  46 +-
+ include/linux/list_lru.h                      |  26 +
+ include/linux/mm.h                            |  16 +-
+ include/linux/pkeys.h                         |   1 +
+ mm/Kconfig                                    |  23 +
+ mm/debug_vm_pgtable.c                         |  36 +-
+ mm/list_lru.c                                 |  38 +-
+ mm/memory.c                                   |   1 +
+ mm/sparse-vmemmap.c                           |  22 +-
+ mm/swap.c                                     |   6 +
+ mm/swap_state.c                               |   5 +
+ .../arch/x86/include/asm/disabled-features.h  |   8 +-
+ 26 files changed, 1123 insertions(+), 52 deletions(-)
+
+-- 
+2.17.1
+
