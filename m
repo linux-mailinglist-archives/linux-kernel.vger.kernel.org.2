@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52C83FB527
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2123FB53D
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237052AbhH3MBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:01:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48024 "EHLO mail.kernel.org"
+        id S237206AbhH3MCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:02:25 -0400
+Received: from verein.lst.de ([213.95.11.211]:40275 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236905AbhH3MBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:01:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D38E56112F;
-        Mon, 30 Aug 2021 12:00:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630324842;
-        bh=FwzfyyuZ6VLcfr1F4gDZkIzt9er8qc+k9jKBDlAJIYM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JMYF/egw2zZOhnix4HrxaLfi3+Ro+Y/awufRos3T6HBVk2+h/N2RQozBCh7QbHclh
-         CHY1tvx+caUZeMIIFfA/4nKh5BUQWk99Kne2oDnBT7LxHJRnMlQ4Xz1HNLWJNLiKO/
-         QK9zMp0QGE2ki7pktHEir9MCTIUq8Kp/Ir5OgnAtEhXQgOUKJkLZbNUXo8zj/+VudV
-         M9g65402UxgOmwoGF8JtEkeUfFJ8+uT5xpVtqRpSJmpfNsDD3NerVUwgiPCMmrYGDu
-         sxRm6hs4Dato98xNwfRASCLB80eAPTeyIxiT/RLMQaf1yNwQNM5GGaLXeLSrQ5U5Rr
-         35xOx59bPLbYg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>, linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 8/8] cryptoloop: add a deprecation warning
-Date:   Mon, 30 Aug 2021 08:00:31 -0400
-Message-Id: <20210830120031.1017977-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210830120031.1017977-1-sashal@kernel.org>
-References: <20210830120031.1017977-1-sashal@kernel.org>
+        id S236921AbhH3MBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 08:01:39 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 25CFD68B05; Mon, 30 Aug 2021 14:00:37 +0200 (CEST)
+Date:   Mon, 30 Aug 2021 14:00:36 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tianyu Lan <ltykernel@gmail.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, catalin.marinas@arm.com,
+        will@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, gregkh@linuxfoundation.org,
+        arnd@arndb.de, hch@lst.de, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, brijesh.singh@amd.com,
+        thomas.lendacky@amd.com, Tianyu.Lan@microsoft.com,
+        pgonda@google.com, martin.b.radev@gmail.com,
+        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        rppt@kernel.org, hannes@cmpxchg.org, aneesh.kumar@linux.ibm.com,
+        krish.sadhukhan@oracle.com, saravanand@fb.com,
+        linux-arm-kernel@lists.infradead.org,
+        xen-devel@lists.xenproject.org, rientjes@google.com,
+        ardb@kernel.org, michael.h.kelley@microsoft.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
+Subject: Re: [PATCH V4 00/13] x86/Hyper-V: Add Hyper-V Isolation VM support
+Message-ID: <20210830120036.GA22005@lst.de>
+References: <20210827172114.414281-1-ltykernel@gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827172114.414281-1-ltykernel@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+Sorry for the delayed answer, but I look at the vmap_pfn usage in the
+previous version and tried to come up with a better version.  This
+mostly untested branch:
 
-[ Upstream commit 222013f9ac30b9cec44301daa8dbd0aae38abffb ]
+http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/hyperv-vmap
 
-Support for cryptoloop has been officially marked broken and deprecated
-in favor of dm-crypt (which supports the same broken algorithms if
-needed) in Linux 2.6.4 (released in March 2004), and support for it has
-been entirely removed from losetup in util-linux 2.23 (released in April
-2013).  Add a warning and a deprecation schedule.
+get us there for swiotlb and the channel infrastructure  I've started
+looking at the network driver and didn't get anywhere due to other work.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20210827163250.255325-1-hch@lst.de
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/block/Kconfig      | 4 ++--
- drivers/block/cryptoloop.c | 2 ++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+As far as I can tell the network driver does gigantic multi-megabyte
+vmalloc allocation for the send and receive buffers, which are then
+passed to the hardware, but always copied to/from when interacting
+with the networking stack.  Did I see that right?  Are these big
+buffers actually required unlike the normal buffer management schemes
+in other Linux network drivers?
 
-diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
-index e101f286ac35..60662771bd46 100644
---- a/drivers/block/Kconfig
-+++ b/drivers/block/Kconfig
-@@ -242,7 +242,7 @@ config BLK_DEV_LOOP_MIN_COUNT
- 	  dynamically allocated with the /dev/loop-control interface.
- 
- config BLK_DEV_CRYPTOLOOP
--	tristate "Cryptoloop Support"
-+	tristate "Cryptoloop Support (DEPRECATED)"
- 	select CRYPTO
- 	select CRYPTO_CBC
- 	depends on BLK_DEV_LOOP
-@@ -254,7 +254,7 @@ config BLK_DEV_CRYPTOLOOP
- 	  WARNING: This device is not safe for journaled file systems like
- 	  ext3 or Reiserfs. Please use the Device Mapper crypto module
- 	  instead, which can be configured to be on-disk compatible with the
--	  cryptoloop device.
-+	  cryptoloop device.  cryptoloop support will be removed in Linux 5.16.
- 
- source "drivers/block/drbd/Kconfig"
- 
-diff --git a/drivers/block/cryptoloop.c b/drivers/block/cryptoloop.c
-index 7033a4beda66..1b84105dfe62 100644
---- a/drivers/block/cryptoloop.c
-+++ b/drivers/block/cryptoloop.c
-@@ -201,6 +201,8 @@ init_cryptoloop(void)
- 
- 	if (rc)
- 		printk(KERN_ERR "cryptoloop: loop_register_transfer failed\n");
-+	else
-+		pr_warn("the cryptoloop driver has been deprecated and will be removed in in Linux 5.16\n");
- 	return rc;
- }
- 
--- 
-2.30.2
-
+If so I suspect the best way to allocate them is by not using vmalloc
+but just discontiguous pages, and then use kmap_local_pfn where the
+PFN includes the share_gpa offset when actually copying from/to the
+skbs.
