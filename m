@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76763FBA61
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 535EF3FBA68
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237909AbhH3Qvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54102 "EHLO
+        id S237946AbhH3QwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237808AbhH3Qvh (ORCPT
+        with ESMTP id S237788AbhH3QwR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:51:37 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8886AC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:50:43 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id u3so32433750ejz.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:50:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bQVMvYcjCnMFgvYOVDQREa1BXf8UCBlf+lOOy+41N5U=;
-        b=obzbb1pzaE1LR8FOGj+GTvRiG8gJkpP+lR1f98oUFk0zlgW9DVHYeNoJPhjBDHIW98
-         47IEBb+gsKPIwsCtga4z5CpSMw1iboO+i7+MDAU1P7/JWMEe8kvW6FrNxT8NCgFlCGSD
-         ePfyC2Npipk2h3J/gWBvCDfA7vUpiwI54PTOm+w26AFvwnpmeamGky/4GnYqw7r8vedF
-         F2d3w3EA9YMq2G9pTFz+NTUjARmEt0VQVCdEy0ub7t6eNo+giW4piBQgkFReTSdxUecm
-         Jj64UtjFvvfxkJc3lv28hZqhJe1PF7GpNxLYtJeGk2UXlBUt1aZJXa/4LeFOuWmcFX3x
-         v80A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bQVMvYcjCnMFgvYOVDQREa1BXf8UCBlf+lOOy+41N5U=;
-        b=qBmCAjD/lk3aPOj/H4tbMAyUq23Ao8JhZ5sE1UEZPj86/wkxvSYtJ0IRd+XPuQkvkI
-         lZo1okFnVrc1aQt7sN4zVojvrDc3XesQ/QtTxRipghYNI3yz9P0cUh8JlM6eGW+9pD5I
-         4gz5bvg6iwnyT1T68s3k5c3Bpxn7xrtsukklnOgq0QwzwRTouz6Rc6ukSCWWYSiMyDrh
-         yZNGTjpx9oVgV4n4mr8DIuyxJb/1VBJ6FbVFgvfd4+LKsp2ywHj8E87Jbs2RU3kvJyi8
-         ygu6jKOTJvDlMztnSbaQ7aGRimzxI2IXWM42Xhc7izZ6F8ST9/Mnzda+SV3qQGmFfO0x
-         2uRA==
-X-Gm-Message-State: AOAM5323BdsogOATJL++LcI+ux4Jpy3teCi1HGHD/PyDT9+1VGOFq+Rn
-        WG43B48kTmHWPEfEkGkHzjtoIUJ0SS10BKgr2Nok
-X-Google-Smtp-Source: ABdhPJx52e04Hss4PIUoU//zykOp13TlB+DzQ6HwhK6DcPWsOi04aRDu8IY7lDXCZ7khHk0VuPR7KlNpbq+lxTgZvYk=
-X-Received: by 2002:a17:906:b845:: with SMTP id ga5mr26745803ejb.106.1630342242114;
- Mon, 30 Aug 2021 09:50:42 -0700 (PDT)
+        Mon, 30 Aug 2021 12:52:17 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14E3C061575;
+        Mon, 30 Aug 2021 09:51:23 -0700 (PDT)
+Received: from apollo.. (unknown [IPv6:2a02:810c:c200:2e91:4685:ff:fe12:5967])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 064AB2222E;
+        Mon, 30 Aug 2021 18:51:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1630342281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=s7FBoujQg3kVA4BmPGpYvHkhVu18Qs2dpi7QKew8788=;
+        b=VSHipgrNulbGk3HtKKzZJYBk9xH45pCbIQDl7tsartInrHAylIzuj1YKoVam1yQf4d/Ipm
+        Q2u9vSO/pC8cvQ6quY5EQ8c0wCtt4HANRUVBHKpQAhqDi+k3h+xAb9dEWpN8erBYjn9srX
+        lhCegqe9ykqoTPG6onqBX+xPfqItMCE=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH] arm64: dts: hisilicon: fix arm,sp805 compatible string
+Date:   Mon, 30 Aug 2021 18:51:13 +0200
+Message-Id: <20210830165113.222867-1-michael@walle.cc>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <c6864908-d093-1705-76ce-94d6af85e092@linux.alibaba.com>
- <18f0171e-0cc8-6ae6-d04a-a69a2a3c1a39@linux.alibaba.com> <CAHC9VhTEs9E+ZeGGp96NnOhmr-6MZLXf6ckHeG8w5jh3AfgKiQ@mail.gmail.com>
- <20210830094525.3c97e460@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210830094525.3c97e460@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 30 Aug 2021 12:50:31 -0400
-Message-ID: <CAHC9VhRHx=+Fek7W4oyZWVBUENQ8VnD+mWXUytKPKg+9p-J4LQ@mail.gmail.com>
-Subject: Re: [PATCH v2] net: fix NULL pointer reference in cipso_v4_doi_free
-To:     Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 12:45 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> On Mon, 30 Aug 2021 10:17:05 -0400 Paul Moore wrote:
-> > On Mon, Aug 30, 2021 at 6:28 AM =E7=8E=8B=E8=B4=87 <yun.wang@linux.alib=
-aba.com> wrote:
-> > >
-> > > In netlbl_cipsov4_add_std() when 'doi_def->map.std' alloc
-> > > failed, we sometime observe panic:
-> > >
-> > >   BUG: kernel NULL pointer dereference, address:
-> > >   ...
-> > >   RIP: 0010:cipso_v4_doi_free+0x3a/0x80
-> > >   ...
-> > >   Call Trace:
-> > >    netlbl_cipsov4_add_std+0xf4/0x8c0
-> > >    netlbl_cipsov4_add+0x13f/0x1b0
-> > >    genl_family_rcv_msg_doit.isra.15+0x132/0x170
-> > >    genl_rcv_msg+0x125/0x240
-> > >
-> > > This is because in cipso_v4_doi_free() there is no check
-> > > on 'doi_def->map.std' when doi_def->type got value 1, which
-> > > is possibe, since netlbl_cipsov4_add_std() haven't initialize
-> > > it before alloc 'doi_def->map.std'.
-> > >
-> > > This patch just add the check to prevent panic happen in similar
-> > > cases.
-> > >
-> > > Reported-by: Abaci <abaci@linux.alibaba.com>
-> > > Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
-> > > ---
-> > >  net/netlabel/netlabel_cipso_v4.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > I see this was already merged, but it looks good to me, thanks for
-> > making those changes.
->
-> FWIW it looks like v1 was also merged:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=
-=3D733c99ee8b
+According to Documentation/devicetree/bindings/watchdog/arm,sp805.yaml
+the compatible is:
+  compatible = "arm,sp805", "arm,primecell";
 
-Yeah, that is unfortunate, there was a brief discussion about that
-over on one of the -stable patches for the v1 patch (odd that I never
-saw a patchbot post for the v1 patch?).  Having both merged should be
-harmless, but we want to revert the v1 patch as soon as we can.
-Michael, can you take care of this?
+The current compatible string doesn't exist at all. Fix it.
 
---=20
-paul moore
-www.paul-moore.com
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+There are also the layerscape SoC which are using these compatible
+strings. I'm on it to change these, too.
+
+ arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 4 ++--
+ arch/arm64/boot/dts/hisilicon/hi6220.dtsi | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+index 2d5c1a348716..6eabec2602e2 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+@@ -1087,7 +1087,7 @@ dwmmc2: dwmmc2@ff3ff000 {
+ 		};
+ 
+ 		watchdog0: watchdog@e8a06000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xe8a06000 0x0 0x1000>;
+ 			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&crg_ctrl HI3660_OSC32K>,
+@@ -1096,7 +1096,7 @@ watchdog0: watchdog@e8a06000 {
+ 		};
+ 
+ 		watchdog1: watchdog@e8a07000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xe8a07000 0x0 0x1000>;
+ 			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&crg_ctrl HI3660_OSC32K>,
+diff --git a/arch/arm64/boot/dts/hisilicon/hi6220.dtsi b/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
+index dde9371dc545..e4860b8a638e 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
+@@ -840,7 +840,7 @@ dwmmc_2: dwmmc2@f723f000 {
+ 		};
+ 
+ 		watchdog0: watchdog@f8005000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xf8005000 0x0 0x1000>;
+ 			interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&ao_ctrl HI6220_WDT0_PCLK>,
+-- 
+2.30.2
+
