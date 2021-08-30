@@ -2,179 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490F43FBF03
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 00:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AFC23FBF0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 00:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238842AbhH3WfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 18:35:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44864 "EHLO mail.kernel.org"
+        id S239115AbhH3Wkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 18:40:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230140AbhH3We6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 18:34:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1B5460E98;
-        Mon, 30 Aug 2021 22:34:03 +0000 (UTC)
+        id S238554AbhH3WkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 18:40:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id F1B2861027;
+        Mon, 30 Aug 2021 22:39:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630362844;
-        bh=wlr+0GYj5AofoT2qLGQnGAd0De8XaqzW9JKk9OfETXI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WvvNsgssfkXqpGn/WQqRti1oOg9e3+5keyLeV+h/FY5iMBnW6NGD3RXQOThN5C+dd
-         YmmaClMBnqiN0Jug1ruemGzaqGcTxHbCV/bXm0qRdBq8R8SlsXKnfsjWDo2LEK4Ok4
-         PZSZd5LgsAukrOFPqaDF7lUSO9NGEXYJ/ZIuiuwRHpjbxyKc4vj/gF5DZ79Ezwe9rZ
-         cypetSnlmu3d80ml+4HhrjBuAnH8YQN3JGkTqOb73fnEdnZNJimUPhHTFvlbVRgdep
-         LLNFLXEmPoxmlFgmk+Xn7WNxPHPdnNW2ezmTQZbv+XU4YTudIqgxHXmv583MViTvWd
-         IDbDQRlDKgT5g==
-Date:   Mon, 30 Aug 2021 15:34:01 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Keith Packard <keithp@keithp.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        clang-built-linux@googlegroups.com,
-        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v3 0/5] Enable -Warray-bounds and -Wzero-length-bounds
-Message-ID: <YS1c2UE487rkGnya@Ryzen-9-3900X.localdomain>
-References: <20210827163015.3141722-1-keescook@chromium.org>
- <YS0nJtNDCwfbaubZ@Ryzen-9-3900X.localdomain>
- <202108301314.22B3CB015C@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202108301314.22B3CB015C@keescook>
+        s=k20201202; t=1630363169;
+        bh=fhgwBULQgzfL0K/ApKbBPO/w5zcUSqoqlb6NhBYq26s=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Gc26ZFzUNSiB3jnneIJFJdpibdiuei9vBFTTXXY940fqMV8602AI6i0BGolqtcATJ
+         XFOER0zd+l2Sy1d2q6QT/15ng4rUyriSqTUY6FBlaw8Ro9MmgIOQokyAGu4ekevJ6S
+         aEYlbKVgqJ33I2VU7/wDbQgjYNI5DLGnKHBwiYt3jUVf/7Ycc0tmtuKluKaDqTw2mS
+         4lBmeOhh3lthfsA6NixPCbHEVhkZS8G0MWY4UB+KWx3T6WizV+N2IwCqxAgqj0brAq
+         ajirLF7rVjgSquDk1KxPQYUH3Kk5yqyEUbpM6rtNC+MKBwz9NleiEgBBZLcIk9NzsN
+         yBeLRtvU4841w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id ECB6660A4F;
+        Mon, 30 Aug 2021 22:39:28 +0000 (UTC)
+Subject: Re: [GIT pull] x86/misc for v5.15-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <163031993985.58256.16849318566787748326.tglx@xen13.tec.linutronix.de>
+References: <163031993120.58256.1250660796395121952.tglx@xen13.tec.linutronix.de> <163031993985.58256.16849318566787748326.tglx@xen13.tec.linutronix.de>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <163031993985.58256.16849318566787748326.tglx@xen13.tec.linutronix.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-misc-2021-08-30
+X-PR-Tracked-Commit-Id: a729691b541f6e63043beae72e635635abe5dc09
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: bed91667415be768be4e5d7691011f2b5e16d796
+Message-Id: <163036316896.23007.6241597050210847792.pr-tracker-bot@kernel.org>
+Date:   Mon, 30 Aug 2021 22:39:28 +0000
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 01:16:41PM -0700, Kees Cook wrote:
-> On Mon, Aug 30, 2021 at 11:44:54AM -0700, Nathan Chancellor wrote:
-> > arch/powerpc/kernel/signal_32.c:780:2: error: array index 3 is past the end of the array (which contains 1 element) [-Werror,-Warray-bounds]
-> >         unsafe_put_sigset_t(&frame->uc.uc_sigmask, oldset, failed);
-> >         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Or is this a Clang DCE failure?
-> 
-> #define unsafe_put_compat_sigset(compat, set, label) do {               \
->         compat_sigset_t __user *__c = compat;                           \
->         const sigset_t *__s = set;                                      \
->                                                                         \
->         switch (_NSIG_WORDS) {                                          \
->         case 4:                                                         \
->                 unsafe_put_user(__s->sig[3] >> 32, &__c->sig[7], label);        \
->                 unsafe_put_user(__s->sig[3], &__c->sig[6], label);      \
->                 fallthrough;                                            \
->         case 3:                                                         \
->                 unsafe_put_user(__s->sig[2] >> 32, &__c->sig[5], label);        \
->                 unsafe_put_user(__s->sig[2], &__c->sig[4], label);      \
->                 fallthrough;                                            \
->         case 2:                                                         \
->                 unsafe_put_user(__s->sig[1] >> 32, &__c->sig[3], label);        \
->                 unsafe_put_user(__s->sig[1], &__c->sig[2], label);      \
->                 fallthrough;                                            \
->         case 1:                                                         \
->                 unsafe_put_user(__s->sig[0] >> 32, &__c->sig[1], label);        \
->                 unsafe_put_user(__s->sig[0], &__c->sig[0], label);      \
->         }                                                               \
-> } while (0)
-> 
-> if "set" has only 1 element, then _NSIG_WORDS must be 1. The warnings
-> are coming from cases 4 and 3. (But why not 2, which would also access
-> beyond the end?)
+The pull request you sent on Mon, 30 Aug 2021 12:44:50 +0200 (CEST):
 
-I trimmed the warnings down otherwise it would have been 400 lines long
-:) it did warn for the 2 case.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-misc-2021-08-30
 
-Clang does not like the use of asm goto in unsafe_put_user on powerpc it
-seems:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/bed91667415be768be4e5d7691011f2b5e16d796
 
-$ cat warray-bounds.c
-#define NSIG_WORDS      1
+Thank you!
 
-typedef struct {
-        unsigned long sig[NSIG_WORDS];
-} sigset_t;
-
-int handle_rt_signal32_bad(sigset_t *);
-int handle_rt_signal32_bad(sigset_t *oldset)
-{
-	switch (NSIG_WORDS) {
-	case 4:
-			__asm__ goto("" : : "r"(oldset->sig[3] >> 32) : : failed);
-			__asm__ goto("" : : "r"(oldset->sig[3]) : : failed);
-			__attribute__((fallthrough));
-	case 3:
-			__asm__ goto("" : : "r"(oldset->sig[2] >> 32) : : failed);
-			__asm__ goto("" : : "r"(oldset->sig[2]) : : failed);
-			__attribute__((fallthrough));
-	case 2:
-			__asm__ goto("" : : "r"(oldset->sig[1] >> 32) : : failed);
-			__asm__ goto("" : : "r"(oldset->sig[1]) : : failed);
-			__attribute__((fallthrough));
-	case 1:
-			__asm__ goto("" : : "r"(oldset->sig[0] >> 32) : : failed);
-			__asm__ goto("" : : "r"(oldset->sig[0]) : : failed);
-	}
-
-	return 0;
-failed:
-	return 1;
-}
-
-void normal_array_access(unsigned long);
-int handle_rt_signal32_good(sigset_t *);
-int handle_rt_signal32_good(sigset_t *oldset)
-{
-	switch (NSIG_WORDS) {
-	case 4:
-			normal_array_access(oldset->sig[3] >> 32);
-			normal_array_access(oldset->sig[3]);
-			__attribute__((fallthrough));
-	case 3:
-			normal_array_access(oldset->sig[2] >> 32);
-			normal_array_access(oldset->sig[2]);
-			__attribute__((fallthrough));
-	case 2:
-			normal_array_access(oldset->sig[1] >> 32);
-			normal_array_access(oldset->sig[1]);
-			__attribute__((fallthrough));
-	case 1:
-			normal_array_access(oldset->sig[0] >> 32);
-			normal_array_access(oldset->sig[0]);
-	}
-
-	return 0;
-}
-
-$ clang -fsyntax-only -Weverything warray-bounds.c
-warray-bounds.c:12:27: warning: array index 3 is past the end of the array (which contains 1 element) [-Warray-bounds]
-                __asm__ goto("" : : "r"(oldset->sig[3] >> 32) : : failed);
-                                        ^           ~
-warray-bounds.c:4:2: note: array 'sig' declared here
-        unsigned long sig[NSIG_WORDS];
-        ^
-warray-bounds.c:16:27: warning: array index 2 is past the end of the array (which contains 1 element) [-Warray-bounds]
-                __asm__ goto("" : : "r"(oldset->sig[2] >> 32) : : failed);
-                                        ^           ~
-warray-bounds.c:4:2: note: array 'sig' declared here
-        unsigned long sig[NSIG_WORDS];
-        ^
-warray-bounds.c:20:27: warning: array index 1 is past the end of the array (which contains 1 element) [-Warray-bounds]
-                __asm__ goto("" : : "r"(oldset->sig[1] >> 32) : : failed);
-                                        ^           ~
-warray-bounds.c:4:2: note: array 'sig' declared here
-        unsigned long sig[NSIG_WORDS];
-        ^
-3 warnings generated.
-
-$ gcc -fsyntax-only -Wall -Wextra -Wpedantic warray-bounds.c
-
-godbolt link: https://godbolt.org/z/8xYojs1WY
-
-I've reported this on LLVM's bug tracker to see what the clang
-developers can do with you on CC:
-
-https://bugs.llvm.org/show_bug.cgi?id=51682
-
-Cheers,
-Nathan
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
