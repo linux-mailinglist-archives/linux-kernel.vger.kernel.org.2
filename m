@@ -2,176 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1679F3FBC4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B463FBC51
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238634AbhH3SZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:25:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47840 "EHLO
+        id S238515AbhH3SZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238508AbhH3SZR (ORCPT
+        with ESMTP id S238538AbhH3SZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:25:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F17FC0617A8;
-        Mon, 30 Aug 2021 11:24:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qFsHsk6AyJLgCY4KMOK4CQBK1/TyhhbrC84aarSuCoM=; b=K0CGUsgB6cXBq/GMuqmkJ7OFlm
-        2eP4ou1xcM9VX8gkbGOPDinAmPcwPQhVxyA+VUovkLmzwvbt3xUe5OrRMFqtD2Coi0hlUvq2MC4PT
-        hJU5mUw20jETjrc7oNf59TetDuJCHFtqlEVwpEMLWN+PcWlC1OcqDdUOsRxjzwrWBrLkAEqa04GeE
-        xM6MdeFVLkdONh+310fVcN1QHghYq9V9PIw4Hfai4wIRyivwBjZUQNPARFeWmk8jfIgYem1LpyT7o
-        CRzIP3PybQe5yeb6SxwxXPb8t2sFAu6epo9esDaZR5cx1A3P4MoXmUvTj3zfH26u0NZWkj8l3mV/c
-        cghSiFIA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKlvN-000Pkf-DY; Mon, 30 Aug 2021 18:22:36 +0000
-Date:   Mon, 30 Aug 2021 19:22:25 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YS0h4cFhwYoW3MBI@casper.infradead.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YSQSkSOWtJCE4g8p@cmpxchg.org>
- <YSQeFPTMn5WpwyAa@casper.infradead.org>
- <YSU7WCYAY+ZRy+Ke@cmpxchg.org>
- <YSVMAS2pQVq+xma7@casper.infradead.org>
- <YSZeKfHxOkEAri1q@cmpxchg.org>
- <20210826004555.GF12597@magnolia>
- <YSjxlNl9jeEX2Yff@cmpxchg.org>
- <YSkyjcX9Ih816mB9@casper.infradead.org>
- <YS0WR38gCSrd6r41@cmpxchg.org>
+        Mon, 30 Aug 2021 14:25:45 -0400
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4941EC061575;
+        Mon, 30 Aug 2021 11:24:50 -0700 (PDT)
+Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 0DEA13E7B2;
+        Mon, 30 Aug 2021 20:24:48 +0200 (CEST)
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     phone-devel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Subject: [PATCH v2 0/2] Use "ref" clocks from firmware for DSI PLL VCO parent
+Date:   Mon, 30 Aug 2021 20:24:43 +0200
+Message-Id: <20210830182445.167527-1-marijn.suijten@somainline.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YS0WR38gCSrd6r41@cmpxchg.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 01:32:55PM -0400, Johannes Weiner wrote:
-> A lot of DC hosts nowadays are in a direct pipeline for handling user
-> requests, which are highly parallelizable.
-> 
-> They are much smaller, and there are a lot more of them than there are
-> VMs in the world. The per-request and per-host margins are thinner,
-> and the compute-to-memory ratio is more finely calibrated than when
-> you're renting out large VMs that don't neatly divide up the machine.
-> 
-> Right now, we're averaging ~1G of RAM per CPU thread for most of our
-> hosts. You don't need a very large system - certainly not in the TB
-> ballpark - where struct page takes up the memory budget of entire CPU
-> threads. So now we have to spec memory for it, and spend additional
-> capex and watts, or we'll end up leaving those CPU threads stranded.
+All DSI PHY/PLL drivers were referencing their VCO parent clock by a
+global name, most of which don't exist or have been renamed.  These
+clock drivers seem to function fine without that except the 14nm driver
+for the sdm6xx [1].
 
-So you're noticing at the level of a 64 thread machine (something like
-a dual-socket Xeon Gold 5318H, which would have 2x18x2 = 72 threads).
-Things certainly have changed, then.
+At the same time all DTs provide a "ref" clock as per the requirements
+of dsi-phy-common.yaml, but the clock is never used.  This patchset puts
+that clock to use without relying on a global clock name, so that all
+dependencies are explicitly defined in DT (the firmware) in the end.
 
-> > The mistake you're making is coupling "minimum mapping granularity" with
-> > "minimum allocation granularity".  We can happily build a system which
-> > only allocates memory on 2MB boundaries and yet lets you map that memory
-> > to userspace in 4kB granules.
-> 
-> Yeah, but I want to do it without allocating 4k granule descriptors
-> statically at boot time for the entirety of available memory.
+[1]: https://lore.kernel.org/linux-arm-msm/386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org/
 
-Even that is possible when bumping the PAGE_SIZE to 16kB.  It needs a
-bit of fiddling:
+Changes since v1:
+  - Dropped "arm: dts: qcom: apq8064: Use 27MHz PXO clock as DSI PLL
+    reference" which has made its way into 5.15-fixes in advance of this
+    patchset landing in 5.16.
+  - Added Fixes: tags for commits that added missing "ref" clocks to DT
+    while this firmware clock was never used (until this patchset).
+  - Documented missing/wrong and later-added clocks (by aforementioned
+    patches) in patch 1/2 more clearly.
 
-static int insert_page_into_pte_locked(struct mm_struct *mm, pte_t *pte,
-                        unsigned long addr, struct page *page, pgprot_t prot)
-{
-        if (!pte_none(*pte))
-                return -EBUSY;
-        /* Ok, finally just insert the thing.. */
-        get_page(page);
-        inc_mm_counter_fast(mm, mm_counter_file(page));
-        page_add_file_rmap(page, false);
-        set_pte_at(mm, addr, pte, mk_pte(page, prot));
-        return 0;
-}
+Dmitry:
+  I have not added the .name="xo" fallback to the 28nm-hpm driver for
+  the missing "ref" clock in msm8974 yet.  This patch is supposed to
+  make it in for 5.16 while the missing clock should be added in 5.15,
+  is that enough time?
+  If not I'll gladly respin a v3 with that fallback, but I hope everyone
+  can update their DT firmware before that time.  Likewise Bjorn
+  acknowledged that there is enough time for the same to happen on
+  apq8064.
 
-mk_pte() assumes that a struct page refers to a single pte.  If we
-revamped it to take (page, offset, prot), it could construct the
-appropriate pte for the offset within that page.
+Marijn Suijten (2):
+  drm/msm/dsi: Use "ref" fw clock instead of global name for VCO parent
+  clk: qcom: gcc-sdm660: Remove transient global "xo" clock
 
----
+ drivers/clk/qcom/gcc-sdm660.c                   | 14 --------------
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c      |  4 +++-
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c      |  4 +++-
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm.c      |  4 +++-
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm_8960.c |  4 +++-
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c       |  4 +++-
+ 6 files changed, 15 insertions(+), 19 deletions(-)
 
-Independent of _that_, the biggest problem we face (I think) in getting
-rid of memmap is that it offers the pfn_to_page() lookup.  If we move to a
-dynamically allocated descriptor for our arbitrarily-sized memory objects,
-we need a tree to store them in.  Given the trees we currently have,
-our best bet is probably the radix tree, but I dislike its glass jaws.
-I'm hoping that (again) the maple tree becomes stable soon enough for
-us to dynamically allocate memory descriptors and store them in it.
-And that we don't discover a bootstrapping problem between kmalloc()
-(for tree nodes) and memmap (to look up the page associated with a node).
-
-But that's all a future problem and if we can't even take a first step
-to decouple filesystems from struct page then working towards that would
-be wasted effort.
-
-> > > Willy says he has future ideas to make compound pages scale. But we
-> > > have years of history saying this is incredibly hard to achieve - and
-> > > it certainly wasn't for a lack of constant trying.
-> > 
-> > I genuinely don't understand.  We have five primary users of memory
-> > in Linux (once we're in a steady state after boot):
-> > 
-> >  - Anonymous memory
-> >  - File-backed memory
-> >  - Slab
-> >  - Network buffers
-> >  - Page tables
-> > 
-> > The relative importance of each one very much depends on your workload.
-> > Slab already uses medium order pages and can be made to use larger.
-> > Folios should give us large allocations of file-backed memory and
-> > eventually anonymous memory.  Network buffers seem to be headed towards
-> > larger allocations too.  Page tables will need some more thought, but
-> > once we're no longer interleaving file cache pages, anon pages and
-> > page tables, they become less of a problem to deal with.
-> > 
-> > Once everybody's allocating order-4 pages, order-4 pages become easy
-> > to allocate.  When everybody's allocating order-0 pages, order-4 pages
-> > require the right 16 pages to come available, and that's really freaking
-> > hard.
-> 
-> Well yes, once (and iff) everybody is doing that. But for the
-> foreseeable future we're expecting to stay in a world where the
-> *majority* of memory is in larger chunks, while we continue to see 4k
-> cache entries, anon pages, and corresponding ptes, yes?
-
-No.  4k page table entries are demanded by the architecture, and there's
-little we can do about that.  We can allocate them in larger chunks, but
-let's not solve that problem in this email.  I can see a world where
-anon memory is managed (by default, opportunistically) in larger
-chunks within a year.  Maybe six months if somebody really works hard
-on it.
-
-> Memory is dominated by larger allocations from the main workloads, but
-> we'll continue to have a base system that does logging, package
-> upgrades, IPC stuff, has small config files, small libraries, small
-> executables. It'll be a while until we can raise the floor on those
-> much smaller allocations - if ever.
-> 
-> So we need a system to manage them living side by side.
-> 
-> The slab allocator has proven to be an excellent solution to this
-> problem, because the mailing lists are not flooded with OOM reports
-> where smaller allocations fragmented the 4k page space. And even large
-> temporary slab explosions (inodes, dentries etc.) are usually pushed
-> back with fairly reasonable CPU overhead.
-
-You may not see the bug reports, but they exist.  Right now, we have
-a service that is echoing 2 to drop_caches every hour on systems which
-are lightly loaded, otherwise the dcache swamps the entire machine and
-takes hours or days to come back under control.
+-- 
+2.33.0
 
