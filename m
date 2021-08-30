@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107943FB4C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938A73FB4CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236567AbhH3LsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 07:48:02 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:61387 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236542AbhH3LsB (ORCPT
+        id S236548AbhH3LuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 07:50:07 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:46912 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236434AbhH3LuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 07:48:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630324028; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=0NlgGf+fVQWSUZ9a8fP0CoOEMHCCeZNsni95+pq81Xc=; b=kLxSZBmuGxKffHGKzh5tQNzEj6uYRYnSSQW+18n7bu+fcoRr8wtH75Sb4l/aN5bPNcrn+QSw
- wZ5r/hARxIi28eZ8xjbxbyo8KO7OBXnKCmf2mlrLpy5Sf8CUMceBWwE42Q+apRImAaBaXwUf
- jENsD997uOUCx7wQH5ORl9iNPTo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 612cc534f61b2f864bff92dd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Aug 2021 11:47:00
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 723D9C4361A; Mon, 30 Aug 2021 11:46:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.3] (unknown [122.163.204.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C179C43616;
-        Mon, 30 Aug 2021 11:46:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 4C179C43616
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH V5 2/2] soc: qcom: aoss: Add debugfs entry
-To:     Stephen Boyd <swboyd@chromium.org>, bjorn.andersson@linaro.org,
-        clew@codeaurora.org, sibis@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
-References: <1628161974-7182-1-git-send-email-deesin@codeaurora.org>
- <1628161974-7182-3-git-send-email-deesin@codeaurora.org>
- <CAE-0n50CM=DpXx7fzrcnWox+ZSfqvWuEb-R_rTP8ghR+bd54eA@mail.gmail.com>
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-Message-ID: <ff8ede00-008e-4dfb-7a39-19242d421462@codeaurora.org>
-Date:   Mon, 30 Aug 2021 17:16:53 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <CAE-0n50CM=DpXx7fzrcnWox+ZSfqvWuEb-R_rTP8ghR+bd54eA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        Mon, 30 Aug 2021 07:50:06 -0400
+Received: by mail-ot1-f49.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso17941354ott.13;
+        Mon, 30 Aug 2021 04:49:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=JabMds8rlTqzaFVY57dtROBNgjZw2GgQgB2Qb6t5/ns=;
+        b=kF9BVL9s/e9VDzZp289mr3JZoQ7aGF9o/1rdXYG0siGPoos64C0qg5+t8xeRlheWmI
+         +rFUhglQvlBm6T+Hf3uF8RyVYJiB7FYQ5N8iX1Auhr4+fU7OAou/mWRPBw+HXd7nfji/
+         6him0dquhJ7VvYMz0xaoD7tEFOWInihEn7qfv6J5EXjV11D0q/3DqLbhqiSU1iNmIyJa
+         qKo3tBC6Eb50UYhLpEs8YFg3t7msXCsHNjTrLsbRlJpMck1p2CN+mGUhGjWAjoXxSolI
+         qgEFm1VlFSzrag23InEqAb4f+a3Nw0M1ZeCHPuXyfdfq6MCwn7knfaTJoQdx13xEaCQn
+         GPyA==
+X-Gm-Message-State: AOAM530yn54qSX9j5VPre1VxlD2gvis02ndzMibm+mhFmnCdPEZWOSyu
+        89od/7YMCHpsmYX9mNl69w==
+X-Google-Smtp-Source: ABdhPJxCLJ/yib0AOP+DL1a/lRsjMNJ6RDrdZQNNBtWLnSUpCjSeNRI4mOsfXmR11mHZddEmz9UYUA==
+X-Received: by 2002:a9d:5a6:: with SMTP id 35mr18050354otd.256.1630324152528;
+        Mon, 30 Aug 2021 04:49:12 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id q31sm3129438otv.57.2021.08.30.04.49.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 04:49:12 -0700 (PDT)
+Received: (nullmailer pid 1731752 invoked by uid 1000);
+        Mon, 30 Aug 2021 11:49:10 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     devicetree@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        jamipkettunen@somainline.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Taniya Das <tdas@codeaurora.org>, linux-kernel@vger.kernel.org,
+        angelogioacchino.delregno@somainline.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Andy Gross <agross@kernel.org>, martin.botka@somainline.org,
+        marijn.suijten@somainline.org
+In-Reply-To: <20210829193617.4105-1-konrad.dybcio@somainline.org>
+References: <20210829193617.4105-1-konrad.dybcio@somainline.org>
+Subject: Re: [PATCH RESEND v2 1/9] dt-bindings: clk: qcom: Add bindings for MSM8994 GCC driver
+Date:   Mon, 30 Aug 2021 06:49:10 -0500
+Message-Id: <1630324150.916431.1731751.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 29 Aug 2021 21:36:08 +0200, Konrad Dybcio wrote:
+> Add documentation for the MSM8994 GCC driver.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
+> No changes since the original v2, only added Rob's A-b
+> 
+>  .../bindings/clock/qcom,gcc-msm8994.yaml      | 72 +++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
+> 
 
-On 8/5/2021 11:58 PM, Stephen Boyd wrote:
-> Quoting Deepak Kumar Singh (2021-08-05 04:12:54)
->> It can be useful to control the different power states of various
->> parts of hardware for device testing. Add a debugfs node for qmp so
->> messages can be sent to aoss for debugging and testing purposes.
-> Is it ever useful after device testing? I'd prefer we not apply this
-> patch as it looks like testing code that won't ever be used after
-> developing this driver.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-This is not only for testing. Some user space clients can also use this 
-to send messages to aoss.
+yamllint warnings/errors:
 
-One such example is setting higher ddr frequency during boot and 
-reducing it post boot from user space.
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.example.dt.yaml: clock-controller@300000: 'clock-names', 'clocks' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1522007
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
