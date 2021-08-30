@@ -2,88 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB42D3FBA0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B353FBA0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237661AbhH3QY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:24:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:44160 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232785AbhH3QYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:24:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 480F91FB;
-        Mon, 30 Aug 2021 09:23:29 -0700 (PDT)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 46A0E3F766;
-        Mon, 30 Aug 2021 09:23:28 -0700 (PDT)
-Subject: Re: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
-To:     nicolas saenz julienne <nsaenz@kernel.org>,
-        linux-pci@vger.kernel.org
-Cc:     lorenzo.pieralisi@arm.com, bhelgaas@google.com, rjw@rjwysocki.net,
-        lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210826071557.29239-1-jeremy.linton@arm.com>
- <20210826071557.29239-3-jeremy.linton@arm.com>
- <44ad79081412af289c68e74cdecb6a2baa2e873c.camel@kernel.org>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <5c39cf29-a08f-48d1-b873-ce0fda763d66@arm.com>
-Date:   Mon, 30 Aug 2021 11:23:27 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S237684AbhH3QZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235499AbhH3QZp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 12:25:45 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41207C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:24:51 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id u14so32251361ejf.13
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:24:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=iyG7Drn5ZN2S6Vg9wzcCuLj02HK4oqRu4fPdzya+1o4=;
+        b=KX65V9IFDpEg2PVw5qrTX7HK5oCfX8C2mC6GoD0RbT350TAmFXLSRQCuiQnh+EcyRL
+         aB8EF0t3QeU6n7PMhhu01mJ8tYRJEgObD2dtPXb5vcSAcy3LllP10tq+yyVqBjp04aEC
+         Xzz0nZVT0OiakBOlE1zUhVvcpJKX7hXPil5gDWomU8azuCq1Ad1RqbJY0lYiHw6VuS1v
+         JJ8CvvSQL+qdQiVlzXkF/HJCrsfbeVl9Zp52aDyhQ5LWB55OpcQJVmJIbECLRA760W1f
+         giKsfNbVsaLhQQPH30qZYlD+blgxiY7DwRIFq8nCXBtZ6VKM3VbZz9YTQ7xX9CaaVDLe
+         vlcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=iyG7Drn5ZN2S6Vg9wzcCuLj02HK4oqRu4fPdzya+1o4=;
+        b=dB3ISD1bIquXUMAKeKa+dL/FfSFQhKTDuTB3IXPhTV83/p+kIrp25ZDZSyMP9Mm8nq
+         Uw99OhkN3Hd7oolS5WHhvRaFKOZaWtcFuoc3wmpCtxg7avrFztOIdQJr92MaLrXoRAZR
+         2QAN9VBsUa6x/AfmQ1oQqH/Z87AAVRyTE140puKpMpdzFpx5QU7oWX/fXa7PqwiDP3xc
+         2KHnpVr+hrNGSx8DkmBxCW+FKtAyA+olNAgLIGiG8fje1JFq7rxDsYi0ZZEwiUmiGGL2
+         yPAAw19ZFHuRVIGjLSsbPWcFFC3fBqQBDLiGtuIXJASrEel4hlqy73VVUBXWSam57dLS
+         1w4w==
+X-Gm-Message-State: AOAM531te/9jlFoqjx/UUXhXR6uwYAtZ/FOUBP6E0Y+IX6yfZIavuzwi
+        I+rFtpkjmOtNF01m16WFVLF/oT/NTxXWeUM+O1Q=
+X-Google-Smtp-Source: ABdhPJwNsuCEYm9uUhr+kqm32vXvHG+/p1XmEhxaKRypTGfcBFSx+nij+blydlw3cQoDa3bfcHAQTWDcS+MSuPEzGt0=
+X-Received: by 2002:a17:906:36d6:: with SMTP id b22mr26220504ejc.387.1630340689865;
+ Mon, 30 Aug 2021 09:24:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <44ad79081412af289c68e74cdecb6a2baa2e873c.camel@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6402:291d:0:0:0:0 with HTTP; Mon, 30 Aug 2021 09:24:49
+ -0700 (PDT)
+Reply-To: auel6605@gmail.com
+From:   Auel Zahra <amalisabelle9@gmail.com>
+Date:   Mon, 30 Aug 2021 16:24:49 +0000
+Message-ID: <CAOdXdQoLymobVhfQ=N_N9qWjzO01gezaaYUOxrH_8Qy+9LJoHg@mail.gmail.com>
+Subject: Good day friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/30/21 3:36 AM, nicolas saenz julienne wrote:
-> Hi Jeremy,
-> sorry for the late reply, I've been on vacation.
-> 
-> On Thu, 2021-08-26 at 02:15 -0500, Jeremy Linton wrote:
-> 
-> [...]
-> 
->> +static void __iomem *brcm_pcie_map_conf2(struct pci_bus *bus,
->> +					unsigned int devfn, int where)
->> +{
->> +	struct pci_config_window *cfg = bus->sysdata;
->> +	void __iomem *base = cfg->win;
->> +	int idx;
->> +	u32 up;
->> +
->> +	/* Accesses to the RC go right to the RC registers if slot==0 */
->> +	if (pci_is_root_bus(bus))
->> +		return PCI_SLOT(devfn) ? NULL : base + where;
->> +
->> +	/*
->> +	 * Assure the link is up before sending requests downstream. This is done
->> +	 * to avoid sending transactions to EPs that don't exist. Link flap
->> +	 * conditions/etc make this race more probable. The resulting unrecoverable
->> +	 * SERRORs will result in the machine crashing.
->> +	 */
->> +	up = readl(base + PCIE_MISC_PCIE_STATUS);
->> +	if (!(up & PCIE_MISC_PCIE_STATUS_PCIE_DL_ACTIVE_MASK))
->> +		return NULL;
->> +
->> +	if (!(up & PCIE_MISC_PCIE_STATUS_PCIE_PHYLINKUP_MASK))
->> +		return NULL;
-> 
-> Couldn't this be integrated in the original brcm_pcie_map_conf()? IIUC there is
-> nothing ACPI specific about it. It'd also make for less code duplication.
-
-That is where I started with this, but it wasn't the linkup check/etc 
-which caused me to hoist it but the fact that if ACPI quirks are enabled 
-they end up statically built into the kernel. While if this host bridge 
-is enabled, it can end up being a module, and the resulting mess I 
-created trying to satisfy the CONFIG variations. I'm not much of a fan 
-of copy/paste programming, but that IMHO ended up being the cleanest here.
-
+-- 
+ Greetings my friend,
+My name is: Miss Auel Zahra.
+I'm contacting you because I want to be your friend and confide in you.
+I have in my possession now 227 KG of Gold Bars, Quality: 23 carat, 95%pure
+that I inherited from my late mother. I want you to buy or help me to find
+a buyer who can buy the gold at good price more than African price so you
+can help me to invest the money in your country
+since I had no business idea.
+I want to leave Cote d'Ivoire and relocate to your country to continue my
+education in your country. I Want you to stand by me as my tutor to sell
+this gold and for investment in your country.I will be waiting for your
+response.
+Miss Auel Zahra
