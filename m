@@ -2,110 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DAD3FAF91
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 03:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B3D3FAF96
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 03:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236255AbhH3B3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 21:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
+        id S236067AbhH3Bmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 21:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236168AbhH3B3M (ORCPT
+        with ESMTP id S230152AbhH3Bmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 21:29:12 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED95C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 18:28:19 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id ot2-20020a17090b3b4200b0019127f8ed87so11099613pjb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 18:28:19 -0700 (PDT)
+        Sun, 29 Aug 2021 21:42:32 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6168EC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 18:41:39 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id c19so10477673qte.7
+        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 18:41:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X3SrLsuCe4juyzGE4LqoUUFGT9pNx1rNm2mTU/3y9og=;
-        b=aKR25DYdFm6Sp8Z3gewF3tCnA3+j7tvKqkNfrDZe6Cg/w4/rhlgujAZLRWgNwbZF8e
-         zLk+SP7KEOsLVdJVqcylGueMfw3pCr9+weJ6ZtiaUwcd6r6q5aWitq/X6IRddGaMXVcw
-         NjdXM+WZxTi8Ox81gFk0cY70M9RJGbQO9cSx71M5qVmOpToGEqFSAZOveiZF+VundMES
-         kjX9qit9IuGB0W6DOGJxosGFjAYZBrBt5FNIPoG16MDkRryYyd+tgofronVJpYAQN4oc
-         QKgg9dzCnEnsCevxBZLJ3xDQobsUBXo2E9LZxs9ldMZiX9d4go3MPWytwDz+zR5EFpDu
-         MO5A==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pFdqIIBcp4naoKXGSG7TY4qC/e9lQpz509K+tkZVCTQ=;
+        b=Iuxg0igurz4XQ/ons9/177yA8AHMROiA8gZgXxYCwrwZql9SP9O2R1GlZfkuYxL/Lp
+         /4IryCO6BYiVW3NodXiSwGht+2S1OSHKRsdJQoo27t7YNuW9K3r+sNiiWsiEU7IgHCnc
+         M0dQwbgM773pmdOqTD8E7BuOxRQE2+vlThtsg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X3SrLsuCe4juyzGE4LqoUUFGT9pNx1rNm2mTU/3y9og=;
-        b=cgoojEQeq9WrnPVSWiRPwsqrmyzuRGkYhFl2n+F9wOopnHNifkNEh9MBFvidvaSfP+
-         AmORF0mjNXiZizCaW/ArXeNgvSspYcDRBnaixh+ZA+GskETCkv8tR9PZvuO4V4jNv92h
-         vhSrJTytVcg7uQiRqNxF4LeNdCcXwmPieUsXZkifiHVkvdSH4rRZmbuqOabzaE5w2Xkx
-         BvU4oRuTZiowYxhFoOWvXzyvuJEDjDyhslPvSRc4VnDw4dhm2rTfidyrwTNWdfEtQGBb
-         TB4hdQPirQM+PODMbhzc01BRAPTYPYxqkIVuufEpbvDoEPtifX1mZhex8DeQwjsiXcw7
-         QvjA==
-X-Gm-Message-State: AOAM530Qo9T2+WUlq9FV/z6Bt/iLcw/VAQFKJySF8hZ0Tv4aJJKyVxYv
-        96YCHVaMafhUnVq2wFmNJJDyBjJxCS0=
-X-Google-Smtp-Source: ABdhPJx3zQCY3/Nuk5XcDNwNmQlvbKMVdbrKD+be3wlQzQ7ph4BZhy5e7a0Nzglb2q9Gyzk1QKdjDA==
-X-Received: by 2002:a17:902:d504:b029:12d:4cb3:397e with SMTP id b4-20020a170902d504b029012d4cb3397emr19893430plg.41.1630286899143;
-        Sun, 29 Aug 2021 18:28:19 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id g12sm12615322pjh.33.2021.08.29.18.28.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 18:28:18 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: xu.xin16@zte.com.cn
-To:     phil@philpotter.co.uk
-Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
-        martin@kaiser.cx, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, xu xin <xu.xin16@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] staging: r8118eu: remove useless parts of judgements from os_dep/ioctl_linux.
-Date:   Sun, 29 Aug 2021 18:28:11 -0700
-Message-Id: <20210830012811.3384-1-xu.xin16@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pFdqIIBcp4naoKXGSG7TY4qC/e9lQpz509K+tkZVCTQ=;
+        b=PJmZkW5SxtXMem3aRyypUPF/VCe5TJLMOTVjquxrlsBCgpAEXnMbjACMxnAAzJ4Ker
+         C1T+SdDeWbjH5P0Dm9shJc5/+FDluOHITiwIbmhGpLQen6PdWcBDQ31f3FNcJBTZiHZi
+         CqPD/zqK0c6o3JFPn0RlTlugrnq/1pOZ38Ex+wwK0Jr5h7Nt9awgUONesRfC6xvAfHeq
+         lWP5Bnm4rCy1HGm2SN9Nw2VthZOv1V6mw622kAUnRgEq/pAjh64k9hNMRR8ZIShTNy3p
+         K7sSoHzQV54XCpQmK8KLPFXWxph/uhh0INI8PCnh2AQaDsptDxD5bxXNwqTafSUxoffg
+         2c7Q==
+X-Gm-Message-State: AOAM533poknnnebTE2fwe1ygnuu/BT39rn63t/dZciq5GFu9a2VAr6S8
+        Gt9hSD60Qxaj9uIKPtuqhtAPX3Q9srhMWRiDA5FR6bhmzM0=
+X-Google-Smtp-Source: ABdhPJzGkATn1TLTxqpx8oNd1PjxixtxPXmIUDnlBRK47I0ec/USZNVKXUgEbwElDD15QtQMFEclWaj0lDifFYPMuCM=
+X-Received: by 2002:ac8:7245:: with SMTP id l5mr18824297qtp.206.1630287698346;
+ Sun, 29 Aug 2021 18:41:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210826132946.3324593-1-joel@jms.id.au> <YSwjlzegL+cKt1hg@antec>
+In-Reply-To: <YSwjlzegL+cKt1hg@antec>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Mon, 30 Aug 2021 01:41:26 +0000
+Message-ID: <CACPK8XdzpSpz_iswn7ojE1TbXpYFqG2orALSvJP7piq=UC0xDg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] openrisc/litex: Add liteeth support
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     openrisc@lists.librecores.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: xu xin <xu.xin16@zte.com.cn>
+On Mon, 30 Aug 2021 at 00:17, Stafford Horne <shorne@gmail.com> wrote:
+>
+> On Thu, Aug 26, 2021 at 10:59:43PM +0930, Joel Stanley wrote:
+> > Hello Stafford,
+> >
+> > Here are some changes so that the openrisc kernel can boot with ethernet
+> > support with the in-tree device tree.
+> >
+> > I have also updated the address of the serial device to match recent
+> > litex. I realise this may keep changing, but it does make it easier to
+> > test upstream kernels if the basics work.
+> >
+> > Joel Stanley (3):
+> >   openrisc/litex: Update uart address
+> >   openrisc/litex: Add ethernet device
+> >   openrisc/litex: Update defconfig
+> >
+> >  arch/openrisc/boot/dts/or1klitex.dts      | 13 ++++++++++--
+> >  arch/openrisc/configs/or1klitex_defconfig | 26 ++++++++++++++---------
+> >  2 files changed, 27 insertions(+), 12 deletions(-)
+>
+> Hi,
+>
+> These all look fine to me.  Note, I have just using the autogenerated .dts file
+> created by the litex build, so I don't usually use this one other than for some
+> basic testing.  I know auto generated one has it's quirks but it does work.
+>
+> It's good to have these here though.
 
-Remove the check of the pointer 'pregpriv' that is impossible to be
-NULL. There is no need to check if pregpriv is NULL.
+Agreed.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: xu xin <xu.xin16@zte.com.cn>
-Thansk-to: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/staging/r8188eu/os_dep/ioctl_linux.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+The auto generated ones need a lot of work to be relevant outside of
+the vexriscv CPU (I tried to build for rocket, a different riscv, and
+the script blew up...).
 
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index ab4a9200f079..d2f7a77357f1 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -4340,11 +4340,10 @@ static int rtw_dbg_port(struct net_device *dev,
- 			struct registry_priv	*pregpriv = &padapter->registrypriv;
- 			/*  0: disable, bit(0):enable 2.4g, bit(1):enable 5g, 0x3: enable both 2.4g and 5g */
- 			/* default is set to enable 2.4GHZ for IOT issue with bufflao's AP at 5GHZ */
--			if (pregpriv &&
--			    (extra_arg == 0 ||
--			     extra_arg == 1 ||
--			     extra_arg == 2 ||
--			     extra_arg == 3)) {
-+			if (extra_arg == 0 ||
-+			    extra_arg == 1 ||
-+			    extra_arg == 2 ||
-+			    extra_arg == 3) {
- 				pregpriv->rx_stbc = extra_arg;
- 				DBG_88E("set rx_stbc =%d\n", pregpriv->rx_stbc);
- 			} else {
-@@ -4356,7 +4355,7 @@ static int rtw_dbg_port(struct net_device *dev,
- 		{
- 			struct registry_priv	*pregpriv = &padapter->registrypriv;
- 			/*  0: disable, 0x1:enable (but wifi_spec should be 0), 0x2: force enable (don't care wifi_spec) */
--			if (pregpriv && extra_arg >= 0 && extra_arg < 3) {
-+			if (extra_arg >= 0 && extra_arg < 3) {
- 				pregpriv->ampdu_enable = extra_arg;
- 				DBG_88E("set ampdu_enable =%d\n", pregpriv->ampdu_enable);
- 			} else {
--- 
-2.25.1
+In the future it would be good to have this one support the drivers
+that are merged upstream.
 
+>
+> I will queue these after the ehternet driver is queued.  Are you planning me to
+> queue the ethernet driver?  Or will someone else be taking that in?
+
+I should have mentioned that the driver and bindings were merged
+through the network tree last week. You can see them in Friday's
+linux-next.
+
+Cheers,
+
+Joel
+
+---------- Forwarded message ---------
+From: <patchwork-bot+netdevbpf@kernel.org>
+Date: Thu, 26 Aug 2021 at 11:30
+Subject: Re: [PATCH v4 0/2] net: Add LiteETH network driver
+To: Joel Stanley <joel@jms.id.au>
+Cc: <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
+<kgugala@antmicro.com>, <mholenko@antmicro.com>,
+<devicetree@vger.kernel.org>, <florent@enjoy-digital.fr>,
+<gsomlo@gmail.com>, <netdev@vger.kernel.org>,
+<linux-kernel@vger.kernel.org>
+
+
+Hello:
+
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Thu, 26 Aug 2021 07:51:04 +0930 you wrote:
+> This adds a driver for the LiteX network device, LiteEth.
+>
+> v4 Fixes the bindings and adds r-b tags from Gabriel and Rob.
+>
+> v3 Updates the bindings to describe the slots in a way that makes more
+> sense for the hardware, instead of trying to fit some existing
+> properties. The driver is updated to use these bindings, and fix some
+> issues pointed out by Gabriel.
+>
+> [...]
+
+Here is the summary with links:
+  - [v4,1/2] dt-bindings: net: Add bindings for LiteETH
+    https://git.kernel.org/netdev/net-next/c/b0f8d3077f8f
+  - [v4,2/2] net: Add driver for LiteX's LiteETH network interface
+    https://git.kernel.org/netdev/net-next/c/ee7da21ac4c3
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
+
+
+
+>
+> -Stafford
