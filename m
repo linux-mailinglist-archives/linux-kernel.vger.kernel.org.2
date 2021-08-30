@@ -2,167 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F933FBCBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 21:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B404E3FBCC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 21:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbhH3TEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 15:04:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
+        id S233134AbhH3TGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 15:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbhH3TEq (ORCPT
+        with ESMTP id S230471AbhH3TGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 15:04:46 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A54C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 12:03:52 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id f15so30165112ybg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 12:03:52 -0700 (PDT)
+        Mon, 30 Aug 2021 15:06:02 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31102C061575;
+        Mon, 30 Aug 2021 12:05:08 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id v19so16617615ybv.9;
+        Mon, 30 Aug 2021 12:05:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=z2bxnmb0ihpOea9bKFBJwN2QiE7nKKp/Kf8m8WRCLmQ=;
-        b=CNXv9uQY/btGpuGZCGIeiwDkbadXPvVPJGX8i+eMZ94MOA1GM1y93ZATn5Ei0ThY+i
-         JTjfMEaijan7LRBtEtM5It2Yg9iQ5piQQycZRmmHt+mIfxP8D9saNFiGT+F6FaI2mnN1
-         LnCl45iXefqt9y4KBuDEFRCmohy3sNSy1hsaRqjNAcY3XBhkC/aCTPy7kun43JxxXbUF
-         ZiZhgvGhYNK+g9yIztL2E04zfwdkMgBpMRTBngU0KkgHBmqMJtqvDX4lbzZvz4iLVO3Y
-         Lu1pEj2hQ4LRYAsuo6jGb617+9fd0pcLfd/EWU8aZvpFFKvcMZrYsVkpo5VpUeG5F5gK
-         zKUw==
+        bh=iq88rt+bkBOjHt9lnMugBUtWcA1Pi2Qr+AfgrTf4Tro=;
+        b=mI7Z+EkcDZxptsnn+NdYNNruhnmO+15i71gU88do/cMT9RCxgouuSAxfaXpiwX+Iv7
+         foEkwBDwm4Uu3hdUjSPpSd7aTenZoR7ZtF9eng9ayWEpOmctFWgDWNZPKLMtfZMyZSpD
+         TkbDLgAb8SzdLIBTov7wAmwkYM5TlDr1lubOj1Q6uZ1D6l35ES/jJIY92QjyKTJ5vofT
+         A62k8sMexGEvC9CGq4njL7i1zcl4xzdmo+9uP6q45idVtrxnmA+Kl+xymML2Dmhqm3RV
+         zKmZXNZSkXogQzZnFMIbASzXh47dt7BrM+gqnOW1vZlm+va9IhY/qumhiDL+TKlLcEUJ
+         36Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=z2bxnmb0ihpOea9bKFBJwN2QiE7nKKp/Kf8m8WRCLmQ=;
-        b=B3hgpycsmkIIz9WoSmy/ZG9YgiiNQ29wih0o7ZvXIuyGoKEnojT6sNl7c/KfJG2gNR
-         EqZhmLBkGgOH4uDw5V5Pb28OAVOUIpghPmPZEXpPS9HgkBWuywtsX80ueopsiOxOU9sN
-         kWm8S2zPj8EvMFLfa+rO6mkiI5/sW2EBTUOmd8TR6u+aavTY1cpdrurU9Qb7qNRUg+QF
-         UtIWaZ3SVZF+NBx5duYE8gx4iDRwCWKsqjTbqcJRypM2wQAZMyh6KbEcK2XDkR+z1sl3
-         kTgnvLXdpimvxIvB+IaGtkPcI29e6tbzD6WS/PmZrawTd44cDwEvSaCFI9hbGFjwnPw2
-         F+bw==
-X-Gm-Message-State: AOAM532YqNHmPjliEAArsmiDTE8Ouha0imiwmaoBX/ZOl0DcJNaGw3kx
-        hpOZP+uLGpPtjkbx8mma5UGM8qsuS5aCR+cGVquHxw==
-X-Google-Smtp-Source: ABdhPJz9aD6FzTGpzWANYNoSRWYbWlVX4WNltzALVRrIK1we8xo3YfH38PlE1sT1b+6yUjbcDmqzWkoGLExhUMGBhIE=
-X-Received: by 2002:a25:804:: with SMTP id 4mr24050887ybi.346.1630350231696;
- Mon, 30 Aug 2021 12:03:51 -0700 (PDT)
+        bh=iq88rt+bkBOjHt9lnMugBUtWcA1Pi2Qr+AfgrTf4Tro=;
+        b=gACMPsKtF4Sirvugc+IPuA4rAc8+2ePOYVW5eOukJ/Q2x6xK9R6AfVfZ4xsecMTxIX
+         r5iYs6lEuMtD1YvHzakdB5fdULRxt5Zlt2RVsetiCvWGp+TPaigdyShKFZ6s6aaJHnaz
+         m2vXtWdc9lBFqptDeaXzRSOARWS18dFM+uyWjLvaxYf60h4Jv6zHq3zvid06pMG510vz
+         f1tRhGmYjFoaDcPUfa4Qj5yoyvZSJFyItleSq/uafH+hBSPWSdW8WgUqQ9x+rTIcPXja
+         YWW8iahhj2xTgvm4SEkUegoSk3ZJhVRG3t/xvfPZ9Gbccuov6l8p6LXrUfg2VcxtXSdx
+         qfXw==
+X-Gm-Message-State: AOAM530nHOEsWN/WYhPT+JO+EJ1IPhyOeIcSKTo1QD78p7WMnaexWA6c
+        UAwO9Yuob5DV0EiZpR9Wlo7ISM4K5HyVV5DyuKIfDCh/f4M=
+X-Google-Smtp-Source: ABdhPJxMZEuIbVQ7KIIzLj0InJxIVVLpvXZyMG41cAigOqrmaFBgqH5biJ/zyZIOrh+xdguT51vlqy/bi6YqU3foX7Y=
+X-Received: by 2002:a25:5e8a:: with SMTP id s132mr25477533ybb.510.1630350307295;
+ Mon, 30 Aug 2021 12:05:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <YSeTdb6DbHbBYabN@lunn.ch> <CAGETcx-pSi60NtMM=59cve8kN9ff9fgepQ5R=uJ3Gynzh=0_BA@mail.gmail.com>
- <YSf/Mps9E77/6kZX@lunn.ch> <CAGETcx_h6moWbS7m4hPm6Ub3T0tWayUQkppjevkYyiA=8AmACw@mail.gmail.com>
- <YSg+dRPSX9/ph6tb@lunn.ch> <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
- <YSjsQmx8l4MXNvP+@lunn.ch> <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
- <YSlG4XRGrq5D1/WU@lunn.ch> <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
- <YSpr/BOZj2PKoC8B@lunn.ch>
-In-Reply-To: <YSpr/BOZj2PKoC8B@lunn.ch>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 30 Aug 2021 12:03:15 -0700
-Message-ID: <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
+References: <162756755600.301564.4957591913842010341.stgit@devnote2> <163024693462.457128.1437820221831758047.stgit@devnote2>
+In-Reply-To: <163024693462.457128.1437820221831758047.stgit@devnote2>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 30 Aug 2021 12:04:56 -0700
+Message-ID: <CAEf4BzbQZqtHAt5XMVxpeH2AmfaWmrqesB5fZavcwESudymR+g@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/1] Non stack-intrusive return probe event
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 10:01 AM Andrew Lunn <andrew@lunn.ch> wrote:
+On Sun, Aug 29, 2021 at 7:22 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
 >
-> On Fri, Aug 27, 2021 at 02:33:02PM -0700, Saravana Kannan wrote:
-> > On Fri, Aug 27, 2021 at 1:11 PM Andrew Lunn <andrew@lunn.ch> wrote:
-> > >
-> > > > > I've not yet looked at plain Ethernet drivers. This pattern could also
-> > > > > exist there. And i wonder about other complex structures, i2c bus
-> > > > > multiplexors, you can have interrupt controllers as i2c devices,
-> > > > > etc. So the general case could exist in other places.
-> > > >
-> > > > I haven't seen any generic issues like this reported so far. It's only
-> > > > after adding phy-handle that we are hitting these issues with DSA
-> > > > switches.
-> > >
-> > > Can you run your parser over the 2250 DTB blobs and see how many
-> > > children have dependencies on a parent? That could give us an idea how
-> > > many moles need whacking. And maybe, where in the tree they are
-> > > hiding?
-> >
-> > You are only responding to part of my email. As I said in my previous
-> > email: "There are plenty of cases where it's better to delay the child
-> > device's probe until the parent finishes. You even gave an example[7]
-> > where it would help avoid unnecessary deferred probes." Can you please
-> > give your thoughts on the rest of the points I made too?
+> Hello,
 >
-> I must admit, my main problem at the moment is -rc1 in two weeks
-> time. It seems like a number of board with Ethernet switches will be
-> broken, that worked before. phy-handle is not limited to switch
-> drivers, it is also used for Ethernet drivers. So it could be, a
-> number of Ethernet drivers are also going to be broken in -rc1?
+> For a long time, we tackled to fix some issues around kretprobe.
+> One of the latest action was the stacktrace fix on x86 in this
+> thread.
+>
+> https://lore.kernel.org/bpf/162756755600.301564.4957591913842010341.stgit@devnote2/
+>
+> However, there seems no progress/further discussion. So I would
+> like to make another approach for this (and the other issues.)
 
-Again, in those cases, based on your FEC example, fw_devlink=on
-actually improves things.
+v10 of kretprobe+stacktrace fixes ([0]) from Masami has received no
+comment or objections in the last month, since it was posted. It fixes
+the very real and very limiting problem of not being able to capture a
+stack trace from BPF kretprobe programs. Masami, while I don't mind
+your new approach, I think we shouldn't consider them as "either/or"
+solutions. We have a fix that works for existing implementations, can
+we please land it, and then work on further improvements
+independently?
 
-> But the issues sounds not to be specific to phy-handle, but any
-> phandle that points back to a parent.
+Ingo, Peter, Steven,
 
-I feel like I'm going in circles here. This statement is not true.
-Please read my previous explanations.
+I'm not sure who and which kernel tree this has to go through, but
+assuming it's one of you/yours, can you please take a look at [0] and
+apply it where appropriate? The work has been going on since March and
+it blocks development of some extremely useful tooling (retsnoop [1]
+being one of them). There were also bpftrace users that were
+completely surprised about the inability to use stack trace capturing
+from kretprobe handlers, so it's not just me. I (and a bunch of other
+BPF users) would greatly appreciate help with getting this problem
+fixed. Thank you!
 
-> So it could be drivers outside
-> of networking are also going to be broken with -rc1?
-> You have been very focused on one or two drivers. I would much rather
-> see you getting an idea of how wide spread this problem is, and what
-> should we do for -rc1?
+  [0] https://lore.kernel.org/bpf/162756755600.301564.4957591913842010341.stgit@devnote2/
+  [1] https://github.com/anakryiko/retsnoop
 
-Again, it's not a widespread problem as I explained before.
-fw_devlink=on has been the default for 2 kernel versions now. With no
-unfixed reported issues.
-
-> Even if modifying DSA drivers to component drivers is possible, while
-> not breaking backwards compatibility with DT,
-
-It should be possible without needing any DT changes.
-
-> it is not going to
-> happen over night. That is something for the next merge window, not
-> this merge window.
-
-Right, I wasn't suggesting the component driver option be implemented
-right away. We were talking about what the longer term proper fix
-would be for DSA (and Ethernet if we actually find issues there) and
-who would do it. That's what I hope this discussion could be.
-
-Also, if we replace Patch 2/2 in this series with the patch below, it
-will work as a generic quick fix for DSA that we could use for -rc1.
-And if we still have issues reported on the phy-handle patch by -rc5
-or so, we could revert the phy-handle patch then so that v5.15 isn't
-broken.
-
--Saravana
-
---- a/net/dsa/dsa2.c
-+++ b/net/dsa/dsa2.c
-@@ -1286,6 +1286,17 @@ static int dsa_switch_parse_of(struct
-dsa_switch *ds, struct device_node *dn)
- {
-        int err;
-
-+       /* A lot of switch devices have their PHYs as child devices and have
-+        * the PHYs depend on the switch as a supplier (Eg: interrupt
-+        * controller). With fw_devlink=on, that means the PHYs will defer
-+        * probe until the probe() of the switch completes. However, the way
-+        * the DSA framework is designed, the PHYs are expected to be probed
-+        * successfully before the probe() of the switch completes.
-+        *
-+        * So, mark the switch devices as a "broken parent" so that fw_devlink
-+        * knows not to create device links between PHYs and the parent switch.
-+        */
-+       np->fwnode.flags |= FWNODE_FLAG_BROKEN_PARENT;
-        err = dsa_switch_parse_member_of(ds, dn);
-        if (err)
-                return err;
+>
+> Here is my idea -- replace kretprobe with kprobe.
+> In other words, put a kprobe on the "return instruction" directly
+> instead of modifying the kernel stack. This can solve most
+> of the kretprobe disadvantges. E.g.
+>
+> - Since it doesn't change the kernel stack, any special stack
+>   unwinder fixup is not needed anymore.
+> - No "max-instance" limitations anymore, because it will use
+>   kprobes directly.
+> - Scalability performance will be improved as same as kprobes.
+>   No list-operation in probe-runtime.
+>
+> Here is a PoC code which introduces "retinsn_probe" event as a part
+> of ftrace kprobe event. I don't think we need to replace the
+> kretprobe. This should be a higher layer feature, because some
+> kernel functions can have multiple "return instructions". Thus,
+> the "retinsn_probe" must manage multiple kprobes. That means the
+> "retinsn_probe" will be a user of kprobes. I decided to make it
+> inside the ftrace "kprobe-event". This gives us another advantage
+> for eBPF support. Because eBPF uses "kprobe-event" instead of
+> "kprobe" directly, if the "retinsn_probe" is implemented in the
+> "kprobe-event", eBPF can use it without any change.
+> Anyway, this can be co-exist with kretprobe. So as far as any
+> user uses kretprobe, we can keep it.
+>
+>
+> Example
+> =======
+> For example, I ran a shell script, which was used in the
+> stacktrace fix series.
+>
+> ----
+> mount -t debugfs debugfs /sys/kernel/debug/
+> cd /sys/kernel/debug/tracing
+> echo > trace
+> echo 1 > options/sym-offset
+> echo r vfs_read >> kprobe_events
+> echo r full_proxy_read >> kprobe_events
+> echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+> echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+> echo 1 > events/kprobes/enable
+> cat /sys/kernel/debug/kprobes/list
+> echo 0 > events/kprobes/enable
+> cat trace
+> ----
+>
+> This is the result.
+> ----
+> ffffffff813b420e  k  full_proxy_read+0x6e
+> ffffffff812b7c0a  k  vfs_read+0xda
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 3/3   #P:8
+> #
+> #                                _-----=> irqs-off
+> #                               / _----=> need-resched
+> #                              | / _---=> hardirq/softirq
+> #                              || / _--=> preempt-depth
+> #                              ||| /     delay
+> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+> #              | |         |   ||||      |         |
+>              cat-136     [007] d.Z.     8.038381: r_full_proxy_read_0: (vfs_read+0x9b/0x180 <- full_proxy_read)
+>              cat-136     [007] d.Z.     8.038386: <stack trace>
+>  => kretprobe_trace_func+0x209/0x300
+>  => retinsn_dispatcher+0x7a/0xa0
+>  => kprobe_post_process+0x28/0x80
+>  => kprobe_int3_handler+0x166/0x1a0
+>  => exc_int3+0x47/0x140
+>  => asm_exc_int3+0x31/0x40
+>  => vfs_read+0x9b/0x180
+>  => ksys_read+0x68/0xe0
+>  => do_syscall_64+0x3b/0x90
+>  => entry_SYSCALL_64_after_hwframe+0x44/0xae
+>              cat-136     [007] d.Z.     8.038387: r_vfs_read_0: (ksys_read+0x68/0xe0 <- vfs_read)
+> ----
+>
+> You can see the return probe events are translated to kprobes
+> instead of kretprobes. And also, on the stacktrace, we can see
+> an int3 calls the kprobe and decode stacktrace correctly.
+>
+>
+> TODO
+> ====
+> Of course, this is just an PoC code, there are many TODOs.
+>
+> - This PoC code only supports x86 at this moment. But I think this
+>   can be done on the other architectures. What it needs is
+>   to implement "find_return_instructions()".
+> - Code cleanup is not enough. I have to remove "kretprobe" from
+>  "trace_kprobe" data structure, rewrite related functions etc.
+> - It has to handle "tail-call" optimized code, which replaces
+>   a "call + return" into "jump". find_return_instruction() should
+>   detect it and decode the jump destination too.
+>
+>
+> Thank you,
+>
+>
+> ---
+>
+> Masami Hiramatsu (1):
+>       [PoC] tracing: kprobe: Add non-stack intrusion return probe event
+>
+>
+>  arch/x86/kernel/kprobes/core.c |   59 +++++++++++++++++++++
+>  kernel/trace/trace_kprobe.c    |  110 ++++++++++++++++++++++++++++++++++++++--
+>  2 files changed, 164 insertions(+), 5 deletions(-)
+>
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
