@@ -2,249 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3825F3FB782
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1388C3FB78F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236937AbhH3OIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 10:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhH3OIP (ORCPT
+        id S236998AbhH3OKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 10:10:16 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:18712 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229710AbhH3OKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 10:08:15 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3591AC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 07:07:20 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:99a5:7017:6f3e:f1d2])
-        by baptiste.telenet-ops.be with bizsmtp
-        id nq7J2500L30rvgn01q7JaV; Mon, 30 Aug 2021 16:07:18 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mKhwU-000ad7-EL
-        for linux-kernel@vger.kernel.org; Mon, 30 Aug 2021 16:07:18 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mKhwU-008NBU-2V
-        for linux-kernel@vger.kernel.org; Mon, 30 Aug 2021 16:07:18 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v5.14
-Date:   Mon, 30 Aug 2021 16:07:18 +0200
-Message-Id: <20210830140718.1995701-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 30 Aug 2021 10:10:14 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17UE4HQT005141;
+        Mon, 30 Aug 2021 14:09:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=wNdvRMCc7orn/20DEeCbZIdJh7pnbJVUCcHYK761M5U=;
+ b=xZb0MwJ0WJLl6MhgF6ho1GL7sp5g+8EHOusmE2ZdCYmvRcL9Vfmh1E+JSuEkixiNJUoG
+ Z8PLM3FOY2oVRvruEtwgqsRznr7JmgGH7XFnyPuXRx6cfGmJo8HBInCR68XtGDJNHemA
+ L/rnHWILXStyQJGM40V6w3F30m+Rprnj4AJcE92JZmBb4VzBFvNHCA/zyhJwsClcTTYP
+ GD7pxVdVZNgnwUjrAGHIBo/mmALu7z09kKCD0fEYNd18YGDBQTU0ttRiZ/ypQuTWG1I2
+ mziW0mUHyKXi/Bj/UaGkOXZPBpsr93H0qiSFXViYKtVsKWaQ5VlSKOJfYBQreDu9+DLm xw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=wNdvRMCc7orn/20DEeCbZIdJh7pnbJVUCcHYK761M5U=;
+ b=yBuCfCmoNJLcmLGFsHwbiUVdINMQNhkuZwsEtzAl8Wnk08ZfMyV8vytNiJ2OrI+EFYBY
+ KoUmerm3NhoISujitUcIOve66Uu4NArpGGtQ/mjc+r1GfvR4Q9mgtnjVF/udDINSsBxV
+ ok3BElcn0Islbl7VcYlf6plaNbtyU9T2JdIJ9O+0YBxQxvCz/fVRpDLBM7MgRH02vh9/
+ j7sRr49oFeGgEfYa76tKqljr9gdv4RcK/TqA5obUciJqG4q5N3ZpGn0AGr0Zs+kOjQz4
+ 5DBhuJZlnjK/4sdpEtKZYhRfcEhQkeB8CtzxXk2Z+qTvy3ECD8tRG+M+Ltb2m7JiF6dO jw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3arbymhmb9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Aug 2021 14:09:17 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17UE5lQA073774;
+        Mon, 30 Aug 2021 14:09:14 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2172.outbound.protection.outlook.com [104.47.73.172])
+        by aserp3030.oracle.com with ESMTP id 3aqb6c0g3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Aug 2021 14:09:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CFUjmL+LC4X6E3jCWedokMQNQKTaCygvFOxO+F4drjZwlwL+KldFYpbOfU8O3HCpuhia6ziGNjwscXMJzjr2l3BEOjBOEMoKcxfJk4+fnPTnEidrR78+MF7XHI04XOHl0rfz29XQz7wIypuCQrSKYVCsoijzgrJHu4hjzZUePi3IlN2SKAVGG3htwNwdWM3cDq0oWj3fhel1Co0zAH9S/Z4zOBrny25OqZndIUGgCnxZuvmKe1e8X1iCXtusxhrt0uvTA0DsPUfIT5UuQqroPevL5fLE90FSAgfxfn98t1XsK32Igqut4zhjUu/W57Od7gBJho+SSXDkxZV4WfcyOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wNdvRMCc7orn/20DEeCbZIdJh7pnbJVUCcHYK761M5U=;
+ b=QWEXKVmUB6VA6tgwEy3qA9r3Ha9p5kMoRrxU/5wKyp/5NHxH0PnXVk1P9qVn0JwNIAhRxPGymJpWu+fNFtUU4Sz8SpXx2UzZc06ZGXuXtY0mTui8762AUkrxsj7PZHscdnpgWNOCw6okavBT6VAvXHXKTgwRpHibYARiAEnZe2u8ijMW42qVJBKC1AkSwd6ETHCzt4Yg9Xet93LLuifZ33CERVBWF9RrNphvfsNcyfzcC1pQz5qJDnOyn2LKUDM7eXYQksLEGUk1VgjCdkAnB+yfpq9SM2pL4PYyd2XgQZJVzDBrIbt1VsNW1jnIejSUVPlN9xQGL4tCvItWZSzbPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wNdvRMCc7orn/20DEeCbZIdJh7pnbJVUCcHYK761M5U=;
+ b=tbiIgO2wsDP8FC4DMvgmNuNHkCzE6njzc13PgSy4MSpHMoIK1cR7G5viEgjf1zFyaFGN0SA0LOKXaIZdZuaDOuq14TjUn7k0pcFMbWspdkLfSE5x7ap1d7K9XqCuzq201awwVe68zxuJDJCda0vL2+jjax2aoDBGkjCyl/IaYv4=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO1PR10MB4513.namprd10.prod.outlook.com
+ (2603:10b6:303:93::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.20; Mon, 30 Aug
+ 2021 14:09:12 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4457.024; Mon, 30 Aug 2021
+ 14:09:12 +0000
+Date:   Mon, 30 Aug 2021 17:08:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Johannes Thumshirn <jth@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andreas Werner <andreas.werner@men.de>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mcb: fix error handling in mcb_alloc_bus()
+Message-ID: <20210830140856.GX7722@kadam>
+References: <YLX7bAD4UPCpIBmq@mwanda>
+ <c4cffc84-be11-6558-60aa-a5217963b1f6@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c4cffc84-be11-6558-60aa-a5217963b1f6@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0038.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::9)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (62.8.83.99) by JNAP275CA0038.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21 via Frontend Transport; Mon, 30 Aug 2021 14:09:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d910575a-2add-46b2-3bc9-08d96bbfbddf
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4513:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO1PR10MB45131AEE0EF01182D18A9A9D8ECB9@CO1PR10MB4513.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SQFbGCz/BYsrlPasaEh4RR5EXnkBI88tJJPZ3Wxd8lbD/xueLKWVtrdUbrJSOLGA6cV/hTeWAeLmrpmgxH4ND2aaGpb4w/fp5cbKt5tQ7fVDAd7XAmNDUrFJ4hFRJMfiZWpnUwHNMU4bl1upcKJn11DclnEGwCSHk0EChRERGlanAKFcozoR+9Pfcq4gGCY5fSxeoij00fbQCj7+n+sFB2QxGur2tw2A7iapqGpbJAQO6pC+lnJ5mXXyuXd/cgmwNFC1O0miz1sOtvur1PhiJrP71HX5Tp/R+E6dm73jkbV5KiXpuIHOvxiK3quLq8EzWo96n5aGT0Etu4qv2tUzANyZXFPv2ToRh5imFZcXRyRQAPJOnr8LQxj4yY0INjCHxYjaVcyEX1Ij3GgNK5k6gUnWVnlppTN/CDZA1KuavSyEpS527hVnrRro9Of0yHVUfL88fTiVlaaG0+SZ3ejCM8i4ENEE+mjkGkyfYxPsJBcysmIJgW89tMizKqivdR4snMhHH6hONT6t8DKnFFWv9rYxkt9iGvjxruHK6Q1o3b0WokTsw7n4K8vdwxz23LDOQUiiix2sDKxxZYPEzXPcMe8FZm3x8YtBpYH/4TyFKQs1c+HIt8JbC4qjSrIVZYYIzI2zKI0/B1Vjf7FpdfdModNB/0WMPUEHCoGRd9fo2Qz0R94I+/K8qkMHCCeyX64gylofInc9rzlKzqY+sZ433w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39860400002)(376002)(346002)(136003)(1076003)(9686003)(5660300002)(6916009)(38350700002)(4744005)(8936002)(33716001)(33656002)(66476007)(26005)(86362001)(478600001)(956004)(9576002)(6496006)(54906003)(2906002)(66946007)(316002)(4326008)(186003)(55016002)(38100700002)(8676002)(6666004)(66556008)(52116002)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hG/oGoyNSrVEX4Kk/xCPPcSxnefNcZ/bmxsOWaWOhZGxv98ddJA3J7txCGeR?=
+ =?us-ascii?Q?I9NIYgUfzDMwW18b5+jMjEBLzVojoyNcogkB0ktOdeiDoe6sErRgDSIwesGx?=
+ =?us-ascii?Q?+/Kaj2d9GYK6xrJDvwGfr1bm45ZWlZvX/isPXKsahpiRzL9T3D1KeFsAgMus?=
+ =?us-ascii?Q?NvWGCSeADjF/8uPmEtOTu9LAEhMCG0vVcp2ayYNHLrc0deYvA+hj5WQjrUHV?=
+ =?us-ascii?Q?hjvHSo9/8xJ0Nfa4Q1O25Oj4TZLo+xNTRXB1Dn23wjQfCnwGLDqiRORacq/h?=
+ =?us-ascii?Q?5lMjyUk5SL/xayPHh6UVrhWnp6KJ/UOyMeiuGdPR577Lc1JHm0WD6kaiWUUv?=
+ =?us-ascii?Q?uWwSC7h5K61AuNIUs6aOO/a6FvnuTUx2jPqHxYnvEFBK2dK9+XK7iXdaV5FX?=
+ =?us-ascii?Q?QvsWlEn/tWwHWQYgqNXI4Au3NFPfRfrV/lLcaQd3p592uIvzuzLKVD4qAytv?=
+ =?us-ascii?Q?jjkgsaUmSyunz8/FDp/w5TV8sIgcPCpGZxz32cIYbNc/8kXoTBC7TCcVAcb/?=
+ =?us-ascii?Q?u5L7xAqpYNSD6bdHKlRBcJTTvbpDD2SOU0rh7wuyeW4Y6npSHteht/i7jRmU?=
+ =?us-ascii?Q?q55pqm8MZKzuYdlp0aNCX0WuLijkwuCwzHL5UDOelD+UzMQ6mf/Gtg9S3XUo?=
+ =?us-ascii?Q?5FxDDN/Vj23Xe74iUi75yWpa9U4PHlJpDdqzvqXeYVZ4BmcT5/ra/imZ+ZRT?=
+ =?us-ascii?Q?/mzOqZt8wJqWwJzT9cCeBAhl4nvFTdIaVSiFrF1YVIOrqYj19oo6nGVNgmqo?=
+ =?us-ascii?Q?NIPJzGM33tFmZLTE1csC/ZxBiuKspHgmnty4NlAJG3OIfbPNP01oJwIGI94D?=
+ =?us-ascii?Q?tIpfueGidRextZcx7Dd5b/j0hkDo5Bn3/w0rOnPNwqnnsJuOGxNfZOk8+xM1?=
+ =?us-ascii?Q?IAkraQv0EviD0TfKNwlSODb33+w2VhSa/658bo1MD9U6PVQmA09pCnqgZ9Y4?=
+ =?us-ascii?Q?soUlV5q/4ghPtMmbGl7lPtNPH+xK5MpxoOwGmj7N8ynE/Q0G/LX/q8FcvjBf?=
+ =?us-ascii?Q?wB28iO0OQ1q2uFq8V/UBmym6mg9TAPOSo/OfwybjuSlv3+Sh8/9AvGH8bx1+?=
+ =?us-ascii?Q?cZEplRpb/6ptcwBEWNk1j0mHpsNddE4wiXZC3SfRh1VB6rhclbE2NZPM1R2v?=
+ =?us-ascii?Q?ugjl/4TasKH7PEyoVN/0ZA43+EgS9d1GhSVAbAr6zZ7SHJ2lPwHKJyP53hfo?=
+ =?us-ascii?Q?EaEHGoDYA9oILPA2khJM2KNlOpaNSTgvaSrIxTDcU1Jj5OZDKxUxXMeKcEml?=
+ =?us-ascii?Q?QJ/nsQEyocYelIlmPpCjEA9Iji+nEjx7cwn4c0VCkko5tW45kTmZG5XEwpWO?=
+ =?us-ascii?Q?3b8ihuYk32r3NzlmGMdoarYQ?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d910575a-2add-46b2-3bc9-08d96bbfbddf
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2021 14:09:12.0415
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RKWbyUD3c439Fy8cySxtS6T5d78RxSpN4N3pN6JzWpbRpc3BcuQ5Y4q375QacswuCuUrZBzGYFUS6lEWdZOh2n8QI8lQtdS4UR5QIWwUgy0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4513
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10092 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 suspectscore=0
+ adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108300100
+X-Proofpoint-ORIG-GUID: Qo21ltgkyc00R7CPKkiCkDW473e5IBxj
+X-Proofpoint-GUID: Qo21ltgkyc00R7CPKkiCkDW473e5IBxj
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v5.14[1] compared to v5.13+[2].
+On Tue, Jun 01, 2021 at 03:23:55PM +0200, Johannes Thumshirn wrote:
+> 
+> 
+> Am 01.06.21 um 11:18 schrieb Dan Carpenter:
+> > There are two bugs:
+> > 1) If ida_simple_get() fails then this code calls put_device(carrier)
+> >    but we haven't yet called get_device(carrier) and probably that
+> >    leads to a use after free.
+> > 2) After device_initialize() then we need to use put_device() to
+> >    release the bus.  This will free the internal resources tied to the
+> >    device and call mcb_free_bus() which will free the rest.
+> >
+> > Fixes: 5d9e2ab9fea4 ("mcb: Implement bus->dev.release callback")
+> > Fixes: 18d288198099 ("mcb: Correctly initialize the bus's device")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> >
+> 
+> Thanks applied
 
-Summarized:
-  - build errors: +15/-0
-  - build warnings: +102/-47
+This is still not in linux-next.
 
-JFYI, when comparing v5.14[1] to v5.14-rc7[3], the summaries are:
-  - build errors: +0/-0
-  - build warnings: +1/-0
-
-Note that there may be false regressions, as some logs are incomplete.
-Still, they're build errors/warnings.
-
-Happy fixing! ;-)
-
-Thanks to the linux-next team for providing the build service.
-
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/7d2a07b769330c34b4deabeed939325c77a7ec2f/ (182 out of 189 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/66d9282523b3228183b14d9f812872dd2620704d/ (all 189 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93/ (182 out of 189 configs)
-
-
-*** ERRORS ***
-
-15 error regressions:
-  + /kisskb/src/drivers/dma/idxd/init.c: error: implicit declaration of function 'cpu_feature_enabled' [-Werror=implicit-function-declaration]:  => 815:7
-  + /kisskb/src/drivers/dma/idxd/perfmon.h: error: 'struct perf_event' has no member named 'pmu':  => 35:13, 24:13
-  + /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of function 'boot_cpu_has' [-Werror=implicit-function-declaration]:  => 74:6
-  + /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of function 'cpuid_eax' [-Werror=implicit-function-declaration]:  => 64:18
-  + /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of function 'cpuid_ebx' [-Werror=implicit-function-declaration]:  => 17:31
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: 'X86_MSI_BASE_ADDRESS_HIGH' undeclared (first use in this function):  => 150:20
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: 'X86_MSI_BASE_ADDRESS_LOW' undeclared (first use in this function):  => 151:35
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: 'arch_msi_msg_addr_lo_t {aka struct arch_msi_msg_addr_lo}' has no member named 'base_address':  => 151:19
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: 'arch_msi_msg_addr_lo_t {aka struct arch_msi_msg_addr_lo}' has no member named 'destid_0_7':  => 152:19
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: control reaches end of non-void function [-Werror=return-type]:  => 127:1
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: dereferencing pointer to incomplete type 'struct pci_sysdata':  => 700:4
-  + /kisskb/src/drivers/pci/controller/vmd.c: error: field 'sysdata' has incomplete type:  => 116:21
-  + /kisskb/src/include/linux/compiler_attributes.h: error: "__GCC4_has_attribute___no_sanitize_coverage__" is not defined [-Werror=undef]:  => 29:29
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1854' declared with attribute error: FIELD_PREP: value too large for the field:  => 328:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1861' declared with attribute error: FIELD_PREP: value too large for the field:  => 328:38
-
-
-*** WARNINGS ***
-
-102 warning regressions:
-  + .config: warning: override: reassigning to symbol GCC_PLUGIN_RANDSTRUCT:  => 11597, 11822
-  + .config: warning: override: reassigning to symbol GCC_PLUGIN_SANCOV:  => 11819, 11594
-  + /kisskb/src/arch/parisc/math-emu/fpudispatch.c: warning: this statement may fall through [-Wimplicit-fallthrough=]:  => 744:5, 728:3, 905:5, 453:5, 733:5, 1030:5, 352:5, 1021:5, 777:5, 574:5, 771:18, 305:5, 637:5, 410:5, 423:5, 327:18, 361:18, 343:18, 890:5, 498:5, 521:7, 661:5, 817:5, 625:5, 938:7, 359:18, 312:18, 300:3, 749:18, 649:5, 760:18, 314:18, 738:18, 860:5, 1075:5, 766:5, 468:5, 408:3, 345:18, 815:3, 368:5, 329:18, 755:5, 483:5, 830:5, 1042:8, 320:5, 845:5, 336:5, 875:5, 438:5
-  + /kisskb/src/arch/s390/kernel/perf_cpum_cf.c: warning: 'cfdiag_push_sample' uses dynamic stack allocation:  => 651:1
-  + /kisskb/src/block/mq-deadline.c: warning: 'dd_queued' defined but not used [-Wunused-function]:  => 274:12
-  + /kisskb/src/drivers/cxl/core.c: warning: (near initialization for '(anonymous).hdm_decoder') [-Wmissing-braces]:  => 567:17
-  + /kisskb/src/drivers/cxl/core.c: warning: (near initialization for '(anonymous).status') [-Wmissing-braces]:  => 831:17
-  + /kisskb/src/drivers/cxl/core.c: warning: missing braces around initializer [-Wmissing-braces]:  => 831:17, 567:17
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_psr.c: warning: (near initialization for 'params.triggers') [-Wmissing-braces]:  => 104:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_psr.c: warning: missing braces around initializer [-Wmissing-braces]:  => 104:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_clk_mgr.c: warning: (near initialization for 'dummy_wms.WatermarkRow') [-Wmissing-braces]:  => 402:15
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_clk_mgr.c: warning: (near initialization for 'idle_info.idle_info') [-Wmissing-braces]:  => 157:11, 179:10
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]:  => 402:15, 179:10, 157:11
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_smu.c: warning: (near initialization for 'idle_info.idle_info') [-Wmissing-braces]:  => 240:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_smu.c: warning: missing braces around initializer [-Wmissing-braces]:  => 240:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_hw_lock_mgr.c: warning: (near initialization for 'data.inbox0_cmd_common') [-Wmissing-braces]:  => 58:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_hw_lock_mgr.c: warning: missing braces around initializer [-Wmissing-braces]:  => 58:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: (near initialization for 'ddc_init_data.id') [-Wmissing-braces]:  => 3725:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: missing braces around initializer [-Wmissing-braces]: 451:15 => 3725:9, 451:15
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_resource.c: warning: (near initialization for 'ddc_init_data.id') [-Wmissing-braces]:  => 2541:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_resource.c: warning: missing braces around initializer [-Wmissing-braces]:  => 2541:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn31.c: warning: (near initialization for 'boot_options.bits') [-Wmissing-braces]:  => 320:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn31.c: warning: missing braces around initializer [-Wmissing-braces]:  => 320:8
-  + /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2128 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 98:1
-  + /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2144 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 98:1
-  + /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2152 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 98:1
-  + /kisskb/src/drivers/net/dsa/sja1105/sja1105_spi.c: warning: (near initialization for 'xfers[0]') [-Wmissing-braces]:  => 40:9
-  + /kisskb/src/drivers/net/dsa/sja1105/sja1105_spi.c: warning: missing braces around initializer [-Wmissing-braces]:  => 40:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'req.hdr') [-Wmissing-braces]: 754:9, 654:9, 604:9 => 681:9, 774:9, 631:9, 845:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'rsp.hdr') [-Wmissing-braces]: 605:9, 655:9, 755:9 => 682:9, 775:9, 846:9, 632:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: missing braces around initializer [-Wmissing-braces]: 654:9, 754:9, 755:9, 655:9, 604:9, 605:9 => 846:9, 775:9, 774:9, 681:9, 682:9, 631:9, 632:9, 845:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'alloc_req.hdr') [-Wmissing-braces]:  => 144:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'alloc_rsp.hdr') [-Wmissing-braces]:  => 145:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'free_req.hdr') [-Wmissing-braces]:  => 198:9, 147:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'req.hdr') [-Wmissing-braces]:  => 13:9, 41:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'rsp.hdr') [-Wmissing-braces]:  => 14:9, 42:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'uninstall_req.hdr') [-Wmissing-braces]:  => 197:9, 146:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: missing braces around initializer [-Wmissing-braces]:  => 13:9, 14:9, 145:9, 146:9, 42:9, 197:9, 144:9, 41:9, 147:9, 198:9
-  + /kisskb/src/drivers/net/ethernet/marvell/prestera/prestera_flower.c: warning: (near initialization for 'm_entry.list') [-Wmissing-braces]:  => 52:9
-  + /kisskb/src/drivers/net/ethernet/marvell/prestera/prestera_flower.c: warning: missing braces around initializer [-Wmissing-braces]:  => 52:9
-  + /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.39' uses dynamic stack allocation:  => 481:1
-  + /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 3136 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 2207:1
-  + /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 3168 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 2207:1
-  + /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 3176 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 2207:1
-  + /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 7192 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 2367:1
-  + /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 7208 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 2367:1
-  + /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 7264 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 2367:1
-  + /kisskb/src/drivers/video/fbdev/nvidia/nvidia.c: warning: passing argument 1 of 'iounmap' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]:  => 1439:10, 1414:10
-  + /kisskb/src/drivers/video/fbdev/riva/fbdev.c: warning: passing argument 1 of 'iounmap' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]:  => 2092:11, 2059:11
-  + /kisskb/src/drivers/virtio/virtio_vdpa.c: warning: (near initialization for 'state.<anonymous>') [-Wmissing-braces]:  => 146:9
-  + /kisskb/src/drivers/virtio/virtio_vdpa.c: warning: missing braces around initializer [-Wmissing-braces]:  => 146:9
-  + /kisskb/src/fs/cifs/connect.c: warning: (near initialization for 'mount_id.b') [-Wmissing-braces]:  => 3466:2
-  + /kisskb/src/fs/cifs/connect.c: warning: missing braces around initializer [-Wmissing-braces]:  => 3466:2
-  + /kisskb/src/fs/ntfs/aops.c: warning: the frame size of 2208 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 1311:1
-  + /kisskb/src/include/linux/compiler_attributes.h: warning: "__GCC4_has_attribute___no_sanitize_coverage__" is not defined [-Wundef]:  => 29:29
-  + /kisskb/src/kernel/trace/trace_osnoise.c: warning: 'main' is usually a function [-Wmain]:  => 1515:8
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2128 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 437:1, 530:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2144 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 437:1, 530:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2464 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 437:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2472 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 437:1, 530:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2480 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 437:1, 530:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2488 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 530:1, 437:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2512 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 437:1, 530:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2616 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2640 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2952 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2960 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2976 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 2992 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/test_scanf.c: warning: the frame size of 3008 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 488:1
-  + /kisskb/src/lib/xxhash.c: warning: the frame size of 1656 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 236:1
-  + /kisskb/src/lib/xxhash.c: warning: the frame size of 1672 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 236:1
-  + /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1192 bytes is larger than 1024 bytes [-Wframe-larger-than=]:  => 1393:1
-  + /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1384 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 2051:1
-  + /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1432 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 2262:1
-  + arch/powerpc/configs/mpc885_ads_defconfig: warning: override: reassigning to symbol IPV6:  => 79
-  + modpost: WARNING: modpost: EXPORT symbol "___rw_read_enter" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "___rw_read_exit" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "___rw_read_try" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "___rw_write_enter" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "__ashldi3" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "__ashrdi3" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "__copy_1page" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "__divdi3" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "__lshrdi3" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "__muldi3" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "__ndelay" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "__udelay" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "_mcount" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "bzero_1page" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "clear_page" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "copy_page" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: EXPORT symbol "empty_zero_page" [vmlinux] version ...:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x140): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x158): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x170): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x188): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1a0): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1b8): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1d0): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + warning: LSE atomics not supported by binutils:  => N/A
-  + warning: ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum:  => N/A
-
-47 warning improvements:
-  - .config: warning: override: reassigning to symbol GCC_PLUGIN_CYC_COMPLEXITY: 4582, 4553 => 
-  - .config: warning: override: reassigning to symbol GCC_PLUGIN_LATENT_ENTROPY: 4555, 4584 => 
-  - /kisskb/src/arch/s390/kernel/perf_cpum_cf_diag.c: warning: 'cf_diag_push_sample' uses dynamic stack allocation: 503:1 => 
-  - /kisskb/src/arch/s390/kernel/traps.c: warning: '__do_pgm_check' uses dynamic stack allocation: 359:1 => 
-  - /kisskb/src/arch/xtensa/include/asm/cmpxchg.h: warning: value computed is not used [-Wunused-value]: 173:3 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: warning: (near initialization for 'params.triggers') [-Wmissing-braces]: 10583:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: warning: missing braces around initializer [-Wmissing-braces]: 10583:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c: warning: (near initialization for 'info.head') [-Wmissing-braces]: 610:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c: warning: missing braces around initializer [-Wmissing-braces]: 610:9 => 
-  - /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2288 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 98:1 => 
-  - /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2320 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 98:1 => 
-  - /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2336 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 98:1 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/mvpp2/mvpp2.h: warning: overflow in conversion from 'long unsigned int' to 'int' changes value from '18446744073709551584' to '-32' [-Woverflow]: 844:2 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/mvpp2/mvpp2.h: warning: overflow in implicit constant conversion [-Woverflow]: 844:2 => 
-  - /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.40' uses dynamic stack allocation: 481:1 => 
-  - /kisskb/src/drivers/usb/gadget/udc/fsl_qe_udc.c: warning: this statement may fall through [-Wimplicit-fallthrough=]: 542:37, 580:8, 596:5, 563:8, 566:8 => 
-  - /kisskb/src/fs/ntfs/aops.c: warning: the frame size of 2224 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 1311:1 => 
-  - /kisskb/src/lib/xxhash.c: warning: the frame size of 1616 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 236:1 => 
-  - /kisskb/src/lib/xxhash.c: warning: the frame size of 1624 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 236:1 => 
-  - /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1348 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 2262:1 => 
-  - /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1584 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 1393:1 => 
-  - arch/arm64/configs/defconfig: warning: override: reassigning to symbol MTK_PMIC_WRAP: 1018 => 
-  - modpost: WARNING: modpost: EXPORT symbol "___rw_read_enter" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "___rw_read_exit" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "___rw_read_try" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "___rw_write_enter" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__ashldi3" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__ashrdi3" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__copy_1page" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__divdi3" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__lshrdi3" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__muldi3" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__ndelay" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__udelay" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "_mcount" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "bzero_1page" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "clear_page" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "copy_page" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "empty_zero_page" [vmlinux] version generation failed, symbol will not be versioned.: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x13c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x154): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x16c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x184): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x19c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1b4): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1cc): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - warning: 4 bad relocations: N/A => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+regards,
+dan carpenter
