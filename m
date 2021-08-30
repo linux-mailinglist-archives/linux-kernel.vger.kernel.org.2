@@ -2,104 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B81A3FBE6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1753FBE6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238480AbhH3Vln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 17:41:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237296AbhH3Vlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:41:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D38D60F42;
-        Mon, 30 Aug 2021 21:40:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630359648;
-        bh=SzO1R52+ZB+6kqt/cDT852NMK8dI6tMtqvLALi8Kxds=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Hak1fDsYnfPaKFY1JIjEueAOgawlGC0S2HgsT97Y8rpGcjSvaFpNwXHXD3JUvKXLw
-         TquSc+bthbdVlt6WazZOFj4Dt6V/lKOKw0VPsEJFEoW5paMbnL83/EAWrBjErok/00
-         1vEl7BZFe7nyTDYqVDhPrLPqKIQIXRFI/ZXPw+OxmReX2fYoa/vRp2dW0mOa7/vfDG
-         5ipEzepz188NXry20yFlekCBMmQtKALtS1jsMs/TnQ4J5SUHxF2X1tDtH+vrOhLyq3
-         3DCfw7T4mDZCsLGxazIc9/qJi1m/aOFs/0VXH9uNKeF1TuoItD5ZYvmy92CI3vSaB0
-         UewWKMCWv48hA==
-Received: by mail-ej1-f52.google.com with SMTP id ia27so34166528ejc.10;
-        Mon, 30 Aug 2021 14:40:48 -0700 (PDT)
-X-Gm-Message-State: AOAM530YHPI8Qn3jF0ltSLn3vvEs008MKM14MASaJB2JSgxgUzVQ/UtH
-        8vBl9xQGVfQpfW1SJKhWLnwj8PC1mmPyxdHiUg==
-X-Google-Smtp-Source: ABdhPJxGp4WjwQjr/Aw2mEv66FDMH6nC78/9Ppvg542fhNgLL79IDqfZVGKpaho3DBv+uzLo8HKcO0jhr0HsowtDn60=
-X-Received: by 2002:a17:906:8cd:: with SMTP id o13mr27805604eje.341.1630359646777;
- Mon, 30 Aug 2021 14:40:46 -0700 (PDT)
+        id S238559AbhH3VmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:42:09 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44594 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237612AbhH3VmI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 17:42:08 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17ULcYAa014094
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 14:41:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=GQkjT68Y1G0cFcBBOBufW5uO3v6jWnEaZhZVXddLF0Q=;
+ b=PGj5ps+zKOHRiEsgkrVfJEZF6xWFWfPDBUyFn+sneBwVyzfR7O80uvkq4deTlv1vvsmg
+ XEi8MlakBXr+byFwHt5O7bvky4VhBVzzisggJd6Xop31isMxFt26EaUYAQsLV249a4Si
+ vMU6fWeUncu5bQZOhK3VDV5L3e1U+iToU2U= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3artudvxwa-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 14:41:13 -0700
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 30 Aug 2021 14:41:11 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id DD81FF146804; Mon, 30 Aug 2021 14:41:09 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <kjain@linux.ibm.com>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH v3 bpf-next 0/3] bpf: introduce bpf_get_branch_snapshot
+Date:   Mon, 30 Aug 2021 14:41:03 -0700
+Message-ID: <20210830214106.4142056-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: GZrA2XXFDO1nEK_GmqpRjU__EQL2UJq_
+X-Proofpoint-ORIG-GUID: GZrA2XXFDO1nEK_GmqpRjU__EQL2UJq_
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210728230230.1911468-1-robh@kernel.org> <20210728230230.1911468-3-robh@kernel.org>
- <d720903c-926e-f57a-0862-4e5d76db763a@kernel.org> <CAL_JsqLRv9ugKJcn4dq_ps0JMt74Y7PKA=5yySYxvftdQWzzPA@mail.gmail.com>
- <de97454b-9b4d-492f-a435-6a5e33889219@www.fastmail.com> <CAL_JsqKpT93W6nBj68DykEJzjFYOPG=8PGShsh2QZVzHq5N3fQ@mail.gmail.com>
- <43b3a838-da8a-4733-9832-f3d5f990ec13@www.fastmail.com> <f3b72c71-f9c9-e1a8-4542-e248e8a5d769@maine.edu>
- <20210830085106.GF4353@worktop.programming.kicks-ass.net> <0b794c5-5988-c79d-7bb-11533ed92a9@maine.edu>
-In-Reply-To: <0b794c5-5988-c79d-7bb-11533ed92a9@maine.edu>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 30 Aug 2021 16:40:34 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJWe76gvwh7GE3qFCy2imskWSSVRyc6L=b_yVqxM4Xrww@mail.gmail.com>
-Message-ID: <CAL_JsqJWe76gvwh7GE3qFCy2imskWSSVRyc6L=b_yVqxM4Xrww@mail.gmail.com>
-Subject: Re: [RFC 2/3] perf/x86: Control RDPMC access from .enable() hook
-To:     Vince Weaver <vincent.weaver@maine.edu>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-30_06:2021-08-30,2021-08-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 adultscore=0 phishscore=0 malwarescore=0
+ clxscore=1015 lowpriorityscore=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108300136
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 3:21 PM Vince Weaver <vincent.weaver@maine.edu> wrote:
->
-> On Mon, 30 Aug 2021, Peter Zijlstra wrote:
->
-> > There's just not much we can do to validate the usage, fundamentally at
-> > RDPMC time we're not running any kernel code, so we can't validate the
-> > conditions under which we're called.
-> >
-> > I suppose one way would be to create a mode where RDPMC is disabled but
-> > emulated -- which completely voids the reason for using RDPMC in the
-> > first place (performance), but would allow us to validate the usage.
-> >
-> > Fundamentally, we must call RDPMC only for events that are currently
-> > actuve on *this* CPU. Currently we rely on userspace to DTRT and if it
-> > doesn't we have no way of knowing and it gets to keep the pieces.
->
-> yes, though it would be nice for cases where things will never work (such
-> as process-attach?  I think even if pinned to the same CPU that won't
-> work?) Maybe somehow the mmap page could be set in a way to indicate we
-> should fall back to the syscall.  Maybe set pc->index to an invalid value
-> so we can use the existing syscall fallback code.
->
-> We could force every userspace program to know allthe unsupoorted cases
-> but it seems like it could be easier and less failure-prone to centralize
-> this in the kernel.
->
-> I was looking into maybe creating a patch for this but the magic perf
-> mmap page implementation is complex enough that I'm not sure I'm qualified
-> to mess with it.
+Changes v2 =3D> v3:
+1. Fix the use of static_call. (Peter)
+2. Limit the use to perfmon version >=3D 2. (Peter)
+3. Modify intel_pmu_snapshot_branch_stack() to use intel_pmu_disable_all
+   and intel_pmu_enable_all().
 
-There's now an implementation in libperf[1]. perf_evsel__read() will
-use it[2] and fallback to read() call if necessary (but will still
-happily give you wrong values if reading on the wrong CPU).
+Changes v1 =3D> v2:
+1. Rename the helper as bpf_get_branch_snapshot;
+2. Fix/simplify the use of static_call;
+3. Instead of percpu variables, let intel_pmu_snapshot_branch_stack output
+   branch records to an output argument of type perf_branch_snapshot.
 
-Rob
+Branch stack can be very useful in understanding software events. For
+example, when a long function, e.g. sys_perf_event_open, returns an errno,
+it is not obvious why the function failed. Branch stack could provide very
+helpful information in this type of scenarios.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/mmap.c#n302
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/evsel.c#n305
+This set adds support to read branch stack with a new BPF helper
+bpf_get_branch_trace(). Currently, this is only supported in Intel systems.
+It is also possible to support the same feaure for PowerPC.
+
+The hardware that records the branch stace is not stopped automatically on
+software events. Therefore, it is necessary to stop it in software soon.
+Otherwise, the hardware buffers/registers will be flushed. One of the key
+design consideration in this set is to minimize the number of branch record
+entries between the event triggers and the hardware recorder is stopped.
+Based on this goal, current design is different from the discussions in
+original RFC [1]:
+ 1) Static call is used when supported, to save function pointer
+    dereference;
+ 2) intel_pmu_lbr_disable_all is used instead of perf_pmu_disable(),
+    because the latter uses about 10 entries before stopping LBR.
+
+With current code, on Intel CPU, LBR is stopped after 6 branch entries
+after fexit triggers:
+
+ID: 0 from intel_pmu_lbr_disable_all.part.10+37 to intel_pmu_lbr_disable_al=
+l.part.10+72
+ID: 1 from intel_pmu_lbr_disable_all.part.10+33 to intel_pmu_lbr_disable_al=
+l.part.10+37
+ID: 2 from intel_pmu_snapshot_branch_stack+46 to intel_pmu_lbr_disable_all.=
+part.10+0
+ID: 3 from __bpf_prog_enter+38 to intel_pmu_snapshot_branch_stack+0
+ID: 4 from __bpf_prog_enter+8 to __bpf_prog_enter+38
+ID: 5 from __brk_limit+477020214 to __bpf_prog_enter+0
+ID: 6 from bpf_fexit_loop_test1+22 to __brk_limit+477020195
+ID: 7 from bpf_fexit_loop_test1+20 to bpf_fexit_loop_test1+13
+ID: 8 from bpf_fexit_loop_test1+20 to bpf_fexit_loop_test1+13
+...
+
+[1] https://lore.kernel.org/bpf/20210818012937.2522409-1-songliubraving@fb.=
+com/
+
+Song Liu (3):
+  perf: enable branch record for software events
+  bpf: introduce helper bpf_get_branch_snapshot
+  selftests/bpf: add test for bpf_get_branch_snapshot
+
+ arch/x86/events/intel/core.c                  |  24 +++-
+ include/linux/bpf.h                           |   2 +
+ include/linux/filter.h                        |   3 +-
+ include/linux/perf_event.h                    |  24 ++++
+ include/uapi/linux/bpf.h                      |  16 +++
+ kernel/bpf/trampoline.c                       |  13 +++
+ kernel/bpf/verifier.c                         |  12 ++
+ kernel/events/core.c                          |   3 +
+ kernel/trace/bpf_trace.c                      |  43 +++++++
+ net/bpf/test_run.c                            |  15 ++-
+ tools/include/uapi/linux/bpf.h                |  16 +++
+ .../bpf/prog_tests/get_branch_snapshot.c      | 106 ++++++++++++++++++
+ .../selftests/bpf/progs/get_branch_snapshot.c |  41 +++++++
+ tools/testing/selftests/bpf/trace_helpers.c   |  30 +++++
+ tools/testing/selftests/bpf/trace_helpers.h   |   5 +
+ 15 files changed, 349 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_snaps=
+hot.c
+ create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot.c
+
+--
+2.30.2
