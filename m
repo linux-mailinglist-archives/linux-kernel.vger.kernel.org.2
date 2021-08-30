@@ -2,365 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8FA3FB8FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0193FB900
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237592AbhH3P1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34184 "EHLO
+        id S237600AbhH3P2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237548AbhH3P1p (ORCPT
+        with ESMTP id S237602AbhH3P2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:27:45 -0400
-Received: from mail-ed1-x563.google.com (mail-ed1-x563.google.com [IPv6:2a00:1450:4864:20::563])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174B8C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:26:52 -0700 (PDT)
-Received: by mail-ed1-x563.google.com with SMTP id i6so22263271edu.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:26:52 -0700 (PDT)
+        Mon, 30 Aug 2021 11:28:19 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AC4C061575;
+        Mon, 30 Aug 2021 08:27:25 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id l18so26525401lji.12;
+        Mon, 30 Aug 2021 08:27:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=flowbird.group; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ExRvH1Jgn+sQe7cf+qhrLRjyf/V8Wg2gbLCRLIZyA34=;
-        b=ZeLO3+sCIn3HZOSUc+DLsEhh2dK+OrloRMRMQu1FgzPrLyLYiUkBNBE9elL+ddA+ls
-         VsyPnxwRxeK0uaDJ9dUhdaOhY3bZ5i68jFrI+radcnSAZfoAG2eZPceAjWH9aKXb4fvU
-         gJqSf/sruK5kWJ+ea9TgudRYKZ8wkfqH1EqfkFoIBw0Ixpgx57RTcdJ4VS4M+e+Y2Xv6
-         /janDJAHMHwhnsbGigsmRl25fpLlRMwS3fkMTGtGOW2+dbIuudYfOYA++cbsCJtUzXg9
-         /AuknGihTp38hLMuTX8/m85ypldkjOBwHYbelRtK/SJzPZBMKW8lOZv3LvI1vX/AlnOG
-         ndWA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7v0xGUniRMAaLr5lnK8CuaUQYawKvoIYmd2gIBcaU8w=;
+        b=D4S90DnfDBzpndOpBbJ6kbLOp9NHMBwDLEcOAiMq+ad/somop0xi8tqVwsxNh9+GOc
+         7xhleMcRUB0HjJHxW9FS98FJKaFNl7Ux2X04VsYYHxkUVs/eQ/mIO1v9SaRp1eVnOmKx
+         On/XugGzX6fIaeGAZtkNqnjicya5EFGQaJh35whyLCjookiz9c9lE6wnOw0FOrLbLDSk
+         yESz+qEuH0+Bq8+cXnxayLzRA3BxnE6xBNIRmrSKjd1uEFcPNA5N53495+RZwW875z96
+         xNKaXnFZ/L2SBGxQp+g8FwZ6xf6rwFxwy8mszz547yrbd7WG6oWpYOWYv9RyY8ial6iD
+         n8iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ExRvH1Jgn+sQe7cf+qhrLRjyf/V8Wg2gbLCRLIZyA34=;
-        b=kD2vTQSY/NSNHv2ec6iFZRbGTpYRLUN4LzTMQaEfwYqlqnnrQKFtCotYvt7XwU1Hec
-         KgeV+iP8OZbJv6TPN3ZRWnZE6zjJ6t6JHKng/09fUBRWlRHWZzvNHjkPXHzFPPeJmWjc
-         tmfRh4/LrfFwRBHwByTMnSq+4ALJ40IiyA7DCDXHNuGMuSGrPWKREiI5ng2CC5JEHuD4
-         SHrHiBUEfh2H4QYSaDUF4nZsIIlwCtgbQ1V4+HtLbatH5uwn+YrvdOWZH0oB29ryc0+S
-         WtRgWJjRQS7OJs5xSyjYsG6mWe4QaPH6FxvxMcP1wf9GbOherSlKVCG0qiWA0GaoRktp
-         h1RA==
-X-Gm-Message-State: AOAM533KPP1WWHPu7sJ88Rp/U+4PExc09UIpO6PZG9rfegqKyMuz09Fh
-        FJR4TFrSUZzik7iBS9Ahw8IqxATVQzJNSiSbJpce8EaUDB8U
-X-Google-Smtp-Source: ABdhPJwmAlJGz963vJJbAsHxv5O7uYV8rARc7Tt3ijVIBZ1KlYUmDPaRVgxz3RqpFVSgrGBWWdikukOBb3Zj
-X-Received: by 2002:aa7:c60e:: with SMTP id h14mr14561694edq.43.1630337210535;
-        Mon, 30 Aug 2021 08:26:50 -0700 (PDT)
-Received: from mta1.parkeon.com ([185.149.63.251])
-        by smtp-relay.gmail.com with ESMTPS id p21sm194264ejy.180.2021.08.30.08.26.50
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Mon, 30 Aug 2021 08:26:50 -0700 (PDT)
-X-Relaying-Domain: flowbird.group
-Received: from [172.16.13.38] (port=37560 helo=PC12445-BES.dynamic.besancon.parkeon.com)
-        by mta1.parkeon.com with esmtp (Exim 4.71)
-        (envelope-from <martin.fuzzey@flowbird.group>)
-        id 1mKjBS-0005mz-0n; Mon, 30 Aug 2021 17:26:50 +0200
-From:   Martin Fuzzey <martin.fuzzey@flowbird.group>
-To:     linux-wireless@vger.kernel.org
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Siva Rebbagondla <siva8118@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Prameela Rani Garnepudi <prameela.j04cs@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>
-Subject: [PATCH v2 3/3] rsi: fix rate mask set leading to P2P failure
-Date:   Mon, 30 Aug 2021 17:26:46 +0200
-Message-Id: <1630337206-12410-4-git-send-email-martin.fuzzey@flowbird.group>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1630337206-12410-1-git-send-email-martin.fuzzey@flowbird.group>
-References: <1630337206-12410-1-git-send-email-martin.fuzzey@flowbird.group>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7v0xGUniRMAaLr5lnK8CuaUQYawKvoIYmd2gIBcaU8w=;
+        b=U8mM/Bq0qBDX63RxLJLUBvIJHEB5P58Mw5trvaLfEa7pRTSa0UMhkQ7uOawRcSHrA2
+         0DpC6woKUaX/sArwJSK2IqyjAUJHBeznfZ0XbVBVzO9lAEo7R07X9xy6tyMTERhmy15T
+         UTje18wEToss5saLP1+mEw1rX3malSK29LWdYqNF/KJVfkeuiaynIYF0Op2JjQx5efug
+         y++Z9sf1H6TgGGnCcFWj7rRpNzQIXHsL/E7SNYiGjKIxey4wAXoCh/JFvri7pZ0fojCU
+         GJjhujsKs0a+dq6SoWMJpoi/Os2S4WuzQr4fwVhH5iHcRkbxxDOtCzNFRWieDQs8H6hT
+         17Fw==
+X-Gm-Message-State: AOAM531su0HJ9/gF2jo2dq5pHoYTbf2QG29mFhew0UaPMgzw5wRfVQHi
+        ihkRsDU15UZhBNybzpt5Vr4=
+X-Google-Smtp-Source: ABdhPJxaeCXzoZxaPJ/mXRRzN82IPZckzxV3SXID+xSSoA4Eg1+2QLyNRlSRlpLJTYdFSB75lzgYQA==
+X-Received: by 2002:a2e:b558:: with SMTP id a24mr20678346ljn.225.1630337244373;
+        Mon, 30 Aug 2021 08:27:24 -0700 (PDT)
+Received: from DESKTOP-5EKDQDN.localdomain (78-63-10-115.static.zebra.lt. [78.63.10.115])
+        by smtp.gmail.com with ESMTPSA id z3sm409300lfd.38.2021.08.30.08.27.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 08:27:23 -0700 (PDT)
+From:   =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>
+Subject: [PATCH] HID: plantronics: Fix bare use of 'unsigned'
+Date:   Mon, 30 Aug 2021 18:27:11 +0300
+Message-Id: <20210830152711.991-1-aldas60@gmail.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-P2P client mode was only working the first time.
-On subsequent connection attempts the group was successfully created but
-no data was sent (no transmitted data packets were seen with a sniffer).
+Fix checkpatch warning: Prefer 'unsigned int' to bare use of 'unsigned'
 
-The reason for this was that the hardware was being configured in fixed
-rate mode with rate RSI_RATE_1 (1Mbps) which is not valid in the 5GHz band.
-
-In P2P mode wpa_supplicant uses NL80211_CMD_SET_TX_BITRATE_MASK to disallow
-the 11b rates in the 2.4GHz band which updated common->fixedrate_mask.
-
-rsi_set_min_rate() then used the fixedrate_mask to calculate the minimum
-allowed rate, or 0xffff = auto if none was found.
-However that calculation did not account for the different rate sets
-allowed in the different bands leading to the error.
-
-Fixing set_min_rate() would result in 6Mb/s being used all the time
-which is not what we want either.
-
-The reason the problem did not occur on the first connection is that
-rsi_mac80211_set_rate_mask() only updated the fixedrate_mask for
-the *current* band. When it was called that was still 2.4GHz as the
-switch is done later. So the when set_min_rate() was subsequently
-called after the switch to 5GHz it still had a mask of zero, leading
-to defaulting to auto mode.
-
-Fix this by differentiating the case of a single rate being
-requested, in which case the hardware will be used in fixed rate
-mode with just that rate, and multiple rates being requested,
-in which case we remain in auto mode but the firmware rate selection
-algorithm is configured with a restricted set of rates.
-
-Fixes: dad0d04fa7ba ("rsi: Add RS9113 wireless driver")
-Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
-CC: stable@vger.kernel.org
+Signed-off-by: Aldas Taraškevičius <aldas60@gmail.com>
 ---
- drivers/net/wireless/rsi/rsi_91x_hal.c      |  8 ++--
- drivers/net/wireless/rsi/rsi_91x_mac80211.c | 74 +++++++++--------------------
- drivers/net/wireless/rsi/rsi_91x_mgmt.c     | 21 +++++---
- drivers/net/wireless/rsi/rsi_main.h         | 12 +++--
- 4 files changed, 50 insertions(+), 65 deletions(-)
+ drivers/hid/hid-plantronics.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_hal.c b/drivers/net/wireless/rsi/rsi_91x_hal.c
-index 2aa9f0b..dca81a4 100644
---- a/drivers/net/wireless/rsi/rsi_91x_hal.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_hal.c
-@@ -214,15 +214,17 @@ int rsi_prepare_data_desc(struct rsi_common *common, struct sk_buff *skb)
- 			RSI_WIFI_DATA_Q);
- 	data_desc->header_len = ieee80211_size;
+diff --git a/drivers/hid/hid-plantronics.c b/drivers/hid/hid-plantronics.c
+index e81b7cec2d12..4aae7569e353 100644
+--- a/drivers/hid/hid-plantronics.c
++++ b/drivers/hid/hid-plantronics.c
+@@ -143,7 +143,7 @@ static int plantronics_event(struct hid_device *hdev, struct hid_field *field,
  
--	if (common->min_rate != RSI_RATE_AUTO) {
-+	if (common->rate_config[common->band].fixed_enabled) {
- 		/* Send fixed rate */
-+		u16 fixed_rate = common->rate_config[common->band].fixed_hw_rate;
-+
- 		data_desc->frame_info = cpu_to_le16(RATE_INFO_ENABLE);
--		data_desc->rate_info = cpu_to_le16(common->min_rate);
-+		data_desc->rate_info = cpu_to_le16(fixed_rate);
- 
- 		if (conf_is_ht40(&common->priv->hw->conf))
- 			data_desc->bbp_info = cpu_to_le16(FULL40M_ENABLE);
- 
--		if ((common->vif_info[0].sgi) && (common->min_rate & 0x100)) {
-+		if (common->vif_info[0].sgi && (fixed_rate & 0x100)) {
- 		       /* Only MCS rates */
- 			data_desc->rate_info |=
- 				cpu_to_le16(ENABLE_SHORTGI_RATE);
-diff --git a/drivers/net/wireless/rsi/rsi_91x_mac80211.c b/drivers/net/wireless/rsi/rsi_91x_mac80211.c
-index b66975f..e70c1c7f 100644
---- a/drivers/net/wireless/rsi/rsi_91x_mac80211.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_mac80211.c
-@@ -510,7 +510,6 @@ static int rsi_mac80211_add_interface(struct ieee80211_hw *hw,
- 	if ((vif->type == NL80211_IFTYPE_AP) ||
- 	    (vif->type == NL80211_IFTYPE_P2P_GO)) {
- 		rsi_send_rx_filter_frame(common, DISALLOW_BEACONS);
--		common->min_rate = RSI_RATE_AUTO;
- 		for (i = 0; i < common->max_stations; i++)
- 			common->stations[i].sta = NULL;
- 	}
-@@ -1228,20 +1227,32 @@ static int rsi_mac80211_set_rate_mask(struct ieee80211_hw *hw,
- 				      struct ieee80211_vif *vif,
- 				      const struct cfg80211_bitrate_mask *mask)
+ static unsigned long plantronics_device_type(struct hid_device *hdev)
  {
-+	const unsigned int mcs_offset = ARRAY_SIZE(rsi_rates);
- 	struct rsi_hw *adapter = hw->priv;
- 	struct rsi_common *common = adapter->priv;
--	enum nl80211_band band = hw->conf.chandef.chan->band;
-+	int i;
+-	unsigned i, col_page;
++	unsigned int i, col_page;
+ 	unsigned long plt_type = hdev->product;
  
- 	mutex_lock(&common->mutex);
--	common->fixedrate_mask[band] = 0;
- 
--	if (mask->control[band].legacy == 0xfff) {
--		common->fixedrate_mask[band] =
--			(mask->control[band].ht_mcs[0] << 12);
--	} else {
--		common->fixedrate_mask[band] =
--			mask->control[band].legacy;
-+	for (i = 0; i < ARRAY_SIZE(common->rate_config); i++) {
-+		struct rsi_rate_config *cfg = &common->rate_config[i];
-+		u32 bm;
-+
-+		bm = mask->control[i].legacy | (mask->control[i].ht_mcs[0] << mcs_offset);
-+		if (hweight32(bm) == 1) { /* single rate */
-+			int rate_index = ffs(bm) - 1;
-+
-+			if (rate_index < mcs_offset)
-+				cfg->fixed_hw_rate = rsi_rates[rate_index].hw_value;
-+			else
-+				cfg->fixed_hw_rate = rsi_mcsrates[rate_index - mcs_offset];
-+			cfg->fixed_enabled = true;
-+		} else {
-+			cfg->configured_mask = bm;
-+			cfg->fixed_enabled = false;
-+		}
- 	}
-+
- 	mutex_unlock(&common->mutex);
- 
- 	return 0;
-@@ -1378,46 +1389,6 @@ void rsi_indicate_pkt_to_os(struct rsi_common *common,
- 	ieee80211_rx_irqsafe(hw, skb);
- }
- 
--static void rsi_set_min_rate(struct ieee80211_hw *hw,
--			     struct ieee80211_sta *sta,
--			     struct rsi_common *common)
--{
--	u8 band = hw->conf.chandef.chan->band;
--	u8 ii;
--	u32 rate_bitmap;
--	bool matched = false;
--
--	common->bitrate_mask[band] = sta->supp_rates[band];
--
--	rate_bitmap = (common->fixedrate_mask[band] & sta->supp_rates[band]);
--
--	if (rate_bitmap & 0xfff) {
--		/* Find out the min rate */
--		for (ii = 0; ii < ARRAY_SIZE(rsi_rates); ii++) {
--			if (rate_bitmap & BIT(ii)) {
--				common->min_rate = rsi_rates[ii].hw_value;
--				matched = true;
--				break;
--			}
--		}
--	}
--
--	common->vif_info[0].is_ht = sta->ht_cap.ht_supported;
--
--	if ((common->vif_info[0].is_ht) && (rate_bitmap >> 12)) {
--		for (ii = 0; ii < ARRAY_SIZE(rsi_mcsrates); ii++) {
--			if ((rate_bitmap >> 12) & BIT(ii)) {
--				common->min_rate = rsi_mcsrates[ii];
--				matched = true;
--				break;
--			}
--		}
--	}
--
--	if (!matched)
--		common->min_rate = 0xffff;
--}
--
- /**
-  * rsi_mac80211_sta_add() - This function notifies driver about a peer getting
-  *			    connected.
-@@ -1516,9 +1487,9 @@ static int rsi_mac80211_sta_add(struct ieee80211_hw *hw,
- 
- 	if ((vif->type == NL80211_IFTYPE_STATION) ||
- 	    (vif->type == NL80211_IFTYPE_P2P_CLIENT)) {
--		rsi_set_min_rate(hw, sta, common);
-+		common->bitrate_mask[common->band] = sta->supp_rates[common->band];
-+		common->vif_info[0].is_ht = sta->ht_cap.ht_supported;
- 		if (sta->ht_cap.ht_supported) {
--			common->vif_info[0].is_ht = true;
- 			common->bitrate_mask[NL80211_BAND_2GHZ] =
- 					sta->supp_rates[NL80211_BAND_2GHZ];
- 			if ((sta->ht_cap.cap & IEEE80211_HT_CAP_SGI_20) ||
-@@ -1592,7 +1563,6 @@ static int rsi_mac80211_sta_remove(struct ieee80211_hw *hw,
- 		bss->qos = sta->wme;
- 		common->bitrate_mask[NL80211_BAND_2GHZ] = 0;
- 		common->bitrate_mask[NL80211_BAND_5GHZ] = 0;
--		common->min_rate = 0xffff;
- 		common->vif_info[0].is_ht = false;
- 		common->vif_info[0].sgi = false;
- 		common->vif_info[0].seq_start = 0;
-diff --git a/drivers/net/wireless/rsi/rsi_91x_mgmt.c b/drivers/net/wireless/rsi/rsi_91x_mgmt.c
-index a25742a..0848f7a 100644
---- a/drivers/net/wireless/rsi/rsi_91x_mgmt.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_mgmt.c
-@@ -276,7 +276,7 @@ static void rsi_set_default_parameters(struct rsi_common *common)
- 	common->channel_width = BW_20MHZ;
- 	common->rts_threshold = IEEE80211_MAX_RTS_THRESHOLD;
- 	common->channel = 1;
--	common->min_rate = 0xffff;
-+	memset(&common->rate_config, 0, sizeof(common->rate_config));
- 	common->fsm_state = FSM_CARD_NOT_READY;
- 	common->iface_down = true;
- 	common->endpoint = EP_2GHZ_20MHZ;
-@@ -1314,7 +1314,7 @@ static int rsi_send_auto_rate_request(struct rsi_common *common,
- 	u8 band = hw->conf.chandef.chan->band;
- 	u8 num_supported_rates = 0;
- 	u8 rate_table_offset, rate_offset = 0;
--	u32 rate_bitmap;
-+	u32 rate_bitmap, configured_rates;
- 	u16 *selected_rates, min_rate;
- 	bool is_ht = false, is_sgi = false;
- 	u16 frame_len = sizeof(struct rsi_auto_rate);
-@@ -1364,6 +1364,10 @@ static int rsi_send_auto_rate_request(struct rsi_common *common,
- 			is_sgi = true;
- 	}
- 
-+	/* Limit to any rates administratively configured by cfg80211 */
-+	configured_rates = common->rate_config[band].configured_mask ?: 0xffffffff;
-+	rate_bitmap &= configured_rates;
-+
- 	if (band == NL80211_BAND_2GHZ) {
- 		if ((rate_bitmap == 0) && (is_ht))
- 			min_rate = RSI_RATE_MCS0;
-@@ -1389,10 +1393,13 @@ static int rsi_send_auto_rate_request(struct rsi_common *common,
- 	num_supported_rates = jj;
- 
- 	if (is_ht) {
--		for (ii = 0; ii < ARRAY_SIZE(mcs); ii++)
--			selected_rates[jj++] = mcs[ii];
--		num_supported_rates += ARRAY_SIZE(mcs);
--		rate_offset += ARRAY_SIZE(mcs);
-+		for (ii = 0; ii < ARRAY_SIZE(mcs); ii++) {
-+			if (configured_rates & BIT(ii + ARRAY_SIZE(rsi_rates))) {
-+				selected_rates[jj++] = mcs[ii];
-+				num_supported_rates++;
-+				rate_offset++;
-+			}
-+		}
- 	}
- 
- 	sort(selected_rates, jj, sizeof(u16), &rsi_compare, NULL);
-@@ -1482,7 +1489,7 @@ void rsi_inform_bss_status(struct rsi_common *common,
- 					      qos_enable,
- 					      aid, sta_id,
- 					      vif);
--		if (common->min_rate == 0xffff)
-+		if (!common->rate_config[common->band].fixed_enabled)
- 			rsi_send_auto_rate_request(common, sta, sta_id, vif);
- 		if (opmode == RSI_OPMODE_STA &&
- 		    !(assoc_cap & WLAN_CAPABILITY_PRIVACY) &&
-diff --git a/drivers/net/wireless/rsi/rsi_main.h b/drivers/net/wireless/rsi/rsi_main.h
-index 810485a..dcf8fb4 100644
---- a/drivers/net/wireless/rsi/rsi_main.h
-+++ b/drivers/net/wireless/rsi/rsi_main.h
-@@ -61,6 +61,7 @@ enum RSI_FSM_STATES {
- extern u32 rsi_zone_enabled;
- extern __printf(2, 3) void rsi_dbg(u32 zone, const char *fmt, ...);
- 
-+#define RSI_MAX_BANDS			2
- #define RSI_MAX_VIFS                    3
- #define NUM_EDCA_QUEUES                 4
- #define IEEE80211_ADDR_LEN              6
-@@ -230,6 +231,12 @@ struct rsi_9116_features {
- 	u32 ps_options;
- };
- 
-+struct rsi_rate_config {
-+	u32 configured_mask;	/* configured by mac80211 bits 0-11=legacy 12+ mcs */
-+	u16 fixed_hw_rate;
-+	bool fixed_enabled;
-+};
-+
- struct rsi_common {
- 	struct rsi_hw *priv;
- 	struct vif_priv vif_info[RSI_MAX_VIFS];
-@@ -255,8 +262,8 @@ struct rsi_common {
- 	u8 channel_width;
- 
- 	u16 rts_threshold;
--	u16 bitrate_mask[2];
--	u32 fixedrate_mask[2];
-+	u32 bitrate_mask[RSI_MAX_BANDS];
-+	struct rsi_rate_config rate_config[RSI_MAX_BANDS];
- 
- 	u8 rf_reset;
- 	struct transmit_q_stats tx_stats;
-@@ -277,7 +284,6 @@ struct rsi_common {
- 	u8 mac_id;
- 	u8 radio_id;
- 	u16 rate_pwr[20];
--	u16 min_rate;
- 
- 	/* WMM algo related */
- 	u8 selected_qnum;
+ 	/* multi-HID interfaces? - plt_type is PID */
 -- 
-1.9.1
+2.33.0
 
