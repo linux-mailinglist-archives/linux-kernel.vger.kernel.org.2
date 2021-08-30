@@ -2,94 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4098C3FAFE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 04:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26BC53FAFD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 04:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236302AbhH3CkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 29 Aug 2021 22:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236307AbhH3CkH (ORCPT
+        id S234903AbhH3Cjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 29 Aug 2021 22:39:40 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:36164 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234163AbhH3Cjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 29 Aug 2021 22:40:07 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1118C061796
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 19:39:14 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id x16so6017633pll.2
-        for <linux-kernel@vger.kernel.org>; Sun, 29 Aug 2021 19:39:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VZWe9odMZgnt9mjtq2iv4uaqfnCxctrfiTl8at5lg+U=;
-        b=H5JVPbTHC8SB8r/+TeRp4H245mDk6SyWLQnjgfEMHdAhlNV/mq4L5R5OVUT1A+px2E
-         9k4RQmsdK8EjY8F/XWTekRCMfWyNMQkLrtF2uBaMaRH9b/4nR5u3vQ8chIh5pbV+gxvM
-         cW1XDRcH3ABMFvihUp/VMVxbZr/M0RU85KKnFQyFOVwevLPn1O57O2ECc//J9MzbOJmU
-         WthZaFTkf0SA7M/I9D5FzKm+pJIDPFEL+DZBJHj2YtfJ6jOHBAbXMNp6PPgJcfBMPIGD
-         0CRLHlujjrFyWOICoDcacrvJD+h1qeFUNVv69/g8muXTHwq8LWUdPwpQDxBPLKqA7fCU
-         Gm8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VZWe9odMZgnt9mjtq2iv4uaqfnCxctrfiTl8at5lg+U=;
-        b=dXsG5QiOUlx/kzG6jQ0tvKMvUWHD5vPsn9LeGDZh9B2esMVaUhDwo+nt1qLqbmNOn+
-         x8P6kCbGv5HE8CIyY6B3u/HTaMuH1KzasI59Rugb8LiuVAczZka4TGS62wb91p9XOQgx
-         WotXUIEctUxM9OMXHYly68iPhMWMWVHZnoaKLQfK6EJtXAnStkLsP1qgRXNzsYaZcYSm
-         Xi9umQoQo5No56wJ0/f78sBPkHvp/I+egCtgS1V1EqMeneyb/WAICg0fzjYjjBFJ2me9
-         UBz/bOT10dOv4+fg+MpE2VxdjLsDl566aceV3+9mbJo+C3lAQW0lecBJ+Mm7fgg1u4a8
-         6XZw==
-X-Gm-Message-State: AOAM532t6w3I5LsHlXmDlL5siKAsna47aprlVu32NQl0yaHz4frrry0k
-        n3nHdl47mUBSW7AZCsaJKpBFMQ==
-X-Google-Smtp-Source: ABdhPJyCt808VXD8pif69vuHIxZz9bz2CGJZPLiMhs3Yn7Mxjw9rlv0cHRIwrwSM44nC1ZLlM2qE3g==
-X-Received: by 2002:a17:90a:598e:: with SMTP id l14mr36347757pji.28.1630291154320;
-        Sun, 29 Aug 2021 19:39:14 -0700 (PDT)
-Received: from yc.huaqin.com ([101.78.151.213])
-        by smtp.gmail.com with ESMTPSA id g13sm906839pfi.176.2021.08.29.19.39.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 19:39:14 -0700 (PDT)
-From:   yangcong <yangcong5@huaqin.corp-partner.google.com>
-To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
-        daniel@ffwll.ch, dianders@google.com
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        yangcong <yangcong5@huaqin.corp-partner.google.com>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [v4 4/4] dt-bindngs: display: panel: Add BOE and INX panel bindings
-Date:   Mon, 30 Aug 2021 10:38:49 +0800
-Message-Id: <20210830023849.258839-5-yangcong5@huaqin.corp-partner.google.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210830023849.258839-1-yangcong5@huaqin.corp-partner.google.com>
-References: <20210830023849.258839-1-yangcong5@huaqin.corp-partner.google.com>
+        Sun, 29 Aug 2021 22:39:39 -0400
+X-UUID: 173842058bd14ab19b6ef8674c3acd5e-20210830
+X-UUID: 173842058bd14ab19b6ef8674c3acd5e-20210830
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1295346586; Mon, 30 Aug 2021 10:38:42 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 30 Aug 2021 10:38:40 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas07.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Mon, 30 Aug 2021 10:38:40 +0800
+From:   <guangming.cao@mediatek.com>
+To:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <linux-media@vger.kernel.org>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA-BUF HEAPS FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+CC:     <wsd_upstream@mediatek.com>, <isaacm@codeaurora.org>,
+        <sspatil@google.com>, <hridya@google.com>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: [PATCH] dma-buf: Add support for mapping buffers with DMA attributes
+Date:   Mon, 30 Aug 2021 10:39:11 +0800
+Message-ID: <20210830023911.4410-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for boe tv110c9m-ll3, inx hj110iz-01a panel.
+From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+When mapping the memory represented by a dma-buf into a device's
+address space, it might be desireable to map the memory with
+certain DMA attributes. Thus, introduce the dma_mapping_attrs
+field in the dma_buf_attachment structure so that when
+the memory is mapped with dma_buf_map_attachment, it is mapped
+with the desired DMA attributes.
+
+Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+Signed-off-by: Sandeep Patil <sspatil@google.com>
+Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
 ---
- .../devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml   | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/dma-buf/heaps/cma_heap.c    | 6 ++++--
+ drivers/dma-buf/heaps/system_heap.c | 6 ++++--
+ include/linux/dma-buf.h             | 3 +++
+ 3 files changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-index a7091ae0f791..45bd82931805 100644
---- a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-@@ -26,6 +26,10 @@ properties:
-       - auo,b101uan08.3
-         # BOE TV105WUM-NW0 10.5" WUXGA TFT LCD panel
-       - boe,tv105wum-nw0
-+        # BOE TV110C9M-LL3 10.95" WUXGA TFT LCD panel
-+      - boe,tv110c9m-ll3
-+        # INX HJ110IZ-01A 10.95" WUXGA TFT LCD panel
-+      - inx,hj110iz-01a
+diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
+index 0c05b79870f9..2c9feb3bfc3e 100644
+--- a/drivers/dma-buf/heaps/cma_heap.c
++++ b/drivers/dma-buf/heaps/cma_heap.c
+@@ -99,9 +99,10 @@ static struct sg_table *cma_heap_map_dma_buf(struct dma_buf_attachment *attachme
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
+ 	struct sg_table *table = &a->table;
++	int attrs = attachment->dma_map_attrs;
+ 	int ret;
  
-   reg:
-     description: the virtual channel number of a DSI peripheral
+-	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
++	ret = dma_map_sgtable(attachment->dev, table, direction, attrs);
+ 	if (ret)
+ 		return ERR_PTR(-ENOMEM);
+ 	a->mapped = true;
+@@ -113,9 +114,10 @@ static void cma_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
+ 				   enum dma_data_direction direction)
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
++	int attrs = attachment->dma_map_attrs;
+ 
+ 	a->mapped = false;
+-	dma_unmap_sgtable(attachment->dev, table, direction, 0);
++	dma_unmap_sgtable(attachment->dev, table, direction, attrs);
+ }
+ 
+ static int cma_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 23a7e74ef966..fc7b1e02988e 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -130,9 +130,10 @@ static struct sg_table *system_heap_map_dma_buf(struct dma_buf_attachment *attac
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
+ 	struct sg_table *table = a->table;
++	int attrs = attachment->dma_map_attrs;
+ 	int ret;
+ 
+-	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
++	ret = dma_map_sgtable(attachment->dev, table, direction, attrs);
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
+@@ -145,9 +146,10 @@ static void system_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
+ 				      enum dma_data_direction direction)
+ {
+ 	struct dma_heap_attachment *a = attachment->priv;
++	int attrs = attachment->dma_map_attrs;
+ 
+ 	a->mapped = false;
+-	dma_unmap_sgtable(attachment->dev, table, direction, 0);
++	dma_unmap_sgtable(attachment->dev, table, direction, attrs);
+ }
+ 
+ static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index efdc56b9d95f..4d650731766e 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -379,6 +379,8 @@ struct dma_buf_attach_ops {
+  * @importer_ops: importer operations for this attachment, if provided
+  * dma_buf_map/unmap_attachment() must be called with the dma_resv lock held.
+  * @importer_priv: importer specific attachment data.
++ * @dma_map_attrs: DMA attributes to be used when the exporter maps the buffer
++ * through dma_buf_map_attachment.
+  *
+  * This structure holds the attachment information between the dma_buf buffer
+  * and its user device(s). The list contains one attachment struct per device
+@@ -399,6 +401,7 @@ struct dma_buf_attachment {
+ 	const struct dma_buf_attach_ops *importer_ops;
+ 	void *importer_priv;
+ 	void *priv;
++	unsigned long dma_map_attrs;
+ };
+ 
+ /**
 -- 
-2.25.1
+2.17.1
 
