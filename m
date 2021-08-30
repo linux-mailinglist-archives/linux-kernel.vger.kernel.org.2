@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FC13FBB25
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0DF3FBB28
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238214AbhH3RmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 13:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
+        id S234054AbhH3RmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 13:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238039AbhH3RmG (ORCPT
+        with ESMTP id S238194AbhH3RmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 13:42:06 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94845C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:41:12 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id y3so16957861ilm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:41:12 -0700 (PDT)
+        Mon, 30 Aug 2021 13:42:19 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9770AC061575;
+        Mon, 30 Aug 2021 10:41:25 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id p38so32960318lfa.0;
+        Mon, 30 Aug 2021 10:41:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+O0RNc3jbrY9aGTI5kzjQXfNk8YSfy4dVQqI70uLIpA=;
-        b=XoW88OaK4oFkHhPRFjhLU/lr9tE8W1Nk2kQVGiS6tt5KQmoTjvbYrjAvU1HfwGuTqe
-         r6DfX6ZrdtMyxcExcNkA3s4rREuAxcs9uk6rQdnH3+ngLuSRBT0/quXTVtUCTWgA7aQd
-         SwrxD9JMoRDhYuGZqTRXopNUyZepMDL97yTTsZIXtCfCciYXPRpPBRGQx2x3EuZQsKSJ
-         qFshnx/HVkN9q47slR+UHhzEqRBVMDDRC6ADzNwxzMoSsG451hp6rB26qZuVfAREU144
-         sLvZS9op5awv+yuCYHQpNoj5h6LH1r3GIM51EhNS8Pn1+FKd3Wf4UGJUcLJsL38hUfV0
-         TPHw==
+        bh=lZOE6NdYi7YGPVoRW2vvmAPerIza6xFYslQzFR4ZBtE=;
+        b=AB1J0NmrLstVowEAiKWurJRlP2pbZhAKNC40qWhnjtDw4U6fogsrSQx7sxPXkxeL8h
+         KqJ6C2h3gCdVs0ZMr+kwQATPZaUtTEiWvwcm4U9+lpVKTJqv6/BdUlnaD86nl6S0LmB2
+         YKuZTGLZKCTq0UlhzS6QyieGeh6QufxKVjlw3lSot6Ngg4Oj3U45ZL9ktQdNPQRxjoSg
+         SXklBgCtTxh0L9gSmMFbKJjC23VOyDVJMBHNOPYVhdJTRxlqZ7d7ptwVKu5IwB+6TRi2
+         NhFHUnyyxdBbD4oY76M49syF2N0ZGf8Ry03BKJJoH9+62hgL1+CcPcunW44zEOcRcA3t
+         y5zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+O0RNc3jbrY9aGTI5kzjQXfNk8YSfy4dVQqI70uLIpA=;
-        b=YwLCIlpjsjlQNOZtEaoIWelxftqA5AhXY6GCX08vD3hz4AeEf9G6NYvjW3hnpllPCv
-         e6aw3P6NeUdK5peXby6OJ7okIMF56q1s/wK6/u948N6K8gzqWBocngBcPJ2T1WzFwEsn
-         HfWXz+NCRXZevFaDAj+gtRZFhWzhXV31Wy1WQ7wy624oxc+ZvfL25szYGaVVGSfUWMW9
-         cTZhiPdx17u7LMWDVAfSiebC4OnXi7cAVvaqDVETavY2HO2y5CD5SKk74LGMrVT4+sWV
-         Z3MTPcW6i+xWgl1D8rU7RajqK4Zlq/sNoqfb6+2Cf6Nfe++UUzeMPnsMa/LVi9fhjst4
-         YXdg==
-X-Gm-Message-State: AOAM532xTjcmgmc/FIa4abGhD1K2R2MbNNmnM4/hsNEbr9bCtyjnpP2p
-        GC4Zgeu48myi1PDcjg0+GNk55g56gtDTtXd6W/A=
-X-Google-Smtp-Source: ABdhPJzFZ6SAb33f8nLKqru5YTGbEkGGGFPUH9//jGQBpTtQ+Q9bABNdA/d7+wvcoQxpwiW07YlYhdcPFZrF1/UJrgA=
-X-Received: by 2002:a05:6e02:130e:: with SMTP id g14mr17416934ilr.81.1630345271925;
- Mon, 30 Aug 2021 10:41:11 -0700 (PDT)
+        bh=lZOE6NdYi7YGPVoRW2vvmAPerIza6xFYslQzFR4ZBtE=;
+        b=EACxsn3acJkquPPjE6WvbVKnF3ldH9P6qY0C3G+uZLBtejZ6JATpJQ1Jvhvufuc06K
+         z1P+q9344GTUkuPyCCh/yz5NJGnX5lghOTra43ihxneSEn6hwPCiB1ZRZkZ5OXUkTOjj
+         4fz/yrGhYK8X1WO8bpuC/KnmuMATnrbfavLnBbBxUe/2DV67XgvFqAHRygYc7AJ9UrJT
+         +WfuiYiuhhiGW+oh1L6N6m/5xObws7Np2DefZ54jFXR7Uy3ig69dz+0/yT1bsga+IDTF
+         MDaX+Mc/Clo3jP6GPy2F7yeB+GBPovsoFzJ1g8Me1PDU+cypFmu1BGBHFFMCICviIXMP
+         NECg==
+X-Gm-Message-State: AOAM531p0CtyesXbC4mxe2g3CqSzJD5SoZJ6jIu3pFvZKjJP9Atwr9fS
+        8KuRHs3YfuMiyF+y91s2pk/pjFJDHYsVPZ6lOwo=
+X-Google-Smtp-Source: ABdhPJxPCpk3CIRP6sbIr9jWcESA/cBvGxq9HPNlVRkhIW40nQT4VjSrn/CKh1mxsXM2ZRlXzyTBswE0UPmiBD7253o=
+X-Received: by 2002:a19:5f0d:: with SMTP id t13mr17970186lfb.229.1630345283860;
+ Mon, 30 Aug 2021 10:41:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAK+bU8e_mue_-a4cm85THkg=MyNOf6O2so4D+22wzG_LPu=4LA@mail.gmail.com>
- <CAADnVQKNNcj_2U_E=3NPgbO76JB4MPZ131zd4ykE4jOt6TAVkg@mail.gmail.com>
-In-Reply-To: <CAADnVQKNNcj_2U_E=3NPgbO76JB4MPZ131zd4ykE4jOt6TAVkg@mail.gmail.com>
-From:   Etienne Martineau <etmartin101@gmail.com>
-Date:   Mon, 30 Aug 2021 13:41:01 -0400
-Message-ID: <CAK+bU8fAEL0tyG1wA24LWnT=-X+_Gsti3gEq3Y=Wp11MWH+q0Q@mail.gmail.com>
-Subject: Re: Question related to ( commit 9f691549f76d "bpf: fix struct
- htab_elem layout" )
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     yonch@yonch.com, Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Chenbo Feng <fengc@google.com>, sashal@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210830172140.414-1-caihuoqing@baidu.com> <20210830172140.414-2-caihuoqing@baidu.com>
+In-Reply-To: <20210830172140.414-2-caihuoqing@baidu.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 30 Aug 2021 14:41:12 -0300
+Message-ID: <CAOMZO5CG_NtGC3ZJv+qy2YOk-J6gLyZpUMty+jna3v4V6DfmnQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] iio: adc: Init the driver for NXP i.MX8QuadXPlus
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>, alex.dewar90@gmail.com,
+        linux-iio@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 12:39 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Aug 30, 2021 at 7:17 AM Etienne Martineau <etmartin101@gmail.com> wrote:
-> >
-> > Hi,
-> >
-> > I've been staring at this commit for some time and I wonder what were the
-> > symptoms when the issue was reproduced?
-> >   "The bug was discovered by manual code analysis and reproducible
-> >     only with explicit udelay() in lookup_elem_raw()."
-> >
-> > I tried various stress test + timing combinations in lookup_elem_raw() but no
-> > luck.
->
-> That fix was a long time ago :)
-> afair the issue will not look like  a crash, but rather an element
-> will not be found.
-> That's what lookup_nulls_elem_raw() is fixing.
+Hi Cai,
 
-Under that same scenario I wonder if it's also possible to have a
-messed up element somehow?
+On Mon, Aug 30, 2021 at 2:22 PM Cai Huoqing <caihuoqing@baidu.com> wrote:
 
->
-> > I believe that one of our production boxes ran into that issue lately with a GPF
-> > in the area of htab_map_lookup_elem(). The crash was seen on an outdated
-> > 4.9 stable.
->
-> Would be great if you can reproduce it on the latest kernel.
+> +static int imx8qxp_adc_probe(struct platform_device *pdev)
+> +{
+> +       return 0;
+> +}
 
-We have another deployment on 5.4 stable running the same bpf code so
-will let you know.
+This is not the correct way to split the series.
+
+Patches 1, 2, 3, and 5 could be squashed into a single patch.
+
+Thanks
