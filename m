@@ -2,194 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D363FBDAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840713FBDB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236019AbhH3U6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54470 "EHLO
+        id S236279AbhH3U7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 16:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235968AbhH3U6T (ORCPT
+        with ESMTP id S235898AbhH3U7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:58:19 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D3DC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:57:25 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id y1-20020a0cec01000000b00375e130950fso2073062qvo.14
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:57:24 -0700 (PDT)
+        Mon, 30 Aug 2021 16:59:25 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CF8C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:58:31 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id y3so17683632ilm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:58:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ijncrk8rUqsxi+KMQZrb7TMOV/czYWoHZiWYp38B42A=;
-        b=diWrc1cigzn6KVGYpj15+fe4oHAsHOaDOHR/zD7GPnsOB2PLhom2HDOytth2iYFuSr
-         6VEK6hihUN4yvm33+0HZLSL0blWmak52MNeuyx5ECn8mwGrczChNnaz3lKmks2UBHwjR
-         4nvwgbXpFiSZjGGvRbo0/BwyJ7eOVSTHO/NXXS7aAJcEaeIJckfuz2Pjeb0atSDQHcAd
-         sTG/HUlH+PYCPzK7bgFTfWbkCP7EQmgpuni+C5OeN0/zeIl1FpHfbJfi5WMzp3orqAbO
-         /KUHfE93fPMbYDSUJMWkgj/5pxptUh7a3ZCNpztbMYwzwNVjXza3Ck6IfY+xSy+JEluT
-         ITbQ==
+        bh=KI2RPuIRoh7NOePByo6KVOnUF9gby91sf7lNNFA6eIg=;
+        b=SBMG9ymeVS2vlI8RISsrSy2N4QQxU/x92frWOGSDNUosIAdgQmUR7yxj5yGIbqr0xg
+         jeP/mvg9VN50cKoY/vFIR1GALIZN/fOOBtZYtxgQSzvByeUqH3ip5vB7nYQcbtLD+6JM
+         KmSq46SN9goyVG1Jl3XZImHJ2zWbD947M+dP8o/ewFQ9lTBxpVgvdQpQkJk1ycsaZoJK
+         hEdtbDsEpMCH4EwPHND0ichcKfPbaIi5HPGl445qZ+85dLm6GRP2OQFOeC330AFR8LKH
+         hbpP7EQSX0SHL7QkTzQbZic901OxHkIWmUtod5X5bZPwDD4M7zevPmc4UR2qE9WupDjQ
+         /EFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ijncrk8rUqsxi+KMQZrb7TMOV/czYWoHZiWYp38B42A=;
-        b=ImxjKksdqUJZVnZpGCYHBsApCW7vFljtKEilE0wDsrFFShHm9zM4Gp8fJv3MnCPFfH
-         BDIZL1KTicHNk7IXUOKtB4t91gFBCxMygtaTuRoTJZGIiqB+b44TXSeY1jSlbQlnZ4dV
-         gyAU4gqjAWbN241sNFtb+Q7vQcq18AYVGpJWh8t0lc3SXDC74CGb1S49bpxxbOTYHExo
-         QX9Eb4OqxxJddfVZISK5i0maFjuiEKChWoYkntUa9qaZ0fQU/EGNDedcBydz1d7XKp/a
-         ediwHl34wgedVL9wCtSgJxsVdZL0qBmOrl0KKzPJEzsaKA1u8wzN7n5GAs2lY2aS87HA
-         DQ4A==
-X-Gm-Message-State: AOAM530FH3eBiErGOhbkGw8ZhDIdc9p7MKlsQhOWztrqIzq228E7uhWj
-        wY0Bi1nzIP/eVW3BDGw893FFSHofEy0=
-X-Google-Smtp-Source: ABdhPJwr/qupM/KV1lTNths63RBEx3WCz/61pTHw80lU811E3Ft+4wl8Tv63z8MNbNpXBp8llDs0t6oM1is=
-X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:e552:6d5e:b69d:968c])
- (user=pgonda job=sendgmr) by 2002:a0c:bece:: with SMTP id f14mr25050382qvj.25.1630357044119;
- Mon, 30 Aug 2021 13:57:24 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 13:57:16 -0700
-In-Reply-To: <20210830205717.3530483-1-pgonda@google.com>
-Message-Id: <20210830205717.3530483-3-pgonda@google.com>
-Mime-Version: 1.0
-References: <20210830205717.3530483-1-pgonda@google.com>
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH 2/3 V6] KVM, SEV: Add support for SEV-ES intra host migration
-From:   Peter Gonda <pgonda@google.com>
-To:     kvm@vger.kernel.org
-Cc:     Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KI2RPuIRoh7NOePByo6KVOnUF9gby91sf7lNNFA6eIg=;
+        b=TSrhN37p7mzXUdn4uwW9IpNIRJTp8LSUGN/bwc33zq3Shrvr8A5BNnNlHrYYAiolYW
+         e19dFDoFvOHVtX8lzCeG1vaQwK47bDDhNCQvHgCm+qSyOik7jfe4RoJSZeh9o5BeMeXF
+         rCXOxkK1JdKRoeTsfFeJA3PbbBZhAjPEPD+Nf5efMEi+kUcXgfzz+qyISqx5/roIFqwD
+         of8cIAd6N4ADNBLgwvVbQqJ5K1pG1QDy4i8pnUvkztfwMrDf5139FHGptvlBNgLgHIp0
+         IRB6QurhL/vwwK44eWbFOFKFN+pi3bJqLVynyaZxSlW+f+uir/oMcOwvXRDK/jyizTX5
+         hgqw==
+X-Gm-Message-State: AOAM53359kkbKJIAzs5pQIfZmIybR5eRjliwkeqKI6371UYnHrWgrnqt
+        K5KehAOD1KL/xmrmjX6qjclu0bzI9u0ImDNogVDIEQ==
+X-Google-Smtp-Source: ABdhPJwp3/kiOxyQkGJQbuBrPJLY89/1ucjlbEwBcLaoftrBluWg08kjh0Z6meSfc7wvI3FkBRVCWXtdVecglvTzALU=
+X-Received: by 2002:a05:6e02:1546:: with SMTP id j6mr17383378ilu.154.1630357110922;
+ Mon, 30 Aug 2021 13:58:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210830044425.2686755-1-mizhang@google.com> <20210830044425.2686755-2-mizhang@google.com>
+In-Reply-To: <20210830044425.2686755-2-mizhang@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 30 Aug 2021 13:58:19 -0700
+Message-ID: <CANgfPd8KKYRXGn9Vb-BjAGrhqq0pffE5_+j9KNODvpQGQhv=hg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] selftests: KVM: align guest physical memory base
+ address to 1GB
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Sean Christopherson <seanjc@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Peter Xu <peterx@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For SEV-ES to work with intra host migration the VMSAs, GHCB metadata,
-and other SEV-ES info needs to be preserved along with the guest's
-memory.
+On Sun, Aug 29, 2021 at 9:44 PM Mingwei Zhang <mizhang@google.com> wrote:
+>
+> Existing selftest library function always allocates GPA range that aligns
+> to the end of GPA address space, ie., the allocated GPA range guarantees to
+> end at the last available GPA. This ends up with the fact that selftest
+> programs cannot control the alignment of the base GPA. Depending on the
+> size of the allocation, the base GPA may align only on a 4K based
+> bounday.
+>
+> The alignment of base GPA sometimes creates problems for dirty logging
+> selftest where a 2MB-aligned or 1GB-aligned base GPA is needed to
+> create NPT/EPT mappings for hugepages.
+>
+> So, fix this issue and ensure all GPA allocation starts from a 1GB bounary
+> in all architectures.
+>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: David Matlack <dmatlack@google.com>
+> Cc: Jing Zhang <jingzhangos@google.com>
+> Cc: Peter Xu <peterx@redhat.com>
+>
+> Suggested-by: Ben Gardon <bgardon@google.com>
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
 
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Wanpeng Li <wanpengli@tencent.com>
-Cc: Jim Mattson <jmattson@google.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: kvm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- arch/x86/kvm/svm/sev.c | 62 ++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 60 insertions(+), 2 deletions(-)
+Reviewed-by: Ben Gardon <bgardon@google.com>
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 063cf26528bc..3324eed1a39e 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1545,6 +1545,59 @@ static void migrate_info_from(struct kvm_sev_info *dst,
- 	list_replace_init(&src->regions_list, &dst->regions_list);
- }
- 
-+static int migrate_vmsa_from(struct kvm *dst, struct kvm *src)
-+{
-+	int i, num_vcpus;
-+	struct kvm_vcpu *dst_vcpu, *src_vcpu;
-+	struct vcpu_svm *dst_svm, *src_svm;
-+
-+	num_vcpus = atomic_read(&dst->online_vcpus);
-+	if (num_vcpus != atomic_read(&src->online_vcpus)) {
-+		pr_warn_ratelimited(
-+			"Source and target VMs must have same number of vCPUs.\n");
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < num_vcpus; ++i) {
-+		src_vcpu = src->vcpus[i];
-+		if (!src_vcpu->arch.guest_state_protected) {
-+			pr_warn_ratelimited(
-+				"Source ES VM vCPUs must have protected state.\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	for (i = 0; i < num_vcpus; ++i) {
-+		src_vcpu = src->vcpus[i];
-+		src_svm = to_svm(src_vcpu);
-+		dst_vcpu = dst->vcpus[i];
-+		dst_svm = to_svm(dst_vcpu);
-+
-+		/*
-+		 * Copy VMSA and GHCB fields from the source to the destination.
-+		 * Clear them on the source to prevent the VM running and
-+		 * changing the state of the VMSA/GHCB unexpectedly.
-+		 */
-+		dst_vcpu->vcpu_id = src_vcpu->vcpu_id;
-+		dst_svm->vmsa = src_svm->vmsa;
-+		src_svm->vmsa = NULL;
-+		dst_svm->ghcb = src_svm->ghcb;
-+		src_svm->ghcb = NULL;
-+		dst_svm->vmcb->control.ghcb_gpa =
-+				src_svm->vmcb->control.ghcb_gpa;
-+		src_svm->vmcb->control.ghcb_gpa = 0;
-+		dst_svm->ghcb_sa = src_svm->ghcb_sa;
-+		src_svm->ghcb_sa = NULL;
-+		dst_svm->ghcb_sa_len = src_svm->ghcb_sa_len;
-+		src_svm->ghcb_sa_len = 0;
-+		dst_svm->ghcb_sa_sync = src_svm->ghcb_sa_sync;
-+		src_svm->ghcb_sa_sync = false;
-+		dst_svm->ghcb_sa_free = src_svm->ghcb_sa_free;
-+		src_svm->ghcb_sa_free = false;
-+	}
-+	return 0;
-+}
-+
- int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
- {
- 	struct kvm_sev_info *dst_sev = &to_kvm_svm(kvm)->sev_info;
-@@ -1556,7 +1609,7 @@ int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
- 	if (ret)
- 		return ret;
- 
--	if (!sev_guest(kvm) || sev_es_guest(kvm)) {
-+	if (!sev_guest(kvm)) {
- 		ret = -EINVAL;
- 		pr_warn_ratelimited("VM must be SEV enabled to migrate to.\n");
- 		goto out_unlock;
-@@ -1580,13 +1633,18 @@ int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
- 	if (ret)
- 		goto out_fput;
- 
--	if (!sev_guest(source_kvm) || sev_es_guest(source_kvm)) {
-+	if (!sev_guest(source_kvm)) {
- 		ret = -EINVAL;
- 		pr_warn_ratelimited(
- 			"Source VM must be SEV enabled to migrate from.\n");
- 		goto out_source;
- 	}
- 
-+	if (sev_es_guest(kvm)) {
-+		ret = migrate_vmsa_from(kvm, source_kvm);
-+		if (ret)
-+			goto out_source;
-+	}
- 	migrate_info_from(dst_sev, &to_kvm_svm(source_kvm)->sev_info);
- 	ret = 0;
- 
--- 
-2.33.0.259.gc128427fd7-goog
-
+> ---
+>  tools/testing/selftests/kvm/lib/perf_test_util.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/lib/perf_test_util.c b/tools/testing/selftests/kvm/lib/perf_test_util.c
+> index 0ef80dbdc116..96c30b8d6593 100644
+> --- a/tools/testing/selftests/kvm/lib/perf_test_util.c
+> +++ b/tools/testing/selftests/kvm/lib/perf_test_util.c
+> @@ -93,10 +93,10 @@ struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
+>         guest_test_phys_mem = (vm_get_max_gfn(vm) - guest_num_pages) *
+>                               perf_test_args.guest_page_size;
+>         guest_test_phys_mem &= ~(perf_test_args.host_page_size - 1);
+> -#ifdef __s390x__
+> -       /* Align to 1M (segment size) */
+> -       guest_test_phys_mem &= ~((1 << 20) - 1);
+> -#endif
+> +
+> +       /* Align to 1G for all architectures */
+> +       guest_test_phys_mem &= ~((1 << 30) - 1);
+> +
+>         pr_info("guest physical test memory offset: 0x%lx\n", guest_test_phys_mem);
+>
+>         /* Add extra memory slots for testing */
+> --
+> 2.33.0.259.gc128427fd7-goog
+>
