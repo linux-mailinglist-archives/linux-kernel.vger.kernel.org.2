@@ -2,171 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249E23FB421
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CC63FB423
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236434AbhH3Kwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 06:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236337AbhH3Kwe (ORCPT
+        id S236443AbhH3Kxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 06:53:42 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:57684 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236337AbhH3Kxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:52:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F803C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 03:51:41 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630320699;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/RSN32Fc68vnUkBjhF7yk4nL6Ecg28CKvWg6fH1Afb8=;
-        b=DgC8APdWcPdyCu5Ldzu8bfCy59RdZ61gBbCJI65WTqqDRaBbTwpJJOCxiRCeVX97f/IIQH
-        dFwJKlhjLR4qhSheT81COEvjCYcOSaFnOvZZ9D+Yo6iq1U0ajFvqbF7R3mfrftcY0shCPh
-        2w/WoTnU2UaFRulJ6s1OgpIuylWlPbjqsmugALh8lhPM6Ab1aR1Gn/iEIhue3CE6Kl42Vf
-        DpWrl5RqwNYrdHgy8WpDfJ5TBuDqzVuUt87+BPuwwxL+XLfjLzkukI90pYaKUOoDHRUsWt
-        7yRFf6ZPOOB0b3FqmH5NKEHkoVAzyyMRkFrbEHCWN8YDPJJQCKWSjtgpFr5uMg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630320699;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/RSN32Fc68vnUkBjhF7yk4nL6Ecg28CKvWg6fH1Afb8=;
-        b=fbCcLlRd4ULBNGXuXvWkAg2PEiFfQyBULPr5a0UBMO5KUiHZ+ilvuLs7aYJs3O8GsNOyUD
-        hBKoV+oS/fnb/TBA==
-To:     syzbot <syzbot+f2ceae48bb0c0ab08b9d@syzkaller.appspotmail.com>,
-        bp@alien8.de, dwmw@amazon.co.uk, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com, x86@kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [syzbot] WARNING in rcu_core
-In-Reply-To: <000000000000d4ba6405cac3b065@google.com>
-References: <000000000000d4ba6405cac3b065@google.com>
-Date:   Mon, 30 Aug 2021 12:51:39 +0200
-Message-ID: <87eeabgq84.ffs@tglx>
+        Mon, 30 Aug 2021 06:53:41 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17U6wpYt020827;
+        Mon, 30 Aug 2021 10:52:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=sd+bb+gDxgRL0SbgG4hmkv+Pr8q0+Voi9pEY6LfdGyg=;
+ b=P/uEQL6CZ90/Z1kJXHHyAoOkpvJgbzX08nGfZcJhW20wCOduZHpzWXt4juKIFyh2C30Z
+ yJZan2roWcqB/U1QDf4HwolKG/E33Fef81KqasfGRQ2LgxHvpzz5BRhh5OynPvh6rAYL
+ fa5FWBxccBc8ooaknNjsxpM9AgtgzZwxYK810CHNDywZOMt22IEvxZ3ppccoORRomjNs
+ tDvRWv1SSVQSMPgHSH2ze7Vqs1Rh0RVUTkl52OuJNpKSPrSOxSrU2GtCqBRPviZjGlbW
+ mVG7ulQB6r07bUEOMxvT4zf87vF4m20t/qZtZDb2O0jGMLUFOti4/WSP4Wf+Idw+txPB Mg== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=sd+bb+gDxgRL0SbgG4hmkv+Pr8q0+Voi9pEY6LfdGyg=;
+ b=jV15pLjrP6lyzGl6KZxhK2CAxoBbtpGvdF4G2GVvZNp0I11RymLiuNuLxv00vg4Q8L04
+ XBXAUuMXcbWn1hWj0aOkygj/easKX+hYzTzZdRtow0gRywkvHQCsxUDYvAkxCs/a1IQc
+ HiajXTy7PoMszj2gvOVv2NgATL50jo3ZNZQ+z/VeMCrdjHzp+V0WxQnZyrVt9s1ZboTU
+ NWKs72JuT3r/vo/turTTedPtul3QIGoliv5m2DSIkmx9Mt17LrP/whAX88xiq8LTEIOn
+ jPKSbIP48Rx6AnWWW8t/bZD0LW3AZtGKLjNltIs9jUHO2A6Fn/CAQFXtwtKmKXJ0x5XF Rw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3arc1a186m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Aug 2021 10:52:37 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17UAnfdH033898;
+        Mon, 30 Aug 2021 10:52:36 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2107.outbound.protection.outlook.com [104.47.70.107])
+        by aserp3030.oracle.com with ESMTP id 3aqb6br8ns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Aug 2021 10:52:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M5YCsHGD+9ylA17d7DeSfUIgKCalGPQU/Iyf5hMWCn83JbKcX/9yHStBl/Kr69aL71OM6ycfTyG1gIrvO685/ckE/bfWoEs+I93540kPmcy9lKHqdQXc9AJlOnxGI2gLmRfOV4AMMdVpdF/dglHcwCbQA7ww5AbEOL0fi8QHO5QXqkFDTsmjs48wTI6sIbykMkxuBzipwzpTC6QPBT1o/TEItpxtGkw8Hj0uhnTh7RGDqJJS8vgebfsu38ACWHan6Dmaneqczggopxl90aCjspsRh3qOCLTA7KYcyQ8jwrhMWP3swkDgvGGM60ALp9w7m/K2ZHWyhmAXaPYFp6RxKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sd+bb+gDxgRL0SbgG4hmkv+Pr8q0+Voi9pEY6LfdGyg=;
+ b=MW0MlURnlXBSLdPLMHUW/dhqnBAMCOFCitdJZSdxsmYSlpZGI9jjOFtMfH2FNTuj1PbmUCsazi60eAgLmuWS8M2wLgnxOwY4FbAyEryNMcZyaT6GjU9Uk5aSzTnMClAovAed5D20nD7hu282jKCn1CvcFJntLwJ7mSBVGcD4IKzCmMIbzMiicSzhRN4ryTY214f97QkByG6m6shW7MyvZRSt/NRYg3uf7Qyr3omcJtNV8tQFjz55TIm1qV5qA8F9dt5B5yGmL9cvGFBHIQjWuG2NDihPhihpPW2iTkju9gTRLuDesMM1XKOqokwr62cmStMqe6+eLi29MVac8jpW0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sd+bb+gDxgRL0SbgG4hmkv+Pr8q0+Voi9pEY6LfdGyg=;
+ b=XE5upz/bu3vWhe2DiLe6C5vqX7Qn4UsA/DAMy1CWn/L7mScrDOo7pl8s01hsu+XuXc+43oebb4et5DNj/OcCg6ql9dQOBtUp/kmCJCFmqiD9/V/NPk9Oa0a5vpYy02zznzd1ZtI6UJJlnx9oxhwuniD50dxalg9xXD3MCLK/m0s=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1999.namprd10.prod.outlook.com
+ (2603:10b6:300:10a::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Mon, 30 Aug
+ 2021 10:52:32 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4457.024; Mon, 30 Aug 2021
+ 10:52:32 +0000
+Date:   Mon, 30 Aug 2021 13:52:17 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/3] staging: r8188eu: fix sparse warnings
+Message-ID: <20210830105217.GE12231@kadam>
+References: <cover.1630148641.git.aakashhemadri123@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1630148641.git.aakashhemadri123@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0005.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::10)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (62.8.83.99) by JNAP275CA0005.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.22 via Frontend Transport; Mon, 30 Aug 2021 10:52:28 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7e6eb207-c580-4ffe-d140-08d96ba444db
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1999:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB19993DDE71C3588DAF568D258ECB9@MWHPR10MB1999.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:901;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YogqZhRjlLbGPtvLvQKe7Dx6N8XSqT+WQOi5aW4rP/xo/00BCaisyv9Y98ib4FUi/+fwOYkicJABKx5mKPaEO28rAbV+pIrhrhuFLHhsYu8E5fcMOWZxoax6ZdT9v9I4aHOp1Qp7vbqaa8h57oby5EPC8yQgQb5V20JIHKseokM+ok1UpcBoG9Hz66SQ7457pNd7VYqs0qoxVuTniMUo65boFx6FADU952m6FE8YzFnoGEVJmUj338Zvu0ryVf2vo6obgVshAjyRL1++XPaNBrZws+wOZPTjpV0wpCUu1/MreA11CEMKJ/149feImJUUM2imOchfTRXwpxJa4wvGcy/xzUu2dCbh05F8m6bqP0zPfKrfCJrIOERh5A3QGAf124TEPt+HNuJ+K0d8kOjQ+ffGvzvZL2LAxrlBsaXK40wg+QqDvOQed5RhUDoYzMW0JHstUBai6uuc4/IChkR3z5F5By8YifKeujm/ICbX/MCt4qALVFCI92b14fmA/3ObwiWfZBpvciW71757YV9QFSb6YeuPiy5AU/I0Ch+We1C0HtwxN0JmC1R+ef707qY9N0sNp1tLjwV5GfnZSRWsDNvyhInXameeAfFD7R302OICFOMngD6+RQFH9Srm8UzFyZItjFrzWzKGt5H97gRXzUg1S9ZztH0oNbuFC/Rv6Llj63CHJAtU+1FJIPnWdSf604p9vkIWsEdxgUrfiMvvDg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(346002)(396003)(376002)(2906002)(86362001)(316002)(956004)(66946007)(44832011)(1076003)(4326008)(66556008)(5660300002)(33716001)(8936002)(38350700002)(6496006)(55016002)(38100700002)(478600001)(8676002)(558084003)(52116002)(9576002)(26005)(186003)(6666004)(66476007)(54906003)(9686003)(33656002)(6916009)(4270600006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?s2yPxFjdKZgZvkdIBbsctU97Eovtb/qMnLIbU4i7c0xsOyAveJnoWkQlldIs?=
+ =?us-ascii?Q?qmF1yTLTVxUY0pzub8ntEOngXhO7TFaaZWKIwwO6ZRkPRuCrqiaEDm2RkeUE?=
+ =?us-ascii?Q?GC/ykQXGiMSB91dQS1+4kBrwU8iFYJRDmUZT4MiTFc/cZMjk05PjOYbCA0i8?=
+ =?us-ascii?Q?SpdxMjTNW9DgTRmzV8fSiKWYWRNyzMRcIBmwKkLxGysfdx0+yUs5ZuDAVpB5?=
+ =?us-ascii?Q?86KTLuoYpX5ypA1Fkry+5khgeD4Jl7NA7z2AmSGoV19bT+JUKJ5N3oTqX1wA?=
+ =?us-ascii?Q?QCJ/FetzEz8iFjjTfqh9fjB3kn9/IwoBlOyBrRLWIm1fLJK1HLQccB1n0eNw?=
+ =?us-ascii?Q?qyRX2q0A4trwiItibXYLMnPdNISAMlPaHA5BBLPmnJfepuXOcuLZyl6AFr8o?=
+ =?us-ascii?Q?hyFm+IyGV0XKyNcqyO+5WvsViU6qH6cz0VtSzJXEacbUxfSxD90c6CNNcvs7?=
+ =?us-ascii?Q?iS1FAnHgNY+Wpfvr2h2NE2gaHuOuBZVEaWmCG+oqlMr7AWULNCta6yhna/pC?=
+ =?us-ascii?Q?HhY9bY6KRPOvgyD91u3vIYhzzHYEB88kE9WJwZH50r9AcDg6D0QIqBGn17Qe?=
+ =?us-ascii?Q?hbkgOqdupzrt72ZWQ1RTu4fhB10KxbBpATfOgSO3broyrfi5Z7QGFURYOmvh?=
+ =?us-ascii?Q?zNtcvWQHxVoP3m4s4mmGJQ/Ej9DfdTBlOQ8+almtWIGRm2DLT7oAzf8Je2rr?=
+ =?us-ascii?Q?Dco/LdaqUXc6o9Gt8/UlE1Kf0uovZx/4Wm26UmmLTy4An2K+6czbt71A/+/Y?=
+ =?us-ascii?Q?QTOSwHuccJuyiIK1qwdpF/HnLHBg4s40KOAYzDSgjRx3P+Nz2Ni0hmqzsSFV?=
+ =?us-ascii?Q?X14TcDIv2b3ICyfitkJBpSaPW4LD8ETVC6UBkbW7kaujn+7sJ9ZHUSNiu0S0?=
+ =?us-ascii?Q?AwcdGvpm3nbWqfrlu0UVlrUFnyL0AFBh2tDVMbfjOKRIhNnEu3Yw4uSQWcSF?=
+ =?us-ascii?Q?qWY5TLP6r2z67Kn53UXdQDtH5KmoM3EiVbO7bV4tDsI7pacQ07pJaIq9qMUP?=
+ =?us-ascii?Q?Do5w0o9mOZQ5xVShlf5CQV9al0Eim1OSl97H9T2y8dXE/DSOQfDuErqnb0sC?=
+ =?us-ascii?Q?JFWqQoUBo9IV7tvEvVrmZNCsB3dJ22gPduPVy+MABosHCTSy6wkucZjFNMwj?=
+ =?us-ascii?Q?7Kc25aT8/fITbEXR4pdlbHLUfOn7tnIetZzvNSiMn8LE3ETBFQD84st03JSE?=
+ =?us-ascii?Q?GJ3H9Xaa9OPeDRGhQWFZeOmAc3tGMbg0BaB832aooCnjzqGTyGfxtTp1G3XJ?=
+ =?us-ascii?Q?8GUeGr6FJSBCuWg/NXmx/HDXIOXq+ATyMaMxOETPuvfqkVfNPguRnCyj3XlP?=
+ =?us-ascii?Q?kyfwJlS2aqJjP6u0ohYtTYsX?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e6eb207-c580-4ffe-d140-08d96ba444db
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2021 10:52:32.6281
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mi7kl2zcJqMUIRovxjhB+D1TQct9XI4Anf6rZnMf6lmAh0l5zyhDZ6AWbOVgyW362Mnpdf/sfKqZaFwWBLRUdYIplXdmF85ATJbCMr2z+Jg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1999
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10091 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 suspectscore=0
+ adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108300079
+X-Proofpoint-GUID: eF5Ll3VBEm_PRbmWeTe0hjQOahIJVuhQ
+X-Proofpoint-ORIG-GUID: eF5Ll3VBEm_PRbmWeTe0hjQOahIJVuhQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30 2021 at 02:45, syzbot wrote:
+These patches are fine.
 
-Cc+ Paul
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    77dd11439b86 Merge tag 'drm-fixes-2021-08-27' of git://ano..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12018abd300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f2ceae48bb0c0ab08b9d
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+f2ceae48bb0c0ab08b9d@syzkaller.appspotmail.com
->
-> ------------[ cut here ]------------
-> ODEBUG: active_state not available (active state 0) object type: rcu_head hint: 0x0
-> WARNING: CPU: 0 PID: 8442 at lib/debugobjects.c:508 debug_print_object lib/debugobjects.c:505 [inline]
-> WARNING: CPU: 0 PID: 8442 at lib/debugobjects.c:508 debug_object_active_state+0x28a/0x410 lib/debugobjects.c:946
-> Modules linked in:
-> CPU: 0 PID: 8442 Comm: syz-executor.2 Not tainted 5.14.0-rc7-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:debug_print_object lib/debugobjects.c:505 [inline]
-> RIP: 0010:debug_object_active_state+0x28a/0x410 lib/debugobjects.c:946
-> Code: e8 fb c6 be fd 4c 8b 45 00 48 c7 c7 c0 a2 93 8a 48 c7 c6 60 9f 93 8a 48 c7 c2 00 a5 93 8a 31 c9 49 89 d9 31 c0 e8 16 58 41 fd <0f> 0b e9 9f 00 00 00 45 31 f6 ff 05 66 bd 9d 0c 43 8a 04 2f 84 c0
-> RSP: 0018:ffffc90000007ba0 EFLAGS: 00010246
-> RAX: b9c220867f01ad00 RBX: 0000000000000000 RCX: ffff88801b5b0000
-> RDX: 0000000080000101 RSI: 0000000080000101 RDI: 0000000000000000
-> RBP: ffffffff8a304d00 R08: ffffffff81664f72 R09: ffffed1017383f2c
-> R10: ffffed1017383f2c R11: 0000000000000000 R12: ffff888000137e18
-> R13: dffffc0000000000 R14: 1ffff11000026fc3 R15: ffff88805ec97ba0
-> FS:  0000000002131400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000000001ffffc00 CR3: 00000000505bb000 CR4: 00000000001526f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <IRQ>
->  debug_rcu_head_unqueue kernel/rcu/rcu.h:185 [inline]
->  rcu_do_batch kernel/rcu/tree.c:2543 [inline]
->  rcu_core+0x8a6/0x14b0 kernel/rcu/tree.c:2785
->  __do_softirq+0x372/0x783 kernel/softirq.c:558
->  invoke_softirq kernel/softirq.c:432 [inline]
->  __irq_exit_rcu+0x21b/0x260 kernel/softirq.c:636
->  irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
->  sysvec_apic_timer_interrupt+0x91/0xb0 arch/x86/kernel/apic/apic.c:1100
->  </IRQ>
->  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-> RIP: 0010:finish_lock_switch+0xf0/0x1c0 kernel/sched/core.c:4436
-> Code: 61 0c 00 74 11 48 89 df be ff ff ff ff e8 18 33 80 08 85 c0 74 27 4d 85 ff 75 44 4c 89 f7 e8 a7 dd 82 08 e8 f2 40 2d 00 fb 5b <41> 5c 41 5d 41 5e 41 5f 5d c3 0f 0b 4d 85 ff 75 92 eb a8 0f 0b 4d
-> RSP: 0018:ffffc9000167fa30 EFLAGS: 00000282
-> RAX: b9c220867f01ad00 RBX: ffff8880902a54f4 RCX: ffffffff9070c703
-> RDX: dffffc0000000000 RSI: 0000000000000001 RDI: 0000000000000000
-> RBP: 1ffff1101738a400 R08: ffffffff8186a520 R09: ffffed101738a2a9
-> R10: ffffed101738a2a9 R11: 0000000000000000 R12: ffff8880b9c52000
-> R13: dffffc0000000000 R14: ffff8880b9c51540 R15: 0000000000000000
->  finish_task_switch+0x140/0x630 kernel/sched/core.c:4553
->  context_switch kernel/sched/core.c:4684 [inline]
->  __schedule+0xc0f/0x11f0 kernel/sched/core.c:5938
->  schedule+0x14b/0x210 kernel/sched/core.c:6017
->  freezable_schedule include/linux/freezer.h:172 [inline]
->  do_nanosleep+0x1b6/0x7b0 kernel/time/hrtimer.c:1896
->  hrtimer_nanosleep+0x239/0x470 kernel/time/hrtimer.c:1949
->  __do_sys_clock_nanosleep kernel/time/posix-timers.c:1267 [inline]
->  __se_sys_clock_nanosleep kernel/time/posix-timers.c:1245 [inline]
->  __x64_sys_clock_nanosleep+0x344/0x3d0 kernel/time/posix-timers.c:1245
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x48a7c1
-> Code: 24 0c 89 3c 24 48 89 4c 24 18 e8 aa e7 ff ff 4c 8b 54 24 18 48 8b 54 24 10 41 89 c0 8b 74 24 0c 8b 3c 24 b8 e6 00 00 00 0f 05 <44> 89 c7 48 89 04 24 e8 e3 e7 ff ff 48 8b 04 24 eb 97 66 2e 0f 1f
-> RSP: 002b:00007ffe3a1cf3e0 EFLAGS: 00000293 ORIG_RAX: 00000000000000e6
-> RAX: ffffffffffffffda RBX: 00000000000019ce RCX: 000000000048a7c1
-> RDX: 00007ffe3a1cf420 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: 00007ffe3a1cf4bc R08: 0000000000000000 R09: 0000000000000010
-> R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000032
-> R13: 00000000001f8f0a R14: 000000000000000b R15: 00007ffe3a1cf520
-> ----------------
-> Code disassembly (best guess), 1 bytes skipped:
->    0:	0c 00                	or     $0x0,%al
->    2:	74 11                	je     0x15
->    4:	48 89 df             	mov    %rbx,%rdi
->    7:	be ff ff ff ff       	mov    $0xffffffff,%esi
->    c:	e8 18 33 80 08       	callq  0x8803329
->   11:	85 c0                	test   %eax,%eax
->   13:	74 27                	je     0x3c
->   15:	4d 85 ff             	test   %r15,%r15
->   18:	75 44                	jne    0x5e
->   1a:	4c 89 f7             	mov    %r14,%rdi
->   1d:	e8 a7 dd 82 08       	callq  0x882ddc9
->   22:	e8 f2 40 2d 00       	callq  0x2d4119
->   27:	fb                   	sti
->   28:	5b                   	pop    %rbx
-> * 29:	41 5c                	pop    %r12 <-- trapping instruction
->   2b:	41 5d                	pop    %r13
->   2d:	41 5e                	pop    %r14
->   2f:	41 5f                	pop    %r15
->   31:	5d                   	pop    %rbp
->   32:	c3                   	retq
->   33:	0f 0b                	ud2
->   35:	4d 85 ff             	test   %r15,%r15
->   38:	75 92                	jne    0xffffffcc
->   3a:	eb a8                	jmp    0xffffffe4
->   3c:	0f 0b                	ud2
->   3e:	4d                   	rex.WRB
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+regards,
+dan carpenter
+
