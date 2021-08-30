@@ -2,127 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C843FBF4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 01:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B79C33FBF52
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 01:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239002AbhH3XNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 19:13:50 -0400
-Received: from mail-pl1-f179.google.com ([209.85.214.179]:34574 "EHLO
-        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238966AbhH3XNr (ORCPT
+        id S239040AbhH3XOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 19:14:30 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:48426 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238898AbhH3XO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 19:13:47 -0400
-Received: by mail-pl1-f179.google.com with SMTP id j2so9484440pll.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 16:12:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=v3IzYk5Cz+OUtPw+/T83szt+1CdCHRLLUCDNc9RQVcs=;
-        b=YcV2ddWuIrF2s1vGYe9HzAGnODRw5wnfJ5u2ELHYhdQRcHeO6542ekG0CExW5mtlHX
-         UqEC5wM0qhgLCEr9b4uj5dD99SlTvuqWUYfxwg8AkyBLquBCvLDBngtRxPd+yALzuL36
-         +zrvC+uQV5239SG8ObDcMp54Pfv1YtpP+I27kBAeBxrXKUneZJbmWOKBySQISnlmrZLJ
-         FnCqAA3oyLquzdH4MXa8Bcmo1o7Bi0R8HhI4Fa7s6z0a680cQ+/w39Kdfh2v6xSbXbtz
-         yIYalCvw9xtXpLxp6Fozb1e+HDe8Fw0csoccfsY7+NutnDNGIC0AZnrC6P+UXtVh1kMY
-         pBpg==
-X-Gm-Message-State: AOAM532foQkvQKJQzseJCFhCFbwWht25WKpdU8rMpVEhEU/HL3b0atPh
-        pfca1bzg62u7gEdiMSvhnes=
-X-Google-Smtp-Source: ABdhPJyM+xavDMy2nU5nHoZXItH9Z32dpIp3B6TEu9y18rZ8vFM4JFAMkb8gBzWR8C+1D3lMK1Vm+Q==
-X-Received: by 2002:a17:90a:3cc6:: with SMTP id k6mr1630328pjd.134.1630365173468;
-        Mon, 30 Aug 2021 16:12:53 -0700 (PDT)
-Received: from sultan-box.localdomain (static-198-54-131-119.cust.tzulo.com. [198.54.131.119])
-        by smtp.gmail.com with ESMTPSA id w11sm8448566pfj.65.2021.08.30.16.12.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 16:12:53 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 16:12:51 -0700
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     linux-mm@kvack.org
-Cc:     mhocko@suse.com, mgorman@techsingularity.net,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Stuck looping on list_empty(list) in free_pcppages_bulk()
-Message-ID: <YS1l83lmwEYXuQsY@sultan-box.localdomain>
+        Mon, 30 Aug 2021 19:14:29 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id 24BE820B90FF; Mon, 30 Aug 2021 16:13:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 24BE820B90FF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1630365215;
+        bh=y8kbnU6wSCpgwXOq1MQQIkVnRwqj3xH6aJeaz2aubBY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sSkVi6OXSgiAj4hA98ukq34ASL/5U3pAIYzzvNkQswfVkKvxpySXEA+VX3YMrLCoP
+         T/JnEMwesI348tJ9hy53ZX/p4571zO7va6B2YqKgEIHRf7kGDWNscy0J0whfdNoVG4
+         yFIDkJzZ8RdZQMYlsUFSPb/JCmOYvXoh0TFGg6ME=
+From:   longli@linuxonhyperv.com
+To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: [Patch v2] PCI: hv: Fix sleep while in non-sleep context when removing child devices from the bus
+Date:   Mon, 30 Aug 2021 16:13:27 -0700
+Message-Id: <1630365207-20616-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Long Li <longli@microsoft.com>
 
-I was recently given the following CPU stall splat and asked to look into it:
-----------------8<----------------
- rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
- rcu:         44-...0: (1 GPs behind) idle=77e/1/0x4000000000000000 softirq=28480656/28480657 fqs=279939 
-         (detected by 62, t=1140032 jiffies, g=224165577, q=8883218)
- Sending NMI from CPU 62 to CPUs 44:
- NMI backtrace for cpu 44
- CPU: 44 PID: 83957 Comm: perl Tainted: G             L    5.8.18-100.fc31.x86_64 #1
- RIP: 0010:free_pcppages_bulk+0x63/0x2a0
- RSP: 0018:ffffb3078698fb60 EFLAGS: 00000086
- RAX: ffff8b647db30390 RBX: ffffee5fcab67f48 RCX: ffffee5f30c79980
- RDX: 0000000000c31e66 RSI: 0000000000000007 RDI: 0000000000000007
- RBP: 0000000000000000 R08: ffffb3078698fb80 R09: ffffb3078698fb80
- R10: 00000000002ffa93 R11: 0000000000000000 R12: ffff8b647db30390
- R13: 0000000000000000 R14: ffff8b647db30380 R15: 000000006a340084
- FS:  0000000000000000(0000) GS:ffff8b647db00000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 00007ff2b5200fa8 CR3: 00000034ada0a000 CR4: 0000000000340ee0
- Call Trace:
-  free_unref_page_list+0x113/0x1a0
-  release_pages+0x3ad/0x450
-  tlb_flush_mmu+0x36/0x160
-  unmap_page_range+0xab6/0xee0
-  unmap_vmas+0x6a/0xd0
-  exit_mmap+0x97/0x170
-  mmput+0x61/0x140
-  do_exit+0x306/0xb80
-  ? syscall_trace_enter+0x160/0x290
-  do_group_exit+0x3a/0xa0
-  __x64_sys_exit_group+0x14/0x20
-  do_syscall_64+0x4d/0x90
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
----------------->8----------------
+In hv_pci_bus_exit, the code is holding a spinlock while calling
+pci_destroy_slot(), which takes a mutex.
 
-I apologize in advance for reporting a bug on an EOL kernel. I don't see any
-changes as of 5.14 that could address something like this, so I'm emailing in
-case whatever happened here may be a bug affecting newer kernels.
+This is not safe for spinlock. Fix this by moving the children to be
+deleted to a list on the stack, and removing them after spinlock is
+released.
 
-With gdb, it appears that the CPU got stuck in the list_empty(list) loop inside
-free_pcppages_bulk():
-----------------8<----------------
-	do {
-		batch_free++;
-		if (++migratetype == MIGRATE_PCPTYPES)
-			migratetype = 0;
-		list = &pcp->lists[migratetype];
-	} while (list_empty(list));
----------------->8----------------
+Fixes: 94d22763207a ("PCI: hv: Fix a race condition when removing the device")
 
-Although this code snippet is slightly different in 5.14, it's still ultimately
-the same. Side note: I noticed that the way `migratetype` is incremented causes
-`&pcp->lists[1]` to get looked at first rather than `&pcp->lists[0]`, since
-`migratetype` will start out at 1. This quirk is still present in 5.14, though
-the variable in question is now called `pindex`.
+Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: Stephen Hemminger <sthemmin@microsoft.com>
+Cc: Wei Liu <wei.liu@kernel.org>
+Cc: Dexuan Cui <decui@microsoft.com>
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: Rob Herring <robh@kernel.org>
+Cc: "Krzysztof Wilczyński" <kw@linux.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Michael Kelley <mikelley@microsoft.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/linux-hyperv/20210823152130.GA21501@kili/
+Signed-off-by: Long Li <longli@microsoft.com>
+---
+Changes in v2:
+Made patch title more specific on what the patch does.
+Added link to the original bug report.
+Changed to list_for_each_entry_safe for iterating the removed list.
 
-With some more gdb digging, I found that the `count` variable was stored in %ESI
-at the time of the stall. According to register dump in the splat, %ESI was 7.
+ drivers/pci/controller/pci-hyperv.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-It looks like, for some reason, the pcp count was 7 higher than the number of
-pages actually present in the pcp lists.
+diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+index a53bd8728d0d..fc1a29acadbb 100644
+--- a/drivers/pci/controller/pci-hyperv.c
++++ b/drivers/pci/controller/pci-hyperv.c
+@@ -3229,9 +3229,17 @@ static int hv_pci_bus_exit(struct hv_device *hdev, bool keep_devs)
+ 		return 0;
+ 
+ 	if (!keep_devs) {
+-		/* Delete any children which might still exist. */
++		struct list_head removed;
++
++		/* Move all present children to the list on stack */
++		INIT_LIST_HEAD(&removed);
+ 		spin_lock_irqsave(&hbus->device_list_lock, flags);
+-		list_for_each_entry_safe(hpdev, tmp, &hbus->children, list_entry) {
++		list_for_each_entry_safe(hpdev, tmp, &hbus->children, list_entry)
++			list_move_tail(&hpdev->list_entry, &removed);
++		spin_unlock_irqrestore(&hbus->device_list_lock, flags);
++
++		/* Remove all children in the list */
++		list_for_each_entry_safe(hpdev, tmp, &removed, list_entry) {
+ 			list_del(&hpdev->list_entry);
+ 			if (hpdev->pci_slot)
+ 				pci_destroy_slot(hpdev->pci_slot);
+@@ -3239,7 +3247,6 @@ static int hv_pci_bus_exit(struct hv_device *hdev, bool keep_devs)
+ 			put_pcichild(hpdev);
+ 			put_pcichild(hpdev);
+ 		}
+-		spin_unlock_irqrestore(&hbus->device_list_lock, flags);
+ 	}
+ 
+ 	ret = hv_send_resources_released(hdev);
+-- 
+2.25.1
 
-I tried to find some way that this could happen, but the only thing I could
-think of was that maybe an allocation had both __GFP_RECLAIMABLE and
-__GFP_MOVABLE set in its gfp mask, in which case the rmqueue() call in
-get_page_from_freelist() would pass in a migratetype equal to MIGRATE_PCPTYPES
-and then pages could be added to an out-of-bounds pcp list while still
-incrementing the overall pcp count. This seems pretty unlikely though. As
-another side note, it looks like there's nothing stopping this from occurring;
-there's only a VM_WARN_ON() in gfp_migratetype() that checks if both bits are
-set.
-
-Any ideas on what may have happened here, or a link to a commit that may have
-fixed this issue in newer kernels, would be much appreciated.
-
-Thanks,
-Sultan
