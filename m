@@ -2,699 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502833FBF80
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 01:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E3A3FBF7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 01:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239101AbhH3Xkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 19:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239088AbhH3Xkf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 19:40:35 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D61C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 16:39:40 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id g135so9858228wme.5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 16:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pm6UA6GHOLycqzcfXybYqpBLPvUfJMLS2xahcfJrEIU=;
-        b=t+Em1uWy3v7HlN3HDkk8kaRufYeqJio53TdPbFt0G3M7j1cE7+kGL5KftKQMp5pmMJ
-         CVrS7h554TmeiLHcGNRLvzxdbRg0blwnZZlHbajz15I45AXnKZf8umpdpeudYJ06AmzC
-         w1b58gb6i93Qx6cQRlwI18opg1CAgWiFuJD6smv+4zWAKO9U3JGx+RhVg/RScarmpD3C
-         Opvqx1S4CNvjXVC0kvUE1n1WKLX7GB5Hl7Ze//9He7N2seTLoVRPMV4vv+1ueYQ1zLNY
-         W776AOl15Rie8nYKCJOetWbuLVhHOBdXjYGRNTderpQBbMhODIQyqhxiCdFrzImBva2+
-         TOfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pm6UA6GHOLycqzcfXybYqpBLPvUfJMLS2xahcfJrEIU=;
-        b=W254EOVF3kdcK1rFfneGVk/U+AmFJqQC/C90N18Y/8hwexrp3j4Kdb6kSn0SGviTwA
-         TQ7eMGYiFBQMFM+Pov7LGYspYfftRGjGfUWGRetMBZaJ8yiQFP41CmLEDReFun6rWE+N
-         j5JndTm2V3gzQi+xYTLMij9Hde6U9W38zgDXw8M3AU82Ovib5KXIBm36/AUdRm6vP4Oj
-         jZpb07S/OJwqqzNfn0spaX3kowFy7zhDA6CNip++dpxEbtjC6S4R9Sgl5FtfXY4cO3rE
-         JiF51tEl6E0o9zrklxgkupZZObmplgFDof/RZwbg1GstMXlpFsPG4tOSi+ldPkCKFx8b
-         t5YQ==
-X-Gm-Message-State: AOAM530L3Bxg6O3z9J/m1JYUmx0317I6c3dKdsQy8hOGKa9k1//6vMYS
-        LySBISz3oPzq8FglODvhV8o/e9giuD+vMEuX90mMyg==
-X-Google-Smtp-Source: ABdhPJweWaYRdCtNt3P8BLBnmxC/U27ar8V1/jf6Nv3o0mRfemS2Rk2DRgNFHmpJo1VgBk+AZ1/Tvopyxv8+2XE7tGg=
-X-Received: by 2002:a7b:cb02:: with SMTP id u2mr1265971wmj.103.1630366778688;
- Mon, 30 Aug 2021 16:39:38 -0700 (PDT)
+        id S239080AbhH3Xkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 19:40:32 -0400
+Received: from mga02.intel.com ([134.134.136.20]:4224 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231601AbhH3Xkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 19:40:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="205589070"
+X-IronPort-AV: E=Sophos;i="5.84,364,1620716400"; 
+   d="scan'208";a="205589070"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 16:39:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,364,1620716400"; 
+   d="scan'208";a="498015350"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by fmsmga008.fm.intel.com with ESMTP; 30 Aug 2021 16:39:36 -0700
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Mon, 30 Aug 2021 16:39:36 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Mon, 30 Aug 2021 16:39:35 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Mon, 30 Aug 2021 16:39:35 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Mon, 30 Aug 2021 16:39:35 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PMnVPQOKL5r8Xm16/xsraxGePEg3zXEDFAjZMO5n9H2ZvqxuzAeiL99foZImPe6aqpQNnLD1UIAE7IneJb55Hn9JTFj55OEiT3/9fArPY9fQj8c7TFRxjS2HH/dAjcqjShqgbVIh/lx+H6CjdYOMF727779Qv12JPUOZEm5Mfqb4+v4sJP+urpDhboWvok+h0fLyPzVvyUUgvvMw0fsasMRLTAz/Dom2tvEnxOYrp6FjNf7Jhx4dRb431j06zuh9VwO2DjepgmV1E//7ahyykL1UhxKubVHInF7Pn6Kagi45OM152X+xQ6VsxZ2ZVKt86F5N/x+ktovHWVYDQLh3FQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lWdo9xD1q1Ieo9kQ1Ju5NMfGiZG4XE9X+Hg4lxjSvKU=;
+ b=X+e0q7K/dnTcpbSDfVs1U2FoAeq8mHb7hmIcB+cjjHqAPpaO35DpE3UtNJyQyv+FZG7yL8zfKEzsE08AyzD9rHYPjHAuBtgySoJrcSjOVm/ibpi0rp6fjLoZ2elV9BBjf31f5Pkdv3QBrOZ0HclzZ8BbjuPURP+CSCJYbkBB64v4n5sHMXBcA3mqWL5RaVyRmSV0MQW12O07o8z+gUTxqPRIz+KzqKwa9C2jFb4ReEhcnRVvWkleM28whufPofH3PcKipGfwtB/uMCox0u5Kukdo/qNs98WY+RQmR5iwfWy1Rh0yE5tPnpy8W0Emeun9c/kMTbaumcPIcnanY9lX0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lWdo9xD1q1Ieo9kQ1Ju5NMfGiZG4XE9X+Hg4lxjSvKU=;
+ b=zOPxvdrxOhwYHM8Bk3kbHjpR0hOIwYx+AqwsQuVDtEmOa3mZ0br0hw4KWuRKSbhDHZMFLtcWVXWP/bpdzMLGISrc6XDDz1b5gqGh/fh4JIo5nf+5KhPrs+vCUw8q8B0qd3ybT7m/qwhPZHnIe8XncrWL/eY6cNiv67WRDEBC5Gk=
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
+ by PH0PR11MB4967.namprd11.prod.outlook.com (2603:10b6:510:41::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Mon, 30 Aug
+ 2021 23:39:33 +0000
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::b427:a68a:7cb6:1983]) by PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::b427:a68a:7cb6:1983%3]) with mapi id 15.20.4457.024; Mon, 30 Aug 2021
+ 23:39:33 +0000
+From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
+To:     "Hansen, Dave" <dave.hansen@intel.com>
+CC:     "bp@suse.de" <bp@suse.de>, "Lutomirski, Andy" <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Macieira, Thiago" <thiago.macieira@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v9 08/26] x86/fpu/xstate: Introduce helpers to manage the
+ XSTATE buffer dynamically
+Thread-Topic: [PATCH v9 08/26] x86/fpu/xstate: Introduce helpers to manage the
+ XSTATE buffer dynamically
+Thread-Index: AQHXhVRxstI5EaBny0+yAHwtQ/jrKKuMguIAgABjBIA=
+Date:   Mon, 30 Aug 2021 23:39:33 +0000
+Message-ID: <2FC84687-9F89-49E6-85C0-448D3DAF201C@intel.com>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com>
+ <20210730145957.7927-9-chang.seok.bae@intel.com>
+ <bb49fdc9-2228-8bd1-bcc5-7c498daf0887@intel.com>
+In-Reply-To: <bb49fdc9-2228-8bd1-bcc5-7c498daf0887@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.7)
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: aac83c2a-4652-4b6a-cded-08d96c0f6b81
+x-ms-traffictypediagnostic: PH0PR11MB4967:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR11MB49678A94EE4D1B16C247E37FD8CB9@PH0PR11MB4967.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: o/+cFXqRrxlAgqWEQB8KDXVMSnYeIU1S4XdeBRku0sdsIV7/t09NO1EMOWYXd3YH2ERePNoQGE7QXiLZ4bgw3nI564hDCtBzPX+R1DrYl8BPKGpK30ZWbJ/+x/ae5LoSqSAchOArMAohAFn8sP/8zxB2+210BDKFy4c7Y1revYRTN9BG34Vzw+IkOJWbeBvRnCUQRYlAyBdMv8pzEPBZHTvKWhOOzsrp8qJNwEKQju+faHp4ca/GdH9Ae6sMjAErp8sNsovTn6rEYymxv8r4qijFUQsDKTmEFB69p2ci2aSQZGxGVwlUdhuVJEuG8oQ/jP9ythE6/Fpdg90RVsuQEsOz36OPio8NLUhjAMm1Vg92zWM70LfzbGGZYxUY9IbqRbsW9CTGd9p2f8/HOt5VY7vIGQad1BM7SkXaGwPUtJG7s3PsniBPxj6bI1eLgB3H0UwA2Ts8g1kZjJZQB5ltYb8FyCELZgXwkFa9qEwiqEsdwRpsc9TSeK3CzSCLp2Bu/0Ryr/cvTseiZNafHLHzy87920xIUehoORzw1vSEfkISkuX+N0TSG6JlUkTgEgzwcghrStb82ihBgDhPOG8aRFL98i6noNnXZSFdjMICs2zsYcwvXhoggt/NjGcL2cD0Dpp5yJvwrqChMFX2xhUPalDi7z08S82XJAKFX2VQ2JKMfYJUYz+2QJ6ipRqKM/omfteiZ+AY+4izX+g7ec5WYxB/j1QG2VLl2uYRtDjBJdgJBCxGsZLbaTHoIWArEghXokPHoF9oln7K100KjgfpNB5Me9peK4lknBy9GDl5hJ9nJOPupIwZUC4TOBjyMpQi+tqMm+gk4XEyOlHo8ugZp9eI1wv7G0izD4ORi7n0SkM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(376002)(396003)(346002)(66556008)(38100700002)(26005)(186003)(76116006)(66946007)(54906003)(4326008)(6486002)(64756008)(6636002)(53546011)(33656002)(966005)(66476007)(478600001)(66446008)(316002)(5660300002)(37006003)(36756003)(6506007)(8936002)(38070700005)(8676002)(71200400001)(6512007)(122000001)(6862004)(2906002)(2616005)(86362001)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?V2WZVO/fiju66RBU4IpvqdAgenjasyae8IYYk/Yot8X3QzABHhn6rZ7tWiia?=
+ =?us-ascii?Q?B6yCRsTlxEQFcgKf4/76tzC4lWANM7FfaYIoJhwaygf9jDGTe9EYTL7H2Fno?=
+ =?us-ascii?Q?TnqR1MPMTcS3Tnuvx2TaqVQQLqE+mAFZWRaKWmdk8HnRtMo7zpSZBvlswDrB?=
+ =?us-ascii?Q?PbGnDdvXbkGD4z9hTl3xtDdDoSsRfnKLuCSwwjRhf132xjF8VuSz5Uf8nr1v?=
+ =?us-ascii?Q?FTMkjhJ1qg6ENdGwq5BFjxKzE3FNqIo/zrmKhWYnNAAXhwZvLAQ08a29b5us?=
+ =?us-ascii?Q?b7tPBW2NbsY6lPu0pcUSvg7d6XCikF+FMVNgD1LW33as4E42iB0lKP9alx15?=
+ =?us-ascii?Q?Zqv752KYviMDIAe6Sgb6ZEL6L1mDj4Y+vVjJ/6KsQUhbYe0ozmXgGzQor2if?=
+ =?us-ascii?Q?hIGlbGsQMj9Z4if++j3NQJjWgjYdRw+Ulo08Sbo6eetlw0jZcSgMw0qSkfq3?=
+ =?us-ascii?Q?WvQ9eOlpouoxRnf13tdAR78k9+fxS3lFqtH/GlEv+Vnk7r0cTg9TEV6M/5u0?=
+ =?us-ascii?Q?lHepMXpHzJZ5gCdC1415tLEdLrq2pL0G3gKhDU+mQ7EWPaFxVv4pwkTNUjxV?=
+ =?us-ascii?Q?LjDMvEQf8bl5/4eS4U04iDHlv92qOIn/U9AJaoUgBUY4UrftKhHa8xijNJ+i?=
+ =?us-ascii?Q?k7S1qU/VL+T3Ow79CBub/fBfoyFohcLJOoDmp0+uYn4mx+a9q/4J6vGztIME?=
+ =?us-ascii?Q?PF599wZobTxiEa5wz2d8UtzT5MyCzV0sOAm1gB9DZN5ldC3lZaQgCsZUZPA/?=
+ =?us-ascii?Q?5hi85IGAcRfDIlUUi1EeWeUpF17feSJoOGEsXSOgN0DggsuJjbrAc/JStj9e?=
+ =?us-ascii?Q?1GpvtCpIC9ZsbfboayGRnlOlRJP5TbRgDsDg7SzUaws+kFav71Rrq/533Fib?=
+ =?us-ascii?Q?TDEr8K8DDxccSBvqsX+Vr2Sryl8A2DKchtxX19eRfGeUj0VmJePnKspNwPH/?=
+ =?us-ascii?Q?mHuOo+sq6s3MFmtA3N8xZRXaMP7pKxIa7uiNwzNAd8GVUdUnwyVvIx/k724S?=
+ =?us-ascii?Q?jO0QxGLyIrQ6rIMH5rLKj9tF5bXWzRv7hNSR/nLjiXicVEo2m1mh/taenRlg?=
+ =?us-ascii?Q?zZG4ouXQr8tQW0A+m1gd+HPUOx0NpvZz0nkSwN5+zFz8zZlwNy1pMko4+IZB?=
+ =?us-ascii?Q?XZ3H/69Hz+Ovks714gxThDydP4DTQHs8gBExZjQKC0gEiU0EXFLH+99HufC7?=
+ =?us-ascii?Q?gxhI+M5H+jsnbjF3/QGHw/wbSo9RwgWIr7asRhmjPuqbsyfn1xzkNnKXeI4G?=
+ =?us-ascii?Q?tjCXU6m1tk5p4VOrYYZ8PdkGO810T/wkuicCnNvonOmo6OVdwzzsaj3wH/EV?=
+ =?us-ascii?Q?hw+Q9B1XHN+PIEuZHA/5Lj/m?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <817C36672BB4E440BE9EABD328C77B9D@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com>
- <202108272330.AE55FCD@keescook>
-In-Reply-To: <202108272330.AE55FCD@keescook>
-From:   David Gow <davidgow@google.com>
-Date:   Tue, 31 Aug 2021 07:39:27 +0800
-Message-ID: <CABVgOSkOu=h4pC60fn2FrwPd-XbdaDd=_3pV01rtO+bMrncgMQ@mail.gmail.com>
-Subject: Re: RFC - kernel test result specification (KTAP)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Rae Moar <rmoar@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        "Bird, Tim" <Tim.Bird@sony.com>, Shuah Khan <shuah@kernel.org>,
-        Daniel Latypov <dlatypov@google.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernelci@groups.io,
-        Guillaume Tucker <guillaume.tucker@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aac83c2a-4652-4b6a-cded-08d96c0f6b81
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2021 23:39:33.1612
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2e/J/icU6NpgaXgFTiEgnqivIQoj+bND73kpf5DyOb5YfoFrEZ1R5YVVKgfCnFfKgosaHGqYOv3StDY/gYYblpT/S/Fsyrvw+59e/Qj85HM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4967
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 4:20 PM Kees Cook <keescook@chromium.org> wrote:
->
-> [+kernelci, +Guillaume]
->
-> Hi!
->
-> Please keep me in CC for these kinds of proposals. And thanks for looking
-> at this again! Please understand that while I may be coming across as
-> rather negative here, I would like to have a rational and documented
-> specification for the kernel's test output, too. My main objection here
-> is that we already _have_ a specification, and it's already being parsed
-> by machines, so making changes without strong justification is going to
-> be met with resistance. :) So, with that in mind, on to my reply...
->
-> On Tue, Aug 10, 2021 at 04:25:03PM -0700, Rae Moar wrote:
-> > We are looking to further standardise the output format used by kernel
-> > test frameworks like kselftest and KUnit. Thus far we have used the
-> > TAP (Test Anything Protocol) specification, but it has been extended
-> > in many different ways, so we would like to agree on a common "Kernel
-> > TAP" (KTAP) format to resolve these differences. Thus, below is a
-> > draft of a specification of KTAP. Note that this specification is
-> > largely based on the current format of test results for KUnit tests.
->
-> The kernel's largest producer of TAP is kselftest, and the largest
-> consumer is LAVA[1]. I would want buy-in from at least those responsible
-> for either side of those two things. (And I'm one of the people working
-> on both sides of it.)
->
-> The fundamental purpose of the kernel's TAP is to have many independent
-> tests runnable and parseable, specifically without any embedded framework
-> knowledge (or, even, any knowledge of TAP).
->
-> The tests run by kselftest come from 2 different TAP-producing harnesses
-> (kselftest.h for C, kselftest/runner.sh for TAP-agnostic tests) as well
-> as several hand-rolled instances in Shell, Python, and C. There used to
-> be more, but I have been steadily fixing their syntax[2] and merging[3]
-> separate implementations for a while now.
->
-> [1] https://github.com/Linaro/test-definitions/commit/8bd338bbcfa5a03efcf1d12e25b5d341d5a29cbc
-> [2] https://git.kernel.org/linus/b0df366bbd701c45e93af0dcb87ce22398589d1d
-> [3] https://git.kernel.org/linus/e80068be21824e4d2726eeea41cac6178d212415
->
+On Aug 30, 2021, at 10:45, Hansen, Dave <dave.hansen@intel.com> wrote:
+<snip>=20
+> On 7/30/21 7:59 AM, Chang S. Bae wrote:
+>>=20
+>> +	/*
+>> +	 * The minimum buffer size excludes the dynamic user state. When a
+>> +	 * task uses the state, the buffer can grow up to the max size.
+>> +	 */
+>> +	if (mask =3D=3D (xfeatures_mask_all & ~xfeatures_mask_user_dynamic))
+>> +		return get_xstate_config(XSTATE_MIN_SIZE);
+>> +	else if (mask =3D=3D xfeatures_mask_all)
+>> +		return get_xstate_config(XSTATE_MAX_SIZE);
+>=20
+> Is this just an optimization?  It seems redundant with everything below.
+> I think that adds to the confusion.
 
-Thanks a lot for doing this, by the way!
+Boris suggested to remove the below instead [1]:
 
-I think many of the issues here stem from the original TAP spec having
-been insufficient for kernel stuff, and a bit of divergent evolution
-having occurred between kselftest, KUnit, and the dormant TAP 14 spec.
-This proposed spec does approach things more from the KUnit side, just
-because that's what we're more familiar with, but I agree that
-kselftest and LAVA are the bigger fish in this pond. KUnit's parser
-has also been a bit stricter in what it accepts, and the TAP producing
-code is shared between all of the KUnit tests, which makes prototyping
-changes a bit easier.
+    "So leave only the first two which are obvious and are more likely to
+     happen - the first one is going to be the most likely on non-dynamic
+     setups and the second one is on dynamic systems."
 
-Fortunately, most of these differences seem pretty minor in the grand
-scheme of things, so I'm sure we can adapt this spec to fit what
-kselftest is doing better, while still leaving enough of the structure
-the KUnit tooling requires.
+>> +	nr =3D fls64(mask) - 1;
+>=20
+> "nr" is a really, really, confusing name for this.  "last_feature_nr"
+> might be better.  Otherwise, this might be read as "number of features".
+> Comment might have helped, had there been any.
 
-In any case, here are some of my initial thoughts:
+Yes, it seems to be the case.
 
-> > Additionally, this specification was heavily inspired by the KTAP
-> > specification draft by Tim Bird
-> > (https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/T/).
-> > However, there are some notable differences to his specification. One
-> > such difference is the format of nested tests is more fully specified
-> > in the following specification. However, they are specified in a way
-> > which may not be compatible with many kselftest nested tests.
->
-> I commented extensively on that thread. :)
->
-> >
-> > =====================
-> > Specification of KTAP
-> > =====================
-> >
-> > TAP, or the Test Anything Protocol is a format for specifying test
-> > results used by a number of projects. It's website and specification
-> > are found at: https://testanything.org/. The Linux Kernel uses TAP
-> > output for test results. However, KUnit (and other Kernel testing
-> > frameworks such as kselftest) have some special needs for test results
-> > which don't gel perfectly with the original TAP specification. Thus, a
-> > "Kernel TAP" (KTAP) format is specified to extend and alter TAP to
-> > support these use-cases.
-> >
-> > KTAP Output consists of 5 major elements (all line-based):
-> > - The version line
-> > - Plan lines
-> > - Test case result lines
->
-> These are required.
->
-> > - Diagnostic lines
->
-> This is optional.
->
-> > - A bail out line
->
-> Bail out should be optional, and possibly not included at all. (See
-> below.)
->
+>> +	if (!boot_cpu_has(X86_FEATURE_XSAVES))
+>> +		return xstate_offsets[nr] + xstate_sizes[nr];
+>=20
+> Doesn't xstate_comp_offsets[] also work for non-compacted features?
+> setup_xstate_comp_offsets() says so and __raw_xsave_addr() depends on
+> that behavior.
 
-Yeah, I'd happily jettison this totally if no-one's using it.
+Yes, but I think using xstate_comp_offsets[] for non-compacted format inste=
+ad
+of xstate_offsets[] here just makes confusion.
 
-> >
-> > An important component in this specification of KTAP is the
-> > specification of the format of nested tests. This can be found in the
-> > section on nested tests below.
-> >
-> > The version line
-> > ----------------
-> >
-> > The first line of KTAP output must be the version line. As this
-> > specification documents the first version of KTAP,  the recommended
-> > version line is "KTAP version 1". However, since all kernel testing
-> > frameworks use TAP version lines, "TAP version 14" and "TAP version
-> > 13" are all acceptable version lines. Version lines with other
-> > versions of TAP or KTAP will not cause the parsing of the test results
-> > to fail but it will produce an error.
->
-> Maybe "TAP version Linux.1" ? I don't want to needlessly break existing
-> parsers.
->
+>> +	if ((xfeatures_mask_all & (BIT_ULL(nr + 1) - 1)) =3D=3D mask)
+>> +		return xstate_comp_offsets[nr] + xstate_sizes[nr];
+>=20
+> OK, so this is basically saying, "Is the size I'm looking for already
+> calculated and stored in xstate_comp_offsets[] because the mask is a
+> subset of xfeatures_mask_all".  Right?
+>=20
+> I guess that work.  But, that's a *LOT* of logic to go uncommented.
 
-I'd be okay with this. I personally think "KTAP" better describes how
-much of a deviation this is turning out to be from the official TAP
-specs, but if this fixes more parsers than it breaks, it's worth
-doing.
+Boris suggested simplifying the function by removing this [2]:
+    > But it might be better to simplify this hunk for readability. I
+    > suspect its call sites are not that performance-critical.
+    That's *exactly* what I'm driving at!
 
-> >
-> > Plan lines
-> > ----------
-> >
-> > Plan lines must follow the format of "1..N" where N is the number of
-> > subtests. The second line of KTAP output must be a plan line, which
-> > indicates the number of tests at the highest level, such that the
-> > tests do not have a parent. Also, in the instance of a test having
-> > subtests, the second line of the test after the subtest header must be
-> > a plan line which indicates the number of subtests within that test.
->
-> I do not want "subtests" as a specification concept, only "nested
-> tests".
->
+And I applied on v10 [3].
 
-I don't think there's fundamentally a distinction worth preserving
-here. "Subtests" is the language used by the TAP 14 spec, but if we
-want to reframe it as nested tests, that's not a problem (and I agree
-'subtests' is a little misleading here).
+>> +	/*
+>> +	 * With the given mask, no relevant size is found so far. So,
+>> +	 * calculate it by summing up each state size.
+>> +	 */
+>> +	for (size =3D FXSAVE_SIZE + XSAVE_HDR_SIZE, i =3D FIRST_EXTENDED_XFEAT=
+URE; i <=3D nr; i++) {
+>> +		if (!(mask & BIT_ULL(i)))
+>> +			continue;
+>> +
+>> +		if (xstate_aligns[i])
+>> +			size =3D ALIGN(size, 64);
+>> +		size +=3D xstate_sizes[i];
+>> +	}
+>> +	return size;
+>> +}
+>=20
+> OK, so this finally reveals something important about the function.  It
+> is *trying* to avoid running this loop.  All of the above is really just
+> optimizations to try and avoid doing this loop.
+>=20
+> That makes me wonder why you chose that particular set of optimizations.
+> It also makes me wonder if they're even necessary.
+>=20
+> So, first of all, why is this a new loop?  Can't it share code with the
+> XSAVE setup code?  That code also calculates the amount of space needed
+> for an XSAVE buffer given a mask.
 
-> >
-> > Test case result lines
-> > ----------------------
-> >
-> > Test case result lines must have the format:
-> >
-> >     <result> <number> [-] [<description>] [<directive>] [<diagnostic data>]
->
-> "[<diagnostic data>]" is not defined below. I think what you mean is
-> "directive details".
->
-> I suggest:
->
-> <result> <number>[ [- ]<description>][# <directive> [<directive details>]]
->
-> > The result can be either "ok", which indicates the test case passed,
-> > or "not ok", which indicates that the test case failed.
->
-> Yes.
->
-> >
-> > The number represents the number of the test case or suite being
-> > performed. The first test case or suite must have the number 1 and the
-> > number must increase by 1 for each additional test case or result at
-> > the same level and within the same testing suite.
->
-> Yes, though parsers should handle ordering failures and missed test
-> results (this is the purpose of the "plan" line).
->
+This runtime function uses the recorded values for offset, size, and alignm=
+ent
+instead of performing CPUID. The loop in the setup function references CPUI=
+D
+values.
 
-For the record, KUnit's parser prints an error for each test with the
-"wrong number", but still reports its result.
+> Second, which of those optimizations do we *need*?  I worry that this is
+> trying to be way too generic and be *optimized* for being generic code
+> when it will never really get random masks as input.
+>=20
+> For instance, who is going to be calling this with
+> mask!=3Dxfeatures_mask_all with !boot_cpu_has(X86_FEATURE_XSAVES)?  That
+> seems rather improbable.
 
-> >
-> > The "-" character is optional.
-> >
-> > The description is a description of the test, generally the name of
-> > the test, and can be any string of words (can't include #). The
-> > description is optional.
->
-> Yes, though the optional "- " is strictly part of the optional
-> description.
->
+This function is considered to help the dynamic state allocation function a=
+nd
+some others. Avoiding the loop might be helpful for the future, especially =
+when
+some other dynamic states are enabled.
 
-I think the goal of specifying the "- " explicitly is that it's very
-ugly to have test names/descriptions start with a "-" if one is used.
+V10 has a much-trimmed version [3] now as that optimization is not needed w=
+ith
+AMX enabling.
 
-> > The directive is used to indicate if a test was skipped. The format
->
-> The directive is a single word -- currently only "SKIP" is recognized
-> by TAP 14(?), but kselftest uses also XFAIL, XPASS, TIMEOUT, and
-> error. (Though I would love to hear what "error" is intended to be used
-> for, if different from regular "not ok".)
->
-> (This could also be called "context" rather than "directive".)
->
+Thanks,
+Chang
 
-The name here matches the TAP spec, but I don't think we need to be
-too beholden to it.
+[1]: https://lore.kernel.org/lkml/YRzSuC25eHEOgj6h@zn.tnic/
+[2]: https://lore.kernel.org/lkml/YRZDu2Rk+KdRhh1U@zn.tnic/
+[3]: https://lore.kernel.org/lkml/20210825155413.19673-10-chang.seok.bae@in=
+tel.com/
 
-Personally, I think it'd make more sense to have SKIP, XFAIL, etc be
-different statuses like "ok" and "not ok", rather than a directive
-after the name, but that's possibly too radical a departure from TAP.
 
-> > for the directive is: "# SKIP [<skip_description>]". The
-> > skip_description is optional and can be any string of words to
-> > describe why the test was skipped.
->
-> I would call this "directive details".
->
-
-Agreed.
-
-> > The result of the test case result
-> > line can be either "ok" or "not ok" if the skip directive is used.
-> > Finally, note that TAP 14 specification includes TODO directives but
-> > these are not supported for KTAP.
-> >
-> > Examples of test case result lines:
-> >
-> > Test passed:
-> >
-> >     ok 1 - test_case_name
-> >
-> > Test was skipped:
-> >
-> >     not ok 1 - test_case_name # SKIP test_case_name should be skipped
-> >
-> > Test failed:
-> >
-> >     not_ok 1 - test_case_name
->
-> This isn't valid. No "_" is recognized for "ok" vs "not ok".
->
-> >
-> > Diagnostic lines
-> > ----------------
-> >
-> > Diagnostic lines are used for description of testing operations.
-> > Diagnostic lines are generally formatted as "#
-> > <diagnostic_description>", where the description can be any string.
-> > However, in practice, diagnostic lines are all lines that don't follow
-> > the format of any other KTAP line format.
->
-> I still think there should be a distinction between "diagnostic lines"
-> and "unknown lines". For example, if kselftest is running on a console,
-> the dmesg output may be intermixed, and possibly temporally offset. Such
-> lines may not be useful, and may not be strictly correlated, where-as
-> the output from kselftest is at least self-consistent.
->
-
-I'm in two minds about this. On one hand, I totally agree that there's
-a useful distinction here, and that a lot of dmesg output can get
-nondeterministically mixed in. On the other, there are some tests for
-which the dmesg output which gets mixed in is important output which
-shouldn't be stripped out (for example, the KUnit KASAN tests print
-KASAN reports, which we want to treat as "diagnostics" because they're
-useful to understand what's happening in the tests.
-
-That being said, there's nothing actually stopping us from maintaining
-this distinction, and just having the KUnit parser treat "unknown"
-lines the same as "diagnostic" lines, while maintaining the
-distinction in theory.
-
-> > Diagnostic lines can be
-> > anywhere in the test output after the first two lines.
->
-> I don't see a reason for this strictness. They can be anywhere.
->
-
-I think this was just there because because we wanted to have room for
-the TAP version header (or the 'Subtest' line in this spec/TAP14) and
-the test plan, which needed to be the first two lines.
-
-> > There are a few
-> > special diagnostic lines.
->
-> No; diagnostic lines must have no meaning: they are for humans and nothing
-> else. If other details are needed for machines, we should explicitly
-> create new format lines. I made a mistake when I used a diagnostic line
-> for embedding the test names. :( There is a need for parsers to discover
-> the name of a given test, though, so we do likely need something for this.
->
-
-Yeah: the problem here is that we do have a pretty random mix of lines
-starting with "#" which need parsing, and those which don't. Some of
-this is inherited from the TAP or TAP14 spec. Using "# " for nesting
-makes this a bit confusing as well.
-
-Maybe this just needs reframing to something like "lines starting with
-'#' which are not parseable as any of the following are diagnostic
-lines", rather than the current implication that it's "anything that
-starts with '#'".
-
-Or we could try to clean up the mess and get rid of the leading '#'
-everywhere else, but that's also a fair bit of work.
-
-> > Diagnostic lines of the format "# Subtest:
-> > <test_name>" indicate the start of a test with subtests. Also,
-> > diagnostic lines of the format "# <test_name>: <description>" refer to
-> > a specific test and tend to occur before the test result line of that
-> > test but are optional.
->
-> I don't think the above should be included in the spec -- diag lines
-> should have no parseable meaning.
->
-> >
-> > Bail out line
-> > -------------
-> >
-> > A bail out line can occur anywhere in the KTAP output and will
-> > indicate that a test has crashed. The format of a bail out line is
-> > "Bail out! [<description>]",  where the description can give
-> > information on why the bail out occurred and can be any string.
->
-> I'm not a fan of the Bail out line. It's not a problem, exactly, but I
-> find it redundant. If we want an "end of test" line, let's make one.
-> "Bail out" is a special case of exit. If we want to handle test exit,
-> let's define it. E.g. make kselftest's test summary lines not
-> diagnostic lines:
->
-> # FAILED: 85 / 87 tests passed.
-> # Totals: pass:83 fail:2 xfail:0 xpass:0 skip:2 error:0
-
-KUnit has just added a similar line, though it's optional, and is
-mainly used as a way of providing sums of nested tests at different
-levels:
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit&id=acd8e8407b8fcc3229d6d8558cac338bea801aed
-
-It's currently optional, though, so we might want to change that if we
-rely on it.
-
-In general, though, I agree that "Bail out!" is pretty useless. I
-suspect it's here mostly because "it was in the TAP spec" rather than
-"it's something we actually want to use".
-
->
-> Also, parsers should treat a new "TAP version..." line at the same
-> nesting level as indication that the prior test has ended (and any tests
-> without result lines should be considered failed).
->
-
-I do like this idea as a way of making it possible to just cat test
-results together and get a sensibly merged result.
-I think we want to count any tests without result lines marked as
-"error" (test execution didn't complete/crashed/etc), rather than
-"failed", but that's just a detail.
-
-> >
-> > Nested tests
-> > ------------
-> >
-> > The new specification for KTAP will support an arbitrary number of
-> > nested subtests. Thus, tests can now have subtests and those subtests
-> > can have subtests. This can be useful to further categorize tests and
-> > organize test results.
-> >
-> > The new required format for a test with subtests consists of: a
-> > subtest header line, a plan line, all subtests, and a final test
-> > result line.
-> >
-> > The first line of the test must be the subtest header line with the
-> > format: "# Subtest: <test_name>".
->
-> Please no. There is no reason to force a nested test to suddenly have
-> to know about its test execution depth/environment. A subtest is just a
-> nested TAP result. That it is nested is only meaningful to the parser, not
-> the executing test, and it must have the same output, nested or not. (e.g.
-> running the test alone or running the test under a full kselftest run,
-> the only difference is the indentation level.)
->
-
-This originally came from the draft TAP 14 spec here:
-https://github.com/TestAnything/testanything.github.io/pull/36/files
-
-On the KUnit side, we were labouring under the impression TAP 14 would
-be ratified and implemented, so a lot of TAP 14 things ended up in our
-implementation, including this line. Given that it stalled a long time
-ago and no-one seems to care, I don't think that compatibility with it
-needs to be an explicit goal any more, but it is still something that
-KUnit uses at the moment.
-
-The other thing worth noting is that, in KUnit, while nested test
-support is limited, the framework does need to keep track of the
-nesting depth in order to print the indentation.
-
-> > The second line of the test must be the plan line, which is formatted
-> > as "1..N", where N is the number of subtests.
-> >
-> > Following the plan line, all lines pertaining to the subtests will follow.
-> >
-> > Finally, the last line of the test is a final test result line with
-> > the format: "(ok|not ok) <number> [-] [<description>] [<directive>]
-> > [<diagnostic data>]", which follows the same format as the general
-> > test result lines described in this section. The result line should
-> > indicate the result of the subtests. Thus, if one of the subtests
-> > fail, the test should fail. The description in the final test result
-> > line should match the name of the test in the subtest header.
-> >
-> > An example format:
-> >
-> > KTAP version 1
-> > 1..1
-> >     # Subtest: test_suite
-> >     1..2
-> >     ok 1 - test_1
-> >     ok 2 - test_2
-> > ok 1 - test_suite
->
-> Again, I see only downsides to this. Nesting for the spec is simple
-> indentation-based recursion. Let's just keep what we already have:
->
-> TAP version 13
-> 1..1
-> # TAP version 13
-> # 1..2
-> # ok 1 - test_1
-> # ok 2 - test_2
-> ok 1 - test_suite
->
->
-> > An example format with multiple levels of nested testing:
-> >
-> > KTAP version 1
-> > 1..1
-> >     # Subtest: test_suite
-> >     1..2
-> >         # Subtest: sub_test_suite
-> >         1..2
-> >         ok 1 - test_1
-> >         ok 2 test_2
-> >     ok 1 - sub_test_suite
-> >     ok 2 - test
-> > ok 1 - test_suite
-> >
-> > In the instance that the plan line is missing, the end of the test
-> > will be denoted by the final result line containing a description that
-> > matches the name of the test given in the subtest header. Note that
-> > thus, if the plan line is missing and one of the subtests have a
-> > matching name to the test suite this will cause errors.
->
-> A plan line is required. No special cases are needed. :)
->
-> If nesting level is lost, a parser will understand the nested test to
-> have ended, but probably so did the test runner:
->
-> TAP version 13
-> 1..1
->     TAP version 13
->     1..2
->         TAP version 13
->         1..3
->         ok 1 - test_1
->         ok 2 test_2
->     not ok 1 - sub test unfinished plan
->     ok 2 - test
-> not ok 1 - test_suite
->
-> > Lastly, indentation is also recommended for improved readability.
->
-> Indentation is _required_. :)
->
-> Whether this is "# " or "  " I don't really care, as long as the change
-> is coordinated. "  " is easier for humans to read, but may make parsing of
-> "unknown" lines more difficult for machines.
->
-
-As one of the people who has an irrational distaste for syntactically
-significant indentation, I'd prefer using something like the TAP
-version header or the test plan as a way of indicating nesting. The
-TAP 14 spec says that they should be indented four spaces, but "# " is
-probably better, even if it doesn't gel perfectly with my mental model
-of "#" lines not needing parsing (which went out the window ages ago).
-
-> >
-> > Major differences between TAP 14 and KTAP specification
-> > -------------------------------------------------------
-> >
-> > Note that the major differences between TAP 14 and KTAP specification:
-> > - yaml and json are not allowed in diagnostic messages
->
-> Agreed -- these are overkill (and very difficult to implement as they
-> _follow_ the test result line: anything generating them has already
-> finished running).
->
-> > - TODO directive not allowed
->
-> I would just say "unrecognized".
->
-
-I think this is actually supported in at least some versions of
-TAP...? So maybe this isn't a difference at all.
-
-> > - KTAP allows for an arbitrary number of tests to be nested with
-> > specified nested test format
->
-> Yup.
->
-
-Again, I think this is actually a difference between TAP14/KTAP and
-KUnit's current logic. TAP 14 does support nested tests using this
-format, but KUnit only supported one level of nesting (Suite->Test).
-
-> >
-> > Example of KTAP
-> > ---------------
-> >
-> > KTAP version 1
-> > 1..1
-> >     # Subtest: test_suite
-> >     1..1
-> >         # Subtest: sub_test_suite
-> >         1..2
-> >         ok 1 - test_1
-> >         ok 2 test_2
-> >     ok 1 - sub_test_suite
-> > ok 1 - test_suite
->
-> For a good example, please include all the possible combinations (SKIP,
-> not ok, diagnostics, etc etc)
->
-> >
-> > =========================================
-> > Note on incompatibilities with kselftests
-> > =========================================
-> >
-> > To my knowledge, the above specification seems to generally accept the
-> > TAP format of many non-nested test results of kselftests.
-> >
-> > An example of a common kselftests TAP format for non-nested test
-> > results that are accepted by the above specification:
-> >
-> > TAP version 13
-> > 1..2
-> > # selftests: vDSO: vdso_test_gettimeofday
-> > # The time is 1628024856.096879
-> > ok 1 selftests: vDSO: vdso_test_gettimeofday
-> > # selftests: vDSO: vdso_test_getcpu
-> > # Could not find __vdso_getcpu
-> > ok 2 selftests: vDSO: vdso_test_getcpu # SKIP
-> >
-> > However, one major difference noted with kselftests is the use of more
-> > directives than the "# SKIP" directive. kselftest also supports XPASS
-> > and XFAIL directives. Some additional examples found in kselftests:
-> >
-> >     not ok 5 selftests: netfilter: nft_concat_range.sh # TIMEOUT 45 seconds
-> >
-> >     not ok 45 selftests: kvm: kvm_binary_stats_test # exit=127
-> >
-> > Should the specification be expanded to include these directives?
->
-> Yes. (Though "exit=" is a mistake in runner.sh -- this should probably
-> be reported without the '#')
->
-> >
-> > However, the general format for kselftests with nested test results
-> > seems to differ from the above specification. It seems that a general
-> > format for nested tests is as follows:
-> >
-> > TAP version 13
-> > 1..2
-> > # selftests: membarrier: membarrier_test_single_thread
-> > # TAP version 13
-> > # 1..2
-> > # ok 1 sys_membarrier available
-> > # ok 2 sys membarrier invalid command test: command = -1, flags = 0,
-> > errno = 22. Failed as expected
-> > ok 1 selftests: membarrier: membarrier_test_single_thread
-> > # selftests: membarrier: membarrier_test_multi_thread
-> > # TAP version 13
-> > # 1..2
-> > # ok 1 sys_membarrier available
-> > # ok 2 sys membarrier invalid command test: command = -1, flags = 0,
-> > errno = 22. Failed as expected
-> > ok 2 selftests: membarrier: membarrier_test_multi_thread
-> >
-> > The major differences here, that do not match the above specification,
-> > are use of "# " as an indentation and using a TAP version line to
-> > denote a new test with subtests rather than the subtest header line
-> > described above. If these are widely utilized formats in kselftests,
-> > should we include both versions in the specification or should we
-> > attempt to agree on a single format for nested tests? I personally
-> > believe we should try to agree on a single format for nested tests.
-> > This would allow for a cleaner specification of KTAP and would reduce
-> > possible confusion.
->
-> We already use "# " and the nested TAP lines to denote subtests. Without
-> a good reason to change it, we should avoid the churn with the existing
-> parsers.
->
-
-Like with the "Subtests" line, this came from the draft TAP 14 spec, via KUnit.
-Personally, I prefer the whitespace indent from a readability point of
-view, and because it gels a bit better with my idea of what the "#"
-was supposed to represent: a non-parseable additional diagnostic,
-though that's not consistently been the case for ages, so I don't care
-too much.
-
-> > ====
-> >
-> > So what do people think about the above specification?
-> > How should we handle the differences with kselftests?
->
-> I'm probably a broken record by now, but kselftests _is_ the
-> specification. ;) What about it needs changing, and why?
->
-
-I think there's value in describing the spec more explicitly,
-particularly since there's also the TAP spec, TAP 14 draft spec, and
-KUnit's implementation, all of which are different in some ways. And
-while a lot of the implicit spec can be gleaned from reading example
-kselftest tests, that only tells you what is valid, not what isn't,
-which makes writing parsers a bit trickier.
-
-> > If this specification is accepted, where should the specification be documented?
->
-> I imagine some .rst file under Documentation/dev-tools/, linked to from
-> kselftest.rst and kunit/...rst
->
-Agreed.
