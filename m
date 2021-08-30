@@ -2,209 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B3C3FBDCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8AA3FBDD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236431AbhH3VBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 17:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
+        id S236176AbhH3VCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234509AbhH3VBO (ORCPT
+        with ESMTP id S229923AbhH3VCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:01:14 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAB3C061575;
-        Mon, 30 Aug 2021 14:00:20 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id u14so33859620ejf.13;
-        Mon, 30 Aug 2021 14:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KWiHNXS+3DcOlsVpnDVjQ/m3C1IyjZ5owtbI17urlSs=;
-        b=bls3vPsE9/mpAehw9h8f0bfIKo/ur5D3gapsk6ABlwMpjeNlxnNftLg5NnlgKbrS4J
-         /sKHmCpb2siio/kdCeNycUZ/YaVbk+xwo5ZfnVTuL1OsnztQ4y3HVsto7kYb0mDWWMfq
-         8WvxYIJTIg9sE0Cfxp8919Ne5mZ0AxMthoZinPZFWWUC00ZrTYoNt8QeXuqlqGirttHG
-         k+ZwbnF6G40YvyJTJXblgBwpSjnNY3tWBrKGzhYGJRP8X2ebVIFiUH+zW4cD75T377Xz
-         la5A1p6W1yPx/RLEbxQqKeK2sbulJg1f+x+IjRuzhp187q928KQ6NyqQGyxu+URoxBD7
-         Su9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KWiHNXS+3DcOlsVpnDVjQ/m3C1IyjZ5owtbI17urlSs=;
-        b=QyWx7lxddHyrmJJ1pgY/la0FPXouMksveAZZSrU6c2/qoW7O5RdPEVz6vwGoZPc2vA
-         c5ckT7OXYEVUwpi9d1kLvaaB9CuMJIy8Zi6UJMqmA+e4enhwcJinZzKxjr0BD2GahG3K
-         nMEnQF4U+B/BXCcGlyCP+qdaB9u5q6WM4tYg++WPtGaLhq7qLXysGnjFlUlLiMoIwYAF
-         ctWcTuI/UPh8JR6I6pjVb++V/Oyhi6HPvPM17IDirjkiXwCTxegQZlA0CGX7X9mmuAPf
-         LlzpTyni/m1N3Ta+CciOu71QTz0NnMTDMRdQeq+5aKD5L9CF7hPYevrF8fp/eZB2YaEI
-         QDQw==
-X-Gm-Message-State: AOAM530cyMuS748lHKcthIyovnXqigJChCnO30v/8UQAFQF/lQzT9a2q
-        hqipw9Hf7SwmK2im6JRIFQG2ji7iHwmcmyYc
-X-Google-Smtp-Source: ABdhPJwhD4PkYb6968XTC6ESe+L5tvt2UaX2SD+FMpytvd38l0rgpOZLeQtVZrtL5iuFcKST3zh7Iw==
-X-Received: by 2002:a17:906:1451:: with SMTP id q17mr27376832ejc.214.1630357219217;
-        Mon, 30 Aug 2021 14:00:19 -0700 (PDT)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id dk6sm8164992edb.14.2021.08.30.14.00.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 14:00:18 -0700 (PDT)
-Subject: Re: [PATCH v1 4/5] dt-bindings: phy: phy-rockchip-dphy-rx0: add
- support for tx1rx1 phy
-To:     Mikhail Rudenko <mike.rudenko@gmail.com>,
-        linux-phy@lists.infradead.org
-Cc:     linux-media@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Helen Koike <helen.koike@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210830180758.251390-1-mike.rudenko@gmail.com>
- <20210830180758.251390-5-mike.rudenko@gmail.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <60aa055c-d872-3e5c-3c85-09300215a60e@gmail.com>
-Date:   Mon, 30 Aug 2021 23:00:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 30 Aug 2021 17:02:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18734C061575;
+        Mon, 30 Aug 2021 14:01:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YLeyIh36W9KZ0EdnGoneLXaI1P2Sf43R5mGsowkdW0g=; b=rHUGs8PC9SNCLr8+68pmjJ6j+O
+        LtaWTZh9Q5B1+nQ2hrTGPF1fcfbSR3Bc4MaZvFu5VphNn3uzQki+n35xkL0bVrh1LapvtJXCTf9x2
+        aX8wRYUgYbB46/sh+IyauBD/d0v+EUJxIYc5tPiQ59XAdDbtIw4Bl5TuloVoTzanjLZH6B4zEyu9Z
+        cJfxaSEUPDqzy73KINJtfXG3JQEC+OVcdV8NY+mlstsLgVUnda0SZf0UpWRWmmrSNYHh6ccI4qX6Q
+        jujgcYNbGhmMrYwBPve3x8mENOXlAOUdzlGIdtNTAxg2GKSXah81G/vdsWSHpKSkvVupm5BhcGwQl
+        0RhmffIA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKoOo-000ZII-6j; Mon, 30 Aug 2021 21:00:58 +0000
+Date:   Mon, 30 Aug 2021 14:00:58 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
+        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
+        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
+        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
+        josef@toxicpanda.com, hare@suse.de, bvanassche@acm.org,
+        ming.lei@redhat.com, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
+        dm-devel@redhat.com, nbd@other.debian.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/10] dm: add add_disk() error handling
+Message-ID: <YS1HCgP/XdWmMtFN@bombadil.infradead.org>
+References: <20210823202930.137278-1-mcgrof@kernel.org>
+ <20210823202930.137278-9-mcgrof@kernel.org>
+ <YSSP6ujNQttGN2sZ@infradead.org>
+ <YSk1EhUIr9OjIoVv@bombadil.infradead.org>
+ <YSnnXdKLvxEY8yay@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210830180758.251390-5-mike.rudenko@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSnnXdKLvxEY8yay@infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mikhail,
-
-Some comments below. Have a look if it is useful.
-
-On 8/30/21 8:07 PM, Mikhail Rudenko wrote:
-> RK3399 TX1RX1 D-PHY is not a child of GRF and uses reg, thus add
-> corresponding properties conditionally. It also requires DSI clock to
-> operate, so check for it. Since we now support both rx0 and tx1rx1,
-> rename the schema to rockchip-mipi-dphy-rx.yaml.
+On Sat, Aug 28, 2021 at 08:35:57AM +0100, Christoph Hellwig wrote:
+> On Fri, Aug 27, 2021 at 11:55:14AM -0700, Luis Chamberlain wrote:
+> > > I think the add_disk should just return r.  If you look at the
+> > > callers they eventualy end up in dm_table_destroy, which does
+> > > this cleanup.
+> > 
+> > I don't see it. What part of dm_table_destroy() does this?
 > 
-> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
-> ---
->  ...hy-rx0.yaml => rockchip-mipi-dphy-rx.yaml} | 39 +++++++++++++++++--
->  1 file changed, 35 insertions(+), 4 deletions(-)
->  rename Documentation/devicetree/bindings/phy/{rockchip-mipi-dphy-rx0.yaml => rockchip-mipi-dphy-rx.yaml} (65%)
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx0.yaml b/Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx.yaml
-> similarity index 65%
-> rename from Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx0.yaml
-> rename to Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx.yaml
-> index 7d888d358823..f42319448fc9 100644
-> --- a/Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx0.yaml
-> +++ b/Documentation/devicetree/bindings/phy/rockchip-mipi-dphy-rx.yaml
-> @@ -1,10 +1,10 @@
->  # SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->  %YAML 1.2
->  ---
-> -$id: http://devicetree.org/schemas/phy/rockchip-mipi-dphy-rx0.yaml#
-> +$id: http://devicetree.org/schemas/phy/rockchip-mipi-dphy-rx.yaml#
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
->  
-> -title: Rockchip SoC MIPI RX0 D-PHY Device Tree Bindings
-> +title: Rockchip SoC MIPI RX0/TX1RX1 D-PHY Device Tree Bindings
->  
->  maintainers:
->    - Helen Koike <helen.koike@collabora.com>
-> @@ -16,19 +16,28 @@ description: |
->  
->  properties:
->    compatible:
-> -    const: rockchip,rk3399-mipi-dphy-rx0
-> +    enum:
-> +      - rockchip,rk3399-mipi-dphy-rx0
-> +      - rockchip,rk3399-mipi-dphy-tx1rx1
-> +
+> Sorry, dm_destroy, not dm_table_destroy.  For dm_early_create it's
+> trivial as that calls both dm_table_destroy and dm_destroy in the error
+> path.  The normal table_load case is a separate ioctl, but if that
+> fails userspace needs to call the DM_DEV_REMOVE_CMD to cleanup
+> the state - similar to any other failure.
 
-> +  reg:
-> +    maxItems: 1
+I see, ok sure I'll document this on the commit log as its not so
+obvious.
 
-This allows every node to have a reg property.
-
->  
->    clocks:
-> +    minItems: 3
->      items:
->        - description: MIPI D-PHY ref clock
-> -      - description: MIPI D-PHY RX0 cfg clock
-> +      - description: MIPI D-PHY RX0/TX1RX1 cfg clock
->        - description: Video in/out general register file clock
-> +      - description: MIPI D-PHY DSI clock
->  
->    clock-names:
-> +    minItems: 3
->      items:
->        - const: dphy-ref
->        - const: dphy-cfg
->        - const: grf
-> +      - const: dsi
->  
->    '#phy-cells':
->      const: 0
-> @@ -37,6 +46,12 @@ properties:
->      description: Video in/out power domain.
->      maxItems: 1
->  
-
-> +  rockchip,grf:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      The phandle of the syscon node for the general register file
-> +      (GRF), required for TX1RX1 MIPI D-PHY on RK3399.
-
-This allows every node to have a rockchip,grf property.
-
-> +
->  required:
->    - compatible
->    - clocks
-> @@ -44,6 +59,22 @@ required:
->    - '#phy-cells'
->    - power-domains
->  
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +          const: rockchip,rk3399-mipi-dphy-tx1rx1
-> +then:
-
-> +  required:
-
-Move/swap the properties section above the required section.
-
-> +    - reg
-> +    - rockchip,grf
-> +
-> +  properties:
-
-  reg:
-    maxItems: 1
-
-> +    clocks:
-> +      minItems: 4
-> +    clock-names:
-> +      minItems: 4
-
-  rockchip,grf:
-    $ref: /schemas/types.yaml#/definitions/phandle
-    description:
-      The phandle of the syscon node for the general register file(GRF).
-
-
-", required for TX1RX1 MIPI D-PHY on RK3399."
-
-This phrase is already said/done with the "required:" section above
-
->  additionalProperties: false
->  
->  examples:
-> 
+  Luis
