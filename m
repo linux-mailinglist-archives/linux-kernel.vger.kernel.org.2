@@ -2,94 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19E43FB42A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6253FB425
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236437AbhH3K5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 06:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235818AbhH3K5x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:57:53 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F08C061575;
-        Mon, 30 Aug 2021 03:56:59 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so13572965pjr.1;
-        Mon, 30 Aug 2021 03:56:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IuLKz1s8t6PFtB3h5yQO3vsoV8BYc4QlCilxBHWTOcY=;
-        b=gN/rIRJ+8Mk/MKOcw84CamLKnAejx1PZuqVsRV51WgkCvcJS7L9PiWIKt0TnmceP+T
-         LWRDkoPqbMr9zTFv9XJG9Xj6TvqGCnYGa2ohFlCriTb69HjNgWfGichEWUseAQJg8Qsl
-         iStTTO2OwqYvqYUWFGIDNLosinsIhEUxZjbRsO/5KlbtLOoVF5GvI5t+lsvGViaPBnQw
-         G1mpqa0KY8zOeAIG0D/9eXsQNhPiHz0rsAnndZfMmWCv2GlWNdHhtwzjFXWD865dWSqo
-         SaOF8r+DOgfxRSRI67JQUnYEoeorL/SCpBhsnCahpdVRGWchqt58a1hlZ8GGQUVWuvH1
-         fz1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IuLKz1s8t6PFtB3h5yQO3vsoV8BYc4QlCilxBHWTOcY=;
-        b=pGlxPNvk73Iy/5Q739JMOQScsxoRtFmyCF38I8VaUKTtivk6S5QTV4H3Y/FoboLzq+
-         moxA69QduikECkXp78SIkb9j0K/EWZNVzuQd1pBAqgc2vY0xSXetwzOpbO1SLiUL7rik
-         eaZ0UYzi+iFeqnVs5TfPfOIiS0dYw89+Knl/CAT83o+OR4hEjbSL52OEcrRXdjsgz9Qo
-         v+cKfvx+entxr+kNe1tul4MyGMQkYQHwwenuGQKrXBQUj6Gkns9++pNiyRkZWJHh89fr
-         nLE2ar8dAzk+trLO1V/mYCjD1y58lgjSr39I8SPu7MnsuGzl66oCIMKudcKQ9P/vzzRB
-         JmMw==
-X-Gm-Message-State: AOAM532iPJzPNUiG4wcjM1PsPszjNzYe15dl99IGsHnqLqBfqPLVQs0v
-        +Ty97P78F7AJ0wpQWBacmIAVvuzZdYoSsgBM2ak=
-X-Google-Smtp-Source: ABdhPJw9OgY3Xxn2H4QQ1g1xlibhj/dL2aOLnV1zyaaGrMut4CoMdwiVwchEgR4QZ2kpD0o9m8nYPxIOOJnVw03hs7U=
-X-Received: by 2002:a17:902:bb81:b0:12d:a7ec:3d85 with SMTP id
- m1-20020a170902bb8100b0012da7ec3d85mr21312883pls.17.1630321019360; Mon, 30
- Aug 2021 03:56:59 -0700 (PDT)
+        id S236394AbhH3K4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 06:56:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235818AbhH3K4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 06:56:08 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09C6B610FD;
+        Mon, 30 Aug 2021 10:55:12 +0000 (UTC)
+Date:   Mon, 30 Aug 2021 11:58:22 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH -next] iio: adc: add missing clk_disable_unprepare() in
+ rzg2l_adc_pm_runtime_resume()
+Message-ID: <20210830115822.759f4bba@jic23-huawei>
+In-Reply-To: <CAHp75Vdim8S5kMZY1DYSMM-gLbPHoqRcEMD-rcZ1sm9hPeTaOw@mail.gmail.com>
+References: <20210819132416.175644-1-yangyingliang@huawei.com>
+        <CAHp75Vd22aP098s9iXCGmBG505dW1vmZgvy3h9NoNA=J-eQ-CQ@mail.gmail.com>
+        <9b848f1c-9acd-243e-2c5b-d489d2427464@huawei.com>
+        <CAHp75Vdim8S5kMZY1DYSMM-gLbPHoqRcEMD-rcZ1sm9hPeTaOw@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210830104426.487246-1-atafalla@dnyon.com> <20210830104426.487246-2-atafalla@dnyon.com>
-In-Reply-To: <20210830104426.487246-2-atafalla@dnyon.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 30 Aug 2021 13:56:23 +0300
-Message-ID: <CAHp75VfgbA0upoHyDLPCRGrN+7H5mZiDu-GbQPxHid++Z9UqQA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: max98927: Handle reset gpio when probing i2c
-To:     Alejandro Tafalla <atafalla@dnyon.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 1:48 PM Alejandro Tafalla <atafalla@dnyon.com> wrote:
->
-> Drive the reset gpio if defined in the DTS node.
+On Fri, 20 Aug 2021 12:17:46 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-...
+> On Fri, Aug 20, 2021 at 4:52 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
+> > On 2021/8/20 1:20, Andy Shevchenko wrote:  
+> > > On Thu, Aug 19, 2021 at 4:19 PM Yang Yingliang <yangyingliang@huawei.com> wrote:  
+> > >> Add clk_disable_unprepare() on error path in rzg2l_adc_pm_runtime_resume().  
+> > > ...
+> > >  
+> > >>          ret = clk_prepare_enable(adc->adclk);
+> > >> -       if (ret)
+> > >> +       if (ret) {
+> > >> +               clk_disable_unprepare(adc->pclk);
+> > >>                  return ret;
+> > >> +       }  
+> > > Huh?!  
+> > The pclk need be disabled, when enable adclk failed.
+> >        ^                                                         ^^  
+> 
+> Indeed. I'm wondering if those clocks behave like a bulk or any
+> combination is possible on a working case?
 
-> +       reset_gpio
-> +               = devm_gpiod_get_optional(&i2c->dev, "reset", GPIOD_OUT_LOW);
+They are handled independently in other parts of the driver, so bulk
+setting is going to be a mess.
 
-A bit of a strange indentation, shouldn't it be one line?
+> 
 
-> +       if (IS_ERR(reset_gpio)) {
-
-> +               ret = PTR_ERR(reset_gpio);
-> +               return dev_err_probe(&i2c->dev, ret,
-> +                       "failed to request GPIO reset pin");
-
-It simply as
-
-               return dev_err_probe(&i2c->dev, PTR_ERR(reset_gpio),
-                       "failed to request GPIO reset pin");
-
-> +       }
-
--- 
-With Best Regards,
-Andy Shevchenko
