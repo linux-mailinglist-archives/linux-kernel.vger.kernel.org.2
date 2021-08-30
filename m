@@ -2,215 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844E43FB6A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA5F3FB69F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232656AbhH3NBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 09:01:41 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:44550 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229809AbhH3NBj (ORCPT
+        id S231923AbhH3NB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 09:01:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24932 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229809AbhH3NBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 09:01:39 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17UBO0N8014293;
-        Mon, 30 Aug 2021 13:00:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=bcjPxZS3sqBxi2fZB94p+SGJNUBKQEzkPc1CM21Krvw=;
- b=vM+uf0XQno/aCWaDEpltyE8BQthdtCK141YJdlR/LOGoxdG7gJukk0sX0LcwDwziNQ7q
- gRkl4g84sp5gqCFiTelnbbLJofwehbMbJ/MKhHJlsTafoZXYhomEbmeX/IF21k/RO3SJ
- YBQaXnrDPz0wsN6Q+t/1hyIv28QbEFVaWag0/ZjwTjFzRzRgnTSu3pCb3Dp/HsNNhDab
- MSSx4MpSEV2qeUurN6x/8ZMQ6gN+MIeRz7LdJwl4yZFGOk4P4Tjs7dirP3uNu1/BgcaO
- lITqjhxOUWQisczk9PQr1jzmkzPjSAj8Y2+Z/Wb5DQfIGQCtkOEjNJW6Xnoo/zCkagmG 6g== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=bcjPxZS3sqBxi2fZB94p+SGJNUBKQEzkPc1CM21Krvw=;
- b=scm6TmON1aPyMKBI1JOsZbQnx+7P9hxAvdA9Vck988oDyq5oA3KG9SS5fueQSKHKCoUc
- 6h6Q5JjBYy6ga45UL9kRNkSNF5XLZ0FfTPm8vmeL/oxYWOD2rTtygD15pzUzxhUtuPhU
- zsbUlBW2pz4NV8LWFwontf7uHTCvJ7udwOhKHIcoAanxic7qr0zKf9a6VlGN/MvOBeRk
- pmYXX32MhhjTm/0NDMalp0ysIqZ+5+g7IRVXiRvq2A3KG0aZKlrM/AosROU0f66HgD5B
- 7QxG4EMe19mDoxKQY1/FiwbDJj+P81DtOouHDMNoTmqUqYNpZhzB+oY4U6T9ifQd/vti sA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3arbymhemt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Aug 2021 13:00:26 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17UCuAxE016761;
-        Mon, 30 Aug 2021 13:00:24 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
-        by userp3030.oracle.com with ESMTP id 3arpf29frk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Aug 2021 13:00:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Doc5Jp4sd1wb/mQR9h6Q41TKX4fkchDxX1+++hdXvP/cvkkJZYqGQLvsOtmZxb/quUXAbewlOTXirwLSHwLF66S9OJKiCq31VtXFaIwuloc71EPOfXJeQro3lL5bTLuEy1+YPVFtv5TY8r/4aRJfHrQbaKYhzii/bSBSFn05hMU8wGOFNZmLsg7gDjp2umQH/pxQ2EOk941p78qRhiS0r3k8hIikrEbLenpSIJPD9MZLeNVKVXuv+FbLl6aXl0O41EWYY0ICRP3MlvoQAyJLNRpG6pNc6pWPaf/MfMflXeWJ4pcFpeyvzxy5yFu9IvF96T0JT5TGmZ+FUGOmYfetPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bcjPxZS3sqBxi2fZB94p+SGJNUBKQEzkPc1CM21Krvw=;
- b=A0n81nQhOSzIce0NGQB1gm7HkDYi+IvDQyCbp1MpwLgfuv8P2VPT6CIhQ80bc5EAMWBcAdZjS6tyc3AkgGanC/BtPantxVwJK6DTp+3U1EFE7eceqOc0STdg8d6MaN99PURiGF7sFwPZLffCDab64XSBD4SII9pDhGDt1GHsEBwXh6FCOAu0cxLIBgKdaj8Ltw/ELJ6dOKqcih9ygNdexWnE7Anfs8ywAdaR58DaeFiIbXSuuc/PUgXHJINNg8eQP/CoLdZoeq3bC/XaZxIwDvgD9nQnulv3utUH1UnLx84AaMd6vygFoeio8LWjzkYliL2vx7VnrAuKZGyaMxcqCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bcjPxZS3sqBxi2fZB94p+SGJNUBKQEzkPc1CM21Krvw=;
- b=NSQc8aBe0+sOK9I4VphFOlA7BnsBKQrjh01dtdJQMEzxRdER+elBvxNuOcWfmMoPnbmOLsUL5kFTV+5/pQCCEgcfykXv2eX632gPP5zpMHIdO9wPuVmj3BtSRsrppuAxPEv7GjoLfLRiMuKM6X1/HLPKjoisv/ziBC1agtio46o=
-Authentication-Results: linux-m68k.org; dkim=none (message not signed)
- header.d=none;linux-m68k.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR1001MB2318.namprd10.prod.outlook.com
- (2603:10b6:301:2f::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Mon, 30 Aug
- 2021 13:00:20 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4457.024; Mon, 30 Aug 2021
- 13:00:20 +0000
-Date:   Mon, 30 Aug 2021 16:00:00 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Colin King <colin.king@canonical.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in
- vga16fb_fillrect
-Message-ID: <20210830130000.GW7722@kadam>
-References: <000000000000815b9605c70e74f8@google.com>
- <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
- <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
- <CAMuHMdV=xVhEHLEoYt3OF+kmGrLOr6t7SP1sghSmp9JqXD+3Og@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdV=xVhEHLEoYt3OF+kmGrLOr6t7SP1sghSmp9JqXD+3Og@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNXP275CA0004.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::16)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Mon, 30 Aug 2021 09:01:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630328431;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1QISg/NYFf78v9zEJ28Xkat7ENRrNVQvUvLwRsOOvUY=;
+        b=ZT4S9t69ckiluezF90bq1ki4DesPMC3V9lOVVv+bsnN/pcnCg1g2Va7o/uUz3EGCffZe0S
+        NHpd+zLTCVYHFbHzLelqzviFhiATcRiT7jm2xiBFpMgm1w2k2dh2tpDj4nYAy5p1z34qfL
+        GeUu7fin5B77iN4GdBE21kw2DaV/TS0=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-zStq2wEbO2GjtwoYW_mhxA-1; Mon, 30 Aug 2021 09:00:29 -0400
+X-MC-Unique: zStq2wEbO2GjtwoYW_mhxA-1
+Received: by mail-wr1-f72.google.com with SMTP id p10-20020a5d68ca000000b001552bf8b9daso3277733wrw.22
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 06:00:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=1QISg/NYFf78v9zEJ28Xkat7ENRrNVQvUvLwRsOOvUY=;
+        b=Y6F5Xx4nn7zeidmOEyQ+Zh6PMkp4Q249opqcc45LdsLTFaHmI2CTSmnJniFo+zIK0k
+         uulZNImMTHJcV+yWSJ9BCizKahrDYTPEuOcpLaP1mjtWUZ7/5mYwfAHztDh8DK9WUzfz
+         O0uU2bwgnsYp8h6hVRxfsNIhviKlomZoa25Qj60nEoEDpiS/cHejsm3jcwmaSon93nj4
+         H3qMEmvGHbWrOsVrEfd9nBYzx9bj22uGth0ONc9mU6YK3CppBwyypjIlUuD7EKVEqND/
+         KhkQ3EgjhJmuuVCMcxHx897QT18GBrtZJtgbvzavmRyTC8taxoCbYm0kv9Mp5bMquxYI
+         TTTQ==
+X-Gm-Message-State: AOAM531Z1bTyBfzsq4TEP+ULVinhMNrt2qpjpg7Dvkxs47CAH3IJHXY/
+        3PB6nzXkp4XRtyNe9CKSi+i7EcqdF3gODC/2OEGhvH8vkThgQ+jnJfwaVT35F+yD/BjP3GUG4iH
+        4ky5KxZ3pl2rT/mQoynqCF4Y4
+X-Received: by 2002:adf:c785:: with SMTP id l5mr26059318wrg.360.1630328428657;
+        Mon, 30 Aug 2021 06:00:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxyeAnddxexwyxt1smSb+6mGbFViWKJvMPrKjdmL3RSq68uOI2M94yMRhQNQnLliA2dnz6zTA==
+X-Received: by 2002:adf:c785:: with SMTP id l5mr26059292wrg.360.1630328428469;
+        Mon, 30 Aug 2021 06:00:28 -0700 (PDT)
+Received: from ?IPv6:2a0c:5a80:3c08:b500:afb2:5ebc:3fd2:26de? ([2a0c:5a80:3c08:b500:afb2:5ebc:3fd2:26de])
+        by smtp.gmail.com with ESMTPSA id c14sm15263203wrr.58.2021.08.30.06.00.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 06:00:28 -0700 (PDT)
+Message-ID: <72210d6eb3e50254f0808a8040bd4bcd471cc87e.camel@redhat.com>
+Subject: Re: [RFC PATCH vs 2/4] drivers/input/joystick: sensehat: Raspberry
+ Pi Sense HAT joystick driver
+From:   nsaenzju@redhat.com
+To:     Charles Mirabile <cmirabil@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org,
+        Serge Schneider <serge@raspberrypi.org>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        linux-rpi-kernel@lists.infradead.org, fedora-rpi@googlegroups.com,
+        Mwesigwa Guma <mguma@redhat.com>,
+        Joel Savitz <jsavitz@redhat.com>
+Date:   Mon, 30 Aug 2021 15:00:26 +0200
+In-Reply-To: <20210820180801.561119-3-cmirabil@redhat.com>
+References: <20210820180801.561119-1-cmirabil@redhat.com>
+         <20210820180801.561119-3-cmirabil@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (62.8.83.99) by JNXP275CA0004.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.20 via Frontend Transport; Mon, 30 Aug 2021 13:00:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b8df0aab-e346-4237-51ee-08d96bb61f31
-X-MS-TrafficTypeDiagnostic: MWHPR1001MB2318:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR1001MB23188A656EDA39F08BAF89F88ECB9@MWHPR1001MB2318.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QvF5E273TJt433B29Qd3fLMjlggSlOhcfZMp2/A1lHrLzTFrQC33Z54HS/IrVWbIsfM7KT7UGZVHQDKTVcdbSOQphIpPKegDwiuNyurzrp60fsswBmk31n000m8OT3zD7E5Lyhp4SzFhWkhWCacACRvlkBrqPfJGx5kpU9h7+uJNYTFWAZTvJbMsk4zEruGSDIadrRlea/qt+yCBZs0YxhGHEMYvaJZRYzmRcFHEWrY7qC2MuOXSSPIBwX+/HdqCQ1bpJ+BlpWPbIuzGJccvYV914vTGGmiOmfedrbF6Gfk/tV/e4KTXvcVqYQ99r2hDfL9kAncIagR+60O/6gR60iHb8ETkyt0LH2J5Qm0T1k4Kp065NOXcIVjDHwgGnu72DuIlwbzxdcJMd3YsheLcdxh7xmHdx5DLnf5M2pfQg1tRm5O3CcN/Ii9GFlKV8527zJ+KIDyhUibGmKauY2aIzVw0eLSatrGjet2bPutX8F0EDIyhfZcuqlr0QArFlGOLULAKSFx39B7ZjkzLvIHeJjnIm6rIxcnTC1oWKUOwL9y9o4UHSIAvsJw3mPENYmEj4Ifzt0owC22qxV92wq/ZUCUII+KzkamE+TnRomSscHHSQece429ELMINFFRhMS8ohgquPR3g1nD1d0NF45xlJbSJ13TdkVGaz4fXV8UEvd4Veg4UpydTmN8o7ZPcMkAgdamZFa9OKnM5/gxUShy2Sg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(346002)(136003)(366004)(396003)(6666004)(33716001)(9686003)(55016002)(54906003)(33656002)(478600001)(956004)(6916009)(44832011)(86362001)(8676002)(38100700002)(38350700002)(8936002)(52116002)(83380400001)(2906002)(66946007)(1076003)(26005)(53546011)(66556008)(6496006)(186003)(316002)(5660300002)(9576002)(4326008)(7416002)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?J2AbSXZyRj9//ay6Ea7bX5IcUm+uBBO02kGyRC/duJyqZD0GpPLLZnIEeeSx?=
- =?us-ascii?Q?r8Unhl7jnnjIGyJaFXXvAqIk6Ecf/nD7ryPF5BGOZ9XX+EnSEkZkDdn21baR?=
- =?us-ascii?Q?o2mJ54htK8v5bR5qtxsnzrXe3fveZp9zbGucKMRuK+GAzaWVPT9c/9mx/YSv?=
- =?us-ascii?Q?Gl7CtOvtiTaO0Ec2wpqgZiHEsVdOaaV4McHnqJOsBYK52MCS9Pv8fo6doZGc?=
- =?us-ascii?Q?bg2lLU7eIEK4sfbxbxZH6k90uU7XxZKV7Xx7eTrKdsIEARayXqZzjbrTk/Kn?=
- =?us-ascii?Q?/UxDcC1CWAssW9t8Gty+jLZbCoULgu+LhzWYh5k7WeDvNA88R5uQgFQ8+f52?=
- =?us-ascii?Q?Ab7gooPgGGLNkaEjkwCLJTBKnSAZF1cYrvDJEs5d6XNw10djBhHDmQVNWfe6?=
- =?us-ascii?Q?BlUwtQIig+nKdMspgxbpaPOom6XvpcARNGioKBFZrH26uFSH/5mBAJYX39Zi?=
- =?us-ascii?Q?Mze+0DuGc0zSs0k7QOTbQlHHz1hYh56mikzBe+zMnehHMU51CZEvoel/YXB/?=
- =?us-ascii?Q?E92XErHt5GL5aF6Ti70V9tqe6jSIIqMCIO97SjpF6gLFEHA930AeYi6EYN7v?=
- =?us-ascii?Q?1TpxsYEHGCgVbAe/hYYCcY6IjAGMn2WGuNpVYtgZrH3gU3FV1RjWFjxlBysM?=
- =?us-ascii?Q?eZQFmUeR0VO4rWgou9Yhkl4go3wFv41HIb4K8ME1McsiA5lXCgSsTaViZUqb?=
- =?us-ascii?Q?cNx8eB8hfyFls/N6TgUduXPX5PjtNuvRe0D1bHGD9BdifsyVDOa6mjyJj0bY?=
- =?us-ascii?Q?NNmT+i++7nvkKwwdOLdb1p9bObyQwIFhr2r/OHn9G08y2guMYcQt980GBb0T?=
- =?us-ascii?Q?buiMw17EscXkKjj4m31IPYy/rk021vRj+OK6Q5/1vWduf2cLW7Ro1aAS+9t5?=
- =?us-ascii?Q?HCsfusAeV1SO8J4iJJSXpM/wmKp2fwJwoUpaUUwd7RPfAJeKMDq5D5B/qB4N?=
- =?us-ascii?Q?xNeMbLWFV3fYZwr7ptuWleTk21NQmfohnMyKay/mMmg6k2WRlHIRldAT1xJk?=
- =?us-ascii?Q?M8/9nL6RlRwt+PE8tAai34NAfFcve/2hZ+kOJBys+PldmOLrNGTxgUlCNXJl?=
- =?us-ascii?Q?YaOB6LCNZ4rwgH+vRh/9vnmHBnFKHCbwEm/m5n7KWaCLW7N3HlXbO7cX9Wrj?=
- =?us-ascii?Q?i8FmrnonD5QkmUObZ6AWncWbc+7NTWISfz3b7WVjsIYlILhzqwLtBRRkqcLI?=
- =?us-ascii?Q?2Pjr3f+XLKQBLWstxvkZzz7SB/QcHyv1PYi4bOCHoMUZoze0F6FsT8L2dsl9?=
- =?us-ascii?Q?7O4P9D66Di2BK7TN7PIWFvQSHRwtXyq48GAFXWM86EnP+fQko4/tIGscwVSY?=
- =?us-ascii?Q?M9QwpS89djnA/vz8VU8ci7wk?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8df0aab-e346-4237-51ee-08d96bb61f31
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2021 13:00:20.6362
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NEuBAIbljagaz1+svTK+k5BjK8C5QJ7RVEe7O7oLrgxKTgK9HB098auP2XSajtbsjw+WItXdW5fd+k1igw9tnvLuMKb2Apd0VmWpwMDE4yY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2318
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10091 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 phishscore=0
- spamscore=0 mlxlogscore=999 adultscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108300093
-X-Proofpoint-ORIG-GUID: ouoOpO6IVxP804W5Zp4g2KOtS-NVKE8O
-X-Proofpoint-GUID: ouoOpO6IVxP804W5Zp4g2KOtS-NVKE8O
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 02:00:21PM +0200, Geert Uytterhoeven wrote:
-> Hi Testsuo,
+On Fri, 2021-08-20 at 14:07 -0400, Charles Mirabile wrote:
+> This patch implements support for the joystick.
+> It supports left/right/up/down/enter attached via i2c
 > 
-> On Mon, Aug 30, 2021 at 4:27 AM Tetsuo Handa
-> <penguin-kernel@i-love.sakura.ne.jp> wrote:
-> > On 2021/08/30 9:24, Randy Dunlap wrote:
-> > > Note that yres_virtual is set to 0x10000000. Is there no practical limit
-> > > (hence limit check) that can be used here?
-> > >
-> > > Also, in vga16fb_check_var(), beginning at line 404:
-> > >
-> > >   404        if (yres > vyres)
-> > >   405            vyres = yres;
-> > >   406        if (vxres * vyres > maxmem) {
-> > >   407            vyres = maxmem / vxres;
-> > >   408            if (vyres < yres)
-> > >   409                return -ENOMEM;
-> > >   410        }
-> > >
-> > > At line 406, the product of vxres * vyres overflows 32 bits (is 0 in this
-> > > case/example), so any protection from this block is lost.
-> >
-> > OK. Then, we can check overflow like below.
-> >
-> > diff --git a/drivers/video/fbdev/vga16fb.c b/drivers/video/fbdev/vga16fb.c
-> > index e2757ff1c23d..e483a3f5fd47 100644
-> > --- a/drivers/video/fbdev/vga16fb.c
-> > +++ b/drivers/video/fbdev/vga16fb.c
-> > @@ -403,7 +403,7 @@ static int vga16fb_check_var(struct fb_var_screeninfo *var,
-> >
-> >         if (yres > vyres)
-> >                 vyres = yres;
-> > -       if (vxres * vyres > maxmem) {
-> > +       if ((u64) vxres * vyres > (u64) maxmem) {
+> Signed-off-by: Charles Mirabile <cmirabil@redhat.com>
+> Signed-off-by: Mwesigwa Guma <mguma@redhat.com>
+> Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+> ---
+>  drivers/input/joystick/Kconfig             |   8 ++
+>  drivers/input/joystick/Makefile            |   1 +
+>  drivers/input/joystick/sensehat-joystick.c | 124 +++++++++++++++++++++
+>  3 files changed, 133 insertions(+)
+>  create mode 100644 drivers/input/joystick/sensehat-joystick.c
 > 
-> Mindlessly changing the sizes is not the solution.
-> Please use e.g. the array_size() helper from <linux/overflow.h>
-> instead.
+> diff --git a/drivers/input/joystick/Kconfig b/drivers/input/joystick/Kconfig
+> index 3b23078bc7b5..d2f78353b74c 100644
+> --- a/drivers/input/joystick/Kconfig
+> +++ b/drivers/input/joystick/Kconfig
+> @@ -399,4 +399,12 @@ config JOYSTICK_N64
+>  	  Say Y here if you want enable support for the four
+>  	  built-in controller ports on the Nintendo 64 console.
+>  
+> +config JOYSTICK_SENSEHAT
+> +	tristate "Raspberry Pi Sense HAT joystick"
+> +	depends on GPIOLIB && INPUT
+> +	select MFD_SENSEHAT_CORE
+> +
+> +	help
+> +	  This is the joystick driver for the Raspberry Pi Sense HAT
+> +
+>  endif
+> diff --git a/drivers/input/joystick/Makefile b/drivers/input/joystick/Makefile
+> index 5174b8aba2dd..39c8b5c6e5ae 100644
+> --- a/drivers/input/joystick/Makefile
+> +++ b/drivers/input/joystick/Makefile
+> @@ -28,6 +28,7 @@ obj-$(CONFIG_JOYSTICK_N64)		+= n64joy.o
+>  obj-$(CONFIG_JOYSTICK_PSXPAD_SPI)	+= psxpad-spi.o
+>  obj-$(CONFIG_JOYSTICK_PXRC)		+= pxrc.o
+>  obj-$(CONFIG_JOYSTICK_QWIIC)		+= qwiic-joystick.o
+> +obj-$(CONFIG_JOYSTICK_SENSEHAT)         += sensehat-joystick.o
+>  obj-$(CONFIG_JOYSTICK_SIDEWINDER)	+= sidewinder.o
+>  obj-$(CONFIG_JOYSTICK_SPACEBALL)	+= spaceball.o
+>  obj-$(CONFIG_JOYSTICK_SPACEORB)		+= spaceorb.o
+> diff --git a/drivers/input/joystick/sensehat-joystick.c b/drivers/input/joystick/sensehat-joystick.c
+> new file mode 100644
+> index 000000000000..4aca125bc29d
+> --- /dev/null
+> +++ b/drivers/input/joystick/sensehat-joystick.c
+> @@ -0,0 +1,124 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Raspberry Pi Sense HAT joystick driver
+> + * http://raspberrypi.org
+> + *
+> + * Copyright (C) 2015 Raspberry Pi
+> + * Copyright (C) 2021 Charles Mirabile, Mwesigwa Guma, Joel Savitz
+> + *
+> + * Original Author: Serge Schneider
+> + * Revised for upstream Linux by: Charles Mirabile, Mwesigwa Guma, Joel Savitz
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/input.h>
+> +#include <linux/i2c.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include <linux/mfd/sensehat.h>
+> +
+> +static unsigned char keymap[] = {KEY_DOWN, KEY_RIGHT, KEY_UP, KEY_ENTER, KEY_LEFT,};
 
-On a 64bit system the array_size() macro is going to do the exact same
-casts?  But I do think this code would be easier to understand if the
-integer overflow check were pull out separately and done first:
+I'm not sure devices outputing KEY_* events fits input/joystick. Maybe
+input/misc or input/keyboard? Or else use 'BTN_DPAD_UP/DOWN/LEFT/RIGHT'. Which
+is what game controllers seem to do.
 
-	if (array_size(vxres, vyres) >= UINT_MAX)
-		return -EINVAL;
+Regards,
+Nicolas
 
-	if (vxres * vyres > maxmem) {
-		...
-
-The UINT_MAX is because vxres and vyres are u32.
-
-This would maybe be the first time anyone ever did an integer overflow
-check like this in the kernel.  It's a new idiom.
-
-regards,
-dan carpenter
 
