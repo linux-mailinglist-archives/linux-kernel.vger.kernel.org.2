@@ -2,118 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF113FB314
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0433FB31E
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235928AbhH3JXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 05:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235837AbhH3JXA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 05:23:00 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A623C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:22:06 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id m25-20020a7bcb99000000b002e751bcb5dbso8923063wmi.5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1K2L0rfQcMA4bHPO7PeyHVg9f7MV/63zN9Cyy+Mz/1I=;
-        b=MwvbTUoXPFfHYJWBysVve6D22DaqF7WouBzXZ5uV6PcPKYzj7ouBPtBD0l9iJlMNCL
-         2B/EBUs4Yjv3lEFfV97CWZ7Tk+NCrg2tRxXEBMXU7z5FTBpEZnZcDp5ZZmWbDcL97Fkf
-         lE8Qj2Cjc4QAdUJE1BuP98eUMelnDo+5nT+cpggD9D3Y6sB6icNSaWOmkGcbUlClAWfj
-         j9heZk8m6n7UTEjI+1OBS2ObhkZi7PNjPG9b3prUfnii+oM7x6NvB4AeHRDJ2ith1jTm
-         jozWfr6ZT8g/ukJGIdSbdLNOS6gyYoJESB7rYBTPAanfTIfMjOGaTHUQE75k2VImnrFl
-         2rNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1K2L0rfQcMA4bHPO7PeyHVg9f7MV/63zN9Cyy+Mz/1I=;
-        b=uRJ5XiEKDDOAKsHIlOMRL3rFi1xWoegFZqyPLfN9jatQ45BWJ8WxHHvCZiAh+FhMdq
-         V59f0YORkRhcPiyy0/oo9u1BFUZjl0F37kzgXmJIV4HQU6IWNwVtERMjpMW3zb0UmPt7
-         K7JGtxfoyz3Fnjrh0x0hVSsqTQ23sTqsgb5z2KrQImXRnLNS2Wngsd8MiagGYK8W5xjk
-         /8ZyN1Qzps9ZU9d/d1yiXx02svgchUx1sioligyPlbGiHvGiv4NJi7mdZ5lza5YB16ZH
-         ysR49atxX0cRvXRo8ihWpz6C6rQJo/XKW9UXNCVcPZ8UkDhdX3jYmPXqIXSEK0jnaF/f
-         U6Zw==
-X-Gm-Message-State: AOAM533xTEImNnG7L3+/zwpM2ZOcUCgLr2FU882/rAYrIyZV+5UtgPYo
-        Q5M78rSO4qNKA9+ppdXyZv8=
-X-Google-Smtp-Source: ABdhPJyg6F3CiC0oxDopjeuy116vYb8nYwo4z6r6St1P2iAILpwRb2/X03HxTdzGuOC9lHcBvksIng==
-X-Received: by 2002:a05:600c:8a4:: with SMTP id l36mr20861074wmp.128.1630315324621;
-        Mon, 30 Aug 2021 02:22:04 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::16fa])
-        by smtp.gmail.com with ESMTPSA id j1sm18378248wrd.50.2021.08.30.02.22.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 02:22:04 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 4/4] staging: r8188eu: remove unused function SetBcnCtrlReg()
-Date:   Mon, 30 Aug 2021 11:21:53 +0200
-Message-Id: <20210830092153.9283-5-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210830092153.9283-1-straube.linux@gmail.com>
-References: <20210830092153.9283-1-straube.linux@gmail.com>
+        id S235535AbhH3Ja2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 05:30:28 -0400
+Received: from mail-am6eur05on2070.outbound.protection.outlook.com ([40.107.22.70]:4726
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235073AbhH3Ja0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 05:30:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OdR4ChkO7vcyWudVbgcZs6lrBvrlxi5us3bRze50Q74bDQ+nFwRspMBiZOK1noG2hPnUkNFc/kxFcrqeuNRZ2v9wvREtkbjxfFt9gseQ981wXdzaxeWNoiZqRjj2MPf8G5v48Z+d7wxwojuRfoT2mDNQGV1DYBa9ZgP3PZ4GordN0lqaGpatG+uxEwyPwC/4tyiPJJEUU8w+T6A03vEfucy4/6FBDcn2jKeukeUecbeCNR0LE/PCfmv/8mw2rdpzcGJ95kYakNqZ9dT/BJK7KU1Elj6BnFj0hasDRo8BqlgIrDqJlAicSYF+QGB6MRbt46pBIjDtZBjVqHZ/DR2ZBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KEl2ycz/1/25Z0dBZjFKmmyWw5JF4L3mRN6A12igN0M=;
+ b=H3EryHQkS1X4l1b9gS/7ryuOHGWYJrL1PNZqeJZ4tKtAJD55QBo87zqlKESmpZVnYl5MsQkfkH5utYMtT0DHU95/UdUqNSSjTmxy5eCcfya31omFcINTDKcAUH64+zG0/rrFRCSkYrv5VMpqyf3HDj5HnWmyBSgdOcRuSOQu9gS6xbd7R7fQB3vJMSwiPY6rh6fXSP0WO/97E6bjQ433C0q4EvKBmBInRZDIhU/GtqFtHxy1pkflmZT/rsSDjdGeHG2q2s8LRBKIqRIaeVlo3UbpU7E8gTU0tNvpjFAtC34J8oLv/Ke4C2AF+o7sDkcSqCXtgKlcyTtbpz3lNMmJLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KEl2ycz/1/25Z0dBZjFKmmyWw5JF4L3mRN6A12igN0M=;
+ b=J02TTw8h9m2EGLjcYB7yw78SkknPIz0R5GatLgYYRqJQjp43RwP82M/qVmzuhjW9+BvBWtBYoyI0Brv/VDfpRYYBAefVXzpgLR9wWtFIk7oXnziNFzmOyOMTazDSK1mz6mnSScIfwy0yEhbkLqu7N7JQFAoGUmjxg/XM0fdN70A=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
+ by VI1PR04MB5037.eurprd04.prod.outlook.com (2603:10a6:803:57::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17; Mon, 30 Aug
+ 2021 09:29:25 +0000
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::10e6:799c:9d34:fc2d]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::10e6:799c:9d34:fc2d%6]) with mapi id 15.20.4457.024; Mon, 30 Aug 2021
+ 09:29:25 +0000
+Subject: Re: [PATCH 1/2] bus/fsl-mc: Add generic implementation for
+ open/reset/close commands
+To:     Diana Craciun <diana.craciun@oss.nxp.com>,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Li Yang <leoyang.li@nxp.com>, linux-arm-kernel@lists.infradead.org
+References: <20210825090538.4860-1-diana.craciun@oss.nxp.com>
+From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Message-ID: <b0ec47ea-d32b-04bb-aea4-1c8a74bc8f99@nxp.com>
+Date:   Mon, 30 Aug 2021 12:29:23 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <20210825090538.4860-1-diana.craciun@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR01CA0092.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:10e::33) To VI1PR0402MB3405.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::26)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.108] (79.113.50.66) by AM0PR01CA0092.eurprd01.prod.exchangelabs.com (2603:10a6:208:10e::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.20 via Frontend Transport; Mon, 30 Aug 2021 09:29:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6557f365-40eb-4d98-46e5-08d96b98a87b
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5037:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB50379EDA8E115BE12E1282ECECCB9@VI1PR04MB5037.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: af5dK4qXcB4lX26/KfLmSBeKOA4KLJah60yqu3tBHdMnNsWCYU1vm5S+n1rP7P7PfkiEdyWYqynB9iKH5BJndTjGZMeEuGesVQo7mr173Ikk1oMpBjthZn+GCVHBCrBDu8ZlFZFumGHqWmYmdHxU4tX6WOs6BjcQg1769pVYVWqf79/To3Sn/iwVNmyJLLEiXn2eL/hlm2KSBjPdwANnfozwAlH4Lk0hVgLITPMeiFpl/gILOxoNN3ZkFNXlcLsqumcVlhtMfbmVRbV676aUn8yf1k5uVBR0lLEGVwJepBoNq8tbRsu3aOZytyKZHFlaoS+XJ+SH52j2RzNT0QWfoqJ/L3463Aegljx/SOb0FMAZ66+CpdpSaQ6kaWDaHLYCOrlJgMjVMmiGBGlSFqiwbvXYp3idudEiGN6/M0LgBSGGjXv6RFmo13QasN827QDKuVwGjQVItvBBItt3VCYliUS6y6M4nDwbGxBm8B5j7OMHZL2Sxcb16Sr8yKIQ/Erfyv1mPqQIK+JQdZ8vUqwq3lwTv7WyUs9WE5rhwTACYjJDp/BEltzEmwjM2cNAH9Blg4gXEw9TmMy5AmJfRZpZuTbq0MK1behoxLrTDXKEzkCjfyJEuMuSvYvI+p7lSV0nea9r4s53UpjC79Q7iFkgdBjH4zqciPfC9nIrXFKegtfeVjBQZfFoCm8NA+bd8rYfXIOdNNfASkMIOa0pqexM/onZEa1XA6+5FrHArcagE6czOVY6Qh5kfeKPU8cbP4n6
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(39860400002)(136003)(396003)(2906002)(2616005)(86362001)(110136005)(52116002)(44832011)(38100700002)(83380400001)(66476007)(6486002)(31696002)(316002)(16576012)(36756003)(66946007)(5660300002)(26005)(8676002)(53546011)(478600001)(31686004)(66556008)(38350700002)(956004)(4326008)(186003)(8936002)(41533002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aUdSZllRUGtiSGVxWlR3NklzRFc4V1lXaE9Va0pDQTFMYytwVXloNDc3Q0tq?=
+ =?utf-8?B?V25ianBNSUpMaVdiUzN4SElGTmRaOE1nVjJjUlhpMmMrdStjRTVOUVIvRnNU?=
+ =?utf-8?B?eklTYnRsRlU0R2hsbS9jVG40enVXU08vSFR5SERJRmVjZ2NDTXQyVDd0NU5r?=
+ =?utf-8?B?UkpUZEJ5VVVvQVRuRDRoRER3RzlOQ1NTMTFOOXY3WThMQVBOaHBxMjJPNk5h?=
+ =?utf-8?B?RUxwWlNKR0dkQzIyV1R5ekVQZ0NRQkJZY2VISEtYNUI0Ti9VcCtVTVhtbTd0?=
+ =?utf-8?B?NjJpMzZlY3VVQmplQWtKby81T2VsbDZtc2l6emVuL243SXZpQ2FROVVLekFS?=
+ =?utf-8?B?V1k5RThoUTh3bUdZek1xT2dEY3VoL1Jva2RqVXdSdnFXMlhSL2NUdXY3OGh6?=
+ =?utf-8?B?RURmdUR2NGs5cHcxdGRoUnlKWGt4OHhYTExLbmV6MGpOTDZ3dVJRTDBEUk0w?=
+ =?utf-8?B?Mm5ka2wvcDNWRW5WbVUvUzBucU43WkJzV0J1aWFRcDhicmx5WVpHUUxSZjlr?=
+ =?utf-8?B?YmdLR2x1ZUxKMCtyZjB0Y2lrRmNhYVI4UWt3bTdrdFE1T1dkTFliSHFkWTFY?=
+ =?utf-8?B?RjI0K2hKdnR6aFd4K3RYTDBvNVdTdGRrbThsM0hUUWMwTkhJZENSRUFSeUhI?=
+ =?utf-8?B?QWFLMVhUYmxJS0UrZnJ2cDdmMTR1WFJhRWI2aXA3Q1ZoTzF0cUFvVzlwMzRq?=
+ =?utf-8?B?bGxVdDY1bXdqVUJreERGRkdmeEt1dU5xZHZGVXBPNzkzNUlpbkIxWWw4b0pH?=
+ =?utf-8?B?emMyYW82VjFuR3BZeE9IOWMrblhhWjZkRjVlUHErNTF4bnB1WE1wWCtXNit2?=
+ =?utf-8?B?VGFITHIzR0ErK0lzQnRDZDg3NGY0c1lCdDhqdHNrUDNNdGorYnA0TXN1azh4?=
+ =?utf-8?B?T283bHloVzVlYm5oS25DMGxMOW9kY0RQa2drNk9PQW45VkR6M2xmUTJmSWZG?=
+ =?utf-8?B?RmFuMmoxOE51M0hMQ2dxalI2MjJENVNBdmFKdWRJMkVlandFZi92VG9tYnFU?=
+ =?utf-8?B?SUppUklYdWtIemJ3VitVYjEvZmZPekpFN1dEK2w5VVZlSmFGRTcvcTk0NVNH?=
+ =?utf-8?B?NUxhanJLcW9GeGNXVkF5L1I0N2FPbW9tOVBEbmJaMjNDeHg1ZE9pTGhCR0dh?=
+ =?utf-8?B?NWkxR2FYSzREbWlmWWR4QXlJM0M3ZE1iVUlSay9Ed1ZqdERIMFhWLzgwU2pJ?=
+ =?utf-8?B?cXZYVUFqNXJwSzB2MUdtZUlZQnJJTU5hZmFKRGpqOGMyWVFDOU95aXZZYXE3?=
+ =?utf-8?B?WEZZTkZMSDFMV202bWsvQ0xZWjJXQ0lwckdJQ1R2djlmYUxoYm5kZDJnUFdK?=
+ =?utf-8?B?UHE0cEVvQlNnbmprYk4rLzA0ZUhZOFhkQlltL1pPUWkvMFNtWUJ6dHNVR0E4?=
+ =?utf-8?B?SkJ4OTNJeFpBenRxUlkreVNGNjYvY0RrbEx1WEFCN2Fzb0w3RmJmRkUzNmxa?=
+ =?utf-8?B?RndlZWlQZG4vTE1CMnh3Zi95UTl0VEl4TFF3V1p3UG9kTHFPaGlOK1NXUHlX?=
+ =?utf-8?B?V0NLZ09OZmVqZmgvSURuRjRGSnZiNkJ2aGY4cDlZR05FWWxFcUtLMUZqY2JG?=
+ =?utf-8?B?RFNIb3lCRzAvT1NXV2cvTzN1WnpPOHMrbmtnb3VmUitLcTRncGVwMGJmRTJT?=
+ =?utf-8?B?SVk0V0Z4dnBxbzl4WHBOWVFBUWJUOWh6dWFzUTB5SUl5SmNIeHRRL29WaXIv?=
+ =?utf-8?B?aGFjRUd0RGlUYmlKbGswbWJhYU1VMjI3aUJjSnVFODJJNk42R3R2dWhlVnRT?=
+ =?utf-8?Q?Z6aa6d5HGexdX6u0GCCe/MeXuipCjnLF9yVy8gU?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6557f365-40eb-4d98-46e5-08d96b98a87b
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2021 09:29:25.6947
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 47cpeDsF5kwWGZpDFo1AR2vtLM8gXwvHAX7XFsVyzEtyk+VbtWrilH1fZy0hzfLoPj1CViQXRQfaRlTv1deAEw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5037
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused function SetBcnCtrlReg().
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
+
+On 8/25/2021 12:05 PM, Diana Craciun wrote:
+> The open/reset/close commands format is similar for all objects.
+> Currently there are multiple implementations for these commands
+> scattered through various drivers. The code is cavsi-identical.
+> Create a generic implementation for the open/reset/close commands.
+> One of the consumer will be the VFIO driver which needs to
+> be able to reset a device.
+> 
+> Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
+> ---
+>  drivers/bus/fsl-mc/Makefile         |   3 +-
+>  drivers/bus/fsl-mc/fsl-mc-private.h |  39 +++++++++--
+>  drivers/bus/fsl-mc/obj-api.c        | 104 ++++++++++++++++++++++++++++
+>  include/linux/fsl/mc.h              |  14 ++++
+>  4 files changed, 155 insertions(+), 5 deletions(-)
+>  create mode 100644 drivers/bus/fsl-mc/obj-api.c
+> 
+> diff --git a/drivers/bus/fsl-mc/Makefile b/drivers/bus/fsl-mc/Makefile
+> index 4ae292a30e53..892946245527 100644
+> --- a/drivers/bus/fsl-mc/Makefile
+> +++ b/drivers/bus/fsl-mc/Makefile
+> @@ -15,7 +15,8 @@ mc-bus-driver-objs := fsl-mc-bus.o \
+>  		      dprc-driver.o \
+>  		      fsl-mc-allocator.o \
+>  		      fsl-mc-msi.o \
+> -		      dpmcp.o
+> +		      dpmcp.o \
+> +		      obj-api.o
+>  
+>  # MC userspace support
+>  obj-$(CONFIG_FSL_MC_UAPI_SUPPORT) += fsl-mc-uapi.o
+> diff --git a/drivers/bus/fsl-mc/fsl-mc-private.h b/drivers/bus/fsl-mc/fsl-mc-private.h
+> index 1958fa065360..6055ef3e9e02 100644
+> --- a/drivers/bus/fsl-mc/fsl-mc-private.h
+> +++ b/drivers/bus/fsl-mc/fsl-mc-private.h
+> @@ -48,7 +48,6 @@ struct dpmng_rsp_get_version {
+>  
+>  /* DPMCP command IDs */
+>  #define DPMCP_CMDID_CLOSE		DPMCP_CMD(0x800)
+> -#define DPMCP_CMDID_OPEN		DPMCP_CMD(0x80b)
+>  #define DPMCP_CMDID_RESET		DPMCP_CMD(0x005)
+>  
+>  struct dpmcp_cmd_open {
+> @@ -91,7 +90,6 @@ int dpmcp_reset(struct fsl_mc_io *mc_io,
+>  
+>  /* DPRC command IDs */
+>  #define DPRC_CMDID_CLOSE                        DPRC_CMD(0x800)
+> -#define DPRC_CMDID_OPEN                         DPRC_CMD(0x805)
+>  #define DPRC_CMDID_GET_API_VERSION              DPRC_CMD(0xa05)
+>  
+>  #define DPRC_CMDID_GET_ATTR                     DPRC_CMD(0x004)
+> @@ -453,7 +451,6 @@ int dprc_get_connection(struct fsl_mc_io *mc_io,
+>  
+>  /* Command IDs */
+>  #define DPBP_CMDID_CLOSE		DPBP_CMD(0x800)
+> -#define DPBP_CMDID_OPEN			DPBP_CMD(0x804)
+>  
+>  #define DPBP_CMDID_ENABLE		DPBP_CMD(0x002)
+>  #define DPBP_CMDID_DISABLE		DPBP_CMD(0x003)
+> @@ -492,7 +489,6 @@ struct dpbp_rsp_get_attributes {
+>  
+>  /* Command IDs */
+>  #define DPCON_CMDID_CLOSE			DPCON_CMD(0x800)
+> -#define DPCON_CMDID_OPEN			DPCON_CMD(0x808)
+>  
+>  #define DPCON_CMDID_ENABLE			DPCON_CMD(0x002)
+>  #define DPCON_CMDID_DISABLE			DPCON_CMD(0x003)
+> @@ -524,6 +520,41 @@ struct dpcon_cmd_set_notification {
+>  	__le64 user_ctx;
+>  };
+>  
+> +/*
+> + * Generic FSL MC API
+> + */
+> +
+> +/* generic command versioning */
+> +#define OBJ_CMD_BASE_VERSION		1
+> +#define OBJ_CMD_ID_OFFSET		4
+> +
+> +#define OBJ_CMD(id)	(((id) << OBJ_CMD_ID_OFFSET) | OBJ_CMD_BASE_VERSION)
+> +
+> +/* open command codes */
+> +#define DPRTC_CMDID_OPEN		OBJ_CMD(0x810)
+> +#define DPNI_CMDID_OPEN		OBJ_CMD(0x801)
+> +#define DPSW_CMDID_OPEN		OBJ_CMD(0x802)
+> +#define DPIO_CMDID_OPEN		OBJ_CMD(0x803)
+> +#define DPBP_CMDID_OPEN		OBJ_CMD(0x804)
+> +#define DPRC_CMDID_OPEN		OBJ_CMD(0x805)
+> +#define DPDMUX_CMDID_OPEN		OBJ_CMD(0x806)
+> +#define DPCI_CMDID_OPEN		OBJ_CMD(0x807)
+> +#define DPCON_CMDID_OPEN		OBJ_CMD(0x808)
+> +#define DPSECI_CMDID_OPEN		OBJ_CMD(0x809)
+> +#define DPAIOP_CMDID_OPEN		OBJ_CMD(0x80a)
+> +#define DPMCP_CMDID_OPEN		OBJ_CMD(0x80b)
+> +#define DPMAC_CMDID_OPEN		OBJ_CMD(0x80c)
+> +#define DPDCEI_CMDID_OPEN		OBJ_CMD(0x80d)
+> +#define DPDMAI_CMDID_OPEN		OBJ_CMD(0x80e)
+> +#define DPDBG_CMDID_OPEN		OBJ_CMD(0x80f)
+> +
+> +/* Generic object command IDs */
+> +#define OBJ_CMDID_CLOSE		OBJ_CMD(0x800)
+> +#define OBJ_CMDID_RESET		OBJ_CMD(0x005)
+> +
+> +struct obj_cmd_open {
+
+Nit: maybe the name should be made less generic, e.g. fsl_mc_obj_cmd_open.
+
+Otherwise, looks good to me:
+
+Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+
 ---
- .../staging/r8188eu/hal/rtl8188e_hal_init.c    | 18 ------------------
- drivers/staging/r8188eu/include/rtl8188e_hal.h |  3 ---
- 2 files changed, 21 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index 3da5c27b6805..1adaf472a116 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-@@ -2283,21 +2283,3 @@ bool HalDetectPwrDownMode88E(struct adapter *Adapter)
- 
- 	return pHalData->pwrdown;
- }	/*  HalDetectPwrDownMode */
--
--/*  This function is used only for 92C to set REG_BCN_CTRL(0x550) register. */
--/*  We just reserve the value of the register in variable pHalData->RegBcnCtrlVal and then operate */
--/*  the value of the register via atomic operation. */
--/*  This prevents from race condition when setting this register. */
--/*  The value of pHalData->RegBcnCtrlVal is initialized in HwConfigureRTL8192CE() function. */
--
--void SetBcnCtrlReg(struct adapter *padapter, u8 SetBits, u8 ClearBits)
--{
--	struct hal_data_8188e *pHalData;
--
--	pHalData = GET_HAL_DATA(padapter);
--
--	pHalData->RegBcnCtrlVal |= SetBits;
--	pHalData->RegBcnCtrlVal &= ~ClearBits;
--
--	rtw_write8(padapter, REG_BCN_CTRL, (u8)pHalData->RegBcnCtrlVal);
--}
-diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-index 3939bf053de1..103991b6ec82 100644
---- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
-+++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-@@ -437,9 +437,6 @@ bool HalDetectPwrDownMode88E(struct adapter *Adapter);
- void Hal_InitChannelPlan(struct adapter *padapter);
- void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc);
- 
--/*  register */
--void SetBcnCtrlReg(struct adapter *padapter, u8 SetBits, u8 ClearBits);
--
- void rtl8188e_clone_haldata(struct adapter *dst, struct adapter *src);
- void rtl8188e_start_thread(struct adapter *padapter);
- void rtl8188e_stop_thread(struct adapter *padapter);
--- 
-2.33.0
-
+Best Regards, Laurentiu
