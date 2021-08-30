@@ -2,119 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9153B3FBC81
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CC63FBC84
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238858AbhH3SeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:34:01 -0400
-Received: from relay07.th.seeweb.it ([5.144.164.168]:33973 "EHLO
-        relay07.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238851AbhH3Sd7 (ORCPT
+        id S232801AbhH3Sfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230301AbhH3Sfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:33:59 -0400
-Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 5DB493E878;
-        Mon, 30 Aug 2021 20:33:01 +0200 (CEST)
-Date:   Mon, 30 Aug 2021 20:33:00 +0200
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] arm: dts: qcom: apq8064: Use 27MHz PXO clock as DSI
- PLL reference
-Message-ID: <YS0kXJ/Mr+qNMRfq@Marijn-Arch-PC.localdomain>
-References: <20210829203027.276143-2-marijn.suijten@somainline.org>
- <CAA8EJprQ03ipZzO+1vgt9W7jFbLXgsYR0n-oJxVB-142x8dgRA@mail.gmail.com>
- <17d19b93-dbe5-cc85-f302-b52cd8eeed56@somainline.org>
- <CAA8EJpqd7_5510TodALnX13Wo0MufYm2G=r6vw9sy=VURrewyw@mail.gmail.com>
- <YSznouVZ93sUd6xa@Marijn-Arch-PC.localdomain>
- <CAA8EJpoRo6rPgpUeT9X0K4UPu5d8-YBP=BJ3AAejD+wujhmv+g@mail.gmail.com>
- <YSzqR2yq3MtdPnIG@Marijn-Arch-PC.localdomain>
- <YSz2kVKv8jhz7/n8@yoga>
- <YSz7NZD7elH3+XgP@Marijn-Arch-PC.localdomain>
- <YS0AEZR7NhmDhHmk@yoga>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YS0AEZR7NhmDhHmk@yoga>
+        Mon, 30 Aug 2021 14:35:51 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9EDC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 11:34:58 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so85930pjc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 11:34:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=K3k7s0tk5eH6iPVl7FoiuOgyi60Lr2QqZx1htKYsqdo=;
+        b=Zll8QDHW5Z29yxm1dJ36mXm8hA/F92MyD8wzv5OlJM77C3FFV/YuajMXfv0fTnSJxm
+         ilQm43Dfo8Ktc4DvoctzUitEOlW4bDwMMNVF0yQTRjmyazG0ZSo54kPAyhut57BeAojR
+         0rwR5NnZ2xvAhg0XkNQ6nwsoRoMt7c3BpG3KKCejGmaAZbxjtvWJ+rLtLEbelImB2+/S
+         bTPk3SxRgLnqPEAycisuW3/keMaOlrWjMYKli33Btj6NL7SUblQHc81pWpLIGjw1UpYM
+         aRzBfbwE9HSdSUQdeXsWuB0ca0wV0sHvHHrMZr8yHSicvLDheT1Jmkw7y5lUKLqD5MLe
+         mUnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=K3k7s0tk5eH6iPVl7FoiuOgyi60Lr2QqZx1htKYsqdo=;
+        b=cKQgSWq9WHOgvqvCQZ5RL+LN1D1z7+x5nXMtF/sob2FZCqtMUVRowAGO53HwSy7sGW
+         rMjoH8EzDFu36kocr3lO0CVHColJ9+mWa8UlO8XPA1Csv4e5wR2RpPh7nChIZaJNyp6d
+         hmWzIP8cTYZCsQZeUioAVfVHMmewf5BJSqLTqbjpb1viu+g7Ay+jz+VGUGOidIqR4KyM
+         WN2NP+oaqdn+G7h/iRs/U5OT7SVi7zJtvcHuEB1B2Y5IOJ1p7yK05TMyQKIphCpDcNbJ
+         WDWYyPEpTwPnz33dRCMF54GlS+EvBBgpkdS8koqPvIvsif70X7h1Ci7IHsPP44ge+elG
+         3x2w==
+X-Gm-Message-State: AOAM531dd8eUv6lUQyB7GlzCtQn9jdpdeJF6AVME6uldYApX9Jgt9mSB
+        +316MEl4gVx4tE0u4nb/3MzKLw==
+X-Google-Smtp-Source: ABdhPJyFbCGQkBJrHEYGqFicAoIw2y3LiDyPSfY74cnJhCzbjJ93dkAFlZHwQspdYcSmoLPdksybJA==
+X-Received: by 2002:a17:902:c410:b0:138:ad8f:865b with SMTP id k16-20020a170902c41000b00138ad8f865bmr872993plk.79.1630348497479;
+        Mon, 30 Aug 2021 11:34:57 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id w188sm14566273pfd.32.2021.08.30.11.34.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Aug 2021 11:34:56 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <8FEED5A6-DABE-4F29-9C1F-95A1B2E20190@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_CEB5A37B-2F31-4800-8BF9-FF29B194CBBA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: Discontiguous folios/pagesets
+Date:   Mon, 30 Aug 2021 12:35:05 -0600
+In-Reply-To: <20210830182818.GA9892@magnolia>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+To:     "Darrick J. Wong" <djwong@kernel.org>
+References: <YSqIry5dKg+kqAxJ@casper.infradead.org>
+ <1FC3646C-259F-4AA4-B7E0-B13E19EDC595@dilger.ca>
+ <20210830182818.GA9892@magnolia>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-30 10:58:09, Bjorn Andersson wrote:
-[...]
-> > > 
-> > > Afaik these devices all boots off a boot.img, which means that it's
-> > > unlikely that a new kernel is installed on a device with an older DT.
-> > > None of them would boot mainline off the DT that shipped with the
-> > > original product.
-> > 
-> > That was my understanding as well, DT overlays are a "new thing" afaik
-> > and most devices (at least all Sony's that I'm working with) use an
-> > appended DTB that's always in-sync with the kernel image.
-> > 
+
+--Apple-Mail=_CEB5A37B-2F31-4800-8BF9-FF29B194CBBA
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
+
+
+> On Aug 30, 2021, at 12:28 PM, Darrick J. Wong <djwong@kernel.org> wrote:
 > 
-> I think that with the introduction of DT overlays the system becomes
-> more flexible and as such more susceptible for bugs caused by unexpected
-> DT versions.
-
-Offtopic: We have some problems with this on newer Sony devices where
-the BL indeed tries to overlay this DTBO on the DT, which is usually a
-downstream DT not fitting on top of a mainline kernel+appended-DTB.  The
-solution is to simply wipe DTBO, and afaik it should be fine to compile
-the overlay bits directly inside the appended-DTB anyway.  Leads to
-unsuspecting problems at times, but it is manageable.
-
-> I think in practice the real issues comes when the DTB is delivered
-> separately (i.e. not by boot.img) or inbetween two kernel releases where
-> the Qualcomm tree might not be in sync with the driver tree.
-
-Dmitry sees this as a problem for msm8974 but I'm not familiar enough
-with the board.  I take it this doesn't use appended DTBs then?
-
-> > > As such, if I pick this patch up as a fix for 5.15 you can respin the
-> > > other two patches and they can land in 5.16 and I would be surprised if
-> > > anyone will run into any issues with it.
-> > > 
-> > > I.e. I've applied this patch.
-> > 
-> > Sounds good, I'll leave this patch out from v2.  Should it have a Fixes:
-> > tag to get backported too?
-> > 
+> On Sat, Aug 28, 2021 at 01:27:29PM -0600, Andreas Dilger wrote:
+>> On Aug 28, 2021, at 1:04 PM, Matthew Wilcox <willy@infradead.org> wrote:
+>>> 
+>>> The current folio work is focused on permitting the VM to use
+>>> physically contiguous chunks of memory.  Both Darrick and Johannes
+>>> have pointed out the advantages of supporting logically-contiguous,
+>>> physically-discontiguous chunks of memory.  Johannes wants to be able to
+>>> use order-0 allocations to allocate larger folios, getting the benefit
+>>> of managing the memory in larger chunks without requiring the memory
+>>> allocator to be able to find contiguous chunks.  Darrick wants to support
+>>> non-power-of-two block sizes.
+>> 
+>> What is the use case for non-power-of-two block sizes?  The main question
+>> is whether that use case is important enough to add the complexity and
+>> overhead in order to support it?
 > 
-> Sounds good, I added to this:
+> For copy-on-write to a XFS realtime volume where the allocation extent
+> size (we support bigalloc too! :P) is not a power of two (e.g. you set
+> up a 4 disk raid5 with 64k stripes, now the extent size is 192k).
 > 
-> Fixes: 6969d1d9c615 ("ARM: dts: qcom-apq8064: Set 'cxo_board' as ref clock of the DSI PHY")
+> Granted, I don't think folios handling 192k chunks is absolutely
+> *required* for folios; the only hard requirement is that if any page in
+> a 192k extent becomes dirty, the rest have to get written out all the
+> same time, and the cow remap can only happen after the last page
+> finishes writeback.
 
-Did the same on the v2 respin since it seems like those patches were
-incomplete without the driver change.
+OK, they are still multiples of PAGE_SIZE.  That wasn't clear, I thought
+these were byte-granular IOs or something...
 
-> > Since most review seems to be in I'll respin v2 shortly with the
-> > addition of the "ref" clock to msm8974, that should probably get the
-> > same treatment (added to 5.15 fixes) then we can land this patchset in
-> > 5.16 (maybe without .name= fallback if Dmitry is okay with that).
-> > 
-> 
-> Sounds good.
+Cheers, Andreas
 
-Sent the msm8974 patch separately and re-spun a v2.  I haven't added the
-.name="xo" fallback yet while awaiting Dmitry to see if that counts as
-enough time for firmware to be delivered between kernel 5.15 and 5.16.
 
-- Marijn
+
+
+
+
+--Apple-Mail=_CEB5A37B-2F31-4800-8BF9-FF29B194CBBA
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmEtJNkACgkQcqXauRfM
+H+BMbg//WkPjoSqpO0uyJFtCnuPsruBwvQiUx/noIiD9R/7TPNFhjVPixtkm/LM9
+yx09eEuDtlHFZs3j4ZCD/mBpyy8GR6nXi7pE7nXv6PgMMweEQ5vkyc+G5IwMLgyD
+GQoDKAt5GG4yVvcYsNbd6jn6AFhj0nIZKD//OQL7oCqoqd6i9n7/W+pRt8nvOY/N
+Lr6eOjRNwdg1jWCkr5FgO+F4zl1OG1NXZ5UCLOGNlT3KhQpVjfxyvsZCyhjQxpjx
+reNZX3g2H6/6WWnBV+FAwlqh9G5mt8Fyh4Oqvt3i3nmYhwfJCIeMxM2i5i2O8EJG
+2Gy8vxRRxFaBi2Nwh8R7Ne2BEL3YGwRPQzkWmC9s1ju6QhNdYjK62ZIHT34veBRE
+3ehtF/xA0UISzVBwEkbY6HOVdfTVfUBxzKJwFsoceeerc4EdIymfeesANm31uLT8
+yKFng+ZKBDodH6YhvxODf+wARzDBkrfXP1jMCvdvcvvab/uCYFpV2zeKBbj4DiAm
+9d2MKIhbqXQiXjieAiJaXbAdg3zat8ajF9yuE1GM6I2bfXvBAhxdMnTwNtBKeZml
+5vRNMlDiYMht0rdQY/aHPnTll6L7kExd9R5PjeVg75x57D3mdsVl/9N3Y9VVUAEr
+8xWBdJ4RAuF3BON4LApuIFLEicxejOJo+8zKgEZNJGoSpGgCD8Y=
+=dDZs
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_CEB5A37B-2F31-4800-8BF9-FF29B194CBBA--
