@@ -2,214 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5319E3FB24A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036943FB253
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 10:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234630AbhH3IQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 04:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46254 "EHLO
+        id S234514AbhH3IRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 04:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234225AbhH3IQ1 (ORCPT
+        with ESMTP id S234764AbhH3IRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 04:16:27 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5FCC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:15:33 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id eb14so11129974edb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:15:33 -0700 (PDT)
+        Mon, 30 Aug 2021 04:17:20 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F8DC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:16:26 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id d6so20367524edt.7
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 01:16:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PULVD8Tt/i1F2Zu50bq8VYUQ0dJK4dOLAdcFqlBPDxM=;
-        b=Bm2659KE37r3KLmF5KXzNzVgCMphfHBJ4AeM4UEHLCfKRPtyqlp277y+Cd/zwVThis
-         QKWU2s+hDCRpLAkRSIrV+qMTqKJKbqUg0+6Re5wlWxubRAXK0XoAzgJK7FdbudpZJOFp
-         ntSnU75MSeK566FnGjFw8pt8T2Wq6n5owWONTAMWnaUpvZoa2vMwTVhDL6rf71TGeTkH
-         h6N631M0VCAaMNlNo1cN6TevdkhVI2yxLC58Xw7Usx5e/mt6mG/a6oo0SKp49K1BPpFH
-         Bw9GoJhsUZqlXIstlKFLuyq4JRfsRgYILL7l/Ri4x+VB4VL09OQMX2OpnE6sLwBeqQZm
-         MB9A==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4V8zQGj1Gqf1F2tUDyAxGYR3CqJxPsTeRp5ZOBqSIDQ=;
+        b=TuRY2sKW4BSfhJDjqVGbNRktK9LKQd2XLWSD40j4bkwxZWVIoWgb227dKGlbXTtTY5
+         AEV0TuIGQPvrFZ6iy4MYEhgyGjzIMrilibmAUyqrwhDs4+AVxXMienXkDEGlpbaRnTFh
+         hTFf9cDd5j+dozZN/drbUiSS0HawPZce23FDc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PULVD8Tt/i1F2Zu50bq8VYUQ0dJK4dOLAdcFqlBPDxM=;
-        b=hAJgC0w+laJEcuOWdDy3kfaMRlOPw0qHfBKRDzoOQ8UIB1i5G3cuIMdNUS8GHnYlTW
-         qGfg77srbPdULSEfyUPTTEZue/toRJ4VAFmI3yHetOoa37DeIevlXvUF9e9/SbejVNOe
-         WglmAZ9qhealjYh8PO0+zj4lX05laj3m17gqoqbXZhSznCQxXIMTw7r3hXVgiyLtgZSL
-         gfNDRMuIz14Ng1lfm41lGtSBnNlkCSSb5C3S1r7Damx40x1KmCaK7UdnSfziY5CLINDp
-         EZJYTAE6KMH8K2Os8V3F+vyOQiwBHh2DIQuw3/9F9d0u8Bq1aYaZW4i9YYy2+rTxvNVC
-         J8wg==
-X-Gm-Message-State: AOAM531tSkLQYbEMIDNL2wj9Q7qKvpEUYFzEOsFIVd3KzUkbKAvrfLFL
-        pwFmB5km3CCQJOoUHAf+vz01XDYS0VwT9xaMJgI=
-X-Google-Smtp-Source: ABdhPJyYDZGYZSNfbAWTuOL+qZ9is47kppZD33wj9EyK9D6ofHPz3x0/QBFlb/K4tvwggtTHJSXZAqiEWvWm7du2+eU=
-X-Received: by 2002:aa7:c88e:: with SMTP id p14mr23257354eds.174.1630311331667;
- Mon, 30 Aug 2021 01:15:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=4V8zQGj1Gqf1F2tUDyAxGYR3CqJxPsTeRp5ZOBqSIDQ=;
+        b=Ykh0XiQ6x8hN50mlFUfEngwyG7nfvVDA9wcYijEnaknP2yrRsGeYpj2RvjN9v55uYv
+         JGsRTKe7wB3pcoj0duv8O62F8vBsAjrvAzW8Zd4QcTg/AIswqjoKnPoDgIQQ3pMYCaET
+         sOOl+irQBGdupeahJH0RxNGLa1krIci+R2nwEf2TD1/I9TGFfrfxBfj0h/DwYMurQNha
+         lK485FGFYHjkDII1wu8hyEZVA6pD+IctJoRRYEsnOV/szvN+ObmalFymQrKo6G4gJlPH
+         llRlnctq2P/QvRWqgtmlm1f9CHzhhH0zlNgQTkrgLs3lMurnX1Hm81ilxa/owozQReNM
+         syaw==
+X-Gm-Message-State: AOAM531cy8qSbZwr5KbdwT02C8iiHULpw+gFodpV8VYkdVV2nK6JkuyA
+        kBdbvFV9/GPiVW+oW6IAZ7ckvg==
+X-Google-Smtp-Source: ABdhPJzrm65vrU6FbeDHBqEE0r78ZCI76NdXsgPcErghrJZM0wZPOGz21FvSxt91jZIRA0bIPWz8rg==
+X-Received: by 2002:a50:998f:: with SMTP id m15mr22603150edb.193.1630311385540;
+        Mon, 30 Aug 2021 01:16:25 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q5sm7275049edt.50.2021.08.30.01.16.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 01:16:25 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 10:16:14 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     tcs.kernel@gmail.com
+Cc:     daniel.vetter@ffwll.ch, willy@infradead.org,
+        george.kennedy@oracle.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arnd@arndb.de, gregkh@linuxfoundation.org,
+        penguin-kernel@i-love.sakura.ne.jp,
+        Haimin Zhang <tcs_kernel@tencent.com>
+Subject: Re: [PATCH V4] fbcon: fix fbcon out-of-bounds write in sys_imageblit
+Message-ID: <YSyTzlUEhrxD7rU4@phenom.ffwll.local>
+Mail-Followup-To: tcs.kernel@gmail.com, willy@infradead.org,
+        george.kennedy@oracle.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arnd@arndb.de, gregkh@linuxfoundation.org,
+        penguin-kernel@i-love.sakura.ne.jp,
+        Haimin Zhang <tcs_kernel@tencent.com>
+References: <1630294223-7225-1-git-send-email-tcs_kernel@tencent.com>
 MIME-Version: 1.0
-References: <20210818102612.864127-1-mudongliangabcd@gmail.com>
-In-Reply-To: <20210818102612.864127-1-mudongliangabcd@gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 30 Aug 2021 16:15:05 +0800
-Message-ID: <CAD-N9QUQ1p_Zu1zdL3ZOtxmyw3z4CR3K3VL2FkLP=aJYhT8cUQ@mail.gmail.com>
-Subject: Re: [PATCH] JFS: fix memleak in jfs_mount
-To:     Dave Kleikamp <shaggy@kernel.org>
-Cc:     jfs-discussion@lists.sourceforge.net,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1630294223-7225-1-git-send-email-tcs_kernel@tencent.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 6:26 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->
-> In jfs_mount, when diMount(ipaimap2) fails, it goes to errout35. However,
-> the following code does not free ipaimap2 allocated by diReadSpecial.
->
-> Fix this by refactoring the error handling code of jfs_mount. To be
-> specific, modify the lable name and free ipaimap2 when the above error
-> ocurrs.
->
+On Mon, Aug 30, 2021 at 11:30:23AM +0800, tcs.kernel@gmail.com wrote:
+> From: Haimin Zhang <tcs_kernel@tencent.com>
+> 
+> yres and vyres can be controlled by user mode parameters, and cause
+> p->vrows to become a negative value. While this value be passed to real_y
+> function, the ypos will be out of screen range.This is an out-of-bounds
+> write bug.
+> some driver will check xres and yres in fb_check_var callback,but some not
+> so we add a common check after that callback.
+> 
+> Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
+> Signed-off-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
 
-Hi maintainers,
+Does this fix a syzbot crash or how was this discovered?
+-Daniel
 
-any comment on this patch?
-
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 > ---
->  fs/jfs/jfs_mount.c | 53 +++++++++++++++++++---------------------------
->  1 file changed, 22 insertions(+), 31 deletions(-)
->
-> diff --git a/fs/jfs/jfs_mount.c b/fs/jfs/jfs_mount.c
-> index 5d7d7170c03c..638a4ecc4069 100644
-> --- a/fs/jfs/jfs_mount.c
-> +++ b/fs/jfs/jfs_mount.c
-> @@ -81,14 +81,14 @@ int jfs_mount(struct super_block *sb)
->          * (initialize mount inode from the superblock)
->          */
->         if ((rc = chkSuper(sb))) {
-> -               goto errout20;
-> +               return rc;
->         }
->
->         ipaimap = diReadSpecial(sb, AGGREGATE_I, 0);
->         if (ipaimap == NULL) {
->                 jfs_err("jfs_mount: Failed to read AGGREGATE_I");
->                 rc = -EIO;
-> -               goto errout20;
-> +               goto out;
->         }
->         sbi->ipaimap = ipaimap;
->
-> @@ -99,7 +99,7 @@ int jfs_mount(struct super_block *sb)
->          */
->         if ((rc = diMount(ipaimap))) {
->                 jfs_err("jfs_mount: diMount(ipaimap) failed w/rc = %d", rc);
-> -               goto errout21;
-> +               goto err_ipaimap;
->         }
->
->         /*
-> @@ -108,7 +108,7 @@ int jfs_mount(struct super_block *sb)
->         ipbmap = diReadSpecial(sb, BMAP_I, 0);
->         if (ipbmap == NULL) {
->                 rc = -EIO;
-> -               goto errout22;
-> +               goto err_umount_ipaimap;
->         }
->
->         jfs_info("jfs_mount: ipbmap:0x%p", ipbmap);
-> @@ -120,7 +120,7 @@ int jfs_mount(struct super_block *sb)
->          */
->         if ((rc = dbMount(ipbmap))) {
->                 jfs_err("jfs_mount: dbMount failed w/rc = %d", rc);
-> -               goto errout22;
-> +               goto err_ipbmap;
->         }
->
->         /*
-> @@ -139,7 +139,7 @@ int jfs_mount(struct super_block *sb)
->                 if (!ipaimap2) {
->                         jfs_err("jfs_mount: Failed to read AGGREGATE_I");
->                         rc = -EIO;
-> -                       goto errout35;
-> +                       goto err_umount_ipbmap;
->                 }
->                 sbi->ipaimap2 = ipaimap2;
->
-> @@ -151,7 +151,7 @@ int jfs_mount(struct super_block *sb)
->                 if ((rc = diMount(ipaimap2))) {
->                         jfs_err("jfs_mount: diMount(ipaimap2) failed, rc = %d",
->                                 rc);
-> -                       goto errout35;
-> +                       goto err_ipaimap2;
->                 }
->         } else
->                 /* Secondary aggregate inode table is not valid */
-> @@ -168,7 +168,7 @@ int jfs_mount(struct super_block *sb)
->                 jfs_err("jfs_mount: Failed to read FILESYSTEM_I");
->                 /* open fileset secondary inode allocation map */
->                 rc = -EIO;
-> -               goto errout40;
-> +               goto err_umount_ipaimap2;
->         }
->         jfs_info("jfs_mount: ipimap:0x%p", ipimap);
->
-> @@ -178,41 +178,32 @@ int jfs_mount(struct super_block *sb)
->         /* initialize fileset inode allocation map */
->         if ((rc = diMount(ipimap))) {
->                 jfs_err("jfs_mount: diMount failed w/rc = %d", rc);
-> -               goto errout41;
-> +               goto err_ipimap;
->         }
->
-> -       goto out;
-> +       return rc;
->
->         /*
->          *      unwind on error
->          */
-> -      errout41:                /* close fileset inode allocation map inode */
-> +err_ipimap:
-> +       /* close fileset inode allocation map inode */
->         diFreeSpecial(ipimap);
-> -
-> -      errout40:                /* fileset closed */
-> -
-> +err_umount_ipaimap2:
->         /* close secondary aggregate inode allocation map */
-> -       if (ipaimap2) {
-> -               diUnmount(ipaimap2, 1);
-> -               diFreeSpecial(ipaimap2);
-> -       }
-> -
-> -      errout35:
-> -
-> -       /* close aggregate block allocation map */
-> +       if (ipaimap2) diUnmount(ipaimap2, 1);
-> +err_ipaimap2:
-> +       /* close aggregate inodes */
-> +       if (ipaimap2) diFreeSpecial(ipaimap2);
-> +err_umount_ipbmap:     /* close aggregate block allocation map */
->         dbUnmount(ipbmap, 1);
-> +err_ipbmap:            /* close aggregate inodes */
->         diFreeSpecial(ipbmap);
-> -
-> -      errout22:                /* close aggregate inode allocation map */
-> -
-> +err_umount_ipaimap:    /* close aggregate inode allocation map */
->         diUnmount(ipaimap, 1);
-> -
-> -      errout21:                /* close aggregate inodes */
-> +err_ipaimap:           /* close aggregate inodes */
->         diFreeSpecial(ipaimap);
-> -      errout20:                /* aggregate closed */
-> -
-> -      out:
-> -
-> +out:
->         if (rc)
->                 jfs_err("Mount JFS Failure: %d", rc);
->
-> --
-> 2.25.1
->
+>  drivers/video/fbdev/core/fbmem.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+> index 1c85514..5599372 100644
+> --- a/drivers/video/fbdev/core/fbmem.c
+> +++ b/drivers/video/fbdev/core/fbmem.c
+> @@ -1013,6 +1013,10 @@ static int fb_check_caps(struct fb_info *info, struct fb_var_screeninfo *var,
+>  	if (ret)
+>  		return ret;
+>  
+> +	/* virtual resolution cannot be smaller than visible resolution. */
+> +	if (var->yres_virtual < var->yres || var->xres_virtual < var->xres)
+> +		return -EINVAL;
+> +
+>  	if ((var->activate & FB_ACTIVATE_MASK) != FB_ACTIVATE_NOW)
+>  		return 0;
+>  
+> -- 
+> 1.8.3.1
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
