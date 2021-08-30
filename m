@@ -2,139 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CA53FBD8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E423FBD8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235846AbhH3UpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235057AbhH3UpI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:45:08 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E218FC061575;
-        Mon, 30 Aug 2021 13:44:14 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so670977pje.0;
-        Mon, 30 Aug 2021 13:44:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eGh7cTPum9ArbjWj3aWoT5S5YnpgVCZnC19NWxFTQLk=;
-        b=kecjsMdrD2/AjU3DPAqosecIEsW67GUtCIDIqtWjAa2c1qkHVuyhfc0qVpc927erO3
-         bu1d6En1rJnU+BK0LCWqspfjQzCy3hSPOmFIcAlAdaJLUjRgxGlDWvYxsLD/82Q8DvmS
-         N1mqkujoZljIDY7GNsE6xWNtVfUUj69ySY9oTBw/Kcn2KF1IKOAZHJy1OmTP6avKtqFy
-         YYAqut3MtiKmHIGXeD0br7za7M4+bNBhCBUUUC3QJ+O+ofeRd7IHYhDKlDRdZIOMpvkB
-         Hmni5Br7Wy70uDXgFwZybYerIkhAYpJlmJFNQviQM2Y9UiI49TGviGmv9EzM8O6LNhXB
-         goJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eGh7cTPum9ArbjWj3aWoT5S5YnpgVCZnC19NWxFTQLk=;
-        b=EDC/SixpibvUjW2hU5PcROu2IWX2EadoCA411cTjtJWklCSstSUWtd+FhN5xOOi/30
-         LN7mxUhUsoLFt7qwG3MR/rEhhWZNd/NFxUVe3QtIn9gghdltQfpG/vA9nO3YKJk/o93p
-         PEWMCQHl0rZhjMTywCYYTkdIoQGwiywmRjj2YKJy3f3TRRaBtSvApiXI94hnX9lHzKiH
-         blz55X/K1i2czRu2NECP1Q638q0hhFA2wxiEFO9ZoHRI24QAPbzzlsnSfo16zqeSkdVA
-         r4YLAssRIodjcmR8rtAcqKc61F3xcg0vv3lUZ4HO9pVzBTr1wGUl/1lsnAgzKb4L5oqk
-         3Vmg==
-X-Gm-Message-State: AOAM5321p/lfw39tWPiQYtapg6AkpXsJeJ9qooO7PDUfIWhO6ljQaZxC
-        XgGpWntX52Qw3hB7+G5uAUg=
-X-Google-Smtp-Source: ABdhPJx8ULqhhNMPgZHMuYaLMOjcgZe/T5ABiFmftMeO3GlTbOp+F6jT41DXnzXs6qJ6PgfZbjyFhw==
-X-Received: by 2002:a17:902:f541:b0:138:e3e0:a5f8 with SMTP id h1-20020a170902f54100b00138e3e0a5f8mr1328091plf.60.1630356254242;
-        Mon, 30 Aug 2021 13:44:14 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:771a:afc8:2e96:23dd])
-        by smtp.gmail.com with ESMTPSA id gg22sm338481pjb.19.2021.08.30.13.44.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 13:44:13 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 13:44:10 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Alistair Francis <alistair@alistair23.me>, ping.cheng@wacom.com,
-        tatsunosuke.tobita@wacom.com
-Cc:     linux-input@vger.kernel.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, pinglinux@gmail.com, junkpainting@gmail.com,
-        linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v10 05/12] Input: wacom_i2c - Read the descriptor values
-Message-ID: <YS1DGuTTAEKAd2Yr@google.com>
-References: <20210829091925.190-1-alistair@alistair23.me>
- <20210829091925.190-7-alistair@alistair23.me>
+        id S235057AbhH3UqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 16:46:04 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:36424 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229708AbhH3UqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 16:46:02 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mKo9Q-0001Q1-8y; Mon, 30 Aug 2021 22:45:04 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     linux-phy@lists.infradead.org,
+        Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc:     linux-media@vger.kernel.org,
+        Mikhail Rudenko <mike.rudenko@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/5] phy: phy-rockchip-dphy-rx0: refactor for tx1rx1 addition
+Date:   Mon, 30 Aug 2021 22:45:03 +0200
+Message-ID: <6474995.6kXVAnRFRJ@diego>
+In-Reply-To: <20210830180758.251390-2-mike.rudenko@gmail.com>
+References: <20210830180758.251390-1-mike.rudenko@gmail.com> <20210830180758.251390-2-mike.rudenko@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210829091925.190-7-alistair@alistair23.me>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 07:19:18PM +1000, Alistair Francis wrote:
-> When we query the device let's also read the descriptor from the device.
-> This tells us useful information, including the version, which we use to
-> determine a generation.
+Hi Mikhail,
+
+Am Montag, 30. August 2021, 20:07:50 CEST schrieb Mikhail Rudenko:
+> In order to accommodate for rk3399 tx1rx1 addition, make
+> enable/disable function calls indirect via function pointers in
+> rk_dphy_drv_data. Also rename rk_dphy_write and rk_dphy_enable to
+> avoid naming clashes.
+
+You're a bit too late to the party :-( .
+
+The tx1rx1 dphy is living _inside_ the 2nd DSI controller and is
+configured through it. 
+
+So having the same peripheral in the dts with different compatibles
+does break the devicetree-describes-hardware-not-Linux-implementation-details
+paradigm.
+
+Therefore my approach was to handle the switch between tx and rx modes
+inside the dsi driver. This got merged for 5.15 as well, see [0] [1].
+
+So sadly this series is somewhat obsolete, but you should find the
+building blocks for camera support in linux-next already.
+
+
+Regards
+Heiko
+
+
+
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=71f68fe7f12182ed968cfbbd1ef018721e4dee30
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=68e0277204c733dff19073686e2ac48239b06fbc
+
+
 > 
-> This is based on the driver from Wacom.
-> 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 > ---
->  drivers/input/touchscreen/wacom_i2c.c | 64 +++++++++++++++++++++++++++
->  1 file changed, 64 insertions(+)
+>  drivers/phy/rockchip/phy-rockchip-dphy-rx0.c | 38 +++++++++++++-------
+>  1 file changed, 25 insertions(+), 13 deletions(-)
 > 
-> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-> index 28255c77d426..72ba4a36459b 100644
-> --- a/drivers/input/touchscreen/wacom_i2c.c
-> +++ b/drivers/input/touchscreen/wacom_i2c.c
-> @@ -16,6 +16,7 @@
->  #include <linux/of.h>
->  #include <asm/unaligned.h>
+> diff --git a/drivers/phy/rockchip/phy-rockchip-dphy-rx0.c b/drivers/phy/rockchip/phy-rockchip-dphy-rx0.c
+> index 4df9476ef2a9..72145cdfb036 100644
+> --- a/drivers/phy/rockchip/phy-rockchip-dphy-rx0.c
+> +++ b/drivers/phy/rockchip/phy-rockchip-dphy-rx0.c
+> @@ -138,12 +138,17 @@ static const struct dphy_reg rk3399_grf_dphy_regs[] = {
+>  	[GRF_DPHY_RX0_TESTDOUT] = PHY_REG(RK3399_GRF_SOC_STATUS1, 8, 0),
+>  };
 >  
-> +#define WACOM_DESC_REG	0x01
->  #define WACOM_CMD_QUERY0	0x04
->  #define WACOM_CMD_QUERY1	0x00
->  #define WACOM_CMD_QUERY2	0x33
-> @@ -24,11 +25,46 @@
->  #define WACOM_CMD_THROW1	0x00
->  #define WACOM_QUERY_SIZE	19
+> +struct rk_dphy;
+> +
+>  struct rk_dphy_drv_data {
+>  	const char * const *clks;
+>  	unsigned int num_clks;
+>  	const struct hsfreq_range *hsfreq_ranges;
+>  	unsigned int num_hsfreq_ranges;
+>  	const struct dphy_reg *regs;
+> +
+> +	void (*enable)(struct rk_dphy *priv);
+> +	void (*disable)(struct rk_dphy *priv);
+>  };
 >  
-> +#define WACOM_MAX_DATA_SIZE_BG9     10
-> +#define WACOM_MAX_DATA_SIZE_G12     15
-> +#define WACOM_MAX_DATA_SIZE_AG14    17
-> +#define WACOM_MAX_DATA_SIZE         22
+>  struct rk_dphy {
+> @@ -170,7 +175,7 @@ static inline void rk_dphy_write_grf(struct rk_dphy *priv,
+>  	regmap_write(priv->grf, reg->offset, val);
+>  }
+>  
+> -static void rk_dphy_write(struct rk_dphy *priv, u8 test_code, u8 test_data)
+> +static void rk_dphy_write_mipi_rx(struct rk_dphy *priv, u8 test_code, u8 test_data)
+>  {
+>  	rk_dphy_write_grf(priv, GRF_DPHY_RX0_TESTDIN, test_code);
+>  	rk_dphy_write_grf(priv, GRF_DPHY_RX0_TESTEN, 1);
+> @@ -186,7 +191,7 @@ static void rk_dphy_write(struct rk_dphy *priv, u8 test_code, u8 test_data)
+>  	rk_dphy_write_grf(priv, GRF_DPHY_RX0_TESTCLK, 1);
+>  }
+>  
+> -static void rk_dphy_enable(struct rk_dphy *priv)
+> +static void rk_dphy_enable_rx(struct rk_dphy *priv)
+>  {
+>  	rk_dphy_write_grf(priv, GRF_DPHY_RX0_FORCERXMODE, 0);
+>  	rk_dphy_write_grf(priv, GRF_DPHY_RX0_FORCETXSTOPMODE, 0);
+> @@ -206,22 +211,27 @@ static void rk_dphy_enable(struct rk_dphy *priv)
+>  	usleep_range(100, 150);
+>  
+>  	/* set clock lane */
+> -	/* HS hsfreq_range & lane 0  settle bypass */
+> -	rk_dphy_write(priv, CLOCK_LANE_HS_RX_CONTROL, 0);
+> +	/* HS hsfreq_range & lane 0	 settle bypass */
+> +	rk_dphy_write_mipi_rx(priv, CLOCK_LANE_HS_RX_CONTROL, 0);
+>  	/* HS RX Control of lane0 */
+> -	rk_dphy_write(priv, LANE0_HS_RX_CONTROL, priv->hsfreq << 1);
+> +	rk_dphy_write_mipi_rx(priv, LANE0_HS_RX_CONTROL, priv->hsfreq << 1);
+>  	/* HS RX Control of lane1 */
+> -	rk_dphy_write(priv, LANE1_HS_RX_CONTROL, priv->hsfreq << 1);
+> +	rk_dphy_write_mipi_rx(priv, LANE1_HS_RX_CONTROL, priv->hsfreq << 1);
+>  	/* HS RX Control of lane2 */
+> -	rk_dphy_write(priv, LANE2_HS_RX_CONTROL, priv->hsfreq << 1);
+> +	rk_dphy_write_mipi_rx(priv, LANE2_HS_RX_CONTROL, priv->hsfreq << 1);
+>  	/* HS RX Control of lane3 */
+> -	rk_dphy_write(priv, LANE3_HS_RX_CONTROL, priv->hsfreq << 1);
+> +	rk_dphy_write_mipi_rx(priv, LANE3_HS_RX_CONTROL, priv->hsfreq << 1);
+>  	/* HS RX Data Lanes Settle State Time Control */
+> -	rk_dphy_write(priv, LANES_THS_SETTLE_CONTROL,
+> -		      THS_SETTLE_COUNTER_THRESHOLD);
+> +	rk_dphy_write_mipi_rx(priv, LANES_THS_SETTLE_CONTROL,
+> +			  THS_SETTLE_COUNTER_THRESHOLD);
+>  
+>  	/* Normal operation */
+> -	rk_dphy_write(priv, 0x0, 0);
+> +	rk_dphy_write_mipi_rx(priv, 0x0, 0);
+> +}
 > +
-> +/* Generation selction */
-> +/* Before and at G9 generation */
-> +#define WACOM_BG9	0
-> +/* G12 generation the IC supports "height"*/
-> +#define WACOM_G12	1
-> +/* After and at G14 generation the IC supports "height" and
-> + * it is defined as "Z" axis
-> + */
-> +#define WACOM_AG14	2
-> +
-> +struct wacom_desc {
-> +	u16 descLen;
-> +	u16 version;
-> +	u16 reportLen;
-> +	u16 reportReg;
-> +	u16 inputReg;
-> +	u16 maxInputLen;
-> +	u16 outputReg;
-> +	u16 maxOutputLen;
-> +	u16 commReg;
-> +	u16 dataReg;
-> +	u16 vendorID;
-> +	u16 productID;
-> +	u16 fwVersion;
-> +	u16 misc_high;
-> +	u16 misc_low;
-> +};
+> +static void rk_dphy_disable_rx(struct rk_dphy *priv)
+> +{
+> +	rk_dphy_write_grf(priv, GRF_DPHY_RX0_ENABLE, 0);
+>  }
+>  
+>  static int rk_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
+> @@ -266,7 +276,7 @@ static int rk_dphy_power_on(struct phy *phy)
+>  	if (ret)
+>  		return ret;
+>  
+> -	rk_dphy_enable(priv);
+> +	priv->drv_data->enable(priv);
+>  
+>  	return 0;
+>  }
+> @@ -275,7 +285,7 @@ static int rk_dphy_power_off(struct phy *phy)
+>  {
+>  	struct rk_dphy *priv = phy_get_drvdata(phy);
+>  
+> -	rk_dphy_write_grf(priv, GRF_DPHY_RX0_ENABLE, 0);
+> +	priv->drv_data->disable(priv);
+>  	clk_bulk_disable(priv->drv_data->num_clks, priv->clks);
+>  	return 0;
+>  }
+> @@ -310,6 +320,8 @@ static const struct rk_dphy_drv_data rk3399_mipidphy_drv_data = {
+>  	.hsfreq_ranges = rk3399_mipidphy_hsfreq_ranges,
+>  	.num_hsfreq_ranges = ARRAY_SIZE(rk3399_mipidphy_hsfreq_ranges),
+>  	.regs = rk3399_grf_dphy_regs,
+> +	.enable = rk_dphy_enable_rx,
+> +	.disable = rk_dphy_disable_rx,
+>  };
+>  
+>  static const struct of_device_id rk_dphy_dt_ids[] = {
+> 
 
-This looks like I2C HID descriptor. Is the device actually I2C HID
-compatible? If so we should use that and abandon this driver.
 
-Ping, Tatsunosuke, please advise.
 
-Thanks.
 
--- 
-Dmitry
