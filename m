@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B903FB5EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6F93FB5ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236885AbhH3MWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:22:13 -0400
-Received: from emcscan.emc.com.tw ([192.72.220.5]:61099 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237463AbhH3MUr (ORCPT
+        id S237010AbhH3MWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:22:15 -0400
+Received: from heliosphere.sirena.org.uk ([172.104.155.198]:50284 "EHLO
+        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237533AbhH3MUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:20:47 -0400
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="42474874"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 30 Aug 2021 20:19:51 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(46200:0:AUTH_RELAY)
-        (envelope-from <phoenix@emc.com.tw>); Mon, 30 Aug 2021 20:19:50 +0800 (CST)
-Received: from 192.168.33.13
-        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2480:0:AUTH_LOGIN)
-        (envelope-from <phoenix@emc.com.tw>); Mon, 30 Aug 2021 20:19:48 +0800 (CST)
-From:   "phoenix" <phoenix@emc.com.tw>
-To:     <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        <dmitry.torokhov@gmail.com>
-Cc:     <jingle.wu@emc.com.tw>, <josh.chen@emc.com.tw>,
-        <dave.wang@emc.com.tw>
-References: <20210729010940.5752-1-phoenix@emc.com.tw>
-In-Reply-To: <20210729010940.5752-1-phoenix@emc.com.tw>
-Subject: RE: [PATCH] Input: elantench - Fix the firmware misreport coordinates for trackpoint occasionally.
-Date:   Mon, 30 Aug 2021 20:19:48 +0800
-Message-ID: <000001d79d99$53762dd0$fa628970$@emc.com.tw>
+        Mon, 30 Aug 2021 08:20:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=2oe3rQNKRsH+sZx1COtJ0b5SxHv/VuiVP6lcNnZDmbU=; b=pqre4ADfLQ/tmzhj4a+EM/fB+E
+        k1wbbi30/NfGL5YrLDp3r5uUuIO+A+Ds5pNaTwIAVjC+sULEJirteSvLHk6nphywNk2AyEEFK6Zf3
+        lcFNV/KtQzwxVslpah02SLtDpjKrKqmq/ZD9rOeEstN9R/58E9aKIT1bGQ5/QeT0wTvo=;
+Received: from jack.einval.com ([84.45.184.145] helo=fitzroy.sirena.org.uk)
+        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <broonie@sirena.org.uk>)
+        id 1mKgGU-00H4U4-Ho; Mon, 30 Aug 2021 12:19:50 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+        id 4DC10D1B484; Mon, 30 Aug 2021 13:19:49 +0100 (BST)
+Date:   Mon, 30 Aug 2021 13:19:49 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Lee Jones <lee.jones@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Biwen Li <biwen.li@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] regmap: teach regmap to use raw spinlocks if
+ requested in the config
+Message-ID: <YSzM5S3VKOBXniRu@sirena.org.uk>
+References: <20210825205041.927788-1-vladimir.oltean@nxp.com>
+ <20210825205041.927788-2-vladimir.oltean@nxp.com>
+ <875yvr3j5c.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQGk7tjGsgsB1mM/H5Ov4MUFApOKzavnmDiw
-Content-Language: zh-tw
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcODgwNTFcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy05MGI4OGY1YS0wOThjLTExZWMtYTkxYy04OGQ3ZjY1ODJkZmNcYW1lLXRlc3RcOTBiODhmNWItMDk4Yy0xMWVjLWE5MWMtODhkN2Y2NTgyZGZjYm9keS50eHQiIHN6PSIxNjA5IiB0PSIxMzI3NDc5OTU4ODA2NjU1ODYiIGg9IjRveHkwbHJscktkNU5id3VEVE4xSnBJVldnZz0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
-x-dg-rorf: true
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UG0QBevihfrK1GlS"
+Content-Disposition: inline
+In-Reply-To: <875yvr3j5c.ffs@tglx>
+X-Cookie: I can relate to that.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
 
-Would you review this patch, thanks
+--UG0QBevihfrK1GlS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Best regards,
-Phoenix Huang
+On Fri, Aug 27, 2021 at 01:01:35AM +0200, Thomas Gleixner wrote:
+> On Wed, Aug 25 2021 at 23:50, Vladimir Oltean wrote:
 
------Original Message-----
-From: Phoenix Huang [mailto:phoenix@emc.com.tw] 
-Sent: Thursday, July 29, 2021 9:10 AM
-To: linux-kernel@vger.kernel.org; linux-input@vger.kernel.org;
-dmitry.torokhov@gmail.com
-Cc: jingle.wu@emc.com.tw; josh.chen@emc.com.tw; dave.wang@emc.com.tw;
-Phoenix Huang <phoenix@emc.com.tw>
-Subject: [PATCH] Input: elantench - Fix the firmware misreport coordinates
-for trackpoint occasionally.
+> > It seems reasonable for regmap to have an option use a raw spinlock too,
+> > so add that in the config such that drivers can request it.
 
-Signed-off-by: Phoenix Huang <phoenix@emc.com.tw>
----
- drivers/input/mouse/elantech.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+> What's reasonable about that?
 
-diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
-index 2d0bc029619f..07e1098f2d31 100644
---- a/drivers/input/mouse/elantech.c
-+++ b/drivers/input/mouse/elantech.c
-@@ -517,6 +517,17 @@ static void elantech_report_trackpoint(struct psmouse
-*psmouse,
- 	case 0x16008020U:
- 	case 0x26800010U:
- 	case 0x36808000U:
-+	
-+		/* This firmware misreport coordinates for trackpoint
-occasionally.
-+		* So we discard these packets by pattern to prevent cursor
-jumps.
-+		*/
-+		if (packet[4] == 0x80 || packet[5] == 0x80 ||
-+		    packet[1] >> 7 == packet[4] >> 7 ||
-+		    packet[2] >> 7 == packet[5] >> 7) {
-+		    	elantech_debug("discarding packet [%6ph]\n",
-packet);
-+			break;
-+
-+		}
- 		x = packet[4] - (int)((packet[1]^0x80) << 1);
- 		y = (int)((packet[2]^0x80) << 1) - packet[5];
- 
---
-2.25.1
+> What exactly prevents the regmap locking to use a raw spinlock
+> unconditionally?
 
+We definitely can't use a raw spinlock unconditionally since we
+support register maps on devices connected via buses which can't
+be accessed atomically so we need the option of doing mutexes.
+
+> Even for the case where the regmap is not dealing with irq chips it does
+> not make any sense to protect low level operations on shared register
+> with a regular spinlock. I might be missing something though...
+
+That probably does make sense, I think we're just using regular
+spinlocks for spinlocks mainly because they're the default rather
+than because anyone put huge amounts of thought into it.  IIRC
+the first users were using spinlocks for their locking when they
+were converted.
+
+--UG0QBevihfrK1GlS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEszOQACgkQJNaLcl1U
+h9Dn9Qf/ebqXC0dbiH/yOjtNHGY17MMPRL+1UDXL1Cl+hANqVEEGzogokDM2Pr6h
+M1XoLFdrR0fWFLlrU+O52AFsdK2VOh7M1nT27RHYttSZ9jmYki9cu3QF8RK88Oxd
+ozEX6Z6GdfBe4tlfVfLObQwEpqkRSw4IyESzybY7YKoGtogRPav69FgCL8UeT5gT
+YcWVSRjWwkMpeSlr06oqWBKzO3LGW0Q73756rMjiRbaw1H7OksQIfgMCp7CM4RvJ
+kHEPu8Me9Gkklv2Jhouow2GBiqwcFvz+52ldHiowQI7SBZPe/09IbzagCMVPc+Hl
+qwmZRxx1iXCE4cJQXEkk7ND+ADCIBg==
+=+enQ
+-----END PGP SIGNATURE-----
+
+--UG0QBevihfrK1GlS--
