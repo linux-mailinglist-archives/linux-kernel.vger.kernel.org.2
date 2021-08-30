@@ -2,156 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4170D3FB6FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CEA3FB709
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236791AbhH3Nds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 09:33:48 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:48438 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235904AbhH3Ndr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 09:33:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=WWoMPuly9JjasrmMAELtnD9xCnZoOqZNrh1kbiw2GMg=; b=gadLj+IYXsId0pedWIi13rMucB
-        2YVu28H9RTBKahrWOu8MH5UQbEUIliM9nuiZA+Q0ZiW4bOBf1PUjIbrYWAelg1PDvPCaVLyElYq/r
-        6vnzg2+HIbtzNl4E2tXtebnx116lCdje+NhcO88khrrPvwgy8yJ7Vs9WR+TLk/GtbsUo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mKhP2-004Z5J-Ik; Mon, 30 Aug 2021 15:32:44 +0200
-Date:   Mon, 30 Aug 2021 15:32:44 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Luo Jie <luoj@codeaurora.org>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v1 1/3] net: phy: improve the wol feature of at803x
-Message-ID: <YSzd/BCy7JHoWKZV@lunn.ch>
-References: <20210830110733.8964-1-luoj@codeaurora.org>
- <20210830110733.8964-2-luoj@codeaurora.org>
+        id S236718AbhH3NhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 09:37:25 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44494 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231669AbhH3NhX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 09:37:23 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B4485200A0;
+        Mon, 30 Aug 2021 13:36:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630330588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=kIB1R2UoO86uSAyq3GTtYfJQEncWEiprIpDXfpQ9qH4=;
+        b=sh3zIQT97Emhb0/lhdQVivDaAugVe03zuuL36gAs05iOitbSYNmx3fcaKy2K8nJWaX8t55
+        eSd3rlBTTSTzquYdw2YkaqZdYLbL/1JDBV4KjigtXPiF+WhvuEHs+lddijesvrAZBZkDY+
+        fkYMg125ghzxagS0HTuTpvzgPxH78hc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630330588;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=kIB1R2UoO86uSAyq3GTtYfJQEncWEiprIpDXfpQ9qH4=;
+        b=0U6QlNXtffaVIdOQMs+cfrInVSabGFSrwFCZw9XuikBSLn1aWNZVR49zJR2u87ZeNDohNi
+        ZMehRWfYlI7okFAg==
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id AC0AAA3BAB;
+        Mon, 30 Aug 2021 13:36:28 +0000 (UTC)
+Received: by adalid.arch.suse.de (Postfix, from userid 17828)
+        id 9EB32518DCE7; Mon, 30 Aug 2021 15:36:28 +0200 (CEST)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>, yi.he@emc.com,
+        Daniel Wagner <dwagner@suse.de>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v6] nvme-tcp: Do not reset transport on data digest errors
+Date:   Mon, 30 Aug 2021 15:36:26 +0200
+Message-Id: <20210830133626.139828-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830110733.8964-2-luoj@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 07:07:31PM +0800, Luo Jie wrote:
-> wol is controlled by bit 5 of reg 3.8012, which should be
-> configured by set_wol of phy_driver.
-> 
-> Signed-off-by: Luo Jie <luoj@codeaurora.org>
-> ---
->  drivers/net/phy/at803x.c | 50 +++++++++++++++++++++++-----------------
->  1 file changed, 29 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-> index 5d62b85a4024..ecae26f11aa4 100644
-> --- a/drivers/net/phy/at803x.c
-> +++ b/drivers/net/phy/at803x.c
-> @@ -70,10 +70,14 @@
->  #define AT803X_CDT_STATUS_DELTA_TIME_MASK	GENMASK(7, 0)
->  #define AT803X_LED_CONTROL			0x18
->  
-> -#define AT803X_DEVICE_ADDR			0x03
-> +/* WOL control */
-> +#define AT803X_PHY_MMD3_WOL_CTRL		0x8012
-> +#define AT803X_WOL_EN				BIT(5)
-> +
->  #define AT803X_LOC_MAC_ADDR_0_15_OFFSET		0x804C
->  #define AT803X_LOC_MAC_ADDR_16_31_OFFSET	0x804B
->  #define AT803X_LOC_MAC_ADDR_32_47_OFFSET	0x804A
-> +
->  #define AT803X_REG_CHIP_CONFIG			0x1f
->  #define AT803X_BT_BX_REG_SEL			0x8000
->  
-> @@ -328,12 +332,6 @@ static int at803x_set_wol(struct phy_device *phydev,
->  	struct net_device *ndev = phydev->attached_dev;
->  	const u8 *mac;
->  	int ret;
-> -	u32 value;
-> -	unsigned int i, offsets[] = {
-> -		AT803X_LOC_MAC_ADDR_32_47_OFFSET,
-> -		AT803X_LOC_MAC_ADDR_16_31_OFFSET,
-> -		AT803X_LOC_MAC_ADDR_0_15_OFFSET,
-> -	};
->  
->  	if (!ndev)
->  		return -ENODEV;
-> @@ -344,23 +342,30 @@ static int at803x_set_wol(struct phy_device *phydev,
->  		if (!is_valid_ether_addr(mac))
->  			return -EINVAL;
->  
-> -		for (i = 0; i < 3; i++)
-> -			phy_write_mmd(phydev, AT803X_DEVICE_ADDR, offsets[i],
-> -				      mac[(i * 2) + 1] | (mac[(i * 2)] << 8));
-> +		phy_write_mmd(phydev, MDIO_MMD_PCS, AT803X_LOC_MAC_ADDR_32_47_OFFSET,
-> +				mac[1] | (mac[0] << 8));
-> +		phy_write_mmd(phydev, MDIO_MMD_PCS, AT803X_LOC_MAC_ADDR_16_31_OFFSET,
-> +				mac[3] | (mac[2] << 8));
-> +		phy_write_mmd(phydev, MDIO_MMD_PCS, AT803X_LOC_MAC_ADDR_0_15_OFFSET,
-> +				mac[5] | (mac[4] << 8));
+The spec says
 
-Please try to keep your changes minimal. It looks like all you really
-need is to replace AT803X_DEVICE_ADDR with MDIO_MMD_PCS. Everything
-else is O.K. Maybe make offset a const?
+  7.4.6.1 Digest Error handling
 
-Making the change more complex than it needs to be makes it harder to
-review.
+  When a host detects a data digest error in a C2HData PDU, that host
+  shall continue processing C2HData PDUs associated with the command and
+  when the command processing has completed, if a successful status was
+  returned by the controller, the host shall fail the command with a
+  non-fatal transport error.
 
->  
-> -		value = phy_read(phydev, AT803X_INTR_ENABLE);
-> -		value |= AT803X_INTR_ENABLE_WOL;
-> -		ret = phy_write(phydev, AT803X_INTR_ENABLE, value);
+Currently the transport is reseted when a data digest error is
+detected. Instead, when a digest error is detected, mark the final
+status as NVME_SC_DATA_XFER_ERROR and let the upper layer handle
+the error.
 
-So that it be replaced with a phy_modify().
+In order to keep track of the final result maintain a status field in
+nvme_tcp_request object and use it to overwrite the completion queue
+status (which might be successful even though a digest error has been
+detected) when completing the request.
 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Cc: kernel test robot <lkp@intel.com>
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+v6:
+ - It was this exact moment when he hit the send button
+   he knew he forgot something: annonate all req->status
+   access with cpu_to_le16() calls.
 
-> +		/* clear the pending interrupt */
-> +		phy_read(phydev, AT803X_INTR_STATUS);
+v5:
+ - https://lore.kernel.org/linux-nvme/20210830132306.126387-1-dwagner@suse.de/ - use __le16 instead of u16 for status type. Reported by lkp
+ 
+v4:
+ - https://lore.kernel.org/linux-nvme/20210830113822.104516-1-dwagner@suse.de/
+ - use req->status directly, avoid local variable. Suggested by Sagi.
 
-But where did this come from? 
+v3:
+ - https://lore.kernel.org/linux-nvme/20210826082137.23826-1-dwagner@suse.de/
+ - initialize req->status in nvme_tcp_setup_cmd_pdu()
+ - add rb tag from Hannes
 
-> +
-> +		ret = phy_modify(phydev, AT803X_INTR_ENABLE, 0, AT803X_INTR_ENABLE_WOL);
->  		if (ret)
->  			return ret;
-> -		value = phy_read(phydev, AT803X_INTR_STATUS);
-> +
-> +		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, AT803X_PHY_MMD3_WOL_CTRL,
-> +				0, AT803X_WOL_EN);
-> +
->  	} else {
-> -		value = phy_read(phydev, AT803X_INTR_ENABLE);
-> -		value &= (~AT803X_INTR_ENABLE_WOL);
-> -		ret = phy_write(phydev, AT803X_INTR_ENABLE, value);
-> +		ret = phy_modify(phydev, AT803X_INTR_ENABLE, AT803X_INTR_ENABLE_WOL, 0);
+v2:
+ - https://lore.kernel.org/linux-nvme/20210825124259.28707-1-dwagner@suse.de/
+ - moved 'status' from nvme_tcp_queue to nvme_tcp_request.
 
-This makes sense
+v1:
+ - https://lore.kernel.org/linux-nvme/20210805121541.77613-1-dwagner@suse.de/
 
->  		if (ret)
->  			return ret;
-> -		value = phy_read(phydev, AT803X_INTR_STATUS);
-> +
-> +		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, AT803X_PHY_MMD3_WOL_CTRL,
-> +				AT803X_WOL_EN, 0);
+ drivers/nvme/host/tcp.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-But where did this come from?
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 645025620154..f3235d584121 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -45,6 +45,7 @@ struct nvme_tcp_request {
+ 	u32			pdu_len;
+ 	u32			pdu_sent;
+ 	u16			ttag;
++	__le16			status;
+ 	struct list_head	entry;
+ 	struct llist_node	lentry;
+ 	__le32			ddgst;
+@@ -485,6 +486,7 @@ static void nvme_tcp_error_recovery(struct nvme_ctrl *ctrl)
+ static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
+ 		struct nvme_completion *cqe)
+ {
++	struct nvme_tcp_request *req;
+ 	struct request *rq;
+ 
+ 	rq = nvme_find_rq(nvme_tcp_tagset(queue), cqe->command_id);
+@@ -496,7 +498,11 @@ static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (!nvme_try_complete_req(rq, cqe->status, cqe->result))
++	req = blk_mq_rq_to_pdu(rq);
++	if (req->status == cpu_to_le16(NVME_SC_SUCCESS))
++		req->status = cqe->status;
++
++	if (!nvme_try_complete_req(rq, req->status, cqe->result))
+ 		nvme_complete_rq(rq);
+ 	queue->nr_cqe++;
+ 
+@@ -758,7 +764,7 @@ static int nvme_tcp_recv_data(struct nvme_tcp_queue *queue, struct sk_buff *skb,
+ 			queue->ddgst_remaining = NVME_TCP_DIGEST_LENGTH;
+ 		} else {
+ 			if (pdu->hdr.flags & NVME_TCP_F_DATA_SUCCESS) {
+-				nvme_tcp_end_request(rq, NVME_SC_SUCCESS);
++				nvme_tcp_end_request(rq, req->status);
+ 				queue->nr_cqe++;
+ 			}
+ 			nvme_tcp_init_recv_ctx(queue);
+@@ -788,18 +794,24 @@ static int nvme_tcp_recv_ddgst(struct nvme_tcp_queue *queue,
+ 		return 0;
+ 
+ 	if (queue->recv_ddgst != queue->exp_ddgst) {
++		struct request *rq = nvme_cid_to_rq(nvme_tcp_tagset(queue),
++					pdu->command_id);
++		struct nvme_tcp_request *req = blk_mq_rq_to_pdu(rq);
++
++		req->status = cpu_to_le16(NVME_SC_DATA_XFER_ERROR);
++
+ 		dev_err(queue->ctrl->ctrl.device,
+ 			"data digest error: recv %#x expected %#x\n",
+ 			le32_to_cpu(queue->recv_ddgst),
+ 			le32_to_cpu(queue->exp_ddgst));
+-		return -EIO;
+ 	}
+ 
+ 	if (pdu->hdr.flags & NVME_TCP_F_DATA_SUCCESS) {
+ 		struct request *rq = nvme_cid_to_rq(nvme_tcp_tagset(queue),
+ 					pdu->command_id);
++		struct nvme_tcp_request *req = blk_mq_rq_to_pdu(rq);
+ 
+-		nvme_tcp_end_request(rq, NVME_SC_SUCCESS);
++		nvme_tcp_end_request(rq, req->status);
+ 		queue->nr_cqe++;
+ 	}
+ 
+@@ -2293,6 +2305,7 @@ static blk_status_t nvme_tcp_setup_cmd_pdu(struct nvme_ns *ns,
+ 		return ret;
+ 
+ 	req->state = NVME_TCP_SEND_CMD_PDU;
++	req->status = cpu_to_le16(NVME_SC_SUCCESS);
+ 	req->offset = 0;
+ 	req->data_sent = 0;
+ 	req->pdu_len = 0;
+-- 
+2.29.2
 
-I could be wrong, but i get the feeling you just replaced the code
-with what you have in your new driver, rather than step by step
-improve this code.
-
-Please break this patch up into a number of patches:
-
-AT803X_DEVICE_ADDR with MDIO_MMD_PCS
-read/write to modify.
-
-Other patches for the remaining changes, if actually required, with a
-good explanation of why they are needed.
-
-    Andrew
