@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B09A3FB5D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B903FB5EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236668AbhH3MQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:16:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236624AbhH3MQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:16:14 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13367610FB;
-        Mon, 30 Aug 2021 12:15:17 +0000 (UTC)
-Date:   Mon, 30 Aug 2021 13:18:29 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nicolas.ferre@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <ludovic.desroches@microchip.com>
-Subject: Re: [PATCH v2 06/10] iio: adc: at91-sama5d2_adc: add helper for COR
- register
-Message-ID: <20210830131829.782546eb@jic23-huawei>
-In-Reply-To: <20210824115441.681253-7-eugen.hristev@microchip.com>
-References: <20210824115441.681253-1-eugen.hristev@microchip.com>
-        <20210824115441.681253-7-eugen.hristev@microchip.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S236885AbhH3MWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:22:13 -0400
+Received: from emcscan.emc.com.tw ([192.72.220.5]:61099 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237463AbhH3MUr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 08:20:47 -0400
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="42474874"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 30 Aug 2021 20:19:51 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(46200:0:AUTH_RELAY)
+        (envelope-from <phoenix@emc.com.tw>); Mon, 30 Aug 2021 20:19:50 +0800 (CST)
+Received: from 192.168.33.13
+        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2480:0:AUTH_LOGIN)
+        (envelope-from <phoenix@emc.com.tw>); Mon, 30 Aug 2021 20:19:48 +0800 (CST)
+From:   "phoenix" <phoenix@emc.com.tw>
+To:     <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <dmitry.torokhov@gmail.com>
+Cc:     <jingle.wu@emc.com.tw>, <josh.chen@emc.com.tw>,
+        <dave.wang@emc.com.tw>
+References: <20210729010940.5752-1-phoenix@emc.com.tw>
+In-Reply-To: <20210729010940.5752-1-phoenix@emc.com.tw>
+Subject: RE: [PATCH] Input: elantench - Fix the firmware misreport coordinates for trackpoint occasionally.
+Date:   Mon, 30 Aug 2021 20:19:48 +0800
+Message-ID: <000001d79d99$53762dd0$fa628970$@emc.com.tw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQGk7tjGsgsB1mM/H5Ov4MUFApOKzavnmDiw
+Content-Language: zh-tw
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcODgwNTFcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy05MGI4OGY1YS0wOThjLTExZWMtYTkxYy04OGQ3ZjY1ODJkZmNcYW1lLXRlc3RcOTBiODhmNWItMDk4Yy0xMWVjLWE5MWMtODhkN2Y2NTgyZGZjYm9keS50eHQiIHN6PSIxNjA5IiB0PSIxMzI3NDc5OTU4ODA2NjU1ODYiIGg9IjRveHkwbHJscktkNU5id3VEVE4xSnBJVldnZz0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 14:54:37 +0300
-Eugen Hristev <eugen.hristev@microchip.com> wrote:
+Hi Dmitry,
 
-> Add helper for the COR register. This helper allows to modify the COR
-> register, removes duplicate code and improves readability.
-> The COR offset is now part of the register layout. This will allow
-> different platform with a different offset to use the same helper.
-> 
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-Nitpick inline.  If this is all I find in the series I'll tidy it up whilst
-applying.
+Would you review this patch, thanks
 
-J
+Best regards,
+Phoenix Huang
 
-> ---
->  drivers/iio/adc/at91-sama5d2_adc.c | 40 +++++++++++++++---------------
->  1 file changed, 20 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
-> index 23be7cec063e..bb4e5e1e3ce4 100644
-> --- a/drivers/iio/adc/at91-sama5d2_adc.c
-> +++ b/drivers/iio/adc/at91-sama5d2_adc.c
-> @@ -151,8 +151,8 @@ struct at91_adc_reg_layout {
->  	u16				CGR;
->  /* Channel Offset Register */
->  	u16				COR;
-> -#define AT91_SAMA5D2_COR_DIFF_OFFSET	16
-> -
-> +/* Channel Offset Register differential offset - constant, not a register */
-> +	u16				COR_diff_offset;
->  /* Analog Control Register */
->  	u16				ACR;
->  /* Analog Control Register - Pen detect sensitivity mask */
-> @@ -246,6 +246,7 @@ static const struct at91_adc_reg_layout sama5d2_layout = {
->  	.CWR =			0x44,
->  	.CGR =			0x48,
->  	.COR =			0x4c,
-> +	.COR_diff_offset =	16,
->  	.ACR =			0x94,
->  	.TSMR =			0xb0,
->  	.XPOSR =		0xb4,
-> @@ -589,6 +590,21 @@ static unsigned int at91_adc_active_scan_mask_to_reg(struct iio_dev *indio_dev)
->  	return mask & GENMASK(st->soc_info.platform->nr_channels, 0);
->  }
->  
-> +static void at91_adc_cor(struct at91_adc_state *st,
-> +			 struct iio_chan_spec const *chan)
-> +{
-> +	u32 cor, cur_cor;
-> +
-> +	cor = (BIT(chan->channel) | BIT(chan->channel2));
+-----Original Message-----
+From: Phoenix Huang [mailto:phoenix@emc.com.tw] 
+Sent: Thursday, July 29, 2021 9:10 AM
+To: linux-kernel@vger.kernel.org; linux-input@vger.kernel.org;
+dmitry.torokhov@gmail.com
+Cc: jingle.wu@emc.com.tw; josh.chen@emc.com.tw; dave.wang@emc.com.tw;
+Phoenix Huang <phoenix@emc.com.tw>
+Subject: [PATCH] Input: elantench - Fix the firmware misreport coordinates
+for trackpoint occasionally.
 
-Excessive brackets.
+Signed-off-by: Phoenix Huang <phoenix@emc.com.tw>
+---
+ drivers/input/mouse/elantech.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-
-> +
-> +	cur_cor = at91_adc_readl(st, COR);
-> +	cor <<= st->soc_info.platform->layout->COR_diff_offset;
-> +	if (chan->differential)
-> +		at91_adc_writel(st, COR, cur_cor | cor);
-> +	else
-> +		at91_adc_writel(st, COR, cur_cor & ~cor);
-> +}
-> +
->  static void at91_adc_irq_status(struct at91_adc_state *st, u32 *status,
->  				u32 *eoc)
->  {
-> @@ -1033,8 +1049,6 @@ static int at91_adc_buffer_prepare(struct iio_dev *indio_dev)
->  			 indio_dev->num_channels) {
->  		struct iio_chan_spec const *chan =
->  					at91_adc_chan_get(indio_dev, bit);
-> -		u32 cor;
-> -
->  		if (!chan)
->  			continue;
->  		/* these channel types cannot be handled by this trigger */
-> @@ -1042,16 +1056,7 @@ static int at91_adc_buffer_prepare(struct iio_dev *indio_dev)
->  		    chan->type == IIO_PRESSURE)
->  			continue;
->  
-> -		cor = at91_adc_readl(st, COR);
-> -
-> -		if (chan->differential)
-> -			cor |= (BIT(chan->channel) | BIT(chan->channel2)) <<
-> -				AT91_SAMA5D2_COR_DIFF_OFFSET;
-> -		else
-> -			cor &= ~(BIT(chan->channel) <<
-> -			       AT91_SAMA5D2_COR_DIFF_OFFSET);
-> -
-> -		at91_adc_writel(st, COR, cor);
-> +		at91_adc_cor(st, chan);
->  
->  		at91_adc_writel(st, CHER, BIT(chan->channel));
->  	}
-> @@ -1439,7 +1444,6 @@ static int at91_adc_read_info_raw(struct iio_dev *indio_dev,
->  				  struct iio_chan_spec const *chan, int *val)
->  {
->  	struct at91_adc_state *st = iio_priv(indio_dev);
-> -	u32 cor = 0;
->  	u16 tmp_val;
->  	int ret;
->  
-> @@ -1485,11 +1489,7 @@ static int at91_adc_read_info_raw(struct iio_dev *indio_dev,
->  
->  	st->chan = chan;
->  
-> -	if (chan->differential)
-> -		cor = (BIT(chan->channel) | BIT(chan->channel2)) <<
-> -		      AT91_SAMA5D2_COR_DIFF_OFFSET;
-> -
-> -	at91_adc_writel(st, COR, cor);
-> +	at91_adc_cor(st, chan);
->  	at91_adc_writel(st, CHER, BIT(chan->channel));
->  	at91_adc_eoc_ena(st, chan->channel);
->  	at91_adc_writel(st, CR, AT91_SAMA5D2_CR_START);
+diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
+index 2d0bc029619f..07e1098f2d31 100644
+--- a/drivers/input/mouse/elantech.c
++++ b/drivers/input/mouse/elantech.c
+@@ -517,6 +517,17 @@ static void elantech_report_trackpoint(struct psmouse
+*psmouse,
+ 	case 0x16008020U:
+ 	case 0x26800010U:
+ 	case 0x36808000U:
++	
++		/* This firmware misreport coordinates for trackpoint
+occasionally.
++		* So we discard these packets by pattern to prevent cursor
+jumps.
++		*/
++		if (packet[4] == 0x80 || packet[5] == 0x80 ||
++		    packet[1] >> 7 == packet[4] >> 7 ||
++		    packet[2] >> 7 == packet[5] >> 7) {
++		    	elantech_debug("discarding packet [%6ph]\n",
+packet);
++			break;
++
++		}
+ 		x = packet[4] - (int)((packet[1]^0x80) << 1);
+ 		y = (int)((packet[2]^0x80) << 1) - packet[5];
+ 
+--
+2.25.1
 
