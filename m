@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AEF3FB61D
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1233FB62C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233844AbhH3MeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:34:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50842 "EHLO mail.kernel.org"
+        id S235173AbhH3Mg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:36:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232267AbhH3MeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:34:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AD3D60C40;
-        Mon, 30 Aug 2021 12:33:13 +0000 (UTC)
+        id S234741AbhH3Mg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 08:36:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9875B61059;
+        Mon, 30 Aug 2021 12:36:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630326793;
-        bh=vV+7QnNcsLi7ddrn19KrBeLW/vMy+0JLtPVhL5tRbOk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HlcaD79YuVD6E4snc6M8dEemUht+nc/NxwaoDzP60kuXKC6zG6Ydi3emsqcj02bH8
-         8k007CSBzgrFoUkX3fmlUSqBqcUz5s0wASf1qdOUp1m68IAgCyKB2vbWwlMgT8DZJD
-         fIh5imSlsfUEO0g9371knT/i95Q+PITkizeR1zWtbDk1oOmMcnT2UefIadUEubfwiq
-         G9BZmfRtJ/WEcH1Vpzz5P5J4cAWyu+Wil9htTcOhDiakLkJoX237X2oeV4O1N7u87O
-         9DbwP6fHGbV0nq/Ptuqs5iPf+dXip7GB3G92uKWrz7Irka9CeBf2yOAPeUwWmavu4f
-         OaBGc5wwttE3A==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mKgTJ-00061h-KY; Mon, 30 Aug 2021 14:33:05 +0200
-Date:   Mon, 30 Aug 2021 14:33:05 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] staging: greybus: Convert uart.c from IDR to XArray
-Message-ID: <YSzQAd0Rg5CF/eLe@hovoldconsulting.com>
-References: <20210829092250.25379-1-fmdefrancesco@gmail.com>
- <YSyg/Db1So0LDGR+@hovoldconsulting.com>
- <2879439.WEJLM9RBEh@localhost.localdomain>
- <YSzGkNfG6HOayiXi@hovoldconsulting.com>
- <YSzMB80NOkNvdjy1@casper.infradead.org>
+        s=k20201202; t=1630326964;
+        bh=VSnG7ci/z6It+oL6KcTBEhuTf8u1sv3TMd5qXRIvpQw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Z9VrAPSYu3o1kLTK5GooxotaEz5m+jtqVGPk8x4/xsNs4xSvwITYKkramNk5d/Ds0
+         Teze/fJvUS5JD3p4PamiFqb8HZjoQyXqOhTqZWPGvRcsAursOrRZnb9c31yWhB6kP1
+         z7J2AvmUKIV07RunGf8O9elvEyIotC5c1kW9YeGN8AstPmq2X97tMbSCFduB4B7put
+         Gjvg/TCjEPgvqzH+1XqWBuZcnDX3l3ZBslHmIwBQ4ginqBAmsCLQGEUmFYThNrvgKJ
+         M0cHM01VOqLFW+6ei0XINX0sckimNyiqcvkXgF7RoCI43TdCyB0U20iL6wW7xeU/LQ
+         mw9nffcTzgXBA==
+Received: by mail-ed1-f50.google.com with SMTP id g22so21351310edy.12;
+        Mon, 30 Aug 2021 05:36:04 -0700 (PDT)
+X-Gm-Message-State: AOAM530DSbMjmc5MjOkDXS1OYoeo7WZcVt3YpP5IaDshUFjKfHpWyoHF
+        VAYwbc2U+1DDN535iAhbOgPBmeHMYn7lQq5aFA==
+X-Google-Smtp-Source: ABdhPJzKe9hTkHckfNaR1ucxYim8h6wVK9o1P5JmQEu+WRbO6Yl0Gq0AZ2KqnNnrX8JgVC8B7aRTlLvuFbVruyQ61UA=
+X-Received: by 2002:a05:6402:70c:: with SMTP id w12mr24307350edx.289.1630326963208;
+ Mon, 30 Aug 2021 05:36:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSzMB80NOkNvdjy1@casper.infradead.org>
+References: <20210819084144.18483-1-trevor.wu@mediatek.com> <20210819084144.18483-8-trevor.wu@mediatek.com>
+In-Reply-To: <20210819084144.18483-8-trevor.wu@mediatek.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 30 Aug 2021 07:35:51 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+bLVLqqVKfYuXDVYexMojMgZ5p34Pcx7_7LwU40b-2dA@mail.gmail.com>
+Message-ID: <CAL_Jsq+bLVLqqVKfYuXDVYexMojMgZ5p34Pcx7_7LwU40b-2dA@mail.gmail.com>
+Subject: Re: [PATCH v5 07/11] dt-bindings: mediatek: mt8195: add audio afe document
+To:     Trevor Wu <trevor.wu@mediatek.com>,
+        Mark Brown <broonie@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, bicycle.tsai@mediatek.com,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        Jimmy Cheng-Yi Chiang <cychiang@google.com>,
+        Li-Yu Yu <aaronyu@google.com>,
+        Chen-Yu Tsai <wenst@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 01:16:07PM +0100, Matthew Wilcox wrote:
-> On Mon, Aug 30, 2021 at 01:52:48PM +0200, Johan Hovold wrote:
-> > Whether the API is better is debatable. As I said, almost no drivers use
-> > the new XArray interface, and perhaps partly because the new interface
-> > isn't as intuitive as has been claimed (e.g. xa_load() instead of
-> > ida_find()). And IDR/IDA isn't marked/documented as deprecated as far as
-> > I know.
-> 
-> I can't just slap a 'deprecated' attribute on it.  That'll cause a
-> storm of warnings.  What would you suggest I do to warn people that
-> this interface is deprecated and I would like to remove it?
+On Thu, Aug 19, 2021 at 3:43 AM Trevor Wu <trevor.wu@mediatek.com> wrote:
+>
+> This patch adds mt8195 audio afe document.
+>
+> In order to support dynamic clock reparenting for ADDA and ETDM, PLL
+> and MUX clocks are requested even though they are not consumed by afe
+> directly.
+>
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+> ---
+> This patch depends on the following series that have not been accepted.
+>
+> [1] Mediatek MT8195 clock support
+> https://patchwork.kernel.org/project/linux-mediatek/list/?series=501923
+> (dt-bindings/clock/mt8195-clk.h is included)
 
-I'd at least expect a suggestion in the IDR documentation to consider
-using XArray instead.
+This dependency is still not applied, so the example fails. One of the
+following needs to happen: the dependency needs to be applied, this
+patch reverted, or drop the use of the defines in the example.
 
-> Why do you think that idr_find() is more intuitive than xa_load()?
-> The 'find' verb means that you search for something.  But it doesn't
-> search for anything; it just returns the pointer at that index.
-> 'find' should return the next non-NULL pointer at-or-above a given
-> index.
-
-We're looking up a minor number which may or may not exist. "Find" (or
-"lookup" or "search") seems to describe this much better than "load"
-(even if that may better reflect the implementation of XArray).
-
-And no, I would not expect a find implementation to return the next
-entry if the requested entry does not exist (and neither does idr_find()
-or radix_tree_lookup()).
-
-Johan
+Rob
