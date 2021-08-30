@@ -2,124 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64233FBC9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E713FBCA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbhH3Spv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:45:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229708AbhH3Spu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:45:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C42B60F3A;
-        Mon, 30 Aug 2021 18:44:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630349096;
-        bh=LtTJKZ/nDmnOgKVis3WLUMr+KoCayI+9HgyvZySnxLE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YIenoLLyVAS+i6cujE8l6cJwEIsV1bmiRG9P+prmjn8S3FUHfZsQHGb85HwQl8B0m
-         oIY2XIuQjeED8yzmQct6OVY+ONatrINvelb5MVrmYo7KQVZ2ueShDTw/q20Io+nL7R
-         J9K0oio3GJdul3pgs0LYMOqX8QGCqk8S5CH3kr/lFD78/MjxrGEI/eShnVuFMPYWWv
-         Q4MfnMGtlP8dXMRjzoGDmNomJ83R6JFR6XjQww9S+QNbXk25lDD1nB8gmJQTus6Qso
-         V5284apjrl4SKcuPigJcuuJbqp1jjd9y0K2peNgAbTn/tcG6c4ztN5JnpaZ97QWT5T
-         8WWy9t+6XNrWw==
-Date:   Mon, 30 Aug 2021 11:44:54 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Keith Packard <keithp@keithp.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        clang-built-linux@googlegroups.com,
-        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v3 0/5] Enable -Warray-bounds and -Wzero-length-bounds
-Message-ID: <YS0nJtNDCwfbaubZ@Ryzen-9-3900X.localdomain>
-References: <20210827163015.3141722-1-keescook@chromium.org>
+        id S232003AbhH3Sqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:46:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40582 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231715AbhH3Sqa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 14:46:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630349135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i7iUH7l5Sh0OpUsn92+ULA9isAZYjj/3KpoIKNS+nc0=;
+        b=Y1Bfj6zdquZRuaxwOY0yd0FwnqB6CVPSBvZ+JY3GeNb9D2nVRYjfFB7rI1f8WF1V+y4Hmo
+        3LkBx35FQTgDAqUR5lxFQxyYHHIflf7nOIDnfXQED7HhCUlW7QY7jJxtKRzYbHDJmxa0pk
+        UXx5r+xoZlI4/q4EBcRSv2hJQ505odE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-jnQEB5U4OBineMHHI0DrUA-1; Mon, 30 Aug 2021 14:45:33 -0400
+X-MC-Unique: jnQEB5U4OBineMHHI0DrUA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 822448799EE;
+        Mon, 30 Aug 2021 18:45:31 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.8.102])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3255D2AF99;
+        Mon, 30 Aug 2021 18:45:26 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 93FA72241BF; Mon, 30 Aug 2021 14:45:25 -0400 (EDT)
+Date:   Mon, 30 Aug 2021 14:45:25 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Bruce Fields <bfields@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, virtio-fs@redhat.com, dwalsh@redhat.com,
+        dgilbert@redhat.com, casey.schaufler@intel.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
+        jack@suse.cz, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special
+ files
+Message-ID: <YS0nRQeuxEFppDxG@redhat.com>
+References: <20210708175738.360757-2-vgoyal@redhat.com>
+ <20210709091915.2bd4snyfjndexw2b@wittgenstein>
+ <20210709152737.GA398382@redhat.com>
+ <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
+ <20210709175947.GB398382@redhat.com>
+ <CAPL3RVGKg4G5qiiHo7KYPcsWWgeoW=qNPOSQpd3Sv329jrWrLQ@mail.gmail.com>
+ <20210712140247.GA486376@redhat.com>
+ <20210712154106.GB18679@fieldses.org>
+ <20210712174759.GA502004@redhat.com>
+ <3d55ff30-c6cf-46c4-0e32-3b578099343d@schaufler-ca.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210827163015.3141722-1-keescook@chromium.org>
+In-Reply-To: <3d55ff30-c6cf-46c4-0e32-3b578099343d@schaufler-ca.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 09:30:10AM -0700, Kees Cook wrote:
-> v3:
-> - fix typo in treewide conversion (u8 should have been __u8)
-> - improve changelog for DECLARE_FLEX_ARRAY patch
-> - add acks/reviews
-> v2: https://lore.kernel.org/lkml/20210826050458.1540622-1-keescook@chromium.org/
-> v1: https://lore.kernel.org/lkml/20210818081118.1667663-1-keescook@chromium.org/
+On Tue, Jul 13, 2021 at 07:17:00AM -0700, Casey Schaufler wrote:
+> On 7/12/2021 10:47 AM, Vivek Goyal wrote:
+> > On Mon, Jul 12, 2021 at 11:41:06AM -0400, J. Bruce Fields wrote:
+> >> On Mon, Jul 12, 2021 at 10:02:47AM -0400, Vivek Goyal wrote:
+> >>> On Fri, Jul 09, 2021 at 04:10:16PM -0400, Bruce Fields wrote:
+> >>>> On Fri, Jul 9, 2021 at 1:59 PM Vivek Goyal <vgoyal@redhat.com> wrote:
+> >>>>> nfs seems to have some issues.
+> >>>> I'm not sure what the expected behavior is for nfs.  All I have for
+> >>>> now is some generic troubleshooting ideas, sorry:
+> >>>>
+> >>>>> - I can set user.foo xattr on symlink and query it back using xattr name.
+> >>>>>
+> >>>>>   getfattr -h -n user.foo foo-link.txt
+> >>>>>
+> >>>>>   But when I try to dump all xattrs on this file, user.foo is being
+> >>>>>   filtered out it looks like. Not sure why.
+> >>>> Logging into the server and seeing what's set there could help confirm
+> >>>> whether it's the client or server that's at fault.  (Or watching the
+> >>>> traffic in wireshark; there are GET/SET/LISTXATTR ops that should be
+> >>>> easy to spot.)
+> >>>>
+> >>>>> - I can't set "user.foo" xattr on a device node on nfs and I get
+> >>>>>   "Permission denied". I am assuming nfs server is returning this.
+> >>>> Wireshark should tell you whether it's the server or client doing that.
+> >>>>
+> >>>> The RFC is https://datatracker.ietf.org/doc/html/rfc8276, and I don't
+> >>>> see any explicit statement about what the server should do in the case
+> >>>> of symlinks or device nodes, but I do see "Any regular file or
+> >>>> directory may have a set of extended attributes", so that was clearly
+> >>>> the assumption.  Also, NFS4ERR_WRONG_TYPE is listed as a possible
+> >>>> error return for the xattr ops.  But on a quick skim I don't see any
+> >>>> explicit checks in the nfsd code, so I *think* it's just relying on
+> >>>> the vfs for any file type checks.
+> >>> Hi Bruce,
+> >>>
+> >>> Thanks for the response. I am just trying to do set a user.foo xattr on
+> >>> a device node on nfs.
+> >>>
+> >>> setfattr -n "user.foo" -v "bar" /mnt/nfs/test-dev
+> >>>
+> >>> and I get -EACCESS.
+> >>>
+> >>> I put some printk() statements and EACCESS is being returned from here.
+> >>>
+> >>> nfs4_xattr_set_nfs4_user() {
+> >>>         if (!nfs_access_get_cached(inode, current_cred(), &cache, true)) {
+> >>>                 if (!(cache.mask & NFS_ACCESS_XAWRITE)) {
+> >>>                         return -EACCES;
+> >>>                 }
+> >>>         }
+> >>> }
+> >>>
+> >>> Value of cache.mask=0xd at the time of error.
+> >> Looks like 0xd is what the server returns to access on a device node
+> >> with mode bits rw- for the caller.
+> >>
+> >> Commit c11d7fd1b317 "nfsd: take xattr bits into account for permission
+> >> checks" added the ACCESS_X* bits for regular files and directories but
+> >> not others.
+> >>
+> >> But you don't want to determine permission from the mode bits anyway,
+> >> you want it to depend on the owner,
+> > Thinking more about this part. Current implementation of my patch is
+> > effectively doing both the checks. It checks that you are owner or
+> > have CAP_FOWNER in xattr_permission() and then goes on to call
+> > inode_permission(). And that means file mode bits will also play a
+> > role. If caller does not have write permission on the file, it will
+> > be denied setxattr().
+> >
+> > If I don't call inode_permission(), and just return 0 right away for
+> > file owner (for symlinks and special files), then just being owner
+> > is enough to write user.* xattr. And then even security modules will
+> > not get a chance to block that operation.
 > 
-> Hi,
-> 
-> In support of the improved buffer overflow detection for memcpy(),
-> this enables -Warray-bounds and -Wzero-length-bounds globally. Mostly
-> it involves some struct member tricks with the new DECLARE_FLEX_ARRAY()
-> macro. Everything else is just replacing stacked 0-element arrays
-> with actual unions in two related treewide patches. There is one set of
-> special cases that were fixed separately[1] and are needed as well.
-> 
-> I'm expecting to carry this series with the memcpy() series in my
-> "overflow" tree. Reviews appreciated! :)
+> That isn't going to fly. SELinux and Smack don't rely on ownership
+> as a criteria for access. Being the owner of a symlink conveys no
+> special privilege. The LSM must be consulted to determine if the
+> module's policy allows the access.
 
-Hi Kees,
+Getting back to this thread after a while. Sorry got busy in other
+things.
 
-I ran this series through my local build tests and uncovered two
-warnings in the same file that appear to be unhandled as of
-next-20210830. This is from ARCH=powerpc pseries_defconfig with
-clang-14, I did not try earlier versions of clang.
+I noticed that if we skip calling inode_permission() for special files,
+then we will skip calling security_inode_permission() but we will
+still call security hooks for setxattr/getxattr/removexattr etc.
 
-arch/powerpc/kernel/signal_32.c:780:2: error: array index 3 is past the end of the array (which contains 1 element) [-Werror,-Warray-bounds]
-        unsafe_put_sigset_t(&frame->uc.uc_sigmask, oldset, failed);
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/kernel/signal_32.c:85:29: note: expanded from macro 'unsafe_put_sigset_t'
-#define unsafe_put_sigset_t     unsafe_put_compat_sigset
-                                ^
-./include/linux/compat.h:455:19: note: expanded from macro 'unsafe_put_compat_sigset'
-                unsafe_put_user(__s->sig[3] >> 32, &__c->sig[7], label);        \
-                                ^        ~
-./arch/powerpc/include/asm/uaccess.h:426:42: note: expanded from macro 'unsafe_put_user'
-        __put_user_size_goto((__typeof__(*(p)))(x), (p), sizeof(*(p)), e)
-                                                ^
-./arch/powerpc/include/asm/uaccess.h:114:30: note: expanded from macro '__put_user_size_goto'
-        case 1: __put_user_asm_goto(x, __pus_addr, label, "stb"); break;        \
-                                    ^
-./arch/powerpc/include/asm/uaccess.h:89:10: note: expanded from macro '__put_user_asm_goto'
-                : "r" (x), "m"UPD_CONSTR (*addr)                \
-                       ^
-./include/linux/compiler_types.h:254:42: note: expanded from macro 'asm_volatile_goto'
-#define asm_volatile_goto(x...) asm goto(x)
-                                         ^
-./arch/powerpc/include/uapi/asm/signal.h:18:2: note: array 'sig' declared here
-        unsigned long sig[_NSIG_WORDS];
-        ^
-arch/powerpc/kernel/signal_32.c:1044:3: error: array index 2 is past the end of the array (which contains 1 element) [-Werror,-Warray-bounds]
-                unsafe_put_sigset_t(&old_ctx->uc_sigmask, &current->blocked, failed);
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/kernel/signal_32.c:85:29: note: expanded from macro 'unsafe_put_sigset_t'
-#define unsafe_put_sigset_t     unsafe_put_compat_sigset
-                                ^
-./include/linux/compat.h:459:19: note: expanded from macro 'unsafe_put_compat_sigset'
-                unsafe_put_user(__s->sig[2] >> 32, &__c->sig[5], label);        \
-                                ^        ~
-./arch/powerpc/include/asm/uaccess.h:426:42: note: expanded from macro 'unsafe_put_user'
-        __put_user_size_goto((__typeof__(*(p)))(x), (p), sizeof(*(p)), e)
-                                                ^
-./arch/powerpc/include/asm/uaccess.h:116:30: note: expanded from macro '__put_user_size_goto'
-        case 4: __put_user_asm_goto(x, __pus_addr, label, "stw"); break;        \
-                                    ^
-./arch/powerpc/include/asm/uaccess.h:89:10: note: expanded from macro '__put_user_asm_goto'
-                : "r" (x), "m"UPD_CONSTR (*addr)                \
-                       ^
-./include/linux/compiler_types.h:254:42: note: expanded from macro 'asm_volatile_goto'
-#define asm_volatile_goto(x...) asm goto(x)
-                                         ^
-./arch/powerpc/include/uapi/asm/signal.h:18:2: note: array 'sig' declared here
-        unsigned long sig[_NSIG_WORDS];
-        ^
+security_inode_setxattr()
+security_inode_getxattr()
+security_inode_removexattr()
 
-Cheers,
-Nathan
+So LSMs will still get a chance whether to allow/disallow this operation
+or not.
+
+And skipping security_inode_permission() kind of makes sense that for
+special files, I am not writing to device. So taking permission from
+LSMs, will not make much sense.
+
+Thanks
+Vivek
+
