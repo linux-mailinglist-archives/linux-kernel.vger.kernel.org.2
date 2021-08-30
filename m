@@ -2,224 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAAD3FB98A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5EEF3FB987
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237847AbhH3P7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:59:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237735AbhH3P7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:59:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DCB460FD8;
-        Mon, 30 Aug 2021 15:58:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630339093;
-        bh=94GQfHWUxtTHx/+l6i92UggNWHytvmlkl4wPKFJaFiE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cMntF844dTL/rBrW/ozl8hJNGnQz4nclR45Brpr02jajmhmvqC4IN8OgKXFVrm+5i
-         CliEBSD4+ZH97rJ4duZf6NbUTy8eDU15/4ZBNbjc5EjEMG8TP7E7e8uQEI3kkRneIW
-         s23es8i1wM3B2UefnCRh7Axf/kEIv95kqQNaRxtXza/CwIfRD7t0i9QD04yUMUFjNt
-         VLwg0SKtc8IrlMHp+IfYQtJSp3clNh7eSwYgNUinPvyxgv/9ZlRXNMtFeRvc7gfF0/
-         Cd+QgH70JfVHOup9sHF9+Qj4JoFH1WERT5E/3SbKy11j7hhvSfof9m5S+sy0VFvc8N
-         F1JlcbPHnvjLA==
-Received: by mail-ej1-f46.google.com with SMTP id e21so32110789ejz.12;
-        Mon, 30 Aug 2021 08:58:13 -0700 (PDT)
-X-Gm-Message-State: AOAM533F3ta3mAooAkUXpQ+IQY/dw9t5R/AnK42t1rroEUvUDl7y7f4x
-        +Uz4tKB7WA7giXcxGVJEjm6g1r/WsizXFkHRrQ==
-X-Google-Smtp-Source: ABdhPJxdn0w1vnkBGUjO5dciyQYkquk0ijWzCAVg0wdsn4z3j1+X4UTTETS+FmnItD7/WXsSw60BVGvHjQN32sYA9ac=
-X-Received: by 2002:a17:906:25db:: with SMTP id n27mr25255293ejb.108.1630339091824;
- Mon, 30 Aug 2021 08:58:11 -0700 (PDT)
+        id S237796AbhH3P7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237715AbhH3P7G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 11:59:06 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B16C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:58:12 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso18958113ott.13
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:58:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FY2VA2VPS0PFv3jNVx3v2krt3aMF9FEesDIXjv70sZY=;
+        b=qmKaHEDQEWijGlt9M6f2t5iEadeHD6W2gwpvcMOhMhprgbY3tbrV8V91B/E/MQHc27
+         u7AM5LHRvdGnlhcV4j9GV7EfRRzaj0Hlgi5AYtFRh1E84XNjartSn3Cld1l49/J4HRT/
+         pViRaCSyDKVqMzYm/r9GEY2oiuKNwMKihTLBgFSs5T5Ze70j2Q6SipESqpeySrOl0bhq
+         9wbfYwEtY8ZHeuS1AmgKw9SZkvZEVdKAoQTHuDCXQ1tarfaOtgeG8jTslXSx1SDmAQvd
+         UCVmResiMJx1dvY1JqJIG3WYLn2JhI0gAawvx3uUsj39w7FRTZwuhYD5GBRQUDX5SaxZ
+         KzDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FY2VA2VPS0PFv3jNVx3v2krt3aMF9FEesDIXjv70sZY=;
+        b=STG5YZGLOs0XqAVFTqoXk8ynHOJNR84h7jnPxkWHUt9Z7UeaMzktP/qv+5wdoBC9ti
+         JJwZMgBP80c4GCW8kBSTembaLcxDrPOmHSBaAziO/4aWxpWHk2R0YrMEHpUdq0ORyvRX
+         T8zMxIbfWciJlPPpPPvHK6mcroLeHQVWG/MYNXQR+p24wYVDR2gFVSrQz7lcdHcdi8Ye
+         LWbXNINswfU/o3M03nOberPOF9cLxZOCxdDqxhPZQ8zrM1F0i8P3UVCcZ8qPn0264vEl
+         3ncJ7HwqoCi96lwXpEWmJfWsQRc4PtBPw2zPQPA3mBT2lKJceJIVtlXUZqxtRH72iruk
+         6DUg==
+X-Gm-Message-State: AOAM532lUCMfv//nNAe6j47lVxAPfkxKOxzO5lcut+MqaUUYLdauikWt
+        3o6TlVdaC/StL64N5Pk2/NrRbf48OqHeRw==
+X-Google-Smtp-Source: ABdhPJxdyszdxt5Si2XTSb8nyAs1TDBREjU2cIHp64OHvdLDifuUoynPAUN7kq4KaGkq4BJdDfWkkQ==
+X-Received: by 2002:a05:6830:4117:: with SMTP id w23mr19635301ott.40.1630339091617;
+        Mon, 30 Aug 2021 08:58:11 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id l3sm3271303otd.79.2021.08.30.08.58.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 08:58:11 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 10:58:09 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] arm: dts: qcom: apq8064: Use 27MHz PXO clock as DSI
+ PLL reference
+Message-ID: <YS0AEZR7NhmDhHmk@yoga>
+References: <20210829203027.276143-1-marijn.suijten@somainline.org>
+ <20210829203027.276143-2-marijn.suijten@somainline.org>
+ <CAA8EJprQ03ipZzO+1vgt9W7jFbLXgsYR0n-oJxVB-142x8dgRA@mail.gmail.com>
+ <17d19b93-dbe5-cc85-f302-b52cd8eeed56@somainline.org>
+ <CAA8EJpqd7_5510TodALnX13Wo0MufYm2G=r6vw9sy=VURrewyw@mail.gmail.com>
+ <YSznouVZ93sUd6xa@Marijn-Arch-PC.localdomain>
+ <CAA8EJpoRo6rPgpUeT9X0K4UPu5d8-YBP=BJ3AAejD+wujhmv+g@mail.gmail.com>
+ <YSzqR2yq3MtdPnIG@Marijn-Arch-PC.localdomain>
+ <YSz2kVKv8jhz7/n8@yoga>
+ <YSz7NZD7elH3+XgP@Marijn-Arch-PC.localdomain>
 MIME-Version: 1.0
-References: <20210827171534.62380-1-mark.kettenis@xs4all.nl>
- <20210827171534.62380-5-mark.kettenis@xs4all.nl> <87pmtvcgec.wl-maz@kernel.org>
-In-Reply-To: <87pmtvcgec.wl-maz@kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 30 Aug 2021 10:57:59 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJC+FxiynFkkcB0amp3s4agsio5ggCrYiPbqoXroAJV4Q@mail.gmail.com>
-Message-ID: <CAL_JsqJC+FxiynFkkcB0amp3s4agsio5ggCrYiPbqoXroAJV4Q@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] arm64: apple: Add PCIe node
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
-        devicetree@vger.kernel.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Hector Martin <marcan@marcan.st>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Saenz Julienne <nsaenzjulienne@suse.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSz7NZD7elH3+XgP@Marijn-Arch-PC.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 6:37 AM Marc Zyngier <maz@kernel.org> wrote:
->
-> Hi Mark,
->
-> On Fri, 27 Aug 2021 18:15:29 +0100,
-> Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
-> >
-> > From: Mark Kettenis <kettenis@openbsd.org>
-> >
-> > Add node corresponding to the apcie,t8103 node in the
-> > Apple device tree for the Mac mini (M1, 2020).
-> >
-> > Clock references and DART (IOMMU) references are left out at the
-> > moment and will be added once the appropriate bindings have been
-> > settled upon.
-> >
-> > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
-> > ---
-> >  arch/arm64/boot/dts/apple/t8103.dtsi | 63 ++++++++++++++++++++++++++++
-> >  1 file changed, 63 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
-> > index 503a76fc30e6..6e4677bdef44 100644
-> > --- a/arch/arm64/boot/dts/apple/t8103.dtsi
-> > +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
-> > @@ -214,5 +214,68 @@ pinctrl_smc: pinctrl@23e820000 {
-> >                                    <AIC_IRQ 396 IRQ_TYPE_LEVEL_HIGH>,
-> >                                    <AIC_IRQ 397 IRQ_TYPE_LEVEL_HIGH>;
-> >               };
-> > +
-> > +             pcie0: pcie@690000000 {
-> > +                     compatible = "apple,t8103-pcie", "apple,pcie";
-> > +                     device_type = "pci";
-> > +
-> > +                     reg = <0x6 0x90000000 0x0 0x1000000>,
-> > +                           <0x6 0x80000000 0x0 0x4000>,
-> > +                           <0x6 0x81000000 0x0 0x8000>,
-> > +                           <0x6 0x82000000 0x0 0x8000>,
-> > +                           <0x6 0x83000000 0x0 0x8000>;
-> > +                     reg-names = "config", "rc", "port0", "port1", "port2";
-> > +
-> > +                     interrupt-parent = <&aic>;
-> > +                     interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
-> > +                                  <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
-> > +                                  <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>;
-> > +
-> > +                     msi-controller;
-> > +                     msi-parent = <&pcie0>;
-> > +                     msi-ranges = <&aic AIC_IRQ 704 IRQ_TYPE_EDGE_RISING 32>;
-> > +
-> > +                     bus-range = <0 3>;
-> > +                     #address-cells = <3>;
-> > +                     #size-cells = <2>;
-> > +                     ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
-> > +                              <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
-> > +
-> > +                     pinctrl-0 = <&pcie_pins>;
-> > +                     pinctrl-names = "default";
-> > +
-> > +                     pci@0,0 {
-> > +                             device_type = "pci";
-> > +                             reg = <0x0 0x0 0x0 0x0 0x0>;
-> > +                             reset-gpios = <&pinctrl_ap 152 0>;
-> > +                             max-link-speed = <2>;
-> > +
-> > +                             #address-cells = <3>;
-> > +                             #size-cells = <2>;
-> > +                             ranges;
-> > +                     };
-> > +
-> > +                     pci@1,0 {
-> > +                             device_type = "pci";
-> > +                             reg = <0x800 0x0 0x0 0x0 0x0>;
-> > +                             reset-gpios = <&pinctrl_ap 153 0>;
-> > +                             max-link-speed = <2>;
-> > +
-> > +                             #address-cells = <3>;
-> > +                             #size-cells = <2>;
-> > +                             ranges;
-> > +                     };
-> > +
-> > +                     pci@2,0 {
-> > +                             device_type = "pci";
-> > +                             reg = <0x1000 0x0 0x0 0x0 0x0>;
-> > +                             reset-gpios = <&pinctrl_ap 33 0>;
-> > +                             max-link-speed = <1>;
-> > +
-> > +                             #address-cells = <3>;
-> > +                             #size-cells = <2>;
-> > +                             ranges;
-> > +                     };
-> > +             };
-> >       };
-> >  };
->
-> I have now implemented the MSI change on the Linux driver side, and it
-> works nicely. So thumbs up from me on this front.
->
-> I am now looking at the interrupts provided by each port:
-> (1) a bunch of port-private interrupts (link up/down...)
-> (2) INTx interrupts
+On Mon 30 Aug 10:37 CDT 2021, Marijn Suijten wrote:
 
-So each port has an independent INTx space? Is that even something PCI
-defines or comprehends?
+> On Mon, Aug 30, 2021 at 10:17:37AM -0500, Bjorn Andersson wrote:
+> > On Mon 30 Aug 09:25 CDT 2021, Marijn Suijten wrote:
+> > 
+> > > On Mon, Aug 30, 2021 at 05:18:37PM +0300, Dmitry Baryshkov wrote:
+> > > > On Mon, 30 Aug 2021 at 17:14, Marijn Suijten
+> > > > <marijn.suijten@somainline.org> wrote:
+> > > > >
+> > > > > On Mon, Aug 30, 2021 at 04:24:58PM +0300, Dmitry Baryshkov wrote:
+> > > > > > On Mon, 30 Aug 2021 at 11:28, Marijn Suijten
+> > > > > > <marijn.suijten@somainline.org> wrote:
+> > > > > > >
+> > > > > > > Hi Dmitry,
+> > > > > > >
+> > > > > > > On 8/30/21 3:18 AM, Dmitry Baryshkov wrote:
+> > > > > > > > On Sun, 29 Aug 2021 at 23:30, Marijn Suijten
+> > > > > > > > <marijn.suijten@somainline.org> wrote:
+> > > > > > > >>
+> > > > > > > >> The 28NM DSI PLL driver for msm8960 calculates with a 27MHz reference
+> > > > > > > >> clock and should hence use PXO, not CXO which runs at 19.2MHz.
+> > > > > > > >>
+> > > > > > > >> Note that none of the DSI PHY/PLL drivers currently use this "ref"
+> > > > > > > >> clock; they all rely on (sometimes inexistant) global clock names and
+> > > > > > > >> usually function normally without a parent clock.  This discrepancy will
+> > > > > > > >> be corrected in a future patch, for which this change needs to be in
+> > > > > > > >> place first.
+> > > > > > > >>
+> > > > > > > >> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > > > > > >> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > > > > > > >
+> > > > > > > > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > > > > > >
+> > > > > > > > Checked the downstream driver, it always uses 27 MHz clock in calculations.
+> > > > > > >
+> > > > > > >
+> > > > > > > Given our concerns for msm8974 not updating DT in parallel with the
+> > > > > > > kernel (hence the need for a global-name fallback because "ref" is
+> > > > > > > missing from the DT), should we worry about the same for apq8064?  That
+> > > > > > > is, is there a chance that the kernel but not the firmware is upgraded
+> > > > > > > leading to the wrong parent clock being used?  The msm8960 variant of
+> > > > > > > the 28nm PLL driver uses parent_rate in a few places and might read
+> > > > > > > cxo's 19.2MHz erroneously instead of using pxo's 27MHz.
+> > > > > >
+> > > > > > Checked the code. It uses .parent_names =  "pxo", so changing ref
+> > > > > > clock should not matter. We'd need to fix ref clocks and after that we
+> > > > > > can switch parent names to fw_name.
+> > > > >
+> > > > > Correct, hence why this patch is ordered before the switch to .fw_name.
+> > > > > These patches can't go in the same series if apq8064 doesn't update its
+> > > > > firmware in parallel with the kernel just like msm8974.  Do you know if
+> > > > > this is the case?  If so, how much time do you think should be between
+> > > > > the DT fix (this patch) and migrating the drivers?
+> > > > 
+> > > > You can have parent_data with .fw_name and .name in it.  .name will be
+> > > > used as a fallback if .fw_name doesn't match.
+> > > 
+> > > The problem is that it will always find the "ref" clock which references
+> > > &cxo_board until the DT is updated with this patch to use &pxo_board
+> > > instead.  Question is, will the kernel and DT usually/always be updated
+> > > in parallel?
+> > > 
+> > 
+> > Afaik these devices all boots off a boot.img, which means that it's
+> > unlikely that a new kernel is installed on a device with an older DT.
+> > None of them would boot mainline off the DT that shipped with the
+> > original product.
+> 
+> That was my understanding as well, DT overlays are a "new thing" afaik
+> and most devices (at least all Sony's that I'm working with) use an
+> appended DTB that's always in-sync with the kernel image.
+> 
 
-> Given that the programming is per-port, I've implemented this as a
-> per-port interrupt controller.
->
-> (1) is dead easy to implement, and doesn't require any DT description.
-> (2) is unfortunately exposing the limits of my DT knowledge, and I'm
-> not clear how to model it. I came up with the following:
->
->         port00: pci@0,0 {
->                 device_type = "pci";
->                 reg = <0x0 0x0 0x0 0x0 0x0>;
->                 reset-gpios = <&pinctrl_ap 152 0>;
->                 max-link-speed = <2>;
->
->                 #address-cells = <3>;
->                 #size-cells = <2>;
->                 ranges;
->
->                 interrupt-controller;
->                 #interrupt-cells = <1>;
->                 interrupt-parent = <&port00>;
->                 interrupt-map-mask = <0 0 0 7>;
->                 interrupt-map = <0 0 0 1 &port00 0>,
->                                 <0 0 0 2 &port00 1>,
->                                 <0 0 0 3 &port00 2>,
->                                 <0 0 0 4 &port00 3>;
+I think that with the introduction of DT overlays the system becomes
+more flexible and as such more susceptible for bugs caused by unexpected
+DT versions.
 
-IIRC, I don't think the DT IRQ code handles a node having both
-'interrupt-controller' and 'interrupt-map' properties. I think that's
-why some PCI host bridge nodes have child interrupt-controller nodes.
-I don't really like that work-around, so if the above can be made to
-work, I'd be happy to see it. But the DT IRQ code is some ancient code
-for ancient platforms (PowerMacs being one of them).
+I think in practice the real issues comes when the DTB is delivered
+separately (i.e. not by boot.img) or inbetween two kernel releases where
+the Qualcomm tree might not be in sync with the driver tree.
 
->         };
->
-> which vaguely seem to do the right thing for the devices behind root
-> ports, but doesn't seem to work for INTx generated by the root ports
-> themselves. Any clue? Alternatively, I could move it to something
-> global to the whole PCIe controller, but that doesn't seem completely
-> right.
->
-> It also begs the question whether the per-port interrupt to the AIC
-> should be moved into each root port, should my per-port approach hold
-> any water.
+> > As such, if I pick this patch up as a fix for 5.15 you can respin the
+> > other two patches and they can land in 5.16 and I would be surprised if
+> > anyone will run into any issues with it.
+> > 
+> > I.e. I've applied this patch.
+> 
+> Sounds good, I'll leave this patch out from v2.  Should it have a Fixes:
+> tag to get backported too?
+> 
 
-I tend to think per-port is the right thing to do. However, the child
-nodes are PCI devices, so that creates some restrictions. Such as the
-per port registers are in the host address space, not the PCI address
-space, so we can't move the registers into the child nodes. The
-interrupts may be okay. Certainly, being an 'interrupt-controller'
-without having an 'interrupts' property for an non root interrupt
-controller is odd.
+Sounds good, I added to this:
 
-Rob
+Fixes: 6969d1d9c615 ("ARM: dts: qcom-apq8064: Set 'cxo_board' as ref clock of the DSI PHY")
+
+> Since most review seems to be in I'll respin v2 shortly with the
+> addition of the "ref" clock to msm8974, that should probably get the
+> same treatment (added to 5.15 fixes) then we can land this patchset in
+> 5.16 (maybe without .name= fallback if Dmitry is okay with that).
+> 
+
+Sounds good.
+
+Regards,
+Bjorn
