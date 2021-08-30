@@ -2,54 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075553FB5E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B09A3FB5D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 14:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236748AbhH3MS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 08:18:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50820 "EHLO mail.kernel.org"
+        id S236668AbhH3MQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 08:16:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236721AbhH3MSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:18:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98CA560E77;
-        Mon, 30 Aug 2021 12:17:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630325877;
-        bh=Dj+5yK8xpFom0mCcZ7jfHLC+VMnh/en5i7qChO92frY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RfxnPzOqNMUipBFtamdNjXUyKphDTUVdbyQpodkhoYbs7kHS8CdJykSsn6VtHn1KC
-         wEDW+t50EQVgwAR5iKt7MuwGJWFMl6bWXWJu4dtwwEew070HWnhJssrCSWTxLE0UMM
-         e+PE4A7rRPrAFbr1eyOx5/ke3ZVWFN0AuhpanAkndBMmwl6gFrGC22cd3n92AP4kSP
-         rCI9j00lg7c+Ph91T3ppKbgJCT0VTtgcT/aRe07zNCjNXmnlqi2+ooNzzgytBndvmO
-         G8VPw2B543LXFzBXQCs4Ccyx4LVv0ZNK5Nqb2rA7RXnUob133dw7d1LU+EUvxSB+DE
-         3xn4JBnvg+YWQ==
-Date:   Mon, 30 Aug 2021 08:17:56 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Ben Skeggs <bskeggs@redhat.com>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Subject: Re: [PATCH AUTOSEL 4.14 6/7] drm/nouveau: block a bunch of classes
- from userspace
-Message-ID: <YSzMdH4E1jIJd5Ed@sashalap>
-References: <20210824005528.631702-1-sashal@kernel.org>
- <20210824005528.631702-6-sashal@kernel.org>
- <75ccbdea6e8871856002edb75dff1a32822a5a89.camel@redhat.com>
+        id S236624AbhH3MQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 08:16:14 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13367610FB;
+        Mon, 30 Aug 2021 12:15:17 +0000 (UTC)
+Date:   Mon, 30 Aug 2021 13:18:29 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <nicolas.ferre@microchip.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        <ludovic.desroches@microchip.com>
+Subject: Re: [PATCH v2 06/10] iio: adc: at91-sama5d2_adc: add helper for COR
+ register
+Message-ID: <20210830131829.782546eb@jic23-huawei>
+In-Reply-To: <20210824115441.681253-7-eugen.hristev@microchip.com>
+References: <20210824115441.681253-1-eugen.hristev@microchip.com>
+        <20210824115441.681253-7-eugen.hristev@microchip.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <75ccbdea6e8871856002edb75dff1a32822a5a89.camel@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 01:05:32PM -0400, Lyude Paul wrote:
->This isn't at all intended to be a fix to be backported, so I don't think this
->should be included. I don't know about 5/7, but I'll let Benjamin comment on
->that one
+On Tue, 24 Aug 2021 14:54:37 +0300
+Eugen Hristev <eugen.hristev@microchip.com> wrote:
 
-I'll drop it, thanks!
+> Add helper for the COR register. This helper allows to modify the COR
+> register, removes duplicate code and improves readability.
+> The COR offset is now part of the register layout. This will allow
+> different platform with a different offset to use the same helper.
+> 
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+Nitpick inline.  If this is all I find in the series I'll tidy it up whilst
+applying.
 
--- 
-Thanks,
-Sasha
+J
+
+> ---
+>  drivers/iio/adc/at91-sama5d2_adc.c | 40 +++++++++++++++---------------
+>  1 file changed, 20 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
+> index 23be7cec063e..bb4e5e1e3ce4 100644
+> --- a/drivers/iio/adc/at91-sama5d2_adc.c
+> +++ b/drivers/iio/adc/at91-sama5d2_adc.c
+> @@ -151,8 +151,8 @@ struct at91_adc_reg_layout {
+>  	u16				CGR;
+>  /* Channel Offset Register */
+>  	u16				COR;
+> -#define AT91_SAMA5D2_COR_DIFF_OFFSET	16
+> -
+> +/* Channel Offset Register differential offset - constant, not a register */
+> +	u16				COR_diff_offset;
+>  /* Analog Control Register */
+>  	u16				ACR;
+>  /* Analog Control Register - Pen detect sensitivity mask */
+> @@ -246,6 +246,7 @@ static const struct at91_adc_reg_layout sama5d2_layout = {
+>  	.CWR =			0x44,
+>  	.CGR =			0x48,
+>  	.COR =			0x4c,
+> +	.COR_diff_offset =	16,
+>  	.ACR =			0x94,
+>  	.TSMR =			0xb0,
+>  	.XPOSR =		0xb4,
+> @@ -589,6 +590,21 @@ static unsigned int at91_adc_active_scan_mask_to_reg(struct iio_dev *indio_dev)
+>  	return mask & GENMASK(st->soc_info.platform->nr_channels, 0);
+>  }
+>  
+> +static void at91_adc_cor(struct at91_adc_state *st,
+> +			 struct iio_chan_spec const *chan)
+> +{
+> +	u32 cor, cur_cor;
+> +
+> +	cor = (BIT(chan->channel) | BIT(chan->channel2));
+
+Excessive brackets.
+
+
+> +
+> +	cur_cor = at91_adc_readl(st, COR);
+> +	cor <<= st->soc_info.platform->layout->COR_diff_offset;
+> +	if (chan->differential)
+> +		at91_adc_writel(st, COR, cur_cor | cor);
+> +	else
+> +		at91_adc_writel(st, COR, cur_cor & ~cor);
+> +}
+> +
+>  static void at91_adc_irq_status(struct at91_adc_state *st, u32 *status,
+>  				u32 *eoc)
+>  {
+> @@ -1033,8 +1049,6 @@ static int at91_adc_buffer_prepare(struct iio_dev *indio_dev)
+>  			 indio_dev->num_channels) {
+>  		struct iio_chan_spec const *chan =
+>  					at91_adc_chan_get(indio_dev, bit);
+> -		u32 cor;
+> -
+>  		if (!chan)
+>  			continue;
+>  		/* these channel types cannot be handled by this trigger */
+> @@ -1042,16 +1056,7 @@ static int at91_adc_buffer_prepare(struct iio_dev *indio_dev)
+>  		    chan->type == IIO_PRESSURE)
+>  			continue;
+>  
+> -		cor = at91_adc_readl(st, COR);
+> -
+> -		if (chan->differential)
+> -			cor |= (BIT(chan->channel) | BIT(chan->channel2)) <<
+> -				AT91_SAMA5D2_COR_DIFF_OFFSET;
+> -		else
+> -			cor &= ~(BIT(chan->channel) <<
+> -			       AT91_SAMA5D2_COR_DIFF_OFFSET);
+> -
+> -		at91_adc_writel(st, COR, cor);
+> +		at91_adc_cor(st, chan);
+>  
+>  		at91_adc_writel(st, CHER, BIT(chan->channel));
+>  	}
+> @@ -1439,7 +1444,6 @@ static int at91_adc_read_info_raw(struct iio_dev *indio_dev,
+>  				  struct iio_chan_spec const *chan, int *val)
+>  {
+>  	struct at91_adc_state *st = iio_priv(indio_dev);
+> -	u32 cor = 0;
+>  	u16 tmp_val;
+>  	int ret;
+>  
+> @@ -1485,11 +1489,7 @@ static int at91_adc_read_info_raw(struct iio_dev *indio_dev,
+>  
+>  	st->chan = chan;
+>  
+> -	if (chan->differential)
+> -		cor = (BIT(chan->channel) | BIT(chan->channel2)) <<
+> -		      AT91_SAMA5D2_COR_DIFF_OFFSET;
+> -
+> -	at91_adc_writel(st, COR, cor);
+> +	at91_adc_cor(st, chan);
+>  	at91_adc_writel(st, CHER, BIT(chan->channel));
+>  	at91_adc_eoc_ena(st, chan->channel);
+>  	at91_adc_writel(st, CR, AT91_SAMA5D2_CR_START);
+
