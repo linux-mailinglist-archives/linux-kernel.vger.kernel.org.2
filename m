@@ -2,175 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC003FB9E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4D23FB9E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237755AbhH3QNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbhH3QNJ (ORCPT
+        id S237738AbhH3QNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:13:31 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45032 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237523AbhH3QN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:13:09 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4686EC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:12:16 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id k65so29166372yba.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:12:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1GG6tg8XbUgZaMZCQ5xRATgRnP/jMPvp3jA/MirEbNo=;
-        b=twvcbEdVEBll9AfkQNe5af0zQd9ziYfYCKCAn9VET2O5NOWONGcLr3SY6j5VijsHIH
-         ApkpmIc6t+2HUtK/lec+2ElqW4bz5E0CDT3wDB1Nue+Mi+6ffiFmM7yZ2qpxSwGNJd+q
-         fmdqxrxlR21OU1mv1NMGzHcu4Gx02yL/Q/h+00WNA3OUghz2WZLfSaoNf0kv1agW/zkQ
-         H+CD+GGnOnvNeqIQVY9MmHW7E8dlOkbXPZfhTo6j7x8ku2/6VAB4q+ZcFyrv3CGvw2WK
-         Y2YR4l69YSC2350Fykt8SGF4QjW7RiDEZVvvjOas0D4IL15nkBVSwyd9vLusrz2TF43D
-         WUpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1GG6tg8XbUgZaMZCQ5xRATgRnP/jMPvp3jA/MirEbNo=;
-        b=OSt4aKNE7vTL+xNar6oP0HQWBQ+9FqkT88uYmV44r7yKFU7M/Kf8ITWoykinxLxGYo
-         zXeHR8B5iTaSs6k/Q2BT1mXXzKTelHhSHZq/CtnoMrm6oSiW0ACe9/GPoaTwClPiChkS
-         ccHgt1P0tMfRf/B1JyIQTJTRLMvbLV7lYaZmAnigEhGCqMEf3esBDSTWLpMRlOhmAC4K
-         BiBw72nzt1xd0M+si7bLQ4nJJyEHPRODX4peRDBJC6Ajh0GU6J47dpSQ+hkcSwbf3RlG
-         MmiTqE3h7OrpBb7pl+nm553c3470QaliiqAyBQNcwwR1Ad0n3iDmjdd28AZVj6Fbw53g
-         OPWg==
-X-Gm-Message-State: AOAM532AJr5IXZuQFhZhmt2HAe1T65w2hyd3hFdYPhtu8ky5l5TNheqo
-        bztK0cWxVfwBPGfhykyVNpBRff3sHyxaVXwJQ4uD2A==
-X-Google-Smtp-Source: ABdhPJyZ5H68bvwLbFLqiWFTMo5h8kw5ktkDNCncmkDU7epUUx9pY1a0ha08PueWlXCu+9PrzTDAqwFl5KIme8kL57c=
-X-Received: by 2002:a25:810c:: with SMTP id o12mr26240733ybk.250.1630339935154;
- Mon, 30 Aug 2021 09:12:15 -0700 (PDT)
+        Mon, 30 Aug 2021 12:13:28 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D7BC5200D7;
+        Mon, 30 Aug 2021 16:12:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630339953; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xBQ7FIg+6O9siSbKpK8EjSIbBKNvrFU9Ut9QehKS9a4=;
+        b=iovPIVz2Nx8Kf+6XMfuc0Gk1sBC6D+rmCHaclRSHk888d5KVTn/YmVq8i6D/aFbFxVx6WB
+        Qnx3Mu2LS7l/yHbpbJQmCFOugz0Zb4c3qLOx1kPRHkyU/T/7Tp8SyqqUwS46e029CGvo8t
+        8CZWdHRV3S6ir71UzFokDCd4RTC2sWg=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 90CC3139BB;
+        Mon, 30 Aug 2021 16:12:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id GdbNIXEDLWGsIAAAGKfGzw
+        (envelope-from <jgross@suse.com>); Mon, 30 Aug 2021 16:12:33 +0000
+Subject: Re: [PATCH v2] xen/pcifront: Removed unnecessary __ref annotation
+To:     =?UTF-8?Q?Sergio_Migu=c3=a9ns_Iglesias?= <lonyelon@gmail.com>,
+        konrad.wilk@oracle.com
+Cc:     boris.ostrovsky@oracle.com, sstabellini@kernel.org,
+        bhelgaas@google.com, xen-devel@lists.xenproject.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Sergio_Migu=c3=a9ns_Iglesias?= <sergio@lony.xyz>
+References: <20210830175305.13370-1-sergio@lony.xyz>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <c30a0835-e1c2-eca1-90d9-fcf8808c6510@suse.com>
+Date:   Mon, 30 Aug 2021 18:12:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210827191858.2037087-1-surenb@google.com> <20210827191858.2037087-4-surenb@google.com>
- <15537178.k4V9gYNSIy@devpool47>
-In-Reply-To: <15537178.k4V9gYNSIy@devpool47>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 30 Aug 2021 09:12:04 -0700
-Message-ID: <CAJuCfpH+EsqTTok8sT1dXoO6_jz0UJa+PsCbX-_zUty6g-mPYQ@mail.gmail.com>
-Subject: Re: [PATCH v8 3/3] mm: add anonymous vma name refcounting
-To:     Rolf Eike Beer <eb@emlix.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210830175305.13370-1-sergio@lony.xyz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="mSX3MV3pc7lCaHXzywjt4cM0ijUa0JFTe"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 12:03 AM Rolf Eike Beer <eb@emlix.com> wrote:
->
-> Am Freitag, 27. August 2021, 21:18:58 CEST schrieb Suren Baghdasaryan:
-> > While forking a process with high number (64K) of named anonymous vmas =
-the
-> > overhead caused by strdup() is noticeable. Experiments with ARM64 Andro=
-id
-> > device show up to 40% performance regression when forking a process wit=
-h
-> > 64k unpopulated anonymous vmas using the max name lengths vs the same
-> > process with the same number of anonymous vmas having no name.
-> > Introduce anon_vma_name refcounted structure to avoid the overhead of
-> > copying vma names during fork() and when splitting named anonymous vmas=
-.
-> > When a vma is duplicated, instead of copying the name we increment the
-> > refcount of this structure. Multiple vmas can point to the same
-> > anon_vma_name as long as they increment the refcount. The name member o=
-f
-> > anon_vma_name structure is assigned at structure allocation time and is
-> > never changed. If vma name changes then the refcount of the original
-> > structure is dropped, a new anon_vma_name structure is allocated
-> > to hold the new name and the vma pointer is updated to point to the new
-> > structure.
-> > With this approach the fork() performance regressions is reduced 3-4x
-> > times and with usecases using more reasonable number of VMAs (a few
-> > thousand) the regressions is not measurable.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > ---
-> >  include/linux/mm_types.h |  9 ++++++++-
-> >  mm/madvise.c             | 42 +++++++++++++++++++++++++++++++++-------
-> >  2 files changed, 43 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/mm/madvise.c b/mm/madvise.c
-> > index bc029f3fca6a..32ac5dc5ebf3 100644
-> > --- a/mm/madvise.c
-> > +++ b/mm/madvise.c
-> > @@ -63,6 +63,27 @@ static int madvise_need_mmap_write(int behavior)
-> >       }
-> >  }
-> >
-> > +static struct anon_vma_name *anon_vma_name_alloc(const char *name)
-> > +{
-> > +     struct anon_vma_name *anon_name;
-> > +     size_t len =3D strlen(name);
-> > +
-> > +     /* Add 1 for NUL terminator at the end of the anon_name->name */
-> > +     anon_name =3D kzalloc(sizeof(*anon_name) + len + 1,
-> > +                         GFP_KERNEL);
-> > +     kref_init(&anon_name->kref);
-> > +     strcpy(anon_name->name, name);
-> > +
-> > +     return anon_name;
-> > +}
->
-> Given that you overwrite anything in that struct anyway this could be red=
-uced
-> to kmalloc(), no? And it definitely needs a NULL check.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--mSX3MV3pc7lCaHXzywjt4cM0ijUa0JFTe
+Content-Type: multipart/mixed; boundary="wgqNTkARa6z9h1rsIpTkGELfWVqJ3Iy5l";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: =?UTF-8?Q?Sergio_Migu=c3=a9ns_Iglesias?= <lonyelon@gmail.com>,
+ konrad.wilk@oracle.com
+Cc: boris.ostrovsky@oracle.com, sstabellini@kernel.org, bhelgaas@google.com,
+ xen-devel@lists.xenproject.org, linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org, =?UTF-8?Q?Sergio_Migu=c3=a9ns_Iglesias?=
+ <sergio@lony.xyz>
+Message-ID: <c30a0835-e1c2-eca1-90d9-fcf8808c6510@suse.com>
+Subject: Re: [PATCH v2] xen/pcifront: Removed unnecessary __ref annotation
+References: <20210830175305.13370-1-sergio@lony.xyz>
+In-Reply-To: <20210830175305.13370-1-sergio@lony.xyz>
 
-Ack. I'll address both points in the next revision.
-Thanks!
-Suren.
+--wgqNTkARa6z9h1rsIpTkGELfWVqJ3Iy5l
+Content-Type: multipart/mixed;
+ boundary="------------4C62CBBA30041344696CEC9B"
+Content-Language: en-US
 
->
-> Eike
-> --
-> Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-> Fon +49 551 30664-0, Fax +49 551 30664-11
-> Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
-> Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 31=
-60
-> Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-Id=
-Nr.: DE 205 198 055
->
-> emlix - smart embedded open source
+This is a multi-part message in MIME format.
+--------------4C62CBBA30041344696CEC9B
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 30.08.21 19:53, Sergio Migu=C3=A9ns Iglesias wrote:
+> An unnecessary "__ref" annotation was removed from the
+> "drivers/pci/xen_pcifront.c" file. The function where the annotation
+> was used was "pcifront_backend_changed()", which does not call any
+> functions annotated as "__*init" nor "__*exit". This makes "__ref"
+> unnecessary since this annotation is used to make the compiler ignore
+> section miss-matches when they are not happening here in the first
+> place.
+>=20
+> In addition to the aforementioned change, some code style issues were
+> fixed in the same file.
+>=20
+> Signed-off-by: Sergio Migu=C3=A9ns Iglesias <sergio@lony.xyz>
+
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+
+Juergen
+
+--------------4C62CBBA30041344696CEC9B
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------4C62CBBA30041344696CEC9B--
+
+--wgqNTkARa6z9h1rsIpTkGELfWVqJ3Iy5l--
+
+--mSX3MV3pc7lCaHXzywjt4cM0ijUa0JFTe
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmEtA3EFAwAAAAAACgkQsN6d1ii/Ey8q
+TAf+MVn0lQXPCkA3G8XCakPAwOP+HEof7NLvoGaAVNv8XzHA48C+CoUEqV7ibOn0iNW/gkvheZLA
+fvXrAQqUi7P+n7YFcBV6xFCbbtFyCb6jgyZ7RUNpgd/YNmo3ZHc8Ae5KS0+uI4stXKBav6SvIXs9
+MWzaNOqhBR25Se9qaJvbO8JJ2tq2bzZWS1vsc4q7HTx5Uz9F3PUjtBdq//tD0pPTSyaA1SXtg+A2
+bmkbZ6cV9dK6A6rs1D8qyfUMQF+zL1gwbEU8SKA0XCsIGUk7AcLp8yvfLKDor+1zeAIc5cjMNjl/
+eviBfsf14LfRZ925sB2e/gdvmi0Wjo74tdQNSE+iMg==
+=Xg+X
+-----END PGP SIGNATURE-----
+
+--mSX3MV3pc7lCaHXzywjt4cM0ijUa0JFTe--
