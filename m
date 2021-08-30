@@ -2,202 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC743FB9A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125D43FB9A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237892AbhH3QCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42264 "EHLO
+        id S237843AbhH3QDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237833AbhH3QB6 (ORCPT
+        with ESMTP id S237751AbhH3QDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:01:58 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC3AC061575;
-        Mon, 30 Aug 2021 09:01:04 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id oa17so9823821pjb.1;
-        Mon, 30 Aug 2021 09:01:04 -0700 (PDT)
+        Mon, 30 Aug 2021 12:03:08 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC823C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:02:14 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id r6so16583240ilt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fk7/r4wiBFQn4VdUenLsdi7Ji84YzGRrFf1wzmjaAi8=;
-        b=aBseQnMae5mHee4uH+72B54i7StOjj5fUyCXFy0cxHf/IqhZT1m7bsdcjetZKS5KM+
-         W5mU1ZTbkSTRhFHfiKa4w2hRiNI6nkBPxwvnMTjHyzkv7G+pJPvtEqdaPFQ1hfmm04iQ
-         iijWJZYd0vjVYsjy7Q2A9bk+8HV2OMp7Lxenuw4Kwxe1vG3CncQfyu48z082Q+vHaXLD
-         jra6Fg5fgYB64cX84DV4GE5zfPwlm6q9iPPnwQMNzSwj5HchQ3KNvcC9c9vKqYp+D4Ez
-         s+mfR96mtOZn2dMQUmxHY4Sfq4Xt4DcfrhVn7jQBmfaoZaMOBpGlrnOcVP1E7sJZ9chN
-         P4jQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G49FQ0uWZW6i9vFSjQGplZyOwvgazjM4XABr+KXbVDU=;
+        b=FgHn+o867IORlJciLs9Bi5TiNrh3rHwcUaE5v5BWRE+D8Ogj7RMwzmHDca7m5f8xyj
+         9k6vgOSezNdEwZZ1S0k2a3NC7CqeBjcGdzWdN8NEYaWiFGWtWUCGltPFnCPFQ9udKeno
+         Z4/rimxn50hBdSQnCkBaIIuQD78qeLnmmelk0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fk7/r4wiBFQn4VdUenLsdi7Ji84YzGRrFf1wzmjaAi8=;
-        b=SD0SDEMH9s7KmrqhfTmkYjqehhUMvxGFZtZbwxeYYkzXZqcf2nnIZs8eRkt7gq5xY+
-         IBdivhAAmfU1V05bu9o3K1Xwa3jte8gyoy0LBEgAM+pUTikNnXNUF6L318grGdJ2YJkF
-         S25TJFa9OsUzP8wPEl3aRHtpbhwtQ6/1Et4dtELznNn+6cKkTGZJfTog5CspCcdsmdI7
-         EhNogOLEK5+tLG+Q7w1v7f4/uhyS+EsDjltvRAkLOXPjLUmrCrL3J9F51qQMgv43J4tl
-         pLVbJjHZtDX50+moiXXUoU1ceyEQYeCjzE57FsqnhfSrbwuzJQ+p1Z8KOEgBkA3IxEO3
-         XMTg==
-X-Gm-Message-State: AOAM5327ocAeSBDg//gTjEMQu413u1gGvPM5fVxNeZwR4RLmBTz6NYcn
-        5sai221aMrDEeppK4j+ejEM=
-X-Google-Smtp-Source: ABdhPJzUZYGbQBQh0xlJfmCoBZK5gYWrJqYoI1syUuyy54FBztA/8jk16xOFSswZXTman0h7EswHng==
-X-Received: by 2002:a17:902:cec1:b0:138:e176:9676 with SMTP id d1-20020a170902cec100b00138e1769676mr320049plg.65.1630339264325;
-        Mon, 30 Aug 2021 09:01:04 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id u21sm17896282pgk.57.2021.08.30.09.01.02
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G49FQ0uWZW6i9vFSjQGplZyOwvgazjM4XABr+KXbVDU=;
+        b=VTzGVdtvMya/0Va0KcJhUke5BnSi8NUOVR5sG4mHwWkWNK7yeJr/WNr4kgnibri3Pe
+         T/0r9BLOUYUOwnuwS1+fmpYEPXX2WxYWTG+jIzHzGKhl7ol9sHHGyMFlAMfLGpmlaiNb
+         al6Api5gLLNJhqTF2RLRM0mBOLLmf3lsOb2Xj2cLcBV1L7lBL98VNv3537Kfu/fWBVd+
+         jCt2CBhclGAgNU0MScXRHVttVCf8ip80ftE69afJoBrENnewFr27aUzjbrSEd1bw3acL
+         DY46T2TehqIb8iAdEmmXiJFA8j4V91vDf2EPw9cPwSOKH4eXKiVAp8V3eWdYMqQY+gIQ
+         q+8w==
+X-Gm-Message-State: AOAM532AqkMPkyNmK4tXwU1GssLbYoqgwX/A0JIPb4vYxUZTAOzXxpkd
+        O+k8L6Qk17EPKWFqWquBNm5JZ8n5AM7o+g==
+X-Google-Smtp-Source: ABdhPJy/TlG1/elDcK0Su18doDNhXpt4kC4ee2IbBWZwiAnQE49E/t1WAuNtDZKbDVg9am9B+GRsng==
+X-Received: by 2002:a92:d646:: with SMTP id x6mr17270774ilp.280.1630339333850;
+        Mon, 30 Aug 2021 09:02:13 -0700 (PDT)
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com. [209.85.166.51])
+        by smtp.gmail.com with ESMTPSA id b18sm9041359iln.8.2021.08.30.09.02.11
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 09:01:03 -0700 (PDT)
-Subject: Re: [PATCH v2] skb_expand_head() adjust skb->truesize incorrectly
-To:     Vasily Averin <vvs@virtuozzo.com>,
-        Christoph Paasch <christoph.paasch@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@openvz.org, Julian Wiedmann <jwi@linux.ibm.com>
-References: <CALMXkpZYGC5HNkJAi4wCuawC-9CVNjN1LqO073YJvUF5ONwupA@mail.gmail.com>
- <860513d5-fd02-832b-1c4c-ea2b17477d76@virtuozzo.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <9f0c5e45-ad79-a9ea-dab1-aeb3bc3730ae@gmail.com>
-Date:   Mon, 30 Aug 2021 09:01:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 30 Aug 2021 09:02:12 -0700 (PDT)
+Received: by mail-io1-f51.google.com with SMTP id q3so20554961iot.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:02:11 -0700 (PDT)
+X-Received: by 2002:a02:c7d2:: with SMTP id s18mr17206234jao.22.1630339331487;
+ Mon, 30 Aug 2021 09:02:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <860513d5-fd02-832b-1c4c-ea2b17477d76@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210726231351.655302-1-bjorn.andersson@linaro.org>
+ <CAD=FV=UGtHXD==Yy8CVCOioYGb=2hqGQOoNWftD1Jj7OiEp51g@mail.gmail.com> <YSpK3wTUdqlUyJxb@yoga>
+In-Reply-To: <YSpK3wTUdqlUyJxb@yoga>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 30 Aug 2021 09:01:58 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=URLJHujmu36sNMfPVMYtDZUirJq5T-PLbeMGqjLuMtNQ@mail.gmail.com>
+Message-ID: <CAD=FV=URLJHujmu36sNMfPVMYtDZUirJq5T-PLbeMGqjLuMtNQ@mail.gmail.com>
+Subject: Re: [RFC] drm/msm/dp: Allow attaching a drm_panel
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On Sat, Aug 28, 2021 at 7:40 AM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Fri 27 Aug 15:52 CDT 2021, Doug Anderson wrote:
+>
+> > Hi,
+> >
+> > On Mon, Jul 26, 2021 at 4:15 PM Bjorn Andersson
+> > <bjorn.andersson@linaro.org> wrote:
+> > >
+> > > +static int dp_parser_find_panel(struct dp_parser *parser)
+> > > +{
+> > > +       struct device_node *np = parser->pdev->dev.of_node;
+> > > +       int rc;
+> > > +
+> > > +       rc = drm_of_find_panel_or_bridge(np, 2, 0, &parser->drm_panel, NULL);
+> >
+> > Why port 2? Shouldn't this just be port 1 always? The yaml says that
+> > port 1 is "Output endpoint of the controller". We should just use port
+> > 1 here, right?
+> >
+>
+> I thought port 1 was the link to the Type-C controller, didn't give it a
+> second thought and took the next available.
+>
+> But per the binding it makes sense that the panel is the "Output
+> endpoint of the controller" and I guess one will have either a Type-C
+> controller or a panel - even after the DP rework?
 
-On 8/29/21 5:59 AM, Vasily Averin wrote:
-> Christoph Paasch reports [1] about incorrect skb->truesize
-> after skb_expand_head() call in ip6_xmit.
-> This may happen because of two reasons:
-> - skb_set_owner_w() for newly cloned skb is called too early,
-> before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
-> - pskb_expand_head() does not adjust truesize in (skb->sk) case.
-> In this case sk->sk_wmem_alloc should be adjusted too.
-> 
-> [1] https://lkml.org/lkml/2021/8/20/1082
-> 
-> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
-> v2: based on patch version from Eric Dumazet,
->     added __pskb_expand_head() function, which can be forced
->     to adjust skb->truesize and sk->sk_wmem_alloc.
-> ---
->  net/core/skbuff.c | 43 +++++++++++++++++++++++++++++--------------
->  1 file changed, 29 insertions(+), 14 deletions(-)
-> 
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index f931176..4691023 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -1681,10 +1681,10 @@ struct sk_buff *__pskb_copy_fclone(struct sk_buff *skb, int headroom,
->   *	reloaded after call to this function.
->   */
->  
-> -int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
-> -		     gfp_t gfp_mask)
-> +static int __pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
-> +			      gfp_t gfp_mask, bool update_truesize)
->  {
-> -	int i, osize = skb_end_offset(skb);
-> +	int delta, i, osize = skb_end_offset(skb);
->  	int size = osize + nhead + ntail;
->  	long off;
->  	u8 *data;
-> @@ -1756,9 +1756,13 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
->  	 * For the moment, we really care of rx path, or
->  	 * when skb is orphaned (not attached to a socket).
->  	 */
-> -	if (!skb->sk || skb->destructor == sock_edemux)
-> -		skb->truesize += size - osize;
-> -
-> +	delta = size - osize;
-> +	if (!skb->sk || skb->destructor == sock_edemux) {
-> +		skb->truesize += delta;
-> +	} else if (update_truesize) {
+Right, my understanding is that "port 1" is the output port
+irregardless of whether you're outputting to a panel or a DP
+connector. I think the only case it would make sense to add a new port
+is if it was possible for the output to be connected to both a panel
+and a DP port simultaneously. ...but that doesn't make sense.
 
-Unfortunately we can not always do this sk_wmem_alloc change here.
-
-Some skb have skb->sk set, but the 'reference on socket' is not through sk_wmem_alloc
-
-It seems you need a helper to make sure skb->destructor is one of
-the destructors that use skb->truesize and sk->sk_wmem_alloc
-
-For instance, skb_orphan_partial() could have been used.
-
-
-
-> +		refcount_add(delta, &skb->sk->sk_wmem_alloc);
-> +		skb->truesize += delta;
-> +	}
->  	return 0;
->  
->  nofrags:
-> @@ -1766,6 +1770,12 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
->  nodata:
->  	return -ENOMEM;
->  }
-> +
-> +int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
-> +		     gfp_t gfp_mask)
-> +{
-> +	return __pskb_expand_head(skb, nhead, ntail, gfp_mask, false);
-> +}
->  EXPORT_SYMBOL(pskb_expand_head);
->  
->  /* Make private copy of skb with writable head and some headroom */
-> @@ -1804,28 +1814,33 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
->  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
->  {
->  	int delta = headroom - skb_headroom(skb);
-> +	struct sk_buff *oskb = NULL;
->  
->  	if (WARN_ONCE(delta <= 0,
->  		      "%s is expecting an increase in the headroom", __func__))
->  		return skb;
->  
-> +	delta = SKB_DATA_ALIGN(delta);
->  	/* pskb_expand_head() might crash, if skb is shared */
->  	if (skb_shared(skb)) {
->  		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
->  
-> -		if (likely(nskb)) {
-> -			if (skb->sk)
-> -				skb_set_owner_w(nskb, skb->sk);
-> -			consume_skb(skb);
-> -		} else {
-> +		if (unlikely(!nskb)) {
->  			kfree_skb(skb);
-> +			return NULL;
->  		}
-> +		oskb = skb;
->  		skb = nskb;
->  	}
-> -	if (skb &&
-> -	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-> +	if (__pskb_expand_head(skb, delta, 0, GFP_ATOMIC, true)) {
->  		kfree_skb(skb);
-> -		skb = NULL;
-> +		kfree_skb(oskb);
-> +		return NULL;
-> +	}
-> +	if (oskb) {
-> +		if (oskb->sk)
-> +			skb_set_owner_w(skb, oskb->sk);
-> +		consume_skb(oskb);
->  	}
->  	return skb;
->  }
-> 
+-Doug
