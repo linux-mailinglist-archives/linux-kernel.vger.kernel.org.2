@@ -2,78 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D5E3FBB19
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE703FBB1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238255AbhH3RhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 13:37:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238117AbhH3RhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 13:37:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43AA760F3A;
-        Mon, 30 Aug 2021 17:36:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630344969;
-        bh=mBCLjTq+slwrTN0PgRGiG1Cp1vN3TjIt/HY5SniWLqQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hy9jp3yXzE1HgymdQKBR/PeDFaOgNrUzsLvzBVUFBRls/iFFxm3UdobZzNaGwIUp0
-         vajsKv1I/8925Q/dPpfxQFXnJ/JgUFigEjw+ue4fdEwSrjq8Mw5OAUGq22ODoYE1MK
-         k3igzx6eYB46j+K3vbaUvs49Z8oSSWu8SdNQLoO0KtQw09cQblCGd2bK61sf+UrK5+
-         Tn2Iy9pk83qPZB9DGCturzWGZSKk2Fkd0yVCNw6RBbPb2THjVpH3uEmN+ckFO8Hx3d
-         aahrWmRDgeWW0Wj8KbwMyaEn3fmTWnNeIMQF8rMZ7VyceT7/OuWky9zojOjkbB3SAA
-         ckVewkbRHjLmA==
-Date:   Mon, 30 Aug 2021 10:36:08 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] net: bonding: bond_alb: Replace if (cond)
- BUG() with BUG_ON()
-Message-ID: <20210830103608.5e0394f1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210828010230.11022-1-deng.changcheng@zte.com.cn>
-References: <20210828010230.11022-1-deng.changcheng@zte.com.cn>
+        id S238287AbhH3RhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 13:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238117AbhH3RhW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 13:37:22 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CB1C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:36:28 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id e9so11151029vst.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2YdUdeUKZfBFzMR1jBM9RNC90FnM3wxYhfPH5nEI0FQ=;
+        b=LX9ib2ZyUcSD/ZaFz+8eAUshfQOAn/4woZAxZhLaESc5RNlCL/7SNuGmtjHlB8Ra8a
+         LYkHAy0oqhLyoAHQ/kFNQirR9PaGmx5S2gMPptsrRfGHJFRy0XPIcFTJMwD7Ebf4zMkp
+         +ICtUsKogy/NDpufwRoIImN521zHSHcy6j20E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2YdUdeUKZfBFzMR1jBM9RNC90FnM3wxYhfPH5nEI0FQ=;
+        b=MybRu7yQpMIDzT035d4On2LBvIDjfArrlLh5ERQiQyI+qKaI2rQdhlnTSpbav8c4EA
+         lfVGiAGzFLUjEzw+idPEUu7p7rrigcfRsclw3RHZKQCzG8dusvQK7qHQV9FwBM73uaJn
+         Zxk7L2fmaythkjrnZok4ExBwuEwm/VRkveywp07Te8TbZ6gj3DPGCg2uwICq/BgLB7yl
+         jHnsMSDxkj3aemdR//gJPHAh3EF2Skow0lTgP7Q1xKbmmE7AYh7ZFrN/g6t27EpeXnr0
+         0bw1g2j5sAGrfxYXIo0FtFInF4jSzGi24HES1emApOV0g/nGBZfIsrzGW48bGosDw561
+         64uw==
+X-Gm-Message-State: AOAM5325701+tibvDWD1gC2QoEwXP4f9CqCVfvj+0pNHxPGJA8O3+V9W
+        1HcmYfQvq5djEkoWG2xLEAKH11g+YcC1YdnJ5DV5Cg==
+X-Google-Smtp-Source: ABdhPJwHwYOFG4pDjI/FzqFAeEptCPiadG2mKKA2G7M/xzR6URTq7cbu6NBgFZRZcR6Fj7zJzLpBXzKKJN97qEq8Mjw=
+X-Received: by 2002:a67:4c7:: with SMTP id 190mr16166130vse.0.1630344987923;
+ Mon, 30 Aug 2021 10:36:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210520154654.1791183-1-groug@kaod.org> <20210520154654.1791183-6-groug@kaod.org>
+ <CAOQ4uxh69ii5Yk-DgFAq+TrrvJ6xCv9s8sKLfo3aBCSWjJvp9Q@mail.gmail.com>
+ <YRqEPjzHg9IlifBo@redhat.com> <YSpUgzG8rM5LeFDy@miu.piliscsaba.redhat.com> <YS0O2MlR2G2LJH/0@redhat.com>
+In-Reply-To: <YS0O2MlR2G2LJH/0@redhat.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 30 Aug 2021 19:36:17 +0200
+Message-ID: <CAJfpeguyBU3r+rUa9NvvNjaBwUno9O5PszAoriABStf5Fm3xfg@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] virtiofs: propagate sync() to file server
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>, Greg Kurz <groug@kaod.org>,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Reitz <mreitz@redhat.com>, Robert Krawitz <rlk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Aug 2021 18:02:30 -0700 CGEL wrote:
-> From: Changcheng Deng <deng.changcheng@zte.com.cn>
-> 
-> Fix the following coccinelle reports:
-> 
-> ./drivers/net/bonding/bond_alb.c:976:3-6 WARNING: Use BUG_ON instead of
-> if condition followed by BUG.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
-> ---
->  drivers/net/bonding/bond_alb.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
-> index 7d3752c..3288022 100644
-> --- a/drivers/net/bonding/bond_alb.c
-> +++ b/drivers/net/bonding/bond_alb.c
-> @@ -972,8 +972,7 @@ static int alb_upper_dev_walk(struct net_device *upper,
->  	 */
->  	if (netif_is_macvlan(upper) && !strict_match) {
->  		tags = bond_verify_device_path(bond->dev, upper, 0);
-> -		if (IS_ERR_OR_NULL(tags))
-> -			BUG();
-> +		BUG_ON(IS_ERR_OR_NULL(tags));
->  		alb_send_lp_vid(slave, upper->dev_addr,
->  				tags[0].vlan_proto, tags[0].vlan_id);
->  		kfree(tags);
+On Mon, 30 Aug 2021 at 19:01, Vivek Goyal <vgoyal@redhat.com> wrote:
 
-The fact this code using is BUG() in the first place is more problematic
-than not using BUG_ON(). Can it be converted to WARN_ON() + return?
-Looks like alb_upper_dev_walk() returns int.
+> >  static struct fuse_writepage_args *fuse_find_writeback(struct fuse_inode *fi,
+> > @@ -1608,6 +1609,9 @@ static void fuse_writepage_free(struct fuse_writepage_args *wpa)
+> >       struct fuse_args_pages *ap = &wpa->ia.ap;
+> >       int i;
+> >
+> > +     if (wpa->bucket && atomic_dec_and_test(&wpa->bucket->num_writepages))
+>
+> Hi Miklos,
+>
+> Wondering why this wpa->bucket check is there. Isn't every wpa is associated
+> bucket.  So when do we run into situation when wpa->bucket = NULL.
+
+In case fc->sync_fs is false.
+
+> > @@ -1871,6 +1875,19 @@ static struct fuse_writepage_args *fuse_writepage_args_alloc(void)
+> >
+> >  }
+> >
+> > +static void fuse_writepage_add_to_bucket(struct fuse_conn *fc,
+> > +                                      struct fuse_writepage_args *wpa)
+> > +{
+> > +     if (!fc->sync_fs)
+> > +             return;
+> > +
+> > +     rcu_read_lock();
+> > +     do {
+> > +             wpa->bucket = rcu_dereference(fc->curr_bucket);
+> > +     } while (unlikely(!atomic_inc_not_zero(&wpa->bucket->num_writepages)));
+>
+> So this loop is there because fuse_sync_fs() might be replacing
+> fc->curr_bucket. And we are fetching this pointer under rcu. So it is
+> possible that fuse_fs_sync() dropped its reference and that led to
+> ->num_writepages 0 and we don't want to use this bucket.
+>
+> What if fuse_sync_fs() dropped its reference but still there is another
+> wpa in progress and hence ->num_writepages is not zero. We still don't
+> want to use this bucket for new wpa, right?
+
+It's an unlikely race in which case the the write will go into the old
+bucket, and will be waited for, but that definitely should not be a
+problem.
+
+> > @@ -528,6 +542,31 @@ static int fuse_sync_fs(struct super_block *sb, int wait)
+> >       if (!fc->sync_fs)
+> >               return 0;
+> >
+> > +     new_bucket = fuse_sync_bucket_alloc();
+> > +     spin_lock(&fc->lock);
+> > +     bucket = fc->curr_bucket;
+> > +     if (atomic_read(&bucket->num_writepages) != 0) {
+> > +             /* One more for count completion of old bucket */
+> > +             atomic_inc(&new_bucket->num_writepages);
+> > +             rcu_assign_pointer(fc->curr_bucket, new_bucket);
+> > +             /* Drop initially added active count */
+> > +             atomic_dec(&bucket->num_writepages);
+> > +             spin_unlock(&fc->lock);
+> > +
+> > +             wait_event(bucket->waitq, atomic_read(&bucket->num_writepages) == 0);
+> > +             /*
+> > +              * Drop count on new bucket, possibly resulting in a completion
+> > +              * if more than one syncfs is going on
+> > +              */
+> > +             if (atomic_dec_and_test(&new_bucket->num_writepages))
+> > +                     wake_up(&new_bucket->waitq);
+> > +             kfree_rcu(bucket, rcu);
+> > +     } else {
+> > +             spin_unlock(&fc->lock);
+> > +             /* Free unused */
+> > +             kfree(new_bucket);
+> When can we run into the situation when fc->curr_bucket is num_writepages
+> == 0. When install a bucket it has count 1. And only time it can go to
+> 0 is when we have dropped the initial reference. And initial reference
+> can be dropped only after removing bucket from fc->curr_bucket.
+>
+> IOW, we don't drop initial reference on a bucket if it is in
+> fc->curr_bucket. And that mean anything installed fc->curr_bucket should
+> not ever have a reference count of 0. What am I missing.
+
+You are correct.  I fixed it by warning on zero count and checking for
+count != 1.
+
+I have other fixes as well, will send v2.
+
+Thanks,
+Miklos
