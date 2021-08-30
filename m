@@ -2,200 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96483FB9DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC003FB9E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237741AbhH3QLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:11:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:44028 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237608AbhH3QLw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:11:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0C4831FB;
-        Mon, 30 Aug 2021 09:10:58 -0700 (PDT)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD57E3F766;
-        Mon, 30 Aug 2021 09:10:56 -0700 (PDT)
-Subject: Re: [PATCH v2 2/4] PCI: brcmstb: Add ACPI config space quirk
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        lorenzo.pieralisi@arm.com
-Cc:     linux-pci@vger.kernel.org, nsaenz@kernel.org, bhelgaas@google.com,
-        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        f.fainelli@gmail.com, sdonthineni@nvidia.com,
-        stefan.wahren@i2se.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210819215655.84866-1-jeremy.linton@arm.com>
- <20210819215655.84866-3-jeremy.linton@arm.com>
- <20210829111330.22f6n3tvmm246jzg@pali>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <40bba0af-0a70-ab65-581e-e0c308c8f1d9@arm.com>
-Date:   Mon, 30 Aug 2021 11:10:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S237755AbhH3QNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231181AbhH3QNJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 12:13:09 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4686EC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:12:16 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id k65so29166372yba.13
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:12:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1GG6tg8XbUgZaMZCQ5xRATgRnP/jMPvp3jA/MirEbNo=;
+        b=twvcbEdVEBll9AfkQNe5af0zQd9ziYfYCKCAn9VET2O5NOWONGcLr3SY6j5VijsHIH
+         ApkpmIc6t+2HUtK/lec+2ElqW4bz5E0CDT3wDB1Nue+Mi+6ffiFmM7yZ2qpxSwGNJd+q
+         fmdqxrxlR21OU1mv1NMGzHcu4Gx02yL/Q/h+00WNA3OUghz2WZLfSaoNf0kv1agW/zkQ
+         H+CD+GGnOnvNeqIQVY9MmHW7E8dlOkbXPZfhTo6j7x8ku2/6VAB4q+ZcFyrv3CGvw2WK
+         Y2YR4l69YSC2350Fykt8SGF4QjW7RiDEZVvvjOas0D4IL15nkBVSwyd9vLusrz2TF43D
+         WUpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1GG6tg8XbUgZaMZCQ5xRATgRnP/jMPvp3jA/MirEbNo=;
+        b=OSt4aKNE7vTL+xNar6oP0HQWBQ+9FqkT88uYmV44r7yKFU7M/Kf8ITWoykinxLxGYo
+         zXeHR8B5iTaSs6k/Q2BT1mXXzKTelHhSHZq/CtnoMrm6oSiW0ACe9/GPoaTwClPiChkS
+         ccHgt1P0tMfRf/B1JyIQTJTRLMvbLV7lYaZmAnigEhGCqMEf3esBDSTWLpMRlOhmAC4K
+         BiBw72nzt1xd0M+si7bLQ4nJJyEHPRODX4peRDBJC6Ajh0GU6J47dpSQ+hkcSwbf3RlG
+         MmiTqE3h7OrpBb7pl+nm553c3470QaliiqAyBQNcwwR1Ad0n3iDmjdd28AZVj6Fbw53g
+         OPWg==
+X-Gm-Message-State: AOAM532AJr5IXZuQFhZhmt2HAe1T65w2hyd3hFdYPhtu8ky5l5TNheqo
+        bztK0cWxVfwBPGfhykyVNpBRff3sHyxaVXwJQ4uD2A==
+X-Google-Smtp-Source: ABdhPJyZ5H68bvwLbFLqiWFTMo5h8kw5ktkDNCncmkDU7epUUx9pY1a0ha08PueWlXCu+9PrzTDAqwFl5KIme8kL57c=
+X-Received: by 2002:a25:810c:: with SMTP id o12mr26240733ybk.250.1630339935154;
+ Mon, 30 Aug 2021 09:12:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210829111330.22f6n3tvmm246jzg@pali>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210827191858.2037087-1-surenb@google.com> <20210827191858.2037087-4-surenb@google.com>
+ <15537178.k4V9gYNSIy@devpool47>
+In-Reply-To: <15537178.k4V9gYNSIy@devpool47>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 30 Aug 2021 09:12:04 -0700
+Message-ID: <CAJuCfpH+EsqTTok8sT1dXoO6_jz0UJa+PsCbX-_zUty6g-mPYQ@mail.gmail.com>
+Subject: Re: [PATCH v8 3/3] mm: add anonymous vma name refcounting
+To:     Rolf Eike Beer <eb@emlix.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Aug 30, 2021 at 12:03 AM Rolf Eike Beer <eb@emlix.com> wrote:
+>
+> Am Freitag, 27. August 2021, 21:18:58 CEST schrieb Suren Baghdasaryan:
+> > While forking a process with high number (64K) of named anonymous vmas =
+the
+> > overhead caused by strdup() is noticeable. Experiments with ARM64 Andro=
+id
+> > device show up to 40% performance regression when forking a process wit=
+h
+> > 64k unpopulated anonymous vmas using the max name lengths vs the same
+> > process with the same number of anonymous vmas having no name.
+> > Introduce anon_vma_name refcounted structure to avoid the overhead of
+> > copying vma names during fork() and when splitting named anonymous vmas=
+.
+> > When a vma is duplicated, instead of copying the name we increment the
+> > refcount of this structure. Multiple vmas can point to the same
+> > anon_vma_name as long as they increment the refcount. The name member o=
+f
+> > anon_vma_name structure is assigned at structure allocation time and is
+> > never changed. If vma name changes then the refcount of the original
+> > structure is dropped, a new anon_vma_name structure is allocated
+> > to hold the new name and the vma pointer is updated to point to the new
+> > structure.
+> > With this approach the fork() performance regressions is reduced 3-4x
+> > times and with usecases using more reasonable number of VMAs (a few
+> > thousand) the regressions is not measurable.
+> >
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > ---
+> >  include/linux/mm_types.h |  9 ++++++++-
+> >  mm/madvise.c             | 42 +++++++++++++++++++++++++++++++++-------
+> >  2 files changed, 43 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/mm/madvise.c b/mm/madvise.c
+> > index bc029f3fca6a..32ac5dc5ebf3 100644
+> > --- a/mm/madvise.c
+> > +++ b/mm/madvise.c
+> > @@ -63,6 +63,27 @@ static int madvise_need_mmap_write(int behavior)
+> >       }
+> >  }
+> >
+> > +static struct anon_vma_name *anon_vma_name_alloc(const char *name)
+> > +{
+> > +     struct anon_vma_name *anon_name;
+> > +     size_t len =3D strlen(name);
+> > +
+> > +     /* Add 1 for NUL terminator at the end of the anon_name->name */
+> > +     anon_name =3D kzalloc(sizeof(*anon_name) + len + 1,
+> > +                         GFP_KERNEL);
+> > +     kref_init(&anon_name->kref);
+> > +     strcpy(anon_name->name, name);
+> > +
+> > +     return anon_name;
+> > +}
+>
+> Given that you overwrite anything in that struct anyway this could be red=
+uced
+> to kmalloc(), no? And it definitely needs a NULL check.
 
-On 8/29/21 6:13 AM, Pali Rohár wrote:
-> On Thursday 19 August 2021 16:56:53 Jeremy Linton wrote:
->> The PFTF CM4 is an ACPI platform that isn't ECAM compliant. Its config
->> space is in two parts. One part is for the root port registers and a
->> second moveable window pointing at a device's 4K config space. Thus it
->> doesn't have an MCFG, and any MCFG provided would be nonsense
->> anyway. Instead, a Linux specific host bridge _DSD selects a custom
->> ECAM ops and cfgres. The cfg op picks between those two regions while
->> disallowing problematic accesses.
-> 
-> I'm not sure if Lorenzo would like this patch series...
+Ack. I'll address both points in the next revision.
+Thanks!
+Suren.
 
-That was sorta true since the arm64/ACPI/PCI patches landed. The 
-underlying reason is the desire for arm platforms to require less 
-one-off kernel patching in order to "just work". But, its become 
-apparent that there continue to be problems with PCIe IP and Arm 
-interconnect integration. So, a firmware interface was standardized 
-which solves most of the nonstandard ECAM issues. At that point it was 
-decided though that the kernel maintainers would prefer to have the 
-quirks visible to the kernel rather than hidden in the firmware, and 
-that they would be more open to merging these quirks. The Tegra patch 
-you listed above has been merged.
-
-More info about this: https://lkml.org/lkml/2021/3/25/777
-
-
-Thanks,
-
-> 
-> In past there was a long discussion about ECAM compliance, MCFG quirks
-> and usage of ACPI (on other platform), see long thread:
-> https://lore.kernel.org/linux-pci/20200207183427.GA40158@google.com/
-> 
-> And I think it is not a good idea to extend MCFG quirks table as
-> according to discussion it was just temporary plaster and if platform is
-> not ACPI / ECAM compliant then it should use DT booting...
-> 
-> Lorenzo, could you put any comment on this?
-> 
->> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
->> ---
->>   drivers/pci/controller/Makefile            |  1 +
->>   drivers/pci/controller/pcie-brcmstb-acpi.c | 74 ++++++++++++++++++++++
->>   include/linux/pci-ecam.h                   |  1 +
->>   3 files changed, 76 insertions(+)
->>   create mode 100644 drivers/pci/controller/pcie-brcmstb-acpi.c
->>
->> diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
->> index aaf30b3dcc14..65aa6fd3ed89 100644
->> --- a/drivers/pci/controller/Makefile
->> +++ b/drivers/pci/controller/Makefile
->> @@ -57,5 +57,6 @@ ifdef CONFIG_PCI_QUIRKS
->>   obj-$(CONFIG_ARM64) += pci-thunder-ecam.o
->>   obj-$(CONFIG_ARM64) += pci-thunder-pem.o
->>   obj-$(CONFIG_ARM64) += pci-xgene.o
->> +obj-$(CONFIG_ARM64) += pcie-brcmstb-acpi.o
->>   endif
->>   endif
->> diff --git a/drivers/pci/controller/pcie-brcmstb-acpi.c b/drivers/pci/controller/pcie-brcmstb-acpi.c
->> new file mode 100644
->> index 000000000000..71f6def3074c
->> --- /dev/null
->> +++ b/drivers/pci/controller/pcie-brcmstb-acpi.c
->> @@ -0,0 +1,74 @@
->> +// SPDX-License-Identifier: GPL-2.0+
->> +/*
->> + * ACPI quirks for Brcm2711 PCIe host controller
->> + * As used on the Raspberry Pi Compute Module 4
->> + *
->> + * Copyright (C) 2021 Arm Ltd.
->> + */
->> +
->> +#include <linux/io.h>
->> +#include <linux/pci.h>
->> +#include <linux/pci-ecam.h>
->> +#include "../pci.h"
->> +#include "pcie-brcmstb.h"
->> +
->> +static int brcm_acpi_init(struct pci_config_window *cfg)
->> +{
->> +	/*
->> +	 * This platform doesn't technically have anything that could be called
->> +	 * ECAM. Its config region has root port specific registers between
->> +	 * standard PCIe defined config registers. Thus the region setup by the
->> +	 * generic ECAM code needs to be adjusted. The HW can access bus 0-ff
->> +	 * but the footprint isn't a nice power of 2 (40k). For purposes of
->> +	 * mapping the config region we are just going to squash the standard
->> +	 * and nonstandard registers together rather than mapping them separately.
->> +	 */
->> +	iounmap(cfg->win);
->> +	cfg->win = pci_remap_cfgspace(cfg->res.start, resource_size(&cfg->res));
->> +	if (!cfg->win)
->> +		goto err_exit;
->> +
->> +	/* MSI is nonstandard as well */
->> +	pci_no_msi();
->> +
->> +	return 0;
->> +err_exit:
->> +	dev_err(cfg->parent, "PCI: Failed to remap config\n");
->> +	return -ENOMEM;
->> +}
->> +
->> +static void __iomem *brcm_pcie_map_conf2(struct pci_bus *bus,
->> +					unsigned int devfn, int where)
->> +{
->> +	struct pci_config_window *cfg = bus->sysdata;
->> +	void __iomem *base = cfg->win;
->> +	int idx;
->> +	u32 up;
->> +
->> +	/* Accesses to the RC go right to the RC registers if slot==0 */
->> +	if (pci_is_root_bus(bus))
->> +		return PCI_SLOT(devfn) ? NULL : base + where;
->> +
->> +	/* Assure link up before sending request */
->> +	up = readl(base + PCIE_MISC_PCIE_STATUS);
->> +	if (!(up & PCIE_MISC_PCIE_STATUS_PCIE_DL_ACTIVE_MASK))
->> +		return NULL;
->> +
->> +	if (!(up & PCIE_MISC_PCIE_STATUS_PCIE_PHYLINKUP_MASK))
->> +		return NULL;
->> +
->> +	/* For devices, write to the config space index register */
->> +	idx = PCIE_ECAM_OFFSET(bus->number, devfn, 0);
->> +	writel(idx, base + PCIE_EXT_CFG_INDEX);
->> +	return base + PCIE_EXT_CFG_DATA + where;
->> +}
->> +
->> +const struct pci_ecam_ops bcm2711_pcie_ops = {
->> +	.init		= brcm_acpi_init,
->> +	.bus_shift	= 1,
->> +	.pci_ops	= {
->> +		.map_bus	= brcm_pcie_map_conf2,
->> +		.read		= pci_generic_config_read,
->> +		.write		= pci_generic_config_write,
->> +	}
->> +};
->> diff --git a/include/linux/pci-ecam.h b/include/linux/pci-ecam.h
->> index adea5a4771cf..a5de0285bb7f 100644
->> --- a/include/linux/pci-ecam.h
->> +++ b/include/linux/pci-ecam.h
->> @@ -87,6 +87,7 @@ extern const struct pci_ecam_ops xgene_v1_pcie_ecam_ops; /* APM X-Gene PCIe v1 *
->>   extern const struct pci_ecam_ops xgene_v2_pcie_ecam_ops; /* APM X-Gene PCIe v2.x */
->>   extern const struct pci_ecam_ops al_pcie_ops;	/* Amazon Annapurna Labs PCIe */
->>   extern const struct pci_ecam_ops tegra194_pcie_ops; /* Tegra194 PCIe */
->> +extern const struct pci_ecam_ops bcm2711_pcie_ops; /* Bcm2711 PCIe */
->>   #endif
->>   
->>   #if IS_ENABLED(CONFIG_PCI_HOST_COMMON)
->> -- 
->> 2.31.1
->>
-
+>
+> Eike
+> --
+> Rolf Eike Beer, emlix GmbH, http://www.emlix.com
+> Fon +49 551 30664-0, Fax +49 551 30664-11
+> Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
+> Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 31=
+60
+> Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-Id=
+Nr.: DE 205 198 055
+>
+> emlix - smart embedded open source
