@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8393FB2E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978053FB2EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235341AbhH3JM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 05:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
+        id S235445AbhH3JNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 05:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235198AbhH3JMZ (ORCPT
+        with ESMTP id S234714AbhH3JNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 05:12:25 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85489C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:11:32 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:99a5:7017:6f3e:f1d2])
-        by albert.telenet-ops.be with bizsmtp
-        id nlBW2500Y30rvgn06lBWZq; Mon, 30 Aug 2021 11:11:30 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mKdKE-000UIr-BI; Mon, 30 Aug 2021 11:11:30 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mKdKD-007mOH-In; Mon, 30 Aug 2021 11:11:29 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] block/mq-deadline: Move dd_queued() to fix defined but not used warning
-Date:   Mon, 30 Aug 2021 11:11:28 +0200
-Message-Id: <20210830091128.1854266-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 30 Aug 2021 05:13:00 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF57FC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:12:06 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id z18so26733478ybg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:12:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YChlRIwNGYErlmU0QryVn5ed1Ie2ageBpLATHI0LS7I=;
+        b=jGOF9gXLJt2KO1gz3XoWbK0fzlSey9CAQTTRVie+Bp+eOvzKreZhD9JcI9DQ7TRZIy
+         58OjivsgS9GbuNV8qxo/q01bhHXQV2b0fPLQpjG0ewcd649Tp1fS/j0JcCR1XHx3z3oS
+         bvJeE1MqMY0s9avZ6V8JZAfvKbJ9A8S/SWUIxvz+MaZSipuKwhEezMepJG9qXhur7zkP
+         G354nwCpke4/5pLqRnfs8nHN51zk0J1zAXj4TLkl8qKtEvzOvuGn1F9AkFNxckco2lmm
+         lsRpU/+v5mekYId6mnXC/bkkKXvGlh4bOnnRRDeXjIrkpUoa6p0RpXNnSqvOHjUYx9+x
+         eA5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YChlRIwNGYErlmU0QryVn5ed1Ie2ageBpLATHI0LS7I=;
+        b=Sdo5+vf/z9Y1nfAUqc4OuD/Omk8rhwFkwjAPKIMkJmaid1ZutVitxQH065cOohO4BW
+         E+4a53r4OzNx624A5/0DTl9xvmS52oGL6xlYaQn0KV9DOgMZuctIceQVUVXL7LKPgPtM
+         2HtlFCb1SHbhie6+EeIs9RsuAQk/YTHxkBqKIF7GzMXSbQ1LjYZ8VgY+/FvBWPG2W6TK
+         p78bWQR0NODMOVWXmJIU79agMh45U07CjQ9zT0L+/8yqh0mlAvrU9tqZDvC/PuvAhRJM
+         MQdAlVlcO5YG0xkaIGpppSMQZ6ytt4IHhQGAHlXVjNdufc2iS2czw8OjXCtsc/DF/Yu9
+         5vRg==
+X-Gm-Message-State: AOAM533GTnPLsENIwEwAkMsz90+3pfLpPlybY4rm1RNssQnrIMWYSFMy
+        z21mGSS0Wtvvvl5uWGaDTz5dBZn5FtZB3k5UDT56lBASVuk=
+X-Google-Smtp-Source: ABdhPJyKl/L4iGAXckrro18BQ3MSSr+elNrdPc0y5fMhFkU49xetZHkj+4Z8aMAnJNZl1IhBeqbO1IpxdO0r9N/8Wmo=
+X-Received: by 2002:a25:2b48:: with SMTP id r69mr23272560ybr.448.1630314726093;
+ Mon, 30 Aug 2021 02:12:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CAHk-=wh75ELUu99yPkPNt+R166CK=-M4eoV+F62tW3TVgB7=4g@mail.gmail.com>
+In-Reply-To: <CAHk-=wh75ELUu99yPkPNt+R166CK=-M4eoV+F62tW3TVgB7=4g@mail.gmail.com>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Mon, 30 Aug 2021 10:11:30 +0100
+Message-ID: <CADVatmP8HQfZBPevLuuWtWh=1eBD=cmY84iJoMcoHh0n480Bag@mail.gmail.com>
+Subject: Re: Linux 5.14
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_BLK_DEBUG_FS=n:
+Hi All,
 
-    block/mq-deadline.c:274:12: warning: ‘dd_queued’ defined but not used [-Wunused-function]
-      274 | static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
-	  |            ^~~~~~~~~
+On Sun, Aug 29, 2021 at 11:23 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
 
-Fix this by moving dd_queued() just before the sole function that calls
-it.
+<snip>
 
-Fixes: 7b05bf771084ff78 ("Revert "block/mq-deadline: Prioritize high-priority requests"")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-v2:
-  - Fix prefix in one-line summary.
----
- block/mq-deadline.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> Of course, the poor tireless kernel maintainers won't have time for
+> the festivities, because for them, this just means that the merge
+> window will start tomorrow. We have another 30 years to look forward
+> to, after all. But for the rest of you, take a breather, build a
+> kernel, test it out, and then you can go back to the seemingly endless
+> party that I'm sure you just crawled out of.
 
-diff --git a/block/mq-deadline.c b/block/mq-deadline.c
-index 36920670dccc35f3..c2c724d4e668ebea 100644
---- a/block/mq-deadline.c
-+++ b/block/mq-deadline.c
-@@ -270,12 +270,6 @@ deadline_move_request(struct deadline_data *dd, struct dd_per_prio *per_prio,
- 	deadline_remove_request(rq->q, per_prio, rq);
- }
- 
--/* Number of requests queued for a given priority level. */
--static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
--{
--	return dd_sum(dd, inserted, prio) - dd_sum(dd, completed, prio);
--}
--
- /*
-  * deadline_check_fifo returns 0 if there are no expired requests on the fifo,
-  * 1 otherwise. Requires !list_empty(&dd->fifo_list[data_dir])
-@@ -951,6 +945,12 @@ static int dd_async_depth_show(void *data, struct seq_file *m)
- 	return 0;
- }
- 
-+/* Number of requests queued for a given priority level. */
-+static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
-+{
-+	return dd_sum(dd, inserted, prio) - dd_sum(dd, completed, prio);
-+}
-+
- static int dd_queued_show(void *data, struct seq_file *m)
- {
- 	struct request_queue *q = data;
+We were recently working on openqa based testing and is a very basic
+testing for now.. Build the kernel for x86_64 and arm64, boot it on
+qemu and rpi4 and test that the desktop environment is working. And,
+it now tests mainline branch every night. So, last night it tested
+"5.14.0-7d2a07b76933" and both tests were ok.
+
+rpi4: https://openqa.qa.codethink.co.uk/tests/68
+qemu: https://openqa.qa.codethink.co.uk/tests/67
+
+
 -- 
-2.25.1
-
+Regards
+Sudip
