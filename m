@@ -2,136 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860FC3FBD64
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D913FBD66
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234122AbhH3UUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:20:25 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:56113 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237017AbhH3UUU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:20:20 -0400
-Received: by mail-il1-f199.google.com with SMTP id c16-20020a92cf500000b02902243aec7e27so9843572ilr.22
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:19:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=QZkpasqzKgqT+xZmsajBBcw/kv6RDRSIJuoe9agvRDM=;
-        b=ew7tjnzxdOdbt7lJ5o/qlvK4sKA8xFqNiB3XUE73obXId/1YrAqyZa2ovM/+rl0MeY
-         AFHrkt4YESS77iU9uGG+a2n43E7vI2T3WMUuQowA7tcX78MPrQBI6BcquG+MV9P5zkSX
-         8HzkRyll01ks/gdaq3MvglomTvzkNDEUtFpfnTyA93PLaecvrYw17lk5xIKIujRNRMA1
-         ZEsQ5HbBfFvAcSys+e9x6MIo6IS/q1+2WnYtEpb288mtZvQxw43EkA0Tm78VBvqU4wEt
-         xBPdMlN9b3PyMmthGf/CQItOdmQ5xhRaGmwiF5O3oU2YmS/0Tf3W0VGh2fMlirAJJRis
-         JrTw==
-X-Gm-Message-State: AOAM5307vtxydNC0/MgBR47ioTk+0Rk4yR3QZc9IMRaoBbuGoR8C6kOO
-        8KnyRqivxX3FlkC8ArcPa+pMDhsuKZ4ggxVqxUtl64Qtslb7
-X-Google-Smtp-Source: ABdhPJwFNkrFwz2YjRkYl5/Kjj80freLjHikyTzWX9cYv/jET1LEGjHkcDHrrM+MTydKT07W8uitUhjIO9D9N6X+dRMTP+pFM8Mk
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a0f:: with SMTP id s15mr18898654ild.158.1630354766183;
- Mon, 30 Aug 2021 13:19:26 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 13:19:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b2420c05cacc8c66@google.com>
-Subject: [syzbot] UBSAN: shift-out-of-bounds in xfrm_get_default
-From:   syzbot <syzbot+b2be9dd8ca6f6c73ee2d@syzkaller.appspotmail.com>
-To:     antony.antony@secunet.com, christian.langrock@secunet.com,
-        davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S236882AbhH3UVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 16:21:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52516 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232906AbhH3UVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 16:21:14 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B895760F5C;
+        Mon, 30 Aug 2021 20:20:20 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mKnlS-00852D-9H; Mon, 30 Aug 2021 21:20:18 +0100
+Date:   Mon, 30 Aug 2021 21:20:17 +0100
+Message-ID: <87o89ed6ri.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
+        devicetree@vger.kernel.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Hector Martin <marcan@marcan.st>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Jim Quinlan <jim2101024@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Saenz Julienne <nsaenzjulienne@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 4/4] arm64: apple: Add PCIe node
+In-Reply-To: <CAL_JsqJC+FxiynFkkcB0amp3s4agsio5ggCrYiPbqoXroAJV4Q@mail.gmail.com>
+References: <20210827171534.62380-1-mark.kettenis@xs4all.nl>
+        <20210827171534.62380-5-mark.kettenis@xs4all.nl>
+        <87pmtvcgec.wl-maz@kernel.org>
+        <CAL_JsqJC+FxiynFkkcB0amp3s4agsio5ggCrYiPbqoXroAJV4Q@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: robh+dt@kernel.org, mark.kettenis@xs4all.nl, devicetree@vger.kernel.org, alyssa@rosenzweig.io, kettenis@openbsd.org, tglx@linutronix.de, marcan@marcan.st, bhelgaas@google.com, nsaenz@kernel.org, jim2101024@gmail.com, f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com, daire.mcnamara@microchip.com, nsaenzjulienne@suse.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 30 Aug 2021 16:57:59 +0100,
+Rob Herring <robh+dt@kernel.org> wrote:
+> 
+> On Mon, Aug 30, 2021 at 6:37 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > I have now implemented the MSI change on the Linux driver side, and it
+> > works nicely. So thumbs up from me on this front.
+> >
+> > I am now looking at the interrupts provided by each port:
+> > (1) a bunch of port-private interrupts (link up/down...)
+> > (2) INTx interrupts
+> 
+> So each port has an independent INTx space?
 
-syzbot found the following issue on:
+Yes.
 
-HEAD commit:    eaf2aaec0be4 Merge tag 'wireless-drivers-next-2021-08-29' ..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1219326d300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d2f9d4c9ff8c5ae7
-dashboard link: https://syzkaller.appspot.com/bug?extid=b2be9dd8ca6f6c73ee2d
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e6e3a9300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10de8a6d300000
+> Is that even something PCI defines or comprehends?
 
-The issue was bisected to:
+Can't see why not. That's no different from having several PCI busses.
+I don't think anything enforces that INTx interrupts have to be
+unique across the system. As long as they are unique across a PCI
+hierarchy, we should be OK.
 
-commit 2d151d39073aff498358543801fca0f670fea981
-Author: Steffen Klassert <steffen.klassert@secunet.com>
-Date:   Sun Jul 18 07:11:06 2021 +0000
+> 
+> > Given that the programming is per-port, I've implemented this as a
+> > per-port interrupt controller.
+> >
+> > (1) is dead easy to implement, and doesn't require any DT description.
+> > (2) is unfortunately exposing the limits of my DT knowledge, and I'm
+> > not clear how to model it. I came up with the following:
+> >
+> >         port00: pci@0,0 {
+> >                 device_type = "pci";
+> >                 reg = <0x0 0x0 0x0 0x0 0x0>;
+> >                 reset-gpios = <&pinctrl_ap 152 0>;
+> >                 max-link-speed = <2>;
+> >
+> >                 #address-cells = <3>;
+> >                 #size-cells = <2>;
+> >                 ranges;
+> >
+> >                 interrupt-controller;
+> >                 #interrupt-cells = <1>;
+> >                 interrupt-parent = <&port00>;
+> >                 interrupt-map-mask = <0 0 0 7>;
+> >                 interrupt-map = <0 0 0 1 &port00 0>,
+> >                                 <0 0 0 2 &port00 1>,
+> >                                 <0 0 0 3 &port00 2>,
+> >                                 <0 0 0 4 &port00 3>;
+> 
+> IIRC, I don't think the DT IRQ code handles a node having both
+> 'interrupt-controller' and 'interrupt-map' properties.
 
-    xfrm: Add possibility to set the default to block if we have no policy
+Indeed, and that actually explains why the damned INTx interrupts
+insist on being 1-based instead of 0-based as the above mapping
+attempts to describe it. Turns out I can rip the interrupt-map out and
+it isn't worse.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=114523fe300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=134523fe300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=154523fe300000
+> I think that's why some PCI host bridge nodes have child
+> interrupt-controller nodes.  I don't really like that work-around,
+> so if the above can be made to work, I'd be happy to see it. But the
+> DT IRQ code is some ancient code for ancient platforms (PowerMacs
+> being one of them).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b2be9dd8ca6f6c73ee2d@syzkaller.appspotmail.com
-Fixes: 2d151d39073a ("xfrm: Add possibility to set the default to block if we have no policy")
+That'd probably need some massaging. I'll have a look. I checked that
+if I add something like:
 
-netlink: 172 bytes leftover after parsing attributes in process `syz-executor354'.
-================================================================================
-UBSAN: shift-out-of-bounds in net/xfrm/xfrm_user.c:2010:49
-shift exponent 224 is too large for 32-bit type 'int'
-CPU: 1 PID: 8447 Comm: syz-executor354 Not tainted 5.14.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
- xfrm_get_default.cold+0x1f/0x75 net/xfrm/xfrm_user.c:2010
- xfrm_user_rcv_msg+0x430/0xa20 net/xfrm/xfrm_user.c:2869
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2891
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- sock_no_sendpage+0xf3/0x130 net/core/sock.c:2980
- kernel_sendpage.part.0+0x1a0/0x340 net/socket.c:3496
- kernel_sendpage net/socket.c:3493 [inline]
- sock_sendpage+0xe5/0x140 net/socket.c:1003
- pipe_to_sendpage+0x2ad/0x380 fs/splice.c:364
- splice_from_pipe_feed fs/splice.c:418 [inline]
- __splice_from_pipe+0x43e/0x8a0 fs/splice.c:562
- splice_from_pipe fs/splice.c:597 [inline]
- generic_splice_sendpage+0xd4/0x140 fs/splice.c:746
- do_splice_from fs/splice.c:767 [inline]
- direct_splice_actor+0x110/0x180 fs/splice.c:936
- splice_direct_to_actor+0x34b/0x8c0 fs/splice.c:891
- do_splice_direct+0x1b3/0x280 fs/splice.c:979
- do_sendfile+0x9f0/0x1120 fs/read_write.c:1260
- __do_sys_sendfile64 fs/read_write.c:1325 [inline]
- __se_sys_sendfile64 fs/read_write.c:1311 [inline]
- __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1311
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43f019
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd24165888 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f019
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000005
-RBP: 0000000000403000 R08: 0000000000400488 R09: 0000000000400488
-R10: 0000000100000002 R11: 0000000000000246 R12: 0000000000403090
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-================================================================================
+		interrupts-extended = <&port02 2>;
 
+to each port, I get the PME interrupt correctly assigned should I pass
+pcie_pme=nomsi. Given that this IP is pretty limited in terms of MSIs,
+every bit that can free a MSI is welcome.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+I guess that it would make sense to expand this support to also match
+for an interrupt-map.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> 
+> >         };
+> >
+> > which vaguely seem to do the right thing for the devices behind root
+> > ports, but doesn't seem to work for INTx generated by the root ports
+> > themselves. Any clue? Alternatively, I could move it to something
+> > global to the whole PCIe controller, but that doesn't seem completely
+> > right.
+
+I've investigated this one further, and it looks like the DT IRQ code
+insists on trying to find the interrupt in the main pcie node instead
+of in the root port itself. But of course it doesn't want to parse an
+interrupt-map at that level either.
+
+I guess that's related to the above.
+
+> >
+> > It also begs the question whether the per-port interrupt to the AIC
+> > should be moved into each root port, should my per-port approach hold
+> > any water.
+> 
+> I tend to think per-port is the right thing to do. However, the child
+> nodes are PCI devices, so that creates some restrictions. Such as the
+> per port registers are in the host address space, not the PCI address
+> space, so we can't move the registers into the child nodes. The
+> interrupts may be okay. Certainly, being an 'interrupt-controller'
+> without having an 'interrupts' property for an non root interrupt
+> controller is odd.
+
+That was my own impression as well.
+
+I guess there is no real canonical way to handle this particular
+system and to fully support it, we'll have to amend the current
+infrastructure. The question is: what is the least ugly way to express
+this that will work reasonably across implementations (OpenBSD, Linux,
+u-boot)?
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
