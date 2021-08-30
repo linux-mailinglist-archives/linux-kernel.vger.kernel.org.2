@@ -2,246 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544313FBC21
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC4E3FBD47
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238441AbhH3SWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
+        id S234691AbhH3UJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 16:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhH3SWf (ORCPT
+        with ESMTP id S234634AbhH3UJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:22:35 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B82C061575;
-        Mon, 30 Aug 2021 11:21:41 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id u14so32975820ejf.13;
-        Mon, 30 Aug 2021 11:21:41 -0700 (PDT)
+        Mon, 30 Aug 2021 16:09:00 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E47EC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:08:06 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id j15so17502378ila.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=wzZpQf8XnnBwyx6FVtKgKg1R+YJbNENRicsfxpeSOjg=;
-        b=s0Podc1xJLmrSH7zzIutVt5Z4MUPpsmSN4KM21NQzv/por9GG7uDnBp0vDYN5IDFr0
-         tGTK1FSLOK4m/ryvX546QsgOlZ7PZ1Wm5LKvCI98ewfFjrk3c5joi1W4Iukhr4nyXmfB
-         aDxqnYVraFAbjw7eVUkM6AboZGuzWJN7Yfx3VD/MaaxgfYke7TRn5UrRe27bjFIYO+cA
-         KI9MWtq7qXpJ8nA0epWWhMTwJDokyP8S+6jxa7mNRuJQ1oFy3JCgOYg0cbICb/E4wePb
-         8kVBBqXM+2+4hrhiSHrn/wkUDQBY7xnGJCWy8P8Z7x9ogXaSRzdCFT79F4EyknRaNWS3
-         x1Ww==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0RtSe3tPXjpOd0ru72YE33BChLV62/Ie8i3PXYdqo+I=;
+        b=YN8ribrXpRm7FNv4ZI5E2n4zz36a4faIdX+Ua6lNeUTqzla9RlyJBG3EfB0uEdskEn
+         BNNB7hsiTrDVB5euYOicZNKvhwFmChfyxLtoz8W3VfmuQom3evvkZbMwP/+DW3+985lE
+         lPJGcJFB+PNRcH82klgyMod8NN8UM9GXgbJ+c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wzZpQf8XnnBwyx6FVtKgKg1R+YJbNENRicsfxpeSOjg=;
-        b=Fcc91aBywAQxTjpDRJNAQTcbsT0E1+IR6jB9iDUmOmr3KHfejqx3nyXvNBJ8MluP8I
-         RYracJk95kppwh9+mRaLUtQjpXJmcc/z6hIC0PpKSkez7kmBNEs/gbKumDmQslzlpaGa
-         I2JzapPOu8aE4t6b8rTMTGp3WqW1AhKpfcOa03giZ33/3mLmJaXdu+aQ9obdIaImxGkz
-         a02gKJoWa9oBIqGnXRfnyeID3PYHIe5oVP0tockdz7RajWUEWUG82G1l7Vek9ry3SKcI
-         WnaQA0+QDhTmax76SX/h4zQazYm/KnE/tIA9FnquJEFeSwnnLdD/uog+sxoi9Wh9b8vX
-         3Wsw==
-X-Gm-Message-State: AOAM533J0evdb+4WDmHZuTyLn8M9wSYIVkgEJmdz88b5+s5U9OQJJz8u
-        W0eqDW7lmERB1U4fGNtEnMk=
-X-Google-Smtp-Source: ABdhPJyG0uLXjFltYZO0gomkV8AheRsZ9MRvMqjAOQIY90291rqGI8ghqsFOaePEiEUGvpiN1Y9nyQ==
-X-Received: by 2002:a17:906:3947:: with SMTP id g7mr27480038eje.87.1630347699997;
-        Mon, 30 Aug 2021 11:21:39 -0700 (PDT)
-Received: from localhost (host-79-37-188-60.retail.telecomitalia.it. [79.37.188.60])
-        by smtp.gmail.com with ESMTPSA id h30sm8121250edz.40.2021.08.30.11.21.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 11:21:39 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 22:21:33 +0200
-From:   Sergio =?utf-8?Q?Migu=C3=A9ns?= Iglesias <lonyelon@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, bhelgaas@google.com,
-        xen-devel@lists.xenproject.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sergio =?utf-8?Q?Migu=C3=A9ns?= Iglesias <sergio@lony.xyz>
-Subject: Re: [PATCH v2] xen/pcifront: Removed unnecessary __ref annotation
-Message-ID: <20210830202133.q6j2he5kijf2tgpy@archlap>
-References: <20210830175305.13370-1-sergio@lony.xyz>
- <20210830162922.GA4188989@bjorn-Precision-5520>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0RtSe3tPXjpOd0ru72YE33BChLV62/Ie8i3PXYdqo+I=;
+        b=Vo9FELbPZ/8iYdM+F907gG8db2oQHPBMXGT0HCnvY1l/hAuJIVi3IFTKOyQmgRHHTE
+         /7TKPtMnbo5UkwPGtoAZCaOyBJ3W6GqkfvTCHs4KVMOVXBB3VCiTO3ZD00ZMG3VI35au
+         7T7rA4RZfA0hqWKkNUXkmxDrTwdQ0CkIsW8zVad4G9LJLBQJ3gn5Hqz1ZPMPUbG/aLpM
+         5DXoSX35ea0ouYU/SZ6PbR3BbUtjh5jOKv9bflG128tvUcPNXNbiZu33dj71zMLs/9ba
+         C0quwfJux7k4ehvf/FfMy3xd0tnx3G42LlVxBE9qqNnzUWwEyVKtihxRWWU5i+5ITp6A
+         Vz5w==
+X-Gm-Message-State: AOAM531EwDUGwNEUT60+7yendgAZ53vHgmicR7oSVSGFBTFnMM2ilb/Z
+        eTPzx/E+V1xtF50pcl+Ef5VaF4QpZhia+A==
+X-Google-Smtp-Source: ABdhPJyPL9hjkJctbf9KLwcpaUJT7MBMZh3/M1GzCvCHl2Kx+pQiq7TKDObM2FiAmpRP90+ZMTgzkQ==
+X-Received: by 2002:a05:6e02:130e:: with SMTP id g14mr17874125ilr.81.1630354085074;
+        Mon, 30 Aug 2021 13:08:05 -0700 (PDT)
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com. [209.85.166.46])
+        by smtp.gmail.com with ESMTPSA id p15sm9745952ilc.12.2021.08.30.13.08.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 13:08:04 -0700 (PDT)
+Received: by mail-io1-f46.google.com with SMTP id y18so21600132ioc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:08:03 -0700 (PDT)
+X-Received: by 2002:a5d:8acf:: with SMTP id e15mr19403264iot.184.1630354083438;
+ Mon, 30 Aug 2021 13:08:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210830162922.GA4188989@bjorn-Precision-5520>
+References: <1630346073-7099-1-git-send-email-sanm@codeaurora.org> <1630346073-7099-2-git-send-email-sanm@codeaurora.org>
+In-Reply-To: <1630346073-7099-2-git-send-email-sanm@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 30 Aug 2021 13:07:50 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XjRMdB=iHDcMATWDq5CSRGdh1ZBCftjrZvTfMk_Nqgvg@mail.gmail.com>
+Message-ID: <CAD=FV=XjRMdB=iHDcMATWDq5CSRGdh1ZBCftjrZvTfMk_Nqgvg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd bindings
+ for dwc3 qcom
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Pratham Pratap <prathampratap@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Never mind, it got accepted anyways, but I will 100% fix my commit
-messages for my future patches.
+Hi,
 
-I really appreciate your suggestions and the time you have put into
-writing them. I will improve in my next commits :)
+On Mon, Aug 30, 2021 at 10:55 AM Sandeep Maheswaram <sanm@codeaurora.org> wrote:
+>
+> Add multi pd bindings to set performance state for cx domain
+> to maintain minimum corner voltage for USB clocks.
+>
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> index e70afc4..838d9c4 100644
+> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> @@ -41,7 +41,18 @@ properties:
+>
+>    power-domains:
+>      description: specifies a phandle to PM domain provider node
+> -    maxItems: 1
+> +    minItems: 1
+> +    items:
+> +      - description: optional,cx power domain
+> +      - description: USB gdsc power domain
 
-Sergio M. Iglesias.
+You need to re-order the above. The optional one needs to be second, not first.
 
-On 21/08/30 11:29, Bjorn Helgaas wrote:
-> On Mon, Aug 30, 2021 at 07:53:05PM +0200, Sergio Miguéns Iglesias wrote:
-> > An unnecessary "__ref" annotation was removed from the
-> > "drivers/pci/xen_pcifront.c" file. The function where the annotation
-> > was used was "pcifront_backend_changed()", which does not call any
-> > functions annotated as "__*init" nor "__*exit". This makes "__ref"
-> > unnecessary since this annotation is used to make the compiler ignore
-> > section miss-matches when they are not happening here in the first
-> > place.
-> > 
-> > In addition to the aforementioned change, some code style issues were
-> > fixed in the same file.
-> 
-> One of the Xen folks may apply this, and they may not be as nit-picky
-> as I am :)
-> 
-> If I were to apply this, I would suggest:
-> 
->   - Write subject line and commit message in imperative mood.  This is
->     a really good guide to this and other commit message this:
->     https://chris.beams.io/posts/git-commit/
-> 
->     For example, in the subject, say "Remove" (not "Removed").  Same
->     in the body.  In the body, I would mention the function but not
->     the filename since that's obvious from the diff.
-> 
->   - Split the __ref change into a separate patch from the style
->     changes.  The __ref removal should come first and be the absolute
->     minimal patch.  That makes it much easier to review, backport, and
->     revert if necessary.  And, if the maintainer isn't wild about
->     style patches, it's trivial to just ignore that patch.
-> 
->     Commit logs that say "Also, ..." or "In addition, ..." are always
->     red flags to me because they usually indicate the patch could be
->     split into two or more simpler patches.
-> 
->   - When reviewing changes like this, I assume __ref was added in the
->     first place for some good reason, so I want to know why, and I
->     want to know when that reason changed.  So I would look for the
->     commit that *introduced* __ref and for the commit that removed the
->     need for it.  It would save me time if the log said something
->     like:
-> 
->       956a9202cd12 ("xen-pcifront: Xen PCI frontend driver.") added
->       __initrefok because pcifront_backend_changed() called
->       pcifront_try_connect() and pcifront_attach_devices(), which were
->       both __devinit.
-> 
->       The __devinit annotations were removed by 15856ad50bf5 ("PCI:
->       Remove __dev* markings"), which made __initrefok unnecessary.
-> 
->       Finally, bd721ea73e1f ("treewide: replace obsolete _refok by
->       __ref") replaced __initrefok with __ref.
-> 
->     That might be too much for a commit log, but it shows that you've
->     done your homework and makes it easier to review (and helps people
->     make similar fixes elsewhere).  If it *is* too much, it's trivial
->     for a maintainer to cut it out.
-> 
-> More notes about my idiosyncracies:
-> https://lore.kernel.org/r/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
-> 
-> > Signed-off-by: Sergio Miguéns Iglesias <sergio@lony.xyz>
-> > ---
-> >  drivers/pci/xen-pcifront.c | 30 +++++++++++++++++++-----------
-> >  1 file changed, 19 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/drivers/pci/xen-pcifront.c b/drivers/pci/xen-pcifront.c
-> > index b7a8f3a1921f..427041c1e408 100644
-> > --- a/drivers/pci/xen-pcifront.c
-> > +++ b/drivers/pci/xen-pcifront.c
-> > @@ -115,7 +115,7 @@ static int do_pci_op(struct pcifront_device *pdev, struct xen_pci_op *op)
-> >  	struct xen_pci_op *active_op = &pdev->sh_info->op;
-> >  	unsigned long irq_flags;
-> >  	evtchn_port_t port = pdev->evtchn;
-> > -	unsigned irq = pdev->irq;
-> > +	unsigned int irq = pdev->irq;
-> >  	s64 ns, ns_timeout;
-> >  
-> >  	spin_lock_irqsave(&pdev->sh_info_lock, irq_flags);
-> > @@ -153,10 +153,10 @@ static int do_pci_op(struct pcifront_device *pdev, struct xen_pci_op *op)
-> >  	}
-> >  
-> >  	/*
-> > -	* We might lose backend service request since we
-> > -	* reuse same evtchn with pci_conf backend response. So re-schedule
-> > -	* aer pcifront service.
-> > -	*/
-> > +	 * We might lose backend service request since we
-> > +	 * reuse same evtchn with pci_conf backend response. So re-schedule
-> > +	 * aer pcifront service.
-> > +	 */
-> >  	if (test_bit(_XEN_PCIB_active,
-> >  			(unsigned long *)&pdev->sh_info->flags)) {
-> >  		dev_err(&pdev->xdev->dev,
-> > @@ -414,7 +414,8 @@ static int pcifront_scan_bus(struct pcifront_device *pdev,
-> >  	struct pci_dev *d;
-> >  	unsigned int devfn;
-> >  
-> > -	/* Scan the bus for functions and add.
-> > +	/*
-> > +	 * Scan the bus for functions and add.
-> >  	 * We omit handling of PCI bridge attachment because pciback prevents
-> >  	 * bridges from being exported.
-> >  	 */
-> > @@ -492,8 +493,10 @@ static int pcifront_scan_root(struct pcifront_device *pdev,
-> >  
-> >  	list_add(&bus_entry->list, &pdev->root_buses);
-> >  
-> > -	/* pci_scan_root_bus skips devices which do not have a
-> > -	* devfn==0. The pcifront_scan_bus enumerates all devfn. */
-> > +	/*
-> > +	 * pci_scan_root_bus skips devices which do not have a
-> > +	 * devfn==0. The pcifront_scan_bus enumerates all devfn.
-> > +	 */
-> >  	err = pcifront_scan_bus(pdev, domain, bus, b);
-> >  
-> >  	/* Claim resources before going "live" with our devices */
-> > @@ -651,8 +654,10 @@ static void pcifront_do_aer(struct work_struct *data)
-> >  	pci_channel_state_t state =
-> >  		(pci_channel_state_t)pdev->sh_info->aer_op.err;
-> >  
-> > -	/*If a pci_conf op is in progress,
-> > -		we have to wait until it is done before service aer op*/
-> > +	/*
-> > +	 * If a pci_conf op is in progress, we have to wait until it is done
-> > +	 * before service aer op
-> > +	 */
-> >  	dev_dbg(&pdev->xdev->dev,
-> >  		"pcifront service aer bus %x devfn %x\n",
-> >  		pdev->sh_info->aer_op.bus, pdev->sh_info->aer_op.devfn);
-> > @@ -676,6 +681,7 @@ static void pcifront_do_aer(struct work_struct *data)
-> >  static irqreturn_t pcifront_handler_aer(int irq, void *dev)
-> >  {
-> >  	struct pcifront_device *pdev = dev;
-> > +
-> >  	schedule_pcifront_aer_op(pdev);
-> >  	return IRQ_HANDLED;
-> >  }
-> > @@ -1027,6 +1033,7 @@ static int pcifront_detach_devices(struct pcifront_device *pdev)
-> >  	/* Find devices being detached and remove them. */
-> >  	for (i = 0; i < num_devs; i++) {
-> >  		int l, state;
-> > +
-> >  		l = snprintf(str, sizeof(str), "state-%d", i);
-> >  		if (unlikely(l >= (sizeof(str) - 1))) {
-> >  			err = -ENOMEM;
-> > @@ -1078,7 +1085,7 @@ static int pcifront_detach_devices(struct pcifront_device *pdev)
-> >  	return err;
-> >  }
-> >  
-> > -static void __ref pcifront_backend_changed(struct xenbus_device *xdev,
-> > +static void pcifront_backend_changed(struct xenbus_device *xdev,
-> >  						  enum xenbus_state be_state)
-> >  {
-> >  	struct pcifront_device *pdev = dev_get_drvdata(&xdev->dev);
-> > @@ -1137,6 +1144,7 @@ static int pcifront_xenbus_probe(struct xenbus_device *xdev,
-> >  static int pcifront_xenbus_remove(struct xenbus_device *xdev)
-> >  {
-> >  	struct pcifront_device *pdev = dev_get_drvdata(&xdev->dev);
-> > +
-> >  	if (pdev)
-> >  		free_pdev(pdev);
-> >  
-> > -- 
-> > 2.33.0
-> > 
+
+> +  power-domain-names:
+> +     items:
+> +      - const: cx
+> +      - const: usb_gdsc
+
+Why do you need the names at all? The ordering of power-domains is
+well defined and there are no holes in it and there are no legacy
+reasons for having the names (like there are for clocks), so you
+should drop. This is much like reg-names and I always point people to
+this message from Rob Herring about reg-names:
+
+https://lore.kernel.org/r/CAL_Jsq+MMunmVWqeW9v2RyzsMKP+=kMzeTHNMG4JDHM7Fy0HBg@mail.gmail.com/
+
+You'll have to change your driver to use dev_pm_domain_attach_by_id()
+but that should be fine.
+
+-Doug
