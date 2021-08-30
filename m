@@ -2,141 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A7C3FB396
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41FC73FB390
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236318AbhH3KHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 06:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235959AbhH3KHi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:07:38 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D8CC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 03:06:45 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id eb14so11549350edb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 03:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=/ScTPc3ER8rBFcp+FO12BRhj4mI9lEcmEwpkznnBTb4=;
-        b=mFd7hO2LpgdSs2T1l4SZMqil7xScV0wNi5GsadSgxS+3UA74/VPveBLeEOpac1e3sQ
-         /uhQ0LvBo8V5WEi/VcbtIjKGnj5lbOTPk09cbZYab3v0jGabuqIhiZM+7gYHXcTltiwa
-         DS4dUMwhZNuUm7WpBPaoOoBaBrjVayqvsWw+FQ6l+vHVLquNrpcD12iwZua6rpRCN8uG
-         793n89feUs7JENcku+UV+3ceRjufcs9RebftqO3ua/sovS2KRQ1aUICroubMRu4dzlYp
-         hudjasdDe/u7dEBWFEmO1kiwvtWK367iAZWGde7P3fJflAgPdWmAWhHxStwe2gMJDtLf
-         6bRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=/ScTPc3ER8rBFcp+FO12BRhj4mI9lEcmEwpkznnBTb4=;
-        b=AYdFYsokhzAX0fHNSZXV1VCxLrTRWMkAQTuy3aAt/ZOU7QZNlaTUhxiZCMhmPildUS
-         xVLpubbMEZCSMNeJsmsHo/PRWG3Ar4cEeGE+foH2C2vev8zkComd9fdltch5dXLG2SoX
-         qADHbiEKSx8QEUbXAySM2ay17/OtxsFZx+Q/B/I4EtpPPhBoiGDZlPJVBj7Nd67sGDcA
-         GXLZ2h+f52vlgITdQUprQUUfQRv2/7mCXOVLXCovm8j7j+2sN+DdNUV2ukUKA2w+JBOX
-         /OcU8MufQFBGbjGEaXfZpOJMEDYjN6MhZWG0sY9UG7Ndpx2II4asrBnhtskeduWlZM5G
-         WArA==
-X-Gm-Message-State: AOAM5334gq8evCCNa0wAFcBfyw5ESoVpMPeaV/lcJmyeyFoaqeGdp0D8
-        8ePpuZZFGfec7+BTlnvPOmtbJGbOqV8=
-X-Google-Smtp-Source: ABdhPJwFYhBYkC17NTdc1oNZvtGj9v6BiYEyAjmmR5BgRIFdWsfg2w/LbbbtlWTHT7qM+3nHVeZC+w==
-X-Received: by 2002:a05:6402:c9:: with SMTP id i9mr22712685edu.76.1630318003652;
-        Mon, 30 Aug 2021 03:06:43 -0700 (PDT)
-Received: from gmail.com (0526ECFD.dsl.pool.telekom.hu. [5.38.236.253])
-        by smtp.gmail.com with ESMTPSA id f1sm7349656edq.89.2021.08.30.03.06.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 03:06:43 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 30 Aug 2021 12:06:41 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] perf changes for v5.15
-Message-ID: <YSytsSM2mOcpGHJq@gmail.com>
+        id S236297AbhH3KFn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Aug 2021 06:05:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229901AbhH3KFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 06:05:40 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CC0A610A2;
+        Mon, 30 Aug 2021 10:04:44 +0000 (UTC)
+Date:   Mon, 30 Aug 2021 11:07:56 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Sa, Nuno" <Nuno.Sa@analog.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
+ samples
+Message-ID: <20210830110756.733d5201@jic23-huawei>
+In-Reply-To: <SJ0PR03MB6359415E120CFD3EFAF417F599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
+References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
+        <20210818111139.330636-4-miquel.raynal@bootlin.com>
+        <SJ0PR03MB6359415E120CFD3EFAF417F599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Fri, 20 Aug 2021 07:10:48 +0000
+"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
 
-Please pull the latest perf/core git tree from:
+> > -----Original Message-----
+> > From: Miquel Raynal <miquel.raynal@bootlin.com>
+> > Sent: Wednesday, August 18, 2021 1:11 PM
+> > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
+> > <lars@metafoo.de>
+> > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>; linux-
+> > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel Raynal
+> > <miquel.raynal@bootlin.com>
+> > Subject: [PATCH 03/16] iio: adc: max1027: Push only the requested
+> > samples
+> > 
+> > [External]
+> > 
+> > When a triggered scan occurs, the identity of the desired channels is
+> > known in indio_dev->active_scan_mask. Instead of reading and
+> > pushing to
+> > the IIO buffers all channels each time, scan the minimum amount of
+> > channels (0 to maximum requested chan, to be exact) and only
+> > provide the
+> > samples requested by the user.
+> > 
+> > For example, if the user wants channels 1, 4 and 5, all channels from
+> > 0 to 5 will be scanned but only the desired channels will be pushed to
+> > the IIO buffers.
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  drivers/iio/adc/max1027.c | 25 +++++++++++++++++++++----
+> >  1 file changed, 21 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
+> > index b753658bb41e..8ab660f596b5 100644
+> > --- a/drivers/iio/adc/max1027.c
+> > +++ b/drivers/iio/adc/max1027.c
+> > @@ -360,6 +360,9 @@ static int max1027_set_trigger_state(struct
+> > iio_trigger *trig, bool state)
+> >  	struct max1027_state *st = iio_priv(indio_dev);
+> >  	int ret;
+> > 
+> > +	if (bitmap_empty(indio_dev->active_scan_mask, indio_dev-  
+> > >masklength))  
+> > +		return -EINVAL;
+> > +  
+> 
+> I'm not sure this can actually happen. If you try to enable the buffer
+> with no scan element, it should give you an error before you reach
+> this point...
+> 
+> >  	if (state) {
+> >  		/* Start acquisition on cnvst */
+> >  		st->reg = MAX1027_SETUP_REG |
+> > MAX1027_CKS_MODE0 |
+> > @@ -368,9 +371,12 @@ static int max1027_set_trigger_state(struct
+> > iio_trigger *trig, bool state)
+> >  		if (ret < 0)
+> >  			return ret;
+> > 
+> > -		/* Scan from 0 to max */
+> > -		st->reg = MAX1027_CONV_REG | MAX1027_CHAN(0) |
+> > -			  MAX1027_SCAN_N_M | MAX1027_TEMP;
+> > +		/*
+> > +		 * Scan from 0 to the highest requested channel. The
+> > temperature
+> > +		 * could be avoided but it simplifies a bit the logic.
+> > +		 */
+> > +		st->reg = MAX1027_CONV_REG |
+> > MAX1027_SCAN_0_N | MAX1027_TEMP;
+> > +		st->reg |= MAX1027_CHAN(fls(*indio_dev-  
+> > >active_scan_mask) - 2);  
+> >  		ret = spi_write(st->spi, &st->reg, 1);
+> >  		if (ret < 0)
+> >  			return ret;
+> > @@ -391,11 +397,22 @@ static irqreturn_t
+> > max1027_trigger_handler(int irq, void *private)
+> >  	struct iio_poll_func *pf = private;
+> >  	struct iio_dev *indio_dev = pf->indio_dev;
+> >  	struct max1027_state *st = iio_priv(indio_dev);
+> > +	unsigned int scanned_chans = fls(*indio_dev-  
+> > >active_scan_mask);  
+> > +	u16 *buf = st->buffer;  
+> 
+> I think sparse will complain here. buffer is a __be16 restricted
+> type so you should not mix those... 
+> > +	unsigned int bit;
+> > 
+> >  	pr_debug("%s(irq=%d, private=0x%p)\n", __func__, irq,
+> > private);in/20210818_miquel_raynal_bring_software_triggers_support_to_max1027_like_adcs.mbx
+> > 
+> >  	/* fill buffer with all channel */
+> > -	spi_read(st->spi, st->buffer, indio_dev->masklength * 2);
+> > +	spi_read(st->spi, st->buffer, scanned_chans * 2);
+> > +
+> > +	/* Only keep the channels selected by the user */
+> > +	for_each_set_bit(bit, indio_dev->active_scan_mask,
+> > +			 indio_dev->masklength) {
+> > +		if (buf[0] != st->buffer[bit])
+> > +			buf[0] = st->buffer[bit];  
+> 
+> Since we are here, when looking into the driver, I realized
+> that st->buffer is not DMA safe. In IIO, we kind of want to enforce
+> that all buffers that are passed to spi/i2c buses are safe... Maybe
+> this is something you can include in your series.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-core-2021-08-30
+Why is it not?  st->buffer is result of a devm_kmalloc_array() call and
+that should provide a DMA safe buffer as I understand it.
 
-   # HEAD: 6a371bafe613b7746c3d3ac486bdb3035f77e029 perf/x86/amd/ibs: Add bitfield definitions in new <asm/amd-ibs.h> header
+> 
+> - Nuno Sá
+> 
+>  > +		buf++;
+> > +	}
+> > 
+> >  	iio_push_to_buffers(indio_dev, st->buffer);
+> > 
+> > --
+> > 2.27.0  
+> 
 
-Perf events changes for v5.15 are:
-
- - Add support for Intel Sapphire Rapids server CPU uncore events
- - Allow the AMD uncore driver to be built as a module
- - Misc cleanups and fixes
-
- Thanks,
-
-	Ingo
-
------------------->
-Alexander Antonov (1):
-      perf/x86/intel/uncore: Fix IIO cleanup mapping procedure for SNR/ICX
-
-Colin Ian King (1):
-      perf/x86: Remove unused assignment to pointer 'e'
-
-Kan Liang (15):
-      perf/x86/intel/uncore: Add Sapphire Rapids server framework
-      perf/x86/intel/uncore: Add Sapphire Rapids server CHA support
-      perf/x86/intel/uncore: Add Sapphire Rapids server IIO support
-      perf/x86/intel/uncore: Add Sapphire Rapids server IRP support
-      perf/x86/intel/uncore: Add Sapphire Rapids server M2PCIe support
-      perf/x86/intel/uncore: Add Sapphire Rapids server PCU support
-      perf/x86/intel/uncore: Add Sapphire Rapids server IMC support
-      perf/x86/intel/uncore: Add Sapphire Rapids server M2M support
-      perf/x86/intel/uncore: Add Sapphire Rapids server UPI support
-      perf/x86/intel/uncore: Add Sapphire Rapids server M3UPI support
-      perf/x86/intel/uncore: Add Sapphire Rapids server MDF support
-      perf/x86/intel/uncore: Add alias PMU name
-      perf/x86/intel/uncore: Factor out snr_uncore_mmio_map()
-      perf/x86/intel/uncore: Support IIO free-running counters on Sapphire Rapids server
-      perf/x86/intel/uncore: Support IMC free-running counters on Sapphire Rapids server
-
-Kim Phillips (5):
-      perf/amd/uncore: Simplify code, use free_percpu()'s built-in check for NULL
-      perf/amd/uncore: Clean up header use, use <linux/ include paths instead of <asm/
-      x86/cpu: Add get_llc_id() helper function
-      perf/amd/uncore: Allow the driver to be built as a module
-      perf/x86/amd/ibs: Add bitfield definitions in new <asm/amd-ibs.h> header
-
-Sebastian Andrzej Siewior (2):
-      perf/x86/intel: Replace deprecated CPU-hotplug functions
-      perf/hw_breakpoint: Replace deprecated CPU-hotplug functions
-
-
- .../testing/sysfs-bus-event_source-devices-uncore  |  13 +
- arch/x86/events/Kconfig                            |  10 +
- arch/x86/events/amd/Makefile                       |   5 +-
- arch/x86/events/amd/ibs.c                          |  23 +-
- arch/x86/events/amd/uncore.c                       |  40 +-
- arch/x86/events/core.c                             |   4 +-
- arch/x86/events/intel/core.c                       |   8 +-
- arch/x86/events/intel/pt.c                         |   4 +-
- arch/x86/events/intel/uncore.c                     |  45 +-
- arch/x86/events/intel/uncore.h                     |   4 +
- arch/x86/events/intel/uncore_discovery.c           |  42 +-
- arch/x86/events/intel/uncore_discovery.h           |  21 +
- arch/x86/events/intel/uncore_snbep.c               | 583 ++++++++++++++++++++-
- arch/x86/include/asm/amd-ibs.h                     | 132 +++++
- arch/x86/include/asm/processor.h                   |   2 +
- arch/x86/kernel/cpu/amd.c                          |   2 +-
- arch/x86/kernel/cpu/common.c                       |   6 +
- kernel/events/hw_breakpoint.c                      |   4 +-
- 18 files changed, 858 insertions(+), 90 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-event_source-devices-uncore
- create mode 100644 arch/x86/include/asm/amd-ibs.h
