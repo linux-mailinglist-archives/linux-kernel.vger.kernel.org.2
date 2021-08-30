@@ -2,121 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BA73FBAF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C99F3FBAFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 19:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238057AbhH3Rax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 13:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbhH3Raw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 13:30:52 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02284C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:29:59 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id fy13-20020a17090b020d00b001939890b4d6so1972353pjb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 10:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=LVV3UHlk75yje1xXSFFRWyfRbrh8OImERx560ZLqV78=;
-        b=IvtVU2ecU6KZCoDqCW093hiZ2lhwtQIofFW8UZrOYtk+4S6cXBZM8LYiHxTLo4DA62
-         Mcsr5juVYUrOy8rNyG1yZ7voTbgtLZowhpm4tnGY655pEJvnJp7fyMZTqiMH1sQS94hr
-         9UX3sA2Bb364oAvBYogFtLGQ1YCTDOAgIbFSxHqXCrfUwhq49GCKEQbLyH/0HeZAZCCH
-         T5ilQHDzPuxCXeyzVeQjK6gBJHf4UkTwnOl2zR/K51CKwqjq2xQmcZYfaxYnOM37SYRS
-         8CIAN6O9Bq5BWHogtAPODwYydCw1lsWmC5+GKMkgJl7k0H6KCXzSLTMvK8Mejsyaoirg
-         ajVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=LVV3UHlk75yje1xXSFFRWyfRbrh8OImERx560ZLqV78=;
-        b=Z+UcFiTHnfyxvPnbjeEoVBBFsklFqZGNwoRUSUQBePMKJarDY2C3VnZTDmafl5+tGI
-         htUC9mX7fhyhjxtJMFUBbQd4C3E9DV6M0oX0qFJMPbW5A7FfQfCetQJpLwx6QaQ8ZR4a
-         Pb1jITzgM5LT+s7gzQccoDDHzkhlOQZjLmPBVQy3lAsltfXmK68vWu9iO/Cy9FjHYdIl
-         oAxF/i0HoXUs1WJX46coywlcuCHU51Tb40/8uoP7zpTVadKOrFyUaLA0klx2TXQKrGgK
-         QJIb7+g8rno28fmTfUamSHv0ozCAOdJvWYHMq3geqVeqefcVQgkPIfTRtPUvrq4mChZS
-         7Obw==
-X-Gm-Message-State: AOAM5303Ewege3kXezf7Y2xeYNYHUEQdvv/QAl/aTqFgnAPDTIdluxH6
-        h2fahlC/RXBucl5PDGreuPkIXL6sfdr1Bw==
-X-Google-Smtp-Source: ABdhPJzCcC4VvlzbbigWq9Ik0NqIKJYOOVsEeFdC4+tI++PBliuKJgwEngIraYu+cMozuc9V7j3OEuD8/wksKQ==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:cc09:9ca3:397b:a20c])
- (user=shakeelb job=sendgmr) by 2002:a65:6658:: with SMTP id
- z24mr22641670pgv.266.1630344598441; Mon, 30 Aug 2021 10:29:58 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 10:29:53 -0700
-Message-Id: <20210830172953.207257-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH] memcg: make memcg->event_list_lock irqsafe
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S238126AbhH3RcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 13:32:06 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:51418 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229709AbhH3RcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 13:32:05 -0400
+Received: from zn.tnic (p200300ec2f0b3b00d8cdf5b388faf601.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3b00:d8cd:f5b3:88fa:f601])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BA53F1EC03FE;
+        Mon, 30 Aug 2021 19:31:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630344666;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=F78NScsYpwqvpgPkUnjQEmzNw8vwPloEwqLWWWjPdIc=;
+        b=gHUjM8LYBihZBiKhxG8eUaIU3GxJ2Eiiesqv/h+xzfolzQ4oGd5/9WDhUZNADUJjEKo20k
+        FoL46yG1P5ScJPkMUGE45AcXKsGLgLoDSTKU2IGtfTE8269oCIeu7qFBnLBUPH6AIfDvg2
+        nFpd1lz9pomQDEy1g7pbJ0uop7cvML8=
+Date:   Mon, 30 Aug 2021 19:31:43 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Len Brown <lenb@kernel.org>
+Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        "Macieira, Thiago" <thiago.macieira@intel.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
+ protect dynamic user state
+Message-ID: <YS0V//png0YVPWHG@zn.tnic>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com>
+ <20210730145957.7927-13-chang.seok.bae@intel.com>
+ <YR00U19168BGoRB9@zn.tnic>
+ <3181031.RqgVF4sTRC@tjmaciei-mobl5>
+ <YR1HYRRN0HMTxXrw@zn.tnic>
+ <BCC327C2-CF9F-4910-B626-315E515E9A3A@intel.com>
+ <YR14zq2LaExjhFR+@zn.tnic>
+ <CAJvTdKnhn8rOKUJ0VKvM08sFYkvmEsSWBsH2ynncxH9_z49bxA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJvTdKnhn8rOKUJ0VKvM08sFYkvmEsSWBsH2ynncxH9_z49bxA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memcg->event_list_lock is usually taken in the normal context but
-when the userspace closes the corresponding eventfd, eventfd_release
-through memcg_event_wake takes memcg->event_list_lock with interrupts
-disabled. This is not an issue on its own but it creates a nested
-dependency from eventfd_ctx->wqh.lock to memcg->event_list_lock.
+On Tue, Aug 24, 2021 at 07:22:18PM -0400, Len Brown wrote:
+> We are forced to complicate their life for AMX (and subsequent features)
+> because of the legacy Linux signal ABI.
 
-Independently, for unrelated eventfd, eventfd_signal() can be called in
-the irq context, thus making eventfd_ctx->wqh.lock an irq lock. For
-example, FPGA DFL driver, VHOST VPDA driver and couple of VFIO drivers.
-This will force memcg->event_list_lock to be an irqsafe lock as well.
+No, we need to design this interface properly because you folks went and
+put this AMX thing in xstates. Where it doesn't belong at all.
 
-One way to break the nested dependency between eventfd_ctx->wqh.lock and
-memcg->event_list_lock is to add an indirection. However the simplest
-solution would be to make memcg->event_list_lock irqsafe. This is cgroup
-v1 feature, is in maintenance and may get deprecated in near future. So,
-no need to add more code.
+> We require that new apps invoke a system call to tell us that they
+> are not indeed a legacy program, but that they are a program that
+> understands if they use an alt-sig-stack that it must be big enough to
+> handle whatever current hardware requires.
 
-BTW this has been discussed previously [1] but there weren't irq users
-of eventfd_signal() at the time.
+Yes, because of the reason I gave above. If no additional 8K fat wasn't
+an xstate, we wouldn't be having this conversation.
 
-[1] https://www.spinics.net/lists/cgroups/msg06248.html
+> The secondary motivation for the system call is the desire to give the
+> kernel a hook so that it can refuse to give permission for some apps
+> to use AMX, should the need arise.
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
- mm/memcontrol.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Yes.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 999e626f4111..a73689caee5d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -4851,9 +4851,9 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
- 
- 	vfs_poll(efile.file, &event->pt);
- 
--	spin_lock(&memcg->event_list_lock);
-+	spin_lock_irq(&memcg->event_list_lock);
- 	list_add(&event->list, &memcg->event_list);
--	spin_unlock(&memcg->event_list_lock);
-+	spin_unlock_irq(&memcg->event_list_lock);
- 
- 	fdput(cfile);
- 	fdput(efile);
-@@ -5280,12 +5280,12 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
- 	 * Notify userspace about cgroup removing only after rmdir of cgroup
- 	 * directory to avoid race between userspace and kernelspace.
- 	 */
--	spin_lock(&memcg->event_list_lock);
-+	spin_lock_irq(&memcg->event_list_lock);
- 	list_for_each_entry_safe(event, tmp, &memcg->event_list, list) {
- 		list_del_init(&event->list);
- 		schedule_work(&event->remove);
- 	}
--	spin_unlock(&memcg->event_list_lock);
-+	spin_unlock_irq(&memcg->event_list_lock);
- 
- 	page_counter_set_min(&memcg->memory, 0);
- 	page_counter_set_low(&memcg->memory, 0);
+> > prctl(GET_FEATURES_WITH_KERNEL_ASSISTANCE);
+>
+> The problem is that it adds zero value over the currently used xgetbv(XCR0).
+> As it adds no value, programmers will not use it.
+
+Bullsh*t.
+
+First of all, it is a new interface we're introducing and if it is
+there from the get-go along with examples how to use it and proper
+documentation, people will.
+
+Secondly, from a previous email of mine: "What if this modus operandi of
+features userspace can use with kernel assistance but need an explicit
+request and are off otherwise, gets extended beyond XSAVE-managed
+features?"
+
+In that case you can xgetbv() all you want but the new fat feature is
+not even in XCR0. So *then* you *have* to introduce a new prctl() to
+query supported features. And right then and there you wish you would've
+done that from the very beginning!
+
 -- 
-2.33.0.259.gc128427fd7-goog
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
