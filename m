@@ -2,116 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE0E3FBDE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59903FBDE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236431AbhH3VHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 17:07:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
+        id S236842AbhH3VIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236983AbhH3VHJ (ORCPT
+        with ESMTP id S235412AbhH3VIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:07:09 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37B4C061575;
-        Mon, 30 Aug 2021 14:06:14 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id e16so12796770pfc.6;
-        Mon, 30 Aug 2021 14:06:14 -0700 (PDT)
+        Mon, 30 Aug 2021 17:08:37 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86566C061575;
+        Mon, 30 Aug 2021 14:07:43 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id j18so21830274ioj.8;
+        Mon, 30 Aug 2021 14:07:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=l4mUL7KTlI0Cq3qGA1ysHUWbzUs7cEfmJVpqyyFGsp8=;
-        b=ePChrhmbbjXl7+ObMyn+IvqZOrTyHT5tNsX2lranOL15xxrn+yMRAhiP1CezlFQoxr
-         gPm1LSnikhBOcDhIrKuKlUTJ5hzEYyj1Q9N2QhgbFRXZdUXcPl6Zm//lAXjfbUjbcV2E
-         zeFEdjI9LG5UegQkvgAl9yn9FTnJZAp8vCQWGJ9L1nQFeJNcd9G3j85DaPg41F2FRcGC
-         BPCBpNXxZd0ykhWq3NBSl/w1FDef1evk7wo8lrtsoaQuhfD/JLnNFQ0gFEKJnKXTRRyR
-         l2ULmtbP0uz7t2DzKZceQt/j+dX51ZsMJpHvQI2UPEhtP9Jr6jzOmj9XF87MKf/GYN/H
-         NVXA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=g5yL003HMqaHRo5YL2Nf3KKbD13P3l8kcGs2AKGZYpU=;
+        b=ne5M+gmNn5PcZlSCwY8qx+B1r3x/aMhF5+tk4L36/MsSzTr3CGARYRr1tsJgJGpXpW
+         NjrWiOWa3A+DGrGCqvqOLVY/639iQIP1X9ErnP8XVLWtrIgyK7skDbttJ3Uz2prvdccC
+         Ji/vbZ7cfy8AtUCdPUJwqFNWbCotzkaEqRRnDhxYW+UlCzRw+xheESBu6APh+4IShKrl
+         g5l3SGieySjJB6INSaP6K36wQz+iupSrfvzsY08t36TJj8NzZ/TtpeWc+sOv8BrH702/
+         fpDOvw0ek826WbTCxeIy1VLr2TCrPGLb8pkspCNOK1zHNNUzKr+iMownqMZo3P1s087w
+         tFwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=l4mUL7KTlI0Cq3qGA1ysHUWbzUs7cEfmJVpqyyFGsp8=;
-        b=mF/5QVKeK/0menB9bd218AI5WuD8RU5ERWlDe2KM7Wq8sdtH+1s/N1eDMZ6rwbGeuQ
-         Ano62+O4SsDjLaTIzpSPTdpFkC4UIssD0cVzAnG40PKyvR0X4HCGXLBy0aRGopdc5jQk
-         R1O89cKlh4NM23gwSLhcKVGiCD6j98eLqNxWgfkQjP+VNPg8YTocStLZQFFjL3zRXcCU
-         Dad2NIxkaJQr7yms2nTSXTqBz1HodBsfRXWmfyN1SB2cU/V5LLQc0SRnWvhhgIRthiVS
-         zAdVBhTGQAN6LwqUx2uQIXL9v521SaPzpZmbw6eEqbaP2MWQ/+NbdS5OJGGiwb5vSlqQ
-         Tcug==
-X-Gm-Message-State: AOAM532tpvaqyOrcp740t44PJa212TR+gDQDcV3P+qzUce85qtpPbujH
-        SiQjvXwZoY90sclf3wLtoI4=
-X-Google-Smtp-Source: ABdhPJyARgDzaEEd/8lorS/vMkvnCj3AXWAsnDYS5hXmLzHLF5RfQHRMPhy0sBoroUS55Mx/IwaJHg==
-X-Received: by 2002:a63:d250:: with SMTP id t16mr23928547pgi.95.1630357574551;
-        Mon, 30 Aug 2021 14:06:14 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id j17sm16057194pfn.148.2021.08.30.14.06.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 14:06:13 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 14:06:10 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     "Machnikowski, Maciej" <maciej.machnikowski@intel.com>
-Cc:     "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "nikolay@nvidia.com" <nikolay@nvidia.com>,
-        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
-        "colin.king@canonical.com" <colin.king@canonical.com>,
-        "gustavoars@kernel.org" <gustavoars@kernel.org>,
-        "Bross, Kevin" <kevin.bross@intel.com>,
-        "Stanton, Kevin B" <kevin.b.stanton@intel.com>,
-        Ahmad Byagowi <abyagowi@fb.com>
-Subject: Re: [RFC net-next 1/7] ptp: Add interface for acquiring DPLL state
-Message-ID: <20210830210610.GB26230@hoboy.vegasvil.org>
-References: <20210816160717.31285-1-arkadiusz.kubalewski@intel.com>
- <20210816160717.31285-2-arkadiusz.kubalewski@intel.com>
- <20210816235400.GA24680@hoboy.vegasvil.org>
- <PH0PR11MB4951762ECB04D90D634E905DEAFE9@PH0PR11MB4951.namprd11.prod.outlook.com>
- <20210818170259.GD9992@hoboy.vegasvil.org>
- <PH0PR11MB495162EC9116F197D79589F5EAFF9@PH0PR11MB4951.namprd11.prod.outlook.com>
- <20210819153414.GC26242@hoboy.vegasvil.org>
- <PH0PR11MB4951F51CBA231DFD65806CDAEAC09@PH0PR11MB4951.namprd11.prod.outlook.com>
- <20210820155538.GB9604@hoboy.vegasvil.org>
- <PH0PR11MB49518ED9AAF8B543FD8324B9EAC19@PH0PR11MB4951.namprd11.prod.outlook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=g5yL003HMqaHRo5YL2Nf3KKbD13P3l8kcGs2AKGZYpU=;
+        b=OzS9E4N0iFGwBI689kt7NeXlSYMJGvxGjeOAup2qGhIATcRajdZbP8dho49nlS7AI3
+         4D9OcoLDv+J8t6ejRCOmgRn0GyaiF+G9e+u9nha7CVVjbdaXsdbkixhGtZ+HdRXd+P3u
+         5quHREfw/SGliXXESzKSXB80a0+RwhXHuiRQens9yac1O5S5pAMSK1EBjmzjn9rCNXHF
+         guGdWanqtc5CBZi+WpABurMjXE5FvEUg2oLDucHVRLlXQIoufgUTyuqFHbnn61giiIF1
+         TokSxSHnXAEAf+CwhMyKkfKrGWhiMu3v/0E8UunbsdwEh7aXDyzfq/v/4PK6JE3pwgyr
+         mrzA==
+X-Gm-Message-State: AOAM532h/Ltgle52rAr/KxXySBQWLPLcUab5+jsXrLp3D+4Ni0CDjwSq
+        oSu/BoBVwTq5iTtn7cdiu0SYorSscJL3bA==
+X-Google-Smtp-Source: ABdhPJyY/fXXZi//wASNXGJl8Ch8FW63ZZ4b1Fkl9cJohC1YS/+m4kBZW8Neyxb8M3NZi0WOr/bjQw==
+X-Received: by 2002:a05:6638:d85:: with SMTP id l5mr342434jaj.2.1630357662375;
+        Mon, 30 Aug 2021 14:07:42 -0700 (PDT)
+Received: from [192.168.4.31] (199-48-94-117.rochmnaa.metronetinc.net. [199.48.94.117])
+        by smtp.gmail.com with ESMTPSA id b10sm8947921ils.13.2021.08.30.14.07.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 14:07:41 -0700 (PDT)
+Subject: Re: [PATCH] hwmon: (pmbus/ibm-cffps) Do not swap max_power_out
+To:     Eddie James <eajames@linux.ibm.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210827230433.3596370-1-bjwyman@gmail.com>
+ <20210828155250.GA820265@roeck-us.net>
+ <e9de99d88fb9e2e34552806fa47efa488332325c.camel@linux.ibm.com>
+From:   Brandon Wyman <bjwyman@gmail.com>
+Message-ID: <cac545d4-3840-898c-4950-8262fea9e2ab@gmail.com>
+Date:   Mon, 30 Aug 2021 16:07:41 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB49518ED9AAF8B543FD8324B9EAC19@PH0PR11MB4951.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <e9de99d88fb9e2e34552806fa47efa488332325c.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 06:30:02PM +0000, Machnikowski, Maciej wrote:
 
-> So to be able to control SyncE we need 2 interfaces:
-> - Interface to enable the recovered clock output at the given pin
-> - interface to monitor the DPLL to see if the clock that we got is valid, or not.
-> 
-> If it comes to ESMC (G.8264) messages, SyncE itself can run in 2 modes (slides 29/30 will give you more details):
-> - QL-Disabled - with no ESMC messages - it base on the local information from the PLL to make all decisions
-> - QL-Enabled - that adds ESMC and quality message transfer between the nodes.
+On 2021-08-30 08:50, Eddie James wrote:
+> On Sat, 2021-08-28 at 08:52 -0700, Guenter Roeck wrote:
+>> On Fri, Aug 27, 2021 at 11:04:33PM +0000, Brandon Wyman wrote:
+>>> The bytes for max_power_out from the ibm-cffps devices do not need
+>>> to be
+>>> swapped.
+>>>
+>>> Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
+>> Eddie, can you confirm this ?
+> This can't be true for all the power supplies supported by this driver,
+> no. I think we need to check the version first. Brandon, I tested this
+> on witherspoon (which is psu version 1) and get 3148 watts. If it's not
+> swapped, that would be 19468 watts...
+>
+> Thanks,
+> Eddie
+I had tested this on a variety of systems with a variety of different 
+power supplies, but I did *NOT* test this on the Witherspoon power supplies.
 
-How do you get the QL codes from this?
+This apparently requires a bit more thought to figure out how to handle 
+the other types and also not get Witherspoon wrong.
 
-+enum if_eec_state {
-+       IF_EEC_STATE_INVALID = 0,
-+       IF_EEC_STATE_FREERUN,
-+       IF_EEC_STATE_LOCKACQ,
-+       IF_EEC_STATE_LOCKREC,
-+       IF_EEC_STATE_LOCKED,
-+       IF_EEC_STATE_HOLDOVER,
-+       IF_EEC_STATE_OPEN_LOOP,
-+       __IF_EEC_STATE_MAX,
-+};
+Thanks for checking Eddie.
 
-Thanks,
-Richard
+>> Thanks,
+>> Guenter
+>>
+>>> ---
+>>>   drivers/hwmon/pmbus/ibm-cffps.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/hwmon/pmbus/ibm-cffps.c
+>>> b/drivers/hwmon/pmbus/ibm-cffps.c
+>>> index df712ce4b164..29b77f192c9e 100644
+>>> --- a/drivers/hwmon/pmbus/ibm-cffps.c
+>>> +++ b/drivers/hwmon/pmbus/ibm-cffps.c
+>>> @@ -171,7 +171,7 @@ static ssize_t ibm_cffps_debugfs_read(struct
+>>> file *file, char __user *buf,
+>>>   		cmd = CFFPS_SN_CMD;
+>>>   		break;
+>>>   	case CFFPS_DEBUGFS_MAX_POWER_OUT:
+>>> -		rc = i2c_smbus_read_word_swapped(psu->client,
+>>> +		rc = i2c_smbus_read_word_data(psu->client,
+>>>   						 CFFPS_MAX_POWER_OUT_CM
+>>> D);
+>>>   		if (rc < 0)
+>>>   			return rc;
+>>> -- 
+>>> 2.25.1
+>>>
