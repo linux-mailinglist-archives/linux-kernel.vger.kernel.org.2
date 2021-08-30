@@ -2,73 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAAE3FB4B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107943FB4C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 13:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236537AbhH3Lkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 07:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236430AbhH3Lkx (ORCPT
+        id S236567AbhH3LsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 07:48:02 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:61387 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236542AbhH3LsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 07:40:53 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6504C061575;
-        Mon, 30 Aug 2021 04:39:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=olFWSyursi1tndR4gL2jA2gcoq/zLkojRZ8FRs3OKHc=; b=ciSk/hhS1CWRvrPL14tgpUNf1
-        iNWZN/P/OB+zchktLlH4LB6xfCXK56yY0Mq/b5FNlsqcSGBzxDI8bSET2K70HSRIwyWYIvr0sOBOZ
-        U2LESDm4YTF8fqRuG0IIPtqCguZDN/XDLUd8O1yuCMAahUdtGcjSmKJp7MgIVVkxZJvtJ2vriL6Rc
-        L9O21M/tX630hf9CduizKY+YewG0LLpavrB2Y+FpOf6JWl/VNosaJHW3mX6kKbVcPwTIOg47TxP+E
-        wUnUUH+JwGSu53nq8FjzSDi+w5jZk6HkA04TE2NiTnHQAdZhxGoYjXm3Y+FqSdhkWojRqG22RoXh7
-        o1Axxsw8A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47872)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mKfdo-00051Z-7A; Mon, 30 Aug 2021 12:39:52 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mKfdm-0004rR-Rl; Mon, 30 Aug 2021 12:39:50 +0100
-Date:   Mon, 30 Aug 2021 12:39:50 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Luo Jie <luoj@codeaurora.org>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v1 2/3] net: phy: add qca8081 ethernet phy driver
-Message-ID: <20210830113950.GX22278@shell.armlinux.org.uk>
-References: <20210830110733.8964-1-luoj@codeaurora.org>
- <20210830110733.8964-3-luoj@codeaurora.org>
+        Mon, 30 Aug 2021 07:48:01 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630324028; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=0NlgGf+fVQWSUZ9a8fP0CoOEMHCCeZNsni95+pq81Xc=; b=kLxSZBmuGxKffHGKzh5tQNzEj6uYRYnSSQW+18n7bu+fcoRr8wtH75Sb4l/aN5bPNcrn+QSw
+ wZ5r/hARxIi28eZ8xjbxbyo8KO7OBXnKCmf2mlrLpy5Sf8CUMceBWwE42Q+apRImAaBaXwUf
+ jENsD997uOUCx7wQH5ORl9iNPTo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 612cc534f61b2f864bff92dd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 30 Aug 2021 11:47:00
+ GMT
+Sender: deesin=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 723D9C4361A; Mon, 30 Aug 2021 11:46:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.3] (unknown [122.163.204.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C179C43616;
+        Mon, 30 Aug 2021 11:46:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 4C179C43616
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH V5 2/2] soc: qcom: aoss: Add debugfs entry
+To:     Stephen Boyd <swboyd@chromium.org>, bjorn.andersson@linaro.org,
+        clew@codeaurora.org, sibis@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
+References: <1628161974-7182-1-git-send-email-deesin@codeaurora.org>
+ <1628161974-7182-3-git-send-email-deesin@codeaurora.org>
+ <CAE-0n50CM=DpXx7fzrcnWox+ZSfqvWuEb-R_rTP8ghR+bd54eA@mail.gmail.com>
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+Message-ID: <ff8ede00-008e-4dfb-7a39-19242d421462@codeaurora.org>
+Date:   Mon, 30 Aug 2021 17:16:53 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830110733.8964-3-luoj@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <CAE-0n50CM=DpXx7fzrcnWox+ZSfqvWuEb-R_rTP8ghR+bd54eA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 07:07:32PM +0800, Luo Jie wrote:
-> +/* AN 2.5G */
-> +#define QCA808X_FAST_RETRAIN_2500BT		BIT(5)
-> +#define QCA808X_ADV_LOOP_TIMING			BIT(0)
-> 
-> +/* Fast retrain related registers */
-> +#define QCA808X_PHY_MMD1_FAST_RETRAIN_CTL	0x93
-> +#define QCA808X_FAST_RETRAIN_CTRL_VALUE		0x1
 
-These are standard 802.3 defined registers bits - please add
-definitions for them to uapi/linux/mdio.h.
+On 8/5/2021 11:58 PM, Stephen Boyd wrote:
+> Quoting Deepak Kumar Singh (2021-08-05 04:12:54)
+>> It can be useful to control the different power states of various
+>> parts of hardware for device testing. Add a debugfs node for qmp so
+>> messages can be sent to aoss for debugging and testing purposes.
+> Is it ever useful after device testing? I'd prefer we not apply this
+> patch as it looks like testing code that won't ever be used after
+> developing this driver.
 
-Thanks.
+This is not only for testing. Some user space clients can also use this 
+to send messages to aoss.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+One such example is setting higher ddr frequency during boot and 
+reducing it post boot from user space.
+
