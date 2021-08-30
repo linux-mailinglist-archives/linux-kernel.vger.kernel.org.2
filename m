@@ -2,83 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E6F3FBD69
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3BF3FBD6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235086AbhH3UYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:24:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233129AbhH3UYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:24:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65B9460240;
-        Mon, 30 Aug 2021 20:23:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630354990;
-        bh=tn3qgzyY5hPJkn4IIVN5SAwUHdjKS1rYEATcvTAHc2Y=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=q5xtsCTIUdFm8S1L9ZIUuu72RJMsGfHWl0/i378RewZigtMXy27H6RjIFxgA+mTWj
-         YXJqzPkkuBtgwSeH/q+adJ2B4mgnNTIVFi56+W9Ww82X/HSK7VJLN24pzZGb7jllN9
-         0OLKHyS4mFCtFBOBF5DA+3szQa8B83TCdV5MSkUW+kKfaZlj3dvLB7MyXqyEooSw/h
-         fy18+FExj8WHppxiMToIatQ5YQYLTquadrmv7ase6RqP68UqPJmB6ZEzlcd1LGNNvm
-         tcAAgtI47SuweI/7xeUKU9OTmHL9n0NBU+j5xY0P2yBh/zFwtV1LYzwbVGElNCIbKL
-         FaIdzAYoax85Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3636D5C0566; Mon, 30 Aug 2021 13:23:10 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 13:23:10 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        xiehaocheng.cn@gmail.com, jiangong.han@windriver.com,
-        Joel Fernandes <joel@joelfernandes.org>, jwi@linux.ibm.com,
-        fishland@aliyun.com, Mark Brown <broonie@kernel.org>,
-        Willy Tarreau <w@1wt.eu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        yanfei.xu@windriver.com, zhouzhouyi@gmail.com
-Subject: Re: [GIT PULL] RCU changes for v5.15
-Message-ID: <20210830202310.GY4156@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210830041459.GA3067667@paulmck-ThinkPad-P17-Gen-1>
- <CAHk-=wiVNCemfBsTvSLGBycu55ArJAponTYhBqO8fzApiKj1xg@mail.gmail.com>
+        id S235685AbhH3UYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 16:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235306AbhH3UYj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 16:24:39 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5ECCC061575;
+        Mon, 30 Aug 2021 13:23:45 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id ot2-20020a17090b3b4200b0019127f8ed87so612003pjb.1;
+        Mon, 30 Aug 2021 13:23:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=h+3mX84nFnAyClKOUYMDJFGqUg+wKBWo2M4YAm5KDeE=;
+        b=HkQRX6YAZLsaUi38EWhsB24kcuq1aHXtuE0Rxwe/j5/TaRphVrzGkHhlla2pEeZTBb
+         aoQ6ZYfK3S9WgLByBLi5X7MpO2x27iqqG505NFkjWuQOhUbr2HNnzD2jqZImIs77vxIZ
+         cZXCp7Wj8cGp4rGk27QasIpYOPu4hnBNFLnlLkHyjIOpXjwwNljVDX+gC7s59/Ez0gym
+         +srHPt3zgCefNNVdveChYizrbJwAQq20c7a41ace8U1QvV0OlXEF+fQMyUj1XgY4FW5k
+         WwTefeHfz9rhg2fMCfgGcttIC4Www3v/lZ9KXbWsPR/XFIH/KWLbI08PAmLmDMkbZliy
+         QUPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h+3mX84nFnAyClKOUYMDJFGqUg+wKBWo2M4YAm5KDeE=;
+        b=WzaUTk6r+Ig+Ua40/olDyTYl+hYMsn4rsKa0fkqZ29tLoOYDk4bWJ027N25jQlquFO
+         Ya4BiDMCHq3PSPi/TbF/P7b8DtJadhAHifDHRUNFHiStdyX98iOVVlG6H76DAponch9m
+         uh/UeUDnwKjgbkVppqqSTo/Ua5zSShhhgawnlZBLIeBpmWUoXborAHq3Aml1jNebkQSI
+         61O6RJkVEIlSlA6nZ6IBYEbZ/EGb9NMF95QWT9uxJUog9hvOyFv/aFJA/k7c+5Z2wpJA
+         gVaRWvNHI7u1Y49KzIFBDjvCjcsxpK8ygOvVrrXc2RWKhIerffzwnNoOdKC9O8D8p5F8
+         5o3A==
+X-Gm-Message-State: AOAM530VnIqPx7A6wRvUgq3nMzEJqjegcN1jGmN/QKrIDwUucqUuTR4Q
+        iF3oGFL4f5VUd0/TLtStKqM=
+X-Google-Smtp-Source: ABdhPJxHmgQYkJFj5bbpFOtlXZui63pW8/vSQPJjJ8wBem06ht10W47cL3+3RzVQ97Qo0JMXaxWufw==
+X-Received: by 2002:a17:90a:4204:: with SMTP id o4mr928331pjg.199.1630355024962;
+        Mon, 30 Aug 2021 13:23:44 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:771a:afc8:2e96:23dd])
+        by smtp.gmail.com with ESMTPSA id s20sm14915497pfe.205.2021.08.30.13.23.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 13:23:43 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 13:23:41 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     phoenix <phoenix@emc.com.tw>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        jingle.wu@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw
+Subject: Re: [PATCH] Input: elantench - Fix the firmware misreport
+ coordinates for trackpoint occasionally.
+Message-ID: <YS0+TU21/nok6Ge9@google.com>
+References: <20210729010940.5752-1-phoenix@emc.com.tw>
+ <000001d79d99$53762dd0$fa628970$@emc.com.tw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wiVNCemfBsTvSLGBycu55ArJAponTYhBqO8fzApiKj1xg@mail.gmail.com>
+In-Reply-To: <000001d79d99$53762dd0$fa628970$@emc.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 12:54:19PM -0700, Linus Torvalds wrote:
-> On Sun, Aug 29, 2021 at 9:15 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > Please pull the latest RCU git tree from:
-> 
-> Pulled.
-> 
-> I do note that you are one of the few people I pull from that haven't
-> converted to signed tags yet.
-> 
-> It's not technically a problem, since I trust the kernel.org
-> repositories, but when I notice I try to gently push people to use
-> signed tags even on kernel.org repositories. It's just a good idea.
-> 
-> So here's that gentle nudge.
-> 
-> I even have an old pgp key from you in my keyring, so I know you at
-> some point had one. And making git use them really is not a log more
-> than using "git tag -s" to create one, and pointing me at the tag
-> instead of the branch name.
+Hi Phoenix,
 
-Very well, I will use a signed tag for my next pull request to you.
+On Mon, Aug 30, 2021 at 08:19:48PM +0800, phoenix wrote:
+> Hi Dmitry,
+> 
+> Would you review this patch, thanks
+> 
+> Best regards,
+> Phoenix Huang
+> 
+> -----Original Message-----
+> From: Phoenix Huang [mailto:phoenix@emc.com.tw] 
+> Sent: Thursday, July 29, 2021 9:10 AM
+> To: linux-kernel@vger.kernel.org; linux-input@vger.kernel.org;
+> dmitry.torokhov@gmail.com
+> Cc: jingle.wu@emc.com.tw; josh.chen@emc.com.tw; dave.wang@emc.com.tw;
+> Phoenix Huang <phoenix@emc.com.tw>
+> Subject: [PATCH] Input: elantench - Fix the firmware misreport coordinates
+> for trackpoint occasionally.
+> 
+> Signed-off-by: Phoenix Huang <phoenix@emc.com.tw>
+> ---
+>  drivers/input/mouse/elantech.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
+> index 2d0bc029619f..07e1098f2d31 100644
+> --- a/drivers/input/mouse/elantech.c
+> +++ b/drivers/input/mouse/elantech.c
+> @@ -517,6 +517,17 @@ static void elantech_report_trackpoint(struct psmouse
+> *psmouse,
+>  	case 0x16008020U:
+>  	case 0x26800010U:
+>  	case 0x36808000U:
+> +	
+> +		/* This firmware misreport coordinates for trackpoint
+> occasionally.
+> +		* So we discard these packets by pattern to prevent cursor
+> jumps.
+> +		*/
+> +		if (packet[4] == 0x80 || packet[5] == 0x80 ||
+> +		    packet[1] >> 7 == packet[4] >> 7 ||
 
-If you would like to check ahead of time, I have created a
-signed test tag named test.2021.08.30a on
-git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+I think this will reject X coordinates in range [0, 127]. Is this really
+what is needed? What kind of patterns are you observing when firmware
+misreports coordinates?
 
-							Thanx, Paul
+Thanks.
+
+-- 
+Dmitry
