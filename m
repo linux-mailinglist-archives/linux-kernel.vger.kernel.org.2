@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5970E3FBD1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 21:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8424B3FBD21
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 21:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234092AbhH3TrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 15:47:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44104 "EHLO mail.kernel.org"
+        id S234160AbhH3TrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 15:47:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233845AbhH3TrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 15:47:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E198760462;
-        Mon, 30 Aug 2021 19:46:13 +0000 (UTC)
+        id S234067AbhH3TrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 15:47:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0462C60F5B;
+        Mon, 30 Aug 2021 19:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630352773;
-        bh=PvaT27lZtqs9bitwXzznuUAps+ObzbAt0uEUwY3We3s=;
+        s=k20201202; t=1630352775;
+        bh=cMjJxUaXv2i5f8X+Tyzv99TCeIXyXaopYNdOKYJc3Lw=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=LIY4wGy37RbZr+v+mKIsNKYMlLtIDOognjSBDhNs5TRlh+4ZZadeEWas5L5ZVVdYK
-         GJGBpWYGj8QKN7oMJ64Ab4c+NvcnHLtHMnLf3GH0EF30X/hhy8Tg27RVHQNXceaUj8
-         OmZAJhvjZbCphCjFV8S8P2lgS6U3eXqPYxi8nbRmku027Q8t5bHz7LXqQwMSHdBG8G
-         Yd2s6NxvxNk75fi0aQpTgtO5KLvoiNiagNuQhphj0IruTHfPQOJXQg6YYjLl2p7IT3
-         YzXyFNN8qGAnZV/VARj4PCrw15ILS6VubeFjTO3oXf2AZij8ZCe73CaZeX9ge8vkfn
-         SKX9tGLF1tL3A==
+        b=Tx3IFoLMFxMk4PlKvyf6oQuTwn6B5ADypiIkBdVTdVuJhTXHd/T8S2TD2FUfXMe0p
+         uVG1f3k002UjPxGQOzl5D0Vu8RMjdTp9lMyL8Zba7dX8kPH1qfqTmxSst/XiBqIKCa
+         dPtcEt4m4mdjlifBCmaUVwfpN1tokDaVDtpGwTAG3fE2b7ycoYFjZP0WyXa8DWu3Kd
+         A3p5m8yxbSHAWJN1jROuB5VYW66XVRKQ3ad1srZwu+fR9QW/YqCf/VhHKCvJBOed64
+         1p48NuS97GBsNsSTJkxOqfa5ruTlOOH5zdRBKU47VLnlF6rHucfmEt/gqEEwSNdJge
+         RCC+u3h+Rvftw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CD76660A5A;
-        Mon, 30 Aug 2021 19:46:13 +0000 (UTC)
-Subject: Re: [GIT PULL] TPM DEVICE DRIVER changes for v5.15
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F100E60A3C;
+        Mon, 30 Aug 2021 19:46:14 +0000 (UTC)
+Subject: Re: [GIT PULL] power-supply changes for 5.15
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <dbb37ec13b79573e1223161383c222a6ab7ac15e.camel@kernel.org>
-References: <dbb37ec13b79573e1223161383c222a6ab7ac15e.camel@kernel.org>
-X-PR-Tracked-List-Id: <linux-integrity.vger.kernel.org>
-X-PR-Tracked-Message-Id: <dbb37ec13b79573e1223161383c222a6ab7ac15e.camel@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.15
-X-PR-Tracked-Commit-Id: f985911b7bc75d5c98ed24d8aaa8b94c590f7c6a
+In-Reply-To: <20210827085220.yryb2prsgeaz7s6o@earth.universe>
+References: <20210827085220.yryb2prsgeaz7s6o@earth.universe>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210827085220.yryb2prsgeaz7s6o@earth.universe>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git tags/for-v5.15
+X-PR-Tracked-Commit-Id: c9398455b046fc7a44b6dd53d9d6fe4b11c21700
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 451819aa5ad0a22b23f0eb178816dc72b73ab903
-Message-Id: <163035277378.30336.12109422444290071212.pr-tracker-bot@kernel.org>
-Date:   Mon, 30 Aug 2021 19:46:13 +0000
-To:     Jarkko Sakkinen <jarkko@kernel.org>
+X-PR-Merge-Commit-Id: 4520dcbe0df41385288f24e61f322ee97063fa03
+Message-Id: <163035277498.30336.15091820360246843774.pr-tracker-bot@kernel.org>
+Date:   Mon, 30 Aug 2021 19:46:14 +0000
+To:     Sebastian Reichel <sre@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        jmorris@namei.org, dhowells@redhat.com, peterhuewe@gmx.de
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 23 Aug 2021 20:31:25 +0300:
+The pull request you sent on Fri, 27 Aug 2021 10:52:20 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.15
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git tags/for-v5.15
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/451819aa5ad0a22b23f0eb178816dc72b73ab903
+https://git.kernel.org/torvalds/c/4520dcbe0df41385288f24e61f322ee97063fa03
 
 Thank you!
 
