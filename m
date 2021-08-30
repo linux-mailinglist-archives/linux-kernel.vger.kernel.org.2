@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0649C3FB381
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E213FB37F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 11:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235604AbhH3KAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 06:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhH3KAv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:00:51 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864E6C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:59:58 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id f22so14916476qkm.5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 02:59:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mJdwvRMdkrpxEfeQAg6MAeFgakBlC1tISJ8H7onnuLM=;
-        b=ISu+0Ybd+wbw3eW5LgQYHi72bEiVI6B4w36e0SjAnuoqFNSAo0c4NhIMS9HrVzX9RP
-         lHauOs6mR76mUbBOOidKk4MvBB905v0vNPdJJbIYDfRhpZGd7UYCWlSOBROUGIfc59kO
-         GWCroOmImTW1l3JQgrU0pI6sX1FfahEaEuOLuGAiEi8odi5i//ZjgKnSz8IRTpzoYyj5
-         A3is99vwxyS+BU1IQ/Ks0GuKgUQ8SM27gPVjmrR7IS4+XJJw9BXCqYw78T0SJLu+OFHS
-         VQ3PcnZFABH4qZszhbPKHupTgPcLK5leXcFYjtUi+ourV6QVZu6Zgk99jBWZ7QZx91Ue
-         b1qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mJdwvRMdkrpxEfeQAg6MAeFgakBlC1tISJ8H7onnuLM=;
-        b=WFtOTTVTaeN2lRgKpI4A6iiv0k/sQe+hjGgxZf7k6Eqlhy/mEOX1GuWdqcPt/geCj6
-         eOJ3DTQvZokbPFSOmhjg3mymVNrwVRPQ6VDwa5PJv4+A1SInIe3GAl8SUV6pxR6SR1x8
-         ZZGngGNevQKr5+1r4gB54yuBmmm6fXrnMk3pgA2lXFMRKlqZE2KjfhrgM/ni0HEGSmmc
-         Hu27NNrE45VPn3C4/8jwprM5jgEnYuv1j/gNptjyUYGhtoIKZKm6d7aBTDi1GVi3ACc2
-         d9i29zce87NtxQs045h93i1VIdy6Vk4+W0l9qHAaL6JNTY10PtkNPEr9OyCOag+MOS8H
-         Ny5A==
-X-Gm-Message-State: AOAM530sUwdO7XQHwYDKdkULYlRP6ex+xsn6+0rzN9GvK/UqA35ZCjVu
-        9kIL0vJQACBlibVvFgSXqN0BGjlJ7oE=
-X-Google-Smtp-Source: ABdhPJzYM+ujLda+0cyqURBwDvoWd6i6xnN0imxljCn7lZGaok9KdWki/Ymg/zPqrLWIDE+F2ofH8A==
-X-Received: by 2002:a37:e20f:: with SMTP id g15mr22059950qki.450.1630317597528;
-        Mon, 30 Aug 2021 02:59:57 -0700 (PDT)
-Received: from vps.qemfd.net (vps.qemfd.net. [173.230.130.29])
-        by smtp.gmail.com with ESMTPSA id g27sm7977036qts.79.2021.08.30.02.59.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 02:59:57 -0700 (PDT)
-Received: from schwarzgerat.orthanc (schwarzgerat.danknet [192.168.128.2])
-        by vps.qemfd.net (Postfix) with ESMTP id A36F72B478;
-        Mon, 30 Aug 2021 05:59:56 -0400 (EDT)
-Received: by schwarzgerat.orthanc (Postfix, from userid 1000)
-        id 935C56001E5; Mon, 30 Aug 2021 05:59:56 -0400 (EDT)
-Date:   Mon, 30 Aug 2021 05:59:56 -0400
-From:   nick black <dankamongmen@gmail.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] console: consume APC, DM, DCS
-Message-ID: <YSysHCQyN+brJLEj@schwarzgerat.orthanc>
-References: <YSydL0q8iaUfkphg@schwarzgerat.orthanc>
- <0f094eb9-11d4-1bd5-0a1b-823317ad4f7d@kernel.org>
+        id S235950AbhH3J6C convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 30 Aug 2021 05:58:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229901AbhH3J6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 05:58:00 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50A6660525;
+        Mon, 30 Aug 2021 09:57:03 +0000 (UTC)
+Date:   Mon, 30 Aug 2021 11:00:15 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Sa, Nuno" <Nuno.Sa@analog.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH 02/16] iio: adc: max1027: Fix the number of max1X31
+ channels
+Message-ID: <20210830110015.787e0abe@jic23-huawei>
+In-Reply-To: <SJ0PR03MB63596A655409A24A442977F199C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
+References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
+        <20210818111139.330636-3-miquel.raynal@bootlin.com>
+        <SJ0PR03MB63596A655409A24A442977F199C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f094eb9-11d4-1bd5-0a1b-823317ad4f7d@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jiri Slaby left as an exercise for the reader:
-> So simply:
-> return state == ESosc || state == ESapc || state == ESpm || state == ESdcs;
+On Fri, 20 Aug 2021 07:03:40 +0000
+"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
 
-Sure, I can do this. Would you like me to recut the patch?
+> > -----Original Message-----
+> > From: Miquel Raynal <miquel.raynal@bootlin.com>
+> > Sent: Wednesday, August 18, 2021 1:11 PM
+> > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
+> > <lars@metafoo.de>
+> > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>; linux-
+> > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel Raynal
+> > <miquel.raynal@bootlin.com>; stable@vger.kernel.org
+> > Subject: [PATCH 02/16] iio: adc: max1027: Fix the number of max1X31
+> > channels
+> > 
+> > [External]
+> > 
+> > The macro MAX1X29_CHANNELS() already calls
+> > MAX1X27_CHANNELS().
+> > Calling MAX1X27_CHANNELS() before MAX1X29_CHANNELS() in the
+> > definition
+> > of MAX1X31_CHANNELS() declares the first 8 channels twice. So drop
+> > this
+> > extra call from the MAX1X31 channels list definition.
+> > 
+> > Fixes: 7af5257d8427 ("iio: adc: max1027: Prepare the introduction of
+> > different resolutions")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  drivers/iio/adc/max1027.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
+> > index 4a42d140a4b0..b753658bb41e 100644
+> > --- a/drivers/iio/adc/max1027.c
+> > +++ b/drivers/iio/adc/max1027.c
+> > @@ -142,7 +142,6 @@ MODULE_DEVICE_TABLE(of,
+> > max1027_adc_dt_ids);
+> >  	MAX1027_V_CHAN(11, depth)
+> > 
+> >  #define MAX1X31_CHANNELS(depth)			\
+> > -	MAX1X27_CHANNELS(depth),		\
+> >  	MAX1X29_CHANNELS(depth),		\
+> >  	MAX1027_V_CHAN(12, depth),		\
+> >  	MAX1027_V_CHAN(13, depth),		\
+> > --
+> > 2.27.0  
+> 
+> Reviewed-by: Nuno Sá <nuno.sa@analog.com>
+> 
+I guess we don't have many users of these devices as I would have expected
+this to blow up spectacularly.  Ah well.  
 
-> I wonder if we can simply hide them all behind single ESignore?
+Applied to the fixes-togreg branch of iio.git
 
-I'd rather not--I have plans beyond this patch which will
-require differentiating between them.
+Thanks,
 
--- 
-nick black -=- https://www.nick-black.com
-to make an apple pie from scratch,
-you need first invent a universe.
+Jonathan
