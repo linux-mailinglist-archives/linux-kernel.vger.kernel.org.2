@@ -2,72 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B353FBA0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F753FBA12
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237684AbhH3QZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235499AbhH3QZp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:25:45 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41207C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:24:51 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id u14so32251361ejf.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:24:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=iyG7Drn5ZN2S6Vg9wzcCuLj02HK4oqRu4fPdzya+1o4=;
-        b=KX65V9IFDpEg2PVw5qrTX7HK5oCfX8C2mC6GoD0RbT350TAmFXLSRQCuiQnh+EcyRL
-         aB8EF0t3QeU6n7PMhhu01mJ8tYRJEgObD2dtPXb5vcSAcy3LllP10tq+yyVqBjp04aEC
-         Xzz0nZVT0OiakBOlE1zUhVvcpJKX7hXPil5gDWomU8azuCq1Ad1RqbJY0lYiHw6VuS1v
-         JJ8CvvSQL+qdQiVlzXkF/HJCrsfbeVl9Zp52aDyhQ5LWB55OpcQJVmJIbECLRA760W1f
-         giKsfNbVsaLhQQPH30qZYlD+blgxiY7DwRIFq8nCXBtZ6VKM3VbZz9YTQ7xX9CaaVDLe
-         vlcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=iyG7Drn5ZN2S6Vg9wzcCuLj02HK4oqRu4fPdzya+1o4=;
-        b=dB3ISD1bIquXUMAKeKa+dL/FfSFQhKTDuTB3IXPhTV83/p+kIrp25ZDZSyMP9Mm8nq
-         Uw99OhkN3Hd7oolS5WHhvRaFKOZaWtcFuoc3wmpCtxg7avrFztOIdQJr92MaLrXoRAZR
-         2QAN9VBsUa6x/AfmQ1oQqH/Z87AAVRyTE140puKpMpdzFpx5QU7oWX/fXa7PqwiDP3xc
-         2KHnpVr+hrNGSx8DkmBxCW+FKtAyA+olNAgLIGiG8fje1JFq7rxDsYi0ZZEwiUmiGGL2
-         yPAAw19ZFHuRVIGjLSsbPWcFFC3fBqQBDLiGtuIXJASrEel4hlqy73VVUBXWSam57dLS
-         1w4w==
-X-Gm-Message-State: AOAM531te/9jlFoqjx/UUXhXR6uwYAtZ/FOUBP6E0Y+IX6yfZIavuzwi
-        I+rFtpkjmOtNF01m16WFVLF/oT/NTxXWeUM+O1Q=
-X-Google-Smtp-Source: ABdhPJwNsuCEYm9uUhr+kqm32vXvHG+/p1XmEhxaKRypTGfcBFSx+nij+blydlw3cQoDa3bfcHAQTWDcS+MSuPEzGt0=
-X-Received: by 2002:a17:906:36d6:: with SMTP id b22mr26220504ejc.387.1630340689865;
- Mon, 30 Aug 2021 09:24:49 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6402:291d:0:0:0:0 with HTTP; Mon, 30 Aug 2021 09:24:49
- -0700 (PDT)
-Reply-To: auel6605@gmail.com
-From:   Auel Zahra <amalisabelle9@gmail.com>
-Date:   Mon, 30 Aug 2021 16:24:49 +0000
-Message-ID: <CAOdXdQoLymobVhfQ=N_N9qWjzO01gezaaYUOxrH_8Qy+9LJoHg@mail.gmail.com>
-Subject: Good day friend
-To:     undisclosed-recipients:;
+        id S237755AbhH3Q0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:26:31 -0400
+Received: from mengyan1223.wang ([89.208.246.23]:36108 "EHLO mengyan1223.wang"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237734AbhH3Q03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 12:26:29 -0400
+Received: from [IPv6:240e:35a:10e9:a200:dc73:854d:832e:2] (unknown [IPv6:240e:35a:10e9:a200:dc73:854d:832e:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+        (Client did not present a certificate)
+        (Authenticated sender: xry111@mengyan1223.wang)
+        by mengyan1223.wang (Postfix) with ESMTPSA id D7E0C65B15;
+        Mon, 30 Aug 2021 12:25:27 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
+        s=mail; t=1630340735;
+        bh=V9KPj1l200pe8lvrcwheafYz+NbTIXwaozb+aPY+BSE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Fqrh/qF+X3n/+zQXnNn+7tjXVNEFnrUVO1Qflwd0i5G2GH4A2jkbApWcQhTi+VyG5
+         qO4I5sItnmPNSC1PKnv1t57DqNF071cp1MWSVeHlfne6Q97uIcgDnHcGLkb6Zl/q50
+         XO3Z+GxVdMZrjCvcHoIEaaO3YglzsegxQ6EeXAoo0yyxVMAkyhxNG8WynqxnbokiHh
+         5f4qkXuDvSppBg1rK0OXBblglXkUO65JvJ+AuGEHZQH5Xc1iqwnpqXgclzFPfi4fqo
+         jVJiigqJbpjm2hBX4XKFSOPl/NCmrrghSVxBAj4pPAkq2u/hag1b8PBfvlKdjOA3sM
+         eZtBEnUkSGxEg==
+Message-ID: <40948c12746cbef5d5c2262d69a157f9b609845b.camel@mengyan1223.wang>
+Subject: Re: [PATCH] mips: remove reference to "newer Loongson-3"
+From:   Xi Ruoyao <xry111@mengyan1223.wang>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 31 Aug 2021 00:25:17 +0800
+In-Reply-To: <1d49da11-51d5-e148-cb02-9bd0ee57fae6@flygoat.com>
+References: <0b7c9431efb12c2d957fcc53ec8f0743725d61b3.camel@mengyan1223.wang>
+         <b32c0d64-77b2-d054-afcf-7d006eba3418@flygoat.com>
+         <086f60d6ef4395db5da7ee22c4f352d5c901d396.camel@mengyan1223.wang>
+         <1d49da11-51d5-e148-cb02-9bd0ee57fae6@flygoat.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2021-08-31 at 00:14 +0800, Jiaxun Yang wrote:
+> 
+> 
+> 在 2021/8/30 下午8:28, Xi Ruoyao 写道:
+> > On Mon, 2021-08-30 at 10:32 +0800, Jiaxun Yang wrote:
+> > > 在 2021/8/29 20:49, Xi Ruoyao 写道:
+> > > > Newest Loongson-3 processors have moved to use LoongArch
+> > > > architecture.
+> > > > Sadly, the LL/SC issue is still existing on both latest
+> > > > Loongson-3
+> > > > processors using MIPS64 (Loongson-3A4000) and LoongArch
+> > > > (Loongson-3A5000).
+> > > LLSC is fixed on Loongson-3A4000 as per CPUCFG report.
+> > If I don't enable LL/SC fix, GCC libgomp tests fail on both 3A4000
+> > and
+> > 3A5000 (using github.com/loongson/gcc for the latter) with "invalid
+> > access to 0x00000049" or "0x00000005".  This is a race condition: it
+> > does not happen at all with OMP_NUM_THREADS=1, happens with about
+> > 10%
+> > possibility with OMP_NUM_THREADS=2, and about 90% possibility with
+> > OMP_NUM_THREAD=4 (on 3A5000, on 3A4000 the possibility is lower).
+
+> Apologize for the false report, yes, you are right. I had checked with
+> Loongson guys
+> and they confirmed that the workaround still needs to be applied to 
+> latest 3A4000
+> processors, including 3A4000 for MIPS and 3A5000 for LoongArch.
+> 
+> Though, the reason behind the workaround varies with the evaluation of
+> their uArch,
+> for GS464V based core, barrier is required as the uArch design allows 
+> regular load
+> to be reordered after an atomic linked load, and that would break 
+> assumption of compiler
+> atomic constraints.
+
+> For GS464E, barrier is required to flush the Store Fill Buffer and
+> land 
+> all the cachelines
+> to L1 cache, otherwise a linked load to a cacheline located at SFB may
+> cause deadlock.
+> 
+> For original GS464, barrier is required to deal with some kind of 
+> pipeline hazard to
+> ensure store condition won't be shorted to success.
+
+This explains the different (mis)behavior of LL/SC on those uarchs.  I
+remember the original report of LL/SC issue said it can cause a deadlock
+on earlier model of 3As, but I didn't observed any deadlock on 3A4000.
+
+(That's I why didn't tried the workaround immediately after spotting
+libgomp failure, but debugged the code from 00:00 AM to 04:00 :( )
+
+Thanks for your detailed explanation!
+
+> Patch LGTM. The config symbol looks ambiguous and I'd agree with your 
+> idea of renaming.
+> 
+> Thanks,
+> 
+> - Jiaxun
+
+> > Or these are two different erratas and I misunderstand them as the
+> > same one?
+
+So basically this is true :).  They just happen to share one workaround.
+
 -- 
- Greetings my friend,
-My name is: Miss Auel Zahra.
-I'm contacting you because I want to be your friend and confide in you.
-I have in my possession now 227 KG of Gold Bars, Quality: 23 carat, 95%pure
-that I inherited from my late mother. I want you to buy or help me to find
-a buyer who can buy the gold at good price more than African price so you
-can help me to invest the money in your country
-since I had no business idea.
-I want to leave Cote d'Ivoire and relocate to your country to continue my
-education in your country. I Want you to stand by me as my tutor to sell
-this gold and for investment in your country.I will be waiting for your
-response.
-Miss Auel Zahra
+Xi Ruoyao <xry111@mengyan1223.wang>
+School of Aerospace Science and Technology, Xidian University
+
