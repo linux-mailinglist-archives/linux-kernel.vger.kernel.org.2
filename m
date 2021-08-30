@@ -2,132 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D4F3FB7C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C6C3FB7D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237084AbhH3OUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 10:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46004 "EHLO
+        id S237121AbhH3OV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 10:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237047AbhH3OTn (ORCPT
+        with ESMTP id S237015AbhH3OV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 10:19:43 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27850C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 07:18:49 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id p17so4015376qvo.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 07:18:49 -0700 (PDT)
+        Mon, 30 Aug 2021 10:21:28 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF80C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 07:20:34 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id u3so31413078ejz.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 07:20:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3bDYv7A/LtthHV1B7A47v6rcfLVgrIbXO4oXJa+YfPI=;
-        b=k0CgpMslNX1rWTUgpPhbj/OqdkaWqxYr0wGz3TaXWYankEGP0Q3UNqymfky1Xy/A+Q
-         h2qV2iynbjhNRBp4+5VMojFc8NLf6bLWmC5iCC4hU9iJmqfFt3vEIvEpmtO4bC9JENVS
-         BiUJYDzZwfJJyCxYy3ccI1VMtZTiaf2eTMcchnC33Ew6zEn292rQtR/oJd+VTNqdqJaM
-         +lXC7g5AzwG4qJFKN8/fmN2SuGpQ/XuyOnLFauVszjQOJ/QUPycaOo0ZNzkAcCQeWyvJ
-         b3nU64Ng0kboG6NPpBQljpimAc7gCI8udk+hQmMjKVema62pS4lJie44vfgdbfDw9Q8Q
-         EOdQ==
+         :cc:content-transfer-encoding;
+        bh=AhXC7FsliCDbgMBllCtVSrepgVuX0YpwGQp9z/ekM1Y=;
+        b=aizIAHzAv3IZCt4XAp2HBi2nBu99U5vp1261GVSeUsVCmxPQ9XcjIJUXm+PnBPp1p2
+         On1W34iNSDUP3GuA5Sk3YMWsBc8udP1Sq1YRFH+b19ypOZOfudgnwfu5gUzZrHfELV4D
+         oidZKe5e9SyEJkDw2IlyR62BYFOWuY37PetkpS4Be0IGVvVpB0yQ9ADVWhhXS0wssujW
+         MfhUKI0hpYkDC6aegg89z3B+sZ/dDeRE9DD+7HmnLr9MoMrvgNVWRytKOYughnseaiZm
+         1E2gfW21Y+O2tOlLu2G4+4KQo/E3IzsUD5zJhbpAkMuxM8t0R4MTEXKT1yYElZcKH6lS
+         QPkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3bDYv7A/LtthHV1B7A47v6rcfLVgrIbXO4oXJa+YfPI=;
-        b=WkKdTK3u9dCLze56CiNXNDgNJ9NyudBj+GfaaASw+CozvLVKosKRLQ0V7gBWvLbWAh
-         ZETqHmimAvgSZnfL/Adfn+mj2+Mg0nZWWk36fjbhK+8IFPhR/v5q9+3ZMep4557rzIXm
-         AY6GizMvWFZWajwKaO+uGy4JDlh0BLdAnjdEU3JJbfHq4n9lKGujIGwWGoaEOCZRXldx
-         aNhOkEe/nWlm2I+547zbkbR+g0Vq+wrTKRhCo7GPGFaR5uu0p/YHyHwfAsSJ3eSuroYt
-         W8dUtvV7eWm61kv7/eJ1JWy3+68pM8nR2OWluDshsiSk8SRMWzUv9LzvpUWSTOMMw3Bp
-         /PyQ==
-X-Gm-Message-State: AOAM533w1Whr1ZsqoxMZTax/FB62chGid450Dq2gzCkAKJ6rdaNzReVy
-        RHj1dEa9X0U9nUaKLz+BXhiqyuFV68bzIaAunCVZgQ==
-X-Google-Smtp-Source: ABdhPJzHjekGyU39UWiALsxjZxpzf/CttK5mtbE3Qic8fvdcaKyqq5Gpsqicgq48oCXssFXjY5mgE7OOpv1b2mFWx9Q=
-X-Received: by 2002:a05:6214:acd:: with SMTP id g13mr23816483qvi.23.1630333128241;
- Mon, 30 Aug 2021 07:18:48 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AhXC7FsliCDbgMBllCtVSrepgVuX0YpwGQp9z/ekM1Y=;
+        b=UURKKSqSzO3kYHUaoMe3W1GIpYeCpp+lbZimvAmhtZen9+GxtO37DfI6xigcJOH4kb
+         6yKZ4bJsfTv3tInXlwy3h7pO/99XQqR+KkJ6sJsORLbo2wTuB2ZU28uzipkPAqfqZN5Y
+         GAvO+C5xl7oxY5tgVKK+mgbxS5mn7VGtyNZaqqXNcQjfBa4H9YeOOAraMVtEyakbQc+n
+         BYbZwnD4lFNYj96rj86lg+ezlMn4BRLG0ySC3wumcPFaVxUm5GWuyyCYsbTGtCYrYXJQ
+         dt8sqipDN6DuDDrkVnrrcs74qJlL4Fc3GNkwc+AtH5khACdfmMdcrS9sEwBPO0m3LSo8
+         dwaw==
+X-Gm-Message-State: AOAM532IeiS0a3zt7HvZmz8pX3KNfUpCjfz4Ucb9kiLbCVbYs/USr12/
+        Z5PxTo0SflFtWrIgI6QYuiDIv6jazwXNewkD4ko8
+X-Google-Smtp-Source: ABdhPJzofMywvHG9GYplqHaT8BalSiL9uoUxDKQw/jVvGW+oC9BvtDJV521UIbWSBHNfDlNS5rfeQLoPnlOP789groQ=
+X-Received: by 2002:a17:906:2755:: with SMTP id a21mr24982312ejd.488.1630333232912;
+ Mon, 30 Aug 2021 07:20:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210829203027.276143-1-marijn.suijten@somainline.org>
- <20210829203027.276143-2-marijn.suijten@somainline.org> <CAA8EJprQ03ipZzO+1vgt9W7jFbLXgsYR0n-oJxVB-142x8dgRA@mail.gmail.com>
- <17d19b93-dbe5-cc85-f302-b52cd8eeed56@somainline.org> <CAA8EJpqd7_5510TodALnX13Wo0MufYm2G=r6vw9sy=VURrewyw@mail.gmail.com>
- <YSznouVZ93sUd6xa@Marijn-Arch-PC.localdomain>
-In-Reply-To: <YSznouVZ93sUd6xa@Marijn-Arch-PC.localdomain>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 30 Aug 2021 17:18:37 +0300
-Message-ID: <CAA8EJpoRo6rPgpUeT9X0K4UPu5d8-YBP=BJ3AAejD+wujhmv+g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] arm: dts: qcom: apq8064: Use 27MHz PXO clock as DSI
- PLL reference
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210830115942.1017300-1-sashal@kernel.org> <20210830115942.1017300-13-sashal@kernel.org>
+ <CAD-N9QUXXjEMtdDniuqcNSAtaOhKtHE=hLMchtCJgbvxQXdABQ@mail.gmail.com>
+In-Reply-To: <CAD-N9QUXXjEMtdDniuqcNSAtaOhKtHE=hLMchtCJgbvxQXdABQ@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 30 Aug 2021 10:20:22 -0400
+Message-ID: <CAHC9VhTjFMw111-fyZsFaCSnN3b-TuQjqXcc1zVu2QTTekTohw@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.13 13/14] net: fix NULL pointer reference in cipso_v4_doi_free
+To:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-security-module@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 at 17:14, Marijn Suijten
-<marijn.suijten@somainline.org> wrote:
+On Mon, Aug 30, 2021 at 8:42 AM Dongliang Mu <mudongliangabcd@gmail.com> wr=
+ote:
 >
-> On Mon, Aug 30, 2021 at 04:24:58PM +0300, Dmitry Baryshkov wrote:
-> > On Mon, 30 Aug 2021 at 11:28, Marijn Suijten
-> > <marijn.suijten@somainline.org> wrote:
-> > >
-> > > Hi Dmitry,
-> > >
-> > > On 8/30/21 3:18 AM, Dmitry Baryshkov wrote:
-> > > > On Sun, 29 Aug 2021 at 23:30, Marijn Suijten
-> > > > <marijn.suijten@somainline.org> wrote:
-> > > >>
-> > > >> The 28NM DSI PLL driver for msm8960 calculates with a 27MHz reference
-> > > >> clock and should hence use PXO, not CXO which runs at 19.2MHz.
-> > > >>
-> > > >> Note that none of the DSI PHY/PLL drivers currently use this "ref"
-> > > >> clock; they all rely on (sometimes inexistant) global clock names and
-> > > >> usually function normally without a parent clock.  This discrepancy will
-> > > >> be corrected in a future patch, for which this change needs to be in
-> > > >> place first.
-> > > >>
-> > > >> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > >> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > > >
-> > > > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > >
-> > > > Checked the downstream driver, it always uses 27 MHz clock in calculations.
-> > >
-> > >
-> > > Given our concerns for msm8974 not updating DT in parallel with the
-> > > kernel (hence the need for a global-name fallback because "ref" is
-> > > missing from the DT), should we worry about the same for apq8064?  That
-> > > is, is there a chance that the kernel but not the firmware is upgraded
-> > > leading to the wrong parent clock being used?  The msm8960 variant of
-> > > the 28nm PLL driver uses parent_rate in a few places and might read
-> > > cxo's 19.2MHz erroneously instead of using pxo's 27MHz.
+> On Mon, Aug 30, 2021 at 8:01 PM Sasha Levin <sashal@kernel.org> wrote:
 > >
-> > Checked the code. It uses .parent_names =  "pxo", so changing ref
-> > clock should not matter. We'd need to fix ref clocks and after that we
-> > can switch parent names to fw_name.
+> > From: =E7=8E=8B=E8=B4=87 <yun.wang@linux.alibaba.com>
+> >
+> > [ Upstream commit 733c99ee8be9a1410287cdbb943887365e83b2d6 ]
+> >
 >
-> Correct, hence why this patch is ordered before the switch to .fw_name.
-> These patches can't go in the same series if apq8064 doesn't update its
-> firmware in parallel with the kernel just like msm8974.  Do you know if
-> this is the case?  If so, how much time do you think should be between
-> the DT fix (this patch) and migrating the drivers?
+> Hi Sasha,
+>
+> Michael Wang has sent a v2 patch [1] for this bug and it is merged
+> into netdev/net-next.git. However, the v1 patch is already in the
+> upstream tree.
+>
+> How do you guys handle such a issue?
+>
+> [1] https://lkml.org/lkml/2021/8/30/229
 
-You can have parent_data with .fw_name and .name in it.  .name will be
-used as a fallback if .fw_name doesn't match.
+Ugh.  Michael can you please work with netdev to fix this in the
+upstream, and hopefully -stable, kernels?  My guess is you will need
+to rebase your v2 patch on top of the v1 patch (basically what exists
+in upstream) and send that back out.
 
-
--- 
-With best wishes
-Dmitry
+--=20
+paul moore
+www.paul-moore.com
