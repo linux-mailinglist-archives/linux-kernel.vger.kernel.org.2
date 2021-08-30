@@ -2,69 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978573FB38E
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A573FB392
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236223AbhH3KFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 06:05:38 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40768 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhH3KFh (ORCPT
+        id S236288AbhH3KGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 06:06:25 -0400
+Received: from mail-qt1-f172.google.com ([209.85.160.172]:43627 "EHLO
+        mail-qt1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235877AbhH3KGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:05:37 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9E4B91FDE9;
-        Mon, 30 Aug 2021 10:04:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1630317883; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/BZ9Nzbh36Uo0OVwK8BMQEKq6pKk8VDrZgnYLw2r5LY=;
-        b=qeXtqhtrEOPqMzRzjW9t+TL3jD98MhlIpYFJ14zcXaGcQZrNOZmLbncf5x17UL634db6rd
-        6zt9q/NPMSYigFoIOBBEtFa0LyjpNJEfDC3wxg+AhGcVnttMXNuBk0DB5nJTJSpQc7qhSG
-        2NSpDOIlgfXwxDOzxYehTIXjSfJcg7Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1630317883;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/BZ9Nzbh36Uo0OVwK8BMQEKq6pKk8VDrZgnYLw2r5LY=;
-        b=w9mIVkZ+OuEEu+8qMvcwqgTG2QA7yK6/k+KJ8QRCp1byGlaAS0DamOhqqmcrWNh5Tdu/M9
-        7K5DA6/Cs8gmOmCg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 8AAEA1365C;
-        Mon, 30 Aug 2021 10:04:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id KnbNITutLGEdQAAAGKfGzw
-        (envelope-from <dwagner@suse.de>); Mon, 30 Aug 2021 10:04:43 +0000
-Date:   Mon, 30 Aug 2021 12:04:43 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH v1] nvme: avoid race in shutdown namespace removal
-Message-ID: <20210830100443.b2zkdp4l3vi2gz42@carbon.lan>
-References: <20210830093618.97657-1-dwagner@suse.de>
+        Mon, 30 Aug 2021 06:06:24 -0400
+Received: by mail-qt1-f172.google.com with SMTP id s15so7774977qta.10;
+        Mon, 30 Aug 2021 03:05:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=amZ51+cAPYqcNlwWC9J0wRvXw3ShsXJZxpepHqJ1tLY=;
+        b=KX2TogN4Ziw+SAvoOUhL+Hqk6Ghv4au5wg84AM4QHhHT64BJn2M5er7K6ckz6jr4CL
+         dtBkeJWAeB+bRZqLHwrCgDEE270X1xbm/dDRy1TiibsfOPBj9nfJl/OuUSiI9MGLh6X7
+         fHj37rRIeZcymKhM/f+jH8CdMU0tC1y1QuxRF+DXEcGvrVxv5geIC00OClwG84dmUH2e
+         9dDcXd0II17y2QwEVym7uvxUX9+SW+SVXLq7zG3Lcy6XgBaqg1NcmZ+z/K1+xWLw50LS
+         L/jiTO1SgeAlKlkhohRzDjSS5RBcNl/YEnTfKRdYf7byr6S4xSkTiqCw7mInJO8WT5tv
+         ysFA==
+X-Gm-Message-State: AOAM531Mj/BcyCnP3QtbWi9DhNMODLnvPAi4ulYxuxRqcHJTEqmmOXxC
+        zFWhrBccy7d+lTWnurwZditEvfNs0T5v2g==
+X-Google-Smtp-Source: ABdhPJwYwc3Ga5LmHPWFTfyoJhqH4MStboEdPraERN+q1LMbog5jgT9xi4ekFMHhgVR6/s5aBg654w==
+X-Received: by 2002:ac8:7391:: with SMTP id t17mr19777559qtp.0.1630317930377;
+        Mon, 30 Aug 2021 03:05:30 -0700 (PDT)
+Received: from purple.ru.oracle.com (broadband-109-173-81-86.ip.moscow.rt.ru. [109.173.81.86])
+        by smtp.googlemail.com with ESMTPSA id w6sm10744622qkw.91.2021.08.30.03.05.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 03:05:29 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Denis Efremov <efremov@linux.com>
+Subject: [PATCH] ext4: change EXT4_IOC_GETSTATE ioctl to _IOR
+Date:   Mon, 30 Aug 2021 13:05:08 +0300
+Message-Id: <20210830100508.56004-1-efremov@linux.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830093618.97657-1-dwagner@suse.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 11:36:18AM +0200, Daniel Wagner wrote:
-> Though one thing I am not really sure how it interacts with
-> nvme_init_ns_head() as we could be in running nvme_init_ns_head()
-> after we have set last_path = true. I haven't really figured
-> out yet what this would mean. Is this a real problem?
+EXT4_IOC_GETSTATE is only used to read the state flags from the kernel.
 
-I suspect it will regress the very thing 5396fdac56d8 ("nvme: fix
-refcounting imbalance when all paths are down") tried to fix.
+Fixes: 1ad3ea6e0a69 ("ext4: add a new ioctl EXT4_IOC_GETSTATE")
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
+ fs/ext4/ext4.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 3c51e243450d..244b4dd193d3 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -718,7 +718,7 @@ enum {
+ #define EXT4_IOC_PRECACHE_EXTENTS	_IO('f', 18)
+ /* ioctl codes 19--39 are reserved for fscrypt */
+ #define EXT4_IOC_CLEAR_ES_CACHE		_IO('f', 40)
+-#define EXT4_IOC_GETSTATE		_IOW('f', 41, __u32)
++#define EXT4_IOC_GETSTATE		_IOR('f', 41, __u32)
+ #define EXT4_IOC_GET_ES_CACHE		_IOWR('f', 42, struct fiemap)
+ #define EXT4_IOC_CHECKPOINT		_IOW('f', 43, __u32)
+ 
+-- 
+2.31.1
+
