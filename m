@@ -2,157 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669083FB409
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF253FB419
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 12:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236454AbhH3KqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 06:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
+        id S236485AbhH3Ktt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 06:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236421AbhH3Kpu (ORCPT
+        with ESMTP id S236415AbhH3Ktn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:45:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097FEC0617A8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 03:44:52 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630320290;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=m6usKdrX8IxR3Iqz1D7AWqgHkFW5USFWmQfrLHHfk/g=;
-        b=LK/HTXj6K40d+88fSuXGfBANMXKg+BbDXnjRehdegUMW6zoXQHZR0e2M4vY5Z0/IHdVNR4
-        1CtXxmwWrE5QMgNnO/6kdH9VuMdVDiF23744cqta0V1DHSX6rEJzer3CSM+rZJfq7PucCq
-        jSVdP3jty3+SKnFAaNMPw063bvlvkZ61/cMldhf3HCbJ+iKxIIu7PN+VMs0rlAnK7x2RGW
-        DucgEqDQsN4DAxt2m4d62ekKHHEC5zLydT0jG08sUwdWqNslHTPdsNJomEdUutSY4519ot
-        K5sl1a/pszyW4eeSfp0N8+wY3blvGy+6b5ku6Xhm0lUxm9T7Z0mhdYh9QjpLYg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630320290;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=m6usKdrX8IxR3Iqz1D7AWqgHkFW5USFWmQfrLHHfk/g=;
-        b=sXdhK1sq377fkZ3Olp6yr9O0lR0wLVW7iQtwuROvktSWHFJqRvthqvuTQnA0UkZis5/oBT
-        yAzLu6y+icAIE7DQ==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] x86/misc for v5.15-rc1
-References: <163031993120.58256.1250660796395121952.tglx@xen13.tec.linutronix.de>
-Message-ID: <163031993985.58256.16849318566787748326.tglx@xen13.tec.linutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 30 Aug 2021 06:49:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6611AC061575;
+        Mon, 30 Aug 2021 03:48:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dKqKLIxUsagVJumO62jXGIe/loCKVk6eG2zNzXoCLu0=; b=DC1+bjb6VW4EnFq6o2tl/PH/Oy
+        fF+RTWPCypJoRXwG2Ig8NW8E59NULCElV9jlXYE7WnGrgdE8TVIcu+YNjTBkivSpXJnDG7WzFA9gW
+        V3NDQ7h+ZPbZhp13UNT6Qyrhzzm7QwfkMdqwQ4pAZogK+P8SXl6daRmA36sjueqjiYp3osCoD5WfK
+        fMI/k2HCyuXVDY+NuFQ5E3Im9kW9aVGsIxWY7tTydUW3s4xFYE8+VLLTETw+tNm1LDFTLQdV4u3OV
+        tYg6nPFjsAzhyH0FLxJv/+z4ol/Ty4zKdUreqqVL8VcEZ1AsC6k9pBvWZMZ9rObSewbAFHXqyxLv4
+        E/wQc1ug==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKepJ-00021g-Cf; Mon, 30 Aug 2021 10:47:47 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EFAD498186D; Mon, 30 Aug 2021 12:47:40 +0200 (CEST)
+Date:   Mon, 30 Aug 2021 12:47:40 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
+        acme@kernel.org, mingo@redhat.com, kjain@linux.ibm.com,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 2/3] bpf: introduce helper
+ bpf_get_branch_snapshot
+Message-ID: <20210830104740.GK4353@worktop.programming.kicks-ass.net>
+References: <20210826221306.2280066-3-songliubraving@fb.com>
+ <202108272326.sMsn5b1g-lkp@intel.com>
 MIME-Version: 1.0
-Date:   Mon, 30 Aug 2021 12:44:50 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202108272326.sMsn5b1g-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Fri, Aug 27, 2021 at 11:10:39PM +0800, kernel test robot wrote:
 
-please pull the latest x86/misc branch from:
+> All errors (new ones prefixed by >>):
+> 
+>    riscv32-linux-ld: kernel/bpf/trampoline.o: in function `.L57':
+> >> trampoline.c:(.text+0x34c): undefined reference to `__SCK__perf_snapshot_branch_stack'
+>    riscv32-linux-ld: kernel/bpf/trampoline.o: in function `.L61':
+>    trampoline.c:(.text+0x360): undefined reference to `bpf_perf_branch_snapshot'
+> 
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-misc-2021-08=
--30
-
-up to:  a729691b541f: x86/reboot: Limit Dell Optiplex 990 quirk to early BIOS=
- versions
-
-
-A set of updates for the 86 reboot code:
-
-  - Limit the Dell Optiplex 990 quirk to early BIOS versions to avoid the
-    full 'power cycle' alike reboot which is required for the buggy BIOSes.
-
-  - Update documentation for the reboot=3Dpci command line option and
-    document how DMI platform quirks can be overridden.
-
-
-
-Thanks,
-
-	tglx
-
------------------->
-Paul Gortmaker (3):
-      x86/reboot: Document the "reboot=3Dpci" option
-      x86/reboot: Document how to override DMI platform quirks
-      x86/reboot: Limit Dell Optiplex 990 quirk to early BIOS versions
-
-
- Documentation/admin-guide/kernel-parameters.txt |  2 +-
- Documentation/x86/x86_64/boot-options.rst       | 11 ++++++++++-
- arch/x86/kernel/reboot.c                        |  3 ++-
- 3 files changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/=
-admin-guide/kernel-parameters.txt
-index bdb22006f713..34c8dd54518e 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4777,7 +4777,7 @@
-=20
- 	reboot=3D		[KNL]
- 			Format (x86 or x86_64):
--				[w[arm] | c[old] | h[ard] | s[oft] | g[pio]] \
-+				[w[arm] | c[old] | h[ard] | s[oft] | g[pio]] | d[efault] \
- 				[[,]s[mp]#### \
- 				[[,]b[ios] | a[cpi] | k[bd] | t[riple] | e[fi] | p[ci]] \
- 				[[,]f[orce]
-diff --git a/Documentation/x86/x86_64/boot-options.rst b/Documentation/x86/x8=
-6_64/boot-options.rst
-index 5f62b3b86357..ccb7e86bf8d9 100644
---- a/Documentation/x86/x86_64/boot-options.rst
-+++ b/Documentation/x86/x86_64/boot-options.rst
-@@ -126,7 +126,7 @@ Idle loop
- Rebooting
- =3D=3D=3D=3D=3D=3D=3D=3D=3D
-=20
--   reboot=3Db[ios] | t[riple] | k[bd] | a[cpi] | e[fi] [, [w]arm | [c]old]
-+   reboot=3Db[ios] | t[riple] | k[bd] | a[cpi] | e[fi] | p[ci] [, [w]arm | [=
-c]old]
-       bios
-         Use the CPU reboot vector for warm reset
-       warm
-@@ -145,6 +145,8 @@ Rebooting
-         Use efi reset_system runtime service. If EFI is not configured or
-         the EFI reset does not work, the reboot path attempts the reset using
-         the keyboard controller.
-+      pci
-+        Use a write to the PCI config space register 0xcf9 to trigger reboot.
-=20
-    Using warm reset will be much faster especially on big memory
-    systems because the BIOS will not go through the memory check.
-@@ -155,6 +157,13 @@ Rebooting
-      Don't stop other CPUs on reboot. This can make reboot more reliable
-      in some cases.
-=20
-+   reboot=3Ddefault
-+     There are some built-in platform specific "quirks" - you may see:
-+     "reboot: <name> series board detected. Selecting <type> for reboots."
-+     In the case where you think the quirk is in error (e.g. you have
-+     newer BIOS, or newer board) using this option will ignore the built-in
-+     quirk table, and use the generic default reboot actions.
-+
- Non Executable Mappings
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=20
-diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-index ebfb91108232..0a40df66a40d 100644
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -388,10 +388,11 @@ static const struct dmi_system_id reboot_dmi_table[] __=
-initconst =3D {
- 	},
- 	{	/* Handle problems with rebooting on the OptiPlex 990. */
- 		.callback =3D set_pci_reboot,
--		.ident =3D "Dell OptiPlex 990",
-+		.ident =3D "Dell OptiPlex 990 BIOS A0x",
- 		.matches =3D {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 990"),
-+			DMI_MATCH(DMI_BIOS_VERSION, "A0"),
- 		},
- 	},
- 	{	/* Handle problems with rebooting on Dell 300's */
-
+This a build with PERF_EVENTS=n, I suppose you'd better make calling
+perf_snapshot_branch_stack() dependent on having that :-)
