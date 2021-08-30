@@ -2,175 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4B13FBC95
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 265DE3FBC98
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 20:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbhH3Sme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 14:42:34 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:45694 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhH3Smd (ORCPT
+        id S231422AbhH3SoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 14:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231157AbhH3SoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:42:33 -0400
-Received: by mail-ot1-f54.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso19536412otv.12;
-        Mon, 30 Aug 2021 11:41:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=a12sAAWnY24FkYzNdYZv9eBHcuK5LgwU3aNcX710ZsI=;
-        b=B2kfkJMR4NBwSS6TWHolHC697fP5y9uccF6i9dVMz8sOnEulCC700zfmFcgHf+ekY5
-         pmuI4/K+qosCBOhOt92qP7Ve+OtkIh3Omo4l2zqObAXlTfw7ZelmyyeXbH7kARmj5oaO
-         lPInwU8vjsHgUga1VhdS9k/mI/1v6BL0+hULkuiAIvj4nPr40VdCEWg5gFs+vmlp0jJw
-         47SOpH2fqFNJLGLh5LRs6ztb6SIE86K47vjvkTAnJFYwz/QVJBfcrlGTzO1LzmvLJ2a7
-         XGNHKRxeyvgzYvqHf9D+o8losGo34DT7ZsGOliJhnD+7wcvBrC9+hhcyGeuLR0ORIszM
-         CVJw==
-X-Gm-Message-State: AOAM533wYfab0vFe/29FRTCOVIp1p6b+j399oGKft67H+0X9yu7anL+T
-        XPMdraRowEafVyTBVQSyzSpcy7pcN6LNHaDU+dZhFg7zmi6kHQ==
-X-Google-Smtp-Source: ABdhPJwcZiH6LamUWb2y07rVGxWqwk/8+DbNlrfz5Ml0h/YCe3gtfgbDOi1QnBjglu2qiKBV6we3cRU+H22h1VI4+V0=
-X-Received: by 2002:a9d:7115:: with SMTP id n21mr15526909otj.321.1630348899304;
- Mon, 30 Aug 2021 11:41:39 -0700 (PDT)
+        Mon, 30 Aug 2021 14:44:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1968EC061575;
+        Mon, 30 Aug 2021 11:43:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HTdApohf3fKpGokZqXcDVUqyTvtY54Ltdsz34HGavd8=; b=EgOq2CKpqZ4hVB4ORDcVotdj4v
+        zW4VqF6Rb++MLTTFWBAxYBeNKBVU5n2MdiA5mHBNqs66FDAmW/3GPrErUtrgQVMyo5IRi1fZCF1CZ
+        FjwIWQfKdC4oIidVjoFGMcDF8SqZtRVzBA3I6xfp5wnqyhgSvG9UP/Z02RZY0S1S0Da2GbO6uA54u
+        oDaq1vxhmOMbMBmrtN0dwuKQGiorsEgZcyqgaf+MThFtd5OvK/+jOV0qb6cdU0i2P4p5lyn6KQUBj
+        5MctOwRLxlqT8XSNkGfHuEiczwYsh4HIRkdXix4Rc5BJN/xJIFywVvGVaz0+Jh5fHKALziiRfUJ7r
+        gKQh/m2g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKmFJ-000RIR-F2; Mon, 30 Aug 2021 18:43:07 +0000
+Date:   Mon, 30 Aug 2021 19:43:01 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Andreas Dilger <adilger@dilger.ca>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Discontiguous folios/pagesets
+Message-ID: <YS0mtYZ+PEAaM7pI@casper.infradead.org>
+References: <YSqIry5dKg+kqAxJ@casper.infradead.org>
+ <1FC3646C-259F-4AA4-B7E0-B13E19EDC595@dilger.ca>
+ <20210830182818.GA9892@magnolia>
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 30 Aug 2021 20:41:28 +0200
-Message-ID: <CAJZ5v0hqMbLjTO71URfxCiKv6+Ha9BMA0ive1tEcjP7VqA1XZg@mail.gmail.com>
-Subject: [GIT PULL] Power management updates for v5.15-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210830182818.GA9892@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Aug 30, 2021 at 11:28:18AM -0700, Darrick J. Wong wrote:
+> On Sat, Aug 28, 2021 at 01:27:29PM -0600, Andreas Dilger wrote:
+> > On Aug 28, 2021, at 1:04 PM, Matthew Wilcox <willy@infradead.org> wrote:
+> > > 
+> > > The current folio work is focused on permitting the VM to use
+> > > physically contiguous chunks of memory.  Both Darrick and Johannes
+> > > have pointed out the advantages of supporting logically-contiguous,
+> > > physically-discontiguous chunks of memory.  Johannes wants to be able to
+> > > use order-0 allocations to allocate larger folios, getting the benefit
+> > > of managing the memory in larger chunks without requiring the memory
+> > > allocator to be able to find contiguous chunks.  Darrick wants to support
+> > > non-power-of-two block sizes.
+> > 
+> > What is the use case for non-power-of-two block sizes?  The main question
+> > is whether that use case is important enough to add the complexity and
+> > overhead in order to support it?
+> 
+> For copy-on-write to a XFS realtime volume where the allocation extent
+> size (we support bigalloc too! :P) is not a power of two (e.g. you set
+> up a 4 disk raid5 with 64k stripes, now the extent size is 192k).
+> 
+> Granted, I don't think folios handling 192k chunks is absolutely
+> *required* for folios; the only hard requirement is that if any page in
+> a 192k extent becomes dirty, the rest have to get written out all the
+> same time, and the cow remap can only happen after the last page
+> finishes writeback.
 
-Please pull from the tag
+I /think/ "all pages get written out at the same time" is basically the
+same thing as "support a non-power-of-two block size".
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.15-rc1
+If we only have page A in the cache at the time it's going to be written
+back, we have to read in pages B and C in order to calculate the parity P.
+That will annoy writeback-because-we're-low-on-memory; I know we allow
+a certain amount of allocation to happen in the writeback path, but
+requiring 128kB to be allocated is a bit much.
 
-with top-most commit fe583359ddf0d509275b87b635fa8b2e3794321e
-
- Merge branches 'pm-pci', 'pm-sleep', 'pm-domains' and 'powercap'
-
-on top of commit 7ee5fd12e8cac91bdec6de8417b030ed05d5d7ee
-
- Merge branch 'pm-opp'
-
-to receive power management updates for 5.15-rc1.
-
-These address some PCI device power management issues, add new
-hardware support to the RAPL power capping driver, add HWP guaranteed
-performance change notification support to the intel_pstate driver,
-replace deprecated CPU-hotplug functions in a few places, update CPU
-PM notifiers to use raw spinlocks, update the PM domains framework
-(new DT property support, Kconfig fix), do a couple of cleanups in
-code related to system sleep, and improve the energy model and
-the schedutil cpufreq governor.
-
-Specifics:
-
- - Address 3 PCI device power management issues (Rafael Wysocki).
-
- - Add Power Limit4 support for Alder Lake to the Intel RAPL power
-   capping driver (Sumeet Pawnikar).
-
- - Add HWP guaranteed performance change notification support to
-   the intel_pstate driver (Srinivas Pandruvada).
-
- - Replace deprecated CPU-hotplug functions in code related to power
-   management (Sebastian Andrzej Siewior).
-
- - Update CPU PM notifiers to use raw spinlocks (Valentin Schneider).
-
- - Add support for 'required-opps' DT property to the generic power
-   domains (genpd) framework and use this property for I2C on ARM64
-   sc7180 (Rajendra Nayak).
-
- - Fix Kconfig issue related to genpd (Geert Uytterhoeven).
-
- - Increase energy calculation precision in the Energy Model (Lukasz
-   Luba).
-
- - Fix kobject deletion in the exit code of the schedutil cpufreq
-   governor (Kevin Hao).
-
- - Unmark some functions as kernel-doc in the PM core to avoid
-   false-positive documentation build warnings (Randy Dunlap).
-
- - Check RTC features instead of ops in suspend_test Alexandre
-   Belloni).
-
-Thanks!
-
-
----------------
-
-Alexandre Belloni (1):
-      PM: sleep: check RTC features instead of ops in suspend_test
-
-Geert Uytterhoeven (1):
-      PM: domains: Fix domain attach for CONFIG_PM_OPP=n
-
-Kevin Hao (1):
-      cpufreq: schedutil: Use kobject release() method to free sugov_tunables
-
-Lukasz Luba (1):
-      PM: EM: Increase energy calculation precision
-
-Rafael J. Wysocki (3):
-      PCI: Use pci_update_current_state() in pci_enable_device_flags()
-      PCI: PM: Avoid forcing PCI_D0 for wakeup reasons inconsistently
-      PCI: PM: Enable PME if it can be signaled from D3cold
-
-Rajendra Nayak (3):
-      opp: Don't print an error if required-opps is missing
-      PM: domains: Add support for 'required-opps' to set default perf state
-      arm64: dts: sc7180: Add required-opps for i2c
-
-Randy Dunlap (1):
-      PM: sleep: unmark 'state' functions as kernel-doc
-
-Sebastian Andrzej Siewior (3):
-      powercap: intel_rapl: Replace deprecated CPU-hotplug functions
-      cpufreq: Replace deprecated CPU-hotplug functions
-      PM: sleep: s2idle: Replace deprecated CPU-hotplug functions
-
-Srinivas Pandruvada (2):
-      thermal: intel: Allow processing of HWP interrupt
-      cpufreq: intel_pstate: Process HWP Guaranteed change notification
-
-Sumeet Pawnikar (1):
-      powercap: Add Power Limit4 support for Alder Lake SoC
-
-Valentin Schneider (2):
-      PM: cpu: Make notifier chain use a raw_spinlock_t
-      notifier: Remove atomic_notifier_call_chain_robust()
-
----------------
-
- arch/arm64/boot/dts/qcom/sc7180.dtsi      | 24 +++++++++++++++
- drivers/base/power/domain.c               | 30 +++++++++++++++++--
- drivers/cpufreq/acpi-cpufreq.c            |  4 +--
- drivers/cpufreq/cpufreq.c                 |  6 ++--
- drivers/cpufreq/cpufreq_ondemand.c        |  4 +--
- drivers/cpufreq/intel_pstate.c            | 43 ++++++++++++++++++++++++--
- drivers/cpufreq/powernow-k8.c             |  6 ++--
- drivers/cpufreq/powernv-cpufreq.c         |  4 +--
- drivers/opp/of.c                          | 12 ++------
- drivers/pci/pci.c                         | 31 +++++++++++--------
- drivers/powercap/intel_rapl_common.c      | 50 +++++++++++++++----------------
- drivers/powercap/intel_rapl_msr.c         |  2 ++
- drivers/thermal/intel/therm_throt.c       |  7 ++++-
- drivers/thermal/intel/thermal_interrupt.h |  3 ++
- include/linux/energy_model.h              | 16 ++++++++++
- include/linux/notifier.h                  |  2 --
- include/linux/pm_domain.h                 |  1 +
- kernel/cpu_pm.c                           | 50 +++++++++++++++++++++++--------
- kernel/notifier.c                         | 19 ------------
- kernel/power/energy_model.c               |  4 ++-
- kernel/power/main.c                       |  2 +-
- kernel/power/suspend.c                    |  4 +--
- kernel/power/suspend_test.c               |  2 +-
- kernel/sched/cpufreq_schedutil.c          | 16 ++++++----
- 24 files changed, 235 insertions(+), 107 deletions(-)
+So we have to allow page A being dirty to pin pages B and C in the cache.
+I suppose that's possible; we could make (clean) pages B and C follow
+page A on the LRU, so they're going to still be in RAM at the time that
+page A is written back.  I don't fully understand how the LRU works,
+but I assume it'd be a nightmare to ensure that A, B and C all move
+around the system in the same way.  Much easier to ensure that ABC stay
+linked together and all get written back at once.
