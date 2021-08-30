@@ -2,134 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495F23FBA2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9E73FBA22
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 18:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237988AbhH3Q2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 12:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
+        id S237869AbhH3Q20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 12:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237953AbhH3Q2d (ORCPT
+        with ESMTP id S237621AbhH3Q2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:28:33 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B76C0617A8;
-        Mon, 30 Aug 2021 09:27:40 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id c17so13998694pgc.0;
-        Mon, 30 Aug 2021 09:27:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=SpvJ4CLAzhva5F4XtB4tBqXKDI4X4EVKC4ISV0mt3TQ=;
-        b=o0YL3iEkw8q0MowNpeR/VimKmsU6TWbEzdwc6ToupWCLOaed6sYGM2aqsjrPtkChUG
-         iOL/XLD3JLQ3h1vgASVVACHjUAah8iPuiLr9354s/X3eVypT7R/Z9hInjmbjRnDsIehW
-         +vfX5rWml/b3MZ27c7uIIBOx5TArWWd0kNidfd8psSI3nyc15X8JH6gMJDoUJbg7g+l0
-         /3mKK17tk7ZE7Jwvn04xT/+/CDwJNrvb5apN4XnVklDp0cMkpNajAdq3VMj4b1oheGzL
-         pgEuAuvewxkFPBYojdHGRemAGSGcN5dyAfPjYpzw95nhwXNmFkfWdxtgL882ucvvgcbL
-         68SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=SpvJ4CLAzhva5F4XtB4tBqXKDI4X4EVKC4ISV0mt3TQ=;
-        b=fK2v84a5jwhXdHvx1ZrCX+wz1sPekYvLcHf/jcaaXO0oK/k+D7JT4EEkaSOI4ie+sN
-         LyofHV7FpHTrHK/kymvjX72X4I6C6JHX8tv9FSroaY6GPd5T/43mNwv2EfyCoLlFO9SU
-         FT461+491xutBx5fM7xPgFTr76vkagvvv9efZR4MkWkxyd/8Wgz9QdV3QlB7AtmDxf5c
-         gmB75y8zhu5pIbS3OhNytyPzNkEqr6rUTRRKQ3BQpRWj9Q68AKkCSM13yTR1VtxmeC2B
-         0kff4TFnvsZIKkbDWfmEVz5Vx2sWITY1piN6TMj6+/2OZaghwBm24X23hLPM3jDtPP/q
-         9joA==
-X-Gm-Message-State: AOAM532kK9UlyE/2W1N50SizQHyWoHwqHp+OHJrHCbVJhVCgDePaDGB1
-        /RaMlkFa1lCPOdsLbq94AyW7aiUswt0=
-X-Google-Smtp-Source: ABdhPJygMorFNusfQeS9xBheuAyjc2V0N2/yjue/iuDSrnu2bwejacaGM7WVS7ULTcntBHH47ZTLiA==
-X-Received: by 2002:a63:7405:: with SMTP id p5mr22388217pgc.426.1630340859387;
-        Mon, 30 Aug 2021 09:27:39 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with UTF8SMTPSA id h5sm14234261pfv.131.2021.08.30.09.27.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 09:27:38 -0700 (PDT)
-Message-ID: <f6860e38-c6fa-292d-f1a1-22b3e4b48f32@gmail.com>
-Date:   Mon, 30 Aug 2021 09:27:26 -0700
+        Mon, 30 Aug 2021 12:28:23 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056D9C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 09:27:29 -0700 (PDT)
+Message-ID: <20210830162545.541794090@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630340847;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=uzMgNkI7vpXdxJyVtV5DFnRLmy4JxwCsFf80of/Osng=;
+        b=EvoKAsh4wAm1EVUyJIY1NkKl4U781Z/ayXRglvph8LRsuVTYA4xPnwK6v+OVx+ilCaNyzB
+        9xMBq+kM0+RxCNM5w+Eo17ML/kpbQ++bxoxi23Lw+AEticqVGGHOHUMLZm9JlzSwWNnh8z
+        C0YhuGGflMcURHrew/Jz/CfmJwnKnL+TJD70b5ourenzpXEwTjVRLMtcA2yV5bgvGSPbST
+        xnYRoU9dXbo89Vx3pbUY1vk94oNUWfTrocizRYhESNrFiVHKVoDJ9g0NNPZJepOfltW5Kc
+        NlNOa1J+sRKD057VTVxCqdsJdb6XFwdVHWhCZ9SJDAZGoHQ9c0WR+sH0tJZc8Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630340847;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=uzMgNkI7vpXdxJyVtV5DFnRLmy4JxwCsFf80of/Osng=;
+        b=DzxhBM5dg3Sz7U71QSJ7IlQaRCoR6TWw9K5i6OQLW74C6AvOpUc/a8vEJhYYXcmPQKNsAe
+        5BDzCFdqeANQ7FDQ==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [patch 04/10] x86/fpu/signal: Change return type of
+ copy_fpstate_to_sigframe() to boolean
+References: <20210830154702.247681585@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.2
-Subject: Re: [PATCH v3 2/4] PCI: brcmstb: Add ACPI config space quirk
-Content-Language: en-US
-To:     Jeremy Linton <jeremy.linton@arm.com>,
-        nicolas saenz julienne <nsaenz@kernel.org>,
-        linux-pci@vger.kernel.org
-Cc:     lorenzo.pieralisi@arm.com, bhelgaas@google.com, rjw@rjwysocki.net,
-        lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210826071557.29239-1-jeremy.linton@arm.com>
- <20210826071557.29239-3-jeremy.linton@arm.com>
- <44ad79081412af289c68e74cdecb6a2baa2e873c.camel@kernel.org>
- <5c39cf29-a08f-48d1-b873-ce0fda763d66@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <5c39cf29-a08f-48d1-b873-ce0fda763d66@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
+Date:   Mon, 30 Aug 2021 18:27:27 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+None of the call sites cares about the actual return code. Change the
+return type to boolean and return 'true' on success.
 
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ arch/x86/ia32/ia32_signal.c         |    4 ++--
+ arch/x86/include/asm/fpu/internal.h |    2 +-
+ arch/x86/kernel/fpu/signal.c        |   20 ++++++++++----------
+ arch/x86/kernel/signal.c            |    4 +---
+ 4 files changed, 14 insertions(+), 16 deletions(-)
 
-On 8/30/2021 9:23 AM, Jeremy Linton wrote:
-> Hi,
-> 
-> On 8/30/21 3:36 AM, nicolas saenz julienne wrote:
->> Hi Jeremy,
->> sorry for the late reply, I've been on vacation.
->>
->> On Thu, 2021-08-26 at 02:15 -0500, Jeremy Linton wrote:
->>
->> [...]
->>
->>> +static void __iomem *brcm_pcie_map_conf2(struct pci_bus *bus,
->>> +                    unsigned int devfn, int where)
->>> +{
->>> +    struct pci_config_window *cfg = bus->sysdata;
->>> +    void __iomem *base = cfg->win;
->>> +    int idx;
->>> +    u32 up;
->>> +
->>> +    /* Accesses to the RC go right to the RC registers if slot==0 */
->>> +    if (pci_is_root_bus(bus))
->>> +        return PCI_SLOT(devfn) ? NULL : base + where;
->>> +
->>> +    /*
->>> +     * Assure the link is up before sending requests downstream. 
->>> This is done
->>> +     * to avoid sending transactions to EPs that don't exist. Link flap
->>> +     * conditions/etc make this race more probable. The resulting 
->>> unrecoverable
->>> +     * SERRORs will result in the machine crashing.
->>> +     */
->>> +    up = readl(base + PCIE_MISC_PCIE_STATUS);
->>> +    if (!(up & PCIE_MISC_PCIE_STATUS_PCIE_DL_ACTIVE_MASK))
->>> +        return NULL;
->>> +
->>> +    if (!(up & PCIE_MISC_PCIE_STATUS_PCIE_PHYLINKUP_MASK))
->>> +        return NULL;
->>
->> Couldn't this be integrated in the original brcm_pcie_map_conf()? IIUC 
->> there is
->> nothing ACPI specific about it. It'd also make for less code duplication.
-> 
-> That is where I started with this, but it wasn't the linkup check/etc 
-> which caused me to hoist it but the fact that if ACPI quirks are enabled 
-> they end up statically built into the kernel. While if this host bridge 
-> is enabled, it can end up being a module, and the resulting mess I 
-> created trying to satisfy the CONFIG variations. I'm not much of a fan 
-> of copy/paste programming, but that IMHO ended up being the cleanest here.
-> 
+--- a/arch/x86/ia32/ia32_signal.c
++++ b/arch/x86/ia32/ia32_signal.c
+@@ -220,8 +220,8 @@ static void __user *get_sigframe(struct
+ 
+ 	sp = fpu__alloc_mathframe(sp, 1, &fx_aligned, &math_size);
+ 	*fpstate = (struct _fpstate_32 __user *) sp;
+-	if (copy_fpstate_to_sigframe(*fpstate, (void __user *)fx_aligned,
+-				     math_size) < 0)
++	if (!copy_fpstate_to_sigframe(*fpstate, (void __user *)fx_aligned,
++				      math_size))
+ 		return (void __user *) -1L;
+ 
+ 	sp -= frame_size;
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -391,7 +391,7 @@ static inline void restore_fpregs_from_f
+ 	__restore_fpregs_from_fpstate(fpstate, xfeatures_mask_fpstate());
+ }
+ 
+-extern int copy_fpstate_to_sigframe(void __user *buf, void __user *fp, int size);
++extern bool copy_fpstate_to_sigframe(void __user *buf, void __user *fp, int size);
+ 
+ /*
+  * FPU context switch related helper methods:
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -165,7 +165,7 @@ static inline int copy_fpregs_to_sigfram
+  * For [f]xsave state, update the SW reserved fields in the [f]xsave frame
+  * indicating the absence/presence of the extended state to the user.
+  */
+-int copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
++bool copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
+ {
+ 	struct task_struct *tsk = current;
+ 	int ia32_fxstate = (buf != buf_fx);
+@@ -176,13 +176,14 @@ int copy_fpstate_to_sigframe(void __user
+ 
+ 	if (!static_cpu_has(X86_FEATURE_FPU)) {
+ 		struct user_i387_ia32_struct fp;
++
+ 		fpregs_soft_get(current, NULL, (struct membuf){.p = &fp,
+ 						.left = sizeof(fp)});
+-		return copy_to_user(buf, &fp, sizeof(fp)) ? -EFAULT : 0;
++		return !copy_to_user(buf, &fp, sizeof(fp));
+ 	}
+ 
+ 	if (!access_ok(buf, size))
+-		return -EACCES;
++		return false;
+ 
+ 	if (use_xsave()) {
+ 		struct xregs_state __user *xbuf = buf_fx;
+@@ -191,9 +192,8 @@ int copy_fpstate_to_sigframe(void __user
+ 		 * Clear the xsave header first, so that reserved fields are
+ 		 * initialized to zero.
+ 		 */
+-		ret = __clear_user(&xbuf->header, sizeof(xbuf->header));
+-		if (unlikely(ret))
+-			return ret;
++		if (__clear_user(&xbuf->header, sizeof(xbuf->header)))
++			return false;
+ 	}
+ retry:
+ 	/*
+@@ -215,17 +215,17 @@ int copy_fpstate_to_sigframe(void __user
+ 		if (!__clear_user(buf_fx, fpu_user_xstate_size) &&
+ 		    ret == -X86_TRAP_PF)
+ 			goto retry;
+-		return -1;
++		return false;
+ 	}
+ 
+ 	/* Save the fsave header for the 32-bit frames. */
+ 	if ((ia32_fxstate || !use_fxsr()) && save_fsave_header(tsk, buf))
+-		return -1;
++		return false;
+ 
+ 	if (use_fxsr() && save_xstate_epilog(buf_fx, ia32_fxstate))
+-		return -1;
++		return false;
+ 
+-	return 0;
++	return true;
+ }
+ 
+ static int __restore_fpregs_from_user(void __user *buf, u64 xrestore,
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -244,7 +244,6 @@ get_sigframe(struct k_sigaction *ka, str
+ 	unsigned long math_size = 0;
+ 	unsigned long sp = regs->sp;
+ 	unsigned long buf_fx = 0;
+-	int ret;
+ 
+ 	/* redzone */
+ 	if (IS_ENABLED(CONFIG_X86_64))
+@@ -292,8 +291,7 @@ get_sigframe(struct k_sigaction *ka, str
+ 	}
+ 
+ 	/* save i387 and extended state */
+-	ret = copy_fpstate_to_sigframe(*fpstate, (void __user *)buf_fx, math_size);
+-	if (ret < 0)
++	if (!copy_fpstate_to_sigframe(*fpstate, (void __user *)buf_fx, math_size))
+ 		return (void __user *)-1L;
+ 
+ 	return (void __user *)sp;
 
-Agreed, the open coding that is being done is reasonable IHMO, although 
-we may have to update the link up code in both pcie-brcmstb.c and this 
-file in the future if offsets/bits do change, nothing impossible though.
--- 
-Florian
