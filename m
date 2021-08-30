@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB063FBDFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560013FBE0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 23:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237512AbhH3VNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 17:13:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234509AbhH3VNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:13:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC1F260F12;
-        Mon, 30 Aug 2021 21:12:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630357956;
-        bh=YrP4QWnjK4YR+/nxa4JkFJROV+YrCrmUhd7Yrmz5SOk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rMiPMhiFHCV8mWRklW8TonxJ8LIIaAH7hfr0kn7d+V1TM2GsCdkUS9MAeb4Kk0x3N
-         Gsvq9OEeJSNYiDVuTwr59qqXVTXueDxxi29G/jm0EBPbBDttUgb4vPHz+s+mVhvysk
-         KgBgkqlQGmTXGEIyOX+4oLGFLXjNEpVqjiL2SVSzfZ6ih1ukMihRnuBh/VLM6FMhTH
-         //fniMIdcyWSW1TMec4pTCQr6eT9LgJ/1FzgOPCfWhEGQRNB+cJin0DBM6yRU+RbV6
-         8vAnxGtdQmML9xWDKZ/W4QhzZ22nHZR8FBp5mkGK88aFcs5EvHdwwzgrYQVcOusi5R
-         0aetTdVIEdtUw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id EB9FF4007E; Mon, 30 Aug 2021 18:12:32 -0300 (-03)
-Date:   Mon, 30 Aug 2021 18:12:32 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH] Add --sysroot when building dlfilters on cross build
- environments
-Message-ID: <YS1JwIMTNNWcbGdT@kernel.org>
+        id S237415AbhH3VXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 17:23:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230025AbhH3VX3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 17:23:29 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F579C061575;
+        Mon, 30 Aug 2021 14:22:35 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id q21so9328649plq.3;
+        Mon, 30 Aug 2021 14:22:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gx+f4gzusOR2tKDAjP+xRdZLA8qcZC7Zt4eF0MKqKkE=;
+        b=kSFwC6ghrMGuitpn0a8H2GVELVDGijuc5FFwWEaRdUGP7/BdPnxM5ROqRN4U/LxOhN
+         PPuEyeyQ+nEv6NHcrrxQbCHzVCiTtFYWOSqIZticf4p0otUb+TD7srPGdQcxnpE/GOom
+         4UtMwfupQ04OQq4CAukW8grcmsNIEeQ3TRv7bm/6yN6BSWcKBGfKqewBA9d6cUmMXJdm
+         Y3guRAILw6Vyggnk6alt3aNyvv8BNC/hkh7Kd/8ADnDFQijgSgji9w6ywK1KOl607p3i
+         jRvtCDwR0d6lEBC5ZrrJ/WsqBcdmeOYQcq7Diiub9UZC7Zrw8fhLkHkTAXnDiLZvQBrr
+         hHvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gx+f4gzusOR2tKDAjP+xRdZLA8qcZC7Zt4eF0MKqKkE=;
+        b=ntmogueqS2uYC0Pw6qZnC1ee9n+QeL4xbyRMrJACN/a0l1QCFEBZg+ZNeESboKk8eP
+         hTrwtZAgJoVF2irKu0SEQfyuepFe/4N6chUYC1ryjdpMGJiZHW9rigJ3OivW4IgatSS0
+         4kva85W/WDh1brja4AjxMsjYoK8szmpl2AXXgksX62n4RMceetRS8QnHaBydbBZLzgDh
+         /QnziYdjtBMJ4EuhmUJ+cWN/9moPNjbqblBk+cYVslWom/bB50++v7fldJkS3HdyWFTa
+         20ZCETr4vXxu/bwc1eYtBaGh8cQ97Pb+O+tv9Ct4X27MpHBTc7fpbPqCHiqA1CV2rPvi
+         frNQ==
+X-Gm-Message-State: AOAM531HQ2I2PBWXPNhbNZEl9wcYBiGQjKDoHj6G3RDnBTkGAC6fYYll
+        OOBIXxfTaVpUJ2X+fWdSnokpt7Forco=
+X-Google-Smtp-Source: ABdhPJyHyA632gLgZPODsAAy+mqta2nstfTR1ytg9szYz7gZ7lFT/QHuZ9+oomn8TCRoe5BsEf/5tQ==
+X-Received: by 2002:a17:90a:5b0f:: with SMTP id o15mr1174799pji.97.1630358554604;
+        Mon, 30 Aug 2021 14:22:34 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:771a:afc8:2e96:23dd])
+        by smtp.gmail.com with ESMTPSA id v6sm8417193pfu.0.2021.08.30.14.22.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 14:22:33 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 14:22:31 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-input@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] input: remove dead CSR Prima2 PWRC driver
+Message-ID: <YS1MFw+WTXk/6o2A@google.com>
+References: <20210817072842.8640-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210817072842.8640-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
+On Tue, Aug 17, 2021 at 09:28:42AM +0200, Lukas Bulwahn wrote:
+> Commit f3a732843acc ("ARM: remove sirf prima2/atlas platforms") removes
+> the config ARCH_SIRF in ./arch/arm/mach-prima2/Kconfig.
+> 
+> Hence, since then, the corresponding CSR Prima2 PWRC Driver is dead code.
+> Remove this dead driver.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-	I had to add this cset to fix the build/link on cross build
-environments with a sysroot, like Android, EXTRA_CFLAGS is where it will
-get the needed --sysroot=/opt/android-ndk-r12b//platforms/android-24/arch-arm, please ack.
+Applied, thank you.
 
-- Arnaldo
-
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 24623599113df215..e04313c4d8409a94 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -785,10 +785,10 @@ endif
- 
- $(OUTPUT)dlfilters/%.o: dlfilters/%.c include/perf/perf_dlfilter.h
- 	$(Q)$(MKDIR) -p $(OUTPUT)dlfilters
--	$(QUIET_CC)$(CC) -c -Iinclude -o $@ -fpic $<
-+	$(QUIET_CC)$(CC) -c -Iinclude $(EXTRA_CFLAGS) -o $@ -fpic $<
- 
- $(OUTPUT)dlfilters/%.so: $(OUTPUT)dlfilters/%.o
--	$(QUIET_LINK)$(CC) -shared -o $@ $<
-+	$(QUIET_LINK)$(CC) $(EXTRA_CFLAGS) -shared -o $@ $<
- 
- ifndef NO_JVMTI
- LIBJVMTI_IN := $(OUTPUT)jvmti/jvmti-in.o
+-- 
+Dmitry
