@@ -2,425 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2E13FB6DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADD03FB6E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 15:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236609AbhH3NTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 09:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhH3NTQ (ORCPT
+        id S236718AbhH3NW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 09:22:27 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42768 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhH3NWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 09:19:16 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0E7C061575;
-        Mon, 30 Aug 2021 06:18:22 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso18304581otv.3;
-        Mon, 30 Aug 2021 06:18:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cg6OXuQAhuta2iwUkLbIKCRedxbapFqye1RnoTP5ohA=;
-        b=N9B1/pv/i9JbL3a+a4DZJx7Y2OYapKAHuMaGHP3VKRMjue0t2zBn1XoCsHHduCUi35
-         uMFFN/PSLI4wU/0I5IwRidYhCfoNPgTMH+2wLfv06WLuYVQhrXzfO7tmKQNyfTPt2ncq
-         AGqxrYHlAzlrXTZXb8uJGAt2CnBfOuQvmqe1ZA5KxRYOyLpFpSJgJ1+NEaIdZeMNrQdi
-         vjSmR0EK0g+9bqKUszuR5X453phTDrg2iFaM3MfA/3j5VBT15mHHqvOi+BrFFcUq/av6
-         Lti4TSzBNRt3gYb0sssVnPZPNDyWvSNZgmktEg5kImyyb6TXo+atxLrHJW8H6pJM5Ba6
-         Na/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cg6OXuQAhuta2iwUkLbIKCRedxbapFqye1RnoTP5ohA=;
-        b=t9ah4Ya266VXjX/cKwlwgE505LM332+6bverjfsxrkmA28RUu4zqM9FLCt68J2sAt8
-         X/udSMMOJSZmtnr2kih0zpGZvAqgTlNAtGKOY0p9h4bCyCzZO1ZCwWEIlK8+OrPPA4Yw
-         WdTruM18iRYxfaf9bYvHqSK0l+0pN+5RSDXK8pnMZt7C2YvlKLlwCh1acjEiGqXi0ALv
-         MTIiufiseX8IzwX4jMg7ab+G0Dzg8TgFUJMXIS9bxW/Q7xNwqTpjCgMGX0o+O9eugsrg
-         Jm4V00DDJHJJuj0JzzkoWjol9i7GBKJkYigBhCv0+600upwlIsSWuy+GUC6mGYwANG72
-         S20w==
-X-Gm-Message-State: AOAM531pCUCESNo1SJctFG5s5APvZ3wjdlAD2J0TbO3N8jDLbinGPu/M
-        HK5nl70yZq9NaQSVRxMYeN6p3HPqVDpvRdhAvUU3Vd6CbnXbmYO7
-X-Google-Smtp-Source: ABdhPJxPkbSHeXhoaxP3fyZ3aj6FH1hkSO3INGKLC/x6hwxbiLeIcrTXBUt03MGXGwAPi6OVfwCa0cp5i4R1/f3eg14=
-X-Received: by 2002:a9d:75d5:: with SMTP id c21mr19390335otl.118.1630329502175;
- Mon, 30 Aug 2021 06:18:22 -0700 (PDT)
+        Mon, 30 Aug 2021 09:22:25 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 1892F200AB;
+        Mon, 30 Aug 2021 13:21:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630329691; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=/mxb5bwbKvhJ2pxEIrBosdQjLxp69cwkKXuCcp+7EAc=;
+        b=OXRsTxXrNJp8FCs4sDGAW5nQUG/JqzcCp2xIyPvm9ayTTeAnakus70WQFkPHfeU7k0J2OQ
+        QX4ZnuHzU46o/GKuQ+GDPp/cwcxit1iCtyUVpTe7nXr6wQ2Kb+OU3i+c5RBHvuQ/DPW1wU
+        2JSgKN6Cu5PsW3vDGcL8qxvvA6CkvyE=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 0D5EFA3B8C;
+        Mon, 30 Aug 2021 13:21:31 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D0C48DA733; Mon, 30 Aug 2021 15:18:40 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs updates for 5.15
+Date:   Mon, 30 Aug 2021 15:18:39 +0200
+Message-Id: <cover.1630327914.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210830124638.35408-1-kerneljasonxing@gmail.com>
-In-Reply-To: <20210830124638.35408-1-kerneljasonxing@gmail.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Mon, 30 Aug 2021 21:17:46 +0800
-Message-ID: <CAL+tcoBPZj3ixF8yXdEn7sYGzPHkBwFZWT3y6WQbcMghML42sA@mail.gmail.com>
-Subject: Re: [PATCH v5] ixgbe: let the xdpdrv work with more than 64 cpus
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 8:49 PM <kerneljasonxing@gmail.com> wrote:
->
-> From: Jason Xing <xingwanli@kuaishou.com>
->
-> Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
-> server is equipped with more than 64 cpus online. So it turns out that
-> the loading of xdpdrv causes the "NOMEM" failure.
->
-> Actually, we can adjust the algorithm and then make it work through
-> mapping the current cpu to some xdp ring with the protect of @tx_lock.
->
-> Here're some numbers before/after applying this patch with xdp-example
-> loaded on the eth0X:
->
->                      Before    After
-> TCP_STREAM send-64   734.14    714.20
-> TCP_STREAM send-128  1401.91   1395.05
-> TCP_STREAM send-512  5311.67   5292.84
-> TCP_STREAM send-1k   9277.40   9356.22 (not stable)
-> TCP_RR     send-1    22559.75  21844.22
-> TCP_RR     send-128  23169.54  22725.13
-> TCP_RR     send-512  21670.91  21412.56
->
+Hi,
 
-Sorry, I need to update the full result:
+the highlights of this round are integrations with fs-verity and
+idmapped mounts, the rest is usual mix of minor improvements, speedups
+and cleanups.
 
-As client with xdpdrv loaded (tx path):
+Please note there are some patches outside of btrfs, namely updating
+some VFS interfaces, all straightforward and acked.
 
-                     Before    After
-TCP_STREAM send-64   734.14    714.20
-TCP_STREAM send-128  1401.91   1395.05
-TCP_STREAM send-512  5311.67   5292.84
-TCP_STREAM send-1k   9277.40   9356.22 (not stable)
-TCP_RR     send-1    22559.75  21844.22
-TCP_RR     send-128  23169.54  22725.13
-TCP_RR     send-512  21670.91  21412.56
+Please pull, thanks.
 
-As server with xdpdrv loaded (rx path):
-                     Before    After
-TCP_STREAM send-64   1416.49    1383.12
-TCP_STREAM send-128  3141.49   3055.50
-TCP_STREAM send-512  9488.73   9487.44
-TCP_STREAM send-1k   9491.17   9356.22 (not stable)
-TCP_RR     send-1    23617.74  23601.60
+---
+Features:
 
-Now, the numbers are complete:)
+- fs-verity support, using standard ioctls, backward compatible with
+  read-only limitation on inodes with previously enabled fs-verity
 
-> I tested many times with different parameters combined through netperf.
-> Though the result is not that accurate, I cannot see much influence on
-> this patch. The static key is places on the hot path, but it actually
-> shouldn't cause a huge regression theoretically.
->
-> Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
-> Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
-> ---
-> v5:
-> - Change back to nr_cpu_ids (Eric)
-> - Add the basic net performance data (Jason)
->
-> v4:
-> - Update the wrong commit messages. (Jason)
->
-> v3:
-> - Change nr_cpu_ids to num_online_cpus() (Maciej)
-> - Rename MAX_XDP_QUEUES to IXGBE_MAX_XDP_QS (Maciej)
-> - Rename ixgbe_determine_xdp_cpu() to ixgbe_determine_xdp_q_idx() (Maciej)
-> - Wrap ixgbe_xdp_ring_update_tail() with lock into one function (Maciej)
->
-> v2:
-> - Adjust cpu id in ixgbe_xdp_xmit(). (Jesper)
-> - Add a fallback path. (Maciej)
-> - Adjust other parts related to xdp ring.
-> ---
->  drivers/net/ethernet/intel/ixgbe/ixgbe.h           | 15 ++++-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c       |  9 ++-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      | 64 ++++++++++++++++------
->  .../net/ethernet/intel/ixgbe/ixgbe_txrx_common.h   |  1 +
->  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |  9 +--
->  5 files changed, 73 insertions(+), 25 deletions(-)
->
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> index a604552..5f7f181 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> @@ -82,6 +82,8 @@
->  #define IXGBE_2K_TOO_SMALL_WITH_PADDING \
->  ((NET_SKB_PAD + IXGBE_RXBUFFER_1536) > SKB_WITH_OVERHEAD(IXGBE_RXBUFFER_2K))
->
-> +DECLARE_STATIC_KEY_FALSE(ixgbe_xdp_locking_key);
-> +
->  static inline int ixgbe_compute_pad(int rx_buf_len)
->  {
->         int page_size, pad_size;
-> @@ -351,6 +353,7 @@ struct ixgbe_ring {
->         };
->         u16 rx_offset;
->         struct xdp_rxq_info xdp_rxq;
-> +       spinlock_t tx_lock;     /* used in XDP mode */
->         struct xsk_buff_pool *xsk_pool;
->         u16 ring_idx;           /* {rx,tx,xdp}_ring back reference idx */
->         u16 rx_buf_len;
-> @@ -375,7 +378,7 @@ enum ixgbe_ring_f_enum {
->  #define IXGBE_MAX_FCOE_INDICES         8
->  #define MAX_RX_QUEUES                  (IXGBE_MAX_FDIR_INDICES + 1)
->  #define MAX_TX_QUEUES                  (IXGBE_MAX_FDIR_INDICES + 1)
-> -#define MAX_XDP_QUEUES                 (IXGBE_MAX_FDIR_INDICES + 1)
-> +#define IXGBE_MAX_XDP_QS               (IXGBE_MAX_FDIR_INDICES + 1)
->  #define IXGBE_MAX_L2A_QUEUES           4
->  #define IXGBE_BAD_L2A_QUEUE            3
->  #define IXGBE_MAX_MACVLANS             63
-> @@ -629,7 +632,7 @@ struct ixgbe_adapter {
->
->         /* XDP */
->         int num_xdp_queues;
-> -       struct ixgbe_ring *xdp_ring[MAX_XDP_QUEUES];
-> +       struct ixgbe_ring *xdp_ring[IXGBE_MAX_XDP_QS];
->         unsigned long *af_xdp_zc_qps; /* tracks AF_XDP ZC enabled rings */
->
->         /* TX */
-> @@ -772,6 +775,14 @@ struct ixgbe_adapter {
->  #endif /* CONFIG_IXGBE_IPSEC */
->  };
->
-> +static inline int ixgbe_determine_xdp_q_idx(int cpu)
-> +{
-> +       if (static_key_enabled(&ixgbe_xdp_locking_key))
-> +               return cpu % IXGBE_MAX_XDP_QS;
-> +       else
-> +               return cpu;
-> +}
-> +
->  static inline u8 ixgbe_max_rss_indices(struct ixgbe_adapter *adapter)
->  {
->         switch (adapter->hw.mac.type) {
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> index 0218f6c..86b1116 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> @@ -299,7 +299,10 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
->
->  static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
->  {
-> -       return adapter->xdp_prog ? nr_cpu_ids : 0;
-> +       int queues;
-> +
-> +       queues = min_t(int, IXGBE_MAX_XDP_QS, nr_cpu_ids);
-> +       return adapter->xdp_prog ? queues : 0;
->  }
->
->  #define IXGBE_RSS_64Q_MASK     0x3F
-> @@ -947,6 +950,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
->                 ring->count = adapter->tx_ring_count;
->                 ring->queue_index = xdp_idx;
->                 set_ring_xdp(ring);
-> +               spin_lock_init(&ring->tx_lock);
->
->                 /* assign ring to adapter */
->                 WRITE_ONCE(adapter->xdp_ring[xdp_idx], ring);
-> @@ -1032,6 +1036,9 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
->         adapter->q_vector[v_idx] = NULL;
->         __netif_napi_del(&q_vector->napi);
->
-> +       if (static_key_enabled(&ixgbe_xdp_locking_key))
-> +               static_branch_dec(&ixgbe_xdp_locking_key);
-> +
->         /*
->          * after a call to __netif_napi_del() napi may still be used and
->          * ixgbe_get_stats64() might access the rings on this vector,
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> index 14aea40..bec29f5 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> @@ -165,6 +165,9 @@ static int ixgbe_notify_dca(struct notifier_block *, unsigned long event,
->  MODULE_DESCRIPTION("Intel(R) 10 Gigabit PCI Express Network Driver");
->  MODULE_LICENSE("GPL v2");
->
-> +DEFINE_STATIC_KEY_FALSE(ixgbe_xdp_locking_key);
-> +EXPORT_SYMBOL(ixgbe_xdp_locking_key);
-> +
->  static struct workqueue_struct *ixgbe_wq;
->
->  static bool ixgbe_check_cfg_remove(struct ixgbe_hw *hw, struct pci_dev *pdev);
-> @@ -2422,13 +2425,10 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
->                 xdp_do_flush_map();
->
->         if (xdp_xmit & IXGBE_XDP_TX) {
-> -               struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
-> +               int index = ixgbe_determine_xdp_q_idx(smp_processor_id());
-> +               struct ixgbe_ring *ring = adapter->xdp_ring[index];
->
-> -               /* Force memory writes to complete before letting h/w
-> -                * know there are new descriptors to fetch.
-> -                */
-> -               wmb();
-> -               writel(ring->next_to_use, ring->tail);
-> +               ixgbe_xdp_ring_update_tail_locked(ring);
->         }
->
->         u64_stats_update_begin(&rx_ring->syncp);
-> @@ -6320,7 +6320,7 @@ static int ixgbe_sw_init(struct ixgbe_adapter *adapter,
->         if (ixgbe_init_rss_key(adapter))
->                 return -ENOMEM;
->
-> -       adapter->af_xdp_zc_qps = bitmap_zalloc(MAX_XDP_QUEUES, GFP_KERNEL);
-> +       adapter->af_xdp_zc_qps = bitmap_zalloc(IXGBE_MAX_XDP_QS, GFP_KERNEL);
->         if (!adapter->af_xdp_zc_qps)
->                 return -ENOMEM;
->
-> @@ -8539,21 +8539,32 @@ static u16 ixgbe_select_queue(struct net_device *dev, struct sk_buff *skb,
->  int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
->                         struct xdp_frame *xdpf)
->  {
-> -       struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
->         struct ixgbe_tx_buffer *tx_buffer;
->         union ixgbe_adv_tx_desc *tx_desc;
-> +       struct ixgbe_ring *ring;
->         u32 len, cmd_type;
->         dma_addr_t dma;
-> +       int index, ret;
->         u16 i;
->
->         len = xdpf->len;
->
-> -       if (unlikely(!ixgbe_desc_unused(ring)))
-> -               return IXGBE_XDP_CONSUMED;
-> +       index = ixgbe_determine_xdp_q_idx(smp_processor_id());
-> +       ring = adapter->xdp_ring[index];
-> +
-> +       if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-> +               spin_lock(&ring->tx_lock);
-> +
-> +       if (unlikely(!ixgbe_desc_unused(ring))) {
-> +               ret = IXGBE_XDP_CONSUMED;
-> +               goto out;
-> +       }
->
->         dma = dma_map_single(ring->dev, xdpf->data, len, DMA_TO_DEVICE);
-> -       if (dma_mapping_error(ring->dev, dma))
-> -               return IXGBE_XDP_CONSUMED;
-> +       if (dma_mapping_error(ring->dev, dma)) {
-> +               ret = IXGBE_XDP_CONSUMED;
-> +               goto out;
-> +       }
->
->         /* record the location of the first descriptor for this packet */
->         tx_buffer = &ring->tx_buffer_info[ring->next_to_use];
-> @@ -8590,7 +8601,11 @@ int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
->         tx_buffer->next_to_watch = tx_desc;
->         ring->next_to_use = i;
->
-> -       return IXGBE_XDP_TX;
-> +       ret = IXGBE_XDP_TX;
-> +out:
-> +       if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-> +               spin_unlock(&ring->tx_lock);
-> +       return ret;
->  }
->
->  netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *skb,
-> @@ -10130,8 +10145,13 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
->                         return -EINVAL;
->         }
->
-> -       if (nr_cpu_ids > MAX_XDP_QUEUES)
-> +       /* if the number of cpus is much larger than the maximum of queues,
-> +        * we should stop it and then return with NOMEM like before.
-> +        */
-> +       if (nr_cpu_ids > IXGBE_MAX_XDP_QS * 2)
->                 return -ENOMEM;
-> +       else if (nr_cpu_ids > IXGBE_MAX_XDP_QS)
-> +               static_branch_inc(&ixgbe_xdp_locking_key);
->
->         old_prog = xchg(&adapter->xdp_prog, prog);
->         need_reset = (!!prog != !!old_prog);
-> @@ -10195,12 +10215,22 @@ void ixgbe_xdp_ring_update_tail(struct ixgbe_ring *ring)
->         writel(ring->next_to_use, ring->tail);
->  }
->
-> +void ixgbe_xdp_ring_update_tail_locked(struct ixgbe_ring *ring)
-> +{
-> +       if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-> +               spin_lock(&ring->tx_lock);
-> +       ixgbe_xdp_ring_update_tail(ring);
-> +       if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-> +               spin_unlock(&ring->tx_lock);
-> +}
-> +
->  static int ixgbe_xdp_xmit(struct net_device *dev, int n,
->                           struct xdp_frame **frames, u32 flags)
->  {
->         struct ixgbe_adapter *adapter = netdev_priv(dev);
->         struct ixgbe_ring *ring;
->         int nxmit = 0;
-> +       int index;
->         int i;
->
->         if (unlikely(test_bit(__IXGBE_DOWN, &adapter->state)))
-> @@ -10209,10 +10239,12 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
->         if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
->                 return -EINVAL;
->
-> +       index = ixgbe_determine_xdp_q_idx(smp_processor_id());
-> +
->         /* During program transitions its possible adapter->xdp_prog is assigned
->          * but ring has not been configured yet. In this case simply abort xmit.
->          */
-> -       ring = adapter->xdp_prog ? adapter->xdp_ring[smp_processor_id()] : NULL;
-> +       ring = adapter->xdp_prog ? adapter->xdp_ring[index] : NULL;
->         if (unlikely(!ring))
->                 return -ENXIO;
->
-> @@ -10230,7 +10262,7 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
->         }
->
->         if (unlikely(flags & XDP_XMIT_FLUSH))
-> -               ixgbe_xdp_ring_update_tail(ring);
-> +               ixgbe_xdp_ring_update_tail_locked(ring);
->
->         return nxmit;
->  }
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-> index 2aeec78..f6426d9 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-> @@ -23,6 +23,7 @@ void ixgbe_process_skb_fields(struct ixgbe_ring *rx_ring,
->  void ixgbe_rx_skb(struct ixgbe_q_vector *q_vector,
->                   struct sk_buff *skb);
->  void ixgbe_xdp_ring_update_tail(struct ixgbe_ring *ring);
-> +void ixgbe_xdp_ring_update_tail_locked(struct ixgbe_ring *ring);
->  void ixgbe_irq_rearm_queues(struct ixgbe_adapter *adapter, u64 qmask);
->
->  void ixgbe_txrx_ring_disable(struct ixgbe_adapter *adapter, int ring);
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> index b1d22e4..82d00e4 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> @@ -334,13 +334,10 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
->                 xdp_do_flush_map();
->
->         if (xdp_xmit & IXGBE_XDP_TX) {
-> -               struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
-> +               int index = ixgbe_determine_xdp_q_idx(smp_processor_id());
-> +               struct ixgbe_ring *ring = adapter->xdp_ring[index];
->
-> -               /* Force memory writes to complete before letting h/w
-> -                * know there are new descriptors to fetch.
-> -                */
-> -               wmb();
-> -               writel(ring->next_to_use, ring->tail);
-> +               ixgbe_xdp_ring_update_tail_locked(ring);
->         }
->
->         u64_stats_update_begin(&rx_ring->syncp);
-> --
-> 1.8.3.1
->
+- idmapped mount support
+
+- make mount with rescue=ibadroots more tolerant to partially damaged
+  trees
+
+- allow raid0 on a single device and raid10 on two devices, degenerate
+  cases but might be useful as an intermediate step during conversion to
+  other profiles
+
+- zoned mode block group auto reclaim can be disabled via sysfs knob
+
+Performance improvements:
+
+- continue readahead of node siblings even if target node is in memory,
+  could speed up full send (on sample test +11%)
+
+- batching of delayed items can speed up creating many files
+
+- fsync/tree-log speedups
+  - avoid unnecessary work (gains +2% throughput, -2% run time on
+    sample load)
+  - reduced lock contention on renames (on dbench +4% throughput, up to
+    -30% latency)
+
+Fixes:
+
+- various zoned mode fixes
+
+- preemptive flushing threshold tuning, avoid excessive work on almost
+  full filesystems
+
+Core:
+
+- continued subpage support, preparation for implementing remaining
+  features like compression and defragmentation; with some limitations,
+  write is now enabled on 64K page systems with 4K sectors, still
+  considered experimental
+  - no readahead on compressed reads
+  - inline extents disabled
+  - disabled raid56 profile conversion and mount
+
+- improved flushing logic, fixing early ENOSPC on some workloads
+
+- inode flags have been internally split to read-only and read-write
+  incompat bit parts, used by fs-verity
+
+- new tree items for fs-verity
+  - descriptor item
+  - Merkle tree item
+
+- inode operations extended to be namespace-aware
+
+- cleanups and refactoring
+
+Generic code changes:
+
+- fs: new export filemap_fdatawrite_wbc
+
+- fs: removed sync_inode
+
+- block: bio_trim argument type fixups
+
+- vfs: add namespace-aware lookup
+
+----------------------------------------------------------------
+The following changes since commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
+
+  Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-tag
+
+for you to fetch changes up to 0d977e0eba234e01a60bdde27314dc21374201b3:
+
+  btrfs: reset replace target device to allocation state on close (2021-08-23 13:57:18 +0200)
+
+----------------------------------------------------------------
+Anand Jain (4):
+      btrfs: check-integrity: drop unnecessary function prototypes
+      btrfs: cleanup fs_devices pointer usage in btrfs_trim_fs
+      btrfs: simplify return values in btrfs_check_raid_min_devices
+      btrfs: sysfs: document structures and their associated files
+
+Boris Burkov (3):
+      btrfs: add ro compat flags to inodes
+      btrfs: initial fsverity support
+      btrfs: verity metadata orphan items
+
+Chaitanya Kulkarni (2):
+      block: fix argument type of bio_trim()
+      btrfs: fix argument type of btrfs_bio_clone_partial()
+
+Christian Brauner (20):
+      namei: add mapping aware lookup helper
+      btrfs: handle idmaps in btrfs_new_inode()
+      btrfs: allow idmapped rename inode op
+      btrfs: allow idmapped getattr inode op
+      btrfs: allow idmapped mknod inode op
+      btrfs: allow idmapped create inode op
+      btrfs: allow idmapped mkdir inode op
+      btrfs: allow idmapped symlink inode op
+      btrfs: allow idmapped tmpfile inode op
+      btrfs: allow idmapped setattr inode op
+      btrfs: allow idmapped permission inode op
+      btrfs: check whether fsgid/fsuid are mapped during subvolume creation
+      btrfs: allow idmapped SNAP_CREATE/SUBVOL_CREATE ioctls
+      btrfs: allow idmapped SNAP_DESTROY ioctls
+      btrfs: relax restrictions for SNAP_DESTROY_V2 with subvolids
+      btrfs: allow idmapped SET_RECEIVED_SUBVOL ioctls
+      btrfs: allow idmapped SUBVOL_SETFLAGS ioctl
+      btrfs: allow idmapped INO_LOOKUP_USER ioctl
+      btrfs: handle ACLs on idmapped mounts
+      btrfs: allow idmapped mount
+
+David Sterba (18):
+      btrfs: add special case to setget helpers for 64k pages
+      btrfs: drop from __GFP_HIGHMEM all allocations
+      btrfs: compression: drop kmap/kunmap from lzo
+      btrfs: compression: drop kmap/kunmap from zlib
+      btrfs: compression: drop kmap/kunmap from zstd
+      btrfs: compression: drop kmap/kunmap from generic helpers
+      btrfs: check-integrity: drop kmap/kunmap for block pages
+      btrfs: switch uptodate to bool in btrfs_writepage_endio_finish_ordered
+      btrfs: remove uptodate parameter from btrfs_dec_test_first_ordered_pending
+      btrfs: make btrfs_next_leaf static inline
+      btrfs: tree-checker: use table values for stripe checks
+      btrfs: tree-checker: add missing stripe checks for raid1c3/4 profiles
+      btrfs: uninline btrfs_bg_flags_to_raid_index
+      btrfs: merge alloc_device helpers
+      btrfs: simplify data stripe calculation helpers
+      btrfs: constify and cleanup variables in comparators
+      btrfs: allow degenerate raid0/raid10
+      btrfs: print if fsverity support is built in when loading module
+
+Desmond Cheong Zhi Xi (1):
+      btrfs: reset replace target device to allocation state on close
+
+Filipe Manana (14):
+      btrfs: continue readahead of siblings even if target node is in memory
+      btrfs: improve the batch insertion of delayed items
+      btrfs: stop doing GFP_KERNEL memory allocations in the ref verify tool
+      btrfs: remove racy and unnecessary inode transaction update when using no-holes
+      btrfs: avoid unnecessary log mutex contention when syncing log
+      btrfs: remove unnecessary list head initialization when syncing log
+      btrfs: avoid unnecessary lock and leaf splits when updating inode in the log
+      btrfs: remove ignore_offset argument from btrfs_find_all_roots()
+      btrfs: eliminate some false positives when checking if inode was logged
+      btrfs: do not pin logs too early during renames
+      btrfs: remove unnecessary NULL check for the new inode during rename exchange
+      btrfs: remove no longer needed full sync flag check at inode_logged()
+      btrfs: update comment at log_conflicting_inodes()
+      btrfs: avoid unnecessarily logging directories that had no changes
+
+Goldwyn Rodrigues (4):
+      btrfs: allocate file_ra_state on stack in readahead_cache
+      btrfs: allocate btrfs_ioctl_quota_rescan_args on stack
+      btrfs: allocate btrfs_ioctl_defrag_range_args on stack
+      btrfs: allocate backref_ctx on stack in find_extent_clone
+
+Johannes Thumshirn (2):
+      btrfs: zoned: remove max_zone_append_size logic
+      btrfs: zoned: allow disabling of zone auto reclaim
+
+Josef Bacik (11):
+      btrfs: wake up async_delalloc_pages waiters after submit
+      btrfs: include delalloc related info in dump space info tracepoint
+      btrfs: enable a tracepoint when we fail tickets
+      btrfs: use delalloc_bytes to determine flush amount for shrink_delalloc
+      btrfs: wait on async extents when flushing delalloc
+      fs: add a filemap_fdatawrite_wbc helper
+      btrfs: use the filemap_fdatawrite_wbc helper for delalloc shrinking
+      9p: migrate from sync_inode to filemap_fdatawrite_wbc
+      fs: kill sync_inode
+      btrfs: reduce the preemptive flushing threshold to 90%
+      btrfs: do not do preemptive flushing if the majority is global rsv
+
+Marcos Paulo de Souza (7):
+      btrfs: remove max argument from generic_bin_search
+      btrfs: pass NULL as trans to btrfs_search_slot if we only want to search
+      btrfs: use btrfs_next_leaf instead of btrfs_next_item when slots > nritems
+      btrfs: remove unneeded return variable in btrfs_lookup_file_extent
+      btrfs: introduce btrfs_lookup_match_dir
+      btrfs: introduce btrfs_search_backwards function
+      btrfs: tree-log: check btrfs_lookup_data_extent return value
+
+Naohiro Aota (5):
+      btrfs: drop unnecessary ASSERT from btrfs_submit_direct()
+      btrfs: zoned: suppress reclaim error message on EAGAIN
+      btrfs: zoned: fix block group alloc_offset calculation
+      btrfs: zoned: add asserts on splitting extent_map
+      btrfs: zoned: fix ordered extent boundary calculation
+
+Nikolay Borisov (1):
+      btrfs: make btrfs_finish_chunk_alloc private to block-group.c
+
+Qu Wenruo (22):
+      btrfs: rescue: allow ibadroots to skip bad extent tree when reading block group items
+      btrfs: remove unused start and end parameters from btrfs_run_delalloc_range()
+      btrfs: reset this_bio_flag to avoid inheriting old flags
+      btrfs: subpage: check if there are compressed extents inside one page
+      btrfs: disable compressed readahead for subpage
+      btrfs: grab correct extent map for subpage compressed extent read
+      btrfs: rework btrfs_decompress_buf2page()
+      btrfs: rework lzo_decompress_bio() to make it subpage compatible
+      btrfs: reloc: factor out relocation page read and dirty part
+      btrfs: make relocate_one_page() handle subpage case
+      btrfs: subpage: fix writeback which does not have ordered extent
+      btrfs: subpage: disable inline extent creation
+      btrfs: subpage: allow submit_extent_page() to do bio split
+      btrfs: subpage: reject raid56 filesystem and profile conversion
+      btrfs: subpage: fix race between prepare_pages() and btrfs_releasepage()
+      btrfs: subpage: fix a potential use-after-free in writeback helper
+      btrfs: subpage: fix false alert when relocating partial preallocated data extents
+      btrfs: subpage: fix relocation potentially overwriting last page data
+      btrfs: allow read-write for 4K sectorsize on 64K page size systems
+      btrfs: unify regular and subpage error paths in __extent_writepage()
+      btrfs: remove the dead comment in writepage_delalloc()
+      btrfs: fix NULL pointer dereference when deleting device by invalid id
+
+ block/bio.c                     |  12 +-
+ fs/9p/vfs_file.c                |   7 +-
+ fs/btrfs/Makefile               |   1 +
+ fs/btrfs/acl.c                  |  11 +-
+ fs/btrfs/backref.c              |   6 +-
+ fs/btrfs/backref.h              |   2 +-
+ fs/btrfs/block-group.c          | 114 +++++-
+ fs/btrfs/btrfs_inode.h          |  27 +-
+ fs/btrfs/check-integrity.c      |  60 +--
+ fs/btrfs/compression.c          | 169 ++++-----
+ fs/btrfs/compression.h          |   5 +-
+ fs/btrfs/ctree.c                |  62 +--
+ fs/btrfs/ctree.h                |  94 +++--
+ fs/btrfs/delayed-inode.c        | 227 ++++-------
+ fs/btrfs/dir-item.c             |  76 ++--
+ fs/btrfs/disk-io.c              |  13 +-
+ fs/btrfs/extent-tree.c          |  12 +-
+ fs/btrfs/extent_io.c            | 318 +++++++++++-----
+ fs/btrfs/extent_io.h            |   2 +-
+ fs/btrfs/file-item.c            |   5 +-
+ fs/btrfs/file.c                 |  23 +-
+ fs/btrfs/free-space-cache.c     |  26 +-
+ fs/btrfs/inode.c                | 295 +++++++++++----
+ fs/btrfs/ioctl.c                | 188 +++++-----
+ fs/btrfs/lzo.c                  | 236 +++++-------
+ fs/btrfs/ordered-data.c         |   5 +-
+ fs/btrfs/ordered-data.h         |   2 +-
+ fs/btrfs/qgroup.c               |   8 +-
+ fs/btrfs/raid56.c               |  18 +-
+ fs/btrfs/ref-verify.c           |  10 +-
+ fs/btrfs/relocation.c           | 306 +++++++++------
+ fs/btrfs/send.c                 |  35 +-
+ fs/btrfs/space-info.c           |  98 ++++-
+ fs/btrfs/struct-funcs.c         |   8 +-
+ fs/btrfs/subpage.c              |  24 +-
+ fs/btrfs/subpage.h              |   3 +
+ fs/btrfs/super.c                |  56 ++-
+ fs/btrfs/sysfs.c                | 108 +++++-
+ fs/btrfs/tests/qgroup-tests.c   |  30 +-
+ fs/btrfs/tree-checker.c         |  38 +-
+ fs/btrfs/tree-log.c             | 102 +++--
+ fs/btrfs/verity.c               | 811 ++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c              | 234 ++++--------
+ fs/btrfs/volumes.h              |  29 +-
+ fs/btrfs/zlib.c                 |  54 +--
+ fs/btrfs/zoned.c                |  22 +-
+ fs/btrfs/zoned.h                |   1 -
+ fs/btrfs/zstd.c                 |  39 +-
+ fs/fs-writeback.c               |  19 +-
+ fs/namei.c                      |  43 ++-
+ include/linux/bio.h             |   2 +-
+ include/linux/blk_types.h       |   1 +
+ include/linux/fs.h              |   3 +-
+ include/linux/namei.h           |   1 +
+ include/trace/events/btrfs.h    |  21 +-
+ include/uapi/linux/btrfs.h      |   1 +
+ include/uapi/linux/btrfs_tree.h |  35 ++
+ mm/filemap.c                    |  36 +-
+ 58 files changed, 2769 insertions(+), 1425 deletions(-)
+ create mode 100644 fs/btrfs/verity.c
