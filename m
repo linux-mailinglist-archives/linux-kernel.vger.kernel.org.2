@@ -2,117 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840713FBDB6
+	by mail.lfdr.de (Postfix) with ESMTP id CCE7D3FBDB7
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 22:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236279AbhH3U7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 16:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235898AbhH3U7Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:59:25 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CF8C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:58:31 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id y3so17683632ilm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 13:58:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KI2RPuIRoh7NOePByo6KVOnUF9gby91sf7lNNFA6eIg=;
-        b=SBMG9ymeVS2vlI8RISsrSy2N4QQxU/x92frWOGSDNUosIAdgQmUR7yxj5yGIbqr0xg
-         jeP/mvg9VN50cKoY/vFIR1GALIZN/fOOBtZYtxgQSzvByeUqH3ip5vB7nYQcbtLD+6JM
-         KmSq46SN9goyVG1Jl3XZImHJ2zWbD947M+dP8o/ewFQ9lTBxpVgvdQpQkJk1ycsaZoJK
-         hEdtbDsEpMCH4EwPHND0ichcKfPbaIi5HPGl445qZ+85dLm6GRP2OQFOeC330AFR8LKH
-         hbpP7EQSX0SHL7QkTzQbZic901OxHkIWmUtod5X5bZPwDD4M7zevPmc4UR2qE9WupDjQ
-         /EFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KI2RPuIRoh7NOePByo6KVOnUF9gby91sf7lNNFA6eIg=;
-        b=TSrhN37p7mzXUdn4uwW9IpNIRJTp8LSUGN/bwc33zq3Shrvr8A5BNnNlHrYYAiolYW
-         e19dFDoFvOHVtX8lzCeG1vaQwK47bDDhNCQvHgCm+qSyOik7jfe4RoJSZeh9o5BeMeXF
-         rCXOxkK1JdKRoeTsfFeJA3PbbBZhAjPEPD+Nf5efMEi+kUcXgfzz+qyISqx5/roIFqwD
-         of8cIAd6N4ADNBLgwvVbQqJ5K1pG1QDy4i8pnUvkztfwMrDf5139FHGptvlBNgLgHIp0
-         IRB6QurhL/vwwK44eWbFOFKFN+pi3bJqLVynyaZxSlW+f+uir/oMcOwvXRDK/jyizTX5
-         hgqw==
-X-Gm-Message-State: AOAM53359kkbKJIAzs5pQIfZmIybR5eRjliwkeqKI6371UYnHrWgrnqt
-        K5KehAOD1KL/xmrmjX6qjclu0bzI9u0ImDNogVDIEQ==
-X-Google-Smtp-Source: ABdhPJwp3/kiOxyQkGJQbuBrPJLY89/1ucjlbEwBcLaoftrBluWg08kjh0Z6meSfc7wvI3FkBRVCWXtdVecglvTzALU=
-X-Received: by 2002:a05:6e02:1546:: with SMTP id j6mr17383378ilu.154.1630357110922;
- Mon, 30 Aug 2021 13:58:30 -0700 (PDT)
+        id S236566AbhH3U7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 16:59:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235898AbhH3U7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 16:59:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D6E461008;
+        Mon, 30 Aug 2021 20:58:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630357121;
+        bh=sTRehZGcYy+Yc7uLDclFNF91ENgqtbr7oENyFmAL5TU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZW1NbJsaPxeE7G5eUXY+YvTgTHsC5BcI5HhA53AZnIUxN61WucGdEZyNOkwf43dus
+         x8CqUcZxfhKwamEa7FDiPFcDASHJJrVNzQdvXdngPulDRdguLJrxi3xukWuVJ0VP65
+         zC4ZleNjRs7uufQnxNxNkjNxlD3kzcdEEwFu2BSz8V6eX68/CLMyBDoZ6D6z7ZRzvG
+         LpCLXzfyAPGm0G2af9QzY47U1SeszKGDgZB64C1FFPR9hrFghX/Ez9FWIIqHIHU2+t
+         MLfckrP944o6IXWpOdb6UgCAga/4CD7xaxl6nsAm1bvT0Xh/+hbUGIyXjshbcD9FXW
+         JBYPSqD/arLoQ==
+Received: by mail-ej1-f51.google.com with SMTP id h9so33982445ejs.4;
+        Mon, 30 Aug 2021 13:58:41 -0700 (PDT)
+X-Gm-Message-State: AOAM530Pc01oLNv/fBgK8kSJfHvXHBbMV/7CYgJ1h/21R89uumfKQhTX
+        cOafhCTrwmAR/B/znj+VL855I8ah6o7n5BLfsA==
+X-Google-Smtp-Source: ABdhPJx4Ui5N1WjpN6yxDi75ZXSmB5EwI9nNo0eNIiVjqAZYoAy5aGYleTBanIMZJSY66PvSA9aHhTpsGnptDYTlga0=
+X-Received: by 2002:a17:906:1cd0:: with SMTP id i16mr26673334ejh.360.1630357119849;
+ Mon, 30 Aug 2021 13:58:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210830044425.2686755-1-mizhang@google.com> <20210830044425.2686755-2-mizhang@google.com>
-In-Reply-To: <20210830044425.2686755-2-mizhang@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 30 Aug 2021 13:58:19 -0700
-Message-ID: <CANgfPd8KKYRXGn9Vb-BjAGrhqq0pffE5_+j9KNODvpQGQhv=hg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] selftests: KVM: align guest physical memory base
- address to 1GB
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Peter Xu <peterx@redhat.com>
+References: <20210728230230.1911468-1-robh@kernel.org> <20210728230230.1911468-3-robh@kernel.org>
+ <d720903c-926e-f57a-0862-4e5d76db763a@kernel.org> <CAL_JsqLRv9ugKJcn4dq_ps0JMt74Y7PKA=5yySYxvftdQWzzPA@mail.gmail.com>
+ <de97454b-9b4d-492f-a435-6a5e33889219@www.fastmail.com> <CAL_JsqKpT93W6nBj68DykEJzjFYOPG=8PGShsh2QZVzHq5N3fQ@mail.gmail.com>
+ <43b3a838-da8a-4733-9832-f3d5f990ec13@www.fastmail.com> <f3b72c71-f9c9-e1a8-4542-e248e8a5d769@maine.edu>
+In-Reply-To: <f3b72c71-f9c9-e1a8-4542-e248e8a5d769@maine.edu>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 30 Aug 2021 15:58:28 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLs9Wbdbso0_XdijME=zDK9=5yKpi1a1NQM6j1qNczWbg@mail.gmail.com>
+Message-ID: <CAL_JsqLs9Wbdbso0_XdijME=zDK9=5yKpi1a1NQM6j1qNczWbg@mail.gmail.com>
+Subject: Re: [RFC 2/3] perf/x86: Control RDPMC access from .enable() hook
+To:     Vince Weaver <vincent.weaver@maine.edu>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 9:44 PM Mingwei Zhang <mizhang@google.com> wrote:
+On Sun, Aug 29, 2021 at 10:06 PM Vince Weaver <vincent.weaver@maine.edu> wr=
+ote:
 >
-> Existing selftest library function always allocates GPA range that aligns
-> to the end of GPA address space, ie., the allocated GPA range guarantees to
-> end at the last available GPA. This ends up with the fact that selftest
-> programs cannot control the alignment of the base GPA. Depending on the
-> size of the allocation, the base GPA may align only on a 4K based
-> bounday.
+> On Fri, 27 Aug 2021, Andy Lutomirski wrote:
 >
-> The alignment of base GPA sometimes creates problems for dirty logging
-> selftest where a 2MB-aligned or 1GB-aligned base GPA is needed to
-> create NPT/EPT mappings for hugepages.
+> > On Thu, Aug 26, 2021, at 12:09 PM, Rob Herring wrote:
 >
-> So, fix this issue and ensure all GPA allocation starts from a 1GB bounary
-> in all architectures.
->
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: David Matlack <dmatlack@google.com>
-> Cc: Jing Zhang <jingzhangos@google.com>
-> Cc: Peter Xu <peterx@redhat.com>
->
-> Suggested-by: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> > > After testing some scenarios and finding perf_event_tests[1], this
+> > > series isn't going to work for x86 unless rdpmc is restricted to task
+> > > events only or allowed to segfault on CPU events when read on the
+> > > wrong CPU rather than just returning garbage. It's been discussed
+> > > before here[2].
+> > >
+> > > Ultimately, I'm just trying to define the behavior for arm64 where we
+> > > don't have an existing ABI to maintain and don't have to recreate the
+> > > mistakes of x86 rdpmc ABI. Tying the access to mmap is messy. As we
+> > > explicitly request user access on perf_event_open(), I think it may b=
+e
+> > > better to just enable access when the event's context is active and
+> > > ignore mmap(). Maybe you have an opinion there since you added the
+> > > mmap() part?
+> >
+> > That makes sense to me. The mmap() part was always a giant kludge.
+> >
+> > There is fundamentally a race, at least if rseq isn=E2=80=99t used: if =
+you check
+> > that you=E2=80=99re on the right CPU, do RDPMC, and throw out the resul=
+t if you
+> > were on the wrong CPU (determined by looking at the mmap), you still
+> > would very much prefer not to fault.
+> >
+> > Maybe rseq or a vDSO helper is the right solution for ARM.
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+There was a version using rseq[1]. AIUI, that would solve the reading
+from the wrong CPU problem. I don't think using rseq would change the
+kernel implementation other than whether we enable events on specific
+CPUs.
 
-> ---
->  tools/testing/selftests/kvm/lib/perf_test_util.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/lib/perf_test_util.c b/tools/testing/selftests/kvm/lib/perf_test_util.c
-> index 0ef80dbdc116..96c30b8d6593 100644
-> --- a/tools/testing/selftests/kvm/lib/perf_test_util.c
-> +++ b/tools/testing/selftests/kvm/lib/perf_test_util.c
-> @@ -93,10 +93,10 @@ struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
->         guest_test_phys_mem = (vm_get_max_gfn(vm) - guest_num_pages) *
->                               perf_test_args.guest_page_size;
->         guest_test_phys_mem &= ~(perf_test_args.host_page_size - 1);
-> -#ifdef __s390x__
-> -       /* Align to 1M (segment size) */
-> -       guest_test_phys_mem &= ~((1 << 20) - 1);
-> -#endif
-> +
-> +       /* Align to 1G for all architectures */
-> +       guest_test_phys_mem &= ~((1 << 30) - 1);
-> +
->         pr_info("guest physical test memory offset: 0x%lx\n", guest_test_phys_mem);
->
->         /* Add extra memory slots for testing */
-> --
-> 2.33.0.259.gc128427fd7-goog
->
+> as the author of those perf_event tests for rdpmc, I have to say if ARM
+> comes up with a cleaner implementation I'd be glad to have x86 transition
+> to something better.
+
+Thanks for chiming in.
+
+My plan is to be more restricted in terms of what works, and fail or
+disable user access for what's not supported. Unless I hear events on
+specific CPUs is really important, that means only monitoring of a
+thread on all (for big.LITTLE, all homogeneous) CPUs is supported.
+That doesn't require a better/cleaner interface. It just means cpu
+must be -1 for perf_event_open if you want rdpmc. The difference on
+Arm is just that we can enforce/indicate that.
+
+We could also enable CPU events, but abort if read on the wrong CPU.
+The user in that case either has to control the thread affinity or
+possibly use rseq.
+
+> The rdpmc code is a huge mess and has all kinds of corner cases.  I'm not
+> sure anyone besides the PAPI library tries to use it, and while it's a
+> nice performance improvement to use rdpmc it is really hard to get things
+> working right.
+
+Yes, I've been reading thru the bugs you reported and related tests. I
+just wish I found them sooner...
+
+> As a PAPI developer we actually have run into the issue where the CPU
+> switches and we were reporting the wrong results.  Also if I recall (it's
+> been a while) we were having issues where the setup lets you attach to a
+> process on another CPU for monitoring using the rdpmc interface and it
+> returns results even though I think that will rarely ever work in
+> practice.
+
+Returning the wrong results is obviously bad for the user, but making
+that "work" also complicates the kernel implementation.
+
+Rob
+
+[1] https://x-lore.kernel.org/all/20190611125315.18736-4-raphael.gault@arm.=
+com/
