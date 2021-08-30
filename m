@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D5D3FB0DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 07:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63983FB0DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 07:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbhH3Fp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 01:45:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42078 "EHLO mail.kernel.org"
+        id S231695AbhH3FrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 01:47:05 -0400
+Received: from ozlabs.org ([203.11.71.1]:55985 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229936AbhH3Fpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 01:45:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C38FD60F57;
-        Mon, 30 Aug 2021 05:45:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630302301;
-        bh=LU8rgY0nlcLGJ0Odp4fZfzKGSi2dMFgS4N01IWoDkt0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HayGxGtZ83S7vi18Gk6XUrcgt28QrdBKOAD024qt/XbwSyxM4105omlig777Sf/6K
-         7Dtv2P+YWO4u9FaOwjIFpaGJdGTWbDfbo2Ooy17hqbRftxkrfZ+fSvC8q5RDxgfCer
-         LGEQKYd/ylznu56w1ZhtnU2weyK+B0e+mBsAQINc=
-Date:   Mon, 30 Aug 2021 07:44:57 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     tcs.kernel@gmail.com
-Cc:     daniel.vetter@ffwll.ch, willy@infradead.org,
-        george.kennedy@oracle.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        arnd@arndb.de, penguin-kernel@i-love.sakura.ne.jp,
-        Haimin Zhang <tcs_kernel@tencent.com>
-Subject: Re: [PATCH V4] fbcon: fix fbcon out-of-bounds write in sys_imageblit
-Message-ID: <YSxwWcvyNtu2QtJ5@kroah.com>
-References: <1630294223-7225-1-git-send-email-tcs_kernel@tencent.com>
+        id S229936AbhH3FrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 01:47:03 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GyfSZ4MrFz9sWS;
+        Mon, 30 Aug 2021 15:46:06 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630302368;
+        bh=eh3cO90c1KedAIJjSl6KhOs8itt4bFhDPyslsaki+bg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=QnM00rPpxqrsnMXbwtoHmHkDteIgeugumsc/XoT3jOIHVJ2mMcFfl2APcwhta8Ov0
+         C077J3yxmbQIl6nZUHFqYJ6o/gVwzA+L5ETTvIQacv2rY0cSHxGdsoupRKJmdCdWWz
+         65WAyNR9tajJWXaXAhSC1Yp8eF3am4Y2UlFDaEW6NfUN9731OieVTXzU76enl7xBqK
+         +ublSzQbXKL+PGS4DEQuWXRfSz0WhXxh1HuJORKUEnQmAhOMbBevrG0h9DMqdhmJSX
+         azeNByre4P7oyKZ8vJKffAU8kFA1GCzJpbzMaYmLA3kLMfSwV3ekfpwPyXZH/ChCbw
+         8CYKskaHKTZrA==
+Date:   Mon, 30 Aug 2021 15:46:05 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Jiri Slaby <jslaby@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the tty tree with the parisc-hd tree
+Message-ID: <20210830154605.2abe717e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1630294223-7225-1-git-send-email-tcs_kernel@tencent.com>
+Content-Type: multipart/signed; boundary="Sig_/uVUbwi0.12Pg.+NH6XSljQ2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 11:30:23AM +0800, tcs.kernel@gmail.com wrote:
-> From: Haimin Zhang <tcs_kernel@tencent.com>
-> 
-> yres and vyres can be controlled by user mode parameters, and cause
-> p->vrows to become a negative value. While this value be passed to real_y
-> function, the ypos will be out of screen range.This is an out-of-bounds
-> write bug.
-> some driver will check xres and yres in fb_check_var callback,but some not
-> so we add a common check after that callback.
-> 
-> Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
-> Signed-off-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-> ---
->  drivers/video/fbdev/core/fbmem.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
-> index 1c85514..5599372 100644
-> --- a/drivers/video/fbdev/core/fbmem.c
-> +++ b/drivers/video/fbdev/core/fbmem.c
-> @@ -1013,6 +1013,10 @@ static int fb_check_caps(struct fb_info *info, struct fb_var_screeninfo *var,
->  	if (ret)
->  		return ret;
->  
-> +	/* virtual resolution cannot be smaller than visible resolution. */
-> +	if (var->yres_virtual < var->yres || var->xres_virtual < var->xres)
-> +		return -EINVAL;
-> +
->  	if ((var->activate & FB_ACTIVATE_MASK) != FB_ACTIVATE_NOW)
->  		return 0;
->  
-> -- 
-> 1.8.3.1
-> 
+--Sig_/uVUbwi0.12Pg.+NH6XSljQ2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi all,
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Today's linux-next merge of the tty tree got a conflict in:
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+  arch/parisc/kernel/pdc_cons.c
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
+between commit:
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+  9613b0cb3eb4 ("tty: pdc_cons, free tty_driver upon failure")
 
-thanks,
+from the parisc-hd tree and commits:
 
-greg k-h's patch email bot
+  0524513afe45 ("tty: don't store semi-state into tty drivers")
+  72fdb403008c ("tty: pdc_cons, free tty_driver upon failure")
+
+from the tty tree.
+
+I fixed it up (I just used the latter version) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/uVUbwi0.12Pg.+NH6XSljQ2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEscJ0ACgkQAVBC80lX
+0Gz2wwf9EzoZZLXgVZXEOqIIY8e8do1BSIZz7CIxD2/674rEK/Tq3du0wpe3X3a4
+PJgW4uAso7V+6vxCYHXx6BdzM7gqYly1Grh2oxW3i0KeTqs08uxst3qZjYCfIduu
+2GorYxFuYVOcZpIxSOEoLaMYGkvxRE7V5QitRgaqO8SYguFYzVT6taVuJrC1CICU
+7aVndMGhlHU5ejSRcdWE8n6hKnXqRIpp8mOkjfJHQv2FCAtoRYd1fi6RadWMcWC3
+J/l9S6EMn/3xzHPkJunJN20Mc1jWpIFmCS0AY9mW4r7JoTJ3YsGwApi36ejZ0Dgf
+1taA8ciufj106PfavfhbuGKzmhhd3A==
+=VduB
+-----END PGP SIGNATURE-----
+
+--Sig_/uVUbwi0.12Pg.+NH6XSljQ2--
