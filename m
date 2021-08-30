@@ -2,208 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2C03FB215
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 09:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FF13FB21A
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 09:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbhH3HxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 03:53:19 -0400
-Received: from ozlabs.org ([203.11.71.1]:51137 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233318AbhH3HxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 03:53:15 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GyjGD4hZDz9sWc;
-        Mon, 30 Aug 2021 17:52:20 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1630309941;
-        bh=sP+TwshCrNfkpgG1A/2esKEB7tgvvZ+K/tvnLrF8jfk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=g+TU4UY6nWdm2oiNn0nFhYh9kfAKBQ2EMjxZ8QtafxslI1WtFMtuw7ndAoap+n9Z3
-         DULp8aR6PEWo07ccMrvj3P9LOuxN2EAFRrvYOKFDArCmiBRHSW1vppS7etNB8jU9R2
-         XYan1U2ROSW8cVYJK7VY+abS2WtcjVsbJCMENeAG+gCPbQuIQWYimXP9oB4CgOTXFL
-         J1ZOBEnzvHoD2m+9g7511zVKo13N5yO67a04t3wbCM6B8fbFcTjeAOZBsBUtnUqMzb
-         ZGhnH9u7eaY6BYnInoNudeNyojkIxTfBH1+FTi2BpTSwN0/difMQyTjMYHh2swrird
-         MN8li1eFGoQYw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v4 4/4] powerpc/ptdump: Convert powerpc to GENERIC_PTDUMP
-In-Reply-To: <5c479866-f31a-3579-9d71-357c85b777d0@csgroup.eu>
-References: <b864a92693ca8413ef0b19f0c12065c212899b6e.1625762905.git.christophe.leroy@csgroup.eu>
- <03166d569526be70214fe9370a7bad219d2f41c8.1625762907.git.christophe.leroy@csgroup.eu>
- <YSvYFTSwP5EkXQZ0@Ryzen-9-3900X.localdomain>
- <5c479866-f31a-3579-9d71-357c85b777d0@csgroup.eu>
-Date:   Mon, 30 Aug 2021 17:52:18 +1000
-Message-ID: <87tuj7e5e5.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S234204AbhH3HzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 03:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233844AbhH3HzA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 03:55:00 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D69C061575;
+        Mon, 30 Aug 2021 00:54:07 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id y23so12599901pgi.7;
+        Mon, 30 Aug 2021 00:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=qV6OtCVBWcTizrfIVpMoyQFjiimKyipNfQI+73uY/1I=;
+        b=iWNiHU34cAj7o3N36B9+/Th/hfnWa+eAnLfbNL1jKMDh3CtNfgtDbBx91x4uWSmZeg
+         8z1EZ8ZbefnDUqt80hYArTM2deIzpWr1j/mJXaETAQmf80vEMZJ/gGyOj9dIXbrTyp5N
+         aj4JTP5FA1NzfQdBn3nCGIwvqO0Jv4w4bD/tcdwCbTaGTsOlESXzTdWLqqIv/O2NhUpE
+         /pbZnlaf9VaTN2r5neaM78bmIt1z8QgRovn1qV/BZcFG7ilBMUfeounUolxY5pkbY/El
+         KY3I/M4VjowZKVFO5C2e+0gUoD2prlaxl8nQA5V/HmVgnFocJogRyrj4PtwbqtOhVQ67
+         F5Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=qV6OtCVBWcTizrfIVpMoyQFjiimKyipNfQI+73uY/1I=;
+        b=UEwf/K9b+A8WrUlJyUj/eMMMLuohT+zRiPQppApiDCq2gMiSVHeVjuIMGVZHLXrZ/p
+         AFOqzeZMTDayEuHGEBxHW/awONMtxtFNaNWpr73+AEKYPYhhTPx5+vjaVnaAPJ0gSW3N
+         J2dvpMX+6d8MJTFqgE4apnlE2A6yIJBae0WaJqacncxduzAhb5YOMaqlaZ0j5LjWxdia
+         Ninm+y6GLYx8VKxWfi3nAsrmWWUSy6jRuiukJQBBokYL6P4sjszsRkYSpTtEL1wt4c3o
+         467xeyo5DF7iyF1J/Uxl8PXS3QdkDCaIv061I9gJPczk/6mL4RrAb5il86CHO+QkCpyx
+         xKLw==
+X-Gm-Message-State: AOAM533rpHoIyhrQ+igFPWjk5JRYCDNqZlGObxtyBMdtN1/RCen6p9JF
+        /XkZLC29ePk+CKcjUXgPh+k=
+X-Google-Smtp-Source: ABdhPJw5zjIs5K90SY5f8KVIOl0mHrAVIU/T4uod/6GGzkvYA47hj5a4bPUOsaDvtm44FmfcVSmuoQ==
+X-Received: by 2002:a63:df06:: with SMTP id u6mr7907608pgg.148.1630310046791;
+        Mon, 30 Aug 2021 00:54:06 -0700 (PDT)
+Received: from localhost.localdomain ([162.219.34.245])
+        by smtp.gmail.com with ESMTPSA id b17sm16260839pgl.61.2021.08.30.00.54.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 00:54:06 -0700 (PDT)
+From:   Wang Jianchao <jianchao.wan9@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     jack@suse.cz, guoqing.jiang@linux.dev,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [PATCH V4 0/5] ext4: get discard out of jbd2 commit kthread
+Date:   Mon, 30 Aug 2021 15:52:41 +0800
+Message-Id: <20210830075246.12516-1-jianchao.wan9@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Hi Nathan,
->
-> Le 29/08/2021 =C3=A0 20:55, Nathan Chancellor a =C3=A9crit=C2=A0:
->> Hi Christophe,
->>=20
->> On Thu, Jul 08, 2021 at 04:49:43PM +0000, Christophe Leroy wrote:
->>> This patch converts powerpc to the generic PTDUMP implementation.
->>>
->>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>=20
->> This patch as commit e084728393a5 ("powerpc/ptdump: Convert powerpc to
->> GENERIC_PTDUMP") in powerpc/next causes a panic with Fedora's ppc64le
->> config [1] when booting up in QEMU with [2]:
->>=20
->> [    1.621864] BUG: Unable to handle kernel data access on read at 0xc0e=
-eff7f00000000
->> [    1.623058] Faulting instruction address: 0xc00000000045e5fc
->> [    1.623832] Oops: Kernel access of bad area, sig: 11 [#1]
->> [    1.624318] LE PAGE_SIZE=3D64K MMU=3DHash SMP NR_CPUS=3D2048 NUMA Pow=
-erNV
->> [    1.625015] Modules linked in:
->> [    1.625463] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc7-next=
--20210827 #16
->> [    1.626237] NIP:  c00000000045e5fc LR: c00000000045e580 CTR: c0000000=
-00518220
->> [    1.626839] REGS: c00000000752b820 TRAP: 0380   Not tainted  (5.14.0-=
-rc7-next-20210827)
->> [    1.627528] MSR:  9000000002009033 <SF,HV,VEC,EE,ME,IR,DR,RI,LE>  CR:=
- 84002482  XER: 20000000
->> [    1.628449] CFAR: c000000000518300 IRQMASK: 0
->> [    1.628449] GPR00: c00000000045e580 c00000000752bac0 c0000000028a9300=
- 0000000000000000
->> [    1.628449] GPR04: c200800000000000 ffffffffffffffff 000000000000000a=
- 0000000000000001
->> [    1.628449] GPR08: c0eeff7f00000000 0000000000000012 0000000000000000=
- 0000000000000000
->> [    1.628449] GPR12: 0000000000000000 c000000002b20000 fffffffffffffffe=
- c000000002971a70
->> [    1.628449] GPR16: c000000002960040 c0000000011a8f98 c00000000752bbf0=
- ffffffffffffffff
->> [    1.628449] GPR20: c2008fffffffffff c0eeff7f00000000 c000000002971a68=
- c00a0003ff000000
->> [    1.628449] GPR24: c000000002971a78 0000000000000002 0000000000000001=
- c0000000011a8f98
->> [    1.628449] GPR28: c0000000011a8f98 c0000000028daef8 c200800000000000=
- c200900000000000
->> [    1.634090] NIP [c00000000045e5fc] __walk_page_range+0x2bc/0xce0
->> [    1.635117] LR [c00000000045e580] __walk_page_range+0x240/0xce0
->> [    1.635755] Call Trace:
->> [    1.636018] [c00000000752bac0] [c00000000045e580] __walk_page_range+0=
-x240/0xce0 (unreliable)
->> [    1.636811] [c00000000752bbd0] [c00000000045f234] walk_page_range_nov=
-ma+0x74/0xb0
->> [    1.637459] [c00000000752bc20] [c000000000518448] ptdump_walk_pgd+0x9=
-8/0x170
->> [    1.638138] [c00000000752bc70] [c0000000000aa988] ptdump_check_wx+0x8=
-8/0xd0
->> [    1.638738] [c00000000752bd50] [c00000000008d6d8] mark_rodata_ro+0x48=
-/0x80
->> [    1.639299] [c00000000752bdb0] [c000000000012a34] kernel_init+0x74/0x=
-1a0
->> [    1.639842] [c00000000752be10] [c00000000000cfd4] ret_from_kernel_thr=
-ead+0x5c/0x64
->> [    1.640597] Instruction dump:
->> [    1.641021] 38e7ffff 39490010 7ce707b4 7fca5436 79081564 7d4a3838 790=
-8f082 794a1f24
->> [    1.641740] 78a8f00e 30e6ffff 7ea85214 7ce73110 <7d48502a> 78f90fa4 2=
-c2a0000 39290010
->> [    1.642771] ---[ end trace 6cf72b085097ad52 ]---
->> [    1.643220]
->> [    2.644228] Kernel panic - not syncing: Attempted to kill init! exitc=
-ode=3D0x0000000b
->> [    2.645523] ---[ end Kernel panic - not syncing: Attempted to kill in=
-it! exitcode=3D0x0000000b ]---
->>=20
->> This is not compiler specific, I can reproduce it with GCC 11.2.0 and
->> binutils 2.37. If there is any additional information I can provide,
->> please let me know.
->
-> Can you provide a dissassembly of __walk_page_range() ? Or provide your v=
-mlinux binary.
+Hi all
 
-It seems to be walking of the end of the pgd.
+This is the version 4 patch set that attempts to get discard out of the jbd2
+commit kthread. When the user delete a lot data and cause discard flooding,
+the jbd2 commit kthread can be blocked for very long time and then all of
+the metadata operations are blocked due to no journal space.
 
-[    3.373800] walk_p4d_range: addr c00fff0000000000 end c00fff8000000000
-[    3.373852] walk_p4d_range: addr c00fff8000000000 end c010000000000000	<=
-- end of pgd at PAGE_OFFSET + 4PB
-[    3.373905] walk_p4d_range: addr c010000000000000 end c010008000000000
-[    3.373957] walk_p4d_range: addr c010008000000000 end c010010000000000
-[    3.374009] walk_p4d_range: addr c010010000000000 end c010018000000000
-[    3.374060] walk_p4d_range: addr c010018000000000 end c010020000000000
-[    3.376727] walk_p4d_range: addr c010020000000000 end c010028000000000
-[    3.376780] walk_p4d_range: addr c010028000000000 end c010030000000000
-[    3.376831] walk_p4d_range: addr c010030000000000 end c010038000000000
-[    3.376883] walk_p4d_range: addr c010038000000000 end c010040000000000
-[    3.376935] walk_p4d_range: addr c010040000000000 end c010048000000000
-[    3.376988] walk_p4d_range: addr c010048000000000 end c010050000000000
-[    3.377039] walk_p4d_range: addr c010050000000000 end c010058000000000
-[    3.377091] walk_p4d_range: addr c010058000000000 end c010060000000000
-[    3.377143] walk_p4d_range: addr c010060000000000 end c010068000000000
-[    3.377244] walk_pud_range: addr c010060000000000 end c010068000000000
-[    3.377374] walk_pmd_range: addr c010060100000000 end c010060140000000
-[    3.377817] BUG: Unable to handle kernel data access on read at 0xf906a0=
-38d8ba8400
-[    3.378247] Faulting instruction address: 0xc00000000045b4a4
-[    3.378725] Oops: Kernel access of bad area, sig: 11 [#1]
-[    3.378843] LE PAGE_SIZE=3D64K MMU=3DRadix SMP NR_CPUS=3D2048 NUMA pSeri=
-es
-[    3.379118] Modules linked in:
-[    3.379422] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc2+ #75
-[    3.379751] NIP:  c00000000045b4a4 LR: c00000000045b430 CTR: c000000000b=
-4b580
-[    3.379833] REGS: c0000000085637c0 TRAP: 0300   Not tainted  (5.14.0-rc2=
-+)
-[    3.379940] MSR:  8000000002009033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 88002=
-28f  XER: 20040000
-[    3.380284] CFAR: c0000000001f5744 DAR: f906a038d8ba8400 DSISR: 40000000=
- IRQMASK: 0
-[    3.380284] GPR00: c00000000045b430 c000000008563a60 c0000000028a7d00 00=
-0000000000003a
-[    3.380284] GPR04: 00000000ffffe14d c000000008563748 ffffffffffffffff 00=
-000000000001ff
-[    3.380284] GPR08: f906a038d8ba8400 c0100601001fffff c01006013fffffff ff=
-fffffffffc51e0
-[    3.380284] GPR12: 0000000000002000 c0000000ffffee80 0000000000000001 c0=
-00000008563be0
-[    3.380284] GPR16: c000000001198118 c0000000028daef8 c000000002971a60 c0=
-000000014bc868
-[    3.380284] GPR20: c010060100200000 c000000002971a58 c000000002971a68 c0=
-10060100000000
-[    3.380284] GPR24: 0000000000000003 c000000001198118 c000000001198118 c0=
-00000001000020
-[    3.380284] GPR28: 0000000000000000 c010060140000000 c010068000000000 f9=
-06a038d8ba8400
-[    3.381235] NIP [c00000000045b4a4] __walk_page_range+0x7f4/0xbd0
-[    3.381906] LR [c00000000045b430] __walk_page_range+0x780/0xbd0
-[    3.382120] Call Trace:
-[    3.382240] [c000000008563a60] [c00000000045b430] __walk_page_range+0x78=
-0/0xbd0 (unreliable)
-[    3.382445] [c000000008563bc0] [c00000000045ba94] walk_page_range_novma+=
-0x74/0xb0
-[    3.382548] [c000000008563c10] [c000000000514cd8] ptdump_walk_pgd+0x98/0=
-x170
-[    3.382630] [c000000008563c60] [c0000000000aaf70] ptdump_check_wx+0xb0/0=
-x100
-[    3.382774] [c000000008563d40] [c00000000008db18] mark_rodata_ro+0x48/0x=
-80
-[    3.382849] [c000000008563da0] [c000000000012a18] kernel_init+0x78/0x1c0
-[    3.382926] [c000000008563e10] [c00000000000cfd4] ret_from_kernel_thread=
-+0x5c/0x64
-[    3.383092] Instruction dump:
-[    3.383341] 78c8f00e 7fe84a14 e9360000 e94100a8 39290010 7dc94836 7e89ba=
-14 7d2900d0
-[    3.383516] 7e944838 3934ffff 7c295040 40800098 <e93f0000> 2c290000 4082=
-0094 e9990028
-[    3.384126] ---[ end trace d8e6479034d7a9d1 ]---
+The xfstest with following parameters,
+MODULAR=0
+TEST_DIR=/mnt/test
+TEST_DEV=/dev/nbd37p1
+SCRATCH_MNT=/mnt/scratch
+SCRATCH_DEV=/dev/nbd37p2
+MOUNT_OPTIONS="-o discard"
+has passed. The result is consistent w/ or w/o this patch set.
 
-cheers
+There are 5 patches,
+
+Patch 1 ~ 3, there are no functional changes in them, but just some preparation
+for following patches
+
+Patch 4 introduces a async kworker to do discard in fstrim fation which implements
+the core idea of this patch set.
+
+Patch 5 flush discard background work in ext4_should_retry_alloc, This fix the generic/371
+
+Any comments are welcome ;)
+
+V3 -> V4:
+ - In patch 1, avoid modify two lines in patch 1 when remove 'grou'p parameter
+ - In patch 4, remove redunbant queue_work() in ext4_mb_release(). And queue background
+   discard work to system_unbound_wq as it is not a urgent task.
+ - In patch 5, flush discard kwork in ext4_should_retry_alloc(), instead of invoke
+   ext4_should_retry_alloc in fallocate again.
+   
+V2 -> V3
+ - Get rid of the per block group rb tree which carries freed entry. It is not neccesary
+   because we have done aggregation when wait for journal commit. Just use a list
+   to carry the free entries.
+
+V1 -> V2
+ - free the blocks back to mb buddy after commit and then do ftrim fashion discard
+
+ fs/ext4/balloc.c  |   8 ++-
+ fs/ext4/ext4.h    |   3 ++
+ fs/ext4/mballoc.c | 216 +++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------------
+ 3 files changed, 148 insertions(+), 79 deletions(-)
+
