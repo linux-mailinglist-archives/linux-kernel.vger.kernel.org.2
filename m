@@ -2,29 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CBB3FB7A2
+	by mail.lfdr.de (Postfix) with ESMTP id 5267A3FB7A1
 	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 16:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237078AbhH3OOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 10:14:30 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:33886 "EHLO gloria.sntech.de"
+        id S237032AbhH3OO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 10:14:26 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:33884 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237021AbhH3OOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236877AbhH3OOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 30 Aug 2021 10:14:25 -0400
 Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=phil.lan)
         by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <heiko@sntech.de>)
-        id 1mKi2T-0008I3-IP; Mon, 30 Aug 2021 16:13:29 +0200
+        id 1mKi2T-0008I3-Q8; Mon, 30 Aug 2021 16:13:29 +0200
 From:   Heiko Stuebner <heiko@sntech.de>
 To:     linux-rockchip@lists.infradead.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         jacopo@jmondi.org, heiko@sntech.de,
         Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Subject: [PATCH 1/2] arm64: dts: rockchip: add isp node for px30
-Date:   Mon, 30 Aug 2021 16:13:17 +0200
-Message-Id: <20210830141318.66744-1-heiko@sntech.de>
+Subject: [PATCH 2/2] arm64: dts: rockchip: hook up camera on px30-evb
+Date:   Mon, 30 Aug 2021 16:13:18 +0200
+Message-Id: <20210830141318.66744-2-heiko@sntech.de>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210830141318.66744-1-heiko@sntech.de>
+References: <20210830141318.66744-1-heiko@sntech.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -33,65 +35,88 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
-Add the rkisp1 node and iommu for the px30 soc.
-
 Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 ---
- arch/arm64/boot/dts/rockchip/px30.dtsi | 41 ++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ arch/arm64/boot/dts/rockchip/px30-evb.dts | 52 +++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
-index 64f643145688..500ef3af2a49 100644
---- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-@@ -1189,6 +1189,47 @@ vopl_mmu: iommu@ff470f00 {
- 		status = "disabled";
- 	};
+diff --git a/arch/arm64/boot/dts/rockchip/px30-evb.dts b/arch/arm64/boot/dts/rockchip/px30-evb.dts
+index c1ce9c295e5b..848bc39cf86a 100644
+--- a/arch/arm64/boot/dts/rockchip/px30-evb.dts
++++ b/arch/arm64/boot/dts/rockchip/px30-evb.dts
+@@ -114,6 +114,10 @@ &cpu3 {
+ 	cpu-supply = <&vdd_arm>;
+ };
  
-+	isp: isp@ff4a0000 {
-+		compatible = "rockchip,px30-cif-isp"; /*rk3326-rkisp1*/
-+		reg = <0x0 0xff4a0000 0x0 0x8000>;
-+		interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupt-names = "isp", "mi", "mipi";
-+		clocks = <&cru SCLK_ISP>,
-+			 <&cru ACLK_ISP>,
-+			 <&cru HCLK_ISP>,
-+			 <&cru PCLK_ISP>;
-+		clock-names = "isp", "aclk", "hclk", "pclk";
-+		iommus = <&isp_mmu>;
-+		phys = <&csi_dphy>;
-+		phy-names = "dphy";
-+		power-domains = <&power PX30_PD_VI>;
-+		status = "disabled";
++&csi_dphy {
++	status = "okay";
++};
 +
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
+ &display_subsystem {
+ 	status = "okay";
+ };
+@@ -428,6 +432,36 @@ sensor@4c {
+ 	};
+ };
+ 
++&i2c2 {
++	status = "okay";
 +
-+			port@0 {
-+				reg = <0>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
++	clock-frequency = <100000>;
++
++	/* These are relatively safe rise/fall times; TODO: measure */
++	i2c-scl-falling-time-ns = <50>;
++	i2c-scl-rising-time-ns = <300>;
++
++	ov5695: ov5695@36 {
++		compatible = "ovti,ov5695";
++		reg = <0x36>;
++		avdd-supply = <&vcc2v8_dvp>;
++		clocks = <&cru SCLK_CIF_OUT>;
++		clock-names = "xvclk";
++		dvdd-supply = <&vcc1v5_dvp>;
++		dovdd-supply = <&vcc1v8_dvp>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&cif_clkout_m0>;
++		reset-gpios = <&gpio2 14 GPIO_ACTIVE_LOW>;
++
++		port {
++			ucam_out: endpoint {
++				remote-endpoint = <&mipi_in_ucam>;
++				data-lanes = <1 2>;
 +			};
 +		};
 +	};
++};
 +
-+	isp_mmu: iommu@ff4a8000 {
-+		compatible = "rockchip,iommu";
-+		reg = <0x0 0xff4a8000 0x0 0x100>;
-+		interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru ACLK_ISP>, <&cru HCLK_ISP>;
-+		clock-names = "aclk", "iface";
-+		power-domains = <&power PX30_PD_VI>;
-+		rockchip,disable-mmu-reset;
-+		#iommu-cells = <0>;
+ &i2s1_2ch {
+ 	status = "okay";
+ };
+@@ -443,6 +477,24 @@ &io_domains {
+ 	vccio6-supply = <&vccio_flash>;
+ };
+ 
++&isp {
++	status = "okay";
++
++	ports {
++		port@0 {
++			mipi_in_ucam: endpoint@0 {
++				reg = <0>;
++				data-lanes = <1 2>;
++				remote-endpoint = <&ucam_out>;
++			};
++		};
 +	};
++};
 +
- 	qos_gmac: qos@ff518000 {
- 		compatible = "rockchip,px30-qos", "syscon";
- 		reg = <0x0 0xff518000 0x0 0x20>;
++&isp_mmu {
++	status = "okay";
++};
++
+ &pinctrl {
+ 	headphone {
+ 		hp_det: hp-det {
 -- 
 2.29.2
 
