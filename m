@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3CA3FB210
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 09:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3013FB213
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 09:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234173AbhH3HsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 03:48:02 -0400
-Received: from 8.mo548.mail-out.ovh.net ([46.105.45.231]:60125 "EHLO
-        8.mo548.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233726AbhH3Hr7 (ORCPT
+        id S233971AbhH3HuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 03:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233318AbhH3HuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 03:47:59 -0400
-Received: from mxplan5.mail.ovh.net (unknown [10.108.1.249])
-        by mo548.mail-out.ovh.net (Postfix) with ESMTPS id 4073F2079B;
-        Mon, 30 Aug 2021 07:47:04 +0000 (UTC)
-Received: from kaod.org (37.59.142.100) by DAG4EX1.mxp5.local (172.16.2.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Mon, 30 Aug
- 2021 09:47:03 +0200
-Authentication-Results: garm.ovh; auth=pass (GARM-100R00323d219df-5663-47f2-b4cd-9fc470d5d05b,
-                    A410DCCBFF6448DFF799E1C977766415213BDB3F) smtp.auth=clg@kaod.org
-X-OVh-ClientIp: 82.66.77.115
-Subject: Re: [PATCH 2/2]: Be stric clocksource/drivers/fttmr010 on IRQs
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Linus Walleij <linus.walleij@linaro.org>
-CC:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Joel Stanley <joel@jms.id.au>
-References: <20210724224424.2085404-1-linus.walleij@linaro.org>
- <20210724224424.2085404-2-linus.walleij@linaro.org>
- <20210821042010.GA1759866@roeck-us.net>
- <CACRpkdYObGTWni3sSa21iNsgikzj7t9MA6y4TNgkBTTYQt+coA@mail.gmail.com>
- <4d87c7af-d2e3-9456-130a-b35b507ff3a2@roeck-us.net>
- <567a65a8-077b-7394-c8e2-dbd9f063e02c@kaod.org>
- <4c87cee3-2dfb-41e7-a18b-5ed4687a6f7a@www.fastmail.com>
- <f71cbfb9-b72c-39d2-6acb-dc83b6a496f8@roeck-us.net>
-From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <cc934baf-75a9-d7f6-44ac-e7fa1c6f69b6@kaod.org>
-Date:   Mon, 30 Aug 2021 09:47:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 30 Aug 2021 03:50:04 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35B4C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 00:49:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=wA/gsUCb3PAoH4z1d3dqqDuu/3zM/xx6tIByC/CvD7s=; b=XcdoPMZy/0Fg3gM8QRg8zSs1qw
+        f1WKz4JRPEXfas0+4i6K0UfdGnTpbYzU2Qep90nJauSrulL92kcHzLtCxm7ld9gUuAinQFgSsQPva
+        61aQp/gYxcqmVwXE54qgjJtlYTHfFFQOM/wrrV2yrWmbOe6i29RT2wmcMW9OrYpndKBJU8D9wLtI+
+        aT9QAICLaI7CRELUaYj3eyGctYk3nX8Bv10O/5e0j968I7hVpVsZp4G9fnERb3FsIZtpYqhfT/dN6
+        /l1laEWM+6h4RIWzWyJ5XAVIMRpuWmeXaLsVKO1NAQ3rKeMWj/ebsr9Jyo+DZg+EV00dJCAxSijBC
+        lpdaB8VQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKc20-00ELyC-MN; Mon, 30 Aug 2021 07:48:36 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B8EF6981255; Mon, 30 Aug 2021 09:48:34 +0200 (CEST)
+Date:   Mon, 30 Aug 2021 09:48:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, joro@8bytes.org,
+        boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
+        rostedt@goodmis.org, dvyukov@google.com, elver@google.com
+Subject: Re: [PATCH v2 01/24] x86/xen: Mark cpu_bringup_and_idle() as
+ dead_end_function
+Message-ID: <20210830074834.GE4353@worktop.programming.kicks-ass.net>
+References: <20210624094059.886075998@infradead.org>
+ <20210624095147.693801717@infradead.org>
+ <20210820192224.ytrr6ybuuwegbeov@treble>
+ <20210820193107.omvshmsqbpxufzkc@treble>
+ <fc90e972-f81f-3706-b13a-988b16264650@suse.com>
+ <d27cd344-1323-803c-d26d-9aa851681b69@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <f71cbfb9-b72c-39d2-6acb-dc83b6a496f8@roeck-us.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [37.59.142.100]
-X-ClientProxiedBy: DAG7EX2.mxp5.local (172.16.2.62) To DAG4EX1.mxp5.local
- (172.16.2.31)
-X-Ovh-Tracer-GUID: 0a51df70-3316-4a7a-bb6a-740fc67eb451
-X-Ovh-Tracer-Id: 10157587485558541161
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddukedguddvgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefuvfhfhffkffgfgggjtgfgihesthejredttdefjeenucfhrhhomhepveorughrihgtpgfnvggpifhorghtvghruceotghlgheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpeegvdeijeefvdfhudfhffeuveehledufffhvdekheelgedttddthfeigeevgefhffenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddttdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheptghlgheskhgrohgurdhorhhgpdhrtghpthhtoheplhhinhhugiesrhhovggtkhdquhhsrdhnvght
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <d27cd344-1323-803c-d26d-9aa851681b69@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/21 6:58 AM, Guenter Roeck wrote:
-> On 8/29/21 9:16 PM, Andrew Jeffery wrote:
-> [ ... ]
->>>
->>>> I don't have the manuals, so I can't say what the correct behavior is,
->>>> but at least there is some evidence that TIMER_INTR_STATE may not exist
->>>> on ast2400 and ast2500 SOCs.
->>>
->>> On Aspeed SoCs AST2400 and AST2500, the TMC[34] register is a
->>> "control register #2" whereas on the AST2600 it is an "interruptarch/arm/boot/dts/ast2600-facebook-netbmc-common.dtsi:#include
->>> status register" with bits [0-7] holding the timers status.
->>>
->>> I would say that the patch simply should handle the "is_aspeed" case.
->>
->> Well, is_aspeed is set true in the driver for all of the 2400, 2500 and
->> 2600. 0x34 behaves the way this patch expects on the 2600. So I think
->> we need something less coarse than is_aspeed?
->>
-> 
-> If I understand the code correctly, ast2400 and ast2500 execute
-> fttmr010_timer_interrupt(), while ast2600 has its own interrupt handler.
-> To make this work, it would probably be necessary to check for is_aspeed
-> in fttmr010_timer_interrupt(), and only execute the new code if the flag
-> is false. The existing flag in struct fttmr010 should be good enough
-> for that.
+On Mon, Aug 30, 2021 at 07:55:02AM +0200, Juergen Gross wrote:
+> > > From: Josh Poimboeuf <jpoimboe@redhat.com>
+> > > Subject: [PATCH] x86/xen: Move hypercall_page to top of the file
+> > >=20
+> > > Because hypercall_page is page-aligned, the assembler inexplicably ad=
+ds
+> > > an unreachable jump from after the end of the previous code to the
+> > > beginning of hypercall_page.
+> > >=20
+> > > That confuses objtool, understandably.=A0 It also creates significant=
+ text
+> > > fragmentation.=A0 As a result, much of the object file is wasted text
+> > > (nops).
+> > >=20
+> > > Move hypercall_page to the beginning of the file to both prevent the
+> > > text fragmentation and avoid the dead jump instruction.
+> > >=20
+> > > $ size /tmp/head_64.before.o /tmp/head_64.after.o
+> > > =A0=A0=A0 text=A0=A0=A0=A0=A0=A0 data=A0=A0=A0=A0=A0=A0=A0 bss=A0=A0=
+=A0=A0=A0=A0=A0 dec=A0=A0=A0=A0=A0=A0=A0 hex=A0=A0=A0 filename
+> > > =A0=A0 10924=A0=A0=A0=A0 307252=A0=A0=A0=A0=A0=A0 4096=A0=A0=A0=A0 32=
+2272=A0=A0=A0=A0=A0 4eae0
+> > > /tmp/head_64.before.o
+> > > =A0=A0=A0 6823=A0=A0=A0=A0 307252=A0=A0=A0=A0=A0=A0 4096=A0=A0=A0=A0 =
+318171=A0=A0=A0=A0=A0 4dadb
+> > > /tmp/head_64.after.o
+> > >=20
+> > > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com
+> >=20
+> > Reviewed-by: Juergen Gross <jgross@suse.com>
+>=20
+> Umm, will this be carried through the tip tree, or shall I take it in
+> the xen tree?
 
-yes. 
-
-I wonder why we have ast2600 support in fttmr010. The AST2600 boards use 
-the arm_arch_timer AFAICT.
-
-C.
-
+I have it in the whole x86/objtool/paravirt series. I you want it in the
+Xen tree, I'll be happy to drop it from there, although I hope to get
+all that merged this cycles somewhere.
