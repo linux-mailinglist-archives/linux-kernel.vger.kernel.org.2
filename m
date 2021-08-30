@@ -2,111 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E48F3FB90F
-	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233EE3FB911
+	for <lists+linux-kernel@lfdr.de>; Mon, 30 Aug 2021 17:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237553AbhH3Pgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 11:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36186 "EHLO
+        id S237575AbhH3PhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 11:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237085AbhH3Pge (ORCPT
+        with ESMTP id S237570AbhH3PhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 11:36:34 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDADC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:35:41 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id ot2-20020a17090b3b4200b0019127f8ed87so183467pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 08:35:41 -0700 (PDT)
+        Mon, 30 Aug 2021 11:37:17 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF308C061575;
+        Mon, 30 Aug 2021 08:36:23 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id bi4so16555125oib.9;
+        Mon, 30 Aug 2021 08:36:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ycmCKNPJgpcB3YMEss9Ra0DZx7JMWRVdCgZx9z/DNn0=;
-        b=CYcFHCuVeNg1qUbDtLgxHOvwlLpT8nf/FXWHUZRQEpAOZApYO5oYzGFw5ttfZlPey1
-         bmnJ3v0sX6/55bPQM5gxjOPkc+Hya/WOfzDq8VV0R7hDXVAZLAf9CM5a4iltNUR3io0B
-         aHefaHB7+lD6uD94osrn3n63ZdVAvgpjCBoDg=
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GTNo1Wom6VjY9cXuvhXLTz44pONgpHE1+NUjnkRawY0=;
+        b=EEMGlFaiCCD9fU9V1jhUlzSO59uM3a/c13cKfuCwBobaCYBrC6f/zm7nAcrI9ecM4x
+         NRHmYjnuqexyiWWCcwjqpEsfh8K8DP+IIo0OnYyXvyHlHTIwkWKY4L5zRMbZCDGfKWFs
+         zpSSo7OE94shjRk9NvXHCoyDOl+j+A2nfnPfr9eVykgBFjzr2Odf1IcFrDChWrSEciid
+         hbvvNTPnQAdLYB+Eriq8VlUcrE0NzfAEKtHpptU/zKcA4QijxY5RZbqEnkdPAnlKmDF/
+         DrgdOa0ILMR1bnZI3NXquzCauZT8xJpATOVRBH8YPNhB2bAsN5qG8/qcxLggYBZCyfy9
+         QxSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ycmCKNPJgpcB3YMEss9Ra0DZx7JMWRVdCgZx9z/DNn0=;
-        b=qQXMTD/7TfOdlpQC0IY74CVFaUBWzzbUi2fyrhtYtBQEgSWqPvxiXv9DLjJevnLFoa
-         HQXPQdkSfKV3OUthi2Nkl7VvQoIFHKWK7SQP78q4mWaWDcBktlm4GxfjdsRE5fuQy7QJ
-         YY65ilC+3Be66nio9n7lwT+syTfatEnPYOff5WJz0moy73uYBXt/AwXwhKLKCQX3uryf
-         NVYwET1VvIkTQvcS/esLpZBchh/SF2bLB1zBfAjqySqgVlYj30o/6/8Ff0nF16Cf4cX6
-         uWafsVLywtbstq9EotQ6PlZkn4qKdzumdIL2C1mDLCl5k8XJpNQ7FmXJVYLM4+F6twh5
-         CDOA==
-X-Gm-Message-State: AOAM531gFFNDBt9A+zwhS9btnpXdX2npLnUpltClIAA9KiPGC81D8yVb
-        aCt0www+Dk/jmU33+Dkl72eKgQ==
-X-Google-Smtp-Source: ABdhPJwi32UTr9IwxTycPbcvQxxUNoOHq7+rN9Cnb44EOMY7EGG464Xxpt7qBKn+uz2xtnJUWiaY0A==
-X-Received: by 2002:a17:90a:29a6:: with SMTP id h35mr27349351pjd.188.1630337740577;
-        Mon, 30 Aug 2021 08:35:40 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:b658:7113:70a2:ea])
-        by smtp.gmail.com with ESMTPSA id i1sm21115438pjs.31.2021.08.30.08.35.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 08:35:40 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Niklas Cassel <nks@flawful.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] nvmem: core: Add stubs for nvmem_cell_read_variable_le_u32/64 if !CONFIG_NVMEM
-Date:   Mon, 30 Aug 2021 08:35:10 -0700
-Message-Id: <20210830083449.1.I38e95343209fe1f808c3b4860795a00a2b539701@changeid>
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+        bh=GTNo1Wom6VjY9cXuvhXLTz44pONgpHE1+NUjnkRawY0=;
+        b=bbVUBpUn0UfCSLyLKBIlNtFlt4BlHPaKDD1QRsTxyveSxLoin0HbrngWal1/sikukO
+         tuwNTK/clAsJb4KAAT49yaN9FZeCsoF7Oi7qVBteqyiAJtGgN+haS88cu5SKHcU2i+iv
+         FciDDupGt61Y0E9ICkUfFR4jd/I5d27/2wdtcR3M304iE+Haq1eUWrAzQ+jwSV5dJGuH
+         26Dx0D9AEEiZxMfw4w9AtYuXxRpbIvJSZvQu7yshvTMc2uRH0gvtp11JLHqQWAtFUYjW
+         M7BrwPRtC4mZPEBzSXHaiBrxNXH3vM3jOuvOIout7+bGo99kC9Kxpo7xvkFWwNmsCGP3
+         IjVg==
+X-Gm-Message-State: AOAM533qgnuO31YRQ7xRuS/YtQrFWwj0Q3+S28dehlbUqqyQSbMdn1+v
+        OkppjXyKwV91TJElQiBNAnLhr79gPZg=
+X-Google-Smtp-Source: ABdhPJyd9OiEkiuq/TNlmUOjwCfxmtXBgGdJSqfTQ/jwsOdfTpEJH87800wXBIwRtZfU0t1P/fXHjg==
+X-Received: by 2002:aca:1a0f:: with SMTP id a15mr15332556oia.42.1630337782951;
+        Mon, 30 Aug 2021 08:36:22 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v24sm3288662ote.66.2021.08.30.08.36.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 08:36:22 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v2 4/4] hwmon: (adt7470) Use standard update_interval
+ property
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210826024121.15665-1-chris.packham@alliedtelesis.co.nz>
+ <20210826024121.15665-5-chris.packham@alliedtelesis.co.nz>
+ <20210827212942.GA716764@roeck-us.net>
+ <fe6cf9f3-f15e-065c-aaf8-cc018edf12e8@alliedtelesis.co.nz>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <e467a3b2-d7c7-0920-9287-fb3e7abd5fae@roeck-us.net>
+Date:   Mon, 30 Aug 2021 08:36:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <fe6cf9f3-f15e-065c-aaf8-cc018edf12e8@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I added nvmem_cell_read_variable_le_u32() and
-nvmem_cell_read_variable_le_u64() I forgot to add the "static inline"
-stub functions for when CONFIG_NVMEM wasn't defined. Add them
-now. This was causing problems with randconfig builds that compiled
-`drivers/soc/qcom/cpr.c`.
+On 8/29/21 2:09 PM, Chris Packham wrote:
+> 
+> On 28/08/21 9:29 am, Guenter Roeck wrote:
+>> On Thu, Aug 26, 2021 at 02:41:21PM +1200, Chris Packham wrote:
+>>> Instead of the non-standard auto_update_interval make use of the
+>>> update_interval property that is supported by the hwmon core.
+>>>
+>>> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+>>> ---
+>>>
+>>> Notes:
+>>>       I kind of anticipate a NAK on this because it affects the ABI. But I figured
+>>>       I'd run it past the ML to see if moving towards the hwmon core is worth the hit
+>>>       in ABI compatibility.
+>>>       
+>> I personally don't mind (most likely no one is using it anyway), but let's
+>> wait until after the upcoming commit window closes to give people time to
+>> complain.
+> 
+> I know of one application using this sysfs entry. But it's our in-house
+> environmental monitoring code so if this gets merged I'll just update it
+> to use the new path.
+> 
+> One thought I had was we could do both. i.e. have an entry that conforms
+> to the hwmon core and a backwards compatible entry that just aliases the
+> new path.
+> 
+Now you almost convinced me to indeed reject this patch. The idea of the new API
+is to simplify driver code, not to make it more complicated. If we can't simplify
+the code, it is better to leave it alone.
 
-Fixes: 6feba6a62c57 ("PM: AVS: qcom-cpr: Use nvmem_cell_read_variable_le_u32()")
-Fixes: a28e824fb827 ("nvmem: core: Add functions to make number reading easy")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-It might be handy if this commit could somehow end up in the SoC tree
-soon-ish to fix the build warning. I expect that the "qcom-cpr" patch
-will be part of the pull requests send in the next merge window and
-it'd be nice if we didn't end up with the build warning in -rc1.
-
- include/linux/nvmem-consumer.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
-index 923dada24eb4..c0c0cefc3b92 100644
---- a/include/linux/nvmem-consumer.h
-+++ b/include/linux/nvmem-consumer.h
-@@ -150,6 +150,20 @@ static inline int nvmem_cell_read_u64(struct device *dev,
- 	return -EOPNOTSUPP;
- }
- 
-+static inline int nvmem_cell_read_variable_le_u32(struct device *dev,
-+						 const char *cell_id,
-+						 u32 *val)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int nvmem_cell_read_variable_le_u64(struct device *dev,
-+						  const char *cell_id,
-+						  u64 *val)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- static inline struct nvmem_device *nvmem_device_get(struct device *dev,
- 						    const char *name)
- {
--- 
-2.33.0.259.gc128427fd7-goog
-
+Guenter
