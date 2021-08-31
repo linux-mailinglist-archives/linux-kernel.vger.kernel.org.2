@@ -2,167 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2633FC99D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DCC3FC9A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234892AbhHaOVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:21:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38008 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230135AbhHaOVD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:21:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630419608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kuHdMLn18IKwwH4QQSWLOw+X0/FNLXCUYkqXo3AG1Jk=;
-        b=GbowEyRVoAtR1J8FXUhpxEdeIgnxtW6eLhOSwnjdYJmYip/pkGpFYEZnrLr1jdThigX3Z2
-        Ft0KtU+1j9W6/seZrnWSgp4sY8aa6S7FU/uVkGFCPd8j/sTkJNEnW2lh4r6NbI38WtaNZ4
-        0GXNFarOroJe3Sh7jngo98NpmLxIDEo=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-459-UUGUCBl-Pz6QehdmDmA8bA-1; Tue, 31 Aug 2021 10:20:06 -0400
-X-MC-Unique: UUGUCBl-Pz6QehdmDmA8bA-1
-Received: by mail-ej1-f72.google.com with SMTP id x21-20020a170906135500b005d8d4900c5eso687361ejb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:20:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kuHdMLn18IKwwH4QQSWLOw+X0/FNLXCUYkqXo3AG1Jk=;
-        b=s/nIkx5rAuKn6J2meKRWIIVN7DKeDHRgk4CXFKj4VIArAzC9UPdbmEwDo4qaY2QjA3
-         3pBnAyizfPo3MFsYvEMHmQ8aKXh+GgvmJ/qUQaGMclXeZwBrHRAc3VCCdT6aMPTitF4b
-         hE5JsIfqgxurGLPY4C/x47EN7D1+isIUb3C+dwlLIKlFLavV41E+sLsRAzB2KUJh25ol
-         G7NWKzYGFmKqanoywfBQvqXLJ82XmOlwDV9fsD2dLtUAjR2CUpRpH4yufAI1j3z2yZXn
-         jlEo2dcjCALgfPS6RIDLXeEpQqNsGd1jQFW7Aa5bq8rUl4jcKMrR/F6aG2YXH0WgdH23
-         Uktg==
-X-Gm-Message-State: AOAM532uPtYjoq+vK3khcvc3T8PZ/apLcjF4P23QmYsdMHG1GHU3vkZA
-        kVbKhgVnnPBOMc/2Ej5SqD3t8ArCfBtOmfUpuO/xQUIW3366BIkkIWxC6vQ3y12qU8MLuek3xmG
-        2GVXfKbfaT0WmPJ5rK712icG8
-X-Received: by 2002:a17:906:4482:: with SMTP id y2mr11838348ejo.484.1630419605674;
-        Tue, 31 Aug 2021 07:20:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCxB/XR66pzE/FFXAseDZAL6q3C0BZpaBf1FpxaPmkMLrL2KcZjS2xPKREZptzzbalDzsEyA==
-X-Received: by 2002:a17:906:4482:: with SMTP id y2mr11838314ejo.484.1630419605313;
-        Tue, 31 Aug 2021 07:20:05 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id h7sm3392356edr.4.2021.08.31.07.20.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 07:20:04 -0700 (PDT)
-Subject: Re: [PATCH regression fix] firmware/dmi: Move product_sku info to the
- end of the modalias
-To:     Jean Delvare <jdelvare@suse.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Kai-Chuan Hsieh <kaichuan.hsieh@canonical.com>,
-        Erwan Velu <e.velu@criteo.com>
-References: <20210831130508.14511-1-hdegoede@redhat.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <0a96f1de-c0a0-40ce-e4dc-0acacfa2c7a8@redhat.com>
-Date:   Tue, 31 Aug 2021 16:20:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235860AbhHaOV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:21:56 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50358 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230135AbhHaOVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 10:21:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=bkzQryUC9VMNEg1re0qIAX363VNCQlN54z1700v8XqI=; b=bfZP1pxv2sP2bSyYP4Ni9erzqv
+        Esy3NVVdGUpCG5rGpoAMDmjX8feP3djTiXZEU/bP4y7Z4SwFF3ZYyO9gL8suXHKG5IBj4f98rfJfa
+        oyzEfe1TfkBzicZBd5kvGht4adR7JH9zA6DzeypHVWoPRDxwE5SwGanYDbkCBKiUCPvU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mL4d7-004jET-9a; Tue, 31 Aug 2021 16:20:49 +0200
+Date:   Tue, 31 Aug 2021 16:20:49 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     syzbot <syzbot+6a916267d9bc5fa2d9a6@syzkaller.appspotmail.com>,
+        davem@davemloft.net, hkallweit1@gmail.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Oleksij Rempel <linux@rempel-privat.de>
+Subject: Re: [syzbot] KASAN: null-ptr-deref Read in phy_disconnect
+Message-ID: <YS46wWr6WegVF4Er@lunn.ch>
+References: <0000000000006a17f905cad88525@google.com>
+ <20210831064845.1a8f5c14@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210831130508.14511-1-hdegoede@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831064845.1a8f5c14@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Aug 31, 2021 at 06:48:45AM -0700, Jakub Kicinski wrote:
+> On Tue, 31 Aug 2021 03:36:23 -0700 syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    9c1587d99f93 usb: isp1760: otg control register access
+> > git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=16907291300000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=24756feea212a6b0
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=6a916267d9bc5fa2d9a6
+> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=166de449300000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12c5ddce300000
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+6a916267d9bc5fa2d9a6@syzkaller.appspotmail.com
+> > 
+> > asix 1-1:0.0 eth1: register 'asix' at usb-dummy_hcd.0-1, ASIX AX88178 USB 2.0 Ethernet, 8a:c0:d1:1e:27:4c
+> > usb 1-1: USB disconnect, device number 2
+> > asix 1-1:0.0 eth1: unregister 'asix' usb-dummy_hcd.0-1, ASIX AX88178 USB 2.0 Ethernet
+> > general protection fault, probably for non-canonical address 0xdffffc00000000c3: 0000 [#1] SMP KASAN
+> > KASAN: null-ptr-deref in range [0x0000000000000618-0x000000000000061f]
+> > CPU: 1 PID: 32 Comm: kworker/1:1 Not tainted 5.14.0-rc7-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Workqueue: usb_hub_wq hub_event
+> > RIP: 0010:phy_is_started include/linux/phy.h:947 [inline]
+> > RIP: 0010:phy_disconnect+0x22/0x110 drivers/net/phy/phy_device.c:1097
+> > Code: 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 46 33 68 fe 48 8d bd 18 06 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e c5 00 00 00 8b 9d 18 06 00 00
+> > RSP: 0018:ffffc900001a7780 EFLAGS: 00010206
+> > RAX: dffffc0000000000 RBX: ffff88811a410bc0 RCX: 0000000000000000
+> > RDX: 00000000000000c3 RSI: ffffffff82d9305a RDI: 0000000000000618
+> > RBP: 0000000000000000 R08: 0000000000000055 R09: 0000000000000000
+> > R10: ffffffff814c05fb R11: 0000000000000000 R12: ffff8881063cc300
+> > R13: ffffffff83870d90 R14: ffffffff86805a20 R15: ffffffff868059e0
+> > FS:  0000000000000000(0000) GS:ffff8881f6900000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007fb4c30b3008 CR3: 00000001021e1000 CR4: 00000000001506e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  ax88772_unbind+0x51/0x90 drivers/net/usb/asix_devices.c:816
 
-On 8/31/21 3:05 PM, Hans de Goede wrote:
-> Commit e26f023e01ef ("firmware/dmi: Include product_sku info to modalias")
-> added a new field to the modalias in the middle of the modalias, breaking
-> some existing udev/hwdb matches on the whole modalias without a wildcard
-> ('*') in between the pvr and rvn fields.
-> 
-> All modalias matches in e.g. :
-> https://github.com/systemd/systemd/blob/main/hwdb.d/60-sensor.hwdb
-> deliberately end in ':*' so that new fields can be added at *the end* of
-> the modalias, but adding a new field in the middle like this breaks things.
-> 
-> Move the new sku field to the end of the modalias to fix some hwdb
-> entries no longer matching.
-> 
-> The new sku field has already been put to use in 2 new hwdb entries:
-> 
->  sensor:modalias:platform:HID-SENSOR-200073:dmi:*svnDell*:sku0A3E:*
->   ACCEL_LOCATION=base
-> 
->  sensor:modalias:platform:HID-SENSOR-200073:dmi:*svnDell*:sku0B0B:*
->   ACCEL_LOCATION=base
-> 
-> The wildcard use before and after the sku in these matches means that they
-> should keep working with the sku moved to the end.
-> 
-> Note that there is a second instance of in essence the same problem,
-> commit f5152f4ded3c ("firmware/dmi: Report DMI Bios & EC firmware release")
-> 
-> Added 2 new br and efr fields in the middle of the modalias. This too
-> breaks some hwdb modalias matches, but this has gone unnoticed for over
-> a year. So some newer hwdb modalias matches actually depend on these
-> fields being in the middle of the string. Moving these to the end now
-> would break 3 hwdb entries, while fixing 8 entries.
-> 
-> Since there is no good answer for the new br and efr fields I have chosen
-> to leave these as is. Instead I'll submit a hwdb update to put a wildcard
-> at the place where these fields may or may not be present depending on the
-> kernel version.
+Looking at the console messages:
 
-In case anyone is interested here is the systemd pull-req fixing this from
-the hwdb side: https://github.com/systemd/systemd/pull/20599
+[   36.456221][   T32] usb 1-1: new high-speed USB device number 2 using dummy_hcd
+[   36.976035][   T32] usb 1-1: New USB device found, idVendor=0df6, idProduct=0056, bcdDevice=42.6c
+[   36.985338][   T32] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[   36.993579][   T32] usb 1-1: Product: syz
+[   36.997817][   T32] usb 1-1: Manufacturer: syz
+[   37.002423][   T32] usb 1-1: SerialNumber: syz
+[   37.013578][   T32] usb 1-1: config 0 descriptor??
+[   37.276018][   T32] asix 1-1:0.0 (unnamed net_device) (uninitialized): invalid hw address, using random
+executing program
+[   37.715517][   T32] asix 1-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
+[   37.725693][   T32] asix 1-1:0.0 (unnamed net_device) (uninitialized): Failed to send software reset: ffffffb9
+[   37.925418][   T32] asix 1-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
+[   37.936461][   T32] asix 1-1:0.0 (unnamed net_device) (uninitialized): Failed to send software reset: ffffffb9
+[   38.119561][   T32] asix 1-1:0.0 eth1: register 'asix' at usb-dummy_hcd.0-1, ASIX AX88178 USB 2.0 Ethernet, 8a:c0:d1:1e:27:4c
+[   38.138828][   T32] usb 1-1: USB disconnect, device number 2
+[   38.150689][   T32] asix 1-1:0.0 eth1: unregister 'asix' usb-dummy_hcd.0-1, ASIX AX88178 USB 2.0 Ethernet
 
-Regards,
+So this is a AX88178, and you would expect it to use
+ax88178_bind(). That function never calls ax88772_init_phy() which is
+what connects the PHY to the MAC, and sets priv->phydev.
 
-Hans
+static void ax88772_unbind(struct usbnet *dev, struct usb_interface *intf)
+{
+        struct asix_common_private *priv = dev->driver_priv;
 
+        phy_disconnect(priv->phydev);
 
+So this passes a NULL pointer.
 
-> BugLink: https://github.com/systemd/systemd/issues/20550
-> Link: https://github.com/systemd/systemd/pull/20562
-> Fixes: e26f023e01ef ("firmware/dmi: Include product_sku info to modalias")
-> Cc: stable@vger.kernel.org
-> Cc: Kai-Chuan Hsieh <kaichuan.hsieh@canonical.com>
-> Cc: Erwan Velu <e.velu@criteo.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  drivers/firmware/dmi-id.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/firmware/dmi-id.c b/drivers/firmware/dmi-id.c
-> index 4d5421d14a41..940ddf916202 100644
-> --- a/drivers/firmware/dmi-id.c
-> +++ b/drivers/firmware/dmi-id.c
-> @@ -73,6 +73,10 @@ static void ascii_filter(char *d, const char *s)
->  
->  static ssize_t get_modalias(char *buffer, size_t buffer_size)
->  {
-> +	/*
-> +	 * Note new fields need to be added at the end to keep compatibility
-> +	 * with udev's hwdb which does matches on "`cat dmi/id/modalias`*".
-> +	 */
->  	static const struct mafield {
->  		const char *prefix;
->  		int field;
-> @@ -85,13 +89,13 @@ static ssize_t get_modalias(char *buffer, size_t buffer_size)
->  		{ "svn", DMI_SYS_VENDOR },
->  		{ "pn",  DMI_PRODUCT_NAME },
->  		{ "pvr", DMI_PRODUCT_VERSION },
-> -		{ "sku", DMI_PRODUCT_SKU },
->  		{ "rvn", DMI_BOARD_VENDOR },
->  		{ "rn",  DMI_BOARD_NAME },
->  		{ "rvr", DMI_BOARD_VERSION },
->  		{ "cvn", DMI_CHASSIS_VENDOR },
->  		{ "ct",  DMI_CHASSIS_TYPE },
->  		{ "cvr", DMI_CHASSIS_VERSION },
-> +		{ "sku", DMI_PRODUCT_SKU },
->  		{ NULL,  DMI_NONE }
->  	};
->  
-> 
+static const struct driver_info ax88178_info = {
+        .description = "ASIX AX88178 USB 2.0 Ethernet",
+        .bind = ax88178_bind,
+        .unbind = ax88772_unbind,
+        .status = asix_status,
 
+You cannot pair ax88178_bind with ax88772_unbind. Either a
+ax88178_unbind is needed, or ax88772_unbind needs to check for a NULL
+pointer.
+
+	Andrew
