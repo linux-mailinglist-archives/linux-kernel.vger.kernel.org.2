@@ -2,215 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5E43FCD70
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B11253FCD83
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240004AbhHaTF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238517AbhHaTFv (ORCPT
+        id S240182AbhHaTIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:08:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54938 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238332AbhHaTIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:05:51 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCA4C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:04:55 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id k24so161272pgh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:04:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6YJBR9vYLhAu14mKGfz0PBgwyR5YLsGa/4dlPURQSIM=;
-        b=1adpaxsa8GtEIeBSvyd/je9Qejeo4SzykQMDFh7ceuQwY8HiFhw7Rvc9Lslb4u1k7S
-         patogBvUwv5V0U3Y+KHnuFLvud75z4jND1KIs11dETgGj/BTYz+K+Kp4y/iV75zKpRQD
-         TEAaSQ3JX0J1oBtgi7zhC0OFFKbnlFG7/QftpHAkjJrdl8reeE+VVKPOVmGhewUOv+Dn
-         Uo4kiAoT5IKQ0ejx8n0ucf/M/HkppJUZqBOJ8SqxgPjXphHSVZw+kNgt2CL1O89xl7+q
-         4q2lN7ivKMnPh+1R+gQbhpBjGTd5kjjk9qIkPDvJ8j9ff83xaYscK9CLBtLDeZf2m8QT
-         eLRA==
+        Tue, 31 Aug 2021 15:08:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630436833;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L5ykmaiBHLn8tM3nLNz5TAEpWwFHOANe8ir9pHZRCuw=;
+        b=WfhVXa4BaDOOgyBtclSpbzUhQpeVqniJBZ0/e0djmvu6Fdq2cmJ5eui5ZxN4ukT+yyxc8o
+        q+eswU0bvA4kdXSmrZeZSK7Zp7jEcLmfE/4xobbL2pdoE/L3Snok6jeRJzc9O7ASPyfhJd
+        RCsHeZcbJa0a7gg0eGTmJcpydosvK7k=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-332-dfXfHW22O8yr1htw6fRnuQ-1; Tue, 31 Aug 2021 15:07:11 -0400
+X-MC-Unique: dfXfHW22O8yr1htw6fRnuQ-1
+Received: by mail-wm1-f70.google.com with SMTP id u14-20020a7bcb0e0000b0290248831d46e4so79596wmj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:07:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6YJBR9vYLhAu14mKGfz0PBgwyR5YLsGa/4dlPURQSIM=;
-        b=o0TFFpAH9+wSLcm7VZFwVSzPb4cQE5YD1NV4wJ/ISBKI21HHOD009Kj07gUof80qAW
-         EEbrGYfApRYJG4tvu8IpdXCUQpll8GsDAsUcKrVo7M2q03lJ/cttNuEMt4BR75dBIC/G
-         lH74t7d2lO5m8OPIU7Cnp51c8GRtwTuNBdvyJE84pZ5YFDbWJ/3j8eWrInRhQVfY6IQe
-         ZqU/3wjGh2DiWSswiHxEWsKDfSOOJaFxf0rLHRhxDxF0Xffsz0whJjYjfQBE8BwKPM3f
-         sCPUYPxCMo5LcQLO7NVgcvdSRLlOlDx02ScKmfICm0p8q+AR1Gct7C50Tm9EMZ3Hlg0G
-         8GRw==
-X-Gm-Message-State: AOAM5327LioPg4bpO9wsDNCmd/V5qqmRZ/TNRw4p3C+Tz2fH5GUKdmBx
-        hAFHhXpqor3rH756QpGeDDgSwjleDwS+5Q==
-X-Google-Smtp-Source: ABdhPJwx92JM1HGxNJmjO2brSpaA61eqAQJo+cQGvuI9Wo+II8F0jRAEAVx4Soz7cZAQH0aeqtzcNg==
-X-Received: by 2002:a63:551a:: with SMTP id j26mr27693742pgb.142.1630436695338;
-        Tue, 31 Aug 2021 12:04:55 -0700 (PDT)
-Received: from hermes.local (204-195-33-123.wavecable.com. [204.195.33.123])
-        by smtp.gmail.com with ESMTPSA id q22sm1238053pgn.67.2021.08.31.12.04.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 12:04:55 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 12:04:52 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [ANNOUNCE] iproute2 5.14.0 release
-Message-ID: <20210831120452.71325cd8@hermes.local>
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=L5ykmaiBHLn8tM3nLNz5TAEpWwFHOANe8ir9pHZRCuw=;
+        b=cKTV2L1QwBNsJr3Bo+wVjqtA61Tx4E7QdfJb1M9yhyGBGv64EdmZe18tUE7H8vteB+
+         ymHmMYSzOs58UdBwLl/SjNVyacmL37Ea7e5qK6FnE6TX2yJ4rLZPtwrYg+z+pmN66c3x
+         R5y1bPj+uAHI7ka1hYmWqPoc6tjjDRSFRer2CYSr/SQOMdG+vHX73oGXH2PFSOsNA4my
+         +BTkY+534snIWmFB6lYHcYPeyXm65Qk769je8VI9i46w1HNRYm3UgCYIqzNJyQQ5TJzy
+         Zbp+FBKertoNrlG3+yTPplWRIylaeHHjnDTx++3+h9ZvqPahjeI8UeBKLWXXuX6rDpkh
+         rkYQ==
+X-Gm-Message-State: AOAM531g3vF602hNMnAetEn4F5wZ/qNzISDihNk7WAunBYx9kWG5TD5I
+        ia1d9JUPyM57iKZ+fMl6SOfJC+mVOFc/ANKrpQExtdH3HZ1GQXO3bwxlOK1/g9awfctPJmaqEyZ
+        y81KkgZNxHPqkVRa2/KLq5uY5
+X-Received: by 2002:a1c:f414:: with SMTP id z20mr5923484wma.94.1630436830300;
+        Tue, 31 Aug 2021 12:07:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQWrSDLLp1TcV1T+/bO+ed5HqV84f+I7rn+Kp+Rm6ixxZf1kGZm5sU+cR1zQ/9IfVLm1yr5g==
+X-Received: by 2002:a1c:f414:: with SMTP id z20mr5923456wma.94.1630436830087;
+        Tue, 31 Aug 2021 12:07:10 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23bf5.dip0.t-ipconnect.de. [79.242.59.245])
+        by smtp.gmail.com with ESMTPSA id n1sm18760006wrp.49.2021.08.31.12.07.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 12:07:09 -0700 (PDT)
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+ <YSlkzLblHfiiPyVM@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
+ memory
+Message-ID: <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
+Date:   Tue, 31 Aug 2021 21:07:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YSlkzLblHfiiPyVM@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-End of summer sale, get your new iproute2 just in time for fall!
-This is a relatively low volume release (maybe because of summer doldrums).
+On 28.08.21 00:18, Sean Christopherson wrote:
+> On Thu, Aug 26, 2021, David Hildenbrand wrote:
+>> You'll end up with a VMA that corresponds to the whole file in a single
+>> process only, and that cannot vanish, not even in parts.
+> 
+> How would userspace tell the kernel to free parts of memory that it doesn't want
+> assigned to the guest, e.g. to free memory that the guest has converted to
+> not-private?
 
-As always, it is recommended to always use the latest iproute2.
-Do not treat iproute2 like perf and require matching packages.
-The latest code will always run on older kernels (and vice versa);
-this is possible because of the kernel API/ABI guarantees.
-Except for rare cases, iproute2 does not do maintenance releases
-and there is no long term stable version.
+I'd guess one possibility could be fallocate(FALLOC_FL_PUNCH_HOLE).
 
-Download:
-    https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.14.0.tar=
-.gz
+Questions are: when would it actually be allowed to perform such a 
+destructive operation? Do we have to protect from that? How would KVM 
+protect from user space replacing private pages by shared pages in any 
+of the models we discuss?
 
-Repository for current release
-    https://github.com/shemminger/iproute2.git
-    git://git.kernel.org/pub/scm/network/iproute2/iproute2.git
+> 
+>> Define "ordinary" user memory slots as overlay on top of "encrypted" memory
+>> slots.  Inside KVM, bail out if you encounter such a VMA inside a normal
+>> user memory slot. When creating a "encryped" user memory slot, require that
+>> the whole VMA is covered at creation time. You know the VMA can't change
+>> later.
+> 
+> This can work for the basic use cases, but even then I'd strongly prefer not to
+> tie memslot correctness to the VMAs.  KVM doesn't truly care what lies behind
+> the virtual address of a memslot, and when it does care, it tends to do poorly,
+> e.g. see the whole PFNMAP snafu.  KVM cares about the pfn<->gfn mappings, and
+> that's reflected in the infrastructure.  E.g. KVM relies on the mmu_notifiers
+> to handle mprotect()/munmap()/etc...
 
-And future release (net-next):
-    git://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git
+Right, and for the existing use cases this worked. But encrypted memory 
+breaks many assumptions we once made ...
 
-Contributions:
+I have somewhat mixed feelings about pages that are mapped into 
+$WHATEVER page tables but not actually mapped into user space page 
+tables. There is no way to reach these via the rmap.
 
-Alexander Mikhalitsyn (2):
-      ip route: ignore ENOENT during save if RT_TABLE_MAIN is being dumped
-      libnetlink: check error handler is present before a call
+We have something like that already via vfio. And that is fundamentally 
+broken when it comes to mmu notifiers, page pinning, page migration, ...
 
-Andrea Claudi (9):
-      tc: q_ets: drop dead code from argument parsing
-      lib: bpf_legacy: avoid to pass invalid argument to close()
-      dcb: fix return value on dcb_cmd_app_show
-      dcb: fix memory leak
-      tipc: bail out if algname is abnormally long
-      tipc: bail out if key is abnormally long
-      tc: htb: improve burst error messages
-      lib: bpf_legacy: fix potential NULL-pointer dereference
-      lib: bpf_glue: remove useless assignment
+> 
+> As is, I don't think KVM would get any kind of notification if userpaces unmaps
+> the VMA for a private memslot that does not have any entries in the host page
+> tables.   I'm sure it's a solvable problem, e.g. by ensuring at least one page
+> is touched by the backing store, but I don't think the end result would be any
+> prettier than a dedicated API for KVM to consume.
+> 
+> Relying on VMAs, and thus the mmu_notifiers, also doesn't provide line of sight
+> to page migration or swap.  For those types of operations, KVM currently just
+> reacts to invalidation notifications by zapping guest PTEs, and then gets the
+> new pfn when the guest re-faults on the page.  That sequence doesn't work for
+> TDX or SEV-SNP because the trusteday agent needs to do the memcpy() of the page
+> contents, i.e. the host needs to call into KVM for the actual migration.
 
-Ariel Levkovich (2):
-      tc: f_flower: Add option to match on related ct state
-      tc: f_flower: Add missing ct_state flags to usage description
+Right, but I still think this is a kernel internal. You can do such 
+handshake later in the kernel IMHO.
 
-Asbj=C3=B8rn Sloth T=C3=B8nnesen (2):
-      tc: pedit: parse_cmd: add flags argument
-      tc: pedit: add decrement operation
+But I also already thought: is it really KVM that is to perform the 
+migration or is it the fd-provider that performs the migration? Who says 
+memfd_encrypted() doesn't default to a TDX "backend" on Intel CPUs that 
+just knows how to migrate such a page?
 
-Christian Sch=C3=BCrmann (1):
-      man8/ip-tunnel.8: fix typo, 'encaplim' is not a valid option
+I'd love to have some details on how that's supposed to work, and which 
+information we'd need to migrate/swap/... in addition to the EPFN and a 
+new SPFN.
 
-David Ahern (6):
-      Update kernel headers
-      Update kernel headers
-      config.mk: Rerun configure when it is newer than config.mk
-      Update kernel headers
-      Update kernel headers
-      Import wwan.h uapi file
+> 
+> There's also the memory footprint side of things; the fd-based approach avoids
+> having to create host page tables for memory that by definition will never be
+> used by the host.
 
-Dmytro Linkin (3):
-      devlink: Add helper function to validate object handler
-      devlink: Add port func rate support
-      devlink: Add ISO/IEC switch
+While that is true, that is not a compelling argument IMHO. No need to 
+try to be better than state of the art if it results in something 
+cleaner/better* just sticking with state of the art. Just like we don't 
+have special interfaces to map $WHATEVER into a guest and bypassing user 
+space page tables.
 
-Eric Dumazet (1):
-      tc: fq: add horizon attributes
+* to be shown what actually is cleaner/better. We don't really have 
+prototypes for either.
 
-Feng Zhou (1):
-      lib/bpf: Fix btf_load error lead to enable debug log
+-- 
+Thanks,
 
-Gal Pressman (2):
-      rdma: update uapi headers
-      rdma: Add copy-on-fork to get sys command
-
-Gokul Sivakumar (3):
-      bridge: reorder cmd line arg parsing to let "-c" detected as "color" =
-option
-      bridge: fdb: don't colorize the "dev" & "dst" keywords in "bridge -c =
-fdb"
-      man: bridge: fix the typo to change "-c[lor]" into "-c[olor]" in man =
-page
-
-Guillaume Nault (1):
-      utils: bump max args number to 512 for batch files
-
-Hangbin Liu (3):
-      configure: add options ability
-      configure: convert LIBBPF environment variables to command-line optio=
-ns
-      ip/bond: add arp_validate filter support
-
-Heiko Thiery (1):
-      lib/fs: fix issue when {name,open}_to_handle_at() is not implemented
-
-Hoang Le (1):
-      tipc: call a sub-routine in separate socket
-
-Jacob Keller (1):
-      devlink: fix infinite loop on flash update for drivers without status
-
-Jakub Kicinski (3):
-      ip: align the name of the 'nohandler' stat
-      ip: dynamically size columns when printing stats
-      ss: fix fallback to procfs for raw sockets
-
-Jethro Beekman (1):
-      ip: Add nodst option to macvlan type source
-
-Jianguo Wu (1):
-      mptcp: make sure flag signal is set when add addr with port
-
-Lahav Schlesinger (1):
-      ipmonitor: Fix recvmsg with ancillary data
-
-Martynas Pumputis (1):
-      libbpf: fix attach of prog with multiple sections
-
-Neta Ostrovsky (3):
-      rdma: Update uapi headers
-      rdma: Add context resource tracking information
-      rdma: Add SRQ resource tracking information
-
-Paolo Lungaroni (2):
-      seg6: add counters support for SRv6 Behaviors
-      seg6: add support for SRv6 End.DT46 Behavior
-
-Parav Pandit (2):
-      devlink: Add optional controller user input
-      devlink: Show port state values in man page and in the help command
-
-Peilin Ye (1):
-      tc/skbmod: Remove misinformation about the swap action
-
-Phil Sutter (1):
-      tc: u32: Fix key folding in sample option
-
-Roi Dayan (2):
-      police: Add support for json output
-      police: Fix normal output back to what it was
-
-Sergey Ryazanov (2):
-      iplink: add support for parent device
-      iplink: support for WWAN devices
-
-Stephen Hemminger (6):
-      lib: remove blank line at eof
-      uapi: update kernel headers from 5.14-rc1
-      libnetlink: cosmetic changes
-      uapi: headers update
-      uapi: update neighbour.h
-      v5.14.0
-
-Tyson Moore (1):
-      tc-cake: update docs to include LE diffserv
+David / dhildenb
 
