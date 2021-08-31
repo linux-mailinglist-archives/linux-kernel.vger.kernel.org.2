@@ -2,107 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C4E3FCFC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 01:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47393FCFC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 01:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241020AbhHaXDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 19:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235659AbhHaXDK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 19:03:10 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BACC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 16:02:14 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso3222316pjh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 16:02:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6fVAWuXyMT/0QgdpRVgsjl6TJ333S1dL0H95dr0w7D4=;
-        b=cN/pRkWepY9szJhCGFEPduR7G2SfRnHtedWRZGHZgo7ynsiU42WzlO23dLKzbB5Cxm
-         UfhXiclsdLL1nN6w2+HaQ5elSEGTMTMDi3zRaDVHaE51R0tY4B8WvTHgpz65Rey73xXt
-         X1C0nLlMydp9kyQbDpJSA4faH41L5bAJf5msA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6fVAWuXyMT/0QgdpRVgsjl6TJ333S1dL0H95dr0w7D4=;
-        b=FxTYK/29YuMZAx8syWFx4XjtVtGXWiP5q+WAbXrSGS8uqHddE77Uof7KXbhZtGQ5pv
-         wUWIevMTwKY2ETDc4No4v5Hyj0ltqNvuxkVb9AWftc/SWPgzPa95h+gs8EynrYzGNzDU
-         Mw2RiGVoxDfx/lor7h6+imBIDvPHJ1NYSnSPMuXwdSSUuUei6I9RWd2Bq99dxIFBGQJk
-         eDD+gASpM19Dc+TgNX6AxGHVfuaH5AgEokeA8YR/39z/YVEjdU8kyVDbV3fJ7hcUrQ3u
-         9QUZ+wnKSonsxcbIeJwgWiJlg1/yMvGQBM8czvgD/InkQv/imLTFDC5Gb+Wk0k2zItA6
-         KNqw==
-X-Gm-Message-State: AOAM531+WEmJTQX8uFjMHs3qZ8telJZMA2c0feSDr2VUeiZ6wexTYdNX
-        2Ft1m94NEI/ZenHF654rnF1/yA==
-X-Google-Smtp-Source: ABdhPJzE6cWm5HiRuXg08jWq8VHUKGkg1rU7QEpW+TjtjSxhB6ZOgXMAWsvktwi9zY3Ybfadh7SHng==
-X-Received: by 2002:a17:902:c401:b0:138:e450:1ec4 with SMTP id k1-20020a170902c40100b00138e4501ec4mr6798556plk.56.1630450934463;
-        Tue, 31 Aug 2021 16:02:14 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:6d52:87b8:b55b:8800])
-        by smtp.gmail.com with ESMTPSA id f18sm8511663pfc.161.2021.08.31.16.02.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 16:02:13 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 08:02:09 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     =?utf-8?B?7J207Jqp7YOd?= <ytk.lee@samsung.com>,
-        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "john.ogness@linutronix.de" <john.ogness@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] printk: use kvmalloc instead of kmalloc for devkmsg_user
-Message-ID: <YS608AfYqPgQ3F7R@google.com>
-References: <CGME20210830071701epcms1p70f72ae10940bc407a3c33746d20da771@epcms1p7>
- <20210830071701epcms1p70f72ae10940bc407a3c33746d20da771@epcms1p7>
- <YS4jqsSlD7UySNRA@alley>
+        id S241084AbhHaXDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 19:03:16 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50882 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235659AbhHaXDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 19:03:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=enbFY4AVKjJRnyljEbP4rqvuKLOuy7w4dhctW4G9+Pc=; b=TbneM/9NQEoaUp0zOG3XRre1XH
+        UxI+alXoL6qsrMUqaE1U188kI4iGhU3jWtF6ZXvd2iQHmVinWsmOlSihU/RwtfWSfk4qcj3kvuFga
+        KWTDDdRqWoVtzhmhvFNDVvnJxTR3TyIcBZvo1R7L3UoGGwrlmTQsWysnG2IGqF7pUsE4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mLCld-004m4d-Tn; Wed, 01 Sep 2021 01:02:09 +0200
+Date:   Wed, 1 Sep 2021 01:02:09 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
+ FWNODE_FLAG_BROKEN_PARENT
+Message-ID: <YS608fdIhH4+qJsn@lunn.ch>
+References: <YSjsQmx8l4MXNvP+@lunn.ch>
+ <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
+ <YSlG4XRGrq5D1/WU@lunn.ch>
+ <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
+ <YSpr/BOZj2PKoC8B@lunn.ch>
+ <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
+ <YS4rw7NQcpRmkO/K@lunn.ch>
+ <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
+ <YS6nxLp5TYCK+mJP@lunn.ch>
+ <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YS4jqsSlD7UySNRA@alley>
+In-Reply-To: <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/08/31 14:42), Petr Mladek wrote:
-> On Mon 2021-08-30 16:17:01, 이용택 wrote:
-> > Size of struct devkmsg_user increased to 16784 by commit 896fbe20b4e2
-> > ("printk: use the lockless ringbuffer") so order3(32kb) is needed for
-> > kmalloc. Under stress conditions the kernel may temporary fail to
-> > allocate 32k with kmalloc. Use kvmalloc instead of kmalloc to aviod
-> > this issue.
-> > 
-> > qseecomd invoked oom-killer: gfp_mask=0x40cc0(GFP_KERNEL|__GFP_COMP), order=3, oom_score_adj=-1000
-> > Call trace:
-> >  dump_backtrace+0x0/0x34c
-> >  dump_stack_lvl+0xd4/0x16c
-> >  dump_header+0x5c/0x338
-> >  out_of_memory+0x374/0x4cc
-> >  __alloc_pages_slowpath+0xbc8/0x1130
-> >  __alloc_pages_nodemask+0x170/0x1b0
-> >  kmalloc_order+0x5c/0x24c
-> >  devkmsg_open+0x1f4/0x558
-> >  memory_open+0x94/0xf0
-> >  chrdev_open+0x288/0x3dc
-> >  do_dentry_open+0x2b4/0x618
-> >  path_openat+0xce4/0xfa8
-> >  do_filp_open+0xb0/0x164
-> >  do_sys_openat2+0xa8/0x264
-> >  __arm64_sys_openat+0x70/0xa0
-> >  el0_svc_common+0xc4/0x270
-> >  el0_svc+0x34/0x9c
-> >  el0_sync_handler+0x88/0xf0
-> >  el0_sync+0x1bc/0x200
-> > 
-> >  DMA32: 4521*4kB (UMEC) 1377*8kB (UMECH) 73*16kB (UM) 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 30268kB
-> >  Normal: 2490*4kB (UMEH) 277*8kB (UMH) 27*16kB (UH) 1*32kB (H) 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 12640kB
-> > 
-> > Signed-off-by: Yong-Taek Lee <ytk.lee@samsung.com>
-> 
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> If the switches are broken without the phy-handle or ethernet change,
+> I'm not sure if the "BROKEN_PARENT" patch would help.
 
-Acked-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > Which is not enough to fix these Ethernet switches.
+> 
+> Ok, if you can give more specifics on this, I'll look into it.
+
+The switches probe, but get the wrong PHY driver, genphy, not the
+Marvell PHY driver. And genphy is not sufficient for this hardware.
+
+I'd need:
+> 1) The DTS file that you see the issue on.
+
+I did the bisect on arch/arm/boot/dts/vf610-zii-dev-rev-c.dts but i
+also tested arch/arm/boot/dts/vf610-zii-dev-rev-b.dts.
+
+Rev B is interesting because switch0 and switch1 got genphy, while
+switch2 got the correct Marvell PHY driver. switch2 PHYs don't have
+interrupt properties, so don't loop back to their parent device.
+
+Here is Rev B. I trimmed out other devices probing in parallel:
+
+[    1.029100] fec 400d1000.ethernet: Invalid MAC address: 00:00:00:00:00:00
+[    1.034735] fec 400d1000.ethernet: Using random MAC address: 42:f2:14:33:78:f5
+[    1.042272] libphy: fec_enet_mii_bus: probed
+[    1.455932] libphy: mdio_mux: probed
+[    1.459432] mv88e6085 0.1:00: switch 0x3520 detected: Marvell 88E6352, revision 1
+[    1.494076] libphy: mdio: probed
+[    1.518958] libphy: mdio_mux: probed
+[    1.522553] mv88e6085 0.2:00: switch 0x3520 detected: Marvell 88E6352, revision 1
+[    1.537295] libphy: mdio: probed
+[    1.556571] libphy: mdio_mux: probed
+[    1.559719] mv88e6085 0.4:00: switch 0x1a70 detected: Marvell 88E6185, revision 2
+[    1.574614] libphy: mdio: probed
+[    1.733104] mv88e6085 0.1:00 lan0 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:00] driver [Generic PHY] (irq=POLL)
+[    1.750737] mv88e6085 0.1:00 lan1 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:01] driver [Generic PHY] (irq=POLL)
+[    1.768273] mv88e6085 0.1:00 lan2 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:02] driver [Generic PHY] (irq=POLL)
+[    1.806561] mv88e6085 0.2:00 lan3 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:00] driver [Generic PHY] (irq=POLL)
+[    1.824033] mv88e6085 0.2:00 lan4 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:01] driver [Generic PHY] (irq=POLL)
+[    1.841496] mv88e6085 0.2:00 lan5 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:02] driver [Generic PHY] (irq=POLL)
+[    1.943535] mv88e6085 0.4:00 lan6 (uninitialized): PHY [!mdio-mux!mdio@4!switch@0!mdio:00] driver [Marvell 88E1545] (irq=POLL)
+[    2.003529] mv88e6085 0.4:00 lan7 (uninitialized): PHY [!mdio-mux!mdio@4!switch@0!mdio:01] driver [Marvell 88E1545] (irq=POLL)
+[    2.063535] mv88e6085 0.4:00 lan8 (uninitialized): PHY [!mdio-mux!mdio@4!switch@0!mdio:02] driver [Marvell 88E1545] (irq=POLL)
+[    2.084768] DSA: tree 0 setup
+[    2.087791] libphy: mdio_mux: probed
+[    2.265477] Micrel KSZ8041 400d0000.ethernet-1:00: attached PHY driver (mii_bus:phy_addr=400d0000.ethernet-1:00, irq=POLL)
+
+root@zii-devel-b:~# cat /sys/kernel/debug/devices_deferred
+root@zii-devel-b:~# 
+
+For Rev C we see:
+
+[    1.244417] fec 400d1000.ethernet: Invalid MAC address: 00:00:00:00:00:00
+[    1.250081] fec 400d1000.ethernet: Using random MAC address: c6:42:89:ed:5f:dd
+[    1.257507] libphy: fec_enet_mii_bus: probed
+[    1.570725] libphy: mdio_mux: probed
+[    1.574208] mv88e6085 0.1:00: switch 0xa10 detected: Marvell 88E6390X, revision 1
+[    1.590272] libphy: mdio: probed
+[    1.627721] libphy: mdio_mux: probed
+[    1.631222] mv88e6085 0.2:00: switch 0xa10 detected: Marvell 88E6390X, revision 1
+[    1.659643] libphy: mdio: probed
+[    1.811665] mv88e6085 0.1:00 lan1 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:01] driver [Generic PHY] (irq=POLL)
+[    1.829230] mv88e6085 0.1:00 lan2 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:02] driver [Generic PHY] (irq=POLL)
+[    1.845884] mv88e6085 0.1:00 lan3 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:03] driver [Generic PHY] (irq=POLL)
+[    1.863237] mv88e6085 0.1:00 lan4 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:04] driver [Generic PHY] (irq=POLL)
+[    1.884078] mv88e6085 0.2:00 lan5 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:01] driver [Generic PHY] (irq=POLL)
+[    1.901630] mv88e6085 0.2:00 lan6 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:02] driver [Generic PHY] (irq=POLL)
+[    1.918287] mv88e6085 0.2:00 lan7 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:03] driver [Generic PHY] (irq=POLL)
+[    1.933721] mv88e6085 0.2:00 lan8 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:04] driver [Generic PHY] (irq=POLL)
+[    1.948722] DSA: tree 0 setup
+[    1.951599] libphy: mdio_mux: probed
+
+[   21.565550] Micrel KSZ8041 400d0000.ethernet-1:00: attached PHY driver (mii_bus:phy_addr=400d0000.ethernet-1:00, irq=48)
+
+I have Rev B using NFS root, so the interfaces are configured up by
+the kernel during boot. Rev C has a local root filesystem, so user
+space brings the interfaces up, and it is only when the FEC is opened
+does it attach to the Micrel PHY. That explains the difference between
+2.265 and 21.565 seconds for the last line.
+
+Again, nothing deferred.
+
+       Andrew
