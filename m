@@ -2,187 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894E73FCD35
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2763A3FCD37
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234488AbhHaSv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 14:51:27 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:17020 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229946AbhHaSvZ (ORCPT
+        id S238527AbhHaSwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 14:52:06 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:55006 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhHaSwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 14:51:25 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17VIiNBn030571;
-        Tue, 31 Aug 2021 18:50:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=iNC2T4q7ESgUAozNS8mERQ6/FitA8h005d3HLrdwM5g=;
- b=ZSTkQJ80v2weJwhA8mxQWUSCUmXk4p4IZXcCiTgLaOwe0vhOBaSQyJpp70rfr+u8Y85D
- hl8bCPrGr0HwPEq9nzfRY1fvutjYgzNhOarPJmfrqrFQP8S2yJWHQm72X/OikqSsaDfl
- IHZA62q6n/WpYURun3OkHPwvXFDYMfbMn0aB/GLhqFcB50sxN00IMQGv+NoMd5JRDRhZ
- pF++tiWuBMofgFDAhMW+HBqx2RXNPR7+DjqY6TbpkdNzEbl5Uywpgb3vTXZ9dO0Gqn1h
- Dna4c62Ym2CYocuq2XHJ0INXw0Ur2TkXMMtqz3mjLHgXw0WHkljXrlKWJ/i3oNBK5r5r oQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=iNC2T4q7ESgUAozNS8mERQ6/FitA8h005d3HLrdwM5g=;
- b=SVDDDfi4DZ6/nB9G30xa++0023zGMCJYPcBDa3eM7mR4KlDJ7KMXhi1j4mFcSRnzycIk
- j3DBbx/58dJk6e7fGmWbmRgGN5f+cz7/AKsxEAiM0/YmgdqgugevVVGrXxKz6ikVZbLK
- KdFGbWzaWENgbhko1RJSiht+rQooVFM1knKaTazzNQotlXJb8A0CJuDnG+x+QonxhOJU
- 1nKqmcnK4sXyCtam0EXKi4mt6KLUVZsIc6AfZQrs3v7yXWJkCRoKCO2ebPxTNShaCKBY
- gwMBdfE6feO8AJX8HFx6tDvP0iL5SV7nogeUt4EpvrpXy26UzgZJsOc+bfdqZiPbWCsn mg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ase02a4mf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 31 Aug 2021 18:50:06 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17VIfd9k097012;
-        Tue, 31 Aug 2021 18:50:05 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
-        by aserp3020.oracle.com with ESMTP id 3aqcy58jvx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 31 Aug 2021 18:50:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IhtLPY4jNMuEP+ycyL7uO8wWI3NG9SeBqQuChNjq4CtpnBglo39GfBdItf2zk+o3uqFolg0muh7QlsDYTI5PA/CMPRqImUttDx/8dFzAGEW5DQ4y2uFQN2RLz0L9cvsILRjczXKIxy2b9DGmf8LH9jsTHJfT1KLZZHInRJLTdIs8yvfaowQJoP5npb4sSth4FDZ8jsSq57q8GZ3ubg8QP3X5si9mjpBiXz0/NViGnUYdpcDm1Vq27xXqsxZTSR2m2NaigPLVfCtkx/HN1/9hZbXFZ1ELjE5bvECw7wCcl5MrIbx/X5oE3jy7vCCF4dfcCMYQ4XpIRtBLWXCXtimSUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iNC2T4q7ESgUAozNS8mERQ6/FitA8h005d3HLrdwM5g=;
- b=k7yjnl/AkN/LVTaqEQhyDa6sF6WWkcivE6qC4e3QDo7eVSSIjwe46Y98RGShDQgspEZTqSnvaebNexT8bOvwHK7/i7HzbX0yHpplYCBTaRyUBjBDZWtmNSrohF6HxfkuFo9NqCMKaMNjfvFmHYw6kXZvvfrkovZ3H5t0mZpmly6cYimXTTJOXFQpWddOS8KBZSbkaYk/coG2Tay96Ywzc89ye1UTo64WBdhpolX/HYL6TpwSELbuWdK882E3aMBKXtGupIFQum7F79NrEG/knoddxalDr72h45sLANP4h8L+anKji6kmmkNhzbKoIBoU7dI9Ruwnt2CvDqUldcY/FQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iNC2T4q7ESgUAozNS8mERQ6/FitA8h005d3HLrdwM5g=;
- b=D6uibUew62aIQN4Ix0Fd3zxOOgw3LUQh+TF2JKzwHTeL+C7dErQ1hdya6UaGm8lr/1BW0O1X9Kn4vnWUwkyUG0AGQUkAfNhnuFieTXx22cJrc9Q7pva6M9/oGF2hR2P5mCcE3bukAL7jKcyPLDBhpjGrDxHIhDMjKweDLHSOtqc=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
- by SJ0PR10MB4432.namprd10.prod.outlook.com (2603:10b6:a03:2df::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.24; Tue, 31 Aug
- 2021 18:50:02 +0000
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::cdbb:4673:98bd:7f2c]) by BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::cdbb:4673:98bd:7f2c%5]) with mapi id 15.20.4457.024; Tue, 31 Aug 2021
- 18:50:02 +0000
-Date:   Tue, 31 Aug 2021 14:49:58 -0400
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Claire Chang <tientzu@chromium.org>, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux@roeck-us.net
-Subject: Re: [PATCH] swiotlb: use depends on for DMA_RESTRICTED_POOL
-Message-ID: <YS551niE8F5HzIaw@localhost.localdomain>
-References: <20210827034802.1065294-1-tientzu@chromium.org>
- <20210831151746.GB32001@willie-the-truck>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210831151746.GB32001@willie-the-truck>
-X-ClientProxiedBy: MN2PR11CA0002.namprd11.prod.outlook.com
- (2603:10b6:208:23b::7) To BYAPR10MB2999.namprd10.prod.outlook.com
- (2603:10b6:a03:85::27)
+        Tue, 31 Aug 2021 14:52:05 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:48582)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mL8qg-005rv9-7n; Tue, 31 Aug 2021 12:51:06 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:39628 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mL8qd-005khz-UH; Tue, 31 Aug 2021 12:51:05 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <YSQSkSOWtJCE4g8p@cmpxchg.org>
+        <YSQeFPTMn5WpwyAa@casper.infradead.org> <YSU7WCYAY+ZRy+Ke@cmpxchg.org>
+        <YSVMAS2pQVq+xma7@casper.infradead.org> <YSZeKfHxOkEAri1q@cmpxchg.org>
+        <20210826004555.GF12597@magnolia> <YSjxlNl9jeEX2Yff@cmpxchg.org>
+        <YSkyjcX9Ih816mB9@casper.infradead.org> <YS0WR38gCSrd6r41@cmpxchg.org>
+        <YS0h4cFhwYoW3MBI@casper.infradead.org> <YS0/GHBG15+2Mglk@cmpxchg.org>
+Date:   Tue, 31 Aug 2021 13:50:35 -0500
+In-Reply-To: <YS0/GHBG15+2Mglk@cmpxchg.org> (Johannes Weiner's message of
+        "Mon, 30 Aug 2021 16:27:04 -0400")
+Message-ID: <87r1e95tz8.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (130.44.160.152) by MN2PR11CA0002.namprd11.prod.outlook.com (2603:10b6:208:23b::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.21 via Frontend Transport; Tue, 31 Aug 2021 18:50:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8e6382b4-83f1-4778-88da-08d96cb0242f
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4432:
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB443220C3BC260E1849DE364B89CC9@SJ0PR10MB4432.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1091;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: i7DPgJexKdGx4uWIiqTZI0wAQ/HI76Z33xzvfn5qb8Fnx8SspxD50Y/tprlQBAAppBhqbpRtqrND4hAcQ7c/s6LSFkdi0BJrxCZCve8dYqNcbVgUgfAOxtAhYq9Hs/Ou1lLlFZZuaXmoXHnWCTFfrri/kYZXOtdixVlVs/nHLsINXqTE86RnOVn9RkeVFRrjzuGIlAJ5MvLChdGhShN8A+sPhacBO4uHBk+K8wQZnDEXPeVGtjsj9D0K8t8x0TG/N4f3xeZ/RcEoKznGC8OdPOi5mDvzZg5v9Oy0501HXP17vTAwW2ZxvjD1RjuF6TEajSnWOhHbsWovIZzoTYabgS/zPjcOV4SAXZK+hurzHW0QY2ZHA9Z0wUD9XZoxIH9LNydlmyEVLze5XgIzr4WCf+RMyECRmXNFFDS+dgvTBrSUUmIp51ObpjHMjGVrif2VDcrCfTJRL7mpmNv/axPJzPEybgWMBmXYWmkyGwrfxh9+4KDZhvnY7bI7DBei/OenvgNRMvQdhuOEihA6HtkQo404P9hR+cFCpg5/W31NxqWsG8+6Mrv4+O3o3NRWza0cY9yWRLl4di15dlVKg3bAspfRBWOzrhxc8V1d9neelLNstkZav8VNxortyAwWJSXCZhDgAd4bDl2cu9cPSTfsIK/4a74oKYPV9KxC4W3Ic0kdCn7Shy+qOL0YVie4e103Pzb4x6zlMIJWQWVMApdoqQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(346002)(366004)(39860400002)(136003)(5660300002)(83380400001)(2906002)(478600001)(86362001)(316002)(956004)(8676002)(9686003)(8936002)(55016002)(38100700002)(6666004)(26005)(6916009)(52116002)(38350700002)(186003)(66946007)(7696005)(66476007)(4326008)(66556008)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?j3UFpt4SWDR/cRm++HkSlzoP/kpXHi7KGHqdM5avmFmkXjHnB72qgOPvEprZ?=
- =?us-ascii?Q?ZrE1erhoddXBJoCfZAArNqtgIZMBzT4gigiB/meFyBr8iJp7OZKbsSfKIVLu?=
- =?us-ascii?Q?3PZRVyMd4aHZ0WvlCo09B2KEpJ2PiHclzYhVR/5zunoJwGLb4DSiEotdXLvn?=
- =?us-ascii?Q?DJJvnYBCq/SDd1DriiRGkLPI4PSeoLRn9VBw5QpDqaS1WZ7Vcbq010ZYZp/d?=
- =?us-ascii?Q?u6AW6HWuuNcx/b6WJ3IAbFZU/7uBwQ/XRYXpbUub/aQ0NjheuS+EyTGJO96L?=
- =?us-ascii?Q?7cL52yYfVPEYZ8A81QTyb6cbF/MtngaiIA6JawDbqDEJ3qgStGYcLJJd9aAX?=
- =?us-ascii?Q?HoA6jyqU87XpRCjCu4ZMQmjbn5sQf1C1nA4OH1Wlye7rMYuRkFHMsylhQFWV?=
- =?us-ascii?Q?Sv4pVlvzljoRkN9RwVwLQm1V7kAgZWL/NxDgduAxOyoVuCTBXJpqGJV4dcKL?=
- =?us-ascii?Q?+KSawqDn+89GgxCXiHVgndDaRkZqjYQCq4y5NBWooEieOAYvm9mCEzCDDOT7?=
- =?us-ascii?Q?x7fl+o3+l4rGGNtkO/jkvUw3Ur9T6u5BcJgdloSl+PZ/kcMw8TcEPUX05n//?=
- =?us-ascii?Q?MGFEtp6iQij0IdGTzDgmiUfBQZPEB2wRiAaCVhflEziB2NpFQgiLDqYNimQW?=
- =?us-ascii?Q?wnKbd+0pplQ7JHiShuE8kHqts6n2kFBYY+KaVEHaxsY8+A9NFaan7LOaFVkf?=
- =?us-ascii?Q?EddnKn54eQR2jAk/u4ABP9uL44VdK+34r09R4HecMxOdSUvpCu28dCQA0j5x?=
- =?us-ascii?Q?1rJVTC9GtIEmAUBvhbBCddv+PHEAFqZDCtBNfVUBm/iVXPlApu7vnCWI/CIJ?=
- =?us-ascii?Q?QhxIsRUWZuiF7Gbv7LxtOoOqhUZJZM3KN37y0sVZeVGyEC5VRo5Pqmj/Jp5h?=
- =?us-ascii?Q?tQEWnAi4EOj3VZ8h70zJDsKtSiECZOGjIvUNhHpN7FsOCXBNxYkm15Hpzyqw?=
- =?us-ascii?Q?JLsTjPVAdRV+8teCblo9PhAcN8huzThg9OGXAUI0T8r6yz5n9oT6UlGcp+TU?=
- =?us-ascii?Q?ZF0eWWX9YknR9V5Cyr5/2FEsgww5T/0PRhEbc/TYaSi7RK/6rim6B01yjGXf?=
- =?us-ascii?Q?wm+t65lP6MiUx4oVvha3JXsVzY24lebe4zXbPWvJv4AnZg0zqdYDnPMOIkpO?=
- =?us-ascii?Q?yvPLLByQ2Gtz8MnyjVgSQveA8Jd+CkcHDfDL6I5ogVEINivSWhegGCugzu0K?=
- =?us-ascii?Q?T7Bluk2skqY+myPMcJZppex7gcK6K06XPQRBOD4W6iAe0O3mgaCT98X37oKL?=
- =?us-ascii?Q?cqinDgoMcaQFpZWW+0DmZiG87QGpAwipYvDaj/1CJpxIxIR9FuY+9TgURH8c?=
- =?us-ascii?Q?PJsjmB0+ITCCBzL+enLmxvni?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e6382b4-83f1-4778-88da-08d96cb0242f
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2021 18:50:02.8393
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P+04csIlkC8vpILov5A+Ld9Z07Q2z8U2e5ghuoKqC8txhMudU8xirg6h4P+/dhqDlXmRuCOF9eG9RnTBKMMvcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4432
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10093 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- phishscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108310103
-X-Proofpoint-GUID: eSh9bh8ughdRcKPlBrGrXzKkapqQgDUS
-X-Proofpoint-ORIG-GUID: eSh9bh8ughdRcKPlBrGrXzKkapqQgDUS
+Content-Type: text/plain
+X-XM-SPF: eid=1mL8qd-005khz-UH;;;mid=<87r1e95tz8.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18eKAe35NzalvMqaiLGi59y7wlKRtQmiJs=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubMetaSxObfu_03,
+        XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4997]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Johannes Weiner <hannes@cmpxchg.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1505 ms - load_scoreonly_sql: 0.21 (0.0%),
+        signal_user_changed: 11 (0.8%), b_tie_ro: 10 (0.6%), parse: 0.92
+        (0.1%), extract_message_metadata: 13 (0.8%), get_uri_detail_list: 1.52
+        (0.1%), tests_pri_-1000: 6 (0.4%), tests_pri_-950: 1.30 (0.1%),
+        tests_pri_-900: 1.03 (0.1%), tests_pri_-90: 157 (10.4%), check_bayes:
+        153 (10.2%), b_tokenize: 7 (0.5%), b_tok_get_all: 8 (0.5%),
+        b_comp_prob: 2.5 (0.2%), b_tok_touch_all: 133 (8.8%), b_finish: 0.89
+        (0.1%), tests_pri_0: 1300 (86.4%), check_dkim_signature: 0.52 (0.0%),
+        check_dkim_adsp: 2.8 (0.2%), poll_dns_idle: 0.50 (0.0%), tests_pri_10:
+        2.3 (0.2%), tests_pri_500: 9 (0.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [GIT PULL] Memory folios for v5.15
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 04:17:47PM +0100, Will Deacon wrote:
-> On Fri, Aug 27, 2021 at 11:48:02AM +0800, Claire Chang wrote:
-> > Use depends on instead of select for DMA_RESTRICTED_POOL; otherwise it
-> > will make SWIOTLB user configurable and cause compile errors for some
-> > arch (e.g. mips).
-> > 
-> > Fixes: 0b84e4f8b793 ("swiotlb: Add restricted DMA pool initialization")
-> > Reported-by: Guenter Roeck <linux@roeck-us.net>
-> > Signed-off-by: Claire Chang <tientzu@chromium.org>
-> > ---
-> >  kernel/dma/Kconfig | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
-> > index fd4db714d86b..1b02179758cb 100644
-> > --- a/kernel/dma/Kconfig
-> > +++ b/kernel/dma/Kconfig
-> > @@ -82,8 +82,7 @@ config SWIOTLB
-> >  
-> >  config DMA_RESTRICTED_POOL
-> >  	bool "DMA Restricted Pool"
-> > -	depends on OF && OF_RESERVED_MEM
-> > -	select SWIOTLB
-> > +	depends on OF && OF_RESERVED_MEM && SWIOTLB
-> >  	help
-> >  	  This enables support for restricted DMA pools which provide a level of
-> >  	  DMA memory protection on systems with limited hardware protection
-> 
-> Acked-by: Will Deacon <will@kernel.org>
+Johannes Weiner <hannes@cmpxchg.org> writes:
 
-I put it in linux-next and devel/for-linus-5.15.
+> On Mon, Aug 30, 2021 at 07:22:25PM +0100, Matthew Wilcox wrote:
+>> On Mon, Aug 30, 2021 at 01:32:55PM -0400, Johannes Weiner wrote:
+>> > > The mistake you're making is coupling "minimum mapping granularity" with
+>> > > "minimum allocation granularity".  We can happily build a system which
+>> > > only allocates memory on 2MB boundaries and yet lets you map that memory
+>> > > to userspace in 4kB granules.
+>> > 
+>> > Yeah, but I want to do it without allocating 4k granule descriptors
+>> > statically at boot time for the entirety of available memory.
+>> 
+>> Even that is possible when bumping the PAGE_SIZE to 16kB.  It needs a
+>> bit of fiddling:
+>> 
+>> static int insert_page_into_pte_locked(struct mm_struct *mm, pte_t *pte,
+>>                         unsigned long addr, struct page *page, pgprot_t prot)
+>> {
+>>         if (!pte_none(*pte))
+>>                 return -EBUSY;
+>>         /* Ok, finally just insert the thing.. */
+>>         get_page(page);
+>>         inc_mm_counter_fast(mm, mm_counter_file(page));
+>>         page_add_file_rmap(page, false);
+>>         set_pte_at(mm, addr, pte, mk_pte(page, prot));
+>>         return 0;
+>> }
+>> 
+>> mk_pte() assumes that a struct page refers to a single pte.  If we
+>> revamped it to take (page, offset, prot), it could construct the
+>> appropriate pte for the offset within that page.
+>
+> Right, page tables only need a pfn. The struct page is for us to
+> maintain additional state about the object.
+>
+> For the objects that are subpage sized, we should be able to hold that
+> state (shrinker lru linkage, referenced bit, dirtiness, ...) inside
+> ad-hoc allocated descriptors.
+>
+> Descriptors which could well be what struct folio {} is today, IMO. As
+> long as it doesn't innately assume, or will assume, in the API the
+> 1:1+ mapping to struct page that is inherent to the compound page.
 
-I will wait a day and see if there are any issues with linux-next and if
-not will send out a GIT pull.
+struct buffer_head any one?
 
-Thanks!
+I am being silly but when you say you want something that isn't a page
+for caching that could be less than a page in size, it really sounds
+like you want struct buffer_head.
 
+The only actual problem I am aware of with struct buffer_head is that
+it is a block device abstraction and does not map well to other
+situations.  Which makes network filesystems unable to use struct
+buffer_head.
 
-> 
-> Will
+Eric
