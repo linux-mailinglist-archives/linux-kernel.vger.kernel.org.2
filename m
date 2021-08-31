@@ -2,222 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755A23FC96B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D968C3FC96E
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235230AbhHaOMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:12:18 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:45470 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233758AbhHaOMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:12:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630419076; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=7S0kRQ1abQwwZF4U3vdKpHJgesRzC60yL/nDP3TMnX0=; b=UMPi1aV8j4YPYyrWPACvMXgHzNoakHoTltsrKeIlNEcUH9GJBIE7gG3CJmkz409yRa4+KCOv
- H/KgzkrqhOvFuH4QPuGF54K5VNHgzgF9sSagMm1fnmQxPYG30HHyN2d9Hk1/Rd2k/bI5KYmC
- yreQi1sAIfRP1VNmvHFqFPirtxU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 612e38684cd9015037a70267 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 31 Aug 2021 14:10:48
- GMT
-Sender: luoj=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9694BC43619; Tue, 31 Aug 2021 14:10:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.10.117] (unknown [183.192.232.105])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5B8E6C4338F;
-        Tue, 31 Aug 2021 14:10:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 5B8E6C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v1 2/3] net: phy: add qca8081 ethernet phy driver
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-References: <20210830110733.8964-1-luoj@codeaurora.org>
- <20210830110733.8964-3-luoj@codeaurora.org> <YSzhtF8g42Ccv2h0@lunn.ch>
-From:   Jie Luo <luoj@codeaurora.org>
-Message-ID: <af224018-1190-ac78-2035-c9763c1d46ae@codeaurora.org>
-Date:   Tue, 31 Aug 2021 22:10:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235504AbhHaOM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232008AbhHaOM4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 10:12:56 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8680AC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:12:01 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so2109754pjw.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:12:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DwBG0kbYLoprwx2xDskuGjAg4KxbwGBk3fVvkOflJfY=;
+        b=n4plaO9ZqXTMabwQQad7OQWiFxsARGV7/IksaEq0V+fk0Zar3ZT8MUTLoE2UWcX4MU
+         zrVz9ULgAArOMtdajOyS0NRgdYmASL0E3tULikziScQjHqXjdDxNJe8F3UuhQ5DCFetJ
+         SEjUA0AznWEznLoyb4A+/Bp9ZQWGW+j2Wi4KjQWGqZ/+PuIH8uulXO87Q40BX/X/C9Ji
+         VCkkkixVthgv0kfgThJ3bvFwJ2rmHkmipXXtLzc4YtwSC1Eot/27pCBts9+zBhgCXaZb
+         YfbUSJPuTMOYkdYUSs1GXJ3NX3d2DI4yxeCMPM+avwPD8BP70QqkWLTTS/lNdppx7Rkm
+         mVlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DwBG0kbYLoprwx2xDskuGjAg4KxbwGBk3fVvkOflJfY=;
+        b=VtbuQTk2hgl83kZNbzhB+BCClEGhcxfLI+CvDz/bgFeM9sHwa8qJsQXxvGGnQVZS15
+         t+4FZKttPp90Gjy6uVwEQcOqDAL8Y5pLobco1vPQC/LXe+zbuB3fuaB2fAeaMbQ96cxm
+         sN7k50Soy/GlGGW+2OZLuDmNUFsmQaNME9iz/TrsGZkhJidHXTPgsR9bI9/sgJcNxOF5
+         FDOFg7JKBMWxejQ8hdyhbXBEXPzqJPwJ7tiTzdyz0rZXRC/d98x9qDB46gyD/mVPTAA8
+         aUau/FH4pLY5bBLjsoH88V/Skh9r4b/dQknAgSXYioRDs4CNycFGfKncOwgeYNaWnZ+K
+         Mw8A==
+X-Gm-Message-State: AOAM5320UGeeqvKYEkQkciysw7rC48JAJ6JyzuJp48QCEaXvuRenWec2
+        URAgoFjs3hce4RkC8N3nSTsNmgZJx1gLQ0yTV1+ewA==
+X-Google-Smtp-Source: ABdhPJx5yHJTTzBrXq2AUYXsGcTAO5IKtUmnDI+oVOLx/pegeMs0loQRWMfDgCq3QQK52OVn5wqzTEChmIVQ8Q2ox7A=
+X-Received: by 2002:a17:902:a513:b029:11a:9be6:f1b9 with SMTP id
+ s19-20020a170902a513b029011a9be6f1b9mr4831914plq.55.1630419120987; Tue, 31
+ Aug 2021 07:12:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YSzhtF8g42Ccv2h0@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210819060110.3427256-1-xji@analogixsemi.com>
+In-Reply-To: <20210819060110.3427256-1-xji@analogixsemi.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 31 Aug 2021 16:11:49 +0200
+Message-ID: <CAG3jFytk21cSVKiFcu859CBvUW593XQw5_D97Uydsf798jyWDg@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/bridge: anx7625: enable DSI EOTP
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bernie Liang <bliang@analogixsemi.com>,
+        Qilin Wen <qwen@analogixsemi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devel@driverdev.osuosl.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 8/30/2021 9:48 PM, Andrew Lunn wrote:
-> On Mon, Aug 30, 2021 at 07:07:32PM +0800, Luo Jie wrote:
->> qca8081 is a single port ethernet phy chip that supports
->> 10/100/1000/2500 Mbps mode.
->>
->> Signed-off-by: Luo Jie <luoj@codeaurora.org>
->> ---
->>   drivers/net/phy/at803x.c | 389 ++++++++++++++++++++++++++++++++++-----
->>   1 file changed, 338 insertions(+), 51 deletions(-)
->>
->> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
->> index ecae26f11aa4..2b3563ae152f 100644
->> --- a/drivers/net/phy/at803x.c
->> +++ b/drivers/net/phy/at803x.c
->> @@ -33,10 +33,10 @@
->>   #define AT803X_SFC_DISABLE_JABBER		BIT(0)
->>   
->>   #define AT803X_SPECIFIC_STATUS			0x11
->> -#define AT803X_SS_SPEED_MASK			(3 << 14)
->> -#define AT803X_SS_SPEED_1000			(2 << 14)
->> -#define AT803X_SS_SPEED_100			(1 << 14)
->> -#define AT803X_SS_SPEED_10			(0 << 14)
->> +#define AT803X_SS_SPEED_MASK			GENMASK(15, 14)
->> +#define AT803X_SS_SPEED_1000			2
->> +#define AT803X_SS_SPEED_100			1
->> +#define AT803X_SS_SPEED_10			0
-> This looks like an improvement, and nothing to do with qca8081. Please
-> make it an separate patch.
-will make it an separate patch in the next patch series.
->>   #define AT803X_SS_DUPLEX			BIT(13)
->>   #define AT803X_SS_SPEED_DUPLEX_RESOLVED		BIT(11)
->>   #define AT803X_SS_MDIX				BIT(6)
->> @@ -158,6 +158,8 @@
->>   #define QCA8337_PHY_ID				0x004dd036
->>   #define QCA8K_PHY_ID_MASK			0xffffffff
->>   
->> +#define QCA8081_PHY_ID				0x004dd101
->> +
-> Maybe keep all the PHY_ID together?
-will move it to make PHY_ID together in the next patch series.
+On Thu, 19 Aug 2021 at 08:01, Xin Ji <xji@analogixsemi.com> wrote:
 >
->>   #define QCA8K_DEVFLAGS_REVISION_MASK		GENMASK(2, 0)
->>   
->>   #define AT803X_PAGE_FIBER			0
->> @@ -167,7 +169,73 @@
->>   #define AT803X_KEEP_PLL_ENABLED			BIT(0)
->>   #define AT803X_DISABLE_SMARTEEE			BIT(1)
->>   
->> @@ -711,11 +779,18 @@ static void at803x_remove(struct phy_device *phydev)
->>   
->>   static int at803x_get_features(struct phy_device *phydev)
->>   {
->> -	int err;
->> +	int val;
-> Why? The driver pretty consistently uses err for return values which
-> are errors.
-will keep err unchanged in the next patch set.
+> Enable DSI EOTP feature for fixing some panel screen constant shift issue.
+> Removing MIPI flag MIPI_DSI_MODE_NO_EOT_PACKET to enable DSI EOTP.
 >
->>   
->> -	err = genphy_read_abilities(phydev);
->> -	if (err)
->> -		return err;
->> +	val = genphy_read_abilities(phydev);
->> +	if (val)
->> +		return val;
->> +
->> +	if (at803x_match_phy_id(phydev, QCA8081_PHY_ID)) {
->> +		val = phy_read_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_PMA_NG_EXTABLE);
-> You don't check if val indicates if there was an error.
-thanks Andrew for the comment, will add the check here.
+> Reviewed-by: Robert Foss <robert.foss@linaro.org>
+> Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> ---
+>  drivers/gpu/drm/bridge/analogix/anx7625.c | 1 -
+>  1 file changed, 1 deletion(-)
 >
->> +
->> +		linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->supported,
->> +				val & MDIO_PMA_NG_EXTABLE_2_5GBT);
->> +	}
->>   
->>   	if (!at803x_match_phy_id(phydev, ATH8031_PHY_ID))
->>   		return 0;
->> @@ -935,44 +1010,44 @@ static void at803x_link_change_notify(struct phy_device *phydev)
->>   	}
->>   }
->>   
->> -static int at803x_read_status(struct phy_device *phydev)
->> +static int at803x_read_specific_status(struct phy_device *phydev)
->>   {
->> -	int ss, err, old_link = phydev->link;
->> -
->> -	/* Update the link, but return if there was an error */
->> -	err = genphy_update_link(phydev);
->> -	if (err)
->> -		return err;
->> -
->> -	/* why bother the PHY if nothing can have changed */
->> -	if (phydev->autoneg == AUTONEG_ENABLE && old_link && phydev->link)
->> -		return 0;
->> +	int val;
->>   
->> -	phydev->speed = SPEED_UNKNOWN;
->> -	phydev->duplex = DUPLEX_UNKNOWN;
->> -	phydev->pause = 0;
->> -	phydev->asym_pause = 0;
->> +	val = phy_read(phydev, AT803X_SPECIFIC_FUNCTION_CONTROL);
->> +	if (val < 0)
->> +		return val;
->>   
->> -	err = genphy_read_lpa(phydev);
->> -	if (err < 0)
->> -		return err;
->> +	switch (FIELD_GET(AT803X_SFC_MDI_CROSSOVER_MODE_M, val)) {
->> +	case AT803X_SFC_MANUAL_MDI:
->> +		phydev->mdix_ctrl = ETH_TP_MDI;
->> +		break;
->> +	case AT803X_SFC_MANUAL_MDIX:
->> +		phydev->mdix_ctrl = ETH_TP_MDI_X;
->> +		break;
->> +	case AT803X_SFC_AUTOMATIC_CROSSOVER:
->> +		phydev->mdix_ctrl = ETH_TP_MDI_AUTO;
->> +		break;
->> +	}
->>   
->>   	/* Read the AT8035 PHY-Specific Status register, which indicates the
->>   	 * speed and duplex that the PHY is actually using, irrespective of
->>   	 * whether we are in autoneg mode or not.
->>   	 */
->> -	ss = phy_read(phydev, AT803X_SPECIFIC_STATUS);
->> -	if (ss < 0)
->> -		return ss;
->> +	val = phy_read(phydev, AT803X_SPECIFIC_STATUS);
->> +	if (val < 0)
->> +		return val;
-> What was actually wrong with ss?
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> index abc8db77bfd3..1a871f6b6822 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> @@ -1335,7 +1335,6 @@ static int anx7625_attach_dsi(struct anx7625_data *ctx)
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO   |
+>                 MIPI_DSI_MODE_VIDEO_SYNC_PULSE  |
+> -               MIPI_DSI_MODE_NO_EOT_PACKET     |
+>                 MIPI_DSI_MODE_VIDEO_HSE;
 >
-> Is this another case of just copying code from your other driver,
-> rather than cleanly extending the existing driver?
->
-> There are two many changes here all at once. Please break this patch
-> up. You are aiming for lots of small patches which are obviously
-> correct. Part of being obviously correct is having a good commit
-> message, and that gets much easier when a patch is small.
->
-> 	 Andrew
+>         if (mipi_dsi_attach(dsi) < 0) {
 
-Hi Andrew,
-
-i separate the phy specific status into a new function 
-at803x_read_specific_status, since this function
-
-need to be used for both at803x phy driver and qca8081 phy driver.
-
-i will break the patch into the minimal changes and provide the commit 
-message in detail in the next
-
-patch series.
-
-thanks for your helpful comments.
-
-
+Applied to drm-misc-next
