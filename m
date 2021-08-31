@@ -2,641 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD803FC2D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D973FC2D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234975AbhHaGhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 02:37:18 -0400
-Received: from mga01.intel.com ([192.55.52.88]:3856 "EHLO mga01.intel.com"
+        id S235218AbhHaGh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 02:37:29 -0400
+Received: from mga03.intel.com ([134.134.136.65]:32487 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232892AbhHaGhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 02:37:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="240661875"
+        id S232892AbhHaGhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 02:37:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="218456529"
 X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
-   d="scan'208";a="240661875"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 23:36:19 -0700
+   d="scan'208";a="218456529"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 23:36:25 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
-   d="scan'208";a="466355002"
-Received: from coresw01.iind.intel.com ([10.106.46.194])
-  by orsmga007.jf.intel.com with ESMTP; 30 Aug 2021 23:36:16 -0700
-From:   pandith.n@intel.com
-To:     georgi.djakov@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mgross@linux.intel.com, furong.zhou@intel.com,
-        mallikarjunappa.sangannavar@intel.com,
-        lakshmi.bai.raja.subramanian@intel.com,
-        Pandith N <pandith.n@intel.com>
-Subject: [PATCH V6 1/1] interconnect: intel: Add Keem Bay noc driver
-Date:   Tue, 31 Aug 2021 12:06:15 +0530
-Message-Id: <20210831063615.1021-1-pandith.n@intel.com>
-X-Mailer: git-send-email 2.17.1
+   d="scan'208";a="509838039"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga001.jf.intel.com with ESMTP; 30 Aug 2021 23:36:24 -0700
+Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 30 Aug 2021 23:36:22 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Mon, 30 Aug 2021 23:36:22 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.176)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Mon, 30 Aug 2021 23:36:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OoWp9YnpLzpWSj4yzVe0Lzpa8VesOzl0gm5TGjVdaw6bNoqaOSh1ayXj97OM7GofUmpKVPfO8k2BQ9KysDMga2G1M+jjRWDXUWFqCs4r3MJDWyNi0ce98w6VheH6IoCjhJXNIXqIoOnk9eB6fSvJv4ED0dvyOgtUDOU/Ww7N8VUd6F5K0xSvbNuecfnM5LncxdW6xNeRn0uSNihIWrEpWKsit0EEtnyjG9/3INcckeKiNkDYW4KagJq3DPX5cjYAw+JhacKjXoyhoGEVAZtpc8S5K7xQDVC7AExelCB/okyO0dw1BPjjUa4MhqazUZ7r2NJlOgTckBP+2gAkpDjEJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7ynzJR/6IvutAC9R7IC6Xnyn19K0PJ+lRKoo92ifaLI=;
+ b=Pn/KV2M7LFzGiS4/s7S1LKHPYGrM8T6k0Oxqjd8fhlAwP6fD9GX2zW1sNRSm4kQzZ1loKGT32KusIpREHZP7DZ7u2LilOooWSHEMTkoHWPD4rd5TZravo1YlwwlID8lX5OSROa9+wqpYm3T8bfhaFKKbvsgt+LmDaP6LsUsEcszXqMwRZSo7fCsVQ6bff9kht9vMZJfoSFmzydVvfYc9aZgYNCPwfhB/rG0GLGORk6e9u8iyqJR0XL6Q9bPzrIAIfMQspFkmx5upZYQgOcbXnr58ZXalFPF1FVUcPCEyK83W4YC7Qe3B4ENEmLeca2rwpjBGNrMOB2gqIogrMFjimw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7ynzJR/6IvutAC9R7IC6Xnyn19K0PJ+lRKoo92ifaLI=;
+ b=OvHqdfBXI8uiV6CHLDMJkbN4wVxS00XWrfdpczPsQUMn/1BusXWZEHoeMJbe5xPQzayO7FjpV3Pp9R+mj2wOY0N+WZcEOh4xo4hm4nJ5nkGicy/RmDggxvyPonLtQ5tpiWrS0cb+a/0TqvNaIdYbSI9xJYSXQ4BLaYxQTW1yc+0=
+Received: from BYAPR11MB3207.namprd11.prod.outlook.com (2603:10b6:a03:7c::14)
+ by BYAPR11MB2647.namprd11.prod.outlook.com (2603:10b6:a02:be::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Tue, 31 Aug
+ 2021 06:36:15 +0000
+Received: from BYAPR11MB3207.namprd11.prod.outlook.com
+ ([fe80::bc8c:80c0:1c01:94bf]) by BYAPR11MB3207.namprd11.prod.outlook.com
+ ([fe80::bc8c:80c0:1c01:94bf%7]) with mapi id 15.20.4478.017; Tue, 31 Aug 2021
+ 06:36:15 +0000
+From:   "Coelho, Luciano" <luciano.coelho@intel.com>
+To:     "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "jmforbes@linuxtx.org" <jmforbes@linuxtx.org>
+CC:     "yj99.shin@samsung.com" <yj99.shin@samsung.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "Berg, Johannes" <johannes.berg@intel.com>,
+        "Baruch, Yaara" <yaara.baruch@intel.com>,
+        "ihab.zhaika@intel.com" <ihab.zhaika@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "Gottlieb, Matti" <matti.gottlieb@intel.com>,
+        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>,
+        "jh80.chung@samsung.com" <jh80.chung@samsung.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH] iwlwifi Add support for ax201 in Samsung Galaxy Book
+ Flex2 Alpha
+Thread-Topic: [PATCH] iwlwifi Add support for ax201 in Samsung Galaxy Book
+ Flex2 Alpha
+Thread-Index: AQHXb5JCu++4nbn+uUSCiulktq1hDqs68YgAgC+EIYCABj1HAIANkJWbgAaVfYCACKzVgA==
+Date:   Tue, 31 Aug 2021 06:36:15 +0000
+Message-ID: <ddcb88a3f6614ef6138b68375a22fbba1b068ff3.camel@intel.com>
+References: <20210702223155.1981510-1-jforbes@fedoraproject.org>
+         <CGME20210709173244epcas1p3ea6488202595e182d45f59fcba695e0a@epcas1p3.samsung.com>
+         <CAFxkdApGUeGdg4=rH=iC2SK58FO6yzbFiq3uSFMFTyZsDQ5j5w@mail.gmail.com>
+         <8c55c7c9-a5ae-3b0e-8a0f-8954a8da7e7b@samsung.com>
+         <94edb3c4-43a6-1031-8431-2befb0eca2bf@samsung.com>
+         <87ilzyudk0.fsf@codeaurora.org>
+         <CAFxkdArjsp4YxYWYZ_qW7UsNobzodKOaNJqKTHpPf5RmtT+Rww@mail.gmail.com>
+In-Reply-To: <CAFxkdArjsp4YxYWYZ_qW7UsNobzodKOaNJqKTHpPf5RmtT+Rww@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.38.3-1 
+authentication-results: codeaurora.org; dkim=none (message not signed)
+ header.d=none;codeaurora.org; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6adc32ef-609a-4a63-f736-08d96c49a1ff
+x-ms-traffictypediagnostic: BYAPR11MB2647:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR11MB2647F987AC44208D8E5C87BE90CC9@BYAPR11MB2647.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Si61PcV6Exc6RXix/qYUIT3om8+WE7amAgb/7MOx8fcLfkEtXKpfUyup8UAKkZZ1Er+tpYrbjkZ6qWtd0rwT0e/6Rn/Hla+THqpUKzZrveIpF6oDvp5PYyLXJEcOuAIYhDp2wc8p0XwQ78+3Owr6sbaIclzuxBxDUw0pQgRaHm/c1/lpc0qxJ+BPV1z8ZYh09bPbOSPUl38zl/gk3AjSfzFCjckzegMkAe4YYZPfEfhE20aObsEFgavkC7LHbGiUAg29M+0z/x7PJiZjfRiann75ASNOpQceGdef6CDvAdfRlrzo8HsQlD1kGmJ0QFGLvUtTdyE37EMFDA3lzaWZO8GXW34ETtuMJYIdccDWgjyChndNAnKd+E0LE4scIbCVzHjqyF74SNDeZUvfxCcrhrxzY5uD3c5yQhSQZWqyRE3ZVNXNbj73Kdbh8dfTcalYUM9kFnKVmskIwak5Eb04ucLDGB85zjd237vZ2y4S7lCF4Gc4ynThWhNdQ9mJJ31EytlhgVHjl2mTp3dNwxQPdcGvxKPhkmJsIyaTPFrAtcKkp3DXgZbKqs1/qiI58VKGy/vsAFUy6CmkeI9yXu6KnK3q3ET1NrADSCazcjFzGFeC6Aqpf8CtJXrkR7IuEfLCp1F415y3wLSZ6tzqP4FAtXMVNhsYE1fgiQBCDNucvqjeEabjNB19pb5iLE5PSOdYrDo23LHC2jPNk0w6yh39Qy2OGHI5MicJoXMetLwne8UrBWv7Dm8AgRdPdsKg6kOiy5z4Y4Dn0VeZFGn8mQ0AxPIrICEA/I32av8B5Te14o4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3207.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(376002)(346002)(39860400002)(5660300002)(6512007)(83380400001)(2906002)(8676002)(66946007)(4326008)(53546011)(64756008)(71200400001)(66476007)(966005)(6506007)(54906003)(38100700002)(6486002)(36756003)(122000001)(76116006)(8936002)(110136005)(91956017)(66556008)(186003)(86362001)(66446008)(478600001)(2616005)(316002)(26005)(38070700005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aUtjcDNEUUdhQndST29kR1NoQk9RcmROMVpZc0YrOVFURStIODR5ZGZKMkxs?=
+ =?utf-8?B?NngwRnRXMTE5aHBWUmpKWWV1UHZxNVVMWEFaakx2dnVIQUpnRy9OK0JiZXpp?=
+ =?utf-8?B?SVFGa3BOYytIMzRsRGZWai9FZUJKT05BTDZGZHB6YjNORHNhdGVkVUFIc1I4?=
+ =?utf-8?B?Mzg5VmZhVjVaRjkzY1ZMbVpkQ3FZNGJKQkVPbXdkSkZ6cXN1aWhXUDRvbkJO?=
+ =?utf-8?B?Mm1GMmppbjNZU3FMbVE4NGlWUGNac2owZmJoRHpCRW9MSEtqNFBZRnlqTE1j?=
+ =?utf-8?B?RmlKN1graDh3TUhPWmJodExmbnVBZ3JocC92MDc2MXJzTXQ3TWkyRWhKVkJw?=
+ =?utf-8?B?L3duaENLM0x6Z2RweE9nOVJHOEpneTR5U2diTjgyRHhwTXdKUDlwdmNwZklQ?=
+ =?utf-8?B?ZzRDUS9WMmQrRTJrR2tSZFpsLzNwWjJicnFOSk51Y1duNGMvQU4vZWRQRjYy?=
+ =?utf-8?B?WDlyUGtUbEticmZJQUpZUVExK3Rzejd2WXhEUDdNL3ExUkM5ZVJ2ZCtYc3Fl?=
+ =?utf-8?B?QlJwU0NkbWE5Z3RQNVRaN0xQUW9FWG5lUlV2djBmWWR5bllnbFRQdXphS1dI?=
+ =?utf-8?B?M0dvV3E2SUtydzhLUUprYTRFUExjUGllOXdzdVEybWQ4UG9mYzVRYzI0TkVl?=
+ =?utf-8?B?VFRVcHVoQ1JpYlJjdS9OTml5aEQrWGM1cGNvcUJBNjk5ZnlDeW5pSCtudWFi?=
+ =?utf-8?B?MGYrSlNFMUd6Z1FJSmlDMUE0aVdZcUtZMFpCVU80VkRKQS9nZ3dhUHFZTlk3?=
+ =?utf-8?B?TEZXNSsvc2RmbWd2MExxWlhUNWNyMHJNVW1Md054TjhVL1Q5aEJmQ1dCaUhz?=
+ =?utf-8?B?azd2NGJwSEp3VFJPQVFWSi9XeTdUWVB6UUxySVNJRVc0cmFZYmwvYWY1VlY0?=
+ =?utf-8?B?UkU4NUlrdmdLRURnYVRBdndPRXFtS2orVzZlOGtpbHBjNkhIOFpsaEdVZTNY?=
+ =?utf-8?B?S2FmNy9sTkRpTnc2TFpLZndjVVY4T0kwcHZsYzBRSHFEZktxVDRSMnd0RmFK?=
+ =?utf-8?B?NDZuZzB0bHRuVnZlTENCUGtqaWJ3RVQ1OEp0d0x5RUVZRC9oSEdGM0VmUkc4?=
+ =?utf-8?B?cWdvdERuNmJrVFBmbSt6S2sxeDR1bVVPRDdPclp0VDJ0RXFHZWlSYy8vSHcv?=
+ =?utf-8?B?Nm5Wc0hCakF2RmswMHNHbHcxdkh5djQ4dkZWd2k0NHVNbzRPY211U3pIOTdS?=
+ =?utf-8?B?YjZmT1lHWXpwMzh3Q3RFc3JNTTR1NjR5anR1WVEwcTlkVW1PT2ZnalJ6QlFx?=
+ =?utf-8?B?Z3BHWUgyUDNWb01oMEtQUUJ4ckR3T3dzdkE0Q2F4ckJldXF5Uk1aWkxoMnJ4?=
+ =?utf-8?B?Qmpha3pHeUdyYXdLcEZDbk5RdUZUWHVkZkRxbkNodDRnWWFoNmtaRVgzOWlW?=
+ =?utf-8?B?d0tpd1BTd3kzUWFpb0hoVEJKM21Bc0RnYVJQdFpVaFVsdmhIaUJUNVNCTWtp?=
+ =?utf-8?B?L0VQeUx3Y0ZrTEU5Q1p2MnBJeUp2V2RFRW90WU9ZTlA0YzAvSnhrMW0vVjBP?=
+ =?utf-8?B?Y1hUUitJZTU4NGlYUzF0Wk9wT0ZicUlUK1VnRUNVSUpSS2hIWjBIY0ZQZm1x?=
+ =?utf-8?B?NmtYY1BnOHBRQytDVE5nSXRQM1NkZzBGUGpVSldmU0ViMEtOdTFrTHNyZDBp?=
+ =?utf-8?B?ZUdiL01QbmM5b0xLRnlTRmNDYnYyU21YRjJRdW52ZHRxQlBvS1VTWklMRU9y?=
+ =?utf-8?B?Z1BJbHVrTWxBNTF0Y2R4dXNLV3RzZGc4OS9Zd3JyaE1scHhhbUJWcWFrSHpo?=
+ =?utf-8?Q?ZTFJUwKj/vC0Ze7q2L+gPg1R5KTRPDLuL76AVsV?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E5DEC37F7B8F5C40A031340AF0F8152B@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3207.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6adc32ef-609a-4a63-f736-08d96c49a1ff
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2021 06:36:15.4196
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: SqhzsAbc5y1JGwG3kHPynvw7vIpTE76OmXOsnuewPNT3yRzSHzqFfJ0Xyylud5SFMfoEBYqw+v4e1H5b62PLMjiQE2+urF1bHNAEb5+UaGo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2647
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pandith N <pandith.n@intel.com>
-
-Add support for Network on Chip(NOC) counters. Enable features to configure
-and capture NOC probe counters, needed for DDR bandwidth measurement. NOC
-driver is specific to Intel Keem Bay SOC. NOC hardware counters are used
-for DDR statistics profiling, it is not related to timers.
-Interface details are provided in include/uapi/linux/noc_uapi.h
-
-Signed-off-by: Pandith N <pandith.n@intel.com>
-Reviewed-by: Mark Gross <mgross@linux.intel.com>
-
----
-Changes in V2 :
-NOC is class driver, platform driver not needed.
-Removed LINUX syscall note from noc_driver.c.
-Order variable from longest to shortest.
-Using varaible in sizeof parameter, rather than data type.
-Consistent project naming as Keem Bay
-
-Changes in V3 :
-Free noc device in failure case and module exit.
-Remove platform device references.
-
-Changes in V4 :
-Rephrased commit description, added missing punctuation in Kconfig.
-
-Changes in V5 :
-Local variables are always initialized before use in all cases
-of capture function
-No need of counter 3 definiton in enumeration
-
-Changes in V6 :
-Renaming noc driver as keembay-bwmon, moved to interconnect/intel.
-Added more description about DSS, NOC
----
- MAINTAINERS                                |   6 +
- drivers/interconnect/Kconfig               |   1 +
- drivers/interconnect/Makefile              |   1 +
- drivers/interconnect/intel/Kconfig         |  19 ++
- drivers/interconnect/intel/Makefile        |   5 +
- drivers/interconnect/intel/keembay-bwmon.c | 305 +++++++++++++++++++++
- drivers/interconnect/intel/keembay-bwmon.h | 110 ++++++++
- include/uapi/linux/noc_uapi.h              |  42 +++
- 8 files changed, 489 insertions(+)
- create mode 100644 drivers/interconnect/intel/Kconfig
- create mode 100644 drivers/interconnect/intel/Makefile
- create mode 100644 drivers/interconnect/intel/keembay-bwmon.c
- create mode 100644 drivers/interconnect/intel/keembay-bwmon.h
- create mode 100644 include/uapi/linux/noc_uapi.h
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6eff4f720c72..0c22e30ed2ea 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9045,6 +9045,12 @@ M:	Deepak Saxena <dsaxena@plexity.net>
- S:	Maintained
- F:	drivers/char/hw_random/ixp4xx-rng.c
- 
-+INTEL KEEM BAY DDR SUBSYSTEM, NETWORK ON CHIP INTERCONNECT DRIVER
-+M:	Pandith N <pandith.n@intel.com>
-+S:	Supported
-+F:	drivers/interconnect/intel/
-+F:	include/uapi/linux/noc_uapi.h
-+
- INTEL KEEM BAY DRM DRIVER
- M:	Anitha Chrisanthus <anitha.chrisanthus@intel.com>
- M:	Edmund Dea <edmund.j.dea@intel.com>
-diff --git a/drivers/interconnect/Kconfig b/drivers/interconnect/Kconfig
-index d637a89d4695..e820e270b40d 100644
---- a/drivers/interconnect/Kconfig
-+++ b/drivers/interconnect/Kconfig
-@@ -12,6 +12,7 @@ menuconfig INTERCONNECT
- if INTERCONNECT
- 
- source "drivers/interconnect/imx/Kconfig"
-+source "drivers/interconnect/intel/Kconfig"
- source "drivers/interconnect/qcom/Kconfig"
- source "drivers/interconnect/samsung/Kconfig"
- 
-diff --git a/drivers/interconnect/Makefile b/drivers/interconnect/Makefile
-index 97d393fd638d..c88227f7a7c5 100644
---- a/drivers/interconnect/Makefile
-+++ b/drivers/interconnect/Makefile
-@@ -5,5 +5,6 @@ icc-core-objs				:= core.o bulk.o
- 
- obj-$(CONFIG_INTERCONNECT)		+= icc-core.o
- obj-$(CONFIG_INTERCONNECT_IMX)		+= imx/
-+obj-$(CONFIG_INTERCONNECT_INTEL)	+= intel/
- obj-$(CONFIG_INTERCONNECT_QCOM)		+= qcom/
- obj-$(CONFIG_INTERCONNECT_SAMSUNG)	+= samsung/
-diff --git a/drivers/interconnect/intel/Kconfig b/drivers/interconnect/intel/Kconfig
-new file mode 100644
-index 000000000000..a2f933773380
---- /dev/null
-+++ b/drivers/interconnect/intel/Kconfig
-@@ -0,0 +1,19 @@
-+# Copyright (C) 2019 Intel Corporation
-+# SPDX-License-Identifier: GPL-2.0-only
-+config INTERCONNECT_INTEL
-+	bool "Intel Network-on-chip interconnect drivers"
-+	help
-+	  Support for Intel's Network on chip interconnect hardware.
-+
-+config INTERCONNECT_INTEL_KEEMBAY
-+	tristate "Intel Keem Bay Enable DDR profiling using NOC"
-+	depends on INTERCONNECT_INTEL || ARCH_KEEMBAY || COMPILE_TEST
-+	help
-+	  Enable this option for DDR bandwidth measurements using NOC
-+
-+	  Add support for Network-on-chip (NOC) in DDR Subsystem(DSS).
-+	  DSS NOC has capabilities to enable and get statistics profiling.
-+	  NOC driver enables features to configure and capture NOC probe
-+          counters, needed for DSS bandwidth measurement.
-+	  Say Y if using a processor that includes the Intel VPU such as
-+	  Keem Bay.  If unsure, say N.
-diff --git a/drivers/interconnect/intel/Makefile b/drivers/interconnect/intel/Makefile
-new file mode 100644
-index 000000000000..5bb34fcfefae
---- /dev/null
-+++ b/drivers/interconnect/intel/Makefile
-@@ -0,0 +1,5 @@
-+# Copyright (C) 2019 Intel Corporation
-+# SPDX-License-Identifier: GPL-2.0-only
-+#     Makefile for Keem Bay NOC
-+#
-+obj-$(CONFIG_INTERCONNECT_INTEL_KEEMBAY) += keembay-bwmon.o
-diff --git a/drivers/interconnect/intel/keembay-bwmon.c b/drivers/interconnect/intel/keembay-bwmon.c
-new file mode 100644
-index 000000000000..3c0358d868bc
---- /dev/null
-+++ b/drivers/interconnect/intel/keembay-bwmon.c
-@@ -0,0 +1,305 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*  Copyright (C) 2020 Intel Corporation
-+ *
-+ *  Purpose: Intel Keem Bay NOC bandwidth measurement interface
-+ *
-+ */
-+#include <linux/arm-smccc.h>
-+#include <linux/compiler_types.h>
-+#include <linux/device.h>
-+#include <linux/delay.h>
-+#include <linux/fs.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/noc_uapi.h>
-+#include <linux/of_device.h>
-+#include <linux/types.h>
-+#include <linux/uaccess.h>
-+#include "keembay-bwmon.h"
-+
-+/* Filter and counter offset */
-+static const int f_offset[] = {0x44, 0x80, 0xbc, 0xf8};
-+static const int c_offset[] = {0x134, 0x148, 0x15c, 0x170};
-+static struct noc_device noc_dev;
-+
-+static inline u32 noc_readl(u32 offset)
-+{
-+	struct arm_smccc_res res;
-+
-+	arm_smccc_smc(PLATFORM_SIP_SVC_DSS_NOC_PROBE_READ, offset,
-+		      0, 0, 0, 0, 0, 0, &res);
-+	return res.a1;
-+}
-+
-+static inline void noc_writel(u32 offset, u32 value)
-+{
-+	struct arm_smccc_res res;
-+
-+	arm_smccc_smc(PLATFORM_SIP_SVC_DSS_NOC_PROBE_WRITE, offset,
-+		      value, 0, 0, 0, 0, 0, &res);
-+}
-+
-+/**
-+ * flex_noc_setup() - Setup two counters for the NOC probe
-+ * @noc: NOC type to setup counters
-+ * @counter: Counter number to set up counter n and n+1
-+ * @trace_port: trace port number to setup counters
-+ *
-+ * This function will setup the counters for the trace port given.
-+ */
-+int flex_noc_setup(enum noc_ss_type noc, enum noc_counter counter, int trace_port)
-+{
-+	int offset;
-+
-+	if (noc >= NOC_TYPE_MAX || counter >= NOC_COUNTER_MAX)
-+		return -EINVAL;
-+
-+	offset = f_offset[counter / 2];
-+
-+	/* Stop ongoing stats */
-+	noc_writel(MAINCTL, 0);
-+	noc_writel(CFGCTL, 0);
-+
-+	/* Setup trace port and counters port select */
-+	noc_writel(TRACEPORTSEL, trace_port);
-+	noc_writel((c_offset[counter] + C_PORTSEL), trace_port);
-+	noc_writel((c_offset[counter + 1] + C_PORTSEL), trace_port);
-+
-+	/* Setup counter sources & triggers, Alarm mode - OFF */
-+	noc_writel((c_offset[counter] + C_SRC), COUNTERS_0_SRC_VAL);
-+	noc_writel((c_offset[counter] + C_ALARMMODE), COUNTERS_ALARMMODE_VAL);
-+	noc_writel((c_offset[counter + 1] + C_SRC), COUNTERS_1_SRC_VAL);
-+	noc_writel((c_offset[counter + 1] + C_ALARMMODE),
-+		   COUNTERS_ALARMMODE_VAL);
-+
-+	/* Setup filters - RouteID mask, addr base, window size */
-+	noc_writel((offset + F_ROUTEIDBASE), 0);
-+	noc_writel((offset + F_ROUTEIDMASK), 0);
-+	noc_writel((offset + F_ADDRBASE_LOW), 0);
-+	noc_writel((offset + F_ADDRBASE_HIGH), 0);
-+	noc_writel((offset + F_WINDOWSIZE), FILTER_WINDOW_VAL);
-+	noc_writel((offset + F_OPCODE), FILTER_OPCODE_VAL);
-+	noc_writel((offset + F_STATUS), FILTER_STATUS_VAL);
-+	noc_writel((offset + F_LENGTH), FILTER_OPCODE_VAL);
-+
-+	return 0;
-+}
-+
-+/**
-+ * flexnoc_probe_start() - Start two counters for the NOC probe
-+ * @noc: NOC type to setup counters
-+ *
-+ * This function will start the counters.  When this
-+ * function returns NOC_PROBE_CAPTURE_STARTED, it is guaranteed that NOC
-+ * is setup for probing counters.
-+ *
-+ */
-+enum noc_status flexnoc_probe_start(enum noc_ss_type noc)
-+{
-+	if (noc >= NOC_TYPE_MAX)
-+		return NOC_PROBE_ERR_INVALID_ARGS;
-+
-+	/* Setting up probe */
-+	noc_writel(MAINCTL, (1 << MAINCTL_STATEN_POS));
-+	noc_writel(FILTERLUT, 1);
-+	noc_writel(STATALARMMIN, 0);
-+	noc_writel(STATALARMMAX, 1);
-+	noc_writel(STATALARMEN, 1);
-+	noc_writel(MAINCTL, ((1 << MAINCTL_STATEN_POS) |
-+			     (1 << MAINCTL_ALARM_EN_POS) |
-+			     (1 << MAINCTL_ALWAYS_CHAINABLE_POS)));
-+	noc_writel(STATPERIOD, NOC_STATPERIOD_VAL);
-+	noc_writel(FILTERLUT, 0x00000001);
-+	noc_writel(CFGCTL, 0x00000001);
-+
-+	return NOC_PROBE_CAPTURE_STARTED;
-+}
-+
-+/**
-+ * flexnoc_counterp_capture() - Capture the counter statistic values
-+ * @noc: NOC type to setup counters
-+ * @counter:  Counter number to capture statistics values for n and n+1
-+ * @value: statistics values read are returned in this address passed
-+ *
-+ * This function will return the statistics value of started counters.
-+ * When this function returns NOC_PROBE_COMPLETED, it is guaranteed that NOC
-+ * counters are idle and finished probing.
-+ * Algo : The values should not returned when counters are active/running.
-+ * Once the counter is frozen, the values are good to read. There is an
-+ * iteration logic implemented to check this. An maximum timeout config
-+ * is provided to for capture timeout - NOC_CAPTURE_TIMEOUT_MSEC
-+ *
-+ */
-+enum noc_status flexnoc_counter_capture(enum noc_ss_type noc,
-+					enum noc_counter counter, u32  *value)
-+{
-+	unsigned long j0, j1, delay;
-+	u32 c0_0, c0_1;
-+
-+	if (noc >= NOC_TYPE_MAX ||
-+	    counter >= NOC_COUNTER_MAX  ||
-+	    !value)
-+		return NOC_PROBE_ERR_INVALID_ARGS;
-+
-+	delay = msecs_to_jiffies(NOC_CAPTURE_TIMEOUT_MSEC);
-+	j0 = jiffies;
-+	j1 = j0 + delay;
-+	do {
-+		c0_0 = noc_readl((c_offset[counter] + C_VAL));
-+		usleep_range(10000, 11000);
-+		c0_1 = noc_readl((c_offset[counter] + C_VAL));
-+		/* If mainctrl is zero , return error */
-+		if (noc_readl(MAINCTL) == 0)
-+			return NOC_PROBE_ERR_IN_PROGRESS;
-+		/* If counters are zero, keep reading */
-+		if (0 == c0_0 && 0 == c0_1) {
-+			break;
-+		} else if (c0_0 != c0_1) {
-+			continue;
-+		} else {
-+			/* counters look good break the while */
-+			break;
-+		}
-+	} while (time_before(jiffies, j1));
-+
-+	if (c0_0 != c0_1)
-+		return NOC_PROBE_ERR_IN_PROGRESS;
-+
-+	c0_0 = noc_readl((c_offset[counter] + C_VAL));
-+	c0_1 = noc_readl((c_offset[counter + 1] + C_VAL));
-+	*value = (c0_0 | (c0_1 << 16));
-+
-+	return NOC_PROBE_COMPLETED;
-+}
-+
-+static long noc_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-+{
-+	struct flexnoc_countercapture capture_data;
-+	void __user *argp = (void __user *)arg;
-+	struct flexnoc_probestart probe_data;
-+	struct flexnoc_setup setup_data;
-+	int rc;
-+
-+	if (!arg) {
-+		pr_err("NOC: Null pointer from user\n");
-+		return -EINVAL;
-+	}
-+	switch (cmd) {
-+	case NOC_SETUP:
-+		if (copy_from_user(&setup_data,
-+				   argp, sizeof(setup_data))) {
-+			return -EFAULT;
-+		}
-+		rc =  flex_noc_setup(setup_data.noc_type, setup_data.counter,
-+				     setup_data.traceport);
-+		setup_data.ret_id = rc;
-+
-+		if (copy_to_user(argp,
-+				 &setup_data, sizeof(setup_data))) {
-+			return -EFAULT;
-+		}
-+	break;
-+	case NOC_PROBE_START:
-+		if (copy_from_user(&probe_data, argp,
-+				   sizeof(probe_data))) {
-+			return -EFAULT;
-+		}
-+		rc = flexnoc_probe_start(probe_data.noc_type);
-+		probe_data.ret_id = rc;
-+
-+		if (copy_to_user(argp,
-+				 &probe_data, sizeof(probe_data))) {
-+			return -EFAULT;
-+		}
-+	break;
-+	case NOC_COUNTER_CAPTURE:
-+		if (copy_from_user(&capture_data, argp,
-+				   sizeof(capture_data))) {
-+			return -EFAULT;
-+		}
-+		rc = flexnoc_counter_capture(capture_data.noc_type,
-+					     capture_data.counter,
-+					     &capture_data.bw_res);
-+		capture_data.ret_id = rc;
-+
-+		if (copy_to_user(argp, &capture_data,
-+				 sizeof(capture_data))) {
-+			return -EFAULT;
-+		}
-+	break;
-+	default:
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+static const struct file_operations noc_fops = {
-+	.owner  = THIS_MODULE,
-+	.unlocked_ioctl = noc_ioctl,
-+};
-+
-+static int intel_noc_cdev_init(struct noc_device *nocdev)
-+{
-+	if ((alloc_chrdev_region(&nocdev->cdev, 0, 1, "nocdev")) < 0) {
-+		pr_err("Cannot allocate major number for NOC\n");
-+		return -EINVAL;
-+	}
-+
-+	cdev_init(&nocdev->noc_cdev, &noc_fops);
-+	if ((cdev_add(&nocdev->noc_cdev, nocdev->cdev, 1)) < 0) {
-+		pr_err("Cannot add NOC device to the system\n");
-+		goto r_class;
-+	}
-+
-+	nocdev->dev_class = class_create(THIS_MODULE, "noc_class");
-+	if (!nocdev->dev_class) {
-+		pr_err("Cannot create the NOC class\n");
-+		cdev_del(&nocdev->noc_cdev);
-+		goto r_class;
-+	}
-+
-+	if ((device_create(nocdev->dev_class, NULL, nocdev->cdev,
-+			   NULL, "noc")) == NULL) {
-+		pr_err("Cannot create NOC device\n");
-+		cdev_del(&nocdev->noc_cdev);
-+		goto r_cdev;
-+	}
-+
-+	return 0;
-+
-+r_cdev:
-+	class_destroy(nocdev->dev_class);
-+r_class:
-+	unregister_chrdev_region(nocdev->cdev, 1);
-+	return -EINVAL;
-+}
-+
-+static void intel_noc_cdev_exit(struct noc_device *nocdev)
-+{
-+	cdev_del(&nocdev->noc_cdev);
-+	class_destroy(nocdev->dev_class);
-+	unregister_chrdev_region(nocdev->cdev, 1);
-+}
-+
-+static int __init noc_driver_module_init(void)
-+{
-+	int ret;
-+
-+	ret = intel_noc_cdev_init(&noc_dev);
-+	if (ret)
-+		pr_err("NOC char device init failed\n");
-+	return ret;
-+}
-+
-+static void noc_driver_module_exit(void)
-+{
-+	intel_noc_cdev_exit(&noc_dev);
-+}
-+
-+module_init(noc_driver_module_init);
-+module_exit(noc_driver_module_exit);
-+
-+MODULE_DESCRIPTION("Intel Keem Bay NOC interconnect driver");
-+MODULE_AUTHOR("Pandith N <pandith.n@intel.com>");
-+MODULE_AUTHOR("Sudarshan Ravula <sudarshan.ravula@intel.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/interconnect/intel/keembay-bwmon.h b/drivers/interconnect/intel/keembay-bwmon.h
-new file mode 100644
-index 000000000000..9343a6ed70b3
---- /dev/null
-+++ b/drivers/interconnect/intel/keembay-bwmon.h
-@@ -0,0 +1,110 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*  Copyright (C) 2020 Intel Corporation
-+ *
-+ *  Purpose: Intel Keem Bay NOC bandwidth measurement interface
-+ *
-+ */
-+#ifndef LINUX_NOCDRIVER_H
-+#define LINUX_NOCDRIVER_H
-+
-+#include <linux/cdev.h>
-+#include <linux/device.h>
-+#include <linux/types.h>
-+#include <uapi/linux/noc_uapi.h>
-+
-+/**
-+ * enum noc_status - NOC probe status
-+ * @NOC_PROBE_CAPTURE_STARTED: Probe counters monitoring started
-+ * @NOC_PROBE_ERR_IN_PROGRESS: Probe counters are active, capture failure
-+ * @NOC_PROBE_ERR_INVALID_ARGS: NOC error, Invalid arguments passed
-+ * @NOC_PROBE_ERR_COMPLETED: NOC counter values captured successfully
-+ */
-+enum noc_status {
-+	NOC_PROBE_CAPTURE_STARTED,
-+	NOC_PROBE_ERR_IN_PROGRESS,
-+	NOC_PROBE_ERR_INVALID_ARGS,
-+	NOC_PROBE_COMPLETED,
-+};
-+
-+/**
-+ * enum noc_counter - NOC counter
-+ * @NOC_COUNTER_0: NOC Counter 0
-+ * @NOC_COUNTER_1: NOC Counter 1
-+ */
-+enum noc_counter {
-+	NOC_COUNTER_0,
-+	NOC_COUNTER_1,
-+	NOC_COUNTER_2,
-+	NOC_COUNTER_MAX
-+};
-+
-+/* NOC Control Register Probe offsets */
-+#define ID_COREID		0x0000
-+#define ID_REVISIONID		0x0004
-+#define MAINCTL			0x0008
-+#define CFGCTL			0x000C
-+#define TRACEPORTSEL		0x0010
-+#define FILTERLUT		0x0014
-+#define TRACEALARMEN		0x0018
-+#define TRACEALARMSTATUS	0x001C
-+#define TRACEALARMCLR		0x0020
-+#define STATPERIOD		0x0024
-+#define STATGO			0x0028
-+#define STATALARMMIN		0x002C
-+#define STATALARMMAX		0x0030
-+#define STATALARMSTATUS		0x0034
-+#define STATALARMCLR		0x0038
-+#define STATALARMEN		0x003C
-+
-+/* NOC Filter Registers offsets */
-+#define F_ROUTEIDBASE		0x0000
-+#define F_ROUTEIDMASK		0x0004
-+#define F_ADDRBASE_LOW		0x0008
-+#define F_ADDRBASE_HIGH		0x000C
-+#define F_WINDOWSIZE		0x0010
-+#define F_OPCODE		0x001C
-+#define F_STATUS		0x0020
-+#define F_LENGTH		0x0024
-+#define F_URGENCY		0x0028
-+#define F_USERBASE		0x002C
-+#define F_USERMASK		0x0030
-+
-+/* NOC Counter Registers offsets */
-+#define C_PORTSEL		0x0000
-+#define C_SRC			0x0004
-+#define C_ALARMMODE		0x0008
-+#define C_VAL			0x000C
-+
-+/* NOC register secure access r/w */
-+#define PLATFORM_SIP_SVC_DSS_NOC_PROBE_READ		(0x8200ff28)
-+#define PLATFORM_SIP_SVC_DSS_NOC_PROBE_WRITE		(0x8200ff29)
-+
-+/* Timeout(msec) for checking active counters */
-+#define NOC_CAPTURE_TIMEOUT_MSEC	2000
-+#define NOC_STATPERIOD_VAL		0x1B
-+
-+#define COUNTERS_0_SRC_VAL	0x14
-+#define COUNTERS_1_SRC_VAL	0x10
-+#define COUNTERS_ALARMMODE_VAL	0x02
-+#define FILTER_WINDOW_VAL	0xFFFFFFFF
-+#define FILTER_OPCODE_VAL	0x0F
-+#define FILTER_STATUS_VAL	0x03
-+#define FILTER_LENGTH_VAL	0x03
-+
-+/* NOC Probe Main controli register fields */
-+#define MAINCTL_STATEN_POS		3
-+#define MAINCTL_ALARM_EN_POS		4
-+#define MAINCTL_ALWAYS_CHAINABLE_POS	7
-+
-+struct noc_device {
-+	struct class *dev_class;
-+	struct cdev noc_cdev;
-+	dev_t cdev;
-+};
-+
-+int flex_noc_setup(enum noc_ss_type noc, enum noc_counter counter, int trace_port);
-+enum noc_status flexnoc_probe_start(enum noc_ss_type noc);
-+enum noc_status flexnoc_counter_capture(enum noc_ss_type noc,
-+					enum noc_counter counter, u32 *value);
-+
-+#endif
-diff --git a/include/uapi/linux/noc_uapi.h b/include/uapi/linux/noc_uapi.h
-new file mode 100644
-index 000000000000..8da3b03efe65
---- /dev/null
-+++ b/include/uapi/linux/noc_uapi.h
-@@ -0,0 +1,42 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*  Copyright (C) 2020 Intel Corporation
-+ *
-+ *  Purpose: Intel Keem Bay NOC interface for user space access.
-+ */
-+
-+#ifndef __NOC_UAPI_H
-+#define __NOC_UAPI_H
-+
-+#include <linux/types.h>
-+
-+#define NOC_MAGIC 'n'
-+#define NOC_SETUP		_IOW(NOC_MAGIC, 1, void*)
-+#define NOC_PROBE_START		_IOW(NOC_MAGIC, 2, void*)
-+#define NOC_COUNTER_CAPTURE	_IOW(NOC_MAGIC, 3, void*)
-+
-+enum noc_ss_type {
-+	DSS_NOC = 0,
-+	NOC_TYPE_MAX
-+};
-+
-+struct flexnoc_setup {
-+	enum noc_ss_type noc_type;
-+	__u16 counter;
-+	__u16 traceport;
-+	__u16 ret_id;
-+};
-+
-+struct flexnoc_probestart {
-+	enum noc_ss_type noc_type;
-+	__u16 ret_id;
-+	__u32 captime;
-+};
-+
-+struct flexnoc_countercapture {
-+	enum noc_ss_type noc_type;
-+	__u32 bw_res;
-+	__u16 counter;
-+	__u16 ret_id;
-+};
-+
-+#endif  /*_NOC__UAPI_H*/
--- 
-2.17.1
-
+T24gV2VkLCAyMDIxLTA4LTI1IGF0IDEzOjA3IC0wNTAwLCBKdXN0aW4gRm9yYmVzIHdyb3RlOg0K
+PiBPbiBTYXQsIEF1ZyAyMSwgMjAyMSBhdCA4OjM0IEFNIEthbGxlIFZhbG8gPGt2YWxvQGNvZGVh
+dXJvcmEub3JnPiB3cm90ZToNCj4gPiANCj4gPiBKYWVob29uIENodW5nIDxqaDgwLmNodW5nQHNh
+bXN1bmcuY29tPiB3cml0ZXM6DQo+ID4gDQo+ID4gPiBIaQ0KPiA+ID4gDQo+ID4gPiBPbiA4Lzkv
+MjEgODowOSBBTSwgSmFlaG9vbiBDaHVuZyB3cm90ZToNCj4gPiA+ID4gSGkNCj4gPiA+ID4gDQo+
+ID4gPiA+IE9uIDcvMTAvMjEgMjozMiBBTSwgSnVzdGluIEZvcmJlcyB3cm90ZToNCj4gPiA+ID4g
+PiBPbiBGcmksIEp1bCAyLCAyMDIxIGF0IDU6MzIgUE0gSnVzdGluIE0uIEZvcmJlcw0KPiA+ID4g
+PiA+IDxqZm9yYmVzQGZlZG9yYXByb2plY3Qub3JnPiB3cm90ZToNCj4gPiA+ID4gPiA+IA0KPiA+
+ID4gPiA+ID4gVGhlIFNhbXN1bmcgR2FsYXh5IEJvb2sgRmxleDIgQWxwaGEgdXNlcyBhbiBheDIw
+MSB3aXRoIHRoZSBJRCBhMGYwLzYwNzQuDQo+ID4gPiA+ID4gPiBUaGlzIHdvcmtzIGZpbmUgd2l0
+aCB0aGUgZXhpc3RpbmcgZHJpdmVyIG9uY2UgaXQga25vd3MgdG8gY2xhaW0gaXQuDQo+ID4gPiA+
+ID4gPiBTaW1wbGUgcGF0Y2ggdG8gYWRkIHRoZSBkZXZpY2UuDQo+ID4gPiA+ID4gPiANCj4gPiA+
+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IEp1c3RpbiBNLiBGb3JiZXMgPGpmb3JiZXNAZmVkb3JhcHJv
+amVjdC5vcmc+DQo+ID4gPiANCj4gPiA+IElmIHRoaXMgcGF0Y2ggaXMgbWVyZ2VkLCBjYW4gdGhp
+cyBwYXRjaCBiZSBhbHNvIGFwcGxpZWQgb24gc3RhYmxlIHRyZWU/DQo+ID4gDQo+ID4gTHVjYSwg
+d2hhdCBzaG91bGQgd2UgZG8gd2l0aCB0aGlzIHBhdGNoPw0KPiA+IA0KPiA+IC0tDQo+ID4gaHR0
+cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LXdpcmVsZXNzL2xpc3QvDQo+
+ID4gDQo+ID4gaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vZGV2ZWxvcGVycy9k
+b2N1bWVudGF0aW9uL3N1Ym1pdHRpbmdwYXRjaGVzDQo+IA0KPiANCj4gSXMgdGhhdCB0byBpbXBs
+eSB0aGF0IHRoZXJlIGlzIGFuIGlzc3VlIHdpdGggdGhlIHN1Ym1pc3Npb24/ICBIYXBweSB0bw0K
+PiBmaXggYW55IHByb2JsZW1zLCBidXQgaXQgd291bGQgbmljZSB0byBnZXQgdGhpcyBpbiBzb29u
+LiAgSSBrbm93IHRoZQ0KPiA1LjE0IG1lcmdlIHdpbmRvdyB3YXMgYWxyZWFkeSBvcGVuZWQgd2hl
+biBJIHNlbnQgaXQsIGJ1dCB0aGUgNS4xNSBNUg0KPiBpcyBvcGVuaW5nIHNvb24uICBIYXJkd2Fy
+ZSBpcyBkZWZpbml0ZWx5IHNoaXBwaW5nIGFuZCBpbiB1c2VycyBoYW5kcy4NCg0KU29ycnkgZm9y
+IHRoZSBkZWxheSBoZXJlLiAgVGhpcyBmZWxsIGJldHdlZW4gdGhlIGNyYWNrcy4NCg0KS2FsbGUg
+Y2FuIHlvdSBhcHBseSB0aGlzIGRpcmVjdGx5IHRvIHlvdXIgdHJlZT8gSSdsbCBhc3NpZ24gaXQg
+dG8geW91Lg0KQW5kLCBpZiBwb3NzaWJsZSwgYWRkIHRoZSBjYy1zdGFibGUgdGFnIHNvIGl0IGdl
+dHMgcGlja2VkIHVwLiA6KQ0KDQpMb25nZXIgcmVhc29uaW5nOiBnZW5lcmFsbHkgd2UgZGV0ZWN0
+IHRoZSBoYXJkd2FyZSBpbiBhIG1vcmUNCnByb2dyYW1tYXRpYyB3YXksIGJ5IGNoZWNraW5nIHRo
+ZSB0eXBlIGZyb20gcmVnaXN0ZXJzIChhbmQgbm90IHJlbHlpbmcNCmVudGlyZWx5IG9uIHRoZSBQ
+Q0kgSURzKSwgYnV0IGZvciBzb21lIHJlYXNvbiB0aGlzIHR5cGUgb2YgZGV2aWNlIGlzDQpzdGls
+bCB1c2luZyB0aGUgbGVnYWN5IHdheSBvZiBtYXRjaGluZyB0aGUgZXhhY3QgUENJIElEIHRvIGEg
+ZGV2aWNlDQp0eXBlLiAgVGh1cywgdGhpcyBwYXRjaCBpcyBuZWVkZWQsIGF0IGxlYXN0IGZvciBu
+b3cuDQoNClRoYW5rcyENCg0KLS0NCkNoZWVycywNCkx1Y2EuDQo=
