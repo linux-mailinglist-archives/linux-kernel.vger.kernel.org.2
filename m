@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09E13FCBAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E77E3FCBB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240500AbhHaQnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 12:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
+        id S240707AbhHaQnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 12:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240583AbhHaQn0 (ORCPT
+        with ESMTP id S240617AbhHaQnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 12:43:26 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5D7C06179A
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:42:31 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id u19-20020a05620a121300b0042665527c3bso1890413qkj.14
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:42:31 -0700 (PDT)
+        Tue, 31 Aug 2021 12:43:32 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44427C0617AD
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:42:33 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 131-20020a251489000000b0059bdeb10a84so6174254ybu.15
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:42:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=R0rwLatZLldNW7q/mE9bVILdLCL4f7JwM3XDs6++eBg=;
-        b=nQnHpVWc4lsinOZ661uLOi6p1BeHteUoJ+9fiw5/ubivFiMsw2t+gBCT/pNW1CBHok
-         1HsNN1qO4JDOjoLmUd2MB8Fr96X1mERIBr/jbqhXYX/rScgjAtOCpiZZvYkgAC8IqqHf
-         +P2B5b48tihUX6yY2B6g4tLGA6egUS6wyFFDIrKwwS/BBoag0lRyoLoW9KHWe7dfG08u
-         Ze6qUsopq4pFNKbzTPswfKmAXCmInPk+qT2xuIUKsfmFRxONGYZgMAqi9z6Jxao/5/uo
-         eglFrY7RrTyyExOXMMigTKAG/tN5rov8G3YqCY1MhwsDW16ncFXrPmnBiuaxC0rCWlfD
-         8TgQ==
+        bh=m6ppgzPHX5FTwFdMfEcjDUXpHiFMBtjECxUlkSmxAlA=;
+        b=OWa7d9lu++qCSEI/ayjmog6B6Cjl+s5Y5f/cBVkFStNUsXgsOJ6G7JSggAlwVtAXNH
+         ZS/+7CPgHz18M/0+aqyxQWHD3BzoPw4edtO/r4Hbjs81l09xD9btnLljhH0CKDyjLdCa
+         HvPExGzDFkeq1bIlm88NNufwx0rVnZRM4R2KO6xGVxvdZtQUPeebvy3hzWCIan6B3iw6
+         ZHJ11IQAeTBGW3vQpNXE/BcL1ugLLfqbPny6yxw+voygIaabuB5LeLiXxD8JxkM9Jtw/
+         zDeZoOJto7WsGXsyMvTpUg7TqL+jJZm74ohdEUrgc9QfbEjapU7lCgQ1nT5Fh/iDjbp0
+         35/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=R0rwLatZLldNW7q/mE9bVILdLCL4f7JwM3XDs6++eBg=;
-        b=T8Mh4poT8no+ZzD0G9pJuNmuhM6qPO76Ga2gfKsCc/ZyR6Qm+ICh2vLOMneEIzqYYQ
-         VCaXpygY+iIjCv8nVdg9BgRkOm30ncN5dQwgnEY77Z0E009O3GuJvgJcPMoUKiheFGXc
-         0qs8cPLNp2PydYOl9+Fd4owKHl95oHcDBNsG8zYb5VvdU5EAbYjKNR1mIXZavbUxe/3/
-         4EDadWCLG8ObgSPtAxT5nZz+bGWEhUktQam9DQ2SViFjlXlqxmPpH88zgCK6+CMZlyLm
-         WadsW4gQCQ6wr/Unb+N/FK2eiP2PosG2lkDdn5zECe4rc5tcMoepYM4Ew0L+46ZR4Nt0
-         tvJg==
-X-Gm-Message-State: AOAM532u2oF7BJrb1bZAhvTHnLWbVjYL/FDH8kw4YMlbAjXVpHka0AeZ
-        IBldnFSFPpnVbysLk0mX+cbUNAhCzjE=
-X-Google-Smtp-Source: ABdhPJzgPYcbpT5y/YADtEpvA4HETDnCDrqlmu24L8dMiW7GyycOoAfxD5ICQrhkE7tR1SFcY+pGecIuXe0=
+        bh=m6ppgzPHX5FTwFdMfEcjDUXpHiFMBtjECxUlkSmxAlA=;
+        b=szHdQMW+2VaN4tiTWjKzjYEboqNTWGdyidKYSolOJCxm964HKAMn+XgP+9CvN1hhia
+         CHS6XevGHUDQVfxLBj89K8s1P1C613tg5EqYUdCVCds7OAUZRNEkA0npztIh6DetyTJS
+         Y9Ny7aUuqx7F0fk+KdQbufDk9Z2KeVt+ScPKVpPjLoifpPzRkweL+6L5jIFQmp3PzPW0
+         wim3bvAr3Opy5CPySzx/NavAT8w02IKjEmxVUlEyYv0ZPgfP3KpmU0AFpcCey6KW1w2I
+         k/awUt7D5yjb0iTX5/55ehewe9i0klGI2kP8tCCFCGlGjJyWnbrL7tRa5twsERvgjzGM
+         frag==
+X-Gm-Message-State: AOAM530BfMQUaZCA80RFPyt8jLmBmK5QXrgSxr4Wv9ElUnigcvGlDD6u
+        XD6d8/XK8H6PKYpFNMACBo7TNRDv3Ms=
+X-Google-Smtp-Source: ABdhPJx9yLzJZJ4UoFcp4y62YQWbMPEH/tyAk+TIU0N7Q+QB/7xWMV/D/F87uTMucr4658tPA1WxCatY0qA=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:ddbd:588d:571:702a])
- (user=seanjc job=sendgmr) by 2002:a05:6214:c3:: with SMTP id
- f3mr29784262qvs.1.1630428150469; Tue, 31 Aug 2021 09:42:30 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:61d6:: with SMTP id v205mr3447536ybb.262.1630428152476;
+ Tue, 31 Aug 2021 09:42:32 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 31 Aug 2021 09:42:22 -0700
+Date:   Tue, 31 Aug 2021 09:42:23 -0700
 In-Reply-To: <20210831164224.1119728-1-seanjc@google.com>
-Message-Id: <20210831164224.1119728-2-seanjc@google.com>
+Message-Id: <20210831164224.1119728-3-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210831164224.1119728-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH 1/3] Revert "KVM: x86: mmu: Add guest physical address check
- in translate_gpa()"
+Subject: [PATCH 2/3] KVM: x86: Subsume nested GPA read helper into load_pdptrs()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,66 +67,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Revert a misguided illegal GPA check when "translating" a non-nested GPA.
-The check is woefully incomplete as it does not fill in @exception as
-expected by all callers, which leads to KVM attempting to inject a bogus
-exception, potentially exposing kernel stack information in the process.
+Open code the call to mmu->translate_gpa() when loading nested PDPTRs and
+kill off the existing helper, kvm_read_guest_page_mmu(), to discourage
+incorrect use.  Reading guest memory straight from an L2 GPA is extremely
+rare (as evidenced by the lack of users), as very few constructs in x86
+specify physical addresses, even fewer are virtualized by KVM, and even
+fewer yet require emulation of L2 by L0 KVM.
 
- WARNING: CPU: 0 PID: 8469 at arch/x86/kvm/x86.c:525 exception_type+0x98/0xb0 arch/x86/kvm/x86.c:525
- CPU: 1 PID: 8469 Comm: syz-executor531 Not tainted 5.14.0-rc7-syzkaller #0
- RIP: 0010:exception_type+0x98/0xb0 arch/x86/kvm/x86.c:525
- Call Trace:
-  x86_emulate_instruction+0xef6/0x1460 arch/x86/kvm/x86.c:7853
-  kvm_mmu_page_fault+0x2f0/0x1810 arch/x86/kvm/mmu/mmu.c:5199
-  handle_ept_misconfig+0xdf/0x3e0 arch/x86/kvm/vmx/vmx.c:5336
-  __vmx_handle_exit arch/x86/kvm/vmx/vmx.c:6021 [inline]
-  vmx_handle_exit+0x336/0x1800 arch/x86/kvm/vmx/vmx.c:6038
-  vcpu_enter_guest+0x2a1c/0x4430 arch/x86/kvm/x86.c:9712
-  vcpu_run arch/x86/kvm/x86.c:9779 [inline]
-  kvm_arch_vcpu_ioctl_run+0x47d/0x1b20 arch/x86/kvm/x86.c:10010
-  kvm_vcpu_ioctl+0x49e/0xe50 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3652
+No functional change intended.
 
-The bug has escaped notice because practically speaking the GPA check is
-useless.  The GPA check in question only comes into play when KVM is
-walking guest page tables (or "translating" CR3), and KVM already handles
-illegal GPA checks by setting reserved bits in rsvd_bits_mask for each
-PxE, or in the case of CR3 for loading PTDPTRs, manually checks for an
-illegal CR3.  This particular failure doesn't hit the existing reserved
-bits checks because syzbot sets guest.MAXPHYADDR=1, and IA32 architecture
-simply doesn't allow for such an absurd MAXPHADDR, e.g. 32-bit paging
-doesn't define any reserved PA bits checks, which KVM emulates by only
-incorporating the reserved PA bits into the "high" bits, i.e. bits 63:32.
-
-Simply remove the bogus check.  There is zero meaningful value and no
-architectural justification for supporting guest.MAXPHYADDR < 32, and
-properly filling the exception would introduce non-trivial complexity.
-
-This reverts commit ec7771ab471ba6a945350353617e2e3385d0e013.
-
-Fixes: ec7771ab471b ("KVM: x86: mmu: Add guest physical address check in translate_gpa()")
-Cc: stable@vger.kernel.org
-Reported-by: syzbot+200c08e88ae818f849ce@syzkaller.appspotmail.com
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 6 ------
- 1 file changed, 6 deletions(-)
+ arch/x86/include/asm/kvm_host.h |  3 --
+ arch/x86/kvm/x86.c              | 56 +++++++++++----------------------
+ 2 files changed, 18 insertions(+), 41 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 4853c033e6ce..4b7908187d05 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -334,12 +334,6 @@ static bool check_mmio_spte(struct kvm_vcpu *vcpu, u64 spte)
- static gpa_t translate_gpa(struct kvm_vcpu *vcpu, gpa_t gpa, u32 access,
-                                   struct x86_exception *exception)
- {
--	/* Check if guest physical address doesn't exceed guest maximum */
--	if (kvm_vcpu_is_illegal_gpa(vcpu, gpa)) {
--		exception->error_code |= PFERR_RSVD_MASK;
--		return UNMAPPED_GVA;
--	}
--
-         return gpa;
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 09b256db394a..ec26a929b94b 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1703,9 +1703,6 @@ void kvm_requeue_exception_e(struct kvm_vcpu *vcpu, unsigned nr, u32 error_code)
+ void kvm_inject_page_fault(struct kvm_vcpu *vcpu, struct x86_exception *fault);
+ bool kvm_inject_emulated_page_fault(struct kvm_vcpu *vcpu,
+ 				    struct x86_exception *fault);
+-int kvm_read_guest_page_mmu(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+-			    gfn_t gfn, void *data, int offset, int len,
+-			    u32 access);
+ bool kvm_require_cpl(struct kvm_vcpu *vcpu, int required_cpl);
+ bool kvm_require_dr(struct kvm_vcpu *vcpu, int dr);
+ 
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 86539c1686fa..8bd76698be52 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -790,30 +790,6 @@ bool kvm_require_dr(struct kvm_vcpu *vcpu, int dr)
  }
+ EXPORT_SYMBOL_GPL(kvm_require_dr);
+ 
+-/*
+- * This function will be used to read from the physical memory of the currently
+- * running guest. The difference to kvm_vcpu_read_guest_page is that this function
+- * can read from guest physical or from the guest's guest physical memory.
+- */
+-int kvm_read_guest_page_mmu(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+-			    gfn_t ngfn, void *data, int offset, int len,
+-			    u32 access)
+-{
+-	struct x86_exception exception;
+-	gfn_t real_gfn;
+-	gpa_t ngpa;
+-
+-	ngpa     = gfn_to_gpa(ngfn);
+-	real_gfn = mmu->translate_gpa(vcpu, ngpa, access, &exception);
+-	if (real_gfn == UNMAPPED_GVA)
+-		return -EFAULT;
+-
+-	real_gfn = gpa_to_gfn(real_gfn);
+-
+-	return kvm_vcpu_read_guest_page(vcpu, real_gfn, data, offset, len);
+-}
+-EXPORT_SYMBOL_GPL(kvm_read_guest_page_mmu);
+-
+ static inline u64 pdptr_rsvd_bits(struct kvm_vcpu *vcpu)
+ {
+ 	return vcpu->arch.reserved_gpa_bits | rsvd_bits(5, 8) | rsvd_bits(1, 2);
+@@ -825,34 +801,38 @@ static inline u64 pdptr_rsvd_bits(struct kvm_vcpu *vcpu)
+ int load_pdptrs(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu, unsigned long cr3)
+ {
+ 	gfn_t pdpt_gfn = cr3 >> PAGE_SHIFT;
+-	unsigned offset = ((cr3 & (PAGE_SIZE-1)) >> 5) << 2;
++	unsigned offset = (((cr3 & (PAGE_SIZE-1)) >> 5) << 2) * sizeof(u64);
++	gpa_t real_gpa;
+ 	int i;
+ 	int ret;
+ 	u64 pdpte[ARRAY_SIZE(mmu->pdptrs)];
+ 
+-	ret = kvm_read_guest_page_mmu(vcpu, mmu, pdpt_gfn, pdpte,
+-				      offset * sizeof(u64), sizeof(pdpte),
+-				      PFERR_USER_MASK|PFERR_WRITE_MASK);
+-	if (ret < 0) {
+-		ret = 0;
+-		goto out;
+-	}
++	/*
++	 * If the MMU is nested, CR3 holds an L2 GPA and needs to be translated
++	 * to an L1 GPA.
++	 */
++	real_gpa = mmu->translate_gpa(vcpu, gfn_to_gpa(pdpt_gfn),
++				      PFERR_USER_MASK | PFERR_WRITE_MASK, NULL);
++	if (real_gpa == UNMAPPED_GVA)
++		return 0;
++
++	ret = kvm_vcpu_read_guest_page(vcpu, gpa_to_gfn(real_gpa), pdpte,
++				       offset, sizeof(pdpte));
++	if (ret < 0)
++		return 0;
++
+ 	for (i = 0; i < ARRAY_SIZE(pdpte); ++i) {
+ 		if ((pdpte[i] & PT_PRESENT_MASK) &&
+ 		    (pdpte[i] & pdptr_rsvd_bits(vcpu))) {
+-			ret = 0;
+-			goto out;
++			return 0;
+ 		}
+ 	}
+-	ret = 1;
+ 
+ 	memcpy(mmu->pdptrs, pdpte, sizeof(mmu->pdptrs));
+ 	kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
+ 	vcpu->arch.pdptrs_from_userspace = false;
+ 
+-out:
+-
+-	return ret;
++	return 1;
+ }
+ EXPORT_SYMBOL_GPL(load_pdptrs);
  
 -- 
 2.33.0.259.gc128427fd7-goog
