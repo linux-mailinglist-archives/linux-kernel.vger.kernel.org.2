@@ -2,200 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4E43FC35E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 09:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCDC3FC365
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 09:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239827AbhHaHRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 03:17:04 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:24523 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239786AbhHaHQ5 (ORCPT
+        id S239879AbhHaHRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 03:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239217AbhHaHRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 03:16:57 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 17V6sdB2028283;
-        Tue, 31 Aug 2021 14:54:39 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 31 Aug
- 2021 15:13:36 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <p.zabel@pengutronix.de>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [v5 15/15] iio: adc: aspeed: Get and set trimming data.
-Date:   Tue, 31 Aug 2021 15:14:58 +0800
-Message-ID: <20210831071458.2334-16-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210831071458.2334-1-billy_tsai@aspeedtech.com>
-References: <20210831071458.2334-1-billy_tsai@aspeedtech.com>
+        Tue, 31 Aug 2021 03:17:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DB4C061575;
+        Tue, 31 Aug 2021 00:16:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gLCUylh57Khzbm1YYBevM3G+lquntLPykp1nxiwLj6c=; b=mTUButiiFQjGFVvsgz802ApuPt
+        uWBsVA0FGwvnGHgJFiE1D9FXr0J4XM7fdipDlwgkoiSNGIablZZYpUkvl5a03YAfQ1iOKfiz/DBfM
+        jy1e8uE0NX9FalhGKke6BBSVcVGhPCpe27pDJ/hrkAlZ64ZHLXMCOHGrdW4UD5rpm1bW0eZJQ80q+
+        jRDAntAlJhIcrYB+zip5Fug40G915DuwtLZGp4jVL/Hm9cKyn6zBjpnclht4303KTDxGlTdS33wwT
+        ueW/q4A/H07iH2M98Jns54E8hx6U1ZHCmzJOCaggOAe2ZGEAaTqXNK3qX5fz7h9UTEOYEWDzQXVva
+        TTmXGJmw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKy09-00EdPU-Rc; Tue, 31 Aug 2021 07:16:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3D419300109;
+        Tue, 31 Aug 2021 09:16:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 228622CFB41A0; Tue, 31 Aug 2021 09:16:09 +0200 (CEST)
+Date:   Tue, 31 Aug 2021 09:16:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tianqiang Xu <skyele@sjtu.edu.cn>
+Cc:     x86@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, kvm@vger.kernel.org, hpa@zytor.com,
+        jarkko@kernel.org, dave.hansen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Subject: Re: [PATCH 3/4] KVM host implementation
+Message-ID: <YS3XOYJXcYw9vIda@hirez.programming.kicks-ass.net>
+References: <20210831015919.13006-1-skyele@sjtu.edu.cn>
+ <20210831015919.13006-3-skyele@sjtu.edu.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.149]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 17V6sdB2028283
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831015919.13006-3-skyele@sjtu.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ADC controller has a trimming register for fine-tune the reference
-voltage. The trimming value comes from the OTP register which will be
-written during chip production. This patch will read this OTP value and
-configure it to the ADC register when the ADC controller probes and using
-dts property "aspeed,trim-data-valid" to determine whether to execute this
-flow.
+On Tue, Aug 31, 2021 at 09:59:18AM +0800, Tianqiang Xu wrote:
+> @@ -4304,8 +4374,14 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+>  	idx = srcu_read_lock(&vcpu->kvm->srcu);
+>  	if (kvm_xen_msr_enabled(vcpu->kvm))
+>  		kvm_xen_runstate_set_preempted(vcpu);
+> -	else
+> +	else {
+>  		kvm_steal_time_set_preempted(vcpu);
+> +
+> +		if (get_cpu_nr_running(smp_processor_id()) <= 1)
+> +			kvm_steal_time_set_is_idle(vcpu);
+> +		else
+> +			kvm_steal_time_clear_is_idle(vcpu);
+> +	}
+>  	srcu_read_unlock(&vcpu->kvm->srcu, idx);
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- drivers/iio/adc/aspeed_adc.c | 71 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
 
-diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-index b594a723db2e..fddd7508099f 100644
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@ -25,6 +25,8 @@
- #include <linux/spinlock.h>
- #include <linux/types.h>
- #include <linux/bitfield.h>
-+#include <linux/regmap.h>
-+#include <linux/mfd/syscon.h>
- 
- #include <linux/iio/iio.h>
- #include <linux/iio/driver.h>
-@@ -80,6 +82,11 @@
-  */
- #define ASPEED_ADC_DEF_SAMPLING_RATE	65000
- 
-+struct aspeed_adc_trim_locate {
-+	const unsigned int offset;
-+	const unsigned int field;
-+};
-+
- struct aspeed_adc_model_data {
- 	const char *model_name;
- 	unsigned int min_sampling_rate;	// Hz
-@@ -90,6 +97,7 @@ struct aspeed_adc_model_data {
- 	bool bat_sense_sup;
- 	u8 scaler_bit_width;
- 	unsigned int num_channels;
-+	const struct aspeed_adc_trim_locate *trim_locate;
- };
- 
- struct adc_gain {
-@@ -165,6 +173,44 @@ static const struct iio_chan_spec aspeed_adc_iio_bat_channels[] = {
- 	ASPEED_BAT_CHAN(7, 0x1E),
- };
- 
-+static int aspeed_adc_set_trim_data(struct iio_dev *indio_dev)
-+{
-+	struct device_node *syscon;
-+	struct regmap *scu;
-+	u32 scu_otp, trimming_val;
-+	struct aspeed_adc_data *data = iio_priv(indio_dev);
-+
-+	syscon = of_find_node_by_name(NULL, "syscon");
-+	if (syscon == NULL) {
-+		dev_warn(data->dev, "Couldn't find syscon node\n");
-+		return -EOPNOTSUPP;
-+	}
-+	scu = syscon_node_to_regmap(syscon);
-+	if (IS_ERR(scu)) {
-+		dev_warn(data->dev, "Failed to get syscon regmap\n");
-+		return -EOPNOTSUPP;
-+	}
-+	if (data->model_data->trim_locate) {
-+		if (regmap_read(scu, data->model_data->trim_locate->offset,
-+				&scu_otp)) {
-+			dev_warn(data->dev,
-+				 "Failed to get adc trimming data\n");
-+			trimming_val = 0x8;
-+		} else {
-+			trimming_val =
-+				((scu_otp) &
-+				 (data->model_data->trim_locate->field)) >>
-+				__ffs(data->model_data->trim_locate->field);
-+		}
-+		dev_dbg(data->dev,
-+			"trimming val = %d, offset = %08x, fields = %08x\n",
-+			trimming_val, data->model_data->trim_locate->offset,
-+			data->model_data->trim_locate->field);
-+		writel(trimming_val, data->base + ASPEED_REG_COMPENSATION_TRIM);
-+	}
-+	return 0;
-+}
-+
- static int aspeed_adc_compensation(struct iio_dev *indio_dev)
- {
- 	struct aspeed_adc_data *data = iio_priv(indio_dev);
-@@ -545,6 +591,13 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	if (of_find_property(data->dev->of_node, "aspeed,trim-data-valid",
-+			     NULL)) {
-+		ret = aspeed_adc_set_trim_data(indio_dev);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	if (of_find_property(data->dev->of_node, "aspeed,battery-sensing",
- 			     NULL)) {
- 		if (data->model_data->bat_sense_sup) {
-@@ -616,6 +669,21 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
-+static const struct aspeed_adc_trim_locate ast2500_adc_trim = {
-+	.offset = 0x154,
-+	.field = GENMASK(31, 28),
-+};
-+
-+static const struct aspeed_adc_trim_locate ast2600_adc0_trim = {
-+	.offset = 0x5d0,
-+	.field = GENMASK(3, 0),
-+};
-+
-+static const struct aspeed_adc_trim_locate ast2600_adc1_trim = {
-+	.offset = 0x5d0,
-+	.field = GENMASK(7, 4),
-+};
-+
- static const struct aspeed_adc_model_data ast2400_model_data = {
- 	.model_name = "ast2400-adc",
- 	.vref_fixed_mv = 2500,
-@@ -635,6 +703,7 @@ static const struct aspeed_adc_model_data ast2500_model_data = {
- 	.need_prescaler = true,
- 	.scaler_bit_width = 10,
- 	.num_channels = 16,
-+	.trim_locate = &ast2500_adc_trim,
- };
- 
- static const struct aspeed_adc_model_data ast2600_adc0_model_data = {
-@@ -645,6 +714,7 @@ static const struct aspeed_adc_model_data ast2600_adc0_model_data = {
- 	.bat_sense_sup = true,
- 	.scaler_bit_width = 16,
- 	.num_channels = 8,
-+	.trim_locate = &ast2600_adc0_trim,
- };
- 
- static const struct aspeed_adc_model_data ast2600_adc1_model_data = {
-@@ -655,6 +725,7 @@ static const struct aspeed_adc_model_data ast2600_adc1_model_data = {
- 	.bat_sense_sup = true,
- 	.scaler_bit_width = 16,
- 	.num_channels = 8,
-+	.trim_locate = &ast2600_adc1_trim,
- };
- 
- static const struct of_device_id aspeed_adc_matches[] = {
--- 
-2.25.1
-
+This cannot be right. The CPU could long since be running tasks again,
+but as long as this vCPU crud doesn't run, the guest keeps thinking it's
+physically idle.
