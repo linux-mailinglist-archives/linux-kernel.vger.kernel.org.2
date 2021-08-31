@@ -2,166 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEED3FC3A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B413FC3AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239853AbhHaHZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 03:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53622 "EHLO
+        id S239946AbhHaH00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 03:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239538AbhHaHZr (ORCPT
+        with ESMTP id S239937AbhHaH0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 03:25:47 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67FC5C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 00:24:52 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id x16so8422319pll.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 00:24:52 -0700 (PDT)
+        Tue, 31 Aug 2021 03:26:21 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FFDC06175F;
+        Tue, 31 Aug 2021 00:25:26 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so1304337pjc.3;
+        Tue, 31 Aug 2021 00:25:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HRmn2HSjIyoyl5frN1JOdwhv1jt4tYR/jznN931pQCc=;
-        b=W41bBzENunWIPZGT70XTQ00/4JnKxG7675YoBNn/BC+6i5PNbLAeodHCYDxybVjcmu
-         qFgp3TB+nSH2E7rmZt0sBiBYw+Y5c4JQ36hyuDIc1JQxwAyuTZwQYlqIswJnTJYUELXD
-         aZf1VLcJ+mWmrLj/QrFDipHMTaroujCrLRBKcLLJHOCPlGHWRS5cmsZ4oHgZgtMgRk54
-         F7oOCW3GwlVFet1305G9xWZj5Ay6FX8oCjgyYyDJORSk5QTOsQ/53otmyUmx5Z4xyU1C
-         67+E8kKZzk7vJ9j1kKnLVZY3QpUIim4uXEZ7BN7M9JSu36TBNWiEOfFrg6RGo/phzAVu
-         JgAA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JNsb6x1cQWvzMyudhFnNtCYBKN16JRWCSincvM+uOoY=;
+        b=jxGI0ujHdl0N9GyGT2D3gCCB89vXr6ZHaDLYSvDAb0ZPJwcEXuX0JTOEampQTrFjnT
+         R26DUsjxGUV2bNbq11XYxHiYUTV/uhTyuRaSRpftAlhLNY+PZYIOzUIExnRbFTF5Rnrq
+         n7liC6CH5fsoUMhY6V6BKI3bZpqEPdZersNF3QuTd3yaxx6NO1Hx39aiwKeZuszeHUHv
+         EX1SNZbPUwkQUarOBZmOPveUMleCesg2Zdur/+YXj4VfUkMN0TcSZ1kJJ4f1zDAZrLk+
+         MGLPPd80FAOi/Irzp/mnPQkGHNpv58wKjPpEb29iiC4LBAZch9D8LBW54yjgya0qO7Pd
+         Djuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HRmn2HSjIyoyl5frN1JOdwhv1jt4tYR/jznN931pQCc=;
-        b=ftUgipEJPdXCNb4vrS5Ta0lqtrJ6l3KSp4AuS5RdEmf2PxYcNupay5irBFyQYsk9bl
-         jco0wRvrWcriUAvSQVEhhjljonxndW+gKpGXejezF/wZXTw7ogX2WuB9ppuOXllYTQdb
-         dozxfuh7NOCVFDXyC+YuQkyvR5wy4rpJAT3Jt1EAJBEw/H+gSfMuGZiC31/VZ3YT4rWh
-         YLSysKsWc+yAaCmeQrXjizryfi/ktkoBvi5bi6f4NJ8R8oKJLAJboc4gmjXtOFsZBZBj
-         LivZyYa35CDaOZWDzw8vfcBrGA5yxt1NUX8I/b2II13jqQUvg3WWOwkqjduAQwYTdErb
-         XIsA==
-X-Gm-Message-State: AOAM530DskI505BuqrjK2IfLFI7dDrU4r1ARkjmNqPEvOdcUZa0srbUW
-        afBaIbh6kgi5uYQbfqjMNP7C4bLV7OqcXcrRiCeM7Q==
-X-Google-Smtp-Source: ABdhPJzoS9DdKnYQUkbtZAQSn4bnjxyR+xzpi2fokmo+9QTwxCtzqiKfpyGKOpBi7GwEiy1jX+9pldHWJo0DUuequSM=
-X-Received: by 2002:a17:90b:78f:: with SMTP id l15mr3754035pjz.181.1630394691968;
- Tue, 31 Aug 2021 00:24:51 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JNsb6x1cQWvzMyudhFnNtCYBKN16JRWCSincvM+uOoY=;
+        b=Nq1J7aCPJYkytedD7dmLcqXF7VPhOhwOtOQgx/HN6t8ceUDs/u1Db7pBxShYjA5bPW
+         zAxtX1uyHuVfnxfguwELO6s5lP3KnEB4F8n/NrM3NTy/U+AbOVVLH35/kNJA50ckJGVD
+         zb1d8IOWvBpk3SwifTDkXGBGg0aHkYIJkdsMqOPMBTeL6+h0H63jOkQoW0jMNXfs3fIb
+         A0P0rGzohYLp2m0DZm0I3uwrEaxbzmVjuETCKlC0bkEz7OtE+UMTpkVCxks6dddXqiDk
+         NQ6oAme+tlgU2kIrsLJVzVDJmiMXcz53wxC73XATbstn3d3Gl4yaztp+PQMseL8OK0oN
+         H1HQ==
+X-Gm-Message-State: AOAM533B+kqgDieG/NDystbRUQQqhmDhcVHMD2QeT6+UJ6kguKE3ydXL
+        HvIAdKzR2s7DEBs5Pl1uM4M=
+X-Google-Smtp-Source: ABdhPJyXMfL4c3g1dgTRJF/g+KwCIJImavM64F0XKUZcJVbQKi+4eCx2e6aSpaHBso5IjMGSKotQkA==
+X-Received: by 2002:a17:902:c101:b0:138:f219:b0a0 with SMTP id 1-20020a170902c10100b00138f219b0a0mr393100pli.1.1630394725844;
+        Tue, 31 Aug 2021 00:25:25 -0700 (PDT)
+Received: from sanitydock.wifi-cloud.jp ([210.160.217.69])
+        by smtp.gmail.com with ESMTPSA id m11sm1720724pjn.2.2021.08.31.00.25.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 00:25:25 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH v10 0/4] drm: update locking for modesetting
+Date:   Tue, 31 Aug 2021 15:24:57 +0800
+Message-Id: <20210831072501.184211-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210830195146.587206-1-tkjos@google.com>
-In-Reply-To: <20210830195146.587206-1-tkjos@google.com>
-From:   Martijn Coenen <maco@android.com>
-Date:   Tue, 31 Aug 2021 09:24:40 +0200
-Message-ID: <CAB0TPYFmUgPTONABLTJAdonK7fY7oqURKCpLp1-WqHLtyen7Zw@mail.gmail.com>
-Subject: Re: [PATCH] binder: make sure fd closes complete
-To:     Todd Kjos <tkjos@google.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian@brauner.io>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martijn Coenen <maco@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 9:51 PM 'Todd Kjos' via kernel-team
-<kernel-team@android.com> wrote:
->
-> During BC_FREE_BUFFER processing, the BINDER_TYPE_FDA object
-> cleanup may close 1 or more fds. The close operations are
-> completed using the task work mechanism -- which means the thread
-> needs to return to userspace or the file object may never be
-> dereferenced -- which can lead to hung processes.
->
-> Force the binder thread back to userspace if an fd is closed during
-> BC_FREE_BUFFER handling.
->
-> Signed-off-by: Todd Kjos <tkjos@google.com>
-Reviewed-by: Martijn Coenen <maco@android.com>
+Sorry for the noise, rebasing on top of drm-misc-next. Please ignore the
+v9 series.
 
-> ---
->  drivers/android/binder.c | 23 +++++++++++++++++------
->  1 file changed, 17 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index bcec598b89f2..c2823f0d588f 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -1852,6 +1852,7 @@ static void binder_deferred_fd_close(int fd)
->  }
->
->  static void binder_transaction_buffer_release(struct binder_proc *proc,
-> +                                             struct binder_thread *thread,
->                                               struct binder_buffer *buffer,
->                                               binder_size_t failed_at,
->                                               bool is_failure)
-> @@ -2011,8 +2012,16 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
->                                                 &proc->alloc, &fd, buffer,
->                                                 offset, sizeof(fd));
->                                 WARN_ON(err);
-> -                               if (!err)
-> +                               if (!err) {
->                                         binder_deferred_fd_close(fd);
-> +                                       /*
-> +                                        * Need to make sure the thread goes
-> +                                        * back to userspace to complete the
-> +                                        * deferred close
-> +                                        */
-> +                                       if (thread)
-> +                                               thread->looper_need_return = true;
-> +                               }
->                         }
->                 } break;
->                 default:
-> @@ -3105,7 +3114,7 @@ static void binder_transaction(struct binder_proc *proc,
->  err_copy_data_failed:
->         binder_free_txn_fixups(t);
->         trace_binder_transaction_failed_buffer_release(t->buffer);
-> -       binder_transaction_buffer_release(target_proc, t->buffer,
-> +       binder_transaction_buffer_release(target_proc, NULL, t->buffer,
->                                           buffer_offset, true);
->         if (target_node)
->                 binder_dec_node_tmpref(target_node);
-> @@ -3184,7 +3193,9 @@ static void binder_transaction(struct binder_proc *proc,
->   * Cleanup buffer and free it.
->   */
->  static void
-> -binder_free_buf(struct binder_proc *proc, struct binder_buffer *buffer)
-> +binder_free_buf(struct binder_proc *proc,
-> +               struct binder_thread *thread,
-> +               struct binder_buffer *buffer)
->  {
->         binder_inner_proc_lock(proc);
->         if (buffer->transaction) {
-> @@ -3212,7 +3223,7 @@ binder_free_buf(struct binder_proc *proc, struct binder_buffer *buffer)
->                 binder_node_inner_unlock(buf_node);
->         }
->         trace_binder_transaction_buffer_release(buffer);
-> -       binder_transaction_buffer_release(proc, buffer, 0, false);
-> +       binder_transaction_buffer_release(proc, thread, buffer, 0, false);
->         binder_alloc_free_buf(&proc->alloc, buffer);
->  }
->
-> @@ -3414,7 +3425,7 @@ static int binder_thread_write(struct binder_proc *proc,
->                                      proc->pid, thread->pid, (u64)data_ptr,
->                                      buffer->debug_id,
->                                      buffer->transaction ? "active" : "finished");
-> -                       binder_free_buf(proc, buffer);
-> +                       binder_free_buf(proc, thread, buffer);
->                         break;
->                 }
->
-> @@ -4107,7 +4118,7 @@ static int binder_thread_read(struct binder_proc *proc,
->                         buffer->transaction = NULL;
->                         binder_cleanup_transaction(t, "fd fixups failed",
->                                                    BR_FAILED_REPLY);
-> -                       binder_free_buf(proc, buffer);
-> +                       binder_free_buf(proc, thread, buffer);
->                         binder_debug(BINDER_DEBUG_FAILED_TRANSACTION,
->                                      "%d:%d %stransaction %d fd fixups failed %d/%d, line %d\n",
->                                      proc->pid, thread->pid,
-> --
-> 2.33.0.259.gc128427fd7-goog
->
->
+Hi,
+
+I updated the patch set with some suggestions by Daniel Vetter, and
+dropped the patches after patch 4 so that we can stick the landing for
+avoiding races with modesetting rights before dealing with the tricky
+spinlock.
+
+Overall, this series fixes races with modesetting rights, and converts
+drm_device.master_mutex into master_rwsem.
+
+- Patch 1: Fix a potential null ptr dereference in drm_master_release
+
+- Patch 2: Convert master_mutex into rwsem (avoids creating a new lock)
+
+- Patch 3: Update global mutex locking in the ioctl handler (avoids
+deadlock when grabbing read lock on master_rwsem in drm_ioctl_kernel)
+
+- Patch 4: Plug races with drm modesetting rights
+
+v9 -> v10:
+- Rebase on top of drm-misc-next, caught by Intel-gfx CI
+
+v8 -> v9 (suggested by Daniel Vetter):
+- Drop patches 5-7 to handle it in another series
+- Add the appropriate Fixes: tag for the null ptr dereference fix
+(patch 1)
+- Create a locked_ioctl bool to clarify locking/unlocking patterns in
+the ioctl handler (patch 3)
+- Clarify the kernel doc for master_rwsem (patch 4)
+
+v7 -> v8:
+- Avoid calling drm_lease_held in drm_mode_setcrtc and
+drm_wait_vblank_ioctl, caught by Intel-gfx CI
+
+v6 -> v7:
+- Export __drm_mode_object_find for loadable modules, caught by the
+Intel-gfx CI
+
+v5 -> v6:
+- Fix recursive locking on master_rwsem, caught by the Intel-gfx CI
+
+v4 -> v5:
+- Avoid calling drm_file_get_master while holding on to the modeset
+mutex, caught by the Intel-gfx CI
+
+v3 -> v4 (suggested by Daniel Vetter):
+- Drop a patch that added an unnecessary master_lookup_lock in
+drm_master_release
+- Drop a patch that addressed a non-existent race in
+drm_is_current_master_locked
+- Remove fixes for non-existent null ptr dereferences
+- Protect drm_master.magic_map,unique{_len} with master_rwsem instead of
+master_lookup_lock
+- Drop the patch that moved master_lookup_lock into struct drm_device
+- Drop a patch to export task_work_add
+- Revert the check for the global mutex in the ioctl handler to use
+drm_core_check_feature instead of drm_dev_needs_global_mutex
+- Push down master_rwsem locking for selected ioctls to avoid lock
+hierarchy inversions, and to allow us to hold write locks on
+master_rwsem instead of flushing readers
+- Remove master_lookup_lock by replacing it with master_rwsem
+
+v2 -> v3:
+- Unexport drm_master_flush, as suggested by Daniel Vetter.
+- Merge master_mutex and master_rwsem, as suggested by Daniel Vetter.
+- Export task_work_add, reported by kernel test robot.
+- Make master_flush static, reported by kernel test robot.
+- Move master_lookup_lock into struct drm_device.
+- Add a missing lock on master_lookup_lock in drm_master_release.
+- Fix a potential race in drm_is_current_master_locked.
+- Fix potential null ptr dereferences in drm_{auth, ioctl}.
+- Protect magic_map,unique{_len} with  master_lookup_lock.
+- Convert master_mutex into a rwsem.
+- Update global mutex locking in the ioctl handler.
+
+v1 -> v2 (suggested by Daniel Vetter):
+- Address an additional race when drm_open runs.
+- Switch from SRCU to rwsem to synchronise readers and writers.
+- Implement drm_master_flush with task_work so that flushes can be
+queued to run before returning to userspace without creating a new
+DRM_MASTER_FLUSH ioctl flag.
+
+Best wishes,
+Desmond
+
+Desmond Cheong Zhi Xi (4):
+  drm: fix null ptr dereference in drm_master_release
+  drm: convert drm_device.master_mutex into a rwsem
+  drm: lock drm_global_mutex earlier in the ioctl handler
+  drm: avoid races with modesetting rights
+
+ drivers/gpu/drm/drm_auth.c    | 39 ++++++++++++++++------------
+ drivers/gpu/drm/drm_debugfs.c |  4 +--
+ drivers/gpu/drm/drm_drv.c     |  3 +--
+ drivers/gpu/drm/drm_file.c    |  6 ++---
+ drivers/gpu/drm/drm_ioctl.c   | 49 ++++++++++++++++++++++-------------
+ drivers/gpu/drm/drm_lease.c   | 35 +++++++++++++++++--------
+ include/drm/drm_auth.h        |  6 ++---
+ include/drm/drm_device.h      | 16 +++++++++---
+ include/drm/drm_file.h        | 12 ++++-----
+ 9 files changed, 104 insertions(+), 66 deletions(-)
+
+-- 
+2.25.1
+
