@@ -2,132 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92403FC233
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 07:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21683FC238
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 07:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238236AbhHaFhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 01:37:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234934AbhHaFhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 01:37:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D90B260C3E;
-        Tue, 31 Aug 2021 05:36:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630388184;
-        bh=udHiZDDc4f7qKURsjQeNCeCgOm8GE63sa7rzPWsHY9A=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-        b=r8LXwCv2S7RMDwBylPK4SF9vva9SeETYJuCkWO1dmBxnAt7Dy2MPIEeKkxjNJKVop
-         WgUrHR0TQZUOaCSrmisH6FkKUma+UjlJmVBH5D6wIEjzAYcai1J/OFQOe35CCThlDj
-         sVZxDFDfGx07IitikNvFrGDRaQj+3R9skQPOKKiLrgoiLXStIUVRZlk8bRtrMk8UbA
-         gVA6E9HTCFshrdr/K0NT0z85IbMDb6LWr+tSiWjTiUmZPVnftk6+XWxohYCYXfHWja
-         nxeVfNW3EpRkm5WLc3VEEhWfJ++mAROi541EK76LkFDg3la5QMTVSE0gbt4fUHyS6j
-         bCArj4iHtk07A==
-References: <1630346073-7099-1-git-send-email-sanm@codeaurora.org>
- <1630346073-7099-3-git-send-email-sanm@codeaurora.org>
-User-agent: mu4e 1.6.5; emacs 27.2
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pratham Pratap <prathampratap@codeaurora.org>
-Subject: Re: [PATCH 2/3] usb: dwc3: qcom: Add multi-pd support
-Date:   Tue, 31 Aug 2021 08:34:56 +0300
-In-reply-to: <1630346073-7099-3-git-send-email-sanm@codeaurora.org>
-Message-ID: <87r1each0s.fsf@kernel.org>
+        id S238283AbhHaFnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 01:43:15 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44890 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231537AbhHaFnP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 01:43:15 -0400
+X-UUID: 17cac67aad734e0d95a0ba0e270bb0a5-20210831
+X-UUID: 17cac67aad734e0d95a0ba0e270bb0a5-20210831
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <hui.liu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1860664525; Tue, 31 Aug 2021 13:42:17 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 31 Aug 2021 13:42:16 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 31 Aug 2021 13:42:15 +0800
+From:   Hui Liu <hui.liu@mediatek.com>
+To:     <robh+dt@kernel.org>, <jic23@kernel.org>, <lars@metafoo.de>,
+        <pmeerw@pmeerw.net>
+CC:     <srv_heupstream@mediatek.com>, <hui.liu@mediatek.com>,
+        <zhiyong.tao@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <yingjoe.chen@mediatek.com>, <seiya.wang@mediatek.com>,
+        <ben.tseng@mediatek.com>, <matthias.bgg@gmail.com>,
+        <s.hauer@pengutronix.de>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v2 0/1] AUXADC: Mediatek auxadc driver
+Date:   Tue, 31 Aug 2021 13:42:06 +0800
+Message-ID: <20210831054207.13236-1-hui.liu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series includes one patch:
+1.update case IIO_CHAN_INFO_PROCESSED: convert raw data to voltage.
 
-Hi,
+Changes in patch v2:
+1)abandon support case IIO_CHAN_INFO_RAW.
 
-Sandeep Maheswaram <sanm@codeaurora.org> writes:
-> Add multi pd support to set performance state for cx domain
-> to maintain minimum corner voltage for USB clocks.
->
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> ---
->  drivers/usb/dwc3/dwc3-qcom.c | 49 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 49 insertions(+)
->
-> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> index 9abbd01..777a647 100644
-> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> @@ -17,6 +17,7 @@
->  #include <linux/of_platform.h>
->  #include <linux/platform_device.h>
->  #include <linux/phy/phy.h>
-> +#include <linux/pm_domain.h>
->  #include <linux/usb/of.h>
->  #include <linux/reset.h>
->  #include <linux/iopoll.h>
-> @@ -89,6 +90,10 @@ struct dwc3_qcom {
->  	bool			pm_suspended;
->  	struct icc_path		*icc_path_ddr;
->  	struct icc_path		*icc_path_apps;
-> +	/* power domain for cx */
-> +	struct device		*pd_cx;
-> +	/* power domain for usb gdsc */
-> +	struct device		*pd_usb_gdsc;
->  };
->  
->  static inline void dwc3_qcom_setbits(void __iomem *base, u32 offset, u32 val)
-> @@ -521,6 +526,46 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +static int dwc3_qcom_attach_pd(struct device *dev)
-> +{
-> +	struct dwc3_qcom *qcom = dev_get_drvdata(dev);
-> +	struct device_link *link;
-> +
-> +	/* Do nothing when in a single power domain */
-> +	if (dev->pm_domain)
-> +		return 0;
-> +
-> +	qcom->pd_cx = dev_pm_domain_attach_by_name(dev, "cx");
-> +	if (IS_ERR(qcom->pd_cx))
-> +		return PTR_ERR(qcom->pd_cx);
-> +	/* Do nothing when power domain missing */
-> +	if (!qcom->pd_cx)
-> +		return 0;
-> +	link = device_link_add(dev, qcom->pd_cx,
-> +			DL_FLAG_STATELESS |
-> +			DL_FLAG_PM_RUNTIME |
-> +			DL_FLAG_RPM_ACTIVE);
-> +	if (!link) {
-> +		dev_err(dev, "Failed to add device_link to cx pd.\n");
+Changes in patch v1:
+1)fix typo covert to convert in patch 2/2 description.
 
-do you need to call dev_pm_domain_dettach() here?
+Hui Liu (1):
+  iio: mtk-auxadc: update case IIO_CHAN_INFO_PROCESSED
 
-> +		return -EINVAL;
-> +	}
-> +
-> +	qcom->pd_usb_gdsc = dev_pm_domain_attach_by_name(dev, "usb_gdsc");
-> +	if (IS_ERR(qcom->pd_usb_gdsc))
+ drivers/iio/adc/mt6577_auxadc.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-do you need to call dev_pm_domain_dettach() here?
+--
+2.18.0
 
-> +		return PTR_ERR(qcom->pd_usb_gdsc);
-> +
-> +	link = device_link_add(dev, qcom->pd_usb_gdsc,
-> +			DL_FLAG_STATELESS |
-> +			DL_FLAG_PM_RUNTIME |
-> +			DL_FLAG_RPM_ACTIVE);
-> +	if (!link) {
-> +		dev_err(dev, "Failed to add device_link to usb gdsc pd.\n");
 
-do you need to call dev_pm_domain_dettach() here?
 
--- 
-balbi
