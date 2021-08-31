@@ -2,129 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963013FCC5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AE43FCC5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240398AbhHaRcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 13:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51728 "EHLO
+        id S240389AbhHaRcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 13:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240324AbhHaRcM (ORCPT
+        with ESMTP id S240324AbhHaRcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 13:32:12 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9429EC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:31:16 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id q70so36629959ybg.11
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:31:16 -0700 (PDT)
+        Tue, 31 Aug 2021 13:32:04 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC923C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:31:07 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so3004338pjx.5
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:31:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l4HrFHUEESj2r5pg822WYUbEDh1E29PcEg+NUHp2lfY=;
-        b=XQJTNcZ/Yns5Xw3Pexc1RyG8YNhEfpoB9JlfAMUFDwSIxjfonMb2yWiUc8J622xxwZ
-         cnp9epbY6cGUQUeM3LnfNK8HqyCMdIAj1S6fi5TsfuqCq+ChjavGOcV561FQ3bFHHjJe
-         CeVejYdqu5xT/crGfvd7oQw6VO3WrCa2rXYt3J6oGMaX17UbsndQqfJN70ZObGbKUK+K
-         oTdta97PWiYl4+a6u7TBpzmFArGyVTX/L2FvMkdPObStd2mZLjsnRsXZoXUxsgutmC5A
-         4RhYaejO2gx5+RHkSUD/N+tRJWPQqYyEaNW1h/HVpN3Dak2AeLvx4Kb7FgwDIiRqt9OO
-         Rnjw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5LyN0K+Wus5Cj53RnJaq/QRwIimxfpbtiHPTvrng6hg=;
+        b=nyzULMjwjJw6h/+Oy1rkXR5IyeiOrfFqiN6AVnkctw3ssI+hirKxSRuQEze7nxWScm
+         YPrM+qgb1UTHnIPbwGJYwy+z5jKknx/1TrCDo0rja5PKQCb4h2KcYHtyzpzzLcUKWX/j
+         vuM7sAb3MX8hLz/wqRYrvDUxUbKZS5r+txjmw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l4HrFHUEESj2r5pg822WYUbEDh1E29PcEg+NUHp2lfY=;
-        b=fBAyQY6wNO98MzlmwzOPnr5DR9xRuZZxHhwiTY4gByiw6dInph76JXDDfVixcPNkaH
-         sb0r89bywW5PmBA/IoOPrGoGMxJ4kRXDk+/W/9DctjxXwjovc42u0cl5JS6EETMUp21x
-         pQj0mmsoVWs/xQRZ9GBrd0psz9PcunR0xLST3SWc3XZ2BRqJU4ckIp7kiFjYptjlWsNo
-         reNrZqk0AgftNDKptjmEWSTfM4Hkokita2pzauH2NlJht+422GJVN98279yTLXPHOobs
-         dlqtnYn3pd/l4nae8rCDC1nPCNRlPacLp2SvQQGZkrCgxIUwkMkiban5SYxu8kBrCyG1
-         rOSQ==
-X-Gm-Message-State: AOAM531mmtqQCdPgIlbkFst7By1WO2ZrTIcN/03LNeDUifEqQsacilvv
-        HFjK4Lka0DLp+KmLo0levBoO1oiyN0J5su66p5fpwg==
-X-Google-Smtp-Source: ABdhPJzYDnP24wwOelVeEyCcBSvfNazhiS7QfNC77RO9c3sg9x5dox+fMIX33I/5b3Ecdv0X677NG4RGlEqudd7zz6c=
-X-Received: by 2002:a25:804:: with SMTP id 4mr30394840ybi.346.1630431075086;
- Tue, 31 Aug 2021 10:31:15 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5LyN0K+Wus5Cj53RnJaq/QRwIimxfpbtiHPTvrng6hg=;
+        b=okXJJtQwhBUvRan0bHa1DZxlSQhKv0lDLBn27lGai6MxDWI1wGZwAAYJn4vbk2u64H
+         vpgIMVHNMo2qe9xG28tyXmaPYsUfb4FTBe5L52Yzg1HBXIjq8wHUwaFzCXfs/QQfeuul
+         0Uo0tF/nrNBt9Gy3AsIQKlnHFqXu7HAfwaZqlWYuP3NxA2zqgyqurR7M+IKBQiW4x50c
+         b8cbAPUBY2Azew4wxlEcSBehWj0T8FaYzNn3XsQ6zBJv+gLcwOFkGcEjvXXvZNud+i9M
+         /psnxw53FlqF6EfdpfZ5nBqG0tF95A9GO83O2hN4k8KILSCB3PjUC0RzYjGw99rA7K+R
+         Ekdw==
+X-Gm-Message-State: AOAM533V+15VDk5TFWgtbn6XX9RjDrjUUqHeqnbOI14K32b36TxFp424
+        m+27uqBCdYDN1OdoRo9A1b0Oqw==
+X-Google-Smtp-Source: ABdhPJyreXlCVuGBRZGGEG/FVzXeBVHZmYwNxr4ysj6JV2xB/EulpLX2NMh4JPN80o8MPLbWFFUx1A==
+X-Received: by 2002:a17:902:8606:b029:12c:2625:76cf with SMTP id f6-20020a1709028606b029012c262576cfmr5692548plo.17.1630431067343;
+        Tue, 31 Aug 2021 10:31:07 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c24sm10985547pfd.145.2021.08.31.10.31.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 10:31:06 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 10:31:05 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 04/13] kbuild: factor out OBJECT_FILES_NON_STANDARD
+ check into a macro
+Message-ID: <202108311030.CEA8856D@keescook>
+References: <20210831074004.3195284-1-masahiroy@kernel.org>
+ <20210831074004.3195284-5-masahiroy@kernel.org>
 MIME-Version: 1.0
-References: <20210831102125.624661-1-ulf.hansson@linaro.org>
-In-Reply-To: <20210831102125.624661-1-ulf.hansson@linaro.org>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 31 Aug 2021 10:30:39 -0700
-Message-ID: <CAGETcx868QWj0jMJ+U-eL62jT-LO_LTOw5EcwEKptfFOVa=A5A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] of: property: fw_devlink: Rename 'node_not_dev' to 'optional_con_dev'
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831074004.3195284-5-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 3:21 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> In the struct supplier_bindings the member 'node_not_dev' is described as
-> "The consumer node containing the property is never a device.", but that
-> doesn't match the behaviour of the code in of_link_property().
->
-> To make the behaviour consistent with the description, let's rename the
-> member to "optional_con_dev" and clarify the corresponding comment.
->
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
->  drivers/of/property.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index 6c028632f425..2babb1807228 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1249,7 +1249,8 @@ static struct device_node *parse_##fname(struct device_node *np,       \
->   * @parse_prop.index: For properties holding a list of phandles, this is the
->   *                   index into the list
->   * @optional: Describes whether a supplier is mandatory or not
-> - * @node_not_dev: The consumer node containing the property is never a device.
-> + * @optional_con_dev: The consumer node containing the property may not be a
-> + *                   device, then try finding one from an ancestor node.
+On Tue, Aug 31, 2021 at 04:39:55PM +0900, Masahiro Yamada wrote:
+> The OBJECT_FILES_NON_STANDARD check is quite long.
+> 
+> Factor it out into a new macro, objtool-enabled, to not repeat it.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Nak. This flag is not about "may not be". This is explicitly for
-"never a device". It has to do with stuff like remote-endpoint which
-is never listed under the root node of the device node. Your
-documentation change is changing the meaning of the flag.
+Looks right to me.
 
--Saravana
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
->   *
->   * Returns:
->   * parse_prop() return values are
-> @@ -1261,7 +1262,7 @@ struct supplier_bindings {
->         struct device_node *(*parse_prop)(struct device_node *np,
->                                           const char *prop_name, int index);
->         bool optional;
-> -       bool node_not_dev;
-> +       bool optional_con_dev;
->  };
->
->  DEFINE_SIMPLE_PROP(clocks, "clocks", "#clock-cells")
-> @@ -1370,7 +1371,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
->         { .parse_prop = parse_pinctrl6, },
->         { .parse_prop = parse_pinctrl7, },
->         { .parse_prop = parse_pinctrl8, },
-> -       { .parse_prop = parse_remote_endpoint, .node_not_dev = true, },
-> +       { .parse_prop = parse_remote_endpoint, .optional_con_dev = true, },
->         { .parse_prop = parse_gpio_compat, },
->         { .parse_prop = parse_interrupts, },
->         { .parse_prop = parse_regulators, },
-> @@ -1415,7 +1416,7 @@ static int of_link_property(struct device_node *con_np, const char *prop_name)
->                 while ((phandle = s->parse_prop(con_np, prop_name, i))) {
->                         struct device_node *con_dev_np;
->
-> -                       con_dev_np = s->node_not_dev
-> +                       con_dev_np = s->optional_con_dev
->                                         ? of_get_compat_node(con_np)
->                                         : of_node_get(con_np);
->                         matched = true;
-> --
-> 2.25.1
->
+-- 
+Kees Cook
