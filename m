@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453F03FCD47
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC153FCD52
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239034AbhHaS5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 14:57:36 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:36407 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231514AbhHaS5f (ORCPT
+        id S239350AbhHaTAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239540AbhHaS7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 14:57:35 -0400
-Received: by mail-vs1-f53.google.com with SMTP id f6so402275vsr.3;
-        Tue, 31 Aug 2021 11:56:39 -0700 (PDT)
+        Tue, 31 Aug 2021 14:59:13 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2852BC0612E7
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 11:58:17 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id q21so22173plq.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 11:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hja3k4ZIoHMyQ4VMtlG5szRRbScDh1UjpE02C2d4Keg=;
+        b=kicsjtll2NsAKBfjPi48UpmCfWsb4FJEcTRGcrE5uks4vHLsX71gqk79m8Us/tamin
+         XNurIf+3NS5RgfXBPJDOh5b+AFFP3+H7hsFSxfL9Vwb+FBInOrB3bUMzGzI4HG1pv0yo
+         qByPbg69R4mh1iyiutn783XwUDEuViZZh+wWLzAxV8KNPAXLYMLnMQ7ZIC5dBF/jJ0Uf
+         ATOJBlEbDfKr49CyoQE3NS/wdpgXRK43XqUolPGY7v+/2iaZWnEhp4NxfHpSzOq8tAFY
+         KPm7dvp3HOyllOHPqJ3OaYwVF710GR7FGM2+FU87sCMEW7HnJZYMbvATrp2kicNQo/Lp
+         wZIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0hrVR/Pp4bY5ExwU3CuX6SzlhALUUdWlYKXEp50Y348=;
-        b=E4t68AklQrX2lq5RL1ENJVvNyuhvJtS3PzlCMQi1hXmCI74aBIeGTykQ1GvAjoct6w
-         d7I+w6aADQDe7brIe8p8WvFC6YqEsisd3Kwm4zcddOQBIMYCE3E2Kvd3cUftYOrCS0kl
-         LNOvN0r+65222zmakGtqzUtXBRSdAbShWYOJzC6E/Xzs2WQGjKPaPL1QkJJ7C4Kv+LUg
-         zoZqb6Z/URehsv6iW9XItS/VH17h/u5pl8S9YugnA7afDjawhDLtr+hv+ex/5ZtFYCoS
-         z+MXIbtPgeaJPAg6p7Dme7Ijc2b2lwAzGgaPZi3zJNLaBT44BkoxBG4fh/Sa1xs+6zs8
-         aoYw==
-X-Gm-Message-State: AOAM532nGSK0wbQZKkgVM7YQd8aBWQYpfeTTuLgC4Geomc/OCETYNkv+
-        FyB+el6R+N5qDRHES+NnxAy64PwsB8JVV7x3S77cH6VU
-X-Google-Smtp-Source: ABdhPJz9v59KKZoqK9rLnaHapES3XW5DBPdu8VPOELGOeHWSav0EGFF40rmu9oSffgZtAtzQvdPp23duhz+ykWeWZKU=
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr20702000vsl.9.1630436198992;
- Tue, 31 Aug 2021 11:56:38 -0700 (PDT)
+        bh=hja3k4ZIoHMyQ4VMtlG5szRRbScDh1UjpE02C2d4Keg=;
+        b=hrRBC4X6O82+z7JU0jmmdBSMTqnShesK/gNZKW7bj43Qhehpmntls44/A+7I4o+6GO
+         npZ8VQ5r4glRpDorc4OcH8Yc0My34dKVuC251SE1GhkGrMk3XP+FgZGjrtbmmsZBPmur
+         zhS1ZK5nIxv2xY9AgRoJFHbAeczAMOx/PmDZSG+ldevpOpsPSF9ej3oIehxVXItkv/X4
+         vv3NrnGnxcl5l6Ks7LNFIX3H+QMehrbweBFr8JdGPnRaWbCx61MoazZSAR5kv8Z5g0t9
+         DRCQpeEbNv4UGqvoGIgIAAbgBu/F9pZ0iZxktu0IOmo2RTOvsjkTBX+TQmXVB0XDrzWy
+         VhiQ==
+X-Gm-Message-State: AOAM532wuLmSsYalrV8B3xrIHgyJfIdTOkxsD0dU3R4X3gNWiXGG8SVi
+        /VceN9FZyT3mZN90FANAbnDxRhzyibrLDtQUxJ7s4A==
+X-Google-Smtp-Source: ABdhPJwoE2JSRabTcXsiA1AgYUTphGBwkKAbOMuVGJ2LSP+gzTcAsVPbn/x852sYGDfXxMDArhTShQzlDIpbLKeNN64=
+X-Received: by 2002:a17:90a:708c:: with SMTP id g12mr7220358pjk.13.1630436296443;
+ Tue, 31 Aug 2021 11:58:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000815b9605c70e74f8@google.com> <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
- <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
- <339bfb21-8e80-c7d9-46dd-c416f87c50c0@infradead.org> <535e404d-03bf-8e7a-b296-132a2a98c599@i-love.sakura.ne.jp>
- <CAMuHMdWX7s63X_zR9329canbQkPGBVxZNG4O+_=jUut60aGR9g@mail.gmail.com>
- <5c6d2b95-31d7-0d59-5e62-2593d9a0e1fe@i-love.sakura.ne.jp>
- <CAMuHMdWbSUGRGAVi-17C3hyDBZnGLAsmbAs+wXPHiCNWWLbMpA@mail.gmail.com> <CAKMK7uF1cnen2UVWeOL164z1CCqOuRMC5SmM+5GvRvi7C-UOTw@mail.gmail.com>
-In-Reply-To: <CAKMK7uF1cnen2UVWeOL164z1CCqOuRMC5SmM+5GvRvi7C-UOTw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 31 Aug 2021 20:56:27 +0200
-Message-ID: <CAMuHMdWNYaZxZB0Td4PFb76rrtQMumKu6cJgLi2aNnW-9NmG8A@mail.gmail.com>
-Subject: Re: [PATCH] fbmem: don't allow too huge resolutions
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Colin King <colin.king@canonical.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+References: <20210616085118.1141101-1-omosnace@redhat.com> <CAPcyv4jvR8CT4rYODR5KUHNdiqMwQSwJZ+OkVf61kLT3JfjC_Q@mail.gmail.com>
+ <CAFqZXNtuH0329Xvcb415Kar-=o6wwrkFuiP8BZ_2OQhHLqkkAg@mail.gmail.com> <CAHC9VhTGECM2p+Q8n48aSdfJzY6XrpXQ5tcFurjWc4A3n8Qxjg@mail.gmail.com>
+In-Reply-To: <CAHC9VhTGECM2p+Q8n48aSdfJzY6XrpXQ5tcFurjWc4A3n8Qxjg@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 31 Aug 2021 11:58:05 -0700
+Message-ID: <CAPcyv4i8YXo=xOL2vO67KLABQRDNAxzrzT=a1xtwtrts5pVPKw@mail.gmail.com>
+Subject: Re: [PATCH v3] lockdown,selinux: fix wrong subject in some SELinux
+ lockdown checks
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        X86 ML <x86@kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        linux-cxl@vger.kernel.org, linux-efi <linux-efi@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux-pm mailing list <linux-pm@vger.kernel.org>,
+        linux-serial@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Kexec Mailing List <kexec@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Randy Dunlap <rdunlap@infradead.org>
+        Casey Schaufler <casey@schaufler-ca.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
-
-On Tue, Aug 31, 2021 at 8:53 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
-> On Tue, Aug 31, 2021 at 7:19 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Tue, Aug 31, 2021 at 5:24 PM Tetsuo Handa
-> > <penguin-kernel@i-love.sakura.ne.jp> wrote:
-> > > On 2021/08/31 15:48, Geert Uytterhoeven wrote:
-> > > > Furthermore, this restricts the virtual frame buffer size on 64-bit,
-> > > > too, while graphics cards can have much more than 4 GiB of RAM.
-> > >
-> > > Excuse me, but do you mean that some hardware allows allocating more than
-> > > UINT_MAX bytes of memory for kernel frame buffer drivers?
-> >
-> > While smem_len is u32 (there have been complaints about such
-> > limitations on 64-bit platforms as far as 10 years ago), I see no
-> > reason why a graphics card with more than 4 GiB of RAM would not be
-> > able to provide a very large virtual screen.
-> >
-> > Of course e.g. vga16fb cannot, as it is limited to 64 KiB.
+On Tue, Aug 31, 2021 at 6:53 AM Paul Moore <paul@paul-moore.com> wrote:
 >
-> The first gpus with 4GB or more memory started shipping in 2012. We're
-> not going to have fbdev drivers for these, so let's not invent code
-> for use-cases that aren't please.
+> On Tue, Aug 31, 2021 at 5:09 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > On Sat, Jun 19, 2021 at 12:18 AM Dan Williams <dan.j.williams@intel.com> wrote:
+> > > On Wed, Jun 16, 2021 at 1:51 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+>
+> ...
+>
+> > > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > > > index 2acc6173da36..c1747b6555c7 100644
+> > > > --- a/drivers/cxl/mem.c
+> > > > +++ b/drivers/cxl/mem.c
+> > > > @@ -568,7 +568,7 @@ static bool cxl_mem_raw_command_allowed(u16 opcode)
+> > > >         if (!IS_ENABLED(CONFIG_CXL_MEM_RAW_COMMANDS))
+> > > >                 return false;
+> > > >
+> > > > -       if (security_locked_down(LOCKDOWN_NONE))
+> > > > +       if (security_locked_down(current_cred(), LOCKDOWN_NONE))
+> > >
+> > > Acked-by: Dan Williams <dan.j.williams@intel.com>
+> > >
+> > > ...however that usage looks wrong. The expectation is that if kernel
+> > > integrity protections are enabled then raw command access should be
+> > > disabled. So I think that should be equivalent to LOCKDOWN_PCI_ACCESS
+> > > in terms of the command capabilities to filter.
+> >
+> > Yes, the LOCKDOWN_NONE seems wrong here... but it's a pre-existing bug
+> > and I didn't want to go down yet another rabbit hole trying to fix it.
+> > I'll look at this again once this patch is settled - it may indeed be
+> > as simple as replacing LOCKDOWN_NONE with LOCKDOWN_PCI_ACCESS.
+>
+> At this point you should be well aware of my distaste for merging
+> patches that have known bugs in them.  Yes, this is a pre-existing
+> condition, but it seems well within the scope of this work to address
+> it as well.
+>
+> This isn't something that is going to get merged while the merge
+> window is open, so at the very least you've got almost two weeks to
+> sort this out - please do that.
 
-This code path is used with fbdev emulation for drm drivers, too,
-right?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Yes, apologies, I should have sent the fix shortly after noticing the
+problem. I'll get the CXL bug fix out of the way so Ondrej can move
+this along.
