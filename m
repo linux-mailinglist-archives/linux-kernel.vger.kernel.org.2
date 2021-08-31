@@ -2,112 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27033FC805
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0465B3FC80D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234756AbhHaNSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:18:03 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50210 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230175AbhHaNSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:18:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=O0tbD+MhxYcxlWeFJDcgfYosGr5RiD+IdZLr5hwd1OI=; b=cVzPwALFENJsChIX2055ZXy1JL
-        qt4lmrRBX8oXBiWXmBjYXg7ompSsfXwCclG/zP8Jcftu96My4+xefEuCxy+bpNoIfLKBCcClC9KEE
-        2cXda4H4jA/Mxx+Ec6LONitWbtADK7mBLX0J99LaWXTT0KfqIiTB7sUIXRbayR4NLQKE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mL3dD-004ilj-3l; Tue, 31 Aug 2021 15:16:51 +0200
-Date:   Tue, 31 Aug 2021 15:16:51 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
- FWNODE_FLAG_BROKEN_PARENT
-Message-ID: <YS4rw7NQcpRmkO/K@lunn.ch>
-References: <YSf/Mps9E77/6kZX@lunn.ch>
- <CAGETcx_h6moWbS7m4hPm6Ub3T0tWayUQkppjevkYyiA=8AmACw@mail.gmail.com>
- <YSg+dRPSX9/ph6tb@lunn.ch>
- <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
- <YSjsQmx8l4MXNvP+@lunn.ch>
- <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
- <YSlG4XRGrq5D1/WU@lunn.ch>
- <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
- <YSpr/BOZj2PKoC8B@lunn.ch>
- <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
+        id S234475AbhHaNT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:19:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230175AbhHaNT5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 09:19:57 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA7AC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 06:19:02 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:2193:279a:893d:20ae])
+        by xavier.telenet-ops.be with bizsmtp
+        id oDJx250061ZidPp01DJx8i; Tue, 31 Aug 2021 15:19:00 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mL3fE-000rnQ-OW; Tue, 31 Aug 2021 15:18:56 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mL3fE-000hSM-B9; Tue, 31 Aug 2021 15:18:56 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Trevor Wu <trevor.wu@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] ASoC: mediatek: SND_SOC_MT8195 should depend on ARCH_MEDIATEK
+Date:   Tue, 31 Aug 2021 15:18:54 +0200
+Message-Id: <7e628e359bde04ceb9ddd74a45931059b4a4623c.1630415860.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > I must admit, my main problem at the moment is -rc1 in two weeks
-> > time. It seems like a number of board with Ethernet switches will be
-> > broken, that worked before. phy-handle is not limited to switch
-> > drivers, it is also used for Ethernet drivers. So it could be, a
-> > number of Ethernet drivers are also going to be broken in -rc1?
-> 
-> Again, in those cases, based on your FEC example, fw_devlink=on
-> actually improves things.
+The Mediatek MT8195 sound hardware is only present on Mediatek MT8195
+SoCs.  Hence add a dependency on ARCH_MEDIATEK, to prevent asking the
+user about this driver when configuring a kernel without Mediatek SoC
+support.
 
-Debatable. I did some testing. As expected some boards with Ethernet
-switches are now broken. Without fw_devlink=on, some boards are not
-optimal, but they actually work. With it, they are broken.
+Fixes: 6746cc858259985a ("ASoC: mediatek: mt8195: add platform driver")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ sound/soc/mediatek/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-I did a bisect, and they have been broken since:
-
-ea718c699055c8566eb64432388a04974c43b2ea is the first bad commit
-commit ea718c699055c8566eb64432388a04974c43b2ea
-Author: Saravana Kannan <saravanak@google.com>
-Date:   Tue Mar 2 13:11:32 2021 -0800
-
-    Revert "Revert "driver core: Set fw_devlink=on by default""
-    
-    This reverts commit 3e4c982f1ce75faf5314477b8da296d2d00919df.
-    
-    Since all reported issues due to fw_devlink=on should be addressed by
-    this series, revert the revert. fw_devlink=on Take II.
-    
-    Signed-off-by: Saravana Kannan <saravanak@google.com>
-    Link: https://lore.kernel.org/r/20210302211133.2244281-4-saravanak@google.com
-    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
- drivers/base/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-So however it is fixed, it needs to go into stable, not just -rc1.
-
-> Again, it's not a widespread problem as I explained before.
-> fw_devlink=on has been the default for 2 kernel versions now. With no
-> unfixed reported issues.
-
-Given that some Ethernet switches have been broken all that time, i
-wonder what else has been broken? Normally, the kernel which is
-release in December becomes the next LTS. It then gets picked up by
-the distros and more wide spread tested. So it could be, you get a
-flood of reports in January and February about things which are
-broken. This is why i don't think you should be relying on bug
-reports, you should be taking a more proactive stance and trying to
-analyse the DTB blobs.
-
-I will spend some time trying out your proposed fix. See if they are a
-quick fix for stable.
-
-      Andrew
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index cf567a89f421b4c0..c8c815f599da90bf 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -187,6 +187,7 @@ config SND_SOC_MT8192_MT6359_RT1015_RT5682
+ 
+ config SND_SOC_MT8195
+ 	tristate "ASoC support for Mediatek MT8195 chip"
++	depends on ARCH_MEDIATEK || COMPILE_TEST
+ 	select SND_SOC_MEDIATEK
+ 	help
+ 	  This adds ASoC platform driver support for Mediatek MT8195 chip
+-- 
+2.25.1
 
