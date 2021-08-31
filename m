@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E75113FCE1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C8D3FCE24
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240094AbhHaUEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 16:04:35 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:34458 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234441AbhHaUEe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 16:04:34 -0400
-Received: by mail-oi1-f173.google.com with SMTP id p2so749897oif.1;
-        Tue, 31 Aug 2021 13:03:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K/gOc3F91rtVhTYdor0Wlk0nHlisr/+Ju2+e3kwXKlE=;
-        b=a4BJ03WLkKRSSrxH06ZVIeW4jGgfnAs/iBvKvZ/N07N9fr4gh53ThIdR+tkbuLDSof
-         UM4uT7fi6Xt7CVLQwESqYL10yheNg7QyTz2zTmrJonQTfssdOqC489RwUpATGZTKUq5T
-         8ohM4qZC10k6lCabJqPxJXXYaFJSVkXJwY+noSJshW7gqUDsEeX3qkang+LIYvVf7wZG
-         1/COvugT0hlrKWpPoTYxYn0fLueKp34tWkHWG9faQ3Trr7kNfcxIIWckvfBw+7nlhsbN
-         gafhu6dye/8baXl8d8ypAv/aavj12t4xTpOxnwdhjGJhwXEmam63UF3I+d1GyQ2ICeuk
-         SYmw==
-X-Gm-Message-State: AOAM533r8b6t7D90yXhi623LUOcrBnLvrlo2Z4tkp5YbM4Vy4EIN+6u3
-        7uRV9vCUeuoNeiwj+39jTKiCX9/riA==
-X-Google-Smtp-Source: ABdhPJxyvw6A3WpkwYyp4mS6wewpbG9OYOakEjOkRTiDliPXaYPSP6vAkgtnCYV4KBQxM5ZFRhQ8nQ==
-X-Received: by 2002:a05:6808:208b:: with SMTP id s11mr4501275oiw.95.1630440218135;
-        Tue, 31 Aug 2021 13:03:38 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id r13sm4110438oti.80.2021.08.31.13.03.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 13:03:37 -0700 (PDT)
-Received: (nullmailer pid 565288 invoked by uid 1000);
-        Tue, 31 Aug 2021 20:03:36 -0000
-Date:   Tue, 31 Aug 2021 15:03:36 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sireesh Kodali <sireeshkodali1@gmail.com>
-Cc:     phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        Vladimir Lypak <vladimir.lypak@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Adam Skladowski <a_skl39@protonmail.com>,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 3/4] dt-bindings: power: rpmpd: Add MSM8953 to rpmpd
- binding
-Message-ID: <YS6LGLcKbo/+95gZ@robh.at.kernel.org>
-References: <20210825165251.18358-1-sireeshkodali1@gmail.com>
- <20210825170233.19859-1-sireeshkodali1@gmail.com>
+        id S233842AbhHaUHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 16:07:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229476AbhHaUHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 16:07:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 256316108B;
+        Tue, 31 Aug 2021 20:06:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630440373;
+        bh=xrvKiHXhYI03XkknWcnBRe0wu5iG2lTHButTzM1ZtwE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FQcjRDlduBYIPHCwtbtquYUWQAwyz1mnXHv1m813KLjFpOv3EAYfIEB01ZMzWLPAA
+         vnga06UIcMK7xldwTnWdGSVXwFDXBmy21Nmo2CJsAKCegkmOIFh22CwWwLea4JL5X0
+         1RhgjEWQRcOtRU7mL2Jv8gK0+Q1zbzu0o7GAMpw93RY2z2gaTzOsQDHLcnmd6wi2uP
+         ltm4EgHsDc8WUY7QsmjuLeF7dJYUIAgESL4lRJ2D0VFGO7J+D5q/snaWuIYUwVb+vJ
+         ia/TV/6Spg/6/flpaZIqCxG5sMrQVkqX83uzQ9mU3L0DeNQlug9rNz08j0jHSTwWDy
+         WQYf2r2h1Hovg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 03F884007E; Tue, 31 Aug 2021 17:06:09 -0300 (-03)
+Date:   Tue, 31 Aug 2021 17:06:09 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [RFC PATCH v1 27/37] perf evlist: add
+ evlist__for_each_entry_from macro
+Message-ID: <YS6LsW1bYZpRyhY4@kernel.org>
+References: <cover.1629490974.git.rickyman7@gmail.com>
+ <2386505f8b598adf0dbcd04ec21804c6bcf00826.1629490974.git.rickyman7@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210825170233.19859-1-sireeshkodali1@gmail.com>
+In-Reply-To: <2386505f8b598adf0dbcd04ec21804c6bcf00826.1629490974.git.rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Aug 2021 22:32:32 +0530, Sireesh Kodali wrote:
-> From: Vladimir Lypak <vladimir.lypak@gmail.com>
+Em Sat, Aug 21, 2021 at 11:19:33AM +0200, Riccardo Mancini escreveu:
+> This patch adds a new iteration macro for evlist that resumes iteration
+> from a given evsel in the evlist.
 > 
-> Add compatible and constants for the power domains exposed by the RPM
-> in the Qualcomm MSM8953 platform.
-> 
-> Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
-> Signed-off-by: Adam Skladowski <a_skl39@protonmail.com>
-> Signed-off-by: Sireesh Kodali <sireeshkodali1@gmail.com>
-> ---
->  Documentation/devicetree/bindings/power/qcom,rpmpd.yaml | 1 +
->  include/dt-bindings/power/qcom-rpmpd.h                  | 9 +++++++++
->  2 files changed, 10 insertions(+)
-> 
+> This macro will be used in the next patch
 
-Acked-by: Rob Herring <robh@kernel.org>
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/perf/util/evlist.h | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+> index 5f24a45d4e3cf30a..b0c2da0f9755b2d1 100644
+> --- a/tools/perf/util/evlist.h
+> +++ b/tools/perf/util/evlist.h
+> @@ -275,6 +275,22 @@ void evlist__to_front(struct evlist *evlist, struct evsel *move_evsel);
+>  #define evlist__for_each_entry_continue(evlist, evsel) \
+>  	__evlist__for_each_entry_continue(&(evlist)->core.entries, evsel)
+>  
+> +/**
+> + * __evlist__for_each_entry_from - continue iteration from @evsel (included)
+> + * @list: list_head instance to iterate
+> + * @evsel: struct evsel iterator
+> + */
+> +#define __evlist__for_each_entry_from(list, evsel) \
+> +	list_for_each_entry_from(evsel, list, core.node)
+> +
+> +/**
+> + * evlist__for_each_entry_from - continue iteration from @evsel (included)
+> + * @evlist: evlist instance to iterate
+> + * @evsel: struct evsel iterator
+> + */
+> +#define evlist__for_each_entry_from(evlist, evsel) \
+> +	__evlist__for_each_entry_from(&(evlist)->core.entries, evsel)
+> +
+>  /**
+>   * __evlist__for_each_entry_reverse - iterate thru all the evsels in reverse order
+>   * @list: list_head instance to iterate
+> -- 
+> 2.31.1
+
+-- 
+
+- Arnaldo
