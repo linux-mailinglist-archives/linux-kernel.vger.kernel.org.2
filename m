@@ -2,130 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFDA3FC9E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A25C3FC9ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238389AbhHaOgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:36:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238227AbhHaOgm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:36:42 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06657C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:35:47 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id q11so28070893wrr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=t4rZGwfZEIOrCqcjibED3N9c7CMYt/1s+laPidanJ9U=;
-        b=yC/J2IkaFivBRU9NGiW59trje7d4yntYagBVo9vlQoNWteSJIXEi+XV1UN92LQXU6Y
-         6X+b1KiPiOuE0hH9FDgslu7r9hvH7P1KkUXuKL+2BDJnLDMtlb7yZkAhciDqUppAOdx9
-         cjcp2KWoXQIDBLLoadxkk9MFxIjtU2mFpVIX6OC6Lg1X2zAZFt1mItcD5/zuvAjBsbwq
-         Xwrhr6/tGl5uf6t/ImCIhMMM0L9ucBr9VrsuIps+nHNZUa/DJPkvLzRtcXVn8b+XUT7K
-         wox/1EqzDbBcObZAKMxZNbe6AC80atzRyp7evrBnWvdIx2ainMfCLIZ/b86bm9k0CO2P
-         xrbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=t4rZGwfZEIOrCqcjibED3N9c7CMYt/1s+laPidanJ9U=;
-        b=LnnOBwsrxbkQ7tM49LjBzU4pYMi+9EaaKDbNgR0ZshF2E/B50odopJvwlR4CFVU1QU
-         XfrdNpAs/o2t8vpuwAWl2s6udGzY1JlUMD+57Qew2blBcY9pEHW8BIa2J4XQN1b7Bo+h
-         ASHUqK/LBwrsu00Zml4U88s0FLRdGecLeVo7tqwhk3c9OOSgpQHr2xlbvZkYMvaxZhEq
-         LkT8VgEYiDP2o//BJe2vzI98uG+JEvHGnRK1WDRMKdQ9JDV04EIBDLUG9f0ZUUj2g6Uj
-         +Ja4R+x3Ztoq9/bPvFrZ+CBFfMTiWbUY8muTkmeFurzlG9Gm0KKhLn3RCuPOrrCZgZnT
-         jf4g==
-X-Gm-Message-State: AOAM530hN+BuxdI1j1bQ28Cl3BURxd8ZX7oylyDA6QmY+eTnybqDVUXn
-        AtgFm3Z2PsvjHbMgycpG4zb5ywB4okcPyyWB
-X-Google-Smtp-Source: ABdhPJz1pzwOW6HFn9CswPOaXqf3E3MWOvhHxsRINvTlHKrnGPthKiywMBDC/0mPhZNzBg8b+xY76g==
-X-Received: by 2002:a5d:490d:: with SMTP id x13mr31431795wrq.412.1630420544859;
-        Tue, 31 Aug 2021 07:35:44 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:fc41:6c:2c4e:2156? ([2001:861:44c0:66c0:fc41:6c:2c4e:2156])
-        by smtp.gmail.com with ESMTPSA id c24sm18471493wrb.57.2021.08.31.07.35.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 07:35:44 -0700 (PDT)
-Subject: Re: [PATCH] drm/meson: Make use of the helper function
- devm_platform_ioremap_resourcexxx()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210831135644.4576-1-caihuoqing@baidu.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <896e4f35-f410-41e8-50ad-ed16c65cab45@baylibre.com>
-Date:   Tue, 31 Aug 2021 16:35:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232911AbhHaOjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:39:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232016AbhHaOjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 10:39:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0C6F60F91;
+        Tue, 31 Aug 2021 14:38:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630420721;
+        bh=6obG3EWY8MJUaRtOjEQePHAgTbi/IVRVmFayceuFgCM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BZYavu6YjFg1t3BR4Zr8XkA/4j7Z4avQ85Hbzti7gbafz+rs7wqpf/Kjp3K/k7hS5
+         jBTFpCzrNVFCYd3gAEL7QayYgs4SDb7Be4u4lj+pxa8blm7gkwswM87ODsD3CwhWkg
+         WoYoPGrSEI3NMAYzY/XUjbU4lXuF6pGDk98hde/LeKGaUAOZZE67HLLcylEGo2j4Fa
+         p2BoMB3p8FZr5kDoNzmpwdw4zN0PzWPhpdjhgIRRxoJ/ZiOL2xgFCvA+ytThp/C57w
+         Oc9QkcaXiSeHHWBfzJHEpBSynjuPfR6APgBlXr1SHeE5iOj33d0i6+DpphviMxwZEN
+         VXgDqrKtSHAUg==
+Date:   Tue, 31 Aug 2021 15:38:36 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        jean-philippe <jean-philippe@linaro.org>,
+        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v5 3/3] PCI: Set dma-can-stall for HiSilicon chips
+Message-ID: <20210831143835.GA31947@willie-the-truck>
+References: <20210826182624.GA3694827@bjorn-Precision-5520>
+ <225e905d-b7b2-c740-de94-2f4aece75f59@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210831135644.4576-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <225e905d-b7b2-c740-de94-2f4aece75f59@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/08/2021 15:56, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource_byname() helper instead of
-> calling platform_get_resource_byname() and devm_ioremap_resource()
-> separately
+On Thu, Aug 26, 2021 at 08:12:12PM +0100, Robin Murphy wrote:
+> On 2021-08-26 19:26, Bjorn Helgaas wrote:
+> > [+cc Will, Robin, Joerg, hoping for an ack]
+> > 
+> > On Tue, Jul 13, 2021 at 10:54:36AM +0800, Zhangfei Gao wrote:
+> > > HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
+> > > actually on the AMBA bus. These fake PCI devices can support SVA via
+> > > SMMU stall feature, by setting dma-can-stall for ACPI platforms.
+> > > 
+> > > Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+> > > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > > Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
+> > > ---
+> > >   drivers/pci/quirks.c | 13 +++++++++++++
+> > >   1 file changed, 13 insertions(+)
+> > > 
+> > > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> > > index 5d46ac6..03b0f98 100644
+> > > --- a/drivers/pci/quirks.c
+> > > +++ b/drivers/pci/quirks.c
+> > > @@ -1823,10 +1823,23 @@ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI
+> > >   static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
+> > >   {
+> > > +	struct property_entry properties[] = {
+> > > +		PROPERTY_ENTRY_BOOL("dma-can-stall"),
+> > 
+> > "dma-can-stall" is used in arm_smmu_probe_device() to help set
+> > master->stall_enabled.
+> > 
+> > I don't know the implications, so it'd be nice to get an ack from a
+> > maintainer of that code.
 > 
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
+> If it helps,
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/gpu/drm/meson/meson_drv.c     | 3 +--
->  drivers/gpu/drm/meson/meson_dw_hdmi.c | 4 +---
->  2 files changed, 2 insertions(+), 5 deletions(-)
+> Acked-by: Robin Murphy <robin.murphy@arm.com>
 > 
-> diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
-> index bc0d60df04ae..7f41a33592c8 100644
-> --- a/drivers/gpu/drm/meson/meson_drv.c
-> +++ b/drivers/gpu/drm/meson/meson_drv.c
-> @@ -206,8 +206,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
->  	priv->compat = match->compat;
->  	priv->afbcd.ops = match->afbcd_ops;
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "vpu");
-> -	regs = devm_ioremap_resource(dev, res);
-> +	regs = devm_platform_ioremap_resource_byname(pdev, "vpu");
->  	if (IS_ERR(regs)) {
->  		ret = PTR_ERR(regs);
->  		goto free_drm;
-> diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-> index 2ed87cfdd735..0afbd1e70bfc 100644
-> --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
-> +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-> @@ -978,7 +978,6 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
->  	struct dw_hdmi_plat_data *dw_plat_data;
->  	struct drm_bridge *next_bridge;
->  	struct drm_encoder *encoder;
-> -	struct resource *res;
->  	int irq;
->  	int ret;
->  
-> @@ -1042,8 +1041,7 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
->  		return PTR_ERR(meson_dw_hdmi->hdmitx_phy);
->  	}
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	meson_dw_hdmi->hdmitx = devm_ioremap_resource(dev, res);
-> +	meson_dw_hdmi->hdmitx = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(meson_dw_hdmi->hdmitx))
->  		return PTR_ERR(meson_dw_hdmi->hdmitx);
->  
+> Normally stalling must not be enabled for PCI devices, since it would break
+> the PCI requirement for free-flowing writes and may lead to deadlock. We
+> expect PCI devices to support ATS and PRI if they want to be fault-tolerant,
+> so there's no ACPI binding to describe anything else, even when a "PCI"
+> device turns out to be a regular old SoC device dressed up as a RCiEP and
+> normal rules don't apply.
 > 
+> I'm taking it on trust that stalling really is safe for all possible
+> matching devices here (in general, deadlock may still be possible in the SoC
+> interconnect depending on topology, hence why it's an explicit opt-in even
+> for platform devices), but TBH either way I think I'd rather have this as a
+> quirk in the kernel under our control, than have vendors attempt to play
+> tricks with _DSD properties out in the field :)
 
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+I think a comment next to the quirk echoing the commit message and your
+first paragraph above would be really helpful here.
+
+Will
