@@ -2,158 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8F23FC590
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8527C3FC593
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240971AbhHaKWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:22:41 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:45196 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240908AbhHaKWk (ORCPT
+        id S240983AbhHaKWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240908AbhHaKWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:22:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1630405306; x=1661941306;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=lS1HgJMUvIX3HSRFAT1nvoN6FUBX0UTcTqsk5k75S0U=;
-  b=UqAgoVREe3uyClY3JGC8wLlO+F/k0lXeE2AscqqfO/5bOrEBFJ+Scgmt
-   5ql3kgxbH7Xkuar4UDtgo94n77gAK2xaer18ejsAF27Qu0jQNeX9BNA7T
-   6xhYWYI+nSDeWwScQFKfTTrdvcX4WMcR/ljmJhleG+1dG7eudS+gqPwKb
-   240SIC+ha+J2oQIGxvIX6Hij3FgSzzmfRTt9Ry2BRwyQ8afVxnHEoyhJL
-   hrjl4PtzBIHacMSlnmXGY0cqEpv9GFkbacFO19EcHpZ2dCM693qqoROb/
-   1MYbYXz3cCbelPhJKV02g3UPHgYIjBiT9Mih7uqypXa4b8op0ybRPg0tm
-   g==;
-IronPort-SDR: YGLHHjHri8oGde+FUz7IfKOl/hFWe1Cx9IJoDG0Svr+EAkPoQjWo0eziSTcop0nALunY52JqA4
- 7Sq1C5+aslY7MPfgwYeBRKz3p8tEcOVDv0P536ctcE36xD/RxTwDg43isEeThwU27JJYzVXOv6
- sSKukQjFfKul4YYpgO2QhsuukzNrVzSr3cYiZE1i7q912UPy1hjaqEJFlG1TmaxbmQle4juHHs
- v6DleeKe7eoEk8LLv8EflsCYUZ2umqRZhxxbYPR73NQYfzieksE+StAJAEQdUaKmSDSz78W58k
- PyLyjV8fuRbnaMBH3fbeypHK
-X-IronPort-AV: E=Sophos;i="5.84,366,1620716400"; 
-   d="scan'208";a="134263072"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Aug 2021 03:21:45 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 31 Aug 2021 03:21:44 -0700
-Received: from kavya-HP-Compaq-6000-Pro-SFF-PC.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 31 Aug 2021 03:21:41 -0700
-From:   <kavyasree.kotagiri@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>
-CC:     <linux@armlinux.org.uk>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <Kavyasree.Kotagiri@microchip.com>,
-        <Manohar.Puri@microchip.com>, <Madhuri.Sripada@microchip.com>
-Subject: [PATCH v2] ARM: at91: add basic support for new SoC lan966x
-Date:   Tue, 31 Aug 2021 15:51:38 +0530
-Message-ID: <20210831102138.2476-1-kavyasree.kotagiri@microchip.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 31 Aug 2021 06:22:41 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4D8C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:21:46 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id s3so30808226ljp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:21:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wQ8kS/+bTV4avdS2tU6jC3f6zz+Ryry/9cKDRK1gufo=;
+        b=jiP1wMEEvsgc3n7vYx1ledvZpCZkUX5FcfCU/d4NmQ10imEb+nTwuV7AvPQyuAhzpe
+         YsP/UU3DHPPh2i10yLbc78f5nCMLrerGJ6O5w2qQxXo1os1R5iEn/nQbRPHBGoAOHkXS
+         1aGLp5y3Z3p+M9xTR3mVec6Ve/Wj+o+zBAE2jyiAeEhGtBnmOfK3J7BHgoO9AKlkFMG8
+         XHtHiuMg1cbBY5AtMl5rgl7rqbMvAu7ThdDV0Pq3/ED5GoRF4shP/c5KQGW9yKirDnmq
+         d2LCC2MTmPF6h0Symi6YMYf/1TDJKL/EaXJSAYRhHwpoTPEraIaRvdsHZ1cUt089Z39h
+         /jrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wQ8kS/+bTV4avdS2tU6jC3f6zz+Ryry/9cKDRK1gufo=;
+        b=GVT642kgXLymB/1je6WpmTf6dQSZX5N7pk6/ywd6pzKREfrfnqPcq7JB7aiSXduBRr
+         dvdUU4yfwk65YAKPYTQ9sjZmLY1PRLuyxmt1icPtV2z392791A2crpvTXKQGkPH+Wuas
+         EP6giU2UziZkedQJH19KmZPmT6n71Kl9ZGufTJsidYohU4mOxwkFT/jbW7fqmjveBDIc
+         KeXTzbfC3PRIByeHReil+Y9DCF6+ZScGUdH58/yQXdqvAiBYXBTe+DX9SA0zj2msafpk
+         C/hyOdClXJoFXHBidCET8aJoFlhWLwBe5KALzg7nTxkoED2eKDf6NNZAJtOEK5Bn8mcy
+         6MgA==
+X-Gm-Message-State: AOAM532UUCwdmd6TrjyK1FNYGpWGvD7EKVqGEmMUmqtsFHyq0kNGMHUr
+        wAHUznlZR455qyfisRPjBRZQgg==
+X-Google-Smtp-Source: ABdhPJyfAO80CqzIGBt9m8D2PiuI5w5PJosyAgh/JmPeY8WX1k4mcSvpAtqPgpVYTTOGtXaXZQRtog==
+X-Received: by 2002:a05:651c:2ca:: with SMTP id f10mr24621298ljo.211.1630405305074;
+        Tue, 31 Aug 2021 03:21:45 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id d13sm1687864lfk.232.2021.08.31.03.21.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 03:21:44 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Saravana Kannan <saravanak@google.com>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 2/2] of: property: fw_devlink: Set 'optional_con_dev' for parse_power_domains
+Date:   Tue, 31 Aug 2021 12:21:41 +0200
+Message-Id: <20210831102141.624725-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kavyasree Kotagiri <Kavyasree.Kotagiri@microchip.com>
+The power-domain DT bindings [1] doesn't enforce a compatible string for a
+provider node, even if this is common to use. In particular, when
+describing a hierarchy with parent/child power-domains, as the psci DT
+bindings [2] for example, it's sometimes not applicable to use a compatible
+string.
 
-This patch introduces Microchip LAN966X ARMv7 based SoC family
-of multiport gigabit AVB/TSN-capable ethernet switches.
-It supports two SKUs: 4-port LAN9662 with multiprotocol
-processing support and 8-port LAN9668 switch.
+Therefore, let's set the 'optional_con_dev' to true to avoid creating
+incorrect fw_devlinks for power-domains.
 
-LAN966X includes copper and serial ethernet interfaces,
-peripheral interfaces such as PCIe, USB, TWI, SPI, UART, QSPI,
-SD/eMMC, Parallel Interface (PI) as well as synchronization
-and trigger inputs/outputs.
+[1] Documentation/devicetree/bindings/power/power-domain.yaml
+[2] Documentation/devicetree/bindings/arm/psci.yaml
 
-Signed-off-by: Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
-v1 -> v2:
-- Removed lan966x_dt_device_init().
-  System boots fine without this function.
 
- arch/arm/mach-at91/Kconfig   | 13 +++++++++++++
- arch/arm/mach-at91/Makefile  |  1 +
- arch/arm/mach-at91/lan966x.c | 25 +++++++++++++++++++++++++
- 3 files changed, 39 insertions(+)
- create mode 100644 arch/arm/mach-at91/lan966x.c
+Some more details of what goes on here. I have added a debug print in
+of_link_to_phandle() to see the fw_devlinks that gets created.
 
-diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
-index ccd7e80ce943..06cb425af761 100644
---- a/arch/arm/mach-at91/Kconfig
-+++ b/arch/arm/mach-at91/Kconfig
-@@ -122,6 +122,14 @@ config SOC_SAM9X60
- 	help
- 	  Select this if you are using Microchip's SAM9X60 SoC
- 
-+config SOC_LAN966X
-+	bool "ARMv7 based Microchip LAN966X SoC family"
-+	depends on ARCH_MULTI_V7
-+	select SOC_LAN966
-+	select DW_APB_TIMER_OF
-+	help
-+	  This enables support for ARMv7 based Microchip LAN966X SoC family.
-+
- comment "Clocksource driver selection"
- 
- config ATMEL_CLOCKSOURCE_PIT
-@@ -188,6 +196,11 @@ config SOC_SAMA5
- 	select SOC_SAM_V7
- 	select SRAM if PM
- 
-+config SOC_LAN966
-+	bool
-+	select ARM_GIC
-+	select MEMORY
-+
- config ATMEL_PM
- 	bool
- 
-diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
-index f565490f1b70..93cfd5b4e6d4 100644
---- a/arch/arm/mach-at91/Makefile
-+++ b/arch/arm/mach-at91/Makefile
-@@ -6,6 +6,7 @@
- # CPU-specific support
- obj-$(CONFIG_SOC_AT91RM9200)	+= at91rm9200.o
- obj-$(CONFIG_SOC_AT91SAM9)	+= at91sam9.o
-+obj-$(CONFIG_SOC_LAN966X)	+= lan966x.o
- obj-$(CONFIG_SOC_SAM9X60)	+= sam9x60.o
- obj-$(CONFIG_SOC_SAMA5)		+= sama5.o
- obj-$(CONFIG_SOC_SAMV7)		+= samv7.o
-diff --git a/arch/arm/mach-at91/lan966x.c b/arch/arm/mach-at91/lan966x.c
-new file mode 100644
-index 000000000000..154d616569ae
---- /dev/null
-+++ b/arch/arm/mach-at91/lan966x.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Setup code for LAN966X
-+ *
-+ * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
-+ *
-+ */
-+
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+
-+#include <asm/mach/arch.h>
-+#include <asm/system_misc.h>
-+
-+#include "generic.h"
-+
-+static const char *const lan966x_dt_board_compat[] __initconst = {
-+	"microchip,lan966x",
-+	NULL
-+};
-+
-+DT_MACHINE_START(lan966x_dt, "Microchip LAN966X")
-+	/* Maintainer: Microchip */
-+	.dt_compat	= lan966x_dt_board_compat,
-+MACHINE_END
+This is what happens on Dragonboard 410c when 'optional_con_dev' isn't set:
+...
+[    0.041274] device: 'psci': device_add
+[    0.041366] OF: Linking power-domain-cpu0 (consumer) to psci (supplier)
+[    0.041395] OF: Linking power-domain-cpu1 (consumer) to psci (supplier)
+[    0.041423] OF: Linking power-domain-cpu2 (consumer) to psci (supplier)
+[    0.041451] OF: Linking power-domain-cpu3 (consumer) to psci (supplier)
+[    0.041494] device: 'platform:psci--platform:psci': device_add
+[    0.041556] platform psci: Linked as a sync state only consumer to psci
+...
+
+This is what happens on Dragonboard 410c when 'optional_con_dev' is set:
+...
+[    0.041179] device: 'psci': device_add
+[    0.041265] OF: Not linking psci to psci - is descendant
+[    0.041293] OF: Not linking psci to psci - is descendant
+[    0.041319] OF: Not linking psci to psci - is descendant
+[    0.041346] OF: Not linking psci to psci - is descendant
+...
+
+The relevant dtsi file:
+arch/arm64/boot/dts/qcom/msm8916.dtsi
+
+Kind regards
+Ulf Hansson
+
+---
+ drivers/of/property.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index 2babb1807228..4d607fdbea24 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1356,7 +1356,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+ 	{ .parse_prop = parse_io_channels, },
+ 	{ .parse_prop = parse_interrupt_parent, },
+ 	{ .parse_prop = parse_dmas, .optional = true, },
+-	{ .parse_prop = parse_power_domains, },
++	{ .parse_prop = parse_power_domains, .optional_con_dev = true, },
+ 	{ .parse_prop = parse_hwlocks, },
+ 	{ .parse_prop = parse_extcon, },
+ 	{ .parse_prop = parse_nvmem_cells, },
 -- 
-2.17.1
+2.25.1
 
