@@ -2,151 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC283FC94B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4954F3FC955
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbhHaODp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:03:45 -0400
-Received: from mail-oo1-f51.google.com ([209.85.161.51]:40476 "EHLO
-        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233466AbhHaODj (ORCPT
+        id S232699AbhHaOEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:04:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32666 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234135AbhHaOEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:03:39 -0400
-Received: by mail-oo1-f51.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so5684226ooh.7;
-        Tue, 31 Aug 2021 07:02:44 -0700 (PDT)
+        Tue, 31 Aug 2021 10:04:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630418629;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KUyHspkViTFXqWZ8iiKYwCb9orAa774mgXoDDK5r4uw=;
+        b=WqsQDup4oIkAwSVcrxyFkyhstktgWS3P4i3EQFKkevMUU03f+E5qOuRz4ZGCgTEAsGAP2Z
+        jm29Dn1dliulugZvKqpYlRvF9/wVrvn4r72THwudH7fzT1UtdKPZIuDi/VUFP88bn05zNi
+        kPQZUg8jef3sI3Ilcwh7tchl+BwE5+Q=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-392-_RheEACdOr-Klsja1AhkWg-1; Tue, 31 Aug 2021 10:03:48 -0400
+X-MC-Unique: _RheEACdOr-Klsja1AhkWg-1
+Received: by mail-wm1-f70.google.com with SMTP id u1-20020a05600c210100b002e74fc5af71so6025050wml.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:03:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=siSurg9Mj4lOmhFCOYxSAG/uyAcqicBKkSE3YXG7CoY=;
-        b=YnzZXXM/FlWOqHDA+AuA6UXJcv9Fgk+K3g2LscfAJP3FPCr9IPe/JPS/Tm5pgKB9Yu
-         PsM7vEoEEdfR0YRZfZD0HAXbHe7fHMkkpoNay9P0/i5o9GhcTTyYMnybYpT4avLSRpdd
-         p7jIJ4Hb6trokkMhGHp8jpQFBkp2nVgRUtV1ywuA0BeTZXCWtHk3iuCp82aei/JsIg85
-         j64rOU/XyrxMyOReZ1N8C4/sO1xtJqBigDnpkWzkXTgcNpMs2fc8x8AU76u6X7RUFE0U
-         YN6yr76GMzh+33G8uCWmySU0NHpigbD7CWYk7HUn8DUsc0vgi5V7Q+1HizyQ65RWnT2T
-         m1UA==
-X-Gm-Message-State: AOAM533w5v6dvtpZCEnLmG3D6AohVJQqi2rPV0+VdpzvPkxCcgVze4bz
-        rov/LEVr9QO+MWSXzycdug==
-X-Google-Smtp-Source: ABdhPJyUxmnfU7FI1daQ0AqrjWJ2CDyymFn+KqhOXS1I4AGy5V1YBoicf4L8ANNGXG/oe0lvmENqEQ==
-X-Received: by 2002:a4a:e907:: with SMTP id z7mr14641574ood.20.1630418563544;
-        Tue, 31 Aug 2021 07:02:43 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id w23sm3900313otk.56.2021.08.31.07.02.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 07:02:42 -0700 (PDT)
-Received: (nullmailer pid 79946 invoked by uid 1000);
-        Tue, 31 Aug 2021 14:02:42 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Navin Sankar Velliangiri <navin@linumiz.com>
-Cc:     a.zummo@towertech.it, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alexandre.belloni@bootlin.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <20210831074922.273809-1-navin@linumiz.com>
-References: <20210831074922.273809-1-navin@linumiz.com>
-Subject: Re: [PATCH] rtc: bq32000: Add TI BQ32002 compatible
-Date:   Tue, 31 Aug 2021 09:02:42 -0500
-Message-Id: <1630418562.136316.79945.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=KUyHspkViTFXqWZ8iiKYwCb9orAa774mgXoDDK5r4uw=;
+        b=TUQaC0sol3KpVamxph7C9qXHgpuPDVVtabUAopRKxqKT3LhNWI3pcKQBN4FxsDgViw
+         oRPfIVJDj5FHd2Majku7g3oFBlwfAOAAC0UuRWujZ5pFMnCPo5gDnmdyxmCUCyBfSVND
+         hHBLw95vNsF2fb8fjcTHsNIhVmduJM6famZwZCjwAmP1QlBCv60eI5g4K3YJ3k8XwF6S
+         AVTwNh3uxBB/SC2T6pqvHfQrUU3DbtYKinIiqwzmgysi8tNf3sV4yYgRxRPfIQSznKlq
+         4qI7uNTj8IgbmDLxrky3f9r1hZOCJkX/ycKKQ79t7LKtt3WNvCO0EBC/cZ5stsNAdCkE
+         h15w==
+X-Gm-Message-State: AOAM530b+Id7Qxn4dS63P+AzYBjHvynU3zS4dxNaWyAblOUxPjz1oWqN
+        L7zFo3sqKzZ04nlHOMBpNiAu51i9JLrosDuD56FgUdQEp/RQ/m+UszcKqHve/WPtsC0vABmicro
+        NNcmbZNoMLaqVLukMu1Em2Fm9
+X-Received: by 2002:a7b:cb44:: with SMTP id v4mr4482991wmj.169.1630418626902;
+        Tue, 31 Aug 2021 07:03:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyQxgsAwqewPXBe3d+wAvlhesHNv1NlxeMEIDzWug8SQcboJNjWJ6G41AqWjlU9NYpwI5Aafw==
+X-Received: by 2002:a7b:cb44:: with SMTP id v4mr4482961wmj.169.1630418626624;
+        Tue, 31 Aug 2021 07:03:46 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23bf5.dip0.t-ipconnect.de. [79.242.59.245])
+        by smtp.gmail.com with ESMTPSA id a10sm2518234wmj.44.2021.08.31.07.03.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 07:03:46 -0700 (PDT)
+Subject: Re: [PATCH v3 2/3] s390x: KVM: Implementation of Multiprocessor
+ Topology-Change-Report
+To:     Pierre Morel <pmorel@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
+        thuth@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com
+References: <1627979206-32663-1-git-send-email-pmorel@linux.ibm.com>
+ <1627979206-32663-3-git-send-email-pmorel@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <4d462f11-2990-6799-75e5-add0c39f9563@redhat.com>
+Date:   Tue, 31 Aug 2021 16:03:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <1627979206-32663-3-git-send-email-pmorel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 13:19:22 +0530, Navin Sankar Velliangiri wrote:
-> The TI BQ32002 is software compatible with the TI BQ32000,
-> add DT compatible entries
+On 03.08.21 10:26, Pierre Morel wrote:
+> We let the userland hypervisor know if the machine support the CPU
+> topology facility using a new KVM capability: KVM_CAP_S390_CPU_TOPOLOGY.
 > 
-> Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
+> The PTF instruction will report a topology change if there is any change
+> with a previous STSI_15_2 SYSIB.
+> Changes inside a STSI_15_2 SYSIB occur if CPU bits are set or clear
+> inside the CPU Topology List Entry CPU mask field, which happens with
+> changes in CPU polarization, dedication, CPU types and adding or
+> removing CPUs in a socket.
+> 
+> The reporting to the guest is done using the Multiprocessor
+> Topology-Change-Report (MTCR) bit of the utility entry of the guest's
+> SCA which will be cleared during the interpretation of PTF.
+> 
+> To check if the topology has been modified we use a new field of the
+> arch vCPU to save the previous real CPU ID at the end of a schedule
+> and verify on next schedule that the CPU used is in the same socket.
+> 
+> We deliberatly ignore:
+> - polarization: only horizontal polarization is currently used in linux.
+> - CPU Type: only IFL Type are supported in Linux
+> - Dedication: we consider that only a complete dedicated CPU stack can
+>    take benefit of the CPU Topology.
+> 
+> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
 > ---
->  Documentation/devicetree/bindings/rtc/ti,bq32000.yaml | 11 +++++++++++
->  drivers/rtc/rtc-bq32k.c                               |  2 ++
->  2 files changed, 13 insertions(+)
+>   arch/s390/include/asm/kvm_host.h | 14 +++++++---
+>   arch/s390/kvm/kvm-s390.c         | 48 +++++++++++++++++++++++++++++++-
+>   arch/s390/kvm/vsie.c             |  3 ++
+>   include/uapi/linux/kvm.h         |  1 +
+>   4 files changed, 61 insertions(+), 5 deletions(-)
 > 
+> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
+> index 9b4473f76e56..b7effdc96a7a 100644
+> --- a/arch/s390/include/asm/kvm_host.h
+> +++ b/arch/s390/include/asm/kvm_host.h
+> @@ -95,15 +95,19 @@ struct bsca_block {
+>   	union ipte_control ipte_control;
+>   	__u64	reserved[5];
+>   	__u64	mcn;
+> -	__u64	reserved2;
+> +#define ESCA_UTILITY_MTCR	0x8000
+> +	__u16	utility;
+> +	__u8	reserved2[6];
+>   	struct bsca_entry cpu[KVM_S390_BSCA_CPU_SLOTS];
+>   };
+>   
+>   struct esca_block {
+>   	union ipte_control ipte_control;
+> -	__u64   reserved1[7];
+> +	__u64   reserved1[6];
+> +	__u16	utility;
+> +	__u8	reserved2[6];
+>   	__u64   mcn[4];
+> -	__u64   reserved2[20];
+> +	__u64   reserved3[20];
+>   	struct esca_entry cpu[KVM_S390_ESCA_CPU_SLOTS];
+>   };
+>   
+> @@ -228,7 +232,7 @@ struct kvm_s390_sie_block {
+>   	__u8	icptcode;		/* 0x0050 */
+>   	__u8	icptstatus;		/* 0x0051 */
+>   	__u16	ihcpu;			/* 0x0052 */
+> -	__u8	reserved54;		/* 0x0054 */
+> +	__u8	mtcr;			/* 0x0054 */
+>   #define IICTL_CODE_NONE		 0x00
+>   #define IICTL_CODE_MCHK		 0x01
+>   #define IICTL_CODE_EXT		 0x02
+> @@ -246,6 +250,7 @@ struct kvm_s390_sie_block {
+>   #define ECB_TE		0x10
+>   #define ECB_SRSI	0x04
+>   #define ECB_HOSTPROTINT	0x02
+> +#define ECB_PTF		0x01
+>   	__u8	ecb;			/* 0x0061 */
+>   #define ECB2_CMMA	0x80
+>   #define ECB2_IEP	0x20
+> @@ -747,6 +752,7 @@ struct kvm_vcpu_arch {
+>   	bool skey_enabled;
+>   	struct kvm_s390_pv_vcpu pv;
+>   	union diag318_info diag318_info;
+> +	int prev_cpu;
+>   };
+>   
+>   struct kvm_vm_stat {
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index b655a7d82bf0..ff6d8a2b511c 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -568,6 +568,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>   	case KVM_CAP_S390_VCPU_RESETS:
+>   	case KVM_CAP_SET_GUEST_DEBUG:
+>   	case KVM_CAP_S390_DIAG318:
+> +	case KVM_CAP_S390_CPU_TOPOLOGY:
+>   		r = 1;
+>   		break;
+>   	case KVM_CAP_SET_GUEST_DEBUG2:
+> @@ -819,6 +820,23 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+>   		icpt_operexc_on_all_vcpus(kvm);
+>   		r = 0;
+>   		break;
+> +	case KVM_CAP_S390_CPU_TOPOLOGY:
+> +		mutex_lock(&kvm->lock);
+> +		if (kvm->created_vcpus) {
+> +			r = -EBUSY;
+> +		} else {
+> +			set_kvm_facility(kvm->arch.model.fac_mask, 11);
+> +			set_kvm_facility(kvm->arch.model.fac_list, 11);
+> +			r = 0;
+> +		}
+> +		mutex_unlock(&kvm->lock);
+> +		VM_EVENT(kvm, 3, "ENABLE: CPU TOPOLOGY %s",
+> +			 r ? "(not available)" : "(success)");
+> +		break;
+> +
+> +		r = -EINVAL;
+> +		break;
+> +
+>   	default:
+>   		r = -EINVAL;
+>   		break;
+> @@ -3067,18 +3085,41 @@ __u64 kvm_s390_get_cpu_timer(struct kvm_vcpu *vcpu)
+>   	return value;
+>   }
+>   
+> -void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+> +static void kvm_s390_set_mtcr(struct kvm_vcpu *vcpu)
+>   {
+> +	struct esca_block *esca = vcpu->kvm->arch.sca;
+> +
+> +	if (vcpu->arch.sie_block->ecb & ECB_PTF) {
+> +		ipte_lock(vcpu);
+> +		WRITE_ONCE(esca->utility, ESCA_UTILITY_MTCR);
+> +		ipte_unlock(vcpu);
+> +	}
+> +}
+>   
+> +void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+> +{
+>   	gmap_enable(vcpu->arch.enabled_gmap);
+>   	kvm_s390_set_cpuflags(vcpu, CPUSTAT_RUNNING);
+>   	if (vcpu->arch.cputm_enabled && !is_vcpu_idle(vcpu))
+>   		__start_cpu_timer_accounting(vcpu);
+>   	vcpu->cpu = cpu;
+> +
+> +	/*
+> +	 * With PTF interpretation the guest will be aware of topology
+> +	 * change by the Multiprocessor Topology-Change-Report is pending.
+> +	 * Check for reasons to make the MTCR pending and make it pending.
+> +	 */
+> +	if ((vcpu->arch.sie_block->ecb & ECB_PTF) &&
+> +	    cpu != vcpu->arch.prev_cpu) {
+> +		if (cpu_topology[cpu].socket_id !=
+> +		    cpu_topology[vcpu->arch.prev_cpu].socket_id)
+> +			kvm_s390_set_mtcr(vcpu);
+> +	}
+>   }
+>   
+>   void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+>   {
+> +	vcpu->arch.prev_cpu = vcpu->cpu;
+>   	vcpu->cpu = -1;
+>   	if (vcpu->arch.cputm_enabled && !is_vcpu_idle(vcpu))
+>   		__stop_cpu_timer_accounting(vcpu);
+> @@ -3198,6 +3239,11 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu *vcpu)
+>   		vcpu->arch.sie_block->ecb |= ECB_HOSTPROTINT;
+>   	if (test_kvm_facility(vcpu->kvm, 9))
+>   		vcpu->arch.sie_block->ecb |= ECB_SRSI;
+> +
+> +	/* PTF needs both host and guest facilities to enable interpretation */
+> +	if (test_kvm_facility(vcpu->kvm, 11) && test_facility(11))
+> +		vcpu->arch.sie_block->ecb |= ECB_PTF;
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-yamllint warnings/errors:
+Again, doesn't test_kvm_facility(vcpu->kvm, 11) imply that we have host 
+support by checking fac_mask?
 
-dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/rtc/ti,bq32000.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
-    return self.construct_document(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
-    for _dummy in generator:
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
-    value = self.construct_mapping(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
-    return BaseConstructor.construct_mapping(self, node, deep=deep)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
-    if self.check_mapping_key(node, key_node, mapping, key, value):
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
-    raise DuplicateKeyError(*args)
-ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
-  in "<unicode string>", line 17, column 5
-found duplicate key "const" with value "ti,bq32002" (original value: "ti,bq32000")
-  in "<unicode string>", line 18, column 5
+-- 
+Thanks,
 
-To suppress this check see:
-    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
-
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/rtc/ti,bq32000.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-doc-validate", line 25, in check_doc
-    testtree = dtschema.load(filename, line_number=line_number)
-  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 623, in load
-    return yaml.load(f.read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
-    return self.construct_document(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
-    for _dummy in generator:
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
-    value = self.construct_mapping(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
-    return BaseConstructor.construct_mapping(self, node, deep=deep)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
-    if self.check_mapping_key(node, key_node, mapping, key, value):
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
-    raise DuplicateKeyError(*args)
-ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
-  in "<unicode string>", line 17, column 5
-found duplicate key "const" with value "ti,bq32002" (original value: "ti,bq32000")
-  in "<unicode string>", line 18, column 5
-
-To suppress this check see:
-    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
-
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-doc-validate", line 67, in <module>
-    ret = check_doc(f)
-  File "/usr/local/bin/dt-doc-validate", line 30, in check_doc
-    print(filename + ":", exc.path[-1], exc.message, file=sys.stderr)
-AttributeError: 'DuplicateKeyError' object has no attribute 'path'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/rtc/ti,bq32000.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/rtc/ti,bq32000.yaml
-make: *** [Makefile:1419: dt_binding_check] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1522467
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+David / dhildenb
 
