@@ -2,203 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598F83FC6CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9AA3FC6D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241588AbhHaLvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 07:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbhHaLvy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 07:51:54 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F0AC061575;
-        Tue, 31 Aug 2021 04:50:59 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id m9so2805347wrb.1;
-        Tue, 31 Aug 2021 04:50:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=KeTUAwtb7J7R1GnrmeTkWgueRyZh566eMg2APxrUefE=;
-        b=RyuJpEaqHtTq8s9f6CYcKcHnM+aBAi6QaUzHWiErBMoEwWr4ipUUOF8YKLUJcfOdso
-         zxnd7jfx2+QPjLHoDSfVs8aC4Sdxohs5Seg/zKQb8sa8QAA9996TEbgwGj6N2hvBMMtD
-         qlfYy1IfSSt12zV6OAqD+jvV8F2mgpdYZOAQu8fTIZrM/xOXPYMbUVH+x2GuZ8+Ic0uL
-         XpAkE/jXreho9tvqiUxZxwxtu0ktcDDN7jWeeFaF3vUEKBomo7Mkl7uFAgi+UIv+jVY2
-         RZZzx8RJtNNO0pUxUmYeT2ZLQryiaDL9bJbgpqqir34+7ewlPdUz+PBxFESSytajiQoE
-         6syg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KeTUAwtb7J7R1GnrmeTkWgueRyZh566eMg2APxrUefE=;
-        b=UM4MHkIxhRRpG6K+hVw/9BEJC9PxgoZscVkbvdswMfrbWLIxp4/0BAVWabvjoXyPLB
-         y2dYvQfMHJ8Zaf1fSwu+g5ptG8Cth7S/fXy3mjaZ15rpYdg2Fi6/ZoLJl/e+hQ61JggW
-         g2Bt+39KYqIH4oIP92HJi2SWAGhOEJ2apJurqByy7YkhM3HxKjU9UnZ9KzFy2WuPVtQV
-         98CKqNvg/w5f1/7X0yER+8TPyewYgPVrL6sQeJdGdn1xzAiNaLRHUer1d99ve7TUmj5z
-         8s0V4g7SgpUK7mute0Xnh9h57mRKYvX7Q3mG8h0kXwPMKlGlrTjUwZ7mhqhXBHiEZKEs
-         kmYg==
-X-Gm-Message-State: AOAM533NIiKJ26ChcbFNaH49ICU33/eb7m947Fs7Des4iXXdBIzaX6Fb
-        yM/010GWXyR+RjtY2ZC/XsI=
-X-Google-Smtp-Source: ABdhPJzHX3wJcvV7IXBOUTZBByZLmoHRN2UpdiDbFmEhbDQ5J57Sg0e0YcoMCk+a2qTYBLeD2pbQ0g==
-X-Received: by 2002:adf:9f0c:: with SMTP id l12mr32166334wrf.146.1630410657738;
-        Tue, 31 Aug 2021 04:50:57 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.133.138])
-        by smtp.gmail.com with ESMTPSA id x9sm2199164wmi.30.2021.08.31.04.50.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 04:50:57 -0700 (PDT)
-Subject: Re: [syzbot] general protection fault in sock_from_file
-To:     Hao Xu <haoxu@linux.alibaba.com>, Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dvyukov@google.com,
-        io-uring@vger.kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-References: <00000000000059117905cacce99e@google.com>
- <7949b7a0-fec1-34a7-aaf5-cbe07c6127ed@kernel.dk>
- <d881d3fa-4df5-1862-bc2b-9420649ba3c8@linux.alibaba.com>
- <407ce02f-7a0a-4eb2-b242-188fc605012c@gmail.com>
- <6df81737-38d8-4c91-358a-79bc5d5f9074@linux.alibaba.com>
- <fb5821b5-3bb2-4c1a-acdb-816e639cb210@gmail.com>
- <6a0ac681-3741-373c-6001-20af97aa5ea8@linux.alibaba.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <66b01fec-9555-87b6-840a-ce01fd8955f1@gmail.com>
-Date:   Tue, 31 Aug 2021 12:50:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S241594AbhHaLwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 07:52:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231710AbhHaLwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 07:52:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36A8660FF2;
+        Tue, 31 Aug 2021 11:51:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630410682;
+        bh=C0oeB3ryMBhpXrSLry7MvD8AXh7RJTn6E+8tv5L4s/E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mByPGkjpZM6rTAMxnxI3z2gL3oSKjUexZWHE2Nwiui3XwKrbl9PDdMQXnq9eGEpNs
+         IduX07AG537gLUgzzLcUGsOqtWJEPfz7QdJU2/6xXGP4AOOceHPJQAtVAWwLERR6e5
+         c7/aQbObf/nEqI7EpzFUFAWjtg93DjrkFi/TH35v1lQOoKQ/mzIqkqG8JXze5xK0Dh
+         Qtk2X8bjbwj3FL9M8z/4cp82LGoa3jaVqUmEmSZxtFvGlBpp1oFNU2QwNW8tti5Lpo
+         9KlVot+XpXGIdolX5qnQQhfIP4dFeKRtu04wClb3ojZlvkEmVdXIFX6Kp//UrVXCbc
+         kryUX7KiG/0Iw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mL2IM-0001HL-AX; Tue, 31 Aug 2021 13:51:15 +0200
+Date:   Tue, 31 Aug 2021 13:51:14 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alex Elder <elder@kernel.org>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: Re: [greybus-dev] [PATCH v4] staging: greybus: Convert uart.c from
+ IDR to XArray
+Message-ID: <YS4Xsn9YNOzruq2b@hovoldconsulting.com>
+References: <20210829092250.25379-1-fmdefrancesco@gmail.com>
+ <YSyg/Db1So0LDGR+@hovoldconsulting.com>
+ <2879439.WEJLM9RBEh@localhost.localdomain>
+ <YSzGkNfG6HOayiXi@hovoldconsulting.com>
+ <YSzMB80NOkNvdjy1@casper.infradead.org>
+ <YSzQAd0Rg5CF/eLe@hovoldconsulting.com>
+ <f7a25eb1-20f4-5031-a156-9e5dc019ad28@linaro.org>
+ <YS3jSsGSs0yAw/Ba@hovoldconsulting.com>
+ <51c57831-71bf-92f8-2b20-3e542160a8bf@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <6a0ac681-3741-373c-6001-20af97aa5ea8@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51c57831-71bf-92f8-2b20-3e542160a8bf@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/21 12:48 PM, Hao Xu wrote:
-> 在 2021/8/31 下午7:26, Pavel Begunkov 写道:
->> On 8/31/21 12:05 PM, Hao Xu wrote:
->>> 在 2021/8/31 下午5:42, Pavel Begunkov 写道:
->>>> On 8/31/21 10:19 AM, Hao Xu wrote:
->>>>> 在 2021/8/31 上午10:14, Jens Axboe 写道:
->>>>>> On 8/30/21 2:45 PM, syzbot wrote:
->>>>>>> syzbot has found a reproducer for the following issue on:
->>>>>>>
->>>>>>> HEAD commit:    93717cde744f Add linux-next specific files for 20210830
->>>>>>> git tree:       linux-next
->>>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15200fad300000
->>>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=c643ef5289990dd1
->>>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=f9704d1878e290eddf73
->>>>>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
->>>>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111f5f9d300000
->>>>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1651a415300000
->>>>>>>
->>>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>>>>> Reported-by: syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com
->>>>>>>
->>>>>>> general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN
->>>>>>> KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
->>>>>>> CPU: 0 PID: 6548 Comm: syz-executor433 Not tainted 5.14.0-next-20210830-syzkaller #0
->>>>>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->>>>>>> RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
->>>>>>> Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
->>>>>>> RSP: 0018:ffffc90002caf8e8 EFLAGS: 00010206
->>>>>>> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
->>>>>>> RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
->>>>>>> RBP: ffff888019fc0780 R08: ffffffff899aee40 R09: ffffffff81e21978
->>>>>>> R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
->>>>>>> R13: 1ffff110033f80f9 R14: 0000000000000003 R15: ffff888019fc0780
->>>>>>> FS:  00000000013b5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
->>>>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>>>>>> CR2: 00000000004ae0f0 CR3: 000000001d355000 CR4: 00000000001506f0
->>>>>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>>>>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>>>>>> Call Trace:
->>>>>>>     io_sendmsg+0x98/0x640 fs/io_uring.c:4681
->>>>>>>     io_issue_sqe+0x14de/0x6ba0 fs/io_uring.c:6578
->>>>>>>     __io_queue_sqe+0x90/0xb50 fs/io_uring.c:6864
->>>>>>>     io_req_task_submit+0xbf/0x1b0 fs/io_uring.c:2218
->>>>>>>     tctx_task_work+0x166/0x610 fs/io_uring.c:2143
->>>>>>>     task_work_run+0xdd/0x1a0 kernel/task_work.c:164
->>>>>>>     tracehook_notify_signal include/linux/tracehook.h:212 [inline]
->>>>>>>     handle_signal_work kernel/entry/common.c:146 [inline]
->>>>>>>     exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->>>>>>>     exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
->>>>>>>     __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->>>>>>>     syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
->>>>>>>     do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
->>>>>>>     entry_SYSCALL_64_after_hwframe+0x44/0xae
->>>>>>> RIP: 0033:0x43fd49
->>>>>>
->>>>>> Hao, this is due to:
->>>>>>
->>>>>> commit a8295b982c46d4a7c259a4cdd58a2681929068a9
->>>>>> Author: Hao Xu <haoxu@linux.alibaba.com>
->>>>>> Date:   Fri Aug 27 17:46:09 2021 +0800
->>>>>>
->>>>>>        io_uring: fix failed linkchain code logic
->>>>>>
->>>>>> which causes some weirdly super long chains from that single sqe.
->>>>>> Can you take a look, please?
->>>>> Sure, I'm working on this.
->>>>
->>>> Ah, saw it after sending a patch. It's nothing too curious, just
->>>> a small error in logic. More interesting that we don't have a
->>>> test case covering it, we should definitely add something.
->>>>
->>> Saw your patch after coding my fix..😂
->>> Since my email client doesn't receive your patch(only saw it in
->>> webpage https://lore.kernel.org/), I put my comment here:
->>
->> Hmm, does it happen often? I'll CC you
-> Uncommon, somestimes there is delay.
->>
->>
->>>>   fs/io_uring.c | 2 ++
->>>>   1 file changed, 2 insertions(+)
->>>>
->>>> diff --git a/fs/io_uring.c b/fs/io_uring.c
->>>> index 473a977c7979..a531c7324ea8 100644
->>>> --- a/fs/io_uring.c
->>>> +++ b/fs/io_uring.c
->>>> @@ -6717,6 +6717,8 @@ static inline void io_queue_sqe(struct io_kiocb *req)
->>>>       if (likely(!(req->flags & (REQ_F_FORCE_ASYNC | REQ_F_FAIL)))) {
->>>>           __io_queue_sqe(req);
->>>>       } else if (req->flags & REQ_F_FAIL) {
->>>> +        /* fail all, we don't submit */
->>>> +        req->flags &= ~REQ_F_HARDLINK;
->>> maybe set REQ_F_LINK here?
->>
->> if (unlikely((req->flags & REQ_F_FAIL) &&
->>          !(req->flags & REQ_F_HARDLINK))) {
->>     posted |= (req->link != NULL);
->>     io_fail_links(req);
->> }
->>
->> The problem is hardlink, normal will be failed. But there is indeed
->> a problem with both patches,
->>
->> if (req->flags & (REQ_F_LINK | REQ_F_HARDLINK))
->>     // kill linked
-> Yeah, if we don't have REQ_F_LINK, io_req_complete_post() won't go to
-> the disarm branch
-
-Ah, that's what you meant, right. Good catch!
-
-
->>
->> Will resend with some tests on top
->>
->>
->>>>           io_req_complete_failed(req, req->result);
->>>>       } else {
->>>>           int ret = io_req_prep_async(req);
->>
+On Tue, Aug 31, 2021 at 05:42:20AM -0500, Alex Elder wrote:
+> On 8/31/21 3:07 AM, Johan Hovold wrote:
+> > On Mon, Aug 30, 2021 at 08:20:25AM -0500, Alex Elder wrote:
+> > 
+> >> I have been offering review feedback on this patch for three reasons:
+> >>
+> >> - First, because I think the intended change does no real harm to the
+> >>    Greybus code, and in a small way actually simplifies it.
+> > 
+> > You leave out that we've already seen three versions of the patch that
+> > broke things in various ways and that there was still work to be done
+> > with respect to the commit message and verifying the locking. That's all
+> > real costs that someone needs to bear.
 > 
+> This is true.  But it's separate from my reason for doing it,
+> and unrelated to the suggested change.
 
--- 
-Pavel Begunkov
+I was perhaps reading the "no harm" bit too literally, but I'd say it
+very much applies to the suggested change (which was the example I
+used).
+
+> >> - Because I wanted to encourage Fabio's efforts to be part of the
+> >>    Linux contributor community.
+> > 
+> > Helping new contributers that for example have run into a bug or need
+> > some assistance adding a new feature that they themselves have use for
+> > is one thing.
+> > 
+> > I'm not so sure we're helping either newcomers or Linux long term by
+> > inventing work for an already strained community however.
+> > 
+> > [ This is more of a general comment and of course in no way a critique
+> >    against Fabio or a claim that the XArray conversions are pointless. ]
+> 
+> Yes, yours is a general comment.  But I would characterize
+> this as Fabio "scratching an itch" rather than "inventing
+> new work."
+
+Just to clarify again, my comment was in no way directed at Fabio or
+not necessarily even at the XArray conversions if it indeed means that
+IDR/IDA can be removed.
+
+> The strained community needs more helpers, and
+> they don't suddenly appear fully-formed; they need to be
+> cultivated.  There's a balance to strike between "I see
+> you need a little guidance here" and "go away and come
+> back when you know how to do it right."
+
+And here's where I think the invented work bit really comes in. I have
+no problem helping someone fix a real problem or add a feature they
+need, but spending hours on reviewing changes that in the end no one
+needs I find a bit frustrating. My guess is that the former is also more
+likely to generate long-term contributors than teaching people C on
+made-up tasks or asking them to silence checkpatch.pl indentation
+warnings.
+
+> In any case, I don't disagree with your general point, but
+> we seem to view this particular instance differently.
+
+Perhaps I shouldn't have brought up the general issue in this case. If
+there was a general consensus that IDR was going away and some
+precedence outside of staging that could be used as a model, then this
+change would be fine.
+
+Johan
