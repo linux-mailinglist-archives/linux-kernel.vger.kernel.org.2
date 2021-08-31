@@ -2,99 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9073FCE05
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940283FCE0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbhHaTvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:51:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57746 "EHLO mail.kernel.org"
+        id S241003AbhHaTxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:53:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230008AbhHaTvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:51:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7075160FE6;
-        Tue, 31 Aug 2021 19:50:25 +0000 (UTC)
+        id S232241AbhHaTxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 15:53:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D5AAE61059;
+        Tue, 31 Aug 2021 19:52:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630439425;
-        bh=ekHRx31xM7F0lGz1VDIoOTtbt1ej1vJeqD8rSC0v11U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XViDsM1Wyg0Ma+Qekrqx4vg4No3lgCD3GyUoAgVAeQy+FFTRUZVYnwrkfw63ua8nc
-         apcjV4sJDHSWGkFhCfukmsjyLJwN5eOBMzrhHnkusyMKF9SDL332oTUk8qhtmE6Gii
-         VRXx9TyipzApKPODqD+ir57qsMO4XEE7B12VI3wxSItc1tlsVhkxyeJf+Zz77e2DIx
-         tu7ILb+mjvv3I/Roynx4Dg7ytD7HhZAkM1AJeZuW7yzdS9UcLR3SSBmiFQvID+1ynt
-         YChg98MAiRff6OQv/+JfzIqmvAZXlKOAUZk6lXVb9zwfbjYDMYaXQ8liKStBdLv3ZV
-         N7EWauc3U0G7g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2D9754007E; Tue, 31 Aug 2021 16:50:22 -0300 (-03)
-Date:   Tue, 31 Aug 2021 16:50:22 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>,
-        Song Liu <songliubraving@fb.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFC PATCH v1 23/37] perf evsel: move bpf_counter__install_pe to
- success path in evsel__open_cpu
-Message-ID: <YS6H/hiBHVMxWeQR@kernel.org>
-References: <cover.1629490974.git.rickyman7@gmail.com>
- <64f8a1b0a838a6e6049cd43c1beafd432999ae57.1629490974.git.rickyman7@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64f8a1b0a838a6e6049cd43c1beafd432999ae57.1629490974.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+        s=k20201202; t=1630439564;
+        bh=NXeM58bBdRNZl6g/+Nhv9FCzBl5YSDlYvb5psbhBkrc=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=bX5cq7TpO2XfZjHQ350AstOc6I7fYwnMcDr8bTlv4ypOQkef0Xxj4jM13QKY+gNTV
+         3tSVMAY8BPFCLGHK0tmThK8kGJ++7pPQSu6qTPb/CCm4qa8fM7wZf+GC98Ivtl29DD
+         RRnDMwNpJGtBIG2DqQB6qI71gStji2W7paiEDATx5dllGMBsC/l85QRPV21Wyo6TBU
+         gQ0Jozu10H5E25XJml7YYwTo7c6Dm8jUpSHMwhuamhW2Ou4zD7W8r3vRWacy3tVpT+
+         hGriZ43O+Yj8uUFpZaLFq21Hv/kYb46DwK9T85WganinyLfDte0BrzS8nBCJLG+9Dv
+         muxsb4ThSFoaw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D12336097A;
+        Tue, 31 Aug 2021 19:52:44 +0000 (UTC)
+Subject: Re: [GIT PULL] close_range updates
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210831100239.2297934-1-christian.brauner@ubuntu.com>
+References: <20210831100239.2297934-1-christian.brauner@ubuntu.com>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210831100239.2297934-1-christian.brauner@ubuntu.com>
+X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/fs.close_range.v5.15
+X-PR-Tracked-Commit-Id: 03ba0fe4d09f2eb0a91888caaa057ed67462ae2d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 927bc120a248b658acc2f5206ec4e81a794d8a57
+Message-Id: <163043956485.8865.15505757350277339044.pr-tracker-bot@kernel.org>
+Date:   Tue, 31 Aug 2021 19:52:44 +0000
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Aug 21, 2021 at 11:19:29AM +0200, Riccardo Mancini escreveu:
-> I don't see why bpf_counter__install_pe should get called even if fd=-1,
-> so I'm moving it to the success path.
-> 
-> This will be useful in following patches to separate the actual open and
-> the related operations from the fallback mechanisms.
+The pull request you sent on Tue, 31 Aug 2021 12:02:39 +0200:
 
-Looks sane, applied.
+> git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/fs.close_range.v5.15
 
-Next time please use git blame to find the author and add him to the CC
-list, like I just did, so that the mistery can be unveiled or a duh!
-uttered :-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/927bc120a248b658acc2f5206ec4e81a794d8a57
 
-- Arnaldo
- 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/util/evsel.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index d2b0391569286080..3e556afed8dd396c 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -2009,8 +2009,6 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  
->  			FD(evsel, cpu, thread) = fd;
->  
-> -			bpf_counter__install_pe(evsel, cpu, fd);
-> -
->  			if (fd < 0) {
->  				err = -errno;
->  
-> @@ -2019,6 +2017,8 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  				goto try_fallback;
->  			}
->  
-> +			bpf_counter__install_pe(evsel, cpu, fd);
-> +
->  			if (unlikely(test_attr__enabled)) {
->  				test_attr__open(&evsel->core.attr, pid, cpus->map[cpu],
->  						fd, group_fd, evsel->open_flags);
-> -- 
-> 2.31.1
+Thank you!
 
 -- 
-
-- Arnaldo
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
