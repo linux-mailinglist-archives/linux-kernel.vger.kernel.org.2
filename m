@@ -2,171 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF67B3FCBF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079FB3FCBFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240031AbhHaRBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 13:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239889AbhHaRBd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 13:01:33 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37397C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:00:37 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id r4so36431486ybp.4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:00:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i8PcX2+XWTTfkBhJlaSnXEKAq4tUSIhCVzkx3+YPIzQ=;
-        b=Nxy18LRSUwEYVA5DTKMZAvL4rAk1tRd5SCwCgy3kPwmFcVczamy4c0w8t80hPz1I/f
-         8oOKJSQS8NIvS/huWDDoCBky8SREsb/slcloX8HAqtlcTraI1PlIeKH/xoU347db2UgF
-         eabJg2g/87Heihsq4Usegv+QuGs2SMEnntgqucDklj+OFjAgF3q2pg5JzMYve6GONNS5
-         sFJdlF0RhkvU8VAqHItEVl1SjXA38WyW09y6fjdnVfjszkOKmafamigdLLJdnxZtoFth
-         4+nsV8f0/SqIHX9ShTWLwWECxxvaUdpANLuzGdduu2672mr3I34VfIZJjXwyDJM2nt7P
-         GyWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i8PcX2+XWTTfkBhJlaSnXEKAq4tUSIhCVzkx3+YPIzQ=;
-        b=QZmhmPX5hPovTOUb7EFj7OFUIjnER7kwLLlwHWr0UvGVuXB1gm6o+oq3/vbOeWnvYP
-         D5LEbm/PzMrHr0SIsw0nyFcudBF3g0A8eSySj0mRiNRy3KLfbZBzXwfwJrh+a7o+V7C5
-         nCa4+6hWE8SL29nrlCeOugDHK/xoMFVqXskjH6o6Hi8HJ4iRpjLtJL8Bt2bf3jynFi1N
-         W3TEaI3EuZKd6J9ssOcunB9sUd9FWALdgAwQ1gRirVG6gXrXoPjXYWNN+mpt/rLHFsPL
-         j59jkkR3nlxEBrjRL0uDicYcgjSrmSt/rSJkvAwIPr99SlJuYeeNDGcyI8HoeWfnk8Xt
-         BmvA==
-X-Gm-Message-State: AOAM532R9yUbLOEvRPHEMJ0bWp2O72L57B/q0vARpW+gr/ESAM24cvVw
-        ZSSuxFlfZp0OAibzpZ/i5GkVHsMBZaZ4s2VV5LctVw==
-X-Google-Smtp-Source: ABdhPJyf9scnnsIgG/atu8659uQZbS+IseYKqkkKL5AGE9MW5L/11vKlLX+Muk/K6RFkSJiRqA7sQEPY8pv9w5+F+jw=
-X-Received: by 2002:a25:6746:: with SMTP id b67mr33221625ybc.96.1630429236196;
- Tue, 31 Aug 2021 10:00:36 -0700 (PDT)
+        id S240387AbhHaRCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 13:02:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238215AbhHaRCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 13:02:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37EE060FC3;
+        Tue, 31 Aug 2021 17:01:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630429308;
+        bh=wqILHNFsZnQ1YUeuBEg5b2/CPkm/zZ3cKjXYEtPPTGE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GYulEa18IW84f60wqT9n1+oCYVcnhUACoA9lxMi5Du8zB45gz6V5BIsRoGpy1Xv3E
+         XFBkRHG3kNPeeuQkn94rGNaPSAMv8cqFuIklFmOtLKLjJoLBpVFhbJaWav0af9Hm9M
+         AhiPNBptAYtFo6jqXtLlM7A7byxCABFsBEY2JJE1etxjl/sHO+b2Rg4BRr9nXcViho
+         mg2V3G5Yp5WYJmRfQ1VtoEwqlWXpjtdkBSfdO/JnmeepcjR6mKENajm0+d0LYH0ane
+         C+VdVbUELpudEMrToU1A2JdG2kMCZHStiH9EY05kVPGOQP+0kY4Tyj0+NdP/BzjoMt
+         Z2JM6OFbSJvtw==
+Date:   Tue, 31 Aug 2021 10:01:47 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de, hsiangkao@linux.alibaba.com
+Subject: [GIT PULL] iomap: new code for 5.15
+Message-ID: <20210831170147.GB9959@magnolia>
 MIME-Version: 1.0
-References: <CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com>
-In-Reply-To: <CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 31 Aug 2021 09:59:58 -0700
-Message-ID: <CAGETcx8JDR+5Aj2uwnQJ9sL+8-p=Cxix+P4sP8-ygMQ8_2AcXA@mail.gmail.com>
-Subject: Re: [RFD] drivers: base: A driver's ->sync_state() callback don't get called
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 6:56 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> Hi Saravana, Rafael, Stephen,
->
-> I have observed an issue with a driver's  ->sync_state() callback that
-> doesn't get called, even if consumers/supplier device links conditions
-> should have been satisfied. I have narrowed down the problem, but I am
-> not sure what is the best solution to fix it, hence I am turning to
-> you for some discussion/advice.
->
-> I have two test platform drivers, one that matches on the
-> "test,pm-domains-test" compatible string (this driver also has the
-> ->sync_state() callback assigned) and another driver that matches on
-> "test,runtime-pm-test".
->
-> This is the relevant part in my DTS file:
->
->        pm_domain_test {
->                 compatible = "test,pm-domains-test";
->
->                 pdParent: power-domain-parent {
->                         #power-domain-cells = <0>;
->                 };
->
->                 pdChild: power-domain-child {
->                         #power-domain-cells = <0>;
->                         power-domains = <&pdParent>;
->                 };
->         };
->
->         soctest: soctest {
->                 compatible = "simple-bus";
->
->                 rpmtest0 {
->                         compatible = "test,runtime-pm-test";
->                         power-domains = <&pdParent>;
->                 };
->         };
->
-> During boot the fw_devlinks are being created and their corresponding
-> links. With some debug enabled this shows some of the interesting
-> parts that are being printed to the log:
->
-> [    0.041539] device: 'pm_domain_test': device_add
-> [    0.041629] OF: Not linking pm_domain_test to pm_domain_test - is descendant
-> [    0.041718] device: 'soctest': device_add
-> [    0.041803] OF: Linking rpmtest0 (consumer) to pm_domain_test (supplier)
-> [    0.041829] device: 'platform:pm_domain_test--platform:soctest': device_add
-> [    0.041892] platform soctest: Linked as a sync state only consumer
-> to pm_domain_test
-> [    0.041957] OF:    create child: /soctest/rpmtest0
-> [    0.041995] device: 'soctest:rpmtest0': device_add
-> [    0.042072] device:
-> 'platform:pm_domain_test--platform:soctest:rpmtest0': device_add
-> [    0.042132] devices_kset: Moving soctest:rpmtest0 to end of list
-> [    0.042141] platform soctest:rpmtest0: Linked as a consumer to pm_domain_test
->
-> The interesting thing here is the "sync state only" link that gets
-> created. I assume there are good reasons for creating this link, even
-> if I fail to understand exactly why.
+Hi Linus,
 
-In general there's a good reason for creating these links from parent
-devices of the consumer to the supplier. It is documented in the code
-under __fw_devlink_link_to_consumers().
+Please pull this new iomap code for 5.15-rc1.  The most notable
+externally visible change for this cycle is the addition of support for
+reads to inline tail fragments of files, which was requested by the
+erofs developers; and a correction for a kernel memory corruption bug if
+the sysadmin tries to activate a swapfile with more pages than the
+swapfile header suggests.  We also now report writeback completion
+errors to the file mapping correctly, instead of munging all errors into
+EIO.
 
-/*
- * If consumer device is not available yet, make a "proxy"
- * SYNC_STATE_ONLY link from the consumer's parent device to
- * the supplier device. This is necessary to make sure the
- * supplier doesn't get a sync_state() callback before the real
- * consumer can create a device link to the supplier.
- *
- * This proxy link step is needed to handle the case where the
- * consumer's parent device is added before the supplier.
- */
+Internally, the bulk of the changes are Christoph's patchset to reduce
+the indirect function call count by a third to a half by converting
+iomap iteration from a loop pattern to a generator/consumer pattern.
+As an added bonus, fsdax no longer open-codes iomap apply loops.
 
-and under __fw_devlink_link_to_suppliers().
+The branch merges cleanly with upstream as of a few minutes ago and has
+been soaking in for-next for a couple of weeks without complaints.
+Please let me know if there are any problems.
 
-/*
- * Make "proxy" SYNC_STATE_ONLY device links to represent the needs of
- * all the descendants. This proxy link step is needed to handle the
- * case where the supplier is added before the consumer's parent device
- * (@dev).
- */
+--D
 
+The following changes since commit c500bee1c5b2f1d59b1081ac879d73268ab0ff17:
 
->
-> In any case, the sync state only link never gets dropped, which I
-> assume is because there is no driver getting bound for the "soctest"
-> device (it has only the "simple-bus" compatible).
+  Linux 5.14-rc4 (2021-08-01 17:04:17 -0700)
 
-Yeah, you've identified the problem correctly. I've been thinking
-about this possibility (and all the side effects a fix might have). I
-can send out a fix for this soon (within a week or so).
+are available in the Git repository at:
 
-> In other words, it doesn't matter that both the rpmtest0 and the
-> pm_domain_test devices are probed, thus satisfying the
-> supplier/consumer conditions, the ->sync_state() callback doesn't get
-> called anyway.
->
-> Can you perhaps help to point me in a direction of how to best fix this problem?
+  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.15-merge-4
 
-I hope you are okay with me sending a fix.
+for you to fetch changes up to 03b8df8d43ecc3c5724e6bfb80bc0b9ea2aa2612:
 
+  iomap: standardize tracepoint formatting and storage (2021-08-26 09:18:53 -0700)
 
--Saravana
+----------------------------------------------------------------
+New code for 5.15:
+ - Simplify the bio_end_page usage in the buffered IO code.
+ - Support reading inline data at nonzero offsets for erofs.
+ - Fix some typos and bad grammar.
+ - Convert kmap_atomic usage in the inline data read path.
+ - Add some extra inline data input checking.
+ - Fix a memory corruption bug stemming from iomap_swapfile_activate
+   trying to activate more pages than mm was expecting.
+ - Pass errnos through the page writeback code so that writeback errors
+   are reported correctly instead of being munged to EIO.
+ - Replace iomap_apply with a open-coded iterator loops to reduce the
+   number of indirect calls by a third to a half.
+ - Refactor the fsdax code to use iomap iterators instead of the
+   open-coded iomap_apply code that it had before.
+ - Format file range iomap tracepoint data in hexadecimal and
+   standardize the names used in the pretty-print string.
+
+----------------------------------------------------------------
+Andreas Gruenbacher (1):
+      iomap: Fix some typos and bad grammar
+
+Christoph Hellwig (30):
+      iomap: simplify iomap_readpage_actor
+      iomap: simplify iomap_add_to_ioend
+      iomap: fix a trivial comment typo in trace.h
+      iomap: remove the iomap arguments to ->page_{prepare,done}
+      iomap: mark the iomap argument to iomap_sector const
+      iomap: mark the iomap argument to iomap_inline_data const
+      iomap: mark the iomap argument to iomap_inline_data_valid const
+      fs: mark the iomap argument to __block_write_begin_int const
+      fsdax: mark the iomap argument to dax_iomap_sector as const
+      iomap: mark the iomap argument to iomap_read_inline_data const
+      iomap: mark the iomap argument to iomap_read_page_sync const
+      iomap: fix the iomap_readpage_actor return value for inline data
+      iomap: add the new iomap_iter model
+      iomap: switch readahead and readpage to use iomap_iter
+      iomap: switch iomap_file_buffered_write to use iomap_iter
+      iomap: switch iomap_file_unshare to use iomap_iter
+      iomap: switch iomap_zero_range to use iomap_iter
+      iomap: switch iomap_page_mkwrite to use iomap_iter
+      iomap: switch __iomap_dio_rw to use iomap_iter
+      iomap: switch iomap_fiemap to use iomap_iter
+      iomap: switch iomap_bmap to use iomap_iter
+      iomap: switch iomap_seek_hole to use iomap_iter
+      iomap: switch iomap_seek_data to use iomap_iter
+      iomap: switch iomap_swapfile_activate to use iomap_iter
+      fsdax: switch dax_iomap_rw to use iomap_iter
+      iomap: remove iomap_apply
+      iomap: pass an iomap_iter to various buffered I/O helpers
+      iomap: rework unshare flag
+      fsdax: switch the fault handlers to use iomap_iter
+      iomap: constify iomap_iter_srcmap
+
+Darrick J. Wong (3):
+      iomap: pass writeback errors to the mapping
+      iomap: move loop control code to iter.c
+      iomap: standardize tracepoint formatting and storage
+
+Gao Xiang (1):
+      iomap: support reading inline data from non-zero pos
+
+Matthew Wilcox (Oracle) (3):
+      iomap: Support inline data with block size < page size
+      iomap: Use kmap_local_page instead of kmap_atomic
+      iomap: Add another assertion to inline data handling
+
+Shiyang Ruan (2):
+      fsdax: factor out helpers to simplify the dax fault code
+      fsdax: factor out a dax_fault_actor() helper
+
+Xu Yu (1):
+      mm/swap: consider max pages in iomap_swapfile_add_extent
+
+ fs/btrfs/inode.c       |   5 +-
+ fs/buffer.c            |   4 +-
+ fs/dax.c               | 606 +++++++++++++++++++++++--------------------------
+ fs/gfs2/bmap.c         |   5 +-
+ fs/internal.h          |   4 +-
+ fs/iomap/Makefile      |   2 +-
+ fs/iomap/apply.c       |  99 --------
+ fs/iomap/buffered-io.c | 508 ++++++++++++++++++++---------------------
+ fs/iomap/direct-io.c   | 172 +++++++-------
+ fs/iomap/fiemap.c      | 101 ++++-----
+ fs/iomap/iter.c        |  80 +++++++
+ fs/iomap/seek.c        |  98 ++++----
+ fs/iomap/swapfile.c    |  44 ++--
+ fs/iomap/trace.h       |  61 ++---
+ include/linux/iomap.h  |  91 ++++++--
+ 15 files changed, 934 insertions(+), 946 deletions(-)
+ delete mode 100644 fs/iomap/apply.c
+ create mode 100644 fs/iomap/iter.c
