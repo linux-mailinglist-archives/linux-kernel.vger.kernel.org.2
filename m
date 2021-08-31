@@ -2,144 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897253FCA59
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00323FCA5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238452AbhHaOvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42830 "EHLO
+        id S238517AbhHaOvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:51:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238212AbhHaOvD (ORCPT
+        with ESMTP id S238511AbhHaOvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:51:03 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9729AC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:50:07 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id o39-20020a05600c512700b002e74638b567so2786731wms.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:50:07 -0700 (PDT)
+        Tue, 31 Aug 2021 10:51:08 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EB2C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:50:13 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id x16so9121379pll.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:50:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=o9Xerj9x1DLdOo3ptOhFxaFlDghoWf30GwyqU+zR+pM=;
-        b=LYnaMiSx6In2IhqsjnBuzcKiAAnYd1Z9V8nHKpwnTHxnVU6vKJz2kuv+v+NT4E+tln
-         9K/V2zFOD0fOgpT3zUVuAXgWD4PXEoy4Q/gCZ6iQ8PnN4sJ2Vv0HAmlw0Z7T3ZloaJhj
-         x1LX1KgDZl+tHo8sXoETBDndsSZqZAInIT78mAOBOROzg4xeiLpPdJa9UPZW1vj5LVGZ
-         6mcjb56V3x8apPenmXWh4Cyt+t9rrgZyBC6YWHOsdIUdxQ8xFgGhHgQOk5jtiN5i42RL
-         5JewEyU7Aob+VQCvD4w5+ONNDEfhERvofgfNc6MjumtnrSKDynZnccbGQxJfOHENd4zY
-         48jQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ohiiHqesNPeC/mV3ttMhan9fJsp+PESpTprhKRQBUys=;
+        b=qxeDHCHkDXDv36deSisEv8D00T7si8oSUAAGdKI+OujJdeG3kU2Krk0jLUlMop5tlA
+         UF1sbjLOAalJQB7zHjak8XuQewtqPJAJh3UiXkAMu/+xnqBqJiswiJ96U1wPzbSHm8xt
+         4l9kAuL4OUEKEm6/ADbKppZOAUF91RYuTswtWLUHR5MikFGSnRw1yVM0Zur5X56DnGLP
+         LfrOLD18Zf2pz16uJ3AMbfrfxVJqryPYu2q5BoM4kYM9A9ah8sLRcQNiCHc0pEpwLVfC
+         bdlkVP0srN/TALyDbaSiuLLOrDOETb2z+YFmjTvj33X2riU5lQL8/ovfZ5BRkSuSmCU2
+         9vLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=o9Xerj9x1DLdOo3ptOhFxaFlDghoWf30GwyqU+zR+pM=;
-        b=FERoiLLXQov3SX1ebGgLYsgBLp/HOrHiFNl8BrqTdAPhoOLVLx518FJuBI2aAMls7F
-         2dPpxpXVZbvhkaVsLPMG/s3xdRw1SivXfCZK/19NO848thgAsOyfm2xzaY8rTcikyhWa
-         mdqGuLKKsD3OLud8bgdRdT5tOtmOcsG2Qdqkb96n6ZdTwTSgoJxsDwwYj255eHeDnVjx
-         KksKYN4oWnUP5hUkDXXsWE78X2DKaIm/KdIVgGSdXlTNcUbwIWLPMgaMYdtrb+EPfD/Y
-         XUltP2044rEViTzyVuU89mk+139KgEU73BFQO+aLklUXgtBdgrc4wmkE4m1MmF8HuBdZ
-         OUIg==
-X-Gm-Message-State: AOAM531sN+LhMnSaSdtuDmQild3G5wuRRlFogCVvesc77svsSSdX4v2h
-        fYsRlqUKkNyOcD6ZoXfYmXA//g==
-X-Google-Smtp-Source: ABdhPJzfXFWLxmkSweI+5zHOnWUNvWwOON8f7JdZdJowyF1SEsMkEOlKFrkT0ehkRSJs7vuhu8m0zg==
-X-Received: by 2002:a1c:4407:: with SMTP id r7mr4774784wma.150.1630421405887;
-        Tue, 31 Aug 2021 07:50:05 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:fc41:6c:2c4e:2156? ([2001:861:44c0:66c0:fc41:6c:2c4e:2156])
-        by smtp.gmail.com with ESMTPSA id h6sm2795675wmq.5.2021.08.31.07.50.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 07:50:05 -0700 (PDT)
-Subject: Re: [PATCHv3 1/6] ARM: dts: meson8b: odroidc1: Add usb phy power node
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Anand Moon <linux.amoon@gmail.com>, linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Matt Corallo <oc2udbzfd@mattcorallo.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Brian Kim <brian.kim@hardkernel.com>
-References: <20210817041548.1276-1-linux.amoon@gmail.com>
- <20210817041548.1276-2-linux.amoon@gmail.com>
- <c7f6213b-5ddc-881c-1aea-9cc7b03e6a4f@baylibre.com>
- <CAFBinCBeNMET2tvH0h6HF3dR+xBb59hifQyaoXigUs3UGkS+KQ@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <2b07b3de-cee5-c570-8fde-6a4c684122d6@baylibre.com>
-Date:   Tue, 31 Aug 2021 16:50:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ohiiHqesNPeC/mV3ttMhan9fJsp+PESpTprhKRQBUys=;
+        b=KXbDDUR+EAIB3ANciBzhP9fiipVOxwhuQEKqaziHBaAorETZcnMlrT1HSk2R1pZRm5
+         1O4UO+UVRedif3Sp44uZvlJtWeFLVwZ54TFuu0GC15ODsxpRZyh9bx/07agiH8RpM8jI
+         QoLWKEvKXZ5XOjXQ386yQJT83hrW0Xbw4Ccs1KmUoyeM+Svp7oEGW1lVg+RdxGVs2ZDs
+         kHPqCqlcVTC1IVRAogcP79864s8lZtVi0ruCgXht0RufsaEzRcz+VjpdesoWBTCSu7lp
+         qbwyoaOrINjg26wEMT8ZL/VqvX4EAGV74dPEtfuvWKHbP6DolV2IDE6fn0InLvN3uMbh
+         jt/w==
+X-Gm-Message-State: AOAM532iwYsa+yJ+WH7bU0So2oyz5IiFOBGKwTSIboo9B28CzTFRSN02
+        qJpAkmK65Uyhe+PgaDvCyKXuaQ==
+X-Google-Smtp-Source: ABdhPJx2U01+1IX8ZEA2HMzsm5rbu7780DiR3Dut8yt/oVACgZD4uw7vNgwPlFJ5fjNmWn2VZfvpBA==
+X-Received: by 2002:a17:90a:4481:: with SMTP id t1mr6006880pjg.232.1630421411692;
+        Tue, 31 Aug 2021 07:50:11 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id t15sm20610705pgk.13.2021.08.31.07.50.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 07:50:11 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 14:50:07 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     tcs.kernel@gmail.com
+Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org,
+        Haimin Zhang <tcs_kernel@tencent.com>
+Subject: Re: [PATCH] KVM: x86: Add a return code and check kvm_page_track_init
+Message-ID: <YS5Bn6I6wVEL8wKS@google.com>
+References: <1630376040-20567-1-git-send-email-tcs_kernel@tencent.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCBeNMET2tvH0h6HF3dR+xBb59hifQyaoXigUs3UGkS+KQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1630376040-20567-1-git-send-email-tcs_kernel@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+For the shortlog, describe what is being fixed instead of the literal code change,
+otherwise the shortlog doesn't help explain _why_ a change is being made.
 
-On 30/08/2021 21:37, Martin Blumenstingl wrote:
-> Hi Neil,
+On Tue, Aug 31, 2021, tcs.kernel@gmail.com wrote:
+> From: Haimin Zhang <tcs_kernel@tencent.com>
 > 
-> On Mon, Aug 30, 2021 at 9:45 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
->>
->> Hi,
->>
->> On 17/08/2021 06:15, Anand Moon wrote:
->>> Add missing usb phy power node for usb node fix below warning.
->>> P5V0 regulator supply input voltage range to USB host controller.
->>> As described in the C1+ schematics, GPIO GPIOAO_5 is used to
->>> enable input power to USB ports, set it to Active Low.
->>>
->>> [    1.260772] dwc2 c90c0000.usb: Looking up vbus-supply from device tree
->>> [    1.260784] dwc2 c90c0000.usb: Looking up vbus-supply property in
->>>               mode /soc/usb@c90c0000 failed
->>
->> First of all, DT is not here to fix boot message.
-> Anand mentioned elsewhere that this is a debug/info message
-> 
->> Finally, I looked at the Odroid-C1 schematics and the GPIOAO.BIT5 is an input
->> to the S805, and the PWREN signal is controlled by the USB Hub so this regulator
->> should not be added at all.
-> I think there's a misunderstanding because there's two PWREN signals
-> with different meanings.
-> The PWREN signal for the USB host ports is hard-wired and not
-> connected to the SoC at all.
-> The PWREN signal for the Micro-USB port (which Anand is adding here)
-> is controlled by GPIOAO_5. odroid-c1+_rev0.4_20150615.pdf [0] shows it
-> as an input to "USB_OTG" on page 1. "USB_OTG" consists of a power
-> switch and the connector itself as shown on page 28.
-> 
-> Personally I think that the change from Anand itself is good.
-> If you feel otherwise then please speak up.
+> We found a null pointer deref by our modified syzkaller.
+>  KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+>  CPU: 1 PID: 13993 Comm: syz-executor.0 Kdump: loaded Tainted: 
+>  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
+>  BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+>  RIP: 0010:rcu_segcblist_enqueue+0xf5/0x1d0 
+>  RSP: 0018:ffffc90001e1fc10 EFLAGS: 00010046
+>  RAX: dffffc0000000000 RBX: ffff888135c00080 RCX: ffffffff815ba8a1
+>  RDX: 0000000000000000 RSI: ffffc90001e1fd00 RDI: ffff888135c00080
+>  RBP: ffff888135c000a0 R08: 0000000000000004 R09: fffff520003c3f75
+>  R10: 0000000000000003 R11: fffff520003c3f75 R12: 0000000000000000
+>  R13: ffff888135c00080 R14: ffff888135c00040 R15: 0000000000000000
+>  FS:  00007fecc99f1700(0000) GS:ffff888135c00000(0000) knlGS:0000000000
+>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  CR2: 0000001b2f225000 CR3: 0000000093d08000 CR4: 0000000000750ee0
+>  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>  PKRU: 55555554
+>  Call Trace:
+>  srcu_gp_start_if_needed+0x158/0xc60 build/../kernel/rcu/srcutree.c:823
+>  __synchronize_srcu+0x1dc/0x250 build/../kernel/rcu/srcutree.c:929
+>  kvm_mmu_uninit_vm+0x18/0x30 build/../arch/x86/kvm/mmu/mmu.c:5585
+>  kvm_arch_destroy_vm+0x43f/0x5c0 build/../arch/x86/kvm/x86.c:11277
+>  kvm_create_vm build/../arch/x86/kvm/../../../virt/kvm/kvm_main.c:1060 
+>  kvm_dev_ioctl_create_vm build/../arch/x86/kvm/../../../virt/kvm/kvm_main
+>  kvm_dev_ioctl+0xdfb/0x1860 build/../arch/x86/kvm/../../../virt/kvm/kvm_main
+>  vfs_ioctl build/../fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl build/../fs/ioctl.c:1069 [inline]
+>  __se_sys_ioctl build/../fs/ioctl.c:1055 [inline]
+>  __x64_sys_ioctl+0x183/0x210 build/../fs/ioctl.c:1055
+>  do_syscall_x64 build/../arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x34/0xb0 build/../arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Ok thanks for the clarification, then the change is ok, but not the commit message.
+Newline here to make it easier to differentiate between the splat and the
+explanation.  Though I would say hoist the explanation of the "why" to the top, e.g.
 
->> Add missing usb phy power node for usb node fix below warning.
+  KVM: x86: Handle SRCU initialization failure during page track init
 
-is not a good reason for a DT change. A proper reason should be added.
+  Check the return of init_srcu_struct(), which can fail due to OOM, when
+  initializing the page track mechanism.  Lack of checking leads to a NULL
+  pointer deref found by a modified syzkaller.
 
-And the commit message doesn't specify the change is for the Micro-USB port,
-this should be clarified.
+  <splat goes here>
 
-Neil
-
-> As I pointed out three smaller changes I am hoping that Anand will
-> re-send the updated patch anyways. At that point he can also add the
-> changes from your feedback.
+> This is because when init_srcu_struct() calls alloc_percpu(struct
+> srcu_data) failed, kvm_page_track_init() didn't check init_srcu_struct
+> return code. 
 > 
+> Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
+> Reported-by: TCS Robot <tcs_robot@tencent.com>
+> ---
+>  arch/x86/include/asm/kvm_page_track.h | 2 +-
+>  arch/x86/kvm/mmu/page_track.c         | 8 ++++++--
+>  arch/x86/kvm/x86.c                    | 7 +++++--
+>  3 files changed, 12 insertions(+), 5 deletions(-)
 > 
-> Best regards,
-> Martin
-> 
-> 
-> [0] https://dn.odroid.com/S805/Schematics/odroid-c1+_rev0.4_20150615.pdf
-> 
+> diff --git a/arch/x86/include/asm/kvm_page_track.h b/arch/x86/include/asm/kvm_page_track.h
+> index 87bd6025d91d..6a5f3acf2b33 100644
+> --- a/arch/x86/include/asm/kvm_page_track.h
+> +++ b/arch/x86/include/asm/kvm_page_track.h
+> @@ -46,7 +46,7 @@ struct kvm_page_track_notifier_node {
+>  			    struct kvm_page_track_notifier_node *node);
+>  };
+>  
+> -void kvm_page_track_init(struct kvm *kvm);
+> +int kvm_page_track_init(struct kvm *kvm);
+>  void kvm_page_track_cleanup(struct kvm *kvm);
+>  
+>  void kvm_page_track_free_memslot(struct kvm_memory_slot *slot);
+> diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
+> index 91a9f7e0fd91..44a67a50f6d2 100644
+> --- a/arch/x86/kvm/mmu/page_track.c
+> +++ b/arch/x86/kvm/mmu/page_track.c
+> @@ -163,13 +163,17 @@ void kvm_page_track_cleanup(struct kvm *kvm)
+>  	cleanup_srcu_struct(&head->track_srcu);
+>  }
+>  
+> -void kvm_page_track_init(struct kvm *kvm)
+> +int kvm_page_track_init(struct kvm *kvm)
+>  {
+> +	int r = -ENOMEM;
 
+Unnecessary initialization.
+
+>  	struct kvm_page_track_notifier_head *head;
+>  
+>  	head = &kvm->arch.track_notifier_head;
+> -	init_srcu_struct(&head->track_srcu);
+> +	r = init_srcu_struct(&head->track_srcu);
+> +	if (r)
+> +		return r;
+>  	INIT_HLIST_HEAD(&head->track_notifier_list);
+> +	return r;
+
+Just do "return 0", which is guaranteed by the above.  Or even better, I would
+vote for returning init_srcu_struct() directly, the ordering doesn't matter and
+obviously failure is a very rare occurence.
+
+	@@ -175,8 +175,8 @@ void kvm_page_track_init(struct kvm *kvm)
+        struct kvm_page_track_notifier_head *head;
+ 
+        head = &kvm->arch.track_notifier_head;
+-       init_srcu_struct(&head->track_srcu);
+        INIT_HLIST_HEAD(&head->track_notifier_list);
++       return init_srcu_struct(&head->track_srcu);
+ }
+>  }
+>  
+>  /*
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index e5d5c5ed7dd4..5da76f989207 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -11086,8 +11086,9 @@ void kvm_arch_free_vm(struct kvm *kvm)
+>  
+>  int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+>  {
+> +	int r = -EINVAL;
+
+Unnecessary initialization.
+
+>  	if (type)
+> -		return -EINVAL;
+> +		return r;
+
+Unrelated and unnecessary change.
+
+>  
+>  	INIT_HLIST_HEAD(&kvm->arch.mask_notifier_list);
+>  	INIT_LIST_HEAD(&kvm->arch.active_mmu_pages);
+> @@ -11121,7 +11122,9 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+>  
+>  	kvm_apicv_init(kvm);
+>  	kvm_hv_init_vm(kvm);
+> -	kvm_page_track_init(kvm);
+> +	r = kvm_page_track_init(kvm);
+> +	if (r)
+> +		return r;
+
+Hmm, so I don't see anything above this that needs to be unwound, but I'm still
+worried this will be hard to audit/maintain.
+
+As an alternative "fix", about dropping kvm->arch.track_notifier_head.track_srcu
+and using kvm->srcu?  kvm_page_track_write() pretty much _has_ to hold that since
+the caller is writing guest memory, and conversely kvm_page_track_flush_slot()
+_can't_ hold it because the caller is modifying memslots and thus would deadlock
+if it held kvm->srcu for read.  In other words, kvm_page_track_write() can rely
+(assert?) on vcpu->srcu_idx, and kvm_page_track_flush_slot() can take and release
+kvm->srcu.
+
+Practially speaking, (Un)Registering is going to happen only at VM creation so
+waiting all kvm->srcu readers instead of just page track readers should not be a
+problem.
+
+>  	kvm_mmu_init_vm(kvm);
+>  
+>  	return static_call(kvm_x86_vm_init)(kvm);
+> -- 
+> 2.27.0
+> 
