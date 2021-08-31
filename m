@@ -2,119 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732F23FC799
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D203FC7A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhHaMxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 08:53:07 -0400
-Received: from smtpbguseast2.qq.com ([54.204.34.130]:58584 "EHLO
-        smtpbguseast2.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhHaMxG (ORCPT
+        id S232836AbhHaMxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 08:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232251AbhHaMxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 08:53:06 -0400
-X-QQ-mid: bizesmtp50t1630414322to4ez3a3
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 31 Aug 2021 20:52:01 +0800 (CST)
-X-QQ-SSF: 0140000000200070D000B00C0000000
-X-QQ-FEAT: W55xVYr4DdamfzGdMYazV9cLbeqQm5kZFgM1v+xUwuvNJIcAJAqwN2SZTHB0z
-        xPN/S7M4t7S1MVxUzXmAvUNlRLroyu+JYocJPPxBUGEPbiTOCNApH6dPQC+MxwAIf/0XTbT
-        Q0atRhIjciBk5i7ME/5YbcP+3JHfo9+3MS8NRvGqHaGTD7B9aXSA/BOFJIICxKiMrZWiqfR
-        D9/HpavpP0WBeh5wyF/zHLqP2SRYwXp9UvKlO5tLnYtN1GXDffV2HvtlmxTWXKS5e6EppwS
-        o8G942HpQ8xGCVZMSNAJAzvIMMxmAG7c38uRU34cc62+rvQJFLz4uHnn1WAth6Og8EKB8rN
-        XQm0/96p4qeLWsh/tjQ2HhauCTbtE9gJFgNE0gr3M+AyO60yao=
-X-QQ-GoodBg: 2
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     thierry.reding@gmail.com, lee.jones@linaro.org, heiko@sntech.de
-Cc:     u.kleine-koenig@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH] pwm: rockchip: Simplify using devm_pwmchip_add()
-Date:   Tue, 31 Aug 2021 20:51:59 +0800
-Message-Id: <20210831125159.29282-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Tue, 31 Aug 2021 08:53:46 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6686C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:52:51 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so1950131pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:52:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=WabTdj9An5z5ILEGVeAkv4WhYJoKZFzGY2Bi+4jqu40=;
+        b=QtbFCBQwB7vEOOjsNeuQm4+4/dYAfMe3yCq4qGgDMPEP2HtgL0c0UNl/2IPOdesOwR
+         HDN5aoeyLSKvd+pOu/bNSqj8hw6KjAf4fMtcvarHbALjsd0qhaiAcfKjFl/s6XmzbDuw
+         vLl3jBaDIzoMLuMw5BwFwqtLcpVMUyTzUszMSRvVcSFXLn4/4JEu/EVetR9Z6cTOAjY5
+         cdOVD9RO944Bt20RgMPPgjxMYbMVnck3LxIogxCXaDIWuG4hPo5ECGXyanqvTrD7gEgS
+         X9pMjDGgKSHs87IlIUdATLZY0ETAiGXiePf2ln3VFdMx1NnXGtSG8wHIgXcvGnketO+E
+         hRbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=WabTdj9An5z5ILEGVeAkv4WhYJoKZFzGY2Bi+4jqu40=;
+        b=qd+GFUUYFCXycviCO4ZAPHXtuHEKV3Pf2IMVr+IvnoTpS/oXJPc8PHFk4Sca0VFXCV
+         gcQ+Yq5qfJ6+FGXenhxo89khvud/TB2xmyECxBT/F6E5MTNS0raaVRGIve7YjCXNWBl1
+         UCN3yyYXHTKZ0/+dzmFJFGJZoukZZEkFk1NhqeVHKm26olKUveAMTTAYeIrRamnMY+TO
+         41gTifMOJpz7S45nrlBPhWn1ZTxIuzwWdUWnO5Go3Jn/M5SFp00yk6gdFRpIkaOxkeWo
+         W6gAjf2zIrkMhVYFeM0znjtMnVBNjhXu68TTzcq2CGb+oE9NVW9+xJB7lvYz5PirsX5F
+         N/Qw==
+X-Gm-Message-State: AOAM531IHvM8OwYdpeH4IYtN0042aiwFkNMkGtlrm8u91cL/QqMH5iyg
+        VRu3yFtG0ze/VQ00nz7jOxdCSg==
+X-Google-Smtp-Source: ABdhPJzUHSDAap4VmW6faAIG74gQrS2lCsqGRTOMEhdKrHauFD9+QCaCpWYcdIqu3MWTwEcslg6jEA==
+X-Received: by 2002:a17:902:c643:b0:138:b603:f944 with SMTP id s3-20020a170902c64300b00138b603f944mr4593654pls.45.1630414371312;
+        Tue, 31 Aug 2021 05:52:51 -0700 (PDT)
+Received: from [10.254.46.235] ([139.177.225.230])
+        by smtp.gmail.com with ESMTPSA id s29sm20965758pgl.38.2021.08.31.05.52.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 05:52:50 -0700 (PDT)
+Subject: Re: [PATCH v1 2/2] mm: remove redundant smp_wmb()
+To:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
+        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
+        mika.penttila@nextfour.com, david@redhat.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com
+References: <20210828042306.42886-1-zhengqi.arch@bytedance.com>
+ <20210828042306.42886-3-zhengqi.arch@bytedance.com>
+ <17a36dfc-cbd1-56c5-46a9-9f4043bb56e6@suse.cz>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+Message-ID: <766d0039-02c9-4511-6421-9d2ccfd0cfb2@bytedance.com>
+Date:   Tue, 31 Aug 2021 20:52:42 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign5
-X-QQ-Bgrelay: 1
+In-Reply-To: <17a36dfc-cbd1-56c5-46a9-9f4043bb56e6@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With devm_pwmchip_add() we can drop pwmchip_remove() from the device
-remove callback. The latter can then go away, too and as this is the
-only user of platform_get_drvdata(), the respective call to
-platform_set_drvdata() can go, too.
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
- drivers/pwm/pwm-rockchip.c | 29 +----------------------------
- 1 file changed, 1 insertion(+), 28 deletions(-)
 
-diff --git a/drivers/pwm/pwm-rockchip.c b/drivers/pwm/pwm-rockchip.c
-index cbe900877724..c22856916e63 100644
---- a/drivers/pwm/pwm-rockchip.c
-+++ b/drivers/pwm/pwm-rockchip.c
-@@ -347,8 +347,6 @@ static int rockchip_pwm_probe(struct platform_device *pdev)
- 		goto err_clk;
- 	}
- 
--	platform_set_drvdata(pdev, pc);
--
- 	pc->data = id->data;
- 	pc->chip.dev = &pdev->dev;
- 	pc->chip.ops = &rockchip_pwm_ops;
-@@ -358,7 +356,7 @@ static int rockchip_pwm_probe(struct platform_device *pdev)
- 	ctrl = readl_relaxed(pc->base + pc->data->regs.ctrl);
- 	enabled = (ctrl & enable_conf) == enable_conf;
- 
--	ret = pwmchip_add(&pc->chip);
-+	ret = devm_pwmchip_add(&pdev->dev, &pc->chip);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "pwmchip_add() failed: %d\n", ret);
- 		goto err_pclk;
-@@ -380,37 +378,12 @@ static int rockchip_pwm_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int rockchip_pwm_remove(struct platform_device *pdev)
--{
--	struct rockchip_pwm_chip *pc = platform_get_drvdata(pdev);
--
--	/*
--	 * Disable the PWM clk before unpreparing it if the PWM device is still
--	 * running. This should only happen when the last PWM user left it
--	 * enabled, or when nobody requested a PWM that was previously enabled
--	 * by the bootloader.
--	 *
--	 * FIXME: Maybe the core should disable all PWM devices in
--	 * pwmchip_remove(). In this case we'd only have to call
--	 * clk_unprepare() after pwmchip_remove().
--	 *
--	 */
--	if (pwm_is_enabled(pc->chip.pwms))
--		clk_disable(pc->clk);
--
--	clk_unprepare(pc->pclk);
--	clk_unprepare(pc->clk);
--
--	return pwmchip_remove(&pc->chip);
--}
--
- static struct platform_driver rockchip_pwm_driver = {
- 	.driver = {
- 		.name = "rockchip-pwm",
- 		.of_match_table = rockchip_pwm_dt_ids,
- 	},
- 	.probe = rockchip_pwm_probe,
--	.remove = rockchip_pwm_remove,
- };
- module_platform_driver(rockchip_pwm_driver);
- 
--- 
-2.20.1
+On 2021/8/31 PM6:20, Vlastimil Babka wrote:
+> On 8/28/21 06:23, Qi Zheng wrote:
+>> The smp_wmb() which is in the __pte_alloc() is used to
+>> ensure all ptes setup is visible before the pte is made
+>> visible to other CPUs by being put into page tables. We
+>> only need this when the pte is actually populated, so
+>> move it to pte_install(). __pte_alloc_kernel(),
+> 
+> It's named pmd_install()?
 
+Yes, I will update it in the next version.
+
+> 
+>> __p4d_alloc(), __pud_alloc() and __pmd_alloc() are similar
+>> to this case.
+>>
+>> We can also defer smp_wmb() to the place where the pmd entry
+>> is really populated by preallocated pte. There are two kinds
+>> of user of preallocated pte, one is filemap & finish_fault(),
+>> another is THP. The former does not need another smp_wmb()
+>> because the smp_wmb() has been done by pte_install().
+> 
+> Same here.
+> 
+>> Fortunately, the latter also does not need another smp_wmb()
+>> because there is already a smp_wmb() before populating the
+>> new pte when the THP uses a preallocated pte to split a huge
+>> pmd.
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+>> ---
+>>   mm/memory.c         | 47 ++++++++++++++++++++---------------------------
+>>   mm/sparse-vmemmap.c |  2 +-
+>>   2 files changed, 21 insertions(+), 28 deletions(-)
+>>
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index ef7b1762e996..9c7534187454 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -439,6 +439,20 @@ void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte)
+>>   
+>>   	if (likely(pmd_none(*pmd))) {	/* Has another populated it ? */
+>>   		mm_inc_nr_ptes(mm);
+>> +		/*
+>> +		 * Ensure all pte setup (eg. pte page lock and page clearing) are
+>> +		 * visible before the pte is made visible to other CPUs by being
+>> +		 * put into page tables.
+>> +		 *
+>> +		 * The other side of the story is the pointer chasing in the page
+>> +		 * table walking code (when walking the page table without locking;
+>> +		 * ie. most of the time). Fortunately, these data accesses consist
+>> +		 * of a chain of data-dependent loads, meaning most CPUs (alpha
+>> +		 * being the notable exception) will already guarantee loads are
+>> +		 * seen in-order. See the alpha page table accessors for the
+>> +		 * smp_rmb() barriers in page table walking code.
+>> +		 */
+>> +		smp_wmb(); /* Could be smp_wmb__xxx(before|after)_spin_lock */
+> 
+> So, could it? :)
+> 
+
+Yes, it could, but we don't have smp_wmb__after_spin_lock() now.
 
 
