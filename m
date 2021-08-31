@@ -2,118 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82393FC534
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2859D3FC538
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240790AbhHaJwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 05:52:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30441 "EHLO
+        id S240762AbhHaJyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 05:54:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59194 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240798AbhHaJwk (ORCPT
+        by vger.kernel.org with ESMTP id S240676AbhHaJyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 05:52:40 -0400
+        Tue, 31 Aug 2021 05:54:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630403505;
+        s=mimecast20190719; t=1630403593;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=boUrZKhLp0JiMUKIan6Po3HbNkfH+6C/uMe+4QjtHEA=;
-        b=KAsbVUmRBDLMl44mp5fcXtjKIxDkG677VO92DtSGxauElYcZCNqwYk3RSEOD+Qciz2vsNh
-        2SEVWSUwL6ZPk6WcmXgKnyYyj/UgD+y+rzlWcoPa5yANeOxITt2CrNQYcuIQT+ouhRUdiz
-        hQVlU8jYsFjsYhmo4vxBydoRxwoxAns=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-215-3VUjC8W0OU-b0cwAQzOBRA-1; Tue, 31 Aug 2021 05:51:44 -0400
-X-MC-Unique: 3VUjC8W0OU-b0cwAQzOBRA-1
-Received: by mail-pj1-f71.google.com with SMTP id bt7-20020a17090af00700b0019680f4d157so1187039pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:51:44 -0700 (PDT)
+        bh=adPlHXi23O+FflMxYXwYC0KWMEstkM3rAyfgF/lEnWk=;
+        b=cHlgRhSXWi0CNAuPe2Q9lRtQHkv1BVRX66XDYgmcg9SkG0nya5hRBQgsjR88VUbjdl9pdj
+        utLww7gkWLQ43uPMfUADrjDhPv4TJLLGmzXmWB3LfLv7cenArgfvN1YaW4GYZXXRITi/fl
+        qn00iif5rxDXnmI6AaHFg+Y1AO26vL0=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-210-OGafm1deP6i7u6HLYssE5A-1; Tue, 31 Aug 2021 05:53:08 -0400
+X-MC-Unique: OGafm1deP6i7u6HLYssE5A-1
+Received: by mail-wr1-f72.google.com with SMTP id p1-20020adfcc81000000b001576cccf12cso3894096wrj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:53:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=boUrZKhLp0JiMUKIan6Po3HbNkfH+6C/uMe+4QjtHEA=;
-        b=salLjDLUEbXMC6K59pTpjdbFq5k4cj9A7lh9PKu4zpm4RMndFN+sezHS9LZmzqHHXN
-         RfqFtK5OXLPYJfSSdl/WT/jA3o4KenaFUL63doZbfCdelo2EdGTcFjE9ygHvSKb/tLno
-         Xovyl9NhL81Wg7QLCPg/Rs+Pq4EamKiugc7WwNvwDelyh4J/01gXyIOOz1aqtsFkRwoA
-         HxaGT3yUA6i+M20mXGOksBCumLfSa3O0wswQTjewW4DhkHMzN5G3ZPVYGLjd3sMaz7a/
-         Hrywqmlh8B7/S4KqUtnDptTY448o16KTBr2kJwsGcL8gJtsEy+tta2rT5TA2cVf8XPxt
-         Fa6A==
-X-Gm-Message-State: AOAM530tvC57yugyMPWSMzht2qbvW9dfhWjlaLSCezWbe/BAb83CK68j
-        FTp7+3Dor/4s9tpt7pvFcu3ZYh3QWjQ5IQoS8MwUsEtKhf/ZucWx3CciHA5l8l/zomVdmBKhe6C
-        +bm5c+ptqVcXDiyk7bTshO8FrfyJv5pJ34rFDvZyY
-X-Received: by 2002:a17:90b:120a:: with SMTP id gl10mr4426085pjb.234.1630403503181;
-        Tue, 31 Aug 2021 02:51:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzojti8W56GvxIsdVgucUtiiapsjjuPzxBecCRiM0JFpL3yj4lfl53tJeN7sS3PHQ/XJHKcnklFe+XbA8OBY18=
-X-Received: by 2002:a17:90b:120a:: with SMTP id gl10mr4426067pjb.234.1630403502897;
- Tue, 31 Aug 2021 02:51:42 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=adPlHXi23O+FflMxYXwYC0KWMEstkM3rAyfgF/lEnWk=;
+        b=MYBm3PaPU5HYTKPgOKdUPtB2LPgJVTmXXeDxrnguqaI4152U1jybtLlev7QweTiefs
+         J6gU19/W106sn3DJ41fXDz0yiyVi86iXy5agFn+gmqUlQAiDw/P7NVavn37zbSH52fFq
+         uygAaPRdVgKRsxD3c5j3fGdUtqund1EqrnhfNFcVlynK7+EIjPTDhxInEZWEyp8x7/P/
+         w06Nmao1AiIdg4pMZEY/WSS5MlJ6je+cb4sVCGaiqTA5/jGCAgi18TAdEN+yiD87YcGV
+         pp0KhLWJWFGjFffeuGYeEXPE8RqafcwbqJma+lZAAeC4/hJutxfTX8GZ1qsJrUylQhTP
+         PY+A==
+X-Gm-Message-State: AOAM531Qi09/sZLOQ6bfCv+ANeBm1qqcn/uYc/wy8Kn+Zn66uOOKruXN
+        Se9N8SBB6IcW8G8oeKOzW4385DyndBj2b7JEwOPRawPVYm+RqaMwCkCq5D2YZLZVDoyuUxR49AF
+        AAQP/ELAEXjBd2Pn57B7xcD1q
+X-Received: by 2002:a1c:2289:: with SMTP id i131mr3286004wmi.179.1630403587347;
+        Tue, 31 Aug 2021 02:53:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxVJc8ZHngkq/rrH5Ya3sDKRqcKDY6u7TUfy3abVk7wXx7rhAj7yK8yyPOS0sADozq8JQN0Ag==
+X-Received: by 2002:a1c:2289:: with SMTP id i131mr3285982wmi.179.1630403587101;
+        Tue, 31 Aug 2021 02:53:07 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23bf5.dip0.t-ipconnect.de. [79.242.59.245])
+        by smtp.gmail.com with ESMTPSA id f17sm1944177wmf.4.2021.08.31.02.53.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 02:53:06 -0700 (PDT)
+To:     SeongJae Park <sj38.park@gmail.com>, akpm@linux-foundation.org
+Cc:     markubo@amazon.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
+References: <20210827150400.6305-1-sj38.park@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH] mm/damon/vaddr: Safely walk page table
+Message-ID: <daa567fe-3026-669a-d4a4-bdbaff036fe6@redhat.com>
+Date:   Tue, 31 Aug 2021 11:53:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210819195300.GA8613@rowland.harvard.edu> <000000000000c322ab05c9f2e880@google.com>
- <20210820140620.GA35867@rowland.harvard.edu> <nycvar.YFH.7.76.2108241351490.15313@cbobk.fhfr.pm>
-In-Reply-To: <nycvar.YFH.7.76.2108241351490.15313@cbobk.fhfr.pm>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Tue, 31 Aug 2021 11:51:31 +0200
-Message-ID: <CAO-hwJ+i4MqOj0umUW9kFgYSZLt3QMb6hDZHQwb8AKH9pKxSTg@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210827150400.6305-1-sj38.park@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 1:54 PM Jiri Kosina <jikos@kernel.org> wrote:
->
-> On Fri, 20 Aug 2021, Alan Stern wrote:
->
-> > > syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-> >
-> > That's good to know.  Still, I suspect there's a better way of handling
-> > this condition.
-> >
-> > In particular, does it make sense to accept descriptors for input or
-> > feature reports with length zero?  I can't imagine what good such
-> > reports would do.
->
-> I quickly went through drivers + some hidraw users, and can't spot any use
-> case for it.
->
-> > On the other hand, I'm not familiar enough with the code to know the
-> > right way to reject these descriptors and reports.  It looks like the
-> > HID subsystem was not designed with this sort of check in mind.
-> >
-> > Benjamin and Jiri, what do you think?  Is it okay to allow descriptors
-> > for zero-length reports and just pretend they have length 1 (as the
-> > patch tested by syzbot did), or should we instead reject them during
-> > probing?
->
-> I think it's a good band-aid for 5.14 (or 5.14-stable if we don't make
-> it), and if it turns out to break something (which I don't expect), than
-> we can look into rejecting already during probe.
->
-> Benjamin, is there a way to run this quickly through your HID regression
-> testing machinery?
->
+On 27.08.21 17:04, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> Commit d7f647622761 ("mm/damon: implement primitives for the virtual
+> memory address spaces") of linux-mm[1] tries to find PTE or PMD for
+> arbitrary virtual address using 'follow_invalidate_pte()' without proper
+> locking[2].  This commit fixes the issue by using another page table
+> walk function for more general use case under proper locking.
+> 
+> [1] https://github.com/hnaz/linux-mm/commit/d7f647622761
+> [2] https://lore.kernel.org/linux-mm/3b094493-9c1e-6024-bfd5-7eca66399b7e@redhat.com
+> 
+> Fixes: d7f647622761 ("mm/damon: implement primitives for the virtual memory address spaces")
+> Reported-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>   mm/damon/vaddr.c | 81 +++++++++++++++++++++++++++++++++++++++++++-----
+>   1 file changed, 74 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
+> index 230db7413278..b3677f2ef54b 100644
+> --- a/mm/damon/vaddr.c
+> +++ b/mm/damon/vaddr.c
+> @@ -8,10 +8,12 @@
+>   #define pr_fmt(fmt) "damon-va: " fmt
+>   
+>   #include <linux/damon.h>
+> +#include <linux/hugetlb.h>
+>   #include <linux/mm.h>
+>   #include <linux/mmu_notifier.h>
+>   #include <linux/highmem.h>
+>   #include <linux/page_idle.h>
+> +#include <linux/pagewalk.h>
+>   #include <linux/random.h>
+>   #include <linux/sched/mm.h>
+>   #include <linux/slab.h>
+> @@ -446,14 +448,69 @@ static void damon_pmdp_mkold(pmd_t *pmd, struct mm_struct *mm,
+>   #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>   }
+>   
+> +struct damon_walk_private {
+> +	pmd_t *pmd;
+> +	pte_t *pte;
+> +	spinlock_t *ptl;
+> +};
+> +
+> +static int damon_pmd_entry(pmd_t *pmd, unsigned long addr, unsigned long next,
+> +		struct mm_walk *walk)
+> +{
+> +	struct damon_walk_private *priv = walk->private;
+> +
+> +	if (pmd_huge(*pmd)) {
+> +		priv->ptl = pmd_lock(walk->mm, pmd);
+> +		if (pmd_huge(*pmd)) {
+> +			priv->pmd = pmd;
+> +			return 0;
+> +		}
+> +		spin_unlock(priv->ptl);
+> +	}
+> +
+> +	if (pmd_none(*pmd) || unlikely(pmd_bad(*pmd)))
+> +		return -EINVAL;
+> +	priv->pte = pte_offset_map_lock(walk->mm, pmd, addr, &priv->ptl);
+> +	if (!pte_present(*priv->pte)) {
+> +		pte_unmap_unlock(priv->pte, priv->ptl);
+> +		priv->pte = NULL;
+> +		return -EINVAL;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static struct mm_walk_ops damon_walk_ops = {
+> +	.pmd_entry = damon_pmd_entry,
+> +};
+> +
+> +int damon_follow_pte_pmd(struct mm_struct *mm, unsigned long addr,
+> +		struct damon_walk_private *private)
+> +{
+> +	int rc;
+> +
+> +	private->pte = NULL;
+> +	private->pmd = NULL;
+> +	rc = walk_page_range(mm, addr, addr + 1, &damon_walk_ops, private);
+> +	if (!rc && !private->pte && !private->pmd)
+> +		return -EINVAL;
+> +	return rc;
+> +}
+> +
+>   static void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
+>   {
+> -	pte_t *pte = NULL;
+> -	pmd_t *pmd = NULL;
+> +	struct damon_walk_private walk_result;
+> +	pte_t *pte;
+> +	pmd_t *pmd;
+>   	spinlock_t *ptl;
+>   
+> -	if (follow_invalidate_pte(mm, addr, NULL, &pte, &pmd, &ptl))
+> +	mmap_write_lock(mm);
 
-I have finally been able to test this patch:
-- the testsuite is still passing (of course, this is not hid-core related)
-- Logitech unify receivers are fine (according to the automated tests)
-- Gaming mice with hidraw calls works (with libratbag in userspace)
-- Wacom Intuos Pro still works (so the usbhid calls to enable the
-tablet mode are still OK)
+Can you elaborate why mmap_read_lock() isn't sufficient for your use 
+case? The write mode might heavily affect damon performance and workload 
+impact.
 
-->
-Tested-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 
-Alan, would you mind resending the patch with the various tags with a
-commit description? (unless I missed it...)
+Also, I wonder if it wouldn't be much easier and cleaner to just handle 
+it completely in the .pmd_entry callback, instead of returning PMDs, 
+PTEs, LOCKs, ... here.
 
-Cheers,
-Benjamin
+You could have
+
+static struct mm_walk_ops damon_mkold_ops = {
+	.pmd_entry = damon_mkold_pmd_entry,
+};
+
+and
+
+static struct mm_walk_ops damon_young_ops = {
+	.pmd_entry = damon_young_pmd_entry,
+};
+
+And then just handle everything completely inside the callback, avoiding 
+having to return locked PTEs, PMDs, .... and instead handling it at a 
+single location. Simply forward the page_sz pointer in the latter case 
+to damon_young_ops.
+
+
+damon_va_mkold()/damon_va_young() would mostly only call 
+walk_page_range() with the right ops and eventually convert some return 
+values.
+
+-- 
+Thanks,
+
+David / dhildenb
 
