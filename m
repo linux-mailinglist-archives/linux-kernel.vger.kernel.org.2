@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98043FCE81
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2433B3FCE89
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241249AbhHaUXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 16:23:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42226 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241192AbhHaUW5 (ORCPT
+        id S241077AbhHaUYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 16:24:10 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18750 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241090AbhHaUYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 16:22:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630441321;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xrJn03sgZ88g+0B73iP7rR7hukfKfXOSP0HDgzZ3C3M=;
-        b=UWLER0H9x3NF843uxr0rauOb6bQ8IsCeYAvr6fF3ube8OIEZZMlyE1zzdGKhqJpEKc30rg
-        bDL/t3f7wdCIWpatGCDSPzlK9xsUDcsKu1R+gLOzahoNdZc9E+RC6fK8nEcCRTZnej9n1c
-        V94FLlYfXA4KQkxJr839XGIp97S65Bc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-208-z7vELFjoPaGA0EQ_Bm6TIQ-1; Tue, 31 Aug 2021 16:21:59 -0400
-X-MC-Unique: z7vELFjoPaGA0EQ_Bm6TIQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E16FE87D541
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 20:21:58 +0000 (UTC)
-Received: from t480s.redhat.com (unknown [10.39.194.183])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1ABA86A915;
-        Tue, 31 Aug 2021 20:21:57 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>
-Subject: [PATCH v3 3/3] virtio-mem: disallow mapping virtio-mem memory via /dev/mem
-Date:   Tue, 31 Aug 2021 22:21:41 +0200
-Message-Id: <20210831202141.13846-4-david@redhat.com>
-In-Reply-To: <20210831202141.13846-1-david@redhat.com>
-References: <20210831202141.13846-1-david@redhat.com>
+        Tue, 31 Aug 2021 16:24:08 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17VK907i151394;
+        Tue, 31 Aug 2021 16:22:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ig7sVt9wfp6quoeY/muCeGzaKqcqMWXcgd0PrsiZb6w=;
+ b=g0TARFiOrBmoQWj4hE7viys/Fyum/TPyqHzRu66rKnZJu7I8Jeya76WRiO9ceL8Fa2HT
+ Zkqo0jArYFZP0KN9ny9S1H2FOsedDQaKFjAVDr6jhqAK2YTimtlxmB4F5macr9A90L30
+ /7LKu/n2zRoYye7a6jgx4ZywlaPvfn9eRoDwL/rrjYYhXpSqbYn79pF4jLaSVDYdtWnw
+ 12tiQpDtPGguh5EjC3f70UY7iBwskPC4wvhocjFptsoMiqy5IMKRn873zrN9Sy9RdpdE
+ 0xWq3FXlMh2UY9/PFlDb2Ogd17pOHTq7fhjNFTFWmzXkRyK9z1nM9wW4WEl8u4bxU3pz Fw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3astk5s1xm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Aug 2021 16:22:28 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17VK9XUU154067;
+        Tue, 31 Aug 2021 16:22:27 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3astk5s1xa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Aug 2021 16:22:27 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17VKCfZi016728;
+        Tue, 31 Aug 2021 20:22:25 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma02dal.us.ibm.com with ESMTP id 3aqcsdd8e7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Aug 2021 20:22:25 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17VKMOXt51904814
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 31 Aug 2021 20:22:24 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4198E78063;
+        Tue, 31 Aug 2021 20:22:24 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BE01A780D8;
+        Tue, 31 Aug 2021 20:22:15 +0000 (GMT)
+Received: from [9.65.248.250] (unknown [9.65.248.250])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 31 Aug 2021 20:22:15 +0000 (GMT)
+Subject: Re: [PATCH Part1 v5 38/38] virt: sevguest: Add support to get
+ extended report
+To:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        Dov Murik <dovmurik@linux.ibm.com>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-39-brijesh.singh@amd.com>
+From:   Dov Murik <dovmurik@linux.ibm.com>
+Message-ID: <bd5b2d47-2f66-87d9-ce1e-dfe717741d22@linux.ibm.com>
+Date:   Tue, 31 Aug 2021 23:22:04 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210820151933.22401-39-brijesh.singh@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ULfOSV9PEPRbITNqCq9zYascDlVLWA6b
+X-Proofpoint-ORIG-GUID: 11cFRGpYi2ZoT8RJDYNnY7ITk344_uEz
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-31_09:2021-08-31,2021-08-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ lowpriorityscore=0 spamscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
+ phishscore=0 clxscore=1015 impostorscore=0 priorityscore=1501 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108310109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't want user space to be able to map virtio-mem device memory
-directly (e.g., via /dev/mem) in order to have guarantees that in a sane
-setup we'll never accidentially access unplugged memory within the
-device-managed region of a virtio-mem device, just as required by the
-virtio-spec.
+Hi Brijesh,
 
-As soon as the virtio-mem driver is loaded, the device region is visible
-in /proc/iomem via the parent device region. From that point on user space
-is aware of the device region and we want to disallow mapping anything
-inside that region (where we will dynamically (un)plug memory) until
-the driver has been unloaded cleanly and e.g., another driver might take
-over.
+On 20/08/2021 18:19, Brijesh Singh wrote:
+> Version 2 of GHCB specification defines NAE to get the extended guest
+> request. It is similar to the SNP_GET_REPORT ioctl. The main difference
+> is related to the additional data that be returned. The additional
+> data returned is a certificate blob that can be used by the SNP guest
+> user. 
 
-By creating our parent IORESOURCE_SYSTEM_RAM resource with
-IORESOURCE_EXCLUSIVE, we will disallow any /dev/mem access to our
-device region until the driver was unloaded cleanly and removed the
-parent region. This will work even though only some memory blocks are
-actually currently added to Linux and appear as busy in the resource tree.
+It seems like the SNP_GET_EXT_REPORT ioctl does everything that the
+SNP_GET_REPORT ioctl does, and more.  Why expose SNP_GET_REPORT to
+userspace at all?
 
-So access to the region from user space is only possible
-a) if we don't load the virtio-mem driver.
-b) after unloading the virtio-mem driver cleanly.
 
-Don't build virtio-mem if access to /dev/mem cannot be restricticted --
-if we have CONFIG_DEVMEM=y but CONFIG_STRICT_DEVMEM is not set.
+-Dov
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- drivers/virtio/Kconfig      | 1 +
- drivers/virtio/virtio_mem.c | 4 +++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
-index ce1b3f6ec325..ff80cd03f1d1 100644
---- a/drivers/virtio/Kconfig
-+++ b/drivers/virtio/Kconfig
-@@ -101,6 +101,7 @@ config VIRTIO_MEM
- 	depends on MEMORY_HOTPLUG_SPARSE
- 	depends on MEMORY_HOTREMOVE
- 	depends on CONTIG_ALLOC
-+	depends on !DEVMEM || STRICT_DEVMEM
- 	help
- 	 This driver provides access to virtio-mem paravirtualized memory
- 	 devices, allowing to hotplug and hotunplug memory.
-diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index b91bc810a87e..c2d93492cf0f 100644
---- a/drivers/virtio/virtio_mem.c
-+++ b/drivers/virtio/virtio_mem.c
-@@ -2523,8 +2523,10 @@ static int virtio_mem_create_resource(struct virtio_mem *vm)
- 	if (!name)
- 		return -ENOMEM;
- 
-+	/* Disallow mapping device memory via /dev/mem completely. */
- 	vm->parent_resource = __request_mem_region(vm->addr, vm->region_size,
--						   name, IORESOURCE_SYSTEM_RAM);
-+						   name, IORESOURCE_SYSTEM_RAM |
-+						   IORESOURCE_EXCLUSIVE);
- 	if (!vm->parent_resource) {
- 		kfree(name);
- 		dev_warn(&vm->vdev->dev, "could not reserve device region\n");
--- 
-2.31.1
+> The certificate blob layout is defined in the GHCB specification.
+> The driver simply treats the blob as a opaque data and copies it to
+> userspace.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  Documentation/virt/coco/sevguest.rst  |  22 +++++
+>  drivers/virt/coco/sevguest/sevguest.c | 126 ++++++++++++++++++++++++++
+>  include/uapi/linux/sev-guest.h        |  13 +++
+>  3 files changed, 161 insertions(+)
+> 
 
+[...]
