@@ -2,305 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E12C3FC3B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBC73FC3B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240004AbhHaH0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 03:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239824AbhHaH0v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 03:26:51 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA7CC061575;
-        Tue, 31 Aug 2021 00:25:56 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id j1so11178950pjv.3;
-        Tue, 31 Aug 2021 00:25:56 -0700 (PDT)
+        id S240009AbhHaH1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 03:27:38 -0400
+Received: from mail-eopbgr50126.outbound.protection.outlook.com ([40.107.5.126]:35332
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239824AbhHaH1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 03:27:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A0Iy9dDQeXBtVbIICL9sQTwuJY+rdEZEPUoJJtYhBOZI/lBDho+zaYhHWjtZr79js+y0Zrlm3AaYF0f1M4P4GQkQ9/lcwN286im5Xihzpro7Pxp7tKVaSyIo3QoYIjmhNa/cv/PZ8etKhi92vdxpEuf6jaW0XW0s711szQzoo9IUZ+ak4C0EI+QXGg22hJhwG5qNTGBvA/Xe+Fi1DaS/yDVv/J8UEk3y0XKGgwiB4UmjB26w64PDYQAlziFPxn697nmUYmNgwn2RaRaW4vCQTDJ+zfkm4hiZhsUPd+8OHQU1WAveVXYtCo6IBGPL27U8myKg51nO51t/fmTQpldDCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V6s/UsXvRcWvtFM6cbxRrGuIdxNj5HYR1/+OqoAIQW4=;
+ b=kM7YI6lnc4vX355ECvI84Jems+KQHnkfWGcxwWWh+MOCIdZi0NA4Ky62w6Z++EUhlnHUgTIkUGGsFFSsYuTzZa5DNTkryuoeh9htBXVE/5BeAHb03i/NRhrWylBeDBNXYk55yb0o1ZWSVNrpnIgcUQhDu57cPSTebgYGNPtKEC5LSgHYvDgoD89ezWdt1VtSuRN1WLRk0HpZ2AD9XBgFq1xSs1e+kdbd+KaWK6WEeukITciitxcASKC2A+cg0Mnbn4iqowV/hzamtuteZSVxgm9+TuDSHEIEjcnakpg3tSnp9ZArO3J9whbrnLcdOdF9gGnOmYJTxjp7fqjJUCkl2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=viveris.fr; dmarc=pass action=none header.from=viveris.fr;
+ dkim=pass header.d=viveris.fr; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SrrV3clumIwMrnsDunPCSljyK6+I7diizgnIMV5VDGM=;
-        b=D4Uczj5ScpNKrJc2Y6vF1YPgkC+QRmy1Lv0ltH1JckfUAHsuIJWIxJpkh2L8SsiJ64
-         hjMuPVqUafy/ebyVLdcsvRAp5Qnreo8eWUBy5IDRrnG1/3+UTrVMheVSoWbi+roIQVj8
-         yq2JpQPV/EEiCfdoyR5o3Oqe/ylclUPgep/W1bl2+fm9F3dkmfgRhmyUtmFTkhFFg+OC
-         r+OWKESZFBqJPMGKZMAIb5N0Z5mpiZgZpv9r2vPUzT6r6dxeh11uDgksd8CtFLfjsBPA
-         Egn31ZHbxhSnWGwI9JsDGWFMO2glYjsHi/m5JcIuTd6GdhRoUADTbsHv5QZaTrVXWZf7
-         TeNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SrrV3clumIwMrnsDunPCSljyK6+I7diizgnIMV5VDGM=;
-        b=CgidO43B39uCgYbChqr7KFphc4bNDPnV2bYQUadWJGvFeiNeVHLuRd7E3nxBex1WD2
-         QWqygKstLDJRzQpHKrVQP15geXGDy8Ja1AuQXA+3xHAC5Hi321yPxgXFLyWhxk0YFNGj
-         Xtebg19zQyVyyKtGzd5zA2IKtdfNgiUvXDiNJJkKHQficBx6gEgGsBSbe/FlzOSxD4gA
-         8ukxCHQCJK49fjVwwmoOX9RufIn4q8nLETZc3M7GmwYf7zB3NHoQlVGzlzcBegPu3D/C
-         Me6X9tkQxLQ28BZDtBBM3yJLozUjrwbYp4Kap9nlE2nwEpWSHoOhuuMmhsXdygQPE+Nt
-         HtoQ==
-X-Gm-Message-State: AOAM533RQQBLu6gOcb0TY/rPdRjiTuPAVd0EFGyaWRjqddJzvqQ/bztA
-        QRyRNjiv0UnOlPg89SK+BlM=
-X-Google-Smtp-Source: ABdhPJx6BRnSMBYnfZwO2vU0ugdP71fbA/c8IXcsv4fhMgZvTRVKDTzBrOOTXreNdkilLdMY8+POLw==
-X-Received: by 2002:a17:90a:cf81:: with SMTP id i1mr3731701pju.76.1630394755924;
-        Tue, 31 Aug 2021 00:25:55 -0700 (PDT)
-Received: from sanitydock.wifi-cloud.jp ([210.160.217.69])
-        by smtp.gmail.com with ESMTPSA id m11sm1720724pjn.2.2021.08.31.00.25.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 00:25:55 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, christian.koenig@amd.com
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH v10 4/4] drm: avoid races with modesetting rights
-Date:   Tue, 31 Aug 2021 15:25:01 +0800
-Message-Id: <20210831072501.184211-5-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210831072501.184211-1-desmondcheongzx@gmail.com>
-References: <20210831072501.184211-1-desmondcheongzx@gmail.com>
+ d=viverislicensing.onmicrosoft.com;
+ s=selector2-viverislicensing-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V6s/UsXvRcWvtFM6cbxRrGuIdxNj5HYR1/+OqoAIQW4=;
+ b=vBqlKFXg1MpFzMgSbgBpZM6aTCVNkdPzzdxLtwWfLe2fYTAtgqhXGpVFd0bbGIStndAKKSk0LWRajGgi4K69OBmXVspzHkpooEawxG2nQS+l/gtiljidOo1LmBoLOd2pPTREbfaOUK4/zVQ0ztLmFcYTTqKblruv9Lwsw5WUfn8=
+Received: from AM4PR0902MB1748.eurprd09.prod.outlook.com
+ (2603:10a6:200:96::21) by AM0PR09MB4115.eurprd09.prod.outlook.com
+ (2603:10a6:208:195::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.24; Tue, 31 Aug
+ 2021 07:26:38 +0000
+Received: from AM4PR0902MB1748.eurprd09.prod.outlook.com
+ ([fe80::84a0:780d:1c5c:4432]) by AM4PR0902MB1748.eurprd09.prod.outlook.com
+ ([fe80::84a0:780d:1c5c:4432%9]) with mapi id 15.20.4457.024; Tue, 31 Aug 2021
+ 07:26:38 +0000
+From:   THOBY Simon <Simon.THOBY@viveris.fr>
+To:     J Freyensee <why2jjj.linux@gmail.com>,
+        Igor Zhbanov <izh1979@gmail.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 1/1] NAX LSM: Add initial support
+Thread-Topic: [PATCH v5 1/1] NAX LSM: Add initial support
+Thread-Index: AQHXlnGAzLReKMZ1V0uu/5KoZS8O5KuMwPiAgACFNYA=
+Date:   Tue, 31 Aug 2021 07:26:38 +0000
+Message-ID: <b5666cb1-b73f-d5e3-df5f-f7ec66ea65da@viveris.fr>
+References: <281927a3-7d3e-7aac-509d-9d3b1609b02b@gmail.com>
+ <624ae20f-b520-5b68-06a6-d0fa3713b9a1@gmail.com>
+ <219ed9d8-9711-dfe0-c620-070976c1daac@gmail.com>
+In-Reply-To: <219ed9d8-9711-dfe0-c620-070976c1daac@gmail.com>
+Accept-Language: fr-FR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=viveris.fr;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0844d619-e83a-42e9-874f-08d96c50abea
+x-ms-traffictypediagnostic: AM0PR09MB4115:
+x-microsoft-antispam-prvs: <AM0PR09MB4115A2CC093C8EA424AF910094CC9@AM0PR09MB4115.eurprd09.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zR57z2FT+RXeT+EcuRxrwCjJDj1g7Hh2DfB2gEGrkynSiJxFLfCystAl5KWYVwg02Gd0PR/L1ue6XkdN/WTFmux8fb+DAdzNt/MaWp7QBvQRSowlTsDeoxEgqwKEGER2pEQuEKFR3Q/Rm8elYq2cVUSUFg9QEsFJK7he6nmAQ9hitdZlp7LtCgUwzP+3Wd5iO0h8nlm19Vph0VVwmBtkXs9PfeOl2tbsfnK5qCEZuCOcT3XAviqmpYL+64yB7zgjwqJsZaRbgipTxGedRMSmw+hDpPSTLXarRsqpZNlhMv1pfFZcQn7NsLZchq77nBKIuw+XEHvrTbcojxd9dZXVGcPYntch2gm1XmFXXyzAHgL45wPS3PH8n67wyVkefzJRzxCrjTBZenuB7q86NCGMGjFloJVt5IxIDFC46nI82ex2mjdfETlTgplpJp1sgcloNCpJRhRXajOtWEcqBBTUCD7CiR9w+eKshdhETuuEzM94XD4pOVHw8QNpOPkobSgqdUZ1Qpg7N4Kft2v4U52Q5WwidcJmouidpmjY7h+fd2ZDBpeBYm2/99g4hV7iebtuHXOtPC+rIMyqElnZQ56gwdsYxIT9F7HeGLIJZKdyGdH7S6ym9Ws/JNFEa5taP+Gz0Oq/mBRqh5E37+oLu2mtpvCMp+PpCvmNoWh5Tp7IxImkM1N+INt1uQ6Lg985T5T5lLdi43ezGq1gueSOQ8dYTwWnLWZFDYbxKCG7+BIHDmdJgK4h33XMTBftsqQER10Xo0Cf2/1isNTn/NSb9zDWr0FAtyqoYnOt+se1LBsUMAan6vnBFkNAdzASvkUGk1KK
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM4PR0902MB1748.eurprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39850400004)(376002)(346002)(366004)(31696002)(83380400001)(71200400001)(2906002)(38100700002)(26005)(6506007)(38070700005)(53546011)(122000001)(36756003)(31686004)(86362001)(2616005)(8936002)(6486002)(8676002)(91956017)(66476007)(186003)(110136005)(66946007)(6512007)(76116006)(316002)(5660300002)(508600001)(966005)(66446008)(64756008)(66556008)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Tzd6TGRyVFBFZXJBckFoTDJscUgweThxOHV4SzZrajFNYnVwQVcyNGxCanVK?=
+ =?utf-8?B?MWQzNzBDTUxEa0NnYllkQTJpZXZQeHY0dFQyQ3hhSmJ6MzZzQlRsZFRtSjJ5?=
+ =?utf-8?B?d1IvZVp0YVJLelZyOVc4TFJwMmJnYjZ4U0hhNVl2MGFuUUo5WmNTRzltZU5C?=
+ =?utf-8?B?MW42T21rWldRNlB1OGhNaWQ5dlVlZnR0QkN3Y2puNFV3UWU2RGsxa3cvREp0?=
+ =?utf-8?B?ZTRSRGFwenJEQ0U5T0p3Z0tuYWMzWFNUZlBOdlF4Zi9HWFhSQ0RGTEdWdEZL?=
+ =?utf-8?B?ajltdkRzUFFxTGNVbjMyL1NubEMwLytrZ0duR2h5QXdDYTNkQUhCeUNWOWM5?=
+ =?utf-8?B?Ui8wMTJqb0t1VG1Nc3pHc2c2a3k5WFQ0WmF5REpnbXFNSjlBNEN6RFp6UW54?=
+ =?utf-8?B?dkJSQkhGU3Q0eWdXci8zcW16anhXWW92T2FBY1F3bWpxeHZ3MHh1WnlKcjNG?=
+ =?utf-8?B?U3RobitsNExxNXRXaE8zYkM2OGpncFg5QStBaE9QSWltN0tURFZMUDgxcm1r?=
+ =?utf-8?B?Q2JZd3JiRDNzMTh2NzlVTFRIbzBUUThRblNtbVdSMmw2OVRhZUI4K1d5MmpW?=
+ =?utf-8?B?bnYrUXJTQ0tqeGtpZ2JnMzQxTUgwa0pES0xNdGMyYWJXNFdaR1pWSHA5Z2JD?=
+ =?utf-8?B?cHpjV0NZSmVONlp2U2M2bEoxV1ZWaDI0T2pqSkkzdHhBTWxuU09QYmtkRVpL?=
+ =?utf-8?B?MFZ0TTVXa1NvUXNHZ25MQmwyM0cvV2RuUFVwSWhERmoreUxsVXo2dytQKzFj?=
+ =?utf-8?B?WmdSTXJQR0o0RnpDckhqR1VmWVVvUjVPMktpSWJGbSs1cWdLcVZuRVVrZ1Zl?=
+ =?utf-8?B?UUdwZzZ3cUdJSkduYnJRbjQ0TEtwTkRGcTQ3RFViUkc2bXMxd0pSZnJRS3oy?=
+ =?utf-8?B?TGdEY2E5RDFHU2dtU1JzeG05OXNRcXZCb3hvS0dtNnlIdXIwT0dyMjdoRTcx?=
+ =?utf-8?B?SVRUd1prWThubkFWRjVoZTVaR0V2Zk1KTi9TZDNsc2xPL2dzcGUwcWZITlkw?=
+ =?utf-8?B?c2VnaCtpRmZXcmk1UmdTc2dyeW1CR25weW5oYnJ3OFlwVCtFelI5QnB6MlEy?=
+ =?utf-8?B?TXhXbnBqaDhwY1ZXVklmNzZIL1VsMElWdXllbG1HblBGUjBQNTZkZndWTStB?=
+ =?utf-8?B?UnhobzBVc29TcTJVT0pEZFJRQ1JBemlwMEMwV3dwb25EdUE1TmEzMHNFU3hw?=
+ =?utf-8?B?VTdOWTQ0Smk5QUtHeGNxWGVpbVFVdEU3MXU3R0l3UFh5V3dvY0JSV1FLZFR5?=
+ =?utf-8?B?NHZKYjg5UGk3SXdkcGFjYVI3aURWQ0xEZWM1M0pCY3FsbDhPQ1c2cDA5T2JN?=
+ =?utf-8?B?M1hKalR1TitHcFBHeXFGejh5MGE0ZnpKNzVUSkx3eElKWUxVTE1EQ2N6OWJN?=
+ =?utf-8?B?Qk4rUXUxakorTDhRSSs2U3RKNy9hQzg2a1d6aVBoTXVzTjhQeTlmdVRSSWxa?=
+ =?utf-8?B?TTU2T2hWVzVQRlovSndBSC9kbHptWE5KaS9BWXptak9pd2RoNlcweDg2OWRo?=
+ =?utf-8?B?ZklQVXdYMW11SXNreXByY29qTUFDSmUwZERFMXlsbW5kZnR2MTV6TWgyU0tR?=
+ =?utf-8?B?dlh5VHY0aXJZb1JkdVJROTczUnNFZ0lXSG5ETFFCcWkxcUUzbXpEbGVJSWth?=
+ =?utf-8?B?WVU3emZaTC9WbGhPOFJEcWtRY3gySkdjOWYxUzF1QnB3THc5QkVtY3NydmRT?=
+ =?utf-8?B?OTgvVVYxMWdXYnhmaktQQ0JZMi9wUXA0NHpBN1pwMWZPU1MzZHFHYUxCSmhI?=
+ =?utf-8?Q?Z8+CLI/VSVqWqJNNezKc+qExt0FOfeb08LgvKn2?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8692A7148A36C348B46D2E462F8DCEA1@eurprd09.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: viveris.fr
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM4PR0902MB1748.eurprd09.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0844d619-e83a-42e9-874f-08d96c50abea
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2021 07:26:38.6353
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 34bab81c-945c-43f1-ad13-592b97e11b40
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8zE+lI70XF6obV9WTjYAdqd1AZXHw/Z6PdoUwTW9BUPSRxDHc31KRSZgheTBybqlDq91Kaf1to3pXv57S0oBmg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR09MB4115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In drm_client_modeset.c and drm_fb_helper.c,
-drm_master_internal_{acquire,release} are used to avoid races with DRM
-userspace. These functions hold onto drm_device.master_rwsem while
-committing, and bail if there's already a master.
-
-However, there are other places where modesetting rights can race. A
-time-of-check-to-time-of-use error can occur if an ioctl that changes
-the modeset has its rights revoked after it validates its permissions,
-but before it completes.
-
-There are four places where modesetting permissions can change:
-
-- DROP_MASTER ioctl removes rights for a master and its leases
-
-- REVOKE_LEASE ioctl revokes rights for a specific lease
-
-- SET_MASTER ioctl sets the device master if the master role hasn't
-been acquired yet
-
-- drm_open which can create a new master for a device if one does not
-currently exist
-
-These races can be avoided using drm_device.master_rwsem: users that
-perform modesetting should hold a read lock on the new
-drm_device.master_rwsem, and users that change these permissions
-should hold a write lock.
-
-To avoid deadlocks with master_rwsem, for ioctls that need to check
-for modesetting permissions, but also need to hold a write lock on
-master_rwsem to protect some other attribute (or recurses to some
-function that holds a write lock, like drm_mode_create_lease_ioctl
-which eventually calls drm_master_open), we remove the DRM_MASTER flag
-and push the master_rwsem lock and permissions check into the ioctl.
-
-Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
----
- drivers/gpu/drm/drm_auth.c  |  4 ++++
- drivers/gpu/drm/drm_ioctl.c | 20 +++++++++++++++-----
- drivers/gpu/drm/drm_lease.c | 35 ++++++++++++++++++++++++-----------
- include/drm/drm_device.h    |  6 ++++++
- 4 files changed, 49 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
-index 73ade0513ccb..65065f7e1499 100644
---- a/drivers/gpu/drm/drm_auth.c
-+++ b/drivers/gpu/drm/drm_auth.c
-@@ -120,6 +120,10 @@ int drm_authmagic(struct drm_device *dev, void *data,
- 	DRM_DEBUG("%u\n", auth->magic);
- 
- 	down_write(&dev->master_rwsem);
-+	if (unlikely(!drm_is_current_master(file_priv))) {
-+		up_write(&dev->master_rwsem);
-+		return -EACCES;
-+	}
- 	file = idr_find(&file_priv->master->magic_map, auth->magic);
- 	if (file) {
- 		file->authenticated = 1;
-diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
-index fe9c4c0264a9..f6a8aa6c53b3 100644
---- a/drivers/gpu/drm/drm_ioctl.c
-+++ b/drivers/gpu/drm/drm_ioctl.c
-@@ -386,6 +386,10 @@ static int drm_setversion(struct drm_device *dev, void *data, struct drm_file *f
- 	int if_version, retcode = 0;
- 
- 	down_write(&dev->master_rwsem);
-+	if (unlikely(!drm_is_current_master(file_priv))) {
-+		retcode = -EACCES;
-+		goto unlock;
-+	}
- 	if (sv->drm_di_major != -1) {
- 		if (sv->drm_di_major != DRM_IF_MAJOR ||
- 		    sv->drm_di_minor < 0 || sv->drm_di_minor > DRM_IF_MINOR) {
-@@ -420,8 +424,9 @@ static int drm_setversion(struct drm_device *dev, void *data, struct drm_file *f
- 	sv->drm_di_minor = DRM_IF_MINOR;
- 	sv->drm_dd_major = dev->driver->major;
- 	sv->drm_dd_minor = dev->driver->minor;
--	up_write(&dev->master_rwsem);
- 
-+unlock:
-+	up_write(&dev->master_rwsem);
- 	return retcode;
- }
- 
-@@ -574,12 +579,12 @@ static const struct drm_ioctl_desc drm_ioctls[] = {
- 	DRM_IOCTL_DEF(DRM_IOCTL_GET_STATS, drm_getstats, 0),
- 	DRM_IOCTL_DEF(DRM_IOCTL_GET_CAP, drm_getcap, DRM_RENDER_ALLOW),
- 	DRM_IOCTL_DEF(DRM_IOCTL_SET_CLIENT_CAP, drm_setclientcap, 0),
--	DRM_IOCTL_DEF(DRM_IOCTL_SET_VERSION, drm_setversion, DRM_MASTER),
-+	DRM_IOCTL_DEF(DRM_IOCTL_SET_VERSION, drm_setversion, 0),
- 
- 	DRM_IOCTL_DEF(DRM_IOCTL_SET_UNIQUE, drm_invalid_op, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
- 	DRM_IOCTL_DEF(DRM_IOCTL_BLOCK, drm_noop, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
- 	DRM_IOCTL_DEF(DRM_IOCTL_UNBLOCK, drm_noop, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
--	DRM_IOCTL_DEF(DRM_IOCTL_AUTH_MAGIC, drm_authmagic, DRM_MASTER),
-+	DRM_IOCTL_DEF(DRM_IOCTL_AUTH_MAGIC, drm_authmagic, 0),
- 
- 	DRM_LEGACY_IOCTL_DEF(DRM_IOCTL_ADD_MAP, drm_legacy_addmap_ioctl, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
- 	DRM_LEGACY_IOCTL_DEF(DRM_IOCTL_RM_MAP, drm_legacy_rmmap_ioctl, DRM_AUTH),
-@@ -706,10 +711,10 @@ static const struct drm_ioctl_desc drm_ioctls[] = {
- 		      DRM_RENDER_ALLOW),
- 	DRM_IOCTL_DEF(DRM_IOCTL_CRTC_GET_SEQUENCE, drm_crtc_get_sequence_ioctl, 0),
- 	DRM_IOCTL_DEF(DRM_IOCTL_CRTC_QUEUE_SEQUENCE, drm_crtc_queue_sequence_ioctl, 0),
--	DRM_IOCTL_DEF(DRM_IOCTL_MODE_CREATE_LEASE, drm_mode_create_lease_ioctl, DRM_MASTER),
-+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_CREATE_LEASE, drm_mode_create_lease_ioctl, 0),
- 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_LIST_LESSEES, drm_mode_list_lessees_ioctl, DRM_MASTER),
- 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GET_LEASE, drm_mode_get_lease_ioctl, DRM_MASTER),
--	DRM_IOCTL_DEF(DRM_IOCTL_MODE_REVOKE_LEASE, drm_mode_revoke_lease_ioctl, DRM_MASTER),
-+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_REVOKE_LEASE, drm_mode_revoke_lease_ioctl, 0),
- };
- 
- #define DRM_CORE_IOCTL_COUNT	ARRAY_SIZE(drm_ioctls)
-@@ -779,6 +784,9 @@ long drm_ioctl_kernel(struct file *file, drm_ioctl_t *func, void *kdata,
- 	if (locked_ioctl)
- 		mutex_lock(&drm_global_mutex);
- 
-+	if (unlikely(flags & DRM_MASTER))
-+		down_read(&dev->master_rwsem);
-+
- 	retcode = drm_ioctl_permit(flags, file_priv);
- 	if (unlikely(retcode))
- 		goto out;
-@@ -786,6 +794,8 @@ long drm_ioctl_kernel(struct file *file, drm_ioctl_t *func, void *kdata,
- 	retcode = func(dev, kdata, file_priv);
- 
- out:
-+	if (unlikely(flags & DRM_MASTER))
-+		up_read(&dev->master_rwsem);
- 	if (locked_ioctl)
- 		mutex_unlock(&drm_global_mutex);
- 	return retcode;
-diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
-index dee4f24a1808..bed6f7636cbe 100644
---- a/drivers/gpu/drm/drm_lease.c
-+++ b/drivers/gpu/drm/drm_lease.c
-@@ -500,6 +500,18 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
- 		return -EINVAL;
- 	}
- 
-+	/* Clone the lessor file to create a new file for us */
-+	DRM_DEBUG_LEASE("Allocating lease file\n");
-+	lessee_file = file_clone_open(lessor_file);
-+	if (IS_ERR(lessee_file))
-+		return PTR_ERR(lessee_file);
-+
-+	down_read(&dev->master_rwsem);
-+	if (unlikely(!drm_is_current_master(lessor_priv))) {
-+		ret = -EACCES;
-+		goto out_file;
-+	}
-+
- 	lessor = drm_file_get_master(lessor_priv);
- 	/* Do not allow sub-leases */
- 	if (lessor->lessor) {
-@@ -547,14 +559,6 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
- 		goto out_leases;
- 	}
- 
--	/* Clone the lessor file to create a new file for us */
--	DRM_DEBUG_LEASE("Allocating lease file\n");
--	lessee_file = file_clone_open(lessor_file);
--	if (IS_ERR(lessee_file)) {
--		ret = PTR_ERR(lessee_file);
--		goto out_lessee;
--	}
--
- 	lessee_priv = lessee_file->private_data;
- 	/* Change the file to a master one */
- 	drm_master_put(&lessee_priv->master);
-@@ -571,17 +575,19 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
- 	fd_install(fd, lessee_file);
- 
- 	drm_master_put(&lessor);
-+	up_read(&dev->master_rwsem);
- 	DRM_DEBUG_LEASE("drm_mode_create_lease_ioctl succeeded\n");
- 	return 0;
- 
--out_lessee:
--	drm_master_put(&lessee);
--
- out_leases:
- 	put_unused_fd(fd);
- 
- out_lessor:
- 	drm_master_put(&lessor);
-+
-+out_file:
-+	up_read(&dev->master_rwsem);
-+	fput(lessee_file);
- 	DRM_DEBUG_LEASE("drm_mode_create_lease_ioctl failed: %d\n", ret);
- 	return ret;
- }
-@@ -705,6 +711,11 @@ int drm_mode_revoke_lease_ioctl(struct drm_device *dev,
- 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
- 		return -EOPNOTSUPP;
- 
-+	down_write(&dev->master_rwsem);
-+	if (unlikely(!drm_is_current_master(lessor_priv))) {
-+		ret = -EACCES;
-+		goto unlock;
-+	}
- 	lessor = drm_file_get_master(lessor_priv);
- 	mutex_lock(&dev->mode_config.idr_mutex);
- 
-@@ -728,5 +739,7 @@ int drm_mode_revoke_lease_ioctl(struct drm_device *dev,
- 	mutex_unlock(&dev->mode_config.idr_mutex);
- 	drm_master_put(&lessor);
- 
-+unlock:
-+	up_write(&dev->master_rwsem);
- 	return ret;
- }
-diff --git a/include/drm/drm_device.h b/include/drm/drm_device.h
-index 142fb2f6e74d..5504f9192408 100644
---- a/include/drm/drm_device.h
-+++ b/include/drm/drm_device.h
-@@ -151,6 +151,12 @@ struct drm_device {
- 	 * Lock for &drm_device.master, &drm_file.was_master,
- 	 * &drm_file.is_master, &drm_file.master, &drm_master.unique,
- 	 * &drm_master.unique_len, and &drm_master.magic_map.
-+	 *
-+	 * Additionally, synchronizes access rights to exclusive resources like
-+	 * modesetting access between multiple users. For example, users that
-+	 * can change the modeset or display state must hold a read lock on
-+	 * @master_rwsem, and users that change modesetting rights should hold
-+	 * a write lock.
- 	 */
- 	struct rw_semaphore master_rwsem;
- 
--- 
-2.25.1
-
+T24gOC8zMS8yMSAxOjI5IEFNLCBKIEZyZXllbnNlZSB3cm90ZToNCj4gT24gOC8yMS8yMSAyOjQ3
+IEFNLCBJZ29yIFpoYmFub3Ygd3JvdGU6DQo+PiBBZGQgaW5pdGlhbCBzdXBwb3J0IGZvciBOQVgg
+KE5vIEFub255bW91cyBFeGVjdXRpb24pLCB3aGljaCBpcyBhIExpbnV4DQo+PiBTZWN1cml0eSBN
+b2R1bGUgdGhhdCBleHRlbmRzIERBQyBieSBtYWtpbmcgaW1wb3NzaWJsZSB0byBtYWtlIGFub255
+bW91cw0KPj4gYW5kIG1vZGlmaWVkIHBhZ2VzIGV4ZWN1dGFibGUgZm9yIHByaXZpbGVnZWQgcHJv
+Y2Vzc2VzLg0KPj4NCj4+IEludGVyY2VwdHMgYW5vbnltb3VzIGV4ZWN1dGFibGUgcGFnZXMgY3Jl
+YXRlZCB3aXRoIG1tYXAoKSBhbmQgbXByb3RlY3QoKQ0KPj4gc3lzdGVtIGNhbGxzLg0KPj4NCj4+
+IExvZyB2aW9sYXRpb25zIChpbiBub24tcXVpZXQgbW9kZSkgYW5kIGJsb2NrIHRoZSBhY3Rpb24g
+b3Iga2lsbCB0aGUNCj4+IG9mZmVuZGluZyBwcm9jZXNzLCBkZXBlbmRpbmcgb24gdGhlIGVuYWJs
+ZWQgc2V0dGluZ3MuDQo+Pg0KPj4gU2VlIERvY3VtZW50YXRpb24vYWRtaW4tZ3VpZGUvTFNNL05B
+WC5yc3QuDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogSWdvciBaaGJhbm92IDxpemgxOTc5QGdtYWls
+LmNvbT4NCj4+IC0tLQ0KPj4gwqAgRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9MU00vTkFYLnJz
+dMKgwqDCoMKgwqDCoMKgwqAgfMKgIDcyICsrKw0KPj4gwqAgRG9jdW1lbnRhdGlvbi9hZG1pbi1n
+dWlkZS9MU00vaW5kZXgucnN0wqDCoMKgwqDCoMKgIHzCoMKgIDEgKw0KPj4gwqAgLi4uL2FkbWlu
+LWd1aWRlL2tlcm5lbC1wYXJhbWV0ZXJzLnJzdMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgMSArDQo+
+PiDCoCAuLi4vYWRtaW4tZ3VpZGUva2VybmVsLXBhcmFtZXRlcnMudHh0wqDCoMKgwqDCoMKgwqDC
+oCB8wqAgMzIgKysNCj4+IMKgIHNlY3VyaXR5L0tjb25maWfCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoCAxMSArLQ0KPj4gwqAgc2Vj
+dXJpdHkvTWFrZWZpbGXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCB8wqDCoCAyICsNCj4+IMKgIHNlY3VyaXR5L25heC9LY29uZmlnwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCAxMTMgKysrKysN
+Cj4+IMKgIHNlY3VyaXR5L25heC9NYWtlZmlsZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoCA0ICsNCj4+IMKgIHNlY3VyaXR5L25heC9uYXgtbHNt
+LmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgNDcyICsr
+KysrKysrKysrKysrKysrKw0KPj4gwqAgOSBmaWxlcyBjaGFuZ2VkLCA3MDMgaW5zZXJ0aW9ucygr
+KSwgNSBkZWxldGlvbnMoLSkNCj4+IMKgIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9u
+L2FkbWluLWd1aWRlL0xTTS9OQVgucnN0DQo+PiDCoCBjcmVhdGUgbW9kZSAxMDA2NDQgc2VjdXJp
+dHkvbmF4L0tjb25maWcNCj4+IMKgIGNyZWF0ZSBtb2RlIDEwMDY0NCBzZWN1cml0eS9uYXgvTWFr
+ZWZpbGUNCj4+IMKgIGNyZWF0ZSBtb2RlIDEwMDY0NCBzZWN1cml0eS9uYXgvbmF4LWxzbS5jDQo+
+Pg0KPj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vYWRtaW4tZ3VpZGUvTFNNL05BWC5yc3Qg
+Yi9Eb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL0xTTS9OQVgucnN0DQo+PiBuZXcgZmlsZSBtb2Rl
+IDEwMDY0NA0KPj4gaW5kZXggMDAwMDAwMDAwMDAwLi5kYTU0YjNiZTRjZGENCj4+IC0tLSAvZGV2
+L251bGwNCj4+ICsrKyBiL0RvY3VtZW50YXRpb24vYWRtaW4tZ3VpZGUvTFNNL05BWC5yc3QNCj4+
+IEBAIC0wLDAgKzEsNzIgQEANCj4+ICs9PT09PT09DQo+PiArTkFYIExTTQ0KPj4gKz09PT09PT0N
+Cj4+ICsNCj4+ICs6QXV0aG9yOiBJZ29yIFpoYmFub3YNCj4+ICsNCj4+ICtOQVggKE5vIEFub255
+bW91cyBFeGVjdXRpb24pIGlzIGEgTGludXggU2VjdXJpdHkgTW9kdWxlIHRoYXQgZXh0ZW5kcyBE
+QUMNCj4+ICtieSBtYWtpbmcgaW1wb3NzaWJsZSB0byBtYWtlIGFub255bW91cyBhbmQgbW9kaWZp
+ZWQgcGFnZXMgZXhlY3V0YWJsZSBmb3INCj4+ICtwcm9jZXNzZXMuIFRoZSBtb2R1bGUgaW50ZXJj
+ZXB0cyBhbm9ueW1vdXMgZXhlY3V0YWJsZSBwYWdlcyBjcmVhdGVkIHdpdGgNCj4+ICttbWFwKCkg
+YW5kIG1wcm90ZWN0KCkgc3lzdGVtIGNhbGxzLg0KPj4gKw0KPj4gK1RvIHNlbGVjdCBpdCBhdCBi
+b290IHRpbWUsIGFkZCBgYG5heGBgIHRvIGBgc2VjdXJpdHlgYCBrZXJuZWwgY29tbWFuZC1saW5l
+DQo+PiArcGFyYW1ldGVyLg0KPj4gKw0KPj4gK1RoZSBmb2xsb3dpbmcgc3lzY3RsIHBhcmFtZXRl
+cnMgYXJlIGF2YWlsYWJsZToNCj4+ICsNCj4+ICsqIGBga2VybmVsLm5heC5jaGVja19hbGxgYDoN
+Cj4+ICsgLSAwOiBDaGVjayBhbGwgcHJvY2Vzc2VzLg0KPj4gKyAtIDE6IENoZWNrIG9ubHkgcHJp
+dmlsZWdlZCBwcm9jZXNzZXMuIFRoZSBwcml2aWxlZ2VkIHByb2Nlc3MgaXMgYSBwcm9jZXNzDQo+
+PiArwqDCoMKgwqDCoCBmb3Igd2hpY2ggYW55IG9mIHRoZSBmb2xsb3dpbmcgaXMgdHJ1ZToNCj4+
+ICvCoMKgwqDCoMKgIC0gYGB1aWTCoCA9PSAwYGANCj4+ICvCoMKgwqDCoMKgIC0gYGBldWlkID09
+IDBgYA0KPj4gK8KgwqDCoMKgwqAgLSBgYHN1aWQgPT0gMGBgDQo+PiArwqDCoMKgwqDCoCAtIGBg
+Y2FwX2VmZmVjdGl2ZWBgIGhhcyBhbnkgY2FwYWJpbGl0eSBleGNlcHQgZm9yIHRoZSBvbmVzIGFs
+bG93ZWQNCj4+ICvCoMKgwqDCoMKgwqDCoCBpbiBgYGtlcm5lbC5uYXguYWxsb3dlZF9jYXBzYGAN
+Cj4+ICvCoMKgwqDCoMKgIC0gYGBjYXBfcGVybWl0dGVkYGAgaGFzIGFueSBjYXBhYmlsaXR5IGV4
+Y2VwdCBmb3IgdGhlIG9uZXMgYWxsb3dlZA0KPj4gK8KgwqDCoMKgwqDCoMKgIGluIGBga2VybmVs
+Lm5heC5hbGxvd2VkX2NhcHNgYA0KPj4gKw0KPj4gKyBDaGVja2luZyBvZiB1aWQvZXVpZC9zdWlk
+IGlzIGltcG9ydGFudCBiZWNhdXNlIGEgcHJvY2VzcyBtYXkgY2FsbCBzZXRldWlkKDApDQo+PiAr
+IHRvIGdhaW4gcHJpdmlsZWdlcyAoaWYgU0VDVVJFX05PX1NFVFVJRF9GSVhVUCBzZWN1cmUgYml0
+IGlzIG5vdCBzZXQpLg0KPj4gKw0KPj4gKyogYGBrZXJuZWwubmF4LmFsbG93ZWRfY2Fwc2BgOg0K
+Pj4gKw0KPj4gKyBIZXhhZGVjaW1hbCBudW1iZXIgcmVwcmVzZW50aW5nIHRoZSBzZXQgb2YgY2Fw
+YWJpbGl0aWVzIGEgbm9uLXJvb3QNCj4+ICsgcHJvY2VzcyBjYW4gcG9zc2VzcyB3aXRob3V0IGJl
+aW5nIGNvbnNpZGVyZWQgInByaXZpbGVnZWQiIGJ5IE5BWCBMU00uDQo+PiArDQo+PiArIEZvciB0
+aGUgbWVhbmluZyBvZiB0aGUgY2FwYWJpbGl0aWVzIGJpdHMgYW5kIHRoZWlyIHZhbHVlLCBwbGVh
+c2UgY2hlY2sNCj4+ICsgYGBpbmNsdWRlL3VhcGkvbGludXgvY2FwYWJpbGl0eS5oYGAgYW5kIGBg
+Y2FwYWJpbGl0aWVzKDcpYGAgbWFudWFsIHBhZ2UuDQo+PiArDQo+PiArIEZvciBleGFtcGxlLCBg
+YENBUF9TWVNfUFRSQUNFYGAgaGFzIGEgbnVtYmVyIDE5LiBUaGVyZWZvcmUsIHRvIGFkZCBpdCB0
+bw0KPj4gKyBhbGxvd2VkIGNhcGFiaWxpdGllcyBsaXN0LCB3ZSBuZWVkIHRvIHNldCAxOSd0aCBi
+aXQgKDJeMTkgb3IgMSA8PCAxOSkNCj4+ICsgb3IgODAwMDAgaW4gaGV4YWRlY2ltYWwgZm9ybS4g
+Q2FwYWJpbGl0aWVzIGNhbiBiZSBiaXR3aXNlIE9SZWQuDQo+PiArDQo+PiArKiBgYGtlcm5lbC5u
+YXgubW9kZWBgOg0KPj4gKw0KPj4gKyAtIDA6IE9ubHkgbG9nIGVycm9ycyAod2hlbiBlbmFibGVk
+IGJ5IGBga2VybmVsLm5heC5xdWlldGBgKSAoZGVmYXVsdCBtb2RlKQ0KPj4gKyAtIDE6IEZvcmJp
+ZCB1bnNhZmUgcGFnZXMgbWFwcGluZ3MgKGFuZCBsb2cgd2hlbiBlbmFibGVkKQ0KPj4gKyAtIDI6
+IEtpbGwgdGhlIHZpb2xhdGluZyBwcm9jZXNzIChhbmQgbG9nIHdoZW4gZW5hYmxlZCkNCj4+ICsN
+Cj4+ICsqIGBga2VybmVsLm5heC5xdWlldGBgOg0KPj4gKw0KPj4gKyAtIDA6IExvZyB2aW9sYXRp
+b25zIChkZWZhdWx0KQ0KPj4gKyAtIDE6IEJlIHF1aWV0DQo+PiArDQo+PiArKiBgYGtlcm5lbC5u
+YXgubG9ja2VkYGA6DQo+PiArDQo+PiArIC0gMDogQ2hhbmdpbmcgb2YgdGhlIG1vZHVsZSdzIHN5
+c2N0bCBwYXJhbWV0ZXJzIGlzIGFsbG93ZWQNCj4+ICsgLSAxOiBGdXJ0aGVyIGNoYW5naW5nIG9m
+IHRoZSBtb2R1bGUncyBzeXNjdGwgcGFyYW1ldGVycyBpcyBmb3JiaWRkZW4NCj4+ICsNCj4+ICsg
+U2V0dGluZyB0aGlzIHBhcmFtZXRlciB0byBgYDFgYCBhZnRlciBpbml0aWFsIHNldHVwIGR1cmlu
+ZyB0aGUgc3lzdGVtIGJvb3QNCj4+ICsgd2lsbCBwcmV2ZW50IHRoZSBtb2R1bGUgZGlzYWJsaW5n
+IGF0IHRoZSBsYXRlciB0aW1lLg0KPj4gKw0KPj4gK1RoZXJlIGFyZSBtYXRjaGluZyBrZXJuZWwg
+Y29tbWFuZC1saW5lIHBhcmFtZXRlcnMgKHdpdGggdGhlIHNhbWUgdmFsdWVzKToNCj4+ICsNCj4+
+ICstIGBgbmF4X2FsbG93ZWRfY2Fwc2BgDQo+PiArLSBgYG5heF9jaGVja19hbGxgYA0KPj4gKy0g
+YGBuYXhfbW9kZWBgDQo+PiArLSBgYG5heF9xdWlldGBgDQo+PiArLSBgYG5heF9sb2NrZWRgYA0K
+Pj4gKw0KPj4gK1RoZSBgYG5heF9sb2NrZWRgYCBjb21tYW5kLWxpbmUgcGFyYW1ldGVyIG11c3Qg
+YmUgc3BlY2lmaWVkIGxhc3QgdG8gYXZvaWQNCj4+ICtwcmVtYXR1cmUgc2V0dGluZyBsb2NraW5n
+Lg0KPiANCj4gDQo+IElzIGl0IGNvbW1vbiB0byBoYXZlIHRoZXNlIHR5cGVzIG9mIHJlc3RyaWN0
+aW9ucyBmb3Iga2VybmVsIGNvbW1hbmQtbGluZQ0KPiBwYXJhbWV0ZXJzLCBpbiB0aGlzIGNhc2Us
+IGtlcm5lbCBjb21tYW5kLWxpbmUgcGFyYW1ldGVyIG9yZGVyaW5nP8KgIFNlZW1zDQo+IGxpa2Ug
+dGhhdCB3b3VsZCBiZSBwcm9uZSBmb3IgYSBsb3Qgb2YgYXZvaWRhYmxlIHRyb3VibGVzaG9vdGlu
+ZyBpc3N1ZXMNCj4gYW5kIHVubmVjZXNzYXJ5IHVzYWdlIHF1ZXN0aW9ucy4NCg0KVGhpcyBwb2lu
+dCB3YXMgZGlzY3Vzc2VkIGluIHRoZSB2MSBvZiB0aGlzIHBhdGNoIChidXQgd2UgZGlkbid0IHJl
+YWxseSByZWFjaCBhbiBhZ3JlZW1lbnQgb25lIHdheSBvciBhbm90aGVyKToNCmh0dHBzOi8veC1s
+b3JlLmtlcm5lbC5vcmcvYWxsL2IxZjM2NTBjLWRmNDItYzVkNC00NWMwLWM3Nzk0Njc1OTkyNkB2
+aXZlcmlzLmZyLw0KDQo+IA0KPiA8YmlnIHNuaXA+DQo+IC4NCj4gLg0KPiAuDQo+IA0KPj4gKw0K
+Pj4gK3N0YXRpYyB2b2lkIF9faW5pdA0KPj4gK25heF9pbml0X3N5c2N0bCh2b2lkKQ0KPj4gK3sN
+Cj4+ICvCoMKgwqDCoCBpZiAoIXJlZ2lzdGVyX3N5c2N0bF9wYXRocyhuYXhfc3lzY3RsX3BhdGgs
+IG5heF9zeXNjdGxfdGFibGUpKQ0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwYW5pYygi
+TkFYOiBzeXNjdGwgcmVnaXN0cmF0aW9uIGZhaWxlZC5cbiIpOw0KPj4gK30NCj4+ICsNCj4+ICsj
+ZWxzZSAvKiAhQ09ORklHX1NZU0NUTCAqLw0KPj4gKw0KPj4gK3N0YXRpYyBpbmxpbmUgdm9pZA0K
+Pj4gK25heF9pbml0X3N5c2N0bCh2b2lkKQ0KPj4gK3sNCj4+ICsNCj4+ICt9DQo+PiArDQo+PiAr
+I2VuZGlmIC8qICFDT05GSUdfU1lTQ1RMICovDQo+PiArDQo+PiArc3RhdGljIGludCBfX2luaXQg
+c2V0dXBfYWxsb3dlZF9jYXBzKGNoYXIgKnN0cikNCj4+ICt7DQo+PiArwqDCoMKgwqAgaWYgKGxv
+Y2tlZCkNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIDE7DQo+PiArDQo+PiAr
+wqDCoMKgwqAgLyogRG8gbm90IGFsbG93IHRyYWlsaW5nIGdhcmJhZ2Ugb3IgZXhjZXNzaXZlIGxl
+bmd0aCAqLw0KPj4gK8KgwqDCoMKgIGlmIChzdHJsZW4oc3RyKSA+IEFMTE9XRURfQ0FQU19IRVhf
+TEVOKSB7DQo+IA0KPiDCoGEgbGl0dGxlIG5pdHBpY2ssIGNvdWxkIHN0cm5sZW4oKSBiZSB1c2Vk
+IGluc3RlYWQgdG8gZGVmaW5lIGEgbWF4DQo+IGxlbmd0aCBvZiB0aGUgaW5wdXQgJ3N0cic/DQo+
+IA0KPiANCj4gUmVnYXJkcywNCj4gSmF5DQoNCkhhdmUgYSBuaWNlIGRheSwNClNpbW9uDQo=
