@@ -2,75 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876983FC635
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B503FC637
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241097AbhHaKnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40190 "EHLO
+        id S241112AbhHaKov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:44:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241017AbhHaKnR (ORCPT
+        with ESMTP id S238567AbhHaKou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:43:17 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F06C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:42:22 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id j18so23956325ioj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:42:22 -0700 (PDT)
+        Tue, 31 Aug 2021 06:44:50 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A34EC061575;
+        Tue, 31 Aug 2021 03:43:55 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id h1so30917173ljl.9;
+        Tue, 31 Aug 2021 03:43:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4i4U3chg4RrpvJeefmoTUcAUO8DCreq+/zj+injJGdg=;
-        b=FEL1nLFI3SxmT0kdXKNnikjiCFRkxxQ8mEWAkbNkLZZhRa2V7Yj2amzMCGhz9qnym0
-         KS3F8ID7UX9zEmKrXPD5nTliLBExT81PoSaRn725bVRruE7XAuR8bmzelXAd9jsn/8O2
-         bf2xGX0r+EK4SQfg1dCjBKtqNiQKssbXTIMDP0MgyjXa5LEeNa38uP4vUt+6TewRie8d
-         6HG7P9wI/VpfAej1IbbPrlnmPOo3uh3jpe5KMIA3VTcD4uIq9sxrV491n2mVP9sqLZ0C
-         Oy8H2FUUXKmGnBsv7OuXn9vO8PFfWrlWv8ONCyGV11YJ4uD9w8ansP2YHZiMCnHbEtNb
-         tuIA==
+        bh=NCyZges4LSfBygkjB5WR0itgY49P3E5xevDMIcceVSw=;
+        b=TbaAt/f8GhDRt10oNppg6QI3MVQqA/zfWAnJYdBjBHyAthBQ4H3WbjIlWEfo9CeNQT
+         GJWGCq8lEv7UTme0Kx/8MitQ+XZuVW+m8BC7ZwVqRmDw9pU64aZMVLZrft0ZyhdUDZRy
+         nPHF/BV4MNxm60TtJLMr5uCvrFfgpA92rQP0el+BYhTFe2I1kJmmb2Pef3VXF2J5wK97
+         HMkNAsPK1tp/QMZx3DS7NIvsDRdhPEwuje2er89BoyS38Ts7KWBg1h/4tSjpBvJOZVQ2
+         h7bdLns+PA3bQIropTOxvbUEHsIb1ytBhNLXd/4umx6Abino9rYKO3KFMM/MbT8Tv+a6
+         38Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=4i4U3chg4RrpvJeefmoTUcAUO8DCreq+/zj+injJGdg=;
-        b=buWI2Mm2esqxqusqdZftAYdFXnpYAT1AQtSnjY+Y4a8fFBfOBJDQpdX0xfnwVLCiHx
-         csvo/YVVgaaPUWKvfEw7DhtChKQyT9YX7tZQQCpFo2nmUkKki0pxtKYgJ5quqYWAX7Wn
-         bEsaDfE1Ck6ieNrYQRFrRJvF/2BrKO3jsSq8PPdD+E9NhGpCqy8+KoYQ4aFyz/SZbKnk
-         YNZ6Imf2u1w44ZgX4AM/nx/RIZ4LguWGGLnHL9jQOuW/k3HRtuDhsQWFVRoP+Mgt5GF7
-         k1hdPaqVDcOJTWRMlyywCWRMUGDEf9YJqXrKdDGJ6HeT3ZD8MPm+nX2FxtRFR6cInqGT
-         penA==
-X-Gm-Message-State: AOAM533lMTlf6uPdkOATtbXy1A3kgfm5PfC77Z8XWSweiJnB0jbgI+Gf
-        dBN5XQQQW6cptIOL0HmGs61luQ==
-X-Google-Smtp-Source: ABdhPJzOMrOo4lTEIL/8iFunOOHOhJ3nkE010J0VNpmxtY895bk9PWC6kTdAdNodXpVrEA3yPsJrSA==
-X-Received: by 2002:a02:c7d2:: with SMTP id s18mr2266000jao.22.1630406541615;
-        Tue, 31 Aug 2021 03:42:21 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id v5sm9864790iln.42.2021.08.31.03.42.20
+        bh=NCyZges4LSfBygkjB5WR0itgY49P3E5xevDMIcceVSw=;
+        b=a94A/dMYEG3SqoLLUbbwGKIy1GPQ1O/zOqTsh/EVB2GOonpvBK4yl1O1HWDniiwKjx
+         3QmPwA3nexsym30OqR4uoP/AL3q2GCDVbdJPq/EUT4vD45vhwn2YR7b4ZpG6XahMK4kY
+         O6HjI3UNkKhgYnjeLFszJQeI4qjEb/XAUJ4BEd9igCFcjMPq22spfCGRm6E/rdwgpVAs
+         aci14Iyz7HKSCQ/p5YRsYEr7EYAMUiTj+ouKps3m1iwKB2EUmK5403BE6EwUnQHA2Ihx
+         aElP0Ru1csA7pFegVjBH2qGde1GF8EO1iqanP79opISGQEs0FtWYxAqqULC0/sa7LSpD
+         6nsA==
+X-Gm-Message-State: AOAM530FY3DuFBuRYka+R8QQF1pDdzgNoIg2UwYM3eN1UTsySw58EItU
+        X6QCjVNOpN5OdSs5682eWFYpZQP79k4=
+X-Google-Smtp-Source: ABdhPJzqEA7GugBUX4eDLND3dXUloMtXUS1htfAi8jRxzVIAh+95KqQOtrbCJdi3ATwfBMq6KrG0Xw==
+X-Received: by 2002:a2e:9915:: with SMTP id v21mr24522204lji.108.1630406633234;
+        Tue, 31 Aug 2021 03:43:53 -0700 (PDT)
+Received: from localhost.localdomain ([46.61.204.60])
+        by smtp.gmail.com with ESMTPSA id k23sm2147066ljg.73.2021.08.31.03.43.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 03:42:21 -0700 (PDT)
-Subject: Re: [greybus-dev] [PATCH v4] staging: greybus: Convert uart.c from
- IDR to XArray
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Alex Elder <elder@kernel.org>, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-References: <20210829092250.25379-1-fmdefrancesco@gmail.com>
- <YSyg/Db1So0LDGR+@hovoldconsulting.com>
- <2879439.WEJLM9RBEh@localhost.localdomain>
- <YSzGkNfG6HOayiXi@hovoldconsulting.com>
- <YSzMB80NOkNvdjy1@casper.infradead.org>
- <YSzQAd0Rg5CF/eLe@hovoldconsulting.com>
- <f7a25eb1-20f4-5031-a156-9e5dc019ad28@linaro.org>
- <YS3jSsGSs0yAw/Ba@hovoldconsulting.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <51c57831-71bf-92f8-2b20-3e542160a8bf@linaro.org>
-Date:   Tue, 31 Aug 2021 05:42:20 -0500
+        Tue, 31 Aug 2021 03:43:52 -0700 (PDT)
+Subject: Re: [PATCH] net: ath9k: fix use-after-free in ath9k_hif_usb_rx_cb
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     ath9k-devel@qca.qualcomm.com, kvalo@codeaurora.org,
+        davem@davemloft.net, vasanth@atheros.com, senthilkumar@atheros.com
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzbot+03110230a11411024147@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org
+References: <20210804194841.14544-1-paskripkin@gmail.com>
+ <a490dcec-b14f-e8c8-fbb0-a480892c1def@gmail.com>
+Message-ID: <4119f4fa-31b0-66bc-a0e2-373b2e1c449e@gmail.com>
+Date:   Tue, 31 Aug 2021 13:43:51 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <YS3jSsGSs0yAw/Ba@hovoldconsulting.com>
+In-Reply-To: <a490dcec-b14f-e8c8-fbb0-a480892c1def@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,76 +71,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/21 3:07 AM, Johan Hovold wrote:
-> On Mon, Aug 30, 2021 at 08:20:25AM -0500, Alex Elder wrote:
+On 8/4/21 10:57 PM, Pavel Skripkin wrote:
+> On 8/4/21 10:48 PM, Pavel Skripkin wrote:
+>> Syzbot reported use-after-free Read in ath9k_hif_usb_rx_cb(). The
+>> problem was in incorrect htc_handle->drv_priv initialization.
+>> 
+>> Probable call trace which can trigger use-after-free:
+>> 
+>> ath9k_htc_probe_device()
+>>    /* htc_handle->drv_priv = priv; */
+>>    ath9k_htc_wait_for_target()      <--- Failed
+>>    ieee80211_free_hw()		   <--- priv pointer is freed
+>> 
+>> <IRQ>
+>> ...
+>> ath9k_hif_usb_rx_cb()
+>>    ath9k_hif_usb_rx_stream()
+>>     RX_STAT_INC()		<--- htc_handle->drv_priv access
+>> 
+>> In order to not add fancy protection for drv_priv we can move
+>> htc_handle->drv_priv initialization at the end of the
+>> ath9k_htc_probe_device() and add helper macro to make
+>> all *_STAT_* macros NULL save.
+>> 
+>> Also, I made whitespaces clean ups in *_STAT_* macros definitions
+>> to make checkpatch.pl happy.
+>> 
+>> Fixes: fb9987d0f748 ("ath9k_htc: Support for AR9271 chipset.")
+>> Reported-and-tested-by: syzbot+03110230a11411024147@syzkaller.appspotmail.com
+>> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+>> ---
+>> 
+>> Hi, ath9k maintainer/developers!
+>> 
+>> I know, that you do not like changes, that wasn't tested on real
+>> hardware. I really don't access to this one, so I'd like you to test it on
+>> real hardware piece, if you have one. At least, this patch was tested by
+>> syzbot [1]
+>> 
+>> [1] https://syzkaller.appspot.com/bug?id=6ead44e37afb6866ac0c7dd121b4ce07cb665f60
+>> 
+>> ---
+>>   drivers/net/wireless/ath/ath9k/htc.h          | 11 ++++++-----
+>>   drivers/net/wireless/ath/ath9k/htc_drv_init.c |  3 ++-
+>>   2 files changed, 8 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/drivers/net/wireless/ath/ath9k/htc.h b/drivers/net/wireless/ath/ath9k/htc.h
+>> index 0a1634238e67..c16b2a482e83 100644
+>> --- a/drivers/net/wireless/ath/ath9k/htc.h
+>> +++ b/drivers/net/wireless/ath/ath9k/htc.h
+>> @@ -326,11 +326,12 @@ static inline struct ath9k_htc_tx_ctl *HTC_SKB_CB(struct sk_buff *skb)
+>>   
+>>   #ifdef CONFIG_ATH9K_HTC_DEBUGFS
+>>   
+>> -#define TX_STAT_INC(c) (hif_dev->htc_handle->drv_priv->debug.tx_stats.c++)
+>> -#define TX_STAT_ADD(c, a) (hif_dev->htc_handle->drv_priv->debug.tx_stats.c += a)
+>> -#define RX_STAT_INC(c) (hif_dev->htc_handle->drv_priv->debug.skbrx_stats.c++)
+>> -#define RX_STAT_ADD(c, a) (hif_dev->htc_handle->drv_priv->debug.skbrx_stats.c += a)
+>> -#define CAB_STAT_INC   priv->debug.tx_stats.cab_queued++
+>> +#define __STAT_SAVE(expr)	(hif_dev->htc_handle->drv_priv ? (expr) : 0)
+>> +#define TX_STAT_INC(c)		__STAT_SAVE(hif_dev->htc_handle->drv_priv->debug.tx_stats.c++)
+>> +#define TX_STAT_ADD(c, a)	__STAT_SAVE(hif_dev->htc_handle->drv_priv->debug.tx_stats.c += a)
+>> +#define RX_STAT_INC(c)		__STAT_SAVE(hif_dev->htc_handle->drv_priv->debug.skbrx_stats.c++)
+>> +#define RX_STAT_ADD(c, a)	__STAT_SAVE(hif_dev->htc_handle->drv_priv->debug.skbrx_stats.c += a)
+>> +#define CAB_STAT_INC		(priv->debug.tx_stats.cab_queued++)
+>>   
+>>   #define TX_QSTAT_INC(q) (priv->debug.tx_stats.queue_stats[q]++)
+>>   
+>> diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_init.c b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
+>> index ff61ae34ecdf..07ac88fb1c57 100644
+>> --- a/drivers/net/wireless/ath/ath9k/htc_drv_init.c
+>> +++ b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
+>> @@ -944,7 +944,6 @@ int ath9k_htc_probe_device(struct htc_target *htc_handle, struct device *dev,
+>>   	priv->hw = hw;
+>>   	priv->htc = htc_handle;
+>>   	priv->dev = dev;
+>> -	htc_handle->drv_priv = priv;
+>>   	SET_IEEE80211_DEV(hw, priv->dev);
+>>   
+>>   	ret = ath9k_htc_wait_for_target(priv);
+>> @@ -965,6 +964,8 @@ int ath9k_htc_probe_device(struct htc_target *htc_handle, struct device *dev,
+>>   	if (ret)
+>>   		goto err_init;
+>>   
+>> +	htc_handle->drv_priv = priv;
+>> +
+>>   	return 0;
+>>   
+>>   err_init:
+>> 
 > 
->> I have been offering review feedback on this patch for three reasons:
->>
->> - First, because I think the intended change does no real harm to the
->>    Greybus code, and in a small way actually simplifies it.
+> Added missing LKML in CC. Sorry for confusion.
 > 
-> You leave out that we've already seen three versions of the patch that
-> broke things in various ways and that there was still work to be done
-> with respect to the commit message and verifying the locking. That's all
-> real costs that someone needs to bear.
+> 
+Any chance to review this patch? Thanks
 
-This is true.  But it's separate from my reason for doing it,
-and unrelated to the suggested change.
 
->> - Because I wanted to encourage Fabio's efforts to be part of the
->>    Linux contributor community.
-> 
-> Helping new contributers that for example have run into a bug or need
-> some assistance adding a new feature that they themselves have use for
-> is one thing.
-> 
-> I'm not so sure we're helping either newcomers or Linux long term by
-> inventing work for an already strained community however.
-> 
-> [ This is more of a general comment and of course in no way a critique
->    against Fabio or a claim that the XArray conversions are pointless. ]
 
-Yes, yours is a general comment.  But I would characterize
-this as Fabio "scratching an itch" rather than "inventing
-new work."  The strained community needs more helpers, and
-they don't suddenly appear fully-formed; they need to be
-cultivated.  There's a balance to strike between "I see
-you need a little guidance here" and "go away and come
-back when you know how to do it right."
 
-In any case, I don't disagree with your general point, but
-we seem to view this particular instance differently.
-
->> - Because I suspected that Matthew's long-term intention was to
->>    replace IDR/IDA use with XArray, so this would represent an early
->>    conversion.
-> 
-> That could be a valid motivation for the change indeed (since the
-> efficiency arguments are irrelevant in this case), but I could not find
-> any indications that there has been an agreement to deprecate the
-> current interfaces.
-> 
-> Last time around I think there was even push-back to convert IDR/IDA to
-> use XArray internally instead (but I may misremember).
-> 
->> The Greybus code is generally good, but that doesn't mean it can't
->> evolve.  It gets very little patch traffic, so I don't consider small
->> changes like this "useless churn."  The Greybus code is held up as an
->> example of Linux kernel code that can be safely modified, and I think
->> it's actively promoted as a possible source of new developer tasks
->> (e.g. for Outreachy).
-> 
-> Since most people can't really test their changes to Greybus perhaps it
-> isn't the best example of code that can be safely modified. But yeah,
-> parts of it are still in staging and, yes, staging has been promoted as
-> place were some churn is accepted.
-
-Testing Greybus code is a problem.  *That* would be something useful
-for people to help fix.
-
-					-Alex
-
->   
-> Johan
-> 
-
+With regards,
+Pavel Skripkin
