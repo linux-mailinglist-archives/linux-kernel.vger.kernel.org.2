@@ -2,92 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F333FCC57
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963013FCC5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240287AbhHaRbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 13:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
+        id S240398AbhHaRcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 13:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233345AbhHaRbX (ORCPT
+        with ESMTP id S240324AbhHaRcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 13:31:23 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E603C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:30:28 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id d3-20020a17090ae28300b0019629c96f25so23213pjz.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:30:28 -0700 (PDT)
+        Tue, 31 Aug 2021 13:32:12 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9429EC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:31:16 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id q70so36629959ybg.11
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:31:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RR58B/xYGJafxin5HeHSX4dLzWc56hmmhBLa05Y8cXM=;
-        b=AbxW1+lW0iR9IecIcWmDkhs34/VdSO4avGg/BAMtpRoucC0VTQ+bku0ZpnWNCtdKKd
-         s04U+9eOwwvYZUIT5xLheScJ37r88IsGEBmXVifrWhSlfnwu7wRjEOv2nS97FgdFwNca
-         WWTsln9Gem/D1y8mj8uSkF/n1DgfvLwBwDnfE=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l4HrFHUEESj2r5pg822WYUbEDh1E29PcEg+NUHp2lfY=;
+        b=XQJTNcZ/Yns5Xw3Pexc1RyG8YNhEfpoB9JlfAMUFDwSIxjfonMb2yWiUc8J622xxwZ
+         cnp9epbY6cGUQUeM3LnfNK8HqyCMdIAj1S6fi5TsfuqCq+ChjavGOcV561FQ3bFHHjJe
+         CeVejYdqu5xT/crGfvd7oQw6VO3WrCa2rXYt3J6oGMaX17UbsndQqfJN70ZObGbKUK+K
+         oTdta97PWiYl4+a6u7TBpzmFArGyVTX/L2FvMkdPObStd2mZLjsnRsXZoXUxsgutmC5A
+         4RhYaejO2gx5+RHkSUD/N+tRJWPQqYyEaNW1h/HVpN3Dak2AeLvx4Kb7FgwDIiRqt9OO
+         Rnjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RR58B/xYGJafxin5HeHSX4dLzWc56hmmhBLa05Y8cXM=;
-        b=qVVr3ROEzEbewFQVJBJrbiBybDk+milww4k2f+86XOdDvAYOtk9PsOEbN/m0sanGTh
-         fHa9kJGbHkZqdkgZpEE+pBOudrjbHVxxVMb+sum7OK0Ubz16/TFDyAdLurrfL2LREeJ3
-         EzYpE5o2bcC73S+MFpPZoGs//fj9ztXNr56wi5iuCAjbsDlY9Lwec59BjZWuJONrMagj
-         0In2uCd30s9SEkFalFmRXOd7SfQxFdtt3QUep5YtAQwuzv5IR8paLsYjA54VHqndD27l
-         YYh/MVfEv8AF7Nun30pgr3yzoh0veIxK67Bw/tyGID22DPuVeN6gC8fqmCuQPOY8Lu8q
-         aQMQ==
-X-Gm-Message-State: AOAM533cJyjP5fgPmPT7a1ojoe6kqjKFs6g/zNdKQfG+4gBnbNfckkr0
-        KZ2sxy8JNysF43dweockR4yV1g==
-X-Google-Smtp-Source: ABdhPJzn2E3XqZObb7PyG8evez59tKrv/PLIVSkTIsUT6DkRP7iTI6Mib+vjLKFL2rm1r/lNLENCFQ==
-X-Received: by 2002:a17:902:b093:b029:12c:843:b55a with SMTP id p19-20020a170902b093b029012c0843b55amr5725338plr.83.1630431027801;
-        Tue, 31 Aug 2021 10:30:27 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q3sm21692389pgf.18.2021.08.31.10.30.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 10:30:26 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 10:30:25 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 03/13] kbuild: store the objtool command in *.cmd files
-Message-ID: <202108311030.41739E4@keescook>
-References: <20210831074004.3195284-1-masahiroy@kernel.org>
- <20210831074004.3195284-4-masahiroy@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l4HrFHUEESj2r5pg822WYUbEDh1E29PcEg+NUHp2lfY=;
+        b=fBAyQY6wNO98MzlmwzOPnr5DR9xRuZZxHhwiTY4gByiw6dInph76JXDDfVixcPNkaH
+         sb0r89bywW5PmBA/IoOPrGoGMxJ4kRXDk+/W/9DctjxXwjovc42u0cl5JS6EETMUp21x
+         pQj0mmsoVWs/xQRZ9GBrd0psz9PcunR0xLST3SWc3XZ2BRqJU4ckIp7kiFjYptjlWsNo
+         reNrZqk0AgftNDKptjmEWSTfM4Hkokita2pzauH2NlJht+422GJVN98279yTLXPHOobs
+         dlqtnYn3pd/l4nae8rCDC1nPCNRlPacLp2SvQQGZkrCgxIUwkMkiban5SYxu8kBrCyG1
+         rOSQ==
+X-Gm-Message-State: AOAM531mmtqQCdPgIlbkFst7By1WO2ZrTIcN/03LNeDUifEqQsacilvv
+        HFjK4Lka0DLp+KmLo0levBoO1oiyN0J5su66p5fpwg==
+X-Google-Smtp-Source: ABdhPJzYDnP24wwOelVeEyCcBSvfNazhiS7QfNC77RO9c3sg9x5dox+fMIX33I/5b3Ecdv0X677NG4RGlEqudd7zz6c=
+X-Received: by 2002:a25:804:: with SMTP id 4mr30394840ybi.346.1630431075086;
+ Tue, 31 Aug 2021 10:31:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210831074004.3195284-4-masahiroy@kernel.org>
+References: <20210831102125.624661-1-ulf.hansson@linaro.org>
+In-Reply-To: <20210831102125.624661-1-ulf.hansson@linaro.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 31 Aug 2021 10:30:39 -0700
+Message-ID: <CAGETcx868QWj0jMJ+U-eL62jT-LO_LTOw5EcwEKptfFOVa=A5A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] of: property: fw_devlink: Rename 'node_not_dev' to 'optional_con_dev'
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 04:39:54PM +0900, Masahiro Yamada wrote:
-> objtool_dep includes include/config/{ORC_UNWINDER,STACK_VALIDATION}
-> so that all the objects are rebuilt when any of CONFIG_ORC_UNWINDER
-> and CONFIG_STACK_VALIDATION is toggled.
-> 
-> As you can see in 'objtool_args', there are more CONFIG options
-> that affect the objtool command line.
-> 
-> Adding more and more include/config/* is ugly and unmaintainable.
-> 
-> Another issue is that non-standard objects are needlessly rebuilt.
-> Objects specified as OBJECT_FILES_NON_STANDARD is not processed by
-> objtool, but they are rebuilt anyway when CONFIG_ORC_UNWINDER or
-> CONFIG_STACK_VALIDATION is toggled. This is not a big deal, but
-> better to fix.
-> 
-> A cleaner and more precise fix is to include the objtool command in
-> *.cmd files so any command change is naturally detected by if_change.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+On Tue, Aug 31, 2021 at 3:21 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> In the struct supplier_bindings the member 'node_not_dev' is described as
+> "The consumer node containing the property is never a device.", but that
+> doesn't match the behaviour of the code in of_link_property().
+>
+> To make the behaviour consistent with the description, let's rename the
+> member to "optional_con_dev" and clarify the corresponding comment.
+>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>  drivers/of/property.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index 6c028632f425..2babb1807228 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -1249,7 +1249,8 @@ static struct device_node *parse_##fname(struct device_node *np,       \
+>   * @parse_prop.index: For properties holding a list of phandles, this is the
+>   *                   index into the list
+>   * @optional: Describes whether a supplier is mandatory or not
+> - * @node_not_dev: The consumer node containing the property is never a device.
+> + * @optional_con_dev: The consumer node containing the property may not be a
+> + *                   device, then try finding one from an ancestor node.
 
-Yeah, nice solution for this.
+Nak. This flag is not about "may not be". This is explicitly for
+"never a device". It has to do with stuff like remote-endpoint which
+is never listed under the root node of the device node. Your
+documentation change is changing the meaning of the flag.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+-Saravana
 
--- 
-Kees Cook
+>   *
+>   * Returns:
+>   * parse_prop() return values are
+> @@ -1261,7 +1262,7 @@ struct supplier_bindings {
+>         struct device_node *(*parse_prop)(struct device_node *np,
+>                                           const char *prop_name, int index);
+>         bool optional;
+> -       bool node_not_dev;
+> +       bool optional_con_dev;
+>  };
+>
+>  DEFINE_SIMPLE_PROP(clocks, "clocks", "#clock-cells")
+> @@ -1370,7 +1371,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+>         { .parse_prop = parse_pinctrl6, },
+>         { .parse_prop = parse_pinctrl7, },
+>         { .parse_prop = parse_pinctrl8, },
+> -       { .parse_prop = parse_remote_endpoint, .node_not_dev = true, },
+> +       { .parse_prop = parse_remote_endpoint, .optional_con_dev = true, },
+>         { .parse_prop = parse_gpio_compat, },
+>         { .parse_prop = parse_interrupts, },
+>         { .parse_prop = parse_regulators, },
+> @@ -1415,7 +1416,7 @@ static int of_link_property(struct device_node *con_np, const char *prop_name)
+>                 while ((phandle = s->parse_prop(con_np, prop_name, i))) {
+>                         struct device_node *con_dev_np;
+>
+> -                       con_dev_np = s->node_not_dev
+> +                       con_dev_np = s->optional_con_dev
+>                                         ? of_get_compat_node(con_np)
+>                                         : of_node_get(con_np);
+>                         matched = true;
+> --
+> 2.25.1
+>
