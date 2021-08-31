@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1DA3FC564
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522C33FC565
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240857AbhHaKEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:04:04 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:53064
+        id S240890AbhHaKEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:04:34 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:53108
         "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234263AbhHaKEC (ORCPT
+        by vger.kernel.org with ESMTP id S240676AbhHaKEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:04:02 -0400
+        Tue, 31 Aug 2021 06:04:34 -0400
 Received: from wittgenstein.fritz.box (i577BC18B.versanet.de [87.123.193.139])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 281203F355;
-        Tue, 31 Aug 2021 10:03:06 +0000 (UTC)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 58DF53F070;
+        Tue, 31 Aug 2021 10:03:38 +0000 (UTC)
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] idmapped updates
-Date:   Tue, 31 Aug 2021 12:02:52 +0200
-Message-Id: <20210831100252.2298022-1-christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] sys fixes
+Date:   Tue, 31 Aug 2021 12:03:26 +0200
+Message-Id: <20210831100326.2298176-1-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -34,26 +34,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hi Linus,
 
 /* Summary */
-The bulk of the idmapped work this cycle is adding support for idmapped mounts
-to btrfs. While this required the addition of a (simple) new vfs helper all the
-work is going through David Sterba's btrfs tree. It was way simpler to do it
-this way rather then forcing David to coordinate between his btrfs and my tree.
-Plus I don't care who merges it as long as I feel I can trust the maintainer
-and the btrfs folks were really fast and helpful in reviewing this work.
-As always, associated with the btrfs port for idmapped mounts is a new fstests
-extension specifically concerned with btrfs ioctls (e.g. subvolume creation,
-deletion etc.) on idmapped mounts which can be found in the fstests repo as
-5f8179ce8b00 ("btrfs: introduce btrfs specific idmapped mounts tests").
-
-Consequently, this PR should hopefully be boring. It only contains
-documentation updates, specifically about how idmappings and idmapped mounts
-work.
+This contains a single fix to set_user() which aligns permission checks with
+the corresponding fork() codepath. Noone involved in this could come up with a
+reason for the difference. A capable caller can already circumvent the check
+when they fork where the permission checks are already for the relevant
+capabilities in addition to also allowing to exceed nproc when it is the init
+user. Apply the same logic to set_user().
 
 (In case any question come up I'll be on vacation next week so responding might
-take a while.)
+ take a while.)
 
 /* Testing */
-All patches are based on v5.14-rc3 and have been sitting in linux-next. No
+All patches are based on v5.14-rc5 and have been sitting in linux-next. No
 build failures or warnings were observed. All old and new tests are passing.
 
 /* Conflicts */
@@ -61,31 +53,29 @@ At the time of creating this PR no merge conflicts were reported from
 linux-next and no merge conflicts showed up doing a test-merge with current
 mainline.
 
-The following changes since commit ff1176468d368232b684f75e82563369208bc371:
+The following changes since commit 36a21d51725af2ce0700c6ebcb6b9594aac658a6:
 
-  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
+  Linux 5.14-rc5 (2021-08-08 13:49:31 -0700)
 
 are available in the Git repository at:
 
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/fs.idmapped.v5.15
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/kernel.sys.v5.15
 
-for you to fetch changes up to ad19607a90b29eef044660aba92a2a2d63b1e977:
+for you to fetch changes up to 2863643fb8b92291a7e97ba46e342f1163595fa8:
 
-  doc: give a more thorough id handling explanation (2021-08-11 15:28:32 +0200)
+  set_user: add capability check when rlimit(RLIMIT_NPROC) exceeds (2021-08-12 14:54:25 +0200)
 
-Please consider pulling these changes from the signed fs.idmapped.v5.15 tag.
+Please consider pulling these changes from the signed kernel.sys.v5.15 tag.
 
 Thanks!
 Christian
 
 ----------------------------------------------------------------
-fs.idmapped.v5.15
+kernel.sys.v5.15
 
 ----------------------------------------------------------------
-Christian Brauner (1):
-      doc: give a more thorough id handling explanation
+Ran Xiaokai (1):
+      set_user: add capability check when rlimit(RLIMIT_NPROC) exceeds
 
- Documentation/filesystems/idmappings.rst | 1026 ++++++++++++++++++++++++++++++
- Documentation/filesystems/index.rst      |    1 +
- 2 files changed, 1027 insertions(+)
- create mode 100644 Documentation/filesystems/idmappings.rst
+ kernel/sys.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
