@@ -2,121 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913613FC467
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098053FC468
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240374AbhHaIkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 04:40:03 -0400
-Received: from mga05.intel.com ([192.55.52.43]:6039 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240190AbhHaIkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 04:40:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="304005105"
-X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
-   d="scan'208";a="304005105"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 01:38:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
-   d="scan'208";a="600844367"
-Received: from shbuild999.sh.intel.com ([10.239.146.151])
-  by fmsmga001.fm.intel.com with ESMTP; 31 Aug 2021 01:38:06 -0700
-From:   Feng Tang <feng.tang@intel.com>
-To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Christian Brauner <christian@brauner.io>
-Cc:     linux-kernel@vger.kernel.org, Feng Tang <feng.tang@intel.com>
-Subject: [RFC PATCH] mm/oom: detect and kill task which has allocation forbidden by cpuset limit
-Date:   Tue, 31 Aug 2021 16:38:05 +0800
-Message-Id: <1630399085-70431-1-git-send-email-feng.tang@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S240387AbhHaIk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 04:40:27 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:35915 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240383AbhHaIkY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 04:40:24 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 62C0722178;
+        Tue, 31 Aug 2021 10:39:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1630399167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Al9hxpy89OFqGr1jtl5s3SCyXzCKTUzg1d1GPfZ1mFA=;
+        b=EVPMi+6swXoY0LQIiBrX70aI80A1jgGU7o4YAJZEZVW00UfVnMoSPIpDNVAnPNkUhO0Y/A
+        IdSViWYiF9u4z6A4AsTkgGSHzmBN1WGjPcqwzX4m6pb2v/Ae6T6qBybJYofRRPvvZvxaq2
+        H83VD51+I/uTvyyalS9Q/erh/O8qQuk=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 31 Aug 2021 10:39:27 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Andrea Zanotti <andreazanottifo@gmail.com>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: micron-st: added support for np8p128ax60
+In-Reply-To: <20210831081329.27420-1-andrea.zanotti@tyvak.eu>
+References: <20210831081329.27420-1-andrea.zanotti@tyvak.eu>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <3462300528bbe71207ef2164411e34d2@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There was report that starting an Ubuntu in docker while using cpuset
-to bind it to movlabe nodes (a node only has movable zone, like a node
-for hotplug or a PMEM node in normal usage) will fail due to memory
-allocation failure, and then OOM is involved and many other innocent
-processes got killed. It can be reproduced with command:
-$docker run -it --rm  --cpuset-mems 4 ubuntu:latest bash -c
-"grep Mems_allowed /proc/self/status" (node 4 is a movable node)
+Hi Andrea,
 
-The reason is, in the case, the target cpuset nodes only have movable
-zone, while the creation of an OS in docker sometimes needs to allocate
-memory in non-movable zones (dma/dma32/normal) like GFP_HIGHUSER, and
-the cpuset limit forbids the allocation, then out-of-memory killing is
-involved even when normal nodes and movable nodes both have many free
-memory.
+Am 2021-08-31 10:13, schrieb Andrea Zanotti:
+> From: Andrea Zanotti <andreazanottifo@gmail.com>
+> 
+> Added support for P8P Parallel Phase Change Memory.
 
-We've posted patches to LKML trying to make the usage working by
-loosening the check, which is not agreed as the cpuset binding should
-be respected, and should not be bypassed [1]
+Please use present tense, eg "add support..."
 
-But still there is another problem, that when the usage fails as it's an
-mission impossible due to the cpuset limit, the allocating should just
-be killed first, before any other innocent processes get killed.
+Is there a public datasheet? If so, please include it above
+your SoB like so:
+Datasheet: https://...
 
-Add detection for cases like this, and kill the allocating task only.
+> Added memory information (page size and sector size) as per data-
+> sheet information, after typos corrections.
 
-[1].https://lore.kernel.org/lkml/1604470210-124827-1-git-send-email-feng.tang@intel.com/
+After typos corrections?
 
-Signed-off-by: Feng Tang <feng.tang@intel.com>
----
- include/linux/oom.h |  1 +
- mm/oom_kill.c       | 13 ++++++++++++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
+> At page 37, paragraph 'SPI Memory Organization', it is written
+> down that the memory is organized as:
+>  * 16.772.216 bytes (typo here, there 16.777.216 bytes)
+>  * 128 sectors of 128 Kbytes each (correct)
+>  * 131.072 pages of 64 bytes each (typo here, as the total would be
+>    64Mbit, but the total memory is actually 128Mbit, correct value
+>    is 262.144 pages)
+> 
+> Patch tested against the aforementioned PCM memory.
 
-diff --git a/include/linux/oom.h b/include/linux/oom.h
-index 2db9a1432511..bf470d8cc421 100644
---- a/include/linux/oom.h
-+++ b/include/linux/oom.h
-@@ -18,6 +18,7 @@ struct task_struct;
- enum oom_constraint {
- 	CONSTRAINT_NONE,
- 	CONSTRAINT_CPUSET,
-+	CONSTRAINT_CPUSET_NONE,	/* no available zone from cpuset's mem nodes */
- 	CONSTRAINT_MEMORY_POLICY,
- 	CONSTRAINT_MEMCG,
- };
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 431d38c3bba8..021ec8954279 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -247,6 +247,7 @@ long oom_badness(struct task_struct *p, unsigned long totalpages)
- static const char * const oom_constraint_text[] = {
- 	[CONSTRAINT_NONE] = "CONSTRAINT_NONE",
- 	[CONSTRAINT_CPUSET] = "CONSTRAINT_CPUSET",
-+	[CONSTRAINT_CPUSET_NONE] = "CONSTRAINT_CPUSET_NONE",
- 	[CONSTRAINT_MEMORY_POLICY] = "CONSTRAINT_MEMORY_POLICY",
- 	[CONSTRAINT_MEMCG] = "CONSTRAINT_MEMCG",
- };
-@@ -275,6 +276,14 @@ static enum oom_constraint constrained_alloc(struct oom_control *oc)
- 
- 	if (!oc->zonelist)
- 		return CONSTRAINT_NONE;
-+
-+	if (cpusets_enabled() && (oc->gfp_mask & __GFP_HARDWALL)) {
-+		z = first_zones_zonelist(oc->zonelist,
-+			highest_zoneidx, &cpuset_current_mems_allowed);
-+		if (!z->zone)
-+			return CONSTRAINT_CPUSET_NONE;
-+	}
-+
- 	/*
- 	 * Reach here only when __GFP_NOFAIL is used. So, we should avoid
- 	 * to kill current.We have to random task kill in this case.
-@@ -1093,7 +1102,9 @@ bool out_of_memory(struct oom_control *oc)
- 		oc->nodemask = NULL;
- 	check_panic_on_oom(oc);
- 
--	if (!is_memcg_oom(oc) && sysctl_oom_kill_allocating_task &&
-+	if (!is_memcg_oom(oc) &&
-+	    (sysctl_oom_kill_allocating_task ||
-+	       oc->constraint == CONSTRAINT_CPUSET_NONE) &&
- 	    current->mm && !oom_unkillable_task(current) &&
- 	    oom_cpuset_eligible(current, oc) &&
- 	    current->signal->oom_score_adj != OOM_SCORE_ADJ_MIN) {
+What SPI host controller was used?
+
+> No known regressions inserted, as the patch only adds the possibility
+> to recognize said PCM memory inside the common spi-nor driver.
+
+Please drop this. If there were any regressions, the patch wouldn't
+be picked up anyway.
+
+> 
+> Signed-off-by: Andrea Zanotti <andreazanottifo@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/micron-st.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/micron-st.c 
+> b/drivers/mtd/spi-nor/micron-st.c
+> index c224e59820a1..c78331451082 100644
+> --- a/drivers/mtd/spi-nor/micron-st.c
+> +++ b/drivers/mtd/spi-nor/micron-st.c
+> @@ -128,6 +128,7 @@ static const struct flash_info micron_parts[] = {
+>  	{ "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
+>  			    SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+>  			    SPI_NOR_4B_OPCODES) },
+> +	{ "np8p128ax60", {0x89, 0xda, 0x18}, 3, 128 * 1024, 128, 64, 0, 0 },
+
+Eh? Please use INFO(). And why isn't this 0x20 for micron.
+
+I found this datasheet:
+https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/NP8P128Ax60E_Rev_K.pdf
+
+According to that datasheet, the manuf id is 0x20. And the device id
+should be either 0x88e1 or 0x8821.
+
+>  };
+> 
+>  static const struct flash_info st_parts[] = {
+
 -- 
-2.14.1
-
+-michael
