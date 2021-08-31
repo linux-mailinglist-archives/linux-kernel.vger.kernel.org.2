@@ -2,165 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079FB3FCBFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6536F3FCBFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240387AbhHaRCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 13:02:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238215AbhHaRCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 13:02:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37EE060FC3;
-        Tue, 31 Aug 2021 17:01:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630429308;
-        bh=wqILHNFsZnQ1YUeuBEg5b2/CPkm/zZ3cKjXYEtPPTGE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GYulEa18IW84f60wqT9n1+oCYVcnhUACoA9lxMi5Du8zB45gz6V5BIsRoGpy1Xv3E
-         XFBkRHG3kNPeeuQkn94rGNaPSAMv8cqFuIklFmOtLKLjJoLBpVFhbJaWav0af9Hm9M
-         AhiPNBptAYtFo6jqXtLlM7A7byxCABFsBEY2JJE1etxjl/sHO+b2Rg4BRr9nXcViho
-         mg2V3G5Yp5WYJmRfQ1VtoEwqlWXpjtdkBSfdO/JnmeepcjR6mKENajm0+d0LYH0ane
-         C+VdVbUELpudEMrToU1A2JdG2kMCZHStiH9EY05kVPGOQP+0kY4Tyj0+NdP/BzjoMt
-         Z2JM6OFbSJvtw==
-Date:   Tue, 31 Aug 2021 10:01:47 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de, hsiangkao@linux.alibaba.com
-Subject: [GIT PULL] iomap: new code for 5.15
-Message-ID: <20210831170147.GB9959@magnolia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S240163AbhHaRDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 13:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232509AbhHaRDy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 13:03:54 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A94C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:02:59 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id k12-20020a05620a0b8c00b003d5c8646ec2so2953377qkh.20
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:02:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=g8lY3yuhge4SRook/yGWV7kL5YSEDsu9mSGrR5Y9scA=;
+        b=kt6ekm9T+vWkJ8q0edC27hme2qMrVnaFZLAbhawe6zbXaUsECF/QCwz/8bw0gYjMbJ
+         MRfRbbw+/eyf9sm9HJTxivTkeEC/wKeYceKTApzMJB9Ipa6RSF+ftxg8ZjsrvhIqc9Uu
+         /yUzLTwr3u0n/Cv59LKIfw5VmeZV+sPt/uP9dt+kvWwY973s7+R64dXLxsDLNoUUmJsH
+         2qsUQPeYUa/EyfYPlsBWxevqylze6ebN3LrlnHDzun9k2uqxxFh1F/8cFMlhJkBbnqUX
+         e3arpB0XRXauZ5IOBKn5zWJmRYG2XJTTK0iuiR7u59miy5/C7pxw9cRJHW490PMRdax+
+         gbUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=g8lY3yuhge4SRook/yGWV7kL5YSEDsu9mSGrR5Y9scA=;
+        b=gMZONAjzpSVUoiRCPE3x32HdNgmuOFiIE0fnKwFtf3mElsL40rZ26UB/NJ8i/9j9Co
+         OEH36MXQ/DwwEHMyWrJXlZyezcK0srXYBL3X4Z5I7TGJUN56BqqzxPKs6LVr/pnjB5oM
+         gAnc2N40AarTEihl7Gfj1p2kB2a97DsxWIbetvioWLT9jpFKNn6XJU+4+L1f+DluKVqZ
+         zatsyfGYSjJahi6CmmfiyMZwjDQlbK23odIRmRgaPGDbFD9YkzuMBXsbDcPPPEOBuDHc
+         C5FzXQRNcW/Du9iB3mRhEyiLa60V2NQGbuumFPUCEixWDM2c0JwbkFpLhkJbJ4mT3bCm
+         4kYw==
+X-Gm-Message-State: AOAM531DR52B5Hi4cTiyCsDjtLSdaGlD4eDpNscfdeEvQl+neonycu1y
+        hD+ZEptGhbSt/j3TAc/B4d4JTSBiiEydcWEL9Q==
+X-Google-Smtp-Source: ABdhPJwCf3Cu7g4PmQSnZJgkn4wuD7Lo+AaxU2pZ6uElWFd42D/y42xyxtqfRfSENfX+fiBJOXU+pO9LUuntCuFf4w==
+X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:2145])
+ (user=kaleshsingh job=sendgmr) by 2002:a0c:ac4a:: with SMTP id
+ m10mr29926257qvb.37.1630429378671; Tue, 31 Aug 2021 10:02:58 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 17:02:29 +0000
+Message-Id: <20210831170233.1409537-1-kaleshsingh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+Subject: [RESEND v2] tracing/gpu: Add imported size to gpu_mem_imported tracepoint
+From:   Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, hridya@google.com, gregkh@linuxfoundation.org,
+        john.reitan@arm.com, orjan.eide@arm.com, mark.underwood@arm.com,
+        gary.sweet@broadcom.com, stephen.mansfield@imgtec.com,
+        kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The existing gpu_mem_total tracepoint provides GPU drivers a uniform way
+to report the per-process and system-wide GPU memory usage. This
+tracepoint reports a single total of the GPU private allocations and the
+imported memory. [1]
 
-Please pull this new iomap code for 5.15-rc1.  The most notable
-externally visible change for this cycle is the addition of support for
-reads to inline tail fragments of files, which was requested by the
-erofs developers; and a correction for a kernel memory corruption bug if
-the sysadmin tries to activate a swapfile with more pages than the
-swapfile header suggests.  We also now report writeback completion
-errors to the file mapping correctly, instead of munging all errors into
-EIO.
+To allow distinguishing GPU private vs imported memory, add an
+imported_size field to the gpu_mem_total tracepoint. GPU drivers can use
+this new field to report the per-process and global GPU-imported memory
+in a uniform way.
 
-Internally, the bulk of the changes are Christoph's patchset to reduce
-the indirect function call count by a third to a half by converting
-iomap iteration from a loop pattern to a generator/consumer pattern.
-As an added bonus, fsdax no longer open-codes iomap apply loops.
+User space tools can detect and handle the old vs new gpu_mem_total
+format via the gpu_mem/gpu_mem_total/format file.
 
-The branch merges cleanly with upstream as of a few minutes ago and has
-been soaking in for-next for a couple of weeks without complaints.
-Please let me know if there are any problems.
+[1] https://lore.kernel.org/r/20200302234840.57188-1-zzyiwei@google.com/
 
---D
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+---
+ include/trace/events/gpu_mem.h | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-The following changes since commit c500bee1c5b2f1d59b1081ac879d73268ab0ff17:
+diff --git a/include/trace/events/gpu_mem.h b/include/trace/events/gpu_mem.h
+index 26d871f96e94..ae6fab6bab7b 100644
+--- a/include/trace/events/gpu_mem.h
++++ b/include/trace/events/gpu_mem.h
+@@ -15,7 +15,7 @@
+ 
+ /*
+  * The gpu_memory_total event indicates that there's an update to either the
+- * global or process total gpu memory counters.
++ * global or process total and imported gpu memory counters.
+  *
+  * This event should be emitted whenever the kernel device driver allocates,
+  * frees, imports, unimports memory in the GPU addressable space.
+@@ -24,31 +24,36 @@
+  *
+  * @pid: Put 0 for global total, while positive pid for process total.
+  *
+- * @size: Size of the allocation in bytes.
++ * @size: Total size of allocated and imported memory in bytes.
++ *
++ * @imported_size: Total size of imported memory in bytes.
+  *
+  */
+ TRACE_EVENT(gpu_mem_total,
+ 
+-	TP_PROTO(uint32_t gpu_id, uint32_t pid, uint64_t size),
++	TP_PROTO(uint32_t gpu_id, uint32_t pid, uint64_t size, uint64_t imported_size),
+ 
+-	TP_ARGS(gpu_id, pid, size),
++	TP_ARGS(gpu_id, pid, size, imported_size),
+ 
+ 	TP_STRUCT__entry(
+ 		__field(uint32_t, gpu_id)
+ 		__field(uint32_t, pid)
+ 		__field(uint64_t, size)
++		__field(uint64_t, imported_size)
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__entry->gpu_id = gpu_id;
+ 		__entry->pid = pid;
+ 		__entry->size = size;
++		__entry->imported_size = imported_size;
+ 	),
+ 
+-	TP_printk("gpu_id=%u pid=%u size=%llu",
++	TP_printk("gpu_id=%u pid=%u size=%llu imported_size=%llu",
+ 		__entry->gpu_id,
+ 		__entry->pid,
+-		__entry->size)
++		__entry->size,
++		__entry->imported_size)
+ );
+ 
+ #endif /* _TRACE_GPU_MEM_H */
 
-  Linux 5.14-rc4 (2021-08-01 17:04:17 -0700)
+base-commit: 9c849ce86e0fa93a218614eac562ace44053d7ce
+-- 
+2.33.0.259.gc128427fd7-goog
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.15-merge-4
-
-for you to fetch changes up to 03b8df8d43ecc3c5724e6bfb80bc0b9ea2aa2612:
-
-  iomap: standardize tracepoint formatting and storage (2021-08-26 09:18:53 -0700)
-
-----------------------------------------------------------------
-New code for 5.15:
- - Simplify the bio_end_page usage in the buffered IO code.
- - Support reading inline data at nonzero offsets for erofs.
- - Fix some typos and bad grammar.
- - Convert kmap_atomic usage in the inline data read path.
- - Add some extra inline data input checking.
- - Fix a memory corruption bug stemming from iomap_swapfile_activate
-   trying to activate more pages than mm was expecting.
- - Pass errnos through the page writeback code so that writeback errors
-   are reported correctly instead of being munged to EIO.
- - Replace iomap_apply with a open-coded iterator loops to reduce the
-   number of indirect calls by a third to a half.
- - Refactor the fsdax code to use iomap iterators instead of the
-   open-coded iomap_apply code that it had before.
- - Format file range iomap tracepoint data in hexadecimal and
-   standardize the names used in the pretty-print string.
-
-----------------------------------------------------------------
-Andreas Gruenbacher (1):
-      iomap: Fix some typos and bad grammar
-
-Christoph Hellwig (30):
-      iomap: simplify iomap_readpage_actor
-      iomap: simplify iomap_add_to_ioend
-      iomap: fix a trivial comment typo in trace.h
-      iomap: remove the iomap arguments to ->page_{prepare,done}
-      iomap: mark the iomap argument to iomap_sector const
-      iomap: mark the iomap argument to iomap_inline_data const
-      iomap: mark the iomap argument to iomap_inline_data_valid const
-      fs: mark the iomap argument to __block_write_begin_int const
-      fsdax: mark the iomap argument to dax_iomap_sector as const
-      iomap: mark the iomap argument to iomap_read_inline_data const
-      iomap: mark the iomap argument to iomap_read_page_sync const
-      iomap: fix the iomap_readpage_actor return value for inline data
-      iomap: add the new iomap_iter model
-      iomap: switch readahead and readpage to use iomap_iter
-      iomap: switch iomap_file_buffered_write to use iomap_iter
-      iomap: switch iomap_file_unshare to use iomap_iter
-      iomap: switch iomap_zero_range to use iomap_iter
-      iomap: switch iomap_page_mkwrite to use iomap_iter
-      iomap: switch __iomap_dio_rw to use iomap_iter
-      iomap: switch iomap_fiemap to use iomap_iter
-      iomap: switch iomap_bmap to use iomap_iter
-      iomap: switch iomap_seek_hole to use iomap_iter
-      iomap: switch iomap_seek_data to use iomap_iter
-      iomap: switch iomap_swapfile_activate to use iomap_iter
-      fsdax: switch dax_iomap_rw to use iomap_iter
-      iomap: remove iomap_apply
-      iomap: pass an iomap_iter to various buffered I/O helpers
-      iomap: rework unshare flag
-      fsdax: switch the fault handlers to use iomap_iter
-      iomap: constify iomap_iter_srcmap
-
-Darrick J. Wong (3):
-      iomap: pass writeback errors to the mapping
-      iomap: move loop control code to iter.c
-      iomap: standardize tracepoint formatting and storage
-
-Gao Xiang (1):
-      iomap: support reading inline data from non-zero pos
-
-Matthew Wilcox (Oracle) (3):
-      iomap: Support inline data with block size < page size
-      iomap: Use kmap_local_page instead of kmap_atomic
-      iomap: Add another assertion to inline data handling
-
-Shiyang Ruan (2):
-      fsdax: factor out helpers to simplify the dax fault code
-      fsdax: factor out a dax_fault_actor() helper
-
-Xu Yu (1):
-      mm/swap: consider max pages in iomap_swapfile_add_extent
-
- fs/btrfs/inode.c       |   5 +-
- fs/buffer.c            |   4 +-
- fs/dax.c               | 606 +++++++++++++++++++++++--------------------------
- fs/gfs2/bmap.c         |   5 +-
- fs/internal.h          |   4 +-
- fs/iomap/Makefile      |   2 +-
- fs/iomap/apply.c       |  99 --------
- fs/iomap/buffered-io.c | 508 ++++++++++++++++++++---------------------
- fs/iomap/direct-io.c   | 172 +++++++-------
- fs/iomap/fiemap.c      | 101 ++++-----
- fs/iomap/iter.c        |  80 +++++++
- fs/iomap/seek.c        |  98 ++++----
- fs/iomap/swapfile.c    |  44 ++--
- fs/iomap/trace.h       |  61 ++---
- include/linux/iomap.h  |  91 ++++++--
- 15 files changed, 934 insertions(+), 946 deletions(-)
- delete mode 100644 fs/iomap/apply.c
- create mode 100644 fs/iomap/iter.c
