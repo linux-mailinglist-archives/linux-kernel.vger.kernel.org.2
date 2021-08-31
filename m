@@ -2,317 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE933FC97B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2560F3FC97F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236670AbhHaOQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34520 "EHLO
+        id S236697AbhHaOQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235634AbhHaOQH (ORCPT
+        with ESMTP id S233132AbhHaOQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:16:07 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A893C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:15:11 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id g14so3901677ljk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:15:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wwFBa6ID2CU7IVCJdpVesspkl7cQEPY7fvmjvIApmuo=;
-        b=jwRI7kWHlrfPZQmfPHYGVlfBIptRF6mhDuUvY+UI9DiL97IYcWoL2lnxSM9O1MS4bf
-         crxBlK90EylzTVK1eyMhTTtR8k6zthuLf8LEGXSQ3iZ+cL/UEiLjmAizSOCBZW8t8aQ7
-         1nYhkbGEpnxcy0qZtIOnADopwFFMj1B0fjWOEKfk/+uU2GiEOY4c6U+gdy/1cLmwi1MF
-         fasrMyXeXyexYn9qBijcwOir/tFySqMMSeWfS1h8O/8/sf+vqAZtzwzD7QBDdXnLJPRC
-         k7EuRraSADK2xRQXmpmTpP6hbgNmcOg/+HdxbJq7s6kIDT3Bi6LjahtCUnBLp2jpph+y
-         g2Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wwFBa6ID2CU7IVCJdpVesspkl7cQEPY7fvmjvIApmuo=;
-        b=jhDmzOuRug36eXODuzEoVIx2a3pr6dHbJw+Q3pg0coOExukKksHw3M7nk673oihZQr
-         5okytZXq93esDpTJAWRKkI4LZbkW/DSEIuxvq2Y735ZrrTTyGhk0sfKqncMW0bWN1mgo
-         HBP3hkEZKsToBbgwG7wTQuUkRPwEI7b4PwqoQTot/0WS1oLDhjxvxkolbVlFCy/mRElX
-         uJ2fyHva3Jz64Lk1AP4gtLtStufxNpRGsYsvOa4vip3CR8f7HgPTQp/auWbI/zWDWS+/
-         Hxj4lZnxA81NRthwBfMjLiQTaTrjhZ1Gm9Hi3DktmRR7Ie6MOr9nerXDuLb0XCYKtu1G
-         3Vgg==
-X-Gm-Message-State: AOAM533cIJEYO65sBfuNUaP8ju7axtw98KHsicWsUEo4odVNw8Gcz1mq
-        JRPWQ/8SbD/evhXBZbYJE1j0IJEzUoTDBg==
-X-Google-Smtp-Source: ABdhPJwj6KQ23nDAa7hZXMw5ODJAaLZkmN3HDJ/2IdpkPYgNeKkHdOp2dV6Mdvp/DHpTwVdxQXky+w==
-X-Received: by 2002:a2e:a363:: with SMTP id i3mr24971842ljn.56.1630419309740;
-        Tue, 31 Aug 2021 07:15:09 -0700 (PDT)
-Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id i30sm2202187ljb.48.2021.08.31.07.15.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 07:15:09 -0700 (PDT)
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev
-Cc:     Kari Argillander <kari.argillander@gmail.com>,
+        Tue, 31 Aug 2021 10:16:46 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DACC061575;
+        Tue, 31 Aug 2021 07:15:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=IwVDVSRkq1mFvqFDRXC6n97YzWiMMq7IqL+KsJFCFj8=; b=K470W4XhRu+mM5sEymp8eI9GN1
+        xU8xY5adCX3qk2QPAAfWhccgmlxGztHB60LYsV170iclqt4THGE88flMwvp2s0oQAMRGlpcb2mATm
+        91mJHXW7mXL/mgzTM3J7EEVTEeldbYqoBTS2JnLdC0eQk4WvFDAndl6X1JQ8VEiX6rYK+k+yPJZes
+        HAea/iKXN7+Zaz7/jCCn29S/OtDxPpaQRVgeBglS48+smmkjOou7zIvEoU0oTbgDvjo5eiw1m7W8y
+        QTUWOsMmUXv4vyfzORGOhO0Vormeehtjkcz7Ux0CVEggRApV9nXVdURPzHBzybiigSPHao/qFRoq3
+        2L8Bb/Ew==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mL4YI-002Wks-Bb; Tue, 31 Aug 2021 14:15:50 +0000
+Subject: Re: [PATCH RESEND v3] Trivial comment fix for the CRC ITU-T polynom
+To:     Roger Knecht <roger@norberthealth.com>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Jiri Kosina <trivial@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] fs/ntfs3: Remove unneeded header files from c files
-Date:   Tue, 31 Aug 2021 17:14:34 +0300
-Message-Id: <20210831141434.975175-8-kari.argillander@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210831141434.975175-1-kari.argillander@gmail.com>
-References: <20210831141434.975175-1-kari.argillander@gmail.com>
+References: <20210831130702.31526-1-roger@norberthealth.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6ba219b5-0a9d-610e-0670-232e5d3d4ad3@infradead.org>
+Date:   Tue, 31 Aug 2021 07:15:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210831130702.31526-1-roger@norberthealth.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have lot of unnecessary headers in these files. Remove them so that
-we help compiler a little bit.
+On 8/31/21 6:07 AM, Roger Knecht wrote:
+> This patch fixes a small typo in the CRC ITU-T polynom documentation.
+> 
+> The code comment says that the polynom is x^16 + x^12 + x^15 + 1, but the
+> correct polynom is x^16 + x^12 + x^5 + 1.
+> 
+> Quote from page 2 in the ITU-T V.41 specification:
+>    "2 Encoding and checking process
+> 
+>    The service bits and information bits, taken in conjunction, correspond
+>    to the coefficients of a message polynomial having terms from x^(n-1)
+>    (n = total number of bits in a block or sequence) down to x^16. This
+>    polynomial is divided, modulo 2, by the generating polynomial
+>    x^16 + x^12 + x^5 + 1. [...]"
+> 
+> Source: https://www.itu.int/rec/T-REC-V.41-198811-I/en
+> 
+> The hex polynom 0x1021 and CRC code implementation are correct.
+> 
+> Signed-off-by: Roger Knecht <roger@norberthealth.com>
+> ---
+> Changes for the resend:
+>    - Moved "changes and thanks" out of the commit message.
+> 
+> Thanks,
+> Roger
+> 
+>   include/linux/crc-itu-t.h | 2 +-
+>   lib/crc-itu-t.c           | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/crc-itu-t.h b/include/linux/crc-itu-t.h
+> index a4367051e192..2f991a427ade 100644
+> --- a/include/linux/crc-itu-t.h
+> +++ b/include/linux/crc-itu-t.h
+> @@ -4,7 +4,7 @@
+>    *
+>    * Implements the standard CRC ITU-T V.41:
+>    *   Width 16
+> - *   Poly  0x1021 (x^16 + x^12 + x^15 + 1)
+> + *   Poly  0x1021 (x^16 + x^12 + x^5 + 1)
+>    *   Init  0
+>    */
+>   
+> diff --git a/lib/crc-itu-t.c b/lib/crc-itu-t.c
+> index 1974b355c148..56e6e0d63d1e 100644
+> --- a/lib/crc-itu-t.c
+> +++ b/lib/crc-itu-t.c
+> @@ -7,7 +7,7 @@
+>   #include <linux/module.h>
+>   #include <linux/crc-itu-t.h>
+>   
+> -/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^15 + 1) */
+> +/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^5 + 1) */
+>   const u16 crc_itu_t_table[256] = {
+>   	0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
+>   	0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef,
 
-Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
----
- fs/ntfs3/attrib.c   | 5 -----
- fs/ntfs3/attrlist.c | 3 ---
- fs/ntfs3/bitmap.c   | 3 ---
- fs/ntfs3/dir.c      | 3 ---
- fs/ntfs3/file.c     | 1 -
- fs/ntfs3/frecord.c  | 3 ---
- fs/ntfs3/fslog.c    | 4 ----
- fs/ntfs3/fsntfs.c   | 1 -
- fs/ntfs3/index.c    | 1 -
- fs/ntfs3/inode.c    | 2 --
- fs/ntfs3/namei.c    | 4 ----
- fs/ntfs3/record.c   | 3 ---
- fs/ntfs3/run.c      | 2 --
- fs/ntfs3/super.c    | 2 --
- fs/ntfs3/xattr.c    | 3 ---
- 15 files changed, 40 deletions(-)
 
-diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
-index 4b285f704e62..b4290b4f996d 100644
---- a/fs/ntfs3/attrib.c
-+++ b/fs/ntfs3/attrib.c
-@@ -6,12 +6,7 @@
-  * TODO: Merge attr_set_size/attr_data_get_block/attr_allocate_frame?
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/hash.h>
--#include <linux/nls.h>
--#include <linux/ratelimit.h>
- #include <linux/slab.h>
- 
- #include "debug.h"
-diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
-index 32ca990af64b..4d1bb695e650 100644
---- a/fs/ntfs3/attrlist.c
-+++ b/fs/ntfs3/attrlist.c
-@@ -5,10 +5,7 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- 
- #include "debug.h"
- #include "ntfs.h"
-diff --git a/fs/ntfs3/bitmap.c b/fs/ntfs3/bitmap.c
-index 06ae38adb8ad..01c639865132 100644
---- a/fs/ntfs3/bitmap.c
-+++ b/fs/ntfs3/bitmap.c
-@@ -10,12 +10,9 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- 
--#include "debug.h"
- #include "ntfs.h"
- #include "ntfs_fs.h"
- 
-diff --git a/fs/ntfs3/dir.c b/fs/ntfs3/dir.c
-index 93f6d485564e..76697ec3c146 100644
---- a/fs/ntfs3/dir.c
-+++ b/fs/ntfs3/dir.c
-@@ -7,10 +7,7 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/iversion.h>
- #include <linux/nls.h>
- 
- #include "debug.h"
-diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-index 26346771d9dc..bf3b7b666423 100644
---- a/fs/ntfs3/file.c
-+++ b/fs/ntfs3/file.c
-@@ -13,7 +13,6 @@
- #include <linux/falloc.h>
- #include <linux/fiemap.h>
- #include <linux/msdos_fs.h> /* FAT_IOCTL_XXX */
--#include <linux/nls.h>
- 
- #include "debug.h"
- #include "ntfs.h"
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index 9d374827750b..50c185da8fbb 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -5,11 +5,8 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fiemap.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- #include <linux/vmalloc.h>
- 
- #include "debug.h"
-diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
-index 6f6057129fdd..38235c1c60a2 100644
---- a/fs/ntfs3/fslog.c
-+++ b/fs/ntfs3/fslog.c
-@@ -6,12 +6,8 @@
-  */
- 
- #include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/hash.h>
--#include <linux/nls.h>
- #include <linux/random.h>
--#include <linux/ratelimit.h>
- #include <linux/slab.h>
- 
- #include "debug.h"
-diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
-index 0edb95ed9717..3eec44671a71 100644
---- a/fs/ntfs3/fsntfs.c
-+++ b/fs/ntfs3/fsntfs.c
-@@ -8,7 +8,6 @@
- #include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- 
- #include "debug.h"
- #include "ntfs.h"
-diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-index 70ef59455b72..fec1e72206e8 100644
---- a/fs/ntfs3/index.c
-+++ b/fs/ntfs3/index.c
-@@ -8,7 +8,6 @@
- #include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- 
- #include "debug.h"
- #include "ntfs.h"
-diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-index b86ec7dd731c..00ce4c40b3fc 100644
---- a/fs/ntfs3/inode.c
-+++ b/fs/ntfs3/inode.c
-@@ -5,10 +5,8 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/iversion.h>
- #include <linux/mpage.h>
- #include <linux/namei.h>
- #include <linux/nls.h>
-diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
-index f79a399bd015..67cb541a5b12 100644
---- a/fs/ntfs3/namei.c
-+++ b/fs/ntfs3/namei.c
-@@ -5,11 +5,7 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/iversion.h>
--#include <linux/namei.h>
- #include <linux/nls.h>
- 
- #include "debug.h"
-diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
-index d48a5e6c5045..ff09ff2714fc 100644
---- a/fs/ntfs3/record.c
-+++ b/fs/ntfs3/record.c
-@@ -5,10 +5,7 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- 
- #include "debug.h"
- #include "ntfs.h"
-diff --git a/fs/ntfs3/run.c b/fs/ntfs3/run.c
-index 26ed2b64345e..a8fec651f973 100644
---- a/fs/ntfs3/run.c
-+++ b/fs/ntfs3/run.c
-@@ -7,10 +7,8 @@
-  */
- 
- #include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
- #include <linux/log2.h>
--#include <linux/nls.h>
- 
- #include "debug.h"
- #include "ntfs.h"
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 2fbab8a931ee..1934c273ee1d 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -23,12 +23,10 @@
-  *
-  */
- 
--#include <linux/backing-dev.h>
- #include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/exportfs.h>
- #include <linux/fs.h>
--#include <linux/iversion.h>
- #include <linux/log2.h>
- #include <linux/module.h>
- #include <linux/nls.h>
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index b4c921e4bc1a..b84d15e8d3a2 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -5,10 +5,7 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- #include <linux/posix_acl.h>
- #include <linux/posix_acl_xattr.h>
- #include <linux/xattr.h>
+I should have noticed this earlier:
+
+Please change the /** to a simple /*.
+/** means "beginning of kernel-doc comment" and this is not
+a kernel-doc comment.
+
+Thanks.
+
 -- 
-2.25.1
+~Randy
 
