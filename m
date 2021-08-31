@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03443FCA9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA9C3FCAA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238891AbhHaPPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:15:20 -0400
-Received: from mail-pl1-f173.google.com ([209.85.214.173]:38679 "EHLO
-        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233369AbhHaPPT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:15:19 -0400
-Received: by mail-pl1-f173.google.com with SMTP id u1so7027803plq.5;
-        Tue, 31 Aug 2021 08:14:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=9D9qsE+noSqIxlombEWfgmTi8GkmBBFofBmVtpmcEtA=;
-        b=itSWzH4ixfOyPM690gG4ccQ/BhSaaoxi67TASyMz9x5YVMbXNg4rSXPANfR1ex1saj
-         pS3Mse1CzVBx1FWyJYBux7wRPMfZa8KejAk1A2rX70I7v0Pt+BpQh02J3Pwh0ji1uGf0
-         qSnLFCtus+so1769jmx1Usp1wDRq6xCT5fPN5sO7Mx+m4H2e6/FrlgUPD6/8ec74TpxC
-         vjTd+KrlDxayEGI63oD8bucTgtfSXC8q8/IMyfIA01dMJI90jE245Lk8BFB1UPrSkxDQ
-         YGn+aOymw8O5T4xaCCg9hA6lKowSNgVdarnQsxTm1zWNfcvOCZqS6LkR0Km46iY6d+l9
-         H2TQ==
-X-Gm-Message-State: AOAM532uuh5pyW8xQB4NWOC12GFA22T8QjWE8YHsTIc0eQXir0Ef4ubn
-        nmo9fiYShW6bSCKfcXU0SbE=
-X-Google-Smtp-Source: ABdhPJyKXABDfAD4y80t9N4Emqt15ysfSH9n+R7JutmuWmP2w8oVS7MjvXqU3xPfHqC6EoKjin3xqg==
-X-Received: by 2002:a17:90a:6b83:: with SMTP id w3mr5890999pjj.114.1630422863841;
-        Tue, 31 Aug 2021 08:14:23 -0700 (PDT)
-Received: from ?IPV6:2601:647:4000:d7:bf86:9409:8dda:644? ([2601:647:4000:d7:bf86:9409:8dda:644])
-        by smtp.gmail.com with UTF8SMTPSA id x10sm2926345pfj.174.2021.08.31.08.14.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 08:14:22 -0700 (PDT)
-Message-ID: <634f24b5-c47e-0303-f462-8a63c3453af8@acm.org>
-Date:   Tue, 31 Aug 2021 08:14:19 -0700
+        id S238733AbhHaPSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:18:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233369AbhHaPSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 11:18:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5432360724;
+        Tue, 31 Aug 2021 15:17:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630423071;
+        bh=Gze4tbWximZZAQoREaDEMclW35VaWPdDTv5B4j6qHX0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OeyrkZc+CBDZ1kqmQ9WpxRHA7iBGHgRCtg6iJhsdEAhaiG4ZStFXL2Mm7pDluNsMW
+         gXi28iVYXOjEXS6s7DOi5h5kKTD/9rtqErELDvWJeFP4UPF8ork8X80pXNeYQherK0
+         fBJ4Q0fnA8wPw5gk+eSwWOzoiERQJ0ajAU2SnFwkXBUE268P0zkU0ktzj2X9dO9w2b
+         zZKGAIdeyAcEQYoua1Ivq2uteKDRRhzi8E9eou4/LhVp0G7tVUBJGr6X62tNOHv+vQ
+         gsk4f71fg6bpdbge4+rkUO5SPdD65cUbgo9yQBI6qS58/xse/Q1Huo+ts5ZUxZ6mIN
+         w6QIz/QPOaUPA==
+Date:   Tue, 31 Aug 2021 16:17:47 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        konrad.wilk@oracle.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux@roeck-us.net
+Subject: Re: [PATCH] swiotlb: use depends on for DMA_RESTRICTED_POOL
+Message-ID: <20210831151746.GB32001@willie-the-truck>
+References: <20210827034802.1065294-1-tientzu@chromium.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.1
-Subject: Re: [PATCH] scsi: ufs: ufshpb: Remove unused parameters
-Content-Language: en-US
-To:     Chanwoo Lee <cw9316.lee@samsung.com>, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, daejun7.park@samsung.com,
-        beanhuo@micron.com, stanley.chu@mediatek.com,
-        keosung.park@samsung.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com
-References: <CGME20210831071227epcas1p188440324d4e68fb5c5ab506e02ee11e7@epcas1p1.samsung.com>
- <20210831070443.25480-1-cw9316.lee@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20210831070443.25480-1-cw9316.lee@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827034802.1065294-1-tientzu@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/21 00:04, Chanwoo Lee wrote:
-> From: ChanWoo Lee <cw9316.lee@samsung.com>
+On Fri, Aug 27, 2021 at 11:48:02AM +0800, Claire Chang wrote:
+> Use depends on instead of select for DMA_RESTRICTED_POOL; otherwise it
+> will make SWIOTLB user configurable and cause compile errors for some
+> arch (e.g. mips).
 > 
-> Remove unused parameters
-> * ufshpb_set_hpb_read_to_upiu()
->   -> struct ufshpb_lu *hpb
->   -> u32 lpn
+> Fixes: 0b84e4f8b793 ("swiotlb: Add restricted DMA pool initialization")
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> ---
+>  kernel/dma/Kconfig | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
+> index fd4db714d86b..1b02179758cb 100644
+> --- a/kernel/dma/Kconfig
+> +++ b/kernel/dma/Kconfig
+> @@ -82,8 +82,7 @@ config SWIOTLB
+>  
+>  config DMA_RESTRICTED_POOL
+>  	bool "DMA Restricted Pool"
+> -	depends on OF && OF_RESERVED_MEM
+> -	select SWIOTLB
+> +	depends on OF && OF_RESERVED_MEM && SWIOTLB
+>  	help
+>  	  This enables support for restricted DMA pools which provide a level of
+>  	  DMA memory protection on systems with limited hardware protection
 
-Please use full sentences in the patch description for future patch 
-submissions. Anyway:
+Acked-by: Will Deacon <will@kernel.org>
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Will
