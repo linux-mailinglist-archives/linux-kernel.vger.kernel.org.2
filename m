@@ -2,199 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4B03FCA75
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4683D3FCA7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234663AbhHaPDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:03:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45672 "EHLO
+        id S236497AbhHaPE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbhHaPDT (ORCPT
+        with ESMTP id S231127AbhHaPE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:03:19 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D6DC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:02:23 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id n5so28152957wro.12
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:02:23 -0700 (PDT)
+        Tue, 31 Aug 2021 11:04:56 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DD2C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:04:01 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id g14so4216430ljk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:04:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oG874AdcXI3o82/TGwk+Cx3DBaSWTb47/JMNkLWiZok=;
-        b=qcHtViW34mFDs+6eJ7L3v7AeMjvSULLglQaq36dZekNuXmZKBNmq+4taLB0F2VWTjT
-         40WyqXFDclhaTCz5+gwNk6rs2oUKYZervqn/hdmQlKkhpXWKNKZNoV9OA0Td1nSgKa58
-         AuAasxJkQnRr5N1vM+dUJ5t7pc2GmRXfqQBaC/e8Zp+paD3q3zO3gfIkVnTvJwb07dtv
-         f74Hu8ydFGVqimcPjIynxZK/BgGGBjqiyEjw1vQQiUzXabHz7jHIJlODSnDvwnhodBJc
-         zeNwNLnjwJtxFzlNoes+uCJ+QcTRTbZIINLN8lObUnpZMWiAv1r3ET1ju0xp/18AVVDf
-         SK/A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4Fn4UZmVWhb7Bzvp1FoQQ7qfnZgNzUwT5A3uCCmGDj0=;
+        b=cdfjp6SVsuxqd4fltHdv9vJ1ZOrV00nXaLXFRWNyrWwlDEpcVCsVSzniXR+eEBRSAI
+         8xN0+xrgRv/xoPOhyhee4AiLqAjeQdvE6wBT3AM+GaO/FDPI/Z8ibTlR4oj/gi+EKhfH
+         WheZuSGPwB9l2Zfj9sosh1GhJfSZRX6Fe2T5pyo8QT9+L0kZAuSPTacOMAzk97pzAvQf
+         PHFDYeiLmvDGRUFsSayJ2jg5J7VTpNIwGLOJdIXvRYj/Rqr3bZ7bpDGyCcKnQRfEN+lA
+         eyRxBew4PNzkdzOpuh9Dxqv4y+itg5Pj3L8j8Tl2ea8PnK9ASRdGreKC25SEWsDj8Wjk
+         Dy5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oG874AdcXI3o82/TGwk+Cx3DBaSWTb47/JMNkLWiZok=;
-        b=g0q910IYu8YdDDn9ocKH+h0d+JSZf1goIo6YI8rOq+DALZAi7dEDozPGbCFXQn4cNr
-         pF7WmavYZvbaG0l9ZAWVBA7e5iBQMENzhB5W3r7z4vnOy8DEDdoK04jnLw2hxfSJioA2
-         XWJ6PwHymQjcHabCcjM4NjNuPnWDdCzzqI50vEERF5u5GBCyTpMgAa9DgYJ4ZujAefIG
-         ol0zd/BNL9JG4ZNbF6NqIHB9sU9ZI4GkLju6wYO6yMLfUqXUW0PmtfN5Ia/ENw8ccF68
-         K3w1qBj9rTYGe3l90lPOK9RF5F0WcAWAyeiYOVW/UOWJiaU+Hp1jAyv+BOBYM1ZVOCA8
-         blyQ==
-X-Gm-Message-State: AOAM531ivP9oHg+jpSII5kIFEO3QCmZouKfubnIHAsjtDlJO7+6343gm
-        ADaF8Mw6sIA05f1oRZec7CoLFg==
-X-Google-Smtp-Source: ABdhPJyk6IGggC9wvbTFCze2ISYZ4szGyjRQ/DsvvyAKPPgzPn8KiCuYhlqw2i3+BmV0nOK5RKcEpg==
-X-Received: by 2002:a5d:47a4:: with SMTP id 4mr31678862wrb.329.1630422142080;
-        Tue, 31 Aug 2021 08:02:22 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:3729:c12:7ee0:e9bc])
-        by smtp.gmail.com with ESMTPSA id p9sm2401009wrg.14.2021.08.31.08.02.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 08:02:20 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 17:02:15 +0200
-From:   Marco Elver <elver@google.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        qemu-s390x <qemu-s390x@nongnu.org>
-Subject: Re: [GIT PULL] s390 updates for 5.15 merge window
-Message-ID: <YS5Ed4Cyf+rOf9MR@elver.google.com>
-References: <YSzZFgBt6nMvpVgc@osiris>
- <YS2RrUma2oOSYtIc@Ryzen-9-3900X.localdomain>
- <82161448-2770-158c-fdd3-d253b4ae476f@de.ibm.com>
- <YS4AufXrOCa4rzN0@osiris>
- <CANpmjNPp3dAcr+WfYxM6_uQOmFmDf60aL-LbXF12NCzP6P3-6Q@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4Fn4UZmVWhb7Bzvp1FoQQ7qfnZgNzUwT5A3uCCmGDj0=;
+        b=GxrrrNA4n5rWQpqnG3kZ/JnPSMkGfrn9XGlKvTVPCiPO9fqjxhY0V7vri3iaJqeanO
+         XVnpxMvyPjR0JVdeaWiGBW5zgklq1HgotNLl6qYLaB3dCDteHnNHn4FcOCpNJADtN/MI
+         J55LnfTf2FzaPkP5ZoTeJR514boj7e9369+LVweWnQQxbiKtq3AOUauT4UyOHRyzDIOM
+         UjfRatKa3FNf11xMjSh6Ks28WN+m5+cFRAynIlMIdfbMOMSBPK29Qrd+i6eTCHf1iJ+h
+         9i2WHtxOhWN18UFr052DxWQ+x2CQ63uHNirkZYgFrYCAemK9c2aleWNkFH5CDIdsd+SS
+         INkA==
+X-Gm-Message-State: AOAM532oH17r7L3It6pCLeDiDR+FAmz74pJn4Nr8L8lsYVJNoGSGnd0J
+        yokFKMoGBiLP+m42fV1zJZ6uhWlTGlfFL9L/zoPttMyb80o=
+X-Google-Smtp-Source: ABdhPJz7R8yS4tFq5OIt5U9b9AwBlSVoxf+LlWKsuk9kKOCQLPYDxpxb4go5g5kLf6mFhZ12nLnYq9g/o1AU0vuqcm0=
+X-Received: by 2002:a2e:a7d0:: with SMTP id x16mr25654175ljp.494.1630422239046;
+ Tue, 31 Aug 2021 08:03:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNPp3dAcr+WfYxM6_uQOmFmDf60aL-LbXF12NCzP6P3-6Q@mail.gmail.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+References: <20210830212951.3541589-1-pgonda@google.com> <CAA03e5Fd2aes=euzXv51d6b3E0S3tK45hkqQhONsmWA5dE33dw@mail.gmail.com>
+ <CAA03e5G9TEsmzbQw_m_Zh+Evdief0hgiuMmBGF40xctMAwjY2w@mail.gmail.com>
+In-Reply-To: <CAA03e5G9TEsmzbQw_m_Zh+Evdief0hgiuMmBGF40xctMAwjY2w@mail.gmail.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 31 Aug 2021 09:03:47 -0600
+Message-ID: <CAMkAt6r8X5XbhRSbfX5vfHn+F40Mp_Ou+qmtUqeDBCtTF1oTxg@mail.gmail.com>
+Subject: Re: [PATCH 3/3 V6] selftest: KVM: Add intra host migration
+To:     Marc Orr <marcorr@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 12:46PM +0200, Marco Elver wrote:
-> On Tue, 31 Aug 2021 at 12:13, Heiko Carstens <hca@linux.ibm.com> wrote:
-> [...]
-> > I really don't think this is QEMU related. The test fails are sort of
-> > expected: we've seen KCSAN reports when the kernel boots and wanted to
-> > fix them later.
-> > However I have to admit that I wasn't aware of the KCSAN KUNIT tests,
-> > and wouldn't have sent the s390 KCSAN enablement upstream if I would
-> > have been aware of failing self tests.
+On Tue, Aug 31, 2021 at 7:26 AM Marc Orr <marcorr@google.com> wrote:
+>
+> On Tue, Aug 31, 2021 at 6:24 AM Marc Orr <marcorr@google.com> wrote:
 > >
-> > We'll fix them, and I let you know if things are supposed to work.
+> > On Mon, Aug 30, 2021 at 2:29 PM Peter Gonda <pgonda@google.com> wrote:
+> > >
+> > > Adds testcases for intra host migration for SEV and SEV-ES. Also adds
+> > > locking test to confirm no deadlock exists.
+> > >
+> > > ---
+> > >  tools/testing/selftests/kvm/Makefile          |   1 +
+> > >  .../selftests/kvm/x86_64/sev_vm_tests.c       | 152 ++++++++++++++++++
+> > >  2 files changed, 153 insertions(+)
+> > >  create mode 100644 tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> > >
+> > > Signed-off-by: Peter Gonda <pgonda@google.com>
+> > > Suggested-by: Sean Christopherson <seanjc@google.com>
+> > > Cc: Marc Orr <marcorr@google.com>
+> > > Cc: Sean Christopherson <seanjc@google.com>
+> > > Cc: Brijesh Singh <brijesh.singh@amd.com>
+> > > Cc: kvm@vger.kernel.org
+> > > Cc: linux-kernel@vger.kernel.org
+> > >
+> > > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> > > index 5832f510a16c..de6e64d5c9c4 100644
+> > > --- a/tools/testing/selftests/kvm/Makefile
+> > > +++ b/tools/testing/selftests/kvm/Makefile
+> > > @@ -71,6 +71,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
+> > >  TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_msrs_test
+> > >  TEST_GEN_PROGS_x86_64 += x86_64/xen_shinfo_test
+> > >  TEST_GEN_PROGS_x86_64 += x86_64/xen_vmcall_test
+> > > +TEST_GEN_PROGS_x86_64 += x86_64/sev_vm_tests
+> > >  TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
+> > >  TEST_GEN_PROGS_x86_64 += demand_paging_test
+> > >  TEST_GEN_PROGS_x86_64 += dirty_log_test
+> > > diff --git a/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> > > new file mode 100644
+> > > index 000000000000..50a770316628
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> > > @@ -0,0 +1,150 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +#include <linux/kvm.h>
+> > > +#include <linux/psp-sev.h>
+> > > +#include <stdio.h>
+> > > +#include <sys/ioctl.h>
+> > > +#include <stdlib.h>
+> > > +#include <errno.h>
+> > > +#include <pthread.h>
+> > > +
+> > > +#include "test_util.h"
+> > > +#include "kvm_util.h"
+> > > +#include "processor.h"
+> > > +#include "svm_util.h"
+> > > +#include "kvm_util.h"
+> > > +#include "kselftest.h"
+> > > +#include "../lib/kvm_util_internal.h"
+> > > +
+> > > +#define SEV_DEV_PATH "/dev/sev"
+> > > +
+> > > +/*
+> > > + * Open SEV_DEV_PATH if available, otherwise exit the entire program.
+> > > + *
+> > > + * Input Args:
+> > > + *   flags - The flags to pass when opening SEV_DEV_PATH.
+> > > + *
+> > > + * Return:
+> > > + *   The opened file descriptor of /dev/sev.
+> > > + */
+> > > +static int open_sev_dev_path_or_exit(int flags)
+> > > +{
+> > > +       static int fd;
+> > > +
+> > > +       if (fd != 0)
+> > > +               return fd;
+> > > +
+> > > +       fd = open(SEV_DEV_PATH, flags);
+> > > +       if (fd < 0) {
+> > > +               print_skip("%s not available, is SEV not enabled? (errno: %d)",
+> > > +                          SEV_DEV_PATH, errno);
+> > > +               exit(KSFT_SKIP);
+> > > +       }
+> > > +
+> > > +       return fd;
+> > > +}
+> > > +
+> > > +static void sev_ioctl(int fd, int cmd_id, void *data)
+> > > +{
+> > > +       struct kvm_sev_cmd cmd = { 0 };
+> > > +       int ret;
+> > > +
+> > > +       TEST_ASSERT(cmd_id < KVM_SEV_NR_MAX, "Unknown SEV CMD : %d\n", cmd_id);
+> > > +
+> > > +       cmd.id = cmd_id;
+> > > +       cmd.sev_fd = open_sev_dev_path_or_exit(0);
+> > > +       cmd.data = (uint64_t)data;
+> > > +       ret = ioctl(fd, KVM_MEMORY_ENCRYPT_OP, &cmd);
+> > > +       TEST_ASSERT((ret == 0 || cmd.error == SEV_RET_SUCCESS),
+> > > +                   "%d failed: return code: %d, errno: %d, fw error: %d",
+> > > +                   cmd_id, ret, errno, cmd.error);
+> > > +}
 > >
-> > Thanks a lot for making aware of this!
-> 
-> Note: Set `CONFIG_KCSAN_REPORT_ONCE_IN_MS=100` (or smaller) instead of
-> the default to make the test complete faster.
-> 
-> The pattern I see from what Nathan reported is that all test cases
-> that expect race reports don't observe them ("not ok" cases), and all
-> those where no races are meant to be reported are fine ("ok" cases).
-> Without actually seeing the log, I'm guessing that no races are
-> reported at all, which is certainly not working as intended.
+> > nit: Since this function has two file descriptors, `fd` and
+> > `cmd.sev_fd`, can we rename `fd` to `vm_fd`?
+> >
+> > > +
+> > > +static struct kvm_vm *sev_vm_create(bool es)
+> > > +{
+> > > +       struct kvm_vm *vm;
+> > > +       struct kvm_sev_launch_start start = { 0 };
+> > > +       int i;
+> > > +
+> > > +       vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> > > +       sev_ioctl(vm->fd, es ? KVM_SEV_ES_INIT : KVM_SEV_INIT, NULL);
+> > > +       for (i = 0; i < 3; ++i)
+> >
+> > nit: Consider moving `3` to a macro, like `MAX_VCPU_IDX` or maybe
+> > better defining something like `NUM_VCPUS` to be 4.
+> >
+> > > +               vm_vcpu_add(vm, i);
+> > > +       start.policy |= (es) << 2;
+> > > +       sev_ioctl(vm->fd, KVM_SEV_LAUNCH_START, &start);
+> > > +       if (es)
+> > > +               sev_ioctl(vm->fd, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
+> > > +       return vm;
+> > > +}
+> > > +
+> > > +static void test_sev_migrate_from(bool es)
+> > > +{
+> > > +       struct kvm_vm *vms[3];
+> >
+> > If we create a `NUM_VCPUS` macro, then we can use it here.
+> >
+> > > +       struct kvm_enable_cap cap = { 0 };
+> > > +       int i;
+> > > +
+> > > +       for (i = 0; i < sizeof(vms) / sizeof(struct kvm_vm *); ++i)
+> > > +               vms[i] = sev_vm_create(es);
+> > > +
+> > > +       cap.cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM;
+> > > +       for (i = 0; i < sizeof(vms) / sizeof(struct kvm_vm *) - 1; ++i) {
+> > > +               cap.args[0] = vms[i]->fd;
+> > > +               vm_enable_cap(vms[i + 1], &cap);
+> > > +       }
+> >
+> > nit/optional: To me, the code would be more clear if we combined this
+> > loop with the one above and guarded calling `vm_enable_cap()` with `if
+> > (i > 0)`. Also, maybe we can initialize `cap` when it's declared.
+> >
+> >      struct kvm_enable_cap cap = { .cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM };
+> >      int i;
+> >
+> >      for (i = 0; i < sizeof(vms) / sizeof(struct kvm_vm *); ++i) {
+> >           vms[i] = sev_vm_create(es);
+> >           if (i > 0)
+> >                vm_enable_cap(vms[i], &cap);
+> >      }
+> >
+> > > +}
+> > > +
+> > > +#define LOCK_TESTING_THREADS 3
+> >
+> > nit: Consider moving this macro to the top of the file.
+> >
+> > > +
+> > > +struct locking_thread_input {
+> > > +       struct kvm_vm *vm;
+> > > +       int source_fds[LOCK_TESTING_THREADS];
+> > > +};
+> > > +
+> > > +static void *locking_test_thread(void *arg)
+> > > +{
+> > > +       struct kvm_enable_cap cap = { 0 };
+> >
+> > Maybe:
+> > struct kvm_enable_cap cap = { .cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM };
+> >
+> > > +       int i, j;
+> > > +       struct locking_thread_input *input = (struct locking_test_thread *)arg;
+> > > +
+> > > +       cap.cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM;
+> >
+> > If we initialize the cap field during the declaration, then this line goes away.
+> >
+> > > +
+> > > +       for (i = 0; i < 1000; ++i) {
+> > > +               j = input->source_fds[i % LOCK_TESTING_THREADS];
+> > > +               cap.args[0] = input->source_fds[j];
+> > > +               /*
+> > > +                * Call IOCTL directly without checking return code. We are
+> > > +                * simply trying to confirm there is no deadlock from userspace
+> > > +                * not check correctness of migration here.
+> > > +                */
+> > > +               ioctl(input->vm->fd, KVM_ENABLE_CAP, &cap);
+> >
+> > Should we use `vm_enable_cap()` here?
+> >
 
-I repro'd, and the problem is part QEMU TCG and a minor problem with
-stack_trace_save() on s390:
+I took all other suggestions but this one I just updated the comment.
+vm_enable_cap TEST_ASSERT()s if the ioctl fails. Since we are just
+randomly iterating through a bunch of ioclts we fail often so this
+would kill the test.
 
-1. QEMU TCG doesn't seem to want to execute threads concurrently,
-   resulting in no "value changes" being observed. This is probably just
-   a limitation of TCG, and if run on a real CPU, shouldn't be a problem.
-   On QEMU, most test cases will pass with CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n
-   (There's one left that requires value changes to be observable)
-
-2. stack_trace_save() is subtly broken on s390: it starts the trace in
-   stack_trace_save() itself. This is incorrect, as the trace should
-   start with the caller. We reported something similar to arm64, also
-   because one of our sanitizer tests failed:
-   https://lkml.kernel.org/r/20210319184106.5688-1-mark.rutland@arm.com
-
-I noticed because stack traces like this: 
-
-| read to 0x0000000001309128 of 8 bytes by task 49 on cpu 1:
-|  print_report+0x48/0x6c0
-|  kcsan_report_known_origin+0x112/0x200
-|  kcsan_setup_watchpoint+0x464/0x500
-|  test_kernel_read+0x2a/0x40
-|  access_thread+0x84/0xb0
-|  kthread+0x3aa/0x3d0
-|  __ret_from_fork+0x58/0x90
-|  ret_from_fork+0xa/0x30
-
-, which should not be generated because KCSAN uses stack_trace_save(..., 1)
-in print_report().
-
-I fixed it with the below, and now most tests pass. Note that, other
-debugging tools may also report misleading stack traces without the
-stack_trace_save() fix (e.g. certain KFENCE reports).
-
-If you have a better solution for how to fix stack_trace_save() on s390,
-please discard my patch.
-
-Thanks,
--- Marco
-
------- >8 ------
-
-From: Marco Elver <elver@google.com>
-Date: Tue, 31 Aug 2021 16:00:03 +0200
-Subject: [PATCH] s390/stacktrace: do not include arch_stack_walk() in stack
- trace
-
-Callers of stack_trace_save() expect that it does not include itself,
-which attempts to exclude itself by skipping + 1. This contract is
-broken if arch_stack_walk() still includes itself.
-
-Fix it by skipping the initial entry in s390's arch_stack_walk().
-
-Signed-off-by: Marco Elver <elver@google.com>
----
- arch/s390/kernel/stacktrace.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/arch/s390/kernel/stacktrace.c b/arch/s390/kernel/stacktrace.c
-index 101477b3e263..47d1841af03e 100644
---- a/arch/s390/kernel/stacktrace.c
-+++ b/arch/s390/kernel/stacktrace.c
-@@ -16,11 +16,16 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
- {
- 	struct unwind_state state;
- 	unsigned long addr;
-+	bool init = true;
- 
- 	unwind_for_each_frame(&state, task, regs, 0) {
- 		addr = unwind_get_return_address(&state);
--		if (!addr || !consume_entry(cookie, addr))
-+		if (!addr)
-+			break;
-+
-+		if (!init && !consume_entry(cookie, addr))
- 			break;
-+		init = false;
- 	}
- }
- 
-@@ -29,6 +34,7 @@ int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
- {
- 	struct unwind_state state;
- 	unsigned long addr;
-+	bool init = true;
- 
- 	unwind_for_each_frame(&state, task, NULL, 0) {
- 		if (state.stack_info.type != STACK_TYPE_TASK)
-@@ -50,8 +56,9 @@ int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
- 			return -EINVAL;
- #endif
- 
--		if (!consume_entry(cookie, addr))
-+		if (!init && !consume_entry(cookie, addr))
- 			return -EINVAL;
-+		init = false;
- 	}
- 
- 	/* Check for stack corruption */
--- 
-2.33.0.259.gc128427fd7-goog
-
+> > > +       }
+> > > +}
+> > > +
+> > > +static void test_sev_migrate_locking(void)
+> > > +{
+> > > +       struct locking_thread_input input[LOCK_TESTING_THREADS];
+> > > +       pthread_t pt[LOCK_TESTING_THREADS];
+> > > +       int i;
+> > > +
+> > > +       for (i = 0; i < LOCK_TESTING_THREADS; ++i) {
+> > > +               input[i].vm = sev_vm_create(/* es= */ false);
+> > > +               input[0].source_fds[i] = input[i].vm->fd;
+> > > +       }
+> > > +       memcpy(input[1].source_fds, input[0].source_fds,
+> > > +              sizeof(input[1].source_fds));
+> > > +       memcpy(input[2].source_fds, input[0].source_fds,
+> > > +              sizeof(input[2].source_fds));
+> > > +
+> > > +       for (i = 0; i < LOCK_TESTING_THREADS; ++i)
+> > > +               pthread_create(&pt[i], NULL, locking_test_thread, &input[i]);
+> > > +
+> > > +       for (i = 0; i < LOCK_TESTING_THREADS; ++i)
+> > > +               pthread_join(pt[i], NULL);
+> > > +}
+> >
+> > I think this function/test case deserves a comment to capture some of
+> > the conversation we had on the list that led to Sean suggesting this
+> > test case. Speaking of which, should this test case have a
+> > Suggested-by tag for Sean, since he suggested this test?
+>
+> Gah. I forgot to check the tags before sending my feedback. Of course,
+> the suggested-by tag is already there. Second time I made this gaffe
+> in the last couple of weeks. Sorry for the noise.
+>
+> >
+> > > +
+> > > +int main(int argc, char *argv[])
+> > > +{
+> > > +       test_sev_migrate_from(/* es= */ false);
+> > > +       test_sev_migrate_from(/* es= */ true);
+> > > +       test_sev_migrate_locking();
+> > > +       return 0;
+> > > +}
+> > > --
+> > > 2.33.0.259.gc128427fd7-goog
+> > >
+> >
+> > Nice test!
