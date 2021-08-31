@@ -2,125 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B251C3FC7F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F26A3FC7FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234589AbhHaNP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:15:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230175AbhHaNP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:15:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 170CC6103D;
-        Tue, 31 Aug 2021 13:15:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630415702;
-        bh=0zkMautvKaCRy49XjpJW4DX7iRRfLMhdAybHI0e16lc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Anus8dDaJ3K0vwh84BE/MHE0LAawH4FsqJjSwRbpIeDVPR2jp3lCTxxAdn2hdcOSg
-         I5AxzC0NxnI2w59aJzxWgU+W36pvXR+QIWRUJNQWWMyzKal2GZjfAWD60P9xsZAINy
-         medmWxBrtj+dqVG9Ya1hxpBZeoQ4ctjy7ZHdPHTYB2Nk+dojrkP8nPpJ0n2CUPEvNo
-         KHse1fwIhYVsOyis/Ls+0hln4IjaRUp0tN0REnOo0Xs/EOnfY7gVXNuMS6SLSzNsxB
-         dLMzHtjn/JuJAZkkvl76fUlKXUDayve+olZDbRygH8hTLbM/LUiP2SqH0DCqsqJDD4
-         QFGHEs49+oqug==
-Date:   Tue, 31 Aug 2021 22:15:00 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: Re: [trace:ftrace/core 35/39] kernel/trace/trace_boot.c:418:17:
- warning: this 'if' clause does not guard...
-Message-Id: <20210831221500.8c4e179571bffcfdbd0da91c@kernel.org>
-In-Reply-To: <202108312050.5qqqDz5V-lkp@intel.com>
-References: <202108312050.5qqqDz5V-lkp@intel.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235108AbhHaNRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:17:12 -0400
+Received: from mail-wm1-f42.google.com ([209.85.128.42]:40564 "EHLO
+        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230175AbhHaNRF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 09:17:05 -0400
+Received: by mail-wm1-f42.google.com with SMTP id x2-20020a1c7c02000000b002e6f1f69a1eso2061819wmc.5;
+        Tue, 31 Aug 2021 06:16:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=O04+J9gSxbpkBztP2ggNCNH2CejHjsWY1TH+VQQ2tR4=;
+        b=Z1QpaNb6lwYgwghFPERz6ASgsUyRcU5/9NACCK5mmoSJoqgBeMtg1h8SnlnNoLQZv4
+         RepI5FBDTKXeMnvf7CDxLls3bIfF3ZN0VmBEtfiOWAGxlBtlEyN8Rb8af74Mp1YahZsM
+         wdnIKVUBz5XiPi5hLwv5b3kXu+urf814NVXzrr6FQ7HLlFKp5936abvsKBvGPfJUj2bo
+         mmyKC1V7hJ9+ByBOzHRDLwzCfPMWHs54xLEYhRwTHLJE/HPGE0r/vhtU24GLP0BRsOBw
+         kUcPUrXm3oMSIavHEmJHxX+NYqjwNTVpnxrta6ho4k3wBVVOJXY0OiDYEfSIAsugJYvk
+         sCxw==
+X-Gm-Message-State: AOAM533ZYDFcYrm2qAg02aD2BiWYLrvGYvYUTotHwaUcgNi6kuY/DLY6
+        QDgnz7pp/uVLcT7awX/psMA=
+X-Google-Smtp-Source: ABdhPJwpoDBQpL9HH7X3Hred4ImIlOsoaD0JdkXw1ZnRsGtGL4rbmQERxwBqSVjC+kmODA3gr95k3Q==
+X-Received: by 2002:a7b:cc16:: with SMTP id f22mr4161917wmh.99.1630415769653;
+        Tue, 31 Aug 2021 06:16:09 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id c15sm2442150wmr.8.2021.08.31.06.16.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 06:16:09 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 13:16:07 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     longli@linuxonhyperv.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, Long Li <longli@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: Re: [Patch v2] PCI: hv: Fix sleep while in non-sleep context when
+ removing child devices from the bus
+Message-ID: <20210831131607.vsjvmr43eei4dsie@liuwe-devbox-debian-v2>
+References: <1630365207-20616-1-git-send-email-longli@linuxonhyperv.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1630365207-20616-1-git-send-email-longli@linuxonhyperv.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops, thanks for the great test bot!
-Let me send a fix asap.
+On Mon, Aug 30, 2021 at 04:13:27PM -0700, longli@linuxonhyperv.com wrote:
+> From: Long Li <longli@microsoft.com>
+> 
+> In hv_pci_bus_exit, the code is holding a spinlock while calling
+> pci_destroy_slot(), which takes a mutex.
+> 
+> This is not safe for spinlock. Fix this by moving the children to be
+> deleted to a list on the stack, and removing them after spinlock is
+> released.
+> 
+> Fixes: 94d22763207a ("PCI: hv: Fix a race condition when removing the device")
+> 
+> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+> Cc: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: Stephen Hemminger <sthemmin@microsoft.com>
+> Cc: Wei Liu <wei.liu@kernel.org>
+> Cc: Dexuan Cui <decui@microsoft.com>
+> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: "Krzysztof Wilczyński" <kw@linux.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Michael Kelley <mikelley@microsoft.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Link: https://lore.kernel.org/linux-hyperv/20210823152130.GA21501@kili/
+> Signed-off-by: Long Li <longli@microsoft.com>
 
-Thank you,
-
-On Tue, 31 Aug 2021 20:57:56 +0800
-kernel test robot <lkp@intel.com> wrote:
-
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git ftrace/core
-> head:   3dc65994e3c1c999be3d991cdc96705e167cb3b1
-> commit: 5d4648a0415efc239ffb377bce1d389723eda25d [35/39] tracing/boot: Show correct histogram error command
-> config: s390-allyesconfig (attached as .config)
-> compiler: s390-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git/commit/?id=5d4648a0415efc239ffb377bce1d389723eda25d
->         git remote add trace https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
->         git fetch --no-tags trace ftrace/core
->         git checkout 5d4648a0415efc239ffb377bce1d389723eda25d
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=s390 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    kernel/trace/trace_boot.c: In function 'trace_boot_init_histograms':
-> >> kernel/trace/trace_boot.c:418:17: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
->      418 |                 if (trace_boot_compose_hist_cmd(hnode, buf, size) == 0)
->          |                 ^~
->    kernel/trace/trace_boot.c:420:25: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
->      420 |                         if (trigger_process_regex(file, buf) < 0)
->          |                         ^~
-> 
-> 
-> vim +/if +418 kernel/trace/trace_boot.c
-> 
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  395  
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  396  static void __init
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  397  trace_boot_init_histograms(struct trace_event_file *file,
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  398  			   struct xbc_node *hnode, char *buf, size_t size)
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  399  {
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  400  	struct xbc_node *node;
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  401  	const char *p;
-> 5d4648a0415efc Masami Hiramatsu 2021-08-06  402  	char *tmp;
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  403  
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  404  	xbc_node_for_each_subkey(hnode, node) {
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  405  		p = xbc_node_get_data(node);
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  406  		if (!isdigit(p[0]))
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  407  			continue;
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  408  		/* All digit started node should be instances. */
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  409  		if (trace_boot_compose_hist_cmd(node, buf, size) == 0) {
-> 5d4648a0415efc Masami Hiramatsu 2021-08-06  410  			tmp = kstrdup(buf, GFP_KERNEL);
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  411  			if (trigger_process_regex(file, buf) < 0)
-> 5d4648a0415efc Masami Hiramatsu 2021-08-06  412  				pr_err("Failed to apply hist trigger: %s\n", tmp);
-> 5d4648a0415efc Masami Hiramatsu 2021-08-06  413  			kfree(tmp);
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  414  		}
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  415  	}
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  416  
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  417  	if (xbc_node_find_child(hnode, "keys")) {
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06 @418  		if (trace_boot_compose_hist_cmd(hnode, buf, size) == 0)
-> 5d4648a0415efc Masami Hiramatsu 2021-08-06  419  			tmp = kstrdup(buf, GFP_KERNEL);
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  420  			if (trigger_process_regex(file, buf) < 0)
-> 5d4648a0415efc Masami Hiramatsu 2021-08-06  421  				pr_err("Failed to apply hist trigger: %s\n", tmp);
-> 5d4648a0415efc Masami Hiramatsu 2021-08-06  422  			kfree(tmp);
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  423  	}
-> 30cb856e3067e5 Masami Hiramatsu 2021-08-06  424  
-> 
-> :::::: The code at line 418 was first introduced by commit
-> :::::: 30cb856e3067e5d6ae7b2144e1659145ab7686fd tracing/boot: Support multiple histograms for each event
-> 
-> :::::: TO: Masami Hiramatsu <mhiramat@kernel.org>
-> :::::: CC: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Reviewed-by: Wei Liu <wei.liu@kernel.org>
