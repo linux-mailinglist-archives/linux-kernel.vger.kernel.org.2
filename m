@@ -2,97 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393753FCBF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF67B3FCBF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240371AbhHaQ7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 12:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
+        id S240031AbhHaRBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 13:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239443AbhHaQ7p (ORCPT
+        with ESMTP id S239889AbhHaRBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 12:59:45 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20B7C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:58:49 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id 7so15444520pfl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:58:49 -0700 (PDT)
+        Tue, 31 Aug 2021 13:01:33 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37397C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:00:37 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id r4so36431486ybp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:00:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vSsyLkLytT485YxJhtDSyUreAWOp01WMhEhWSjhjWSQ=;
-        b=WikKTHCGSrl0kxsZN24g3MXifcsxcZtAFFRO48tUni80/KqA8LTr8XSi4fNFo65Aao
-         gKy+EtOibB7v+ZJIdF1Wa328jMqZNCbLv4cCb4i+z0ynk/8l9lpl3kw9gcX6h9rUpCjj
-         2Gn61+sOAbk86lUBL8oNCEyo9YX9I6pjhVx/8D9upbekveGjCSNiqQeYDavYkHs2QP7s
-         wlyUPeRRFo0wljtXm0cBxeWR5o6v2yarB+S16jqWC+wEM8K1XmychGW+iQAzv/V/+tPl
-         VDEJrvb4YXLG/prOWTh2Nvy5C9cuStXPC/8rXvUWq+lS4GPlKFtXFx7jCCRXFpQyeRdN
-         reKA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i8PcX2+XWTTfkBhJlaSnXEKAq4tUSIhCVzkx3+YPIzQ=;
+        b=Nxy18LRSUwEYVA5DTKMZAvL4rAk1tRd5SCwCgy3kPwmFcVczamy4c0w8t80hPz1I/f
+         8oOKJSQS8NIvS/huWDDoCBky8SREsb/slcloX8HAqtlcTraI1PlIeKH/xoU347db2UgF
+         eabJg2g/87Heihsq4Usegv+QuGs2SMEnntgqucDklj+OFjAgF3q2pg5JzMYve6GONNS5
+         sFJdlF0RhkvU8VAqHItEVl1SjXA38WyW09y6fjdnVfjszkOKmafamigdLLJdnxZtoFth
+         4+nsV8f0/SqIHX9ShTWLwWECxxvaUdpANLuzGdduu2672mr3I34VfIZJjXwyDJM2nt7P
+         GyWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vSsyLkLytT485YxJhtDSyUreAWOp01WMhEhWSjhjWSQ=;
-        b=XgHfu/arRAsauG/7zTSIpYcYb6cTrh+xZcNZCqTfBjF9qJaBbuB1RZ+mqn0eo5X+MB
-         SBZiLJUY1HYBkUz9WRwjWWVJJUPPGU4RY7iMEmfklyqeqmmkIB7L9UCYydUZ1HgCaev0
-         VhoucUbK64+iZLgo5grfjCqWlkUBx0Z5g1ETu3ldyyNs/n+31zo2mEEgKTn+vr1eTuRe
-         wlPOn1nATTqiePl4CS/nwrIGz5WbTdJw0joPSAXKR0wL4GLWiHDvopGn+ZcIM/kwvufF
-         7Az/pQD1V23nBl7hw1Xcj56XNFoffwL5IU/t9SCQ8FLEBJPbjfeTo4hsSLhSamNpfI2Z
-         sLGw==
-X-Gm-Message-State: AOAM5323pBf9t+flwnQUr7FkUk6eJsfv4+eQ9Yg2Q9BEXFjkkC2yM8GC
-        DkxNykIMMegN9ThYJyPvNzcQVg==
-X-Google-Smtp-Source: ABdhPJyeDoViWQ6dpRqrKXaytMTw6VBaCzRO2A8PkQSx0XzGLRKz7bIpGFwqEUIOHoJCNaOtosUgIQ==
-X-Received: by 2002:a05:6a00:706:b0:404:d92b:82a5 with SMTP id 6-20020a056a00070600b00404d92b82a5mr4761642pfl.79.1630429129108;
-        Tue, 31 Aug 2021 09:58:49 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id y25sm18351069pfm.80.2021.08.31.09.58.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 09:58:48 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 16:58:44 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Mingwei Zhang <mizhang@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Peter Xu <peterx@redhat.com>
-Subject: Re: [PATCH v3 2/2] selftests: KVM: use dirty logging to check if
- page stats work correctly
-Message-ID: <YS5fxJtX/nYb43ir@google.com>
-References: <20210830044425.2686755-1-mizhang@google.com>
- <20210830044425.2686755-3-mizhang@google.com>
- <CANgfPd_46=V24r5Qu8cDuOCwVRSEF9RFHuD-1sPpKrBCjWOA2w@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i8PcX2+XWTTfkBhJlaSnXEKAq4tUSIhCVzkx3+YPIzQ=;
+        b=QZmhmPX5hPovTOUb7EFj7OFUIjnER7kwLLlwHWr0UvGVuXB1gm6o+oq3/vbOeWnvYP
+         D5LEbm/PzMrHr0SIsw0nyFcudBF3g0A8eSySj0mRiNRy3KLfbZBzXwfwJrh+a7o+V7C5
+         nCa4+6hWE8SL29nrlCeOugDHK/xoMFVqXskjH6o6Hi8HJ4iRpjLtJL8Bt2bf3jynFi1N
+         W3TEaI3EuZKd6J9ssOcunB9sUd9FWALdgAwQ1gRirVG6gXrXoPjXYWNN+mpt/rLHFsPL
+         j59jkkR3nlxEBrjRL0uDicYcgjSrmSt/rSJkvAwIPr99SlJuYeeNDGcyI8HoeWfnk8Xt
+         BmvA==
+X-Gm-Message-State: AOAM532R9yUbLOEvRPHEMJ0bWp2O72L57B/q0vARpW+gr/ESAM24cvVw
+        ZSSuxFlfZp0OAibzpZ/i5GkVHsMBZaZ4s2VV5LctVw==
+X-Google-Smtp-Source: ABdhPJyf9scnnsIgG/atu8659uQZbS+IseYKqkkKL5AGE9MW5L/11vKlLX+Muk/K6RFkSJiRqA7sQEPY8pv9w5+F+jw=
+X-Received: by 2002:a25:6746:: with SMTP id b67mr33221625ybc.96.1630429236196;
+ Tue, 31 Aug 2021 10:00:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANgfPd_46=V24r5Qu8cDuOCwVRSEF9RFHuD-1sPpKrBCjWOA2w@mail.gmail.com>
+References: <CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 31 Aug 2021 09:59:58 -0700
+Message-ID: <CAGETcx8JDR+5Aj2uwnQJ9sL+8-p=Cxix+P4sP8-ygMQ8_2AcXA@mail.gmail.com>
+Subject: Re: [RFD] drivers: base: A driver's ->sync_state() callback don't get called
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021, Ben Gardon wrote:
-> On Sun, Aug 29, 2021 at 9:44 PM Mingwei Zhang <mizhang@google.com> wrote:
-> > diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-> > index af1031fed97f..07eb6b5c125e 100644
-> > --- a/tools/testing/selftests/kvm/lib/test_util.c
-> > +++ b/tools/testing/selftests/kvm/lib/test_util.c
-> > @@ -15,6 +15,13 @@
-> >  #include "linux/kernel.h"
-> >
-> >  #include "test_util.h"
-> > +#include "processor.h"
-> > +
-> > +static const char * const pagestat_filepaths[] = {
-> > +       "/sys/kernel/debug/kvm/pages_4k",
-> > +       "/sys/kernel/debug/kvm/pages_2m",
-> > +       "/sys/kernel/debug/kvm/pages_1g",
-> > +};
-> 
-> I think these should only be defined for x86_64 too. Is this the right
-> file for these definitions or is there an arch specific file they
-> should go in?
+On Tue, Aug 31, 2021 at 6:56 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> Hi Saravana, Rafael, Stephen,
+>
+> I have observed an issue with a driver's  ->sync_state() callback that
+> doesn't get called, even if consumers/supplier device links conditions
+> should have been satisfied. I have narrowed down the problem, but I am
+> not sure what is the best solution to fix it, hence I am turning to
+> you for some discussion/advice.
+>
+> I have two test platform drivers, one that matches on the
+> "test,pm-domains-test" compatible string (this driver also has the
+> ->sync_state() callback assigned) and another driver that matches on
+> "test,runtime-pm-test".
+>
+> This is the relevant part in my DTS file:
+>
+>        pm_domain_test {
+>                 compatible = "test,pm-domains-test";
+>
+>                 pdParent: power-domain-parent {
+>                         #power-domain-cells = <0>;
+>                 };
+>
+>                 pdChild: power-domain-child {
+>                         #power-domain-cells = <0>;
+>                         power-domains = <&pdParent>;
+>                 };
+>         };
+>
+>         soctest: soctest {
+>                 compatible = "simple-bus";
+>
+>                 rpmtest0 {
+>                         compatible = "test,runtime-pm-test";
+>                         power-domains = <&pdParent>;
+>                 };
+>         };
+>
+> During boot the fw_devlinks are being created and their corresponding
+> links. With some debug enabled this shows some of the interesting
+> parts that are being printed to the log:
+>
+> [    0.041539] device: 'pm_domain_test': device_add
+> [    0.041629] OF: Not linking pm_domain_test to pm_domain_test - is descendant
+> [    0.041718] device: 'soctest': device_add
+> [    0.041803] OF: Linking rpmtest0 (consumer) to pm_domain_test (supplier)
+> [    0.041829] device: 'platform:pm_domain_test--platform:soctest': device_add
+> [    0.041892] platform soctest: Linked as a sync state only consumer
+> to pm_domain_test
+> [    0.041957] OF:    create child: /soctest/rpmtest0
+> [    0.041995] device: 'soctest:rpmtest0': device_add
+> [    0.042072] device:
+> 'platform:pm_domain_test--platform:soctest:rpmtest0': device_add
+> [    0.042132] devices_kset: Moving soctest:rpmtest0 to end of list
+> [    0.042141] platform soctest:rpmtest0: Linked as a consumer to pm_domain_test
+>
+> The interesting thing here is the "sync state only" link that gets
+> created. I assume there are good reasons for creating this link, even
+> if I fail to understand exactly why.
 
-The stats also need to be pulled from the selftest's VM, not from the overall KVM
-stats, otherwise the test will fail if there are any other active VMs on the host,
-e.g. I like to run to selftests and kvm-unit-tests in parallel.
+In general there's a good reason for creating these links from parent
+devices of the consumer to the supplier. It is documented in the code
+under __fw_devlink_link_to_consumers().
+
+/*
+ * If consumer device is not available yet, make a "proxy"
+ * SYNC_STATE_ONLY link from the consumer's parent device to
+ * the supplier device. This is necessary to make sure the
+ * supplier doesn't get a sync_state() callback before the real
+ * consumer can create a device link to the supplier.
+ *
+ * This proxy link step is needed to handle the case where the
+ * consumer's parent device is added before the supplier.
+ */
+
+and under __fw_devlink_link_to_suppliers().
+
+/*
+ * Make "proxy" SYNC_STATE_ONLY device links to represent the needs of
+ * all the descendants. This proxy link step is needed to handle the
+ * case where the supplier is added before the consumer's parent device
+ * (@dev).
+ */
+
+
+>
+> In any case, the sync state only link never gets dropped, which I
+> assume is because there is no driver getting bound for the "soctest"
+> device (it has only the "simple-bus" compatible).
+
+Yeah, you've identified the problem correctly. I've been thinking
+about this possibility (and all the side effects a fix might have). I
+can send out a fix for this soon (within a week or so).
+
+> In other words, it doesn't matter that both the rpmtest0 and the
+> pm_domain_test devices are probed, thus satisfying the
+> supplier/consumer conditions, the ->sync_state() callback doesn't get
+> called anyway.
+>
+> Can you perhaps help to point me in a direction of how to best fix this problem?
+
+I hope you are okay with me sending a fix.
+
+
+-Saravana
