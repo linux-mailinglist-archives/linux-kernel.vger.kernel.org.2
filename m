@@ -2,127 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C723FCC74
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2F43FCC77
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240477AbhHaRlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 13:41:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233619AbhHaRlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 13:41:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 512AE60C3E;
-        Tue, 31 Aug 2021 17:40:51 +0000 (UTC)
-Date:   Tue, 31 Aug 2021 18:40:48 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Chen Wandun <chenwandun@huawei.com>
-Cc:     will@kernel.org, ardb@kernel.org, rppt@kernel.org,
-        akpm@linux-foundation.org, nsaenz@kernel.org,
-        anshuman.khandual@arm.com, geert+renesas@glider.be,
-        rafael.j.wysocki@intel.com, robh@kernel.org,
-        kirill.shtuemov@linux.intel.com, sfr@canb.auug.org.au,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        wangkefeng.wang@huawei.com, weiyongjun1@huawei.com,
-        guohanjun@huawei.com
-Subject: Re: [PATCH] arm64: kdump: Skip kmemleak scan reserved memory for
- kdump
-Message-ID: <YS5poB8hPd1kfdVZ@arm.com>
-References: <20210827092246.3565437-1-chenwandun@huawei.com>
+        id S232808AbhHaRn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 13:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231668AbhHaRnV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 13:43:21 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98C3C061575;
+        Tue, 31 Aug 2021 10:42:25 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so72526otf.6;
+        Tue, 31 Aug 2021 10:42:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B1LHGphPEba5NZOfpvC5Fu547UHq90yEuXN6wYUtUOg=;
+        b=Nsh9Rqlg49JA5gem8AN3KCBjJiL9JEbsmZLcVZJZMwy4WD4SO+7OD6DHji7n6AExtF
+         i9k5+0mmfwJQ+gpNK8KheEPwsbIjXlj7xHIwj7xWR0pTl6uPDl9pcCQJVfTm3y0my4z6
+         sfDCiDv6EKVwpIYdNLfGvjZV8IR4+cIeM1tMUPmZPmkwyxtPNFZyoK8rZ/fufsjTHKS5
+         +WRni/XSFdM90RZhSuagCfcwoxNJPvIOLx61n88D8ztQL1kfSi7AJkl3sqnyOWHSYUm8
+         uAziYoc+Kp/GOPUwqg0XZL69yDo+nONmBThvfGffAFzngp9Fmc12kKT//Ot1yYoIzuQC
+         CZ3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=B1LHGphPEba5NZOfpvC5Fu547UHq90yEuXN6wYUtUOg=;
+        b=ULi/wj16d6By3x0T1dtA+BLDy889GWXptNWoQT0CiF99hCyiAQzwhpZv9fG61zX/jr
+         48BQ1ciwoweL6wXSggVVAQz1ESyj1B40CAHhRjeuvBmlAaSCl9HxKjLipjCpM1TkfSO2
+         MRvF1P/NWVkYVbzRtUa5RY4wKJmAE5DkF/nrU1v5Bq6AzEYj3/RK9Go1GEPaiO5NXsS4
+         aZX9HlEb3kFtAuvuIOCxbX/afz2cNtcJJ21jgJQDMLYbeecxMHjmokfnKqezjoOiNxgh
+         nQgRKr2sa9hHL0yDYJTyFV07ji6UTmNwvesenPamphOdInqglSr/CZ5T3CCSt767UcaE
+         c1ng==
+X-Gm-Message-State: AOAM533e1K37v9YviF2nDqJs8ipxR5Uff7QtSlee+N47rEAhdDxQpWJW
+        L18bG171GoCNxCstz1zDwec=
+X-Google-Smtp-Source: ABdhPJyiiKrDu2x9L8n348OCFziR086Je5juU3I11U3OIknbwQSGanqioLjYclbdKtNBEB2YhmUaYg==
+X-Received: by 2002:a9d:17c5:: with SMTP id j63mr25026360otj.208.1630431745119;
+        Tue, 31 Aug 2021 10:42:25 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t1sm3987511otp.9.2021.08.31.10.42.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 10:42:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 31 Aug 2021 10:42:22 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Xiaoming Ni <nixiaoming@huawei.com>, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, boqun.feng@gmail.com, wangle6@huawei.com,
+        xiaoqian9@huawei.com, shaolexi@huawei.com,
+        linux-acpi@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] semaphore: Add might_sleep() to down_*() family
+Message-ID: <20210831174222.GA1040808@roeck-us.net>
+References: <20210809021215.19991-1-nixiaoming@huawei.com>
+ <20210831111322.GA1687117@roeck-us.net>
+ <871r69ersb.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210827092246.3565437-1-chenwandun@huawei.com>
+In-Reply-To: <871r69ersb.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 05:22:46PM +0800, Chen Wandun wrote:
-> Trying to boot with kdump + kmemleak, command will result in a crash:
-> "echo scan > /sys/kernel/debug/kmemleak"
+On Tue, Aug 31, 2021 at 02:13:08PM +0200, Thomas Gleixner wrote:
+> On Tue, Aug 31 2021 at 04:13, Guenter Roeck wrote:
 > 
-> crashkernel reserved: 0x0000000007c00000 - 0x0000000027c00000 (512 MB)
-> Kernel command line: BOOT_IMAGE=(hd1,gpt2)/vmlinuz-5.14.0-rc5-next-20210809+ root=/dev/mapper/ao-root ro rd.lvm.lv=ao/root rd.lvm.lv=ao/swap crashkernel=512M
-> Unable to handle kernel paging request at virtual address ffff000007c00000
-> Mem abort info:
->   ESR = 0x96000007
->   EC = 0x25: DABT (current EL), IL = 32 bits
->   SET = 0, FnV = 0
->   EA = 0, S1PTW = 0
->   FSC = 0x07: level 3 translation fault
-> Data abort info:
->   ISV = 0, ISS = 0x00000007
->   CM = 0, WnR = 0
-> swapper pgtable: 64k pages, 48-bit VAs, pgdp=00002024f0d80000
-> [ffff000007c00000] pgd=1800205ffffd0003, p4d=1800205ffffd0003, pud=1800205ffffd0003, pmd=1800205ffffc0003, pte=0068000007c00f06
-> Internal error: Oops: 96000007 [#1] SMP
-> pstate: 804000c9 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : scan_block+0x98/0x230
-> lr : scan_block+0x94/0x230
-> sp : ffff80008d6cfb70
-> x29: ffff80008d6cfb70 x28: 0000000000000000 x27: 0000000000000000
-> x26: 00000000000000c0 x25: 0000000000000001 x24: 0000000000000000
-> x23: ffffa88a6b18b398 x22: ffff000007c00ff9 x21: ffffa88a6ac7fc40
-> x20: ffffa88a6af6a830 x19: ffff000007c00000 x18: 0000000000000000
-> x17: 0000000000000000 x16: 0000000000000000 x15: ffffffffffffffff
-> x14: ffffffff00000000 x13: ffffffffffffffff x12: 0000000000000020
-> x11: 0000000000000000 x10: 0000000001080000 x9 : ffffa88a6951c77c
-> x8 : ffffa88a6a893988 x7 : ffff203ff6cfb3c0 x6 : ffffa88a6a52b3c0
-> x5 : ffff203ff6cfb3c0 x4 : 0000000000000000 x3 : 0000000000000000
-> x2 : 0000000000000001 x1 : ffff20226cb56a40 x0 : 0000000000000000
-> Call trace:
->  scan_block+0x98/0x230
->  scan_gray_list+0x120/0x270
->  kmemleak_scan+0x3a0/0x648
->  kmemleak_write+0x3ac/0x4c8
->  full_proxy_write+0x6c/0xa0
->  vfs_write+0xc8/0x2b8
->  ksys_write+0x70/0xf8
->  __arm64_sys_write+0x24/0x30
->  invoke_syscall+0x4c/0x110
->  el0_svc_common+0x9c/0x190
->  do_el0_svc+0x30/0x98
->  el0_svc+0x28/0xd8
->  el0t_64_sync_handler+0x90/0xb8
->  el0t_64_sync+0x180/0x184
+> > Hi,
+> >
+> > On Mon, Aug 09, 2021 at 10:12:15AM +0800, Xiaoming Ni wrote:
+> >> Semaphore is sleeping lock. Add might_sleep() to down*() family
+> >> (with exception of down_trylock()) to detect atomic context sleep.
+> >> 
+> >> Previously discussed with Peter Zijlstra, see link:
+> >>  https://lore.kernel.org/lkml/20210806082320.GD22037@worktop.programming.kicks-ass.net
+> >> 
+> >> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> >> Acked-by: Will Deacon <will@kernel.org>
+> >
+> > This patch results in the following traceback on all arm64 boots with
+> > EFI BIOS.
 > 
-> The reserved memory for kdump will be looked up by kmemleak, this area
-> will be set invalid when kdump service is bring up. That will result in
-> crash when kmemleak scan this area.
+> That's what this change was supposed to catch :)
 > 
-> Fixes: 461ef12c4375 ("memblock: make memblock_find_in_range method private")
-> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
+> > The problem is only seen with CONFIG_ACPI_PPTT=y, and thus only on arm64.
+> 
+> The below should fix this.
+> 
+> Thanks,
+> 
+>         tglx
 > ---
->  arch/arm64/mm/init.c | 2 ++
->  1 file changed, 2 insertions(+)
+> Subject: drivers: base: cacheinfo: Get rid of DEFINE_SMP_CALL_CACHE_FUNCTION()
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Date: Tue, 31 Aug 2021 13:48:34 +0200
 > 
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index b16be52233c6..dc0c44622bfd 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -30,6 +30,7 @@
->  #include <linux/crash_dump.h>
->  #include <linux/hugetlb.h>
->  #include <linux/acpi_iort.h>
-> +#include <linux/kmemleak.h>
+> DEFINE_SMP_CALL_CACHE_FUNCTION() was usefel before the CPU hotplug rework
+> to ensure that the cache related functions are called on the upcoming CPU
+> because the notifier itself could run on any online CPU.
+> 
+> The hotplug state machine guarantees that the callbacks are invoked on the
+> upcoming CPU. So there is no need to have this SMP function call
+> obfuscation. That indirection was missed when the hotplug notifiers were
+> converted.
+> 
+> This also solves the problem of ARM64 init_cache_level() invoking ACPI
+> functions which take a semaphore in that context. That's invalid as SMP
+> function calls run with interrupts disabled. Running it just from the
+> callback in context of the CPU hotplug thread solves this.
 >  
->  #include <asm/boot.h>
->  #include <asm/fixmap.h>
-> @@ -101,6 +102,7 @@ static void __init reserve_crashkernel(void)
->  	pr_info("crashkernel reserved: 0x%016llx - 0x%016llx (%lld MB)\n",
->  		crash_base, crash_base + crash_size, crash_size >> 20);
->  
-> +	kmemleak_ignore_phys(crash_base);
->  	crashk_res.start = crash_base;
->  	crashk_res.end = crash_base + crash_size - 1;
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Fixes: 8571890e1513 ("arm64: Add support for ACPI based firmware tables")
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+
+The warning is no longer seen with this patch applied on top of
+v5.14-1100-gb91db6a0b52e, and I don't see any new problems on riscv,
+x86/x86_64, or mips.
+
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Thanks,
+Guenter
+
+> ---
+>  arch/arm64/kernel/cacheinfo.c   |    7 ++-----
+>  arch/mips/kernel/cacheinfo.c    |    7 ++-----
+>  arch/riscv/kernel/cacheinfo.c   |    7 ++-----
+>  arch/x86/kernel/cpu/cacheinfo.c |    7 ++-----
+>  include/linux/cacheinfo.h       |   18 ------------------
+>  5 files changed, 8 insertions(+), 38 deletions(-)
+> 
+> --- a/arch/arm64/kernel/cacheinfo.c
+> +++ b/arch/arm64/kernel/cacheinfo.c
+> @@ -43,7 +43,7 @@ static void ci_leaf_init(struct cacheinf
+>  	this_leaf->type = type;
 >  }
-
-I'd add a comment here along the lines of (feel free to change it):
-
-	/*
-	 * The crashkernel memory will be removed from the kernel linear
-	 * map. Inform kmemleak so that it won't try to access it.
-	 */
-
-With that:
-
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+>  
+> -static int __init_cache_level(unsigned int cpu)
+> +int init_cache_level(unsigned int cpu)
+>  {
+>  	unsigned int ctype, level, leaves, fw_level;
+>  	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+> @@ -78,7 +78,7 @@ static int __init_cache_level(unsigned i
+>  	return 0;
+>  }
+>  
+> -static int __populate_cache_leaves(unsigned int cpu)
+> +int populate_cache_leaves(unsigned int cpu)
+>  {
+>  	unsigned int level, idx;
+>  	enum cache_type type;
+> @@ -97,6 +97,3 @@ static int __populate_cache_leaves(unsig
+>  	}
+>  	return 0;
+>  }
+> -
+> -DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+> -DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+> --- a/arch/mips/kernel/cacheinfo.c
+> +++ b/arch/mips/kernel/cacheinfo.c
+> @@ -17,7 +17,7 @@ do {								\
+>  	leaf++;							\
+>  } while (0)
+>  
+> -static int __init_cache_level(unsigned int cpu)
+> +int init_cache_level(unsigned int cpu)
+>  {
+>  	struct cpuinfo_mips *c = &current_cpu_data;
+>  	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+> @@ -74,7 +74,7 @@ static void fill_cpumask_cluster(int cpu
+>  			cpumask_set_cpu(cpu1, cpu_map);
+>  }
+>  
+> -static int __populate_cache_leaves(unsigned int cpu)
+> +int populate_cache_leaves(unsigned int cpu)
+>  {
+>  	struct cpuinfo_mips *c = &current_cpu_data;
+>  	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+> @@ -114,6 +114,3 @@ static int __populate_cache_leaves(unsig
+>  
+>  	return 0;
+>  }
+> -
+> -DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+> -DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+> --- a/arch/riscv/kernel/cacheinfo.c
+> +++ b/arch/riscv/kernel/cacheinfo.c
+> @@ -113,7 +113,7 @@ static void fill_cacheinfo(struct cachei
+>  	}
+>  }
+>  
+> -static int __init_cache_level(unsigned int cpu)
+> +int init_cache_level(unsigned int cpu)
+>  {
+>  	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+>  	struct device_node *np = of_cpu_device_node_get(cpu);
+> @@ -155,7 +155,7 @@ static int __init_cache_level(unsigned i
+>  	return 0;
+>  }
+>  
+> -static int __populate_cache_leaves(unsigned int cpu)
+> +int populate_cache_leaves(unsigned int cpu)
+>  {
+>  	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+>  	struct cacheinfo *this_leaf = this_cpu_ci->info_list;
+> @@ -187,6 +187,3 @@ static int __populate_cache_leaves(unsig
+>  
+>  	return 0;
+>  }
+> -
+> -DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+> -DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+> --- a/arch/x86/kernel/cpu/cacheinfo.c
+> +++ b/arch/x86/kernel/cpu/cacheinfo.c
+> @@ -985,7 +985,7 @@ static void ci_leaf_init(struct cacheinf
+>  	this_leaf->priv = base->nb;
+>  }
+>  
+> -static int __init_cache_level(unsigned int cpu)
+> +int init_cache_level(unsigned int cpu)
+>  {
+>  	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+>  
+> @@ -1014,7 +1014,7 @@ static void get_cache_id(int cpu, struct
+>  	id4_regs->id = c->apicid >> index_msb;
+>  }
+>  
+> -static int __populate_cache_leaves(unsigned int cpu)
+> +int populate_cache_leaves(unsigned int cpu)
+>  {
+>  	unsigned int idx, ret;
+>  	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+> @@ -1033,6 +1033,3 @@ static int __populate_cache_leaves(unsig
+>  
+>  	return 0;
+>  }
+> -
+> -DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+> -DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+> --- a/include/linux/cacheinfo.h
+> +++ b/include/linux/cacheinfo.h
+> @@ -79,24 +79,6 @@ struct cpu_cacheinfo {
+>  	bool cpu_map_populated;
+>  };
+>  
+> -/*
+> - * Helpers to make sure "func" is executed on the cpu whose cache
+> - * attributes are being detected
+> - */
+> -#define DEFINE_SMP_CALL_CACHE_FUNCTION(func)			\
+> -static inline void _##func(void *ret)				\
+> -{								\
+> -	int cpu = smp_processor_id();				\
+> -	*(int *)ret = __##func(cpu);				\
+> -}								\
+> -								\
+> -int func(unsigned int cpu)					\
+> -{								\
+> -	int ret;						\
+> -	smp_call_function_single(cpu, _##func, &ret, true);	\
+> -	return ret;						\
+> -}
+> -
+>  struct cpu_cacheinfo *get_cpu_cacheinfo(unsigned int cpu);
+>  int init_cache_level(unsigned int cpu);
+>  int populate_cache_leaves(unsigned int cpu);
