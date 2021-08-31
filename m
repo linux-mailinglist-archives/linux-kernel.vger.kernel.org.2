@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477B63FCF28
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 23:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BD63FCF2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 23:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235562AbhHaVea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 17:34:30 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:46040 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233407AbhHaVe3 (ORCPT
+        id S241355AbhHaVem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 17:34:42 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:47047 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235761AbhHaVel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 17:34:29 -0400
-Received: by mail-ot1-f44.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso895090otv.12;
-        Tue, 31 Aug 2021 14:33:33 -0700 (PDT)
+        Tue, 31 Aug 2021 17:34:41 -0400
+Received: by mail-oi1-f173.google.com with SMTP id o185so994814oih.13;
+        Tue, 31 Aug 2021 14:33:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=DEpQtIcbExJAxj5xWJXZXM2lHBBB0XQwgkBGvLg9dOE=;
-        b=pgu5zMJsnScphPDLWBzB+d8smfPulqKFYS3f0OEXoojt4JIEN/ik4Xh/mfde8Ipx/T
-         ooNc1+P2wEgvabEs8tPQX0zUkUyqx/D2BU4aDHxmLLJML1mrZj2MVQ2B5cgyK/YQmN4I
-         BpMqRNAptircaUmh7jiuRluN4CkFyml/8dww2K+JRUsZMkUHu7vldJfK2X0DG55WCIoW
-         qZY1WDExfDg8o+f8xW0ZQuwlF3D/u2p6gq/890y+ZcIrKNsssz0LHVl9cCnIo1XHUtP3
-         RGgbJELknTKQV0i5MwEE6JBFBuwpiEtskZvBTb2IomTATyeijhNV/8hIXrvlxGnnOO3U
-         2eeA==
-X-Gm-Message-State: AOAM532jEI8rfC0/qeyn9W7Wx1kLE5d2zfEUSYH0YN95RrbUOUStrtvb
-        Z4GI8rA/mbMGqeA9Zeabuw==
-X-Google-Smtp-Source: ABdhPJxGqyVnBtagDTjCeybHyJZZcO2XDDl1qVwChkvfIfIOVQCqHzcY9vD9BRXlCYPbqdWGaP7XtA==
-X-Received: by 2002:a9d:2782:: with SMTP id c2mr25865678otb.323.1630445613196;
-        Tue, 31 Aug 2021 14:33:33 -0700 (PDT)
+        bh=J/4rk321aST3R1dX7uB1Sz8tt/BHBEqAaVrBW+SYz70=;
+        b=INNi+wO82tqt2wirxpAP9TRWOCK1gYnjKvmroEpjDpXmXA1U+3cUQZIij40EHUmS7q
+         y/8GIRxYiJb+VBn7vLjNJsmKJ6SaCm1IU0Ms4FwnqGd/KoYn7XqOS5dq9Vrl2jQNP/Lk
+         8aBs4Pyl/ojJ8PhLZ3fZP52Td8hJx+eMusOrdg+s1288+8oQg9Ky9FGSF0gSX2llYkvI
+         dEeE2Bl8uh6f/11E75oKN/VOh608aXtWvJOUSPVWff/VQeYvAgRXISPEnjrSNp8WFglb
+         qQIk1XxjcJIZd/WOZrx7DGMB6p8SPClPKIHkMaZoRjtWCMOlhPb0nBr1Yyg+Msq0LXbC
+         350Q==
+X-Gm-Message-State: AOAM531zCuHPbfM2yv0+Pp6AF2BPdwuBv+AJFK+uKRprRHmoUEcSc7WL
+        UthUxysxERwd7JYENpfdvA==
+X-Google-Smtp-Source: ABdhPJxTxOStSIvir2iEJq4mjIa41utLlNeQXu3O+1z8752kfXnyDVgGNxNEOI52q/hcSeLwMg9+9w==
+X-Received: by 2002:a54:4714:: with SMTP id k20mr4801241oik.103.1630445625304;
+        Tue, 31 Aug 2021 14:33:45 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 186sm3929809ood.39.2021.08.31.14.33.32
+        by smtp.gmail.com with ESMTPSA id o68sm4194764ota.33.2021.08.31.14.33.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 14:33:32 -0700 (PDT)
-Received: (nullmailer pid 682925 invoked by uid 1000);
-        Tue, 31 Aug 2021 21:33:32 -0000
-Date:   Tue, 31 Aug 2021 16:33:32 -0500
+        Tue, 31 Aug 2021 14:33:44 -0700 (PDT)
+Received: (nullmailer pid 683290 invoked by uid 1000);
+        Tue, 31 Aug 2021 21:33:44 -0000
+Date:   Tue, 31 Aug 2021 16:33:44 -0500
 From:   Rob Herring <robh@kernel.org>
 To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     linux-phy@lists.infradead.org, heiko@sntech.de,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org, vkoul@kernel.org,
-        kishon@ti.com, linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH 1/2] dt-bindings: phy: rockchip: remove usb-phy fallback
- string for rk3066a/rk3188
-Message-ID: <YS6gLG+M4dP+rkl6@robh.at.kernel.org>
-References: <20210828111218.10026-1-jbx6244@gmail.com>
+Cc:     linux-rockchip@lists.infradead.org, bgolaszewski@baylibre.com,
+        linux-kernel@vger.kernel.org, heiko@sntech.de,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org
+Subject: Re: [PATCH] dt-bindings: gpio: add gpio-line-names to
+ rockchip,gpio-bank.yaml
+Message-ID: <YS6gOGhoQKNlg5cL@robh.at.kernel.org>
+References: <20210828121007.14865-1-jbx6244@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210828111218.10026-1-jbx6244@gmail.com>
+In-Reply-To: <20210828121007.14865-1-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 28 Aug 2021 13:12:17 +0200, Johan Jonker wrote:
-> With the conversion of rockchip-usb-phy.yaml a long time used fallback
-> string for rk3066a/rk3188 was added. The linux driver doesn't do much with
-> the GRF phy address range, however the u-boot driver rockchip_usb2_phy.c
-> does. The bits in GRF_UOC0_CON2 for rk3066a/rk3188 and rk3288 for example
-> don't match. Remove the usb-phy fallback string for rk3066a/rk3188
-> to prevent possible strange side effects.
+On Sat, 28 Aug 2021 14:10:07 +0200, Johan Jonker wrote:
+> Some people and companies may want to add more description
+> to there gpio pins. Add a gpio-line-names property to the
+> rockchip,gpio-bank.yaml file to reduce the notifications
+> from the existing mainline DT.
 > 
 > Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 > ---
->  .../devicetree/bindings/phy/rockchip-usb-phy.yaml     | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
+>  Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
