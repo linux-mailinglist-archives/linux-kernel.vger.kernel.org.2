@@ -2,66 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C6F3FC45D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 831323FC46C
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240350AbhHaIgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 04:36:08 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:18993 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240289AbhHaIgD (ORCPT
+        id S240411AbhHaIl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 04:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240407AbhHaIlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 04:36:03 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GzL4b3XSQzbktP;
-        Tue, 31 Aug 2021 16:31:11 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 31 Aug 2021 16:35:03 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 31 Aug
- 2021 16:35:03 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>
-Subject: [PATCH net-next] net: w5100: check return value after calling platform_get_resource()
-Date:   Tue, 31 Aug 2021 16:40:18 +0800
-Message-ID: <20210831084018.1358605-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 31 Aug 2021 04:41:23 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA07C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 01:40:27 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id n5so26309587wro.12
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 01:40:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc:from
+         :subject:content-transfer-encoding;
+        bh=tpgdwJ8aV/oJ/3Y288K3Jw8J276wPQjTvmO8SwKNYG0=;
+        b=bjo1Law/Ha4kZL71sTf78aIyaLtyP4Wpd6cl3zusSDioAxkSeyi8SPBxU48tgylgwW
+         MaZEjHcZ+h1Bt0vsWsCMNBReFQEgSWeQYJEjyfTEBPEs8rnxB9fUUIOel8n6J+Qr/BSl
+         orfWqHLIYfecr/09JrE8xUDH2vndw3oRyDDrQ68o6tV5pzt3+8U62HwRA/eHhLEVwVEY
+         sfOFhuzc1DpWXUSbbR7I5/ogiFLJsA5twJFB7zhpWqyN/dD2k1FXcgUBUfOUKOIg0bwx
+         iXioON0NpfUjbPd3LziVExTPGK/Ly/SlUiq+3YKJBGO8DpMu+E6DXKbKIEj63y3XErAc
+         +l4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:from:subject:content-transfer-encoding;
+        bh=tpgdwJ8aV/oJ/3Y288K3Jw8J276wPQjTvmO8SwKNYG0=;
+        b=FctMgFtqjt4LYUW/KNar4p8sr/QuBxL0OyPyuuqJGHrfvTUaesh06oEIg2dcXKL/qr
+         atlraAeI8EM8/P4+LhIVm0zS1I0idnMPG4YUtPeunAnHTlQrcbqnplhiSSDPB/5GrzqJ
+         oSKPiobXB5tQ7jbRBwN+ZmmEmf6IQl0wNjhVaCcJ4sXKoJZBTpLzQScRIpjhbgx3M0VB
+         9MXpLd4F2xAxow4nJDog+3Z4aWYdAxHPV7c69pEicY/dAdBXGUN8akeyIf6i1hUdcBap
+         rRNje4JY9ppaam+3AYr95Nx5Uah6QFmLlzo6dV8rbVYKtHsnkA+LYhDxGk7IQyHRlsqc
+         z/BA==
+X-Gm-Message-State: AOAM5318tr7yCVUPwMCusKQqUZ/LEZ+kiGWcjoaZgHdycew4eV7uUHdx
+        LOV1zRsumphtACP9KJ5f+xGLkuyYfLV4JQ==
+X-Google-Smtp-Source: ABdhPJxaJhQc1E1GI4ZOjM9kN7WMKJxNo7mJuOBcpIOTMwzlrx4OAnWGu5fGKdaElx3YrQlghpeSMA==
+X-Received: by 2002:adf:9151:: with SMTP id j75mr30305889wrj.68.1630399226261;
+        Tue, 31 Aug 2021 01:40:26 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::884b? ([2a02:8108:96c0:3b88::884b])
+        by smtp.gmail.com with UTF8SMTPSA id y15sm2002528wmi.18.2021.08.31.01.40.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 01:40:25 -0700 (PDT)
+Message-ID: <85959c1f-80d4-3fd9-f8a5-d7688e337e95@gmail.com>
+Date:   Tue, 31 Aug 2021 10:40:24 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Content-Language: en-US
+To:     Larry.Finger@lwfinger.net
+Cc:     gregkh@linuxfoundation.org, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        straube.linux@gmail.com
+From:   Michael Straube <straube.linux@gmail.com>
+Subject: staging: r8188eu: Switching encryption to use lib80211
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+Hi Larry and all,
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/net/ethernet/wiznet/w5100.c | 2 ++
- 1 file changed, 2 insertions(+)
+I'm currently working on adapting patches from the old rtl8188eu driver
+that convert the frame de/encrypt functions to use lib80211.
 
-diff --git a/drivers/net/ethernet/wiznet/w5100.c b/drivers/net/ethernet/wiznet/w5100.c
-index 811815f8cd3b..f974e70a82e8 100644
---- a/drivers/net/ethernet/wiznet/w5100.c
-+++ b/drivers/net/ethernet/wiznet/w5100.c
-@@ -1047,6 +1047,8 @@ static int w5100_mmio_probe(struct platform_device *pdev)
- 		mac_addr = data->mac_addr;
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem)
-+		return -EINVAL;
- 	if (resource_size(mem) < W5100_BUS_DIRECT_SIZE)
- 		ops = &w5100_mmio_indirect_ops;
- 	else
--- 
-2.25.1
+Please let me know if it's not worth.
 
+Thanks,
+Michael
