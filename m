@@ -2,60 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E8743FD012
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 01:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4486E3FD0A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 03:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240845AbhHaX5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 19:57:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231511AbhHaX5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 19:57:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A018D60EE3;
-        Tue, 31 Aug 2021 23:56:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630454210;
-        bh=j2WYyb+6keMeIVfNgpkTXMoKBeCkjiO5E0neAsCApJo=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=tqbcr9k4f+/rW7+dJbwb/RmL5Y2jGrLTMHBzbFBCOKGmjRbTY47YMy6IhR2Ub2CHK
-         2qEcL5EonFpoKPsxDr5/uE0+nTuq4yVC5WKxIGwiXl7Mr/Matz2b22cPQEmVjcprOp
-         Ph1ovO6yURxzVUo6ExRAJO0zq0WWn/iE/6pupE6qiHPh2jGKO/wDHzqMQRZmVbkZ8i
-         TaEIiteUePJfA97eJKHs2KkWj34LyCcOA9aCuPNZh8EELgdX8l0kKXDIEn2lz03olB
-         QxMinnEYA54Fxpr+s6iaFMH1ieCkVryHB2EdTZ60IZGZz78jhUcSjFHT+BmqHchrcf
-         OuGLFsCXrWguA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 87BFC60963;
-        Tue, 31 Aug 2021 23:56:50 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for v5.15
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210831203727.3852294-1-kuba@kernel.org>
-References: <20210831203727.3852294-1-kuba@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210831203727.3852294-1-kuba@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-5.15
-X-PR-Tracked-Commit-Id: 29ce8f9701072fc221d9c38ad952de1a9578f95c
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9e9fb7655ed585da8f468e29221f0ba194a5f613
-Message-Id: <163045421048.32328.14897488306331902664.pr-tracker-bot@kernel.org>
-Date:   Tue, 31 Aug 2021 23:56:50 +0000
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+        id S241585AbhIABSr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 31 Aug 2021 21:18:47 -0400
+Received: from mail.jadistribuidora.net ([187.110.237.10]:44226 "EHLO
+        mail.jacomercial.com.br" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S241207AbhIABSq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 21:18:46 -0400
+X-Greylist: delayed 10728 seconds by postgrey-1.27 at vger.kernel.org; Tue, 31 Aug 2021 21:18:45 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.jacomercial.com.br (Postfix) with ESMTP id 03B4514F528B;
+        Tue, 31 Aug 2021 18:15:03 -0300 (-03)
+Received: from mail.jacomercial.com.br ([127.0.0.1])
+        by localhost (mail.jacomercial.com.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id pB-HpYiazlGo; Tue, 31 Aug 2021 18:15:02 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.jacomercial.com.br (Postfix) with ESMTP id 0761014F5230;
+        Tue, 31 Aug 2021 18:15:02 -0300 (-03)
+X-Virus-Scanned: amavisd-new at mail.jacomercial.com.br
+Received: from mail.jacomercial.com.br ([127.0.0.1])
+        by localhost (mail.jacomercial.com.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id MFgroUovOJyk; Tue, 31 Aug 2021 18:15:01 -0300 (-03)
+Received: from [172.20.10.2] (unknown [197.234.223.222])
+        by mail.jacomercial.com.br (Postfix) with ESMTPSA id 72B5214F522F;
+        Tue, 31 Aug 2021 18:14:31 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: 
+To:     Recipients <mnelson@surrey.ca>
+From:   "Yi Huiman" <mnelson@surrey.ca>
+Date:   Tue, 31 Aug 2021 14:13:55 -0700
+Reply-To: yi.hiuman@outlook.com
+Message-Id: <20210831211431.72B5214F522F@mail.jacomercial.com.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 31 Aug 2021 13:37:27 -0700:
-
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-5.15
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9e9fb7655ed585da8f468e29221f0ba194a5f613
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+I'm Mr. Yi Huiman, former chairman of the Industrial and Commercial
+Bank of China (ICBC) and current China Securities Regulatory
+Commission (CSRC).. I have a business proposal that will benefit both
+of us. I am looking for a serious partner to entrust a transaction
+worth $45,275,000.00 USD. Can i rely on you? Please contact me for
+more informatio
