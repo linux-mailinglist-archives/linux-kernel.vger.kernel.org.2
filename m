@@ -2,72 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADFB3FC96C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0293FC969
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234953AbhHaOMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232008AbhHaOMa (ORCPT
+        id S233231AbhHaOL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:11:26 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64465 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229514AbhHaOLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:12:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D11C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:11:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=V706oC8QQbvzl3+pjYtFFnX45qzIKr47GJsjg77W3Gw=; b=FjL6Q8guCtNYReVS5N2XkrKLZr
-        YiJ7/S6fEyMTlljHveHfh2+xBOyV8Q2di1WEjLglnHG8Xmal9sjtaJ58fas8pGvX86u9fTfVHiiP/
-        bhfZ2I3/pXsjdayEPkig3B12NdsLTmTACzuanURMxt3x7KLNuEIrApraYnYaI7yTEnLJV6CGHuae7
-        3E9dGEqWIw1jkN4vY2PCbcHXIXxs8SFvwaYzoJUSqJMArbP+IAfjRvnKowH70Kgnmer9QcZOVPhi4
-        8I/gn9R2mQEoeoap7LB/dbxnwxImRKqnenUFjuW3VKqBrhQVRBhiNfgBQD7dT84jSBwpNQSsYHXlj
-        acyOz8kg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mL4SL-001HBs-6Y; Tue, 31 Aug 2021 14:09:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 24132300299;
-        Tue, 31 Aug 2021 16:09:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D2F5120AEBF29; Tue, 31 Aug 2021 16:09:39 +0200 (CEST)
-Date:   Tue, 31 Aug 2021 16:09:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Li RongQing <lirongqing@baidu.com>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [Resend][PATCH] sched/fair: micro-optimize pick_next_entity()
-Message-ID: <YS44IzVARx2ZaEUo@hirez.programming.kicks-ass.net>
-References: <1629872869-19829-1-git-send-email-lirongqing@baidu.com>
+        Tue, 31 Aug 2021 10:11:24 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17VE4OFv096980;
+        Tue, 31 Aug 2021 10:10:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=jzA+ZFVNxi4+GfcKW6hWIgIZRc8anhJmPU4P65ynJqI=;
+ b=DvLkrC5dPIz7W7J+ay8b16e7qWOAwtGP24mBreTAAFczCyKeG0xtT6Nu04TkBY3qp8Xs
+ eoI2mHRZzxWHJa6IZjeQCh13yvTUGaO2GxRyE3gTYJj7WcvK2+uvyUtzvUg96TW/DBL7
+ u+Nw6rMqZ7Cst6fJrN+3Qz+L/k6+9Zbf6lkyuv93ydB2+QRKuGS7WOczE/GZGSIoVDLa
+ MZqXaktC8yuD7qciAYZ+sf4udcZEaB19YsaRt4nXo6Zm+R6GKAr2gsFgKgMEuekrIxaK
+ jQ3zR58/RG5128AHZyw01+it3NpWhA8xd1ZfL/I7lAc1LM7kqJTX6cK1mH3WKfuQhB8M 9A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3asnt7rcpn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Aug 2021 10:10:28 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17VE55nm101357;
+        Tue, 31 Aug 2021 10:10:28 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3asnt7rcnq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Aug 2021 10:10:28 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17VDvZe9032105;
+        Tue, 31 Aug 2021 14:10:26 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 3aqcdjbt7e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Aug 2021 14:10:26 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17VEAK2330605606
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 31 Aug 2021 14:10:20 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 93065AE063;
+        Tue, 31 Aug 2021 14:10:20 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 31059AE055;
+        Tue, 31 Aug 2021 14:10:20 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.164.122])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 31 Aug 2021 14:10:20 +0000 (GMT)
+Subject: Re: [PATCH v4 03/14] KVM: s390: pv: avoid stalls for
+ kvm_s390_pv_init_vm
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, frankja@linux.ibm.com, thuth@redhat.com,
+        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
+References: <20210818132620.46770-1-imbrenda@linux.ibm.com>
+ <20210818132620.46770-4-imbrenda@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <efa07fc5-2f74-d785-e90f-571698ae8f54@de.ibm.com>
+Date:   Tue, 31 Aug 2021 16:10:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1629872869-19829-1-git-send-email-lirongqing@baidu.com>
+In-Reply-To: <20210818132620.46770-4-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 6W3BmA6yqlGBT8SO7cZY3jYG2_-oJNw4
+X-Proofpoint-ORIG-GUID: zfAQUFfz3oyvS3kW_ENYQeQz306D59Cb
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-31_05:2021-08-31,2021-08-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 priorityscore=1501 mlxscore=0 clxscore=1015 adultscore=0
+ mlxlogscore=999 spamscore=0 bulkscore=0 malwarescore=0 impostorscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108310078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 02:27:49PM +0800, Li RongQing wrote:
-> Only check the skip buddy when next buddy and last buddy
-> are not picked up, this can save the cycles of checking
-> the skip buddy and computation of the second buddy, when
-> next and last buddy will be picked up
-> for example, yield_to_task_fair() set both next and skip
-> buddy
 
-Is that actually measurable?
 
-But looking at it, should we not, instead, move the whole ->skip thing to
-the bottom, so we unconditionally check it vs the result of
-->next/->last ?
+On 18.08.21 15:26, Claudio Imbrenda wrote:
+> When the system is heavily overcommitted, kvm_s390_pv_init_vm might
+> generate stall notifications.
+> 
+> Fix this by using uv_call_sched instead of just uv_call. This is ok because
+> we are not holding spinlocks.
 
-Imagine ->next == ->skip, then we want to avoid running it and not have
-->next win.
+I guess this should only happen for really large guests where the donated memory is also large?
+> 
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Fixes: 214d9bbcd3a672 ("s390/mm: provide memory management functions for protected KVM guests")
 
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+
+> ---
+>   arch/s390/kvm/pv.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+> index 0a854115100b..00d272d134c2 100644
+> --- a/arch/s390/kvm/pv.c
+> +++ b/arch/s390/kvm/pv.c
+> @@ -195,7 +195,7 @@ int kvm_s390_pv_init_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
+>   	uvcb.conf_base_stor_origin = (u64)kvm->arch.pv.stor_base;
+>   	uvcb.conf_virt_stor_origin = (u64)kvm->arch.pv.stor_var;
+>   
+> -	cc = uv_call(0, (u64)&uvcb);
+> +	cc = uv_call_sched(0, (u64)&uvcb);
+>   	*rc = uvcb.header.rc;
+>   	*rrc = uvcb.header.rrc;
+>   	KVM_UV_EVENT(kvm, 3, "PROTVIRT CREATE VM: handle %llx len %llx rc %x rrc %x",
+> 
