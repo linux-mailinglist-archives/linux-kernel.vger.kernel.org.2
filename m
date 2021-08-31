@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DBA3FC521
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644E03FC527
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240655AbhHaJvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 05:51:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21956 "EHLO
+        id S240737AbhHaJvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 05:51:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43861 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233851AbhHaJvR (ORCPT
+        by vger.kernel.org with ESMTP id S240721AbhHaJvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 05:51:17 -0400
+        Tue, 31 Aug 2021 05:51:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630403421;
+        s=mimecast20190719; t=1630403427;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jDRR4Gfeq/0Z0bdm9Tr2VtsZ6WrEwR+UZOlpkJZ7nKg=;
-        b=Nu9bcis1LqJH5IUjwCgM81uJBkY07GJjJ9APVmMt76/93pHqWpoz9q2YU1LVhfqq8/BaGL
-        Y+FaLPUUbn1yggXTqvagLiZQZL3MnKKI9dBEhn2bT+1YMEpC/OS/q8gln7Y13dY77RUKKg
-        BUvau475mUJGiUFzZtvtXkifJEvuM0A=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-235-u7auoT-jN8C10_PT2YnF_w-1; Tue, 31 Aug 2021 05:50:19 -0400
-X-MC-Unique: u7auoT-jN8C10_PT2YnF_w-1
-Received: by mail-wm1-f71.google.com with SMTP id p11-20020a05600c204b00b002f05aff1663so1126165wmg.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:50:19 -0700 (PDT)
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t8XYUgR9kHcOYFdSNrWNV6bYolumP9ymhRdSASBvoKM=;
+        b=ZE15u+td5r1mW2/OqEBqoALMSlkl9lFGXp+G6nqsqryGxJy9RS1ryjPcNenslW+WLPi1LG
+        SmMkKa/uLaELj8ETAdWBl6vGIlDAvWXZiUIiDLouyBstahbcaa2PkBSTzRzvMLnN3YIGd5
+        4ufHCfgLN45XtT3h53F0AZl8RpFyXO0=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-5W31Md0uM2mrTaAiDEbBBA-1; Tue, 31 Aug 2021 05:50:26 -0400
+X-MC-Unique: 5W31Md0uM2mrTaAiDEbBBA-1
+Received: by mail-wm1-f72.google.com with SMTP id j145-20020a1c2397000000b002ea321114f7so1245523wmj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:50:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jDRR4Gfeq/0Z0bdm9Tr2VtsZ6WrEwR+UZOlpkJZ7nKg=;
-        b=FzHcviKKyvA4d0RisAE4m6fFA+FH9trlwUV7cKKo3b76XmL8sOwQY44IxIBA03JRmA
-         0ayQ/ajXrisobb/LVo7rl/ia48jtQG6vkt4riZ9+uQl6iISTXo5+ojFKPIE3HQ/BZWCQ
-         K9U60dEGkLc20ewuZLNEx4Zl6FTMN2z/zBE38BUvROaTGY8Z1GISCWx/WU3tLRZH/TM9
-         AbcWsKBGvEJe+7zKn343qFVugS26qJMj7HOJ16ltf5fnEipyeTFxxwrWcD/FanFLZ+zE
-         SrghFOG7u/0CiWRib9+Qam491j6YbW7h4JgXz2YoetHpfWmHtkhmiXGwAuJaNpa9lRcS
-         CSWQ==
-X-Gm-Message-State: AOAM5338ZIgc8SCMa5yxMyafK2jRaEnIh2mk0UTto2ddjk7PeMVzeqJH
-        V7DA0ZiuxZ87m8np8W6BC36CTzbaPw8x4T20a7wexLEzqyv/idEeVtbhVuHJfsy14gybJFAhAdf
-        RjhU2Q+8sDHOn5SWXxt+2pKrU
-X-Received: by 2002:adf:db83:: with SMTP id u3mr31058775wri.363.1630403418566;
-        Tue, 31 Aug 2021 02:50:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy11hiyXvUZaBhVtba4HRZ9FmZPj0iZsGOk8RZQoo5D9MJBsjSR7eUxt6OaCXO+9Q29XTagVA==
-X-Received: by 2002:adf:db83:: with SMTP id u3mr31058760wri.363.1630403418410;
-        Tue, 31 Aug 2021 02:50:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=t8XYUgR9kHcOYFdSNrWNV6bYolumP9ymhRdSASBvoKM=;
+        b=bdyVrgNXWs6MiIaCiVI9cJNzDZy89PbKaZ+rKK0uvTpQO+hIeeK2ZJKU5yES975i8L
+         zZZsE6Rlzgx987SNNZTu1ZFV/GcsgCm049yx+jvBvL+3sqCVIR6gkQ2eU3yO7qLmTPl0
+         sOuTlUzWPRs+OnUevoG8w3daPG37/dqEH6KxcmeKQDQ/hWWVsQGGeVUYl4LOLCPsiEdT
+         Q3Yw2OtXeZW9FOZgdBnMQzN0fMR4EJZgRXkiIFf6NkVUMaSg+BS0waU+Zh4B7/oBiyIT
+         qVn3wJGzZ7oBU+tld+13hdfpH9gSw2ObOwQggePOmmBqkegHgc460q3EluYLKTC0oMbR
+         MnTw==
+X-Gm-Message-State: AOAM530Adf4H9YIGyeumI4AHN60uyqieh7MbRb6LUY0K2f4Qr5/xZ9Ls
+        DxYzTKAICC67bv2hkNnwcysc++NTXWTnBjosF6M+4EPuwel9ho4MkPJUq0L/m5w0Q0H7h2gcp1w
+        Nz+2kwYByHHUmTA2NP7X8FZ/I
+X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr3237231wmp.52.1630403424971;
+        Tue, 31 Aug 2021 02:50:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwmw4QOsPrdbgK9ka9SXfqxCs3jTWhJePp5bIWBfxduD2YjHbSYNsMxcmqk6mS4WTpJhWp5+w==
+X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr3237201wmp.52.1630403424699;
+        Tue, 31 Aug 2021 02:50:24 -0700 (PDT)
 Received: from krava.redhat.com ([94.113.247.3])
-        by smtp.gmail.com with ESMTPSA id d7sm18112990wrs.39.2021.08.31.02.50.17
+        by smtp.gmail.com with ESMTPSA id y11sm21530442wru.0.2021.08.31.02.50.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 02:50:18 -0700 (PDT)
+        Tue, 31 Aug 2021 02:50:24 -0700 (PDT)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
@@ -57,66 +58,37 @@ Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH 0/8] x86/ftrace: Add direct batch interface
-Date:   Tue, 31 Aug 2021 11:50:09 +0200
-Message-Id: <20210831095017.412311-1-jolsa@kernel.org>
+Subject: [PATCH 1/8] x86/ftrace: Remove extra orig rax move
+Date:   Tue, 31 Aug 2021 11:50:10 +0200
+Message-Id: <20210831095017.412311-2-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210831095017.412311-1-jolsa@kernel.org>
+References: <20210831095017.412311-1-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi,
-adding interface to maintain multiple direct functions
-within single calls. It's a base for follow up bpf batch
-attach functionality.
+There's identical move 2 lines earlier.
 
-New interface:
-
-  int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-  int unregister_ftrace_direct_multi(struct ftrace_ops *ops)
-  int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-
-that allows to register/unregister/modify direct function 'addr'
-with struct ftrace_ops object. The ops filter can be updated
-before with ftrace_set_filter_ip calls
-
-  1) patches (1-4) that fix the ftrace graph tracing over the function
-     with direct trampolines attached
-  2) patches (5-8) that add batch interface for ftrace direct function
-     register/unregister/modify
-
-Also available at (based on Steven's ftrace/core branch):
-  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-  ftrace/direct
-
-thanks,
-jirka
-
-
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
-Jiri Olsa (6):
-      x86/ftrace: Remove extra orig rax move
-      tracing: Add trampoline/graph selftest
-      ftrace: Add ftrace_add_rec_direct function
-      ftrace: Add multi direct register/unregister interface
-      ftrace: Add multi direct modify interface
-      ftrace/samples: Add multi direct interface test module
+ arch/x86/kernel/ftrace_64.S | 1 -
+ 1 file changed, 1 deletion(-)
 
-Steven Rostedt (VMware) (2):
-      x86/ftrace: Remove fault protection code in prepare_ftrace_return
-      x86/ftrace: Make function graph use ftrace directly
-
- arch/x86/include/asm/ftrace.h        |   9 +++--
- arch/x86/kernel/ftrace.c             |  71 +++++++++++++++++++-------------------
- arch/x86/kernel/ftrace_64.S          |  30 +---------------
- include/linux/ftrace.h               |  26 ++++++++++++++
- kernel/trace/fgraph.c                |   6 ++--
- kernel/trace/ftrace.c                | 214 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------
- kernel/trace/trace_selftest.c        |  49 +++++++++++++++++++++++++-
- samples/ftrace/Makefile              |   1 +
- samples/ftrace/ftrace-direct-multi.c |  52 ++++++++++++++++++++++++++++
- 9 files changed, 364 insertions(+), 94 deletions(-)
- create mode 100644 samples/ftrace/ftrace-direct-multi.c
+diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
+index 7c273846c687..a8eb084a7a9a 100644
+--- a/arch/x86/kernel/ftrace_64.S
++++ b/arch/x86/kernel/ftrace_64.S
+@@ -251,7 +251,6 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_GLOBAL)
+ 	 * If ORIG_RAX is anything but zero, make this a call to that.
+ 	 * See arch_ftrace_set_direct_caller().
+ 	 */
+-	movq ORIG_RAX(%rsp), %rax
+ 	testq	%rax, %rax
+ SYM_INNER_LABEL(ftrace_regs_caller_jmp, SYM_L_GLOBAL)
+ 	jnz	1f
+-- 
+2.31.1
 
