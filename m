@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF8D3FCA61
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D672A3FCA64
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238617AbhHaOxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:53:42 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:53670 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238552AbhHaOxk (ORCPT
+        id S238633AbhHaOyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:54:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38688 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237512AbhHaOya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:53:40 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E1F8822214;
-        Tue, 31 Aug 2021 14:52:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630421564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Tue, 31 Aug 2021 10:54:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630421614;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=D4MjAnG6bKcCkTAybjJn5d/f5tRLhbz0qM5zXERoID8=;
-        b=ZbXwpTdfMgE4NZ2iZScvnHiaafSuJ+epkFCXEYLsgFSCAEkef0MGbRAwYZ9acgWLVETcMr
-        LqHt80gX0yBAXHS2g+eIr38ZuXB+pfrjcNJ1/toeXwSEYxtK6p66ifkTfS5WXgKbfJKZm1
-        D4XMWbT3ICTx+cJevlIxjWn0xdrWTY4=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 9035CA3B9F;
-        Tue, 31 Aug 2021 14:52:44 +0000 (UTC)
-Date:   Tue, 31 Aug 2021 16:52:44 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     James Wang <jnwang@linux.alibaba.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: kernel hang during reboot when cmdline include a non-exist
- console device
-Message-ID: <YS5CPGm4JENsFIem@alley>
-References: <CAHk-=wj+G8MXRUk5HRCvUr8gOpbR+zXQ6WNTB0E7n32fTUjKxQ@mail.gmail.com>
- <YS2fZ1sknFYKtJFi@google.com>
- <YS3k5TRf5oLLEdKu@alley>
- <YS3stL0cTn5ZQSNx@google.com>
- <fc18d17a-b185-7a1e-2135-ec83f3f8c70f@linux.alibaba.com>
- <YS490P27YM6UlB2z@alley>
- <e66f501a-0ba9-77f1-b5a2-9a759f8e00d6@linux.alibaba.com>
+        bh=6VDF51hxbfpaWMVUumQtD4q9C2aOAsvQD3/LfZAqP4M=;
+        b=IAB4wrN81/1x03eEc3o6hVfdnVinEDlD/P28GEZVajAy6EaVwuMqyp8iIHOBE9iu4qu1QB
+        XdP3yYMcYm2FmzI+98Kxpj/E2cGUW/flb9clqWJA9tFbsTL5RAEfNymMeyJLfE2tBMtMzw
+        zEQPC5iYiB0IOxGH9VfA/xK53lko7Io=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-337--Huv94v8MHuvhrLJ3XR8Ew-1; Tue, 31 Aug 2021 10:53:33 -0400
+X-MC-Unique: -Huv94v8MHuvhrLJ3XR8Ew-1
+Received: by mail-wm1-f69.google.com with SMTP id f19-20020a1c1f13000000b002e6bd83c344so1433022wmf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:53:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=6VDF51hxbfpaWMVUumQtD4q9C2aOAsvQD3/LfZAqP4M=;
+        b=NYBND1v8LCuecZtWrdUcx1HloaOqQMJ2su9G5qeI1BFsbzIBufJNtqEbBfMEaETclg
+         S72omlJu+tgqs+1vpMxYu0yKo83wTuFf3xtiwfJDXyjv49MSNwhNnHwkcJDhuGffMvzI
+         vTOcOOs2rJL2fvQh5gVbyoj6DWW5DiK6dI2OfkhdiYU6Ul9JQnlCXr7/zAQIKyB30zwI
+         ZnQLA+XyBJMa+bwHfdLbMpoywzwxAPfaOcvT4+DzQ3jGKDd+G96odnHhm6AThHneCr4k
+         IHoWXVV6VZ+JEcloVxMm1qhWLsKqO9HofbGQOax4Ot+WSPZVzHduEdmnLHY+1QnjLq17
+         dAMg==
+X-Gm-Message-State: AOAM531+8nFtKrvMAWBiXCNQiYT/yLWiONIKexoGo735jwILEynhx8Y3
+        pzR/6RM9Rq7tj/d4yGVJu+GWF0OlO/a/NCEkF/pSAU6+VFpDBTtrHrNF+dW3jp1hpov+EpAn5an
+        AR7svl3SbMRJmhQYVIgBy5YA6
+X-Received: by 2002:a05:600c:acd:: with SMTP id c13mr4662697wmr.28.1630421612335;
+        Tue, 31 Aug 2021 07:53:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzZpt4uPbrs+nBeQjdBZh+eSaDaqLcdwE8DpAhzNPYPYTbfR/TjMmmGpI29u6Qa4UQlZ2PqaQ==
+X-Received: by 2002:a05:600c:acd:: with SMTP id c13mr4662677wmr.28.1630421612150;
+        Tue, 31 Aug 2021 07:53:32 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23bf5.dip0.t-ipconnect.de. [79.242.59.245])
+        by smtp.gmail.com with ESMTPSA id l21sm2638372wmh.31.2021.08.31.07.53.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 07:53:31 -0700 (PDT)
+Subject: Re: [RFC][PATCH] mm/page_isolation: tracing: trace all
+ test_pages_isolated failures
+To:     "George G. Davis" <george_davis@mentor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Eugeniu Rosca <erosca@de.adit-jv.com>,
+        "George G. Davis" <davis.george@siemens.com>
+References: <20210823202823.13765-1-george_davis@mentor.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <4f680b5a-9076-3ba4-caea-bdd6eafeb899@redhat.com>
+Date:   Tue, 31 Aug 2021 16:53:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e66f501a-0ba9-77f1-b5a2-9a759f8e00d6@linux.alibaba.com>
+In-Reply-To: <20210823202823.13765-1-george_davis@mentor.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-08-31 22:38:42, James Wang wrote:
+On 23.08.21 22:28, George G. Davis wrote:
+> From: "George G. Davis" <davis.george@siemens.com>
 > 
-> 在 2021/8/31 PM10:33, Petr Mladek 写道:
-> > On Tue 2021-08-31 21:45:05, James Wang wrote:
-> > > 在 2021/8/31 PM4:47, Sergey Senozhatsky 写道:
-> > > > And may I ask, just in case, if James can revert a revert of Petr's commit:
-> > > > 
-> > > >          revert a91bd6223ecd46addc71ee6fcd432206d39365d2
-> > > > 
-> > > > boot with wrong console argument and see if the kernel reboots without
-> > > > any problems.
-> > > After test, revert Petr's commit can work; reboot without any problem;
-> > Interesting, it looks like the panic() is really caused by missing
-> > stdout, stdin, and stderr, for the init process.
-> > 
-> > Unfortunately, the fix is not easy, as described in the commit
-> > a91bd6223ecd46addc71e ("Revert "init/console: Use ttynull as
-> > a fallback when there is no console").
-> 
-> OK. But I suppose you could find a quick workaround to mitigate this issue.
+> Some test_pages_isolated failure conditions don't include trace points.
+> For debugging issues caused by "pinned" pages, make sure to trace all
+> calls whether they succeed or fail. In this case, a failure case did not
+> result in a trace point. So add the missing failure case in
+> test_pages_isolated traces.
 
-You could either remove the invalid console=ttyUSB0,115200
-parameter. As a result, tty0 will become the default console and
-it will be used by the init process.
+In which setups did you actually run into these cases?
 
-If you do not want any console, you could build the kernel with
-CONFIG_NULL_TTY=y and use console=null on the commandline.
 
-Best Regards,
-Petr
+-- 
+Thanks,
+
+David / dhildenb
+
