@@ -2,102 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D968C3FC96E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0981E3FC974
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235504AbhHaOM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
+        id S233044AbhHaOPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232008AbhHaOM4 (ORCPT
+        with ESMTP id S229927AbhHaOPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:12:56 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8680AC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:12:01 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so2109754pjw.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:12:01 -0700 (PDT)
+        Tue, 31 Aug 2021 10:15:53 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85271C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:14:57 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id s10so14010823lfr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:14:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DwBG0kbYLoprwx2xDskuGjAg4KxbwGBk3fVvkOflJfY=;
-        b=n4plaO9ZqXTMabwQQad7OQWiFxsARGV7/IksaEq0V+fk0Zar3ZT8MUTLoE2UWcX4MU
-         zrVz9ULgAArOMtdajOyS0NRgdYmASL0E3tULikziScQjHqXjdDxNJe8F3UuhQ5DCFetJ
-         SEjUA0AznWEznLoyb4A+/Bp9ZQWGW+j2Wi4KjQWGqZ/+PuIH8uulXO87Q40BX/X/C9Ji
-         VCkkkixVthgv0kfgThJ3bvFwJ2rmHkmipXXtLzc4YtwSC1Eot/27pCBts9+zBhgCXaZb
-         YfbUSJPuTMOYkdYUSs1GXJ3NX3d2DI4yxeCMPM+avwPD8BP70QqkWLTTS/lNdppx7Rkm
-         mVlA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kd9hSFQF1FANNkmj2prEeUy+eH+yNiViZuvtA7HLfFU=;
+        b=UJZPKprU1aE2FjXAdzOkeK0Rr5YVf3H7Py4YbXFgukwBaxx3a5YR8JMSWrWegs5sRE
+         YQVd3Au4NT6LLBoCBDBuRXl4cYvS0Jefcaj/Dkl0wc7q9oB+/kxV04vHC01f7Ugje0Po
+         l40tE/u8csAAlnJi/OizrgilY5i4Yvx84EYinufp+Svuu2VXn94SD0ecUWG+Qqo6BPu/
+         4QcNoPLh79Uivr4JzP9OR+UFZUbIcr+vDN+657bsalnqR+XZYwqGDXLJvfVDC4LIgUg9
+         wb+786zCr03DS3E5yxbAE8VOf2EONaxNjX/jjgrJtD4oZB4Hre6OJNi7fyZka0FX3YcA
+         Qpqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DwBG0kbYLoprwx2xDskuGjAg4KxbwGBk3fVvkOflJfY=;
-        b=VtbuQTk2hgl83kZNbzhB+BCClEGhcxfLI+CvDz/bgFeM9sHwa8qJsQXxvGGnQVZS15
-         t+4FZKttPp90Gjy6uVwEQcOqDAL8Y5pLobco1vPQC/LXe+zbuB3fuaB2fAeaMbQ96cxm
-         sN7k50Soy/GlGGW+2OZLuDmNUFsmQaNME9iz/TrsGZkhJidHXTPgsR9bI9/sgJcNxOF5
-         FDOFg7JKBMWxejQ8hdyhbXBEXPzqJPwJ7tiTzdyz0rZXRC/d98x9qDB46gyD/mVPTAA8
-         aUau/FH4pLY5bBLjsoH88V/Skh9r4b/dQknAgSXYioRDs4CNycFGfKncOwgeYNaWnZ+K
-         Mw8A==
-X-Gm-Message-State: AOAM5320UGeeqvKYEkQkciysw7rC48JAJ6JyzuJp48QCEaXvuRenWec2
-        URAgoFjs3hce4RkC8N3nSTsNmgZJx1gLQ0yTV1+ewA==
-X-Google-Smtp-Source: ABdhPJx5yHJTTzBrXq2AUYXsGcTAO5IKtUmnDI+oVOLx/pegeMs0loQRWMfDgCq3QQK52OVn5wqzTEChmIVQ8Q2ox7A=
-X-Received: by 2002:a17:902:a513:b029:11a:9be6:f1b9 with SMTP id
- s19-20020a170902a513b029011a9be6f1b9mr4831914plq.55.1630419120987; Tue, 31
- Aug 2021 07:12:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kd9hSFQF1FANNkmj2prEeUy+eH+yNiViZuvtA7HLfFU=;
+        b=pRtAX+B7L2HPB9qZoOuXeRDPo6nGDNY/z+Sb4R/m4EQu3V/cvR9FGhrpDbWoXIeO4W
+         yEPWsVq28Z4uuXiusR3Wzpu9vGYc2DAN85GcBBMH735y1HrtTdSQRk43TkjDCh6OREc/
+         EUqeEFHf+S9Z1bx+thpSFvROhDv6neDWCjrpFR1gIXlRGESJKmOW7pW/nTqtfEAh2YZd
+         2Ui4eSB8K1fZmgb60/4yaQNjFizqICRFpPL1nignaNPMvYmA02MLkN6sTbiLEVZgyexs
+         ZSCnvmcvWu8H5RGbYPT1D2HCRCSESQbjYiOm91SLrFgAYXVHX72cfUKPigQTGFS3wvx8
+         ND1g==
+X-Gm-Message-State: AOAM531MaabLu971kGlRU5dXBIKm38MkxKKBotUn2pDPdbXEUvgMeroH
+        ur9bSD8uDUPusnar6GI4cw39MajUSdQcLg==
+X-Google-Smtp-Source: ABdhPJzB/X88QadQ8KYfQuHgh+2/QLwgm6t0jJpldIGyASZQeizCXOwiGGZAHRrPqzE5WbO4ey0nxg==
+X-Received: by 2002:a19:5e0e:: with SMTP id s14mr22213942lfb.534.1630419295749;
+        Tue, 31 Aug 2021 07:14:55 -0700 (PDT)
+Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id i30sm2202187ljb.48.2021.08.31.07.14.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 07:14:55 -0700 (PDT)
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev
+Cc:     Kari Argillander <kari.argillander@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/7] fs/ntfs3: Refactor header includes
+Date:   Tue, 31 Aug 2021 17:14:27 +0300
+Message-Id: <20210831141434.975175-1-kari.argillander@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210819060110.3427256-1-xji@analogixsemi.com>
-In-Reply-To: <20210819060110.3427256-1-xji@analogixsemi.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 31 Aug 2021 16:11:49 +0200
-Message-ID: <CAG3jFytk21cSVKiFcu859CBvUW593XQw5_D97Uydsf798jyWDg@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/bridge: anx7625: enable DSI EOTP
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bernie Liang <bliang@analogixsemi.com>,
-        Qilin Wen <qwen@analogixsemi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devel@driverdev.osuosl.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Aug 2021 at 08:01, Xin Ji <xji@analogixsemi.com> wrote:
->
-> Enable DSI EOTP feature for fixing some panel screen constant shift issue.
-> Removing MIPI flag MIPI_DSI_MODE_NO_EOT_PACKET to enable DSI EOTP.
->
-> Reviewed-by: Robert Foss <robert.foss@linaro.org>
-> Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> ---
->  drivers/gpu/drm/bridge/analogix/anx7625.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> index abc8db77bfd3..1a871f6b6822 100644
-> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> @@ -1335,7 +1335,6 @@ static int anx7625_attach_dsi(struct anx7625_data *ctx)
->         dsi->format = MIPI_DSI_FMT_RGB888;
->         dsi->mode_flags = MIPI_DSI_MODE_VIDEO   |
->                 MIPI_DSI_MODE_VIDEO_SYNC_PULSE  |
-> -               MIPI_DSI_MODE_NO_EOT_PACKET     |
->                 MIPI_DSI_MODE_VIDEO_HSE;
->
->         if (mipi_dsi_attach(dsi) < 0) {
+Right now header includes are big mess with ntfs3 imo. We cannot example
+include ntfs3 headers without need of punch of includes to source file.
+This patch set try to address that. When this patch series is applied we
+can include any header file without need of include anything else. This
+does not mean source file should rely what header file includes. Instead
+it should include them by self also if it needs them.
 
-Applied to drm-misc-next
+When some include is added I have write why this is needed to commit
+message. Hopefully this will help when someone wants to correct them
+again. I have also just delete unnecessary headers from some .c files
+and not added what is needed. Usually deleted headers where there
+because ntfs_fs.h need them not file itself. When file was simple enough
+I added all necessary linux headers.
+
+I did not add linux/headers to all files yet. That is big job. This is
+good starting point. I did try to build every file itself so this will
+build like it should.
+
+Please do not hesitate to tell if there is something wrong with this
+series or somethings could be done better.
+
+Kari Argillander (7):
+  fs/ntfs3: Add missing header files to ntfs.h
+  fs/ntfs3: Add missing headers and forward declarations to ntfs_fs.h
+  fs/ntfs3: Add missing header and guards to lib/ headers
+  fs/ntfs3: Change right headers to bitfunc.c
+  fs/ntfs3: Change right headers to upcase.c
+  fs/ntfs3: Change right headers to lznt.c
+  fs/ntfs3: Remove unneeded header files from c files
+
+ fs/ntfs3/attrib.c                |  5 -----
+ fs/ntfs3/attrlist.c              |  3 ---
+ fs/ntfs3/bitfunc.c               |  7 +------
+ fs/ntfs3/bitmap.c                |  3 ---
+ fs/ntfs3/dir.c                   |  3 ---
+ fs/ntfs3/file.c                  |  1 -
+ fs/ntfs3/frecord.c               |  3 ---
+ fs/ntfs3/fslog.c                 |  4 ----
+ fs/ntfs3/fsntfs.c                |  1 -
+ fs/ntfs3/index.c                 |  1 -
+ fs/ntfs3/inode.c                 |  2 --
+ fs/ntfs3/lib/decompress_common.h |  5 +++++
+ fs/ntfs3/lib/lib.h               |  6 ++++++
+ fs/ntfs3/lznt.c                  | 10 +++++-----
+ fs/ntfs3/namei.c                 |  4 ----
+ fs/ntfs3/ntfs.h                  |  9 +++++++++
+ fs/ntfs3/ntfs_fs.h               | 31 +++++++++++++++++++++++++++++++
+ fs/ntfs3/record.c                |  3 ---
+ fs/ntfs3/run.c                   |  2 --
+ fs/ntfs3/super.c                 |  2 --
+ fs/ntfs3/upcase.c                |  8 ++------
+ fs/ntfs3/xattr.c                 |  3 ---
+ 22 files changed, 59 insertions(+), 57 deletions(-)
+
+-- 
+2.25.1
+
