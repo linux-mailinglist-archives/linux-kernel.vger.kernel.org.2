@@ -2,147 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AB13FC0C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 04:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E952C3FC0C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 04:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239423AbhHaCPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 22:15:30 -0400
-Received: from mo-csw1516.securemx.jp ([210.130.202.155]:58600 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239376AbhHaCP2 (ORCPT
+        id S239412AbhHaCP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 22:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239377AbhHaCP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 22:15:28 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 17V2EUa2022033; Tue, 31 Aug 2021 11:14:30 +0900
-X-Iguazu-Qid: 34trdvrI75kL3fQ1Yi
-X-Iguazu-QSIG: v=2; s=0; t=1630376070; q=34trdvrI75kL3fQ1Yi; m=enqtohIq2eRDuL61o6eYoKfPFuSw91zMK8OV2c3zi3A=
-Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
-        by relay.securemx.jp (mx-mr1510) id 17V2EUbk016230
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 31 Aug 2021 11:14:30 +0900
-Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 1866310009F;
-        Tue, 31 Aug 2021 11:14:30 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 17V2ETgh024714;
-        Tue, 31 Aug 2021 11:14:29 +0900
-Date:   Tue, 31 Aug 2021 11:14:28 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] dt-bindings: clock: Add DT bindings for PLL of
- Toshiba Visconti TMPV770x SoC
-X-TSB-HOP: ON
-Message-ID: <20210831021428.rsjzi6vtv2q3wnkb@toshiba.co.jp>
-References: <20210804092244.390376-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210804092244.390376-2-nobuhiro1.iwamatsu@toshiba.co.jp>
- <163021379431.2676726.15668763072935534900@swboyd.mtv.corp.google.com>
+        Mon, 30 Aug 2021 22:15:26 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFF6C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:14:31 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id y18so22842417ioc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:14:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=w45JWDlt0vhgUxESpT+B1nBJn2/Ywxu3Hd7D6mtFCsk=;
+        b=pUC1K9sZnqws5HK4X1IGqMHX3153nlTXaKgAUvcUy+u0ju6CK56m6ssTgOQ5JzurbV
+         mcZRSv6W45fwP6JHg9y4UALfHb/+W/QTxuTuhMeqo4jgBBiQDs14vL6tG1TZ27aAo+pE
+         19r8xcQ4pviy1o2JIbO3WU3PcfXrRbudZGiUK2U8qZYWqVmAKzttvF01A0eU8YvZoJTR
+         MHBm+/6pvMqmo9y32Lg9hDes14zgdoKb6lEfRwt0TL6yqAKKABjEPqF6m7g6LRrFLFep
+         DMCGGG7+d7B2eQMp7wQERoKLu8c7b0dkaVJaMrVGFvvOJ+IPkjpdQOcCM5Cy0jXQYPz2
+         U5yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w45JWDlt0vhgUxESpT+B1nBJn2/Ywxu3Hd7D6mtFCsk=;
+        b=Cj+B2v2hOHPjSbzNMnKKAUO8A0tlD3uRKgkH97pkWHpUf/LUkIzvcenfvXpc/Fumq2
+         1XZ8DHkzRB61+vJHqFJvJEBWSeU0KxQyAxzDVTgHtsnaGgpJc/Ed2VJKjdaJJUHBYSC+
+         ZfecRLdcAKN5M5+dxkCEhwUdaiAgni5wbBO1BgQT9G+t1GDJdGJaCxingDLYojJx3V6z
+         aOtz7R7LTIEzVtvUv5Kb+AGyuEgllpzP6jbXP4b0O2hMhSqwkH/WzaIEwN/pjeg9ddAK
+         0alwHMX1E+YzHpvB9KabxSIlGvnVzITLlKQFkFpcl7Bb2mZWxVKTKC6+L5usFPcW0V6M
+         Zvog==
+X-Gm-Message-State: AOAM530u/axbC5QM59hi5OqN/afGKYzy1yXNuzOuaWB+zpghIs3RT/Gh
+        GBpVNuR4mHK9XpTdcKfusUXa2w==
+X-Google-Smtp-Source: ABdhPJwOWL0ElFafqXDsaz7jVNEJ5b5BIc0bzOV1mLUrHPTeFfp83rpZxizK43GqJbuZnSLCDbmW5w==
+X-Received: by 2002:a02:ce37:: with SMTP id v23mr567877jar.81.1630376071173;
+        Mon, 30 Aug 2021 19:14:31 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id p16sm9618230ilg.32.2021.08.30.19.14.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 19:14:30 -0700 (PDT)
+Subject: Re: [syzbot] general protection fault in sock_from_file
+To:     syzbot <syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com>,
+        andrii@kernel.org, asml.silence@gmail.com, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        dvyukov@google.com, io-uring@vger.kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        Hao Xu <haoxu@linux.alibaba.com>
+References: <00000000000059117905cacce99e@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7949b7a0-fec1-34a7-aaf5-cbe07c6127ed@kernel.dk>
+Date:   Mon, 30 Aug 2021 20:14:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163021379431.2676726.15668763072935534900@swboyd.mtv.corp.google.com>
+In-Reply-To: <00000000000059117905cacce99e@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Thanks for your review.
-
-On Sat, Aug 28, 2021 at 10:09:54PM -0700, Stephen Boyd wrote:
-> Quoting Nobuhiro Iwamatsu (2021-08-04 02:22:41)
-> > Add device tree bindings for PLL of Toshiba Visconti TMPV770x SoC series.
-> > 
-> > Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> > ---
-> >  .../clock/toshiba,tmpv770x-pipllct.yaml       | 57 +++++++++++++++++++
-> >  1 file changed, 57 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/clock/toshiba,tmpv770x-pipllct.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/clock/toshiba,tmpv770x-pipllct.yaml b/Documentation/devicetree/bindings/clock/toshiba,tmpv770x-pipllct.yaml
-> > new file mode 100644
-> > index 000000000000..7b7300ce96d6
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/clock/toshiba,tmpv770x-pipllct.yaml
-> > @@ -0,0 +1,57 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/clock/toshiba,tmpv770x-pipllct.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Toshiba Visconti5 TMPV770X PLL Controller Device Tree Bindings
-> > +
-> > +maintainers:
-> > +  - Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> > +
-> > +description:
-> > +  Toshia Visconti5 PLL controller which supports the PLLs on TMPV770X.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: toshiba,tmpv7708-pipllct
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  '#clock-cells':
-> > +    const: 1
-> > +
-> > +  clocks:
-> > +    description: External reference clock (OSC2)
-> > +    maxItems: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - "#clock-cells"
-> > +  - clocks
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +
-> > +    osc2_clk: osc2-clk {
-> > +      compatible = "fixed-clock";
-> > +      clock-frequency = <20000000>;
-> > +      #clock-cells = <0>;
-> > +    };
-> > +
-> > +    soc {
-> > +        #address-cells = <2>;
-> > +        #size-cells = <2>;
-> > +
-> > +        pipllct: clock-controller@24220000 {
-> > +            compatible = "toshiba,tmpv7708-pipllct";
+On 8/30/21 2:45 PM, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
 > 
-> The driver makes it look like this is actually part of a syscon node. Is
-> that right? It's not clear to me that this is a syscon. But then looking
-> at the binding it seems that one device has been split up into PLL and
-> "not PLL" parts sort of arbitrarily.
-
-This is the driver that controls the PIPLLCT device that produces the
-PLL. This device only has the ability to generate his PLL, no other
-features.
-
-I have received similar comments in the driver patch from you, so I will
-check that as well.
-
+> HEAD commit:    93717cde744f Add linux-next specific files for 20210830
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15200fad300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c643ef5289990dd1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=f9704d1878e290eddf73
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111f5f9d300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1651a415300000
 > 
-> > +            reg = <0 0x24220000 0 0x820>;
-> > +            #clock-cells = <1>;
-> > +            clocks = <&osc2_clk>;
-> > +        };
-> > +    };
-> > +...
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com
 > 
+> general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
+> CPU: 0 PID: 6548 Comm: syz-executor433 Not tainted 5.14.0-next-20210830-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
+> Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
+> RSP: 0018:ffffc90002caf8e8 EFLAGS: 00010206
+> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
+> RBP: ffff888019fc0780 R08: ffffffff899aee40 R09: ffffffff81e21978
+> R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
+> R13: 1ffff110033f80f9 R14: 0000000000000003 R15: ffff888019fc0780
+> FS:  00000000013b5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000004ae0f0 CR3: 000000001d355000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  io_sendmsg+0x98/0x640 fs/io_uring.c:4681
+>  io_issue_sqe+0x14de/0x6ba0 fs/io_uring.c:6578
+>  __io_queue_sqe+0x90/0xb50 fs/io_uring.c:6864
+>  io_req_task_submit+0xbf/0x1b0 fs/io_uring.c:2218
+>  tctx_task_work+0x166/0x610 fs/io_uring.c:2143
+>  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+>  tracehook_notify_signal include/linux/tracehook.h:212 [inline]
+>  handle_signal_work kernel/entry/common.c:146 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x43fd49
 
-Best regards,
-  Nobuhiro
+Hao, this is due to:
+
+commit a8295b982c46d4a7c259a4cdd58a2681929068a9
+Author: Hao Xu <haoxu@linux.alibaba.com>
+Date:   Fri Aug 27 17:46:09 2021 +0800
+
+    io_uring: fix failed linkchain code logic
+
+which causes some weirdly super long chains from that single sqe.
+Can you take a look, please?
+
+-- 
+Jens Axboe
 
