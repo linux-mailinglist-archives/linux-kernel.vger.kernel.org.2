@@ -2,133 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344A73FCAC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CE23FCAC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239033AbhHaP0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234356AbhHaP0O (ORCPT
+        id S239112AbhHaP0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:26:42 -0400
+Received: from smtprelay0167.hostedemail.com ([216.40.44.167]:35250 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234356AbhHaP0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:26:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AFA0C061575;
-        Tue, 31 Aug 2021 08:25:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uwTrTbDOHkMVsLsXLuJcKBuRojYiovx3RxkvNr4JkMg=; b=kjxY+506AsKcbc56c4Db88UNyP
-        mAffMHWYJi+LpHja+OyORAKzOUK8ha4Ey/H1HwPXBL8ggcP/zW7hPehvqLPWBbe4JEThAkkD3k5pP
-        WF03Z3VvU9ldXavXGUkqVVoejtZ4dlvP0jhhm7oyRhZ7y9lU3M660mGs2tZXRA5f/5mrlKjdmBdB4
-        bCPpZMbFYQqrCdoB3EdZ5ba1O1ZU9NOvazzaQQ/tdEKjoCukrYzzoKQDMMfge8hOweqYuGbqWwx3U
-        lwQXQlnEHDaXqxUUj/MVblTNbkyFXn97hnhMtwWdHDGNQAnet4r4ydnCEQdGEd52Tj9Tr9RoZYXgA
-        mwSHerJA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mL5cm-001KP4-UO; Tue, 31 Aug 2021 15:24:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AFB1E300109;
-        Tue, 31 Aug 2021 17:24:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5FE1820AEBF37; Tue, 31 Aug 2021 17:24:26 +0200 (CEST)
-Date:   Tue, 31 Aug 2021 17:24:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com
-Subject: Re: [PATCH v3 bpf-next 1/3] perf: enable branch record for software
- events
-Message-ID: <YS5Jqr60qHZ14+2g@hirez.programming.kicks-ass.net>
-References: <20210830214106.4142056-1-songliubraving@fb.com>
- <20210830214106.4142056-2-songliubraving@fb.com>
+        Tue, 31 Aug 2021 11:26:41 -0400
+Received: from omf16.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 2552C253D4;
+        Tue, 31 Aug 2021 15:25:44 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id D7C6A255100;
+        Tue, 31 Aug 2021 15:25:42 +0000 (UTC)
+Message-ID: <1c5b485cc9b8836b09f99278233d9dc0ae991da7.camel@perches.com>
+Subject: Re: [PATCH V6 1/1] interconnect: intel: Add Keem Bay noc driver
+From:   Joe Perches <joe@perches.com>
+To:     pandith.n@intel.com, georgi.djakov@linaro.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     mgross@linux.intel.com, furong.zhou@intel.com,
+        mallikarjunappa.sangannavar@intel.com,
+        lakshmi.bai.raja.subramanian@intel.com
+Date:   Tue, 31 Aug 2021 08:25:40 -0700
+In-Reply-To: <20210831063615.1021-1-pandith.n@intel.com>
+References: <20210831063615.1021-1-pandith.n@intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830214106.4142056-2-songliubraving@fb.com>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.06
+X-Stat-Signature: wrt8d4hktnqgu6mjx4hi8abedwxiz8sx
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: D7C6A255100
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19/Ih3lgzedQTxeHUMZmH61JF8v3mnvv2U=
+X-HE-Tag: 1630423542-295277
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 02:41:04PM -0700, Song Liu wrote:
+On Tue, 2021-08-31 at 12:06 +0530, pandith.n@intel.com wrote:
+> From: Pandith N <pandith.n@intel.com>
+> 
+> Add support for Network on Chip(NOC) counters. Enable features to configure
+> and capture NOC probe counters, needed for DDR bandwidth measurement. NOC
+> driver is specific to Intel Keem Bay SOC. NOC hardware counters are used
+> for DDR statistics profiling, it is not related to timers.
+> Interface details are provided in include/uapi/linux/noc_uapi.h
 
-> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> index ac6fd2dabf6a2..d28d0e12c112c 100644
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -2155,9 +2155,9 @@ static void __intel_pmu_disable_all(void)
->  
->  static void intel_pmu_disable_all(void)
->  {
-> +	intel_pmu_lbr_disable_all();
->  	__intel_pmu_disable_all();
->  	intel_pmu_pebs_disable_all();
-> -	intel_pmu_lbr_disable_all();
->  }
+trivial notes:
 
-Hurmph... I'm not sure about that, I'd rather you sprinkle a few
-__always_inline to ensure no actual function is called while you disable
-things in the correct order.
+> diff --git a/drivers/interconnect/intel/Kconfig b/drivers/interconnect/intel/Kconfig
+[]
+> +config INTERCONNECT_INTEL_KEEMBAY
+> +	tristate "Intel Keem Bay Enable DDR profiling using NOC"
+> +	depends on INTERCONNECT_INTEL || ARCH_KEEMBAY || COMPILE_TEST
+> +	help
+> +	  Enable this option for DDR bandwidth measurements using NOC
+> +
+> +	  Add support for Network-on-chip (NOC) in DDR Subsystem(DSS).
+> +	  DSS NOC has capabilities to enable and get statistics profiling.
+> +	  NOC driver enables features to configure and capture NOC probe
+> +          counters, needed for DSS bandwidth measurement.
 
-You now still have a hole vs PMI.
+Inconsistent tab/space indentation on this line
 
-> +static int
-> +intel_pmu_snapshot_branch_stack(struct perf_branch_snapshot *br_snapshot)
+> diff --git a/drivers/interconnect/intel/keembay-bwmon.c b/drivers/interconnect/intel/keembay-bwmon.c
+[]
+> +/**
+> + * flex_noc_setup() - Setup two counters for the NOC probe
+> + * @noc: NOC type to setup counters
+> + * @counter: Counter number to set up counter n and n+1
+> + * @trace_port: trace port number to setup counters
+> + *
+> + * This function will setup the counters for the trace port given.
+
+This seems to be unnecessary kernel-doc and if it is useful,
+the return value isn't described.
+
+> +int flex_noc_setup(enum noc_ss_type noc, enum noc_counter counter, int trace_port)
 > +{
-> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-
-Note that this requires preemption is disabled, then look at the
-call-sites in your next patch and spot the problem...
-
+> +	int offset;
 > +
-> +	intel_pmu_disable_all();
-> +	intel_pmu_lbr_read();
-> +	memcpy(br_snapshot->entries, cpuc->lbr_entries,
-> +	       sizeof(struct perf_branch_entry) * x86_pmu.lbr_nr);
-> +	br_snapshot->nr = x86_pmu.lbr_nr;
-> +	intel_pmu_enable_all(0);
-> +	return 0;
-> +}
+> +	if (noc >= NOC_TYPE_MAX || counter >= NOC_COUNTER_MAX)
+> +		return -EINVAL;
 > +
->  /*
->   * Workaround for:
->   *   Intel Errata AAK100 (model 26)
-> @@ -6283,9 +6297,15 @@ __init int intel_pmu_init(void)
->  			x86_pmu.lbr_nr = 0;
->  	}
->  
-> -	if (x86_pmu.lbr_nr)
-> +	if (x86_pmu.lbr_nr) {
->  		pr_cont("%d-deep LBR, ", x86_pmu.lbr_nr);
->  
-> +		/* only support branch_stack snapshot for perfmon >= v2 */
-> +		if (x86_pmu.disable_all == intel_pmu_disable_all)
-								  {
-> +			static_call_update(perf_snapshot_branch_stack,
-> +					   intel_pmu_snapshot_branch_stack);
-
-		}
-
-> +	}
+> +	offset = f_offset[counter / 2];
 > +
->  	intel_pmu_check_extra_regs(x86_pmu.extra_regs);
->  
->  	/* Support full width counters using alternative MSR range */
-
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 011cc5069b7ba..22807864e913b 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -13437,3 +13437,6 @@ struct cgroup_subsys perf_event_cgrp_subsys = {
->  	.threaded	= true,
->  };
->  #endif /* CONFIG_CGROUP_PERF */
+> +	/* Stop ongoing stats */
+> +	noc_writel(MAINCTL, 0);
+> +	noc_writel(CFGCTL, 0);
 > +
-> +DEFINE_STATIC_CALL_RET0(perf_snapshot_branch_stack,
-> +			perf_snapshot_branch_stack_t);
+> +	/* Setup trace port and counters port select */
+> +	noc_writel(TRACEPORTSEL, trace_port);
+> +	noc_writel((c_offset[counter] + C_PORTSEL), trace_port);
 
-I'll squint and accept 82 characters :-)
+Lots of unnecessary parentheses
+
+> +	noc_writel((c_offset[counter + 1] + C_PORTSEL), trace_port);
+> +
+> +	/* Setup counter sources & triggers, Alarm mode - OFF */
+> +	noc_writel((c_offset[counter] + C_SRC), COUNTERS_0_SRC_VAL);
+> +	noc_writel((c_offset[counter] + C_ALARMMODE), COUNTERS_ALARMMODE_VAL);
+> +	noc_writel((c_offset[counter + 1] + C_SRC), COUNTERS_1_SRC_VAL);
+> +	noc_writel((c_offset[counter + 1] + C_ALARMMODE),
+> +		   COUNTERS_ALARMMODE_VAL);
+
+[]
+
+> +enum noc_status flexnoc_counter_capture(enum noc_ss_type noc,
+> +					enum noc_counter counter, u32  *value)
+> +{
+> +	unsigned long j0, j1, delay;
+> +	u32 c0_0, c0_1;
+> +
+> +	if (noc >= NOC_TYPE_MAX ||
+> +	    counter >= NOC_COUNTER_MAX  ||
+> +	    !value)
+> +		return NOC_PROBE_ERR_INVALID_ARGS;
+> +
+> +	delay = msecs_to_jiffies(NOC_CAPTURE_TIMEOUT_MSEC);
+> +	j0 = jiffies;
+> +	j1 = j0 + delay;
+
+j0 and j1 seem unnecessary
+
+	timeout = jiffies + msecs_to_jiffies(NOC_CAPTURE_TIMEOUT_MSEC);
+
+> +	do {
+> +		c0_0 = noc_readl((c_offset[counter] + C_VAL));
+> +		usleep_range(10000, 11000);
+
+Seems a long time.
+
+> +		c0_1 = noc_readl((c_offset[counter] + C_VAL));
+> +		/* If mainctrl is zero , return error */
+> +		if (noc_readl(MAINCTL) == 0)
+> +			return NOC_PROBE_ERR_IN_PROGRESS;
+> +		/* If counters are zero, keep reading */
+> +		if (0 == c0_0 && 0 == c0_1) {
+> +			break;
+> +		} else if (c0_0 != c0_1) {
+> +			continue;
+> +		} else {
+> +			/* counters look good break the while */
+> +			break;
+> +		}
+> +	} while (time_before(jiffies, j1));
+
+	} while (time_before(jiffies, timeout);
+
+[]
+
+> +static long noc_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> +{
+> +	struct flexnoc_countercapture capture_data;
+> +	void __user *argp = (void __user *)arg;
+> +	struct flexnoc_probestart probe_data;
+> +	struct flexnoc_setup setup_data;
+> +	int rc;
+> +
+> +	if (!arg) {
+> +		pr_err("NOC: Null pointer from user\n");
+
+Perhaps useful to add #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+near the top of the file.
+
+
