@@ -2,160 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1DB3FCCC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 20:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306DD3FCCCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 20:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239795AbhHaSJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 14:09:28 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:39136 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhHaSJ1 (ORCPT
+        id S238226AbhHaSQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 14:16:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234154AbhHaSQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 14:09:27 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2F6BB1C0B76; Tue, 31 Aug 2021 20:08:31 +0200 (CEST)
-Date:   Tue, 31 Aug 2021 20:08:30 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        jacek.anaszewski@gmail.com, linux-leds@vger.kernel.org
-Subject: [GIT PULL] LEDs changes for v5.15-rc1
-Message-ID: <20210831180830.GA13989@duo.ucw.cz>
+        Tue, 31 Aug 2021 14:16:12 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C11C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 11:15:16 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id j12so198594ljg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 11:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HeW13tvhrL9w5gUzeL7/FrKd5rvLwTrOT4w/pqdAqYI=;
+        b=gXGwAW3ph6ywIS8Sz5jE+FROTf5zxy9FLtAF8gdEQCU88x0F4zTKe6GmlfHoU+uqYL
+         7bg9ATTsnSiC+2DcSi8q6dBnNfY0sJbTvPXohDhE7IcGz/nNL+zK2ELfa1UUaXksTMwu
+         AXI9v49SXZPQlSwh3gY2g65C+VIPKJTWREAdZqBQ3mLW+F8IPttFsw/i72huSIuE9kD2
+         b6wpnHPHRV8NCLdOjADGs59MaNeq3nB4law5rpgXyAyxK8R9sj7i4SLWOmIQ/n71gzZc
+         4HrLEGrl2PGAf8O8xu5bTHzmuru3w8pmkcF7AEXKip4rhaKGFOcMncYI7XF/py6uHVxM
+         lYZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HeW13tvhrL9w5gUzeL7/FrKd5rvLwTrOT4w/pqdAqYI=;
+        b=SacEvfzfkG1/qJ2JTieKn8IK+Lha9HqY4JtjpjsARnS7iM7gMgHBuNOz/NV5q1jb5f
+         6CkRTAqSn8m/ob2yHd+4PKgQFlvwedEalRt+dl2CwTmlpONifn9kInKgQ3CkH3M7oD6Q
+         KtZCATSM0B0JoI0fh+i+BEuJaHcSSOg3a1vd/9ttkF7JEnM6NRpEzL2KuUCC9n1Fe7mB
+         T2DHjimmDPTgg48FwaXlCz9ik3dWJFkh//VGdHcQHIUz7RUoGyE+cOksiq6FMOVF34I6
+         bssdNLcvTEBeCzFEuQE/F23ZIpEQ7dAo6ozde9Id3f2LpMRWIcM01DjZ7VpE6YY9dKoV
+         JZsQ==
+X-Gm-Message-State: AOAM5304ZWd4waam9tS65cUeE8qjNT5N4zVVM/KV0B0NM8mHlzfAsbzs
+        KbKwl6QURZOI8M6JyhIQ61mp4E9mpQff6g==
+X-Google-Smtp-Source: ABdhPJxewjW9UZrju5EUVd3IeOVLtk2BregE54DcFplZw6qtPBzo0F7AYM26Qs/ppjaObvXxOZmm7A==
+X-Received: by 2002:a2e:9798:: with SMTP id y24mr25635516lji.165.1630433714811;
+        Tue, 31 Aug 2021 11:15:14 -0700 (PDT)
+Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id z11sm2270757ljn.114.2021.08.31.11.15.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 11:15:14 -0700 (PDT)
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev
+Cc:     Kari Argillander <kari.argillander@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] fs/ntfs3: Fix various styling issues
+Date:   Tue, 31 Aug 2021 21:15:00 +0300
+Message-Id: <20210831181505.1074767-1-kari.argillander@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="sm4nu43k4a2Rpi4c"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Many new checkpatch warnings have been introduce to ntfs3. These could
+have been prevent if checkpatch is used. One thing that worrys me is
+that Konstantin puts new code without code reviewing process to ntfs3.
+Patch commit message says one thing, but one huge patch address that and
+lot of just refactoring code.  Also with review process we can prevent
+these kind of silly checkpatch mistakes.
 
---sm4nu43k4a2Rpi4c
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Kmalloc_array was my fault for some reason checkpatch did not show
+those. I have no idea how, but I just fix it now and be very ashamed.
+You should also Konstantin use checkpatch always before push so you can
+spot these things before hand. I will try to get CI going for patches.
 
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+Kari Argillander (5):
+  fs/ntfs3: Use kmalloc_array over kmalloc with multiply
+  fs/ntfs3: Use consistent spacing around '+'
+  fs/ntfs3: Place Comparisons constant right side of the test
+  fs/ntfs3: Remove braces from single statment block
+  fs/ntfs3: Remove tabs before spaces from comment
 
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+ fs/ntfs3/bitmap.c  | 2 +-
+ fs/ntfs3/frecord.c | 8 ++++----
+ fs/ntfs3/index.c   | 4 ++--
+ fs/ntfs3/lznt.c    | 2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ tags/=
-leds-5.15-rc1
+base-commit: d3624466b56dd5b1886c1dff500525b544c19c83
+-- 
+2.25.1
 
-for you to fetch changes up to 239f32b4f161c1584cd4b386d6ab8766432a6ede:
-
-  leds: pca955x: Switch to i2c probe_new (2021-08-20 11:00:08 +0200)
-
-----------------------------------------------------------------
-LED updates for 5.15-rc1. Usual driver changes, piece of documentation
-that should hopefully get LED names standartized, and many fixes.
-
-----------------------------------------------------------------
-Andy Shevchenko (11):
-      leds: el15203000: Correct headers (of*.h -> mod_devicetable.h)
-      leds: lgm-sso: Put fwnode in any case during ->probe()
-      leds: lgm-sso: Don't spam logs when probe is deferred
-      leds: lgm-sso: Remove explicit managed GPIO resource cleanup
-      leds: lgm-sso: Convert to use list_for_each_entry*() API
-      leds: lm3692x: Correct headers (of*.h -> mod_devicetable.h)
-      leds: lm3697: Update header block to reflect reality
-      leds: lm3697: Make error handling more robust
-      leds: lt3593: Put fwnode in any case during ->probe()
-      leds: rt8515: Put fwnode in any case during ->probe()
-      leds: lgm-sso: Propagate error codes from callee to caller
-
-Denis Osterland-Heim (2):
-      leds: move default_state read from fwnode to core
-      leds: pwm: add support for default-state device property
-
-Eddie James (7):
-      dt-bindings: leds: Add retain-state-shutdown boolean
-      leds: leds-core: Implement the retain-state-shutdown property
-      leds: pca955x: Clean up code formatting
-      leds: pca955x: Add brightness_get function
-      leds: pca955x: Implement the default-state property
-      leds: pca955x: Let the core process the fwnode
-      leds: pca955x: Switch to i2c probe_new
-
-Hans de Goede (1):
-      leds: trigger: audio: Add an activate callback to ensure the initial =
-brightness is set
-
-Jan Kundr=E1t (1):
-      leds: lp50xx: Fix chip name in KConfig
-
-Jiapeng Chong (1):
-      leds: is31fl32xx: Fix missing error code in is31fl32xx_parse_dt()
-
-Linus Walleij (6):
-      leds: aat1290: Move driver to flash subdirectory
-      leds: as3645a: Move driver to flash subdirectory
-      leds: max77693: Move driver to flash subdirectory
-      leds: sgm3140: Move driver to flash subdirectory
-      leds: lm3601x: Move driver to flash subdirectory
-      leds: ktd2692: Move driver to flash subdirectory
-
-Lukas Bulwahn (1):
-      leds: trigger: remove reference to obsolete CONFIG_IDE_GD_ATA
-
-Pavel Machek (2):
-      leds: flash: Remove redundant initialization of variable ret
-      Documentation: leds: standartizing LED names
-
- Documentation/devicetree/bindings/leds/common.yaml |   6 +
- Documentation/leds/well-known-leds.txt             |  58 ++++++
- MAINTAINERS                                        |   2 +-
- drivers/leds/Kconfig                               |  59 +-----
- drivers/leds/Makefile                              |   6 -
- drivers/leds/blink/leds-lgm-sso.c                  |  39 ++--
- drivers/leds/flash/Kconfig                         |  53 +++++
- drivers/leds/flash/Makefile                        |   6 +
- drivers/leds/{ =3D> flash}/leds-aat1290.c            |   0
- drivers/leds/{ =3D> flash}/leds-as3645a.c            |   0
- drivers/leds/{ =3D> flash}/leds-ktd2692.c            |   0
- drivers/leds/{ =3D> flash}/leds-lm3601x.c            |   0
- drivers/leds/{ =3D> flash}/leds-max77693.c           |   0
- drivers/leds/flash/leds-rt8515.c                   |   4 +-
- drivers/leds/{ =3D> flash}/leds-sgm3140.c            |   0
- drivers/leds/led-class-flash.c                     |   6 +-
- drivers/leds/led-class.c                           |  10 +-
- drivers/leds/led-core.c                            |  15 ++
- drivers/leds/leds-el15203000.c                     |   3 +-
- drivers/leds/leds-gpio.c                           |  12 +-
- drivers/leds/leds-is31fl32xx.c                     |   1 +
- drivers/leds/leds-lm3692x.c                        |   3 +-
- drivers/leds/leds-lm3697.c                         |  16 +-
- drivers/leds/leds-lt3593.c                         |   5 +-
- drivers/leds/leds-pca955x.c                        | 232 +++++++++++++++--=
-----
- drivers/leds/leds-pwm.c                            |  49 ++++-
- drivers/leds/leds.h                                |   1 +
- drivers/leds/trigger/Kconfig                       |   2 +-
- drivers/leds/trigger/ledtrig-audio.c               |  37 +++-
- include/linux/leds.h                               |  12 +-
- 30 files changed, 441 insertions(+), 196 deletions(-)
- create mode 100644 Documentation/leds/well-known-leds.txt
- rename drivers/leds/{ =3D> flash}/leds-aat1290.c (100%)
- rename drivers/leds/{ =3D> flash}/leds-as3645a.c (100%)
- rename drivers/leds/{ =3D> flash}/leds-ktd2692.c (100%)
- rename drivers/leds/{ =3D> flash}/leds-lm3601x.c (100%)
- rename drivers/leds/{ =3D> flash}/leds-max77693.c (100%)
- rename drivers/leds/{ =3D> flash}/leds-sgm3140.c (100%)
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---sm4nu43k4a2Rpi4c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYS5wHgAKCRAw5/Bqldv6
-8orsAJ9fmdPsppl4uOIe8VrUKS+dqLyVxgCeNqN3gecIsDBZY90ep0XOGdcAhkI=
-=xW4C
------END PGP SIGNATURE-----
-
---sm4nu43k4a2Rpi4c--
