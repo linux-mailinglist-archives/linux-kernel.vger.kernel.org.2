@@ -2,274 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DB03FCF0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 23:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8635C3FCF12
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 23:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238488AbhHaVW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 17:22:27 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:46702 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbhHaVWZ (ORCPT
+        id S239708AbhHaVX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 17:23:59 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:45863 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhHaVX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 17:22:25 -0400
-Received: by mail-ot1-f45.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso853981ott.13;
-        Tue, 31 Aug 2021 14:21:30 -0700 (PDT)
+        Tue, 31 Aug 2021 17:23:58 -0400
+Received: by mail-ot1-f44.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso858929otv.12;
+        Tue, 31 Aug 2021 14:23:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6jdtKNJGtMPNclOsbLTtEjPl05TzE/Ds+uGwthXxqlA=;
-        b=AaUNEeiqVTCfohlkSErRcsoJ3f/KoFqPbbneSqlQUXbiEHKbu7avuaf3key+iB987X
-         UtdAlpzmkEzJGX4LNQ9xvEqcjsUx6jJr4Gqq8VUz3Cry0ESkJHxiK3nI1jsayCSdOw9P
-         KWgUJlWuiDhRYX91+OnoHuqRGLZbqxiLvJp1sDORY9Zs+3NhIG+t6vZ1d05tPb9IiVM/
-         Sj83QX1VePL2SgxOurv9NYHIQpFfVI2V3pCsizTTli9nDPPaCcVDq2dNO267Ihtf16WR
-         7m6xZ/2Ij3tnNYZPH7euPYxGS634RlAaL+xamGk6rtmcawjFe8CpBolOSvnSavZC5EPR
-         UlMQ==
-X-Gm-Message-State: AOAM531zlkn/ORRE55oLWSTOBnVbco2tcNmhfrMNQ7wk5DBe9Em+O3oe
-        IxiM8GrMrfYhP/IQGFxzxg==
-X-Google-Smtp-Source: ABdhPJxHO/7oRYJs8n/4l9VZuKdHDXbkFvxcqjgFpOj8fqujBTu5jShdvNd9Ikpe2JjJ/2SpEPPjuA==
-X-Received: by 2002:a9d:7017:: with SMTP id k23mr10456298otj.320.1630444889621;
-        Tue, 31 Aug 2021 14:21:29 -0700 (PDT)
+        bh=wUx9V4VMzp/B15LcV0R/B+k8WpG+YIR/wnvRb9JZesY=;
+        b=eM6Q3lUDaVWfsf+F7fCEO8gNjsEO9C+r8Hn5dLnrtI/ZT4au4nfowQA1zBlNC7CNrt
+         7Y0j/FLGE2XndfTSo8oFg7qZdm2sKR9vkICW/KfiquQu5EJKTnCWNLESWxvaGvQlo5zH
+         p1d+I1E4VBuazNu7iwP4kRp+jvvmuhAcCX+Mosc3ElAhCpudEyiceVn2qybhqI74q2Zf
+         QsDp3ep9AKcYKJhKx5VmssrUBSBvHvf+OKYk4gutDDXMlXmDaeH/aQE9I3wYk2uaMWYq
+         aPCrpuMf5/GaFhdiVDc5rEkrz2d2ZE39dmxq5DiHxECqPbS0CFffGaku5OA37Ty1Ly2B
+         Uwpg==
+X-Gm-Message-State: AOAM533V9H3VrVRGRORNneBdwPAJ8+vWr4AlppHc6eHTwXEsHmzSB4LJ
+        a4eCvN/0/kj8jg3yKuBOy6MS8ceJow==
+X-Google-Smtp-Source: ABdhPJx68CiltMvlQWW7XQDzxPXrlYNB0M+lz+RG3htfHDCPSgm6oi8Kyx/DfROlwDgq4po4zNOXKg==
+X-Received: by 2002:a9d:d35:: with SMTP id 50mr25379100oti.22.1630444982315;
+        Tue, 31 Aug 2021 14:23:02 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id s24sm3874375oic.34.2021.08.31.14.21.28
+        by smtp.gmail.com with ESMTPSA id z7sm4232632oti.65.2021.08.31.14.23.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 14:21:29 -0700 (PDT)
-Received: (nullmailer pid 667047 invoked by uid 1000);
-        Tue, 31 Aug 2021 21:21:28 -0000
-Date:   Tue, 31 Aug 2021 16:21:28 -0500
+        Tue, 31 Aug 2021 14:23:01 -0700 (PDT)
+Received: (nullmailer pid 669145 invoked by uid 1000);
+        Tue, 31 Aug 2021 21:23:00 -0000
+Date:   Tue, 31 Aug 2021 16:23:00 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Mark Kettenis <mark.kettenis@xs4all.nl>
-Cc:     devicetree@vger.kernel.org, alyssa@rosenzweig.io,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Saenz Julienne <nsaenzjulienne@suse.de>,
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 3/4] dt-bindings: pci: Add DT bindings for apple,pcie
-Message-ID: <YS6dWI4wwg7XkuNA@robh.at.kernel.org>
-References: <20210827171534.62380-1-mark.kettenis@xs4all.nl>
- <20210827171534.62380-4-mark.kettenis@xs4all.nl>
+        Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH devicetree 1/2] dt-bindings: arm: fsl: document the
+ LX2160A BlueBox 3 boards
+Message-ID: <YS6dtKYnwle++wA6@robh.at.kernel.org>
+References: <20210827202722.2567687-1-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210827171534.62380-4-mark.kettenis@xs4all.nl>
+In-Reply-To: <20210827202722.2567687-1-vladimir.oltean@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 07:15:28PM +0200, Mark Kettenis wrote:
-> From: Mark Kettenis <kettenis@openbsd.org>
+On Fri, 27 Aug 2021 23:27:21 +0300, Vladimir Oltean wrote:
+> Document the compatible string for the LX2160A system that is part of
+> the BlueBox 3. Also add a separate compatible string for Rev A, since
+> technically it uses a different device tree.
 > 
-> The Apple PCIe host controller is a PCIe host controller with
-> multiple root ports present in Apple ARM SoC platforms, including
-> various iPhone and iPad devices and the "Apple Silicon" Macs.
-> 
-> Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 > ---
->  .../devicetree/bindings/pci/apple,pcie.yaml   | 165 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  2 files changed, 166 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> new file mode 100644
-> index 000000000000..97a126db935a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> @@ -0,0 +1,165 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Apple PCIe host controller
-> +
-> +maintainers:
-> +  - Mark Kettenis <kettenis@openbsd.org>
-> +
-> +description: |
-> +  The Apple PCIe host controller is a PCIe host controller with
-> +  multiple root ports present in Apple ARM SoC platforms, including
-> +  various iPhone and iPad devices and the "Apple Silicon" Macs.
-> +  The controller incorporates Synopsys DesigWare PCIe logic to
-> +  implements its root ports.  But the ATU found on most DesignWare
-> +  PCIe host bridges is absent.
-> +
-> +  All root ports share a single ECAM space, but separate GPIOs are
-> +  used to take the PCI devices on those ports out of reset.  Therefore
-> +  the standard "reset-gpios" and "max-link-speed" properties appear on
-> +  the child nodes that represent the PCI bridges that correspond to
-> +  the individual root ports.
-> +
-> +  MSIs are handled by the PCIe controller and translated into regular
-> +  interrupts.  A range of 32 MSIs is provided.  These 32 MSIs can be
-> +  distributed over the root ports as the OS sees fit by programming
-> +  the PCIe controller's port registers.
-> +
-> +allOf:
-> +  - $ref: /schemas/pci/pci-bus.yaml#
-> +  - $ref: ../interrupt-controller/msi-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: apple,t8103-pcie
-> +      - const: apple,pcie
-> +
-> +  reg:
-> +    minItems: 3
-> +    maxItems: 5
-> +
-> +  reg-names:
-> +    minItems: 3
-> +    maxItems: 5
-> +    items:
-> +      - const: config
-> +      - const: rc
-> +      - const: port0
-> +      - const: port1
-> +      - const: port2
-> +
-> +  ranges:
-> +    minItems: 2
-> +    maxItems: 2
-> +
-> +  interrupts:
-> +    description:
-> +      Interrupt specifiers, one for each root port.
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +  msi-parent: true
 
-I still think this should be dropped as it is meaningless with 
-'msi-controller' present.
-
-> +
-> +#  msi-ranges:
-> +#    description:
-> +#      A list of pairs <intid span>, where "intid" is the first
-> +#      interrupt number that can be used as an MSI, and "span" the size
-> +#      of that range.
-> +#    $ref: /schemas/types.yaml#/definitions/phandle-array
-
-Here, you'll want just 'maxItems: 1' as there's only 1 entry.
-
-> +
-> +  iommu-map: true
-> +  iommu-map-mask: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - bus-range
-> +  - interrupts
-> +  - msi-controller
-> +  - msi-parent
-> +  - msi-ranges
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/apple-aic.h>
-> +
-> +    soc {
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
-> +
-> +      pcie0: pcie@690000000 {
-> +        compatible = "apple,t8103-pcie", "apple,pcie";
-> +        device_type = "pci";
-> +
-> +        reg = <0x6 0x90000000 0x0 0x1000000>,
-> +              <0x6 0x80000000 0x0 0x4000>,
-> +              <0x6 0x81000000 0x0 0x8000>,
-> +              <0x6 0x82000000 0x0 0x8000>,
-> +              <0x6 0x83000000 0x0 0x8000>;
-> +        reg-names = "config", "rc", "port0", "port1", "port2";
-> +
-> +        interrupt-parent = <&aic>;
-> +        interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +        msi-controller;
-> +        msi-parent = <&pcie0>;
-> +        msi-ranges = <&aic AIC_IRQ 704 IRQ_TYPE_EDGE_RISING 32>;
-> +
-> +        iommu-map = <0x100 &dart0 1 1>,
-> +                    <0x200 &dart1 1 1>,
-> +                    <0x300 &dart2 1 1>;
-> +        iommu-map-mask = <0xff00>;
-> +
-> +        bus-range = <0 3>;
-> +        #address-cells = <3>;
-> +        #size-cells = <2>;
-> +        ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
-> +                 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
-> +
-> +        clocks = <&pcie_core_clk>, <&pcie_aux_clk>, <&pcie_ref_clk>;
-> +        pinctrl-0 = <&pcie_pins>;
-> +        pinctrl-names = "default";
-> +
-> +        pci@0,0 {
-> +          device_type = "pci";
-> +          reg = <0x0 0x0 0x0 0x0 0x0>;
-> +          reset-gpios = <&pinctrl_ap 152 0>;
-> +          max-link-speed = <2>;
-> +
-> +          #address-cells = <3>;
-> +          #size-cells = <2>;
-> +          ranges;
-> +        };
-> +
-> +        pci@1,0 {
-> +          device_type = "pci";
-> +          reg = <0x800 0x0 0x0 0x0 0x0>;
-> +          reset-gpios = <&pinctrl_ap 153 0>;
-> +          max-link-speed = <2>;
-> +
-> +          #address-cells = <3>;
-> +          #size-cells = <2>;
-> +          ranges;
-> +        };
-> +
-> +        pci@2,0 {
-> +          device_type = "pci";
-> +          reg = <0x1000 0x0 0x0 0x0 0x0>;
-> +          reset-gpios = <&pinctrl_ap 33 0>;
-> +          max-link-speed = <1>;
-> +
-> +          #address-cells = <3>;
-> +          #size-cells = <2>;
-> +          ranges;
-> +        };
-> +      };
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c6b8a720c0bc..30bea4042e7e 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1694,6 +1694,7 @@ C:	irc://chat.freenode.net/asahi-dev
->  T:	git https://github.com/AsahiLinux/linux.git
->  F:	Documentation/devicetree/bindings/arm/apple.yaml
->  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
-> +F:	Documentation/devicetree/bindings/pci/apple,pcie.yaml
->  F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
->  F:	arch/arm64/boot/dts/apple/
->  F:	drivers/irqchip/irq-apple-aic.c
-> -- 
-> 2.32.0
-> 
-> 
+Acked-by: Rob Herring <robh@kernel.org>
