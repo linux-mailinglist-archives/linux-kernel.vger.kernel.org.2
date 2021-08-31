@@ -2,119 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9AA3FC6D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E14C33FC6DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241594AbhHaLwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 07:52:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231710AbhHaLwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 07:52:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36A8660FF2;
-        Tue, 31 Aug 2021 11:51:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630410682;
-        bh=C0oeB3ryMBhpXrSLry7MvD8AXh7RJTn6E+8tv5L4s/E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mByPGkjpZM6rTAMxnxI3z2gL3oSKjUexZWHE2Nwiui3XwKrbl9PDdMQXnq9eGEpNs
-         IduX07AG537gLUgzzLcUGsOqtWJEPfz7QdJU2/6xXGP4AOOceHPJQAtVAWwLERR6e5
-         c7/aQbObf/nEqI7EpzFUFAWjtg93DjrkFi/TH35v1lQOoKQ/mzIqkqG8JXze5xK0Dh
-         Qtk2X8bjbwj3FL9M8z/4cp82LGoa3jaVqUmEmSZxtFvGlBpp1oFNU2QwNW8tti5Lpo
-         9KlVot+XpXGIdolX5qnQQhfIP4dFeKRtu04wClb3ojZlvkEmVdXIFX6Kp//UrVXCbc
-         kryUX7KiG/0Iw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mL2IM-0001HL-AX; Tue, 31 Aug 2021 13:51:15 +0200
-Date:   Tue, 31 Aug 2021 13:51:14 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Alex Elder <elder@kernel.org>, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: Re: [greybus-dev] [PATCH v4] staging: greybus: Convert uart.c from
- IDR to XArray
-Message-ID: <YS4Xsn9YNOzruq2b@hovoldconsulting.com>
-References: <20210829092250.25379-1-fmdefrancesco@gmail.com>
- <YSyg/Db1So0LDGR+@hovoldconsulting.com>
- <2879439.WEJLM9RBEh@localhost.localdomain>
- <YSzGkNfG6HOayiXi@hovoldconsulting.com>
- <YSzMB80NOkNvdjy1@casper.infradead.org>
- <YSzQAd0Rg5CF/eLe@hovoldconsulting.com>
- <f7a25eb1-20f4-5031-a156-9e5dc019ad28@linaro.org>
- <YS3jSsGSs0yAw/Ba@hovoldconsulting.com>
- <51c57831-71bf-92f8-2b20-3e542160a8bf@linaro.org>
+        id S241617AbhHaLwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 07:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241608AbhHaLwd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 07:52:33 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6AEC061575;
+        Tue, 31 Aug 2021 04:51:38 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id d5so5830551pjx.2;
+        Tue, 31 Aug 2021 04:51:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RX2rigJ/4yVGAmIjeTnRBQKJ9haoWNb/JQuSYn5hcTw=;
+        b=oK5tdGSOQTMsLfb4/ETbVqXw4L2ZZPy7lgqdzuKE5vGRQ9NRXt3hyP4pkf+9CWn1I9
+         JuuRZsjmLhas77RfTcWUeWg0TZBjR6pcEs0Jvu2IHxVmD3ZW/7TNY4HTfnSLoHC0WyfU
+         Io6jF6RjVQ2U77QU7U000QluIYRTee+UuOWvI2Tfod4dkOU3vHk+4tXpGX/4TmlmX420
+         2t3vi+xtP94r268cWL1AzAwpIz4xv5FNijaoCHf9CrRI63svgHwH3gVKAeBJ7QFq4kRb
+         wEzPfOrSoCD6LRpPK5QZpiMWCEzYg27he/KSY2SJs4+Gs+TRPCR9ExT/pBpYsFjfeOq6
+         SsJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RX2rigJ/4yVGAmIjeTnRBQKJ9haoWNb/JQuSYn5hcTw=;
+        b=Kx3yz0J0Ap4MFnrfbZWJjUUCUQ3HWQ5jXn4FA0X9QCXKZsVLJvc6Dy+jBDhFeTUbTw
+         +xRT/tdE8zWrRjL62UrYj4cqbHMsZrglM/v9K7UypZhaSrn/agBu5Sh9gKSciaK/w81d
+         fGIKEkzlcI4E7aQmWaEqOHUS4LsgjzGXYUqH1KLnEoTLVs5PSraVI34eqSSSrCpKEVBw
+         8Um50Pd1xukFvm1/I6sEYMHl2lPioBMpdX4/kStKkg+allAAjm/YwNNQwYsbTXuSWPrU
+         cNd7nLsIOzL5/iOgcBvDFaCjhllkj2fWOGszJbSHT2cFkHPgajU0iGk2EJ0dSS8hGZJ/
+         4D3Q==
+X-Gm-Message-State: AOAM5323lfe9pKHRroiJgTr4XAHa+bo42Xit6G9z+AyMc19f/oB9K4es
+        a+3fgFISrNimNI/c9wYMnhg=
+X-Google-Smtp-Source: ABdhPJzXWq2tYhWG1U3hwSgB2KoPkJW4AwHFV1/8WNeGxVPjtCWZWir2TS/a1El7ezWCydmwoCMq9w==
+X-Received: by 2002:a17:902:a70e:b0:12d:9eff:23be with SMTP id w14-20020a170902a70e00b0012d9eff23bemr4351271plq.34.1630410697578;
+        Tue, 31 Aug 2021 04:51:37 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id r8sm20399460pgp.30.2021.08.31.04.51.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 04:51:37 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To:     robdclark@gmail.com
+Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        lyude@redhat.com, airlied@redhat.com,
+        laurent.pinchart@ideasonboard.com, chi.minghao@zte.com.cn,
+        treding@nvidia.com, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] drm/msm: remove unneeded variable
+Date:   Tue, 31 Aug 2021 04:51:27 -0700
+Message-Id: <20210831115127.18236-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51c57831-71bf-92f8-2b20-3e542160a8bf@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 05:42:20AM -0500, Alex Elder wrote:
-> On 8/31/21 3:07 AM, Johan Hovold wrote:
-> > On Mon, Aug 30, 2021 at 08:20:25AM -0500, Alex Elder wrote:
-> > 
-> >> I have been offering review feedback on this patch for three reasons:
-> >>
-> >> - First, because I think the intended change does no real harm to the
-> >>    Greybus code, and in a small way actually simplifies it.
-> > 
-> > You leave out that we've already seen three versions of the patch that
-> > broke things in various ways and that there was still work to be done
-> > with respect to the commit message and verifying the locking. That's all
-> > real costs that someone needs to bear.
-> 
-> This is true.  But it's separate from my reason for doing it,
-> and unrelated to the suggested change.
+From: Chi Minghao <chi.minghao@zte.com.cn>
 
-I was perhaps reading the "no harm" bit too literally, but I'd say it
-very much applies to the suggested change (which was the example I
-used).
+Fix the following coccicheck REVIEW:
+./drivers/gpu/drm/msm/edp/edp_ctrl.c:1245:5-8 Unneeded variable
 
-> >> - Because I wanted to encourage Fabio's efforts to be part of the
-> >>    Linux contributor community.
-> > 
-> > Helping new contributers that for example have run into a bug or need
-> > some assistance adding a new feature that they themselves have use for
-> > is one thing.
-> > 
-> > I'm not so sure we're helping either newcomers or Linux long term by
-> > inventing work for an already strained community however.
-> > 
-> > [ This is more of a general comment and of course in no way a critique
-> >    against Fabio or a claim that the XArray conversions are pointless. ]
-> 
-> Yes, yours is a general comment.  But I would characterize
-> this as Fabio "scratching an itch" rather than "inventing
-> new work."
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Chi Minghao <chi.minghao@zte.com.cn>
+---
+ drivers/gpu/drm/msm/edp/edp_ctrl.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Just to clarify again, my comment was in no way directed at Fabio or
-not necessarily even at the XArray conversions if it indeed means that
-IDR/IDA can be removed.
+diff --git a/drivers/gpu/drm/msm/edp/edp_ctrl.c b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+index 4fb397ee7c84..3610e26e62fa 100644
+--- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
++++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+@@ -1242,8 +1242,6 @@ bool msm_edp_ctrl_panel_connected(struct edp_ctrl *ctrl)
+ int msm_edp_ctrl_get_panel_info(struct edp_ctrl *ctrl,
+ 		struct drm_connector *connector, struct edid **edid)
+ {
+-	int ret = 0;
+-
+ 	mutex_lock(&ctrl->dev_mutex);
+ 
+ 	if (ctrl->edid) {
+@@ -1278,7 +1276,7 @@ int msm_edp_ctrl_get_panel_info(struct edp_ctrl *ctrl,
+ 	}
+ unlock_ret:
+ 	mutex_unlock(&ctrl->dev_mutex);
+-	return ret;
++	return 0;
+ }
+ 
+ int msm_edp_ctrl_timing_cfg(struct edp_ctrl *ctrl,
+-- 
+2.25.1
 
-> The strained community needs more helpers, and
-> they don't suddenly appear fully-formed; they need to be
-> cultivated.  There's a balance to strike between "I see
-> you need a little guidance here" and "go away and come
-> back when you know how to do it right."
-
-And here's where I think the invented work bit really comes in. I have
-no problem helping someone fix a real problem or add a feature they
-need, but spending hours on reviewing changes that in the end no one
-needs I find a bit frustrating. My guess is that the former is also more
-likely to generate long-term contributors than teaching people C on
-made-up tasks or asking them to silence checkpatch.pl indentation
-warnings.
-
-> In any case, I don't disagree with your general point, but
-> we seem to view this particular instance differently.
-
-Perhaps I shouldn't have brought up the general issue in this case. If
-there was a general consensus that IDR was going away and some
-precedence outside of staging that could be used as a model, then this
-change would be fine.
-
-Johan
