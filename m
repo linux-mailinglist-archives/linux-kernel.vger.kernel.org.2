@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944F73FC58A
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5750F3FC58F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240954AbhHaKVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:21:17 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57852 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234682AbhHaKVP (ORCPT
+        id S240953AbhHaKWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240908AbhHaKWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:21:15 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7295F221F2;
-        Tue, 31 Aug 2021 10:20:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630405219; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YpSsXvykYNxP6O/KJXAtzalCJEzC7b1UFSE2Gtv43HY=;
-        b=bKJb7owMtYJrRNv5VDrvvGVp07A/pa7iex0XjJ0+R8PU4XQD6fasNj+V/Plqr/wZYkcmjo
-        NeNsoC7sbZq43MwjOZqsDF97Yf1vaySJQwCgG4nVkrroThrwpt6KhK2BYzUQ/dDxgu0rZC
-        T+sJJ/gtSHHxwveL4jYvw/XxEa1Un2k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630405219;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YpSsXvykYNxP6O/KJXAtzalCJEzC7b1UFSE2Gtv43HY=;
-        b=AzUwivJ+XLu5WUD2QTK4k2lJplQkfMSiRyVTG1JT/kB7bRb3QDQ6AMgLI0ror9DP2zzYGZ
-        tp69pYhhuczEMaAA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4322F13A7A;
-        Tue, 31 Aug 2021 10:20:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id E/+2D2MCLmE8egAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Tue, 31 Aug 2021 10:20:19 +0000
-Message-ID: <17a36dfc-cbd1-56c5-46a9-9f4043bb56e6@suse.cz>
-Date:   Tue, 31 Aug 2021 12:20:18 +0200
+        Tue, 31 Aug 2021 06:22:34 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172BBC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:21:39 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id y34so37394382lfa.8
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SaQiFvhNq7368+94ke7tCwmU8u/vT5hggbptJeHOcYo=;
+        b=OQ8Bc7H/j7dY8F+7/WWLC8l2pfhCHESOHANGP40xBtANdPJhhCoXsFJE8/mcMLl6lb
+         bKH2QIzdw8Z3bHXrkZiaqsbkx9pU/7qQ3ikcKw5DsQifxf7w4S6mRQvk1kjExY/XCrBL
+         x1f8EISuWCWhIkqllRSOpX0AE8ii8ONpNBj807/cw5HxrPKESUk9MTq7svvQQbGk8/DX
+         PT6GqOiEW+D9hmrjFv2Db0EVRCjLTLSb9b0DMV2Id/Pszpdi0+sYj409rQuECO1+Zsdc
+         D/bTITEW67QawE23Dz0u5spWInPsJ8lnUGdvyx/xOZCTiDWTFogofPOFgZWhd5KL98sg
+         ZfmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SaQiFvhNq7368+94ke7tCwmU8u/vT5hggbptJeHOcYo=;
+        b=LzU+iH9LOyS+tUFLh2vv0efsx4I68+GgVUSioedhJES7m8PDLdEc7ksVv1tiBh/2We
+         Ft9uRqsQ6HORSoZhPzJ7joPXpgx6/IG1zwkwqVLhFSl8PPLwOYFOGTwiwWAJMTTCcx45
+         cURNj8NK7KbPvHhh9CDnzRbFtBgl+yt/cwU/d1QKHMk3Ehk7evMEAOa2KhiRp2Kg8gS0
+         5ye2M4Ct56DK2Ipky13JuJWI5lpUG6obtD8GtGLsBg9eFV7/PFjZsHE2WZCFEZ2yP0GJ
+         2orwugr5YhW4ByFxM3f9OouwYbQub4jGZRvv3OQrDjiTEVeQwwEsXtXonF48cjyS1MvF
+         vlNg==
+X-Gm-Message-State: AOAM53033Pwjov1tYrUjY9OJ5qb9+zaEsh12NDW6V7vFMp4VtL33ssAq
+        KzA6bmsDe+g4WMqe3LXkxU2UcA==
+X-Google-Smtp-Source: ABdhPJysTQHKjj6sHl08LoVd8gzCM5Oi5pHDfNeAo1fs+lBAhuD47ThIpXSDKSYwaxeOL6peufsGZQ==
+X-Received: by 2002:a05:6512:2210:: with SMTP id h16mr20684305lfu.621.1630405297014;
+        Tue, 31 Aug 2021 03:21:37 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id b21sm753714lfi.104.2021.08.31.03.21.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 03:21:36 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Saravana Kannan <saravanak@google.com>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 1/2] of: property: fw_devlink: Rename 'node_not_dev' to 'optional_con_dev'
+Date:   Tue, 31 Aug 2021 12:21:25 +0200
+Message-Id: <20210831102125.624661-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH v1 2/2] mm: remove redundant smp_wmb()
-Content-Language: en-US
-To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
-        mika.penttila@nextfour.com, david@redhat.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com
-References: <20210828042306.42886-1-zhengqi.arch@bytedance.com>
- <20210828042306.42886-3-zhengqi.arch@bytedance.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20210828042306.42886-3-zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/21 06:23, Qi Zheng wrote:
-> The smp_wmb() which is in the __pte_alloc() is used to
-> ensure all ptes setup is visible before the pte is made
-> visible to other CPUs by being put into page tables. We
-> only need this when the pte is actually populated, so
-> move it to pte_install(). __pte_alloc_kernel(),
+In the struct supplier_bindings the member 'node_not_dev' is described as
+"The consumer node containing the property is never a device.", but that
+doesn't match the behaviour of the code in of_link_property().
 
-It's named pmd_install()?
+To make the behaviour consistent with the description, let's rename the
+member to "optional_con_dev" and clarify the corresponding comment.
 
-> __p4d_alloc(), __pud_alloc() and __pmd_alloc() are similar
-> to this case.
-> 
-> We can also defer smp_wmb() to the place where the pmd entry
-> is really populated by preallocated pte. There are two kinds
-> of user of preallocated pte, one is filemap & finish_fault(),
-> another is THP. The former does not need another smp_wmb()
-> because the smp_wmb() has been done by pte_install().
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ drivers/of/property.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Same here.
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index 6c028632f425..2babb1807228 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1249,7 +1249,8 @@ static struct device_node *parse_##fname(struct device_node *np,	     \
+  * @parse_prop.index: For properties holding a list of phandles, this is the
+  *		      index into the list
+  * @optional: Describes whether a supplier is mandatory or not
+- * @node_not_dev: The consumer node containing the property is never a device.
++ * @optional_con_dev: The consumer node containing the property may not be a
++ *		      device, then try finding one from an ancestor node.
+  *
+  * Returns:
+  * parse_prop() return values are
+@@ -1261,7 +1262,7 @@ struct supplier_bindings {
+ 	struct device_node *(*parse_prop)(struct device_node *np,
+ 					  const char *prop_name, int index);
+ 	bool optional;
+-	bool node_not_dev;
++	bool optional_con_dev;
+ };
+ 
+ DEFINE_SIMPLE_PROP(clocks, "clocks", "#clock-cells")
+@@ -1370,7 +1371,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+ 	{ .parse_prop = parse_pinctrl6, },
+ 	{ .parse_prop = parse_pinctrl7, },
+ 	{ .parse_prop = parse_pinctrl8, },
+-	{ .parse_prop = parse_remote_endpoint, .node_not_dev = true, },
++	{ .parse_prop = parse_remote_endpoint, .optional_con_dev = true, },
+ 	{ .parse_prop = parse_gpio_compat, },
+ 	{ .parse_prop = parse_interrupts, },
+ 	{ .parse_prop = parse_regulators, },
+@@ -1415,7 +1416,7 @@ static int of_link_property(struct device_node *con_np, const char *prop_name)
+ 		while ((phandle = s->parse_prop(con_np, prop_name, i))) {
+ 			struct device_node *con_dev_np;
+ 
+-			con_dev_np = s->node_not_dev
++			con_dev_np = s->optional_con_dev
+ 					? of_get_compat_node(con_np)
+ 					: of_node_get(con_np);
+ 			matched = true;
+-- 
+2.25.1
 
-> Fortunately, the latter also does not need another smp_wmb()
-> because there is already a smp_wmb() before populating the
-> new pte when the THP uses a preallocated pte to split a huge
-> pmd.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  mm/memory.c         | 47 ++++++++++++++++++++---------------------------
->  mm/sparse-vmemmap.c |  2 +-
->  2 files changed, 21 insertions(+), 28 deletions(-)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index ef7b1762e996..9c7534187454 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -439,6 +439,20 @@ void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte)
->  
->  	if (likely(pmd_none(*pmd))) {	/* Has another populated it ? */
->  		mm_inc_nr_ptes(mm);
-> +		/*
-> +		 * Ensure all pte setup (eg. pte page lock and page clearing) are
-> +		 * visible before the pte is made visible to other CPUs by being
-> +		 * put into page tables.
-> +		 *
-> +		 * The other side of the story is the pointer chasing in the page
-> +		 * table walking code (when walking the page table without locking;
-> +		 * ie. most of the time). Fortunately, these data accesses consist
-> +		 * of a chain of data-dependent loads, meaning most CPUs (alpha
-> +		 * being the notable exception) will already guarantee loads are
-> +		 * seen in-order. See the alpha page table accessors for the
-> +		 * smp_rmb() barriers in page table walking code.
-> +		 */
-> +		smp_wmb(); /* Could be smp_wmb__xxx(before|after)_spin_lock */
-
-So, could it? :)
