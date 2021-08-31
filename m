@@ -2,159 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BEB3FC831
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85223FC82F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235961AbhHaN1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50442 "EHLO
+        id S235281AbhHaN1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233512AbhHaN1X (ORCPT
+        with ESMTP id S234589AbhHaN1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:27:23 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE305C061575;
-        Tue, 31 Aug 2021 06:26:28 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id u7so19911577ilk.7;
-        Tue, 31 Aug 2021 06:26:28 -0700 (PDT)
+        Tue, 31 Aug 2021 09:27:05 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A448C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 06:26:10 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id n27so24698347oij.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 06:26:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9ZS2rq7TdX/lH9ThK6GDPfAidwJG5w2VZOyeSQOB1m0=;
-        b=XHGcX+O7iUV4pWgRoeWLQ6OgWYc0j1iBce8scG93nSMR34nifJV/IKMcFSHs6WIqUh
-         WGrcElbCwPTBYS2dbaORFGLxEKbt2icD/wlFJIXGLoMRBMPWPYik39nWWdFDiryUk+6Z
-         FNhaBRNH6Oo7kM9NPX7GxzoIXD1idTx88ZehyLnB+E7zW5q8dQa4q6uhhmt0tcZkMnAH
-         2ERhGsmurHKhrRPwn6DhuIRcSmGUMfi6G7+b2XbrixyCuYqPLDeXEU/20VgB3mfZDzBM
-         q+6wdF9eHv6RPfSDhefv3IluZZv7pkPvXjAdyoxMWiFatGPUnt8LjpOgwp9OY3xhIav8
-         GWlA==
+        bh=w+OGVM7mlO+rbT4FsYj2MnmdM50qACz9pjvpcU7+PMY=;
+        b=KbmAfbw/vdflbdPCVYj6tkOs3YSbhZrP+l0T3EpxWZ/wLsl4JhKpnWaPb/uduSHpBI
+         x/N2tXtNpqMZH/EgyvVUKytKfTelcjEVKevakpywjiulvRjPpx4udIBFZliT11MPpziZ
+         lrxHzCbakSPKwFw4V/cPHbb1euBzfjx/JGd16W9vzOzZj2ZZgbPphuUusd8VXBw4RQcm
+         mbXZ65z/OMQ+U6QSJy1rtdeZDpOtBjvDTegl7xli6TyMtSS4sXDIvtZ4fEB6i5mzh5bd
+         Z6ekv1QrkOSa+kQJ5dQO4zB6tgfMeA1+j6CvJhpec3W0vcVbc5qvcIA0vUhNon5oHktd
+         urhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9ZS2rq7TdX/lH9ThK6GDPfAidwJG5w2VZOyeSQOB1m0=;
-        b=J3nBZVX+K+602Mk+orxzjQB5tIDGKOgce9tsoK6y0UwjmSnnC4WpQvJeNcqRLxZ8ny
-         zLp6BqcCuWS+yhMdnlcB54+kf9PWMy6SGceHLfOv4fynV+GlCZ0/8T5c1GMrFhOJqRby
-         g/obNRRZ8CvlvqFsdEkGgCmmEKsD1WGDCABYWMW+KR84kAtDHdLkxrQ4A1l7OExunsYU
-         OLokvbrSTTR89IPJzqKAlYOU9OlG/rD7Xwn4REP9as9a5M2/61NN6/qZlbS7RRbNeR3Q
-         HgsaaaI5BlHOa9xAhlSGF2kMRSUJ9Wjgde1jJlIOY1Xbx/F+QWxengq4N2USPfu3b94q
-         OzSA==
-X-Gm-Message-State: AOAM533SiW5nhaowCrv69LEDMUQ2cD+2TYMiVm9BEtbQN6//2ENyQMXN
-        BtHFby2nnrHFzAOOvFFmeIiLLQg5C7vzYNb8B9g=
-X-Google-Smtp-Source: ABdhPJz5gsMDI0G+bxOkqlvJqa7jGXoSCu6MF8hlitRetsAxgu6aybdHpkBYhStLdP5Eu92OgfQ9O57hSwcTFKqlokQ=
-X-Received: by 2002:a05:6e02:1aa2:: with SMTP id l2mr20570434ilv.168.1630416388169;
- Tue, 31 Aug 2021 06:26:28 -0700 (PDT)
+        bh=w+OGVM7mlO+rbT4FsYj2MnmdM50qACz9pjvpcU7+PMY=;
+        b=a0Y+k1zQeTjOVEWtuomVEH9u75VagTF8NsfrYEwFYT6nTL47YPCOrGAAXXh6xeL5WK
+         ao7yFy2LyXhp35Ru/dCT58TK5G+EPLXEZppFb9cUdWKufISl7DHpQAZOo8G9ox/V/ooe
+         TO68Dska2N7quHJkBe0NNaO5qNpBHpQ9B9TDxTRBqtwQFiDP0fhnngbTtQ14xcIGwSCi
+         PN0OOmVwKbozz3wxjfMxdtBNpvqG7rIsulHpuZvaQWH2DdjkHZxZd6yZPCdUxu9Kz4rk
+         LgDEelghRyGFkdkO/1WSO1ruWCrLaJjFX2A5UoOHysB5VPQ5KyfXPMsuHpII/UadxGXm
+         tlJw==
+X-Gm-Message-State: AOAM531bzCdUOMWoLeF4q/iLwZHZ6ZmHC/yjvq772rd7s7NrVW+cLRBW
+        wB7oFTLfOiE4MsNUfZ4rQVGVaU7UHeeOBD95HMDfDA==
+X-Google-Smtp-Source: ABdhPJwi4Gy5jptuKvQY3nJdJnbPO9GEVAw3SKF8q1ChR09PXNJkFEisB7zDtwSFv1GYybWiq/TUkN47zTuTkKNJHP8=
+X-Received: by 2002:a05:6808:21a5:: with SMTP id be37mr3131695oib.172.1630416369618;
+ Tue, 31 Aug 2021 06:26:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210824112946.9324-1-laoar.shao@gmail.com> <20210824112946.9324-3-laoar.shao@gmail.com>
- <YS4CRi7nzfGk2o7u@hirez.programming.kicks-ass.net>
-In-Reply-To: <YS4CRi7nzfGk2o7u@hirez.programming.kicks-ass.net>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 31 Aug 2021 21:25:52 +0800
-Message-ID: <CALOAHbAAyAOx9Ck27LhqV-sddTTWsk0cqMdHRNiA5O-r_9K+cQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/7] sched: make struct sched_statistics independent of
- fair sched class
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Alison Chaiken <achaiken@aurora.tech>,
-        kbuild test robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
+References: <20210830212951.3541589-1-pgonda@google.com> <CAA03e5Fd2aes=euzXv51d6b3E0S3tK45hkqQhONsmWA5dE33dw@mail.gmail.com>
+In-Reply-To: <CAA03e5Fd2aes=euzXv51d6b3E0S3tK45hkqQhONsmWA5dE33dw@mail.gmail.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Tue, 31 Aug 2021 06:25:58 -0700
+Message-ID: <CAA03e5G9TEsmzbQw_m_Zh+Evdief0hgiuMmBGF40xctMAwjY2w@mail.gmail.com>
+Subject: Re: [PATCH 3/3 V6] selftest: KVM: Add intra host migration
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 6:19 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, Aug 31, 2021 at 6:24 AM Marc Orr <marcorr@google.com> wrote:
 >
-> On Tue, Aug 24, 2021 at 11:29:41AM +0000, Yafang Shao wrote:
->
-> > +#ifdef CONFIG_FAIR_GROUP_SCHED
-> > +static inline void
-> > +__schedstats_from_sched_entity(struct sched_entity *se,
-> > +                           struct sched_statistics **stats)
-> > +{
-> > +     struct task_group *tg;
-> > +     struct task_struct *p;
-> > +     struct cfs_rq *cfs;
-> > +     int cpu;
+> On Mon, Aug 30, 2021 at 2:29 PM Peter Gonda <pgonda@google.com> wrote:
+> >
+> > Adds testcases for intra host migration for SEV and SEV-ES. Also adds
+> > locking test to confirm no deadlock exists.
+> >
+> > ---
+> >  tools/testing/selftests/kvm/Makefile          |   1 +
+> >  .../selftests/kvm/x86_64/sev_vm_tests.c       | 152 ++++++++++++++++++
+> >  2 files changed, 153 insertions(+)
+> >  create mode 100644 tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> >
+> > Signed-off-by: Peter Gonda <pgonda@google.com>
+> > Suggested-by: Sean Christopherson <seanjc@google.com>
+> > Cc: Marc Orr <marcorr@google.com>
+> > Cc: Sean Christopherson <seanjc@google.com>
+> > Cc: Brijesh Singh <brijesh.singh@amd.com>
+> > Cc: kvm@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> >
+> > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> > index 5832f510a16c..de6e64d5c9c4 100644
+> > --- a/tools/testing/selftests/kvm/Makefile
+> > +++ b/tools/testing/selftests/kvm/Makefile
+> > @@ -71,6 +71,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
+> >  TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_msrs_test
+> >  TEST_GEN_PROGS_x86_64 += x86_64/xen_shinfo_test
+> >  TEST_GEN_PROGS_x86_64 += x86_64/xen_vmcall_test
+> > +TEST_GEN_PROGS_x86_64 += x86_64/sev_vm_tests
+> >  TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
+> >  TEST_GEN_PROGS_x86_64 += demand_paging_test
+> >  TEST_GEN_PROGS_x86_64 += dirty_log_test
+> > diff --git a/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> > new file mode 100644
+> > index 000000000000..50a770316628
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> > @@ -0,0 +1,150 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +#include <linux/kvm.h>
+> > +#include <linux/psp-sev.h>
+> > +#include <stdio.h>
+> > +#include <sys/ioctl.h>
+> > +#include <stdlib.h>
+> > +#include <errno.h>
+> > +#include <pthread.h>
 > > +
-> > +     if (entity_is_task(se)) {
-> > +             p = task_of(se);
-> > +             *stats = &p->stats;
-> > +     } else {
-> > +             cfs = group_cfs_rq(se);
-> > +             tg = cfs->tg;
-> > +             cpu = cpu_of(rq_of(cfs));
-> > +             *stats = tg->stats[cpu];
-> > +     }
+> > +#include "test_util.h"
+> > +#include "kvm_util.h"
+> > +#include "processor.h"
+> > +#include "svm_util.h"
+> > +#include "kvm_util.h"
+> > +#include "kselftest.h"
+> > +#include "../lib/kvm_util_internal.h"
+> > +
+> > +#define SEV_DEV_PATH "/dev/sev"
+> > +
+> > +/*
+> > + * Open SEV_DEV_PATH if available, otherwise exit the entire program.
+> > + *
+> > + * Input Args:
+> > + *   flags - The flags to pass when opening SEV_DEV_PATH.
+> > + *
+> > + * Return:
+> > + *   The opened file descriptor of /dev/sev.
+> > + */
+> > +static int open_sev_dev_path_or_exit(int flags)
+> > +{
+> > +       static int fd;
+> > +
+> > +       if (fd != 0)
+> > +               return fd;
+> > +
+> > +       fd = open(SEV_DEV_PATH, flags);
+> > +       if (fd < 0) {
+> > +               print_skip("%s not available, is SEV not enabled? (errno: %d)",
+> > +                          SEV_DEV_PATH, errno);
+> > +               exit(KSFT_SKIP);
+> > +       }
+> > +
+> > +       return fd;
 > > +}
 > > +
-> > +#else
-> > +
-> > +static inline void
-> > +__schedstats_from_sched_entity(struct sched_entity *se,
-> > +                           struct sched_statistics **stats)
+> > +static void sev_ioctl(int fd, int cmd_id, void *data)
 > > +{
-> > +     struct task_struct *p;
+> > +       struct kvm_sev_cmd cmd = { 0 };
+> > +       int ret;
 > > +
-> > +     p = task_of(se);
-> > +     *stats = &p->stats;
+> > +       TEST_ASSERT(cmd_id < KVM_SEV_NR_MAX, "Unknown SEV CMD : %d\n", cmd_id);
+> > +
+> > +       cmd.id = cmd_id;
+> > +       cmd.sev_fd = open_sev_dev_path_or_exit(0);
+> > +       cmd.data = (uint64_t)data;
+> > +       ret = ioctl(fd, KVM_MEMORY_ENCRYPT_OP, &cmd);
+> > +       TEST_ASSERT((ret == 0 || cmd.error == SEV_RET_SUCCESS),
+> > +                   "%d failed: return code: %d, errno: %d, fw error: %d",
+> > +                   cmd_id, ret, errno, cmd.error);
+> > +}
+>
+> nit: Since this function has two file descriptors, `fd` and
+> `cmd.sev_fd`, can we rename `fd` to `vm_fd`?
+>
+> > +
+> > +static struct kvm_vm *sev_vm_create(bool es)
+> > +{
+> > +       struct kvm_vm *vm;
+> > +       struct kvm_sev_launch_start start = { 0 };
+> > +       int i;
+> > +
+> > +       vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> > +       sev_ioctl(vm->fd, es ? KVM_SEV_ES_INIT : KVM_SEV_INIT, NULL);
+> > +       for (i = 0; i < 3; ++i)
+>
+> nit: Consider moving `3` to a macro, like `MAX_VCPU_IDX` or maybe
+> better defining something like `NUM_VCPUS` to be 4.
+>
+> > +               vm_vcpu_add(vm, i);
+> > +       start.policy |= (es) << 2;
+> > +       sev_ioctl(vm->fd, KVM_SEV_LAUNCH_START, &start);
+> > +       if (es)
+> > +               sev_ioctl(vm->fd, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
+> > +       return vm;
 > > +}
 > > +
-> > +#endif
+> > +static void test_sev_migrate_from(bool es)
+> > +{
+> > +       struct kvm_vm *vms[3];
+>
+> If we create a `NUM_VCPUS` macro, then we can use it here.
+>
+> > +       struct kvm_enable_cap cap = { 0 };
+> > +       int i;
 > > +
-> >  /*
-> >   * Update the current task's runtime statistics.
-> >   */
-> > @@ -826,6 +861,7 @@ static void update_curr(struct cfs_rq *cfs_rq)
-> >  {
-> >       struct sched_entity *curr = cfs_rq->curr;
-> >       u64 now = rq_clock_task(rq_of(cfs_rq));
-> > +     struct sched_statistics *stats = NULL;
-> >       u64 delta_exec;
-> >
-> >       if (unlikely(!curr))
-> > @@ -837,8 +873,11 @@ static void update_curr(struct cfs_rq *cfs_rq)
-> >
-> >       curr->exec_start = now;
-> >
-> > -     schedstat_set(curr->statistics.exec_max,
-> > -                   max(delta_exec, curr->statistics.exec_max));
-> > +     if (schedstat_enabled()) {
-> > +             __schedstats_from_sched_entity(curr, &stats);
-> > +             __schedstat_set(stats->exec_max,
-> > +                             max(delta_exec, stats->exec_max));
-> > +     }
-> >
-> >       curr->sum_exec_runtime += delta_exec;
-> >       schedstat_add(cfs_rq->exec_clock, delta_exec);
+> > +       for (i = 0; i < sizeof(vms) / sizeof(struct kvm_vm *); ++i)
+> > +               vms[i] = sev_vm_create(es);
+> > +
+> > +       cap.cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM;
+> > +       for (i = 0; i < sizeof(vms) / sizeof(struct kvm_vm *) - 1; ++i) {
+> > +               cap.args[0] = vms[i]->fd;
+> > +               vm_enable_cap(vms[i + 1], &cap);
+> > +       }
 >
+> nit/optional: To me, the code would be more clear if we combined this
+> loop with the one above and guarded calling `vm_enable_cap()` with `if
+> (i > 0)`. Also, maybe we can initialize `cap` when it's declared.
 >
-> That's just really odd style; what's wrong with something like:
+>      struct kvm_enable_cap cap = { .cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM };
+>      int i;
 >
+>      for (i = 0; i < sizeof(vms) / sizeof(struct kvm_vm *); ++i) {
+>           vms[i] = sev_vm_create(es);
+>           if (i > 0)
+>                vm_enable_cap(vms[i], &cap);
+>      }
+>
+> > +}
+> > +
+> > +#define LOCK_TESTING_THREADS 3
+>
+> nit: Consider moving this macro to the top of the file.
+>
+> > +
+> > +struct locking_thread_input {
+> > +       struct kvm_vm *vm;
+> > +       int source_fds[LOCK_TESTING_THREADS];
+> > +};
+> > +
+> > +static void *locking_test_thread(void *arg)
+> > +{
+> > +       struct kvm_enable_cap cap = { 0 };
+>
+> Maybe:
+> struct kvm_enable_cap cap = { .cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM };
+>
+> > +       int i, j;
+> > +       struct locking_thread_input *input = (struct locking_test_thread *)arg;
+> > +
+> > +       cap.cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM;
+>
+> If we initialize the cap field during the declaration, then this line goes away.
+>
+> > +
+> > +       for (i = 0; i < 1000; ++i) {
+> > +               j = input->source_fds[i % LOCK_TESTING_THREADS];
+> > +               cap.args[0] = input->source_fds[j];
+> > +               /*
+> > +                * Call IOCTL directly without checking return code. We are
+> > +                * simply trying to confirm there is no deadlock from userspace
+> > +                * not check correctness of migration here.
+> > +                */
+> > +               ioctl(input->vm->fd, KVM_ENABLE_CAP, &cap);
+>
+> Should we use `vm_enable_cap()` here?
+>
+> > +       }
+> > +}
+> > +
+> > +static void test_sev_migrate_locking(void)
+> > +{
+> > +       struct locking_thread_input input[LOCK_TESTING_THREADS];
+> > +       pthread_t pt[LOCK_TESTING_THREADS];
+> > +       int i;
+> > +
+> > +       for (i = 0; i < LOCK_TESTING_THREADS; ++i) {
+> > +               input[i].vm = sev_vm_create(/* es= */ false);
+> > +               input[0].source_fds[i] = input[i].vm->fd;
+> > +       }
+> > +       memcpy(input[1].source_fds, input[0].source_fds,
+> > +              sizeof(input[1].source_fds));
+> > +       memcpy(input[2].source_fds, input[0].source_fds,
+> > +              sizeof(input[2].source_fds));
+> > +
+> > +       for (i = 0; i < LOCK_TESTING_THREADS; ++i)
+> > +               pthread_create(&pt[i], NULL, locking_test_thread, &input[i]);
+> > +
+> > +       for (i = 0; i < LOCK_TESTING_THREADS; ++i)
+> > +               pthread_join(pt[i], NULL);
+> > +}
+>
+> I think this function/test case deserves a comment to capture some of
+> the conversation we had on the list that led to Sean suggesting this
+> test case. Speaking of which, should this test case have a
+> Suggested-by tag for Sean, since he suggested this test?
 
-I will change it.
+Gah. I forgot to check the tags before sending my feedback. Of course,
+the suggested-by tag is already there. Second time I made this gaffe
+in the last couple of weeks. Sorry for the noise.
 
-> static inline struct sched_statistics *
-> __schedstats_from_se(struct sched_entity *se)
-> {
->         ...
-> }
 >
->         if (schedstats_enabled()) {
->                 struct sched_statistics *stats = __schedstats_from_se(curr);
->                 __schedstat_set(stats->exec_max, max(stats->exec_max, delta_exec));
->         }
+> > +
+> > +int main(int argc, char *argv[])
+> > +{
+> > +       test_sev_migrate_from(/* es= */ false);
+> > +       test_sev_migrate_from(/* es= */ true);
+> > +       test_sev_migrate_locking();
+> > +       return 0;
+> > +}
+> > --
+> > 2.33.0.259.gc128427fd7-goog
+> >
 >
->
-
-
--- 
-Thanks
-Yafang
+> Nice test!
