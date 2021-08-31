@@ -2,79 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567393FC343
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 09:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB09E3FC33C
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 09:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239453AbhHaHQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 03:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239265AbhHaHQJ (ORCPT
+        id S239249AbhHaHPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 03:15:22 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:42962 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239112AbhHaHPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 03:16:09 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E25C061575;
-        Tue, 31 Aug 2021 00:15:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YY9pvWpNs1TzAImK8Qk46A5Z5evWyYN+iUQ9FkXNB2c=; b=gZVCxgwskqclakQkAXx+Eg+7Bl
-        l/BVBBomSXREZJyKAHP5/AUuxejcIaW95mP3JfuN25GssEJNYKjdO6Ud4u8HfgQ0cNSUk/PRERtsY
-        hP/i6wVee6DIbIJPKXcY0nLdh9NNszNSK94qfHwz8VJMicVkUQmjB+Rk7Eb2PJzMc7MiqUXta/1O5
-        xxYHMNCpBTCzXzexwKysuA4wAvsZsTrmkHLyyHK6XNKt047bIec6ihWXGJ8XZw1f0ZFCYrNaKwvU/
-        eQVYRRaP1jAnA7umHS+h6y3brAhQ7KmMT4jieqDMs6dtybgjFdVWRKTTVbYb7La4nzKcgzw5H5Sbo
-        d79TYnZw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKxyJ-00EdO7-8r; Tue, 31 Aug 2021 07:14:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6DAD23001F6;
-        Tue, 31 Aug 2021 09:14:13 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 22AAB2CFB419C; Tue, 31 Aug 2021 09:14:13 +0200 (CEST)
-Date:   Tue, 31 Aug 2021 09:14:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tianqiang Xu <skyele@sjtu.edu.cn>
-Cc:     x86@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, kvm@vger.kernel.org, hpa@zytor.com,
-        jarkko@kernel.org, dave.hansen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Subject: Re: [PATCH 2/4] Scheduler changes
-Message-ID: <YS3WxQe6bJLx6qpR@hirez.programming.kicks-ass.net>
-References: <20210831015919.13006-1-skyele@sjtu.edu.cn>
- <20210831015919.13006-2-skyele@sjtu.edu.cn>
+        Tue, 31 Aug 2021 03:15:20 -0400
+X-UUID: 264a7f8db0d2461c95951a919d751f03-20210831
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=8w6G2IE3sjCnMBO0KwY4vI3XXmg7cJyry2Y2ZvnNaH8=;
+        b=C/JiyAKP7OI8oifk1AWqL0NAmTOtWXpse4A2N9OabTRGIxe8yPuf/NXko1zh2AGmdRTR0oXhsEGKVAHoxKYsmigderlsrUNXs65f3SOgjgWE150tRe2na0F2H/Q+piLn6dlD88OD2rlZJkhtnpGt3W7Q+ud2MmYCER/kWxw41BY=;
+X-UUID: 264a7f8db0d2461c95951a919d751f03-20210831
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <jason-jh.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 627122481; Tue, 31 Aug 2021 15:14:23 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 31 Aug 2021 15:14:22 +0800
+Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 31 Aug 2021 15:14:22 +0800
+Message-ID: <81f4cecd13cd40fcbcdb980bf18375a4a894b118.camel@mediatek.com>
+Subject: Re: [PATCH v6 0/5] Add gce support for mt8195
+From:   Jason-JH Lin <jason-jh.lin@mediatek.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>, <hsinyi@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, <nancy.lin@mediatek.com>,
+        <singo.chang@mediatek.com>
+Date:   Tue, 31 Aug 2021 15:14:22 +0800
+In-Reply-To: <CABb+yY0rTZrM1J7mFbSf0Z5tdwjYsQ8Tff-DnVfxX8P4HRu01w@mail.gmail.com>
+References: <20210825094120.5005-1-jason-jh.lin@mediatek.com>
+         <CABb+yY0rTZrM1J7mFbSf0Z5tdwjYsQ8Tff-DnVfxX8P4HRu01w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210831015919.13006-2-skyele@sjtu.edu.cn>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 09:59:17AM +0800, Tianqiang Xu wrote:
-> Authors: Tianqiang Xu, Dingji Li, Zeyu Mi
-> 	 Shanghai Jiao Tong University
-> 
-> Signed-off-by: Tianqiang Xu <skyele@sjtu.edu.cn>
+SGkgSmFzc2ksDQoNClRoYW5rcyBmb3IgdGhlIHJldmlld3MuDQoNCk9uIE1vbiwgMjAyMS0wOC0z
+MCBhdCAwMDozNCAtMDUwMCwgSmFzc2kgQnJhciB3cm90ZToNCj4gT24gV2VkLCBBdWcgMjUsIDIw
+MjEgYXQgNDo0MSBBTSBqYXNvbi1qaC5saW4gPA0KPiBqYXNvbi1qaC5saW5AbWVkaWF0ZWsuY29t
+PiB3cm90ZToNCj4gPiANCj4gPiBDaGFuZ2UgaW4gdjY6DQo+ID4gLSByZW1vdmUgdGhlIHVudXNl
+ZCBkZWZpbmUgaW4gR0NFIGhlYWRlciBmaWxlLg0KPiA+IA0KPiANCj4gUGxlYXNlIHJlYmFzZSB0
+aGUgcGF0Y2hlcyBvdmVyIG90aGVyIHByZXZpb3VzIG10ayBwYXRjaHNldCBmb3INCj4gbXQ4MTky
+Lg0KPiANCmh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMvX19odHRwczovL2dpdC5saW5hcm8ub3Jn
+L2xhbmRpbmctdGVhbXMvd29ya2luZy9mdWppdHN1L2ludGVncmF0aW9uLmdpdC9sb2cvP2g9bWFp
+bGJveC1mb3ItbmV4dF9fOyEhQ1RSTktBOXdNZzBBUmJ3ITBLZWtIQU5VTVFRN09kSC1reTBjaDFy
+U2M3a09uM05QRkFPakxyc3J6c2QwWjJyRnZ5c1NGUkFyM1I2YWRZUm5BZko0JA0KPiAgDQo+IA0K
+PiBUaGFua3MuDQoNCk9LLCBJJ3ZlIHJlYmFzZWQgb24gbXQ4MTkyIHNlcmllcyBhdCB2NzoNCg0K
+aHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LW1lZGlhdGVrL3BhdGNo
+LzIwMjEwODMxMDcwOTAzLjg2NzItMi1qYXNvbi1qaC5saW5AbWVkaWF0ZWsuY29tLw0KDQpSZWdh
+cmRzLA0KSmFzb24tSkguTGluDQo=
 
-Authors is not a valid tag, please see our Documentation on submitting
-patches.
-
-> @@ -10504,3 +10515,9 @@ void call_trace_sched_update_nr_running(struct rq *rq, int count)
->  {
->          trace_sched_update_nr_running_tp(rq, count);
->  }
-> +
-> +int get_cpu_nr_running(int cpu)
-> +{
-> +	return cpu_rq(cpu)->nr_running;
-> +}
-> +EXPORT_SYMBOL_GPL(get_cpu_nr_running);
-
-Yeah, not going to happen.
