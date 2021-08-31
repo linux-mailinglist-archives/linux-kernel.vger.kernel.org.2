@@ -2,66 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B358C3FBFDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 02:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508CA3FBFDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 02:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233812AbhHaAEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 20:04:52 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:44563 "EHLO
+        id S239169AbhHaAE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 20:04:56 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:42731 "EHLO
         mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233270AbhHaAEt (ORCPT
+        with ESMTP id S233201AbhHaAEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 20:04:49 -0400
-Received: by mail-ot1-f54.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so20606560otg.11;
-        Mon, 30 Aug 2021 17:03:55 -0700 (PDT)
+        Mon, 30 Aug 2021 20:04:51 -0400
+Received: by mail-ot1-f54.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so20579697otk.9;
+        Mon, 30 Aug 2021 17:03:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=cIxLbC0V4V1OdsC/Ly6jKX0YPVdFxUbPkUbq2zoGTMs=;
-        b=KWoCpj8kuWUampiLPX5fZe+Ku32AA01l4/dsT/GW0Ut5KGxm7nqL6YWDaERRxtfK/L
-         v65M0QFbT/giv+6FelxsYh3BPWffWgJ/wwtZAfRsBgEoylwbp7byAreifBYKsxvj+5/4
-         XXlFIs7s+eb2CD9R6pCZ13zRPMa6L1Me4zDq6govzf73x2MTHM/lIqPCkiVoESIvDOka
-         Bit9CJB6OHslfbLe9l/YwSfduU6d2VfJvZ6POoawAcywppcxcqySv18nzwWr6BqHakhR
-         n1RVrZviqhWjBMpV2rUiHMnK1ql9VecYvwVCV5FE8LHNW8BcgpzkCMxF4LOYTlVPVXrv
-         YjHg==
-X-Gm-Message-State: AOAM532NWfQz0byOG2gLQ/EE1ErReIGjiFmvQ/cSUST7mcLxUIijSLxE
-        KNisO6BTTBJnBmjC43WjBQ==
-X-Google-Smtp-Source: ABdhPJzApwMo/dFh6AfQatjs1hglDwJoGhq5PQw87cu4H4prFWq6jzpKxMtFIM1NqNnPtbqUya0biw==
-X-Received: by 2002:a05:6830:913:: with SMTP id v19mr22138821ott.131.1630368235166;
-        Mon, 30 Aug 2021 17:03:55 -0700 (PDT)
+        bh=X+JzFHvarIVnvQQqcBJPXmNCBKi89Vgxfb6Fxl+5bS0=;
+        b=NShZJbuOZ6AmLI4BJG474mCUb0GDW8aDGaiNiCAr0kZoa/BZyP8M55KQtmoPOoaSWn
+         poI0zfZZydR61Z1f+YVmSoUgOiYowL2iQl6APMMCtMwabV57QI+M6oJC89RNmkzhhpAV
+         tbc3DVaNFnwqz03ClBul3jB1+aSbjKg9rXuZau+HeCS+45hru65LyNQmOdOf/UmDsFNz
+         jhqbNG5CDGew8yoCqzGTjYiuNxHRipRKYhaxRjFoXYlnGrT20hA2u+ByM+X2CAHh+0nx
+         qFPgGeFKReexGd5KYnABpWTK/Vt535j+qW9yLO8hQe2CYUaYqCO/ngNFUIqdr2nh+Ifd
+         B9qg==
+X-Gm-Message-State: AOAM532gBEgnzRlY0PesfE8lFfUn2z0+UP1XSH8cMWglIelPadavBM6S
+        FBnO4Rv092IYRF10O/rQUw==
+X-Google-Smtp-Source: ABdhPJwF/IP0deTf//Ue3cOh3Y7qENVSDc0BoPLSkMEtkukSAs7/D/uJt7OhzFx2N7wm4NL5Jl+cfA==
+X-Received: by 2002:a05:6830:1d59:: with SMTP id p25mr21366508oth.191.1630368236877;
+        Mon, 30 Aug 2021 17:03:56 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id v8sm3559453ota.16.2021.08.30.17.03.53
+        by smtp.gmail.com with ESMTPSA id l8sm3282905oom.19.2021.08.30.17.03.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 17:03:54 -0700 (PDT)
-Received: (nullmailer pid 2940837 invoked by uid 1000);
+        Mon, 30 Aug 2021 17:03:56 -0700 (PDT)
+Received: (nullmailer pid 2940840 invoked by uid 1000);
         Tue, 31 Aug 2021 00:03:53 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     shawnguo@kernel.org, linux-iio@vger.kernel.org, robh+dt@kernel.org,
-        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        lars@metafoo.de, festevam@gmail.com, jic23@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de,
+To:     Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Helen Koike <helen.koike@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Ezequiel Garcia <ezequiel@collabora.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex.dewar90@gmail.com
-In-Reply-To: <20210830172140.414-5-caihuoqing@baidu.com>
-References: <20210830172140.414-1-caihuoqing@baidu.com> <20210830172140.414-5-caihuoqing@baidu.com>
-Subject: Re: [PATCH 4/6] dt-bindings: iio: adc: Add the binding documentation for NXP IMX8QXP ADC
+        Vinod Koul <vkoul@kernel.org>, linux-phy@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-rockchip@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org
+In-Reply-To: <20210830180758.251390-5-mike.rudenko@gmail.com>
+References: <20210830180758.251390-1-mike.rudenko@gmail.com> <20210830180758.251390-5-mike.rudenko@gmail.com>
+Subject: Re: [PATCH v1 4/5] dt-bindings: phy: phy-rockchip-dphy-rx0: add support for tx1rx1 phy
 Date:   Mon, 30 Aug 2021 19:03:53 -0500
-Message-Id: <1630368233.478982.2940836.nullmailer@robh.at.kernel.org>
+Message-Id: <1630368233.493531.2940839.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 01:21:38 +0800, Cai Huoqing wrote:
-> The NXP i.MX 8QuadXPlus SOC has a new ADC IP, so add the binding
-> documentation for NXP IMX8QXP ADC
+On Mon, 30 Aug 2021 21:07:53 +0300, Mikhail Rudenko wrote:
+> RK3399 TX1RX1 D-PHY is not a child of GRF and uses reg, thus add
+> corresponding properties conditionally. It also requires DSI clock to
+> operate, so check for it. Since we now support both rx0 and tx1rx1,
+> rename the schema to rockchip-mipi-dphy-rx.yaml.
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 > ---
->  .../bindings/iio/adc/nxp,imx8qxp-adc.yaml     | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+>  ...hy-rx0.yaml => rockchip-mipi-dphy-rx.yaml} | 39 +++++++++++++++++--
+>  1 file changed, 35 insertions(+), 4 deletions(-)
+>  rename Documentation/devicetree/bindings/phy/{rockchip-mipi-dphy-rx0.yaml => rockchip-mipi-dphy-rx.yaml} (65%)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -70,38 +75,17 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 120, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 848, in _ruamel_yaml.CParser._compose_sequence_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: while scanning a block scalar
-  in "<unicode string>", line 65, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 71, column 1
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.example.dts] Error 1
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/phy/rockchip-mipi-dphy-rx0.yaml'
+xargs: dt-doc-validate: exited with status 255; aborting
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/soc/rockchip/grf.example.dt.yaml'
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/phy/rockchip-mipi-dphy-rx0.yaml'
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/soc/rockchip/grf.example.dt.yaml] Error 255
 make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml:  while scanning a block scalar
-  in "<unicode string>", line 65, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 71, column 1
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
 make: *** [Makefile:1419: dt_binding_check] Error 2
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1522287
+See https://patchwork.ozlabs.org/patch/1522296
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
