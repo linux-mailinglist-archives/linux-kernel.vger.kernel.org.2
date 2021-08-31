@@ -2,196 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B643FC85B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A20E3FC859
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237541AbhHaNiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
+        id S237781AbhHaNiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235908AbhHaNh7 (ORCPT
+        with ESMTP id S238028AbhHaNiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:37:59 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0ABC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 06:37:03 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so22766411otf.6
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 06:37:03 -0700 (PDT)
+        Tue, 31 Aug 2021 09:38:04 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFB3C0617A8;
+        Tue, 31 Aug 2021 06:37:09 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id l4so10287459qvl.12;
+        Tue, 31 Aug 2021 06:37:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=S0ivpO+/wBB1QVyedUdLAO/h8IikuLBE6+1HWRVEtJg=;
-        b=hTbafWMaGRLRJ9tKhAqzBgzS/YZt6LXaz0EPdsC7KAJwvEuG024HTopG2ksSIKkBK7
-         OBrxyHGlj0TIdRYtsHhbjtHmrEPK1ABDBs39Bf2ECzzrBCqmg0RVBubDr8UkH9EAjHQ+
-         rr06jzMABpceWSErqfzPoZEdJ2C9hhGmREPOVYL01usmJojIemPT+rjpxXZRbP6Y7ojJ
-         92ehojO4YQf9dsfB4Y5xDPf7+OQdQJs8yCazJC1CIhxqEbMpmP/DpdsI7acoaa6JfDSe
-         vb+henU4Ifd6KaCGrOz31NFAuIEmdeD67upgLFeEOEDncQR6ztoIi/YydBxFaoeziEWN
-         0Rqg==
+        bh=e5Gx+da6dDuqX2X2jy+iLAiI++WqiH4CLbDqLcJwtDQ=;
+        b=cVdZJDOpln5dQl57gPBfEnbyS7ELywYok6JW3P+5tQEog8VKZ2aoFr3Gr/HvgwtY6x
+         QIvRMRlMhbiKcIrmDJrUuYvp9psCiVn/lujbgONFFT7VNSOvktVqZ6gpbNCRC6xcEfX1
+         gQ1/Zgh63u/s9YvRo8wFZs4YHiP0kjFjuZ6x8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=S0ivpO+/wBB1QVyedUdLAO/h8IikuLBE6+1HWRVEtJg=;
-        b=O23u4jYDhi2ZHYDrHgbQ+v/D0z9k5KMJyi0/fqjuLqNj29BjnUrOj97uFQ/KEQ5y4G
-         tRkjLgC/eGdbVNCnfY+XnJW1rBQsSwY+XbJg77r8BdP3zTM7/6r6EM+lcV2iHsOIu4+P
-         h3ouiK8g1wT2QTJc5jeUPeJvEZLhDYxunUfSmm9eFWz/zdCFMhumqxy1mASP/7z+UxRP
-         uXSNKQFoycHRHywrhEdFBi2rrthwKaVkUP8qePcjGRxOYFaDSrbuEaWnxu65C58n9vuV
-         YtX9rxBcAb/n6mcV2Rea9ki89c9wdRRnW4gxcLwVfFP/Ye0lpFZi9sN7/bmWA/L7FtnT
-         D5KA==
-X-Gm-Message-State: AOAM5308vNUpLg8ftrVzW/xWA7JLDaj+rVZvgzExl3G13Kd+m+pl8lPi
-        uCnQVHCBvCaN93qznSv88gNM1H1WA0GF6nTf++qxIw==
-X-Google-Smtp-Source: ABdhPJzVFM5xVxXl6RHQsEzsIQNEfzCFs/8mFrBGneTSOyHXnj3FE3qiwldQHAmRi6/mm+eQ3PZiKx1Tp9zqvJ7SQKE=
-X-Received: by 2002:a05:6830:2b2c:: with SMTP id l44mr23760369otv.238.1630417022988;
- Tue, 31 Aug 2021 06:37:02 -0700 (PDT)
+        bh=e5Gx+da6dDuqX2X2jy+iLAiI++WqiH4CLbDqLcJwtDQ=;
+        b=sI31kJDj0wnuxb5y38Mf+odd+49/x16+X7Z/war6cyEy/sZkGdEADgPG0YPZzwLlml
+         9zKb4cUzeGWQclJ9SlnpmRoASCX3szv5v8KikhW3NAEAG9CQ4uCykoV6tcg/6yYFeur1
+         RlotsnPIpeajbAQcoVKZxeBz7IVPx5dx7X6uDghqyM1jFbUTTUIyQ77Xf+w2KVzvC4wv
+         idiOGVsH/9fTQAf0aYs9Mo8FnIBCOgx2cfFbLYvmdvKmd2nXH/aNikQbbW0n7uWk4u2i
+         DtnHGxrFnPufALGuOQrKCDk7/iVwC7q3K0ZOOrl2YZBQ9VAzXqSEpXJ1U3DNnnqXLXdD
+         FbXw==
+X-Gm-Message-State: AOAM533l+guIzPWZU8+A2kIWx/hhNuRo93tABQG/+yPJCt8o72f2lvnC
+        z7qkjJYAko0FiNf02o+81W9olNB/sOm4ujCpSb4=
+X-Google-Smtp-Source: ABdhPJyScrXRyrJucburp3ZoxrFjwrIrrdvFzIXMmhkX9NmsV8jV9/P/A+kY5G7tuYvEBRRZToG+xZCF7k3jXen68j8=
+X-Received: by 2002:a0c:a709:: with SMTP id u9mr11019420qva.3.1630417028407;
+ Tue, 31 Aug 2021 06:37:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210830205717.3530483-1-pgonda@google.com> <20210830205717.3530483-3-pgonda@google.com>
-In-Reply-To: <20210830205717.3530483-3-pgonda@google.com>
-From:   Marc Orr <marcorr@google.com>
-Date:   Tue, 31 Aug 2021 06:36:51 -0700
-Message-ID: <CAA03e5E+BOjrepbaiMQROAsNyuaPYYmc2eLzbUwzb8G=B+SZvw@mail.gmail.com>
-Subject: Re: [PATCH 2/3 V6] KVM, SEV: Add support for SEV-ES intra host migration
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+References: <72bc8926dcfc471ce385494f2c8c23398f8761d2.1630415944.git.geert+renesas@glider.be>
+In-Reply-To: <72bc8926dcfc471ce385494f2c8c23398f8761d2.1630415944.git.geert+renesas@glider.be>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 31 Aug 2021 13:36:55 +0000
+Message-ID: <CACPK8XfyYpWTmaASuG7Jkyp06fRrg_zXvg93JB7igZgVDWjumw@mail.gmail.com>
+Subject: Re: [PATCH] net: NET_VENDOR_LITEX should depend on LITEX
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Gabriel Somlo <gsomlo@gmail.com>, David Shah <dave@ds0.me>,
+        Stafford Horne <shorne@gmail.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 1:57 PM Peter Gonda <pgonda@google.com> wrote:
+On Tue, 31 Aug 2021 at 13:21, Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
 >
-> For SEV-ES to work with intra host migration the VMSAs, GHCB metadata,
-> and other SEV-ES info needs to be preserved along with the guest's
-> memory.
+> LiteX Ethernet devices are only present on LiteX SoCs.  Hence add a
+> dependency on LITEX, to prevent asking the user about drivers for these
+> devices when configuring a kernel without LiteX SoC Builder support.
+
+nak.
+
+They can be present on any soc that uses them. We have an example in
+mainline already; microwatt uses liteeth but is not a litex soc.
+
+Cheers,
+
+Joel
+
 >
-> Signed-off-by: Peter Gonda <pgonda@google.com>
-> Cc: Marc Orr <marcorr@google.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Cc: Wanpeng Li <wanpengli@tencent.com>
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
+> Fixes: ee7da21ac4c3be1f ("net: Add driver for LiteX's LiteETH network interface")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->  arch/x86/kvm/svm/sev.c | 62 ++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 60 insertions(+), 2 deletions(-)
+>  drivers/net/ethernet/litex/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 063cf26528bc..3324eed1a39e 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1545,6 +1545,59 @@ static void migrate_info_from(struct kvm_sev_info *dst,
->         list_replace_init(&src->regions_list, &dst->regions_list);
->  }
->
-> +static int migrate_vmsa_from(struct kvm *dst, struct kvm *src)
-> +{
-> +       int i, num_vcpus;
-> +       struct kvm_vcpu *dst_vcpu, *src_vcpu;
-> +       struct vcpu_svm *dst_svm, *src_svm;
-> +
-> +       num_vcpus = atomic_read(&dst->online_vcpus);
-> +       if (num_vcpus != atomic_read(&src->online_vcpus)) {
-> +               pr_warn_ratelimited(
-> +                       "Source and target VMs must have same number of vCPUs.\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       for (i = 0; i < num_vcpus; ++i) {
-> +               src_vcpu = src->vcpus[i];
-> +               if (!src_vcpu->arch.guest_state_protected) {
-> +                       pr_warn_ratelimited(
-> +                               "Source ES VM vCPUs must have protected state.\n");
-> +                       return -EINVAL;
-> +               }
-> +       }
-> +
-> +       for (i = 0; i < num_vcpus; ++i) {
-> +               src_vcpu = src->vcpus[i];
-> +               src_svm = to_svm(src_vcpu);
-> +               dst_vcpu = dst->vcpus[i];
-> +               dst_svm = to_svm(dst_vcpu);
-> +
-> +               /*
-> +                * Copy VMSA and GHCB fields from the source to the destination.
-> +                * Clear them on the source to prevent the VM running and
-> +                * changing the state of the VMSA/GHCB unexpectedly.
-> +                */
-> +               dst_vcpu->vcpu_id = src_vcpu->vcpu_id;
-> +               dst_svm->vmsa = src_svm->vmsa;
-> +               src_svm->vmsa = NULL;
-> +               dst_svm->ghcb = src_svm->ghcb;
-> +               src_svm->ghcb = NULL;
-> +               dst_svm->vmcb->control.ghcb_gpa =
-> +                               src_svm->vmcb->control.ghcb_gpa;
-> +               src_svm->vmcb->control.ghcb_gpa = 0;
-> +               dst_svm->ghcb_sa = src_svm->ghcb_sa;
-> +               src_svm->ghcb_sa = NULL;
-> +               dst_svm->ghcb_sa_len = src_svm->ghcb_sa_len;
-> +               src_svm->ghcb_sa_len = 0;
-> +               dst_svm->ghcb_sa_sync = src_svm->ghcb_sa_sync;
-> +               src_svm->ghcb_sa_sync = false;
-> +               dst_svm->ghcb_sa_free = src_svm->ghcb_sa_free;
-> +               src_svm->ghcb_sa_free = false;
-> +       }
-> +       return 0;
-> +}
-> +
->  int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
->  {
->         struct kvm_sev_info *dst_sev = &to_kvm_svm(kvm)->sev_info;
-> @@ -1556,7 +1609,7 @@ int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
->         if (ret)
->                 return ret;
->
-> -       if (!sev_guest(kvm) || sev_es_guest(kvm)) {
-> +       if (!sev_guest(kvm)) {
->                 ret = -EINVAL;
->                 pr_warn_ratelimited("VM must be SEV enabled to migrate to.\n");
->                 goto out_unlock;
-> @@ -1580,13 +1633,18 @@ int svm_vm_migrate_from(struct kvm *kvm, unsigned int source_fd)
->         if (ret)
->                 goto out_fput;
->
-> -       if (!sev_guest(source_kvm) || sev_es_guest(source_kvm)) {
-> +       if (!sev_guest(source_kvm)) {
->                 ret = -EINVAL;
->                 pr_warn_ratelimited(
->                         "Source VM must be SEV enabled to migrate from.\n");
->                 goto out_source;
->         }
->
-> +       if (sev_es_guest(kvm)) {
-> +               ret = migrate_vmsa_from(kvm, source_kvm);
-> +               if (ret)
-> +                       goto out_source;
-> +       }
->         migrate_info_from(dst_sev, &to_kvm_svm(source_kvm)->sev_info);
->         ret = 0;
+> diff --git a/drivers/net/ethernet/litex/Kconfig b/drivers/net/ethernet/litex/Kconfig
+> index 265dba414b41ec22..bfad1df1368866d3 100644
+> --- a/drivers/net/ethernet/litex/Kconfig
+> +++ b/drivers/net/ethernet/litex/Kconfig
+> @@ -5,6 +5,7 @@
+>  config NET_VENDOR_LITEX
+>         bool "LiteX devices"
+>         default y
+> +       depends on LITEX || COMPILE_TEST
+>         help
+>           If you have a network (Ethernet) card belonging to this class, say Y.
 >
 > --
-> 2.33.0.259.gc128427fd7-goog
+> 2.25.1
 >
-
-Reviewed-by: Marc Orr <marcorr@google.com>
