@@ -2,138 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E0D3FC3C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2906A3FC3C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239914AbhHaHj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 03:39:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239830AbhHaHjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 03:39:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E09B560ED4;
-        Tue, 31 Aug 2021 07:38:20 +0000 (UTC)
-Date:   Tue, 31 Aug 2021 09:38:18 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>,
-        andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, dvyukov@google.com, jmorris@namei.org,
-        kafai@fb.com, kpsingh@google.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-        paul@paul-moore.com, selinux@vger.kernel.org,
-        songliubraving@fb.com, stephen.smalley.work@gmail.com,
-        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com,
-        viro@zeniv.linux.org.uk, yhs@fb.com
-Subject: Re: [syzbot] general protection fault in legacy_parse_param
-Message-ID: <20210831073818.oojyjqyiogel7hll@wittgenstein>
-References: <0000000000004e5ec705c6318557@google.com>
- <0000000000008d2a0005ca951d94@google.com>
- <20210830122348.jffs5dmq6z25qzw5@wittgenstein>
- <61bf6b11-80f8-839e-4ae7-54c2c6021ed5@schaufler-ca.com>
- <89d0e012-4caf-4cda-3c4e-803a2c6ebc2b@schaufler-ca.com>
- <20210830165733.emqlg3orflaqqfio@wittgenstein>
- <3354839e-5e7a-08c7-277a-9bbebfbfc0bc@schaufler-ca.com>
+        id S239926AbhHaHj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 03:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239766AbhHaHjz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 03:39:55 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CF1C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 00:39:00 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0f2f00e5150ccccff88358.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:2f00:e515:ccc:cff8:8358])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EB5E11EC01A8;
+        Tue, 31 Aug 2021 09:38:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630395535;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=hjLt7oa05/D8Vi9HscoubNiAV0wTmuAQox8ARWpSiIY=;
+        b=q+oQsQkhF6llloRN/lL6fjmzuQo6pr0s+lUAv9DVi6aI5erpUIshxu/ToUciUCbTEw7kDS
+        FB9nGDrqOwtCos04zzJX0WPGk2LmxetLA68EgYCaympNGsVNtKlXCW0mN2/l3VFVb4R1tr
+        pmy5FcekqpXQ2eHEzhyQjDdLSd4M8MI=
+Date:   Tue, 31 Aug 2021 09:39:30 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
+ restore_fpregs_from_user()
+Message-ID: <YS3cskpK9Uoq3Wc4@zn.tnic>
+References: <20210830154702.247681585@linutronix.de>
+ <20210830162545.374070793@linutronix.de>
+ <YS0ylo9nTHD9NiAp@zn.tnic>
+ <87zgsyg0eg.ffs@tglx>
+ <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
+ <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
+ <YS1OE6FRi4ZwEF8j@zeniv-ca.linux.org.uk>
+ <CAHk-=wh57tMaJxcH=kWE4xdKLjayKSDEVvMwHG4fKZ5tUHF6mg@mail.gmail.com>
+ <87zgsye9kn.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <3354839e-5e7a-08c7-277a-9bbebfbfc0bc@schaufler-ca.com>
+In-Reply-To: <87zgsye9kn.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 10:41:29AM -0700, Casey Schaufler wrote:
-> On 8/30/2021 9:57 AM, Christian Brauner wrote:
-> > On Mon, Aug 30, 2021 at 09:40:57AM -0700, Casey Schaufler wrote:
-> >> On 8/30/2021 7:25 AM, Casey Schaufler wrote:
-> >>> On 8/30/2021 5:23 AM, Christian Brauner wrote:
-> >>>> On Fri, Aug 27, 2021 at 07:11:18PM -0700, syzbot wrote:
-> >>>>> syzbot has bisected this issue to:
-> >>>>>
-> >>>>> commit 54261af473be4c5481f6196064445d2945f2bdab
-> >>>>> Author: KP Singh <kpsingh@google.com>
-> >>>>> Date:   Thu Apr 30 15:52:40 2020 +0000
-> >>>>>
-> >>>>>     security: Fix the default value of fs_context_parse_param hook
-> >>>>>
-> >>>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=160c5d75300000
-> >>>>> start commit:   77dd11439b86 Merge tag 'drm-fixes-2021-08-27' of git://ano..
-> >>>>> git tree:       upstream
-> >>>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=150c5d75300000
-> >>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=110c5d75300000
-> >>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
-> >>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
-> >>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126d084d300000
-> >>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16216eb1300000
-> >>>>>
-> >>>>> Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
-> >>>>> Fixes: 54261af473be ("security: Fix the default value of fs_context_parse_param hook")
-> >>>>>
-> >>>>> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> >>>> So ok, this seems somewhat clear now. When smack and 
-> >>>> CONFIG_BPF_LSM=y
-> >>>> is selected the bpf LSM will register NOP handlers including
-> >>>>
-> >>>> bpf_lsm_fs_context_fs_param()
-> >>>>
-> >>>> for the
-> >>>>
-> >>>> fs_context_fs_param
-> >>>>
-> >>>> LSM hook. The bpf LSM runs last, i.e. after smack according to:
-> >>>>
-> >>>> CONFIG_LSM="landlock,lockdown,yama,safesetid,integrity,tomoyo,smack,bpf"
-> >>>>
-> >>>> in the appended config. The smack hook runs and sets
-> >>>>
-> >>>> param->string = NULL
-> >>>>
-> >>>> then the bpf NOP handler runs returning -ENOPARM indicating to the vfs
-> >>>> parameter parser that this is not a security module option so it should
-> >>>> proceed processing the parameter subsequently causing the crash because
-> >>>> param->string is not allowed to be NULL (Which the vfs parameter parser
-> >>>> verifies early in fsconfig().).
-> >>> The security_fs_context_parse_param() function is incorrectly
-> >>> implemented using the call_int_hook() macro. It should return
-> >>> zero if any of the modules return zero. It does not follow the
-> >>> usual failure model of LSM hooks. It could be argued that the
-> >>> code was fine before the addition of the BPF hook, but it was
-> >>> going to fail as soon as any two security modules provided
-> >>> mount options.
-> >>>
-> >>> Regardless, I will have a patch later today. Thank you for
-> >>> tracking this down.
-> >> Here's my proposed patch. I'll tidy it up with a proper
-> >> commit message if it looks alright to y'all. I've tested
-> >> with Smack and with and without BPF.
-> > Looks good to me.
-> > On question, in contrast to smack, selinux returns 1 instead of 0 on
-> > success. So selinux would cause an early return preventing other hooks
-> > from running. Just making sure that this is intentional.
-> >
-> > Iirc, this would mean that selinux causes fsconfig() to return a
-> > positive value to userspace which I think is a bug; likely in selinux.
-> > So I think selinux should either return 0 or the security hook itself
-> > needs to overwrite a positive value with a sensible errno that can be
-> > seen by userspace.
+On Tue, Aug 31, 2021 at 02:34:16AM +0200, Thomas Gleixner wrote:
+> what's worse is that even if you have access to such a machine, there is
+> no documented way to do proper hardware based error injection.
+
+Oh brother, welcome to my nightmare :) How much time to do you have? We
+haz cookies.
+
+> The injection mechanism which claims to do hardware error injection in
+> arch/x86/kernel/cpu/mce/inject.c is a farce:
+
+No no, that's an *attempt* to have something which at least works on
+the arch level, without having other "agents" involved. Just keep on
+readin'...
+
+> All it does is to "prepare" the MSRs with some fake error values and
+> raising #MC via int 18 afterwards in the hope that the previously
+> prepared MSR values are still valid.
+
+What do you mean? Something might swoop in and overwrite them before the
+INT? Bah, we can do some locking but it is not worth it.
+
+> Great way to test stuff by setting the MSR to the expected failure
+> value and then raising the exception in software.
+
+No no, the great way to do error injection is the ACPI-spec'ed, firwmare
+implemented
+
+drivers/acpi/apei/einj.c
+
+Yap, you heard me right, firmware. And when you hear firmware, you can
+imagine how it all works in practice... Yeap, exactly.
+
+We even wrote documentation what to do:
+
+Documentation/firmware-guide/acpi/apei/einj.rst
+
+But but, this is firmware so
+
+- it is f*cking broken in all ways imaginable
+
+- if it works, it doesn't support the error type which you wanna inject
+
+- if it does, enterprise sh*t hw has added value crap which analyzes and
+looks at hardware errors first</me rolls eyes, trying to remain serious>
+so you might get the error report if you get lucky.
+
+So right now wrt to RAS my approach is: don't let it get worse than it
+is. Yap, that's called maintainer resignation.
+
+And all those hw vendors can come at me with the fanciest feature ideas
+- my reply is: you wanted to do it all in the BIOS. Go do that there
+too.
+
+> NHM had a documented mechanism to inject at least ECC failures at the
+> hardware level, but with the later memory controllers this ended up in
+> the documentation black hole along with all the other undocumented real
+> HW injection mechanisms which allow actual testing of this stuff.
 > 
-> I think that I agree. The SELinux and Smack versions of the
-> hook are almost identical except for setting rc to 1 in the
-> SELinux case. And returning 1 makes no sense if you follow
-> the callers back. David Howells wrote both the SELinux and
-> Smack versions. David - why are they different? which is correct?
+> The HW injection mechanisms definitely exist, but without documentation
+> they are useless. Intel still thinks that the secrecy around that stuff
+> is valuable and they can get away with those untestable mechanisms even
+> for their endeavours in the safety critical space.
 
-The documentation for fs_context_parse_param notes:
+My impression with error injection with hw people is just like what they
+do with perf counters: it counts *something* right? You should be happy
+that it does.
 
- * @fs_context_parse_param:
- *	Userspace provided a parameter to configure a superblock.  The LSM may
- *	reject it with an error and may use it for itself, in which case it
- *	should return 0; otherwise it should return -ENOPARAM to pass it on to
- *	the filesystem.
- *	@fc indicates the filesystem context.
- *	@param The parameter
+So yeah, hw error injection and RAS in general is a stinking pile of
+doodoo. If I knew that then, I would've steered away from it.
 
-So we should simply make selinux return 0 on top of your patch when it
-has consumed the option.
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
