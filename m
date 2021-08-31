@@ -2,52 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB85E3FC67D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F097C3FC684
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239526AbhHaLSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 07:18:32 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:18994 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239259AbhHaLSa (ORCPT
+        id S241324AbhHaLYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 07:24:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229759AbhHaLYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 07:18:30 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GzPh30mGbzbkk6;
-        Tue, 31 Aug 2021 19:13:39 +0800 (CST)
-Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 31 Aug 2021 19:17:33 +0800
-Received: from [10.67.101.251] (10.67.101.251) by
- dggpeml500018.china.huawei.com (7.185.36.186) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 31 Aug 2021 19:17:33 +0800
-To:     <juri.lelli@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <mingo@redhat.com>, <vincent.guittot@linaro.org>,
-        <peterz@infradead.org>, <pjt@google.com>
-CC:     <daniel.m.jordan@oracle.com>, <zhangqiao22@huawei.com>
-References: <20210716022756.193817-1-zhangqiao22@huawei.com>
-Subject: Re: [PATCH -next v3] sched: Dec cfs_bandwidth_used in
- destroy_cfs_bandwidth()
-In-Reply-To: <20210716022756.193817-1-zhangqiao22@huawei.com>
-From:   Zhang Qiao <zhangqiao22@huawei.com>
-Message-ID: <588b807a-38f8-e405-7de3-53d559702259@huawei.com>
-Date:   Tue, 31 Aug 2021 19:17:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 31 Aug 2021 07:24:49 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4010AC061575;
+        Tue, 31 Aug 2021 04:23:54 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 17so16344494pgp.4;
+        Tue, 31 Aug 2021 04:23:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zbn1lreGZxJVDlwL+VgDbBJ+pZDFvJhr5f++SxvLVh0=;
+        b=XR8yD9T9wHcxAyvbRPv0YDNjWtFk/JFZhXImSr+m5ZpXow5yRIh3jtKcNgbO+QnhGi
+         335HwNRcF9Bg1erfFkWFeOvYZvJ3OYH591Sg3paye4gMpADssM5FyIWYQ884ZNVQO+Ag
+         YdIF2Lvo8rcx6PoX0FglLX4WLExYEwPayJlUm9/8SPCrSUdcQe+tY2l32nMoipra0VNI
+         OWil24kKEOv4NB4hk4OGc/v4O/PWUW0/9fGDFSvllGP1m93NovmIFw7qx9sIZNfOcIKq
+         Se2aIAejhjhS036ctmzmJVWAYxqgPHt4KugQfchORISKFnpQ0RXvwJDzqYCEa5mXxc68
+         kXIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zbn1lreGZxJVDlwL+VgDbBJ+pZDFvJhr5f++SxvLVh0=;
+        b=NkGPA0qk2RBxzf+1shS2k2jJ/IgbIYtnfc52l64cq2d72DwV93Zv1Xxnv0pNwPpPLs
+         Y348RyWSys3+97DjGPAJcXRGeu4cUmvE9T99T5TzD5rQkt07a8Jl9CeHyp35uTTvBUfv
+         Cu0eptZj7VltkxCSRFGne26WIY+GYCCA0Y3cPa32cVlHEhY0DkJMfdGn5cRPoCJ9P2o3
+         OCbVccDnxl/gn0Socj++LqFmr1x+IfS+FQ8jvAi3BP9FXXdefrDs6Hrz8jsydUcmpgs7
+         omMZFw05UMLylC1EiURvf3L7evKTdLaJPnQvzXCcyULJeAYIdbeG0ZFTCZtAjXXhzhd8
+         niEg==
+X-Gm-Message-State: AOAM533mIaUXPUty7B2xsc6WzUEOxUn9Kq0/mLllQmVXpBn4r7h0Code
+        qtmpk1kIf4ZYR36aDwLHXEFckO56xIA=
+X-Google-Smtp-Source: ABdhPJzYtwb6FOR7oypYnFTA5ItxbQ6IK8/J/j03oyquJT/7xiBkRApmYI+Y8fEJxJpp3oKO7Xf+hg==
+X-Received: by 2002:a63:f050:: with SMTP id s16mr26526742pgj.258.1630409033668;
+        Tue, 31 Aug 2021 04:23:53 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id c133sm17837509pfb.39.2021.08.31.04.23.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 04:23:53 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: lv.ruyi@zte.com.cn
+To:     davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Ruyi <lv.ruyi@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] ipv6: seg6: remove duplicated include
+Date:   Tue, 31 Aug 2021 04:22:50 -0700
+Message-Id: <20210831112250.17429-1-lv.ruyi@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.101.251]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500018.china.huawei.com (7.185.36.186)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just a ping...
+From: Lv Ruyi <lv.ruyi@zte.com.cn>
 
-thanks,
-Qiao Zhang.
+Remove all but the first include of net/lwtunnel.h from 'seg6_local.c.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+---
+ net/ipv6/seg6_local.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
+index ddc8dfcd4e2b..2dc40b3f373e 100644
+--- a/net/ipv6/seg6_local.c
++++ b/net/ipv6/seg6_local.c
+@@ -30,7 +30,6 @@
+ #include <net/seg6_local.h>
+ #include <linux/etherdevice.h>
+ #include <linux/bpf.h>
+-#include <net/lwtunnel.h>
+ #include <linux/netfilter.h>
+ 
+ #define SEG6_F_ATTR(i)		BIT(i)
+-- 
+2.25.1
+
