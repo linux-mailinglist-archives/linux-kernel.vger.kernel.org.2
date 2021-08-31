@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF093FC183
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 05:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B749F3FC185
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 05:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239486AbhHaDcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 23:32:24 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:57642 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229983AbhHaDcX (ORCPT
+        id S239500AbhHaDd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 23:33:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239419AbhHaDd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 23:32:23 -0400
-X-UUID: 28d8e3b791bd4d13a91a10de81bdef3a-20210831
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=i4ol5vbanD813f/B2tnhhHkAIPJlnC/VEEVt1TAFHhI=;
-        b=Nf9ll2G683B/PC68VzwDAXf23DlS16J6bAEC4tvJLaUk8r27D3V3DJcudrdqv/Omhb1+m/E9jLUMnrFXfVXE2wmXO0Yg+0fjbYdre+0dByF8RDlM1IkriZPPN4nfN+V1lUZ/+HKJtsmVOHuB+TV15Ceb/gzQRWBrVYiZogbKbcE=;
-X-UUID: 28d8e3b791bd4d13a91a10de81bdef3a-20210831
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <chuanjia.liu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 215663490; Tue, 31 Aug 2021 11:31:25 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 31 Aug
- 2021 11:31:23 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 31 Aug 2021 11:31:22 +0800
-Message-ID: <ccf767340afe13a6d273ad8fbc29c6bc966d6314.camel@mediatek.com>
-Subject: Re: [PATCH v12 2/6] PCI: mediatek: Add new method to get shared
- pcie-cfg base address
-From:   Chuanjia Liu <chuanjia.liu@mediatek.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <robh+dt@kernel.org>, <bhelgaas@google.com>,
-        <matthias.bgg@gmail.com>, <lorenzo.pieralisi@arm.com>,
-        <ryder.lee@mediatek.com>, <jianjun.wang@mediatek.com>,
-        <yong.wu@mediatek.com>, <linux-pci@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Tue, 31 Aug 2021 11:31:24 +0800
-In-Reply-To: <20210830214317.GA27606@bjorn-Precision-5520>
-References: <20210830214317.GA27606@bjorn-Precision-5520>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Mon, 30 Aug 2021 23:33:56 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB12C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 20:33:01 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id y144so18131031qkb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 20:33:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F+XY9o2o2BjI8NsCXol5HC0zdB96dwzv/iViiaTxKvA=;
+        b=U1SNr70f+gjp0hrXgo0u2eC3+EpKRG9XhWIn3H35PINzBAYwSQY8daRR4ccliS8c3J
+         EHhLkL078ne1kUCNAAtnijXvyFsrRJr7d5pl+R/GoWRR+OkWrD6J6hcX/yn6qZ9EVuQW
+         +jbm/eofsLobkw170vCgEG/cV3cyIbsat94SA150XkMt2lWWev1Xl3/j3DAOPm+7cSZI
+         B4X/7S7V7GFyJ6B3BMYJc4iLHzKHorBwoCAUHJCZ5zhwD8xesYSDirzDuqUDFWE7XcDJ
+         /PlD12DMHiCReCEgleyNtNXc510Opme5rRXUYBftcN3TDeGoQYujSHedyawytKRW68NO
+         7yQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F+XY9o2o2BjI8NsCXol5HC0zdB96dwzv/iViiaTxKvA=;
+        b=teQRcwNKDNh1VzTnQ1dCePFa+dGBHRlaUX9fMhDzIV80JLYW3ehreTJC8Px0BbjU8+
+         xndGOgehoakrLejfMC2K18CWniG5nyuYhMNxr3ghzXSrhWIn6+fWmvS01qprxuk1e62i
+         tgVJTgYZdnfav8vwBYlKbm/Pc9wqNCn0lzOISw/LdQ8qsk1bG5i1OveYAaLeShR3qm4z
+         0j8WPkk5sOGPIMMaTP8pOfN/yRkoufLAgWT4/Gn3BSl93I1DqAw2nMyuVGivkXQP267B
+         RC84+cu0hKSIyh1IhWfl+YOL5hek7L7VFEY1zP/H5mBzfHzojZLlycq86XuqA0BlogwN
+         4Ejg==
+X-Gm-Message-State: AOAM530yqsm4Q243ur+SGjfol/JHyBmwYUMNVBfjcJ0ebhjY4QYBZPIt
+        9OH+YicZhpYoy7QPij49gSpe36LoOfkk9w==
+X-Google-Smtp-Source: ABdhPJyVt0/HzUg0WTpHmLpyLVm+994nneoifIHlunkE6MoaFDjiP+AjtjDqi9sDjTC92+u73vX9FA==
+X-Received: by 2002:a05:620a:1354:: with SMTP id c20mr971205qkl.335.1630380780393;
+        Mon, 30 Aug 2021 20:33:00 -0700 (PDT)
+Received: from julio.local ([2804:4ec:1200:4f00:fcb8:8bf6:3b5:ca53])
+        by smtp.gmail.com with ESMTPSA id u13sm12949530qki.38.2021.08.30.20.32.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 20:32:59 -0700 (PDT)
+From:   Julio Faracco <jcfaracco@gmail.com>
+To:     mhiramat@kernel.org
+Cc:     rostedt@goodmis.org, mingo@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bootconfig: Fix missing return check of xbc_node_compose_key function
+Date:   Tue, 31 Aug 2021 00:32:56 -0300
+Message-Id: <20210831033256.5973-1-jcfaracco@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA4LTMwIGF0IDE2OjQzIC0wNTAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0K
-PiBPbiBNb24sIEF1ZyAzMCwgMjAyMSBhdCAwMzowOTo0NFBNICswODAwLCBDaHVhbmppYSBMaXUg
-d3JvdGU6DQo+ID4gT24gRnJpLCAyMDIxLTA4LTI3IGF0IDExOjQ2IC0wNTAwLCBCam9ybiBIZWxn
-YWFzIHdyb3RlOg0KPiA+ID4gT24gTW9uLCBBdWcgMjMsIDIwMjEgYXQgMTE6Mjc6NTZBTSArMDgw
-MCwgQ2h1YW5qaWEgTGl1IHdyb3RlOg0KPiA+ID4gPiBAQCAtOTk1LDYgKzEwMDQsMTQgQEAgc3Rh
-dGljIGludCBtdGtfcGNpZV9zdWJzeXNfcG93ZXJ1cChzdHJ1Y3QNCj4gPiA+ID4gbXRrX3BjaWUg
-KnBjaWUpDQo+ID4gPiA+ICAJCQlyZXR1cm4gUFRSX0VSUihwY2llLT5iYXNlKTsNCj4gPiA+ID4g
-IAl9DQo+ID4gPiA+ICANCj4gPiA+ID4gKwljZmdfbm9kZSA9IG9mX2ZpbmRfY29tcGF0aWJsZV9u
-b2RlKE5VTEwsIE5VTEwsDQo+ID4gPiA+ICsJCQkJCSAgICJtZWRpYXRlayxnZW5lcmljLQ0KPiA+
-ID4gPiBwY2llY2ZnIik7DQo+ID4gPiA+ICsJaWYgKGNmZ19ub2RlKSB7DQo+ID4gPiA+ICsJCXBj
-aWUtPmNmZyA9IHN5c2Nvbl9ub2RlX3RvX3JlZ21hcChjZmdfbm9kZSk7DQo+ID4gPiANCj4gPiA+
-IE90aGVyIGRyaXZlcnMgaW4gZHJpdmVycy9wY2kvY29udHJvbGxlci8gdXNlDQo+ID4gPiBzeXNj
-b25fcmVnbWFwX2xvb2t1cF9ieV9waGFuZGxlKCkgKGo3MjFlLCBkcmE3eHgsIGtleXN0b25lLA0K
-PiA+ID4gbGF5ZXJzY2FwZSwgYXJ0cGVjNikgb3Igc3lzY29uX3JlZ21hcF9sb29rdXBfYnlfY29t
-cGF0aWJsZSgpDQo+ID4gPiAoaW14NiwNCj4gPiA+IGtpcmluLCB2My1zZW1pKS4NCj4gPiA+IA0K
-PiA+ID4gWW91IHNob3VsZCBkbyBpdCB0aGUgc2FtZSB3YXkgdW5sZXNzIHRoZXJlJ3MgYSBuZWVk
-IHRvIGJlDQo+ID4gPiBkaWZmZXJlbnQuDQo+ID4gDQo+ID4gSSBoYXZlIHVzZWQgcGhhbmRsZSwg
-YnV0IFJvYiBzdWdnZXN0ZWQgdG8gc2VhcmNoIGZvciB0aGUgbm9kZSBieSANCj4gPiBjb21wYXRp
-YmxlLg0KPiA+IFRoZSByZWFzb24gd2h5IHN5c2Nvbl9yZWdtYXBfbG9va3VwX2J5X2NvbXBhdGli
-bGUoKSBpcyBub3QgDQo+ID4gdXNlZCBoZXJlIGlzIHRoYXQgdGhlIHBjaWVjZmcgbm9kZSBpcyBv
-cHRpb25hbCwgYW5kIHRoZXJlIGlzIG5vDQo+ID4gbmVlZCB0bw0KPiA+IHJldHVybiBlcnJvciB3
-aGVuIHRoZSBub2RlIGlzIG5vdCBzZWFyY2hlZC4NCj4gDQo+IEhvdyBhYm91dCB0aGlzPw0KPiAN
-Cj4gICByZWdtYXAgPSBzeXNjb25fcmVnbWFwX2xvb2t1cF9ieV9jb21wYXRpYmxlKCJtZWRpYXRl
-ayxnZW5lcmljLQ0KPiBwY2llY2ZnIik7DQo+ICAgaWYgKCFJU19FUlIocmVnbWFwKSkNCj4gICAg
-IHBjaWUtPmNmZyA9IHJlZ21hcDsNCg0KSGkgQmpvcm4sDQoNCldlIG5lZWQgdG8gZGVhbCB3aXRo
-IHRocmVlIHNpdHVhdGlvbnMNCjEpIE5vIGVycm9yDQoyKSBUaGUgZXJyb3Igb2YgdGhlIG5vZGUg
-bm90IGZvdW5kLCBkb24ndCBkbyBhbnl0aGluZyANCjMpIE90aGVyIGVycm9ycywgcmV0dXJuIGVy
-cm9ycw0KDQpJIGd1ZXNzIHlvdSBtZWFuDQoNCnJlZ21hcCA9IHN5c2Nvbl9yZWdtYXBfbG9va3Vw
-X2J5X2NvbXBhdGlibGUoIm1lZGlhdGVrLGdlbmVyaWMtDQpwY2llY2ZnIik7DQogIGlmICghSVNf
-RVJSKHJlZ21hcCkpDQogICAgICBwY2llLT5jZmcgPSByZWdtYXA7DQogIGVsc2UgaWYgKElTX0VS
-UihyZWdtYXApICYmIFBUUl9FUlIocmVnbWFwKSAhPSAtRU5PREVWKQ0KICAgICAgcmV0dXJuIFBU
-Ul9FUlIocmVnbWFwKTsNCg0KSSdtIG5vdCBzdXJlIGlmIHdlIG5lZWQgdGhpcywgaXQgc2VlbXMg
-YSBsaXR0bGUgd2VpcmQgYW5kIHRoZXJlIGFyZQ0KbWFueSBkcml2ZXJzIGluIG90aGVyIHN1YnN5
-c3RlbXMgdGhhdCB1c2Ugc3lzY29uX25vZGVfdG9fcmVnbWFwKCkuDQoNClRoYW5rcw0KQ2h1YW5q
-aWENCg==
+The function `xbc_show_list should` handle the keys during the
+composition. Even the errors returned by the compose function. Instead
+of removing the `ret` variable, it should save the value and show the
+exact error. This missing variable is causing a compilation issue also.
+
+Signed-off-by: Julio Faracco <jcfaracco@gmail.com>
+---
+ tools/bootconfig/main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
+index f45fa992e01d..fd67496a947f 100644
+--- a/tools/bootconfig/main.c
++++ b/tools/bootconfig/main.c
+@@ -111,9 +111,11 @@ static void xbc_show_list(void)
+ 	char key[XBC_KEYLEN_MAX];
+ 	struct xbc_node *leaf;
+ 	const char *val;
++	int ret;
+ 
+ 	xbc_for_each_key_value(leaf, val) {
+-		if (xbc_node_compose_key(leaf, key, XBC_KEYLEN_MAX) < 0) {
++		ret = xbc_node_compose_key(leaf, key, XBC_KEYLEN_MAX);
++		if (ret < 0) {
+ 			fprintf(stderr, "Failed to compose key %d\n", ret);
+ 			break;
+ 		}
+-- 
+2.31.1
 
