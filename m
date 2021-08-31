@@ -2,180 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1653FCB53
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B319F3FCB58
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239863AbhHaQQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 12:16:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22763 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239840AbhHaQQt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 12:16:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630426554;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iC/vqrnC8agefEfcK8F2l8XU9S2U0FJkOrhS5FcGFpE=;
-        b=C2U3gFFXnWKCpPsxZEuvCgkzD2JjfmADTfOk1D1dKN3bDJtHeSIvz/dj6dyYvCNwQpzd3n
-        O9WNgJYT9hTG87SKEIJhFzehGeIQ1+Cyoj2PPMRbnIvI7RPYHH1KKm8R8g8HnGizhSUCXc
-        5ABluoVUp8NATVIoQcEi8JHvDTAtvfA=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-6ZfG01jONIuCHa3vjAfrQg-1; Tue, 31 Aug 2021 12:15:53 -0400
-X-MC-Unique: 6ZfG01jONIuCHa3vjAfrQg-1
-Received: by mail-io1-f70.google.com with SMTP id n189-20020a6b8bc6000000b005b92c64b625so11100875iod.20
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:15:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=iC/vqrnC8agefEfcK8F2l8XU9S2U0FJkOrhS5FcGFpE=;
-        b=bNqnvlYUnIrz936RJbog5nXrHkPAsXU17RZgM0j8HxFvKmVSPBZ1Man7lpQZcbSibE
-         0zJQ66GLT8En2JjRn95bRizvQTmqMcgPprXyz1UIutzAhm4SIPBV1oIVh9lBomrXb2ry
-         6HdPfGDede2vu0uO1P9Zj8OSaXugiSMTYbnr2ap5NVqljOnRVMcRWONMc30A9OB8DWOy
-         yiUQavN3QQCpFWWkEHd6qHGor0bITFholt+b+R1klcDKIJQ7v71b66vbeTSZBiGzyDph
-         IcO68IsJGyhb/SzvoeGX9ftvgQxpj+KeUByomTDHvBA6PW2MHfDmx2J31hWHQ7Q8fA7Q
-         3vFw==
-X-Gm-Message-State: AOAM531DUvITBDjVfFfpz90eg75IX7WKVZJ+cTaW7adU+sxrn8vhfN1J
-        enxlTAQmr8hTjg0nPVShJoKFs403RdSbvimPqvFa7kMd0jVSTHOtpCZYgHvFTBFagzuWFrxC8us
-        DNDnXQhj81EBXmyGqWE37k5cJ
-X-Received: by 2002:a92:1306:: with SMTP id 6mr10977676ilt.183.1630426552023;
-        Tue, 31 Aug 2021 09:15:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyU8Gm8fnWRjCaSBCl5W6DLLHCeLpBofrbxoK/jTZqCPsDHAV1I8o6zW03fTiw16wfuaHsuSQ==
-X-Received: by 2002:a92:1306:: with SMTP id 6mr10977660ilt.183.1630426551786;
-        Tue, 31 Aug 2021 09:15:51 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id u13sm9685406iot.29.2021.08.31.09.15.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 09:15:51 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 10:15:49 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <cohuck@redhat.com>, <corbet@lwn.net>, <nicoleotsuka@gmail.com>,
-        <vdumpa@nvidia.com>, <thierry.reding@gmail.com>,
-        <linux-tegra@vger.kernel.org>, <nwatterson@nvidia.com>,
-        <Jonathan.Cameron@huawei.com>, <jean-philippe@linaro.org>,
-        <song.bao.hua@hisilicon.com>, <eric.auger@redhat.com>,
-        <thunder.leizhen@huawei.com>, <yuzenghui@huawei.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, "Tian, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [RFC][PATCH v2 00/13] iommu/arm-smmu-v3: Add NVIDIA
- implementation
-Message-ID: <20210831101549.237151fa.alex.williamson@redhat.com>
-In-Reply-To: <20210831025923.15812-1-nicolinc@nvidia.com>
-References: <20210831025923.15812-1-nicolinc@nvidia.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S239835AbhHaQSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 12:18:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:56302 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239733AbhHaQSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 12:18:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E7C16D;
+        Tue, 31 Aug 2021 09:17:57 -0700 (PDT)
+Received: from [10.57.20.161] (unknown [10.57.20.161])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E01583F766;
+        Tue, 31 Aug 2021 09:17:54 -0700 (PDT)
+Subject: Re: [PATCH V3 9/9] cpufreq: scmi: Use .register_em() to register with
+ energy model
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <cover.1628742634.git.viresh.kumar@linaro.org>
+ <8158488baa1ea1aebd09c8d256db7420051d05ac.1628742634.git.viresh.kumar@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <d454df8e-9adb-ea97-727e-f182e95707ef@arm.com>
+Date:   Tue, 31 Aug 2021 17:17:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <8158488baa1ea1aebd09c8d256db7420051d05ac.1628742634.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 19:59:10 -0700
-Nicolin Chen <nicolinc@nvidia.com> wrote:
+Hi Viresh,
 
-> The SMMUv3 devices implemented in the Grace SoC support NVIDIA's custom
-> CMDQ-Virtualization (CMDQV) hardware. Like the new ECMDQ feature first
-> introduced in the ARM SMMUv3.3 specification, CMDQV adds multiple VCMDQ
-> interfaces to supplement the single architected SMMU_CMDQ in an effort
-> to reduce contention.
-> 
-> This series of patches add CMDQV support with its preparational changes:
-> 
-> * PATCH-1 to PATCH-8 are related to shared VMID feature: they are used
->   first to improve TLB utilization, second to bind a shared VMID with a
->   VCMDQ interface for hardware configuring requirement.
+My apologies for delay I was on holidays. I've seen the pull requests,
+so it's too late, but just for history...
 
-The vfio changes would need to be implemented in alignment with the
-/dev/iommu proposals[1].  AIUI, the VMID is essentially binding
-multiple containers together for TLB invalidation, which I expect in
-the proposal below is largely already taken care of in that a single
-iommu-fd can support multiple I/O address spaces and it's largely
-expected that a hypervisor would use a single iommu-fd so this explicit
-connection by userspace across containers wouldn't be necessary.
+I have tested this new callback with hacked juno FW which works in
+the per-cpu perf requests. There are no issues.
 
-We're expecting to talk more about the /dev/iommu approach at Plumbers
-in few weeks.  Thanks,
+Some debug prints:
 
-Alex
+[    3.110072] cpu cpu0: cpumask weight(opp_shared_cpus)=4 weight 
+policy->cpus=1
+[    3.117666] cpu cpu0: Empty OPP table
+[    3.121418] cpu cpu0: OPP table empty
+[    3.131367] cpu cpu0: EM: created perf domain
+[    3.137848] cpu cpu1: cpumask weight(opp_shared_cpus)=2 weight 
+policy->cpus=1
+[    3.145220] cpu cpu1: Empty OPP table
+[    3.148961] cpu cpu1: OPP table empty
+[    3.158193] cpu cpu1: EM: created perf domain
+[    3.164325] cpu cpu2: cpumask weight(opp_shared_cpus)=2 weight 
+policy->cpus=1
+[    3.173430] cpu cpu3: cpumask weight(opp_shared_cpus)=4 weight 
+policy->cpus=1
+[    3.181947] cpu cpu4: cpumask weight(opp_shared_cpus)=4 weight 
+policy->cpus=1
+[    3.190620] cpu cpu5: cpumask weight(opp_shared_cpus)=4 weight 
+policy->cpus=1
 
-[1]https://lore.kernel.org/kvm/BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com/
+root@sqwt-ubuntu:~# grep . /sys/kernel/debug/energy_model/cpu0/ps\:*/*
+/sys/kernel/debug/energy_model/cpu0/ps:450000/cost:79
+/sys/kernel/debug/energy_model/cpu0/ps:450000/frequency:450000
+/sys/kernel/debug/energy_model/cpu0/ps:450000/power:42
+/sys/kernel/debug/energy_model/cpu0/ps:575000/cost:85
+/sys/kernel/debug/energy_model/cpu0/ps:575000/frequency:575000
+/sys/kernel/debug/energy_model/cpu0/ps:575000/power:58
+/sys/kernel/debug/energy_model/cpu0/ps:700000/cost:95
+/sys/kernel/debug/energy_model/cpu0/ps:700000/frequency:700000
+/sys/kernel/debug/energy_model/cpu0/ps:700000/power:79
+/sys/kernel/debug/energy_model/cpu0/ps:775000/cost:106
+/sys/kernel/debug/energy_model/cpu0/ps:775000/frequency:775000
+/sys/kernel/debug/energy_model/cpu0/ps:775000/power:97
+/sys/kernel/debug/energy_model/cpu0/ps:850000/cost:119
+/sys/kernel/debug/energy_model/cpu0/ps:850000/frequency:850000
+/sys/kernel/debug/energy_model/cpu0/ps:850000/power:119
+root@sqwt-ubuntu:~# cat /sys/kernel/debug/energy_model/cpu0/cpus
+0,3-5
+root@sqwt-ubuntu:~# cat /sys/kernel/debug/energy_model/cpu1/cpus
+1-2
+root@sqwt-ubuntu:~# grep . /sys/kernel/debug/energy_model/cpu1/ps\:*/*
+/sys/kernel/debug/energy_model/cpu1/ps:1100000/cost:583
+/sys/kernel/debug/energy_model/cpu1/ps:1100000/frequency:1100000
+/sys/kernel/debug/energy_model/cpu1/ps:1100000/power:583
+/sys/kernel/debug/energy_model/cpu1/ps:450000/cost:391
+/sys/kernel/debug/energy_model/cpu1/ps:450000/frequency:450000
+/sys/kernel/debug/energy_model/cpu1/ps:450000/power:160
+/sys/kernel/debug/energy_model/cpu1/ps:625000/cost:420
+/sys/kernel/debug/energy_model/cpu1/ps:625000/frequency:625000
+/sys/kernel/debug/energy_model/cpu1/ps:625000/power:239
+/sys/kernel/debug/energy_model/cpu1/ps:800000/cost:471
+/sys/kernel/debug/energy_model/cpu1/ps:800000/frequency:800000
+/sys/kernel/debug/energy_model/cpu1/ps:800000/power:343
+/sys/kernel/debug/energy_model/cpu1/ps:950000/cost:525
+/sys/kernel/debug/energy_model/cpu1/ps:950000/frequency:950000
+/sys/kernel/debug/energy_model/cpu1/ps:950000/power:454
+root@sqwt-ubuntu:~#
 
- 
-> * PATCH-9 and PATCH-10 are to accommodate the NVIDIA implementation with
->   the existing arm-smmu-v3 driver.
-> 
-> * PATCH-11 borrows the "implementation infrastructure" from the arm-smmu
->   driver so later change can build upon it.
-> 
-> * PATCH-12 adds an initial NVIDIA implementation related to host feature,
->   and also adds implementation specific ->device_reset() and ->get_cmdq()
->   callback functions.
-> 
-> * PATCH-13 adds virtualization features using VFIO mdev interface, which
->   allows user space hypervisor to map and get access to one of the VCMDQ
->   interfaces of CMDQV module.
-> 
-> ( Thinking that reviewers can get a better view of this implementation,
->   I am attaching QEMU changes here for reference purpose:
->       https://github.com/nicolinc/qemu/commits/dev/cmdqv_v6.0.0-rc2
->   The branch has all preparational changes, while I'm still integrating
->   device model and ARM-VIRT changes, and will push them these two days,
->   although they might not be in a good shape of being sent to review yet )
-> 
-> Above all, I marked RFC for this series, as I feel that we may come up
-> some better solution. So please kindly share your reviews and insights.
-> 
-> Thank you!
-> 
-> Changelog
-> v1->v2:
->  * Added mdev interface support for hypervisor and VMs.
->  * Added preparational changes for mdev interface implementation.
->  * PATCH-12 Changed ->issue_cmdlist() to ->get_cmdq() for a better
->    integration with recently merged ECMDQ-related changes.
-> 
-> Nate Watterson (3):
->   iommu/arm-smmu-v3: Add implementation infrastructure
->   iommu/arm-smmu-v3: Add support for NVIDIA CMDQ-Virtualization hw
->   iommu/nvidia-smmu-v3: Add mdev interface support
-> 
-> Nicolin Chen (10):
->   iommu: Add set_nesting_vmid/get_nesting_vmid functions
->   vfio: add VFIO_IOMMU_GET_VMID and VFIO_IOMMU_SET_VMID
->   vfio: Document VMID control for IOMMU Virtualization
->   vfio: add set_vmid and get_vmid for vfio_iommu_type1
->   vfio/type1: Implement set_vmid and get_vmid
->   vfio/type1: Set/get VMID to/from iommu driver
->   iommu/arm-smmu-v3: Add shared VMID support for NESTING
->   iommu/arm-smmu-v3: Add VMID alloc/free helpers
->   iommu/arm-smmu-v3: Pass dev pointer to arm_smmu_detach_dev
->   iommu/arm-smmu-v3: Pass cmdq pointer in arm_smmu_cmdq_issue_cmdlist()
-> 
->  Documentation/driver-api/vfio.rst             |   34 +
->  MAINTAINERS                                   |    2 +
->  drivers/iommu/arm/arm-smmu-v3/Makefile        |    2 +-
->  .../iommu/arm/arm-smmu-v3/arm-smmu-v3-impl.c  |   15 +
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  121 +-
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |   18 +
->  .../iommu/arm/arm-smmu-v3/nvidia-smmu-v3.c    | 1249 +++++++++++++++++
->  drivers/iommu/iommu.c                         |   20 +
->  drivers/vfio/vfio.c                           |   25 +
->  drivers/vfio/vfio_iommu_type1.c               |   37 +
->  include/linux/iommu.h                         |    5 +
->  include/linux/vfio.h                          |    2 +
->  include/uapi/linux/vfio.h                     |   26 +
->  13 files changed, 1537 insertions(+), 19 deletions(-)
->  create mode 100644 drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-impl.c
->  create mode 100644 drivers/iommu/arm/arm-smmu-v3/nvidia-smmu-v3.c
-> 
-
+Regards,
+Lukasz
