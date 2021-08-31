@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E77E3FCBB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57DBE3FCBB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240707AbhHaQnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 12:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
+        id S240688AbhHaQnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 12:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240617AbhHaQnc (ORCPT
+        with ESMTP id S240627AbhHaQnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 12:43:32 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44427C0617AD
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:42:33 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 131-20020a251489000000b0059bdeb10a84so6174254ybu.15
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:42:33 -0700 (PDT)
+        Tue, 31 Aug 2021 12:43:33 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894B9C0612E7
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:42:35 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id k187-20020a2556c4000000b00598b2a660e2so6252731ybb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:42:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=m6ppgzPHX5FTwFdMfEcjDUXpHiFMBtjECxUlkSmxAlA=;
-        b=OWa7d9lu++qCSEI/ayjmog6B6Cjl+s5Y5f/cBVkFStNUsXgsOJ6G7JSggAlwVtAXNH
-         ZS/+7CPgHz18M/0+aqyxQWHD3BzoPw4edtO/r4Hbjs81l09xD9btnLljhH0CKDyjLdCa
-         HvPExGzDFkeq1bIlm88NNufwx0rVnZRM4R2KO6xGVxvdZtQUPeebvy3hzWCIan6B3iw6
-         ZHJ11IQAeTBGW3vQpNXE/BcL1ugLLfqbPny6yxw+voygIaabuB5LeLiXxD8JxkM9Jtw/
-         zDeZoOJto7WsGXsyMvTpUg7TqL+jJZm74ohdEUrgc9QfbEjapU7lCgQ1nT5Fh/iDjbp0
-         35/w==
+        bh=SwK4KMPU/9P2wLFjun4ZRaTVvv9zhjATQGOHh/CTEIk=;
+        b=DPzD5KJ5IS8/KpX4M24l0iPbtmTToiCjk8saqB8GA45RVMTZ4zn+GkqAgsvieGSosl
+         /zrufAR/mIUqAKMJWitHF4W9OCBkHW6hIksH3yK0WrJFWUJBpbPrkojnSC7flm37wwTF
+         5FXTX0EpMVhFhrEwHSyqy7f8K0jdKZaueS0Yg3uOSKKbyTJr1Ke9TFXjSnpI2TujIKOW
+         MgDTMzUOtU1v22gA4jK49idp1YomezKNSt44h3KfjZe/j3sPRpKqGPLl9+R86g+inRbF
+         WY4Yn1sfEkeM37U6HeQKAmIk2venZr82qBkXC78apA9K/Q1en2JgYSAkrPhtPFmijlO+
+         W7JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=m6ppgzPHX5FTwFdMfEcjDUXpHiFMBtjECxUlkSmxAlA=;
-        b=szHdQMW+2VaN4tiTWjKzjYEboqNTWGdyidKYSolOJCxm964HKAMn+XgP+9CvN1hhia
-         CHS6XevGHUDQVfxLBj89K8s1P1C613tg5EqYUdCVCds7OAUZRNEkA0npztIh6DetyTJS
-         Y9Ny7aUuqx7F0fk+KdQbufDk9Z2KeVt+ScPKVpPjLoifpPzRkweL+6L5jIFQmp3PzPW0
-         wim3bvAr3Opy5CPySzx/NavAT8w02IKjEmxVUlEyYv0ZPgfP3KpmU0AFpcCey6KW1w2I
-         k/awUt7D5yjb0iTX5/55ehewe9i0klGI2kP8tCCFCGlGjJyWnbrL7tRa5twsERvgjzGM
-         frag==
-X-Gm-Message-State: AOAM530BfMQUaZCA80RFPyt8jLmBmK5QXrgSxr4Wv9ElUnigcvGlDD6u
-        XD6d8/XK8H6PKYpFNMACBo7TNRDv3Ms=
-X-Google-Smtp-Source: ABdhPJx9yLzJZJ4UoFcp4y62YQWbMPEH/tyAk+TIU0N7Q+QB/7xWMV/D/F87uTMucr4658tPA1WxCatY0qA=
+        bh=SwK4KMPU/9P2wLFjun4ZRaTVvv9zhjATQGOHh/CTEIk=;
+        b=C4kxPNlzekDaNzePOYlVDIsxb/bvbSu6Bn7+DKBsUbGwV04TiVUYtstK+R7IcKLNf1
+         FIhe51AuG8fAXVX7H+qH22R6fQ2HJjRP4Tumrqepwm3x8cP9Hb3C2nHC5kqWnkeHZipp
+         MyxU6I1FURGnnpbGE7t8VKpZu9aarWTAN/UbJ3jctvUW2EsOxpV8y+L9navexElHETh0
+         Z7p6LaiCuqJc9sJay4m0Yvqo6JV2DosHnvg7kFVrFuyDPfIjZumbJA42Jy33d1TD344a
+         F8omxo1fM6FTmrcFC7xeEBPiEaytfJ3kQ3hQszzvTeGXH5wIwj3yo1oAbzBVXwwhDUGS
+         gC9Q==
+X-Gm-Message-State: AOAM533BFZTz2mvlJJUS0CK1uc8e7MOXaJtXt8C3eV7/4xwwGPhAFQqP
+        83vr05nNCy08NBsBPEcPPXlOZHWp0Ig=
+X-Google-Smtp-Source: ABdhPJxxIu8jKn+yeQkVdDNzwkM+OFi0tbw2Av3v+yvsf6uybshFKNKbfr7wjqWe+xzkIKhu+ElBb1gR058=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:ddbd:588d:571:702a])
- (user=seanjc job=sendgmr) by 2002:a25:61d6:: with SMTP id v205mr3447536ybb.262.1630428152476;
- Tue, 31 Aug 2021 09:42:32 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:5554:: with SMTP id j81mr31047422ybb.133.1630428154774;
+ Tue, 31 Aug 2021 09:42:34 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 31 Aug 2021 09:42:23 -0700
+Date:   Tue, 31 Aug 2021 09:42:24 -0700
 In-Reply-To: <20210831164224.1119728-1-seanjc@google.com>
-Message-Id: <20210831164224.1119728-3-seanjc@google.com>
+Message-Id: <20210831164224.1119728-4-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210831164224.1119728-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH 2/3] KVM: x86: Subsume nested GPA read helper into load_pdptrs()
+Subject: [PATCH 3/3] KVM: x86: Simplify retrieving the page offset when
+ loading PDTPRs
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,122 +68,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Open code the call to mmu->translate_gpa() when loading nested PDPTRs and
-kill off the existing helper, kvm_read_guest_page_mmu(), to discourage
-incorrect use.  Reading guest memory straight from an L2 GPA is extremely
-rare (as evidenced by the lack of users), as very few constructs in x86
-specify physical addresses, even fewer are virtualized by KVM, and even
-fewer yet require emulation of L2 by L0 KVM.
+Replace impressively complex "logic" for computing the page offset from
+CR3 when loading PDPTRs.  Unlike other paging modes, the address held in
+CR3 for PAE paging is 32-byte aligned, i.e. occupies bits 31:5, thus bits
+11:5 need to be used as the offset from the gfn when reading PDPTRs.
+
+The existing calculation originated in commit 1342d3536d6a ("[PATCH] KVM:
+MMU: Load the pae pdptrs on cr3 change like the processor does"), which
+read the PDPTRs from guest memory as individual 8-byte loads.  At the
+time, the so called "offset" was the base index of PDPTR0 as a _u64_, not
+a byte offset.  Naming aside, the computation was useful and arguably
+simplified the overall flow.
+
+Unfortunately, when commit 195aefde9cc2 ("KVM: Add general accessors to
+read and write guest memory") added accessors with offsets at byte
+granularity, the cleverness of the original code was lost and KVM was
+left with convoluted code for a simple operation.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/include/asm/kvm_host.h |  3 --
- arch/x86/kvm/x86.c              | 56 +++++++++++----------------------
- 2 files changed, 18 insertions(+), 41 deletions(-)
+ arch/x86/kvm/x86.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 09b256db394a..ec26a929b94b 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1703,9 +1703,6 @@ void kvm_requeue_exception_e(struct kvm_vcpu *vcpu, unsigned nr, u32 error_code)
- void kvm_inject_page_fault(struct kvm_vcpu *vcpu, struct x86_exception *fault);
- bool kvm_inject_emulated_page_fault(struct kvm_vcpu *vcpu,
- 				    struct x86_exception *fault);
--int kvm_read_guest_page_mmu(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
--			    gfn_t gfn, void *data, int offset, int len,
--			    u32 access);
- bool kvm_require_cpl(struct kvm_vcpu *vcpu, int required_cpl);
- bool kvm_require_dr(struct kvm_vcpu *vcpu, int dr);
- 
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 86539c1686fa..8bd76698be52 100644
+index 8bd76698be52..aa41ed693b0a 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -790,30 +790,6 @@ bool kvm_require_dr(struct kvm_vcpu *vcpu, int dr)
- }
- EXPORT_SYMBOL_GPL(kvm_require_dr);
- 
--/*
-- * This function will be used to read from the physical memory of the currently
-- * running guest. The difference to kvm_vcpu_read_guest_page is that this function
-- * can read from guest physical or from the guest's guest physical memory.
-- */
--int kvm_read_guest_page_mmu(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
--			    gfn_t ngfn, void *data, int offset, int len,
--			    u32 access)
--{
--	struct x86_exception exception;
--	gfn_t real_gfn;
--	gpa_t ngpa;
--
--	ngpa     = gfn_to_gpa(ngfn);
--	real_gfn = mmu->translate_gpa(vcpu, ngpa, access, &exception);
--	if (real_gfn == UNMAPPED_GVA)
--		return -EFAULT;
--
--	real_gfn = gpa_to_gfn(real_gfn);
--
--	return kvm_vcpu_read_guest_page(vcpu, real_gfn, data, offset, len);
--}
--EXPORT_SYMBOL_GPL(kvm_read_guest_page_mmu);
--
- static inline u64 pdptr_rsvd_bits(struct kvm_vcpu *vcpu)
- {
- 	return vcpu->arch.reserved_gpa_bits | rsvd_bits(5, 8) | rsvd_bits(1, 2);
-@@ -825,34 +801,38 @@ static inline u64 pdptr_rsvd_bits(struct kvm_vcpu *vcpu)
+@@ -801,7 +801,6 @@ static inline u64 pdptr_rsvd_bits(struct kvm_vcpu *vcpu)
  int load_pdptrs(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu, unsigned long cr3)
  {
  	gfn_t pdpt_gfn = cr3 >> PAGE_SHIFT;
--	unsigned offset = ((cr3 & (PAGE_SIZE-1)) >> 5) << 2;
-+	unsigned offset = (((cr3 & (PAGE_SIZE-1)) >> 5) << 2) * sizeof(u64);
-+	gpa_t real_gpa;
+-	unsigned offset = (((cr3 & (PAGE_SIZE-1)) >> 5) << 2) * sizeof(u64);
+ 	gpa_t real_gpa;
  	int i;
  	int ret;
- 	u64 pdpte[ARRAY_SIZE(mmu->pdptrs)];
+@@ -816,8 +815,9 @@ int load_pdptrs(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu, unsigned long cr3)
+ 	if (real_gpa == UNMAPPED_GVA)
+ 		return 0;
  
--	ret = kvm_read_guest_page_mmu(vcpu, mmu, pdpt_gfn, pdpte,
--				      offset * sizeof(u64), sizeof(pdpte),
--				      PFERR_USER_MASK|PFERR_WRITE_MASK);
--	if (ret < 0) {
--		ret = 0;
--		goto out;
--	}
-+	/*
-+	 * If the MMU is nested, CR3 holds an L2 GPA and needs to be translated
-+	 * to an L1 GPA.
-+	 */
-+	real_gpa = mmu->translate_gpa(vcpu, gfn_to_gpa(pdpt_gfn),
-+				      PFERR_USER_MASK | PFERR_WRITE_MASK, NULL);
-+	if (real_gpa == UNMAPPED_GVA)
-+		return 0;
-+
-+	ret = kvm_vcpu_read_guest_page(vcpu, gpa_to_gfn(real_gpa), pdpte,
-+				       offset, sizeof(pdpte));
-+	if (ret < 0)
-+		return 0;
-+
- 	for (i = 0; i < ARRAY_SIZE(pdpte); ++i) {
- 		if ((pdpte[i] & PT_PRESENT_MASK) &&
- 		    (pdpte[i] & pdptr_rsvd_bits(vcpu))) {
--			ret = 0;
--			goto out;
-+			return 0;
- 		}
- 	}
--	ret = 1;
- 
- 	memcpy(mmu->pdptrs, pdpte, sizeof(mmu->pdptrs));
- 	kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
- 	vcpu->arch.pdptrs_from_userspace = false;
- 
--out:
--
--	return ret;
-+	return 1;
- }
- EXPORT_SYMBOL_GPL(load_pdptrs);
++	/* Note the offset, PDPTRs are 32 byte aligned when using PAE paging. */
+ 	ret = kvm_vcpu_read_guest_page(vcpu, gpa_to_gfn(real_gpa), pdpte,
+-				       offset, sizeof(pdpte));
++				       cr3 & GENMASK(11, 5), sizeof(pdpte));
+ 	if (ret < 0)
+ 		return 0;
  
 -- 
 2.33.0.259.gc128427fd7-goog
