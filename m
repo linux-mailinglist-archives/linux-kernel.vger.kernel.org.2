@@ -2,96 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBCE3FC74B
+	by mail.lfdr.de (Postfix) with ESMTP id 870E33FC74C
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbhHaMcD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 31 Aug 2021 08:32:03 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:60540 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231134AbhHaMcC (ORCPT
+        id S231611AbhHaMcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 08:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230111AbhHaMcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 08:32:02 -0400
-Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 0EDE0CECDA;
-        Tue, 31 Aug 2021 14:31:06 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH 1/2] Bluetooth: btusb: Support public address
- configuration for MediaTek Chip.
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <SL2PR03MB4457513693916CBA07BE450BB3CC9@SL2PR03MB4457.apcprd03.prod.outlook.com>
-Date:   Tue, 31 Aug 2021 14:31:05 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Sean Wang <Sean.Wang@mediatek.com>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "michaelfsun@google.com" <michaelfsun@google.com>,
-        "mcchou@chromium.org" <mcchou@chromium.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <51A4788D-DDFD-4700-9D50-84F37ADD4883@holtmann.org>
-References: <20210824154430.27689-1-mark-yw.chen@mediatek.com>
- <CF258C9C-BB3C-4C10-88B0-F6F3A03303D5@holtmann.org>
- <SL2PR03MB4457513693916CBA07BE450BB3CC9@SL2PR03MB4457.apcprd03.prod.outlook.com>
-To:     =?utf-8?B?Ik1hcmstWVcgQ2hlbiAo6Zmz5o+a5paHKSI=?= 
-        <Mark-YW.Chen@mediatek.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Tue, 31 Aug 2021 08:32:31 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41665C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:31:36 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id x16so8871080pll.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:31:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=KCFcVFLPVDjWU9gNsMaxNCZmVlje7lLqE88KbC2/x+Y=;
+        b=lw2ejCIWUuc1EXwPLkMFmDDAdWeGKwYiX1CI28o2SIHI5352Tredb/D+03fp5DJBNb
+         xFJ+sTI4zMREulp4UH5bTBdP7T8sqLUZdZVO5njhNmrBIwSk434zmuhZy0Ez0424wlrb
+         zYmed2v/ZU4QfWt7XM0IWiCFizoN9L1mp8ieFg4EDPcqV8Lvq5Zrw+qJd0TrpdJKqLlP
+         5xHFRnifgfZ6dJNF0JisXkLVpAefvUocwZQosdeaw9sjOxj7cLWzIqzZFlvAICg1U75B
+         Dn86quaFpEDENbQ1Et5yVVkDHOFHOkP2FdPSJQNSKLIIS1P9cQNgaVW/bplzUmBZ9jix
+         XSiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=KCFcVFLPVDjWU9gNsMaxNCZmVlje7lLqE88KbC2/x+Y=;
+        b=qZ2j82AypeVjXYTu6l7kMZDHsWV5pI7MB3+XBARwFOSeqJQMHEg8rzNTRaUHm3NIWq
+         CvMsaGqUGYpnzD8IMqAx16xMo/SfUMjC/qUrfDE3BZ5EEQn7fWUnDJGUBmL/B+MVJpUo
+         poUa+TH/fKAcAqZavZK6FPcTHPJjcAGoGU92j16IEK8vQ1nHPPMrxV0v7FM86n/8mlxC
+         Mc0lsZLWcz9hve9zVeJUXz/Ra4Qc5Xnno9vHq8xGn0T7NQ2xiWiBGBhi0oFPI3ajZFRV
+         Uu38J9BaMUn4vNPEBRdpYh7Sb+AAZ9QLJ5R01M9oOMhkH1qvv+o4ZkvKVpBbOfYDuvqY
+         BREg==
+X-Gm-Message-State: AOAM532T0Yre3GNE6wE+EsubpEm2Ncauoxh0Czm3elcwq76dH20kuhfI
+        bVYGpaS4RpBRRECbyTkdA5fcWjL2yJNt3c0RIA==
+X-Google-Smtp-Source: ABdhPJxJgfQaCZWdZlMpC73UA1IcIEXfZRp36lw3CsoOY++H6RyfPcJOK8zIYe/Jeq/zceKcAWepnTJFpJFS/5vZUfg=
+X-Received: by 2002:a17:90b:128b:: with SMTP id fw11mr5306459pjb.161.1630413095852;
+ Tue, 31 Aug 2021 05:31:35 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:6a10:9599:0:0:0:0 with HTTP; Tue, 31 Aug 2021 05:31:35
+ -0700 (PDT)
+Reply-To: wolverinefllclub@hotmail.com
+From:   "Martin Jr. Schwarz" <juliewalters0110@gmail.com>
+Date:   Tue, 31 Aug 2021 14:31:35 +0200
+Message-ID: <CAAs47DAabuMLPxqrTVpHRftZUL_qqW44vSxCHhdKtO739AUpiA@mail.gmail.com>
+Subject: DONATION
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+-- 
+Hello,
+My name is Martin Jr. Schwarz, from the Wolverine FLL Club of Oakland
+County, winning the $ 1.05 billion Mega Millions jackpot. on March 12,
+2021. We volunteered to donate $ 500,000 to help with this pandemic.
+Contact me via e-mail: wolverinefllclub@hotmail.com for information/
+clarification.
 
->>> The MediaTek chip support vendor specific HCI command(0xfc1a) to
->>> change the public address. Add hdev->set_bdaddr handler for MediaTek
->>> Chip.
->>> 
->>> Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
->>> ---
->>> drivers/bluetooth/btusb.c | 18 ++++++++++++++++++
->>> 1 file changed, 18 insertions(+)
->>> 
->>> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
->>> index 60d2fce59a71..41e7c9f28d82 100644
->>> --- a/drivers/bluetooth/btusb.c
->>> +++ b/drivers/bluetooth/btusb.c
->>> @@ -2200,6 +2200,23 @@ struct btmtk_section_map {
->>> 	};
->>> } __packed;
->>> 
->>> +static int btusb_set_bdaddr_mtk(struct hci_dev *hdev, const bdaddr_t
->>> +*bdaddr) {
->>> +	struct sk_buff *skb;
->>> +	long ret;
->>> +
->>> +	skb = __hci_cmd_sync(hdev, 0xfc1a, sizeof(bdaddr), bdaddr,
->> HCI_INIT_TIMEOUT);
->>> +	if (IS_ERR(skb)) {
->>> +		ret = PTR_ERR(skb);
->>> +		bt_dev_err(hdev, "changing Mediatek device address failed
->> (%ld)",
->>> +			   ret);
->>> +		return ret;
->>> +	}
->>> +	kfree_skb(skb);
->>> +
->>> +	return 0;
->>> +}
->>> +
->> 
->> this is not a permanent change, correct? Meaning a power cycle will bring back
->> the original BD_ADDR?
->> 
-> 
-> Yes, it's not a permanent change.
-> After doing a power cycle or Mediatek specific Bluetooth reset, Mediatek Chips will bring back the original  BD_ADDRESS.
-
-ok, good. Then please re-submit against latest bluetooth-next tree. Unfortunately current patch doesn’t apply anymore.
-
-Regards
-
-Marcel
-
+Sincerely,
+Martin Jr. Schwarz.
