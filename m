@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0361F3FCC72
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C723FCC74
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240444AbhHaRle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 13:41:34 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49322 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhHaRld (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 13:41:33 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 30AB522151;
-        Tue, 31 Aug 2021 17:40:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630431637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SdMI+6lRD2G3u+2aUh0DhRa8Y0EyNFFP/fCE9/AfF38=;
-        b=kqkkGcIyh6CEA3ka71xoIpNa4R3Y+ziCRvBQEaDLiYOQKo7orFmj+LUueWOSLXNHxgtDzG
-        dfMd3Pm9o+kwRkRYM2+FhqarrUfZgNWVBmXIR6KscUIvxyRY0FhX6KaYkYqwscFydQztee
-        m4H0f3QfR/JQ1XaWyBBAEuqhupl/0FM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630431637;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SdMI+6lRD2G3u+2aUh0DhRa8Y0EyNFFP/fCE9/AfF38=;
-        b=PlgcLUyqlpnPq0vYXl74bfk9ATownostgZC1o+12r/KnkdYqQdgJfkkT6fPmsCD1rgCb1K
-        UamHX93Js1w7pCBQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 0761713966;
-        Tue, 31 Aug 2021 17:40:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id m+BoAJVpLmHzZwAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Tue, 31 Aug 2021 17:40:36 +0000
-Message-ID: <eef914fb-c3c4-effa-5bd8-81ee2495a2f9@suse.cz>
-Date:   Tue, 31 Aug 2021 19:40:36 +0200
+        id S240477AbhHaRlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 13:41:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233619AbhHaRlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 13:41:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 512AE60C3E;
+        Tue, 31 Aug 2021 17:40:51 +0000 (UTC)
+Date:   Tue, 31 Aug 2021 18:40:48 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Chen Wandun <chenwandun@huawei.com>
+Cc:     will@kernel.org, ardb@kernel.org, rppt@kernel.org,
+        akpm@linux-foundation.org, nsaenz@kernel.org,
+        anshuman.khandual@arm.com, geert+renesas@glider.be,
+        rafael.j.wysocki@intel.com, robh@kernel.org,
+        kirill.shtuemov@linux.intel.com, sfr@canb.auug.org.au,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        wangkefeng.wang@huawei.com, weiyongjun1@huawei.com,
+        guohanjun@huawei.com
+Subject: Re: [PATCH] arm64: kdump: Skip kmemleak scan reserved memory for
+ kdump
+Message-ID: <YS5poB8hPd1kfdVZ@arm.com>
+References: <20210827092246.3565437-1-chenwandun@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <YSQeFPTMn5WpwyAa@casper.infradead.org>
- <YSU7WCYAY+ZRy+Ke@cmpxchg.org> <YSVMAS2pQVq+xma7@casper.infradead.org>
- <YSZeKfHxOkEAri1q@cmpxchg.org> <20210826004555.GF12597@magnolia>
- <YSjxlNl9jeEX2Yff@cmpxchg.org> <YSkyjcX9Ih816mB9@casper.infradead.org>
- <YS0WR38gCSrd6r41@cmpxchg.org> <YS0h4cFhwYoW3MBI@casper.infradead.org>
- <YS0/GHBG15+2Mglk@cmpxchg.org> <YS1PzKLr2AWenbHF@casper.infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <YS1PzKLr2AWenbHF@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827092246.3565437-1-chenwandun@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/21 23:38, Matthew Wilcox wrote:
-> I think something that might actually help is if we added a pair of new
-> GFP flags, __GFP_FAST and __GFP_DENSE.  Dense allocations are those which
-> are expected to live for a long time, and so the page allocator should
-> try to group them with other dense allocations.  Slab and page tables
-> should use DENSE, along with things like superblocks, or fs bitmaps where
-> the speed of allocation is almost unimportant, but attempting to keep
-> them out of the way of other allocations is useful.  Fast allocations
-> are for allocations which should not live for very long.  The speed of
-> allocation dominates, and it's OK if the allocation gets in the way of
-> defragmentation for a while.
-
-Note we used to have GFP_TEMPORARY, but it didn't really work out:
-https://lwn.net/Articles/732107/
-
-> An example of another allocator that could care about DENSE vs FAST
-> would be vmalloc.  Today, it does:
+On Fri, Aug 27, 2021 at 05:22:46PM +0800, Chen Wandun wrote:
+> Trying to boot with kdump + kmemleak, command will result in a crash:
+> "echo scan > /sys/kernel/debug/kmemleak"
 > 
->         if (array_size > PAGE_SIZE) {
->                 area->pages = __vmalloc_node(array_size, 1, nested_gfp, node,
->                                         area->caller);
->         } else {
->                 area->pages = kmalloc_node(array_size, nested_gfp, node);
->         }
+> crashkernel reserved: 0x0000000007c00000 - 0x0000000027c00000 (512 MB)
+> Kernel command line: BOOT_IMAGE=(hd1,gpt2)/vmlinuz-5.14.0-rc5-next-20210809+ root=/dev/mapper/ao-root ro rd.lvm.lv=ao/root rd.lvm.lv=ao/swap crashkernel=512M
+> Unable to handle kernel paging request at virtual address ffff000007c00000
+> Mem abort info:
+>   ESR = 0x96000007
+>   EC = 0x25: DABT (current EL), IL = 32 bits
+>   SET = 0, FnV = 0
+>   EA = 0, S1PTW = 0
+>   FSC = 0x07: level 3 translation fault
+> Data abort info:
+>   ISV = 0, ISS = 0x00000007
+>   CM = 0, WnR = 0
+> swapper pgtable: 64k pages, 48-bit VAs, pgdp=00002024f0d80000
+> [ffff000007c00000] pgd=1800205ffffd0003, p4d=1800205ffffd0003, pud=1800205ffffd0003, pmd=1800205ffffc0003, pte=0068000007c00f06
+> Internal error: Oops: 96000007 [#1] SMP
+> pstate: 804000c9 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> pc : scan_block+0x98/0x230
+> lr : scan_block+0x94/0x230
+> sp : ffff80008d6cfb70
+> x29: ffff80008d6cfb70 x28: 0000000000000000 x27: 0000000000000000
+> x26: 00000000000000c0 x25: 0000000000000001 x24: 0000000000000000
+> x23: ffffa88a6b18b398 x22: ffff000007c00ff9 x21: ffffa88a6ac7fc40
+> x20: ffffa88a6af6a830 x19: ffff000007c00000 x18: 0000000000000000
+> x17: 0000000000000000 x16: 0000000000000000 x15: ffffffffffffffff
+> x14: ffffffff00000000 x13: ffffffffffffffff x12: 0000000000000020
+> x11: 0000000000000000 x10: 0000000001080000 x9 : ffffa88a6951c77c
+> x8 : ffffa88a6a893988 x7 : ffff203ff6cfb3c0 x6 : ffffa88a6a52b3c0
+> x5 : ffff203ff6cfb3c0 x4 : 0000000000000000 x3 : 0000000000000000
+> x2 : 0000000000000001 x1 : ffff20226cb56a40 x0 : 0000000000000000
+> Call trace:
+>  scan_block+0x98/0x230
+>  scan_gray_list+0x120/0x270
+>  kmemleak_scan+0x3a0/0x648
+>  kmemleak_write+0x3ac/0x4c8
+>  full_proxy_write+0x6c/0xa0
+>  vfs_write+0xc8/0x2b8
+>  ksys_write+0x70/0xf8
+>  __arm64_sys_write+0x24/0x30
+>  invoke_syscall+0x4c/0x110
+>  el0_svc_common+0x9c/0x190
+>  do_el0_svc+0x30/0x98
+>  el0_svc+0x28/0xd8
+>  el0t_64_sync_handler+0x90/0xb8
+>  el0t_64_sync+0x180/0x184
 > 
-> That's actually pretty bad; if you have, say, a 768kB vmalloc space,
-> you need a 12kB array.  We currently allocate 16kB for the array, when we
-> could use alloc_pages_exact() to free the 4kB we're never going to use.
-> If this is GFP_DENSE, we know it's a long-lived allocation and we can
-> let somebody else use the extra 4kB.  If it's not, it's probably not
-> worth bothering with.
+> The reserved memory for kdump will be looked up by kmemleak, this area
+> will be set invalid when kdump service is bring up. That will result in
+> crash when kmemleak scan this area.
 > 
+> Fixes: 461ef12c4375 ("memblock: make memblock_find_in_range method private")
+> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
+> ---
+>  arch/arm64/mm/init.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index b16be52233c6..dc0c44622bfd 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -30,6 +30,7 @@
+>  #include <linux/crash_dump.h>
+>  #include <linux/hugetlb.h>
+>  #include <linux/acpi_iort.h>
+> +#include <linux/kmemleak.h>
+>  
+>  #include <asm/boot.h>
+>  #include <asm/fixmap.h>
+> @@ -101,6 +102,7 @@ static void __init reserve_crashkernel(void)
+>  	pr_info("crashkernel reserved: 0x%016llx - 0x%016llx (%lld MB)\n",
+>  		crash_base, crash_base + crash_size, crash_size >> 20);
+>  
+> +	kmemleak_ignore_phys(crash_base);
+>  	crashk_res.start = crash_base;
+>  	crashk_res.end = crash_base + crash_size - 1;
+>  }
 
+I'd add a comment here along the lines of (feel free to change it):
+
+	/*
+	 * The crashkernel memory will be removed from the kernel linear
+	 * map. Inform kmemleak so that it won't try to access it.
+	 */
+
+With that:
+
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
