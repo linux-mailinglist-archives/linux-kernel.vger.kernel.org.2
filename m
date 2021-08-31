@@ -2,134 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD5A3FC004
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 02:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE2A3FC006
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 02:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhHaAeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 20:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
+        id S239198AbhHaAfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 20:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhHaAep (ORCPT
+        with ESMTP id S239182AbhHaAfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 20:34:45 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE29C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 17:33:51 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so1159080pjx.5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 17:33:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TjFdVibCziMMV625QJ8En+pQePJGwxqOLzHHo+cR/2g=;
-        b=AzDcWKGtdHyMnoIEjzFPFQjRSRfN6cZcyUfqyg+1RFft/sQblgaz4y7UB0acXhUsAk
-         aYq77Xwd7EMjSfEApWR3a558fJLQOEbjXYD1SI5rTv8NJMwK07Xba20kndQ9K5z7nQNv
-         VqF6GPhvubvT3lLK/TsJYcG7uj5cuYcL5eVI8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TjFdVibCziMMV625QJ8En+pQePJGwxqOLzHHo+cR/2g=;
-        b=Lmw9UrPTdf4KTH82QHQV9ButEfCI21wJppJyLCa/gIkvlUdXIsQzV6YSpHsF+AqGZl
-         iTCbVXOncIhuILzmdQkqa2n2U8gkEkjB251MeXSkhuMS3K8cr02YmLPE8zxHj1Hpyj1R
-         RSGeA3WhbLbpDZXeRChEqFTF3hjNQcTRTCeWYHIIeuHvxqMEkKagAGcjapj9Giy2BiiP
-         f+ls+bIPY3Q6acInWNegMMT8VBvyQJwa5FMukMYJHS7qaWZcDezkscNlKMDSO3JtISNr
-         KnoPheJEuoI8h9h3vaCOUJqAAZd5OZoXrRD42UU8TAUbDaQ8BlqyRQJpclFdPCq65hTD
-         dFEQ==
-X-Gm-Message-State: AOAM530eKrW9/aGxfXqAsfI5ROFhdCV2iE4PGiLhs6jjWuNGQaehDtJX
-        HjwJdKToS5tMtnPkXs314TpK6Q==
-X-Google-Smtp-Source: ABdhPJxdbxW4ryHv5bhuf8dsnrqkWswjsDidSV0lyn6xogTwXPWUAw0uITGdywWoWH5lbvCpqEzDjw==
-X-Received: by 2002:a17:90a:bc47:: with SMTP id t7mr2025742pjv.19.1630370030908;
-        Mon, 30 Aug 2021 17:33:50 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:69ed:b45b:ceb5:e18b])
-        by smtp.gmail.com with ESMTPSA id q12sm15915318pfj.153.2021.08.30.17.33.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 17:33:50 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 09:33:36 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Chengyang Fan <cy.fan@huawei.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Changbin Du <changbin.du@intel.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Cengiz Can <cengiz@kernel.wtf>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
-        Wang Qing <wangqing@vivo.com>, Andrij Abyzov <aabyzov@slb.com>,
-        Johan Hovold <johan@kernel.org>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Claire Chang <tientzu@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Al Cooper <alcooperx@gmail.com>, linux-serial@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH printk v1 00/10] printk: introduce atomic consoles and
- sync mode
-Message-ID: <YS144PMiCJnmoKE4@google.com>
-References: <20210803131301.5588-1-john.ogness@linutronix.de>
- <YQwHwT2wYM1dJfVk@alley>
+        Mon, 30 Aug 2021 20:35:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC60C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 17:34:19 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630370057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3ZF4qqQnXb/4fSz0lBZGHElW/Uyy8YkIOQytsRHW6+k=;
+        b=yOXWRULFixb9/mm7cCn8uA2k5YsqwZgtvjzdB62PJr0F4l+IkZJO/07MseFxRmjFYSr0zD
+        1L5I2RalahplPpQ++se590p7+Q2+fbO74UB8+Dt6AiwayEXY1e9pscWFMsf2uD+/Al1a7W
+        75sSsTrLQAaLxyOAQMoNSbcmc71kCf+wfLlgbEnN856FfIgGLZ1VX1H8XZ/IxCRaj8PqkV
+        jspBgZJK7can8sDycaX7upxiMjBcWvypAXoScZ+rs3Cn7YGDwTQdcCRVbySF7S34gxShdu
+        c2EGVNFjyOsZicT44b8jL4J/QW2ue3gWG4U3KgbpQTbgCKjAS828E2hVoz05MA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630370057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3ZF4qqQnXb/4fSz0lBZGHElW/Uyy8YkIOQytsRHW6+k=;
+        b=Ux4gK+XR2ZQTXd+vDDYfy2PjJMsi95WdlHmtdH7Y9p0wlfaydaexVp5jhebYEOigDjHN87
+        Dop4TGzKtaFh3rBw==
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
+ restore_fpregs_from_user()
+In-Reply-To: <CAHk-=wh57tMaJxcH=kWE4xdKLjayKSDEVvMwHG4fKZ5tUHF6mg@mail.gmail.com>
+References: <20210830154702.247681585@linutronix.de>
+ <20210830162545.374070793@linutronix.de> <YS0ylo9nTHD9NiAp@zn.tnic>
+ <87zgsyg0eg.ffs@tglx> <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
+ <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
+ <YS1OE6FRi4ZwEF8j@zeniv-ca.linux.org.uk>
+ <CAHk-=wh57tMaJxcH=kWE4xdKLjayKSDEVvMwHG4fKZ5tUHF6mg@mail.gmail.com>
+Date:   Tue, 31 Aug 2021 02:34:16 +0200
+Message-ID: <87zgsye9kn.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQwHwT2wYM1dJfVk@alley>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/08/05 17:47), Petr Mladek wrote:
-[..]
-> 3. After introducing console kthread(s):
-> 
-> 	int printk(...)
-> 	{
-> 		vprintk_store();
-> 		wake_consoles_via_irqwork();
-> 	}
-> 
-> 	+ in panic:
-> 
-> 	    + with atomic console like after this patchset?
-> 	    + without atomic consoles?
-> 
-> 	+ during early boot?
+Linus,
 
-I guess I'd also add netconsole to the list.
+On Mon, Aug 30 2021 at 15:00, Linus Torvalds wrote:
+> But since the Intel machine check stuff is so misdesigned and doesn't
+> work on any normal machines, most people can't test any of this, none
+> of this matters, and it's only broken on those "serious enterprise
+> machines" setups that people think are better, but are actually just
+> almost entirely untested and thus don't work right.
+
+what's worse is that even if you have access to such a machine, there is
+no documented way to do proper hardware based error injection.
+
+The injection mechanism which claims to do hardware error injection in
+arch/x86/kernel/cpu/mce/inject.c is a farce:
+
+All it does is to "prepare" the MSRs with some fake error values and
+raising #MC via int 18 afterwards in the hope that the previously
+prepared MSR values are still valid. Great way to test stuff by setting
+the MSR to the expected failure value and then raising the exception in
+software.
+
+NHM had a documented mechanism to inject at least ECC failures at the
+hardware level, but with the later memory controllers this ended up in
+the documentation black hole along with all the other undocumented real
+HW injection mechanisms which allow actual testing of this stuff.
+
+The HW injection mechanisms definitely exist, but without documentation
+they are useless. Intel still thinks that the secrecy around that stuff
+is valuable and they can get away with those untestable mechanisms even
+for their endeavours in the safety critical space.
+
+It's pretty much the same approach as security through obscurity, but in
+the safety case that's even more hillarious.
+
+Though we all know what the 'S' in INTEL stands for... I used to be
+Security, but nowadays it's Security _and_ Safety.
+
+Thanks,
+
+        tglx
+
+
+
+
+
