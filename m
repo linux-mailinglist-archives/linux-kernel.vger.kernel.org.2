@@ -2,101 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EAE3FCC03
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2181E3FCC10
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbhHaREH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 13:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
+        id S239204AbhHaRJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 13:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240202AbhHaREC (ORCPT
+        with ESMTP id S229735AbhHaRJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 13:04:02 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF20FC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:03:06 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id t2-20020a4ae9a2000000b0028c7144f106so5876572ood.6
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:03:06 -0700 (PDT)
+        Tue, 31 Aug 2021 13:09:57 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B43C061575;
+        Tue, 31 Aug 2021 10:09:01 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id z2so307698lft.1;
+        Tue, 31 Aug 2021 10:09:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aquqJwbc9m/hIVCd01TlOuCXbAUHlFJOz/03vmUb8IM=;
-        b=q5jjzmupuZysdq6pWM6sahYpgGRYgqndWyW/wAc+WhHHcvPtSPx1jDAU0woWnKbRbo
-         tn/icMFl7O5TPVcbFWiyHWfHBfvH5q4M81Eye4+TLIsH/xh7sS1GZCXpszVjli5RBp7t
-         qmxrNg7JaX8/jUCQ5qmckF4xKx4F33oh3CEKEfs8y9TcaZBc93oUfwmnVbwoNriqOyBO
-         R9cYqvxZZbqb45UeyIa/tIfRHVBkkfpDqNdXKGaCkcrWV4ntPwL+rWnRq9jw/awNpe5d
-         Kr7ft9qBkhKzqN+TUudBVrTf8xbZcd/tYx7zs2WSramLm+f3npGOdIeZzeF7mA5ujJjR
-         s8jA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KdVhQl1AA3NYR5Y28IbfQxZ7Txmq2EPWrQl9yB9/fZM=;
+        b=uE4LCEGokfsQFSnQiDm+z+xI+rr8OUzBYDsGz09P2ekdwyek+LNClH/4/tL1Kh067w
+         uMLC/6FSRcgLljPnxvzeb5sYTRZQXBLLSK2WFGEP5xm+hV8EquCps3ydk4muJjKrzLJi
+         kQ8NP1HWl/qKwb+O0/nSCAeOPcUk36Ixh2DjgRQiF8U0TQYjFfFB6mrefqCuVhu63sc3
+         2ZHR5kzfQTKvMygBW5npxWAUZcTkZJ51qHGvEuSlWnHshX7UoD7rNM4dVaWAsOM9Dbsq
+         R9A+BUo8jpp796QRADct8pVjPG+xWGz+oFCbEvw0boKH7qVD49VbzDxV7XCgXjjbmCGU
+         WDHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aquqJwbc9m/hIVCd01TlOuCXbAUHlFJOz/03vmUb8IM=;
-        b=lYrPiMjuCt6/7bN0qahLpq3wAaPhWntAkleo+xxLVopaNOy54ghcEeupLdrjHhJwzQ
-         on7VLe/nI5WIfhMRE0VCQSSYD9Rkqwwk7MmCpfcPAZ0zUMVR+OlYRWmEcT238ncdh8fN
-         q5S8/fufAQ8rbilCaGF5S29f4b9wxW1LBHgfdQuB7B6bZQ+VngfYbLSrYypr4yY33ue0
-         7lmRvaney0l/UG1vh2B/7RjS/AfX2AIzOttZJt44W2ADo9e/SbaKci9jnKJbIPq4jpPO
-         71VmzZ3AyJegazvaf2ZnfT8Do4TzHeWfnCF0ajKoshucZnusAKaaPuu0wz7g+6+82jRR
-         z+Ow==
-X-Gm-Message-State: AOAM530AX02bQCf6VaTsqmAhbROaKc2DsPNdTQE/ssamT618B/WEjEkw
-        osV6sMrS94Tc1ddXq4FK5UDVTw==
-X-Google-Smtp-Source: ABdhPJxKKFdY8MvkADZc3EpXGvVWUIRpCwdjGVe7w41nCD/MZyO774PBzlWQ8ANv/3d0FU5rFERitw==
-X-Received: by 2002:a4a:df43:: with SMTP id j3mr15210793oou.37.1630429386025;
-        Tue, 31 Aug 2021 10:03:06 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id y138sm3647410oie.22.2021.08.31.10.03.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 10:03:05 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 10:04:14 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Sibi Sankar <sibis@codeaurora.org>, sboyd@kernel.org,
-        robh+dt@kernel.org, viresh.kumar@linaro.org, agross@kernel.org,
-        rjw@rjwysocki.net, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, dianders@chromium.org,
-        tdas@codeaurora.org
-Subject: Re: [PATCH 3/4] arm64: dts: qcom: sc7280: Fixup the cpufreq node
-Message-ID: <YS5hDq+xblntYbh0@ripper>
-References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
- <1627581885-32165-4-git-send-email-sibis@codeaurora.org>
- <YS5LDb4KDFx/dRnM@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KdVhQl1AA3NYR5Y28IbfQxZ7Txmq2EPWrQl9yB9/fZM=;
+        b=OG0tYqqF4EOCLxsFGKJOik7zCp/nD08lUXhtsVvBnFOOw+UZPW2CxqnXqIvfEzeG9J
+         wgdHRJ+o3QRdTJ/uZAdWNtQTRXgo3lv46/jB74wpoWIkQobZeNYeS/X7MsQz+uDJ7Iks
+         /q1cdaKSj/bsYaSprv2VxNBKwsQNNzLnmnNGBmLua3WcrD0jwPrpV4QZ+RsszUL9oUi8
+         u1iJuYHQ0N+0OVcJ9/JRxPdNxK8wcgAQ+0cdtI/9f5R9FFREzG5VT2WWRg7kai/b8snP
+         la6rDV2Te8zzEq+1iFiYXI3Ndb2wHs7JJB9Td3w+/A66GbPpJs4GVj4DXxdg1KoRNxY5
+         CG9w==
+X-Gm-Message-State: AOAM531yN7bHJBHRZjSujP95Ffv/ZkCp6GD2hTOZ8DV/bdhG1NUCkgIy
+        TE9ulES1BqjQcs7fukytTrof6FXDKzaoff4R+yyowna6
+X-Google-Smtp-Source: ABdhPJwqSEbsDf2RgvQHuasmksVMqpQ/BuuPPMMzavKg3Rc2DnPFO/sPDECXCSmWZatGLM+HWWbTemuWQNHaGKHEhGU=
+X-Received: by 2002:ac2:54a4:: with SMTP id w4mr10746063lfk.133.1630429739587;
+ Tue, 31 Aug 2021 10:08:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YS5LDb4KDFx/dRnM@google.com>
+References: <CAH2r5mvVdBoUW-0BfsxiRAE6X30cqhBtNDvG7pwKdQwsu+wXfg@mail.gmail.com>
+ <CAHk-=wiNvB_j3VZYJ1yZqq+9JjgWCO1MUmRsjTKBwQ+x=kB5tg@mail.gmail.com>
+In-Reply-To: <CAHk-=wiNvB_j3VZYJ1yZqq+9JjgWCO1MUmRsjTKBwQ+x=kB5tg@mail.gmail.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Tue, 31 Aug 2021 12:08:48 -0500
+Message-ID: <CAH2r5mtTLUQa2U=MGHOVk_FsPZg6owMsw+RoTudWxGuoQej41g@mail.gmail.com>
+Subject: Re: [GIT PULL] cifs/smb3 client fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 31 Aug 08:30 PDT 2021, Matthias Kaehlcke wrote:
+On Tue, Aug 31, 2021 at 11:40 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Sun, Aug 29, 2021 at 10:48 PM Steve French <smfrench@gmail.com> wrote:
+> >
+> > - mostly restructuring to allow disabling less secure algorithms (this
+> > will allow eventual removing rc4 and md4 from general use in the
+> > kernel)
+>
+> Well, you should probably have mentioned that you already started on
+> this by removing LANMAN support.
+>
+> I'm sincerely hoping nobody used or depended on that old garbage in
+> this day and age any more.
+>
+> Anyway, entirely unrelated question: you pretty much interchangeably
+> use "cifs" or "smb3" for the filesystem, as shown once more by the
+> commit messages here (but also the subject line).
+>
+> The filesystem directory is called "cifs", and I've taken to use that
+> in my "Pull cifs updates" thing from you to just avoiding the
+> confusion.
+>
+> And now we have ksmbd (yup, I just merged that pull request too), so
+> we have a "cifs client" and a "smb server". Aaarrgh.
+>
+> I understand that some people may care about the name, may care about
+> "smb2 vs smb3", or whatever. But I have to admit finding it a bit
+> annoying how the code and the directory layout uses these different
+> terms pretty much randomly with no real apparent logic.
+>
+> Somehow the NFS people had no problem completely changing everything
+> about their protocols and then still calling the end result "nfs
+> client" vs "nfs server".
+>
+> Oh well. I'm assuming it's not going to change, and it's not really a
+> problem, I just wanted to mention my frustration about how clear as
+> mud the naming is.
+>              Linus
 
-> On Thu, Jul 29, 2021 at 11:34:44PM +0530, Sibi Sankar wrote:
-> > Fixup the register regions used by the cpufreq node on SC7280 SoC to
-> > support per core L3 DCVS.
-> > 
-> > Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
-> > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> 
-> This patch landed in the Bjorn's tree, however the corresponding driver
-> change ("cpufreq: qcom: Re-arrange register offsets to support per core
-> L3 DCVS" / https://patchwork.kernel.org/project/linux-arm-msm/patch/1627581885-32165-3-git-send-email-sibis@codeaurora.org/)
-> did not land in any maintainer tree yet AFAIK. IIUC the DT change alone
-> breaks cpufreq since the changed register regions require the changed
-> offset in the cpufreq driver.
-> 
 
-Thanks for the note Matthias, it must have slipped by as I scraped the
-inbox for things that looked ready.
+I (and many at Microsoft and in Samba team etc.) also have a strong
+desire to stop
+using the word "CIFS" as it has been associated with some very high profile
+attacks, and with the introduction of SMB2.1 support (which was far more
+secure) in 2009 no one should be using the very old CIFS dialect
+(aka "SMB1" dialect).  So if you are ok with renaming the client dir and module
+name - we can gradually stop using the word/name "cifs" except for the
+parts of code which really are needed to access the (unfortunately
+hundreds of millions of) very old devices which require SMB1 ("CIFS").
+We could even build two versions of the module "smb3.ko" which does not
+include support for the less secure legacy dialects and "cifs.ko" which does
+include it.   Is there a precedent for something similar.
 
-I'm actually not in favor of splitting these memory blocks in DT to
-facilitate the Linux implementation of splitting that in multiple
-drivers...
+Note that with the introduction of various security features
+in SMB3 (then even more security features in SMB3.1.1) it seems like it seemed
+confusing to users to tell them "mount -t cifs ..." which was why I
+added support
+for "mount -t smb3 (to cifs.ko)  in the 4.18 kernel/   but I also
+would strongly like to
+stop using the word "cifs" in module name going forward, even if it does cause
+a little bit of extra work for distros (most of which could be handled
+in the mount
+helper in any case)
 
-But I've not been following up on that discussion.
+If no objections,  we can start moving most things on
+the client to "smb.ko" rather than "cifs.ko" ...
 
-Regards,
-Bjorn
+Do you have any objections to me renaming the client's source
+directory to "fs/smb3"
+(or fs/smb) and fs/smb3_common ...?
 
-> Sibi, please confirm or clarify that my concern is unwarranted.
+
+
+-- 
+Thanks,
+
+Steve
