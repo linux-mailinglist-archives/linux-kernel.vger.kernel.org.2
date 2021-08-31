@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 644E03FC527
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01ED23FC529
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240737AbhHaJvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 05:51:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43861 "EHLO
+        id S240749AbhHaJvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 05:51:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56824 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240721AbhHaJvW (ORCPT
+        by vger.kernel.org with ESMTP id S240733AbhHaJv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 05:51:22 -0400
+        Tue, 31 Aug 2021 05:51:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630403427;
+        s=mimecast20190719; t=1630403433;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=t8XYUgR9kHcOYFdSNrWNV6bYolumP9ymhRdSASBvoKM=;
-        b=ZE15u+td5r1mW2/OqEBqoALMSlkl9lFGXp+G6nqsqryGxJy9RS1ryjPcNenslW+WLPi1LG
-        SmMkKa/uLaELj8ETAdWBl6vGIlDAvWXZiUIiDLouyBstahbcaa2PkBSTzRzvMLnN3YIGd5
-        4ufHCfgLN45XtT3h53F0AZl8RpFyXO0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-5W31Md0uM2mrTaAiDEbBBA-1; Tue, 31 Aug 2021 05:50:26 -0400
-X-MC-Unique: 5W31Md0uM2mrTaAiDEbBBA-1
-Received: by mail-wm1-f72.google.com with SMTP id j145-20020a1c2397000000b002ea321114f7so1245523wmj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:50:26 -0700 (PDT)
+        bh=eqAj4ZrmrtKDThZEc8WrAKFFOfUsJKx4HE/+LaO0ups=;
+        b=COg2VWl0oU8+KShi4vTMCLtrHzMoyIqvUtR/w8mfmp7J9kZVPCIyrtwvKuVdpON8kPZ0X3
+        PBebcz+mwzmZq93IkYNkbDa/X8vaQfgWcyGPFL+EIjqz7yLkIPJT/CKvilZgZUHrrAcHbu
+        JgHAMQq8mAvIcXIukncHLKczk1C0oNA=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-502-5TQCOjchN6e4ckOShge2Ow-1; Tue, 31 Aug 2021 05:50:32 -0400
+X-MC-Unique: 5TQCOjchN6e4ckOShge2Ow-1
+Received: by mail-wr1-f69.google.com with SMTP id q14-20020a5d574e000000b00157b0978ddeso1239074wrw.5
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:50:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=t8XYUgR9kHcOYFdSNrWNV6bYolumP9ymhRdSASBvoKM=;
-        b=bdyVrgNXWs6MiIaCiVI9cJNzDZy89PbKaZ+rKK0uvTpQO+hIeeK2ZJKU5yES975i8L
-         zZZsE6Rlzgx987SNNZTu1ZFV/GcsgCm049yx+jvBvL+3sqCVIR6gkQ2eU3yO7qLmTPl0
-         sOuTlUzWPRs+OnUevoG8w3daPG37/dqEH6KxcmeKQDQ/hWWVsQGGeVUYl4LOLCPsiEdT
-         Q3Yw2OtXeZW9FOZgdBnMQzN0fMR4EJZgRXkiIFf6NkVUMaSg+BS0waU+Zh4B7/oBiyIT
-         qVn3wJGzZ7oBU+tld+13hdfpH9gSw2ObOwQggePOmmBqkegHgc460q3EluYLKTC0oMbR
-         MnTw==
-X-Gm-Message-State: AOAM530Adf4H9YIGyeumI4AHN60uyqieh7MbRb6LUY0K2f4Qr5/xZ9Ls
-        DxYzTKAICC67bv2hkNnwcysc++NTXWTnBjosF6M+4EPuwel9ho4MkPJUq0L/m5w0Q0H7h2gcp1w
-        Nz+2kwYByHHUmTA2NP7X8FZ/I
-X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr3237231wmp.52.1630403424971;
-        Tue, 31 Aug 2021 02:50:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwmw4QOsPrdbgK9ka9SXfqxCs3jTWhJePp5bIWBfxduD2YjHbSYNsMxcmqk6mS4WTpJhWp5+w==
-X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr3237201wmp.52.1630403424699;
-        Tue, 31 Aug 2021 02:50:24 -0700 (PDT)
+        bh=eqAj4ZrmrtKDThZEc8WrAKFFOfUsJKx4HE/+LaO0ups=;
+        b=cFPOREXmUwFkcfkZ6mGf6v+WFc48f11Kbpc1PE5lNKODfkU30CxB+E3upmIPMChYFW
+         Y4RpYWuz3g3CNVb6+PQEpOi48rblJYVAdw74r+fqiMRv+8qwhUiprBOJinGr3P+52n/j
+         bjVriEHQMxlt0r4/3AZQrJMrv1+EguD+ZNpec099MT000Gptg/usEj4UbTxAEQABG5u/
+         c6ePnem4jSDabkHr1XeXV4MZx0beJUvJ6DFP135tdbEBG0YXIgZ+vdAn3Dr9YjyETd4h
+         5oatMl2JQB7Y0FFurRkfnas1dgs9oc9d7YLvJioPvX+YQOkCioZxoZUE6iYSfFluB1Gh
+         y6IQ==
+X-Gm-Message-State: AOAM5313A1d/Ufh9hYOuNI8aJyMjQE5q+hJFrvKO8wsyCWZ+D/niqWu0
+        hD7gjwmh33V/OaVogtm8dXeYh3NOPtoFNqQYmaqpS2z1qxMvXPUNTKwYgeyP7LsjeNbHBy85tH/
+        Lg4rKrAPQnhQ+8TKqcTq/LQiM
+X-Received: by 2002:a5d:634f:: with SMTP id b15mr29948169wrw.220.1630403431301;
+        Tue, 31 Aug 2021 02:50:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyT+c1jjGRY2d3dwjvaR2TIlhGUOehXrslKaZ7jFbw+KAWrwQ4Lb33Z8Ifttxyc/c4WrcMAmQ==
+X-Received: by 2002:a5d:634f:: with SMTP id b15mr29948160wrw.220.1630403431114;
+        Tue, 31 Aug 2021 02:50:31 -0700 (PDT)
 Received: from krava.redhat.com ([94.113.247.3])
-        by smtp.gmail.com with ESMTPSA id y11sm21530442wru.0.2021.08.31.02.50.24
+        by smtp.gmail.com with ESMTPSA id f23sm2150379wmc.3.2021.08.31.02.50.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 02:50:24 -0700 (PDT)
+        Tue, 31 Aug 2021 02:50:30 -0700 (PDT)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
@@ -58,9 +58,9 @@ Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH 1/8] x86/ftrace: Remove extra orig rax move
-Date:   Tue, 31 Aug 2021 11:50:10 +0200
-Message-Id: <20210831095017.412311-2-jolsa@kernel.org>
+Subject: [PATCH 2/8] x86/ftrace: Remove fault protection code in prepare_ftrace_return
+Date:   Tue, 31 Aug 2021 11:50:11 +0200
+Message-Id: <20210831095017.412311-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210831095017.412311-1-jolsa@kernel.org>
 References: <20210831095017.412311-1-jolsa@kernel.org>
@@ -70,25 +70,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's identical move 2 lines earlier.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
+Removing the fault protection code when writing return_hooker
+to stack. As Steven noted:
+
+> That protection was there from the beginning due to being "paranoid",
+> considering ftrace was bricking network cards. But that protection
+> would not have even protected against that.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/kernel/ftrace_64.S | 1 -
- 1 file changed, 1 deletion(-)
+ arch/x86/kernel/ftrace.c | 38 +++-----------------------------------
+ 1 file changed, 3 insertions(+), 35 deletions(-)
 
-diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-index 7c273846c687..a8eb084a7a9a 100644
---- a/arch/x86/kernel/ftrace_64.S
-+++ b/arch/x86/kernel/ftrace_64.S
-@@ -251,7 +251,6 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_GLOBAL)
- 	 * If ORIG_RAX is anything but zero, make this a call to that.
- 	 * See arch_ftrace_set_direct_caller().
- 	 */
--	movq ORIG_RAX(%rsp), %rax
- 	testq	%rax, %rax
- SYM_INNER_LABEL(ftrace_regs_caller_jmp, SYM_L_GLOBAL)
- 	jnz	1f
+diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+index 1b3ce3b4a2a2..c555624da989 100644
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -625,12 +625,10 @@ int ftrace_disable_ftrace_graph_caller(void)
+  * Hook the return address and push it in the stack of return addrs
+  * in current thread info.
+  */
+-void prepare_ftrace_return(unsigned long self_addr, unsigned long *parent,
++void prepare_ftrace_return(unsigned long ip, unsigned long *parent,
+ 			   unsigned long frame_pointer)
+ {
+ 	unsigned long return_hooker = (unsigned long)&return_to_handler;
+-	unsigned long old;
+-	int faulted;
+ 
+ 	/*
+ 	 * When resuming from suspend-to-ram, this function can be indirectly
+@@ -650,37 +648,7 @@ void prepare_ftrace_return(unsigned long self_addr, unsigned long *parent,
+ 	if (unlikely(atomic_read(&current->tracing_graph_pause)))
+ 		return;
+ 
+-	/*
+-	 * Protect against fault, even if it shouldn't
+-	 * happen. This tool is too much intrusive to
+-	 * ignore such a protection.
+-	 */
+-	asm volatile(
+-		"1: " _ASM_MOV " (%[parent]), %[old]\n"
+-		"2: " _ASM_MOV " %[return_hooker], (%[parent])\n"
+-		"   movl $0, %[faulted]\n"
+-		"3:\n"
+-
+-		".section .fixup, \"ax\"\n"
+-		"4: movl $1, %[faulted]\n"
+-		"   jmp 3b\n"
+-		".previous\n"
+-
+-		_ASM_EXTABLE(1b, 4b)
+-		_ASM_EXTABLE(2b, 4b)
+-
+-		: [old] "=&r" (old), [faulted] "=r" (faulted)
+-		: [parent] "r" (parent), [return_hooker] "r" (return_hooker)
+-		: "memory"
+-	);
+-
+-	if (unlikely(faulted)) {
+-		ftrace_graph_stop();
+-		WARN_ON(1);
+-		return;
+-	}
+-
+-	if (function_graph_enter(old, self_addr, frame_pointer, parent))
+-		*parent = old;
++	if (!function_graph_enter(*parent, ip, frame_pointer, parent))
++		*parent = return_hooker;
+ }
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
 -- 
 2.31.1
 
