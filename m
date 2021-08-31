@@ -2,122 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757FC3FC662
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF073FC661
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241389AbhHaLJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 07:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46002 "EHLO
+        id S241380AbhHaLJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 07:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241371AbhHaLJb (ORCPT
+        with ESMTP id S241366AbhHaLJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 07:09:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF03FC061575;
-        Tue, 31 Aug 2021 04:08:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XyUQxjZHSZSuzp+qRC4DocYyFuEXPwjxTQ+qBgZtJgo=; b=jFem8aE5ANpFoWULnO9Myo5SNO
-        SrY3DwoZyTcYitjq+PdhfCGHfGIl8dvtiVATNuyFqZrq6sqa7vbw9jBhvuwuemhzLQD3w2iVGVlez
-        O4imjAIRL90uykvHGrpLPdTn0bb4epPI0X+b25dN2kwrj6Db6jQjzIm/pu5c8G4eGWKvy/6PlyPRq
-        N9WIT2QrhEyVkVGBVTT1XGdqZb4SUUIBVmjkAvQtMnJxKDxsiX9ZnmfcRiJ5KgXLolkCq9mcPpRYN
-        2JqWiVgMZWx4EH9iIArKNRR88QwvE3adZk0fpxTmGElE8yh1TQCnY/qy0Cjqfg5zyBMpmxeCuaqlb
-        3R5eS+MQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mL1c0-0017uw-Ov; Tue, 31 Aug 2021 11:07:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A98CA300103;
-        Tue, 31 Aug 2021 13:07:27 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6EF802C83EADD; Tue, 31 Aug 2021 13:07:27 +0200 (CEST)
-Date:   Tue, 31 Aug 2021 13:07:27 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     mingo@redhat.com, mgorman@suse.de, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        achaiken@aurora.tech, lkp@intel.com, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH v3 3/7] sched: make schedstats helpers independent of
- fair sched class
-Message-ID: <YS4Nbzz6Kosfhx5M@hirez.programming.kicks-ass.net>
-References: <20210824112946.9324-1-laoar.shao@gmail.com>
- <20210824112946.9324-4-laoar.shao@gmail.com>
+        Tue, 31 Aug 2021 07:09:04 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCA5C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 04:08:08 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id q11so26993310wrr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 04:08:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:references:in-reply-to
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=nMRTUAlq+ptR/ckeEvsJ2OY0SDOy9cpq2/OlFIgm97M=;
+        b=qsp4c+wN0W3QAqKyb6QGXEW9nPLEAOkKU7RtwLh9zvb06ptChOpvOqSO9lwu3CMekq
+         oLBc39IdmcReLrYv8oLeznfogTcijoYweoSDWI7AtjHeE4/v1QVgXZM3SwMEJk8/mpQw
+         bcBe1cIi+0ja+JpsWOuO8fbVQXb/Z+zjqrRZ1sM8dHxR7+XtWNBMd45/zAzImTov8mX6
+         pgmL2p1g9EE2ariy0meoI+5caNaawlG4IY3RDTXjYzL9zQV48ENYGCe7TDIg50JxbIH2
+         M8N8EOcSsT4yA2WzsSwmFGYBDfuuX2FcgeTjjvJ9z3Tbh7e5JoacSRoI/h6pym4CZlfq
+         jBUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
+         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
+        bh=nMRTUAlq+ptR/ckeEvsJ2OY0SDOy9cpq2/OlFIgm97M=;
+        b=RSIDb3IHN8/CRLA3zhGdWPsEoqfWezHD5h3Q9PF1sNWFhAMDmLjKBlPDRUkmR4l6H3
+         Pp3RBqmuLoPHa+F2QRzw/vbtdW4yre3e+xuarmufuMYtsZHWu84xjbIww23IYg8J0/4J
+         jFExdyC1V2Ig4Q3XfwqX+gRLlf27j1ZXgwIR3SyUfI+h2GMrCSsv/h+x/EfikHgfwgtB
+         ehToyAzm8AnnOWbp8M4TV42ECIyP/DJ/xGjaFU7HznNDOhMmZxOQ/nqCkqSPO+XorqFc
+         e3aSGJX9KTIWKsH3kOlO4lPIoMf6dlZVXYup0jo9bjNp1vQzXHyYwVjiGG3sZsnql8T4
+         WvPA==
+X-Gm-Message-State: AOAM530jyzT1eyK4/JagYB7iV9TQDG3NnJWkX/SS5iinkVHPVg+VQsHK
+        cqOQelUzES72zlCqKzN8ziCBtQ==
+X-Google-Smtp-Source: ABdhPJzXIL3GbSqZDI1inNtMGsjeB9vVKemBahtgKBwRGcrh9KL0DkvZHGv4C8PCZdFxPLuHoEjlgg==
+X-Received: by 2002:a5d:6785:: with SMTP id v5mr30524945wru.261.1630408087281;
+        Tue, 31 Aug 2021 04:08:07 -0700 (PDT)
+Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
+        by smtp.gmail.com with ESMTPSA id s12sm18338402wru.41.2021.08.31.04.08.06
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 31 Aug 2021 04:08:06 -0700 (PDT)
+From:   John Cox <jc@kynesim.co.uk>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     mchehab@kernel.org, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@gmail.com, hverkuil-cisco@xs4all.nl,
+        ezequiel@vanguardiasur.com.ar, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: Re: [PATCH 1/2] media: hevc: Remove RPS named flags
+Date:   Tue, 31 Aug 2021 12:08:06 +0100
+Message-ID: <4g2sigpsttf80t72c7spdqqjvvijnths2d@4ax.com>
+References: <20210831094900.203283-1-benjamin.gaignard@collabora.com> <20210831094900.203283-2-benjamin.gaignard@collabora.com>
+In-Reply-To: <20210831094900.203283-2-benjamin.gaignard@collabora.com>
+User-Agent: ForteAgent/8.00.32.1272
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824112946.9324-4-laoar.shao@gmail.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 11:29:42AM +0000, Yafang Shao wrote:
-> diff --git a/kernel/sched/stats.c b/kernel/sched/stats.c
-> index 3f93fc3b5648..b2542f4d3192 100644
-> --- a/kernel/sched/stats.c
-> +++ b/kernel/sched/stats.c
-> @@ -4,6 +4,109 @@
->   */
->  #include "sched.h"
->  
-> +void __update_stats_wait_start(struct rq *rq, struct task_struct *p,
-> +			       struct sched_statistics *stats)
-> +{
-> +u64 wait_start, prev_wait_start;
+>Marking a picture as long-term reference is valid for DPB but not for =
+RPS.
+>Change flag name to match with it description in HEVC spec chapiter
+>"8.3.2 Decoding process for reference picture set".
+>Remove the other unused RPS flags.
+>
+>Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>---
+> Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 6 ++----
+> drivers/staging/media/hantro/hantro_g2_hevc_dec.c         | 2 +-
+> drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 2 +-
+> include/media/hevc-ctrls.h                                | 4 +---
+> 4 files changed, 5 insertions(+), 9 deletions(-)
+>
+>diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst =
+b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>index 3865acb9e0fd..eff33c511090 100644
+>--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>@@ -3138,10 +3138,8 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+> 	:c:type:`timeval` in struct :c:type:`v4l2_buffer` to a __u64.
+>     * - __u8
+>       - ``rps``
+>-      - The reference set for the reference frame
+>-        (V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_BEFORE,
+>-        V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_AFTER or
+>-        V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
+>+      - Long term flag for the reference frame
+>+        (V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
+>     * - __u8
+>       - ``field_pic``
+>       - Whether the reference is a field picture or a frame.
 
-indent fail...
+If you are going to remove all the RPS values except for Long Term
+wouldn't it be better to rename the field too, either to "flags" or a
+bool "is_long_term"?  If we have a field called RPS it really should be
+able to have a value for any of the 5 valid Reference Picture Sets that
+a DPB entry can belong to.
 
-> +
-> +	wait_start = rq_clock(rq);
-> +	prev_wait_start = schedstat_val(stats->wait_start);
-> +
-> +	if (p && likely(wait_start > prev_wait_start))
-> +		wait_start -= prev_wait_start;
-> +
-> +	__schedstat_set(stats->wait_start, wait_start);
-> +}
+As a side note, it is important to my code that the DPB array contains
+all the DPB entries not just the ones that are in use in this frame.  I
+need them so I can track which frames have left the DPB so I can
+reuse/free the MV tables associated with them (yes I could keep one for
+every entry in the capture Q but that is generally wasteful on memory
+and the Pi is often memory constrained). So maybe update the docn on DPB
+to make this explicit please? (I suspect that current code does this
+anyway as it is generally easier to do than to not.)
 
-> diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
-> index e6905e369c5d..9ecd81b91f26 100644
-> --- a/kernel/sched/stats.h
-> +++ b/kernel/sched/stats.h
+John Cox
 
-> @@ -40,6 +42,33 @@ rq_sched_info_dequeue(struct rq *rq, unsigned long long delta)
->  #define   schedstat_val(var)		(var)
->  #define   schedstat_val_or_zero(var)	((schedstat_enabled()) ? (var) : 0)
->  
-> +void __update_stats_wait_start(struct rq *rq, struct task_struct *p,
-> +			       struct sched_statistics *stats);
-> +
-> +void __update_stats_wait_end(struct rq *rq, struct task_struct *p,
-> +			     struct sched_statistics *stats);
-> +void __update_stats_enqueue_sleeper(struct rq *rq, struct task_struct *p,
-> +				    struct sched_statistics *stats);
-> +
-> +static inline void
-> +check_schedstat_required(void)
-> +{
-> +	if (schedstat_enabled())
-> +		return;
-> +
-> +	/* Force schedstat enabled if a dependent tracepoint is active */
-> +	if (trace_sched_stat_wait_enabled()    ||
-> +		trace_sched_stat_sleep_enabled()   ||
-> +		trace_sched_stat_iowait_enabled()  ||
-> +		trace_sched_stat_blocked_enabled() ||
-> +		trace_sched_stat_runtime_enabled())  {
-> +		printk_deferred_once("Scheduler tracepoints stat_sleep, stat_iowait, "
-> +					"stat_blocked and stat_runtime require the "
-> +					"kernel parameter schedstats=enable or "
-> +					"kernel.sched_schedstats=1\n");
-> +	}
-> +}
-
-If you're moving this, you might as well reflow it to not have broken
-indentation.
+>diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c =
+b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+>index 9ea864ca5625..be46b3c28b17 100644
+>--- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+>+++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+>@@ -503,7 +503,7 @@ static int set_ref(struct hantro_ctx *ctx)
+> 		compress_luma_addr =3D luma_addr + compress_luma_offset;
+> 		compress_chroma_addr =3D luma_addr + compress_chroma_offset;
+>=20
+>-		if (dpb[i].rps =3D=3D V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
+>+		if (dpb[i].rps =3D=3D V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
+> 			dpb_longterm_e |=3D BIT(V4L2_HEVC_DPB_ENTRIES_NUM_MAX - 1 - i);
+>=20
+> 		/*
+>diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c =
+b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+>index ef0311a16d01..6086cc35e8cc 100644
+>--- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+>+++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+>@@ -169,7 +169,7 @@ static void cedrus_h265_ref_pic_list_write(struct =
+cedrus_dev *dev,
+> 		unsigned int index =3D list[i];
+> 		u8 value =3D list[i];
+>=20
+>-		if (dpb[index].rps =3D=3D V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
+>+		if (dpb[index].rps =3D=3D V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
+> 			value |=3D VE_DEC_H265_SRAM_REF_PIC_LIST_LT_REF;
+>=20
+> 		/* Each SRAM word gathers up to 4 references. */
+>diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+>index ef63bc205756..f587448ef495 100644
+>--- a/include/media/hevc-ctrls.h
+>+++ b/include/media/hevc-ctrls.h
+>@@ -127,9 +127,7 @@ struct v4l2_ctrl_hevc_pps {
+> 	__u64	flags;
+> };
+>=20
+>-#define V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_BEFORE	0x01
+>-#define V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_AFTER	0x02
+>-#define V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR		0x03
+>+#define V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE	0x01
+>=20
+> #define V4L2_HEVC_DPB_ENTRIES_NUM_MAX		16
+>=20
