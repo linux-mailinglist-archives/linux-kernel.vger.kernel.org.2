@@ -2,69 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB09E3FC33C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 09:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862C63FC346
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 09:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239249AbhHaHPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 03:15:22 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:42962 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239112AbhHaHPU (ORCPT
+        id S239617AbhHaHQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 03:16:29 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:53311 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239265AbhHaHQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 03:15:20 -0400
-X-UUID: 264a7f8db0d2461c95951a919d751f03-20210831
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=8w6G2IE3sjCnMBO0KwY4vI3XXmg7cJyry2Y2ZvnNaH8=;
-        b=C/JiyAKP7OI8oifk1AWqL0NAmTOtWXpse4A2N9OabTRGIxe8yPuf/NXko1zh2AGmdRTR0oXhsEGKVAHoxKYsmigderlsrUNXs65f3SOgjgWE150tRe2na0F2H/Q+piLn6dlD88OD2rlZJkhtnpGt3W7Q+ud2MmYCER/kWxw41BY=;
-X-UUID: 264a7f8db0d2461c95951a919d751f03-20210831
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <jason-jh.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 627122481; Tue, 31 Aug 2021 15:14:23 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 31 Aug 2021 15:14:22 +0800
-Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 31 Aug 2021 15:14:22 +0800
-Message-ID: <81f4cecd13cd40fcbcdb980bf18375a4a894b118.camel@mediatek.com>
-Subject: Re: [PATCH v6 0/5] Add gce support for mt8195
-From:   Jason-JH Lin <jason-jh.lin@mediatek.com>
-To:     Jassi Brar <jassisinghbrar@gmail.com>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>, <hsinyi@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, <nancy.lin@mediatek.com>,
-        <singo.chang@mediatek.com>
-Date:   Tue, 31 Aug 2021 15:14:22 +0800
-In-Reply-To: <CABb+yY0rTZrM1J7mFbSf0Z5tdwjYsQ8Tff-DnVfxX8P4HRu01w@mail.gmail.com>
-References: <20210825094120.5005-1-jason-jh.lin@mediatek.com>
-         <CABb+yY0rTZrM1J7mFbSf0Z5tdwjYsQ8Tff-DnVfxX8P4HRu01w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Tue, 31 Aug 2021 03:16:24 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 17V6saQx028254;
+        Tue, 31 Aug 2021 14:54:36 +0800 (GMT-8)
+        (envelope-from billy_tsai@aspeedtech.com)
+Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 31 Aug
+ 2021 15:13:33 +0800
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <p.zabel@pengutronix.de>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+CC:     <BMC-SW@aspeedtech.com>
+Subject: [v5 00/15] Add support for ast2600 ADC
+Date:   Tue, 31 Aug 2021 15:14:43 +0800
+Message-ID: <20210831071458.2334-1-billy_tsai@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.2.149]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 17V6saQx028254
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSmFzc2ksDQoNClRoYW5rcyBmb3IgdGhlIHJldmlld3MuDQoNCk9uIE1vbiwgMjAyMS0wOC0z
-MCBhdCAwMDozNCAtMDUwMCwgSmFzc2kgQnJhciB3cm90ZToNCj4gT24gV2VkLCBBdWcgMjUsIDIw
-MjEgYXQgNDo0MSBBTSBqYXNvbi1qaC5saW4gPA0KPiBqYXNvbi1qaC5saW5AbWVkaWF0ZWsuY29t
-PiB3cm90ZToNCj4gPiANCj4gPiBDaGFuZ2UgaW4gdjY6DQo+ID4gLSByZW1vdmUgdGhlIHVudXNl
-ZCBkZWZpbmUgaW4gR0NFIGhlYWRlciBmaWxlLg0KPiA+IA0KPiANCj4gUGxlYXNlIHJlYmFzZSB0
-aGUgcGF0Y2hlcyBvdmVyIG90aGVyIHByZXZpb3VzIG10ayBwYXRjaHNldCBmb3INCj4gbXQ4MTky
-Lg0KPiANCmh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMvX19odHRwczovL2dpdC5saW5hcm8ub3Jn
-L2xhbmRpbmctdGVhbXMvd29ya2luZy9mdWppdHN1L2ludGVncmF0aW9uLmdpdC9sb2cvP2g9bWFp
-bGJveC1mb3ItbmV4dF9fOyEhQ1RSTktBOXdNZzBBUmJ3ITBLZWtIQU5VTVFRN09kSC1reTBjaDFy
-U2M3a09uM05QRkFPakxyc3J6c2QwWjJyRnZ5c1NGUkFyM1I2YWRZUm5BZko0JA0KPiAgDQo+IA0K
-PiBUaGFua3MuDQoNCk9LLCBJJ3ZlIHJlYmFzZWQgb24gbXQ4MTkyIHNlcmllcyBhdCB2NzoNCg0K
-aHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LW1lZGlhdGVrL3BhdGNo
-LzIwMjEwODMxMDcwOTAzLjg2NzItMi1qYXNvbi1qaC5saW5AbWVkaWF0ZWsuY29tLw0KDQpSZWdh
-cmRzLA0KSmFzb24tSkguTGluDQo=
+This patch serials make aspeed_adc.c can support ast2600 and backward
+compatible.
+
+Change since v4:
+dt-bindings:
+  - Add clocks maxItems.
+  - Rename the property to meet the property-units.yaml.
+  - Add the description for the difference between adc0 and adc1.
+aspeed_adc.c:
+  - Use new property name to get internal reference voltage: units from mv to
+  uv.
+  - Fix -Wnonnull warning caused by snprintf parameters.
+  - Add suffix mv to the vref parameters.
+  - Use ARRAY_SIZE instead of 32.
+  - Add a reset action for ADC power down and Use devm_iio_device_register.
+  - Fix typo error.
+  - Separate the offset interface of ch7 when battery sensing enable
+
+Change since v3:
+dt-bindings:
+  - Fix properties:aspeed,int_vref_mv type error.
+
+Change since v2:
+dt-bindings:
+  - Create a new dt-bindings for ast2600 adc
+aspeed_adc.c:
+  - Splits the patch for more details
+  - Remove version enum and use the flags in model data to distinguish
+  hardware feature
+  - Support trimming data get and set.
+  - Use devm_add_action_or_reset to simplify probe error handling.
+
+Changes since v1:
+dt-bindings:
+  - Fix the aspeed,adc.yaml check error.
+  - Add battery-sensing property.
+aspeed_adc.c:
+  - Change the init flow:
+    Clock and reference voltage setting should be completed before adc
+    engine enable.
+  - Change the default sampling rate to meet most user case.
+  - Add patch #8 to suppoert battery sensing mode.
+
+Billy Tsai (15):
+  iio: adc: aspeed: set driver data when adc probe.
+  dt-bindings: iio: adc: Add ast2600-adc bindings
+  iio: adc: aspeed: completes the bitfield declare.
+  iio: adc: aspeed: Keep model data to driver data.
+  iio: adc: aspeed: Refactory model data structure
+  iio: adc: aspeed: Add vref config function
+  iio: adc: aspeed: Set num_channels with model data
+  iio: adc: aspeed: Use model_data to set clk scaler.
+  iio: adc: aspeed: Use devm_add_action_or_reset.
+  iio: adc: aspeed: Support ast2600 adc.
+  iio: adc: aspeed: Fix the calculate error of clock.
+  iio: adc: aspeed: Add func to set sampling rate.
+  iio: adc: aspeed: Add compensation phase.
+  iio: adc: aspeed: Support battery sensing.
+  iio: adc: aspeed: Get and set trimming data.
+
+ .../bindings/iio/adc/aspeed,ast2600-adc.yaml  | 100 +++
+ drivers/iio/adc/aspeed_adc.c                  | 617 +++++++++++++++---
+ 2 files changed, 619 insertions(+), 98 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml
+
+-- 
+2.25.1
 
