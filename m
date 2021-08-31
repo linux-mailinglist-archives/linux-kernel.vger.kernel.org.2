@@ -2,167 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF073FC661
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811323FC665
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241380AbhHaLJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 07:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241366AbhHaLJE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 07:09:04 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCA5C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 04:08:08 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q11so26993310wrr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 04:08:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:references:in-reply-to
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=nMRTUAlq+ptR/ckeEvsJ2OY0SDOy9cpq2/OlFIgm97M=;
-        b=qsp4c+wN0W3QAqKyb6QGXEW9nPLEAOkKU7RtwLh9zvb06ptChOpvOqSO9lwu3CMekq
-         oLBc39IdmcReLrYv8oLeznfogTcijoYweoSDWI7AtjHeE4/v1QVgXZM3SwMEJk8/mpQw
-         bcBe1cIi+0ja+JpsWOuO8fbVQXb/Z+zjqrRZ1sM8dHxR7+XtWNBMd45/zAzImTov8mX6
-         pgmL2p1g9EE2ariy0meoI+5caNaawlG4IY3RDTXjYzL9zQV48ENYGCe7TDIg50JxbIH2
-         M8N8EOcSsT4yA2WzsSwmFGYBDfuuX2FcgeTjjvJ9z3Tbh7e5JoacSRoI/h6pym4CZlfq
-         jBUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
-         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
-        bh=nMRTUAlq+ptR/ckeEvsJ2OY0SDOy9cpq2/OlFIgm97M=;
-        b=RSIDb3IHN8/CRLA3zhGdWPsEoqfWezHD5h3Q9PF1sNWFhAMDmLjKBlPDRUkmR4l6H3
-         Pp3RBqmuLoPHa+F2QRzw/vbtdW4yre3e+xuarmufuMYtsZHWu84xjbIww23IYg8J0/4J
-         jFExdyC1V2Ig4Q3XfwqX+gRLlf27j1ZXgwIR3SyUfI+h2GMrCSsv/h+x/EfikHgfwgtB
-         ehToyAzm8AnnOWbp8M4TV42ECIyP/DJ/xGjaFU7HznNDOhMmZxOQ/nqCkqSPO+XorqFc
-         e3aSGJX9KTIWKsH3kOlO4lPIoMf6dlZVXYup0jo9bjNp1vQzXHyYwVjiGG3sZsnql8T4
-         WvPA==
-X-Gm-Message-State: AOAM530jyzT1eyK4/JagYB7iV9TQDG3NnJWkX/SS5iinkVHPVg+VQsHK
-        cqOQelUzES72zlCqKzN8ziCBtQ==
-X-Google-Smtp-Source: ABdhPJzXIL3GbSqZDI1inNtMGsjeB9vVKemBahtgKBwRGcrh9KL0DkvZHGv4C8PCZdFxPLuHoEjlgg==
-X-Received: by 2002:a5d:6785:: with SMTP id v5mr30524945wru.261.1630408087281;
-        Tue, 31 Aug 2021 04:08:07 -0700 (PDT)
-Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
-        by smtp.gmail.com with ESMTPSA id s12sm18338402wru.41.2021.08.31.04.08.06
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 31 Aug 2021 04:08:06 -0700 (PDT)
-From:   John Cox <jc@kynesim.co.uk>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     mchehab@kernel.org, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@gmail.com, hverkuil-cisco@xs4all.nl,
-        ezequiel@vanguardiasur.com.ar, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: Re: [PATCH 1/2] media: hevc: Remove RPS named flags
-Date:   Tue, 31 Aug 2021 12:08:06 +0100
-Message-ID: <4g2sigpsttf80t72c7spdqqjvvijnths2d@4ax.com>
-References: <20210831094900.203283-1-benjamin.gaignard@collabora.com> <20210831094900.203283-2-benjamin.gaignard@collabora.com>
-In-Reply-To: <20210831094900.203283-2-benjamin.gaignard@collabora.com>
-User-Agent: ForteAgent/8.00.32.1272
+        id S241400AbhHaLJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 07:09:33 -0400
+Received: from mout.gmx.net ([212.227.17.20]:56247 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241366AbhHaLJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 07:09:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630408097;
+        bh=Q3naRGFUOjCanc3SPmyynPd1C68uqCO9v6By/oLNW38=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=kVsBeUZNmAPdaHNjse2sCbByppVde/dWY7PXtV4t/LrCMMOvP60GIoJRGoRa22QZJ
+         cZOB2XUkIXPJbyu28As0fL7Qw9I/tIAgZHxCnZt4KZoRoHTe51QJWjcr1gWgeJINVO
+         Vhisjj03G5J+Q0gprH68HeJVL8hKojfMWengWYZg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [80.245.77.109] ([80.245.77.109]) by web-mail.gmx.net
+ (3c-app-gmx-bap45.server.lan [172.19.172.115]) (via HTTP); Tue, 31 Aug 2021
+ 13:08:17 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <trinity-2f57e648-cb42-4116-b3d0-6fcdbaae81b6-1630408097512@3c-app-gmx-bap45>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Sungbo Eo <mans0n@gorani.run>
+Cc:     linux-mediatek@lists.infradead.org,
+        =?UTF-8?Q?Chunfeng_Yun_=28=E4=BA=91=E6=98=A5=E5=B3=B0=29?= 
+        <Chunfeng.Yun@mediatek.com>, "b-liu@ti.com" <b-liu@ti.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+Subject: Aw: Re: [PATCH v4 1/2] arm: dts: mt7623: add musb device nodes
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 31 Aug 2021 13:08:17 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <3d57ae38-9d8f-05e3-c5b3-58db73879f16@gorani.run>
+References: <20210822041333.5264-1-mans0n@gorani.run>
+ <20210830155903.13907-1-mans0n@gorani.run>
+ <20210830155903.13907-2-mans0n@gorani.run>
+ <16f980b95e1f32bb8eb32448f1615bafdc51b792.camel@mediatek.com>
+ <14C40B35-3607-49C6-970B-441F9093125A@public-files.de>
+ <3d57ae38-9d8f-05e3-c5b3-58db73879f16@gorani.run>
 Content-Transfer-Encoding: quoted-printable
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:HA2wZfkN2riithVmFwnSZ1/BfJwDAEJS8KaCZjTcOXMuMyr9Gv/w9eOyIEvnZbjTlkOb2
+ vumjUULx8/phJD0+woWFe1xD7+8R+XLKYMF83XtNeqqBI813PI4r6hvfNVW1TDkbUFa2EwbPE9ip
+ GBNsRWIGFnfeTEA8x4VRpZr2BGweCPlo5xVDymNE2/CZmJLnpmZlDJhUhDwC4mo/7h3xHu01P4t1
+ IiBGIlVGyTabd4CwcHfa4FMKX8x/D6esWx4SFYd3NRNG50QU15EEvPhzJ8iHC8hjkhT1O5NgECJC
+ C8=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Poez8dKN2Fw=:TmHdTsCV04OMxVmZdrDObR
+ ljsE7K/UT/WJY4VBRUIYbDjME8YThAhmAavEdnbOV+S2kHr7jpKWPFZ4zVwabv8CsGfJ8Zm6R
+ QR0FgcQVrUocmDWdT9Sbp3AReNMesw0s0uhWfm4R+u8N+R5vYkkk70SSqiSQGo4a6pDvywMTB
+ WPBhhOa9PcUaM2W0iUXviEg+0OyW63WpxeBtYOiMjrHeOEQG46i+lDNZ0W8kGNPZwEUy0Dr7h
+ eky56x0gJxbdswAHByKqPrGKAkmdsAH8F9HIou6Jh9YdiUbLVKhOV7uJ45+nJxuU/vUchmK5j
+ mg11k/W2Y0Jcagxf45gjj6WWMk8tiDWpWrPw9ISn2s51nzRjGt+WmbdH5N+xYWbsZE4Rjbqyw
+ y2OyV3jV8zzM8rq5KyA5XrqeAEcG8MXv/zuXGOq/bnL1rAalmuLEPxC3x+Hu84lY9UwqyHo5t
+ fgyqh20CQG53CgF/BJIVzMi5gJlvnuzv/U3Nc1/Rh084XWC+9q7Mi0aK0/h/f13Zyoll5xc24
+ yZo7oDieGt2NlZ8GnXIUpes/4MnmmxHppiW1Y/+vbK4gZCobuNaKEwYOj1kQ60me4s/xu/2uE
+ /2xHc1sPDZnPIQbbz68YA7Z0TIoQvHrtiF2HW2+IOq/GTwktdExMkOZo/g+aMjeQefH5mWQvm
+ GnqvhV6uVq0stZ+qkP1GuSTtT13FSvwrLIO6S1MZMPyaCngvF8y2TDdAUujtp1L/u7/mGwQTf
+ /dsSYvFhX64gNL6ZL2sTN+BmCMuITrto0dmmPXMr2AapkINAm16IDK+zDByXfjcGnr7jf2FYA
+ Hz+fGpon/jpPamoPSf98b8PABwQzfJyjzLuKO24ZfK3lI3pyzc=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Marking a picture as long-term reference is valid for DPB but not for =
-RPS.
->Change flag name to match with it description in HEVC spec chapiter
->"8.3.2 Decoding process for reference picture set".
->Remove the other unused RPS flags.
+> Gesendet: Dienstag, 31=2E August 2021 um 13:02 Uhr
+> Von: "Sungbo Eo" <mans0n@gorani=2Erun>
+> On 2021-08-31 17:59, Frank Wunderlich wrote:
+> > Am 31=2E August 2021 08:27:18 MESZ schrieb "Chunfeng Yun (=E4=BA=91=E6=
+=98=A5=E5=B3=B0)" <Chunfeng=2EYun@mediatek=2Ecom>:
+
+> > I don't see [1] (ack from rob) in [2]/[3]
+>=20
+> You can find it here=2E
+> https://git=2Ekernel=2Eorg/pub/scm/linux/kernel/git/gregkh/usb=2Egit/log=
+/?h=3Dusb-next
+>=20
+> >=20
+> > @sungbo: please leave dt-bindings patch in series=2E
+>=20
+> I'll keep it for a while, then=2E
+
+ok, then it is not needed again=2E=2E=2Ehave not searched in usb-tree=2E
+
+> > You need no new version only for adding tags (acked,tested or reviewed=
+)=2E
+> > Only for code-changes,but then add tags from previous versions=2E
+>=20
+> Got it=2E Thanks for the tip=2E :)
+>=20
+> > Imho it is better to take my musb patch [4]
+> > into the series as well to make depency cleaner
+>=20
+> Okay, I'll take it in the next version=2E
+
+okay, if dt-bindings is already in usb-tree wait what maintainers (matthia=
+s/rob) says about adding my patch to a new version of your series or if thi=
+s is clear now :)
+
+> > [1] https://patchwork=2Ekernel=2Eorg/project/linux-mediatek/patch/2021=
+0808123840=2E176738-2-mans0n@gorani=2Erun/
+> > [2] https://git=2Ekernel=2Eorg/pub/scm/linux/kernel/git/robh/linux=2Eg=
+it/log/?h=3Dfor-next
+> > [3] https://git=2Ekernel=2Eorg/pub/scm/linux/kernel/git/matthias=2Ebgg=
+/linux=2Egit/log/?h=3Dfor-next
+> > [4] https://patchwork=2Ekernel=2Eorg/project/linux-mediatek/patch/2021=
+0830145958=2E108605-1-linux@fw-web=2Ede/
+> > regards Frank
+> >=20
 >
->Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->---
-> Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 6 ++----
-> drivers/staging/media/hantro/hantro_g2_hevc_dec.c         | 2 +-
-> drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 2 +-
-> include/media/hevc-ctrls.h                                | 4 +---
-> 4 files changed, 5 insertions(+), 9 deletions(-)
->
->diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst =
-b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->index 3865acb9e0fd..eff33c511090 100644
->--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->@@ -3138,10 +3138,8 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-> 	:c:type:`timeval` in struct :c:type:`v4l2_buffer` to a __u64.
->     * - __u8
->       - ``rps``
->-      - The reference set for the reference frame
->-        (V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_BEFORE,
->-        V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_AFTER or
->-        V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
->+      - Long term flag for the reference frame
->+        (V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
->     * - __u8
->       - ``field_pic``
->       - Whether the reference is a field picture or a frame.
-
-If you are going to remove all the RPS values except for Long Term
-wouldn't it be better to rename the field too, either to "flags" or a
-bool "is_long_term"?  If we have a field called RPS it really should be
-able to have a value for any of the 5 valid Reference Picture Sets that
-a DPB entry can belong to.
-
-As a side note, it is important to my code that the DPB array contains
-all the DPB entries not just the ones that are in use in this frame.  I
-need them so I can track which frames have left the DPB so I can
-reuse/free the MV tables associated with them (yes I could keep one for
-every entry in the capture Q but that is generally wasteful on memory
-and the Pi is often memory constrained). So maybe update the docn on DPB
-to make this explicit please? (I suspect that current code does this
-anyway as it is generally easier to do than to not.)
-
-John Cox
-
->diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c =
-b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
->index 9ea864ca5625..be46b3c28b17 100644
->--- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
->+++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
->@@ -503,7 +503,7 @@ static int set_ref(struct hantro_ctx *ctx)
-> 		compress_luma_addr =3D luma_addr + compress_luma_offset;
-> 		compress_chroma_addr =3D luma_addr + compress_chroma_offset;
->=20
->-		if (dpb[i].rps =3D=3D V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
->+		if (dpb[i].rps =3D=3D V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
-> 			dpb_longterm_e |=3D BIT(V4L2_HEVC_DPB_ENTRIES_NUM_MAX - 1 - i);
->=20
-> 		/*
->diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c =
-b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->index ef0311a16d01..6086cc35e8cc 100644
->--- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->+++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->@@ -169,7 +169,7 @@ static void cedrus_h265_ref_pic_list_write(struct =
-cedrus_dev *dev,
-> 		unsigned int index =3D list[i];
-> 		u8 value =3D list[i];
->=20
->-		if (dpb[index].rps =3D=3D V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
->+		if (dpb[index].rps =3D=3D V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
-> 			value |=3D VE_DEC_H265_SRAM_REF_PIC_LIST_LT_REF;
->=20
-> 		/* Each SRAM word gathers up to 4 references. */
->diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->index ef63bc205756..f587448ef495 100644
->--- a/include/media/hevc-ctrls.h
->+++ b/include/media/hevc-ctrls.h
->@@ -127,9 +127,7 @@ struct v4l2_ctrl_hevc_pps {
-> 	__u64	flags;
-> };
->=20
->-#define V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_BEFORE	0x01
->-#define V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_AFTER	0x02
->-#define V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR		0x03
->+#define V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE	0x01
->=20
-> #define V4L2_HEVC_DPB_ENTRIES_NUM_MAX		16
->=20
