@@ -2,126 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05C73FC502
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB4D3FC50A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240703AbhHaJbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 05:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240658AbhHaJax (ORCPT
+        id S233420AbhHaJgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 05:36:01 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:54154 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229652AbhHaJf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 05:30:53 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCBDC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:29:58 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id n126so33592727ybf.6
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+wJSd/b8R9DZgfIJi5U7BwHEGhO0PaWYM/2wUsKfQ1Y=;
-        b=hMqfRmcGyVFEZgNxjCRVYYeUYAuLBXArcD3MGBBtcFns6zz0uE5jME2WPybkWXRnu0
-         jrB0cIkqf9knP8+I/dyiLWEBA0ifJKbQcmVVrSEKfj2I6JmhN66YyjsaNPPJ2U9zfT5D
-         hIXxk2jFdnycgWHrEOUtKKY8oE3rpmaAH9luvTDYwHe+tlYNu8hWZfHJW1kjKLSp/V9K
-         iW12rs4yPlYWcmlSNRYM2Hk9cvLzYKhR6tb5FJRFqUXfmi4/RmTZEaBqCepGMPbv2Opd
-         PC1jI6pZ3zi/vtRkIKdNBOGKr8WD40r2gkFvg2fwcsv9QCz7Z/+mkrnviuYgnnfV6gS/
-         IdCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+wJSd/b8R9DZgfIJi5U7BwHEGhO0PaWYM/2wUsKfQ1Y=;
-        b=bZ6M1TeQVY1b7aG/bsrjsZM1zt9qnGIUsK5GJwq/Xurr2e5zhcgaW5tXoAXrLIhT88
-         1FVghn9B4+CY+gzawwvcKQWf50UiS8Fc58ilWyCXaj5QCttazIATnjMJg/sCxYPmWjTq
-         QyQpAbNqda36sheUA8uU+muupWiPCNNYMh2/qLHBfa54PtrR5lruAil2N15XnVC1AYY1
-         alLE2liaSmOiiVT5s6/iR7GZG+MRJZrdnqNWzbPvT2dI21lT9380ttE1H1aD9xoP0ZvX
-         fUyIj99APW22KCiNV/M+VlG8M1Dl5jxaygOEbusmM8eRJGFWJ3TXjb41uZoMzGtlMBZg
-         4fJw==
-X-Gm-Message-State: AOAM531L9xMM7n2X+m5GTyJFRUWxna4SrCxp5xXNxR1J0j28XmpxnUYG
-        m3kjBRTfWmvFsWOJAjfm6Ec7xCL9E5KUFdsYmhUqzQ==
-X-Google-Smtp-Source: ABdhPJyC89SH9/jtyx3m7kK793S2xGNGm4PosM/nre2oaEhTJ4mlVT2GBJOafwzSnQSE8oRaPdMU3YkV7/2FjT/GGDc=
-X-Received: by 2002:a25:1d07:: with SMTP id d7mr29544339ybd.469.1630402197664;
- Tue, 31 Aug 2021 02:29:57 -0700 (PDT)
+        Tue, 31 Aug 2021 05:35:58 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Umk8iQZ_1630402501;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Umk8iQZ_1630402501)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 31 Aug 2021 17:35:01 +0800
+Subject: Re: [PATCH] mm: fix panic caused by __page_handle_poison()
+To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "open list:HWPOISON MEMORY FAILURE HANDLING" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <58b6b733-b021-7eb8-4226-1b98d50c8c82@linux.alibaba.com>
+ <20210831091134.GA1075738@hori.linux.bs1.fc.nec.co.jp>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <4bb8b27e-2926-82db-0da2-dbead13c9b69@linux.alibaba.com>
+Date:   Tue, 31 Aug 2021 17:35:00 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210707135144.191567-1-aardelean@deviqon.com> <20210825070125.32918-1-aardelean@deviqon.com>
-In-Reply-To: <20210825070125.32918-1-aardelean@deviqon.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 31 Aug 2021 11:29:46 +0200
-Message-ID: <CAMpxmJWpOjsJXSDJ3w64MrKeT3Uh1Jx+C7tP44Dj7uF9tnw-Eg@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: viperboard: remove platform_set_drvdata() call
- in probe
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210831091134.GA1075738@hori.linux.bs1.fc.nec.co.jp>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 9:02 AM Alexandru Ardelean
-<aardelean@deviqon.com> wrote:
->
-> The platform_set_drvdata() call is only useful if we need to retrieve back
-> the private information.
-> Since the driver doesn't do that, it's not useful to have it.
->
-> This change removes it.
-> Also removing with this change is some logging about the failure to init
-> the gpio chip data. There are other logging methods to view that this
-> failed.
->
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> ---
->
-> Changelog v1 -> v2:
-> * remove dev_err() prints
-> * [styling] added empty line before first devm_gpiochip_add_data()
->
->  drivers/gpio/gpio-viperboard.c | 14 +++-----------
->  1 file changed, 3 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-viperboard.c b/drivers/gpio/gpio-viperboard.c
-> index c301c1d56dd2..e55d28a8a66f 100644
-> --- a/drivers/gpio/gpio-viperboard.c
-> +++ b/drivers/gpio/gpio-viperboard.c
-> @@ -404,11 +404,10 @@ static int vprbrd_gpio_probe(struct platform_device *pdev)
->         vb_gpio->gpioa.get = vprbrd_gpioa_get;
->         vb_gpio->gpioa.direction_input = vprbrd_gpioa_direction_input;
->         vb_gpio->gpioa.direction_output = vprbrd_gpioa_direction_output;
-> +
->         ret = devm_gpiochip_add_data(&pdev->dev, &vb_gpio->gpioa, vb_gpio);
-> -       if (ret < 0) {
-> -               dev_err(vb_gpio->gpioa.parent, "could not add gpio a");
-> +       if (ret < 0)
->                 return ret;
-> -       }
->
->         /* registering gpio b */
->         vb_gpio->gpiob.label = "viperboard gpio b";
-> @@ -421,15 +420,8 @@ static int vprbrd_gpio_probe(struct platform_device *pdev)
->         vb_gpio->gpiob.get = vprbrd_gpiob_get;
->         vb_gpio->gpiob.direction_input = vprbrd_gpiob_direction_input;
->         vb_gpio->gpiob.direction_output = vprbrd_gpiob_direction_output;
-> -       ret = devm_gpiochip_add_data(&pdev->dev, &vb_gpio->gpiob, vb_gpio);
-> -       if (ret < 0) {
-> -               dev_err(vb_gpio->gpiob.parent, "could not add gpio b");
-> -               return ret;
-> -       }
-> -
-> -       platform_set_drvdata(pdev, vb_gpio);
->
-> -       return ret;
-> +       return devm_gpiochip_add_data(&pdev->dev, &vb_gpio->gpiob, vb_gpio);
->  }
->
->  static struct platform_driver vprbrd_gpio_driver = {
-> --
-> 2.31.1
->
 
-Applied, thanks!
 
-Bart
+On 2021/8/31 下午5:11, HORIGUCHI NAOYA(堀口 直也) wrote:
+> On Mon, Aug 30, 2021 at 06:07:56PM +0800, 王贇 wrote:
+>> By commit 510d25c92ec4 ("mm/hwpoison: disable pcp for
+>> page_handle_poison()"), __page_handle_poison() was
+>> introduced, and if we mark:
+>>
+>> RET_A = dissolve_free_huge_page();
+>> RET_B = take_page_off_buddy();
+>>
+>> then __page_handle_poison was supposed to return TRUE When
+>> RET_A == 0 && RET_B == TRUE
+>>
+>> But since it failed to take care the case when RET_A is
+>> -EBUSY or -ENOMEM, and just return the ret as a bool which
+>> actually become TRUE, it break the original logical.
+> 
+> s/logical/logic/ ?
+
+Will Fix it in v2.
+
+> 
+>>
+>> The following result is a huge page in freelist but was
+>> referenced as poisoned, and lead into the final panic:
+>>
+>>   kernel BUG at mm/internal.h:95!
+>>   invalid opcode: 0000 [#1] SMP PTI
+>>   skip...
+>>   RIP: 0010:set_page_refcounted mm/internal.h:95 [inline]
+>>   RIP: 0010:remove_hugetlb_page+0x23c/0x240 mm/hugetlb.c:1371
+>>   skip...
+>>   Call Trace:
+>>    remove_pool_huge_page+0xe4/0x110 mm/hugetlb.c:1892
+>>    return_unused_surplus_pages+0x8d/0x150 mm/hugetlb.c:2272
+>>    hugetlb_acct_memory.part.91+0x524/0x690 mm/hugetlb.c:4017
+>>
+>> This patch replace 'bool' with 'int' to handle RET_A correctly.
+>>
+>> Reported-by: Abaci <abaci@linux.alibaba.com>
+>> Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+> 
+> Thank you very much, this fix is totally right.
+> 
+> Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> 
+> Could you add the following tags, too?
+> 
+> Fixes: 510d25c92ec4 ("mm/hwpoison: disable pcp for page_handle_poison()")
+> Cc: <stable@vger.kernel.org> # 5.14
+
+Thanks for the review, will add in v2 and send out soon.
+
+Regards,
+Michael Wang
+
+> 
+> Thanks,
+> Naoya Horiguchi
+> 
