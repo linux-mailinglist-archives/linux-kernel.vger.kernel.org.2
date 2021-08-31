@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36AC43FCD11
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 20:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183C53FCD31
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239733AbhHaSsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 14:48:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239481AbhHaSsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 14:48:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37BF161008;
-        Tue, 31 Aug 2021 18:47:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630435633;
-        bh=iT/iIdNBsTbGiFre6zz9wX0FMEwGiJRBo2nVuhGFLaE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mktDBhAO3/B5cmfypfEMomXqZX+lfO17FLVMw0r2aC6emyMFXQaxwJcErh4djdmsw
-         upV+1TEuS+2cKvpyefH4tk8kN7iY06HKsUNayutcm/xrShONgV2qO3NXEHNFrqX0NO
-         LAATfSaDO/cmqOQuXWTeJEXGOT9/rIKAX37a7Jw/tYhXGZB6SQJ0ZGL0QTaL+mIyZY
-         AHt/Dy+Fnx+ppqA4V8+1c503hwM+Vj1DZQoUyZeNqj1E6FGYMeYIUhJ54RetrLYj78
-         8NH7FK8sC8xbL854MXORHmN3AOw5mgH0syLTWfHShflq4eCbuxRCz8wowf9ZtNghN+
-         9RDfWfJrSt+8g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BBE1C400FE; Tue, 31 Aug 2021 15:47:10 -0300 (-03)
-Date:   Tue, 31 Aug 2021 15:47:10 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFC PATCH v1 02/37] libperf cpumap: improve max function
-Message-ID: <YS55LhhuABId0ag7@kernel.org>
-References: <cover.1629490974.git.rickyman7@gmail.com>
- <fb79f02e7b86ea8044d563adb1e9890c906f982f.1629490974.git.rickyman7@gmail.com>
+        id S234274AbhHaSuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 14:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231312AbhHaStg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 14:49:36 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4F1C061575;
+        Tue, 31 Aug 2021 11:48:40 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id u15so94568wmj.1;
+        Tue, 31 Aug 2021 11:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ssx/Du/IP+VJ6yRDjCWSrw9PFpibgX8+LOfvx0arrC0=;
+        b=puHwvGy27ZCKW1/hb24T4TxdTwdhH8hvACG5TZRQSpyCBIIMky52bBklkqr9uJutP9
+         P0wNNsLYBf1rjLSkYPzkH9uMmpQw22uPzb75brSLN9IoR/EySrsjS3gV+thkKOc8/H82
+         DI3D7LnOxXZVwTOxYbmAGqepG19w67uxdr+UqtuKgQlAouvhp3shcbNh69RePVDN7xVj
+         WLCwur8FuuCsy2nyBXl015EN7380NvJAK3gPDqMFBvPm9y+8MyNgk67elQ7sxGSnioVa
+         bz6G4tYRWV/i22lvNZPWSLbZFkZstVT/Xrky1y3wroe9W8wxlSJZn3OiE4MwLdI7la+B
+         yM9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ssx/Du/IP+VJ6yRDjCWSrw9PFpibgX8+LOfvx0arrC0=;
+        b=sOlqf8NadyCQ58VuN4nQH9HKhZiBkZt9NcCf490yJw/CpO5nGEUoOsuG3VBN65HGJY
+         XdIurWJEbDrkql45tUFd296RrOiKEFe7bVjl9vIM/XM+HzCCbFopLKb8qKNxg+gJod6T
+         zEF/4eN4Kd8FsMv+jtYJW8oq6wR1CDlXDKKQ0k1knukiLAXdAkhpBIhTFkwnWQUIo6hl
+         H7eOvCB0W5APWs8f+UGKGvNlcp6VtEgTsnWxFr0f4cUz2F16Ig9W4ANWmDiIL2PN3/Zw
+         wxUmG5Hf6ObrZlPVBcn2gBYJd7myixHbatsRyBNkwiJrqAFVYFAL5muCRX3+8o89Zo/p
+         HBYg==
+X-Gm-Message-State: AOAM530enukdWxk1YknLmahmD8vFMGRB2dP+AdpDhQgqqmKUgWuKA9CX
+        zdcJbwsKrH/+/VW8hkySAqEpiOWN5lfA1Q==
+X-Google-Smtp-Source: ABdhPJxpHtUrxMXrtWzNzUZfT5NDgfPAC3iEvcgbop4yUZWCq6uU0jUnfin9kUgN30R0dGd3QoArGw==
+X-Received: by 2002:a1c:e904:: with SMTP id q4mr5857630wmc.26.1630435719011;
+        Tue, 31 Aug 2021 11:48:39 -0700 (PDT)
+Received: from kista.localdomain (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
+        by smtp.gmail.com with ESMTPSA id d145sm3111884wmd.3.2021.08.31.11.48.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 11:48:38 -0700 (PDT)
+From:   Jernej Skrabec <jernej.skrabec@gmail.com>
+To:     mripard@kernel.org, wens@csie.org
+Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        stable@vger.kernel.org, Roman Stratiienko <r.stratiienko@gmail.com>
+Subject: [PATCH] drm/sun4i: Fix macros in sun8i_csc.h
+Date:   Tue, 31 Aug 2021 20:48:19 +0200
+Message-Id: <20210831184819.93670-1-jernej.skrabec@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fb79f02e7b86ea8044d563adb1e9890c906f982f.1629490974.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Aug 21, 2021 at 11:19:08AM +0200, Riccardo Mancini escreveu:
-> >From commit 7074674e7338863e ("perf cpumap: Maintain cpumaps ordered and
-> without dups"), perf_cpu_map elements are sorted in ascending order.
-> 
-> This patch improves the perf_cpu_map__max function by returning the last
-> element.
-> 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/lib/perf/cpumap.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
-> 
-> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
-> index fb633272be3aaed9..80e03b2f0c60cce7 100644
-> --- a/tools/lib/perf/cpumap.c
-> +++ b/tools/lib/perf/cpumap.c
-> @@ -284,14 +284,10 @@ int perf_cpu_map__idx(struct perf_cpu_map *cpus, int cpu)
->  
->  int perf_cpu_map__max(struct perf_cpu_map *map)
->  {
-> -	int i, max = -1;
-> -
-> -	for (i = 0; i < map->nr; i++) {
-> -		if (map->map[i] > max)
-> -			max = map->map[i];
-> -	}
-> -
-> -	return max;
-> +	if (map->nr > 0)
-> +		return map->map[map->nr-1];
-> +	else
-> +		return -1;
+Macros SUN8I_CSC_CTRL() and SUN8I_CSC_COEFF() don't follow usual
+recommendation of having arguments enclosed in parenthesis. While that
+didn't change anything for quiet sometime, it actually become important
+after CSC code rework with commit ea067aee45a8 ("drm/sun4i: de2/de3:
+Remove redundant CSC matrices").
 
-Applying, but adding spaces around the '-',
+Without this fix, colours are completely off for supported YVU formats
+on SoCs with DE2 (A64, H3, R40, etc.).
 
-Thanks.
+Fix the issue by enclosing macro arguments in parenthesis.
 
-- Arnaldo
+Cc: stable@vger.kernel.org # 5.12+
+Fixes: 883029390550 ("drm/sun4i: Add DE2 CSC library")
+Reported-by: Roman Stratiienko <r.stratiienko@gmail.com>
+Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+---
+ drivers/gpu/drm/sun4i/sun8i_csc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/sun4i/sun8i_csc.h b/drivers/gpu/drm/sun4i/sun8i_csc.h
+index a55a38ad849c..022cafa6c06c 100644
+--- a/drivers/gpu/drm/sun4i/sun8i_csc.h
++++ b/drivers/gpu/drm/sun4i/sun8i_csc.h
+@@ -16,8 +16,8 @@ struct sun8i_mixer;
+ #define CCSC10_OFFSET 0xA0000
+ #define CCSC11_OFFSET 0xF0000
+ 
+-#define SUN8I_CSC_CTRL(base)		(base + 0x0)
+-#define SUN8I_CSC_COEFF(base, i)	(base + 0x10 + 4 * i)
++#define SUN8I_CSC_CTRL(base)		((base) + 0x0)
++#define SUN8I_CSC_COEFF(base, i)	((base) + 0x10 + 4 * (i))
+ 
+ #define SUN8I_CSC_CTRL_EN		BIT(0)
+ 
+-- 
+2.33.0
+
