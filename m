@@ -2,493 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD573FC63A
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E553FC63D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241212AbhHaKpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238567AbhHaKpt (ORCPT
+        id S241240AbhHaKqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:46:18 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:45698 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S238567AbhHaKqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:45:49 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82D6C061575;
-        Tue, 31 Aug 2021 03:44:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fcq0Vj8dz4GfpImmXhE/w+/OCqqc9iyFgNrysUGvKgY=; b=rFZhxj9FaxRd5jlpzADAkSh+FQ
-        2T2vZQCrxN6sH/vERrmZzU6bZ3+Mu4B3Fh6cGRpn5e0rVrW0huU9Gh0eiOtnVAc6gnp4venls+6Bk
-        Mor7TBXFEW46m+nsJolC0zEifUguyCetEZSceLkjrqVBzuQ50Br03kMaT0+jGTsEhgvU6m5u+sAtd
-        hpbqxcAwF46mm2zKsGaW6vQzgpYgfLpCYQ7iJBBO+OwfsQY7M1Z9Mx4+G1mdYdQ9tQ57dGX2eJ/Qp
-        IzNDXj9iXOX9A9d0GWWOX7VEntc0TzoreZyDCrH3Qkeu1MJcmP6PVs7eoeYdx5V/jnR6qvZqYOeZs
-        xG34pQKA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mL1Fs-00Eg7q-Sc; Tue, 31 Aug 2021 10:44:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AFF73300109;
-        Tue, 31 Aug 2021 12:44:35 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 904732C7E2CC8; Tue, 31 Aug 2021 12:44:35 +0200 (CEST)
-Date:   Tue, 31 Aug 2021 12:44:35 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     mingo@redhat.com, mgorman@suse.de, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        achaiken@aurora.tech, lkp@intel.com, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH v3 0/7] sched: support schedstats for RT sched class
-Message-ID: <YS4IE1Dxf0ite81A@hirez.programming.kicks-ass.net>
-References: <20210824112946.9324-1-laoar.shao@gmail.com>
- <YS3/jhuRNS2GGVrp@hirez.programming.kicks-ass.net>
+        Tue, 31 Aug 2021 06:46:17 -0400
+X-UUID: b6045a5a351a49c0a0b98c205a2f48de-20210831
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=phNHXum76mAZ4qYmxK28Mp4u++IBnPR+ThnSGtip/xI=;
+        b=bHJc8wjrQQX01lRkhQulo48BOhlYo5XR3yWHpBGr+kfHPvSuCGwCKWxqIjPjvLvb+SAzvF7lYeM7mtREPnTEGBbKuI2BM6J5L4wR0Jf9O6xNrAje4DzsM+6iJkpuDr2N3sVyK2LQTT0M2SDqp04UvVqWaE4/XU+2oJJqSbi/iOU=;
+X-UUID: b6045a5a351a49c0a0b98c205a2f48de-20210831
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 122042693; Tue, 31 Aug 2021 18:45:16 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 31 Aug 2021 18:45:15 +0800
+Received: from APC01-PU1-obe.outbound.protection.outlook.com (172.21.101.239)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.792.15 via Frontend Transport; Tue, 31 Aug 2021 18:45:15 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EMAXYF/BcmTfpToo49CxrBo96Txabtqqt8ttcUwy3PTjJnc5WbzrNaAJoEffnMKOKwxO30BeQi/UJ1mb9xfY3V4PEIQyG2eBtUKbLybc4IEwskgPRABCSWJ4BCe5WsDamRTrK6egqn3YYs2BucDzL76oeB7p1BH57dvXm9eY0NWGUNhK2Mwwu6xocqYnCQk/cdIOEUTc1Bdal+0INakYmy65RDqPq3dgRkMD+ArC0Hz8O9Xa+qSyOzg5OVg4YNtTxVV525mq1yZ03RT99jTEdBVChmNBR4lj4TQLGg2v7GDbBDxqw4pmFNQZjBYxJ3Ofv0X4vm5g9luwsji2OoEYCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=phNHXum76mAZ4qYmxK28Mp4u++IBnPR+ThnSGtip/xI=;
+ b=MD9SkBwLv/1MiaOq/HmZc8536g+BdmFwIuzH6TLicovUHVvJWPL5PISgKyBIWIqoTOtQm43H++qqauNFbRLpGTd01PYFxOS4HDhyDCnL9vBSwTOn3ESxVl5PSOj0c4fFZ4KQE6Y8BteFp7zfxeNfBLEMesm9KuXkbvbfVQo0Z/LXmqSkv3MrkNXkf/EpXT9F3yq1bPp14rTE7vqcHe4Cqu9UMNy476PGmo+NHv+JR4GrpNDCHa3dmINS8GLBvSconAzQoFPM4UoM1mWGJsf8a/f79Bu6BBO7QJhoeqib95cCHKEk6gpeuMnReoCfa4FQI2wvurZiJi9wdObWoJkyug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=phNHXum76mAZ4qYmxK28Mp4u++IBnPR+ThnSGtip/xI=;
+ b=icrP/PO7FK+gGiQmcKbZpWaFHOnOD4OTf5TurY5udFhoMpatC7dQwicfIlg8i/dKl9Ca0VCbs1fZg2bsYEh/n0cIcnthgdBHO/H5HTRaLOYATZn4h57FagGF9v0vF3CrU1f9PbN82x2rQybjuha6MmcxQuJ6NY5pEVWW2iBboDY=
+Received: from HK0PR03MB3139.apcprd03.prod.outlook.com (2603:1096:203:4b::11)
+ by HK2PR0302MB2499.apcprd03.prod.outlook.com (2603:1096:202:3::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.16; Tue, 31 Aug
+ 2021 10:45:03 +0000
+Received: from HK0PR03MB3139.apcprd03.prod.outlook.com
+ ([fe80::6595:af4e:bda9:801e]) by HK0PR03MB3139.apcprd03.prod.outlook.com
+ ([fe80::6595:af4e:bda9:801e%6]) with mapi id 15.20.4478.017; Tue, 31 Aug 2021
+ 10:45:02 +0000
+From:   =?utf-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>
+To:     "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+CC:     "dafna.hirschfeld@collabora.com" <dafna.hirschfeld@collabora.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "krzysztof.kozlowski@canonical.com" 
+        <krzysztof.kozlowski@canonical.com>,
+        =?utf-8?B?WW91bGluIFBlaSAo6KO05Y+L5p6XKQ==?= 
+        <youlin.pei@mediatek.com>,
+        =?utf-8?B?QW5hbiBTdW4gKOWtmeWuieWuiSk=?= <Anan.Sun@mediatek.com>,
+        "tfiga@chromium.org" <tfiga@chromium.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        =?utf-8?B?WGlhIEppYW5nICjmsZ/pnJ4p?= <Xia.Jiang@mediatek.com>,
+        "eizan@chromium.org" <eizan@chromium.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        =?utf-8?B?WWkgS3VvICjpg63mh78p?= <Yi.Kuo@mediatek.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "evgreen@chromium.org" <evgreen@chromium.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        =?utf-8?B?QW50aG9ueSBIdWFuZyAo6buD5bu65ZiJKQ==?= 
+        <Anthony.Huang@mediatek.com>,
+        =?utf-8?B?VGlmZmFueSBMaW4gKOael+aFp+ePiik=?= 
+        <tiffany.lin@mediatek.com>,
+        "acourbot@chromium.org" <acourbot@chromium.org>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "drinkcat@chromium.org" <drinkcat@chromium.org>,
+        "hsinyi@chromium.org" <hsinyi@chromium.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "frank-w@public-files.de" <frank-w@public-files.de>,
+        =?utf-8?B?TWluZy1GYW4gQ2hlbiAo6Zmz5piO5rGOKQ==?= 
+        <Ming-Fan.Chen@mediatek.com>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "will.deacon@arm.com" <will.deacon@arm.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mka@chromium.org" <mka@chromium.org>
+Subject: Re: [PATCH v7 00/12] Clean up "mediatek,larb"
+Thread-Topic: [PATCH v7 00/12] Clean up "mediatek,larb"
+Thread-Index: AQHXhO4/B+asb7CmWUi2ITwnwJWoI6uNoJ8A
+Date:   Tue, 31 Aug 2021 10:45:02 +0000
+Message-ID: <271b63107031f6bfa1b746e70ccdcee6d86db8b7.camel@mediatek.com>
+References: <20210730025238.22456-1-yong.wu@mediatek.com>
+In-Reply-To: <20210730025238.22456-1-yong.wu@mediatek.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 74c22ace-4c7a-4b3f-8624-08d96c6c635b
+x-ms-traffictypediagnostic: HK2PR0302MB2499:
+x-ld-processed: a7687ede-7a6b-4ef6-bace-642f677fbe31,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK2PR0302MB249906CC89596137FA88C2C898CC9@HK2PR0302MB2499.apcprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ICJs5sYJxBYBYD8Oubv8I/7rjityPVUeoC/5N9Imn52AmsSMw76NqBv80QAqEaRLHfWpMo6z98AflyeNViBrDS18tOfkK4WA7/qKaul7n7++EJ4spdQBjXvyY0F6cWtQx3Uybv7yWI760NWTBDekUg07QoE8at20pgw0WzudeWDi/rYOZ6NgwM1eV+skoAaVxCGAKcQftUus43hjsN1MAqm7arPOjwpl/Cb351WCduYV0/UGufzk2YfYgTHAe9IHLcKqXj4UexJWwGp3x/q1dVCGyo7em4FDAaCMqCJBL6v4goGNQOwrn8viAnKU3+hJCehKe1qExYP39Xc1w+H0nBQbtxjuZ82ygIe3o2SlHHIFPMf/SoZAH2vPIKSUDenjX8xMAr154L6HEsEPvmp0ALsSRGh2mNaWJvXB7Sw/AvBw9LVezqoLe5i4E153Fn1Nk8udDIGK6ABixgBw9uYY1CKgA0BEiqvc+/KNbkAZ5A3ygNeLRxwLjPQVU/os+LO09/U+bakaiBLeIllgMxyHf2sQo4RaB+8asKN622wwkEeyJ5GYLMLiS1XJy4tB7PK8/uA4kJILKp4AckfRDuK9pE87zk/QkV/6p6PtbIaLOJbhAc5RzLwOPKHPfREVQFkRkUNtTKJZKE7YOXMRT61bF1BbJgvRwezln6RhL8wRtU0UP9vA/XyCdAH+gcgWbKgYLazyybP+k1MQQ0MPGsuwo+ikgDsYeNJEs4wg8VcwVjUxmAKhrQix3lTxuYvpma/Q9RgR8f2iKrzyO96tkiJPM5zc8GPUCAsvpBfJVZSK2ruGTjCylW/Pejt2Vn6FmnRc8WNZL54h1vwIY5R2isdptY8GULO8f5pVy66HZopXIeA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR03MB3139.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(85182001)(66476007)(66556008)(64756008)(316002)(38100700002)(66946007)(66446008)(6506007)(122000001)(91956017)(76116006)(6486002)(2906002)(36756003)(6512007)(54906003)(5660300002)(83380400001)(2616005)(71200400001)(966005)(186003)(86362001)(26005)(7416002)(4326008)(6916009)(38070700005)(508600001)(8676002)(8936002)(99106002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dHpPTzRIRnJUWXJQODREV1NIVzd0N1JXeEZLVHNQdWV6eDlmeWR2VUxYaWpS?=
+ =?utf-8?B?eC92VjN5UDNaVXpZSWt0NVRLbHNKU1Z1RXZ1NFE2V0NOUWpVZ3R4RFRGUTlE?=
+ =?utf-8?B?bWFrUXZGQU1NTDJRRlVLdjNMcUEyYlZlRjhUTTU4NUhLM1BGRVM2SHZVK08y?=
+ =?utf-8?B?Q254RTlCbTR0SUpiemJWYmNrcGFKNDBubXVBZWtYaGpaVEpnUGV3SUdibkNw?=
+ =?utf-8?B?TVpndkZjZ1l1ZUNRNjVwODZQSDdNbkFoVnRxa1dYa0Nua2ZZYTNOZnl0QjZQ?=
+ =?utf-8?B?endQemxSSG91WUNrSWZaanpWNWNROGt5TUpSMkszdm5jb1BqbHA4NG56Rmp3?=
+ =?utf-8?B?UDY1OFNPWXhQbWZ5T01MOXJhRHhQbkl1TFhzSERWdXZTc3VWMnEvY2ZubU4r?=
+ =?utf-8?B?ZWJwTExPSkhweFh2VHYvVnVnbkxFcm1PRXFwdlhsYklQYjc0cGtPV1B0QlRT?=
+ =?utf-8?B?YUNuYmsrL0dOa0lhQU1FeVQ5cUNkYlN1R3l1dVVWTk1SVXJzVzdxb3NXS2Va?=
+ =?utf-8?B?TlRnSThDenhZZnZFSlN6ZzJ4SnhqaDdTTDgrNmVIWEIzQUcrNU5iMGRZaDZN?=
+ =?utf-8?B?amxIeFFUUGtGQUhSQ29LTm42cG42Q29YMVdDMS9Bc0RnSzIzQVkvZEkvK0hR?=
+ =?utf-8?B?Uk1OQUVSbXZFeCtObDBlYVlEWndFV0lPb3RJR3o4TjM1c2ltSGRVaVZKalRP?=
+ =?utf-8?B?WVQvd1pNQ1N2dTMyWGNQL2gyZG1uTWwyNDcrWmJCRExMZWRtTTdMQlRWaFBY?=
+ =?utf-8?B?VGdxU04wMUI2MWFjTTJPY3NUNWFUMUFYL05BWUgzTUZpQ3dlYWZRZ24ycXpX?=
+ =?utf-8?B?bVBKYm5hQkk0TGxkUXhmdTZLNkhYaWhzT1U2YjFTNEpteDJXcnErQjNNYUFC?=
+ =?utf-8?B?ZVVGOGVudk9OQmZ1RWVmelFLSFgyaFl4VXBBSnNOekg3YU9HYTF3YlpDelRl?=
+ =?utf-8?B?eVlTYUFHVzJVQzhWTEcrL0I3b3hXTGpITStwcUVqRWNWSThkeWc2bnM2Q1Vn?=
+ =?utf-8?B?TVZOcFgvTUxIOFVBZ3huM2FPVE5PZ0pybGtPZHc1Q1hQd0RieFFVNVRBakt5?=
+ =?utf-8?B?Njc1R3BLeFdZV3NUMEFvK0VuV29Kc0hQbzFlQTV3S2JjYVRBaTNTOWNpZU1l?=
+ =?utf-8?B?d0NyTHd4aXlyRXBMbWNSU0VhZlFUc2FwMjVnUUFtUFF0b0dkazR3WlI0UXlU?=
+ =?utf-8?B?ZzZMb0UydVYxOHFiMXJXbFBRYXU3RUZ5T1pkb09jaS9HVUp4YTNYOUxNT1pl?=
+ =?utf-8?B?T1NLWExTa2xzZFhkcDcreERESVhCQ3VseDZFSFpFdUxubVNFaGpPRzZFMExX?=
+ =?utf-8?B?Rm9HYVhTZW04bElGOTQ0RFFoVkRrdHoxQVRXNDVxMWtFaGlrc3doS2JUL2RY?=
+ =?utf-8?B?MC84TE1RRVdWNlFPdnNIYmNhRDA1bHlSSDVIditHQU92S251M0QySFRDWDFZ?=
+ =?utf-8?B?RlkyWXZtWVd1WG9USXpxNmRHS0tyU2RuWWhRLzBRaGVxeXd4NjcrOTY2Z0NP?=
+ =?utf-8?B?eHJWQTduS0FZVGFQbkdkSFphMkh2UWdlbkFlMlZLaExOcTIyODZUeUNCNzBV?=
+ =?utf-8?B?NFZGQWRjY1JQR0IrVmljYzNuVWhseXlvMit3cWhLWUdRUDN2RUhzTDBBZWo4?=
+ =?utf-8?B?QzlDNXVWVW1kc0lybmJmTHVsc0tlMGIzaC83cEppM0QxdEtJTCs2eEg4Wmhk?=
+ =?utf-8?B?Z0lVRWZ6OVh0VGNHTE02dG96NGxQRFh3MDlMbWt6Um9ZQmlKQ0NUNGoxSjZU?=
+ =?utf-8?Q?UFtR7qKBws/0BmZsw+cQnc3CZiweAiPaGSkWWtk?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <985F7259908913478FD1B549BAC23552@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YS3/jhuRNS2GGVrp@hirez.programming.kicks-ass.net>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR03MB3139.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74c22ace-4c7a-4b3f-8624-08d96c6c635b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2021 10:45:02.5578
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FTX8d5gunTqX53RnrogGC7P0520rFxArZo2rqvwf9WiHMiyrjV8MIR4MY933sB/d0+reTUhoDsKG+Bcra80bMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR0302MB2499
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 12:08:15PM +0200, Peter Zijlstra wrote:
-> On Tue, Aug 24, 2021 at 11:29:39AM +0000, Yafang Shao wrote:
-
-> > After the patchset, schestats are orgnized as follows,
-> > struct task_struct {
-> >     ...
-> >     struct sched_statistics statistics;
-> >     ...
-> >     struct sched_entity *se;
-> >     struct sched_rt_entity *rt;
-> >     ...
-> > };
-> > 
-> > struct task_group {                    |---> stats[0] : of CPU0
-> >     ...                                |
-> >     struct sched_statistics **stats; --|---> stats[1] : of CPU1
-> >     ...                                |
-> >                                        |---> stats[n] : of CPUn
-> >  #ifdef CONFIG_FAIR_GROUP_SCHED
-> >     struct sched_entity **se;
-> >  #endif
-> >  #ifdef CONFIG_RT_GROUP_SCHED
-> >     struct sched_rt_entity  **rt_se;
-> >  #endif
-> >     ...
-> > };
-> 
-> Yeah, this seems to give a terrible mess, let me see if I can come up
-> with anything less horrible.
-
-Here, isn't this *MUCH* saner ?
-
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -521,7 +521,7 @@ struct sched_statistics {
- 	u64				nr_wakeups_passive;
- 	u64				nr_wakeups_idle;
- #endif
--};
-+} ____cacheline_aligned;
- 
- struct sched_entity {
- 	/* For load-balancing: */
-@@ -537,8 +537,6 @@ struct sched_entity {
- 
- 	u64				nr_migrations;
- 
--	struct sched_statistics		statistics;
--
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 	int				depth;
- 	struct sched_entity		*parent;
-@@ -802,6 +800,8 @@ struct task_struct {
- 	struct uclamp_se		uclamp[UCLAMP_CNT];
- #endif
- 
-+	struct sched_statistics         stats;
-+
- #ifdef CONFIG_PREEMPT_NOTIFIERS
- 	/* List of struct preempt_notifier: */
- 	struct hlist_head		preempt_notifiers;
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3489,11 +3489,11 @@ ttwu_stat(struct task_struct *p, int cpu
- #ifdef CONFIG_SMP
- 	if (cpu == rq->cpu) {
- 		__schedstat_inc(rq->ttwu_local);
--		__schedstat_inc(p->se.statistics.nr_wakeups_local);
-+		__schedstat_inc(p->stats.nr_wakeups_local);
- 	} else {
- 		struct sched_domain *sd;
- 
--		__schedstat_inc(p->se.statistics.nr_wakeups_remote);
-+		__schedstat_inc(p->stats.nr_wakeups_remote);
- 		rcu_read_lock();
- 		for_each_domain(rq->cpu, sd) {
- 			if (cpumask_test_cpu(cpu, sched_domain_span(sd))) {
-@@ -3505,14 +3505,14 @@ ttwu_stat(struct task_struct *p, int cpu
- 	}
- 
- 	if (wake_flags & WF_MIGRATED)
--		__schedstat_inc(p->se.statistics.nr_wakeups_migrate);
-+		__schedstat_inc(p->stats.nr_wakeups_migrate);
- #endif /* CONFIG_SMP */
- 
- 	__schedstat_inc(rq->ttwu_count);
--	__schedstat_inc(p->se.statistics.nr_wakeups);
-+	__schedstat_inc(p->stats.nr_wakeups);
- 
- 	if (wake_flags & WF_SYNC)
--		__schedstat_inc(p->se.statistics.nr_wakeups_sync);
-+		__schedstat_inc(p->stats.nr_wakeups_sync);
- }
- 
- /*
-@@ -4196,7 +4196,7 @@ static void __sched_fork(unsigned long c
- 
- #ifdef CONFIG_SCHEDSTATS
- 	/* Even if schedstat is disabled, there should not be garbage */
--	memset(&p->se.statistics, 0, sizeof(p->se.statistics));
-+	memset(&p->stats, 0, sizeof(p->stats));
- #endif
- 
- 	RB_CLEAR_NODE(&p->dl.rb_node);
-@@ -9619,9 +9619,9 @@ void normalize_rt_tasks(void)
- 			continue;
- 
- 		p->se.exec_start = 0;
--		schedstat_set(p->se.statistics.wait_start,  0);
--		schedstat_set(p->se.statistics.sleep_start, 0);
--		schedstat_set(p->se.statistics.block_start, 0);
-+		schedstat_set(p->stats.wait_start,  0);
-+		schedstat_set(p->stats.sleep_start, 0);
-+		schedstat_set(p->stats.block_start, 0);
- 
- 		if (!dl_task(p) && !rt_task(p)) {
- 			/*
-@@ -10467,7 +10467,7 @@ static int cpu_cfs_stat_show(struct seq_
- 		int i;
- 
- 		for_each_possible_cpu(i)
--			ws += schedstat_val(tg->se[i]->statistics.wait_sum);
-+			ws += schedstat_val(tg->stats[i]->wait_sum);
- 
- 		seq_printf(sf, "wait_sum %llu\n", ws);
- 	}
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1265,8 +1265,8 @@ static void update_curr_dl(struct rq *rq
- 		return;
- 	}
- 
--	schedstat_set(curr->se.statistics.exec_max,
--		      max(curr->se.statistics.exec_max, delta_exec));
-+	schedstat_set(curr->stats.exec_max,
-+		      max(curr->stats.exec_max, delta_exec));
- 
- 	curr->se.sum_exec_runtime += delta_exec;
- 	account_group_exec_runtime(curr, delta_exec);
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -819,6 +819,21 @@ static void update_tg_load_avg(struct cf
- }
- #endif /* CONFIG_SMP */
- 
-+struct sched_entity_stats {
-+	struct sched_entity	se;
-+	struct sched_statistics	stats;
-+} __no_randomize_layout;
-+
-+static inline struct sched_statistics *
-+__schedstats_from_se(struct sched_entity *se)
-+{
-+#ifdef CONFIG_FAIR_GROUP_SCHED
-+	if (!entity_is_task(se))
-+		return &container_of(se, struct sched_entity_stats, se)->stats;
-+#endif
-+	return &task_of(se)->stats;
-+}
-+
- /*
-  * Update the current task's runtime statistics.
-  */
-@@ -837,8 +852,10 @@ static void update_curr(struct cfs_rq *c
- 
- 	curr->exec_start = now;
- 
--	schedstat_set(curr->statistics.exec_max,
--		      max(delta_exec, curr->statistics.exec_max));
-+	if (schedstat_enabled()) {
-+		struct sched_statistics *stats = __schedstats_from_se(curr);
-+		__schedstat_set(stats->exec_max, max(delta_exec, stats->exec_max));
-+	}
- 
- 	curr->sum_exec_runtime += delta_exec;
- 	schedstat_add(cfs_rq->exec_clock, delta_exec);
-@@ -866,39 +883,45 @@ static inline void
- update_stats_wait_start(struct cfs_rq *cfs_rq, struct sched_entity *se)
- {
- 	u64 wait_start, prev_wait_start;
-+	struct sched_statistics *stats;
- 
- 	if (!schedstat_enabled())
- 		return;
- 
-+	stats = __schedstats_from_se(se);
-+
- 	wait_start = rq_clock(rq_of(cfs_rq));
--	prev_wait_start = schedstat_val(se->statistics.wait_start);
-+	prev_wait_start = schedstat_val(stats->wait_start);
- 
- 	if (entity_is_task(se) && task_on_rq_migrating(task_of(se)) &&
- 	    likely(wait_start > prev_wait_start))
- 		wait_start -= prev_wait_start;
- 
--	__schedstat_set(se->statistics.wait_start, wait_start);
-+	__schedstat_set(stats->wait_start, wait_start);
- }
- 
- static inline void
- update_stats_wait_end(struct cfs_rq *cfs_rq, struct sched_entity *se)
- {
--	struct task_struct *p;
-+	struct sched_statistics *stats;
-+	struct task_struct *p = NULL;
- 	u64 delta;
- 
- 	if (!schedstat_enabled())
- 		return;
- 
-+	stats = __schedstats_from_se(se);
-+
- 	/*
- 	 * When the sched_schedstat changes from 0 to 1, some sched se
- 	 * maybe already in the runqueue, the se->statistics.wait_start
- 	 * will be 0.So it will let the delta wrong. We need to avoid this
- 	 * scenario.
- 	 */
--	if (unlikely(!schedstat_val(se->statistics.wait_start)))
-+	if (unlikely(!schedstat_val(stats->wait_start)))
- 		return;
- 
--	delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(se->statistics.wait_start);
-+	delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(stats->wait_start);
- 
- 	if (entity_is_task(se)) {
- 		p = task_of(se);
-@@ -908,30 +931,33 @@ update_stats_wait_end(struct cfs_rq *cfs
- 			 * time stamp can be adjusted to accumulate wait time
- 			 * prior to migration.
- 			 */
--			__schedstat_set(se->statistics.wait_start, delta);
-+			__schedstat_set(stats->wait_start, delta);
- 			return;
- 		}
- 		trace_sched_stat_wait(p, delta);
- 	}
- 
--	__schedstat_set(se->statistics.wait_max,
--		      max(schedstat_val(se->statistics.wait_max), delta));
--	__schedstat_inc(se->statistics.wait_count);
--	__schedstat_add(se->statistics.wait_sum, delta);
--	__schedstat_set(se->statistics.wait_start, 0);
-+	__schedstat_set(stats->wait_max,
-+		      max(schedstat_val(stats->wait_max), delta));
-+	__schedstat_inc(stats->wait_count);
-+	__schedstat_add(stats->wait_sum, delta);
-+	__schedstat_set(stats->wait_start, 0);
- }
- 
- static inline void
- update_stats_enqueue_sleeper(struct cfs_rq *cfs_rq, struct sched_entity *se)
- {
-+	struct sched_statistics *stats;
- 	struct task_struct *tsk = NULL;
- 	u64 sleep_start, block_start;
- 
- 	if (!schedstat_enabled())
- 		return;
- 
--	sleep_start = schedstat_val(se->statistics.sleep_start);
--	block_start = schedstat_val(se->statistics.block_start);
-+	stats = __schedstats_from_se(se);
-+
-+	sleep_start = schedstat_val(stats->sleep_start);
-+	block_start = schedstat_val(stats->block_start);
- 
- 	if (entity_is_task(se))
- 		tsk = task_of(se);
-@@ -942,11 +968,11 @@ update_stats_enqueue_sleeper(struct cfs_
- 		if ((s64)delta < 0)
- 			delta = 0;
- 
--		if (unlikely(delta > schedstat_val(se->statistics.sleep_max)))
--			__schedstat_set(se->statistics.sleep_max, delta);
-+		if (unlikely(delta > schedstat_val(stats->sleep_max)))
-+			__schedstat_set(stats->sleep_max, delta);
- 
--		__schedstat_set(se->statistics.sleep_start, 0);
--		__schedstat_add(se->statistics.sum_sleep_runtime, delta);
-+		__schedstat_set(stats->sleep_start, 0);
-+		__schedstat_add(stats->sum_sleep_runtime, delta);
- 
- 		if (tsk) {
- 			account_scheduler_latency(tsk, delta >> 10, 1);
-@@ -959,16 +985,16 @@ update_stats_enqueue_sleeper(struct cfs_
- 		if ((s64)delta < 0)
- 			delta = 0;
- 
--		if (unlikely(delta > schedstat_val(se->statistics.block_max)))
--			__schedstat_set(se->statistics.block_max, delta);
-+		if (unlikely(delta > schedstat_val(stats->block_max)))
-+			__schedstat_set(stats->block_max, delta);
- 
--		__schedstat_set(se->statistics.block_start, 0);
--		__schedstat_add(se->statistics.sum_sleep_runtime, delta);
-+		__schedstat_set(stats->block_start, 0);
-+		__schedstat_add(stats->sum_sleep_runtime, delta);
- 
- 		if (tsk) {
- 			if (tsk->in_iowait) {
--				__schedstat_add(se->statistics.iowait_sum, delta);
--				__schedstat_inc(se->statistics.iowait_count);
-+				__schedstat_add(stats->iowait_sum, delta);
-+				__schedstat_inc(stats->iowait_count);
- 				trace_sched_stat_iowait(tsk, delta);
- 			}
- 
-@@ -1030,10 +1056,10 @@ update_stats_dequeue(struct cfs_rq *cfs_
- 		/* XXX racy against TTWU */
- 		state = READ_ONCE(tsk->__state);
- 		if (state & TASK_INTERRUPTIBLE)
--			__schedstat_set(se->statistics.sleep_start,
-+			__schedstat_set(tsk->stats.sleep_start,
- 				      rq_clock(rq_of(cfs_rq)));
- 		if (state & TASK_UNINTERRUPTIBLE)
--			__schedstat_set(se->statistics.block_start,
-+			__schedstat_set(tsk->stats.block_start,
- 				      rq_clock(rq_of(cfs_rq)));
- 	}
- }
-@@ -4502,9 +4528,10 @@ set_next_entity(struct cfs_rq *cfs_rq, s
- 	 */
- 	if (schedstat_enabled() &&
- 	    rq_of(cfs_rq)->cfs.load.weight >= 2*se->load.weight) {
--		__schedstat_set(se->statistics.slice_max,
--			max((u64)schedstat_val(se->statistics.slice_max),
--			    se->sum_exec_runtime - se->prev_sum_exec_runtime));
-+		struct sched_statistics *stats = __schedstats_from_se(se);
-+		__schedstat_set(stats->slice_max,
-+				max((u64)stats->slice_max,
-+				    se->sum_exec_runtime - se->prev_sum_exec_runtime));
- 	}
- 
- 	se->prev_sum_exec_runtime = se->sum_exec_runtime;
-@@ -5993,12 +6020,12 @@ static int wake_affine(struct sched_doma
- 	if (sched_feat(WA_WEIGHT) && target == nr_cpumask_bits)
- 		target = wake_affine_weight(sd, p, this_cpu, prev_cpu, sync);
- 
--	schedstat_inc(p->se.statistics.nr_wakeups_affine_attempts);
-+	schedstat_inc(p->stats.nr_wakeups_affine_attempts);
- 	if (target == nr_cpumask_bits)
- 		return prev_cpu;
- 
- 	schedstat_inc(sd->ttwu_move_affine);
--	schedstat_inc(p->se.statistics.nr_wakeups_affine);
-+	schedstat_inc(p->stats.nr_wakeups_affine);
- 	return target;
- }
- 
-@@ -7802,7 +7829,7 @@ int can_migrate_task(struct task_struct
- 	if (!cpumask_test_cpu(env->dst_cpu, p->cpus_ptr)) {
- 		int cpu;
- 
--		schedstat_inc(p->se.statistics.nr_failed_migrations_affine);
-+		schedstat_inc(p->stats.nr_failed_migrations_affine);
- 
- 		env->flags |= LBF_SOME_PINNED;
- 
-@@ -7836,7 +7863,7 @@ int can_migrate_task(struct task_struct
- 	env->flags &= ~LBF_ALL_PINNED;
- 
- 	if (task_running(env->src_rq, p)) {
--		schedstat_inc(p->se.statistics.nr_failed_migrations_running);
-+		schedstat_inc(p->stats.nr_failed_migrations_running);
- 		return 0;
- 	}
- 
-@@ -7858,12 +7885,12 @@ int can_migrate_task(struct task_struct
- 	    env->sd->nr_balance_failed > env->sd->cache_nice_tries) {
- 		if (tsk_cache_hot == 1) {
- 			schedstat_inc(env->sd->lb_hot_gained[env->idle]);
--			schedstat_inc(p->se.statistics.nr_forced_migrations);
-+			schedstat_inc(p->stats.nr_forced_migrations);
- 		}
- 		return 1;
- 	}
- 
--	schedstat_inc(p->se.statistics.nr_failed_migrations_hot);
-+	schedstat_inc(p->stats.nr_failed_migrations_hot);
- 	return 0;
- }
- 
-@@ -11390,7 +11417,7 @@ int alloc_fair_sched_group(struct task_g
- 		if (!cfs_rq)
- 			goto err;
- 
--		se = kzalloc_node(sizeof(struct sched_entity),
-+		se = kzalloc_node(sizeof(struct sched_entity_stats),
- 				  GFP_KERNEL, cpu_to_node(i));
- 		if (!se)
- 			goto err_free_rq;
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -1009,8 +1009,8 @@ static void update_curr_rt(struct rq *rq
- 	if (unlikely((s64)delta_exec <= 0))
- 		return;
- 
--	schedstat_set(curr->se.statistics.exec_max,
--		      max(curr->se.statistics.exec_max, delta_exec));
-+	schedstat_set(curr->stats.exec_max,
-+		      max(curr->stats.exec_max, delta_exec));
- 
- 	curr->se.sum_exec_runtime += delta_exec;
- 	account_group_exec_runtime(curr, delta_exec);
---- a/kernel/sched/stats.h
-+++ b/kernel/sched/stats.h
-@@ -41,6 +41,7 @@ rq_sched_info_dequeue(struct rq *rq, uns
- #define   schedstat_val_or_zero(var)	((schedstat_enabled()) ? (var) : 0)
- 
- #else /* !CONFIG_SCHEDSTATS: */
-+
- static inline void rq_sched_info_arrive  (struct rq *rq, unsigned long long delta) { }
- static inline void rq_sched_info_dequeue(struct rq *rq, unsigned long long delta) { }
- static inline void rq_sched_info_depart  (struct rq *rq, unsigned long long delta) { }
-@@ -53,6 +54,7 @@ static inline void rq_sched_info_depart
- # define   schedstat_set(var, val)	do { } while (0)
- # define   schedstat_val(var)		0
- # define   schedstat_val_or_zero(var)	0
-+
- #endif /* CONFIG_SCHEDSTATS */
- 
- #ifdef CONFIG_PSI
---- a/kernel/sched/stop_task.c
-+++ b/kernel/sched/stop_task.c
-@@ -78,8 +78,8 @@ static void put_prev_task_stop(struct rq
- 	if (unlikely((s64)delta_exec < 0))
- 		delta_exec = 0;
- 
--	schedstat_set(curr->se.statistics.exec_max,
--			max(curr->se.statistics.exec_max, delta_exec));
-+	schedstat_set(curr->stats.exec_max,
-+		      max(curr->stats.exec_max, delta_exec));
- 
- 	curr->se.sum_exec_runtime += delta_exec;
- 	account_group_exec_runtime(curr, delta_exec);
+SGkgTWF0dGhpYXMsDQoNCkp1c3QgcGluZyBmb3IgdGhpcyBwYXRjaHNldC4NCg0KVGhhbmtzLg0K
+DQpPbiBGcmksIDIwMjEtMDctMzAgYXQgMTA6NTIgKzA4MDAsIFlvbmcgV3Ugd3JvdGU6DQo+IE1l
+ZGlhVGVrIElPTU1VIGJsb2NrIGRpYWdyYW0gYWx3YXlzIGxpa2UgYmVsb3c6DQo+IA0KPiAgICAg
+ICAgIE00VQ0KPiAgICAgICAgICB8DQo+ICAgICBzbWktY29tbW9uDQo+ICAgICAgICAgIHwNCj4g
+ICAtLS0tLS0tLS0tLS0tDQo+ICAgfCAgICAgICAgIHwgIC4uLg0KPiAgIHwgICAgICAgICB8DQo+
+IGxhcmIxICAgICBsYXJiMg0KPiAgIHwgICAgICAgICB8DQo+IHZkZWMgICAgICAgdmVuYw0KPiAN
+Cj4gQWxsIHRoZSBjb25zdW1lciBjb25uZWN0IHdpdGggc21pLWxhcmIsIHRoZW4gY29ubmVjdCB3
+aXRoIHNtaS1jb21tb24uDQo+IA0KPiBXaGVuIHRoZSBjb25zdW1lciB3b3JrcywgaXQgc2hvdWxk
+IGVuYWJsZSB0aGUgc21pLWxhcmIncyBwb3dlciB3aGljaA0KPiBhbHNvDQo+IG5lZWQgZW5hYmxl
+IHRoZSBzbWktY29tbW9uJ3MgcG93ZXIgZmlyc3RseS4NCj4gDQo+IFRodXMsIEZpcnN0bHksIHVz
+ZSB0aGUgZGV2aWNlIGxpbmsgY29ubmVjdCB0aGUgY29uc3VtZXIgYW5kIHRoZQ0KPiBzbWktbGFy
+YnMuIHRoZW4gYWRkIGRldmljZSBsaW5rIGJldHdlZW4gdGhlIHNtaS1sYXJiIGFuZCBzbWktY29t
+bW9uLg0KPiANCj4gQWZ0ZXIgYWRkaW5nIHRoZSBkZXZpY2VfbGluaywgdGhlbiAibWVkaWF0ZWss
+bGFyYiIgcHJvcGVydHkgY2FuIGJlDQo+IHJlbW92ZWQuDQo+IHRoZSBpb21tdSBjb25zdW1lciBk
+b24ndCBuZWVkIGNhbGwgdGhlIG10a19zbWlfbGFyYl9nZXQvcHV0IHRvIGVuYWJsZQ0KPiB0aGUg
+cG93ZXIgYW5kIGNsb2NrIG9mIHNtaS1sYXJiIGFuZCBzbWktY29tbW9uLg0KPiANCj4gQmFzZSBv
+biB2NS4xNC1yYzEsIGFuZCBhIGpwZWdbMV0gYW5kIG1kcFsyXSBwYXRjaHNldC4NCj4gDQo+IFsx
+XSANCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtbWVkaWF0ZWsvMjAyMTA3MDIxMDIz
+MDQuMzM0NjQyOS0xLWhzaW55aUBjaHJvbWl1bS5vcmcvDQo+IFsyXSANCj4gaHR0cHM6Ly9sb3Jl
+Lmtlcm5lbC5vcmcvbGludXgtbWVkaWF0ZWsvMjAyMTA3MDkwMjIzMjQuMTYwNzg4NC0xLWVpemFu
+QGNocm9taXVtLm9yZy8NCj4gDQo+IENoYW5nZSBub3RlczoNCj4gdjc6IDEpIEZpeCBhIGFybTMy
+IGJvb3QgZmFpbCBpc3N1ZS4gcmVwb3J0ZWQgZnJvbSBGcmFuay4NCj4gICAgIDIpIEFkZCBhIHJl
+dHVybiBmYWlsIGluIHRoZSBtdGsgZHJtLiBzdWdnZXN0ZWQgYnkgRGFmbmEuDQoNCg==
