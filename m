@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7803FCB8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393353FCB90
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235479AbhHaQiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 12:38:21 -0400
-Received: from mail-pf1-f181.google.com ([209.85.210.181]:33702 "EHLO
-        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhHaQiU (ORCPT
+        id S240000AbhHaQi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 12:38:58 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41480 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230047AbhHaQiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 12:38:20 -0400
-Received: by mail-pf1-f181.google.com with SMTP id u6so14786169pfi.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:37:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FjfxfLj+fG4rooFHLvP0f8WffL8MrE8x/5JcvPYS7Xo=;
-        b=PdyDc/qlEtyCviFGGX9l74k4CV9w5MZfOS9CQZx8EjaSvKTnk2us7NjG+iIQbSUcKn
-         PtZjhHBlYUalQNe2AOMJVuhmMa+bxSnrRyGeE+29W/UD2UK0R7ROm25y9MzXEFvT7XiI
-         gkIPCFJosczpg0+2OyFUEcoPkoE+PNwbCY7YtcRfH9ER6tjZrXBTrHnmtadyaMhT8Zzq
-         G5S+/AoX6YhBljz6cnzs4o3OMAnqrzjq0MZUDA7mdz5HA471Ui19KaJKqmjMaElAkH9b
-         OkNaX+AR448CayyAJQ94cgoyCUWmx3CxxXgWsjzIXjVEYRv7bs3IY0Oc+hy7AwYF3+rY
-         EWLg==
-X-Gm-Message-State: AOAM530u/p/WsL6nTU0Aq8y2be+MbBFR95kIiPIQpkU6K/meVtJ9gW83
-        BRczjaRsHvDXgFKefQIsGGE=
-X-Google-Smtp-Source: ABdhPJzcDb5dLJUeAkSVNgRk7H+su0RFuBd+hyh6LovS4I/nz5Dr/cezzlRgCu6p16P4RtgSOKv0hg==
-X-Received: by 2002:a62:1c96:0:b0:3f5:e01a:e47 with SMTP id c144-20020a621c96000000b003f5e01a0e47mr21105599pfc.76.1630427844913;
-        Tue, 31 Aug 2021 09:37:24 -0700 (PDT)
-Received: from sultan-box.localdomain (static-198-54-131-119.cust.tzulo.com. [198.54.131.119])
-        by smtp.gmail.com with ESMTPSA id 130sm8120059pfy.175.2021.08.31.09.37.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 09:37:24 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 09:37:23 -0700
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     linux-mm@kvack.org, mhocko@suse.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Stuck looping on list_empty(list) in free_pcppages_bulk()
-Message-ID: <YS5aw1FL0QxydYy7@sultan-box.localdomain>
-References: <YS1l83lmwEYXuQsY@sultan-box.localdomain>
- <20210831124449.GB4128@techsingularity.net>
+        Tue, 31 Aug 2021 12:38:55 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 54BE6222DC;
+        Tue, 31 Aug 2021 16:37:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630427878; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=elr0DzDewaztAa9Pi9knUWjSATe4WGI8ZR1bF2BTblI=;
+        b=ca1HQCk+kvAlRTDp6miDRJQg1r+7t8eGBkgAnfEYyc5SPBFT3IvMRVMBh2WhyRlO3jjm3g
+        Cl9ukvXRDIopHBQOpSC9W3UoMkbszANLBvlqmX3XzptiXhzPDseZb1/QNqR4Gcd9u4IHey
+        YarP7ik60uJnN3Au4NDVogLiBGH1p8U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630427878;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=elr0DzDewaztAa9Pi9knUWjSATe4WGI8ZR1bF2BTblI=;
+        b=4Aqx6NY7rW7aNkS0/7rs2Pk5/VDEkOW0xsKFkHwQex+OowAa1m17C4HSbv/TJ9N6PV402O
+        xVB8DhRmdVPupSDg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 2F60113A9A;
+        Tue, 31 Aug 2021 16:37:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 4BW/CuZaLmGzWgAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Tue, 31 Aug 2021 16:37:58 +0000
+Message-ID: <cde527a6-36cf-8a01-16b9-41e950676e48@suse.cz>
+Date:   Tue, 31 Aug 2021 18:37:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210831124449.GB4128@techsingularity.net>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH 6/6] mm/page_alloc.c: avoid allocating highmem pages via
+ alloc_pages_exact_nid()
+Content-Language: en-US
+To:     Miaohe Lin <linmiaohe@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, sfr@canb.auug.org.au,
+        peterz@infradead.org, mgorman@techsingularity.net,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210830141051.64090-1-linmiaohe@huawei.com>
+ <20210830141051.64090-7-linmiaohe@huawei.com>
+ <YSzqDt/13YbOAyo4@casper.infradead.org>
+ <d90329db-b13a-ac28-c381-758f12c679c2@huawei.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <d90329db-b13a-ac28-c381-758f12c679c2@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 01:44:49PM +0100, Mel Gorman wrote:
-> That's your answer -- the PCP count has been corrupted or misaccounted.
-> Given this is a Fedora kernel, check for any patches affecting
-> mm/page_alloc.c that could be accounting related or that would affect
-> the IRQ disabling or zone lock acquisition for problems. Another
-> possibility is memory corruption -- either kernel or the hardware
-> itself.
-
-Hmm, I don't see any changes to mm/page_alloc.c from Fedora for this kernel.
-
-What about a memory allocation originating from inside an NMI? I think this
-could occur quite easily with an eBPF program registered to a tracepoint, as
-some of the eBPF helpers do allocate memory on the fly for certain map types.
-
-> > I tried to find some way that this could happen, but the only thing I could
-> > think of was that maybe an allocation had both __GFP_RECLAIMABLE and
-> > __GFP_MOVABLE set in its gfp mask, in which case the rmqueue() call in
-> > get_page_from_freelist() would pass in a migratetype equal to MIGRATE_PCPTYPES
-> > and then pages could be added to an out-of-bounds pcp list while still
-> > incrementing the overall pcp count. This seems pretty unlikely though.
+On 8/31/21 03:56, Miaohe Lin wrote:
+> On 2021/8/30 22:24, Matthew Wilcox wrote:
+>> On Mon, Aug 30, 2021 at 10:10:51PM +0800, Miaohe Lin wrote:
+>>> Don't use with __GFP_HIGHMEM because page_address() cannot represent
+>>> highmem pages without kmap(). Newly allocated pages would leak as
+>>> page_address() will return NULL for highmem pages here. But It works
+>>> now because the only caller does not specify __GFP_HIGHMEM now.
+>> 
+>> This is a misunderstanding of how alloc_pages_exact() /
+>> alloc_pages_exact_nid() work.  You simply can't call them with
+>> GFP_HIGHMEM.
+>> 
 > 
-> It's unlikely because it would be an outright bug to specify both flags.
+> Yep, they can't work with GFP_HIGHMEM. So IMO it might be better to
+> get rid of GFP_HIGHMEM explicitly or add a comment to clarify this
+> situation to avoid future misbehavior. But this may be a unnecessary
+> worry... Do you prefer to not change anything here?
 
-Perhaps that VM_WARN_ON should be changed to a VM_BUG_ON?
+I agree with the suggestion below...
 
-Thanks,
-Sultan
+> Many thanks.
+> 
+>> If you really must change anything here,
+>> s/__GFP_COMP/(__GFP_COMP|__GFP_HIGHMEM)/g throughout both
+>> alloc_pages_exact() and alloc_pages_exact_nid().
+
+... which means __GFP_HIGHMEM would be stripped and additionally there would
+be a warning.
+
