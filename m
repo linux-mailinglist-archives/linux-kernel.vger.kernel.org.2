@@ -2,215 +2,553 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EAAA3FC9F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCE93FC9F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238061AbhHaOlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:41:39 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:9596 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232214AbhHaOlh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:41:37 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17VDETQd013065;
-        Tue, 31 Aug 2021 14:40:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=PihoORGtlQLwnsLRmrIyPiHIdBeBaEsfUPS0CtG5C28=;
- b=Snh8+Hb5qbkr3GW52NsuI6Yq/Resik50j052viIvP1ZNLeugRwoX3V0/X08NGTlZRJ16
- hQdu7LSlD5vc+HHeYgHM01aaYVIKLl3q6CeBgHp0aUi3a+DrAjzeXd/m0WlU9jfF5JeZ
- Dx/PsGZcR3qVPUtBjnGBAAd/YX5AXbwBOaoBfnjcdYSXgVPOwB39f5QrbV1edJhHPVDf
- j9lLpwlgIfPNt6eBKngG/K65ga5LilRTVgZDo4c3E1dZ0achP6eFhrPnFIdNmRzSoOCg
- TQk3XT/PrT+iYPiDdk0Wo5x0deFpy4jG4ieiGrRJpKMk7sX6Gia9ZR7Hww6qSE86+qi2 ww== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=PihoORGtlQLwnsLRmrIyPiHIdBeBaEsfUPS0CtG5C28=;
- b=myazFjA8aqRioi5l2Ok3p1dINFyGp29itv4Q+QmCBoBUYT5xaCEo7Y7fZDO9m09upkC2
- 44IMt2vqQpFREpDtfEP/pyeYE5tpHi5B/4kwkO7V2LYa4RsLyhAieR61uyDJlwQGCJlh
- Cym8puAhHCF+AHo7z6VgCSE5yJqCjRXNyrV+PLTQyWd3WpUnEKb1P5k5DfZuiZzVvGjD
- C2elrJDxYMjLYjrZ1tOtm2Faz+vDo6KddqgElJmwRBhocYQDZDqmZYqglyxuYCNWgAgF
- 9n6KCec084iorFmteluSGac8ARg1FJKumJ8CIRIDsMr7eyuV+6MHMhfgrU+DQfHf+Q69 eA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ase029bkp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 31 Aug 2021 14:40:08 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17VELdP5025285;
-        Tue, 31 Aug 2021 14:40:07 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
-        by aserp3020.oracle.com with ESMTP id 3aqcy4ujgc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 31 Aug 2021 14:40:07 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=epurdjPKVRv/vLv6SV5jygkDtcDYdEGk3/xOQtX1xa7Tx90pFxAD5mwVz2sRNYQJTd7J7Qn1yZ7g7fNpp2sf5qFYVgor/VGq+k/b/dQTmvM0RSnym3ySF5R3gjrIZC7kaDaDeQIlX7Mgjr7c6ppPz5BMsJTB3wYWoZ0fxB+O5Vug1VllU4ryBPrbN0ZeEJyx6fjUOFSO6wGeA5grDKH9umaFQeC9lCLDYHzByJ/avv2NbeQjjQCeCMTkbKqVN6G/3Ild8HDQelJ4ce/zHPPOncPLrKMfqrNzw01S1hm6O8/equZIPPK72KStrLokhXOyaUkIc0BokR8/Z88hn4p3HA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PihoORGtlQLwnsLRmrIyPiHIdBeBaEsfUPS0CtG5C28=;
- b=fCMXurq713GRMDE4M+SvJfULO2Je+1xkhd2mE0FMt4M+WV062YkN9JaVeAvSLEAF4vR5UdtWICvMZc0iS0O2K3VU8Zh04s/j5auMSZ64b05D0ixVyR45PtlEetntkNDGqhRw6vR3OmHDyNW7GIJUjEeXNuRCo4rB7CjN55CyS/JtuNDKzv2YLbYj+yZE2HDvD6M7lt9aExM8M8c6HjlG7cYmH3E4BE6bBZUzngvYnni/pPPPiR3U68M47Wl164cYbVIE1gS9zhj5gBdlqrPbaNIErRbzWj7sSBd+AJ5qBFvIf5LFlyeRoAhNJE3wTNhq+pm2jfYT7zoArRluXdec0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PihoORGtlQLwnsLRmrIyPiHIdBeBaEsfUPS0CtG5C28=;
- b=h+XK8jpMQtMSSGfgpmtmcia0wfINGxrFADAVyffqsiM5mtV/rBgWZYZS3EUvp6PeqHiwUdsv2zqgTt1XXX+nyDp0V2Z8biITg6WjeW0HlhhGowCqnvnlJP5jt/MnRniAZqyaEPnJL7nt3hx3tE3Pxe4CMaANW6b6TkI9wE86aRk=
-Received: from DM6PR10MB4380.namprd10.prod.outlook.com (2603:10b6:5:223::19)
- by DM6PR10MB2940.namprd10.prod.outlook.com (2603:10b6:5:65::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Tue, 31 Aug
- 2021 14:40:04 +0000
-Received: from DM6PR10MB4380.namprd10.prod.outlook.com
- ([fe80::f4b1:d890:7745:30a3]) by DM6PR10MB4380.namprd10.prod.outlook.com
- ([fe80::f4b1:d890:7745:30a3%4]) with mapi id 15.20.4457.024; Tue, 31 Aug 2021
- 14:40:04 +0000
-From:   Liam Howlett <liam.howlett@oracle.com>
-To:     David Hildenbrand <david@redhat.com>
-CC:     "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Song Liu <songliubraving@fb.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        David Rientjes <rientjes@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Rik van Riel <riel@surriel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michel Lespinasse <walken.cr@gmail.com>
-Subject: Re: [PATCH v2 11/61] mm: Remove rb tree.
-Thread-Topic: [PATCH v2 11/61] mm: Remove rb tree.
-Thread-Index: AQHXk38kuOi0fuhFmk2xO62p7QuQn6uA4U4AgAzjzYA=
-Date:   Tue, 31 Aug 2021 14:40:03 +0000
-Message-ID: <20210831143949.wr2aizw5qmpc4fsh@revolver>
-References: <20210817154651.1570984-1-Liam.Howlett@oracle.com>
- <20210817154651.1570984-12-Liam.Howlett@oracle.com>
- <3104a9d0-b8b3-46ed-4f10-1c1f0e5eff92@redhat.com>
-In-Reply-To: <3104a9d0-b8b3-46ed-4f10-1c1f0e5eff92@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 60910ac5-fc44-4e7b-5291-08d96c8d386d
-x-ms-traffictypediagnostic: DM6PR10MB2940:
-x-microsoft-antispam-prvs: <DM6PR10MB2940B50C1D19CF74635ACC67FDCC9@DM6PR10MB2940.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pVrUNPoGTtKpP3pzqJbMkP8K3IHZ+vTiqylW0+iFhDdASHVu3KaMm4Uz7QMqDrxRDH+k0wyEyTX27IOQ3r7qUWXi61F7fMPGJgIJb7s6nE+l9H9WPeiKaB3Uss3gUb/OORaniRcdg8PBp8SqdZXToJt/n0fMxc3Uoqw/OjNE6xkpoyfA9RLGaTrPdldGzog2nrZC0Y/XbGl9yQDSAF8j9B5Ps9wRMMjYGw44uI0tAauC3JC5nYyiUMcd3u5xXCuLGIHs84TAV84zcH2UOnLCe+PVPlFNyXxoUopZqIlbwToajIyN2fosk4OPGZdZgfa8nE4R0xHDfiN98wCEhBKbwe2iBH83gcvMY3jh35Jm5ZUR63xe5LE2Hur/UvhZWtHrSvT10WlYZSJvLRkViRPE9Z1X6+9d4Rv70GFaW/FOCAQuxXu6cFoSiDzsLTLrAxx1T1MDwEnQ5N2g7CDt2Ad5f4HXzM2sz3245+zsK8uiuBaYd6VQPbHWOTbd6AEFBTUd/psbgh1EfFH+4HpMNUhTfqFJ4sGduUT/h0016+KCHHr3dLx+SEylapvGZZ4x2qYCuGA/mB6KsJZYWUg2w+gAqu4777UmOoB026yUYISv84ru2xivUaKZdxqHS8n7Rr2QpynUTHmUOv87ZEh46OGe2qtHm8uSp1ytCRjQpTTzet+tw25zKmttZsN3GcL5deUCJHtJ6amTNPAvfObilxring==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4380.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(346002)(366004)(39860400002)(376002)(396003)(136003)(8936002)(2906002)(54906003)(38100700002)(8676002)(122000001)(478600001)(44832011)(6486002)(1076003)(4326008)(33716001)(26005)(53546011)(91956017)(7416002)(66476007)(38070700005)(66446008)(64756008)(6506007)(316002)(66946007)(86362001)(186003)(9686003)(6512007)(76116006)(83380400001)(66556008)(71200400001)(5660300002)(6916009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?1o7e7PHtKYmbhjA6ji7x15Y/BtDr5ku9gx7nY2Fb75YQov8UfCt1bL3BHf1X?=
- =?us-ascii?Q?n6hrhJ1ldGWCUdtz1VUwOpd8x44F63Std9S5N4qb0EcCcO7js4OBPOHhSGqC?=
- =?us-ascii?Q?/eF37ttiZ836wUb8NCq5qp6FHHKxAofWt3yOt3xC6sYXbUaTuRcyMPgNpm1r?=
- =?us-ascii?Q?qv4JnQJ9xQflEwOV51B1L5bJQn1HXTPir7+E3iwW7zveLJFrYIbXAqphzIk/?=
- =?us-ascii?Q?Zm/4tt+9509B4cwhXB4rUAW8zEUuLUJTWDaUwW+SiQDOXpCviErGfWMHOJVr?=
- =?us-ascii?Q?Z/0MMz8Aoq1IR2qHxP7RHzAlS8yG7AX61Jk0alZ6clu8mzAxBBx73/QYxKMa?=
- =?us-ascii?Q?7QkP+hd0tnkwWu1FdUhET2z1nG/13W2/X0zc3eWje0CT8xJj5pDk0S34gQqd?=
- =?us-ascii?Q?aDEMoNSJyzzZdrgixUN1/KqF+UZIy4yv6lUpaJLXZ+SlWLgBXYKZnvOx1HNi?=
- =?us-ascii?Q?Q4iXzdjDtmVfmSmeRZJ80cx+z05iMELyHpC7AFZ9s8OJg+T4CnY8EZ0eKArA?=
- =?us-ascii?Q?MdGDIn1JyBH027t+OyUZrcI1gzEsTgGixKcRgTTPBmmG0Wfn9q98Sd5JZL0+?=
- =?us-ascii?Q?2Ifn7Q6l+TtcFF3oQ8yLcQlgU66TiUoY56nmj9kmr8jHuUDHh1FzB/z2j/x0?=
- =?us-ascii?Q?nlixBUE5VFpeWwHSiPYNFR59ZJBOFShumYUctExTsvVqfrxSGJxBq4cSoAZ1?=
- =?us-ascii?Q?Gd47u1lcIAFDVp7YEIXFWNKfS/fzFd6r4Whz+2zj5daNZjfGw+3LxbBdedNt?=
- =?us-ascii?Q?najOwh+l9G3KhW/LDulX4sbQOyr3SvR68XJIDZV2sg4BdrRyTqgSSQcYkYZF?=
- =?us-ascii?Q?EfLfKTxHUQOIiyNPa/xgQZcTIvvsMTGUA2kMjVk41uB8B11euf95Z05gL607?=
- =?us-ascii?Q?fEddzji0Ne15tMTqDck9poCDGrTNWM36gVdo9DU0AJX7xUGICubM3/Xi/NhV?=
- =?us-ascii?Q?T+zBRtwXRbAl0eQVL5OoCslrEpQrSNOuIkauBDs6/s0pT4VNmCGSaP6M8TQK?=
- =?us-ascii?Q?fP+AD/bRnRw0d1Y3RYl5npIZ710QIfaTPjyhmX6NxCqwl9gGCneVWnD13ker?=
- =?us-ascii?Q?pgVkHCyIOnli5zFMX3urKpHnBMjFSfogklaaqyqzA+rMdSNB+GzQYX9nf2lV?=
- =?us-ascii?Q?l1tbWt5ZW5/6LodtBmLIcbG5ur/W9F21QCYYjKFey36pxdhZ4inQ6BW7X4K7?=
- =?us-ascii?Q?IL5eZwFFooZCLz3wD2vZp6aVh3yVwaRPo4cBs8EAGtbg94/U8AWrazV4BIVd?=
- =?us-ascii?Q?8yD698bXzGN6XwHY8TYn2Z3taFGNHVWMrmxx+ZQEWzTDqezrs6uAdOphhQRE?=
- =?us-ascii?Q?IoQozx5WaR2SA+WIvBrgu+My?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <04982743AA186B47B1366DE1CEC85A1D@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S238284AbhHaOmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:42:55 -0400
+Received: from mga18.intel.com ([134.134.136.126]:36529 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232016AbhHaOmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 10:42:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="205616942"
+X-IronPort-AV: E=Sophos;i="5.84,366,1620716400"; 
+   d="scan'208";a="205616942"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 07:41:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,366,1620716400"; 
+   d="scan'208";a="475736094"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by orsmga008.jf.intel.com with ESMTP; 31 Aug 2021 07:41:51 -0700
+Received: from alobakin-mobl.ger.corp.intel.com (psmrokox-mobl.ger.corp.intel.com [10.213.6.58])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 17VEfmfQ002209;
+        Tue, 31 Aug 2021 15:41:48 +0100
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     linux-hardening@vger.kernel.org
+Cc:     "Kristen C Accardi" <kristen.c.accardi@intel.com>,
+        Kristen Carlson Accardi <kristen@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jessica Yu <jeyu@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Marios Pomonis <pomonis@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        "Marta A Plantykow" <marta.a.plantykow@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH v6 kspp-next 00/22] Function Granular KASLR
+Date:   Tue, 31 Aug 2021 16:40:52 +0200
+Message-Id: <20210831144114.154-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4380.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60910ac5-fc44-4e7b-5291-08d96c8d386d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2021 14:40:04.1168
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: u+0Vl2aN15AScVuT5I1EI5YKDbRagL5xVXCb48v29LKzbr7xPFeaH3zA1gQUp5r/1K6SSslWPGgHQuJC9nDXkQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB2940
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10093 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- phishscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108310079
-X-Proofpoint-GUID: 3W5JxWf3Pd3rxXaqYMMGUpkqMSJSmMDH
-X-Proofpoint-ORIG-GUID: 3W5JxWf3Pd3rxXaqYMMGUpkqMSJSmMDH
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* David Hildenbrand <david@redhat.com> [210823 05:49]:
-> On 17.08.21 17:47, Liam Howlett wrote:
-> > From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-> >=20
-> > Remove the RB tree and start using the maple tree for vm_area_struct
-> > tracking.
-> >=20
-> > Drop validate_mm() calls in expand_upwards() and expand_downwards() as
-> > the lock is not held.
-> >=20
-> > Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
->=20
->=20
-> [...]
->=20
->=20
-> Why are we reshuffling the code below? This either needs a good
-> justification or should just be dropped as it introduces noise. Maybe I a=
-m
-> missing something important.
->=20
-> >   	/*
-> > @@ -427,6 +414,11 @@ struct vm_area_struct {
-> >   	pgprot_t vm_page_prot;
-> >   	unsigned long vm_flags;		/* Flags, see mm.h. */
-> > +	/* Information about our backing store: */
-> > +	unsigned long vm_pgoff;		/* Offset (within vm_file) in PAGE_SIZE
-> > +					 * units
-> > +					 */
-> > +	struct file *vm_file;		/* File we map to (can be NULL). */
-> >   	/*
-> >   	 * For areas with an address space and backing store,
-> >   	 * linkage into the address_space->i_mmap interval tree.
-> > @@ -449,12 +441,9 @@ struct vm_area_struct {
-> >   	/* Function pointers to deal with this struct. */
-> >   	const struct vm_operations_struct *vm_ops;
-> > -	/* Information about our backing store: */
-> > -	unsigned long vm_pgoff;		/* Offset (within vm_file) in PAGE_SIZE
-> > -					   units */
-> > -	struct file * vm_file;		/* File we map to (can be NULL). */
-> >   	void * vm_private_data;		/* was vm_pte (shared mem) */
-> > +
+This is a massive rework and a respin of Kristen Accardi's marvellous
+FG-KASLR series (v5).
 
-Thank you, I will drop this from the next revision.
+The major differences since v5 [0]:
+* You can now tune the number of functions per each section to
+  achieve the preferable vmlinux size or protection level. Default
+  is still as one section per each function.
+  This can be handy for storage-constrained systems. 4-8 fps are
+  still strong, but reduce the size of the final vmlinu{x,z}
+  significantly;
+* I don't use orphan sections anymore. It's not reliable at all /
+  may differ from linker to linker, and also conflicts with
+  CONFIG_LD_ORPHAN_WARN which is great for catching random bugs ->
+* All the .text.* sections are now being described explicitly in the
+  linker script. A Perl script is used to take the original LDS, the
+  original object file, read a list of input sections from it and
+  generate the resulting LDS.
+  This costs a bit of linking time as LD tends to think hard when
+  processing scripts > 1 Mb. It adds about 40-60 seconds to the
+  whole linking process (BTF step, 2-3 kallsyms steps and the final
+  step), but "better safe than sorry".
+  In addition, that approach allows to reserve some space at the end
+  and add some link assertions ->
+* Input .text section now must be empty, otherwise the linkage will
+  be stopped. This is implemented by the size assertion in the
+  resulting LD script and is designed to plug the potentional layout
+  leakage. This also means that ->
+* "Regular" ASM functions are now being placed into unique separate
+  functions the same way compiler does this for C functions. This is
+  achieved by introducing and using several new macros which take
+  the symbol name as a base for its new section name.
+  This gives a better opportunity to both DCE and FG-KASLR, as ASM
+  code now can also be randomized or garbage-collected;
+* It's now fully compatible with ClangLTO, ClangCFI,
+  CONFIG_LD_ORPHAN_WARN and some more stuff landed since the last
+  revision was published;
+* Includes several fixes: relocations inside .altinstr_replacement
+  code and minor issues found and/or suggested by LKP robot.
 
->=20
-> Another unrelated change (there seem to some more in this patch)
+The series was compile-time and runtime tested on the following
+setups with no issues:
+- x86_64, GCC 11, Binutils 2.35;
+- x86_64, Clang/LLVM 12, ClangLTO + ClangCFI (from Sami's tree).
 
-I'll have a look though it again.
+The first 4 patches are from the linux-kbuild tree and included
+to avoid merge conflicts and non-intuitive resolving of them.
 
-Thanks,
-Liam=
+The series is also available here: [1]
+
+[0] https://lore.kernel.org/kernel-hardening/20200923173905.11219-1-kristen@linux.intel.com
+[1] https://github.com/alobakin/linux/pull/3
+
+The original v5 cover letter:
+
+Function Granular Kernel Address Space Layout Randomization (fgkaslr)
+---------------------------------------------------------------------
+
+This patch set is an implementation of finer grained kernel address space
+randomization. It rearranges your kernel code at load time 
+on a per-function level granularity, with only around a second added to
+boot time.
+
+Changes in v5:
+--------------
+* fixed a bug in the code which increases boot heap size for
+  CONFIG_FG_KASLR which prevented the boot heap from being increased
+  for CONFIG_FG_KASLR when using bzip2 compression. Thanks to Andy Lavr
+  for finding the problem and identifying the solution.
+* changed the adjustment of the orc_unwind_ip table at boot time to
+  disregard relocs associated with this table, and instead inspect the
+  entries separately. Relocs are not able to be used since they are
+  no longer correct once the table is resorted at buildtime.
+* changed how orc_unwind_ip addresses in randomized sections are identified
+  to include the byte immediately after the end of the section.
+* updated module code to use kvmalloc/kvfree based on suggestions from
+  Evgenii Shatokhin <eshatokhin@virtuozzo.com>.
+* changed kernel commandline to disable fgkaslr to simply "nofgkaslr" to
+  match the nokaslr option. fgkaslr="X" can be added at a later date
+  if it is needed.
+* Added a patch to force livepatch to require symbols to be unique if
+  using while fgkaslr either for core or modules.
+
+Changes in v4:
+-------------
+* dropped the patch to split out change to STATIC definition in
+  x86/boot/compressed/misc.c and replaced with a patch authored
+  by Kees Cook to avoid the duplicate malloc definitions
+* Added a section to Documentation/admin-guide/kernel-parameters.txt
+  to document the fgkaslr boot option.
+* redesigned the patch to hide the new layout when reading
+  /proc/kallsyms. The previous implementation utilized a dynamically
+  allocated linked list to display the kernel and module symbols
+  in alphabetical order. The new implementation uses a randomly
+  shuffled index array to display the kernel and module symbols
+  in a random order.
+
+Changes in v3:
+-------------
+* Makefile changes to accommodate CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+* removal of extraneous ALIGN_PAGE from _etext changes
+* changed variable names in x86/tools/relocs to be less confusing
+* split out change to STATIC definition in x86/boot/compressed/misc.c
+* Updates to Documentation to make it more clear what is preserved in .text
+* much more detailed commit message for function granular KASLR patch
+* minor tweaks and changes that make for more readable code
+* this cover letter updated slightly to add additional details
+
+Changes in v2:
+--------------
+* Fix to address i386 build failure
+* Allow module reordering patch to be configured separately so that
+  arm (or other non-x86_64 arches) can take advantage of module function
+  reordering. This support has not be tested by me, but smoke tested by
+  Ard Biesheuvel <ardb@kernel.org> on arm.
+* Fix build issue when building on arm as reported by
+  Ard Biesheuvel <ardb@kernel.org> 
+
+Patches to objtool are included because they are dependencies for this
+patchset, however they have been submitted by their maintainer separately.
+
+Background
+----------
+KASLR was merged into the kernel with the objective of increasing the
+difficulty of code reuse attacks. Code reuse attacks reused existing code
+snippets to get around existing memory protections. They exploit software bugs
+which expose addresses of useful code snippets to control the flow of
+execution for their own nefarious purposes. KASLR moves the entire kernel
+code text as a unit at boot time in order to make addresses less predictable.
+The order of the code within the segment is unchanged - only the base address
+is shifted. There are a few shortcomings to this algorithm.
+
+1. Low Entropy - there are only so many locations the kernel can fit in. This
+   means an attacker could guess without too much trouble.
+2. Knowledge of a single address can reveal the offset of the base address,
+   exposing all other locations for a published/known kernel image.
+3. Info leaks abound.
+
+Finer grained ASLR has been proposed as a way to make ASLR more resistant
+to info leaks. It is not a new concept at all, and there are many variations
+possible. Function reordering is an implementation of finer grained ASLR
+which randomizes the layout of an address space on a function level
+granularity. We use the term "fgkaslr" in this document to refer to the
+technique of function reordering when used with KASLR, as well as finer grained
+KASLR in general.
+
+Proposed Improvement
+--------------------
+This patch set proposes adding function reordering on top of the existing
+KASLR base address randomization. The over-arching objective is incremental
+improvement over what we already have. It is designed to work in combination
+with the existing solution. The implementation is really pretty simple, and
+there are 2 main area where changes occur:
+
+* Build time
+
+GCC has had an option to place functions into individual .text sections for
+many years now. This option can be used to implement function reordering at
+load time. The final compiled vmlinux retains all the section headers, which
+can be used to help find the address ranges of each function. Using this
+information and an expanded table of relocation addresses, individual text
+sections can be suffled immediately after decompression. Some data tables
+inside the kernel that have assumptions about order require re-sorting
+after being updated when applying relocations. In order to modify these tables,
+a few key symbols are excluded from the objcopy symbol stripping process for
+use after shuffling the text segments.
+
+Some highlights from the build time changes to look for:
+
+The top level kernel Makefile was modified to add the gcc flag if it
+is supported. Currently, I am applying this flag to everything it is
+possible to randomize. Anything that is written in C and not present in a
+special input section is randomized. The final binary segment 0 retains a
+consolidated .text section, as well as all the individual .text.* sections.
+Future work could turn off this flags for selected files or even entire
+subsystems, although obviously at the cost of security.
+
+The relocs tool is updated to add relative relocations. This information
+previously wasn't included because it wasn't necessary when moving the
+entire .text segment as a unit. 
+
+A new file was created to contain a list of symbols that objcopy should
+keep. We use those symbols at load time as described below.
+
+* Load time
+
+The boot kernel was modified to parse the vmlinux elf file after
+decompression to check for our interesting symbols that we kept, and to
+look for any .text.* sections to randomize. The consolidated .text section
+is skipped and not moved. The sections are shuffled randomly, and copied
+into memory following the .text section in a new random order. The existing
+code which updated relocation addresses was modified to account for
+not just a fixed delta from the load address, but the offset that the function
+section was moved to. This requires inspection of each address to see if
+it was impacted by a randomization. We use a bsearch to make this less
+horrible on performance. Any tables that need to be modified with new
+addresses or resorted are updated using the symbol addresses parsed from the
+elf symbol table.
+
+In order to hide our new layout, symbols reported through /proc/kallsyms
+will be displayed in a random order.
+
+Security Considerations
+-----------------------
+The objective of this patch set is to improve a technology that is already
+merged into the kernel (KASLR). This code will not prevent all attacks,
+but should instead be considered as one of several tools that can be used.
+In particular, this code is meant to make KASLR more effective in the presence
+of info leaks.
+
+How much entropy we are adding to the existing entropy of standard KASLR will
+depend on a few variables. Firstly and most obviously, the number of functions
+that are randomized matters. This implementation keeps the existing .text
+section for code that cannot be randomized - for example, because it was
+assembly code. The less sections to randomize, the less entropy. In addition,
+due to alignment (16 bytes for x86_64), the number of bits in a address that
+the attacker needs to guess is reduced, as the lower bits are identical.
+
+Performance Impact
+------------------
+There are two areas where function reordering can impact performance: boot
+time latency, and run time performance.
+
+* Boot time latency
+This implementation of finer grained KASLR impacts the boot time of the kernel
+in several places. It requires additional parsing of the kernel ELF file to
+obtain the section headers of the sections to be randomized. It calls the
+random number generator for each section to be randomized to determine that
+section's new memory location. It copies the decompressed kernel into a new
+area of memory to avoid corruption when laying out the newly randomized
+sections. It increases the number of relocations the kernel has to perform at
+boot time vs. standard KASLR, and it also requires a lookup on each address
+that needs to be relocated to see if it was in a randomized section and needs
+to be adjusted by a new offset. Finally, it re-sorts a few data tables that
+are required to be sorted by address.
+
+Booting a test VM on a modern, well appointed system showed an increase in
+latency of approximately 1 second.
+
+* Run time
+The performance impact at run-time of function reordering varies by workload.
+Using kcbench, a kernel compilation benchmark, the performance of a kernel
+build with finer grained KASLR was about 1% slower than a kernel with standard
+KASLR. Analysis with perf showed a slightly higher percentage of 
+L1-icache-load-misses. Other workloads were examined as well, with varied
+results. Some workloads performed significantly worse under FGKASLR, while
+others stayed the same or were mysteriously better. In general, it will
+depend on the code flow whether or not finer grained KASLR will impact
+your workload, and how the underlying code was designed. Because the layout
+changes per boot, each time a system is rebooted the performance of a workload
+may change.
+
+Future work could identify hot areas that may not be randomized and either
+leave them in the .text section or group them together into a single section
+that may be randomized. If grouping things together helps, one other thing to
+consider is that if we could identify text blobs that should be grouped together
+to benefit a particular code flow, it could be interesting to explore
+whether this security feature could be also be used as a performance
+feature if you are interested in optimizing your kernel layout for a
+particular workload at boot time. Optimizing function layout for a particular
+workload has been researched and proven effective - for more information
+read the Facebook paper "Optimizing Function Placement for Large-Scale
+Data-Center Applications" (see references section below).
+
+Image Size
+----------
+Adding additional section headers as a result of compiling with
+-ffunction-sections will increase the size of the vmlinux ELF file.
+With a standard distro config, the resulting vmlinux was increased by
+about 3%. The compressed image is also increased due to the header files,
+as well as the extra relocations that must be added. You can expect fgkaslr
+to increase the size of the compressed image by about 15%.
+
+Memory Usage
+------------
+fgkaslr increases the amount of heap that is required at boot time,
+although this extra memory is released when the kernel has finished
+decompression. As a result, it may not be appropriate to use this feature on
+systems without much memory.
+
+Building
+--------
+To enable fine grained KASLR, you need to have the following config options
+set (including all the ones you would use to build normal KASLR)
+
+CONFIG_FG_KASLR=y
+
+In addition, fgkaslr is only supported for the X86_64 architecture.
+
+Modules
+-------
+Modules are randomized similarly to the rest of the kernel by shuffling
+the sections at load time prior to moving them into memory. The module must
+also have been build with the -ffunction-sections compiler option.
+
+Although fgkaslr for the kernel is only supported for the X86_64 architecture,
+it is possible to use fgkaslr with modules on other architectures. To enable
+this feature, select
+
+CONFIG_MODULE_FG_KASLR=y
+
+This option is selected automatically for X86_64 when CONFIG_FG_KASLR is set.
+
+Disabling
+---------
+Disabling normal KASLR using the nokaslr command line option also disables
+fgkaslr. It is also possible to disable fgkaslr separately by booting with
+nofgkaslr on the commandline.
+
+References
+----------
+There are a lot of academic papers which explore finer grained ASLR.
+This paper in particular contributed the most to my implementation design
+as well as my overall understanding of the problem space:
+
+Selfrando: Securing the Tor Browser against De-anonymization Exploits,
+M. Conti, S. Crane, T. Frassetto, et al.
+
+For more information on how function layout impacts performance, see:
+
+Optimizing Function Placement for Large-Scale Data-Center Applications,
+G. Ottoni, B. Maher
+
+Alexander Lobakin (7):
+  linkage: add macros for putting ASM functions into own sections
+  x86: conditionally place regular ASM functions into separate sections
+  FG-KASLR: use a scripted approach to handle .text.* sections
+  x86/boot: allow FG-KASLR to be selected
+  arm64/crypto: conditionally place ASM functions into separate sections
+  module: use a scripted approach for FG-KASLR
+  maintainers: add MAINTAINERS entry for FG-KASLR
+
+Kees Cook (2):
+  x86/boot: Allow a "silent" kaslr random byte fetch
+  x86/boot/compressed: Avoid duplicate malloc() implementations
+
+Kristen Carlson Accardi (9):
+  x86: tools/relocs: Support >64K section headers
+  x86: Makefile: Add build and config option for CONFIG_FG_KASLR
+  Make sure ORC lookup covers the entire _etext - _stext
+  x86/tools: Add relative relocs for randomized functions
+  x86: Add support for function granular KASLR
+  kallsyms: Hide layout
+  livepatch: only match unique symbols when using fgkaslr
+  module: Reorder functions
+  Documentation: add a documentation for FG-KASLR
+
+Masahiro Yamada (3):
+  kbuild: merge vmlinux_link() between the ordinary link and Clang LTO
+  kbuild: do not remove 'linux' link in scripts/link-vmlinux.sh
+  kbuild: merge vmlinux_link() between ARCH=um and other architectures
+
+Sami Tolvanen (1):
+  kbuild: Fix TRIM_UNUSED_KSYMS with LTO_CLANG
+
+ .../admin-guide/kernel-parameters.txt         |   6 +
+ Documentation/security/fgkaslr.rst            | 172 ++++
+ Documentation/security/index.rst              |   1 +
+ MAINTAINERS                                   |  12 +
+ Makefile                                      |  17 +-
+ arch/Kconfig                                  |   3 +
+ arch/arm64/crypto/aes-ce-ccm-core.S           |  16 +-
+ arch/arm64/crypto/aes-ce-core.S               |  16 +-
+ arch/arm64/crypto/aes-ce.S                    |   4 +-
+ arch/arm64/crypto/aes-cipher-core.S           |   8 +-
+ arch/arm64/crypto/aes-modes.S                 |  16 +-
+ arch/arm64/crypto/aes-neon.S                  |   4 +-
+ arch/arm64/crypto/aes-neonbs-core.S           |  38 +-
+ arch/arm64/crypto/chacha-neon-core.S          |  18 +-
+ arch/arm64/crypto/crct10dif-ce-core.S         |  14 +-
+ arch/arm64/crypto/ghash-ce-core.S             |  24 +-
+ arch/arm64/crypto/nh-neon-core.S              |   4 +-
+ arch/arm64/crypto/poly1305-armv8.pl           |  17 +
+ arch/arm64/crypto/sha1-ce-core.S              |   4 +-
+ arch/arm64/crypto/sha2-ce-core.S              |   4 +-
+ arch/arm64/crypto/sha3-ce-core.S              |   4 +-
+ arch/arm64/crypto/sha512-armv8.pl             |  11 +
+ arch/arm64/crypto/sha512-ce-core.S            |   4 +-
+ arch/arm64/crypto/sm3-ce-core.S               |   4 +-
+ arch/arm64/crypto/sm4-ce-core.S               |   4 +-
+ arch/x86/Kconfig                              |   1 +
+ arch/x86/boot/compressed/Makefile             |   9 +-
+ arch/x86/boot/compressed/fgkaslr.c            | 905 ++++++++++++++++++
+ arch/x86/boot/compressed/kaslr.c              |   4 -
+ arch/x86/boot/compressed/misc.c               | 157 ++-
+ arch/x86/boot/compressed/misc.h               |  30 +
+ arch/x86/boot/compressed/utils.c              |  13 +
+ arch/x86/boot/compressed/vmlinux.symbols      |  19 +
+ arch/x86/crypto/aegis128-aesni-asm.S          |  36 +-
+ arch/x86/crypto/aes_ctrby8_avx-x86_64.S       |  12 +-
+ arch/x86/crypto/aesni-intel_asm.S             | 116 ++-
+ arch/x86/crypto/aesni-intel_avx-x86_64.S      |  32 +-
+ arch/x86/crypto/blake2s-core.S                |   8 +-
+ arch/x86/crypto/blowfish-x86_64-asm_64.S      |  16 +-
+ arch/x86/crypto/camellia-aesni-avx-asm_64.S   |  28 +-
+ arch/x86/crypto/camellia-aesni-avx2-asm_64.S  |  28 +-
+ arch/x86/crypto/camellia-x86_64-asm_64.S      |  16 +-
+ arch/x86/crypto/cast5-avx-x86_64-asm_64.S     |  24 +-
+ arch/x86/crypto/cast6-avx-x86_64-asm_64.S     |  20 +-
+ arch/x86/crypto/chacha-avx2-x86_64.S          |  12 +-
+ arch/x86/crypto/chacha-avx512vl-x86_64.S      |  12 +-
+ arch/x86/crypto/chacha-ssse3-x86_64.S         |  16 +-
+ arch/x86/crypto/crc32-pclmul_asm.S            |   4 +-
+ arch/x86/crypto/crc32c-pcl-intel-asm_64.S     |   4 +-
+ arch/x86/crypto/crct10dif-pcl-asm_64.S        |   4 +-
+ arch/x86/crypto/des3_ede-asm_64.S             |   8 +-
+ arch/x86/crypto/ghash-clmulni-intel_asm.S     |  12 +-
+ arch/x86/crypto/nh-avx2-x86_64.S              |   4 +-
+ arch/x86/crypto/nh-sse2-x86_64.S              |   4 +-
+ arch/x86/crypto/poly1305-x86_64-cryptogams.pl |   8 +-
+ arch/x86/crypto/serpent-avx-x86_64-asm_64.S   |  20 +-
+ arch/x86/crypto/serpent-avx2-asm_64.S         |  20 +-
+ arch/x86/crypto/serpent-sse2-i586-asm_32.S    |   8 +-
+ arch/x86/crypto/serpent-sse2-x86_64-asm_64.S  |   8 +-
+ arch/x86/crypto/sha1_avx2_x86_64_asm.S        |   4 +-
+ arch/x86/crypto/sha1_ni_asm.S                 |   4 +-
+ arch/x86/crypto/sha1_ssse3_asm.S              |   4 +-
+ arch/x86/crypto/sha256-avx-asm.S              |   4 +-
+ arch/x86/crypto/sha256-avx2-asm.S             |   4 +-
+ arch/x86/crypto/sha256-ssse3-asm.S            |   4 +-
+ arch/x86/crypto/sha256_ni_asm.S               |   4 +-
+ arch/x86/crypto/sha512-avx-asm.S              |   4 +-
+ arch/x86/crypto/sha512-avx2-asm.S             |   4 +-
+ arch/x86/crypto/sha512-ssse3-asm.S            |   4 +-
+ arch/x86/crypto/twofish-avx-x86_64-asm_64.S   |  20 +-
+ arch/x86/crypto/twofish-i586-asm_32.S         |   8 +-
+ arch/x86/crypto/twofish-x86_64-asm_64-3way.S  |   8 +-
+ arch/x86/crypto/twofish-x86_64-asm_64.S       |   8 +-
+ arch/x86/entry/entry_32.S                     |  24 +-
+ arch/x86/entry/entry_64.S                     |  18 +-
+ arch/x86/entry/thunk_32.S                     |   4 +-
+ arch/x86/entry/thunk_64.S                     |   8 +-
+ arch/x86/include/asm/boot.h                   |  13 +-
+ arch/x86/include/asm/paravirt.h               |   2 +-
+ arch/x86/include/asm/qspinlock_paravirt.h     |   2 +-
+ arch/x86/kernel/acpi/wakeup_32.S              |   9 +-
+ arch/x86/kernel/acpi/wakeup_64.S              |  10 +-
+ arch/x86/kernel/ftrace_32.S                   |  19 +-
+ arch/x86/kernel/ftrace_64.S                   |  28 +-
+ arch/x86/kernel/irqflags.S                    |   4 +-
+ arch/x86/kernel/kprobes/core.c                |   3 +-
+ arch/x86/kernel/kvm.c                         |   2 +-
+ arch/x86/kernel/relocate_kernel_32.S          |   2 +
+ arch/x86/kernel/relocate_kernel_64.S          |   2 +
+ arch/x86/kernel/vmlinux.lds.S                 |   6 +-
+ arch/x86/kvm/emulate.c                        |   2 +-
+ arch/x86/kvm/vmx/vmenter.S                    |   8 +-
+ arch/x86/lib/clear_page_64.S                  |  12 +-
+ arch/x86/lib/cmpxchg16b_emu.S                 |   4 +-
+ arch/x86/lib/copy_mc_64.S                     |   8 +-
+ arch/x86/lib/copy_page_64.S                   |   7 +-
+ arch/x86/lib/copy_user_64.S                   |  18 +-
+ arch/x86/lib/csum-copy_64.S                   |   4 +-
+ arch/x86/lib/error-inject.c                   |   3 +-
+ arch/x86/lib/getuser.S                        |  37 +-
+ arch/x86/lib/hweight.S                        |   9 +-
+ arch/x86/lib/iomap_copy_64.S                  |   4 +-
+ arch/x86/lib/kaslr.c                          |  18 +-
+ arch/x86/lib/memmove_64.S                     |   4 +-
+ arch/x86/lib/memset_64.S                      |  12 +-
+ arch/x86/lib/msr-reg.S                        |   8 +-
+ arch/x86/lib/putuser.S                        |  18 +-
+ arch/x86/mm/mem_encrypt_boot.S                |   8 +-
+ arch/x86/platform/efi/efi_stub_64.S           |   4 +-
+ arch/x86/platform/efi/efi_thunk_64.S          |   4 +-
+ arch/x86/power/hibernate_asm_32.S             |  14 +-
+ arch/x86/power/hibernate_asm_64.S             |  14 +-
+ arch/x86/tools/relocs.c                       | 135 ++-
+ arch/x86/tools/relocs.h                       |   4 +-
+ arch/x86/tools/relocs_common.c                |  15 +-
+ arch/x86/xen/xen-asm.S                        |  49 +-
+ arch/x86/xen/xen-head.S                       |  10 +-
+ include/asm-generic/vmlinux.lds.h             |  41 +-
+ include/linux/decompress/mm.h                 |  12 +-
+ include/linux/linkage.h                       |  76 ++
+ include/uapi/linux/elf.h                      |   1 +
+ init/Kconfig                                  |  51 +
+ kernel/kallsyms.c                             | 158 ++-
+ kernel/livepatch/core.c                       |  11 +
+ kernel/module.c                               |  91 +-
+ scripts/Makefile.build                        |  27 +-
+ scripts/Makefile.lib                          |   7 +
+ scripts/Makefile.modfinal                     |  36 +-
+ scripts/Makefile.modpost                      |  22 +-
+ scripts/gen_autoksyms.sh                      |  12 -
+ scripts/generate_text_sections.pl             | 149 +++
+ scripts/link-vmlinux.sh                       | 104 +-
+ scripts/module.lds.S                          |  14 +-
+ 133 files changed, 2771 insertions(+), 757 deletions(-)
+ create mode 100644 Documentation/security/fgkaslr.rst
+ create mode 100644 arch/x86/boot/compressed/fgkaslr.c
+ create mode 100644 arch/x86/boot/compressed/utils.c
+ create mode 100644 arch/x86/boot/compressed/vmlinux.symbols
+ create mode 100755 scripts/generate_text_sections.pl
+
+-- 
+2.31.1
+
