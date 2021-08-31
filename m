@@ -2,271 +2,718 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B39A3FCE13
+	by mail.lfdr.de (Postfix) with ESMTP id A55903FCE14
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239832AbhHaTzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:55:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhHaTzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:55:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 532D361053;
-        Tue, 31 Aug 2021 19:54:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630439686;
-        bh=aHloCrBXDAhdjVe5ypi8FjpqRvK46acnBPd5AxJF6jM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E3qHKfO7Z8IeYKyPGbJcLeS8l1mWQDSssd1OcC6/hXCS2hmu6PmJKz1qElx5b0lZL
-         Izn9m3rhr8rK0Ezbxj2NZWOs+sVa2AavF7YbjlXGsJj66zYZtYlPS/OBiWi1y0kqJ/
-         6RmT/YomRvQr/2lNYMi5XWRfiZ25B7h1Yf19/EO9Yj3R8TKCzxpv2z4IqSLa33sjVM
-         ivS4LOo/YKmXuNIGoedWHj+3KFW3r/xJW499i+Mv1+kuPhpdDXvlsI0pzE7fFpauPf
-         Ex/u4QP9M1bvQv5/gMknkkvQTaWKE3dksEWS2DMn2gq0K7v8gYNdtMc2ABRdbKqjM+
-         vA8LfULOjyfEQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 444514007E; Tue, 31 Aug 2021 16:54:44 -0300 (-03)
-Date:   Tue, 31 Aug 2021 16:54:44 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFC PATCH v1 25/37] perf evsel: move event open in
- evsel__open_cpu to separate function
-Message-ID: <YS6JBBW3d4pmcy/U@kernel.org>
-References: <cover.1629490974.git.rickyman7@gmail.com>
- <74ac2eea14f45b2cbecffb509dd5f3cd523d4a9b.1629490974.git.rickyman7@gmail.com>
+        id S239698AbhHaT5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:57:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhHaT5t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 15:57:49 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2742FC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:56:53 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id b4so1227372lfo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:56:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CDEBcyI78lCEp/a6yagpA6RrIJWapwQCXeq6VoRM8yQ=;
+        b=FeCi4tff81PEQZd8cFCYHM1Lb3XURt3gLp6TK25IHXYS9sKYJLV9LFNQXKFfOEIfxl
+         fU5Udi0tUqOz14nGHITO0J9J23YwAl+Rx/VfcyOIOSJjOk5Ky8Jsv4PcMvYLPwHJ+wZs
+         TUnhEbS+KtPaITc5F4aNPDPKG6+GagA1Wd6OhYDuQNAGt5oI6GFMyAecY1bhjt3tcB1i
+         COrLI0TrGx366c5QG5Rzdx0kCkQNGC1fEqsP/lUgJNX9Ql3vfEKnbgKoql3xaXGj/kOw
+         sGR5A+vEAlP+AGiEeYDxOwzO0twY4tH7Q0ApbnLdfn4aXo9mzU4iDUfuQiW8BgE8rn8S
+         81Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CDEBcyI78lCEp/a6yagpA6RrIJWapwQCXeq6VoRM8yQ=;
+        b=oLvbq/hV4x5SMVnFS467dQHrxTVVJmKkbKTOz1sOuL0Q67mbF4R/PAW2pZaXLVsJs7
+         T7t7IarYaF2vpcH8WTp/YKOwcZ7hW6LwsgLFyb1ul+IfL7YwL7TzrLzEe6N3usVi+R5S
+         +Sn6n4Ei4VSjbTSC3E8LsstFzByUkDYMLdd080bFuoZuIyItbiXgVx15lZxtol0x1/BQ
+         aK0G5BwhgGNlqmuv8UYGtz4EvvuhedzSlQd4s7QcWKDOafYdB/6BR5TufuCK8GN1mIDn
+         HAqf0hbYwGW0yYbITWR0+Jur8IPS5518ZgQS5TCn7aE+ViKkc64kvvPnDefguw3bF/hk
+         wGCQ==
+X-Gm-Message-State: AOAM532S7WEpeqy063ZhkC8DeXd+z9k40J8Rv/TSIi/P2nLhxJeeUR6V
+        CfWI1x3Clm/4WqX6ckNpYgZbcSLdoAI=
+X-Google-Smtp-Source: ABdhPJzQDTnrQV+j5ow6Yadl391tqLVGiWS1YyKDOG2nTLxrAIxHmDaAbbt2YBMU6ORAhAC0GJI/6A==
+X-Received: by 2002:a05:6512:752:: with SMTP id c18mr22572135lfs.346.1630439811233;
+        Tue, 31 Aug 2021 12:56:51 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id f17sm2224115ljn.44.2021.08.31.12.56.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 12:56:50 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 22:56:48 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        sfr@canb.auug.org.au
+Subject: Re: [PATCH] fs/ntfs3: Restyle comments to better align with
+ kernel-doc
+Message-ID: <20210831195648.u2k2gh5ivg7olevl@kari-VirtualBox>
+References: <b0ef6ddc-b623-0585-e03f-75d66d1a92eb@paragon-software.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <74ac2eea14f45b2cbecffb509dd5f3cd523d4a9b.1629490974.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <b0ef6ddc-b623-0585-e03f-75d66d1a92eb@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Aug 21, 2021 at 11:19:31AM +0200, Riccardo Mancini escreveu:
-> This is the final patch splitting evsel__open_cpu.
-> This patch moves the entire loop code to a separate function, to be
-> reused for the multithreaded code.
+sfr@canb.auug.org.au
 
-Are you going to use that 'enum perf_event_open_err' somewhere else?
-I.e. is there a need to expose it in evsel.h?
+This was in cc. Is this accident?
 
-I'm stopping at this patch to give the ones I merged so far some
-testing, will now push it to tmp.perf/core.
+This is already in git repo. Please submit patch first to review process
+before apply it to master. I still comment here as I do not know if you
+are going to revert or rebase.
 
-- Arnaldo
- 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/util/evsel.c | 142 ++++++++++++++++++++++++----------------
->  tools/perf/util/evsel.h |  12 ++++
->  2 files changed, 99 insertions(+), 55 deletions(-)
+On Tue, Aug 31, 2021 at 07:38:27PM +0300, Konstantin Komarov wrote:
+> Capitalize comments and end with period for better reading.
+
+This is better commit header without "for better reading".
+
 > 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index 2e95416b8320c6b9..e41f55a7a70ea630 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1945,6 +1945,82 @@ bool evsel__increase_rlimit(enum rlimit_action *set_rlimit)
->  	return false;
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  fs/ntfs3/attrib.c  | 18 +++++++++++-------
+>  fs/ntfs3/bitmap.c  |  5 ++---
+>  fs/ntfs3/file.c    | 18 +++++++++---------
+>  fs/ntfs3/frecord.c | 27 +++++++++++++--------------
+>  fs/ntfs3/fslog.c   | 11 +++++++----
+>  fs/ntfs3/fsntfs.c  |  8 ++++----
+>  fs/ntfs3/index.c   |  8 +++++---
+>  fs/ntfs3/inode.c   | 20 ++++++++++----------
+>  fs/ntfs3/lznt.c    |  5 +++--
+>  fs/ntfs3/ntfs.h    |  2 +-
+>  fs/ntfs3/ntfs_fs.h | 24 ++++++++++++------------
+>  fs/ntfs3/record.c  |  2 +-
+>  fs/ntfs3/super.c   |  2 +-
+>  fs/ntfs3/upcase.c  |  2 +-
+>  fs/ntfs3/xattr.c   |  7 ++++---
+>  15 files changed, 84 insertions(+), 75 deletions(-)
+> 
+> diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
+> index ffc323bacc9f..34c4cbf7e29b 100644
+> --- a/fs/ntfs3/attrib.c
+> +++ b/fs/ntfs3/attrib.c
+> @@ -199,6 +199,7 @@ int attr_allocate_clusters(struct ntfs_sb_info *sbi, struct runs_tree *run,
+>  
+>  		/* Add new fragment into run storage. */
+>  		if (!run_add_entry(run, vcn, lcn, flen, opt == ALLOCATE_MFT)) {
+> +			/* Undo last 'ntfs_look_for_free_space' */
+>  			down_write_nested(&wnd->rw_lock, BITMAP_MUTEX_CLUSTERS);
+>  			wnd_set_free(wnd, lcn, flen);
+>  			up_write(&wnd->rw_lock);
+> @@ -351,7 +352,6 @@ int attr_make_nonresident(struct ntfs_inode *ni, struct ATTRIB *attr,
+>  	run_close(run);
+>  out1:
+>  	kfree(attr_s);
+> -	/* Reinsert le. */
+>  out:
+>  	return err;
+>  }
+> @@ -1153,14 +1153,18 @@ int attr_load_runs_vcn(struct ntfs_inode *ni, enum ATTR_TYPE type,
+>  	u16 ro;
+>  
+>  	attr = ni_find_attr(ni, NULL, NULL, type, name, name_len, &vcn, NULL);
+> -	if (!attr)
+> +	if (!attr) {
+> +		/* Is record corrupted? */
+>  		return -ENOENT;
+> +	}
+>  
+>  	svcn = le64_to_cpu(attr->nres.svcn);
+>  	evcn = le64_to_cpu(attr->nres.evcn);
+>  
+> -	if (evcn < vcn || vcn < svcn)
+> +	if (evcn < vcn || vcn < svcn) {
+> +		/* Is record corrupted? */
+>  		return -EINVAL;
+> +	}
+>  
+>  	ro = le16_to_cpu(attr->nres.run_off);
+>  	err = run_unpack_ex(run, ni->mi.sbi, ni->mi.rno, svcn, evcn, svcn,
+> @@ -1171,7 +1175,7 @@ int attr_load_runs_vcn(struct ntfs_inode *ni, enum ATTR_TYPE type,
 >  }
 >  
-> +static struct perf_event_open_result perf_event_open(struct evsel *evsel,
-> +					pid_t pid, int cpu, int thread,
-> +					struct perf_cpu_map *cpus,
-> +					struct perf_thread_map *threads)
-> +{
-> +	int fd, group_fd, rc;
-> +	struct perf_event_open_result res;
-> +
-> +	if (!evsel->cgrp && !evsel->core.system_wide)
-> +		pid = perf_thread_map__pid(threads, thread);
-> +
-> +	group_fd = get_group_fd(evsel, cpu, thread);
-> +
-> +	test_attr__ready();
-> +
-> +	pr_debug2_peo("sys_perf_event_open: pid %d  cpu %d  group_fd %d  flags %#lx",
-> +			pid, cpus->map[cpu], group_fd, evsel->open_flags);
-> +
-> +	fd = sys_perf_event_open(&evsel->core.attr, pid, cpus->map[cpu],
-> +				group_fd, evsel->open_flags);
-> +
-> +	FD(evsel, cpu, thread) = fd;
-> +	res.fd = fd;
-> +
-> +	if (fd < 0) {
-> +		rc = -errno;
-> +
-> +		pr_debug2_peo("\nsys_perf_event_open failed, error %d\n",
-> +				rc);
-> +		res.rc = rc;
-> +		res.err = PEO_FALLBACK;
-> +		return res;
-> +	}
-> +
-> +	bpf_counter__install_pe(evsel, cpu, fd);
-> +
-> +	if (unlikely(test_attr__enabled)) {
-> +		test_attr__open(&evsel->core.attr, pid,
-> +			cpus->map[cpu], fd,
-> +			group_fd, evsel->open_flags);
-> +	}
-> +
-> +	pr_debug2_peo(" = %d\n", fd);
-> +
-> +	if (evsel->bpf_fd >= 0) {
-> +		int evt_fd = fd;
-> +		int bpf_fd = evsel->bpf_fd;
-> +
-> +		rc = ioctl(evt_fd,
-> +				PERF_EVENT_IOC_SET_BPF,
-> +				bpf_fd);
-> +		if (rc && errno != EEXIST) {
-> +			pr_err("failed to attach bpf fd %d: %s\n",
-> +				bpf_fd, strerror(errno));
-> +			res.rc = -EINVAL;
-> +			res.err = PEO_ERROR;
-> +			return res;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * If we succeeded but had to kill clockid, fail and
-> +	 * have evsel__open_strerror() print us a nice error.
-> +	 */
-> +	if (perf_missing_features.clockid ||
-> +		perf_missing_features.clockid_wrong) {
-> +		res.rc = -EINVAL;
-> +		res.err = PEO_ERROR;
-> +		return res;
-> +	}
-> +
-> +	res.rc = 0;
-> +	res.err = PEO_SUCCESS;
-> +	return res;
-> +}
-> +
->  static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  		struct perf_thread_map *threads,
->  		int start_cpu, int end_cpu)
-> @@ -1952,6 +2028,7 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  	int cpu, thread, nthreads;
->  	int pid = -1, err, old_errno;
->  	enum rlimit_action set_rlimit = NO_CHANGE;
-> +	struct perf_event_open_result peo_res;
+>  /*
+> - * attr_wof_load_runs_range - Load runs for given range [from to).
+> + * attr_load_runs_range - Load runs for given range [from to).
+>   */
+>  int attr_load_runs_range(struct ntfs_inode *ni, enum ATTR_TYPE type,
+>  			 const __le16 *name, u8 name_len, struct runs_tree *run,
+> @@ -1974,7 +1978,7 @@ int attr_punch_hole(struct ntfs_inode *ni, u64 vbo, u64 bytes, u32 *frame_size)
+>  	total_size = le64_to_cpu(attr_b->nres.total_size);
 >  
->  	err = __evsel__prepare_open(evsel, cpus, threads);
->  	if (err)
-> @@ -1979,67 +2056,22 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  	for (cpu = start_cpu; cpu < end_cpu; cpu++) {
+>  	if (vbo >= alloc_size) {
+> -		// NOTE: It is allowed.
+> +		/* NOTE: It is allowed. */
+>  		return 0;
+>  	}
 >  
->  		for (thread = 0; thread < nthreads; thread++) {
-> -			int fd, group_fd;
->  retry_open:
->  			if (thread >= nthreads)
->  				break;
+> @@ -1986,9 +1990,9 @@ int attr_punch_hole(struct ntfs_inode *ni, u64 vbo, u64 bytes, u32 *frame_size)
+>  	bytes -= vbo;
 >  
-> -			if (!evsel->cgrp && !evsel->core.system_wide)
-> -				pid = perf_thread_map__pid(threads, thread);
-> -
-> -			group_fd = get_group_fd(evsel, cpu, thread);
-> -
-> -			test_attr__ready();
-> -
-> -			pr_debug2_peo("sys_perf_event_open: pid %d  cpu %d  group_fd %d  flags %#lx",
-> -				pid, cpus->map[cpu], group_fd, evsel->open_flags);
-> +			peo_res = perf_event_open(evsel, pid, cpu, thread, cpus,
-> +						threads);
->  
-> -			fd = sys_perf_event_open(&evsel->core.attr, pid, cpus->map[cpu],
-> -						group_fd, evsel->open_flags);
-> -
-> -			FD(evsel, cpu, thread) = fd;
-> -
-> -			if (fd < 0) {
-> -				err = -errno;
-> -
-> -				pr_debug2_peo("\nsys_perf_event_open failed, error %d\n",
-> -					  err);
-> +			err = peo_res.rc;
-> +			switch (peo_res.err) {
-> +			case PEO_SUCCESS:
-> +				set_rlimit = NO_CHANGE;
-> +				continue;
-> +			case PEO_FALLBACK:
->  				goto try_fallback;
-> -			}
-> -
-> -			bpf_counter__install_pe(evsel, cpu, fd);
-> -
-> -			if (unlikely(test_attr__enabled)) {
-> -				test_attr__open(&evsel->core.attr, pid, cpus->map[cpu],
-> -						fd, group_fd, evsel->open_flags);
-> -			}
-> -
-> -			pr_debug2_peo(" = %d\n", fd);
-> -
-> -			if (evsel->bpf_fd >= 0) {
-> -				int evt_fd = fd;
-> -				int bpf_fd = evsel->bpf_fd;
-> -
-> -				err = ioctl(evt_fd,
-> -					    PERF_EVENT_IOC_SET_BPF,
-> -					    bpf_fd);
-> -				if (err && errno != EEXIST) {
-> -					pr_err("failed to attach bpf fd %d: %s\n",
-> -					       bpf_fd, strerror(errno));
-> -					err = -EINVAL;
-> -					goto out_close;
-> -				}
-> -			}
-> -
-> -			set_rlimit = NO_CHANGE;
-> -
-> -			/*
-> -			 * If we succeeded but had to kill clockid, fail and
-> -			 * have evsel__open_strerror() print us a nice error.
-> -			 */
-> -			if (perf_missing_features.clockid ||
-> -			    perf_missing_features.clockid_wrong) {
-> -				err = -EINVAL;
-> +			default:
-> +			case PEO_ERROR:
->  				goto out_close;
->  			}
+>  	if ((vbo & mask) || (bytes & mask)) {
+> -		/* We have to zero a range(s)*/
+> +		/* We have to zero a range(s). */
+>  		if (frame_size == NULL) {
+> -			/* Caller insists range is aligned */
+> +			/* Caller insists range is aligned. */
+>  			return -EINVAL;
 >  		}
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 0a245afab2d87d74..8c9827a93ac001a7 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -282,6 +282,18 @@ int evsel__enable(struct evsel *evsel);
->  int evsel__disable(struct evsel *evsel);
->  int evsel__disable_cpu(struct evsel *evsel, int cpu);
+>  		*frame_size = mask + 1;
+> diff --git a/fs/ntfs3/bitmap.c b/fs/ntfs3/bitmap.c
+> index 06ae38adb8ad..831501555009 100644
+> --- a/fs/ntfs3/bitmap.c
+> +++ b/fs/ntfs3/bitmap.c
+> @@ -29,7 +29,6 @@ struct rb_node_key {
+>  	size_t key;
+>  };
 >  
-> +enum perf_event_open_err {
-> +	PEO_SUCCESS,
-> +	PEO_FALLBACK,
-> +	PEO_ERROR
-> +};
-> +
-> +struct perf_event_open_result {
-> +	enum perf_event_open_err err;
-> +	int rc;
-> +	int fd;
-> +};
-> +
->  int evsel__open_per_cpu(struct evsel *evsel, struct perf_cpu_map *cpus, int cpu);
->  int evsel__open_per_thread(struct evsel *evsel, struct perf_thread_map *threads);
->  int evsel__open(struct evsel *evsel, struct perf_cpu_map *cpus,
+> -/* Tree is sorted by start (key). */
+>  struct e_node {
+>  	struct rb_node_key start; /* Tree sorted by start. */
+>  	struct rb_node_key count; /* Tree sorted by len. */
+> @@ -1117,7 +1116,7 @@ size_t wnd_find(struct wnd_bitmap *wnd, size_t to_alloc, size_t hint,
+>  	sb = wnd->sb;
+>  	log2_bits = sb->s_blocksize_bits + 3;
+>  
+> -	/* At most two ranges [hint, max_alloc) + [0, hint) */
+> +	/* At most two ranges [hint, max_alloc) + [0, hint). */
+>  Again:
+>  
+>  	/* TODO: Optimize request for case nbits > wbits. */
+> @@ -1241,7 +1240,7 @@ size_t wnd_find(struct wnd_bitmap *wnd, size_t to_alloc, size_t hint,
+>  			continue;
+>  		}
+>  
+> -		/* Read window */
+> +		/* Read window. */
+>  		bh = wnd_map(wnd, iw);
+>  		if (IS_ERR(bh)) {
+>  			// TODO: Error.
+> diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
+> index 62ebfa324bff..89557d60a9b0 100644
+> --- a/fs/ntfs3/file.c
+> +++ b/fs/ntfs3/file.c
+> @@ -190,7 +190,8 @@ static int ntfs_extend_initialized_size(struct file *file,
+>  
+>  /*
+>   * ntfs_zero_range - Helper function for punch_hole.
+> - * It zeroes a range [vbo, vbo_to)
+> + *
+> + * It zeroes a range [vbo, vbo_to).
+>   */
+>  static int ntfs_zero_range(struct inode *inode, u64 vbo, u64 vbo_to)
+>  {
+> @@ -231,12 +232,12 @@ static int ntfs_zero_range(struct inode *inode, u64 vbo, u64 vbo_to)
+>  
+>  			if (!buffer_mapped(bh)) {
+>  				ntfs_get_block(inode, iblock, bh, 0);
+> -				/* unmapped? It's a hole - nothing to do */
+> +				/* Unmapped? It's a hole - nothing to do. */
+>  				if (!buffer_mapped(bh))
+>  					continue;
+>  			}
+>  
+> -			/* Ok, it's mapped. Make sure it's up-to-date */
+> +			/* Ok, it's mapped. Make sure it's up-to-date. */
+>  			if (PageUptodate(page))
+>  				set_buffer_uptodate(bh);
+>  
+> @@ -272,9 +273,8 @@ static int ntfs_zero_range(struct inode *inode, u64 vbo, u64 vbo_to)
+>  }
+>  
+>  /*
+> - * ntfs_sparse_cluster
+> + * ntfs_sparse_cluster - Helper function to zero a new allocated clusters.
+>   *
+> - * Helper function to zero a new allocated clusters
+>   * NOTE: 512 <= cluster size <= 2M
+>   */
+>  void ntfs_sparse_cluster(struct inode *inode, struct page *page0, CLST vcn,
+> @@ -588,7 +588,7 @@ static long ntfs_fallocate(struct file *file, int mode, loff_t vbo, loff_t len)
+>  		truncate_pagecache(inode, vbo_down);
+>  
+>  		if (!is_sparsed(ni) && !is_compressed(ni)) {
+> -			/* normal file */
+> +			/* Normal file. */
+>  			err = ntfs_zero_range(inode, vbo, end);
+>  			goto out;
+>  		}
+> @@ -599,7 +599,7 @@ static long ntfs_fallocate(struct file *file, int mode, loff_t vbo, loff_t len)
+>  		if (err != E_NTFS_NOTALIGNED)
+>  			goto out;
+>  
+> -		/* process not aligned punch */
+> +		/* Process not aligned punch. */
+>  		mask = frame_size - 1;
+>  		vbo_a = (vbo + mask) & ~mask;
+>  		end_a = end & ~mask;
+> @@ -647,7 +647,7 @@ static long ntfs_fallocate(struct file *file, int mode, loff_t vbo, loff_t len)
+>  		if (err)
+>  			goto out;
+>  
+> -		/* Wait for existing dio to complete */
+> +		/* Wait for existing dio to complete. */
+>  		inode_dio_wait(inode);
+>  
+>  		truncate_pagecache(inode, vbo_down);
+> @@ -1127,7 +1127,7 @@ static ssize_t ntfs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>  		goto out;
+>  
+>  	if (WARN_ON(ni->ni_flags & NI_FLAG_COMPRESSED_MASK)) {
+> -		/* Should never be here, see ntfs_file_open() */
+> +		/* Should never be here, see ntfs_file_open(). */
+>  		ret = -EOPNOTSUPP;
+>  		goto out;
+>  	}
+> diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+> index 3f48b612ec96..938b12d56ca6 100644
+> --- a/fs/ntfs3/frecord.c
+> +++ b/fs/ntfs3/frecord.c
+> @@ -56,7 +56,7 @@ static struct mft_inode *ni_find_mi(struct ntfs_inode *ni, CLST rno)
+>  
+>  /*
+>   * ni_add_mi - Add new mft_inode into ntfs_inode.
+> -*/
+> + */
+>  static void ni_add_mi(struct ntfs_inode *ni, struct mft_inode *mi)
+>  {
+>  	ni_ins_mi(ni, &ni->mi_tree, mi->rno, &mi->node);
+> @@ -70,9 +70,8 @@ void ni_remove_mi(struct ntfs_inode *ni, struct mft_inode *mi)
+>  	rb_erase(&mi->node, &ni->mi_tree);
+>  }
+>  
+> -/* ni_std
+> - *
+> - * Return: Pointer into std_info from primary record.
+> +/*
+> + * ni_std - Return: Pointer into std_info from primary record.
+
+If we want to follow kernel doc style then Return should be like it was.
+
+>   */
+>  struct ATTR_STD_INFO *ni_std(struct ntfs_inode *ni)
+>  {
+> @@ -385,7 +384,7 @@ bool ni_add_subrecord(struct ntfs_inode *ni, CLST rno, struct mft_inode **mi)
+>  
+>  /*
+>   * ni_remove_attr - Remove all attributes for the given type/name/id.
+> -*/
+> + */
+>  int ni_remove_attr(struct ntfs_inode *ni, enum ATTR_TYPE type,
+>  		   const __le16 *name, size_t name_len, bool base_only,
+>  		   const __le16 *id)
+> @@ -740,7 +739,7 @@ static int ni_try_remove_attr_list(struct ntfs_inode *ni)
+>  
+>  /*
+>   * ni_create_attr_list - Generates an attribute list for this primary record.
+> -*/
+> + */
+>  int ni_create_attr_list(struct ntfs_inode *ni)
+>  {
+>  	struct ntfs_sb_info *sbi = ni->mi.sbi;
+> @@ -939,7 +938,7 @@ static int ni_ins_attr_ext(struct ntfs_inode *ni, struct ATTR_LIST_ENTRY *le,
+>  		if (is_mft_data &&
+>  		    (mi_enum_attr(mi, NULL) ||
+>  		     vbo <= ((u64)mi->rno << sbi->record_bits))) {
+> -			/* We can't accept this record 'case MFT's bootstrapping. */
+> +			/* We can't accept this record 'cause MFT's bootstrapping. */
+
+This should be splitted if we want kinda follow <= 80 rule.
+
+>  			continue;
+>  		}
+>  		if (is_mft &&
+> @@ -1078,7 +1077,7 @@ static int ni_insert_attr(struct ntfs_inode *ni, enum ATTR_TYPE type,
+>  	 */
+>  	max_free = free;
+>  
+> -	/* Estimate the result of moving all possible attributes away.*/
+> +	/* Estimate the result of moving all possible attributes away. */
+>  	attr = NULL;
+>  
+>  	while ((attr = mi_enum_attr(&ni->mi, attr))) {
+> @@ -1095,7 +1094,7 @@ static int ni_insert_attr(struct ntfs_inode *ni, enum ATTR_TYPE type,
+>  		goto out;
+>  	}
+>  
+> -	/* Start real attribute moving */
+> +	/* Start real attribute moving. */
+>  	attr = NULL;
+>  
+>  	for (;;) {
+> @@ -1542,7 +1541,7 @@ int ni_delete_all(struct ntfs_inode *ni)
+>  		node = next;
+>  	}
+>  
+> -	/* Free base record */
+> +	/* Free base record. */
+>  	clear_rec_inuse(ni->mi.mrec);
+>  	ni->mi.dirty = true;
+>  	err = mi_write(&ni->mi, 0);
+> @@ -2243,7 +2242,7 @@ int ni_decompress_file(struct ntfs_inode *ni)
+>  	}
+>  
+>  	if (attr->non_res && is_attr_sparsed(attr)) {
+> -		/* Sarsed attribute header is 8 bytes bigger than normal. */
+> +		/* Sparsed attribute header is 8 bytes bigger than normal. */
+>  		struct MFT_REC *rec = mi->mrec;
+>  		u32 used = le32_to_cpu(rec->used);
+>  		u32 asize = le32_to_cpu(attr->size);
+> @@ -2324,7 +2323,7 @@ static int decompress_lzx_xpress(struct ntfs_sb_info *sbi, const char *cmpr,
+>  		mutex_lock(&sbi->compress.mtx_xpress);
+>  		ctx = sbi->compress.xpress;
+>  		if (!ctx) {
+> -			/* Lazy initialize Xpress decompress context */
+> +			/* Lazy initialize Xpress decompress context. */
+>  			ctx = xpress_allocate_decompressor();
+>  			if (!ctx) {
+>  				err = -ENOMEM;
+> @@ -2348,7 +2347,7 @@ static int decompress_lzx_xpress(struct ntfs_sb_info *sbi, const char *cmpr,
+>  /*
+>   * ni_read_frame
+>   *
+> - * Pages - array of locked pages.
+> + * Pages - Array of locked pages.
+>   */
+>  int ni_read_frame(struct ntfs_inode *ni, u64 frame_vbo, struct page **pages,
+>  		  u32 pages_per_frame)
+> @@ -2740,7 +2739,7 @@ int ni_write_frame(struct ntfs_inode *ni, struct page **pages,
+>  		lznt = NULL;
+>  	}
+>  
+> -	/* Compress: frame_mem -> frame_ondisk. */
+> +	/* Compress: frame_mem -> frame_ondisk */
+>  	compr_size = compress_lznt(frame_mem, frame_size, frame_ondisk,
+>  				   frame_size, sbi->compress.lznt);
+>  	mutex_unlock(&sbi->compress.mtx_lznt);
+> diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
+> index 6f6057129fdd..b5853aed0e25 100644
+> --- a/fs/ntfs3/fslog.c
+> +++ b/fs/ntfs3/fslog.c
+> @@ -1362,7 +1362,8 @@ static void log_create(struct ntfs_log *log, u32 l_size, const u64 last_lsn,
+>  	/* Compute the log page values. */
+>  	log->data_off = ALIGN(
+>  		offsetof(struct RECORD_PAGE_HDR, fixups) +
+> -		sizeof(short) * ((log->page_size >> SECTOR_SHIFT) + 1), 8);
+> +			sizeof(short) * ((log->page_size >> SECTOR_SHIFT) + 1),
+> +		8);
+
+This is not comment like commit message says.
+
+>  	log->data_size = log->page_size - log->data_off;
+>  	log->record_header_len = sizeof(struct LFS_RECORD_HDR);
+>  
+> @@ -1372,7 +1373,9 @@ static void log_create(struct ntfs_log *log, u32 l_size, const u64 last_lsn,
+>  	/* Compute the restart page values. */
+>  	log->ra_off = ALIGN(
+>  		offsetof(struct RESTART_HDR, fixups) +
+> -		sizeof(short) * ((log->sys_page_size >> SECTOR_SHIFT) + 1), 8);
+> +			sizeof(short) *
+> +				((log->sys_page_size >> SECTOR_SHIFT) + 1),
+> +		8);
+
+Same here.
+
+>  	log->restart_size = log->sys_page_size - log->ra_off;
+>  	log->ra_size = struct_size(log->ra, clients, 1);
+>  	log->current_openlog_count = open_log_count;
+> @@ -5132,8 +5135,8 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
+>  	rh->sys_page_size = cpu_to_le32(log->page_size);
+>  	rh->page_size = cpu_to_le32(log->page_size);
+>  
+> -	t16 = ALIGN(offsetof(struct RESTART_HDR, fixups) +
+> -		    sizeof(short) * t16, 8);
+> +	t16 = ALIGN(offsetof(struct RESTART_HDR, fixups) + sizeof(short) * t16,
+> +		    8);
+
+Same here.
+
+>  	rh->ra_off = cpu_to_le16(t16);
+>  	rh->minor_ver = cpu_to_le16(1); // 0x1A:
+>  	rh->major_ver = cpu_to_le16(1); // 0x1C:
+> diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
+> index 669249439217..91e3743e1442 100644
+> --- a/fs/ntfs3/fsntfs.c
+> +++ b/fs/ntfs3/fsntfs.c
+> @@ -312,7 +312,7 @@ int ntfs_loadlog_and_replay(struct ntfs_inode *ni, struct ntfs_sb_info *sbi)
+>  	if (sb_rdonly(sb) || !initialized)
+>  		goto out;
+>  
+> -	/* Fill LogFile by '-1' if it is initialized.ssss */
+> +	/* Fill LogFile by '-1' if it is initialized. */
+>  	err = ntfs_bio_fill_1(sbi, &ni->file.run);
+>  
+>  out:
+> @@ -960,10 +960,10 @@ int ntfs_set_state(struct ntfs_sb_info *sbi, enum NTFS_DIRTY_FLAGS dirty)
+>  	/* verify(!ntfs_update_mftmirr()); */
+>  
+>  	/*
+> -	 * if we used wait=1, sync_inode_metadata waits for the io for the
+> +	 * If we used wait=1, sync_inode_metadata waits for the io for the
+>  	 * inode to finish. It hangs when media is removed.
+>  	 * So wait=0 is sent down to sync_inode_metadata
+> -	 * and filemap_fdatawrite is used for the data blocks
+> +	 * and filemap_fdatawrite is used for the data blocks.
+>  	 */
+>  	err = sync_inode_metadata(&ni->vfs_inode, 0);
+>  	if (!err)
+> @@ -1917,7 +1917,7 @@ int ntfs_security_init(struct ntfs_sb_info *sbi)
+>  	sbi->security.next_id = SECURITY_ID_FIRST;
+>  	/* Always write new security at the end of bucket. */
+>  	sbi->security.next_off =
+> -			ALIGN(sds_size - SecurityDescriptorsBlockSize, 16);
+> +		ALIGN(sds_size - SecurityDescriptorsBlockSize, 16);
+
+Not comment.
+
+>  
+>  	off = 0;
+>  	ne = NULL;
+> diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
+> index 1224b8e42b3e..0daca9adc54c 100644
+> --- a/fs/ntfs3/index.c
+> +++ b/fs/ntfs3/index.c
+> @@ -2624,17 +2624,19 @@ int indx_update_dup(struct ntfs_inode *ni, struct ntfs_sb_info *sbi,
+>  	e_fname = (struct ATTR_FILE_NAME *)(e + 1);
+>  
+>  	if (!memcmp(&e_fname->dup, dup, sizeof(*dup))) {
+> -		/* Nothing to update in index! Try to avoid this call. */
+> +		/*
+> +		 * Nothing to update in index! Try to avoid this call.
+> +		 */
+
+What is the point of multiline?
+
+>  		goto out;
+>  	}
+>  
+>  	memcpy(&e_fname->dup, dup, sizeof(*dup));
+>  
+>  	if (fnd->level) {
+> -		/* directory entry in index */
+> +		/* Directory entry in index. */
+>  		err = indx_write(indx, ni, fnd->nodes[fnd->level - 1], sync);
+>  	} else {
+> -		/* directory entry in directory MFT record */
+> +		/* Directory entry in directory MFT record. */
+>  		mi->dirty = true;
+>  		if (sync)
+>  			err = mi_write(mi, 1);
+> diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
+> index 8f72066b3229..db2a5a4c38e4 100644
+> --- a/fs/ntfs3/inode.c
+> +++ b/fs/ntfs3/inode.c
+> @@ -89,7 +89,7 @@ static struct inode *ntfs_read_mft(struct inode *inode,
+>  	}
+>  
+>  	if (le32_to_cpu(rec->total) != sbi->record_size) {
+> -		// Bad inode?
+> +		/* Bad inode? */
+>  		err = -EINVAL;
+>  		goto out;
+>  	}
+> @@ -605,7 +605,7 @@ static noinline int ntfs_get_block_vbo(struct inode *inode, u64 vbo,
+>  		if (vbo >= valid)
+>  			set_buffer_new(bh);
+>  	} else if (create) {
+> -		/*normal write*/
+> +		/* Normal write. */
+>  		if (bytes > bh->b_size)
+>  			bytes = bh->b_size;
+>  
+> @@ -1091,7 +1091,7 @@ int inode_write_data(struct inode *inode, const void *data, size_t bytes)
+>  /*
+>   * ntfs_reparse_bytes
+>   *
+> - * Number of bytes to for REPARSE_DATA_BUFFER(IO_REPARSE_TAG_SYMLINK)
+> + * Number of bytes for REPARSE_DATA_BUFFER(IO_REPARSE_TAG_SYMLINK)
+>   * for unicode string of @uni_len length.
+>   */
+>  static inline u32 ntfs_reparse_bytes(u32 uni_len)
+> @@ -1205,13 +1205,13 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
+>  		return ERR_PTR(-EINVAL);
+>  
+>  	if (S_ISDIR(mode)) {
+> -		/* use parent's directory attributes */
+> +		/* Use parent's directory attributes. */
+>  		fa = dir_ni->std_fa | FILE_ATTRIBUTE_DIRECTORY |
+>  		     FILE_ATTRIBUTE_ARCHIVE;
+>  		/*
+> -		 * By default child directory inherits parent attributes
+> -		 * root directory is hidden + system
+> -		 * Make an exception for children in root
+> +		 * By default child directory inherits parent attributes.
+> +		 * Root directory is hidden + system.
+> +		 * Make an exception for children in root.
+>  		 */
+>  		if (dir->i_ino == MFT_REC_ROOT)
+>  			fa &= ~(FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
+> @@ -1220,8 +1220,8 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
+>  		fa = FILE_ATTRIBUTE_REPARSE_POINT;
+>  
+>  		/*
+> -		 * linux: there are dir/file/symlink and so on.
+> -		 * NTFS: symlinks are "dir + reparse" or "file + reparse".
+> +		 * Linux: there are dir/file/symlink and so on.
+> +		 * NTFS: symlinks are "dir + reparse" or "file + reparse"
+>  		 * It is good idea to create:
+>  		 * dir + reparse if 'symname' points to directory
+>  		 * or
+> @@ -1860,7 +1860,7 @@ static noinline int ntfs_readlink_hlp(struct inode *inode, char *buffer,
+>  
+>  	default:
+>  		if (IsReparseTagMicrosoft(rp->ReparseTag)) {
+> -			/* unknown Microsoft Tag */
+> +			/* Unknown Microsoft Tag. */
+>  			goto out;
+>  		}
+>  		if (!IsReparseTagNameSurrogate(rp->ReparseTag) ||
+> diff --git a/fs/ntfs3/lznt.c b/fs/ntfs3/lznt.c
+> index 3acf0d9f0b15..f1f691a67cc4 100644
+> --- a/fs/ntfs3/lznt.c
+> +++ b/fs/ntfs3/lznt.c
+> @@ -296,8 +296,9 @@ static inline ssize_t decompress_chunk(u8 *unc, u8 *unc_end, const u8 *cmpr,
+>   */
+>  struct lznt *get_lznt_ctx(int level)
+>  {
+> -	struct lznt *r = kzalloc(level ? offsetof(struct lznt, hash) :
+> -					 sizeof(struct lznt), GFP_NOFS);
+> +	struct lznt *r = kzalloc(level ? offsetof(struct lznt, hash)
+> +				       : sizeof(struct lznt),
+> +				 GFP_NOFS);
+
+Not comment.
+
+>  
+>  	if (r)
+>  		r->std = !level;
+> diff --git a/fs/ntfs3/ntfs.h b/fs/ntfs3/ntfs.h
+> index 0fd7bffb98d4..6bb3e595263b 100644
+> --- a/fs/ntfs3/ntfs.h
+> +++ b/fs/ntfs3/ntfs.h
+> @@ -262,7 +262,7 @@ enum RECORD_FLAG {
+>  	RECORD_FLAG_UNKNOWN	= cpu_to_le16(0x0008),
+>  };
+>  
+> -/* MFT Record structure, */
+> +/* MFT Record structure. */
+>  struct MFT_REC {
+>  	struct NTFS_RECORD_HEADER rhdr; // 'FILE'
+>  
+> diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
+> index f9436cbbc347..97e682ebcfb9 100644
+> --- a/fs/ntfs3/ntfs_fs.h
+> +++ b/fs/ntfs3/ntfs_fs.h
+> @@ -59,18 +59,18 @@ struct ntfs_mount_options {
+>  	u16 fs_fmask_inv;
+>  	u16 fs_dmask_inv;
+>  
+> -	unsigned uid : 1,	/* uid was set. */
+> -		gid : 1,	/* gid was set. */
+> -		fmask : 1,	/* fmask was set. */
+> -		dmask : 1,	/* dmask was set. */
+> -		sys_immutable : 1,/* Immutable system files. */
+> -		discard : 1,	/* Issue discard requests on deletions. */
+> -		sparse : 1,	/* Create sparse files. */
+> -		showmeta : 1,	/* Show meta files. */
+> -		nohidden : 1, 	/* Do not show hidden files. */
+> -		force : 1, 	/* Rw mount dirty volume. */
+> -		no_acs_rules : 1,/*Exclude acs rules. */
+> -		prealloc : 1	/* Preallocate space when file is growing. */
+> +	unsigned uid : 1, /* uid was set. */
+> +		gid : 1, /* gid was set. */
+> +		fmask : 1, /* fmask was set. */
+> +		dmask : 1, /* dmask was set. */
+> +		sys_immutable : 1, /* Immutable system files. */
+> +		discard : 1, /* Issue discard requests on deletions. */
+> +		sparse : 1, /* Create sparse files. */
+> +		showmeta : 1, /* Show meta files. */
+> +		nohidden : 1, /* Do not show hidden files. */
+> +		force : 1, /* Rw mount dirty volume. */
+> +		no_acs_rules : 1, /*Exclude acs rules. */
+> +		prealloc : 1 /* Preallocate space when file is growing. */
+>  		;
+>  };
+>  
+> diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
+> index 61e3f2fb619f..103705c86772 100644
+> --- a/fs/ntfs3/record.c
+> +++ b/fs/ntfs3/record.c
+> @@ -219,7 +219,7 @@ struct ATTRIB *mi_enum_attr(struct mft_inode *mi, struct ATTRIB *attr)
+>  
+>  		asize = le32_to_cpu(attr->size);
+>  		if (asize < SIZEOF_RESIDENT) {
+> -			/* Impossible 'cause we should not return such attribute */
+> +			/* Impossible 'cause we should not return such attribute. */
+
+Over > 80
+
+>  			return NULL;
+>  		}
+>  
+> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> index 2fbab8a931ee..dbecf095da59 100644
+> --- a/fs/ntfs3/super.c
+> +++ b/fs/ntfs3/super.c
+> @@ -1053,7 +1053,7 @@ static int ntfs_fill_super(struct super_block *sb, void *data, int silent)
+>  
+>  	iput(inode);
+>  
+> -	/* Load $LogFile to replay. */
+> +	/* Load LogFile to replay. */
+
+I feel like we should leave $ mark. I know that checkpatch will
+complain, but we can try to change checkpatch behavier so that it will
+not false alarm about these. I will add that to my todo list.
+
+>  	ref.low = cpu_to_le32(MFT_REC_LOG);
+>  	ref.seq = cpu_to_le16(MFT_REC_LOG);
+>  	inode = ntfs_iget5(sb, &ref, &NAME_LOGFILE);
+> diff --git a/fs/ntfs3/upcase.c b/fs/ntfs3/upcase.c
+> index eb65bbd939e8..bbeba778237e 100644
+> --- a/fs/ntfs3/upcase.c
+> +++ b/fs/ntfs3/upcase.c
+> @@ -34,7 +34,7 @@ static inline u16 upcase_unicode_char(const u16 *upcase, u16 chr)
+>   * - Case insensitive
+>   * - If name equals and 'bothcases' then
+>   * - Case sensitive
+> - * 'Straigth way' code scans input names twice in worst case.
+> + * 'Straight way' code scans input names twice in worst case.
+>   * Optimized code scans input names only once.
+>   */
+>  int ntfs_cmp_names(const __le16 *s1, size_t l1, const __le16 *s2, size_t l2,
+> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+> index 22fd5eb32c5b..b15d532e4a17 100644
+> --- a/fs/ntfs3/xattr.c
+> +++ b/fs/ntfs3/xattr.c
+> @@ -26,9 +26,10 @@
+>  static inline size_t unpacked_ea_size(const struct EA_FULL *ea)
+>  {
+>  	return ea->size ? le32_to_cpu(ea->size)
+> -			: ALIGN(struct_size(
+> -			      ea, name,
+> -			      1 + ea->name_len + le16_to_cpu(ea->elength)), 4);
+> +			: ALIGN(struct_size(ea, name,
+> +					    1 + ea->name_len +
+> +						    le16_to_cpu(ea->elength)),
+> +				4);
+
+Not a comment.
+
+>  }
+>  
+>  static inline size_t packed_ea_size(const struct EA_FULL *ea)
 > -- 
-> 2.31.1
-
--- 
-
-- Arnaldo
+> 2.28.0
+> 
+> 
