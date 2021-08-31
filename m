@@ -2,138 +2,673 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E952C3FC0C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 04:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3E63FC0C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 04:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239412AbhHaCP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 22:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41538 "EHLO
+        id S239604AbhHaCQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 22:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239377AbhHaCP0 (ORCPT
+        with ESMTP id S239605AbhHaCQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 22:15:26 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFF6C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:14:31 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id y18so22842417ioc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:14:31 -0700 (PDT)
+        Mon, 30 Aug 2021 22:16:08 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E7CC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:15:13 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a25so35265774ejv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:15:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=w45JWDlt0vhgUxESpT+B1nBJn2/Ywxu3Hd7D6mtFCsk=;
-        b=pUC1K9sZnqws5HK4X1IGqMHX3153nlTXaKgAUvcUy+u0ju6CK56m6ssTgOQ5JzurbV
-         mcZRSv6W45fwP6JHg9y4UALfHb/+W/QTxuTuhMeqo4jgBBiQDs14vL6tG1TZ27aAo+pE
-         19r8xcQ4pviy1o2JIbO3WU3PcfXrRbudZGiUK2U8qZYWqVmAKzttvF01A0eU8YvZoJTR
-         MHBm+/6pvMqmo9y32Lg9hDes14zgdoKb6lEfRwt0TL6yqAKKABjEPqF6m7g6LRrFLFep
-         DMCGGG7+d7B2eQMp7wQERoKLu8c7b0dkaVJaMrVGFvvOJ+IPkjpdQOcCM5Cy0jXQYPz2
-         U5yg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+eoxevLynvAqMQTJnSHjcI7b5GAVpIEQJl/6AQ4odJw=;
+        b=AY5c/hcZlOyIi9ELJnU0RSYz9WuGcrZJUFyZeMNQ3waeAEP2ycoBRVdIP+k/Kuz1vH
+         bDN5zVpGJ7wr1Yk4lsmQQy5xjPqsUhwQkxn1JRJvMa1S1MeWfW4mpYQHs4TOQw1/FypF
+         mAM9Pb8kNwIia86gfhE7nM6zlSZZx50SKsk06KTIE8KPMubucLwleQCZIM0LxvEg6gTY
+         RfSYbpPQGFx3uHGsPGN4grB9HJJu4zIj2qGEJ6FlffxxY2smJTKLZWQUaBs4yPWfoBf0
+         h3TFLdtlZJYlwIW4DuvYb0tCGhf0dl/+6p/fRKAiMVKUjCUOOn+lDNUimNDdUWkI3eVh
+         zVtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=w45JWDlt0vhgUxESpT+B1nBJn2/Ywxu3Hd7D6mtFCsk=;
-        b=Cj+B2v2hOHPjSbzNMnKKAUO8A0tlD3uRKgkH97pkWHpUf/LUkIzvcenfvXpc/Fumq2
-         1XZ8DHkzRB61+vJHqFJvJEBWSeU0KxQyAxzDVTgHtsnaGgpJc/Ed2VJKjdaJJUHBYSC+
-         ZfecRLdcAKN5M5+dxkCEhwUdaiAgni5wbBO1BgQT9G+t1GDJdGJaCxingDLYojJx3V6z
-         aOtz7R7LTIEzVtvUv5Kb+AGyuEgllpzP6jbXP4b0O2hMhSqwkH/WzaIEwN/pjeg9ddAK
-         0alwHMX1E+YzHpvB9KabxSIlGvnVzITLlKQFkFpcl7Bb2mZWxVKTKC6+L5usFPcW0V6M
-         Zvog==
-X-Gm-Message-State: AOAM530u/axbC5QM59hi5OqN/afGKYzy1yXNuzOuaWB+zpghIs3RT/Gh
-        GBpVNuR4mHK9XpTdcKfusUXa2w==
-X-Google-Smtp-Source: ABdhPJwOWL0ElFafqXDsaz7jVNEJ5b5BIc0bzOV1mLUrHPTeFfp83rpZxizK43GqJbuZnSLCDbmW5w==
-X-Received: by 2002:a02:ce37:: with SMTP id v23mr567877jar.81.1630376071173;
-        Mon, 30 Aug 2021 19:14:31 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id p16sm9618230ilg.32.2021.08.30.19.14.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 19:14:30 -0700 (PDT)
-Subject: Re: [syzbot] general protection fault in sock_from_file
-To:     syzbot <syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com>,
-        andrii@kernel.org, asml.silence@gmail.com, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        dvyukov@google.com, io-uring@vger.kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        Hao Xu <haoxu@linux.alibaba.com>
-References: <00000000000059117905cacce99e@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <7949b7a0-fec1-34a7-aaf5-cbe07c6127ed@kernel.dk>
-Date:   Mon, 30 Aug 2021 20:14:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+eoxevLynvAqMQTJnSHjcI7b5GAVpIEQJl/6AQ4odJw=;
+        b=BwQ4J4+jFL8U/0h1Zr7/8++KlcQQMk9+bC7d6zfv+Zpl7gvj6aPPRrvm3m3rQw7Qqt
+         emEvkUoTZ2kxoV97Vf7UDRAh/O3Sa/i6ccqVZVsxeNlnpoOsMgPt4TSoerEYxGv0DANo
+         u5AEPtCH/eXvoDgUzZL5w2hiajQWQmdviR6Ev2TGGLt1AqEjtBPOoyf2fhP0oLCR26kr
+         mVRYbIj9epCbdKPfnL3tkOSYIhVVJAHpLsectZ2xSTIH68lZJElJ2uQ0jXP26QkdtW/2
+         PSjHpjWCxVlOzSmhGHqkz7Yiyvj7QTC/MIxaDnnwkPU61Q8EB4rMqHugEEwEOeBvZCLf
+         EFzg==
+X-Gm-Message-State: AOAM530nkhAEPc39x4qT1TdRvBTCH0/8x3mgOdylSX+RFMW788SVvZNQ
+        25pwiliTvJ8HppwegJ4ihuN2oJOqy97caXqXZzB0qQ==
+X-Google-Smtp-Source: ABdhPJw2xlLws1Ij4fOMzEgIq4PlYDCYVniaH802w2D9yaGOtPZn1XeMZMPEL6gQv12XgU+01BZSFzdOWFbeQAIKz5c=
+X-Received: by 2002:a17:907:3393:: with SMTP id zj19mr27465430ejb.535.1630376111593;
+ Mon, 30 Aug 2021 19:15:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <00000000000059117905cacce99e@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com>
+ <202108272330.AE55FCD@keescook>
+In-Reply-To: <202108272330.AE55FCD@keescook>
+From:   Rae Moar <rmoar@google.com>
+Date:   Mon, 30 Aug 2021 22:14:59 -0400
+Message-ID: <CA+GJov5cjPapO8fek=hpZR4fTq2pmBRrEpvS-i9hPFOdLwsAWw@mail.gmail.com>
+Subject: Re: RFC - kernel test result specification (KTAP)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>, Tim.Bird@sony.com,
+        Shuah Khan <shuah@kernel.org>,
+        Daniel Latypov <dlatypov@google.com>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernelci@groups.io,
+        Guillaume Tucker <guillaume.tucker@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/21 2:45 PM, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    93717cde744f Add linux-next specific files for 20210830
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15200fad300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c643ef5289990dd1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f9704d1878e290eddf73
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111f5f9d300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1651a415300000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com
-> 
-> general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
-> CPU: 0 PID: 6548 Comm: syz-executor433 Not tainted 5.14.0-next-20210830-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
-> Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
-> RSP: 0018:ffffc90002caf8e8 EFLAGS: 00010206
-> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
-> RBP: ffff888019fc0780 R08: ffffffff899aee40 R09: ffffffff81e21978
-> R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
-> R13: 1ffff110033f80f9 R14: 0000000000000003 R15: ffff888019fc0780
-> FS:  00000000013b5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000004ae0f0 CR3: 000000001d355000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  io_sendmsg+0x98/0x640 fs/io_uring.c:4681
->  io_issue_sqe+0x14de/0x6ba0 fs/io_uring.c:6578
->  __io_queue_sqe+0x90/0xb50 fs/io_uring.c:6864
->  io_req_task_submit+0xbf/0x1b0 fs/io_uring.c:2218
->  tctx_task_work+0x166/0x610 fs/io_uring.c:2143
->  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
->  tracehook_notify_signal include/linux/tracehook.h:212 [inline]
->  handle_signal_work kernel/entry/common.c:146 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->  exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
->  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x43fd49
+Hello everyone! Thank you for all of your comments! I am glad to see some
+discussion on this email. First of all, my primary goal with this email is to
+advocate for a documented specification for the kernel's test output.  I
+presented my first email largely from the perspective of KUnit and thus, I
+am not surprised there are points of contention in the proposed specification.
+That being said my comments are as follows:
 
-Hao, this is due to:
+On Sat, Aug 28, 2021 at 4:20 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> [+kernelci, +Guillaume]
+>
+> Hi!
+>
+> Please keep me in CC for these kinds of proposals.
 
-commit a8295b982c46d4a7c259a4cdd58a2681929068a9
-Author: Hao Xu <haoxu@linux.alibaba.com>
-Date:   Fri Aug 27 17:46:09 2021 +0800
+Very sorry for not including you as a CC. I will be sure to do this in the
+future.
 
-    io_uring: fix failed linkchain code logic
+> And thanks for looking
+> at this again! Please understand that while I may be coming across as
+> rather negative here, I would like to have a rational and documented
+> specification for the kernel's test output, too. My main objection here
+> is that we already _have_ a specification,
 
-which causes some weirdly super long chains from that single sqe.
-Can you take a look, please?
+I totally agree that the documented specification should generally follow
+the agreed upon formats for kernel test results. However, there seems to be
+some prominent differences in the formats of test results between KUnit and
+kselftests, as well as within kselftests (requiring test plan line, use of
+different directives). So I am primarily advocating for the specification to be
+agreed upon and documented.
 
--- 
-Jens Axboe
+> and it's already being parsed
+> by machines, so making changes without strong justification is going to
+> be met with resistance. :) So, with that in mind, on to my reply...
+>
+> On Tue, Aug 10, 2021 at 04:25:03PM -0700, Rae Moar wrote:
+> > We are looking to further standardise the output format used by kernel
+> > test frameworks like kselftest and KUnit. Thus far we have used the
+> > TAP (Test Anything Protocol) specification, but it has been extended
+> > in many different ways, so we would like to agree on a common "Kernel
+> > TAP" (KTAP) format to resolve these differences. Thus, below is a
+> > draft of a specification of KTAP. Note that this specification is
+> > largely based on the current format of test results for KUnit tests.
+>
+> The kernel's largest producer of TAP is kselftest, and the largest
+> consumer is LAVA[1]. I would want buy-in from at least those responsible
+> for either side of those two things. (And I'm one of the people working
+> on both sides of it.)
+>
+> The fundamental purpose of the kernel's TAP is to have many independent
+> tests runnable and parseable, specifically without any embedded framework
+> knowledge (or, even, any knowledge of TAP).
+>
+> The tests run by kselftest come from 2 different TAP-producing harnesses
+> (kselftest.h for C, kselftest/runner.sh for TAP-agnostic tests) as well
+> as several hand-rolled instances in Shell, Python, and C. There used to
+> be more, but I have been steadily fixing their syntax[2] and merging[3]
+> separate implementations for a while now.
+>
+> [1] https://github.com/Linaro/test-definitions/commit/8bd338bbcfa5a03efcf1d12e25b5d341d5a29cbc
+> [2] https://git.kernel.org/linus/b0df366bbd701c45e93af0dcb87ce22398589d1d
+> [3] https://git.kernel.org/linus/e80068be21824e4d2726eeea41cac6178d212415
+>
+> > Additionally, this specification was heavily inspired by the KTAP
+> > specification draft by Tim Bird
+> > (https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/T/).
+> > However, there are some notable differences to his specification. One
+> > such difference is the format of nested tests is more fully specified
+> > in the following specification. However, they are specified in a way
+> > which may not be compatible with many kselftest nested tests.
+>
+> I commented extensively on that thread. :)
+>
+> >
+> > =====================
+> > Specification of KTAP
+> > =====================
+> >
+> > TAP, or the Test Anything Protocol is a format for specifying test
+> > results used by a number of projects. It's website and specification
+> > are found at: https://testanything.org/. The Linux Kernel uses TAP
+> > output for test results. However, KUnit (and other Kernel testing
+> > frameworks such as kselftest) have some special needs for test results
+> > which don't gel perfectly with the original TAP specification. Thus, a
+> > "Kernel TAP" (KTAP) format is specified to extend and alter TAP to
+> > support these use-cases.
+> >
+> > KTAP Output consists of 5 major elements (all line-based):
+> > - The version line
+> > - Plan lines
+> > - Test case result lines
+>
+> These are required.
 
+Agreed.
+
+>
+> > - Diagnostic lines
+>
+> This is optional.
+
+Agreed.
+
+>
+> > - A bail out line
+>
+> Bail out should be optional, and possibly not included at all. (See
+> below.)
+
+I am fine with the Bail out line being removed if it is not in use.
+
+>
+> >
+> > An important component in this specification of KTAP is the
+> > specification of the format of nested tests. This can be found in the
+> > section on nested tests below.
+> >
+> > The version line
+> > ----------------
+> >
+> > The first line of KTAP output must be the version line. As this
+> > specification documents the first version of KTAP,  the recommended
+> > version line is "KTAP version 1". However, since all kernel testing
+> > frameworks use TAP version lines, "TAP version 14" and "TAP version
+> > 13" are all acceptable version lines. Version lines with other
+> > versions of TAP or KTAP will not cause the parsing of the test results
+> > to fail but it will produce an error.
+>
+> Maybe "TAP version Linux.1" ? I don't want to needlessly break existing
+> parsers.
+
+I think it would be best to maintain a numerical version number. So I
+would prefer to either maintain 'TAP version #' or 'KTAP version 1', to
+indicate the test results follow the newly specified KTAP. However, I
+am flexible on this.
+
+>
+> >
+> > Plan lines
+> > ----------
+> >
+> > Plan lines must follow the format of "1..N" where N is the number of
+> > subtests. The second line of KTAP output must be a plan line, which
+> > indicates the number of tests at the highest level, such that the
+> > tests do not have a parent. Also, in the instance of a test having
+> > subtests, the second line of the test after the subtest header must be
+> > a plan line which indicates the number of subtests within that test.
+>
+> I do not want "subtests" as a specification concept, only "nested
+> tests".
+>
+
+I am fine changing this concept. It might be slightly clearer.
+
+> >
+> > Test case result lines
+> > ----------------------
+> >
+> > Test case result lines must have the format:
+> >
+> >     <result> <number> [-] [<description>] [<directive>] [<diagnostic data>]
+>
+> "[<diagnostic data>]" is not defined below. I think what you mean is
+> "directive details".
+
+I should have defined the [<diagnostic data>] more fully. My intention was
+that the diagnostic data would accommodate including information in the
+test result that is not a directive or the description of the test. For example,
+this would accommodate the examples that Tim Bird mentioned:
+ok 5 - check return code # rcode=0
+
+Note that both the directive and diagnostic data would be after a # symbol.
+So the more exact format I was intending would be as follows:
+
+<result> <number> [-] [<description>] [# [<directive>][<diagnostic data>]]
+
+>
+> I suggest:
+>
+> <result> <number>[ [- ]<description>][# <directive> [<directive details>]]
+>
+> > The result can be either "ok", which indicates the test case passed,
+> > or "not ok", which indicates that the test case failed.
+>
+> Yes.
+>
+> >
+> > The number represents the number of the test case or suite being
+> > performed. The first test case or suite must have the number 1 and the
+> > number must increase by 1 for each additional test case or result at
+> > the same level and within the same testing suite.
+>
+> Yes, though parsers should handle ordering failures and missed test
+> results (this is the purpose of the "plan" line).
+>
+> >
+> > The "-" character is optional.
+> >
+> > The description is a description of the test, generally the name of
+> > the test, and can be any string of words (can't include #). The
+> > description is optional.
+>
+> Yes, though the optional "- " is strictly part of the optional
+> description.
+
+Does this mean you would want the "-" parsed as part of
+the description? I think having "-" at the beginning of test descriptions
+might be confusing.
+
+Additionally, I am flexible on whether the "-" is necessary. I personally
+think it looks a bit better with the "-" but that is preference.
+
+>
+> > The directive is used to indicate if a test was skipped. The format
+>
+> The directive is a single word -- currently only "SKIP" is recognized
+> by TAP 14(?), but kselftest uses also XFAIL, XPASS, TIMEOUT, and
+> error. (Though I would love to hear what "error" is intended to be used
+> for, if different from regular "not ok".)
+>
+> (This could also be called "context" rather than "directive".)
+>
+> > for the directive is: "# SKIP [<skip_description>]". The
+> > skip_description is optional and can be any string of words to
+> > describe why the test was skipped.
+>
+> I would call this "directive details".
+>
+> > The result of the test case result
+> > line can be either "ok" or "not ok" if the skip directive is used.
+> > Finally, note that TAP 14 specification includes TODO directives but
+> > these are not supported for KTAP.
+> >
+> > Examples of test case result lines:
+> >
+> > Test passed:
+> >
+> >     ok 1 - test_case_name
+> >
+> > Test was skipped:
+> >
+> >     not ok 1 - test_case_name # SKIP test_case_name should be skipped
+> >
+> > Test failed:
+> >
+> >     not_ok 1 - test_case_name
+>
+> This isn't valid. No "_" is recognized for "ok" vs "not ok".
+
+Oops. My typo here. I meant:
+not ok 1 - test_case_name
+
+>
+> >
+> > Diagnostic lines
+> > ----------------
+> >
+> > Diagnostic lines are used for description of testing operations.
+> > Diagnostic lines are generally formatted as "#
+> > <diagnostic_description>", where the description can be any string.
+> > However, in practice, diagnostic lines are all lines that don't follow
+> > the format of any other KTAP line format.
+>
+> I still think there should be a distinction between "diagnostic lines"
+> and "unknown lines". For example, if kselftest is running on a console,
+> the dmesg output may be intermixed, and possibly temporally offset. Such
+> lines may not be useful, and may not be strictly correlated, where-as
+> the output from kselftest is at least self-consistent.
+
+I would be fine with maintaining that distinction.
+
+>
+> > Diagnostic lines can be
+> > anywhere in the test output after the first two lines.
+>
+> I don't see a reason for this strictness. They can be anywhere.
+>
+
+This was an attempt to ensure that the first two lines of the KTAP
+results are the
+version line and the test plan. However, looking back on this, it was a bit too
+strict.
+
+> > There are a few
+> > special diagnostic lines.
+>
+> No; diagnostic lines must have no meaning: they are for humans and nothing
+> else. If other details are needed for machines, we should explicitly
+> create new format lines. I made a mistake when I used a diagnostic line
+> for embedding the test names. :( There is a need for parsers to discover
+> the name of a given test, though, so we do likely need something for this.
+>
+> > Diagnostic lines of the format "# Subtest:
+> > <test_name>" indicate the start of a test with subtests. Also,
+> > diagnostic lines of the format "# <test_name>: <description>" refer to
+> > a specific test and tend to occur before the test result line of that
+> > test but are optional.
+>
+> I don't think the above should be included in the spec -- diag lines
+> should have no parseable meaning.
+>
+> >
+> > Bail out line
+> > -------------
+> >
+> > A bail out line can occur anywhere in the KTAP output and will
+> > indicate that a test has crashed. The format of a bail out line is
+> > "Bail out! [<description>]",  where the description can give
+> > information on why the bail out occurred and can be any string.
+>
+> I'm not a fan of the Bail out line. It's not a problem, exactly, but I
+> find it redundant. If we want an "end of test" line, let's make one.
+> "Bail out" is a special case of exit. If we want to handle test exit,
+> let's define it. E.g. make kselftest's test summary lines not
+> diagnostic lines:
+>
+> # FAILED: 85 / 87 tests passed.
+> # Totals: pass:83 fail:2 xfail:0 xpass:0 skip:2 error:0
+>
+> Also, parsers should treat a new "TAP version..." line at the same
+> nesting level as indication that the prior test has ended (and any tests
+> without result lines should be considered failed).
+>
+> >
+> > Nested tests
+> > ------------
+> >
+> > The new specification for KTAP will support an arbitrary number of
+> > nested subtests. Thus, tests can now have subtests and those subtests
+> > can have subtests. This can be useful to further categorize tests and
+> > organize test results.
+> >
+> > The new required format for a test with subtests consists of: a
+> > subtest header line, a plan line, all subtests, and a final test
+> > result line.
+> >
+> > The first line of the test must be the subtest header line with the
+> > format: "# Subtest: <test_name>".
+>
+> Please no. There is no reason to force a nested test to suddenly have
+> to know about its test execution depth/environment. A subtest is just a
+> nested TAP result. That it is nested is only meaningful to the parser, not
+> the executing test, and it must have the same output, nested or not. (e.g.
+> running the test alone or running the test under a full kselftest run,
+> the only difference is the indentation level.)
+
+To clarify if this was implemented in kselftests, I believe the parent test
+would print this subtest header. So the executing test would not have
+this knowledge about the execution depth and thus, if the test was not
+nested, it would not print this subtest header. This is my understanding.
+
+Additionally, this is the current format for nested tests for KUnit.
+As David mentioned, KUnit adopted this format from the proposed
+TAP 14 draft spec
+(https://github.com/TestAnything/testanything.github.io/pull/36/files).
+Currently KUnit relies on this Subtest header line to parse nested tests.
+I hope this is taken into account with discussions.
+
+However, I hope we can decide on a singular format for these nested
+tests. I am flexible with this specification. I would be fine with including
+the nested version lines.
+
+>
+> > The second line of the test must be the plan line, which is formatted
+> > as "1..N", where N is the number of subtests.
+> >
+> > Following the plan line, all lines pertaining to the subtests will follow.
+> >
+> > Finally, the last line of the test is a final test result line with
+> > the format: "(ok|not ok) <number> [-] [<description>] [<directive>]
+> > [<diagnostic data>]", which follows the same format as the general
+> > test result lines described in this section. The result line should
+> > indicate the result of the subtests. Thus, if one of the subtests
+> > fail, the test should fail. The description in the final test result
+> > line should match the name of the test in the subtest header.
+> >
+> > An example format:
+> >
+> > KTAP version 1
+> > 1..1
+> >     # Subtest: test_suite
+> >     1..2
+> >     ok 1 - test_1
+> >     ok 2 - test_2
+> > ok 1 - test_suite
+>
+> Again, I see only downsides to this. Nesting for the spec is simple
+> indentation-based recursion. Let's just keep what we already have:
+>
+> TAP version 13
+> 1..1
+> # TAP version 13
+> # 1..2
+> # ok 1 - test_1
+> # ok 2 - test_2
+> ok 1 - test_suite
+>
+>
+> > An example format with multiple levels of nested testing:
+> >
+> > KTAP version 1
+> > 1..1
+> >     # Subtest: test_suite
+> >     1..2
+> >         # Subtest: sub_test_suite
+> >         1..2
+> >         ok 1 - test_1
+> >         ok 2 test_2
+> >     ok 1 - sub_test_suite
+> >     ok 2 - test
+> > ok 1 - test_suite
+> >
+> > In the instance that the plan line is missing, the end of the test
+> > will be denoted by the final result line containing a description that
+> > matches the name of the test given in the subtest header. Note that
+> > thus, if the plan line is missing and one of the subtests have a
+> > matching name to the test suite this will cause errors.
+>
+> A plan line is required. No special cases are needed. :)
+>
+
+I am good with this. This was an attempt to be flexible because
+it does seem there are tests that leave out the test plan or
+place the test plan at the end of the test.
+
+> If nesting level is lost, a parser will understand the nested test to
+> have ended, but probably so did the test runner:
+>
+> TAP version 13
+> 1..1
+>     TAP version 13
+>     1..2
+>         TAP version 13
+>         1..3
+>         ok 1 - test_1
+>         ok 2 test_2
+>     not ok 1 - sub test unfinished plan
+>     ok 2 - test
+> not ok 1 - test_suite
+>
+> > Lastly, indentation is also recommended for improved readability.
+>
+> Indentation is _required_. :)
+
+I think this could be a little strict to require indentation. For example,
+in the instance of a nested test with a prefix, there could be difficulties
+with correctly parsing the indentation level:
+
+TAP version 13
+1..1
+[batch_id 4] TAP version 13
+[batch_id 4] 1..2
+[batch_id 4] ok 1 - cyclictest with 1000 cycles
+[batch_id 4] # problem setting CLOCK_REALTIME
+[batch_id 4] not ok 2 - cyclictest with CLOCK_REALTIME
+not ok 1 - check realtime
+
+(using a truncated version of an example Tim Bird used - note
+he used it for a different point)
+
+This could mostly be corrected with the use of "# " as the indentation. But
+I personally prefer "  " as an indentation because the use of "# " can be
+confusing with the format of diagnostic lines also starting with "# ". Thus,
+I think it is safer to use the version lines or a subtest header lines to parse
+nested tests.
+
+>
+> Whether this is "# " or "  " I don't really care, as long as the change
+> is coordinated. "  " is easier for humans to read, but may make parsing of
+> "unknown" lines more difficult for machines.
+>
+> >
+> > Major differences between TAP 14 and KTAP specification
+> > -------------------------------------------------------
+> >
+> > Note that the major differences between TAP 14 and KTAP specification:
+> > - yaml and json are not allowed in diagnostic messages
+>
+> Agreed -- these are overkill (and very difficult to implement as they
+> _follow_ the test result line: anything generating them has already
+> finished running).
+>
+> > - TODO directive not allowed
+>
+> I would just say "unrecognized".
+
+I am good with this change.
+
+>
+> > - KTAP allows for an arbitrary number of tests to be nested with
+> > specified nested test format
+>
+> Yup.
+>
+> >
+> > Example of KTAP
+> > ---------------
+> >
+> > KTAP version 1
+> > 1..1
+> >     # Subtest: test_suite
+> >     1..1
+> >         # Subtest: sub_test_suite
+> >         1..2
+> >         ok 1 - test_1
+> >         ok 2 test_2
+> >     ok 1 - sub_test_suite
+> > ok 1 - test_suite
+>
+> For a good example, please include all the possible combinations (SKIP,
+> not ok, diagnostics, etc etc)
+>
+> >
+> > =========================================
+> > Note on incompatibilities with kselftests
+> > =========================================
+> >
+> > To my knowledge, the above specification seems to generally accept the
+> > TAP format of many non-nested test results of kselftests.
+> >
+> > An example of a common kselftests TAP format for non-nested test
+> > results that are accepted by the above specification:
+> >
+> > TAP version 13
+> > 1..2
+> > # selftests: vDSO: vdso_test_gettimeofday
+> > # The time is 1628024856.096879
+> > ok 1 selftests: vDSO: vdso_test_gettimeofday
+> > # selftests: vDSO: vdso_test_getcpu
+> > # Could not find __vdso_getcpu
+> > ok 2 selftests: vDSO: vdso_test_getcpu # SKIP
+> >
+> > However, one major difference noted with kselftests is the use of more
+> > directives than the "# SKIP" directive. kselftest also supports XPASS
+> > and XFAIL directives. Some additional examples found in kselftests:
+> >
+> >     not ok 5 selftests: netfilter: nft_concat_range.sh # TIMEOUT 45 seconds
+> >
+> >     not ok 45 selftests: kvm: kvm_binary_stats_test # exit=127
+> >
+> > Should the specification be expanded to include these directives?
+>
+> Yes. (Though "exit=" is a mistake in runner.sh -- this should probably
+> be reported without the '#')
+>
+
+Sounds good. Are there specific directives that should or should not
+be included?
+
+> >
+> > However, the general format for kselftests with nested test results
+> > seems to differ from the above specification. It seems that a general
+> > format for nested tests is as follows:
+> >
+> > TAP version 13
+> > 1..2
+> > # selftests: membarrier: membarrier_test_single_thread
+> > # TAP version 13
+> > # 1..2
+> > # ok 1 sys_membarrier available
+> > # ok 2 sys membarrier invalid command test: command = -1, flags = 0,
+> > errno = 22. Failed as expected
+> > ok 1 selftests: membarrier: membarrier_test_single_thread
+> > # selftests: membarrier: membarrier_test_multi_thread
+> > # TAP version 13
+> > # 1..2
+> > # ok 1 sys_membarrier available
+> > # ok 2 sys membarrier invalid command test: command = -1, flags = 0,
+> > errno = 22. Failed as expected
+> > ok 2 selftests: membarrier: membarrier_test_multi_thread
+> >
+> > The major differences here, that do not match the above specification,
+> > are use of "# " as an indentation and using a TAP version line to
+> > denote a new test with subtests rather than the subtest header line
+> > described above. If these are widely utilized formats in kselftests,
+> > should we include both versions in the specification or should we
+> > attempt to agree on a single format for nested tests? I personally
+> > believe we should try to agree on a single format for nested tests.
+> > This would allow for a cleaner specification of KTAP and would reduce
+> > possible confusion.
+>
+> We already use "# " and the nested TAP lines to denote subtests. Without
+> a good reason to change it, we should avoid the churn with the existing
+> parsers.
+>
+> > ====
+> >
+> > So what do people think about the above specification?
+> > How should we handle the differences with kselftests?
+>
+> I'm probably a broken record by now, but kselftests _is_ the
+> specification. ;) What about it needs changing, and why?
+
+I think the change that needs to happen is that the specification is
+documented so it is accessible to everyone. Otherwise I hope this
+proposed specification helps to incite needed discussion so we
+hopefully can create this accepted specification. Again thank you
+to everyone for their comments.
+
+>
+> > If this specification is accepted, where should the specification be documented?
+>
+> I imagine some .rst file under Documentation/dev-tools/, linked to from
+> kselftest.rst and kunit/...rst
+>
+> --
+> Kees Cook
