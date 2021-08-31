@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C69E3FCDC8
+	by mail.lfdr.de (Postfix) with ESMTP id 662D23FCDC9
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240680AbhHaTXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:23:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231634AbhHaTXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:23:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 449E160234;
-        Tue, 31 Aug 2021 19:22:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630437740;
-        bh=i1Y1hbT/RZr4nx6BdPpIbKxSIJvrWrIGnl09XjmbwrQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BT9a29McinkaEPxJSYihIRCbncF/2ez4ztp1fuytYb1LpHiNyaEdYcYmcy3yRg1xf
-         /30XDjHFoAh4Bx9kP90BULDT3FiPaTYhov+ExVCYV5tUbSMn8WhKRQqO+IB+jRJSF2
-         u04d1g0/9hdavW6FocQWFJYhjnXW8R5aY9yJM4WYe8kTLv9nWx9Vrb+GN8ueu2emOR
-         k9ZfZfONJWg6lK6VN8TiMlU6c7w9b7NjgBOlctI3GuzVRVyjrw3t5XLSnJCQ4TwyhU
-         saSQ5aodm9AZ3J6SV3QHrjqERvAHFi8velP5wB60FoZetUp+hNrh0iAEyay1/LWpSb
-         yKh6SBooUKhxQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 20C934007E; Tue, 31 Aug 2021 16:22:18 -0300 (-03)
-Date:   Tue, 31 Aug 2021 16:22:18 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFC PATCH v1 05/37] perf util/mmap: add missing bitops.h header
-Message-ID: <YS6Baiyjlw7vpwp7@kernel.org>
-References: <cover.1629490974.git.rickyman7@gmail.com>
- <c5b91ee432a2e28e7f16337c740b43b4d0b0e86c.1629490974.git.rickyman7@gmail.com>
+        id S240622AbhHaTZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231634AbhHaTZL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 15:25:11 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34195C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:24:16 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id m28so1113798lfj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FWFkkvCODPs1gGNFlhWX69S2LvyhHBIDjA0U78R4gZE=;
+        b=KyVEPAeFlFYKw8eOIQf+cBSy0IlRFlLGUygecieBHi+cVJ2lx2b55OKPscQWoTpbJB
+         SqjuGsh6ATL3hxaod7W4Hm8M5G3oc+/tnxgVBjrWbXnWSzGHYwV8thb2+YZZk/AdKCG/
+         EQMxhNZtcKP/5TRpSsHTTuoLn2E/7H2RWdPAE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FWFkkvCODPs1gGNFlhWX69S2LvyhHBIDjA0U78R4gZE=;
+        b=lEBN4on2k4kfb9pRISG94lgkR5GtE/Rv3wcOEbsJUR/xkkMJZOzYaiaRJu1lzWD2fp
+         xm+36D9CUkwe99A9BaT5i7PSxQ8rUqPA76RwwhHjsfb9iiI2w2/09Gaaq4/09dsPSAzW
+         Tb5Z0ZhaHsf0IOSX0mT6egwN8gGiSVk52/yCNQwQB6o2M38YbntykVQ3fx1sS6CWr7lv
+         P+UuCHv4LSXEQ+S4POlROpkGxErIqO09xprrVtOF1iLypTrRwc3juzCGWfL19ENCX+hC
+         2/2ngMFx+E/8uiZNAkTd97+g2DUX3jgttv0i4XIYpVNpHxmndde635e0Tr4OnUh5B2hM
+         G1dw==
+X-Gm-Message-State: AOAM530LOM5pZWmKWNCC/hdLfNtT7Dyq1oh+nlBBlY1cWOys52slK6+8
+        /G+t2fih3ZIdWB+jS/itF5HfVCY8fBUvMYJ8vkg=
+X-Google-Smtp-Source: ABdhPJzmmgTOOHy0ZphtlRGlSXmeyd2UjhgSVmizNd7rgSPSl/idzU/GgI/qnAZBPbWQTafFUaglVQ==
+X-Received: by 2002:a05:6512:1394:: with SMTP id p20mr21596263lfa.189.1630437854035;
+        Tue, 31 Aug 2021 12:24:14 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id a13sm1433071ljk.92.2021.08.31.12.24.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 12:24:13 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id m18so1057393lfl.10
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:24:13 -0700 (PDT)
+X-Received: by 2002:a05:6512:230b:: with SMTP id o11mr14286247lfu.377.1630437853221;
+ Tue, 31 Aug 2021 12:24:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c5b91ee432a2e28e7f16337c740b43b4d0b0e86c.1629490974.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210831100326.2298176-1-christian.brauner@ubuntu.com>
+In-Reply-To: <20210831100326.2298176-1-christian.brauner@ubuntu.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 31 Aug 2021 12:23:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg557LzOM7Hg29UhVMn3FOpXs0yUwPGHgF7JxMA7gqOew@mail.gmail.com>
+Message-ID: <CAHk-=wg557LzOM7Hg29UhVMn3FOpXs0yUwPGHgF7JxMA7gqOew@mail.gmail.com>
+Subject: Re: [GIT PULL] sys fixes
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Aug 21, 2021 at 11:19:11AM +0200, Riccardo Mancini escreveu:
-> MMAP_CPU_MASK_BYTES uses the BITS_TO_LONGS macro, which is defined in
-> linux/bitops.h.
-> However, this header is not included directly, but gets imported
-> indirectly in files using the macro.
-> This patch adds the missing include.
+On Tue, Aug 31, 2021 at 3:03 AM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+>
+> This contains a single fix to set_user() which aligns permission checks with
+> the corresponding fork() codepath.
 
-Thanks, applied.
+Pulled.
 
-- Arnaldo
+That single commit is odd, though. It has strange formatting, it got
+the first-line summary rule wrong, and it has the "cc:" list
+corruption that should just have been fixed up.
 
- 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/util/mmap.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
-> index b4923e587fd7749c..8e259b9610f83c96 100644
-> --- a/tools/perf/util/mmap.h
-> +++ b/tools/perf/util/mmap.h
-> @@ -6,6 +6,7 @@
->  #include <linux/refcount.h>
->  #include <linux/types.h>
->  #include <linux/ring_buffer.h>
-> +#include <linux/bitops.h>
->  #include <stdbool.h>
->  #include <pthread.h> // for cpu_set_t
->  #ifdef HAVE_AIO_SUPPORT
-> -- 
-> 2.31.1
+Not any real problems, but sloppy editing that I started looking at
+because the one-liner shortlog didn't make sense.
 
--- 
-
-- Arnaldo
+           Linus
