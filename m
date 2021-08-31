@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B738E3FC0E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 04:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1F03FC0E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 04:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239443AbhHaCm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 22:42:57 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:52325 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236452AbhHaCmx (ORCPT
+        id S239363AbhHaCyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 22:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhHaCyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 22:42:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Umi-x8D_1630377711;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Umi-x8D_1630377711)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 31 Aug 2021 10:41:52 +0800
-Subject: Re: [PATCH v2] net: fix NULL pointer reference in cipso_v4_doi_free
-To:     Paul Moore <paul@paul-moore.com>, Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <c6864908-d093-1705-76ce-94d6af85e092@linux.alibaba.com>
- <18f0171e-0cc8-6ae6-d04a-a69a2a3c1a39@linux.alibaba.com>
- <CAHC9VhTEs9E+ZeGGp96NnOhmr-6MZLXf6ckHeG8w5jh3AfgKiQ@mail.gmail.com>
- <20210830094525.3c97e460@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAHC9VhRHx=+Fek7W4oyZWVBUENQ8VnD+mWXUytKPKg+9p-J4LQ@mail.gmail.com>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <84262e7b-fda6-9d7d-b0bd-1bb0e945e6f9@linux.alibaba.com>
-Date:   Tue, 31 Aug 2021 10:41:51 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Mon, 30 Aug 2021 22:54:44 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE11EC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:53:49 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id y34so35387369lfa.8
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:53:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=SeYApWq5p7n4wZLvEDL4MvNDOHrzTG68S/LXRGbX0D0=;
+        b=I4brZGJK2h3tDxuXff8kChntsAY6fQSGPSPcDRYXV2LwlXnM2EFwqT1WPP1+pNYm/s
+         r7O5SisCVPWNhWxW4EWA85MnjworX87qN0gCPa5GF800mhiCzJ2HL46wPnSvA50iktnp
+         31M6WvF6NUARGBkqpEF+CrarzfoZqaaMn/sqE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=SeYApWq5p7n4wZLvEDL4MvNDOHrzTG68S/LXRGbX0D0=;
+        b=adRPBIFpkotXuMAtuPitFP9Fhk+IJHkom3WVvkKojTfOWhZhmm8FjA8oBWOIp+eF84
+         NqsJybw8v9pPosQE/Y7OBAu96zVFV06dIQb3HWu7h7Eno6w0kFOz+WN37mG1wtEsa+gL
+         pnU70ffkCyhucrv3ZL6ms/RT3WAMmCGGzW+R4i3DRyla3gCQqyjKBCMMq0DAvAPV+sP3
+         OSoaGTyyPy9D+Y6g/QjR6T+eHDBJQqUHkUjT3taz4iszpI26Vmx0ZQuW68mdEivTM63g
+         aNxw3WBJJs3SNh+TnwwswDYJuhPdiAFtZAImKKdYaPrGNYOSguZHk49gTuapyTOZaMaD
+         Cb0A==
+X-Gm-Message-State: AOAM530k0ZGXjOExR3+tTXinfG2aUAYjiudHROacziDZ5rCjDxF2j0pc
+        20eIYAZ8hpYze1BEIBSYWc+FqQgMaa/Y40txN+4=
+X-Google-Smtp-Source: ABdhPJyxhFBVYUxrfx9IQ/rSASpp+6IUe/4Sd0jo3Bog9WsNaF1o+ZIMWxP/n76cKkhYu1fROEz+JA==
+X-Received: by 2002:a19:6742:: with SMTP id e2mr19929168lfj.507.1630378427528;
+        Mon, 30 Aug 2021 19:53:47 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id l3sm1133634lfk.245.2021.08.30.19.53.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 19:53:46 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id w4so29211161ljh.13
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:53:46 -0700 (PDT)
+X-Received: by 2002:a05:651c:1144:: with SMTP id h4mr22432285ljo.48.1630378426484;
+ Mon, 30 Aug 2021 19:53:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHC9VhRHx=+Fek7W4oyZWVBUENQ8VnD+mWXUytKPKg+9p-J4LQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 30 Aug 2021 19:53:30 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj+G8MXRUk5HRCvUr8gOpbR+zXQ6WNTB0E7n32fTUjKxQ@mail.gmail.com>
+Message-ID: <CAHk-=wj+G8MXRUk5HRCvUr8gOpbR+zXQ6WNTB0E7n32fTUjKxQ@mail.gmail.com>
+Subject: Re: kernel hang during reboot when cmdline include a non-exist
+ console device
+To:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There's a bugzilla for this, but let's just move it to reguilar email,
+unless some of you want to track it that way.
 
+The bugzilla entry says
 
-On 2021/8/31 上午12:50, Paul Moore wrote:
-[SNIP]
->>>> Reported-by: Abaci <abaci@linux.alibaba.com>
->>>> Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
->>>> ---
->>>>  net/netlabel/netlabel_cipso_v4.c | 4 ++--
->>>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> I see this was already merged, but it looks good to me, thanks for
->>> making those changes.
->>
->> FWIW it looks like v1 was also merged:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=733c99ee8b
-> 
-> Yeah, that is unfortunate, there was a brief discussion about that
-> over on one of the -stable patches for the v1 patch (odd that I never
-> saw a patchbot post for the v1 patch?).  Having both merged should be
-> harmless, but we want to revert the v1 patch as soon as we can.
-> Michael, can you take care of this?
+  "When reboot=EF=BC=8C the capslock key of thinkpad x1 starts blinking"
 
-As v1 already merged, may be we could just goon with it?
+which sounds like there's an oops that just isn't showing, quite
+possibly because the console has already been shut down.
 
-Actually both working to fix the problem, v1 will cover all the
-cases, v2 take care one case since that's currently the only one,
-but maybe there will be more in future.
+I didn't test this out, and would sincerely hope that somebody else is
+willing to follow up on it since I'm in the busiest part of the merge
+window.
 
-Regards,
-Michael Wang
+           Linus
 
-> 
+On Mon, Aug 30, 2021 at 7:19 PM <bugzilla-daemon@bugzilla.kernel.org> wrote=
+:
+>
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D214201
