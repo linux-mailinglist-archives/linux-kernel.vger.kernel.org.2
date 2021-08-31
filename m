@@ -2,135 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451CD3FCDAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953A23FCDA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240722AbhHaTU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:20:57 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:52927 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240564AbhHaTUs (ORCPT
+        id S240537AbhHaTUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:20:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231938AbhHaTUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:20:48 -0400
-Received: from weisslap.aisec.fraunhofer.de ([178.27.102.95]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1MDQqe-1mAjyU11LK-00AWVx; Tue, 31 Aug 2021 21:19:40 +0200
-From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-To:     Paul Moore <paul@paul-moore.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc:     =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Song Liu <song@kernel.org>, Eric Paris <eparis@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-audit@redhat.com
-Subject: [PATCH v3 3/3] dm crypt: log aead integrity violations to audit subsystem
-Date:   Tue, 31 Aug 2021 21:18:40 +0200
-Message-Id: <20210831191845.7928-4-michael.weiss@aisec.fraunhofer.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210831191845.7928-1-michael.weiss@aisec.fraunhofer.de>
-References: <20210831191845.7928-1-michael.weiss@aisec.fraunhofer.de>
+        Tue, 31 Aug 2021 15:20:19 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEFDC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:19:24 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id j18so147957ioj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:19:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=BnfnduHx3i2X80cz742KibQtwDjAziOnxR1dEDNguNQ=;
+        b=k8Uq/xSxlaLj3DJmwHqi3zi23+XTDI345vnvhN5QS8pnpgx8a0Q49xhD5D4KS8+DLC
+         gtYdQDcKGi80NEfOReWj/tPYUGw6JOZLDane/KBJPXnNoHM9WB2/1f+riot8p/HOeB7G
+         u8BARTX9hRBylvw5eZW2vgu6vn4Si0ptrSmEEckvMh4M/81RefCoqC1u5cM7rBtbBLNs
+         z5Hpha8wYRq/8xulDm1+MfqK4W0ggyxAhzcul7WLDxCMRZq6YH10Lb4hjPT1rOlWa6Nc
+         WC0yq2hPUZ3DtgBpKPenD7oBZyvF3EX39LxtgC0rOpCGm8b2Itupimky3nERNn1xhvv/
+         A1zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=BnfnduHx3i2X80cz742KibQtwDjAziOnxR1dEDNguNQ=;
+        b=rrg0MPPGr53tx6giDVUXHFUwHW9HjdCpHVQ9PtblxrJ0o09TYS4ziOsClUUvp3eO2/
+         Molw4wS+fNyoEViBLoLh2JxvZc/GwC/WsXPN25yc5m4aEBPQ34B+5LNQK0kU6qSiEnCu
+         CJr3nkr7J446LngwcBtQq32q2TNleCfZbagVA8uMHhGJ/M0EjeV+nkt4cj5AJrptMRai
+         zClF1gaJ2vv4Kq3wtct8hHApodWpGuG/kypHiWnJ7CcxSia6tyR0Li5/uSiJti70Oc6+
+         VHd9jibufHB1Cp1NiFgIhfdDMw75pksnEcmoBML3X+0G5/ZWuLVAVN4YvpmdaJ64EIzE
+         DmYA==
+X-Gm-Message-State: AOAM53018InydJcTb+ogxGJWhAlSnXTG6sAK1MaIsKrFFexQ86bQjl5Q
+        0Cct6drlSNVISJfiTBvioZ4zyA==
+X-Google-Smtp-Source: ABdhPJzLpm8haUqn3kfzyuXtg4CiQZwskLDtRsRbptxnszVRu77+8NA0/wO490W6qNwD3GPt10CQDw==
+X-Received: by 2002:a02:2348:: with SMTP id u69mr4216099jau.141.1630437562446;
+        Tue, 31 Aug 2021 12:19:22 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
+        by smtp.gmail.com with ESMTPSA id c23sm10143469ioi.31.2021.08.31.12.19.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 12:19:21 -0700 (PDT)
+Message-ID: <1484b5ebb9c943c72d7d7a0481c1a2cd9899705b.camel@ndufresne.ca>
+Subject: Re: [PATCH 0/2] media: HEVC: RPS clean up
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@gmail.com, hverkuil-cisco@xs4all.nl,
+        jc@kynesim.co.uk, ezequiel@vanguardiasur.com.ar
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Date:   Tue, 31 Aug 2021 15:19:19 -0400
+In-Reply-To: <20210831094900.203283-1-benjamin.gaignard@collabora.com>
+References: <20210831094900.203283-1-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:IrWO8hNKbUyJGbXkVzHd+rTfxnWDoZDtfPQ4TxlfEze/ruCXXJr
- /D15kCdQ3XnRZyT89l2wgZjhnoLP1M7LGpXR6f8TOEkx6SOc1MMHDa//EcvKMPvgFEeVWiP
- WP5L3h8DnDFkF8lfM/QLvkd43Ado7xyGNgBni4D+aOin0kiBbAuxnWuOuvK3KpUj5yGenw9
- 2D8HiY7EzjytAcFhlzasw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Fy0xCcQ7OtE=:siHcSREbi8J5D/whvYvK1T
- COkJZUpBXpa+Ga0aXHql5J2wPTDL2RjcBVNTRkube504ABGTOMoxUbfScQqms09lc6YIH1jM2
- GyrkiqXST+ulIyGRO4SEtYZFrv16oj2rxBT9U26TROq7ELBf+XHy7ThH3DMOAOBepEwVKfz8c
- fGb4/snp8/724GopRka7LrsuK+gHjmFujAdtVqMNItsBsWPIUCk8VdHZZIgueCmPMi9POY0fB
- W8CpeGf7IiHlSHqUpHHB7ocJ+8y/vRcaAmJdMQu/Siv1oIsyp+YcCAomwmyS7nm2gK+jyRUn2
- iTNSSoza1uhZb7YeQkgZWfwfvLGGikS9x266LLm1CYgF7ZuN9uz2EM1U+iOWf/6WSC5q8oMGn
- ZcGcK7kQdxmmHi1kLxFjMl0jvTVMTJWGp9Zsl8nwBd3qnFRCE5MntkY3Mkvuk2v78pVKXYMOQ
- FtqG14mAB9wv9eUo204tyAb9LaYXN9OJR1w/Wy2o3GneoNaTfe8lNwqGS1/rQHi86G/Ayp8VM
- IyAYPj39kut9cRP0QI3GEkkC1+R59pdZkB4ii58gX3zExghCMzdJjNLpt8UMilB0QBFnlPeBU
- /6giM4hcAkS0czHl/x6kl9+LM+1VaMKzosXhZhEIBTmXk9XFGD9IIcQDAMTqqWw84RKgQqquj
- Bz7UplUo0+DVruGesg+fiU9BryTJk2eIOJHM0X4mI4Y1SZlEp18kEe3gJCE/UXljo+Q8PG4T5
- X4d7EdXyLr4OedvWK0d+tXUl5ZmtRVFDU1J7LtigIsFQZxhRlvl+UCgTLO4=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since dm-crypt target can be stacked on dm-integrity targets to
-provide authenticated encryption, integrity violations are recognized
-here during aead computation. We use the dm-audit submodule to
-signal those events to user space, too.
+As per discussion with Ezequiel, I think this patch should perhaps be made an
+RFC titled "media: uapi: clean and make HEVC uAPI public". Keep it RFC until we
+have collected all the needed changes.
 
-The construction and destruction of crypt device mappings are also
-logged as audit events.
+Opinion ?
 
-Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
----
- drivers/md/dm-crypt.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+Le mardi 31 août 2021 à 11:48 +0200, Benjamin Gaignard a écrit :
+> This series aims to clean up Reference Picture Set usage and flags.
+> 
+> Long term flag was named with RPS prefix while it is not used for RPS
+> but for mark long term references in DBP. Remane it and remove the two
+> other useless RPS flags.
+> 
+> Clarify documentation about RPS lists content and make sure that Hantro
+> driver use them correctly (i.e without look up in DBP).
+> 
+> Benjamin
+> 
+> Benjamin Gaignard (2):
+>   media: hevc: Remove RPS named flags
+>   media: hevc: Embedded indexes in RPS
+> 
+>  .../media/v4l/ext-ctrls-codec.rst             | 12 ++++-----
+>  .../staging/media/hantro/hantro_g2_hevc_dec.c | 27 +++++--------------
+>  .../staging/media/sunxi/cedrus/cedrus_h265.c  |  2 +-
+>  include/media/hevc-ctrls.h                    |  4 +--
+>  4 files changed, 14 insertions(+), 31 deletions(-)
+> 
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 50f4cbd600d5..5e02002345fa 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -41,6 +41,8 @@
- 
- #include <linux/device-mapper.h>
- 
-+#include "dm-audit.h"
-+
- #define DM_MSG_PREFIX "crypt"
- 
- /*
-@@ -1362,8 +1364,12 @@ static int crypt_convert_block_aead(struct crypt_config *cc,
- 
- 	if (r == -EBADMSG) {
- 		char b[BDEVNAME_SIZE];
--		DMERR_LIMIT("%s: INTEGRITY AEAD ERROR, sector %llu", bio_devname(ctx->bio_in, b),
--			    (unsigned long long)le64_to_cpu(*sector));
-+		sector_t s = le64_to_cpu(*sector);
-+
-+		DMERR_LIMIT("%s: INTEGRITY AEAD ERROR, sector %llu",
-+			    bio_devname(ctx->bio_in, b), s);
-+		dm_audit_log_bio(DM_MSG_PREFIX, "integrity-aead",
-+				 ctx->bio_in, s, 0);
- 	}
- 
- 	if (!r && cc->iv_gen_ops && cc->iv_gen_ops->post)
-@@ -2173,8 +2179,12 @@ static void kcryptd_async_done(struct crypto_async_request *async_req,
- 
- 	if (error == -EBADMSG) {
- 		char b[BDEVNAME_SIZE];
--		DMERR_LIMIT("%s: INTEGRITY AEAD ERROR, sector %llu", bio_devname(ctx->bio_in, b),
--			    (unsigned long long)le64_to_cpu(*org_sector_of_dmreq(cc, dmreq)));
-+		sector_t s = le64_to_cpu(*org_sector_of_dmreq(cc, dmreq));
-+
-+		DMERR_LIMIT("%s: INTEGRITY AEAD ERROR, sector %llu",
-+			    bio_devname(ctx->bio_in, b), s);
-+		dm_audit_log_bio(DM_MSG_PREFIX, "integrity-aead",
-+				 ctx->bio_in, s, 0);
- 		io->error = BLK_STS_PROTECTION;
- 	} else if (error < 0)
- 		io->error = BLK_STS_IOERR;
-@@ -2729,6 +2739,8 @@ static void crypt_dtr(struct dm_target *ti)
- 	dm_crypt_clients_n--;
- 	crypt_calculate_pages_per_client();
- 	spin_unlock(&dm_crypt_clients_lock);
-+
-+	dm_audit_log_dtr(DM_MSG_PREFIX, ti, 1);
- }
- 
- static int crypt_ctr_ivmode(struct dm_target *ti, const char *ivmode)
-@@ -3357,9 +3369,11 @@ static int crypt_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 	ti->num_flush_bios = 1;
- 	ti->limit_swap_bios = true;
- 
-+	dm_audit_log_ctr(DM_MSG_PREFIX, ti, 1);
- 	return 0;
- 
- bad:
-+	dm_audit_log_ctr(DM_MSG_PREFIX, ti, 0);
- 	crypt_dtr(ti);
- 	return ret;
- }
--- 
-2.20.1
 
