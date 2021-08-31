@@ -2,190 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2913FC68C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 642B63FC68F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhHaL1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 07:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241421AbhHaL1w (ORCPT
+        id S241421AbhHaL2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 07:28:25 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:30838 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234065AbhHaL2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 07:27:52 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741F1C061575;
-        Tue, 31 Aug 2021 04:26:57 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id m9so2694823wrb.1;
-        Tue, 31 Aug 2021 04:26:57 -0700 (PDT)
+        Tue, 31 Aug 2021 07:28:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1630409248; x=1661945248;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=WGGV7lI8R1R6PZAp8vij88bmsuRv9nzJIdOaUYTsPV8=;
+  b=CwNkNykWrHjOK5tY11Krl167G8F95YWs6KleLWnrtnoCLg+pz5XkfL7Y
+   Yp+W5lRJhY8dTlhoW9SAQkFzVRC0b03q5wHau2q76wuikNWHZVZsYXH0u
+   uBwVilxIUJE9SqfIHnonMpidnGxbSPCzHnLpJtWBAUm93A3lM0/2iTEmu
+   M0gn6rCMG5nK4xSaKvdUzX8q82Zkj8Xs4xcLQLFBvxM4Sam752kR7buOj
+   IlLNYYLQ8L1nqGL/ORLmdWbwOQ9AfAXjJbGH44qr9Y8lLFcUFWZvkxcYC
+   KvJ3lUc2o+kFWVrHpGctlZxLZ5Siyic0iwkN+0eTd0AfXpheeXXBsylV+
+   g==;
+IronPort-SDR: kCC8FrzBUeJ38xce4/7PHVCDwhxROyg9jzUfdCZjnSgBCUQb/6SOXCCVDIZPTr++UwlVWiy2ya
+ M+DxuIC1BtB6btzAyjqUr/DDfTG4ZC7GMx0S8YWVE2oaDEy5O+oXCVECo37r66a2YuSTUjdJh0
+ 3YJaeMDb8YKLmYV2jGu9tR1Il4hEKGDVhoU32VThiK7UdJv3qPZfgDg6S78lXWKPPMkxKOiaTM
+ 0I09fHozX+sdDBhKOLJ3Rh0WTkO14TPo6qjxXl2wwu270NB7tL35/oATC5jpT1/94PH3zncXCY
+ dj+rZXo02K2OG5fvoVfFrOyr
+X-IronPort-AV: E=Sophos;i="5.84,366,1620716400"; 
+   d="scan'208";a="67697738"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Aug 2021 04:27:27 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 31 Aug 2021 04:27:27 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14 via Frontend Transport; Tue, 31 Aug 2021 04:27:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z8g2WdGXEmm25LRN9TXTtszeMxWv/rYI7GsXWWWEIqXsczia04QRY6WPVfulXMlOd1/4l4tWRuQsTe2SRvKsrwW7AJ+c0O70vz/0WS6Z8/c0OS712hcJrFvoXINjQLcVgXY9iqElFF2x3Lu4UTBnf55NKCcwzKierA+2qs+ZTWGsTDdLzx5aWG+49HzQM51ra9rY0ps7+bjo4gMh2Ovrmr9hiNgrwoXrQQjbqmHjzYH+bhdCk2boLngvG7YETksfrua/x8GMJAscBTxsYNpTqmqCfDT3j3/lQH2IOIpm3AFPqECOgbspUbAYUG+y+kpI7ETmPTfRyoIrqPTiv2PgLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WGGV7lI8R1R6PZAp8vij88bmsuRv9nzJIdOaUYTsPV8=;
+ b=TRDWCMVKMtxYDanwVa+5jRJO7SLcg9FcwELDXl860mc5wuNOFaYPIy5Uk2mjmA4++F2OLab6K7KU15GCIrTSi8D3lauKItWxvPz3i5g/hp0uBttyBquJG/4VJVCHmKX8VAeumV4n7bdFVA6oKwmIsHrvHfKyxGtnnBFmI3KVkAboQt3jC4gwAklsukg2wqYX3r/g1q+lwr1WPfcROFwvvxjARzvTMDkFzoEL2UcJkiHPLYmbl+w68+8sDbUBv3L3ucNmIZwHseB9OppyEj08zcZr5ni+i0veWpNnRlFF5njFpGa8aYAh50f60Ke9Z+vZQ0hAQch9oDTmRy7r9TK2GA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:from:subject:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=YcgZqItZmzj1WtOfFfaQ8Qttwhk3+ja41xq6aWhCuIk=;
-        b=iz3XxAwyMs+UW2Q1ayzMNLsbiXEhiKegaYWufcldVPv0IW4xiI23VfDzqsGjIlNOb8
-         46noeVsHdjqgynqWBDWm3C7M3lOZR/EzUTrIwuSZGbprCNUcyyBi05pBWiJNEZugZmad
-         7mRivpMdjFUwyuInpgpERZ/D7gcoT2nqha7PlSZCz9DAuhQGQ22aNiblLgSQ5i3Lf1aI
-         e4pjGnHe9vDkoHPtpW5CZyO897yAK2X4I6rYA51QdFvmG6KFTIIEflijOp0pNtNRSl++
-         082SU5kKHOdqebSUuZfiO+ENL15V1cWYkpx6Xer+kTBRj1Xv6YGGlRzdTVnjFXbJ201T
-         JS5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YcgZqItZmzj1WtOfFfaQ8Qttwhk3+ja41xq6aWhCuIk=;
-        b=r8TSEZIqAGRNwcHFS+YMeLTJpp0GeNiPH+XErC/5A3CWc4k5UbQxZvQOq3xXWYebma
-         oiY50RTKlkmAErJOuxoe9YYHksgxL1mUVped4sOFLxwRTXax0Rnr80N3mRFL3cpBYgcf
-         ibOdc2qcsejbIY2fS+Twp23gu0nnbilBpJIKoAkSj9+rrrLDll/LWTvG2RNhnpeOk6V+
-         sYZi+FLhPkQfQ583czEmgRQMaqC/I2KWSd1hkWYjKLajk7LBBU4hZbFIG8CpJrxRL5y9
-         uol7VUurd/NUOkkLz5fingk5AApIqhmMfnrjRRidusthQs5+xPgLXUImkotMiAdXQCvz
-         CtJg==
-X-Gm-Message-State: AOAM531F/YPaM9gosPat8YXSJtje+aMKP+SQahOSOC/VynuV+dKnKZ7R
-        V+aGwj+DYtz8lzFTX7VM8pU=
-X-Google-Smtp-Source: ABdhPJxmGd+GvI9ohnTeJUlgdQ12DdXwK/m37yiYxbPpGFtGI7VZAolSjPhsmWpE29sK0gSQHZ9OKw==
-X-Received: by 2002:a5d:4591:: with SMTP id p17mr30865100wrq.57.1630409216077;
-        Tue, 31 Aug 2021 04:26:56 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.133.138])
-        by smtp.gmail.com with ESMTPSA id v62sm1624151wme.21.2021.08.31.04.26.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 04:26:55 -0700 (PDT)
-To:     Hao Xu <haoxu@linux.alibaba.com>, Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dvyukov@google.com,
-        io-uring@vger.kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-References: <00000000000059117905cacce99e@google.com>
- <7949b7a0-fec1-34a7-aaf5-cbe07c6127ed@kernel.dk>
- <d881d3fa-4df5-1862-bc2b-9420649ba3c8@linux.alibaba.com>
- <407ce02f-7a0a-4eb2-b242-188fc605012c@gmail.com>
- <6df81737-38d8-4c91-358a-79bc5d5f9074@linux.alibaba.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [syzbot] general protection fault in sock_from_file
-Message-ID: <fb5821b5-3bb2-4c1a-acdb-816e639cb210@gmail.com>
-Date:   Tue, 31 Aug 2021 12:26:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WGGV7lI8R1R6PZAp8vij88bmsuRv9nzJIdOaUYTsPV8=;
+ b=hjooGPpSj/eWeiVZcGfMUY0aEaQFxD1+ezRaItxeDiJhm2uWu3/uvBysb305qB7M7y5cyV7dm0la31jCBviKRzO75vaODgR8vAvd3jdDYJT67sd9eMYyQx0bzGmffNuP9u4tXCo4zYgMxrVgnSzSXsAcsWOV80tMsoqJ8OHGTCs=
+Received: from CO1PR11MB5154.namprd11.prod.outlook.com (2603:10b6:303:95::7)
+ by MWHPR11MB1406.namprd11.prod.outlook.com (2603:10b6:300:23::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18; Tue, 31 Aug
+ 2021 11:27:24 +0000
+Received: from CO1PR11MB5154.namprd11.prod.outlook.com
+ ([fe80::d96a:4568:b553:97a4]) by CO1PR11MB5154.namprd11.prod.outlook.com
+ ([fe80::d96a:4568:b553:97a4%9]) with mapi id 15.20.4478.017; Tue, 31 Aug 2021
+ 11:27:24 +0000
+From:   <Conor.Dooley@microchip.com>
+To:     <krzysztof.kozlowski@canonical.com>, <robh+dt@kernel.org>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <atish.patra@wdc.com>,
+        <sagar.kadam@sifive.com>, <devicetree@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/5] riscv: dts: microchip: add missing compatibles for
+ clint and plic
+Thread-Topic: [PATCH v2 4/5] riscv: dts: microchip: add missing compatibles
+ for clint and plic
+Thread-Index: AQHXmbJK24GNG6e5kkiiaVImeMyyJ6uNgvGA
+Date:   Tue, 31 Aug 2021 11:27:24 +0000
+Message-ID: <5b05d1e0-24be-f013-bb4e-f69b061b62e4@microchip.com>
+References: <20210825130452.203407-1-krzysztof.kozlowski@canonical.com>
+ <20210825130639.203657-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210825130639.203657-1-krzysztof.kozlowski@canonical.com>
+Accept-Language: en-IE, en-US
+Content-Language: en-IE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+authentication-results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none
+ header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fdadc3b3-4f1a-4c15-0024-08d96c724e15
+x-ms-traffictypediagnostic: MWHPR11MB1406:
+x-microsoft-antispam-prvs: <MWHPR11MB1406C4F3B227FEA7311FE9B398CC9@MWHPR11MB1406.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1443;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jG89RryUU2ATeLBQIkzWkCRVumthHQ0gde9BhmNe5IGqfYd6YzxiBmFh2GyLlI7E9tkvPvtZ1Riw6IOs/e1D0CD/Ns56Sx+O5akstvB29RyJ2RzRFpTH36yb2pAqi02XhP62Xojacr2Sh+fMbIRmlKP7KH6j47Jk/lRqXZ5qBnFrst3EUzzYXZu4OC/T+HH+wMzavEWHr232vvonUfg28td1y5uEHyGbWPr12qxe39mkKwZjODBEIcyPZiZ6JeeIG4cC1ppgQqjbeJYjQSProXirjrlzWMs4vnsPwpjO18K3WuVLgVzFxODd5Oj/vIL0TcVJvEJ9uyH34X39U6YY/Pj8ZIzOQQzmjsTvCOr/D+gLVmGNKAUmrxgqVrAsDF+JkmBrRuHCc2QJ5Bod3vS1aW6QAX6RjIu++UGw8BwAHNj1467dallezhaqz7zS1mobBkbjpKI1gck7xh/vxV/Eyr7N8U2fL2YjO7lnWznL7AtyOKWVL6MoQ3q0mseHE+vtGmtgbBRwTufrUv7SwsDhKbB7izVGyz3xUHo0eoZY8gfgywGJucSSNACSKW/XgiofFl8vhuectNbDofa79RnC2BG0GlZrir1SkOz5D9OIpIFfkWoMwzYhtGEJ+EWBZxMdEsiUcO2oe7ykunhvi9p4ovTYQewIzjF4jL5h/QlO2JjPsm6ZIe/HranPk6b/3GLgG6gxaOHErJJPQmh8VtnTniXfvK+XCRc51Z8NQwmg2hpL5fJC/9n1kHmn4cBG4Idz6gJ2WLQhsbfnw8Rbg5/jGJD/q1X+KrdiEFDHRenk9ZT+TmbA1B9bzXW8b/L4/K7/pnrLLL45pcQWZPsxXvwqyABH3QhZCfgf6a+EAN8wPec1oQB+t72xm05BE+i5ISi5
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5154.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(366004)(346002)(136003)(396003)(83380400001)(66556008)(8676002)(64756008)(53546011)(66446008)(66946007)(26005)(31686004)(66476007)(6506007)(186003)(110136005)(316002)(8936002)(478600001)(2616005)(36756003)(7416002)(6486002)(38100700002)(86362001)(921005)(6512007)(5660300002)(122000001)(31696002)(38070700005)(966005)(91956017)(2906002)(76116006)(71200400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TU1vVFowR21vUmNwSGNHc2JGMjFETDJ2SEJNbyt1V1JBMlREM3h5Ui9MdFVK?=
+ =?utf-8?B?emc4eGlWbFRNMGp1WmoyeHpwUXJaTjFiTkxtMCtGVHRLalhKQng4aVJwNVhw?=
+ =?utf-8?B?dVI4VmtNOGpjWDZvenBPdWlIYzVhRGR2N1NNcTBockFLWm9yQ25UVlhiK3BZ?=
+ =?utf-8?B?V1lPQXdhWEt1ejF2eW0zTmp4VzRSem5PWk42Y0pVNVkvaFpvcnFxOVZDOUlM?=
+ =?utf-8?B?ODdRTXV5ei9TbzEyL2VLd1ovaGtYR2NVMjdObVlEMHFTUC9XdThQNFh2UXE4?=
+ =?utf-8?B?RHQwYmRmeFJaUldRVXVMeFBCNE5FOHNhSjFJaVkwZTR6SU5HNW55c1lwekNl?=
+ =?utf-8?B?OGk5Q3c3U3drTUpDdXZWLzhhNUlxN1hjdm1WZGdNb2I4U2c3cjZLbWNNM0I3?=
+ =?utf-8?B?WEYvbnhmdWFWNWZDSGlIOXFaMEVXOUNJWFRYSXJ5QkR3by84SmFxQ28yamlC?=
+ =?utf-8?B?Y0d4bmZDRUVZODJJY1dnWVpYRG1PbkM4azBtZHUzZzhGQXlDMlphdEt0US9J?=
+ =?utf-8?B?dHJIZUdyQ01wTWR5MEJrS0E0RWFPN0RSazRjS0I3TjY5MUhSVUt4YUxJSFpn?=
+ =?utf-8?B?NEl1RHNFQ1VWbXBlRGNGZGVkNElRZmJ6YlpLemxiZkpTaVgvaE5PUjI0bnlj?=
+ =?utf-8?B?SHM1aWhQQ085emhrUVcwQkRUMXBsNDdTM0hSMEZCQlB5NUFtbkdzNFlEL1l3?=
+ =?utf-8?B?eHEyN0RvZnhDV3pxRGJQL0lYcjR4UnBwdVVnZVRaUDJyYXRrYzBuVWJyckdt?=
+ =?utf-8?B?ZVVlSDJSc0dPZzkweFJhV21sZkRNVFpQRUVFc0QyVzFCVmhhenJWYzhEU0xm?=
+ =?utf-8?B?Tm9DNTVWdFZEdWR4ZE05SkNkbVQzYTlCcUl4S01FbU5ZeE1rQzFPZ3lKVnR5?=
+ =?utf-8?B?T1E0d2xMcW5vbkM3YkZydTdSREo0MjRuMGkrWkl5cHRRZ3pyOGhNVGlkMHFI?=
+ =?utf-8?B?UTJaSG9iaytlSjJINStrL3dCb2dwaXA1OG53ak91RC9aQkozQVc5amF2dERS?=
+ =?utf-8?B?SkdLVnJYMTh4YTBISC9ML2hQVFl1K2xLQURxREF1TFA1SFFoUDVOdVYxNENE?=
+ =?utf-8?B?d2FGN203ZEhMQzV2VVNzdUZGdld6MWNkTlNUMGdFekNhNGF1V3JjY2VnR0NW?=
+ =?utf-8?B?Z3IyYlBWWXlzcmZxWkVtbTU4NDBhaW11U0dCeVFlanZhUVdQaFlNOHVoVm4x?=
+ =?utf-8?B?d3d4OWFUL3VPWlo3KzVKalZmazZWWHk3VmEyK2xaUFNOK3RYblV2SEtudEJj?=
+ =?utf-8?B?ZnhCK0hSZWtUSUJPNGoyZjNUbGJISnA3b1pKV0ZYZ2hoMWlqUmlncWpxbEx3?=
+ =?utf-8?B?UVNvRTFoclY0U0xnaGtDbzhDbk0rUEZPS2RzMTltQ3RmandCbGJaL01veDF0?=
+ =?utf-8?B?dTU4R0crSE1BQ1gvaGFBRUxQU1YwNTF4UDIxdkg4b2paMC82TlF3MW4vU3VN?=
+ =?utf-8?B?MHhBVUxMMGZUTVp6bm96ZHUyUUY4SEhOT2NyaW9TNmZES0VkOUVnT3FvKzhP?=
+ =?utf-8?B?NEdzR1R3Q2FQNi9JaDhicndaS1BNY3luUldpTnJYeUVwUzUvSFFhQ3paQzg1?=
+ =?utf-8?B?aGt2OHZDazFldGlGUW1Hc0szZXJCdXhVV3Vnb0YxMjJpb0pVTTl6b3hRZXgy?=
+ =?utf-8?B?OVhuWEFVWGk4aG5hU1FhZENjTk90MjFHU3NhUVhVaEJlNmFVL2hnb2FqekY2?=
+ =?utf-8?B?ZDF2YUgybjhrSWlHY0VPZVNNQkN1dGRsU2NsbkVWVTJmS2RGYTVlNEJDSzc2?=
+ =?utf-8?Q?wK00oF7XF7cESLBOIixZ6ztzRSW0vt+Au3pk/Ac?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <CD885D0ABCC4454190ABD7A18CDFA41F@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <6df81737-38d8-4c91-358a-79bc5d5f9074@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5154.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fdadc3b3-4f1a-4c15-0024-08d96c724e15
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2021 11:27:24.0720
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 06yI9KoDx0SMuRpaWpB01sN0T2xV8iq2P3JhppGtJs/bU/Sy6qrbup73aGlNrDLXPDQwxT5lg05lUJroDmQ+oikSqf8gXKESEKrgCkOhJLo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1406
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/21 12:05 PM, Hao Xu wrote:
-> 在 2021/8/31 下午5:42, Pavel Begunkov 写道:
->> On 8/31/21 10:19 AM, Hao Xu wrote:
->>> 在 2021/8/31 上午10:14, Jens Axboe 写道:
->>>> On 8/30/21 2:45 PM, syzbot wrote:
->>>>> syzbot has found a reproducer for the following issue on:
->>>>>
->>>>> HEAD commit:    93717cde744f Add linux-next specific files for 20210830
->>>>> git tree:       linux-next
->>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15200fad300000
->>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=c643ef5289990dd1
->>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=f9704d1878e290eddf73
->>>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
->>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111f5f9d300000
->>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1651a415300000
->>>>>
->>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>>> Reported-by: syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com
->>>>>
->>>>> general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN
->>>>> KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
->>>>> CPU: 0 PID: 6548 Comm: syz-executor433 Not tainted 5.14.0-next-20210830-syzkaller #0
->>>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->>>>> RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
->>>>> Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
->>>>> RSP: 0018:ffffc90002caf8e8 EFLAGS: 00010206
->>>>> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
->>>>> RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
->>>>> RBP: ffff888019fc0780 R08: ffffffff899aee40 R09: ffffffff81e21978
->>>>> R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
->>>>> R13: 1ffff110033f80f9 R14: 0000000000000003 R15: ffff888019fc0780
->>>>> FS:  00000000013b5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
->>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>>>> CR2: 00000000004ae0f0 CR3: 000000001d355000 CR4: 00000000001506f0
->>>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>>>> Call Trace:
->>>>>    io_sendmsg+0x98/0x640 fs/io_uring.c:4681
->>>>>    io_issue_sqe+0x14de/0x6ba0 fs/io_uring.c:6578
->>>>>    __io_queue_sqe+0x90/0xb50 fs/io_uring.c:6864
->>>>>    io_req_task_submit+0xbf/0x1b0 fs/io_uring.c:2218
->>>>>    tctx_task_work+0x166/0x610 fs/io_uring.c:2143
->>>>>    task_work_run+0xdd/0x1a0 kernel/task_work.c:164
->>>>>    tracehook_notify_signal include/linux/tracehook.h:212 [inline]
->>>>>    handle_signal_work kernel/entry/common.c:146 [inline]
->>>>>    exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->>>>>    exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
->>>>>    __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->>>>>    syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
->>>>>    do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
->>>>>    entry_SYSCALL_64_after_hwframe+0x44/0xae
->>>>> RIP: 0033:0x43fd49
->>>>
->>>> Hao, this is due to:
->>>>
->>>> commit a8295b982c46d4a7c259a4cdd58a2681929068a9
->>>> Author: Hao Xu <haoxu@linux.alibaba.com>
->>>> Date:   Fri Aug 27 17:46:09 2021 +0800
->>>>
->>>>       io_uring: fix failed linkchain code logic
->>>>
->>>> which causes some weirdly super long chains from that single sqe.
->>>> Can you take a look, please?
->>> Sure, I'm working on this.
->>
->> Ah, saw it after sending a patch. It's nothing too curious, just
->> a small error in logic. More interesting that we don't have a
->> test case covering it, we should definitely add something.
->>
-> Saw your patch after coding my fix..😂
-> Since my email client doesn't receive your patch(only saw it in
-> webpage https://lore.kernel.org/), I put my comment here:
-
-Hmm, does it happen often? I'll CC you
-
-
->>  fs/io_uring.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/fs/io_uring.c b/fs/io_uring.c
->> index 473a977c7979..a531c7324ea8 100644
->> --- a/fs/io_uring.c
->> +++ b/fs/io_uring.c
->> @@ -6717,6 +6717,8 @@ static inline void io_queue_sqe(struct io_kiocb *req)
->>      if (likely(!(req->flags & (REQ_F_FORCE_ASYNC | REQ_F_FAIL)))) {
->>          __io_queue_sqe(req);
->>      } else if (req->flags & REQ_F_FAIL) {
->> +        /* fail all, we don't submit */
->> +        req->flags &= ~REQ_F_HARDLINK;
-> maybe set REQ_F_LINK here?
-
-if (unlikely((req->flags & REQ_F_FAIL) &&
-	     !(req->flags & REQ_F_HARDLINK))) {
-	posted |= (req->link != NULL);
-	io_fail_links(req);
-}
-
-The problem is hardlink, normal will be failed. But there is indeed
-a problem with both patches, 
-
-if (req->flags & (REQ_F_LINK | REQ_F_HARDLINK))
-	// kill linked
-
-Will resend with some tests on top
-
-
->>          io_req_complete_failed(req, req->result);
->>      } else {
->>          int ret = io_req_prep_async(req);
-
--- 
-Pavel Begunkov
+T24gMjUvMDgvMjAyMSAxNDowNiwgS3J6eXN6dG9mIEtvemxvd3NraSB3cm90ZToNCj4gRVhURVJO
+QUwgRU1BSUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5
+b3Uga25vdyB0aGUgY29udGVudCBpcyBzYWZlDQo+DQo+IFRoZSBNaWNyb2NoaXAgSWNpY2xlIGtp
+dCB1c2VzIFNpRml2ZSBFNTEgYW5kIFU1NCBjb3Jlcywgc28gaXQgbG9va3MgdGhhdA0KPiBhbHNv
+IENvcmUgTG9jYWwgSW50ZXJydXB0b3IgYW5kIFBsYXRmb3JtLUxldmVsIEludGVycnVwdCBDb250
+cm9sbGVyIGFyZQ0KPiBjb21pbmcgZnJvbSBTaUZpdmUuICBBZGQgcHJvcGVyIGNvbXBhdGlibGVz
+IHRvIHNpbGVuY2UgZHRic19jaGVjaw0KPiB3YXJuaW5nczoNCj4NCj4gICAgY2xpbnRAMjAwMDAw
+MDogY29tcGF0aWJsZTowOiAnc2lmaXZlLGNsaW50MCcgaXMgbm90IG9uZSBvZiBbJ3NpZml2ZSxm
+dTU0MC1jMDAwLWNsaW50JywgJ2NhbmFhbixrMjEwLWNsaW50J10NCj4gICAgaW50ZXJydXB0LWNv
+bnRyb2xsZXJAYzAwMDAwMDogY29tcGF0aWJsZTowOiAnc2lmaXZlLHBsaWMtMS4wLjAnIGlzIG5v
+dCBvbmUgb2YgWydzaWZpdmUsZnU1NDAtYzAwMC1wbGljJywgJ2NhbmFhbixrMjEwLXBsaWMnXQ0K
+Pg0KPiBTaWduZWQtb2ZmLWJ5OiBLcnp5c3p0b2YgS296bG93c2tpIDxrcnp5c3p0b2Yua296bG93
+c2tpQGNhbm9uaWNhbC5jb20+DQo+DQo+IC0tLQ0KPg0KPiBDaGFuZ2VzIHNpbmNlIHYxOg0KPiAx
+LiBOb25lDQo+IC0tLQ0KPiAgIGFyY2gvcmlzY3YvYm9vdC9kdHMvbWljcm9jaGlwL21pY3JvY2hp
+cC1tcGZzLmR0c2kgfCA0ICsrLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCsp
+LCAyIGRlbGV0aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9yaXNjdi9ib290L2R0cy9t
+aWNyb2NoaXAvbWljcm9jaGlwLW1wZnMuZHRzaSBiL2FyY2gvcmlzY3YvYm9vdC9kdHMvbWljcm9j
+aGlwL21pY3JvY2hpcC1tcGZzLmR0c2kNCj4gaW5kZXggZDlmN2VlNzQ3ZDBkLi42Zjg0M2FmYWNm
+YWQgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvcmlzY3YvYm9vdC9kdHMvbWljcm9jaGlwL21pY3JvY2hp
+cC1tcGZzLmR0c2kNCj4gKysrIGIvYXJjaC9yaXNjdi9ib290L2R0cy9taWNyb2NoaXAvbWljcm9j
+aGlwLW1wZnMuZHRzaQ0KPiBAQCAtMTYxLDcgKzE2MSw3IEBAIGNhY2hlLWNvbnRyb2xsZXJAMjAx
+MDAwMCB7DQo+ICAgICAgICAgICAgICAgICAgfTsNCj4NCj4gICAgICAgICAgICAgICAgICBjbGlu
+dEAyMDAwMDAwIHsNCj4gLSAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJzaWZp
+dmUsY2xpbnQwIjsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJzaWZp
+dmUsZnU1NDAtYzAwMC1jbGludCIsICJzaWZpdmUsY2xpbnQwIjsNCj4gICAgICAgICAgICAgICAg
+ICAgICAgICAgIHJlZyA9IDwweDAgMHgyMDAwMDAwIDB4MCAweEMwMDA+Ow0KPiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgaW50ZXJydXB0cy1leHRlbmRlZCA9IDwmY3B1MF9pbnRjIDMgJmNwdTBf
+aW50YyA3DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAmY3B1MV9pbnRjIDMgJmNwdTFfaW50YyA3DQo+IEBAIC0xNzIsNyArMTcyLDcgQEAgJmNwdTNf
+aW50YyAzICZjcHUzX2ludGMgNw0KPg0KPiAgICAgICAgICAgICAgICAgIHBsaWM6IGludGVycnVw
+dC1jb250cm9sbGVyQGMwMDAwMDAgew0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgI2ludGVy
+cnVwdC1jZWxscyA9IDwxPjsNCj4gLSAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9
+ICJzaWZpdmUscGxpYy0xLjAuMCI7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgIGNvbXBhdGli
+bGUgPSAic2lmaXZlLGZ1NTQwLWMwMDAtcGxpYyIsICJzaWZpdmUscGxpYy0xLjAuMCI7DQo+ICAg
+ICAgICAgICAgICAgICAgICAgICAgICByZWcgPSA8MHgwIDB4YzAwMDAwMCAweDAgMHg0MDAwMDAw
+PjsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgIHJpc2N2LG5kZXYgPSA8MTg2PjsNCj4gICAg
+ICAgICAgICAgICAgICAgICAgICAgIGludGVycnVwdC1jb250cm9sbGVyOw0KPiAtLQ0KPiAyLjMw
+LjINCj4NCkxvb2tzIGdvb2QsIHdlJ3ZlIHN3aXRjaGVkIHRvIHVzaW5nIHRoaXMgb25lIG91cnNl
+bHZlcyBhbHNvLg0KUmV2aWV3ZWQtYnk6IENvbm9yIERvb2xleSA8Y29ub3IuZG9vbGV5QG1pY3Jv
+Y2hpcC5jb20+DQoNCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18NCj4gbGludXgtcmlzY3YgbWFpbGluZyBsaXN0DQo+IGxpbnV4LXJpc2N2QGxpc3RzLmlu
+ZnJhZGVhZC5vcmcNCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1yaXNjdg0KDQoNCg==
