@@ -2,190 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B469A3FC9D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B303FC9D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238093AbhHaOe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236942AbhHaOe1 (ORCPT
+        id S238424AbhHaOfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:35:04 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:58006 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238241AbhHaOe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:34:27 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2315EC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:33:32 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id d26so28181531wrc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:33:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:references:in-reply-to
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=smPFOktGxjGC+Ka43r7/WQHSP01FF5/7pAB/RUjJpV4=;
-        b=AsLarEwC2DIl28aNaxfHmcVDR7gDLzrwBaNfCtVmbTjYTzeuBYYtVHy299w2bZPviv
-         ETmWhowsY0U9rXtNQNPN4MKmznVwFEVDZsyytb1jSoRUrrH5aforeiajolKjky2Nzibr
-         7geWsndye6eIADa/BAjii6HRRxaVMhT6flG/c4dNOipJem/jjNwFaZE4Ja4PZi0o+Oyb
-         e44rtVA6eMzcSBCXdh8RSrhh02I/fN0M07w7kxnTsAjmewoeBhgkJn2cCS69NLt+Y63H
-         qj/51daTnKPEeLbhhy+Rkg0uLCJFpYMPb6EPbDLd+CpVYotV13Pt1jyL2fIjBjZ/63OL
-         3WIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
-         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
-        bh=smPFOktGxjGC+Ka43r7/WQHSP01FF5/7pAB/RUjJpV4=;
-        b=JhhMBXSmTwovw+dBykCvBUFj0Rv1T5kGDP5MRpdiDCzx+Dnni3D1t3Iw9ZB4MnM9pw
-         DUvH6WNFOQ36JR5RckwZbaHzdADgPEuLsUa/VQrjCgv1UNKq51HdOVrl6bAPheGqvL4R
-         rjZY81D8EKadMXvMMHHR/d3z+ztn7n+kwx28VWMLlsXsRL30ETRZcUvSE0XHWdImvYDL
-         F3WHT9wF6jnKIDZPIEQ2rbxIizTzIMLwVFsho4f7W+vQ10rMCrmpbMBz2rpY66/lSOkC
-         sB5nl5cNSUINzyyw6KedYuXbnJ6onSDH7Mo+XWKIEakWg2frwAuvFuvHvVDlgiH3ZvMl
-         K2Ng==
-X-Gm-Message-State: AOAM532844LDdeGCy/ZoRZSBvxWdlQ7yOgTetVO+U1KHThPauKVfhpDq
-        pSn5mu4RbYiFHlFIa1uT+CppBA==
-X-Google-Smtp-Source: ABdhPJyTTR6zGQEBSRbTCv9IzZ2WJeGXy2X5XoQq/beWXTSp/UY3OL+GBF9XPwA6D7i3seGROy3HXw==
-X-Received: by 2002:a5d:49cd:: with SMTP id t13mr31334228wrs.175.1630420410752;
-        Tue, 31 Aug 2021 07:33:30 -0700 (PDT)
-Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
-        by smtp.gmail.com with ESMTPSA id c9sm16291108wrf.77.2021.08.31.07.33.29
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 31 Aug 2021 07:33:30 -0700 (PDT)
-From:   John Cox <jc@kynesim.co.uk>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     mchehab@kernel.org, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@gmail.com, hverkuil-cisco@xs4all.nl,
-        ezequiel@vanguardiasur.com.ar, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH 1/2] media: hevc: Remove RPS named flags
-Date:   Tue, 31 Aug 2021 15:33:30 +0100
-Message-ID: <l0fsigdnavn1n1n33a8a2ftfuj81tgv3if@4ax.com>
-References: <20210831094900.203283-1-benjamin.gaignard@collabora.com> <20210831094900.203283-2-benjamin.gaignard@collabora.com> <4g2sigpsttf80t72c7spdqqjvvijnths2d@4ax.com> <fdf6417e-09cd-f0a0-a351-fccd64bfc8c7@collabora.com>
-In-Reply-To: <fdf6417e-09cd-f0a0-a351-fccd64bfc8c7@collabora.com>
-User-Agent: ForteAgent/8.00.32.1272
+        Tue, 31 Aug 2021 10:34:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630420441; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=suAP7OpI5mXef+eBKru8jM6cCh54dYm12uN9GdHVDkc=; b=RiLbwhopQYBLJ7gOrVmoTa7BDQm/aM7AeNBBUHbDNuaKZsVs+jTHCQthRRDGzniA2RWMQtvV
+ /yB9PAKz/e08U0XVoarEgyzbJDzJmKBqLBwUoF/mGaT+Wi1Poap1bZ4j2BExCi6zrjKEZKrL
+ tMR7OBi7qKAfpX1SXDiOfOjYI8g=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 612e3dcd4f8fcf7054296fba (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 31 Aug 2021 14:33:49
+ GMT
+Sender: deesin=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CBC9FC43618; Tue, 31 Aug 2021 14:33:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.3] (unknown [106.202.140.97])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19648C43460;
+        Tue, 31 Aug 2021 14:33:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 19648C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH V7 2/2] soc: qcom: aoss: Add debugfs entry
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     swboyd@chromium.org, clew@codeaurora.org, sibis@codeaurora.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
+References: <1630323451-7160-1-git-send-email-deesin@codeaurora.org>
+ <1630323451-7160-3-git-send-email-deesin@codeaurora.org>
+ <YS1nSP8kziOPaDld@yoga>
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+Message-ID: <6b1c4368-72e2-79e4-37c5-d333bb6bec5d@codeaurora.org>
+Date:   Tue, 31 Aug 2021 20:03:42 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YS1nSP8kziOPaDld@yoga>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Le 31/08/2021 =C3=A0 13:08, John Cox a =C3=A9crit=C2=A0:
->>> Marking a picture as long-term reference is valid for DPB but not for=
- RPS.
->>> Change flag name to match with it description in HEVC spec chapiter
->>> "8.3.2 Decoding process for reference picture set".
->>> Remove the other unused RPS flags.
->>>
->>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->>> ---
->>> Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 6 ++----
->>> drivers/staging/media/hantro/hantro_g2_hevc_dec.c         | 2 +-
->>> drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 2 +-
->>> include/media/hevc-ctrls.h                                | 4 +---
->>> 4 files changed, 5 insertions(+), 9 deletions(-)
->>>
->>> diff --git =
-a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst =
-b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>> index 3865acb9e0fd..eff33c511090 100644
->>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>> @@ -3138,10 +3138,8 @@ enum v4l2_mpeg_video_hevc_size_of_length_field=
- -
->>> 	:c:type:`timeval` in struct :c:type:`v4l2_buffer` to a __u64.
->>>      * - __u8
->>>        - ``rps``
->>> -      - The reference set for the reference frame
->>> -        (V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_BEFORE,
->>> -        V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_AFTER or
->>> -        V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
->>> +      - Long term flag for the reference frame
->>> +        (V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
->>>      * - __u8
->>>        - ``field_pic``
->>>        - Whether the reference is a field picture or a frame.
->> If you are going to remove all the RPS values except for Long Term
->> wouldn't it be better to rename the field too, either to "flags" or a
->> bool "is_long_term"?  If we have a field called RPS it really should =
-be
->> able to have a value for any of the 5 valid Reference Picture Sets =
-that
->> a DPB entry can belong to.
->
->I will send a v2 and rename rps into flags.
 
-OK. I was going to say that you should merge the "field_pic" entry into
-a flags bitfield, but then I remembered that H265 doesn't have the
-concept of field_pics in the way that H264 does and I believe that both
-it and pic_order_count[1] are redundant (i.e. can never be used). But I
-guess that is the subject of yet another patch.
-
-Regards
-
-John Cox
-
->> As a side note, it is important to my code that the DPB array contains
->> all the DPB entries not just the ones that are in use in this frame.  =
-I
->> need them so I can track which frames have left the DPB so I can
->> reuse/free the MV tables associated with them (yes I could keep one =
-for
->> every entry in the capture Q but that is generally wasteful on memory
->> and the Pi is often memory constrained). So maybe update the docn on =
-DPB
->> to make this explicit please? (I suspect that current code does this
->> anyway as it is generally easier to do than to not.)
+On 8/31/2021 4:48 AM, Bjorn Andersson wrote:
+> On Mon 30 Aug 06:37 CDT 2021, Deepak Kumar Singh wrote:
 >
->That should be in another patch :-)
->
->Benjamin
->
+>> Some user space clients may require to change power states of various
+>> parts of hardware. Add a debugfs node for qmp so messages can be sent
+>> to aoss from user space.
 >>
->> John Cox
+> I think this could be a useful tool while testing and developing client
+> drivers or perhaps during bringup of new platforms.
+>
+> But your new commit message doesn't sound right, given that debugfs
+> isn't mounted in your production builds.
+>
+> Regards,
+> Bjorn
+Updated commit message in V8.
+>
+>> Signed-off-by: Chris Lew <clew@codeaurora.org>
+>> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+>> ---
+>>   drivers/soc/qcom/qcom_aoss.c | 32 ++++++++++++++++++++++++++++++++
+>>   1 file changed, 32 insertions(+)
 >>
->>> diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c =
-b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
->>> index 9ea864ca5625..be46b3c28b17 100644
->>> --- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
->>> +++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
->>> @@ -503,7 +503,7 @@ static int set_ref(struct hantro_ctx *ctx)
->>> 		compress_luma_addr =3D luma_addr + compress_luma_offset;
->>> 		compress_chroma_addr =3D luma_addr + compress_chroma_offset;
->>>
->>> -		if (dpb[i].rps =3D=3D V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
->>> +		if (dpb[i].rps =3D=3D V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
->>> 			dpb_longterm_e |=3D BIT(V4L2_HEVC_DPB_ENTRIES_NUM_MAX - 1 - i);
->>>
->>> 		/*
->>> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c =
-b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->>> index ef0311a16d01..6086cc35e8cc 100644
->>> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->>> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->>> @@ -169,7 +169,7 @@ static void cedrus_h265_ref_pic_list_write(struct=
- cedrus_dev *dev,
->>> 		unsigned int index =3D list[i];
->>> 		u8 value =3D list[i];
->>>
->>> -		if (dpb[index].rps =3D=3D V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
->>> +		if (dpb[index].rps =3D=3D V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
->>> 			value |=3D VE_DEC_H265_SRAM_REF_PIC_LIST_LT_REF;
->>>
->>> 		/* Each SRAM word gathers up to 4 references. */
->>> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->>> index ef63bc205756..f587448ef495 100644
->>> --- a/include/media/hevc-ctrls.h
->>> +++ b/include/media/hevc-ctrls.h
->>> @@ -127,9 +127,7 @@ struct v4l2_ctrl_hevc_pps {
->>> 	__u64	flags;
->>> };
->>>
->>> -#define V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_BEFORE	0x01
->>> -#define V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_AFTER	0x02
->>> -#define V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR		0x03
->>> +#define V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE	0x01
->>>
->>> #define V4L2_HEVC_DPB_ENTRIES_NUM_MAX		16
->>>
+>> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+>> index bf0a6280..4cd8670 100644
+>> --- a/drivers/soc/qcom/qcom_aoss.c
+>> +++ b/drivers/soc/qcom/qcom_aoss.c
+>> @@ -4,6 +4,7 @@
+>>    */
+>>   #include <dt-bindings/power/qcom-aoss-qmp.h>
+>>   #include <linux/clk-provider.h>
+>> +#include <linux/debugfs.h>
+>>   #include <linux/interrupt.h>
+>>   #include <linux/io.h>
+>>   #include <linux/mailbox_client.h>
+>> @@ -86,6 +87,7 @@ struct qmp {
+>>   	struct clk_hw qdss_clk;
+>>   	struct genpd_onecell_data pd_data;
+>>   	struct qmp_cooling_device *cooling_devs;
+>> +	struct dentry *debugfs_file;
+>>   };
+>>   
+>>   struct qmp_pd {
+>> @@ -566,6 +568,31 @@ void qmp_put(struct qmp *qmp)
+>>   }
+>>   EXPORT_SYMBOL(qmp_put);
+>>   
+>> +static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
+>> +			      size_t len, loff_t *pos)
+>> +{
+>> +	struct qmp *qmp = file->private_data;
+>> +	char buf[QMP_MSG_LEN] = {};
+>> +	int ret;
+>> +
+>> +	if (!len || len >= QMP_MSG_LEN)
+>> +		return -EINVAL;
+>> +
+>> +	ret  = copy_from_user(buf, userstr, len);
+>> +	if (ret) {
+>> +		return -EFAULT;
+>> +	}
+>> +
+>> +	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
+>> +
+>> +	return ret ? ret : len;
+>> +}
+>> +
+>> +static const struct file_operations aoss_dbg_fops = {
+>> +	.open = simple_open,
+>> +	.write = aoss_dbg_write,
+>> +};
+>> +
+>>   static int qmp_probe(struct platform_device *pdev)
+>>   {
+>>   	struct resource *res;
+>> @@ -620,6 +647,9 @@ static int qmp_probe(struct platform_device *pdev)
+>>   
+>>   	platform_set_drvdata(pdev, qmp);
+>>   
+>> +	qmp->debugfs_file = debugfs_create_file("aoss_send_message", 0220, NULL,
+>> +						qmp, &aoss_dbg_fops);
+>> +
+>>   	return 0;
+>>   
+>>   err_remove_qdss_clk:
+>> @@ -636,6 +666,8 @@ static int qmp_remove(struct platform_device *pdev)
+>>   {
+>>   	struct qmp *qmp = platform_get_drvdata(pdev);
+>>   
+>> +	debugfs_remove(qmp->debugfs_file);
+>> +
+>>   	qmp_qdss_clk_remove(qmp);
+>>   	qmp_pd_remove(qmp);
+>>   	qmp_cooling_devices_remove(qmp);
+>> -- 
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>> a Linux Foundation Collaborative Project
+>>
