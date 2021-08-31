@@ -2,94 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCD83FC783
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE873FC789
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbhHaMps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 08:45:48 -0400
-Received: from outbound-smtp48.blacknight.com ([46.22.136.219]:50671 "EHLO
-        outbound-smtp48.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230154AbhHaMpr (ORCPT
+        id S232542AbhHaMq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 08:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230154AbhHaMq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 08:45:47 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp48.blacknight.com (Postfix) with ESMTPS id D3A76FA925
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 13:44:50 +0100 (IST)
-Received: (qmail 23353 invoked from network); 31 Aug 2021 12:44:50 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 31 Aug 2021 12:44:50 -0000
-Date:   Tue, 31 Aug 2021 13:44:49 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Sultan Alsawaf <sultan@kerneltoast.com>
-Cc:     linux-mm@kvack.org, mhocko@suse.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Stuck looping on list_empty(list) in free_pcppages_bulk()
-Message-ID: <20210831124449.GB4128@techsingularity.net>
-References: <YS1l83lmwEYXuQsY@sultan-box.localdomain>
+        Tue, 31 Aug 2021 08:46:57 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C029C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:46:02 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id x16so8895206pll.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:46:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=norberthealth-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g+EFI6GnSelcnpgoeb+deAAklW3NRFaUm26pY4E+w0k=;
+        b=ioSemb3JD5Y1eOx3s8QHMULwaxNxq90XekgXbUYN3MIi4wPew/JByeaeSULeT4nbEa
+         cKzIZ4/H6afFFvkg5Qwx3+83wPYHyGoSruTzZfnNZE0FeHolHwnaOEg2GmzOv1uRu5Zc
+         veTsu8tUiQaMChhjarmaZ79IoIj9BKQmJN9YxQpsfR87xdgfmE2Mdr4BP/SfuBq3QZO5
+         CFNQEtJI6Hb80splvXF/qFEsjirZ8eAbKuCALFyGg3Gktbehfx02UaG6vAg19br4r1Vj
+         dUTIgoZG1HoHuB6CFQRkhLi5jMqsLLj76GXn4TgVbRl7x/vgSTM0uCggygyXE89Lvi0J
+         xRGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g+EFI6GnSelcnpgoeb+deAAklW3NRFaUm26pY4E+w0k=;
+        b=dNfKQbsqy/olQo80priUih40/tXhe0T3MuXiHyIZuGCQVlkV6vs1a4EntWsTUuQ14B
+         o09OpV7KMQTQ5d78bWSBDeLXThMOfsjZkqrGoAsN0cFMqux/KWhMieSmhlHxgHNi8aIe
+         2myDYNH7OlydwBhmWoC+wPAp9XO4Q1Tf+jUBd6zhEcejyUHT8X0eXgFnt/RaeGzN42bc
+         SuvQ3QwyKBppJepbhhaZIJU3tMDxxKK3Lw1etFn+X/OA6aCqyNDci1a55GKXsDQum+Ek
+         UV5AAD3RwPqhZ1ITVWirjbrfwXtNKUqeic2wDp/y5helkt6rae/t3TRRcNB5iHqBeWuQ
+         53NA==
+X-Gm-Message-State: AOAM532kWSXa3mc6klpXaT/r6m6JMuikAFZO4l3bBq4XrVsG1IkXhsON
+        KfctM5NKMOtIgEjIZ5awl4Bxy5MmbJxpYQAjFCYbcg==
+X-Google-Smtp-Source: ABdhPJzp0DSkkGaQ+vQsAfxzLKLGMRlAgWHiJnqZvPuKn9KmYDA8wE3e08OvWWQvIXbffne6YSWjWMRfm0H3l1lj0SQ=
+X-Received: by 2002:a17:90a:6ac2:: with SMTP id b2mr5341365pjm.36.1630413961661;
+ Tue, 31 Aug 2021 05:46:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <YS1l83lmwEYXuQsY@sultan-box.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210830163324.12537-1-roger@norberthealth.com> <20210830185714.GK12231@kadam>
+In-Reply-To: <20210830185714.GK12231@kadam>
+From:   Roger Knecht <roger@norberthealth.com>
+Date:   Tue, 31 Aug 2021 14:45:50 +0200
+Message-ID: <CAO_iFwp7s4ZAAiyektJgi1bWV5arTmtqGJuNqgkyOrYoZTUDUw@mail.gmail.com>
+Subject: Re: [PATCH RESEND v2] Trivial comment fix for the CRC ITU-T polynom
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Jiri Kosina <jkosina@suse.cz>, Jiri Kosina <trivial@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 04:12:51PM -0700, Sultan Alsawaf wrote:
-> I apologize in advance for reporting a bug on an EOL kernel. I don't see any
-> changes as of 5.14 that could address something like this, so I'm emailing in
-> case whatever happened here may be a bug affecting newer kernels.
-> 
-> With gdb, it appears that the CPU got stuck in the list_empty(list) loop inside
-> free_pcppages_bulk():
-> ----------------8<----------------
-> 	do {
-> 		batch_free++;
-> 		if (++migratetype == MIGRATE_PCPTYPES)
-> 			migratetype = 0;
-> 		list = &pcp->lists[migratetype];
-> 	} while (list_empty(list));
-> ---------------->8----------------
-> 
-> Although this code snippet is slightly different in 5.14, it's still ultimately
-> the same. Side note: I noticed that the way `migratetype` is incremented causes
-> `&pcp->lists[1]` to get looked at first rather than `&pcp->lists[0]`, since
-> `migratetype` will start out at 1. This quirk is still present in 5.14, though
-> the variable in question is now called `pindex`.
-> 
-> With some more gdb digging, I found that the `count` variable was stored in %ESI
-> at the time of the stall. According to register dump in the splat, %ESI was 7.
-> 
-> It looks like, for some reason, the pcp count was 7 higher than the number of
-> pages actually present in the pcp lists.
-> 
+Hi Dan,
 
-That's your answer -- the PCP count has been corrupted or misaccounted.
-Given this is a Fedora kernel, check for any patches affecting
-mm/page_alloc.c that could be accounting related or that would affect
-the IRQ disabling or zone lock acquisition for problems. Another
-possibility is memory corruption -- either kernel or the hardware
-itself.
+Thanks for pointing this out. I will fix and resend it shortly.
 
-> I tried to find some way that this could happen, but the only thing I could
-> think of was that maybe an allocation had both __GFP_RECLAIMABLE and
-> __GFP_MOVABLE set in its gfp mask, in which case the rmqueue() call in
-> get_page_from_freelist() would pass in a migratetype equal to MIGRATE_PCPTYPES
-> and then pages could be added to an out-of-bounds pcp list while still
-> incrementing the overall pcp count. This seems pretty unlikely though.
-
-It's unlikely because it would be an outright bug to specify both flags.
-
-> As
-> another side note, it looks like there's nothing stopping this from occurring;
-> there's only a VM_WARN_ON() in gfp_migratetype() that checks if both bits are
-> set.
-> 
-
-There is no explicit check for it because they should not be both set.
-I don't think this happens in kernel but if an out-of-tree module did
-it, it might corrupt adjacent PCPs.
-
--- 
-Mel Gorman
-SUSE Labs
+Regards,
+Roger
