@@ -2,172 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED65F3FC9CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B469A3FC9D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237828AbhHaOdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:33:32 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1905 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232774AbhHaOd2 (ORCPT
+        id S238093AbhHaOe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236942AbhHaOe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:33:28 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17VE4WBm032539;
-        Tue, 31 Aug 2021 10:32:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=aLHlqks51Yz2yAH+b9GNoPK2+kd9oKOUmDc/x11pwMU=;
- b=D8+/Dplnk94P41NYr6OVXMjWeTcJKpm3E99D9J/i9UXGqFQdHbS+sDcFH5Qss8JQNzFZ
- XicMDhFpcXMnjTQO5DcgRoO3OPpSmNtvOFFqwrpcv2i7HB7897gBomkfmKg4yn+wNDjW
- dsp6hMT7cFUol7HwvPYx0mpXi1ZVJU8DlHaJ96evTYm5j2phMCVbhdWeup+NoJncPpwY
- geDa8KwNxht9r0GEXiuri1lWSQVS5tvYCfIfNDdSghYDT6oaNATCNGctNnPYxPZV31WY
- B3EqARqO9RMY7Pr551CcfdjkT336WLLSowtvExEJejJUzApLCEGz1gqbAZUjR2LLRV6S NA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3asnt71885-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 10:32:33 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17VE4YeK032780;
-        Tue, 31 Aug 2021 10:32:32 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3asnt71874-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 10:32:32 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17VEHYIO006906;
-        Tue, 31 Aug 2021 14:32:30 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 3aqcs9c65f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 14:32:30 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17VEWP1N52101556
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 31 Aug 2021 14:32:25 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 77DEBAE06A;
-        Tue, 31 Aug 2021 14:32:25 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 03FC9AE05F;
-        Tue, 31 Aug 2021 14:32:25 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.164.122])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 31 Aug 2021 14:32:24 +0000 (GMT)
-Subject: Re: [PATCH v4 04/14] KVM: s390: pv: avoid stalls when making pages
- secure
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, frankja@linux.ibm.com, thuth@redhat.com,
-        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
-References: <20210818132620.46770-1-imbrenda@linux.ibm.com>
- <20210818132620.46770-5-imbrenda@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <731aeb25-3883-5941-9400-7cd8c43fc31c@de.ibm.com>
-Date:   Tue, 31 Aug 2021 16:32:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 31 Aug 2021 10:34:27 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2315EC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:33:32 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id d26so28181531wrc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:references:in-reply-to
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=smPFOktGxjGC+Ka43r7/WQHSP01FF5/7pAB/RUjJpV4=;
+        b=AsLarEwC2DIl28aNaxfHmcVDR7gDLzrwBaNfCtVmbTjYTzeuBYYtVHy299w2bZPviv
+         ETmWhowsY0U9rXtNQNPN4MKmznVwFEVDZsyytb1jSoRUrrH5aforeiajolKjky2Nzibr
+         7geWsndye6eIADa/BAjii6HRRxaVMhT6flG/c4dNOipJem/jjNwFaZE4Ja4PZi0o+Oyb
+         e44rtVA6eMzcSBCXdh8RSrhh02I/fN0M07w7kxnTsAjmewoeBhgkJn2cCS69NLt+Y63H
+         qj/51daTnKPEeLbhhy+Rkg0uLCJFpYMPb6EPbDLd+CpVYotV13Pt1jyL2fIjBjZ/63OL
+         3WIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
+         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
+        bh=smPFOktGxjGC+Ka43r7/WQHSP01FF5/7pAB/RUjJpV4=;
+        b=JhhMBXSmTwovw+dBykCvBUFj0Rv1T5kGDP5MRpdiDCzx+Dnni3D1t3Iw9ZB4MnM9pw
+         DUvH6WNFOQ36JR5RckwZbaHzdADgPEuLsUa/VQrjCgv1UNKq51HdOVrl6bAPheGqvL4R
+         rjZY81D8EKadMXvMMHHR/d3z+ztn7n+kwx28VWMLlsXsRL30ETRZcUvSE0XHWdImvYDL
+         F3WHT9wF6jnKIDZPIEQ2rbxIizTzIMLwVFsho4f7W+vQ10rMCrmpbMBz2rpY66/lSOkC
+         sB5nl5cNSUINzyyw6KedYuXbnJ6onSDH7Mo+XWKIEakWg2frwAuvFuvHvVDlgiH3ZvMl
+         K2Ng==
+X-Gm-Message-State: AOAM532844LDdeGCy/ZoRZSBvxWdlQ7yOgTetVO+U1KHThPauKVfhpDq
+        pSn5mu4RbYiFHlFIa1uT+CppBA==
+X-Google-Smtp-Source: ABdhPJyTTR6zGQEBSRbTCv9IzZ2WJeGXy2X5XoQq/beWXTSp/UY3OL+GBF9XPwA6D7i3seGROy3HXw==
+X-Received: by 2002:a5d:49cd:: with SMTP id t13mr31334228wrs.175.1630420410752;
+        Tue, 31 Aug 2021 07:33:30 -0700 (PDT)
+Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
+        by smtp.gmail.com with ESMTPSA id c9sm16291108wrf.77.2021.08.31.07.33.29
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 31 Aug 2021 07:33:30 -0700 (PDT)
+From:   John Cox <jc@kynesim.co.uk>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     mchehab@kernel.org, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@gmail.com, hverkuil-cisco@xs4all.nl,
+        ezequiel@vanguardiasur.com.ar, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH 1/2] media: hevc: Remove RPS named flags
+Date:   Tue, 31 Aug 2021 15:33:30 +0100
+Message-ID: <l0fsigdnavn1n1n33a8a2ftfuj81tgv3if@4ax.com>
+References: <20210831094900.203283-1-benjamin.gaignard@collabora.com> <20210831094900.203283-2-benjamin.gaignard@collabora.com> <4g2sigpsttf80t72c7spdqqjvvijnths2d@4ax.com> <fdf6417e-09cd-f0a0-a351-fccd64bfc8c7@collabora.com>
+In-Reply-To: <fdf6417e-09cd-f0a0-a351-fccd64bfc8c7@collabora.com>
+User-Agent: ForteAgent/8.00.32.1272
 MIME-Version: 1.0
-In-Reply-To: <20210818132620.46770-5-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nmgsrCJs4maGmaCDAAGwWqGZKiYANIHd
-X-Proofpoint-ORIG-GUID: 4sx5EiE5QIMtZANOyzQ3koe6epN6LH9T
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-31_05:2021-08-31,2021-08-31 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- spamscore=0 bulkscore=0 suspectscore=0 adultscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 clxscore=1015 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108310078
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+>Le 31/08/2021 =C3=A0 13:08, John Cox a =C3=A9crit=C2=A0:
+>>> Marking a picture as long-term reference is valid for DPB but not for=
+ RPS.
+>>> Change flag name to match with it description in HEVC spec chapiter
+>>> "8.3.2 Decoding process for reference picture set".
+>>> Remove the other unused RPS flags.
+>>>
+>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>>> ---
+>>> Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 6 ++----
+>>> drivers/staging/media/hantro/hantro_g2_hevc_dec.c         | 2 +-
+>>> drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 2 +-
+>>> include/media/hevc-ctrls.h                                | 4 +---
+>>> 4 files changed, 5 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git =
+a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst =
+b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>> index 3865acb9e0fd..eff33c511090 100644
+>>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>> @@ -3138,10 +3138,8 @@ enum v4l2_mpeg_video_hevc_size_of_length_field=
+ -
+>>> 	:c:type:`timeval` in struct :c:type:`v4l2_buffer` to a __u64.
+>>>      * - __u8
+>>>        - ``rps``
+>>> -      - The reference set for the reference frame
+>>> -        (V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_BEFORE,
+>>> -        V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_AFTER or
+>>> -        V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
+>>> +      - Long term flag for the reference frame
+>>> +        (V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
+>>>      * - __u8
+>>>        - ``field_pic``
+>>>        - Whether the reference is a field picture or a frame.
+>> If you are going to remove all the RPS values except for Long Term
+>> wouldn't it be better to rename the field too, either to "flags" or a
+>> bool "is_long_term"?  If we have a field called RPS it really should =
+be
+>> able to have a value for any of the 5 valid Reference Picture Sets =
+that
+>> a DPB entry can belong to.
+>
+>I will send a v2 and rename rps into flags.
 
+OK. I was going to say that you should merge the "field_pic" entry into
+a flags bitfield, but then I remembered that H265 doesn't have the
+concept of field_pics in the way that H264 does and I believe that both
+it and pic_order_count[1] are redundant (i.e. can never be used). But I
+guess that is the subject of yet another patch.
 
-On 18.08.21 15:26, Claudio Imbrenda wrote:
-> Improve make_secure_pte to avoid stalls when the system is heavily
-> overcommitted. This was especially problematic in kvm_s390_pv_unpack,
-> because of the loop over all pages that needed unpacking.
-> 
-> Due to the locks being held, it was not possible to simply replace
-> uv_call with uv_call_sched. A more complex approach was
-> needed, in which uv_call is replaced with __uv_call, which does not
-> loop. When the UVC needs to be executed again, -EAGAIN is returned, and
-> the caller (or its caller) will try again.
-> 
-> When -EAGAIN is returned, the path is the same as when the page is in
-> writeback (and the writeback check is also performed, which is
-> harmless).
+Regards
 
-To me it looks like
-handle_pv_uvc does not handle EAGAIN but also calls into this code. Is this code
-path ok or do we need to change something here?
+John Cox
 
-> 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Fixes: 214d9bbcd3a672 ("s390/mm: provide memory management functions for protected KVM guests")
-> ---
->   arch/s390/kernel/uv.c | 29 +++++++++++++++++++++++------
->   1 file changed, 23 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-> index aeb0a15bcbb7..68a8fbafcb9c 100644
-> --- a/arch/s390/kernel/uv.c
-> +++ b/arch/s390/kernel/uv.c
-> @@ -180,7 +180,7 @@ static int make_secure_pte(pte_t *ptep, unsigned long addr,
->   {
->   	pte_t entry = READ_ONCE(*ptep);
->   	struct page *page;
-> -	int expected, rc = 0;
-> +	int expected, cc = 0;
->   
->   	if (!pte_present(entry))
->   		return -ENXIO;
-> @@ -196,12 +196,25 @@ static int make_secure_pte(pte_t *ptep, unsigned long addr,
->   	if (!page_ref_freeze(page, expected))
->   		return -EBUSY;
->   	set_bit(PG_arch_1, &page->flags);
-> -	rc = uv_call(0, (u64)uvcb);
-> +	/*
-> +	 * If the UVC does not succeed or fail immediately, we don't want to
-> +	 * loop for long, or we might get stall notifications.
-> +	 * On the other hand, this is a complex scenario and we are holding a lot of
-> +	 * locks, so we can't easily sleep and reschedule. We try only once,
-> +	 * and if the UVC returned busy or partial completion, we return
-> +	 * -EAGAIN and we let the callers deal with it.
-> +	 */
-> +	cc = __uv_call(0, (u64)uvcb);
->   	page_ref_unfreeze(page, expected);
-> -	/* Return -ENXIO if the page was not mapped, -EINVAL otherwise */
-> -	if (rc)
-> -		rc = uvcb->rc == 0x10a ? -ENXIO : -EINVAL;
-> -	return rc;
-> +	/*
-> +	 * Return -ENXIO if the page was not mapped, -EINVAL for other errors.
-> +	 * If busy or partially completed, return -EAGAIN.
-> +	 */
-> +	if (cc == UVC_CC_OK)
-> +		return 0;
-> +	else if (cc == UVC_CC_BUSY || cc == UVC_CC_PARTIAL)
-> +		return -EAGAIN;
-> +	return uvcb->rc == 0x10a ? -ENXIO : -EINVAL;
->   }
->   
->   /*
-> @@ -254,6 +267,10 @@ int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb)
->   	mmap_read_unlock(gmap->mm);
->   
->   	if (rc == -EAGAIN) {
-> +		/*
-> +		 * If we are here because the UVC returned busy or partial
-> +		 * completion, this is just a useless check, but it is safe.
-> +		 */
->   		wait_on_page_writeback(page);
->   	} else if (rc == -EBUSY) {
->   		/*
-> 
+>> As a side note, it is important to my code that the DPB array contains
+>> all the DPB entries not just the ones that are in use in this frame.  =
+I
+>> need them so I can track which frames have left the DPB so I can
+>> reuse/free the MV tables associated with them (yes I could keep one =
+for
+>> every entry in the capture Q but that is generally wasteful on memory
+>> and the Pi is often memory constrained). So maybe update the docn on =
+DPB
+>> to make this explicit please? (I suspect that current code does this
+>> anyway as it is generally easier to do than to not.)
+>
+>That should be in another patch :-)
+>
+>Benjamin
+>
+>>
+>> John Cox
+>>
+>>> diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c =
+b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+>>> index 9ea864ca5625..be46b3c28b17 100644
+>>> --- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+>>> +++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+>>> @@ -503,7 +503,7 @@ static int set_ref(struct hantro_ctx *ctx)
+>>> 		compress_luma_addr =3D luma_addr + compress_luma_offset;
+>>> 		compress_chroma_addr =3D luma_addr + compress_chroma_offset;
+>>>
+>>> -		if (dpb[i].rps =3D=3D V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
+>>> +		if (dpb[i].rps =3D=3D V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
+>>> 			dpb_longterm_e |=3D BIT(V4L2_HEVC_DPB_ENTRIES_NUM_MAX - 1 - i);
+>>>
+>>> 		/*
+>>> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c =
+b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+>>> index ef0311a16d01..6086cc35e8cc 100644
+>>> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+>>> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+>>> @@ -169,7 +169,7 @@ static void cedrus_h265_ref_pic_list_write(struct=
+ cedrus_dev *dev,
+>>> 		unsigned int index =3D list[i];
+>>> 		u8 value =3D list[i];
+>>>
+>>> -		if (dpb[index].rps =3D=3D V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
+>>> +		if (dpb[index].rps =3D=3D V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
+>>> 			value |=3D VE_DEC_H265_SRAM_REF_PIC_LIST_LT_REF;
+>>>
+>>> 		/* Each SRAM word gathers up to 4 references. */
+>>> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+>>> index ef63bc205756..f587448ef495 100644
+>>> --- a/include/media/hevc-ctrls.h
+>>> +++ b/include/media/hevc-ctrls.h
+>>> @@ -127,9 +127,7 @@ struct v4l2_ctrl_hevc_pps {
+>>> 	__u64	flags;
+>>> };
+>>>
+>>> -#define V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_BEFORE	0x01
+>>> -#define V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_AFTER	0x02
+>>> -#define V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR		0x03
+>>> +#define V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE	0x01
+>>>
+>>> #define V4L2_HEVC_DPB_ENTRIES_NUM_MAX		16
+>>>
