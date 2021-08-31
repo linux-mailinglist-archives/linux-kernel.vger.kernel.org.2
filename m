@@ -2,170 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC9F3FC490
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB393FC4CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240528AbhHaJAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 05:00:55 -0400
-Received: from mail-eopbgr60048.outbound.protection.outlook.com ([40.107.6.48]:57523
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240405AbhHaJAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 05:00:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nDBaDdryANPsP9ps9xyD8oZMwm+u4ClHM51eBQQ8xWPQQ09DLfdCUTTAuWLaVXbixfiPsiCwXcjg9k9vcG0Nou4Ax8zW7irsVfe43GupHO4obyc6RdBdSIgS5JIbYuqVLfnIfQoZMHpmGbAXZGNiimsdY54Qb2BHSCjYaWpvbOpOkufVg+KNHcrgEvFdoFa/GGuatAViW1A9ab7FePRwACQaLQymK836JesbVH9CtBXWGwbof3Wcj7QTNFtBWsaV5djNBD/W2plO6yRkO/we0Qjvvm2Ptv89ikX5ItYohmTqrDdwK2x9CnO/s+FdU0AaKesG/sC3igMLax35ysqUeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K7uLyLVKP/G+Ob8OqD7LSwTqd1+QgbJGdGllZd0ayBU=;
- b=LcHnWQ3fbGaSn9XaWzY8BW0A0aWyRmZ//FJngzJEt+/HqNVReqVbHrv1TIgwkpyMZmYU/+B2BSO2d9OcJGgV92qNDaBeeItWXTv1iD+2n7VFJbWqFm4tidHeZmNNMWQGCS4vHsKaiG1iXVe6MwtBRDpLH6x5yY/g+BeqAi+/Xn1cyhcWy8KZZfXsXYvdtcvffWvA56S4BYqGWTvBvQJuJ1yJftQIKQEtWPREL6705ze8y9nm6ZsEyGKKlJ0f3TPixbcW13alFlrPE7ScyUvmGhwLeK3tObpY0omze5qFd3gwgm9Rq+yBP9BvXp8400zSEeDviPAfRMZ67xATkIhHOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K7uLyLVKP/G+Ob8OqD7LSwTqd1+QgbJGdGllZd0ayBU=;
- b=Sf/c192Wp9/k3Ucv83PnF/FPJ7MoQucIDnC/0ltxJbLDJaFaZzJak+VpVLarwiYWGvySHRMVpTbhFyUbNJohnFHurygUfEJyfIPFrGfDka5m4ig4VwPKVC4t8iVYEMAExpZvWApbR/YFBSfFFU1evIPyP0T5OAI4hCyGBeyKF6Y=
-Received: from DB8PR04MB5785.eurprd04.prod.outlook.com (2603:10a6:10:b0::22)
- by DBBPR04MB7994.eurprd04.prod.outlook.com (2603:10a6:10:1ea::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.24; Tue, 31 Aug
- 2021 08:59:57 +0000
-Received: from DB8PR04MB5785.eurprd04.prod.outlook.com
- ([fe80::7c1f:f1c4:3d81:13fc]) by DB8PR04MB5785.eurprd04.prod.outlook.com
- ([fe80::7c1f:f1c4:3d81:13fc%7]) with mapi id 15.20.4478.017; Tue, 31 Aug 2021
- 08:59:57 +0000
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
-        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "saeedm@mellanox.com" <saeedm@mellanox.com>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
-        Leo Li <leoyang.li@nxp.com>
-Subject: RE: [PATCH v3 net-next 5/8] net: dsa: felix: support psfp filter on
- vsc9959
-Thread-Topic: [PATCH v3 net-next 5/8] net: dsa: felix: support psfp filter on
- vsc9959
-Thread-Index: AQHXnhk3XLn1mK+aKEKIkxNIly6FZauNPsGAgAADucCAAAqfgIAAAG6g
-Date:   Tue, 31 Aug 2021 08:59:57 +0000
-Message-ID: <DB8PR04MB5785E37A5054FC94E4D6E7B5F0CC9@DB8PR04MB5785.eurprd04.prod.outlook.com>
-References: <20210831034536.17497-1-xiaoliang.yang_1@nxp.com>
- <20210831034536.17497-6-xiaoliang.yang_1@nxp.com>
- <20210831075450.u7smg5bibz3vvw4q@skbuf>
- <DB8PR04MB5785D9E678164B7CFE2A38CCF0CC9@DB8PR04MB5785.eurprd04.prod.outlook.com>
- <20210831084610.gadyyrkm4fwzf6hp@skbuf>
-In-Reply-To: <20210831084610.gadyyrkm4fwzf6hp@skbuf>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e94c379f-b26a-4974-0ea8-08d96c5db52c
-x-ms-traffictypediagnostic: DBBPR04MB7994:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DBBPR04MB7994D0C6D04B95EED3A8C4B0F0CC9@DBBPR04MB7994.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6zwKC+GorGQfHkETdUR2I9CVutcfnCa/2LVxcxo77EVFtDiHVjKMvR1p1Jd+uLKVLrImniQ+ICK7cjNHMkheoZqrLkmQDgy31zEu5WJ+Ww5ujJD1OXujQsTOzLjFIUaRO0kiUNynW7q3blCkPfBkkrGb1jt4lJfqgB5pPnLaeGDZ1kAk0aBdX0ERRFHiFw6TCq/bVVP4Tvt/UuiDcsH9Cw29tqRO9cs66mfh7tiCRnjNGRoVpD5MVdtUtSZBU9jKp2+niiZ8h5vkVy9DN2ac0Vr3NnYUbZY5K31lTf/uQIpxASuDwsOysCLSPUpO2S+GySMlCt++Omokq83x4nZs0AuJZgnhpHI4ZL+JrxBN5ciwLy7CrkqHp7DiFBCa1YJ3xPPHQfgMzJQo3M2TSiQHstnDkh174q+dGPdFxjVj3CzuLG4Flkx6edhyrgYJxcjyFoOUPHyvmAcs5w0KdZeGOU4oYpUm3WC3J4DftgPI5ymEiO1JrlLSsz+fZhIwFSZymIe6DvSRSPr6dm3Xf0qBxqwOWTSuBCqFVMrV3GT0FOCSVY0wFm0rHfBkEjFIwb6Um/TpW/LNdAGvAnR3hYUddF+EQqxIgXBVbmycP7qISGxFyLA/Nx73Bxf3HvApIFqEQQpieNsQxYtjgKrQicUp8lujcCgs5CKyKF8O+x1GhQM/08LJgB9i3U9keTxWwsM+D9je5WtsEVIZsv3FTb5gAQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB5785.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(39860400002)(346002)(376002)(478600001)(71200400001)(122000001)(33656002)(6636002)(52536014)(66476007)(38100700002)(6862004)(7416002)(5660300002)(4326008)(26005)(186003)(7696005)(8676002)(8936002)(55016002)(9686003)(316002)(66446008)(86362001)(38070700005)(2906002)(66946007)(6506007)(76116006)(54906003)(64756008)(66556008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?mmWdxFS2ve2GxTbwZoWxAmPVQkEHnEqHkUZVPY2+8p+BOZiHwUTGBirtUcPa?=
- =?us-ascii?Q?OgE4/RgmQqFeWA5VcVhn6d66A7oqYr2h7gzHYE1tz5lfyMa65wk5iq5ofqbP?=
- =?us-ascii?Q?yqeOm6Zm71Qqz2aMhkR6FRxHELYJ4UVPnzJQF79l4zZjwDeIigAnii0qnjhr?=
- =?us-ascii?Q?n8mj+td7QAlj9g4QZV0eFc5AiImee4NC59PxRT6frVyTNgIvlGIhDA3hxYEu?=
- =?us-ascii?Q?uAyryH5P2+es/+XqxunszRkMuhLOLub9wpbHmUzL4R4UW8YmQksAlQBV/yKL?=
- =?us-ascii?Q?8GdyQ4eT70In2gtMXlp9cFGRH4z1qj5iHkYTDqynSRjgqxU89nAA7bjsFfW5?=
- =?us-ascii?Q?cgUOd0b/4nrC4RkQAQIkECfqmN4ZbAJUeP+aJ05CkJKFRd3CP1366S1bdvUM?=
- =?us-ascii?Q?mFpUrRBbdbS/lKyje80GOcIumvwtaW9CmGiigu24qkaGYPGh0sA3cRRVMiZG?=
- =?us-ascii?Q?AFG7kb2drHa/Y/qjWaB0YskIdieDPg9etM0R7KgEQ/i4txrAWlLgNKacDaS1?=
- =?us-ascii?Q?wRvl+a/jnlJbctD17rvDqBW1y/aRi+apfwFFFxDUq8E9R1hrYvxPVgkR0vZV?=
- =?us-ascii?Q?jaPVBYAkGuyUOFtf8gfbr11I893FeK+8SsAzDBO1pfpOLufFIIw64aeBPHln?=
- =?us-ascii?Q?93Ko17iLAiAFw3D0kKbodsuNMvlT9tdP/7WE9oyeJVQ5eV0/4r4notTwy5zG?=
- =?us-ascii?Q?A45MLXpKm70xy1j3gkx2XPP+kezv9CgM4gblaGONi0Q4tYgHr61B9BkUlkGO?=
- =?us-ascii?Q?VlcbbxrEYPaX3EmyZv1PWLspb+ZTCNGIGjEzFfeBfDNYAjJ5gP1ywvEXApwJ?=
- =?us-ascii?Q?dgSMZ9uf160fRoyg0IzHRi0Yh72qGKEv33LVBDJc5JJROHTDTIyyzCeC6xDe?=
- =?us-ascii?Q?ozKmqTqzC4ioCZMbCgOY8nGKnQ1TvMlGaC/8nDNfMnNb4TwWwc8jbO9j30bI?=
- =?us-ascii?Q?kvb6f+qHiwSOSONbleGzwehshBhP+KBeViUnkqqb3UC//FCEDHL8dzB+hSiJ?=
- =?us-ascii?Q?oPDh4bOCZ/GGWWe/bS3OrNrXXTXstREayYzq5XrMKFV3+FcxQD+FC4cpFyL5?=
- =?us-ascii?Q?sgRMWgeuA3yHpDMJyoQ97cmAmZN90KCkE4Pkb05rnVGg+1ZRthIZO0+wMjFG?=
- =?us-ascii?Q?LNwpQ80TXrUxWk9Be7RfUfAs9bw9a2dCOMKKCGswJEkXD/N8HuuDMDZAM67f?=
- =?us-ascii?Q?hy9ZzwpRcuU5flkFn0O0XRhhCV2syB1///jWkKa35FHk2QX7Qdo6+NnAX7tP?=
- =?us-ascii?Q?WxkPBJfbxdYOvimctjbTyQpNb8umcCdYJj+P3LH60if76wJY8l6ggd5hO+w3?=
- =?us-ascii?Q?HyL9PANqN2Bn59CwaLHYG0og?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S240447AbhHaJIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 05:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240370AbhHaJIf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 05:08:35 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B02C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:07:40 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id f4so1602804ybr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:07:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z9WReO737XvBGcFweYL9X7AjJlBEgD6o3hCVwVj5PgA=;
+        b=dFSImeZWMvygJT+lci3mTcdU6P09+HPgNnkK9qhPbUelu7+o9Jbqhm61zCmm+jdVwx
+         63nWBmng9QWYl31TAuLDq3sGsSv+TCrs8ZsMlmIVu9IrEd1UwnrUTZp1/62N8HBggsFr
+         OJUPvAWhNgRVd0JwerCKryOytWbZ7uCRccDw/6WknPFAYnKmQH/9Mff9JjWiZ7Vl4S1f
+         hqTarpQDYErTJ/im/3A2sRM/1ywMYN1nSz0Iu+3HV5NSaQje+QlwFiatgJXWW4ecETGz
+         JW7u5AxeGhgxqiRI6IfqE1qvUd3tpKZihVzja1qm78S5vXJshBpbHb52RxBU60RhODNs
+         KlPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z9WReO737XvBGcFweYL9X7AjJlBEgD6o3hCVwVj5PgA=;
+        b=kRKx5IfSH20NmEK7+gj6mGM0LApWYuKGMsrZOUl495PfZtkwfyfohomEMwAX1J9hPZ
+         RpxR2BULaySFx1Px/zfeFKKPnfDKAhofjlMRhRIRjzx+aLWLn/fGSDli9jPfSJHEhve7
+         Hj+PU96AKLzn51QK55wFQuFeKZyWSb5EfgO9MC1WJJwpBzEnigIDG0m2pvqi9YD1bsuK
+         rVZPC7LEK4geXbEBIsXpR37DdUSlrBnUz1w86l2Il/jKoFu0g8J+8aUI3RfGssiKnnh2
+         cRhQuwp54QnQa+d1+ymUJpELVRuaYxx6pIwLqaOtC9EhHODHcR58S9/i9+3LKnnd/noG
+         celw==
+X-Gm-Message-State: AOAM530JJzgi0ph1R4nP9d7b1FMoOqiC23RS4rcVWrin5oHbC9UYbT2M
+        gxqktpGyCqRbnm2mCqRfPd6NHgpiSh1s6r2hc1LGAPV8ivo=
+X-Google-Smtp-Source: ABdhPJyMNMvSs4tK/E9ZN1j+n8cnxhnu8pdH1dz1/PqYf57AN6v9ljrv28r/XlDtmmfeqEUnSkw1EogGewK24oOrmYw=
+X-Received: by 2002:a25:48c7:: with SMTP id v190mr28471081yba.312.1630400859621;
+ Tue, 31 Aug 2021 02:07:39 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB5785.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e94c379f-b26a-4974-0ea8-08d96c5db52c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2021 08:59:57.5808
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6aJy56fRGDhm8wz0s6bXZG1v1QkmpL9Wdh4aY0S85QKpDBWqlaGTXhke4jIFTTcmCyWzz0DVYvWFTvr1Bl5MLsKcrQBYY59A0l4rM0ZtWhI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7994
+References: <32ab7b833743449b21f529cae41f4cbb60dc863c.1630387746.git.viresh.kumar@linaro.org>
+ <20210831022224-mutt-send-email-mst@kernel.org> <20210831063149.gcctzqtn635mn3wb@vireshk-i7>
+In-Reply-To: <20210831063149.gcctzqtn635mn3wb@vireshk-i7>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 31 Aug 2021 11:07:28 +0200
+Message-ID: <CAMpxmJWeYTf4yVTJmnHf8Lqrf=J9rGxq54rPFGMYjLaKhH6fdA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: virtio: Fix sparse warnings
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 16:46:13AM +0800, Vladimir Oltean wrote:
-> > > > +static int vsc9959_mact_stream_set(struct ocelot *ocelot,
-> > > > +				   struct felix_stream *stream,
-> > > > +				   struct netlink_ext_ack *extack) {
-> > > > +	struct ocelot_mact_entry entry;
-> > > > +	u32 row, col, reg, dst_idx;
-> > > > +	int ret;
-> > > > +
-> > > > +	/* Stream identification desn't support to add a stream with non
-> > > > +	 * existent MAC (The MAC entry has not been learned in MAC table)=
-.
-> > > > +	 */
+On Tue, Aug 31, 2021 at 8:31 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 31-08-21, 02:25, Michael S. Tsirkin wrote:
+> > On Tue, Aug 31, 2021 at 10:59:25AM +0530, Viresh Kumar wrote:
+> > > Fix warnings reported by sparse, related to type mismatch between u16
+> > > and __le16.
 > > >
-> > > Who will add the MAC entry to the MAC table in this design? The user?
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Fixes: 3a29355a22c0 ("gpio: Add virtio-gpio driver")
+> > > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > >
-> > Yes, The MAC entry is always learned by hardware, user also can add it
-> > by using "bridge fdb add".
+> > Acked-by: Michael S. Tsirkin <mst@redhat.com>
 > >
-> > > So if the STREAMDATA entry for this SFID was valid, you mark the MAC
-> > > table entry as static, otherwise you mark it as ageable? Why?
-> >
-> > If the MAC entry is learned by hardware, it's marked as ageable. When
-> > setting the PSFP filter on this stream, it needs to be set to static.
-> > For example, if the MAC table entry is not set to static, when link is
-> > down for a period of time, the MAC entry will be forgotten, and SFID
-> > information will be lost.
-> > After disable PSFP filter on the stream, there is no need to keep the
-> > MAC entry static, setting the type back to ageable can cope with
-> > network topology changes.
-> >
->=20
-> So if the MAC table entry is ageable, will the TSN stream disappear from
-> hardware even though it is still present in tc?
+> > I'm not sure which tree has the above commit - can this be squashed?
+>
+> It has gone via the GPIO tree:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git/log/?h=gpio/for-next
+>
+> I believe it can be squashed, Bartosz can confirm the same though.
 
-Yes, PSFP filter information on the stream will be lost in hardware.
+I just applied it on top of my for-next branch.
 
->=20
-> I think in previous versions you were automatically installing a static M=
-AC table
-> entry when one was not present (either it was absent, or the entry was
-> dynamically learned). Why did that change?
+Bart
 
-The PSFP gate and police action are set on ingress port, and " tc-filter" h=
-as no parameter to set the forward port for the filtered stream. And I also=
- think that adding a FDB mac entry in tc-filter command is not good.
-
+>
+> > Also, the driver lacks a MAINTAINERS entry - we want at least
+> > L:      virtualization@lists.linux-foundation.org
+> > on all virtio drivers.
+>
+> Sure, I will send a patch for that.
+>
+> --
+> viresh
