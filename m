@@ -2,127 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FA13FCC2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3BB3FCC33
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240223AbhHaRSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 13:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
+        id S239735AbhHaRUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 13:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233368AbhHaRRz (ORCPT
+        with ESMTP id S230257AbhHaRUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 13:17:55 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC9AC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:16:59 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id m18so244253lfl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:16:59 -0700 (PDT)
+        Tue, 31 Aug 2021 13:20:30 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067EBC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:19:35 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id 62-20020a3706410000b02903d2cdd9acf0so9819288qkg.21
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:19:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=obdT8H3XYks2rJPjk5mybOLqMo1D6xNjm3PqnOSi/Co=;
-        b=M8HO7XZ8gEpPcSZ9IHcOu5DzjDBc45aO6HMKmSD4PUBvAlGCeW8AZ3yffZUgeXUO4q
-         PmKxHho9OVF/9kWc8M629PmHyioaO74KXGPdnHDooREtDV3DJsWyQuGGYMAT8uj8FHXn
-         SAfJhMYypBSCOqo22iy/+kHfq/jQNKe05Dg/FlSRJhtHTL98u9IWKVNU0DzOaIFCc7Pd
-         OrpftmTdYzwCdAlrrBAQ6wBPH7V1C857vpj88o/pusO94g8khv6GycpRXdlq24n0tTiI
-         mgfJHd9SB/m7zaFCI3bkptzHQ4WnWqM81CMYv5ekHtgMZBP+iw6oOwlxfExLKie8zXGO
-         C6YA==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=dmkOdfcI6U6JDwUvYTzByiIe7Et2CCkWqmfYAB8t7A8=;
+        b=Ml7dcq37gQJuyMBrIRF+SqWDEkygN+PXfDuRZsIk3ntCeBt22foD9APomI6rr6CxX3
+         ZKteec+wNKmAvAQnLa71p/gjdVmuh7ShSkwwmutFFZacegSnKf6OzEwmYetPuxH8e0nI
+         kf9+fdlLbzBJlHOzhV7ota53+5qxuERECQ9PlpJIBOpnX1lDxbBGoMH/VIlU9qTS4lxf
+         WWUJgrQDq5Um7bh7nZll/bqFem2VT9iohl/DmDAqDmafJejgdwKQz4yfPsxKWx5wybqv
+         ZdgRlJgyyAfCYldUDVApV1q707yGvaXvh2DgCxLe+Dz+YPjenXA7pbeZdh87UYbIxiWW
+         Lx0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=obdT8H3XYks2rJPjk5mybOLqMo1D6xNjm3PqnOSi/Co=;
-        b=TgbPW9d+XNfdPP/QF31ZbQu7odHPa3QZ/zwB4zbviyQGkEdzVC4S51rCZv/vJ8yXqA
-         gli/KFrDsLP0jUm04kXxOHMWlYYvHyOZZqFg5twNGbQmsf5RBpJrllB9OE3y631H8Q5d
-         jSKwWWtUqPrPhffAYQeSzvxWRiYX1ijiCA+WM+7Y3LmAQ02O9zTnRo2kXCZDuTr1j+FT
-         DX9g39hb3pP9CBNL0RvRuQ2FqAmXxEUjbkEXqpafFw//Rtx2R6bymNyr0cjhdIzXMvl2
-         N29v/bzEFYnPkjEs9VE8RLVw4A3M+cF4fBOIpFpmGj469XCHjTEi9G7pc4DeyDBQJREP
-         hT0g==
-X-Gm-Message-State: AOAM530fVfSUDkv/4ID3gKnxsAxX+nR7mmR8DnCH6ZyXohnQPJiWe3hx
-        vS/OALczKZrVPMWtLUD/4YG1kPptv4lvvylPo+HJkaNisYEN6w==
-X-Google-Smtp-Source: ABdhPJydYfYxTQDSdJbtgTOZjrnwb5IRRbv7WAkxTk6roO4tlccLhpb7ALDT3CbhQTmTtv/QjyiiaF86jVRZDomz0/8=
-X-Received: by 2002:a05:6512:3e22:: with SMTP id i34mr22513753lfv.374.1630430217595;
- Tue, 31 Aug 2021 10:16:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210831074004.3195284-1-masahiroy@kernel.org> <20210831074004.3195284-3-masahiroy@kernel.org>
-In-Reply-To: <20210831074004.3195284-3-masahiroy@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 31 Aug 2021 10:16:45 -0700
-Message-ID: <CAKwvOdn9661=wg3ErhaHM=QS4=zOqjK7_f7VqpTgUoGTGnzHsA@mail.gmail.com>
-Subject: Re: [PATCH v2 02/13] kbuild: rename __objtool_obj to objtool
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=dmkOdfcI6U6JDwUvYTzByiIe7Et2CCkWqmfYAB8t7A8=;
+        b=i09v3pjkKuYFtGB5PY6038lEK+x0Y1Ay9CldMVhS4eyxaIRGUUexlZpMuVC22l5k21
+         LlYVzRg1Bjvy0vDRjA2hsm/p9vxOlP2s2hY4xSmhUGEX2nqAsuCgFysQX5PBRB8MnbT/
+         gpaCd+7qRm2ef10x7U+ahCVUO/kG5T/dK5EQ0EKi0Zqx/s2PkrOcCsjKxKErUQKKOCjz
+         uu1utbQShHfUM1t6rtLR+VmD2xl0B0iMovIMPJeLr6rrinKyr035FJrWuoBbPi5gTcro
+         jHnxJe0a61eycUwgchyDOs7fuAIEn/+l80nE6f7WFusqHV4glb/v6mPaAyuiQMCKw4PG
+         r90w==
+X-Gm-Message-State: AOAM531PbIrsKA9P1O9VTTjfYJOm3/oePa/LEPIsP3z5VMqolyTg44V1
+        4lv+1ig+XS2F3Lw/wMLMrqnFMzdDz7wyJw==
+X-Google-Smtp-Source: ABdhPJyFEMhIUiSB9Ixf8MBWUFnT4sJu0XyS49wBGirVOsYp6NnJCWVeWZ0j7Cg8K1VyPfNHtVLeFMNTiX9ucg==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:7ad4:b790:ae28:9a76])
+ (user=dlatypov job=sendgmr) by 2002:ad4:5247:: with SMTP id
+ s7mr29849422qvq.58.1630430374053; Tue, 31 Aug 2021 10:19:34 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 10:19:25 -0700
+Message-Id: <20210831171926.3832806-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+Subject: [PATCH v3 1/2] kunit: drop assumption in kunit-log-test about current suite
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 12:40 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Rename __objtool_obj to objtool, and move it out of the
-> 'ifndef CONFIG_LTO_CLANG' conditional, so it can be used for
-> cmd_cc_lto_link_modules as well.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+This test assumes that the declared kunit_suite object is the exact one
+which is being executed, which KUnit will not guarantee [1].
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Specifically, `suite->log` is not initialized until a suite object is
+executed. So if KUnit makes a copy of the suite and runs that instead,
+this test dereferences an invalid pointer and (hopefully) segfaults.
 
-> ---
->
->  scripts/Makefile.build | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
->
-> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> index 17508c0e4358..e78096cd396b 100644
-> --- a/scripts/Makefile.build
-> +++ b/scripts/Makefile.build
-> @@ -225,6 +225,8 @@ endif # CONFIG_FTRACE_MCOUNT_USE_RECORDMCOUNT
->
->  ifdef CONFIG_STACK_VALIDATION
->
-> +objtool := $(objtree)/tools/objtool/objtool
-> +
->  objtool_args =                                                         \
->         $(if $(CONFIG_UNWINDER_ORC),orc generate,check)                 \
->         $(if $(part-of-module), --module)                               \
-> @@ -236,17 +238,15 @@ objtool_args =                                                            \
->
->  ifndef CONFIG_LTO_CLANG
->
-> -__objtool_obj := $(objtree)/tools/objtool/objtool
-> -
->  # 'OBJECT_FILES_NON_STANDARD := y': skip objtool checking for a directory
->  # 'OBJECT_FILES_NON_STANDARD_foo.o := 'y': skip objtool checking for a file
->  # 'OBJECT_FILES_NON_STANDARD_foo.o := 'n': override directory skip for a file
->  cmd_objtool = $(if $(patsubst y%,, \
->         $(OBJECT_FILES_NON_STANDARD_$(basetarget).o)$(OBJECT_FILES_NON_STANDARD)n), \
-> -       $(__objtool_obj) $(objtool_args) $@)
-> +       $(objtool) $(objtool_args) $@)
->  objtool_obj = $(if $(patsubst y%,, \
->         $(OBJECT_FILES_NON_STANDARD_$(basetarget).o)$(OBJECT_FILES_NON_STANDARD)n), \
-> -       $(__objtool_obj))
-> +       $(objtool))
->
->  endif # CONFIG_LTO_CLANG
->  endif # CONFIG_STACK_VALIDATION
-> @@ -300,8 +300,7 @@ cmd_cc_lto_link_modules =                                           \
->  ifdef CONFIG_STACK_VALIDATION
->  # objtool was skipped for LLVM bitcode, run it now that we have compiled
->  # modules into native code
-> -cmd_cc_lto_link_modules += ;                                           \
-> -       $(objtree)/tools/objtool/objtool $(objtool_args) --module $@
-> +cmd_cc_lto_link_modules += ; $(objtool) $(objtool_args) --module $@
->  endif
->
->  $(obj)/%.lto.o: $(obj)/%.o FORCE
-> --
-> 2.30.2
->
+N.B. since we no longer assume this, we can no longer verify that
+`suite->log` is *not* allocated during normal execution.
 
+An alternative to this patch that would allow us to test that would
+require exposing an API for the current test to get its current suite.
+Exposing that for one internal kunit test seems like overkill, and
+grants users more footguns (e.g. reusing a test case in multiple suites
+and changing behavior based on the suite name, dynamically modifying the
+setup/cleanup funcs, storing/reading stuff out of the suite->log, etc.).
 
+[1] In a subsequent patch, KUnit will allow running subsets of test
+cases within a suite by making a copy of the suite w/ the filtered test
+list. But there are other reasons KUnit might execute a copy, e.g. if it
+ever wants to support parallel execution of different suites, recovering
+from errors and restarting suites
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ lib/kunit/kunit-test.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
+index d69efcbed624..555601d17f79 100644
+--- a/lib/kunit/kunit-test.c
++++ b/lib/kunit/kunit-test.c
+@@ -415,12 +415,15 @@ static struct kunit_suite kunit_log_test_suite = {
+ 
+ static void kunit_log_test(struct kunit *test)
+ {
+-	struct kunit_suite *suite = &kunit_log_test_suite;
++	struct kunit_suite suite;
++
++	suite.log = kunit_kzalloc(test, KUNIT_LOG_SIZE, GFP_KERNEL);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
+ 
+ 	kunit_log(KERN_INFO, test, "put this in log.");
+ 	kunit_log(KERN_INFO, test, "this too.");
+-	kunit_log(KERN_INFO, suite, "add to suite log.");
+-	kunit_log(KERN_INFO, suite, "along with this.");
++	kunit_log(KERN_INFO, &suite, "add to suite log.");
++	kunit_log(KERN_INFO, &suite, "along with this.");
+ 
+ #ifdef CONFIG_KUNIT_DEBUGFS
+ 	KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+@@ -428,12 +431,11 @@ static void kunit_log_test(struct kunit *test)
+ 	KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+ 				     strstr(test->log, "this too."));
+ 	KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+-				     strstr(suite->log, "add to suite log."));
++				     strstr(suite.log, "add to suite log."));
+ 	KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+-				     strstr(suite->log, "along with this."));
++				     strstr(suite.log, "along with this."));
+ #else
+ 	KUNIT_EXPECT_PTR_EQ(test, test->log, (char *)NULL);
+-	KUNIT_EXPECT_PTR_EQ(test, suite->log, (char *)NULL);
+ #endif
+ }
+ 
+
+base-commit: 9c849ce86e0fa93a218614eac562ace44053d7ce
 -- 
-Thanks,
-~Nick Desaulniers
+2.33.0.259.gc128427fd7-goog
+
