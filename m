@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B5D3FCF6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A553FCF70
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239857AbhHaWHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 18:07:03 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50832 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230085AbhHaWHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 18:07:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=nvErR40qfu1kFHYvqRKQ6/X+/HW+U8tJ8ybWTvE/KVQ=; b=pwBjBgmSmIucoQsPZR0eQWjlXc
-        n1WHhMUfOJJghCBhuolPMcyhyzDZaBjgufGu8tvEU+7H92a3OhbuTs38SwifTtFq7pZs8I7NW7kGg
-        dnG+v+mHgmGIoL+eHjwCoqDKFrh7AO5mXKS/lx7dMHRpZVtZooAy1+m/R6iuw0bf2AQU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mLBtE-004lbS-9m; Wed, 01 Sep 2021 00:05:56 +0200
-Date:   Wed, 1 Sep 2021 00:05:56 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
- FWNODE_FLAG_BROKEN_PARENT
-Message-ID: <YS6nxLp5TYCK+mJP@lunn.ch>
-References: <YSg+dRPSX9/ph6tb@lunn.ch>
- <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
- <YSjsQmx8l4MXNvP+@lunn.ch>
- <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
- <YSlG4XRGrq5D1/WU@lunn.ch>
- <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
- <YSpr/BOZj2PKoC8B@lunn.ch>
- <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
- <YS4rw7NQcpRmkO/K@lunn.ch>
- <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
+        id S240223AbhHaWIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 18:08:32 -0400
+Received: from mail-ed1-f48.google.com ([209.85.208.48]:37554 "EHLO
+        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230085AbhHaWIb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 18:08:31 -0400
+Received: by mail-ed1-f48.google.com with SMTP id g21so802124edw.4
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 15:07:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iiqDg2IJazrjCZh7knpESd4lYmfxjk4NhNOmIuXSw2o=;
+        b=Jo6kUNyzYOHivRN1EehQkSk1wmBEbZyOenZ685x4TMKRB+pwcqUkha0PZyaTR0aMy/
+         RkzHJDQpVM4LjRH3eSbuB5u6ifpu16PnL0Fn1EkL4UASFUixH6W/QNfaP4V2tQu0Xnvj
+         mvFJMoz4KeZNsnlI3PAs+pEtGkQpv5goF/1+jLbZw3Wgx2aVDRAZ4mk0bUEEQb7FSr2Q
+         UqKfbqnd2+ojFDV/7RbMkQzq7N2gQrS6IxaaHYrktFMboXoet7aS0kcEvobOfPmVA5A1
+         czLlXAyES1WXYuAg7GaLD0Bara6al0poGdXwmGLYmUPntMI1ZVfOBMVNyFRcBwZXny/E
+         LZTA==
+X-Gm-Message-State: AOAM533PNBKsKLqHsKevJySmCmunm6lu/yTges5RH2OewlYGddMF8qoj
+        Cy2QNByCBRVhPMGsEalhbmNWZSTTMAsFkvu3Tus=
+X-Google-Smtp-Source: ABdhPJwg7H/ekAtx80usOC6IeDVn6PsZ4UWG6w/201xh65/2dGIBeFF1fNty3rmbeyHRFYl11sTGHMvNbdTnrYAwbRo=
+X-Received: by 2002:a05:6402:445:: with SMTP id p5mr32307788edw.208.1630447654736;
+ Tue, 31 Aug 2021 15:07:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com>
+ <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
+ <CAJvTdKn09GiAOgdsOR-+ooEO=bmj8VDL9e9sSAsu2UPx73a-Mw@mail.gmail.com> <YS0bAPaDGcDKftUp@zn.tnic>
+In-Reply-To: <YS0bAPaDGcDKftUp@zn.tnic>
+From:   Len Brown <lenb@kernel.org>
+Date:   Tue, 31 Aug 2021 18:07:23 -0400
+Message-ID: <CAJvTdKm=mPQUhJax-UietFFELOuHn89he6FPNb5jUC_Mcdc_rw@mail.gmail.com>
+Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
+ protect dynamic user state
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Thiago Macieira <thiago.macieira@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 12:26:30PM -0700, Saravana Kannan wrote:
-> On Tue, Aug 31, 2021 at 6:16 AM Andrew Lunn <andrew@lunn.ch> wrote:
-> >
-> > > > I must admit, my main problem at the moment is -rc1 in two weeks
-> > > > time. It seems like a number of board with Ethernet switches will be
-> > > > broken, that worked before. phy-handle is not limited to switch
-> > > > drivers, it is also used for Ethernet drivers. So it could be, a
-> > > > number of Ethernet drivers are also going to be broken in -rc1?
-> > >
-> > > Again, in those cases, based on your FEC example, fw_devlink=on
-> > > actually improves things.
-> >
-> > Debatable. I did some testing. As expected some boards with Ethernet
-> > switches are now broken.
-> 
-> To clarify myself, I'm saying the patch to parse "ethernet" [8] will
-> make things better with fw_devlink=on for FEC. Not sure if you tested
-> that patch or not.
+On Mon, Aug 30, 2021 at 1:52 PM Borislav Petkov <bp@alien8.de> wrote:
 
-Yes and no. I was tested with the FEC, but because of fw_devlink=on,
-the switches don't probe correctly. So it is not possible to see if it
-helped or not, since its plain broken.
+> Well, if you preallocate everything...
 
-> Not sure what was the tip of the tree with which you bisected.
+Nothing prevents, say, a pthread_create() or anything
+else where the kernel consumes memory on behalf of a process
+from failing at run-time...  AMX does not add a unique OOM risk here.
 
-I manually tested linux-next, v5.14, v5.13 and v5.12 and then
-bisected:
+> > The advantage of the #NM over the syscall is that the programmer
+> > doesn't actually have to do anything. Also, transparently allocated
+> > buffers offer a theoretical benefit that a program may have many
+> > threads, but only a few may actually touch AMX, and so there is
+> > savings to be had by allocating buffers only for the threads that
+> > actually use the buffers.
+>
+> The program already asked the kernel whether it can use AMX - it can
+> allocate the buffers for the threads too.
 
-$ git bisect log
-git bisect start
-# good: [9f4ad9e425a1d3b6a34617b8ea226d56a119a717] Linux 5.12
-git bisect good 9f4ad9e425a1d3b6a34617b8ea226d56a119a717
-# bad: [62fb9874f5da54fdb243003b386128037319b219] Linux 5.13
+The result is that if one thread in a 1,000 task process requests
+and touches AMX, the kernel would allocate 8MB, instead of 8KB
+of context switch buffers for that process, no?
 
-So well away from linux-next which contains the phy-handle parser.
-
-I will try to give the two patches a try today or tomorrow.
-
-> Thanks for testing it out. And worst case, we'll revert phy-handle
-> support.
-
-Which is not enough to fix these Ethernet switches.
-
-      Andrew
+Len Brown, Intel Open Source Technology Center
