@@ -2,245 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F423FCCBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 20:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE58F3FCCC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 20:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239744AbhHaSE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 14:04:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50462 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230145AbhHaSE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 14:04:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A32160F6C;
-        Tue, 31 Aug 2021 18:03:31 +0000 (UTC)
-Date:   Tue, 31 Aug 2021 19:03:28 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [GIT PULL] arm64 updates for 5.15
-Message-ID: <YS5u8M97frcjTbJW@arm.com>
+        id S239350AbhHaSHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 14:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhHaSHt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 14:07:49 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FC9C061575;
+        Tue, 31 Aug 2021 11:06:53 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id w4so125828ljh.13;
+        Tue, 31 Aug 2021 11:06:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4uoFy8lFPfOaRv20kXGYEUnEgHw1OP9Lm88Uu/BMnVE=;
+        b=u1zPg1ZS36y+OJdwnG9hcpPsMVJIN/gOuB5RL3hnCHyd5TqigUN5AO9MKcJ8QrQ57f
+         tihJTWu7OorM/pV7Ri9OHGMxCemm2s3jyILoDdCzS07iOmhoE/ct7C9O0wn7I83AEjEa
+         ZgRgkBc6ND/hFiHUUT1KTE6GBf/oi/1bWz533CN421bo51io3jv79cxhSj62mYDfNTVi
+         EtsJ1O5PIz03FeNvBbwEsBgGDVAgXGgVJWGP/eGF1hfScw4y4TF2Rxn1a+KwyEwQOb84
+         LpqYpgqt7ZN3OD84pJHXjA6yx9/GcfT+7sJlnZ+RdmZOFFEXeXhGP2TrzPpinwoG7izs
+         1RXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4uoFy8lFPfOaRv20kXGYEUnEgHw1OP9Lm88Uu/BMnVE=;
+        b=VZt78c+RNmqkFxpSjcMIzFgb+00oRkJYqQgtJ7q/tBsyl1vV0LqwZuElkGWZgpOixm
+         o1xR9pxMThecitlTay7ZlytENI1gtlv7eBSqE2wb2awNm4e/wuAM6pJU8zzThk6KCsLi
+         qT3/hd7BHLdvXOrubGBF9Zn8NiRTO2CIROrkcIfrqwvuhOiDtNL1Sa93yTOnoV7LMQFs
+         hfrHHIq+MAXq8Va+ILfTFFRjRUYYff1LmBA/pOxtjim1zazT2QJpW+DQrcCIf9Uuw6gd
+         vsjTUfU7tk+dFUZXiC8o7oWBoWXj068rCjAJ2tnBvrUFe1nIrTJdbZmWW7xtEnufx+JI
+         v9kg==
+X-Gm-Message-State: AOAM53062wQkc0lxD8x6Ho1J9qmlCOYEWr7Zvy49KVpbk5O0tRYAn9P5
+        ZJCcbVSsUH7nsox/Ir+j2bSp2V5iYVvpjpKWP+yLJTfg
+X-Google-Smtp-Source: ABdhPJwHI/awRoxhF/yFyqZlpxqd+L2fpZ9GRmrzEMOYW6p5QGXjiKG/Ums/ZeYJAQVJprqmbAFf8ykZZvNpgGthLSo=
+X-Received: by 2002:a2e:bb8f:: with SMTP id y15mr25733061lje.148.1630433212221;
+ Tue, 31 Aug 2021 11:06:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <CAH2r5mvVdBoUW-0BfsxiRAE6X30cqhBtNDvG7pwKdQwsu+wXfg@mail.gmail.com>
+ <CAHk-=wiNvB_j3VZYJ1yZqq+9JjgWCO1MUmRsjTKBwQ+x=kB5tg@mail.gmail.com>
+ <CAH2r5mtTLUQa2U=MGHOVk_FsPZg6owMsw+RoTudWxGuoQej41g@mail.gmail.com> <CAHk-=wjxmDks6CS41PCy_BZG70pjAhcPBV_7ga8kSJySvvDezQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wjxmDks6CS41PCy_BZG70pjAhcPBV_7ga8kSJySvvDezQ@mail.gmail.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Tue, 31 Aug 2021 13:06:41 -0500
+Message-ID: <CAH2r5mt72NYan9q8MR5H8cNkYzT4jn1ZM1f3jp5V-fDs2cyB-A@mail.gmail.com>
+Subject: Re: [GIT PULL] cifs/smb3 client fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Aug 31, 2021 at 12:43 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Tue, Aug 31, 2021 at 10:09 AM Steve French <smfrench@gmail.com> wrote:
+> >
+> >   So if you are ok with renaming the client dir and module
+> > name - we can gradually stop using the word/name "cifs" except for the
+> > parts of code which really are needed to access the (unfortunately
+> > hundreds of millions of) very old devices which require SMB1 ("CIFS").
+>
+> I'm ok with directory renames, git handles it all well enough that the
+> pain should be fairly minimal.
+>
+> I'd ask for that to be done during a fairly calm cycle, though, when
+> there isn't a lot pending, so that any rename conflicts will be
+> minimized.
 
-Please pull the arm64 updates for 5.15 below. The asymmetric AArch32
-support patches were queued via tip/sched/arm64 on top of the scheduler
-counterpart. I merged the tip branch into the arm64 tree (based on -rc3)
-but since the former was based on -rc6, I had to generate the diffstat
-manually (dummy merge with upstream and git show --stat). Hopefully it
-matches yours.
+Given likely movement of various common server/client functions into
+cifs_common in the short term - we can delay renaming "fs/cifs"
+(and fs/cifs_common) to e.g. "fs/smbfs" to 5.16 or 5.17
 
-Thanks.
 
-The following changes since commit 234b8ab6476c5edd5262e2ff563de9498d60044a:
+> > We could even build two versions of the module "smb3.ko" which does not
+> > include support for the less secure legacy dialects and "cifs.ko" which does
+> > include it.   Is there a precedent for something similar.
+>
+> I'm not sure there is precedent for that, but that's not a huge issue per se.
 
-  sched: Introduce dl_task_check_affinity() to check proposed affinity (2021-08-20 12:33:00 +0200)
+<snip>
 
-are available in the Git repository at:
+> > Do you have any objections to me renaming the client's source
+> > directory to "fs/smb3" (or fs/smb) and fs/smb3_common ...?
+>
+> So no objections to the rename per se, but can we please use a more
+> specific name that is *not* tainted by history?
+>
+> I'll throw out two suggestions, but they are just that: (a) "smbfs" or
+> (b) "smb-client".
+>
+> I think "smbfs" has the nice property of making it clear that this is
+> just the filesystem part of the smb protocols - that otherwise cover a
+> lot of other things too (at least historically printers, although I
+> have no idea how true that is any more).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-upstream
+"smbfs" would likely be fine and I can bounce the idea around
+others on Samba team etc.  And yes you are right, the broader
+"SMB family of protocols" covers a lot of other functions
+(from systems management, DCE/RPC, clustering, change notification,
+named pipes, global name space ... not just files and printers) so "smbfs"
+as a name for the client fs module going forward may be a bit less confusing.
 
-for you to fetch changes up to 65266a7c6abfa1ad915a362c41bf38576607f1f9:
+> So if we rename, we should rename it to something new and slightly
+> more specific than what we used to have.
+>
+> I'd rather have a module called "smbfs.ko" (or "smb-fs.ko" or
+> "smb-client.ko" etc) than "smb.ko".
 
-  Merge remote-tracking branch 'tip/sched/arm64' into for-next/core (2021-08-31 09:10:00 +0100)
+That should be easy enough (IIRC FreeBSD called their
+module "smbfs), but presumably wait until 5.16 or 5.17
+to lessen merge conflicts etc.
 
-----------------------------------------------------------------
-arm64 updates for 5.15:
-
-- Support for 32-bit tasks on asymmetric AArch32 systems (on top of the
-  scheduler changes merged via the tip tree).
-
-- More entry.S clean-ups and conversion to C.
-
-- MTE updates: allow a preferred tag checking mode to be set per CPU
-  (the overhead of synchronous mode is smaller for some CPUs than
-  others); optimisations for kernel entry/exit path; optionally disable
-  MTE on the kernel command line.
-
-- Kselftest improvements for SVE and signal handling, PtrAuth.
-
-- Fix unlikely race where a TLBI could use stale ASID on an ASID
-  roll-over (found by inspection).
-
-- Miscellaneous fixes: disable trapping of PMSNEVFR_EL1 to higher
-  exception levels; drop unnecessary sigdelsetmask() call in the
-  signal32 handling; remove BUG_ON when failing to allocate SVE state
-  (just signal the process); SYM_CODE annotations.
-
-- Other trivial clean-ups: use macros instead of magic numbers, remove
-  redundant returns, typos.
-
-----------------------------------------------------------------
-Alexandru Elisei (1):
-      arm64: Do not trap PMSNEVFR_EL1
-
-Anshuman Khandual (2):
-      arm64/kexec: Test page size support with new TGRAN range values
-      arm64/perf: Replace '0xf' instances with ID_AA64DFR0_PMUVER_IMP_DEF
-
-Catalin Marinas (3):
-      Merge branches 'for-next/mte', 'for-next/misc' and 'for-next/kselftest', remote-tracking branch 'arm64/for-next/perf' into for-next/core
-      Merge branch 'for-next/entry' into for-next/core
-      Merge remote-tracking branch 'tip/sched/arm64' into for-next/core
-
-Changbin Du (1):
-      arm64: replace in_irq() with in_hardirq()
-
-Jason Wang (3):
-      arm64: use __func__ to get function name in pr_err
-      arm64: unnecessary end 'return;' in void functions
-      arm64: fix typo in a comment
-
-Lingyan Huang (1):
-      arm64: SSBS/DIT: print SSBS and DIT bit when printing PSTATE
-
-Marc Zyngier (1):
-      arm64: Document the requirement for SCR_EL3.HCE
-
-Mark Brown (19):
-      arm64/sme: Document boot requirements for SME
-      kselftest/arm64: Ignore check_gcr_el1_cswitch binary
-      arm64/sve: Make fpsimd_bind_task_to_cpu() static
-      kselftest/arm64: Provide a helper binary and "library" for SVE RDVL
-      kselftest/arm64: Validate vector lengths are set in sve-probe-vls
-      kselftest/arm64: Add tests for SVE vector configuration
-      kselftest/arm64: Add a TODO list for floating point tests
-      arm64: entry: Add SYM_CODE annotation for __bad_stack
-      kselftest/arm64: mte: Fix misleading output when skipping tests
-      kselftest/arm64: pac: Fix skipping of tests on systems without PAC
-      kselftest/arm64: signal: Add SVE to the set of features we can check for
-      kselftest/arm64: signal: Support signal frames with SVE register data
-      kselftest/arm64: signal: Check SVE signal frame shows expected vector length
-      kselftest/arm64: signal: Verify that signals can't change the SVE vector length
-      kselftest/arm64: signal: Add test case for SVE register state in signals
-      kselftest/arm64: signal: Add a TODO list for signal handling tests
-      arm64/sve: Add some comments for sve_save/load_state()
-      arm64/sve: Add a comment documenting the binutils needed for SVE asm
-      arm64/sve: Better handle failure to allocate SVE register storage
-
-Mark Rutland (7):
-      arm64: kasan: mte: use a constant kernel GCR_EL1 value
-      arm64: kasan: mte: remove redundant mte_report_once logic
-      arm64: entry: consolidate entry/exit helpers
-      arm64: entry: clarify entry/exit helpers
-      arm64: entry: move bulk of ret_to_user to C
-      arm64: entry: call exit_to_user_mode() from C
-      arm64: head: avoid over-mapping in map_memory
-
-Masahiro Yamada (1):
-      arm64: move the (z)install rules to arch/arm64/Makefile
-
-Peter Collingbourne (8):
-      arm64: mte: avoid TFSRE0_EL1 related operations unless in async mode
-      arm64: mte: rename gcr_user_excl to mte_ctrl
-      arm64: mte: change ASYNC and SYNC TCF settings into bitfields
-      arm64: move preemption disablement to prctl handlers
-      arm64: mte: introduce a per-CPU tag checking mode preference
-      Documentation: document the preferred tag checking mode feature
-      arm64: mte: optimize GCR_EL1 modification on kernel entry/exit
-      arm64: avoid double ISB on kernel entry
-
-Peter Zijlstra (1):
-      Merge branch 'sched/core'
-
-Shaokun Zhang (1):
-      arm64: cpufeature: Use defined macro instead of magic numbers
-
-Will Deacon (9):
-      arm64: mm: Fix TLBI vs ASID rollover
-      arm64: Implement task_cpu_possible_mask()
-      arm64: exec: Adjust affinity for compat tasks with mismatched 32-bit EL0
-      arm64: Prevent offlining first CPU with 32-bit EL0 on mismatched system
-      arm64: Advertise CPUs capable of running 32-bit applications in sysfs
-      arm64: Hook up cmdline parameter to allow mismatched 32-bit EL0
-      arm64: Remove logic to kill 32-bit tasks on 64-bit-only cores
-      Documentation: arm64: describe asymmetric 32-bit support
-      arm64: signal32: Drop pointless call to sigdelsetmask()
-
-Xujun Leng (1):
-      arm64: mm: fix comment typo of pud_offset_phys()
-
-Yee Lee (1):
-      arm64/cpufeature: Optionally disable MTE via command-line
-
- Documentation/ABI/testing/sysfs-devices-system-cpu |  26 +
- Documentation/admin-guide/kernel-parameters.txt    |  14 +
- Documentation/arm64/asymmetric-32bit.rst           | 155 ++++++
- Documentation/arm64/booting.rst                    |  37 +-
- Documentation/arm64/index.rst                      |   1 +
- Documentation/arm64/memory-tagging-extension.rst   |  48 +-
- arch/arm64/Makefile                                |   7 +-
- arch/arm64/boot/Makefile                           |   8 -
- arch/arm64/include/asm/cpufeature.h                |  11 +-
- arch/arm64/include/asm/el2_setup.h                 |  13 +-
- arch/arm64/include/asm/elf.h                       |   6 +-
- arch/arm64/include/asm/exception.h                 |   5 +-
- arch/arm64/include/asm/fpsimd.h                    |   1 -
- arch/arm64/include/asm/fpsimdmacros.h              |   1 +
- arch/arm64/include/asm/kernel-pgtable.h            |   4 +-
- arch/arm64/include/asm/memory.h                    |   2 -
- arch/arm64/include/asm/mmu.h                       |  29 +-
- arch/arm64/include/asm/mmu_context.h               |  13 +
- arch/arm64/include/asm/mte-kasan.h                 |  17 -
- arch/arm64/include/asm/mte.h                       |   6 -
- arch/arm64/include/asm/pgtable.h                   |   2 +-
- arch/arm64/include/asm/pointer_auth.h              |  12 +-
- arch/arm64/include/asm/processor.h                 |  10 +-
- arch/arm64/include/asm/simd.h                      |   2 +-
- arch/arm64/include/asm/sysreg.h                    |  47 +-
- arch/arm64/include/asm/tlbflush.h                  |  13 +-
- arch/arm64/kernel/asm-offsets.c                    |   2 +-
- arch/arm64/kernel/cpufeature.c                     |  58 +-
- arch/arm64/kernel/entry-common.c                   | 219 +++++---
- arch/arm64/kernel/entry-fpsimd.S                   |  13 +
- arch/arm64/kernel/entry.S                          | 114 ++--
- arch/arm64/kernel/fpsimd.c                         |  14 +-
- arch/arm64/kernel/head.S                           |  11 +-
- arch/arm64/kernel/idreg-override.c                 |   2 +
- arch/arm64/kernel/mte.c                            | 180 ++++---
- arch/arm64/kernel/perf_event.c                     |   2 +-
- arch/arm64/kernel/pointer_auth.c                   |  10 +-
- arch/arm64/kernel/process.c                        |  78 ++-
- arch/arm64/kernel/ptrace.c                         |   5 +
- arch/arm64/kernel/signal.c                         |  34 +-
- arch/arm64/kernel/signal32.c                       |   6 +-
- arch/arm64/kernel/suspend.c                        |   1 -
- arch/arm64/lib/insn.c                              |   4 +-
- arch/arm64/mm/fault.c                              |  15 +-
- arch/arm64/mm/proc.S                               |   3 +-
- include/linux/kasan-tags.h                         |  15 +
- include/uapi/linux/prctl.h                         |  11 +-
- lib/test_kasan.c                                   |   2 -
- mm/kasan/hw_tags.c                                 |   8 -
- mm/kasan/kasan.h                                   |  22 +-
- tools/testing/selftests/arm64/fp/.gitignore        |   2 +
- tools/testing/selftests/arm64/fp/Makefile          |  11 +-
- tools/testing/selftests/arm64/fp/TODO              |   4 +
- tools/testing/selftests/arm64/fp/rdvl-sve.c        |  14 +
- tools/testing/selftests/arm64/fp/rdvl.S            |  10 +
- tools/testing/selftests/arm64/fp/rdvl.h            |   8 +
- tools/testing/selftests/arm64/fp/sve-probe-vls.c   |   5 +
- tools/testing/selftests/arm64/fp/vec-syscfg.c      | 593 +++++++++++++++++++++
- tools/testing/selftests/arm64/mte/.gitignore       |   1 +
- .../testing/selftests/arm64/mte/mte_common_util.c  |   2 +-
- tools/testing/selftests/arm64/pauth/pac.c          |  10 +-
- tools/testing/selftests/arm64/signal/.gitignore    |   1 +
- .../testing/selftests/arm64/signal/test_signals.h  |   2 +
- .../selftests/arm64/signal/test_signals_utils.c    |   3 +
- .../testing/selftests/arm64/signal/testcases/TODO  |   2 +
- .../testcases/fake_sigreturn_sve_change_vl.c       |  92 ++++
- .../selftests/arm64/signal/testcases/sve_regs.c    | 126 +++++
- .../selftests/arm64/signal/testcases/sve_vl.c      |  68 +++
- .../selftests/arm64/signal/testcases/testcases.c   |  34 +-
- 69 files changed, 1843 insertions(+), 464 deletions(-)
 
 -- 
-Catalin
+Thanks,
+
+Steve
