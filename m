@@ -2,136 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A673FC588
+	by mail.lfdr.de (Postfix) with ESMTP id 944F73FC58A
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240935AbhHaKVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234682AbhHaKVE (ORCPT
+        id S240954AbhHaKVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:21:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57852 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234682AbhHaKVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:21:04 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAF2C061575;
-        Tue, 31 Aug 2021 03:20:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3HC1u+t7nD+kgNZouX/L8goGQGQI/ehvF/XWNqquvtE=; b=BtqiQaUd96jX/cvQyn4LHGP0He
-        MnhhEm1LxGe1ccadn3pRVsnLi+pX99ktL7ZI35nypv1S4ryWNfofhw5VHwFn19VQZO4XBtoyflSfv
-        GbzDVWviYGHSvukol3IzpR3k3F2APISnGDQoL0I/bB+RI3eBUUosbDt0jo0A9yesBka9dhXegd+jY
-        1CqxX9SECEnPhAQ4jWqI0BDmUTfDu9icL1Z4ulFbnx3QVEA+ziVk8lGOLxoRYETe8y1r4Ld29M82P
-        nnuwRAT1Gw/lyiwF1hOyOHGYMPYVbNsgl27a3xlv3RqrX3KfTJKVTSS2WV63OhgEU6EvmJwvS0m4x
-        +qdhJh+A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mL0rv-00Efqz-5F; Tue, 31 Aug 2021 10:19:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Tue, 31 Aug 2021 06:21:15 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9D0A2300109;
-        Tue, 31 Aug 2021 12:19:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7ACCD2C83EADB; Tue, 31 Aug 2021 12:19:50 +0200 (CEST)
-Date:   Tue, 31 Aug 2021 12:19:50 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     mingo@redhat.com, mgorman@suse.de, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        achaiken@aurora.tech, lkp@intel.com, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH v3 2/7] sched: make struct sched_statistics independent
- of fair sched class
-Message-ID: <YS4CRi7nzfGk2o7u@hirez.programming.kicks-ass.net>
-References: <20210824112946.9324-1-laoar.shao@gmail.com>
- <20210824112946.9324-3-laoar.shao@gmail.com>
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7295F221F2;
+        Tue, 31 Aug 2021 10:20:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630405219; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YpSsXvykYNxP6O/KJXAtzalCJEzC7b1UFSE2Gtv43HY=;
+        b=bKJb7owMtYJrRNv5VDrvvGVp07A/pa7iex0XjJ0+R8PU4XQD6fasNj+V/Plqr/wZYkcmjo
+        NeNsoC7sbZq43MwjOZqsDF97Yf1vaySJQwCgG4nVkrroThrwpt6KhK2BYzUQ/dDxgu0rZC
+        T+sJJ/gtSHHxwveL4jYvw/XxEa1Un2k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630405219;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YpSsXvykYNxP6O/KJXAtzalCJEzC7b1UFSE2Gtv43HY=;
+        b=AzUwivJ+XLu5WUD2QTK4k2lJplQkfMSiRyVTG1JT/kB7bRb3QDQ6AMgLI0ror9DP2zzYGZ
+        tp69pYhhuczEMaAA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4322F13A7A;
+        Tue, 31 Aug 2021 10:20:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id E/+2D2MCLmE8egAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Tue, 31 Aug 2021 10:20:19 +0000
+Message-ID: <17a36dfc-cbd1-56c5-46a9-9f4043bb56e6@suse.cz>
+Date:   Tue, 31 Aug 2021 12:20:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824112946.9324-3-laoar.shao@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH v1 2/2] mm: remove redundant smp_wmb()
+Content-Language: en-US
+To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
+        mika.penttila@nextfour.com, david@redhat.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com
+References: <20210828042306.42886-1-zhengqi.arch@bytedance.com>
+ <20210828042306.42886-3-zhengqi.arch@bytedance.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20210828042306.42886-3-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 11:29:41AM +0000, Yafang Shao wrote:
+On 8/28/21 06:23, Qi Zheng wrote:
+> The smp_wmb() which is in the __pte_alloc() is used to
+> ensure all ptes setup is visible before the pte is made
+> visible to other CPUs by being put into page tables. We
+> only need this when the pte is actually populated, so
+> move it to pte_install(). __pte_alloc_kernel(),
 
-> +#ifdef CONFIG_FAIR_GROUP_SCHED
-> +static inline void
-> +__schedstats_from_sched_entity(struct sched_entity *se,
-> +			      struct sched_statistics **stats)
-> +{
-> +	struct task_group *tg;
-> +	struct task_struct *p;
-> +	struct cfs_rq *cfs;
-> +	int cpu;
-> +
-> +	if (entity_is_task(se)) {
-> +		p = task_of(se);
-> +		*stats = &p->stats;
-> +	} else {
-> +		cfs = group_cfs_rq(se);
-> +		tg = cfs->tg;
-> +		cpu = cpu_of(rq_of(cfs));
-> +		*stats = tg->stats[cpu];
-> +	}
-> +}
-> +
-> +#else
-> +
-> +static inline void
-> +__schedstats_from_sched_entity(struct sched_entity *se,
-> +			      struct sched_statistics **stats)
-> +{
-> +	struct task_struct *p;
-> +
-> +	p = task_of(se);
-> +	*stats = &p->stats;
-> +}
-> +
-> +#endif
-> +
->  /*
->   * Update the current task's runtime statistics.
->   */
-> @@ -826,6 +861,7 @@ static void update_curr(struct cfs_rq *cfs_rq)
->  {
->  	struct sched_entity *curr = cfs_rq->curr;
->  	u64 now = rq_clock_task(rq_of(cfs_rq));
-> +	struct sched_statistics *stats = NULL;
->  	u64 delta_exec;
+It's named pmd_install()?
+
+> __p4d_alloc(), __pud_alloc() and __pmd_alloc() are similar
+> to this case.
+> 
+> We can also defer smp_wmb() to the place where the pmd entry
+> is really populated by preallocated pte. There are two kinds
+> of user of preallocated pte, one is filemap & finish_fault(),
+> another is THP. The former does not need another smp_wmb()
+> because the smp_wmb() has been done by pte_install().
+
+Same here.
+
+> Fortunately, the latter also does not need another smp_wmb()
+> because there is already a smp_wmb() before populating the
+> new pte when the THP uses a preallocated pte to split a huge
+> pmd.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  mm/memory.c         | 47 ++++++++++++++++++++---------------------------
+>  mm/sparse-vmemmap.c |  2 +-
+>  2 files changed, 21 insertions(+), 28 deletions(-)
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index ef7b1762e996..9c7534187454 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -439,6 +439,20 @@ void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte)
 >  
->  	if (unlikely(!curr))
-> @@ -837,8 +873,11 @@ static void update_curr(struct cfs_rq *cfs_rq)
->  
->  	curr->exec_start = now;
->  
-> -	schedstat_set(curr->statistics.exec_max,
-> -		      max(delta_exec, curr->statistics.exec_max));
-> +	if (schedstat_enabled()) {
-> +		__schedstats_from_sched_entity(curr, &stats);
-> +		__schedstat_set(stats->exec_max,
-> +				max(delta_exec, stats->exec_max));
-> +	}
->  
->  	curr->sum_exec_runtime += delta_exec;
->  	schedstat_add(cfs_rq->exec_clock, delta_exec);
+>  	if (likely(pmd_none(*pmd))) {	/* Has another populated it ? */
+>  		mm_inc_nr_ptes(mm);
+> +		/*
+> +		 * Ensure all pte setup (eg. pte page lock and page clearing) are
+> +		 * visible before the pte is made visible to other CPUs by being
+> +		 * put into page tables.
+> +		 *
+> +		 * The other side of the story is the pointer chasing in the page
+> +		 * table walking code (when walking the page table without locking;
+> +		 * ie. most of the time). Fortunately, these data accesses consist
+> +		 * of a chain of data-dependent loads, meaning most CPUs (alpha
+> +		 * being the notable exception) will already guarantee loads are
+> +		 * seen in-order. See the alpha page table accessors for the
+> +		 * smp_rmb() barriers in page table walking code.
+> +		 */
+> +		smp_wmb(); /* Could be smp_wmb__xxx(before|after)_spin_lock */
 
-
-That's just really odd style; what's wrong with something like:
-
-static inline struct sched_statistics *
-__schedstats_from_se(struct sched_entity *se)
-{
-	...
-}
-
-	if (schedstats_enabled()) {
-		struct sched_statistics *stats = __schedstats_from_se(curr);
-		__schedstat_set(stats->exec_max, max(stats->exec_max, delta_exec));
-	}
-
-
+So, could it? :)
