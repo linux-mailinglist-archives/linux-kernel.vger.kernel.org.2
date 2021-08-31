@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 384E63FC452
+	by mail.lfdr.de (Postfix) with ESMTP id 856583FC453
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240281AbhHaIbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 04:31:13 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:45441 "EHLO pegase2.c-s.fr"
+        id S240292AbhHaIbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 04:31:25 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:48751 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240255AbhHaIbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 04:31:12 -0400
+        id S240190AbhHaIbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 04:31:22 -0400
 Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GzL3X4wt4z9sTX;
-        Tue, 31 Aug 2021 10:30:16 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4GzL3j2c6Nz9sTX;
+        Tue, 31 Aug 2021 10:30:25 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase2.c-s.fr ([172.26.127.65])
         by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Cym_Uc7otZ0i; Tue, 31 Aug 2021 10:30:16 +0200 (CEST)
+        with ESMTP id Ha_H_sx_ILRv; Tue, 31 Aug 2021 10:30:25 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GzL3X3rllz9sTR;
-        Tue, 31 Aug 2021 10:30:16 +0200 (CEST)
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GzL3j1LPQz9sTk;
+        Tue, 31 Aug 2021 10:30:25 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 518E98B7DE;
-        Tue, 31 Aug 2021 10:30:16 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0ED768B7DE;
+        Tue, 31 Aug 2021 10:30:25 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id SRZG-eXB5LeO; Tue, 31 Aug 2021 10:30:16 +0200 (CEST)
+        with ESMTP id 44dcfM13DqZ2; Tue, 31 Aug 2021 10:30:24 +0200 (CEST)
 Received: from po18078vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 08A9E8B7DD;
-        Tue, 31 Aug 2021 10:30:16 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BE1A58B7DD;
+        Tue, 31 Aug 2021 10:30:24 +0200 (CEST)
 Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id D05556BCA2; Tue, 31 Aug 2021 08:30:15 +0000 (UTC)
+        id 974506BCA2; Tue, 31 Aug 2021 08:30:24 +0000 (UTC)
 Message-Id: <24d4ca0ada683c9436a5f812a7aeb0a1362afa2b.1630398606.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
 Subject: [PATCH] powerpc/machdep: Remove stale functions from ppc_md structure
@@ -40,7 +40,7 @@ To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 31 Aug 2021 08:30:15 +0000 (UTC)
+Date:   Tue, 31 Aug 2021 08:30:24 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
