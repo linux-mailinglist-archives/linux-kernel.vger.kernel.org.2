@@ -2,114 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B319F3FCB58
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF413FCB5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239835AbhHaQSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 12:18:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:56302 "EHLO foss.arm.com"
+        id S239886AbhHaQSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 12:18:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239733AbhHaQSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 12:18:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E7C16D;
-        Tue, 31 Aug 2021 09:17:57 -0700 (PDT)
-Received: from [10.57.20.161] (unknown [10.57.20.161])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E01583F766;
-        Tue, 31 Aug 2021 09:17:54 -0700 (PDT)
-Subject: Re: [PATCH V3 9/9] cpufreq: scmi: Use .register_em() to register with
- energy model
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <cover.1628742634.git.viresh.kumar@linaro.org>
- <8158488baa1ea1aebd09c8d256db7420051d05ac.1628742634.git.viresh.kumar@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <d454df8e-9adb-ea97-727e-f182e95707ef@arm.com>
-Date:   Tue, 31 Aug 2021 17:17:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S239733AbhHaQSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 12:18:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2873260FE8;
+        Tue, 31 Aug 2021 16:17:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630426679;
+        bh=ijFJRZX+OSPIfRRJIeek2KE83snf87M/UN9hXM4/RLI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o/zQRUOqGhiKgg5QOghl8C1mcnuhY+jCKDuSsfcDIJfzYDwqeugqNbB2NoE9TMcGF
+         5TM7dyFEB56nqMTmzRfTDreKiTpIRE8X2OgEj5duwmwk8gD314HfZk7RnmwRXO29jk
+         ouSZFojRP3qRLgoxM7/FujdTe4essyAcI/NufkehlMIlerHiPksttpgr3j0ym+/zLo
+         LkVFjwAGKmB1QPLyt25mheY1M2BSP+LCTBGIv42APJo+Vg7FyLSskX1yeb/cWZ3Ut7
+         xJNnObPl9s1xApIuOlMIvJlot7i5Q9YJhiBWMExPVvl1FI31lJyHTur5EsCHLiGbH2
+         UKKOrSY/gCIuA==
+Date:   Tue, 31 Aug 2021 21:47:54 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Sanjay R Mehta <sanju.mehta@amd.com>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Fix AMD PTDMA DRIVER entry
+Message-ID: <YS5WMu4g1FMzoIRp@matsya>
+References: <28b7663ebcaf9363324a615129417b24625a7038.1630413650.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-In-Reply-To: <8158488baa1ea1aebd09c8d256db7420051d05ac.1628742634.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <28b7663ebcaf9363324a615129417b24625a7038.1630413650.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+On 31-08-21, 14:42, Geert Uytterhoeven wrote:
+> Remove the bogus leading plus signs from the entry for the AMD PTDMA
+> driver.
 
-My apologies for delay I was on holidays. I've seen the pull requests,
-so it's too late, but just for history...
+Applied, thanks
 
-I have tested this new callback with hacked juno FW which works in
-the per-cpu perf requests. There are no issues.
-
-Some debug prints:
-
-[    3.110072] cpu cpu0: cpumask weight(opp_shared_cpus)=4 weight 
-policy->cpus=1
-[    3.117666] cpu cpu0: Empty OPP table
-[    3.121418] cpu cpu0: OPP table empty
-[    3.131367] cpu cpu0: EM: created perf domain
-[    3.137848] cpu cpu1: cpumask weight(opp_shared_cpus)=2 weight 
-policy->cpus=1
-[    3.145220] cpu cpu1: Empty OPP table
-[    3.148961] cpu cpu1: OPP table empty
-[    3.158193] cpu cpu1: EM: created perf domain
-[    3.164325] cpu cpu2: cpumask weight(opp_shared_cpus)=2 weight 
-policy->cpus=1
-[    3.173430] cpu cpu3: cpumask weight(opp_shared_cpus)=4 weight 
-policy->cpus=1
-[    3.181947] cpu cpu4: cpumask weight(opp_shared_cpus)=4 weight 
-policy->cpus=1
-[    3.190620] cpu cpu5: cpumask weight(opp_shared_cpus)=4 weight 
-policy->cpus=1
-
-root@sqwt-ubuntu:~# grep . /sys/kernel/debug/energy_model/cpu0/ps\:*/*
-/sys/kernel/debug/energy_model/cpu0/ps:450000/cost:79
-/sys/kernel/debug/energy_model/cpu0/ps:450000/frequency:450000
-/sys/kernel/debug/energy_model/cpu0/ps:450000/power:42
-/sys/kernel/debug/energy_model/cpu0/ps:575000/cost:85
-/sys/kernel/debug/energy_model/cpu0/ps:575000/frequency:575000
-/sys/kernel/debug/energy_model/cpu0/ps:575000/power:58
-/sys/kernel/debug/energy_model/cpu0/ps:700000/cost:95
-/sys/kernel/debug/energy_model/cpu0/ps:700000/frequency:700000
-/sys/kernel/debug/energy_model/cpu0/ps:700000/power:79
-/sys/kernel/debug/energy_model/cpu0/ps:775000/cost:106
-/sys/kernel/debug/energy_model/cpu0/ps:775000/frequency:775000
-/sys/kernel/debug/energy_model/cpu0/ps:775000/power:97
-/sys/kernel/debug/energy_model/cpu0/ps:850000/cost:119
-/sys/kernel/debug/energy_model/cpu0/ps:850000/frequency:850000
-/sys/kernel/debug/energy_model/cpu0/ps:850000/power:119
-root@sqwt-ubuntu:~# cat /sys/kernel/debug/energy_model/cpu0/cpus
-0,3-5
-root@sqwt-ubuntu:~# cat /sys/kernel/debug/energy_model/cpu1/cpus
-1-2
-root@sqwt-ubuntu:~# grep . /sys/kernel/debug/energy_model/cpu1/ps\:*/*
-/sys/kernel/debug/energy_model/cpu1/ps:1100000/cost:583
-/sys/kernel/debug/energy_model/cpu1/ps:1100000/frequency:1100000
-/sys/kernel/debug/energy_model/cpu1/ps:1100000/power:583
-/sys/kernel/debug/energy_model/cpu1/ps:450000/cost:391
-/sys/kernel/debug/energy_model/cpu1/ps:450000/frequency:450000
-/sys/kernel/debug/energy_model/cpu1/ps:450000/power:160
-/sys/kernel/debug/energy_model/cpu1/ps:625000/cost:420
-/sys/kernel/debug/energy_model/cpu1/ps:625000/frequency:625000
-/sys/kernel/debug/energy_model/cpu1/ps:625000/power:239
-/sys/kernel/debug/energy_model/cpu1/ps:800000/cost:471
-/sys/kernel/debug/energy_model/cpu1/ps:800000/frequency:800000
-/sys/kernel/debug/energy_model/cpu1/ps:800000/power:343
-/sys/kernel/debug/energy_model/cpu1/ps:950000/cost:525
-/sys/kernel/debug/energy_model/cpu1/ps:950000/frequency:950000
-/sys/kernel/debug/energy_model/cpu1/ps:950000/power:454
-root@sqwt-ubuntu:~#
-
-Regards,
-Lukasz
+-- 
+~Vinod
