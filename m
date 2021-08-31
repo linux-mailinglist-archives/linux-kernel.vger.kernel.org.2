@@ -2,106 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547063FCF22
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 23:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477B63FCF28
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 23:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241334AbhHaVbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 17:31:16 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:38464 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239708AbhHaVbM (ORCPT
+        id S235562AbhHaVea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 17:34:30 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:46040 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233407AbhHaVe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 17:31:12 -0400
-Received: by mail-ot1-f49.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso950667ots.5;
-        Tue, 31 Aug 2021 14:30:17 -0700 (PDT)
+        Tue, 31 Aug 2021 17:34:29 -0400
+Received: by mail-ot1-f44.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso895090otv.12;
+        Tue, 31 Aug 2021 14:33:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Lv/ljHshSZK3RFgD2a8g0MVknlEMt9i5zUtkABsa3c0=;
-        b=QbRpDfRY+/x1atbFO5/WMv28jcwGZEFYMzrZhCyFNV2hlVI/fZPuFu1RsdLG3giDBL
-         lMq7reipv1KB5cIjzYbgs5ytUCdabjJsiWL4ZujIkiJ2ZGVF4ElD7L4qLfjDIQGG8lpF
-         XfaMWKRsKm06bPGoUYSAA5OCly466G40egn0tYTHf3ojx9ED0v6zR1P3G9APsy+OwbZL
-         1XHdbSIcG9VpzfHugG5CprcQ3v1W9DGwa3a1Fg55orR0SkLzeqidGEm5LokEixw0j8b9
-         GIGTiUHko7x+0KNMV8m6G+YnNvI/jJ/9iTx5JHBcU6T4mjOsCGtCHKWwAmwNiC8fiXjn
-         O6mw==
-X-Gm-Message-State: AOAM5312vOXvkVdDOYLPAKJ/0fWq+F9+85ZD24KC7AP78aOMGK2S2Pw+
-        YXrRL+PsrMfyF3xbtj/WZA==
-X-Google-Smtp-Source: ABdhPJzCoKKVloeON0/InoVfsSGtFPejEa6c0Hy6uFnCKvcn2QG3UG5aK/HzG37HQA69/+Y37NLGSQ==
-X-Received: by 2002:a9d:74c5:: with SMTP id a5mr25815380otl.205.1630445416795;
-        Tue, 31 Aug 2021 14:30:16 -0700 (PDT)
+        bh=DEpQtIcbExJAxj5xWJXZXM2lHBBB0XQwgkBGvLg9dOE=;
+        b=pgu5zMJsnScphPDLWBzB+d8smfPulqKFYS3f0OEXoojt4JIEN/ik4Xh/mfde8Ipx/T
+         ooNc1+P2wEgvabEs8tPQX0zUkUyqx/D2BU4aDHxmLLJML1mrZj2MVQ2B5cgyK/YQmN4I
+         BpMqRNAptircaUmh7jiuRluN4CkFyml/8dww2K+JRUsZMkUHu7vldJfK2X0DG55WCIoW
+         qZY1WDExfDg8o+f8xW0ZQuwlF3D/u2p6gq/890y+ZcIrKNsssz0LHVl9cCnIo1XHUtP3
+         RGgbJELknTKQV0i5MwEE6JBFBuwpiEtskZvBTb2IomTATyeijhNV/8hIXrvlxGnnOO3U
+         2eeA==
+X-Gm-Message-State: AOAM532jEI8rfC0/qeyn9W7Wx1kLE5d2zfEUSYH0YN95RrbUOUStrtvb
+        Z4GI8rA/mbMGqeA9Zeabuw==
+X-Google-Smtp-Source: ABdhPJxGqyVnBtagDTjCeybHyJZZcO2XDDl1qVwChkvfIfIOVQCqHzcY9vD9BRXlCYPbqdWGaP7XtA==
+X-Received: by 2002:a9d:2782:: with SMTP id c2mr25865678otb.323.1630445613196;
+        Tue, 31 Aug 2021 14:33:33 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id n130sm3841778oif.32.2021.08.31.14.30.15
+        by smtp.gmail.com with ESMTPSA id 186sm3929809ood.39.2021.08.31.14.33.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 14:30:16 -0700 (PDT)
-Received: (nullmailer pid 678569 invoked by uid 1000);
-        Tue, 31 Aug 2021 21:30:15 -0000
-Date:   Tue, 31 Aug 2021 16:30:15 -0500
+        Tue, 31 Aug 2021 14:33:32 -0700 (PDT)
+Received: (nullmailer pid 682925 invoked by uid 1000);
+        Tue, 31 Aug 2021 21:33:32 -0000
+Date:   Tue, 31 Aug 2021 16:33:32 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Luca Weiss <luca@z3ntu.xyz>
-Cc:     linux-fbdev@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Hans de Goede <hdegoede@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: display: add missing simple-framebuffer
- formats
-Message-ID: <YS6fZ4nFgic1DYhR@robh.at.kernel.org>
-References: <20210828110206.142899-1-luca@z3ntu.xyz>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     linux-phy@lists.infradead.org, heiko@sntech.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org, vkoul@kernel.org,
+        kishon@ti.com, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH 1/2] dt-bindings: phy: rockchip: remove usb-phy fallback
+ string for rk3066a/rk3188
+Message-ID: <YS6gLG+M4dP+rkl6@robh.at.kernel.org>
+References: <20210828111218.10026-1-jbx6244@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210828110206.142899-1-luca@z3ntu.xyz>
+In-Reply-To: <20210828111218.10026-1-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 01:02:05PM +0200, Luca Weiss wrote:
-> Document all formats currently present in include/linux/platform_data/
-> simplefb.h
+On Sat, 28 Aug 2021 13:12:17 +0200, Johan Jonker wrote:
+> With the conversion of rockchip-usb-phy.yaml a long time used fallback
+> string for rk3066a/rk3188 was added. The linux driver doesn't do much with
+> the GRF phy address range, however the u-boot driver rockchip_usb2_phy.c
+> does. The bits in GRF_UOC0_CON2 for rk3066a/rk3188 and rk3288 for example
+> don't match. Remove the usb-phy fallback string for rk3066a/rk3188
+> to prevent possible strange side effects.
 > 
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 > ---
->  .../bindings/display/simple-framebuffer.yaml         | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+>  .../devicetree/bindings/phy/rockchip-usb-phy.yaml     | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/display/simple-framebuffer.yaml b/Documentation/devicetree/bindings/display/simple-framebuffer.yaml
-> index c2499a7906f5..c1acd2859ae8 100644
-> --- a/Documentation/devicetree/bindings/display/simple-framebuffer.yaml
-> +++ b/Documentation/devicetree/bindings/display/simple-framebuffer.yaml
-> @@ -83,13 +83,25 @@ properties:
->    format:
->      description: >
->        Format of the framebuffer:
-> +        * `a1r5g5b5` - 16-bit pixels, d[15]=a, d[14:10]=r, d[9:5]=g, d[4:0]=b
-> +        * `a2r10g10b10` - 32-bit pixels, d[31:30]=a, d[29:20]=r, d[19:10]=g, d[9:0]=b
 
-Not a new problem, but are these 32-bit big or little endian words? That 
-should be figured out before we add more.
-
->          * `a8b8g8r8` - 32-bit pixels, d[31:24]=a, d[23:16]=b, d[15:8]=g, d[7:0]=r
-> +        * `a8r8g8b8` - 32-bit pixels, d[31:24]=a, d[23:16]=r, d[15:8]=g, d[7:0]=b
->          * `r5g6b5` - 16-bit pixels, d[15:11]=r, d[10:5]=g, d[4:0]=b
-> +        * `r5g5b5a1` - 16-bit pixels, d[15:11]=r, d[10:6]=g, d[5:1]=b, d[0]=a
-> +        * `r8g8b8` - 24-bit pixels, d[23:16]=r, d[15:8]=g, d[7:0]=b
-> +        * `x1r5g5b5` - 16-bit pixels, d[14:10]=r, d[9:5]=g, d[4:0]=b
->          * `x2r10g10b10` - 32-bit pixels, d[29:20]=r, d[19:10]=g, d[9:0]=b
->          * `x8r8g8b8` - 32-bit pixels, d[23:16]=r, d[15:8]=g, d[7:0]=b
->      enum:
-> +      - a1r5g5b5
-> +      - a2r10g10b10
->        - a8b8g8r8
-> +      - a8r8g8b8
->        - r5g6b5
-> +      - r5g5b5a1
-> +      - r8g8b8
-> +      - x1r5g5b5
->        - x2r10g10b10
->        - x8r8g8b8
->  
-> -- 
-> 2.33.0
-> 
-> 
+Acked-by: Rob Herring <robh@kernel.org>
