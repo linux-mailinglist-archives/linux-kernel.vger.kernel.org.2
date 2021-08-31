@@ -2,156 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3FA3FC87E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537413FC883
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237918AbhHaNml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:42:41 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:39998 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233789AbhHaNmj (ORCPT
+        id S238098AbhHaNne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237059AbhHaNnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:42:39 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17V921ZZ014213;
-        Tue, 31 Aug 2021 15:40:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=xBK3pqlFL97RTUxttGzt1l2EgAMHJw/Nm5xYjtTYw7M=;
- b=CrDRIxtCxVYJHaq/yc9f6cFjObY9OA1OZcmuFIQTXa0NYgzvrLvieOr8U77xZadenCsA
- Pe8oeqlvHKPF8gu317rlicl/gd5A6sbvoNW0Lc7111CX6mybEZ7V86+vo2FrespkfLuJ
- AxYoEATcJW2DdKvDkSgJ3o61HvATIQLDIW5/5Tn65aJ6EH0Q4GCNf6tkwVI2kc38R4fJ
- 2jF/vcSdGpSY45Qz8EsK9L3DMXh5JgpHCgNw2w7lPenjCe1hnFSpU+FKS3ycjxJqlO6y
- UVKvbSxw/tDbrXbh6JcZoMHxnSWHhRy2Ln8ENodH+PqHKnZtKjVKuRYP6u9ki6Uwof6A cg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3asheh1hcb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 15:40:40 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1B40410002A;
-        Tue, 31 Aug 2021 15:40:40 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0306424692E;
-        Tue, 31 Aug 2021 15:40:40 +0200 (CEST)
-Received: from [10.211.11.146] (10.75.127.44) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 31 Aug
- 2021 15:40:38 +0200
-Subject: Re: [PATCH v16 02/14] counter: stm32-timer-cnt: Provide defines for
- slave mode selection
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, <jic23@kernel.org>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <kernel@pengutronix.de>, <a.fatoum@pengutronix.de>,
-        <kamel.bouhara@bootlin.com>, <gwendal@chromium.org>,
-        <alexandre.belloni@bootlin.com>, <david@lechnology.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <syednwaris@gmail.com>,
-        <patrick.havelange@essensium.com>, <fabrice.gasnier@st.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
-        <o.rempel@pengutronix.de>, <jarkko.nikula@linux.intel.com>
-References: <cover.1630031207.git.vilhelm.gray@gmail.com>
- <ad3d9cd7af580d586316d368f74964cbc394f981.1630031207.git.vilhelm.gray@gmail.com>
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Message-ID: <ad245fd3-5751-08e6-3f3a-30522822f0af@foss.st.com>
-Date:   Tue, 31 Aug 2021 15:40:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 31 Aug 2021 09:43:31 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C1EC061575;
+        Tue, 31 Aug 2021 06:42:35 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id b7so24847104iob.4;
+        Tue, 31 Aug 2021 06:42:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/T4oXxIZKVXcXuK4xo4FO0eUgZsswaNawbX1ar73vJY=;
+        b=YTCuGPHaE/M2F5PZEGC2L/zzZfxy8dVhvnvzZYwmm3xf/Gi20rmsGYkpJDmB90B4GE
+         4bpFmfkAv2xpClmwba0vZOETrmpy+Jt5aPHvLEa/EWIUVsU9vARzdaHo17c1Ky/3nOcn
+         4UDb4aTJxLkkDsl5GD9o45Z5T8qdupa/rudoBBguEqQV85qCZ4xY6tCkW7/WrK9RhuCH
+         +qItJnHKxj1EuTt/5U3we6rWvlpyPDRPMnWvTC9c8m6QsgQQHeVlv4sUkwXrlh0SX/IN
+         prZ47i+a4W74xrFP8hdS3ftnYHW5mGCm2ca2ZWiDldixcHFDj2u0u1qHlWzMNo2Lw8xJ
+         IAXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/T4oXxIZKVXcXuK4xo4FO0eUgZsswaNawbX1ar73vJY=;
+        b=KXQjDSTP0qQdxiy0XAbUe61kUcma1a86qRU9uqEoirtFwN0nCcCAsXCOZKOXt1nlZp
+         SRHTnai+MIXhPWE5a5KdgKFGvLlrsAERydZcxGmZ8FIOxRQ4DhXXXmS0ATEZpPrN/SA3
+         Ijvq/RNC+17PAel36pdvaCom2VRtWae9RSgO/iqpmBw8Mkb38nKJSN+ozBjgucJuEYhm
+         B0dYo7ia1lQQSdkl5TOOjdTkHmLt43OpVi0LxgaeeP5IY9y8xY9t2VFyzEOGrsYLLEQq
+         Cyu2aiXRo82ig5qyadMeIkC8TS/BS9KZ9AaZDbULBJoPKeYLqdlrYHFtgv762fN8tgwA
+         T78Q==
+X-Gm-Message-State: AOAM5320JST4x3J1kbrkXCokYVUN6FvlJV+n54zOB20TnxZ3ntba+uL6
+        K3R3k0K2Q+4m5StU4AGJ0SCcawxg8Mv7SQv6zA0=
+X-Google-Smtp-Source: ABdhPJw4lII5+mP2IjiI7gw8j7KxgaPU/kBhn676pl7jR3vSimgmTPlFzm6EAay+u/ZodVqWYPpPEyk5+ENo17HBD/0=
+X-Received: by 2002:a05:6602:2597:: with SMTP id p23mr22902651ioo.195.1630417355164;
+ Tue, 31 Aug 2021 06:42:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ad3d9cd7af580d586316d368f74964cbc394f981.1630031207.git.vilhelm.gray@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-08-31_05,2021-08-31_01,2020-04-07_01
+References: <0c5910979f39225d5d8fe68c9ab1c147c68ddee1.1629314734.git.christophe.jaillet@wanadoo.fr>
+ <f8a4a6897deb0c8cb2e576580790303550f15fcd.1629314734.git.christophe.jaillet@wanadoo.fr>
+ <c56617ff-5d74-9b07-4bcc-25f3dd2aca64@gmail.com>
+In-Reply-To: <c56617ff-5d74-9b07-4bcc-25f3dd2aca64@gmail.com>
+From:   Alan Cooper <alcooperx@gmail.com>
+Date:   Tue, 31 Aug 2021 09:42:37 -0400
+Message-ID: <CAOGqxeXrkv2-7CX34QMQgmtkOwQo2fmmDYbKxJ3hUNAB3gXkEQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] usb: bdc: Fix a resource leak in the error handling
+ path of 'bdc_probe()'
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        ": Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/21 5:47 AM, William Breathitt Gray wrote:
-> The STM32 timer permits configuration of the counter encoder mode via
-> the slave mode control register (SMCR) slave mode selection (SMS) bits.
-> This patch provides preprocessor defines for the supported encoder
-> modes.
-> 
-> Cc: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> ---
->  drivers/counter/stm32-timer-cnt.c | 16 ++++++++--------
->  include/linux/mfd/stm32-timers.h  |  4 ++++
->  2 files changed, 12 insertions(+), 8 deletions(-)
+On Fri, Aug 20, 2021 at 4:03 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+>
+>
+> On 8/18/2021 9:32 PM, Christophe JAILLET wrote:
+> > If an error occurs after a successful 'clk_prepare_enable()' call, it must
+> > be undone by a corresponding 'clk_disable_unprepare()' call.
+> > This call is already present in the remove function.
+> >
+> > Add this call in the error handling path and reorder the code so that the
+> > 'clk_prepare_enable()' call happens later in the function.
+> > The goal is to have as much managed resources functions as possible
+> > before the 'clk_prepare_enable()' call in order to keep the error handling
+> > path simple.
+> >
+> > While at it, remove the now unneeded 'clk' variable.
+> >
+> > Fixes: c87dca047849 ("usb: bdc: Add clock enable for new chips with a separate BDC clock")
+> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+>
+> > ---
+> > Review with care.
+> > I don't like shuffling code like that because of possible side effect.
+> > Moving the code related to this clk looks fine to me, but who knows...
+>
+> There are no register accesses until bdc_phy_init() gets called, so this
+> looks fine to me. Al knows this code better than I do though, so it
+> would be better to wait for his Acked-by tag.
 
-Hi William,
+This is safe.
+Acked-by: Al Cooper <alcooperx@gmail.com>
 
-You can add my:
-Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-
-Thanks,
-Fabrice
-
-> 
-> diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-> index 3fb0debd7425..1fbc46f4ee66 100644
-> --- a/drivers/counter/stm32-timer-cnt.c
-> +++ b/drivers/counter/stm32-timer-cnt.c
-> @@ -93,16 +93,16 @@ static int stm32_count_function_get(struct counter_device *counter,
->  	regmap_read(priv->regmap, TIM_SMCR, &smcr);
->  
->  	switch (smcr & TIM_SMCR_SMS) {
-> -	case 0:
-> +	case TIM_SMCR_SMS_SLAVE_MODE_DISABLED:
->  		*function = STM32_COUNT_SLAVE_MODE_DISABLED;
->  		return 0;
-> -	case 1:
-> +	case TIM_SMCR_SMS_ENCODER_MODE_1:
->  		*function = STM32_COUNT_ENCODER_MODE_1;
->  		return 0;
-> -	case 2:
-> +	case TIM_SMCR_SMS_ENCODER_MODE_2:
->  		*function = STM32_COUNT_ENCODER_MODE_2;
->  		return 0;
-> -	case 3:
-> +	case TIM_SMCR_SMS_ENCODER_MODE_3:
->  		*function = STM32_COUNT_ENCODER_MODE_3;
->  		return 0;
->  	default:
-> @@ -119,16 +119,16 @@ static int stm32_count_function_set(struct counter_device *counter,
->  
->  	switch (function) {
->  	case STM32_COUNT_SLAVE_MODE_DISABLED:
-> -		sms = 0;
-> +		sms = TIM_SMCR_SMS_SLAVE_MODE_DISABLED;
->  		break;
->  	case STM32_COUNT_ENCODER_MODE_1:
-> -		sms = 1;
-> +		sms = TIM_SMCR_SMS_ENCODER_MODE_1;
->  		break;
->  	case STM32_COUNT_ENCODER_MODE_2:
-> -		sms = 2;
-> +		sms = TIM_SMCR_SMS_ENCODER_MODE_2;
->  		break;
->  	case STM32_COUNT_ENCODER_MODE_3:
-> -		sms = 3;
-> +		sms = TIM_SMCR_SMS_ENCODER_MODE_3;
->  		break;
->  	default:
->  		return -EINVAL;
-> diff --git a/include/linux/mfd/stm32-timers.h b/include/linux/mfd/stm32-timers.h
-> index f8db83aedb2b..5f5c43fd69dd 100644
-> --- a/include/linux/mfd/stm32-timers.h
-> +++ b/include/linux/mfd/stm32-timers.h
-> @@ -82,6 +82,10 @@
->  #define MAX_TIM_ICPSC		0x3
->  #define TIM_CR2_MMS_SHIFT	4
->  #define TIM_CR2_MMS2_SHIFT	20
-> +#define TIM_SMCR_SMS_SLAVE_MODE_DISABLED	0 /* counts on internal clock when CEN=1 */
-> +#define TIM_SMCR_SMS_ENCODER_MODE_1		1 /* counts TI1FP1 edges, depending on TI2FP2 level */
-> +#define TIM_SMCR_SMS_ENCODER_MODE_2		2 /* counts TI2FP2 edges, depending on TI1FP1 level */
-> +#define TIM_SMCR_SMS_ENCODER_MODE_3		3 /* counts on both TI1FP1 and TI2FP2 edges */
->  #define TIM_SMCR_TS_SHIFT	4
->  #define TIM_BDTR_BKF_MASK	0xF
->  #define TIM_BDTR_BKF_SHIFT(x)	(16 + (x) * 4)
-> 
+> --
+> Florian
