@@ -2,121 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FC33FC7EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946183FC7ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234016AbhHaNMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232604AbhHaNMb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:12:31 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19ECEC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 06:11:36 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id i6so27688177wrv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 06:11:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=norberthealth-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=tGsBv1pAuKTHv07Wj00TrdwJkxbHrYcPF1O+phMPjvQ=;
-        b=ISRMIHCJo448TK3sYnTZC8NZneL8WWKQmmbfRil/r88gcP2FvGMwDJcHzNGU7h6pWp
-         Uj1DedVk/iy/C0+x69z8cYGRGpFRcHLxzrwqcpSdA8QwB5V8FgUxLvfba+MZwB4iMmBI
-         2AQz58GRAZKv5TeQ+UH+mxQnmXmlozsdWp/A/b7wLp8Eh5FVLfRphF1vf+eabskTzfBH
-         FB2qBNC2qeMp6cwV8A21qCVZmkbAmBcYhBevk1KHB6RWAom/EWLrW+AaIVIVJQi7gPNr
-         ElMBPZJiIOcqPvDmuuCyHy+y8Pp+pFZNzE4rbLvNr0zKYrmvtzcXTGHv4qwN/wn8TrVf
-         nC5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=tGsBv1pAuKTHv07Wj00TrdwJkxbHrYcPF1O+phMPjvQ=;
-        b=dtjLzyiC4WNPpGKmmX4wApG7/99k31Filb18YOWhudHwKQajuhTGs7OvG8KBDPvHvn
-         KLUwvpDaaYWIvPJOD7VR2B+/GkuBE1pkT7npQ4Gngx7qnr/wXRyuT3A+H3V3Mp4O3Qf3
-         Ra2aW+gvgomAH5xHBJdtQo32RnaVI8t2FCrUENu49Ulle5YR/n8NnwPG891+icGDa2fM
-         o3ExAghNq0DmncdkPedLhPQnrtha8fwDI0h5IxxaKzhUO+ojHuksTGgVWW4SZrPFVpJ1
-         ooCzfbQKHagrMWR79xx/ofYWhy9o8MPrDPinenMmtq5kJh15KT1wa57ahbMrz2G/uGce
-         QO6A==
-X-Gm-Message-State: AOAM530RmTuU33SEbKQFEQ3ZdurEZhrrZdrcG4ICOwx9c1duqHy6L41v
-        Ets3qXa8x4HtCeKwPnVBTlJr8w==
-X-Google-Smtp-Source: ABdhPJzXoivC1fHD6K9VYjFIPCkIgh3F+PvZ4MUGwzNrTLi0V4Up8N81Xnbry7iYFxDBEQalfJ5rbA==
-X-Received: by 2002:a05:6000:23a:: with SMTP id l26mr30839399wrz.369.1630415494498;
-        Tue, 31 Aug 2021 06:11:34 -0700 (PDT)
-Received: from localhost.localdomain (81.227.26.93.rev.sfr.net. [93.26.227.81])
-        by smtp.gmail.com with ESMTPSA id k4sm18459745wrm.74.2021.08.31.06.11.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 06:11:34 -0700 (PDT)
-From:   Roger Knecht <roger@norberthealth.com>
-To:     Jiri Kosina <jkosina@suse.cz>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Jiri Kosina <trivial@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roger Knecht <roger@norberthealth.com>
-Subject: [PATCH RESEND v3] Trivial comment fix for the CRC ITU-T polynom
-Date:   Tue, 31 Aug 2021 15:07:02 +0200
-Message-Id: <20210831130702.31526-1-roger@norberthealth.com>
-X-Mailer: git-send-email 2.17.1
+        id S234224AbhHaNN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:13:27 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:43543 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232604AbhHaNNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 09:13:25 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GzSK802cBz9sTX;
+        Tue, 31 Aug 2021 15:12:28 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id oIgIQjJLmJuV; Tue, 31 Aug 2021 15:12:27 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GzSK75vDfz9sT9;
+        Tue, 31 Aug 2021 15:12:27 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8A0E38B7EE;
+        Tue, 31 Aug 2021 15:12:27 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id nvzuqENngpjM; Tue, 31 Aug 2021 15:12:27 +0200 (CEST)
+Received: from po18078vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 426448B7ED;
+        Tue, 31 Aug 2021 15:12:27 +0200 (CEST)
+Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 00A596BCA2; Tue, 31 Aug 2021 13:12:26 +0000 (UTC)
+Message-Id: <97f252fcd63e145f54fbf85124c75fb01e96e1bb.1630415517.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2] powerpc/32: Add support for out-of-line static calls
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 31 Aug 2021 13:12:26 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a small typo in the CRC ITU-T polynom documentation.
+Add support for out-of-line static calls on PPC32. This change
+improve performance of calls to global function pointers by
+using direct calls instead of indirect calls.
 
-The code comment says that the polynom is x^16 + x^12 + x^15 + 1, but the
-correct polynom is x^16 + x^12 + x^5 + 1.
+The trampoline is initialy populated with a 'blr' or branch to target,
+followed by an unreachable long jump sequence.
 
-Quote from page 2 in the ITU-T V.41 specification:
-  "2 Encoding and checking process
+In order to cater with parallele execution, the trampoline needs to
+be updated in a way that ensures it remains consistent at all time.
+This means we can't use the traditional lis/addi to load r12 with
+the target address, otherwise there would be a window during which
+the first instruction contains the upper part of the new target
+address while the second instruction still contains the lower part of
+the old target address. To avoid that the target address is stored
+just after the 'bctr' and loaded from there with a single instruction.
 
-  The service bits and information bits, taken in conjunction, correspond
-  to the coefficients of a message polynomial having terms from x^(n-1)
-  (n = total number of bits in a block or sequence) down to x^16. This
-  polynomial is divided, modulo 2, by the generating polynomial
-  x^16 + x^12 + x^5 + 1. [...]"
+Then, depending on the target distance, arch_static_call_transform()
+will either replace the first instruction by a direct 'bl <target>' or
+'nop' in order to have the trampoline fall through the long jump
+sequence.
 
-Source: https://www.itu.int/rec/T-REC-V.41-198811-I/en
+Performancewise the long jump sequence is probably not better than
+the indirect calls set by GCC when we don't use static calls, but
+such calls are unlikely to be required on powerpc32: With most
+configurations the kernel size is far below 32 Mbytes so only
+modules may happen to be too far. And even modules are likely to
+be close enough as they are allocated below the kernel core and
+as close as possible of the kernel text.
 
-The hex polynom 0x1021 and CRC code implementation are correct.
+static_call selftest is running successfully with this change.
 
-Signed-off-by: Roger Knecht <roger@norberthealth.com>
+With this patch, __do_irq() has the following sequence to trace
+irq entries:
+
+	c0004a00 <__SCT__tp_func_irq_entry>:
+	c0004a00:	48 00 00 e0 	b       c0004ae0 <__traceiter_irq_entry>
+	c0004a04:	3d 80 c0 00 	lis     r12,-16384
+	c0004a08:	81 8c 4a 14 	lwz     r12,18964(r12)
+	c0004a0c:	7d 89 03 a6 	mtctr   r12
+	c0004a10:	4e 80 04 20 	bctr
+	c0004a14:	00 00 00 00 	.long 0x0
+	c0004a18:	60 00 00 00 	nop
+	c0004a1c:	60 00 00 00 	nop
+...
+	c0005654 <__do_irq>:
+...
+	c0005664:	7c 7f 1b 78 	mr      r31,r3
+...
+	c00056a0:	81 22 00 00 	lwz     r9,0(r2)
+	c00056a4:	39 29 00 01 	addi    r9,r9,1
+	c00056a8:	91 22 00 00 	stw     r9,0(r2)
+	c00056ac:	3d 20 c0 af 	lis     r9,-16209
+	c00056b0:	81 29 74 cc 	lwz     r9,29900(r9)
+	c00056b4:	2c 09 00 00 	cmpwi   r9,0
+	c00056b8:	41 82 00 10 	beq     c00056c8 <__do_irq+0x74>
+	c00056bc:	80 69 00 04 	lwz     r3,4(r9)
+	c00056c0:	7f e4 fb 78 	mr      r4,r31
+	c00056c4:	4b ff f3 3d 	bl      c0004a00 <__SCT__tp_func_irq_entry>
+
+Before this patch, __do_irq() was doing the following to trace irq
+entries:
+
+	c0005700 <__do_irq>:
+...
+	c0005710:	7c 7e 1b 78 	mr      r30,r3
+...
+	c000574c:	93 e1 00 0c 	stw     r31,12(r1)
+	c0005750:	81 22 00 00 	lwz     r9,0(r2)
+	c0005754:	39 29 00 01 	addi    r9,r9,1
+	c0005758:	91 22 00 00 	stw     r9,0(r2)
+	c000575c:	3d 20 c0 af 	lis     r9,-16209
+	c0005760:	83 e9 f4 cc 	lwz     r31,-2868(r9)
+	c0005764:	2c 1f 00 00 	cmpwi   r31,0
+	c0005768:	41 82 00 24 	beq     c000578c <__do_irq+0x8c>
+	c000576c:	81 3f 00 00 	lwz     r9,0(r31)
+	c0005770:	80 7f 00 04 	lwz     r3,4(r31)
+	c0005774:	7d 29 03 a6 	mtctr   r9
+	c0005778:	7f c4 f3 78 	mr      r4,r30
+	c000577c:	4e 80 04 21 	bctrl
+	c0005780:	85 3f 00 0c 	lwzu    r9,12(r31)
+	c0005784:	2c 09 00 00 	cmpwi   r9,0
+	c0005788:	40 82 ff e4 	bne     c000576c <__do_irq+0x6c>
+
+Behind the fact of now using a direct 'bl' instead of a
+'load/mtctr/bctr' sequence, we can also see that we get one less
+register on the stack.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-Changes for the resend:
-  - Moved "changes and thanks" out of the commit message.
+v2: Use indirect load in long jump sequence to cater with parallele execution and preemption.
+---
+ arch/powerpc/Kconfig                   |  1 +
+ arch/powerpc/include/asm/static_call.h | 25 ++++++++++++++++++
+ arch/powerpc/kernel/Makefile           |  2 +-
+ arch/powerpc/kernel/static_call.c      | 36 ++++++++++++++++++++++++++
+ 4 files changed, 63 insertions(+), 1 deletion(-)
+ create mode 100644 arch/powerpc/include/asm/static_call.h
+ create mode 100644 arch/powerpc/kernel/static_call.c
 
-Thanks,
-Roger
-
- include/linux/crc-itu-t.h | 2 +-
- lib/crc-itu-t.c           | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/crc-itu-t.h b/include/linux/crc-itu-t.h
-index a4367051e192..2f991a427ade 100644
---- a/include/linux/crc-itu-t.h
-+++ b/include/linux/crc-itu-t.h
-@@ -4,7 +4,7 @@
-  *
-  * Implements the standard CRC ITU-T V.41:
-  *   Width 16
-- *   Poly  0x1021 (x^16 + x^12 + x^15 + 1)
-+ *   Poly  0x1021 (x^16 + x^12 + x^5 + 1)
-  *   Init  0
-  */
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 36b72d972568..a0fe69d8ec83 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -247,6 +247,7 @@ config PPC
+ 	select HAVE_SOFTIRQ_ON_OWN_STACK
+ 	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
+ 	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
++	select HAVE_STATIC_CALL			if PPC32
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HAVE_VIRT_CPU_ACCOUNTING
+ 	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
+diff --git a/arch/powerpc/include/asm/static_call.h b/arch/powerpc/include/asm/static_call.h
+new file mode 100644
+index 000000000000..2402c6d32439
+--- /dev/null
++++ b/arch/powerpc/include/asm/static_call.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_POWERPC_STATIC_CALL_H
++#define _ASM_POWERPC_STATIC_CALL_H
++
++#define __POWERPC_SCT(name, inst)					\
++	asm(".pushsection .text, \"ax\"				\n"	\
++	    ".align 5						\n"	\
++	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
++	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
++	    inst "						\n"	\
++	    "	lis	12,1f@ha				\n"	\
++	    "	lwz	12,1f@l(12)				\n"	\
++	    "	mtctr	12					\n"	\
++	    "	bctr						\n"	\
++	    "1:	.long 0						\n"	\
++	    "	nop						\n"	\
++	    "	nop						\n"	\
++	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
++	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
++	    ".popsection					\n")
++
++#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)	__POWERPC_SCT(name, "b " #func)
++#define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)	__POWERPC_SCT(name, "blr")
++
++#endif /* _ASM_POWERPC_STATIC_CALL_H */
+diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
+index 7be36c1e1db6..0e3640e14eb1 100644
+--- a/arch/powerpc/kernel/Makefile
++++ b/arch/powerpc/kernel/Makefile
+@@ -106,7 +106,7 @@ extra-y				+= vmlinux.lds
  
-diff --git a/lib/crc-itu-t.c b/lib/crc-itu-t.c
-index 1974b355c148..56e6e0d63d1e 100644
---- a/lib/crc-itu-t.c
-+++ b/lib/crc-itu-t.c
-@@ -7,7 +7,7 @@
- #include <linux/module.h>
- #include <linux/crc-itu-t.h>
+ obj-$(CONFIG_RELOCATABLE)	+= reloc_$(BITS).o
  
--/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^15 + 1) */
-+/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^5 + 1) */
- const u16 crc_itu_t_table[256] = {
- 	0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
- 	0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef,
+-obj-$(CONFIG_PPC32)		+= entry_32.o setup_32.o early_32.o
++obj-$(CONFIG_PPC32)		+= entry_32.o setup_32.o early_32.o static_call.o
+ obj-$(CONFIG_PPC64)		+= dma-iommu.o iommu.o
+ obj-$(CONFIG_KGDB)		+= kgdb.o
+ obj-$(CONFIG_BOOTX_TEXT)	+= btext.o
+diff --git a/arch/powerpc/kernel/static_call.c b/arch/powerpc/kernel/static_call.c
+new file mode 100644
+index 000000000000..e5e78205ccb4
+--- /dev/null
++++ b/arch/powerpc/kernel/static_call.c
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/memory.h>
++#include <linux/static_call.h>
++
++#include <asm/code-patching.h>
++
++void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
++{
++	int err;
++	unsigned long target = (long)func;
++	bool is_short = is_offset_in_branch_range((long)target - (long)tramp);
++
++	if (!tramp)
++		return;
++
++	mutex_lock(&text_mutex);
++
++	if (func && !is_short) {
++		err = patch_instruction(tramp + 20, ppc_inst(target));
++		if (err)
++			goto out;
++	}
++
++	if (!func)
++		err = patch_instruction(tramp, ppc_inst(PPC_RAW_BLR()));
++	else if (is_short)
++		err = patch_branch(tramp, target, 0);
++	else
++		err = patch_instruction(tramp, ppc_inst(PPC_RAW_NOP()));
++out:
++	mutex_unlock(&text_mutex);
++
++	if (err)
++		panic("%s: patching failed %pS at %pS\n", __func__, func, tramp);
++}
++EXPORT_SYMBOL_GPL(arch_static_call_transform);
 -- 
-2.17.1
+2.25.0
 
