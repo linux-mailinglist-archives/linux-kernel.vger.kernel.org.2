@@ -2,72 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA9C3FCAA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EDA3FCAA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238733AbhHaPSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:18:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59810 "EHLO mail.kernel.org"
+        id S238905AbhHaPTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:19:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233369AbhHaPSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:18:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5432360724;
-        Tue, 31 Aug 2021 15:17:50 +0000 (UTC)
+        id S232559AbhHaPTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 11:19:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBCB46103A;
+        Tue, 31 Aug 2021 15:18:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630423071;
-        bh=Gze4tbWximZZAQoREaDEMclW35VaWPdDTv5B4j6qHX0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OeyrkZc+CBDZ1kqmQ9WpxRHA7iBGHgRCtg6iJhsdEAhaiG4ZStFXL2Mm7pDluNsMW
-         gXi28iVYXOjEXS6s7DOi5h5kKTD/9rtqErELDvWJeFP4UPF8ork8X80pXNeYQherK0
-         fBJ4Q0fnA8wPw5gk+eSwWOzoiERQJ0ajAU2SnFwkXBUE268P0zkU0ktzj2X9dO9w2b
-         zZKGAIdeyAcEQYoua1Ivq2uteKDRRhzi8E9eou4/LhVp0G7tVUBJGr6X62tNOHv+vQ
-         gsk4f71fg6bpdbge4+rkUO5SPdD65cUbgo9yQBI6qS58/xse/Q1Huo+ts5ZUxZ6mIN
-         w6QIz/QPOaUPA==
-Date:   Tue, 31 Aug 2021 16:17:47 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        konrad.wilk@oracle.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux@roeck-us.net
-Subject: Re: [PATCH] swiotlb: use depends on for DMA_RESTRICTED_POOL
-Message-ID: <20210831151746.GB32001@willie-the-truck>
-References: <20210827034802.1065294-1-tientzu@chromium.org>
+        s=k20201202; t=1630423087;
+        bh=RJTxHIyrBUknplHV6hGq8g2EyXUUbu+8+pAvfCZtkMk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=G0yMMTqHzwe0qELu/DoAveRwHUB13dr3KPJRkqxmmeotdjBerRgfbWfJzvi9M4w7j
+         R3d+skaMiYzBdMNJOfXm9IWujZ7afBwVsnt3mzrac3T8HNMuZFQm6btu2kyq11MD9l
+         NU0wxpysBolR1UlYFWOd3DdrfplB3FDtilgRYq9UbC1JXckD5jD+uXirhjfZ876WcO
+         cqkLBhbYdUEdxIO0Y3pu3KB4qCvNUYdQDdwG5VOgIGLiZCWlloej9IUto9KfnXma+I
+         CftbNTGohba7GqvjL/2RLJlsW3BEuUXuEVwcoNO1UjdzSkJ21YGcAF73la1USBO6cM
+         6J9E/lUdaDRTA==
+Received: by mail-ej1-f52.google.com with SMTP id e21so39507055ejz.12;
+        Tue, 31 Aug 2021 08:18:06 -0700 (PDT)
+X-Gm-Message-State: AOAM533EBAIN1HUAZg0/mQATQ8qqgXXGodmv2IfUN97ibNJZ9hbfx17i
+        HWNAvjWe1xztl4hw9M8chUknL8zsQLruroCGlQ==
+X-Google-Smtp-Source: ABdhPJy8LprSPFGyN9DqZEs0SFSzAWJ2ZV2nFyBr73KsmWA8/W5JGC4e+TWoma70T7sy/5hnC40loUZrlfZ4loNuCl4=
+X-Received: by 2002:a17:906:8cd:: with SMTP id o13mr32127271eje.341.1630423085544;
+ Tue, 31 Aug 2021 08:18:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827034802.1065294-1-tientzu@chromium.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210830214317.GA27606@bjorn-Precision-5520> <ccf767340afe13a6d273ad8fbc29c6bc966d6314.camel@mediatek.com>
+In-Reply-To: <ccf767340afe13a6d273ad8fbc29c6bc966d6314.camel@mediatek.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 31 Aug 2021 10:17:53 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+dBi-XUDJD_STP=jWw+RLkRpX1U9XsRMhqK4U1H=0FHw@mail.gmail.com>
+Message-ID: <CAL_Jsq+dBi-XUDJD_STP=jWw+RLkRpX1U9XsRMhqK4U1H=0FHw@mail.gmail.com>
+Subject: Re: [PATCH v12 2/6] PCI: mediatek: Add new method to get shared
+ pcie-cfg base address
+To:     Chuanjia Liu <chuanjia.liu@mediatek.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        Yong Wu <yong.wu@mediatek.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 11:48:02AM +0800, Claire Chang wrote:
-> Use depends on instead of select for DMA_RESTRICTED_POOL; otherwise it
-> will make SWIOTLB user configurable and cause compile errors for some
-> arch (e.g. mips).
-> 
-> Fixes: 0b84e4f8b793 ("swiotlb: Add restricted DMA pool initialization")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
-> ---
->  kernel/dma/Kconfig | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
-> index fd4db714d86b..1b02179758cb 100644
-> --- a/kernel/dma/Kconfig
-> +++ b/kernel/dma/Kconfig
-> @@ -82,8 +82,7 @@ config SWIOTLB
->  
->  config DMA_RESTRICTED_POOL
->  	bool "DMA Restricted Pool"
-> -	depends on OF && OF_RESERVED_MEM
-> -	select SWIOTLB
-> +	depends on OF && OF_RESERVED_MEM && SWIOTLB
->  	help
->  	  This enables support for restricted DMA pools which provide a level of
->  	  DMA memory protection on systems with limited hardware protection
+On Mon, Aug 30, 2021 at 10:31 PM Chuanjia Liu <chuanjia.liu@mediatek.com> wrote:
+>
+> On Mon, 2021-08-30 at 16:43 -0500, Bjorn Helgaas wrote:
+> > On Mon, Aug 30, 2021 at 03:09:44PM +0800, Chuanjia Liu wrote:
+> > > On Fri, 2021-08-27 at 11:46 -0500, Bjorn Helgaas wrote:
+> > > > On Mon, Aug 23, 2021 at 11:27:56AM +0800, Chuanjia Liu wrote:
+> > > > > @@ -995,6 +1004,14 @@ static int mtk_pcie_subsys_powerup(struct
+> > > > > mtk_pcie *pcie)
+> > > > >                         return PTR_ERR(pcie->base);
+> > > > >         }
+> > > > >
+> > > > > +       cfg_node = of_find_compatible_node(NULL, NULL,
+> > > > > +                                          "mediatek,generic-
+> > > > > pciecfg");
+> > > > > +       if (cfg_node) {
+> > > > > +               pcie->cfg = syscon_node_to_regmap(cfg_node);
+> > > >
+> > > > Other drivers in drivers/pci/controller/ use
+> > > > syscon_regmap_lookup_by_phandle() (j721e, dra7xx, keystone,
+> > > > layerscape, artpec6) or syscon_regmap_lookup_by_compatible()
+> > > > (imx6,
+> > > > kirin, v3-semi).
+> > > >
+> > > > You should do it the same way unless there's a need to be
+> > > > different.
+> > >
+> > > I have used phandle, but Rob suggested to search for the node by
+> > > compatible.
+> > > The reason why syscon_regmap_lookup_by_compatible() is not
+> > > used here is that the pciecfg node is optional, and there is no
+> > > need to
+> > > return error when the node is not searched.
+> >
+> > How about this?
+> >
+> >   regmap = syscon_regmap_lookup_by_compatible("mediatek,generic-
+> > pciecfg");
+> >   if (!IS_ERR(regmap))
+> >     pcie->cfg = regmap;
 
-Acked-by: Will Deacon <will@kernel.org>
++1
 
-Will
+>
+> Hi Bjorn,
+>
+> We need to deal with three situations
+> 1) No error
+> 2) The error of the node not found, don't do anything
+> 3) Other errors, return errors
+>
+> I guess you mean
+>
+> regmap = syscon_regmap_lookup_by_compatible("mediatek,generic-
+> pciecfg");
+>   if (!IS_ERR(regmap))
+>       pcie->cfg = regmap;
+>   else if (IS_ERR(regmap) && PTR_ERR(regmap) != -ENODEV)
+
+You already know  IS_ERR is true here.
+
+>       return PTR_ERR(regmap);
+
+syscon_regmap_lookup_by_compatible_optional is the function you are
+looking for. The _optional flavor doesn't exist, so create it. There
+is one for the phandle lookup.
+
+>
+> I'm not sure if we need this, it seems a little weird and there are
+> many drivers in other subsystems that use syscon_node_to_regmap().
+
+You are implementing the exact same sequence that
+syscon_regmap_lookup_by_compatible() does, so clearly you should be
+using it. The one difference is you forgot the of_node_put().
+
+Rob
