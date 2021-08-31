@@ -2,153 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22533FCD9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89663FCD9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240463AbhHaTNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:13:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53049 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240212AbhHaTNq (ORCPT
+        id S240484AbhHaTQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235292AbhHaTQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:13:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630437170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B3R8+9xCMOWLuSi664S67yIHwiGeNUaH36y7wRqkQk8=;
-        b=WcNtHgW56NbbjMMwYa2R59bm3DVYFbGX/hza0hueHCB97kBSnqKyv6V/7p25dhDHpOzGO7
-        708/gSe2/VAhQrZ8xqC77BMLr1Knp/6SoKtbra2Tu/j5l46IRcaxzoO11xEtfZcU3E6sTX
-        onEy+PSO7M9DslsMJsd/E3OrvrKEsl4=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-K3z3UYBQNT-kcZnFKmpRMg-1; Tue, 31 Aug 2021 15:12:47 -0400
-X-MC-Unique: K3z3UYBQNT-kcZnFKmpRMg-1
-Received: by mail-wr1-f70.google.com with SMTP id u2-20020adfdd42000000b001579f5d6779so153350wrm.8
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:12:47 -0700 (PDT)
+        Tue, 31 Aug 2021 15:16:46 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B42C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:15:50 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id t19so1079113ejr.8
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:15:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LRu3w/aDjbu6nLXcWdhVb0x5w4DgW1rHwaWns4vHGkU=;
+        b=GrVqDCWJ47WFtA6A/pcjE82vFKjlsZc9KXICG7aYWtOShZDbJ0baMSf/Dlzk/7vlSI
+         0XBAix2NF04DaYHYtpYbMeILbThYSlInegJ90RrRM4zDkW/tTN+FPIF9W/l5y+xT1ew3
+         UhGcbua7lKtiqp73fOVxDaKyLsxBXleFr0wDw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=B3R8+9xCMOWLuSi664S67yIHwiGeNUaH36y7wRqkQk8=;
-        b=MLZiciM9xWef2DxoRQ6fdp40GvysBXyCHc1gl1x/oQz9OlxmsMdxrNlqrfEv/W+Iz9
-         /qj36+caIocqja7YRGcU8YIdDrJC/r304ord7gNERI6AgroWbSS9xQurgmskSy+T4Hme
-         cn9pY5dtntfv2r9YC9Yj9wsJogzXHN5TdlrYCHs4i45uGe7MXjCHTTNGFqIG6JN02B9p
-         /G/GR+6ywBbjwvcp2ZjWAM7rGw2SQ6co/L77rCxwRbzXnYX5hGrWe1DTof5XJsaydVOS
-         E2PkAn9SgqlNxKhrEAkH9WBKFM0wJl3VTt2FN2CJELX4CQ7SehgdYTibguoiw4TLoO3O
-         VmJA==
-X-Gm-Message-State: AOAM530QCetwzKAOYSO/TgecRBbPkWQLbIkj0eXCuXK1t0GZoAbf2MJ4
-        Z+l2IUuh5zfnuHJCv22XewSZrKSPT81zXhs9/LlcBV/WkomafFyT37yiMwcpymIQkvIYFqlXJFP
-        97CvAJ1cA2DN1obdUlSi6kiR9
-X-Received: by 2002:a1c:f315:: with SMTP id q21mr5819461wmq.76.1630437166301;
-        Tue, 31 Aug 2021 12:12:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxiLNTwKQMvs3colTkzHCAECIzU7cGUrdshsPwDbRyk3ubr6ahQwvcGeQbVyq70Sw5+SV5+fA==
-X-Received: by 2002:a1c:f315:: with SMTP id q21mr5819425wmq.76.1630437166118;
-        Tue, 31 Aug 2021 12:12:46 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23bf5.dip0.t-ipconnect.de. [79.242.59.245])
-        by smtp.gmail.com with ESMTPSA id f5sm3231993wmb.47.2021.08.31.12.12.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 12:12:45 -0700 (PDT)
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
- memory
-To:     Sean Christopherson <seanjc@google.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
- <40af9d25-c854-8846-fdab-13fe70b3b279@kernel.org>
- <cfe75e39-5927-c02a-b8bc-4de026bb7b3b@redhat.com>
- <73319f3c-6f5e-4f39-a678-7be5fddd55f2@www.fastmail.com>
- <YSlnJpWh8fdpddTA@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <949e6d95-266d-0234-3b86-6bd3c5267333@redhat.com>
-Date:   Tue, 31 Aug 2021 21:12:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LRu3w/aDjbu6nLXcWdhVb0x5w4DgW1rHwaWns4vHGkU=;
+        b=jzqMYxr+QqrEYs1jZExblMf2N5m2J+t7xH2345Da4zebb/DZfiIN6wjpqLFqzNi/yG
+         8OFaRTZh1OfNSMlD+bOpKAJdoM5pwsn+SgPWg9JPHRNiiaNoF2Y/kCBVj49NvHmcqs7w
+         E1L+U79B9c2thJkLS9ZiAaF6MXfZj1ecZXH6UfpU2mvSy6f65IXTv59rcuWM8lnBqTJj
+         V8HvyJi9l47/A1kwfejn5wd4GmFeIIqV3nwiCpdmrHiqvryeVVSitbjyUzbhnvNB5bRO
+         saPSuX97rXLaju+xkwa0hOY57FwGM/jpK9jDwDIfWMAvlYR12mrA/GFA1xP821JexSfU
+         uWZA==
+X-Gm-Message-State: AOAM5333xbvQZPG8lFm6yzvCrGaPASNo/QgzfQFP3ev1Lkw5mNHfteT9
+        ZQoKu10Svn8XO3iOTs/dEuAzpevHkWNMKGVon2NfaQ==
+X-Google-Smtp-Source: ABdhPJwDXEk0fhlWloCFjxuKx6dWx6wpwmrkENdBVL0IulLdcZuW7RYsFEQG72VCjSxfpqJiUVnqdLeDbkbx/CG//+Q=
+X-Received: by 2002:a17:906:5855:: with SMTP id h21mr31467671ejs.230.1630437348629;
+ Tue, 31 Aug 2021 12:15:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YSlnJpWh8fdpddTA@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <ff60d9aa-28b9-9c6d-f318-94dd51a95abd.ref@schaufler-ca.com> <ff60d9aa-28b9-9c6d-f318-94dd51a95abd@schaufler-ca.com>
+In-Reply-To: <ff60d9aa-28b9-9c6d-f318-94dd51a95abd@schaufler-ca.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 31 Aug 2021 12:15:37 -0700
+Message-ID: <CAADWXX9A-6R13VAekvzvWYGcy990nLxcyz1BiZyeBpKHivtCqg@mail.gmail.com>
+Subject: Re: [GIT PULL] Smack patches for v5.15
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Austin Kim <austindh.kim@gmail.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.08.21 00:28, Sean Christopherson wrote:
-> On Fri, Aug 27, 2021, Andy Lutomirski wrote:
->>
->> On Thu, Aug 26, 2021, at 2:26 PM, David Hildenbrand wrote:
->>> On 26.08.21 19:05, Andy Lutomirski wrote:
->>
->>>> Oof.  That's quite a requirement.  What's the point of the VMA once all
->>>> this is done?
->>>
->>> You can keep using things like mbind(), madvise(), ... and the GUP code
->>> with a special flag might mostly just do what you want. You won't have
->>> to reinvent too many wheels on the page fault logic side at least.
-> 
-> Ya, Kirill's RFC more or less proved a special GUP flag would indeed Just Work.
-> However, the KVM page fault side of things would require only a handful of small
-> changes to send private memslots down a different path.  Compared to the rest of
-> the enabling, it's quite minor.
-> 
-> The counter to that is other KVM architectures would need to learn how to use the
-> new APIs, though I suspect that there will be a fair bit of arch enabling regardless
-> of what route we take.
-> 
->> You can keep calling the functions.  The implementations working is a
->> different story: you can't just unmap (pte_numa-style or otherwise) a private
->> guest page to quiesce it, move it with memcpy(), and then fault it back in.
-> 
-> Ya, I brought this up in my earlier reply.  Even the initial implementation (without
-> real NUMA support) would likely be painful, e.g. the KVM TDX RFC/PoC adds dedicated
-> logic in KVM to handle the case where NUMA balancing zaps a _pinned_ page and then
-> KVM fault in the same pfn.  It's not thaaat ugly, but it's arguably more invasive
-> to KVM's page fault flows than a new fd-based private memslot scheme.
+On Tue, Aug 31, 2021 at 11:53 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+>
+> Here is the Smack pull request for v5.15.
 
-I might have a different mindset, but less code churn doesn't 
-necessarily translate to "better approach".
+Hmm. This went into my spambox.
 
-I'm certainly not pushing for what I proposed (it's a rough, broken 
-sketch). I'm much rather trying to come up with alternatives that try 
-solving the same issue, handling the identified requirements.
+I have no idea why. Everything looks ok as far as I can tell, although
+having a SPF record for the originating host might have helped.
 
-I have a gut feeling that the list of requirements might not be complete 
-yet. For example, I wonder if we have to protect against user space 
-replacing private pages by shared pages or punishing random holes into 
-the encrypted memory fd.
+It also doesn't look like you are doing anything new wrt your email
+setup, even if that yahoo web mail thing might be a bit unusual.
 
--- 
-Thanks,
+It *might* help to use "git://" instead of "https://" in case some
+spam logic thinks web links might be more suspicious, but who knows..
 
-David / dhildenb
+Anyway, I've caught it and marked it not spam, but this is a note to
+let you know that something on the internet hates you and your emails.
 
+              Linus
