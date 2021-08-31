@@ -2,110 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B913FC2FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70033FC2F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238215AbhHaGuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 02:50:16 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:22712 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237960AbhHaGuQ (ORCPT
+        id S238022AbhHaGuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 02:50:02 -0400
+Received: from mail-vk1-f180.google.com ([209.85.221.180]:42842 "EHLO
+        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236181AbhHaGuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 02:50:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1630392561; x=1661928561;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=JTAKNwf9/VDIV8aG/1dqbq8tyWYJ42As+VykpPbner0=;
-  b=XyrZnjMQ+emm2GbGyOxQQjMzFz6GIDsbPqLKL1h7RbpPi1X/PbYZi+2H
-   RQ+h5fSLtTX2nVYdEZo6L06J6q/gU17TwB2nhIJ6UGdsqzOkQil9CbLDX
-   DwA/WDFyJLw0252sty3YNWVt3DBFDyuo4xgcw35ZDzt9sLdgl6rmI7TU/
-   qaUWLsTydsFmbQpRcpq8Y+hU/TAoWwOFApsZGhDYLXaIl0gCSLsr6bOW3
-   7j8ZQlOg+BrNyB8nV4seeN+2D5ocLoLnTKl3PL8uQYWy5WOOSayTcyNUd
-   RO0E6S7grJctpKAKfIPfwaBijp6ufrM8Bs8jIj1Y9WZH0WUMryfIT0JQd
-   Q==;
-IronPort-SDR: 8JOg7j2LcHXqiYgjLCi7asyQmhpshlu1XaIHM4LcWlsS1kyO5q7PikOs3TrNKXDMaYI9lV76TT
- fIXZPkF7KIQVswCUMzOo5C2wxSa1EPDErLl14vuKjT2ZEILk4ZKY0Z6ggDIanZxhy+DnRGnCLs
- 0pThhaPMq0a+TaxVshGoXiTvUnft1qeSTEFKebcH7LpK8TLURRbR5GExqB4Np2m6f1gY+I9w0B
- PGYDBDI+e7cKpy6I8Vj8rQqjHfX1ztDa5pO6BbiikpQrydQvSvzejQzanFszf7Zg643iUSC/Fx
- tFdFPErVXKk4jwCsGiQK6FT/
-X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
-   d="scan'208";a="134242849"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Aug 2021 23:49:21 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 30 Aug 2021 23:49:20 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 30 Aug 2021 23:49:16 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <jic23@kernel.org>
-CC:     <linux-iio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] iio: adc: at91-sama5d2_adc: fix warning for uninitialized 'val' variable
-Date:   Tue, 31 Aug 2021 09:48:00 +0300
-Message-ID: <20210831064800.78979-1-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 31 Aug 2021 02:50:01 -0400
+Received: by mail-vk1-f180.google.com with SMTP id bb10so5105585vkb.9;
+        Mon, 30 Aug 2021 23:49:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zKUmgc5HsRuZ5PLjImhWvj4wVvW9mMCLXiQ/PKtOxMo=;
+        b=KpS2VdhsCdqgIax/sJ2jO9WvhcklQPDNebR/JT0JnFDCyOIfXVDJv+T6CxZIfU0KSg
+         TzQCb3BovhK6KggZIvwCSQD29BO467ovqtNZLr8dcFxawegy1dUBLvGX/PpdfnrSDTTE
+         4w+BsQCBcMH2GisUY+9CoSGMrFCWmqCP3iQf+A196NQ3QhguKIZO9rn9tvxXAd9jzdHK
+         NTBBX8KJ/xfjuebbrqW+XAI8diSn5Mo0P7jpTS4x7HXW0B50n4BIkDSvIH2e2e3xbnRH
+         S7dKPiWRg6zxECIb1i+drt7Dh6mP6NHnyhgPglslBwUy6ljGY2aS55zI8zZygssZfPZF
+         OVeA==
+X-Gm-Message-State: AOAM533WOFJXkRFDc82W3hm1VMn4qGxk36v5S+jyTcl1t23Ehd4zUD5a
+        Db+Z7ohitMjoUnrf64ncmbO6/vOumCc4PhqyzWo=
+X-Google-Smtp-Source: ABdhPJzEoZFw11dTEebUr/ZL3MQASD4gZXPDPDil0jflTrPULArVww18ZayyTQn/pA0/lqVcrURes38hVPnfukRK4Xc=
+X-Received: by 2002:a1f:738f:: with SMTP id o137mr16613429vkc.2.1630392546165;
+ Mon, 30 Aug 2021 23:49:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <000000000000815b9605c70e74f8@google.com> <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
+ <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
+ <339bfb21-8e80-c7d9-46dd-c416f87c50c0@infradead.org> <535e404d-03bf-8e7a-b296-132a2a98c599@i-love.sakura.ne.jp>
+In-Reply-To: <535e404d-03bf-8e7a-b296-132a2a98c599@i-love.sakura.ne.jp>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 31 Aug 2021 08:48:53 +0200
+Message-ID: <CAMuHMdWX7s63X_zR9329canbQkPGBVxZNG4O+_=jUut60aGR9g@mail.gmail.com>
+Subject: Re: [PATCH] fbmem: don't allow too huge resolutions
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Colin King <colin.king@canonical.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> drivers/iio/adc/at91-sama5d2_adc.c:722:11: warning: variable 'val' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-           else if (reg == st->soc_info.platform->layout->YPOSR)
-                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/iio/adc/at91-sama5d2_adc.c:725:7: note: uninitialized use occurs here
-           if (!val)
-                ^~~
-   drivers/iio/adc/at91-sama5d2_adc.c:722:7: note: remove the 'if' if its condition is always true
-           else if (reg == st->soc_info.platform->layout->YPOSR)
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/iio/adc/at91-sama5d2_adc.c:711:9: note: initialize the variable 'val' to silence this warning
-           u32 val;
-                  ^
-                   = 0
-   1 warning generated.
+Hi Tetsuo,
 
-Fixed by initializing 'val' variable.
+Thanks for your patch!
 
-Fixes: 29edec2b98ff ("iio: adc: at91-sama5d2_adc: convert to platform specific data structures")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
----
+On Mon, Aug 30, 2021 at 6:05 PM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+> syzbot is reporting page fault at vga16fb_fillrect() [1], for
+> vga16fb_check_var() is failing to detect multiplication overflow.
+>
+>   if (vxres * vyres > maxmem) {
+>     vyres = maxmem / vxres;
+>     if (vyres < yres)
+>       return -ENOMEM;
+>   }
 
-Hi Jonathan,
+IMHO that should be fixed in vga16fb, too.
 
-If you can still rebase your testing branch, maybe you can squash this into the
-original patch, no need to make a separate commit I guess.
-I fixed this as soon as the report came out from the 0day robot.
+> Since no module would accept too huge resolutions where multiplication
+> overflow happens, let's reject in the common path.
+>
+> This patch does not use array_size(), for array_size() is allowed to
+> return UINT_MAX on 32bits even if overflow did not happen. We want to
+> detect only overflow here, for individual module will recheck with more
+> strict limits as needed.
 
-Thanks !
-Eugen
+Which is IMHO not really an issue, as I believe on 32-bit you cannot
+use a very large frame buffer, long before you reach UINT_MAX.
 
- drivers/iio/adc/at91-sama5d2_adc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Link: https://syzkaller.appspot.com/bug?extid=04168c8063cfdde1db5e [1]
+> Reported-by: syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>
+> Debugged-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Tested-by: syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>
+> ---
+>  drivers/video/fbdev/core/fbmem.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+> index 1c855145711b..9f5075dc2345 100644
+> --- a/drivers/video/fbdev/core/fbmem.c
+> +++ b/drivers/video/fbdev/core/fbmem.c
+> @@ -1008,6 +1008,11 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
+>         if (var->xres < 8 || var->yres < 8)
+>                 return -EINVAL;
+>
+> +       /* Don't allow u32 * u32 to overflow. */
+> +       if ((u64) var->xres * var->yres > UINT_MAX ||
+> +           (u64) var->xres_virtual * var->yres_virtual > UINT_MAX)
+> +               return -EINVAL;
+> +
 
-diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
-index 29c7441f9f27..f8a9ad50a00b 100644
---- a/drivers/iio/adc/at91-sama5d2_adc.c
-+++ b/drivers/iio/adc/at91-sama5d2_adc.c
-@@ -846,7 +846,7 @@ static int at91_adc_configure_touch(struct at91_adc_state *st, bool state)
- 
- static u16 at91_adc_touch_pos(struct at91_adc_state *st, int reg)
- {
--	u32 val;
-+	u32 val = 0;
- 	u32 scale, result, pos;
- 
- 	/*
+I think it would still be better to use check_mul_overflow(), as that
+makes it clear and explicit what is being done, even without a comment.
+
+Furthermore, this restricts the virtual frame buffer size on 64-bit,
+too, while graphics cards can have much more than 4 GiB of RAM.
+
+>         ret = info->fbops->fb_check_var(var, info);
+>
+>         if (ret)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
