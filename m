@@ -2,156 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69873FCAD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D3D3FCAEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239218AbhHaPaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:30:08 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:29636 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238853AbhHaPaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:30:07 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630423752; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=JU0ORv8xALIzRyTc2G/fAIzydYETp5J0m/dw8byxgP4=;
- b=saxxPmkcDZwpR4DYk1LxwXvv6UGvKklulBQbQLlrXPTlm7wKTFsak2F1GIAabfYwOSxjMsEp
- NPc38gR3FVq6XecpqfIE7KRDDGyCkTulwWDSmEcTxAy7ZRTn1pd1bWFGhktwuzjRFAcCIM/i
- v5eudyeJEAzk7TP0WIEZclaCTpc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 612e4ab440d2129ac1eb7c4e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 31 Aug 2021 15:28:52
- GMT
-Sender: rajpat=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 39800C43460; Tue, 31 Aug 2021 15:28:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rajpat)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A55BEC4338F;
-        Tue, 31 Aug 2021 15:28:51 +0000 (UTC)
+        id S239453AbhHaPeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:34:23 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:33112 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234068AbhHaPeW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 11:34:22 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mL5h3-0000RV-T4; Tue, 31 Aug 2021 15:28:58 +0000
+Date:   Tue, 31 Aug 2021 15:28:57 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [RFC][arm64] possible infinite loop in btrfs search_ioctl()
+Message-ID: <YS5KudP4DBwlbPEp@zeniv-ca.linux.org.uk>
+References: <20210827164926.1726765-1-agruenba@redhat.com>
+ <20210827164926.1726765-6-agruenba@redhat.com>
+ <YSkz025ncjhyRmlB@zeniv-ca.linux.org.uk>
+ <CAHk-=wh5p6zpgUUoY+O7e74X9BZyODhnsqvv=xqnTaLRNj3d_Q@mail.gmail.com>
+ <YSk7xfcHVc7CxtQO@zeniv-ca.linux.org.uk>
+ <CAHk-=wjMyZLH+ta5SohAViSc10iPj-hRnHc-KPDoj1XZCmxdBg@mail.gmail.com>
+ <YSk+9cTMYi2+BFW7@zeniv-ca.linux.org.uk>
+ <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
+ <YSqOUb7yZ7kBoKRY@zeniv-ca.linux.org.uk>
+ <YS40qqmXL7CMFLGq@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 31 Aug 2021 20:58:51 +0530
-From:   rajpat@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org
-Subject: Re: [PATCH V6 6/7] arm64: dts: sc7280: Add QUPv3 wrapper_1 nodes
-In-Reply-To: <CAE-0n51YGqp701EzUs1Q1PG89SECVQDdUPsiJ8P95xFj0UFs=A@mail.gmail.com>
-References: <1629983731-10595-1-git-send-email-rajpat@codeaurora.org>
- <1629983731-10595-7-git-send-email-rajpat@codeaurora.org>
- <CAE-0n51YGqp701EzUs1Q1PG89SECVQDdUPsiJ8P95xFj0UFs=A@mail.gmail.com>
-Message-ID: <18995b9913c9acb7880b01a4f61ee5d0@codeaurora.org>
-X-Sender: rajpat@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YS40qqmXL7CMFLGq@arm.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-26 23:41, Stephen Boyd wrote:
-> Quoting Rajesh Patil (2021-08-26 06:15:30)
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> index 7c106c0..65126a7 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> @@ -225,6 +225,10 @@
->>         status = "okay";
->>  };
->> 
->> +&qupv3_id_1 {
->> +       status = "okay";
->> +};
->> +
-> 
-> Why enable this here but not any of the i2c/spi/uart devices that are a
-> child? Can this hunk be split off to a different patch?
-> 
+On Tue, Aug 31, 2021 at 02:54:50PM +0100, Catalin Marinas wrote:
 
-Currently there is no usecase on qup1 and hence not enabled.
-Regarding splitting this, I did not get the exact reason why we need to 
-split. This patch adds all the qup wrapper1 nodes and we are enabling it 
-in board file.
+> An arm64-specific workaround would be for pagefault_disable() to disable
+> tag checking. It's a pretty big hammer, weakening the out of bounds
+> access detection of MTE. My preference would be a fix in the btrfs code.
+> 
+> A btrfs option would be for copy_to_sk() to return an indication of
+> where the fault occurred and get fault_in_pages_writeable() to check
+> that location, even if the copying would restart from an earlier offset
+> (this requires open-coding copy_to_user_nofault()). An attempt below,
+> untested and does not cover read_extent_buffer_to_user_nofault():
 
->>  &sdhc_1 {
->>         status = "okay";
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index a3c11b0..32f411f 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -2040,6 +2469,46 @@
->>                                 function = "qup07";
->>                         };
->> 
->> +                       qup_i2c8_data_clk:qup-i2c8-data-clk {
-> 
-> Unstick please.
-> 
+Umm...  There's another copy_to_user_nofault() call in the same function
+(same story, AFAICS).
 
-OKay.
-
->> +                               pins = "gpio32", "gpio33";
->> +                               function = "qup10";
->> +                       };
->> +
->> +                       qup_i2c9_data_clk:qup-i2c9-data-clk {
->> +                               pins = "gpio36", "gpio37";
->> +                               function = "qup11";
->> +                       };
->> +
->> +                       qup_i2c10_data_clk:qup-i2c10-data-clk {
->> +                               pins = "gpio40", "gpio41";
->> +                               function = "qup12";
->> +                       };
->> +
->> +                       qup_i2c11_data_clk:qup-i2c11-data-clk {
->> +                               pins = "gpio44", "gpio45";
->> +                               function = "qup13";
->> +                       };
->> +
->> +                       qup_i2c12_data_clk:qup-i2c12-data-clk {
->> +                               pins = "gpio48", "gpio49";
->> +                               function = "qup14";
->> +                       };
->> +
->> +                       qup_i2c13_data_clk:qup-i2c13-data-clk {
->> +                               pins = "gpio52", "gpio53";
->> +                               function = "qup15";
->> +                       };
->> +
->> +                       qup_i2c14_data_clk:qup-i2c14-data-clk {
->> +                               pins = "gpio56", "gpio57";
->> +                               function = "qup16";
->> +                       };
->> +
->> +                       qup_i2c15_data_clk:qup-i2c15-data-clk {
->> +                               pins = "gpio60", "gpio61";
->> +                               function = "qup17";
->> +                       };
-> 
-> All of these.
-> 
->> +
->>                         qup_spi0_data_clk: qup-spi0-data-clk {
->>                                 pins = "gpio0", "gpio1", "gpio2";
->>                                 function = "qup00";
+Can't say I'm fond of their ABI, but then I guess it could've been worse -
+iterating over btree, running a user-supplied chunk of INTERCAL over it,
+with all details of internal representation cast in stone by that exposure...
