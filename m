@@ -2,151 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B1E3FCE00
+	by mail.lfdr.de (Postfix) with ESMTP id E42A33FCE01
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240738AbhHaTl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234715AbhHaTly (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:41:54 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C87C061575;
-        Tue, 31 Aug 2021 12:40:58 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id bi4so583476oib.9;
-        Tue, 31 Aug 2021 12:40:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qvcMN2KJSm0Glt1zzqTqjBfpcMvYb7sh/Q3A1fId/Sg=;
-        b=mDsk+f1Jh4vsinPzAnJYQRS3gF+NGP+rXi9V9oBu196jJgewBPFew4x0BUjtRlIWix
-         /jy5SRODQpn1vCaYZ7m0G1UOFDsnOl7G9AvFE5GhobEafRlv6YpS8wxELkutZ8myZN0+
-         0+PLmkwpdKiZmMeKORJIcgUxH/GC0gSQW+/khvjv6/S/Ck2gr1fNc2tU728Tq9TxiL6K
-         1rKgZ0qntTG5V2uqx+PP3JJassFTbDCjvfFepVScwbQHnu9nvz7TqqRvH2doj4dPlNR6
-         INe2dRk5OtBmRKiOxOAq8YBT51bGgck/x+zLBlOu0T+j6D23dV6i/0BVnjvzBeSto/lY
-         BBRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qvcMN2KJSm0Glt1zzqTqjBfpcMvYb7sh/Q3A1fId/Sg=;
-        b=H7h+psE/Jwn09PhUGJqvkGU9ks+I0C1e9V6s4G3j074k10HWi4mueUM3eHuXCO1but
-         EDTqBeef1y2Zu5dQ8oujDDFUxa7HA/Wnq+aSM6VINyfAbOwN4nrbL0jKqv2Mx++9nFw3
-         AKFbb4upjFPJWKjoyn3kzZUepZ+2TPzQ7JdTY1y294gweUyx6GeWpSG1/ihkfEzHL4SO
-         FaBTZ/ujGBtJS+8nU/+CzUcbb4FEhRMKa0BsAOCWSpgvgLb0VY+9tQMGAW8gVUMewtHu
-         y869/x2JD/Lt8/b8kNBzFVDDWzwVjbSRAr2MKDBbIdhwQdLtToTQ7mo+b12dU1xMDUC/
-         Zhug==
-X-Gm-Message-State: AOAM531Iyhyy/s+JuITvv132vg/oE4+9sEdtf1eJFleDQmiW1qk3rHx2
-        2zgEOcI634gyK/H+H/Ox3b+mQap/TCM=
-X-Google-Smtp-Source: ABdhPJyt0s9o4xD8EnlOeHifb9h2/4DMioCjspclUT6SyLK0KtuFtwo9PQRNcgs7eo1NbJUPtARakQ==
-X-Received: by 2002:aca:e10b:: with SMTP id y11mr4436924oig.172.1630438857917;
-        Tue, 31 Aug 2021 12:40:57 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y24sm4191795oto.40.2021.08.31.12.40.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 12:40:57 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Keith Packard <keithp@keithp.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
-References: <20210827163015.3141722-1-keescook@chromium.org>
- <20210827163015.3141722-5-keescook@chromium.org>
- <20210831043128.GA2749311@roeck-us.net> <202108311042.FFE1818D@keescook>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v3 4/5] Makefile: Enable -Warray-bounds
-Message-ID: <3ab153ec-2798-da4c-f7b1-81b0ac8b0c5b@roeck-us.net>
-Date:   Tue, 31 Aug 2021 12:40:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S240980AbhHaTmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:42:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234715AbhHaTmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 15:42:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09DD060F6C;
+        Tue, 31 Aug 2021 19:41:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630438886;
+        bh=Q/h/rcc7Azc7x48LlJctFK4Yk9KlVRAwRYtEyT2GKVU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=acTIp6JqMSQqh/gLADlqOjJVw/uAm/cbra626tqWnkrhMK8idIn9lu3jmD3MwAooP
+         gfngHiPFc+20P0ilC0lYES1zQMOtofGInvEdsozcC+KeKggrUHepI0vSoTO8qsqxQl
+         FjDckiSmDp3VMBtS6VAC38e2eN/qq/F+sblYLKmve5FRNkr6ygdNpx8vqFpRKMswZ3
+         wEt/qaT7YeJo6C0e2iCPR/9Es8Yx3FMa81nMSplYkAf8JYOobhuw8ibekPkSuwfXz+
+         E+n6wdmJYWNVEweyp+XLEav6EYiqnfFApTps4OwLGaexCdowz7vm6vh7uy2DlZK7Uv
+         DAwmpWJTDv6+A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 939CF4007E; Tue, 31 Aug 2021 16:41:23 -0300 (-03)
+Date:   Tue, 31 Aug 2021 16:41:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [RFC PATCH v1 20/37] perf evsel: separate rlimit increase from
+ evsel__open_cpu
+Message-ID: <YS6F46/ONZzCWFnT@kernel.org>
+References: <cover.1629490974.git.rickyman7@gmail.com>
+ <2f256de8ec37b9809a5cef73c2fa7bce416af5d3.1629490974.git.rickyman7@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <202108311042.FFE1818D@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f256de8ec37b9809a5cef73c2fa7bce416af5d3.1629490974.git.rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
-
-On 8/31/21 10:46 AM, Kees Cook wrote:
-> On Mon, Aug 30, 2021 at 09:31:28PM -0700, Guenter Roeck wrote:
->> On Fri, Aug 27, 2021 at 09:30:14AM -0700, Kees Cook wrote:
->>> With the recent fixes for flexible arrays and expanded FORTIFY_SOURCE
->>> coverage, it is now possible to enable -Warray-bounds. Since both
->>> GCC and Clang include -Warray-bounds in -Wall, we just need to stop
->>> disabling it.
->>>
->>> Cc: Arnd Bergmann <arnd@arndb.de>
->>> Cc: Masahiro Yamada <masahiroy@kernel.org>
->>> Cc: linux-kbuild@vger.kernel.org
->>> Co-developed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>> Signed-off-by: Kees Cook <keescook@chromium.org>
->>> ---
->>>   Makefile | 1 -
->>>   1 file changed, 1 deletion(-)
->>>
->>> diff --git a/Makefile b/Makefile
->>> index e4f5895badb5..8e7e73a642e2 100644
->>> --- a/Makefile
->>> +++ b/Makefile
->>> @@ -995,7 +995,6 @@ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
->>>   
->>>   # We'll want to enable this eventually, but it's not going away for 5.7 at least
->>>   KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
->>> -KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
->>>   KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
->>>   
->>
->> This patch causes 'alpha' builds to fail when trying to build an image with
->> gcc 11.2.
->>
->> In file included from include/linux/string.h:20,
->>                   from include/linux/bitmap.h:11,
->>                   from include/linux/cpumask.h:12,
->>                   from include/linux/smp.h:13,
->>                   from include/linux/lockdep.h:14,
->>                   from include/linux/spinlock.h:63,
->>                   from include/linux/mmzone.h:8,
->>                   from include/linux/gfp.h:6,
->>                   from include/linux/mm.h:10,
->>                   from include/linux/pagemap.h:8,
->>                   from arch/alpha/mm/init.c:10:
->> In function '__memset',
->>      inlined from '__bad_pagetable' at arch/alpha/mm/init.c:79:2:
->> arch/alpha/include/asm/string.h:37:32: error: '__builtin_memset' offset [0, 8191] is out of the bounds [0, 0] [-Werror=array-bounds]
->>     37 |                         return __builtin_memset(s, c, n);
->>        |                                ^~~~~~~~~~~~~~~~~~~~~~~~~
->> In function '__memset',
->>      inlined from '__bad_page' at arch/alpha/mm/init.c:86:2:
->> arch/alpha/include/asm/string.h:37:32: error: '__builtin_memset' offset [0, 8191] is out of the bounds [0, 0] [-Werror=array-bounds]
->>     37 |                         return __builtin_memset(s, c, n);
->>        |                                ^~~~~~~~~~~~~~~~~~~~~~~~~
->> In function '__memset',
->>      inlined from 'paging_init' at arch/alpha/mm/init.c:256:2:
->> arch/alpha/include/asm/string.h:37:32: error: '__builtin_memset' offset [0, 8191] is out of the bounds [0, 0] [-Werror=array-bounds]
->>     37 |                         return __builtin_memset(s, c, n);
->>
->> Seen in next-20210830.
+Em Sat, Aug 21, 2021 at 11:19:26AM +0200, Riccardo Mancini escreveu:
+> This is a preparatory patch for the following patches with the goal to
+> separate from evlist__open_cpu the actual opening (which could be
+> performed in parallel), from the existing fallback mechanisms, which
+> should be handled sequentially.
 > 
-> Ah-ha, thanks for the report! I didn't see this in my builds -- what
-> config target did you use for this?
+> This patch separates the rlimit increase from evsel__open_cpu.
 > 
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/perf/util/evsel.c | 50 ++++++++++++++++++++++++-----------------
+>  tools/perf/util/evsel.h |  3 +++
+>  2 files changed, 33 insertions(+), 20 deletions(-)
+> 
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index c393bd992322d925..916930ea31450265 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -1931,13 +1931,40 @@ bool evsel__detect_missing_features(struct evsel *evsel)
+>  	}
+>  }
+>  
+> +bool evsel__increase_rlimit(enum rlimit_action *set_rlimit)
+> +{
+> +	int old_errno;
+> +	struct rlimit l;
+> +
+> +	if (*set_rlimit < INCREASED_MAX) {
+> +
 
-The configuration doesn't matter; it fails for me for all configurations,
-including defconfig, alllnoconfig, and allmodconfig.
-Key is to use gcc 11.2. The image builds just fine with gcc 9.4 and 10.3.
+The above blank line is not needed
+> +		old_errno = errno;
 
-Guenter
+And here it should be used, I'm recycling it for you :-)
+
+> +		if (getrlimit(RLIMIT_NOFILE, &l) == 0) {
+> +			if (*set_rlimit == NO_CHANGE)
+> +				l.rlim_cur = l.rlim_max;
+> +			else {
+
+Also when the else clause has {}, the if should have it too, I'm fixing
+it.
+
+I see that you just moved things around, but then this is a good time to
+do these cosmetic changes.
+
+Applying.
+
+- Arnaldo
+
+> +				l.rlim_cur = l.rlim_max + 1000;
+> +				l.rlim_max = l.rlim_cur;
+> +			}
+> +			if (setrlimit(RLIMIT_NOFILE, &l) == 0) {
+> +				(*set_rlimit) += 1;
+> +				errno = old_errno;
+> +				return true;
+> +			}
+> +		}
+> +		errno = old_errno;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+>  		struct perf_thread_map *threads,
+>  		int start_cpu, int end_cpu)
+>  {
+>  	int cpu, thread, nthreads;
+>  	int pid = -1, err, old_errno;
+> -	enum { NO_CHANGE, SET_TO_MAX, INCREASED_MAX } set_rlimit = NO_CHANGE;
+> +	enum rlimit_action set_rlimit = NO_CHANGE;
+>  
+>  	err = __evsel__prepare_open(evsel, cpus, threads);
+>  	if (err)
+> @@ -2046,25 +2073,8 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+>  	 * perf stat needs between 5 and 22 fds per CPU. When we run out
+>  	 * of them try to increase the limits.
+>  	 */
+> -	if (err == -EMFILE && set_rlimit < INCREASED_MAX) {
+> -		struct rlimit l;
+> -
+> -		old_errno = errno;
+> -		if (getrlimit(RLIMIT_NOFILE, &l) == 0) {
+> -			if (set_rlimit == NO_CHANGE)
+> -				l.rlim_cur = l.rlim_max;
+> -			else {
+> -				l.rlim_cur = l.rlim_max + 1000;
+> -				l.rlim_max = l.rlim_cur;
+> -			}
+> -			if (setrlimit(RLIMIT_NOFILE, &l) == 0) {
+> -				set_rlimit++;
+> -				errno = old_errno;
+> -				goto retry_open;
+> -			}
+> -		}
+> -		errno = old_errno;
+> -	}
+> +	if (err == -EMFILE && evsel__increase_rlimit(&set_rlimit))
+> +		goto retry_open;
+>  
+>  	if (err != -EINVAL || cpu > 0 || thread > 0)
+>  		goto out_close;
+> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> index a83fb7f69b1ead73..bf9abd9a5cbf9852 100644
+> --- a/tools/perf/util/evsel.h
+> +++ b/tools/perf/util/evsel.h
+> @@ -290,6 +290,9 @@ int evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
+>  		struct perf_thread_map *threads);
+>  bool evsel__detect_missing_features(struct evsel *evsel);
+>  
+> +enum rlimit_action { NO_CHANGE, SET_TO_MAX, INCREASED_MAX };
+> +bool evsel__increase_rlimit(enum rlimit_action *set_rlimit);
+> +
+>  struct perf_sample;
+>  
+>  void *evsel__rawptr(struct evsel *evsel, struct perf_sample *sample, const char *name);
+> -- 
+> 2.31.1
+
+-- 
+
+- Arnaldo
