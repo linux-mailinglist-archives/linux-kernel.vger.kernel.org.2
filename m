@@ -2,166 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB26E3FC316
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 09:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567393FC343
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 09:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239021AbhHaHK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 03:10:26 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7720 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232209AbhHaHKZ (ORCPT
+        id S239453AbhHaHQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 03:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239265AbhHaHQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 03:10:25 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17V736ti047385;
-        Tue, 31 Aug 2021 03:09:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=A4or8wCPaJw5nsvcratCIQfzxHr6UWtP9FgQXgaGPn4=;
- b=AEUVeRmL4rBm830wgqsOM98obFTq92/4GFOKRqdG6IaQ3fIkJTd28eL87XodnTQKVrMP
- MIe8HGXP9wHctKtDUD5tPMZgpNpQjf6fRXNpA5iHxTeH66W0sq39XJcWSKUDrXz7WIZU
- P9sg/jRDjZaDEKcMCU6sFqyzVjwrwQtuOMjOz61QIL/+spL9KL/cWUNROreuVGQlE4dD
- LL77R2Js9RTO94hEvrdarCgDiGvebLW1mMv/MYqcdVFeKhzjT8f5+xLzeTsStypuX7fg
- fO4xiweq0Kh+LfDrHtu5Ksvqk6zDIOfFzimO1B4peolRyDmrFkZu+Rfo0wW1AX5Thyp8 Sw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ases01rsw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 03:09:19 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17V73WCf020122;
-        Tue, 31 Aug 2021 07:09:16 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3aqcdj50gu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 07:09:16 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17V75CZO55181748
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 31 Aug 2021 07:05:12 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8FCEC4C059;
-        Tue, 31 Aug 2021 07:09:11 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 31E3D4C04A;
-        Tue, 31 Aug 2021 07:09:11 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.164.122])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 31 Aug 2021 07:09:11 +0000 (GMT)
-Subject: Re: [GIT PULL] s390 updates for 5.15 merge window
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        qemu-s390x <qemu-s390x@nongnu.org>
-References: <YSzZFgBt6nMvpVgc@osiris>
- <YS2RrUma2oOSYtIc@Ryzen-9-3900X.localdomain>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <82161448-2770-158c-fdd3-d253b4ae476f@de.ibm.com>
-Date:   Tue, 31 Aug 2021 09:09:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <YS2RrUma2oOSYtIc@Ryzen-9-3900X.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: t2nwNVzhx5q_ZLHD7RIrXIkEYm8lA_r4
-X-Proofpoint-ORIG-GUID: t2nwNVzhx5q_ZLHD7RIrXIkEYm8lA_r4
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 31 Aug 2021 03:16:09 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E25C061575;
+        Tue, 31 Aug 2021 00:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YY9pvWpNs1TzAImK8Qk46A5Z5evWyYN+iUQ9FkXNB2c=; b=gZVCxgwskqclakQkAXx+Eg+7Bl
+        l/BVBBomSXREZJyKAHP5/AUuxejcIaW95mP3JfuN25GssEJNYKjdO6Ud4u8HfgQ0cNSUk/PRERtsY
+        hP/i6wVee6DIbIJPKXcY0nLdh9NNszNSK94qfHwz8VJMicVkUQmjB+Rk7Eb2PJzMc7MiqUXta/1O5
+        xxYHMNCpBTCzXzexwKysuA4wAvsZsTrmkHLyyHK6XNKt047bIec6ihWXGJ8XZw1f0ZFCYrNaKwvU/
+        eQVYRRaP1jAnA7umHS+h6y3brAhQ7KmMT4jieqDMs6dtybgjFdVWRKTTVbYb7La4nzKcgzw5H5Sbo
+        d79TYnZw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKxyJ-00EdO7-8r; Tue, 31 Aug 2021 07:14:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6DAD23001F6;
+        Tue, 31 Aug 2021 09:14:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 22AAB2CFB419C; Tue, 31 Aug 2021 09:14:13 +0200 (CEST)
+Date:   Tue, 31 Aug 2021 09:14:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tianqiang Xu <skyele@sjtu.edu.cn>
+Cc:     x86@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, kvm@vger.kernel.org, hpa@zytor.com,
+        jarkko@kernel.org, dave.hansen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Subject: Re: [PATCH 2/4] Scheduler changes
+Message-ID: <YS3WxQe6bJLx6qpR@hirez.programming.kicks-ass.net>
+References: <20210831015919.13006-1-skyele@sjtu.edu.cn>
+ <20210831015919.13006-2-skyele@sjtu.edu.cn>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-31_03:2021-08-30,2021-08-31 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- impostorscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
- mlxlogscore=999 spamscore=0 malwarescore=0 adultscore=0 bulkscore=0
- phishscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108310041
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831015919.13006-2-skyele@sjtu.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 31, 2021 at 09:59:17AM +0800, Tianqiang Xu wrote:
+> Authors: Tianqiang Xu, Dingji Li, Zeyu Mi
+> 	 Shanghai Jiao Tong University
+> 
+> Signed-off-by: Tianqiang Xu <skyele@sjtu.edu.cn>
 
+Authors is not a valid tag, please see our Documentation on submitting
+patches.
 
-On 31.08.21 04:19, Nathan Chancellor wrote:
-> Hi Heiko,
-> 
-> On Mon, Aug 30, 2021 at 03:11:50PM +0200, Heiko Carstens wrote:
->> - Enable KCSAN for s390. This comes with a small common code change to fix a
->>    compile warning. Acked by Marco Elver:
->>    https://lore.kernel.org/r/20210729142811.1309391-1-hca@linux.ibm.com/
-> 
-> This caught my eye, as we are boot testing KCSAN + KCSAN_KUNIT_TEST in
-> our CI [1] for x86_64 so it would be nice to enable this for s390 as
-> well. However, it does not seem like the unit tests pass when booting up
-> in QEMU, is this expected or am I doing something wrong? The results and
-> compiler versions are below (the results are the same), they should both
-> have the commits that are mentioned in the KCSAN message.
+> @@ -10504,3 +10515,9 @@ void call_trace_sched_update_nr_running(struct rq *rq, int count)
+>  {
+>          trace_sched_update_nr_running_tp(rq, count);
+>  }
+> +
+> +int get_cpu_nr_running(int cpu)
+> +{
+> +	return cpu_rq(cpu)->nr_running;
+> +}
+> +EXPORT_SYMBOL_GPL(get_cpu_nr_running);
 
-Do you have a branch somewhere where you have the s390 build rules as well as
-the qemu command line? Maybe its a QEMU TCG issue, dont know. CC qemu-s390x
-just in case.
-
-FWIW, if you want access to a virtual s390x let me know.
-
-> 
-> GCC 12.0.0 @ d904008df267cbcc01bd6edf98fa0789fb6e94da
-> 
-> [  131.813482]     not ok 1 - test_basic
-> [  135.321137]     not ok 2 - test_concurrent_races
-> [  138.830648]     ok 3 - test_novalue_change
-> [  142.342562]     not ok 4 - test_novalue_change_exception
-> [  145.851008]     not ok 5 - test_unknown_origin
-> [  149.361416]     ok 6 - test_write_write_assume_atomic
-> [  152.872013]     not ok 7 - test_write_write_struct
-> [  156.382960]     not ok 8 - test_write_write_struct_part
-> [  159.890222]     ok 9 - test_read_atomic_write_atomic
-> [  163.402919]     not ok 10 - test_read_plain_atomic_write
-> [  166.912931]     not ok 11 - test_read_plain_atomic_rmw
-> [  170.431915]     not ok 12 - test_zero_size_access
-> [  173.940959]     ok 13 - test_data_race
-> [  177.452028]     not ok 14 - test_assert_exclusive_writer
-> [  180.962840]     not ok 15 - test_assert_exclusive_access
-> [  184.474686]     not ok 16 - test_assert_exclusive_access_writer
-> [  187.992282]     not ok 17 - test_assert_exclusive_bits_change
-> [  191.501869]     ok 18 - test_assert_exclusive_bits_nochange
-> [  195.013138]     not ok 19 - test_assert_exclusive_writer_scoped
-> [  199.534212]     not ok 20 - test_assert_exclusive_access_scoped
-> [  203.053361]     ok 21 - test_jiffies_noreport
-> [  206.573803]     ok 22 - test_seqlock_noreport
-> [  210.093508]     ok 23 - test_atomic_builtins
-> [  210.094014] not ok 1 - kcsan
-> 
-> clang 14.0.0 @ 657bb7262d4a53e903e702d46fdcab57b7085128:
-> 
-> [   10.341427]     not ok 1 - test_basic
-> [   13.848960]     not ok 2 - test_concurrent_races
-> [   17.359671]     ok 3 - test_novalue_change
-> [   20.869202]     not ok 4 - test_novalue_change_exception
-> [   24.379067]     not ok 5 - test_unknown_origin
-> [   27.889492]     ok 6 - test_write_write_assume_atomic
-> [   31.399572]     not ok 7 - test_write_write_struct
-> [   34.910833]     not ok 8 - test_write_write_struct_part
-> [   38.419473]     ok 9 - test_read_atomic_write_atomic
-> [   41.929642]     not ok 10 - test_read_plain_atomic_write
-> [   45.439644]     not ok 11 - test_read_plain_atomic_rmw
-> [   48.950048]     not ok 12 - test_zero_size_access
-> [   52.459026]     ok 13 - test_data_race
-> [   55.969806]     not ok 14 - test_assert_exclusive_writer
-> [   59.480436]     not ok 15 - test_assert_exclusive_access
-> [   62.990164]     not ok 16 - test_assert_exclusive_access_writer
-> [   66.499199]     not ok 17 - test_assert_exclusive_bits_change
-> [   70.009481]     ok 18 - test_assert_exclusive_bits_nochange
-> [   73.522184]     not ok 19 - test_assert_exclusive_writer_scoped
-> [   78.030448]     not ok 20 - test_assert_exclusive_access_scoped
-> [   81.539059]     ok 21 - test_jiffies_noreport
-> [   85.051769]     ok 22 - test_seqlock_noreport
-> [   88.572048]     ok 23 - test_atomic_builtins
-> [   88.572279] not ok 1 - kcsan
-> 
-> [1]: https://github.com/ClangBuiltLinux/continuous-integration2
-> 
-> Cheers,
-> Nathan
-> 
+Yeah, not going to happen.
