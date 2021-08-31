@@ -2,123 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5750F3FC58F
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8F23FC590
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240953AbhHaKWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240908AbhHaKWe (ORCPT
+        id S240971AbhHaKWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:22:41 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:45196 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240908AbhHaKWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:22:34 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172BBC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:21:39 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id y34so37394382lfa.8
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:21:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SaQiFvhNq7368+94ke7tCwmU8u/vT5hggbptJeHOcYo=;
-        b=OQ8Bc7H/j7dY8F+7/WWLC8l2pfhCHESOHANGP40xBtANdPJhhCoXsFJE8/mcMLl6lb
-         bKH2QIzdw8Z3bHXrkZiaqsbkx9pU/7qQ3ikcKw5DsQifxf7w4S6mRQvk1kjExY/XCrBL
-         x1f8EISuWCWhIkqllRSOpX0AE8ii8ONpNBj807/cw5HxrPKESUk9MTq7svvQQbGk8/DX
-         PT6GqOiEW+D9hmrjFv2Db0EVRCjLTLSb9b0DMV2Id/Pszpdi0+sYj409rQuECO1+Zsdc
-         D/bTITEW67QawE23Dz0u5spWInPsJ8lnUGdvyx/xOZCTiDWTFogofPOFgZWhd5KL98sg
-         ZfmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SaQiFvhNq7368+94ke7tCwmU8u/vT5hggbptJeHOcYo=;
-        b=LzU+iH9LOyS+tUFLh2vv0efsx4I68+GgVUSioedhJES7m8PDLdEc7ksVv1tiBh/2We
-         Ft9uRqsQ6HORSoZhPzJ7joPXpgx6/IG1zwkwqVLhFSl8PPLwOYFOGTwiwWAJMTTCcx45
-         cURNj8NK7KbPvHhh9CDnzRbFtBgl+yt/cwU/d1QKHMk3Ehk7evMEAOa2KhiRp2Kg8gS0
-         5ye2M4Ct56DK2Ipky13JuJWI5lpUG6obtD8GtGLsBg9eFV7/PFjZsHE2WZCFEZ2yP0GJ
-         2orwugr5YhW4ByFxM3f9OouwYbQub4jGZRvv3OQrDjiTEVeQwwEsXtXonF48cjyS1MvF
-         vlNg==
-X-Gm-Message-State: AOAM53033Pwjov1tYrUjY9OJ5qb9+zaEsh12NDW6V7vFMp4VtL33ssAq
-        KzA6bmsDe+g4WMqe3LXkxU2UcA==
-X-Google-Smtp-Source: ABdhPJysTQHKjj6sHl08LoVd8gzCM5Oi5pHDfNeAo1fs+lBAhuD47ThIpXSDKSYwaxeOL6peufsGZQ==
-X-Received: by 2002:a05:6512:2210:: with SMTP id h16mr20684305lfu.621.1630405297014;
-        Tue, 31 Aug 2021 03:21:37 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id b21sm753714lfi.104.2021.08.31.03.21.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 03:21:36 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 1/2] of: property: fw_devlink: Rename 'node_not_dev' to 'optional_con_dev'
-Date:   Tue, 31 Aug 2021 12:21:25 +0200
-Message-Id: <20210831102125.624661-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Tue, 31 Aug 2021 06:22:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1630405306; x=1661941306;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=lS1HgJMUvIX3HSRFAT1nvoN6FUBX0UTcTqsk5k75S0U=;
+  b=UqAgoVREe3uyClY3JGC8wLlO+F/k0lXeE2AscqqfO/5bOrEBFJ+Scgmt
+   5ql3kgxbH7Xkuar4UDtgo94n77gAK2xaer18ejsAF27Qu0jQNeX9BNA7T
+   6xhYWYI+nSDeWwScQFKfTTrdvcX4WMcR/ljmJhleG+1dG7eudS+gqPwKb
+   240SIC+ha+J2oQIGxvIX6Hij3FgSzzmfRTt9Ry2BRwyQ8afVxnHEoyhJL
+   hrjl4PtzBIHacMSlnmXGY0cqEpv9GFkbacFO19EcHpZ2dCM693qqoROb/
+   1MYbYXz3cCbelPhJKV02g3UPHgYIjBiT9Mih7uqypXa4b8op0ybRPg0tm
+   g==;
+IronPort-SDR: YGLHHjHri8oGde+FUz7IfKOl/hFWe1Cx9IJoDG0Svr+EAkPoQjWo0eziSTcop0nALunY52JqA4
+ 7Sq1C5+aslY7MPfgwYeBRKz3p8tEcOVDv0P536ctcE36xD/RxTwDg43isEeThwU27JJYzVXOv6
+ sSKukQjFfKul4YYpgO2QhsuukzNrVzSr3cYiZE1i7q912UPy1hjaqEJFlG1TmaxbmQle4juHHs
+ v6DleeKe7eoEk8LLv8EflsCYUZ2umqRZhxxbYPR73NQYfzieksE+StAJAEQdUaKmSDSz78W58k
+ PyLyjV8fuRbnaMBH3fbeypHK
+X-IronPort-AV: E=Sophos;i="5.84,366,1620716400"; 
+   d="scan'208";a="134263072"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Aug 2021 03:21:45 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 31 Aug 2021 03:21:44 -0700
+Received: from kavya-HP-Compaq-6000-Pro-SFF-PC.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Tue, 31 Aug 2021 03:21:41 -0700
+From:   <kavyasree.kotagiri@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <linux@armlinux.org.uk>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <Kavyasree.Kotagiri@microchip.com>,
+        <Manohar.Puri@microchip.com>, <Madhuri.Sripada@microchip.com>
+Subject: [PATCH v2] ARM: at91: add basic support for new SoC lan966x
+Date:   Tue, 31 Aug 2021 15:51:38 +0530
+Message-ID: <20210831102138.2476-1-kavyasree.kotagiri@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the struct supplier_bindings the member 'node_not_dev' is described as
-"The consumer node containing the property is never a device.", but that
-doesn't match the behaviour of the code in of_link_property().
+From: Kavyasree Kotagiri <Kavyasree.Kotagiri@microchip.com>
 
-To make the behaviour consistent with the description, let's rename the
-member to "optional_con_dev" and clarify the corresponding comment.
+This patch introduces Microchip LAN966X ARMv7 based SoC family
+of multiport gigabit AVB/TSN-capable ethernet switches.
+It supports two SKUs: 4-port LAN9662 with multiprotocol
+processing support and 8-port LAN9668 switch.
 
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+LAN966X includes copper and serial ethernet interfaces,
+peripheral interfaces such as PCIe, USB, TWI, SPI, UART, QSPI,
+SD/eMMC, Parallel Interface (PI) as well as synchronization
+and trigger inputs/outputs.
+
+Signed-off-by: Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>
 ---
- drivers/of/property.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+v1 -> v2:
+- Removed lan966x_dt_device_init().
+  System boots fine without this function.
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 6c028632f425..2babb1807228 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1249,7 +1249,8 @@ static struct device_node *parse_##fname(struct device_node *np,	     \
-  * @parse_prop.index: For properties holding a list of phandles, this is the
-  *		      index into the list
-  * @optional: Describes whether a supplier is mandatory or not
-- * @node_not_dev: The consumer node containing the property is never a device.
-+ * @optional_con_dev: The consumer node containing the property may not be a
-+ *		      device, then try finding one from an ancestor node.
-  *
-  * Returns:
-  * parse_prop() return values are
-@@ -1261,7 +1262,7 @@ struct supplier_bindings {
- 	struct device_node *(*parse_prop)(struct device_node *np,
- 					  const char *prop_name, int index);
- 	bool optional;
--	bool node_not_dev;
-+	bool optional_con_dev;
- };
+ arch/arm/mach-at91/Kconfig   | 13 +++++++++++++
+ arch/arm/mach-at91/Makefile  |  1 +
+ arch/arm/mach-at91/lan966x.c | 25 +++++++++++++++++++++++++
+ 3 files changed, 39 insertions(+)
+ create mode 100644 arch/arm/mach-at91/lan966x.c
+
+diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+index ccd7e80ce943..06cb425af761 100644
+--- a/arch/arm/mach-at91/Kconfig
++++ b/arch/arm/mach-at91/Kconfig
+@@ -122,6 +122,14 @@ config SOC_SAM9X60
+ 	help
+ 	  Select this if you are using Microchip's SAM9X60 SoC
  
- DEFINE_SIMPLE_PROP(clocks, "clocks", "#clock-cells")
-@@ -1370,7 +1371,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_pinctrl6, },
- 	{ .parse_prop = parse_pinctrl7, },
- 	{ .parse_prop = parse_pinctrl8, },
--	{ .parse_prop = parse_remote_endpoint, .node_not_dev = true, },
-+	{ .parse_prop = parse_remote_endpoint, .optional_con_dev = true, },
- 	{ .parse_prop = parse_gpio_compat, },
- 	{ .parse_prop = parse_interrupts, },
- 	{ .parse_prop = parse_regulators, },
-@@ -1415,7 +1416,7 @@ static int of_link_property(struct device_node *con_np, const char *prop_name)
- 		while ((phandle = s->parse_prop(con_np, prop_name, i))) {
- 			struct device_node *con_dev_np;
++config SOC_LAN966X
++	bool "ARMv7 based Microchip LAN966X SoC family"
++	depends on ARCH_MULTI_V7
++	select SOC_LAN966
++	select DW_APB_TIMER_OF
++	help
++	  This enables support for ARMv7 based Microchip LAN966X SoC family.
++
+ comment "Clocksource driver selection"
  
--			con_dev_np = s->node_not_dev
-+			con_dev_np = s->optional_con_dev
- 					? of_get_compat_node(con_np)
- 					: of_node_get(con_np);
- 			matched = true;
+ config ATMEL_CLOCKSOURCE_PIT
+@@ -188,6 +196,11 @@ config SOC_SAMA5
+ 	select SOC_SAM_V7
+ 	select SRAM if PM
+ 
++config SOC_LAN966
++	bool
++	select ARM_GIC
++	select MEMORY
++
+ config ATMEL_PM
+ 	bool
+ 
+diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
+index f565490f1b70..93cfd5b4e6d4 100644
+--- a/arch/arm/mach-at91/Makefile
++++ b/arch/arm/mach-at91/Makefile
+@@ -6,6 +6,7 @@
+ # CPU-specific support
+ obj-$(CONFIG_SOC_AT91RM9200)	+= at91rm9200.o
+ obj-$(CONFIG_SOC_AT91SAM9)	+= at91sam9.o
++obj-$(CONFIG_SOC_LAN966X)	+= lan966x.o
+ obj-$(CONFIG_SOC_SAM9X60)	+= sam9x60.o
+ obj-$(CONFIG_SOC_SAMA5)		+= sama5.o
+ obj-$(CONFIG_SOC_SAMV7)		+= samv7.o
+diff --git a/arch/arm/mach-at91/lan966x.c b/arch/arm/mach-at91/lan966x.c
+new file mode 100644
+index 000000000000..154d616569ae
+--- /dev/null
++++ b/arch/arm/mach-at91/lan966x.c
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Setup code for LAN966X
++ *
++ * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
++ *
++ */
++
++#include <linux/of.h>
++#include <linux/of_platform.h>
++
++#include <asm/mach/arch.h>
++#include <asm/system_misc.h>
++
++#include "generic.h"
++
++static const char *const lan966x_dt_board_compat[] __initconst = {
++	"microchip,lan966x",
++	NULL
++};
++
++DT_MACHINE_START(lan966x_dt, "Microchip LAN966X")
++	/* Maintainer: Microchip */
++	.dt_compat	= lan966x_dt_board_compat,
++MACHINE_END
 -- 
-2.25.1
+2.17.1
 
