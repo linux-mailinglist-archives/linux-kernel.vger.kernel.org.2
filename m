@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BA93FC9A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D513FC9AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbhHaOXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbhHaOXv (ORCPT
+        id S235825AbhHaOYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:24:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38266 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230135AbhHaOYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:23:51 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9B2C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:22:56 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id j4-20020a17090a734400b0018f6dd1ec97so2543387pjs.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=agCwJbjopXjgdjmt4UnQYJb9rZ+TRxYP+Vp/4vfg7+k=;
-        b=xUfPT7uqyNTLbSkt8EJkfnL621vuvL4YaeyQMQcEyMiFDL4/I5sTnl5XcQ5k3PpyE9
-         Rjs+X9He+NEyKrm3YHptM2QT7wsAMniI7Dk5IXuxP0CgeoQzedp6hG4mkDvWv6vYUdjD
-         uoO9n4eDgTjDFTzMOizrpN9LrpGx6wRzgNrSmrwXzhRsgt43uULPFtYQRHdmG9OgSnST
-         6NZ2aINyRolFvpynKmPIPcfSQ8OCvenMfgfOdK8upQh+Te0gCDws+NKP/ZLTJ6NpfhPY
-         j113oi2x/NWHM4B6HltsQfeuRoVdi22TthwV51cFm5KQ0w8WMCejRSd8q8OxFu3lhJ2o
-         4VQw==
+        Tue, 31 Aug 2021 10:24:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630419791;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=urLJX4mD4+0+z3Cmi5p6BeY5jBhCGBwwOY1UjB3PyvE=;
+        b=K/7ZzMkTwmaXgcEp/T0Ftk6oZEvqpSkwV5iLJlXsTv3VqYUNcfeZUxKcIs7Icl8EDn1KXz
+        9EkRArD8kSESS4X1lasmO7mTHWWIlHMGozQa4rlCcdIy/IVFd/ZjYVCZug2hkXuxB++qH0
+        8dZ56oy+QDaWW9q8E1QxcwISEeOqRB0=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-490-BgeHJxzjP46FUKtaw9iDUQ-1; Tue, 31 Aug 2021 10:23:10 -0400
+X-MC-Unique: BgeHJxzjP46FUKtaw9iDUQ-1
+Received: by mail-wm1-f72.google.com with SMTP id c4-20020a1c9a04000000b002e864b7edd1so6040084wme.6
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:23:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=agCwJbjopXjgdjmt4UnQYJb9rZ+TRxYP+Vp/4vfg7+k=;
-        b=k5kMxy48FmGJzf6RQtL1/c7e3VU6r2I/n7y/3Em/HKUCWhDTKY8DYawlSmz6Zl5e1A
-         2R0xPrAP2FCc7feo0xgWx9HeMNfdMzew19OMqojBrO7z5KAtISQvrUPIO43E0KUfSj9f
-         JrVz82KQL+ZthdP7EYUOEG0uL3aGtr3um+6ScHslbd1WK9u8NMbu/j5PypNKmNtxrU7+
-         rh99dr4uFs9I/IVn+zoN3m+lnuCPezM+N9factoKwIUlcQEk591E31sKLaPQseY5KjvP
-         p9nhaYTAFo005V4H+yJdiI1/+74ylMt84hYYTzXR5jb12ov860edrJt0idmHBvVNswbg
-         ai3w==
-X-Gm-Message-State: AOAM533wHdTRE3dbAPE6xU8NI1T8M8SxGDYjWOQzZcPFCIea48rQEvpU
-        7R9A6FsBVrfWC55ylQ3sSjUocP17d5MrAmCnGIx4enI1z24=
-X-Google-Smtp-Source: ABdhPJxRfsG7ydqj58dpKD9O7I8cMNgCJ98STKID3Y4Eep+EHuVwC6xKW+BLX4aQHDJ5ezz2uuvo491L64pugzlwrjE=
-X-Received: by 2002:a17:90b:4c8b:: with SMTP id my11mr5588645pjb.220.1630419775900;
- Tue, 31 Aug 2021 07:22:55 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=urLJX4mD4+0+z3Cmi5p6BeY5jBhCGBwwOY1UjB3PyvE=;
+        b=c+ciXN0HL0Y1MPqnl+SuFYKYvoa0Ho6hdwS7sCWAjyxbUPntsA6XeSRLIzMlEZKItU
+         1TY6mhjAbyHdkU12CXWrcFf68iFhGtSYH1A5NthdjxVwthn7ug0ytCR+aEyEPc/nfp9K
+         Je/QAS9NB2KAWyloW/v+aunlMYBwRdQP06bhfCVt5F2JqtzC1CxVlVmuV8zzHnpWj/Ut
+         lE/IeGmitjdIiDjwCChAGNORyHoXl1YpAqJXRARWW3MjllsfyzLsZMVbz8g7EizYToXM
+         TdY8Hn+D8ams7rjChl8SXpvttXT1uegwXapHvQa9yOCGlon8QjgodFMlO2uC+hgK/4Fj
+         QreA==
+X-Gm-Message-State: AOAM530R/pYjDjFPyrQc+EA9lrf5AnAb0RPZ5YgCkOIKZGR5LoHkc+dO
+        zdKgIC0HBhxSHIb3IsVkvTbgGoMd9+0oqCj2mYEuF/j71YWlyKeG9jBMej9p18pB3AXJvbAQsrY
+        hywmbKzdi7nWCLz3w95nl5Y37ClHKr+4T0uOjf69YhhJ4T2WjCy/Scod2Fxt23GuRt9gia22Z
+X-Received: by 2002:a1c:f712:: with SMTP id v18mr4475229wmh.25.1630419789324;
+        Tue, 31 Aug 2021 07:23:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw2oxz4h5PTJEcybV9HdfEeThpSVgOxrmM77fxTd1EzWzzl5aFc4X49pdQOHATL0hmWjMfzZA==
+X-Received: by 2002:a1c:f712:: with SMTP id v18mr4475189wmh.25.1630419789029;
+        Tue, 31 Aug 2021 07:23:09 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23bf5.dip0.t-ipconnect.de. [79.242.59.245])
+        by smtp.gmail.com with ESMTPSA id d145sm2560524wmd.3.2021.08.31.07.23.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 07:23:08 -0700 (PDT)
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, vbabka@suse.cz, sfr@canb.auug.org.au,
+        peterz@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210830141051.64090-1-linmiaohe@huawei.com>
+ <20210830141051.64090-6-linmiaohe@huawei.com>
+ <20210831134311.GG4128@techsingularity.net>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH 5/6] mm/page_alloc.c: avoid accessing uninitialized pcp
+ page migratetype
+Message-ID: <877b7043-65c3-5e08-ac89-ad6f10e354b3@redhat.com>
+Date:   Tue, 31 Aug 2021 16:23:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210827163956.27517-1-paul@crapouillou.net> <27e68baf-5797-9c66-37b2-382cb8792467@baylibre.com>
-In-Reply-To: <27e68baf-5797-9c66-37b2-382cb8792467@baylibre.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 31 Aug 2021 16:22:44 +0200
-Message-ID: <CAG3jFytAdkt5DDzsm9T+buAL0vqS-X4M66aNyOaB8=5N3CbKWg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm/bridge: it66121: Initialize {device,vendor}_ids
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>, Phong LE <ple@baylibre.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, list@opendingux.net,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210831134311.GG4128@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 at 11:40, Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> On 27/08/2021 18:39, Paul Cercueil wrote:
-> > These two arrays are populated with data read from the I2C device
-> > through regmap_read(), and the data is then compared with hardcoded
-> > vendor/product ID values of supported chips.
-> >
-> > However, the return value of regmap_read() was never checked. This is
-> > fine, as long as the two arrays are zero-initialized, so that we don't
-> > compare the vendor/product IDs against whatever garbage is left on the
-> > stack.
-> >
-> > Address this issue by zero-initializing these two arrays.
-> >
->
-> Fixes: 988156dc2fc9 ("drm: bridge: add it66121 driver")
->
-> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> > ---
-> >  drivers/gpu/drm/bridge/ite-it66121.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
-> > index 2f2a09adb4bc..b130d01147c6 100644
-> > --- a/drivers/gpu/drm/bridge/ite-it66121.c
-> > +++ b/drivers/gpu/drm/bridge/ite-it66121.c
-> > @@ -889,7 +889,7 @@ static irqreturn_t it66121_irq_threaded_handler(int irq, void *dev_id)
-> >  static int it66121_probe(struct i2c_client *client,
-> >                        const struct i2c_device_id *id)
-> >  {
-> > -     u32 vendor_ids[2], device_ids[2], revision_id;
-> > +     u32 revision_id, vendor_ids[2] = { 0 }, device_ids[2] = { 0 };
-> >       struct device_node *ep;
-> >       int ret;
-> >       struct it66121_ctx *ctx;
-> >
->
-> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+On 31.08.21 15:43, Mel Gorman wrote:
+> On Mon, Aug 30, 2021 at 10:10:50PM +0800, Miaohe Lin wrote:
+>> If it's not prepared to free unref page, the pcp page migratetype is
+>> unset. Thus We will get rubbish from get_pcppage_migratetype() and
+>> might list_del &page->lru again after it's already deleted from the
+>> list leading to grumble about data corruption.
+>>
+>> Fixes: 3dcbe270d8ec ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> 
+> Acked-by: Mel Gorman <mgorman@techsingularity.net>
+> 
+> This fix is fairly important. Take this patch out and send it on its own
+> so it gets picked up relatively quickly. It does not belong in a series
+> that is mostly cosmetic cleanups.
 
-Applied series to drm-misc-next.
+I think the commit id is wrong. Shouldn't that be
+
+df1acc856923 ("mm/page_alloc: avoid conflating IRQs disabled with 
+zone->lock")
+
+?
+
+-- 
+Thanks,
+
+David / dhildenb
+
