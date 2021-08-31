@@ -2,183 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E523FCF3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 23:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D511C3FCF40
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 23:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241369AbhHaVjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 17:39:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51682 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239795AbhHaVjk (ORCPT
+        id S240755AbhHaVpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 17:45:09 -0400
+Received: from mail-ej1-f52.google.com ([209.85.218.52]:40862 "EHLO
+        mail-ej1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235562AbhHaVpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 17:39:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630445924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jF9rwEM7cmKziqpDUf57DgLJOh4uDfmAVb6WTLHCRQc=;
-        b=dtBhnEepaX+y5PjIVpeB4fG7JlkgnqbDaSVxrk0x8k5OXb3CZojB6HeN3OD6WHbMsrmK/I
-        Iw88+xNrXSix5MqDfjU1xCSap4NfMOYRdblju7AyOeHKtPHC0MWWoxvciutqPdRrRdgIEg
-        dvPQOqVUbn6iVLwTK4HSMQSL2U9Ahm4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-etE7GrocP62B622SZDpz4g-1; Tue, 31 Aug 2021 17:38:43 -0400
-X-MC-Unique: etE7GrocP62B622SZDpz4g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1928D8CC784;
-        Tue, 31 Aug 2021 21:38:42 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6CB1D60843;
-        Tue, 31 Aug 2021 21:38:35 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     dhowells@redhat.com, Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] fscache: Fixes and rewrite preparation
+        Tue, 31 Aug 2021 17:45:08 -0400
+Received: by mail-ej1-f52.google.com with SMTP id lc21so2018875ejc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 14:44:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qj80+5X0Hk9qELCGgLDzAFTVAS9vfZCgqLfK/Rlubo0=;
+        b=X9vZXfyfVxz3+EReFx0SAn3pOxIw64Wju94QJf20gzuhzlB/i+s5H+3WoYU44cc0QQ
+         mqUsijbQiaAkgC1qR8xkfoAVEw7Z75KON6Eub93vVJ8U6wUDkgfiZoZwu663gOdE31+M
+         stdDU7r7VPJbEuY6ua0I4d6yPVeNgGxeq3AJEmTZE74OZlfiITLDdpJXBoY+lmSKT+0o
+         DfRV1WmU2eRZ9wS14UvhOWGhp29GzOS6igYWmgjjCGStLr2A2sapGan0mt7JiRaHRI5O
+         yW3eyqcgKLtgt7tE7Ad2L7219EAvkZRTLZUimVutUD1VlQU7nNrywMO2TOUQ9AqPeBSq
+         nrJw==
+X-Gm-Message-State: AOAM530tcoveBHbvtqBLouKoi/SeqsGEcwuFaeNHk2omja7nV9LadEeP
+        eHXr09ED5zu4OyGXI7XxU132P/7ydJ3kBfVonGo=
+X-Google-Smtp-Source: ABdhPJwxSifo6H+uuUybemBu/VPfQKWpOjD9FKYiD3F085y15Jx8p8MxOp0Ef1VwKzmay1FDLQ0kKcGcY/DqPlIo0nw=
+X-Received: by 2002:a17:906:31ca:: with SMTP id f10mr34268591ejf.73.1630446251978;
+ Tue, 31 Aug 2021 14:44:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3282507.1630445914.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 31 Aug 2021 22:38:34 +0100
-Message-ID: <3282508.1630445914@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210730145957.7927-1-chang.seok.bae@intel.com>
+ <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
+ <CAJvTdKk6kh3yT==FFRJ0RXDSrpnWecOo06EAEgHctnWbwTg50Q@mail.gmail.com> <YS0YZZFyy0Z7slk6@zn.tnic>
+In-Reply-To: <YS0YZZFyy0Z7slk6@zn.tnic>
+From:   Len Brown <lenb@kernel.org>
+Date:   Tue, 31 Aug 2021 17:44:00 -0400
+Message-ID: <CAJvTdKknsU3=a=3aiK9nHH_2X6Asgu0vYSrkL-sCj4PdEfGhfg@mail.gmail.com>
+Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
+ protect dynamic user state
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, thiago.macieira@intel.com,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Aug 30, 2021 at 1:41 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Tue, Aug 24, 2021 at 06:21:23PM -0400, Len Brown wrote:
+> > MSR_IA32_XFD and MSR_IA32_XFD_ERR are architectural.
+> >
+> > (which is why they follow the convention of having an "IA32" in their name)
+>
+> Where is that official statement I can refer to that says that MSRs with
+> "IA32" in the name are architectural?
+>
+> Perhaps that section of the SDM:
+>
+> "2.1 ARCHITECTURAL MSRS"
 
-Can you pull these changes please?  They perform some preparatory work for=
- the
-fscache rewrite that's being worked on and fix some bugs.  These include:
+Yes.
 
- (1) Always select netfs stats when enabling fscache stats since they're
-     displayed through the same procfile.
+> In any case, those MSRs are not there yet, maybe they need to trickle
+> from the ISA to the SDM docs at some point first.
 
- (2) Add a cookie debug ID that can be used in tracepoints instead of a
-     pointer and cache it in the netfs_cache_resources struct rather than
-     in the netfs_read_request struct to make it more available.
+Right.
+These new MSRs are already named IA32... even though the info from
+the ISA Extensions Manual hasn't yet tricked into the SDM, because
+they are defined to be architectural from the get-go.
 
- (3) Use file_inode() in cachefiles rather than dereferencing file->f_inod=
-e
-     directly.
-
- (4) Provide a procfile to display fscache cookies.
-
- (5) Remove the fscache and cachefiles histogram procfiles.
-
- (6) Remove the fscache object list procfile.
-
- (7) Avoid using %p in fscache and cachefiles as the value is hashed and
-     not comparable to the register dump in an oops trace.
-
- (8) Fix the cookie hash function to actually achieve useful dispersion.
-
- (9) Fix fscache_cookie_put() so that it doesn't dereference the cookie
-     pointer in the tracepoint after the refcount has been decremented
-     (we're only allowed to do that if we decremented it to zero).
-
-(10) Use refcount_t rather than atomic_t for the fscache_cookie refcount.
-
-Some of these patches have been posted before as part of a larger patchset
-that effected almost the whole rewrite[1].
-
-Changes
-=3D=3D=3D=3D=3D=3D=3D
-ver #2:
- - Fix a NULL pointer ref in a tracepoint (that patch reposted here [2]).
-
-David
-
-Link: https://lore.kernel.org/r/162431188431.2908479.14031376932042135080.=
-stgit@warthog.procyon.org.uk/ # v1
-Link: https://lore.kernel.org/r/160588455242.3465195.3214733858273019178.s=
-tgit@warthog.procyon.org.uk/ [1]
-Link: https://lore.kernel.org/r/2512396.1630067489@warthog.procyon.org.uk/=
- [2]
-
----
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d=
-3:
-
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
-/fscache-next-20210829
-
-for you to fetch changes up to 20ec197bfa13c5b799fc9527790ea7b5374fc8f2:
-
-  fscache: Use refcount_t for the cookie refcount instead of atomic_t (202=
-1-08-27 13:34:03 +0100)
-
-----------------------------------------------------------------
-fscache changes and fixes
-
-----------------------------------------------------------------
-David Howells (12):
-      fscache: Select netfs stats if fscache stats are enabled
-      netfs: Move cookie debug ID to struct netfs_cache_resources
-      cachefiles: Use file_inode() rather than accessing ->f_inode
-      fscache: Add a cookie debug ID and use that in traces
-      fscache: Procfile to display cookies
-      fscache, cachefiles: Remove the histogram stuff
-      fscache: Remove the object list procfile
-      fscache: Change %p in format strings to something else
-      cachefiles: Change %p in format strings to something else
-      fscache: Fix cookie key hashing
-      fscache: Fix fscache_cookie_put() to not deref after dec
-      fscache: Use refcount_t for the cookie refcount instead of atomic_t
-
- fs/cachefiles/Kconfig             |  19 --
- fs/cachefiles/Makefile            |   2 -
- fs/cachefiles/bind.c              |   2 -
- fs/cachefiles/interface.c         |   6 +-
- fs/cachefiles/internal.h          |  25 ---
- fs/cachefiles/io.c                |   6 +-
- fs/cachefiles/key.c               |   2 +-
- fs/cachefiles/main.c              |   7 -
- fs/cachefiles/namei.c             |  61 ++----
- fs/cachefiles/proc.c              | 114 -----------
- fs/cachefiles/xattr.c             |   4 +-
- fs/fscache/Kconfig                |  25 +--
- fs/fscache/Makefile               |   2 -
- fs/fscache/cache.c                |  11 +-
- fs/fscache/cookie.c               | 201 +++++++++++++-----
- fs/fscache/fsdef.c                |   3 +-
- fs/fscache/histogram.c            |  87 --------
- fs/fscache/internal.h             |  57 ++----
- fs/fscache/main.c                 |  39 ++++
- fs/fscache/netfs.c                |   2 +-
- fs/fscache/object-list.c          | 414 ---------------------------------=
------
- fs/fscache/object.c               |   8 -
- fs/fscache/operation.c            |   3 -
- fs/fscache/page.c                 |   6 -
- fs/fscache/proc.c                 |  20 +-
- include/linux/fscache-cache.h     |   4 -
- include/linux/fscache.h           |   4 +-
- include/linux/netfs.h             |   2 +-
- include/trace/events/cachefiles.h |  68 +++----
- include/trace/events/fscache.h    | 160 +++++++--------
- include/trace/events/netfs.h      |   2 +-
- 31 files changed, 368 insertions(+), 998 deletions(-)
- delete mode 100644 fs/cachefiles/proc.c
- delete mode 100644 fs/fscache/histogram.c
- delete mode 100644 fs/fscache/object-list.c
-
+Len Brown, Intel Open Source Technology Center
