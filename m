@@ -2,180 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A78C3FCDDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B703FCDEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240782AbhHaTcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:32:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234139AbhHaTcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:32:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0F6260F91;
-        Tue, 31 Aug 2021 19:31:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630438266;
-        bh=NFwDSnpklMxKC8EPBXBrgV0olmRU2p/XdOiop04+OXY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZmEuKQQCj4tfmsYyd5IsPjxYsRUf3ApRsmYdwQ6q3/qUi76aR0LmiwGmXuyVQPjdB
-         CNGvHoIM5ZEqHo8f9lc31czbFDwjIY01Chxsghw6C9Q1LfFs/BUofJrztjHzJVun+j
-         0Niqp6lNuaGceUIjD66H5UXzQ+OdNFltfUTCO+EmkcjcwyDFpeRYsN6lQTu1z3SfYw
-         P3inIZDD0vBMtQSlToI4yXOvx228cHUkBtjLXLoa09050UQb3QIj9wOvAqkefAVeKu
-         dokUAuH8DUqskf5u0K3XtWkXRxiKK0pRRVEiK4Kh1VFJqnTHwSwKjdLz1J4gRT0YPm
-         tFM5+VinuW+BQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 720894007E; Tue, 31 Aug 2021 16:31:03 -0300 (-03)
-Date:   Tue, 31 Aug 2021 16:31:03 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFC PATCH v1 16/37] perf evsel: save open flags in evsel
-Message-ID: <YS6Dd6lZoftrKGXl@kernel.org>
-References: <cover.1629490974.git.rickyman7@gmail.com>
- <d9f63159098e56fa518eecf25171d72e6f74df37.1629490974.git.rickyman7@gmail.com>
+        id S240896AbhHaThG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240873AbhHaThB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 15:37:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48113C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:36:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dPXocIsffJsC7BTSpE9Q2xOCkrLHiRU6IRBDs6FOToM=; b=N7/N1vFlPNSH3sd7UPyxfrzNz1
+        mUx1IQmO1vueD+YazoemijtCcvqG03/UM6gwQR4rYcGmyS8TPaNjlcCuJ9BeNXnZgWjkBszl+wNZg
+        hX/pPum7jQTOTql/dRF2wo7s02AsSKp6LDplK3JXDHtZRK9gYOdtGVQ+Un1lFe3fzxL1J4K3CYW4I
+        ZSq38C6fU83c2DMD1WwIi5s0JLgOumid8mP5n2Ay9xsdKZy0eF+rU+6XgngRzUgIEKlCQS87QQCq+
+        f7BJxLF1+LEWyh3FNSzW4tFNCLyqYrGM5CQig8d8+NWBdDFI2+aD7tVCuM/BzmTcGMhdJSyLsRpSi
+        Poa69JJw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mL9Wm-001Va5-0F; Tue, 31 Aug 2021 19:34:42 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C1D0B98176D; Tue, 31 Aug 2021 21:34:30 +0200 (CEST)
+Date:   Tue, 31 Aug 2021 21:34:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 05/24] x86/entry: Introduce __entry_text for entry code
+ written in C
+Message-ID: <20210831193430.GL4353@worktop.programming.kicks-ass.net>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210831175025.27570-6-jiangshanlai@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d9f63159098e56fa518eecf25171d72e6f74df37.1629490974.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210831175025.27570-6-jiangshanlai@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Aug 21, 2021 at 11:19:22AM +0200, Riccardo Mancini escreveu:
-> This patch caches the flags used in perf_event_open inside evsel, so
-> that they can be set in __evsel__prepare_open (this will be useful
-> in following patches, when the fallback mechanisms will be handled
-> outside the open itself).
-> This also optimizes the code, by not having to recompute them everytime.
-
-Nice, thanks, applied, I'll make available what I have in tmp.perf/core
-so that you can take a look before I push it all to Linus, this week.
-
-- Arnaldo
- 
-> Since flags are now saved in evsel, the flags argument in
-> perf_event_open is removed.
+On Wed, Sep 01, 2021 at 01:50:06AM +0800, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> Some entry code will be implemented in traps.c.  We need __entry_text
+> to set them in .entry.text section.
+> 
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 > ---
->  tools/perf/util/evsel.c | 24 ++++++++++++------------
->  tools/perf/util/evsel.h |  1 +
->  2 files changed, 13 insertions(+), 12 deletions(-)
+>  arch/x86/entry/traps.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index ddf324e2e17a0951..509a2970a94b3142 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1710,17 +1710,16 @@ static void display_attr(struct perf_event_attr *attr)
->  }
+> diff --git a/arch/x86/entry/traps.c b/arch/x86/entry/traps.c
+> index f71db7934f90..ef07ae5fb3a0 100644
+> --- a/arch/x86/entry/traps.c
+> +++ b/arch/x86/entry/traps.c
+> @@ -69,6 +69,11 @@
+>  extern unsigned char native_irq_return_iret[];
+>  extern unsigned char asm_load_gs_index_gs_change[];
 >  
->  static int perf_event_open(struct evsel *evsel,
-> -			   pid_t pid, int cpu, int group_fd,
-> -			   unsigned long flags)
-> +			   pid_t pid, int cpu, int group_fd)
->  {
->  	int precise_ip = evsel->core.attr.precise_ip;
->  	int fd;
->  
->  	while (1) {
->  		pr_debug2_peo("sys_perf_event_open: pid %d  cpu %d  group_fd %d  flags %#lx",
-> -			  pid, cpu, group_fd, flags);
-> +			  pid, cpu, group_fd, evsel->open_flags);
->  
-> -		fd = sys_perf_event_open(&evsel->core.attr, pid, cpu, group_fd, flags);
-> +		fd = sys_perf_event_open(&evsel->core.attr, pid, cpu, group_fd, evsel->open_flags);
->  		if (fd >= 0)
->  			break;
->  
-> @@ -1788,6 +1787,10 @@ static int __evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
->  	    perf_evsel__alloc_fd(&evsel->core, cpus->nr, nthreads) < 0)
->  		return -ENOMEM;
->  
-> +	evsel->open_flags = PERF_FLAG_FD_CLOEXEC;
-> +	if (evsel->cgrp)
-> +		evsel->open_flags |= PERF_FLAG_PID_CGROUP;
-> +
->  	return 0;
->  }
->  
-> @@ -1796,7 +1799,6 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  		int start_cpu, int end_cpu)
->  {
->  	int cpu, thread, nthreads;
-> -	unsigned long flags = PERF_FLAG_FD_CLOEXEC;
->  	int pid = -1, err, old_errno;
->  	enum { NO_CHANGE, SET_TO_MAX, INCREASED_MAX } set_rlimit = NO_CHANGE;
->  
-> @@ -1815,10 +1817,8 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  	else
->  		nthreads = threads->nr;
->  
-> -	if (evsel->cgrp) {
-> -		flags |= PERF_FLAG_PID_CGROUP;
-> +	if (evsel->cgrp)
->  		pid = evsel->cgrp->fd;
-> -	}
->  
->  fallback_missing_features:
->  	if (perf_missing_features.weight_struct) {
-> @@ -1832,7 +1832,7 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  		evsel->core.attr.clockid = 0;
->  	}
->  	if (perf_missing_features.cloexec)
-> -		flags &= ~(unsigned long)PERF_FLAG_FD_CLOEXEC;
-> +		evsel->open_flags &= ~(unsigned long)PERF_FLAG_FD_CLOEXEC;
->  	if (perf_missing_features.mmap2)
->  		evsel->core.attr.mmap2 = 0;
->  	if (perf_missing_features.exclude_guest)
-> @@ -1866,7 +1866,7 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  			test_attr__ready();
->  
->  			fd = perf_event_open(evsel, pid, cpus->map[cpu],
-> -					     group_fd, flags);
-> +					     group_fd);
->  
->  			FD(evsel, cpu, thread) = fd;
->  
-> @@ -1874,7 +1874,7 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  
->  			if (unlikely(test_attr__enabled)) {
->  				test_attr__open(&evsel->core.attr, pid, cpus->map[cpu],
-> -						fd, group_fd, flags);
-> +						fd, group_fd, evsel->open_flags);
->  			}
->  
->  			if (fd < 0) {
-> @@ -2012,7 +2012,7 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  		perf_missing_features.clockid = true;
->  		pr_debug2_peo("switching off use_clockid\n");
->  		goto fallback_missing_features;
-> -	} else if (!perf_missing_features.cloexec && (flags & PERF_FLAG_FD_CLOEXEC)) {
-> +	} else if (!perf_missing_features.cloexec && (evsel->open_flags & PERF_FLAG_FD_CLOEXEC)) {
->  		perf_missing_features.cloexec = true;
->  		pr_debug2_peo("switching off cloexec flag\n");
->  		goto fallback_missing_features;
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index eabccce406886320..1c0057e80d080f2f 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -149,6 +149,7 @@ struct evsel {
->  		struct bperf_leader_bpf *leader_skel;
->  		struct bperf_follower_bpf *follower_skel;
->  	};
-> +	unsigned long		open_flags;
->  };
->  
->  struct perf_missing_features {
-> -- 
-> 2.31.1
+> +/* Entry code written in C. Must be only used in traps.c */
+> +#define __entry_text							\
+> +	noinline notrace __attribute((__section__(".entry.text")))	\
+> +	__no_kcsan __no_sanitize_address __no_profile __no_sanitize_coverage
 
--- 
+Urgh, that's bound to get out of sync with noinstr.. How about you make
+noinstr something like:
 
-- Arnaldo
+#define __noinstr_section(section) \
+	noinline notrace __attribute((__section__(section)))	\
+	__no_kcsan __no_sanitize_address __no_profile __no_sanitize_coverage
+
+#define noinstr __noinstr_section(".noinstr.text")
+
+and then write the above like:
+
+#define __entry_text __noinstr_section(".entry.text")
+
+
