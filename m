@@ -2,172 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E227E3FCA81
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353E73FCA83
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237632AbhHaPFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:05:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230237AbhHaPFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:05:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9935A61053;
-        Tue, 31 Aug 2021 15:04:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630422294;
-        bh=C3Xs7RdGLh2cMdjlr/NAo11NY+tlBUiaZVO0ueTSglQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GS3gtkoeV4qXKwQmd4bUMERgedQrUWTuFxSyAzmC7v96oqJUPBR0o6fcwM1vCb3Qh
-         isbVAVzB6yDvys72vXZdbHuZByy0ZLcTmKGrtb/QPVK0DPqUK6ME72GiLKjkW8Mt89
-         eh7YpcgaQRDGaDm1Q2CCInQw18tKM0ovSQc41bZd5ZTzRmM68MDeDv/6oSkgUga+nD
-         xgFT4puzZgUcQqdedzDKW/PY3Aaqfjl3+jXmlkq2xdH4nZgPLcy8nocTE9qxiyksXe
-         fPx9IMtOfHfeRZo/DmhfSnfTooXK9rL4kArxThL3RyYX/QfUAjc3k+yyzFO23Ur0si
-         eXCCt2qmaMO/w==
-Received: by mail-ed1-f44.google.com with SMTP id j13so21960372edv.13;
-        Tue, 31 Aug 2021 08:04:54 -0700 (PDT)
-X-Gm-Message-State: AOAM533SGucLKJ1jjqODaLX7NztTQGpLpg/6hjsLfw9z0x17AwMMMeTL
-        PAjyURhhwa+f2dFJMxGl7U3A9c3YnXlQZn3V5A==
-X-Google-Smtp-Source: ABdhPJzIMc1+WNRGq8elp8WiVQQ/QZvEnHKttYUctX+V3p0QWutbb1xjXyyvrpXfsncygsOskBw3nTY6jXKx0zawpjs=
-X-Received: by 2002:a50:eb8a:: with SMTP id y10mr30469814edr.137.1630422293211;
- Tue, 31 Aug 2021 08:04:53 -0700 (PDT)
+        id S238437AbhHaPGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230237AbhHaPGX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 11:06:23 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48524C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:05:28 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id DE12922234;
+        Tue, 31 Aug 2021 17:05:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1630422326;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IbEiTj8/FDUjs9gGlZ6P7LHVQpqyo+Y/3URkhMMwSeA=;
+        b=fQQs3j3m+Ozg95af6j9KIKt5sJPG9GmQzu+Sb/0RIjrI71Jqqh9TE959tICYtcPKTi/SFG
+        PrX47q3ORuNUNFkMolYXPlbmOoI5jSuCuXfPNyEBWDpRbDDB/sbHjN3XWLU1jIGOZodaVD
+        dBIKGMdYGk/gf5P7Y1wKLFgxiBiYKMQ=
 MIME-Version: 1.0
-References: <20210823032800.1660-3-chuanjia.liu@mediatek.com> <20210827164634.GA3779223@bjorn-Precision-5520>
-In-Reply-To: <20210827164634.GA3779223@bjorn-Precision-5520>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 31 Aug 2021 10:04:40 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKEvAypWhiaWMhxM7zVkLAFL9=eMU7_vr=ht+uyxYe0qg@mail.gmail.com>
-Message-ID: <CAL_JsqKEvAypWhiaWMhxM7zVkLAFL9=eMU7_vr=ht+uyxYe0qg@mail.gmail.com>
-Subject: Re: [PATCH v12 2/6] PCI: mediatek: Add new method to get shared
- pcie-cfg base address
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Chuanjia Liu <chuanjia.liu@mediatek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        Yong Wu <yong.wu@mediatek.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 31 Aug 2021 17:05:25 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Andrea Zanotti <andreazanottifo@gmail.com>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: micron-st: added support for np8p128ax60
+In-Reply-To: <CAGiusB0B5dN_K+bW1xudmT6UNmVOL=voBOuSVJeiYo3v6ywO8w@mail.gmail.com>
+References: <20210831081329.27420-1-andrea.zanotti@tyvak.eu>
+ <3462300528bbe71207ef2164411e34d2@walle.cc>
+ <CAGiusB1JvHkX7GSvD2JsqKWwC5xBePX_ruWk9nU9gugoroLnKA@mail.gmail.com>
+ <CAGiusB0B5dN_K+bW1xudmT6UNmVOL=voBOuSVJeiYo3v6ywO8w@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <4bf9396505975e3fee2cc6396a6eeff7@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 11:46 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Mon, Aug 23, 2021 at 11:27:56AM +0800, Chuanjia Liu wrote:
-> > For the new dts format, add a new method to get
-> > shared pcie-cfg base address and use it to configure
-> > the PCIECFG controller
->
-> Rewrap this to fill 75 columns.
->
-> > Signed-off-by: Chuanjia Liu <chuanjia.liu@mediatek.com>
-> > Acked-by: Ryder Lee <ryder.lee@mediatek.com>
-> > ---
-> >  drivers/pci/controller/pcie-mediatek.c | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
-> >
-> > diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-> > index 25bee693834f..4296d9e04240 100644
-> > --- a/drivers/pci/controller/pcie-mediatek.c
-> > +++ b/drivers/pci/controller/pcie-mediatek.c
-> > @@ -14,6 +14,7 @@
-> >  #include <linux/irqchip/chained_irq.h>
-> >  #include <linux/irqdomain.h>
-> >  #include <linux/kernel.h>
-> > +#include <linux/mfd/syscon.h>
-> >  #include <linux/msi.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of_address.h>
-> > @@ -23,6 +24,7 @@
-> >  #include <linux/phy/phy.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/pm_runtime.h>
-> > +#include <linux/regmap.h>
-> >  #include <linux/reset.h>
-> >
-> >  #include "../pci.h"
-> > @@ -207,6 +209,7 @@ struct mtk_pcie_port {
-> >   * struct mtk_pcie - PCIe host information
-> >   * @dev: pointer to PCIe device
-> >   * @base: IO mapped register base
-> > + * @cfg: IO mapped register map for PCIe config
-> >   * @free_ck: free-run reference clock
-> >   * @mem: non-prefetchable memory resource
-> >   * @ports: pointer to PCIe port information
-> > @@ -215,6 +218,7 @@ struct mtk_pcie_port {
-> >  struct mtk_pcie {
-> >       struct device *dev;
-> >       void __iomem *base;
-> > +     struct regmap *cfg;
-> >       struct clk *free_ck;
-> >
-> >       struct list_head ports;
-> > @@ -682,6 +686,10 @@ static int mtk_pcie_startup_port_v2(struct mtk_pcie_port *port)
-> >               val |= PCIE_CSR_LTSSM_EN(port->slot) |
-> >                      PCIE_CSR_ASPM_L1_EN(port->slot);
-> >               writel(val, pcie->base + PCIE_SYS_CFG_V2);
-> > +     } else if (pcie->cfg) {
-> > +             val = PCIE_CSR_LTSSM_EN(port->slot) |
-> > +                   PCIE_CSR_ASPM_L1_EN(port->slot);
-> > +             regmap_update_bits(pcie->cfg, PCIE_SYS_CFG_V2, val, val);
-> >       }
-> >
-> >       /* Assert all reset signals */
-> > @@ -985,6 +993,7 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
-> >       struct device *dev = pcie->dev;
-> >       struct platform_device *pdev = to_platform_device(dev);
-> >       struct resource *regs;
-> > +     struct device_node *cfg_node;
-> >       int err;
-> >
-> >       /* get shared registers, which are optional */
-> > @@ -995,6 +1004,14 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
-> >                       return PTR_ERR(pcie->base);
-> >       }
-> >
-> > +     cfg_node = of_find_compatible_node(NULL, NULL,
-> > +                                        "mediatek,generic-pciecfg");
->
-> This looks wrong to me.  IIUC, since we start at NULL, this searches
-> the entire device tree for any node with
->
->   compatible = "mediatek,generic-pciecfg"
->
-> but we should only care about the specific device/node this driver
-> claimed.
->
-> Should this be part of the match data, i.e., struct mtk_pcie_soc?
+Hi Andrea,
 
-What would you put in match data exactly?
+Am 2021-08-31 12:11, schrieb Andrea Zanotti:
+> Il giorno mar 31 ago 2021 alle ore 11:09 Andrea Zanotti
+> <andreazanottifo@gmail.com> ha scritto:
+>> 
+>> Hi Michael,
+>> 
+>> Il giorno mar 31 ago 2021 alle ore 10:39 Michael Walle 
+>> <michael@walle.cc> ha scritto:
+>>> 
+>>> Hi Andrea,
+>>> 
+>>> Am 2021-08-31 10:13, schrieb Andrea Zanotti:
+>>> > From: Andrea Zanotti <andreazanottifo@gmail.com>
+>>> >
+>>> > Added support for P8P Parallel Phase Change Memory.
+>>> 
+>>> Please use present tense, eg "add support..."
+>>> 
+>>> Is there a public datasheet? If so, please include it above
+>>> your SoB like so:
+>>> Datasheet: https://...
+>>> 
+>> 
+>> I will format the header as per your suggestions. I used the same 
+>> datasheet
+>> linked by you at the end of the email
+>> 
+>>> 
+>>> > Added memory information (page size and sector size) as per data-
+>>> > sheet information, after typos corrections.
+>>> 
+>>> After typos corrections?
+>>> 
+>> 
+>> The one specified in the following paragraph. I'll better write this. 
+>> (What I meant
+>> is that there are some typos in the datasheet itself)
+>> 
+>>> 
+>>> > At page 37, paragraph 'SPI Memory Organization', it is written
+>>> > down that the memory is organized as:
+>>> >  * 16.772.216 bytes (typo here, there 16.777.216 bytes)
+>>> >  * 128 sectors of 128 Kbytes each (correct)
+>>> >  * 131.072 pages of 64 bytes each (typo here, as the total would be
+>>> >    64Mbit, but the total memory is actually 128Mbit, correct value
+>>> >    is 262.144 pages)
+>>> >
+>>> > Patch tested against the aforementioned PCM memory.
+>>> 
+>>> What SPI host controller was used?
+>>> 
+>> 
+>> I used an AT91SAM9G20 processor, SPI controller "atmel,at91rm9200-spi" 
+>> (spi-atmel.c)
+>> 
+>>> 
+>>> > No known regressions inserted, as the patch only adds the possibility
+>>> > to recognize said PCM memory inside the common spi-nor driver.
+>>> 
+>>> Please drop this. If there were any regressions, the patch wouldn't
+>>> be picked up anyway.
+>>> 
+>> 
+>> It will be dropped.
+>> 
+>>> >
+>>> > Signed-off-by: Andrea Zanotti <andreazanottifo@gmail.com>
+>>> > ---
+>>> >  drivers/mtd/spi-nor/micron-st.c | 1 +
+>>> >  1 file changed, 1 insertion(+)
+>>> >
+>>> > diff --git a/drivers/mtd/spi-nor/micron-st.c
+>>> > b/drivers/mtd/spi-nor/micron-st.c
+>>> > index c224e59820a1..c78331451082 100644
+>>> > --- a/drivers/mtd/spi-nor/micron-st.c
+>>> > +++ b/drivers/mtd/spi-nor/micron-st.c
+>>> > @@ -128,6 +128,7 @@ static const struct flash_info micron_parts[] = {
+>>> >       { "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
+>>> >                           SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+>>> >                           SPI_NOR_4B_OPCODES) },
+>>> > +     { "np8p128ax60", {0x89, 0xda, 0x18}, 3, 128 * 1024, 128, 64, 0, 0 },
+>>> 
+>>> Eh? Please use INFO(). And why isn't this 0x20 for micron.
+>>> 
+>> 
+>> With INFO() macro I am locked in with .page_size = 256 (I would need 
+>> 64), or am I missing something?
 
-The other way to do this is to have a DT property with the phandle
-which people like to do (have everything in the node 'for their
-driver'). If there's only 1 possible node (which is almost always the
-case), then there is little benefit to having another property. It's
-just redundant data. A phandle lookup might be a bit faster with the
-caching we do, but on a miss it would still walk all nodes.
+Ok I see. Mh, then maybe there should be a new macro where you can
+set the page_size?
 
-The other thing with these 'extra register bits to twiddle' is that
-they tend to be SoC specific and change from chip to chip, so either
-way is not very portable. The real question to ask is should there be
-a standard interface used or created.
+>>> 
+>>> I found this datasheet:
+>>> https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/NP8P128Ax60E_Rev_K.pdf
+>>> 
+>>> According to that datasheet, the manuf id is 0x20. And the device id
+>>> should be either 0x88e1 or 0x8821.
+>>> 
+>> 
+>> You are right, checking it right now.
+>> 
+> 
+> - As per datasheet, table 10 on page 18, Manufacturer code is 0x89
+> (column "data" for parameter "Manufacturer Code").
 
->
-> > +     if (cfg_node) {
-> > +             pcie->cfg = syscon_node_to_regmap(cfg_node);
->
-> Other drivers in drivers/pci/controller/ use
-> syscon_regmap_lookup_by_phandle() (j721e, dra7xx, keystone,
-> layerscape, artpec6) or syscon_regmap_lookup_by_compatible() (imx6,
-> kirin, v3-semi).
+That is for the command 90h (which is for the parallel interface?). We
+issue 9Fh and according to the "READ IDENTIFICATION (RDID)" chapter:
 
-There's no phandle to use in this case. As above, I'm trying to break
-people of this habit.
+   The manufacturer identification is assigned by JEDEC and has the
+   value 20h for Micron.
 
-Rob
+And in fact it is assigned by JEDEC, see below.
+
+> - On the datasheet, I agree with you that the device code is
+> advertised as either 0x88e1 or 0x8821. I changed the byte array
+> to something wrong in order to have the debug warning on the JEDEC id
+> bytes, and this is the log:
+> 
+> spi-nor spi0.0: unrecognized JEDEC id bytes: 89 da 18 00 00 00
+> 
+> Second and third byte are "0xda" and "0x18". I am not an expert in the
+> spi-nor driver, but from my understanding
+> (if it's wrong, please correct me) the spi-nor driver tries to match
+> the the read bytes from the memory with the ones
+> in the tables. I don't know if the datasheet is wrong also in that
+> cell of the table, or if I am interpreting the data wrongly.
+
+Looks like the datasheet is wrong or something is broken here. Yes
+you are correct in assuming that these are in fact the ID bytes.
+
+We'd need to check what vendor 0x89 is to avoid collisions with other
+vendors/flashes.
+
+Btw this "flash" has no need for an erase, just like the MRAM or an
+SPI EEPROM. Could you have a look at drivers/misc/eeprom/at25.c if
+that will work for you?
+
+-michael
