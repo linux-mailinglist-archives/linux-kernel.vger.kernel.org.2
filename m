@@ -2,115 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09BA3FC46A
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A46B3FC46B
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240410AbhHaIk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 04:40:59 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53364 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240422AbhHaIk5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 04:40:57 -0400
-X-UUID: c2bb3395cc704301b8105ff7d3b932e2-20210831
-X-UUID: c2bb3395cc704301b8105ff7d3b932e2-20210831
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1722613409; Tue, 31 Aug 2021 16:39:59 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 31 Aug 2021 16:39:58 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 31 Aug 2021 16:39:57 +0800
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     <broonie@kernel.org>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH] ASoC: dt-bindings: mt8195: remove dependent headers in the example
-Date:   Tue, 31 Aug 2021 16:39:56 +0800
-Message-ID: <20210831083956.9804-1-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S240389AbhHaIlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 04:41:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240403AbhHaIlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 04:41:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 243F960E98;
+        Tue, 31 Aug 2021 08:40:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630399208;
+        bh=gqiAk6efM2NN49iQ6niUDVype6wdTyTtrakguXN3l0s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G+2OqoixJR5gxsUHm+HCT4jEjATdneaHH8fhceORBhplLmZnEa8lBaX3OdTjQtbUj
+         ypyZHT7vKvuDgO6ss0PxUhJXTLgWgyquyyn9/4Wrl7+R//GUcG4mQ7Igkhg9YNm7i+
+         HljCOvfeS2INezlaD3Xblc9SWH4FWctfVr0SubaJAav7J2VZ860G0YYhtnNlPQo/lJ
+         7xouBtHZyh9x53cP1oIT2tkFmU/5oR6Njp3bv8dtOQ6YDIpU+nSCUUfphv5mZU2Fa1
+         gQcm92SwWyqLwAh8tTDAqlam2nc+VuC95/Wuj295yfSmdaeRAiR2LEHdiLoyiRlIgc
+         7q3OxLc8rIjIQ==
+Date:   Tue, 31 Aug 2021 11:40:01 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
+Cc:     dave.hansen@intel.com, luto@kernel.org, peterz@infradead.org,
+        x86@kernel.org, akpm@linux-foundation.org, keescook@chromium.org,
+        shakeelb@google.com, vbabka@suse.cz, linux-mm@kvack.org,
+        linux-hardening@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, ira.weiny@intel.com,
+        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 05/19] x86, mm: Use cache of page tables
+Message-ID: <YS3q4Q+ybxweHoLK@kernel.org>
+References: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
+ <20210830235927.6443-6-rick.p.edgecombe@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210830235927.6443-6-rick.p.edgecombe@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the use of the defines including clock and power id, so that
-we can remove the headers which are not applied in the example.
+On Mon, Aug 30, 2021 at 04:59:13PM -0700, Rick Edgecombe wrote:
+> Change the page table allocation functions defined in pgalloc.h to use
+> a cache of physically grouped pages. This will let the page tables be set
+> with PKS permissions later.
+> 
+> For userspace page tables, they are gathered up using mmu gather, and
+> freed along with other types of pages in swap.c. Move setting/clearing of
+> the PageTable page flag to the allocators so that swap can know to return
+> this page to the cache of page tables, and not free it to the page
+> allocator. Where it currently is, in the ctor/dtors, causes it to be
+> cleared before the page gets to swap.
+> 
+> Do not set PKS permissions on the page tables, because the page table
+> setting functions cannot handle it yet. This will be done in later
+> patches.
+> 
+> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> ---
+>  arch/x86/include/asm/pgalloc.h |  6 ++-
+>  arch/x86/include/asm/pgtable.h |  6 +++
+>  arch/x86/mm/pgtable.c          | 79 ++++++++++++++++++++++++++++++++++
+>  include/asm-generic/pgalloc.h  | 44 ++++++++++++++-----
+>  include/linux/mm.h             | 11 +++--
+>  mm/swap.c                      |  6 +++
+>  mm/swap_state.c                |  5 +++
+>  7 files changed, 142 insertions(+), 15 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/pgalloc.h b/arch/x86/include/asm/pgalloc.h
+> index c7ec5bb88334..1ff308ea76cd 100644
+> --- a/arch/x86/include/asm/pgalloc.h
+> +++ b/arch/x86/include/asm/pgalloc.h
+> @@ -7,6 +7,10 @@
+>  #include <linux/pagemap.h>
+>  
+>  #define __HAVE_ARCH_PTE_ALLOC_ONE
+> +#ifdef CONFIG_PKS_PG_TABLES
+> +#define __HAVE_ARCH_FREE_TABLE
+> +#define __HAVE_ARCH_ALLOC_TABLE
 
-Fixes: b5bac34fcfb4 ("dt-bindings: mediatek: mt8195: add audio afe document")
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- .../bindings/sound/mt8195-afe-pcm.yaml        | 40 +++++++++----------
- 1 file changed, 19 insertions(+), 21 deletions(-)
+I think one define would suffice. If we'd ever have an architecture that
+can implement only one of those, we update the ifdefery in
+asm-generic/pgalloc.h
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
-index 53e9434a6d9d..dcf790b053d2 100644
---- a/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
-+++ b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
-@@ -130,36 +130,34 @@ additionalProperties: false
- 
- examples:
-   - |
--    #include <dt-bindings/clock/mt8195-clk.h>
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
-     #include <dt-bindings/interrupt-controller/irq.h>
--    #include <dt-bindings/power/mt8195-power.h>
- 
-     afe: mt8195-afe-pcm@10890000 {
-         compatible = "mediatek,mt8195-audio";
-         reg = <0x10890000 0x10000>;
-         interrupts = <GIC_SPI 822 IRQ_TYPE_LEVEL_HIGH 0>;
-         mediatek,topckgen = <&topckgen>;
--        power-domains = <&spm MT8195_POWER_DOMAIN_AUDIO>;
-+        power-domains = <&spm 7>; //MT8195_POWER_DOMAIN_AUDIO
-         clocks = <&clk26m>,
--                 <&topckgen CLK_TOP_APLL1>,
--                 <&topckgen CLK_TOP_APLL2>,
--                 <&topckgen CLK_TOP_APLL12_DIV0>,
--                 <&topckgen CLK_TOP_APLL12_DIV1>,
--                 <&topckgen CLK_TOP_APLL12_DIV2>,
--                 <&topckgen CLK_TOP_APLL12_DIV3>,
--                 <&topckgen CLK_TOP_APLL12_DIV9>,
--                 <&topckgen CLK_TOP_A1SYS_HP_SEL>,
--                 <&topckgen CLK_TOP_AUD_INTBUS_SEL>,
--                 <&topckgen CLK_TOP_AUDIO_H_SEL>,
--                 <&topckgen CLK_TOP_AUDIO_LOCAL_BUS_SEL>,
--                 <&topckgen CLK_TOP_DPTX_M_SEL>,
--                 <&topckgen CLK_TOP_I2SO1_M_SEL>,
--                 <&topckgen CLK_TOP_I2SO2_M_SEL>,
--                 <&topckgen CLK_TOP_I2SI1_M_SEL>,
--                 <&topckgen CLK_TOP_I2SI2_M_SEL>,
--                 <&infracfg_ao CLK_INFRA_AO_AUDIO_26M_B>,
--                 <&scp_adsp CLK_SCP_ADSP_AUDIODSP>;
-+                 <&topckgen 163>, //CLK_TOP_APLL1
-+                 <&topckgen 166>, //CLK_TOP_APLL2
-+                 <&topckgen 233>, //CLK_TOP_APLL12_DIV0
-+                 <&topckgen 234>, //CLK_TOP_APLL12_DIV1
-+                 <&topckgen 235>, //CLK_TOP_APLL12_DIV2
-+                 <&topckgen 236>, //CLK_TOP_APLL12_DIV3
-+                 <&topckgen 238>, //CLK_TOP_APLL12_DIV9
-+                 <&topckgen 100>, //CLK_TOP_A1SYS_HP_SEL
-+                 <&topckgen 33>, //CLK_TOP_AUD_INTBUS_SEL
-+                 <&topckgen 34>, //CLK_TOP_AUDIO_H_SEL
-+                 <&topckgen 107>, //CLK_TOP_AUDIO_LOCAL_BUS_SEL
-+                 <&topckgen 98>, //CLK_TOP_DPTX_M_SEL
-+                 <&topckgen 94>, //CLK_TOP_I2SO1_M_SEL
-+                 <&topckgen 95>, //CLK_TOP_I2SO2_M_SEL
-+                 <&topckgen 96>, //CLK_TOP_I2SI1_M_SEL
-+                 <&topckgen 97>, //CLK_TOP_I2SI2_M_SEL
-+                 <&infracfg_ao 50>, //CLK_INFRA_AO_AUDIO_26M_B
-+                 <&scp_adsp 0>; //CLK_SCP_ADSP_AUDIODSP
-         clock-names = "clk26m",
-                       "apll1_ck",
-                       "apll2_ck",
+> +#endif
+>  #define __HAVE_ARCH_PGD_FREE
+>  #include <asm-generic/pgalloc.h>
+>  
+> @@ -162,7 +166,7 @@ static inline void p4d_free(struct mm_struct *mm, p4d_t *p4d)
+>  		return;
+>  
+>  	BUG_ON((unsigned long)p4d & (PAGE_SIZE-1));
+> -	free_page((unsigned long)p4d);
+> +	free_table(virt_to_page(p4d));
+>  }
+>  
+>  extern void ___p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d);
+
+...
+
+> diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
+> index 02932efad3ab..e576c19abc8c 100644
+> --- a/include/asm-generic/pgalloc.h
+> +++ b/include/asm-generic/pgalloc.h
+> @@ -2,11 +2,26 @@
+>  #ifndef __ASM_GENERIC_PGALLOC_H
+>  #define __ASM_GENERIC_PGALLOC_H
+>  
+> +#include <linux/mm.h>
+> +
+
+Why is this required?
+
+>  #ifdef CONFIG_MMU
+>  
+>  #define GFP_PGTABLE_KERNEL	(GFP_KERNEL | __GFP_ZERO)
+>  #define GFP_PGTABLE_USER	(GFP_PGTABLE_KERNEL | __GFP_ACCOUNT)
+>  
+> +#ifndef __HAVE_ARCH_ALLOC_TABLE
+> +static inline struct page *alloc_table(gfp_t gfp)
+> +{
+> +	return alloc_page(gfp);
+> +}
+> +#else /* __HAVE_ARCH_ALLOC_TABLE */
+> +extern struct page *alloc_table(gfp_t gfp);
+> +#endif /* __HAVE_ARCH_ALLOC_TABLE */
+> +
+> +#ifdef __HAVE_ARCH_FREE_TABLE
+> +extern void free_table(struct page *);
+> +#endif /* __HAVE_ARCH_FREE_TABLE */
+> +
+>  /**
+>   * __pte_alloc_one_kernel - allocate a page for PTE-level kernel page table
+>   * @mm: the mm_struct of the current context
+
+...
+
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index c13c7af7cad3..ab63d5a201cb 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2327,6 +2327,13 @@ static inline bool ptlock_init(struct page *page) { return true; }
+>  static inline void ptlock_free(struct page *page) {}
+>  #endif /* USE_SPLIT_PTE_PTLOCKS */
+>  
+> +#ifndef CONFIG_PKS_PG_TABLES
+> +static inline void free_table(struct page *table_page)
+> +{
+> +	__free_pages(table_page, 0);
+> +}
+> +#endif /* CONFIG_PKS_PG_TABLES */
+> +
+
+Can't this live in asm-generic/pgalloc.h?
+Then you won't need to include linux/mm.h there.
+
+>  static inline void pgtable_init(void)
+>  {
+>  	ptlock_cache_init();
+> @@ -2337,7 +2344,6 @@ static inline bool pgtable_pte_page_ctor(struct page *page)
+>  {
+>  	if (!ptlock_init(page))
+>  		return false;
+> -	__SetPageTable(page);
+
+This change is only valid when __HAVE_ARCH_ALLOC_TABLE is set.
+
+>  	inc_lruvec_page_state(page, NR_PAGETABLE);
+>  	return true;
+>  }
+> @@ -2345,7 +2351,6 @@ static inline bool pgtable_pte_page_ctor(struct page *page)
+>  static inline void pgtable_pte_page_dtor(struct page *page)
+>  {
+>  	ptlock_free(page);
+> -	__ClearPageTable(page);
+>  	dec_lruvec_page_state(page, NR_PAGETABLE);
+>  }
+>  
+
 -- 
-2.18.0
-
+Sincerely yours,
+Mike.
