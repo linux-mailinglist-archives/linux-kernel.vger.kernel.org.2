@@ -2,132 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5D13FCE12
+	by mail.lfdr.de (Postfix) with ESMTP id 5B39A3FCE13
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241005AbhHaTyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238633AbhHaTyt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:54:49 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E3EC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:53:53 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id u15so219194wmj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qQ7pRpfj3Zvhm7mtC8636KmrgJunLoZPtX0Bf0A/Whw=;
-        b=kuDYr9xO5OpyFL0y8r/WxNtqmTwOYUJc9AMOyYOtaHl2NUbh7topJfQoiJpt4s0l+6
-         ADFBe9aovwAjs4wNe2EA4+I4pHO+fftDvDG/ReRFk+7PTuPJEA04l61TiGN/J2Gc3YY/
-         2SoDwkHetZPQ7KdIWx577FLJEVDvqZqLjwXgGSo5VWfraljZ/Gmg3dLbC4w/4w1s1EPN
-         xiBEN7xNAfNETBBy6+tbxE1e24WyG2SapbkCsfyHovrdmpWVCmwsPgAg9uckdAw0KWnM
-         P9xP77tQ3UO4sanXYfUEUy0Olysk1hMKn5vGGLCvtb9HttGgcIZp954U8gFOsAGImbFl
-         wl9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qQ7pRpfj3Zvhm7mtC8636KmrgJunLoZPtX0Bf0A/Whw=;
-        b=lHG8qRjvGbj+/zxbSQ71yDBS2fOa6Om/yHf8/67BKAw9SsPMMnMOX1Ovkfh3CKa92v
-         r3p6T7AhCHW+nVg0Ed6N9eFQBwpm9ycLjXhNB1mGec4csuY+xpskXMdnn35XEm3JDXTx
-         XAnvsvFGRSame+b1jtJZP0h+B7VI7nmvDcizrAzfcUrG1Om0VJmanzLslGJ9jzzHrrkr
-         XsOGYWxj3aNORvGm7vFEFfdDQKRAGxwM5z3eG7PWAm9Zc/92MQA8K5yCXwrdGYAaso0l
-         QzHkfkIwg2B59JJeICNvxAQzJMyCTr9NihjEh8KQbOAmdSDdkd2w/Nb8H55gIZQR13Hz
-         nROg==
-X-Gm-Message-State: AOAM531ovLqe6YgTL1WG/D5+gj8gH8PnwLX5vhmhTBx2vNIgSptxZGz/
-        er2It2wpdlVe8SFC9RatHjc=
-X-Google-Smtp-Source: ABdhPJxGWxr4kDCDpQ6LMo42hH4LRXFBwPKhVoasjCcPzF94SSAdxocVyGF3wev5aGuu+rtKUuESqA==
-X-Received: by 2002:a1c:f712:: with SMTP id v18mr5904179wmh.25.1630439632249;
-        Tue, 31 Aug 2021 12:53:52 -0700 (PDT)
-Received: from kista.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id k25sm20318237wrd.42.2021.08.31.12.53.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 12:53:51 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        =?utf-8?B?Q2zDqW1lbnQgQsWTc2No?= <u@pkh.me>,
-        Willy Liu <willy.liu@realtek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] arm64: dts: sun50i: h5: NanoPI Neo 2: phy-mode rgmii-id
-Date:   Tue, 31 Aug 2021 21:53:50 +0200
-Message-ID: <1746741.3t3T1tWQfl@kista>
-In-Reply-To: <YS1SsqDgGFOvyIT0@lunn.ch>
-References: <20210830151645.18018-1-u@pkh.me> <116454729.UZi3dMzWh7@jernej-laptop> <YS1SsqDgGFOvyIT0@lunn.ch>
+        id S239832AbhHaTzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:55:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229946AbhHaTzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 15:55:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 532D361053;
+        Tue, 31 Aug 2021 19:54:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630439686;
+        bh=aHloCrBXDAhdjVe5ypi8FjpqRvK46acnBPd5AxJF6jM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E3qHKfO7Z8IeYKyPGbJcLeS8l1mWQDSssd1OcC6/hXCS2hmu6PmJKz1qElx5b0lZL
+         Izn9m3rhr8rK0Ezbxj2NZWOs+sVa2AavF7YbjlXGsJj66zYZtYlPS/OBiWi1y0kqJ/
+         6RmT/YomRvQr/2lNYMi5XWRfiZ25B7h1Yf19/EO9Yj3R8TKCzxpv2z4IqSLa33sjVM
+         ivS4LOo/YKmXuNIGoedWHj+3KFW3r/xJW499i+Mv1+kuPhpdDXvlsI0pzE7fFpauPf
+         Ex/u4QP9M1bvQv5/gMknkkvQTaWKE3dksEWS2DMn2gq0K7v8gYNdtMc2ABRdbKqjM+
+         vA8LfULOjyfEQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 444514007E; Tue, 31 Aug 2021 16:54:44 -0300 (-03)
+Date:   Tue, 31 Aug 2021 16:54:44 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [RFC PATCH v1 25/37] perf evsel: move event open in
+ evsel__open_cpu to separate function
+Message-ID: <YS6JBBW3d4pmcy/U@kernel.org>
+References: <cover.1629490974.git.rickyman7@gmail.com>
+ <74ac2eea14f45b2cbecffb509dd5f3cd523d4a9b.1629490974.git.rickyman7@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <74ac2eea14f45b2cbecffb509dd5f3cd523d4a9b.1629490974.git.rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew!
+Em Sat, Aug 21, 2021 at 11:19:31AM +0200, Riccardo Mancini escreveu:
+> This is the final patch splitting evsel__open_cpu.
+> This patch moves the entire loop code to a separate function, to be
+> reused for the multithreaded code.
 
-Dne ponedeljek, 30. avgust 2021 ob 23:50:42 CEST je Andrew Lunn napisal(a):
-> On Mon, Aug 30, 2021 at 10:49:37PM +0200, Jernej =C5=A0krabec wrote:
-> > Hi!
-> >=20
-> > Dne ponedeljek, 30. avgust 2021 ob 17:16:45 CEST je Cl=C3=A9ment B=C5=
-=93sch=20
-napisal(a):
-> > > Since commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx del=
-ay
-> > > config") network is broken on the NanoPi Neo 2.
-> > >=20
-> > > This patch changes the phy-mode to use internal delays both for RX and
-> > > TX as has been done for other boards affected by the same commit.
-> > >=20
-> > > Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay con=
-fig")
-> >=20
-> > This commit fixes DT issue, so "fixes" tag should be:
-> > Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
-> >=20
-> > Here, a node with wrong phy-mode property was added to NanoPi Neo 2 boa=
-rd=20
-DT. =20
->=20
-> Hi Jernej
->=20
-> I would say, it is debatable. The board broke when the driver started
-> acting on the value, which is commit bbc4d71d6354. It could be argued
-> it was always technically broken, since it has the wrong value, but
-> practically, it was not broken. One of the rules for stable is:
->=20
->  - It must fix a real bug that bothers people (not a, "This could be a
->    problem..." type thing).
->=20
-> So i would argue, anything before bbc4d71d6354 does not fulfil stable
-> requirements, since it does not bother anybody.
+Are you going to use that 'enum perf_event_open_err' somewhere else?
+I.e. is there a need to expose it in evsel.h?
 
-True, but then again, DT is a bit special, since it's not used only by Linu=
-x.=20
-It's shared at least with BSDs and U-Boot, which most likely have independe=
-nt=20
-driver implementation. That's why it's good to have DT fixes referencing DT=
-=20
-related commits. As you said, DT described HW wrong.
+I'm stopping at this patch to give the ones I merged so far some
+testing, will now push it to tmp.perf/core.
 
-Looking at past Allwinner related DT commits regarding this issue, we were =
-not=20
-totally consistent. Most of them reference commit where emac node was=20
-introduced in DT. But I also found a couple of commits which indeed have fi=
-xes=20
-tag for bbc4d71d6354.
+- Arnaldo
+ 
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/perf/util/evsel.c | 142 ++++++++++++++++++++++++----------------
+>  tools/perf/util/evsel.h |  12 ++++
+>  2 files changed, 99 insertions(+), 55 deletions(-)
+> 
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index 2e95416b8320c6b9..e41f55a7a70ea630 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -1945,6 +1945,82 @@ bool evsel__increase_rlimit(enum rlimit_action *set_rlimit)
+>  	return false;
+>  }
+>  
+> +static struct perf_event_open_result perf_event_open(struct evsel *evsel,
+> +					pid_t pid, int cpu, int thread,
+> +					struct perf_cpu_map *cpus,
+> +					struct perf_thread_map *threads)
+> +{
+> +	int fd, group_fd, rc;
+> +	struct perf_event_open_result res;
+> +
+> +	if (!evsel->cgrp && !evsel->core.system_wide)
+> +		pid = perf_thread_map__pid(threads, thread);
+> +
+> +	group_fd = get_group_fd(evsel, cpu, thread);
+> +
+> +	test_attr__ready();
+> +
+> +	pr_debug2_peo("sys_perf_event_open: pid %d  cpu %d  group_fd %d  flags %#lx",
+> +			pid, cpus->map[cpu], group_fd, evsel->open_flags);
+> +
+> +	fd = sys_perf_event_open(&evsel->core.attr, pid, cpus->map[cpu],
+> +				group_fd, evsel->open_flags);
+> +
+> +	FD(evsel, cpu, thread) = fd;
+> +	res.fd = fd;
+> +
+> +	if (fd < 0) {
+> +		rc = -errno;
+> +
+> +		pr_debug2_peo("\nsys_perf_event_open failed, error %d\n",
+> +				rc);
+> +		res.rc = rc;
+> +		res.err = PEO_FALLBACK;
+> +		return res;
+> +	}
+> +
+> +	bpf_counter__install_pe(evsel, cpu, fd);
+> +
+> +	if (unlikely(test_attr__enabled)) {
+> +		test_attr__open(&evsel->core.attr, pid,
+> +			cpus->map[cpu], fd,
+> +			group_fd, evsel->open_flags);
+> +	}
+> +
+> +	pr_debug2_peo(" = %d\n", fd);
+> +
+> +	if (evsel->bpf_fd >= 0) {
+> +		int evt_fd = fd;
+> +		int bpf_fd = evsel->bpf_fd;
+> +
+> +		rc = ioctl(evt_fd,
+> +				PERF_EVENT_IOC_SET_BPF,
+> +				bpf_fd);
+> +		if (rc && errno != EEXIST) {
+> +			pr_err("failed to attach bpf fd %d: %s\n",
+> +				bpf_fd, strerror(errno));
+> +			res.rc = -EINVAL;
+> +			res.err = PEO_ERROR;
+> +			return res;
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * If we succeeded but had to kill clockid, fail and
+> +	 * have evsel__open_strerror() print us a nice error.
+> +	 */
+> +	if (perf_missing_features.clockid ||
+> +		perf_missing_features.clockid_wrong) {
+> +		res.rc = -EINVAL;
+> +		res.err = PEO_ERROR;
+> +		return res;
+> +	}
+> +
+> +	res.rc = 0;
+> +	res.err = PEO_SUCCESS;
+> +	return res;
+> +}
+> +
+>  static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+>  		struct perf_thread_map *threads,
+>  		int start_cpu, int end_cpu)
+> @@ -1952,6 +2028,7 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+>  	int cpu, thread, nthreads;
+>  	int pid = -1, err, old_errno;
+>  	enum rlimit_action set_rlimit = NO_CHANGE;
+> +	struct perf_event_open_result peo_res;
+>  
+>  	err = __evsel__prepare_open(evsel, cpus, threads);
+>  	if (err)
+> @@ -1979,67 +2056,22 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+>  	for (cpu = start_cpu; cpu < end_cpu; cpu++) {
+>  
+>  		for (thread = 0; thread < nthreads; thread++) {
+> -			int fd, group_fd;
+>  retry_open:
+>  			if (thread >= nthreads)
+>  				break;
+>  
+> -			if (!evsel->cgrp && !evsel->core.system_wide)
+> -				pid = perf_thread_map__pid(threads, thread);
+> -
+> -			group_fd = get_group_fd(evsel, cpu, thread);
+> -
+> -			test_attr__ready();
+> -
+> -			pr_debug2_peo("sys_perf_event_open: pid %d  cpu %d  group_fd %d  flags %#lx",
+> -				pid, cpus->map[cpu], group_fd, evsel->open_flags);
+> +			peo_res = perf_event_open(evsel, pid, cpu, thread, cpus,
+> +						threads);
+>  
+> -			fd = sys_perf_event_open(&evsel->core.attr, pid, cpus->map[cpu],
+> -						group_fd, evsel->open_flags);
+> -
+> -			FD(evsel, cpu, thread) = fd;
+> -
+> -			if (fd < 0) {
+> -				err = -errno;
+> -
+> -				pr_debug2_peo("\nsys_perf_event_open failed, error %d\n",
+> -					  err);
+> +			err = peo_res.rc;
+> +			switch (peo_res.err) {
+> +			case PEO_SUCCESS:
+> +				set_rlimit = NO_CHANGE;
+> +				continue;
+> +			case PEO_FALLBACK:
+>  				goto try_fallback;
+> -			}
+> -
+> -			bpf_counter__install_pe(evsel, cpu, fd);
+> -
+> -			if (unlikely(test_attr__enabled)) {
+> -				test_attr__open(&evsel->core.attr, pid, cpus->map[cpu],
+> -						fd, group_fd, evsel->open_flags);
+> -			}
+> -
+> -			pr_debug2_peo(" = %d\n", fd);
+> -
+> -			if (evsel->bpf_fd >= 0) {
+> -				int evt_fd = fd;
+> -				int bpf_fd = evsel->bpf_fd;
+> -
+> -				err = ioctl(evt_fd,
+> -					    PERF_EVENT_IOC_SET_BPF,
+> -					    bpf_fd);
+> -				if (err && errno != EEXIST) {
+> -					pr_err("failed to attach bpf fd %d: %s\n",
+> -					       bpf_fd, strerror(errno));
+> -					err = -EINVAL;
+> -					goto out_close;
+> -				}
+> -			}
+> -
+> -			set_rlimit = NO_CHANGE;
+> -
+> -			/*
+> -			 * If we succeeded but had to kill clockid, fail and
+> -			 * have evsel__open_strerror() print us a nice error.
+> -			 */
+> -			if (perf_missing_features.clockid ||
+> -			    perf_missing_features.clockid_wrong) {
+> -				err = -EINVAL;
+> +			default:
+> +			case PEO_ERROR:
+>  				goto out_close;
+>  			}
+>  		}
+> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> index 0a245afab2d87d74..8c9827a93ac001a7 100644
+> --- a/tools/perf/util/evsel.h
+> +++ b/tools/perf/util/evsel.h
+> @@ -282,6 +282,18 @@ int evsel__enable(struct evsel *evsel);
+>  int evsel__disable(struct evsel *evsel);
+>  int evsel__disable_cpu(struct evsel *evsel, int cpu);
+>  
+> +enum perf_event_open_err {
+> +	PEO_SUCCESS,
+> +	PEO_FALLBACK,
+> +	PEO_ERROR
+> +};
+> +
+> +struct perf_event_open_result {
+> +	enum perf_event_open_err err;
+> +	int rc;
+> +	int fd;
+> +};
+> +
+>  int evsel__open_per_cpu(struct evsel *evsel, struct perf_cpu_map *cpus, int cpu);
+>  int evsel__open_per_thread(struct evsel *evsel, struct perf_thread_map *threads);
+>  int evsel__open(struct evsel *evsel, struct perf_cpu_map *cpus,
+> -- 
+> 2.31.1
 
-Best regards,
-Jernej
+-- 
 
->=20
->       Andrew
->=20
-
-
+- Arnaldo
