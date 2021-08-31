@@ -2,89 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1F03FC0E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 04:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C24F3FC0EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 04:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239363AbhHaCyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 22:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50304 "EHLO
+        id S239438AbhHaC4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 22:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhHaCyo (ORCPT
+        with ESMTP id S229514AbhHaC4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 22:54:44 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE11EC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:53:49 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id y34so35387369lfa.8
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:53:49 -0700 (PDT)
+        Mon, 30 Aug 2021 22:56:03 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA35CC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:55:08 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so1339899pjx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:55:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=SeYApWq5p7n4wZLvEDL4MvNDOHrzTG68S/LXRGbX0D0=;
-        b=I4brZGJK2h3tDxuXff8kChntsAY6fQSGPSPcDRYXV2LwlXnM2EFwqT1WPP1+pNYm/s
-         r7O5SisCVPWNhWxW4EWA85MnjworX87qN0gCPa5GF800mhiCzJ2HL46wPnSvA50iktnp
-         31M6WvF6NUARGBkqpEF+CrarzfoZqaaMn/sqE=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AvjxB8xiv6vhyzTLX37XxNMhEu4AOfVYHWUw1RynGTs=;
+        b=LcDbfg8h77pj9HiMCk164bJNj2c128WiFloKTzvlCsfV9j35JoVoN6K4+MJMAuj6ep
+         L7VXntyWCg5GreKw4W71GiQyJXs6pMl4sKgtcnm+iUKE2LyqBn637UCJ9Tpq+vBH5dH0
+         LDSvFiSgUA9AjbGMP83g5dzf2ai2Owxsw5uGM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=SeYApWq5p7n4wZLvEDL4MvNDOHrzTG68S/LXRGbX0D0=;
-        b=adRPBIFpkotXuMAtuPitFP9Fhk+IJHkom3WVvkKojTfOWhZhmm8FjA8oBWOIp+eF84
-         NqsJybw8v9pPosQE/Y7OBAu96zVFV06dIQb3HWu7h7Eno6w0kFOz+WN37mG1wtEsa+gL
-         pnU70ffkCyhucrv3ZL6ms/RT3WAMmCGGzW+R4i3DRyla3gCQqyjKBCMMq0DAvAPV+sP3
-         OSoaGTyyPy9D+Y6g/QjR6T+eHDBJQqUHkUjT3taz4iszpI26Vmx0ZQuW68mdEivTM63g
-         aNxw3WBJJs3SNh+TnwwswDYJuhPdiAFtZAImKKdYaPrGNYOSguZHk49gTuapyTOZaMaD
-         Cb0A==
-X-Gm-Message-State: AOAM530k0ZGXjOExR3+tTXinfG2aUAYjiudHROacziDZ5rCjDxF2j0pc
-        20eIYAZ8hpYze1BEIBSYWc+FqQgMaa/Y40txN+4=
-X-Google-Smtp-Source: ABdhPJyxhFBVYUxrfx9IQ/rSASpp+6IUe/4Sd0jo3Bog9WsNaF1o+ZIMWxP/n76cKkhYu1fROEz+JA==
-X-Received: by 2002:a19:6742:: with SMTP id e2mr19929168lfj.507.1630378427528;
-        Mon, 30 Aug 2021 19:53:47 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id l3sm1133634lfk.245.2021.08.30.19.53.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Aug 2021 19:53:46 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id w4so29211161ljh.13
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 19:53:46 -0700 (PDT)
-X-Received: by 2002:a05:651c:1144:: with SMTP id h4mr22432285ljo.48.1630378426484;
- Mon, 30 Aug 2021 19:53:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AvjxB8xiv6vhyzTLX37XxNMhEu4AOfVYHWUw1RynGTs=;
+        b=dQvXi3xlqPXJX280ZUNrWFHMvyzYwVKzurmWNfOOsdGIZ8Jn3AEDQYak/LSGsxxOAr
+         An2kCXNuHkoWeVb2/ORC692flEtZD+uc029U3dt10ErUq1tt4/rHfYLnaMk1XV1ktvvl
+         fXe+NrXshlhHIKHp7HERA+QWI4kDRVDcf2xQrjL2VLaHxk8bXsQXrUFv+VWY8qeZRxgE
+         Sxat/f0Ik4Bm/JZNCj3flIVbsgtZKh4iDqKBA4IXa0IJgcpNFBaEvxw9x0VyxUlftfgO
+         muNzz87SKRRin6kXfE9DHv5ZM26x3IvrxPQdgeeSivnWNZuGtxJEDdZwQxN/mWrZoQhU
+         OKKg==
+X-Gm-Message-State: AOAM530TfbUSoyc6zFAo7r70cBvpnxnOkf4HynUC4xEY1ZcCo/e6PZlD
+        PLeSqv7Qz0KbAostrUmJJ7m+6w==
+X-Google-Smtp-Source: ABdhPJw03Yb7FbPHCPVYncNmoWmE8n3JwHQ1UVAhawvsdVLIsqjK4EzbJrHspDGBLYYGA65M1S6+ig==
+X-Received: by 2002:a17:902:a406:b029:12b:c50a:4289 with SMTP id p6-20020a170902a406b029012bc50a4289mr2499299plq.56.1630378508430;
+        Mon, 30 Aug 2021 19:55:08 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:6d52:87b8:b55b:8800])
+        by smtp.gmail.com with ESMTPSA id j9sm18869509pgl.1.2021.08.30.19.55.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 19:55:08 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 11:55:01 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Changbin Du <changbin.du@intel.com>
+Subject: Re: [PATCH printk v1 07/10] console: add write_atomic interface
+Message-ID: <YS2aBeymxuiW3CIw@google.com>
+References: <20210803131301.5588-1-john.ogness@linutronix.de>
+ <20210803131301.5588-8-john.ogness@linutronix.de>
 MIME-Version: 1.0
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 30 Aug 2021 19:53:30 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj+G8MXRUk5HRCvUr8gOpbR+zXQ6WNTB0E7n32fTUjKxQ@mail.gmail.com>
-Message-ID: <CAHk-=wj+G8MXRUk5HRCvUr8gOpbR+zXQ6WNTB0E7n32fTUjKxQ@mail.gmail.com>
-Subject: Re: kernel hang during reboot when cmdline include a non-exist
- console device
-To:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803131301.5588-8-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a bugzilla for this, but let's just move it to reguilar email,
-unless some of you want to track it that way.
+On (21/08/03 15:18), John Ogness wrote:
+[..]
+> @@ -1993,6 +1993,16 @@ static int console_trylock_spinning(void)
+>  	bool spin = false;
+>  	unsigned long flags;
+>  
+> +#ifdef CONFIG_SMP
+> +	/*
+> +	 * CPUs holding the printk cpulock must not spin on any lock. Even
+> +	 * console_trylock() must not be called because its implementation
+> +	 * uses spinlocks.
+> +	 */
+> +	if (atomic_read(&printk_cpulock_owner) == smp_processor_id())
+> +		return 0;
+> +#endif
+> +
+>  	if (console_trylock())
+>  		return 1;
+>  
+> @@ -2719,7 +2729,17 @@ static int have_callable_console(void)
+>   */
+>  static inline int can_use_console(void)
+>  {
+> -	return cpu_online(raw_smp_processor_id()) || have_callable_console();
+> +	int cpu = raw_smp_processor_id();
+> +#ifdef CONFIG_SMP
+> +	/*
+> +	 * CPUs holding the printk cpulock must not spin on any lock.
+> +	 * Allowing console usage could call into the spinlocks of the
+> +	 * various console drivers.
+> +	 */
+> +	if (atomic_read(&printk_cpulock_owner) == cpu)
+> +		return 0;
 
-The bugzilla entry says
+I guess the only reason this is done in can_use_console() is
+console_flush_on_panic()?
 
-  "When reboot=EF=BC=8C the capslock key of thinkpad x1 starts blinking"
+Because otherwise, I think, we can move this check to vprintk_emit().
 
-which sounds like there's an oops that just isn't showing, quite
-possibly because the console has already been shut down.
+can_use_console() can be called from preemptible() context. But
+if it's called from preemptible() then we know that this is not
+printk()/NMI path (but console_device() and friends instead) and
+that this CPU is definitely not holding printk CPU lock.
 
-I didn't test this out, and would sincerely hope that somebody else is
-willing to follow up on it since I'm in the busiest part of the merge
-window.
+console_trylock_spinning() and console_unlock()->can_use_console()
+follow each other
 
-           Linus
+	if (console_trylock_spinning())
+		console_unlock();
 
-On Mon, Aug 30, 2021 at 7:19 PM <bugzilla-daemon@bugzilla.kernel.org> wrote=
-:
->
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D214201
+so a single `atomic_read(&printk_cpulock_owner) == cpu` can suffice.
+
+Now we get to the console_flush_on_panic(), which still calls console_unlock(),
+iterates over messages, but when called by the CPU that owns printk_lock,
+just skips all the messages. But there is no point in calling console_unlock()
+in such a case, we can check if we're printk_cpulock_owner and bail out if so.
+
+Or am I missing something?
