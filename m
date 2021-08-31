@@ -2,102 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787B03FCE30
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5274A3FCE33
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240426AbhHaULl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 16:11:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37139 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232808AbhHaULl (ORCPT
+        id S240722AbhHaUMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 16:12:33 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:46634 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232018AbhHaUMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 16:11:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630440644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KbgJ2Vu8JpD26GA6OCHo87Wy3/ZN8Be3JYXsPNbuv+A=;
-        b=AS6VDpPS8aPN4JrzNOP/3jEvQMEa5mihPx32aYRI50pfPt8gJVA7qGmXd74H5S0VMJupfs
-        Il7axd2J/Oud1EcRSWKHxQOPW3rnvlQgadVzE3Gs8FZqYpmRLVDQb0xIuaB1bGIwxO0Nsl
-        P4CYeYKZS4c5/mnx5PqD2Um7xx2xpnc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-428-rKcdwF2oMKKq5U-vbn3zdw-1; Tue, 31 Aug 2021 16:10:43 -0400
-X-MC-Unique: rKcdwF2oMKKq5U-vbn3zdw-1
-Received: by mail-wr1-f70.google.com with SMTP id n1-20020a5d4c41000000b00159305d19baso749wrt.11
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 13:10:43 -0700 (PDT)
+        Tue, 31 Aug 2021 16:12:32 -0400
+Received: by mail-ot1-f47.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso599080ott.13;
+        Tue, 31 Aug 2021 13:11:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=KbgJ2Vu8JpD26GA6OCHo87Wy3/ZN8Be3JYXsPNbuv+A=;
-        b=ez9LLM9Z7z5svl/KWlxAttxmiC4blLuRUpg4N86wHCJJxrJ73NYy3VasdvpXQmDyRb
-         zpGk5aPUqMwVNF3BPgvACmAFIv1t7U2W4/oMkcnJ0JBe4TtBi2ie8gdvTx6qLxLikMqx
-         09eD3rYCyit75z0SAU7S7KZjjdtUMXRgdQ8SaaG0qq761UGfzUOe/st25E7/Ffts3178
-         vbDzUtkAdpvH9l4dliVqQUx8v4RGIv1JTp3P/ukdu+SbqhnLT3yx7iIIB3keaR5eM/1C
-         U/hBswiE2g9LTBqZxiKmxJ1XqVljcpqaguqzFVwU4LxqVZARo2T11ujz7rPEmp3hdULA
-         rDGA==
-X-Gm-Message-State: AOAM533PKSqFwSNYGYWT2mFqd4Xp9gHtJQCXRWz1KQjoLYwGwWyZJZ3y
-        Y1NyO/Ps/+puRff08oB+j6uqH+sAUHOWInRdFTzjYJc/b8gQ9Ms0q6B2/GhLcLlg6jnaw8EiJ0F
-        VuR8Ht4fbqWEFnhg4SQFO4p5b
-X-Received: by 2002:adf:edc2:: with SMTP id v2mr33398997wro.255.1630440642150;
-        Tue, 31 Aug 2021 13:10:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyFHxJK6CuUyH4fIACh8WCgho8ld2f48k7iz12CJXT9s8M02Pmju/iUqJTv/KchgQNGbkL+Og==
-X-Received: by 2002:adf:edc2:: with SMTP id v2mr33398977wro.255.1630440641934;
-        Tue, 31 Aug 2021 13:10:41 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23bf5.dip0.t-ipconnect.de. [79.242.59.245])
-        by smtp.gmail.com with ESMTPSA id u23sm3315346wmc.24.2021.08.31.13.10.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 13:10:41 -0700 (PDT)
-Subject: Re: [GIT PULL] virtio: a last minute fix
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     KVM list <kvm@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>, david@redhat.com,
-        dverkamp@chromium.org, hch@lst.de, jasowang@redhat.com,
-        liang.z.li@intel.com, mst@redhat.com, tiny.windzz@gmail.com,
-        jasowang@redhat.com
-References: <20210829115343-mutt-send-email-mst@kernel.org>
- <CAHk-=wjYkPWoQWZEHXzd3azugRO4MCCEx9dBYKkVJLrk+1gsMg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <6aaa0ca9-61ed-7ea3-de61-56dcd04ce88b@redhat.com>
-Date:   Tue, 31 Aug 2021 22:10:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xDJ0PmrfTNmUKd+WiQbtsbJY13YkKv2W/xQT4TLd1m8=;
+        b=dIktUSgiH8DoGBEswOa3wh0P/d6ll8LW5GsiBh69orjfTNjk3s0LQacvOK93tij0HC
+         AKl6KIiVyme9NyE+cLcXnd6E6IugE+QTwr/lWuLeI3E9/+Ox7JhSm/pf86yhoqv28v8f
+         VFU905jNRbmzYIY2fxZUdWT8YC/+sUTrbiOSGHpVPbCGhuksoWroqV5irBG65VLfx7o/
+         HF7/a1oHpjrnc7Xznglju4xm8NIktnsvzpcyIsf2iCV75dMkmFJdjR+A1RDx03UvNnDr
+         uDgysI0/uGogvxcDYR4kE+8mSXAJ04Tv1VDIG5R/EWQHhrX9eKFKm1DWGY1diTVPhm6V
+         1W7g==
+X-Gm-Message-State: AOAM531kAzRQ7ddgW2S22X9pG/5FeSY9LFBZwcMU/vr113RQpwcaZPXb
+        0NwhBy9uKSaA4mM5ybirVA==
+X-Google-Smtp-Source: ABdhPJymWrZnT1U/ezUhueNwXieCLmJl8C0jQHRuWUEasrp1MJVlGEmUgItUJ5tc95ePvqM2m8Rs8g==
+X-Received: by 2002:a9d:17c5:: with SMTP id j63mr25565229otj.208.1630440696001;
+        Tue, 31 Aug 2021 13:11:36 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id b24sm3814403oic.33.2021.08.31.13.11.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 13:11:35 -0700 (PDT)
+Received: (nullmailer pid 575853 invoked by uid 1000);
+        Tue, 31 Aug 2021 20:11:34 -0000
+Date:   Tue, 31 Aug 2021 15:11:34 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Alvaro Gamez <alvaro.gamez@hazent.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Lee Jones <lee.jones@linaro.org>, michal.simek@xilinx.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/3] dt-bindings: pwm: Add Xilinx AXI Timer
+Message-ID: <YS6M9jmTmy4EvB4k@robh.at.kernel.org>
+References: <20210826211830.3311140-1-sean.anderson@seco.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjYkPWoQWZEHXzd3azugRO4MCCEx9dBYKkVJLrk+1gsMg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826211830.3311140-1-sean.anderson@seco.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.08.21 20:11, Linus Torvalds wrote:
-> On Sun, Aug 29, 2021 at 8:53 AM Michael S. Tsirkin <mst@redhat.com> wrote:
->>
->> Donnu if it's too late - was on vacation and this only arrived
->> Wednesday. Seems to be necessary to avoid introducing a regression
->> in virtio-mem.
+On Thu, Aug 26, 2021 at 05:18:28PM -0400, Sean Anderson wrote:
+> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is a
+> "soft" block, so it has some parameters which would not be configurable in
+> most hardware. This binding is usually automatically generated by Xilinx's
+> tools, so the names and values of some properties should be kept as they
+> are, if possible. In addition, this binding is already in the kernel at
+> arch/microblaze/boot/dts/system.dts, and in user software such as QEMU.
 > 
-> Heh. Not too late for 5.14, but too late in the sense that I had
-> picked this one up manually already as commit 425bec0032f5
-> ("virtio-mem: fix sleeping in RCU read side section in
-> virtio_mem_online_page_cb()").
+> The existing driver uses the clock-frequency property, or alternatively the
+> /cpus/timebase-frequency property as its frequency input. Because these
+> properties are deprecated, they have not been included with this schema.
+> All new bindings should use the clocks/clock-names properties to specify
+> the parent clock.
+> 
+> Because we need to init timer devices so early in boot, we determine if we
+> should use the PWM driver or the clocksource/clockevent driver by the
+> presence/absence, respectively, of #pwm-cells. Because both counters are
+> used by the PWM, there is no need for a separate property specifying which
+> counters are to be used for the PWM.
+> 
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> ---
+> 
+> Changes in v6:
+> - Fix incorrect schema id
+> - Enumerate possible counter widths
+> 
+> Changes in v5:
+> - Update commit message to reflect revisions
+> - Fix indentation lint
+> - Add example for timer binding
+> - Remove xlnx,axi-timer-2.0 compatible string
+> - Move schema into the timer directory
+> 
+> Changes in v4:
+> - Remove references to generate polarity so this can get merged
+> - Predicate PWM driver on the presence of #pwm-cells
+> - Make some properties optional for clocksource drivers
+> 
+> Changes in v3:
+> - Mark all boolean-as-int properties as deprecated
+> - Add xlnx,pwm and xlnx,gen?-active-low properties.
+> - Make newer replacement properties mutually-exclusive with what they
+>   replace
+> - Add an example with non-deprecated properties only.
+> 
+> Changes in v2:
+> - Use 32-bit addresses for example binding
+> 
+>  .../bindings/timer/xlnx,xps-timer.yaml        | 90 +++++++++++++++++++
+>  1 file changed, 90 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml b/Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
+> new file mode 100644
+> index 000000000000..5be353a642aa
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
+> @@ -0,0 +1,90 @@
+> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/timer/xlnx,xps-timer.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Xilinx LogiCORE IP AXI Timer Device Tree Binding
+> +
+> +maintainers:
+> +  - Sean Anderson <sean.anderson@seco.com>
+> +
+> +properties:
+> +  compatible:
+> +    contains:
+> +      const: xlnx,xps-timer-1.00.a
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: s_axi_aclk
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  xlnx,count-width:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [8, 16, 32]
+> +    default: 32
+> +    description:
+> +      The width of the counter(s), in bits.
+> +
+> +  xlnx,one-timer-only:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [ 0, 1 ]
+> +    description:
+> +      Whether only one timer is present in this block.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - xlnx,one-timer-only
+> +
+> +allOf:
+> +  - if:
+> +      required:
+> +        - '#pwm-cells'
+> +    then:
+> +      allOf:
+> +        - required:
+> +            - clocks
+> +        - properties:
+> +            xlnx,one-timer-only:
+> +              const: 0
+> +    else:
+> +      required:
+> +        - interrupts
+> +  - if:
+> +      required:
+> +        - clocks
+> +    then:
+> +      required:
+> +        - clock-names
+> +
+> +additionalProperties: true
 
-Thanks Michael for sending this last minute and thanks Linus for picking 
-it up independently early! Awesome :)
+This needs to be false. What else do you expect to be present?
 
--- 
-Thanks,
-
-David / dhildenb
-
+> +
+> +examples:
+> +  - |
+> +    timer@800e0000 {
+> +        clock-names = "s_axi_aclk";
+> +        clocks = <&zynqmp_clk 71>;
+> +        compatible = "xlnx,xps-timer-1.00.a";
+> +        reg = <0x800e0000 0x10000>;
+> +        interrupts = <0 39 2>;
+> +        xlnx,count-width = <16>;
+> +        xlnx,one-timer-only = <0x0>;
+> +    };
+> +
+> +    timer@800f0000 {
+> +        #pwm-cells = <0>;
+> +        clock-names = "s_axi_aclk";
+> +        clocks = <&zynqmp_clk 71>;
+> +        compatible = "xlnx,xps-timer-1.00.a";
+> +        reg = <0x800e0000 0x10000>;
+> +        xlnx,count-width = <32>;
+> +        xlnx,one-timer-only = <0x0>;
+> +    };
+> -- 
+> 2.25.1
+> 
+> 
