@@ -2,133 +2,393 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E3F3FC269
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E1B3FC26B
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239611AbhHaGCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 02:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
+        id S239631AbhHaGDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 02:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239537AbhHaGC2 (ORCPT
+        with ESMTP id S229954AbhHaGDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 02:02:28 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD394C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 23:01:33 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso1156789pjh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 23:01:33 -0700 (PDT)
+        Tue, 31 Aug 2021 02:03:47 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A265C061575;
+        Mon, 30 Aug 2021 23:02:52 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id c17so15693747pgc.0;
+        Mon, 30 Aug 2021 23:02:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=PVdJWAW4gV+l3crQVW3zm26y90XFf8SFud15h5boB9k=;
-        b=DUSY685Mt6bD+78O+cuR0kSOvujYkzK0h6LdWW4l6nGhPWG+gnKZ9IdAmhm07pfq9l
-         KmyQYhBx9Hed9oiHmzlk3uPA+qnoR/HSQD8nZFZNPmnUwv8UlrzJh2wRXHc3q9EGsgiS
-         ovJMSv0vXjoDkHX3E43PSwfjU5Z+UGRoGP/4I=
+        d=gmail.com; s=20161025;
+        h=from:subject:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=JgE6pOzjUWMtrhnLNBuBWU9KFrWMuVhYBJLyJBwIXmQ=;
+        b=HRhhgw+expLjjGuYuunMp1TVMv+esvzS4hfLsztE54T9bpNa0RWhvbt4yoTuBKl88k
+         mK+wOklmsSSps2HzzVc1ptlS+TeX9xIRU64D08lPIanGRQtWn1QxSbfT2dtKPIjtvCmX
+         4MsX/E1n9sceYDMviTXn64KWmLgU6xE6Tm9VLkib5BV8XWSYaLYm418NhlQREkpvV7A2
+         pyoEA9nC2GIXzKFSn721+dMcMib8Awrg1pOfkpLZPuQ453XcYkaqrlMeq7cDQAXH3x0G
+         d2HnqNKTgBytni+gwb3DRPL0MJRylMdec1ZOx+zO+fBguPWJgaO/SO/fnGpLjeu2miJ9
+         GvfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=PVdJWAW4gV+l3crQVW3zm26y90XFf8SFud15h5boB9k=;
-        b=FXqiZoywneaqGeTQovIqUVKg/dU4NkEs/GRoR/RXq8757o983FXJ9SI1SuG6zUATL4
-         p7GWh6Pm3KhSSlfJ31wj6sFoKOZMNx+0l0blpvnhowgtpMGJtPq4zEbYShluMlULjkA2
-         HzqbxOuLAhAOVGPPYoWNq41omAHVjTfVc86nc/9H39Zy7QN8MNrekJsH9zUnqxSdyrqQ
-         Knv/nF2nW3owFIjuX/ZtPsTK1GDrZmIkP180Jc4X4gTpqKi5PQhjrmcoCAOiSdQWlr2k
-         Mq5exvePNRcE/NYTKhQlbBhVZ5guDw4nUM2uEwMmPw+pM+Jjn5PrKT15suZTRuzpiOYg
-         myvQ==
-X-Gm-Message-State: AOAM532E52oKFwUjgu31V2zaqAR49cXHLG2XxYqG9D60uZymj4efw8RQ
-        4rJZe2htKou6PlR8YnliQBD+iw==
-X-Google-Smtp-Source: ABdhPJxaHoEhY6NhIKPUuvmwa4U6i7dWA5wABSMPHCCtui5n6whegr42jU1T5IiZawYrOWc5TX+b9g==
-X-Received: by 2002:a17:90a:168f:: with SMTP id o15mr3495765pja.158.1630389693272;
-        Mon, 30 Aug 2021 23:01:33 -0700 (PDT)
-Received: from localhost ([2001:4479:e200:df00:a664:ffe7:ee94:4600])
-        by smtp.gmail.com with ESMTPSA id r15sm12914731pfh.45.2021.08.30.23.01.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 23:01:32 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     CGEL <cgel.zte@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Zeal Robot <zealci@zte.com.cn>,
-        Jing Yangyang <jing.yangyang@zte.com.cn>
-Subject: Re: [PATCH linux-next] power:pkeys: fix bugon.cocci warnings
-In-Reply-To: <20210825064228.70487-1-deng.changcheng@zte.com.cn>
-References: <20210825064228.70487-1-deng.changcheng@zte.com.cn>
-Date:   Tue, 31 Aug 2021 16:01:29 +1000
-Message-ID: <87lf4i6tl2.fsf@dja-thinkpad.axtens.net>
+        h=x-gm-message-state:from:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JgE6pOzjUWMtrhnLNBuBWU9KFrWMuVhYBJLyJBwIXmQ=;
+        b=lJGsQGDaZU7vEY/VjIrYlhLRLDG01ezwPpSd4MdHD0imkMwhZlaqHmuLInw3yf6Anh
+         vv96oGugr/ztAvGrzbJjuEiP6I3kA3hbM7ZCAQ6vFfrenOQNl4fq7C3sBHve4LmmlhQd
+         keYOkrL2gTp0AuR4TANnUWM+r6L/OSsg4BLkJB6xKwavot17n2EZmluMwf07zWWEHGPC
+         T2/L1x/HHAZu8E9npr7AkZe1ZPWwpr2lKh8D3koT7fTqZTpHUKBDwa7YSvNbJbCcPQMA
+         ExlUHxY6NcB4IdltCUWB10WEC7TW4SgVA2SSfgku1yUTgHvKJcjfktblMn/vsPM5b1jO
+         Kyuw==
+X-Gm-Message-State: AOAM530g+53kwlnO3SSOEpRGwB0CXpaaLdhlyuQ/KoOD6CeLyY1lF7qF
+        Es1mAjRpy8jrbK+i/RteIqU=
+X-Google-Smtp-Source: ABdhPJwjYlf2MdJdhTj7onVnYhm76wFgOfHA2E9gEqSwrWNox8TuBxmCXzIjJpuinRUk5kdifyszpA==
+X-Received: by 2002:a63:f70a:: with SMTP id x10mr25396531pgh.393.1630389771673;
+        Mon, 30 Aug 2021 23:02:51 -0700 (PDT)
+Received: from [10.146.0.237] ([210.160.217.69])
+        by smtp.gmail.com with ESMTPSA id d17sm16178322pfn.110.2021.08.30.23.02.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Aug 2021 23:02:51 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Subject: Re: [PATCH v8 7/7] drm: remove drm_file.master_lookup_lock
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        chris@chris-wilson.co.uk, ville.syrjala@linux.intel.com,
+        matthew.auld@intel.com, dan.carpenter@oracle.com,
+        tvrtko.ursulin@intel.com, matthew.d.roper@intel.com,
+        lucas.demarchi@intel.com, karthik.b.s@intel.com,
+        jose.souza@intel.com, manasi.d.navare@intel.com,
+        airlied@redhat.com, aditya.swarup@intel.com, andrescj@chromium.org,
+        linux-graphics-maintainer@vmware.com, zackr@vmware.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Daniel Vetter <daniel@ffwll.ch>
+References: <20210826020122.1488002-1-desmondcheongzx@gmail.com>
+ <20210826020122.1488002-8-desmondcheongzx@gmail.com>
+ <YSeVWivR6p9spRQn@phenom.ffwll.local>
+Message-ID: <deadae07-ff1c-538c-9f59-a72ff8367c75@gmail.com>
+Date:   Tue, 31 Aug 2021 14:02:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YSeVWivR6p9spRQn@phenom.ffwll.local>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jing,
+On 26/8/21 9:21 pm, Daniel Vetter wrote:
+> On Thu, Aug 26, 2021 at 10:01:22AM +0800, Desmond Cheong Zhi Xi wrote:
+>> Previously, master_lookup_lock was introduced in
+>> commit 0b0860a3cf5e ("drm: serialize drm_file.master with a new
+>> spinlock") to serialize accesses to drm_file.master. This then allowed
+>> us to write drm_file_get_master in commit 56f0729a510f ("drm: protect
+>> drm_master pointers in drm_lease.c").
+>>
+>> The rationale behind introducing a new spinlock at the time was that
+>> the other lock that could have been used (drm_device.master_mutex) was
+>> the outermost lock, so embedding calls to drm_file_get_master and
+>> drm_is_current_master in various functions easily caused us to invert
+>> the lock hierarchy.
+>>
+>> Following the conversion of master_mutex into a rwsem, and its use to
+>> plug races with modesetting rights, we've untangled some lock
+>> hierarchies and removed the need for using drm_file_get_master and the
+>> unlocked version of drm_is_current_master in multiple places.
+>>
+>> Hence, we can take this opportunity to clean up the locking design by
+>> replacing master_lookup_lock with drm_device.master_rwsem.
+>>
+>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+>> ---
+>>   drivers/gpu/drm/drm_auth.c     | 19 +++++++------------
+>>   drivers/gpu/drm/drm_file.c     |  1 -
+>>   drivers/gpu/drm/drm_internal.h |  1 +
+>>   drivers/gpu/drm/drm_ioctl.c    |  4 ++--
+>>   drivers/gpu/drm/drm_lease.c    | 18 ++++++++----------
+>>   include/drm/drm_file.h         |  9 +--------
+>>   6 files changed, 19 insertions(+), 33 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
+>> index f2b2f197052a..232416119407 100644
+>> --- a/drivers/gpu/drm/drm_auth.c
+>> +++ b/drivers/gpu/drm/drm_auth.c
+>> @@ -61,10 +61,9 @@
+>>    * trusted clients.
+>>    */
+>>   
+>> -static bool drm_is_current_master_locked(struct drm_file *fpriv)
+>> +bool drm_is_current_master_locked(struct drm_file *fpriv)
+>>   {
+>> -	lockdep_assert_once(lockdep_is_held(&fpriv->master_lookup_lock) ||
+>> -			    lockdep_is_held(&fpriv->minor->dev->master_rwsem));
+>> +	lockdep_assert_held_once(&fpriv->minor->dev->master_rwsem);
+>>   
+>>   	return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
+>>   }
+>> @@ -83,9 +82,9 @@ bool drm_is_current_master(struct drm_file *fpriv)
+>>   {
+>>   	bool ret;
+>>   
+>> -	spin_lock(&fpriv->master_lookup_lock);
+>> +	down_read(&fpriv->minor->dev->master_rwsem);
+> 
+> Looking at the 3 patches and the need to have a locked version of pretty
+> much everything I'm wondering: Can't we just drop the spinlock completely,
+> and everywhere we've taking it thus far replace it with a
+> lockdep_assert_held_once?
+> 
+> The thing is, if there's any path left that doesn't hold the rwsem in at
+> least read mode we have a bug. And the right way to fix such a bug is to
+> grab the rwsem sufficiently high up in the callchain. That way I think we
+> should be able to avoid all these tedious changes to everything, including
+> touching i915 and vmwgfx drivers.
+> 
+> Or am I missing something big time?
+> -Daniel
+> 
 
-Thanks for your patch.
+Thanks for taking a look at all the patches and for the suggestions, Daniel.
 
-The patch looks good, but looking at the output of `make coccicheck
-M=arch/powerpc MODE=report`, it looks like there might be a few other
-things that we might want to fix. Would it be worth trying to make the
-arch/powerpc directory free from coccinelle warnings in one big patch
-series, and then we could add coccicheck to our automatic patch testing?
-(see
-e.g. https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20210825064228.70487-1-deng.changcheng@zte.com.cn/ )
+Just my two cents. I think it makes sense to replace the lock with the 
+lockdep assertion. This avoids the weirdness with the lock being taken 
+both as an outer lock and sometimes as a deeply embedded inner lock.
 
-For this patch, I think we should try to fix all of arch/powerpc at the
-same time. The check points out the following other possible uses of
-BUG_ON:
+But we'll probably have to fix some stuff because I don't think we 
+always hold the rwsem in the places where the spinlock is grabbed (i.e. 
+when drm_is_current_master or drm_file_get_master is called).
 
-arch/powerpc/include/asm/book3s/64/pgtable-64k.h:68:2-5: WARNING: Use BUG_ON instead of if condition followed by BUG.
-Please make sure the condition has no side effects (see conditional BUG_ON definition in include/asm-generic/bug.h)
-arch/powerpc/platforms/cell/spufs/sched.c:908:2-5: WARNING: Use BUG_ON instead of if condition followed by BUG.
-Please make sure the condition has no side effects (see conditional BUG_ON definition in include/asm-generic/bug.h)
-arch/powerpc/platforms/powernv/idle.c:968:3-6: WARNING: Use BUG_ON instead of if condition followed by BUG.
-Please make sure the condition has no side effects (see conditional BUG_ON definition in include/asm-generic/bug.h)
-arch/powerpc/platforms/powernv/idle.c:456:2-5: WARNING: Use BUG_ON instead of if condition followed by BUG.
-Please make sure the condition has no side effects (see conditional BUG_ON definition in include/asm-generic/bug.h)
+I'll split the series as suggested so we can test things up to PATCH 4 
+("drm: avoid races with modesetting rights"). For the rest of the series 
+to remove the spinlock, I'll take a closer look and probably send out a 
+patch later this week.
 
-Kind regards,
-Daniel
+Best wishes,
+Desmond
 
+>>   	ret = drm_is_current_master_locked(fpriv);
+>> -	spin_unlock(&fpriv->master_lookup_lock);
+>> +	up_read(&fpriv->minor->dev->master_rwsem);
+>>   
+>>   	return ret;
+>>   }
+>> @@ -120,7 +119,7 @@ int drm_authmagic(struct drm_device *dev, void *data,
+>>   	DRM_DEBUG("%u\n", auth->magic);
+>>   
+>>   	down_write(&dev->master_rwsem);
+>> -	if (unlikely(!drm_is_current_master(file_priv))) {
+>> +	if (unlikely(!drm_is_current_master_locked(file_priv))) {
+>>   		up_write(&dev->master_rwsem);
+>>   		return -EACCES;
+>>   	}
+>> @@ -178,9 +177,7 @@ static int drm_new_set_master(struct drm_device *dev, struct drm_file *fpriv)
+>>   	new_master = drm_master_create(dev);
+>>   	if (!new_master)
+>>   		return -ENOMEM;
+>> -	spin_lock(&fpriv->master_lookup_lock);
+>>   	fpriv->master = new_master;
+>> -	spin_unlock(&fpriv->master_lookup_lock);
+>>   
+>>   	fpriv->is_master = 1;
+>>   	fpriv->authenticated = 1;
+>> @@ -343,9 +340,7 @@ int drm_master_open(struct drm_file *file_priv)
+>>   	if (!dev->master) {
+>>   		ret = drm_new_set_master(dev, file_priv);
+>>   	} else {
+>> -		spin_lock(&file_priv->master_lookup_lock);
+>>   		file_priv->master = drm_master_get(dev->master);
+>> -		spin_unlock(&file_priv->master_lookup_lock);
+>>   	}
+>>   	up_write(&dev->master_rwsem);
+>>   
+>> @@ -413,13 +408,13 @@ struct drm_master *drm_file_get_master(struct drm_file *file_priv)
+>>   	if (!file_priv)
+>>   		return NULL;
+>>   
+>> -	spin_lock(&file_priv->master_lookup_lock);
+>> +	down_read(&file_priv->minor->dev->master_rwsem);
+>>   	if (!file_priv->master)
+>>   		goto unlock;
+>>   	master = drm_master_get(file_priv->master);
+>>   
+>>   unlock:
+>> -	spin_unlock(&file_priv->master_lookup_lock);
+>> +	up_read(&file_priv->minor->dev->master_rwsem);
+>>   	return master;
+>>   }
+>>   EXPORT_SYMBOL(drm_file_get_master);
+>> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
+>> index 90b62f360da1..8c846e0179d7 100644
+>> --- a/drivers/gpu/drm/drm_file.c
+>> +++ b/drivers/gpu/drm/drm_file.c
+>> @@ -176,7 +176,6 @@ struct drm_file *drm_file_alloc(struct drm_minor *minor)
+>>   	init_waitqueue_head(&file->event_wait);
+>>   	file->event_space = 4096; /* set aside 4k for event buffer */
+>>   
+>> -	spin_lock_init(&file->master_lookup_lock);
+>>   	mutex_init(&file->event_read_lock);
+>>   
+>>   	if (drm_core_check_feature(dev, DRIVER_GEM))
+>> diff --git a/drivers/gpu/drm/drm_internal.h b/drivers/gpu/drm/drm_internal.h
+>> index 17f3548c8ed2..5d421f749a17 100644
+>> --- a/drivers/gpu/drm/drm_internal.h
+>> +++ b/drivers/gpu/drm/drm_internal.h
+>> @@ -132,6 +132,7 @@ int drm_crtc_queue_sequence_ioctl(struct drm_device *dev, void *data,
+>>   				  struct drm_file *filp);
+>>   
+>>   /* drm_auth.c */
+>> +bool drm_is_current_master_locked(struct drm_file *fpriv);
+>>   int drm_getmagic(struct drm_device *dev, void *data,
+>>   		 struct drm_file *file_priv);
+>>   int drm_authmagic(struct drm_device *dev, void *data,
+>> diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
+>> index 8bea39ffc5c0..c728437466c3 100644
+>> --- a/drivers/gpu/drm/drm_ioctl.c
+>> +++ b/drivers/gpu/drm/drm_ioctl.c
+>> @@ -386,7 +386,7 @@ static int drm_setversion(struct drm_device *dev, void *data, struct drm_file *f
+>>   	int if_version, retcode = 0;
+>>   
+>>   	down_write(&dev->master_rwsem);
+>> -	if (unlikely(!drm_is_current_master(file_priv))) {
+>> +	if (unlikely(!drm_is_current_master_locked(file_priv))) {
+>>   		retcode = -EACCES;
+>>   		goto unlock;
+>>   	}
+>> @@ -540,7 +540,7 @@ static int drm_ioctl_permit(u32 flags, struct drm_file *file_priv)
+>>   
+>>   	/* MASTER is only for master or control clients */
+>>   	if (unlikely((flags & DRM_MASTER) &&
+>> -		     !drm_is_current_master(file_priv)))
+>> +		     !drm_is_current_master_locked(file_priv)))
+>>   		return -EACCES;
+>>   
+>>   	/* Render clients must be explicitly allowed */
+>> diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
+>> index 15bf3a3c76d1..0eecf320b1ab 100644
+>> --- a/drivers/gpu/drm/drm_lease.c
+>> +++ b/drivers/gpu/drm/drm_lease.c
+>> @@ -498,12 +498,12 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
+>>   		return PTR_ERR(lessee_file);
+>>   
+>>   	down_read(&dev->master_rwsem);
+>> -	if (unlikely(!drm_is_current_master(lessor_priv))) {
+>> +	if (unlikely(!drm_is_current_master_locked(lessor_priv))) {
+>>   		ret = -EACCES;
+>>   		goto out_file;
+>>   	}
+>>   
+>> -	lessor = drm_file_get_master(lessor_priv);
+>> +	lessor = lessor_priv->master;
+>>   	/* Do not allow sub-leases */
+>>   	if (lessor->lessor) {
+>>   		DRM_DEBUG_LEASE("recursive leasing not allowed\n");
+>> @@ -565,7 +565,6 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
+>>   	/* Hook up the fd */
+>>   	fd_install(fd, lessee_file);
+>>   
+>> -	drm_master_put(&lessor);
+>>   	up_read(&dev->master_rwsem);
+>>   	DRM_DEBUG_LEASE("drm_mode_create_lease_ioctl succeeded\n");
+>>   	return 0;
+>> @@ -600,7 +599,8 @@ int drm_mode_list_lessees_ioctl(struct drm_device *dev,
+>>   	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+>>   		return -EOPNOTSUPP;
+>>   
+>> -	lessor = drm_file_get_master(lessor_priv);
+>> +	lockdep_assert_held_once(&dev->master_rwsem);
+>> +	lessor = lessor_priv->master;
+>>   	DRM_DEBUG_LEASE("List lessees for %d\n", lessor->lessee_id);
+>>   
+>>   	mutex_lock(&dev->mode_config.idr_mutex);
+>> @@ -624,7 +624,6 @@ int drm_mode_list_lessees_ioctl(struct drm_device *dev,
+>>   		arg->count_lessees = count;
+>>   
+>>   	mutex_unlock(&dev->mode_config.idr_mutex);
+>> -	drm_master_put(&lessor);
+>>   
+>>   	return ret;
+>>   }
+>> @@ -650,7 +649,8 @@ int drm_mode_get_lease_ioctl(struct drm_device *dev,
+>>   	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+>>   		return -EOPNOTSUPP;
+>>   
+>> -	lessee = drm_file_get_master(lessee_priv);
+>> +	lockdep_assert_held_once(&dev->master_rwsem);
+>> +	lessee = lessee_priv->master;
+>>   	DRM_DEBUG_LEASE("get lease for %d\n", lessee->lessee_id);
+>>   
+>>   	mutex_lock(&dev->mode_config.idr_mutex);
+>> @@ -678,7 +678,6 @@ int drm_mode_get_lease_ioctl(struct drm_device *dev,
+>>   		arg->count_objects = count;
+>>   
+>>   	mutex_unlock(&dev->mode_config.idr_mutex);
+>> -	drm_master_put(&lessee);
+>>   
+>>   	return ret;
+>>   }
+>> @@ -703,11 +702,11 @@ int drm_mode_revoke_lease_ioctl(struct drm_device *dev,
+>>   		return -EOPNOTSUPP;
+>>   
+>>   	down_write(&dev->master_rwsem);
+>> -	if (unlikely(!drm_is_current_master(lessor_priv))) {
+>> +	if (unlikely(!drm_is_current_master_locked(lessor_priv))) {
+>>   		ret = -EACCES;
+>>   		goto unlock;
+>>   	}
+>> -	lessor = drm_file_get_master(lessor_priv);
+>> +	lessor = lessor_priv->master;
+>>   	mutex_lock(&dev->mode_config.idr_mutex);
+>>   
+>>   	lessee = _drm_find_lessee(lessor, arg->lessee_id);
+>> @@ -728,7 +727,6 @@ int drm_mode_revoke_lease_ioctl(struct drm_device *dev,
+>>   
+>>   fail:
+>>   	mutex_unlock(&dev->mode_config.idr_mutex);
+>> -	drm_master_put(&lessor);
+>>   
+>>   unlock:
+>>   	up_write(&dev->master_rwsem);
+>> diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
+>> index d12bb2ba7814..e2d49fe3e32d 100644
+>> --- a/include/drm/drm_file.h
+>> +++ b/include/drm/drm_file.h
+>> @@ -227,16 +227,12 @@ struct drm_file {
+>>   	 * @master:
+>>   	 *
+>>   	 * Master this node is currently associated with. Protected by struct
+>> -	 * &drm_device.master_rwsem, and serialized by @master_lookup_lock.
+>> +	 * &drm_device.master_rwsem.
+>>   	 *
+>>   	 * Only relevant if drm_is_primary_client() returns true. Note that
+>>   	 * this only matches &drm_device.master if the master is the currently
+>>   	 * active one.
+>>   	 *
+>> -	 * To update @master, both &drm_device.master_rwsem and
+>> -	 * @master_lookup_lock need to be held, therefore holding either of
+>> -	 * them is safe and enough for the read side.
+>> -	 *
+>>   	 * When dereferencing this pointer, either hold struct
+>>   	 * &drm_device.master_rwsem for the duration of the pointer's use, or
+>>   	 * use drm_file_get_master() if struct &drm_device.master_rwsem is not
+>> @@ -248,9 +244,6 @@ struct drm_file {
+>>   	 */
+>>   	struct drm_master *master;
+>>   
+>> -	/** @master_lock: Serializes @master. */
+>> -	spinlock_t master_lookup_lock;
+>> -
+>>   	/** @pid: Process that opened this file. */
+>>   	struct pid *pid;
+>>   
+>> -- 
+>> 2.25.1
+>>
+> 
 
-> Use BUG_ON instead of a if condition followed by BUG.
->
-> ./arch/powerpc/include/asm/book3s/64/pkeys.h:21:2-5:WARNING
-> Use BUG_ON instead of if condition followed by BUG.
-> ./arch/powerpc/include/asm/book3s/64/pkeys.h:14:2-5:WARNING
-> Use BUG_ON instead of if condition followed by BUG.
->
-> Generated by: scripts/coccinelle/misc/bugon.cocci
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
-> ---
->  arch/powerpc/include/asm/book3s/64/pkeys.h | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/book3s/64/pkeys.h b/arch/powerpc/include/asm/book3s/64/pkeys.h
-> index 5b17813..5f74f0c 100644
-> --- a/arch/powerpc/include/asm/book3s/64/pkeys.h
-> +++ b/arch/powerpc/include/asm/book3s/64/pkeys.h
-> @@ -10,15 +10,13 @@ static inline u64 vmflag_to_pte_pkey_bits(u64 vm_flags)
->  	if (!mmu_has_feature(MMU_FTR_PKEY))
->  		return 0x0UL;
->  
-> -	if (radix_enabled())
-> -		BUG();
-> +	BUG_ON(radix_enabled());
->  	return hash__vmflag_to_pte_pkey_bits(vm_flags);
->  }
->  
->  static inline u16 pte_to_pkey_bits(u64 pteflags)
->  {
-> -	if (radix_enabled())
-> -		BUG();
-> +	BUG_ON(radix_enabled());
->  	return hash__pte_to_pkey_bits(pteflags);
->  }
->  
-> -- 
-> 1.8.3.1
