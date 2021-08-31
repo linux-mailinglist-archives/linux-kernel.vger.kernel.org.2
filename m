@@ -2,188 +2,1275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B173A3FCD04
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 20:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E493FCCBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 20:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbhHaSlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 14:41:22 -0400
-Received: from mga11.intel.com ([192.55.52.93]:40538 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhHaSlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 14:41:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="215405635"
-X-IronPort-AV: E=Sophos;i="5.84,367,1620716400"; 
-   d="scan'208";a="215405635"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 10:58:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,367,1620716400"; 
-   d="scan'208";a="519809989"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by fmsmga004.fm.intel.com with ESMTP; 31 Aug 2021 10:58:16 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Tue, 31 Aug 2021 10:58:11 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Tue, 31 Aug 2021 10:58:11 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.47) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Tue, 31 Aug 2021 10:58:10 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k30/BvQJSNjMnJkmKRQysS+wEAi6wom9H+RYSmOaEVh5Kw/+SDSyAuf16ElXbmvUPyVbGkwZPuGrvqNPqJaI+7z1hcnumV2N3lNBz7ISTrRHdsNxZVdZb8F9qgU/UROEzWBqLahXpV2OfDBesPAR6leDQVvDykYVxvGMJ4IxArJ9kD/ylBrfUa2241w6jE0kqzuis8JDIiq7adpOgtnWcXrTEK1Idy20ZfWT0W8gXW4uhbhaiyw5WEyUaKBKLuvbIU3WGjtb3ikzBiM+GP/kAlYdjBhBY8LLdk+nygRK3feEnABv2Ait75h3fZXzFs/ycAnDZV7gHhUXn4w+rw+pjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JI9/wEW/44Zdc9f8YUTnI4VLsxpizYFWbgWSiyGelPM=;
- b=N7fm5GXywHneRd+cGX8XkzriD/6hdHH9Iy2t4iLPU4yWSk/DJWiKVye7mVb/OsbTzmb/9M0X+mPmOhxkMEHAt10A+duuUteKCtVe3szxbRTdiRplerJ0VrJbjEuQEiDQaFPXSy73C6QK/O/YyYWcMw8sq9MUvqxj1RniBa7/rplxxme847wC5tmoEaGlMX6Rw09Qnl4CLdyocWMg+nu3OkgwsbGCdgVPfXKGGU6UNTsWs5j9I6cwoU51qeE5l6/MgUoQ5ETuTqb/j2W8RlBh4f6Q5Wd9Y7S2e4l59lL42BB/9dPVELHYfPX2lwj+pZSXqNfF8xRuxTpZ0dehFm/Hqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JI9/wEW/44Zdc9f8YUTnI4VLsxpizYFWbgWSiyGelPM=;
- b=IDyZ36Io7dpIezpv4zQdRx10VrfOq166HdTqgAiXuTahnQ7HN3y46CD0Zk9bEOt17UEfpW+CwlthtNlnITZmWP+XMRQ90x2X8sEeciX83DefLDOoXwZeiM/ARHL+1R5AJwk182Sa5Z+GnR+xLrauE36A/SRTPE8O78WxvEU2tNE=
-Received: from SN6PR11MB3184.namprd11.prod.outlook.com (2603:10b6:805:bd::17)
- by SN6PR11MB3120.namprd11.prod.outlook.com (2603:10b6:805:d6::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17; Tue, 31 Aug
- 2021 17:58:04 +0000
-Received: from SN6PR11MB3184.namprd11.prod.outlook.com
- ([fe80::892e:cae1:bef0:935e]) by SN6PR11MB3184.namprd11.prod.outlook.com
- ([fe80::892e:cae1:bef0:935e%6]) with mapi id 15.20.4457.024; Tue, 31 Aug 2021
- 17:58:04 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "rppt@kernel.org" <rppt@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "kernel-hardening@lists.openwall.com" 
-        <kernel-hardening@lists.openwall.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "shakeelb@google.com" <shakeelb@google.com>
-Subject: Re: [RFC PATCH v2 17/19] x86/mm/cpa: PKS protect direct map page
- tables
-Thread-Topic: [RFC PATCH v2 17/19] x86/mm/cpa: PKS protect direct map page
- tables
-Thread-Index: AQHXnftC1idj/sxjpECi31R8IraMbquNZfEAgACBlIA=
-Date:   Tue, 31 Aug 2021 17:58:04 +0000
-Message-ID: <69aaf7209a560b6414c5ea839bd9a3800495050e.camel@intel.com>
-References: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
-         <20210830235927.6443-18-rick.p.edgecombe@intel.com>
-         <YS4A+F1H9MvyOeMV@kernel.org>
-In-Reply-To: <YS4A+F1H9MvyOeMV@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: dc0b1302-b84e-4448-1ef3-08d96ca8e1b4
-x-ms-traffictypediagnostic: SN6PR11MB3120:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR11MB3120C92D6416A8B62D0407E0C9CC9@SN6PR11MB3120.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ABRw6zGipbpEtyX9uwatQ+jipYmaGDEOGet6YCLD5kb4rkpTB+8yECG1+KY9d7diEzDx//Wc3qMsjUq+Yrcr1J5XQTGGIEQiTP9kyIEFItYr9ELL6w9XciCeM7am8aba+2LnJF5QO5jXOI/JyvFo3CUT/VqUODclHDkCixryE4NTg8BAhe3xDVbfRGIUa/cP0pJx5oK27iUJh9cG80PJ7TN2r5t9Xx/jUNfw1dXed7eTVA431KuKt5wo706SsPfpDdrIM62V2NidkpIpMitoVBXGWSfiqDxANPY7YVvEujQ1B/ldmBKm1Up5l4+9dE9KSYbYE+yav1DMlodDzPDwXOBdcTY/rW6kPmUmDzIkQ1ezq/Rz4G9R0gZJb0ErHQ3bJqZ7DKK84YEddhjh9RmQWdmZvirXefWvA1fexhGes527AYd/kgL0lewrkYzbcCpN18usuHkcSMixSo+nzfnaYOF8dEeJIZHCbC5Mv3ycbllwwy8y8venY6PMupsCiQwPH7chT9IVWaKA4ln4a7grg1vAq1gMIpw/63FVy75hszHHiHLFI6ervAR4pXZo3tgar/e0b9JyEOXhX9NpZmCXEH9VQJA6N0SlcQkqMieskyRKONWiwl7Rsy5i6Qwx1IkAn3gmAVyYcWPAEdjsT0S19cfOqJPzg0I7KMXPCosPuXtBvVLp3WhZYAM9rTeCGYoLraTd+vCrtM+rKkStVJMJ45ptqs9N14vm/oboxtlEVT0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3184.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(39850400004)(346002)(366004)(38070700005)(83380400001)(91956017)(2616005)(86362001)(38100700002)(76116006)(66476007)(54906003)(66446008)(66946007)(36756003)(2906002)(316002)(6486002)(64756008)(66556008)(478600001)(8676002)(122000001)(6916009)(26005)(7416002)(71200400001)(6506007)(5660300002)(6512007)(8936002)(186003)(4326008)(99106002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Nm9MYmFPMXA4S0k0UWxVV28rTVk4Zkg1YU9ldGFkUW9EMTVFR1hCTWNKb3o1?=
- =?utf-8?B?RDZjWE9rblQraHdkY3dENTZNTVB3cExBV3c3a25rb2VScG9lcU81VGJwTit0?=
- =?utf-8?B?TWJRc1lrVXAvbmxiMHd6TWpLWlcreHlCSm9yQnRvaytWOGZTQ3NlTUo1MTZ2?=
- =?utf-8?B?WnB1VnVzQXlpQnQxT2RPK1g1Yko5RFZPbGlKTVhoczNWc0NlaExucDVNcHVL?=
- =?utf-8?B?Qk5mZ1JpZ0NNbUZuVVNYQlR5RDJVcGNCdDgwRXkyYVR6MWFYSnpSZXJJSGNT?=
- =?utf-8?B?R0xvVS9lWitrdnhMWWtrMnJlVUFSbUtLelZmY1J5dngyUUxlcjhMMmRvbEh0?=
- =?utf-8?B?azY0bmVDOWRGclphVHFWSTBva0JRQXdtUUJDbjVRYkRIb1BCTkxKalVvOXp1?=
- =?utf-8?B?Ry95SXpmemN2MnJqbmx0a1Vob05KMkYwb2F5Qmc5dlk1ckZGTHlaZGFnc2dp?=
- =?utf-8?B?NEhuSEc5TVZKZklnR0tvRndVVGViakNXSkcvMGFJQkhDZ2NaVlpUNFRxRk84?=
- =?utf-8?B?S3RVbnkzRVZDcXhocWNsUm44UkhZZGJNSjUvbXhIWjRVdWtqRCtVTWtqTVV3?=
- =?utf-8?B?L0VsenRrdy9TbW4xQ3ZteWRtR1J1dDVUbzVkUEt4MWcvellSV2U5SU03dEJo?=
- =?utf-8?B?S0FlU3FVb1ZDcng2cmxnZDZhZHJKMEtSZnU4REFGODJ3M0VuQURUTEJyMzRD?=
- =?utf-8?B?RDFSZHVHNlJPOWJnSU5EK1pGVVRiMml3NW9Zay8rYzFJblFreko3RDNCVjRK?=
- =?utf-8?B?WHI2am9jT2lNT2pycXVmdGh3d3FQZHRJL0Y5LzlLZmZ3cmp6WVV0UVMxclF4?=
- =?utf-8?B?Zm5mN0YyUXNBY1dvUWppWFhmRk5PaXVEZnBleXAxYlNRQWo0MUJ2RkE2VkMx?=
- =?utf-8?B?dTJ6UjBzSCtBTE0vUWxQSGFuNUxzOWdSSjNWM2FlRVczZDdhWERaYmQ0ZXNu?=
- =?utf-8?B?aDcwdlFMc000aUwyYlN4c29JeWI5V3ZIS1VGcFpMZkZHUkVUNW9HSTBDdysv?=
- =?utf-8?B?SkZQdUloeURnQzYwRzRqVHlwTjY1N2w1cGkzR1pKbU1wZk1LT2E0WEl1QThQ?=
- =?utf-8?B?VC9WcFgvNTRZai9KSkVLY2NMZncxYzNVQ1gvb0lkdGdEaFRiVUNTMGN5YzVj?=
- =?utf-8?B?cTBoS3hxbnNST2V2R1dpN0lBOHAwKzBpajE2YndlZHdqWmc0YUFBQS8vblF5?=
- =?utf-8?B?SXpncUpiQjlZeUNSQVBXVE42WTZoZG9uQ0twc1FHWDJ4L1hKQnZ2WlAxU2dY?=
- =?utf-8?B?bEtmOTU2Y3BGS3ZUR3hEdTArSVBZdlVRVldCdzhRUkRWS2R6dDVKQWNMMmJ5?=
- =?utf-8?B?NzE4czNWeStmTnFYVEJkbVlKTmpFZnVMdFhrTXZGajFSY3FESXAzK2ZDUDdo?=
- =?utf-8?B?V21RT0xTNFZVbnpYZkZOLzRESmdJU2EwTE1GeFdUN1Jpa0NONW1wdDZ3YWhj?=
- =?utf-8?B?NjA1L2NRR0lJOXhZak9zOHhCRlhPMUU5MHNhOTZhbUJHMGJRUmdrRTlZWEEx?=
- =?utf-8?B?ZllDOFdDRHNUME1ZYnRacEJSYy9obEc5NXhBcy94REhVbnMrUFFMc1pGRUwy?=
- =?utf-8?B?T0F4R2tSNVBjd3I1dkpSbU45L0pSVks4SzN6QlY1VTZSWnBYREtzTWZFWVJn?=
- =?utf-8?B?eDR3NFFqMkRvZ0R4NXVmTndaMWFvZVh5TktqK09WUXQweXd6WGJwUk1hUktU?=
- =?utf-8?B?Rm52bGxDR3ZmUktTOG9oMDN2K3FheUtMVHJ1aGZSdndMYk4yekZZaXcwMHVn?=
- =?utf-8?B?dkVDdFE4LzBsTkhCMHBYUzhBRmhycDZFN3FPM1pYSzBhTkF1UFMxRDk2ckNE?=
- =?utf-8?B?b3h6d21CUGhZbnFpQkluZz09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <71758F83623BD24F8BA4D832BA196431@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S239933AbhHaSDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 14:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235148AbhHaSDA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 14:03:00 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81BDC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 11:02:04 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d17so11105163plr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 11:02:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t2FciFs3l2kJqghun4juh0xhDy+ke3Vk3csTXqbJ3mc=;
+        b=W1GyJWXCnWuYdJnaLqcvfdWuXUFuKpaeVrhGPp2JcdQjvEyYW8Y8aChIDzNk+uSp+E
+         A9INtruMqvU7GIO5dMZfxzWEWZVRcwhAVAGNS7CMXP4yK64xRqTdT0sosUZw6S+hsrmA
+         6l61jzjzR9kgngN7G96RFabjxX+E7lnN4nGGxawC01DCfVYN9i3ow8foMO8i27FEDxPh
+         VFS1eBvSAxsU84Wsat5gjzCkv+qE+kIgHVNik/wwAnIIyp+f45MlyBui68oel56TRJz+
+         fbBdXRhxkxZ4aOXgrylALSpXNMfYfnVHA+D2eCG+FPYIaog82O/uVam3G/YPCFwYLxpX
+         e5Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t2FciFs3l2kJqghun4juh0xhDy+ke3Vk3csTXqbJ3mc=;
+        b=FNG1SlNu5VANdrcSz/W/d6KzGkqQoKQrNUcRr/GPMZ5dvvw+kf9PPMqFJgD0dJK9Vf
+         Nl+l9aR+A7r/vEbCsyMVaFjCfNnxzlD/e6NOsKp+p6/Tym1dfUVgqghwLfGi4vxaDZud
+         F2+9ON0jYTHGzP2jt4lI/bTa8mqGwPhOVbz8aqMDvfcc0JyzkNuEANHhbdbjSUwAv5yc
+         myGGEjAfxy1Gr8rnTs1S5lvlNOXS1B5GK3kED2cBqKGswFDXiF+8W23ZuhQMvRz/lPDK
+         J5EdMRBp7tXLot0isvJQLJAoUOzQxRSngwGzS+dS3ICVbGJERn1RzGLdbMJ78cxoGOrG
+         VxOQ==
+X-Gm-Message-State: AOAM533Qzmh7sUdh4xnvKDCPQvIbyFb0ve5MHZSBYmRUtAAeSVG5BXuP
+        h7siraIQP7jZXKZI470bCr+R3Q==
+X-Google-Smtp-Source: ABdhPJxTI9vfQ2kBJloX87RT/FYwnyEVHI8CCJpk1u6RfCUTne7l5AhqqM4prBgcl0XSQlPoja2r7w==
+X-Received: by 2002:a17:90a:b88:: with SMTP id 8mr6757083pjr.12.1630432923925;
+        Tue, 31 Aug 2021 11:02:03 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id j14sm3811663pjg.29.2021.08.31.11.01.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 11:01:59 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 12:01:56 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com
+Subject: Re: [PATCH v2 2/2] remoteproc: imx_dsp_rproc: add remoteproc driver
+ for dsp on i.MX
+Message-ID: <20210831180156.GA981305@p14s>
+References: <1629876516-16513-1-git-send-email-shengjiu.wang@nxp.com>
+ <1629876516-16513-2-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3184.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc0b1302-b84e-4448-1ef3-08d96ca8e1b4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2021 17:58:04.5080
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: in+MkeXoIBgebEBC9sAm/XF2AE73CSCx0306qJDvyDgdabEenXD3DED54wpPLL0/oK4tYmOErxZJ49BehNep+N86GVw+2Z/djx5KpksId4g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3120
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1629876516-16513-2-git-send-email-shengjiu.wang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA4LTMxIGF0IDEzOjE0ICswMzAwLCBNaWtlIFJhcG9wb3J0IHdyb3RlOg0K
-dHJpbQ0KPiA+ICsvKg0KPiA+ICsgKiBJZiBwcmUgYm9vdCwgcmVzZXJ2ZSBsYXJnZSBwYWdlcyBm
-cm9tIG1lbW9yeSB0aGF0IHdpbGwgYmUNCj4gPiBtYXBwZWQuIEl0J3Mgb2sgdGhhdCB0aGlzIGlz
-IG5vdA0KPiA+ICsgKiBtYXBwZWQgYXMgUEtTLCBvdGhlciBpbml0IGNvZGUgaW4gQ1BBIHdpbGwg
-aGFuZGxlIHRoZQ0KPiA+IGNvbnZlcnNpb24uDQo+ID4gKyAqLw0KPiA+ICtzdGF0aWMgdW5zaWdu
-ZWQgaW50IF9faW5pdCByZXNlcnZlX3ByZV9ib290KHU2NCBzdGFydCwgdTY0IGVuZCkNCj4gPiAr
-ew0KPiA+ICsgICAgIHU2NCBjdXIgPSBtZW1ibG9ja19maW5kX2luX3JhbmdlKHN0YXJ0LCBlbmQs
-IEhQQUdFX1NJWkUsDQo+ID4gSFBBR0VfU0laRSk7DQo+ID4gKyAgICAgaW50IGk7DQo+IA0KPiBQ
-bGVhc2UgdXNlIG1lbWJsb2NrX3BoeXNfYWxsb2NfcmFuZ2UoKSBoZXJlLg0KT2ggeWVhLCB0aGF0
-J3MgYmV0dGVyLiBUaGFua3MuDQoNCj4gQmVzaWRlcywgaXQgc2VlbXMgdGhpcyByZXNlcnZlZCBw
-YWdlcyBhcmUgbm90IGFjY2Vzc2VkIHVudGlsDQo+IGxhdGVfaW5pdGNhbGwNCj4gdGltZSwgc28g
-dGhlcmUgaXMgbm8gbmVlZCB0byBsaW1pdCB0aGUgYWxsb2NhdGlvbiB0byBhbHJlYWR5IG1hcHBl
-ZA0KPiBhcmVhcywNCj4gbWVtYmxvY2tfYWxsb2NfcmF3KCkgd291bGQgc3VmZmljZS4NClRoZSBw
-YWdlIGl0c2VsZiBpcyB1c2VkIGZvciB0aGUgbGxpc3Rfbm9kZS4gSSBkaWRuJ3Qgc2VlIGFuIGVh
-c3kgd2F5IHRvDQpnZXQgYSBzbWFsbGVyIGFsbG9jYXRlIGF0IHRoaXMgdGltZS4gSSBndWVzcyBp
-dCBjb3VsZCB1c2UgbGVzcyBtYXBwZWQNCm1lbW9yeSBieSBqdXN0IHVzaW5nIGEgZmV3IG1hcHBl
-ZCBwYWdlcyBmb3Igc29tZSBzdHJ1Y3RzIHRvIGtlZXAgdGhlDQpsaXN0IG91dHNpZGUgb2YgdGhl
-IHVubWFwcGVkIHBhZ2VzLCBidXQgaXQgYmVjb21lcyBtb3JlIGNvbXBsZXguDQoNCj4gDQo+ID4g
-Kw0KPiA+ICsgICAgIGlmICghY3VyKQ0KPiA+ICsgICAgICAgICAgICAgcmV0dXJuIDA7DQo+ID4g
-KyAgICAgbWVtYmxvY2tfcmVzZXJ2ZShjdXIsIEhQQUdFX1NJWkUpOw0KPiA+ICsgICAgIGZvciAo
-aSA9IDA7IGkgPCBIUEFHRV9TSVpFOyBpICs9IFBBR0VfU0laRSkNCj4gPiArICAgICAgICAgICAg
-IGFkZF9kbWFwX3RhYmxlKCh1bnNpZ25lZCBsb25nKV9fdmEoY3VyICsgaSkpOw0KPiA+ICsgICAg
-IHJldHVybiBIUEFHRV9TSVpFOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICsvKiBJZiBwb3N0IGJvb3Qs
-IG1lbWJsb2NrIGlzIG5vdCBhdmFpbGFibGUuIEp1c3QgcmVzZXJ2ZSBmcm9tDQo+ID4gb3RoZXIg
-bWVtb3J5IHJlZ2lvbnMgKi8NCj4gPiArc3RhdGljIHVuc2lnbmVkIGludCBfX2luaXQgcmVzZXJ2
-ZV9wb3N0X2Jvb3Qodm9pZCkNCj4gPiArew0KPiA+ICsgICAgIHN0cnVjdCBwYWdlICpwYWdlID0g
-YWxsb2NfdGFibGUoR0ZQX0tFUk5FTCk7DQo+ID4gKw0KPiA+ICsgICAgIGlmICghcGFnZSkNCj4g
-PiArICAgICAgICAgICAgIHJldHVybiAwOw0KPiA+ICsNCj4gPiArICAgICBhZGRfZG1hcF90YWJs
-ZSgodW5zaWduZWQgbG9uZylwYWdlX2FkZHJlc3MocGFnZSkpOw0KPiANCj4gYWRkX2RtYXBfdGFi
-bGUoKSBjYWxscyB1c2UgY2FzdGluZyBldmVyeXdoZXJlLCBtYXliZSBtYWtlIGl0DQo+IGFkZF9k
-bWFwX3RhYmxlKHZvaWQgKik/DQo+IA0KWWVhLCBJJ2xsIGdpdmUgaXQgYSB0cnkuIEl0IHdhcyBv
-biBteSB0b2RvIGxpc3QsIGJ1dCBzb21laG93IGdvdA0KZm9yZ290dGVuLg0KDQo+ID4gKw0K
+Hi Shengjiu,
+
+On Wed, Aug 25, 2021 at 03:28:36PM +0800, Shengjiu Wang wrote:
+> Provide a basic driver to control DSP processor found on NXP i.MX8QM,
+> i.MX8QXP, i.MX8MP and i.MX8ULP.
+> 
+> Currently it is able to resolve addresses between DSP and main CPU,
+> start and stop the processor, suspend and resume.
+> 
+> The communication between DSP and main CPU is based on mailbox, there
+> are three mailbox channels (tx, rx, rxdb).
+> 
+> This driver was tested on NXP i.MX8QM, i.MX8QXP, i.MX8MP and i.MX8ULP.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+> changes in v2:
+> - change syscon to fsl,dsp-ctrl
+> 
+>  drivers/remoteproc/Kconfig         |   11 +
+>  drivers/remoteproc/Makefile        |    1 +
+>  drivers/remoteproc/imx_dsp_rproc.c | 1078 ++++++++++++++++++++++++++++
+>  3 files changed, 1090 insertions(+)
+>  create mode 100644 drivers/remoteproc/imx_dsp_rproc.c
+> 
+> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> index 9a6eedc3994a..890a14e6f3f9 100644
+> --- a/drivers/remoteproc/Kconfig
+> +++ b/drivers/remoteproc/Kconfig
+> @@ -34,6 +34,17 @@ config IMX_REMOTEPROC
+>  
+>  	  It's safe to say N here.
+>  
+> +config IMX_DSP_REMOTEPROC
+> +	tristate "i.MX DSP remoteproc support"
+> +	depends on ARCH_MXC
+> +	depends on HAVE_ARM_SMCCC
+> +	select MAILBOX
+> +	help
+> +	  Say y here to support iMX's DSP remote processors via the remote
+> +	  processor framework.
+> +
+> +	  It's safe to say N here.
+> +
+>  config INGENIC_VPU_RPROC
+>  	tristate "Ingenic JZ47xx VPU remoteproc support"
+>  	depends on MIPS || COMPILE_TEST
+> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> index bb26c9e4ef9c..37d5cb1c04bf 100644
+> --- a/drivers/remoteproc/Makefile
+> +++ b/drivers/remoteproc/Makefile
+> @@ -12,6 +12,7 @@ remoteproc-y				+= remoteproc_virtio.o
+>  remoteproc-y				+= remoteproc_elf_loader.o
+>  obj-$(CONFIG_REMOTEPROC_CDEV)		+= remoteproc_cdev.o
+>  obj-$(CONFIG_IMX_REMOTEPROC)		+= imx_rproc.o
+> +obj-$(CONFIG_IMX_DSP_REMOTEPROC)	+= imx_dsp_rproc.o
+>  obj-$(CONFIG_INGENIC_VPU_RPROC)		+= ingenic_rproc.o
+>  obj-$(CONFIG_MTK_SCP)			+= mtk_scp.o mtk_scp_ipi.o
+>  obj-$(CONFIG_OMAP_REMOTEPROC)		+= omap_remoteproc.o
+> diff --git a/drivers/remoteproc/imx_dsp_rproc.c b/drivers/remoteproc/imx_dsp_rproc.c
+> new file mode 100644
+> index 000000000000..ce0596694122
+> --- /dev/null
+> +++ b/drivers/remoteproc/imx_dsp_rproc.c
+> @@ -0,0 +1,1078 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +// Copyright 2021 NXP
+> +
+> +#include <linux/clk.h>
+> +#include <linux/err.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mailbox_client.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/module.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_reserved_mem.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/regmap.h>
+> +#include <linux/remoteproc.h>
+> +#include <linux/slab.h>
+> +#include <linux/pm_runtime.h>
+
+Alphabetical order
+
+> +#include <linux/workqueue.h>
+> +#include <linux/firmware/imx/sci.h>
+
+Same
+
+> +#include <dt-bindings/firmware/imx/rsrc.h>
+> +#include <linux/arm-smccc.h>
+
+Same
+
+> +
+> +#include "remoteproc_internal.h"
+> +#include "remoteproc_elf_helpers.h"
+
+Same
+
+> +
+> +enum imx_dsp_rp_mbox_messages {
+> +	RP_MBOX_SUSPEND_SYSTEM  = 0xFF11,
+> +	RP_MBOX_SUSPEND_ACK     = 0xFF12,
+> +	RP_MBOX_RESUME_SYSTEM   = 0xFF13,
+> +	RP_MBOX_RESUME_ACK      = 0xFF14,
+> +};
+> +
+> +#define DSP_RPROC_CLK_MAX 32
+> +
+> +#define REMOTE_IS_READY			BIT(0)
+> +#define REMOTE_READY_WAIT_MAX_RETRIES	500
+> +
+> +/* att flags */
+> +/* DSP own area. Can be mapped at probe */
+> +#define ATT_OWN		BIT(31)
+> +#define ATT_IRAM	BIT(30)
+> +
+> +/* i.MX8MP */
+> +/* DAP registers */
+> +#define IMX8M_DAP_DEBUG                0x28800000
+> +#define IMX8M_DAP_DEBUG_SIZE           (64 * 1024)
+> +#define IMX8M_DAP_PWRCTL               (0x4000 + 0x3020)
+> +#define IMX8M_PWRCTL_CORERESET         BIT(16)
+> +
+> +/* DSP audio mix registers */
+> +#define IMX8M_AudioDSP_REG0   0x100
+> +#define IMX8M_AudioDSP_REG1   0x104
+> +#define IMX8M_AudioDSP_REG2   0x108
+> +#define IMX8M_AudioDSP_REG3   0x10c
+> +
+> +#define IMX8M_AudioDSP_REG2_RUNSTALL  BIT(5)
+> +#define IMX8M_AudioDSP_REG2_PWAITMODE BIT(1)
+> +
+> +/* i.MX8ULP */
+> +#define IMX8ULP_SIM_LPAV_REG_SYSCTRL0       0x8
+> +#define IMX8ULP_SYSCTRL0_DSP_DBG_RST        BIT(25)
+> +#define IMX8ULP_SYSCTRL0_DSP_PLAT_CLK_EN    BIT(19)
+> +#define IMX8ULP_SYSCTRL0_DSP_PBCLK_EN       BIT(18)
+> +#define IMX8ULP_SYSCTRL0_DSP_CLK_EN         BIT(17)
+> +#define IMX8ULP_SYSCTRL0_DSP_RST            BIT(16)
+> +#define IMX8ULP_SYSCTRL0_DSP_OCD_HALT       BIT(14)
+> +#define IMX8ULP_SYSCTRL0_DSP_STALL          BIT(13)
+> +
+> +#define IMX8ULP_SIP_HIFI_XRDC         0xc200000e
+
+For all of the above defines, either align them all or not at all.
+
+> +
+> +/* address translation table */
+> +struct imx_dsp_rproc_att {
+> +	u32 da;	/* device address (From Cortex M4 view)*/
+> +	u32 sa;	/* system bus address */
+> +	u32 size; /* size of reg range */
+> +	int flags;
+> +};
+
+This is already defined in imx_rproc.c - why do we need another definition here?
+
+> +
+> +/* Remote core start/stop method */
+> +enum imx_dsp_rproc_method {
+> +	/* Through syscon regmap */
+> +	IMX_DSP_MMIO,
+> +	IMX_DSP_SCU_API,
+> +};
+
+From where I stand it would be worth merging the above with imx_rproc_method
+found in imx_rproc.c.  I don't see a need for duplication.
+
+> +
+> +struct imx_dsp_rproc {
+> +	struct device			*dev;
+> +	struct regmap			*regmap;
+> +	struct rproc			*rproc;
+> +	const struct imx_dsp_rproc_dcfg	*dcfg;
+> +	struct clk			*clks[DSP_RPROC_CLK_MAX];
+> +	struct mbox_client		cl;
+> +	struct mbox_client		cl_rxdb;
+> +	struct mbox_chan		*tx_ch;
+> +	struct mbox_chan		*rx_ch;
+> +	struct mbox_chan		*rxdb_ch;
+> +	struct device			**pd_dev;
+> +	struct device_link		**pd_dev_link;
+> +	struct imx_sc_ipc		*ipc_handle;
+> +	struct work_struct		rproc_work;
+> +	struct workqueue_struct		*workqueue;
+> +	struct completion		pm_comp;
+> +	spinlock_t			mbox_lock;    /* lock for mbox */
+> +	int				num_domains;
+> +	u32				flags;
+> +};
+> +
+> +struct imx_dsp_rproc_dcfg {
+> +	u32				src_reg;
+> +	u32				src_mask;
+> +	u32				src_start;
+> +	u32				src_stop;
+> +	const struct imx_dsp_rproc_att	*att;
+> +	size_t				att_size;
+> +	enum imx_dsp_rproc_method	method;
+
+The above is similar to imx_rproc_cfg.  As such:
+
+struct imx_dsp_rproc_dcfg {
+        struct imx_rproc_cfg            *dcfg;
+        int (*reset)(struct imx_dsp_rproc *priv);
+};
+
+> +	int (*reset)(struct imx_dsp_rproc *priv);
+> +};
+> +
+> +static const struct imx_dsp_rproc_att imx_dsp_rproc_att_imx8qm[] = {
+> +	/* dev addr , sys addr  , size	    , flags */
+> +	{ 0x596e8000, 0x556e8000, 0x00008000, ATT_OWN },
+> +	{ 0x596f0000, 0x556f0000, 0x00008000, ATT_OWN },
+> +	{ 0x596f8000, 0x556f8000, 0x00000800, ATT_OWN | ATT_IRAM},
+> +	{ 0x55700000, 0x55700000, 0x00070000, ATT_OWN },
+> +	/* DDR (Data) */
+> +	{ 0x80000000, 0x80000000, 0x60000000, 0},
+> +};
+> +
+> +static const struct imx_dsp_rproc_att imx_dsp_rproc_att_imx8qxp[] = {
+> +	/* dev addr , sys addr  , size	    , flags */
+> +	{ 0x596e8000, 0x596e8000, 0x00008000, ATT_OWN },
+> +	{ 0x596f0000, 0x596f0000, 0x00008000, ATT_OWN },
+> +	{ 0x596f8000, 0x596f8000, 0x00000800, ATT_OWN | ATT_IRAM},
+> +	{ 0x59700000, 0x59700000, 0x00070000, ATT_OWN },
+> +	/* DDR (Data) */
+> +	{ 0x80000000, 0x80000000, 0x60000000, 0},
+> +};
+> +
+> +static const struct imx_dsp_rproc_att imx_dsp_rproc_att_imx8mp[] = {
+> +	/* dev addr , sys addr  , size	    , flags */
+> +	{ 0x3b6e8000, 0x3b6e8000, 0x00008000, ATT_OWN },
+> +	{ 0x3b6f0000, 0x3b6f0000, 0x00008000, ATT_OWN },
+> +	{ 0x3b6f8000, 0x3b6f8000, 0x00000800, ATT_OWN | ATT_IRAM},
+> +	{ 0x3b700000, 0x3b700000, 0x00040000, ATT_OWN },
+> +	/* DDR (Data) */
+> +	{ 0x40000000, 0x40000000, 0x80000000, 0},
+> +};
+> +
+> +static const struct imx_dsp_rproc_att imx_dsp_rproc_att_imx8ulp[] = {
+> +	/* dev addr , sys addr  , size	    , flags */
+> +	{ 0x21170000, 0x21170000, 0x00010000, ATT_OWN | ATT_IRAM},
+> +	{ 0x21180000, 0x21180000, 0x00010000, ATT_OWN },
+> +	/* DDR (Data) */
+> +	{ 0x0c000000, 0x80000000, 0x10000000, 0},
+> +	{ 0x30000000, 0x90000000, 0x10000000, 0},
+> +};
+> +
+> +static int imx8mp_dsp_reset(struct imx_dsp_rproc *priv)
+> +{
+> +	void __iomem *dap = ioremap_wc(IMX8M_DAP_DEBUG, IMX8M_DAP_DEBUG_SIZE);
+> +	int pwrctl;
+> +
+> +	/* put DSP into reset and stall */
+> +	pwrctl = readl(dap + IMX8M_DAP_PWRCTL);
+> +	pwrctl |= IMX8M_PWRCTL_CORERESET;
+> +	writel(pwrctl, dap + IMX8M_DAP_PWRCTL);
+> +
+> +	/* keep reset asserted for 10 cycles */
+> +	usleep_range(1, 2);
+> +
+> +	regmap_update_bits(priv->regmap, IMX8M_AudioDSP_REG2,
+> +			   IMX8M_AudioDSP_REG2_RUNSTALL,
+> +			   IMX8M_AudioDSP_REG2_RUNSTALL);
+> +
+> +	/* take the DSP out of reset and keep stalled for FW loading */
+> +	pwrctl = readl(dap + IMX8M_DAP_PWRCTL);
+> +	pwrctl &= ~IMX8M_PWRCTL_CORERESET;
+> +	writel(pwrctl, dap + IMX8M_DAP_PWRCTL);
+> +
+> +	iounmap(dap);
+> +	return 0;
+> +}
+> +
+> +static int imx8ulp_dsp_reset(struct imx_dsp_rproc *priv)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	regmap_update_bits(priv->regmap, IMX8ULP_SIM_LPAV_REG_SYSCTRL0,
+> +			   IMX8ULP_SYSCTRL0_DSP_RST, IMX8ULP_SYSCTRL0_DSP_RST);
+> +	regmap_update_bits(priv->regmap, IMX8ULP_SIM_LPAV_REG_SYSCTRL0,
+> +			   IMX8ULP_SYSCTRL0_DSP_STALL,
+> +			   IMX8ULP_SYSCTRL0_DSP_STALL);
+> +
+> +	arm_smccc_smc(IMX8ULP_SIP_HIFI_XRDC, 0, 0, 0, 0, 0, 0, 0, &res);
+> +
+> +	regmap_update_bits(priv->regmap, IMX8ULP_SIM_LPAV_REG_SYSCTRL0,
+> +			   IMX8ULP_SYSCTRL0_DSP_RST, 0);
+> +	regmap_update_bits(priv->regmap, IMX8ULP_SIM_LPAV_REG_SYSCTRL0,
+> +			   IMX8ULP_SYSCTRL0_DSP_DBG_RST, 0);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct imx_dsp_rproc_dcfg imx_dsp_rproc_cfg_imx8mp = {
+> +	.src_reg	= IMX8M_AudioDSP_REG2,
+> +	.src_mask	= IMX8M_AudioDSP_REG2_RUNSTALL,
+> +	.src_start	= 0,
+> +	.src_stop	= IMX8M_AudioDSP_REG2_RUNSTALL,
+> +	.att		= imx_dsp_rproc_att_imx8mp,
+> +	.att_size	= ARRAY_SIZE(imx_dsp_rproc_att_imx8mp),
+> +	.method		= IMX_DSP_MMIO,
+> +	.reset          = imx8mp_dsp_reset,
+> +};
+> +
+> +static const struct imx_dsp_rproc_dcfg imx_dsp_rproc_cfg_imx8ulp = {
+> +	.src_reg	= IMX8ULP_SIM_LPAV_REG_SYSCTRL0,
+> +	.src_mask	= IMX8ULP_SYSCTRL0_DSP_STALL,
+> +	.src_start	= 0,
+> +	.src_stop	= IMX8ULP_SYSCTRL0_DSP_STALL,
+> +	.att		= imx_dsp_rproc_att_imx8ulp,
+> +	.att_size	= ARRAY_SIZE(imx_dsp_rproc_att_imx8ulp),
+> +	.method		= IMX_DSP_MMIO,
+> +	.reset          = imx8ulp_dsp_reset,
+> +};
+> +
+> +static const struct imx_dsp_rproc_dcfg imx_dsp_rproc_cfg_imx8qxp = {
+> +	.att		= imx_dsp_rproc_att_imx8qxp,
+> +	.att_size	= ARRAY_SIZE(imx_dsp_rproc_att_imx8qxp),
+> +	.method		= IMX_DSP_SCU_API,
+> +};
+> +
+> +static const struct imx_dsp_rproc_dcfg imx_dsp_rproc_cfg_imx8qm = {
+> +	.att		= imx_dsp_rproc_att_imx8qm,
+> +	.att_size	= ARRAY_SIZE(imx_dsp_rproc_att_imx8qm),
+> +	.method		= IMX_DSP_SCU_API,
+> +};
+> +
+> +static int imx_dsp_rproc_ready(struct rproc *rproc)
+> +{
+> +	struct imx_dsp_rproc *priv = rproc->priv;
+> +	int i;
+> +
+> +	if (!priv->rxdb_ch)
+> +		return 0;
+> +
+> +	for (i = 0; i < REMOTE_READY_WAIT_MAX_RETRIES; i++) {
+> +		if (priv->flags & REMOTE_IS_READY)
+> +			return 0;
+> +		usleep_range(100, 200);
+> +	}
+> +
+> +	return -ETIMEDOUT;
+> +}
+> +
+> +static int imx_dsp_rproc_start(struct rproc *rproc)
+> +{
+> +	struct imx_dsp_rproc *priv = rproc->priv;
+> +	const struct imx_dsp_rproc_dcfg *dcfg = priv->dcfg;
+> +	struct device *dev = priv->dev;
+> +	int ret;
+> +
+> +	switch (dcfg->method) {
+> +	case IMX_DSP_MMIO:
+> +		ret = regmap_update_bits(priv->regmap,
+> +					 dcfg->src_reg,
+> +					 dcfg->src_mask,
+> +					 dcfg->src_start);
+> +		break;
+> +	case IMX_DSP_SCU_API:
+> +		ret = imx_sc_pm_cpu_start(priv->ipc_handle,
+> +					  IMX_SC_R_DSP,
+> +					  true,
+> +					  rproc->bootaddr);
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	if (ret)
+> +		dev_err(dev, "Failed to enable remote core!\n");
+> +	else
+> +		ret = imx_dsp_rproc_ready(rproc);
+> +
+> +	return ret;
+> +}
+> +
+> +static int imx_dsp_rproc_stop(struct rproc *rproc)
+> +{
+> +	struct imx_dsp_rproc *priv = rproc->priv;
+> +	const struct imx_dsp_rproc_dcfg *dcfg = priv->dcfg;
+> +	struct device *dev = priv->dev;
+> +	int ret = 0;
+> +
+> +	if (rproc->state == RPROC_CRASHED) {
+> +		priv->flags &= ~REMOTE_IS_READY;
+> +		return 0;
+> +	}
+> +
+> +	switch (dcfg->method) {
+> +	case IMX_DSP_MMIO:
+> +		ret = regmap_update_bits(priv->regmap, dcfg->src_reg, dcfg->src_mask,
+> +					 dcfg->src_stop);
+> +		break;
+> +	case IMX_DSP_SCU_API:
+> +		ret = imx_sc_pm_cpu_start(priv->ipc_handle,
+> +					  IMX_SC_R_DSP,
+> +					  false,
+> +					  rproc->bootaddr);
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	if (ret)
+> +		dev_err(dev, "Failed to stop remote core\n");
+> +	else
+> +		priv->flags &= ~REMOTE_IS_READY;
+> +
+> +	return ret;
+> +}
+> +
+> +static int imx_dsp_rproc_sys_to_da(struct imx_dsp_rproc *priv, u64 sys,
+> +				   size_t len, u64 *da)
+> +{
+> +	const struct imx_dsp_rproc_dcfg *dcfg = priv->dcfg;
+> +	int i;
+> +
+> +	/* parse address translation table */
+> +	for (i = 0; i < dcfg->att_size; i++) {
+> +		const struct imx_dsp_rproc_att *att = &dcfg->att[i];
+> +
+> +		if (sys >= att->sa && sys + len <= att->sa + att->size) {
+> +			unsigned int offset = sys - att->sa;
+> +
+> +			*da = att->da + offset;
+> +			return 0;
+> +		}
+> +	}
+> +
+> +	return -ENOENT;
+> +}
+> +
+> +static void imx_dsp_rproc_vq_work(struct work_struct *work)
+> +{
+> +	struct imx_dsp_rproc *priv = container_of(work, struct imx_dsp_rproc,
+> +						  rproc_work);
+> +
+> +	rproc_vq_interrupt(priv->rproc, 0);
+> +	rproc_vq_interrupt(priv->rproc, 1);
+> +}
+> +
+> +static void imx_dsp_rproc_rx_callback(struct mbox_client *cl, void *data)
+> +{
+> +	struct rproc *rproc = dev_get_drvdata(cl->dev);
+> +	struct imx_dsp_rproc *priv = rproc->priv;
+> +	u32 message = (u32)(*(u32 *)data);
+> +
+> +	dev_dbg(priv->dev, "mbox msg: 0x%x\n", message);
+> +
+> +	switch (message) {
+> +	case RP_MBOX_SUSPEND_ACK:
+> +		complete(&priv->pm_comp);
+> +		break;
+> +	case RP_MBOX_RESUME_ACK:
+> +		complete(&priv->pm_comp);
+> +		break;
+> +	default:
+> +		queue_work(priv->workqueue, &priv->rproc_work);
+> +		break;
+> +	}
+> +}
+> +
+> +static void imx_dsp_rproc_rxdb_callback(struct mbox_client *cl, void *msg)
+> +{
+> +	struct rproc *rproc = dev_get_drvdata(cl->dev);
+> +	struct imx_dsp_rproc *priv = rproc->priv;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&priv->mbox_lock, flags);
+> +	priv->flags |= REMOTE_IS_READY;
+> +	spin_unlock_irqrestore(&priv->mbox_lock, flags);
+> +}
+> +
+> +static int imx_dsp_rproc_mbox_init(struct imx_dsp_rproc *priv)
+> +{
+> +	struct device *dev = priv->dev;
+> +	struct mbox_client *cl;
+> +	int ret;
+> +
+> +	if (!of_get_property(dev->of_node, "mbox-names", NULL))
+> +		return 0;
+> +
+> +	spin_lock_init(&priv->mbox_lock);
+> +
+> +	cl = &priv->cl;
+> +	cl->dev = dev;
+> +	cl->tx_block = true;
+> +	cl->tx_tout = 100;
+> +	cl->knows_txdone = false;
+> +	cl->rx_callback = imx_dsp_rproc_rx_callback;
+> +
+> +	priv->tx_ch = mbox_request_channel_byname(cl, "tx");
+> +	if (IS_ERR(priv->tx_ch)) {
+> +		ret = PTR_ERR(priv->tx_ch);
+> +		dev_dbg(cl->dev, "failed to request tx mailbox channel: %d\n",
+> +			ret);
+> +		goto err_out;
+> +	}
+> +
+> +	priv->rx_ch = mbox_request_channel_byname(cl, "rx");
+> +	if (IS_ERR(priv->rx_ch)) {
+> +		ret = PTR_ERR(priv->rx_ch);
+> +		dev_dbg(cl->dev, "failed to request rx mailbox channel: %d\n",
+> +			ret);
+> +		goto err_out;
+> +	}
+> +
+> +	cl = &priv->cl_rxdb;
+> +	cl->dev = dev;
+> +	cl->rx_callback = imx_dsp_rproc_rxdb_callback;
+> +
+> +	/*
+> +	 * RX door bell is used to receive the ready signal from remote
+> +	 * after the partition reset of A core.
+> +	 */
+> +	priv->rxdb_ch = mbox_request_channel_byname(cl, "rxdb");
+> +	if (IS_ERR(priv->rxdb_ch)) {
+> +		ret = PTR_ERR(priv->rxdb_ch);
+> +		dev_dbg(cl->dev, "failed to request mbox chan rxdb, ret %d\n",
+> +			ret);
+> +		goto err_out;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_out:
+> +	if (!IS_ERR(priv->tx_ch))
+> +		mbox_free_channel(priv->tx_ch);
+> +	if (!IS_ERR(priv->rx_ch))
+> +		mbox_free_channel(priv->rx_ch);
+> +	if (!IS_ERR(priv->rxdb_ch))
+> +		mbox_free_channel(priv->rxdb_ch);
+> +
+> +	return ret;
+> +}
+> +
+> +static void imx_dsp_rproc_free_mbox(struct imx_dsp_rproc *priv)
+> +{
+> +	mbox_free_channel(priv->tx_ch);
+> +	mbox_free_channel(priv->rx_ch);
+> +	mbox_free_channel(priv->rxdb_ch);
+> +}
+> +
+> +static int imx_dsp_rproc_add_carveout(struct imx_dsp_rproc *priv)
+> +{
+> +	const struct imx_dsp_rproc_dcfg *dcfg = priv->dcfg;
+> +	struct rproc *rproc = priv->rproc;
+> +	struct device *dev = priv->dev;
+> +	struct device_node *np = dev->of_node;
+> +	struct of_phandle_iterator it;
+> +	struct rproc_mem_entry *mem;
+> +	struct reserved_mem *rmem;
+> +	void __iomem *cpu_addr;
+> +	int a;
+> +	u64 da;
+> +
+> +	/* remap required addresses */
+> +	for (a = 0; a < dcfg->att_size; a++) {
+> +		const struct imx_dsp_rproc_att *att = &dcfg->att[a];
+> +
+> +		if (!(att->flags & ATT_OWN))
+> +			continue;
+> +
+> +		if (imx_dsp_rproc_sys_to_da(priv, att->sa, att->size, &da))
+> +			return -EINVAL;
+> +
+> +		cpu_addr = devm_ioremap_wc(dev, att->sa, att->size);
+> +
+> +		/* Register memory region */
+> +		mem = rproc_mem_entry_init(dev, cpu_addr, (dma_addr_t)att->sa,
+> +					   att->size, da,
+> +					   NULL,
+> +					   NULL,
+> +					   "dsp_mem");
+
+Stacking
+
+> +
+> +		if (mem)
+> +			rproc_coredump_add_segment(rproc, da, att->size);
+> +		else
+> +			return -ENOMEM;
+> +
+> +		rproc_add_carveout(rproc, mem);
+> +	}
+> +
+> +	of_phandle_iterator_init(&it, np, "memory-region", NULL, 0);
+> +	while (of_phandle_iterator_next(&it) == 0) {
+> +		/*
+> +		 * Ignore the first memory region which will be used vdev buffer.
+> +		 * No need to do extra handlings, rproc_add_virtio_dev will handle it.
+> +		 */
+> +		if (!strcmp(it.node->name, "vdev0buffer"))
+> +			continue;
+> +
+> +		rmem = of_reserved_mem_lookup(it.node);
+> +		if (!rmem) {
+> +			dev_err(dev, "unable to acquire memory-region\n");
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (imx_dsp_rproc_sys_to_da(priv, rmem->base, rmem->size, &da))
+> +			return -EINVAL;
+> +
+> +		cpu_addr = devm_ioremap_wc(dev, rmem->base, rmem->size);
+> +
+> +		/* Register memory region */
+> +		mem = rproc_mem_entry_init(dev, cpu_addr, (dma_addr_t)rmem->base,
+> +					   rmem->size, da,
+> +					   NULL,
+> +					   NULL,
+> +					   it.node->name);
+
+Stacking
+
+> +
+> +		if (mem)
+> +			rproc_coredump_add_segment(rproc, da, rmem->size);
+> +		else
+> +			return -ENOMEM;
+> +
+> +		rproc_add_carveout(rproc, mem);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * imx_dsp_rproc_elf_load_segments() specially check if memsz is zero
+> + * or not.
+> + */
+> +static int imx_dsp_rproc_elf_load_segments(struct rproc *rproc,
+> +					   const struct firmware *fw)
+> +{
+> +	struct device *dev = &rproc->dev;
+> +	u8 class = fw_elf_get_class(fw);
+> +	u32 elf_phdr_get_size = elf_size_of_phdr(class);
+> +	const u8 *elf_data = fw->data;
+> +	const void *ehdr, *phdr;
+> +	int i, ret = 0;
+> +	u16 phnum;
+> +
+> +	ehdr = elf_data;
+> +	phnum = elf_hdr_get_e_phnum(class, ehdr);
+> +	phdr = elf_data + elf_hdr_get_e_phoff(class, ehdr);
+> +
+> +	/* go through the available ELF segments */
+> +	for (i = 0; i < phnum; i++, phdr += elf_phdr_get_size) {
+> +		u64 da = elf_phdr_get_p_paddr(class, phdr);
+> +		u64 memsz = elf_phdr_get_p_memsz(class, phdr);
+> +		u64 filesz = elf_phdr_get_p_filesz(class, phdr);
+> +		u64 offset = elf_phdr_get_p_offset(class, phdr);
+> +		u32 type = elf_phdr_get_p_type(class, phdr);
+> +		void *ptr;
+> +		bool is_iomem;
+> +
+> +		if (type != PT_LOAD || !memsz)
+> +			continue;
+> +
+> +		dev_dbg(dev, "phdr: type %d da 0x%llx memsz 0x%llx filesz 0x%llx\n",
+> +			type, da, memsz, filesz);
+> +
+> +		if (filesz > memsz) {
+> +			dev_err(dev, "bad phdr filesz 0x%llx memsz 0x%llx\n",
+> +				filesz, memsz);
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		if (offset + filesz > fw->size) {
+> +			dev_err(dev, "truncated fw: need 0x%llx avail 0x%zx\n",
+> +				offset + filesz, fw->size);
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		if (!rproc_u64_fit_in_size_t(memsz)) {
+> +			dev_err(dev, "size (%llx) does not fit in size_t type\n",
+> +				memsz);
+> +			ret = -EOVERFLOW;
+> +			break;
+> +		}
+> +
+> +		/* grab the kernel address for this device address */
+> +		ptr = rproc_da_to_va(rproc, da, memsz, &is_iomem);
+> +		if (!ptr) {
+> +			dev_err(dev, "bad phdr da 0x%llx mem 0x%llx\n", da,
+> +				memsz);
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		/* put the segment where the remote processor expects it */
+> +		if (filesz)
+> +			memcpy(ptr, elf_data + offset, filesz);
+> +
+> +		/*
+> +		 * Zero out remaining memory for this segment.
+> +		 *
+> +		 * This isn't strictly required since dma_alloc_coherent already
+> +		 * did this for us. albeit harmless, we may consider removing
+> +		 * this.
+> +		 */
+> +		if (memsz > filesz)
+> +			memset(ptr + filesz, 0, memsz - filesz);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int imx_dsp_rproc_prepare(struct rproc *rproc)
+> +{
+> +	struct imx_dsp_rproc *priv = rproc->priv;
+> +	struct device *dev = priv->dev;
+> +	struct rproc_mem_entry *carveout;
+> +	int ret;
+> +
+> +	ret = imx_dsp_rproc_add_carveout(priv);
+> +	if (ret) {
+> +		dev_err(dev, "failed on imx_dsp_rproc_add_carveout\n");
+> +		return ret;
+> +	}
+> +
+> +	pm_runtime_get_sync(dev);
+> +
+> +	/* clear buffers */
+> +	list_for_each_entry(carveout, &rproc->carveouts, node) {
+> +		if (carveout->va)
+> +			memset(carveout->va, 0, carveout->len);
+> +	}
+> +
+> +	return  0;
+> +}
+> +
+> +static int imx_dsp_rproc_unprepare(struct rproc *rproc)
+> +{
+> +	struct imx_dsp_rproc *priv = rproc->priv;
+> +
+> +	pm_runtime_put_sync(priv->dev);
+> +
+> +	return  0;
+> +}
+> +
+> +static void imx_dsp_rproc_kick(struct rproc *rproc, int vqid)
+> +{
+> +	struct imx_dsp_rproc *priv = rproc->priv;
+> +	int err;
+> +	__u32 mmsg;
+> +
+> +	if (!priv->tx_ch) {
+> +		dev_err(priv->dev, "No initialized mbox tx channel\n");
+> +		return;
+> +	}
+> +
+> +	/*
+> +	 * Send the index of the triggered virtqueue as the mu payload.
+> +	 * Let remote processor know which virtqueue is used.
+> +	 */
+> +	mmsg = vqid;
+> +
+> +	err = mbox_send_message(priv->tx_ch, (void *)&mmsg);
+> +	if (err < 0)
+> +		dev_err(priv->dev, "%s: failed (%d, err:%d)\n",
+> +			__func__, vqid, err);
+> +}
+> +
+> +static const struct rproc_ops imx_dsp_rproc_ops = {
+> +	.prepare	= imx_dsp_rproc_prepare,
+> +	.unprepare	= imx_dsp_rproc_unprepare,
+> +	.start		= imx_dsp_rproc_start,
+> +	.stop		= imx_dsp_rproc_stop,
+> +	.kick		= imx_dsp_rproc_kick,
+> +	.load		= imx_dsp_rproc_elf_load_segments,
+> +	.parse_fw	= rproc_elf_load_rsc_table,
+> +	.sanity_check	= rproc_elf_sanity_check,
+> +	.get_boot_addr	= rproc_elf_get_boot_addr,
+> +};
+> +
+> +static int imx_dsp_attach_pm_domains(struct imx_dsp_rproc *priv)
+> +{
+> +	struct device *dev = priv->dev;
+> +	int ret, i;
+> +
+> +	priv->num_domains = of_count_phandle_with_args(dev->of_node,
+> +						       "power-domains",
+> +						       "#power-domain-cells");
+> +	if (priv->num_domains <= 1)
+> +		return 0;
+> +
+> +	priv->pd_dev = devm_kmalloc_array(dev, priv->num_domains,
+> +					  sizeof(*priv->pd_dev),
+> +					  GFP_KERNEL);
+> +	if (!priv->pd_dev)
+> +		return -ENOMEM;
+> +
+> +	priv->pd_dev_link = devm_kmalloc_array(dev, priv->num_domains,
+> +					       sizeof(*priv->pd_dev_link),
+> +					       GFP_KERNEL);
+> +	if (!priv->pd_dev_link)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < priv->num_domains; i++) {
+> +		priv->pd_dev[i] = dev_pm_domain_attach_by_id(dev, i);
+> +		if (IS_ERR(priv->pd_dev[i]))
+> +			return PTR_ERR(priv->pd_dev[i]);
+> +
+> +		priv->pd_dev_link[i] = device_link_add(dev,
+> +						       priv->pd_dev[i],
+> +						       DL_FLAG_STATELESS |
+> +						       DL_FLAG_PM_RUNTIME |
+> +						       DL_FLAG_RPM_ACTIVE);
+> +		if (IS_ERR(priv->pd_dev_link[i])) {
+> +			dev_pm_domain_detach(priv->pd_dev[i], false);
+> +			ret = PTR_ERR(priv->pd_dev_link[i]);
+> +			goto detach_pm;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +
+> +detach_pm:
+> +	while (--i >= 0) {
+> +		device_link_del(priv->pd_dev_link[i]);
+> +		dev_pm_domain_detach(priv->pd_dev[i], false);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int imx_dsp_detach_pm_domains(struct imx_dsp_rproc *priv)
+> +{
+> +	int i;
+> +
+> +	if (priv->num_domains <= 1)
+> +		return 0;
+> +
+> +	for (i = 0; i < priv->num_domains; i++) {
+> +		device_link_del(priv->pd_dev_link[i]);
+> +		dev_pm_domain_detach(priv->pd_dev[i], false);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int imx_dsp_rproc_detect_mode(struct imx_dsp_rproc *priv)
+> +{
+> +	const struct imx_dsp_rproc_dcfg *dcfg = priv->dcfg;
+> +	struct device *dev = priv->dev;
+> +	struct regmap *regmap;
+> +	int ret = 0;
+> +
+> +	switch (dcfg->method) {
+> +	case IMX_DSP_SCU_API:
+> +		ret = imx_scu_get_handle(&priv->ipc_handle);
+> +		if (ret)
+> +			return ret;
+> +		return 0;
+> +	case IMX_DSP_MMIO:
+> +		regmap = syscon_regmap_lookup_by_phandle(dev->of_node, "fsl,dsp-ctrl");
+> +		if (IS_ERR(regmap)) {
+> +			dev_err(dev, "failed to find syscon\n");
+> +			return PTR_ERR(regmap);
+> +		}
+> +
+> +		priv->regmap = regmap;
+> +	default:
+> +		break;
+
+Shouldn't it be an error if neither SCU of MMIO methods are specified?
+
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static const char *imx_dsp_clks_names[DSP_RPROC_CLK_MAX] = {
+> +	/* DSP clocks */
+> +	"dsp_clk1", "dsp_clk2", "dsp_clk3", "dsp_clk4", "dsp_clk5", "dsp_clk6",
+> +	"dsp_clk7", "dsp_clk8",
+> +
+> +	/* Peripheral clocks */
+> +	"per_clk1", "per_clk2", "per_clk3", "per_clk4", "per_clk5", "per_clk6",
+> +	"per_clk7", "per_clk8", "per_clk9", "per_clk10", "per_clk11", "per_clk12",
+> +	"per_clk13", "per_clk14", "per_clk15", "per_clk16", "per_clk17", "per_clk18",
+> +};
+> +
+> +static int imx_dsp_rproc_clk_get(struct imx_dsp_rproc *priv)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < DSP_RPROC_CLK_MAX; i++) {
+> +		priv->clks[i] = devm_clk_get_optional(priv->dev,
+> +						      imx_dsp_clks_names[i]);
+
+Please use the devm_clk_bulk_xyz() API.
+
+> +		if (IS_ERR(priv->clks[i])) {
+> +			dev_err(priv->dev, "Failed to get clock %s\n",
+> +				imx_dsp_clks_names[i]);
+> +			return PTR_ERR(priv->clks[i]);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int imx_dsp_rproc_clk_enable(struct imx_dsp_rproc *priv)
+> +{
+> +	int i, ret;
+> +
+> +	for (i = 0; i < DSP_RPROC_CLK_MAX; i++) {
+> +		ret = clk_prepare_enable(priv->clks[i]);
+> +		if (ret < 0) {
+> +			dev_err(priv->dev, "Failed to enable clk %s\n",
+> +				imx_dsp_clks_names[i]);
+> +			goto err_dsp_clks;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +
+> +err_dsp_clks:
+> +	while (--i >= 0)
+> +		clk_disable_unprepare(priv->clks[i]);
+> +
+> +	return ret;
+> +}
+> +
+> +static void imx_dsp_rproc_clk_disable(struct imx_dsp_rproc *priv)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < DSP_RPROC_CLK_MAX; i++)
+> +		clk_disable_unprepare(priv->clks[i]);
+> +}
+> +
+> +static int imx_dsp_rproc_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	const struct imx_dsp_rproc_dcfg *dcfg;
+> +	struct imx_dsp_rproc *priv;
+> +	struct rproc *rproc;
+> +	const char *fw_name;
+> +	int ret;
+> +
+> +	dcfg = of_device_get_match_data(dev);
+> +	if (!dcfg)
+> +		return -ENODEV;
+> +
+> +	ret = rproc_of_parse_firmware(dev, 0, &fw_name);
+> +	if (ret) {
+> +		dev_err(dev, "failed to parse firmware-name property, ret = %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	rproc = rproc_alloc(dev, "imx-dsp-rproc", &imx_dsp_rproc_ops, fw_name,
+> +			    sizeof(*priv));
+> +	if (!rproc)
+> +		return -ENOMEM;
+> +
+> +	priv = rproc->priv;
+> +	priv->rproc = rproc;
+> +	priv->dcfg = dcfg;
+> +	priv->dev = dev;
+> +
+> +	dev_set_drvdata(dev, rproc);
+> +
+> +	priv->workqueue = create_workqueue(dev_name(dev));
+> +	if (!priv->workqueue) {
+> +		dev_err(dev, "cannot create workqueue\n");
+> +		ret = -ENOMEM;
+> +		goto err_wkq;
+> +	}
+> +
+> +	INIT_WORK(&priv->rproc_work, imx_dsp_rproc_vq_work);
+> +
+> +	ret = imx_dsp_rproc_detect_mode(priv);
+> +	if (ret) {
+> +		dev_err(dev, "failed on imx_dsp_rproc_detect_mode\n");
+> +		goto err_detect;
+> +	}
+> +
+> +	ret = imx_dsp_attach_pm_domains(priv);
+> +	if (ret) {
+> +		dev_err(dev, "failed on imx_dsp_attach_pm_domains\n");
+> +		goto err_pm;
+> +	}
+> +
+> +	ret = imx_dsp_rproc_clk_get(priv);
+> +	if (ret) {
+> +		dev_err(dev, "failed on imx_dsp_rproc_clk_get\n");
+> +		goto err_clk_get;
+> +	}
+> +
+> +	init_completion(&priv->pm_comp);
+> +	rproc->auto_boot = false;
+> +	ret = rproc_add(rproc);
+> +	if (ret) {
+> +		dev_err(dev, "rproc_add failed\n");
+> +		goto err_rproc_add;
+> +	}
+> +
+> +	pm_runtime_enable(dev);
+> +
+> +	return 0;
+> +
+> +err_rproc_add:
+> +err_clk_get:
+
+Name the gotos in relation to what they do rather than where they come from,
+something like "detach_domains".  That way you don't need multiple goto
+statements that clutter the code.
+
+> +	imx_dsp_detach_pm_domains(priv);
+> +err_pm:
+> +err_detect:
+
+Same
+
+> +	destroy_workqueue(priv->workqueue);
+> +err_wkq:
+> +	rproc_free(rproc);
+> +
+> +	return ret;
+> +}
+> +
+> +static int imx_dsp_rproc_remove(struct platform_device *pdev)
+> +{
+> +	struct rproc *rproc = platform_get_drvdata(pdev);
+> +	struct imx_dsp_rproc *priv = rproc->priv;
+> +
+> +	pm_runtime_disable(&pdev->dev);
+> +	rproc_del(rproc);
+> +	imx_dsp_detach_pm_domains(priv);
+> +	destroy_workqueue(priv->workqueue);
+> +	rproc_free(rproc);
+> +
+> +	return 0;
+> +}
+> +
+> +/* pm runtime */
+> +static int imx_dsp_runtime_resume(struct device *dev)
+> +{
+> +	struct rproc *rproc = dev_get_drvdata(dev);
+> +	struct imx_dsp_rproc *priv = rproc->priv;
+> +	const struct imx_dsp_rproc_dcfg *dcfg = priv->dcfg;
+> +	int ret;
+> +
+> +	ret = imx_dsp_rproc_mbox_init(priv);
+
+Why is the mailbox setup and destroyed with every PM cycle?  I find an overall
+lack of comments makes this driver difficult to review, resulting in having to
+spend more time to look at and understand the code.  I will have to continue
+tomorrow because, well, I ran out of time. 
+
+Mathieu
+
+> +	if (ret) {
+> +		dev_err(dev, "failed on imx_dsp_rproc_mbox_init\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = imx_dsp_rproc_clk_enable(priv);
+> +	if (ret) {
+> +		dev_err(dev, "failed on imx_dsp_rproc_clk_enable\n");
+> +		return ret;
+> +	}
+> +
+> +	/* reset DSP if needed */
+> +	if (dcfg->reset)
+> +		dcfg->reset(priv);
+> +
+> +	return 0;
+> +}
+> +
+> +static int imx_dsp_runtime_suspend(struct device *dev)
+> +{
+> +	struct rproc *rproc = dev_get_drvdata(dev);
+> +	struct imx_dsp_rproc *priv = rproc->priv;
+> +
+> +	imx_dsp_rproc_clk_disable(priv);
+> +
+> +	imx_dsp_rproc_free_mbox(priv);
+> +
+> +	return 0;
+> +}
+> +
+> +static void imx_dsp_load_firmware(const struct firmware *fw, void *context)
+> +{
+> +	struct rproc *rproc = context;
+> +	int ret;
+> +
+> +	/* load the ELF segments to memory */
+> +	ret = rproc_load_segments(rproc, fw);
+> +	if (ret)
+> +		goto out;
+> +
+> +	/* power up the remote processor */
+> +	ret = rproc->ops->start(rproc);
+> +	if (ret)
+> +		goto out;
+> +
+> +	/* same flow as first start */
+> +	rproc->ops->kick(rproc, 0);
+> +
+> +out:
+> +	release_firmware(fw);
+> +}
+> +
+> +static int imx_dsp_suspend(struct device *dev)
+> +{
+> +	struct rproc *rproc = dev_get_drvdata(dev);
+> +	struct imx_dsp_rproc *priv = rproc->priv;
+> +	__u32 mmsg = RP_MBOX_SUSPEND_SYSTEM;
+> +	int ret;
+> +
+> +	if (rproc->state == RPROC_RUNNING) {
+> +		reinit_completion(&priv->pm_comp);
+> +
+> +		ret = mbox_send_message(priv->tx_ch, (void *)&mmsg);
+> +		if (ret < 0) {
+> +			dev_err(dev, "PM mbox_send_message failed: %d\n", ret);
+> +			return ret;
+> +		}
+> +
+> +		if (!wait_for_completion_timeout(&priv->pm_comp, msecs_to_jiffies(100)))
+> +			return -EBUSY;
+> +	}
+> +
+> +	return pm_runtime_force_suspend(dev);
+> +}
+> +
+> +static int imx_dsp_resume(struct device *dev)
+> +{
+> +	struct rproc *rproc = dev_get_drvdata(dev);
+> +	int ret = 0;
+> +
+> +	ret = pm_runtime_force_resume(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (rproc->state == RPROC_RUNNING) {
+> +		/*TODO: load firmware and start */
+> +		ret = request_firmware_nowait(THIS_MODULE,
+> +					      FW_ACTION_UEVENT,
+> +					      rproc->firmware,
+> +					      dev,
+> +					      GFP_KERNEL,
+> +					      rproc,
+> +					      imx_dsp_load_firmware);
+> +		if (ret < 0) {
+> +			dev_err(dev, "load firmware failed: %d\n", ret);
+> +			goto err;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +
+> +err:
+> +	pm_runtime_force_suspend(dev);
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct dev_pm_ops imx_dsp_rproc_pm_ops = {
+> +	SET_SYSTEM_SLEEP_PM_OPS(imx_dsp_suspend, imx_dsp_resume)
+> +	SET_RUNTIME_PM_OPS(imx_dsp_runtime_suspend,
+> +			   imx_dsp_runtime_resume, NULL)
+> +};
+> +
+> +static const struct of_device_id imx_dsp_rproc_of_match[] = {
+> +	{ .compatible = "fsl,imx8qxp-hifi4", .data = &imx_dsp_rproc_cfg_imx8qxp },
+> +	{ .compatible = "fsl,imx8qm-hifi4",  .data = &imx_dsp_rproc_cfg_imx8qm },
+> +	{ .compatible = "fsl,imx8mp-hifi4",  .data = &imx_dsp_rproc_cfg_imx8mp },
+> +	{ .compatible = "fsl,imx8ulp-hifi4", .data = &imx_dsp_rproc_cfg_imx8ulp },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, imx_dsp_rproc_of_match);
+> +
+> +static struct platform_driver imx_dsp_rproc_driver = {
+> +	.probe = imx_dsp_rproc_probe,
+> +	.remove = imx_dsp_rproc_remove,
+> +	.driver = {
+> +		.name = "imx-dsp-rproc",
+> +		.of_match_table = imx_dsp_rproc_of_match,
+> +		.pm = &imx_dsp_rproc_pm_ops,
+> +	},
+> +};
+> +module_platform_driver(imx_dsp_rproc_driver);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_DESCRIPTION("i.MX HiFi Core Remote Processor Control Driver");
+> +MODULE_AUTHOR("Shengjiu Wang <shengjiu.wang@nxp.com>");
+> -- 
+> 2.17.1
+> 
