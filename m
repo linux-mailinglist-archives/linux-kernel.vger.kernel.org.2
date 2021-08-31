@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 758D43FC8C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8313FC8CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239733AbhHaNv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:51:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44784 "EHLO mail.kernel.org"
+        id S239886AbhHaNvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:51:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239133AbhHaNvW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:51:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CFE361027;
-        Tue, 31 Aug 2021 13:50:27 +0000 (UTC)
+        id S239847AbhHaNvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 09:51:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE8906103A;
+        Tue, 31 Aug 2021 13:50:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630417827;
-        bh=9enbDHRItSEBVqHTy4fYhbDScEEUguUhNhfZuTRNQLo=;
+        s=k20201202; t=1630417847;
+        bh=0/puZ1DnYbulIiCsq72aaBHvD0Op7lgwXm2j4v10DWU=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EPR06hAJKymadfuLFq6bEcXviID2XR2bAf4H8YvO37aoVEz5i1bQK2XY40l5Nn8+b
-         NzZjmBn+7WMQzFw9SCELCWbPFinXfb3nbsOgxv/m3iS0RE2WGP/DiJFpKFGB83NiIt
-         wyu0tZK8sZ9nMamUsPZ9QBC7jGics/WENLVQukyPAJu1oWuFvzOOfuYfHW3O4a0yla
-         MJN8XGUPSOBqSJ8cYmXLLRIip7REiFg8tpVVO87PETnaOb5KCxRy8culSd1UkGpSwA
-         jY6O/b96sHZq7xOQWr7LfduJ5oHI3CtArDlPn1PuhvkIkyKGB6jRU83QRHrQsK32G/
-         +XtCAxRkQYsmg==
-Received: by mail-ed1-f47.google.com with SMTP id r7so10920433edd.6;
-        Tue, 31 Aug 2021 06:50:27 -0700 (PDT)
-X-Gm-Message-State: AOAM530Jm2vWNpYveWC2gLQ8SDYTSey0kJP92izNmgcniWh8wxTogwJd
-        YtV2nNi025fQkEMpjC1Z9rYVAIxK0gDE3JdL9Q==
-X-Google-Smtp-Source: ABdhPJyYQShfn4w//yBf35+yfTgcoefHDREub/IZd9p9I+kmPPLux1ziBhWsKoLgqZF+WYKcr17QvaJhdiBcbfB5HaI=
-X-Received: by 2002:aa7:d1d3:: with SMTP id g19mr29465236edp.373.1630417826265;
- Tue, 31 Aug 2021 06:50:26 -0700 (PDT)
+        b=jHRXWFObnzzfkSUxyqjyAzp3yhz+iDHtLiIOr2+GqGM04XGek3dlunGKxx0JDNbwH
+         r0Ilb3h/c9Nui9ZI31twx0g6LoKQw/fsIGA1tH5C0Z0nkJ8bPFdbOcG6FVibBWYZOJ
+         RYiFqvINZbjCg8Gq/PfF3kHpRvCTmGRKx3UN1bjYwY1PaOPnEhUejgqSU7VA5Paqcc
+         oFe9ZG9sTZkVEixBZeJ2fLgI15kwi0DpWR0gA6VNPdCexDejrJMLQoqAI9T3CHB0sd
+         AppeTMFTi+pn0seFfIn+3scT8yzHFVkXBiJic63hwrsf41H+JL/e5DVeqlaFGtHrF3
+         d4VdJsNbTVLPQ==
+Received: by mail-ed1-f52.google.com with SMTP id q17so26970939edv.2;
+        Tue, 31 Aug 2021 06:50:47 -0700 (PDT)
+X-Gm-Message-State: AOAM530baCne3+QaOGdGAS1SrqYKGPvK+FWX6cJFmq57sQEB6Kbhv31B
+        lR4VkUm699WBfgkcrtReGe5qYfDUX46z6hh9pQ==
+X-Google-Smtp-Source: ABdhPJyLzjbCPa0wTpzwt6rAxhVcwtW1DCxv2OE+lMi2EBNxYFss19SDC0y72tFokBzcLQhSftwTIEY/j0QG9asTPtA=
+X-Received: by 2002:a05:6402:180f:: with SMTP id g15mr24326222edy.258.1630417846350;
+ Tue, 31 Aug 2021 06:50:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210831125843.1233488-1-nsaenzju@redhat.com> <20210831125843.1233488-2-nsaenzju@redhat.com>
-In-Reply-To: <20210831125843.1233488-2-nsaenzju@redhat.com>
+References: <20210831125843.1233488-1-nsaenzju@redhat.com>
+In-Reply-To: <20210831125843.1233488-1-nsaenzju@redhat.com>
 From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 31 Aug 2021 08:50:14 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqL-CdrAqY_4vnXQfTuSU8GsYzZutyFhZZgm4o3p-qaqFA@mail.gmail.com>
-Message-ID: <CAL_JsqL-CdrAqY_4vnXQfTuSU8GsYzZutyFhZZgm4o3p-qaqFA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ARM: dts: bcm2711-rpi-4-b: Fix usb's unit address
+Date:   Tue, 31 Aug 2021 08:50:34 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+R06nrnzuY8MxpCsxzcmTg1NW2L5eSNxM2ne+GqwMdgQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+R06nrnzuY8MxpCsxzcmTg1NW2L5eSNxM2ne+GqwMdgQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] ARM: dts: bcm2711-rpi-4-b: Fix pcie0's unit
+ address formatting
 To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
 Cc:     Nicolas Saenz Julienne <nsaenz@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
@@ -58,21 +59,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Tue, Aug 31, 2021 at 7:59 AM Nicolas Saenz Julienne
 <nsaenzju@redhat.com> wrote:
 >
-> The unit address is supposed to represent '<device>,<function>'. Which
-> are both 0 for RPi4b's XHCI controller. On top of that although
-> OpenFirmware states bus number goes in the high part of the last reg
-> parameter, FDT doesn't seem to care for it[1], so remove it.
+> dtbs_check currently complains that:
 >
-> [1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210830103909.323356-1-nsaenzju@redhat.com/#24414633
+> arch/arm/boot/dts/bcm2711-rpi-4-b.dts:220.10-231.4: Warning
+> (pci_device_reg): /scb/pcie@7d500000/pci@1,0: PCI unit address format
+> error, expected "0,0"
+>
+> Unsurprisingly pci@0,0 is the right address, as illustrated by its reg
+> property:
+>
+>     &pcie0 {
+>             pci@0,0 {
+>                     /*
+>                      * As defined in the IEEE Std 1275-1994 document,
+>                      * reg is a five-cell address encoded as (phys.hi
+>                      * phys.mid phys.lo size.hi size.lo). phys.hi
+>                      * should contain the device's BDF as 0b00000000
+>                      * bbbbbbbb dddddfff 00000000. The other cells
+>                      * should be zero.
+>                      */
+>                     reg = <0 0 0 0 0>;
+>             };
+>     };
+>
+> The device is clearly 0. So fix it.
+>
+> Also add a missing 'device_type = "pci"'.
+>
 > Fixes: 258f92d2f840 ("ARM: dts: bcm2711: Add reset controller to xHCI node")
 > Suggested-by: Rob Herring <robh@kernel.org>
 > Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
 > ---
 >
-> Chages since v1:
->  - Add patch as per robh suggestion
+> Changes since v1:
+>  - s/bus/device/ when talking about unit addresses
+>  - Add device_type
+>  - Add Suggested-by
 >
->  arch/arm/boot/dts/bcm2711-rpi-4-b.dts | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  arch/arm/boot/dts/bcm2711-rpi-4-b.dts | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
 Reviewed-by: Rob Herring <robh@kernel.org>
