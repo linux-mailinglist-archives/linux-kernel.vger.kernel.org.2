@@ -2,101 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0A53FC2CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5C93FC2CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235284AbhHaGcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 02:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234957AbhHaGcq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 02:32:46 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE220C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 23:31:51 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so1421595pje.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 23:31:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Wx1FDrVHCRBqDvRaHXak7M9kfgXHCkU5zPaASGw2oLA=;
-        b=aPJa2N2MY5Z7BKQF5gTAMAyTuN7gxdROFNru4ixmqR+6K6Eai7JK6GVv6IMqPYTQPm
-         4woSXX6gnH0ZuFC+om9Bf8Or74CTSzg+74vMPY2T6kMxDYNIrKYjVocVCRo8e2qwiArE
-         xWYvlUBy5P99Ix1QLLKagMn8X9VqOJ8f/JOlGz9poVdbWDKGvTHTiBtcPaKqLDvYCq6D
-         HXI7K9qLNpnswBYh9p7MHorx65FTSxNO3oio2RIdYTG7XlPCcZJJDVUtkyENwTtpahCk
-         TqUPv05fcWpSQ5y036aYs3PKvLN6+Z6oS5LGBCU8t+OT41qByaH40rSpslzEEMdN+KpE
-         BkyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Wx1FDrVHCRBqDvRaHXak7M9kfgXHCkU5zPaASGw2oLA=;
-        b=VJT0rBEuyhnP5g6HlNFrt2eU2DHfUT7FmP2XMjNn910Yr7URLb3SyBi7j2bOWeL/gq
-         EAORDsHjPW4YrE8T0ilV71WC4Nxmw8jAziTJJo5aj/ZCu35TgtDVKX7jF6mZQVJZB9TH
-         R8viP9Fo/H+epA5eb1akS63fFiYvfb0qVg07lqCCYj4kQGy/warMaW480TZKutv2fyLA
-         Tj/U51sU6BVZ8HfTu6lz55PGoWBYQ9av+cCDGOmAQCfXg9FxQDHr89HBdMZC+ihgFkIA
-         G67U7d0wJHav4gaIGUdkutPkKGV0VcvalJq3Kfgu1RRTvllTB4lHFw+dTRGsy1r5MWiv
-         Lu7Q==
-X-Gm-Message-State: AOAM530VGBuKj70fhJnhgMfSTL2AfQ4krc4j3IbN0tSHCODiXxt6cJYk
-        AInLkc/KWFd2ilsGNoQovpDRMQ==
-X-Google-Smtp-Source: ABdhPJzwbDvXXfhIxrp8QSQqB48TnUI6F5NGl+r7oFXzRWGJBYGkY92yx00/9g0/BBpLhMowfwv1hg==
-X-Received: by 2002:a17:90a:6a01:: with SMTP id t1mr3496203pjj.31.1630391511361;
-        Mon, 30 Aug 2021 23:31:51 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id z67sm16827221pfb.169.2021.08.30.23.31.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 23:31:50 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 12:01:49 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel test robot <lkp@intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH] gpio: virtio: Fix sparse warnings
-Message-ID: <20210831063149.gcctzqtn635mn3wb@vireshk-i7>
-References: <32ab7b833743449b21f529cae41f4cbb60dc863c.1630387746.git.viresh.kumar@linaro.org>
- <20210831022224-mutt-send-email-mst@kernel.org>
+        id S235108AbhHaGch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 02:32:37 -0400
+Received: from mga18.intel.com ([134.134.136.126]:65382 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234975AbhHaGcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 02:32:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="205542902"
+X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
+   d="scan'208";a="205542902"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 23:31:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
+   d="scan'208";a="687551616"
+Received: from louislifei-optiplex-7050.sh.intel.com (HELO louislifei-OptiPlex-7050) ([10.239.154.151])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Aug 2021 23:31:39 -0700
+Date:   Tue, 31 Aug 2021 14:32:15 +0800
+From:   Li Fei1 <fei1.li@intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, yu1.wang@intel.com,
+        shuox.liu@gmail.com, fei1.li@intel.com
+Subject: Re: [PATCH v2 2/3] virt: acrn: Introduce interfaces for virtual
+ device creating/destroying
+Message-ID: <20210831063215.GB8717@louislifei-OptiPlex-7050>
+References: <20210825090142.4418-1-fei1.li@intel.com>
+ <20210825090142.4418-3-fei1.li@intel.com>
+ <YSimrfWz+p7Wf/nC@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210831022224-mutt-send-email-mst@kernel.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <YSimrfWz+p7Wf/nC@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31-08-21, 02:25, Michael S. Tsirkin wrote:
-> On Tue, Aug 31, 2021 at 10:59:25AM +0530, Viresh Kumar wrote:
-> > Fix warnings reported by sparse, related to type mismatch between u16
-> > and __le16.
+On Fri, Aug 27, 2021 at 10:47:41AM +0200, Greg KH wrote:
+> On Wed, Aug 25, 2021 at 05:01:41PM +0800, Fei Li wrote:
+> > From: Shuo Liu <shuo.a.liu@intel.com>
 > > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Fixes: 3a29355a22c0 ("gpio: Add virtio-gpio driver")
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > The ACRN hypervisor can emulate a virtual device within hypervisor for a
+> > Guest VM. The emulated virtual device can work without the ACRN
+> > userspace after creation. The hypervisor do the emulation of that device.
+> > 
+> > To support the virtual device creating/destroying, HSM provides the
+> > following ioctls:
+> >   - ACRN_IOCTL_CREATE_VDEV
+> >     Pass data struct acrn_vdev from userspace to the hypervisor, and inform
+> >     the hypervisor to create a virtual device for a User VM.
+> >   - ACRN_IOCTL_DESTROY_VDEV
+> >     Pass data struct acrn_vdev from userspace to the hypervisor, and inform
+> >     the hypervisor to destroy a virtual device of a User VM.
+> > 
+> > Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+> > Signed-off-by: Fei Li <fei1.li@intel.com>
+> > ---
+> >  drivers/virt/acrn/hsm.c       | 24 ++++++++++++++++++++
+> >  drivers/virt/acrn/hypercall.h | 26 ++++++++++++++++++++++
+> >  include/uapi/linux/acrn.h     | 42 +++++++++++++++++++++++++++++++++++
+> >  3 files changed, 92 insertions(+)
+> > 
+> > diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
+> > index f567ca59d7c2..5419794fccf1 100644
+> > --- a/drivers/virt/acrn/hsm.c
+> > +++ b/drivers/virt/acrn/hsm.c
+> > @@ -118,6 +118,7 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
+> >  	struct acrn_msi_entry *msi;
+> >  	struct acrn_pcidev *pcidev;
+> >  	struct acrn_irqfd irqfd;
+> > +	struct acrn_vdev *vdev;
+> >  	struct page *page;
+> >  	u64 cstate_cmd;
+> >  	int i, ret = 0;
+> > @@ -266,6 +267,29 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
+> >  				"Failed to deassign pci device!\n");
+> >  		kfree(pcidev);
+> >  		break;
+> > +	case ACRN_IOCTL_CREATE_VDEV:
+> > +		vdev = memdup_user((void __user *)ioctl_param,
+> > +				   sizeof(struct acrn_vdev));
+> > +		if (IS_ERR(vdev))
+> > +			return PTR_ERR(vdev);
+> > +
+> > +		ret = hcall_create_vdev(vm->vmid, virt_to_phys(vdev));
+Hi Greg
+
 > 
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> No validation of the structure fields?
+
+Service VM knows nothing about how to create these vdevs, it only needs to
+pass through this structure to ACRN Hypervisor to let ACRN Hypervisor check it.
 > 
-> I'm not sure which tree has the above commit - can this be squashed?
+> 
+> > +		if (ret < 0)
+> > +			dev_dbg(acrn_dev.this_device,
+> > +				"Failed to create virtual device!\n");
+> > +		kfree(vdev);
+> > +		break;
+> > +	case ACRN_IOCTL_DESTROY_VDEV:
+> > +		vdev = memdup_user((void __user *)ioctl_param,
+> > +				   sizeof(struct acrn_vdev));
+> > +		if (IS_ERR(vdev))
+> > +			return PTR_ERR(vdev);
+> > +		ret = hcall_destroy_vdev(vm->vmid, virt_to_phys(vdev));
+> 
+> Again, no validation?
 
-It has gone via the GPIO tree:
+Service VM knows nothing about how to destroy these vdevs, it only needs to
+pass through this structure to ACRN Hypervisor to let ACRN Hypervisor check it.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git/log/?h=gpio/for-next
+> 
+> > +		if (ret < 0)
+> > +			dev_dbg(acrn_dev.this_device,
+> > +				"Failed to destroy virtual device!\n");
+> > +		kfree(vdev);
+> > +		break;
+> >  	case ACRN_IOCTL_SET_PTDEV_INTR:
+> >  		irq_info = memdup_user((void __user *)ioctl_param,
+> >  				       sizeof(struct acrn_ptdev_irq));
+> > diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
+> > index f0c78e52cebb..71d300821a18 100644
+> > --- a/drivers/virt/acrn/hypercall.h
+> > +++ b/drivers/virt/acrn/hypercall.h
+> > @@ -43,6 +43,8 @@
+> >  #define HC_DEASSIGN_PCIDEV		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x06)
+> >  #define HC_ASSIGN_MMIODEV		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x07)
+> >  #define HC_DEASSIGN_MMIODEV		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x08)
+> > +#define HC_CREATE_VDEV			_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x09)
+> > +#define HC_DESTROY_VDEV			_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x0A)
+> >  
+> >  #define HC_ID_PM_BASE			0x80UL
+> >  #define HC_PM_GET_CPU_STATE		_HC_ID(HC_ID, HC_ID_PM_BASE + 0x00)
+> > @@ -196,6 +198,30 @@ static inline long hcall_set_memory_regions(u64 regions_pa)
+> >  	return acrn_hypercall1(HC_VM_SET_MEMORY_REGIONS, regions_pa);
+> >  }
+> >  
+> > +/**
+> > + * hcall_create_vdev() - Create a virtual device for a User VM
+> > + * @vmid:	User VM ID
+> > + * @addr:	Service VM GPA of the &struct acrn_vdev
+> > + *
+> > + * Return: 0 on success, <0 on failure
+> > + */
+> > +static inline long hcall_create_vdev(u64 vmid, u64 addr)
+> > +{
+> > +	return acrn_hypercall2(HC_CREATE_VDEV, vmid, addr);
+> > +}
+> > +
+> > +/**
+> > + * hcall_destroy_vdev() - Destroy a virtual device of a User VM
+> > + * @vmid:	User VM ID
+> > + * @addr:	Service VM GPA of the &struct acrn_vdev
+> > + *
+> > + * Return: 0 on success, <0 on failure
+> > + */
+> > +static inline long hcall_destroy_vdev(u64 vmid, u64 addr)
+> > +{
+> > +	return acrn_hypercall2(HC_DESTROY_VDEV, vmid, addr);
+> > +}
+> > +
+> >  /**
+> >   * hcall_assign_mmiodev() - Assign a MMIO device to a User VM
+> >   * @vmid:	User VM ID
+> > diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
+> > index 470036d6b1ac..1408d1063339 100644
+> > --- a/include/uapi/linux/acrn.h
+> > +++ b/include/uapi/linux/acrn.h
+> > @@ -441,6 +441,44 @@ struct acrn_mmiodev {
+> >  	} res[ACRN_MMIODEV_RES_NUM];
+> >  };
+> >  
+> > +/**
+> > + * struct acrn_vdev - Info for creating or destroying a virtual device
+> > + * @id:				Union of identifier of the virtual device
+> > + * @id.value:			Raw data of the identifier
+> > + * @id.fields.vendor:		Vendor id of the virtual PCI device
+> > + * @id.fields.device:		Device id of the virtual PCI device
+> > + * @id.fields.legacy_id:	ID of the virtual device if not a PCI device
+> > + * @slot:			Virtual Bus/Device/Function of the virtual
+> > + *				device
+> > + * @io_base:			IO resource base address of the virtual device
+> > + * @io_size:			IO resource size of the virtual device
+> > + * @args:			Arguments for the virtual device creation
+> > + *
+> > + * The created virtual device can be a PCI device or a legacy device (e.g.
+> > + * a virtual UART controller) and it is emulated by the hypervisor. This
+> > + * structure will be passed to hypervisor directly.
+> > + */
+> > +struct acrn_vdev {
+> > +	/*
+> > +	 * the identifier of the device, the low 32 bits represent the vendor
+> > +	 * id and device id of PCI device and the high 32 bits represent the
+> > +	 * device number of the legacy device
+> > +	 */
+> > +	union {
+> > +		__u64 value;
+> > +		struct {
+> > +			__u16 vendor;
+> > +			__u16 device;
+> 
+> Endian of these values?
 
-I believe it can be squashed, Bartosz can confirm the same though.
+little-endian or big-endian ?
 
-> Also, the driver lacks a MAINTAINERS entry - we want at least
-> L:      virtualization@lists.linux-foundation.org
-> on all virtio drivers.
 
-Sure, I will send a patch for that.
+> 
+> > +			__u32 legacy_id;
+> 
+> What is "legacy"?  What types of devices?
 
--- 
-viresh
+A PCI device which under a PCI bridge.
+> 
+> 
+> > +		} fields;
+> > +	} id;
+> > +
+> > +	__u64	slot;
+> > +	__u32	io_addr[ACRN_PCI_NUM_BARS];
+> > +	__u32	io_size[ACRN_PCI_NUM_BARS];
+> > +	__u8	args[128];
+> 
+> What are these args for exactly?
+For different kinds of vdevs, it represents differently.
+For current usages, it may be:
+a) a vdev's name of a virtual PCI device which used to communicate between VMs
+b) an index of virtual Uart
+c) a structure to represent a virtual Root Port.
+
+
+> 
+> > +};
+> > +
+> >  /**
+> >   * struct acrn_msi_entry - Info for injecting a MSI interrupt to a VM
+> >   * @msi_addr:	MSI addr[19:12] with dest vCPU ID
+> > @@ -596,6 +634,10 @@ struct acrn_irqfd {
+> >  	_IOW(ACRN_IOCTL_TYPE, 0x57, struct acrn_mmiodev)
+> >  #define ACRN_IOCTL_DEASSIGN_MMIODEV	\
+> >  	_IOW(ACRN_IOCTL_TYPE, 0x58, struct acrn_mmiodev)
+> > +#define ACRN_IOCTL_CREATE_VDEV	\
+> > +	_IOW(ACRN_IOCTL_TYPE, 0x59, struct acrn_vdev)
+> > +#define ACRN_IOCTL_DESTROY_VDEV	\
+> > +	_IOW(ACRN_IOCTL_TYPE, 0x5A, struct acrn_vdev)
+> 
+> Why do you need the full structure to destroy the device?
+We need the id field + other fields (optional, the slot or the args) to identify a vdev.
+
+thanks.
+> 
+> thanks,
+> 
+> greg k-h
