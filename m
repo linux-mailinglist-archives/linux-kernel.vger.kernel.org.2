@@ -2,81 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9502C3FCADC
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F44E3FCAE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239327AbhHaPbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
+        id S239659AbhHaPeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239292AbhHaPbT (ORCPT
+        with ESMTP id S239482AbhHaPeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:31:19 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5649FC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:30:24 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id e1so10836004plt.11
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:30:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/8QKngx6fYNXsVFXUD7bTIuyP3AXKmtCfncJgPUlXPI=;
-        b=fC56+C0qMUV2NToCVEr2JQ+mW+2KLQnLhMtgiO+yyGK4Ur9jxb8KUtHA66mMKGpXxs
-         JkEXpXSPjcq7Slcubo26ZeFQFgbt+1zfU3ZQS4G61g/Sxjo5xGSPT/gmEIOOOD+2TuAj
-         I8jOxkYk7LxEjigOMuC5S2EB0uMxZWQ7HVh98=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/8QKngx6fYNXsVFXUD7bTIuyP3AXKmtCfncJgPUlXPI=;
-        b=XH7/K7rC3BVerQwSKl6bijoxZKV93PsUmeBfgoMG36jQsqRHgULoPs5WjCtjNC24Ew
-         Nefd8sW3pS8SiDXPYuF5EP/4eOiMpz+Cp5j1nGkEObf9ldjIdyHMp14wjjYe02C3fuWM
-         u0+wqHLAqgeBeaO7aJzV68uylV5neaFMAoToA0zDuYuWyI1/Unj7J85++3BnEsGhTL2L
-         6A3xeFDdAmvgm7ZwQadynec9nXVGi13xmDRepc1Bd62YNh7b1zKXD/LRj/x+xOy0LS80
-         eMkmXyA457J+MErNVhRNF+A/fmsU09OLXgF/PP9woHwqNNPYvujQTekXv7+oZ7hNNljy
-         IDwQ==
-X-Gm-Message-State: AOAM530SN/eqPtC4I+VOojD3+nyjRJ4JoUrJ5j65ZP1RxNOKrqCHDtyR
-        GtOsqLP6OzOvdReEN0mMxwQXiw==
-X-Google-Smtp-Source: ABdhPJyIV524Xbc92XY555Tmny00GEGV8W56zWD1B0FkYhPwvzmWPRooO++MCwvgJJwBllurndNS1g==
-X-Received: by 2002:a17:902:6846:b0:138:eea0:9261 with SMTP id f6-20020a170902684600b00138eea09261mr2824106pln.12.1630423823864;
-        Tue, 31 Aug 2021 08:30:23 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:12d4:6054:aa38:6fe2])
-        by smtp.gmail.com with UTF8SMTPSA id g12sm3306711pjh.33.2021.08.31.08.30.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 08:30:23 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 08:30:21 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     sboyd@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        viresh.kumar@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dianders@chromium.org, tdas@codeaurora.org
-Subject: Re: [PATCH 3/4] arm64: dts: qcom: sc7280: Fixup the cpufreq node
-Message-ID: <YS5LDb4KDFx/dRnM@google.com>
-References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
- <1627581885-32165-4-git-send-email-sibis@codeaurora.org>
+        Tue, 31 Aug 2021 11:34:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4058C061575;
+        Tue, 31 Aug 2021 08:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wVbnNec/6ixz+jlkHVGfYg8FrC6hp+XJ8sgJ6bsJr1o=; b=CHNDb13IUz7LAZQK388Gpsngmp
+        zh6Nrzs2HSKSe1PpyisTVcQneowcBu8H3nQtFIBp+b+aqlk7R4AelNs8LCfZNwBdEPmlmFvpii/x4
+        UWsZz5rrMyBhUL2UdsMwFDnDF3ckBuET/iBBuUcsUTCyzsndnzMyKYB33Cj47Z4yTBROfmSZBwnNQ
+        3ettJXTd3CJeD71k0ixRYcEV6IJzAQT5eiOyXoQrh397tWk06Fdk+JR8oXhpf90CCwhkx4hhuoD1S
+        wsxwLL/kxMMCsnIziTt+7i3jgngy7i6ZzzdaonPqXfNIo88l2tjv5zbC5aEZNFar0U7sWaM172EMs
+        SHQljwKg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mL5kC-001KiR-2d; Tue, 31 Aug 2021 15:32:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 83794300109;
+        Tue, 31 Aug 2021 17:32:11 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 676BA20AEBF37; Tue, 31 Aug 2021 17:32:11 +0200 (CEST)
+Date:   Tue, 31 Aug 2021 17:32:11 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com
+Subject: Re: [PATCH v3 bpf-next 2/3] bpf: introduce helper
+ bpf_get_branch_snapshot
+Message-ID: <YS5LexDSokkcOJ7O@hirez.programming.kicks-ass.net>
+References: <20210830214106.4142056-1-songliubraving@fb.com>
+ <20210830214106.4142056-3-songliubraving@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1627581885-32165-4-git-send-email-sibis@codeaurora.org>
+In-Reply-To: <20210830214106.4142056-3-songliubraving@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 11:34:44PM +0530, Sibi Sankar wrote:
-> Fixup the register regions used by the cpufreq node on SC7280 SoC to
-> support per core L3 DCVS.
-> 
-> Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+On Mon, Aug 30, 2021 at 02:41:05PM -0700, Song Liu wrote:
 
-This patch landed in the Bjorn's tree, however the corresponding driver
-change ("cpufreq: qcom: Re-arrange register offsets to support per core
-L3 DCVS" / https://patchwork.kernel.org/project/linux-arm-msm/patch/1627581885-32165-3-git-send-email-sibis@codeaurora.org/)
-did not land in any maintainer tree yet AFAIK. IIUC the DT change alone
-breaks cpufreq since the changed register regions require the changed
-offset in the cpufreq driver.
+> @@ -564,6 +565,18 @@ static void notrace inc_misses_counter(struct bpf_prog *prog)
+>  u64 notrace __bpf_prog_enter(struct bpf_prog *prog)
+>  	__acquires(RCU)
+>  {
+	preempt_disable_notrace();
 
-Sibi, please confirm or clarify that my concern is unwarranted.
+> +#ifdef CONFIG_PERF_EVENTS
+> +	/* Calling migrate_disable costs two entries in the LBR. To save
+> +	 * some entries, we call perf_snapshot_branch_stack before
+> +	 * migrate_disable to save some entries. This is OK because we
+> +	 * care about the branch trace before entering the BPF program.
+> +	 * If migrate happens exactly here, there isn't much we can do to
+> +	 * preserve the data.
+> +	 */
+> +	if (prog->call_get_branch)
+> +		static_call(perf_snapshot_branch_stack)(
+> +			this_cpu_ptr(&bpf_perf_branch_snapshot));
+
+Here the comment is accurate, but if you recall the calling context
+requirements of perf_snapshot_branch_stack from the last patch, you'll
+see it requires you have at the very least preemption disabled, which
+you just violated.
+
+I think you'll find that (on x86 at least) the suggested
+preempt_disable_notrace() incurs no additional branches.
+
+Still, there is the next point to consider...
+
+> +#endif
+>  	rcu_read_lock();
+>  	migrate_disable();
+
+	preempt_enable_notrace();
+
+>  	if (unlikely(__this_cpu_inc_return(*(prog->active)) != 1)) {
+
+> @@ -1863,9 +1892,23 @@ void bpf_put_raw_tracepoint(struct bpf_raw_event_map *btp)
+>  	preempt_enable();
+>  }
+>  
+> +DEFINE_PER_CPU(struct perf_branch_snapshot, bpf_perf_branch_snapshot);
+> +
+>  static __always_inline
+>  void __bpf_trace_run(struct bpf_prog *prog, u64 *args)
+>  {
+> +#ifdef CONFIG_PERF_EVENTS
+> +	/* Calling migrate_disable costs two entries in the LBR. To save
+> +	 * some entries, we call perf_snapshot_branch_stack before
+> +	 * migrate_disable to save some entries. This is OK because we
+> +	 * care about the branch trace before entering the BPF program.
+> +	 * If migrate happens exactly here, there isn't much we can do to
+> +	 * preserve the data.
+> +	 */
+> +	if (prog->call_get_branch)
+> +		static_call(perf_snapshot_branch_stack)(
+> +			this_cpu_ptr(&bpf_perf_branch_snapshot));
+> +#endif
+>  	cant_sleep();
+
+In the face of ^^^^^^ the comment makes no sense. Still, what are the
+nesting rules for __bpf_trace_run() and __bpf_prog_enter() ? I'm
+thinking the trace one can nest inside an occurence of prog, at which
+point you have pieces.
+
+>  	rcu_read_lock();
+>  	(void) bpf_prog_run(prog, args);
