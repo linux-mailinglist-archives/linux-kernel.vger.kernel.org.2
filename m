@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE2E3FC1B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 05:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3E83FC1B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 06:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239469AbhHaDuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 23:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231959AbhHaDux (ORCPT
+        id S230244AbhHaEB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 00:01:29 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57788 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229524AbhHaEB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 23:50:53 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3344DC061575;
-        Mon, 30 Aug 2021 20:49:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=lfVb8puVRcwGOE5PDLqOhyWo7XCfNi3oWP2MVkqEJUg=; b=4aaxxn1fX31IknqwFBEe/0Chss
-        bpw5rJy6r5lR6Z2g44ldILvB3cUun0PMP+VQwvetUMvlAsqi00sjXNFmhim1/h4lxOXaiZGF5MfUr
-        NeDDv7ktu6u5L/hym8/9PjKCXM+/wgYlaFGNbbw8DjNLR4eY6MduPR64HKuoyO/OhTCJ/jfl53lI4
-        erPxqeUkWSkIE1NqolOIYGiTqvonADEjKsvciiVymftaTSv6AEGhjzv12Wfbh2EM80Nuu2LCY2WRb
-        D4kmNPMSZC1gMnoI2LjSFlwSIN+HlSIU8I9rf+LXR0bSggIl4F0EogyNfYxYyTNJKxDpQ/2iLPnAF
-        mjf10aaQ==;
-Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.153])
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKumb-001Fw8-Uz; Tue, 31 Aug 2021 03:49:58 +0000
-Subject: Re: [RFC PATCH v2 18/19] x86/mm: Add PKS table soft mode
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>, dave.hansen@intel.com,
-        luto@kernel.org, peterz@infradead.org, x86@kernel.org,
-        akpm@linux-foundation.org, keescook@chromium.org,
-        shakeelb@google.com, vbabka@suse.cz, rppt@kernel.org
-Cc:     linux-mm@kvack.org, linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, ira.weiny@intel.com,
-        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
-References: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
- <20210830235927.6443-19-rick.p.edgecombe@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <052d20c6-347d-6340-1a62-d62bf53d3315@infradead.org>
-Date:   Mon, 30 Aug 2021 20:49:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 31 Aug 2021 00:01:28 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17V40Nop011278
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Aug 2021 00:00:24 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 7D3C815C3E7E; Tue, 31 Aug 2021 00:00:23 -0400 (EDT)
+Date:   Tue, 31 Aug 2021 00:00:23 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Wang Jianchao <jianchao.wan9@gmail.com>
+Cc:     adilger.kernel@dilger.ca, jack@suse.cz, guoqing.jiang@linux.dev,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH V4 4/5] ext4: get discard out of jbd2 commit kthread
+ contex
+Message-ID: <YS2pV1L/MM4jvlVf@mit.edu>
+References: <20210830075246.12516-1-jianchao.wan9@gmail.com>
+ <20210830075246.12516-5-jianchao.wan9@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210830235927.6443-19-rick.p.edgecombe@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210830075246.12516-5-jianchao.wan9@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/21 4:59 PM, Rick Edgecombe wrote:
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 7902fce7f1da..8bb290fee77f 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4254,6 +4254,10 @@
->   	nopti		[X86-64]
->   			Equivalent to pti=off
->   
-> +	nopkstables	[X86-64] Disable PKS page table protection
-> +
-> +	pkstablessoft	[X86-64] Warn instead of oops on pks tables violations
+On Mon, Aug 30, 2021 at 03:52:45PM +0800, Wang Jianchao wrote:
+> From: Wang Jianchao <wangjianchao@kuaishou.com>
+> 
+> Right now, discard is issued and waited to be completed in jbd2
+> commit kthread context after the logs are committed. When large
+> amount of files are deleted and discard is flooding, jbd2 commit
+> kthread can be blocked for long time. Then all of the metadata
+> operations can be blocked to wait the log space.
+> 
+> One case is the page fault path with read mm->mmap_sem held, which
+> wants to update the file time but has to wait for the log space.
+> When other threads in the task wants to do mmap, then write mmap_sem
+> is blocked. Finally all of the following read mmap_sem requirements
+> are blocked, even the ps command which need to read the /proc/pid/
+> -cmdline. Our monitor service which needs to read /proc/pid/cmdline
+> used to be blocked for 5 mins.
+> 
+> This patch frees the blocks back to buddy after commit and then do
+> discard in a async kworker context in fstrim fashion, namely,
+>  - mark blocks to be discarded as used if they have not been allocated
+>  - do discard
+>  - mark them free
+> After this, jbd2 commit kthread won't be blocked any more by discard
+> and we won't get NOSPC even if the discard is slow or throttled.
+> 
+> Link: https://marc.info/?l=linux-kernel&m=162143690731901&w=2
+> Suggested-by: Theodore Ts'o <tytso@mit.edu>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
 
-preferably		                                 PKS
+I had applied the V3 version of this patch series for testing
+purposes, and then accidentally included in the dev branch.  So an
+earlier version of this patch series has been in the ext4 git tree for
+a while.  I've done a comparison between the V3 and V4 patches, and
+aside from a minor whitespace change in patch #1, the only patch that
+had any real changes was this one (#4).  Patch #5 was also added in
+the V4 series.
 
-> +
->   	pty.legacy_count=
->   			[KNL] Number of legacy pty's. Overwrites compiled-in
->   			default number.
+So I've edited the ext4 git tree using rebase magic, replacing patch
+#4 and adding patch #5.
 
+In other words, this is a slightly more complicated, "Thanks,
+applied".  :-)
 
--- 
-~Randy
-
+					- Ted
