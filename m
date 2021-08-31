@@ -2,197 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353E73FCA83
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE5B3FCA8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238437AbhHaPGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
+        id S238786AbhHaPHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbhHaPGX (ORCPT
+        with ESMTP id S238699AbhHaPHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:06:23 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48524C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:05:28 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id DE12922234;
-        Tue, 31 Aug 2021 17:05:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1630422326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IbEiTj8/FDUjs9gGlZ6P7LHVQpqyo+Y/3URkhMMwSeA=;
-        b=fQQs3j3m+Ozg95af6j9KIKt5sJPG9GmQzu+Sb/0RIjrI71Jqqh9TE959tICYtcPKTi/SFG
-        PrX47q3ORuNUNFkMolYXPlbmOoI5jSuCuXfPNyEBWDpRbDDB/sbHjN3XWLU1jIGOZodaVD
-        dBIKGMdYGk/gf5P7Y1wKLFgxiBiYKMQ=
+        Tue, 31 Aug 2021 11:07:40 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037BCC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:06:45 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id v1so697177plo.10
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:06:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=norberthealth-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RsOKy2MEQrop4eqCyXW//Fh3GI8a5H2xV4Ty8vmEwew=;
+        b=y0+a4DO/Xlt8nbMYhHpc0983QjMDMEKxJbWHtOfcleKDslcmihhvO2xxWFpPAQAQ3o
+         3L/ukw1x0aK650u334xoQ0h3NuSxITCEu/oBAGExEpcQR1+pQi77oAslVc8Os2kIVFbN
+         lOqgNqov/YaatrKH9AftPpbgGa2/Ksm0AJkzMBHvYa16TjYRqx86nbXpCQczkRpvIBGl
+         RuV/nVjsejhWgHz8mfaicc3aB0nz4LmdWsFoH6O6xuLVxHTNZnIFXpySxlVb02vJSfcS
+         Oln6/BY1QclZE3VhMCzNfmgwChoDOrO2Z8dc3f7CwUbaOloMzq/4xrpcsi0vaGgnDIp0
+         wTPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RsOKy2MEQrop4eqCyXW//Fh3GI8a5H2xV4Ty8vmEwew=;
+        b=cIydgbvkCp+0Ed69PJJ0Hsx4J1iQps5vz6zA+QSz+u7qbygn4BGnt0PbPPFkJiI3Ix
+         zDgc3LMJzrXxB4SVADek0f4aBCX1zTsrkvn3TvvGrA0Fm27HKIcE7sp2bDrr0HH6OepP
+         LbUDQ504Jyzv2njcX1rOw1uNYPnMCXEzbTpBM7pTtzzbE3cLq9OP5lqrKS7pdLIlaaxM
+         5NS8CsmabdUe8ePGsY6U/1GPm6jXbuKXJyprzA58Hihni4kTapphfBjjyv3YHbTNKrXd
+         KTMrFZnkm4aozpOip6s+TJHokXaDDWSpkOeiJHJAvXWLKkfsVltXhNNhz3vOze5RhdzK
+         g76A==
+X-Gm-Message-State: AOAM530ljn6FP7A5M3LtOXbt27xApgF7shF4R+l5kKu0UGjfiPjiHdz3
+        Yxnqn28CKX45h0I87/TZJYWaXma6efPJj+07T/lnLg==
+X-Google-Smtp-Source: ABdhPJw7oHRPloH8oVj8QcwmZ4bllvFY3xsCSVV5hpT/HlAmNN8D75hn/EMnwDIZwmJ0qy4N6QLYK87K9dFlUm3HIUU=
+X-Received: by 2002:a17:902:9a04:b029:12b:8d54:7c2 with SMTP id
+ v4-20020a1709029a04b029012b8d5407c2mr5241397plp.62.1630422404327; Tue, 31 Aug
+ 2021 08:06:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 31 Aug 2021 17:05:25 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Andrea Zanotti <andreazanottifo@gmail.com>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: micron-st: added support for np8p128ax60
-In-Reply-To: <CAGiusB0B5dN_K+bW1xudmT6UNmVOL=voBOuSVJeiYo3v6ywO8w@mail.gmail.com>
-References: <20210831081329.27420-1-andrea.zanotti@tyvak.eu>
- <3462300528bbe71207ef2164411e34d2@walle.cc>
- <CAGiusB1JvHkX7GSvD2JsqKWwC5xBePX_ruWk9nU9gugoroLnKA@mail.gmail.com>
- <CAGiusB0B5dN_K+bW1xudmT6UNmVOL=voBOuSVJeiYo3v6ywO8w@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <4bf9396505975e3fee2cc6396a6eeff7@walle.cc>
-X-Sender: michael@walle.cc
+References: <20210831130702.31526-1-roger@norberthealth.com> <6ba219b5-0a9d-610e-0670-232e5d3d4ad3@infradead.org>
+In-Reply-To: <6ba219b5-0a9d-610e-0670-232e5d3d4ad3@infradead.org>
+From:   Roger Knecht <roger@norberthealth.com>
+Date:   Tue, 31 Aug 2021 17:06:33 +0200
+Message-ID: <CAO_iFwpJ_1GqnW+eAfZ5bhVn3uF-0MqFQ30=iPBX_WM4fOTUNQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND v3] Trivial comment fix for the CRC ITU-T polynom
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Jiri Kosina <jkosina@suse.cz>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jiri Kosina <trivial@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrea,
+Hi Randy,
 
-Am 2021-08-31 12:11, schrieb Andrea Zanotti:
-> Il giorno mar 31 ago 2021 alle ore 11:09 Andrea Zanotti
-> <andreazanottifo@gmail.com> ha scritto:
->> 
->> Hi Michael,
->> 
->> Il giorno mar 31 ago 2021 alle ore 10:39 Michael Walle 
->> <michael@walle.cc> ha scritto:
->>> 
->>> Hi Andrea,
->>> 
->>> Am 2021-08-31 10:13, schrieb Andrea Zanotti:
->>> > From: Andrea Zanotti <andreazanottifo@gmail.com>
->>> >
->>> > Added support for P8P Parallel Phase Change Memory.
->>> 
->>> Please use present tense, eg "add support..."
->>> 
->>> Is there a public datasheet? If so, please include it above
->>> your SoB like so:
->>> Datasheet: https://...
->>> 
->> 
->> I will format the header as per your suggestions. I used the same 
->> datasheet
->> linked by you at the end of the email
->> 
->>> 
->>> > Added memory information (page size and sector size) as per data-
->>> > sheet information, after typos corrections.
->>> 
->>> After typos corrections?
->>> 
->> 
->> The one specified in the following paragraph. I'll better write this. 
->> (What I meant
->> is that there are some typos in the datasheet itself)
->> 
->>> 
->>> > At page 37, paragraph 'SPI Memory Organization', it is written
->>> > down that the memory is organized as:
->>> >  * 16.772.216 bytes (typo here, there 16.777.216 bytes)
->>> >  * 128 sectors of 128 Kbytes each (correct)
->>> >  * 131.072 pages of 64 bytes each (typo here, as the total would be
->>> >    64Mbit, but the total memory is actually 128Mbit, correct value
->>> >    is 262.144 pages)
->>> >
->>> > Patch tested against the aforementioned PCM memory.
->>> 
->>> What SPI host controller was used?
->>> 
->> 
->> I used an AT91SAM9G20 processor, SPI controller "atmel,at91rm9200-spi" 
->> (spi-atmel.c)
->> 
->>> 
->>> > No known regressions inserted, as the patch only adds the possibility
->>> > to recognize said PCM memory inside the common spi-nor driver.
->>> 
->>> Please drop this. If there were any regressions, the patch wouldn't
->>> be picked up anyway.
->>> 
->> 
->> It will be dropped.
->> 
->>> >
->>> > Signed-off-by: Andrea Zanotti <andreazanottifo@gmail.com>
->>> > ---
->>> >  drivers/mtd/spi-nor/micron-st.c | 1 +
->>> >  1 file changed, 1 insertion(+)
->>> >
->>> > diff --git a/drivers/mtd/spi-nor/micron-st.c
->>> > b/drivers/mtd/spi-nor/micron-st.c
->>> > index c224e59820a1..c78331451082 100644
->>> > --- a/drivers/mtd/spi-nor/micron-st.c
->>> > +++ b/drivers/mtd/spi-nor/micron-st.c
->>> > @@ -128,6 +128,7 @@ static const struct flash_info micron_parts[] = {
->>> >       { "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
->>> >                           SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
->>> >                           SPI_NOR_4B_OPCODES) },
->>> > +     { "np8p128ax60", {0x89, 0xda, 0x18}, 3, 128 * 1024, 128, 64, 0, 0 },
->>> 
->>> Eh? Please use INFO(). And why isn't this 0x20 for micron.
->>> 
->> 
->> With INFO() macro I am locked in with .page_size = 256 (I would need 
->> 64), or am I missing something?
+No problem, I will update the patch.
 
-Ok I see. Mh, then maybe there should be a new macro where you can
-set the page_size?
-
->>> 
->>> I found this datasheet:
->>> https://media.digikey.com/pdf/Data%20Sheets/Micron%20Technology%20Inc%20PDFs/NP8P128Ax60E_Rev_K.pdf
->>> 
->>> According to that datasheet, the manuf id is 0x20. And the device id
->>> should be either 0x88e1 or 0x8821.
->>> 
->> 
->> You are right, checking it right now.
->> 
-> 
-> - As per datasheet, table 10 on page 18, Manufacturer code is 0x89
-> (column "data" for parameter "Manufacturer Code").
-
-That is for the command 90h (which is for the parallel interface?). We
-issue 9Fh and according to the "READ IDENTIFICATION (RDID)" chapter:
-
-   The manufacturer identification is assigned by JEDEC and has the
-   value 20h for Micron.
-
-And in fact it is assigned by JEDEC, see below.
-
-> - On the datasheet, I agree with you that the device code is
-> advertised as either 0x88e1 or 0x8821. I changed the byte array
-> to something wrong in order to have the debug warning on the JEDEC id
-> bytes, and this is the log:
-> 
-> spi-nor spi0.0: unrecognized JEDEC id bytes: 89 da 18 00 00 00
-> 
-> Second and third byte are "0xda" and "0x18". I am not an expert in the
-> spi-nor driver, but from my understanding
-> (if it's wrong, please correct me) the spi-nor driver tries to match
-> the the read bytes from the memory with the ones
-> in the tables. I don't know if the datasheet is wrong also in that
-> cell of the table, or if I am interpreting the data wrongly.
-
-Looks like the datasheet is wrong or something is broken here. Yes
-you are correct in assuming that these are in fact the ID bytes.
-
-We'd need to check what vendor 0x89 is to avoid collisions with other
-vendors/flashes.
-
-Btw this "flash" has no need for an erase, just like the MRAM or an
-SPI EEPROM. Could you have a look at drivers/misc/eeprom/at25.c if
-that will work for you?
-
--michael
+Regards,
+Roger
