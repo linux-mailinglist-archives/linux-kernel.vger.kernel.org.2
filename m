@@ -2,110 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CAD3FC956
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0831B3FC958
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232874AbhHaOHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:07:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53595 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231526AbhHaOG7 (ORCPT
+        id S233736AbhHaOHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:07:21 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:48195 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231526AbhHaOHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:06:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630418763;
+        Tue, 31 Aug 2021 10:07:18 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 4BB6D22234;
+        Tue, 31 Aug 2021 16:06:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1630418781;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UzECLjZfLJYpLvQ5t/F5N2XADprf0KnFp98nx4CJfPs=;
-        b=IzauzWKfz5D6R4tj66vMeVSUuBvgg6Z5j4XN+srnxjWWTit+92XJEdOE1INEgh8QUvIVQL
-        BqYlgNS6S5UyaxAXAOprt5jxsirlF1VGnakajcEoCvVk5SALvGqt4xtc3Gy+iootEX8aR4
-        9CKMakufrXegFeYaMTiKXiMSucmchjc=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-38-Ad0sWJx0OMSpZA_f4yl9EQ-1; Tue, 31 Aug 2021 10:06:02 -0400
-X-MC-Unique: Ad0sWJx0OMSpZA_f4yl9EQ-1
-Received: by mail-wm1-f70.google.com with SMTP id r125-20020a1c2b830000b0290197a4be97b7so1366769wmr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:06:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=UzECLjZfLJYpLvQ5t/F5N2XADprf0KnFp98nx4CJfPs=;
-        b=HaCFPIzQJ2kJPIgnvvqGHkxXrLM3EDTVUPytFG/gltE4tfJ4cMgjW1gUcgBU4n2xtB
-         HK7WxF28lLsdVgKA5iTo3TKaETAka9Xn9sd+M7AKsv8TXztnumPCafbycrXxa/VdJ0Dk
-         haDBJd8Cb0Cnk+CQWDNa2Eu286wpJS4iKkvrLfQnDol/csCDg1RqIGw97G0LYb4ChJ4E
-         6VE+vzijci2TgeEnkb6Cg/z5nZysqe1fu0MQIBPgt4G3KgzqWp3MGICthqozoC/ZmpmP
-         1zPMhbrxM+PjqbzeuG4g5QFkxpXq9nriOWRneBq9gWbKRQmeRaPnuzrXT+zzIC93LM1w
-         Tu+A==
-X-Gm-Message-State: AOAM5333o37SPeucF16oEC0XgvBaEUMZhm2px5ePYVUwqweb0Z4cywnh
-        M8zgAPsiXv08J0bwRt9gYTV0Exh29+Uy+4ziCF8Tx1NwVA1F9YJSRz/sPy/rt/Vrk8Q+GMjMENd
-        ei5Mwso43DiciFfQJ+SXhhNX4nUbfZjN5c9+YSb5iiqJEDlp+5hYMn7QE1alI+X4oXPhvM6aW
-X-Received: by 2002:adf:8102:: with SMTP id 2mr30566397wrm.89.1630418760985;
-        Tue, 31 Aug 2021 07:06:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxY0s3JMLdy+AoHqP6C5Lc7FYO8MmvKj2V0IH21QbolCvRHQMCzHc4ppkhmHVSFKVgKasZbpA==
-X-Received: by 2002:adf:8102:: with SMTP id 2mr30566364wrm.89.1630418760679;
-        Tue, 31 Aug 2021 07:06:00 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23bf5.dip0.t-ipconnect.de. [79.242.59.245])
-        by smtp.gmail.com with ESMTPSA id k1sm18867586wrz.61.2021.08.31.07.05.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 07:06:00 -0700 (PDT)
-Subject: Re: [PATCH 1/6] mm/page_alloc.c: remove meaningless VM_BUG_ON() in
- pindex_to_order()
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     vbabka@suse.cz, sfr@canb.auug.org.au, peterz@infradead.org,
-        mgorman@techsingularity.net, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210830141051.64090-1-linmiaohe@huawei.com>
- <20210830141051.64090-2-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <3a642b19-6d89-3af4-7efc-3b8a0d28a0f0@redhat.com>
-Date:   Tue, 31 Aug 2021 16:05:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=a1nEe0ivvaarnt1Bv0vjqFAVdslIHyZCpsCJJodQOhY=;
+        b=h5VrNT1X86XklWXK5jSmQSxw+6vGr4Q29w3t0xfc7iz6Drh6/Au9xZz+JolXptC86rTHSY
+        CbxRtyUl1PssY4RNMIzFC1NHpDJ+51mJenA/ZPH27HZDaXVjA9TPuBnfVwqDIuN9dIWClO
+        qLvWArXSKaeZfPnJQSDAFDQ5CjwGxqE=
 MIME-Version: 1.0
-In-Reply-To: <20210830141051.64090-2-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 31 Aug 2021 16:06:21 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Leo Li <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 7/7] arm64: dts: ls1028a: use phy-mode instead of
+ phy-connection-type
+In-Reply-To: <20210831135916.ccvyc5intxs7rlal@skbuf>
+References: <20210831134013.1625527-1-michael@walle.cc>
+ <20210831134013.1625527-8-michael@walle.cc>
+ <20210831135916.ccvyc5intxs7rlal@skbuf>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <c352291c7a88af21b766e33d244b835d@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.08.21 16:10, Miaohe Lin wrote:
-> It's meaningless to VM_BUG_ON() order != pageblock_order just after
-> setting order to pageblock_order. Remove it.
+Am 2021-08-31 15:59, schrieb Vladimir Oltean:
+> On Tue, Aug 31, 2021 at 03:40:13PM +0200, Michael Walle wrote:
+>> In linux both are identical, phy-mode is used more often, though. Also
+>> for the ls1028a both phy-connection-type and phy-mode was used, one 
+>> for
+>> the enetc nodes and the other for the switch nodes. Unify them. But 
+>> the
+>> main reason for this is that the device tree files can be shared with
+>> the u-boot ones; there the enetc driver only supports the "phy-mode"
+>> property.
+>> 
+>> Suggested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
 > 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->   mm/page_alloc.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
+> Actually that is not really a valid reason in itself for this change.
+> The enetc U-Boot driver is perhaps a bit silly in that it calls
+> ofnode_read_string(dev_ofnode(dev), "phy-mode") manually, especially
+> since right below, it uses dm_eth_phy_connect() which searches for 
+> both.
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 91edb930b8ab..dbb3338d9287 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -677,10 +677,8 @@ static inline int pindex_to_order(unsigned int pindex)
->   	int order = pindex / MIGRATE_PCPTYPES;
->   
->   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -	if (order > PAGE_ALLOC_COSTLY_ORDER) {
-> +	if (order > PAGE_ALLOC_COSTLY_ORDER)
->   		order = pageblock_order;
-> -		VM_BUG_ON(order != pageblock_order);
-> -	}
->   #else
->   	VM_BUG_ON(order > PAGE_ALLOC_COSTLY_ORDER);
->   #endif
+> So we are artificially restricting what we support. It would be fine to
+> do the dm_eth_phy_connect first, then use phy->interface for 
+> enetc_start_pcs().
+
+You mean in u-boot. I had a patch for it, but because you suggested
+to convert it to the new property name, it isn't really needed anyway.
+u-boot is just using the device trees within its source tree, so I
+didn't care anymore ;)
+
+> Anyway, I do not mind the patch at all.
 > 
+> Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Thanks!
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
+-michael
