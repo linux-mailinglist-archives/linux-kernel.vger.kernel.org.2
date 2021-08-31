@@ -2,314 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4683D3FCA7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E227E3FCA81
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236497AbhHaPE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhHaPE4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:04:56 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DD2C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:04:01 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id g14so4216430ljk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4Fn4UZmVWhb7Bzvp1FoQQ7qfnZgNzUwT5A3uCCmGDj0=;
-        b=cdfjp6SVsuxqd4fltHdv9vJ1ZOrV00nXaLXFRWNyrWwlDEpcVCsVSzniXR+eEBRSAI
-         8xN0+xrgRv/xoPOhyhee4AiLqAjeQdvE6wBT3AM+GaO/FDPI/Z8ibTlR4oj/gi+EKhfH
-         WheZuSGPwB9l2Zfj9sosh1GhJfSZRX6Fe2T5pyo8QT9+L0kZAuSPTacOMAzk97pzAvQf
-         PHFDYeiLmvDGRUFsSayJ2jg5J7VTpNIwGLOJdIXvRYj/Rqr3bZ7bpDGyCcKnQRfEN+lA
-         eyRxBew4PNzkdzOpuh9Dxqv4y+itg5Pj3L8j8Tl2ea8PnK9ASRdGreKC25SEWsDj8Wjk
-         Dy5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4Fn4UZmVWhb7Bzvp1FoQQ7qfnZgNzUwT5A3uCCmGDj0=;
-        b=GxrrrNA4n5rWQpqnG3kZ/JnPSMkGfrn9XGlKvTVPCiPO9fqjxhY0V7vri3iaJqeanO
-         XVnpxMvyPjR0JVdeaWiGBW5zgklq1HgotNLl6qYLaB3dCDteHnNHn4FcOCpNJADtN/MI
-         J55LnfTf2FzaPkP5ZoTeJR514boj7e9369+LVweWnQQxbiKtq3AOUauT4UyOHRyzDIOM
-         UjfRatKa3FNf11xMjSh6Ks28WN+m5+cFRAynIlMIdfbMOMSBPK29Qrd+i6eTCHf1iJ+h
-         9i2WHtxOhWN18UFr052DxWQ+x2CQ63uHNirkZYgFrYCAemK9c2aleWNkFH5CDIdsd+SS
-         INkA==
-X-Gm-Message-State: AOAM532oH17r7L3It6pCLeDiDR+FAmz74pJn4Nr8L8lsYVJNoGSGnd0J
-        yokFKMoGBiLP+m42fV1zJZ6uhWlTGlfFL9L/zoPttMyb80o=
-X-Google-Smtp-Source: ABdhPJz7R8yS4tFq5OIt5U9b9AwBlSVoxf+LlWKsuk9kKOCQLPYDxpxb4go5g5kLf6mFhZ12nLnYq9g/o1AU0vuqcm0=
-X-Received: by 2002:a2e:a7d0:: with SMTP id x16mr25654175ljp.494.1630422239046;
- Tue, 31 Aug 2021 08:03:59 -0700 (PDT)
+        id S237632AbhHaPFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:05:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230237AbhHaPFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 11:05:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9935A61053;
+        Tue, 31 Aug 2021 15:04:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630422294;
+        bh=C3Xs7RdGLh2cMdjlr/NAo11NY+tlBUiaZVO0ueTSglQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GS3gtkoeV4qXKwQmd4bUMERgedQrUWTuFxSyAzmC7v96oqJUPBR0o6fcwM1vCb3Qh
+         isbVAVzB6yDvys72vXZdbHuZByy0ZLcTmKGrtb/QPVK0DPqUK6ME72GiLKjkW8Mt89
+         eh7YpcgaQRDGaDm1Q2CCInQw18tKM0ovSQc41bZd5ZTzRmM68MDeDv/6oSkgUga+nD
+         xgFT4puzZgUcQqdedzDKW/PY3Aaqfjl3+jXmlkq2xdH4nZgPLcy8nocTE9qxiyksXe
+         fPx9IMtOfHfeRZo/DmhfSnfTooXK9rL4kArxThL3RyYX/QfUAjc3k+yyzFO23Ur0si
+         eXCCt2qmaMO/w==
+Received: by mail-ed1-f44.google.com with SMTP id j13so21960372edv.13;
+        Tue, 31 Aug 2021 08:04:54 -0700 (PDT)
+X-Gm-Message-State: AOAM533SGucLKJ1jjqODaLX7NztTQGpLpg/6hjsLfw9z0x17AwMMMeTL
+        PAjyURhhwa+f2dFJMxGl7U3A9c3YnXlQZn3V5A==
+X-Google-Smtp-Source: ABdhPJzIMc1+WNRGq8elp8WiVQQ/QZvEnHKttYUctX+V3p0QWutbb1xjXyyvrpXfsncygsOskBw3nTY6jXKx0zawpjs=
+X-Received: by 2002:a50:eb8a:: with SMTP id y10mr30469814edr.137.1630422293211;
+ Tue, 31 Aug 2021 08:04:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210830212951.3541589-1-pgonda@google.com> <CAA03e5Fd2aes=euzXv51d6b3E0S3tK45hkqQhONsmWA5dE33dw@mail.gmail.com>
- <CAA03e5G9TEsmzbQw_m_Zh+Evdief0hgiuMmBGF40xctMAwjY2w@mail.gmail.com>
-In-Reply-To: <CAA03e5G9TEsmzbQw_m_Zh+Evdief0hgiuMmBGF40xctMAwjY2w@mail.gmail.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Tue, 31 Aug 2021 09:03:47 -0600
-Message-ID: <CAMkAt6r8X5XbhRSbfX5vfHn+F40Mp_Ou+qmtUqeDBCtTF1oTxg@mail.gmail.com>
-Subject: Re: [PATCH 3/3 V6] selftest: KVM: Add intra host migration
-To:     Marc Orr <marcorr@google.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org
+References: <20210823032800.1660-3-chuanjia.liu@mediatek.com> <20210827164634.GA3779223@bjorn-Precision-5520>
+In-Reply-To: <20210827164634.GA3779223@bjorn-Precision-5520>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 31 Aug 2021 10:04:40 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKEvAypWhiaWMhxM7zVkLAFL9=eMU7_vr=ht+uyxYe0qg@mail.gmail.com>
+Message-ID: <CAL_JsqKEvAypWhiaWMhxM7zVkLAFL9=eMU7_vr=ht+uyxYe0qg@mail.gmail.com>
+Subject: Re: [PATCH v12 2/6] PCI: mediatek: Add new method to get shared
+ pcie-cfg base address
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Chuanjia Liu <chuanjia.liu@mediatek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        Yong Wu <yong.wu@mediatek.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 7:26 AM Marc Orr <marcorr@google.com> wrote:
+On Fri, Aug 27, 2021 at 11:46 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
 >
-> On Tue, Aug 31, 2021 at 6:24 AM Marc Orr <marcorr@google.com> wrote:
+> On Mon, Aug 23, 2021 at 11:27:56AM +0800, Chuanjia Liu wrote:
+> > For the new dts format, add a new method to get
+> > shared pcie-cfg base address and use it to configure
+> > the PCIECFG controller
+>
+> Rewrap this to fill 75 columns.
+>
+> > Signed-off-by: Chuanjia Liu <chuanjia.liu@mediatek.com>
+> > Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+> > ---
+> >  drivers/pci/controller/pcie-mediatek.c | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
 > >
-> > On Mon, Aug 30, 2021 at 2:29 PM Peter Gonda <pgonda@google.com> wrote:
-> > >
-> > > Adds testcases for intra host migration for SEV and SEV-ES. Also adds
-> > > locking test to confirm no deadlock exists.
-> > >
-> > > ---
-> > >  tools/testing/selftests/kvm/Makefile          |   1 +
-> > >  .../selftests/kvm/x86_64/sev_vm_tests.c       | 152 ++++++++++++++++++
-> > >  2 files changed, 153 insertions(+)
-> > >  create mode 100644 tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
-> > >
-> > > Signed-off-by: Peter Gonda <pgonda@google.com>
-> > > Suggested-by: Sean Christopherson <seanjc@google.com>
-> > > Cc: Marc Orr <marcorr@google.com>
-> > > Cc: Sean Christopherson <seanjc@google.com>
-> > > Cc: Brijesh Singh <brijesh.singh@amd.com>
-> > > Cc: kvm@vger.kernel.org
-> > > Cc: linux-kernel@vger.kernel.org
-> > >
-> > > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> > > index 5832f510a16c..de6e64d5c9c4 100644
-> > > --- a/tools/testing/selftests/kvm/Makefile
-> > > +++ b/tools/testing/selftests/kvm/Makefile
-> > > @@ -71,6 +71,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
-> > >  TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_msrs_test
-> > >  TEST_GEN_PROGS_x86_64 += x86_64/xen_shinfo_test
-> > >  TEST_GEN_PROGS_x86_64 += x86_64/xen_vmcall_test
-> > > +TEST_GEN_PROGS_x86_64 += x86_64/sev_vm_tests
-> > >  TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
-> > >  TEST_GEN_PROGS_x86_64 += demand_paging_test
-> > >  TEST_GEN_PROGS_x86_64 += dirty_log_test
-> > > diff --git a/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
-> > > new file mode 100644
-> > > index 000000000000..50a770316628
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
-> > > @@ -0,0 +1,150 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > +#include <linux/kvm.h>
-> > > +#include <linux/psp-sev.h>
-> > > +#include <stdio.h>
-> > > +#include <sys/ioctl.h>
-> > > +#include <stdlib.h>
-> > > +#include <errno.h>
-> > > +#include <pthread.h>
-> > > +
-> > > +#include "test_util.h"
-> > > +#include "kvm_util.h"
-> > > +#include "processor.h"
-> > > +#include "svm_util.h"
-> > > +#include "kvm_util.h"
-> > > +#include "kselftest.h"
-> > > +#include "../lib/kvm_util_internal.h"
-> > > +
-> > > +#define SEV_DEV_PATH "/dev/sev"
-> > > +
-> > > +/*
-> > > + * Open SEV_DEV_PATH if available, otherwise exit the entire program.
-> > > + *
-> > > + * Input Args:
-> > > + *   flags - The flags to pass when opening SEV_DEV_PATH.
-> > > + *
-> > > + * Return:
-> > > + *   The opened file descriptor of /dev/sev.
-> > > + */
-> > > +static int open_sev_dev_path_or_exit(int flags)
-> > > +{
-> > > +       static int fd;
-> > > +
-> > > +       if (fd != 0)
-> > > +               return fd;
-> > > +
-> > > +       fd = open(SEV_DEV_PATH, flags);
-> > > +       if (fd < 0) {
-> > > +               print_skip("%s not available, is SEV not enabled? (errno: %d)",
-> > > +                          SEV_DEV_PATH, errno);
-> > > +               exit(KSFT_SKIP);
-> > > +       }
-> > > +
-> > > +       return fd;
-> > > +}
-> > > +
-> > > +static void sev_ioctl(int fd, int cmd_id, void *data)
-> > > +{
-> > > +       struct kvm_sev_cmd cmd = { 0 };
-> > > +       int ret;
-> > > +
-> > > +       TEST_ASSERT(cmd_id < KVM_SEV_NR_MAX, "Unknown SEV CMD : %d\n", cmd_id);
-> > > +
-> > > +       cmd.id = cmd_id;
-> > > +       cmd.sev_fd = open_sev_dev_path_or_exit(0);
-> > > +       cmd.data = (uint64_t)data;
-> > > +       ret = ioctl(fd, KVM_MEMORY_ENCRYPT_OP, &cmd);
-> > > +       TEST_ASSERT((ret == 0 || cmd.error == SEV_RET_SUCCESS),
-> > > +                   "%d failed: return code: %d, errno: %d, fw error: %d",
-> > > +                   cmd_id, ret, errno, cmd.error);
-> > > +}
+> > diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
+> > index 25bee693834f..4296d9e04240 100644
+> > --- a/drivers/pci/controller/pcie-mediatek.c
+> > +++ b/drivers/pci/controller/pcie-mediatek.c
+> > @@ -14,6 +14,7 @@
+> >  #include <linux/irqchip/chained_irq.h>
+> >  #include <linux/irqdomain.h>
+> >  #include <linux/kernel.h>
+> > +#include <linux/mfd/syscon.h>
+> >  #include <linux/msi.h>
+> >  #include <linux/module.h>
+> >  #include <linux/of_address.h>
+> > @@ -23,6 +24,7 @@
+> >  #include <linux/phy/phy.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/pm_runtime.h>
+> > +#include <linux/regmap.h>
+> >  #include <linux/reset.h>
 > >
-> > nit: Since this function has two file descriptors, `fd` and
-> > `cmd.sev_fd`, can we rename `fd` to `vm_fd`?
+> >  #include "../pci.h"
+> > @@ -207,6 +209,7 @@ struct mtk_pcie_port {
+> >   * struct mtk_pcie - PCIe host information
+> >   * @dev: pointer to PCIe device
+> >   * @base: IO mapped register base
+> > + * @cfg: IO mapped register map for PCIe config
+> >   * @free_ck: free-run reference clock
+> >   * @mem: non-prefetchable memory resource
+> >   * @ports: pointer to PCIe port information
+> > @@ -215,6 +218,7 @@ struct mtk_pcie_port {
+> >  struct mtk_pcie {
+> >       struct device *dev;
+> >       void __iomem *base;
+> > +     struct regmap *cfg;
+> >       struct clk *free_ck;
 > >
-> > > +
-> > > +static struct kvm_vm *sev_vm_create(bool es)
-> > > +{
-> > > +       struct kvm_vm *vm;
-> > > +       struct kvm_sev_launch_start start = { 0 };
-> > > +       int i;
-> > > +
-> > > +       vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
-> > > +       sev_ioctl(vm->fd, es ? KVM_SEV_ES_INIT : KVM_SEV_INIT, NULL);
-> > > +       for (i = 0; i < 3; ++i)
+> >       struct list_head ports;
+> > @@ -682,6 +686,10 @@ static int mtk_pcie_startup_port_v2(struct mtk_pcie_port *port)
+> >               val |= PCIE_CSR_LTSSM_EN(port->slot) |
+> >                      PCIE_CSR_ASPM_L1_EN(port->slot);
+> >               writel(val, pcie->base + PCIE_SYS_CFG_V2);
+> > +     } else if (pcie->cfg) {
+> > +             val = PCIE_CSR_LTSSM_EN(port->slot) |
+> > +                   PCIE_CSR_ASPM_L1_EN(port->slot);
+> > +             regmap_update_bits(pcie->cfg, PCIE_SYS_CFG_V2, val, val);
+> >       }
 > >
-> > nit: Consider moving `3` to a macro, like `MAX_VCPU_IDX` or maybe
-> > better defining something like `NUM_VCPUS` to be 4.
+> >       /* Assert all reset signals */
+> > @@ -985,6 +993,7 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
+> >       struct device *dev = pcie->dev;
+> >       struct platform_device *pdev = to_platform_device(dev);
+> >       struct resource *regs;
+> > +     struct device_node *cfg_node;
+> >       int err;
 > >
-> > > +               vm_vcpu_add(vm, i);
-> > > +       start.policy |= (es) << 2;
-> > > +       sev_ioctl(vm->fd, KVM_SEV_LAUNCH_START, &start);
-> > > +       if (es)
-> > > +               sev_ioctl(vm->fd, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
-> > > +       return vm;
-> > > +}
-> > > +
-> > > +static void test_sev_migrate_from(bool es)
-> > > +{
-> > > +       struct kvm_vm *vms[3];
+> >       /* get shared registers, which are optional */
+> > @@ -995,6 +1004,14 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
+> >                       return PTR_ERR(pcie->base);
+> >       }
 > >
-> > If we create a `NUM_VCPUS` macro, then we can use it here.
-> >
-> > > +       struct kvm_enable_cap cap = { 0 };
-> > > +       int i;
-> > > +
-> > > +       for (i = 0; i < sizeof(vms) / sizeof(struct kvm_vm *); ++i)
-> > > +               vms[i] = sev_vm_create(es);
-> > > +
-> > > +       cap.cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM;
-> > > +       for (i = 0; i < sizeof(vms) / sizeof(struct kvm_vm *) - 1; ++i) {
-> > > +               cap.args[0] = vms[i]->fd;
-> > > +               vm_enable_cap(vms[i + 1], &cap);
-> > > +       }
-> >
-> > nit/optional: To me, the code would be more clear if we combined this
-> > loop with the one above and guarded calling `vm_enable_cap()` with `if
-> > (i > 0)`. Also, maybe we can initialize `cap` when it's declared.
-> >
-> >      struct kvm_enable_cap cap = { .cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM };
-> >      int i;
-> >
-> >      for (i = 0; i < sizeof(vms) / sizeof(struct kvm_vm *); ++i) {
-> >           vms[i] = sev_vm_create(es);
-> >           if (i > 0)
-> >                vm_enable_cap(vms[i], &cap);
-> >      }
-> >
-> > > +}
-> > > +
-> > > +#define LOCK_TESTING_THREADS 3
-> >
-> > nit: Consider moving this macro to the top of the file.
-> >
-> > > +
-> > > +struct locking_thread_input {
-> > > +       struct kvm_vm *vm;
-> > > +       int source_fds[LOCK_TESTING_THREADS];
-> > > +};
-> > > +
-> > > +static void *locking_test_thread(void *arg)
-> > > +{
-> > > +       struct kvm_enable_cap cap = { 0 };
-> >
-> > Maybe:
-> > struct kvm_enable_cap cap = { .cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM };
-> >
-> > > +       int i, j;
-> > > +       struct locking_thread_input *input = (struct locking_test_thread *)arg;
-> > > +
-> > > +       cap.cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM;
-> >
-> > If we initialize the cap field during the declaration, then this line goes away.
-> >
-> > > +
-> > > +       for (i = 0; i < 1000; ++i) {
-> > > +               j = input->source_fds[i % LOCK_TESTING_THREADS];
-> > > +               cap.args[0] = input->source_fds[j];
-> > > +               /*
-> > > +                * Call IOCTL directly without checking return code. We are
-> > > +                * simply trying to confirm there is no deadlock from userspace
-> > > +                * not check correctness of migration here.
-> > > +                */
-> > > +               ioctl(input->vm->fd, KVM_ENABLE_CAP, &cap);
-> >
-> > Should we use `vm_enable_cap()` here?
-> >
+> > +     cfg_node = of_find_compatible_node(NULL, NULL,
+> > +                                        "mediatek,generic-pciecfg");
+>
+> This looks wrong to me.  IIUC, since we start at NULL, this searches
+> the entire device tree for any node with
+>
+>   compatible = "mediatek,generic-pciecfg"
+>
+> but we should only care about the specific device/node this driver
+> claimed.
+>
+> Should this be part of the match data, i.e., struct mtk_pcie_soc?
 
-I took all other suggestions but this one I just updated the comment.
-vm_enable_cap TEST_ASSERT()s if the ioctl fails. Since we are just
-randomly iterating through a bunch of ioclts we fail often so this
-would kill the test.
+What would you put in match data exactly?
 
-> > > +       }
-> > > +}
-> > > +
-> > > +static void test_sev_migrate_locking(void)
-> > > +{
-> > > +       struct locking_thread_input input[LOCK_TESTING_THREADS];
-> > > +       pthread_t pt[LOCK_TESTING_THREADS];
-> > > +       int i;
-> > > +
-> > > +       for (i = 0; i < LOCK_TESTING_THREADS; ++i) {
-> > > +               input[i].vm = sev_vm_create(/* es= */ false);
-> > > +               input[0].source_fds[i] = input[i].vm->fd;
-> > > +       }
-> > > +       memcpy(input[1].source_fds, input[0].source_fds,
-> > > +              sizeof(input[1].source_fds));
-> > > +       memcpy(input[2].source_fds, input[0].source_fds,
-> > > +              sizeof(input[2].source_fds));
-> > > +
-> > > +       for (i = 0; i < LOCK_TESTING_THREADS; ++i)
-> > > +               pthread_create(&pt[i], NULL, locking_test_thread, &input[i]);
-> > > +
-> > > +       for (i = 0; i < LOCK_TESTING_THREADS; ++i)
-> > > +               pthread_join(pt[i], NULL);
-> > > +}
-> >
-> > I think this function/test case deserves a comment to capture some of
-> > the conversation we had on the list that led to Sean suggesting this
-> > test case. Speaking of which, should this test case have a
-> > Suggested-by tag for Sean, since he suggested this test?
+The other way to do this is to have a DT property with the phandle
+which people like to do (have everything in the node 'for their
+driver'). If there's only 1 possible node (which is almost always the
+case), then there is little benefit to having another property. It's
+just redundant data. A phandle lookup might be a bit faster with the
+caching we do, but on a miss it would still walk all nodes.
+
+The other thing with these 'extra register bits to twiddle' is that
+they tend to be SoC specific and change from chip to chip, so either
+way is not very portable. The real question to ask is should there be
+a standard interface used or created.
+
 >
-> Gah. I forgot to check the tags before sending my feedback. Of course,
-> the suggested-by tag is already there. Second time I made this gaffe
-> in the last couple of weeks. Sorry for the noise.
+> > +     if (cfg_node) {
+> > +             pcie->cfg = syscon_node_to_regmap(cfg_node);
 >
-> >
-> > > +
-> > > +int main(int argc, char *argv[])
-> > > +{
-> > > +       test_sev_migrate_from(/* es= */ false);
-> > > +       test_sev_migrate_from(/* es= */ true);
-> > > +       test_sev_migrate_locking();
-> > > +       return 0;
-> > > +}
-> > > --
-> > > 2.33.0.259.gc128427fd7-goog
-> > >
-> >
-> > Nice test!
+> Other drivers in drivers/pci/controller/ use
+> syscon_regmap_lookup_by_phandle() (j721e, dra7xx, keystone,
+> layerscape, artpec6) or syscon_regmap_lookup_by_compatible() (imx6,
+> kirin, v3-semi).
+
+There's no phandle to use in this case. As above, I'm trying to break
+people of this habit.
+
+Rob
