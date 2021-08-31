@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D513FC9AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BE53FC9AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235825AbhHaOYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:24:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38266 "EHLO
+        id S235935AbhHaO0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:26:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46444 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230135AbhHaOYH (ORCPT
+        by vger.kernel.org with ESMTP id S233576AbhHaO0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:24:07 -0400
+        Tue, 31 Aug 2021 10:26:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630419791;
+        s=mimecast20190719; t=1630419928;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=urLJX4mD4+0+z3Cmi5p6BeY5jBhCGBwwOY1UjB3PyvE=;
-        b=K/7ZzMkTwmaXgcEp/T0Ftk6oZEvqpSkwV5iLJlXsTv3VqYUNcfeZUxKcIs7Icl8EDn1KXz
-        9EkRArD8kSESS4X1lasmO7mTHWWIlHMGozQa4rlCcdIy/IVFd/ZjYVCZug2hkXuxB++qH0
-        8dZ56oy+QDaWW9q8E1QxcwISEeOqRB0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-BgeHJxzjP46FUKtaw9iDUQ-1; Tue, 31 Aug 2021 10:23:10 -0400
-X-MC-Unique: BgeHJxzjP46FUKtaw9iDUQ-1
-Received: by mail-wm1-f72.google.com with SMTP id c4-20020a1c9a04000000b002e864b7edd1so6040084wme.6
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:23:10 -0700 (PDT)
+        bh=OA/jhyLAYtK1tYZ39fbir6HGMf0iZmNE8/Rh8O+Ui3Q=;
+        b=aJs0evNcN5GrxsgqBaxV0EDx7Ej57trkOBpC6NNF0TU2u1rIlFF7BgvdBxy4eKqZHJX6KH
+        lT0qU4dwo4Xu2X0btte0FGGyR61m0ecWVie0PjGn/koy23Yroz8o4Bb69zBVxC9YEShnak
+        nh/n+dMC+QJoYeqcMLlJzGJE/lQ7Ndw=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-295-FYrsYo3yPTmtwOO_ysm9ZA-1; Tue, 31 Aug 2021 10:25:26 -0400
+X-MC-Unique: FYrsYo3yPTmtwOO_ysm9ZA-1
+Received: by mail-ej1-f69.google.com with SMTP id bx10-20020a170906a1ca00b005c341820edeso229109ejb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:25:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=urLJX4mD4+0+z3Cmi5p6BeY5jBhCGBwwOY1UjB3PyvE=;
-        b=c+ciXN0HL0Y1MPqnl+SuFYKYvoa0Ho6hdwS7sCWAjyxbUPntsA6XeSRLIzMlEZKItU
-         1TY6mhjAbyHdkU12CXWrcFf68iFhGtSYH1A5NthdjxVwthn7ug0ytCR+aEyEPc/nfp9K
-         Je/QAS9NB2KAWyloW/v+aunlMYBwRdQP06bhfCVt5F2JqtzC1CxVlVmuV8zzHnpWj/Ut
-         lE/IeGmitjdIiDjwCChAGNORyHoXl1YpAqJXRARWW3MjllsfyzLsZMVbz8g7EizYToXM
-         TdY8Hn+D8ams7rjChl8SXpvttXT1uegwXapHvQa9yOCGlon8QjgodFMlO2uC+hgK/4Fj
-         QreA==
-X-Gm-Message-State: AOAM530R/pYjDjFPyrQc+EA9lrf5AnAb0RPZ5YgCkOIKZGR5LoHkc+dO
-        zdKgIC0HBhxSHIb3IsVkvTbgGoMd9+0oqCj2mYEuF/j71YWlyKeG9jBMej9p18pB3AXJvbAQsrY
-        hywmbKzdi7nWCLz3w95nl5Y37ClHKr+4T0uOjf69YhhJ4T2WjCy/Scod2Fxt23GuRt9gia22Z
-X-Received: by 2002:a1c:f712:: with SMTP id v18mr4475229wmh.25.1630419789324;
-        Tue, 31 Aug 2021 07:23:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw2oxz4h5PTJEcybV9HdfEeThpSVgOxrmM77fxTd1EzWzzl5aFc4X49pdQOHATL0hmWjMfzZA==
-X-Received: by 2002:a1c:f712:: with SMTP id v18mr4475189wmh.25.1630419789029;
-        Tue, 31 Aug 2021 07:23:09 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23bf5.dip0.t-ipconnect.de. [79.242.59.245])
-        by smtp.gmail.com with ESMTPSA id d145sm2560524wmd.3.2021.08.31.07.23.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 07:23:08 -0700 (PDT)
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, vbabka@suse.cz, sfr@canb.auug.org.au,
-        peterz@infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210830141051.64090-1-linmiaohe@huawei.com>
- <20210830141051.64090-6-linmiaohe@huawei.com>
- <20210831134311.GG4128@techsingularity.net>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH 5/6] mm/page_alloc.c: avoid accessing uninitialized pcp
- page migratetype
-Message-ID: <877b7043-65c3-5e08-ac89-ad6f10e354b3@redhat.com>
-Date:   Tue, 31 Aug 2021 16:23:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OA/jhyLAYtK1tYZ39fbir6HGMf0iZmNE8/Rh8O+Ui3Q=;
+        b=lttmema9N+pkSvS2mS3oab/AgHcG8lyE8orgqA2LOAE5xJGiKFk+GXOY+ktTQh65Hf
+         ix3RNTUQRBqax7kMFgCuJvERJF+uWBmt0I5KBJ8X6pGJm/G/WNocimWdgOFL1ggCGBjn
+         uXWTm0OOtYaxGa0bOj3Pb0YwoV2FumXg+SfUt+FyMmg3zamrL/7GRrscPo4m01FS2/Ot
+         6feQjGvIymQycngJl/wFdT/d7gZgGmBQDG6HJdP1JjmFKQbWupnPKsRDk/MX22y6JRpB
+         5eMBhETIT78MZXrGppUnulwD9S3WZHiY3lxyr/clnQ0VK+2KSXdZZO0UZAzsmrU2IX5W
+         WTeg==
+X-Gm-Message-State: AOAM530cVtg2qH6LHZsyADYXbAeBpnNEP+REq+nSeT5j/AV0l5kNhO8W
+        AoYqUO8rLrtI1H+Sm01KDOTTodvphLGQAfr7gAdyPpZgH+Erya6D5cH1VkRk3Z1yjZkXkhkEsqc
+        tL3REVmvjnW9apbuLZciO5pb3
+X-Received: by 2002:a17:906:70b:: with SMTP id y11mr31329833ejb.274.1630419925025;
+        Tue, 31 Aug 2021 07:25:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwSzD9zkr7wPpktKq9Ktr39dANS1nu+utRyQ0BSDOUx3yoPFWOxowvAJPabM1ziUJDcXh+Mmg==
+X-Received: by 2002:a17:906:70b:: with SMTP id y11mr31329801ejb.274.1630419924831;
+        Tue, 31 Aug 2021 07:25:24 -0700 (PDT)
+Received: from redhat.com ([2.55.138.60])
+        by smtp.gmail.com with ESMTPSA id b2sm8403019ejj.124.2021.08.31.07.25.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 07:25:24 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 10:25:19 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jason Wang <jasowang@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, Wolfram Sang <wsa@kernel.org>
+Subject: Re: [PATCH V4 0/5] virtio: Add virtio-device bindings
+Message-ID: <20210831102514-mutt-send-email-mst@kernel.org>
+References: <cover.1627362340.git.viresh.kumar@linaro.org>
+ <20210831053105.ut73bmvxcop65nuv@vireshk-i7>
 MIME-Version: 1.0
-In-Reply-To: <20210831134311.GG4128@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831053105.ut73bmvxcop65nuv@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.08.21 15:43, Mel Gorman wrote:
-> On Mon, Aug 30, 2021 at 10:10:50PM +0800, Miaohe Lin wrote:
->> If it's not prepared to free unref page, the pcp page migratetype is
->> unset. Thus We will get rubbish from get_pcppage_migratetype() and
->> might list_del &page->lru again after it's already deleted from the
->> list leading to grumble about data corruption.
->>
->> Fixes: 3dcbe270d8ec ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+On Tue, Aug 31, 2021 at 11:01:05AM +0530, Viresh Kumar wrote:
+> On 27-07-21, 10:53, Viresh Kumar wrote:
+> > Hi,
+> > 
+> > Currently the DT only provides support for following node types for virtio-mmio
+> > nodes:
+> > 
+> >         virtio_mmio@a000000 {
+> >                 dma-coherent;
+> >                 interrupts = <0x00 0x10 0x01>;
+> >                 reg = <0x00 0xa000000 0x00 0x200>;
+> >                 compatible = "virtio,mmio";
+> >         };
+> > 
+> > Here, each virtio-mmio corresponds to a virtio-device. But there is no way for
+> > other users in the DT to show their dependency on virtio devices.
+> > 
+> > This patchset provides that support.
+> > 
+> > The first patch adds virtio-device bindings to allow for device sub-nodes to be
+> > present and the second patch updates the virtio core to update the of_node.
+> > 
+> > Other patches add bindings for i2c and gpio devices.
+> > 
+> > Tested on x86 with qemu for arm64.
 > 
-> Acked-by: Mel Gorman <mgorman@techsingularity.net>
-> 
-> This fix is fairly important. Take this patch out and send it on its own
-> so it gets picked up relatively quickly. It does not belong in a series
-> that is mostly cosmetic cleanups.
+> Michael, are you picking these up for 5.15 ?
 
-I think the commit id is wrong. Shouldn't that be
+Okay.
 
-df1acc856923 ("mm/page_alloc: avoid conflating IRQs disabled with 
-zone->lock")
-
-?
-
--- 
-Thanks,
-
-David / dhildenb
+> -- 
+> viresh
 
