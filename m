@@ -2,69 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7807B3FC1A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 05:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705DF3FC190
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 05:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239747AbhHaDp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 23:45:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:50670 "EHLO foss.arm.com"
+        id S239627AbhHaDgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 23:36:17 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:53198 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239631AbhHaDpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 23:45:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1C021FB;
-        Mon, 30 Aug 2021 20:44:30 -0700 (PDT)
-Received: from [10.163.72.217] (unknown [10.163.72.217])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 772CD3F5A1;
-        Mon, 30 Aug 2021 20:44:29 -0700 (PDT)
-Subject: Re: [PATCH V2] arm64/mm: Drop <asm/page-def.h>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1629457516-32306-1-git-send-email-anshuman.khandual@arm.com>
- <20210820183520.GC23080@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <84b647b6-9cee-5aad-78f8-7bc253300534@arm.com>
-Date:   Tue, 31 Aug 2021 09:15:30 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210820183520.GC23080@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S239526AbhHaDgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 23:36:05 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 13CC62003B5;
+        Tue, 31 Aug 2021 05:35:10 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9AF1F200451;
+        Tue, 31 Aug 2021 05:35:09 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 80BDF183AD07;
+        Tue, 31 Aug 2021 11:35:07 +0800 (+08)
+From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
+        UNGLinuxDriver@microchip.com, vinicius.gomes@intel.com,
+        michael.chan@broadcom.com, vishal@chelsio.com, saeedm@mellanox.com,
+        jiri@mellanox.com, idosch@mellanox.com,
+        alexandre.belloni@bootlin.com, kuba@kernel.org,
+        xiaoliang.yang_1@nxp.com, po.liu@nxp.com, vladimir.oltean@nxp.com,
+        leoyang.li@nxp.com
+Subject: [PATCH v3 net-next 2/8] net: mscc: ocelot: add MAC table write and lookup operations
+Date:   Tue, 31 Aug 2021 11:45:30 +0800
+Message-Id: <20210831034536.17497-3-xiaoliang.yang_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210831034536.17497-1-xiaoliang.yang_1@nxp.com>
+References: <20210831034536.17497-1-xiaoliang.yang_1@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
+ocelot_mact_write() can be used for directly modifying an FDB entry
+situated at a given row and column, as opposed to the current
+ocelot_mact_learn() which calculates the row and column indices
+automatically (based on a 11-bit hash derived from the {DMAC, VID} key).
 
-On 8/21/21 12:05 AM, Catalin Marinas wrote:
-> On Fri, Aug 20, 2021 at 04:35:16PM +0530, Anshuman Khandual wrote:
->> PAGE_SHIFT (PAGE_SIZE and PAGE_MASK) which is derived from ARM64_PAGE_SHIFT
->> should be moved into <asm/page.h> instead like in case for other platforms,
->> and then subsequently <asm/page-def.h> can be just dropped off completely.
-> 
-> These were moved to page-def.h as part of commit b6531456ba27 ("arm64:
-> factor out PAGE_* and CONT_* definitions") to avoid some circular header
-> dependencies.
-> 
->> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
->> index 824a3655dd93..649d26396f9e 100644
->> --- a/arch/arm64/include/asm/memory.h
->> +++ b/arch/arm64/include/asm/memory.h
->> @@ -12,7 +12,7 @@
->>  
->>  #include <linux/const.h>
->>  #include <linux/sizes.h>
->> -#include <asm/page-def.h>
->> +#include <asm/page.h>
-> 
-> In 5.14-rc3, asm/page.h still includes asm/memory.h.
+ocelot_mact_lookup() can be used to retrieve the row and column at which
+an FDB entry with the given {DMAC, VID} key is found.
 
-Dropping <asm/memory.h> from <asm/page.h> does not seem to cause
-any problem, will change that. Afterwards build tested it across
-page sizes and also with some random configs. Is that circular
-dependency still present ? Also wondering why was <asm/memory.h>
-included in <asm/page.h> to begin with ?
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+---
+ drivers/net/ethernet/mscc/ocelot.c | 47 ++++++++++++++++++++++++++++++
+ include/soc/mscc/ocelot.h          |  6 ++++
+ 2 files changed, 53 insertions(+)
+
+diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
+index 39a5cee81677..689c800caa54 100644
+--- a/drivers/net/ethernet/mscc/ocelot.c
++++ b/drivers/net/ethernet/mscc/ocelot.c
+@@ -96,6 +96,53 @@ int ocelot_mact_forget(struct ocelot *ocelot,
+ }
+ EXPORT_SYMBOL(ocelot_mact_forget);
+ 
++int ocelot_mact_lookup(struct ocelot *ocelot, const unsigned char mac[ETH_ALEN],
++		       unsigned int vid, int *row, int *col)
++{
++	int val;
++
++	ocelot_mact_select(ocelot, mac, vid);
++
++	/* Issue a read command with MACACCESS_VALID=1. */
++	ocelot_write(ocelot, ANA_TABLES_MACACCESS_VALID |
++		     ANA_TABLES_MACACCESS_MAC_TABLE_CMD(MACACCESS_CMD_READ),
++		     ANA_TABLES_MACACCESS);
++
++	if (ocelot_mact_wait_for_completion(ocelot))
++		return -ETIMEDOUT;
++
++	/* Read back the entry flags */
++	val = ocelot_read(ocelot, ANA_TABLES_MACACCESS);
++	if (!(val & ANA_TABLES_MACACCESS_VALID))
++		return -ENOENT;
++
++	ocelot_field_read(ocelot, ANA_TABLES_MACTINDX_M_INDEX, row);
++	ocelot_field_read(ocelot, ANA_TABLES_MACTINDX_BUCKET, col);
++
++	return 0;
++}
++EXPORT_SYMBOL(ocelot_mact_lookup);
++
++/* Like ocelot_mact_learn, except at a specific row and col. */
++void ocelot_mact_write(struct ocelot *ocelot, int port,
++		       const struct ocelot_mact_entry *entry,
++		       int row, int col)
++{
++	ocelot_mact_select(ocelot, entry->mac, entry->vid);
++
++	ocelot_field_write(ocelot, ANA_TABLES_MACTINDX_M_INDEX, row);
++	ocelot_field_write(ocelot, ANA_TABLES_MACTINDX_BUCKET, col);
++
++	ocelot_write(ocelot, ANA_TABLES_MACACCESS_VALID |
++		     ANA_TABLES_MACACCESS_ENTRYTYPE(entry->type) |
++		     ANA_TABLES_MACACCESS_DEST_IDX(port) |
++		     ANA_TABLES_MACACCESS_MAC_TABLE_CMD(MACACCESS_CMD_WRITE),
++		     ANA_TABLES_MACACCESS);
++
++	ocelot_mact_wait_for_completion(ocelot);
++}
++EXPORT_SYMBOL(ocelot_mact_write);
++
+ static void ocelot_mact_init(struct ocelot *ocelot)
+ {
+ 	/* Configure the learning mode entries attributes:
+diff --git a/include/soc/mscc/ocelot.h b/include/soc/mscc/ocelot.h
+index 32b3c60d6046..babaa5b0c026 100644
+--- a/include/soc/mscc/ocelot.h
++++ b/include/soc/mscc/ocelot.h
+@@ -923,6 +923,12 @@ void ocelot_phylink_mac_link_up(struct ocelot *ocelot, int port,
+ 				bool tx_pause, bool rx_pause,
+ 				unsigned long quirks);
+ 
++int ocelot_mact_lookup(struct ocelot *ocelot, const unsigned char mac[ETH_ALEN],
++		       unsigned int vid, int *row, int *col);
++void ocelot_mact_write(struct ocelot *ocelot, int port,
++		       const struct ocelot_mact_entry *entry,
++		       int row, int col);
++
+ #if IS_ENABLED(CONFIG_BRIDGE_MRP)
+ int ocelot_mrp_add(struct ocelot *ocelot, int port,
+ 		   const struct switchdev_obj_mrp *mrp);
+-- 
+2.17.1
+
