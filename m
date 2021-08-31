@@ -2,114 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7770D3FCD71
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5E43FCD70
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240147AbhHaTGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
+        id S240004AbhHaTF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239918AbhHaTF4 (ORCPT
+        with ESMTP id S238517AbhHaTFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:05:56 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC467C0617AD
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:05:00 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id y128so478141oie.4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:05:00 -0700 (PDT)
+        Tue, 31 Aug 2021 15:05:51 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCA4C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:04:55 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id k24so161272pgh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:04:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZvHe6WFLlEOY+cnNyJHf8IUGJZtLzfrewOzKEL/ktBI=;
-        b=ACWt0ukBTDTGH9DZcqNb3LHML6ZIXTJi22x9F1+NGl+2yrk61J+GgzScyE3gFTlSlQ
-         x226k4VgR+xl+Mxu1P2nWpexNXNlNb1LiuVItVK2b3hkNGxNhP3j+ea03k66KOk1vptW
-         JM2F8HfiCiSzN9m0fQJeZ3AwirWfftjNbongs=
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6YJBR9vYLhAu14mKGfz0PBgwyR5YLsGa/4dlPURQSIM=;
+        b=1adpaxsa8GtEIeBSvyd/je9Qejeo4SzykQMDFh7ceuQwY8HiFhw7Rvc9Lslb4u1k7S
+         patogBvUwv5V0U3Y+KHnuFLvud75z4jND1KIs11dETgGj/BTYz+K+Kp4y/iV75zKpRQD
+         TEAaSQ3JX0J1oBtgi7zhC0OFFKbnlFG7/QftpHAkjJrdl8reeE+VVKPOVmGhewUOv+Dn
+         Uo4kiAoT5IKQ0ejx8n0ucf/M/HkppJUZqBOJ8SqxgPjXphHSVZw+kNgt2CL1O89xl7+q
+         4q2lN7ivKMnPh+1R+gQbhpBjGTd5kjjk9qIkPDvJ8j9ff83xaYscK9CLBtLDeZf2m8QT
+         eLRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZvHe6WFLlEOY+cnNyJHf8IUGJZtLzfrewOzKEL/ktBI=;
-        b=b6zCET537VpXVLO5WYM3TCtc+fqrKRjuQ/qYygR31k20nsf4OgYE4ulLXU14fxgkcJ
-         SwwA39FQKB/7e+ZPz1v4rvF7aGpIdGoVvVo4GKG7XM1qZvbi0NPTQIfkWsvGbuB/I8PZ
-         yyQHmGDpj2OSZuGlILHa0N96XOR+Dwxa9MoTM2wvOHzCp8hxpYffavpggvE0fMzD0trN
-         uIHI9cu/gY/I6e5deE8VsWMHxHVRHZUWxnjH6E8Dsd1p+OdnD1Wpo1GYdcRGL9eicNmV
-         cWPYa/2whGXUS/rZiL4nccx74eO4AgZdWdgjfPVNA20B3le11EG0m2pJCOPq1+ZAF4Kh
-         k/ww==
-X-Gm-Message-State: AOAM5319UncBSV6Gep+Hmky0fecuf2/Bo0Gz/GNJcn623xLG9b4j5Um0
-        oKoJ8qZcVqySP3WBxqq/Aee1YtDxLa3gtZ8+KVg97g==
-X-Google-Smtp-Source: ABdhPJzuNvtIttTsikeJhpfgPjZLhIkRqb9ifqIW1nYLm/S07/enaQExtksB0ZnMvf3m4HMYN91Gb9HNmjtQutiTXpc=
-X-Received: by 2002:a05:6808:1449:: with SMTP id x9mr4264801oiv.14.1630436700262;
- Tue, 31 Aug 2021 12:05:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6YJBR9vYLhAu14mKGfz0PBgwyR5YLsGa/4dlPURQSIM=;
+        b=o0TFFpAH9+wSLcm7VZFwVSzPb4cQE5YD1NV4wJ/ISBKI21HHOD009Kj07gUof80qAW
+         EEbrGYfApRYJG4tvu8IpdXCUQpll8GsDAsUcKrVo7M2q03lJ/cttNuEMt4BR75dBIC/G
+         lH74t7d2lO5m8OPIU7Cnp51c8GRtwTuNBdvyJE84pZ5YFDbWJ/3j8eWrInRhQVfY6IQe
+         ZqU/3wjGh2DiWSswiHxEWsKDfSOOJaFxf0rLHRhxDxF0Xffsz0whJjYjfQBE8BwKPM3f
+         sCPUYPxCMo5LcQLO7NVgcvdSRLlOlDx02ScKmfICm0p8q+AR1Gct7C50Tm9EMZ3Hlg0G
+         8GRw==
+X-Gm-Message-State: AOAM5327LioPg4bpO9wsDNCmd/V5qqmRZ/TNRw4p3C+Tz2fH5GUKdmBx
+        hAFHhXpqor3rH756QpGeDDgSwjleDwS+5Q==
+X-Google-Smtp-Source: ABdhPJwx92JM1HGxNJmjO2brSpaA61eqAQJo+cQGvuI9Wo+II8F0jRAEAVx4Soz7cZAQH0aeqtzcNg==
+X-Received: by 2002:a63:551a:: with SMTP id j26mr27693742pgb.142.1630436695338;
+        Tue, 31 Aug 2021 12:04:55 -0700 (PDT)
+Received: from hermes.local (204-195-33-123.wavecable.com. [204.195.33.123])
+        by smtp.gmail.com with ESMTPSA id q22sm1238053pgn.67.2021.08.31.12.04.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 12:04:55 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 12:04:52 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [ANNOUNCE] iproute2 5.14.0 release
+Message-ID: <20210831120452.71325cd8@hermes.local>
 MIME-Version: 1.0
-References: <000000000000815b9605c70e74f8@google.com> <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
- <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
- <339bfb21-8e80-c7d9-46dd-c416f87c50c0@infradead.org> <535e404d-03bf-8e7a-b296-132a2a98c599@i-love.sakura.ne.jp>
- <CAMuHMdWX7s63X_zR9329canbQkPGBVxZNG4O+_=jUut60aGR9g@mail.gmail.com>
- <5c6d2b95-31d7-0d59-5e62-2593d9a0e1fe@i-love.sakura.ne.jp>
- <CAMuHMdWbSUGRGAVi-17C3hyDBZnGLAsmbAs+wXPHiCNWWLbMpA@mail.gmail.com>
- <CAKMK7uF1cnen2UVWeOL164z1CCqOuRMC5SmM+5GvRvi7C-UOTw@mail.gmail.com> <CAMuHMdWNYaZxZB0Td4PFb76rrtQMumKu6cJgLi2aNnW-9NmG8A@mail.gmail.com>
-In-Reply-To: <CAMuHMdWNYaZxZB0Td4PFb76rrtQMumKu6cJgLi2aNnW-9NmG8A@mail.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Tue, 31 Aug 2021 21:04:48 +0200
-Message-ID: <CAKMK7uHuOQWUnsiH00QFbHKgTdjjryK0ra9We2stojXMiAVgJA@mail.gmail.com>
-Subject: Re: [PATCH] fbmem: don't allow too huge resolutions
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Colin King <colin.king@canonical.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 8:56 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Daniel,
->
-> On Tue, Aug 31, 2021 at 8:53 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
-> > On Tue, Aug 31, 2021 at 7:19 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Tue, Aug 31, 2021 at 5:24 PM Tetsuo Handa
-> > > <penguin-kernel@i-love.sakura.ne.jp> wrote:
-> > > > On 2021/08/31 15:48, Geert Uytterhoeven wrote:
-> > > > > Furthermore, this restricts the virtual frame buffer size on 64-bit,
-> > > > > too, while graphics cards can have much more than 4 GiB of RAM.
-> > > >
-> > > > Excuse me, but do you mean that some hardware allows allocating more than
-> > > > UINT_MAX bytes of memory for kernel frame buffer drivers?
-> > >
-> > > While smem_len is u32 (there have been complaints about such
-> > > limitations on 64-bit platforms as far as 10 years ago), I see no
-> > > reason why a graphics card with more than 4 GiB of RAM would not be
-> > > able to provide a very large virtual screen.
-> > >
-> > > Of course e.g. vga16fb cannot, as it is limited to 64 KiB.
-> >
-> > The first gpus with 4GB or more memory started shipping in 2012. We're
-> > not going to have fbdev drivers for these, so let's not invent code
-> > for use-cases that aren't please.
->
-> This code path is used with fbdev emulation for drm drivers, too,
-> right?
+End of summer sale, get your new iproute2 just in time for fall!
+This is a relatively low volume release (maybe because of summer doldrums).
 
-Yeah, you get one buffer, with overallocating 2. That's all, you don't
-get the entire vram because we can't revoke that for fbdev users. We'd
-have fixed this long ago if it's a real limitations.
+As always, it is recommended to always use the latest iproute2.
+Do not treat iproute2 like perf and require matching packages.
+The latest code will always run on older kernels (and vice versa);
+this is possible because of the kernel API/ABI guarantees.
+Except for rare cases, iproute2 does not do maintenance releases
+and there is no long term stable version.
 
-8k at 64bpp is still less than 256MB. Also due to pci bar limitations
-(which finally get lifted now because windows fixed their pci code,
-which motivates motherboard manufactures for desktop space to also fix
-theirs) we're limited to 256MB actually cpu visible anyway.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Download:
+    https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.14.0.tar=
+.gz
+
+Repository for current release
+    https://github.com/shemminger/iproute2.git
+    git://git.kernel.org/pub/scm/network/iproute2/iproute2.git
+
+And future release (net-next):
+    git://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git
+
+Contributions:
+
+Alexander Mikhalitsyn (2):
+      ip route: ignore ENOENT during save if RT_TABLE_MAIN is being dumped
+      libnetlink: check error handler is present before a call
+
+Andrea Claudi (9):
+      tc: q_ets: drop dead code from argument parsing
+      lib: bpf_legacy: avoid to pass invalid argument to close()
+      dcb: fix return value on dcb_cmd_app_show
+      dcb: fix memory leak
+      tipc: bail out if algname is abnormally long
+      tipc: bail out if key is abnormally long
+      tc: htb: improve burst error messages
+      lib: bpf_legacy: fix potential NULL-pointer dereference
+      lib: bpf_glue: remove useless assignment
+
+Ariel Levkovich (2):
+      tc: f_flower: Add option to match on related ct state
+      tc: f_flower: Add missing ct_state flags to usage description
+
+Asbj=C3=B8rn Sloth T=C3=B8nnesen (2):
+      tc: pedit: parse_cmd: add flags argument
+      tc: pedit: add decrement operation
+
+Christian Sch=C3=BCrmann (1):
+      man8/ip-tunnel.8: fix typo, 'encaplim' is not a valid option
+
+David Ahern (6):
+      Update kernel headers
+      Update kernel headers
+      config.mk: Rerun configure when it is newer than config.mk
+      Update kernel headers
+      Update kernel headers
+      Import wwan.h uapi file
+
+Dmytro Linkin (3):
+      devlink: Add helper function to validate object handler
+      devlink: Add port func rate support
+      devlink: Add ISO/IEC switch
+
+Eric Dumazet (1):
+      tc: fq: add horizon attributes
+
+Feng Zhou (1):
+      lib/bpf: Fix btf_load error lead to enable debug log
+
+Gal Pressman (2):
+      rdma: update uapi headers
+      rdma: Add copy-on-fork to get sys command
+
+Gokul Sivakumar (3):
+      bridge: reorder cmd line arg parsing to let "-c" detected as "color" =
+option
+      bridge: fdb: don't colorize the "dev" & "dst" keywords in "bridge -c =
+fdb"
+      man: bridge: fix the typo to change "-c[lor]" into "-c[olor]" in man =
+page
+
+Guillaume Nault (1):
+      utils: bump max args number to 512 for batch files
+
+Hangbin Liu (3):
+      configure: add options ability
+      configure: convert LIBBPF environment variables to command-line optio=
+ns
+      ip/bond: add arp_validate filter support
+
+Heiko Thiery (1):
+      lib/fs: fix issue when {name,open}_to_handle_at() is not implemented
+
+Hoang Le (1):
+      tipc: call a sub-routine in separate socket
+
+Jacob Keller (1):
+      devlink: fix infinite loop on flash update for drivers without status
+
+Jakub Kicinski (3):
+      ip: align the name of the 'nohandler' stat
+      ip: dynamically size columns when printing stats
+      ss: fix fallback to procfs for raw sockets
+
+Jethro Beekman (1):
+      ip: Add nodst option to macvlan type source
+
+Jianguo Wu (1):
+      mptcp: make sure flag signal is set when add addr with port
+
+Lahav Schlesinger (1):
+      ipmonitor: Fix recvmsg with ancillary data
+
+Martynas Pumputis (1):
+      libbpf: fix attach of prog with multiple sections
+
+Neta Ostrovsky (3):
+      rdma: Update uapi headers
+      rdma: Add context resource tracking information
+      rdma: Add SRQ resource tracking information
+
+Paolo Lungaroni (2):
+      seg6: add counters support for SRv6 Behaviors
+      seg6: add support for SRv6 End.DT46 Behavior
+
+Parav Pandit (2):
+      devlink: Add optional controller user input
+      devlink: Show port state values in man page and in the help command
+
+Peilin Ye (1):
+      tc/skbmod: Remove misinformation about the swap action
+
+Phil Sutter (1):
+      tc: u32: Fix key folding in sample option
+
+Roi Dayan (2):
+      police: Add support for json output
+      police: Fix normal output back to what it was
+
+Sergey Ryazanov (2):
+      iplink: add support for parent device
+      iplink: support for WWAN devices
+
+Stephen Hemminger (6):
+      lib: remove blank line at eof
+      uapi: update kernel headers from 5.14-rc1
+      libnetlink: cosmetic changes
+      uapi: headers update
+      uapi: update neighbour.h
+      v5.14.0
+
+Tyson Moore (1):
+      tc-cake: update docs to include LE diffserv
+
