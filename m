@@ -2,124 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B313FCF7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010A23FCF81
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240401AbhHaWN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 18:13:59 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:47005 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232930AbhHaWN5 (ORCPT
+        id S240464AbhHaWQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 18:16:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55018 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232930AbhHaWQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 18:13:57 -0400
-Received: by mail-ot1-f53.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso1027267ott.13;
-        Tue, 31 Aug 2021 15:13:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZX+HYfB8T7lqB7oM6NTvI7e2KeIFR4Q4WaO7nRRDb5k=;
-        b=uQ9gmU/zOL7qRUli1Nx+Ud/EDa7nXpGGhcoeCtN1kAwnE4lBu0861dagCGDt2crkEw
-         ANQXk2ImqM1V927oA9gOM69TC3hgKV7DK+wRqb9iun2QK7NzN492vJe7lTj4oadPHmXQ
-         bNkzF7iGycV+ShhvQJPHyl+suZrTBBRxeABQqug9QxxKJg1PEnK488LH9iXNkiZxj2wc
-         4cHqGefjOk/EeSiWzTRhacDopVNb/2FQYa9j/rwj0sv+dxW4pscFhKkwV1NthNfondJh
-         tpddiXpSi7fA6SfjvdrO0UBpLxxuEeik5J9Nwn6PdbRcuZ08lgF6g8EcTckjORCt1Cxs
-         m+ew==
-X-Gm-Message-State: AOAM533oVmQUl5/CvXBKPjqsS8y93C0U4A6+Z5tVyKyU2t0vQ7yelMHk
-        f8hTFc636cDWb599vkd3vw==
-X-Google-Smtp-Source: ABdhPJxjm1/Aq+KESj1LLY5oPb7CeYJ3OoUGohOGiGVBqGpgGf4+usowBjaHVrFMsg2fj3gJPvibvA==
-X-Received: by 2002:a9d:2053:: with SMTP id n77mr27506291ota.9.1630447981665;
-        Tue, 31 Aug 2021 15:13:01 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id v24sm4221903ote.66.2021.08.31.15.13.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 15:13:01 -0700 (PDT)
-Received: (nullmailer pid 735476 invoked by uid 1000);
-        Tue, 31 Aug 2021 22:13:00 -0000
-Date:   Tue, 31 Aug 2021 17:13:00 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     linus.walleij@linaro.org, mark.rutland@arm.com,
-        matthias.bgg@gmail.com, sean.wang@kernel.org,
-        srv_heupstream@mediatek.com, hui.liu@mediatek.com,
-        eddie.huang@mediatek.com, light.hsieh@mediatek.com,
-        biao.huang@mediatek.com, hongzhou.yang@mediatek.com,
-        sean.wang@mediatek.com, seiya.wang@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v11 2/4] dt-bindings: pinctrl: mt8195: change pull
- up/down description
-Message-ID: <YS6pbO4hmNyX//tP@robh.at.kernel.org>
-References: <20210830003603.31864-1-zhiyong.tao@mediatek.com>
- <20210830003603.31864-3-zhiyong.tao@mediatek.com>
+        Tue, 31 Aug 2021 18:16:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630448155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=87x+DTynGLQU2JkIoM5X3ezVDhZ+h9VNFi3bKAp7/QQ=;
+        b=hDoHHMe2z5XJDohIPeGeWI++lamM/e8S+sNvXjDfH4TZNrK2mlX1jNc5YcUlocnG87w5iT
+        S/R1f6HRYfg1V2AyvRE1L09RY6kH6H/QBOGeXmGi7LobTomd5AGAGIiXx4PfTy0Ikbfzes
+        7fsPoh+poMyzYlcM2TL+QSxl3FDVcME=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-300-QiOs4Te1P7m56nLit_JQdA-1; Tue, 31 Aug 2021 18:15:53 -0400
+X-MC-Unique: QiOs4Te1P7m56nLit_JQdA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 302021009628;
+        Tue, 31 Aug 2021 22:15:51 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E57D26060F;
+        Tue, 31 Aug 2021 22:15:47 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Folios: Can we resolve this please?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830003603.31864-3-zhiyong.tao@mediatek.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3285173.1630448147.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 31 Aug 2021 23:15:47 +0100
+Message-ID: <3285174.1630448147@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 08:36:01AM +0800, Zhiyong Tao wrote:
-> Change pull up/down description
+Hi Linus, Andrew, Johannes,
 
-Every commit is a 'change'. Your commit msg should explain 'why', not 
-what the diff is.
+Can we come to a quick resolution on folios?  I'd really like this to be
+solved in this merge window if at all possible as I (and others) have stuf=
+f
+that will depend on and will conflict with Willy's folio work.  It would b=
+e
+great to get this sorted one way or another.
 
-> 
-> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-> ---
->  .../bindings/pinctrl/pinctrl-mt8195.yaml      | 32 +++++++++++++++++--
->  1 file changed, 29 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
-> index 2f12ec59eee5..a341ed9f0095 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
-> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
-> @@ -85,9 +85,35 @@ patternProperties:
->            2/4/6/8/10/12/14/16mA in mt8195.
->          enum: [0, 1, 2, 3, 4, 5, 6, 7]
->  
-> -      bias-pull-down: true
-> -
-> -      bias-pull-up: true
-> +      bias-pull-down:
-> +        description: |
-> +          For pull down type is normal, it don't need add RSEL & R1R0 define
-> +          and resistance value.
-> +          For pull down type is PUPD/R0/R1 type, it can add R1R0 define to
-> +          set different resistance. It can support "MTK_PUPD_SET_R1R0_00" &
-> +          "MTK_PUPD_SET_R1R0_01" & "MTK_PUPD_SET_R1R0_10" & "MTK_PUPD_SET_R1R0_11"
-> +          define in mt8195.
-> +          For pull down type is RSEL, it can add RSEL define & resistance value(ohm)
-> +          to set different resistance. It can support "MTK_PULL_SET_RSEL_000" &
-> +          "MTK_PULL_SET_RSEL_001" & "MTK_PULL_SET_RSEL_010" & "MTK_PULL_SET_RSEL_011" &
-> +          "MTK_PULL_SET_RSEL_100" & "MTK_PULL_SET_RSEL_101" & "MTK_PULL_SET_RSEL_110" &
-> +          "MTK_PULL_SET_RSEL_111" define in mt8195. It can also support resistance value(ohm)
-> +          "75000" & "5000" in mt8195.
+As I see it, there are three issues, I think, and I think they kind of go =
+like
+this:
 
-Sounds like constraints on the values. Please write a schema.
+ (1) Johannes wants to get away from pages being used as the unit of memor=
+y
+     currency and thinks that folios aren't helpful in this regard[1].  Th=
+ere
+     seems to be some disagreement about where this is heading.
 
-> +
-> +      bias-pull-up:
-> +        description: |
-> +          For pull up type is normal, it don't need add RSEL & R1R0 define
-> +          and resistance value.
-> +          For pull up type is PUPD/R0/R1 type, it can add R1R0 define to
-> +          set different resistance. It can support "MTK_PUPD_SET_R1R0_00" &
-> +          "MTK_PUPD_SET_R1R0_01" & "MTK_PUPD_SET_R1R0_10" & "MTK_PUPD_SET_R1R0_11"
-> +          define in mt8195.
-> +          For pull up type is RSEL, it can add RSEL define & resistance value(ohm)
-> +          to set different resistance. It can support "MTK_PULL_SET_RSEL_000" &
-> +          "MTK_PULL_SET_RSEL_001" & "MTK_PULL_SET_RSEL_010" & "MTK_PULL_SET_RSEL_011" &
-> +          "MTK_PULL_SET_RSEL_100" & "MTK_PULL_SET_RSEL_101" & "MTK_PULL_SET_RSEL_110" &
-> +          "MTK_PULL_SET_RSEL_111" define in mt8195. It can also support resistance value(ohm)
-> +          "1000" & "1500" & "2000" & "3000" & "4000" & "5000" & "10000" & "75000" in mt8195.
->  
->        bias-disable: true
->  
-> -- 
-> 2.18.0
-> 
-> 
+ (2) Linus isn't entirely keen on Willy's approach[2], with a bottom up
+     approach hiding the page objects behind a new type from the pov of th=
+e
+     filesystem, but would rather see the page struct stay the main API ty=
+pe
+     and the changes be hidden transparently inside of that.
+
+     I think from what Linus said, he may be in favour (if that's not too
+     strong a word) of using a new type to make sure we don't miss the
+     necessary changes[3].
+
+ (3) Linus isn't in favour of the name 'folio' for the new type[2].  Vario=
+us
+     names have been bandied around and Linus seems okay with "pageset"[4]=
+,
+     though it's already in minor(-ish) use[5][6].  Willy has an alternate
+     patchset with "folio" changed to "pageset"[7].
+
+With regard to (1), I think the folio concept could be used in future to h=
+ide
+at least some of the paginess from filesystems.
+
+With regard to (2), I think a top-down approach won't work until and unles=
+s we
+wrap all accesses to struct page by filesystems (and device drivers) in
+wrapper functions - we need to stop filesystems fiddling with page interna=
+ls
+because what page internals may mean may change.
+
+With regard to (3), I'm personally fine with the name "folio", as are othe=
+r
+people[8][9][10][11], but I could also live with a conversion to "pageset"=
+.
+
+Is it possible to take the folios patchset as-is and just live with the na=
+me,
+or just take Willy's rename-job (although it hasn't had linux-next soak ti=
+me
+yet)?  Or is the approach fundamentally flawed and in need of redoing?
+
+Thanks,
+David
+
+Link: https://lore.kernel.org/r/YSQSkSOWtJCE4g8p@cmpxchg.org/ [1]
+Link: https://lore.kernel.org/r/CAHk-=3DwjD8i2zJVQ9SfF2t=3D_0Fkgy-i5Z=3DmQ=
+jCw36AHvbBTGXyg@mail.gmail.com/ [2]
+Link: https://lore.kernel.org/r/CAHk-=3DwgkA=3DRKJ-vke0EoOUK19Hv1f=3D47Da6=
+pWAWQZPhjKD6WOg@mail.gmail.com/ [3]
+Link: https://lore.kernel.org/r/CAHk-=3DwiZ=3Dwwa4oAA0y=3DKztafgp0n+BDTEV6=
+ybLoH2nvLBeJBLA@mail.gmail.com/ [4]
+Link: https://lore.kernel.org/r/CAHk-=3Dwhd8ugrzMS-3bupkPQz9VS+dWHPpsVssrD=
+fuFgfff+n5A@mail.gmail.com/ [5]
+Link: https://lore.kernel.org/r/CAHk-=3DwgwRW1_o6iBOxtSE+vm7uiSr98wkTLbCze=
+9-7wW0ZhOLQ@mail.gmail.com/ [6]
+Link: https://lore.kernel.org/r/YSmtjVTqR9%2F4W1aq@casper.infradead.org/ [=
+7]
+Link: https://lore.kernel.org/r/YSXkDFNkgAhQGB0E@infradead.org/ [8]
+Link: https://lore.kernel.org/r/92cbfb8f-7418-15d5-c469-d7861e860589@rasmu=
+svillemoes.dk/ [9]
+Link: https://lore.kernel.org/r/cf30c0e8d1eecf08b2651c5984ff09539e2266f9.c=
+amel@kernel.org/ [10]
+Link: https://lore.kernel.org/r/20210826005914.GG12597@magnolia/ [11]
+
