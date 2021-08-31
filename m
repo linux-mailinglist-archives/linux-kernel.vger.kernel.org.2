@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD513FC454
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2663FC456
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240298AbhHaIcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 04:32:16 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:36328 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240190AbhHaIcO (ORCPT
+        id S240310AbhHaIco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 04:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240304AbhHaIcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 04:32:14 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jnwang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Umjn3cu_1630398676;
-Received: from B-VE2WML7H-1820.local(mailfrom:jnwang@linux.alibaba.com fp:SMTPD_---0Umjn3cu_1630398676)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 31 Aug 2021 16:31:16 +0800
-Subject: Re: kernel hang during reboot when cmdline include a non-exist
- console device
-To:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHk-=wj+G8MXRUk5HRCvUr8gOpbR+zXQ6WNTB0E7n32fTUjKxQ@mail.gmail.com>
- <YS2fZ1sknFYKtJFi@google.com> <YS3k5TRf5oLLEdKu@alley>
-From:   James Wang <jnwang@linux.alibaba.com>
-Message-ID: <6970d88b-03e4-61ee-c280-1206d3ace0d9@linux.alibaba.com>
-Date:   Tue, 31 Aug 2021 16:31:16 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Tue, 31 Aug 2021 04:32:43 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A8BC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 01:31:48 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id p38so37001474lfa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 01:31:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=rf85IIrYDoX56EbvJwzXLS38sc5yj7QH4axMImYh7js=;
+        b=YAa/v5HgGjfDVi6CD0lAfa1waSU5Ad87YacLGP7AHTEZANU7iLc7DiodEVgJl5QdA0
+         ywMylaHfxKk6r1twxjJ5gabLgv2jnT8jjIuN0rmAvFHJLiBzuBU3B4k5F8owOfmVtM8t
+         D9n6kqssH3mvEHUTW0n8Bi4fC196fWvQNzNmJSAmNwa3aJlvfzCuK+tjQCbafHEiu/pp
+         zJFKqsHocH3yXFEGwWlqaEm0Fqj46tbIhhMSO/Undup6pFDzrLqnm8IXNr6yom1AzWL0
+         GyWV94+OxtXoqrq5HM+HujytxkZxrdsHS3GRvitT9EhRgN0WT9UJocDhVt5BKz2nqEwL
+         XGPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=rf85IIrYDoX56EbvJwzXLS38sc5yj7QH4axMImYh7js=;
+        b=NE3FL9YKeF/hNQYcbp5ZIlfl5kKwlLs5EjOLlzNaigyOY6grXvOyu8v3WzQ+hlNBlV
+         sZVsTxlfP2PsprAD6LTBpbpXS91dzw9ffWTShmRXCzyKGd7ACr+fJeIJ6PVQcLRj6xrv
+         TJrustXgNOcS9ws2N2Y3OLRSE2LNICh+CoOUE/wwBRjIrkWSmhwClrBOuuE4uelKJRLP
+         UKBEq24VVjhJLQA590IuWsiaQWryhoTEN/ReuQ6SU93FSXtcnWw9UHo4m0LNUdO1Vo+g
+         ISsIXP8x4wLjhWUNUsem3TMjIG2CF8Gxl+cFOCVA3GEmkzZCeZxC+wyDSFtVIUQp+SgR
+         seIQ==
+X-Gm-Message-State: AOAM531yHMmKUestjBuwC8jONndTo4TjUHhKyiiKtRG+j6QgajnQLNOC
+        vc+S1rD4XFBm73WHF4+I3jXtozxXjoT+Sl/RmQ8=
+X-Google-Smtp-Source: ABdhPJwQfciZNJXMmBnci/7KGqzkG7ceI/y1/uhFmuJ62+JJfoA3OnRVurz2TsAS52HUjpxBS/IvVhKTzDIjM3+pUqU=
+X-Received: by 2002:a05:6512:6d5:: with SMTP id u21mr20722937lff.64.1630398706632;
+ Tue, 31 Aug 2021 01:31:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YS3k5TRf5oLLEdKu@alley>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ab3:792f:0:0:0:0:0 with HTTP; Tue, 31 Aug 2021 01:31:45
+ -0700 (PDT)
+Reply-To: mr.sawadogomichel1@gmail.com
+From:   "Mr.Sawadogo Michel" <sadiakipkalya1@gmail.com>
+Date:   Tue, 31 Aug 2021 01:31:45 -0700
+Message-ID: <CAOUBpbbtb=g4XWWib_NyeP4N6ekRtdC9kKm7x9e5NhTHKyo9kA@mail.gmail.com>
+Subject: Hello Dear Friend Your Urgent Response Is Needed
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Dear Friend,
 
-在 2021/8/31 PM4:14, Petr Mladek 写道:
-> Adding the reporter into Cc.
->
-> On Tue 2021-08-31 12:17:59, Sergey Senozhatsky wrote:
->> On (21/08/30 19:53), Linus Torvalds wrote:
->>> There's a bugzilla for this, but let's just move it to reguilar email,
->>> unless some of you want to track it that way.
->>>
->>> The bugzilla entry says
->>>
->>>    "When reboot， the capslock key of thinkpad x1 starts blinking"
->>>
->>> which sounds like there's an oops that just isn't showing, quite
->>> possibly because the console has already been shut down.
->>>
->>> I didn't test this out, and would sincerely hope that somebody else is
->>> willing to follow up on it since I'm in the busiest part of the merge
->>> window.
->> [..]
->>
->>>> https://bugzilla.kernel.org/show_bug.cgi?id=214201
->> I think normally wrong/empty console boot argument should not cause
->> problems. We have a huge number of devices that use console="", for
->> instance. But on some hardware this triggers panic(), very early on.
->>
->> I have the same symptoms on my laptop, and so far haven't been able
->> to figure out how to track it down, but I need to re-start my investigation.
-> Sergey, I think that you talk about the crash where there is no registered
-> console and console_on_rootfs() fails to create stdin, stdout, and
-> stderr for the init process. As a result the kernel crashes
-> during boot.
->
-> But the bugreport says that the system booted. It crashed later during
-> reboot. It will likely be in the shutdown phase. It still might be still
-> be caused by the missing console. But we should rule out other
-> problems.
->
-> James, do you see the problem:
->
->    1. When there is a real console registered. When you remove the
->       wrong console= parameter.
-if I use a real tty, no problem;
->
->    2. When using "reboot -f" so that the system reboots a dirty way
->       without trying to shut down services.
+My name is Mr.Sawadogo Michel. I have decided to seek a confidential
+co-operation  with you in the execution of the deal described
+here-under for our both  mutual benefit and I hope you will keep it a
+top secret because of the nature  of the transaction, During the
+course of our bank year auditing, I discovered  an unclaimed/abandoned
+fund, sum total of {US$19.3 Million United State  Dollars} in the bank
+account that belongs to a Saudi Arabia businessman Who unfortunately
+lost his life and entire family in a Motor Accident.
 
-Yes，I have to use "reboot -f" to avoid a cold reboot;
+Now our bank has been waiting for any of the relatives to come-up for
+the claim but nobody has done that. I personally has been unsuccessful
+in locating any of the relatives, now, I sincerely seek your consent
+to present you as the next of kin / Will Beneficiary to the deceased
+so that the proceeds of this account valued at {US$19.3 Million United
+State Dollars} can be paid to you, which we will share in these
+percentages ratio, 60% to me and 40% to you. All I request is your
+utmost sincere co-operation; trust and maximum confidentiality to
+achieve this project successfully. I have carefully mapped out the
+moralities for execution of this transaction under a legitimate
+arrangement to protect you from any breach of the law both in your
+country and here in Burkina Faso when the fund is being transferred to
+your bank account.
 
-> Best Regards,
-> Petr
+I will have to provide all the relevant document that will be
+requested to indicate that you are the rightful beneficiary of this
+legacy and our bank will release the fund to you without any further
+delay, upon your consideration and acceptance of this offer, please
+send me the following information as stated below so we can proceed
+and get this fund transferred to your designated bank account
+immediately.
+
+-Your Full Name:
+-Your Contact Address:
+-Your direct Mobile telephone Number:
+-Your Date of Birth:
+-Your occupation:
+
+I await your swift response and re-assurance.
+
+Best regards,
+Mr.Sawadogo Michel.
