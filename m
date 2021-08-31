@@ -2,128 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70033FC2F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7544D3FC2FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238022AbhHaGuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 02:50:02 -0400
-Received: from mail-vk1-f180.google.com ([209.85.221.180]:42842 "EHLO
-        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236181AbhHaGuB (ORCPT
+        id S238319AbhHaGuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 02:50:40 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:63716 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237960AbhHaGuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 02:50:01 -0400
-Received: by mail-vk1-f180.google.com with SMTP id bb10so5105585vkb.9;
-        Mon, 30 Aug 2021 23:49:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zKUmgc5HsRuZ5PLjImhWvj4wVvW9mMCLXiQ/PKtOxMo=;
-        b=KpS2VdhsCdqgIax/sJ2jO9WvhcklQPDNebR/JT0JnFDCyOIfXVDJv+T6CxZIfU0KSg
-         TzQCb3BovhK6KggZIvwCSQD29BO467ovqtNZLr8dcFxawegy1dUBLvGX/PpdfnrSDTTE
-         4w+BsQCBcMH2GisUY+9CoSGMrFCWmqCP3iQf+A196NQ3QhguKIZO9rn9tvxXAd9jzdHK
-         NTBBX8KJ/xfjuebbrqW+XAI8diSn5Mo0P7jpTS4x7HXW0B50n4BIkDSvIH2e2e3xbnRH
-         S7dKPiWRg6zxECIb1i+drt7Dh6mP6NHnyhgPglslBwUy6ljGY2aS55zI8zZygssZfPZF
-         OVeA==
-X-Gm-Message-State: AOAM533WOFJXkRFDc82W3hm1VMn4qGxk36v5S+jyTcl1t23Ehd4zUD5a
-        Db+Z7ohitMjoUnrf64ncmbO6/vOumCc4PhqyzWo=
-X-Google-Smtp-Source: ABdhPJzEoZFw11dTEebUr/ZL3MQASD4gZXPDPDil0jflTrPULArVww18ZayyTQn/pA0/lqVcrURes38hVPnfukRK4Xc=
-X-Received: by 2002:a1f:738f:: with SMTP id o137mr16613429vkc.2.1630392546165;
- Mon, 30 Aug 2021 23:49:06 -0700 (PDT)
+        Tue, 31 Aug 2021 02:50:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630392585; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=89LNhb/AkuU7G1W1T3OrP3YeHtcd/PEwZicaCEUM8BI=; b=cAejUQb8u14fI3vPA5kiSD53DrVOH7wB7WZSh8EtH7gLf/B8s/CPKRipPvDXEUXENFn3S3GR
+ pGDXk7CwE77WFTR70IQHZAdim/FvPTUY2h5ESiThKUHzCHLFMzQZj1pQU9S8zjN7NNKkbrGd
+ 3hl8iiBllALQOK67z3efr5SpoD0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 612dd0f089cdb620616e1171 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 31 Aug 2021 06:49:20
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 88E11C43618; Tue, 31 Aug 2021 06:49:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0A126C4338F;
+        Tue, 31 Aug 2021 06:49:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0A126C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     "Coelho\, Luciano" <luciano.coelho@intel.com>
+Cc:     "jmforbes\@linuxtx.org" <jmforbes@linuxtx.org>,
+        "yj99.shin\@samsung.com" <yj99.shin@samsung.com>,
+        "davem\@davemloft.net" <davem@davemloft.net>,
+        "Berg\, Johannes" <johannes.berg@intel.com>,
+        "Baruch\, Yaara" <yaara.baruch@intel.com>,
+        "ihab.zhaika\@intel.com" <ihab.zhaika@intel.com>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "kuba\@kernel.org" <kuba@kernel.org>,
+        "Gottlieb\, Matti" <matti.gottlieb@intel.com>,
+        "Grumbach\, Emmanuel" <emmanuel.grumbach@intel.com>,
+        "jh80.chung\@samsung.com" <jh80.chung@samsung.com>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH] iwlwifi Add support for ax201 in Samsung Galaxy Book Flex2 Alpha
+References: <20210702223155.1981510-1-jforbes@fedoraproject.org>
+        <CGME20210709173244epcas1p3ea6488202595e182d45f59fcba695e0a@epcas1p3.samsung.com>
+        <CAFxkdApGUeGdg4=rH=iC2SK58FO6yzbFiq3uSFMFTyZsDQ5j5w@mail.gmail.com>
+        <8c55c7c9-a5ae-3b0e-8a0f-8954a8da7e7b@samsung.com>
+        <94edb3c4-43a6-1031-8431-2befb0eca2bf@samsung.com>
+        <87ilzyudk0.fsf@codeaurora.org>
+        <CAFxkdArjsp4YxYWYZ_qW7UsNobzodKOaNJqKTHpPf5RmtT+Rww@mail.gmail.com>
+        <ddcb88a3f6614ef6138b68375a22fbba1b068ff3.camel@intel.com>
+Date:   Tue, 31 Aug 2021 09:49:13 +0300
+In-Reply-To: <ddcb88a3f6614ef6138b68375a22fbba1b068ff3.camel@intel.com>
+        (Luciano Coelho's message of "Tue, 31 Aug 2021 06:36:15 +0000")
+Message-ID: <87wno22jo6.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <000000000000815b9605c70e74f8@google.com> <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
- <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
- <339bfb21-8e80-c7d9-46dd-c416f87c50c0@infradead.org> <535e404d-03bf-8e7a-b296-132a2a98c599@i-love.sakura.ne.jp>
-In-Reply-To: <535e404d-03bf-8e7a-b296-132a2a98c599@i-love.sakura.ne.jp>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 31 Aug 2021 08:48:53 +0200
-Message-ID: <CAMuHMdWX7s63X_zR9329canbQkPGBVxZNG4O+_=jUut60aGR9g@mail.gmail.com>
-Subject: Re: [PATCH] fbmem: don't allow too huge resolutions
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Colin King <colin.king@canonical.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tetsuo,
+"Coelho, Luciano" <luciano.coelho@intel.com> writes:
 
-Thanks for your patch!
-
-On Mon, Aug 30, 2021 at 6:05 PM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
-> syzbot is reporting page fault at vga16fb_fillrect() [1], for
-> vga16fb_check_var() is failing to detect multiplication overflow.
+> On Wed, 2021-08-25 at 13:07 -0500, Justin Forbes wrote:
+>> On Sat, Aug 21, 2021 at 8:34 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+>> > 
+>> > Jaehoon Chung <jh80.chung@samsung.com> writes:
+>> > 
+>> > > Hi
+>> > > 
+>> > > On 8/9/21 8:09 AM, Jaehoon Chung wrote:
+>> > > > Hi
+>> > > > 
+>> > > > On 7/10/21 2:32 AM, Justin Forbes wrote:
+>> > > > > On Fri, Jul 2, 2021 at 5:32 PM Justin M. Forbes
+>> > > > > <jforbes@fedoraproject.org> wrote:
+>> > > > > > 
+>> > > > > > The Samsung Galaxy Book Flex2 Alpha uses an ax201 with the ID a0f0/6074.
+>> > > > > > This works fine with the existing driver once it knows to claim it.
+>> > > > > > Simple patch to add the device.
+>> > > > > > 
+>> > > > > > Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
+>> > > 
+>> > > If this patch is merged, can this patch be also applied on stable tree?
+>> > 
+>> > Luca, what should we do with this patch?
+>> > 
+>> > --
+>> > https://patchwork.kernel.org/project/linux-wireless/list/
+>> > 
+>> > https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>> 
+>> 
+>> Is that to imply that there is an issue with the submission?  Happy to
+>> fix any problems, but it would nice to get this in soon.  I know the
+>> 5.14 merge window was already opened when I sent it, but the 5.15 MR
+>> is opening soon.  Hardware is definitely shipping and in users hands.
 >
->   if (vxres * vyres > maxmem) {
->     vyres = maxmem / vxres;
->     if (vyres < yres)
->       return -ENOMEM;
->   }
-
-IMHO that should be fixed in vga16fb, too.
-
-> Since no module would accept too huge resolutions where multiplication
-> overflow happens, let's reject in the common path.
+> Sorry for the delay here.  This fell between the cracks.
 >
-> This patch does not use array_size(), for array_size() is allowed to
-> return UINT_MAX on 32bits even if overflow did not happen. We want to
-> detect only overflow here, for individual module will recheck with more
-> strict limits as needed.
+> Kalle can you apply this directly to your tree? I'll assign it to you.
 
-Which is IMHO not really an issue, as I believe on 32-bit you cannot
-use a very large frame buffer, long before you reach UINT_MAX.
+Ok, I'll queue this to v5.15.
 
-> Link: https://syzkaller.appspot.com/bug?extid=04168c8063cfdde1db5e [1]
-> Reported-by: syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>
-> Debugged-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Tested-by: syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>
-> ---
->  drivers/video/fbdev/core/fbmem.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
-> index 1c855145711b..9f5075dc2345 100644
-> --- a/drivers/video/fbdev/core/fbmem.c
-> +++ b/drivers/video/fbdev/core/fbmem.c
-> @@ -1008,6 +1008,11 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
->         if (var->xres < 8 || var->yres < 8)
->                 return -EINVAL;
->
-> +       /* Don't allow u32 * u32 to overflow. */
-> +       if ((u64) var->xres * var->yres > UINT_MAX ||
-> +           (u64) var->xres_virtual * var->yres_virtual > UINT_MAX)
-> +               return -EINVAL;
-> +
+> And, if possible, add the cc-stable tag so it gets picked up. :)
 
-I think it would still be better to use check_mul_overflow(), as that
-makes it clear and explicit what is being done, even without a comment.
-
-Furthermore, this restricts the virtual frame buffer size on 64-bit,
-too, while graphics cards can have much more than 4 GiB of RAM.
-
->         ret = info->fbops->fb_check_var(var, info);
->
->         if (ret)
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Ok.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
