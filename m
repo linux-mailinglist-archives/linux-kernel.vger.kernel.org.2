@@ -2,215 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5274A3FCE33
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C04BA3FCE39
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240722AbhHaUMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 16:12:33 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:46634 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbhHaUMc (ORCPT
+        id S240866AbhHaUOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 16:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230286AbhHaUOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 16:12:32 -0400
-Received: by mail-ot1-f47.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso599080ott.13;
-        Tue, 31 Aug 2021 13:11:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xDJ0PmrfTNmUKd+WiQbtsbJY13YkKv2W/xQT4TLd1m8=;
-        b=dIktUSgiH8DoGBEswOa3wh0P/d6ll8LW5GsiBh69orjfTNjk3s0LQacvOK93tij0HC
-         AKl6KIiVyme9NyE+cLcXnd6E6IugE+QTwr/lWuLeI3E9/+Ox7JhSm/pf86yhoqv28v8f
-         VFU905jNRbmzYIY2fxZUdWT8YC/+sUTrbiOSGHpVPbCGhuksoWroqV5irBG65VLfx7o/
-         HF7/a1oHpjrnc7Xznglju4xm8NIktnsvzpcyIsf2iCV75dMkmFJdjR+A1RDx03UvNnDr
-         uDgysI0/uGogvxcDYR4kE+8mSXAJ04Tv1VDIG5R/EWQHhrX9eKFKm1DWGY1diTVPhm6V
-         1W7g==
-X-Gm-Message-State: AOAM531kAzRQ7ddgW2S22X9pG/5FeSY9LFBZwcMU/vr113RQpwcaZPXb
-        0NwhBy9uKSaA4mM5ybirVA==
-X-Google-Smtp-Source: ABdhPJymWrZnT1U/ezUhueNwXieCLmJl8C0jQHRuWUEasrp1MJVlGEmUgItUJ5tc95ePvqM2m8Rs8g==
-X-Received: by 2002:a9d:17c5:: with SMTP id j63mr25565229otj.208.1630440696001;
-        Tue, 31 Aug 2021 13:11:36 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id b24sm3814403oic.33.2021.08.31.13.11.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 13:11:35 -0700 (PDT)
-Received: (nullmailer pid 575853 invoked by uid 1000);
-        Tue, 31 Aug 2021 20:11:34 -0000
-Date:   Tue, 31 Aug 2021 15:11:34 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>, michal.simek@xilinx.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/3] dt-bindings: pwm: Add Xilinx AXI Timer
-Message-ID: <YS6M9jmTmy4EvB4k@robh.at.kernel.org>
-References: <20210826211830.3311140-1-sean.anderson@seco.com>
+        Tue, 31 Aug 2021 16:14:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C273C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 13:13:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Pxk8GG60X+2yyobrSu3E/AhsnJLMw7NHv2ZY1OGYPLA=; b=FBEs/xlJysw8HQAyQjF7MUWNMS
+        De2n17pxbQ2xl+NP//J2C8FdgxiOn5GaG568uQ4xBswpLfcfSotviKb/4v24SeBynq4+kZXekuzgc
+        /euaXeiom93NNxQk+a/pGbWeZgCbc/33axph0y0UG+SSeD572JZ0l4CkK9HtjJSiczv+/cQapT7GL
+        MuJVdbS1L1xPGUwr4ezVDYbzSjwbxnTtDqz7GEQcum7reqcsnLL324QBS1yyPHcOMqsswP+vPFZ0+
+        ae/4Qhu2DN0lImdyqbGJtGEEWmsoVPfF2PZDCZI5o+1wqWlLjpf1WEwz5tyY9F+rDnxd7MfyVyorg
+        xw+sCYRA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mLA7s-001Wyc-Sl; Tue, 31 Aug 2021 20:13:08 +0000
+Date:   Tue, 31 Aug 2021 21:12:56 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Tawah Peggy <tawahpeggy98@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH] [Outreachy Kernel] Staging: wlan-ng:
+ cfg80211: Fix Lines should not end with a '('
+Message-ID: <YS6NSLhZKx0mlcYC@casper.infradead.org>
+References: <20210824031551.GA80985@peggy-InsydeH2O-EFI-BIOS>
+ <YSTAnuoGF4zuAFrg@casper.infradead.org>
+ <CADT-=4mWmUmBQtwwdRXUCPZfePbX6gQB_+ZrVwuE-GC=TYE2rw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210826211830.3311140-1-sean.anderson@seco.com>
+In-Reply-To: <CADT-=4mWmUmBQtwwdRXUCPZfePbX6gQB_+ZrVwuE-GC=TYE2rw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 05:18:28PM -0400, Sean Anderson wrote:
-> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is a
-> "soft" block, so it has some parameters which would not be configurable in
-> most hardware. This binding is usually automatically generated by Xilinx's
-> tools, so the names and values of some properties should be kept as they
-> are, if possible. In addition, this binding is already in the kernel at
-> arch/microblaze/boot/dts/system.dts, and in user software such as QEMU.
-> 
-> The existing driver uses the clock-frequency property, or alternatively the
-> /cpus/timebase-frequency property as its frequency input. Because these
-> properties are deprecated, they have not been included with this schema.
-> All new bindings should use the clocks/clock-names properties to specify
-> the parent clock.
-> 
-> Because we need to init timer devices so early in boot, we determine if we
-> should use the PWM driver or the clocksource/clockevent driver by the
-> presence/absence, respectively, of #pwm-cells. Because both counters are
-> used by the PWM, there is no need for a separate property specifying which
-> counters are to be used for the PWM.
-> 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-> ---
-> 
-> Changes in v6:
-> - Fix incorrect schema id
-> - Enumerate possible counter widths
-> 
-> Changes in v5:
-> - Update commit message to reflect revisions
-> - Fix indentation lint
-> - Add example for timer binding
-> - Remove xlnx,axi-timer-2.0 compatible string
-> - Move schema into the timer directory
-> 
-> Changes in v4:
-> - Remove references to generate polarity so this can get merged
-> - Predicate PWM driver on the presence of #pwm-cells
-> - Make some properties optional for clocksource drivers
-> 
-> Changes in v3:
-> - Mark all boolean-as-int properties as deprecated
-> - Add xlnx,pwm and xlnx,gen?-active-low properties.
-> - Make newer replacement properties mutually-exclusive with what they
->   replace
-> - Add an example with non-deprecated properties only.
-> 
-> Changes in v2:
-> - Use 32-bit addresses for example binding
-> 
->  .../bindings/timer/xlnx,xps-timer.yaml        | 90 +++++++++++++++++++
->  1 file changed, 90 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml b/Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
-> new file mode 100644
-> index 000000000000..5be353a642aa
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
-> @@ -0,0 +1,90 @@
-> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/timer/xlnx,xps-timer.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Xilinx LogiCORE IP AXI Timer Device Tree Binding
-> +
-> +maintainers:
-> +  - Sean Anderson <sean.anderson@seco.com>
-> +
-> +properties:
-> +  compatible:
-> +    contains:
-> +      const: xlnx,xps-timer-1.00.a
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    const: s_axi_aclk
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  xlnx,count-width:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [8, 16, 32]
-> +    default: 32
-> +    description:
-> +      The width of the counter(s), in bits.
-> +
-> +  xlnx,one-timer-only:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [ 0, 1 ]
-> +    description:
-> +      Whether only one timer is present in this block.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - xlnx,one-timer-only
-> +
-> +allOf:
-> +  - if:
-> +      required:
-> +        - '#pwm-cells'
-> +    then:
-> +      allOf:
-> +        - required:
-> +            - clocks
-> +        - properties:
-> +            xlnx,one-timer-only:
-> +              const: 0
-> +    else:
-> +      required:
-> +        - interrupts
-> +  - if:
-> +      required:
-> +        - clocks
-> +    then:
-> +      required:
-> +        - clock-names
-> +
-> +additionalProperties: true
+On Mon, Aug 30, 2021 at 01:41:58PM +0100, Tawah Peggy wrote:
+> Thanks for your feedback Mattew,
+> please what approach do you suggest I use?
 
-This needs to be false. What else do you expect to be present?
+[please don't remove mailing lists; other people may benefit from the
+answers to your questions]
 
-> +
-> +examples:
-> +  - |
-> +    timer@800e0000 {
-> +        clock-names = "s_axi_aclk";
-> +        clocks = <&zynqmp_clk 71>;
-> +        compatible = "xlnx,xps-timer-1.00.a";
-> +        reg = <0x800e0000 0x10000>;
-> +        interrupts = <0 39 2>;
-> +        xlnx,count-width = <16>;
-> +        xlnx,one-timer-only = <0x0>;
-> +    };
-> +
-> +    timer@800f0000 {
-> +        #pwm-cells = <0>;
-> +        clock-names = "s_axi_aclk";
-> +        clocks = <&zynqmp_clk 71>;
-> +        compatible = "xlnx,xps-timer-1.00.a";
-> +        reg = <0x800e0000 0x10000>;
-> +        xlnx,count-width = <32>;
-> +        xlnx,one-timer-only = <0x0>;
-> +    };
-> -- 
-> 2.25.1
+There are a number of different approaches you can take to fixing this
+kind of warning.
+
+1. Reduce indentation.  This call seems to be indented 3-4 levels,
+so maybe it would be good to pull part of this function out into
+a helper function.
+
+2. Use a local variable.
+			type center_freq = request->channels[i]->center_freq;
+			ieee80211_frequency_to_channel(center_freq);
+
+3. Reduce the length of the function name.  ieee80211_frequency_to_channel
+is quite a long identifier.  Maybe it would be worth renaming.
+
+4. Introduce a helper function, eg
+
+static inline foo something_to_channel(struct bar *channel)
+{
+	return ieee80211_frequency_to_channel(channel->center_freq);
+}
+
+...
+
+			something_to_channel(request->channels[i]);
+
+There's a judgement call to be made, and without looking at the function
+in detail, I don't know which of these methods might be best.
+
+> tawah peggy
 > 
+> On Tue, Aug 24, 2021 at 10:50 AM Matthew Wilcox <willy@infradead.org> wrote:
 > 
+> > On Tue, Aug 24, 2021 at 04:15:51AM +0100, Tawah Peggy wrote:
+> > > -                     ieee80211_frequency_to_channel(
+> > > -                             request->channels[i]->center_freq);
+> > > +                     ieee80211_frequency_to_channel
+> > > +                             (request->channels[i]->center_freq);
+> >
+> > This is the wrong way to fix this warning.  Function names should not be
+> > divorced from their arguments.
+> >
