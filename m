@@ -2,94 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527713FCCD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 20:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A0B3FCCD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 20:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240415AbhHaSQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 14:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238911AbhHaSQS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 14:16:18 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539F3C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 11:15:22 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id d16so262456ljq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 11:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=a/2+IO+onR8n3ZdfuwB5lM1ps4vOPHv1OrjjTrVRTCk=;
-        b=X0ufsWfC9N2z4/uotq23vGlo/DdqC+468GqPtNuc1ZZfkah7kMxpeku5LUa9pPVVH+
-         TmWaglhxqM2zYn1HRHLkMhgeU8GgkEefvt3gA9U7CPFqiu18mEllBf6br8uo/VF7RVYo
-         vuSImix2ItWDgrpRdbjLgfyxGDmxG0BJvNJvJNxVLtDdmrShZaXBLrOjOCJ+zXD7gA+r
-         If0dgYQk9rhRpbxyhrzFLL11zbsKubj/F4bY9dEJ1B86QOXvHBcK7UzFGPRCS9w5DO7W
-         5fv/MjFwb2VWAHeBpssB14VYKbmiaRyiSVKnqK+y/k6BNcpuxvn9/LzCdd/drCH2kLj9
-         xaVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=a/2+IO+onR8n3ZdfuwB5lM1ps4vOPHv1OrjjTrVRTCk=;
-        b=Yq1Vcs7Vpk7PnLsLDoeVDNEvMDtrq+AO77/fbYRhKyxXNOUPho7Hkuw5plHYnibfSc
-         cmPEC1+Xn2odkpAoKKvKZYrQrPxk6ErqSNncEXa0wCZ4v1rJ4XtF9RI7jL8TQvYs/6H5
-         fMdNAHnD3tqrCVKdvihZNi9QHcs8DUKFOAnUBRzPPv808buWwKKE3NLqTw6BTEEUDeXQ
-         V4wlhVftZO0KT20YOowKzfCcDE8aXLD/K3EursRb8i/TfxZKV6EFoJ39sr7l/krWgOpX
-         QVwiURuzJjmAyT2PsCe5Nj1/Vwvanl3jETdzJQbO/qdDpogmBJUbxsiibu3GqHTrXt91
-         1Spg==
-X-Gm-Message-State: AOAM533nVJrhtOq5eC5kGfE112Ng+xHozdcYMH5WyusdPnzRH7FYylTt
-        KgP0PNY7rfl6dhtQc+mrftw=
-X-Google-Smtp-Source: ABdhPJxhmdZK3kigK1ngsxDNVQmlXUBtaQ3R9N3n636p96WyNZX9i6F2MzjU99X5en0g7aZpxIpBkg==
-X-Received: by 2002:a2e:84c5:: with SMTP id q5mr7039974ljh.43.1630433720728;
-        Tue, 31 Aug 2021 11:15:20 -0700 (PDT)
-Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id z11sm2270757ljn.114.2021.08.31.11.15.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 11:15:20 -0700 (PDT)
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev
-Cc:     Kari Argillander <kari.argillander@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/5] fs/ntfs3: Remove braces from single statment block
-Date:   Tue, 31 Aug 2021 21:15:04 +0300
-Message-Id: <20210831181505.1074767-5-kari.argillander@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210831181505.1074767-1-kari.argillander@gmail.com>
-References: <20210831181505.1074767-1-kari.argillander@gmail.com>
+        id S235580AbhHaSTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 14:19:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231612AbhHaSTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 14:19:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50A1561051;
+        Tue, 31 Aug 2021 18:18:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630433931;
+        bh=upH5fn3/2RfHwb3owpyOsuOtoolBxyBXlb0f0vLL52k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pAj3u/ABIj3WJE2+o0o6GUTUxQE18yvI7yfgJZZjGsm9ixInR0BZX0ysTvJVPer7T
+         yysPf6V6F3LdqjizlxCWDrrlxgeovl20wD+yGKtPZgvirM97ne6OBR+FUwte6TuMKz
+         +Mkmvu1cEUTgypPXaRPiI1nfPKTK1RDplVpcGDsBZ+PPwjwZwmTGW6RhE1NApCnsD4
+         L7WT6aP7T1hobZh/cImetR19Ha7TxShWR73DGMC3sn7zOlk9dvcos3k7J42x2U/KrY
+         pAUNqB1dLHkeHcDCeQXhEZhL5z9MV+lk9r/dEATyHA15GYo5cQaGPZKQkaSWIOO3DY
+         VHKKiKN6oSeyg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1EE1A4007E; Tue, 31 Aug 2021 15:18:48 -0300 (-03)
+Date:   Tue, 31 Aug 2021 15:18:48 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 1/3] perf tools: Refactor LLVM test warning for missing
+ binary
+Message-ID: <YS5yiJPuCH+9CLV3@kernel.org>
+References: <20210831145501.2135754-1-james.clark@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831145501.2135754-1-james.clark@arm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove braces from single statment block as they are not needed. Also
-Linux kernel coding style guide recommend this and checkpatch warn about
-this.
+Em Tue, Aug 31, 2021 at 03:54:59PM +0100, James Clark escreveu:
+> The same warning is duplicated in two places so refactor it into a
+> single function "search_program_and_warn". This will be used a third
+> time in a later commit.
 
-Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
----
- fs/ntfs3/frecord.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks, applied the three patches.
 
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index bc3887635012..61448325c4d1 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -2906,9 +2906,9 @@ bool ni_remove_name_undo(struct ntfs_inode *dir_ni, struct ntfs_inode *ni,
- 		memcpy(Add2Ptr(attr, SIZEOF_RESIDENT), de + 1, de_key_size);
- 		mi_get_ref(&ni->mi, &de->ref);
+- Arnaldo
+
  
--		if (indx_insert_entry(&dir_ni->dir, dir_ni, de, sbi, NULL, 1)) {
-+		if (indx_insert_entry(&dir_ni->dir, dir_ni, de, sbi, NULL, 1))
- 			return false;
--		}
-+
- 	}
- 
- 	return true;
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  tools/perf/util/llvm-utils.c | 36 +++++++++++++++++++++---------------
+>  1 file changed, 21 insertions(+), 15 deletions(-)
+> 
+> diff --git a/tools/perf/util/llvm-utils.c b/tools/perf/util/llvm-utils.c
+> index cbd9b268f168..cec9c16efb17 100644
+> --- a/tools/perf/util/llvm-utils.c
+> +++ b/tools/perf/util/llvm-utils.c
+> @@ -38,6 +38,8 @@ struct llvm_param llvm_param = {
+>  	.user_set_param = false,
+>  };
+>  
+> +static void version_notice(void);
+> +
+>  int perf_llvm_config(const char *var, const char *value)
+>  {
+>  	if (!strstarts(var, "llvm."))
+> @@ -108,6 +110,21 @@ search_program(const char *def, const char *name,
+>  	return ret;
+>  }
+>  
+> +static int search_program_and_warn(const char *def, const char *name,
+> +				   char *output)
+> +{
+> +	int ret = search_program(def, name, output);
+> +
+> +	if (ret) {
+> +		pr_err("ERROR:\tunable to find %s.\n"
+> +		       "Hint:\tTry to install latest clang/llvm to support BPF. Check your $PATH\n"
+> +		       "     \tand '%s-path' option in [llvm] section of ~/.perfconfig.\n",
+> +		       name, name);
+> +		version_notice();
+> +	}
+> +	return ret;
+> +}
+> +
+>  #define READ_SIZE	4096
+>  static int
+>  read_from_pipe(const char *cmd, void **p_buf, size_t *p_read_sz)
+> @@ -458,16 +475,10 @@ int llvm__compile_bpf(const char *path, void **p_obj_buf,
+>  	if (!template)
+>  		template = CLANG_BPF_CMD_DEFAULT_TEMPLATE;
+>  
+> -	err = search_program(llvm_param.clang_path,
+> +	err = search_program_and_warn(llvm_param.clang_path,
+>  			     "clang", clang_path);
+> -	if (err) {
+> -		pr_err(
+> -"ERROR:\tunable to find clang.\n"
+> -"Hint:\tTry to install latest clang/llvm to support BPF. Check your $PATH\n"
+> -"     \tand 'clang-path' option in [llvm] section of ~/.perfconfig.\n");
+> -		version_notice();
+> +	if (err)
+>  		return -ENOENT;
+> -	}
+>  
+>  	/*
+>  	 * This is an optional work. Even it fail we can continue our
+> @@ -495,14 +506,9 @@ int llvm__compile_bpf(const char *path, void **p_obj_buf,
+>  	force_set_env("WORKING_DIR", kbuild_dir ? : ".");
+>  
+>  	if (opts) {
+> -		err = search_program(llvm_param.llc_path, "llc", llc_path);
+> -		if (err) {
+> -			pr_err("ERROR:\tunable to find llc.\n"
+> -			       "Hint:\tTry to install latest clang/llvm to support BPF. Check your $PATH\n"
+> -			       "     \tand 'llc-path' option in [llvm] section of ~/.perfconfig.\n");
+> -			version_notice();
+> +		err = search_program_and_warn(llvm_param.llc_path, "llc", llc_path);
+> +		if (err)
+>  			goto errout;
+> -		}
+>  
+>  		err = -ENOMEM;
+>  		if (asprintf(&pipe_template, "%s -emit-llvm | %s -march=bpf %s -filetype=obj -o -",
+> -- 
+> 2.28.0
+
 -- 
-2.25.1
 
+- Arnaldo
