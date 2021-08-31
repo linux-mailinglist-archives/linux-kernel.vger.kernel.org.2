@@ -2,146 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6173F3FCAA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82703FCAAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238966AbhHaPUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:20:07 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32554 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232559AbhHaPTw (ORCPT
+        id S239034AbhHaPVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232559AbhHaPVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:19:52 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17VF4TA3052060;
-        Tue, 31 Aug 2021 11:18:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=zuHAQQs0gmUCQco7aRWvmy11cWZcfnUYpyX3TZ43UXA=;
- b=geLgWUQisEKJDUnurg1sfiX+fo4evxjnzjVzvbXl3ZSDW+94yPKFMECGxf6Gi5ElZh1y
- qejCRqU5g+ZCjZr3uOwxfpzDjjtJ6IvZQOOiYTdqG7yzkeDM3TopRK2l5RVJcxe6MA5q
- FQ5gnfk44T+pDTl+mL/CLJ1y7Q7gmSJWdU/D5Nks+G0Q0dkbfwnud1wV1FfGJ6QiV2AU
- pOXlXIEwazZCOd8Ugb2mopSZ2VvIJpFseHz3qgsuAuriVGpCS2lJc6sQjtoygk60115d
- ukeW9PbHTArw1RB4CTp/Wnm9jMGQhzu86Hc8k09zpbKUHgd6KwYQy0qjmUGGg7v6UGZK 7w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3asp891pfj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 11:18:38 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17VF5hbJ064295;
-        Tue, 31 Aug 2021 11:18:38 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3asp891pf6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 11:18:38 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17VFGxVV008705;
-        Tue, 31 Aug 2021 15:18:36 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 3aqcs8uxr0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 15:18:36 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17VFIWvG29032706
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 31 Aug 2021 15:18:32 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 240214208A;
-        Tue, 31 Aug 2021 15:18:32 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BF60542087;
-        Tue, 31 Aug 2021 15:18:31 +0000 (GMT)
-Received: from osiris (unknown [9.145.60.147])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 31 Aug 2021 15:18:31 +0000 (GMT)
-Date:   Tue, 31 Aug 2021 17:18:30 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        qemu-s390x <qemu-s390x@nongnu.org>
-Subject: Re: [GIT PULL] s390 updates for 5.15 merge window
-Message-ID: <YS5IRiFO9crNu46y@osiris>
-References: <YSzZFgBt6nMvpVgc@osiris>
- <YS2RrUma2oOSYtIc@Ryzen-9-3900X.localdomain>
- <82161448-2770-158c-fdd3-d253b4ae476f@de.ibm.com>
- <YS4AufXrOCa4rzN0@osiris>
- <CANpmjNPp3dAcr+WfYxM6_uQOmFmDf60aL-LbXF12NCzP6P3-6Q@mail.gmail.com>
- <YS5Ed4Cyf+rOf9MR@elver.google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YS5Ed4Cyf+rOf9MR@elver.google.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7xetOQ97Ah06IA0LnvIUpM37fwGRXaQ0
-X-Proofpoint-ORIG-GUID: QLg8D5EGsrGv4VqBqEToK6xy605cjhtA
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 31 Aug 2021 11:21:18 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC794C061575;
+        Tue, 31 Aug 2021 08:20:21 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id q68so17026835pga.9;
+        Tue, 31 Aug 2021 08:20:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bHjdW+TFSdvqPfi7vbsYmlySYD0qeWma8ZlepyZ1pyA=;
+        b=vKMmKg2JfTEH2r2TLKjdeGLs50EV+1jZUgn5bOxg36v536g3yxVJyUm07AJrRe5zpl
+         tBmmevtBUhZm2otLHjO+t6XZXSqKFmlgJCMuDJmWa/GXj0SoH6IO4AASbNQrCa0nh7qM
+         B7KI7XsRMY0RH1QUZ2VUGE8whdNH2gKq9Z8kV8Ym5rAqaokVsDSlFZJi22dmYwhDgQhT
+         USid/NU4WRGPSTarkDcXxdUTAx9LYuGrR6Nv4PIqqo7PphtFsJN7VG6hLWhI5/qBs3Di
+         +x+drrXZWdPlOXc87KdUarIUyVQNpVlgBbEDUDQ2DCD3gwGIwD/mm2RVJSZt7qbmg0qd
+         mMeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bHjdW+TFSdvqPfi7vbsYmlySYD0qeWma8ZlepyZ1pyA=;
+        b=MzsKrVPlwt7/4rfDPG6EyYEhnRwxeDRkJgwSp9OjclkbRb+2tmxN2Bzw5c53nNNOCv
+         i18wRUyZ1rkGyLOyTbikbWtAwsJAIQCNxgd3tut+0m63FZaiyoCk4SYB7uP3iDs3eVuJ
+         J25jWwQX7SC0zH4cRaf2soACqnB32P33CVFFkCu9++dBszr6lCnlP1wJfMDAvEPa8JRd
+         OZbdd4rQ1fkDlN+2pfjhNoCLwdTXBxEnv9s7aHPZlNxBl67IlEjUU+nH/HQZV3DJIGO6
+         qVIZ7tLQx3cU591mBn2wUaPQ8vfQKfjMl52mryq/+sJb5qRiAz3CF476fPVMAHJ1wS6u
+         XadA==
+X-Gm-Message-State: AOAM531vYGOXn0ln21AVI5BUsNkXL+oUcaCp6/HtEfhg/vvx0B+PCR1O
+        y8lwPBajPooYgQ9g0A0gFf4=
+X-Google-Smtp-Source: ABdhPJzSdF8ZTtYVUbdAWtHig1Ob457a20faxiqqeItSlT8AzOFj7ZlOHpfBE0oc7/WJzromHshTYw==
+X-Received: by 2002:a62:8144:0:b0:3af:7e99:f48f with SMTP id t65-20020a628144000000b003af7e99f48fmr28970407pfd.2.1630423221259;
+        Tue, 31 Aug 2021 08:20:21 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:1a:efea::50b])
+        by smtp.gmail.com with ESMTPSA id x8sm7986672pfj.128.2021.08.31.08.20.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 08:20:20 -0700 (PDT)
+Subject: Re: [PATCH V4 00/13] x86/Hyper-V: Add Hyper-V Isolation VM support
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, catalin.marinas@arm.com,
+        will@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, gregkh@linuxfoundation.org,
+        arnd@arndb.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        brijesh.singh@amd.com, thomas.lendacky@amd.com,
+        Tianyu.Lan@microsoft.com, pgonda@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        hannes@cmpxchg.org, aneesh.kumar@linux.ibm.com,
+        krish.sadhukhan@oracle.com, saravanand@fb.com,
+        linux-arm-kernel@lists.infradead.org,
+        xen-devel@lists.xenproject.org, rientjes@google.com,
+        ardb@kernel.org, michael.h.kelley@microsoft.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
+References: <20210827172114.414281-1-ltykernel@gmail.com>
+ <20210830120036.GA22005@lst.de>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <91b5e997-8d44-77f0-6519-f574b541ba9f@gmail.com>
+Date:   Tue, 31 Aug 2021 23:20:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-31_07:2021-08-31,2021-08-31 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- impostorscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0
- priorityscore=1501 phishscore=0 bulkscore=0 spamscore=0 mlxlogscore=682
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108310080
+In-Reply-To: <20210830120036.GA22005@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 05:02:15PM +0200, Marco Elver wrote:
-> On Tue, Aug 31, 2021 at 12:46PM +0200, Marco Elver wrote:
-> > On Tue, 31 Aug 2021 at 12:13, Heiko Carstens <hca@linux.ibm.com> wrote:
-> I repro'd, and the problem is part QEMU TCG and a minor problem with
-> stack_trace_save() on s390:
-> 
-> 1. QEMU TCG doesn't seem to want to execute threads concurrently,
->    resulting in no "value changes" being observed. This is probably just
->    a limitation of TCG, and if run on a real CPU, shouldn't be a problem.
->    On QEMU, most test cases will pass with CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n
->    (There's one left that requires value changes to be observable)
-> 
-> 2. stack_trace_save() is subtly broken on s390: it starts the trace in
->    stack_trace_save() itself. This is incorrect, as the trace should
->    start with the caller. We reported something similar to arm64, also
->    because one of our sanitizer tests failed:
->    https://lkml.kernel.org/r/20210319184106.5688-1-mark.rutland@arm.com
-...
-> I fixed it with the below, and now most tests pass. Note that, other
-> debugging tools may also report misleading stack traces without the
-> stack_trace_save() fix (e.g. certain KFENCE reports).
-> 
-> If you have a better solution for how to fix stack_trace_save() on s390,
-> please discard my patch.
+Hi Christoph:
 
-Ah, with your patch I get the below on a real machine; so it looks
-like this really was the only problem for the failing self tests.
+On 8/30/2021 8:00 PM, Christoph Hellwig wrote:
+> Sorry for the delayed answer, but I look at the vmap_pfn usage in the
+> previous version and tried to come up with a better version.  This
+> mostly untested branch:
+> 
+> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/hyperv-vmap
 
-Thanks a lot for the patch! Will look into it later and apply if
-everything else still works!
+No problem. Thank you very much for your suggestion patches and they are 
+very helpful.
 
-[    5.138547]     ok 1 - test_basic
-[    7.538799]     ok 2 - test_concurrent_races
-[    9.938524]     ok 3 - test_novalue_change
-[   11.620063]     ok 4 - test_novalue_change_exception
-[   11.952404]     ok 5 - test_unknown_origin
-[   14.349852]     ok 6 - test_write_write_assume_atomic
-[   14.681937]     ok 7 - test_write_write_struct
-[   15.031046]     ok 8 - test_write_write_struct_part
-[   17.429869]     ok 9 - test_read_atomic_write_atomic
-[   17.760862]     ok 10 - test_read_plain_atomic_write
-[   18.093500]     ok 11 - test_read_plain_atomic_rmw
-[   20.490570]     ok 12 - test_zero_size_access
-[   22.939270]     ok 13 - test_data_race
-[   23.271104]     ok 14 - test_assert_exclusive_writer
-[   23.601940]     ok 15 - test_assert_exclusive_access
-[   26.000281]     ok 16 - test_assert_exclusive_access_writer
-[   26.330718]     ok 17 - test_assert_exclusive_bits_change
-[   28.739480]     ok 18 - test_assert_exclusive_bits_nochange
-[   28.962218]     ok 19 - test_assert_exclusive_writer_scoped
-[   29.071385]     ok 20 - test_assert_exclusive_access_scoped
-[   31.479706]     ok 21 - test_jiffies_noreport
-[   33.879581]     ok 22 - test_seqlock_noreport
-[   36.279853]     ok 23 - test_atomic_builtins
-[   36.279893] ok 1 - kcsan
+
+> 
+> get us there for swiotlb and the channel infrastructure  I've started
+> looking at the network driver and didn't get anywhere due to other work.
+> 
+> As far as I can tell the network driver does gigantic multi-megabyte
+> vmalloc allocation for the send and receive buffers, which are then
+> passed to the hardware, but always copied to/from when interacting
+> with the networking stack.  Did I see that right?  Are these big
+> buffers actually required unlike the normal buffer management schemes
+> in other Linux network drivers?
+
+
+For send packet, netvsc tries batching packet in send buffer if 
+possible. It passes the original skb pages directly to
+hypervisor when send buffer is not enough or packet length is larger 
+than section size. These packets are sent via 
+vmbus_sendpacket_pagebuffer() finally. Please see netvsc_send() for 
+detail. The following code is to check whether the packet could be 
+copied into send buffer. If not, the packet will be sent with original 
+skb pages.
+
+1239        /* batch packets in send buffer if possible */
+1240        msdp = &nvchan->msd;
+1241        if (msdp->pkt)
+1242                msd_len = msdp->pkt->total_data_buflen;
+1243
+1244        try_batch =  msd_len > 0 && msdp->count < net_device->max_pkt;
+1245        if (try_batch && msd_len + pktlen + net_device->pkt_align <
+1246            net_device->send_section_size) {
+1247                section_index = msdp->pkt->send_buf_index;
+1248
+1249        } else if (try_batch && msd_len + packet->rmsg_size <
+1250                   net_device->send_section_size) {
+1251                section_index = msdp->pkt->send_buf_index;
+1252                packet->cp_partial = true;
+1253
+1254        } else if (pktlen + net_device->pkt_align <
+1255                   net_device->send_section_size) {
+1256                section_index = 
+netvsc_get_next_send_section(net_device);
+1257                if (unlikely(section_index == NETVSC_INVALID_INDEX)) {
+1258                        ++ndev_ctx->eth_stats.tx_send_full;
+1259                } else {
+1260                        move_pkt_msd(&msd_send, &msd_skb, msdp);
+1261                        msd_len = 0;
+1262                }
+1263        }
+1264
+
+
+
+For receive packet, the data is always copied from recv buffer.
+
+> 
+> If so I suspect the best way to allocate them is by not using vmalloc
+> but just discontiguous pages, and then use kmap_local_pfn where the
+> PFN includes the share_gpa offset when actually copying from/to the
+> skbs.
+> 
+When netvsc needs to copy packet data to send buffer, it needs to 
+caculate position with section_index and send_section_size.
+Please seee netvsc_copy_to_send_buf() detail. So the contiguous virtual 
+address of send buffer is necessary to copy data and batch packets.
