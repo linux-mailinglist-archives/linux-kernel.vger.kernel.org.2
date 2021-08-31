@@ -2,206 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C360F3FCB10
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C3D3FCB13
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239232AbhHaPy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:54:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47329 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239058AbhHaPy5 (ORCPT
+        id S239421AbhHaP4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:56:02 -0400
+Received: from mail-vs1-f49.google.com ([209.85.217.49]:43756 "EHLO
+        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238994AbhHaP4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:54:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630425242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cqcv7q3sxv359Hw+wbovVKAY99uifNtZJRnqtsftjkQ=;
-        b=AbbUgbPljbuejvXU4EdYCngtuVp1aFywPcR3prQV6p37jHmiK2u/EJ526SLrCNG9fFqjX4
-        0QNc2lkRRasg2odrX/kb6h/kB8HyMi+as9TrP0t8eCpdCH5P+YeRuF096PpRFAcWG+b2K1
-        i6TcFymZ69Lsq21A61ug64pmARREOmk=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-KO5PckmbMiO-t9oXRgyJaQ-1; Tue, 31 Aug 2021 11:54:00 -0400
-X-MC-Unique: KO5PckmbMiO-t9oXRgyJaQ-1
-Received: by mail-wr1-f70.google.com with SMTP id q14-20020a5d574e000000b00157b0978ddeso1581643wrw.5
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:54:00 -0700 (PDT)
+        Tue, 31 Aug 2021 11:56:01 -0400
+Received: by mail-vs1-f49.google.com with SMTP id m19so13648863vsj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:55:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Cqcv7q3sxv359Hw+wbovVKAY99uifNtZJRnqtsftjkQ=;
-        b=LxoC5+o5I0zw8jVKSsEjsBCuCvoXMk/3oeVmepK3FBg0rl+vhcumzl1NkUtRHe6MCp
-         eCKdMXe9LBihbHP/vhHKjnOezXjcE8FtCR43uEod1TnBT4rUFyZuRd/FIc51Lnfq9sB/
-         FMjYy3/Sak4DMPOwbbK8kZ4CvtlZdP4N7E97/PBqofIOX0IqLFRx51gjWqPJmiuOqZPk
-         MB/h04ZB08nSX+NkWrsHtXU4thSHeDoq8EwfsaWTMKejtMjnymB4LUbyIx3pqReybmQK
-         RZAzKOcoEr7oavYxpEseGl3qgttPquzcZh1qVNSVlb9v2H+DdgGW06NDoDtKbWSW8lis
-         zePg==
-X-Gm-Message-State: AOAM531uSjXhwHkJjBM/Y00x7LBEIxcGhCH5vsgSQn1M1WciTHy6NgaZ
-        DNlku1hq1Z3TYxeTCwbowr3gOvy58vmsOab+KohWHmXSpRpzRG+gXw2k0DdaGwQu2HkNdEA0aWP
-        EvloXm/YPOHbac6Z8UCp6d5Vw
-X-Received: by 2002:a5d:6daa:: with SMTP id u10mr32428377wrs.31.1630425239228;
-        Tue, 31 Aug 2021 08:53:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0EjHISPHLs3TIYt+0W/6JrjIDK3mdnV2vWllkRSIu0u63CB5Ml6SIBkpL6FesrH+HKFbrVg==
-X-Received: by 2002:a5d:6daa:: with SMTP id u10mr32428349wrs.31.1630425238976;
-        Tue, 31 Aug 2021 08:53:58 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id z19sm3139223wma.0.2021.08.31.08.53.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 08:53:58 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     tcs.kernel@gmail.com
-Cc:     Haimin Zhang <tcs_kernel@tencent.com>, pbonzini@redhat.com,
-        seanjc@google.com, wanpengli@tencent.com, jmattson@google.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jarkko@kernel.org
-Subject: Re: [PATCH] KVM: x86: Add a return code and check kvm_page_track_init
-In-Reply-To: <1630376040-20567-1-git-send-email-tcs_kernel@tencent.com>
-References: <1630376040-20567-1-git-send-email-tcs_kernel@tencent.com>
-Date:   Tue, 31 Aug 2021 17:53:57 +0200
-Message-ID: <87wno1obje.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rXAig6svknWENNxhE5MWFDZ85DSokchu1E/IR78sJuc=;
+        b=gBPL4dgySVCLJIvh2wTzQzJga4T3HNlaBo5OWe9oyrVTgUMFqakrgw+yVpeotfo7Y0
+         eT+Z9WDCiFxsD/4PSqkqkRm0V5GO9gEuqOxpIFb4HDqMphnVQ+5SL+ehCaxzDH2N2LVZ
+         5zvkzTMeJGyn99GinfX8XDHZQd+zMcoRBJwtaWLvcfPynsbvxFa8XiBykOr0eW2YJ526
+         m/S/N04ZQZUvRWjytyrv+lEakUHHkIk6i6rCc7kS8j04CcC4h3rZRg+7toLWdEYxTE40
+         wVeaHoPjM9cimhe0LKrcxw1vC96CkNCB1FoXzd+ppS3CvkY+8AjVXr98O4272TrhFJOe
+         SOWA==
+X-Gm-Message-State: AOAM531OFXSZQmWyn+4HskCjBBKYIpgatCFQSd4kSx5JLQlM6RO+yRBT
+        3YqC2XovQCCOA227ifZQ+YJfAjo7PxJjD7xOqMc6zpgd
+X-Google-Smtp-Source: ABdhPJwd3g3qcsq1rJfE/U29ijK2E1/xXlt4GtyR/vrF5Gnlkgm76LK5kuxADxvS2KbERjJuC/N8lbT7cr8u52dbA/o=
+X-Received: by 2002:a67:3349:: with SMTP id z70mr18508950vsz.7.1630425305956;
+ Tue, 31 Aug 2021 08:55:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210831062539.898293-1-imran.f.khan@oracle.com> <20210831062539.898293-2-imran.f.khan@oracle.com>
+In-Reply-To: <20210831062539.898293-2-imran.f.khan@oracle.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 31 Aug 2021 17:54:54 +0200
+Message-ID: <CAMuHMdUwdGHjOH7GTpq0nNg7Mx5bAwGEWJwEwUSoJL3GrEfv_A@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] lib, stackdepot: Add input prompt for STACKDEPOT option.
+To:     Imran Khan <imran.f.khan@oracle.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tcs.kernel@gmail.com writes:
+Hi Imran,
 
-> From: Haimin Zhang <tcs_kernel@tencent.com>
+On Tue, Aug 31, 2021 at 8:28 AM Imran Khan <imran.f.khan@oracle.com> wrote:
+> So far CONFIG_STACKDEPOT option was being selected by
+> features that need STACKDEPOT support for their operations,
+> for example KASAN.
+> Since next patch makes use of STACKDEPOT to store user tracking
+> information for slub debugger and since user tracking info may
+> or may not store stack trace for allocating and freeing contexts,
+> make STACKDEPOT explicitly configurable.
 >
-> We found a null pointer deref by our modified syzkaller.
->  KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
->  CPU: 1 PID: 13993 Comm: syz-executor.0 Kdump: loaded Tainted: 
->  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
->  BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
->  RIP: 0010:rcu_segcblist_enqueue+0xf5/0x1d0 
->  RSP: 0018:ffffc90001e1fc10 EFLAGS: 00010046
->  RAX: dffffc0000000000 RBX: ffff888135c00080 RCX: ffffffff815ba8a1
->  RDX: 0000000000000000 RSI: ffffc90001e1fd00 RDI: ffff888135c00080
->  RBP: ffff888135c000a0 R08: 0000000000000004 R09: fffff520003c3f75
->  R10: 0000000000000003 R11: fffff520003c3f75 R12: 0000000000000000
->  R13: ffff888135c00080 R14: ffff888135c00040 R15: 0000000000000000
->  FS:  00007fecc99f1700(0000) GS:ffff888135c00000(0000) knlGS:0000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 0000001b2f225000 CR3: 0000000093d08000 CR4: 0000000000750ee0
->  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->  PKRU: 55555554
->  Call Trace:
->  srcu_gp_start_if_needed+0x158/0xc60 build/../kernel/rcu/srcutree.c:823
->  __synchronize_srcu+0x1dc/0x250 build/../kernel/rcu/srcutree.c:929
->  kvm_mmu_uninit_vm+0x18/0x30 build/../arch/x86/kvm/mmu/mmu.c:5585
->  kvm_arch_destroy_vm+0x43f/0x5c0 build/../arch/x86/kvm/x86.c:11277
->  kvm_create_vm build/../arch/x86/kvm/../../../virt/kvm/kvm_main.c:1060 
->  kvm_dev_ioctl_create_vm build/../arch/x86/kvm/../../../virt/kvm/kvm_main
->  kvm_dev_ioctl+0xdfb/0x1860 build/../arch/x86/kvm/../../../virt/kvm/kvm_main
->  vfs_ioctl build/../fs/ioctl.c:51 [inline]
->  __do_sys_ioctl build/../fs/ioctl.c:1069 [inline]
->  __se_sys_ioctl build/../fs/ioctl.c:1055 [inline]
->  __x64_sys_ioctl+0x183/0x210 build/../fs/ioctl.c:1055
->  do_syscall_x64 build/../arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x34/0xb0 build/../arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> This is because when init_srcu_struct() calls alloc_percpu(struct
-> srcu_data) failed, kvm_page_track_init() didn't check init_srcu_struct
-> return code. 
->
-> Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
-> Reported-by: TCS Robot <tcs_robot@tencent.com>
+> Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
+
+Thanks for your patch!
+
 > ---
->  arch/x86/include/asm/kvm_page_track.h | 2 +-
->  arch/x86/kvm/mmu/page_track.c         | 8 ++++++--
->  arch/x86/kvm/x86.c                    | 7 +++++--
->  3 files changed, 12 insertions(+), 5 deletions(-)
+>  lib/Kconfig | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/arch/x86/include/asm/kvm_page_track.h b/arch/x86/include/asm/kvm_page_track.h
-> index 87bd6025d91d..6a5f3acf2b33 100644
-> --- a/arch/x86/include/asm/kvm_page_track.h
-> +++ b/arch/x86/include/asm/kvm_page_track.h
-> @@ -46,7 +46,7 @@ struct kvm_page_track_notifier_node {
->  			    struct kvm_page_track_notifier_node *node);
->  };
->  
-> -void kvm_page_track_init(struct kvm *kvm);
-> +int kvm_page_track_init(struct kvm *kvm);
->  void kvm_page_track_cleanup(struct kvm *kvm);
->  
->  void kvm_page_track_free_memslot(struct kvm_memory_slot *slot);
-> diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-> index 91a9f7e0fd91..44a67a50f6d2 100644
-> --- a/arch/x86/kvm/mmu/page_track.c
-> +++ b/arch/x86/kvm/mmu/page_track.c
-> @@ -163,13 +163,17 @@ void kvm_page_track_cleanup(struct kvm *kvm)
->  	cleanup_srcu_struct(&head->track_srcu);
->  }
->  
-> -void kvm_page_track_init(struct kvm *kvm)
-> +int kvm_page_track_init(struct kvm *kvm)
->  {
-> +	int r = -ENOMEM;
+> diff --git a/lib/Kconfig b/lib/Kconfig
+> index 6a6ae5312fa0..7e4b54f48af7 100644
+> --- a/lib/Kconfig
+> +++ b/lib/Kconfig
+> @@ -665,8 +665,9 @@ config ARCH_STACKWALK
+>         bool
+>
+>  config STACKDEPOT
+> -       bool
+> +       def_bool n
 
-Nitpick: pointless initializer, the value is always overwritten by
-init_srcu_struct()'s return value.
+Why this change? "n" is the default anyway.
 
->  	struct kvm_page_track_notifier_head *head;
->  
->  	head = &kvm->arch.track_notifier_head;
-> -	init_srcu_struct(&head->track_srcu);
-> +	r = init_srcu_struct(&head->track_srcu);
-> +	if (r)
-> +		return r;
->  	INIT_HLIST_HEAD(&head->track_notifier_list);
-> +	return r;
->  }
->  
->  /*
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index e5d5c5ed7dd4..5da76f989207 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -11086,8 +11086,9 @@ void kvm_arch_free_vm(struct kvm *kvm)
->  
->  int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->  {
-> +	int r = -EINVAL;
+>         select STACKTRACE
+> +       prompt "Enable stackdepot support"
+>
+>  config STACK_HASH_ORDER
+>         int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
 
-Blank line missing here.
+Gr{oetje,eeting}s,
 
->  	if (type)
-> -		return -EINVAL;
-> +		return r;
-
-I'd keep this code as-is and dropped then-pointless initializer to
--EINVAL, it's OK to return directly:
-
-	int ret;
-
-	if (type)
-		return -EINVAL;
-
-        ...
-
-        ret = kvm_page_track_init(kvm);
-	if (ret)
-		return ret;
-
->  
->  	INIT_HLIST_HEAD(&kvm->arch.mask_notifier_list);
->  	INIT_LIST_HEAD(&kvm->arch.active_mmu_pages);
-> @@ -11121,7 +11122,9 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->  
->  	kvm_apicv_init(kvm);
->  	kvm_hv_init_vm(kvm);
-> -	kvm_page_track_init(kvm);
-> +	r = kvm_page_track_init(kvm);
-> +	if (r)
-> +		return r;
->  	kvm_mmu_init_vm(kvm);
->  
->  	return static_call(kvm_x86_vm_init)(kvm);
+                        Geert
 
 -- 
-Vitaly
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
