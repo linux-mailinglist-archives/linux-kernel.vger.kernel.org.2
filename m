@@ -2,103 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A25C3FC9ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BFAC3FC9EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbhHaOjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S238102AbhHaOjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:39:47 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:57106 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237410AbhHaOjk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 31 Aug 2021 10:39:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232016AbhHaOjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:39:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0C6F60F91;
-        Tue, 31 Aug 2021 14:38:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630420721;
-        bh=6obG3EWY8MJUaRtOjEQePHAgTbi/IVRVmFayceuFgCM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BZYavu6YjFg1t3BR4Zr8XkA/4j7Z4avQ85Hbzti7gbafz+rs7wqpf/Kjp3K/k7hS5
-         jBTFpCzrNVFCYd3gAEL7QayYgs4SDb7Be4u4lj+pxa8blm7gkwswM87ODsD3CwhWkg
-         WoYoPGrSEI3NMAYzY/XUjbU4lXuF6pGDk98hde/LeKGaUAOZZE67HLLcylEGo2j4Fa
-         p2BoMB3p8FZr5kDoNzmpwdw4zN0PzWPhpdjhgIRRxoJ/ZiOL2xgFCvA+ytThp/C57w
-         Oc9QkcaXiSeHHWBfzJHEpBSynjuPfR6APgBlXr1SHeE5iOj33d0i6+DpphviMxwZEN
-         VXgDqrKtSHAUg==
-Date:   Tue, 31 Aug 2021 15:38:36 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        jean-philippe <jean-philippe@linaro.org>,
-        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v5 3/3] PCI: Set dma-can-stall for HiSilicon chips
-Message-ID: <20210831143835.GA31947@willie-the-truck>
-References: <20210826182624.GA3694827@bjorn-Precision-5520>
- <225e905d-b7b2-c740-de94-2f4aece75f59@arm.com>
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jnwang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UmloMMs_1630420722;
+Received: from B-VE2WML7H-1820.local(mailfrom:jnwang@linux.alibaba.com fp:SMTPD_---0UmloMMs_1630420722)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 31 Aug 2021 22:38:43 +0800
+Subject: Re: kernel hang during reboot when cmdline include a non-exist
+ console device
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAHk-=wj+G8MXRUk5HRCvUr8gOpbR+zXQ6WNTB0E7n32fTUjKxQ@mail.gmail.com>
+ <YS2fZ1sknFYKtJFi@google.com> <YS3k5TRf5oLLEdKu@alley>
+ <YS3stL0cTn5ZQSNx@google.com>
+ <fc18d17a-b185-7a1e-2135-ec83f3f8c70f@linux.alibaba.com>
+ <YS490P27YM6UlB2z@alley>
+From:   James Wang <jnwang@linux.alibaba.com>
+Message-ID: <e66f501a-0ba9-77f1-b5a2-9a759f8e00d6@linux.alibaba.com>
+Date:   Tue, 31 Aug 2021 22:38:42 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <225e905d-b7b2-c740-de94-2f4aece75f59@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YS490P27YM6UlB2z@alley>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 08:12:12PM +0100, Robin Murphy wrote:
-> On 2021-08-26 19:26, Bjorn Helgaas wrote:
-> > [+cc Will, Robin, Joerg, hoping for an ack]
-> > 
-> > On Tue, Jul 13, 2021 at 10:54:36AM +0800, Zhangfei Gao wrote:
-> > > HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
-> > > actually on the AMBA bus. These fake PCI devices can support SVA via
-> > > SMMU stall feature, by setting dma-can-stall for ACPI platforms.
-> > > 
-> > > Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> > > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> > > Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
-> > > ---
-> > >   drivers/pci/quirks.c | 13 +++++++++++++
-> > >   1 file changed, 13 insertions(+)
-> > > 
-> > > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> > > index 5d46ac6..03b0f98 100644
-> > > --- a/drivers/pci/quirks.c
-> > > +++ b/drivers/pci/quirks.c
-> > > @@ -1823,10 +1823,23 @@ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI
-> > >   static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
-> > >   {
-> > > +	struct property_entry properties[] = {
-> > > +		PROPERTY_ENTRY_BOOL("dma-can-stall"),
-> > 
-> > "dma-can-stall" is used in arm_smmu_probe_device() to help set
-> > master->stall_enabled.
-> > 
-> > I don't know the implications, so it'd be nice to get an ack from a
-> > maintainer of that code.
-> 
-> If it helps,
-> 
-> Acked-by: Robin Murphy <robin.murphy@arm.com>
-> 
-> Normally stalling must not be enabled for PCI devices, since it would break
-> the PCI requirement for free-flowing writes and may lead to deadlock. We
-> expect PCI devices to support ATS and PRI if they want to be fault-tolerant,
-> so there's no ACPI binding to describe anything else, even when a "PCI"
-> device turns out to be a regular old SoC device dressed up as a RCiEP and
-> normal rules don't apply.
-> 
-> I'm taking it on trust that stalling really is safe for all possible
-> matching devices here (in general, deadlock may still be possible in the SoC
-> interconnect depending on topology, hence why it's an explicit opt-in even
-> for platform devices), but TBH either way I think I'd rather have this as a
-> quirk in the kernel under our control, than have vendors attempt to play
-> tricks with _DSD properties out in the field :)
 
-I think a comment next to the quirk echoing the commit message and your
-first paragraph above would be really helpful here.
+在 2021/8/31 PM10:33, Petr Mladek 写道:
+> On Tue 2021-08-31 21:45:05, James Wang wrote:
+>> 在 2021/8/31 PM4:47, Sergey Senozhatsky 写道:
+>>> And may I ask, just in case, if James can revert a revert of Petr's commit:
+>>>
+>>>          revert a91bd6223ecd46addc71ee6fcd432206d39365d2
+>>>
+>>> boot with wrong console argument and see if the kernel reboots without
+>>> any problems.
+>> After test, revert Petr's commit can work; reboot without any problem;
+> Interesting, it looks like the panic() is really caused by missing
+> stdout, stdin, and stderr, for the init process.
+>
+> Unfortunately, the fix is not easy, as described in the commit
+> a91bd6223ecd46addc71e ("Revert "init/console: Use ttynull as
+> a fallback when there is no console").
 
-Will
+OK. But I suppose you could find a quick workaround to mitigate this issue.
+
+
+James
+
