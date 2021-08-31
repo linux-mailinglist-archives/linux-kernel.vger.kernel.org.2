@@ -2,64 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721FD3FCE2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787B03FCE30
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240738AbhHaUHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 16:07:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234644AbhHaUHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 16:07:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2583D61090;
-        Tue, 31 Aug 2021 20:06:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630440397;
-        bh=FsiV2TIEKY8AjegL1FyQcE6DAj9tM1hrR/FqtmPZywQ=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=bgO/KEdZpdH7LMX5Vh69lnKewcgRm9DZ9+0LSNSZ/Eb3pKoRyVWYNPAWcAwp3Gefi
-         6aUqsiN3iTlzwPeoAG9kizDVvosyIXNFrYNJ1CG4J+RyYBOJ/9b5cp6DLNa5eaRPtI
-         uJu0BKmDEvbeFNGLdHJk+DXHzred3ZfrDed51mKbYoZAUxT9q1fZPHGP8EsIrlv94/
-         9+7cFlUmsTM+/Rh7viFwbF9ky4G1rFAINmW806m8BvM5eyQ4W4G5w9NGjZ7MOhJaNN
-         caDt4mHd66UCsIPO+P0eUdWaqcY0i4XlUNh1BRhRM3Rs0Dy9aPqf2H2Slq6AZ+e7JG
-         jPQcJ71FAR/lQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 20F246097A;
-        Tue, 31 Aug 2021 20:06:37 +0000 (UTC)
-Subject: Re: [GIT PULL] Smack patches for v5.15
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ff60d9aa-28b9-9c6d-f318-94dd51a95abd@schaufler-ca.com>
-References: <ff60d9aa-28b9-9c6d-f318-94dd51a95abd.ref@schaufler-ca.com> <ff60d9aa-28b9-9c6d-f318-94dd51a95abd@schaufler-ca.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ff60d9aa-28b9-9c6d-f318-94dd51a95abd@schaufler-ca.com>
-X-PR-Tracked-Remote: https://github.com/cschaufler/smack-next tags/Smack-for-5.15
-X-PR-Tracked-Commit-Id: bfc3cac0c76126995737f1b858d2cdb476be5b1d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9b2eacd8f04625c6cb2dd82469972a3bba3a783a
-Message-Id: <163044039712.15638.7972995060301060275.pr-tracker-bot@kernel.org>
-Date:   Tue, 31 Aug 2021 20:06:37 +0000
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Austin Kim <austindh.kim@gmail.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+        id S240426AbhHaULl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 16:11:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37139 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232808AbhHaULl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 16:11:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630440644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KbgJ2Vu8JpD26GA6OCHo87Wy3/ZN8Be3JYXsPNbuv+A=;
+        b=AS6VDpPS8aPN4JrzNOP/3jEvQMEa5mihPx32aYRI50pfPt8gJVA7qGmXd74H5S0VMJupfs
+        Il7axd2J/Oud1EcRSWKHxQOPW3rnvlQgadVzE3Gs8FZqYpmRLVDQb0xIuaB1bGIwxO0Nsl
+        P4CYeYKZS4c5/mnx5PqD2Um7xx2xpnc=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-rKcdwF2oMKKq5U-vbn3zdw-1; Tue, 31 Aug 2021 16:10:43 -0400
+X-MC-Unique: rKcdwF2oMKKq5U-vbn3zdw-1
+Received: by mail-wr1-f70.google.com with SMTP id n1-20020a5d4c41000000b00159305d19baso749wrt.11
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 13:10:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=KbgJ2Vu8JpD26GA6OCHo87Wy3/ZN8Be3JYXsPNbuv+A=;
+        b=ez9LLM9Z7z5svl/KWlxAttxmiC4blLuRUpg4N86wHCJJxrJ73NYy3VasdvpXQmDyRb
+         zpGk5aPUqMwVNF3BPgvACmAFIv1t7U2W4/oMkcnJ0JBe4TtBi2ie8gdvTx6qLxLikMqx
+         09eD3rYCyit75z0SAU7S7KZjjdtUMXRgdQ8SaaG0qq761UGfzUOe/st25E7/Ffts3178
+         vbDzUtkAdpvH9l4dliVqQUx8v4RGIv1JTp3P/ukdu+SbqhnLT3yx7iIIB3keaR5eM/1C
+         U/hBswiE2g9LTBqZxiKmxJ1XqVljcpqaguqzFVwU4LxqVZARo2T11ujz7rPEmp3hdULA
+         rDGA==
+X-Gm-Message-State: AOAM533PKSqFwSNYGYWT2mFqd4Xp9gHtJQCXRWz1KQjoLYwGwWyZJZ3y
+        Y1NyO/Ps/+puRff08oB+j6uqH+sAUHOWInRdFTzjYJc/b8gQ9Ms0q6B2/GhLcLlg6jnaw8EiJ0F
+        VuR8Ht4fbqWEFnhg4SQFO4p5b
+X-Received: by 2002:adf:edc2:: with SMTP id v2mr33398997wro.255.1630440642150;
+        Tue, 31 Aug 2021 13:10:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyFHxJK6CuUyH4fIACh8WCgho8ld2f48k7iz12CJXT9s8M02Pmju/iUqJTv/KchgQNGbkL+Og==
+X-Received: by 2002:adf:edc2:: with SMTP id v2mr33398977wro.255.1630440641934;
+        Tue, 31 Aug 2021 13:10:41 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23bf5.dip0.t-ipconnect.de. [79.242.59.245])
+        by smtp.gmail.com with ESMTPSA id u23sm3315346wmc.24.2021.08.31.13.10.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 13:10:41 -0700 (PDT)
+Subject: Re: [GIT PULL] virtio: a last minute fix
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     KVM list <kvm@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>, david@redhat.com,
+        dverkamp@chromium.org, hch@lst.de, jasowang@redhat.com,
+        liang.z.li@intel.com, mst@redhat.com, tiny.windzz@gmail.com,
+        jasowang@redhat.com
+References: <20210829115343-mutt-send-email-mst@kernel.org>
+ <CAHk-=wjYkPWoQWZEHXzd3azugRO4MCCEx9dBYKkVJLrk+1gsMg@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <6aaa0ca9-61ed-7ea3-de61-56dcd04ce88b@redhat.com>
+Date:   Tue, 31 Aug 2021 22:10:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=wjYkPWoQWZEHXzd3azugRO4MCCEx9dBYKkVJLrk+1gsMg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 31 Aug 2021 11:53:12 -0700:
+On 29.08.21 20:11, Linus Torvalds wrote:
+> On Sun, Aug 29, 2021 at 8:53 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+>>
+>> Donnu if it's too late - was on vacation and this only arrived
+>> Wednesday. Seems to be necessary to avoid introducing a regression
+>> in virtio-mem.
+> 
+> Heh. Not too late for 5.14, but too late in the sense that I had
+> picked this one up manually already as commit 425bec0032f5
+> ("virtio-mem: fix sleeping in RCU read side section in
+> virtio_mem_online_page_cb()").
 
-> https://github.com/cschaufler/smack-next tags/Smack-for-5.15
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9b2eacd8f04625c6cb2dd82469972a3bba3a783a
-
-Thank you!
+Thanks Michael for sending this last minute and thanks Linus for picking 
+it up independently early! Awesome :)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks,
+
+David / dhildenb
+
