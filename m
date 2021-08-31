@@ -2,251 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946183FC7ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDE03FC7F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234224AbhHaNN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:13:27 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:43543 "EHLO pegase2.c-s.fr"
+        id S234273AbhHaNOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:14:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232604AbhHaNNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:13:25 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GzSK802cBz9sTX;
-        Tue, 31 Aug 2021 15:12:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id oIgIQjJLmJuV; Tue, 31 Aug 2021 15:12:27 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GzSK75vDfz9sT9;
-        Tue, 31 Aug 2021 15:12:27 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8A0E38B7EE;
-        Tue, 31 Aug 2021 15:12:27 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id nvzuqENngpjM; Tue, 31 Aug 2021 15:12:27 +0200 (CEST)
-Received: from po18078vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 426448B7ED;
-        Tue, 31 Aug 2021 15:12:27 +0200 (CEST)
-Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 00A596BCA2; Tue, 31 Aug 2021 13:12:26 +0000 (UTC)
-Message-Id: <97f252fcd63e145f54fbf85124c75fb01e96e1bb.1630415517.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2] powerpc/32: Add support for out-of-line static calls
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 31 Aug 2021 13:12:26 +0000 (UTC)
+        id S232209AbhHaNON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 09:14:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63A5B60F3A;
+        Tue, 31 Aug 2021 13:13:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630415598;
+        bh=syr4ALXQaGPBfav03TaiEXTWcXBCM+WsL0Six+TkBsU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PcqbQdUrrNtpLV95QHhuN7I7BG0URhPaTB04B6baZPN5pTaAhMSWSTeryRLSXRoYk
+         dfWuXa17rlSdnnOss6ITSC4N8Ord2USqpM68nBoaH/f4DI0hBL9a1Odyb0rhDX8hd7
+         4PiP/zJyP1NY4JG1MPqhVb+EjI1eWzuKdixwMgFptY/ulGxa2uJOTk2vHS8kUjMn++
+         WnuZ32oUJWRVoiXvX5Sky96InQvU4c6cAzkGVX8a3MrelAxJhBM730HoWoTipc+qLM
+         PJVwGbEOH8iYG81HU+bMnGQEzrLWVwi0ll2SoFOQGBpV4WBMIqYfeOpnqYxpB0FlFS
+         xLhH+NVMu/0ew==
+Date:   Tue, 31 Aug 2021 14:13:14 +0100
+From:   Will Deacon <will@kernel.org>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, elver@google.com
+Subject: Re: [mm]  f9ce0be71d:
+ BUG:KCSAN:data-race_in_next_uptodate_page/next_uptodate_page
+Message-ID: <20210831131313.GC31712@willie-the-truck>
+References: <20210826144157.GA26950@xsang-OptiPlex-9020>
+ <20210827154232.rrpetqsh5xxklkej@box.shutemov.name>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827154232.rrpetqsh5xxklkej@box.shutemov.name>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for out-of-line static calls on PPC32. This change
-improve performance of calls to global function pointers by
-using direct calls instead of indirect calls.
+[+Marco]
 
-The trampoline is initialy populated with a 'blr' or branch to target,
-followed by an unreachable long jump sequence.
+On Fri, Aug 27, 2021 at 06:42:32PM +0300, Kirill A. Shutemov wrote:
+> On Thu, Aug 26, 2021 at 10:41:57PM +0800, kernel test robot wrote:
+> > commit: f9ce0be71d1fbb038ada15ced83474b0e63f264d ("mm: Cleanup faultaround and finish_fault() codepaths")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > 
+> > in testcase: trinity
+> > version: 
+> > with following parameters:
+> > 
+> > 	number: 99999
+> > 	group: group-04
+> > 
+> > test-description: Trinity is a linux system call fuzz tester.
+> > test-url: http://codemonkey.org.uk/projects/trinity/
+> > 
+> > 
+> > on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> > 
+> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > 
+> > +------------------------------------------------------------------------+-----------+------------+
+> > |                                                                        | v5.11-rc4 | f9ce0be71d |
+> > +------------------------------------------------------------------------+-----------+------------+
+> > | BUG:KCSAN:data-race_in_next_uptodate_page/next_uptodate_page           | 0         | 19         |
+> > | BUG:KCSAN:data-race_in_mark_page_accessed/next_uptodate_page           | 0         | 17         |
+> > | BUG:KCSAN:data-race_in_next_uptodate_page/page_memcg                   | 0         | 13         |
+> > | BUG:KCSAN:data-race_in_next_uptodate_page/unlock_page                  | 0         | 13         |
+> > +------------------------------------------------------------------------+-----------+------------+
+> > 
+> > [  184.717904][ T1873] ==================================================================
+> > [  184.718938][ T1873] BUG: KCSAN: data-race in next_uptodate_page / unlock_page
+> > [  184.719828][ T1873]
+> > [  184.720103][ T1873] write (marked) to 0xffffea00050f37c0 of 8 bytes by task 1872 on cpu 1:
+> > [  184.721024][ T1873]  unlock_page+0x102/0x1b0
+> > [  184.721533][ T1873]  filemap_map_pages+0x6c6/0x890
+> > [  184.722102][ T1873]  handle_mm_fault+0x179c/0x27f0
+> > [  184.722672][ T1873]  do_user_addr_fault+0x3fb/0x830
+> > [  184.723263][ T1873]  exc_page_fault+0xc3/0x1a0
+> > [  184.723845][ T1873]  asm_exc_page_fault+0x1e/0x30
+> > [  184.724427][ T1873]
+> > [  184.724720][ T1873] read to 0xffffea00050f37c0 of 8 bytes by task 1873 on cpu 0:
+> > [  184.725575][ T1873]  next_uptodate_page+0x456/0x830
+> > [  184.726161][ T1873]  filemap_map_pages+0x728/0x890
+> > [  184.726747][ T1873]  handle_mm_fault+0x179c/0x27f0
+> > [  184.727332][ T1873]  do_user_addr_fault+0x3fb/0x830
+> > [  184.727905][ T1873]  exc_page_fault+0xc3/0x1a0
+> > [  184.728440][ T1873]  asm_exc_page_fault+0x1e/0x30
+> > [  184.729027][ T1873]
+> > [  184.729313][ T1873] Reported by Kernel Concurrency Sanitizer on:
+> > [  184.730019][ T1873] CPU: 0 PID: 1873 Comm: systemd-udevd Not tainted 5.11.0-rc4-00001-gf9ce0be71d1f #1
+> > [  184.731103][ T1873] ==================================================================
+> 
+> Line annotation would be helpful.
 
-In order to cater with parallele execution, the trampoline needs to
-be updated in a way that ensures it remains consistent at all time.
-This means we can't use the traditional lis/addi to load r12 with
-the target address, otherwise there would be a window during which
-the first instruction contains the upper part of the new target
-address while the second instruction still contains the lower part of
-the old target address. To avoid that the target address is stored
-just after the 'bctr' and loaded from there with a single instruction.
+Agreed.
 
-Then, depending on the target distance, arch_static_call_transform()
-will either replace the first instruction by a direct 'bl <target>' or
-'nop' in order to have the trampoline fall through the long jump
-sequence.
+> And I'm not very familiar with KCSAN. My guess it reports PageLock() vs.
+> clearing PG_locked. In this context it looks safe, unless I miss
+> something.
 
-Performancewise the long jump sequence is probably not better than
-the indirect calls set by GCC when we don't use static calls, but
-such calls are unlikely to be required on powerpc32: With most
-configurations the kernel size is far below 32 Mbytes so only
-modules may happen to be too far. And even modules are likely to
-be close enough as they are allocated below the kernel core and
-as close as possible of the kernel text.
+The access in clear_bit_unlock() is annotated as a full sizeof(long) atomic
+write, so we could be racing with a non-atomic read of another bit in the
+page flags but I can't spot where that happens before the trylock_page() in
+next_uptodate_page().
 
-static_call selftest is running successfully with this change.
+> Do we need some annotation to help KCSAN?
 
-With this patch, __do_irq() has the following sequence to trace
-irq entries:
+clear_bit_unlock() is already instrumented and _most_ of the helpers in
+page-flags.h look they should be as well by virtue of using test_bit().
 
-	c0004a00 <__SCT__tp_func_irq_entry>:
-	c0004a00:	48 00 00 e0 	b       c0004ae0 <__traceiter_irq_entry>
-	c0004a04:	3d 80 c0 00 	lis     r12,-16384
-	c0004a08:	81 8c 4a 14 	lwz     r12,18964(r12)
-	c0004a0c:	7d 89 03 a6 	mtctr   r12
-	c0004a10:	4e 80 04 20 	bctr
-	c0004a14:	00 00 00 00 	.long 0x0
-	c0004a18:	60 00 00 00 	nop
-	c0004a1c:	60 00 00 00 	nop
-...
-	c0005654 <__do_irq>:
-...
-	c0005664:	7c 7f 1b 78 	mr      r31,r3
-...
-	c00056a0:	81 22 00 00 	lwz     r9,0(r2)
-	c00056a4:	39 29 00 01 	addi    r9,r9,1
-	c00056a8:	91 22 00 00 	stw     r9,0(r2)
-	c00056ac:	3d 20 c0 af 	lis     r9,-16209
-	c00056b0:	81 29 74 cc 	lwz     r9,29900(r9)
-	c00056b4:	2c 09 00 00 	cmpwi   r9,0
-	c00056b8:	41 82 00 10 	beq     c00056c8 <__do_irq+0x74>
-	c00056bc:	80 69 00 04 	lwz     r3,4(r9)
-	c00056c0:	7f e4 fb 78 	mr      r4,r31
-	c00056c4:	4b ff f3 3d 	bl      c0004a00 <__SCT__tp_func_irq_entry>
-
-Before this patch, __do_irq() was doing the following to trace irq
-entries:
-
-	c0005700 <__do_irq>:
-...
-	c0005710:	7c 7e 1b 78 	mr      r30,r3
-...
-	c000574c:	93 e1 00 0c 	stw     r31,12(r1)
-	c0005750:	81 22 00 00 	lwz     r9,0(r2)
-	c0005754:	39 29 00 01 	addi    r9,r9,1
-	c0005758:	91 22 00 00 	stw     r9,0(r2)
-	c000575c:	3d 20 c0 af 	lis     r9,-16209
-	c0005760:	83 e9 f4 cc 	lwz     r31,-2868(r9)
-	c0005764:	2c 1f 00 00 	cmpwi   r31,0
-	c0005768:	41 82 00 24 	beq     c000578c <__do_irq+0x8c>
-	c000576c:	81 3f 00 00 	lwz     r9,0(r31)
-	c0005770:	80 7f 00 04 	lwz     r3,4(r31)
-	c0005774:	7d 29 03 a6 	mtctr   r9
-	c0005778:	7f c4 f3 78 	mr      r4,r30
-	c000577c:	4e 80 04 21 	bctrl
-	c0005780:	85 3f 00 0c 	lwzu    r9,12(r31)
-	c0005784:	2c 09 00 00 	cmpwi   r9,0
-	c0005788:	40 82 ff e4 	bne     c000576c <__do_irq+0x6c>
-
-Behind the fact of now using a direct 'bl' instead of a
-'load/mtctr/bctr' sequence, we can also see that we get one less
-register on the stack.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Use indirect load in long jump sequence to cater with parallele execution and preemption.
----
- arch/powerpc/Kconfig                   |  1 +
- arch/powerpc/include/asm/static_call.h | 25 ++++++++++++++++++
- arch/powerpc/kernel/Makefile           |  2 +-
- arch/powerpc/kernel/static_call.c      | 36 ++++++++++++++++++++++++++
- 4 files changed, 63 insertions(+), 1 deletion(-)
- create mode 100644 arch/powerpc/include/asm/static_call.h
- create mode 100644 arch/powerpc/kernel/static_call.c
-
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 36b72d972568..a0fe69d8ec83 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -247,6 +247,7 @@ config PPC
- 	select HAVE_SOFTIRQ_ON_OWN_STACK
- 	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
- 	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
-+	select HAVE_STATIC_CALL			if PPC32
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_VIRT_CPU_ACCOUNTING
- 	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
-diff --git a/arch/powerpc/include/asm/static_call.h b/arch/powerpc/include/asm/static_call.h
-new file mode 100644
-index 000000000000..2402c6d32439
---- /dev/null
-+++ b/arch/powerpc/include/asm/static_call.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_POWERPC_STATIC_CALL_H
-+#define _ASM_POWERPC_STATIC_CALL_H
-+
-+#define __POWERPC_SCT(name, inst)					\
-+	asm(".pushsection .text, \"ax\"				\n"	\
-+	    ".align 5						\n"	\
-+	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
-+	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
-+	    inst "						\n"	\
-+	    "	lis	12,1f@ha				\n"	\
-+	    "	lwz	12,1f@l(12)				\n"	\
-+	    "	mtctr	12					\n"	\
-+	    "	bctr						\n"	\
-+	    "1:	.long 0						\n"	\
-+	    "	nop						\n"	\
-+	    "	nop						\n"	\
-+	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
-+	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
-+	    ".popsection					\n")
-+
-+#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)	__POWERPC_SCT(name, "b " #func)
-+#define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)	__POWERPC_SCT(name, "blr")
-+
-+#endif /* _ASM_POWERPC_STATIC_CALL_H */
-diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
-index 7be36c1e1db6..0e3640e14eb1 100644
---- a/arch/powerpc/kernel/Makefile
-+++ b/arch/powerpc/kernel/Makefile
-@@ -106,7 +106,7 @@ extra-y				+= vmlinux.lds
- 
- obj-$(CONFIG_RELOCATABLE)	+= reloc_$(BITS).o
- 
--obj-$(CONFIG_PPC32)		+= entry_32.o setup_32.o early_32.o
-+obj-$(CONFIG_PPC32)		+= entry_32.o setup_32.o early_32.o static_call.o
- obj-$(CONFIG_PPC64)		+= dma-iommu.o iommu.o
- obj-$(CONFIG_KGDB)		+= kgdb.o
- obj-$(CONFIG_BOOTX_TEXT)	+= btext.o
-diff --git a/arch/powerpc/kernel/static_call.c b/arch/powerpc/kernel/static_call.c
-new file mode 100644
-index 000000000000..e5e78205ccb4
---- /dev/null
-+++ b/arch/powerpc/kernel/static_call.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/memory.h>
-+#include <linux/static_call.h>
-+
-+#include <asm/code-patching.h>
-+
-+void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
-+{
-+	int err;
-+	unsigned long target = (long)func;
-+	bool is_short = is_offset_in_branch_range((long)target - (long)tramp);
-+
-+	if (!tramp)
-+		return;
-+
-+	mutex_lock(&text_mutex);
-+
-+	if (func && !is_short) {
-+		err = patch_instruction(tramp + 20, ppc_inst(target));
-+		if (err)
-+			goto out;
-+	}
-+
-+	if (!func)
-+		err = patch_instruction(tramp, ppc_inst(PPC_RAW_BLR()));
-+	else if (is_short)
-+		err = patch_branch(tramp, target, 0);
-+	else
-+		err = patch_instruction(tramp, ppc_inst(PPC_RAW_NOP()));
-+out:
-+	mutex_unlock(&text_mutex);
-+
-+	if (err)
-+		panic("%s: patching failed %pS at %pS\n", __func__, func, tramp);
-+}
-+EXPORT_SYMBOL_GPL(arch_static_call_transform);
--- 
-2.25.0
-
+Will
