@@ -2,68 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870E33FC74C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA743FC750
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhHaMcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 08:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230111AbhHaMcb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 08:32:31 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41665C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:31:36 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id x16so8871080pll.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:31:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=KCFcVFLPVDjWU9gNsMaxNCZmVlje7lLqE88KbC2/x+Y=;
-        b=lw2ejCIWUuc1EXwPLkMFmDDAdWeGKwYiX1CI28o2SIHI5352Tredb/D+03fp5DJBNb
-         xFJ+sTI4zMREulp4UH5bTBdP7T8sqLUZdZVO5njhNmrBIwSk434zmuhZy0Ez0424wlrb
-         zYmed2v/ZU4QfWt7XM0IWiCFizoN9L1mp8ieFg4EDPcqV8Lvq5Zrw+qJd0TrpdJKqLlP
-         5xHFRnifgfZ6dJNF0JisXkLVpAefvUocwZQosdeaw9sjOxj7cLWzIqzZFlvAICg1U75B
-         Dn86quaFpEDENbQ1Et5yVVkDHOFHOkP2FdPSJQNSKLIIS1P9cQNgaVW/bplzUmBZ9jix
-         XSiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=KCFcVFLPVDjWU9gNsMaxNCZmVlje7lLqE88KbC2/x+Y=;
-        b=qZ2j82AypeVjXYTu6l7kMZDHsWV5pI7MB3+XBARwFOSeqJQMHEg8rzNTRaUHm3NIWq
-         CvMsaGqUGYpnzD8IMqAx16xMo/SfUMjC/qUrfDE3BZ5EEQn7fWUnDJGUBmL/B+MVJpUo
-         poUa+TH/fKAcAqZavZK6FPcTHPJjcAGoGU92j16IEK8vQ1nHPPMrxV0v7FM86n/8mlxC
-         Mc0lsZLWcz9hve9zVeJUXz/Ra4Qc5Xnno9vHq8xGn0T7NQ2xiWiBGBhi0oFPI3ajZFRV
-         Uu38J9BaMUn4vNPEBRdpYh7Sb+AAZ9QLJ5R01M9oOMhkH1qvv+o4ZkvKVpBbOfYDuvqY
-         BREg==
-X-Gm-Message-State: AOAM532T0Yre3GNE6wE+EsubpEm2Ncauoxh0Czm3elcwq76dH20kuhfI
-        bVYGpaS4RpBRRECbyTkdA5fcWjL2yJNt3c0RIA==
-X-Google-Smtp-Source: ABdhPJxJgfQaCZWdZlMpC73UA1IcIEXfZRp36lw3CsoOY++H6RyfPcJOK8zIYe/Jeq/zceKcAWepnTJFpJFS/5vZUfg=
-X-Received: by 2002:a17:90b:128b:: with SMTP id fw11mr5306459pjb.161.1630413095852;
- Tue, 31 Aug 2021 05:31:35 -0700 (PDT)
+        id S231524AbhHaMfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 08:35:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229625AbhHaMfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 08:35:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C0A16103E;
+        Tue, 31 Aug 2021 12:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630413247;
+        bh=6HDDhtpKaGXV78u18QgQGG/0ha5vhcD/0u5eUw6ZWMc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ceysoIUny2eIi/1LE6OvTNQfsCmPBPsIZOo88PEitU1flHFqTGPI7/qkXyufVhD8K
+         9sfcp9K5/sqD2J+cp7Y8Wt+ew8A4Bc01XCSM7sIUo5SRfw8I8jn/41rNHVW3wGge/5
+         8mySGGELNnh27bHPxF3iUcnNByEq+eZFtFK+9qJhmK18fRQwUA/EhoJBxxtbmw7nB1
+         cEWYvGS1vBweshujBnC/lN3TkMD0+Jv9SzCwCeh+lyKHTqt5T2a9qdLLEfyWqKGIJm
+         y2IJE2dqxsHIST0CHtAUHzceXmwx8LQJovdvx0YSgkSozSQ/HBYIGMND2U5lFQWf+X
+         HVMO4rVYtDibQ==
+Date:   Tue, 31 Aug 2021 13:34:01 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, longman@redhat.com, boqun.feng@gmail.com,
+        wangle6@huawei.com, xiaoqian9@huawei.com, shaolexi@huawei.com,
+        linux-acpi@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] semaphore: Add might_sleep() to down_*() family
+Message-ID: <20210831123401.GA31712@willie-the-truck>
+References: <20210809021215.19991-1-nixiaoming@huawei.com>
+ <20210831111322.GA1687117@roeck-us.net>
+ <871r69ersb.ffs@tglx>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:9599:0:0:0:0 with HTTP; Tue, 31 Aug 2021 05:31:35
- -0700 (PDT)
-Reply-To: wolverinefllclub@hotmail.com
-From:   "Martin Jr. Schwarz" <juliewalters0110@gmail.com>
-Date:   Tue, 31 Aug 2021 14:31:35 +0200
-Message-ID: <CAAs47DAabuMLPxqrTVpHRftZUL_qqW44vSxCHhdKtO739AUpiA@mail.gmail.com>
-Subject: DONATION
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871r69ersb.ffs@tglx>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hello,
-My name is Martin Jr. Schwarz, from the Wolverine FLL Club of Oakland
-County, winning the $ 1.05 billion Mega Millions jackpot. on March 12,
-2021. We volunteered to donate $ 500,000 to help with this pandemic.
-Contact me via e-mail: wolverinefllclub@hotmail.com for information/
-clarification.
+On Tue, Aug 31, 2021 at 02:13:08PM +0200, Thomas Gleixner wrote:
+> On Tue, Aug 31 2021 at 04:13, Guenter Roeck wrote:
+> > On Mon, Aug 09, 2021 at 10:12:15AM +0800, Xiaoming Ni wrote:
+> >> Semaphore is sleeping lock. Add might_sleep() to down*() family
+> >> (with exception of down_trylock()) to detect atomic context sleep.
+> >> 
+> >> Previously discussed with Peter Zijlstra, see link:
+> >>  https://lore.kernel.org/lkml/20210806082320.GD22037@worktop.programming.kicks-ass.net
+> >> 
+> >> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> >> Acked-by: Will Deacon <will@kernel.org>
+> >
+> > This patch results in the following traceback on all arm64 boots with
+> > EFI BIOS.
+> 
+> That's what this change was supposed to catch :)
+> 
+> > The problem is only seen with CONFIG_ACPI_PPTT=y, and thus only on arm64.
+> 
+> The below should fix this.
+> 
+> Thanks,
+> 
+>         tglx
+> ---
+> Subject: drivers: base: cacheinfo: Get rid of DEFINE_SMP_CALL_CACHE_FUNCTION()
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Date: Tue, 31 Aug 2021 13:48:34 +0200
+> 
+> DEFINE_SMP_CALL_CACHE_FUNCTION() was usefel before the CPU hotplug rework
 
-Sincerely,
-Martin Jr. Schwarz.
+typo: "usefel"
+
+> to ensure that the cache related functions are called on the upcoming CPU
+> because the notifier itself could run on any online CPU.
+> 
+> The hotplug state machine guarantees that the callbacks are invoked on the
+> upcoming CPU. So there is no need to have this SMP function call
+> obfuscation. That indirection was missed when the hotplug notifiers were
+> converted.
+> 
+> This also solves the problem of ARM64 init_cache_level() invoking ACPI
+> functions which take a semaphore in that context. That's invalid as SMP
+> function calls run with interrupts disabled. Running it just from the
+> callback in context of the CPU hotplug thread solves this.
+>  
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Fixes: 8571890e1513 ("arm64: Add support for ACPI based firmware tables")
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/arm64/kernel/cacheinfo.c   |    7 ++-----
+>  arch/mips/kernel/cacheinfo.c    |    7 ++-----
+>  arch/riscv/kernel/cacheinfo.c   |    7 ++-----
+>  arch/x86/kernel/cpu/cacheinfo.c |    7 ++-----
+>  include/linux/cacheinfo.h       |   18 ------------------
+>  5 files changed, 8 insertions(+), 38 deletions(-)
+> 
+> --- a/arch/arm64/kernel/cacheinfo.c
+> +++ b/arch/arm64/kernel/cacheinfo.c
+> @@ -43,7 +43,7 @@ static void ci_leaf_init(struct cacheinf
+>  	this_leaf->type = type;
+>  }
+>  
+> -static int __init_cache_level(unsigned int cpu)
+> +int init_cache_level(unsigned int cpu)
+>  {
+>  	unsigned int ctype, level, leaves, fw_level;
+>  	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
+> @@ -78,7 +78,7 @@ static int __init_cache_level(unsigned i
+>  	return 0;
+>  }
+>  
+> -static int __populate_cache_leaves(unsigned int cpu)
+> +int populate_cache_leaves(unsigned int cpu)
+>  {
+>  	unsigned int level, idx;
+>  	enum cache_type type;
+> @@ -97,6 +97,3 @@ static int __populate_cache_leaves(unsig
+>  	}
+>  	return 0;
+>  }
+> -
+> -DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
+> -DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+
+Glad to see the back of this:
+
+Acked-by: Will Deacon <will@kernel.org>
+
+Will
