@@ -2,137 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199653FC2C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B557D3FC2C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234413AbhHaG1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 02:27:22 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:35778 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234076AbhHaG1U (ORCPT
+        id S234754AbhHaG25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 02:28:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43206 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233032AbhHaG2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 02:27:20 -0400
-Received: by mail-io1-f70.google.com with SMTP id g14-20020a6be60e000000b005b62a0c2a41so10166602ioh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 23:26:26 -0700 (PDT)
+        Tue, 31 Aug 2021 02:28:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630391280;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hEPnuo65Qwng2L+Utb7e5ueojU9F4bLfB1V9DmTMPmk=;
+        b=GM5PkKtyWKerk1IVMHYmLuOBZH/dcDPpWl3p+mkn8641af7Lm2FNg8SBiL2/FKY7xfjxkA
+        EEN+09vFRDweEeLWwHelen5yAbfHa/dcFIHRO8A4dhy+fZRevAce2+zW8MjIfMaiJMYOiP
+        FdIiecOpd8pP4S8wCmQbHrQWQP06W68=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-31-dS3C9REDMyi958vsuPrHlQ-1; Tue, 31 Aug 2021 02:26:34 -0400
+X-MC-Unique: dS3C9REDMyi958vsuPrHlQ-1
+Received: by mail-ed1-f69.google.com with SMTP id z17-20020a05640240d100b003cac681f4f4so3289748edb.21
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 23:26:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2fBMnjsX5AdFGq7XzKbhCElEWldrauYArDk/5jg/9mA=;
-        b=CQMcH+qmHd/VkRNDeeJcdpwBzGviHOPdqekfITEjkO1jtIOtDi6eC/aAcDEK0zH03+
-         pepusxw0wHeVNqW90i4kd+vAyrg1nDn8zmRX/z8+9oM+aXWIZWZ3avQhLHrpla4lIxFO
-         H5njD9gF9Y5B2m/Zf1QkyidYL4QMk2OnOJGih32K5hC3hTYOkZCQxZeQqMA9J5QfWNqt
-         x+HQa1EH+tMQUEd2BafWAckHu4UZk5mBgckcmZ4hAhdvng/B1JF5QE7Eik0bV6orx9JD
-         6mFRwXAf/oYyrKMKUX4Q2DG+AC9fAP5nEYJvKvmOo55FIYNKsfHY0x8Gten4JDvJSQDi
-         gYxw==
-X-Gm-Message-State: AOAM530ZOnyEUDxit3V+t8oxQSCIodw8j13NBl67rCs6H9QD6uKAqxeP
-        23eOdD6orGK6CZFAyYfI6kXVhK2BVF58sSSAleMl0M3BVMwy
-X-Google-Smtp-Source: ABdhPJzQG9wQ49aRQcCksX58ZAPVm+IqKVAYhBpqfwYsWyUuF6d4zd5zS2M4iMR35CtZb8B6Bu6C2UYHwFn0hJqKv9bNPx1jOG69
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hEPnuo65Qwng2L+Utb7e5ueojU9F4bLfB1V9DmTMPmk=;
+        b=LXtPuGXMkxxHG5rJN/G7tiOeEWaDkGGLC77t0CtGFGxXO38ZVgNIBRNbpOCQj/0NP2
+         PffJuqzsVp/4RTVYSqmgZS0gfoN+8c3NgyUW1N3MNDOKLawfx6E3x2BLOztB/TSo7IU5
+         sUWNc3oIiySpzO+KXtXeZ9yYBY3Fi7FD/dU0oY/eebXqVWw3RPWdin9u43XiKKHoaAWV
+         kmcxII0HwQP/bJs3XXUw1hm8nqw+W1RsoK5T7pd4aUHn40XhFFokx/IbjEpPFmocwCa+
+         rgVzuOC6R6eZDVq3rDcGSjQNZAOKMea9XYKEJOrzYZAqZM3v4RGvw2PCyXm3E8hzh4+T
+         KLng==
+X-Gm-Message-State: AOAM532KM1C/8QSbUzavsKbbxwgLfRWS7yV3y7gbDF37nxdfAoinqg1r
+        wYY4uRS+aJfhaSdBN9pPD+pamqScY7Rjw5umaspU10ucx9xr+LAQKlxsQKBzQ3bvdkoYTj9d51H
+        SSBmAuHX6u33MlCTidSvRAYlz
+X-Received: by 2002:a17:906:7848:: with SMTP id p8mr28411735ejm.212.1630391193308;
+        Mon, 30 Aug 2021 23:26:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz0ENtKRCXEgDAfYv9QFQ79jja5d57DPHChIvu4gbEetyNiq/qMcRLJnMhi1cyEze9WmqAobQ==
+X-Received: by 2002:a17:906:7848:: with SMTP id p8mr28411715ejm.212.1630391193158;
+        Mon, 30 Aug 2021 23:26:33 -0700 (PDT)
+Received: from redhat.com ([2.55.138.60])
+        by smtp.gmail.com with ESMTPSA id c17sm8820979edu.11.2021.08.30.23.26.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 23:26:32 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 02:26:27 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        stratos-dev@op-lists.linaro.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH V7] gpio: Add virtio-gpio driver
+Message-ID: <20210831022536-mutt-send-email-mst@kernel.org>
+References: <56ca9b1fc803e393a67e875bed4f900c6a432085.1629347189.git.viresh.kumar@linaro.org>
+ <CAMRc=Mfm7EekU_LbujfPxo+NzGTErC44yj-aB+Zg8DXqo7eX5g@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1504:: with SMTP id b4mr1372068jat.144.1630391185806;
- Mon, 30 Aug 2021 23:26:25 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 23:26:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007997ea05cad507ad@google.com>
-Subject: [syzbot] general protection fault in io_poll_remove_waitqs
-From:   syzbot <syzbot+a593162d40b4e4bc57cc@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMRc=Mfm7EekU_LbujfPxo+NzGTErC44yj-aB+Zg8DXqo7eX5g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Aug 23, 2021 at 09:52:22AM +0200, Bartosz Golaszewski wrote:
+> On Thu, Aug 19, 2021 at 6:30 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > This patch adds a new driver for Virtio based GPIO devices.
+> >
+> > This allows a guest VM running Linux to access GPIO lines provided by
+> > the host. It supports all basic operations, except interrupts for the
+> > GPIO lines.
+> >
+> > Based on the initial work posted by:
+> > "Enrico Weigelt, metux IT consult" <lkml@metux.net>.
+> >
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> > Bartosz,
+> >
+> > Can you please pick this up for 5.15, the specification is already merged now:
+> >
+> > https://github.com/oasis-tcs/virtio-spec/blob/master/virtio-gpio.tex
+> >
+> > I will follow up with the IRQ stuff separately.
+> >
+> 
+> Applied, thanks!
+> 
+> Bart
 
-syzbot found the following issue on:
+Um. didn't expect this to be applied yet, the driver is not
+sparse clean, kernel build bot gave some other warnings too.
 
-HEAD commit:    7e96bf476270 Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12cde0ae300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=40eef000d7648480
-dashboard link: https://syzkaller.appspot.com/bug?extid=a593162d40b4e4bc57cc
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a593162d40b4e4bc57cc@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xe0807c8080808083: 0000 [#1] PREEMPT SMP KASAN
-KASAN: maybe wild-memory-access in range [0x0404040404040418-0x040404040404041f]
-CPU: 1 PID: 3257 Comm: syz-executor.5 Not tainted 5.14.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__lock_acquire+0xd7d/0x54a0 kernel/locking/lockdep.c:4885
-Code: e7 0d 41 be 01 00 00 00 0f 86 c8 00 00 00 89 05 f9 64 e7 0d e9 bd 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 0f 85 f3 2f 00 00 48 81 3b c0 63 ed 8e 0f 84 52 f3 ff
-RSP: 0018:ffffc90017037740 EFLAGS: 00010003
-RAX: dffffc0000000000 RBX: 040404040404041c RCX: 0000000000000000
-RDX: 0080808080808083 RSI: 0000000000000000 RDI: 0000000000000001
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000006 R12: 0000000000000000
-R13: ffff888083f28000 R14: 0000000000000000 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 00000000f557cdb0 CR3: 0000000063b0c000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
- spin_lock include/linux/spinlock.h:354 [inline]
- __io_poll_remove_one fs/io_uring.c:5219 [inline]
- io_poll_remove_waitqs+0xc7/0x540 fs/io_uring.c:5237
- io_poll_remove_one fs/io_uring.c:5251 [inline]
- io_poll_remove_all+0x230/0x590 fs/io_uring.c:5279
- io_ring_ctx_wait_and_kill+0x1b0/0x3c0 fs/io_uring.c:8874
- io_uring_release+0x3e/0x50 fs/io_uring.c:8894
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0xbd4/0x2a60 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2160 kernel/signal.c:2808
- arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- __do_fast_syscall_32+0x72/0xf0 arch/x86/entry/common.c:181
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f5d549
-Code: Unable to access opcode bytes at RIP 0xf7f5d51f.
-RSP: 002b:00000000f555759c EFLAGS: 00000206 ORIG_RAX: 00000000000000c0
-RAX: 0000000020eea000 RBX: 0000000020eea000 RCX: 0000000000200000
-RDX: 0000000000000003 RSI: 0000000000008011 RDI: 0000000000000004
-RBP: 0000000000010000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 1200cfeeff2833d2 ]---
-RIP: 0010:__lock_acquire+0xd7d/0x54a0 kernel/locking/lockdep.c:4885
-Code: e7 0d 41 be 01 00 00 00 0f 86 c8 00 00 00 89 05 f9 64 e7 0d e9 bd 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 0f 85 f3 2f 00 00 48 81 3b c0 63 ed 8e 0f 84 52 f3 ff
-RSP: 0018:ffffc90017037740 EFLAGS: 00010003
-RAX: dffffc0000000000 RBX: 040404040404041c RCX: 0000000000000000
-RDX: 0080808080808083 RSI: 0000000000000000 RDI: 0000000000000001
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000006 R12: 0000000000000000
-R13: ffff888083f28000 R14: 0000000000000000 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 00000000f557cdb0 CR3: 0000000063b0c000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
