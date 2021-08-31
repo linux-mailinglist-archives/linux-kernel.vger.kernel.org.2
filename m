@@ -2,146 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C99F3FBFD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 02:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B358C3FBFDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 02:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239277AbhHaACG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 20:02:06 -0400
-Received: from mga09.intel.com ([134.134.136.24]:50163 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239293AbhHaABL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 20:01:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="218381564"
-X-IronPort-AV: E=Sophos;i="5.84,364,1620716400"; 
-   d="scan'208";a="218381564"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 17:00:10 -0700
-X-IronPort-AV: E=Sophos;i="5.84,364,1620716400"; 
-   d="scan'208";a="530713039"
-Received: from ajinkyak-mobl2.amr.corp.intel.com (HELO rpedgeco-desk.amr.corp.intel.com) ([10.212.240.95])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 17:00:09 -0700
-From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
-To:     dave.hansen@intel.com, luto@kernel.org, peterz@infradead.org,
-        x86@kernel.org, akpm@linux-foundation.org, keescook@chromium.org,
-        shakeelb@google.com, vbabka@suse.cz, rppt@kernel.org
-Cc:     Rick Edgecombe <rick.p.edgecombe@intel.com>, linux-mm@kvack.org,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, ira.weiny@intel.com,
-        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 19/19] x86/mm: Add PKS table debug checking
-Date:   Mon, 30 Aug 2021 16:59:27 -0700
-Message-Id: <20210830235927.6443-20-rick.p.edgecombe@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
-References: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
+        id S233812AbhHaAEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 20:04:52 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:44563 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233270AbhHaAEt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 20:04:49 -0400
+Received: by mail-ot1-f54.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so20606560otg.11;
+        Mon, 30 Aug 2021 17:03:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=cIxLbC0V4V1OdsC/Ly6jKX0YPVdFxUbPkUbq2zoGTMs=;
+        b=KWoCpj8kuWUampiLPX5fZe+Ku32AA01l4/dsT/GW0Ut5KGxm7nqL6YWDaERRxtfK/L
+         v65M0QFbT/giv+6FelxsYh3BPWffWgJ/wwtZAfRsBgEoylwbp7byAreifBYKsxvj+5/4
+         XXlFIs7s+eb2CD9R6pCZ13zRPMa6L1Me4zDq6govzf73x2MTHM/lIqPCkiVoESIvDOka
+         Bit9CJB6OHslfbLe9l/YwSfduU6d2VfJvZ6POoawAcywppcxcqySv18nzwWr6BqHakhR
+         n1RVrZviqhWjBMpV2rUiHMnK1ql9VecYvwVCV5FE8LHNW8BcgpzkCMxF4LOYTlVPVXrv
+         YjHg==
+X-Gm-Message-State: AOAM532NWfQz0byOG2gLQ/EE1ErReIGjiFmvQ/cSUST7mcLxUIijSLxE
+        KNisO6BTTBJnBmjC43WjBQ==
+X-Google-Smtp-Source: ABdhPJzApwMo/dFh6AfQatjs1hglDwJoGhq5PQw87cu4H4prFWq6jzpKxMtFIM1NqNnPtbqUya0biw==
+X-Received: by 2002:a05:6830:913:: with SMTP id v19mr22138821ott.131.1630368235166;
+        Mon, 30 Aug 2021 17:03:55 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id v8sm3559453ota.16.2021.08.30.17.03.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 17:03:54 -0700 (PDT)
+Received: (nullmailer pid 2940837 invoked by uid 1000);
+        Tue, 31 Aug 2021 00:03:53 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     shawnguo@kernel.org, linux-iio@vger.kernel.org, robh+dt@kernel.org,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        lars@metafoo.de, festevam@gmail.com, jic23@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex.dewar90@gmail.com
+In-Reply-To: <20210830172140.414-5-caihuoqing@baidu.com>
+References: <20210830172140.414-1-caihuoqing@baidu.com> <20210830172140.414-5-caihuoqing@baidu.com>
+Subject: Re: [PATCH 4/6] dt-bindings: iio: adc: Add the binding documentation for NXP IMX8QXP ADC
+Date:   Mon, 30 Aug 2021 19:03:53 -0500
+Message-Id: <1630368233.478982.2940836.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a runtime checker that scans the currently used page tables to check
-that they are all protected on the direct map, in the case of PKS
-tables. Use the recently added page table traverser.
+On Tue, 31 Aug 2021 01:21:38 +0800, Cai Huoqing wrote:
+> The NXP i.MX 8QuadXPlus SOC has a new ADC IP, so add the binding
+> documentation for NXP IMX8QXP ADC
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  .../bindings/iio/adc/nxp,imx8qxp-adc.yaml     | 85 +++++++++++++++++++
+>  1 file changed, 85 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+> 
 
-There are many possible ways to modify and allocate page tables. In
-order to catch any missed cases, just traverse the active tables every
-second and check the direct map protection for each.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-This feature is intended for debugging only. Another way to do this
-without the awkward timers, is to check each page while contructing the
-PTE. It may be useful for enhance the protection as well. But this could
-miss any strange wrong page table modifications hidden away somewhere in
-the kernel. So for debug time, the scanner is a little more thorough.
+yamllint warnings/errors:
 
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
----
- arch/x86/mm/pat/set_memory.c | 43 ++++++++++++++++++++++++++++++++++++
- mm/Kconfig                   |  5 +++++
- 2 files changed, 48 insertions(+)
+dtschema/dtc warnings/errors:
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 120, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 848, in _ruamel_yaml.CParser._compose_sequence_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.scanner.ScannerError: while scanning a block scalar
+  in "<unicode string>", line 65, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 71, column 1
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml:  while scanning a block scalar
+  in "<unicode string>", line 65, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 71, column 1
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+make: *** [Makefile:1419: dt_binding_check] Error 2
 
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index 6acf25999b0f..945b3d3e1231 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -19,6 +19,8 @@
- #include <linux/vmstat.h>
- #include <linux/kernel.h>
- #include <linux/pkeys.h>
-+#include <linux/kthread.h>
-+#include <linux/delay.h>
- 
- #include <asm/e820/api.h>
- #include <asm/processor.h>
-@@ -2703,6 +2705,45 @@ static void traverse_mm(struct mm_struct *mm, traverse_cb cb)
- 	traverse_pgd(mm->pgd, cb, 0);
- }
- 
-+#ifdef CONFIG_PKS_PG_TABLES_DEBUG
-+static void check_table_protected(unsigned long pfn, void *vaddr, void *vend)
-+{
-+	if (is_dmap_protected((unsigned long)__va(pfn << PAGE_SHIFT)))
-+		return;
-+
-+	pr_warn("Found unprotected page, pfn: %lx maps address:0x%p\n", pfn, vaddr);
-+}
-+
-+static int table_scan_fn(void *data)
-+{
-+	while (1) {
-+		msleep(MSEC_PER_SEC);
-+		mmap_read_lock(current->active_mm);
-+		traverse_mm(current->active_mm, &check_table_protected);
-+		mmap_read_unlock(current->active_mm);
-+	}
-+	return 0;
-+}
-+
-+static void __init init_pks_table_scan(void)
-+{
-+	struct task_struct *thread;
-+	int cpu;
-+
-+	pr_info("Starting pks_table_debug thread on %d cpus\n", num_online_cpus());
-+	for (cpu = 0; cpu < num_online_cpus(); cpu++) {
-+		thread = kthread_create_on_cpu(table_scan_fn, NULL, cpu, "pks_table_debug");
-+		if (IS_ERR(thread)) {
-+			pr_err("Failed to create pks_table_debug threads\n");
-+			break;
-+		}
-+		wake_up_process(thread);
-+	}
-+}
-+#else
-+static void __init init_pks_table_scan(void) { }
-+#endif
-+
- static void free_maybe_reserved(struct page *page)
- {
- 	if (PageReserved(page))
-@@ -2776,6 +2817,8 @@ static int __init init_pks_dmap_tables(void)
- 	 */
- 	traverse_mm(&init_mm, &ensure_table_protected);
- 
-+	init_pks_table_scan();
-+
- 	return 0;
- out_err:
- 	while ((cur = llist_del_first(&tables_to_covert))) {
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 1f4fc85cbd2c..87a4963c63c6 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -863,6 +863,11 @@ config PKS_PG_TABLES_SOFT_ALWAYS
- 	  still like to get notifications of illegitimate attempts to modify
- 	  them.
- 
-+config PKS_PG_TABLES_DEBUG
-+	def_bool y
-+	depends on PKS_PG_TABLES
-+
-+
- config PERCPU_STATS
- 	bool "Collect percpu memory statistics"
- 	help
--- 
-2.17.1
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1522287
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
