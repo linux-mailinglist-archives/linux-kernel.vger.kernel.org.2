@@ -2,234 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25263FC41A
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC4E3FC41B
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240188AbhHaIGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 04:06:25 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:37401 "EHLO pegase2.c-s.fr"
+        id S240193AbhHaIIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 04:08:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240107AbhHaIGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 04:06:20 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GzKVp5fByz9sTk;
-        Tue, 31 Aug 2021 10:05:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Kp6tBVa-EcAi; Tue, 31 Aug 2021 10:05:22 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GzKVp4cqCz9sTX;
-        Tue, 31 Aug 2021 10:05:22 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 777968B7D4;
-        Tue, 31 Aug 2021 10:05:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id xoszIsJnp8OF; Tue, 31 Aug 2021 10:05:22 +0200 (CEST)
-Received: from po18078vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id ED3098B774;
-        Tue, 31 Aug 2021 10:05:21 +0200 (CEST)
-Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id A6B206BCA8; Tue, 31 Aug 2021 08:05:21 +0000 (UTC)
-Message-Id: <cbfc0376461d02867c75cee72bb9167e16f4d0b0.1630396954.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/32: Add support for out-of-line static calls
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 31 Aug 2021 08:05:21 +0000 (UTC)
+        id S240107AbhHaIIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 04:08:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34B64603E7;
+        Tue, 31 Aug 2021 08:07:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630397266;
+        bh=z7P55UZRnlAxsdqAANQXJIQgoIdMDN7PXKO0gr+rm5M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q2vdWeLhaBBq6sEVc+B7bSwAyRp14UvYy8+aptxG9qQeEaexhWxicYWqcobw7kMX+
+         bj0yqnoB6ECi5yqLdEP7Baz+WzV1Km2pbmFaC7VO5BuDwp7A4Dk43tqqUZ8O/MA8Bd
+         MaO2Ny3od4cBnW1L+hq5uJC840+68lG07ujDXV6FvuvVkGPwqwYB1ojYsy1H/w2tNi
+         r1kmMKP2oKeDKs9ZSlmY/q3Mr+Po4nbanzvWf7+QKOrHLfZjsFI7bhtJRQpiwLkQMT
+         RJ6vcg94nwwM8sSKTGyinTt0ISTQwKiAk95Gn0CBOZ0ivYMstet2jArn/uQffncUCZ
+         CwF87DBWP/nZA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mKyny-0007AS-8H; Tue, 31 Aug 2021 10:07:39 +0200
+Date:   Tue, 31 Aug 2021 10:07:38 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alex Elder <elder@kernel.org>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: Re: [greybus-dev] [PATCH v4] staging: greybus: Convert uart.c from
+ IDR to XArray
+Message-ID: <YS3jSsGSs0yAw/Ba@hovoldconsulting.com>
+References: <20210829092250.25379-1-fmdefrancesco@gmail.com>
+ <YSyg/Db1So0LDGR+@hovoldconsulting.com>
+ <2879439.WEJLM9RBEh@localhost.localdomain>
+ <YSzGkNfG6HOayiXi@hovoldconsulting.com>
+ <YSzMB80NOkNvdjy1@casper.infradead.org>
+ <YSzQAd0Rg5CF/eLe@hovoldconsulting.com>
+ <f7a25eb1-20f4-5031-a156-9e5dc019ad28@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f7a25eb1-20f4-5031-a156-9e5dc019ad28@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for out-of-line static calls on PPC32. This change
-improve performance of calls to global function pointers by
-using direct calls instead of indirect calls.
+On Mon, Aug 30, 2021 at 08:20:25AM -0500, Alex Elder wrote:
 
-The trampoline is initialy populated with a 'blr' and 3 'nop'.
-Then, depending on the target distance, arch_static_call_transform()
-will either replace the 'blr' by a direct 'bl <target>' or an
-indirect jump throught CTR register via a lis/addi/mtctr/bctr sequence.
+> I have been offering review feedback on this patch for three reasons:
+> 
+> - First, because I think the intended change does no real harm to the
+>   Greybus code, and in a small way actually simplifies it.
 
-static_call selftest is running successfully with this change.
+You leave out that we've already seen three versions of the patch that
+broke things in various ways and that there was still work to be done
+with respect to the commit message and verifying the locking. That's all
+real costs that someone needs to bear.
 
-With this patch, __do_irq() has the following sequence to trace
-irq entries:
+> - Because I wanted to encourage Fabio's efforts to be part of the
+>   Linux contributor community.
 
-	c00049c0 <__SCT__tp_func_irq_entry>:
-	c00049c0:	48 00 00 70 	b       c0004a30 <__traceiter_irq_entry>
-	c00049c4:	60 00 00 00 	nop
-	c00049c8:	60 00 00 00 	nop
-	c00049cc:	60 00 00 00 	nop
-...
-	c00055a4 <__do_irq>:
-...
-	c00055b4:	7c 7f 1b 78 	mr      r31,r3
-...
-	c00055f0:	81 22 00 00 	lwz     r9,0(r2)
-	c00055f4:	39 29 00 01 	addi    r9,r9,1
-	c00055f8:	91 22 00 00 	stw     r9,0(r2)
-	c00055fc:	3d 20 c0 af 	lis     r9,-16209
-	c0005600:	81 29 74 cc 	lwz     r9,29900(r9)
-	c0005604:	2c 09 00 00 	cmpwi   r9,0
-	c0005608:	41 82 00 10 	beq     c0005618 <__do_irq+0x74>
-	c000560c:	80 69 00 04 	lwz     r3,4(r9)
-	c0005610:	7f e4 fb 78 	mr      r4,r31
-	c0005614:	4b ff f3 ad 	bl      c00049c0 <__SCT__tp_func_irq_entry>
+Helping new contributers that for example have run into a bug or need
+some assistance adding a new feature that they themselves have use for
+is one thing.
 
-Before this patch, __do_irq() was doing the following to trace irq
-entries:
+I'm not so sure we're helping either newcomers or Linux long term by
+inventing work for an already strained community however.
 
-	c0005700 <__do_irq>:
-...
-	c0005710:	7c 7e 1b 78 	mr      r30,r3
-...
-	c000574c:	93 e1 00 0c 	stw     r31,12(r1)
-	c0005750:	81 22 00 00 	lwz     r9,0(r2)
-	c0005754:	39 29 00 01 	addi    r9,r9,1
-	c0005758:	91 22 00 00 	stw     r9,0(r2)
-	c000575c:	3d 20 c0 af 	lis     r9,-16209
-	c0005760:	83 e9 f4 cc 	lwz     r31,-2868(r9)
-	c0005764:	2c 1f 00 00 	cmpwi   r31,0
-	c0005768:	41 82 00 24 	beq     c000578c <__do_irq+0x8c>
-	c000576c:	81 3f 00 00 	lwz     r9,0(r31)
-	c0005770:	80 7f 00 04 	lwz     r3,4(r31)
-	c0005774:	7d 29 03 a6 	mtctr   r9
-	c0005778:	7f c4 f3 78 	mr      r4,r30
-	c000577c:	4e 80 04 21 	bctrl
-	c0005780:	85 3f 00 0c 	lwzu    r9,12(r31)
-	c0005784:	2c 09 00 00 	cmpwi   r9,0
-	c0005788:	40 82 ff e4 	bne     c000576c <__do_irq+0x6c>
+[ This is more of a general comment and of course in no way a critique
+  against Fabio or a claim that the XArray conversions are pointless. ]
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/Kconfig                   |  1 +
- arch/powerpc/include/asm/static_call.h | 31 +++++++++++++++++++
- arch/powerpc/kernel/Makefile           |  2 +-
- arch/powerpc/kernel/static_call.c      | 43 ++++++++++++++++++++++++++
- 4 files changed, 76 insertions(+), 1 deletion(-)
- create mode 100644 arch/powerpc/include/asm/static_call.h
- create mode 100644 arch/powerpc/kernel/static_call.c
+> - Because I suspected that Matthew's long-term intention was to
+>   replace IDR/IDA use with XArray, so this would represent an early
+>   conversion.
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 36b72d972568..a0fe69d8ec83 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -247,6 +247,7 @@ config PPC
- 	select HAVE_SOFTIRQ_ON_OWN_STACK
- 	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
- 	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
-+	select HAVE_STATIC_CALL			if PPC32
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_VIRT_CPU_ACCOUNTING
- 	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
-diff --git a/arch/powerpc/include/asm/static_call.h b/arch/powerpc/include/asm/static_call.h
-new file mode 100644
-index 000000000000..7cbefd845afc
---- /dev/null
-+++ b/arch/powerpc/include/asm/static_call.h
-@@ -0,0 +1,31 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_POWERPC_STATIC_CALL_H
-+#define _ASM_POWERPC_STATIC_CALL_H
-+
-+#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)			\
-+	asm(".pushsection .text, \"ax\"				\n"	\
-+	    ".align 4						\n"	\
-+	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
-+	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
-+	    "	b " #func "					\n"	\
-+	    "	nop						\n"	\
-+	    "	nop						\n"	\
-+	    "	nop						\n"	\
-+	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
-+	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
-+	    ".popsection					\n")
-+
-+#define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)			\
-+	asm(".pushsection .text, \"ax\"				\n"	\
-+	    ".align 4						\n"	\
-+	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
-+	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
-+	    "	blr						\n"	\
-+	    "	nop						\n"	\
-+	    "	nop						\n"	\
-+	    "	nop						\n"	\
-+	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
-+	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
-+	    ".popsection					\n")
-+
-+#endif /* _ASM_POWERPC_STATIC_CALL_H */
-diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
-index 7be36c1e1db6..0e3640e14eb1 100644
---- a/arch/powerpc/kernel/Makefile
-+++ b/arch/powerpc/kernel/Makefile
-@@ -106,7 +106,7 @@ extra-y				+= vmlinux.lds
+That could be a valid motivation for the change indeed (since the
+efficiency arguments are irrelevant in this case), but I could not find
+any indications that there has been an agreement to deprecate the
+current interfaces.
+
+Last time around I think there was even push-back to convert IDR/IDA to
+use XArray internally instead (but I may misremember).
+
+> The Greybus code is generally good, but that doesn't mean it can't
+> evolve.  It gets very little patch traffic, so I don't consider small
+> changes like this "useless churn."  The Greybus code is held up as an
+> example of Linux kernel code that can be safely modified, and I think
+> it's actively promoted as a possible source of new developer tasks
+> (e.g. for Outreachy).
+
+Since most people can't really test their changes to Greybus perhaps it
+isn't the best example of code that can be safely modified. But yeah,
+parts of it are still in staging and, yes, staging has been promoted as
+place were some churn is accepted.
  
- obj-$(CONFIG_RELOCATABLE)	+= reloc_$(BITS).o
- 
--obj-$(CONFIG_PPC32)		+= entry_32.o setup_32.o early_32.o
-+obj-$(CONFIG_PPC32)		+= entry_32.o setup_32.o early_32.o static_call.o
- obj-$(CONFIG_PPC64)		+= dma-iommu.o iommu.o
- obj-$(CONFIG_KGDB)		+= kgdb.o
- obj-$(CONFIG_BOOTX_TEXT)	+= btext.o
-diff --git a/arch/powerpc/kernel/static_call.c b/arch/powerpc/kernel/static_call.c
-new file mode 100644
-index 000000000000..72754bcaf758
---- /dev/null
-+++ b/arch/powerpc/kernel/static_call.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/memory.h>
-+#include <linux/static_call.h>
-+
-+#include <asm/code-patching.h>
-+
-+static int patch_trampoline_32(u32 *addr, unsigned long target)
-+{
-+	int err;
-+
-+	err = patch_instruction(addr++, ppc_inst(PPC_RAW_LIS(_R12, PPC_HA(target))));
-+	err |= patch_instruction(addr++, ppc_inst(PPC_RAW_ADDI(_R12, _R12, PPC_LO(target))));
-+	err |= patch_instruction(addr++, ppc_inst(PPC_RAW_MTCTR(_R12)));
-+	err |= patch_instruction(addr, ppc_inst(PPC_RAW_BCTR()));
-+
-+	return err;
-+}
-+
-+void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
-+{
-+	int err;
-+	unsigned long target = (long)func;
-+
-+	if (!tramp)
-+		return;
-+
-+	mutex_lock(&text_mutex);
-+
-+	if (!func)
-+		err = patch_instruction(tramp, ppc_inst(PPC_RAW_BLR()));
-+	else if (is_offset_in_branch_range((long)target - (long)tramp))
-+		err = patch_branch(tramp, target, 0);
-+	else if (IS_ENABLED(CONFIG_PPC32))
-+		err = patch_trampoline_32(tramp, target);
-+	else
-+		BUILD_BUG();
-+
-+	mutex_unlock(&text_mutex);
-+
-+	if (err)
-+		panic("%s: patching failed %pS at %pS\n", __func__, func, tramp);
-+}
-+EXPORT_SYMBOL_GPL(arch_static_call_transform);
--- 
-2.25.0
-
+Johan
