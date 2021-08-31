@@ -2,122 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4694B3FCD6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7770D3FCD71
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 21:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239662AbhHaTFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:05:38 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:43828 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238068AbhHaTFh (ORCPT
+        id S240147AbhHaTGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239918AbhHaTF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:05:37 -0400
-Received: by mail-ot1-f44.google.com with SMTP id x10-20020a056830408a00b004f26cead745so368889ott.10;
-        Tue, 31 Aug 2021 12:04:42 -0700 (PDT)
+        Tue, 31 Aug 2021 15:05:56 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC467C0617AD
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:05:00 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id y128so478141oie.4
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:05:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZvHe6WFLlEOY+cnNyJHf8IUGJZtLzfrewOzKEL/ktBI=;
+        b=ACWt0ukBTDTGH9DZcqNb3LHML6ZIXTJi22x9F1+NGl+2yrk61J+GgzScyE3gFTlSlQ
+         x226k4VgR+xl+Mxu1P2nWpexNXNlNb1LiuVItVK2b3hkNGxNhP3j+ea03k66KOk1vptW
+         JM2F8HfiCiSzN9m0fQJeZ3AwirWfftjNbongs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W9w1w21DdRbVUz09+7iwKeSrHli8LROFhuhLFNVX38M=;
-        b=epVWniu5duu6pAbIWqB6xjR8KTHHe7XwjfVcXPYp6Ll4mes9WNJ1lAMB/hWUVCfTD6
-         kv2ubMDPbnoE/SoJbYebkZhK5iL2uhT0jnWxPcb1XigygIauFcDNoI6tdOpfCLhwlYB1
-         lvujwL9MgtGPR25WNLGquqroSJ2qd/fdUm6gT9ccZJNFNUwB3lpdNJC/5oTqJJwR7l5Q
-         StL7f+lykoFUDFo2ig09pwmmYYweFi5ksg5nWjsCfD9X4SALm120IGzrvIee+FqvW7VL
-         LXc+d8AK2J/Du1GNm7RstrmbHqoKkTlTKfetU+tQQj1SzbMUi0zl0cW+ztN7q4RmhRYv
-         84Tw==
-X-Gm-Message-State: AOAM531pSZoMqRo6bT2zLrImsp7cjlAcLXazDl3Xl25Msl/JMZi09Fm7
-        oZdPVJ4QkzyIxZikZ6JDg9VgMyVc+g==
-X-Google-Smtp-Source: ABdhPJxJkz8PhGJXTQPrVysULkUbmCcCV2OdMO4amhKVmn2i6gpD5xCi+1Pi0q54u82Oa1Y2Bbb43w==
-X-Received: by 2002:a9d:65da:: with SMTP id z26mr25112974oth.303.1630436681918;
-        Tue, 31 Aug 2021 12:04:41 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id k24sm4038647otp.31.2021.08.31.12.04.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 12:04:41 -0700 (PDT)
-Received: (nullmailer pid 482100 invoked by uid 1000);
-        Tue, 31 Aug 2021 19:04:40 -0000
-Date:   Tue, 31 Aug 2021 14:04:40 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Navin Sankar Velliangiri <navin@linumiz.com>
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, a.zummo@towertech.it,
-        alexandre.belloni@bootlin.com
-Subject: Re: [PATCH] rtc: bq32000: Add TI BQ32002 compatible
-Message-ID: <YS59SDh1/mkpBpEJ@robh.at.kernel.org>
-References: <20210831074922.273809-1-navin@linumiz.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZvHe6WFLlEOY+cnNyJHf8IUGJZtLzfrewOzKEL/ktBI=;
+        b=b6zCET537VpXVLO5WYM3TCtc+fqrKRjuQ/qYygR31k20nsf4OgYE4ulLXU14fxgkcJ
+         SwwA39FQKB/7e+ZPz1v4rvF7aGpIdGoVvVo4GKG7XM1qZvbi0NPTQIfkWsvGbuB/I8PZ
+         yyQHmGDpj2OSZuGlILHa0N96XOR+Dwxa9MoTM2wvOHzCp8hxpYffavpggvE0fMzD0trN
+         uIHI9cu/gY/I6e5deE8VsWMHxHVRHZUWxnjH6E8Dsd1p+OdnD1Wpo1GYdcRGL9eicNmV
+         cWPYa/2whGXUS/rZiL4nccx74eO4AgZdWdgjfPVNA20B3le11EG0m2pJCOPq1+ZAF4Kh
+         k/ww==
+X-Gm-Message-State: AOAM5319UncBSV6Gep+Hmky0fecuf2/Bo0Gz/GNJcn623xLG9b4j5Um0
+        oKoJ8qZcVqySP3WBxqq/Aee1YtDxLa3gtZ8+KVg97g==
+X-Google-Smtp-Source: ABdhPJzuNvtIttTsikeJhpfgPjZLhIkRqb9ifqIW1nYLm/S07/enaQExtksB0ZnMvf3m4HMYN91Gb9HNmjtQutiTXpc=
+X-Received: by 2002:a05:6808:1449:: with SMTP id x9mr4264801oiv.14.1630436700262;
+ Tue, 31 Aug 2021 12:05:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210831074922.273809-1-navin@linumiz.com>
+References: <000000000000815b9605c70e74f8@google.com> <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
+ <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
+ <339bfb21-8e80-c7d9-46dd-c416f87c50c0@infradead.org> <535e404d-03bf-8e7a-b296-132a2a98c599@i-love.sakura.ne.jp>
+ <CAMuHMdWX7s63X_zR9329canbQkPGBVxZNG4O+_=jUut60aGR9g@mail.gmail.com>
+ <5c6d2b95-31d7-0d59-5e62-2593d9a0e1fe@i-love.sakura.ne.jp>
+ <CAMuHMdWbSUGRGAVi-17C3hyDBZnGLAsmbAs+wXPHiCNWWLbMpA@mail.gmail.com>
+ <CAKMK7uF1cnen2UVWeOL164z1CCqOuRMC5SmM+5GvRvi7C-UOTw@mail.gmail.com> <CAMuHMdWNYaZxZB0Td4PFb76rrtQMumKu6cJgLi2aNnW-9NmG8A@mail.gmail.com>
+In-Reply-To: <CAMuHMdWNYaZxZB0Td4PFb76rrtQMumKu6cJgLi2aNnW-9NmG8A@mail.gmail.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 31 Aug 2021 21:04:48 +0200
+Message-ID: <CAKMK7uHuOQWUnsiH00QFbHKgTdjjryK0ra9We2stojXMiAVgJA@mail.gmail.com>
+Subject: Re: [PATCH] fbmem: don't allow too huge resolutions
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Colin King <colin.king@canonical.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 01:19:22PM +0530, Navin Sankar Velliangiri wrote:
-> The TI BQ32002 is software compatible with the TI BQ32000,
-> add DT compatible entries
-> 
-> Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
-> ---
->  Documentation/devicetree/bindings/rtc/ti,bq32000.yaml | 11 +++++++++++
->  drivers/rtc/rtc-bq32k.c                               |  2 ++
->  2 files changed, 13 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/rtc/ti,bq32000.yaml b/Documentation/devicetree/bindings/rtc/ti,bq32000.yaml
-> index bf9c1c4ddb7e..2ddf1cc097d8 100644
-> --- a/Documentation/devicetree/bindings/rtc/ti,bq32000.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/ti,bq32000.yaml
-> @@ -15,6 +15,7 @@ allOf:
->  properties:
->    compatible:
->      const: ti,bq32000
-> +    const: ti,bq32002
+On Tue, Aug 31, 2021 at 8:56 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Daniel,
+>
+> On Tue, Aug 31, 2021 at 8:53 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+> > On Tue, Aug 31, 2021 at 7:19 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Tue, Aug 31, 2021 at 5:24 PM Tetsuo Handa
+> > > <penguin-kernel@i-love.sakura.ne.jp> wrote:
+> > > > On 2021/08/31 15:48, Geert Uytterhoeven wrote:
+> > > > > Furthermore, this restricts the virtual frame buffer size on 64-bit,
+> > > > > too, while graphics cards can have much more than 4 GiB of RAM.
+> > > >
+> > > > Excuse me, but do you mean that some hardware allows allocating more than
+> > > > UINT_MAX bytes of memory for kernel frame buffer drivers?
+> > >
+> > > While smem_len is u32 (there have been complaints about such
+> > > limitations on 64-bit platforms as far as 10 years ago), I see no
+> > > reason why a graphics card with more than 4 GiB of RAM would not be
+> > > able to provide a very large virtual screen.
+> > >
+> > > Of course e.g. vga16fb cannot, as it is limited to 64 KiB.
+> >
+> > The first gpus with 4GB or more memory started shipping in 2012. We're
+> > not going to have fbdev drivers for these, so let's not invent code
+> > for use-cases that aren't please.
+>
+> This code path is used with fbdev emulation for drm drivers, too,
+> right?
 
-'enum' is what you want here.
+Yeah, you get one buffer, with overallocating 2. That's all, you don't
+get the entire vram because we can't revoke that for fbdev users. We'd
+have fixed this long ago if it's a real limitations.
 
->  
->    reg:
->      const: 0x68
-> @@ -35,6 +36,16 @@ required:
->  
->  additionalProperties: false
->  
-> +if:
-> +  properties:
-> +     compatible:
-> +       items:
-
-Use 'contains'
-
-> +         - const: ti,bq32002
-> +then:
-> +  properties:
-> +    trickle-resistor-ohms: false
-> +    trickle-diode-disable: false
-> +
->  examples:
->    - |
->      i2c {
-> diff --git a/drivers/rtc/rtc-bq32k.c b/drivers/rtc/rtc-bq32k.c
-> index 2235c968842d..a167a6afdc7e 100644
-> --- a/drivers/rtc/rtc-bq32k.c
-> +++ b/drivers/rtc/rtc-bq32k.c
-> @@ -307,12 +307,14 @@ static int bq32k_remove(struct i2c_client *client)
->  
->  static const struct i2c_device_id bq32k_id[] = {
->  	{ "bq32000", 0 },
-> +	{ "bq32002", 0 },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(i2c, bq32k_id);
->  
->  static const __maybe_unused struct of_device_id bq32k_of_match[] = {
->  	{ .compatible = "ti,bq32000" },
-> +	{ .compatible = "ti,bq32002" },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(of, bq32k_of_match);
-> -- 
-> 2.32.0
-> 
-> 
+8k at 64bpp is still less than 256MB. Also due to pci bar limitations
+(which finally get lifted now because windows fixed their pci code,
+which motivates motherboard manufactures for desktop space to also fix
+theirs) we're limited to 256MB actually cpu visible anyway.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
