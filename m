@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705F13FC556
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2243FC559
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240792AbhHaJ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 05:58:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:52748 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239629AbhHaJ6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 05:58:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A577A1FB;
-        Tue, 31 Aug 2021 02:57:14 -0700 (PDT)
-Received: from [10.163.72.217] (unknown [10.163.72.217])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E0943F5A1;
-        Tue, 31 Aug 2021 02:57:11 -0700 (PDT)
-Subject: Re: [FIX PATCH 2/2] mm/page_alloc: Use accumulated load when building
- node fallback list
-To:     Bharata B Rao <bharata@amd.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     akpm@linux-foundation.org, kamezawa.hiroyu@jp.fujitsu.com,
-        lee.schermerhorn@hp.com, mgorman@suse.de,
-        Krupa.Ramakrishnan@amd.com, Sadagopan.Srinivasan@amd.com
-References: <20210830121603.1081-1-bharata@amd.com>
- <20210830121603.1081-3-bharata@amd.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <13dab5ac-03a3-e9b3-ff12-f819f7711569@arm.com>
-Date:   Tue, 31 Aug 2021 15:28:11 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S240819AbhHaKAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:00:06 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53658 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240576AbhHaKAF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 06:00:05 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0AC6C221D5;
+        Tue, 31 Aug 2021 09:59:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630403950; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WiP8R2FARUsYFRgyybzZXk+qgD0ErxdUL7/x1nn4EHc=;
+        b=jGmRKaHjiB0LJjuSUiCQxNuc0IQU6ggQnRYlQc5lU2gNvcToeTo/ZDpq3fDTJFmiy61YsT
+        fd/IuOQXQx5ZTYzw/1yiGDfqlhwZcClL4HqECu10DBBA/ljjUOk8Wk0ByScFt0RA5WFzBy
+        EBlts6L764k93fDF645Tw7QRW/j4dFk=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id E91A4A3B95;
+        Tue, 31 Aug 2021 09:59:08 +0000 (UTC)
+Date:   Tue, 31 Aug 2021 11:59:05 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Rik van Riel <riel@surriel.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        stable@kernel.org, Chris Down <chris@chrisdown.name>
+Subject: Re: [PATCH] mm,vmscan: fix divide by zero in get_scan_count
+Message-ID: <YS39aci6yhjIplLx@dhcp22.suse.cz>
+References: <20210826220149.058089c6@imladris.surriel.com>
+ <YS1EA3U4XXH7X0qz@cmpxchg.org>
 MIME-Version: 1.0
-In-Reply-To: <20210830121603.1081-3-bharata@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YS1EA3U4XXH7X0qz@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 30-08-21 16:48:03, Johannes Weiner wrote:
+> On Thu, Aug 26, 2021 at 10:01:49PM -0400, Rik van Riel wrote:
+[...]
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index eeae2f6bc532..f1782b816c98 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -2592,7 +2592,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+> >  			cgroup_size = max(cgroup_size, protection);
+> >  
+> >  			scan = lruvec_size - lruvec_size * protection /
+> > -				cgroup_size;
+> > +				(cgroup_size + 1);
+> 
+> I have no overly strong preferences, but if Michal prefers max(), how about:
+> 
+> 	cgroup_size = max3(cgroup_size, protection, 1);
 
+Yes this is better.
 
-On 8/30/21 5:46 PM, Bharata B Rao wrote:
-> As an example, consider a 4 node system with the following distance
-> matrix.
+> Or go back to not taking the branch in the first place when there is
+> no protection in effect...
 > 
-> Node 0  1  2  3
-> ----------------
-> 0    10 12 32 32
-> 1    12 10 32 32
-> 2    32 32 10 12
-> 3    32 32 12 10
-> 
-> For this case, the node fallback list gets built like this:
-> 
-> Node	Fallback list
-> ---------------------
-> 0	0 1 2 3
-> 1	1 0 3 2
-> 2	2 3 0 1
-> 3	3 2 0 1 <-- Unexpected fallback order
-> 
-> In the fallback list for nodes 2 and 3, the nodes 0 and 1
-> appear in the same order which results in more allocations
-> getting satisfied from node 0 compared to node 1.
-> 
-> The effect of this on remote memory bandwidth as seen by stream
-> benchmark is shown below:
-> 
-> Case 1: Bandwidth from cores on nodes 2 & 3 to memory on nodes 0 & 1
-> 	(numactl -m 0,1 ./stream_lowOverhead ... --cores <from 2, 3>)
-> Case 2: Bandwidth from cores on nodes 0 & 1 to memory on nodes 2 & 3
-> 	(numactl -m 2,3 ./stream_lowOverhead ... --cores <from 0, 1>)
-> 
-> ----------------------------------------
-> 		BANDWIDTH (MB/s)
->     TEST	Case 1		Case 2
-> ----------------------------------------
->     COPY	57479.6		110791.8
->    SCALE	55372.9		105685.9
->      ADD	50460.6		96734.2
->   TRIADD	50397.6		97119.1
-> ----------------------------------------
-> 
-> The bandwidth drop in Case 1 occurs because most of the allocations
-> get satisfied by node 0 as it appears first in the fallback order
-> for both nodes 2 and 3.
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 6247f6f4469a..9c200bb3ae51 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -2547,7 +2547,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>  		mem_cgroup_protection(sc->target_mem_cgroup, memcg,
+>  				      &min, &low);
+>  
+> -		if (min || low) {
+> +		if (min || (!sc->memcg_low_reclaim && low)) {
+>  			/*
+>  			 * Scale a cgroup's reclaim pressure by proportioning
+>  			 * its current usage to its memory.low or memory.min
 
-I am wondering what causes this performance drop here ? Would not the memory
-access latency be similar between {2, 3} --->  { 0 } and {2, 3} --->  { 1 },
-given both these nodes {0, 1} have same distance from {2, 3} i.e 32 from the
-above distance matrix. Even if the preferred node order changes from { 0 } to
-{ 1 } for the accessing node { 3 }, it should not change the latency as such.
+This is slightly more complex to read but it is also better than +1
+trick.
 
-Is the performance drop here, is caused by excessive allocation on node { 0 }
-resulting from page allocation latency instead.
+Either of the two work for me.
+
+-- 
+Michal Hocko
+SUSE Labs
