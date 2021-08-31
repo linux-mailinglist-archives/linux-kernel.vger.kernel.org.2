@@ -2,80 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A553FCF70
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AD13FCF76
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240223AbhHaWIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 18:08:32 -0400
-Received: from mail-ed1-f48.google.com ([209.85.208.48]:37554 "EHLO
-        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbhHaWIb (ORCPT
+        id S239857AbhHaWKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 18:10:35 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:41628 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230085AbhHaWKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 18:08:31 -0400
-Received: by mail-ed1-f48.google.com with SMTP id g21so802124edw.4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 15:07:35 -0700 (PDT)
+        Tue, 31 Aug 2021 18:10:33 -0400
+Received: by mail-oi1-f177.google.com with SMTP id 6so1157632oiy.8;
+        Tue, 31 Aug 2021 15:09:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iiqDg2IJazrjCZh7knpESd4lYmfxjk4NhNOmIuXSw2o=;
-        b=Jo6kUNyzYOHivRN1EehQkSk1wmBEbZyOenZ685x4TMKRB+pwcqUkha0PZyaTR0aMy/
-         RkzHJDQpVM4LjRH3eSbuB5u6ifpu16PnL0Fn1EkL4UASFUixH6W/QNfaP4V2tQu0Xnvj
-         mvFJMoz4KeZNsnlI3PAs+pEtGkQpv5goF/1+jLbZw3Wgx2aVDRAZ4mk0bUEEQb7FSr2Q
-         UqKfbqnd2+ojFDV/7RbMkQzq7N2gQrS6IxaaHYrktFMboXoet7aS0kcEvobOfPmVA5A1
-         czLlXAyES1WXYuAg7GaLD0Bara6al0poGdXwmGLYmUPntMI1ZVfOBMVNyFRcBwZXny/E
-         LZTA==
-X-Gm-Message-State: AOAM533PNBKsKLqHsKevJySmCmunm6lu/yTges5RH2OewlYGddMF8qoj
-        Cy2QNByCBRVhPMGsEalhbmNWZSTTMAsFkvu3Tus=
-X-Google-Smtp-Source: ABdhPJwg7H/ekAtx80usOC6IeDVn6PsZ4UWG6w/201xh65/2dGIBeFF1fNty3rmbeyHRFYl11sTGHMvNbdTnrYAwbRo=
-X-Received: by 2002:a05:6402:445:: with SMTP id p5mr32307788edw.208.1630447654736;
- Tue, 31 Aug 2021 15:07:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HmcikI+VA0QWzI/qoUl+fgTIxA58N+W9f1DbteKD1V8=;
+        b=oa8ZFYJ6r0jAzns15dymxo9r/iCsdEuLMlH54qJSYcUiNL6xlQXqVvpeEs5vgBlFyl
+         44SkU+jYIU0iGNXmRr5AJ2v8WVVDNivTjsLnMP3wdS0AiCHqKIFFVX+SXFmoz+Bz3ZKh
+         ib9nKvUpzsG+4Wj6eHkAQIAE3W8lhD21JM4V4f9gDWkPcXj3v9136a2gXGwMcQYw+8Rp
+         vmtgDdSIkEG2HEz3XYr2/aXBZXlOTN3LNIVG5yt4n0ImNwO9oggVvZgmoy6rmK7YedmQ
+         XTHQ/WSIK89SB3TMEjO6xE6ls5L0Eb5xPOYxNaOT3oq5atrMc2m49DnNPMRq2IyBLK9D
+         eYvw==
+X-Gm-Message-State: AOAM53328AhyhFsCGp/DeHQh5CBx5MHoaP6Ros9kw3RBNE01RVPXzuWv
+        BpFaekWBXzuzjzxygktqs7PH+pEXlw==
+X-Google-Smtp-Source: ABdhPJx82+Qn2N1AOPfd4yPM8R+IFiObvLLyMQ4j+UpyO87vSVMNNDAUlqu/L4TPpkcu9FUWchm5qw==
+X-Received: by 2002:aca:be56:: with SMTP id o83mr4847542oif.51.1630447777584;
+        Tue, 31 Aug 2021 15:09:37 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id y66sm3900548oia.12.2021.08.31.15.09.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 15:09:36 -0700 (PDT)
+Received: (nullmailer pid 730620 invoked by uid 1000);
+        Tue, 31 Aug 2021 22:09:35 -0000
+Date:   Tue, 31 Aug 2021 17:09:35 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     biao.huang@mediatek.com, devicetree@vger.kernel.org,
+        eddie.huang@mediatek.com, sean.wang@mediatek.com,
+        mark.rutland@arm.com, light.hsieh@mediatek.com,
+        srv_heupstream@mediatek.com, matthias.bgg@gmail.com,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        seiya.wang@mediatek.com, hongzhou.yang@mediatek.com,
+        sean.wang@kernel.org, linux-mediatek@lists.infradead.org,
+        robh+dt@kernel.org, linus.walleij@linaro.org, hui.liu@mediatek.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v11 1/4] dt-bindings: pinctrl: mt8195: add rsel define
+Message-ID: <YS6onwnr4Lo8VPDA@robh.at.kernel.org>
+References: <20210830003603.31864-1-zhiyong.tao@mediatek.com>
+ <20210830003603.31864-2-zhiyong.tao@mediatek.com>
 MIME-Version: 1.0
-References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
- <CAJvTdKn09GiAOgdsOR-+ooEO=bmj8VDL9e9sSAsu2UPx73a-Mw@mail.gmail.com> <YS0bAPaDGcDKftUp@zn.tnic>
-In-Reply-To: <YS0bAPaDGcDKftUp@zn.tnic>
-From:   Len Brown <lenb@kernel.org>
-Date:   Tue, 31 Aug 2021 18:07:23 -0400
-Message-ID: <CAJvTdKm=mPQUhJax-UietFFELOuHn89he6FPNb5jUC_Mcdc_rw@mail.gmail.com>
-Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
- protect dynamic user state
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Thiago Macieira <thiago.macieira@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210830003603.31864-2-zhiyong.tao@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 1:52 PM Borislav Petkov <bp@alien8.de> wrote:
+On Mon, 30 Aug 2021 08:36:00 +0800, Zhiyong Tao wrote:
+> This patch adds rsel define for mt8195.
+> 
+> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> ---
+>  include/dt-bindings/pinctrl/mt65xx.h | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
 
-> Well, if you preallocate everything...
-
-Nothing prevents, say, a pthread_create() or anything
-else where the kernel consumes memory on behalf of a process
-from failing at run-time...  AMX does not add a unique OOM risk here.
-
-> > The advantage of the #NM over the syscall is that the programmer
-> > doesn't actually have to do anything. Also, transparently allocated
-> > buffers offer a theoretical benefit that a program may have many
-> > threads, but only a few may actually touch AMX, and so there is
-> > savings to be had by allocating buffers only for the threads that
-> > actually use the buffers.
->
-> The program already asked the kernel whether it can use AMX - it can
-> allocate the buffers for the threads too.
-
-The result is that if one thread in a 1,000 task process requests
-and touches AMX, the kernel would allocate 8MB, instead of 8KB
-of context switch buffers for that process, no?
-
-Len Brown, Intel Open Source Technology Center
+Acked-by: Rob Herring <robh@kernel.org>
