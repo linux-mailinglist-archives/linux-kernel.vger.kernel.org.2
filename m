@@ -2,104 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DC13FCB97
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F273FCB9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240079AbhHaQk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 12:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
+        id S240089AbhHaQmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 12:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232509AbhHaQk6 (ORCPT
+        with ESMTP id S240086AbhHaQmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 12:40:58 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDAA2C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:40:02 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id g14so4791803ljk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:40:02 -0700 (PDT)
+        Tue, 31 Aug 2021 12:42:06 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFCBC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:41:11 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id j1so12230334pjv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:41:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=norberthealth-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PlDvXWCwq9oQrcS+ObUACbXbifYYVn7FARrjhr/5Hw8=;
-        b=LaDPyL+bvAPyD4iPhWTnGEliAF5N5bk9qNdn6gNkd/k4E9TXbp/ff4JtgKOD8IS41y
-         9mfNzGlYM+qCWBkM3Xu6bQ0IZ4fcrj9gBV7prm6Ry88aItm9Up1BB36d6W2KxRIOCtWI
-         LxLJxns5SrPZu9HOj88MgI//jXoAE0XHqJ6BQ=
+        bh=6ofROlvTu1E1hVbZ28WkGRDdjDewSdNfrPBGyLPdKxw=;
+        b=eWcbSYm9Ou+SKpzFZH64hU1XB9AQL4hX8f/ozcFkxsFMVmKOVq6EYNCwo3pGkSFeau
+         zJvkw5DumscbfX9AbV+Tk2Hvkczt6b+g0Q0SsXCmxg1bZYvJFvQFYEH6EdizEK4Qw6cH
+         cWo/lMTvnKMK/wGicv28u4BiwaycKQ6qjFV7T8toBj/eN1VEqaU6kUlIM8rMuhXdmf19
+         3ZV1t+2IsqixTsud2p62M9eHiMLU1FV0ozR12unNrQgfEBDItTm+/94DfSA16HElK31L
+         hTmK37Llo0y0IpoUtZYk4a0MToXB2sjhRrX0PfcwDrIKCEvYis+/iwzsJH1doZgZU6Db
+         1Abw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PlDvXWCwq9oQrcS+ObUACbXbifYYVn7FARrjhr/5Hw8=;
-        b=Gbvjnc3u5yrCvn1fWvf7HaCQDfydHmoaNrr6kW+0iPFZTQtGDxURTo0KQDQ29gmSH5
-         I4JqaD9GTnYqiHvKnyh7I75R6udcEUD0Sj/CtPnNq4oLpKsVSUqdj/6IyCdtJglzQnK6
-         Xfa5Gr77blyltXLkvj6v+65+lnLrvqR8HgwXqZyBpJB3iw4Leh3C0lFLhqM51botOiUR
-         AqmrR/W8/eUNnlMetBSPCswnBbJwpvP5ufu2SQNvCV0s0z9ZmZGMSQTnpEyS+y0lF7gn
-         vOUfh7ZQPtb8Vtcda7HOjdsckc6ZOfftbDDw1mKYKErV2szr7sjTco1DCeMgZHU20Erx
-         YftA==
-X-Gm-Message-State: AOAM533KqkmrC4x2hoRgC0zARcm4SVl5avpZISUm9oYBNZQSCwYLYEkl
-        kcbr8Sw5YAeBq0r2efJR62x5dpFjyhYuFqbqTqU=
-X-Google-Smtp-Source: ABdhPJwQ3+3By1ZHMSP9Np6h56zE0SM+JpCiLRA76bYE9UlvYByuej4grJ09kbW4pT2R2qxkAalxkQ==
-X-Received: by 2002:a2e:a28d:: with SMTP id k13mr24398607lja.446.1630428000748;
-        Tue, 31 Aug 2021 09:40:00 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id j1sm1455553lja.108.2021.08.31.09.39.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 09:39:59 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id x27so62805lfu.5
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:39:59 -0700 (PDT)
-X-Received: by 2002:a05:6512:1053:: with SMTP id c19mr9701063lfb.201.1630427999490;
- Tue, 31 Aug 2021 09:39:59 -0700 (PDT)
+        bh=6ofROlvTu1E1hVbZ28WkGRDdjDewSdNfrPBGyLPdKxw=;
+        b=KGPca9o5KyrAFYtBF6qR3Y/HatRiM0+jpPQ9gYRcyaYU8BUm7cFzgx9YZOz3yMbkZv
+         9qpWif83R6qxqQ8N5IF0ec5g+c8s58UMUMBTLGMsGY3JkQMXV2BEGYlUZdjYNLcWcxVT
+         k+IcKRXTIRcz3R2p+S4LPvUhumK2jqoWQFG3X9B1SZrRHjZZBKYYTTmjZ7RXYHGjYYs7
+         LOZyAwwx8hJ9j7BXKaMoUbsaTOKW0XEIhbSULGWKaBkU/aE18p2GrbOARhZGWvMYUi8w
+         MB+/q4wWl46k5XIh17pr2CwUTAKAPi6hZry1LIgYKWyroMpCH3YhRiDfGMgHEVff8Ek0
+         YLSA==
+X-Gm-Message-State: AOAM5300W14Fe37UibTt1ljlw2+tujuaOxeVk/tbogu5yQuh7CDJEWev
+        A6pH8JFmD8TeY2TiccmFKXyhGR88Ut9NX8k4KqRcheqA5T9AZg==
+X-Google-Smtp-Source: ABdhPJzUUsuFUyfYvCeCod2PWQHXawkudz0iKl+h2TTtZf4NEpXj88CuWJS1uiygyv78DjhoEMXXQ++n0FX+toPhwr4=
+X-Received: by 2002:a17:902:a702:b029:12b:aa0f:d553 with SMTP id
+ w2-20020a170902a702b029012baa0fd553mr5470508plq.3.1630428070408; Tue, 31 Aug
+ 2021 09:41:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAH2r5mvVdBoUW-0BfsxiRAE6X30cqhBtNDvG7pwKdQwsu+wXfg@mail.gmail.com>
-In-Reply-To: <CAH2r5mvVdBoUW-0BfsxiRAE6X30cqhBtNDvG7pwKdQwsu+wXfg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 31 Aug 2021 09:39:42 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiNvB_j3VZYJ1yZqq+9JjgWCO1MUmRsjTKBwQ+x=kB5tg@mail.gmail.com>
-Message-ID: <CAHk-=wiNvB_j3VZYJ1yZqq+9JjgWCO1MUmRsjTKBwQ+x=kB5tg@mail.gmail.com>
-Subject: Re: [GIT PULL] cifs/smb3 client fixes
-To:     Steve French <smfrench@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
+References: <20210831151125.2401-1-roger@norberthealth.com> <3f26402b-00fd-1da3-0717-e2a6fc254060@infradead.org>
+In-Reply-To: <3f26402b-00fd-1da3-0717-e2a6fc254060@infradead.org>
+From:   Roger Knecht <roger@norberthealth.com>
+Date:   Tue, 31 Aug 2021 18:40:59 +0200
+Message-ID: <CAO_iFwoqbajgiKwQeNjTDWYPAjcnQWJFZM7EQLHadumtbJuBQQ@mail.gmail.com>
+Subject: Re: [PATCH v4] Trivial comment fix for the CRC ITU-T polynom
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Jiri Kosina <jkosina@suse.cz>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jiri Kosina <trivial@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 10:48 PM Steve French <smfrench@gmail.com> wrote:
->
-> - mostly restructuring to allow disabling less secure algorithms (this
-> will allow eventual removing rc4 and md4 from general use in the
-> kernel)
+Will do, thanks Randy!
 
-Well, you should probably have mentioned that you already started on
-this by removing LANMAN support.
-
-I'm sincerely hoping nobody used or depended on that old garbage in
-this day and age any more.
-
-Anyway, entirely unrelated question: you pretty much interchangeably
-use "cifs" or "smb3" for the filesystem, as shown once more by the
-commit messages here (but also the subject line).
-
-The filesystem directory is called "cifs", and I've taken to use that
-in my "Pull cifs updates" thing from you to just avoiding the
-confusion.
-
-And now we have ksmbd (yup, I just merged that pull request too), so
-we have a "cifs client" and a "smb server". Aaarrgh.
-
-I understand that some people may care about the name, may care about
-"smb2 vs smb3", or whatever. But I have to admit finding it a bit
-annoying how the code and the directory layout uses these different
-terms pretty much randomly with no real apparent logic.
-
-Somehow the NFS people had no problem completely changing everything
-about their protocols and then still calling the end result "nfs
-client" vs "nfs server".
-
-Oh well. I'm assuming it's not going to change, and it's not really a
-problem, I just wanted to mention my frustration about how clear as
-mud the naming is.
-
-             Linus
+Roger
