@@ -2,123 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466113FC062
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 03:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2B23FC06C
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 03:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239251AbhHaBOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 21:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56230 "EHLO
+        id S239256AbhHaBTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 21:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhHaBOg (ORCPT
+        with ESMTP id S231297AbhHaBTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 21:14:36 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80548C061575;
-        Mon, 30 Aug 2021 18:13:41 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gz8Ml2KBfz9sT6;
-        Tue, 31 Aug 2021 11:13:39 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630372419;
-        bh=NvKX1qVZAnfCPVE4H3/0yh3zCLm3YMLzx80u8/vDjd8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ngpikwQNP+Ujfbvz/K4R3SDsmmH6vHqaFziMptEViZpRsYMcbumQhhIjkQSQ4Ca/I
-         umaCohBpOwd+Q1dwbo8Pk3oc0Pxq/4xdqJGdSVs8CxBuG66UIJbJoxIouyEpAbt7lx
-         DxMsWD7DrmhwkJNTYOSRQt3P4pLwHcG7pCqC7WrDpHUAWryl8VN1+UC3ZuxwokRsrO
-         am7vltjPSi9QKg7FE49+yF6X+790/Rhax4vfCOhSUcKb69VRg5nb2RYCbv83mtjv6W
-         teRq7wGolHvoTj+5jkQ5+98IoCnpEnYL54r/JWbFfI1Vwnt4KvGOX23/DJ7UN0jrDn
-         t8r5bFJ0n27sQ==
-Date:   Tue, 31 Aug 2021 11:13:38 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the file-locks tree with the cel
- tree
-Message-ID: <20210831111338.2e3a222c@canb.auug.org.au>
-In-Reply-To: <20210824100737.4bd6d815@canb.auug.org.au>
-References: <20210824100737.4bd6d815@canb.auug.org.au>
+        Mon, 30 Aug 2021 21:19:39 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B37C061575;
+        Mon, 30 Aug 2021 18:18:45 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id c6so450540pjv.1;
+        Mon, 30 Aug 2021 18:18:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rgye6ewHm6HCg5kzBVqjYYpCyOH+GvvYlr8Oahz1qN8=;
+        b=nLJmqPzlSbDHOmsbCF9Av3nX7cBJwZJlA5pP0NbMSNLomonTEPR5IUDgPY5uv4wSL/
+         /m2Trag4jYSVdRCO2q2wGaZjLU3ysro0jVygyMNAMwQzMjKuNZigF+1GMQ4ePMFsbd+B
+         GUZGlQHIaFTBvzQTHHTDaiV6+wXgZqQDK9DvSH2ZAeWydIXG2hWjFCSPJ1OBmWjd4GR4
+         LrWicnZQBuRC7KfXdvGg23TxBuCpVmL2egQRw/77zTuwQwjmVYDy+f/rCXdI7AGgIiY7
+         AHYihJlhPDx3IN5Q1xmG8Ie/HI+99hEUJH7dv9Hb2WA4rw3Q0Mr6jgb+2UkOWfMxQmfk
+         DSFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rgye6ewHm6HCg5kzBVqjYYpCyOH+GvvYlr8Oahz1qN8=;
+        b=MxAnQS2uAcWiy7fTxkoB7YNnbZGNUIcajw41OpD9GiMsLIU0kr0tfUWncEzhzO6Gno
+         mzdj3hLKK45Vzg/XyFE2Srilh6yNB5vxxpr6kD9PF//myToDwteERKi653zaDIx1P7TX
+         0j8Jhuq57qzTTpUb64j5o4tLH7X/fyCzCmf9Lo6kL/RtvtlwXWL929Kmh0245Rk3ritx
+         9mFq2d1f5YbgrOt9/e4JrxeOmotKOwqC9pl67ZI3p5beZnFhZuGePj4vibu/lFWQBAxZ
+         Dc8bkjcfKTBwRA7meFEkDKnonUQJFkP/e7/aZZ7f8R2q8lvCw1N5XwERkItuhUiV0hOG
+         LRpg==
+X-Gm-Message-State: AOAM531hbxdVSRCqzoUsW0N7tpZcpD0ySduIzgBry3imJat+FoqblsS9
+        4hrPOOQFXAjkwW5mkHa2KIikYSfacym18RxNgcuR6J6urqI=
+X-Google-Smtp-Source: ABdhPJx+Wf9hfBNQTxhhCnftf+BNVzp7cZ+qrjogAxu8Vy8b71+5GzWdJ987Vao4gvIuI437mci1a0BgCj03IUG26jU=
+X-Received: by 2002:a17:902:70c6:b029:12c:c0f3:605c with SMTP id
+ l6-20020a17090270c6b029012cc0f3605cmr2196970plt.70.1630372724905; Mon, 30 Aug
+ 2021 18:18:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dX5Z+..yBvC/XOO+yqG3Ki0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <1630252681-71588-1-git-send-email-xiyuyang19@fudan.edu.cn> <20210830110551.730c34c4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210830110551.730c34c4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 30 Aug 2021 18:18:33 -0700
+Message-ID: <CAM_iQpUtAfUX4WQUps6yTGGxuXKYUnTFTnaCxEgKaHDke8z49Q@mail.gmail.com>
+Subject: Re: [PATCH] net: sched: Fix qdisc_rate_table refcount leak when get
+ tcf_block failed
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dX5Z+..yBvC/XOO+yqG3Ki0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Tue, 24 Aug 2021 10:07:37 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On Mon, Aug 30, 2021 at 11:05 AM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> Today's linux-next merge of the file-locks tree got a conflict in:
->=20
->   fs/nfs/file.c
->=20
-> between commit:
->=20
->   c045f1c40a48 ("nfs: don't allow reexport reclaims")
->=20
-> from the cel tree and commit:
->=20
->   f7e33bdbd6d1 ("fs: remove mandatory file locking support")
->=20
-> from the file-locks tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc fs/nfs/file.c
-> index 7411658f8b05,514be5d28d70..000000000000
-> --- a/fs/nfs/file.c
-> +++ b/fs/nfs/file.c
-> @@@ -806,13 -806,6 +806,9 @@@ int nfs_lock(struct file *filp, int cmd
->  =20
->   	nfs_inc_stats(inode, NFSIOS_VFSLOCK);
->  =20
->  +	if (fl->fl_flags & FL_RECLAIM)
->  +		return -ENOGRACE;
->  +
-> - 	/* No mandatory locks over NFS */
-> - 	if (__mandatory_lock(inode) && fl->fl_type !=3D F_UNLCK)
-> - 		goto out_err;
-> -=20
->   	if (NFS_SERVER(inode)->flags & NFS_MOUNT_LOCAL_FCNTL)
->   		is_local =3D 1;
->  =20
+> On Sun, 29 Aug 2021 23:58:01 +0800 Xiyu Yang wrote:
+> > The reference counting issue happens in one exception handling path of
+> > cbq_change_class(). When failing to get tcf_block, the function forgets
+> > to decrease the refcount of "rtab" increased by qdisc_put_rtab(),
+> > causing a refcount leak.
+> >
+> > Fix this issue by jumping to "failure" label when get tcf_block failed.
+> >
+> > Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+>
+> Fixes: 6529eaba33f0 ("net: sched: introduce tcf block infractructure")
 
-This is now a conflict between the cel tree and Linus' tree.
+Reviewed-by: Cong Wang <cong.wang@bytedance.com>
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/dX5Z+..yBvC/XOO+yqG3Ki0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEtgkIACgkQAVBC80lX
-0GzWVAf/Z4F2W+ERoQJTNbk/TzqKe4sxP4te7FOplNhSEKr/OhJe35S+rOv593Tq
-KXSmss0rPZq1rg+gZWN1YDEqwm/YiB/d98MDbFJjrDT8dL4GmNZNEa6p6DqNf85o
-OK6VWHTzWkNVVRPTouS67647dwkcf8WBmJDaCZ67wNS6YZxBdaPKM9YPc9Y1yGfA
-8OOK8RTW1PL7DLsJLsCFhQ2IqHPqcip37xRSZSKCvTXDFR7vxrC7hvJD9SKVjTJ0
-VYMPpGsnqFiSxK9uJab6hbIoDx4XXrR2oCGE7xtFS4YNfOx22JYTgG+cfP8OQoch
-4KajMWm2bt7758FjvOdof5pGxDgOpw==
-=xhXZ
------END PGP SIGNATURE-----
-
---Sig_/dX5Z+..yBvC/XOO+yqG3Ki0--
+Thanks.
