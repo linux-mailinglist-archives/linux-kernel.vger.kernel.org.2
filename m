@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF65C3FC26C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C553FC26D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239802AbhHaGEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 02:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239705AbhHaGE1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 02:04:27 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E42C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 23:03:33 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so21400888otg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 23:03:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=RzIkdEm5aJl66a3p0t6hmEQ+Qv+8MFJLxj5JlLxnEbs=;
-        b=R4oPerrcHKCim2QGI7q4uTaMlXFTXSsbE4KoKsMHK7QzqM3lIcaBiMt9rhCOkzg5gF
-         1+iSJ/0r5aiUTawmCpv9o9kp0/nANFTGdVzj3UyiHklrKq3tXx4FC1bKlH+kX8Kg8ki8
-         +67JtsxXkmk8J8BzYPsxQaG3ZOhgd5k+O+UWbgKDNaV/pLkSy5/m4+RJO78d8EXlzkrV
-         BrBh0X1HKCH58H3dRObz2ZpdfNlMSaA3wiH60+8V58k8urgyeBlWEoLsynXVeFWwMXv2
-         t4R18UdLXhDc51CNhQd5qb5YyBEDbhR76qV8Fcaxn3moD+Yx1+mIlQgryfJ2Q/hlyrTT
-         M6nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=RzIkdEm5aJl66a3p0t6hmEQ+Qv+8MFJLxj5JlLxnEbs=;
-        b=B5yI0+taJcMxNLZq9LM0oQQh0nulgU85QOQ4tkjLB8XHDQ5jAxfGhaxfaeWSRZCMOz
-         a61W7roWy2bSO/J47SqNLL84n11dZ0uYd8MZfiolDtH5Ut8Kjzr5hHz7uo+NhQDlPkVf
-         pHvRAl7I5TpyCJ5MarsmSeXUjo7owEvChpTg1/ZWCB4jrkpQpz9eedB7Sk5IjRudCYyX
-         sD1jTYzdOZnVTNejF8v5R0AGi8cYZnWu5+WMbTClXOw2pRFOOp6kDrYOcaqo99DzBmqU
-         Bc+rjVmKh213b5fU0b3RiKg4n7cuLiwVwRQKYLS+VkkAZgtfRR3fIE7vZNJn1kUTv0ex
-         hrOA==
-X-Gm-Message-State: AOAM532ncQuoMmTUhVlejQ2kD94qxb2Jvdmu4DcX7Wpd3hRs8AilstuS
-        aC72/Yf7+huVgz3+knjWAjANyI3IZ3wpN8/SHxY=
-X-Google-Smtp-Source: ABdhPJx5R/mRs9TwMdFd3fG7/dOySUGFYjViqGjuh/13TSHRKrzXA/f2nEvZxjPxh08a7vHunU+okNUSQ3S0q5nvZP4=
-X-Received: by 2002:a05:6830:13d4:: with SMTP id e20mr22633028otq.218.1630389812350;
- Mon, 30 Aug 2021 23:03:32 -0700 (PDT)
+        id S230104AbhHaGGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 02:06:21 -0400
+Received: from mga12.intel.com ([192.55.52.136]:53801 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238919AbhHaGE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 02:04:58 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="197967862"
+X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
+   d="scan'208";a="197967862"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 23:04:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
+   d="scan'208";a="498101151"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga008.fm.intel.com with ESMTP; 30 Aug 2021 23:04:00 -0700
+Subject: Re: [PATCH] Add --sysroot when building dlfilters on cross build
+ environments
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <YS1JwIMTNNWcbGdT@kernel.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <ba4c0d9a-6e80-41b3-24e3-5073353b298e@intel.com>
+Date:   Tue, 31 Aug 2021 09:04:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Reply-To: godwinppter@gmail.com
-Sender: godwinpeter219@gmail.com
-Received: by 2002:ac9:7156:0:0:0:0:0 with HTTP; Mon, 30 Aug 2021 23:03:31
- -0700 (PDT)
-From:   Godwin Pete <godwinnpeter@gmail.com>
-Date:   Tue, 31 Aug 2021 08:03:31 +0200
-X-Google-Sender-Auth: kJ3MnGn4796QVWs637FRxwQGgK0
-Message-ID: <CA+8O8-d8m0q+kdoWJBZf3QpZUWSE=Fsi6NQ=8BJFLPUfor0-_A@mail.gmail.com>
-Subject: I just want to furnish you with this good news
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YS1JwIMTNNWcbGdT@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 31/08/21 12:12 am, Arnaldo Carvalho de Melo wrote:
+> Hi Adrian,
+> 
+> 	I had to add this cset to fix the build/link on cross build
+> environments with a sysroot, like Android, EXTRA_CFLAGS is where it will
+> get the needed --sysroot=/opt/android-ndk-r12b//platforms/android-24/arch-arm, please ack.
+> 
+> - Arnaldo
+> 
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index 24623599113df215..e04313c4d8409a94 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -785,10 +785,10 @@ endif
+>  
+>  $(OUTPUT)dlfilters/%.o: dlfilters/%.c include/perf/perf_dlfilter.h
+>  	$(Q)$(MKDIR) -p $(OUTPUT)dlfilters
+> -	$(QUIET_CC)$(CC) -c -Iinclude -o $@ -fpic $<
+> +	$(QUIET_CC)$(CC) -c -Iinclude $(EXTRA_CFLAGS) -o $@ -fpic $<
+>  
+>  $(OUTPUT)dlfilters/%.so: $(OUTPUT)dlfilters/%.o
+> -	$(QUIET_LINK)$(CC) -shared -o $@ $<
+> +	$(QUIET_LINK)$(CC) $(EXTRA_CFLAGS) -shared -o $@ $<
+>  
+>  ifndef NO_JVMTI
+>  LIBJVMTI_IN := $(OUTPUT)jvmti/jvmti-in.o
+> 
 
-I just want to use this little opportunity to inform you about my
-success towards the transfer. I'm currently out of the country for an
-investment with part of my share, after completing the transfer with
-an Indian business man. But i will visit your country, next year.
-After the completion of my project. Please, contact my secretary to
-send you the (ATM) card which I've already credited with the sum of
-($500,000.00). Just contact her to help you in receiving the (ATM)
-card. I've explained everything to her before my trip. This is what I
-can do for you because, you couldn't help in the transfer, but for the
-fact that you're the person whom I've contacted initially, for the
-transfer. I decided to give this ($500,000.00) as a compensation for
-being contacted initially for the transfer. I always try to make the
-difference, in dealing with people any time I come in contact with
-them. I'm also trying to show that I'm quite a different person from
-others whose may have a different purpose within them. I believe that
-you will render some help to me when I, will visit your country, for
-another investment there. So contact my secretary for the card, Her
-contact are as follows,
-
-Full name: Mrs, Jovita Dumuije,
-Country: Burkina Faso
-Email: jovitadumuije@gmail.com
-
-Thanks, and hope for a good corporation with you in future.
-
-Godwin Peter,
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
