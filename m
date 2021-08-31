@@ -2,64 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492A43FCC88
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6442C3FCC89
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240449AbhHaRvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 13:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
+        id S240492AbhHaRv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 13:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233576AbhHaRvU (ORCPT
+        with ESMTP id S240476AbhHaRv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 13:51:20 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB14CC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:50:24 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id q3so11101194plx.4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:50:24 -0700 (PDT)
+        Tue, 31 Aug 2021 13:51:27 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A88C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:50:32 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id q21so11112870plq.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:50:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xpR1j4foRTEcoowMnHvCNe4seLyDOV/uvtLd6+E3J0g=;
-        b=QhW02l6wgK4Kh2oJuAmxeidWt/nVoYRmLuYTVbMEeIPtcIf/V6DJ6t6yvHV9te0uDg
-         zriIU2w9xcCPRor+zX1PlGFCGFizwMgCMSmwsBH4POhi/ZHFYJTokSxhNp4s3IpLNjAe
-         y0XqnjgPTBq5tlb47lw4AUGowwOEd9O24AHCO3F8qpK4fv4tWY6s+BPviDY16RbSjV9p
-         ng5NfPRUPPFkIgfHB8Ct2eAatLXtUwRDrbdbXwPhO5/jHg9ZrTy1m3hk4vb4wxEFNtFQ
-         CBE3/eW71JaMVy67HjRsHKn5IcbELjarOzWJBDEiYETtQRlO/NljdwM/WTJEEfJC7MkQ
-         62FA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ImsuJq21r778cYC29NRozNa+V9mlYmB3V8FvT/fMOvg=;
+        b=TW+AKE1AX7lJIe+FdSW+0+8me9dUiOeoiCXLEN9i1i8q/Md9/T1ijSzR9RIaTE7vyK
+         niCR659+tBM/cWxMRTcM1+UtTyDbp0Z3PPafvU+qss2rc2PATKKGfDJV49XoN4LFCjTD
+         sx5ChzQqiUkZtL9kyhS+D13uRl2TpUYw42KZaeoMeMSXnIbbfqd7rI5z0M7T2IZfMcnY
+         Q2sqEjwQVkTPXYWLMsxNc+oqvXmptHQUrHdIS6H7GrKSW6fdZESXgXme22T0a7VPbn8y
+         alJBaHg2q7zQ45RwiBDmxC9dfdxiy727uL3Xf+hC19dwEjcwZyNR1mHpxcPl9nlBO7zM
+         +Hvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xpR1j4foRTEcoowMnHvCNe4seLyDOV/uvtLd6+E3J0g=;
-        b=mHcEMytdMW6VgkdH5a46/SVnXQS1ZkF+nIzJMbNGqdPcde+C0z8dpStQHmipOyt9BA
-         7eJ/KVzvWqVlE08eyrFeWhDjkgkDgbC5f3lFPYwcmcCBWWKtXUKI8zWpoHgAFgfwpFaC
-         T9SzXuDJyNGTcT9OF6hisf96oTjocXhjNM6aV4frfseg9askgxh/A+Eoz9Iw8ErHTJu8
-         6ws+P/XaJgglvaZSJzKCRtBulLnuQaUNAxK4SMSYxSXJ/7gkpqL2VYiov/nS/bdjju4r
-         7o/+IDwROTy4wlOWTeqHICjW+/ZXcUPkNPRiCoXWKwLhCJ7Uz1m+JmOAd3W469bFFh2f
-         nYAw==
-X-Gm-Message-State: AOAM531ynzDxq2KyRJl34WBTrep9NZhArCcPM0EKrh9A7K/JiusMVa87
-        Mgxz04bDZzAimLhWtdQ1iDrAbw4OpNQ=
-X-Google-Smtp-Source: ABdhPJx3/dtfLIX8z39aqUxyJf/iF+0E6iRUTe1jYLBT0sQiGZcW6grdkrIWZEcYGHP0opQOcCZk/Q==
-X-Received: by 2002:a17:90a:8b08:: with SMTP id y8mr6778880pjn.173.1630432224149;
-        Tue, 31 Aug 2021 10:50:24 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ImsuJq21r778cYC29NRozNa+V9mlYmB3V8FvT/fMOvg=;
+        b=ptlpQzK1Vf/3MfsjSnan4QtctbuSHrhVpDynSb/5lY9y89mGnFiDNCdjo1CAvtqDD+
+         /dZ6gJPvs1AC7XRbiCC6VKpRO/D/Ndocco8rmL5yH9TRU352i6UWcGGhF+XOFIGz0s+W
+         WAA0U5+sSMBhZo1ZkO+36QJK3jTSSzlEwzBIilZmOFS78tzVHsrwNBXA7lrtkuAG0F9s
+         ndxtncTJrcdmNXkbJhSO2uhq1OIJAFf6Aeibn9rSsyGRhMxmHFvCtWbznc/nIYNvImlU
+         30bmlL3psH4Ho9EulIqNh7ohVKMLE1NI+tbwp9Qlp9McvJD8q1/xO7xGSC25dlnEUsrS
+         PakQ==
+X-Gm-Message-State: AOAM533h1UBVLuZQYS5jTSk29N3WNVbsADTsrYU4givj8Zd0DdA5Czq5
+        D3QPs0he50iErhe9foHC/6YMEVADYMU=
+X-Google-Smtp-Source: ABdhPJzAvGdG27g6gJs672S+issxWAC+KRHXVX20NJT31yZIl3EJjLzba+pirL7MZEWBio7+ydNctg==
+X-Received: by 2002:a17:902:b218:b029:11a:bf7b:1a80 with SMTP id t24-20020a170902b218b029011abf7b1a80mr5728913plr.82.1630432231749;
+        Tue, 31 Aug 2021 10:50:31 -0700 (PDT)
 Received: from localhost ([47.251.3.230])
-        by smtp.gmail.com with ESMTPSA id y4sm3417888pjw.57.2021.08.31.10.50.23
+        by smtp.gmail.com with ESMTPSA id 23sm21319170pgk.89.2021.08.31.10.50.30
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 31 Aug 2021 10:50:23 -0700 (PDT)
+        Tue, 31 Aug 2021 10:50:31 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH 00/24] x86/entry/64: Convert a bunch of ASM entry code into C code
-Date:   Wed,  1 Sep 2021 01:50:01 +0800
-Message-Id: <20210831175025.27570-1-jiangshanlai@gmail.com>
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Chester Lin <clin@suse.com>, Juergen Gross <jgross@suse.com>
+Subject: [PATCH 01/24] x86/traps: Remove stack-protector from traps.c
+Date:   Wed,  1 Sep 2021 01:50:02 +0800
+Message-Id: <20210831175025.27570-2-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20210831175025.27570-1-jiangshanlai@gmail.com>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -68,85 +75,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Many ASM code in entry_64.S can be rewritten in C if they can be written
-to be non-instrumentable and are called in the right order regarding to
-whether CR3/gsbase is changed to kernel CR3/gsbase.
+When stack-protector is enabled, the compiler adds some instrument code
+at the beginning and the end of some functions. Many functions in traps.c
+are non-instrumentable.  Moreover, stack-protector code in the beginning
+of the affected function accesses the canary that might be watched by
+hardware breakpoints which might also violate the non-instrumentable
+nature of some functions.
 
-The patchset covert some of them to C code.
+So it is better to remove stack-protector from traps.c.
 
-The patch 11 converts the non paranoid entry (entry of interrupts/
-non-IST-exception/IST-exception-from-user) to C code. And patch 1-10
-are preparation for it and patch 12-13 are cleanup for it.  The patch 1
-might fix a defect.
+It is also prepared for later patches that move some entry code into
+traps.c, some of which can NOT use percpu register until gsbase is
+properly switched.  And stack-protector depends on the percpu register
+to work.
 
-The patch 22 converts the paranoid entry/exit to Code.  And patch 14-21 are
-pareparation for it and patch 23 is cleanup for it.
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+ arch/x86/kernel/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
 
-The patch 24 converts a small part of ASM code of syscall to C code which
-does the checking for whether it can use sysret to return to userspace.
-
-Some other paths can be possible to be in C code, for example: the non
-paranoid exit, the syscall entry/exit.  The PTI handling for them can
-be in C code.  But it would required the pt_regs to be copied/pushed
-to the entry stack which means the C code would not be efficient.
-
-When converting ASM to C, the most effort is to make them the same.
-Almost no creative was involved.  The code are kept as the same as ASM
-as possible and no functional change intended unless my missunderstanding
-in the ASM code was involved.  The functions called by the C entry code
-are checked to be ensured noinstr or __always_inline.  Some of them have
-more than one definitions and require some more cares from reviewers.
-The comments in the ASM are also copied in the right place in the C code.
-
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Lai Jiangshan (24):
-  x86/traps: Remove stack-protector from traps.c
-  x86/traps: Move arch/x86/kernel/traps.c to arch/x86/entry/
-  x86/traps: Move declaration of native_irq_return_iret up
-  x86/entry: Expose the address of .Lgs_change to traps.c
-  x86/entry: Introduce __entry_text for entry code written in C
-  x86/entry: Move PTI_USER_* to arch/x86/include/asm/processor-flags.h
-  x86: Mark __native_read_cr3() & native_write_cr3() as __always_inline
-  x86/traps: Add C verion of SWITCH_TO_KERNEL_CR3 as
-    switch_to_kernel_cr3()
-  x86/traps: Add fence_swapgs_{user,kernel}_entry()
-  x86/traps: Move pt_regs only in fixup_bad_iret()
-  x86/entry: Replace the most of asm code of error_entry to C code
-  x86/traps: Reconstruct pt_regs on task stack directly in
-    fixup_bad_iret()
-  x86/traps: Mark sync_regs() and fixup_bad_iret() as static
-    __always_inline
-  x86/entry: Make paranoid_exit() callable
-  x86/entry: Call paranoid_exit() in asm_exc_nmi()
-  x86/entry: Use skip_rdi instead of save_ret for PUSH_AND_CLEAR_REGS
-  x86/entry: Introduce struct ist_regs
-  x86/entry: Add the C version ist_switch_to_kernel_cr3()
-  x86/entry: Add the C version ist_restore_cr3()
-  x86/entry: Add the C version get_percpu_base()
-  x86/entry: Add the C version ist_switch_to_kernel_gsbase()
-  x86/entry: Implement and use do_paranoid_entry() and paranoid_exit()
-  x86/entry: Remove the unused ASM macros
-  x86/syscall/64: Move the checking for sysret to C code
-
- arch/x86/entry/Makefile                |   5 +-
- arch/x86/entry/calling.h               | 144 +--------
- arch/x86/entry/common.c                |  73 ++++-
- arch/x86/entry/entry_64.S              | 366 ++++-------------------
- arch/x86/{kernel => entry}/traps.c     | 397 +++++++++++++++++++++++--
- arch/x86/include/asm/processor-flags.h |  15 +
- arch/x86/include/asm/special_insns.h   |   4 +-
- arch/x86/include/asm/syscall.h         |   2 +-
- arch/x86/include/asm/traps.h           |  36 ++-
- arch/x86/kernel/Makefile               |   2 +-
- arch/x86/kernel/asm-offsets_64.c       |   2 +
- 11 files changed, 554 insertions(+), 492 deletions(-)
- rename arch/x86/{kernel => entry}/traps.c (74%)
-
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index 3e625c61f008..21aa164cece2 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -48,6 +48,9 @@ KCOV_INSTRUMENT		:= n
+ 
+ CFLAGS_head$(BITS).o	+= -fno-stack-protector
+ 
++CFLAGS_REMOVE_traps.o		= -fstack-protector -fstack-protector-strong
++CFLAGS_traps.o			+= -fno-stack-protector
++
+ CFLAGS_irq.o := -I $(srctree)/$(src)/../include/asm/trace
+ 
+ obj-y			:= process_$(BITS).o signal.o
 -- 
 2.19.1.6.gb485710b
 
