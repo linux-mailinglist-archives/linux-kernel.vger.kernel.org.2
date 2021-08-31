@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E7A3FC5EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080673FC5EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241043AbhHaKhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:37:31 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:34581 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233409AbhHaKhS (ORCPT
+        id S241054AbhHaKhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:37:36 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:54932 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240985AbhHaKhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 31 Aug 2021 06:37:18 -0400
-Received: by mail-io1-f71.google.com with SMTP id a9-20020a5ec309000000b005baa3f77016so221404iok.1
+Received: by mail-io1-f72.google.com with SMTP id o5-20020a6bf8050000b02905b026202a6fso1222786ioh.21
         for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:36:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2qd5l81swi+xRw37GGw82lqKntZQqf/pXfsBP2WkvJI=;
-        b=NUNT3dxyK1ADr92KWyWzDTpiOuzVpoCQVdkMcWnYcWETMhWryp0i10HwF9d6ZBRpS8
-         RGo1Qdt79SJoaCkXxUigniOEyL5I/SGV4iGI3RJrOiN3PaEEBd+XpoqwaPcrrL7UPl24
-         EHqfsyt2avVfpIzEvq3TM7rFdVD5PKzPxCVW7YeOx7s49QRcLU7mbmgEn4Gm2WF02ha1
-         YbdvmwdHEfFYbh7y+C9huoaFyOsTvOOo8oiJisKbpt3cNvDNrN4bcDsXQiY52rx009Tn
-         y50CkDuyg3OqhWoZ5Lxdvk6DalEpVaUa5XFuzxjP3IWb0GTk6B6ZdJqn8lDBnARICy45
-         iV+A==
-X-Gm-Message-State: AOAM531hQimuAD5VpnwU4GwZAA+2zoumtZn1Ts9cMnMoM6juLctKh38j
-        yBLVTfBkEGG8HhjhY65mWbjNTRiQ+ULoqgq8MXkpqgmmGg7H
-X-Google-Smtp-Source: ABdhPJz4rBzzNikjOjsztr7lQys04ZKpKbcUXSuij/fKhSA82oPZ+9CIpIBV8UWBQPaHrthpepM3sNcWtsXVwAc9b62eZhDX1XI8
+        bh=C7KJHTkk1c0zJenAnvPa15dENwUnMi0hsUVHukHuBPg=;
+        b=lWw1Fj+GId0xCR15FUAkAXoBWm8J+WQ8U+e+zjZhHjPc0wsTRRtjSJIwqRru9vqnVf
+         DXF5yPGVlrCJRGfq8QUgORSr/j/E80RumVaYDQHd3e8fzmFoZ2hovIraAjOZxa5CRtFU
+         9jzTMonNxgzt4gwdgIGZx+78UQkHS7LAU8E14hp3VkLLwB9rheMjWd8t7D8ynw14sjUP
+         ONWhfyrqD0dpICAJ2ox0X2c+/5BbHjkNgOeuBSLLcNQMyYlMS+RdOFinMV3IO4jpoFn3
+         9No+an/Z1JgoZ9i1OjmMPn2XQ4FaFFwsb2BqtizoYrnh3lhxaxZEBIDFhq0nxguHDCnX
+         p/Ug==
+X-Gm-Message-State: AOAM533cxuZv7MAOXpxk6cKJpUJLCzCUL63hVBfdNyVsOtej4lVE6i5t
+        CnuXuvD52qVJ+QLcDuCwJMbp7uS/xhstkPbRW1Y1mzD6xQ8s
+X-Google-Smtp-Source: ABdhPJwPMhVubij/wMLaajXgQa0Pywx7cTmBuLR4tb2OIWWWNKeEPkoY0pICaC3/QBL0ks9YjgX1H/B0Eo7NX4GBKncageVP74FJ
 MIME-Version: 1.0
-X-Received: by 2002:a92:611:: with SMTP id x17mr19317931ilg.41.1630406183351;
+X-Received: by 2002:a05:6602:2436:: with SMTP id g22mr22469045iob.109.1630406183621;
  Tue, 31 Aug 2021 03:36:23 -0700 (PDT)
 Date:   Tue, 31 Aug 2021 03:36:23 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000065fe6705cad8850e@google.com>
-Subject: [syzbot] WARNING in j1939_session_deactivate
-From:   syzbot <syzbot+535e5aae63c0d0433473@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kernel@pengutronix.de, kuba@kernel.org,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
-        robin@protonic.nl, socketcan@hartkopp.net,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000006a17f905cad88525@google.com>
+Subject: [syzbot] KASAN: null-ptr-deref Read in phy_disconnect
+From:   syzbot <syzbot+6a916267d9bc5fa2d9a6@syzkaller.appspotmail.com>
+To:     andrew@lunn.ch, davem@davemloft.net, hkallweit1@gmail.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,61 +49,95 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    1a6436f37512 Merge tag 'mmc-v5.14-rc7' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11f1f6a9300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=765eea9a273a8879
-dashboard link: https://syzkaller.appspot.com/bug?extid=535e5aae63c0d0433473
+HEAD commit:    9c1587d99f93 usb: isp1760: otg control register access
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=16907291300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=24756feea212a6b0
+dashboard link: https://syzkaller.appspot.com/bug?extid=6a916267d9bc5fa2d9a6
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17193c4d300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12d86fd5300000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=166de449300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12c5ddce300000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+535e5aae63c0d0433473@syzkaller.appspotmail.com
+Reported-by: syzbot+6a916267d9bc5fa2d9a6@syzkaller.appspotmail.com
 
-vcan0: j1939_xtp_rx_abort_one: 0xffff888040cd1c00: 0x00000: (3) A timeout occurred and this is the connection abort to close the session.
-vcan0: j1939_xtp_rx_abort_one: 0xffff88802a973400: 0x00000: (3) A timeout occurred and this is the connection abort to close the session.
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 13 at net/can/j1939/transport.c:1085 j1939_session_deactivate+0xaf/0xd0 net/can/j1939/transport.c:1085
-Modules linked in:
-CPU: 0 PID: 13 Comm: ksoftirqd/0 Not tainted 5.14.0-rc7-syzkaller #0
+asix 1-1:0.0 eth1: register 'asix' at usb-dummy_hcd.0-1, ASIX AX88178 USB 2.0 Ethernet, 8a:c0:d1:1e:27:4c
+usb 1-1: USB disconnect, device number 2
+asix 1-1:0.0 eth1: unregister 'asix' usb-dummy_hcd.0-1, ASIX AX88178 USB 2.0 Ethernet
+general protection fault, probably for non-canonical address 0xdffffc00000000c3: 0000 [#1] SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000618-0x000000000000061f]
+CPU: 1 PID: 32 Comm: kworker/1:1 Not tainted 5.14.0-rc7-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:j1939_session_deactivate+0xaf/0xd0 net/can/j1939/transport.c:1085
-Code: fd 01 76 21 e8 d2 4c 68 f9 48 89 ef e8 2a fc ff ff 4c 89 e7 41 89 c5 e8 5f ca 1f 01 44 89 e8 5d 41 5c 41 5d c3 e8 b1 4c 68 f9 <0f> 0b eb d6 4c 89 ef e8 d5 86 ae f9 eb b5 48 89 ef e8 db 86 ae f9
-RSP: 0018:ffffc90000d27990 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000100
-RDX: ffff888010a60000 RSI: ffffffff880d5c3f RDI: 0000000000000003
-RBP: ffff88802a973400 R08: 0000000000000001 R09: ffff88802a97342b
-R10: ffffffff880d5c13 R11: 0000000000000003 R12: ffff888042005070
-R13: 0000000000000001 R14: ffff88802bd11418 R15: ffffffff8a9ecde0
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:phy_is_started include/linux/phy.h:947 [inline]
+RIP: 0010:phy_disconnect+0x22/0x110 drivers/net/phy/phy_device.c:1097
+Code: 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 46 33 68 fe 48 8d bd 18 06 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e c5 00 00 00 8b 9d 18 06 00 00
+RSP: 0018:ffffc900001a7780 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff88811a410bc0 RCX: 0000000000000000
+RDX: 00000000000000c3 RSI: ffffffff82d9305a RDI: 0000000000000618
+RBP: 0000000000000000 R08: 0000000000000055 R09: 0000000000000000
+R10: ffffffff814c05fb R11: 0000000000000000 R12: ffff8881063cc300
+R13: ffffffff83870d90 R14: ffffffff86805a20 R15: ffffffff868059e0
+FS:  0000000000000000(0000) GS:ffff8881f6900000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000200 CR3: 000000000b68e000 CR4: 00000000001506f0
+CR2: 00007fb4c30b3008 CR3: 00000001021e1000 CR4: 00000000001506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- j1939_session_deactivate_activate_next+0x12/0x35 net/can/j1939/transport.c:1095
- j1939_xtp_rx_abort_one.cold+0x205/0x321 net/can/j1939/transport.c:1329
- j1939_xtp_rx_abort net/can/j1939/transport.c:1340 [inline]
- j1939_tp_cmd_recv net/can/j1939/transport.c:2068 [inline]
- j1939_tp_recv+0x488/0xb40 net/can/j1939/transport.c:2098
- j1939_can_recv+0x6d7/0x930 net/can/j1939/main.c:101
- deliver net/can/af_can.c:574 [inline]
- can_rcv_filter+0x5d4/0x8d0 net/can/af_can.c:608
- can_receive+0x31d/0x580 net/can/af_can.c:665
- can_rcv+0x120/0x1c0 net/can/af_can.c:696
- __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5498
- __netif_receive_skb+0x24/0x1b0 net/core/dev.c:5612
- process_backlog+0x2a5/0x6c0 net/core/dev.c:6492
- __napi_poll+0xaf/0x440 net/core/dev.c:7047
- napi_poll net/core/dev.c:7114 [inline]
- net_rx_action+0x801/0xb40 net/core/dev.c:7201
- __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
- run_ksoftirqd kernel/softirq.c:920 [inline]
- run_ksoftirqd+0x2d/0x60 kernel/softirq.c:912
- smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ax88772_unbind+0x51/0x90 drivers/net/usb/asix_devices.c:816
+ usbnet_disconnect+0x103/0x270 drivers/net/usb/usbnet.c:1618
+ usb_unbind_interface+0x1d8/0x8d0 drivers/usb/core/driver.c:458
+ __device_release_driver+0x3bd/0x6f0 drivers/base/dd.c:1201
+ device_release_driver_internal drivers/base/dd.c:1232 [inline]
+ device_release_driver+0x26/0x40 drivers/base/dd.c:1255
+ bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:529
+ device_del+0x502/0xd40 drivers/base/core.c:3543
+ usb_disable_device+0x35b/0x7b0 drivers/usb/core/message.c:1419
+ usb_disconnect.cold+0x27a/0x78e drivers/usb/core/hub.c:2225
+ hub_port_connect drivers/usb/core/hub.c:5199 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5488 [inline]
+ port_event drivers/usb/core/hub.c:5634 [inline]
+ hub_event+0x1c9c/0x4330 drivers/usb/core/hub.c:5716
+ process_one_work+0x98d/0x15b0 kernel/workqueue.c:2276
+ process_scheduled_works kernel/workqueue.c:2338 [inline]
+ worker_thread+0x85c/0x11f0 kernel/workqueue.c:2424
+ kthread+0x3c0/0x4a0 kernel/kthread.c:319
  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Modules linked in:
+---[ end trace d08c08ba92f8f06f ]---
+RIP: 0010:phy_is_started include/linux/phy.h:947 [inline]
+RIP: 0010:phy_disconnect+0x22/0x110 drivers/net/phy/phy_device.c:1097
+Code: 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 46 33 68 fe 48 8d bd 18 06 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e c5 00 00 00 8b 9d 18 06 00 00
+RSP: 0018:ffffc900001a7780 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff88811a410bc0 RCX: 0000000000000000
+RDX: 00000000000000c3 RSI: ffffffff82d9305a RDI: 0000000000000618
+RBP: 0000000000000000 R08: 0000000000000055 R09: 0000000000000000
+R10: ffffffff814c05fb R11: 0000000000000000 R12: ffff8881063cc300
+R13: ffffffff83870d90 R14: ffffffff86805a20 R15: ffffffff868059e0
+FS:  0000000000000000(0000) GS:ffff8881f6900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb4c30b3008 CR3: 00000001021e1000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+   7:	00
+   8:	55                   	push   %rbp
+   9:	48 89 fd             	mov    %rdi,%rbp
+   c:	53                   	push   %rbx
+   d:	e8 46 33 68 fe       	callq  0xfe683358
+  12:	48 8d bd 18 06 00 00 	lea    0x618(%rbp),%rdi
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
+  2e:	84 c0                	test   %al,%al
+  30:	74 08                	je     0x3a
+  32:	3c 03                	cmp    $0x3,%al
+  34:	0f 8e c5 00 00 00    	jle    0xff
+  3a:	8b 9d 18 06 00 00    	mov    0x618(%rbp),%ebx
 
 
 ---
