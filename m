@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED583FC2E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2747E3FC2E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236476AbhHaGj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 02:39:27 -0400
-Received: from mout.gmx.net ([212.227.15.18]:33289 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236085AbhHaGj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 02:39:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630391900;
-        bh=/SoKFDTopah3K8nfdoOpWkB/I1sNrqXnYeTxD8/0A5M=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date;
-        b=Dknu+NnrdoedbDsZy+wD9NpICXR3xPER0GSJsjEIhu50LVGIFuk7uzUBGrEZ3qyfr
-         cxVODKSTpAx79K9UR5fmELODAExRdeIvyogEzflvxceIfKA4nmbkLDN7OV2FdaiR4V
-         j8ISHzZN6dKs/TToUXbtjk4s7TLNk6woHTOKtkaU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.177]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N7R1T-1n3c4v1OJB-017n5h; Tue, 31
- Aug 2021 08:38:20 +0200
-Message-ID: <50a936b7d8f12277d6ec7ed2ef0421a381056909.camel@gmx.de>
-Subject: [patch] locking, rwsem: Add missing __init_rwsem() for PREEMPT_RT
-From:   Mike Galbraith <efault@gmx.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>
-Date:   Tue, 31 Aug 2021 08:38:19 +0200
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.41.2 
+        id S236732AbhHaGkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 02:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234268AbhHaGkS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 02:40:18 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE7BC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 23:39:23 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so1222806pjc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 23:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NTCDFRak7iBO7zSAEx1oNf4Ml2aUyPgE0FxiqkjCLnw=;
+        b=ea0cyM6OhCVeGG5usZ0KxNHxuYsmmrHVTB/I0bTGwh+BYHl4HXTqySRz2JObBQ5eb9
+         g0HmHkQ1s0wX9/HzIvkxUGZT9rCe7WYKXVKbpjJGlS6uHCmfwSXgsg7fP9KMI8svvy+P
+         B5iih6MzjvTdzL9aIaUBOPVpE9YT7D+6MkVGB2ARB8wodEFoouVyRZN9Lf7UdDfPrHpk
+         dAdq+Og5Nn1szM1iIG5p3/ldeifZO/p74iKLP3uz5D1DeuVF4hEqwoSnvDJVYoBX9lUi
+         P2KxxiVYUIQwOYy9MX/j5u15XaXVzqGK7FPEjNWDD/6GUsWWKiu1P+mxWuZKmHfD8rZS
+         QnAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NTCDFRak7iBO7zSAEx1oNf4Ml2aUyPgE0FxiqkjCLnw=;
+        b=e120yXBi18OsdfL/Z7x2PdbkztF1w+Bve8vi0Wo53wJTamgC9LAbRFDL9OTFX+kqHB
+         xI4qCktbZG6A4z0Lt+XlzywcyJffjd2vOmltUOohvUZLZwNgjEjW1zJZ8TEFuyFnO4Io
+         5om7oQ2JT4iZN1jNdN74NSmZwbRGOLc911oja0EjxaLsYF6I7Iw1FZnOq9SJT2+sz8PU
+         Jwba5F0FOsFWsaLC8QjgYB1PfuOveY+e+fw/ULdFWz+3a+B0D83MtHZ17XJrrLVShHMp
+         gFQWoFAuDZb7GccjGvOD+e1eUflaR98Oc53sBWfcT0+tlrYvILdeOUfoEjo4MubfZ0cb
+         zxIQ==
+X-Gm-Message-State: AOAM533GfXWeUxq/SrrYYcrewcBcn+zAG3r6TX9UNtOECFDtoQnoz1kz
+        yWRTWSi45nccEVXIbp2sf5Fl3w==
+X-Google-Smtp-Source: ABdhPJxBHVEMsZU9CGeogp8ZvKAVf1sD+YoYtF3kIkhRZTAMZ5NJtLosRxW0uUePoJRVQ3c2ER8/zg==
+X-Received: by 2002:a17:90a:680c:: with SMTP id p12mr3619960pjj.33.1630391963054;
+        Mon, 30 Aug 2021 23:39:23 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id y3sm19954621pgc.67.2021.08.30.23.39.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 23:39:22 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] gpio: virtio: Add missing mailings lists in MAINTAINERS entry
+Date:   Tue, 31 Aug 2021 12:09:17 +0530
+Message-Id: <76305b7e89006437b2a3ecf97f857231b2d4ae2a.1630391782.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:JmMFPP8aARLyvJ9I4o6aIiJBOfDa0i8M4svbPL9mC5Sa4r33H20
- FJ4vZuxRr5fnO2UEPd5c33EXtpV0LNG7dG2qie/WvW+bhGK3K+VjxhdxRBOhiz1UiSfg8Si
- ThiMXLF6vFd9yqQ0pWc8zttfaLulbmLff5PzkBpaRxDbH5ZLN5ZRLEyVlTAjazT0TC86bmx
- /3F0+5kSIoPqa7NWuL6vg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WQ7t+Afjly8=:8lCvc8Knr6aDGc2VXlQzzx
- eeqfCtsxX/J6v9ovamIMAQD/LjZI9uKr2Pi1SmxzArRP5ThpMMKHOVlJC8shuh/ytDuxhzurE
- kqxb/dRsjUZUevS7ArY+n9ufSOLB+rfzuHOTjQ6a720eJ7en0iFkBaecO38Rk3gNfhjcu5MxP
- KuUnZBMA6H/vopoP+nYI8CLSSpLzDDAbPcRB4yPuWhrgBWDYpZX6e6gf2Kxk8kC4PyCfs1ftr
- f41AfVGLMAkceDiUjYkvmAO2iQcZtPBc4JTZjZdhd2whWzGbFXsD2nYUb8IQ83OSAdw4wnwv8
- yLwAncEhx0avDGLOY+qgrZ8VPc9cqOluytL23AlJD+4wOdEgEa2D65p1nWuaJhs5QJSYQLULY
- gTYK6geWinrvebpaT9AhmNJO9JrFDmbx3hnDRkzudDhoFmdH3c7WvsxODIbKjVFOqr1XykVrv
- AT5RMWd7OZs54YBzstSb42BnkC5Cg9ba6xJsGeS+98LW+Ee3H2y0weLJzqJdTmjGhc6X86+Yj
- N5ApiGqcxdXokZrdNZZLhRoDw6oWJ3UUWdioTTdRvV820jNS7V3wsmZSLs1SDRDJ/HsmAetYA
- MHQVjq9C7H3Z+yzLUeEzHS6Z3Hp5xi1cXYWiYoEcF2eCKt+9d2aGQg0EVIDQFVZPA1HKdrn3n
- DMY2C0fSQ1488qy9CNVKcv4bxorjTXUIsKMRjMQd/X5/0SxjaYy0U4kMxMXAxfDizq74KOEAh
- EThGqCx+C3HOwtg/xOnkBRAIjnTRsVv4l2fVIY5msZGqO+12Dt9HT5E8it09uUaKjX+2HsCPR
- ge4d+z4WrfYsY+P+l5ons7JEHEzFYjEKA1zsPtWi1Yh5NHYpN328D0qJR5GlWMkoPwmCPxltb
- Hx/0BycvCt6fuAVb+LjHFyR2LtS1KBIljVf0bTPfmKlUE4+r49hxChHNSgPktem0a9VwkIOHW
- M0yr1YawvgypyXJD8fmZb8i0x4iKIFQYwtMjv8EvSJfOlXgASqieyhOG5zwfEAkhBgAHTJttE
- /EdEp7mNbVSN6MnvYcHUyLqPyucwbZgwXxhOO7crD14n/rFNIMr5f8mx2FoCUWQ0dQyejuAwY
- XjV85KC8cgb/M/3uniUpSaNzKg0prHlTY2x
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add gpio and virtualization lists in the MAINTAINERS entry for Virtio
+gpio driver.
 
-730633f0b7f95 became the first direct caller of __init_rwsem() vs the
-usual init_rwsem(), exposing PREEMPT_RT's lack thereof.  Add it.
+Reported-by: "Michael S. Tsirkin" <mst@redhat.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Signed-off-by: Mike Galbraith <efault@gmx.de>
-=2D--
- include/linux/rwsem.h |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-=2D-- a/include/linux/rwsem.h
-+++ b/include/linux/rwsem.h
-@@ -152,12 +152,18 @@ static inline void  __rwsem_init(struct
- }
- #endif
-
-+static inline void __init_rwsem(struct rw_semaphore *sem, const char *nam=
-e,
-+				struct lock_class_key *key)
-+{
-+	init_rwbase_rt(&(sem)->rwbase);
-+	__rwsem_init(sem, name, key);
-+}
-+
- #define init_rwsem(sem)						\
- do {								\
- 	static struct lock_class_key __key;			\
- 								\
--	init_rwbase_rt(&(sem)->rwbase);			\
--	__rwsem_init((sem), #sem, &__key);			\
-+	__init_rwsem((sem), #sem, &__key);			\
- } while (0)
-
- static __always_inline int rwsem_is_locked(struct rw_semaphore *sem)
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f632acd7d98c..da58964935d4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19650,6 +19650,8 @@ F:	include/uapi/linux/virtio_fs.h
+ VIRTIO GPIO DRIVER
+ M:	Enrico Weigelt, metux IT consult <info@metux.net>
+ M:	Viresh Kumar <vireshk@kernel.org>
++L:	linux-gpio@vger.kernel.org
++L:	virtualization@lists.linux-foundation.org
+ S:	Maintained
+ F:	drivers/gpio/gpio-virtio.c
+ F:	include/uapi/linux/virtio_gpio.h
+-- 
+2.31.1.272.g89b43f80a514
 
