@@ -2,96 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B373FC5E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CAE3FC5E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241022AbhHaKeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233654AbhHaKeA (ORCPT
+        id S241026AbhHaKef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:34:35 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:54087 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241043AbhHaKeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:34:00 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED3EC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:33:05 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id m26so14625877pff.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:33:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KY7cMjg+mzN0KnlEN3YeG65WmdAqZbIaUV7izU0+6iA=;
-        b=pXOGWJD/kF4bFfzqbJTMhhqOLUZCXwq5his6RVcYXxe6Ug2dEZbmgeW1EP48CEntsg
-         6vt6JEW9W9bR9pa6ZviNOt4p9sVybqUjN9uljkT/0ornDslUS1pJJsi7zEJ2hg7TuHn1
-         u6IbKftygKlL22GzKKzQoY/UGL40FKl4AYdzakYJ5slhuDl65LH6Vuo8KxfmhujlBPmM
-         LQvoRZcuIS6VaH2VQq/OVGC6UkE9ZOiXDlf5UmVghXWWFN1uz75PAe388s7pU3As7o3y
-         Xf7pxcRWOWbK2uID2M1KFA4Vv4xE/QTQAlEVan9hUBInAine95l6xjDqKL8xtYdLsGeJ
-         kxbQ==
+        Tue, 31 Aug 2021 06:34:19 -0400
+Received: by mail-il1-f197.google.com with SMTP id c4-20020a056e020cc4b02902242bd90889so10964527ilj.20
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:33:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KY7cMjg+mzN0KnlEN3YeG65WmdAqZbIaUV7izU0+6iA=;
-        b=pazrIWe0M3yNGcrQu94ZF1hFk4XWN4qFxTr6a48Z5nBUurHAsDQ8a7IjZSOCbd8cPL
-         j4LiNusGB2kjvG4Wg+HuxNASAs3uXmW3P3RPVsSZtxG+l8S8YoayLAmReYNQmpzTmem8
-         b3z3l4PxaU3R6n6MRS8+KBdp4YPr96XSuABXCkq2LMKwtZ5EPIXOvVakySQjHXJuiudT
-         2uuXbygJh7gprxq7JJDZIfPr55nP+GZ6Emuw+N9dCsWL79MTDlJ8Gco4wLLd2/i7jV3o
-         pcy4T5omEqJh2h0y3u3HUl/0iHnEPhp5X6WDky2KQ0VQQKipIR8UYwZ70jDCbbRIwexy
-         cCfw==
-X-Gm-Message-State: AOAM533TxsF/7n2teKGSj4+IUZ3I76AU3iWmQ5ZfnuJcTZL+xIbrunGH
-        fv11YBfdlzUSFBPMTJtoJgI=
-X-Google-Smtp-Source: ABdhPJxj5IwugF/48Cxv7in/gjqkyeaxFTK3PbcrGKLmNvMJkH2iPhE3TvqKrf22P/bQLjYCRwaKig==
-X-Received: by 2002:a05:6a00:1349:b0:3fd:9054:e243 with SMTP id k9-20020a056a00134900b003fd9054e243mr12357785pfu.38.1630405984922;
-        Tue, 31 Aug 2021 03:33:04 -0700 (PDT)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id m11sm2417535pjl.14.2021.08.31.03.33.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 03:33:04 -0700 (PDT)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     xiang@kernel.org, chao@kernel.org, linux-erofs@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, huyue2@yulong.com, zbestahu@163.com
-Subject: [PATCH] erofs: remove the pagepool parameter from z_erofs_shifted_transform()
-Date:   Tue, 31 Aug 2021 18:32:04 +0800
-Message-Id: <20210831103204.881-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=tnQtiquwrcj+POtE1ovPDFm3cHHjlmHVPG4G/aqMhg4=;
+        b=m+ej7GpqReeE2C/iIQ9QPY0wWMfXG5TzE8wW3xraiaUFmzARs79fYAR42E4neMGsGX
+         VuBDCHYsn7M+ZvgYQWhQ8gE/cMoRmZueHli+pjWPY5wlsxvHA72pATM9vtKaQnR/ltml
+         aW2JHnHGlsLn/F804TtURsPlklhD8It/6VG1GDQdVw6VSa0BP32Kr630aYGRTu052wYB
+         l/16CzcuLapAa3F8JJquqw2AQ04AT4An4Qtf66yhSA7s86zA0Wze7MQFrfJgQKzlXdhx
+         Vacp+vkj25H9B6lRKXamRoreZc8uefiLJoGuNfrz7yri4WTcBcvzHh8IMJYiLtHLcaeq
+         qWZw==
+X-Gm-Message-State: AOAM530NZhbk4f1tNo+tVkEuPt/DGw9pIY8p5j/S+sJu7StvtDOk5OVq
+        rJrKVgimG5zBWUhupX9J/nP/ymPkntHJwBZJ1Tcq3anKCHqC
+X-Google-Smtp-Source: ABdhPJx+7nuFkVm9OJPFEubbAGNlQpyf9/ZUPh2ZiCaN8J9vzEaL86R38LPxkOiWc6/fAAVetdqRJEzEpVcg99vHDqGt2Ysb8Mv2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:f08:: with SMTP id x8mr18891667ilj.92.1630406004366;
+ Tue, 31 Aug 2021 03:33:24 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 03:33:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bae2cf05cad87aff@google.com>
+Subject: [syzbot] BUG: unable to handle kernel paging request in tomoyo_encode2
+From:   syzbot <syzbot+eee04f9a4a45fabcebef@syzkaller.appspotmail.com>
+To:     jmorris@namei.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        penguin-kernel@I-love.SAKURA.ne.jp, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com, takedakn@nttdata.co.jp
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+Hello,
 
-We don't use the pagepool for plain format, remove it.
+syzbot found the following issue on:
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
+HEAD commit:    7d2a07b76933 Linux 5.14
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12dfff03300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=113c5df900d8cf12
+dashboard link: https://syzkaller.appspot.com/bug?extid=eee04f9a4a45fabcebef
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+eee04f9a4a45fabcebef@syzkaller.appspotmail.com
+
+BUG: unable to handle page fault for address: 00000000001b7e20
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 0 P4D 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 4861 Comm: systemd-udevd Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:slab_alloc_node mm/slub.c:2943 [inline]
+RIP: 0010:slab_alloc mm/slub.c:2967 [inline]
+RIP: 0010:__kmalloc+0x1ab/0x390 mm/slub.c:4111
+Code: 84 11 01 00 00 48 83 78 10 00 0f 84 06 01 00 00 48 8b 7d 00 40 f6 c7 0f 0f 85 a7 01 00 00 45 84 c0 0f 84 a0 01 00 00 8b 45 28 <49> 8b 5c 05 00 48 89 d1 48 83 c1 08 4c 89 e8 65 48 0f c7 0f 0f 94
+RSP: 0018:ffffc90000e4f8e0 EFLAGS: 00010202
+RAX: 0000000000000020 RBX: 0000000000000d40 RCX: 0000000000000000
+RDX: 000000000083bf29 RSI: 0000000000000040 RDI: 0000000000054e70
+RBP: ffff888011041640 R08: dffffc0000000001 R09: fffffbfff1b74f1e
+R10: fffffbfff1b74f1e R11: 0000000000000000 R12: 0000000000000032
+R13: 00000000001b7e00 R14: 0000000000000032 R15: 0000000000000d40
+FS:  00007f39d836f8c0(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000001b7e20 CR3: 000000001caf9000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kmalloc include/linux/slab.h:596 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ tomoyo_encode2+0x25a/0x560 security/tomoyo/realpath.c:45
+ tomoyo_encode security/tomoyo/realpath.c:80 [inline]
+ tomoyo_realpath_from_path+0x5c3/0x610 security/tomoyo/realpath.c:288
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_perm+0x201/0x650 security/tomoyo/file.c:822
+ security_inode_getattr+0xc0/0x140 security/security.c:1333
+ vfs_getattr fs/stat.c:139 [inline]
+ vfs_fstat fs/stat.c:164 [inline]
+ __do_sys_newfstat fs/stat.c:404 [inline]
+ __se_sys_newfstat+0xba/0x820 fs/stat.c:401
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f39d71e12e2
+Code: 48 8b 05 b9 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83 ff 01 77 33 48 63 fe b8 05 00 00 00 48 89 d6 0f 05 <48> 3d 00 f0 ff ff 77 06 f3 c3 0f 1f 40 00 48 8b 15 81 db 2b 00 f7
+RSP: 002b:00007ffd97de9338 EFLAGS: 00000246 ORIG_RAX: 0000000000000005
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f39d71e12e2
+RDX: 00007ffd97de9350 RSI: 00007ffd97de9350 RDI: 000000000000000e
+RBP: 00007ffd97de94f0 R08: 0000000000000000 R09: 0000000000000001
+R10: 0000000000080000 R11: 0000000000000246 R12: 0000558889f0be90
+R13: 0000558889ef8010 R14: 0000558889efb450 R15: 00007ffd97de94b0
+Modules linked in:
+CR2: 00000000001b7e20
+----------------
+Code disassembly (best guess):
+   0:	84 11                	test   %dl,(%rcx)
+   2:	01 00                	add    %eax,(%rax)
+   4:	00 48 83             	add    %cl,-0x7d(%rax)
+   7:	78 10                	js     0x19
+   9:	00 0f                	add    %cl,(%rdi)
+   b:	84 06                	test   %al,(%rsi)
+   d:	01 00                	add    %eax,(%rax)
+   f:	00 48 8b             	add    %cl,-0x75(%rax)
+  12:	7d 00                	jge    0x14
+  14:	40 f6 c7 0f          	test   $0xf,%dil
+  18:	0f 85 a7 01 00 00    	jne    0x1c5
+  1e:	45 84 c0             	test   %r8b,%r8b
+  21:	0f 84 a0 01 00 00    	je     0x1c7
+  27:	8b 45 28             	mov    0x28(%rbp),%eax
+* 2a:	49 8b 5c 05 00       	mov    0x0(%r13,%rax,1),%rbx <-- trapping instruction
+  2f:	48 89 d1             	mov    %rdx,%rcx
+  32:	48 83 c1 08          	add    $0x8,%rcx
+  36:	4c 89 e8             	mov    %r13,%rax
+  39:	65 48 0f c7 0f       	cmpxchg16b %gs:(%rdi)
+  3e:	0f                   	.byte 0xf
+  3f:	94                   	xchg   %eax,%esp
+
+
 ---
- fs/erofs/decompressor.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index a5bc4b1..8f50a36 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -360,8 +360,7 @@ static int z_erofs_decompress_generic(struct z_erofs_decompress_req *rq,
- 	return ret;
- }
- 
--static int z_erofs_shifted_transform(const struct z_erofs_decompress_req *rq,
--				     struct list_head *pagepool)
-+static int z_erofs_shifted_transform(const struct z_erofs_decompress_req *rq)
- {
- 	const unsigned int nrpages_out =
- 		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
-@@ -403,6 +402,6 @@ int z_erofs_decompress(struct z_erofs_decompress_req *rq,
- 		       struct list_head *pagepool)
- {
- 	if (rq->alg == Z_EROFS_COMPRESSION_SHIFTED)
--		return z_erofs_shifted_transform(rq, pagepool);
-+		return z_erofs_shifted_transform(rq);
- 	return z_erofs_decompress_generic(rq, pagepool);
- }
--- 
-1.9.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
