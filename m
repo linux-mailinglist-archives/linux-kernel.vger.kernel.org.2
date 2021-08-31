@@ -2,142 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39ACB3FC293
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526363FC2B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbhHaGQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 02:16:52 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25768 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229891AbhHaGQv (ORCPT
+        id S231628AbhHaGSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 02:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229686AbhHaGSt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 02:16:51 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17V63qcE020813;
-        Tue, 31 Aug 2021 02:15:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=uLipEFd8kNOzLcifOAUEDmxkp7kk2e/f6vgLeAIed3U=;
- b=YmMgVuTEmR4gRB4hRwqZSphifNnbwHzRrI5U8cQvO49GZWzVi7KSijmwtVPbwUjU0Dhh
- JNzPaYX16z+AalqIl1XAff6bkoTQIm02gyak93LEn+F6k2VYNgx//md1oChgIcuDYaWj
- 3Rwj4bUd3fcLMX3R+kIxLx2nA+SzIShVWmrAQ6V5fYWW1JvE7D7vkJtbrumAQhmr3FId
- gXdTR7/YZv13cMEHaLf+AyKMY/XHgF0/gY+evcqMjKi+rdkQCN99JMvR9r3ylfa+AyZO
- YyXzZ/beGumxEwGlI8Wdf0987tPBNrpiI/EwvXJadU+FAKFVdTkwi1AVT6unrZgMcaAz YQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3asert0ffc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 02:15:56 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17V64GLA022819;
-        Tue, 31 Aug 2021 02:15:55 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3asert0fen-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 02:15:55 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17V6CvKd003209;
-        Tue, 31 Aug 2021 06:15:53 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 3aqcs8kg82-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 06:15:53 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17V6Fnls20185352
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 31 Aug 2021 06:15:49 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7AF2852145;
-        Tue, 31 Aug 2021 06:15:49 +0000 (GMT)
-Received: from oc6887364776.ibm.com (unknown [9.145.184.25])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 2640D52126;
-        Tue, 31 Aug 2021 06:15:49 +0000 (GMT)
-Subject: Re: [PATCH linux-next] s390:fix Coccinelle warnings
-To:     Heiko Carstens <hca@linux.ibm.com>,
-        jing yangyang <cgel.zte@gmail.com>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20210820025159.11914-1-jing.yangyang@zte.com.cn>
- <YSPj/YRDlGqoVu26@osiris>
-From:   Vineeth Vijayan <vneethv@linux.ibm.com>
-Message-ID: <afd3887e-11e2-1f03-4d40-bae38b28991f@linux.ibm.com>
-Date:   Tue, 31 Aug 2021 08:15:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 31 Aug 2021 02:18:49 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C72FC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 23:17:55 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d17so9958880plr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 23:17:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=h12y69BzOdAqtGfc38mtOtL/jCEg2kKWm7ttfdSU3V0=;
+        b=emCEUMlIwclLmJQocMR7Nf+pbHFowImda37C+Ud6SPflKSIYLYQF718TUTX8KR+Xhq
+         fjhyRLZS3IJE8WCoVlQYfGfh7e4uDTSAnw2g6l1eZYG7KudOnCgj0EhOjqSOuL5xxWuf
+         y6GVOT0nfPLGpJKb8WL2nBnCtzDqsJXiaNmbo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=h12y69BzOdAqtGfc38mtOtL/jCEg2kKWm7ttfdSU3V0=;
+        b=ehjFlDffB4wiFzFmE0MZ31eBiP4qj7VuYQohmfTmHIKnmTrXAtyTDlzx2jtdPZwnjJ
+         07HeT4BFZzPm7rWnFd/F8XGPqk2xgxI0yQr8yQ7iwrVWbFo4nW3wbAxs9Mny9cmMaPNB
+         EMpGPEB8Gunr39XnJSAZ6yJbILke+WH07ccKCOTce0Lcq8hVnYP4SUbOJqQdppsUg1un
+         Qz4wnGKOFOvwrPYalVvSTdkf4G80ICAS2EbpWV4L9yXohXNt0W+y/z/v/OIbRo3s1upD
+         hl2oJnnWLeRgms2xpqAWPLC12rK4xyJ8M4N5whvclOBTN97PuW1JCrn71GjULRZA82gu
+         MyuQ==
+X-Gm-Message-State: AOAM533Zvmg0JAzlGTX4R7wxCGXELckeExHm1qQL5m/+miR5rRhxyj+t
+        b8Gd0wW2Byn+3XMmBURg/4dRb25sDYYENg==
+X-Google-Smtp-Source: ABdhPJxpq2UUe896c6F9+t4U+EcOSQym3Unk4xrZMcWw0fCd5KpWqEqrhj8H2Qi7pXbsdRuKFGmwZA==
+X-Received: by 2002:a17:90a:3849:: with SMTP id l9mr3384862pjf.7.1630390674896;
+        Mon, 30 Aug 2021 23:17:54 -0700 (PDT)
+Received: from localhost ([2001:4479:e200:df00:a664:ffe7:ee94:4600])
+        by smtp.gmail.com with ESMTPSA id u10sm15890366pfg.168.2021.08.30.23.17.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 23:17:54 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/64: Avoid link stack corruption in kexec_wait()
+In-Reply-To: <3ffe7775f3fcda8e5fca6a7bc7db0b8251153c67.1629705147.git.christophe.leroy@csgroup.eu>
+References: <3ffe7775f3fcda8e5fca6a7bc7db0b8251153c67.1629705147.git.christophe.leroy@csgroup.eu>
+Date:   Tue, 31 Aug 2021 16:17:52 +1000
+Message-ID: <87ilzm6str.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-In-Reply-To: <YSPj/YRDlGqoVu26@osiris>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 0TcdjAuOb1buvV6CJ_tF7iPMJEhhyMP9
-X-Proofpoint-GUID: DxL2Wx0LVWL8F3zNVLDYLNFpGJprc1RA
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-31_03:2021-08-30,2021-08-31 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 mlxscore=0 mlxlogscore=999 spamscore=0 adultscore=0
- priorityscore=1501 suspectscore=0 bulkscore=0 malwarescore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108310035
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am a fan of Coccinelle fixes. But, here i think we need to do more 
-work than just fixing it to
-get rid of the warnings. I agree with Heiko. May be we should re-write 
-this entire function and
-make it readable.
+Hi Christophe,
 
-Nack.
+> Use bcl 20,31,+4 instead of bl in order to preserve link stack.
+>
+> See commit c974809a26a1 ("powerpc/vdso: Avoid link stack corruption
+> in __get_datapage()") for details.
 
+From my understanding of that commit message, the change helps to keep
+the link stack correctly balanced which is helpful for performance,
+rather than for correctness. If I understand correctly, kexec_wait is
+not in a hot path - rather it is where CPUs spin while waiting for
+kexec. Is there any benefit in using the more complicated opcode in this
+situation?
 
-On 8/23/21 8:07 PM, Heiko Carstens wrote:
-> On Thu, Aug 19, 2021 at 07:51:59PM -0700, jing yangyang wrote:
->> WARNING !A || A && B is equivalent to !A || B
->>
->> This issue was detected with the help of Coccinelle.
->>
->> Reported-by: Zeal Robot <zealci@zte.com.cn>
->> Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
->> ---
->>   arch/s390/include/asm/scsw.h | 5 ++---
->>   1 file changed, 2 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/s390/include/asm/scsw.h b/arch/s390/include/asm/scsw.h
->> index a7c3ccf..754122d 100644
->> --- a/arch/s390/include/asm/scsw.h
->> +++ b/arch/s390/include/asm/scsw.h
->> @@ -691,9 +691,8 @@ static inline int scsw_tm_is_valid_pno(union scsw *scsw)
->>   {
->>   	return (scsw->tm.fctl != 0) &&
->>   	       (scsw->tm.stctl & SCSW_STCTL_STATUS_PEND) &&
->> -	       (!(scsw->tm.stctl & SCSW_STCTL_INTER_STATUS) ||
->> -		 ((scsw->tm.stctl & SCSW_STCTL_INTER_STATUS) &&
->> -		  (scsw->tm.actl & SCSW_ACTL_SUSPENDED)));
->> +		(!(scsw->tm.stctl & SCSW_STCTL_INTER_STATUS) ||
->> +		(scsw->tm.actl & SCSW_ACTL_SUSPENDED));
-> This turns something unreadable into something else which is
-> unreadable. It's up to Vineeth to decide what to do with this.
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/kernel/misc_64.S | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> However I'd prefer if this would be changed into something readable,
-> maybe as addon patch, like e.g.:
->
-> static inline bool scsw_tm_is_valid_pno(union scsw *scsw)
-> {
-> 	if (scsw->tm.fctl == 0)
-> 		return false;
-> 	if (!(scsw->tm.stctl & SCSW_STCTL_STATUS_PEND))
-> 		return false;
-> 	if (!(scsw->tm.stctl & SCSW_STCTL_INTER_STATUS))
-> 		return false;
-> 	if (scsw->tm.actl & SCSW_ACTL_SUSPENDED)
-> 		return false;
-> 	return true;
-> }
->
-> Chances are that the above is wrong... it's just to illustrate ;)
+> diff --git a/arch/powerpc/kernel/misc_64.S b/arch/powerpc/kernel/misc_64.S
+> index 4b761a18a74d..613509907166 100644
+> --- a/arch/powerpc/kernel/misc_64.S
+> +++ b/arch/powerpc/kernel/misc_64.S
+> @@ -255,7 +255,7 @@ _GLOBAL(scom970_write)
+>   * Physical (hardware) cpu id should be in r3.
+>   */
+>  _GLOBAL(kexec_wait)
+> -	bl	1f
+> +	bcl	20,31,1f
+>  1:	mflr	r5
+
+Would it be better to create a macro of some sort to wrap this unusual
+special form so that the meaning is more clear?
+
+Kind regards,
+Daniel
+
+>  	addi	r5,r5,kexec_flag-1b
+>  
+> -- 
+> 2.25.0
