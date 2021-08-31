@@ -2,64 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AEC3FCE21
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1583FCE1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240409AbhHaUEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 16:04:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234441AbhHaUEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 16:04:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87A7661075;
-        Tue, 31 Aug 2021 20:03:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630440220;
-        bh=+lMli70NJUXEf9vtprMnRCsGAsbyRhC3+FkwvxVEl8A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H2nzvncSunoPktXn4wmJIbtZq8Sx+puGhroI/rGMMN7Z65hR1md/rGCjmpJJfoj+1
-         SueIpa1IFci3GX/sMIoCS48rwzttiEt/gX85LvOPy84kdm4jiWras4KDt8DBDWB751
-         6WLslxu4BR+dD6EJ8rWkMRtBWPDn+qdyHYk4FqdQJmZhfktJ6o+UVEyUGOcARwzSSL
-         G7P9SHGZI6nlQu5B/Ytu55L4XOOFOpRGj4z5riiRZjPoYNdK9Ukc3qtdyn2TEDdBCF
-         uyriPelcbKfZiDpou14B3UPXgXqNDOjg+ziN8bDMRi2n9J5rFmFfbaDGGMYDYhOkUD
-         DbxLubqTad7xw==
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     michal.simek@xilinx.com
-Cc:     dinguyen@kernel.org, bp@alien8.de, mchehab@kernel.org,
-        tony.luck@intel.com, james.morse@arm.com, rric@kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org
-Subject: [PATCH 2/2] EDAC/synopsys: v3.80a of the synopsys edac contoller is also on the N5X
-Date:   Tue, 31 Aug 2021 15:03:16 -0500
-Message-Id: <20210831200316.3208310-2-dinguyen@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210831200316.3208310-1-dinguyen@kernel.org>
-References: <20210831200316.3208310-1-dinguyen@kernel.org>
+        id S232759AbhHaUEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 16:04:20 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:39470 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230230AbhHaUET (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 16:04:19 -0400
+Received: by mail-oi1-f177.google.com with SMTP id v2so703714oie.6;
+        Tue, 31 Aug 2021 13:03:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z6oB7aiXbBqT5wZRehYWpSadkfaaC2Ve45YF7MxbMs4=;
+        b=Vmwqqjtn3sS8j2139rmq3naOyMvY/5crtquyCnUlhpiHkbNBtjXt/miA7eWcgMi6lI
+         PV4Jxq/iT3Yg4LQRj9BIbZpupoBjjnBrUhwRpszRuDstZRI2hwlpHECH3jIaLP13ryk8
+         yCpbyAPXlG3eYfksxJURd9XA5Ig30klwasP8qvOoDr2A8oVLJSdzJ/g3TD8N+gt5dtXb
+         Tpw5Hx/h83tzLytCHkrgmbgp4m2OR1GHfYuW+BGb5h63WftxW25V0DC61pcfyBy5A/Mu
+         dET4RahHtrHGB8wMfdfpOcNXQSrRCUy19V8Zu6nRnj+JD3S2zi+K8J1k0T4A86mqKycg
+         PC9g==
+X-Gm-Message-State: AOAM531AjPEXnfobJJow5OHUrffbGJoadrUJc9foDAMQD2AwAOQKVWPm
+        Ahe0omF1L1KC5TJxC9h6ABuJnHo+FQ==
+X-Google-Smtp-Source: ABdhPJwAR8oaaSOYqHRZG+RINvPJyg/Is00turyC+4wRpJl4UOH+mCLhp/POIhYaT6UzCX/p6ILPYw==
+X-Received: by 2002:a05:6808:bc2:: with SMTP id o2mr4645099oik.73.1630440202961;
+        Tue, 31 Aug 2021 13:03:22 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id 186sm3872719ood.39.2021.08.31.13.03.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 13:03:21 -0700 (PDT)
+Received: (nullmailer pid 564842 invoked by uid 1000);
+        Tue, 31 Aug 2021 20:03:20 -0000
+Date:   Tue, 31 Aug 2021 15:03:20 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sireesh Kodali <sireeshkodali1@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Vladimir Lypak <vladimir.lypak@gmail.com>,
+        Adam Skladowski <a_skl39@protonmail.com>,
+        Kathiravan T <kathirav@codeaurora.org>,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: soc: qcom: smd-rpm: Add compatible for
+ MSM8953 SoC
+Message-ID: <YS6LCLWYWk+xha2/@robh.at.kernel.org>
+References: <20210825165251.18358-1-sireeshkodali1@gmail.com>
+ <20210825165943.19415-1-sireeshkodali1@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210825165943.19415-1-sireeshkodali1@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel's N5X platform is also using the Synopsys EDAC controller.
+On Wed, 25 Aug 2021 22:29:42 +0530, Sireesh Kodali wrote:
+> From: Vladimir Lypak <vladimir.lypak@gmail.com>
+> 
+> Document compatible for MSM8953 SoC.
+> 
+> Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
+> Signed-off-by: Adam Skladowski <a_skl39@protonmail.com>
+> Signed-off-by: Sireesh Kodali <sireeshkodali1@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
----
- drivers/edac/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/edac/Kconfig b/drivers/edac/Kconfig
-index 2fc4c3f91fd5..df46e7483aa0 100644
---- a/drivers/edac/Kconfig
-+++ b/drivers/edac/Kconfig
-@@ -484,7 +484,7 @@ config EDAC_ARMADA_XP
- 
- config EDAC_SYNOPSYS
- 	tristate "Synopsys DDR Memory Controller"
--	depends on ARCH_ZYNQ || ARCH_ZYNQMP
-+	depends on ARCH_ZYNQ || ARCH_ZYNQMP || ARCH_N5X
- 	help
- 	  Support for error detection and correction on the Synopsys DDR
- 	  memory controller.
--- 
-2.25.1
-
+Acked-by: Rob Herring <robh@kernel.org>
