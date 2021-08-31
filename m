@@ -2,102 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC4E3FC41B
+	by mail.lfdr.de (Postfix) with ESMTP id C227D3FC41D
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240193AbhHaIIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 04:08:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240107AbhHaIIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 04:08:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34B64603E7;
-        Tue, 31 Aug 2021 08:07:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630397266;
-        bh=z7P55UZRnlAxsdqAANQXJIQgoIdMDN7PXKO0gr+rm5M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q2vdWeLhaBBq6sEVc+B7bSwAyRp14UvYy8+aptxG9qQeEaexhWxicYWqcobw7kMX+
-         bj0yqnoB6ECi5yqLdEP7Baz+WzV1Km2pbmFaC7VO5BuDwp7A4Dk43tqqUZ8O/MA8Bd
-         MaO2Ny3od4cBnW1L+hq5uJC840+68lG07ujDXV6FvuvVkGPwqwYB1ojYsy1H/w2tNi
-         r1kmMKP2oKeDKs9ZSlmY/q3Mr+Po4nbanzvWf7+QKOrHLfZjsFI7bhtJRQpiwLkQMT
-         RJ6vcg94nwwM8sSKTGyinTt0ISTQwKiAk95Gn0CBOZ0ivYMstet2jArn/uQffncUCZ
-         CwF87DBWP/nZA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mKyny-0007AS-8H; Tue, 31 Aug 2021 10:07:39 +0200
-Date:   Tue, 31 Aug 2021 10:07:38 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Alex Elder <elder@kernel.org>, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: Re: [greybus-dev] [PATCH v4] staging: greybus: Convert uart.c from
- IDR to XArray
-Message-ID: <YS3jSsGSs0yAw/Ba@hovoldconsulting.com>
-References: <20210829092250.25379-1-fmdefrancesco@gmail.com>
- <YSyg/Db1So0LDGR+@hovoldconsulting.com>
- <2879439.WEJLM9RBEh@localhost.localdomain>
- <YSzGkNfG6HOayiXi@hovoldconsulting.com>
- <YSzMB80NOkNvdjy1@casper.infradead.org>
- <YSzQAd0Rg5CF/eLe@hovoldconsulting.com>
- <f7a25eb1-20f4-5031-a156-9e5dc019ad28@linaro.org>
+        id S240205AbhHaII6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 04:08:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240195AbhHaIIy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 04:08:54 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A12C061575;
+        Tue, 31 Aug 2021 01:07:58 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id d22-20020a1c1d16000000b002e7777970f0so1351951wmd.3;
+        Tue, 31 Aug 2021 01:07:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MnhSLTH8eLra+aU3jtPLmoRBRTI1Oo6K9jHTpVGmJYg=;
+        b=caogiY8rcJNBgStQAg1BdfbIHwoVbocbGp49VEZ0hBckAp8JqoBZ5C6XHmKroAyDjO
+         xG+chLdbfBcmhGESMy3eoJVR0DwzUQwYiRss+PYoN/A4gUSybfRhvahXW73xAsOgBffz
+         3yufojTJdktVIecXKhIiZArtxNpz6pYj72Xf1sM0zFfoPkRXdCTiyLyog0drM45qCTGE
+         cnCoY3nxdNNglEa79n5ZrjJPHFVjlihmkTa8Q2+uwJWF6OxKdZDxdRZhSlcCC4XNbCNF
+         m6wp9RDx1xWp12WgxJezx/wbMZcb81U3Qsx9Xl3Xh5P/S0htIfztmNB/94Z0o+fvgbfh
+         aHCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MnhSLTH8eLra+aU3jtPLmoRBRTI1Oo6K9jHTpVGmJYg=;
+        b=fn7heXVY3MzPJQeNOQhLdVB9YcpCLP6+F9beq7nqI3uSeZc/V3yJ5j1p1zeTUsUdbo
+         L9kVFOF7CQtg5P3xs7jwemhnLm9L38JFnn2+Q1WzOemgfFVqWOQbFQzAK6ThwWHqOIKb
+         cparSvV+JILpb76wdVj2F3nFB3HcI7Cd1JvJD2LeslPAjqs/jvAUFkWgrcDMVRwDHPNa
+         HRTygEDrB8aLV56YXQe61lTJxHwaHs0BADPhwXeKerPuOlY8zm/c9JqjqrPatvhS6fwf
+         ha4mvo7A+d5PABqHM0A1cPvvktu+H+AwmZtF7NNj4rTPFGC1A5lTtdykmRfR7uYRQWiZ
+         42ag==
+X-Gm-Message-State: AOAM530UogoioLT9yb0G2AuKH+89Ynd7tGoptf5CbzTxhMWoh3/tH7R9
+        aHtk0AAW/OymGMqc3u7HI6OXbphV5OU=
+X-Google-Smtp-Source: ABdhPJyNV/Bln0OqLvVo6nX9QT0XaKxNR879yM2JzHyRsi11M8JoBlW5x5Vr6s7/ZvdH+s/rfgJw+A==
+X-Received: by 2002:a7b:c5d8:: with SMTP id n24mr2915784wmk.51.1630397277492;
+        Tue, 31 Aug 2021 01:07:57 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f08:4500:7054:c5a4:5c4c:e530? (p200300ea8f0845007054c5a45c4ce530.dip0.t-ipconnect.de. [2003:ea:8f08:4500:7054:c5a4:5c4c:e530])
+        by smtp.googlemail.com with ESMTPSA id k25sm18571391wrd.42.2021.08.31.01.07.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 01:07:56 -0700 (PDT)
+To:     cgel.zte@gmail.com, rajur@chelsio.com
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chi Minghao <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20210831062255.13113-1-chi.minghao@zte.com.cn>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH] cxgb4: remove unneeded variable
+Message-ID: <90c48d79-29e5-ec9e-273d-5598fc4f5fab@gmail.com>
+Date:   Tue, 31 Aug 2021 10:07:46 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7a25eb1-20f4-5031-a156-9e5dc019ad28@linaro.org>
+In-Reply-To: <20210831062255.13113-1-chi.minghao@zte.com.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 08:20:25AM -0500, Alex Elder wrote:
-
-> I have been offering review feedback on this patch for three reasons:
+On 31.08.2021 08:22, cgel.zte@gmail.com wrote:
+> From: Chi Minghao <chi.minghao@zte.com.cn>
 > 
-> - First, because I think the intended change does no real harm to the
->   Greybus code, and in a small way actually simplifies it.
+> Fix the following coccicheck REVIEW:
+> ./drivers/net/ethernet/chelsio/cxgb4/t4_hw.c:3266:5-8 REVIEW Unneeded
+> variable
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Chi Minghao <chi.minghao@zte.com.cn>
 
-You leave out that we've already seen three versions of the patch that
-broke things in various ways and that there was still work to be done
-with respect to the commit message and verifying the locking. That's all
-real costs that someone needs to bear.
+This patch is simply wrong and obviously not even compile-tested.
+You would have found out by looking 5s at the code of the function.
+Look at what the FIRST_RET macro is doing.
+Please don't blindly trust tools and check patches proposed by tools.
 
-> - Because I wanted to encourage Fabio's efforts to be part of the
->   Linux contributor community.
+> ---
+>  drivers/net/ethernet/chelsio/cxgb4/t4_hw.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
+> index 5e8ac42ac6ab..c986a414414b 100644
+> --- a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
+> +++ b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
+> @@ -3263,8 +3263,6 @@ int t4_get_scfg_version(struct adapter *adapter, u32 *vers)
+>   */
+>  int t4_get_version_info(struct adapter *adapter)
+>  {
+> -	int ret = 0;
+> -
+>  	#define FIRST_RET(__getvinfo) \
+>  	do { \
+>  		int __ret = __getvinfo; \
+> @@ -3280,7 +3278,7 @@ int t4_get_version_info(struct adapter *adapter)
+>  	FIRST_RET(t4_get_vpd_version(adapter, &adapter->params.vpd_vers));
+>  
+>  	#undef FIRST_RET
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  /**
+> 
 
-Helping new contributers that for example have run into a bug or need
-some assistance adding a new feature that they themselves have use for
-is one thing.
-
-I'm not so sure we're helping either newcomers or Linux long term by
-inventing work for an already strained community however.
-
-[ This is more of a general comment and of course in no way a critique
-  against Fabio or a claim that the XArray conversions are pointless. ]
-
-> - Because I suspected that Matthew's long-term intention was to
->   replace IDR/IDA use with XArray, so this would represent an early
->   conversion.
-
-That could be a valid motivation for the change indeed (since the
-efficiency arguments are irrelevant in this case), but I could not find
-any indications that there has been an agreement to deprecate the
-current interfaces.
-
-Last time around I think there was even push-back to convert IDR/IDA to
-use XArray internally instead (but I may misremember).
-
-> The Greybus code is generally good, but that doesn't mean it can't
-> evolve.  It gets very little patch traffic, so I don't consider small
-> changes like this "useless churn."  The Greybus code is held up as an
-> example of Linux kernel code that can be safely modified, and I think
-> it's actively promoted as a possible source of new developer tasks
-> (e.g. for Outreachy).
-
-Since most people can't really test their changes to Greybus perhaps it
-isn't the best example of code that can be safely modified. But yeah,
-parts of it are still in staging and, yes, staging has been promoted as
-place were some churn is accepted.
- 
-Johan
