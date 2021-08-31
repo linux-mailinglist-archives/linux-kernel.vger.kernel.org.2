@@ -2,170 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2B53FCA60
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF8D3FCA61
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238513AbhHaOxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237694AbhHaOxY (ORCPT
+        id S238617AbhHaOxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:53:42 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53670 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238552AbhHaOxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:53:24 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FAFC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:52:29 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id b4so9109231qtx.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:52:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=16AnZsBkJuexPiViN7nj+Gw8aypGSfWNEZGs1nXo6RI=;
-        b=L5BD4pYz0fEMo67TuWH1MBOTFdnKdme6R6s8/ggWGEev72wBIfzIg4IkPEWb7Omu7F
-         65UYUcQ527kpae3Ag8qvqoXegA/QU8yOp29rnW5r1fDfogDhvkyOGtm83sJSDqalAzFg
-         SWQICf+lyt9sNjl4qF9jYWsj9kZJbLY63Y2HS/Gkw0BQXnosolRTyVXWiaLXsO5r15W9
-         1W7tprJcSkyfYNpzSCo3kF/pi7TzplSAxbGMBxA+jpbanCdnM+Zaeh88oi5f2zEL0uDN
-         b81GM3QrM5UOnHbyxgZD6DpCaB0r5BJSxtFLFItUwzL9ESn2RTggGde4hbhzx1UPVHvB
-         4bvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=16AnZsBkJuexPiViN7nj+Gw8aypGSfWNEZGs1nXo6RI=;
-        b=iJtWiMW33iJ6IHCPUillFpiS/pBSioihZ8BeoOT/TLvSbIydpJmvdt8TIZYwrGKy7C
-         9kSuy99mA4LMdT1IbKd8TBRYWn8Vis9U0A5iB/5bVoMRRyTOHFpJc7batvxNf2fTKMUE
-         y61euhCuyu8vM3Uaz6PkbRI5G8MWZGuTQwe306HIFx0ZZ4vzUT9fUSo0V8/I2orqdByn
-         NX71q7/8KYJALNe2ilO5/+XHGYLkTZahpjYvR2R4k4kWKMbVo/xiBjkkAwCnpHThMJgl
-         lWUl0gNnA2I3fZzvbiJuOV75Cp+raVIg3azldLI/2piNziKuTkvMwSLnMvcXB5QGXz46
-         3kIA==
-X-Gm-Message-State: AOAM531YphkpuNUYHRLthWKjVO4xBVhwxP8R+eXjkaLQLCwdUFIFbYLt
-        gIplBnoT8AxDCVNbBg5J5W4xOQ==
-X-Google-Smtp-Source: ABdhPJxJsjOI6usqxmwJ3yXpmCcHvIibzi3UynlO47wUSDrTp5AuNEIAufTh7U3gtaifTI0kQhAKTw==
-X-Received: by 2002:ac8:6054:: with SMTP id k20mr3060953qtm.237.1630421548372;
-        Tue, 31 Aug 2021 07:52:28 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id c28sm14263873qkl.69.2021.08.31.07.52.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 07:52:27 -0700 (PDT)
-Subject: Re: [Patch v5 2/6] thermal: qcom: Add support for LMh driver
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, rui.zhang@intel.com, viresh.kumar@linaro.org,
-        rjw@rjwysocki.net, robh+dt@kernel.org, steev@kali.org,
-        tdas@codeaurora.org, mka@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210809191605.3742979-1-thara.gopinath@linaro.org>
- <20210809191605.3742979-3-thara.gopinath@linaro.org>
- <fcbb6d64-7e39-7f03-e76c-512946124777@linaro.org> <YSO5Njg3DXo64InF@ripper>
- <a216c89d-6cd5-326d-f203-f48caaf2a096@linaro.org>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <299e2a59-ae4e-278d-200d-630f055c1411@linaro.org>
-Date:   Tue, 31 Aug 2021 10:52:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 31 Aug 2021 10:53:40 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E1F8822214;
+        Tue, 31 Aug 2021 14:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630421564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D4MjAnG6bKcCkTAybjJn5d/f5tRLhbz0qM5zXERoID8=;
+        b=ZbXwpTdfMgE4NZ2iZScvnHiaafSuJ+epkFCXEYLsgFSCAEkef0MGbRAwYZ9acgWLVETcMr
+        LqHt80gX0yBAXHS2g+eIr38ZuXB+pfrjcNJ1/toeXwSEYxtK6p66ifkTfS5WXgKbfJKZm1
+        D4XMWbT3ICTx+cJevlIxjWn0xdrWTY4=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 9035CA3B9F;
+        Tue, 31 Aug 2021 14:52:44 +0000 (UTC)
+Date:   Tue, 31 Aug 2021 16:52:44 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     James Wang <jnwang@linux.alibaba.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: kernel hang during reboot when cmdline include a non-exist
+ console device
+Message-ID: <YS5CPGm4JENsFIem@alley>
+References: <CAHk-=wj+G8MXRUk5HRCvUr8gOpbR+zXQ6WNTB0E7n32fTUjKxQ@mail.gmail.com>
+ <YS2fZ1sknFYKtJFi@google.com>
+ <YS3k5TRf5oLLEdKu@alley>
+ <YS3stL0cTn5ZQSNx@google.com>
+ <fc18d17a-b185-7a1e-2135-ec83f3f8c70f@linux.alibaba.com>
+ <YS490P27YM6UlB2z@alley>
+ <e66f501a-0ba9-77f1-b5a2-9a759f8e00d6@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <a216c89d-6cd5-326d-f203-f48caaf2a096@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <e66f501a-0ba9-77f1-b5a2-9a759f8e00d6@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/23/21 11:57 AM, Daniel Lezcano wrote:
+On Tue 2021-08-31 22:38:42, James Wang wrote:
 > 
-> Hi Bjorn,
+> 在 2021/8/31 PM10:33, Petr Mladek 写道:
+> > On Tue 2021-08-31 21:45:05, James Wang wrote:
+> > > 在 2021/8/31 PM4:47, Sergey Senozhatsky 写道:
+> > > > And may I ask, just in case, if James can revert a revert of Petr's commit:
+> > > > 
+> > > >          revert a91bd6223ecd46addc71ee6fcd432206d39365d2
+> > > > 
+> > > > boot with wrong console argument and see if the kernel reboots without
+> > > > any problems.
+> > > After test, revert Petr's commit can work; reboot without any problem;
+> > Interesting, it looks like the panic() is really caused by missing
+> > stdout, stdin, and stderr, for the init process.
+> > 
+> > Unfortunately, the fix is not easy, as described in the commit
+> > a91bd6223ecd46addc71e ("Revert "init/console: Use ttynull as
+> > a fallback when there is no console").
 > 
-> On 23/08/2021 17:05, Bjorn Andersson wrote:
->> On Sat 21 Aug 02:41 PDT 2021, Daniel Lezcano wrote:
->>
->>>
->>> Hi Thara,
->>>
->>> On 09/08/2021 21:16, Thara Gopinath wrote:
->>>> Driver enabling various pieces of Limits Management Hardware(LMh) for cpu
->>>> cluster0 and cpu cluster1 namely kick starting monitoring of temperature,
->>>> current, battery current violations, enabling reliability algorithm and
->>>> setting up various temperature limits.
->>>>
->>>> The following has been explained in the cover letter. I am including this
->>>> here so that this remains in the commit message as well.
->>>>
->>>> LMh is a hardware infrastructure on some Qualcomm SoCs that can enforce
->>>> temperature and current limits as programmed by software for certain IPs
->>>> like CPU. On many newer LMh is configured by firmware/TZ and no programming
->>>> is needed from the kernel side. But on certain SoCs like sdm845 the
->>>> firmware does not do a complete programming of the h/w. On such soc's
->>>> kernel software has to explicitly set up the temperature limits and turn on
->>>> various monitoring and enforcing algorithms on the hardware.
->>>>
->>>> Tested-by: Steev Klimaszewski <steev@kali.org> # Lenovo Yoga C630
->>>> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
->>>
->>> Is it possible to have an option to disable/enable the LMh driver at
->>> runtime, for instance with a module parameter ?
->>>
->>
->> Are you referring to being able to disable the hardware throttling, or
->> the driver's changes to thermal pressure?
-> 
-> The former.
+> OK. But I suppose you could find a quick workaround to mitigate this issue.
 
-Hi Daniel,
+You could either remove the invalid console=ttyUSB0,115200
+parameter. As a result, tty0 will become the default console and
+it will be used by the init process.
 
-It is not recommended to turn off LMh once enabled. From h/w point of 
-view, it can be done for debug purposes but it is not to be implemented 
-as a feature.
+If you do not want any console, you could build the kernel with
+CONFIG_NULL_TTY=y and use console=null on the commandline.
 
-
-> 
->> I'm not aware of any way to disable the hardware. I do remember that
->> there was some experiments done (with a hacked up boot chain) early on
->> and iirc it was concluded that it's not a good idea.
-> 
-> My objective was to test the board with the thermal framework handling
-> the mitigation instead of the hardware.
-> 
-> I guess I can set the hardware temperature higher than the thermal zone
-> temperature.
-
-Right. Also remember that  patch 5 in this series removes the cooling 
-devices for the cpu thermal zones. So if you are testing this you will 
-have to add them back.
-
-> 
-> On which sensor the lmh does refer to ? The cluster one ?
-> 
-> (by the way the thermal zone temperatures per core are lower by 5°C than
-> the hardware mitigation ? is it done on purpose ?)
-
-
-So IIUC, it refers to tsens for individual cpus and collates the input. 
-But the documentation is not clear on this one. I took the mitigation 
-temperature from downstream code. Yes I did realize that the thermal 
-zone trip1 temp is 90 degree where as the LMh mitigation point is 95 
-degree. My thinking is this is because the h/w mitigation can happen 
-faster than s/w and hence the 5 degree bump up in temperature.
-
-> 
->> Either way, if there is a way and there is a use for it, we can always
->> add such parameter incrementally. So I suggest that we merge this as is.
-> 
-> Yes, that was for my information. It is already merged.
-
-Thank you very much
-
-> 
-> Thanks
-> 
->    -- Daniel
-> 
-
--- 
-Warm Regards
-Thara (She/Her/Hers)
+Best Regards,
+Petr
