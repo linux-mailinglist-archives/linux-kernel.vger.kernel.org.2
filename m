@@ -2,145 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7957C3FC513
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905F13FC510
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240512AbhHaJnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 05:43:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233015AbhHaJnh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S239948AbhHaJnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 31 Aug 2021 05:43:37 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFADC061575;
-        Tue, 31 Aug 2021 02:42:42 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id v10so26658594wrd.4;
-        Tue, 31 Aug 2021 02:42:42 -0700 (PDT)
+Received: from mailgw01.mediatek.com ([60.244.123.138]:35718 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233015AbhHaJnf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 05:43:35 -0400
+X-UUID: 2cf168c16cd442fbb7b075d098f2c34f-20210831
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=3BNGQD/aW7rW1rGVQycKCaaOggRDvxrkUIhKwXz1U7Y=;
+        b=chB7f7lmaOCbZfXgM/BLJMHAtRyFk7kS8Ac7hZ0ed5ZquYQqMykci8w51163D9Cwe0gLqKNPsIUqOUsCYVKoMtscex3hbYAIL0VzQiPpD0oxfWKYouHA9PuZPts5Fs+yMff7/0uMYC92CMtQX6Xh0GZGBuVnlGwIHkxmfOrFJwA=;
+X-UUID: 2cf168c16cd442fbb7b075d098f2c34f-20210831
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <mark-yw.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1523911956; Tue, 31 Aug 2021 17:42:37 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 31 Aug 2021 17:42:35 +0800
+Received: from KOR01-PS2-obe.outbound.protection.outlook.com (172.21.101.239)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.792.15 via Frontend Transport; Tue, 31 Aug 2021 17:42:35 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P29q74admkQ2LVLWv9mGXConjgIoDCdHk/9/MZNs5Ld+cDN5juUIQVCixQyiG3qKV2tsiDxMcEbMpDlZ/H9JcbxDjtn82+15dCnCGs5HMKt+PhBk5taC90+IgQIpKV1wiNHEQNMGWt21WdbVek3Ybqz8C0HEk5vbBfSFL+Nbj4GU1183en93rnywYpcAjjnIWhstthhWnOJBHyw1USg+A7sMRrql0ThlRPjwuPVfsMCI34aSgVWNxEnPeUOxsWewqBUrdSIJUI6pZWnwN2y17zWGDK7SLOqCsuv+1lMUkaip1UXIcgWW3JUKOZh0FwXm2oS25qMj3mXRtoZTTeGbmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=3BNGQD/aW7rW1rGVQycKCaaOggRDvxrkUIhKwXz1U7Y=;
+ b=Xx/7nKkV8G9uOSbIs2U2wbsopsbFe071KlnEdmApuUX6rMUnc5q+oHZQO+HvHB8PWENFTxvDGRr/9hhxpqthlHwPnJg9RAVQux/EOOM3EZVCjMnbZPKs64QkxaGZSlSG6RYq5jqrLxujGwDLR2156TljPvpp9+FiwxaZZviBuovQrM1ad0SEQ1UYXTs628ioeHMH1r4Piuq4GDmkRxh0yGQqqRR8xeKfRQxv0sDpp4rZf3QPfblEOS7KwMbZidFrkk+7UP49fBqr6VXPtQVqkJiWxXYfGZfv4SlYdcMo2RJYjg0trPKGyBMSnP3DqehYpGkc932fneZempsXB5Cpgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Ojwl8/djIVLrJT34N5n/ZmuYzmO6v/z2g4THD9il8B8=;
-        b=rV10iB4cww2liOe6PvrelTOApV3cUrlSL+9ucNmAC80Aj8rgUeXHG+JEG3w4nVaWlx
-         LKkuBoGmM57JqtvKPkV69KOC/VwsVjUsHibSfdofrsvW5LhgHjle680rrV0Z7Inmreq9
-         sI8Mhv8kQwgLYthylYPB01+AISczfqRe+7Ktp4NnufhgVctyVGqzl3JDGZZkiUP7BLud
-         +gSTtmylcA/KgvKF0SdkBsZjEU1pqXvdX0wtybStmbXkrdTZFkLP+V36YX7fhMiWbca8
-         JQ1bNTL2AvfQedt4xV/X5Mq5D1TISjGjSByRHrMbGsw4pLU4vas6cHDK3nJA8eQsj6PJ
-         DspQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ojwl8/djIVLrJT34N5n/ZmuYzmO6v/z2g4THD9il8B8=;
-        b=Bu6kGAIyY3V6S3+lzczbwBZ5lsVlbDt3vEFQoDLvhLw/tDpMCrpVnd+UQWL1NYOS2/
-         CIszCSD9cJD182V/kXDR7O4PmsdKS85/TsVo0Tv3v+pgdX8Tyhlp2Ev91KBV8IvA4PUg
-         HiX6PsXe4tCetIuGGAXpdA3Gklc6hmluaFufu7VjDiw/MESsjYFwQBzJZFFgKwe46SSw
-         DNMsuVZy+CS9GliVgtw2tLnGX/cD/UQ5u5Xo8REHYE5gcuUh8JKnO7Orpwbn3lwhr5JB
-         N3RaesjDCCHTr8ZJdBZHKKybZGd54WdMEsmLRBwnMEIyIuhd6ffEGsHOaPIXdRVMsUwl
-         Qiuw==
-X-Gm-Message-State: AOAM531yeuz/9l4dpFZtpXhKg3BFYfej2mY/M4FvFuSJHHdwxSrfNEyv
-        Dp4slTB4Qg1n2bJkPOyr2P2K4wel5T0=
-X-Google-Smtp-Source: ABdhPJzTRFWA+GSUAhv11f0Ebl+HeBVZGJs7eZrydcbA4LIuDeqfyV9Q3jUGdWxnK+VGAnTAnbPPwA==
-X-Received: by 2002:a5d:4591:: with SMTP id p17mr30349623wrq.57.1630402961186;
-        Tue, 31 Aug 2021 02:42:41 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.133.138])
-        by smtp.gmail.com with ESMTPSA id j207sm2100809wmj.40.2021.08.31.02.42.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 02:42:40 -0700 (PDT)
-Subject: Re: [syzbot] general protection fault in sock_from_file
-To:     Hao Xu <haoxu@linux.alibaba.com>, Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dvyukov@google.com,
-        io-uring@vger.kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-References: <00000000000059117905cacce99e@google.com>
- <7949b7a0-fec1-34a7-aaf5-cbe07c6127ed@kernel.dk>
- <d881d3fa-4df5-1862-bc2b-9420649ba3c8@linux.alibaba.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <407ce02f-7a0a-4eb2-b242-188fc605012c@gmail.com>
-Date:   Tue, 31 Aug 2021 10:42:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3BNGQD/aW7rW1rGVQycKCaaOggRDvxrkUIhKwXz1U7Y=;
+ b=soEzTuyLJn7uDxfrl+IJFWKzKJTTdZ0BVGwsiBWrQd41ucjinUmTdA+dDOlQRHQs41l4laL4ybmcrnAowQAPoqnyryZexK9oCBgPRNzhDVFzZxNcz1S/u6kRvCgfLagtNEKoqK8oktdHfqRX4bl7dYGetaQlLh25X3Bn+1Snp9Y=
+Received: from SL2PR03MB4457.apcprd03.prod.outlook.com (2603:1096:100:5b::16)
+ by SL2PR03MB4491.apcprd03.prod.outlook.com (2603:1096:100:5b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.14; Tue, 31 Aug
+ 2021 09:42:16 +0000
+Received: from SL2PR03MB4457.apcprd03.prod.outlook.com
+ ([fe80::ed51:65b7:60ec:37ea]) by SL2PR03MB4457.apcprd03.prod.outlook.com
+ ([fe80::ed51:65b7:60ec:37ea%5]) with mapi id 15.20.4478.017; Tue, 31 Aug 2021
+ 09:42:16 +0000
+From:   =?big5?B?TWFyay1ZVyBDaGVuICizr7StpOUp?= <Mark-YW.Chen@mediatek.com>
+To:     Marcel Holtmann <marcel@holtmann.org>
+CC:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Sean Wang <Sean.Wang@mediatek.com>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "michaelfsun@google.com" <michaelfsun@google.com>,
+        "mcchou@chromium.org" <mcchou@chromium.org>
+Subject: RE: [PATCH 1/2] Bluetooth: btusb: Support public address
+ configuration for MediaTek Chip.
+Thread-Topic: [PATCH 1/2] Bluetooth: btusb: Support public address
+ configuration for MediaTek Chip.
+Thread-Index: AQHXmP72/FqZfGDmjkeSjrSolMS5o6uMLoeAgAE1qSA=
+Date:   Tue, 31 Aug 2021 09:42:15 +0000
+Message-ID: <SL2PR03MB4457513693916CBA07BE450BB3CC9@SL2PR03MB4457.apcprd03.prod.outlook.com>
+References: <20210824154430.27689-1-mark-yw.chen@mediatek.com>
+ <CF258C9C-BB3C-4C10-88B0-F6F3A03303D5@holtmann.org>
+In-Reply-To: <CF258C9C-BB3C-4C10-88B0-F6F3A03303D5@holtmann.org>
+Accept-Language: en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbXRrMTM2NzhcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy1iODUzNTk2NC0wYTNmLTExZWMtOTFhYS0yY2YwNWQ0NmQzNzBcYW1lLXRlc3RcYjg1MzU5NjUtMGEzZi0xMWVjLTkxYWEtMmNmMDVkNDZkMzcwYm9keS50eHQiIHN6PSIxNTEyIiB0PSIxMzI3NDg3NjUzNDM2NDI3MDkiIGg9IlNwOEpXQStZSW9STTJVWGNCdTFvYWVtWEZKQT0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
+authentication-results: holtmann.org; dkim=none (message not signed)
+ header.d=none;holtmann.org; dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a8ebc0b3-a09d-4891-24b7-08d96c639e35
+x-ms-traffictypediagnostic: SL2PR03MB4491:
+x-ld-processed: a7687ede-7a6b-4ef6-bace-642f677fbe31,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SL2PR03MB4491F432C5492CC182AE3092B3CC9@SL2PR03MB4491.apcprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jrU72MS2h3Vs7r4MScTcj0n3ozIq5+fBCEpRkV+KatshLUlZuqEUBxTnK5prBb2CNHEHkaAIEmA3bXJT2tVKiCfx4IgdaPdcavmwFA7GJ/SrAzM6f3TjhfyyGcC0ZlQuiRG+am7n4Kcr7nutWArZBnACaXsfSxvkjX5w1sIKkRiDpPrq+trYze7QOEYC3PW1la53jOyy9yOj22K1umD12PU3a+zr6/EM4wydX81AuIpA3y0rsfo5Mb+4YST+3ErUKZ4iIgZ63iqoAtPqHnuDkAE5VJzHAxqut0HhJwTotAZ/0Cv4MB2up55z92wNMUzsF4ZvZefWvfZrNZ4rYEs5TE4IRnoYuxZo1rKr/pe4277mOHgRGPl1TMaT+Y0fYdjiqcNKjDvISCA2pVXbJqJFyX2i9PnU2nxgXq2nWHiWwOWvS3QhCgeQiU2NvISdqUIfNrRO/7ZunX1MXq8jjVKsK+Jaa5DXv7P8DyT1Dm05kxxqnYb0xwFCM9FqO1zy//yRqrWXltVY+MaCDPCipEfFCKsKFWoK1RMPXLsqP8Rt/+SXoTP5+0DZnYbE/gkH2GjLFDCINU3pfpV1ylUw/4jjmtt9ROidjBzNSd8S6jQ6rE+G5gd1YXFZWAyadnzNfI2WP72RH4hgI3R76eb67R/7c5+fy01Ney28uQcwlSAJArijU2AvAy+Hk6vEIavwsuPjUw6+9DhLG+oOzHx1vVuHqg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR03MB4457.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(54906003)(6916009)(26005)(64756008)(76116006)(2906002)(85182001)(55016002)(186003)(8936002)(5660300002)(66446008)(122000001)(9686003)(38100700002)(66476007)(6506007)(7696005)(316002)(71200400001)(66946007)(508600001)(52536014)(86362001)(38070700005)(66556008)(33656002)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?big5?B?K1NJV24xU0dPODE3UG1taktlaFQyVkp1bUFsMVNUZmYya1J1U1FGNVJsVWZGRnBv?=
+ =?big5?B?bE4rZEo5cnFiUXBPRUJzYkl3djhQRm0rQ3dFdjVNY0ZTclUvRGZZSXM3ak94dHZG?=
+ =?big5?B?b2dHdXV6Zm5QdDBMSzh2QnNlM0RBRzlMemlQbXYwdE5CMVdqNjNsWXZvdVpVdkI4?=
+ =?big5?B?MTZMaTZJbDJ0SEtSN05zcEw1QkNDTmZVYjlya1hxeUxHUTl6R0g4YUprY1pJYnZu?=
+ =?big5?B?UkFqZ2lLbVFUUGVGT05uckJNZ0VjdmpRWWN0Ulpad2c3VWdRWFNITzhSaEZucXp4?=
+ =?big5?B?alpqOUpjTEV1RlhHUG1lbmZvdFBrRGFVTENWYTNVNzYzREk3NDlUOU5iOXJhMmJq?=
+ =?big5?B?ZWFndU42LzZFNUxMTmFsRW1PT3M5NGtBUXA4ZGREWXlxc05FSWlRQWpnK1h4S3Jx?=
+ =?big5?B?UTFpc3VmdWdhaGVrSHdwNEh5RkpEaFFUWWpJeHhJWXBMSU05b0I0OHg2bVN3dGRx?=
+ =?big5?B?N3NBM1N0SmVpb2ZTU3FkeklIaWdIcHcyMDdpZUZRdUlDZXRzTUNiMm9pRFl4N1Mz?=
+ =?big5?B?T0QvQUxGQlp6T0ZIL0VqMEJyOVZTUHVkVFEySmRQWTdpblVHOWplNkc4dDg5cTBq?=
+ =?big5?B?Q2VLcXAzbmQwN0M4cW1xUm1zRUJXOVdEdStzVkZ6NkRpYVQxSGdVYkQ2N3MwdHlJ?=
+ =?big5?B?ZFZhYVMrYnl0T1BqYTFORk94VWc4UGFadUo2Qk1PV1pXbzlvSXBXbDhMbEttVlRr?=
+ =?big5?B?OFBoNGVBY2pnTzgxRUxvK2hNLzA1RW9FVS9MVTZ2M3pkR0RPRSswU1ZuMUVhcWM5?=
+ =?big5?B?dlVKVnFGb3VrbjVUbDNzZmo2RmwyWmZCb2lHaHhHUVNCZ3pXUXVCN250Z0RENmFj?=
+ =?big5?B?djlOZ1BNWkxOUkpwUWdPdXl6LzBOVHV1dHZsUUt3NG1aMnEveW1xYW1XUGVHYWN4?=
+ =?big5?B?ekVnNnYvY2lrdmk2QTVEbzV5YmJJMXJNOXZTZ1JUVTBjZVdxQVN4MXJoaytQNWpv?=
+ =?big5?B?WktrQWdkNEFaL1B1Zm5RQUt6S0ZVdnEzOTNualU5aUFENXF6Vk9WZ3V6Q2FuMkla?=
+ =?big5?B?aFJpd2R6TjZKaXBwODRBaGdNZEMrZ0VaUFpLMjZ5UG5EcHdWZU5URm5LMExBVEVO?=
+ =?big5?B?MDl4dGs3NDZMaE9BTTl6SnhTaENtS2c2NW8vWGRsbG12dkdsd2xoa0hHMEVnOWpW?=
+ =?big5?B?MXRJU1htcDNrSDFmZVBKM1hhcUlrM1dwaEZ1cy9MTFFCcms2a2drd3N2bXR4VXpT?=
+ =?big5?B?V2NvZUJNS2ljMzlVbnRLKzRzbE5GK2MrSEkzNy8wd2I0ZWhINnNtUkNLQUZKOHZs?=
+ =?big5?B?L0F5b056S1k0NkgyQ1NiMml2R1N0MXVkZDBhcTFJbXFXbG4wQ3VwK1dJVzBTOHpJ?=
+ =?big5?B?bjdJRHVOc2p3TWdWck1WbXNwM0ZVU09MVDBYZldQNFFScVVIWEFRWFFGMUd0SG5U?=
+ =?big5?B?SnZoSUV1YlJXZ3czNjVyaGtTN0taMC9ocndJTEdzQ1F6K2U3NklJeTU0clc1ZEhC?=
+ =?big5?B?ZTBxeDVIYW9qdGNQWWNaVXdpMlJEMStma3JYREJYdmZXSzFjMStCU1FJKzlsR08y?=
+ =?big5?B?Y1AzUDFLY1hYTnFHd05qL1dmdjlqc1RiZXRTS0poVmRzb3hxTUxwNURqV3B5V1hL?=
+ =?big5?B?S3R3cHJmZjlBZUlBdS9tbG9ZNFZTOTR4RldFRkJ4YVdPcUMwSzQ4MkxYSC9mQzdk?=
+ =?big5?Q?nddshoqLdcMltR4gB7PJEnLK99WnXq+DDM4VkGrRySXKMss/?=
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <d881d3fa-4df5-1862-bc2b-9420649ba3c8@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR03MB4457.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8ebc0b3-a09d-4891-24b7-08d96c639e35
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2021 09:42:15.9961
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sVZJQgMU6V0g4jJla/yoF3RmItemMRNPxVUVofHbMFE+0pxT2kHadyWp5dnkMNl8aUUQnAlh/Rv70+Q5fCDfDWYpjt0Ry6xz/4c33rfbVc4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR03MB4491
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/21 10:19 AM, Hao Xu wrote:
-> 在 2021/8/31 上午10:14, Jens Axboe 写道:
->> On 8/30/21 2:45 PM, syzbot wrote:
->>> syzbot has found a reproducer for the following issue on:
->>>
->>> HEAD commit:    93717cde744f Add linux-next specific files for 20210830
->>> git tree:       linux-next
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=15200fad300000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=c643ef5289990dd1
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=f9704d1878e290eddf73
->>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111f5f9d300000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1651a415300000
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>> Reported-by: syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com
->>>
->>> general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN
->>> KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
->>> CPU: 0 PID: 6548 Comm: syz-executor433 Not tainted 5.14.0-next-20210830-syzkaller #0
->>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->>> RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
->>> Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
->>> RSP: 0018:ffffc90002caf8e8 EFLAGS: 00010206
->>> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
->>> RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
->>> RBP: ffff888019fc0780 R08: ffffffff899aee40 R09: ffffffff81e21978
->>> R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
->>> R13: 1ffff110033f80f9 R14: 0000000000000003 R15: ffff888019fc0780
->>> FS:  00000000013b5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
->>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> CR2: 00000000004ae0f0 CR3: 000000001d355000 CR4: 00000000001506f0
->>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>> Call Trace:
->>>   io_sendmsg+0x98/0x640 fs/io_uring.c:4681
->>>   io_issue_sqe+0x14de/0x6ba0 fs/io_uring.c:6578
->>>   __io_queue_sqe+0x90/0xb50 fs/io_uring.c:6864
->>>   io_req_task_submit+0xbf/0x1b0 fs/io_uring.c:2218
->>>   tctx_task_work+0x166/0x610 fs/io_uring.c:2143
->>>   task_work_run+0xdd/0x1a0 kernel/task_work.c:164
->>>   tracehook_notify_signal include/linux/tracehook.h:212 [inline]
->>>   handle_signal_work kernel/entry/common.c:146 [inline]
->>>   exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->>>   exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
->>>   __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->>>   syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
->>>   do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
->>>   entry_SYSCALL_64_after_hwframe+0x44/0xae
->>> RIP: 0033:0x43fd49
->>
->> Hao, this is due to:
->>
->> commit a8295b982c46d4a7c259a4cdd58a2681929068a9
->> Author: Hao Xu <haoxu@linux.alibaba.com>
->> Date:   Fri Aug 27 17:46:09 2021 +0800
->>
->>      io_uring: fix failed linkchain code logic
->>
->> which causes some weirdly super long chains from that single sqe.
->> Can you take a look, please?
-> Sure, I'm working on this.
-
-Ah, saw it after sending a patch. It's nothing too curious, just
-a small error in logic. More interesting that we don't have a
-test case covering it, we should definitely add something.
-
--- 
-Pavel Begunkov
+SGkgTWFyY2VsLA0KDQo+ID4gVGhlIE1lZGlhVGVrIGNoaXAgc3VwcG9ydCB2ZW5kb3Igc3BlY2lm
+aWMgSENJIGNvbW1hbmQoMHhmYzFhKSB0bw0KPiA+IGNoYW5nZSB0aGUgcHVibGljIGFkZHJlc3Mu
+IEFkZCBoZGV2LT5zZXRfYmRhZGRyIGhhbmRsZXIgZm9yIE1lZGlhVGVrDQo+ID4gQ2hpcC4NCj4g
+Pg0KPiA+IFNpZ25lZC1vZmYtYnk6IG1hcmsteXcuY2hlbiA8bWFyay15dy5jaGVuQG1lZGlhdGVr
+LmNvbT4NCj4gPiAtLS0NCj4gPiBkcml2ZXJzL2JsdWV0b290aC9idHVzYi5jIHwgMTggKysrKysr
+KysrKysrKysrKysrDQo+ID4gMSBmaWxlIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKykNCj4gPg0K
+PiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2JsdWV0b290aC9idHVzYi5jIGIvZHJpdmVycy9ibHVl
+dG9vdGgvYnR1c2IuYw0KPiA+IGluZGV4IDYwZDJmY2U1OWE3MS4uNDFlN2M5ZjI4ZDgyIDEwMDY0
+NA0KPiA+IC0tLSBhL2RyaXZlcnMvYmx1ZXRvb3RoL2J0dXNiLmMNCj4gPiArKysgYi9kcml2ZXJz
+L2JsdWV0b290aC9idHVzYi5jDQo+ID4gQEAgLTIyMDAsNiArMjIwMCwyMyBAQCBzdHJ1Y3QgYnRt
+dGtfc2VjdGlvbl9tYXAgew0KPiA+IAl9Ow0KPiA+IH0gX19wYWNrZWQ7DQo+ID4NCj4gPiArc3Rh
+dGljIGludCBidHVzYl9zZXRfYmRhZGRyX210ayhzdHJ1Y3QgaGNpX2RldiAqaGRldiwgY29uc3Qg
+YmRhZGRyX3QNCj4gPiArKmJkYWRkcikgew0KPiA+ICsJc3RydWN0IHNrX2J1ZmYgKnNrYjsNCj4g
+PiArCWxvbmcgcmV0Ow0KPiA+ICsNCj4gPiArCXNrYiA9IF9faGNpX2NtZF9zeW5jKGhkZXYsIDB4
+ZmMxYSwgc2l6ZW9mKGJkYWRkciksIGJkYWRkciwNCj4gSENJX0lOSVRfVElNRU9VVCk7DQo+ID4g
+KwlpZiAoSVNfRVJSKHNrYikpIHsNCj4gPiArCQlyZXQgPSBQVFJfRVJSKHNrYik7DQo+ID4gKwkJ
+YnRfZGV2X2VycihoZGV2LCAiY2hhbmdpbmcgTWVkaWF0ZWsgZGV2aWNlIGFkZHJlc3MgZmFpbGVk
+DQo+ICglbGQpIiwNCj4gPiArCQkJICAgcmV0KTsNCj4gPiArCQlyZXR1cm4gcmV0Ow0KPiA+ICsJ
+fQ0KPiA+ICsJa2ZyZWVfc2tiKHNrYik7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4gK30N
+Cj4gPiArDQo+IA0KPiB0aGlzIGlzIG5vdCBhIHBlcm1hbmVudCBjaGFuZ2UsIGNvcnJlY3Q/IE1l
+YW5pbmcgYSBwb3dlciBjeWNsZSB3aWxsIGJyaW5nIGJhY2sNCj4gdGhlIG9yaWdpbmFsIEJEX0FE
+RFI/DQo+IA0KDQpZZXMsIGl0J3Mgbm90IGEgcGVybWFuZW50IGNoYW5nZS4NCkFmdGVyIGRvaW5n
+IGEgcG93ZXIgY3ljbGUgb3IgTWVkaWF0ZWsgc3BlY2lmaWMgQmx1ZXRvb3RoIHJlc2V0LCBNZWRp
+YXRlayBDaGlwcyB3aWxsIGJyaW5nIGJhY2sgdGhlIG9yaWdpbmFsICBCRF9BRERSRVNTLg0KDQpX
+aXRoIGJlc3QgcmVnYXJkcywNCk1hcmsNCg==
