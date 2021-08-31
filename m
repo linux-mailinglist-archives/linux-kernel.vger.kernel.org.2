@@ -2,165 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 479223FCC3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDDB3FCC42
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234408AbhHaRWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 13:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
+        id S235504AbhHaRYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 13:24:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231862AbhHaRWq (ORCPT
+        with ESMTP id S234286AbhHaRYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 13:22:46 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BDFC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:21:51 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id q70so36562920ybg.11
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:21:51 -0700 (PDT)
+        Tue, 31 Aug 2021 13:24:20 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E575C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:23:24 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id s12so74431ljg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:23:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WrEonas+JepcSOY1s7UkcRJkLLwq2Xbze1BTfCD2A34=;
-        b=FUmATkIwZg5ZsdXIB4Beeo0WFBRLtX/xMW4hRtj8U9Wo67Z07U2YrBoqMyWD89anYc
-         jsZEr/hMAxrvTFvMC8Z8Rep0v1FYAbDiZxWZvwtcd3E3rkJu/fEI9TdMwKHr1bbDR+uG
-         HrstyAHrLttUKuChWSzh50+cnHbAvQTldLsIhAWnCQBRs8xuX9pTMDALn1e7AG1Tzrqv
-         9CTf/X/hTTE4PneuIB0GsckhUTCqGhd/28jqAa/6Z1Ghl1YlkghiTFTzQHBQ4qZadojQ
-         QpfxNyuvbhGMfLmre6jfNGm/k46DQ96BSRhwvSufQ0V0iRfZBfjkohXmi+r4VNOa0Hou
-         z5zQ==
+        bh=tzj2neslp3w1SKPWRlwTW/oYbxkynkhopGYYCVETIH0=;
+        b=tytHVky8GaRjt8zFupHiN8BCrsvvlBw6Jc4dVL9ZhiMlY6di6akzuOciuS8ZDGAzRD
+         xZOMM1FkOmS/dMV/zjuGhqeMQhf9neLi2JbSczU1jYWxMXKFk85NwsYHNK3E0IfGqR68
+         iZWTsZT+07H0lDSmaFJhtECHNPfB5gm1L6D1Y4+PetP9GbDOlcxRjmY9BkmNoXxTV8Nt
+         5/Sa9mFE1mgw+LiYRvCWK1kPakp5pASh5cP6HKCnJTkk0AufM8AU2Hpuv06yv42lE1Jv
+         JYtEd95piNVpstFTadPrZsBKKCfsNXGDBZu/E2Vpjfd1X7b54CDiHF7av2IPxg/7eB24
+         P/Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WrEonas+JepcSOY1s7UkcRJkLLwq2Xbze1BTfCD2A34=;
-        b=E2A8besAmsgurrXQcaq6sSSeJzr18wONvTiiVreED6xWCvU649xRGMFmhXnlumds1F
-         Qc035wOUK9C3uKA1UP30LdJh87gfWnNBPV11irYH1CzQXNzR3pYqZCqGn4stdEEgGybo
-         GeMGTMv7nYGIhCcPxQfB4pdDufHQUcf0hFlPwb9odednefIxGDSkO2jyhNwKYaPnNfpS
-         DNHrNycIjV41qLo41RLhto+lzRpeyDfaQtHx8fR6fPC+bj1aoe6dDG7BWombJsPJXG1H
-         T/z8LZRDrTAQ9Q91lbSvdaTNKyiEz7aNIcT15v5JjvOw+4ivqxSmGSdLSRJpqkWxr9mx
-         3AzA==
-X-Gm-Message-State: AOAM532saCaG97KxK9oqEhSlTFMm003whTHmZKVVgZmqjnW+fJ+2AN7x
-        my9UeuvL4O+Ogy2prO4MX3EEiL2oed5wWCK3tQ5wYw==
-X-Google-Smtp-Source: ABdhPJyPBOY0YfeCm+axOI1GWL+mwhLsLVw2QaKm2MUud1FTTcYJfKTafsAGvTRvAVjyZR0pFmQLoHwTabaoQHWnias=
-X-Received: by 2002:a25:9ac6:: with SMTP id t6mr32228595ybo.190.1630430510051;
- Tue, 31 Aug 2021 10:21:50 -0700 (PDT)
+        bh=tzj2neslp3w1SKPWRlwTW/oYbxkynkhopGYYCVETIH0=;
+        b=e/oFZgE9x3SXPmP0VWRza/dvBmnm7q8Ii+lOVfkPr2/hccMNzNln+aIjUt/XG5FpDV
+         0uZphWoe/KUeK0VhmCsociE0yHK/Q1Nx3EIJyc8Vt803PWNZsgCTpwb3GSYaR+GRnYRo
+         RaGL33C+SmB4bCKNp/PNuZ1H2W5yPyENN0HRav5MrwEHxDa555m+x6DlCPi+ljLFp+dD
+         8H5f7rV0BESTMFx+JAJYmm8uUNikXS24nj1oJ2hfFm9TpE3hsgfQhOKbKSifcsMm6/5m
+         5q2Of+U0oxLdiQjuFcpdS7yC6bpW6scagDTqqcxDfkJwnlmbpJmmHDURFWM/VnakxLiW
+         3acA==
+X-Gm-Message-State: AOAM532ITY80St4YS6ndlIRHKSlgjwoFI/mXBMC/Gstj9Q6f/aqOoIs1
+        HZa6jK28NtTTTdnTznENyLgjryI5+Gfsp2lRB3uquMy7gKSv2g==
+X-Google-Smtp-Source: ABdhPJxgu58VJGLZ8zAj2IwlRW/puoY8pu3yhoSJjoIv+mVIi+rWCWWiNrpATGfyWX+8mhuRHbS4DWDXTZdZjreU8hc=
+X-Received: by 2002:a2e:a788:: with SMTP id c8mr26190863ljf.116.1630430602541;
+ Tue, 31 Aug 2021 10:23:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210827191858.2037087-1-surenb@google.com> <20210827191858.2037087-3-surenb@google.com>
- <YSmVl+DEPrU6oUR4@casper.infradead.org> <202108272228.7D36F0373@keescook>
- <CAJuCfpEWc+eTLYp_Xf9exMJCO_cFtvBUzi39+WbcSKZBXHe3SQ@mail.gmail.com>
- <f7117620-28ba-cfa5-b2c6-21812f15e4d6@rasmusvillemoes.dk> <CAJuCfpHXF34THa=zVcRozYiLA9QPeNyU09WvyJFKk=ZjCq0ZZw@mail.gmail.com>
- <YS0OWFnzLHJViamF@casper.infradead.org>
-In-Reply-To: <YS0OWFnzLHJViamF@casper.infradead.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 31 Aug 2021 10:21:38 -0700
-Message-ID: <CAJuCfpEnZo8nji3R=6ek=2T2TSG=Ke22PJzV_WkYFeSV4R9beg@mail.gmail.com>
-Subject: Re: [PATCH v8 2/3] mm: add a field to store names for private
- anonymous memory
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+References: <20210831074004.3195284-1-masahiroy@kernel.org> <20210831074004.3195284-4-masahiroy@kernel.org>
+In-Reply-To: <20210831074004.3195284-4-masahiroy@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 31 Aug 2021 10:23:10 -0700
+Message-ID: <CAKwvOd=dVBWFm_kvUc3K_9XNQKvVfNL8aUm70yU6HyG6cE-TvQ@mail.gmail.com>
+Subject: Re: [PATCH v2 03/13] kbuild: store the objtool command in *.cmd files
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
+        Josh Poimboeuf <jpoimboe@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 9:59 AM Matthew Wilcox <willy@infradead.org> wrote:
+On Tue, Aug 31, 2021 at 12:40 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> On Mon, Aug 30, 2021 at 09:16:14AM -0700, Suren Baghdasaryan wrote:
-> > On Mon, Aug 30, 2021 at 1:12 AM Rasmus Villemoes
-> > <linux@rasmusvillemoes.dk> wrote:
-> > >
-> > > On 28/08/2021 23.47, Suren Baghdasaryan wrote:
-> > > > On Fri, Aug 27, 2021 at 10:52 PM Kees Cook <keescook@chromium.org> wrote:
-> > > >>
-> > > >>>> +   case PR_SET_VMA_ANON_NAME:
-> > > >>>> +           name = strndup_user((const char __user *)arg,
-> > > >>>> +                               ANON_VMA_NAME_MAX_LEN);
-> > > >>>> +
-> > > >>>> +           if (IS_ERR(name))
-> > > >>>> +                   return PTR_ERR(name);
-> > > >>>> +
-> > > >>>> +           for (pch = name; *pch != '\0'; pch++) {
-> > > >>>> +                   if (!isprint(*pch)) {
-> > > >>>> +                           kfree(name);
-> > > >>>> +                           return -EINVAL;
-> > > >>>
-> > > >>> I think isprint() is too weak a check.  For example, I would suggest
-> > > >>> forbidding the following characters: ':', ']', '[', ' '.  Perhaps
-> > >
-> > > Indeed. There's also the issue that the kernel's ctype actually
-> > > implements some almost-but-not-quite latin1, so (some) chars above 0x7f
-> > > would also pass isprint() - while everybody today expects utf-8, so the
-> > > ability to put almost arbitrary sequences of chars with the high bit set
-> > > could certainly confuse some parsers. IOW, don't use isprint() at all,
-> > > just explicitly check for the byte values that we and up agreeing to
-> > > allow/forbid.
-> > >
-> > > >>> isalnum() would be better?  (permit a-zA-Z0-9)  I wouldn't necessarily
-> > > >>> be opposed to some punctuation characters, but let's avoid creating
-> > > >>> confusion.  Do you happen to know which characters are actually in use
-> > > >>> today?
-> > > >>
-> > > >> There's some sense in refusing [, ], and :, but removing " " seems
-> > > >> unhelpful for reasonable descriptors. As long as weird stuff is escaped,
-> > > >> I think it's fine. Any parser can just extract with m|\[anon:(.*)\]$|
-> > > >
-> > > > I see no issue in forbidding '[' and ']' but whitespace and ':' are
-> > > > currently used by Android. Would forbidding or escaping '[' and ']' be
-> > > > enough?
-> > >
-> > > how about allowing [0x20, 0x7e] except [0x5b, 0x5d], i.e. all printable
-> > > (including space) ascii characters, except [ \ ] - the brackets as
-> > > already discussed, and backslash because then there's nobody who can get
-> > > confused about whether there's some (and then which?) escaping mechanism
-> > > in play - "\n" is simply never going to appear. Simple rules, easy to
-> > > implement, easy to explain in a man page.
-> >
-> > Thanks for the suggestion, Rasmus. I'm all for keeping it simple.
-> > Kees, Matthew, would that be acceptable?
+> objtool_dep includes include/config/{ORC_UNWINDER,STACK_VALIDATION}
+> so that all the objects are rebuilt when any of CONFIG_ORC_UNWINDER
+> and CONFIG_STACK_VALIDATION is toggled.
 >
-> Yes, I think so.  It permits all kinds of characters that might
-> be confusing if passed on to something else, but we can't prohibit
-> everything, and forbidding just these three should remove any confusion
-> for any parser of /proc.  Little Bobby Tables thanks you.
+> As you can see in 'objtool_args', there are more CONFIG options
+> that affect the objtool command line.
+>
+> Adding more and more include/config/* is ugly and unmaintainable.
+>
+> Another issue is that non-standard objects are needlessly rebuilt.
+> Objects specified as OBJECT_FILES_NON_STANDARD is not processed by
+> objtool, but they are rebuilt anyway when CONFIG_ORC_UNWINDER or
+> CONFIG_STACK_VALIDATION is toggled. This is not a big deal, but
+> better to fix.
+>
+> A cleaner and more precise fix is to include the objtool command in
+> *.cmd files so any command change is naturally detected by if_change.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Thanks for all the feedback! I think I have enough change suggestions
-to resping the next revision. Will send an update later today.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+> ---
+>
+>  scripts/Makefile.build | 14 +++++---------
+>  1 file changed, 5 insertions(+), 9 deletions(-)
+>
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index e78096cd396b..021ae0146913 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -155,7 +155,7 @@ $(obj)/%.ll: $(src)/%.c FORCE
+>  # (See cmd_cc_o_c + relevant part of rule_cc_o_c)
+>
+>  quiet_cmd_cc_o_c = CC $(quiet_modtag)  $@
+> -      cmd_cc_o_c = $(CC) $(c_flags) -c -o $@ $<
+> +      cmd_cc_o_c = $(CC) $(c_flags) -c -o $@ $< $(cmd_objtool)
+>
+>  ifdef CONFIG_MODVERSIONS
+>  # When module versioning is enabled the following steps are executed:
+> @@ -243,7 +243,7 @@ ifndef CONFIG_LTO_CLANG
+>  # 'OBJECT_FILES_NON_STANDARD_foo.o := 'n': override directory skip for a file
+>  cmd_objtool = $(if $(patsubst y%,, \
+>         $(OBJECT_FILES_NON_STANDARD_$(basetarget).o)$(OBJECT_FILES_NON_STANDARD)n), \
+> -       $(objtool) $(objtool_args) $@)
+> +       ; $(objtool) $(objtool_args) $@)
+>  objtool_obj = $(if $(patsubst y%,, \
+>         $(OBJECT_FILES_NON_STANDARD_$(basetarget).o)$(OBJECT_FILES_NON_STANDARD)n), \
+>         $(objtool))
+> @@ -251,10 +251,8 @@ objtool_obj = $(if $(patsubst y%,, \
+>  endif # CONFIG_LTO_CLANG
+>  endif # CONFIG_STACK_VALIDATION
+>
+> -# Rebuild all objects when objtool changes, or is enabled/disabled.
+> -objtool_dep = $(objtool_obj)                                   \
+> -             $(wildcard include/config/ORC_UNWINDER            \
+> -                        include/config/STACK_VALIDATION)
+> +# Rebuild all objects when objtool changes
+> +objtool_dep = $(objtool_obj)
+>
+>  ifdef CONFIG_TRIM_UNUSED_KSYMS
+>  cmd_gen_ksymdeps = \
+> @@ -269,7 +267,6 @@ define rule_cc_o_c
+>         $(call cmd,gen_ksymdeps)
+>         $(call cmd,checksrc)
+>         $(call cmd,checkdoc)
+> -       $(call cmd,objtool)
+>         $(call cmd,modversions_c)
+>         $(call cmd,record_mcount)
+>  endef
+> @@ -277,7 +274,6 @@ endef
+>  define rule_as_o_S
+>         $(call cmd_and_fixdep,as_o_S)
+>         $(call cmd,gen_ksymdeps)
+> -       $(call cmd,objtool)
+>         $(call cmd,modversions_S)
+>  endef
+>
+> @@ -365,7 +361,7 @@ $(obj)/%.s: $(src)/%.S FORCE
+>         $(call if_changed_dep,cpp_s_S)
+>
+>  quiet_cmd_as_o_S = AS $(quiet_modtag)  $@
+> -      cmd_as_o_S = $(CC) $(a_flags) -c -o $@ $<
+> +      cmd_as_o_S = $(CC) $(a_flags) -c -o $@ $< $(cmd_objtool)
+>
+>  ifdef CONFIG_ASM_MODVERSIONS
+>
+> --
+> 2.30.2
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
