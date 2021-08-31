@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBBA3FCD03
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 20:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0873FCD07
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 20:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234498AbhHaSkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 14:40:24 -0400
-Received: from mga03.intel.com ([134.134.136.65]:27012 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhHaSkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 14:40:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="218592117"
-X-IronPort-AV: E=Sophos;i="5.84,367,1620716400"; 
-   d="scan'208";a="218592117"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 11:39:23 -0700
-X-IronPort-AV: E=Sophos;i="5.84,367,1620716400"; 
-   d="scan'208";a="498399794"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 11:39:22 -0700
-Date:   Tue, 31 Aug 2021 11:39:21 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
- restore_fpregs_from_user()
-Message-ID: <20210831183921.GA1687448@agluck-desk2.amr.corp.intel.com>
-References: <20210830154702.247681585@linutronix.de>
- <20210830162545.374070793@linutronix.de>
- <YS0ylo9nTHD9NiAp@zn.tnic>
- <87zgsyg0eg.ffs@tglx>
- <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
- <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
- <YS1OE6FRi4ZwEF8j@zeniv-ca.linux.org.uk>
- <CAHk-=wh57tMaJxcH=kWE4xdKLjayKSDEVvMwHG4fKZ5tUHF6mg@mail.gmail.com>
- <87zgsye9kn.ffs@tglx>
- <YS3cskpK9Uoq3Wc4@zn.tnic>
+        id S233044AbhHaSoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 14:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234954AbhHaSoO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 14:44:14 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6199DC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 11:43:18 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id s12so496900ljg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 11:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NW9pRq8jRsFXrS7VIuuj8MsRMAjJAt9fcukvZZ1utbk=;
+        b=qGTUnhWYuebBX3IGzbOaygL1xjMkqiWXbBXvIrffCDCIaPvnilBs+b25u+o6hcJBPY
+         dXz+Nc99HbBSHD+hu5SXw0UX5Mcu9+qF5gmrlD/ytXM8rNFeZEHTizA24U9G1/W5g/S7
+         Rbg9ZEqnBM0+KnHBEfTUmkd7ECpdG89QXSDaOlr5JpaiOTDtr+tsCLiOF9XvMVojuJUq
+         d/3hJNEFaSMKwMfiCTkw49N15AeGDnWPa200Qs4Xltkvb1S2nXZgw3jwZ9EQTfPTJmuQ
+         3pWpVjlWpITq5l/yx4bkgG3ksutA1pIFcJMgvzAcEPyMqjesl1pSONAqmjiF8Z50UKPd
+         0+xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NW9pRq8jRsFXrS7VIuuj8MsRMAjJAt9fcukvZZ1utbk=;
+        b=bn/w9RLG66aDS4f/B7c2xT789SiGe97WOpYVNj1ioCb/d0mWmNt6gnwhiI6qM0IJQU
+         kHBl1QoMiZPioGvT4UPDTQSQiQjjrK9s1Mxgd/Ap3fsgNnlJuFCH4QdPmVOcKu1cePvv
+         O5ECkACos2lGH0+33aCnnnGy1+F4HQ91zELHgvE3LpvD7dKKE/bhHgG6RPPEKaPnHIbB
+         30A5QlSorGz5mzNtHkA4JPQZL40DI5PEfD6VHvnAUvRGcpGtuIJB4yYz3gGsUf/+hCcX
+         WQRp4chQdHM7H4CwVmCJExFtrYLGtIFdBwkoIicQ0lBW1wW0KFOd+Ej23RuvyVB7+Sky
+         mRYg==
+X-Gm-Message-State: AOAM531mBJuOPaX8S0az4hsXhwye95opZJPzZZZqaOJlV+YptcIJs86C
+        zb7HVGVPo2vxWZ5VqbY8v7o=
+X-Google-Smtp-Source: ABdhPJxWyxgfJO0cp+neOqvUDljek+zgtF/qalNTd8pdqmjvdMtxwkTfHCo7cBRE3sayaDczPvS5jQ==
+X-Received: by 2002:a2e:a4c2:: with SMTP id p2mr26173356ljm.316.1630435396683;
+        Tue, 31 Aug 2021 11:43:16 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id n3sm1813376lft.63.2021.08.31.11.43.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 11:43:16 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 21:43:14 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/7] fs/ntfs3: Change right headers to lznt.c
+Message-ID: <20210831184314.a7pjzimgksilyi7d@kari-VirtualBox>
+References: <20210831141434.975175-7-kari.argillander@gmail.com>
+ <202109010143.J3Eeb1Nw-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YS3cskpK9Uoq3Wc4@zn.tnic>
+In-Reply-To: <202109010143.J3Eeb1Nw-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 09:39:30AM +0200, Borislav Petkov wrote:
-> On Tue, Aug 31, 2021 at 02:34:16AM +0200, Thomas Gleixner wrote:
-> No no, the great way to do error injection is the ACPI-spec'ed, firwmare
-> implemented
-> 
-> drivers/acpi/apei/einj.c
-> 
-> Yap, you heard me right, firmware. And when you hear firmware, you can
-> imagine how it all works in practice... Yeap, exactly.
+On Wed, Sep 01, 2021 at 01:54:23AM +0800, kernel test robot wrote:
+> Thank you for the patch! Yet something to improve:
 
-You can imagine all you want. And if your imagination is based
-on experiences with very old systems like Haswell (launched in 2015)
-then you'd be right to be skeptical of firmware capabilities.
+Patch series should have be 8 patch long. Sorry for mistake. Good thing
+robot noticed.  Will send v2 tomorrow night.
 
-> We even wrote documentation what to do:
-> 
-> Documentation/firmware-guide/acpi/apei/einj.rst
-> 
-> But but, this is firmware so
-> 
-> - it is f*cking broken in all ways imaginable
+> [auto build test ERROR on next-20210831]
+> [cannot apply to linus/master v5.14 v5.14-rc7 v5.14-rc6 v5.14]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 
-s/is/was/
+Will do now on.  I did not know about this.
 
-> 
-> - if it works, it doesn't support the error type which you wanna inject
+Still if someone wants to check why this report was made and what should
+have be patch 1/8.  Here it is:
 
-Memory errors now have very good coverage. Still some issues with PCIe injection.
+[PATCH 1/8] fs/ntfs3. Add forward declarations for structs to debug.h
 
-> - if it does, enterprise sh*t hw has added value crap which analyzes and
-> looks at hardware errors first</me rolls eyes, trying to remain serious>
-> so you might get the error report if you get lucky.
+Add forward declarations for structs so that we can include this file
+without warnings even without linux/fs.h
 
-Turn off eMCA in BIOS to avoid this.
+Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+---
+ fs/ntfs3/debug.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> > The HW injection mechanisms definitely exist, but without documentation
-> > they are useless. Intel still thinks that the secrecy around that stuff
-> > is valuable and they can get away with those untestable mechanisms even
-> > for their endeavours in the safety critical space.
-
-The injection controls in the memory controller can only be accessed
-in SMM mode. Some paranoia there that some ring0 attack could inject
-errors at random intervals causing major costs to diagnose and replace
-"failing" DIMMs. So documentation wouldn't help Linux because it just
-can't twiddle the necessary bits in the h/w.
-
-> My impression with error injection with hw people is just like what they
-> do with perf counters: it counts *something* right? You should be happy
-> that it does.
-
-This was true <= Haswell. But definitely not true now. The h/w groups
-now have validation teams that depend on ACPI/EINJ for many of their
-system level tests. Those guys are serious about this stuff. While I'll
-just inject 1000 errors on a single machine and call it good if it all
-goes as expected, those folks have (small) clusters running injection
-tests 24x7 for weeks at a time.
-
-Downsides of ACPI/EINJ today:
-1) Availability on production machines. It is always disabled by default
-in BIOS. OEMs may not provide a setup option to turn it on (or may have
-deleted the code to support it completely). Intel's pre-production servers
-always have the code, and the setup option to enable.
-2) Doesn't inject to 3D-Xpoint (that has its own injection method, but
-it is annoying to have to juggle two methods).
-3) Hard/impossible to inject into SGX memory (because BIOS is untrusted
-and isn't allowed to do a store to push the poison data to DDR).
-
--Tony
+diff --git a/fs/ntfs3/debug.h b/fs/ntfs3/debug.h
+index 31120569a87b..53ef7489c75f 100644
+--- a/fs/ntfs3/debug.h
++++ b/fs/ntfs3/debug.h
+@@ -11,6 +11,9 @@
+ #ifndef _LINUX_NTFS3_DEBUG_H
+ #define _LINUX_NTFS3_DEBUG_H
+ 
++struct super_block;
++struct inode;
++
+ #ifndef Add2Ptr
+ #define Add2Ptr(P, I)		((void *)((u8 *)(P) + (I)))
+ #define PtrOffset(B, O)		((size_t)((size_t)(O) - (size_t)(B)))
+-- 
+2.25.1
