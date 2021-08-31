@@ -2,98 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6C23FCDCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26183FCDCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240739AbhHaT0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:26:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41216 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231952AbhHaT0A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:26:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D26F61041;
-        Tue, 31 Aug 2021 19:25:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630437904;
-        bh=LfTYo29aM8dEHYTzt+wGMSKyqaEeeay0p+2H1UYZ30c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ib9VzZNveg+hsvzL/JD6x5/M7xGvAuvxiaLDW+1jn5cH2+jZnpQDMAZuSf9LfaNH/
-         o4cQbgmANz+9SeYrQmA0/HUb9W/MUsJBN+AwTAme2tL9lWJoBzc22lq6/C501pR3MK
-         r0pw3c2xAlfBLNCe//MLtNNTSe7FXVHHbpvWWWKpXMe89xdTFCECdumqfZUyfjavPZ
-         I9Vl/Y9f7RpB1WRYG2MvuAn/8uKKMeFMb3PkxTrsgWFpZURNzQ80dJD7a4KBaNeYFd
-         VWy5HobBZAqBuvFyAQg8F7yHKRkkFjCkMRXx3fVy68OTalDS3DU5sF8ni/lFls+S0M
-         9ZOa6X5NDhowA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DE65B4007E; Tue, 31 Aug 2021 16:25:01 -0300 (-03)
-Date:   Tue, 31 Aug 2021 16:25:01 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFC PATCH v1 14/37] perf evsel: remove retry_sample_id goto
- label
-Message-ID: <YS6CDRKiZ7CpVZYD@kernel.org>
-References: <cover.1629490974.git.rickyman7@gmail.com>
- <340af0d03408d6621fd9c742e311db18b3585b3b.1629490974.git.rickyman7@gmail.com>
+        id S240674AbhHaT2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240607AbhHaT2C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 15:28:02 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3459CC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:27:07 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id z18so419190ybg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 12:27:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MiOmjNUrQTixfmxuIIBr9b2mal/6TnKrZ2hUhLBArdA=;
+        b=LQ5DfuisFfwLylONTNqaEbGbMDFUlrFBwbH7uzQmaiairk1VdXureNF3ast1bdtiHJ
+         1OhdNZOseCGceTZIndqQ3bkMer4XSld2e7dnAd9uMTEiA7PS8GaXCTdO3IDSicU2Sopy
+         pPjQFl+IV7DnIZbTdxmgiujRlcFdDgQnyqd0HafORlQfaUcKzeJM+rtI6EvQcmE9wSPe
+         toKIFSnBzzG7JSG3KcpCza54fQ+OUPbOrF9BJ/H9MuW3cKGhLbtDSLThszd042O+RdCn
+         EMxVbcUSYa78NwDnBcDw/h4mGE0H0xlIhxDKiCa6UwAdwH/aWI6HM1IWE+Uv/Z3fLQx9
+         QWDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MiOmjNUrQTixfmxuIIBr9b2mal/6TnKrZ2hUhLBArdA=;
+        b=IrPR6OtBiWSl/My4wM4zng6OmYE9HeE2p7pWUUUz6BXGL5n4XluZaqcSPvuKYMmQ0j
+         W2r3RiriUWW5BZyd6ujwx/JWeoNwcqhSnpi5N3CyPaki/CaQNVLkCtj0fPYVf9IUapxv
+         TF3gHr5MStDdLmreZyKab8wQFaexmDxRHaLtZBGnxCrN4urDqZOArdBGQ6PMopmcJyPw
+         S9O+Vio15gn1b4leGYLWLukjZL3Vrk9t7WwpdvWKzaULOgk8hK9xlwqne8p+i1EA1G1t
+         efr8CFECFPoLAYrrK/tCiP9lriSHaAQdDDt9+qhYdKvrGvm0C2HpYH0qNU8h9iZEeunq
+         1cQQ==
+X-Gm-Message-State: AOAM532MzYtg++smb1555J5WX/EHky6hetqFLty4wDqktQth8D53lfnv
+        lQwAw+xEhAvUCO/JUIzoqBXZIlezieiqvX61d2HEDA==
+X-Google-Smtp-Source: ABdhPJzbL1ke9geoFZR/f+VEBhnoIaAb/U4CLoY6acRJ2ip3Tlo8GdKSCEA0zQzpPM8yo2/DFDO0RlBa+uEN/mbu/fY=
+X-Received: by 2002:a25:d213:: with SMTP id j19mr33717553ybg.20.1630438026156;
+ Tue, 31 Aug 2021 12:27:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <340af0d03408d6621fd9c742e311db18b3585b3b.1629490974.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <YSf/Mps9E77/6kZX@lunn.ch> <CAGETcx_h6moWbS7m4hPm6Ub3T0tWayUQkppjevkYyiA=8AmACw@mail.gmail.com>
+ <YSg+dRPSX9/ph6tb@lunn.ch> <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
+ <YSjsQmx8l4MXNvP+@lunn.ch> <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
+ <YSlG4XRGrq5D1/WU@lunn.ch> <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
+ <YSpr/BOZj2PKoC8B@lunn.ch> <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
+ <YS4rw7NQcpRmkO/K@lunn.ch>
+In-Reply-To: <YS4rw7NQcpRmkO/K@lunn.ch>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 31 Aug 2021 12:26:30 -0700
+Message-ID: <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Aug 21, 2021 at 11:19:20AM +0200, Riccardo Mancini escreveu:
-> As far as I can tell, there is no good reason, apart from optimization
-> to have the retry_sample_id separate from fallback_missing_features.
-> Probably, this label was added to avoid reapplying patches for missing
-> features that had already been applied.
-> However, missing features that have been added later have not used this
-> optimization, always jumping to fallback_missing_features and reapplying
-> all missing features.
-> 
-> This patch removes that label, replacing it with
-> fallback_missing_features.
+On Tue, Aug 31, 2021 at 6:16 AM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > > I must admit, my main problem at the moment is -rc1 in two weeks
+> > > time. It seems like a number of board with Ethernet switches will be
+> > > broken, that worked before. phy-handle is not limited to switch
+> > > drivers, it is also used for Ethernet drivers. So it could be, a
+> > > number of Ethernet drivers are also going to be broken in -rc1?
+> >
+> > Again, in those cases, based on your FEC example, fw_devlink=on
+> > actually improves things.
+>
+> Debatable. I did some testing. As expected some boards with Ethernet
+> switches are now broken.
 
-Fair enough, applied,
+To clarify myself, I'm saying the patch to parse "ethernet" [8] will
+make things better with fw_devlink=on for FEC. Not sure if you tested
+that patch or not.
 
-- Arnaldo
- 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/util/evsel.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index f61e5dd53f5d2859..7b4bb3229a16524e 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1825,7 +1825,6 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  		evsel->core.attr.bpf_event = 0;
->  	if (perf_missing_features.branch_hw_idx)
->  		evsel->core.attr.branch_sample_type &= ~PERF_SAMPLE_BRANCH_HW_INDEX;
-> -retry_sample_id:
->  	if (perf_missing_features.sample_id_all)
->  		evsel->core.attr.sample_id_all = 0;
->  
-> @@ -2006,7 +2005,7 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  	} else if (!perf_missing_features.sample_id_all) {
->  		perf_missing_features.sample_id_all = true;
->  		pr_debug2_peo("switching off sample_id_all\n");
-> -		goto retry_sample_id;
-> +		goto fallback_missing_features;
->  	} else if (!perf_missing_features.lbr_flags &&
->  			(evsel->core.attr.branch_sample_type &
->  			 (PERF_SAMPLE_BRANCH_NO_CYCLES |
-> -- 
-> 2.31.1
+And yes, "phy-handle" will make things worse for switches because it
+has two issues that need to be fixed. One is this deferred probe thing
+for which I gave a patch in the previous email and the other is what
+Marek reported (fix in the works). So can you revert "phy-handle"
+support and test with [8] and you should see things be better with
+fw_devlink=on.
 
--- 
+[8] - https://lore.kernel.org/netdev/CAGETcx9=AyEfjX_-adgRuX=8a0MkLnj8sy2KJGhxpNCinJu4yA@mail.gmail.com/
 
-- Arnaldo
+> Without fw_devlink=on, some boards are not
+> optimal, but they actually work. With it, they are broken.
+>
+> I did a bisect, and they have been broken since:
+>
+> ea718c699055c8566eb64432388a04974c43b2ea is the first bad commit
+> commit ea718c699055c8566eb64432388a04974c43b2ea
+> Author: Saravana Kannan <saravanak@google.com>
+> Date:   Tue Mar 2 13:11:32 2021 -0800
+>
+>     Revert "Revert "driver core: Set fw_devlink=on by default""
+>
+>     This reverts commit 3e4c982f1ce75faf5314477b8da296d2d00919df.
+>
+>     Since all reported issues due to fw_devlink=on should be addressed by
+>     this series, revert the revert. fw_devlink=on Take II.
+>
+>     Signed-off-by: Saravana Kannan <saravanak@google.com>
+>     Link: https://lore.kernel.org/r/20210302211133.2244281-4-saravanak@google.com
+>     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+>  drivers/base/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> So however it is fixed, it needs to go into stable, not just -rc1.
+
+Not sure what was the tip of the tree with which you bisected. For
+example, if phy-handle broke things, bisect could still point at this
+patch above depending on whether the first bisect is good/bad. Because
+reverting this patch effectively disabled phy-handle parsing too.
+
+To be clear, I'm not saying things aren't broken. I'm just pointing
+out some nuances with the bisect that we need to be aware of.
+
+> > Again, it's not a widespread problem as I explained before.
+> > fw_devlink=on has been the default for 2 kernel versions now. With no
+> > unfixed reported issues.
+>
+> Given that some Ethernet switches have been broken all that time, i
+> wonder what else has been broken? Normally, the kernel which is
+> release in December becomes the next LTS. It then gets picked up by
+> the distros and more wide spread tested. So it could be, you get a
+> flood of reports in January and February about things which are
+> broken. This is why i don't think you should be relying on bug
+> reports, you should be taking a more proactive stance and trying to
+> analyse the DTB blobs.
+
+As I mentioned earlier, just looking at DTB doesn't tell me much
+because the driver could still be fine depending on how it's written.
+Also, I don't have an easy way to do this. If I find a way, I'll do
+it.
+
+Btw, most bug reports that have been raised have been fixed with
+generic fixes that address general DT patterns. For example,
+fw_devlink has cycle detection built in, has support for devices that
+never get probed, etc. Enabling fw_devlink=on and handling bug reports
+with generic fixes has worked well so far to get fw_devlink to where
+it is today. I've tried to be very quick in responding to fw_devlink
+issues -- and that has worked out so far and hopefully it'll continue
+to work out.
+
+> I will spend some time trying out your proposed fix. See if they are a
+> quick fix for stable.
+
+Thanks for testing it out. And worst case, we'll revert phy-handle support.
+
+
+-Saravana
