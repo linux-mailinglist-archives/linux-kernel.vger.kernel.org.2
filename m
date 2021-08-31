@@ -2,125 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAA93FC128
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 05:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36603FC172
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 05:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239456AbhHaDG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 23:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239317AbhHaDGZ (ORCPT
+        id S239464AbhHaDNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 23:13:14 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:35360 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234288AbhHaDNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 23:06:25 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8FDC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 20:05:30 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id y23so15354104pgi.7
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 20:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vzU1A7A9dM6sOFHUb4Dm16KSmTy2qTEVAOWldoDjUvI=;
-        b=Y6GZTvHocXTL9Usa+zrNZpBvv/xgN/DAYog0Xg4Pbw42E+tQW6TeMBqEhqn/DF5HwJ
-         PQTwLGjqDIbh3Z9xyjXhnXs4PYId/bvA2mXPTXjarlrHe/6OJplZymhbfghcJsaVmF9F
-         qxgo4aDXcxoj7omQDuBQNZ9seX7r6UcefKyI4=
+        Mon, 30 Aug 2021 23:13:13 -0400
+Received: by mail-io1-f71.google.com with SMTP id g14-20020a6be60e000000b005b62a0c2a41so9892383ioh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 20:12:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vzU1A7A9dM6sOFHUb4Dm16KSmTy2qTEVAOWldoDjUvI=;
-        b=tGIhace0HrdB9rXigKJQGtQIzgmpld21Bu//VfO0kafnUf0Tkt1kkWFwE9ygHPe/9E
-         H5vGsW97s2RStjAQYXOuRK/Yntd0DLzrAdJCipnRNlSggS9JnCtLZT72KZAe6X351e10
-         /w+c00PT96ImDVUArhvusyKFPhe7wGlYMP6IPCXR2XCqSygfZ2HC14jfl1Bn0Do8gXy6
-         7Tl2g0npHMJZ3wKZI2WLwefWVw83iL7I0LDHbWCFEeP9IBTSs4zusM0OTSslHWkXppif
-         sO7NVjRQ3U4hayma4dzqyGSB+9/Zoi9cuYJc0iJfdWWnOPGdRmxjWwC7y9n49Og30RfM
-         G2fA==
-X-Gm-Message-State: AOAM5321vioqGxlQg7I0K7JhNSV10fxsZbE77xnTYVvsE2lCVIZ8d1au
-        MPOsJ/Xm9Aumr/OCnhbN1gCUZPMjdP7Dlg==
-X-Google-Smtp-Source: ABdhPJyVx7iReecgVYnbxLfjCK6zDxvhIE6PHYXZA/eWqMIKvl7e0Clu16y+8i06rDwOgk5yXLVHzA==
-X-Received: by 2002:a63:ce0f:: with SMTP id y15mr20646899pgf.249.1630379130477;
-        Mon, 30 Aug 2021 20:05:30 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:6d52:87b8:b55b:8800])
-        by smtp.gmail.com with ESMTPSA id u21sm18911863pgk.57.2021.08.30.20.05.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 20:05:30 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 12:05:25 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v1 06/10] printk: use seqcount_latch for
- console_seq
-Message-ID: <YS2cdfN5/D1Jzelg@google.com>
-References: <20210803131301.5588-1-john.ogness@linutronix.de>
- <20210803131301.5588-7-john.ogness@linutronix.de>
- <YQvWuzpAv1Tw/CoQ@alley>
- <87bl6bx68f.fsf@jogness.linutronix.de>
- <YQ1bsdh8PoLwBrnl@alley>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Wnwxv4nrK2cqNyAf6GMI8yFt0pARoTgAFkGLh1UOHV8=;
+        b=b455GLt6k0MCaizFCx4bqI4rFvitk50NXQsFU4+9aqijYJEJYqr1WbNYvPuucrZyaU
+         RqN0VOpXMMJ7V9C8oIhLKD8VfkY+8qDSf5siocKjN+1pCZdC7E4ASU94XaZT5KnxPYXI
+         YIV5/NqvJRyd3q1BpGBixl9wKM/ctT/qpaLNustY1rezJx9iDOT1gUViqPHh07TcXegb
+         lvbOf0sGyBkU5vyNISdqPZce1QmnUsNLeyvmuQWfVsk33jkPS6uBOvZKVH1vIn9gYg29
+         rgG/PapN7rM6TKq31S5+6yiHF2Id13KyhLqPukZxjMnG387KAR3JRMemE38eDrNDBNcq
+         1FbQ==
+X-Gm-Message-State: AOAM531ZGoFBQfxOySXc3WSivbR8p7UsdbRdRFOPOosw1zMYo7UQ6Mhz
+        cTh30Bs+vVr/kSvp/y7S3Yri4chlXKKQ7pDUluBmWTeUUwRg
+X-Google-Smtp-Source: ABdhPJwT9gGww4epApyBptPm+bzzC8ANmr6Agdrjgi4izPkBgsZEp67AI+9bLHFstC/1fFiPSPDu/63rjiZxYKZJcthico4u8Pkq
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQ1bsdh8PoLwBrnl@alley>
+X-Received: by 2002:a05:6638:bcf:: with SMTP id g15mr753125jad.1.1630379538994;
+ Mon, 30 Aug 2021 20:12:18 -0700 (PDT)
+Date:   Mon, 30 Aug 2021 20:12:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000455b3805cad25183@google.com>
+Subject: [syzbot] BUG: sleeping function called from invalid context in skcipher_walk_virt
+From:   syzbot <syzbot+60f2f66b9e9cdeacb84d@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/08/06 17:56), Petr Mladek wrote:
-> 
-> A solution might be to implement a generic cycle that would use
-> the right latched_seq and buffers. Something like:
-> 
-> enum console_mode {
-> 	CONSOLE_MODE_NORMAL = 0,
-> 	CONSOLE_MODE_ATOMIC,
-> 	CONSOLE_MODE_ATOMIC_NMI,
-> 	CONSOLE_MODE_REPLAY_ALL,
-> 	CONSOLE_MODE_LAST
-> };
-> 
-> struct console_mode_info
-> {
-> 	static char text[CONSOLE_LOG_MAX];
-> 	static char ext_text[CONSOLE_EXT_LOG_MAX];
-> 	static struct latched_seq seq;
-> };
+Hello,
 
-Seems to me like this wants to be part of struct console.
+syzbot found the following issue on:
 
-[..]
+HEAD commit:    73f3af7b4611 Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15d969e1300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
+dashboard link: https://syzkaller.appspot.com/bug?extid=60f2f66b9e9cdeacb84d
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
 
-> Problems:
-> 
->    a) The same line might be printed by more contexts.
->    b) per-console kthreads?
-> 
-> 
-> Ad a) I am not sure if we could prevent duplicated lines when
->       the nested IRQ/NMI writes the same message that is just
->       being written by the outer context. But it should be
->       an acceptable corner case.
-> 
-> Ad b) Everything will get much more complicated with per-console
->       kthreads. We will need counters and buffers for each console
->       and each context.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Oh, yes, you are talking about per-console counters/buffers too.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+60f2f66b9e9cdeacb84d@syzkaller.appspotmail.com
 
-> This is what I was able to come up before leaving for vacation. I am
-> not sure if it is the best design/naming and it if it has a chance
-> to work.
-> 
-> But it looks like a way how to re-use the same code in all modes.
-> It might help to see what is the same and what is special about each
-> mode.
-> 
-> 
-> I would prefer to see something like this instead of the completely
-> different code paths for atomic consoles that are proposed by 7th
-> patch of this patchset.
+RBP: 00007f2759f4b1d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffdba342b3f R14: 00007f2759f4b300 R15: 0000000000022000
+BUG: sleeping function called from invalid context at crypto/skcipher.c:482
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 19258, name: syz-executor.3
+1 lock held by syz-executor.3/19258:
+ #0: ffff88808b055120 (sk_lock-AF_ALG){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1613 [inline]
+ #0: ffff88808b055120 (sk_lock-AF_ALG){+.+.}-{0:0}, at: skcipher_recvmsg+0xbb/0xea0 crypto/algif_skcipher.c:155
+Preemption disabled at:
+[<ffffffff812edc95>] kernel_fpu_begin_mask+0x75/0x4c0 arch/x86/kernel/fpu/core.c:156
+CPU: 1 PID: 19258 Comm: syz-executor.3 Not tainted 5.14.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1d3/0x29f lib/dump_stack.c:105
+ ___might_sleep+0x4e5/0x6b0 kernel/sched/core.c:9134
+ skcipher_walk_virt+0x80/0x6c0 crypto/skcipher.c:482
+ xts_crypt+0x8ce/0xb70 arch/x86/crypto/aesni-intel_glue.c:908
+ _skcipher_recvmsg crypto/algif_skcipher.c:138 [inline]
+ skcipher_recvmsg+0xa74/0xea0 crypto/algif_skcipher.c:157
+ sock_recvmsg_nosec net/socket.c:943 [inline]
+ sock_recvmsg net/socket.c:961 [inline]
+ ____sys_recvmsg+0x293/0x5c0 net/socket.c:2611
+ ___sys_recvmsg net/socket.c:2653 [inline]
+ do_recvmmsg+0x601/0x1560 net/socket.c:2747
+ __sys_recvmmsg net/socket.c:2826 [inline]
+ __do_sys_recvmmsg net/socket.c:2849 [inline]
+ __se_sys_recvmmsg net/socket.c:2842 [inline]
+ __x64_sys_recvmmsg+0x17f/0x220 net/socket.c:2842
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665e9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f2759f4b188 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
+RDX: 0000000000000001 RSI: 0000000020008340 RDI: 0000000000000004
+RBP: 00007f2759f4b1d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffdba342b3f R14: 00007f2759f4b300 R15: 0000000000022000
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 19258 at arch/x86/kernel/fpu/core.c:159 kernel_fpu_begin_mask+0x3fe/0x4c0 arch/x86/kernel/fpu/core.c:159
+Modules linked in:
+CPU: 1 PID: 19258 Comm: syz-executor.3 Tainted: G        W         5.14.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kernel_fpu_begin_mask+0x3fe/0x4c0 arch/x86/kernel/fpu/core.c:159
+Code: 00 00 65 48 8b 04 25 28 00 00 00 48 3b 44 24 60 0f 85 b0 00 00 00 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 a2 57 51 00 <0f> 0b e9 3f fd ff ff e8 96 57 51 00 eb a1 e8 8f 57 51 00 db e3 eb
+RSP: 0018:ffffc900195a7340 EFLAGS: 00010246
+RAX: ffffffff812ee01e RBX: 0000000000000001 RCX: 0000000000040000
+RDX: ffffc9000fce5000 RSI: 000000000003ffff RDI: 0000000000040000
+RBP: ffffc900195a73f0 R08: ffffffff812edd57 R09: ffffed100702f923
+R10: ffffed100702f923 R11: 0000000000000000 R12: dffffc0000000000
+R13: 1ffff920032b4e6c R14: 0000000000000002 R15: ffffc900195a74a0
+FS:  00007f2759f4b700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000014a53ad CR3: 00000000327a9000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kernel_fpu_begin arch/x86/include/asm/fpu/api.h:40 [inline]
+ xts_crypt+0x8f3/0xb70 arch/x86/crypto/aesni-intel_glue.c:912
+ _skcipher_recvmsg crypto/algif_skcipher.c:138 [inline]
+ skcipher_recvmsg+0xa74/0xea0 crypto/algif_skcipher.c:157
+ sock_recvmsg_nosec net/socket.c:943 [inline]
+ sock_recvmsg net/socket.c:961 [inline]
+ ____sys_recvmsg+0x293/0x5c0 net/socket.c:2611
+ ___sys_recvmsg net/socket.c:2653 [inline]
+ do_recvmmsg+0x601/0x1560 net/socket.c:2747
+ __sys_recvmmsg net/socket.c:2826 [inline]
+ __do_sys_recvmmsg net/socket.c:2849 [inline]
+ __se_sys_recvmmsg net/socket.c:2842 [inline]
+ __x64_sys_recvmmsg+0x17f/0x220 net/socket.c:2842
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665e9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f2759f4b188 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
+RDX: 0000000000000001 RSI: 0000000020008340 RDI: 0000000000000004
+RBP: 00007f2759f4b1d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffdba342b3f R14: 00007f2759f4b300 R15: 0000000000022000
 
-I agree.
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
