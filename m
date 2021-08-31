@@ -2,281 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3933E3FCDFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B1E3FCE00
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240966AbhHaTkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:40:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240905AbhHaTkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:40:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ABAD60F9E;
-        Tue, 31 Aug 2021 19:39:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630438747;
-        bh=x273xtouPAcHm91AALzS9Mid9ylyvIGOadJdw0nv7zg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ciIY8fC97m41MryMUSIsYfTaPWh6rWkzlHFAmlPQ5NpPrkgYAaqftwuGHE3LkGZvV
-         lJWjgjiSGGzfpoqFD6XerG2w21O301dBpb4Fefe/QWt7rti1CIkRpHNj65J+q8nOwd
-         ZcqVVBxCLD0tZDMLyQ6hfSKPI9mPRssr+VNvABpIjJrT4nRMIyMoqKIPSZVET+E7hL
-         xMpbMFkApJw3NPXoYW+Rdy647/h6vlZI6bvL3mkF0klY9pOhtjlGBkRmb2aLnlXRa0
-         +AENoM906JBVtGdvShFDIB9ad4Pc/B60HktI3GZCsuwuDuNnD70L37kcqLiXrr5wDl
-         txfIi4RAu7fAw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9FA794007E; Tue, 31 Aug 2021 16:39:04 -0300 (-03)
-Date:   Tue, 31 Aug 2021 16:39:04 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFC PATCH v1 19/37] perf evsel: separate missing feature
- detection from evsel__open_cpu
-Message-ID: <YS6FWEf41ApoxBee@kernel.org>
-References: <cover.1629490974.git.rickyman7@gmail.com>
- <cba0b7d939862473662adeedb0f9c9b69566ee9a.1629490974.git.rickyman7@gmail.com>
+        id S240738AbhHaTl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234715AbhHaTly (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 15:41:54 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C87C061575;
+        Tue, 31 Aug 2021 12:40:58 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id bi4so583476oib.9;
+        Tue, 31 Aug 2021 12:40:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qvcMN2KJSm0Glt1zzqTqjBfpcMvYb7sh/Q3A1fId/Sg=;
+        b=mDsk+f1Jh4vsinPzAnJYQRS3gF+NGP+rXi9V9oBu196jJgewBPFew4x0BUjtRlIWix
+         /jy5SRODQpn1vCaYZ7m0G1UOFDsnOl7G9AvFE5GhobEafRlv6YpS8wxELkutZ8myZN0+
+         0+PLmkwpdKiZmMeKORJIcgUxH/GC0gSQW+/khvjv6/S/Ck2gr1fNc2tU728Tq9TxiL6K
+         1rKgZ0qntTG5V2uqx+PP3JJassFTbDCjvfFepVScwbQHnu9nvz7TqqRvH2doj4dPlNR6
+         INe2dRk5OtBmRKiOxOAq8YBT51bGgck/x+zLBlOu0T+j6D23dV6i/0BVnjvzBeSto/lY
+         BBRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qvcMN2KJSm0Glt1zzqTqjBfpcMvYb7sh/Q3A1fId/Sg=;
+        b=H7h+psE/Jwn09PhUGJqvkGU9ks+I0C1e9V6s4G3j074k10HWi4mueUM3eHuXCO1but
+         EDTqBeef1y2Zu5dQ8oujDDFUxa7HA/Wnq+aSM6VINyfAbOwN4nrbL0jKqv2Mx++9nFw3
+         AKFbb4upjFPJWKjoyn3kzZUepZ+2TPzQ7JdTY1y294gweUyx6GeWpSG1/ihkfEzHL4SO
+         FaBTZ/ujGBtJS+8nU/+CzUcbb4FEhRMKa0BsAOCWSpgvgLb0VY+9tQMGAW8gVUMewtHu
+         y869/x2JD/Lt8/b8kNBzFVDDWzwVjbSRAr2MKDBbIdhwQdLtToTQ7mo+b12dU1xMDUC/
+         Zhug==
+X-Gm-Message-State: AOAM531Iyhyy/s+JuITvv132vg/oE4+9sEdtf1eJFleDQmiW1qk3rHx2
+        2zgEOcI634gyK/H+H/Ox3b+mQap/TCM=
+X-Google-Smtp-Source: ABdhPJyt0s9o4xD8EnlOeHifb9h2/4DMioCjspclUT6SyLK0KtuFtwo9PQRNcgs7eo1NbJUPtARakQ==
+X-Received: by 2002:aca:e10b:: with SMTP id y11mr4436924oig.172.1630438857917;
+        Tue, 31 Aug 2021 12:40:57 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y24sm4191795oto.40.2021.08.31.12.40.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 12:40:57 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Keith Packard <keithp@keithp.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
+References: <20210827163015.3141722-1-keescook@chromium.org>
+ <20210827163015.3141722-5-keescook@chromium.org>
+ <20210831043128.GA2749311@roeck-us.net> <202108311042.FFE1818D@keescook>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v3 4/5] Makefile: Enable -Warray-bounds
+Message-ID: <3ab153ec-2798-da4c-f7b1-81b0ac8b0c5b@roeck-us.net>
+Date:   Tue, 31 Aug 2021 12:40:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cba0b7d939862473662adeedb0f9c9b69566ee9a.1629490974.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <202108311042.FFE1818D@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Aug 21, 2021 at 11:19:25AM +0200, Riccardo Mancini escreveu:
-> This is a preparatory patch for the following patches with the goal to
-> separate in evlist__open_cpu the actual opening, which could be
-> performed in parallel, from the existing fallback mechanisms, which
-> should be handled sequentially.
+Hi Kees,
+
+On 8/31/21 10:46 AM, Kees Cook wrote:
+> On Mon, Aug 30, 2021 at 09:31:28PM -0700, Guenter Roeck wrote:
+>> On Fri, Aug 27, 2021 at 09:30:14AM -0700, Kees Cook wrote:
+>>> With the recent fixes for flexible arrays and expanded FORTIFY_SOURCE
+>>> coverage, it is now possible to enable -Warray-bounds. Since both
+>>> GCC and Clang include -Warray-bounds in -Wall, we just need to stop
+>>> disabling it.
+>>>
+>>> Cc: Arnd Bergmann <arnd@arndb.de>
+>>> Cc: Masahiro Yamada <masahiroy@kernel.org>
+>>> Cc: linux-kbuild@vger.kernel.org
+>>> Co-developed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>> Signed-off-by: Kees Cook <keescook@chromium.org>
+>>> ---
+>>>   Makefile | 1 -
+>>>   1 file changed, 1 deletion(-)
+>>>
+>>> diff --git a/Makefile b/Makefile
+>>> index e4f5895badb5..8e7e73a642e2 100644
+>>> --- a/Makefile
+>>> +++ b/Makefile
+>>> @@ -995,7 +995,6 @@ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
+>>>   
+>>>   # We'll want to enable this eventually, but it's not going away for 5.7 at least
+>>>   KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
+>>> -KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
+>>>   KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
+>>>   
+>>
+>> This patch causes 'alpha' builds to fail when trying to build an image with
+>> gcc 11.2.
+>>
+>> In file included from include/linux/string.h:20,
+>>                   from include/linux/bitmap.h:11,
+>>                   from include/linux/cpumask.h:12,
+>>                   from include/linux/smp.h:13,
+>>                   from include/linux/lockdep.h:14,
+>>                   from include/linux/spinlock.h:63,
+>>                   from include/linux/mmzone.h:8,
+>>                   from include/linux/gfp.h:6,
+>>                   from include/linux/mm.h:10,
+>>                   from include/linux/pagemap.h:8,
+>>                   from arch/alpha/mm/init.c:10:
+>> In function '__memset',
+>>      inlined from '__bad_pagetable' at arch/alpha/mm/init.c:79:2:
+>> arch/alpha/include/asm/string.h:37:32: error: '__builtin_memset' offset [0, 8191] is out of the bounds [0, 0] [-Werror=array-bounds]
+>>     37 |                         return __builtin_memset(s, c, n);
+>>        |                                ^~~~~~~~~~~~~~~~~~~~~~~~~
+>> In function '__memset',
+>>      inlined from '__bad_page' at arch/alpha/mm/init.c:86:2:
+>> arch/alpha/include/asm/string.h:37:32: error: '__builtin_memset' offset [0, 8191] is out of the bounds [0, 0] [-Werror=array-bounds]
+>>     37 |                         return __builtin_memset(s, c, n);
+>>        |                                ^~~~~~~~~~~~~~~~~~~~~~~~~
+>> In function '__memset',
+>>      inlined from 'paging_init' at arch/alpha/mm/init.c:256:2:
+>> arch/alpha/include/asm/string.h:37:32: error: '__builtin_memset' offset [0, 8191] is out of the bounds [0, 0] [-Werror=array-bounds]
+>>     37 |                         return __builtin_memset(s, c, n);
+>>
+>> Seen in next-20210830.
 > 
-> This patch separates the missing feature detection in evsel__open_cpu
-> into a new evsel__detect_missing_features function.
-
-Thanks, applied.
-
-- Arnaldo
-
- 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/util/evsel.c | 174 +++++++++++++++++++++-------------------
->  tools/perf/util/evsel.h |   1 +
->  2 files changed, 92 insertions(+), 83 deletions(-)
+> Ah-ha, thanks for the report! I didn't see this in my builds -- what
+> config target did you use for this?
 > 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index 4e9a3e62075305f1..c393bd992322d925 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1841,6 +1841,96 @@ int evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
->  	return err;
->  }
->  
-> +bool evsel__detect_missing_features(struct evsel *evsel)
-> +{
-> +	/*
-> +	 * Must probe features in the order they were added to the
-> +	 * perf_event_attr interface.
-> +	 */
-> +	if (!perf_missing_features.weight_struct &&
-> +	    (evsel->core.attr.sample_type & PERF_SAMPLE_WEIGHT_STRUCT)) {
-> +		perf_missing_features.weight_struct = true;
-> +		pr_debug2("switching off weight struct support\n");
-> +		return true;
-> +	} else if (!perf_missing_features.code_page_size &&
-> +	    (evsel->core.attr.sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)) {
-> +		perf_missing_features.code_page_size = true;
-> +		pr_debug2_peo("Kernel has no PERF_SAMPLE_CODE_PAGE_SIZE support, bailing out\n");
-> +		return false;
-> +	} else if (!perf_missing_features.data_page_size &&
-> +	    (evsel->core.attr.sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)) {
-> +		perf_missing_features.data_page_size = true;
-> +		pr_debug2_peo("Kernel has no PERF_SAMPLE_DATA_PAGE_SIZE support, bailing out\n");
-> +		return false;
-> +	} else if (!perf_missing_features.cgroup && evsel->core.attr.cgroup) {
-> +		perf_missing_features.cgroup = true;
-> +		pr_debug2_peo("Kernel has no cgroup sampling support, bailing out\n");
-> +		return false;
-> +	} else if (!perf_missing_features.branch_hw_idx &&
-> +	    (evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_HW_INDEX)) {
-> +		perf_missing_features.branch_hw_idx = true;
-> +		pr_debug2("switching off branch HW index support\n");
-> +		return true;
-> +	} else if (!perf_missing_features.aux_output && evsel->core.attr.aux_output) {
-> +		perf_missing_features.aux_output = true;
-> +		pr_debug2_peo("Kernel has no attr.aux_output support, bailing out\n");
-> +		return false;
-> +	} else if (!perf_missing_features.bpf && evsel->core.attr.bpf_event) {
-> +		perf_missing_features.bpf = true;
-> +		pr_debug2_peo("switching off bpf_event\n");
-> +		return true;
-> +	} else if (!perf_missing_features.ksymbol && evsel->core.attr.ksymbol) {
-> +		perf_missing_features.ksymbol = true;
-> +		pr_debug2_peo("switching off ksymbol\n");
-> +		return true;
-> +	} else if (!perf_missing_features.write_backward && evsel->core.attr.write_backward) {
-> +		perf_missing_features.write_backward = true;
-> +		pr_debug2_peo("switching off write_backward\n");
-> +		return false;
-> +	} else if (!perf_missing_features.clockid_wrong && evsel->core.attr.use_clockid) {
-> +		perf_missing_features.clockid_wrong = true;
-> +		pr_debug2_peo("switching off clockid\n");
-> +		return true;
-> +	} else if (!perf_missing_features.clockid && evsel->core.attr.use_clockid) {
-> +		perf_missing_features.clockid = true;
-> +		pr_debug2_peo("switching off use_clockid\n");
-> +		return true;
-> +	} else if (!perf_missing_features.cloexec && (evsel->open_flags & PERF_FLAG_FD_CLOEXEC)) {
-> +		perf_missing_features.cloexec = true;
-> +		pr_debug2_peo("switching off cloexec flag\n");
-> +		return true;
-> +	} else if (!perf_missing_features.mmap2 && evsel->core.attr.mmap2) {
-> +		perf_missing_features.mmap2 = true;
-> +		pr_debug2_peo("switching off mmap2\n");
-> +		return true;
-> +	} else if (!perf_missing_features.exclude_guest &&
-> +		   (evsel->core.attr.exclude_guest || evsel->core.attr.exclude_host)) {
-> +		perf_missing_features.exclude_guest = true;
-> +		pr_debug2_peo("switching off exclude_guest, exclude_host\n");
-> +		return true;
-> +	} else if (!perf_missing_features.sample_id_all) {
-> +		perf_missing_features.sample_id_all = true;
-> +		pr_debug2_peo("switching off sample_id_all\n");
-> +		return true;
-> +	} else if (!perf_missing_features.lbr_flags &&
-> +			(evsel->core.attr.branch_sample_type &
-> +			 (PERF_SAMPLE_BRANCH_NO_CYCLES |
-> +			  PERF_SAMPLE_BRANCH_NO_FLAGS))) {
-> +		perf_missing_features.lbr_flags = true;
-> +		pr_debug2_peo("switching off branch sample type no (cycles/flags)\n");
-> +		return true;
-> +	} else if (!perf_missing_features.group_read &&
-> +		    evsel->core.attr.inherit &&
-> +		   (evsel->core.attr.read_format & PERF_FORMAT_GROUP) &&
-> +		   evsel__is_group_leader(evsel)) {
-> +		perf_missing_features.group_read = true;
-> +		pr_debug2_peo("switching off group read\n");
-> +		return true;
-> +	} else {
-> +		return false;
-> +	}
-> +}
-> +
->  static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  		struct perf_thread_map *threads,
->  		int start_cpu, int end_cpu)
-> @@ -1979,90 +2069,8 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  	if (err != -EINVAL || cpu > 0 || thread > 0)
->  		goto out_close;
->  
-> -	/*
-> -	 * Must probe features in the order they were added to the
-> -	 * perf_event_attr interface.
-> -	 */
-> -	if (!perf_missing_features.weight_struct &&
-> -	    (evsel->core.attr.sample_type & PERF_SAMPLE_WEIGHT_STRUCT)) {
-> -		perf_missing_features.weight_struct = true;
-> -		pr_debug2("switching off weight struct support\n");
-> +	if (evsel__detect_missing_features(evsel))
->  		goto fallback_missing_features;
-> -	} else if (!perf_missing_features.code_page_size &&
-> -	    (evsel->core.attr.sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)) {
-> -		perf_missing_features.code_page_size = true;
-> -		pr_debug2_peo("Kernel has no PERF_SAMPLE_CODE_PAGE_SIZE support, bailing out\n");
-> -		goto out_close;
-> -	} else if (!perf_missing_features.data_page_size &&
-> -	    (evsel->core.attr.sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)) {
-> -		perf_missing_features.data_page_size = true;
-> -		pr_debug2_peo("Kernel has no PERF_SAMPLE_DATA_PAGE_SIZE support, bailing out\n");
-> -		goto out_close;
-> -	} else if (!perf_missing_features.cgroup && evsel->core.attr.cgroup) {
-> -		perf_missing_features.cgroup = true;
-> -		pr_debug2_peo("Kernel has no cgroup sampling support, bailing out\n");
-> -		goto out_close;
-> -        } else if (!perf_missing_features.branch_hw_idx &&
-> -	    (evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_HW_INDEX)) {
-> -		perf_missing_features.branch_hw_idx = true;
-> -		pr_debug2("switching off branch HW index support\n");
-> -		goto fallback_missing_features;
-> -	} else if (!perf_missing_features.aux_output && evsel->core.attr.aux_output) {
-> -		perf_missing_features.aux_output = true;
-> -		pr_debug2_peo("Kernel has no attr.aux_output support, bailing out\n");
-> -		goto out_close;
-> -	} else if (!perf_missing_features.bpf && evsel->core.attr.bpf_event) {
-> -		perf_missing_features.bpf = true;
-> -		pr_debug2_peo("switching off bpf_event\n");
-> -		goto fallback_missing_features;
-> -	} else if (!perf_missing_features.ksymbol && evsel->core.attr.ksymbol) {
-> -		perf_missing_features.ksymbol = true;
-> -		pr_debug2_peo("switching off ksymbol\n");
-> -		goto fallback_missing_features;
-> -	} else if (!perf_missing_features.write_backward && evsel->core.attr.write_backward) {
-> -		perf_missing_features.write_backward = true;
-> -		pr_debug2_peo("switching off write_backward\n");
-> -		goto out_close;
-> -	} else if (!perf_missing_features.clockid_wrong && evsel->core.attr.use_clockid) {
-> -		perf_missing_features.clockid_wrong = true;
-> -		pr_debug2_peo("switching off clockid\n");
-> -		goto fallback_missing_features;
-> -	} else if (!perf_missing_features.clockid && evsel->core.attr.use_clockid) {
-> -		perf_missing_features.clockid = true;
-> -		pr_debug2_peo("switching off use_clockid\n");
-> -		goto fallback_missing_features;
-> -	} else if (!perf_missing_features.cloexec && (evsel->open_flags & PERF_FLAG_FD_CLOEXEC)) {
-> -		perf_missing_features.cloexec = true;
-> -		pr_debug2_peo("switching off cloexec flag\n");
-> -		goto fallback_missing_features;
-> -	} else if (!perf_missing_features.mmap2 && evsel->core.attr.mmap2) {
-> -		perf_missing_features.mmap2 = true;
-> -		pr_debug2_peo("switching off mmap2\n");
-> -		goto fallback_missing_features;
-> -	} else if (!perf_missing_features.exclude_guest &&
-> -		   (evsel->core.attr.exclude_guest || evsel->core.attr.exclude_host)) {
-> -		perf_missing_features.exclude_guest = true;
-> -		pr_debug2_peo("switching off exclude_guest, exclude_host\n");
-> -		goto fallback_missing_features;
-> -	} else if (!perf_missing_features.sample_id_all) {
-> -		perf_missing_features.sample_id_all = true;
-> -		pr_debug2_peo("switching off sample_id_all\n");
-> -		goto fallback_missing_features;
-> -	} else if (!perf_missing_features.lbr_flags &&
-> -			(evsel->core.attr.branch_sample_type &
-> -			 (PERF_SAMPLE_BRANCH_NO_CYCLES |
-> -			  PERF_SAMPLE_BRANCH_NO_FLAGS))) {
-> -		perf_missing_features.lbr_flags = true;
-> -		pr_debug2_peo("switching off branch sample type no (cycles/flags)\n");
-> -		goto fallback_missing_features;
-> -	} else if (!perf_missing_features.group_read &&
-> -		    evsel->core.attr.inherit &&
-> -		   (evsel->core.attr.read_format & PERF_FORMAT_GROUP) &&
-> -		   evsel__is_group_leader(evsel)) {
-> -		perf_missing_features.group_read = true;
-> -		pr_debug2_peo("switching off group read\n");
-> -		goto fallback_missing_features;
-> -	}
->  out_close:
->  	if (err)
->  		threads->err_thread = thread;
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 58aa998e1814ac9e..a83fb7f69b1ead73 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -288,6 +288,7 @@ int evsel__open(struct evsel *evsel, struct perf_cpu_map *cpus,
->  void evsel__close(struct evsel *evsel);
->  int evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
->  		struct perf_thread_map *threads);
-> +bool evsel__detect_missing_features(struct evsel *evsel);
->  
->  struct perf_sample;
->  
-> -- 
-> 2.31.1
 
--- 
+The configuration doesn't matter; it fails for me for all configurations,
+including defconfig, alllnoconfig, and allmodconfig.
+Key is to use gcc 11.2. The image builds just fine with gcc 9.4 and 10.3.
 
-- Arnaldo
+Guenter
