@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E42B3FC56E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5F63FC571
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240813AbhHaKJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
+        id S240849AbhHaKLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231397AbhHaKJj (ORCPT
+        with ESMTP id S240576AbhHaKLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:09:39 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEFCC061575;
-        Tue, 31 Aug 2021 03:08:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MYa0ikixZAEhuIDeg7K7D5PylKHd6fZI3U61Ut+EyJk=; b=A5XLh7AhNuGufuKfP37eirFZ1h
-        eSanDU3emJic5nnU0Y9B1wku4zkwNgNWxxbsDJWGutC7kflq2gweG9/ulF7CG7iB0fpF3qSXbUFK5
-        sWPJn2fmoLKWpcWLzKTLkmQ/YT+0630uAX2erYLKPRFnCAlkZPHWM1TuFmX8DqoNV9p21zOFQ05zG
-        bG/bHZJW6twRuzRXdrTiSLsM0MjugZ3z845Db1H9mc4zFxXR93feib9xgWSKYkRzyGDyctme9EBKL
-        kK5kTvtY5F7JBMJJkib45EgY2FpzWGs+HPTbcm0j6D/Smv//zvOwINMdLU5tvbudZrvyLtv0RbOa8
-        4vlSuZbQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mL0gj-00Efh5-6Q; Tue, 31 Aug 2021 10:08:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2AE363001F6;
-        Tue, 31 Aug 2021 12:08:15 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 09CA72C83EAD6; Tue, 31 Aug 2021 12:08:15 +0200 (CEST)
-Date:   Tue, 31 Aug 2021 12:08:14 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     mingo@redhat.com, mgorman@suse.de, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        achaiken@aurora.tech, lkp@intel.com, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH v3 0/7] sched: support schedstats for RT sched class
-Message-ID: <YS3/jhuRNS2GGVrp@hirez.programming.kicks-ass.net>
-References: <20210824112946.9324-1-laoar.shao@gmail.com>
+        Tue, 31 Aug 2021 06:11:52 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BBFC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:10:57 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id z5so33859569ybj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:10:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ISxd34HYL0xjjOXHW7kuXX550qqQagXKpShLACv/6Vc=;
+        b=wAPCMoKwU05z5kBh0NgRCLoqGJtz4RamP0Orhks576hOah8T3G6UgLnYJYBEkFre8L
+         oSFTvrLdEPXULpB0bj8drBfDT8pBn9jepOWwWiNNcH4QgifGzMYNG1Z4ODCm4WYH0Qu+
+         jsCM/Z8JmQN+jdiOVWjU4tTxOEsZt6MgLSCC6NT63EzqfESIR56u8GJ0vpeQAwhLX8MW
+         X66ecTL5g2+PO3PwzUjIQSaTFegD+tUJZ/0ZikB/qAURyDqq7ze7exyv1yhDAkbglrFy
+         +SBWrd5X5zyAcXbtkAYiLDqx2Q/1dKbrtUvS8mTfqUebKuQfDebRKWZ/fLD+VvE6kc2H
+         5MBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ISxd34HYL0xjjOXHW7kuXX550qqQagXKpShLACv/6Vc=;
+        b=MeYky+P2gpAHZ+MvguWVCg9HZeC0wFonE35j9EkVzBahq6jUH9UGr2FB9TVEfNAAhQ
+         La5nG8FJOqqzSgjnXRdPQSZsD//0PJ42uoYyNEv+oMQatLwLcWp616NFol1r9KlaavAV
+         4rlUvnJ+NXrkCgFkCUhwl+YjOGVhlxP/7sYB7j6du6hq3Y5UZa6Y8iX5M2Lv2hXkU47n
+         Yg/YviPY2zlk1weW7W7YMHNKltEzlOtPqu0LmT2jP42Y4GBXfihTjBVeKSI4VZ1Fwh2z
+         t+1INZGGRexOf3NHaC/qc6Wkovxs1O5lCLyF+Dujf9mKtHX7lGF6AeNNcESohixL3Nyz
+         5BjA==
+X-Gm-Message-State: AOAM531G9GVw58rKnSnmYep1qPjjpMwVsK52h+12WcnpH1HdzwbFej1l
+        7UtFjZRWV5Mg/Zng2wcU4J6WAUSwLuP+zUf+HmaKKwiBvj0=
+X-Google-Smtp-Source: ABdhPJxgnxQciiKvtmt8jY0P1jl1VcavsxWSNwbcPmDFrcZnoiO3LYi3Mc3V1MiZQbPOxOO3F8RNH8QS8Kb8657Se9c=
+X-Received: by 2002:a05:6902:150c:: with SMTP id q12mr2213332ybu.25.1630404657076;
+ Tue, 31 Aug 2021 03:10:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824112946.9324-1-laoar.shao@gmail.com>
+References: <cover.1629472813.git.christophe.jaillet@wanadoo.fr> <800564ff82277544269add84bf78a5321e1090ed.1629472813.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <800564ff82277544269add84bf78a5321e1090ed.1629472813.git.christophe.jaillet@wanadoo.fr>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 31 Aug 2021 12:10:46 +0200
+Message-ID: <CAMpxmJWefa_NdguY7K2JaSZ_EjxswgNEJOue4bWJ=XV99rQSXg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] gpio: mpc8xxx: Fix a resources leak in the error
+ handling path of 'mpc8xxx_probe()'
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        alexandru.marginean@nxp.com, Laurentiu.Tudor@nxp.com,
+        Hui Song <hui.song_1@nxp.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Ran Wang <ran.wang_1@nxp.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 11:29:39AM +0000, Yafang Shao wrote:
-> Hi Ingo, Peter,
-> 
-> This feature is useful to trace the sched details of RT tasks. Hopefully
-> you can give some feedback on it.
-> 
-> We want to measure the latency of RT tasks in our production
-> environment with schedstats facility, but currently schedstats is only
-> supported for fair sched class. In order to support if for other sched
-> classes, we should make it independent of fair sched class. The struct
-> sched_statistics is the schedular statistics of a task_struct or a
-> task_group, both of which are independent of sched class. So we can move
-> struct sched_statistics into struct task_struct and struct task_group to
-> achieve the goal.
+On Fri, Aug 20, 2021 at 5:37 PM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> Commit 698b8eeaed72 ("gpio/mpc8xxx: change irq handler from chained to normal")
+> has introduced a new 'goto err;' at the very end of the function, but has
+> not updated the error handling path accordingly.
+>
+> Add the now missing 'irq_domain_remove()' call which balances a previous
+> 'irq_domain_create_linear() call.
+>
+> Fixes: 698b8eeaed72 ("gpio/mpc8xxx: change irq handler from chained to normal")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> Is the 'irq_set_chained_handler_and_data()' of the remove function also
+> needed here?
+> ---
+>  drivers/gpio/gpio-mpc8xxx.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
+> index 67dc38976ab6..241bcc80612e 100644
+> --- a/drivers/gpio/gpio-mpc8xxx.c
+> +++ b/drivers/gpio/gpio-mpc8xxx.c
+> @@ -416,6 +416,8 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+>
+>         return 0;
+>  err:
+> +       if (mpc8xxx_gc->irq)
+> +               irq_domain_remove(mpc8xxx_gc->irq);
+>         iounmap(mpc8xxx_gc->regs);
+>         return ret;
+>  }
+> --
+> 2.30.2
+>
 
-Do you really want schedstats or do you want the tracepoints? In general
-I really want to cut back on the built-in statistics crud we carry,
-there's too much and it seems to keep growing forever :-(
+Applied, thanks!
 
-(as is the case here, you're extending it as well)
-
-That said; making schedstats cover the other classes can be seen as
-fixing an inconsistency, but then you forgot deadline.
-
-> After the patchset, schestats are orgnized as follows,
-> struct task_struct {
->     ...
->     struct sched_statistics statistics;
->     ...
->     struct sched_entity *se;
->     struct sched_rt_entity *rt;
->     ...
-> };
-> 
-> struct task_group {                    |---> stats[0] : of CPU0
->     ...                                |
->     struct sched_statistics **stats; --|---> stats[1] : of CPU1
->     ...                                |
->                                        |---> stats[n] : of CPUn
->  #ifdef CONFIG_FAIR_GROUP_SCHED
->     struct sched_entity **se;
->  #endif
->  #ifdef CONFIG_RT_GROUP_SCHED
->     struct sched_rt_entity  **rt_se;
->  #endif
->     ...
-> };
-
-Yeah, this seems to give a terrible mess, let me see if I can come up
-with anything less horrible.
+Bart
