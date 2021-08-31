@@ -2,76 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C109A3FC9D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522D03FC9E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238201AbhHaOey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:34:54 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48704 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238223AbhHaOeu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:34:50 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 337DE2228D;
-        Tue, 31 Aug 2021 14:33:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630420433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/xAEprQsW0N81GpF1JlP4+oliaEb/wfRvXCgcIbPMyM=;
-        b=EOHRQBRTVET1mtXY9RS08x3F+XNuVKJwfmWj3m19yLSK5tZcUolsbmmQfvbRoBrXqCQyCJ
-        Pvd6qktaFRs+MGtx8xHLQZ6BIGsG1CYAPkOsKAsZbNO3LkHaW12upKWkO8iFDbwlktEp2H
-        OsbHF4qnHs2xJHlf/t+tuwG1mkH2ZsI=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DDE74A3B9E;
-        Tue, 31 Aug 2021 14:33:52 +0000 (UTC)
-Date:   Tue, 31 Aug 2021 16:33:52 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     James Wang <jnwang@linux.alibaba.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: kernel hang during reboot when cmdline include a non-exist
- console device
-Message-ID: <YS490P27YM6UlB2z@alley>
-References: <CAHk-=wj+G8MXRUk5HRCvUr8gOpbR+zXQ6WNTB0E7n32fTUjKxQ@mail.gmail.com>
- <YS2fZ1sknFYKtJFi@google.com>
- <YS3k5TRf5oLLEdKu@alley>
- <YS3stL0cTn5ZQSNx@google.com>
- <fc18d17a-b185-7a1e-2135-ec83f3f8c70f@linux.alibaba.com>
+        id S234743AbhHaOf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:35:27 -0400
+Received: from relay.sw.ru ([185.231.240.75]:45648 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234845AbhHaOfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 10:35:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=3y3a0G9JOqOLl1XXFRKNLkkT/vIWt1LlgMq53mTUC6U=; b=brfqHMCWyeI/RD7xYkr
+        xGsXMqL2DGVgLzdz2FU3T7mFop2/m3hjmnbijJkNizAt+K588YQWRpZzm4hqGw+HIFyeIZJOB0v9o
+        ly199lwEOKmgyg/PlQsJmexvrAOX+uynpqzvbnapaLfDBFolsv9EgFQJQU5QoT881/uvRrbjLWY=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mL4qB-000N5z-W4; Tue, 31 Aug 2021 17:34:19 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH net-next v3 RFC] skb_expand_head() adjust skb->truesize
+ incorrectly
+To:     Christoph Paasch <christoph.paasch@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@openvz.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
+References: <8fd56805-2ac8-dcbe-1337-b20f91f759d6@gmail.com>
+Message-ID: <b66d9db6-f0ac-48a9-8062-49d6a5249d4b@virtuozzo.com>
+Date:   Tue, 31 Aug 2021 17:34:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <8fd56805-2ac8-dcbe-1337-b20f91f759d6@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fc18d17a-b185-7a1e-2135-ec83f3f8c70f@linux.alibaba.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-08-31 21:45:05, James Wang wrote:
-> 
-> 在 2021/8/31 PM4:47, Sergey Senozhatsky 写道:
-> > And may I ask, just in case, if James can revert a revert of Petr's commit:
-> > 
-> >         revert a91bd6223ecd46addc71ee6fcd432206d39365d2
-> > 
-> > boot with wrong console argument and see if the kernel reboots without
-> > any problems.
-> 
-> After test, revert Petr's commit can work; reboot without any problem;
+RFC because it have an extra changes:
+new is_skb_wmem() helper can be called
+ - either before pskb_expand_head(), to create skb clones 
+    for skb with destructors that does not change sk->sk_wmem_alloc
+ - or after pskb_expand_head(), to change owner in skb_set_owner_w()
 
-Interesting, it looks like the panic() is really caused by missing
-stdout, stdin, and stderr, for the init process.
+In current patch I've added both these ways,
+we need to keep one of them.
+---
+Christoph Paasch reports [1] about incorrect skb->truesize
+after skb_expand_head() call in ip6_xmit.
+This may happen because of two reasons:
+- skb_set_owner_w() for newly cloned skb is called too early,
+before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
+- pskb_expand_head() does not adjust truesize in (skb->sk) case.
+In this case sk->sk_wmem_alloc should be adjusted too.
 
-Unfortunately, the fix is not easy, as described in the commit
-a91bd6223ecd46addc71e ("Revert "init/console: Use ttynull as
-a fallback when there is no console").
+[1] https://lkml.org/lkml/2021/8/20/1082
 
-Best Regards,
-Petr
+Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+v3: removed __pskb_expand_head(),
+    added is_skb_wmem() helper for skb with wmem-compatible destructors
+    there are 2 ways to use it:
+     - before pskb_expand_head(), to create skb clones
+     - after pskb_expand_head(), to change owner on extended skb.
+v2: based on patch version from Eric Dumazet,
+    added __pskb_expand_head() function, which can be forced
+    to adjust skb->truesize and sk->sk_wmem_alloc.
+---
+ include/net/sock.h |  1 +
+ net/core/skbuff.c  | 39 ++++++++++++++++++++++++++++-----------
+ net/core/sock.c    |  8 ++++++++
+ 3 files changed, 37 insertions(+), 11 deletions(-)
+
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 95b2577..173d58c 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -1695,6 +1695,7 @@ struct sk_buff *sock_wmalloc(struct sock *sk, unsigned long size, int force,
+ 			     gfp_t priority);
+ void __sock_wfree(struct sk_buff *skb);
+ void sock_wfree(struct sk_buff *skb);
++bool is_skb_wmem(const struct sk_buff *skb);
+ struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
+ 			     gfp_t priority);
+ void skb_orphan_partial(struct sk_buff *skb);
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index f931176..3ce33f2 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -1804,30 +1804,47 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
+ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+ {
+ 	int delta = headroom - skb_headroom(skb);
++	int osize = skb_end_offset(skb);
++	struct sk_buff *oskb = NULL;
++	struct sock *sk = skb->sk;
+ 
+ 	if (WARN_ONCE(delta <= 0,
+ 		      "%s is expecting an increase in the headroom", __func__))
+ 		return skb;
+ 
+-	/* pskb_expand_head() might crash, if skb is shared */
+-	if (skb_shared(skb)) {
++	delta = SKB_DATA_ALIGN(delta);
++	/* pskb_expand_head() might crash, if skb is shared.
++	 * Also we should clone skb if its destructor does
++	 * not adjust skb->truesize and sk->sk_wmem_alloc
++ 	 */
++	if (skb_shared(skb) ||
++	    (sk && (!sk_fullsock(sk) || !is_skb_wmem(skb)))) {
+ 		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+ 
+-		if (likely(nskb)) {
+-			if (skb->sk)
+-				skb_set_owner_w(nskb, skb->sk);
+-			consume_skb(skb);
+-		} else {
++		if (unlikely(!nskb)) {
+ 			kfree_skb(skb);
++			return NULL;
+ 		}
++		oskb = skb;
+ 		skb = nskb;
+ 	}
+-	if (skb &&
+-	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
++	if (pskb_expand_head(skb, delta, 0, GFP_ATOMIC)) {
+ 		kfree_skb(skb);
+-		skb = NULL;
++		kfree_skb(oskb);
++		return NULL;
+ 	}
+-	return skb;
++	if (oskb) {
++		if (sk)
++			skb_set_owner_w(skb, sk);
++		consume_skb(oskb);
++	} else if (sk) {
++		delta = osize - skb_end_offset(skb);
++		if (!is_skb_wmem(skb))
++			skb_set_owner_w(skb, sk);
++		skb->truesize += delta;
++		if (sk_fullsock(sk))
++			refcount_add(delta, &sk->sk_wmem_alloc);
++	}	return skb;
+ }
+ EXPORT_SYMBOL(skb_expand_head);
+ 
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 950f1e7..0315dcb 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2227,6 +2227,14 @@ void skb_set_owner_w(struct sk_buff *skb, struct sock *sk)
+ }
+ EXPORT_SYMBOL(skb_set_owner_w);
+ 
++bool is_skb_wmem(const struct sk_buff *skb)
++{
++	return (skb->destructor == sock_wfree ||
++		skb->destructor == __sock_wfree ||
++		(IS_ENABLED(CONFIG_INET) && skb->destructor == tcp_wfree));
++}
++EXPORT_SYMBOL(is_skb_wmem);
++
+ static bool can_skb_orphan_partial(const struct sk_buff *skb)
+ {
+ #ifdef CONFIG_TLS_DEVICE
+-- 
+1.8.3.1
+
