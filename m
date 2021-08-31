@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7E33FC59E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F0F3FC5A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240989AbhHaK0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
+        id S241008AbhHaK0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:26:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240831AbhHaK0k (ORCPT
+        with ESMTP id S240996AbhHaK0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:26:40 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78FB2C061575;
-        Tue, 31 Aug 2021 03:25:45 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id DA6621F42DE7
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Subject: Testing & Fuzzing Micro-Conference at Linux Plumbers Conference 2021
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        automated-testing@lists.yoctoproject.org,
-        linux-kselftest@vger.kernel.org,
-        "kernelci@groups.io" <kernelci@groups.io>,
-        syzkaller <syzkaller@googlegroups.com>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Message-ID: <c801f7b9-1f70-e69c-99f6-5bc5c5622991@collabora.com>
-Date:   Tue, 31 Aug 2021 11:25:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 31 Aug 2021 06:26:52 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59191C061575;
+        Tue, 31 Aug 2021 03:25:57 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0f2f00d101edea3987ba94.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:2f00:d101:edea:3987:ba94])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C81011EC0301;
+        Tue, 31 Aug 2021 12:25:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630405551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=9au5Ib2D8iCGnkGnB5h3PrkkAHJSnmZMrsYQr2spPug=;
+        b=C9MEtadGhn2B1d01Tkv0ATDV6t7XjHM984fM/2q3kBGB3rhHjyytvPa9psO9uFnqXWeish
+        +TKIdvhUUZ8sWo9tk4LpibCf75wr3uxvGVDzgQcndXxIDGBH48JMykQ9sbPNT9Fo37TZYs
+        sj4C/m3u/3wFVYeQJYytDYtNRle0188=
+Date:   Tue, 31 Aug 2021 12:26:28 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 30/38] x86/compressed/64: store Confidential
+ Computing blob address in bootparams
+Message-ID: <YS4D1A9Uy1TmNwmT@zn.tnic>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-31-brijesh.singh@amd.com>
+ <YSjzcgQDubOY1pGI@zn.tnic>
+ <20210827190955.fc5eyvk2mmtuawwz@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210827190955.fc5eyvk2mmtuawwz@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Testing & Fuzzing Micro-Conference[1] at Linux Plumbers 2021 will
-remain open to new proposals for talks and discussion topics until the
-end of next week (Friday 10th Sept).  Please feel free to submit yours
-with the "Submit new proposal" form on this page:
+On Fri, Aug 27, 2021 at 02:09:55PM -0500, Michael Roth wrote:
+> Most of the #ifdef'ery is due to the EFI scan, so I moved that part out
+> to a separate helper, snp_probe_cc_blob_efi(), that lives in
+> boot/compressed.sev.c. Still not pretty, but would this be acceptable?
 
-  https://linuxplumbersconf.org/event/11/abstracts/
+It is still ugly... :)
 
-The MC is currently scheduled for Wednesday 22nd.  This is where the
-timetable will appear as submissions get accepted:
+I guess you should simply do two separate functions - one doing the
+compressed dance and the other the later parsing and keep 'em separate.
+It's not like you're duplicating a ton of code so...
 
-  https://linuxplumbersconf.org/event/11/sessions/110/#20210922
+-- 
+Regards/Gruss,
+    Boris.
 
-
-Last year's edition was very effective in spite of being fully online
-rather than in-person.  Topics around testing were mentioned in many
-other tracks too, such as real-time and toolchains.  See also the
-related KernelCI blog post with community notes[2].  We're looking
-forward to having an equally good virtual experience this time again.
-
-Best wishes,
-Guillaume
-
-
-[1] https://www.linuxplumbersconf.org/blog/2021/index.php/2021/07/09/testing-and-fuzzing-microconference-accepted-into-2021-linux-plumbers-conference/
-
-The Testing and Fuzzing microconference focuses on advancing the current
-state of testing of the Linux kernel. We aim to create connections
-between folks working on similar projects, and help individual projects
-make progress.
-
-We ask that any topic discussions will focus on issues/problems they are
-facing and possible alternatives to resolving them. The Microconference
-is open to all topics related to testing & fuzzing on Linux, not
-necessarily in the kernel space.
-
-Suggested topics:
-
-  KernelCI: Extending coverage and improving user experience.
-  Growing KCIDB, integrating more sources.
-  Better sanitizers: KFENCE, improving KCSAN.
-  Using Clang for better testing coverage.
-  How to spread KUnit throughout the kernel?
-  Testing in-kernel Rust code.
-
-MC leads:
-
-  Sasha Levin <sashal@kernel.org>
-  Guillaume Tucker <guillaume.tucker@collabora.com>
-
-
-[2] https://foundation.kernelci.org/blog/2020/09/23/kernelci-notes-from-plumbers-2020/
-
+https://people.kernel.org/tglx/notes-about-netiquette
