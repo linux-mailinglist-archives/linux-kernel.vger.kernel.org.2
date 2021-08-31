@@ -2,146 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010A23FCF81
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475303FCF82
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240464AbhHaWQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 18:16:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55018 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232930AbhHaWQv (ORCPT
+        id S240738AbhHaWRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 18:17:04 -0400
+Received: from mail-ed1-f41.google.com ([209.85.208.41]:44569 "EHLO
+        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240665AbhHaWRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 18:16:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630448155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=87x+DTynGLQU2JkIoM5X3ezVDhZ+h9VNFi3bKAp7/QQ=;
-        b=hDoHHMe2z5XJDohIPeGeWI++lamM/e8S+sNvXjDfH4TZNrK2mlX1jNc5YcUlocnG87w5iT
-        S/R1f6HRYfg1V2AyvRE1L09RY6kH6H/QBOGeXmGi7LobTomd5AGAGIiXx4PfTy0Ikbfzes
-        7fsPoh+poMyzYlcM2TL+QSxl3FDVcME=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-300-QiOs4Te1P7m56nLit_JQdA-1; Tue, 31 Aug 2021 18:15:53 -0400
-X-MC-Unique: QiOs4Te1P7m56nLit_JQdA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 302021009628;
-        Tue, 31 Aug 2021 22:15:51 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E57D26060F;
-        Tue, 31 Aug 2021 22:15:47 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>
-cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Folios: Can we resolve this please?
+        Tue, 31 Aug 2021 18:17:03 -0400
+Received: by mail-ed1-f41.google.com with SMTP id n11so759166edv.11
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 15:16:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MHqLzHOU5w6GE8viA7VBL7rpO2AVuZg/dxclEvKZqX8=;
+        b=jEQcrNM4B0kOAWqmuepF9bt35AHbXxt9vl2QG1IEqrGlUXI4dfIgHzyOLXN14giBEz
+         Ift69HiOtecdgAzcVNQnE/+NQAaw15SUZCdRnFUnnniCwxOqVpofzF/J3u7IKgTRAqhn
+         4ZOnvNcsJgqAZDhgqbVsCSWAs1VLFg49I9MR3vUJ1IQX4Lyq6tlg/nZ5UZmmm5pbdzCL
+         AMyn7w/NED7x/Qhvu2i9dRxSkIWoS06LrDcpYxxAdX0RkJIbehKFlROdENo0inALalzc
+         XmHT8op2SNUqfAqK3mWypyQbuJ27QQqNqOBhAOB9vxRHKU0rpuaMet12uGWXcF0nnx2d
+         8dRg==
+X-Gm-Message-State: AOAM5325c97/QYcFxR/sQfa8iJYf5SJLxcqnA02H5GAjzwih/dIxJEjz
+        6eak0oZmA7xnqNoVI4XCx6o3DkAd2Fq0GpiRqNY=
+X-Google-Smtp-Source: ABdhPJwh9cDj/SVQqtVAMl3mqZ0Uu/+26ei/COg69EKl8H4zQXaRuxmVeXVJaCG3gEszqAGjs1eRj5xWLZa0L7r7ppI=
+X-Received: by 2002:a05:6402:2050:: with SMTP id bc16mr12027591edb.92.1630448166812;
+ Tue, 31 Aug 2021 15:16:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3285173.1630448147.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 31 Aug 2021 23:15:47 +0100
-Message-ID: <3285174.1630448147@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210730145957.7927-1-chang.seok.bae@intel.com>
+ <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
+ <CAJvTdKn09GiAOgdsOR-+ooEO=bmj8VDL9e9sSAsu2UPx73a-Mw@mail.gmail.com> <a96a65fc-061b-e94b-cee7-16201ac0820f@intel.com>
+In-Reply-To: <a96a65fc-061b-e94b-cee7-16201ac0820f@intel.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Tue, 31 Aug 2021 18:15:55 -0400
+Message-ID: <CAJvTdKkZ==89-rDeBUDy1GJEzU9FGiAb2m3rtMAGQPJQa1A2fA@mail.gmail.com>
+Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
+ protect dynamic user state
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        Thiago Macieira <thiago.macieira@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus, Andrew, Johannes,
+On Mon, Aug 30, 2021 at 2:04 PM Dave Hansen <dave.hansen@intel.com> wrote:
+>
+> On 8/24/21 4:17 PM, Len Brown wrote:
+> > Even if your AMX thread pool threads were to invoke this system call
+> > as soon as possible...
+> > What is to say that the thread pool is created only at a time when memory
+> > is available?  A thread could be created 24 hours into program execution
+> > under OOM conditions and this system call will return ENOMEM, and your program
+> > will in all likelihood throw up its arms and exit at the exact same place
+> > it would exit for transparently allocated buffers.
+>
+> I tried this exact line of reasoning with Thomas: it doesn't matter
+> where we run out of memory, we still need the same memory and we're
+> screwed either way.
+>
+> However, Thomas expressed a clear preference for ABIs which return
+> memory failures explicitly at syscalls versus implicit failures which
+> can happen on random instructions.
+>
+> One might say that the odds of checking for and handling a NULL value
+> (or ENOMEM) are the same as installing a signal handler.  *But*, it's
+> infinitely easier to unroll state and recover from a NULL than it is to
+> handle it from within a signal handler.  In other words, the explicit
+> ones *encourage* better programming.
 
-Can we come to a quick resolution on folios?  I'd really like this to be
-solved in this merge window if at all possible as I (and others) have stuf=
-f
-that will depend on and will conflict with Willy's folio work.  It would b=
-e
-great to get this sorted one way or another.
+I agree.
+Indeed, I believe that there is universal agreement that a synchronous
+return code
+from a system call is a far superior programming model than decoding
+the location of a failure in a system call.  (no, the IP isn't random -- it is
+always the 1st instruction in that thread to touch a TMM register).
 
-As I see it, there are three issues, I think, and I think they kind of go =
-like
-this:
+> I'd prefer removing the demand-driven allocation at this point.
 
- (1) Johannes wants to get away from pages being used as the unit of memor=
-y
-     currency and thinks that folios aren't helpful in this regard[1].  Th=
-ere
-     seems to be some disagreement about where this is heading.
+Adding a pre-allocate system call that can gracefully fail
+(even though it never will) is independent from removing
+demand-driver allocation.  I would leave this to application
+developers.  Honestly, the kernel shouldn't care.
 
- (2) Linus isn't entirely keen on Willy's approach[2], with a bottom up
-     approach hiding the page objects behind a new type from the pov of th=
-e
-     filesystem, but would rather see the page struct stay the main API ty=
-pe
-     and the changes be hidden transparently inside of that.
-
-     I think from what Linus said, he may be in favour (if that's not too
-     strong a word) of using a new type to make sure we don't miss the
-     necessary changes[3].
-
- (3) Linus isn't in favour of the name 'folio' for the new type[2].  Vario=
-us
-     names have been bandied around and Linus seems okay with "pageset"[4]=
-,
-     though it's already in minor(-ish) use[5][6].  Willy has an alternate
-     patchset with "folio" changed to "pageset"[7].
-
-With regard to (1), I think the folio concept could be used in future to h=
-ide
-at least some of the paginess from filesystems.
-
-With regard to (2), I think a top-down approach won't work until and unles=
-s we
-wrap all accesses to struct page by filesystems (and device drivers) in
-wrapper functions - we need to stop filesystems fiddling with page interna=
-ls
-because what page internals may mean may change.
-
-With regard to (3), I'm personally fine with the name "folio", as are othe=
-r
-people[8][9][10][11], but I could also live with a conversion to "pageset"=
-.
-
-Is it possible to take the folios patchset as-is and just live with the na=
-me,
-or just take Willy's rename-job (although it hasn't had linux-next soak ti=
-me
-yet)?  Or is the approach fundamentally flawed and in need of redoing?
-
-Thanks,
-David
-
-Link: https://lore.kernel.org/r/YSQSkSOWtJCE4g8p@cmpxchg.org/ [1]
-Link: https://lore.kernel.org/r/CAHk-=3DwjD8i2zJVQ9SfF2t=3D_0Fkgy-i5Z=3DmQ=
-jCw36AHvbBTGXyg@mail.gmail.com/ [2]
-Link: https://lore.kernel.org/r/CAHk-=3DwgkA=3DRKJ-vke0EoOUK19Hv1f=3D47Da6=
-pWAWQZPhjKD6WOg@mail.gmail.com/ [3]
-Link: https://lore.kernel.org/r/CAHk-=3DwiZ=3Dwwa4oAA0y=3DKztafgp0n+BDTEV6=
-ybLoH2nvLBeJBLA@mail.gmail.com/ [4]
-Link: https://lore.kernel.org/r/CAHk-=3Dwhd8ugrzMS-3bupkPQz9VS+dWHPpsVssrD=
-fuFgfff+n5A@mail.gmail.com/ [5]
-Link: https://lore.kernel.org/r/CAHk-=3DwgwRW1_o6iBOxtSE+vm7uiSr98wkTLbCze=
-9-7wW0ZhOLQ@mail.gmail.com/ [6]
-Link: https://lore.kernel.org/r/YSmtjVTqR9%2F4W1aq@casper.infradead.org/ [=
-7]
-Link: https://lore.kernel.org/r/YSXkDFNkgAhQGB0E@infradead.org/ [8]
-Link: https://lore.kernel.org/r/92cbfb8f-7418-15d5-c469-d7861e860589@rasmu=
-svillemoes.dk/ [9]
-Link: https://lore.kernel.org/r/cf30c0e8d1eecf08b2651c5984ff09539e2266f9.c=
-amel@kernel.org/ [10]
-Link: https://lore.kernel.org/r/20210826005914.GG12597@magnolia/ [11]
-
+-- 
+Len Brown, Intel Open Source Technology Center
