@@ -2,147 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C583FC6E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FC43FC6EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241623AbhHaL5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 07:57:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
+        id S241656AbhHaMGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 08:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231628AbhHaL5h (ORCPT
+        with ESMTP id S240305AbhHaMGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 07:57:37 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42732C061575;
-        Tue, 31 Aug 2021 04:56:42 -0700 (PDT)
-Received: from [IPv6:2a01:e0a:4cb:a870:2d6:5982:f5be:998c] (unknown [IPv6:2a01:e0a:4cb:a870:2d6:5982:f5be:998c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D52781F42F46;
-        Tue, 31 Aug 2021 12:56:39 +0100 (BST)
-Subject: Re: [PATCH 1/2] media: hevc: Remove RPS named flags
-To:     John Cox <jc@kynesim.co.uk>
-Cc:     mchehab@kernel.org, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@gmail.com, hverkuil-cisco@xs4all.nl,
-        ezequiel@vanguardiasur.com.ar, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-References: <20210831094900.203283-1-benjamin.gaignard@collabora.com>
- <20210831094900.203283-2-benjamin.gaignard@collabora.com>
- <4g2sigpsttf80t72c7spdqqjvvijnths2d@4ax.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <fdf6417e-09cd-f0a0-a351-fccd64bfc8c7@collabora.com>
-Date:   Tue, 31 Aug 2021 13:56:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 31 Aug 2021 08:06:42 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B65EC0612E7
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:05:47 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id ot2-20020a17090b3b4200b0019127f8ed87so1884960pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:05:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=81H8Khmuq0gm+N/QGoA0kVYpJHUjl5fbHhU1F9Dsi7A=;
+        b=WHzIyqFPHHfsV3+fhcaDaDbpfrnnsCoB8CjcJK16FN/tDkVHHYqZgD8j+d/U4Ul9xG
+         O91dGGYoZ2Rl/MSi+8H4bss1c/F5nvncUBCpXPJVP2HmHlZD6QdbD23Hp+PFsF/mQ9Td
+         For7qkfdnAVqb9LS3M8qUwcbBkGLcAFGTl2CFDfR4q94Jckr8Q72oU4xbRA5CfGPWLIY
+         jypWd42dQuu/u329tTiXu6LuBo7nwXo4xoODKI1zDCguLqf5VVj8FhNKJlyRHY8mTw8P
+         T0s6AuNCMzU7BkPzwbRr8Xzk0LnsLS1g0UIlgCXcvk1obTYk8okjBuZGbD7i46GU7tve
+         VQGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=81H8Khmuq0gm+N/QGoA0kVYpJHUjl5fbHhU1F9Dsi7A=;
+        b=BzfHNRCipJOVAvj98fjsJTaxieHwtJtiZTsDOHAui8/qOSR8MThZcUBsz+xJigCrhc
+         4InIKJfj+NzvrokQdqfWsCkrckf6nhfp6dLe31vJbY5SjRkfcM4HwZnSmaB1RQD6KFB6
+         S6H9e9y07ZFLKbElzZ5hFa8XkFQWG//O97dFDedU46tmNVbnWzkm6TVj3YpF0M/vrn8k
+         ODKb6sLfF5f9VXCqdTk8VrDg8q99oX0bpRHHo/JDJcN0j9htHZTCGAdhXCP1go6gujk1
+         neTL7yO/cbg8Ti7z6tyIarsY8l0ZC7ELrSF03Yn2KAbjdxU/UU59wMOF1u61f7Z9ES7l
+         PI7Q==
+X-Gm-Message-State: AOAM5326j+WsFLxJqLWqEI/osI+GFC6OfUSDFU2fjaH6nriatJAT7jiF
+        Qc/nSeJqqrPvA/gowjJGRysl2g==
+X-Google-Smtp-Source: ABdhPJzRAQ3+8KLiIf3YKqRM5JYk7c3Av6YFFYKKvuFVGY17IyclAKAGqPiWBfD3UcCzVsM2GjL8Ow==
+X-Received: by 2002:a17:902:ff02:b0:138:b944:e0f0 with SMTP id f2-20020a170902ff0200b00138b944e0f0mr4461195plj.34.1630411546632;
+        Tue, 31 Aug 2021 05:05:46 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id s192sm19353258pgc.23.2021.08.31.05.05.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 05:05:46 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 17:35:44 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Li Zhijian <lizhijian@cn.fujitsu.com>
+Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        philip.li@intel.com, linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] selftests/cpufreq: Rename DEBUG_PI_LIST to
+ DEBUG_PLIST
+Message-ID: <20210831120544.m4vngti4i3c6gwr3@vireshk-i7>
+References: <20210831102316.280512-1-lizhijian@cn.fujitsu.com>
+ <20210831102316.280512-3-lizhijian@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4g2sigpsttf80t72c7spdqqjvvijnths2d@4ax.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831102316.280512-3-lizhijian@cn.fujitsu.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 31-08-21, 18:23, Li Zhijian wrote:
+> DEBUG_PI_LIST was renamed to DEBUG_PLIST since
+> 8e18faeac3 ("lib/plist: rename DEBUG_PI_LIST to DEBUG_PLIST")
+> 
+> - It's not reasonable to keep the deprecated configs.
+> - configs under kselftests are recommended by corresponding tests.
+> So if some configs are missing, it will impact the testing results
+> 
+> CC: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> CC: Viresh Kumar <viresh.kumar@linaro.org>
+> CC: linux-pm@vger.kernel.org
+> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+> 
+> ---
+> v3: update commit logs # Shuah
+> ---
+>  tools/testing/selftests/cpufreq/config | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/cpufreq/config b/tools/testing/selftests/cpufreq/config
+> index 27ff72ebd0f5..75e900793e8a 100644
+> --- a/tools/testing/selftests/cpufreq/config
+> +++ b/tools/testing/selftests/cpufreq/config
+> @@ -6,7 +6,7 @@ CONFIG_CPU_FREQ_GOV_ONDEMAND=y
+>  CONFIG_CPU_FREQ_GOV_CONSERVATIVE=y
+>  CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y
+>  CONFIG_DEBUG_RT_MUTEXES=y
+> -CONFIG_DEBUG_PI_LIST=y
+> +CONFIG_DEBUG_PLIST=y
+>  CONFIG_DEBUG_SPINLOCK=y
+>  CONFIG_DEBUG_MUTEXES=y
+>  CONFIG_DEBUG_LOCK_ALLOC=y
 
-Le 31/08/2021 à 13:08, John Cox a écrit :
->> Marking a picture as long-term reference is valid for DPB but not for RPS.
->> Change flag name to match with it description in HEVC spec chapiter
->> "8.3.2 Decoding process for reference picture set".
->> Remove the other unused RPS flags.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->> Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 6 ++----
->> drivers/staging/media/hantro/hantro_g2_hevc_dec.c         | 2 +-
->> drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 2 +-
->> include/media/hevc-ctrls.h                                | 4 +---
->> 4 files changed, 5 insertions(+), 9 deletions(-)
->>
->> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> index 3865acb9e0fd..eff33c511090 100644
->> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> @@ -3138,10 +3138,8 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->> 	:c:type:`timeval` in struct :c:type:`v4l2_buffer` to a __u64.
->>      * - __u8
->>        - ``rps``
->> -      - The reference set for the reference frame
->> -        (V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_BEFORE,
->> -        V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_AFTER or
->> -        V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
->> +      - Long term flag for the reference frame
->> +        (V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
->>      * - __u8
->>        - ``field_pic``
->>        - Whether the reference is a field picture or a frame.
-> If you are going to remove all the RPS values except for Long Term
-> wouldn't it be better to rename the field too, either to "flags" or a
-> bool "is_long_term"?  If we have a field called RPS it really should be
-> able to have a value for any of the 5 valid Reference Picture Sets that
-> a DPB entry can belong to.
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-I will send a v2 and rename rps into flags.
-
->
-> As a side note, it is important to my code that the DPB array contains
-> all the DPB entries not just the ones that are in use in this frame.  I
-> need them so I can track which frames have left the DPB so I can
-> reuse/free the MV tables associated with them (yes I could keep one for
-> every entry in the capture Q but that is generally wasteful on memory
-> and the Pi is often memory constrained). So maybe update the docn on DPB
-> to make this explicit please? (I suspect that current code does this
-> anyway as it is generally easier to do than to not.)
-
-That should be in another patch :-)
-
-Benjamin
-
->
-> John Cox
->
->> diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
->> index 9ea864ca5625..be46b3c28b17 100644
->> --- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
->> +++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
->> @@ -503,7 +503,7 @@ static int set_ref(struct hantro_ctx *ctx)
->> 		compress_luma_addr = luma_addr + compress_luma_offset;
->> 		compress_chroma_addr = luma_addr + compress_chroma_offset;
->>
->> -		if (dpb[i].rps == V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
->> +		if (dpb[i].rps == V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
->> 			dpb_longterm_e |= BIT(V4L2_HEVC_DPB_ENTRIES_NUM_MAX - 1 - i);
->>
->> 		/*
->> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->> index ef0311a16d01..6086cc35e8cc 100644
->> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->> @@ -169,7 +169,7 @@ static void cedrus_h265_ref_pic_list_write(struct cedrus_dev *dev,
->> 		unsigned int index = list[i];
->> 		u8 value = list[i];
->>
->> -		if (dpb[index].rps == V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR)
->> +		if (dpb[index].rps == V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE)
->> 			value |= VE_DEC_H265_SRAM_REF_PIC_LIST_LT_REF;
->>
->> 		/* Each SRAM word gathers up to 4 references. */
->> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->> index ef63bc205756..f587448ef495 100644
->> --- a/include/media/hevc-ctrls.h
->> +++ b/include/media/hevc-ctrls.h
->> @@ -127,9 +127,7 @@ struct v4l2_ctrl_hevc_pps {
->> 	__u64	flags;
->> };
->>
->> -#define V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_BEFORE	0x01
->> -#define V4L2_HEVC_DPB_ENTRY_RPS_ST_CURR_AFTER	0x02
->> -#define V4L2_HEVC_DPB_ENTRY_RPS_LT_CURR		0x03
->> +#define V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE	0x01
->>
->> #define V4L2_HEVC_DPB_ENTRIES_NUM_MAX		16
->>
+-- 
+viresh
