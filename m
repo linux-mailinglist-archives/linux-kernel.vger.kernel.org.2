@@ -2,68 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00713FCF97
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 189963FCF9C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239279AbhHaWdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 18:33:42 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:44712 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhHaWdl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 18:33:41 -0400
-Received: by mail-oi1-f169.google.com with SMTP id c79so1207746oib.11;
-        Tue, 31 Aug 2021 15:32:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g6D38exB/Nb9kQ3rq5Ht426/g7o8xbXiI53vXw3Leoo=;
-        b=bpWeEgwpxsdF4j68YCdQoxB2tD9Y6Bt9LdhCbo0fc2HAatyKB0PiTxV+16BWW4nO8d
-         6mCgIIXXoI+4QOnabg4RmKKmVBr+VhIsImU2jQB6g5K98R59WRSWdHkEST/bTsxBmOGG
-         K1ASqxBm/3IDMpeB4ii3pWdcKWz4gFZ+KtDMUR7X1bq4Y8K6QKNkCbTkWbjkm9f7htnp
-         KJML7psbtSJOpGD78U138poX/l0XFajiXBF8iTK0fzmsuEKdmtviXLehVNS2M6iPjzOc
-         sHnXnfFUb927y2axAtD5vr6MGg6sOkmNoE4jtGDKtUaTirWYkUUnF0Z+O/BJjrrgzQ4Y
-         0h0Q==
-X-Gm-Message-State: AOAM531dj8Cny0ggEQl3iJUuVa7lfTP8LOtWgBg02OUrpbMsm1a/vGby
-        N8Hs0229Hw+9+a9gu65Eaw==
-X-Google-Smtp-Source: ABdhPJy/LrzRncvMJD8g1bJs+UutiJZ7WjP/8yf47rdUTkA6whSbhnEbeH51oAPVboJp2H4aaVmrog==
-X-Received: by 2002:a05:6808:2cd:: with SMTP id a13mr5040179oid.3.1630449165761;
-        Tue, 31 Aug 2021 15:32:45 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id k8sm3832850oom.20.2021.08.31.15.32.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 15:32:45 -0700 (PDT)
-Received: (nullmailer pid 762341 invoked by uid 1000);
-        Tue, 31 Aug 2021 22:32:44 -0000
-Date:   Tue, 31 Aug 2021 17:32:44 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
-Cc:     sam@ravnborg.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
-        airlied@linux.ie, dianders@google.com, devicetree@vger.kernel.org,
-        daniel@ffwll.ch, Douglas Anderson <dianders@chromium.org>
-Subject: Re: [v4 4/4] dt-bindngs: display: panel: Add BOE and INX panel
- bindings
-Message-ID: <YS6uDL6X1CJeJaNX@robh.at.kernel.org>
-References: <20210830023849.258839-1-yangcong5@huaqin.corp-partner.google.com>
- <20210830023849.258839-5-yangcong5@huaqin.corp-partner.google.com>
+        id S239279AbhHaWkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 18:40:07 -0400
+Received: from mga12.intel.com ([192.55.52.136]:17393 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229602AbhHaWkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 18:40:06 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="198142851"
+X-IronPort-AV: E=Sophos;i="5.84,367,1620716400"; 
+   d="scan'208";a="198142851"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 15:39:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,367,1620716400"; 
+   d="scan'208";a="466607443"
+Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
+  by orsmga007.jf.intel.com with ESMTP; 31 Aug 2021 15:39:08 -0700
+Received: from tjmaciei-mobl5.localnet (10.212.209.231) by
+ IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Tue, 31 Aug 2021 23:39:05 +0100
+From:   Thiago Macieira <thiago.macieira@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>, Len Brown <lenb@kernel.org>
+CC:     Borislav Petkov <bp@alien8.de>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to protect dynamic user state
+Date:   Tue, 31 Aug 2021 15:39:02 -0700
+Message-ID: <2020841.9MqWvG71rC@tjmaciei-mobl5>
+Organization: Intel Corporation
+In-Reply-To: <CAJvTdKkZ==89-rDeBUDy1GJEzU9FGiAb2m3rtMAGQPJQa1A2fA@mail.gmail.com>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com> <a96a65fc-061b-e94b-cee7-16201ac0820f@intel.com> <CAJvTdKkZ==89-rDeBUDy1GJEzU9FGiAb2m3rtMAGQPJQa1A2fA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830023849.258839-5-yangcong5@huaqin.corp-partner.google.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [10.212.209.231]
+X-ClientProxiedBy: orsmsx605.amr.corp.intel.com (10.22.229.18) To
+ IRSMSX605.ger.corp.intel.com (163.33.146.138)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 10:38:49 +0800, yangcong wrote:
-> Add documentation for boe tv110c9m-ll3, inx hj110iz-01a panel.
-> 
-> Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> ---
->  .../devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml   | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
+On Tuesday, 31 August 2021 15:15:55 PDT Len Brown wrote:
+> Indeed, I believe that there is universal agreement that a synchronous
+> return code
+> from a system call is a far superior programming model than decoding
+> the location of a failure in a system call.  (no, the IP isn't random -- it
+> is always the 1st instruction in that thread to touch a TMM register).
 
-Acked-by: Rob Herring <robh@kernel.org>
+That instruction is actually likely going to be a memory load, probably an 
+LDTILECFG. So the developer will see a crashing instruction with a pointer and 
+will spend time trying to figure out why that pointer was wrong, when there 
+was nothing wrong with it.
+
+That's why I suggested (and Chang implemented) a SIGILL for when #NM is 
+received and the arch_prctl() wasn't previously done. The OOM condition, if 
+the extra state is dynamically allocated, was meant to stay a SIGSEGV, but 
+maybe should change to SIGKILL.
+
+On the other hand, if it it's allocated at the syscall, then the kernel can 
+return -ENOMEM for it (which would allow for graceful degradation) or for a 
+later clone() syscall starting a new thread (which I don't expect to ever 
+gracefully degrade).
+
+> decoding the location of the failure in a *signal hander*
+
+That's a separate problem.
+
+We can't be sure that the portion of the userspace doing the alt-stack crash 
+handler is aware of the portion using AMX. There's no way to enforce this. The 
+prctl() is a good indication, but I have no clue how high the correlation will 
+be.
+
+-- 
+Thiago Macieira - thiago.macieira (AT) intel.com
+  Software Architect - Intel DPG Cloud Engineering
+
+
+
