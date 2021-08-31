@@ -2,142 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6536F3FCBFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EAE3FCC03
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 19:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240163AbhHaRDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 13:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
+        id S232509AbhHaREH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 13:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232509AbhHaRDy (ORCPT
+        with ESMTP id S240202AbhHaREC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 13:03:54 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A94C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:02:59 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id k12-20020a05620a0b8c00b003d5c8646ec2so2953377qkh.20
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:02:59 -0700 (PDT)
+        Tue, 31 Aug 2021 13:04:02 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF20FC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:03:06 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id t2-20020a4ae9a2000000b0028c7144f106so5876572ood.6
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:03:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=g8lY3yuhge4SRook/yGWV7kL5YSEDsu9mSGrR5Y9scA=;
-        b=kt6ekm9T+vWkJ8q0edC27hme2qMrVnaFZLAbhawe6zbXaUsECF/QCwz/8bw0gYjMbJ
-         MRfRbbw+/eyf9sm9HJTxivTkeEC/wKeYceKTApzMJB9Ipa6RSF+ftxg8ZjsrvhIqc9Uu
-         /yUzLTwr3u0n/Cv59LKIfw5VmeZV+sPt/uP9dt+kvWwY973s7+R64dXLxsDLNoUUmJsH
-         2qsUQPeYUa/EyfYPlsBWxevqylze6ebN3LrlnHDzun9k2uqxxFh1F/8cFMlhJkBbnqUX
-         e3arpB0XRXauZ5IOBKn5zWJmRYG2XJTTK0iuiR7u59miy5/C7pxw9cRJHW490PMRdax+
-         gbUA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aquqJwbc9m/hIVCd01TlOuCXbAUHlFJOz/03vmUb8IM=;
+        b=q5jjzmupuZysdq6pWM6sahYpgGRYgqndWyW/wAc+WhHHcvPtSPx1jDAU0woWnKbRbo
+         tn/icMFl7O5TPVcbFWiyHWfHBfvH5q4M81Eye4+TLIsH/xh7sS1GZCXpszVjli5RBp7t
+         qmxrNg7JaX8/jUCQ5qmckF4xKx4F33oh3CEKEfs8y9TcaZBc93oUfwmnVbwoNriqOyBO
+         R9cYqvxZZbqb45UeyIa/tIfRHVBkkfpDqNdXKGaCkcrWV4ntPwL+rWnRq9jw/awNpe5d
+         Kr7ft9qBkhKzqN+TUudBVrTf8xbZcd/tYx7zs2WSramLm+f3npGOdIeZzeF7mA5ujJjR
+         s8jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=g8lY3yuhge4SRook/yGWV7kL5YSEDsu9mSGrR5Y9scA=;
-        b=gMZONAjzpSVUoiRCPE3x32HdNgmuOFiIE0fnKwFtf3mElsL40rZ26UB/NJ8i/9j9Co
-         OEH36MXQ/DwwEHMyWrJXlZyezcK0srXYBL3X4Z5I7TGJUN56BqqzxPKs6LVr/pnjB5oM
-         gAnc2N40AarTEihl7Gfj1p2kB2a97DsxWIbetvioWLT9jpFKNn6XJU+4+L1f+DluKVqZ
-         zatsyfGYSjJahi6CmmfiyMZwjDQlbK23odIRmRgaPGDbFD9YkzuMBXsbDcPPPEOBuDHc
-         C5FzXQRNcW/Du9iB3mRhEyiLa60V2NQGbuumFPUCEixWDM2c0JwbkFpLhkJbJ4mT3bCm
-         4kYw==
-X-Gm-Message-State: AOAM531DR52B5Hi4cTiyCsDjtLSdaGlD4eDpNscfdeEvQl+neonycu1y
-        hD+ZEptGhbSt/j3TAc/B4d4JTSBiiEydcWEL9Q==
-X-Google-Smtp-Source: ABdhPJwCf3Cu7g4PmQSnZJgkn4wuD7Lo+AaxU2pZ6uElWFd42D/y42xyxtqfRfSENfX+fiBJOXU+pO9LUuntCuFf4w==
-X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:2145])
- (user=kaleshsingh job=sendgmr) by 2002:a0c:ac4a:: with SMTP id
- m10mr29926257qvb.37.1630429378671; Tue, 31 Aug 2021 10:02:58 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 17:02:29 +0000
-Message-Id: <20210831170233.1409537-1-kaleshsingh@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [RESEND v2] tracing/gpu: Add imported size to gpu_mem_imported tracepoint
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, gregkh@linuxfoundation.org,
-        john.reitan@arm.com, orjan.eide@arm.com, mark.underwood@arm.com,
-        gary.sweet@broadcom.com, stephen.mansfield@imgtec.com,
-        kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aquqJwbc9m/hIVCd01TlOuCXbAUHlFJOz/03vmUb8IM=;
+        b=lYrPiMjuCt6/7bN0qahLpq3wAaPhWntAkleo+xxLVopaNOy54ghcEeupLdrjHhJwzQ
+         on7VLe/nI5WIfhMRE0VCQSSYD9Rkqwwk7MmCpfcPAZ0zUMVR+OlYRWmEcT238ncdh8fN
+         q5S8/fufAQ8rbilCaGF5S29f4b9wxW1LBHgfdQuB7B6bZQ+VngfYbLSrYypr4yY33ue0
+         7lmRvaney0l/UG1vh2B/7RjS/AfX2AIzOttZJt44W2ADo9e/SbaKci9jnKJbIPq4jpPO
+         71VmzZ3AyJegazvaf2ZnfT8Do4TzHeWfnCF0ajKoshucZnusAKaaPuu0wz7g+6+82jRR
+         z+Ow==
+X-Gm-Message-State: AOAM530AX02bQCf6VaTsqmAhbROaKc2DsPNdTQE/ssamT618B/WEjEkw
+        osV6sMrS94Tc1ddXq4FK5UDVTw==
+X-Google-Smtp-Source: ABdhPJxKKFdY8MvkADZc3EpXGvVWUIRpCwdjGVe7w41nCD/MZyO774PBzlWQ8ANv/3d0FU5rFERitw==
+X-Received: by 2002:a4a:df43:: with SMTP id j3mr15210793oou.37.1630429386025;
+        Tue, 31 Aug 2021 10:03:06 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id y138sm3647410oie.22.2021.08.31.10.03.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 10:03:05 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 10:04:14 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Sibi Sankar <sibis@codeaurora.org>, sboyd@kernel.org,
+        robh+dt@kernel.org, viresh.kumar@linaro.org, agross@kernel.org,
+        rjw@rjwysocki.net, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dianders@chromium.org,
+        tdas@codeaurora.org
+Subject: Re: [PATCH 3/4] arm64: dts: qcom: sc7280: Fixup the cpufreq node
+Message-ID: <YS5hDq+xblntYbh0@ripper>
+References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
+ <1627581885-32165-4-git-send-email-sibis@codeaurora.org>
+ <YS5LDb4KDFx/dRnM@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YS5LDb4KDFx/dRnM@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing gpu_mem_total tracepoint provides GPU drivers a uniform way
-to report the per-process and system-wide GPU memory usage. This
-tracepoint reports a single total of the GPU private allocations and the
-imported memory. [1]
+On Tue 31 Aug 08:30 PDT 2021, Matthias Kaehlcke wrote:
 
-To allow distinguishing GPU private vs imported memory, add an
-imported_size field to the gpu_mem_total tracepoint. GPU drivers can use
-this new field to report the per-process and global GPU-imported memory
-in a uniform way.
+> On Thu, Jul 29, 2021 at 11:34:44PM +0530, Sibi Sankar wrote:
+> > Fixup the register regions used by the cpufreq node on SC7280 SoC to
+> > support per core L3 DCVS.
+> > 
+> > Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
+> > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> 
+> This patch landed in the Bjorn's tree, however the corresponding driver
+> change ("cpufreq: qcom: Re-arrange register offsets to support per core
+> L3 DCVS" / https://patchwork.kernel.org/project/linux-arm-msm/patch/1627581885-32165-3-git-send-email-sibis@codeaurora.org/)
+> did not land in any maintainer tree yet AFAIK. IIUC the DT change alone
+> breaks cpufreq since the changed register regions require the changed
+> offset in the cpufreq driver.
+> 
 
-User space tools can detect and handle the old vs new gpu_mem_total
-format via the gpu_mem/gpu_mem_total/format file.
+Thanks for the note Matthias, it must have slipped by as I scraped the
+inbox for things that looked ready.
 
-[1] https://lore.kernel.org/r/20200302234840.57188-1-zzyiwei@google.com/
+I'm actually not in favor of splitting these memory blocks in DT to
+facilitate the Linux implementation of splitting that in multiple
+drivers...
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
- include/trace/events/gpu_mem.h | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+But I've not been following up on that discussion.
 
-diff --git a/include/trace/events/gpu_mem.h b/include/trace/events/gpu_mem.h
-index 26d871f96e94..ae6fab6bab7b 100644
---- a/include/trace/events/gpu_mem.h
-+++ b/include/trace/events/gpu_mem.h
-@@ -15,7 +15,7 @@
- 
- /*
-  * The gpu_memory_total event indicates that there's an update to either the
-- * global or process total gpu memory counters.
-+ * global or process total and imported gpu memory counters.
-  *
-  * This event should be emitted whenever the kernel device driver allocates,
-  * frees, imports, unimports memory in the GPU addressable space.
-@@ -24,31 +24,36 @@
-  *
-  * @pid: Put 0 for global total, while positive pid for process total.
-  *
-- * @size: Size of the allocation in bytes.
-+ * @size: Total size of allocated and imported memory in bytes.
-+ *
-+ * @imported_size: Total size of imported memory in bytes.
-  *
-  */
- TRACE_EVENT(gpu_mem_total,
- 
--	TP_PROTO(uint32_t gpu_id, uint32_t pid, uint64_t size),
-+	TP_PROTO(uint32_t gpu_id, uint32_t pid, uint64_t size, uint64_t imported_size),
- 
--	TP_ARGS(gpu_id, pid, size),
-+	TP_ARGS(gpu_id, pid, size, imported_size),
- 
- 	TP_STRUCT__entry(
- 		__field(uint32_t, gpu_id)
- 		__field(uint32_t, pid)
- 		__field(uint64_t, size)
-+		__field(uint64_t, imported_size)
- 	),
- 
- 	TP_fast_assign(
- 		__entry->gpu_id = gpu_id;
- 		__entry->pid = pid;
- 		__entry->size = size;
-+		__entry->imported_size = imported_size;
- 	),
- 
--	TP_printk("gpu_id=%u pid=%u size=%llu",
-+	TP_printk("gpu_id=%u pid=%u size=%llu imported_size=%llu",
- 		__entry->gpu_id,
- 		__entry->pid,
--		__entry->size)
-+		__entry->size,
-+		__entry->imported_size)
- );
- 
- #endif /* _TRACE_GPU_MEM_H */
+Regards,
+Bjorn
 
-base-commit: 9c849ce86e0fa93a218614eac562ace44053d7ce
--- 
-2.33.0.259.gc128427fd7-goog
-
+> Sibi, please confirm or clarify that my concern is unwarranted.
