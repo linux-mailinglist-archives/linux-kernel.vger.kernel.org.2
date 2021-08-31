@@ -2,110 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6E23FC3C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E0D3FC3C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239822AbhHaHjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 03:39:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52235 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231537AbhHaHjE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 03:39:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630395489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5mQhLKnJ2xoUp4bk3hcpO+tGdeMZNuwhxgy5Bf2xxIw=;
-        b=HrTBd8O1NIvc16KxTg+z+jMW94eprrgOQzsHMJoNAdM74MBWudKlaks7TzLWGTnFsoI6Xg
-        tsNzvJXqCkC2PxT+2JvCyn5pG9M7lJIbR4BotEz/uLqK9SRny7WbdkZMChIZomY6SrC5sG
-        uE6R/q9N9PJ9hJpwHhsopupQ8BMntuY=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-uu9qxoYxNDSHhtgoyAcG2g-1; Tue, 31 Aug 2021 03:38:07 -0400
-X-MC-Unique: uu9qxoYxNDSHhtgoyAcG2g-1
-Received: by mail-ej1-f71.google.com with SMTP id v19-20020a170906b013b02905b2f1bbf8f3so698561ejy.6
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 00:38:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5mQhLKnJ2xoUp4bk3hcpO+tGdeMZNuwhxgy5Bf2xxIw=;
-        b=BUca0xqVmMXdxvlUy3zB7PsTtzrPG9kcN03v+cPu2p20yolhMvZWPEWX2u/yHTHgxU
-         dvxF1QDB9njpAm2JgYltGNbHmwfmz7126SlwhvQ1BcPYf0nUvtPNunpABljhhXu0fT27
-         JC7JAOFgvX2VJiWgl76fw+KufTrvYmEx1QdBvFSXxyPXcU4UHl5xsPAh320Q2u80ev3B
-         oAJdHQwMsfSIYqJ8fqVY53b6tHPfyDcGespq/LazsBbzJciTEWZfSdmgXZ9Ye9zp2c/7
-         s2xVLj5mdRzv3akVJJXNIfgLKKctidw23TBYSI3T30MStMSDQcxjJ5EsvfnHwwhn4Nxj
-         eZHg==
-X-Gm-Message-State: AOAM5327Zj7SJAxiRyYueGxfSPrw4AJrgjUtcdizX9ArrtJF5hIbJ3tM
-        mT7QsUbTqEHo6NJSZwTcau62ML/lvJV/ZqOJL5F4Tm5Xiy26gy9ttepxdaBEPkhaJJx2nIybNwr
-        zwcSikFdMXaVJNlDzHma+feiSIxDWJHvnw+nMgX6pnyixBMumupufsauFOuvQVOVCQq0GhoaNnk
-        Kx
-X-Received: by 2002:a17:906:7716:: with SMTP id q22mr30015663ejm.457.1630395485929;
-        Tue, 31 Aug 2021 00:38:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxLUWFAXTEKfEy/di0/LWfct67mDIywsCfy24A1pBzQGFAYAhL7mGPAFEZNKhwTmY5sUCRFsw==
-X-Received: by 2002:a17:906:7716:: with SMTP id q22mr30015653ejm.457.1630395485727;
-        Tue, 31 Aug 2021 00:38:05 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id f30sm7609956ejl.78.2021.08.31.00.38.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 00:38:05 -0700 (PDT)
-Subject: Re: [PATCH v3 0/1] libata: Add ATA_HORKAGE_NONCQ_ON_AMD for Samsung
- 860 and 870 SSD.
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Kate Hsuan <hpa@redhat.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210830144253.289542-1-hpa@redhat.com>
- <DM6PR04MB708147357F91D5AEB6128A2AE7CB9@DM6PR04MB7081.namprd04.prod.outlook.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <a76b2acd-edfa-55b2-907c-f1faa8ce4914@redhat.com>
-Date:   Tue, 31 Aug 2021 09:38:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239914AbhHaHj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 03:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239830AbhHaHjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 03:39:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E09B560ED4;
+        Tue, 31 Aug 2021 07:38:20 +0000 (UTC)
+Date:   Tue, 31 Aug 2021 09:38:18 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>,
+        andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, dvyukov@google.com, jmorris@namei.org,
+        kafai@fb.com, kpsingh@google.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        paul@paul-moore.com, selinux@vger.kernel.org,
+        songliubraving@fb.com, stephen.smalley.work@gmail.com,
+        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com,
+        viro@zeniv.linux.org.uk, yhs@fb.com
+Subject: Re: [syzbot] general protection fault in legacy_parse_param
+Message-ID: <20210831073818.oojyjqyiogel7hll@wittgenstein>
+References: <0000000000004e5ec705c6318557@google.com>
+ <0000000000008d2a0005ca951d94@google.com>
+ <20210830122348.jffs5dmq6z25qzw5@wittgenstein>
+ <61bf6b11-80f8-839e-4ae7-54c2c6021ed5@schaufler-ca.com>
+ <89d0e012-4caf-4cda-3c4e-803a2c6ebc2b@schaufler-ca.com>
+ <20210830165733.emqlg3orflaqqfio@wittgenstein>
+ <3354839e-5e7a-08c7-277a-9bbebfbfc0bc@schaufler-ca.com>
 MIME-Version: 1.0
-In-Reply-To: <DM6PR04MB708147357F91D5AEB6128A2AE7CB9@DM6PR04MB7081.namprd04.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <3354839e-5e7a-08c7-277a-9bbebfbfc0bc@schaufler-ca.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/30/21 11:45 PM, Damien Le Moal wrote:
-> On 2021/08/30 23:43, Kate Hsuan wrote:
->> Many users reported the issue when running the system with Samsung 860,
->> 870 SSD, and AMD chipset. Therefore, completely disabling the NCQ can
->> avoid this issue.
->>
->> Entire disabling NCQ for Samsung 860/870 SSD will cause I/O performance
->> drop. In this case, a flag ATA_HORKAGE_NONCQ_ON_AMD is introduced to
->> used to perform an additional check for these SSDs. If it finds its parent
->> ATA controller is AMD, the NCQ will be disabled. Otherwise, the NCQ is kept
->> to enable.
+On Mon, Aug 30, 2021 at 10:41:29AM -0700, Casey Schaufler wrote:
+> On 8/30/2021 9:57 AM, Christian Brauner wrote:
+> > On Mon, Aug 30, 2021 at 09:40:57AM -0700, Casey Schaufler wrote:
+> >> On 8/30/2021 7:25 AM, Casey Schaufler wrote:
+> >>> On 8/30/2021 5:23 AM, Christian Brauner wrote:
+> >>>> On Fri, Aug 27, 2021 at 07:11:18PM -0700, syzbot wrote:
+> >>>>> syzbot has bisected this issue to:
+> >>>>>
+> >>>>> commit 54261af473be4c5481f6196064445d2945f2bdab
+> >>>>> Author: KP Singh <kpsingh@google.com>
+> >>>>> Date:   Thu Apr 30 15:52:40 2020 +0000
+> >>>>>
+> >>>>>     security: Fix the default value of fs_context_parse_param hook
+> >>>>>
+> >>>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=160c5d75300000
+> >>>>> start commit:   77dd11439b86 Merge tag 'drm-fixes-2021-08-27' of git://ano..
+> >>>>> git tree:       upstream
+> >>>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=150c5d75300000
+> >>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=110c5d75300000
+> >>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
+> >>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
+> >>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126d084d300000
+> >>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16216eb1300000
+> >>>>>
+> >>>>> Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
+> >>>>> Fixes: 54261af473be ("security: Fix the default value of fs_context_parse_param hook")
+> >>>>>
+> >>>>> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> >>>> So ok, this seems somewhat clear now. When smack and 
+> >>>> CONFIG_BPF_LSM=y
+> >>>> is selected the bpf LSM will register NOP handlers including
+> >>>>
+> >>>> bpf_lsm_fs_context_fs_param()
+> >>>>
+> >>>> for the
+> >>>>
+> >>>> fs_context_fs_param
+> >>>>
+> >>>> LSM hook. The bpf LSM runs last, i.e. after smack according to:
+> >>>>
+> >>>> CONFIG_LSM="landlock,lockdown,yama,safesetid,integrity,tomoyo,smack,bpf"
+> >>>>
+> >>>> in the appended config. The smack hook runs and sets
+> >>>>
+> >>>> param->string = NULL
+> >>>>
+> >>>> then the bpf NOP handler runs returning -ENOPARM indicating to the vfs
+> >>>> parameter parser that this is not a security module option so it should
+> >>>> proceed processing the parameter subsequently causing the crash because
+> >>>> param->string is not allowed to be NULL (Which the vfs parameter parser
+> >>>> verifies early in fsconfig().).
+> >>> The security_fs_context_parse_param() function is incorrectly
+> >>> implemented using the call_int_hook() macro. It should return
+> >>> zero if any of the modules return zero. It does not follow the
+> >>> usual failure model of LSM hooks. It could be argued that the
+> >>> code was fine before the addition of the BPF hook, but it was
+> >>> going to fail as soon as any two security modules provided
+> >>> mount options.
+> >>>
+> >>> Regardless, I will have a patch later today. Thank you for
+> >>> tracking this down.
+> >> Here's my proposed patch. I'll tidy it up with a proper
+> >> commit message if it looks alright to y'all. I've tested
+> >> with Smack and with and without BPF.
+> > Looks good to me.
+> > On question, in contrast to smack, selinux returns 1 instead of 0 on
+> > success. So selinux would cause an early return preventing other hooks
+> > from running. Just making sure that this is intentional.
+> >
+> > Iirc, this would mean that selinux causes fsconfig() to return a
+> > positive value to userspace which I think is a bug; likely in selinux.
+> > So I think selinux should either return 0 or the security hook itself
+> > needs to overwrite a positive value with a sensible errno that can be
+> > seen by userspace.
 > 
-> For a single patch, generally, a cover letter is not needed. Especially so in
-> this case since your cover letter message is the same as the patch commit message.
-> 
->>
->> Changes since v3
->> * Modified the flag from ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL to
->>   ATA_HORKAGE_NONCQ_ON_AMD.
->> * Modified and fixed the code to completely disable NCQ on AMD controller.
-> 
-> Technically, this is a v2 right ? Also, by "completely", did you mean "always" ?
-> (see patch comments).
+> I think that I agree. The SELinux and Smack versions of the
+> hook are almost identical except for setting rc to 1 in the
+> SELinux case. And returning 1 makes no sense if you follow
+> the callers back. David Howells wrote both the SELinux and
+> Smack versions. David - why are they different? which is correct?
 
-Right, as mentioned in my reply to the v1 which was accidentally labelled v2
-I suggested to just make this v3 to avoid confusion, otherwise we would have
-2 v2-s.
+The documentation for fs_context_parse_param notes:
 
-Regards,
+ * @fs_context_parse_param:
+ *	Userspace provided a parameter to configure a superblock.  The LSM may
+ *	reject it with an error and may use it for itself, in which case it
+ *	should return 0; otherwise it should return -ENOPARAM to pass it on to
+ *	the filesystem.
+ *	@fc indicates the filesystem context.
+ *	@param The parameter
 
-Hans
-
+So we should simply make selinux return 0 on top of your patch when it
+has consumed the option.
