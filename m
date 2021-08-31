@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153FB3FCAB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA773FCABD
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239115AbhHaPWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:22:20 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:44660 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238853AbhHaPWR (ORCPT
+        id S238920AbhHaPZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:25:07 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:53726 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234356AbhHaPZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:22:17 -0400
-Received: by mail-ot1-f50.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so23215991otg.11;
-        Tue, 31 Aug 2021 08:21:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iydkFq95FEpeivoCRrL3REow4ynVkrvAtNhFWXbXqTc=;
-        b=BiwTmisMolOpUQ5AQZDym1NY2gbhfeEKV1vwdCRRrY8rSb2GRz7VQlC5kmv22q4/JZ
-         SEg1AG9v++0xKLYOuFmYANdujWFP8jQY+4kOmsAQhuhDUJ0v6Z5N30+UnWC4oJzwLTW6
-         pfJ2EApoIAoQrG0RlBcZRQyIXu3ik/X9573yw2T12MEgL6fh9Hn/rpCxQPhdaCUTRG8b
-         PZV++N3P/3RoxnlvbjyH49aee8Wgi+sBK3qhCczpjfuUVZ4KdY9UrX/XDKIsI3LCyEbd
-         dsUsIaQx/6nCeDJBgFUjKlXni78MJsi24mn6TVUYhdeNvjdJvsAbG1D7APWDfXxi6hSf
-         2tZw==
-X-Gm-Message-State: AOAM532qbORgHy6B3uXOf9YSw4DLtiQW+FJNyYTJBICjZ3+Gmf2qHkre
-        +xjUgkcPhkHhgv4njVqG9w==
-X-Google-Smtp-Source: ABdhPJzdVROAeEU60vayUamOQJIwnsjKstVyAXj2+wmKDPAnvUXvFgPYR3Q3dX73SimpxZFuMmoWhQ==
-X-Received: by 2002:a9d:d35:: with SMTP id 50mr24066094oti.22.1630423281834;
-        Tue, 31 Aug 2021 08:21:21 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id f126sm3711466oob.9.2021.08.31.08.21.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 08:21:20 -0700 (PDT)
-Received: (nullmailer pid 181416 invoked by uid 1000);
-        Tue, 31 Aug 2021 15:21:20 -0000
-Date:   Tue, 31 Aug 2021 10:21:20 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, daniel@ffwll.ch,
-        Shawn Guo <shawnguo@kernel.org>, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, wanghaibin.wang@huawei.com,
-        robh+dt@kernel.org, Jun Nie <jun.nie@linaro.org>
-Subject: Re: [PATCH] dt-bindings: display: remove zte,vou.txt binding doc
-Message-ID: <YS5I8OHKifmH9N/O@robh.at.kernel.org>
-References: <20210831034924.86-1-yuzenghui@huawei.com>
+        Tue, 31 Aug 2021 11:25:06 -0400
+Received: from fsav311.sakura.ne.jp (fsav311.sakura.ne.jp [153.120.85.142])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 17VFO9XU065984;
+        Wed, 1 Sep 2021 00:24:09 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav311.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp);
+ Wed, 01 Sep 2021 00:24:09 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 17VFO3bt065891
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 1 Sep 2021 00:24:09 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] fbmem: don't allow too huge resolutions
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Colin King <colin.king@canonical.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <000000000000815b9605c70e74f8@google.com>
+ <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
+ <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
+ <339bfb21-8e80-c7d9-46dd-c416f87c50c0@infradead.org>
+ <535e404d-03bf-8e7a-b296-132a2a98c599@i-love.sakura.ne.jp>
+ <CAMuHMdWX7s63X_zR9329canbQkPGBVxZNG4O+_=jUut60aGR9g@mail.gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <5c6d2b95-31d7-0d59-5e62-2593d9a0e1fe@i-love.sakura.ne.jp>
+Date:   Wed, 1 Sep 2021 00:23:58 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210831034924.86-1-yuzenghui@huawei.com>
+In-Reply-To: <CAMuHMdWX7s63X_zR9329canbQkPGBVxZNG4O+_=jUut60aGR9g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 11:49:24 +0800, Zenghui Yu wrote:
-> The zte zx platform was removed in commit 89d4f98ae90d ("ARM: remove zte
-> zx platform") and the zxdrm driver is going to be removed in v5.15 via
-> drm tree. Let's remove the now obsolete binding doc.
-> 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Jun Nie <jun.nie@linaro.org>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> ---
->  .../devicetree/bindings/display/zte,vou.txt   | 120 ------------------
->  1 file changed, 120 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/display/zte,vou.txt
-> 
+On 2021/08/31 15:48, Geert Uytterhoeven wrote:
+> Furthermore, this restricts the virtual frame buffer size on 64-bit,
+> too, while graphics cards can have much more than 4 GiB of RAM.
 
-Applied, thanks!
+Excuse me, but do you mean that some hardware allows allocating more than
+UINT_MAX bytes of memory for kernel frame buffer drivers?
+
+> IMHO that should be fixed in vga16fb, too.
+
+According to https://elixir.bootlin.com/linux/v5.14/A/ident/fb_check_var , 
+there are 89 files. Randomly picking up drivers/video/fbdev/udlfb.c as
+an example. dlfb_is_valid_mode() from dlfb_ops_check_var() is doing
+
+  if (mode->xres * mode->yres > dlfb->sku_pixel_limit)
+    return 0;
+  return 1;
+
+where max dlfb->sku_pixel_limit seems to be 2048 * 1152 but I think we need
+same overflow check. I want to avoid patching individual modules if possible.
+That depends on whether some hardware needs to allocate more than UINT_MAX
+bytes of memory.
+
