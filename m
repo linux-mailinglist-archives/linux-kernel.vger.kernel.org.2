@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F26A3FC7FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27033FC805
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235108AbhHaNRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:17:12 -0400
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:40564 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhHaNRF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:17:05 -0400
-Received: by mail-wm1-f42.google.com with SMTP id x2-20020a1c7c02000000b002e6f1f69a1eso2061819wmc.5;
-        Tue, 31 Aug 2021 06:16:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=O04+J9gSxbpkBztP2ggNCNH2CejHjsWY1TH+VQQ2tR4=;
-        b=Z1QpaNb6lwYgwghFPERz6ASgsUyRcU5/9NACCK5mmoSJoqgBeMtg1h8SnlnNoLQZv4
-         RepI5FBDTKXeMnvf7CDxLls3bIfF3ZN0VmBEtfiOWAGxlBtlEyN8Rb8af74Mp1YahZsM
-         wdnIKVUBz5XiPi5hLwv5b3kXu+urf814NVXzrr6FQ7HLlFKp5936abvsKBvGPfJUj2bo
-         mmyKC1V7hJ9+ByBOzHRDLwzCfPMWHs54xLEYhRwTHLJE/HPGE0r/vhtU24GLP0BRsOBw
-         kUcPUrXm3oMSIavHEmJHxX+NYqjwNTVpnxrta6ho4k3wBVVOJXY0OiDYEfSIAsugJYvk
-         sCxw==
-X-Gm-Message-State: AOAM533ZYDFcYrm2qAg02aD2BiWYLrvGYvYUTotHwaUcgNi6kuY/DLY6
-        QDgnz7pp/uVLcT7awX/psMA=
-X-Google-Smtp-Source: ABdhPJwpoDBQpL9HH7X3Hred4ImIlOsoaD0JdkXw1ZnRsGtGL4rbmQERxwBqSVjC+kmODA3gr95k3Q==
-X-Received: by 2002:a7b:cc16:: with SMTP id f22mr4161917wmh.99.1630415769653;
-        Tue, 31 Aug 2021 06:16:09 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id c15sm2442150wmr.8.2021.08.31.06.16.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 06:16:09 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 13:16:07 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     longli@linuxonhyperv.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, Long Li <longli@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [Patch v2] PCI: hv: Fix sleep while in non-sleep context when
- removing child devices from the bus
-Message-ID: <20210831131607.vsjvmr43eei4dsie@liuwe-devbox-debian-v2>
-References: <1630365207-20616-1-git-send-email-longli@linuxonhyperv.com>
+        id S234756AbhHaNSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:18:03 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50210 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230175AbhHaNSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 09:18:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=O0tbD+MhxYcxlWeFJDcgfYosGr5RiD+IdZLr5hwd1OI=; b=cVzPwALFENJsChIX2055ZXy1JL
+        qt4lmrRBX8oXBiWXmBjYXg7ompSsfXwCclG/zP8Jcftu96My4+xefEuCxy+bpNoIfLKBCcClC9KEE
+        2cXda4H4jA/Mxx+Ec6LONitWbtADK7mBLX0J99LaWXTT0KfqIiTB7sUIXRbayR4NLQKE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mL3dD-004ilj-3l; Tue, 31 Aug 2021 15:16:51 +0200
+Date:   Tue, 31 Aug 2021 15:16:51 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
+ FWNODE_FLAG_BROKEN_PARENT
+Message-ID: <YS4rw7NQcpRmkO/K@lunn.ch>
+References: <YSf/Mps9E77/6kZX@lunn.ch>
+ <CAGETcx_h6moWbS7m4hPm6Ub3T0tWayUQkppjevkYyiA=8AmACw@mail.gmail.com>
+ <YSg+dRPSX9/ph6tb@lunn.ch>
+ <CAGETcx_r8LSxV5=GQ-1qPjh7qGbCqTsSoSkQfxAKL5q+znRoWg@mail.gmail.com>
+ <YSjsQmx8l4MXNvP+@lunn.ch>
+ <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
+ <YSlG4XRGrq5D1/WU@lunn.ch>
+ <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
+ <YSpr/BOZj2PKoC8B@lunn.ch>
+ <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1630365207-20616-1-git-send-email-longli@linuxonhyperv.com>
+In-Reply-To: <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 04:13:27PM -0700, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
+> > I must admit, my main problem at the moment is -rc1 in two weeks
+> > time. It seems like a number of board with Ethernet switches will be
+> > broken, that worked before. phy-handle is not limited to switch
+> > drivers, it is also used for Ethernet drivers. So it could be, a
+> > number of Ethernet drivers are also going to be broken in -rc1?
 > 
-> In hv_pci_bus_exit, the code is holding a spinlock while calling
-> pci_destroy_slot(), which takes a mutex.
-> 
-> This is not safe for spinlock. Fix this by moving the children to be
-> deleted to a list on the stack, and removing them after spinlock is
-> released.
-> 
-> Fixes: 94d22763207a ("PCI: hv: Fix a race condition when removing the device")
-> 
-> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
-> Cc: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: Stephen Hemminger <sthemmin@microsoft.com>
-> Cc: Wei Liu <wei.liu@kernel.org>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: "Krzysztof Wilczyński" <kw@linux.com>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Michael Kelley <mikelley@microsoft.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Link: https://lore.kernel.org/linux-hyperv/20210823152130.GA21501@kili/
-> Signed-off-by: Long Li <longli@microsoft.com>
+> Again, in those cases, based on your FEC example, fw_devlink=on
+> actually improves things.
 
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
+Debatable. I did some testing. As expected some boards with Ethernet
+switches are now broken. Without fw_devlink=on, some boards are not
+optimal, but they actually work. With it, they are broken.
+
+I did a bisect, and they have been broken since:
+
+ea718c699055c8566eb64432388a04974c43b2ea is the first bad commit
+commit ea718c699055c8566eb64432388a04974c43b2ea
+Author: Saravana Kannan <saravanak@google.com>
+Date:   Tue Mar 2 13:11:32 2021 -0800
+
+    Revert "Revert "driver core: Set fw_devlink=on by default""
+    
+    This reverts commit 3e4c982f1ce75faf5314477b8da296d2d00919df.
+    
+    Since all reported issues due to fw_devlink=on should be addressed by
+    this series, revert the revert. fw_devlink=on Take II.
+    
+    Signed-off-by: Saravana Kannan <saravanak@google.com>
+    Link: https://lore.kernel.org/r/20210302211133.2244281-4-saravanak@google.com
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+ drivers/base/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+So however it is fixed, it needs to go into stable, not just -rc1.
+
+> Again, it's not a widespread problem as I explained before.
+> fw_devlink=on has been the default for 2 kernel versions now. With no
+> unfixed reported issues.
+
+Given that some Ethernet switches have been broken all that time, i
+wonder what else has been broken? Normally, the kernel which is
+release in December becomes the next LTS. It then gets picked up by
+the distros and more wide spread tested. So it could be, you get a
+flood of reports in January and February about things which are
+broken. This is why i don't think you should be relying on bug
+reports, you should be taking a more proactive stance and trying to
+analyse the DTB blobs.
+
+I will spend some time trying out your proposed fix. See if they are a
+quick fix for stable.
+
+      Andrew
+
