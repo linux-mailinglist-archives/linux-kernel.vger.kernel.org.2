@@ -2,67 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE873FC789
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6700F3FC78D
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232542AbhHaMq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 08:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
+        id S232858AbhHaMsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 08:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhHaMq5 (ORCPT
+        with ESMTP id S230175AbhHaMsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 08:46:57 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C029C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:46:02 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id x16so8895206pll.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:46:02 -0700 (PDT)
+        Tue, 31 Aug 2021 08:48:02 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA1BC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:47:07 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id g18so19996979wrc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 05:47:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=norberthealth-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g+EFI6GnSelcnpgoeb+deAAklW3NRFaUm26pY4E+w0k=;
-        b=ioSemb3JD5Y1eOx3s8QHMULwaxNxq90XekgXbUYN3MIi4wPew/JByeaeSULeT4nbEa
-         cKzIZ4/H6afFFvkg5Qwx3+83wPYHyGoSruTzZfnNZE0FeHolHwnaOEg2GmzOv1uRu5Zc
-         veTsu8tUiQaMChhjarmaZ79IoIj9BKQmJN9YxQpsfR87xdgfmE2Mdr4BP/SfuBq3QZO5
-         CFNQEtJI6Hb80splvXF/qFEsjirZ8eAbKuCALFyGg3Gktbehfx02UaG6vAg19br4r1Vj
-         dUTIgoZG1HoHuB6CFQRkhLi5jMqsLLj76GXn4TgVbRl7x/vgSTM0uCggygyXE89Lvi0J
-         xRGw==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lqW6r2QxBjf3naPSK7ElejDN0miJGNk4JeUrWNu5dFo=;
+        b=P7GUI4rzpcJORZdrR45U9tZBVNt+YutkUgaZAyUSoo0hNOv5YFYj2LVa3BDKBVLlEZ
+         8P09RZ77gdJ/9bmvIGELMImn15ss9sRZV4C/seGIidibDM6yqDjkjA6TuRj46kpJciNn
+         Jh7pnUHhLdusLFGeigWIF2NedtczE/Aou9GJw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g+EFI6GnSelcnpgoeb+deAAklW3NRFaUm26pY4E+w0k=;
-        b=dNfKQbsqy/olQo80priUih40/tXhe0T3MuXiHyIZuGCQVlkV6vs1a4EntWsTUuQ14B
-         o09OpV7KMQTQ5d78bWSBDeLXThMOfsjZkqrGoAsN0cFMqux/KWhMieSmhlHxgHNi8aIe
-         2myDYNH7OlydwBhmWoC+wPAp9XO4Q1Tf+jUBd6zhEcejyUHT8X0eXgFnt/RaeGzN42bc
-         SuvQ3QwyKBppJepbhhaZIJU3tMDxxKK3Lw1etFn+X/OA6aCqyNDci1a55GKXsDQum+Ek
-         UV5AAD3RwPqhZ1ITVWirjbrfwXtNKUqeic2wDp/y5helkt6rae/t3TRRcNB5iHqBeWuQ
-         53NA==
-X-Gm-Message-State: AOAM532kWSXa3mc6klpXaT/r6m6JMuikAFZO4l3bBq4XrVsG1IkXhsON
-        KfctM5NKMOtIgEjIZ5awl4Bxy5MmbJxpYQAjFCYbcg==
-X-Google-Smtp-Source: ABdhPJzp0DSkkGaQ+vQsAfxzLKLGMRlAgWHiJnqZvPuKn9KmYDA8wE3e08OvWWQvIXbffne6YSWjWMRfm0H3l1lj0SQ=
-X-Received: by 2002:a17:90a:6ac2:: with SMTP id b2mr5341365pjm.36.1630413961661;
- Tue, 31 Aug 2021 05:46:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=lqW6r2QxBjf3naPSK7ElejDN0miJGNk4JeUrWNu5dFo=;
+        b=dWZeQHmH2lT83WC55b1kELioUDNsQI8vKRkV93Dm9KVpY6PEAqjckQBJhnTi2zPrAi
+         o+IUDEO2jhLq5JSk9Aaqs4B7BuoActzAznW/bvrUPHRQvFyPow6k8WTs02RnzvOGkI9M
+         tkxLHivwwFSOA6mQJQ4IxxLgXH0q/4qUPm5y7OU/mvrxxqk+E+xig0yRzc//2qxowfBM
+         JpWs1T/9Cn9XshVSkMtsI6OEov5P4/W4eiecYNv9clja4YlXP9kD1bAIcM4qRtpAXr1k
+         yJGZCxZll0a+NCAK6pEXI0Apz3v5clLA003kZG0uEwgqKJfgT3UnWK6b+w1uAbn7vmh7
+         YYjQ==
+X-Gm-Message-State: AOAM533GJ8+vZuZt7+jElTPRwKDMIzakc8RLkOczFRQdAb9+FgyywbXE
+        f15Tw18kMyWDudmLF8wBuPQIUg==
+X-Google-Smtp-Source: ABdhPJxwoD0EiQFf+7rgqTumGOUaiOiYizQOADtUbwoy+P/jmw6DFg/J4Q4QffVcbtqcMVqvU1avQw==
+X-Received: by 2002:adf:c40d:: with SMTP id v13mr29016331wrf.388.1630414026094;
+        Tue, 31 Aug 2021 05:47:06 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q14sm11701297wrc.31.2021.08.31.05.47.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 05:47:05 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 14:47:03 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     guangming.cao@mediatek.com
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <linux-media@vger.kernel.org>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA-BUF HEAPS FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, wsd_upstream@mediatek.com,
+        isaacm@codeaurora.org, sspatil@google.com, hridya@google.com
+Subject: Re: [PATCH] dma-buf: Add support for mapping buffers with DMA
+ attributes
+Message-ID: <YS4kx3thdJOu3uHX@phenom.ffwll.local>
+Mail-Followup-To: guangming.cao@mediatek.com,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>, Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <linux-media@vger.kernel.org>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA-BUF HEAPS FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+        wsd_upstream@mediatek.com, isaacm@codeaurora.org,
+        sspatil@google.com, hridya@google.com
+References: <20210830023911.4410-1-guangming.cao@mediatek.com>
 MIME-Version: 1.0
-References: <20210830163324.12537-1-roger@norberthealth.com> <20210830185714.GK12231@kadam>
-In-Reply-To: <20210830185714.GK12231@kadam>
-From:   Roger Knecht <roger@norberthealth.com>
-Date:   Tue, 31 Aug 2021 14:45:50 +0200
-Message-ID: <CAO_iFwp7s4ZAAiyektJgi1bWV5arTmtqGJuNqgkyOrYoZTUDUw@mail.gmail.com>
-Subject: Re: [PATCH RESEND v2] Trivial comment fix for the CRC ITU-T polynom
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Jiri Kosina <jkosina@suse.cz>, Jiri Kosina <trivial@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210830023911.4410-1-guangming.cao@mediatek.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+On Mon, Aug 30, 2021 at 10:39:11AM +0800, guangming.cao@mediatek.com wrote:
+> From: Guangming Cao <Guangming.Cao@mediatek.com>
+> 
+> When mapping the memory represented by a dma-buf into a device's
+> address space, it might be desireable to map the memory with
+> certain DMA attributes. Thus, introduce the dma_mapping_attrs
+> field in the dma_buf_attachment structure so that when
+> the memory is mapped with dma_buf_map_attachment, it is mapped
+> with the desired DMA attributes.
+> 
+> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+> Signed-off-by: Sandeep Patil <sspatil@google.com>
+> Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
 
-Thanks for pointing this out. I will fix and resend it shortly.
+Can you pls include the code that's going to use this here too?
 
-Regards,
-Roger
+At a glance all the attributes you might want to set are supposed to be
+under the control of the exporter, not the importer.
+-Daniel
+
+> ---
+>  drivers/dma-buf/heaps/cma_heap.c    | 6 ++++--
+>  drivers/dma-buf/heaps/system_heap.c | 6 ++++--
+>  include/linux/dma-buf.h             | 3 +++
+>  3 files changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
+> index 0c05b79870f9..2c9feb3bfc3e 100644
+> --- a/drivers/dma-buf/heaps/cma_heap.c
+> +++ b/drivers/dma-buf/heaps/cma_heap.c
+> @@ -99,9 +99,10 @@ static struct sg_table *cma_heap_map_dma_buf(struct dma_buf_attachment *attachme
+>  {
+>  	struct dma_heap_attachment *a = attachment->priv;
+>  	struct sg_table *table = &a->table;
+> +	int attrs = attachment->dma_map_attrs;
+>  	int ret;
+>  
+> -	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
+> +	ret = dma_map_sgtable(attachment->dev, table, direction, attrs);
+>  	if (ret)
+>  		return ERR_PTR(-ENOMEM);
+>  	a->mapped = true;
+> @@ -113,9 +114,10 @@ static void cma_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
+>  				   enum dma_data_direction direction)
+>  {
+>  	struct dma_heap_attachment *a = attachment->priv;
+> +	int attrs = attachment->dma_map_attrs;
+>  
+>  	a->mapped = false;
+> -	dma_unmap_sgtable(attachment->dev, table, direction, 0);
+> +	dma_unmap_sgtable(attachment->dev, table, direction, attrs);
+>  }
+>  
+>  static int cma_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> index 23a7e74ef966..fc7b1e02988e 100644
+> --- a/drivers/dma-buf/heaps/system_heap.c
+> +++ b/drivers/dma-buf/heaps/system_heap.c
+> @@ -130,9 +130,10 @@ static struct sg_table *system_heap_map_dma_buf(struct dma_buf_attachment *attac
+>  {
+>  	struct dma_heap_attachment *a = attachment->priv;
+>  	struct sg_table *table = a->table;
+> +	int attrs = attachment->dma_map_attrs;
+>  	int ret;
+>  
+> -	ret = dma_map_sgtable(attachment->dev, table, direction, 0);
+> +	ret = dma_map_sgtable(attachment->dev, table, direction, attrs);
+>  	if (ret)
+>  		return ERR_PTR(ret);
+>  
+> @@ -145,9 +146,10 @@ static void system_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
+>  				      enum dma_data_direction direction)
+>  {
+>  	struct dma_heap_attachment *a = attachment->priv;
+> +	int attrs = attachment->dma_map_attrs;
+>  
+>  	a->mapped = false;
+> -	dma_unmap_sgtable(attachment->dev, table, direction, 0);
+> +	dma_unmap_sgtable(attachment->dev, table, direction, attrs);
+>  }
+>  
+>  static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> index efdc56b9d95f..4d650731766e 100644
+> --- a/include/linux/dma-buf.h
+> +++ b/include/linux/dma-buf.h
+> @@ -379,6 +379,8 @@ struct dma_buf_attach_ops {
+>   * @importer_ops: importer operations for this attachment, if provided
+>   * dma_buf_map/unmap_attachment() must be called with the dma_resv lock held.
+>   * @importer_priv: importer specific attachment data.
+> + * @dma_map_attrs: DMA attributes to be used when the exporter maps the buffer
+> + * through dma_buf_map_attachment.
+>   *
+>   * This structure holds the attachment information between the dma_buf buffer
+>   * and its user device(s). The list contains one attachment struct per device
+> @@ -399,6 +401,7 @@ struct dma_buf_attachment {
+>  	const struct dma_buf_attach_ops *importer_ops;
+>  	void *importer_priv;
+>  	void *priv;
+> +	unsigned long dma_map_attrs;
+>  };
+>  
+>  /**
+> -- 
+> 2.17.1
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
