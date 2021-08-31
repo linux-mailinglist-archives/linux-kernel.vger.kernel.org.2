@@ -2,90 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17C53FCB72
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 507CD3FCB76
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239852AbhHaQXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 12:23:11 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:50868 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239733AbhHaQXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 12:23:10 -0400
-Received: from zn.tnic (p200300ec2f0f2f00fdddcaa5e3f9e694.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:2f00:fddd:caa5:e3f9:e694])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 53D851EC01B5;
-        Tue, 31 Aug 2021 18:22:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1630426929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=pJLc4Nr2FSbY+5utp8zq0cqJuoQnIBsw2l3U+d3olSs=;
-        b=OG2MmH57Xx0+9u8ejAjkuvOP+tpM08VxofHGL0MJDMGrKoMdpsPtFuWCKWBH3KhkdjY5dR
-        q04iSVWqzy2Mb06ywIkrzyJ5B5weBNc36UQmvjpJ6W6e412ErBjN16s9Q7SaeuWeoRm2Jc
-        puWQRQUhEU3pSfl/bw2Jv4OLgnedFsQ=
-Date:   Tue, 31 Aug 2021 18:22:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        id S240004AbhHaQY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 12:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239733AbhHaQY1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 12:24:27 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F724C061575;
+        Tue, 31 Aug 2021 09:23:32 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id q14so28678199wrp.3;
+        Tue, 31 Aug 2021 09:23:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=1RiskkQMXgkNjj9qnTOmRZ7i2Te6zUGCcdIS5eV1pqQ=;
+        b=K/pdV8J7p+jVC2uXnM86MCl4umcFXSa+nle4dZA+4QDSJzZbq9KFtE2xtHGbrGnWKw
+         g2xCSFQ5NIepQujFmeVFTQp1uq9QUeVaINpvSmoiNPP8mXHIG4wZNr+og7iHv5N9bS8v
+         XnUBp/WEnx30Xrizf8Lv+dsp4gkBnNa2FGlXVuPvd9okm0MrbVxieDxwWV4MSQmzl+c8
+         d2qLZCbQOaJSr1N7IFrWy5nwvx8FdvsX2T/ALKF3LqxgshI0sserhxK3oVpqUkmOb8VD
+         0PYZ4j0t0NZr537vAnDS/9DNoaaDUoJsD17cuZqB4lw6ABX/erGveA/Hz/KPOXk7l5NR
+         jbeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=1RiskkQMXgkNjj9qnTOmRZ7i2Te6zUGCcdIS5eV1pqQ=;
+        b=qO+HiCABaOqkNRGU3MDLzT6TSpv9SnrMdCm+1B5Wb0MaDHgSmsqYl4YpZJkKov3QbE
+         zm8A5RU3SK6M3IPEnG0WypER0yokQFo/Juc2Mj4yjSd9Kt+4siKI/O/51Cm3H7yMJ6/X
+         OVVSG3aNs7rqdvXRmqBB9Y9N6o9XNZewZ1E4ofFUmDxCra9UAnML/uBi1cRvi4Jhws9O
+         R/aaTpI13dp322123dwF1CWZqclVwHXtAxwCttZq0R+IemFWWCz3K0GygEnlhfC/t8lo
+         cG/CgtktPQqohPR2yF/cDW9N5tY7zl6rJLBd6jhs0oNdYFcYRzBew2xoq4COeLxiNw9r
+         PlTw==
+X-Gm-Message-State: AOAM532SdmVnrR88AXiln9JUb5YcP9bD/uTwrXieXkBlVQ0X5Dkbm6Ry
+        aPEmq8Sgels9DvI2+agXfGo=
+X-Google-Smtp-Source: ABdhPJx5esIkMyVbxjI4d57GWpsFXpmybpNjNAKdqs3koekJQUQkt+kthxm+UN5HeTAal6rZWrxlfw==
+X-Received: by 2002:adf:fec5:: with SMTP id q5mr5106097wrs.153.1630427010574;
+        Tue, 31 Aug 2021 09:23:30 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6456:fd99:ced0:db1c:53e1:191e? ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
+        by smtp.gmail.com with ESMTPSA id n1sm18406916wrp.49.2021.08.31.09.23.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 09:23:29 -0700 (PDT)
+Message-ID: <0952ba94284218e3ac43c2bdf416866fc3dc0700.camel@gmail.com>
+Subject: Re: [RFC PATCH v3 08/15] perf workqueue: add queue_work and
+ flush_workqueue functions
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 32/38] x86/sev: enable SEV-SNP-validated CPUID
- in #VC handlers
-Message-ID: <YS5XVBNrASp7Zrig@zn.tnic>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-33-brijesh.singh@amd.com>
- <YSkCWVTd0ZEvphlx@zn.tnic>
- <20210827183240.f7zvo3ujkeohmlrt@amd.com>
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Date:   Tue, 31 Aug 2021 18:23:27 +0200
+In-Reply-To: <CAM9d7ch4RM5rKrYLKrny3yt3ciK87aqzJ8Wt3ze87u9KBHjyXg@mail.gmail.com>
+References: <cover.1629454773.git.rickyman7@gmail.com>
+         <f9100c6e428eafe1b9761f947550e45ccc9e8849.1629454773.git.rickyman7@gmail.com>
+         <CAM9d7ch4RM5rKrYLKrny3yt3ciK87aqzJ8Wt3ze87u9KBHjyXg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210827183240.f7zvo3ujkeohmlrt@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 01:32:40PM -0500, Michael Roth wrote:
-> If the memory is allocated in boot/compressed/mem_encrypt.S, wouldn't
-> kernel proper still need to create a static buffer for its copy?
+Hi,
 
-Just like the other variables like sme_me_mask etc that file allocates
-at the bottom. Or do you have a better idea?
+On Tue, 2021-08-24 at 12:40 -0700, Namhyung Kim wrote:
+> On Fri, Aug 20, 2021 at 3:54 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
+> > 
+> > This patch adds functions to queue and wait work_structs, and
+> > related tests.
+> > 
+> > When a new work item is added, the workqueue first checks if there
+> > are threads to wake up. If so, it wakes it up with the given work item,
+> > otherwise it will pick the next round-robin thread and queue the work
+> > item to its queue. A thread which completes its queue will go to sleep.
+> > 
+> > The round-robin mechanism is implemented through the next_worker
+> > attibute which will point to the next worker to be chosen for queueing.
+> > When work is assigned to that worker or when the worker goes to sleep,
+> > the pointer is moved to the next worker in the busy_list, if any.
+> > When a worker is woken up, it is added in the busy list just before the
+> > next_worker, so that it will be chosen as last (it's just been assigned
+> > a work item).
+> 
+> Do we really need this?  I think some of the complexity comes
+> because of this.  Can we simply put the works in a list in wq
+> and workers take it out with a lock?  Then the kernel will
+> distribute the works among the threads for us.
+> 
+> Maybe we can get rid of worker->lock too..
 
-> Would that be a reasonable approach for v6?
+Having a per-thread queue has some benefits which are very useful in our case:
+ - it should be able to scale to bigger machines than a shared queue (looking at
+both tests from jiri, it looks like this version is somewhat better than v2, but
+they're done in different conditions, so some other tests comparing the two
+versions on big machines would be useful).
+ - it is possible to choose the worker to execute work on, which is used in the
+evlist patchset (where threads can be pinned to a cpu and evlist operations can
+be done on them).
 
-I don't like the ifdeffery one bit, TBH. I guess you should split it
-and have a boot/compressed page and a kernel proper one and keep 'em
-separate. That should make everything nice and clean at the cost of 2*4K
-which is nothing nowadays.
+Of course, it adds some complexity over the shared queue, for example:
+ - the next_worker pointer to implement the round-robin policy, for which maybe
+there's a cleaner way to do it.
+ - the thread "self-registration", which I think can be dropped in favor of an
+array inside the workqueue (the max number of threads is limited, so having a
+self-registration does not really add much flexibility and it adds contention on
+the workqueue lock when threads are spun-up). Getting rid of it could reduce
+workqueue spinup and stop time.
 
-Thx.
+Thanks,
+Riccardo
 
--- 
-Regards/Gruss,
-    Boris.
+> 
+> Thanks,
+> Namhyung
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
