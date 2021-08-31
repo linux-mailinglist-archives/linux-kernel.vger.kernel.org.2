@@ -2,103 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C543FC256
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52D83FC254
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239547AbhHaF52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 01:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239066AbhHaF50 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S239054AbhHaF50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 31 Aug 2021 01:57:26 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2208BC061575;
-        Mon, 30 Aug 2021 22:56:32 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id n18so544014plp.7;
-        Mon, 30 Aug 2021 22:56:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aIXBIIIoz+rnxmyGhqnZFJeXHpwd+gU8Q68x3m93PVQ=;
-        b=qDY2Ej/r5UzI10iwQI83HXn/Jw4eofnIFvyMHcKbw4KLOWi+nlrsApoxiSRR62WBEG
-         vUGxAU9OyB6dEZxlSKYgsBFAvERCGVtXiYAhzMLxO2Iu0po61VCf/ncpwBsYN9VPA26v
-         OUCGloe7CnhgYOrQmC9jXkhHI551M72FdEEN6fj9xPYlDjPLi7KDBCOGcyTXb4jhxAmH
-         wCEZL+jqLXTtXPCmDeHvD/axS3jdJmQLuL/WTUMhMLxKOJxTVqofa/7YZaEPJqpY0TJd
-         7sVFeiNe9o8WtM1DRizH52tFi73w9+4fIzCxNHfgvgMd7OzuoLAjDOu3sk/2QVRyG2gz
-         hTSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aIXBIIIoz+rnxmyGhqnZFJeXHpwd+gU8Q68x3m93PVQ=;
-        b=izwY/Q74bLNtkajK0BnFRSM3OgR22simr4O5lmAvs/l0R9Hwf1lfmA7jLt1RoYjvGq
-         +NT4vgkwWQM3Ms2iwQFDuPoVNEWnQixu/HU/xdNTzZegU8qIqGC/t6iUNRaKukleSYcX
-         GH0i5xPk4uq3G3qgEQ4ybJhVOEK+dF/tNSHCKMO01+f8EFYQCwyA2EXhQy5/Sb0U5QO9
-         /iO89xzvFDHAZOqukk4m4sYpBcjam5Li2bqqxE4bw89NpDjp2QI+itzXI1SSqxIRDnyE
-         TmlSl06hPPOZwuR7qYam5BieaaYlShS+G0SxhaMPYVaUl2ZHCeEw8wV+9BY6iHzjd1J2
-         dDUQ==
-X-Gm-Message-State: AOAM532Q9kY+/dAC9nKNN12FyDdNaD4vKr2TVScKEyGwwhyzS5ATP/Ht
-        Bsrf6mo68m7N8hTaIgNF3tiio5c7PWfKHONzGlo=
-X-Google-Smtp-Source: ABdhPJwhByb5Jufu27BCB2wa52/aJ3dGafnYRXjfMoZnLI+Y4Dr9MSWTIzNPzbGq2t6j52uasgFquGwoSRpuO0XsXek=
-X-Received: by 2002:a17:90a:a0a:: with SMTP id o10mr3367812pjo.231.1630389391641;
- Mon, 30 Aug 2021 22:56:31 -0700 (PDT)
+Received: from foss.arm.com ([217.140.110.172]:51134 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229759AbhHaF5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 01:57:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4427B6D;
+        Mon, 30 Aug 2021 22:56:26 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A88A33F694;
+        Mon, 30 Aug 2021 22:56:24 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 06:56:22 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        etienne.carriere@linaro.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>
+Subject: Re: [PATCH v4 11/12] [RFC] firmware: arm_scmi: Add
+ sync_cmds_atomic_replies transport flag
+Message-ID: <20210831055622.GK13160@e120937-lin>
+References: <20210824135941.38656-1-cristian.marussi@arm.com>
+ <20210824135941.38656-12-cristian.marussi@arm.com>
+ <7a2f972d-fdd0-d0f7-cac2-1989980ed872@gmail.com>
+ <CA+-6iNw-_VXcntU_UE8kTiPb8Sq28KkZG1__N7rE4ezo=VqQVQ@mail.gmail.com>
+ <20210825184915.GI13160@e120937-lin>
+ <CA+-6iNwjQ1SogxdyrjwqEwLosscUyvrioqFKmesifM_nmCpJAw@mail.gmail.com>
 MIME-Version: 1.0
-References: <1630295221-9859-1-git-send-email-tcs_kernel@tencent.com>
- <163032300695.3135.11373235819151215482.git-patchwork-notify@kernel.org> <20210830101456.21944dfe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210830101456.21944dfe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 30 Aug 2021 22:56:20 -0700
-Message-ID: <CAM_iQpWi083uZ5wMYA+coWtME=xQMy3pb-__9jaFqe9piFRSaQ@mail.gmail.com>
-Subject: Re: [PATCH V2] fix array-index-out-of-bounds in taprio_change
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Haimin Zhang <tcs.kernel@gmail.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, tcs_kernel@tencent.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+-6iNwjQ1SogxdyrjwqEwLosscUyvrioqFKmesifM_nmCpJAw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 10:14 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Mon, 30 Aug 2021 11:30:06 +0000 patchwork-bot+netdevbpf@kernel.org
-> wrote:
-> > Hello:
+On Thu, Aug 26, 2021 at 02:29:21PM -0400, Jim Quinlan wrote:
+> On Wed, Aug 25, 2021 at 2:49 PM Cristian Marussi
+> <cristian.marussi@arm.com> wrote:
 > >
-> > This patch was applied to netdev/net-next.git (refs/heads/master):
+> > On Wed, Aug 25, 2021 at 01:17:47PM -0400, Jim Quinlan wrote:
+> > > On Wed, Aug 25, 2021 at 12:38 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+> > > >
+> > > >
+> > > >
 > >
-> > On Mon, 30 Aug 2021 11:47:01 +0800 you wrote:
-> > > From: Haimin Zhang <tcs_kernel@tencent.com>
+> > Hi Florian and Jim,
+> >
+> > > > On 8/24/2021 3:59 PM, Cristian Marussi wrote:
+> > > > > A flag is added to let the transport signal the core that its handling of
+> > > > > synchronous command messages implies that, after .send_message has returned
+> > > > > successfully, the requested command can be assumed to be fully and
+> > > > > completely executed on SCMI platform side so that any possible response
+> > > > > value is already immediately available to be retrieved by a .fetch_reponse:
+> > > > > in other words the polling phase can be skipped in such a case and the
+> > > > > response values accessed straight away.
+> > > > >
+> > > > > Note that all of the above applies only when polling mode of operation was
+> > > > > selected by the core: if instead a completion IRQ was found to be available
+> > > > > the normal response processing path based on completions will still be
+> > > > > followed.
+> > > >
+> > > > This might actually have to be settable on a per-message basis ideally
+> > > > since we may be transporting short lived SCMI messages for which the
+> > > > completion can be done at SMC time, and long lived SCMI messages (e.g.:
+> > > > involving a voltage change) for which we would prefer a completion
+> > > > interrupt. Jim, what do you think?
+> > > Even if the SCMI main driver could be configured this way in an
+> > > elegant manner, I'm not sure that there is a clean way of specifying
+> > > this  attribute on a per-message basis.  Certainly we could do this
+> > > with our own protocols, but  many of our "long lived" messages are the
+> > > Perf protocol's set_level command.  At any rate, let me give it some
+> > > thought.
 > > >
-> > > syzbot report an array-index-out-of-bounds in taprio_change
-> > > index 16 is out of range for type '__u16 [16]'
-> > > that's because mqprio->num_tc is lager than TC_MAX_QUEUE,so we check
-> > > the return value of netdev_set_num_tc.
-> > >
-> > > [...]
 > >
-> > Here is the summary with links:
-> >   - [V2] fix array-index-out-of-bounds in taprio_change
-> >     https://git.kernel.org/netdev/net-next/c/efe487fce306
+> > The new flag .sync_cmds_atomic_replies applies only when polling mode
+> > has been selected for a specific cmd transaction, which means when no
+> > completion IRQ was found available OR if xfer.poll_completion was
+> > excplicitly set for a specific command.
 > >
-> > You are awesome, thank you!
->
-> https://lore.kernel.org/netdev/20210830091046.610ceb1b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
->
-> Oh, well...
+> > At the moment in this series (unknown bugs apart :D), if you have a
+> > channel configured with a completion IRQ and the .sync_cmds_atomic_replies
+> > set for the transport, this latter flag would be generally ignored and a
+> > wait_for_completion() will be normally used upon reception of the
+> > completionIRQ, UNLESS you specify that one specific command has to be
+> > polled using the per message xfer.poll_completion flag: so you should be
+> > already able to selectively use a polling which immediately returns after
+> > the smc by setting xfer.poll_completion for that specific short lived
+> > message (since sync_cmds_atomic_replies is set and applies to pollmode).
+> > On the other side any other LONG lived message will be naturally handled
+> > via completionIRQ + wait_for_completion. (at least that was the aim..)
+> >
+> > !!! NOTE that you'll have also to drop
+> >
+> >  [PATCH v4 10/12] [RFC] firmware: arm_scmi: Make smc transport atomic
+> >
+> > from this series for the wait_completion to happen as you wish.
+> 
+> Hi Cristian,
+> 
+Hi Jim,
 
-I agree it is slightly better to make the check work in
-taprio_parse_mqprio_opt(), but this patch is not bad either, we
-need to check the return value of netdev_set_num_tc() for
-completeness at least.
+> I've tested all commits on our SMC-based system.  I also tested all commits
+> minus  "10/12 [RFC] firmware: arm_scmi: Make smc transport atomic".
+> This was a basic stress test, not a comprehensive one.  So
+> 
+> Tested-by: Jim Quinlan <james.quinlan@broadcom.com>
+> 
 
-BTW, this patch should be landed in -net, not -net-next, as it
-fixes a real bug reported by syzbot.
+Thanks a lot for this testing.
 
-Thanks.
+> Of course I have a strong preference for omitting  "10/12 [RFC]" :-).
+> FWIW, if you are not planning on dropping this commit, perhaps there
+> could be a transport
+> node in the DT, and that could contain the  a bool  property
+> "smc-atomic-capable"?
+
+Indeed, as I was saying more than one customer/partner is asking for this
+configurability so this atomic mode should be definitely configurable.
+(as it could be teh case similarly with the sync_cmds_atomic_replies
+depedning on SCMI server placement..)
+
+I'll talk with Sudeep in general about the series and this configurations;
+in fact I can exclude that I'll commit this series with 10/12 as it is right
+now.
+
+Thanks for the feedback !
+
+Cristian
+
+> 
+> Regards,
+> Jim Quinlan
+> Broadcom STB
+> 
+> >
+> > As said I'm not sure that this whole mixing of polling and IRQs on the
+> > same channel on a regular won't cause any issues: any feedback on this
+> > from your setup is much appreciated.
+> > (maybe it's fine for SMC transport, but it led to a bit of hell in the
+> > past with mboxes AFAIK...)
+> >
+> > Thanks a lot again for your feedback, I'll have to chat with Sudeep
+> > about the various issues/configs possibility that we discussed and I'll
+> > keep you in the loop.
+> >
+> > Thanks,
+> > Cristian
+> >
+> > P.S.: I'll be off for a few weeks, so even though I'll keep an eye on
+> > the mail, I cannot guarantee any responsiveness :D
+
+
