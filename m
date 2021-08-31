@@ -2,117 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AA23FC2CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D193FC2CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbhHaGbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 02:31:38 -0400
-Received: from mga09.intel.com ([134.134.136.24]:39350 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232885AbhHaGbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 02:31:37 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="218420123"
-X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
-   d="scan'208";a="218420123"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 23:30:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
-   d="scan'208";a="530969458"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 30 Aug 2021 23:30:36 -0700
-Date:   Tue, 31 Aug 2021 14:30:36 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Koutn?? <mkoutny@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        andi.kleen@intel.com
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>
-Subject: Re: [mm] 2d146aa3aa: vm-scalability.throughput -36.4% regression
-Message-ID: <20210831063036.GA46357@shbuild999.sh.intel.com>
-References: <20210811031734.GA5193@xsang-OptiPlex-9020>
- <CAHk-=wiSHHSuSQsCCLOxQA+cbcvjmEeMsTCMWPT1sFVngd9-ig@mail.gmail.com>
- <20210812031910.GA63920@shbuild999.sh.intel.com>
- <20210816032855.GB72770@shbuild999.sh.intel.com>
- <YRrbpRsvdDoom9iG@cmpxchg.org>
- <20210817024500.GC72770@shbuild999.sh.intel.com>
- <20210817164737.GA23342@blackbody.suse.cz>
- <20210818023004.GA17956@shbuild999.sh.intel.com>
- <YSzwWIeapkzNElwV@blackbook>
+        id S234864AbhHaGc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 02:32:29 -0400
+Received: from mail-dm6nam11on2045.outbound.protection.outlook.com ([40.107.223.45]:21728
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232885AbhHaGc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 02:32:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hx94KWhkUN2o3QMnYmfCKT1ry96j8+gBWeoQvkoGyfpF3z9iI16Zk1Rbx06cCLLK679p84qcQ4jDxUJlJd+Mc04bRzrDDT8PPMZZGwsBm6iUJQ0qrQkXMrcleCcwjYWHm2r+fxGdPpMbKsgImrsOFYl7g7WjbMDHiWMVClfpX/7vCrOuKvgE9SzypIMi497WbbbgZoI736wYEeeRBtoXgLSYnyZ/Sy0uz8vlobtK03Lp1Hs2AjBzvgraIbmL5xdvatAjEvJFIZGyO92BhyqekXJg7hG9td1dgk7XfbLJA621UxYMID3J2GuOnFaDyI/40qw2/AA2W5uR2Bha3XsGlQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FzSNFFZs4c99WXVPwgImMnSgH3KfmFLUi53AAFh/hK0=;
+ b=ACM7FJDmAZnId45ttItYSAzXxb/sK4DC2HCboHqw1lPbExPjmdlbp7aO3zztRHik+60WOmLg4GrPuhFlGFnf/lkg3aBt8LlxP03Pn2ifMYGwu+SWmW00g0ufGRm66l2UXHsNynJwChZAplKnNjyGA3wq0oxaHcjOnFX7FCUDgAflVwEmoh5O9FmETrllmyNDUKEotaSYrWoWH4Bq2x5UJXN55wndETmW76WoOm8kt8zhkXMnt0fh22g/3H2x4rVmTST5PRcdEuWt4VlDCXflo6vk1HHNy3aWFbGFz1SrbBztvpbtJqw6puRnQMVPYPWrjf53k6urxIFcZI4wXlI5bw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FzSNFFZs4c99WXVPwgImMnSgH3KfmFLUi53AAFh/hK0=;
+ b=im3KkEjY9Z5GHGHZpYjaQ2N9H/Ukdhg2ee4Fn67m9Fr1kPHXIcFUZuALkxO/tQBR6eSyUazr57BoQ94+vN8r5y9vNLTJDwvkPWJxNQYzgf8ELJ2GuaOi/V6cSYnJM7hnERTM+aqaNKgcD6EmFEAmua6CVgH1HMjP+QssCsHp5Yk=
+Authentication-Results: mediatek.com; dkim=none (message not signed)
+ header.d=none;mediatek.com; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB3903.namprd12.prod.outlook.com (2603:10b6:208:15a::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.24; Tue, 31 Aug
+ 2021 06:31:29 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4457.024; Tue, 31 Aug 2021
+ 06:31:29 +0000
+Subject: Re: [PATCH] dma-buf: heaps: remove duplicated cache sync
+To:     guangming.cao@mediatek.com
+Cc:     Brian.Starkey@arm.com, benjamin.gaignard@linaro.org,
+        dri-devel@lists.freedesktop.org, john.stultz@linaro.org,
+        labbott@redhat.com, linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        lmark@codeaurora.org, matthias.bgg@gmail.com,
+        sumit.semwal@linaro.org, wsd_upstream@mediatek.com
+References: <dd5ba603-8c9d-f6a0-cbcc-dfb353fb6701@amd.com>
+ <20210831034405.41916-1-guangming.cao@mediatek.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <0b48df29-a20f-65f6-bc4c-6c0a7522ecd7@amd.com>
+Date:   Tue, 31 Aug 2021 08:31:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210831034405.41916-1-guangming.cao@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: AM0PR02CA0181.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28e::18) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YSzwWIeapkzNElwV@blackbook>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.178.21] (91.14.161.181) by AM0PR02CA0181.eurprd02.prod.outlook.com (2603:10a6:20b:28e::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.21 via Frontend Transport; Tue, 31 Aug 2021 06:31:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6205f434-79cc-466d-18da-08d96c48f705
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3903:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB3903F9AF510AEB4E2E88CBF083CC9@MN2PR12MB3903.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8salqPox4/I0Ive1XqPQ7ftCdr1TP1CDhvMk+ZSxTMq972c5/tyO5/+GXa8Z81VjK8z8liawVHRvNka40xMkU8h5y98PRyZGfg+SZKj8oCNrwlry/xYtJh/ESxaWDSYD/WqR4usFzqF82ZVUWKXt8gSN9hIPTtXHPe+FBfNL7I6j/r5PUD8FwAPzB4fj6ukdIHeSAzeU2NTxlrjS0moJRq3kW6eHv0VQLLQJ1VlmtOuYjLZnSCvu5zXC431J033/xOFN0+4xXWro4Jv+KNi8Abi8KyziVkFvfID//OpHNKalQ4Sdtw56i61fS+RIBqRH9eA64ijyfJ8LliVYtLNVQsp4pDt1fsjIn6FthZ2nwjgy+pfX2gxJq2ke5yrQFmNmfKpRxgXfRjqfx4bYbOLWX/2eWI8xOo9hzLPzxjsfSk8F2lXHe9zdIMRdIdBTXyYrVQv04Dad1aBfNTKCiwmBSb+N3E/RVe4tls+JGj4vP6MSC1MKQ9nOf53gWUlAO05V5TIzg2XXc8mopwL2pR1aqbvyCJIPTacp1LJUydQUgeGw3pBktT18z7QOHrUrLGBFdVFj9ynJy3IGi4qUJaobaIXZgaFeQNABeOFKZ6X/YwLn+8WK3AvkIEE2w8UU0rrEYsi2ZR3QGMFWLbE/rsWvFe4ts0Fk1MjCY4TFcMKdDPqMRU/QGupV+N99nC2A8sOf2XEQciPyE6diScGwda/TNbuh+cs1yghXkycCDchbDRQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(366004)(346002)(39860400002)(376002)(4326008)(6666004)(6916009)(86362001)(83380400001)(66556008)(66946007)(6486002)(5660300002)(66476007)(36756003)(2906002)(16576012)(31686004)(478600001)(38100700002)(2616005)(316002)(26005)(8936002)(31696002)(8676002)(956004)(7416002)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TmhoQXlpSU9mUlByNmw3d0tKSUk1cFZ3a2xKY1RPVjY1TTZNeGpRcU5pWWJh?=
+ =?utf-8?B?ckFYMWtIZnphYW1rUGpHci9EM09mbFdpWW1rYXp6aXgvaDd1SGYvOEwzZFVv?=
+ =?utf-8?B?UzFvd2hTdEx3a2d2RnhzZ0NuemZWWUIxN2NCR1JEMkZDVGdBYVdHRFZJRGZr?=
+ =?utf-8?B?WHhIWlNUNHJzbTBUSmFDQUNuWHVMazFoTC9GT2FmTmpRTmJQOVUwZExjUHFp?=
+ =?utf-8?B?TXRsV2RVaE4zbW1TZnUvZzdJZWM4bUxNMDhIb3p1SEp3SzZhSjVJUTl5VHAv?=
+ =?utf-8?B?QnVqQWR1SUEvcGtvTlc2bUQzNVAxVnBwcmJlTWlHWW9JdUpreDJVT0I0RWhq?=
+ =?utf-8?B?RTB2aGtRR2dWTU1NNjVaNWh2R05uVG91REFHaUZ1U0dZU2JkZlhrVmd5R3o2?=
+ =?utf-8?B?c3VuZE1mc2JKMjl0LzdncHA4eEFna1BZSFNVb2VOVm1iY094R2U2ckJYMnEw?=
+ =?utf-8?B?ZlBhVnlxc3FleHhvUXIxTDdCZ3FreDZvbkxBNml6ZTZ6dXFrNVFWZldId29x?=
+ =?utf-8?B?b01nWkcrWXFlY04yNjlzMWtTdVBXTDU3N2VGVjZ0UFJrMnp1ZDNOMTZFZG1i?=
+ =?utf-8?B?Zi94bU5DaW1oeWoyeW4zVjQzaUY3bWxmN3BCb3hLbWV5NkR3ditDVmdnQmdU?=
+ =?utf-8?B?c2dhT0VyU2JJbk94TUFYNFRaTEQxZkd6S3Z2U3BoOVlpUk95QkNVbjNKbjhr?=
+ =?utf-8?B?QVJLTVhyZ0luVXYvK3lZUTIyMm9kd3A5cHNXZTVTdkoxdkZ0Y0w5cUVyN2U3?=
+ =?utf-8?B?bHBEVlBxcUZzbCt1YUN3K2tvWGtEWXNCRFVaT1J5VVNJZ1ZPRDhMQ085RUd2?=
+ =?utf-8?B?eVJpZ0NmRkYzZFJ6MlU0b2NKeS9LMzR3ZG5DaXRFRXdpbkZhK2I0aTFPWk8x?=
+ =?utf-8?B?ckwwWEhoaktpZGI5YnNKMWhkZXJKMnczNlFOYVB6OFhQYkxTOVJrTkNYc1RG?=
+ =?utf-8?B?aXN6RTF2WmVMVkY2d2k2S2x5dC9VRE96OFZBQ0FtR2Y1YUN1VkpLWkg5R0ts?=
+ =?utf-8?B?NmpvUlNteWxubFpqWWtvSDdXOGRSY2l1ZGw2MzJSOHFFSHdidnBnNjI2RnVH?=
+ =?utf-8?B?a2VEek82WnFsbHNOY200b0g4c25CS3lzSEpjRzVicXN1MFJ5TEk1TTlRY1RU?=
+ =?utf-8?B?MkJHMS96Y0F1bHFpQ1paY2lBN05uODROckZxaVNzVmUva2RaYVdEamVPYWVz?=
+ =?utf-8?B?Z0JMQnlBellPZStkdUxmSmN2T1ZPZHRoVVZjMlVwckhrQzI2ZDFPMkZjcVov?=
+ =?utf-8?B?cEV5SisyK3VEdXhTZ0pXc3RycStUbFV3UkI1VFJmV3Q2b2RienZ2UkprenVG?=
+ =?utf-8?B?eVUrRWx5aGRPTm5teCthb0E0aCs2N2JkUE1ucmVYZHlOaTRYMjRldTNGblVK?=
+ =?utf-8?B?WkFKaUZLc0p0TEJxQ3dON29scmhOa3Z5eUlYV2V1T1RnN3JYUm1lOGU2ekln?=
+ =?utf-8?B?V0FGaDQrK1ZaaTV4OXNENGF5Rk8ycWJWM1A0YjVHMzAycnAyY2gwU0dGOWlp?=
+ =?utf-8?B?WWZHdlVXU1pWaHZWb3BXU3B3SkR1MW1uSUNScjFTemY3czJIVkhudkRYc3da?=
+ =?utf-8?B?V1Jhd1p0S2dwZzNZeTdCUDN4MVhUbFM3WG1QR05KdktLZnhPbGtBZHJJYmcx?=
+ =?utf-8?B?SlUwbkR4dEpYeFlueVdlR1I4bGlESU52NUpBenVjb3NBRGRYV1VRVEIxUnhX?=
+ =?utf-8?B?dHNOdWpHak9VVUpibEs5UGdkL3FBKzc0TkIzbjQxQWFwSVB3eC9HUUFlcndq?=
+ =?utf-8?Q?UgwkTAq+AKtr8dnGoQ/LBZ5tJcDnMaAgC+Zz/At?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6205f434-79cc-466d-18da-08d96c48f705
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2021 06:31:29.7341
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qte71PpFY1gxU8vMv8x0qnu6OwUUq0AvQ9HlP8BiczGzU3JwZY6upp6ixCef9jv0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3903
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+Am 31.08.21 um 05:44 schrieb guangming.cao@mediatek.com:
+> From: Guangming Cao <Guangming.Cao@mediatek.com>
+>
+>> Am 30.08.21 um 12:01 schrieb guangming.cao@mediatek.com:
+>>> From: Guangming Cao <Guangming.Cao@mediatek.com>
+>>>
+>>> Current flow, one dmabuf maybe call cache sync many times if
+>>> it has beed mapped more than one time.
+>> Well I'm not an expert on DMA heaps, but this will most likely not work
+>> correctly.
+>>
+> All attachments of one dmabuf will add into a list, I think it means dmabuf
+> supports map more than one time. Could you tell me more about it?
 
-On Mon, Aug 30, 2021 at 04:51:04PM +0200, Michal Koutn?? wrote:
-> Hello Feng.
-> 
-> On Wed, Aug 18, 2021 at 10:30:04AM +0800, Feng Tang <feng.tang@intel.com> wrote:
-> > As Shakeel also mentioned, this 0day's vm-scalability doesn't involve
-> > any explicit mem_cgroup configurations.
-> 
-> If it all happens inside root memcg, there should be no accesses to the
-> 0x10 offset since the root memcg is excluded from refcounting. (Unless
-> the modified cacheline is a μarch artifact. Actually, for the lack of
-> other ideas, I was thinking about similar cause even for non-root memcgs
-> since the percpu refcounting is implemented via a segment register.)
+Yes, that's correct and all of those needs to be synced as far as I know.
 
-Thought I haven't checked the exact memcg that the perf-c2c hot spots
-pointed to, I don't think it's the root memcg. From debug, in the test
-run, the OS has created about 50 memcgs before vm-scalability test run,
-mostly by systemd-servces, and during the test there is no more new
-memcg created.
+See the dma_sync_sgtable_for_cpu() is intentionally for each SG table 
+given out.
 
-> Is this still relevant? (You refer to it as 0day's vm-scalability
-> issue.)
-> 
-> By some rough estimates there could be ~10 cgroup_subsys_sets per 10 MiB
-> of workload, so the 128B padding gives 1e-4 relative overhead (but
-> presumably less in most cases). I also think it acceptable (size-wise).
-> 
-> Out of curiosity, have you measured impact of reshuffling the refcnt
-> member into the middle of the cgroup_subsys_state (keeping it distant
-> both from .cgroup and .parent)?
+>>> Is there any case that attachments of one dmabuf will points to
+>>> different memory? If not, seems do sync only one time is more better.
+>> I think that this can happen, yes.
+>>
+>> Christian.
+>>
+> Seems it's a very special case on Android, if you don't mind, could you
+> tell me more about it?
 
-Yes, I tried many re-arrangement of the members of cgroup_subsys_state,
-and even close members of memcg, but there were no obvious changes.
-What can recover the regresion is adding 128 bytes padding in the css,
-no matter at the start, end or in the middle.
+That might be the case, nevertheless this change here is illegal from 
+the DMA API point of view as far as I can see.
 
+Regards,
+Christian.
 
-Some finding is, this could be related with HW cache prefetcher.
+>
+>>> Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+>>> ---
+>>>    drivers/dma-buf/heaps/system_heap.c | 14 ++++++++------
+>>>    1 file changed, 8 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+>>> index 23a7e74ef966..909ef652a8c8 100644
+>>> --- a/drivers/dma-buf/heaps/system_heap.c
+>>> +++ b/drivers/dma-buf/heaps/system_heap.c
+>>> @@ -162,9 +162,10 @@ static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
+>>>    		invalidate_kernel_vmap_range(buffer->vaddr, buffer->len);
+>>>    
+>>>    	list_for_each_entry(a, &buffer->attachments, list) {
+>>> -		if (!a->mapped)
+>>> -			continue;
+>>> -		dma_sync_sgtable_for_cpu(a->dev, a->table, direction);
+>>> +		if (a->mapped) {
+>>> +			dma_sync_sgtable_for_cpu(a->dev, a->table, direction);
+>>> +			break;
+>>> +		}
+>>>    	}
+>>>    	mutex_unlock(&buffer->lock);
+>>>    
+>>> @@ -183,9 +184,10 @@ static int system_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
+>>>    		flush_kernel_vmap_range(buffer->vaddr, buffer->len);
+>>>    
+>>>    	list_for_each_entry(a, &buffer->attachments, list) {
+>>> -		if (!a->mapped)
+>>> -			continue;
+>>> -		dma_sync_sgtable_for_device(a->dev, a->table, direction);
+>>> +		if (!a->mapped) {
+>>> +			dma_sync_sgtable_for_device(a->dev, a->table, direction);
+>>> +			break;
+>>> +		}
+>>>    	}
+>>>    	mutex_unlock(&buffer->lock);
+>>>    
 
-From this article 
-https://software.intel.com/content/www/us/en/develop/articles/disclosure-of-hw-prefetcher-control-on-some-intel-processors.html
-
-There are four bits controlling different types of prefetcher, on the
-testbox (CascadeLake AP platform), they are all enabled by default. 
-When we disable the "L2 hardware prefetcher" (bit 0), the permance
-for commit 2d146aa3aa8 is almost the same as its parent commit.
-
-So it seems to be affected about HW cache prefechter's policy, the
-test's access pattern changes the HW prefetcher policy, which in
-turn affect the performance.
-
-Also the test shows the regression is platform dependent, that regression
-could be seen on Cascade Lake AP (36%) and SP (20%), but not on a
-Icelake SP 2S platform.
-
-Thanks,
-Feng
