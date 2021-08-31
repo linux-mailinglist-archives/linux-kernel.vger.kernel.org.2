@@ -2,140 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3233FC51F
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DBA3FC521
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240680AbhHaJuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 05:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240643AbhHaJuL (ORCPT
+        id S240655AbhHaJvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 05:51:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21956 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233851AbhHaJvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 05:50:11 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38195C06175F;
-        Tue, 31 Aug 2021 02:49:13 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:4cb:a870:2d6:5982:f5be:998c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 65E701F42FCA;
-        Tue, 31 Aug 2021 10:49:11 +0100 (BST)
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     mchehab@kernel.org, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@gmail.com, hverkuil-cisco@xs4all.nl,
-        jc@kynesim.co.uk, ezequiel@vanguardiasur.com.ar
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH 2/2] media: hevc: Embedded indexes in RPS
-Date:   Tue, 31 Aug 2021 11:49:00 +0200
-Message-Id: <20210831094900.203283-3-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210831094900.203283-1-benjamin.gaignard@collabora.com>
-References: <20210831094900.203283-1-benjamin.gaignard@collabora.com>
+        Tue, 31 Aug 2021 05:51:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630403421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jDRR4Gfeq/0Z0bdm9Tr2VtsZ6WrEwR+UZOlpkJZ7nKg=;
+        b=Nu9bcis1LqJH5IUjwCgM81uJBkY07GJjJ9APVmMt76/93pHqWpoz9q2YU1LVhfqq8/BaGL
+        Y+FaLPUUbn1yggXTqvagLiZQZL3MnKKI9dBEhn2bT+1YMEpC/OS/q8gln7Y13dY77RUKKg
+        BUvau475mUJGiUFzZtvtXkifJEvuM0A=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-235-u7auoT-jN8C10_PT2YnF_w-1; Tue, 31 Aug 2021 05:50:19 -0400
+X-MC-Unique: u7auoT-jN8C10_PT2YnF_w-1
+Received: by mail-wm1-f71.google.com with SMTP id p11-20020a05600c204b00b002f05aff1663so1126165wmg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:50:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jDRR4Gfeq/0Z0bdm9Tr2VtsZ6WrEwR+UZOlpkJZ7nKg=;
+        b=FzHcviKKyvA4d0RisAE4m6fFA+FH9trlwUV7cKKo3b76XmL8sOwQY44IxIBA03JRmA
+         0ayQ/ajXrisobb/LVo7rl/ia48jtQG6vkt4riZ9+uQl6iISTXo5+ojFKPIE3HQ/BZWCQ
+         K9U60dEGkLc20ewuZLNEx4Zl6FTMN2z/zBE38BUvROaTGY8Z1GISCWx/WU3tLRZH/TM9
+         AbcWsKBGvEJe+7zKn343qFVugS26qJMj7HOJ16ltf5fnEipyeTFxxwrWcD/FanFLZ+zE
+         SrghFOG7u/0CiWRib9+Qam491j6YbW7h4JgXz2YoetHpfWmHtkhmiXGwAuJaNpa9lRcS
+         CSWQ==
+X-Gm-Message-State: AOAM5338ZIgc8SCMa5yxMyafK2jRaEnIh2mk0UTto2ddjk7PeMVzeqJH
+        V7DA0ZiuxZ87m8np8W6BC36CTzbaPw8x4T20a7wexLEzqyv/idEeVtbhVuHJfsy14gybJFAhAdf
+        RjhU2Q+8sDHOn5SWXxt+2pKrU
+X-Received: by 2002:adf:db83:: with SMTP id u3mr31058775wri.363.1630403418566;
+        Tue, 31 Aug 2021 02:50:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy11hiyXvUZaBhVtba4HRZ9FmZPj0iZsGOk8RZQoo5D9MJBsjSR7eUxt6OaCXO+9Q29XTagVA==
+X-Received: by 2002:adf:db83:: with SMTP id u3mr31058760wri.363.1630403418410;
+        Tue, 31 Aug 2021 02:50:18 -0700 (PDT)
+Received: from krava.redhat.com ([94.113.247.3])
+        by smtp.gmail.com with ESMTPSA id d7sm18112990wrs.39.2021.08.31.02.50.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 02:50:18 -0700 (PDT)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: [PATCH 0/8] x86/ftrace: Add direct batch interface
+Date:   Tue, 31 Aug 2021 11:50:09 +0200
+Message-Id: <20210831095017.412311-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reference Picture Set lists provide indexes of short and long term
-reference in DBP array.
-Fix Hantro to not do a look up in DBP entries.
-Make documentation more clear about it.
+hi,
+adding interface to maintain multiple direct functions
+within single calls. It's a base for follow up bpf batch
+attach functionality.
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+New interface:
+
+  int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+  int unregister_ftrace_direct_multi(struct ftrace_ops *ops)
+  int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+
+that allows to register/unregister/modify direct function 'addr'
+with struct ftrace_ops object. The ops filter can be updated
+before with ftrace_set_filter_ip calls
+
+  1) patches (1-4) that fix the ftrace graph tracing over the function
+     with direct trampolines attached
+  2) patches (5-8) that add batch interface for ftrace direct function
+     register/unregister/modify
+
+Also available at (based on Steven's ftrace/core branch):
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  ftrace/direct
+
+thanks,
+jirka
+
+
 ---
- .../media/v4l/ext-ctrls-codec.rst             |  6 ++---
- .../staging/media/hantro/hantro_g2_hevc_dec.c | 25 +++++--------------
- 2 files changed, 9 insertions(+), 22 deletions(-)
+Jiri Olsa (6):
+      x86/ftrace: Remove extra orig rax move
+      tracing: Add trampoline/graph selftest
+      ftrace: Add ftrace_add_rec_direct function
+      ftrace: Add multi direct register/unregister interface
+      ftrace: Add multi direct modify interface
+      ftrace/samples: Add multi direct interface test module
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index eff33c511090..4e4892c37723 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -3352,15 +3352,15 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-     * - __u8
-       - ``poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-       - PocStCurrBefore as described in section 8.3.2 "Decoding process for reference
--        picture set.
-+        picture set": provides the index of the short term before references in DPB array.
-     * - __u8
-       - ``poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-       - PocStCurrAfter as described in section 8.3.2 "Decoding process for reference
--        picture set.
-+        picture set": provides the index of the short term after references in DPB array.
-     * - __u8
-       - ``poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-       - PocLtCurr as described in section 8.3.2 "Decoding process for reference
--        picture set.
-+        picture set": provides the index of the long term references in DPB array.
-     * - __u64
-       - ``flags``
-       - See :ref:`Decode Parameters Flags <hevc_decode_params_flags>`
-diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-index be46b3c28b17..76386e9eb8f4 100644
---- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-+++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-@@ -306,24 +306,11 @@ static void set_params(struct hantro_ctx *ctx)
- 	hantro_reg_write(vpu, &g2_apf_threshold, 8);
- }
- 
--static int find_ref_pic_index(const struct v4l2_hevc_dpb_entry *dpb, int pic_order_cnt)
--{
--	int i;
--
--	for (i = 0; i < V4L2_HEVC_DPB_ENTRIES_NUM_MAX; i++) {
--		if (dpb[i].pic_order_cnt[0] == pic_order_cnt)
--			return i;
--	}
--
--	return 0x0;
--}
--
- static void set_ref_pic_list(struct hantro_ctx *ctx)
- {
- 	const struct hantro_hevc_dec_ctrls *ctrls = &ctx->hevc_dec.ctrls;
- 	struct hantro_dev *vpu = ctx->dev;
- 	const struct v4l2_ctrl_hevc_decode_params *decode_params = ctrls->decode_params;
--	const struct v4l2_hevc_dpb_entry *dpb = decode_params->dpb;
- 	u32 list0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX] = {};
- 	u32 list1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX] = {};
- 	static const struct hantro_reg ref_pic_regs0[] = {
-@@ -367,11 +354,11 @@ static void set_ref_pic_list(struct hantro_ctx *ctx)
- 	/* List 0 contains: short term before, short term after and long term */
- 	j = 0;
- 	for (i = 0; i < decode_params->num_poc_st_curr_before && j < ARRAY_SIZE(list0); i++)
--		list0[j++] = find_ref_pic_index(dpb, decode_params->poc_st_curr_before[i]);
-+		list0[j++] = decode_params->poc_st_curr_before[i];
- 	for (i = 0; i < decode_params->num_poc_st_curr_after && j < ARRAY_SIZE(list0); i++)
--		list0[j++] = find_ref_pic_index(dpb, decode_params->poc_st_curr_after[i]);
-+		list0[j++] = decode_params->poc_st_curr_after[i];
- 	for (i = 0; i < decode_params->num_poc_lt_curr && j < ARRAY_SIZE(list0); i++)
--		list0[j++] = find_ref_pic_index(dpb, decode_params->poc_lt_curr[i]);
-+		list0[j++] = decode_params->poc_lt_curr[i];
- 
- 	/* Fill the list, copying over and over */
- 	i = 0;
-@@ -380,11 +367,11 @@ static void set_ref_pic_list(struct hantro_ctx *ctx)
- 
- 	j = 0;
- 	for (i = 0; i < decode_params->num_poc_st_curr_after && j < ARRAY_SIZE(list1); i++)
--		list1[j++] = find_ref_pic_index(dpb, decode_params->poc_st_curr_after[i]);
-+		list1[j++] = decode_params->poc_st_curr_after[i];
- 	for (i = 0; i < decode_params->num_poc_st_curr_before && j < ARRAY_SIZE(list1); i++)
--		list1[j++] = find_ref_pic_index(dpb, decode_params->poc_st_curr_before[i]);
-+		list1[j++] = decode_params->poc_st_curr_before[i];
- 	for (i = 0; i < decode_params->num_poc_lt_curr && j < ARRAY_SIZE(list1); i++)
--		list1[j++] = find_ref_pic_index(dpb, decode_params->poc_lt_curr[i]);
-+		list1[j++] = decode_params->poc_lt_curr[i];
- 
- 	i = 0;
- 	while (j < ARRAY_SIZE(list1))
--- 
-2.25.1
+Steven Rostedt (VMware) (2):
+      x86/ftrace: Remove fault protection code in prepare_ftrace_return
+      x86/ftrace: Make function graph use ftrace directly
+
+ arch/x86/include/asm/ftrace.h        |   9 +++--
+ arch/x86/kernel/ftrace.c             |  71 +++++++++++++++++++-------------------
+ arch/x86/kernel/ftrace_64.S          |  30 +---------------
+ include/linux/ftrace.h               |  26 ++++++++++++++
+ kernel/trace/fgraph.c                |   6 ++--
+ kernel/trace/ftrace.c                | 214 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------
+ kernel/trace/trace_selftest.c        |  49 +++++++++++++++++++++++++-
+ samples/ftrace/Makefile              |   1 +
+ samples/ftrace/ftrace-direct-multi.c |  52 ++++++++++++++++++++++++++++
+ 9 files changed, 364 insertions(+), 94 deletions(-)
+ create mode 100644 samples/ftrace/ftrace-direct-multi.c
 
