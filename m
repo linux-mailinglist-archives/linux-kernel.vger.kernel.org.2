@@ -2,82 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACD53FCE16
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F21C3FCE1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241002AbhHaUCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 16:02:40 -0400
-Received: from mga05.intel.com ([192.55.52.43]:27003 "EHLO mga05.intel.com"
+        id S240374AbhHaUEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 16:04:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhHaUCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 16:02:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="304132812"
-X-IronPort-AV: E=Sophos;i="5.84,367,1620716400"; 
-   d="scan'208";a="304132812"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 13:01:42 -0700
-X-IronPort-AV: E=Sophos;i="5.84,367,1620716400"; 
-   d="scan'208";a="687857794"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.121.250]) ([10.209.121.250])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 13:01:39 -0700
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
- memory
-To:     David Hildenbrand <david@redhat.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
- <20210827023150.jotwvom7mlsawjh4@linux.intel.com>
- <243bc6a3-b43b-cd18-9cbb-1f42a5de802f@redhat.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <765e9bbe-2df5-3dcc-9329-347770dc091d@linux.intel.com>
-Date:   Tue, 31 Aug 2021 13:01:37 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239662AbhHaUEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 16:04:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7133960238;
+        Tue, 31 Aug 2021 20:03:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630440219;
+        bh=vRW9bfliGgi3M2Pqi3B8DPXC75HrCI/z3OLaZgRrVm4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=c+n2C2uXjpsgG+IMvy7GFarjuyy9OOh88JPopnrmM35XUt2kVJLSW0TqcN0C4t5+H
+         LpygCEwaDdIkUIgSIqInztLZy9fnac8wWg+YrRfeETvap2T2/iySy+ZyvFW48jCDhe
+         UPSWmECNnA8+QXePzRs/O7cgRK9XfTb/sfKjS9JJB/l7s/MNVTv9B3OubY7/HHnor7
+         SvxYhbBpCNqFfrsciovk8c2h73yCkqORUSPm6L6MGMBx713OQe9Q4CwKPCBoiBIvbm
+         EMIoIIaICTARiBGN8INkzBo0Wm/PNT7JHl62l8zL2F74TJMck3eRx5lUOZdkQY7sjs
+         0aInPP90zpCMA==
+From:   Dinh Nguyen <dinguyen@kernel.org>
+To:     michal.simek@xilinx.com
+Cc:     dinguyen@kernel.org, bp@alien8.de, mchehab@kernel.org,
+        tony.luck@intel.com, james.morse@arm.com, rric@kernel.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org
+Subject: [PATCH 1/2] EDAC/synopsys: add support for version 3 of the Synopsys EDAC DDR
+Date:   Tue, 31 Aug 2021 15:03:15 -0500
+Message-Id: <20210831200316.3208310-1-dinguyen@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <243bc6a3-b43b-cd18-9cbb-1f42a5de802f@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds support for version 3.80a of the Synopsys DDR controller
+with EDAC. This version of the controller has the following differences:
 
->> Thanks a lot for this summary. A question about the requirement: do 
->> we or
->> do we not have plan to support assigned device to the protected VM?
->
-> Good question, I assume that is stuff for the far far future.
+- UE/CE are auto cleared
+- Interrupts are supported by default
 
-It is in principle possible with the current TDX, but not secure. But 
-someone might decide to do it. So it would be good to have basic support 
-at least.
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+---
+ drivers/edac/synopsys_edac.c | 53 ++++++++++++++++++++++++++++++------
+ 1 file changed, 44 insertions(+), 9 deletions(-)
 
--Andi
+diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
+index 7e7146b22c16..297845e65b65 100644
+--- a/drivers/edac/synopsys_edac.c
++++ b/drivers/edac/synopsys_edac.c
+@@ -101,6 +101,7 @@
+ /* DDR ECC Quirks */
+ #define DDR_ECC_INTR_SUPPORT		BIT(0)
+ #define DDR_ECC_DATA_POISON_SUPPORT	BIT(1)
++#define DDR_ECC_INTR_SELF_CLEAR		BIT(2)
+ 
+ /* ZynqMP Enhanced DDR memory controller registers that are relevant to ECC */
+ /* ECC Configuration Registers */
+@@ -171,6 +172,10 @@
+ #define DDR_QOS_IRQ_EN_OFST		0x20208
+ #define DDR_QOS_IRQ_DB_OFST		0x2020C
+ 
++/* DDR QOS Interrupt register definitions */
++#define DDR_UE_MASK			0x200
++#define DDR_CE_MASK			0x100
++
+ /* ECC Corrected Error Register Mask and Shifts*/
+ #define ECC_CEADDR0_RW_MASK		0x3FFFF
+ #define ECC_CEADDR0_RNK_MASK		BIT(24)
+@@ -533,10 +538,16 @@ static irqreturn_t intr_handler(int irq, void *dev_id)
+ 	priv = mci->pvt_info;
+ 	p_data = priv->p_data;
+ 
+-	regval = readl(priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
+-	regval &= (DDR_QOSCE_MASK | DDR_QOSUE_MASK);
+-	if (!(regval & ECC_CE_UE_INTR_MASK))
+-		return IRQ_NONE;
++	/*
++	 * v3.0 of the controller has the ce/ue bits cleared automatically
++	 * cleared, so this condition does not apply.
++	 */
++	if (!(priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR)) {
++		regval = readl(priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
++		regval &= (DDR_QOSCE_MASK | DDR_QOSUE_MASK);
++		if (!(regval & ECC_CE_UE_INTR_MASK))
++			return IRQ_NONE;
++	}
+ 
+ 	status = p_data->get_error_info(priv);
+ 	if (status)
+@@ -548,7 +559,9 @@ static irqreturn_t intr_handler(int irq, void *dev_id)
+ 
+ 	edac_dbg(3, "Total error count CE %d UE %d\n",
+ 		 priv->ce_cnt, priv->ue_cnt);
+-	writel(regval, priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
++	/* v3.0 of the controller does not have this register */
++	if (!(priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR))
++		writel(regval, priv->baseaddr + DDR_QOS_IRQ_STAT_OFST);
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -834,8 +847,13 @@ static void mc_init(struct mem_ctl_info *mci, struct platform_device *pdev)
+ static void enable_intr(struct synps_edac_priv *priv)
+ {
+ 	/* Enable UE/CE Interrupts */
+-	writel(DDR_QOSUE_MASK | DDR_QOSCE_MASK,
+-			priv->baseaddr + DDR_QOS_IRQ_EN_OFST);
++	if (priv->p_data->quirks & DDR_ECC_INTR_SELF_CLEAR)
++		writel(DDR_UE_MASK | DDR_CE_MASK,
++		       priv->baseaddr + ECC_CLR_OFST);
++	else
++		writel(DDR_QOSUE_MASK | DDR_QOSCE_MASK,
++		       priv->baseaddr + DDR_QOS_IRQ_EN_OFST);
++
+ }
+ 
+ static void disable_intr(struct synps_edac_priv *priv)
+@@ -890,6 +908,19 @@ static const struct synps_platform_data zynqmp_edac_def = {
+ 			  ),
+ };
+ 
++static const struct synps_platform_data synopsys_edac_def = {
++	.get_error_info	= zynqmp_get_error_info,
++	.get_mtype	= zynqmp_get_mtype,
++	.get_dtype	= zynqmp_get_dtype,
++	.get_ecc_state	= zynqmp_get_ecc_state,
++	.quirks         = (DDR_ECC_INTR_SUPPORT | DDR_ECC_INTR_SELF_CLEAR
++#ifdef CONFIG_EDAC_DEBUG
++			  | DDR_ECC_DATA_POISON_SUPPORT
++#endif
++			  ),
++};
++
++
+ static const struct of_device_id synps_edac_match[] = {
+ 	{
+ 		.compatible = "xlnx,zynq-ddrc-a05",
+@@ -899,6 +930,10 @@ static const struct of_device_id synps_edac_match[] = {
+ 		.compatible = "xlnx,zynqmp-ddrc-2.40a",
+ 		.data = (void *)&zynqmp_edac_def
+ 	},
++	{
++		.compatible = "snps,ddrc-3.80a",
++		.data = (void *)&synopsys_edac_def
++	},
+ 	{
+ 		/* end of table */
+ 	}
+@@ -1352,8 +1387,8 @@ static int mc_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	if (of_device_is_compatible(pdev->dev.of_node,
+-				    "xlnx,zynqmp-ddrc-2.40a"))
++	if (!of_device_is_compatible(pdev->dev.of_node,
++				    "xlnx,zynq-ddrc-a05"))
+ 		setup_address_map(priv);
+ #endif
+ 
+-- 
+2.25.1
 
->
->
