@@ -2,141 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47393FCFC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 01:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23A93FCFC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 01:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241084AbhHaXDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 19:03:16 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50882 "EHLO vps0.lunn.ch"
+        id S241100AbhHaXEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 19:04:01 -0400
+Received: from mout.gmx.net ([212.227.17.21]:60507 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235659AbhHaXDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 19:03:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=enbFY4AVKjJRnyljEbP4rqvuKLOuy7w4dhctW4G9+Pc=; b=TbneM/9NQEoaUp0zOG3XRre1XH
-        UxI+alXoL6qsrMUqaE1U188kI4iGhU3jWtF6ZXvd2iQHmVinWsmOlSihU/RwtfWSfk4qcj3kvuFga
-        KWTDDdRqWoVtzhmhvFNDVvnJxTR3TyIcBZvo1R7L3UoGGwrlmTQsWysnG2IGqF7pUsE4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mLCld-004m4d-Tn; Wed, 01 Sep 2021 01:02:09 +0200
-Date:   Wed, 1 Sep 2021 01:02:09 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
- FWNODE_FLAG_BROKEN_PARENT
-Message-ID: <YS608fdIhH4+qJsn@lunn.ch>
-References: <YSjsQmx8l4MXNvP+@lunn.ch>
- <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
- <YSlG4XRGrq5D1/WU@lunn.ch>
- <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
- <YSpr/BOZj2PKoC8B@lunn.ch>
- <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
- <YS4rw7NQcpRmkO/K@lunn.ch>
- <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
- <YS6nxLp5TYCK+mJP@lunn.ch>
- <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
+        id S235659AbhHaXD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 19:03:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630450970;
+        bh=VMY9oIXrpgixVLgEGZSgjconPootgdM6kHEuUgEUwno=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=IuTqikVePCEVSo9FlAAsyOcck+QTD2DWCBRUngy3vLmL3eRe77FQKOZ0YQqmboJbu
+         1FK3eNDaNNYcH0BbqFn60pm5EtqIZbb0REM2bu2DLRsvN56BTQMyvMsIfMYD4F2LLa
+         2X0wdIVk+hefWuYhsKDy8XfngCYTZ+yCoNA6P7cI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.218.4]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N2E1G-1mzFyu20GU-013iIT; Wed, 01
+ Sep 2021 01:02:50 +0200
+Message-ID: <6fbb733f35f058b1c1c64116bf7018d8ee56229e.camel@gmx.de>
+Subject: Re: [tip: locking/urgent] locking/rwsem: Add missing __init_rwsem()
+ for PREEMPT_RT
+From:   Mike Galbraith <efault@gmx.de>
+To:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+Date:   Wed, 01 Sep 2021 01:02:49 +0200
+In-Reply-To: <163040368671.25758.17254317330050347174.tip-bot2@tip-bot2>
+References: <50a936b7d8f12277d6ec7ed2ef0421a381056909.camel@gmx.de>
+         <163040368671.25758.17254317330050347174.tip-bot2@tip-bot2>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.41.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:9VE4g0BGlwZSag+QcJLm1h7Lsvjc+DWp/YMXLFsd959vsTD9b1h
+ aCqeejMz6vNitk1PruvnsjNEkPrxqGlwxqAftdu7OOFyg8058btMDJNwOK0aVPV3AfdwX9r
+ w7tPQ2dwlEt1M3UXhIoC8wrFt7WFlTBclK5FxSLtvqWT9JCtmswi3ON5quhZyCGje7+Udlr
+ CUB8dI+Oc8zK+N5Lrrilw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qubAVZrw+vw=:ipEFZxi9EI3MV511nBRDPF
+ 1k+LFBhuNIneaIl6XFqkdAJW12FaAGEal6mHVGNS4Cn37hejzmev5FNvTyJUWU7ekjtE7pn6o
+ beI8IjmEqxblxdn3QQbfd48msGOTePTsA7aYqJmS/MEURqiaLmnGwmyIZdjDtjGTsKK3WlhWI
+ 7wWZLGjTa02TyqreiTWgsch0wZr5Zxcnw3NpqECsy3aMqcvwYJkH31HKZNonhipa5JygW2wpQ
+ iTXk8P0mumVVtUoEOi36vm2nW8Z0of552fx31AnyVNOEDY1pXcVM71GGCYAeydH7D/xw+AKhS
+ q/zlPCSb/9gb0tJ1uRxi5kzDEUmPV04kvjRPsAmJwRiS2vwN19R4q61P1X9wfVC/N+b21RxHH
+ /bqIuVAhCAozTaSkRMXAjGkxopDKTB6Eb/YPYgzwRu4DgdadqEY/iURladeRxjhs/sIWw9a5C
+ S9U4XpZp+hB+trTdM5QczkAFj35MMcD5yrsTx9VVPkCQIrR2u0aLRT3RB0BPlkk3yp0DeyXJY
+ DF37oClBBSjdm50YcXvvCqBVHyMSrVr3PjDYkSj6tQkA6HY8DvwFxwX38yBWmpuR3AbeieZ8/
+ Q/kdQs9ONqmWVePhUawIqPmEF9Dqnf23AcJ5yyO/q086+u9FBbPDyVV2LM1DmOAxxbODI+YbD
+ 94X2jaGDNjHX8dRBFnd0s888uRCLombnl9AgX+AMPxeU8GAt/6FsDPr2LXCN2K3fUKaQJ2NBd
+ TwHQJe6EbK3OPeJXxiBAzlkOOUgZHwlmiFWTKxepWzbSAQ0koPnjwrr//5NWqukiJ58y30C4+
+ VNf7WLdDBhPWguYft9CyYXOrswDvrldf9gwkAkHrs+lTWNrxtZMZ3yZMakIZ2/UnosebAmNXd
+ aYUyzGQPPBAe08FqJv9s884cFlrPn3aIaEhP4o0ZNaIS6QUdCOCLKW9XSWJ23ahHPmA5xd3oP
+ fj7qJzruuxaNO0s4qDzMKuUT4t7qPPbjWafAyvu+QsmyP7MED1mMBXBF/byeYGLReRiMu1TYd
+ U2Q64Nb3nr/aKjvUjNim7lnmZTCIcwSc3oarSep3163//gdStoNGRWW2C7EpZXQN5K2a+Dxm7
+ psLyJc8I7RSZ1it2BcrkLFPxR9+KxLC3N4S
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> If the switches are broken without the phy-handle or ethernet change,
-> I'm not sure if the "BROKEN_PARENT" patch would help.
+On Tue, 2021-08-31 at 09:54 +0000, tip-bot2 for Mike Galbraith wrote:
+> --- a/kernel/locking/rwsem.c
+> +++ b/kernel/locking/rwsem.c
+> @@ -1376,15 +1376,17 @@ static inline void __downgrade_write(struct rw_s=
+emaphore *sem)
+> =C2=A0
+> =C2=A0#include "rwbase_rt.c"
+> =C2=A0
+> -#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> =C2=A0void __rwsem_init(struct rw_semaphore *sem, const char *name,
+        ^^^^^^^^^^^^ this line dodged your key tapping.
 
-> > Which is not enough to fix these Ethernet switches.
-> 
-> Ok, if you can give more specifics on this, I'll look into it.
-
-The switches probe, but get the wrong PHY driver, genphy, not the
-Marvell PHY driver. And genphy is not sufficient for this hardware.
-
-I'd need:
-> 1) The DTS file that you see the issue on.
-
-I did the bisect on arch/arm/boot/dts/vf610-zii-dev-rev-c.dts but i
-also tested arch/arm/boot/dts/vf610-zii-dev-rev-b.dts.
-
-Rev B is interesting because switch0 and switch1 got genphy, while
-switch2 got the correct Marvell PHY driver. switch2 PHYs don't have
-interrupt properties, so don't loop back to their parent device.
-
-Here is Rev B. I trimmed out other devices probing in parallel:
-
-[    1.029100] fec 400d1000.ethernet: Invalid MAC address: 00:00:00:00:00:00
-[    1.034735] fec 400d1000.ethernet: Using random MAC address: 42:f2:14:33:78:f5
-[    1.042272] libphy: fec_enet_mii_bus: probed
-[    1.455932] libphy: mdio_mux: probed
-[    1.459432] mv88e6085 0.1:00: switch 0x3520 detected: Marvell 88E6352, revision 1
-[    1.494076] libphy: mdio: probed
-[    1.518958] libphy: mdio_mux: probed
-[    1.522553] mv88e6085 0.2:00: switch 0x3520 detected: Marvell 88E6352, revision 1
-[    1.537295] libphy: mdio: probed
-[    1.556571] libphy: mdio_mux: probed
-[    1.559719] mv88e6085 0.4:00: switch 0x1a70 detected: Marvell 88E6185, revision 2
-[    1.574614] libphy: mdio: probed
-[    1.733104] mv88e6085 0.1:00 lan0 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:00] driver [Generic PHY] (irq=POLL)
-[    1.750737] mv88e6085 0.1:00 lan1 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:01] driver [Generic PHY] (irq=POLL)
-[    1.768273] mv88e6085 0.1:00 lan2 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:02] driver [Generic PHY] (irq=POLL)
-[    1.806561] mv88e6085 0.2:00 lan3 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:00] driver [Generic PHY] (irq=POLL)
-[    1.824033] mv88e6085 0.2:00 lan4 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:01] driver [Generic PHY] (irq=POLL)
-[    1.841496] mv88e6085 0.2:00 lan5 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:02] driver [Generic PHY] (irq=POLL)
-[    1.943535] mv88e6085 0.4:00 lan6 (uninitialized): PHY [!mdio-mux!mdio@4!switch@0!mdio:00] driver [Marvell 88E1545] (irq=POLL)
-[    2.003529] mv88e6085 0.4:00 lan7 (uninitialized): PHY [!mdio-mux!mdio@4!switch@0!mdio:01] driver [Marvell 88E1545] (irq=POLL)
-[    2.063535] mv88e6085 0.4:00 lan8 (uninitialized): PHY [!mdio-mux!mdio@4!switch@0!mdio:02] driver [Marvell 88E1545] (irq=POLL)
-[    2.084768] DSA: tree 0 setup
-[    2.087791] libphy: mdio_mux: probed
-[    2.265477] Micrel KSZ8041 400d0000.ethernet-1:00: attached PHY driver (mii_bus:phy_addr=400d0000.ethernet-1:00, irq=POLL)
-
-root@zii-devel-b:~# cat /sys/kernel/debug/devices_deferred
-root@zii-devel-b:~# 
-
-For Rev C we see:
-
-[    1.244417] fec 400d1000.ethernet: Invalid MAC address: 00:00:00:00:00:00
-[    1.250081] fec 400d1000.ethernet: Using random MAC address: c6:42:89:ed:5f:dd
-[    1.257507] libphy: fec_enet_mii_bus: probed
-[    1.570725] libphy: mdio_mux: probed
-[    1.574208] mv88e6085 0.1:00: switch 0xa10 detected: Marvell 88E6390X, revision 1
-[    1.590272] libphy: mdio: probed
-[    1.627721] libphy: mdio_mux: probed
-[    1.631222] mv88e6085 0.2:00: switch 0xa10 detected: Marvell 88E6390X, revision 1
-[    1.659643] libphy: mdio: probed
-[    1.811665] mv88e6085 0.1:00 lan1 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:01] driver [Generic PHY] (irq=POLL)
-[    1.829230] mv88e6085 0.1:00 lan2 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:02] driver [Generic PHY] (irq=POLL)
-[    1.845884] mv88e6085 0.1:00 lan3 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:03] driver [Generic PHY] (irq=POLL)
-[    1.863237] mv88e6085 0.1:00 lan4 (uninitialized): PHY [!mdio-mux!mdio@1!switch@0!mdio:04] driver [Generic PHY] (irq=POLL)
-[    1.884078] mv88e6085 0.2:00 lan5 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:01] driver [Generic PHY] (irq=POLL)
-[    1.901630] mv88e6085 0.2:00 lan6 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:02] driver [Generic PHY] (irq=POLL)
-[    1.918287] mv88e6085 0.2:00 lan7 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:03] driver [Generic PHY] (irq=POLL)
-[    1.933721] mv88e6085 0.2:00 lan8 (uninitialized): PHY [!mdio-mux!mdio@2!switch@0!mdio:04] driver [Generic PHY] (irq=POLL)
-[    1.948722] DSA: tree 0 setup
-[    1.951599] libphy: mdio_mux: probed
-
-[   21.565550] Micrel KSZ8041 400d0000.ethernet-1:00: attached PHY driver (mii_bus:phy_addr=400d0000.ethernet-1:00, irq=48)
-
-I have Rev B using NFS root, so the interfaces are configured up by
-the kernel during boot. Rev C has a local root filesystem, so user
-space brings the interfaces up, and it is only when the FEC is opened
-does it attach to the Micrel PHY. That explains the difference between
-2.265 and 21.565 seconds for the last line.
-
-Again, nothing deferred.
-
-       Andrew
+	-Mike
