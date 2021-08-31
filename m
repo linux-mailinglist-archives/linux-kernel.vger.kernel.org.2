@@ -2,144 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE2A3FCBAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2C63FCBAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240576AbhHaQnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 12:43:25 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:58416 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240334AbhHaQnM (ORCPT
+        id S240655AbhHaQnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 12:43:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240567AbhHaQnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 12:43:12 -0400
-X-UUID: a865064f0d914a93a1e7e60d817add79-20210901
-X-UUID: a865064f0d914a93a1e7e60d817add79-20210901
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 993845599; Wed, 01 Sep 2021 00:42:13 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 1 Sep 2021 00:42:12 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 1 Sep 2021 00:42:12 +0800
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Wendell Lin <wendell.lin@mediatek.com>,
-        Hanks Chen <hanks.chen@mediatek.com>,
-        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Miles Chen <miles.chen@mediatek.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH v2 4/4] clk: mediatek: use tristate for COMMON_CLK_MEDAITEK and COMMON_CLK_MT6779
-Date:   Wed, 1 Sep 2021 00:42:10 +0800
-Message-ID: <20210831164210.15455-5-miles.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210831164210.15455-1-miles.chen@mediatek.com>
-References: <20210831164210.15455-1-miles.chen@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Tue, 31 Aug 2021 12:43:24 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9BAAC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:42:28 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id c11-20020ac87dcb0000b0290293566e00b1so1637045qte.15
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:42:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=f12jBhwq9+r/36NoKImUDEFN+8rcbqX1M1KRePLwVzM=;
+        b=k7XX6L8E3h8OOOUPT5I1QXsY0ja9hOXH9xib1TsSyFkgiC+zEr9+9+fJcwJn5CDk7F
+         HthqKNLD9bHN6bCcdiHKjb11Jx1eqJPO6A+xvWVKgxiQuTTSbXIfIdU6HWYlcYUgRuGR
+         4Ah3lNbn94Dzu4xQ5c/i4AN661IvE3pleqlXYNqCmIKsdlMjC+zQQA2KHD724zf7kYYi
+         rgKEnOBl2uz65Nf5pM2wwn/Je1Vu6vOdJDhigMYbPBSHFai61qb79Grv6FN6KiMejmXa
+         lHI+1IbylAtPhrNdhK+ef5x6Xquw/XP/r1sC9VBXHBsxpONjJoR8KyzInszFzFWXmRU6
+         Y61g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=f12jBhwq9+r/36NoKImUDEFN+8rcbqX1M1KRePLwVzM=;
+        b=aadcQ7Cru/lj94FXT23q1lSL50RfV9HP4SjX1FshhiRNHdkOxsbB5v+Ra1Bj80FIJd
+         60+HrklE86AzOWLPQIJqYEv+T8fsYfHcx/HAO57wRqy6fwPkfbODWu/Efx1UqSGGfU3s
+         pYTuSuOIz+7keaBclI//6hYzNrFusSh2jrJUFCc40feHNpYyR8O3vDBJ/N9TrrDImquA
+         tAGVAhooa7MXg487VomWt5NDuuFvmzoe/GnoGQynNZfVBZ3D40tC5h8PVWmEhwTalFW7
+         0eIN9a++1hkDNKjtlONmKo4KPhg9hPlfT2wbaAdtyoISLaqnV6ec/8CplY9C/5j7sVHt
+         227Q==
+X-Gm-Message-State: AOAM532SayqEXUTqM6qBV2Kd6W1bks0XQVnpvqCjWz9J6yD87jz0Peoz
+        93X3NeGHpDBQ+f7F5jGqe24wzeeZj4A=
+X-Google-Smtp-Source: ABdhPJwJpm65TcqXyqkx3P+gbjLiQnm24vEdkncuu85mx+K1P0HAooOTK+aguQjwBYqG1E1oUUgR7+Ii9ac=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:ddbd:588d:571:702a])
+ (user=seanjc job=sendgmr) by 2002:a05:6214:2609:: with SMTP id
+ gu9mr29117556qvb.35.1630428148017; Tue, 31 Aug 2021 09:42:28 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 31 Aug 2021 09:42:21 -0700
+Message-Id: <20210831164224.1119728-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+Subject: [PATCH 0/3] KVM: x86: guest.MAXPHYADDR fix and related cleanup
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+200c08e88ae818f849ce@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now we have all necessary exported symbols, change
-COMMON_CLK_MEDAITEK and COMMON_CLK_MT6779* to tristate.
+Fix a bug exposed by syzkaller where running with guest.MAXPHYADDR < 32
+leads KVM injecting a garbage exception due to mishandling an illegal GPA
+check when "translating" a non-nested GPA.
 
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Hanks Chen <hanks.chen@mediatek.com>
-Cc: Wendell Lin <wendell.lin@mediatek.com>
-Cc: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Miles Chen <miles.chen@mediatek.com>
----
- drivers/clk/mediatek/Kconfig | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+Clean up tangentially related code in load_pdptrs() to discourage reading
+guest memory using a potentially-nested GPA.
 
-diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-index 886e2d9fced5..62ed2054a849 100644
---- a/drivers/clk/mediatek/Kconfig
-+++ b/drivers/clk/mediatek/Kconfig
-@@ -6,7 +6,7 @@ menu "Clock driver for MediaTek SoC"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
- 
- config COMMON_CLK_MEDIATEK
--	bool
-+	tristate
- 	select RESET_CONTROLLER
- 	help
- 	  MediaTek SoCs' clock support.
-@@ -204,7 +204,7 @@ config COMMON_CLK_MT6765_MIPI2BSYS
-          This driver supports MediaTek MT6765 mipi2bsys clocks.
- 
- config COMMON_CLK_MT6779
--	bool "Clock driver for MediaTek MT6779"
-+	tristate "Clock driver for MediaTek MT6779"
- 	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
- 	select COMMON_CLK_MEDIATEK
- 	default ARCH_MEDIATEK && ARM64
-@@ -212,49 +212,49 @@ config COMMON_CLK_MT6779
- 	  This driver supports MediaTek MT6779 basic clocks.
- 
- config COMMON_CLK_MT6779_MMSYS
--	bool "Clock driver for MediaTek MT6779 mmsys"
-+	tristate "Clock driver for MediaTek MT6779 mmsys"
- 	depends on COMMON_CLK_MT6779
- 	help
- 	  This driver supports MediaTek MT6779 mmsys clocks.
- 
- config COMMON_CLK_MT6779_IMGSYS
--	bool "Clock driver for MediaTek MT6779 imgsys"
-+	tristate "Clock driver for MediaTek MT6779 imgsys"
- 	depends on COMMON_CLK_MT6779
- 	help
- 	  This driver supports MediaTek MT6779 imgsys clocks.
- 
- config COMMON_CLK_MT6779_IPESYS
--	bool "Clock driver for MediaTek MT6779 ipesys"
-+	tristate "Clock driver for MediaTek MT6779 ipesys"
- 	depends on COMMON_CLK_MT6779
- 	help
- 	  This driver supports MediaTek MT6779 ipesys clocks.
- 
- config COMMON_CLK_MT6779_CAMSYS
--	bool "Clock driver for MediaTek MT6779 camsys"
-+	tristate "Clock driver for MediaTek MT6779 camsys"
- 	depends on COMMON_CLK_MT6779
- 	help
- 	  This driver supports MediaTek MT6779 camsys clocks.
- 
- config COMMON_CLK_MT6779_VDECSYS
--	bool "Clock driver for MediaTek MT6779 vdecsys"
-+	tristate "Clock driver for MediaTek MT6779 vdecsys"
- 	depends on COMMON_CLK_MT6779
- 	help
- 	  This driver supports MediaTek MT6779 vdecsys clocks.
- 
- config COMMON_CLK_MT6779_VENCSYS
--	bool "Clock driver for MediaTek MT6779 vencsys"
-+	tristate "Clock driver for MediaTek MT6779 vencsys"
- 	depends on COMMON_CLK_MT6779
- 	help
- 	  This driver supports MediaTek MT6779 vencsys clocks.
- 
- config COMMON_CLK_MT6779_MFGCFG
--	bool "Clock driver for MediaTek MT6779 mfgcfg"
-+	tristate "Clock driver for MediaTek MT6779 mfgcfg"
- 	depends on COMMON_CLK_MT6779
- 	help
- 	  This driver supports MediaTek MT6779 mfgcfg clocks.
- 
- config COMMON_CLK_MT6779_AUDSYS
--	bool "Clock driver for Mediatek MT6779 audsys"
-+	tristate "Clock driver for Mediatek MT6779 audsys"
- 	depends on COMMON_CLK_MT6779
- 	help
- 	  This driver supports Mediatek MT6779 audsys clocks.
+Sean Christopherson (3):
+  Revert "KVM: x86: mmu: Add guest physical address check in
+    translate_gpa()"
+  KVM: x86: Subsume nested GPA read helper into load_pdptrs()
+  KVM: x86: Simplify retrieving the page offset when loading PDTPRs
+
+ arch/x86/include/asm/kvm_host.h |  3 --
+ arch/x86/kvm/mmu/mmu.c          |  6 ----
+ arch/x86/kvm/x86.c              | 56 +++++++++++----------------------
+ 3 files changed, 18 insertions(+), 47 deletions(-)
+
 -- 
-2.18.0
+2.33.0.259.gc128427fd7-goog
 
