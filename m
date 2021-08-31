@@ -2,131 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8527C3FC593
+	by mail.lfdr.de (Postfix) with ESMTP id CDEC13FC594
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240983AbhHaKWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240908AbhHaKWl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:22:41 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4D8C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:21:46 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id s3so30808226ljp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:21:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wQ8kS/+bTV4avdS2tU6jC3f6zz+Ryry/9cKDRK1gufo=;
-        b=jiP1wMEEvsgc3n7vYx1ledvZpCZkUX5FcfCU/d4NmQ10imEb+nTwuV7AvPQyuAhzpe
-         YsP/UU3DHPPh2i10yLbc78f5nCMLrerGJ6O5w2qQxXo1os1R5iEn/nQbRPHBGoAOHkXS
-         1aGLp5y3Z3p+M9xTR3mVec6Ve/Wj+o+zBAE2jyiAeEhGtBnmOfK3J7BHgoO9AKlkFMG8
-         XHtHiuMg1cbBY5AtMl5rgl7rqbMvAu7ThdDV0Pq3/ED5GoRF4shP/c5KQGW9yKirDnmq
-         d2LCC2MTmPF6h0Symi6YMYf/1TDJKL/EaXJSAYRhHwpoTPEraIaRvdsHZ1cUt089Z39h
-         /jrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wQ8kS/+bTV4avdS2tU6jC3f6zz+Ryry/9cKDRK1gufo=;
-        b=GVT642kgXLymB/1je6WpmTf6dQSZX5N7pk6/ywd6pzKREfrfnqPcq7JB7aiSXduBRr
-         dvdUU4yfwk65YAKPYTQ9sjZmLY1PRLuyxmt1icPtV2z392791A2crpvTXKQGkPH+Wuas
-         EP6giU2UziZkedQJH19KmZPmT6n71Kl9ZGufTJsidYohU4mOxwkFT/jbW7fqmjveBDIc
-         KeXTzbfC3PRIByeHReil+Y9DCF6+ZScGUdH58/yQXdqvAiBYXBTe+DX9SA0zj2msafpk
-         C/hyOdClXJoFXHBidCET8aJoFlhWLwBe5KALzg7nTxkoED2eKDf6NNZAJtOEK5Bn8mcy
-         6MgA==
-X-Gm-Message-State: AOAM532UUCwdmd6TrjyK1FNYGpWGvD7EKVqGEmMUmqtsFHyq0kNGMHUr
-        wAHUznlZR455qyfisRPjBRZQgg==
-X-Google-Smtp-Source: ABdhPJyfAO80CqzIGBt9m8D2PiuI5w5PJosyAgh/JmPeY8WX1k4mcSvpAtqPgpVYTTOGtXaXZQRtog==
-X-Received: by 2002:a05:651c:2ca:: with SMTP id f10mr24621298ljo.211.1630405305074;
-        Tue, 31 Aug 2021 03:21:45 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id d13sm1687864lfk.232.2021.08.31.03.21.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 03:21:44 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 2/2] of: property: fw_devlink: Set 'optional_con_dev' for parse_power_domains
-Date:   Tue, 31 Aug 2021 12:21:41 +0200
-Message-Id: <20210831102141.624725-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S240991AbhHaKXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:23:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240908AbhHaKXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 06:23:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE57D60FF2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 10:22:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630405350;
+        bh=CopK0+RPrdW0NrpmXSqnJg7a/FM6saM8cfHvnciJNVw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GRQbXhOspGBkkIdQarG+TUlyTgZ1ZIu+lRu3XB3bAPtMaH3eeOK7uUszP3UV0esUN
+         y+omubUOvniXV0SqWGkdDSfBAtuuQumR4kSh6W5bi0l+6wO3MXGuyVRv68ET1Tbadm
+         SYPfB/GK3EE/z7vpkowN6sqqsJ9V6JtkW/ZzOF42L7ocM4APl7HcV0qsY6mKRnyEGm
+         UZ8NJ7hvZrRIx+QS4okWIKDi7lK0d0aNsP1XF2qxaPP0JXIEVVM67k6khIXNvnAu6v
+         DscgIH027byMmXT8p7jQyR18P72N7Bx5hNzbxAzvid0I4NCz363bRF/ckN37pe3f+g
+         cySVbxwB8TE+w==
+Received: by mail-oi1-f170.google.com with SMTP id bi4so19942827oib.9
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:22:29 -0700 (PDT)
+X-Gm-Message-State: AOAM530moMHMaWiKeQ4gqANUl6SPbXPSinLdGe/lktlLKCmP9acFIfcK
+        Au02F3WLEtyBxPTtjO3CbwgfE6DIB6LXl6hYz2A=
+X-Google-Smtp-Source: ABdhPJzjKuTh+epTj5FSATkHPUdlZkAtu32PUzfeNKRcR5oIb4mMVRmSAXwtJww3FuIzehctC2Gstt7OAkN8JJpuuG4=
+X-Received: by 2002:aca:ea54:: with SMTP id i81mr2567189oih.174.1630405349269;
+ Tue, 31 Aug 2021 03:22:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cbfc0376461d02867c75cee72bb9167e16f4d0b0.1630396954.git.christophe.leroy@csgroup.eu>
+ <YS3t/s9nojyCn9ev@hirez.programming.kicks-ass.net>
+In-Reply-To: <YS3t/s9nojyCn9ev@hirez.programming.kicks-ass.net>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 31 Aug 2021 12:22:18 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXERf18cKD6v2vDkue4wosqBSnB4B6xjj4yz0H-c7DKyzw@mail.gmail.com>
+Message-ID: <CAMj1kXERf18cKD6v2vDkue4wosqBSnB4B6xjj4yz0H-c7DKyzw@mail.gmail.com>
+Subject: Re: [PATCH] powerpc/32: Add support for out-of-line static calls
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The power-domain DT bindings [1] doesn't enforce a compatible string for a
-provider node, even if this is common to use. In particular, when
-describing a hierarchy with parent/child power-domains, as the psci DT
-bindings [2] for example, it's sometimes not applicable to use a compatible
-string.
+On Tue, 31 Aug 2021 at 10:53, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Aug 31, 2021 at 08:05:21AM +0000, Christophe Leroy wrote:
+>
+> > +#define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)                     \
+> > +     asm(".pushsection .text, \"ax\"                         \n"     \
+> > +         ".align 4                                           \n"     \
+> > +         ".globl " STATIC_CALL_TRAMP_STR(name) "             \n"     \
+> > +         STATIC_CALL_TRAMP_STR(name) ":                      \n"     \
+> > +         "   blr                                             \n"     \
+> > +         "   nop                                             \n"     \
+> > +         "   nop                                             \n"     \
+> > +         "   nop                                             \n"     \
+> > +         ".type " STATIC_CALL_TRAMP_STR(name) ", @function   \n"     \
+> > +         ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
+> > +         ".popsection                                        \n")
+>
+> > +static int patch_trampoline_32(u32 *addr, unsigned long target)
+> > +{
+> > +     int err;
+> > +
+> > +     err = patch_instruction(addr++, ppc_inst(PPC_RAW_LIS(_R12, PPC_HA(target))));
+> > +     err |= patch_instruction(addr++, ppc_inst(PPC_RAW_ADDI(_R12, _R12, PPC_LO(target))));
+> > +     err |= patch_instruction(addr++, ppc_inst(PPC_RAW_MTCTR(_R12)));
+> > +     err |= patch_instruction(addr, ppc_inst(PPC_RAW_BCTR()));
+> > +
+> > +     return err;
+> > +}
+>
+> There can be concurrent execution and modification; the above doesn't
+> look safe in that regard. What happens if you've say, done the first
+> two, but not the latter two and execution happens (on a different
+> CPU or through IRQ context, etc..)?
+>
+> > +void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
+> > +{
+> > +     int err;
+> > +     unsigned long target = (long)func;
+> > +
+> > +     if (!tramp)
+> > +             return;
+> > +
+> > +     mutex_lock(&text_mutex);
+> > +
+> > +     if (!func)
+> > +             err = patch_instruction(tramp, ppc_inst(PPC_RAW_BLR()));
+> > +     else if (is_offset_in_branch_range((long)target - (long)tramp))
+> > +             err = patch_branch(tramp, target, 0);
+>
+> These two are single instruction modifications and I'm assuming the
+> hardware is sane enough that execution sees either the old or the new
+> instruction. So this should work.
+>
+> > +     else if (IS_ENABLED(CONFIG_PPC32))
+> > +             err = patch_trampoline_32(tramp, target);
+> > +     else
+> > +             BUILD_BUG();
+> > +
+> > +     mutex_unlock(&text_mutex);
+> > +
+> > +     if (err)
+> > +             panic("%s: patching failed %pS at %pS\n", __func__, func, tramp);
+> > +}
+> > +EXPORT_SYMBOL_GPL(arch_static_call_transform);
+>
+> One possible solution that we explored on ARM64, was having the
+> trampoline be in 2 slots:
+>
+>
+>         b 1f
+>
+> 1:      blr
+>         nop
+>         nop
+>         nop
+>
+> 2:      blr
+>         nop
+>         nop
+>         nop
+>
+> Where initially the first slot is active (per "b 1f"), then you write
+> the second slot, and as a final act, re-write the initial branch to
+> point to slot 2.
+>
+> Then you execute synchronize_rcu_tasks() under your text mutex
+> (careful!) to ensure all users of your slot1 are gone and the next
+> modification repeats the whole thing, except for using slot1 etc..
+>
+> Eventually I think Ard came up with the latest ARM64 proposal which puts
+> a literal in a RO section (could be the text section I suppose) and
+> loads and branches to that.
+>
 
-Therefore, let's set the 'optional_con_dev' to true to avoid creating
-incorrect fw_devlinks for power-domains.
+Yes. The main reason is simply that anything else is premature
+optimization: we have a clear use case (CFI) where out-of-line static
+calls are faster than compiler generated indirect calls, even if the
+static call sequence is based on a literal load and an indirect
+branch, but CFI is not upstream [yet].
 
-[1] Documentation/devicetree/bindings/power/power-domain.yaml
-[2] Documentation/devicetree/bindings/arm/psci.yaml
+Once other use cases emerge, we will revisit this.
 
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
 
-Some more details of what goes on here. I have added a debug print in
-of_link_to_phandle() to see the fw_devlinks that gets created.
 
-This is what happens on Dragonboard 410c when 'optional_con_dev' isn't set:
-...
-[    0.041274] device: 'psci': device_add
-[    0.041366] OF: Linking power-domain-cpu0 (consumer) to psci (supplier)
-[    0.041395] OF: Linking power-domain-cpu1 (consumer) to psci (supplier)
-[    0.041423] OF: Linking power-domain-cpu2 (consumer) to psci (supplier)
-[    0.041451] OF: Linking power-domain-cpu3 (consumer) to psci (supplier)
-[    0.041494] device: 'platform:psci--platform:psci': device_add
-[    0.041556] platform psci: Linked as a sync state only consumer to psci
-...
-
-This is what happens on Dragonboard 410c when 'optional_con_dev' is set:
-...
-[    0.041179] device: 'psci': device_add
-[    0.041265] OF: Not linking psci to psci - is descendant
-[    0.041293] OF: Not linking psci to psci - is descendant
-[    0.041319] OF: Not linking psci to psci - is descendant
-[    0.041346] OF: Not linking psci to psci - is descendant
-...
-
-The relevant dtsi file:
-arch/arm64/boot/dts/qcom/msm8916.dtsi
-
-Kind regards
-Ulf Hansson
-
----
- drivers/of/property.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 2babb1807228..4d607fdbea24 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1356,7 +1356,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_io_channels, },
- 	{ .parse_prop = parse_interrupt_parent, },
- 	{ .parse_prop = parse_dmas, .optional = true, },
--	{ .parse_prop = parse_power_domains, },
-+	{ .parse_prop = parse_power_domains, .optional_con_dev = true, },
- 	{ .parse_prop = parse_hwlocks, },
- 	{ .parse_prop = parse_extcon, },
- 	{ .parse_prop = parse_nvmem_cells, },
--- 
-2.25.1
-
+> Anyway, the thing is, you can really only modify a single instruction at
+> the time and need to ensure concurrent execution is correct.
