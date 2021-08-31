@@ -2,99 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C8D3FCE24
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5071A3FCE27
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233842AbhHaUHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 16:07:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40008 "EHLO mail.kernel.org"
+        id S240163AbhHaUHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 16:07:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229476AbhHaUHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 16:07:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 256316108B;
-        Tue, 31 Aug 2021 20:06:13 +0000 (UTC)
+        id S229476AbhHaUHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 16:07:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 64D886054E;
+        Tue, 31 Aug 2021 20:06:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630440373;
-        bh=xrvKiHXhYI03XkknWcnBRe0wu5iG2lTHButTzM1ZtwE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FQcjRDlduBYIPHCwtbtquYUWQAwyz1mnXHv1m813KLjFpOv3EAYfIEB01ZMzWLPAA
-         vnga06UIcMK7xldwTnWdGSVXwFDXBmy21Nmo2CJsAKCegkmOIFh22CwWwLea4JL5X0
-         1RhgjEWQRcOtRU7mL2Jv8gK0+Q1zbzu0o7GAMpw93RY2z2gaTzOsQDHLcnmd6wi2uP
-         ltm4EgHsDc8WUY7QsmjuLeF7dJYUIAgESL4lRJ2D0VFGO7J+D5q/snaWuIYUwVb+vJ
-         ia/TV/6Spg/6/flpaZIqCxG5sMrQVkqX83uzQ9mU3L0DeNQlug9rNz08j0jHSTwWDy
-         WQYf2r2h1Hovg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 03F884007E; Tue, 31 Aug 2021 17:06:09 -0300 (-03)
-Date:   Tue, 31 Aug 2021 17:06:09 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFC PATCH v1 27/37] perf evlist: add
- evlist__for_each_entry_from macro
-Message-ID: <YS6LsW1bYZpRyhY4@kernel.org>
-References: <cover.1629490974.git.rickyman7@gmail.com>
- <2386505f8b598adf0dbcd04ec21804c6bcf00826.1629490974.git.rickyman7@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2386505f8b598adf0dbcd04ec21804c6bcf00826.1629490974.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+        s=k20201202; t=1630440396;
+        bh=671R0W6BoCjcyUP/o/JoH6eMm1f7i+EfnB0Bg1vlmGM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=itRBkDwkaBRAuY7xkfKbKo30MXVU4KAa+v/i4/Fn3D60oxe271TD/OkKrRJCWEMBQ
+         csTS9vBqGWhpmin30dK51akwV92pdMu4BY2ZsJpgU5au0sItBqPzCbAU2EF93b62od
+         2F6fzCEbPaFmMNlIgT/IP/eKqNACi282LEbDMp4zAQTBA3yXsXLlNouePYQ/XYO38c
+         4C8Ovj+aXI4lrpdz+GosEP7iLA4Wl67XqPOeZ9VidspEZv1xiG0oyDyDrQE5A7Nv3E
+         AAJcsbkz8TYIcY7nhaWqfLZePHXIPotxkY5c6s4yAjXHJ9NO24GVtBwsNWNtcYkyPQ
+         y/nmZmfbHuuBw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 56C6C60A6F;
+        Tue, 31 Aug 2021 20:06:36 +0000 (UTC)
+Subject: Re: [GIT PULL] SELinux patches for v5.15
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAHC9VhQDQ2WF+gsRdC+3g6FLa19nvbka99zE0s_ZbupucpmJmQ@mail.gmail.com>
+References: <CAHC9VhQDQ2WF+gsRdC+3g6FLa19nvbka99zE0s_ZbupucpmJmQ@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAHC9VhQDQ2WF+gsRdC+3g6FLa19nvbka99zE0s_ZbupucpmJmQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20210830
+X-PR-Tracked-Commit-Id: 893c47d1964f5c9b00c5468f2cd1a1e9351fbb6a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: befa491ce6954adadb181c464d0318925f18e499
+Message-Id: <163044039629.15638.5361450733762426279.pr-tracker-bot@kernel.org>
+Date:   Tue, 31 Aug 2021 20:06:36 +0000
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Aug 21, 2021 at 11:19:33AM +0200, Riccardo Mancini escreveu:
-> This patch adds a new iteration macro for evlist that resumes iteration
-> from a given evsel in the evlist.
-> 
-> This macro will be used in the next patch
+The pull request you sent on Mon, 30 Aug 2021 12:36:41 -0400:
 
-Thanks, applied.
+> git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20210830
 
-- Arnaldo
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/befa491ce6954adadb181c464d0318925f18e499
 
- 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/util/evlist.h | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-> index 5f24a45d4e3cf30a..b0c2da0f9755b2d1 100644
-> --- a/tools/perf/util/evlist.h
-> +++ b/tools/perf/util/evlist.h
-> @@ -275,6 +275,22 @@ void evlist__to_front(struct evlist *evlist, struct evsel *move_evsel);
->  #define evlist__for_each_entry_continue(evlist, evsel) \
->  	__evlist__for_each_entry_continue(&(evlist)->core.entries, evsel)
->  
-> +/**
-> + * __evlist__for_each_entry_from - continue iteration from @evsel (included)
-> + * @list: list_head instance to iterate
-> + * @evsel: struct evsel iterator
-> + */
-> +#define __evlist__for_each_entry_from(list, evsel) \
-> +	list_for_each_entry_from(evsel, list, core.node)
-> +
-> +/**
-> + * evlist__for_each_entry_from - continue iteration from @evsel (included)
-> + * @evlist: evlist instance to iterate
-> + * @evsel: struct evsel iterator
-> + */
-> +#define evlist__for_each_entry_from(evlist, evsel) \
-> +	__evlist__for_each_entry_from(&(evlist)->core.entries, evsel)
-> +
->  /**
->   * __evlist__for_each_entry_reverse - iterate thru all the evsels in reverse order
->   * @list: list_head instance to iterate
-> -- 
-> 2.31.1
+Thank you!
 
 -- 
-
-- Arnaldo
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
