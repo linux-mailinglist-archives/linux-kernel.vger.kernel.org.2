@@ -2,63 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79F53FCBEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393753FCBF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240325AbhHaQ7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 12:59:17 -0400
-Received: from mail-pg1-f180.google.com ([209.85.215.180]:37727 "EHLO
-        mail-pg1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240361AbhHaQ7N (ORCPT
+        id S240371AbhHaQ7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 12:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239443AbhHaQ7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 12:59:13 -0400
-Received: by mail-pg1-f180.google.com with SMTP id 17so17387884pgp.4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:58:17 -0700 (PDT)
+        Tue, 31 Aug 2021 12:59:45 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20B7C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:58:49 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id 7so15444520pfl.10
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 09:58:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vSsyLkLytT485YxJhtDSyUreAWOp01WMhEhWSjhjWSQ=;
+        b=WikKTHCGSrl0kxsZN24g3MXifcsxcZtAFFRO48tUni80/KqA8LTr8XSi4fNFo65Aao
+         gKy+EtOibB7v+ZJIdF1Wa328jMqZNCbLv4cCb4i+z0ynk/8l9lpl3kw9gcX6h9rUpCjj
+         2Gn61+sOAbk86lUBL8oNCEyo9YX9I6pjhVx/8D9upbekveGjCSNiqQeYDavYkHs2QP7s
+         wlyUPeRRFo0wljtXm0cBxeWR5o6v2yarB+S16jqWC+wEM8K1XmychGW+iQAzv/V/+tPl
+         VDEJrvb4YXLG/prOWTh2Nvy5C9cuStXPC/8rXvUWq+lS4GPlKFtXFx7jCCRXFpQyeRdN
+         reKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RADL0VZuutsxcjrH1H1OF6veIv0hkmcVRwm1RbHKyCk=;
-        b=KKqx2iLg4trmWziUxeVarBuNnPs9hYcLrSLR8qidD8eFRRWJlZ4c3Uj0YX+/ylEpEG
-         0KmgnxlQpjLgjz6jS6/8h+3Z54GYDIEJ6CeTPi+8U1c20CDRSSa+BZG2MVUTQ6Azmlf/
-         kabel35rx//MiNklCli+6mzqdtphv7cBNcxKpmjJKhmdu0cNrge/Sdnf9AyJiqOdXuF5
-         R4rxkYOie9v2mwus9AqCBXtUH/QQSFChuny09jJO2kMZuWw4P1bkorfNgpWGeM/kcLgj
-         9LJ3erDt5K6b9TcpAk4EFRtCFfy5RmneIVezh5k8siXtIIOa1SW/ogf0yJHgNDgf4lBv
-         gm+A==
-X-Gm-Message-State: AOAM5326UWJB85QT8qH/lzhWWXFgcryLFBY3DYTwpNBuN7lVX3oQwcEY
-        g+kG0LAowCDviDOMvmLZXZKbcrY6G9nyWQ==
-X-Google-Smtp-Source: ABdhPJw07czNLMoYptSEg6sH6hXZ+gG/xSCCE36wwLWMV2FLlnCYne2ys1ncRp4xynOz516uKhzUzg==
-X-Received: by 2002:a65:5b86:: with SMTP id i6mr19353438pgr.62.1630429097467;
-        Tue, 31 Aug 2021 09:58:17 -0700 (PDT)
-Received: from sultan-box.localdomain (static-198-54-131-119.cust.tzulo.com. [198.54.131.119])
-        by smtp.gmail.com with ESMTPSA id 20sm18487987pfi.170.2021.08.31.09.58.17
+        bh=vSsyLkLytT485YxJhtDSyUreAWOp01WMhEhWSjhjWSQ=;
+        b=XgHfu/arRAsauG/7zTSIpYcYb6cTrh+xZcNZCqTfBjF9qJaBbuB1RZ+mqn0eo5X+MB
+         SBZiLJUY1HYBkUz9WRwjWWVJJUPPGU4RY7iMEmfklyqeqmmkIB7L9UCYydUZ1HgCaev0
+         VhoucUbK64+iZLgo5grfjCqWlkUBx0Z5g1ETu3ldyyNs/n+31zo2mEEgKTn+vr1eTuRe
+         wlPOn1nATTqiePl4CS/nwrIGz5WbTdJw0joPSAXKR0wL4GLWiHDvopGn+ZcIM/kwvufF
+         7Az/pQD1V23nBl7hw1Xcj56XNFoffwL5IU/t9SCQ8FLEBJPbjfeTo4hsSLhSamNpfI2Z
+         sLGw==
+X-Gm-Message-State: AOAM5323pBf9t+flwnQUr7FkUk6eJsfv4+eQ9Yg2Q9BEXFjkkC2yM8GC
+        DkxNykIMMegN9ThYJyPvNzcQVg==
+X-Google-Smtp-Source: ABdhPJyeDoViWQ6dpRqrKXaytMTw6VBaCzRO2A8PkQSx0XzGLRKz7bIpGFwqEUIOHoJCNaOtosUgIQ==
+X-Received: by 2002:a05:6a00:706:b0:404:d92b:82a5 with SMTP id 6-20020a056a00070600b00404d92b82a5mr4761642pfl.79.1630429129108;
+        Tue, 31 Aug 2021 09:58:49 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id y25sm18351069pfm.80.2021.08.31.09.58.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 09:58:17 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 09:58:15 -0700
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, mhocko@suse.com, mgorman@techsingularity.net,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: Stuck looping on list_empty(list) in free_pcppages_bulk()
-Message-ID: <YS5fp8ZKvw1Xnkgf@sultan-box.localdomain>
-References: <YS1l83lmwEYXuQsY@sultan-box.localdomain>
- <11357114-eb6e-39a6-b16d-5e380f770943@suse.cz>
+        Tue, 31 Aug 2021 09:58:48 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 16:58:44 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Mingwei Zhang <mizhang@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Peter Xu <peterx@redhat.com>
+Subject: Re: [PATCH v3 2/2] selftests: KVM: use dirty logging to check if
+ page stats work correctly
+Message-ID: <YS5fxJtX/nYb43ir@google.com>
+References: <20210830044425.2686755-1-mizhang@google.com>
+ <20210830044425.2686755-3-mizhang@google.com>
+ <CANgfPd_46=V24r5Qu8cDuOCwVRSEF9RFHuD-1sPpKrBCjWOA2w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <11357114-eb6e-39a6-b16d-5e380f770943@suse.cz>
+In-Reply-To: <CANgfPd_46=V24r5Qu8cDuOCwVRSEF9RFHuD-1sPpKrBCjWOA2w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 06:51:23PM +0200, Vlastimil Babka wrote:
-> Does the kernel have commit 88e8ac11d2ea3 backported? If not, and there were
-> memory hotplug operations happening, the infinite loop could happen. If that
-> commit was not backported, and instead 5c3ad2eb7104 was backported, possibly
-> there are more scenarios outside hotplug that can cause trouble.
+On Mon, Aug 30, 2021, Ben Gardon wrote:
+> On Sun, Aug 29, 2021 at 9:44 PM Mingwei Zhang <mizhang@google.com> wrote:
+> > diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
+> > index af1031fed97f..07eb6b5c125e 100644
+> > --- a/tools/testing/selftests/kvm/lib/test_util.c
+> > +++ b/tools/testing/selftests/kvm/lib/test_util.c
+> > @@ -15,6 +15,13 @@
+> >  #include "linux/kernel.h"
+> >
+> >  #include "test_util.h"
+> > +#include "processor.h"
+> > +
+> > +static const char * const pagestat_filepaths[] = {
+> > +       "/sys/kernel/debug/kvm/pages_4k",
+> > +       "/sys/kernel/debug/kvm/pages_2m",
+> > +       "/sys/kernel/debug/kvm/pages_1g",
+> > +};
+> 
+> I think these should only be defined for x86_64 too. Is this the right
+> file for these definitions or is there an arch specific file they
+> should go in?
 
-Yes, it appears that 5.8.18 contains the 88e8ac11d2ea3 backport (commit ID
-5b21a116b1365 in linux-5.8.y).
-
-Thanks,
-Sultan
+The stats also need to be pulled from the selftest's VM, not from the overall KVM
+stats, otherwise the test will fail if there are any other active VMs on the host,
+e.g. I like to run to selftests and kvm-unit-tests in parallel.
