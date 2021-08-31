@@ -2,198 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E5B3FCF90
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00713FCF97
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240560AbhHaW3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 18:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbhHaW3t (ORCPT
+        id S239279AbhHaWdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 18:33:42 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:44712 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229602AbhHaWdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 18:29:49 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9ADC061575;
-        Tue, 31 Aug 2021 15:28:53 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id c8so2196942lfi.3;
-        Tue, 31 Aug 2021 15:28:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dS9a4YMFIkiyop0PAaPSvf253c+DJ+aqy8e3zyibudI=;
-        b=d1GVhDAbWLf39u8T58lsdyyzB3xuNKg4Snil8lED8FR6T5Da6Bbo1S0OeUfmF4RPoI
-         KLzZbsIFQEsImkpVg8eOrEMshDXO5VvJHeb7sWQOYXOnaOwT8U3NvBdpCC5SKaFGpLJF
-         xTevo3atCRYZxfYU+lMvIRBJTRLIsdmaGq3k6NdcK8kFQklBNRME+NfKWY/Unk1RQADn
-         7AIMyj5lQidQDjnU6U05R1iJfGtyMuPA1euC9rlM66zQzuhoI3M8Kt0vfItN6DNEjoCJ
-         4Vbv7HwrCsYDTnNONB6IvgidjP6WvZzsPIdm5bYf6a+qzLAFU60fsO4zgs4ZO+TrEWCk
-         c8Xg==
+        Tue, 31 Aug 2021 18:33:41 -0400
+Received: by mail-oi1-f169.google.com with SMTP id c79so1207746oib.11;
+        Tue, 31 Aug 2021 15:32:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=dS9a4YMFIkiyop0PAaPSvf253c+DJ+aqy8e3zyibudI=;
-        b=pKPTQBqpZDIsfXH7RGgOPFaB+UrfiR0uNN7z8qJo2L2XqY8kNgEviy9Nll+yWhmkeh
-         RaJBC5XzPI+bJ8vCGpo1qRkP5daSChwVhVhzfferoaZ+VvK77SD71z0fd094p2RXeCx6
-         o+CxBKXGJ87gBzXoMJ4aAO68U/KxMa9UDN8Np+iN1XwU6ix81TN1rZStciwiBADwtaGf
-         W8NNlV4+8o1bkWu8J6exE5NmwQJ+sGGj6Q/9JCPcsImRBPHH9ccyjvsYeS/0EgFQ2HML
-         oPt9C1sPryh4S2/XHxW8hhumsWO9XFPLHUhijEuo51rAyCz42Y7ptmRDqfm60qlzYcZH
-         ZHOA==
-X-Gm-Message-State: AOAM532KehVG4mDjQtuGPyYxp+JuP7C5sMLXbKZ3K9NgEbU5cpx20qmQ
-        MoDfnDVA6mEkpmAkyNKY31A=
-X-Google-Smtp-Source: ABdhPJwPqlhz8T1tF33XrwgI72jslJEnQiOVzkoc3MWXhkcOJH2Y6flAB6Q8dAi7LuveQWwTIoXn+w==
-X-Received: by 2002:ac2:42d2:: with SMTP id n18mr23879636lfl.505.1630448930893;
-        Tue, 31 Aug 2021 15:28:50 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id g24sm2341740ljm.6.2021.08.31.15.28.49
+        bh=g6D38exB/Nb9kQ3rq5Ht426/g7o8xbXiI53vXw3Leoo=;
+        b=bpWeEgwpxsdF4j68YCdQoxB2tD9Y6Bt9LdhCbo0fc2HAatyKB0PiTxV+16BWW4nO8d
+         6mCgIIXXoI+4QOnabg4RmKKmVBr+VhIsImU2jQB6g5K98R59WRSWdHkEST/bTsxBmOGG
+         K1ASqxBm/3IDMpeB4ii3pWdcKWz4gFZ+KtDMUR7X1bq4Y8K6QKNkCbTkWbjkm9f7htnp
+         KJML7psbtSJOpGD78U138poX/l0XFajiXBF8iTK0fzmsuEKdmtviXLehVNS2M6iPjzOc
+         sHnXnfFUb927y2axAtD5vr6MGg6sOkmNoE4jtGDKtUaTirWYkUUnF0Z+O/BJjrrgzQ4Y
+         0h0Q==
+X-Gm-Message-State: AOAM531dj8Cny0ggEQl3iJUuVa7lfTP8LOtWgBg02OUrpbMsm1a/vGby
+        N8Hs0229Hw+9+a9gu65Eaw==
+X-Google-Smtp-Source: ABdhPJy/LrzRncvMJD8g1bJs+UutiJZ7WjP/8yf47rdUTkA6whSbhnEbeH51oAPVboJp2H4aaVmrog==
+X-Received: by 2002:a05:6808:2cd:: with SMTP id a13mr5040179oid.3.1630449165761;
+        Tue, 31 Aug 2021 15:32:45 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id k8sm3832850oom.20.2021.08.31.15.32.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 15:28:50 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 01:28:48 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de, pinglinux@gmail.com,
-        tatsunosuke.tobita@wacom.com, junkpainting@gmail.com,
-        ping.cheng@wacom.com, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v10 07/12] Input: wacom_i2c - Clean up the query device
- fields
-Message-ID: <20210831222848.5dtyedllyn43tgoz@kari-VirtualBox>
-References: <20210829091925.190-1-alistair@alistair23.me>
- <20210829091925.190-9-alistair@alistair23.me>
+        Tue, 31 Aug 2021 15:32:45 -0700 (PDT)
+Received: (nullmailer pid 762341 invoked by uid 1000);
+        Tue, 31 Aug 2021 22:32:44 -0000
+Date:   Tue, 31 Aug 2021 17:32:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
+Cc:     sam@ravnborg.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
+        airlied@linux.ie, dianders@google.com, devicetree@vger.kernel.org,
+        daniel@ffwll.ch, Douglas Anderson <dianders@chromium.org>
+Subject: Re: [v4 4/4] dt-bindngs: display: panel: Add BOE and INX panel
+ bindings
+Message-ID: <YS6uDL6X1CJeJaNX@robh.at.kernel.org>
+References: <20210830023849.258839-1-yangcong5@huaqin.corp-partner.google.com>
+ <20210830023849.258839-5-yangcong5@huaqin.corp-partner.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210829091925.190-9-alistair@alistair23.me>
+In-Reply-To: <20210830023849.258839-5-yangcong5@huaqin.corp-partner.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just minor style issues checked.
-
-On Sun, Aug 29, 2021 at 07:19:20PM +1000, Alistair Francis wrote:
-> Improve the query device fields to be more verbose.
+On Mon, 30 Aug 2021 10:38:49 +0800, yangcong wrote:
+> Add documentation for boe tv110c9m-ll3, inx hj110iz-01a panel.
 > 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 > ---
->  drivers/input/touchscreen/wacom_i2c.c | 63 ++++++++++++++++++---------
->  1 file changed, 43 insertions(+), 20 deletions(-)
+>  .../devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml   | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-> index d6036406a9f3..a35d8fda7e7b 100644
-> --- a/drivers/input/touchscreen/wacom_i2c.c
-> +++ b/drivers/input/touchscreen/wacom_i2c.c
-> @@ -13,16 +13,33 @@
->  #include <linux/irq.h>
->  #include <linux/input/touchscreen.h>
->  #include <linux/interrupt.h>
-> +#include <linux/reset.h>
->  #include <linux/of.h>
->  #include <asm/unaligned.h>
->  
-> +// Registers
 
-Use /* */ comments.
-
->  #define WACOM_DESC_REG	0x01
-> -#define WACOM_CMD_QUERY0	0x04
-> -#define WACOM_CMD_QUERY1	0x00
-> -#define WACOM_CMD_QUERY2	0x33
-> -#define WACOM_CMD_QUERY3	0x02
-> -#define WACOM_CMD_THROW0	0x05
-> -#define WACOM_CMD_THROW1	0x00
-> +#define WACOM_COMMAND_LSB   0x04
-> +#define WACOM_COMMAND_MSB   0x00
-> +
-> +#define WACOM_DATA_LSB      0x05
-> +#define WACOM_DATA_MSB      0x00
-
-You use spaces here. Should be tabs.
-
-> +
-> +// Report types
-> +#define REPORT_FEATURE      0x30
-> +
-> +// Requests / operations
-> +#define OPCODE_GET_REPORT   0x02
-> +
-> +// Power settings
-> +#define POWER_ON            0x00
-> +#define POWER_SLEEP         0x01
-> +
-> +// Input report ids
-> +#define WACOM_PEN_DATA_REPORT           2
-> +#define WACOM_SHINONOME_REPORT          26
-> +
-> +#define WACOM_QUERY_REPORT	3
->  #define WACOM_QUERY_SIZE	22
->  
->  #define WACOM_MAX_DATA_SIZE_BG9     10
-> @@ -85,27 +102,30 @@ static int wacom_query_device(struct i2c_client *client,
->  {
->  	int ret;
->  	u8 cmd_wac_desc[] = {WACOM_DESC_REG, 0x00};
-> -	u8 cmd1[] = { WACOM_CMD_QUERY0, WACOM_CMD_QUERY1,
-> -			WACOM_CMD_QUERY2, WACOM_CMD_QUERY3 };
-> -	u8 cmd2[] = { WACOM_CMD_THROW0, WACOM_CMD_THROW1 };
->  	u8 data[WACOM_QUERY_SIZE];
-> +
-> +	u8 get_query_data_cmd[] = {
-> +		WACOM_COMMAND_LSB,
-> +		WACOM_COMMAND_MSB,
-> +		REPORT_FEATURE | WACOM_QUERY_REPORT,
-> +		OPCODE_GET_REPORT,
-> +		WACOM_DATA_LSB,
-> +		WACOM_DATA_MSB,
-> +	};
-> +
->  	struct i2c_msg msgs[] = {
-> +		// Request reading of feature ReportID: 3 (Pen Query Data)
-
-//
-
->  		{
->  			.addr = client->addr,
->  			.flags = 0,
-> -			.len = sizeof(cmd1),
-> -			.buf = cmd1,
-> -		},
-> -		{
-> -			.addr = client->addr,
-> -			.flags = 0,
-> -			.len = sizeof(cmd2),
-> -			.buf = cmd2,
-> +			.len = sizeof(get_query_data_cmd),
-> +			.buf = get_query_data_cmd,
->  		},
-> +		// Read 21 bytes
-
-//
-
->  		{
->  			.addr = client->addr,
->  			.flags = I2C_M_RD,
-> -			.len = sizeof(data),
-> +			.len = WACOM_QUERY_SIZE - 1,
->  			.buf = data,
->  		},
->  	};
-> @@ -158,9 +178,12 @@ static int wacom_query_device(struct i2c_client *client,
->  	}
->  
->  	dev_dbg(&client->dev,
-> -		"x_max:%d, y_max:%d, pressure:%d, fw:%d\n",
-> +		"x_max:%d, y_max:%d, pressure:%d, fw:%d, "
-> +		"distance: %d, tilt_x_max: %d, tilt_y_max: %d\n",
->  		features->x_max, features->y_max,
-> -		features->pressure_max, features->fw_version);
-> +		features->pressure_max, features->fw_version,
-> +		features->distance_max,
-> +		features->tilt_x_max, features->tilt_y_max);
->  
->  	return 0;
->  }
-> -- 
-> 2.31.1
-> 
+Acked-by: Rob Herring <robh@kernel.org>
