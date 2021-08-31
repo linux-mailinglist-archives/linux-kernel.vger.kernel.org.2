@@ -2,104 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537413FC883
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17C93FC886
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238098AbhHaNne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
+        id S239099AbhHaNoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237059AbhHaNnb (ORCPT
+        with ESMTP id S239555AbhHaNoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:43:31 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C1EC061575;
-        Tue, 31 Aug 2021 06:42:35 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id b7so24847104iob.4;
-        Tue, 31 Aug 2021 06:42:35 -0700 (PDT)
+        Tue, 31 Aug 2021 09:44:10 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3970FC061575;
+        Tue, 31 Aug 2021 06:43:15 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id i21so38896911ejd.2;
+        Tue, 31 Aug 2021 06:43:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/T4oXxIZKVXcXuK4xo4FO0eUgZsswaNawbX1ar73vJY=;
-        b=YTCuGPHaE/M2F5PZEGC2L/zzZfxy8dVhvnvzZYwmm3xf/Gi20rmsGYkpJDmB90B4GE
-         4bpFmfkAv2xpClmwba0vZOETrmpy+Jt5aPHvLEa/EWIUVsU9vARzdaHo17c1Ky/3nOcn
-         4UDb4aTJxLkkDsl5GD9o45Z5T8qdupa/rudoBBguEqQV85qCZ4xY6tCkW7/WrK9RhuCH
-         +qItJnHKxj1EuTt/5U3we6rWvlpyPDRPMnWvTC9c8m6QsgQQHeVlv4sUkwXrlh0SX/IN
-         prZ47i+a4W74xrFP8hdS3ftnYHW5mGCm2ca2ZWiDldixcHFDj2u0u1qHlWzMNo2Lw8xJ
-         IAXQ==
+        bh=VH/yKqNAe9e3PUm35v8kdpwIp0mhzflq9zZXa4MIE80=;
+        b=cQmZ8fYs6ynPoVomOUgSSwIFWfEsgdikbjEQfS8VdxK9y/dBxVlm1S/6vWtaU6kWJo
+         LOE5xjRT/QezIFQuTT+RSzP+aVt7mb3v18K55fLa9W9cFmLBeAvg6Jjg4rMRuhwClE9b
+         wKwfgP96LheuO7HofYhnV4heAXQbJGMrbqvdz7fAw7uC2lgu8bOBgNv8uGO0p4M53Ezh
+         vGgpT/yCEN18qbFmqEa1/ibKnU1xn5xOe97sa+hkU5ykMP9nyMkodys6tIQwpmVLzptR
+         du+hDUgMln/KWWWhy4qvrN/UGdkyQ2LIRgbOdxZcH3jALQvIcEDUJ4T4mQjuCheEC+79
+         Ox8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/T4oXxIZKVXcXuK4xo4FO0eUgZsswaNawbX1ar73vJY=;
-        b=KXQjDSTP0qQdxiy0XAbUe61kUcma1a86qRU9uqEoirtFwN0nCcCAsXCOZKOXt1nlZp
-         SRHTnai+MIXhPWE5a5KdgKFGvLlrsAERydZcxGmZ8FIOxRQ4DhXXXmS0ATEZpPrN/SA3
-         Ijvq/RNC+17PAel36pdvaCom2VRtWae9RSgO/iqpmBw8Mkb38nKJSN+ozBjgucJuEYhm
-         B0dYo7ia1lQQSdkl5TOOjdTkHmLt43OpVi0LxgaeeP5IY9y8xY9t2VFyzEOGrsYLLEQq
-         Cyu2aiXRo82ig5qyadMeIkC8TS/BS9KZ9AaZDbULBJoPKeYLqdlrYHFtgv762fN8tgwA
-         T78Q==
-X-Gm-Message-State: AOAM5320JST4x3J1kbrkXCokYVUN6FvlJV+n54zOB20TnxZ3ntba+uL6
-        K3R3k0K2Q+4m5StU4AGJ0SCcawxg8Mv7SQv6zA0=
-X-Google-Smtp-Source: ABdhPJw4lII5+mP2IjiI7gw8j7KxgaPU/kBhn676pl7jR3vSimgmTPlFzm6EAay+u/ZodVqWYPpPEyk5+ENo17HBD/0=
-X-Received: by 2002:a05:6602:2597:: with SMTP id p23mr22902651ioo.195.1630417355164;
- Tue, 31 Aug 2021 06:42:35 -0700 (PDT)
+        bh=VH/yKqNAe9e3PUm35v8kdpwIp0mhzflq9zZXa4MIE80=;
+        b=Li7DLtisoCF8ULtbLYde1U63HagsZiR8q8GJomGiejNblwIxp/eZF1tj+QVR8YM6gp
+         fQKziozBh2nULS7YS4gTc/RiDCqRP/TUHMuk19/Jz0XPZFyaWSiJe/b71j1JrYkY9fGS
+         p8YrmW/3mSXouMP2tDXgxdo9mXBUgAN1hjTHYPK68JmwggamQQwzcxitNBG2wxeXUE/b
+         +vPLG9EHF1xDlfOSSd/TwP8Kqkb1Y0IFVo7FyqL4G5oY5nKeiIo97ZtwCRMEpadgMERz
+         Rzj0g4aQteP+1N4b+p2NmSKqHyjaJCoDguDDDTMo+ujRsVEdMxDok5l9q9KAno3YgNAx
+         B+4w==
+X-Gm-Message-State: AOAM531vee1ZWlCX3t+aCqruLO1YtLMrKpJLjDTgg+75Ju2a0mNax//A
+        1CG58zR72P4uIKzsJ772FPTsB5i0ekPqKpIHF/8=
+X-Google-Smtp-Source: ABdhPJzF4TqghotOb9gsyWAEqZ8d+Z807qcLYjslQQfjFeb/w2NC7K8Rss2nKk5fvcsj5hCbQobCQTmDne5hJC7dpew=
+X-Received: by 2002:a17:907:2d9f:: with SMTP id gt31mr30503364ejc.489.1630417393590;
+ Tue, 31 Aug 2021 06:43:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <0c5910979f39225d5d8fe68c9ab1c147c68ddee1.1629314734.git.christophe.jaillet@wanadoo.fr>
- <f8a4a6897deb0c8cb2e576580790303550f15fcd.1629314734.git.christophe.jaillet@wanadoo.fr>
- <c56617ff-5d74-9b07-4bcc-25f3dd2aca64@gmail.com>
-In-Reply-To: <c56617ff-5d74-9b07-4bcc-25f3dd2aca64@gmail.com>
-From:   Alan Cooper <alcooperx@gmail.com>
-Date:   Tue, 31 Aug 2021 09:42:37 -0400
-Message-ID: <CAOGqxeXrkv2-7CX34QMQgmtkOwQo2fmmDYbKxJ3hUNAB3gXkEQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] usb: bdc: Fix a resource leak in the error handling
- path of 'bdc_probe()'
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        ": Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
+References: <1630286290-43714-1-git-send-email-linyunsheng@huawei.com>
+ <1630286290-43714-2-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0UfNFw+jwoDr_xx6kX_OoCVgrq2rCSc4zdXRMSZLBmbA8Q@mail.gmail.com> <e0f927bb-7a03-de00-d62a-d2235a0f4d8c@huawei.com>
+In-Reply-To: <e0f927bb-7a03-de00-d62a-d2235a0f4d8c@huawei.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Tue, 31 Aug 2021 06:43:02 -0700
+Message-ID: <CAKgT0UcYAKsO8FmunL1WKz=_tyw4EK+Z1UbcOup6_Ywi7J84HQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/2] page_pool: support non-split page with PP_FLAG_PAGE_FRAG
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
+        hawk@kernel.org, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
+        Marco Elver <elver@google.com>, memxor@gmail.com,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 4:03 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+On Mon, Aug 30, 2021 at 11:14 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
 >
->
->
-> On 8/18/2021 9:32 PM, Christophe JAILLET wrote:
-> > If an error occurs after a successful 'clk_prepare_enable()' call, it must
-> > be undone by a corresponding 'clk_disable_unprepare()' call.
-> > This call is already present in the remove function.
+> On 2021/8/30 23:05, Alexander Duyck wrote:
+> > On Sun, Aug 29, 2021 at 6:19 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >>
+> >> Currently when PP_FLAG_PAGE_FRAG is set, the caller is not
+> >> expected to call page_pool_alloc_pages() directly because of
+> >> the PP_FLAG_PAGE_FRAG checking in __page_pool_put_page().
+> >>
+> >> The patch removes the above checking to enable non-split page
+> >> support when PP_FLAG_PAGE_FRAG is set.
+> >>
+> >> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> >> ---
+> >>  include/net/page_pool.h |  6 ++++++
+> >>  net/core/page_pool.c    | 12 +++++++-----
+> >>  2 files changed, 13 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> >> index a408240..2ad0706 100644
+> >> --- a/include/net/page_pool.h
+> >> +++ b/include/net/page_pool.h
+> >> @@ -238,6 +238,9 @@ static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+> >>
+> >>  static inline void page_pool_set_frag_count(struct page *page, long nr)
+> >>  {
+> >> +       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+> >> +               return;
+> >> +
+> >>         atomic_long_set(&page->pp_frag_count, nr);
+> >>  }
+> >>
+> >> @@ -246,6 +249,9 @@ static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+> >>  {
+> >>         long ret;
+> >>
+> >> +       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+> >> +               return 0;
+> >> +
+> >>         /* As suggested by Alexander, atomic_long_read() may cover up the
+> >>          * reference count errors, so avoid calling atomic_long_read() in
+> >>          * the cases of freeing or draining the page_frags, where we would
+> >> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> >> index 1a69784..ba9f14d 100644
+> >> --- a/net/core/page_pool.c
+> >> +++ b/net/core/page_pool.c
+> >> @@ -313,11 +313,14 @@ struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp)
+> >>
+> >>         /* Fast-path: Get a page from cache */
+> >>         page = __page_pool_get_cached(pool);
+> >> -       if (page)
+> >> -               return page;
+> >>
+> >>         /* Slow-path: cache empty, do real allocation */
+> >> -       page = __page_pool_alloc_pages_slow(pool, gfp);
+> >> +       if (!page)
+> >> +               page = __page_pool_alloc_pages_slow(pool, gfp);
+> >> +
+> >> +       if (likely(page))
+> >> +               page_pool_set_frag_count(page, 1);
+> >> +
+> >>         return page;
+> >>  }
+> >>  EXPORT_SYMBOL(page_pool_alloc_pages);
+> >> @@ -426,8 +429,7 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
+> >>                      unsigned int dma_sync_size, bool allow_direct)
+> >>  {
+> >>         /* It is not the last user for the page frag case */
+> >> -       if (pool->p.flags & PP_FLAG_PAGE_FRAG &&
+> >> -           page_pool_atomic_sub_frag_count_return(page, 1))
+> >> +       if (page_pool_atomic_sub_frag_count_return(page, 1))
+> >>                 return NULL;
 > >
-> > Add this call in the error handling path and reorder the code so that the
-> > 'clk_prepare_enable()' call happens later in the function.
-> > The goal is to have as much managed resources functions as possible
-> > before the 'clk_prepare_enable()' call in order to keep the error handling
-> > path simple.
+> > Isn't this going to have a negative performance impact on page pool
+> > pages in general? Essentially you are adding an extra atomic operation
+> > for all the non-frag pages.
 > >
-> > While at it, remove the now unneeded 'clk' variable.
-> >
-> > Fixes: c87dca047849 ("usb: bdc: Add clock enable for new chips with a separate BDC clock")
-> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > It would work better if this was doing a check against 1 to determine
+> > if it is okay for this page to be freed here and only if the check
+> > fails then you perform the atomic sub_return.
 >
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> The page_pool_atomic_sub_frag_count_return() has added the optimization
+> to not do the atomic sub_return when the caller is the last user of the
+> page, see page_pool_atomic_sub_frag_count_return():
 >
-> > ---
-> > Review with care.
-> > I don't like shuffling code like that because of possible side effect.
-> > Moving the code related to this clk looks fine to me, but who knows...
+>         /* As suggested by Alexander, atomic_long_read() may cover up the
+>          * reference count errors, so avoid calling atomic_long_read() in
+>          * the cases of freeing or draining the page_frags, where we would
+>          * not expect it to match or that are slowpath anyway.
+>          */
+>         if (__builtin_constant_p(nr) &&
+>             atomic_long_read(&page->pp_frag_count) == nr)
+>                 return 0;
 >
-> There are no register accesses until bdc_phy_init() gets called, so this
-> looks fine to me. Al knows this code better than I do though, so it
-> would be better to wait for his Acked-by tag.
+> So the check against 1 is not needed here?
 
-This is safe.
-Acked-by: Al Cooper <alcooperx@gmail.com>
+Ah, okay. I hadn't seen that part. So yeah, then this should be mostly
+harmless since 1 falls into the category of a builtin constant and
+would result in the standard case being the frag count being set to 1
+and then being read which should be minimal overhead.
 
-> --
-> Florian
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
