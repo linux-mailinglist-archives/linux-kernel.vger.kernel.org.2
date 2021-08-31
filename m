@@ -2,123 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F44E3FCAE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC0F3FCAEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239659AbhHaPeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239482AbhHaPeP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:34:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4058C061575;
-        Tue, 31 Aug 2021 08:33:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wVbnNec/6ixz+jlkHVGfYg8FrC6hp+XJ8sgJ6bsJr1o=; b=CHNDb13IUz7LAZQK388Gpsngmp
-        zh6Nrzs2HSKSe1PpyisTVcQneowcBu8H3nQtFIBp+b+aqlk7R4AelNs8LCfZNwBdEPmlmFvpii/x4
-        UWsZz5rrMyBhUL2UdsMwFDnDF3ckBuET/iBBuUcsUTCyzsndnzMyKYB33Cj47Z4yTBROfmSZBwnNQ
-        3ettJXTd3CJeD71k0ixRYcEV6IJzAQT5eiOyXoQrh397tWk06Fdk+JR8oXhpf90CCwhkx4hhuoD1S
-        wsxwLL/kxMMCsnIziTt+7i3jgngy7i6ZzzdaonPqXfNIo88l2tjv5zbC5aEZNFar0U7sWaM172EMs
-        SHQljwKg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mL5kC-001KiR-2d; Tue, 31 Aug 2021 15:32:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 83794300109;
-        Tue, 31 Aug 2021 17:32:11 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 676BA20AEBF37; Tue, 31 Aug 2021 17:32:11 +0200 (CEST)
-Date:   Tue, 31 Aug 2021 17:32:11 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com
-Subject: Re: [PATCH v3 bpf-next 2/3] bpf: introduce helper
- bpf_get_branch_snapshot
-Message-ID: <YS5LexDSokkcOJ7O@hirez.programming.kicks-ass.net>
-References: <20210830214106.4142056-1-songliubraving@fb.com>
- <20210830214106.4142056-3-songliubraving@fb.com>
+        id S239210AbhHaPfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:35:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234068AbhHaPfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 11:35:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5397161027;
+        Tue, 31 Aug 2021 15:34:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630424087;
+        bh=ljSui+3X1JKu0t7ml1Ngl8Kot0p+PiQcPJhO7JyIay8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KUlx18TfuGfyOloBjvVCMfmNv6PE9SvmULMFiO9uydntufR6NpoplZMBXQfifcM4V
+         /tWPWSSJP8/pdSZT+rSSxSqoZIncr2ifU302wC2aPtJ2JhHBA100RKK2Y9nFM/vbA7
+         4iaaURzbZcSTKBGTCr0r4fzE3XATd0r3PtnYDoBzORt1zGMeSlG6463UmRM6KgEWPO
+         ohaFpvzOwLgU+A0yXbGvho0Dt+L/YZSAZPpO6mfpQYSSCCPsEXX/DL1cYa1oPEOXPw
+         LVn3RRmm31yMAQQK0nJz7xnRTtT5FgTf0vGxZISQgmnaJpQBMcvig5ZfSAU51Kqy5Q
+         FK7MATV4gYQ0g==
+Date:   Tue, 31 Aug 2021 08:34:46 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Oleksij Rempel <linux@rempel-privat.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        syzbot <syzbot+6a916267d9bc5fa2d9a6@syzkaller.appspotmail.com>,
+        davem@davemloft.net, hkallweit1@gmail.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] KASAN: null-ptr-deref Read in phy_disconnect
+Message-ID: <20210831083446.43effd7c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <a2135e89-e68e-1ba2-770a-84b3b0f5d3ed@rempel-privat.de>
+References: <0000000000006a17f905cad88525@google.com>
+        <20210831064845.1a8f5c14@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YS46wWr6WegVF4Er@lunn.ch>
+        <a2135e89-e68e-1ba2-770a-84b3b0f5d3ed@rempel-privat.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830214106.4142056-3-songliubraving@fb.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 02:41:05PM -0700, Song Liu wrote:
+On Tue, 31 Aug 2021 17:30:19 +0200 Oleksij Rempel wrote:
+> Am 31.08.21 um 16:20 schrieb Andrew Lunn:
+> > On Tue, Aug 31, 2021 at 06:48:45AM -0700, Jakub Kicinski wrote:  
+> >> On Tue, 31 Aug 2021 03:36:23 -0700 syzbot wrote:  
+>  [...]  
+> >
+> > Looking at the console messages:
+> >
+> > [   36.456221][   T32] usb 1-1: new high-speed USB device number 2 using dummy_hcd
+> > [   36.976035][   T32] usb 1-1: New USB device found, idVendor=0df6, idProduct=0056, bcdDevice=42.6c
+> > [   36.985338][   T32] usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+> > [   36.993579][   T32] usb 1-1: Product: syz
+> > [   36.997817][   T32] usb 1-1: Manufacturer: syz
+> > [   37.002423][   T32] usb 1-1: SerialNumber: syz
+> > [   37.013578][   T32] usb 1-1: config 0 descriptor??
+> > [   37.276018][   T32] asix 1-1:0.0 (unnamed net_device) (uninitialized): invalid hw address, using random
+> > executing program
+> > [   37.715517][   T32] asix 1-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
+> > [   37.725693][   T32] asix 1-1:0.0 (unnamed net_device) (uninitialized): Failed to send software reset: ffffffb9
+> > [   37.925418][   T32] asix 1-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
+> > [   37.936461][   T32] asix 1-1:0.0 (unnamed net_device) (uninitialized): Failed to send software reset: ffffffb9
+> > [   38.119561][   T32] asix 1-1:0.0 eth1: register 'asix' at usb-dummy_hcd.0-1, ASIX AX88178 USB 2.0 Ethernet, 8a:c0:d1:1e:27:4c
+> > [   38.138828][   T32] usb 1-1: USB disconnect, device number 2
+> > [   38.150689][   T32] asix 1-1:0.0 eth1: unregister 'asix' usb-dummy_hcd.0-1, ASIX AX88178 USB 2.0 Ethernet
+> >
+> > So this is a AX88178, and you would expect it to use
+> > ax88178_bind(). That function never calls ax88772_init_phy() which is
+> > what connects the PHY to the MAC, and sets priv->phydev.
+> >
+> > static void ax88772_unbind(struct usbnet *dev, struct usb_interface *intf)
+> > {
+> >         struct asix_common_private *priv = dev->driver_priv;
+> >
+> >         phy_disconnect(priv->phydev);
+> >
+> > So this passes a NULL pointer.
+> >
+> > static const struct driver_info ax88178_info = {
+> >         .description = "ASIX AX88178 USB 2.0 Ethernet",
+> >         .bind = ax88178_bind,
+> >         .unbind = ax88772_unbind,
+> >         .status = asix_status,
+> >
+> > You cannot pair ax88178_bind with ax88772_unbind. Either a
+> > ax88178_unbind is needed, or ax88772_unbind needs to check for a NULL
+> > pointer.
+> >
+> > 	Andrew
+> >  
+> 
+> Yes, this was fixed following patch:
+> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/drivers/net/usb/asix_devices.c?id=1406e8cb4b05fdc67692b1af2da39d7ca5278713
 
-> @@ -564,6 +565,18 @@ static void notrace inc_misses_counter(struct bpf_prog *prog)
->  u64 notrace __bpf_prog_enter(struct bpf_prog *prog)
->  	__acquires(RCU)
->  {
-	preempt_disable_notrace();
-
-> +#ifdef CONFIG_PERF_EVENTS
-> +	/* Calling migrate_disable costs two entries in the LBR. To save
-> +	 * some entries, we call perf_snapshot_branch_stack before
-> +	 * migrate_disable to save some entries. This is OK because we
-> +	 * care about the branch trace before entering the BPF program.
-> +	 * If migrate happens exactly here, there isn't much we can do to
-> +	 * preserve the data.
-> +	 */
-> +	if (prog->call_get_branch)
-> +		static_call(perf_snapshot_branch_stack)(
-> +			this_cpu_ptr(&bpf_perf_branch_snapshot));
-
-Here the comment is accurate, but if you recall the calling context
-requirements of perf_snapshot_branch_stack from the last patch, you'll
-see it requires you have at the very least preemption disabled, which
-you just violated.
-
-I think you'll find that (on x86 at least) the suggested
-preempt_disable_notrace() incurs no additional branches.
-
-Still, there is the next point to consider...
-
-> +#endif
->  	rcu_read_lock();
->  	migrate_disable();
-
-	preempt_enable_notrace();
-
->  	if (unlikely(__this_cpu_inc_return(*(prog->active)) != 1)) {
-
-> @@ -1863,9 +1892,23 @@ void bpf_put_raw_tracepoint(struct bpf_raw_event_map *btp)
->  	preempt_enable();
->  }
->  
-> +DEFINE_PER_CPU(struct perf_branch_snapshot, bpf_perf_branch_snapshot);
-> +
->  static __always_inline
->  void __bpf_trace_run(struct bpf_prog *prog, u64 *args)
->  {
-> +#ifdef CONFIG_PERF_EVENTS
-> +	/* Calling migrate_disable costs two entries in the LBR. To save
-> +	 * some entries, we call perf_snapshot_branch_stack before
-> +	 * migrate_disable to save some entries. This is OK because we
-> +	 * care about the branch trace before entering the BPF program.
-> +	 * If migrate happens exactly here, there isn't much we can do to
-> +	 * preserve the data.
-> +	 */
-> +	if (prog->call_get_branch)
-> +		static_call(perf_snapshot_branch_stack)(
-> +			this_cpu_ptr(&bpf_perf_branch_snapshot));
-> +#endif
->  	cant_sleep();
-
-In the face of ^^^^^^ the comment makes no sense. Still, what are the
-nesting rules for __bpf_trace_run() and __bpf_prog_enter() ? I'm
-thinking the trace one can nest inside an occurence of prog, at which
-point you have pieces.
-
->  	rcu_read_lock();
->  	(void) bpf_prog_run(prog, args);
+#syz fix: net: usb: asix: do not call phy_disconnect() for ax88178
