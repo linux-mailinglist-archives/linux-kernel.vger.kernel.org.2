@@ -2,162 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8426A3FC94C
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 217BC3FC948
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233961AbhHaOEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233543AbhHaOEF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:04:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77FE0C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZgzwjZwCf/ykABrZU5jktR0OjgK20KPldkEgMC3u/pM=; b=iMhGAYk8TgJk6vqXPzJH30eIpU
-        ToQBbegMORlZFXCmgjtDqES1d45uMUGrqOzqxy+MgrDJCvMwR5FuHYFs35lhi9jtMUK/8cL7VAQT/
-        1nseKClnmJqNOd8uXKcxdEYcxoB/PKkY8yzS0N2rU4Oyr02kaHcu2y0H/OuBi0l/jFv7NxPAOYFGg
-        kDOh3Ko8Zm7gxxB2jj9KtZDKwvQKB7/zcfQjCCeNvctR5Is/GfI91NsK40PsFy8Am4Bwixv6+siGq
-        n0zIUF6dmfciKAc9bzTIEgZLIA5USAVSlXShsmWUm9doaWk57dk6LA0kYiMRM+B6ikrNpIj4KcyQI
-        0E5pcHVw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mL4JN-001GfJ-AY; Tue, 31 Aug 2021 14:00:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 19B6F300299;
-        Tue, 31 Aug 2021 16:00:20 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B542120AEBF27; Tue, 31 Aug 2021 16:00:20 +0200 (CEST)
-Date:   Tue, 31 Aug 2021 16:00:20 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v2] powerpc/32: Add support for out-of-line static calls
-Message-ID: <YS419Exj6PpESVc/@hirez.programming.kicks-ass.net>
-References: <97f252fcd63e145f54fbf85124c75fb01e96e1bb.1630415517.git.christophe.leroy@csgroup.eu>
+        id S233455AbhHaODR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:03:17 -0400
+Received: from smtp4-g21.free.fr ([212.27.42.4]:4148 "EHLO smtp4-g21.free.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231199AbhHaODQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 10:03:16 -0400
+Received: from bender.morinfr.org (unknown [82.64.86.27])
+        by smtp4-g21.free.fr (Postfix) with ESMTPS id 4E8E619F553;
+        Tue, 31 Aug 2021 16:01:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=morinfr.org
+        ; s=20170427; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=55Oic2tBQdEhKwkImI+q3MlSVJdEokDkBiFlL5mk7CE=; b=I7NOqWvE/o4ycQDxccwJ6VSIRI
+        wuYlIWSu6fnwBGdndzr70GYLMn5cCo+Lh+/3fsK7B6cgU3buqMNhvK750jiCKE/OvRAya52uzzygb
+        G8M31NDV7UKc/a4FzRDqCr4rI3HTgnGxZeVqypWRpxODpj0NYHk0Bt3NIRqTk7Y1A6d0=;
+Received: from guillaum by bender.morinfr.org with local (Exim 4.92)
+        (envelope-from <guillaume@morinfr.org>)
+        id 1mL4Ki-0002Qo-TR; Tue, 31 Aug 2021 16:01:48 +0200
+Date:   Tue, 31 Aug 2021 16:01:48 +0200
+From:   Guillaume Morin <guillaume@morinfr.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guillaume Morin <guillaume@morinfr.org>, stable@vger.kernel.org
+Subject: Re: [PATCH] hugetlb: fix hugetlb cgroup refcounting during vma split
+Message-ID: <20210831140147.GA18648@bender.morinfr.org>
+Mail-Followup-To: Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Shakeel Butt <shakeelb@google.com>, Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guillaume Morin <guillaume@morinfr.org>, stable@vger.kernel.org
+References: <20210830215015.155224-1-mike.kravetz@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <97f252fcd63e145f54fbf85124c75fb01e96e1bb.1630415517.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <20210830215015.155224-1-mike.kravetz@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 01:12:26PM +0000, Christophe Leroy wrote:
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index 36b72d972568..a0fe69d8ec83 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -247,6 +247,7 @@ config PPC
->  	select HAVE_SOFTIRQ_ON_OWN_STACK
->  	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
->  	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
-> +	select HAVE_STATIC_CALL			if PPC32
->  	select HAVE_SYSCALL_TRACEPOINTS
->  	select HAVE_VIRT_CPU_ACCOUNTING
->  	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
-> diff --git a/arch/powerpc/include/asm/static_call.h b/arch/powerpc/include/asm/static_call.h
-> new file mode 100644
-> index 000000000000..2402c6d32439
-> --- /dev/null
-> +++ b/arch/powerpc/include/asm/static_call.h
-> @@ -0,0 +1,25 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_POWERPC_STATIC_CALL_H
-> +#define _ASM_POWERPC_STATIC_CALL_H
-> +
-> +#define __POWERPC_SCT(name, inst)					\
-> +	asm(".pushsection .text, \"ax\"				\n"	\
-> +	    ".align 5						\n"	\
-> +	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
-> +	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
-> +	    inst "						\n"	\
-> +	    "	lis	12,1f@ha				\n"	\
-> +	    "	lwz	12,1f@l(12)				\n"	\
-> +	    "	mtctr	12					\n"	\
-> +	    "	bctr						\n"	\
-> +	    "1:	.long 0						\n"	\
-> +	    "	nop						\n"	\
-> +	    "	nop						\n"	\
-> +	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
-> +	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
-> +	    ".popsection					\n")
-> +
-> +#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)	__POWERPC_SCT(name, "b " #func)
-> +#define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)	__POWERPC_SCT(name, "blr")
-> +
-> +#endif /* _ASM_POWERPC_STATIC_CALL_H */
+On 30 Aug 14:50, Mike Kravetz wrote:
+> Guillaume Morin reported hitting the following WARNING followed
+> by GPF or NULL pointer deference either in cgroups_destroy or in
+> the kill_css path.:
+> 
+> percpu ref (css_release) <= 0 (-1) after switching to atomic
+> WARNING: CPU: 23 PID: 130 at lib/percpu-refcount.c:196 percpu_ref_switch_to_atomic_rcu+0x127/0x130
+> CPU: 23 PID: 130 Comm: ksoftirqd/23 Kdump: loaded Tainted: G           O      5.10.60 #1
+> RIP: 0010:percpu_ref_switch_to_atomic_rcu+0x127/0x130
+> Call Trace:
+>  rcu_core+0x30f/0x530
+>  rcu_core_si+0xe/0x10
+>  __do_softirq+0x103/0x2a2
+>  ? sort_range+0x30/0x30
+>  run_ksoftirqd+0x2b/0x40
+>  smpboot_thread_fn+0x11a/0x170
+>  kthread+0x10a/0x140
+>  ? kthread_create_worker_on_cpu+0x70/0x70
+>  ret_from_fork+0x22/0x30
+> 
+> Upon further examination, it was discovered that the css structure
+> was associated with hugetlb reservations.
+> 
+> For private hugetlb mappings the vma points to a reserve map that
+> contains a pointer to the css.  At mmap time, reservations are set up
+> and a reference to the css is taken.  This reference is dropped in the
+> vma close operation; hugetlb_vm_op_close.  However, if a vma is split
+> no additional reference to the css is taken yet hugetlb_vm_op_close will
+> be called twice for the split vma resulting in an underflow.
+> 
+> Fix by taking another reference in hugetlb_vm_op_open.  Note that the
+> reference is only taken for the owner of the reserve map.  In the more
+> common fork case, the pointer to the reserve map is cleared for
+> non-owning vmas.
+> 
+> Fixes: e9fe92ae0cd2 ("hugetlb_cgroup: add reservation accounting for
+> private mappings")
+> Reported-by: Guillaume Morin <guillaume@morinfr.org>
+> Suggested-by: Guillaume Morin <guillaume@morinfr.org>
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Cc: <stable@vger.kernel.org>
 
-> diff --git a/arch/powerpc/kernel/static_call.c b/arch/powerpc/kernel/static_call.c
-> new file mode 100644
-> index 000000000000..e5e78205ccb4
-> --- /dev/null
-> +++ b/arch/powerpc/kernel/static_call.c
-> @@ -0,0 +1,36 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/memory.h>
-> +#include <linux/static_call.h>
-> +
-> +#include <asm/code-patching.h>
-> +
-> +void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
-> +{
-> +	int err;
-> +	unsigned long target = (long)func;
-> +	bool is_short = is_offset_in_branch_range((long)target - (long)tramp);
-> +
-> +	if (!tramp)
-> +		return;
-> +
-> +	mutex_lock(&text_mutex);
-> +
-> +	if (func && !is_short) {
-> +		err = patch_instruction(tramp + 20, ppc_inst(target));
-> +		if (err)
-> +			goto out;
-> +	}
-> +
-> +	if (!func)
-> +		err = patch_instruction(tramp, ppc_inst(PPC_RAW_BLR()));
-> +	else if (is_short)
-> +		err = patch_branch(tramp, target, 0);
-> +	else
-> +		err = patch_instruction(tramp, ppc_inst(PPC_RAW_NOP()));
-> +out:
-> +	mutex_unlock(&text_mutex);
-> +
-> +	if (err)
-> +		panic("%s: patching failed %pS at %pS\n", __func__, func, tramp);
-> +}
-> +EXPORT_SYMBOL_GPL(arch_static_call_transform);
+I verified that the patch does fix the underflow. I appreciate the help!
 
-Yes, this should work nicely!
+Feel free to add:
+Tested-by: Guillaume Morin <guillaume@morinfr.org>
 
-Since you have the two nop's at the end, you could frob in an
-optimization for __static_call_return0 without too much issue.
-
-Replace the two nops with (excuse my ppc asm):
-
-	li r3, 0
-	blr
-
-and augment arch_static_call_transform() with something like:
-
-	if (func == &__static_call_return0)
-		err = patch_branch(tramp, tramp+24, 0);
-
+-- 
+Guillaume Morin <guillaume@morinfr.org>
