@@ -2,138 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5923FC6AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB26B3FC6B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241458AbhHaLjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 07:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbhHaLji (ORCPT
+        id S241501AbhHaLkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 07:40:07 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:15275 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231622AbhHaLkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 07:39:38 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD399C061575;
-        Tue, 31 Aug 2021 04:38:42 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id j4so37802109lfg.9;
-        Tue, 31 Aug 2021 04:38:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aOKH12yigEUKEi+tvc+Sgbj/UZEyVXFcxaWf8LQZzSE=;
-        b=or70UHRQOq+m936p5onYrYG3w9Y7J+nKsbvvRGD6VAeyoZSfSRihKirEX2HMeuyyOb
-         xZ3RhHKoDQmHSTRJ+hpCFGUd5HSSd03AuI50Ui2YYPZCf1ixg6MLfJM5F97JKfaOGuFY
-         GLFFmNczJmwQ2Ydp+NMW34m8PJDgWnb66ZXPlniIo1eTjjMz4qyW37aXxPXgPzS1X9yE
-         AJEJpm1z8KAS539zc1oh/92ODoCiYw9I9w15VHF1cmXhVXOTX5h6wMuDbqov0CtrQs+y
-         JDpdEO3ph7komlndSShoJ2PVi28zlFt+rFlpPQEloS8YBC+4G538L7HPHtE7ZUKR8HII
-         GDjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aOKH12yigEUKEi+tvc+Sgbj/UZEyVXFcxaWf8LQZzSE=;
-        b=U+w0mrM8ap88ssRlPe4/oRqQ7ujhUj2y/+qNg+RTuDg1WAzZn2e84aXbpsI1zitAGZ
-         9nHVqwkEUtx/RYppI+W16Ed8tkbxtSf2/PPI9TT2Ev1x0dN2/NMMajGgCeF5o9sAt3me
-         qNvKq0adey3HLKy7YdaO7eN0SQiXwZrfZQDMIGqnASdEN0MawWwbTLIcd9cv/a+G1FEA
-         1O5YXzWiWNFzjY6gAnsxjKJfSTzOLcBe1Cy6ZFklYEXFGiy90zJb+Q99nq/w2MMTzg3Y
-         +VK552E11BDNeH+/dl7QoztxGnrVeiTD7c146+AB7gCFVKLyUGOkCimDEvsH5iIgwlXh
-         9cWQ==
-X-Gm-Message-State: AOAM5315AAD/8Zqol8WKsVlzfxmxY8wIiEc7qKhqFOhMUICKJ4IPJTwV
-        EXeSJnOoCf/K/eHFHJi34WI=
-X-Google-Smtp-Source: ABdhPJwHkBEa8hlZ47/vQ1/vwGaxYc613gr2ScicJ6tAHnNve32gRkHYThHCzeaH3mxd3gDhYsF/3Q==
-X-Received: by 2002:a19:c1c2:: with SMTP id r185mr20878699lff.563.1630409921117;
-        Tue, 31 Aug 2021 04:38:41 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-26-37.dynamic.spd-mgts.ru. [46.138.26.37])
-        by smtp.googlemail.com with ESMTPSA id 203sm2265427ljf.63.2021.08.31.04.38.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 04:38:40 -0700 (PDT)
-Subject: Re: [PATCH 2/2] of: property: fw_devlink: Set 'optional_con_dev' for
- parse_power_domains
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20210831102141.624725-1-ulf.hansson@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <d6cbbaf7-03a1-34d7-afe3-823cd627c799@gmail.com>
-Date:   Tue, 31 Aug 2021 14:38:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 31 Aug 2021 07:40:06 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GzQF30V6mz87yl;
+        Tue, 31 Aug 2021 19:38:47 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 31 Aug 2021 19:39:08 +0800
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 31 Aug 2021 19:39:07 +0800
+Subject: Re: [PATCH] semaphore: Add might_sleep() to down_*() family
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Xiaoming Ni <nixiaoming@huawei.com>
+CC:     <linux-kernel@vger.kernel.org>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <will@kernel.org>, <longman@redhat.com>,
+        <boqun.feng@gmail.com>, <wangle6@huawei.com>,
+        <xiaoqian9@huawei.com>, <shaolexi@huawei.com>,
+        <linux-acpi@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Xiongfeng Wang" <wangxiongfeng2@huawei.com>
+References: <20210809021215.19991-1-nixiaoming@huawei.com>
+ <20210831111322.GA1687117@roeck-us.net>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <9471f03d-942d-2143-5d87-8ec98bc38ec3@huawei.com>
+Date:   Tue, 31 Aug 2021 19:39:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210831102141.624725-1-ulf.hansson@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210831111322.GA1687117@roeck-us.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.247]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-31.08.2021 13:21, Ulf Hansson пишет:
-> The power-domain DT bindings [1] doesn't enforce a compatible string for a
-> provider node, even if this is common to use. In particular, when
-> describing a hierarchy with parent/child power-domains, as the psci DT
-> bindings [2] for example, it's sometimes not applicable to use a compatible
-> string.
-> 
-> Therefore, let's set the 'optional_con_dev' to true to avoid creating
-> incorrect fw_devlinks for power-domains.
-> 
-> [1] Documentation/devicetree/bindings/power/power-domain.yaml
-> [2] Documentation/devicetree/bindings/arm/psci.yaml
-> 
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
-> 
-> Some more details of what goes on here. I have added a debug print in
-> of_link_to_phandle() to see the fw_devlinks that gets created.
-> 
-> This is what happens on Dragonboard 410c when 'optional_con_dev' isn't set:
-> ...
-> [    0.041274] device: 'psci': device_add
-> [    0.041366] OF: Linking power-domain-cpu0 (consumer) to psci (supplier)
-> [    0.041395] OF: Linking power-domain-cpu1 (consumer) to psci (supplier)
-> [    0.041423] OF: Linking power-domain-cpu2 (consumer) to psci (supplier)
-> [    0.041451] OF: Linking power-domain-cpu3 (consumer) to psci (supplier)
-> [    0.041494] device: 'platform:psci--platform:psci': device_add
-> [    0.041556] platform psci: Linked as a sync state only consumer to psci
-> ...
-> 
-> This is what happens on Dragonboard 410c when 'optional_con_dev' is set:
-> ...
-> [    0.041179] device: 'psci': device_add
-> [    0.041265] OF: Not linking psci to psci - is descendant
-> [    0.041293] OF: Not linking psci to psci - is descendant
-> [    0.041319] OF: Not linking psci to psci - is descendant
-> [    0.041346] OF: Not linking psci to psci - is descendant
-> ...
-> 
-> The relevant dtsi file:
-> arch/arm64/boot/dts/qcom/msm8916.dtsi
-> 
-> Kind regards
-> Ulf Hansson
-> 
-> ---
->  drivers/of/property.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index 2babb1807228..4d607fdbea24 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1356,7 +1356,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
->  	{ .parse_prop = parse_io_channels, },
->  	{ .parse_prop = parse_interrupt_parent, },
->  	{ .parse_prop = parse_dmas, .optional = true, },
-> -	{ .parse_prop = parse_power_domains, },
-> +	{ .parse_prop = parse_power_domains, .optional_con_dev = true, },
->  	{ .parse_prop = parse_hwlocks, },
->  	{ .parse_prop = parse_extcon, },
->  	{ .parse_prop = parse_nvmem_cells, },
-> 
+Hi Guenter,
 
-State syncing keeps working with this patch as before on Tegra.
+On 2021/8/31 19:13, Guenter Roeck wrote:
+> Hi,
+> 
+> On Mon, Aug 09, 2021 at 10:12:15AM +0800, Xiaoming Ni wrote:
+>> Semaphore is sleeping lock. Add might_sleep() to down*() family
+>> (with exception of down_trylock()) to detect atomic context sleep.
+>>
+>> Previously discussed with Peter Zijlstra, see link:
+>>   https://lore.kernel.org/lkml/20210806082320.GD22037@worktop.programming.kicks-ass.net
+>>
+>> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+>> Acked-by: Will Deacon <will@kernel.org>
+> 
+> This patch results in the following traceback on all arm64 boots with
+> EFI BIOS.
+> 
+> The problem is only seen with CONFIG_ACPI_PPTT=y, and thus only on arm64.
+
+I Cced Xiongfeng, he sent a patch to fix this issue over a month ago:
+
+https://lore.kernel.org/linux-arm-kernel/20210720112635.38565-1-wangxiongfeng2@huawei.com/T/
+
+and the calltrace is exactly the same as below.
+
+Sudeep, would you mind take a look again?
+
+> ---
+> [   14.048540] BUG: sleeping function called from invalid context at kernel/locking/semaphore.c:163
+> [   14.048700] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 14, name: cpuhp/0
+> [   14.048865] 2 locks held by cpuhp/0/14:
+> [   14.048943]  #0: ffff8000125799b0 (cpu_hotplug_lock){++++}-{0:0}, at: cpuhp_thread_fun+0x38/0x254
+> [   14.049320]  #1: ffff8000125799d8 (cpuhp_state-up){+.+.}-{0:0}, at: cpuhp_thread_fun+0x38/0x254
+> [   14.049523] irq event stamp: 62
+> [   14.049580] hardirqs last  enabled at (61): [<ffff800010269690>] finish_task_switch.isra.0+0xd0/0x2f0
+> [   14.049689] hardirqs last disabled at (62): [<ffff800010313ce8>] generic_exec_single+0x138/0x190
+> [   14.049785] softirqs last  enabled at (0): [<ffff8000102245d4>] copy_process+0x634/0x1af4
+> [   14.049876] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> [   14.050299] CPU: 0 PID: 14 Comm: cpuhp/0 Not tainted 5.14.0-01100-gb91db6a0b52e #1
+> [   14.050452] Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+> [   14.050694] Call trace:
+> [   14.050753]  dump_backtrace+0x0/0x19c
+> [   14.050839]  show_stack+0x1c/0x30
+> [   14.050892]  dump_stack_lvl+0x9c/0xd8
+> [   14.050949]  dump_stack+0x1c/0x38
+> [   14.050999]  ___might_sleep+0x154/0x200
+> [   14.051053]  __might_sleep+0x54/0x90
+> [   14.051106]  down_timeout+0x34/0x90
+> [   14.051159]  acpi_os_wait_semaphore+0x68/0x9c
+> [   14.051218]  acpi_ut_acquire_mutex+0x50/0xbc
+> [   14.051277]  acpi_get_table+0x3c/0xc0
+> [   14.051330]  acpi_find_last_cache_level+0x44/0x12c
+> [   14.051391]  _init_cache_level+0xd8/0xe4
+> [   14.051446]  generic_exec_single+0xf8/0x190
+> [   14.051502]  smp_call_function_single+0x174/0x1e0
+> [   14.051561]  init_cache_level+0x30/0x60
+> [   14.051614]  cacheinfo_cpu_online+0x28/0x840
+> [   14.051675]  cpuhp_invoke_callback+0x168/0x2ac
+> [   14.051751]  cpuhp_thread_fun+0x198/0x254
+> [   14.051810]  smpboot_thread_fn+0x200/0x2c0
+> [   14.051867]  kthread+0x164/0x170
+> [   14.051921]  ret_from_fork+0x10/0x18
+
+Thanks
+Hanjun
