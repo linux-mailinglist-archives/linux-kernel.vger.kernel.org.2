@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DCE3FC3A5
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3A13FC3A6
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239903AbhHaH0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 03:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
+        id S239923AbhHaH0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 03:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239538AbhHaH0D (ORCPT
+        with ESMTP id S239897AbhHaH0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 03:26:03 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71C8C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 00:25:08 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id s12so30224823ljg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 00:25:08 -0700 (PDT)
+        Tue, 31 Aug 2021 03:26:05 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 268DFC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 00:25:10 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id c8so23964271lfi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 00:25:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vBdWBM0UW4kI+oJm3DDC8ZI0wyWMqjtOzMb/smR/vC8=;
-        b=ZnltFFLr1PEqPSFMshcpMIL0mUAmxXtNpgvLywKlYnTpPTxOpscUgc1lulIpWcBPsL
-         KWf7t8oToMdUGNpsuhnpumpp7P8r+/vZmlydCOGPf9pofo6pcG5acjV5SrCac7zEI8TU
-         8nN77ep5UTqa8OyPJvCOZBY5FLV3xY9MWVD91mDBp3WcHJj5p4rzQV27DYKUWnbKuNdE
-         fqkXUsvFYp5z48ePsgR8onYL3X1BfTpJEolVsKsnJqMMUmjWcFbFXzBVIVvOfRd4JIwN
-         hJo0aR+uJbCxQtERU1sI3FZW+bHnGDXZap32ogYdkqjiqrcHbUKdTpG2Qd1Gi+I2iEl3
-         z6Qw==
+        bh=o/KK/P8maHQ0VnrYiPfvtpWT4pJDMNsRhKrjhgYtThI=;
+        b=g+vAZuLPlWXdghi4K0UtlpveTfs+VGtyqjN9ahHe7BAS/EXEPxABucsd2NUkOp7vc2
+         BuASjQT7tFKDGFrGGJfHk80Iuj5YNYmZfrjdt/i+JJOZbhZPRrdGYN0cmXNSxjL2sZyH
+         Vi0iENCdyD+c2tdDBJk6gEGSwonPshTWFk69xe80+Zz4BIry4UEz0YWZ6wzAD39W2Uow
+         BtXrtN/0A8NtlgbgRsaKYoYk72eexh1CswMUv4W4eHnwsN6TFJEdDRrzvg7lEKVt/Svu
+         OEiozrw4LxIRHN3bgFZfx6en8QNC743f1EjUTABYHNy32nColVed+g//aOYuqe5Z+FVt
+         LySg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vBdWBM0UW4kI+oJm3DDC8ZI0wyWMqjtOzMb/smR/vC8=;
-        b=uPaw1eh9yqsusmLF+GDcn0s+1CPISe2zS1LW5fWuS6bZ37CpWMWg//UhV1qGzs0spF
-         T8V6wQZOP/uti6gtKZG3RGbcI+LUtpO38zD8clTwuMr4TRbmimhyZbzRLSdcvLySpwbU
-         gQxi70wV30aQmofOqRmO5rKNBDR3V9XiM7BkdpAaf+n31eYIQP6BlGh15xUlpmhmxjfE
-         8Xsdlq3UrCxeuf6Bh1v5D+6sQl/GfU2W0mlbpgTWWiNpgvTjvPz/DLE11RjvoHSJONaX
-         oao2bt2tLQKVEuET5tVVKQqfbjGa8JhbV3EFfZQvClnc470fabW3oMNz2IcfMbO56qeD
-         ihwA==
-X-Gm-Message-State: AOAM5315VMfMfY9h+wX+chfp31MXFk/y4xpEa2OyokjLl/FU9jtbWabU
-        vhE7zTKxY4w/Jja+yIsMzn3ilyqnAX7vvA==
-X-Google-Smtp-Source: ABdhPJytTJ868aVldz1F29Jy24FweRp4vrEtoVPCLgtAoVZWQ5sXfeJYhR9kmL4aiV7v+Jvlp04zrg==
-X-Received: by 2002:a2e:bc1d:: with SMTP id b29mr25017364ljf.2.1630394707133;
+        bh=o/KK/P8maHQ0VnrYiPfvtpWT4pJDMNsRhKrjhgYtThI=;
+        b=mLSYbYuJRj8TOPO9yFTjQ6UXRk1SpwvILgKSz+FYjOjJp3B7PRj3WQX25pzMQOgObs
+         fO35sChftJRp3ipoMjtgpcgWd+f5W8k2ups5R09QjfBKkQRbVWDpU2VKUYbjLZXuDqhc
+         LI6IF7ldNZ6Z2fCOrqn6lE1WdvkprNvoaA/8LZco+d2G7fPEcc6JaraOdla/T9TKAXZk
+         wBCCXmlUhylG5LNf2HlWG78JGFcaRn7qjmkT9c1WTO31fWlJZxM8pbpgh8GtA6kTWzAN
+         blnZbeIa91HpxGb5dAK7y9s5xWvbR6B+9JHNpxonunrUH98cUuWsk9Yd8Eg+XfPOn/Dv
+         VuqA==
+X-Gm-Message-State: AOAM5320A2U4momVN1n3pNTdUus/lSlV0I6L9IVEM0Hn1ooPwThd/xG7
+        68sC/pPYFzuRTCus/k73UKLCnUgTZDtl/w==
+X-Google-Smtp-Source: ABdhPJxx992dIvYEBnl5hF5PlPXcICKITJOGS4UHSKrfLq/Kl4Py1j2Awg3injGWIMJl4CqBh7EHtw==
+X-Received: by 2002:a05:6512:c3:: with SMTP id c3mr9780070lfp.364.1630394707894;
         Tue, 31 Aug 2021 00:25:07 -0700 (PDT)
 Received: from jade.urgonet (h-94-254-48-165.A175.priv.bahnhof.se. [94.254.48.165])
-        by smtp.gmail.com with ESMTPSA id c10sm1642569lfv.246.2021.08.31.00.25.06
+        by smtp.gmail.com with ESMTPSA id c10sm1642569lfv.246.2021.08.31.00.25.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 00:25:06 -0700 (PDT)
+        Tue, 31 Aug 2021 00:25:07 -0700 (PDT)
 From:   Jens Wiklander <jens.wiklander@linaro.org>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         op-tee@lists.trustedfirmware.org
@@ -56,9 +56,9 @@ Cc:     Sumit Garg <sumit.garg@linaro.org>,
         Marc Bonnici <marc.bonnici@arm.com>,
         Jerome Forissier <jerome@forissier.org>,
         sughosh.ganu@linaro.org, Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH v5 2/5] optee: simplify optee_release()
-Date:   Tue, 31 Aug 2021 09:24:09 +0200
-Message-Id: <20210831072412.887565-3-jens.wiklander@linaro.org>
+Subject: [PATCH v5 3/5] optee: refactor driver with internal callbacks
+Date:   Tue, 31 Aug 2021 09:24:10 +0200
+Message-Id: <20210831072412.887565-4-jens.wiklander@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210831072412.887565-1-jens.wiklander@linaro.org>
 References: <20210831072412.887565-1-jens.wiklander@linaro.org>
@@ -68,177 +68,718 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplifies optee_release() with a new helper function,
-optee_close_session_helper() which has been factored out from
-optee_close_session().
+The OP-TEE driver is refactored with three internal callbacks replacing
+direct calls to optee_from_msg_param(), optee_to_msg_param() and
+optee_do_call_with_arg().
 
-A separate optee_release_supp() is added for the supplicant device.
+These functions a central to communicating with OP-TEE in secure world
+by using the SMC Calling Convention directly.
+
+This refactoring makes room for using other primitives to communicate
+with OP-TEE in secure world while being able to reuse as much as
+possible from the present driver.
 
 Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
 Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 ---
- drivers/tee/optee/call.c          | 31 ++++++++++-------
- drivers/tee/optee/core.c          | 56 +++++++++++--------------------
- drivers/tee/optee/optee_private.h |  1 +
- 3 files changed, 39 insertions(+), 49 deletions(-)
+ drivers/tee/optee/call.c          |  86 +++++++++--------
+ drivers/tee/optee/core.c          | 148 ++++++++++++++++++++----------
+ drivers/tee/optee/optee_private.h |  35 +++++--
+ drivers/tee/optee/rpc.c           |  19 ++--
+ 4 files changed, 182 insertions(+), 106 deletions(-)
 
 diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index 945f03da0223..103976df2062 100644
+index 103976df2062..ddedde45f1ee 100644
 --- a/drivers/tee/optee/call.c
 +++ b/drivers/tee/optee/call.c
-@@ -288,12 +288,28 @@ int optee_open_session(struct tee_context *ctx,
- 	return rc;
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * Copyright (c) 2015, Linaro Limited
++ * Copyright (c) 2015-2021, Linaro Limited
+  */
+ #include <linux/arm-smccc.h>
+ #include <linux/device.h>
+@@ -118,20 +118,25 @@ static struct optee_session *find_session(struct optee_context_data *ctxdata,
+ /**
+  * optee_do_call_with_arg() - Do an SMC to OP-TEE in secure world
+  * @ctx:	calling context
+- * @parg:	physical address of message to pass to secure world
++ * @arg:	shared memory holding the message to pass to secure world
+  *
+  * Does and SMC to OP-TEE in secure world and handles eventual resulting
+  * Remote Procedure Calls (RPC) from OP-TEE.
+  *
+  * Returns return code from secure world, 0 is OK
+  */
+-u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg)
++int optee_do_call_with_arg(struct tee_context *ctx, struct tee_shm *arg)
+ {
+ 	struct optee *optee = tee_get_drvdata(ctx->teedev);
+ 	struct optee_call_waiter w;
+ 	struct optee_rpc_param param = { };
+ 	struct optee_call_ctx call_ctx = { };
+-	u32 ret;
++	phys_addr_t parg;
++	int rc;
++
++	rc = tee_shm_get_pa(arg, 0, &parg);
++	if (rc)
++		return rc;
+ 
+ 	param.a0 = OPTEE_SMC_CALL_WITH_ARG;
+ 	reg_pair_from_64(&param.a1, &param.a2, parg);
+@@ -160,7 +165,7 @@ u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg)
+ 			param.a3 = res.a3;
+ 			optee_handle_rpc(ctx, &param, &call_ctx);
+ 		} else {
+-			ret = res.a0;
++			rc = res.a0;
+ 			break;
+ 		}
+ 	}
+@@ -172,14 +177,12 @@ u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg)
+ 	 */
+ 	optee_cq_wait_final(&optee->call_queue, &w);
+ 
+-	return ret;
++	return rc;
  }
  
--int optee_close_session(struct tee_context *ctx, u32 session)
-+int optee_close_session_helper(struct tee_context *ctx, u32 session)
+ static struct tee_shm *get_msg_arg(struct tee_context *ctx, size_t num_params,
+-				   struct optee_msg_arg **msg_arg,
+-				   phys_addr_t *msg_parg)
++				   struct optee_msg_arg **msg_arg)
  {
--	struct optee_context_data *ctxdata = ctx->data;
+-	int rc;
+ 	struct tee_shm *shm;
+ 	struct optee_msg_arg *ma;
+ 
+@@ -190,22 +193,13 @@ static struct tee_shm *get_msg_arg(struct tee_context *ctx, size_t num_params,
+ 
+ 	ma = tee_shm_get_va(shm, 0);
+ 	if (IS_ERR(ma)) {
+-		rc = PTR_ERR(ma);
+-		goto out;
++		tee_shm_free(shm);
++		return (void *)ma;
+ 	}
+ 
+-	rc = tee_shm_get_pa(shm, 0, msg_parg);
+-	if (rc)
+-		goto out;
+-
+ 	memset(ma, 0, OPTEE_MSG_GET_ARG_SIZE(num_params));
+ 	ma->num_params = num_params;
+ 	*msg_arg = ma;
+-out:
+-	if (rc) {
+-		tee_shm_free(shm);
+-		return ERR_PTR(rc);
+-	}
+ 
+ 	return shm;
+ }
+@@ -214,16 +208,16 @@ int optee_open_session(struct tee_context *ctx,
+ 		       struct tee_ioctl_open_session_arg *arg,
+ 		       struct tee_param *param)
+ {
++	struct optee *optee = tee_get_drvdata(ctx->teedev);
+ 	struct optee_context_data *ctxdata = ctx->data;
+ 	int rc;
  	struct tee_shm *shm;
  	struct optee_msg_arg *msg_arg;
- 	phys_addr_t msg_parg;
+-	phys_addr_t msg_parg;
+ 	struct optee_session *sess = NULL;
+ 	uuid_t client_uuid;
+ 
+ 	/* +2 for the meta parameters added below */
+-	shm = get_msg_arg(ctx, arg->num_params + 2, &msg_arg, &msg_parg);
++	shm = get_msg_arg(ctx, arg->num_params + 2, &msg_arg);
+ 	if (IS_ERR(shm))
+ 		return PTR_ERR(shm);
+ 
+@@ -247,7 +241,8 @@ int optee_open_session(struct tee_context *ctx,
+ 		goto out;
+ 	export_uuid(msg_arg->params[1].u.octets, &client_uuid);
+ 
+-	rc = optee_to_msg_param(msg_arg->params + 2, arg->num_params, param);
++	rc = optee->ops->to_msg_param(optee, msg_arg->params + 2,
++				      arg->num_params, param);
+ 	if (rc)
+ 		goto out;
+ 
+@@ -257,7 +252,7 @@ int optee_open_session(struct tee_context *ctx,
+ 		goto out;
+ 	}
+ 
+-	if (optee_do_call_with_arg(ctx, msg_parg)) {
++	if (optee->ops->do_call_with_arg(ctx, shm)) {
+ 		msg_arg->ret = TEEC_ERROR_COMMUNICATION;
+ 		msg_arg->ret_origin = TEEC_ORIGIN_COMMS;
+ 	}
+@@ -272,7 +267,8 @@ int optee_open_session(struct tee_context *ctx,
+ 		kfree(sess);
+ 	}
+ 
+-	if (optee_from_msg_param(param, arg->num_params, msg_arg->params + 2)) {
++	if (optee->ops->from_msg_param(optee, param, arg->num_params,
++				       msg_arg->params + 2)) {
+ 		arg->ret = TEEC_ERROR_COMMUNICATION;
+ 		arg->ret_origin = TEEC_ORIGIN_COMMS;
+ 		/* Close session again to avoid leakage */
+@@ -291,16 +287,16 @@ int optee_open_session(struct tee_context *ctx,
+ int optee_close_session_helper(struct tee_context *ctx, u32 session)
+ {
+ 	struct tee_shm *shm;
++	struct optee *optee = tee_get_drvdata(ctx->teedev);
+ 	struct optee_msg_arg *msg_arg;
+-	phys_addr_t msg_parg;
+ 
+-	shm = get_msg_arg(ctx, 0, &msg_arg, &msg_parg);
++	shm = get_msg_arg(ctx, 0, &msg_arg);
+ 	if (IS_ERR(shm))
+ 		return PTR_ERR(shm);
+ 
+ 	msg_arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
+ 	msg_arg->session = session;
+-	optee_do_call_with_arg(ctx, msg_parg);
++	optee->ops->do_call_with_arg(ctx, shm);
+ 
+ 	tee_shm_free(shm);
+ 
+@@ -328,10 +324,10 @@ int optee_close_session(struct tee_context *ctx, u32 session)
+ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+ 		      struct tee_param *param)
+ {
++	struct optee *optee = tee_get_drvdata(ctx->teedev);
+ 	struct optee_context_data *ctxdata = ctx->data;
+ 	struct tee_shm *shm;
+ 	struct optee_msg_arg *msg_arg;
+-	phys_addr_t msg_parg;
+ 	struct optee_session *sess;
+ 	int rc;
+ 
+@@ -342,7 +338,7 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+ 	if (!sess)
+ 		return -EINVAL;
+ 
+-	shm = get_msg_arg(ctx, arg->num_params, &msg_arg, &msg_parg);
++	shm = get_msg_arg(ctx, arg->num_params, &msg_arg);
+ 	if (IS_ERR(shm))
+ 		return PTR_ERR(shm);
+ 	msg_arg->cmd = OPTEE_MSG_CMD_INVOKE_COMMAND;
+@@ -350,16 +346,18 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+ 	msg_arg->session = arg->session;
+ 	msg_arg->cancel_id = arg->cancel_id;
+ 
+-	rc = optee_to_msg_param(msg_arg->params, arg->num_params, param);
++	rc = optee->ops->to_msg_param(optee, msg_arg->params, arg->num_params,
++				      param);
+ 	if (rc)
+ 		goto out;
+ 
+-	if (optee_do_call_with_arg(ctx, msg_parg)) {
++	if (optee->ops->do_call_with_arg(ctx, shm)) {
+ 		msg_arg->ret = TEEC_ERROR_COMMUNICATION;
+ 		msg_arg->ret_origin = TEEC_ORIGIN_COMMS;
+ 	}
+ 
+-	if (optee_from_msg_param(param, arg->num_params, msg_arg->params)) {
++	if (optee->ops->from_msg_param(optee, param, arg->num_params,
++				       msg_arg->params)) {
+ 		msg_arg->ret = TEEC_ERROR_COMMUNICATION;
+ 		msg_arg->ret_origin = TEEC_ORIGIN_COMMS;
+ 	}
+@@ -373,10 +371,10 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+ 
+ int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session)
+ {
++	struct optee *optee = tee_get_drvdata(ctx->teedev);
+ 	struct optee_context_data *ctxdata = ctx->data;
+ 	struct tee_shm *shm;
+ 	struct optee_msg_arg *msg_arg;
+-	phys_addr_t msg_parg;
+ 	struct optee_session *sess;
+ 
+ 	/* Check that the session is valid */
+@@ -386,14 +384,14 @@ int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session)
+ 	if (!sess)
+ 		return -EINVAL;
+ 
+-	shm = get_msg_arg(ctx, 0, &msg_arg, &msg_parg);
++	shm = get_msg_arg(ctx, 0, &msg_arg);
+ 	if (IS_ERR(shm))
+ 		return PTR_ERR(shm);
+ 
+ 	msg_arg->cmd = OPTEE_MSG_CMD_CANCEL;
+ 	msg_arg->session = session;
+ 	msg_arg->cancel_id = cancel_id;
+-	optee_do_call_with_arg(ctx, msg_parg);
++	optee->ops->do_call_with_arg(ctx, shm);
+ 
+ 	tee_shm_free(shm);
+ 	return 0;
+@@ -622,10 +620,10 @@ int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+ 		       struct page **pages, size_t num_pages,
+ 		       unsigned long start)
+ {
+-	struct tee_shm *shm_arg = NULL;
++	struct optee *optee = tee_get_drvdata(ctx->teedev);
+ 	struct optee_msg_arg *msg_arg;
++	struct tee_shm *shm_arg;
+ 	u64 *pages_list;
+-	phys_addr_t msg_parg;
+ 	int rc;
+ 
+ 	if (!num_pages)
+@@ -639,7 +637,7 @@ int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+ 	if (!pages_list)
+ 		return -ENOMEM;
+ 
+-	shm_arg = get_msg_arg(ctx, 1, &msg_arg, &msg_parg);
++	shm_arg = get_msg_arg(ctx, 1, &msg_arg);
+ 	if (IS_ERR(shm_arg)) {
+ 		rc = PTR_ERR(shm_arg);
+ 		goto out;
+@@ -660,7 +658,7 @@ int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+ 	msg_arg->params->u.tmem.buf_ptr = virt_to_phys(pages_list) |
+ 	  (tee_shm_get_page_offset(shm) & (OPTEE_MSG_NONCONTIG_PAGE_SIZE - 1));
+ 
+-	if (optee_do_call_with_arg(ctx, msg_parg) ||
++	if (optee->ops->do_call_with_arg(ctx, shm_arg) ||
+ 	    msg_arg->ret != TEEC_SUCCESS)
+ 		rc = -EINVAL;
+ 
+@@ -672,12 +670,12 @@ int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+ 
+ int optee_shm_unregister(struct tee_context *ctx, struct tee_shm *shm)
+ {
+-	struct tee_shm *shm_arg;
++	struct optee *optee = tee_get_drvdata(ctx->teedev);
+ 	struct optee_msg_arg *msg_arg;
+-	phys_addr_t msg_parg;
++	struct tee_shm *shm_arg;
+ 	int rc = 0;
+ 
+-	shm_arg = get_msg_arg(ctx, 1, &msg_arg, &msg_parg);
++	shm_arg = get_msg_arg(ctx, 1, &msg_arg);
+ 	if (IS_ERR(shm_arg))
+ 		return PTR_ERR(shm_arg);
+ 
+@@ -686,7 +684,7 @@ int optee_shm_unregister(struct tee_context *ctx, struct tee_shm *shm)
+ 	msg_arg->params[0].attr = OPTEE_MSG_ATTR_TYPE_RMEM_INPUT;
+ 	msg_arg->params[0].u.rmem.shm_ref = (unsigned long)shm;
+ 
+-	if (optee_do_call_with_arg(ctx, msg_parg) ||
++	if (optee->ops->do_call_with_arg(ctx, shm_arg) ||
+ 	    msg_arg->ret != TEEC_SUCCESS)
+ 		rc = -EINVAL;
+ 	tee_shm_free(shm_arg);
+diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+index 86a1ae8d296d..50650224e311 100644
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * Copyright (c) 2015, Linaro Limited
++ * Copyright (c) 2015-2021, Linaro Limited
+  */
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+@@ -27,21 +27,87 @@
+ 
+ #define OPTEE_SHM_NUM_PRIV_PAGES	CONFIG_OPTEE_SHM_NUM_PRIV_PAGES
+ 
++static void from_msg_param_value(struct tee_param *p, u32 attr,
++				 const struct optee_msg_param *mp)
++{
++	p->attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT +
++		  attr - OPTEE_MSG_ATTR_TYPE_VALUE_INPUT;
++	p->u.value.a = mp->u.value.a;
++	p->u.value.b = mp->u.value.b;
++	p->u.value.c = mp->u.value.c;
++}
 +
-+	shm = get_msg_arg(ctx, 0, &msg_arg, &msg_parg);
-+	if (IS_ERR(shm))
-+		return PTR_ERR(shm);
++static int from_msg_param_tmp_mem(struct tee_param *p, u32 attr,
++				  const struct optee_msg_param *mp)
++{
++	struct tee_shm *shm;
++	phys_addr_t pa;
++	int rc;
 +
-+	msg_arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
-+	msg_arg->session = session;
-+	optee_do_call_with_arg(ctx, msg_parg);
++	p->attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT +
++		  attr - OPTEE_MSG_ATTR_TYPE_TMEM_INPUT;
++	p->u.memref.size = mp->u.tmem.size;
++	shm = (struct tee_shm *)(unsigned long)mp->u.tmem.shm_ref;
++	if (!shm) {
++		p->u.memref.shm_offs = 0;
++		p->u.memref.shm = NULL;
++		return 0;
++	}
 +
-+	tee_shm_free(shm);
++	rc = tee_shm_get_pa(shm, 0, &pa);
++	if (rc)
++		return rc;
++
++	p->u.memref.shm_offs = mp->u.tmem.buf_ptr - pa;
++	p->u.memref.shm = shm;
++
++	/* Check that the memref is covered by the shm object */
++	if (p->u.memref.size) {
++		size_t o = p->u.memref.shm_offs +
++			   p->u.memref.size - 1;
++
++		rc = tee_shm_get_pa(shm, o, NULL);
++		if (rc)
++			return rc;
++	}
 +
 +	return 0;
 +}
 +
-+int optee_close_session(struct tee_context *ctx, u32 session)
++static void from_msg_param_reg_mem(struct tee_param *p, u32 attr,
++				   const struct optee_msg_param *mp)
 +{
-+	struct optee_context_data *ctxdata = ctx->data;
- 	struct optee_session *sess;
++	struct tee_shm *shm;
++
++	p->attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT +
++		  attr - OPTEE_MSG_ATTR_TYPE_RMEM_INPUT;
++	p->u.memref.size = mp->u.rmem.size;
++	shm = (struct tee_shm *)(unsigned long)mp->u.rmem.shm_ref;
++
++	if (shm) {
++		p->u.memref.shm_offs = mp->u.rmem.offs;
++		p->u.memref.shm = shm;
++	} else {
++		p->u.memref.shm_offs = 0;
++		p->u.memref.shm = NULL;
++	}
++}
++
+ /**
+  * optee_from_msg_param() - convert from OPTEE_MSG parameters to
+  *			    struct tee_param
++ * @optee:	main service struct
+  * @params:	subsystem internal parameter representation
+  * @num_params:	number of elements in the parameter arrays
+  * @msg_params:	OPTEE_MSG parameters
+  * Returns 0 on success or <0 on failure
+  */
+-int optee_from_msg_param(struct tee_param *params, size_t num_params,
+-			 const struct optee_msg_param *msg_params)
++static int optee_from_msg_param(struct optee *optee, struct tee_param *params,
++				size_t num_params,
++				const struct optee_msg_param *msg_params)
+ {
+ 	int rc;
+ 	size_t n;
+-	struct tee_shm *shm;
+-	phys_addr_t pa;
  
- 	/* Check that the session is valid and remove it from the list */
-@@ -306,16 +322,7 @@ int optee_close_session(struct tee_context *ctx, u32 session)
- 		return -EINVAL;
- 	kfree(sess);
- 
--	shm = get_msg_arg(ctx, 0, &msg_arg, &msg_parg);
--	if (IS_ERR(shm))
--		return PTR_ERR(shm);
+ 	for (n = 0; n < num_params; n++) {
+ 		struct tee_param *p = params + n;
+@@ -56,48 +122,19 @@ int optee_from_msg_param(struct tee_param *params, size_t num_params,
+ 		case OPTEE_MSG_ATTR_TYPE_VALUE_INPUT:
+ 		case OPTEE_MSG_ATTR_TYPE_VALUE_OUTPUT:
+ 		case OPTEE_MSG_ATTR_TYPE_VALUE_INOUT:
+-			p->attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT +
+-				  attr - OPTEE_MSG_ATTR_TYPE_VALUE_INPUT;
+-			p->u.value.a = mp->u.value.a;
+-			p->u.value.b = mp->u.value.b;
+-			p->u.value.c = mp->u.value.c;
++			from_msg_param_value(p, attr, mp);
+ 			break;
+ 		case OPTEE_MSG_ATTR_TYPE_TMEM_INPUT:
+ 		case OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT:
+ 		case OPTEE_MSG_ATTR_TYPE_TMEM_INOUT:
+-			p->attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT +
+-				  attr - OPTEE_MSG_ATTR_TYPE_TMEM_INPUT;
+-			p->u.memref.size = mp->u.tmem.size;
+-			shm = (struct tee_shm *)(unsigned long)
+-				mp->u.tmem.shm_ref;
+-			if (!shm) {
+-				p->u.memref.shm_offs = 0;
+-				p->u.memref.shm = NULL;
+-				break;
+-			}
+-			rc = tee_shm_get_pa(shm, 0, &pa);
++			rc = from_msg_param_tmp_mem(p, attr, mp);
+ 			if (rc)
+ 				return rc;
+-			p->u.memref.shm_offs = mp->u.tmem.buf_ptr - pa;
+-			p->u.memref.shm = shm;
+ 			break;
+ 		case OPTEE_MSG_ATTR_TYPE_RMEM_INPUT:
+ 		case OPTEE_MSG_ATTR_TYPE_RMEM_OUTPUT:
+ 		case OPTEE_MSG_ATTR_TYPE_RMEM_INOUT:
+-			p->attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT +
+-				  attr - OPTEE_MSG_ATTR_TYPE_RMEM_INPUT;
+-			p->u.memref.size = mp->u.rmem.size;
+-			shm = (struct tee_shm *)(unsigned long)
+-				mp->u.rmem.shm_ref;
 -
--	msg_arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
--	msg_arg->session = session;
--	optee_do_call_with_arg(ctx, msg_parg);
+-			if (!shm) {
+-				p->u.memref.shm_offs = 0;
+-				p->u.memref.shm = NULL;
+-				break;
+-			}
+-			p->u.memref.shm_offs = mp->u.rmem.offs;
+-			p->u.memref.shm = shm;
 -
--	tee_shm_free(shm);
--	return 0;
-+	return optee_close_session_helper(ctx, session);
- }
++			from_msg_param_reg_mem(p, attr, mp);
+ 			break;
  
- int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
-diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-index 5ce13b099d7d..86a1ae8d296d 100644
---- a/drivers/tee/optee/core.c
-+++ b/drivers/tee/optee/core.c
-@@ -264,60 +264,42 @@ static int optee_open(struct tee_context *ctx)
+ 		default:
+@@ -107,6 +144,16 @@ int optee_from_msg_param(struct tee_param *params, size_t num_params,
  	return 0;
  }
  
--static void optee_release(struct tee_context *ctx)
-+static void optee_release_helper(struct tee_context *ctx,
-+				 int (*close_session)(struct tee_context *ctx,
-+						      u32 session))
++static void to_msg_param_value(struct optee_msg_param *mp,
++			       const struct tee_param *p)
++{
++	mp->attr = OPTEE_MSG_ATTR_TYPE_VALUE_INPUT + p->attr -
++		   TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT;
++	mp->u.value.a = p->u.value.a;
++	mp->u.value.b = p->u.value.b;
++	mp->u.value.c = p->u.value.c;
++}
++
+ static int to_msg_param_tmp_mem(struct optee_msg_param *mp,
+ 				const struct tee_param *p)
  {
- 	struct optee_context_data *ctxdata = ctx->data;
--	struct tee_device *teedev = ctx->teedev;
--	struct optee *optee = tee_get_drvdata(teedev);
--	struct tee_shm *shm;
--	struct optee_msg_arg *arg = NULL;
--	phys_addr_t parg;
- 	struct optee_session *sess;
- 	struct optee_session *sess_tmp;
+@@ -149,13 +196,15 @@ static int to_msg_param_reg_mem(struct optee_msg_param *mp,
  
- 	if (!ctxdata)
- 		return;
- 
--	shm = tee_shm_alloc(ctx, sizeof(struct optee_msg_arg),
--			    TEE_SHM_MAPPED | TEE_SHM_PRIV);
--	if (!IS_ERR(shm)) {
--		arg = tee_shm_get_va(shm, 0);
--		/*
--		 * If va2pa fails for some reason, we can't call into
--		 * secure world, only free the memory. Secure OS will leak
--		 * sessions and finally refuse more sessions, but we will
--		 * at least let normal world reclaim its memory.
--		 */
--		if (!IS_ERR(arg))
--			if (tee_shm_va2pa(shm, arg, &parg))
--				arg = NULL; /* prevent usage of parg below */
--	}
--
- 	list_for_each_entry_safe(sess, sess_tmp, &ctxdata->sess_list,
- 				 list_node) {
- 		list_del(&sess->list_node);
--		if (!IS_ERR_OR_NULL(arg)) {
--			memset(arg, 0, sizeof(*arg));
--			arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
--			arg->session = sess->session_id;
--			optee_do_call_with_arg(ctx, parg);
--		}
-+		close_session(ctx, sess->session_id);
- 		kfree(sess);
- 	}
- 	kfree(ctxdata);
-+	ctx->data = NULL;
-+}
- 
--	if (!IS_ERR(shm))
--		tee_shm_free(shm);
-+static void optee_release(struct tee_context *ctx)
-+{
-+	optee_release_helper(ctx, optee_close_session_helper);
-+}
- 
--	ctx->data = NULL;
-+static void optee_release_supp(struct tee_context *ctx)
-+{
-+	struct optee *optee = tee_get_drvdata(ctx->teedev);
- 
--	if (teedev == optee->supp_teedev) {
--		if (optee->scan_bus_wq) {
--			destroy_workqueue(optee->scan_bus_wq);
--			optee->scan_bus_wq = NULL;
--		}
--		optee_supp_release(&optee->supp);
-+	optee_release_helper(ctx, optee_close_session_helper);
-+	if (optee->scan_bus_wq) {
-+		destroy_workqueue(optee->scan_bus_wq);
-+		optee->scan_bus_wq = NULL;
- 	}
-+	optee_supp_release(&optee->supp);
+ /**
+  * optee_to_msg_param() - convert from struct tee_params to OPTEE_MSG parameters
++ * @optee:	main service struct
+  * @msg_params:	OPTEE_MSG parameters
+  * @num_params:	number of elements in the parameter arrays
+  * @params:	subsystem itnernal parameter representation
+  * Returns 0 on success or <0 on failure
+  */
+-int optee_to_msg_param(struct optee_msg_param *msg_params, size_t num_params,
+-		       const struct tee_param *params)
++static int optee_to_msg_param(struct optee *optee,
++			      struct optee_msg_param *msg_params,
++			      size_t num_params, const struct tee_param *params)
+ {
+ 	int rc;
+ 	size_t n;
+@@ -172,11 +221,7 @@ int optee_to_msg_param(struct optee_msg_param *msg_params, size_t num_params,
+ 		case TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT:
+ 		case TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT:
+ 		case TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INOUT:
+-			mp->attr = OPTEE_MSG_ATTR_TYPE_VALUE_INPUT + p->attr -
+-				   TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT;
+-			mp->u.value.a = p->u.value.a;
+-			mp->u.value.b = p->u.value.b;
+-			mp->u.value.c = p->u.value.c;
++			to_msg_param_value(mp, p);
+ 			break;
+ 		case TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT:
+ 		case TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT:
+@@ -302,7 +347,7 @@ static void optee_release_supp(struct tee_context *ctx)
+ 	optee_supp_release(&optee->supp);
  }
  
- static const struct tee_driver_ops optee_ops = {
-@@ -341,7 +323,7 @@ static const struct tee_desc optee_desc = {
- static const struct tee_driver_ops optee_supp_ops = {
+-static const struct tee_driver_ops optee_ops = {
++static const struct tee_driver_ops optee_clnt_ops = {
  	.get_version = optee_get_version,
  	.open = optee_open,
--	.release = optee_release,
-+	.release = optee_release_supp,
- 	.supp_recv = optee_supp_recv,
- 	.supp_send = optee_supp_send,
- 	.shm_register = optee_shm_register_supp,
+ 	.release = optee_release,
+@@ -314,9 +359,9 @@ static const struct tee_driver_ops optee_ops = {
+ 	.shm_unregister = optee_shm_unregister,
+ };
+ 
+-static const struct tee_desc optee_desc = {
++static const struct tee_desc optee_clnt_desc = {
+ 	.name = DRIVER_NAME "-clnt",
+-	.ops = &optee_ops,
++	.ops = &optee_clnt_ops,
+ 	.owner = THIS_MODULE,
+ };
+ 
+@@ -337,6 +382,12 @@ static const struct tee_desc optee_supp_desc = {
+ 	.flags = TEE_DESC_PRIVILEGED,
+ };
+ 
++static const struct optee_ops optee_ops = {
++	.do_call_with_arg = optee_do_call_with_arg,
++	.to_msg_param = optee_to_msg_param,
++	.from_msg_param = optee_from_msg_param,
++};
++
+ static bool optee_msg_api_uid_is_optee_api(optee_invoke_fn *invoke_fn)
+ {
+ 	struct arm_smccc_res res;
+@@ -667,10 +718,11 @@ static int optee_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
+ 
++	optee->ops = &optee_ops;
+ 	optee->invoke_fn = invoke_fn;
+ 	optee->sec_caps = sec_caps;
+ 
+-	teedev = tee_device_alloc(&optee_desc, NULL, pool, optee);
++	teedev = tee_device_alloc(&optee_clnt_desc, NULL, pool, optee);
+ 	if (IS_ERR(teedev)) {
+ 		rc = PTR_ERR(teedev);
+ 		goto err;
 diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-index dbdd367be156..d9f5f3f7ba58 100644
+index d9f5f3f7ba58..92d59c145d4a 100644
 --- a/drivers/tee/optee/optee_private.h
 +++ b/drivers/tee/optee/optee_private.h
-@@ -152,6 +152,7 @@ u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg);
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * Copyright (c) 2015, Linaro Limited
++ * Copyright (c) 2015-2021, Linaro Limited
+  */
+ 
+ #ifndef OPTEE_PRIVATE_H
+@@ -66,9 +66,34 @@ struct optee_supp {
+ 	struct completion reqs_c;
+ };
+ 
++struct optee;
++
++/**
++ * struct optee_ops - OP-TEE driver internal operations
++ * @do_call_with_arg:	enters OP-TEE in secure world
++ * @to_msg_param:	converts from struct tee_param to OPTEE_MSG parameters
++ * @from_msg_param:	converts from OPTEE_MSG parameters to struct tee_param
++ *
++ * These OPs are only supposed to be used internally in the OP-TEE driver
++ * as a way of abstracting the different methogs of entering OP-TEE in
++ * secure world.
++ */
++struct optee_ops {
++	int (*do_call_with_arg)(struct tee_context *ctx,
++				struct tee_shm *shm_arg);
++	int (*to_msg_param)(struct optee *optee,
++			    struct optee_msg_param *msg_params,
++			    size_t num_params, const struct tee_param *params);
++	int (*from_msg_param)(struct optee *optee, struct tee_param *params,
++			      size_t num_params,
++			      const struct optee_msg_param *msg_params);
++};
++
+ /**
+  * struct optee - main service struct
+  * @supp_teedev:	supplicant device
++ * @ops:		internal callbacks for different ways to reach secure
++ *			world
+  * @teedev:		client device
+  * @invoke_fn:		function to issue smc or hvc
+  * @call_queue:		queue of threads waiting to call @invoke_fn
+@@ -86,6 +111,7 @@ struct optee_supp {
+ struct optee {
+ 	struct tee_device *supp_teedev;
+ 	struct tee_device *teedev;
++	const struct optee_ops *ops;
+ 	optee_invoke_fn *invoke_fn;
+ 	struct optee_call_queue call_queue;
+ 	struct optee_wait_queue wait_queue;
+@@ -148,7 +174,7 @@ int optee_supp_recv(struct tee_context *ctx, u32 *func, u32 *num_params,
+ int optee_supp_send(struct tee_context *ctx, u32 ret, u32 num_params,
+ 		    struct tee_param *param);
+ 
+-u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg);
++int optee_do_call_with_arg(struct tee_context *ctx, struct tee_shm *arg);
  int optee_open_session(struct tee_context *ctx,
  		       struct tee_ioctl_open_session_arg *arg,
  		       struct tee_param *param);
-+int optee_close_session_helper(struct tee_context *ctx, u32 session);
- int optee_close_session(struct tee_context *ctx, u32 session);
- int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
- 		      struct tee_param *param);
+@@ -172,11 +198,6 @@ int optee_shm_register_supp(struct tee_context *ctx, struct tee_shm *shm,
+ 			    unsigned long start);
+ int optee_shm_unregister_supp(struct tee_context *ctx, struct tee_shm *shm);
+ 
+-int optee_from_msg_param(struct tee_param *params, size_t num_params,
+-			 const struct optee_msg_param *msg_params);
+-int optee_to_msg_param(struct optee_msg_param *msg_params, size_t num_params,
+-		       const struct tee_param *params);
+-
+ u64 *optee_allocate_pages_list(size_t num_entries);
+ void optee_free_pages_list(void *array, size_t num_entries);
+ void optee_fill_pages_list(u64 *dst, struct page **pages, int num_pages,
+diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+index efbaff7ad7e5..309258d47790 100644
+--- a/drivers/tee/optee/rpc.c
++++ b/drivers/tee/optee/rpc.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * Copyright (c) 2015-2016, Linaro Limited
++ * Copyright (c) 2015-2021, Linaro Limited
+  */
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+@@ -55,6 +55,7 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
+ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+ 					     struct optee_msg_arg *arg)
+ {
++	struct optee *optee = tee_get_drvdata(ctx->teedev);
+ 	struct tee_param *params;
+ 	struct i2c_adapter *adapter;
+ 	struct i2c_msg msg = { };
+@@ -79,7 +80,8 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+ 		return;
+ 	}
+ 
+-	if (optee_from_msg_param(params, arg->num_params, arg->params))
++	if (optee->ops->from_msg_param(optee, params, arg->num_params,
++				       arg->params))
+ 		goto bad;
+ 
+ 	for (i = 0; i < arg->num_params; i++) {
+@@ -122,7 +124,8 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+ 		arg->ret = TEEC_ERROR_COMMUNICATION;
+ 	} else {
+ 		params[3].u.value.a = msg.len;
+-		if (optee_to_msg_param(arg->params, arg->num_params, params))
++		if (optee->ops->to_msg_param(optee, arg->params,
++					     arg->num_params, params))
+ 			arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+ 		else
+ 			arg->ret = TEEC_SUCCESS;
+@@ -234,7 +237,7 @@ static void handle_rpc_func_cmd_wait(struct optee_msg_arg *arg)
+ 	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+ }
+ 
+-static void handle_rpc_supp_cmd(struct tee_context *ctx,
++static void handle_rpc_supp_cmd(struct tee_context *ctx, struct optee *optee,
+ 				struct optee_msg_arg *arg)
+ {
+ 	struct tee_param *params;
+@@ -248,14 +251,16 @@ static void handle_rpc_supp_cmd(struct tee_context *ctx,
+ 		return;
+ 	}
+ 
+-	if (optee_from_msg_param(params, arg->num_params, arg->params)) {
++	if (optee->ops->from_msg_param(optee, params, arg->num_params,
++				       arg->params)) {
+ 		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+ 		goto out;
+ 	}
+ 
+ 	arg->ret = optee_supp_thrd_req(ctx, arg->cmd, arg->num_params, params);
+ 
+-	if (optee_to_msg_param(arg->params, arg->num_params, params))
++	if (optee->ops->to_msg_param(optee, arg->params, arg->num_params,
++				     params))
+ 		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+ out:
+ 	kfree(params);
+@@ -480,7 +485,7 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
+ 		handle_rpc_func_cmd_i2c_transfer(ctx, arg);
+ 		break;
+ 	default:
+-		handle_rpc_supp_cmd(ctx, arg);
++		handle_rpc_supp_cmd(ctx, optee, arg);
+ 	}
+ }
+ 
 -- 
 2.31.1
 
