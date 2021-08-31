@@ -2,165 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B303FC9D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C109A3FC9D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238424AbhHaOfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:35:04 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:58006 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238241AbhHaOe4 (ORCPT
+        id S238201AbhHaOey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:34:54 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48704 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238223AbhHaOeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:34:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630420441; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=suAP7OpI5mXef+eBKru8jM6cCh54dYm12uN9GdHVDkc=; b=RiLbwhopQYBLJ7gOrVmoTa7BDQm/aM7AeNBBUHbDNuaKZsVs+jTHCQthRRDGzniA2RWMQtvV
- /yB9PAKz/e08U0XVoarEgyzbJDzJmKBqLBwUoF/mGaT+Wi1Poap1bZ4j2BExCi6zrjKEZKrL
- tMR7OBi7qKAfpX1SXDiOfOjYI8g=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 612e3dcd4f8fcf7054296fba (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 31 Aug 2021 14:33:49
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CBC9FC43618; Tue, 31 Aug 2021 14:33:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.3] (unknown [106.202.140.97])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Tue, 31 Aug 2021 10:34:50 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 337DE2228D;
+        Tue, 31 Aug 2021 14:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630420433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/xAEprQsW0N81GpF1JlP4+oliaEb/wfRvXCgcIbPMyM=;
+        b=EOHRQBRTVET1mtXY9RS08x3F+XNuVKJwfmWj3m19yLSK5tZcUolsbmmQfvbRoBrXqCQyCJ
+        Pvd6qktaFRs+MGtx8xHLQZ6BIGsG1CYAPkOsKAsZbNO3LkHaW12upKWkO8iFDbwlktEp2H
+        OsbHF4qnHs2xJHlf/t+tuwG1mkH2ZsI=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19648C43460;
-        Tue, 31 Aug 2021 14:33:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 19648C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH V7 2/2] soc: qcom: aoss: Add debugfs entry
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     swboyd@chromium.org, clew@codeaurora.org, sibis@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
-References: <1630323451-7160-1-git-send-email-deesin@codeaurora.org>
- <1630323451-7160-3-git-send-email-deesin@codeaurora.org>
- <YS1nSP8kziOPaDld@yoga>
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-Message-ID: <6b1c4368-72e2-79e4-37c5-d333bb6bec5d@codeaurora.org>
-Date:   Tue, 31 Aug 2021 20:03:42 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        by relay2.suse.de (Postfix) with ESMTPS id DDE74A3B9E;
+        Tue, 31 Aug 2021 14:33:52 +0000 (UTC)
+Date:   Tue, 31 Aug 2021 16:33:52 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     James Wang <jnwang@linux.alibaba.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: kernel hang during reboot when cmdline include a non-exist
+ console device
+Message-ID: <YS490P27YM6UlB2z@alley>
+References: <CAHk-=wj+G8MXRUk5HRCvUr8gOpbR+zXQ6WNTB0E7n32fTUjKxQ@mail.gmail.com>
+ <YS2fZ1sknFYKtJFi@google.com>
+ <YS3k5TRf5oLLEdKu@alley>
+ <YS3stL0cTn5ZQSNx@google.com>
+ <fc18d17a-b185-7a1e-2135-ec83f3f8c70f@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <YS1nSP8kziOPaDld@yoga>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fc18d17a-b185-7a1e-2135-ec83f3f8c70f@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 2021-08-31 21:45:05, James Wang wrote:
+> 
+> 在 2021/8/31 PM4:47, Sergey Senozhatsky 写道:
+> > And may I ask, just in case, if James can revert a revert of Petr's commit:
+> > 
+> >         revert a91bd6223ecd46addc71ee6fcd432206d39365d2
+> > 
+> > boot with wrong console argument and see if the kernel reboots without
+> > any problems.
+> 
+> After test, revert Petr's commit can work; reboot without any problem;
 
-On 8/31/2021 4:48 AM, Bjorn Andersson wrote:
-> On Mon 30 Aug 06:37 CDT 2021, Deepak Kumar Singh wrote:
->
->> Some user space clients may require to change power states of various
->> parts of hardware. Add a debugfs node for qmp so messages can be sent
->> to aoss from user space.
->>
-> I think this could be a useful tool while testing and developing client
-> drivers or perhaps during bringup of new platforms.
->
-> But your new commit message doesn't sound right, given that debugfs
-> isn't mounted in your production builds.
->
-> Regards,
-> Bjorn
-Updated commit message in V8.
->
->> Signed-off-by: Chris Lew <clew@codeaurora.org>
->> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
->> ---
->>   drivers/soc/qcom/qcom_aoss.c | 32 ++++++++++++++++++++++++++++++++
->>   1 file changed, 32 insertions(+)
->>
->> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
->> index bf0a6280..4cd8670 100644
->> --- a/drivers/soc/qcom/qcom_aoss.c
->> +++ b/drivers/soc/qcom/qcom_aoss.c
->> @@ -4,6 +4,7 @@
->>    */
->>   #include <dt-bindings/power/qcom-aoss-qmp.h>
->>   #include <linux/clk-provider.h>
->> +#include <linux/debugfs.h>
->>   #include <linux/interrupt.h>
->>   #include <linux/io.h>
->>   #include <linux/mailbox_client.h>
->> @@ -86,6 +87,7 @@ struct qmp {
->>   	struct clk_hw qdss_clk;
->>   	struct genpd_onecell_data pd_data;
->>   	struct qmp_cooling_device *cooling_devs;
->> +	struct dentry *debugfs_file;
->>   };
->>   
->>   struct qmp_pd {
->> @@ -566,6 +568,31 @@ void qmp_put(struct qmp *qmp)
->>   }
->>   EXPORT_SYMBOL(qmp_put);
->>   
->> +static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
->> +			      size_t len, loff_t *pos)
->> +{
->> +	struct qmp *qmp = file->private_data;
->> +	char buf[QMP_MSG_LEN] = {};
->> +	int ret;
->> +
->> +	if (!len || len >= QMP_MSG_LEN)
->> +		return -EINVAL;
->> +
->> +	ret  = copy_from_user(buf, userstr, len);
->> +	if (ret) {
->> +		return -EFAULT;
->> +	}
->> +
->> +	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
->> +
->> +	return ret ? ret : len;
->> +}
->> +
->> +static const struct file_operations aoss_dbg_fops = {
->> +	.open = simple_open,
->> +	.write = aoss_dbg_write,
->> +};
->> +
->>   static int qmp_probe(struct platform_device *pdev)
->>   {
->>   	struct resource *res;
->> @@ -620,6 +647,9 @@ static int qmp_probe(struct platform_device *pdev)
->>   
->>   	platform_set_drvdata(pdev, qmp);
->>   
->> +	qmp->debugfs_file = debugfs_create_file("aoss_send_message", 0220, NULL,
->> +						qmp, &aoss_dbg_fops);
->> +
->>   	return 0;
->>   
->>   err_remove_qdss_clk:
->> @@ -636,6 +666,8 @@ static int qmp_remove(struct platform_device *pdev)
->>   {
->>   	struct qmp *qmp = platform_get_drvdata(pdev);
->>   
->> +	debugfs_remove(qmp->debugfs_file);
->> +
->>   	qmp_qdss_clk_remove(qmp);
->>   	qmp_pd_remove(qmp);
->>   	qmp_cooling_devices_remove(qmp);
->> -- 
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->> a Linux Foundation Collaborative Project
->>
+Interesting, it looks like the panic() is really caused by missing
+stdout, stdin, and stderr, for the init process.
+
+Unfortunately, the fix is not easy, as described in the commit
+a91bd6223ecd46addc71e ("Revert "init/console: Use ttynull as
+a fallback when there is no console").
+
+Best Regards,
+Petr
