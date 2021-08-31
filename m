@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13743FC1A0
+	by mail.lfdr.de (Postfix) with ESMTP id 8907E3FC19F
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 05:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239660AbhHaDlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 23:41:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43996 "EHLO mail.kernel.org"
+        id S239626AbhHaDlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 23:41:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239585AbhHaDlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239581AbhHaDlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 30 Aug 2021 23:41:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8B9AF60462;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 827986102A;
         Tue, 31 Aug 2021 03:40:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1630381205;
-        bh=QMA1pgfvnMOipT1nI60E9hxKbksLelRwRSZMWdWwcQw=;
+        bh=kWPBeTEdTMu5YmcG0XC1GTCA4958z2Qgfg1w+SQLIvE=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Ko55ltK0/St1KwTbHgfzVAAxQI8aDwz4cQfqyXw1my9YY0p2LJJSPEWv7J5n4WFbL
-         NNmRrVuxL4zRdovdUZCihSdreLa0xZyNxCXsl4lmVDAWZEygUUV62oDA0W5zEubDYi
-         U3X+LY3Qyp+TOTenm/ip/UDcfbkeeNipc5nN4s/pkBH6IJWQbrBjqk9wsWu/7GQRDo
-         zL0if8NZfRhuGQbjPaKbOpL91jHycIVnc1Y7PPQvDm3pFZLOoeKQi90wtpxlemzMk1
-         OlLXDlBKVKfRRFMqdyRJQEf8jqKjyc0cOMLthGK2kF83twqV0V32wjp38OSOvleq1d
-         LSg9zUZO1GsVg==
+        b=gskUGt04atwqYCiBVovR+LsfShgPktclLn9i8CAX6ESuB0uuCOoIMhgSCxsa4b71w
+         7F50HEbQGNXRvIxEeZkikkNSwVQdOaFJG637o8glKDsgxEDPkSxDQ29xyF4VHmd9rb
+         D72sadS8lA0LIMTU8tVaEg02Doaf6XBA/1fqBwa87YEyeV9A5ji0gpxppYPuMkBh1B
+         2JL4KweTLbyHEksUWSbrAEZLQ60ohfHT9HXxG7cg0+qNs3QDQ2NKl49lvehzaTWK46
+         SOrf/yczYyRcMDKAaowGsV8PksFOnPM1TbGzBCMO0glrw5wVtYiLvQqq3zv/v/RLZE
+         7f+FE4aP+c0sw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8117E6097A;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7645A60A6F;
         Tue, 31 Aug 2021 03:40:05 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: pasemi: Remove usage of the deprecated
- "pci-dma-compat.h" API
+Subject: Re: [PATCH] net: sched: Fix qdisc_rate_table refcount leak when get
+ tcf_block failed
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163038120552.6773.17379374369003836648.git-patchwork-notify@kernel.org>
+Message-Id: <163038120547.6773.16268744474325460002.git-patchwork-notify@kernel.org>
 Date:   Tue, 31 Aug 2021 03:40:05 +0000
-References: <bc6cd281eae024b26fd9c7ef6678d2d1dc9d74fd.1630150008.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <bc6cd281eae024b26fd9c7ef6678d2d1dc9d74fd.1630150008.git.christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <1630252681-71588-1-git-send-email-xiyuyang19@fudan.edu.cn>
+In-Reply-To: <1630252681-71588-1-git-send-email-xiyuyang19@fudan.edu.cn>
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,21 +48,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Sat, 28 Aug 2021 13:28:48 +0200 you wrote:
-> In [1], Christoph Hellwig has proposed to remove the wrappers in
-> include/linux/pci-dma-compat.h.
+On Sun, 29 Aug 2021 23:58:01 +0800 you wrote:
+> The reference counting issue happens in one exception handling path of
+> cbq_change_class(). When failing to get tcf_block, the function forgets
+> to decrease the refcount of "rtab" increased by qdisc_put_rtab(),
+> causing a refcount leak.
 > 
-> Some reasons why this API should be removed have been given by Julia
-> Lawall in [2].
-> 
-> A coccinelle script has been used to perform the needed transformation
-> Only relevant parts are given below.
+> Fix this issue by jumping to "failure" label when get tcf_block failed.
 > 
 > [...]
 
 Here is the summary with links:
-  - net: pasemi: Remove usage of the deprecated "pci-dma-compat.h" API
-    https://git.kernel.org/netdev/net-next/c/a16ef91aa61a
+  - net: sched: Fix qdisc_rate_table refcount leak when get tcf_block failed
+    https://git.kernel.org/netdev/net-next/c/c66070125837
 
 You are awesome, thank you!
 --
