@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FD53FC240
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 07:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 388353FC242
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 07:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238313AbhHaFtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 01:49:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:51078 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235078AbhHaFte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 01:49:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A71E1FB;
-        Mon, 30 Aug 2021 22:48:39 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 133BF3F694;
-        Mon, 30 Aug 2021 22:48:37 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 06:48:35 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     rishabhb@codeaurora.org
-Cc:     sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, avajid@codeaurora.org,
-        adharmap@codeaurora.org
-Subject: Re: [PATCH v3] firmware: arm_scmi: Free mailbox channels if probe
- fails
-Message-ID: <20210831054835.GJ13160@e120937-lin>
-References: <1628111999-21595-1-git-send-email-rishabhb@codeaurora.org>
- <20210805105427.GU6592@e120937-lin>
- <51782599a01a6a22409d01e5fc1f8a50@codeaurora.org>
+        id S238567AbhHaFx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 01:53:58 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:52340 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231397AbhHaFx5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 01:53:57 -0400
+Received: from jlbec by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKwfX-00HUnl-Tb; Tue, 31 Aug 2021 05:50:48 +0000
+Date:   Tue, 31 Aug 2021 05:50:47 +0000
+From:   Joel Becker <jlbec@evilplan.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Sishuai Gong <sishuai@purdue.edu>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/4] configfs: return -ENAMETOOLONG earlier in
+ configfs_lookup
+Message-ID: <YS3DN6fhJZEhu1Oy@zeniv-ca.linux.org.uk>
+Mail-Followup-To: Christoph Hellwig <hch@lst.de>,
+        Sishuai Gong <sishuai@purdue.edu>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20210825064906.1694233-1-hch@lst.de>
+ <20210825064906.1694233-2-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <51782599a01a6a22409d01e5fc1f8a50@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210825064906.1694233-2-hch@lst.de>
+X-Burt-Line: Trees are cool.
+X-Red-Smith: Ninety feet between bases is perhaps as close as man has ever
+ come to perfection.
+Sender: Joel Becker <jlbec@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 02:09:37PM -0700, rishabhb@codeaurora.org wrote:
-> Hi Christian
+Reviewed-by: Joel Becker <jlbec@evilplan.org>
 
-Hi Rishabh,
-
-thanks for looking into this kind of bad interactions.
-
-> There seems to be another issue here. The response from agent can be delayed
-> causing a timeout during base protocol acquire,
-> which leads to the probe failure. What I have observed is sometimes the
-> failure of probe and rx_callback (due to a delayed message)
-> happens at the same time on different cpus.
-> Because of this race, the device memory may be cleared while the
-> interrupt(rx_callback) is executing on another cpu.
-
-You are right that concurrency was not handled properly in this kind of
-context and moreover, if you think about it, even the case of out of
-order reception of responses and delayed_responses (type2 SCMI messages)
-for asynchronous SCMI commands was not handled properly.
-
-> How do you propose we solve this? Do you think it is better to take the
-> setting up of base and other protocols out of probe and
-> in some delayed work? That would imply the device memory is not released
-> until remove is called. Or should we add locking to
-> the interrupt handler(scmi_rx_callback) and the cleanup in probe to avoid
-> the race?
+On Wed, Aug 25, 2021 at 08:49:03AM +0200, Christoph Hellwig wrote:
+> Just like most other file systems: get the simple checks out of the
+> way first.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/configfs/dir.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
+> index ac5e0c0e9181..cf08bbde55f3 100644
+> --- a/fs/configfs/dir.c
+> +++ b/fs/configfs/dir.c
+> @@ -456,6 +456,9 @@ static struct dentry * configfs_lookup(struct inode *dir,
+>  	int found = 0;
+>  	int err;
+>  
+> +	if (dentry->d_name.len > NAME_MAX)
+> +		return ERR_PTR(-ENAMETOOLONG);
+> +
+>  	/*
+>  	 * Fake invisibility if dir belongs to a group/default groups hierarchy
+>  	 * being attached
+> @@ -486,8 +489,6 @@ static struct dentry * configfs_lookup(struct inode *dir,
+>  		 * If it doesn't exist and it isn't a NOT_PINNED item,
+>  		 * it must be negative.
+>  		 */
+> -		if (dentry->d_name.len > NAME_MAX)
+> -			return ERR_PTR(-ENAMETOOLONG);
+>  		d_add(dentry, NULL);
+>  		return NULL;
+>  	}
+> -- 
+> 2.30.2
 > 
 
-These issues were more easily exposed by SCMI Virtio transport, so in
-the series where I introduced scmi-virtio:
-
-https://lore.kernel.org/linux-arm-kernel/162848483974.232214.9506203742448269364.b4-ty@arm.com/
-
-(which is now queued for v5.15 ...  now on -next I think...finger crossed)
-
-I took the chance to rectify a couple of other things in the SCMI core
-in the initial commits.
-As an example, in the above series
-
- [PATCH v7 05/15] firmware: arm_scmi: Handle concurrent and out-of-order messages
-
-cares to add a refcount to xfers and some locking on xfers between TX
-and RX path to avoid that a timed out xfer can vanish while the rx path
-is concurrently working on it (as you said); moreover I handle the
-condition (rare if not unplausible anyway) in which a transport delivers
-out of order responses and delayed responses.
-
-I tested this scenarios on some fake emulated SCMI Virtio transport
-where I could play any sort of mess and tricks to stress this limit
-conditions, but you're more than welcome to verify if the race you are
-seeing on Base protocol time out is solved (as I would hope :D) by this
-series of mine.
-
-Let me know, any feedback is welcome.
-
-Btw, in the series above there are also other minor changes, but there
-is also another more radical change needed to ensure correctness and
-protection against stale old messages which maybe could interest you
-in general if you are looking into SCMI:
-
-[PATCH v7 04/15] firmware: arm_scmi: Introduce monotonically increasing tokens 
-
-Let me know if yo have other concerns.
-
-Thanks
-Cristian
-
+-- 
