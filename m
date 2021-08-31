@@ -2,108 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2883FCFA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F0A3FCFA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240492AbhHaWqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 18:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39124 "EHLO
+        id S240607AbhHaWsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 18:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhHaWqM (ORCPT
+        with ESMTP id S238552AbhHaWsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 18:46:12 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BE8C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 15:45:17 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id u19-20020a05620a121300b0042665527c3bso1187680qkj.14
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 15:45:17 -0700 (PDT)
+        Tue, 31 Aug 2021 18:48:17 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECC1C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 15:47:21 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id k65so1369197yba.13
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 15:47:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=VBr5TgxCC8MLVwjMjWQQXTK7iMmgeHcn6Adehu6ScSM=;
-        b=NWgyKMGLYOnT5x9MYNZZtLsYsSIszTOkLOJtO5JTeXkNOtfkw0Lu1p7kl+NwDUsEmW
-         upmmOaRYg1r7vn97qb3AQzbv/u/FzWC1R3DYeNK9mBbsJapwb7fBOTd1nxcfowCPmhT9
-         xy9y1PGqQpAXKczq/nZZNNHGIx/KXTCHmU4w5qbvzm5gRGjkTOGu61bCaPmkTPQcY7jK
-         u5XmA3fncqtL++pN60J3ui1H/pCtyh9UQal2F9q6yvVbZNHDpM8b/Q0UDbUs5ZL+8BLs
-         o0p3JJHyS6LLKwrjAaVN8MPAF1cViuTUSVmNyqT5+3p71dA+VJ8Zl49CyW2QxIAInKnr
-         wt9Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/zrrWu3vyZW/zYrRbYJvlBVVQeFSlAL8q0o+fZ41WYo=;
+        b=Bcv/iQ909ld9LZrqWRLP3Rtu9r8i6QUWzOktnuuGS3/2SjjZvDuwXpvSLSGnDz/y4J
+         ZBWF3SmMQRUIUeuQTucLNQyEsrIzFmhD2HMZjebZPnUDdf88Uz97hLjpV5B1a0caFgN2
+         PHRi/xtklW4zzZgRVJxpRkQDv3s2mfAtsXHraoeaRZqbCaU3GNlWX1LWj2zxvDZQD5sL
+         ZWwa4pxfHI2d/+GlEnfmFhUJpf2LMW64aATeRyH51uOgk7RcESwOVKj2pFS+0vDez6C6
+         YwsIMNfK59uZuriv29WaQpAMK3QIv4AB7z9N27Hd2gA6zAaWMbFsq7GYE2nXvpsWI9jH
+         jvKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=VBr5TgxCC8MLVwjMjWQQXTK7iMmgeHcn6Adehu6ScSM=;
-        b=n9ZXJBv8iyXuBjQ59LX/QZbBDUoKzESyavDHDE5OccBjRW25TiJluV94fiIpoP/mDL
-         w069XiHGCbrc0Fb7UKgxY2BuOvvdIXLvUOVhZXSofmExMfns6KQfLVJoJorlbP8lypJ8
-         JzAfNJTrtSShkmIcrbyPIcnbvxJyDXNx5dzptjSUVIu7XVS3lYoTxJpCHnTe4d4+ZeaY
-         O47Y7vYQWuLMCnFarhtx9xPGT1a6aiTa37Mb5fU5Ignjf3As5FS2/0XtynSIKZ9uvhV9
-         2c6amaCrea+pu1iOUkAU7FjNAIAgRQ+xh+1hhvQNF/kB2sFH76GEDVyQydwND4lKk4a5
-         b3HA==
-X-Gm-Message-State: AOAM531G4JsYoLsLXJ8i8xY0LMngwprhkd8F7TjYW1sBey4wZZSMyiKZ
-        BmVbdK0S5rdQHgxvLaZvn+nt1CO23Jw9Rxc=
-X-Google-Smtp-Source: ABdhPJx/hQupCkCBnkliVvrBY2j07/Clpx8SKHzBGOHk/Wo7wwcCIhAe0sHvlrRCQFtGQQiT/+/dQ7cktnyK8Q4=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:c653:ae7e:a926:286a])
- (user=saravanak job=sendgmr) by 2002:a05:6214:23c6:: with SMTP id
- hr6mr30999430qvb.22.1630449916314; Tue, 31 Aug 2021 15:45:16 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 15:45:10 -0700
-Message-Id: <20210831224510.703253-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
-Subject: [PATCH v1] driver core: fw_devlink: Don't create device links for
- devices not on a bus
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/zrrWu3vyZW/zYrRbYJvlBVVQeFSlAL8q0o+fZ41WYo=;
+        b=o6IPrgt5z3fC8lA5xgxx/Yyh5AzRmsw93r3yEYC0sLsOefh1rv5zNtnBBkQVsPPh28
+         kvGsJmG4M5Zkb7/NuieIL/p6ojPfW02+eaev0OGPQ9/LWr+wZfBvD8i+WmortR8aTsL8
+         rE6e3uoxhFrCjI0X9/zhINFiQh4nmNoUy/ZuhfIUsURwVQTjkovKdyx/wI0/91uUetJ+
+         BuwGMJ/1LyBoFu+lMmPvsjRqo+UoUb+qd122iw7uPu3vBeKhBeBztVr6tnOpc5H/ByE5
+         HV4Vx9QJ5jwwB2H11S8Kiq5zmGLjSne5sPUeUvGwnacvL3WA0lBBkA7STV93fyf5JKcQ
+         241g==
+X-Gm-Message-State: AOAM532E0qab8x50giESz3MUIWIEAOyo2lEIgmN3dGAKF14ATRIFyoIQ
+        skkaUdDh43abdl7gesAq/QdsmjY6yrsUhf/CJHvr8fMF0YMmNg==
+X-Google-Smtp-Source: ABdhPJxxMUxoFE7oLhACb3rJ3U1OAxHhXTAmtgpJpd5QqtINesrpTxsSkzeI6UNbEuFYIHJ6yFg/FYdWYgePuorb7Uc=
+X-Received: by 2002:a25:d213:: with SMTP id j19mr34806819ybg.20.1630450040916;
+ Tue, 31 Aug 2021 15:47:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com>
+ <CAGETcx8JDR+5Aj2uwnQJ9sL+8-p=Cxix+P4sP8-ygMQ8_2AcXA@mail.gmail.com>
+In-Reply-To: <CAGETcx8JDR+5Aj2uwnQJ9sL+8-p=Cxix+P4sP8-ygMQ8_2AcXA@mail.gmail.com>
 From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        kernel-team@android.com, linux-kernel@vger.kernel.org
+Date:   Tue, 31 Aug 2021 15:46:44 -0700
+Message-ID: <CAGETcx_p80WZYyDxh3n8a_xw60-vki0kMvxjdNJ9_PeNJk1skQ@mail.gmail.com>
+Subject: Re: [RFD] drivers: base: A driver's ->sync_state() callback don't get called
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Devices that are not on a bus will never have a driver bound to it. So,
-fw_devlink should not create device links for it as it can cause probe
-issues[1] or sync_state() call back issues[2].
+On Tue, Aug 31, 2021 at 9:59 AM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Tue, Aug 31, 2021 at 6:56 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >
+> > Hi Saravana, Rafael, Stephen,
+> >
+> > I have observed an issue with a driver's  ->sync_state() callback that
+> > doesn't get called, even if consumers/supplier device links conditions
+> > should have been satisfied. I have narrowed down the problem, but I am
+> > not sure what is the best solution to fix it, hence I am turning to
+> > you for some discussion/advice.
+> >
+> > I have two test platform drivers, one that matches on the
+> > "test,pm-domains-test" compatible string (this driver also has the
+> > ->sync_state() callback assigned) and another driver that matches on
+> > "test,runtime-pm-test".
+> >
+> > This is the relevant part in my DTS file:
+> >
+> >        pm_domain_test {
+> >                 compatible = "test,pm-domains-test";
+> >
+> >                 pdParent: power-domain-parent {
+> >                         #power-domain-cells = <0>;
+> >                 };
+> >
+> >                 pdChild: power-domain-child {
+> >                         #power-domain-cells = <0>;
+> >                         power-domains = <&pdParent>;
+> >                 };
+> >         };
+> >
+> >         soctest: soctest {
+> >                 compatible = "simple-bus";
+> >
+> >                 rpmtest0 {
+> >                         compatible = "test,runtime-pm-test";
+> >                         power-domains = <&pdParent>;
+> >                 };
+> >         };
+> >
+> > During boot the fw_devlinks are being created and their corresponding
+> > links. With some debug enabled this shows some of the interesting
+> > parts that are being printed to the log:
+> >
+> > [    0.041539] device: 'pm_domain_test': device_add
+> > [    0.041629] OF: Not linking pm_domain_test to pm_domain_test - is descendant
+> > [    0.041718] device: 'soctest': device_add
+> > [    0.041803] OF: Linking rpmtest0 (consumer) to pm_domain_test (supplier)
+> > [    0.041829] device: 'platform:pm_domain_test--platform:soctest': device_add
+> > [    0.041892] platform soctest: Linked as a sync state only consumer
+> > to pm_domain_test
+> > [    0.041957] OF:    create child: /soctest/rpmtest0
+> > [    0.041995] device: 'soctest:rpmtest0': device_add
+> > [    0.042072] device:
+> > 'platform:pm_domain_test--platform:soctest:rpmtest0': device_add
+> > [    0.042132] devices_kset: Moving soctest:rpmtest0 to end of list
+> > [    0.042141] platform soctest:rpmtest0: Linked as a consumer to pm_domain_test
+> >
+> > The interesting thing here is the "sync state only" link that gets
+> > created. I assume there are good reasons for creating this link, even
+> > if I fail to understand exactly why.
+>
+> In general there's a good reason for creating these links from parent
+> devices of the consumer to the supplier. It is documented in the code
+> under __fw_devlink_link_to_consumers().
+>
+> /*
+>  * If consumer device is not available yet, make a "proxy"
+>  * SYNC_STATE_ONLY link from the consumer's parent device to
+>  * the supplier device. This is necessary to make sure the
+>  * supplier doesn't get a sync_state() callback before the real
+>  * consumer can create a device link to the supplier.
+>  *
+>  * This proxy link step is needed to handle the case where the
+>  * consumer's parent device is added before the supplier.
+>  */
+>
+> and under __fw_devlink_link_to_suppliers().
+>
+> /*
+>  * Make "proxy" SYNC_STATE_ONLY device links to represent the needs of
+>  * all the descendants. This proxy link step is needed to handle the
+>  * case where the supplier is added before the consumer's parent device
+>  * (@dev).
+>  */
+>
+>
+> >
+> > In any case, the sync state only link never gets dropped, which I
+> > assume is because there is no driver getting bound for the "soctest"
+> > device (it has only the "simple-bus" compatible).
+>
+> Yeah, you've identified the problem correctly. I've been thinking
+> about this possibility (and all the side effects a fix might have). I
+> can send out a fix for this soon (within a week or so).
+>
+> > In other words, it doesn't matter that both the rpmtest0 and the
+> > pm_domain_test devices are probed, thus satisfying the
+> > supplier/consumer conditions, the ->sync_state() callback doesn't get
+> > called anyway.
+> >
+> > Can you perhaps help to point me in a direction of how to best fix this problem?
+>
+> I hope you are okay with me sending a fix.
 
-[1] - https://lore.kernel.org/lkml/CAGETcx_xJCqOWtwZ9Ee2+0sPGNLM5=F=djtbdYENkAYZa0ynqQ@mail.gmail.com/
-[2] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-Fixes: f9aa460672c9 ("driver core: Refactor fw_devlink feature")
-Reported-by: Ulf Hansson <ulf.hansson@linaro.org>
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/base/core.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Ulf,
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index f6360490a4a3..304a06314656 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -1719,8 +1719,24 @@ static int fw_devlink_create_devlink(struct device *con,
- 	struct device *sup_dev;
- 	int ret = 0;
- 
-+	/*
-+	 * If a consumer device is not on a bus (i.e. a driver will never bind
-+	 * to it), it doesn't make sense for fw_devlink to create device links
-+	 * for it.
-+	 */
-+	if (con->bus == NULL)
-+		return -EINVAL;
-+
- 	sup_dev = get_dev_from_fwnode(sup_handle);
- 	if (sup_dev) {
-+		/*
-+		 * If a supplier device is not on a bus (i.e. a driver will
-+		 * never bind to it), it doesn't make sense for fw_devlink to
-+		 * create device links for it.
-+		 */
-+		if (sup_dev->bus == NULL)
-+			return -EINVAL;
-+
- 		/*
- 		 * If it's one of those drivers that don't actually bind to
- 		 * their device using driver core, then don't wait on this
--- 
-2.33.0.259.gc128427fd7-goog
+Could you give this a shot please?
 
+https://lore.kernel.org/lkml/20210831224510.703253-1-saravanak@google.com/T/#u
+
+-Saravana
