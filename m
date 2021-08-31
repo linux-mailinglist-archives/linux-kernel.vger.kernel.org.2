@@ -2,98 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767693FCD0F
+	by mail.lfdr.de (Postfix) with ESMTP id E25FD3FCD10
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 20:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239407AbhHaSrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 14:47:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239280AbhHaSrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 14:47:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 825176056B;
-        Tue, 31 Aug 2021 18:46:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630435595;
-        bh=kTXrNmPAOjCCJ87XuzHaMszrCV1Jfzu38Ezem81EJ/E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G6qXQvPARkrHm3Ca+RTu4DzO5nw5PbL2A+/CBzgbRuIPi8sW9f3Q/rXP3Ni6Wkbyp
-         7++7YQ7jipWuNR2QgTxgUqVLlaQ9Ugv2u19BH+MV8f+7KI8FAR+YJAjp3aPGUklydD
-         NM6ZP2wkxs53iin29VnoLs1fa68pX1RfJ0QXwDxy44wPB55NPi4B26CvHQEVYkECP9
-         2wwt+4qkKBK465ZImQ4XcagvMzZGToTpyxLGY49xWfJQ4J1oOfdU5s7Ha+VygSmUEj
-         0hcfuczwqtrPJmF5BNwCv934yh1CiBNPfGVM17b1+FoYNwQBfN98Xc9hTwre9wO2eD
-         NaqIsWJxYIllA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id EF4384007E; Tue, 31 Aug 2021 15:46:32 -0300 (-03)
-Date:   Tue, 31 Aug 2021 15:46:32 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFC PATCH v1 01/37] libperf cpumap: improve idx function
-Message-ID: <YS55COgKH5CRsYE0@kernel.org>
-References: <cover.1629490974.git.rickyman7@gmail.com>
- <f1543c15797169c21e8b205a4a6751159180580d.1629490974.git.rickyman7@gmail.com>
+        id S239694AbhHaSrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 14:47:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38139 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239498AbhHaSri (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 14:47:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630435602;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w/RxQVYmK+yNYBTCuOat/QUyeOlO0WxA8hvVfGxmPpM=;
+        b=e8Xkqc5MJDUQ9715df7vDrq4IVOnjA5tyVighsXDvJ7FcFwplEZw9ujAFVAuMaDGShUHbT
+        2PPZTpvwcL0plYnq8wz4jKJqj0CsSCX/DWqUzMUEriftsqUQjlz0PNmo0QYiQ+LhE3Vf3J
+        CrWmsVDMbF/1PaTkHAofRPYEkuYlOc0=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-443-NZltg8OSOR2xJE6Qp2ljEw-1; Tue, 31 Aug 2021 14:46:41 -0400
+X-MC-Unique: NZltg8OSOR2xJE6Qp2ljEw-1
+Received: by mail-ej1-f70.google.com with SMTP id x21-20020a170906135500b005d8d4900c5eso191150ejb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 11:46:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=w/RxQVYmK+yNYBTCuOat/QUyeOlO0WxA8hvVfGxmPpM=;
+        b=Wjk0B3gA280KkMnvcnpiHPxWnOa76vpdFA4krQGfSfqT4cYnfZqMtwwrkQFiB0QNy8
+         OWeGoA8EGXpUQrccc48iO5NljgaxJxXqz+TDFrKLL8cxaHRxN91bYtLOwHzA7cuRjiMV
+         KfiuN9FVE4pVojlUz9LvhIcLec8gKkP6sRmQDC6BOocYuy4W4y/hD7atvLooZvtAYhhp
+         lBmYExgf7mCy4DITAkLEDwjFq+EMhx45fjDBw6n31fWHGTKed783Y7TShFuj9hNT7rpV
+         i646dqTbNFNoVZAl+Z+dcrfPIKKZZCcOO8Qd+9u2L5ye8HTXJ3K9S5F8XOMo+lwzaqfy
+         vJXw==
+X-Gm-Message-State: AOAM532+M68ph4ls1HfHgW777Xnjj7iI/erB05THbrgfxyeJGTHOH2Rb
+        orD7E3iMW7FwEuhHUyFVX5WsrOFCRrYjC5Ib4b5rDMcbcc3H8yr8KHwGR6qoOV5gkbk9jqZOxeE
+        qEUXR1qElITHVTLZvaxOCVZu/
+X-Received: by 2002:a50:fd02:: with SMTP id i2mr27374860eds.22.1630435600256;
+        Tue, 31 Aug 2021 11:46:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzAnAraI2EzWz6HoM1/oanveLpg3orBWapWG1Qzl7HEp7+G+nSYqOJAVduj6mVRAPtIDnQdrQ==
+X-Received: by 2002:a50:fd02:: with SMTP id i2mr27374846eds.22.1630435600051;
+        Tue, 31 Aug 2021 11:46:40 -0700 (PDT)
+Received: from krava ([2a00:102a:4005:bb4:e4bf:9f13:dbe6:2d14])
+        by smtp.gmail.com with ESMTPSA id i6sm8600992ejr.68.2021.08.31.11.46.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 11:46:39 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 20:46:36 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     =?utf-8?B?5Y+25r6E6ZSL?= <dg573847474@gmail.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, CAI Yuandao <ycaibb@cse.ust.hk>
+Subject: Re: Possible deadlock errors in tools/perf/builtin-sched.c
+Message-ID: <YS5uAwp8dGn4CK1V@krava>
+References: <CAAo+4rXNLdgvAiT2-B8cWtLNPnWoGo9RWMW=8SPchzRgxJ4BhA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f1543c15797169c21e8b205a4a6751159180580d.1629490974.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAo+4rXNLdgvAiT2-B8cWtLNPnWoGo9RWMW=8SPchzRgxJ4BhA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Aug 21, 2021 at 11:19:07AM +0200, Riccardo Mancini escreveu:
-> >From commit 7074674e7338863e ("perf cpumap: Maintain cpumaps ordered
-> and without dups"), perf_cpu_map elements are sorted in ascending order.
+On Sat, Aug 28, 2021 at 03:57:17PM +0800, 叶澄锋 wrote:
+> Dear developers:
 > 
-> This patch improves the perf_cpu_map__idx function by using a binary
-> search.
-
-Why not use bsearch()?  See 'man bsearch' and look at the example.
-
-- Arnaldo
- 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/lib/perf/cpumap.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
+> Thank you for your checking.
 > 
-> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
-> index ca0215047c326af4..fb633272be3aaed9 100644
-> --- a/tools/lib/perf/cpumap.c
-> +++ b/tools/lib/perf/cpumap.c
-> @@ -265,11 +265,18 @@ bool perf_cpu_map__empty(const struct perf_cpu_map *map)
->  
->  int perf_cpu_map__idx(struct perf_cpu_map *cpus, int cpu)
->  {
-> -	int i;
-> +	int low = 0, high = cpus->nr, idx, cpu_at_idx;
->  
-> -	for (i = 0; i < cpus->nr; ++i) {
-> -		if (cpus->map[i] == cpu)
-> -			return i;
-> +	while (low < high) {
-> +		idx = (low + high) / 2;
-> +		cpu_at_idx = cpus->map[idx];
-> +
-> +		if (cpu_at_idx == cpu)
-> +			return idx;
-> +		else if (cpu_at_idx > cpu)
-> +			high = idx;
-> +		else
-> +			low = idx+1;
->  	}
->  
->  	return -1;
-> -- 
-> 2.31.1
+> It seems there are two deadlock errors on the lock
+> *sched->work_done_wait_mutex*and*sched->start_work_mutex.*
+> 
+> They are triggered due to one thread(A) runs function *run_one_test* locating
+> in a loop and unreleasing the two locks in the*wait_for_tasks*function, and
+> another thread(B) runs function *thread_func *acquiring the two locks.
+> 
+> Because the two locks are not properly released in thread A, there will be
+> a  deadlock problem if thread B acquires the two locks.
 
--- 
+hi,
+do you have a way to reproduce this?
 
-- Arnaldo
+thanks,
+jirka
+
+> 
+> The related codes are below:
+> 
+> Thread A:
+> 
+> static void create_tasks(struct perf_sched *sched)
+> {
+>      ...;
+>   err = pthread_mutex_lock(&sched->start_work_mutex);
+>     ...;
+>  err = pthread_mutex_lock(&sched->work_done_wait_mutex);
+>        ...;
+> }
+> static int perf_sched__replay(struct perf_sched *sched)
+> {
+>    ...;
+> 
+>         create_tasks(sched);
+>      printf("------------------------------------------------------------\n");
+>      for (i = 0; i < sched->replay_repeat; i++)
+>           run_one_test(sched);   // multiple reacquisition on the lock
+> sched->work_done_wait_mutex and sched->start_work_mutex
+> 
+>    return 0;
+> }
+> 
+> static void run_one_test(struct perf_sched *sched)
+> {
+>  ...;
+>       wait_for_tasks(sched);
+>         ...;
+> }
+> static void wait_for_tasks(struct perf_sched *sched)
+> {
+>        ...;
+>     pthread_mutex_unlock(&sched->work_done_wait_mutex);
+> 
+>   ...;
+>        ret = pthread_mutex_lock(&sched->work_done_wait_mutex);
+>      ...;
+>   pthread_mutex_unlock(&sched->start_work_mutex);
+> 
+>     ...;
+> 
+>  ret = pthread_mutex_lock(&sched->start_work_mutex);
+>    ....;
+> }
+> 
+> Thread B:
+> 
+> static void *thread_func(void *ctx)
+> {
+> 
+> ...;
+> ret = pthread_mutex_lock(&sched->start_work_mutex);
+> ...;
+> ret = pthread_mutex_unlock(&sched->start_work_mutex);
+> 
+> ...;
+> 
+> ret = pthread_mutex_lock(&sched->work_done_wait_mutex);
+> ...;
+> ret = pthread_mutex_unlock(&sched->work_done_wait_mutex);
+> ..;
+> 
+> }
+> 
+> 
+> Thanks,
+
