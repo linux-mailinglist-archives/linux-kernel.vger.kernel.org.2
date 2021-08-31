@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEA33FC5F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D773FC5EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 13:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241156AbhHaKic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241088AbhHaKiE (ORCPT
+        id S241062AbhHaKhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:37:39 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:38906 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241023AbhHaKhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:38:04 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB4FC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:37:08 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id y23so16203432pgi.7
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:37:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9VYKP4BtY52G/QfxOL4ci9LsSwqIuUiAxga6ojIUWhM=;
-        b=GRqzs++JfJ/YbVycJKzsl230H9LBdcktSOMS0CRM7Z9csGboLrEDaTHS5mpZ9R6W/Q
-         h0yUebb0vnRiVhQovGlWZ4qHObLreAQwGxubBzLmX2VpvriR9tTYILs/hWcaIMuq02Ju
-         yxmfLSeC0NhVfNEgU1etpXijn0DhnNH9psTW5aD6mhU5ZMkXucGvNU4iy5HTuVHhQQ37
-         vN7Cdj/LUB/OZgH70gNMN0CSQQC2g5vU52gKzZiimqROPIjpuhS+RRG+BNYAm0p/s9Dg
-         dpiWnWnDnoLVFJ4avE1AGnTW5nXyqjeVKRFFFQW+l5X6R3F25kk7ys29KnpYZo3mRaip
-         ZtNA==
+        Tue, 31 Aug 2021 06:37:18 -0400
+Received: by mail-io1-f70.google.com with SMTP id n8-20020a6b7708000000b005bd491bdb6aso303429iom.5
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:36:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9VYKP4BtY52G/QfxOL4ci9LsSwqIuUiAxga6ojIUWhM=;
-        b=Y4/UH4x3VGyjJWoSnDeSXhriZSCpZ8gUoxon+8FjbHTWAJ3oT004JqKQAgvdzqn9OU
-         xbyY7WPKN7GOQAkr5aNT6P0eUHb2XpqVgXqZbVd6SzV8Sh3vqWp1Fg4luG87/7LRwcwt
-         gkfJPum2/rSakFd64TenF9RoQdm/g6DYkU6grTTKb8o6j4AJd6avtaglk/4qiTmcNiRE
-         6+vCx3If/T+CPbctvCnZycoj+ychkLw/w7a6NHT75FTNvbrVx8aOZi450nYkuciAuIEH
-         pnKQUgLS0zkco2Djy1BFiNUDSRT2OxL1z9DO3Czeib6Ccbm7Zc+nj28zSHPjGItn8Gf4
-         57AQ==
-X-Gm-Message-State: AOAM533zrtGE9HVwXyFsB39XkNqFRF23pGyUApc5GhXj/NQrsYPCMfXI
-        NwBfZQQ/HcLj06sGD8xvQjbp
-X-Google-Smtp-Source: ABdhPJzpvfEiCfyYs8u6SCKIdTO4CD049HKvMqgA1U1TZMFAFKWKT3f3sGm3+cCwAkY6T6H/ysn9yQ==
-X-Received: by 2002:a65:44c3:: with SMTP id g3mr26055726pgs.233.1630406228042;
-        Tue, 31 Aug 2021 03:37:08 -0700 (PDT)
-Received: from localhost ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id p24sm16129455pfh.136.2021.08.31.03.37.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 03:37:07 -0700 (PDT)
-From:   Xie Yongji <xieyongji@bytedance.com>
-To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
-        sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
-        christian.brauner@canonical.com, rdunlap@infradead.org,
-        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org,
-        gregkh@linuxfoundation.org, zhe.he@windriver.com,
-        xiaodong.liu@intel.com, joe@perches.com, robin.murphy@arm.com,
-        will@kernel.org, john.garry@huawei.com
-Cc:     songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v13 01/13] iova: Export alloc_iova_fast() and free_iova_fast()
-Date:   Tue, 31 Aug 2021 18:36:22 +0800
-Message-Id: <20210831103634.33-2-xieyongji@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210831103634.33-1-xieyongji@bytedance.com>
-References: <20210831103634.33-1-xieyongji@bytedance.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=1QsrxMTQ85qZOPqgnRl/vLMVjUOqzpDzRxErTUbVndE=;
+        b=AeIzQ6m6Rojx4K9MDKrvoEhkhBJoN8mcgSR9uXsClgeJKkUT+BjNXBCIKZdCaU39Qv
+         MQoM9VoKW6e+G9rzII96elvuksJr26CXpAq0oeSZ5c6859yRJm1fVquFKO2xZDmOlCvl
+         3XWFjMZezDP/njbdYfFqIRegvxkUYFuAPZQiWxrZUHGDo6prjVMzfi0md1VNpdpnnn8m
+         B6dXFQKDAU16LSGU/ZvVJVqkdaFNSredSGI8piz/YQyDjm9u0E9WaHdNvteywYneraSu
+         zVYqFyZiCOcd7IcAia4FbpTFNjXCbYS8VIshQ5usxYmUWCotrqUq3lCpCu3jTIxuPpIP
+         Uhaw==
+X-Gm-Message-State: AOAM533RIBrwStLe/AaPJ2YshxfA3ncY7PJJkC18LiJJy/dY8w9lbM4c
+        FUQ1FpvUED+SRKkd2pFrXXLL3dO1rmt/e7SU4SNMmbBpa41F
+X-Google-Smtp-Source: ABdhPJzbikzxCi3j3s/DdEUZZlOmQ8cmpMjUunOwvxjOD+pBSs/2+9AvOwnVXIiSADNLNmIkw0VI0fOQuUEDtKUgcHhNzoHmS8Ua
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:160f:: with SMTP id t15mr20626525ilu.60.1630406183867;
+ Tue, 31 Aug 2021 03:36:23 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 03:36:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006dd93205cad885e5@google.com>
+Subject: [syzbot] WARNING in ovl_create_real
+From:   syzbot <syzbot+75eab84fd0af9e8bf66b@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export alloc_iova_fast() and free_iova_fast() so that
-some modules can make use of the per-CPU cache to get
-rid of rbtree spinlock in alloc_iova() and free_iova()
-during IOVA allocation.
+Hello,
 
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Acked-by: Will Deacon <will@kernel.org>
+syzbot found the following issue on:
+
+HEAD commit:    4ccc9e2db7ac Add linux-next specific files for 20210729
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13891f5c300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=75a5bed89b5c0fd2
+dashboard link: https://syzkaller.appspot.com/bug?extid=75eab84fd0af9e8bf66b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1085e076300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14247a56300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+75eab84fd0af9e8bf66b@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6576 at fs/overlayfs/dir.c:212 ovl_create_real+0x272/0x520 fs/overlayfs/dir.c:212
+Modules linked in:
+CPU: 1 PID: 6576 Comm: syz-executor088 Not tainted 5.14.0-rc3-next-20210729-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ovl_create_real+0x272/0x520 fs/overlayfs/dir.c:212
+Code: 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 80 02 00 00 49 83 7c 24 68 00 0f 85 7a fe ff ff e8 de b6 c3 fe <0f> 0b 4c 89 e5 49 c7 c4 fb ff ff ff e9 57 fe ff ff 66 81 eb 00 10
+RSP: 0018:ffffc90002bef958 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000004000 RCX: 0000000000000000
+RDX: ffff88807b10b900 RSI: ffffffff82b20102 RDI: ffff88806f971208
+RBP: ffff88806f9711a0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff82b2018b R11: 0000000000000000 R12: ffff88806f9711a0
+R13: 0000000000004000 R14: ffff8880715c8a20 R15: ffff8880715c8b00
+FS:  00007fe7eef6d700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f49bbacf000 CR3: 000000001eea6000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ovl_workdir_create+0x3a9/0x5b0 fs/overlayfs/super.c:790
+ ovl_make_workdir fs/overlayfs/super.c:1364 [inline]
+ ovl_get_workdir fs/overlayfs/super.c:1511 [inline]
+ ovl_fill_super+0x199a/0x5fb0 fs/overlayfs/super.c:2067
+ mount_nodev+0x60/0x110 fs/super.c:1414
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:610
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1498
+ do_new_mount fs/namespace.c:2978 [inline]
+ path_mount+0x132a/0x1fa0 fs/namespace.c:3308
+ do_mount fs/namespace.c:3321 [inline]
+ __do_sys_mount fs/namespace.c:3529 [inline]
+ __se_sys_mount fs/namespace.c:3506 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3506
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4458d9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe7eef6d2f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00000000004ca400 RCX: 00000000004458d9
+RDX: 00000000200000c0 RSI: 0000000020000000 RDI: 000000000040000d
+RBP: 000000000049a074 R08: 0000000020000100 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0030656c69662f2e
+R13: 0079616c7265766f R14: 003270756f726763 R15: 00000000004ca408
+
+
 ---
- drivers/iommu/iova.c | 2 ++
- 1 file changed, 2 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-index b6cf5f16123b..3941ed6bb99b 100644
---- a/drivers/iommu/iova.c
-+++ b/drivers/iommu/iova.c
-@@ -521,6 +521,7 @@ alloc_iova_fast(struct iova_domain *iovad, unsigned long size,
- 
- 	return new_iova->pfn_lo;
- }
-+EXPORT_SYMBOL_GPL(alloc_iova_fast);
- 
- /**
-  * free_iova_fast - free iova pfn range into rcache
-@@ -538,6 +539,7 @@ free_iova_fast(struct iova_domain *iovad, unsigned long pfn, unsigned long size)
- 
- 	free_iova(iovad, pfn);
- }
-+EXPORT_SYMBOL_GPL(free_iova_fast);
- 
- #define fq_ring_for_each(i, fq) \
- 	for ((i) = (fq)->head; (i) != (fq)->tail; (i) = ((i) + 1) % IOVA_FQ_SIZE)
--- 
-2.11.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
