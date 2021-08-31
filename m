@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980613FC3E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF733FC3DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 10:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240105AbhHaHmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 03:42:18 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:17449 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239912AbhHaHmQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 03:42:16 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 17V7e8Ee031407;
-        Tue, 31 Aug 2021 16:40:17 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 17V7e8Ee031407
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1630395617;
-        bh=DDdb7o2pvT2+v+zP+0WGiSNrtyVISLPLptSueHXBp9M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hOLvaAe+KZYP2HO3x3EADfsgJlfaLvt84kES4q066gOs8oBi9Kd6SFyHK8DyPNbel
-         oBPiMwbWt09VPYHkK5EpO1qPUZuHe5qvtAzWjigjJmwRL2n88A4M8iC9i7nCH9//gt
-         cmHFljLSNBblEn9mcvCZ/A9xrCcen6XrM9uyBxS2tdETnCxeJox6trOx4SbZ8a24M6
-         RwCpGFjLj/HM5NcKvRd2Qmi8lvpALz9RqGtwmTQw4O6FQbFZ7CVuk3VpDk5PLNJaoy
-         k5EMkW83h/qe2UGp+QyhiG+PVYCYmjej67TG3VnnEy50VFQj96Lfs0gCHxEeHewAfU
-         P4OU7PUxRw3dw==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 13/13] kbuild: merge cmd_ar_builtin and cmd_ar_module
-Date:   Tue, 31 Aug 2021 16:40:04 +0900
-Message-Id: <20210831074004.3195284-14-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210831074004.3195284-1-masahiroy@kernel.org>
-References: <20210831074004.3195284-1-masahiroy@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S240075AbhHaHlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 03:41:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240035AbhHaHln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 03:41:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61FA260F46;
+        Tue, 31 Aug 2021 07:40:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630395649;
+        bh=JWmgheTXq2SVhzYpNzzzvKdDNKRbDLeSr0ulGkgkuRw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YkgJa5+ltTsj/D9KueEEYYzjBigtkMqPT0yc/F6lehDvS2AvEiWt3kfeh0Av0dKpn
+         zJVLeyvKYnImTOSiiSY1hAOjDOChYqUkFCC1jrXMT1cUdw79bpDurk/WvZ9Z1n3DlB
+         ggpWJuoRyBcddVEKBBv+ZsnwN6gbMXkPw/qhtC/5An9mPvB7pkSwPo4+QHwV+T0Rty
+         WPhVuvlnTGv3XGLyQm86x2swDNdFZ45YFlrptM7xd4vOAlxiA+D19aVuzgDfm7F3WQ
+         rM83SyEXLCTzyloE+bWSvuCNoCFRQD3njpk3Rj/94JbQVQwmFgZj3N4LWx0Zu63mVA
+         qrGlUdwz4/daw==
+Date:   Tue, 31 Aug 2021 16:40:46 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Julio Faracco <jcfaracco@gmail.com>
+Cc:     rostedt@goodmis.org, mingo@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bootconfig: Fix missing return check of
+ xbc_node_compose_key function
+Message-Id: <20210831164046.b62e20443e2a1852d91b87bb@kernel.org>
+In-Reply-To: <20210831033256.5973-1-jcfaracco@gmail.com>
+References: <20210831033256.5973-1-jcfaracco@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The difference between cmd_ar_builtin and cmd_ar_module is the
-'[M]' in the short log.
+On Tue, 31 Aug 2021 00:32:56 -0300
+Julio Faracco <jcfaracco@gmail.com> wrote:
 
-Merge them into cmd_ar_thin.
+> The function `xbc_show_list should` handle the keys during the
+> composition. Even the errors returned by the compose function. Instead
+> of removing the `ret` variable, it should save the value and show the
+> exact error. This missing variable is causing a compilation issue also.
+> 
 
-$(quiet_modtag) is expanded to '[M]' when it is merging module objects.
+Oops, good catch! Hmm, I missed some intermediate patch for some commit.
+Let me check.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
+Thanks,
 
- scripts/Makefile.build | 12 +++---------
- scripts/Makefile.lib   |  5 ++++-
- 2 files changed, 7 insertions(+), 10 deletions(-)
+> Signed-off-by: Julio Faracco <jcfaracco@gmail.com>
+> ---
+>  tools/bootconfig/main.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
+> index f45fa992e01d..fd67496a947f 100644
+> --- a/tools/bootconfig/main.c
+> +++ b/tools/bootconfig/main.c
+> @@ -111,9 +111,11 @@ static void xbc_show_list(void)
+>  	char key[XBC_KEYLEN_MAX];
+>  	struct xbc_node *leaf;
+>  	const char *val;
+> +	int ret;
+>  
+>  	xbc_for_each_key_value(leaf, val) {
+> -		if (xbc_node_compose_key(leaf, key, XBC_KEYLEN_MAX) < 0) {
+> +		ret = xbc_node_compose_key(leaf, key, XBC_KEYLEN_MAX);
+> +		if (ret < 0) {
+>  			fprintf(stderr, "Failed to compose key %d\n", ret);
+>  			break;
+>  		}
+> -- 
+> 2.31.1
+> 
 
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 4d12f83389ce..0000b3988464 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -380,11 +380,8 @@ $(subdir-modorder): $(obj)/%/modules.order: $(obj)/% ;
- # Rule to compile a set of .o files into one .a file (without symbol table)
- #
- 
--quiet_cmd_ar_builtin = AR      $@
--      cmd_ar_builtin = rm -f $@; $(AR) cDPrST $@ $(real-prereqs)
--
- $(obj)/built-in.a: $(real-obj-y) FORCE
--	$(call if_changed,ar_builtin)
-+	$(call if_changed,ar_thin)
- 
- #
- # Rule to create modules.order file
-@@ -438,14 +435,11 @@ $(obj)/%.prelink.o: part-of-module := y
- $(obj)/%.prelink.o: $(obj)/%.a $(module-symver) FORCE
- 	$(call if_changed_rule,ld_o_a)
- 
--quiet_cmd_ar_module = AR [M]  $@
--      cmd_ar_module = rm -f $@; $(AR) cDPrST $@ $(real-prereqs)
--
- $(modules-single): %.a: %.o FORCE
--	$(call if_changed,ar_module)
-+	$(call if_changed,ar_thin)
- 
- $(modules-multi): FORCE
--	$(call if_changed,ar_module)
-+	$(call if_changed,ar_thin)
- $(call multi_depend, $(modules-multi), .a, -objs -y -m)
- 
- targets += $(modules-single) $(modules-multi)
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 5074922db82d..cc6ff7ffb39d 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -198,7 +198,7 @@ _cpp_flags += -I $(srctree)/$(src) -I $(objtree)/$(obj)
- endif
- endif
- 
--part-of-module = $(if $(filter $(basename $@).o, $(real-obj-m)),y)
-+part-of-module = $(if $(filter $(basename $@).o, $(real-obj-m) $(obj-m)),y)
- quiet_modtag = $(if $(part-of-module),[M],   )
- 
- modkern_cflags =                                          \
-@@ -276,6 +276,9 @@ quiet_cmd_ld = LD      $@
- quiet_cmd_ar = AR      $@
-       cmd_ar = rm -f $@; $(AR) cDPrsT $@ $(real-prereqs)
- 
-+quiet_cmd_ar_thin = AR $(quiet_modtag)  $@
-+      cmd_ar_thin = rm -f $@; $(AR) cDPrST $@ $(real-prereqs)
-+
- # Objcopy
- # ---------------------------------------------------------------------------
- 
+
 -- 
-2.30.2
-
+Masami Hiramatsu <mhiramat@kernel.org>
