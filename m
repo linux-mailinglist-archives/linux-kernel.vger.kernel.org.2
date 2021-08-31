@@ -2,185 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513713FCE0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED483FCE11
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241028AbhHaTxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 15:53:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59462 "EHLO mail.kernel.org"
+        id S241062AbhHaTyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 15:54:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241009AbhHaTxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:53:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36CFD6108B;
-        Tue, 31 Aug 2021 19:52:51 +0000 (UTC)
+        id S240855AbhHaTyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 15:54:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1EC76108B;
+        Tue, 31 Aug 2021 19:53:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630439571;
-        bh=xNMN2u+WxIaMkCU2FbZtFtSdUVxdfHTvJJz6sJp62V0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gvz1NPpyTnZ3uclqKuiMGhsk9g3YiKbrHAaH89MLILtmJMA9+T78PY33gyOWC0Wii
-         b3/Ju0NFxf1LHBbtThBSwmnpcsFoXsGoHvtpBdUpkRxtXnzD7dolMAGckDy9mvPtmt
-         yqqI123QuNFWRnpuV58AAhq/uBgwgLajmUIQ6biEzLLGjd0M9+RqMYUSH9g/2SWdzB
-         WlNAvxahwweui4Lt1JpFA7ALfMQoYXwjpJ0LSly0f2WEW6c7JGLH4i0l8//fksHLd8
-         OW6aBddmlVPVXNlQBic+eHqcrLagxcOEFl+mroJnVGC1fxNOhB6eY8YAB/qSzWBGYa
-         57jB3BB3AHn0w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 083AB4007E; Tue, 31 Aug 2021 16:52:49 -0300 (-03)
-Date:   Tue, 31 Aug 2021 16:52:48 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [RFC PATCH v1 24/37] perf evsel: handle precise_ip fallback in
- evsel__open_cpu
-Message-ID: <YS6IkHuMDIGuOzO7@kernel.org>
-References: <cover.1629490974.git.rickyman7@gmail.com>
- <74208c433d2024a6c4af9c0b140b54ed6b5ea810.1629490974.git.rickyman7@gmail.com>
+        s=k20201202; t=1630439590;
+        bh=gWVE2krHHJdmiWMD3Qxf6lZHqn+EypAzpF8Mvg5iX1U=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=lf2ldoh8kkL0XEugR1zRHurDpLUsczF05DD6ETz58W9BpwuYrDXjp5+GI9kzysEoc
+         fNsQlhToE5LXDH7MZPWJYvR/f08J2Z7pdNEEjpSej5IpNoim46Jdrg4qzT7+S77TRl
+         1ATRcqorM77Y9p1xHYq+zF874j8CgsOHqczthxaQYiGiX+ePkK1iSewg2VL92kd+ED
+         6Rr7S8ljv/GqOJVWl79BVZBQ/at22zzLk1xQg3VsmkVLT0enIthAegFiiXWoY9F93H
+         dx5mNc+/4Qfv0tN/FzJKCNkSw8QPJM1cP3ulG+qlXN6LitH18xJyJmF9f4hes8B3BE
+         awPU3Xd+yCOVA==
+Date:   Tue, 31 Aug 2021 21:53:06 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Linux USB Mailing List <linux-usb@vger.kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
+In-Reply-To: <20210831133438.GA365946@rowland.harvard.edu>
+Message-ID: <nycvar.YFH.7.76.2108312152340.15313@cbobk.fhfr.pm>
+References: <20210819195300.GA8613@rowland.harvard.edu> <000000000000c322ab05c9f2e880@google.com> <20210820140620.GA35867@rowland.harvard.edu> <nycvar.YFH.7.76.2108241351490.15313@cbobk.fhfr.pm> <CAO-hwJ+i4MqOj0umUW9kFgYSZLt3QMb6hDZHQwb8AKH9pKxSTg@mail.gmail.com>
+ <20210831133438.GA365946@rowland.harvard.edu>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <74208c433d2024a6c4af9c0b140b54ed6b5ea810.1629490974.git.rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Aug 21, 2021 at 11:19:30AM +0200, Riccardo Mancini escreveu:
-> This is another patch in the effort to separate the fallback mechanisms
-> from the open itself.
+On Tue, 31 Aug 2021, Alan Stern wrote:
+
+> > Alan, would you mind resending the patch with the various tags with a
+> > commit description? (unless I missed it...)
 > 
-> In case of precise_ip fallback, the original precise_ip will be stored
-> in the evsel (it was stored in a local variable) and the open will be
-> retried. Since the precise_ip fallback will be the first in the chain of
-> fallbacks, there should be no functional change with this patch.
+> Will do.  I'm rather busy today, so it may have to wait until tomorrow.
 
-Thanks, looks ok, applied.
-
-- Arnaldo
-
- 
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/util/evsel.c | 59 ++++++++++++++++++-----------------------
->  tools/perf/util/evsel.h |  2 ++
->  2 files changed, 28 insertions(+), 33 deletions(-)
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index 3e556afed8dd396c..2e95416b8320c6b9 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1709,42 +1709,29 @@ static void display_attr(struct perf_event_attr *attr)
->  	}
->  }
->  
-> -static int perf_event_open(struct evsel *evsel,
-> -			   pid_t pid, int cpu, int group_fd)
-> +bool evsel__precise_ip_fallback(struct evsel *evsel)
->  {
-> -	int precise_ip = evsel->core.attr.precise_ip;
-> -	int fd;
-> -
-> -	while (1) {
-> -		pr_debug2_peo("sys_perf_event_open: pid %d  cpu %d  group_fd %d  flags %#lx",
-> -			  pid, cpu, group_fd, evsel->open_flags);
-> -
-> -		fd = sys_perf_event_open(&evsel->core.attr, pid, cpu, group_fd, evsel->open_flags);
-> -		if (fd >= 0)
-> -			break;
-> -
-> -		/* Do not try less precise if not requested. */
-> -		if (!evsel->precise_max)
-> -			break;
-> -
-> -		/*
-> -		 * We tried all the precise_ip values, and it's
-> -		 * still failing, so leave it to standard fallback.
-> -		 */
-> -		if (!evsel->core.attr.precise_ip) {
-> -			evsel->core.attr.precise_ip = precise_ip;
-> -			break;
-> -		}
-> +	/* Do not try less precise if not requested. */
-> +	if (!evsel->precise_max)
-> +		return false;
->  
-> -		pr_debug2_peo("\nsys_perf_event_open failed, error %d\n", -ENOTSUP);
-> -		evsel->core.attr.precise_ip--;
-> -		pr_debug2_peo("decreasing precise_ip by one (%d)\n", evsel->core.attr.precise_ip);
-> -		display_attr(&evsel->core.attr);
-> +	/*
-> +	 * We tried all the precise_ip values, and it's
-> +	 * still failing, so leave it to standard fallback.
-> +	 */
-> +	if (!evsel->core.attr.precise_ip) {
-> +		evsel->core.attr.precise_ip = evsel->precise_ip_original;
-> +		return false;
->  	}
->  
-> -	return fd;
-> -}
-> +	if (!evsel->precise_ip_original)
-> +		evsel->precise_ip_original = evsel->core.attr.precise_ip;
->  
-> +	evsel->core.attr.precise_ip--;
-> +	pr_debug2_peo("decreasing precise_ip by one (%d)\n", evsel->core.attr.precise_ip);
-> +	display_attr(&evsel->core.attr);
-> +	return true;
-> +}
->  
->  static struct perf_cpu_map *empty_cpu_map;
->  static struct perf_thread_map *empty_thread_map;
-> @@ -2004,8 +1991,11 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  
->  			test_attr__ready();
->  
-> -			fd = perf_event_open(evsel, pid, cpus->map[cpu],
-> -					     group_fd);
-> +			pr_debug2_peo("sys_perf_event_open: pid %d  cpu %d  group_fd %d  flags %#lx",
-> +				pid, cpus->map[cpu], group_fd, evsel->open_flags);
-> +
-> +			fd = sys_perf_event_open(&evsel->core.attr, pid, cpus->map[cpu],
-> +						group_fd, evsel->open_flags);
->  
->  			FD(evsel, cpu, thread) = fd;
->  
-> @@ -2058,6 +2048,9 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  	return 0;
->  
->  try_fallback:
-> +	if (evsel__precise_ip_fallback(evsel))
-> +		goto retry_open;
-> +
->  	if (evsel__ignore_missing_thread(evsel, cpus->nr, cpu, threads, thread, err)) {
->  		/* We just removed 1 thread, so lower the upper nthreads limit. */
->  		nthreads--;
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 661d2677a19b6248..0a245afab2d87d74 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -150,6 +150,7 @@ struct evsel {
->  		struct bperf_follower_bpf *follower_skel;
->  	};
->  	unsigned long		open_flags;
-> +	int			precise_ip_original;
->  };
->  
->  struct perf_missing_features {
-> @@ -297,6 +298,7 @@ bool evsel__ignore_missing_thread(struct evsel *evsel,
->  				  int nr_cpus, int cpu,
->  				  struct perf_thread_map *threads,
->  				  int thread, int err);
-> +bool evsel__precise_ip_fallback(struct evsel *evsel);
->  
->  struct perf_sample;
->  
-> -- 
-> 2.31.1
+Thanks. I'll wait with my pull request to Linus for tomorrow then, to make 
+sure we get the fix into -rc1 already.
 
 -- 
+Jiri Kosina
+SUSE Labs
 
-- Arnaldo
