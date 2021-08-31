@@ -2,58 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1676F3FC884
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259153FC89C
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238446AbhHaNoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:44:15 -0400
-Received: from outbound-smtp19.blacknight.com ([46.22.139.246]:44421 "EHLO
-        outbound-smtp19.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239099AbhHaNoJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:44:09 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp19.blacknight.com (Postfix) with ESMTPS id 82FDD1C3BC4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 14:43:12 +0100 (IST)
-Received: (qmail 29075 invoked from network); 31 Aug 2021 13:43:12 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 31 Aug 2021 13:43:12 -0000
-Date:   Tue, 31 Aug 2021 14:43:11 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, vbabka@suse.cz, sfr@canb.auug.org.au,
-        peterz@infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] mm/page_alloc.c: avoid accessing uninitialized pcp
- page migratetype
-Message-ID: <20210831134311.GG4128@techsingularity.net>
-References: <20210830141051.64090-1-linmiaohe@huawei.com>
- <20210830141051.64090-6-linmiaohe@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210830141051.64090-6-linmiaohe@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S233928AbhHaNp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:45:28 -0400
+Received: from comms.puri.sm ([159.203.221.185]:59180 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239631AbhHaNpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 09:45:20 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id A2892DFE8B;
+        Tue, 31 Aug 2021 06:43:55 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id wn-BFqgtG8Zf; Tue, 31 Aug 2021 06:43:54 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     martin.kepplinger@puri.sm
+Cc:     devicetree@vger.kernel.org, kernel@puri.sm,
+        krzysztof.kozlowski@canonical.com,
+        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        paul.kocialkowski@bootlin.com, pavel@ucw.cz,
+        phone-devel@vger.kernel.org, robh@kernel.org, sakari.ailus@iki.fi,
+        shawnx.tu@intel.com
+Subject: [PATCH v8 0/4] Add support for the Hynix Hi-846 camera
+Date:   Tue, 31 Aug 2021 15:43:40 +0200
+Message-Id: <20210831134344.1673318-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 10:10:50PM +0800, Miaohe Lin wrote:
-> If it's not prepared to free unref page, the pcp page migratetype is
-> unset. Thus We will get rubbish from get_pcppage_migratetype() and
-> might list_del &page->lru again after it's already deleted from the
-> list leading to grumble about data corruption.
-> 
-> Fixes: 3dcbe270d8ec ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+hi,
 
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
+This series adds support for the SK Hynix Hi-846 CMOS images sensor.
+It includes the dt-bindings and the driver.
 
-This fix is fairly important. Take this patch out and send it on its own
-so it gets picked up relatively quickly. It does not belong in a series
-that is mostly cosmetic cleanups.
+best wishes,
 
+                              martin
+
+revision history
+----------------
+v8: (thank you Laurent)
+* add fwnode properties support for orientation and rotation on the board
+* remove the arm64 defconfig addition patch. deal with that later.
+
+v7: (thank you Sakari)
+* move the check for supported nr_lanes for a mode to set_format()
+* change get_selection() according to the Sakaris' review
+* check for the mipi link frequencies from DT
+* check for the external clock rate and add assigned-clock-rates requirement
+* https://lore.kernel.org/linux-media/20210712084137.3779628-1-martin.kepplinger@puri.sm/
+
+v6:
+* better digital gain defaults
+* lane config fix found by smatch
+* fix regulator usage in power_on()
+* https://lore.kernel.org/linux-media/20210628101054.828579-1-martin.kepplinger@puri.sm/
+
+v5: (thank you Laurent and Rob)
+* minor dt-bindings fixes
+* driver: disable lens shading correcting (no seed values yet used from "otp" for that)
+* add reviewed-tags
+* https://lore.kernel.org/linux-media/20210611101404.2553818-1-martin.kepplinger@puri.sm/
+
+v4: (thank you Laurent, Sakari and Rob) many driver changes, see v3 review for
+details. they include:
+* add get_selection(), remove open() callback
+* use gpiod API
+* use regulator_bulk API
+* fix power supply timing sequence and bindings
+* https://lore.kernel.org/linux-media/20210607105213.1211722-1-martin.kepplinger@puri.sm/
+
+v3: (thank you, Laurent)
+* use do_div() for divisions
+* reset-gpios DT property name instead of rst-gpios
+* improve the dt-bindings
+* add the phone-devel list
+* https://lore.kernel.org/linux-media/20210531120737.168496-1-martin.kepplinger@puri.sm/
+
+v2:
+sent a bit early due to stupid mistakes
+* fix build issues
+* fix dtschema issues
+* add enable for arm64 defconfig
+* https://lore.kernel.org/linux-media/20210530212337.GA15366@duo.ucw.cz/T/#t
+
+v1:
+* https://lore.kernel.org/linux-media/20210527091221.3335998-1-martin.kepplinger@puri.sm/
+
+
+Martin Kepplinger (4):
+  dt-bindings: vendor-prefixes: Add SK Hynix Inc.
+  dt-bindings: media: document SK Hynix Hi-846 MIPI CSI-2 8M pixel
+    sensor
+  media: i2c: add driver for the SK Hynix Hi-846 8M pixel camera
+  Documentation: i2c-cardlist: add the Hynix hi846 sensor
+
+ .../admin-guide/media/i2c-cardlist.rst        |    1 +
+ .../bindings/media/i2c/hynix,hi846.yaml       |  120 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    6 +
+ drivers/media/i2c/Kconfig                     |   13 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/hi846.c                     | 2190 +++++++++++++++++
+ 7 files changed, 2333 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+ create mode 100644 drivers/media/i2c/hi846.c
 
 -- 
-Mel Gorman
-SUSE Labs
+2.30.2
+
