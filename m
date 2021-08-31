@@ -2,122 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0293FC969
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755A23FC96B
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbhHaOL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:11:26 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64465 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229514AbhHaOLY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:11:24 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17VE4OFv096980;
-        Tue, 31 Aug 2021 10:10:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=jzA+ZFVNxi4+GfcKW6hWIgIZRc8anhJmPU4P65ynJqI=;
- b=DvLkrC5dPIz7W7J+ay8b16e7qWOAwtGP24mBreTAAFczCyKeG0xtT6Nu04TkBY3qp8Xs
- eoI2mHRZzxWHJa6IZjeQCh13yvTUGaO2GxRyE3gTYJj7WcvK2+uvyUtzvUg96TW/DBL7
- u+Nw6rMqZ7Cst6fJrN+3Qz+L/k6+9Zbf6lkyuv93ydB2+QRKuGS7WOczE/GZGSIoVDLa
- MZqXaktC8yuD7qciAYZ+sf4udcZEaB19YsaRt4nXo6Zm+R6GKAr2gsFgKgMEuekrIxaK
- jQ3zR58/RG5128AHZyw01+it3NpWhA8xd1ZfL/I7lAc1LM7kqJTX6cK1mH3WKfuQhB8M 9A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3asnt7rcpn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 10:10:28 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17VE55nm101357;
-        Tue, 31 Aug 2021 10:10:28 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3asnt7rcnq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 10:10:28 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17VDvZe9032105;
-        Tue, 31 Aug 2021 14:10:26 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 3aqcdjbt7e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 14:10:26 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17VEAK2330605606
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 31 Aug 2021 14:10:20 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 93065AE063;
-        Tue, 31 Aug 2021 14:10:20 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 31059AE055;
-        Tue, 31 Aug 2021 14:10:20 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.164.122])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 31 Aug 2021 14:10:20 +0000 (GMT)
-Subject: Re: [PATCH v4 03/14] KVM: s390: pv: avoid stalls for
- kvm_s390_pv_init_vm
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, frankja@linux.ibm.com, thuth@redhat.com,
-        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
-References: <20210818132620.46770-1-imbrenda@linux.ibm.com>
- <20210818132620.46770-4-imbrenda@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <efa07fc5-2f74-d785-e90f-571698ae8f54@de.ibm.com>
-Date:   Tue, 31 Aug 2021 16:10:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S235230AbhHaOMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:12:18 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45470 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233758AbhHaOMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 10:12:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630419076; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=7S0kRQ1abQwwZF4U3vdKpHJgesRzC60yL/nDP3TMnX0=; b=UMPi1aV8j4YPYyrWPACvMXgHzNoakHoTltsrKeIlNEcUH9GJBIE7gG3CJmkz409yRa4+KCOv
+ H/KgzkrqhOvFuH4QPuGF54K5VNHgzgF9sSagMm1fnmQxPYG30HHyN2d9Hk1/Rd2k/bI5KYmC
+ yreQi1sAIfRP1VNmvHFqFPirtxU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 612e38684cd9015037a70267 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 31 Aug 2021 14:10:48
+ GMT
+Sender: luoj=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9694BC43619; Tue, 31 Aug 2021 14:10:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.10.117] (unknown [183.192.232.105])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5B8E6C4338F;
+        Tue, 31 Aug 2021 14:10:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 5B8E6C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v1 2/3] net: phy: add qca8081 ethernet phy driver
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+References: <20210830110733.8964-1-luoj@codeaurora.org>
+ <20210830110733.8964-3-luoj@codeaurora.org> <YSzhtF8g42Ccv2h0@lunn.ch>
+From:   Jie Luo <luoj@codeaurora.org>
+Message-ID: <af224018-1190-ac78-2035-c9763c1d46ae@codeaurora.org>
+Date:   Tue, 31 Aug 2021 22:10:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210818132620.46770-4-imbrenda@linux.ibm.com>
+In-Reply-To: <YSzhtF8g42Ccv2h0@lunn.ch>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 6W3BmA6yqlGBT8SO7cZY3jYG2_-oJNw4
-X-Proofpoint-ORIG-GUID: zfAQUFfz3oyvS3kW_ENYQeQz306D59Cb
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-31_05:2021-08-31,2021-08-31 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 mlxscore=0 clxscore=1015 adultscore=0
- mlxlogscore=999 spamscore=0 bulkscore=0 malwarescore=0 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108310078
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 8/30/2021 9:48 PM, Andrew Lunn wrote:
+> On Mon, Aug 30, 2021 at 07:07:32PM +0800, Luo Jie wrote:
+>> qca8081 is a single port ethernet phy chip that supports
+>> 10/100/1000/2500 Mbps mode.
+>>
+>> Signed-off-by: Luo Jie <luoj@codeaurora.org>
+>> ---
+>>   drivers/net/phy/at803x.c | 389 ++++++++++++++++++++++++++++++++++-----
+>>   1 file changed, 338 insertions(+), 51 deletions(-)
+>>
+>> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+>> index ecae26f11aa4..2b3563ae152f 100644
+>> --- a/drivers/net/phy/at803x.c
+>> +++ b/drivers/net/phy/at803x.c
+>> @@ -33,10 +33,10 @@
+>>   #define AT803X_SFC_DISABLE_JABBER		BIT(0)
+>>   
+>>   #define AT803X_SPECIFIC_STATUS			0x11
+>> -#define AT803X_SS_SPEED_MASK			(3 << 14)
+>> -#define AT803X_SS_SPEED_1000			(2 << 14)
+>> -#define AT803X_SS_SPEED_100			(1 << 14)
+>> -#define AT803X_SS_SPEED_10			(0 << 14)
+>> +#define AT803X_SS_SPEED_MASK			GENMASK(15, 14)
+>> +#define AT803X_SS_SPEED_1000			2
+>> +#define AT803X_SS_SPEED_100			1
+>> +#define AT803X_SS_SPEED_10			0
+> This looks like an improvement, and nothing to do with qca8081. Please
+> make it an separate patch.
+will make it an separate patch in the next patch series.
+>>   #define AT803X_SS_DUPLEX			BIT(13)
+>>   #define AT803X_SS_SPEED_DUPLEX_RESOLVED		BIT(11)
+>>   #define AT803X_SS_MDIX				BIT(6)
+>> @@ -158,6 +158,8 @@
+>>   #define QCA8337_PHY_ID				0x004dd036
+>>   #define QCA8K_PHY_ID_MASK			0xffffffff
+>>   
+>> +#define QCA8081_PHY_ID				0x004dd101
+>> +
+> Maybe keep all the PHY_ID together?
+will move it to make PHY_ID together in the next patch series.
+>
+>>   #define QCA8K_DEVFLAGS_REVISION_MASK		GENMASK(2, 0)
+>>   
+>>   #define AT803X_PAGE_FIBER			0
+>> @@ -167,7 +169,73 @@
+>>   #define AT803X_KEEP_PLL_ENABLED			BIT(0)
+>>   #define AT803X_DISABLE_SMARTEEE			BIT(1)
+>>   
+>> @@ -711,11 +779,18 @@ static void at803x_remove(struct phy_device *phydev)
+>>   
+>>   static int at803x_get_features(struct phy_device *phydev)
+>>   {
+>> -	int err;
+>> +	int val;
+> Why? The driver pretty consistently uses err for return values which
+> are errors.
+will keep err unchanged in the next patch set.
+>
+>>   
+>> -	err = genphy_read_abilities(phydev);
+>> -	if (err)
+>> -		return err;
+>> +	val = genphy_read_abilities(phydev);
+>> +	if (val)
+>> +		return val;
+>> +
+>> +	if (at803x_match_phy_id(phydev, QCA8081_PHY_ID)) {
+>> +		val = phy_read_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_PMA_NG_EXTABLE);
+> You don't check if val indicates if there was an error.
+thanks Andrew for the comment, will add the check here.
+>
+>> +
+>> +		linkmode_mod_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->supported,
+>> +				val & MDIO_PMA_NG_EXTABLE_2_5GBT);
+>> +	}
+>>   
+>>   	if (!at803x_match_phy_id(phydev, ATH8031_PHY_ID))
+>>   		return 0;
+>> @@ -935,44 +1010,44 @@ static void at803x_link_change_notify(struct phy_device *phydev)
+>>   	}
+>>   }
+>>   
+>> -static int at803x_read_status(struct phy_device *phydev)
+>> +static int at803x_read_specific_status(struct phy_device *phydev)
+>>   {
+>> -	int ss, err, old_link = phydev->link;
+>> -
+>> -	/* Update the link, but return if there was an error */
+>> -	err = genphy_update_link(phydev);
+>> -	if (err)
+>> -		return err;
+>> -
+>> -	/* why bother the PHY if nothing can have changed */
+>> -	if (phydev->autoneg == AUTONEG_ENABLE && old_link && phydev->link)
+>> -		return 0;
+>> +	int val;
+>>   
+>> -	phydev->speed = SPEED_UNKNOWN;
+>> -	phydev->duplex = DUPLEX_UNKNOWN;
+>> -	phydev->pause = 0;
+>> -	phydev->asym_pause = 0;
+>> +	val = phy_read(phydev, AT803X_SPECIFIC_FUNCTION_CONTROL);
+>> +	if (val < 0)
+>> +		return val;
+>>   
+>> -	err = genphy_read_lpa(phydev);
+>> -	if (err < 0)
+>> -		return err;
+>> +	switch (FIELD_GET(AT803X_SFC_MDI_CROSSOVER_MODE_M, val)) {
+>> +	case AT803X_SFC_MANUAL_MDI:
+>> +		phydev->mdix_ctrl = ETH_TP_MDI;
+>> +		break;
+>> +	case AT803X_SFC_MANUAL_MDIX:
+>> +		phydev->mdix_ctrl = ETH_TP_MDI_X;
+>> +		break;
+>> +	case AT803X_SFC_AUTOMATIC_CROSSOVER:
+>> +		phydev->mdix_ctrl = ETH_TP_MDI_AUTO;
+>> +		break;
+>> +	}
+>>   
+>>   	/* Read the AT8035 PHY-Specific Status register, which indicates the
+>>   	 * speed and duplex that the PHY is actually using, irrespective of
+>>   	 * whether we are in autoneg mode or not.
+>>   	 */
+>> -	ss = phy_read(phydev, AT803X_SPECIFIC_STATUS);
+>> -	if (ss < 0)
+>> -		return ss;
+>> +	val = phy_read(phydev, AT803X_SPECIFIC_STATUS);
+>> +	if (val < 0)
+>> +		return val;
+> What was actually wrong with ss?
+>
+> Is this another case of just copying code from your other driver,
+> rather than cleanly extending the existing driver?
+>
+> There are two many changes here all at once. Please break this patch
+> up. You are aiming for lots of small patches which are obviously
+> correct. Part of being obviously correct is having a good commit
+> message, and that gets much easier when a patch is small.
+>
+> 	 Andrew
 
-On 18.08.21 15:26, Claudio Imbrenda wrote:
-> When the system is heavily overcommitted, kvm_s390_pv_init_vm might
-> generate stall notifications.
-> 
-> Fix this by using uv_call_sched instead of just uv_call. This is ok because
-> we are not holding spinlocks.
+Hi Andrew,
 
-I guess this should only happen for really large guests where the donated memory is also large?
-> 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Fixes: 214d9bbcd3a672 ("s390/mm: provide memory management functions for protected KVM guests")
+i separate the phy specific status into a new function 
+at803x_read_specific_status, since this function
 
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+need to be used for both at803x phy driver and qca8081 phy driver.
 
-> ---
->   arch/s390/kvm/pv.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-> index 0a854115100b..00d272d134c2 100644
-> --- a/arch/s390/kvm/pv.c
-> +++ b/arch/s390/kvm/pv.c
-> @@ -195,7 +195,7 @@ int kvm_s390_pv_init_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
->   	uvcb.conf_base_stor_origin = (u64)kvm->arch.pv.stor_base;
->   	uvcb.conf_virt_stor_origin = (u64)kvm->arch.pv.stor_var;
->   
-> -	cc = uv_call(0, (u64)&uvcb);
-> +	cc = uv_call_sched(0, (u64)&uvcb);
->   	*rc = uvcb.header.rc;
->   	*rrc = uvcb.header.rrc;
->   	KVM_UV_EVENT(kvm, 3, "PROTVIRT CREATE VM: handle %llx len %llx rc %x rrc %x",
-> 
+i will break the patch into the minimal changes and provide the commit 
+message in detail in the next
+
+patch series.
+
+thanks for your helpful comments.
+
+
