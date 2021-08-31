@@ -2,243 +2,525 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08CB3FC81D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D97C3FC81E
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234636AbhHaNWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
+        id S235925AbhHaNWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235683AbhHaNW1 (ORCPT
+        with ESMTP id S233826AbhHaNWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:22:27 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0678CC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 06:21:32 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id s11so16643205pgr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 06:21:32 -0700 (PDT)
+        Tue, 31 Aug 2021 09:22:46 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2236C061575;
+        Tue, 31 Aug 2021 06:21:51 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id b10so24727631ioq.9;
+        Tue, 31 Aug 2021 06:21:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0oFIUw/B2R8Fy4y8pZf4ZATrEqBDSvWc0VVN+2RIKNM=;
-        b=dv7gsA8JEBHbuT5/nY4anDm3k3ha8vBonv8d3w3ZYRwxDR9P16ITSF2zuELrbyuneX
-         zZUeKcMvbQXVzlLXNgy2ueWv7EPZBjNlXS6ggn+xP92COqZjU2mwWQr1DNosc4CVN3yv
-         t5xQc4ZtHyiz6AOay1vde988pd/URZB9jP5HOMdb74b/Mfm+pOX20Ru1i3cIbHmMeWHu
-         qTdB3C6L8cyjCVXpjmxS6FDE3MODvgihefysnbvhDgGqKK6PvmYKHk/8xmGCEnyhemHs
-         kB/x2Q0br+mc2nDbM1UZhybjjaFYIh2ekjN1pH5pHXNEnYoTiZNg7fa6NU4RtovYe5fs
-         NkCw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lZmPD4SHVGlfaRzVgc2ILkEjKAxHk6jaXHXHOU0iYlE=;
+        b=d9GrGnJJoGKxD63GXnbpa3jdLaB2rNDS7a2SmT49CwEtthYZzDoR0u8Pt3BMy5BIXo
+         8k9Wd3Fzv+K4FKWuCxj3eINWjXfqbWOXmVRCN1txWVfv4fuRBu/fYyRlHjJlSC2d7tni
+         89ZamxskTq/4da++6EeA/E9UoX9YoOB/u6JHzL3Q7NgvVtEAQp8qhaCCQ7Pj5PhABSjM
+         IO2YKNdnAZtcasSn/PFN2+XgV9+53qVg2PJVHCrnTKP7KVZVfBnjQU0k3VX/78hEanlQ
+         WxreEOklTr0CpN7CcKYXocDxuQixkOzldfrZ3wPPv4ld7fT4MhXmcnM4feBdydgBw38G
+         qyHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0oFIUw/B2R8Fy4y8pZf4ZATrEqBDSvWc0VVN+2RIKNM=;
-        b=c1Gopq9XWoe8M7Nf1uDDWTVRMo5MN+LcRhv0wTs5RWN2tcQEb4swojCgyvkYrhaovG
-         zSTtxle6FTU/J8ajWrrl5H45oIYBW+taN1gfr7sYEwJXCPNTN1QughQVb6KXPNvf+MJN
-         mv76wXeqhyHnwVPThEHuQuSM0j1qW6BGU5VsHazA5orXVlJezCFWIhBxY4dXd/qqXz+F
-         DPjLssrSYawm6CDznSPySNbHYpnV7YKKBMZDBM6Mp8+sSQ8qjyc+ykHyiO9sYeE/s4c4
-         0QCBieIYEy/O5AwEjqW0VmIPYFv8+fI3hnaKgRE+MCL2UOcvEWH9Z3TyC+JbsCTnqA8z
-         kSqA==
-X-Gm-Message-State: AOAM530l6u0p91/pZRfAOM3qnljQyKKSkPr54SxhqTFloa9Y1gt6IojC
-        ipBw8wEeY2vx1l+5MYaDw3MpFYuOhjiZ/g==
-X-Google-Smtp-Source: ABdhPJx45YrJ7EPQz7/6vYl2pa3asjDpmlvsNZ8SZB/DSlXLjhGGMwVBGiVd2ITDa2yCNMN+aO/dUA==
-X-Received: by 2002:a63:a4a:: with SMTP id z10mr26444978pgk.329.1630416091415;
-        Tue, 31 Aug 2021 06:21:31 -0700 (PDT)
-Received: from C02DW0BEMD6R.bytedance.net ([139.177.225.230])
-        by smtp.gmail.com with ESMTPSA id k190sm9548352pgc.11.2021.08.31.06.21.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 31 Aug 2021 06:21:31 -0700 (PDT)
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-To:     akpm@linux-foundation.org, tglx@linutronix.de, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
-        david@redhat.com, vbabka@suse.cz
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 2/2] mm: remove redundant smp_wmb()
-Date:   Tue, 31 Aug 2021 21:21:11 +0800
-Message-Id: <20210831132111.85437-3-zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20210831132111.85437-1-zhengqi.arch@bytedance.com>
-References: <20210831132111.85437-1-zhengqi.arch@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lZmPD4SHVGlfaRzVgc2ILkEjKAxHk6jaXHXHOU0iYlE=;
+        b=N9Jt9ETR8EXUCCZKt/gTejNfKWaGWJjkEhVJlazNev4PCy+ZGzh8CwrGzeM/8t2yc8
+         iaoQPIIAsgJa3+sMTnn5xW1ZM9RAPc0up5WH142arLImzLNIsZ1vg69dZdKShMyad8af
+         g1gLJ2jUB2FOgSnfZupNenBHCVnCuqIZyzZtNJAb7ZwnJgEHU8w++F5AJE8NyX7BYThi
+         mQz2/RURd4VIzkbFqstY229wdII8/irwowKn9LnEl2z70HbP15tmzoGWfS8DYq9P4rQK
+         jMs5aqNi3N+UvfzVTjIlKUwqIN+GMbbl5wOyCYvzPrW49y2+N/Uk1N28EuSX0Sx/D2S4
+         DJ9Q==
+X-Gm-Message-State: AOAM531iF8xYHqTVt7FiHacknaKFs3GIaoraaRAmwfNnfvew4MZSCUHT
+        y1kgfR2TX3fvqEGUEFyoYxPCpJsFsv5p19TLWjE=
+X-Google-Smtp-Source: ABdhPJywUas5gJXI/d4QLJfvlaWNmMjmUTPQ1/doVDEJ7q0QwZOksyBczn0BXAsrmLfq1pkucdhFPjF0INN+DHyBmvE=
+X-Received: by 2002:a02:ce37:: with SMTP id v23mr2832763jar.81.1630416110999;
+ Tue, 31 Aug 2021 06:21:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210824112946.9324-1-laoar.shao@gmail.com> <YS3/jhuRNS2GGVrp@hirez.programming.kicks-ass.net>
+ <YS4IE1Dxf0ite81A@hirez.programming.kicks-ass.net>
+In-Reply-To: <YS4IE1Dxf0ite81A@hirez.programming.kicks-ass.net>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 31 Aug 2021 21:21:14 +0800
+Message-ID: <CALOAHbB53Mnqn-bfxY7EUt-MEDZ_NpjmHYMruf3D+WzN1JGAYg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] sched: support schedstats for RT sched class
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Alison Chaiken <achaiken@aurora.tech>,
+        kbuild test robot <lkp@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The smp_wmb() which is in the __pte_alloc() is used to
-ensure all ptes setup is visible before the pte is made
-visible to other CPUs by being put into page tables. We
-only need this when the pte is actually populated, so
-move it to pmd_install(). __pte_alloc_kernel(),
-__p4d_alloc(), __pud_alloc() and __pmd_alloc() are similar
-to this case.
+On Tue, Aug 31, 2021 at 6:44 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Aug 31, 2021 at 12:08:15PM +0200, Peter Zijlstra wrote:
+> > On Tue, Aug 24, 2021 at 11:29:39AM +0000, Yafang Shao wrote:
+>
+> > > After the patchset, schestats are orgnized as follows,
+> > > struct task_struct {
+> > >     ...
+> > >     struct sched_statistics statistics;
+> > >     ...
+> > >     struct sched_entity *se;
+> > >     struct sched_rt_entity *rt;
+> > >     ...
+> > > };
+> > >
+> > > struct task_group {                    |---> stats[0] : of CPU0
+> > >     ...                                |
+> > >     struct sched_statistics **stats; --|---> stats[1] : of CPU1
+> > >     ...                                |
+> > >                                        |---> stats[n] : of CPUn
+> > >  #ifdef CONFIG_FAIR_GROUP_SCHED
+> > >     struct sched_entity **se;
+> > >  #endif
+> > >  #ifdef CONFIG_RT_GROUP_SCHED
+> > >     struct sched_rt_entity  **rt_se;
+> > >  #endif
+> > >     ...
+> > > };
+> >
+> > Yeah, this seems to give a terrible mess, let me see if I can come up
+> > with anything less horrible.
+>
+> Here, isn't this *MUCH* saner ?
+>
 
-We can also defer smp_wmb() to the place where the pmd entry
-is really populated by preallocated pte. There are two kinds
-of user of preallocated pte, one is filemap & finish_fault(),
-another is THP. The former does not need another smp_wmb()
-because the smp_wmb() has been done by pmd_install().
-Fortunately, the latter also does not need another smp_wmb()
-because there is already a smp_wmb() before populating the
-new pte when the THP uses a preallocated pte to split a huge
-pmd.
+Seems like a good idea.
+I will verify it.
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: David Hildenbrand <david@redhat.com>
----
- mm/memory.c         | 52 +++++++++++++++++++++++-----------------------------
- mm/sparse-vmemmap.c |  2 +-
- 2 files changed, 24 insertions(+), 30 deletions(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index ef7b1762e996..658d8df9c70f 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -439,6 +439,20 @@ void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte)
- 
- 	if (likely(pmd_none(*pmd))) {	/* Has another populated it ? */
- 		mm_inc_nr_ptes(mm);
-+		/*
-+		 * Ensure all pte setup (eg. pte page lock and page clearing) are
-+		 * visible before the pte is made visible to other CPUs by being
-+		 * put into page tables.
-+		 *
-+		 * The other side of the story is the pointer chasing in the page
-+		 * table walking code (when walking the page table without locking;
-+		 * ie. most of the time). Fortunately, these data accesses consist
-+		 * of a chain of data-dependent loads, meaning most CPUs (alpha
-+		 * being the notable exception) will already guarantee loads are
-+		 * seen in-order. See the alpha page table accessors for the
-+		 * smp_rmb() barriers in page table walking code.
-+		 */
-+		smp_wmb(); /* Could be smp_wmb__xxx(before|after)_spin_lock */
- 		pmd_populate(mm, pmd, *pte);
- 		*pte = NULL;
- 	}
-@@ -451,21 +465,6 @@ int __pte_alloc(struct mm_struct *mm, pmd_t *pmd)
- 	if (!new)
- 		return -ENOMEM;
- 
--	/*
--	 * Ensure all pte setup (eg. pte page lock and page clearing) are
--	 * visible before the pte is made visible to other CPUs by being
--	 * put into page tables.
--	 *
--	 * The other side of the story is the pointer chasing in the page
--	 * table walking code (when walking the page table without locking;
--	 * ie. most of the time). Fortunately, these data accesses consist
--	 * of a chain of data-dependent loads, meaning most CPUs (alpha
--	 * being the notable exception) will already guarantee loads are
--	 * seen in-order. See the alpha page table accessors for the
--	 * smp_rmb() barriers in page table walking code.
--	 */
--	smp_wmb(); /* Could be smp_wmb__xxx(before|after)_spin_lock */
--
- 	pmd_install(mm, pmd, &new);
- 	if (new)
- 		pte_free(mm, new);
-@@ -478,10 +477,9 @@ int __pte_alloc_kernel(pmd_t *pmd)
- 	if (!new)
- 		return -ENOMEM;
- 
--	smp_wmb(); /* See comment in __pte_alloc */
--
- 	spin_lock(&init_mm.page_table_lock);
- 	if (likely(pmd_none(*pmd))) {	/* Has another populated it ? */
-+		smp_wmb(); /* See comment in pmd_install() */
- 		pmd_populate_kernel(&init_mm, pmd, new);
- 		new = NULL;
- 	}
-@@ -3857,7 +3855,6 @@ static vm_fault_t __do_fault(struct vm_fault *vmf)
- 		vmf->prealloc_pte = pte_alloc_one(vma->vm_mm);
- 		if (!vmf->prealloc_pte)
- 			return VM_FAULT_OOM;
--		smp_wmb(); /* See comment in __pte_alloc() */
- 	}
- 
- 	ret = vma->vm_ops->fault(vmf);
-@@ -3919,7 +3916,6 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
- 		vmf->prealloc_pte = pte_alloc_one(vma->vm_mm);
- 		if (!vmf->prealloc_pte)
- 			return VM_FAULT_OOM;
--		smp_wmb(); /* See comment in __pte_alloc() */
- 	}
- 
- 	vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
-@@ -4144,7 +4140,6 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
- 		vmf->prealloc_pte = pte_alloc_one(vmf->vma->vm_mm);
- 		if (!vmf->prealloc_pte)
- 			return VM_FAULT_OOM;
--		smp_wmb(); /* See comment in __pte_alloc() */
- 	}
- 
- 	return vmf->vma->vm_ops->map_pages(vmf, start_pgoff, end_pgoff);
-@@ -4819,13 +4814,13 @@ int __p4d_alloc(struct mm_struct *mm, pgd_t *pgd, unsigned long address)
- 	if (!new)
- 		return -ENOMEM;
- 
--	smp_wmb(); /* See comment in __pte_alloc */
--
- 	spin_lock(&mm->page_table_lock);
--	if (pgd_present(*pgd))		/* Another has populated it */
-+	if (pgd_present(*pgd)) {	/* Another has populated it */
- 		p4d_free(mm, new);
--	else
-+	} else {
-+		smp_wmb(); /* See comment in pmd_install() */
- 		pgd_populate(mm, pgd, new);
-+	}
- 	spin_unlock(&mm->page_table_lock);
- 	return 0;
- }
-@@ -4842,11 +4837,10 @@ int __pud_alloc(struct mm_struct *mm, p4d_t *p4d, unsigned long address)
- 	if (!new)
- 		return -ENOMEM;
- 
--	smp_wmb(); /* See comment in __pte_alloc */
--
- 	spin_lock(&mm->page_table_lock);
- 	if (!p4d_present(*p4d)) {
- 		mm_inc_nr_puds(mm);
-+		smp_wmb(); /* See comment in pmd_install() */
- 		p4d_populate(mm, p4d, new);
- 	} else	/* Another has populated it */
- 		pud_free(mm, new);
-@@ -4867,14 +4861,14 @@ int __pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long address)
- 	if (!new)
- 		return -ENOMEM;
- 
--	smp_wmb(); /* See comment in __pte_alloc */
--
- 	ptl = pud_lock(mm, pud);
- 	if (!pud_present(*pud)) {
- 		mm_inc_nr_pmds(mm);
-+		smp_wmb(); /* See comment in pmd_install() */
- 		pud_populate(mm, pud, new);
--	} else	/* Another has populated it */
-+	} else {	/* Another has populated it */
- 		pmd_free(mm, new);
-+	}
- 	spin_unlock(ptl);
- 	return 0;
- }
-diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-index bdce883f9286..db6df27c852a 100644
---- a/mm/sparse-vmemmap.c
-+++ b/mm/sparse-vmemmap.c
-@@ -76,7 +76,7 @@ static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start,
- 		set_pte_at(&init_mm, addr, pte, entry);
- 	}
- 
--	/* Make pte visible before pmd. See comment in __pte_alloc(). */
-+	/* Make pte visible before pmd. See comment in pmd_install(). */
- 	smp_wmb();
- 	pmd_populate_kernel(&init_mm, pmd, pgtable);
- 
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -521,7 +521,7 @@ struct sched_statistics {
+>         u64                             nr_wakeups_passive;
+>         u64                             nr_wakeups_idle;
+>  #endif
+> -};
+> +} ____cacheline_aligned;
+>
+>  struct sched_entity {
+>         /* For load-balancing: */
+> @@ -537,8 +537,6 @@ struct sched_entity {
+>
+>         u64                             nr_migrations;
+>
+> -       struct sched_statistics         statistics;
+> -
+>  #ifdef CONFIG_FAIR_GROUP_SCHED
+>         int                             depth;
+>         struct sched_entity             *parent;
+> @@ -802,6 +800,8 @@ struct task_struct {
+>         struct uclamp_se                uclamp[UCLAMP_CNT];
+>  #endif
+>
+> +       struct sched_statistics         stats;
+> +
+
+The stats was kept close to 'struct sched_entity se' before, because I
+don't want to change the original layout of 'struct task_struct' too
+much, in case the change may impact the cache line.
+I'm not sure whether it is proper to place it here, I will verify it.
+
+>  #ifdef CONFIG_PREEMPT_NOTIFIERS
+>         /* List of struct preempt_notifier: */
+>         struct hlist_head               preempt_notifiers;
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -3489,11 +3489,11 @@ ttwu_stat(struct task_struct *p, int cpu
+>  #ifdef CONFIG_SMP
+>         if (cpu == rq->cpu) {
+>                 __schedstat_inc(rq->ttwu_local);
+> -               __schedstat_inc(p->se.statistics.nr_wakeups_local);
+> +               __schedstat_inc(p->stats.nr_wakeups_local);
+>         } else {
+>                 struct sched_domain *sd;
+>
+> -               __schedstat_inc(p->se.statistics.nr_wakeups_remote);
+> +               __schedstat_inc(p->stats.nr_wakeups_remote);
+>                 rcu_read_lock();
+>                 for_each_domain(rq->cpu, sd) {
+>                         if (cpumask_test_cpu(cpu, sched_domain_span(sd))) {
+> @@ -3505,14 +3505,14 @@ ttwu_stat(struct task_struct *p, int cpu
+>         }
+>
+>         if (wake_flags & WF_MIGRATED)
+> -               __schedstat_inc(p->se.statistics.nr_wakeups_migrate);
+> +               __schedstat_inc(p->stats.nr_wakeups_migrate);
+>  #endif /* CONFIG_SMP */
+>
+>         __schedstat_inc(rq->ttwu_count);
+> -       __schedstat_inc(p->se.statistics.nr_wakeups);
+> +       __schedstat_inc(p->stats.nr_wakeups);
+>
+>         if (wake_flags & WF_SYNC)
+> -               __schedstat_inc(p->se.statistics.nr_wakeups_sync);
+> +               __schedstat_inc(p->stats.nr_wakeups_sync);
+>  }
+>
+>  /*
+> @@ -4196,7 +4196,7 @@ static void __sched_fork(unsigned long c
+>
+>  #ifdef CONFIG_SCHEDSTATS
+>         /* Even if schedstat is disabled, there should not be garbage */
+> -       memset(&p->se.statistics, 0, sizeof(p->se.statistics));
+> +       memset(&p->stats, 0, sizeof(p->stats));
+>  #endif
+>
+>         RB_CLEAR_NODE(&p->dl.rb_node);
+> @@ -9619,9 +9619,9 @@ void normalize_rt_tasks(void)
+>                         continue;
+>
+>                 p->se.exec_start = 0;
+> -               schedstat_set(p->se.statistics.wait_start,  0);
+> -               schedstat_set(p->se.statistics.sleep_start, 0);
+> -               schedstat_set(p->se.statistics.block_start, 0);
+> +               schedstat_set(p->stats.wait_start,  0);
+> +               schedstat_set(p->stats.sleep_start, 0);
+> +               schedstat_set(p->stats.block_start, 0);
+>
+>                 if (!dl_task(p) && !rt_task(p)) {
+>                         /*
+> @@ -10467,7 +10467,7 @@ static int cpu_cfs_stat_show(struct seq_
+>                 int i;
+>
+>                 for_each_possible_cpu(i)
+> -                       ws += schedstat_val(tg->se[i]->statistics.wait_sum);
+> +                       ws += schedstat_val(tg->stats[i]->wait_sum);
+>
+>                 seq_printf(sf, "wait_sum %llu\n", ws);
+>         }
+> --- a/kernel/sched/deadline.c
+> +++ b/kernel/sched/deadline.c
+> @@ -1265,8 +1265,8 @@ static void update_curr_dl(struct rq *rq
+>                 return;
+>         }
+>
+> -       schedstat_set(curr->se.statistics.exec_max,
+> -                     max(curr->se.statistics.exec_max, delta_exec));
+> +       schedstat_set(curr->stats.exec_max,
+> +                     max(curr->stats.exec_max, delta_exec));
+>
+>         curr->se.sum_exec_runtime += delta_exec;
+>         account_group_exec_runtime(curr, delta_exec);
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -819,6 +819,21 @@ static void update_tg_load_avg(struct cf
+>  }
+>  #endif /* CONFIG_SMP */
+>
+> +struct sched_entity_stats {
+> +       struct sched_entity     se;
+> +       struct sched_statistics stats;
+> +} __no_randomize_layout;
+> +
+> +static inline struct sched_statistics *
+> +__schedstats_from_se(struct sched_entity *se)
+> +{
+> +#ifdef CONFIG_FAIR_GROUP_SCHED
+> +       if (!entity_is_task(se))
+> +               return &container_of(se, struct sched_entity_stats, se)->stats;
+> +#endif
+> +       return &task_of(se)->stats;
+> +}
+> +
+>  /*
+>   * Update the current task's runtime statistics.
+>   */
+> @@ -837,8 +852,10 @@ static void update_curr(struct cfs_rq *c
+>
+>         curr->exec_start = now;
+>
+> -       schedstat_set(curr->statistics.exec_max,
+> -                     max(delta_exec, curr->statistics.exec_max));
+> +       if (schedstat_enabled()) {
+> +               struct sched_statistics *stats = __schedstats_from_se(curr);
+> +               __schedstat_set(stats->exec_max, max(delta_exec, stats->exec_max));
+> +       }
+>
+>         curr->sum_exec_runtime += delta_exec;
+>         schedstat_add(cfs_rq->exec_clock, delta_exec);
+> @@ -866,39 +883,45 @@ static inline void
+>  update_stats_wait_start(struct cfs_rq *cfs_rq, struct sched_entity *se)
+>  {
+>         u64 wait_start, prev_wait_start;
+> +       struct sched_statistics *stats;
+>
+>         if (!schedstat_enabled())
+>                 return;
+>
+> +       stats = __schedstats_from_se(se);
+> +
+>         wait_start = rq_clock(rq_of(cfs_rq));
+> -       prev_wait_start = schedstat_val(se->statistics.wait_start);
+> +       prev_wait_start = schedstat_val(stats->wait_start);
+>
+>         if (entity_is_task(se) && task_on_rq_migrating(task_of(se)) &&
+>             likely(wait_start > prev_wait_start))
+>                 wait_start -= prev_wait_start;
+>
+> -       __schedstat_set(se->statistics.wait_start, wait_start);
+> +       __schedstat_set(stats->wait_start, wait_start);
+>  }
+>
+>  static inline void
+>  update_stats_wait_end(struct cfs_rq *cfs_rq, struct sched_entity *se)
+>  {
+> -       struct task_struct *p;
+> +       struct sched_statistics *stats;
+> +       struct task_struct *p = NULL;
+>         u64 delta;
+>
+>         if (!schedstat_enabled())
+>                 return;
+>
+> +       stats = __schedstats_from_se(se);
+> +
+>         /*
+>          * When the sched_schedstat changes from 0 to 1, some sched se
+>          * maybe already in the runqueue, the se->statistics.wait_start
+>          * will be 0.So it will let the delta wrong. We need to avoid this
+>          * scenario.
+>          */
+> -       if (unlikely(!schedstat_val(se->statistics.wait_start)))
+> +       if (unlikely(!schedstat_val(stats->wait_start)))
+>                 return;
+>
+> -       delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(se->statistics.wait_start);
+> +       delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(stats->wait_start);
+>
+>         if (entity_is_task(se)) {
+>                 p = task_of(se);
+> @@ -908,30 +931,33 @@ update_stats_wait_end(struct cfs_rq *cfs
+>                          * time stamp can be adjusted to accumulate wait time
+>                          * prior to migration.
+>                          */
+> -                       __schedstat_set(se->statistics.wait_start, delta);
+> +                       __schedstat_set(stats->wait_start, delta);
+>                         return;
+>                 }
+>                 trace_sched_stat_wait(p, delta);
+>         }
+>
+> -       __schedstat_set(se->statistics.wait_max,
+> -                     max(schedstat_val(se->statistics.wait_max), delta));
+> -       __schedstat_inc(se->statistics.wait_count);
+> -       __schedstat_add(se->statistics.wait_sum, delta);
+> -       __schedstat_set(se->statistics.wait_start, 0);
+> +       __schedstat_set(stats->wait_max,
+> +                     max(schedstat_val(stats->wait_max), delta));
+> +       __schedstat_inc(stats->wait_count);
+> +       __schedstat_add(stats->wait_sum, delta);
+> +       __schedstat_set(stats->wait_start, 0);
+>  }
+>
+>  static inline void
+>  update_stats_enqueue_sleeper(struct cfs_rq *cfs_rq, struct sched_entity *se)
+>  {
+> +       struct sched_statistics *stats;
+>         struct task_struct *tsk = NULL;
+>         u64 sleep_start, block_start;
+>
+>         if (!schedstat_enabled())
+>                 return;
+>
+> -       sleep_start = schedstat_val(se->statistics.sleep_start);
+> -       block_start = schedstat_val(se->statistics.block_start);
+> +       stats = __schedstats_from_se(se);
+> +
+> +       sleep_start = schedstat_val(stats->sleep_start);
+> +       block_start = schedstat_val(stats->block_start);
+>
+>         if (entity_is_task(se))
+>                 tsk = task_of(se);
+> @@ -942,11 +968,11 @@ update_stats_enqueue_sleeper(struct cfs_
+>                 if ((s64)delta < 0)
+>                         delta = 0;
+>
+> -               if (unlikely(delta > schedstat_val(se->statistics.sleep_max)))
+> -                       __schedstat_set(se->statistics.sleep_max, delta);
+> +               if (unlikely(delta > schedstat_val(stats->sleep_max)))
+> +                       __schedstat_set(stats->sleep_max, delta);
+>
+> -               __schedstat_set(se->statistics.sleep_start, 0);
+> -               __schedstat_add(se->statistics.sum_sleep_runtime, delta);
+> +               __schedstat_set(stats->sleep_start, 0);
+> +               __schedstat_add(stats->sum_sleep_runtime, delta);
+>
+>                 if (tsk) {
+>                         account_scheduler_latency(tsk, delta >> 10, 1);
+> @@ -959,16 +985,16 @@ update_stats_enqueue_sleeper(struct cfs_
+>                 if ((s64)delta < 0)
+>                         delta = 0;
+>
+> -               if (unlikely(delta > schedstat_val(se->statistics.block_max)))
+> -                       __schedstat_set(se->statistics.block_max, delta);
+> +               if (unlikely(delta > schedstat_val(stats->block_max)))
+> +                       __schedstat_set(stats->block_max, delta);
+>
+> -               __schedstat_set(se->statistics.block_start, 0);
+> -               __schedstat_add(se->statistics.sum_sleep_runtime, delta);
+> +               __schedstat_set(stats->block_start, 0);
+> +               __schedstat_add(stats->sum_sleep_runtime, delta);
+>
+>                 if (tsk) {
+>                         if (tsk->in_iowait) {
+> -                               __schedstat_add(se->statistics.iowait_sum, delta);
+> -                               __schedstat_inc(se->statistics.iowait_count);
+> +                               __schedstat_add(stats->iowait_sum, delta);
+> +                               __schedstat_inc(stats->iowait_count);
+>                                 trace_sched_stat_iowait(tsk, delta);
+>                         }
+>
+> @@ -1030,10 +1056,10 @@ update_stats_dequeue(struct cfs_rq *cfs_
+>                 /* XXX racy against TTWU */
+>                 state = READ_ONCE(tsk->__state);
+>                 if (state & TASK_INTERRUPTIBLE)
+> -                       __schedstat_set(se->statistics.sleep_start,
+> +                       __schedstat_set(tsk->stats.sleep_start,
+>                                       rq_clock(rq_of(cfs_rq)));
+>                 if (state & TASK_UNINTERRUPTIBLE)
+> -                       __schedstat_set(se->statistics.block_start,
+> +                       __schedstat_set(tsk->stats.block_start,
+>                                       rq_clock(rq_of(cfs_rq)));
+>         }
+>  }
+> @@ -4502,9 +4528,10 @@ set_next_entity(struct cfs_rq *cfs_rq, s
+>          */
+>         if (schedstat_enabled() &&
+>             rq_of(cfs_rq)->cfs.load.weight >= 2*se->load.weight) {
+> -               __schedstat_set(se->statistics.slice_max,
+> -                       max((u64)schedstat_val(se->statistics.slice_max),
+> -                           se->sum_exec_runtime - se->prev_sum_exec_runtime));
+> +               struct sched_statistics *stats = __schedstats_from_se(se);
+> +               __schedstat_set(stats->slice_max,
+> +                               max((u64)stats->slice_max,
+> +                                   se->sum_exec_runtime - se->prev_sum_exec_runtime));
+>         }
+>
+>         se->prev_sum_exec_runtime = se->sum_exec_runtime;
+> @@ -5993,12 +6020,12 @@ static int wake_affine(struct sched_doma
+>         if (sched_feat(WA_WEIGHT) && target == nr_cpumask_bits)
+>                 target = wake_affine_weight(sd, p, this_cpu, prev_cpu, sync);
+>
+> -       schedstat_inc(p->se.statistics.nr_wakeups_affine_attempts);
+> +       schedstat_inc(p->stats.nr_wakeups_affine_attempts);
+>         if (target == nr_cpumask_bits)
+>                 return prev_cpu;
+>
+>         schedstat_inc(sd->ttwu_move_affine);
+> -       schedstat_inc(p->se.statistics.nr_wakeups_affine);
+> +       schedstat_inc(p->stats.nr_wakeups_affine);
+>         return target;
+>  }
+>
+> @@ -7802,7 +7829,7 @@ int can_migrate_task(struct task_struct
+>         if (!cpumask_test_cpu(env->dst_cpu, p->cpus_ptr)) {
+>                 int cpu;
+>
+> -               schedstat_inc(p->se.statistics.nr_failed_migrations_affine);
+> +               schedstat_inc(p->stats.nr_failed_migrations_affine);
+>
+>                 env->flags |= LBF_SOME_PINNED;
+>
+> @@ -7836,7 +7863,7 @@ int can_migrate_task(struct task_struct
+>         env->flags &= ~LBF_ALL_PINNED;
+>
+>         if (task_running(env->src_rq, p)) {
+> -               schedstat_inc(p->se.statistics.nr_failed_migrations_running);
+> +               schedstat_inc(p->stats.nr_failed_migrations_running);
+>                 return 0;
+>         }
+>
+> @@ -7858,12 +7885,12 @@ int can_migrate_task(struct task_struct
+>             env->sd->nr_balance_failed > env->sd->cache_nice_tries) {
+>                 if (tsk_cache_hot == 1) {
+>                         schedstat_inc(env->sd->lb_hot_gained[env->idle]);
+> -                       schedstat_inc(p->se.statistics.nr_forced_migrations);
+> +                       schedstat_inc(p->stats.nr_forced_migrations);
+>                 }
+>                 return 1;
+>         }
+>
+> -       schedstat_inc(p->se.statistics.nr_failed_migrations_hot);
+> +       schedstat_inc(p->stats.nr_failed_migrations_hot);
+>         return 0;
+>  }
+>
+> @@ -11390,7 +11417,7 @@ int alloc_fair_sched_group(struct task_g
+>                 if (!cfs_rq)
+>                         goto err;
+>
+> -               se = kzalloc_node(sizeof(struct sched_entity),
+> +               se = kzalloc_node(sizeof(struct sched_entity_stats),
+>                                   GFP_KERNEL, cpu_to_node(i));
+>                 if (!se)
+>                         goto err_free_rq;
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -1009,8 +1009,8 @@ static void update_curr_rt(struct rq *rq
+>         if (unlikely((s64)delta_exec <= 0))
+>                 return;
+>
+> -       schedstat_set(curr->se.statistics.exec_max,
+> -                     max(curr->se.statistics.exec_max, delta_exec));
+> +       schedstat_set(curr->stats.exec_max,
+> +                     max(curr->stats.exec_max, delta_exec));
+>
+>         curr->se.sum_exec_runtime += delta_exec;
+>         account_group_exec_runtime(curr, delta_exec);
+> --- a/kernel/sched/stats.h
+> +++ b/kernel/sched/stats.h
+> @@ -41,6 +41,7 @@ rq_sched_info_dequeue(struct rq *rq, uns
+>  #define   schedstat_val_or_zero(var)   ((schedstat_enabled()) ? (var) : 0)
+>
+>  #else /* !CONFIG_SCHEDSTATS: */
+> +
+>  static inline void rq_sched_info_arrive  (struct rq *rq, unsigned long long delta) { }
+>  static inline void rq_sched_info_dequeue(struct rq *rq, unsigned long long delta) { }
+>  static inline void rq_sched_info_depart  (struct rq *rq, unsigned long long delta) { }
+> @@ -53,6 +54,7 @@ static inline void rq_sched_info_depart
+>  # define   schedstat_set(var, val)     do { } while (0)
+>  # define   schedstat_val(var)          0
+>  # define   schedstat_val_or_zero(var)  0
+> +
+>  #endif /* CONFIG_SCHEDSTATS */
+>
+>  #ifdef CONFIG_PSI
+> --- a/kernel/sched/stop_task.c
+> +++ b/kernel/sched/stop_task.c
+> @@ -78,8 +78,8 @@ static void put_prev_task_stop(struct rq
+>         if (unlikely((s64)delta_exec < 0))
+>                 delta_exec = 0;
+>
+> -       schedstat_set(curr->se.statistics.exec_max,
+> -                       max(curr->se.statistics.exec_max, delta_exec));
+> +       schedstat_set(curr->stats.exec_max,
+> +                     max(curr->stats.exec_max, delta_exec));
+>
+>         curr->se.sum_exec_runtime += delta_exec;
+>         account_group_exec_runtime(curr, delta_exec);
+
+
+
 -- 
-2.11.0
-
+Thanks
+Yafang
