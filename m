@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F403FC478
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83B53FC47B
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240429AbhHaIs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 04:48:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240156AbhHaIsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 04:48:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EBF760FE8;
-        Tue, 31 Aug 2021 08:47:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630399676;
-        bh=3JkKQ1Gr2earIXtU9C2611/WmKFsUzaW/Ah1TV/+5oA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J7l2GQM0xUVPZcjBQzRHCJwmHKbqEHZlB2Fvwfw61i4QIMCwVSUX3nsdGc3UsJXAT
-         YCCTMVfajuKn/mqFgguAD7SnbatdFt5IgOjjj3o6J3iuVUQ38rY2FXtin4ZdtyXFrF
-         5oT66uKddnZQV3UxkMsCP07S8ugiHNj0ni3fW8ly90ESmG62I0Pu525sPtWnb3wOX0
-         t880TbzdzHYUaE2DIH+Eeu+WaGB2CRR2OM76NPGMC0Os0t4MhWaxB4SHH6bCTGDPdE
-         48F8rKIQcVm2D9dFPeR5v6veSJ7wWbwL9AZlgqWLJT+B6s8V9AcItu9IJyHm+75lGy
-         C4Rx/uOfZIg0A==
-Date:   Tue, 31 Aug 2021 11:47:49 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     dave.hansen@intel.com, luto@kernel.org, peterz@infradead.org,
-        x86@kernel.org, akpm@linux-foundation.org, keescook@chromium.org,
-        shakeelb@google.com, vbabka@suse.cz, linux-mm@kvack.org,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, ira.weiny@intel.com,
-        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 10/19] x86/mm: Use alloc_table() for fill_pte(),
- etc
-Message-ID: <YS3stfkkCLfqROx1@kernel.org>
-References: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
- <20210830235927.6443-11-rick.p.edgecombe@intel.com>
+        id S240467AbhHaItQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 04:49:16 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:56406 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S240417AbhHaItP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 04:49:15 -0400
+X-UUID: 6edc1c8317294ccb827b04c2f20e7ae5-20210831
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=sZFVav08zwMRGHECP5b0bRmeLPWcxHvBk2pMalHXz0k=;
+        b=RrNGUABsTqOF6ZgnPrXLHCz6igypBPTyoCG/9aQ4khqMEc+A+t2awTUZPvESjURS1zM59KQwGjxAdKrF8Zy9+Zi/EnWXK+5UCnVAa1xE3dvUS3Ul5I18sNL2fA9p1u3c3GkWJwMdnVd8X78/dsNqCAGBp4rIxUlo/61dBAcCc3g=;
+X-UUID: 6edc1c8317294ccb827b04c2f20e7ae5-20210831
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <trevor.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1984509139; Tue, 31 Aug 2021 16:48:12 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 31 Aug 2021 16:48:10 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 31 Aug 2021 16:48:10 +0800
+Message-ID: <0d73ada63c3c2949a283ac6830ab9cc84a5e4a41.camel@mediatek.com>
+Subject: Re: [PATCH v5 07/11] dt-bindings: mediatek: mt8195: add audio afe
+ document
+From:   Trevor Wu <trevor.wu@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+CC:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <bicycle.tsai@mediatek.com>,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        "Jimmy Cheng-Yi Chiang" <cychiang@google.com>,
+        Li-Yu Yu <aaronyu@google.com>,
+        Chen-Yu Tsai <wenst@chromium.org>
+Date:   Tue, 31 Aug 2021 16:48:10 +0800
+In-Reply-To: <CAL_Jsq+bLVLqqVKfYuXDVYexMojMgZ5p34Pcx7_7LwU40b-2dA@mail.gmail.com>
+References: <20210819084144.18483-1-trevor.wu@mediatek.com>
+         <20210819084144.18483-8-trevor.wu@mediatek.com>
+         <CAL_Jsq+bLVLqqVKfYuXDVYexMojMgZ5p34Pcx7_7LwU40b-2dA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830235927.6443-11-rick.p.edgecombe@intel.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 04:59:18PM -0700, Rick Edgecombe wrote:
-> fill_pte(), set_pte_vaddr(), etc allocate page tables with
-> spp_getpage(). Use alloc_table() for these allocations in order to get
-> tables from the cache of protected pages when needed.
- 
-I can't say I tracked all the users of set_pte_vaddr(), but I don't see a
-fundamental reason why spp_getpage() would need GFP_ATOMIC. Even if there
-is a caller of set_pte_vaddr() that cannot sleep, it seems that page tables
-can be prepopulated so that set_pte_vaddr() will not need to allocate
-anything.  
+T24gTW9uLCAyMDIxLTA4LTMwIGF0IDA3OjM1IC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gVGh1LCBBdWcgMTksIDIwMjEgYXQgMzo0MyBBTSBUcmV2b3IgV3UgPHRyZXZvci53dUBtZWRp
+YXRlay5jb20+DQo+IHdyb3RlOg0KPiA+IA0KPiA+IFRoaXMgcGF0Y2ggYWRkcyBtdDgxOTUgYXVk
+aW8gYWZlIGRvY3VtZW50Lg0KPiA+IA0KPiA+IEluIG9yZGVyIHRvIHN1cHBvcnQgZHluYW1pYyBj
+bG9jayByZXBhcmVudGluZyBmb3IgQUREQSBhbmQgRVRETSwNCj4gPiBQTEwNCj4gPiBhbmQgTVVY
+IGNsb2NrcyBhcmUgcmVxdWVzdGVkIGV2ZW4gdGhvdWdoIHRoZXkgYXJlIG5vdCBjb25zdW1lZCBi
+eQ0KPiA+IGFmZQ0KPiA+IGRpcmVjdGx5Lg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IFRyZXZv
+ciBXdSA8dHJldm9yLnd1QG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiBUaGlzIHBhdGNoIGRl
+cGVuZHMgb24gdGhlIGZvbGxvd2luZyBzZXJpZXMgdGhhdCBoYXZlIG5vdCBiZWVuDQo+ID4gYWNj
+ZXB0ZWQuDQo+ID4gDQo+ID4gWzFdIE1lZGlhdGVrIE1UODE5NSBjbG9jayBzdXBwb3J0DQo+ID4g
+DQpodHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9y
+Zy9wcm9qZWN0L2xpbnV4LW1lZGlhdGVrL2xpc3QvP3Nlcmllcz01MDE5MjNfXzshIUNUUk5LQTl3
+TWcwQVJidyF5Ym03RTgwRExMWVhzOE91ak80NlNVS1lGT1V4OGdzTFpQVEU2VkRGckdUUTByQVls
+SkpIT1VLaExfWlVTSlNMa0EkDQo+ID4gIA0KPiA+IChkdC1iaW5kaW5ncy9jbG9jay9tdDgxOTUt
+Y2xrLmggaXMgaW5jbHVkZWQpDQo+IA0KPiBUaGlzIGRlcGVuZGVuY3kgaXMgc3RpbGwgbm90IGFw
+cGxpZWQsIHNvIHRoZSBleGFtcGxlIGZhaWxzLiBPbmUgb2YNCj4gdGhlDQo+IGZvbGxvd2luZyBu
+ZWVkcyB0byBoYXBwZW46IHRoZSBkZXBlbmRlbmN5IG5lZWRzIHRvIGJlIGFwcGxpZWQsIHRoaXMN
+Cj4gcGF0Y2ggcmV2ZXJ0ZWQsIG9yIGRyb3AgdGhlIHVzZSBvZiB0aGUgZGVmaW5lcyBpbiB0aGUg
+ZXhhbXBsZS4NCj4gDQo+IFJvYg0KDQpIaSBSb2IsDQoNCkkgc2VuZCBhIHBhdGNoIGFuZCBkcm9w
+IHRoZSB1c2Ugb2YgZGVmaW5lcy4NCg0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9q
+ZWN0L2Fsc2EtZGV2ZWwvcGF0Y2gvMjAyMTA4MzEwODM5NTYuOTgwNC0xLXRyZXZvci53dUBtZWRp
+YXRlay5jb20vDQoNClRoYW5rcywNClRyZXZvcg0KDQo=
 
-> Opportunistically, fix a stale comment.
-
-Ack for this one :)
- 
-> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> ---
->  arch/x86/mm/init_64.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> index 3c0323ad99da..de5a785ee89f 100644
-> --- a/arch/x86/mm/init_64.c
-> +++ b/arch/x86/mm/init_64.c
-> @@ -220,16 +220,19 @@ static void sync_global_pgds(unsigned long start, unsigned long end)
->  
->  /*
->   * NOTE: This function is marked __ref because it calls __init function
-> - * (alloc_bootmem_pages). It's safe to do it ONLY when after_bootmem == 0.
-> + * (memblock_alloc). It's safe to do it ONLY when after_bootmem == 0.
->   */
->  static __ref void *spp_getpage(void)
->  {
->  	void *ptr;
->  
-> -	if (after_bootmem)
-> -		ptr = (void *) get_zeroed_page(GFP_ATOMIC);
-> -	else
-> +	if (after_bootmem) {
-> +		struct page *page = alloc_table(GFP_ATOMIC | __GFP_ZERO);
-> +
-> +		ptr = page ? page_address(page) : NULL;
-> +	} else {
->  		ptr = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> +	}
->  
->  	if (!ptr || ((unsigned long)ptr & ~PAGE_MASK)) {
->  		panic("set_pte_phys: cannot allocate page data %s\n",
-> -- 
-> 2.17.1
-> 
-
--- 
-Sincerely yours,
-Mike.
