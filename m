@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692233FC4D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1210E3FC4DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 11:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240589AbhHaJJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 05:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
+        id S240591AbhHaJKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 05:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240563AbhHaJJO (ORCPT
+        with ESMTP id S240514AbhHaJKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 05:09:14 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1468C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:08:19 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id x16so8568168pll.2
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 02:08:19 -0700 (PDT)
+        Tue, 31 Aug 2021 05:10:12 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AC2C061575;
+        Tue, 31 Aug 2021 02:09:17 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id n18so15994163pgm.12;
+        Tue, 31 Aug 2021 02:09:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CTxJXnRnnalWZJuFXpjzUKednFVCieUvYxYV8lHL8KY=;
-        b=ruqckO53AblQ34q1ZT0jydIzhi6uJGo23HSI1EInQtSWymAhbRuafetOHWN8WICCQF
-         OYZxIBIZYdiaQ/l9CdOYjNfBW3AzTrQu+rE0Ok3S3yLbYrNPNJp6qsV7GLAFOgoYKBhd
-         xGcu9oJPrstSjbNl44T9ZEF9yp+B3r+cIlKZjGHT0GXdJ1kOONmP1/NXbMVrKgjuErdH
-         +UvjdHMwSyzWmh4zSA+El+1GcVmqgJikVXnbejTlBCv5UoC5SqJ7BWvOR2yb2LGbuh9o
-         vOEQLZTA89XqgYi2ff2AJaFSehPnAJ8UF4vu6XEHL0lEJzWj0F39//eaEWO2KjzuwhER
-         Oqbw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ruYftc1JWeVoKKcfbA7HEXx0YC09WyAU0r86mDYsBhI=;
+        b=N/pBVrwX7AdT9rcC3hgqE5o9sJ8arcIbRqrJU0spLdoFJ8KY0Yx4sNF/b+5pG0KUe2
+         ziaKN1AbNQMgSyzpW5icnh0AlVbqlbhw/sZAUf+EgNfnTolt7TbeZ6GowIVvT+ywLLqf
+         B4AnsA3sU9VfTT3695EQ6Qn9BNnJ7oQLtLnZqsDnk3yb2NEhQpBzs/6VG0/KDIvnIHuv
+         dstgBLnqQMKiROn21Z16Vpz6IPkX1XA+H3PCpouYG/u/3vKD1JP03YscGt9vD2srmgnb
+         DrZqmoXiJMNQcMAe+GJBjnZn7hjPNugYlDsGpk56djcQG9F0oEECh+lCpvmThUBdBJrB
+         O70w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CTxJXnRnnalWZJuFXpjzUKednFVCieUvYxYV8lHL8KY=;
-        b=oJcWdYKQ+xWeliDm5i/lYoCMt0r+DNNG65ljTkoNup5x6gDHcl29Byn6oStSSeSI9f
-         gNcDkfinW6iXPvHSbSIIQqNTpLTcgU3P0bk2+MsAEnqiFbuK6GXayxM8TW4AzTAhvE+i
-         WV0/oDQgCFatb1hb4O+oi1lJ01PbK+lPdMdvO5+GTXY3sij9QD1Luy/JJGP7sSF7faE5
-         9OsMLUW4FtPDtP31HTs9BAQxijO3tD1LwrKYVX4h5r4p2Voo/6VS5SZ1p7C/IYVLmhE2
-         /cNI/XitVjcY717MkCc/maFVo1n9951BsPUYY4Tq6Unxes1+KgJ1Du3SsmiMwaBqe3ML
-         MIzA==
-X-Gm-Message-State: AOAM531gEcYNFQAprLS2S2H++7jg2DWDjT8nXCF/ARPuQV8faQJ9JKtk
-        1X/LxWs9Gb6rQG4VEk/zWVFbIl7fatp9tMPGgSc7FhQ/k0k=
-X-Google-Smtp-Source: ABdhPJwz97BCEL9VXsx86CUfQyn+MNaxhuJW5kHvtxfjg7JRj95GGdbr0jWlR+nMdcmJDK61Am0i+x1lvvw9hWjHmoQ=
-X-Received: by 2002:a17:90a:10:: with SMTP id 16mr4201403pja.162.1630400899232;
- Tue, 31 Aug 2021 02:08:19 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ruYftc1JWeVoKKcfbA7HEXx0YC09WyAU0r86mDYsBhI=;
+        b=kVxiIUsmRIAXuisQcPYs5KtACYdHjLeRBJqg5rZSe9wBMUGizO40UMDLbxPVVECIME
+         cyM2NEdk71uZHPBHQpvJy6oaxhJvGc3i5ZLEpJP9pxEUkfS3SQQK8i3k4pog267JMSkJ
+         EoEzeovy71Lc9YvGh58mJ/wkou94rVQ17TRjcRVN+BBR0YKwOZnYc09oZCRqJssh9kTP
+         om3d9CMvF27zCO8wn0ETWjvqmQLEreWoFJQKTwl+rmt3UKW/y9vxnXUhTDR2XMOy7YCI
+         jVbxeyUHwNBd8iWEjuh0dZezaM27jTWUzMADINxV8+PX1N/AZi6Ww6TBK0LZfjrsRUA/
+         8lGA==
+X-Gm-Message-State: AOAM530joiefKIiz++LNRP1YFwGYZQ9h/pczMvEmOyzUG0JMFBBdvz4y
+        PQCW0LTP/Cw00lO7QzgZCM8K+mBvu9o=
+X-Google-Smtp-Source: ABdhPJyKjsxAemWS/pltAEikzHmgoiie3Xx4Cmk7qlWYkbKeAdCOLVJi3hAP4teEFdASKombX195vw==
+X-Received: by 2002:a62:5297:0:b0:3f4:263a:b078 with SMTP id g145-20020a625297000000b003f4263ab078mr21679863pfb.20.1630400956687;
+        Tue, 31 Aug 2021 02:09:16 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id 15sm16814087pfl.186.2021.08.31.02.09.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 02:09:16 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: lv.ruyi@zte.com.cn
+To:     davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Ruyi <lv.ruyi@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] ipv6: remove duplicated 'net/lwtunnel.h' include
+Date:   Tue, 31 Aug 2021 02:09:06 -0700
+Message-Id: <20210831090906.15612-1-lv.ruyi@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <85959c1f-80d4-3fd9-f8a5-d7688e337e95@gmail.com>
-In-Reply-To: <85959c1f-80d4-3fd9-f8a5-d7688e337e95@gmail.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Tue, 31 Aug 2021 10:08:08 +0100
-Message-ID: <CAA=Fs0myEC51-RoTDFgW4+9KkprdKgQ8=C5Xuy9F7ta0z1fFeg@mail.gmail.com>
-Subject: Re: staging: r8188eu: Switching encryption to use lib80211
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 at 09:40, Michael Straube <straube.linux@gmail.com> wrote:
->
-> Hi Larry and all,
->
-> I'm currently working on adapting patches from the old rtl8188eu driver
-> that convert the frame de/encrypt functions to use lib80211.
->
-> Please let me know if it's not worth.
->
-> Thanks,
-> Michael
+From: Lv Ruyi <lv.ruyi@zte.com.cn>
 
-Dear Michael,
+Remove all but the first include of net/lwtunnel.h from seg6_iptunnel.c.
 
-Having had a brief look at the code, and given that this is a stated
-objective of the other Realtek drivers in staging as well, it seems
-like a worthwhile effort to me. Happy to be corrected of course :-)
-Thanks.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+---
+ net/ipv6/seg6_iptunnel.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Regards,
-Phil
+diff --git a/net/ipv6/seg6_iptunnel.c b/net/ipv6/seg6_iptunnel.c
+index 6ebc7aa24466..1bf5f5ae75ac 100644
+--- a/net/ipv6/seg6_iptunnel.c
++++ b/net/ipv6/seg6_iptunnel.c
+@@ -26,7 +26,6 @@
+ #ifdef CONFIG_IPV6_SEG6_HMAC
+ #include <net/seg6_hmac.h>
+ #endif
+-#include <net/lwtunnel.h>
+ #include <linux/netfilter.h>
+
+ static size_t seg6_lwt_headroom(struct seg6_iptunnel_encap *tuninfo)
+-- 
+2.25.1
+
