@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E79D3FCF45
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 23:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EE63FCF49
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 23:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241399AbhHaVtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 17:49:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52634 "EHLO mail.kernel.org"
+        id S241409AbhHaVth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 17:49:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240961AbhHaVte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240867AbhHaVte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 31 Aug 2021 17:49:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9BC0461056;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2DCA76103D;
         Tue, 31 Aug 2021 21:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1630446518;
-        bh=jHcyLjtGwj/yrm1bNFOdm6UFJ+i3n0ZvAXflFin9yX0=;
+        bh=ROGyCSEnS0EwPih0AVc0zvSTxAsHupBcnNjAxTQi3F0=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ZgRQ8TUo9Hx1HfogzU4oH622/0BxvaZsTeQt0YMDTNvrX45Ii/Id79wb9V5DltoUv
-         /TXdmDBs2vGRQDzgrshZwhul4qsEJfb25fMCrCvNRyf5WGw4x58fmw9T7ndvnkpdpi
-         6eIHvEXMsZNv4NKbZoAalk+B17F31ZOdbUp4Ki0v6Jaah6YsUc88GZucGu3o+0TZRQ
-         Z5hxjtBZspMN5go6Iy54QFlWFT0H5XOE9AQORa4RxoOejFSNIfSyKHUZ85Rbs4AqFF
-         lXI5NkGliolixwkjWgY7veIyT6ki+BBmk70OuJqreDK13uvCUVFUhHTIrw+No0M3yK
-         IgP7toKhb3OUA==
+        b=Acz8bj3/P21NE0E3EescdwpZXiToPKLNZv+kYUBEGyyJeIwuefjMFZPE1N/DFYt20
+         SO14zdMaLFHOGOQZbZHD1WOd8z87zxTHS0zrOJ6p6ioA+cE7dDMXy0nzoTviJrW3zw
+         fIhh6pkBkU5e1EGXYYCl2qxkHpNcQoOy837rd1VastP/tStsF8dTR9kQqRyDWMGULI
+         VUetgGtRaGJVxPs3vaIfUMwAgvLpzRNutfXvru3L7VhwHKC9LVy1VOnicNIo3E3dWK
+         qQhTYFoTl4HoZGCenK7yIMDtMIpSrjJiW8NylcHRaswZ9SkxohBVabkav3ch6B1mUw
+         DAkYv9YWLyfSQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9754060A6C;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 294A660A6F;
         Tue, 31 Aug 2021 21:48:38 +0000 (UTC)
-Subject: Re: [GIT PULL] LEDs changes for v5.15-rc1
+Subject: Re: [GIT PULL] hwmon updates for v5.15
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210831180830.GA13989@duo.ucw.cz>
-References: <20210831180830.GA13989@duo.ucw.cz>
+In-Reply-To: <20210830212608.2704628-1-linux@roeck-us.net>
+References: <20210830212608.2704628-1-linux@roeck-us.net>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210831180830.GA13989@duo.ucw.cz>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ tags/leds-5.15-rc1
-X-PR-Tracked-Commit-Id: 239f32b4f161c1584cd4b386d6ab8766432a6ede
+X-PR-Tracked-Message-Id: <20210830212608.2704628-1-linux@roeck-us.net>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.15
+X-PR-Tracked-Commit-Id: 0e35f63f7f4eebd268ec236fd1bbf4e561ce8de5
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a998a62be9cdb509491731ffe81575aa09943a32
-Message-Id: <163044651861.1462.129439761225469593.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: e7c1bbcf0c315c56cd970642214aa1df3d8cf61d
+Message-Id: <163044651816.1462.15402559517805456286.pr-tracker-bot@kernel.org>
 Date:   Tue, 31 Aug 2021 21:48:38 +0000
-To:     Pavel Machek <pavel@ucw.cz>
+To:     Guenter Roeck <linux@roeck-us.net>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        jacek.anaszewski@gmail.com, linux-leds@vger.kernel.org
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 31 Aug 2021 20:08:30 +0200:
+The pull request you sent on Mon, 30 Aug 2021 14:26:08 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ tags/leds-5.15-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.15
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a998a62be9cdb509491731ffe81575aa09943a32
+https://git.kernel.org/torvalds/c/e7c1bbcf0c315c56cd970642214aa1df3d8cf61d
 
 Thank you!
 
