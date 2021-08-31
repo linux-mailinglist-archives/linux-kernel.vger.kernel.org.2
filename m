@@ -2,188 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E0A3FC1AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 05:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE2E3FC1B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 05:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239526AbhHaDud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 23:50:33 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:18992 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239509AbhHaDua (ORCPT
+        id S239469AbhHaDuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 23:50:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231959AbhHaDux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 23:50:30 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GzCl75jDVzbkSH;
-        Tue, 31 Aug 2021 11:45:39 +0800 (CST)
-Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 31 Aug 2021 11:49:34 +0800
-Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
- dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Tue, 31 Aug 2021 11:49:33 +0800
-From:   Zenghui Yu <yuzenghui@huawei.com>
-To:     <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <wanghaibin.wang@huawei.com>, "Zenghui Yu" <yuzenghui@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jun Nie <jun.nie@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH] dt-bindings: display: remove zte,vou.txt binding doc
-Date:   Tue, 31 Aug 2021 11:49:24 +0800
-Message-ID: <20210831034924.86-1-yuzenghui@huawei.com>
-X-Mailer: git-send-email 2.23.0.windows.1
+        Mon, 30 Aug 2021 23:50:53 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3344DC061575;
+        Mon, 30 Aug 2021 20:49:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=lfVb8puVRcwGOE5PDLqOhyWo7XCfNi3oWP2MVkqEJUg=; b=4aaxxn1fX31IknqwFBEe/0Chss
+        bpw5rJy6r5lR6Z2g44ldILvB3cUun0PMP+VQwvetUMvlAsqi00sjXNFmhim1/h4lxOXaiZGF5MfUr
+        NeDDv7ktu6u5L/hym8/9PjKCXM+/wgYlaFGNbbw8DjNLR4eY6MduPR64HKuoyO/OhTCJ/jfl53lI4
+        erPxqeUkWSkIE1NqolOIYGiTqvonADEjKsvciiVymftaTSv6AEGhjzv12Wfbh2EM80Nuu2LCY2WRb
+        D4kmNPMSZC1gMnoI2LjSFlwSIN+HlSIU8I9rf+LXR0bSggIl4F0EogyNfYxYyTNJKxDpQ/2iLPnAF
+        mjf10aaQ==;
+Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.153])
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKumb-001Fw8-Uz; Tue, 31 Aug 2021 03:49:58 +0000
+Subject: Re: [RFC PATCH v2 18/19] x86/mm: Add PKS table soft mode
+To:     Rick Edgecombe <rick.p.edgecombe@intel.com>, dave.hansen@intel.com,
+        luto@kernel.org, peterz@infradead.org, x86@kernel.org,
+        akpm@linux-foundation.org, keescook@chromium.org,
+        shakeelb@google.com, vbabka@suse.cz, rppt@kernel.org
+Cc:     linux-mm@kvack.org, linux-hardening@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, ira.weiny@intel.com,
+        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
+References: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
+ <20210830235927.6443-19-rick.p.edgecombe@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <052d20c6-347d-6340-1a62-d62bf53d3315@infradead.org>
+Date:   Mon, 30 Aug 2021 20:49:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.179]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema764-chm.china.huawei.com (10.1.198.206)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210830235927.6443-19-rick.p.edgecombe@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The zte zx platform was removed in commit 89d4f98ae90d ("ARM: remove zte
-zx platform") and the zxdrm driver is going to be removed in v5.15 via
-drm tree. Let's remove the now obsolete binding doc.
+On 8/30/21 4:59 PM, Rick Edgecombe wrote:
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 7902fce7f1da..8bb290fee77f 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -4254,6 +4254,10 @@
+>   	nopti		[X86-64]
+>   			Equivalent to pti=off
+>   
+> +	nopkstables	[X86-64] Disable PKS page table protection
+> +
+> +	pkstablessoft	[X86-64] Warn instead of oops on pks tables violations
 
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Jun Nie <jun.nie@linaro.org>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
----
- .../devicetree/bindings/display/zte,vou.txt   | 120 ------------------
- 1 file changed, 120 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/display/zte,vou.txt
+preferably		                                 PKS
 
-diff --git a/Documentation/devicetree/bindings/display/zte,vou.txt b/Documentation/devicetree/bindings/display/zte,vou.txt
-deleted file mode 100644
-index 38476475fd60..000000000000
---- a/Documentation/devicetree/bindings/display/zte,vou.txt
-+++ /dev/null
-@@ -1,120 +0,0 @@
--ZTE VOU Display Controller
--
--This is a display controller found on ZTE ZX296718 SoC.  It includes multiple
--Graphic Layer (GL) and Video Layer (VL), two Mixers/Channels, and a few blocks
--handling scaling, color space conversion etc.  VOU also integrates the support
--for typical output devices, like HDMI, TV Encoder, VGA, and RGB LCD.
--
--* Master VOU node
--
--It must be the parent node of all the sub-device nodes.
--
--Required properties:
-- - compatible: should be "zte,zx296718-vou"
-- - #address-cells: should be <1>
-- - #size-cells: should be <1>
-- - ranges: list of address translations between VOU and sub-devices
--
--* VOU DPC device
--
--Required properties:
-- - compatible: should be "zte,zx296718-dpc"
-- - reg: Physical base address and length of DPC register regions, one for each
--   entry in 'reg-names'
-- - reg-names: The names of register regions. The following regions are required:
--	"osd"
--	"timing_ctrl"
--	"dtrc"
--	"vou_ctrl"
--	"otfppu"
-- - interrupts: VOU DPC interrupt number to CPU
-- - clocks: A list of phandle + clock-specifier pairs, one for each entry
--   in 'clock-names'
-- - clock-names: A list of clock names.  The following clocks are required:
--	"aclk"
--	"ppu_wclk"
--	"main_wclk"
--	"aux_wclk"
--
--* HDMI output device
--
--Required properties:
-- - compatible: should be "zte,zx296718-hdmi"
-- - reg: Physical base address and length of the HDMI device IO region
-- - interrupts : HDMI interrupt number to CPU
-- - clocks: A list of phandle + clock-specifier pairs, one for each entry
--   in 'clock-names'
-- - clock-names: A list of clock names.  The following clocks are required:
--	"osc_cec"
--	"osc_clk"
--	"xclk"
--
--* TV Encoder output device
--
--Required properties:
-- - compatible: should be "zte,zx296718-tvenc"
-- - reg: Physical base address and length of the TVENC device IO region
-- - zte,tvenc-power-control: the phandle to SYSCTRL block followed by two
--   integer cells.  The first cell is the offset of SYSCTRL register used
--   to control TV Encoder DAC power, and the second cell is the bit mask.
--
--* VGA output device
--
--Required properties:
-- - compatible: should be "zte,zx296718-vga"
-- - reg: Physical base address and length of the VGA device IO region
-- - interrupts : VGA interrupt number to CPU
-- - clocks: Phandle with clock-specifier pointing to VGA I2C clock.
-- - clock-names: Must be "i2c_wclk".
-- - zte,vga-power-control: the phandle to SYSCTRL block followed by two
--   integer cells.  The first cell is the offset of SYSCTRL register used
--   to control VGA DAC power, and the second cell is the bit mask.
--
--Example:
--
--vou: vou@1440000 {
--	compatible = "zte,zx296718-vou";
--	#address-cells = <1>;
--	#size-cells = <1>;
--	ranges = <0 0x1440000 0x10000>;
--
--	dpc: dpc@0 {
--		compatible = "zte,zx296718-dpc";
--		reg = <0x0000 0x1000>, <0x1000 0x1000>,
--		      <0x5000 0x1000>, <0x6000 0x1000>,
--		      <0xa000 0x1000>;
--		reg-names = "osd", "timing_ctrl",
--			    "dtrc", "vou_ctrl",
--			    "otfppu";
--		interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
--		clocks = <&topcrm VOU_ACLK>, <&topcrm VOU_PPU_WCLK>,
--			 <&topcrm VOU_MAIN_WCLK>, <&topcrm VOU_AUX_WCLK>;
--		clock-names = "aclk", "ppu_wclk",
--			      "main_wclk", "aux_wclk";
--	};
--
--	vga: vga@8000 {
--		compatible = "zte,zx296718-vga";
--		reg = <0x8000 0x1000>;
--		interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
--		clocks = <&topcrm VGA_I2C_WCLK>;
--		clock-names = "i2c_wclk";
--		zte,vga-power-control = <&sysctrl 0x170 0xe0>;
--	};
--
--	hdmi: hdmi@c000 {
--		compatible = "zte,zx296718-hdmi";
--		reg = <0xc000 0x4000>;
--		interrupts = <GIC_SPI 82 IRQ_TYPE_EDGE_RISING>;
--		clocks = <&topcrm HDMI_OSC_CEC>,
--			 <&topcrm HDMI_OSC_CLK>,
--			 <&topcrm HDMI_XCLK>;
--		clock-names = "osc_cec", "osc_clk", "xclk";
--	};
--
--	tvenc: tvenc@2000 {
--		compatible = "zte,zx296718-tvenc";
--		reg = <0x2000 0x1000>;
--		zte,tvenc-power-control = <&sysctrl 0x170 0x10>;
--	};
--};
+> +
+>   	pty.legacy_count=
+>   			[KNL] Number of legacy pty's. Overwrites compiled-in
+>   			default number.
+
+
 -- 
-2.19.1
+~Randy
 
