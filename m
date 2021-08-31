@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508CA3FBFDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 02:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB85A3FBFE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 02:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239169AbhHaAE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 20:04:56 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:42731 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233201AbhHaAEv (ORCPT
+        id S239153AbhHaAHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 20:07:43 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:47148 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233270AbhHaAHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 20:04:51 -0400
-Received: by mail-ot1-f54.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so20579697otk.9;
-        Mon, 30 Aug 2021 17:03:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=X+JzFHvarIVnvQQqcBJPXmNCBKi89Vgxfb6Fxl+5bS0=;
-        b=NShZJbuOZ6AmLI4BJG474mCUb0GDW8aDGaiNiCAr0kZoa/BZyP8M55KQtmoPOoaSWn
-         poI0zfZZydR61Z1f+YVmSoUgOiYowL2iQl6APMMCtMwabV57QI+M6oJC89RNmkzhhpAV
-         tbc3DVaNFnwqz03ClBul3jB1+aSbjKg9rXuZau+HeCS+45hru65LyNQmOdOf/UmDsFNz
-         jhqbNG5CDGew8yoCqzGTjYiuNxHRipRKYhaxRjFoXYlnGrT20hA2u+ByM+X2CAHh+0nx
-         qFPgGeFKReexGd5KYnABpWTK/Vt535j+qW9yLO8hQe2CYUaYqCO/ngNFUIqdr2nh+Ifd
-         B9qg==
-X-Gm-Message-State: AOAM532gBEgnzRlY0PesfE8lFfUn2z0+UP1XSH8cMWglIelPadavBM6S
-        FBnO4Rv092IYRF10O/rQUw==
-X-Google-Smtp-Source: ABdhPJwF/IP0deTf//Ue3cOh3Y7qENVSDc0BoPLSkMEtkukSAs7/D/uJt7OhzFx2N7wm4NL5Jl+cfA==
-X-Received: by 2002:a05:6830:1d59:: with SMTP id p25mr21366508oth.191.1630368236877;
-        Mon, 30 Aug 2021 17:03:56 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l8sm3282905oom.19.2021.08.30.17.03.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 17:03:56 -0700 (PDT)
-Received: (nullmailer pid 2940840 invoked by uid 1000);
-        Tue, 31 Aug 2021 00:03:53 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Mikhail Rudenko <mike.rudenko@gmail.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>, linux-phy@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>, linux-media@vger.kernel.org
-In-Reply-To: <20210830180758.251390-5-mike.rudenko@gmail.com>
-References: <20210830180758.251390-1-mike.rudenko@gmail.com> <20210830180758.251390-5-mike.rudenko@gmail.com>
-Subject: Re: [PATCH v1 4/5] dt-bindings: phy: phy-rockchip-dphy-rx0: add support for tx1rx1 phy
-Date:   Mon, 30 Aug 2021 19:03:53 -0500
-Message-Id: <1630368233.493531.2940839.nullmailer@robh.at.kernel.org>
+        Mon, 30 Aug 2021 20:07:42 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKrIV-00HR8r-KE; Tue, 31 Aug 2021 00:06:39 +0000
+Date:   Tue, 31 Aug 2021 00:06:39 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
+ restore_fpregs_from_user()
+Message-ID: <YS1yj+mUtvnCab1g@zeniv-ca.linux.org.uk>
+References: <20210830154702.247681585@linutronix.de>
+ <20210830162545.374070793@linutronix.de>
+ <YS0ylo9nTHD9NiAp@zn.tnic>
+ <87zgsyg0eg.ffs@tglx>
+ <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
+ <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
+ <YS1OE6FRi4ZwEF8j@zeniv-ca.linux.org.uk>
+ <CAHk-=wh57tMaJxcH=kWE4xdKLjayKSDEVvMwHG4fKZ5tUHF6mg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh57tMaJxcH=kWE4xdKLjayKSDEVvMwHG4fKZ5tUHF6mg@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 21:07:53 +0300, Mikhail Rudenko wrote:
-> RK3399 TX1RX1 D-PHY is not a child of GRF and uses reg, thus add
-> corresponding properties conditionally. It also requires DSI clock to
-> operate, so check for it. Since we now support both rx0 and tx1rx1,
-> rename the schema to rockchip-mipi-dphy-rx.yaml.
+On Mon, Aug 30, 2021 at 03:00:06PM -0700, Linus Torvalds wrote:
+> On Mon, Aug 30, 2021 at 2:33 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >
+> > There's a place where we care about #PF vs. #MC (see upthread)...
 > 
-> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
-> ---
->  ...hy-rx0.yaml => rockchip-mipi-dphy-rx.yaml} | 39 +++++++++++++++++--
->  1 file changed, 35 insertions(+), 4 deletions(-)
->  rename Documentation/devicetree/bindings/phy/{rockchip-mipi-dphy-rx0.yaml => rockchip-mipi-dphy-rx.yaml} (65%)
-> 
+> Interestingly (or perhaps not), that case is a problem case in general
+> for "fault_in_pages_readable()".
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+s/a/the one and only/
 
-yamllint warnings/errors:
+> I'm not sure what the right model here is. We might need to make
+> fault_in_pages_readable() do things a cacheline at a time, at which
+> point those repeat loops start working, and the error code thing
+> becomes pointless.
 
-dtschema/dtc warnings/errors:
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/phy/rockchip-mipi-dphy-rx0.yaml'
-xargs: dt-doc-validate: exited with status 255; aborting
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/soc/rockchip/grf.example.dt.yaml'
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/phy/rockchip-mipi-dphy-rx0.yaml'
-make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/soc/rockchip/grf.example.dt.yaml] Error 255
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1419: dt_binding_check] Error 2
+	We really don't want to do that to fault_in_pages_readable();
+a separate primitive doing that - perhaps, but fault_in_pages_readable()
+is used on fairly hot paths and all callers except this one don't need
+anything of that sort.
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1522296
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+	Similar for fault_in_pages_writeable() - there's exactly one
+caller that needs the same kind of warranties, only there it's in
+arch-independent code and I'm fairly sure that it (btrfs ioctl) really
+is broken on arm64...
