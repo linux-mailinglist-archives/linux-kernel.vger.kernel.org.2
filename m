@@ -2,88 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A5D3FC83B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5563FC83A
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236733AbhHaN3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234395AbhHaN3b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:29:31 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E1FC061575;
-        Tue, 31 Aug 2021 06:28:36 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id b200so24734318iof.13;
-        Tue, 31 Aug 2021 06:28:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6JteJgmJ7TKB+IV4kzfEq5TxJ8GRQQk3aer0scCZatA=;
-        b=nfF761u89YVrdWGrn/NHDrZAQh6OnOvEq0VNBTzGO6VS/UPXNP04HBntgLo+ke6rTG
-         HCuarkcn3w4Q9xXuKIqI/8+5ujNfoUN9txwXomfHP6H3sRbQDA+Vbtj5q9basadryKqd
-         GtdRJNDshmmqeSID9vQHMZz0fc9y7xVVYrKb7uzG4VzFwGTZFDvasRenukfMArUGyayR
-         6NObt5OT5fS7fHOO1vSFCdMf06LAFs1qEV09x1hCDt7Z7y/N7WqzG8Oi3iIx0xNtyemI
-         0X8UAOE1FNl9t5Tln71wsopXLmHuuXp4tXgiA7xT7kTxcV745wy82rpIJEPvyF176HaS
-         GQxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6JteJgmJ7TKB+IV4kzfEq5TxJ8GRQQk3aer0scCZatA=;
-        b=UVQOTjEnr3HNB1u4TRaxnK2yjWfDa55cVTZSKdSLew0V50LKy3XHJeiQNxeUFSRODF
-         TmmKe+lvBDVRtD9jBv5E1tniwEXpp5apzOgVUKMPada/shyZiuEHlgvK69fKqR+820sa
-         bxzJrWyUh+treLnRDbkQjR5tlSfM/RuXk0DMJsju2W5S4RZmOMDE6Y0xjIgm2LDmtPbM
-         uvuY8NpSN8QQX65MTuRkcPJ6aF3GV4FXdoH5Telk32IF5XU4ZbyjIF3xKAfBkUYvRtkR
-         6hU9OxLRXqf27ORj8wS9xeut2/FKxZ7TnNjxtaHuH+TXtSVIKajRyFixHklDrqjOIQSz
-         jwvw==
-X-Gm-Message-State: AOAM5310hxZokrAm8NLGh9u9oGxlJLNlvfDe6/Sj2nFVQWpoYz7ejp/J
-        Zpqfq+QTw+Toix6RSKNCT9o4QA9lZw9zrZPir50=
-X-Google-Smtp-Source: ABdhPJwN/QMzxM+/WzHEzDEe3UaGAXo5qc0AJAKY0J4OrXj4jPqMIAF40FyesWrSQrWNr8i7YJnhwKZxWEefCxKB/RQ=
-X-Received: by 2002:a05:6638:5b5:: with SMTP id b21mr2945619jar.109.1630416515898;
- Tue, 31 Aug 2021 06:28:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210824112946.9324-1-laoar.shao@gmail.com> <20210824112946.9324-5-laoar.shao@gmail.com>
- <YS4Nu6LJwwxfcTr1@hirez.programming.kicks-ass.net>
-In-Reply-To: <YS4Nu6LJwwxfcTr1@hirez.programming.kicks-ass.net>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 31 Aug 2021 21:27:59 +0800
-Message-ID: <CALOAHbAG4v+ZnTohLDP6EFp50N0i=i-KTRvwhVhgmA8bZZX11Q@mail.gmail.com>
-Subject: Re: [PATCH v3 4/7] sched: make the output of schedstats independent
- of fair sched class
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Alison Chaiken <achaiken@aurora.tech>,
-        kbuild test robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S236590AbhHaN3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:29:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235830AbhHaN3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 09:29:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE480604AC;
+        Tue, 31 Aug 2021 13:28:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630416492;
+        bh=OAp364m4aIjqi4gEP2Ealo+3OMtbosCXeHlXtHkX4qw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Bl3Dsj37HdsRWLWo0U+UGLvhbo+UMa0o6LGRcTSTxI8+vgvUqw/kdhhriRf8FvpZY
+         vXSdPsJKFVEUbH5PmYTky1yPSRitXYc4sySHEJAwVAQYZTUMHclfAf1qflT+qc+r+U
+         K1yoeLTWh4tiBr51knUMEDBe1UYUgZAFFX1bCsa/ovDsj3x/oygZuCCdmWf+DA4SWi
+         Pw70mqwUzGXo4mVbDuJiahx/3a32m2EOrqEoXa+cAy063FUGyh8Iue3MdI5lrmyRDU
+         Gzqn9cVTRprA9Uc4yIE/jTNHkxaEqeisbrc3TPfFYWBaxX3srEs5VSH6J7FmBFb92q
+         kysOSSnRQRB+g==
+Date:   Tue, 31 Aug 2021 22:28:10 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: Re: [trace:ftrace/core 35/39] kernel/trace/trace_boot.c:418:17:
+ warning: this 'if' clause does not guard...
+Message-Id: <20210831222810.2cee363a4b094e3faba13bc7@kernel.org>
+In-Reply-To: <20210831221500.8c4e179571bffcfdbd0da91c@kernel.org>
+References: <202108312050.5qqqDz5V-lkp@intel.com>
+        <20210831221500.8c4e179571bffcfdbd0da91c@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 7:09 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Aug 24, 2021 at 11:29:43AM +0000, Yafang Shao wrote:
-> > The per cpu stats can be show with /proc/sched_debug, which includes the
-> > per cpu schedstats of each task group. Currently these per cpu
-> > schedstats only show for the fair sched class. If we want to support
-> > other sched classes, we have to make these output independent of fair
-> > sched class.
->
-> Arguably the whole rt group stuff needs to die, please don't enable it
-> further.
+On Tue, 31 Aug 2021 22:15:00 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Sure.
+> Oops, thanks for the great test bot!
+> Let me send a fix asap.
+
+Hmm, this has been fixed in ftrace/for-next, it has the latest my patch.
+
+Thank you,
+
+> 
+> Thank you,
+> 
+> On Tue, 31 Aug 2021 20:57:56 +0800
+> kernel test robot <lkp@intel.com> wrote:
+> 
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git ftrace/core
+> > head:   3dc65994e3c1c999be3d991cdc96705e167cb3b1
+> > commit: 5d4648a0415efc239ffb377bce1d389723eda25d [35/39] tracing/boot: Show correct histogram error command
+> > config: s390-allyesconfig (attached as .config)
+> > compiler: s390-linux-gcc (GCC) 11.2.0
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git/commit/?id=5d4648a0415efc239ffb377bce1d389723eda25d
+> >         git remote add trace https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+> >         git fetch --no-tags trace ftrace/core
+> >         git checkout 5d4648a0415efc239ffb377bce1d389723eda25d
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=s390 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > All warnings (new ones prefixed by >>):
+> > 
+> >    kernel/trace/trace_boot.c: In function 'trace_boot_init_histograms':
+> > >> kernel/trace/trace_boot.c:418:17: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+> >      418 |                 if (trace_boot_compose_hist_cmd(hnode, buf, size) == 0)
+> >          |                 ^~
+> >    kernel/trace/trace_boot.c:420:25: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+> >      420 |                         if (trigger_process_regex(file, buf) < 0)
+> >          |                         ^~
+> > 
+> > 
+> > vim +/if +418 kernel/trace/trace_boot.c
+> > 
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  395  
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  396  static void __init
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  397  trace_boot_init_histograms(struct trace_event_file *file,
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  398  			   struct xbc_node *hnode, char *buf, size_t size)
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  399  {
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  400  	struct xbc_node *node;
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  401  	const char *p;
+> > 5d4648a0415efc Masami Hiramatsu 2021-08-06  402  	char *tmp;
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  403  
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  404  	xbc_node_for_each_subkey(hnode, node) {
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  405  		p = xbc_node_get_data(node);
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  406  		if (!isdigit(p[0]))
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  407  			continue;
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  408  		/* All digit started node should be instances. */
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  409  		if (trace_boot_compose_hist_cmd(node, buf, size) == 0) {
+> > 5d4648a0415efc Masami Hiramatsu 2021-08-06  410  			tmp = kstrdup(buf, GFP_KERNEL);
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  411  			if (trigger_process_regex(file, buf) < 0)
+> > 5d4648a0415efc Masami Hiramatsu 2021-08-06  412  				pr_err("Failed to apply hist trigger: %s\n", tmp);
+> > 5d4648a0415efc Masami Hiramatsu 2021-08-06  413  			kfree(tmp);
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  414  		}
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  415  	}
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  416  
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  417  	if (xbc_node_find_child(hnode, "keys")) {
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06 @418  		if (trace_boot_compose_hist_cmd(hnode, buf, size) == 0)
+> > 5d4648a0415efc Masami Hiramatsu 2021-08-06  419  			tmp = kstrdup(buf, GFP_KERNEL);
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  420  			if (trigger_process_regex(file, buf) < 0)
+> > 5d4648a0415efc Masami Hiramatsu 2021-08-06  421  				pr_err("Failed to apply hist trigger: %s\n", tmp);
+> > 5d4648a0415efc Masami Hiramatsu 2021-08-06  422  			kfree(tmp);
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  423  	}
+> > 30cb856e3067e5 Masami Hiramatsu 2021-08-06  424  
+> > 
+> > :::::: The code at line 418 was first introduced by commit
+> > :::::: 30cb856e3067e5d6ae7b2144e1659145ab7686fd tracing/boot: Support multiple histograms for each event
+> > 
+> > :::::: TO: Masami Hiramatsu <mhiramat@kernel.org>
+> > :::::: CC: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > 
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
+
 
 -- 
-Thanks
-Yafang
+Masami Hiramatsu <mhiramat@kernel.org>
