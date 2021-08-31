@@ -2,126 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180743FBFFF
+	by mail.lfdr.de (Postfix) with ESMTP id D77AB3FC001
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 02:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239167AbhHaAas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 20:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46506 "EHLO
+        id S235201AbhHaAdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 20:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbhHaAas (ORCPT
+        with ESMTP id S230523AbhHaAdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 20:30:48 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6492C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 17:29:53 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id g184so15080637pgc.6
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 17:29:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z7t2trHohKRljUAy8EElwDU1qFOlxkYQyBAMS3eRrms=;
-        b=bpQFipTAYuUqHfkOkxyWTzIqI/NmWCfe7T+h2qJ3bc+3hXdQI1599rx2zZo5SYByOo
-         hMXXB3mmwwQo7f0SLX+pBTRhzQ051hMehaKauKITzxY2HpsNa3RtzOvAmbAGKprI/p6Q
-         ZHQaNkxdr+5cs6puooAH8eFJOzaQR7Y+nFNJATT4NEtGDN+WiUjqsL0KFEgI+YQleWG8
-         GEVW6IHq8PPqHhh9uhvMe9WIV42EWBucRKCJypq7Sn/gfMNkUT18UKoHABRZAysc/zW3
-         R9umsAsERZaPaIcAdXoJYwbNJIrxW+FRIDR4DOtoOZkBctsiXJ1vOa9Y5P3ODXhzkFas
-         tNmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z7t2trHohKRljUAy8EElwDU1qFOlxkYQyBAMS3eRrms=;
-        b=RoqV6LEKqjbgseodVKS9SsIldPU1NrBu+eadp0f46wf31b9cTAy8q7KkhBsMS/T3i7
-         eZzso8OJ+/gREb5EXdW5etj9y2F2JhyeJiou/swuctSXuCxT9U7Ts/dDSjtgYFWkoa40
-         M9yDK9aUsOesp8hNSNnElTGljb4Uuy1YOBJ2qIh0b2Tb5f3kbsluaXtxSmt5Uhn+Rc7K
-         NjNC0HZJTM7LILAc1zfL2BKWxjhtYK8XhVAS64zYwlkW0Ly5MT+aZSk1Gfe3uIRIb9rf
-         +Qo/0LF6HU6kiYnuVFs/+tfg8gRhUPIGDvGM8o1VLgfZzB4aLxZaCHEwfJ2OPN+T2Iba
-         cKaA==
-X-Gm-Message-State: AOAM532UPnbsdldNNiGHD4T39HrsXYJgFnbu4FUJOut9p2Lt4fgGERsL
-        FJxyby4IFUrEgHPCFchf9JRhSw==
-X-Google-Smtp-Source: ABdhPJw99INV458XzJrWDNLfNMw5o5IlxfrnFU+kMPaSJS1/SCUCWbpANVHWxdE8zHbmc6w9NHA3aA==
-X-Received: by 2002:a62:6447:0:b0:3fa:bce4:c78e with SMTP id y68-20020a626447000000b003fabce4c78emr13863085pfb.15.1630369792731;
-        Mon, 30 Aug 2021 17:29:52 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:d2dc:2a51:77c9:8407])
-        by smtp.gmail.com with ESMTPSA id g37sm17350992pgl.94.2021.08.30.17.29.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 17:29:51 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 17:29:45 -0700
-From:   Benson Leung <bleung@google.com>
-To:     Gwendal Grignou <gwendal@chromium.org>,
-        enric.balletbo@collabora.com, groeck@chromium.org
-Cc:     linux-kernel@vger.kernel.org, bleung@chromium.org
-Subject: Re: [PATCH] platform/chrome: cros_ec_trace: Fix format warnings
-Message-ID: <YS13+XuZxGP2xAnZ@google.com>
-References: <20210823200132.2006257-1-gwendal@chromium.org>
- <163036877941.809543.752509524579579884.b4-ty@chromium.org>
+        Mon, 30 Aug 2021 20:33:23 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BCFC061575;
+        Mon, 30 Aug 2021 17:32:28 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gz7S65yg0z9sW8;
+        Tue, 31 Aug 2021 10:32:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630369944;
+        bh=LhdBKPsFY2Teh7WbthD5Ps9+cXQ1553ImHKbZoLdgiA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FlV63Y9Z6Pb72G6ka5kPL9RZpySjWezsyIyCdfcAso2gACLkt52SLTehB6YfrmeOV
+         HR/CiJJPPEWU0BkAhYVZVI1h+LRYikZM9zpd1436uujQgBWb2PnfjEG7MtFnygBJNp
+         LqonHnHuZaVeDumnPj4YkTn8gKXO9U7MRVWEQ7C2Cvs+tjKsLjYtndecVSJ9Y59BEX
+         URIoM4Xoc31ipN4XN6IARGO8xxhgxyFxtAlvd2jSmwmpSEs+SHwvQzONeZhf7m/IIl
+         5OG4Sz1aJ27w6VeOQKiFx8RlU7T7LfoUr2PsOUCrTJsTYzRPFdeYVOGeI1p7/C2qJs
+         21B31fCxOVanw==
+Date:   Tue, 31 Aug 2021 10:32:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Benson Leung <bleung@google.com>
+Cc:     Stephen Rothwell <sfr@rothwell.id.au>,
+        Guenter Roeck <groeck@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the chrome-platform
+ tree
+Message-ID: <20210831103221.4aa2eae3@canb.auug.org.au>
+In-Reply-To: <YS11KS/XAGgTM5iQ@google.com>
+References: <20210823152134.00d95cb4@canb.auug.org.au>
+        <20210830172132.4fc0ae7f@elm.ozlabs.ibm.com>
+        <YS11KS/XAGgTM5iQ@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MUHmdAPqyeUfA1gW"
-Content-Disposition: inline
-In-Reply-To: <163036877941.809543.752509524579579884.b4-ty@chromium.org>
+Content-Type: multipart/signed; boundary="Sig_/XuVWglZNs2CzsJK2iPLfCbj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---MUHmdAPqyeUfA1gW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/XuVWglZNs2CzsJK2iPLfCbj
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi Gwendal,
+Hi Benson,
 
-On Mon, Aug 30, 2021 at 05:13:54PM -0700, Benson Leung wrote:
-> Hi Gwendal,
->=20
-> On Mon, 23 Aug 2021 13:01:32 -0700, Gwendal Grignou wrote:
-> > Fix printf format issues in new tracing events.
+On Mon, 30 Aug 2021 17:17:45 -0700 Benson Leung <bleung@google.com> wrote:
+>
+> On Mon, Aug 30, 2021 at 05:21:32PM +1000, Stephen Rothwell wrote:
+> > > Introduced by commit
+> > >=20
+> > >   d453ceb6549a ("platform/chrome: sensorhub: Add trace events for sam=
+ple") =20
 > >=20
-> > Fixes: 814318242 ("platform/chrome: cros_ec_trace: Add fields to comman=
-d traces")
+> > I am still seeing these warnings.
+> > --=20
+> > Cheers,
+> > Stephen Rothwell =20
 >=20
-> Applied, thanks!
+> I've just pushed this to chrome-platform's for-next:
+>   5a51bdb0ae26 ("platform/chrome: cros_ec_trace: Fix format warnings")
 >=20
-> [1/1] platform/chrome: cros_ec_trace: Fix format warnings
->       commit: 5a51bdb0ae26cac8764bfb59839a34ea13155a47
->=20
-> Best regards,
-> --=20
-> Benson Leung
-> Staff Software Engineer
-> Chrome OS Kernel
-> Google Inc.
-> bleung@google.com
-> Chromium OS Project
-> bleung@chromium.org
+> This should fix those warnings. Sorry for the long delay.
 
-Sorry about this, I merged v1 incorrectly, so I've repushed v3. Disregard t=
-his
-thank you.
-
-Benson
-
+Thanks.
 --=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
+Cheers,
+Stephen Rothwell
 
---MUHmdAPqyeUfA1gW
-Content-Type: application/pgp-signature; name="signature.asc"
+--Sig_/XuVWglZNs2CzsJK2iPLfCbj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYS13+QAKCRBzbaomhzOw
-wlREAP92JQXa5NACeLUYY8oYVy//93Myt0la4AIq0YSMkLlZvgEAxbxkXWHIpXlZ
-PvOv2BjRl3LhwNv+kNY5VgAJt89ubQg=
-=/d8t
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEteJUACgkQAVBC80lX
+0GzOTQf/SEjvRYtEG1BA+9Q+RgixyFHQwC8cY0Hv1sxFw1IbVGwMreGFRf9h1FZ+
+dBbP8OcFX4KhBHkw/8BaF+62rVvVmptTs7bXQLq/aiF4zvuY6DRynglYi01DZzV8
+FJcNHF0Dljz8o8HhgsLRyCyqke0llG0EThvLQ8bX+EMPPMleNFOPwe0ufhlhJ93c
+QbK8T++rsBrub1+mqvXvhrrEArHf35tIq7bAukCviNQ1Yr/FkUoioIXOtCr2yURs
+dk5f7RCPGnZuwDMKd4ZmatuofMk1IRijMME8ifC1DAN+Dw1JyQa42ib70COvtwln
+nNLMtpPLNSrWP8Nmmv4z2T/3vZ2L2w==
+=eQiz
 -----END PGP SIGNATURE-----
 
---MUHmdAPqyeUfA1gW--
+--Sig_/XuVWglZNs2CzsJK2iPLfCbj--
