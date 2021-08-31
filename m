@@ -2,107 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC3D3FC7DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FC33FC7EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 15:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234016AbhHaNHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 09:07:45 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:40740
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233245AbhHaNHo (ORCPT
+        id S234016AbhHaNMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 09:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232604AbhHaNMb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:07:44 -0400
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 583CD40179
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 13:06:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630415208;
-        bh=jb4Ta6fMMydeh8dJ+siO8U0aOew1wuXL5oWGSgaOpHo=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=OiZDTZREj74srvXpKwO1hRmgxDFk74g+LNkkYjyAt0RAIR/tZV+t/hV4bQSrsQLFd
-         j+LEMwiK6VjQgd5sv2kG94+9GSXA/tow4ZKKlCdUNIuS0val67ihVkrItlfaK+1zmg
-         epBrzgGYEicJREBgKHRJh6SwyG6nn4JqI/JuC7NGajp4UEQqMCTQsgObrzx2u9hDgv
-         sf7suMELPaojqarurSP8+DXTCdWOoC/JMD7NMbXCMHnacvQu9LFViTEszLSh+MdfpS
-         Trjb4dS0+1uwflfzBlRV5qh6DLtG17wYq4BT8M7zJBAYM7rfNKBuVaUGP5yHQxf8Zp
-         sAVvNU//Ql04g==
-Received: by mail-wr1-f72.google.com with SMTP id q11-20020a5d61cb0000b02901550c3fccb5so4015510wrv.14
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 06:06:48 -0700 (PDT)
+        Tue, 31 Aug 2021 09:12:31 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19ECEC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 06:11:36 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id i6so27688177wrv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 06:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=norberthealth-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=tGsBv1pAuKTHv07Wj00TrdwJkxbHrYcPF1O+phMPjvQ=;
+        b=ISRMIHCJo448TK3sYnTZC8NZneL8WWKQmmbfRil/r88gcP2FvGMwDJcHzNGU7h6pWp
+         Uj1DedVk/iy/C0+x69z8cYGRGpFRcHLxzrwqcpSdA8QwB5V8FgUxLvfba+MZwB4iMmBI
+         2AQz58GRAZKv5TeQ+UH+mxQnmXmlozsdWp/A/b7wLp8Eh5FVLfRphF1vf+eabskTzfBH
+         FB2qBNC2qeMp6cwV8A21qCVZmkbAmBcYhBevk1KHB6RWAom/EWLrW+AaIVIVJQi7gPNr
+         ElMBPZJiIOcqPvDmuuCyHy+y8Pp+pFZNzE4rbLvNr0zKYrmvtzcXTGHv4qwN/wn8TrVf
+         nC5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jb4Ta6fMMydeh8dJ+siO8U0aOew1wuXL5oWGSgaOpHo=;
-        b=e8XY/1QmqHiDF3tTXSQN7vHaAuDGajvkfkhegrA/bwNmSXGaiUMm1+u/4pUzROeeXh
-         ry8o8U1wqIySMivuwFUZJpXhKy13EVuz1cIiJrekdC08aY7q3kQnPDfCJXbRf3L/LT9B
-         g/5qLc0Cv1oU98JQp2OATqKes/rz13MVhlRj5hVTMMbfSYpyk0y+YZhucs7uoyuKI1D3
-         DJ6Jc54vCnP5PHiDd12DfGEhT87Vfh3v4j8LfqDhZdbimBPMxCgIBms5E1zntWN66lNm
-         /qIel9j5Bp73czQhq72M4X6zdpuOori6dHspa5qDednVPDKzILe6J9eHrV6rw8DXWBXE
-         3nFg==
-X-Gm-Message-State: AOAM5328GI2Eo+xT6Ih5AMlCw05Iwg4QWgml+UiJs4k2LxXHJ4IFEBU6
-        H3fMDLTuVSp81a1ijqWMI8OlcIqSc9RD74slxdf20MlgAWb0KcPaIP/InGKHOeJsU9x4DNGCgb7
-        wUn7YmpjBVGEcdD/1zU9jEEHIVJPMhO19OlTKFOXL8A==
-X-Received: by 2002:a1c:1d42:: with SMTP id d63mr4034755wmd.113.1630415208043;
-        Tue, 31 Aug 2021 06:06:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyRzBmZSNKQmsvfdl3PEsodfUa1SAbfBbCTnsvKSPFIvVjQbifNg+VvzvXV88t2ef5XMKkkKA==
-X-Received: by 2002:a1c:1d42:: with SMTP id d63mr4034739wmd.113.1630415207887;
-        Tue, 31 Aug 2021 06:06:47 -0700 (PDT)
-Received: from kozik-lap.lan ([79.98.113.233])
-        by smtp.gmail.com with ESMTPSA id u2sm2450035wmj.29.2021.08.31.06.06.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=tGsBv1pAuKTHv07Wj00TrdwJkxbHrYcPF1O+phMPjvQ=;
+        b=dtjLzyiC4WNPpGKmmX4wApG7/99k31Filb18YOWhudHwKQajuhTGs7OvG8KBDPvHvn
+         KLUwvpDaaYWIvPJOD7VR2B+/GkuBE1pkT7npQ4Gngx7qnr/wXRyuT3A+H3V3Mp4O3Qf3
+         Ra2aW+gvgomAH5xHBJdtQo32RnaVI8t2FCrUENu49Ulle5YR/n8NnwPG891+icGDa2fM
+         o3ExAghNq0DmncdkPedLhPQnrtha8fwDI0h5IxxaKzhUO+ojHuksTGgVWW4SZrPFVpJ1
+         ooCzfbQKHagrMWR79xx/ofYWhy9o8MPrDPinenMmtq5kJh15KT1wa57ahbMrz2G/uGce
+         QO6A==
+X-Gm-Message-State: AOAM530RmTuU33SEbKQFEQ3ZdurEZhrrZdrcG4ICOwx9c1duqHy6L41v
+        Ets3qXa8x4HtCeKwPnVBTlJr8w==
+X-Google-Smtp-Source: ABdhPJzXoivC1fHD6K9VYjFIPCkIgh3F+PvZ4MUGwzNrTLi0V4Up8N81Xnbry7iYFxDBEQalfJ5rbA==
+X-Received: by 2002:a05:6000:23a:: with SMTP id l26mr30839399wrz.369.1630415494498;
+        Tue, 31 Aug 2021 06:11:34 -0700 (PDT)
+Received: from localhost.localdomain (81.227.26.93.rev.sfr.net. [93.26.227.81])
+        by smtp.gmail.com with ESMTPSA id k4sm18459745wrm.74.2021.08.31.06.11.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 06:06:47 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: clock: samsung: fix header path in example
-Date:   Tue, 31 Aug 2021 15:06:43 +0200
-Message-Id: <20210831130643.83249-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 31 Aug 2021 06:11:34 -0700 (PDT)
+From:   Roger Knecht <roger@norberthealth.com>
+To:     Jiri Kosina <jkosina@suse.cz>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Jiri Kosina <trivial@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Roger Knecht <roger@norberthealth.com>
+Subject: [PATCH RESEND v3] Trivial comment fix for the CRC ITU-T polynom
+Date:   Tue, 31 Aug 2021 15:07:02 +0200
+Message-Id: <20210831130702.31526-1-roger@norberthealth.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The proper header is exynos4.h:
+This patch fixes a small typo in the CRC ITU-T polynom documentation.
 
-    samsung,exynos4412-isp-clock.example.dts:19:18: fatal error: dt-bindings/clock/exynos4412.h: No such file or directory
+The code comment says that the polynom is x^16 + x^12 + x^15 + 1, but the
+correct polynom is x^16 + x^12 + x^5 + 1.
 
-Fixes: 7ac615780926 ("dt-bindings: clock: samsung: convert Exynos4 to dtschema")
-Reported-by: Stephen Boyd <sboyd@kernel.org>
-Reported-by: Rob Herring <robh+dt@kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Quote from page 2 in the ITU-T V.41 specification:
+  "2 Encoding and checking process
 
+  The service bits and information bits, taken in conjunction, correspond
+  to the coefficients of a message polynomial having terms from x^(n-1)
+  (n = total number of bits in a block or sequence) down to x^16. This
+  polynomial is divided, modulo 2, by the generating polynomial
+  x^16 + x^12 + x^5 + 1. [...]"
+
+Source: https://www.itu.int/rec/T-REC-V.41-198811-I/en
+
+The hex polynom 0x1021 and CRC code implementation are correct.
+
+Signed-off-by: Roger Knecht <roger@norberthealth.com>
 ---
+Changes for the resend:
+  - Moved "changes and thanks" out of the commit message.
 
-The SHA in fixes tag is from linux-next. Might not be stable.
----
- .../devicetree/bindings/clock/samsung,exynos4412-isp-clock.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Roger
 
-diff --git a/Documentation/devicetree/bindings/clock/samsung,exynos4412-isp-clock.yaml b/Documentation/devicetree/bindings/clock/samsung,exynos4412-isp-clock.yaml
-index 7b405bcd6fef..1ed64add4355 100644
---- a/Documentation/devicetree/bindings/clock/samsung,exynos4412-isp-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/samsung,exynos4412-isp-clock.yaml
-@@ -52,7 +52,7 @@ additionalProperties: false
+ include/linux/crc-itu-t.h | 2 +-
+ lib/crc-itu-t.c           | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/crc-itu-t.h b/include/linux/crc-itu-t.h
+index a4367051e192..2f991a427ade 100644
+--- a/include/linux/crc-itu-t.h
++++ b/include/linux/crc-itu-t.h
+@@ -4,7 +4,7 @@
+  *
+  * Implements the standard CRC ITU-T V.41:
+  *   Width 16
+- *   Poly  0x1021 (x^16 + x^12 + x^15 + 1)
++ *   Poly  0x1021 (x^16 + x^12 + x^5 + 1)
+  *   Init  0
+  */
  
- examples:
-   - |
--    #include <dt-bindings/clock/exynos4412.h>
-+    #include <dt-bindings/clock/exynos4.h>
-     clock-controller@10048000 {
-         compatible = "samsung,exynos4412-isp-clock";
-         reg = <0x10048000 0x1000>;
+diff --git a/lib/crc-itu-t.c b/lib/crc-itu-t.c
+index 1974b355c148..56e6e0d63d1e 100644
+--- a/lib/crc-itu-t.c
++++ b/lib/crc-itu-t.c
+@@ -7,7 +7,7 @@
+ #include <linux/module.h>
+ #include <linux/crc-itu-t.h>
+ 
+-/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^15 + 1) */
++/** CRC table for the CRC ITU-T V.41 0x1021 (x^16 + x^12 + x^5 + 1) */
+ const u16 crc_itu_t_table[256] = {
+ 	0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
+ 	0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef,
 -- 
-2.30.2
+2.17.1
 
