@@ -2,184 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C99A3FCEC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE193FCEC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241159AbhHaUtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 16:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhHaUtE (ORCPT
+        id S241203AbhHaUtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 16:49:09 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:44649 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240484AbhHaUtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 16:49:04 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60A9C061575;
-        Tue, 31 Aug 2021 13:48:08 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id eb14so466323edb.8;
-        Tue, 31 Aug 2021 13:48:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PukLxj8PF44hPfPZSax4F6FSnHNWQbfJmpSj2w22I78=;
-        b=Xiuk9zA30NMWF8XhrbeTJPEl62/se/94IUtFgYD5W4nLHJ48vY5U7IJjWmtKVC3w1t
-         o0AznnrBYn7L2lyG+Cqhqcrk6jhGtnHIQZB2YroQsrpO3GQMPOzAj/yna7wxPnJdPEPy
-         qlnlFTNeTdfhHQutlVrf4xVLfCPiHbpUl39ebItWilCFor0DBvFTL7RqQqZNiSEEwDhn
-         PCR1hOTGR9P6Zr/SkzzZRwnm/tJwF9GCdjQO9jDgrHNzIBF94Damn5s5Sa/Ve2Phc1YG
-         DvM5FBHDhBxeUmguDyzpuTjy3TRFCn5Qdc+YrgKJjXLxxj+xNYEGcxtkB3UIzD78SuDm
-         XZHg==
+        Tue, 31 Aug 2021 16:49:07 -0400
+Received: by mail-ot1-f50.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so745727otg.11;
+        Tue, 31 Aug 2021 13:48:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PukLxj8PF44hPfPZSax4F6FSnHNWQbfJmpSj2w22I78=;
-        b=YCuIXg2QoGDc+CrakKTeIqZBXqqHVnYb1eP5G7ZRDL17+moueo5UfuO4Zi4G0iWWJI
-         aP1IgGO5r2PsvuDj5eKTlWWEKSeF5RMlUzxNpnHTHpHeWtUd7Ek6gBOkYUjDgZDCe2Ng
-         ggMhZZGR9+XJBcXS66HP5EYHeIp/ddhcqDW0u8xtRoCkVlsc85mKcgobJuG1BB5B7tG6
-         ZkcnT5SM+3IrvC8pMIsc0uWBRojQES6pRD52NLyPJ+4FBzErPX6vIbMijmtF6E+hPf7r
-         /bwZHMHfBRGVb/eiUf+OvEHaz29F4XSaevq3Rc4mW6226KkwwRcj886m6IZtPEw7XIvV
-         I7yw==
-X-Gm-Message-State: AOAM531ArngtiIUG6nerx4Rz9CD2EvGF+ZYXM/GkWYjA12GAyJKldtu4
-        JhhPw1NRCrSKAGYyEiidndwR+8BD9zvlzvoW4kc=
-X-Google-Smtp-Source: ABdhPJyNzcwfdq3eKJsOgi3wlcy3jJWKnEhkHouSu9RoNQ1aKGfQSX/1suN1mGAqKGoQHXilkSjWxYdx/ZEM2Z+dWlI=
-X-Received: by 2002:a50:e699:: with SMTP id z25mr31279466edm.130.1630442887231;
- Tue, 31 Aug 2021 13:48:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wNNp70ZeS1CkFL+U1J77pDYe0j7gaaFJgPTD6drutso=;
+        b=pDw6ijVRW4J8fOCCa8sxrQ20XQSQp9sWQBr3nsvoVqL55z7rsXk4Nqthzo2o3C6N+t
+         aF4vqeoBWuw9u5RLO81jw3nQjyU1k56ZwjW8LuttPRNjb0ZuXJ17LcGgM2tnPc6bYhOt
+         fkG7t9uWU4NAKjZX8MiZq0Ve+bjeKmi765ZJzC5q8K1nJ2vIxDsgKfa49R3ISrlliJQI
+         xZcZq7e6OBg6amlxNTcCM4W2rkIZHIwwajdoelzZgokJ4AEZ45okflDmSK6w5IFXyHgH
+         l1yKt/n8+t+P9Jq9SQiQ6xrVGX0/29sIVzepGeN5BtaePRIGP8hvITgq+L3mp2YLZMis
+         bamw==
+X-Gm-Message-State: AOAM532uhxFkJIRfKy9EqNuo7zqQn0Gq5iskSvxnlTcPerUBPxgMY/8i
+        KC15eA8VGReDNgPzMFIyUA==
+X-Google-Smtp-Source: ABdhPJzFy3Ujv5wUhcg6/TUy2Ei8DusEEY8iaFpVICUkEJ+8N0SrQvTJ0un7XWJKW550cQ27rF9Dng==
+X-Received: by 2002:a9d:4a8d:: with SMTP id i13mr2190320otf.180.1630442890470;
+        Tue, 31 Aug 2021 13:48:10 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id bg38sm2211456oib.26.2021.08.31.13.48.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 13:48:09 -0700 (PDT)
+Received: (nullmailer pid 623003 invoked by uid 1000);
+        Tue, 31 Aug 2021 20:48:09 -0000
+Date:   Tue, 31 Aug 2021 15:48:09 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, frowand.list@gmail.com,
+        linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org,
+        saravanak@google.com, linus.walleij@linaro.org,
+        devicetree@vger.kernel.org, Ruizhe Lin <linruizhe@huawei.com>
+Subject: Re: [PATCH v2 4/4] amba: Properly handle device probe without IRQ
+ domain
+Message-ID: <YS6ViZ98JGa/KJ+Z@robh.at.kernel.org>
+References: <20210827150600.78811-1-wangkefeng.wang@huawei.com>
+ <20210827150600.78811-5-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-References: <20210817041548.1276-1-linux.amoon@gmail.com> <20210817041548.1276-2-linux.amoon@gmail.com>
- <c7f6213b-5ddc-881c-1aea-9cc7b03e6a4f@baylibre.com> <CAFBinCBeNMET2tvH0h6HF3dR+xBb59hifQyaoXigUs3UGkS+KQ@mail.gmail.com>
- <2b07b3de-cee5-c570-8fde-6a4c684122d6@baylibre.com>
-In-Reply-To: <2b07b3de-cee5-c570-8fde-6a4c684122d6@baylibre.com>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Wed, 1 Sep 2021 02:17:54 +0530
-Message-ID: <CANAwSgRNp8UtU+Yy4smwZ5POTWTU+xN1mrf_cH7Pu9yX5HU=VA@mail.gmail.com>
-Subject: Re: [PATCHv3 1/6] ARM: dts: meson8b: odroidc1: Add usb phy power node
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-phy@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic@lists.infradead.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Matt Corallo <oc2udbzfd@mattcorallo.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Brian Kim <brian.kim@hardkernel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827150600.78811-5-wangkefeng.wang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil / Martin,
+On Fri, Aug 27, 2021 at 11:06:00PM +0800, Kefeng Wang wrote:
+> of_amba_device_create() uses irq_of_parse_and_map() to translate
+> a DT interrupt specification into a Linux virtual interrupt number.
+> 
+> But it doesn't properly handle the case where the interrupt controller
+> is not yet available, eg, when pl011 interrupt is connected to MBIGEN
+> interrupt controller, because the mbigen initialization is too late,
+> which will lead to no IRQ due to no IRQ domain found, log is shown below,
+>   "irq: no irq domain found for uart0 !"
+> 
+> use of_irq_get() to return -EPROBE_DEFER as above, and in the driver
+> deferred probe, it will properly handle in such case, also return 0
+> in other fail cases to be consistent as before.
+> 
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Reported-by: Ruizhe Lin <linruizhe@huawei.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  drivers/amba/bus.c    | 27 +++++++++++++++++++++++++++
+>  drivers/of/platform.c |  6 +-----
+>  2 files changed, 28 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
+> index 4d3a565ca079..96e84ce66e9a 100644
+> --- a/drivers/amba/bus.c
+> +++ b/drivers/amba/bus.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/clk/clk-conf.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/reset.h>
+> +#include <linux/of_irq.h>
+>  
+>  #define to_amba_driver(d)	container_of(d, struct amba_driver, drv)
+>  
+> @@ -170,6 +171,28 @@ static int amba_uevent(struct device *dev, struct kobj_uevent_env *env)
+>  	return retval;
+>  }
+>  
+> +static int of_amba_device_decode_irq(struct amba_device *dev)
+> +{
+> +	struct device_node *node = dev->dev.of_node;
+> +	int i, irq;
+> +
+> +	if (IS_ENABLED(CONFIG_OF_IRQ) && node) {
 
-Thanks for your review comments.
+I don't think this check is needed. If either is false, we should return 
+an errno from of_irq_get().
 
-On Tue, 31 Aug 2021 at 20:20, Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> Hi,
->
-> On 30/08/2021 21:37, Martin Blumenstingl wrote:
-> > Hi Neil,
-> >
-> > On Mon, Aug 30, 2021 at 9:45 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
-> >>
-> >> Hi,
-> >>
-> >> On 17/08/2021 06:15, Anand Moon wrote:
-> >>> Add missing usb phy power node for usb node fix below warning.
-> >>> P5V0 regulator supply input voltage range to USB host controller.
-> >>> As described in the C1+ schematics, GPIO GPIOAO_5 is used to
-> >>> enable input power to USB ports, set it to Active Low.
-> >>>
-> >>> [    1.260772] dwc2 c90c0000.usb: Looking up vbus-supply from device tree
-> >>> [    1.260784] dwc2 c90c0000.usb: Looking up vbus-supply property in
-> >>>               mode /soc/usb@c90c0000 failed
-> >>
-> >> First of all, DT is not here to fix boot message.
-> > Anand mentioned elsewhere that this is a debug/info message
-> >
-> >> Finally, I looked at the Odroid-C1 schematics and the GPIOAO.BIT5 is an input
-> >> to the S805, and the PWREN signal is controlled by the USB Hub so this regulator
-> >> should not be added at all.
-> > I think there's a misunderstanding because there's two PWREN signals
-> > with different meanings.
-> > The PWREN signal for the USB host ports is hard-wired and not
-> > connected to the SoC at all.
-> > The PWREN signal for the Micro-USB port (which Anand is adding here)
-> > is controlled by GPIOAO_5. odroid-c1+_rev0.4_20150615.pdf [0] shows it
-> > as an input to "USB_OTG" on page 1. "USB_OTG" consists of a power
-> > switch and the connector itself as shown on page 28.
-> >
-> > Personally I think that the change from Anand itself is good.
-> > If you feel otherwise then please speak up.
->
-> Ok thanks for the clarification, then the change is ok, but not the commit message.
->
-> >> Add missing usb phy power node for usb node fix below warning.
->
-> is not a good reason for a DT change. A proper reason should be added.
->
-> And the commit message doesn't specify the change is for the Micro-USB port,
-> this should be clarified.
->
-> Neil
->
-> > As I pointed out three smaller changes I am hoping that Anand will
-> > re-send the updated patch anyways. At that point he can also add the
-> > changes from your feedback.
-> >
-Ok I will try to address your feedback in the next version.
-
-After enabling CONFIG_REGULATOR_DEBUG, with this patch applied
-I still not getting the USB regulator to enable.
-Do you see different output at your end?
-
-On Odroid C1+
-[    5.737571] reg-fixed-voltage regulator-usb-pwr-en: GPIO lookup for
-consumer (null)
-[    5.737630] reg-fixed-voltage regulator-usb-pwr-en: using device
-tree for GPIO lookup
-[    5.737711] of_get_named_gpiod_flags: can't parse 'gpios' property
-of node '/regulator-usb-pwr-en[0]'
-[    5.737906] of_get_named_gpiod_flags: parsed 'gpio' property of
-node '/regulator-usb-pwr-en[0]' - status (0)
-[    5.738209] gpio_stub_drv gpiochip0: Persistence not supported for GPIO 5
-[    5.738490] USB_OTG_PWR: 5000 mV, disabled
-[    5.740313] reg-fixed-voltage regulator-usb-pwr-en: Looking up
-vin-supply from device tree
-[    5.740394] USB_OTG_PWR: supplied by P5V0
-[    5.741235] reg-fixed-voltage regulator-usb-pwr-en: USB_OTG_PWR
-supplying 5000000uV
-
-Odroid N2.
-[    3.047813] reg-fixed-voltage regulator-hub_5v: HUB_5V supplying 5000000uV
-[    3.049282] reg-fixed-voltage regulator-usb_pwr_en: GPIO lookup for
-consumer (null)
-[    3.049305] reg-fixed-voltage regulator-usb_pwr_en: using device
-tree for GPIO lookup
-[    3.049370] of_get_named_gpiod_flags: can't parse 'gpios' property
-of node '/regulator-usb_pwr_en[0]'
-[    3.049500] of_get_named_gpiod_flags: parsed 'gpio' property of
-node '/regulator-usb_pwr_en[0]' - status (0)
-[    3.049622] gpio_stub_drv gpiochip0: Persistence not supported for GPIO 22
-[    3.049759] USB_PWR_EN: 5000 mV, disabled
-[    3.051257] reg-fixed-voltage regulator-usb_pwr_en: Looking up
-vin-supply from device tree
-[    3.051320] USB_PWR_EN: supplied by 5V
-
-Thanks
--Anand
-
-
-
-> >
-> > Best regards,
-> > Martin
-> >
-> >
-> > [0] https://dn.odroid.com/S805/Schematics/odroid-c1+_rev0.4_20150615.pdf
-> >
->
+> +		/* Decode the IRQs and address ranges */
+> +		for (i = 0; i < AMBA_NR_IRQS; i++) {
+> +			irq = of_irq_get(node, i);
+> +			if (irq < 0) {
+> +				if (irq == -EPROBE_DEFER)
+> +					return irq;
+> +				irq = 0;
+> +			}
+> +
+> +			dev->irq[i] = irq;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * These are the device model conversion veneers; they convert the
+>   * device model structures to our more specific structures.
+> @@ -182,6 +205,10 @@ static int amba_probe(struct device *dev)
+>  	int ret;
+>  
+>  	do {
+> +		ret = of_amba_device_decode_irq(pcdev);
+> +		if (ret)
+> +			break;
+> +
+>  		ret = of_clk_set_defaults(dev->of_node, false);
+>  		if (ret < 0)
+>  			break;
+> diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+> index 74afbb7a4f5e..32d5ff8df747 100644
+> --- a/drivers/of/platform.c
+> +++ b/drivers/of/platform.c
+> @@ -222,7 +222,7 @@ static struct amba_device *of_amba_device_create(struct device_node *node,
+>  {
+>  	struct amba_device *dev;
+>  	const void *prop;
+> -	int i, ret;
+> +	int ret;
+>  
+>  	pr_debug("Creating amba device %pOF\n", node);
+>  
+> @@ -253,10 +253,6 @@ static struct amba_device *of_amba_device_create(struct device_node *node,
+>  	if (prop)
+>  		dev->periphid = of_read_ulong(prop, 1);
+>  
+> -	/* Decode the IRQs and address ranges */
+> -	for (i = 0; i < AMBA_NR_IRQS; i++)
+> -		dev->irq[i] = irq_of_parse_and_map(node, i);
+> -
+>  	ret = of_address_to_resource(node, 0, &dev->res);
+>  	if (ret) {
+>  		pr_err("amba: of_address_to_resource() failed (%d) for %pOF\n",
+> -- 
+> 2.18.0.huawei.25
+> 
+> 
