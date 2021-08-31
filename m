@@ -2,152 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793AB3FC32F
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 09:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499313FC314
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 09:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239037AbhHaHNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 03:13:31 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:19255 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231537AbhHaHN3 (ORCPT
+        id S238840AbhHaHJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 03:09:29 -0400
+Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:41884 "EHLO
+        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232209AbhHaHJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 03:13:29 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210831071232epoutp01e36c2d97797caf9559ddf3bfe277f2f5~gUqlyBVs13162931629epoutp01R
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:12:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210831071232epoutp01e36c2d97797caf9559ddf3bfe277f2f5~gUqlyBVs13162931629epoutp01R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1630393952;
-        bh=qzDyuoh7r1pqHPB/YFIdG2NA8YkK9g17BAcmkEHhPkw=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=TVyLMBruLiY/O/wGJjYCVszTqATSq9hjTaPPfCsrnQkcuLMnqZQYPxdkETb4EhzEq
-         itPEAwnhZDni4MSkpcaFOXBx6nLfCE+z7qVyNtc25wK8Hv0l6gF/SGFuT2jQr8yyOV
-         nAzKfxfTecjC1gs2tCd8Sk1U9gjNKAJEESJt5/c8=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210831071231epcas1p2fe30f94711250fc0bf4a57df45e8aedf~gUqkkcCQQ2859228592epcas1p2G;
-        Tue, 31 Aug 2021 07:12:31 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.38.241]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4GzJKp3n79z4x9Pp; Tue, 31 Aug
-        2021 07:12:30 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        18.BB.09827.C56DD216; Tue, 31 Aug 2021 16:12:28 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210831071227epcas1p188440324d4e68fb5c5ab506e02ee11e7~gUqg_qa710532705327epcas1p10;
-        Tue, 31 Aug 2021 07:12:27 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210831071227epsmtrp1b268924852f32d341c50b7fdcaef0e6d~gUqg9orXD2015020150epsmtrp1g;
-        Tue, 31 Aug 2021 07:12:27 +0000 (GMT)
-X-AuditID: b6c32a36-1f0ada8000002663-48-612dd65c6222
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C0.81.08750.B56DD216; Tue, 31 Aug 2021 16:12:27 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.100.232]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210831071227epsmtip28ccd903b99c8e13d1f0ba90038faf75c~gUqgsKH531960319603epsmtip2D;
-        Tue, 31 Aug 2021 07:12:27 +0000 (GMT)
-From:   Chanwoo Lee <cw9316.lee@samsung.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, daejun7.park@samsung.com,
-        beanhuo@micron.com, stanley.chu@mediatek.com,
-        keosung.park@samsung.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com,
-        ChanWoo Lee <cw9316.lee@samsung.com>
-Subject: [PATCH] scsi: ufs: ufshpb: Remove unused parameters
-Date:   Tue, 31 Aug 2021 16:04:43 +0900
-Message-Id: <20210831070443.25480-1-cw9316.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
+        Tue, 31 Aug 2021 03:09:29 -0400
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
+ (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Tue, 31 Aug
+ 2021 15:08:30 +0800
+Received: from tony-HX002EA0.zhaoxin.com (10.32.56.37) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Tue, 31 Aug
+ 2021 15:08:28 +0800
+From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <x86@kernel.org>, <hpa@zytor.com>, <linux-kernel@vger.kernel.org>
+CC:     <TimGuo-oc@zhaoxin.com>, <CooperYan@zhaoxin.com>,
+        <QiyuanWang@zhaoxin.com>, <HerryYang@zhaoxin.com>,
+        <CobeChen@zhaoxin.com>, <FelixZhang@zhaoxin.com>
+Subject: [PATCH] x86/tsc: Make cur->adjusted values in package#1 to be the same
+Date:   Tue, 31 Aug 2021 15:08:27 +0800
+Message-ID: <1630393707-3170-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIJsWRmVeSWpSXmKPExsWy7bCmrm7MNd1EgyXzhCwezNvGZvHy51U2
-        i4MPO1ksZpxqY7VY9SDcYt+1k+wWv/6uZ7dYdGMbk8WO52fYLY6ffMdocXnXHDaL7us72CyW
-        H//HZNH0Zx+LxdKtNxkd+D0mLDrA6NFycj+Lx/f1HWweH5/eYvHo27KK0ePzJjmP9gPdTAHs
-        Udk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUB3KymU
-        JeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKzAr0ihNzi0vz0vXyUkusDA0MjEyBChOy
-        M5Y8bWMq+M1ZsbbtM1MD41SOLkZODgkBE4mGT/uZuxi5OIQEdjBKvPswixHC+cQosf/2L2aQ
-        KiGBz4wSC844wHS8enqbDaJoF6PEtlOn2CGKvjBK3GxW72Lk4GAT0JK4fcwbJCwi0MQksfts
-        FUg9s0AXo8Svg10sIAlhARuJOxdmgfWyCKhKXH63gw3E5hWwlljy4zQbxDJ5iT/3e5gh4oIS
-        J2c+AetlBoo3b50NdraEwEwOicXrj7NCNLhI/NzTxgxhC0u8Or6FHcKWknjZ38YO0dDMKHFq
-        9jkop4VR4vWVG1BVxhKfPn9mBHmBWUBTYv0ufYiwosTO33MZITbzSbz72sMKUiIhwCvR0SYE
-        UaIiMafrHBvMro83HkPd4yFx6/EiRkgAxUrcm7OXbQKj/Cwk/8xC8s8shMULGJlXMYqlFhTn
-        pqcWGxYYwWM1OT93EyM47WqZ7WCc9PaD3iFGJg7GQ4wSHMxKIrzZb7QShXhTEiurUovy44tK
-        c1KLDzGaAkN4IrOUaHI+MPHnlcQbmlgamJgZmVgYWxqbKYnzMr6SSRQSSE8sSc1OTS1ILYLp
-        Y+LglGpgWvm/g21i9/rCt1m7frXNNthn/kSJe0HZhiLL16Hb/pWEM/qU9UtO+lFcGqxh0CE/
-        t/XGTufKmT9vSM9bpiMyz3i5muitigtth9t/6h7gTq/KVGIo27izraP4FLtM6wX5loYqlp3L
-        3MQMDa/HSe+yKutS6rtbEMG0OPVvWONT0+Xuy7y31vX6Wt+7ctHz37KrMysYv0tKfRKqtHqT
-        vjzo1t+F1nf67twJdPfsKyz692G6osfXwLkxB96el31R9MI3s9a8zTY4rF1d/qqQ8SKO0K6C
-        6rXs5ZlsPrKn/89N/RZ7OGuRlOGEPWm1Bj7/Gf9um2y3PWV5wt9imaPzwnL1Jb9qcmUvsrvY
-        MO9lWagSS3FGoqEWc1FxIgCZe2jmRAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrALMWRmVeSWpSXmKPExsWy7bCSvG70Nd1Eg7Y1ChYP5m1js3j58yqb
-        xcGHnSwWM061sVqsehBuse/aSXaLX3/Xs1ssurGNyWLH8zPsFsdPvmO0uLxrDptF9/UdbBbL
-        j/9jsmj6s4/FYunWm4wO/B4TFh1g9Gg5uZ/F4/v6DjaPj09vsXj0bVnF6PF5k5xH+4FupgD2
-        KC6blNSczLLUIn27BK6MJU/bmAp+c1asbfvM1MA4laOLkZNDQsBE4tXT22xdjFwcQgI7GCVW
-        P5vNDJGQkti9/zxQggPIFpY4fLgYouYTo8SLFU8YQeJsAloSt495g8RFBPqYJHauWscI4jAL
-        TGCUWHzlLdggYQEbiTsXZrGD2CwCqhKX3+1gA7F5Bawllvw4zQaxTF7iz/0eZoi4oMTJmU9Y
-        QGxmoHjz1tnMExj5ZiFJzUKSWsDItIpRMrWgODc9t9iwwCgvtVyvODG3uDQvXS85P3cTIzgS
-        tLR2MO5Z9UHvECMTB+MhRgkOZiUR3uw3WolCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeS90nYwX
-        EkhPLEnNTk0tSC2CyTJxcEo1MHG1rHrplar5+f9NHdZJzZ7Bwqd7znyoPZX+lfeb3c9SF6Xz
-        Js3zRdlvFZ/LCTIR8ePatvBgou2+40L7N9dcrZaIy97/4mmngu4r1ajjDqmRJgaxd3mffnlb
-        pC/kXZHrEzCP89Or+plL2p6UHVv5/8yN5SYy89Q29t1j/yd6/rXKbsbD/jPWcrF7a/5e1DTL
-        46ff3zbzFXwCtS5RCn/r1oq7Sqg8WjBNZ4Uqg9ITG70ga+HcM8Jc5c3ON+/M2rP3QejTAG3b
-        WR8PFSucde0SaJeRrOQUW2t2dt+1vfPDdG8nmtRPqxI9ejHMaVnKdFM5DUNnl+XXl1rlpEvK
-        OO5Z31MpwPc+Qqy0/+j+91YSSizFGYmGWsxFxYkAsHnoHvMCAAA=
-X-CMS-MailID: 20210831071227epcas1p188440324d4e68fb5c5ab506e02ee11e7
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210831071227epcas1p188440324d4e68fb5c5ab506e02ee11e7
-References: <CGME20210831071227epcas1p188440324d4e68fb5c5ab506e02ee11e7@epcas1p1.samsung.com>
+Content-Type: text/plain
+X-Originating-IP: [10.32.56.37]
+X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChanWoo Lee <cw9316.lee@samsung.com>
+When resume from S4 on Zhaoxin 2 packages platform that support
+X86_FEATURE_TSC_ADJUST, the following warning messages appear:
 
-Remove unused parameters
-* ufshpb_set_hpb_read_to_upiu()
- -> struct ufshpb_lu *hpb
- -> u32 lpn
+[  327.445302] [Firmware Bug]: TSC ADJUST differs: CPU15 45960750 --> 78394770. Restoring
+[  329.209120] [Firmware Bug]: TSC ADJUST differs: CPU14 45960750 --> 78394770. Restoring
+[  329.209128] [Firmware Bug]: TSC ADJUST differs: CPU13 45960750 --> 78394770. Restoring
+[  329.209138] [Firmware Bug]: TSC ADJUST differs: CPU12 45960750 --> 78394770. Restoring
+[  329.209151] [Firmware Bug]: TSC ADJUST differs: CPU11 45960750 --> 78394770. Restoring
+[  329.209160] [Firmware Bug]: TSC ADJUST differs: CPU10 45960750 --> 78394770. Restoring
+[  329.209169] [Firmware Bug]: TSC ADJUST differs: CPU9 45960750 --> 78394770. Restoring
 
-Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+The reason is:
+
+Step 1: Bring up.
+	TSC is sync after bring up with following settings:
+				MSR 0x3b	cur->adjusted
+	Package#0 CPU 0-7	  0		  0
+	Package#1 first CPU	  value1	  value1
+	Package#1 non-first CPU	  value1	  value1
+
+Step 2: Suspend to S4.
+	Settings in Step 1 are not changed in this Step.
+
+Step 3: Bring up caused by S4 wake up event.
+	TSC is sync when bring up with following settings:
+				MSR 0x3b	cur->adjusted
+	Package#0 CPU 0-7	  0		  0
+	Package#1 first CPU	  value2	  value2
+	Package#1 non-first CPU	  value2	  value2
+
+Step 4: Resume from S4.
+	When resuming from S4, Current TSC synchronous mechanism
+	cause following settings:
+				MSR 0x3b	cur->adjusted
+	Package#0 CPU 0-7	  0		  0
+	Package#1 first CPU	  value2	  value2
+	Package#1 non-first CPU	  value2	  value1
+
+In these Steps, value1 != 0 and value2 != value1.
+
+In Step4, as function tsc_store_and_check_tsc_adjust() do, when the
+value of MSR 0x3b on the non-first online CPU in package#1 is equal
+to the value of cur->adjusted on the first online CPU in the same
+package, the cur->adjusted value on this non-first online CPU will
+hold the old value1. This cause function tsc_verify_tsc_adjust() set
+the value of MSR 0x3b on the non-first online CPUs in the package#1
+to the old value1 and print the beginning warning messages.
+
+Fix it by setting cur->adjusted value on the non-first online CPU
+in a package to the value of MSR 0x3b on the same CPU when they are
+not equal.
+
+Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
 ---
- drivers/scsi/ufs/ufshpb.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ arch/x86/kernel/tsc_sync.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 02fb51ae8b25..589af5f6b940 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -333,9 +333,8 @@ ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
- }
- 
- static void
--ufshpb_set_hpb_read_to_upiu(struct ufs_hba *hba, struct ufshpb_lu *hpb,
--			    struct ufshcd_lrb *lrbp, u32 lpn, __be64 ppn,
--			    u8 transfer_len, int read_id)
-+ufshpb_set_hpb_read_to_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp,
-+			    __be64 ppn, u8 transfer_len, int read_id)
- {
- 	unsigned char *cdb = lrbp->cmd->cmnd;
- 	__be64 ppn_tmp = ppn;
-@@ -703,8 +702,7 @@ int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 		}
- 	}
- 
--	ufshpb_set_hpb_read_to_upiu(hba, hpb, lrbp, lpn, ppn, transfer_len,
--				    read_id);
-+	ufshpb_set_hpb_read_to_upiu(hba, lrbp, ppn, transfer_len, read_id);
- 
- 	hpb->stats.hit_cnt++;
- 	return 0;
+diff --git a/arch/x86/kernel/tsc_sync.c b/arch/x86/kernel/tsc_sync.c
+index 50a4515..b5886b4 100644
+--- a/arch/x86/kernel/tsc_sync.c
++++ b/arch/x86/kernel/tsc_sync.c
+@@ -190,7 +190,8 @@ bool tsc_store_and_check_tsc_adjust(bool bootcpu)
+ 	if (bootval != ref->adjusted) {
+ 		cur->adjusted = ref->adjusted;
+ 		wrmsrl(MSR_IA32_TSC_ADJUST, ref->adjusted);
+-	}
++	} else if (cur->adjusted != bootval)
++		cur->adjusted = bootval;
+ 	/*
+ 	 * We have the TSCs forced to be in sync on this package. Skip sync
+ 	 * test:
 -- 
-2.29.0
+2.7.4
 
