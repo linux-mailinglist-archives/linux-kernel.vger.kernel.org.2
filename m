@@ -2,207 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CFC3FC6C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFA73FC6C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 14:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241513AbhHaLrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 07:47:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50513 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232804AbhHaLrm (ORCPT
+        id S241558AbhHaLtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 07:49:07 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:33786 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230382AbhHaLtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 07:47:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630410406;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dwvZYJk8XnuIWqXzPVZ+2IXhoVvLrsO62Vmv5jU4cQA=;
-        b=Da3TOxSSA5kLocG9us+zaYf/tCm0FcMIYNV9bHIohWDclAmMugddpUdJ7VvEsCCEpXl1ho
-        xDdOTG4lWYebPvre8oK6Qru4MjcAPZlKuvmMO8lFgyWjdL+acatRBH2oBg3mMGggf+HUZS
-        M7wErEoQe2BUJvDc6TIBDQ0axTOr6Vs=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-205-KPNDz1uJMx-NgYcQO205zA-1; Tue, 31 Aug 2021 07:46:45 -0400
-X-MC-Unique: KPNDz1uJMx-NgYcQO205zA-1
-Received: by mail-wr1-f72.google.com with SMTP id r11-20020a5d4e4b000000b001575c5ed4b4so3962716wrt.4
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 04:46:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=dwvZYJk8XnuIWqXzPVZ+2IXhoVvLrsO62Vmv5jU4cQA=;
-        b=BdjyRgfQIvI/1GR1pL/BlMq5qmRUxaMcMv0ZpqGjNngJv49pBLYuwAa/Nbs3RRYrlg
-         nXd16PQT9V73HHwh8MuHp0/nT1bn/64JF4LLp1ufq8vZ6ptQyftzHBqeLuTfzjLvMfWd
-         OvXhetZNW7VnoWSWZFegIT1XJmhCe8skjRzY2jBJcbbD0+pwg/pJFoIfB5WeN3t71+6t
-         rrKyRdeeNtPUKicnT7sp1RoQ30U/8DYaeFbUkvKpRhGDtk9WkXcbjmmxhoDSDVcskyPT
-         iGQhehh0yHLxpMjjc3dfSShSlhUpRUZpMwNwS8xT1ky2geyul+HPRj6l9fujPdZL0ji9
-         9clA==
-X-Gm-Message-State: AOAM531v4lWhB1TkWuhno1OO1amIGvviIXtuSQWjG2DvYlrmQxbZFyYe
-        KxykJBr3jRnwXSQIcdI8Mriz0e3rEmQAZsOqActVxdXOeY8Bobgexd13g8JQ2E2viKvGYFK4CDr
-        1giPorupdxH7ZVslkFihW3adJ
-X-Received: by 2002:a5d:6ca4:: with SMTP id a4mr31737895wra.140.1630410403903;
-        Tue, 31 Aug 2021 04:46:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwWivN3ytOnBv6WhYZLuUsIybCSCSVJtoThZlRY4JzF7a/aXHDCKKGjMNxUq57IcbWNKpMzHg==
-X-Received: by 2002:a5d:6ca4:: with SMTP id a4mr31737878wra.140.1630410403669;
-        Tue, 31 Aug 2021 04:46:43 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23bf5.dip0.t-ipconnect.de. [79.242.59.245])
-        by smtp.gmail.com with ESMTPSA id p11sm2312570wma.16.2021.08.31.04.46.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 04:46:43 -0700 (PDT)
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     akpm@linux-foundation.org, markubo@amazon.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
-References: <20210831104938.33548-1-sjpark@amazon.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH] mm/damon/vaddr: Safely walk page table
-Message-ID: <d92a357b-c64c-aaf8-a69a-f00f93022013@redhat.com>
-Date:   Tue, 31 Aug 2021 13:46:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 31 Aug 2021 07:49:06 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=haoxu@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UmlN6Dj_1630410487;
+Received: from B-25KNML85-0107.local(mailfrom:haoxu@linux.alibaba.com fp:SMTPD_---0UmlN6Dj_1630410487)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 31 Aug 2021 19:48:08 +0800
+Subject: Re: [syzbot] general protection fault in sock_from_file
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        syzbot <syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dvyukov@google.com,
+        io-uring@vger.kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <00000000000059117905cacce99e@google.com>
+ <7949b7a0-fec1-34a7-aaf5-cbe07c6127ed@kernel.dk>
+ <d881d3fa-4df5-1862-bc2b-9420649ba3c8@linux.alibaba.com>
+ <407ce02f-7a0a-4eb2-b242-188fc605012c@gmail.com>
+ <6df81737-38d8-4c91-358a-79bc5d5f9074@linux.alibaba.com>
+ <fb5821b5-3bb2-4c1a-acdb-816e639cb210@gmail.com>
+From:   Hao Xu <haoxu@linux.alibaba.com>
+Message-ID: <6a0ac681-3741-373c-6001-20af97aa5ea8@linux.alibaba.com>
+Date:   Tue, 31 Aug 2021 19:48:07 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210831104938.33548-1-sjpark@amazon.de>
+In-Reply-To: <fb5821b5-3bb2-4c1a-acdb-816e639cb210@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.08.21 12:49, SeongJae Park wrote:
-> From: SeongJae Park <sjpark@amazon.de>
+在 2021/8/31 下午7:26, Pavel Begunkov 写道:
+> On 8/31/21 12:05 PM, Hao Xu wrote:
+>> 在 2021/8/31 下午5:42, Pavel Begunkov 写道:
+>>> On 8/31/21 10:19 AM, Hao Xu wrote:
+>>>> 在 2021/8/31 上午10:14, Jens Axboe 写道:
+>>>>> On 8/30/21 2:45 PM, syzbot wrote:
+>>>>>> syzbot has found a reproducer for the following issue on:
+>>>>>>
+>>>>>> HEAD commit:    93717cde744f Add linux-next specific files for 20210830
+>>>>>> git tree:       linux-next
+>>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15200fad300000
+>>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=c643ef5289990dd1
+>>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=f9704d1878e290eddf73
+>>>>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+>>>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111f5f9d300000
+>>>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1651a415300000
+>>>>>>
+>>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>>>> Reported-by: syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com
+>>>>>>
+>>>>>> general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN
+>>>>>> KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
+>>>>>> CPU: 0 PID: 6548 Comm: syz-executor433 Not tainted 5.14.0-next-20210830-syzkaller #0
+>>>>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>>>>>> RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
+>>>>>> Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
+>>>>>> RSP: 0018:ffffc90002caf8e8 EFLAGS: 00010206
+>>>>>> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+>>>>>> RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
+>>>>>> RBP: ffff888019fc0780 R08: ffffffff899aee40 R09: ffffffff81e21978
+>>>>>> R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
+>>>>>> R13: 1ffff110033f80f9 R14: 0000000000000003 R15: ffff888019fc0780
+>>>>>> FS:  00000000013b5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+>>>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>>> CR2: 00000000004ae0f0 CR3: 000000001d355000 CR4: 00000000001506f0
+>>>>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>>>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>>>>> Call Trace:
+>>>>>>     io_sendmsg+0x98/0x640 fs/io_uring.c:4681
+>>>>>>     io_issue_sqe+0x14de/0x6ba0 fs/io_uring.c:6578
+>>>>>>     __io_queue_sqe+0x90/0xb50 fs/io_uring.c:6864
+>>>>>>     io_req_task_submit+0xbf/0x1b0 fs/io_uring.c:2218
+>>>>>>     tctx_task_work+0x166/0x610 fs/io_uring.c:2143
+>>>>>>     task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+>>>>>>     tracehook_notify_signal include/linux/tracehook.h:212 [inline]
+>>>>>>     handle_signal_work kernel/entry/common.c:146 [inline]
+>>>>>>     exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>>>>>>     exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
+>>>>>>     __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>>>>>>     syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>>>>>>     do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>>>>>>     entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>>>>> RIP: 0033:0x43fd49
+>>>>>
+>>>>> Hao, this is due to:
+>>>>>
+>>>>> commit a8295b982c46d4a7c259a4cdd58a2681929068a9
+>>>>> Author: Hao Xu <haoxu@linux.alibaba.com>
+>>>>> Date:   Fri Aug 27 17:46:09 2021 +0800
+>>>>>
+>>>>>        io_uring: fix failed linkchain code logic
+>>>>>
+>>>>> which causes some weirdly super long chains from that single sqe.
+>>>>> Can you take a look, please?
+>>>> Sure, I'm working on this.
+>>>
+>>> Ah, saw it after sending a patch. It's nothing too curious, just
+>>> a small error in logic. More interesting that we don't have a
+>>> test case covering it, we should definitely add something.
+>>>
+>> Saw your patch after coding my fix..😂
+>> Since my email client doesn't receive your patch(only saw it in
+>> webpage https://lore.kernel.org/), I put my comment here:
 > 
-> On Tue, 31 Aug 2021 11:53:05 +0200 David Hildenbrand <david@redhat.com> wrote:
+> Hmm, does it happen often? I'll CC you
+Uncommon, somestimes there is delay.
 > 
->> On 27.08.21 17:04, SeongJae Park wrote:
->>> From: SeongJae Park <sjpark@amazon.de>
->>>
->>> Commit d7f647622761 ("mm/damon: implement primitives for the virtual
->>> memory address spaces") of linux-mm[1] tries to find PTE or PMD for
->>> arbitrary virtual address using 'follow_invalidate_pte()' without proper
->>> locking[2].  This commit fixes the issue by using another page table
->>> walk function for more general use case under proper locking.
->>>
->>> [1] https://github.com/hnaz/linux-mm/commit/d7f647622761
->>> [2] https://lore.kernel.org/linux-mm/3b094493-9c1e-6024-bfd5-7eca66399b7e@redhat.com
->>>
->>> Fixes: d7f647622761 ("mm/damon: implement primitives for the virtual memory address spaces")
->>> Reported-by: David Hildenbrand <david@redhat.com>
->>> Signed-off-by: SeongJae Park <sjpark@amazon.de>
->>> ---
->>>    mm/damon/vaddr.c | 81 +++++++++++++++++++++++++++++++++++++++++++-----
->>>    1 file changed, 74 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
->>> index 230db7413278..b3677f2ef54b 100644
->>> --- a/mm/damon/vaddr.c
->>> +++ b/mm/damon/vaddr.c
->>> @@ -8,10 +8,12 @@
->>>    #define pr_fmt(fmt) "damon-va: " fmt
->>>    
->>>    #include <linux/damon.h>
->>> +#include <linux/hugetlb.h>
->>>    #include <linux/mm.h>
->>>    #include <linux/mmu_notifier.h>
->>>    #include <linux/highmem.h>
->>>    #include <linux/page_idle.h>
->>> +#include <linux/pagewalk.h>
->>>    #include <linux/random.h>
->>>    #include <linux/sched/mm.h>
->>>    #include <linux/slab.h>
->>> @@ -446,14 +448,69 @@ static void damon_pmdp_mkold(pmd_t *pmd, struct mm_struct *mm,
->>>    #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->>>    }
->>>    
->>> +struct damon_walk_private {
->>> +	pmd_t *pmd;
->>> +	pte_t *pte;
->>> +	spinlock_t *ptl;
->>> +};
->>> +
->>> +static int damon_pmd_entry(pmd_t *pmd, unsigned long addr, unsigned long next,
->>> +		struct mm_walk *walk)
->>> +{
->>> +	struct damon_walk_private *priv = walk->private;
->>> +
->>> +	if (pmd_huge(*pmd)) {
->>> +		priv->ptl = pmd_lock(walk->mm, pmd);
->>> +		if (pmd_huge(*pmd)) {
->>> +			priv->pmd = pmd;
->>> +			return 0;
->>> +		}
->>> +		spin_unlock(priv->ptl);
->>> +	}
->>> +
->>> +	if (pmd_none(*pmd) || unlikely(pmd_bad(*pmd)))
->>> +		return -EINVAL;
->>> +	priv->pte = pte_offset_map_lock(walk->mm, pmd, addr, &priv->ptl);
->>> +	if (!pte_present(*priv->pte)) {
->>> +		pte_unmap_unlock(priv->pte, priv->ptl);
->>> +		priv->pte = NULL;
->>> +		return -EINVAL;
->>> +	}
->>> +	return 0;
->>> +}
->>> +
->>> +static struct mm_walk_ops damon_walk_ops = {
->>> +	.pmd_entry = damon_pmd_entry,
->>> +};
->>> +
->>> +int damon_follow_pte_pmd(struct mm_struct *mm, unsigned long addr,
->>> +		struct damon_walk_private *private)
->>> +{
->>> +	int rc;
->>> +
->>> +	private->pte = NULL;
->>> +	private->pmd = NULL;
->>> +	rc = walk_page_range(mm, addr, addr + 1, &damon_walk_ops, private);
->>> +	if (!rc && !private->pte && !private->pmd)
->>> +		return -EINVAL;
->>> +	return rc;
->>> +}
->>> +
->>>    static void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
->>>    {
->>> -	pte_t *pte = NULL;
->>> -	pmd_t *pmd = NULL;
->>> +	struct damon_walk_private walk_result;
->>> +	pte_t *pte;
->>> +	pmd_t *pmd;
->>>    	spinlock_t *ptl;
->>>    
->>> -	if (follow_invalidate_pte(mm, addr, NULL, &pte, &pmd, &ptl))
->>> +	mmap_write_lock(mm);
->>
->> Can you elaborate why mmap_read_lock() isn't sufficient for your use
->> case? The write mode might heavily affect damon performance and workload
->> impact.
 > 
-> Because as you also mentioned in the previous mail, 'we can walk page tables
-> ignoring VMAs with the mmap semaphore held in write mode', and in this case we
-> don't know to which VMA the address is belong.  I thought the link to the mail
-> can help people understanding the reason.  But, as you are suggesting, I now
-> think putting an elaborated explanation here would be much better.  I will also
-> put a warning for the possible performance impact.
-
-walk_page_range() make sure to skip any VMA holes and only walks ranges 
-within VMAs. With the mmap sem in read mode, the VMA layout (mostly) 
-cannot change, so calling walk_page_range() is fine. So pagewalk.c 
-properly takes care of VMAs.
-
-As an example, take a look at MADV_COLD handling in mm/madvise.c.
-
-madvise_need_mmap_write() returns "0", and we end up calling 
-madvise_cold()->...->walk_page_range() with mmap_lock_read().
-
-You can exclude any VMAs you don't care about in the test_walk() 
-callback, if required.
-
--- 
-Thanks,
-
-David / dhildenb
+>>>   fs/io_uring.c | 2 ++
+>>>   1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/fs/io_uring.c b/fs/io_uring.c
+>>> index 473a977c7979..a531c7324ea8 100644
+>>> --- a/fs/io_uring.c
+>>> +++ b/fs/io_uring.c
+>>> @@ -6717,6 +6717,8 @@ static inline void io_queue_sqe(struct io_kiocb *req)
+>>>       if (likely(!(req->flags & (REQ_F_FORCE_ASYNC | REQ_F_FAIL)))) {
+>>>           __io_queue_sqe(req);
+>>>       } else if (req->flags & REQ_F_FAIL) {
+>>> +        /* fail all, we don't submit */
+>>> +        req->flags &= ~REQ_F_HARDLINK;
+>> maybe set REQ_F_LINK here?
+> 
+> if (unlikely((req->flags & REQ_F_FAIL) &&
+> 	     !(req->flags & REQ_F_HARDLINK))) {
+> 	posted |= (req->link != NULL);
+> 	io_fail_links(req);
+> }
+> 
+> The problem is hardlink, normal will be failed. But there is indeed
+> a problem with both patches,
+> 
+> if (req->flags & (REQ_F_LINK | REQ_F_HARDLINK))
+> 	// kill linked
+Yeah, if we don't have REQ_F_LINK, io_req_complete_post() won't go to
+the disarm branch
+> 
+> Will resend with some tests on top
+> 
+> 
+>>>           io_req_complete_failed(req, req->result);
+>>>       } else {
+>>>           int ret = io_req_prep_async(req);
+> 
 
