@@ -2,74 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3249A3FCFA0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2883FCFA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 00:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240300AbhHaWph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 18:45:37 -0400
-Received: from mail-ej1-f44.google.com ([209.85.218.44]:38730 "EHLO
-        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhHaWpg (ORCPT
+        id S240492AbhHaWqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 18:46:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229602AbhHaWqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 18:45:36 -0400
-Received: by mail-ej1-f44.google.com with SMTP id n27so2331494eja.5
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 15:44:39 -0700 (PDT)
+        Tue, 31 Aug 2021 18:46:12 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BE8C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 15:45:17 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id u19-20020a05620a121300b0042665527c3bso1187680qkj.14
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 15:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=VBr5TgxCC8MLVwjMjWQQXTK7iMmgeHcn6Adehu6ScSM=;
+        b=NWgyKMGLYOnT5x9MYNZZtLsYsSIszTOkLOJtO5JTeXkNOtfkw0Lu1p7kl+NwDUsEmW
+         upmmOaRYg1r7vn97qb3AQzbv/u/FzWC1R3DYeNK9mBbsJapwb7fBOTd1nxcfowCPmhT9
+         xy9y1PGqQpAXKczq/nZZNNHGIx/KXTCHmU4w5qbvzm5gRGjkTOGu61bCaPmkTPQcY7jK
+         u5XmA3fncqtL++pN60J3ui1H/pCtyh9UQal2F9q6yvVbZNHDpM8b/Q0UDbUs5ZL+8BLs
+         o0p3JJHyS6LLKwrjAaVN8MPAF1cViuTUSVmNyqT5+3p71dA+VJ8Zl49CyW2QxIAInKnr
+         wt9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qSp4z9/S/GmJmZB+68ZXewALFEkWTtL9H0IgTSE7BNw=;
-        b=GKhG0+1+VRIOLmQ0if/rasXZmAPpfj+m9/zhs1Y0fLaKhxpBwrQ8yXrAHhO0LFM0cH
-         CuA8ll8aGHT04bf8hhrJZBgWn5iwyl9yMjoLfStx+4Df0+aTkYAAmVkQvGMvznlGObzU
-         aTplA2mtp4wJCCjo4vo7PUF/of4EYbaYu7Ee9JOlZxF7MQB1yyBEKhGacW16qP0iuVAc
-         wkT213Yo1JwM9M2AfxFGoE6RdfgxSuPFQb0s3qZMo0zDlD9ouDIaOV+HQ1Y72wTCCH4+
-         lbosHiWBwGJV1Z6wdyaPXhcSuddliLo6KYlnqK0sdtfufOJhvZKwzh97bF+INjX8IjVX
-         VRmg==
-X-Gm-Message-State: AOAM533av+BZ+dH6wHQR9ZuWF5MtHsuk8Y6UBTFF60C5r1NipAfREik7
-        S4KNFJzo657SjfOhlX/QYeG/UB+BFUTxqJq1Csk=
-X-Google-Smtp-Source: ABdhPJyN8v48bt7PC2J0FDeKIZcBbMhlgZYHhrj2dOl2GEIDlo5sNdc+BMmTiXQvAxch/pBc3C8qtksti+9h5KCUjNU=
-X-Received: by 2002:a17:906:988a:: with SMTP id zc10mr34003082ejb.256.1630449879396;
- Tue, 31 Aug 2021 15:44:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <a96a65fc-061b-e94b-cee7-16201ac0820f@intel.com> <CAJvTdKkZ==89-rDeBUDy1GJEzU9FGiAb2m3rtMAGQPJQa1A2fA@mail.gmail.com>
- <2020841.9MqWvG71rC@tjmaciei-mobl5>
-In-Reply-To: <2020841.9MqWvG71rC@tjmaciei-mobl5>
-From:   Len Brown <lenb@kernel.org>
-Date:   Tue, 31 Aug 2021 18:44:28 -0400
-Message-ID: <CAJvTdKmSxkCtBRkL+qP7aaw19amHKBKzNG+z+SuSNo54RBKbyQ@mail.gmail.com>
-Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
- protect dynamic user state
-To:     Thiago Macieira <thiago.macieira@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=VBr5TgxCC8MLVwjMjWQQXTK7iMmgeHcn6Adehu6ScSM=;
+        b=n9ZXJBv8iyXuBjQ59LX/QZbBDUoKzESyavDHDE5OccBjRW25TiJluV94fiIpoP/mDL
+         w069XiHGCbrc0Fb7UKgxY2BuOvvdIXLvUOVhZXSofmExMfns6KQfLVJoJorlbP8lypJ8
+         JzAfNJTrtSShkmIcrbyPIcnbvxJyDXNx5dzptjSUVIu7XVS3lYoTxJpCHnTe4d4+ZeaY
+         O47Y7vYQWuLMCnFarhtx9xPGT1a6aiTa37Mb5fU5Ignjf3As5FS2/0XtynSIKZ9uvhV9
+         2c6amaCrea+pu1iOUkAU7FjNAIAgRQ+xh+1hhvQNF/kB2sFH76GEDVyQydwND4lKk4a5
+         b3HA==
+X-Gm-Message-State: AOAM531G4JsYoLsLXJ8i8xY0LMngwprhkd8F7TjYW1sBey4wZZSMyiKZ
+        BmVbdK0S5rdQHgxvLaZvn+nt1CO23Jw9Rxc=
+X-Google-Smtp-Source: ABdhPJx/hQupCkCBnkliVvrBY2j07/Clpx8SKHzBGOHk/Wo7wwcCIhAe0sHvlrRCQFtGQQiT/+/dQ7cktnyK8Q4=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:c653:ae7e:a926:286a])
+ (user=saravanak job=sendgmr) by 2002:a05:6214:23c6:: with SMTP id
+ hr6mr30999430qvb.22.1630449916314; Tue, 31 Aug 2021 15:45:16 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 15:45:10 -0700
+Message-Id: <20210831224510.703253-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
+Subject: [PATCH v1] driver core: fw_devlink: Don't create device links for
+ devices not on a bus
+From:   Saravana Kannan <saravanak@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 6:39 PM Thiago Macieira
-<thiago.macieira@intel.com> wrote:
->
-> On Tuesday, 31 August 2021 15:15:55 PDT Len Brown wrote:
-> > Indeed, I believe that there is universal agreement that a synchronous
-> > return code
-> > from a system call is a far superior programming model than decoding
-> > the location of a failure in a system call.  (no, the IP isn't random -- it
-> > is always the 1st instruction in that thread to touch a TMM register).
->
-> That instruction is actually likely going to be a memory load, probably an
-> LDTILECFG.
+Devices that are not on a bus will never have a driver bound to it. So,
+fw_devlink should not create device links for it as it can cause probe
+issues[1] or sync_state() call back issues[2].
 
-There is no fault on LDTILECONFIG, it will occur on the load tile data.
-But yes, still a memory load (with a TMM destination)
+[1] - https://lore.kernel.org/lkml/CAGETcx_xJCqOWtwZ9Ee2+0sPGNLM5=F=djtbdYENkAYZa0ynqQ@mail.gmail.com/
+[2] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+Fixes: f9aa460672c9 ("driver core: Refactor fw_devlink feature")
+Reported-by: Ulf Hansson <ulf.hansson@linaro.org>
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/base/core.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-Len Brown, Intel Open Source Technology Center
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index f6360490a4a3..304a06314656 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -1719,8 +1719,24 @@ static int fw_devlink_create_devlink(struct device *con,
+ 	struct device *sup_dev;
+ 	int ret = 0;
+ 
++	/*
++	 * If a consumer device is not on a bus (i.e. a driver will never bind
++	 * to it), it doesn't make sense for fw_devlink to create device links
++	 * for it.
++	 */
++	if (con->bus == NULL)
++		return -EINVAL;
++
+ 	sup_dev = get_dev_from_fwnode(sup_handle);
+ 	if (sup_dev) {
++		/*
++		 * If a supplier device is not on a bus (i.e. a driver will
++		 * never bind to it), it doesn't make sense for fw_devlink to
++		 * create device links for it.
++		 */
++		if (sup_dev->bus == NULL)
++			return -EINVAL;
++
+ 		/*
+ 		 * If it's one of those drivers that don't actually bind to
+ 		 * their device using driver core, then don't wait on this
+-- 
+2.33.0.259.gc128427fd7-goog
+
