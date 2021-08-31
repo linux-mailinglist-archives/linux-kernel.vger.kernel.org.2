@@ -2,190 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D973FC2D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6063FC2E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 08:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235218AbhHaGh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 02:37:29 -0400
-Received: from mga03.intel.com ([134.134.136.65]:32487 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232892AbhHaGhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 02:37:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="218456529"
-X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
-   d="scan'208";a="218456529"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 23:36:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,365,1620716400"; 
-   d="scan'208";a="509838039"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga001.jf.intel.com with ESMTP; 30 Aug 2021 23:36:24 -0700
-Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 30 Aug 2021 23:36:22 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Mon, 30 Aug 2021 23:36:22 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.176)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Mon, 30 Aug 2021 23:36:22 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OoWp9YnpLzpWSj4yzVe0Lzpa8VesOzl0gm5TGjVdaw6bNoqaOSh1ayXj97OM7GofUmpKVPfO8k2BQ9KysDMga2G1M+jjRWDXUWFqCs4r3MJDWyNi0ce98w6VheH6IoCjhJXNIXqIoOnk9eB6fSvJv4ED0dvyOgtUDOU/Ww7N8VUd6F5K0xSvbNuecfnM5LncxdW6xNeRn0uSNihIWrEpWKsit0EEtnyjG9/3INcckeKiNkDYW4KagJq3DPX5cjYAw+JhacKjXoyhoGEVAZtpc8S5K7xQDVC7AExelCB/okyO0dw1BPjjUa4MhqazUZ7r2NJlOgTckBP+2gAkpDjEJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7ynzJR/6IvutAC9R7IC6Xnyn19K0PJ+lRKoo92ifaLI=;
- b=Pn/KV2M7LFzGiS4/s7S1LKHPYGrM8T6k0Oxqjd8fhlAwP6fD9GX2zW1sNRSm4kQzZ1loKGT32KusIpREHZP7DZ7u2LilOooWSHEMTkoHWPD4rd5TZravo1YlwwlID8lX5OSROa9+wqpYm3T8bfhaFKKbvsgt+LmDaP6LsUsEcszXqMwRZSo7fCsVQ6bff9kht9vMZJfoSFmzydVvfYc9aZgYNCPwfhB/rG0GLGORk6e9u8iyqJR0XL6Q9bPzrIAIfMQspFkmx5upZYQgOcbXnr58ZXalFPF1FVUcPCEyK83W4YC7Qe3B4ENEmLeca2rwpjBGNrMOB2gqIogrMFjimw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7ynzJR/6IvutAC9R7IC6Xnyn19K0PJ+lRKoo92ifaLI=;
- b=OvHqdfBXI8uiV6CHLDMJkbN4wVxS00XWrfdpczPsQUMn/1BusXWZEHoeMJbe5xPQzayO7FjpV3Pp9R+mj2wOY0N+WZcEOh4xo4hm4nJ5nkGicy/RmDggxvyPonLtQ5tpiWrS0cb+a/0TqvNaIdYbSI9xJYSXQ4BLaYxQTW1yc+0=
-Received: from BYAPR11MB3207.namprd11.prod.outlook.com (2603:10b6:a03:7c::14)
- by BYAPR11MB2647.namprd11.prod.outlook.com (2603:10b6:a02:be::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Tue, 31 Aug
- 2021 06:36:15 +0000
-Received: from BYAPR11MB3207.namprd11.prod.outlook.com
- ([fe80::bc8c:80c0:1c01:94bf]) by BYAPR11MB3207.namprd11.prod.outlook.com
- ([fe80::bc8c:80c0:1c01:94bf%7]) with mapi id 15.20.4478.017; Tue, 31 Aug 2021
- 06:36:15 +0000
-From:   "Coelho, Luciano" <luciano.coelho@intel.com>
-To:     "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "jmforbes@linuxtx.org" <jmforbes@linuxtx.org>
-CC:     "yj99.shin@samsung.com" <yj99.shin@samsung.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Berg, Johannes" <johannes.berg@intel.com>,
-        "Baruch, Yaara" <yaara.baruch@intel.com>,
-        "ihab.zhaika@intel.com" <ihab.zhaika@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Gottlieb, Matti" <matti.gottlieb@intel.com>,
-        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>,
-        "jh80.chung@samsung.com" <jh80.chung@samsung.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH] iwlwifi Add support for ax201 in Samsung Galaxy Book
- Flex2 Alpha
-Thread-Topic: [PATCH] iwlwifi Add support for ax201 in Samsung Galaxy Book
- Flex2 Alpha
-Thread-Index: AQHXb5JCu++4nbn+uUSCiulktq1hDqs68YgAgC+EIYCABj1HAIANkJWbgAaVfYCACKzVgA==
-Date:   Tue, 31 Aug 2021 06:36:15 +0000
-Message-ID: <ddcb88a3f6614ef6138b68375a22fbba1b068ff3.camel@intel.com>
-References: <20210702223155.1981510-1-jforbes@fedoraproject.org>
-         <CGME20210709173244epcas1p3ea6488202595e182d45f59fcba695e0a@epcas1p3.samsung.com>
-         <CAFxkdApGUeGdg4=rH=iC2SK58FO6yzbFiq3uSFMFTyZsDQ5j5w@mail.gmail.com>
-         <8c55c7c9-a5ae-3b0e-8a0f-8954a8da7e7b@samsung.com>
-         <94edb3c4-43a6-1031-8431-2befb0eca2bf@samsung.com>
-         <87ilzyudk0.fsf@codeaurora.org>
-         <CAFxkdArjsp4YxYWYZ_qW7UsNobzodKOaNJqKTHpPf5RmtT+Rww@mail.gmail.com>
-In-Reply-To: <CAFxkdArjsp4YxYWYZ_qW7UsNobzodKOaNJqKTHpPf5RmtT+Rww@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.38.3-1 
-authentication-results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6adc32ef-609a-4a63-f736-08d96c49a1ff
-x-ms-traffictypediagnostic: BYAPR11MB2647:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB2647F987AC44208D8E5C87BE90CC9@BYAPR11MB2647.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Si61PcV6Exc6RXix/qYUIT3om8+WE7amAgb/7MOx8fcLfkEtXKpfUyup8UAKkZZ1Er+tpYrbjkZ6qWtd0rwT0e/6Rn/Hla+THqpUKzZrveIpF6oDvp5PYyLXJEcOuAIYhDp2wc8p0XwQ78+3Owr6sbaIclzuxBxDUw0pQgRaHm/c1/lpc0qxJ+BPV1z8ZYh09bPbOSPUl38zl/gk3AjSfzFCjckzegMkAe4YYZPfEfhE20aObsEFgavkC7LHbGiUAg29M+0z/x7PJiZjfRiann75ASNOpQceGdef6CDvAdfRlrzo8HsQlD1kGmJ0QFGLvUtTdyE37EMFDA3lzaWZO8GXW34ETtuMJYIdccDWgjyChndNAnKd+E0LE4scIbCVzHjqyF74SNDeZUvfxCcrhrxzY5uD3c5yQhSQZWqyRE3ZVNXNbj73Kdbh8dfTcalYUM9kFnKVmskIwak5Eb04ucLDGB85zjd237vZ2y4S7lCF4Gc4ynThWhNdQ9mJJ31EytlhgVHjl2mTp3dNwxQPdcGvxKPhkmJsIyaTPFrAtcKkp3DXgZbKqs1/qiI58VKGy/vsAFUy6CmkeI9yXu6KnK3q3ET1NrADSCazcjFzGFeC6Aqpf8CtJXrkR7IuEfLCp1F415y3wLSZ6tzqP4FAtXMVNhsYE1fgiQBCDNucvqjeEabjNB19pb5iLE5PSOdYrDo23LHC2jPNk0w6yh39Qy2OGHI5MicJoXMetLwne8UrBWv7Dm8AgRdPdsKg6kOiy5z4Y4Dn0VeZFGn8mQ0AxPIrICEA/I32av8B5Te14o4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3207.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(376002)(346002)(39860400002)(5660300002)(6512007)(83380400001)(2906002)(8676002)(66946007)(4326008)(53546011)(64756008)(71200400001)(66476007)(966005)(6506007)(54906003)(38100700002)(6486002)(36756003)(122000001)(76116006)(8936002)(110136005)(91956017)(66556008)(186003)(86362001)(66446008)(478600001)(2616005)(316002)(26005)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aUtjcDNEUUdhQndST29kR1NoQk9RcmROMVpZc0YrOVFURStIODR5ZGZKMkxs?=
- =?utf-8?B?NngwRnRXMTE5aHBWUmpKWWV1UHZxNVVMWEFaakx2dnVIQUpnRy9OK0JiZXpp?=
- =?utf-8?B?SVFGa3BOYytIMzRsRGZWai9FZUJKT05BTDZGZHB6YjNORHNhdGVkVUFIc1I4?=
- =?utf-8?B?Mzg5VmZhVjVaRjkzY1ZMbVpkQ3FZNGJKQkVPbXdkSkZ6cXN1aWhXUDRvbkJO?=
- =?utf-8?B?Mm1GMmppbjNZU3FMbVE4NGlWUGNac2owZmJoRHpCRW9MSEtqNFBZRnlqTE1j?=
- =?utf-8?B?RmlKN1graDh3TUhPWmJodExmbnVBZ3JocC92MDc2MXJzTXQ3TWkyRWhKVkJw?=
- =?utf-8?B?L3duaENLM0x6Z2RweE9nOVJHOEpneTR5U2diTjgyRHhwTXdKUDlwdmNwZklQ?=
- =?utf-8?B?ZzRDUS9WMmQrRTJrR2tSZFpsLzNwWjJicnFOSk51Y1duNGMvQU4vZWRQRjYy?=
- =?utf-8?B?WDlyUGtUbEticmZJQUpZUVExK3Rzejd2WXhEUDdNL3ExUkM5ZVJ2ZCtYc3Fl?=
- =?utf-8?B?QlJwU0NkbWE5Z3RQNVRaN0xQUW9FWG5lUlV2djBmWWR5bllnbFRQdXphS1dI?=
- =?utf-8?B?M0dvV3E2SUtydzhLUUprYTRFUExjUGllOXdzdVEybWQ4UG9mYzVRYzI0TkVl?=
- =?utf-8?B?VFRVcHVoQ1JpYlJjdS9OTml5aEQrWGM1cGNvcUJBNjk5ZnlDeW5pSCtudWFi?=
- =?utf-8?B?MGYrSlNFMUd6Z1FJSmlDMUE0aVdZcUtZMFpCVU80VkRKQS9nZ3dhUHFZTlk3?=
- =?utf-8?B?TEZXNSsvc2RmbWd2MExxWlhUNWNyMHJNVW1Md054TjhVL1Q5aEJmQ1dCaUhz?=
- =?utf-8?B?azd2NGJwSEp3VFJPQVFWSi9XeTdUWVB6UUxySVNJRVc0cmFZYmwvYWY1VlY0?=
- =?utf-8?B?UkU4NUlrdmdLRURnYVRBdndPRXFtS2orVzZlOGtpbHBjNkhIOFpsaEdVZTNY?=
- =?utf-8?B?S2FmNy9sTkRpTnc2TFpLZndjVVY4T0kwcHZsYzBRSHFEZktxVDRSMnd0RmFK?=
- =?utf-8?B?NDZuZzB0bHRuVnZlTENCUGtqaWJ3RVQ1OEp0d0x5RUVZRC9oSEdGM0VmUkc4?=
- =?utf-8?B?cWdvdERuNmJrVFBmbSt6S2sxeDR1bVVPRDdPclp0VDJ0RXFHZWlSYy8vSHcv?=
- =?utf-8?B?Nm5Wc0hCakF2RmswMHNHbHcxdkh5djQ4dkZWd2k0NHVNbzRPY211U3pIOTdS?=
- =?utf-8?B?YjZmT1lHWXpwMzh3Q3RFc3JNTTR1NjR5anR1WVEwcTlkVW1PT2ZnalJ6QlFx?=
- =?utf-8?B?Z3BHWUgyUDNWb01oMEtQUUJ4ckR3T3dzdkE0Q2F4ckJldXF5Uk1aWkxoMnJ4?=
- =?utf-8?B?Qmpha3pHeUdyYXdLcEZDbk5RdUZUWHVkZkRxbkNodDRnWWFoNmtaRVgzOWlW?=
- =?utf-8?B?d0tpd1BTd3kzUWFpb0hoVEJKM21Bc0RnYVJQdFpVaFVsdmhIaUJUNVNCTWtp?=
- =?utf-8?B?L0VQeUx3Y0ZrTEU5Q1p2MnBJeUp2V2RFRW90WU9ZTlA0YzAvSnhrMW0vVjBP?=
- =?utf-8?B?Y1hUUitJZTU4NGlYUzF0Wk9wT0ZicUlUK1VnRUNVSUpSS2hIWjBIY0ZQZm1x?=
- =?utf-8?B?NmtYY1BnOHBRQytDVE5nSXRQM1NkZzBGUGpVSldmU0ViMEtOdTFrTHNyZDBp?=
- =?utf-8?B?ZUdiL01QbmM5b0xLRnlTRmNDYnYyU21YRjJRdW52ZHRxQlBvS1VTWklMRU9y?=
- =?utf-8?B?Z1BJbHVrTWxBNTF0Y2R4dXNLV3RzZGc4OS9Zd3JyaE1scHhhbUJWcWFrSHpo?=
- =?utf-8?Q?ZTFJUwKj/vC0Ze7q2L+gPg1R5KTRPDLuL76AVsV?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E5DEC37F7B8F5C40A031340AF0F8152B@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S235887AbhHaGid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 02:38:33 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:46650 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234268AbhHaGic (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 02:38:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630391857; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=qqB1D15exrSt/pTX3OC7nAqPOaP6u3UrkRxV0w2R5VU=;
+ b=Q8B5nUtYOtSu5KHIlp9Mcch1SefBlqFdfbIIRm0DdXL41E0JuOVqRsegWLj/T/5EfDgLB0MS
+ jlEVdTtSz4k4qY2AXz1lvWHUWjZg2bXecogHoJneGiF1oKI0t7dLeEV6n3Hqf8IxeTDqf2a3
+ wlw/cc42Lh7TNnWK4OJkZaVLd1k=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 612dce30f61b2f864b7986a6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 31 Aug 2021 06:37:36
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 433C8C43460; Tue, 31 Aug 2021 06:37:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5B809C4338F;
+        Tue, 31 Aug 2021 06:37:30 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3207.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6adc32ef-609a-4a63-f736-08d96c49a1ff
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2021 06:36:15.4196
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SqhzsAbc5y1JGwG3kHPynvw7vIpTE76OmXOsnuewPNT3yRzSHzqFfJ0Xyylud5SFMfoEBYqw+v4e1H5b62PLMjiQE2+urF1bHNAEb5+UaGo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2647
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 31 Aug 2021 12:07:30 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, svarbanov@mm-sol.com,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
+        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v5 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
+ init in SC7280
+In-Reply-To: <CAL_Jsq+4RZejPcgX3J5JDGnHB6Lgx54BVgwfaZrNuY759wm9ig@mail.gmail.com>
+References: <20210825212549.GA3609092@bjorn-Precision-5520>
+ <1795efc94a7b87fb4d9f769e03ce21c6@codeaurora.org>
+ <CAL_Jsq+4RZejPcgX3J5JDGnHB6Lgx54BVgwfaZrNuY759wm9ig@mail.gmail.com>
+Message-ID: <268d53aa6ec8f05928f083dfb0484ae2@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA4LTI1IGF0IDEzOjA3IC0wNTAwLCBKdXN0aW4gRm9yYmVzIHdyb3RlOg0K
-PiBPbiBTYXQsIEF1ZyAyMSwgMjAyMSBhdCA4OjM0IEFNIEthbGxlIFZhbG8gPGt2YWxvQGNvZGVh
-dXJvcmEub3JnPiB3cm90ZToNCj4gPiANCj4gPiBKYWVob29uIENodW5nIDxqaDgwLmNodW5nQHNh
-bXN1bmcuY29tPiB3cml0ZXM6DQo+ID4gDQo+ID4gPiBIaQ0KPiA+ID4gDQo+ID4gPiBPbiA4Lzkv
-MjEgODowOSBBTSwgSmFlaG9vbiBDaHVuZyB3cm90ZToNCj4gPiA+ID4gSGkNCj4gPiA+ID4gDQo+
-ID4gPiA+IE9uIDcvMTAvMjEgMjozMiBBTSwgSnVzdGluIEZvcmJlcyB3cm90ZToNCj4gPiA+ID4g
-PiBPbiBGcmksIEp1bCAyLCAyMDIxIGF0IDU6MzIgUE0gSnVzdGluIE0uIEZvcmJlcw0KPiA+ID4g
-PiA+IDxqZm9yYmVzQGZlZG9yYXByb2plY3Qub3JnPiB3cm90ZToNCj4gPiA+ID4gPiA+IA0KPiA+
-ID4gPiA+ID4gVGhlIFNhbXN1bmcgR2FsYXh5IEJvb2sgRmxleDIgQWxwaGEgdXNlcyBhbiBheDIw
-MSB3aXRoIHRoZSBJRCBhMGYwLzYwNzQuDQo+ID4gPiA+ID4gPiBUaGlzIHdvcmtzIGZpbmUgd2l0
-aCB0aGUgZXhpc3RpbmcgZHJpdmVyIG9uY2UgaXQga25vd3MgdG8gY2xhaW0gaXQuDQo+ID4gPiA+
-ID4gPiBTaW1wbGUgcGF0Y2ggdG8gYWRkIHRoZSBkZXZpY2UuDQo+ID4gPiA+ID4gPiANCj4gPiA+
-ID4gPiA+IFNpZ25lZC1vZmYtYnk6IEp1c3RpbiBNLiBGb3JiZXMgPGpmb3JiZXNAZmVkb3JhcHJv
-amVjdC5vcmc+DQo+ID4gPiANCj4gPiA+IElmIHRoaXMgcGF0Y2ggaXMgbWVyZ2VkLCBjYW4gdGhp
-cyBwYXRjaCBiZSBhbHNvIGFwcGxpZWQgb24gc3RhYmxlIHRyZWU/DQo+ID4gDQo+ID4gTHVjYSwg
-d2hhdCBzaG91bGQgd2UgZG8gd2l0aCB0aGlzIHBhdGNoPw0KPiA+IA0KPiA+IC0tDQo+ID4gaHR0
-cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LXdpcmVsZXNzL2xpc3QvDQo+
-ID4gDQo+ID4gaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vZGV2ZWxvcGVycy9k
-b2N1bWVudGF0aW9uL3N1Ym1pdHRpbmdwYXRjaGVzDQo+IA0KPiANCj4gSXMgdGhhdCB0byBpbXBs
-eSB0aGF0IHRoZXJlIGlzIGFuIGlzc3VlIHdpdGggdGhlIHN1Ym1pc3Npb24/ICBIYXBweSB0bw0K
-PiBmaXggYW55IHByb2JsZW1zLCBidXQgaXQgd291bGQgbmljZSB0byBnZXQgdGhpcyBpbiBzb29u
-LiAgSSBrbm93IHRoZQ0KPiA1LjE0IG1lcmdlIHdpbmRvdyB3YXMgYWxyZWFkeSBvcGVuZWQgd2hl
-biBJIHNlbnQgaXQsIGJ1dCB0aGUgNS4xNSBNUg0KPiBpcyBvcGVuaW5nIHNvb24uICBIYXJkd2Fy
-ZSBpcyBkZWZpbml0ZWx5IHNoaXBwaW5nIGFuZCBpbiB1c2VycyBoYW5kcy4NCg0KU29ycnkgZm9y
-IHRoZSBkZWxheSBoZXJlLiAgVGhpcyBmZWxsIGJldHdlZW4gdGhlIGNyYWNrcy4NCg0KS2FsbGUg
-Y2FuIHlvdSBhcHBseSB0aGlzIGRpcmVjdGx5IHRvIHlvdXIgdHJlZT8gSSdsbCBhc3NpZ24gaXQg
-dG8geW91Lg0KQW5kLCBpZiBwb3NzaWJsZSwgYWRkIHRoZSBjYy1zdGFibGUgdGFnIHNvIGl0IGdl
-dHMgcGlja2VkIHVwLiA6KQ0KDQpMb25nZXIgcmVhc29uaW5nOiBnZW5lcmFsbHkgd2UgZGV0ZWN0
-IHRoZSBoYXJkd2FyZSBpbiBhIG1vcmUNCnByb2dyYW1tYXRpYyB3YXksIGJ5IGNoZWNraW5nIHRo
-ZSB0eXBlIGZyb20gcmVnaXN0ZXJzIChhbmQgbm90IHJlbHlpbmcNCmVudGlyZWx5IG9uIHRoZSBQ
-Q0kgSURzKSwgYnV0IGZvciBzb21lIHJlYXNvbiB0aGlzIHR5cGUgb2YgZGV2aWNlIGlzDQpzdGls
-bCB1c2luZyB0aGUgbGVnYWN5IHdheSBvZiBtYXRjaGluZyB0aGUgZXhhY3QgUENJIElEIHRvIGEg
-ZGV2aWNlDQp0eXBlLiAgVGh1cywgdGhpcyBwYXRjaCBpcyBuZWVkZWQsIGF0IGxlYXN0IGZvciBu
-b3cuDQoNClRoYW5rcyENCg0KLS0NCkNoZWVycywNCkx1Y2EuDQo=
+On 2021-08-26 18:07, Rob Herring wrote:
+> On Thu, Aug 26, 2021 at 2:22 AM Prasad Malisetty
+> <pmaliset@codeaurora.org> wrote:
+>> 
+>> On 2021-08-26 02:55, Bjorn Helgaas wrote:
+>> > [+cc linux-pci; patches to drivers/pci/ should always be cc'd there]
+>> >
+>> > On Wed, Aug 25, 2021 at 07:30:09PM +0000, Stephen Boyd wrote:
+>> >> Quoting Prasad Malisetty (2021-08-24 01:10:48)
+>> >> > On 2021-08-17 22:56, Prasad Malisetty wrote:
+>> >> > > On 2021-08-10 09:38, Prasad Malisetty wrote:
+>> >> > >> On the SC7280, By default the clock source for pcie_1_pipe is
+>> >> > >> TCXO for gdsc enable. But after the PHY is initialized, the clock
+>> >> > >> source must be switched to gcc_pcie_1_pipe_clk from TCXO.
+>> >> > >>
+>> >> > >> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+>> >> > >> ---
+>> >> > >>  drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++++++++++++
+>> >> > >>  1 file changed, 18 insertions(+)
+>> >> > >>
+>> >> > >> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c
+>> >> > >> b/drivers/pci/controller/dwc/pcie-qcom.c
+>> >> > >> index 8a7a300..39e3b21 100644
+>> >> > >> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>> >> > >> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>> >> > >> @@ -166,6 +166,8 @@ struct qcom_pcie_resources_2_7_0 {
+>> >> > >>      struct regulator_bulk_data supplies[2];
+>> >> > >>      struct reset_control *pci_reset;
+>> >> > >>      struct clk *pipe_clk;
+>> >> > >> +    struct clk *gcc_pcie_1_pipe_clk_src;
+>> >> > >> +    struct clk *phy_pipe_clk;
+>> >> > >>  };
+>> >> > >>
+>> >> > >>  union qcom_pcie_resources {
+>> >> > >> @@ -1167,6 +1169,16 @@ static int qcom_pcie_get_resources_2_7_0(struct
+>> >> > >> qcom_pcie *pcie)
+>> >> > >>      if (ret < 0)
+>> >> > >>              return ret;
+>> >> > >>
+>> >> > >> +    if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
+>> >> > >> +            res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
+>> >> > >> +            if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
+>> >> > >> +                    return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
+>> >> > >> +
+>> >> > >> +            res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
+>> >> > >> +            if (IS_ERR(res->phy_pipe_clk))
+>> >> > >> +                    return PTR_ERR(res->phy_pipe_clk);
+>> >> > >> +    }
+>> >> > >
+>> >> > > I would like to check is there any other better approach instead of
+>> >> > > compatible method here as well or is it fine to use compatible method.
+>> >>
+>> >> I'd prefer the compatible method. If nobody is responding then it's
+>> >> best
+>> >> to just resend the patches with the approach you prefer instead of
+>> >> waiting for someone to respond to a review comment.
+>> >
+>> > I'm missing some context here, so I'm not exactly sure what your
+>> > question is, Prasad, but IMO drivers generally should not need to use
+>> > of_device_is_compatible() if they've already called
+>> > of_device_get_match_data() (as qcom_pcie_probe() has).
+>> >
+>> > of_device_is_compatible() does basically the same work of looking for
+>> > a match in qcom_pcie_match[] that of_device_get_match_data() does, so
+>> > it seems pointless to repeat it.
+> 
+> +1
+> 
+>> > I am a little confused because while [1] adds "qcom,pcie-sc7280" to
+>> > qcom,pcie.txt, I don't see a patch that adds it to qcom_pcie_match[].
+> 
+> Either that's missing or there's a fallback to 8250 that's not 
+> documented.
+>> >
+>> > Bjorn
+>> >
+>> Hi Bjorn,
+>> 
+>> I agree on your point, but the main reason is to use compatible in
+>> get_resources_2_7_0 is same hardware version. For SM8250 & SC7280
+>> platforms, the hw version is same. Since we can't have a separate ops
+>> for SC7280, we are using compatible method in get_resources_2_7_0 to
+>> differentiate SM8250 and SC7280.
+> 
+> Then fix the match data to be not just ops, but ops and the flag you 
+> need here.
+> 
+> Rob
+
+Hi Rob,
+
+Thanks for your review comments and inputs .
+
+This difference is not universal across all the platforms but instead 
+this is specific to SC7280.
+Hence it make sense to use compatible other than going for a flag.
+
+Thanks
+-Prasad
