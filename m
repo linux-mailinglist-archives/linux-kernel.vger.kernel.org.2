@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512383FC978
+	by mail.lfdr.de (Postfix) with ESMTP id AA7DB3FC979
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236034AbhHaOQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
+        id S236145AbhHaOQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235636AbhHaOQD (ORCPT
+        with ESMTP id S235797AbhHaOQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 31 Aug 2021 10:16:03 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80C1C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:15:06 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id m18so24676792lfl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:15:06 -0700 (PDT)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262B2C06179A
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:15:07 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id s10so14011991lfr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:15:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JjzmQo1N7d1P1cyzIEi8qkH6o8WLXVag9lNOKET+p2c=;
-        b=nBsQ1UMQrWHJWCVlOmyWqaGEI3ZWxg5jWFSIiCpRXMa+99AnD2rhYiPisfrrobVAXZ
-         21zYOxG9jay1p43sOz/PGA2M+t/d+qH8/1D2TcQ2TkH0qSV7qvKJzRZUp3ucZVlC3o5w
-         6ZLTOjWiwqrqg4I1GGbWk2yo6Wr4S9DgvyHdWGvXaG0jxKu3WmMv/Imke+CM4oi2jMRi
-         4nsGABkULhIdVS8ceBlk2SxcfWYcBCGHh9pjTHKhpqL2OtYs+E7dSTyLdyTrFBMStQjl
-         b50xt6kvP2Hqf9iXTbEu2rbq6Krv0RiM8B7xjcVjLX6fo/9K6LIu35USWBlKZceLIOZV
-         V9nQ==
+        bh=++Rs4f7JOpOPm4iAntpiRan10mluJYx8iHbdWicWw8M=;
+        b=h5NwXmOzJteq0gWLVmZfN3WIEEch2492GbeIThQE3oUIjKC2vZAFkPFJ1jkAaKeAHH
+         DJI3KdnkQFaupKRfAsBJ7WxnFUCoFvYfyW+mVowGq/8ReMcVz718tDSOg7uxOO1FtQ9G
+         3IardJ2Lf+wdMJibTKFsuJdIvylE/+UppdKBjh5VD+ptaTTua2m/P8qaM9qZKtIlxiKV
+         J9m51HnK98oR9gHmxxe/2wmlaDt/7JUQqBXNqy6JBkp9rFfbVFBPzy+pPpKXLG5tThvO
+         5R7yOFINcvDtlcaGEH4S6ELh+2PF19uewAycoujvsN8fhZ5NnjNj5NjuDYAm2hyAqxJs
+         t4pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JjzmQo1N7d1P1cyzIEi8qkH6o8WLXVag9lNOKET+p2c=;
-        b=kYrkiGOuwXYLfWrHQsMCytnZrrnyo87K5zKNoiCf4+pIQkzshfRPkMc3H/AR7qq7sx
-         +gOi5BvL7jxia1xCRCtXqri2xfgNeE8r3Z/vlduEJBALO8ew7vomzyOXes5LNlfxIrBf
-         AJjbmdcfOZfJ6pGFK/yyoQ0yQae0yf5Rj6kYvSsYVMXk1IfKFfQuVYq5lhnphHHOR1eM
-         z0L2TpkiooHXfZVS2O3AE40RXF74/25mgFgx31foAZ6r36MQD16ADC3POZKklxNZBdw1
-         2ITqN5CtKebpdXxUFVRe3mKMNwYJ+92/KmtbL+9r3kV+BvFVnLmPyUoUvRVMyUO7PtC1
-         KzSg==
-X-Gm-Message-State: AOAM532rIlD+wvGq8bMqW6ft3D7VnTG2tc+hOFCg+HU0OlkAxkHCRA7Z
-        pM/exs4xSwpdbRn1IHZqb0U=
-X-Google-Smtp-Source: ABdhPJzXPEinHOtHgNiedNMJpgG4DnomQ5x9de0q9GYvNAvWi5hDOnaZygJC6dEl2gsTaowvN5gAqA==
-X-Received: by 2002:ac2:4c50:: with SMTP id o16mr11491952lfk.224.1630419304952;
-        Tue, 31 Aug 2021 07:15:04 -0700 (PDT)
+        bh=++Rs4f7JOpOPm4iAntpiRan10mluJYx8iHbdWicWw8M=;
+        b=MG/gTmpDmls6TGHyEZV56ZCVc/bgJ882FfrexOcvqfIA/0jykOwtxy/OsgIlH+I/8F
+         At0jLyuMWDGnxFGdTMruAwu+Q/1Cx9xzaXWPCTj0Tar2sB5Bmxt0A+lZ3j/vkhAk8P2n
+         OConSsvb5d3G12N9CIYFKQFoWtR9TEjy3CmU9dFjtL07+dARUXdMluGso7ZONjI1GCSR
+         tkq3HsdXWaCcVVCUclspmvw+uhsXOfqyVmLdHuCHp/O8PaWPWVAfPYkYSrkOIL8WvNj5
+         c15aH3MTK5Wj2Wp0I69OGRBDbNPRK5B+JXgcWYzjwtyCjW0NVM57SdjEEBkyEoQ05nK/
+         0lRw==
+X-Gm-Message-State: AOAM532kRB6ug8vqUItYdxhdJ3UfZ6CqmWkqrrLGo/fHjY6RntqYmqLd
+        NY2kUd/1Er76jkuyekx8pkbjakOXJqtbVA==
+X-Google-Smtp-Source: ABdhPJxttmC1NGeHO7CLnQY2WziC1mG5M97QGaW7ORzJW8lZQktRMuK+c7acbG0/YNPi7q2D0tY3TA==
+X-Received: by 2002:a05:6512:2307:: with SMTP id o7mr18775362lfu.352.1630419306081;
+        Tue, 31 Aug 2021 07:15:06 -0700 (PDT)
 Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id i30sm2202187ljb.48.2021.08.31.07.15.04
+        by smtp.gmail.com with ESMTPSA id i30sm2202187ljb.48.2021.08.31.07.15.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 07:15:04 -0700 (PDT)
+        Tue, 31 Aug 2021 07:15:05 -0700 (PDT)
 From:   Kari Argillander <kari.argillander@gmail.com>
 To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
         ntfs3@lists.linux.dev
 Cc:     Kari Argillander <kari.argillander@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/7] fs/ntfs3: Add missing header and guards to lib/ headers
-Date:   Tue, 31 Aug 2021 17:14:30 +0300
-Message-Id: <20210831141434.975175-4-kari.argillander@gmail.com>
+Subject: [PATCH 4/7] fs/ntfs3: Change right headers to bitfunc.c
+Date:   Tue, 31 Aug 2021 17:14:31 +0300
+Message-Id: <20210831141434.975175-5-kari.argillander@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210831141434.975175-1-kari.argillander@gmail.com>
 References: <20210831141434.975175-1-kari.argillander@gmail.com>
@@ -65,56 +65,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-size_t needs header. Add missing header guards so that compiler will
-only include these ones.
+We only need linux/types.h for types like u8 etc. So we can remove rest
+and help compiler a little bit.
 
 Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
 ---
- fs/ntfs3/lib/decompress_common.h | 5 +++++
- fs/ntfs3/lib/lib.h               | 6 ++++++
- 2 files changed, 11 insertions(+)
+ fs/ntfs3/bitfunc.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/fs/ntfs3/lib/decompress_common.h b/fs/ntfs3/lib/decompress_common.h
-index 66297f398403..a2a858d4bf35 100644
---- a/fs/ntfs3/lib/decompress_common.h
-+++ b/fs/ntfs3/lib/decompress_common.h
-@@ -19,6 +19,9 @@
-  * this program.  If not, see <http://www.gnu.org/licenses/>.
+diff --git a/fs/ntfs3/bitfunc.c b/fs/ntfs3/bitfunc.c
+index ce304d40b5e1..bf10e2da5c6e 100644
+--- a/fs/ntfs3/bitfunc.c
++++ b/fs/ntfs3/bitfunc.c
+@@ -5,13 +5,8 @@
+  *
   */
  
-+#ifndef _LINUX_NTFS3_LIB_DECOMPRESS_COMMON_H
-+#define _LINUX_NTFS3_LIB_DECOMPRESS_COMMON_H
-+
- #include <linux/string.h>
- #include <linux/compiler.h>
- #include <linux/types.h>
-@@ -350,3 +353,5 @@ static forceinline u8 *lz_copy(u8 *dst, u32 length, u32 offset, const u8 *bufend
- 
- 	return dst;
- }
-+
-+#endif /* _LINUX_NTFS3_LIB_DECOMPRESS_COMMON_H */
-diff --git a/fs/ntfs3/lib/lib.h b/fs/ntfs3/lib/lib.h
-index f508fbad2e71..90309a5ae59c 100644
---- a/fs/ntfs3/lib/lib.h
-+++ b/fs/ntfs3/lib/lib.h
-@@ -7,6 +7,10 @@
-  * - linux kernel code style
-  */
- 
-+#ifndef _LINUX_NTFS3_LIB_LIB_H
-+#define _LINUX_NTFS3_LIB_LIB_H
-+
+-#include <linux/blkdev.h>
+-#include <linux/buffer_head.h>
+-#include <linux/fs.h>
+-#include <linux/nls.h>
 +#include <linux/types.h>
  
- /* globals from xpress_decompress.c */
- struct xpress_decompressor *xpress_allocate_decompressor(void);
-@@ -24,3 +28,5 @@ int lzx_decompress(struct lzx_decompressor *__restrict d,
- 		   const void *__restrict compressed_data,
- 		   size_t compressed_size, void *__restrict uncompressed_data,
- 		   size_t uncompressed_size);
-+
-+#endif /* _LINUX_NTFS3_LIB_LIB_H */
+-#include "debug.h"
+-#include "ntfs.h"
+ #include "ntfs_fs.h"
+ 
+ #define BITS_IN_SIZE_T (sizeof(size_t) * 8)
 -- 
 2.25.1
 
