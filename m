@@ -2,83 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BFF3FC367
+	by mail.lfdr.de (Postfix) with ESMTP id CB5FA3FC369
 	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 09:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239689AbhHaHTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 03:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239538AbhHaHTE (ORCPT
+        id S239762AbhHaHVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 03:21:31 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8803 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239538AbhHaHVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 03:19:04 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58285C061575;
-        Tue, 31 Aug 2021 00:18:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wMWQ7afJk2fnujuvLWw5x3JZCKsJTy9GBKnLegMd5ks=; b=bh695AvBuZ7M3JqiZMqx13Qs3o
-        rhHwQEhwNin/3m2tn+IqkWl1VKimHyNGCd/IgqG5L3mavS0J8GIppQ3u4Bg1JyU09iPYM2rB7fk0f
-        ZWo8hiFZ1Xt2SxIdEY2cNlBAD7RegoEAYm5+IUS4HcXfhP4v8/YpZ6hWFzVNmcfSRwE65qX85gDtK
-        xXK6meiNNGDvu/RD9UVssjbBHHfTpqkgGsp62B0sgkxwufAj6BM7RAZzYRzlWGcppLRoH5CnsMk+D
-        nNtR/tfV3L/VYlZvs00GMPBn/AJO0D/qLV8a2MQ5nanvOQFIRLTjim/sbGAThyJXtnXQ17l++sUNO
-        vwGrX1Bg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKy1j-00EdRc-TQ; Tue, 31 Aug 2021 07:17:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8C0C73001F6;
-        Tue, 31 Aug 2021 09:17:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7B4852CFB419C; Tue, 31 Aug 2021 09:17:47 +0200 (CEST)
-Date:   Tue, 31 Aug 2021 09:17:47 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tianqiang Xu <skyele@sjtu.edu.cn>
-Cc:     x86@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, kvm@vger.kernel.org, hpa@zytor.com,
-        jarkko@kernel.org, dave.hansen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Subject: Re: [PATCH 3/4] KVM host implementation
-Message-ID: <YS3Xm9yEUO1DsR+G@hirez.programming.kicks-ass.net>
-References: <20210831015919.13006-1-skyele@sjtu.edu.cn>
- <20210831015919.13006-3-skyele@sjtu.edu.cn>
- <YS3XOYJXcYw9vIda@hirez.programming.kicks-ass.net>
+        Tue, 31 Aug 2021 03:21:30 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GzJVH1QyyzYw6X;
+        Tue, 31 Aug 2021 15:19:51 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 31 Aug 2021 15:20:21 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Tue, 31 Aug
+ 2021 15:20:20 +0800
+Subject: Re: [PATCH net-next 2/2] skbuff: keep track of pp page when
+ __skb_frag_ref() is called
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Kevin Hao" <haokexin@gmail.com>, <nogikh@google.com>,
+        Marco Elver <elver@google.com>, <memxor@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>
+References: <1630286290-43714-1-git-send-email-linyunsheng@huawei.com>
+ <1630286290-43714-3-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0UfmcB93Hn1AS_o2a_h98xxZMouTiGzJfG09qsWf+O6L1Q@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <9cf28179-0cd5-a8c5-2bfd-bd844315ad1a@huawei.com>
+Date:   Tue, 31 Aug 2021 15:20:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YS3XOYJXcYw9vIda@hirez.programming.kicks-ass.net>
+In-Reply-To: <CAKgT0UfmcB93Hn1AS_o2a_h98xxZMouTiGzJfG09qsWf+O6L1Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 09:16:09AM +0200, Peter Zijlstra wrote:
-> On Tue, Aug 31, 2021 at 09:59:18AM +0800, Tianqiang Xu wrote:
-> > @@ -4304,8 +4374,14 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
-> >  	idx = srcu_read_lock(&vcpu->kvm->srcu);
-> >  	if (kvm_xen_msr_enabled(vcpu->kvm))
-> >  		kvm_xen_runstate_set_preempted(vcpu);
-> > -	else
-> > +	else {
-> >  		kvm_steal_time_set_preempted(vcpu);
-> > +
-> > +		if (get_cpu_nr_running(smp_processor_id()) <= 1)
-> > +			kvm_steal_time_set_is_idle(vcpu);
-> > +		else
-> > +			kvm_steal_time_clear_is_idle(vcpu);
-> > +	}
-> >  	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+On 2021/8/30 23:14, Alexander Duyck wrote:
+> On Sun, Aug 29, 2021 at 6:19 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> As the skb->pp_recycle and page->pp_magic may not be enough
+>> to track if a frag page is from page pool after the calling
+>> of __skb_frag_ref(), mostly because of a data race, see:
+>> commit 2cc3aeb5eccc ("skbuff: Fix a potential race while
+>> recycling page_pool packets").
+>>
+>> There may be clone and expand head case that might lose the
+>> track if a frag page is from page pool or not.
+>>
+>> So increment the frag count when __skb_frag_ref() is called,
+>> and only use page->pp_magic to indicate if a frag page is from
+>> page pool, to avoid the above data race.
+>>
+>> For 32 bit systems with 64 bit dma, we preserve the orginial
+>> behavior as frag count is used to trace how many time does a
+>> frag page is called with __skb_frag_ref().
+>>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 > 
-> 
-> This cannot be right. The CPU could long since be running tasks again,
-> but as long as this vCPU crud doesn't run, the guest keeps thinking it's
-> physically idle.
+> Is this really a common enough case to justify adding this extra overhead?
 
-More fundamentally, a blocked task doesn't have a CPU. So unless you've
-pinned your vCPU threads to physical CPUs, the whole thing is bonkers.
+I am not sure I understand what does extra overhead mean here.
+But it seems this patch does not add any explicit overhead?
+As the added page_pool_is_pp_page() checking in __skb_frag_ref() is
+neutralized by avoiding the recycle checking in __skb_frag_unref(),
+and the atomic operation is with either pp_frag_count or _refcount?
+
+> 
+>> ---
+>>  include/linux/skbuff.h  | 13 ++++++++++++-
+>>  include/net/page_pool.h | 17 +++++++++++++++++
+>>  net/core/page_pool.c    | 12 ++----------
+>>  3 files changed, 31 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+>> index 6bdb0db..8311482 100644
+>> --- a/include/linux/skbuff.h
+>> +++ b/include/linux/skbuff.h
+>> @@ -3073,6 +3073,16 @@ static inline struct page *skb_frag_page(const skb_frag_t *frag)
+>>   */
+>>  static inline void __skb_frag_ref(skb_frag_t *frag)
+>>  {
+>> +       struct page *page = skb_frag_page(frag);
+>> +
+>> +#ifdef CONFIG_PAGE_POOL
+>> +       if (!PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
+>> +           page_pool_is_pp_page(page)) {
+>> +               page_pool_atomic_inc_frag_count(page);
+>> +               return;
+>> +       }
+>> +#endif
+>> +
+>>         get_page(skb_frag_page(frag));
+>>  }
+>>
+> 
+> This just seems like a bad idea in general. We are likely increasing
+> the potential for issues with this patch instead of avoiding them. I
+
+Yes, I am agreed that calling the __skb_frag_ref() without calling the
+__skb_frag_unref() for the same page might be more likely to cause problem
+for this patch. But we are already depending on the calling of
+__skb_frag_unref() to free the pp page, making it more likely just enable
+us to catch the bug more quickly?
+
+Or is there other situation that I am not awared of, which might cause
+issues?
+
+> really feel it would be better for us to just give up on the page and
+> kick it out of the page pool if we are cloning frames and multiple
+> references are being taken on the pages.
+
+For Rx, it seems fine for normal case.
+For Tx, it seems the cloning and multiple references happens when
+tso_fragment() is called in tcp_write_xmit(), and the driver need to
+reliable way to tell if a page is from the page pool, so that the
+dma mapping can be avoided for Tx too.
+
+> 
+>> @@ -3101,7 +3111,8 @@ static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
+>>         struct page *page = skb_frag_page(frag);
+>>
+>>  #ifdef CONFIG_PAGE_POOL
+>> -       if (recycle && page_pool_return_skb_page(page))
+>> +       if ((!PAGE_POOL_DMA_USE_PP_FRAG_COUNT || recycle) &&
+>> +           page_pool_return_skb_page(page))
+>>                 return;
+>>  #endif
+>>         put_page(page);
+>> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+>> index 2ad0706..8b43e3d9 100644
+>> --- a/include/net/page_pool.h
+>> +++ b/include/net/page_pool.h
+>> @@ -244,6 +244,23 @@ static inline void page_pool_set_frag_count(struct page *page, long nr)
+>>         atomic_long_set(&page->pp_frag_count, nr);
+>>  }
+>>
+>> +static inline void page_pool_atomic_inc_frag_count(struct page *page)
+>> +{
+>> +       atomic_long_inc(&page->pp_frag_count);
+>> +}
+>> +
+>> +static inline bool page_pool_is_pp_page(struct page *page)
+>> +{
+>> +       /* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
+>> +        * in order to preserve any existing bits, such as bit 0 for the
+>> +        * head page of compound page and bit 1 for pfmemalloc page, so
+>> +        * mask those bits for freeing side when doing below checking,
+>> +        * and page_is_pfmemalloc() is checked in __page_pool_put_page()
+>> +        * to avoid recycling the pfmemalloc page.
+>> +        */
+>> +       return (page->pp_magic & ~0x3UL) == PP_SIGNATURE;
+>> +}
+>> +
+>>  static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+>>                                                           long nr)
+>>  {
+>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+>> index ba9f14d..442d37b 100644
+>> --- a/net/core/page_pool.c
+>> +++ b/net/core/page_pool.c
+>> @@ -24,7 +24,7 @@
+>>  #define DEFER_TIME (msecs_to_jiffies(1000))
+>>  #define DEFER_WARN_INTERVAL (60 * HZ)
+>>
+>> -#define BIAS_MAX       LONG_MAX
+>> +#define BIAS_MAX       (LONG_MAX / 2)
+> 
+> This piece needs some explaining in the patch. Why are you changing
+> the BIAS_MAX?
+
+When __skb_frag_ref() is called for the pp page that is not drained yet,
+the pp_frag_count could be overflowed if the BIAS is too big.
+
+> 
+>>  static int page_pool_init(struct page_pool *pool,
+>>                           const struct page_pool_params *params)
+>> @@ -741,15 +741,7 @@ bool page_pool_return_skb_page(struct page *page)
+>>         struct page_pool *pp;
+>>
+>>         page = compound_head(page);
+>> -
+>> -       /* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
+>> -        * in order to preserve any existing bits, such as bit 0 for the
+>> -        * head page of compound page and bit 1 for pfmemalloc page, so
+>> -        * mask those bits for freeing side when doing below checking,
+>> -        * and page_is_pfmemalloc() is checked in __page_pool_put_page()
+>> -        * to avoid recycling the pfmemalloc page.
+>> -        */
+>> -       if (unlikely((page->pp_magic & ~0x3UL) != PP_SIGNATURE))
+>> +       if (!page_pool_is_pp_page(page))
+>>                 return false;
+>>
+>>         pp = page->pp;
+>> --
+>> 2.7.4
+>>
+> .
+> 
