@@ -2,84 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3303FC23B
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 07:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36FD53FC240
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 07:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238673AbhHaFnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 01:43:19 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:45024 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231537AbhHaFnR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 01:43:17 -0400
-X-UUID: b99fd11d34b1416bbf87eb586268cf6e-20210831
-X-UUID: b99fd11d34b1416bbf87eb586268cf6e-20210831
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <hui.liu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1443729322; Tue, 31 Aug 2021 13:42:18 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 31 Aug 2021 13:42:17 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 31 Aug 2021 13:42:16 +0800
-From:   Hui Liu <hui.liu@mediatek.com>
-To:     <robh+dt@kernel.org>, <jic23@kernel.org>, <lars@metafoo.de>,
-        <pmeerw@pmeerw.net>
-CC:     <srv_heupstream@mediatek.com>, <hui.liu@mediatek.com>,
-        <zhiyong.tao@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <yingjoe.chen@mediatek.com>, <seiya.wang@mediatek.com>,
-        <ben.tseng@mediatek.com>, <matthias.bgg@gmail.com>,
-        <s.hauer@pengutronix.de>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v2 1/1] iio: mtk-auxadc: update case IIO_CHAN_INFO_PROCESSED
-Date:   Tue, 31 Aug 2021 13:42:07 +0800
-Message-ID: <20210831054207.13236-2-hui.liu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210831054207.13236-1-hui.liu@mediatek.com>
-References: <20210831054207.13236-1-hui.liu@mediatek.com>
+        id S238313AbhHaFtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 01:49:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:51078 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235078AbhHaFte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 01:49:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A71E1FB;
+        Mon, 30 Aug 2021 22:48:39 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 133BF3F694;
+        Mon, 30 Aug 2021 22:48:37 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 06:48:35 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     rishabhb@codeaurora.org
+Cc:     sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, avajid@codeaurora.org,
+        adharmap@codeaurora.org
+Subject: Re: [PATCH v3] firmware: arm_scmi: Free mailbox channels if probe
+ fails
+Message-ID: <20210831054835.GJ13160@e120937-lin>
+References: <1628111999-21595-1-git-send-email-rishabhb@codeaurora.org>
+ <20210805105427.GU6592@e120937-lin>
+ <51782599a01a6a22409d01e5fc1f8a50@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51782599a01a6a22409d01e5fc1f8a50@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert raw data to processed data, the processed data is input voltage.
+On Mon, Aug 30, 2021 at 02:09:37PM -0700, rishabhb@codeaurora.org wrote:
+> Hi Christian
 
-Signed-off-by: Hui Liu <hui.liu@mediatek.com>
----
- drivers/iio/adc/mt6577_auxadc.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Hi Rishabh,
 
-diff --git a/drivers/iio/adc/mt6577_auxadc.c b/drivers/iio/adc/mt6577_auxadc.c
-index 79c1dd68b909..d4fccd52ef08 100644
---- a/drivers/iio/adc/mt6577_auxadc.c
-+++ b/drivers/iio/adc/mt6577_auxadc.c
-@@ -82,6 +82,10 @@ static const struct iio_chan_spec mt6577_auxadc_iio_channels[] = {
- 	MT6577_AUXADC_CHANNEL(15),
- };
- 
-+/* For Voltage calculation */
-+#define VOLTAGE_FULL_RANGE  1500	/* VA voltage */
-+#define AUXADC_PRECISE      4096	/* 12 bits */
-+
- static int mt_auxadc_get_cali_data(int rawdata, bool enable_cali)
- {
- 	return rawdata;
-@@ -191,6 +195,10 @@ static int mt6577_auxadc_read_raw(struct iio_dev *indio_dev,
- 		}
- 		if (adc_dev->dev_comp->sample_data_cali)
- 			*val = mt_auxadc_get_cali_data(*val, true);
-+
-+		/* Convert adc raw data to voltage: 0 - 1500 mV */
-+		*val = *val * VOLTAGE_FULL_RANGE / AUXADC_PRECISE;
-+
- 		return IIO_VAL_INT;
- 
- 	default:
--- 
-2.18.0
+thanks for looking into this kind of bad interactions.
+
+> There seems to be another issue here. The response from agent can be delayed
+> causing a timeout during base protocol acquire,
+> which leads to the probe failure. What I have observed is sometimes the
+> failure of probe and rx_callback (due to a delayed message)
+> happens at the same time on different cpus.
+> Because of this race, the device memory may be cleared while the
+> interrupt(rx_callback) is executing on another cpu.
+
+You are right that concurrency was not handled properly in this kind of
+context and moreover, if you think about it, even the case of out of
+order reception of responses and delayed_responses (type2 SCMI messages)
+for asynchronous SCMI commands was not handled properly.
+
+> How do you propose we solve this? Do you think it is better to take the
+> setting up of base and other protocols out of probe and
+> in some delayed work? That would imply the device memory is not released
+> until remove is called. Or should we add locking to
+> the interrupt handler(scmi_rx_callback) and the cleanup in probe to avoid
+> the race?
+> 
+
+These issues were more easily exposed by SCMI Virtio transport, so in
+the series where I introduced scmi-virtio:
+
+https://lore.kernel.org/linux-arm-kernel/162848483974.232214.9506203742448269364.b4-ty@arm.com/
+
+(which is now queued for v5.15 ...  now on -next I think...finger crossed)
+
+I took the chance to rectify a couple of other things in the SCMI core
+in the initial commits.
+As an example, in the above series
+
+ [PATCH v7 05/15] firmware: arm_scmi: Handle concurrent and out-of-order messages
+
+cares to add a refcount to xfers and some locking on xfers between TX
+and RX path to avoid that a timed out xfer can vanish while the rx path
+is concurrently working on it (as you said); moreover I handle the
+condition (rare if not unplausible anyway) in which a transport delivers
+out of order responses and delayed responses.
+
+I tested this scenarios on some fake emulated SCMI Virtio transport
+where I could play any sort of mess and tricks to stress this limit
+conditions, but you're more than welcome to verify if the race you are
+seeing on Base protocol time out is solved (as I would hope :D) by this
+series of mine.
+
+Let me know, any feedback is welcome.
+
+Btw, in the series above there are also other minor changes, but there
+is also another more radical change needed to ensure correctness and
+protection against stale old messages which maybe could interest you
+in general if you are looking into SCMI:
+
+[PATCH v7 04/15] firmware: arm_scmi: Introduce monotonically increasing tokens 
+
+Let me know if yo have other concerns.
+
+Thanks
+Cristian
 
