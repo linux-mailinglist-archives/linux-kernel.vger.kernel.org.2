@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088E23FC03F
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 03:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544223FC054
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 03:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235149AbhHaA65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 20:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52810 "EHLO
+        id S239214AbhHaBFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 21:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhHaA64 (ORCPT
+        with ESMTP id S231297AbhHaBFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 20:58:56 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358A6C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 17:58:02 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id n27so22682782oij.0
-        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 17:58:02 -0700 (PDT)
+        Mon, 30 Aug 2021 21:05:48 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD82FC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 18:04:53 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id x4so15181682pgh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 30 Aug 2021 18:04:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=XYpN3SAtfvTTijjUpUhGm+neUMN/BjViflHhfgj+W+M=;
-        b=L1SCg7SonFYijTI7AWQxcDtkQmPNoWFDMG13dWrcS1VQ/1iHc3PEAkb9tExC8YJbKy
-         4snvL1BY+USFvZP7f0P7Cbu7NDyBed617lUjXt+lDKKURJmqQLdG/wG2Htcv5cj64mb9
-         rxH50EQScj5U8ghqPdl/ltVmwxEsXiwPQ7JtU=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=N9oXdiyKyh+64MjmkQedbrZJBmQwnxKayFwZGo+V8Ik=;
+        b=gW+g6sw7G9SRkIO4ftZiqwMcqR/F0nK+204T/aIFFwdYI3RrUEN4x0Ur8tQ5+GTkdt
+         rvJhRPluk1SvZjJR+tj3T5ryphD7yNZ7pcIKH3U8Yc+6ASXwNTK+oOFPLH7baNTfWdZb
+         oLJPd+q8jWZOCdjWjHShIMMYXULqfITsb4pRQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=XYpN3SAtfvTTijjUpUhGm+neUMN/BjViflHhfgj+W+M=;
-        b=SL0dJi3nFiSA1R2fFtj3Bt62DFtdTw+05qo/Do8qd7xL5iPX7T3dtaWqT1n/kfsHKI
-         pAKlZqGwQen8wPkmNd98jmkH0yly5uMfJ0+2PAJD997nB2cZAFp4HCE8ilmOMFCsC8FR
-         pSzrkenmwrsI/e1T8lr+ZtxefBy+lQLz0ARuAd4sLioaSTLHtPE16Eka5jcldjJ+x6Gj
-         xhxcKPbbRbT5INDFTpGJj+/xI1Z26RsoANKrFjA0S8RenRLSaHfdXD3GNas4HKZzRJs+
-         VbbsCXbG0oWyCAXdey/Nbta4FQsP3ODTJw+byDI4KFON15mavPF2Bcqh36R/xiiE9I5C
-         U7bA==
-X-Gm-Message-State: AOAM530bRd82jZeMoTWauhXHYQvKrOyKYOvVn2WdZN/+kMMRxLdeh+fn
-        QT75C9PW+q3o1H4yGAdF8AMLja0rFs77QVo1Zy0yAg==
-X-Google-Smtp-Source: ABdhPJyAt70CIHuM1fAQgI+/NvPTolzh5c0egjVTluneOAw3mU57bB65j1CAQcMKkEBiPn0xE3peYDhwnb/M7j3U7Sk=
-X-Received: by 2002:aca:2310:: with SMTP id e16mr1421394oie.64.1630371481520;
- Mon, 30 Aug 2021 17:58:01 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 30 Aug 2021 17:58:01 -0700
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N9oXdiyKyh+64MjmkQedbrZJBmQwnxKayFwZGo+V8Ik=;
+        b=L5wVQmhvsYtUb0deDkHiHvhUfK5d1MCkRCS84W8FS0ToPY7PYK9KVhALaF3iXfeVDy
+         lCQf99tzpMrmtd+Zw7ZFgF90OPqCGXzh26GanAGvMQCUChGHyStV6dlrPA0oO1bI3Dmr
+         Fl1Fe3/SyIo0QFlITDrbGZX8HnpUTLMT44TTwtZQnGqSw2mhInKmFTNRx3tnl7oq2NvN
+         Npd0//SV8/Hok7WrrtMB4+h1Nkz8QKp+1b+vO5tQu2hV9WhhrStWkFzo2GPsMtcmArl1
+         6RxrTVvzeWbOlHRRD2bKAYPRKjMCd/QckhZqmGVOQvDNDmXdlhvC75M6eMu/V5R4VKdP
+         tR2A==
+X-Gm-Message-State: AOAM532vK3lhUCsVMUda8I0HXtbloOKQz23Qp1jrCCQ4ZrSbPBrvcww7
+        ++TDilKjL6df6Y+kFjR9g9Ux1Q==
+X-Google-Smtp-Source: ABdhPJzUWbLXbubjr4NxIULBQ208sO9zxi9JNX6oqkH+q/g3cpjbL9Vpcxi4PxuB3pMXHr9AFd/deQ==
+X-Received: by 2002:aa7:8888:0:b0:3ff:1d90:1864 with SMTP id z8-20020aa78888000000b003ff1d901864mr8718183pfe.54.1630371893448;
+        Mon, 30 Aug 2021 18:04:53 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:6d52:87b8:b55b:8800])
+        by smtp.gmail.com with ESMTPSA id o2sm18511425pgu.76.2021.08.30.18.04.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 18:04:53 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 10:04:48 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v1 05/10] printk: call boot_delay_msec() in
+ printk_delay()
+Message-ID: <YS2AMIQGPDR0Ve57@google.com>
+References: <20210803131301.5588-1-john.ogness@linutronix.de>
+ <20210803131301.5588-6-john.ogness@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1630339489-23172-1-git-send-email-khsieh@codeaurora.org>
-References: <1630339489-23172-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 30 Aug 2021 17:58:00 -0700
-Message-ID: <CAE-0n52OjXovJJ2HNFPgyGn6vS84wgrEv4C66-tb176nUbdwSg@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Add Display Port node
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        robdclark@gmail.com, robh+dt@kernel.org, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        mkrishn@codeaurora.org, kalyan_t@codeaurora.org,
-        rajeevny@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803131301.5588-6-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-08-30 09:04:49)
-> Changes in v2:
-> -- break this patch into 3 patches
+On (21/08/03 15:18), John Ogness wrote:
+> boot_delay_msec() is always called immediately before printk_delay()
+> so just call it from within printk_delay().
 
-Are there two more somewhere?
+[..]
 
->
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 88 +++++++++++++++++++++++++++++++++++-
->  1 file changed, 87 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index c29226b..f224029 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -3202,6 +3202,13 @@
->                                                         remote-endpoint = <&edp_in>;
->                                                 };
->                                         };
-> +
-> +                                       port@2 {
-> +                                                reg = <2>;
-> +                                                dpu_intf0_out: endpoint {
-> +                                                        remote-endpoint = <&dp_in>;
-> +                                                };
-> +                                        };
->                                 };
->
->                                 mdp_opp_table: mdp-opp-table {
-> @@ -3389,6 +3396,78 @@
->                                         };
->                                 };
->                         };
-> +
-> +                       msm_dp: displayport-controller@ae90000 {
-> +                               status = "disabled";
-> +                               compatible = "qcom,sc7180-dp", "qcom,sc7280-dp";
+Interesting. Apparently boot_delay_msec() does not do anything
+if suppress_message_printing(level). I wonder if we want a similar
+thing for printk_delay() as well. Otherwise we have some imbalance in
+behaviour.
 
-It should be most specific to least specific from left to right. I'd
-rather see "qcom,sc7180-dp" dropped entirely as it will become important
-to know that sc7280 has eDP and DP whereas sc7180 only has DP. We should
-key that knowledge off the compatible string, so having sc7180-dp here
-makes that harder, not easier.
+IOW,
 
+> @@ -1222,10 +1222,8 @@ static void boot_delay_msec(int level)
+>        unsigned long long k;
+>        unsigned long timeout;
+> 
+>-       if ((boot_delay == 0 || system_state >= SYSTEM_RUNNING)
+>-               || suppress_message_printing(level)) {
+>+       if (boot_delay == 0 || system_state >= SYSTEM_RUNNING)
+>                return;
+>-       }
+> 
+>        k = (unsigned long long)loops_per_msec * boot_delay;
+
+[..]
+
+> +static inline void printk_delay(int level)
+>  {
+
++	if (suppress_message_printing(level))
++		return;
+
+> +	boot_delay_msec(level);
 > +
-> +                               reg = <0 0x0ae90000 0 0x1400>;
-> +
-> +                               interrupt-parent = <&mdss>;
-> +                               interrupts = <12>;
-> +
-> +                               clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +                                        <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
-> +                                        <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
-> +                                        <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
-> +                                        <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
-> +                               clock-names =   "core_iface",
-> +                                               "core_aux",
+>  	if (unlikely(printk_delay_msec)) {
+>  		int m = printk_delay_msec;
+>  
