@@ -2,172 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1CB3FCB06
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2740B3FCB08
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 17:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239639AbhHaPsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 11:48:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239594AbhHaPsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 11:48:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 343DB60F46;
-        Tue, 31 Aug 2021 15:47:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630424832;
-        bh=TnQQpCYETDT/ylSVf5eWQ2bbH/+ot85D9Zd3GWer9E0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=iO4JPZHO/sCO/8Sw7XAgTAKl6Csj4B6jxZbxrbh898E3NV6Qa5U39L6GINA/CLnhK
-         5rxWAlUq1mzF1QOyr25CRZ9xgtfhfTjsTRDdTj/Vpzcov9P6uxW6QwXyKqlMkGB98+
-         +AwBHkPg9OEfH2hp9PgSFTcbft6QXlHY9VBA5dSdyL/d6Isx0epzpjZWG4OsUy3Mo6
-         85PlG/J2koJnnox/C0P8MSmev3EqCeFXDO8Pz7Rwai2ATcKLN5fwJv6D+I8HgjAGpK
-         N7yoy55VwqahrEXkDKCjW65qR7dnFVGMNCcW7iltxbQ8MzvIzic8l8J4dMEvnk+q7h
-         DhFZd0GNxVJ8g==
-Date:   Tue, 31 Aug 2021 10:47:11 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Chuanjia Liu <chuanjia.liu@mediatek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        Yong Wu <yong.wu@mediatek.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v12 2/6] PCI: mediatek: Add new method to get shared
- pcie-cfg base address
-Message-ID: <20210831154711.GA107126@bjorn-Precision-5520>
+        id S239675AbhHaPsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 11:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232770AbhHaPsm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 11:48:42 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C75C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:47:47 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id l7-20020a1c2507000000b002e6be5d86b3so2921721wml.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 08:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MJc3RpVbyMG8T0VfQf1H3doXXOiGLerg/UE1JIfxREM=;
+        b=WIf4R/DWqUqmcItXnJu4pdhrxBk1bx1dEwvm6VitmDix+JMqEkRUE7v73QElBV6F57
+         eecBv/Nu1lbTb82xP5wYUqUSHdmth3Cn4/UG38w9y+KDfOrtlGVTPVGmjus/q1exEt0g
+         IcZGtGuFfP38Ak6wAxIV4sEnfOxQIod365+pdVTHlz47GuDyiTdjbE09Wb1bRjZ8n7fe
+         cfz0Dk2bcx50asoGDjh2VfSwJOvJWa0BwvenaoP8C0SxN5v6qCmi16gYpcFs1zLRB5ys
+         yZrO71hzjbzKWNz1QAoEIFsAulIuKgk0J+ozwzEXae4V1PTh4fTXs/q3WMukyZX5dR2W
+         o5mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MJc3RpVbyMG8T0VfQf1H3doXXOiGLerg/UE1JIfxREM=;
+        b=UgqAW/AVOdFNlGSyMkTI2364dUx1QvqzM/QQHRop1IENNYo4ryYLP/FB7POwVgwNKp
+         cVf95Z0jujg6L21/ip8HVlnlckrIlOKwMWeIrjpG/V+nJvD2sQsX8oR3BelrClKdV27v
+         f1l1kw/66shRQ0+DTpid3fZ/Ll0Vr+yOBvlxuhaW8dZbWvGQWH0YRCio6mrtsSbXVH6s
+         pUEWmxZzl0gKS3Y7O6hw11E+q1IFQy2jfNGa1F+ntUAxPhDgpkScSejeUoW59wTPL4PY
+         ESuu1CScmEKezb4lsKJ3+ER82khXchjNKypSUWumQWeQg/nqtxXsloVNa6Fwsl0O1Vmw
+         sngg==
+X-Gm-Message-State: AOAM533XtIxWYMQKVCGQfHp3Q47fz1W7kEpsLFc3sBdc31XWAq91kxMM
+        dXEzYA0umwYO1bDohyP0t5nlRw==
+X-Google-Smtp-Source: ABdhPJwVwCzqBm9078cg5gCKPbY+Ow3G6ETI4jTg2xYqztpMNKJYy3ALiiH7FHrktnwVChEevD9sdg==
+X-Received: by 2002:a05:600c:4048:: with SMTP id j8mr4774506wmm.173.1630424865576;
+        Tue, 31 Aug 2021 08:47:45 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:3729:c12:7ee0:e9bc])
+        by smtp.gmail.com with ESMTPSA id e13sm18179175wra.40.2021.08.31.08.47.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 08:47:44 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 17:47:37 +0200
+From:   Marco Elver <elver@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        kernel test robot <oliver.sang@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [mm] f9ce0be71d:
+ BUG:KCSAN:data-race_in_next_uptodate_page/next_uptodate_page
+Message-ID: <YS5PGac+2NTGFlwa@elver.google.com>
+References: <20210826144157.GA26950@xsang-OptiPlex-9020>
+ <20210827154232.rrpetqsh5xxklkej@box.shutemov.name>
+ <20210831131313.GC31712@willie-the-truck>
+ <CANpmjNOEstBLc9tbofcM=hfkYsmQFLBzq3i=L58fPpgg1vHgPw@mail.gmail.com>
+ <20210831140749.GA31886@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqKEvAypWhiaWMhxM7zVkLAFL9=eMU7_vr=ht+uyxYe0qg@mail.gmail.com>
+In-Reply-To: <20210831140749.GA31886@willie-the-truck>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 10:04:40AM -0500, Rob Herring wrote:
-> On Fri, Aug 27, 2021 at 11:46 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >
-> > On Mon, Aug 23, 2021 at 11:27:56AM +0800, Chuanjia Liu wrote:
-> > > For the new dts format, add a new method to get
-> > > shared pcie-cfg base address and use it to configure
-> > > the PCIECFG controller
-> >
-> > Rewrap this to fill 75 columns.
-> >
-> > > Signed-off-by: Chuanjia Liu <chuanjia.liu@mediatek.com>
-> > > Acked-by: Ryder Lee <ryder.lee@mediatek.com>
-> > > ---
-> > >  drivers/pci/controller/pcie-mediatek.c | 17 +++++++++++++++++
-> > >  1 file changed, 17 insertions(+)
-> > >
-> > > diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-> > > index 25bee693834f..4296d9e04240 100644
-> > > --- a/drivers/pci/controller/pcie-mediatek.c
-> > > +++ b/drivers/pci/controller/pcie-mediatek.c
-> > > @@ -14,6 +14,7 @@
-> > >  #include <linux/irqchip/chained_irq.h>
-> > >  #include <linux/irqdomain.h>
-> > >  #include <linux/kernel.h>
-> > > +#include <linux/mfd/syscon.h>
-> > >  #include <linux/msi.h>
-> > >  #include <linux/module.h>
-> > >  #include <linux/of_address.h>
-> > > @@ -23,6 +24,7 @@
-> > >  #include <linux/phy/phy.h>
-> > >  #include <linux/platform_device.h>
-> > >  #include <linux/pm_runtime.h>
-> > > +#include <linux/regmap.h>
-> > >  #include <linux/reset.h>
-> > >
-> > >  #include "../pci.h"
-> > > @@ -207,6 +209,7 @@ struct mtk_pcie_port {
-> > >   * struct mtk_pcie - PCIe host information
-> > >   * @dev: pointer to PCIe device
-> > >   * @base: IO mapped register base
-> > > + * @cfg: IO mapped register map for PCIe config
-> > >   * @free_ck: free-run reference clock
-> > >   * @mem: non-prefetchable memory resource
-> > >   * @ports: pointer to PCIe port information
-> > > @@ -215,6 +218,7 @@ struct mtk_pcie_port {
-> > >  struct mtk_pcie {
-> > >       struct device *dev;
-> > >       void __iomem *base;
-> > > +     struct regmap *cfg;
-> > >       struct clk *free_ck;
-> > >
-> > >       struct list_head ports;
-> > > @@ -682,6 +686,10 @@ static int mtk_pcie_startup_port_v2(struct mtk_pcie_port *port)
-> > >               val |= PCIE_CSR_LTSSM_EN(port->slot) |
-> > >                      PCIE_CSR_ASPM_L1_EN(port->slot);
-> > >               writel(val, pcie->base + PCIE_SYS_CFG_V2);
-> > > +     } else if (pcie->cfg) {
-> > > +             val = PCIE_CSR_LTSSM_EN(port->slot) |
-> > > +                   PCIE_CSR_ASPM_L1_EN(port->slot);
-> > > +             regmap_update_bits(pcie->cfg, PCIE_SYS_CFG_V2, val, val);
-> > >       }
-> > >
-> > >       /* Assert all reset signals */
-> > > @@ -985,6 +993,7 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
-> > >       struct device *dev = pcie->dev;
-> > >       struct platform_device *pdev = to_platform_device(dev);
-> > >       struct resource *regs;
-> > > +     struct device_node *cfg_node;
-> > >       int err;
-> > >
-> > >       /* get shared registers, which are optional */
-> > > @@ -995,6 +1004,14 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
-> > >                       return PTR_ERR(pcie->base);
-> > >       }
-> > >
-> > > +     cfg_node = of_find_compatible_node(NULL, NULL,
-> > > +                                        "mediatek,generic-pciecfg");
-> >
-> > This looks wrong to me.  IIUC, since we start at NULL, this searches
-> > the entire device tree for any node with
-> >
-> >   compatible = "mediatek,generic-pciecfg"
-> >
-> > but we should only care about the specific device/node this driver
-> > claimed.
-> >
-> > Should this be part of the match data, i.e., struct mtk_pcie_soc?
+On Tue, Aug 31, 2021 at 03:07PM +0100, Will Deacon wrote:
+> On Tue, Aug 31, 2021 at 03:38:17PM +0200, Marco Elver wrote:
+> > On Tue, 31 Aug 2021 at 15:13, Will Deacon <will@kernel.org> wrote:
+> > > > > [  184.717904][ T1873] ==================================================================
+> > > > > [  184.718938][ T1873] BUG: KCSAN: data-race in next_uptodate_page / unlock_page
+> > > > > [  184.719828][ T1873]
+> > > > > [  184.720103][ T1873] write (marked) to 0xffffea00050f37c0 of 8 bytes by task 1872 on cpu 1:
+> > > > > [  184.721024][ T1873]  unlock_page+0x102/0x1b0
+> > > > > [  184.721533][ T1873]  filemap_map_pages+0x6c6/0x890
+> > > > > [  184.722102][ T1873]  handle_mm_fault+0x179c/0x27f0
+> > > > > [  184.722672][ T1873]  do_user_addr_fault+0x3fb/0x830
+> > > > > [  184.723263][ T1873]  exc_page_fault+0xc3/0x1a0
+> > > > > [  184.723845][ T1873]  asm_exc_page_fault+0x1e/0x30
+> > > > > [  184.724427][ T1873]
+> > > > > [  184.724720][ T1873] read to 0xffffea00050f37c0 of 8 bytes by task 1873 on cpu 0:
+> > > > > [  184.725575][ T1873]  next_uptodate_page+0x456/0x830
+> > > > > [  184.726161][ T1873]  filemap_map_pages+0x728/0x890
+> > > > > [  184.726747][ T1873]  handle_mm_fault+0x179c/0x27f0
+> > > > > [  184.727332][ T1873]  do_user_addr_fault+0x3fb/0x830
+> > > > > [  184.727905][ T1873]  exc_page_fault+0xc3/0x1a0
+> > > > > [  184.728440][ T1873]  asm_exc_page_fault+0x1e/0x30
+> > > > > [  184.729027][ T1873]
+> > > > > [  184.729313][ T1873] Reported by Kernel Concurrency Sanitizer on:
+> > > > > [  184.730019][ T1873] CPU: 0 PID: 1873 Comm: systemd-udevd Not tainted 5.11.0-rc4-00001-gf9ce0be71d1f #1
+> > > > > [  184.731103][ T1873] ==================================================================
+> > > >
+> > > > Line annotation would be helpful.
+[...]
+> > Thoughts?
 > 
-> What would you put in match data exactly?
-> 
-> The other way to do this is to have a DT property with the phandle
-> which people like to do (have everything in the node 'for their
-> driver'). If there's only 1 possible node (which is almost always the
-> case), then there is little benefit to having another property. It's
-> just redundant data. A phandle lookup might be a bit faster with the
-> caching we do, but on a miss it would still walk all nodes.
-> 
-> The other thing with these 'extra register bits to twiddle' is that
-> they tend to be SoC specific and change from chip to chip, so either
-> way is not very portable. The real question to ask is should there be
-> a standard interface used or created.
-> 
-> > > +     if (cfg_node) {
-> > > +             pcie->cfg = syscon_node_to_regmap(cfg_node);
-> >
-> > Other drivers in drivers/pci/controller/ use
-> > syscon_regmap_lookup_by_phandle() (j721e, dra7xx, keystone,
-> > layerscape, artpec6) or syscon_regmap_lookup_by_compatible() (imx6,
-> > kirin, v3-semi).
-> 
-> There's no phandle to use in this case. As above, I'm trying to break
-> people of this habit.
+> I wasn't complaining about the report! It's more that without line numbers
+> we're struggling a bit to figure out where the race is. All the page-flag
+> tests on the reader side should be using test_bit(), but the report above
+> doesn't seem to think that the read is marked. Given your series adding
+> CONFIG_KCSAN_PERMISSIVE and the fact that you try to triage these things, I
+> thought maybe you've seen this before and might be able to point at the race
+> (which is hopefully benign, but it's annoying when you can't spot it!).
 
-Thanks!  I was mistaken in lots of ways here.  I first assumed
-"mediatek,generic-pciecfg" was local to the pcie node, but that's not
-true.  Then I thought there might be an ownership issue because the
-regmap is not local to the device, and several drivers look up and use
-the same regmap.  But it looks like regmap provides some internal
-locking which mitigates most or all of that concern.
+Hmm, I was sure I could find it in either closed or still open syzbot
+reports, but sadly I couldn't find anything. :-/
 
-Just to check -- you prefer syscon_regmap_lookup_by_compatible() over
-syscon_regmap_lookup_by_phandle()?
+The next best thing was to take the same kernel version, same Clang
+version, and same config in the hopes the generated functions of
+interest are identical. If I take the report and symbolize it with what
+I've built, I get:
+
+| ==================================================================
+| BUG: KCSAN: data-race in next_uptodate_page / unlock_page
+|
+| write (marked) to 0xffffea00050f37c0 of 8 bytes by task 1872 on cpu 1:
+|  instrument_atomic_write include/linux/instrumented.h:87 [inline]
+|  clear_bit_unlock_is_negative_byte include/asm-generic/bitops/instrumented-lock.h:74 [inline]
+|  unlock_page+0x102/0x1b0 mm/filemap.c:1465
+|  filemap_map_pages+0x6c6/0x890 mm/filemap.c:3057
+|  do_fault_around mm/memory.c:3904 [inline]
+|  do_read_fault mm/memory.c:3918 [inline]
+|  do_fault mm/memory.c:4051 [inline]
+|  handle_pte_fault mm/memory.c:4302 [inline]
+|  __handle_mm_fault mm/memory.c:4437 [inline]
+|  handle_mm_fault+0x179c/0x27f0 mm/memory.c:4535
+|  do_user_addr_fault+0x3fb/0x830 arch/x86/mm/fault.c:1393
+|  handle_page_fault arch/x86/mm/fault.c:1450 [inline]
+|  exc_page_fault+0xc3/0x1a0 arch/x86/mm/fault.c:1506
+|  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:580
+|
+| read to 0xffffea00050f37c0 of 8 bytes by task 1873 on cpu 0:
+|  PagePoisoned include/linux/page-flags.h:204 [inline]
+|  PageReadahead include/linux/page-flags.h:382 [inline]
+|  next_uptodate_page+0x456/0x830 mm/filemap.c:2975
+|  next_map_page mm/filemap.c:3010 [inline]
+|  filemap_map_pages+0x728/0x890 mm/filemap.c:3066
+|  do_fault_around mm/memory.c:3904 [inline]
+|  do_read_fault mm/memory.c:3918 [inline]
+|  do_fault mm/memory.c:4051 [inline]
+|  handle_pte_fault mm/memory.c:4302 [inline]
+|  __handle_mm_fault mm/memory.c:4437 [inline]
+|  handle_mm_fault+0x179c/0x27f0 mm/memory.c:4535
+|  do_user_addr_fault+0x3fb/0x830 arch/x86/mm/fault.c:1393
+|  handle_page_fault arch/x86/mm/fault.c:1450 [inline]
+|  exc_page_fault+0xc3/0x1a0 arch/x86/mm/fault.c:1506
+|  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:580
+|
+| Reported by Kernel Concurrency Sanitizer on:
+| CPU: 0 PID: 1873 Comm: systemd-udevd Not tainted 5.11.0-rc4-00001-gf9ce0be71d1f #1
+| ==================================================================
+
+And looking at the preprocessed source, this makes sense, because
+PageReadahead clearly includes a call to PagePoisoned with the given
+config.
+
+My guess is that the below patch would be appropriate here?
+
+(LKP folks: I'd still like bots to enable CONFIG_KCSAN_PERMISSIVE=y,
+ just to keep the volume of reports down for now.)
+
+Thanks,
+-- Marco
+
+------ >8 ------
+
+From: Marco Elver <elver@google.com>
+Date: Tue, 31 Aug 2021 17:27:27 +0200
+Subject: [PATCH] mm: fix data race in PagePoisoned()
+
+PagePoisoned() accesses page->flags which can be updated concurrently:
+
+  | BUG: KCSAN: data-race in next_uptodate_page / unlock_page
+  |
+  | write (marked) to 0xffffea00050f37c0 of 8 bytes by task 1872 on cpu 1:
+  |  instrument_atomic_write           include/linux/instrumented.h:87 [inline]
+  |  clear_bit_unlock_is_negative_byte include/asm-generic/bitops/instrumented-lock.h:74 [inline]
+  |  unlock_page+0x102/0x1b0           mm/filemap.c:1465
+  |  filemap_map_pages+0x6c6/0x890     mm/filemap.c:3057
+  |  ...
+  | read to 0xffffea00050f37c0 of 8 bytes by task 1873 on cpu 0:
+  |  PagePoisoned                   include/linux/page-flags.h:204 [inline]
+  |  PageReadahead                  include/linux/page-flags.h:382 [inline]
+  |  next_uptodate_page+0x456/0x830 mm/filemap.c:2975
+  |  ...
+  | CPU: 0 PID: 1873 Comm: systemd-udevd Not tainted 5.11.0-rc4-00001-gf9ce0be71d1f #1
+
+To avoid the compiler tearing or otherwise optimizing the access, use
+READ_ONCE() to access flags.
+
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ include/linux/page-flags.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index a68af80649a4..70bf0ec29ee3 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -236,7 +236,7 @@ static __always_inline int PageCompound(struct page *page)
+ #define	PAGE_POISON_PATTERN	-1l
+ static inline int PagePoisoned(const struct page *page)
+ {
+-	return page->flags == PAGE_POISON_PATTERN;
++	return READ_ONCE(page->flags) == PAGE_POISON_PATTERN;
+ }
+ 
+ #ifdef CONFIG_DEBUG_VM
+-- 
+2.33.0.259.gc128427fd7-goog
+
