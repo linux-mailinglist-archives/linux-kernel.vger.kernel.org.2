@@ -2,75 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780FD3FBFE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 02:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD0B3FBFF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 02:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231989AbhHaAUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 30 Aug 2021 20:20:35 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:37733 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbhHaAU1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 30 Aug 2021 20:20:27 -0400
-Received: by mail-ot1-f50.google.com with SMTP id i3-20020a056830210300b0051af5666070so20688074otc.4;
-        Mon, 30 Aug 2021 17:19:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5kubVYDgr+H+MwB6W5C9Rpp1FgVflkLGibEHAVmx7xQ=;
-        b=GlqbAFFRu6t5niWcuLSSVLD0NN6pMmbaZSoeVN7pUQgt0BAKyoryi8IHgkrdNuf2nt
-         P4Muy0lkoa4gHP9uVlmKiBQ2g5FTxSE82aYbO35lWyXI+aWTqYH7Qxh7oxlvDnUVOHr2
-         cLSQzRQ+NVhHVw/xaWCNtNASfZV4DfLIecOBHAHcfLsYXQYUK95A4eAulnPMJIM0vdE3
-         99Q4dxXoAqfCmUAXpXHvObvOuwr41eQkVmVw7uQZtzM5lfbbaAp4cRfj+iQonsPyDj0L
-         +jmt5xGEuVvC6RVRyRM3i7qUr49E1krPvAKd0Z4ajQujLcr9iS028Ymd5JIUZI9nKdSM
-         7nfQ==
-X-Gm-Message-State: AOAM531R1D9jBo55EDUcDX++/z79bqRQNc22y9fGOg6iGg3S8UK+gcoP
-        EVS4nNIHa+1z+6v9HAuK7Q==
-X-Google-Smtp-Source: ABdhPJyJBIXWC0f381ulM87fyByFnK9rcOmO1oavV0+d1JfKQBceUsirPqGw435MPnfhJZz3JqCbzg==
-X-Received: by 2002:a9d:7c8c:: with SMTP id q12mr22645940otn.352.1630369172968;
-        Mon, 30 Aug 2021 17:19:32 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id h3sm2560997otu.7.2021.08.30.17.19.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 17:19:31 -0700 (PDT)
-Received: (nullmailer pid 2966810 invoked by uid 1000);
-        Tue, 31 Aug 2021 00:19:31 -0000
-Date:   Mon, 30 Aug 2021 19:19:31 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        devicetree@vger.kernel.org, galak@kernel.crashing.org,
-        linux-imx@nxp.com, shawnguo@kernel.org,
-        linux-arm-kernel@lists.infradead.org, l.stach@pengutronix.de
-Subject: Re: [PATCH v2 1/3] dt-bindings: PCI: imx6: convert the imx pcie
- controller to dtschema
-Message-ID: <YS11k+IhBra3+C5g@robh.at.kernel.org>
-References: <1630046580-19282-1-git-send-email-hongxing.zhu@nxp.com>
- <1630046580-19282-2-git-send-email-hongxing.zhu@nxp.com>
+        id S233218AbhHaAYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 30 Aug 2021 20:24:16 -0400
+Received: from mga18.intel.com ([134.134.136.126]:4596 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230523AbhHaAYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 30 Aug 2021 20:24:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="205506671"
+X-IronPort-AV: E=Sophos;i="5.84,364,1620716400"; 
+   d="scan'208";a="205506671"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 17:23:19 -0700
+X-IronPort-AV: E=Sophos;i="5.84,364,1620716400"; 
+   d="scan'208";a="540780855"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.223.22]) ([10.212.223.22])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 17:23:18 -0700
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+References: <20210823195409-mutt-send-email-mst@kernel.org>
+ <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
+ <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
+ <d992b5af-8d57-6aa6-bd49-8e2b8d832b19@linux.intel.com>
+ <20210824053830-mutt-send-email-mst@kernel.org>
+ <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
+ <20210829112105-mutt-send-email-mst@kernel.org>
+ <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
+ <20210829181635-mutt-send-email-mst@kernel.org>
+ <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
+ <20210830163723-mutt-send-email-mst@kernel.org>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <69fc30f4-e3e2-add7-ec13-4db3b9cc0cbd@linux.intel.com>
+Date:   Mon, 30 Aug 2021 17:23:17 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1630046580-19282-2-git-send-email-hongxing.zhu@nxp.com>
+In-Reply-To: <20210830163723-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Aug 2021 14:42:58 +0800, Richard Zhu wrote:
-> Convert the fsl,imx6q-pcie.txt into a schema.
-> - ranges property should be grouped by region, with no functional
->   changes.
-> - only one propert is allowed in the compatible string, remove
->   "snps,dw-pcie".
-> 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> ---
->  .../bindings/pci/fsl,imx6q-pcie.txt           | 100 ---------
->  .../bindings/pci/fsl,imx6q-pcie.yaml          | 202 ++++++++++++++++++
->  MAINTAINERS                                   |   2 +-
->  3 files changed, 203 insertions(+), 101 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
->  create mode 100644 Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> 
 
-Applied, thanks!
+On 8/30/2021 1:59 PM, Michael S. Tsirkin wrote:
+>
+>> Or we can add _audited to the name. ioremap_shared_audited?
+> But it's not the mapping that has to be done in handled special way.
+> It's any data we get from device, not all of it coming from IO, e.g.
+> there's DMA and interrupts that all have to be validated.
+> Wouldn't you say that what is really wanted is just not running
+> unaudited drivers in the first place?
+
+
+Yes.
+
+
+>
+>> And we've been avoiding that drivers can self declare auditing, we've been
+>> trying to have a separate centralized list so that it's easier to enforce
+>> and avoids any cut'n'paste mistakes.
+>>
+>> -Andi
+> Now I'm confused. What is proposed here seems to be basically that,
+> drivers need to declare auditing by replacing ioremap with
+> ioremap_shared.
+
+Auditing is declared on the device model level using a central allow list.
+
+But this cannot do anything to initcalls that run before probe, that's 
+why an extra level of defense of ioremap opt-in is useful. But it's not 
+the primary mechanism to declare a driver audited, that's the allow 
+list. The ioremap is just another mechanism to avoid having to touch a 
+lot of legacy drivers.
+
+If we agree on that then the original proposed semantics of 
+"ioremap_shared" may be acceptable?
+
+-Andi
+
+
+
