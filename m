@@ -2,139 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44C03FC93D
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B15103FC93E
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 16:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234693AbhHaOBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 10:01:15 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:35383 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233044AbhHaOA1 (ORCPT
+        id S234265AbhHaOB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 10:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231526AbhHaOBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:00:27 -0400
-Received: by mail-oi1-f181.google.com with SMTP id r26so24768638oij.2;
-        Tue, 31 Aug 2021 06:59:32 -0700 (PDT)
+        Tue, 31 Aug 2021 10:01:07 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22047C0617AF
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:00:10 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id u14so38842243ejf.13
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 07:00:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vRGPL2VV0o0ofi1MfhnuV5PKCRKMFsjdi8ZYFs81Rbo=;
+        b=TFUmVVnvAGbEyOtfIM5WS0pGceGbjylSZdrAYoM4kkWEqFDQ6PCg1u/t88NaO8M5ej
+         m5hQkCSJQR886X1TdmNECS4DM/nPNz6TOY0aA9sfVE9T0Nxww1tVbd/+xmckkUzaGWH7
+         2GjMY260nBKw8WpBPnQe7oyLeLd1260wjhi095cfN0X/dFzxiz7WtJEAfYOj9ZL2gKB4
+         s4873MuRPe7EQAwv1eLcV9y93F1wXbozwKeYsWsBIyE7O4ESJTrspA5eUQBBONuY4WTj
+         ohyVkdwAKjkN4ce7FtDpv/fFP+KdtGcAWPVnkm+QRj0ya7P7q6od9rz0Nu05m/71haaY
+         McyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Pc6KfUdjMc8QEHIil1UQVUj3n0u1lSzF/AXdD89eq1o=;
-        b=gVgFnQlLXO4KXegeIzEzAQ2+YVkzbRkB+avAqHERlp4w5/ip8XrlqT9XqKaYkUwkdz
-         dEznRElcA5mIHpslFXttVR/OeZUNe3VtwxixFEgUFNt7/kII25mR4LJvoJTjeAy1TyP/
-         Hk2aZbiq2QVoVyvZSq0nQR8CL5xrn7bok7GOYkd65qvSFljiJW0ZIi0usuvBo6R/YJ4S
-         qcDJNOC/lxePfHshoTg6oVS1k1ekVNURasyITRXLnM9YeS78zkZS3Wxxi0K1MzvXjk+f
-         bhXn9j+JEQ69+obNjCAV2+cRl874Vckz6ivr+735ROLbhszfjl60y9qrRD51FS3Db8OU
-         0dBQ==
-X-Gm-Message-State: AOAM532gbEmbOHR6aaTUiV9eeQxw5iS3j7rh9oAvjm2RStPoP3Wi0ogy
-        gJHlKYz/kMmCVzR7B3xZxDBO/Cha5w==
-X-Google-Smtp-Source: ABdhPJxN5eTaWdeT8T1E0xvDyOiCmMJZDshPCi5xRlCx4p0/jKRlNwUg4mRaYb042F4HlZqxN/2kiw==
-X-Received: by 2002:aca:1802:: with SMTP id h2mr3246052oih.146.1630418369985;
-        Tue, 31 Aug 2021 06:59:29 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id n130sm3562611oif.32.2021.08.31.06.59.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vRGPL2VV0o0ofi1MfhnuV5PKCRKMFsjdi8ZYFs81Rbo=;
+        b=GkrZv64zwd05WEo5pfoKHomEPsne1MpGizLirkZH2FyGVaxTuufXRhuBk0faN9UFOM
+         KzZsvFWaVL3rH0dFIdeh2T+gOhy04KH6+0k3QAFR+x1JVIuMUUnqp5dGR4lUBRxBFWUZ
+         k7uYdKGLUZk/p2S7tCgx5SxpbxAJ5nbrS1o1tKSx7u2zHc+i9kEp9iJPdnfJum3HhYLp
+         oHSufDn5uxiw3CuqRlH2ORwbtOUnuxMZISCzp1Av/FpYJKRu7W0dimN32/YtWdxAGVIw
+         n6xCmaknILAXGcG47vYtkHyBBQdPqR/jS8Q4uhG7YLCtM57tZ5ao9uJwNkIc/Oa1VjWd
+         ymuQ==
+X-Gm-Message-State: AOAM531tb23QMxpKElBxnGDGsRN4ixI0HlQcVKzarT6UY4aGFEhj+ptQ
+        oOSVVkwUNB6Tiybc89nGtsY=
+X-Google-Smtp-Source: ABdhPJwaiCI5jhXKCGrECvcCcBYeMyn6JYflAyIN8g+vpECD4nNbTdOPiaHImxWgEUF7dcChGGVpow==
+X-Received: by 2002:a17:907:2492:: with SMTP id zg18mr30707319ejb.233.1630418407083;
+        Tue, 31 Aug 2021 07:00:07 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id g9sm8321266ejo.60.2021.08.31.07.00.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 06:59:29 -0700 (PDT)
-Received: (nullmailer pid 75468 invoked by uid 1000);
-        Tue, 31 Aug 2021 13:59:28 -0000
-Date:   Tue, 31 Aug 2021 08:59:28 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Christophe Branchereau <cbranchereau@gmail.com>,
-        list@opendingux.net, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: display/panel: Add AUO A030JTN01
-Message-ID: <YS41wPKzZkq8Z5jo@robh.at.kernel.org>
-References: <20210828112640.7248-1-paul@crapouillou.net>
+        Tue, 31 Aug 2021 07:00:06 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Krish Jain <krishjain02939@gmail.com>,
+        Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Declare the file_operations struct as const
+Date:   Tue, 31 Aug 2021 16:00:05 +0200
+Message-ID: <13366651.n50aozgL3V@localhost.localdomain>
+In-Reply-To: <20210831133533.6aayzjghdakrhy56@h510>
+References: <20210829144531.c2syu4vv4s22dlg7@h510> <CAPGkw+wyH3Pj6DV_m8wqCV5yujhjRwTwVNs6dK4i9JO-Y3ys6w@mail.gmail.com> <20210831133533.6aayzjghdakrhy56@h510>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210828112640.7248-1-paul@crapouillou.net>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 12:26:39PM +0100, Paul Cercueil wrote:
-> Add binding for the AUO A030JTN01 panel, which is a 320x480 3.0" 4:3
-> 24-bit TFT LCD panel with non-square pixels and a delta-RGB 8-bit
-> interface.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  .../bindings/display/panel/auo,a030jtn01.yaml | 57 +++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/panel/auo,a030jtn01.yaml
+On Tuesday, August 31, 2021 3:35:51 PM CEST Bryan Brattlof wrote:
+> On this day, August 31, 2021, thus sayeth Krish Jain:
+> > Hi, could someone help with this? Still stuck. Maybe someone else has
+> > some insight into this issue too? Or Greg or Bryan.
+> >
+> > Thanks
 
-This appears to be panel-simple.yaml plus 'reg' (and potentially other 
-SPI properties). Perhaps rename to panel-simple-spi.yaml? Maybe there's 
-others already?
+> [...]
 
-> 
-> diff --git a/Documentation/devicetree/bindings/display/panel/auo,a030jtn01.yaml b/Documentation/devicetree/bindings/display/panel/auo,a030jtn01.yaml
-> new file mode 100644
-> index 000000000000..21c9d62e3625
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/panel/auo,a030jtn01.yaml
-> @@ -0,0 +1,57 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/panel/auo,a030jtn01.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: AUO A030JTN01 3.0" (320x480 pixels) 24-bit TFT LCD
-> +
-> +description: |
-> +  The panel must obey the rules for a SPI slave device as specified in
-> +  spi/spi-controller.yaml
-> +
-> +maintainers:
-> +  - Paul Cercueil <paul@crapouillou.net>
-> +
-> +allOf:
-> +  - $ref: panel-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: auo,a030jtn01
-> +
-> +  backlight: true
-> +  port: true
-> +  power-supply: true
-> +  reg: true
-> +  reset-gpios: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - power-supply
-> +  - reset-gpios
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    panel@0 {
-> +      compatible = "auo,a030jtn01";
-> +      reg = <0>;
-> +
-> +      spi-max-frequency = <10000000>;
-> +
-> +      reset-gpios = <&gpe 4 GPIO_ACTIVE_LOW>;
-> +      power-supply = <&lcd_power>;
-> +
-> +      backlight = <&backlight>;
-> +
-> +      port {
-> +        panel_input: endpoint {
-> +          remote-endpoint = <&panel_output>;
-> +        };
-> +      };
-> +    };
-> -- 
-> 2.33.0
-> 
-> 
+> If anyone else wants to jump in here, feel free.
+> ~Bryan
+
+Hi Bryan,
+
+No, I don't want to jump in here because you already did everything that 
+would be conceivable to do.
+
+I just want to *really* thank you for the hard work you got involved and that 
+you carried out with one of the highest levels of professionalism (and 
+patience :)) very few of us could ever equal (not I, for sure).
+
+I thank you also not for the technical hints you gave to Krish, instead for 
+your your choice "to not rob [you] Krish the opportunity to learn".
+
+Actually I was tempted to write something like "first do this, than that, and 
+finally run this tool". But I was able to desist, by learning from you how 
+people should be helped for real.
+
+Most of us here should learn by your attitude.
+
+Thanks again, seriously.
+
+Regards,
+
+Fabio
+
+
+
