@@ -2,130 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507CD3FCB76
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF043FCB7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 18:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240004AbhHaQY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 12:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239733AbhHaQY1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 12:24:27 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F724C061575;
-        Tue, 31 Aug 2021 09:23:32 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id q14so28678199wrp.3;
-        Tue, 31 Aug 2021 09:23:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=1RiskkQMXgkNjj9qnTOmRZ7i2Te6zUGCcdIS5eV1pqQ=;
-        b=K/pdV8J7p+jVC2uXnM86MCl4umcFXSa+nle4dZA+4QDSJzZbq9KFtE2xtHGbrGnWKw
-         g2xCSFQ5NIepQujFmeVFTQp1uq9QUeVaINpvSmoiNPP8mXHIG4wZNr+og7iHv5N9bS8v
-         XnUBp/WEnx30Xrizf8Lv+dsp4gkBnNa2FGlXVuPvd9okm0MrbVxieDxwWV4MSQmzl+c8
-         d2qLZCbQOaJSr1N7IFrWy5nwvx8FdvsX2T/ALKF3LqxgshI0sserhxK3oVpqUkmOb8VD
-         0PYZ4j0t0NZr537vAnDS/9DNoaaDUoJsD17cuZqB4lw6ABX/erGveA/Hz/KPOXk7l5NR
-         jbeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=1RiskkQMXgkNjj9qnTOmRZ7i2Te6zUGCcdIS5eV1pqQ=;
-        b=qO+HiCABaOqkNRGU3MDLzT6TSpv9SnrMdCm+1B5Wb0MaDHgSmsqYl4YpZJkKov3QbE
-         zm8A5RU3SK6M3IPEnG0WypER0yokQFo/Juc2Mj4yjSd9Kt+4siKI/O/51Cm3H7yMJ6/X
-         OVVSG3aNs7rqdvXRmqBB9Y9N6o9XNZewZ1E4ofFUmDxCra9UAnML/uBi1cRvi4Jhws9O
-         R/aaTpI13dp322123dwF1CWZqclVwHXtAxwCttZq0R+IemFWWCz3K0GygEnlhfC/t8lo
-         cG/CgtktPQqohPR2yF/cDW9N5tY7zl6rJLBd6jhs0oNdYFcYRzBew2xoq4COeLxiNw9r
-         PlTw==
-X-Gm-Message-State: AOAM532SdmVnrR88AXiln9JUb5YcP9bD/uTwrXieXkBlVQ0X5Dkbm6Ry
-        aPEmq8Sgels9DvI2+agXfGo=
-X-Google-Smtp-Source: ABdhPJx5esIkMyVbxjI4d57GWpsFXpmybpNjNAKdqs3koekJQUQkt+kthxm+UN5HeTAal6rZWrxlfw==
-X-Received: by 2002:adf:fec5:: with SMTP id q5mr5106097wrs.153.1630427010574;
-        Tue, 31 Aug 2021 09:23:30 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6456:fd99:ced0:db1c:53e1:191e? ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
-        by smtp.gmail.com with ESMTPSA id n1sm18406916wrp.49.2021.08.31.09.23.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 09:23:29 -0700 (PDT)
-Message-ID: <0952ba94284218e3ac43c2bdf416866fc3dc0700.camel@gmail.com>
-Subject: Re: [RFC PATCH v3 08/15] perf workqueue: add queue_work and
- flush_workqueue functions
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Date:   Tue, 31 Aug 2021 18:23:27 +0200
-In-Reply-To: <CAM9d7ch4RM5rKrYLKrny3yt3ciK87aqzJ8Wt3ze87u9KBHjyXg@mail.gmail.com>
-References: <cover.1629454773.git.rickyman7@gmail.com>
-         <f9100c6e428eafe1b9761f947550e45ccc9e8849.1629454773.git.rickyman7@gmail.com>
-         <CAM9d7ch4RM5rKrYLKrny3yt3ciK87aqzJ8Wt3ze87u9KBHjyXg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        id S240025AbhHaQZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 12:25:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:56386 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239964AbhHaQZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 12:25:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 359606D;
+        Tue, 31 Aug 2021 09:24:13 -0700 (PDT)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 118043F766;
+        Tue, 31 Aug 2021 09:24:10 -0700 (PDT)
+Subject: Re: [PATCH v1 05/20] x86/resctrl: Create mba_sc configuration in the
+ rdt_domain
+To:     Jamie Iles <jamie@nuviainc.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        lcherian@marvell.com, bobo.shaobowang@huawei.com
+References: <20210729223610.29373-1-james.morse@arm.com>
+ <20210729223610.29373-6-james.morse@arm.com> <YRP7g5/T2kJ9BypS@hazel>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <10e2bb45-30a8-a7ce-7005-f12b594b991d@arm.com>
+Date:   Tue, 31 Aug 2021 17:24:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YRP7g5/T2kJ9BypS@hazel>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Jamie,
 
-On Tue, 2021-08-24 at 12:40 -0700, Namhyung Kim wrote:
-> On Fri, Aug 20, 2021 at 3:54 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
-> > 
-> > This patch adds functions to queue and wait work_structs, and
-> > related tests.
-> > 
-> > When a new work item is added, the workqueue first checks if there
-> > are threads to wake up. If so, it wakes it up with the given work item,
-> > otherwise it will pick the next round-robin thread and queue the work
-> > item to its queue. A thread which completes its queue will go to sleep.
-> > 
-> > The round-robin mechanism is implemented through the next_worker
-> > attibute which will point to the next worker to be chosen for queueing.
-> > When work is assigned to that worker or when the worker goes to sleep,
-> > the pointer is moved to the next worker in the busy_list, if any.
-> > When a worker is woken up, it is added in the busy list just before the
-> > next_worker, so that it will be chosen as last (it's just been assigned
-> > a work item).
+On 11/08/2021 17:32, Jamie Iles wrote:
+> On Thu, Jul 29, 2021 at 10:35:55PM +0000, James Morse wrote:
+>> To support resctrl's MBA software controller, the architecture must provide
+>> a second configuration array to hold the mbps_val from user-space.
+>>
+>> This complicates the interface between the architecture code.
+>>
+>> Make the filesystem parts of resctrl create an array for the mba_sc
+>> values when the struct resctrl_schema is created. The software controller
+>> can be changed to use this, allowing the architecture code to only
+>> consider the values configured in hardware.
+
+>> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>> index cf0db0b7a5d0..185f9bb992d1 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>> @@ -2030,6 +2030,60 @@ static int mkdir_mondata_all(struct kernfs_node *parent_kn,
+>>  			     struct rdtgroup *prgrp,
+>>  			     struct kernfs_node **mon_data_kn);
+>>  
+>> +static int mba_sc_domain_allocate(struct rdt_resource *res,
+>> +				  struct rdt_domain *d)
+>> +{
+>> +	u32 num_closid = closid_free_map_len;
+>> +	int cpu = cpumask_any(&d->cpu_mask);
+>> +	int i;
+>> +
+>> +	d->mba_sc = kcalloc_node(num_closid, sizeof(*d->mba_sc),
+>> +				 GFP_KERNEL, cpu_to_node(cpu));
+>> +	if (!d->mba_sc)
+>> +		return -ENOMEM;
 > 
-> Do we really need this?  I think some of the complexity comes
-> because of this.  Can we simply put the works in a list in wq
-> and workers take it out with a lock?  Then the kernel will
-> distribute the works among the threads for us.
+> If a CPU was hotplugged before resctrl is mounted then isn't it possible 
+> for this to already be allocated?  I might be misunderstanding the flows 
+> here though...
+
+Yeah, its tortuous. All this is behind an is_mba_sc(r), check, which can only return true
+while the filesystem is mounted. cpus_read_lock() is what ensures the mount-time setup
+doesn't race with the hotplug callbacks.
+
+
+>> +	for (i = 0; i < num_closid; i++)
+>> +		d->mba_sc[i].mbps_val = MBA_MAX_MBPS;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int mba_sc_allocate(struct rdt_resource *r)
+>> +{
+>> +	struct rdt_domain *d;
+>> +	int ret;
+>> +
+>> +	lockdep_assert_cpus_held();
+>> +
+>> +	if (!is_mba_sc(r))
+>> +		return 0;
+>> +
+>> +	list_for_each_entry(d, &r->domains, list) {
+>> +		ret = mba_sc_domain_allocate(r, d);
+>> +		if (ret)
+>> +			break;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+
+
+>> @@ -3287,6 +3353,9 @@ static int domain_setup_mon_state(struct rdt_resource *r, struct rdt_domain *d)
+>>  		}
+>>  	}
+>>  
+>> +	if (is_mba_sc(r))
+>> +		mba_sc_domain_allocate(r, d);
 > 
-> Maybe we can get rid of worker->lock too..
+> This looks to be missing an error check.
 
-Having a per-thread queue has some benefits which are very useful in our case:
- - it should be able to scale to bigger machines than a shared queue (looking at
-both tests from jiri, it looks like this version is somewhat better than v2, but
-they're done in different conditions, so some other tests comparing the two
-versions on big machines would be useful).
- - it is possible to choose the worker to execute work on, which is used in the
-evlist patchset (where threads can be pinned to a cpu and evlist operations can
-be done on them).
+Fixed, thanks.
 
-Of course, it adds some complexity over the shared queue, for example:
- - the next_worker pointer to implement the round-robin policy, for which maybe
-there's a cleaner way to do it.
- - the thread "self-registration", which I think can be dropped in favor of an
-array inside the workqueue (the max number of threads is limited, so having a
-self-registration does not really add much flexibility and it adds contention on
-the workqueue lock when threads are spun-up). Getting rid of it could reduce
-workqueue spinup and stop time.
-
-Thanks,
-Riccardo
-
-> 
-> Thanks,
-> Namhyung
-
-
+James
