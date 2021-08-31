@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A503FC574
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CCB3FC577
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 12:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240879AbhHaKMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 06:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
+        id S240897AbhHaKMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 06:12:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240576AbhHaKME (ORCPT
+        with ESMTP id S240883AbhHaKMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:12:04 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D852EC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:11:09 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id c206so13161048ybb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:11:09 -0700 (PDT)
+        Tue, 31 Aug 2021 06:12:20 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789ECC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:11:25 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id z18so33782616ybg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 03:11:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=p908OU1E8CzrpDUzYGZuUBjZvVs4SSIM0jaSnlZ/+ig=;
-        b=UfiBBWOTypAlVrhNlbjtNJhxXfXng2eEC7fA5RgfRb9zMTk3g4kVS5SpPXe3hRXfKA
-         EY3yGMn1hVhVO9NWr+od4K0eCl6AJQrrklIYq+DMjB4j+9ZwhczyBrR9OJT2AjwRTcwF
-         8kVfgHvQToXN2CAKRX9Fns19TKXM2JQzPyjNMbz/KPdeUYQlNlEq+Oymgg/+zg7ljitJ
-         Q0aS9n4lkPAAjkZ9Qj5438WsN6FQnUGHEun78LZqGAb0Rp+etKBvwdNPd1HHc4sjSoGl
-         aDd0Pun6KJRZ+sFYQ3kGJNJCBYOD8w1vzUSr4lqRYMl/QPG97XDIzws8N8gbF2LW3Bqh
-         gMlQ==
+        bh=Euvaq+g0tY7RjoHZfXjeT8BwGAPATqwa9RvQNSUth7A=;
+        b=h5BMK3FLAt8Dn4Hntcw7B5P7PMwzmuZqb0qpIorzfxOuDOvqg4Z+3s+OVcV3pX1USs
+         DwXJPrG/zDG3AXLzZOd2mDHnC9jbXcASBD4MDXzGmllH5+X7KJKOqFcfrZUsyR7oY5k/
+         7Zz6W65IRPrR7tVIhl4j5eNbqlwdnVxNtg616q8HSHlkzRNpdquRyPoJWn0GyRzUp2E2
+         WKNmhTkW6o9UJBLGfVY/NcnL2mz4o9HZQmRJOhw2I6hvGjbvgEHGMCtR47ddWrLlVZ3C
+         zIMFcQvYr6f7sqDGehJGiextNSxkcwh3/ryScWU4FiFH8Qgi9Hrz3OJFR2waFzY9sRlf
+         gwPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=p908OU1E8CzrpDUzYGZuUBjZvVs4SSIM0jaSnlZ/+ig=;
-        b=fVQRPQeDlwkQlIFoanIUsiIVFb2PGhUEJ+hiT7q6RoiNCEzGx/apSnLqDZxm3QoMgo
-         PTtLgkPMjSCpJS/uoWNx9jq9yL1JaEsPLryZvtoLFP8wiR5zWjN1VIefWzECNY9Gx9jx
-         KGhf/8HiNW3hIIAgi0hxROFNnmO+pz2zuIwNTb7kddtXmN1+QC2lGk/P8uSUcd94d9/U
-         ulFDA2NI7ot2+RfDI3MAF6hzfSs/uZVT1pRb9MJoSojXHCDJ35Is0LxJNj1In0oEzggq
-         7KzB8GbMuzgf2DphbvwCxu0ndEMUXMNX0b0fUcwEHph1ne1MnDyE2w70SGWKh8LeF8sG
-         BrYA==
-X-Gm-Message-State: AOAM533Q1B7tEYzqH24kyZSRlos7Eyg1aFgf57EoFWNBFBGhPhq6YzSH
-        Wno8JqXgjSbPzeqdmnRkNxUUgwFdqNgB4GMD4ed/eg==
-X-Google-Smtp-Source: ABdhPJyg3yJ5XGUgLYfDThVSCxupYgXwLkJH7506KDFxf2y1yQ9FAqiu0Ro6CvXGj/mOOrn4hASxloMRGT+EkpM+7ic=
-X-Received: by 2002:a25:e013:: with SMTP id x19mr30181508ybg.366.1630404668979;
- Tue, 31 Aug 2021 03:11:08 -0700 (PDT)
+        bh=Euvaq+g0tY7RjoHZfXjeT8BwGAPATqwa9RvQNSUth7A=;
+        b=MmcK5BC6TBijUIM/KkGgabjmZoF+VCgfG1HS1prFrLhU93hD1MPmsQXmrMtpj0VoEv
+         X5rT9UgRn2KCe5+fQICxM5sUi2jtIDTaMUnVaTcwtgnkSRy2lBDAkIfiFlx/9CPnmGVn
+         NRd30kTgN6+cWqjFO2WMRzsNdYnqtCBHZtbTRcDdoNck3oXCKl/U3ghElxVK/XGXxoM0
+         RujTXw7eEbxVIJfhEIWBVp2HTYdSYxF57QnQmZPvwerrBSstEuOVLljSv+5M9s8GhGxs
+         PQyxaMLhUFiyEDPaj/SkyYvr0hafpJXH5qqhAp04kau34Rxa5rE8o3E0xP0//NlYzfxZ
+         iiPw==
+X-Gm-Message-State: AOAM53042dIJXeuUw7Qcux5ttXXgekemweJDSJRLEVOXe704ajybEkzR
+        1TUogyh1l9KQvipsZJUxhI9zkvq474Ae3nLww3dDZw==
+X-Google-Smtp-Source: ABdhPJzOhsBzuj9Qu0IwBiI643w/tDEioYa0Ma8MGFW2IU+AtZqLzQFgXxDfsUwVFf/Ha58G+vHpvWq+G41Q6bHtZEg=
+X-Received: by 2002:a25:e70a:: with SMTP id e10mr27471979ybh.302.1630404684772;
+ Tue, 31 Aug 2021 03:11:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1629472813.git.christophe.jaillet@wanadoo.fr> <5341e631dc93902ef13840807163a2883764b8ed.1629472813.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <5341e631dc93902ef13840807163a2883764b8ed.1629472813.git.christophe.jaillet@wanadoo.fr>
+References: <cover.1629472813.git.christophe.jaillet@wanadoo.fr> <b8af1f01cc987d78a8677fcc3709595f8e5b0f38.1629472813.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <b8af1f01cc987d78a8677fcc3709595f8e5b0f38.1629472813.git.christophe.jaillet@wanadoo.fr>
 From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 31 Aug 2021 12:10:58 +0200
-Message-ID: <CAMpxmJX+diO-d-0sxFheMyPYJGxun6QOzddP-hrnU=ac2hSCKw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] gpio: mpc8xxx: Fix a potential double iounmap call in 'mpc8xxx_probe()'
+Date:   Tue, 31 Aug 2021 12:11:14 +0200
+Message-ID: <CAMpxmJU-t3+2GhiJUXCBWoN9LW5+mjt6KnimiY3a8kWZSb--Fg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] gpio: mpc8xxx: Use 'devm_gpiochip_add_data()' to
+ simplify the code and avoid a leak
 To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
         alexandru.marginean@nxp.com, Laurentiu.Tudor@nxp.com,
@@ -68,71 +69,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Fri, Aug 20, 2021 at 5:38 PM Christophe JAILLET
 <christophe.jaillet@wanadoo.fr> wrote:
 >
-> Commit 76c47d1449fc ("gpio: mpc8xxx: Add ACPI support") has switched to a
-> managed version when dealing with 'mpc8xxx_gc->regs'. So the corresponding
-> 'iounmap()' call in the error handling path and in the remove should be
-> removed to avoid a double unmap.
+> If an error occurs after a 'gpiochip_add_data()' call it must be undone by
+> a corresponding 'gpiochip_remove()' as already done in the remove function.
 >
-> This also allows some simplification in the probe. All the error handling
-> paths related to managed resources can be direct returns and a NULL check
-> in what remains in the error handling path can be removed.
+> To simplify the code a fix a leak in the error handling path of the probe,
+> use the managed version instead (i.e. 'devm_gpiochip_add_data()')
 >
-> Fixes: 76c47d1449fc ("gpio: mpc8xxx: Add ACPI support")
+> Fixes: 698b8eeaed72 ("gpio/mpc8xxx: change irq handler from chained to normal")
 > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->  drivers/gpio/gpio-mpc8xxx.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
+>  drivers/gpio/gpio-mpc8xxx.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 >
 > diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
-> index 241bcc80612e..fa4aaeced3f1 100644
+> index fa4aaeced3f1..70d6ae20b1da 100644
 > --- a/drivers/gpio/gpio-mpc8xxx.c
 > +++ b/drivers/gpio/gpio-mpc8xxx.c
-> @@ -332,7 +332,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
->                                  mpc8xxx_gc->regs + GPIO_DIR, NULL,
->                                  BGPIOF_BIG_ENDIAN);
->                 if (ret)
-> -                       goto err;
-> +                       return ret;
->                 dev_dbg(&pdev->dev, "GPIO registers are LITTLE endian\n");
->         } else {
->                 ret = bgpio_init(gc, &pdev->dev, 4,
-> @@ -342,7 +342,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
->                                  BGPIOF_BIG_ENDIAN
->                                  | BGPIOF_BIG_ENDIAN_BYTE_ORDER);
->                 if (ret)
-> -                       goto err;
-> +                       return ret;
->                 dev_dbg(&pdev->dev, "GPIO registers are BIG endian\n");
->         }
+> @@ -380,7 +380,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+>             is_acpi_node(fwnode))
+>                 gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
 >
-> @@ -384,7 +384,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+> -       ret = gpiochip_add_data(gc, mpc8xxx_gc);
+> +       ret = devm_gpiochip_add_data(&pdev->dev, gc, mpc8xxx_gc);
 >         if (ret) {
 >                 dev_err(&pdev->dev,
 >                         "GPIO chip registration failed with status %d\n", ret);
-> -               goto err;
-> +               return ret;
+> @@ -429,8 +429,6 @@ static int mpc8xxx_remove(struct platform_device *pdev)
+>                 irq_domain_remove(mpc8xxx_gc->irq);
 >         }
 >
->         mpc8xxx_gc->irqn = platform_get_irq(pdev, 0);
-> @@ -416,9 +416,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
->
->         return 0;
->  err:
-> -       if (mpc8xxx_gc->irq)
-> -               irq_domain_remove(mpc8xxx_gc->irq);
-> -       iounmap(mpc8xxx_gc->regs);
-> +       irq_domain_remove(mpc8xxx_gc->irq);
->         return ret;
->  }
->
-> @@ -432,7 +430,6 @@ static int mpc8xxx_remove(struct platform_device *pdev)
->         }
->
->         gpiochip_remove(&mpc8xxx_gc->gc);
-> -       iounmap(mpc8xxx_gc->regs);
->
+> -       gpiochip_remove(&mpc8xxx_gc->gc);
+> -
 >         return 0;
 >  }
+>
 > --
 > 2.30.2
 >
