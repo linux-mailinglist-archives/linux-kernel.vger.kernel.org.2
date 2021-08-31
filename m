@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7203FCECE
-	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69983FCED3
+	for <lists+linux-kernel@lfdr.de>; Tue, 31 Aug 2021 22:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241218AbhHaUuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 16:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbhHaUuP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 16:50:15 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33282C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 13:49:20 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id c10so721696qko.11
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 13:49:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=0XGq0QWFCnzYO26yFWXj5mnRnRTvlRa41ppVOuxHxJw=;
-        b=OPzpmN8iojb71hEsYdQswFgRF9J5uQa4An56DALbmyvZw6zJCR/N8Q6ipsBdsFV2M3
-         MmPKYVkEgHeOL711NOoxm4vRV0ZpnAmOFR2Zn/5vnLtSM4TBvzoBuQ1dCa+5xCTzcy4T
-         YXtZhbysJ3yFxd4kXf7oCr2LfWoSx5zAJMHS5KbGIPzvCzXf9EeHPa9JSji2fs9CsbKj
-         vp35vzB5nH0/g4LS5we3vACD2iPRT5T2XTqUKvcDP1XTBeWgyzgsaAXT66+CRfmOqiyn
-         fl5hr8udJncyK9g9khAmpIOgwuEUjL1yTA+FfAIv11tQsET/e45BQOr9CwCOtvie93wo
-         +DFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=0XGq0QWFCnzYO26yFWXj5mnRnRTvlRa41ppVOuxHxJw=;
-        b=htwnnEveEFaeS9apdnc45Ztdc+FuHIyJmu3LaJQejKlzmUI0lXN5vXgPt7g7siC3eS
-         1kgQ5WRs1Z7gXqfSJ4GRGfN+1TFQGFXkxl6kmjSNLM9TPEoZPzn5Do6dVt5hd6jFIJFE
-         cJpRJdgqFeg0QoMwEXHZi03BYbvpaXGRBoRJfoDT7/SFadwoo6u8k4S7reJwR/mVbiP7
-         1JK3AxG5DZ64noFiURe3TAhEHSbix68rLlY61hq3oS8M6CyZgerHDOpMG0PaIiolLJxJ
-         FJiHsp9I7GMN7Cee9wDIhgYTk07VXhz+Av4ghvZGjkFMU4Y6JsQ3U/SoCArOIQm13PrJ
-         km+w==
-X-Gm-Message-State: AOAM531nULVi5czo86gsuHV9wTGA0xjZvxDE7atIUh6mpHVewDQiL+AK
-        /QkxPiu0jYkOzIP7dtIrbWy1xweLzQk=
-X-Google-Smtp-Source: ABdhPJzHNi57SmFcQgygfZZHQNyCxnxCZeGp0wu/IiKtXd+dWkDZkVnEU/lmwwE0ENmjHdWWIDCBDA==
-X-Received: by 2002:a37:a853:: with SMTP id r80mr4977523qke.326.1630442959347;
-        Tue, 31 Aug 2021 13:49:19 -0700 (PDT)
-Received: from ?IPv6:2804:431:c7f1:e948:8e69:9cd6:5512:12f4? ([2804:431:c7f1:e948:8e69:9cd6:5512:12f4])
-        by smtp.gmail.com with ESMTPSA id x27sm5300509qtm.23.2021.08.31.13.49.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 13:49:18 -0700 (PDT)
-Message-ID: <dc80ad61dbd52a3fda5cd47ab5e60e45009b511d.camel@gmail.com>
-Subject: Re: [PATCH v6 00/11] DDW + Indirect Mapping
-From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
-To:     David Christensen <drc@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        kernel test robot <lkp@intel.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Tue, 31 Aug 2021 17:49:36 -0300
-In-Reply-To: <311ece8f-bedc-b3f7-0d1b-2cb78438890f@linux.vnet.ibm.com>
-References: <20210817063929.38701-1-leobras.c@gmail.com>
-         <82ca56ab-6a0a-7cbb-a5e7-facc40f35c3c@linux.vnet.ibm.com>
-         <e867b4ddce01adf318bc8837c997ceb64e44c1c5.camel@gmail.com>
-         <311ece8f-bedc-b3f7-0d1b-2cb78438890f@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        id S241247AbhHaUuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 16:50:54 -0400
+Received: from mga11.intel.com ([192.55.52.93]:51488 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229916AbhHaUux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 16:50:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="215434694"
+X-IronPort-AV: E=Sophos;i="5.84,367,1620716400"; 
+   d="scan'208";a="215434694"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 13:49:57 -0700
+X-IronPort-AV: E=Sophos;i="5.84,367,1620716400"; 
+   d="scan'208";a="460331329"
+Received: from krbo1-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.32.188])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 13:49:57 -0700
+Subject: Re: [PATCH v5 08/12] x86/tdx: Add HLT support for TDX guest
+To:     Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-9-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YSUaAQPiBUqubBHM@zn.tnic> <YSUnDQUrGYc8aY9j@google.com>
+ <YSUsBVx2DD7MCyn/@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <0d2421ac-c501-d33f-d3fc-be9dac7e221c@linux.intel.com>
+Date:   Tue, 31 Aug 2021 13:49:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YSUsBVx2DD7MCyn/@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-31 at 13:39 -0700, David Christensen wrote:
-> > 
-> > This series allow Indirect DMA using DDW when available, which
-> > usually
-> > means bigger pagesizes and more TCEs, and so more DMA space.
+Hi Boris,
+
+On 8/24/21 10:27 AM, Borislav Petkov wrote:
+> I think in the next version all those _tdx_hypercall() wrappers should
+> spell it out what the parameters they pass are used for.
 > 
-> How is the mapping method selected?  LPAR creation via the HMC, Linux
-> kernel load parameter, or some other method?
+> Hohumm.
 
-At device/bus probe, if there is enough DMA space available for Direct
-DMA, then it's used. If not, it uses indirect DMA.
+Regarding details about _tdx_hypercall() wrapper usage, do you want me
+to document the ABI details?
 
-> 
-> The hcall overhead doesn't seem too worrisome when mapping 1GB pages
-> so 
-> the Indirect DMA method might be best in my situation (DPDK).
+For example for MSR read,
 
-Well, it depends on usage.
-I mean, the recommended use of IOMMU is to map, transmit and then
-unmap, but this will vary on the implementation of the driver.
+static u64 tdx_read_msr_safe(unsigned int msr, int *err)
+{
+         struct tdx_hypercall_output out = {0};
+         u64 ret;
 
-If, for example, there is some reuse of the DMA mapping, as in a
-previous patchset I sent (IOMMU Pagecache), then the hcall overhead can
-be reduced drastically.
+         WARN_ON_ONCE(tdx_is_context_switched_msr(msr));
 
-> 
-> Dave
-Best regards,
-Leonardo
+         /*
+          * TDX MSR READ Hypercall ABI:
+          *
+          * Input Registers:
+          *
+          * R11(EXIT_REASON_MSR_READ) - hypercall sub function id
+          * R12(msr) - MSR index
+          *
+          * Output Registers:
+          *
+          * R10(out.r10) - Hypercall return error code
+          * R11(out.r11) - MSR read value
+          * RAX(ret) - TDCALL error code
+          */
+         ret = _tdx_hypercall(EXIT_REASON_MSR_READ, msr, 0, 0, 0, &out);
 
+Let me know if you agree with above format?
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
