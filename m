@@ -2,152 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8D23FE519
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F723FE51A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242445AbhIAVvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 17:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48288 "EHLO
+        id S237547AbhIAVzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 17:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbhIAVvp (ORCPT
+        with ESMTP id S230182AbhIAVza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 17:51:45 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FF1C061575;
-        Wed,  1 Sep 2021 14:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630533041;
-        bh=OY1P0NChdTXcHt/2A+jR/99JxOv1oHCWF263N2hy8mw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=S4cGsRoFHf8XN5JQkJdu+/zv1sRbm+06+YXLv019NXxZspKk+aHM1Que6aedwA0Gc
-         hadVHuPbB5QZHbV7mRiib+W5jDcS4KkJmtuWWrPwfCd+QFqRatGLlMi7wRWKsrNiAw
-         UxOKP2Nj1qyMRdFiEQSp3lYFRhSjB74uqFYMItlqMghLLDMrn2r14G6cbfCFOdI6rj
-         cZJNYGt/DxkdbyTeUY5fQ8FitbYxUkMOxpklhe1V2BkKv2rC4iaKnPsJrGmM/Df8Ts
-         p8M2o0QL+DYXUM9GGrYEmbDlQ4giaDGRPWjyFWlq6Y7UPwxQVriZdgZzvhs8lgJM4c
-         LRv/SDL28VOBg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H0Hmc0tldz9sPf;
-        Thu,  2 Sep 2021 07:50:40 +1000 (AEST)
-Date:   Thu, 2 Sep 2021 07:50:38 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        John Harrison <John.C.Harrison@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm tree
-Message-ID: <20210902075038.7461d3c8@canb.auug.org.au>
-In-Reply-To: <CAK7LNASv-F1Y7kpaDF+_=TW0Jzvpo1uuNL1B5jUmCCRqv-45bA@mail.gmail.com>
-References: <20210820123348.6535a87e@canb.auug.org.au>
-        <CAK7LNASv-F1Y7kpaDF+_=TW0Jzvpo1uuNL1B5jUmCCRqv-45bA@mail.gmail.com>
+        Wed, 1 Sep 2021 17:55:30 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AEB1C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 14:54:32 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id q70so1471935ybg.11
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 14:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WzWZpW/Xflc1H+ASOnQYbeGuxzVxMgF7Gs87eLhc5kU=;
+        b=JkRAK6Pm7ampfbFOs6DYtjYB0pnCEfzfVIaUHo44OnGoyNvB+92RYWZ0/xmT9ETEtz
+         aj+bOTCWXMjY38dRI17/30+fZLK9cQ0wXjlAjRGvSKSPo27utmholZQu+/tywIT2qXEH
+         P+vxAaadz2VKgMnxn0xIduBkdliO2neAe/hL69MbkqK8CaYWgmqZZT6YPsFEjqCCtuct
+         vGgXvdWefXE7CAeAMnE7vBHJYev/6oLWADHLFBL8arbDSSDqiIdfZHPDuYqSIuDJe9ry
+         JOKaaKyg3uhATYrUjolYiapTlB/jpZICgMyRQcOFUZHhW5eai+t62EoTInVHnthQogud
+         ZpCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WzWZpW/Xflc1H+ASOnQYbeGuxzVxMgF7Gs87eLhc5kU=;
+        b=dnElXRUrzp+4gaLAjpln/us85McKVna/oxhpoc9rxvljlR3nV8JeA8VLFlllTVQRKS
+         nKAaHIkHdgUpaoyixgSJIjMjd/R8zxxzoX24ZFuB2Dcmlnuq5f8BExbXETsOw+v8oaNt
+         BqSvwPehO2Bt6dwoTGS5e3LFs5uoIWGclntxV5reUziFF+S3YgZxa5CGZP2EFqO35uKy
+         Rl0BsYd6C674U0wpKlvC3AVGtjQFukUOCNkoE1O5DUhpLQIwsnvakBvnBYa92M9QxsS/
+         I7TBPuVpLc+Dj7xe5VQFBfwlHNIhRdPJBH0nzlwrkp1Wz6uG7y/ULgryVOJliahP3C3o
+         dsoQ==
+X-Gm-Message-State: AOAM533hqzI6gm41V+RY1MRUYrHvn3bBAImqCg7HakuiBfSqB2s3CRU7
+        s3MIBOX+Qj/gI3VvqbzKM0U70wJ6df5yw/G+m7l+zQ==
+X-Google-Smtp-Source: ABdhPJyvQE0l51vewxnPd4rilCE4lt341yeBbELAKEXDmAXKrixsJ368V4O3fWo5a4B96ue3Dplvl9Nn4c4ctriesi4=
+X-Received: by 2002:a25:9c01:: with SMTP id c1mr95596ybo.228.1630533271932;
+ Wed, 01 Sep 2021 14:54:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/P6VydhTMW+uTGLu/gN5IeDS";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210831224510.703253-1-saravanak@google.com> <CAPDyKFpQqKx2UDo4kc3eAxPfp47gOGbjtnm0fg1q+bshpb-vew@mail.gmail.com>
+In-Reply-To: <CAPDyKFpQqKx2UDo4kc3eAxPfp47gOGbjtnm0fg1q+bshpb-vew@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 1 Sep 2021 14:53:56 -0700
+Message-ID: <CAGETcx8Oc63WXy6VPNQ6uO1JhQpVFgcCYNhSJNbvDp1CD18KQg@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: fw_devlink: Don't create device links for
+ devices not on a bus
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/P6VydhTMW+uTGLu/gN5IeDS
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Masahiro,
-
-On Fri, 20 Aug 2021 15:23:34 +0900 Masahiro Yamada <masahiroy@kernel.org> w=
-rote:
+On Wed, Sep 1, 2021 at 8:45 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 >
-> On Fri, Aug 20, 2021 at 11:33 AM Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+> On Wed, 1 Sept 2021 at 00:45, Saravana Kannan <saravanak@google.com> wrote:
 > >
-> > Hi all,
+> > Devices that are not on a bus will never have a driver bound to it. So,
+> > fw_devlink should not create device links for it as it can cause probe
+> > issues[1] or sync_state() call back issues[2].
 > >
-> > After merging the drm tree, today's linux-next build (x86_64 allmodconf=
-ig)
-> > failed like this:
-> >
-> > In file included from drivers/gpu/drm/i915/i915_debugfs.c:39:
-> > drivers/gpu/drm/i915/gt/intel_gt_requests.h:9:10: fatal error: stddef.h=
-: No such file or directory
-> >     9 | #include <stddef.h>
-> >       |          ^~~~~~~~~~
-> >
-> > Caused by commit
-> >
-> >   564f963eabd1 ("isystem: delete global -isystem compile option")
-> >
-> > from the kbuild tree interacting with commit
-> >
-> >   b97060a99b01 ("drm/i915/guc: Update intel_gt_wait_for_idle to work wi=
-th GuC")
-> >
-> > I have applied the following patch for today. =20
->=20
->=20
-> Thanks.
->=20
-> This fix-up does not depend on my kbuild tree in any way.
->=20
-> So, the drm maintainer can apply it to his tree.
->=20
-> Perhaps with
->=20
-> Fixes: b97060a99b01 ("drm/i915/guc: Update intel_gt_wait_for_idle to
-> work with GuC")
+> > [1] - https://lore.kernel.org/lkml/CAGETcx_xJCqOWtwZ9Ee2+0sPGNLM5=F=djtbdYENkAYZa0ynqQ@mail.gmail.com/
+> > [2] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+>
+> Unfortunately, this doesn't fix my problem in [2].
+>
+> When the "soctest" device is initialized, via of_platform_populate(),
+> it will be attached to the platform bus, hence the check for the bus
+> pointer that you suggest to add below, doesn't have an impact on my
+> use case. I still get the below in the log:
 
-OK, so that didn't happen so I will now apply the merge fix up to the
-merge of the kbuild tree.
+*face palm* Right. I forgot that. I just read "bus" and my mind went
+to busses added as devices. It apparently also didn't help [1] which
+is surprising to me. I'll dig into that separately. I'll look into
+fixing this. The annoying part is that some devices have compatible
+property that's both "simple-bus" and some other string that a driver
+actually matches with.
 
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Date: Fri, 20 Aug 2021 12:24:19 +1000
-> > Subject: [PATCH] drm/i915: use linux/stddef.h due to "isystem: trim/fix=
-up stdarg.h and other headers"
-> >
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+-Saravana
+
+>
+> "platform soctest: Linked as a sync state only consumer to pm_domain_test"
+>
+> Kind regards
+> Uffe
+>
+> > Fixes: f9aa460672c9 ("driver core: Refactor fw_devlink feature")
+> > Reported-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
 > > ---
-> >  drivers/gpu/drm/i915/gt/intel_gt_requests.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >  drivers/base/core.c | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
 > >
-> > diff --git a/drivers/gpu/drm/i915/gt/intel_gt_requests.h b/drivers/gpu/=
-drm/i915/gt/intel_gt_requests.h
-> > index 51dbe0e3294e..d2969f68dd64 100644
-> > --- a/drivers/gpu/drm/i915/gt/intel_gt_requests.h
-> > +++ b/drivers/gpu/drm/i915/gt/intel_gt_requests.h
-> > @@ -6,7 +6,7 @@
-> >  #ifndef INTEL_GT_REQUESTS_H
-> >  #define INTEL_GT_REQUESTS_H
+> > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > index f6360490a4a3..304a06314656 100644
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -1719,8 +1719,24 @@ static int fw_devlink_create_devlink(struct device *con,
+> >         struct device *sup_dev;
+> >         int ret = 0;
 > >
-> > -#include <stddef.h>
-> > +#include <linux/stddef.h>
-> >
-> >  struct intel_engine_cs;
-> >  struct intel_gt;
+> > +       /*
+> > +        * If a consumer device is not on a bus (i.e. a driver will never bind
+> > +        * to it), it doesn't make sense for fw_devlink to create device links
+> > +        * for it.
+> > +        */
+> > +       if (con->bus == NULL)
+> > +               return -EINVAL;
+> > +
+> >         sup_dev = get_dev_from_fwnode(sup_handle);
+> >         if (sup_dev) {
+> > +               /*
+> > +                * If a supplier device is not on a bus (i.e. a driver will
+> > +                * never bind to it), it doesn't make sense for fw_devlink to
+> > +                * create device links for it.
+> > +                */
+> > +               if (sup_dev->bus == NULL)
+> > +                       return -EINVAL;
+> > +
+> >                 /*
+> >                  * If it's one of those drivers that don't actually bind to
+> >                  * their device using driver core, then don't wait on this
 > > --
-> > 2.32.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/P6VydhTMW+uTGLu/gN5IeDS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEv9a4ACgkQAVBC80lX
-0Gyfhgf/cOlOxQo7LdY6lacikjcXfwu1wdLPW7Z3AjOGWTohweO9GYJFgtOkKyEo
-7/pjpAPYTYNU/47awEy4DBjE8LS6z6A4gkakVkcd4E1GchD/HnVHyxOyZICwTwPX
-Oe3fvd7ZbjIxJ3FCUlFPySi4VydWeL2BBdAdjCEFYkcVuy33sEvx9xEQLr6X+99u
-JFZi6nIvbFTb5EjnAraJ5M1wwHDU+03Gzef2iLJTWWbWdYeYg2QuPbgafy9MWu+6
-ZrCim6nvKB/2oZ3I7YJZDCkAhmGqS1kPnrSZwjznIMoY3aJbOOOrCugfa2cOrhSR
-DmQZ1rwMa0TKMZcj8SypG166QiBV/w==
-=QCKm
------END PGP SIGNATURE-----
-
---Sig_/P6VydhTMW+uTGLu/gN5IeDS--
+> > 2.33.0.259.gc128427fd7-goog
+> >
