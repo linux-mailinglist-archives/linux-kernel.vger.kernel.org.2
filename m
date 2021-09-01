@@ -2,141 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F523FD635
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFB13FD638
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243420AbhIAJJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:09:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27139 "EHLO
+        id S243428AbhIAJLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:11:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51739 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243389AbhIAJJL (ORCPT
+        by vger.kernel.org with ESMTP id S243292AbhIAJLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:09:11 -0400
+        Wed, 1 Sep 2021 05:11:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630487294;
+        s=mimecast20190719; t=1630487409;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sb1gUtd0hXcMtoF0AKF7BtNjs4zgBEQQbBwZxit0nlE=;
-        b=KdLQSo9D0hjJ6eNw4tN7+hFOy11F84dl5i/2/SwFopCGlWwEROf9cv8imVwGxXG5xpVAZZ
-        iMN6DwNervBAHa6vWPKFeaOC4oJnV46NQZRDBr7f/m9B0SU04vedKCbRrtfsI2wtYei1Nx
-        PhIX5yFCDLUM/bLH86Ck6ceLPcElspk=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-210-kwPaahEzOWSple_tzvm7vA-1; Wed, 01 Sep 2021 05:08:13 -0400
-X-MC-Unique: kwPaahEzOWSple_tzvm7vA-1
-Received: by mail-wr1-f69.google.com with SMTP id h6-20020a5d4fc6000000b00157503046afso569169wrw.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:08:13 -0700 (PDT)
+        bh=Fm8zGk2Bjo/Hj4tDG7GzsmpjVti6KgzDI6tcDiq78i4=;
+        b=VI8GqL9aOsCAFiKNyaVjzfPb+J0hH48s//VxSdditf8GaO/mflbMkOPrPPZtH8SEo7lxJk
+        H1MrA9uMmQsAORP1zzTT+TbIaz4CIkNNgxdlbEWJbWvtiuSZCyh+OEFJPbSUYKA/eYZY8g
+        g96QrdTTGl1RqcICnAJzHGsKqrky+WA=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-401-NPVCE-c0OX68ANBnCI7Fqw-1; Wed, 01 Sep 2021 05:10:08 -0400
+X-MC-Unique: NPVCE-c0OX68ANBnCI7Fqw-1
+Received: by mail-lf1-f71.google.com with SMTP id bi21-20020a0565120e9500b003df0c58083fso789971lfb.16
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:10:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sb1gUtd0hXcMtoF0AKF7BtNjs4zgBEQQbBwZxit0nlE=;
-        b=MmFtkZCEI6+npRR2qK3CN2NVSRIezpQwbF0q1fnj4SKGYsj+1r/FaVyiy5heDJpLAO
-         SrNLh/GhRNyri/ShH7dKKzQLq94VM8ng7/BujihXQlXW0pclTJgoil6aUb8zoAXR9Vvj
-         3b/DcmNZ5u0Qm/fklV6/wuVMGCpqR4VuEo2IuWffM7mDExx2A0E/EsV+xgYGHwgTUgjj
-         OYkA9iDn3Z4IS1X0MCMef7QdBTjkAQPu/2i+mfD57obt85FDTGqEYM3LSamyQl2VHuDU
-         TGEEcf73DefuepRSdxVX6yvnNu9PEIqf7IVAfMaOJQlD4jxgmX7L8Tj6fwJnf1lvHvYK
-         Jt1g==
-X-Gm-Message-State: AOAM532ynY2Lr1PBtTqNHrzkYdEKMG2xt2aJcGWP/ah8B47QSGIQME2C
-        UPAtBDXxnOnQn06GcQ6Zmg0kurBYvXSwGgxlXHKgFMY3fXxx9fOEdQdFVH27E7AAc20msm831oU
-        lIY6CN1MHG/kV97Uaqteg6IZr
-X-Received: by 2002:a05:6000:23a:: with SMTP id l26mr35782793wrz.369.1630487292143;
-        Wed, 01 Sep 2021 02:08:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxJVpF+a4RLY2ojCpEsLP4x9qa6h6EWAkPZshm1oL9/N1tpkEHx6iVx4+dMTAUDoMkqzH46XA==
-X-Received: by 2002:a05:6000:23a:: with SMTP id l26mr35782773wrz.369.1630487291925;
-        Wed, 01 Sep 2021 02:08:11 -0700 (PDT)
-Received: from [192.168.1.101] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id i68sm21120783wri.26.2021.09.01.02.08.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 02:08:11 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/4] Allow to use DRM fbdev emulation layer with
- CONFIG_FB disabled
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        x86@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fbdev@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
-        David Airlie <airlied@linux.ie>
-References: <20210827100027.1577561-1-javierm@redhat.com>
- <bb5d045c-c9de-b6df-cf45-32b1a866264a@suse.de>
- <YSlI+ryYqoRxM7aB@phenom.ffwll.local>
- <a7395626-f022-5c89-07cd-c30d0d52d3dd@redhat.com>
- <YS4iIR689bAZ4QT9@phenom.ffwll.local>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-Message-ID: <b6ba8f6b-4f0c-53cc-e384-ecea3af78410@redhat.com>
-Date:   Wed, 1 Sep 2021 11:08:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Fm8zGk2Bjo/Hj4tDG7GzsmpjVti6KgzDI6tcDiq78i4=;
+        b=of9qgKIA0R9TaJpdzJOCMglgiyGCl7nSra2d84hd3je3HQNEyW/DJUveofF3h+DK+m
+         zKZBYm/KtKj85QldLxlPlfAEeW7UrOBqjfRYcviMpIHYBkj8k8lYquQ54v3URZNRZC39
+         OZPPDqg5qrh/OP5Rq51Dz1POsnuh329xz2NK6JwQBkyvJy0WdMovBmzkFeK6JAOLCF2j
+         0oqieMdwYeTpHhZ3hRRtV8bNVZ19cS4B4DkfV0k2jorWnj9IHlgodjdNAApbD4XGd4lQ
+         B1dbuGpUjlJG9gqxaFvMxPSGo3KmJ6lbEPfko2tGVUSjiSzrznCv8tkbXQYOgvweAusn
+         KMOw==
+X-Gm-Message-State: AOAM533isdPtpP2PCx0Kg0Qbf1T7IEQvS+GGmVN3YEQbzSWRk3zui0GM
+        RMxFTBmmZs61piz2oFZ1IjNxTZWXQYNUEDPmC7SyjNfT3KcE52Pfkhaie88SJpjBCrFvVZF+Vlf
+        nETHug51eM0Ndl0j/JYEgzlwUf6SZx2DrA7SLdXCA
+X-Received: by 2002:a2e:9e1a:: with SMTP id e26mr29324959ljk.265.1630487406958;
+        Wed, 01 Sep 2021 02:10:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy1R3dV5nbsPewj+ZaftCmOx8hGhvHTBUmT/Z8BuAhj6nOTUqU9LAoCrQ3IENgib2/ZsRiBJ/pZL3J41nGtbE4=
+X-Received: by 2002:a2e:9e1a:: with SMTP id e26mr29324935ljk.265.1630487406621;
+ Wed, 01 Sep 2021 02:10:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YS4iIR689bAZ4QT9@phenom.ffwll.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210901045220.27746-1-hpa@redhat.com> <f923a8d9-4da5-7e66-55fd-7c07cfc9fccf@redhat.com>
+In-Reply-To: <f923a8d9-4da5-7e66-55fd-7c07cfc9fccf@redhat.com>
+From:   Kate Hsuan <hpa@redhat.com>
+Date:   Wed, 1 Sep 2021 17:09:55 +0800
+Message-ID: <CAEth8oEDTajqHmpf-QKQktndf5UBVzaAnS46zNyn-b6G3HQHUg@mail.gmail.com>
+Subject: Re: [PATCH v4] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860
+ and 870 SSD.
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        torvic9@mailbox.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/21 2:35 PM, Daniel Vetter wrote:
-> On Sat, Aug 28, 2021 at 12:02:21AM +0200, Javier Martinez Canillas wrote:
+Hi Hans,
 
-[snip]
+On Wed, Sep 1, 2021 at 5:01 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi Kate,
+>
+> On 9/1/21 6:52 AM, Kate Hsuan wrote:
+> > Many users are reporting that the Samsung 860 and 870 SSD are having
+> > various issues when combined with AMD SATA controllers and only
+> > completely disabling NCQ helps to avoid these issues.
+> >
+> > Always disabling NCQ for Samsung 860/870 SSDs regardless of the host
+> > SATA adapter vendor will cause I/O performance degradation with well
+> > behaved adapters. To limit the performance impact to AMD adapters,
+> > introduce the ATA_HORKAGE_NO_NCQ_ON_AMD flag to force disable NCQ
+> > only for these adapters.
+> >
+> > BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=3D201693
+> > Signed-off-by: Kate Hsuan <hpa@redhat.com>
+> > ---
+> > Changes in v4:
+> > * A function ata_dev_check_adapter() is added to check the vendor ID of
+> >   the adapter.
+> > * ATA_HORKAGE_NONCQ_ON_AMD was modified to ATA_HORKAGE_NO_NCQ_ON_AMD to
+> >   align with the naming=C3=82 convention.
+> > * Commit messages were improved according=C3=82 to reviewer comments.
 
->>
->> We talked about a drmcon with Peter Robinson as well but then decided that a
->> way to disable CONFIG_FB but still having the DRM fbdev emulation could be a
->> intermediary step, hence these RFC patches.
->>
->> But yes, I agree that a drmcon would be the proper approach for this, to not
->> need any fbdev support at all. We will just keep the explicit disable for the
->> fbdev drivers then in the meantime.
-> 
-> I think the only intermediate step would be to disable the fbdev uapi
-> (char node and anything in sysfs), while still registering against the
-> fbcon layer so you have a console.
+Thanks, I'll fix this.
+
+> >
+> > Changes in v3:
+> > * ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL was modified to
+> >   ATA_HORKAGE_NONCQ_ON_AMD.
+> > * Codes were fixed to completely disable NCQ on AMD controller.
+> >
+> > ---
+> >  drivers/ata/libata-core.c | 32 ++++++++++++++++++++++++++++++--
+> >  include/linux/libata.h    |  1 +
+> >  2 files changed, 31 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+> > index c861c93d1e84..49049cd713e4 100644
+> > --- a/drivers/ata/libata-core.c
+> > +++ b/drivers/ata/libata-core.c
+> > @@ -2186,6 +2186,25 @@ static void ata_dev_config_ncq_prio(struct ata_d=
+evice *dev)
+> >       dev->flags &=3D ~ATA_DFLAG_NCQ_PRIO;
+> >  }
+> >
+> > +static bool ata_dev_check_adapter(struct ata_device *dev,
+> > +                               unsigned short vendor_id)
+> > +{
+> > +     struct pci_dev *pcidev =3D NULL;
+> > +     struct device *parent_dev =3D NULL;
+> > +
+> > +     for (parent_dev =3D dev->tdev.parent; parent_dev !=3D NULL;
+> > +          parent_dev =3D parent_dev->parent) {
+> > +             if (dev_is_pci(parent_dev)) {
+> > +                     pcidev =3D to_pci_dev(parent_dev);
+> > +                     if (pcidev->vendor =3D=3D vendor_id)
+> > +                             return true;
+> > +                     break;
+> > +             }
+> > +     }
+> > +
+> > +     return false;
+> > +}
+> > +
+> >  static int ata_dev_config_ncq(struct ata_device *dev,
+> >                              char *desc, size_t desc_sz)
+> >  {
+> > @@ -2204,6 +2223,13 @@ static int ata_dev_config_ncq(struct ata_device =
+*dev,
+> >               snprintf(desc, desc_sz, "NCQ (not used)");
+> >               return 0;
+> >       }
+> > +
+> > +     if (dev->horkage & ATA_HORKAGE_NO_NCQ_ON_AMD &&
+> > +         ata_dev_check_adapter(dev, PCI_VENDOR_ID_AMD)) {
+> > +             snprintf(desc, desc_sz, "NCQ (not used)");
+> > +             return 0;
+> > +     }
+> > +
+> >       if (ap->flags & ATA_FLAG_NCQ) {
+> >               hdepth =3D min(ap->scsi_host->can_queue, ATA_MAX_QUEUE);
+> >               dev->flags |=3D ATA_DFLAG_NCQ;
+> > @@ -3971,9 +3997,11 @@ static const struct ata_blacklist_entry ata_devi=
+ce_blacklist [] =3D {
+> >       { "Samsung SSD 850*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
+> >                                               ATA_HORKAGE_ZERO_AFTER_TR=
+IM, },
+> >       { "Samsung SSD 860*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
+>
+> Something went wrong when you applied my pre-cursor patch to your tree
+> as base for this patch, you have spaces in front of and behind the
+> "NULL,", where there should be tabs. So this does not apply cleanly
+> on top of my patch.
+>
+> I'll forward my patch to you as an attached .eml file. You should
+> "git am <file>.eml" that file on top of the latest linux-block/for-next
+> and then rebase your patch on top of that.
+>
+> > -                                             ATA_HORKAGE_ZERO_AFTER_TR=
+IM, },
+> > +                                             ATA_HORKAGE_ZERO_AFTER_TR=
+IM |
+> > +                                             ATA_HORKAGE_NO_NCQ_ON_AMD=
+, },
+> >       { "Samsung SSD 870*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
+>
+> Idem for this line.
+
+Got it.
+
+>
+> > -                                             ATA_HORKAGE_ZERO_AFTER_TR=
+IM, },
+> > +                                             ATA_HORKAGE_ZERO_AFTER_TR=
+IM |
+> > +                                             ATA_HORKAGE_NO_NCQ_ON_AMD=
+, },
+> >       { "FCCT*M500*",                 NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
+> >                                               ATA_HORKAGE_ZERO_AFTER_TR=
+IM, },
+> >
+> > diff --git a/include/linux/libata.h b/include/linux/libata.h
+> > index 860e63f5667b..cdc248a15763 100644
+> > --- a/include/linux/libata.h
+> > +++ b/include/linux/libata.h
+> > @@ -426,6 +426,7 @@ enum {
+> >       ATA_HORKAGE_NOTRIM      =3D (1 << 24),    /* don't use TRIM */
+> >       ATA_HORKAGE_MAX_SEC_1024 =3D (1 << 25),   /* Limit max sects to 1=
+024 */
+> >       ATA_HORKAGE_MAX_TRIM_128M =3D (1 << 26),  /* Limit max trim size =
+to 128M */
+> > +     ATA_HORKAGE_NO_NCQ_ON_AMD =3D (1 << 27),  /* Disable NCQ on AMD c=
+hipset */
+> >
+> >        /* DMA mask for user DMA control: User visible values; DO NOT
+> >           renumber */
+>
+> As discussed elsewhere in this thread, you should allow setting/clearing
+> this flag from the libata.force kernel commandline option by adding the
+> following extra bit to the patch:
+>
+> diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+> index daa375c7e763..e2e900085f99 100644
+> --- a/drivers/ata/libata-core.c
+> +++ b/drivers/ata/libata-core.c
+> @@ -6136,6 +6136,8 @@ static int __init ata_parse_force_one(char **cur,
+>                 { "ncq",        .horkage_off    =3D ATA_HORKAGE_NONCQ },
+>                 { "noncqtrim",  .horkage_on     =3D ATA_HORKAGE_NO_NCQ_TR=
+IM },
+>                 { "ncqtrim",    .horkage_off    =3D ATA_HORKAGE_NO_NCQ_TR=
+IM },
+> +               { "noncqamd",   .horkage_on     =3D ATA_HORKAGE_NO_NCQ_ON=
+_AMD },
+> +               { "ncqamd",     .horkage_off    =3D ATA_HORKAGE_NO_NCQ_ON=
+_AMD },
+
+I'll add them and propose v5 patch.
+
+>                 { "dump_id",    .horkage_on     =3D ATA_HORKAGE_DUMP_ID }=
+,
+>                 { "pio0",       .xfer_mask      =3D 1 << (ATA_SHIFT_PIO +=
+ 0) },
+>                 { "pio1",       .xfer_mask      =3D 1 << (ATA_SHIFT_PIO +=
+ 1) },
+>
+> Regards,
+>
+> Hans
 >
 
-Right, $subject disabled the sysfs interface but left the fbdev chardev. I can
-try to do a v2 that also disables that interface but just keep the fbcon part.
- 
-> But looking at the things syzbot finds the really problematic code is all
-> in the fbcon and console layer in general, and /dev/fb0 seems pretty
-> solid.
->
+Thank you.
 
-Yes, but still would be an improvement in the sense that no legacy fbdev uAPI
-will be exposed and so user-space would only depend on the DRM/KMS interface.
-
-> I think for a substantial improvement here in robustness what you really
-> want is
-> - kmscon in userspace
-> - disable FB layer
-> - ideally also disable console/vt layer in the kernel
-
-Earlier in the thread it was mentioned that an in-kernel drmcon could be used
-instead. My worry with kmscon is that moving something as critical as console
-output to user-space might make harder to troubleshoot early booting issues.
-
-And also that will require user-space changes. An in-kernel drmcon could be a
-drop-in replacement though.
-
-> - have a minimal emergency/boot-up log thing in drm, patches for that
->   floated around a few times
->
-
-Interesting. Do you have any pointers for this? My search-fu failed me when
-trying to find these patches.
-
-Best regards,
--- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+--=20
+BR,
+Kate
 
