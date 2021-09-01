@@ -2,247 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFB13FD638
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEE63FD63A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243428AbhIAJLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:11:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51739 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243292AbhIAJLG (ORCPT
+        id S243435AbhIAJNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243311AbhIAJNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:11:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630487409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fm8zGk2Bjo/Hj4tDG7GzsmpjVti6KgzDI6tcDiq78i4=;
-        b=VI8GqL9aOsCAFiKNyaVjzfPb+J0hH48s//VxSdditf8GaO/mflbMkOPrPPZtH8SEo7lxJk
-        H1MrA9uMmQsAORP1zzTT+TbIaz4CIkNNgxdlbEWJbWvtiuSZCyh+OEFJPbSUYKA/eYZY8g
-        g96QrdTTGl1RqcICnAJzHGsKqrky+WA=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-NPVCE-c0OX68ANBnCI7Fqw-1; Wed, 01 Sep 2021 05:10:08 -0400
-X-MC-Unique: NPVCE-c0OX68ANBnCI7Fqw-1
-Received: by mail-lf1-f71.google.com with SMTP id bi21-20020a0565120e9500b003df0c58083fso789971lfb.16
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:10:08 -0700 (PDT)
+        Wed, 1 Sep 2021 05:13:04 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C60C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 02:12:07 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id v123so1512204pfb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:12:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D2Xus3Gy0mJ3a1u6RNwyvEN4uw8eYtNFGPcMxDGXN9M=;
+        b=Bx6byuMPel9lHgsPbKf4KC5IjOhTYoo8YCfeX/ez4d1rmD9UGdz5wF5AkmIciKt0XV
+         LJIyRnIdG0PkTA4WsK4Zmba5qXZGVY47KnsG55X7ee56SjuOk85MJZSPe1y2ajUQpzqN
+         WBzuLsp48KPPopeS/SAECPr5YENYEmS6Zb+KlXPQloZchS/9YllT2y9bO688pHMBusxe
+         EkJhsF4zBjEhaMexQUoIDFYv9M3TrCxiwlv2b4/woERAMO7Bgdivm/lmWTlhvekv03nM
+         34MEvb+inO6DZErkDUmx5Ry7w903eRzTHjknfgZzNOdEs4NA+jiEZDcWBsNVXOFF8NR2
+         EMiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Fm8zGk2Bjo/Hj4tDG7GzsmpjVti6KgzDI6tcDiq78i4=;
-        b=of9qgKIA0R9TaJpdzJOCMglgiyGCl7nSra2d84hd3je3HQNEyW/DJUveofF3h+DK+m
-         zKZBYm/KtKj85QldLxlPlfAEeW7UrOBqjfRYcviMpIHYBkj8k8lYquQ54v3URZNRZC39
-         OZPPDqg5qrh/OP5Rq51Dz1POsnuh329xz2NK6JwQBkyvJy0WdMovBmzkFeK6JAOLCF2j
-         0oqieMdwYeTpHhZ3hRRtV8bNVZ19cS4B4DkfV0k2jorWnj9IHlgodjdNAApbD4XGd4lQ
-         B1dbuGpUjlJG9gqxaFvMxPSGo3KmJ6lbEPfko2tGVUSjiSzrznCv8tkbXQYOgvweAusn
-         KMOw==
-X-Gm-Message-State: AOAM533isdPtpP2PCx0Kg0Qbf1T7IEQvS+GGmVN3YEQbzSWRk3zui0GM
-        RMxFTBmmZs61piz2oFZ1IjNxTZWXQYNUEDPmC7SyjNfT3KcE52Pfkhaie88SJpjBCrFvVZF+Vlf
-        nETHug51eM0Ndl0j/JYEgzlwUf6SZx2DrA7SLdXCA
-X-Received: by 2002:a2e:9e1a:: with SMTP id e26mr29324959ljk.265.1630487406958;
-        Wed, 01 Sep 2021 02:10:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy1R3dV5nbsPewj+ZaftCmOx8hGhvHTBUmT/Z8BuAhj6nOTUqU9LAoCrQ3IENgib2/ZsRiBJ/pZL3J41nGtbE4=
-X-Received: by 2002:a2e:9e1a:: with SMTP id e26mr29324935ljk.265.1630487406621;
- Wed, 01 Sep 2021 02:10:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D2Xus3Gy0mJ3a1u6RNwyvEN4uw8eYtNFGPcMxDGXN9M=;
+        b=Aq+zKQ12r7A6znZVGcdPHTRCCdoyUNdNZ/IeUpB06TkyqQru04srXUx0VMeVL0rgIQ
+         jgRkpwKqH0JlI7TG343+bn7LnUp7h9QejrWKqxYK7p1mJPy9QnBzTQIGTQXqPemYb673
+         CF8HMH2bkr40Kl1XOHy+cw8uQMQlKlznRsep1sFm39AY44O7FnpdfYP/90Zs8t1tFp0+
+         OsFOSvPRWzn+EKCZk5+3KllR09insBsPyKoDVRqIQGFuQwmbknMjhQy97jsDrb3IfEZr
+         SrC2BZQfiSiOw3+lVwBwmTdyEygkxwGveFh+dlEE/cCGJ4IjTb1IywTZ+fa+eqsqEsh/
+         4Iqw==
+X-Gm-Message-State: AOAM530roQ1pBt3aLOO8fhWJDdG7VUj0weMqjHWSIyQX/VVmb/wavIBQ
+        5FRAe71U9sEVSFUZ/xXDW00Aeg==
+X-Google-Smtp-Source: ABdhPJxGJPhjggihqO4HCv4MWi4qvUBWkSQDZ8pmiBmqwZfdTqXF134RIxSAesKIsvtKNWMITqTvfg==
+X-Received: by 2002:a05:6a00:140e:b029:38b:c129:9f2f with SMTP id l14-20020a056a00140eb029038bc1299f2fmr32314916pfu.75.1630487527427;
+        Wed, 01 Sep 2021 02:12:07 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id u24sm21816388pfm.27.2021.09.01.02.12.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 02:12:06 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>, Alex Shi <alexs@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] cpufreq: Remove ready() callback
+Date:   Wed,  1 Sep 2021 14:41:54 +0530
+Message-Id: <cover.1630487322.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-References: <20210901045220.27746-1-hpa@redhat.com> <f923a8d9-4da5-7e66-55fd-7c07cfc9fccf@redhat.com>
-In-Reply-To: <f923a8d9-4da5-7e66-55fd-7c07cfc9fccf@redhat.com>
-From:   Kate Hsuan <hpa@redhat.com>
-Date:   Wed, 1 Sep 2021 17:09:55 +0800
-Message-ID: <CAEth8oEDTajqHmpf-QKQktndf5UBVzaAnS46zNyn-b6G3HQHUg@mail.gmail.com>
-Subject: Re: [PATCH v4] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860
- and 870 SSD.
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        torvic9@mailbox.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+Remove the last few users of the ready() callback and get rid of it.
 
-On Wed, Sep 1, 2021 at 5:01 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Hi Kate,
->
-> On 9/1/21 6:52 AM, Kate Hsuan wrote:
-> > Many users are reporting that the Samsung 860 and 870 SSD are having
-> > various issues when combined with AMD SATA controllers and only
-> > completely disabling NCQ helps to avoid these issues.
-> >
-> > Always disabling NCQ for Samsung 860/870 SSDs regardless of the host
-> > SATA adapter vendor will cause I/O performance degradation with well
-> > behaved adapters. To limit the performance impact to AMD adapters,
-> > introduce the ATA_HORKAGE_NO_NCQ_ON_AMD flag to force disable NCQ
-> > only for these adapters.
-> >
-> > BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=3D201693
-> > Signed-off-by: Kate Hsuan <hpa@redhat.com>
-> > ---
-> > Changes in v4:
-> > * A function ata_dev_check_adapter() is added to check the vendor ID of
-> >   the adapter.
-> > * ATA_HORKAGE_NONCQ_ON_AMD was modified to ATA_HORKAGE_NO_NCQ_ON_AMD to
-> >   align with the naming=C3=82 convention.
-> > * Commit messages were improved according=C3=82 to reviewer comments.
+Viresh Kumar (3):
+  cpufreq: acpi: Remove acpi_cpufreq_cpu_ready()
+  cpufreq: sh: Remove sh_cpufreq_cpu_ready()
+  cpufreq: Remove ready() callback
 
-Thanks, I'll fix this.
+ Documentation/cpu-freq/cpu-drivers.rst             |  3 ---
+ .../translations/zh_CN/cpu-freq/cpu-drivers.rst    |  2 --
+ drivers/cpufreq/acpi-cpufreq.c                     | 14 +++-----------
+ drivers/cpufreq/cpufreq.c                          |  4 ----
+ drivers/cpufreq/sh-cpufreq.c                       | 11 -----------
+ include/linux/cpufreq.h                            |  3 ---
+ 6 files changed, 3 insertions(+), 34 deletions(-)
 
-> >
-> > Changes in v3:
-> > * ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL was modified to
-> >   ATA_HORKAGE_NONCQ_ON_AMD.
-> > * Codes were fixed to completely disable NCQ on AMD controller.
-> >
-> > ---
-> >  drivers/ata/libata-core.c | 32 ++++++++++++++++++++++++++++++--
-> >  include/linux/libata.h    |  1 +
-> >  2 files changed, 31 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-> > index c861c93d1e84..49049cd713e4 100644
-> > --- a/drivers/ata/libata-core.c
-> > +++ b/drivers/ata/libata-core.c
-> > @@ -2186,6 +2186,25 @@ static void ata_dev_config_ncq_prio(struct ata_d=
-evice *dev)
-> >       dev->flags &=3D ~ATA_DFLAG_NCQ_PRIO;
-> >  }
-> >
-> > +static bool ata_dev_check_adapter(struct ata_device *dev,
-> > +                               unsigned short vendor_id)
-> > +{
-> > +     struct pci_dev *pcidev =3D NULL;
-> > +     struct device *parent_dev =3D NULL;
-> > +
-> > +     for (parent_dev =3D dev->tdev.parent; parent_dev !=3D NULL;
-> > +          parent_dev =3D parent_dev->parent) {
-> > +             if (dev_is_pci(parent_dev)) {
-> > +                     pcidev =3D to_pci_dev(parent_dev);
-> > +                     if (pcidev->vendor =3D=3D vendor_id)
-> > +                             return true;
-> > +                     break;
-> > +             }
-> > +     }
-> > +
-> > +     return false;
-> > +}
-> > +
-> >  static int ata_dev_config_ncq(struct ata_device *dev,
-> >                              char *desc, size_t desc_sz)
-> >  {
-> > @@ -2204,6 +2223,13 @@ static int ata_dev_config_ncq(struct ata_device =
-*dev,
-> >               snprintf(desc, desc_sz, "NCQ (not used)");
-> >               return 0;
-> >       }
-> > +
-> > +     if (dev->horkage & ATA_HORKAGE_NO_NCQ_ON_AMD &&
-> > +         ata_dev_check_adapter(dev, PCI_VENDOR_ID_AMD)) {
-> > +             snprintf(desc, desc_sz, "NCQ (not used)");
-> > +             return 0;
-> > +     }
-> > +
-> >       if (ap->flags & ATA_FLAG_NCQ) {
-> >               hdepth =3D min(ap->scsi_host->can_queue, ATA_MAX_QUEUE);
-> >               dev->flags |=3D ATA_DFLAG_NCQ;
-> > @@ -3971,9 +3997,11 @@ static const struct ata_blacklist_entry ata_devi=
-ce_blacklist [] =3D {
-> >       { "Samsung SSD 850*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
-> >                                               ATA_HORKAGE_ZERO_AFTER_TR=
-IM, },
-> >       { "Samsung SSD 860*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
->
-> Something went wrong when you applied my pre-cursor patch to your tree
-> as base for this patch, you have spaces in front of and behind the
-> "NULL,", where there should be tabs. So this does not apply cleanly
-> on top of my patch.
->
-> I'll forward my patch to you as an attached .eml file. You should
-> "git am <file>.eml" that file on top of the latest linux-block/for-next
-> and then rebase your patch on top of that.
->
-> > -                                             ATA_HORKAGE_ZERO_AFTER_TR=
-IM, },
-> > +                                             ATA_HORKAGE_ZERO_AFTER_TR=
-IM |
-> > +                                             ATA_HORKAGE_NO_NCQ_ON_AMD=
-, },
-> >       { "Samsung SSD 870*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
->
-> Idem for this line.
-
-Got it.
-
->
-> > -                                             ATA_HORKAGE_ZERO_AFTER_TR=
-IM, },
-> > +                                             ATA_HORKAGE_ZERO_AFTER_TR=
-IM |
-> > +                                             ATA_HORKAGE_NO_NCQ_ON_AMD=
-, },
-> >       { "FCCT*M500*",                 NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
-> >                                               ATA_HORKAGE_ZERO_AFTER_TR=
-IM, },
-> >
-> > diff --git a/include/linux/libata.h b/include/linux/libata.h
-> > index 860e63f5667b..cdc248a15763 100644
-> > --- a/include/linux/libata.h
-> > +++ b/include/linux/libata.h
-> > @@ -426,6 +426,7 @@ enum {
-> >       ATA_HORKAGE_NOTRIM      =3D (1 << 24),    /* don't use TRIM */
-> >       ATA_HORKAGE_MAX_SEC_1024 =3D (1 << 25),   /* Limit max sects to 1=
-024 */
-> >       ATA_HORKAGE_MAX_TRIM_128M =3D (1 << 26),  /* Limit max trim size =
-to 128M */
-> > +     ATA_HORKAGE_NO_NCQ_ON_AMD =3D (1 << 27),  /* Disable NCQ on AMD c=
-hipset */
-> >
-> >        /* DMA mask for user DMA control: User visible values; DO NOT
-> >           renumber */
->
-> As discussed elsewhere in this thread, you should allow setting/clearing
-> this flag from the libata.force kernel commandline option by adding the
-> following extra bit to the patch:
->
-> diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-> index daa375c7e763..e2e900085f99 100644
-> --- a/drivers/ata/libata-core.c
-> +++ b/drivers/ata/libata-core.c
-> @@ -6136,6 +6136,8 @@ static int __init ata_parse_force_one(char **cur,
->                 { "ncq",        .horkage_off    =3D ATA_HORKAGE_NONCQ },
->                 { "noncqtrim",  .horkage_on     =3D ATA_HORKAGE_NO_NCQ_TR=
-IM },
->                 { "ncqtrim",    .horkage_off    =3D ATA_HORKAGE_NO_NCQ_TR=
-IM },
-> +               { "noncqamd",   .horkage_on     =3D ATA_HORKAGE_NO_NCQ_ON=
-_AMD },
-> +               { "ncqamd",     .horkage_off    =3D ATA_HORKAGE_NO_NCQ_ON=
-_AMD },
-
-I'll add them and propose v5 patch.
-
->                 { "dump_id",    .horkage_on     =3D ATA_HORKAGE_DUMP_ID }=
-,
->                 { "pio0",       .xfer_mask      =3D 1 << (ATA_SHIFT_PIO +=
- 0) },
->                 { "pio1",       .xfer_mask      =3D 1 << (ATA_SHIFT_PIO +=
- 1) },
->
-> Regards,
->
-> Hans
->
-
-Thank you.
-
---=20
-BR,
-Kate
+-- 
+2.31.1.272.g89b43f80a514
 
