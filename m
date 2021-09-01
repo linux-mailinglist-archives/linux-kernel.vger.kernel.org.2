@@ -2,390 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543393FD746
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E7D3FD74C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhIAJ45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:56:57 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:53466 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229662AbhIAJ44 (ORCPT
+        id S231564AbhIAJ6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:58:52 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:6298 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229662AbhIAJ6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:56:56 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1819Ka4F015561;
-        Wed, 1 Sep 2021 02:55:56 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=WG8iau4MeAgXUeFzLGLTgaMraP7LyJZJPRbd0CbG/K8=;
- b=Oowlyz8B4VxnFb+mLppfIowWnfwzRpWrrOqleqCTX+YqaGvjYIeNJK2b3MCmnj9cvfA4
- DgIrD7c6Qo5jh7+XxRy1fTi52wFj1LlvBl3Z5h5hw6DXBzD6J+7pNVd1G0O13JVxz1Ui
- rJSfNL5YoGuXjrFsTq8LvWcbFOPt6ZjdVrgedbwf3LJmjpUUgdkLDViCXKWm/MQhh5j1
- xuYxydI1+VVpuIaHOZgobK9URJOCp7EQzL7EtICKonkVhcwlCUuQdr4yEXDEfWoFez6q
- fIOFZA/gnV5/h3rSCSoQAFHTU5qdu6HyGFYJpHv8/oq3BacCbLD8WPRgXPKNsaQNbYY7 rQ== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3at0ax9js7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 02:55:56 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 1 Sep
- 2021 02:55:53 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Wed, 1 Sep 2021 02:55:54 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id 9889B3F7088;
-        Wed,  1 Sep 2021 02:55:51 -0700 (PDT)
-From:   Geetha sowjanya <gakula@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>
-Subject: [net-next PATCH] octeontx2-pf: cn10K: Reserve LMTST lines per core
-Date:   Wed, 1 Sep 2021 15:25:50 +0530
-Message-ID: <20210901095550.10590-1-gakula@marvell.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 1 Sep 2021 05:58:51 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1819imPn026419;
+        Wed, 1 Sep 2021 09:57:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=hcAp5DsaKp3pEDFNJ5Ybq/YcO6tojZ8DFDcniS3mtP8=;
+ b=cN+tvcdi70tJ8IdTjsMfWOMwqfLQxG9nJg21bhtTDMhijjXKn+bDF+45M5jfWJXYuyMQ
+ 77wCdI6s1i2fUe/gCCGhDvV+EQozeeUQ1WF08uwJ2ljCBCW9PcJVmhEW/C8R/Uc8bu1B
+ 7WcDagUfAdUcbiDgvcoAg1ObBj9LPP5ZqVpI60urTUwMwHpH33qpxhLWEl9ocmEBIpg1
+ 9XgZ/rufrUSXkkdWO/l3QcWIayMvnJbt50Y/2zgE5dQosywJZTIYDLeow+snXVa27jdT
+ rYAe+mwv00EnDhEPGAhCkWZzZJ7JINlDQlDAYDzc5Ro/tKFHW2TD1ILMW7kh1ygKX5t+ yA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=hcAp5DsaKp3pEDFNJ5Ybq/YcO6tojZ8DFDcniS3mtP8=;
+ b=AQRsvu1CWsAUjE3i6NF9jPXGDxgxmQznVtWso8OfjEqa+YkF+NHIyYp9YBLS+0Oxf9XL
+ aiRBHHJbjPtwYPNRKEAJ7FcIvYh1/j70JkrTGnCG0J28xZ1+5uJMkGuEFWifojUkkPyz
+ U4kZoc/vCHs1SeQ9c5qluVmmu9113wpJkzktr8K3e/iGkG0WEcvrEIhAdFu/kWDhfq12
+ BEhbFh1KiGp7LD8o0QjuNlQ13xc439XFxVbMZpL+hDIGZxnEwX/Eua5IOHtnGwdWlGAx
+ rtNhE+j4RF2mjdicO4Xmp9utJK2yDc9j1Ncoqls7EVa/pZjo+FRqH6cUWrsydBt6sx1P 4g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3asf66m1st-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 01 Sep 2021 09:57:46 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1819nrga003022;
+        Wed, 1 Sep 2021 09:57:45 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2173.outbound.protection.outlook.com [104.47.56.173])
+        by userp3020.oracle.com with ESMTP id 3aqxwva7bj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 01 Sep 2021 09:57:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V90NuARQmRfar08+CLiDX3zdhwURpFOjYDf1H96UNGxWDRhgIlh/wvaE5XWEfcAlqm9JHqjmTXYVHwF1T+nh/LyhrWAd6jleWzEp1Rs8RE57Vo/XT2ERjPfmk4fhjpqBZUcrI9qHjvENOXFc5h9f1Qtq+a4BGQhhe04cHLA4QKCReiaKeuFivi6hid6QYYXxHehVtTqTMiS7dRQx3ov2S7jJ1gr0b4rwl46sNxyWBtyu8a+B/DNYEnLaY0FV0EfQSs9gbrJcBClMr2o5r4JvBZkqJSh4l5JL6DpFHaY3wCTCRSLWtUxtLtmWyOB55Ksi52ey4vCkRCwPai6NIY6TQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hcAp5DsaKp3pEDFNJ5Ybq/YcO6tojZ8DFDcniS3mtP8=;
+ b=hJNycVeA+khxVWizT7XlSk6ngbQp8AkVBD4elDOSovhc9Lh1OgRjmF/AtGKqdeWyG9E2UEUHxjASAJtAqqrqtQwVUo5UA11WVAZ89I+1kHPoavixC9SrKWpIoOlxcBjRNLFzm1f3PGJ895ISiDZTPHHFRPkUH2NczO4MJ8BUBB2Pu0+uT/lWTrlYSAzM4rEOEVaqy2AvQ2xMUC86xi46ZFsw0IibQ4n4x8bdpLzltsuL2AS+UtrZ5LUmg6hiauO3lZd7dD8Msorrt9dH+UVXgk/dKApwZ/c26pTqS4DgCU/+Re+kXQhTG6qEELb1EH2tM04OVFrqBYadDuT7uxDAXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hcAp5DsaKp3pEDFNJ5Ybq/YcO6tojZ8DFDcniS3mtP8=;
+ b=i1QAz7D38opfmu37siufB9dBsj3fSPcqKsGXHE6uJwfRsUNz/FpwHdtYwKj+MThT1v8Je7ORXqcE2/Wyvkx6MBXCFGggl3QjvSS7GzafExMUhR07lIRURW4Mpzx3erljrZMKYIpm8HB7D6lu9VIFDuKzod0axlUOzVLxhKu3+vU=
+Authentication-Results: wanadoo.fr; dkim=none (message not signed)
+ header.d=none;wanadoo.fr; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1999.namprd10.prod.outlook.com
+ (2603:10b6:300:10a::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Wed, 1 Sep
+ 2021 09:57:42 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4478.019; Wed, 1 Sep 2021
+ 09:57:42 +0000
+Date:   Wed, 1 Sep 2021 12:57:22 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, lee.jones@linaro.org,
+        Julia.Lawall@inria.fr, gregory.clement@bootlin.com,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] clk: mvebu: ap-cpu-clk: Fix a memory leak in error
+ handling paths
+Message-ID: <20210901095722.GA2151@kadam>
+References: <545df946044fc1fc05a4217cdf0054be7a79e49e.1619161112.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <545df946044fc1fc05a4217cdf0054be7a79e49e.1619161112.git.christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0039.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::6)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: kelO55a73pnwk93Dr2SYkT8ewHikBmrB
-X-Proofpoint-ORIG-GUID: kelO55a73pnwk93Dr2SYkT8ewHikBmrB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-01_03,2021-08-31_01,2020-04-07_01
+Received: from kadam (62.8.83.99) by JNAP275CA0039.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21 via Frontend Transport; Wed, 1 Sep 2021 09:57:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 899d24a1-a726-42b4-2def-08d96d2ef051
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1999:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB19994B8771255700ECA5C0478ECD9@MWHPR10MB1999.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wGLIA+IDgCQHXj6yO0eGYF0cxcNO/Vei5/JTK61VngJJmmGc5FPJ4iF8xFMS+o0qkp7W1Y6sF4SKuXpgFoNkieFiUcpTHSnd4zOwyA3gDvL/UXKCyKvxYLczhcCHuZB6FJsKszYSFXkQgp9mAl+dCLAZ8sRImA7wxNzTZrgpdOjAHAyhKCvxUumJKz9GaIDR4rbHoCOdMEWkWsn8Okw6yeP47mQFFN9treEjO0Lrz3BxKFmJvSr9eVzOGYgVLcSNIBiE0UdR1x5fgBTAWiF48Oab/LyBUnlFpaq5WKO/pChkIPTQMWHEfw6kJmhsErtxurYvHMcCfHpH2TnYGFK4bkt+9vrDccFRdSrnV96OfFzH57gxfbnHJ/MdH617dr7JRsPv1lV9EC336+P1PtGoL4/tyQ6U5spHMaqaaqvKRv2fX9kWoQm6E9pI/HmMFDH1OHcEyrUk2EcID0Yv1n90SOsHmpp3YJSChfB2N7PE1GD76zDsF3TRnU7ipx5g4t05LN65Ux9Dq8LHRtdYfILlYBXK3umJvwtlDwvWVBgMsggDf1pH+sJt81gIqDCQpEQ8C3rCzrbgnT676BwU+ddbV8NQnTY7CaUUpCPsrygzyR1whwdH4n3F+3AcyW0btz09kasl5grtlt2vJplDTeoFDKoyWd6xTwDcLLGunAfDEgK1nqjdydR5pGCszgsliqZC2+Z6qAOQr5cXpnmLLlVY3A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(346002)(39860400002)(136003)(83380400001)(66476007)(66556008)(6916009)(5660300002)(1076003)(8936002)(55016002)(8676002)(52116002)(316002)(2906002)(9686003)(478600001)(6666004)(4744005)(956004)(9576002)(186003)(86362001)(33656002)(6496006)(38100700002)(38350700002)(26005)(33716001)(4326008)(44832011)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pwg7NsPc/gTolOM797COFSH35hl+mp6i5cMVLoMcgddcZRl9djBAV76prwcb?=
+ =?us-ascii?Q?x0Wd/ocHKTKDYJ78GtTs+uvYpS30vSmCssmK/7my0J5SUzkonV+CmkJuSpD7?=
+ =?us-ascii?Q?PmTIqQmmORsKgfysVeLsr047JDNnS7SXXg7SwMWtm9AE9KrlCzxACk5zB32U?=
+ =?us-ascii?Q?8iMXfe4E2htx81C07U7UQk0CzRlcSUvfELwGeoJ/0ceL81PNICkO7/FRx8bI?=
+ =?us-ascii?Q?FkjDJ0UP+lKtqspSu4R5UVbZ5MPHesXOmum4gNoNIkVWt3jiZNuzcCAgy62e?=
+ =?us-ascii?Q?s9optv7w2vzoPYbgo6cDD5vAo1iE+h/YLoQhH6mF+4+XjkOEjFdZrgAh2IIW?=
+ =?us-ascii?Q?qqUiTo2MP2w/BhkqH6SuujIl0evsUwpDJygRatolXFl5x/EfMTekUtQlVWN9?=
+ =?us-ascii?Q?8IfHGt7iDrrNyWxR5BIDHOR/FwTf3sRn8GSq/0Z9ZUNvdWuT6I8flu/a9raC?=
+ =?us-ascii?Q?IcHucS32CE3XI5lGmpGi+NkALQx+Z3SLnCra4XkTP4VSToXffaYDODxnkEW7?=
+ =?us-ascii?Q?7nwxwjYFjphzD1YLnPhUIQKDkDbD1O9+tXbH/s9CJBea9xs9ZUa335ftB/8z?=
+ =?us-ascii?Q?Nh2aq2fehBh1MC9TjQEePagE1WJkeysiFmZD49h+E/Sa4nMg0ByRL3j9bzE3?=
+ =?us-ascii?Q?x2rVq0oBQI2OKIDEKc6/2IyIA71z1m9dIIPkJlPeUkES0VFAjFvpyAWSz113?=
+ =?us-ascii?Q?tks92c6tVx0nXHzLiqu++jOX8gZKTeSwOdSRNqnCZNtMMF32djAmlIszRH+v?=
+ =?us-ascii?Q?pkLz9xxf3hc8+ihIFzrQu9uArhJCMYZpZoWuBK72EKELTyr5flhylLQ494iH?=
+ =?us-ascii?Q?XVuu9tFS0FeecLgNOVONmD+D139sRBPC6LgR8NB2vNuaA2qaetkZJdgHo9K6?=
+ =?us-ascii?Q?GoIlTxug7Wuqi142lsbMzCphcwBVoLFsOHuuNxv2Q7+A345AvPw5wcgeqFKs?=
+ =?us-ascii?Q?8CHeZFxjtTRfT7Bh8ci59194h7gUtlLProopgaoy/NAOSd3jIr7kdHFot7zu?=
+ =?us-ascii?Q?Sz9iwbXn1IUOhRkLOcKYbY7sNX2nGV9dRtPiefYBzQ56a/9zMsKGOlO9Hv4p?=
+ =?us-ascii?Q?z4vtbj52mb98lQPVmVuLaPgSJcCpYSsi70ytat5XSlAd47ePx71cX4dBVaFp?=
+ =?us-ascii?Q?0U2NX+ty3lTRGodKu23yxg4bVHQFtQv2lkC4js75vCNzm/AWFCEMz2clzhWB?=
+ =?us-ascii?Q?KP/uzQoMMBnKIpgA1Ghc0LdQK1xN+EqkduNowGnT6DmtjPhpL37pLDJAsWMO?=
+ =?us-ascii?Q?Q8y0OA1UkKzXFCbDgk6NWURCORNIR4Vh6mC/5Tx9J0Whev82J9vfQ77ZecTN?=
+ =?us-ascii?Q?RSy6NwxmeTWGMYmYavxws9l4?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 899d24a1-a726-42b4-2def-08d96d2ef051
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 09:57:42.5356
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WULn5OepioDBRqMzTePQkh10xKoiGW8HkeCDu5WALNbT0J5eN1wAlZZzVME0wJw7U0L0xpBQ80XXRcVAuxbZjOeLmse0Q35qfsEWc8DaUrw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1999
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10093 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 suspectscore=0 spamscore=0 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2109010057
+X-Proofpoint-GUID: kup4EaSeFjTBuzo9wOPMp0OzbVjvtv6P
+X-Proofpoint-ORIG-GUID: kup4EaSeFjTBuzo9wOPMp0OzbVjvtv6P
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch reserves the LMTST lines per cpu instead
-of separate LMTST lines for NPA(buffer free) and NIX(sqe flush).
-LMTST line of the core on which SQ or RQ is processed is used
-for LMTST operation.
+On Fri, Apr 23, 2021 at 09:02:26AM +0200, Christophe JAILLET wrote:
+> If we exit the for_each_of_cpu_node loop early, the reference on the
+> current node must be decremented, otherwise there is a leak.
+> 
+> Fixes: f756e362d938 ("clk: mvebu: add CPU clock driver for Armada 7K/8K")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
 
-This patch also replace STEOR with STEORL release semantics and
-updates driver name in ethtool file.
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
----
- .../ethernet/marvell/octeontx2/nic/cn10k.c    | 42 +++++++++----------
- .../marvell/octeontx2/nic/otx2_common.c       |  5 ---
- .../marvell/octeontx2/nic/otx2_common.h       | 28 +++++++------
- .../marvell/octeontx2/nic/otx2_ethtool.c      |  4 +-
- .../ethernet/marvell/octeontx2/nic/otx2_pf.c  | 12 ++----
- .../marvell/octeontx2/nic/otx2_txrx.h         |  2 -
- include/linux/soc/marvell/octeontx2/asm.h     | 11 +++--
- 7 files changed, 49 insertions(+), 55 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
-index 3cc76f14d2fd..95f21dfdba48 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
-@@ -27,7 +27,8 @@ int cn10k_lmtst_init(struct otx2_nic *pfvf)
- {
- 
- 	struct lmtst_tbl_setup_req *req;
--	int qcount, err;
-+	struct otx2_lmt_info *lmt_info;
-+	int err, cpu;
- 
- 	if (!test_bit(CN10K_LMTST, &pfvf->hw.cap_flag)) {
- 		pfvf->hw_ops = &otx2_hw_ops;
-@@ -35,15 +36,9 @@ int cn10k_lmtst_init(struct otx2_nic *pfvf)
- 	}
- 
- 	pfvf->hw_ops = &cn10k_hw_ops;
--	qcount = pfvf->hw.max_queues;
--	/* LMTST lines allocation
--	 * qcount = num_online_cpus();
--	 * NPA = TX + RX + XDP.
--	 * NIX = TX * 32 (For Burst SQE flush).
--	 */
--	pfvf->tot_lmt_lines = (qcount * 3) + (qcount * 32);
--	pfvf->npa_lmt_lines = qcount * 3;
--	pfvf->nix_lmt_size =  LMT_BURST_SIZE * LMT_LINE_SIZE;
-+	/* Total LMTLINES = num_online_cpus() * 32 (For Burst flush).*/
-+	pfvf->tot_lmt_lines = (num_online_cpus() * LMT_BURST_SIZE);
-+	pfvf->hw.lmt_info = alloc_percpu(struct otx2_lmt_info);
- 
- 	mutex_lock(&pfvf->mbox.lock);
- 	req = otx2_mbox_alloc_msg_lmtst_tbl_setup(&pfvf->mbox);
-@@ -66,6 +61,13 @@ int cn10k_lmtst_init(struct otx2_nic *pfvf)
- 	err = otx2_sync_mbox_msg(&pfvf->mbox);
- 	mutex_unlock(&pfvf->mbox.lock);
- 
-+	for_each_possible_cpu(cpu) {
-+		lmt_info = per_cpu_ptr(pfvf->hw.lmt_info, cpu);
-+		lmt_info->lmt_addr = ((u64)pfvf->hw.lmt_base +
-+				      (cpu * LMT_BURST_SIZE * LMT_LINE_SIZE));
-+		lmt_info->lmt_id = cpu * LMT_BURST_SIZE;
-+	}
-+
- 	return 0;
- }
- EXPORT_SYMBOL(cn10k_lmtst_init);
-@@ -74,13 +76,6 @@ int cn10k_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura)
- {
- 	struct nix_cn10k_aq_enq_req *aq;
- 	struct otx2_nic *pfvf = dev;
--	struct otx2_snd_queue *sq;
--
--	sq = &pfvf->qset.sq[qidx];
--	sq->lmt_addr = (u64 *)((u64)pfvf->hw.nix_lmt_base +
--			       (qidx * pfvf->nix_lmt_size));
--
--	sq->lmt_id = pfvf->npa_lmt_lines + (qidx * LMT_BURST_SIZE);
- 
- 	/* Get memory to put this msg */
- 	aq = otx2_mbox_alloc_msg_nix_cn10k_aq_enq(&pfvf->mbox);
-@@ -125,8 +120,7 @@ void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
- 		if (otx2_alloc_buffer(pfvf, cq, &bufptr)) {
- 			if (num_ptrs--)
- 				__cn10k_aura_freeptr(pfvf, cq->cq_idx, ptrs,
--						     num_ptrs,
--						     cq->rbpool->lmt_addr);
-+						     num_ptrs);
- 			break;
- 		}
- 		cq->pool_ptrs--;
-@@ -134,8 +128,7 @@ void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
- 		num_ptrs++;
- 		if (num_ptrs == NPA_MAX_BURST || cq->pool_ptrs == 0) {
- 			__cn10k_aura_freeptr(pfvf, cq->cq_idx, ptrs,
--					     num_ptrs,
--					     cq->rbpool->lmt_addr);
-+					     num_ptrs);
- 			num_ptrs = 1;
- 		}
- 	}
-@@ -143,20 +136,23 @@ void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
- 
- void cn10k_sqe_flush(void *dev, struct otx2_snd_queue *sq, int size, int qidx)
- {
-+	struct otx2_lmt_info *lmt_info;
-+	struct otx2_nic *pfvf = dev;
- 	u64 val = 0, tar_addr = 0;
- 
-+	lmt_info = per_cpu_ptr(pfvf->hw.lmt_info, smp_processor_id());
- 	/* FIXME: val[0:10] LMT_ID.
- 	 * [12:15] no of LMTST - 1 in the burst.
- 	 * [19:63] data size of each LMTST in the burst except first.
- 	 */
--	val = (sq->lmt_id & 0x7FF);
-+	val = (lmt_info->lmt_id & 0x7FF);
- 	/* Target address for LMTST flush tells HW how many 128bit
- 	 * words are present.
- 	 * tar_addr[6:4] size of first LMTST - 1 in units of 128b.
- 	 */
- 	tar_addr |= sq->io_addr | (((size / 16) - 1) & 0x7) << 4;
- 	dma_wmb();
--	memcpy(sq->lmt_addr, sq->sqe_base, size);
-+	memcpy((u64 *)lmt_info->lmt_addr, sq->sqe_base, size);
- 	cn10k_lmt_flush(val, tar_addr);
- 
- 	sq->head++;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index ce25c2744435..78df173e6df2 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -1230,11 +1230,6 @@ static int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
- 
- 	pool->rbsize = buf_size;
- 
--	/* Set LMTST addr for NPA batch free */
--	if (test_bit(CN10K_LMTST, &pfvf->hw.cap_flag))
--		pool->lmt_addr = (__force u64 *)((u64)pfvf->hw.npa_lmt_base +
--						 (pool_id * LMT_LINE_SIZE));
--
- 	/* Initialize this pool's context via AF */
- 	aq = otx2_mbox_alloc_msg_npa_aq_enq(&pfvf->mbox);
- 	if (!aq) {
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index 48227cec06ee..a51ecd771d07 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -53,6 +53,10 @@ enum arua_mapped_qtypes {
- /* Send skid of 2000 packets required for CQ size of 4K CQEs. */
- #define SEND_CQ_SKID	2000
- 
-+struct otx2_lmt_info {
-+	u64 lmt_addr;
-+	u16 lmt_id;
-+};
- /* RSS configuration */
- struct otx2_rss_ctx {
- 	u8  ind_tbl[MAX_RSS_INDIR_TBL_SIZE];
-@@ -224,8 +228,7 @@ struct otx2_hw {
- #define LMT_LINE_SIZE		128
- #define LMT_BURST_SIZE		32 /* 32 LMTST lines for burst SQE flush */
- 	u64			*lmt_base;
--	u64			*npa_lmt_base;
--	u64			*nix_lmt_base;
-+	struct otx2_lmt_info	__percpu *lmt_info;
- };
- 
- enum vfperm {
-@@ -407,17 +410,18 @@ static inline bool is_96xx_B0(struct pci_dev *pdev)
-  */
- #define PCI_REVISION_ID_96XX		0x00
- #define PCI_REVISION_ID_95XX		0x10
--#define PCI_REVISION_ID_LOKI		0x20
-+#define PCI_REVISION_ID_95XXN		0x20
- #define PCI_REVISION_ID_98XX		0x30
- #define PCI_REVISION_ID_95XXMM		0x40
-+#define PCI_REVISION_ID_95XXO		0xE0
- 
- static inline bool is_dev_otx2(struct pci_dev *pdev)
- {
- 	u8 midr = pdev->revision & 0xF0;
- 
- 	return (midr == PCI_REVISION_ID_96XX || midr == PCI_REVISION_ID_95XX ||
--		midr == PCI_REVISION_ID_LOKI || midr == PCI_REVISION_ID_98XX ||
--		midr == PCI_REVISION_ID_95XXMM);
-+		midr == PCI_REVISION_ID_95XXN || midr == PCI_REVISION_ID_98XX ||
-+		midr == PCI_REVISION_ID_95XXMM || midr == PCI_REVISION_ID_95XXO);
- }
- 
- static inline void otx2_setup_dev_hw_settings(struct otx2_nic *pfvf)
-@@ -562,15 +566,16 @@ static inline u64 otx2_atomic64_add(u64 incr, u64 *ptr)
- #endif
- 
- static inline void __cn10k_aura_freeptr(struct otx2_nic *pfvf, u64 aura,
--					u64 *ptrs, u64 num_ptrs,
--					u64 *lmt_addr)
-+					u64 *ptrs, u64 num_ptrs)
- {
-+	struct otx2_lmt_info *lmt_info;
- 	u64 size = 0, count_eot = 0;
- 	u64 tar_addr, val = 0;
- 
-+	lmt_info = per_cpu_ptr(pfvf->hw.lmt_info, smp_processor_id());
- 	tar_addr = (__force u64)otx2_get_regaddr(pfvf, NPA_LF_AURA_BATCH_FREE0);
- 	/* LMTID is same as AURA Id */
--	val = (aura & 0x7FF) | BIT_ULL(63);
-+	val = (lmt_info->lmt_id & 0x7FF) | BIT_ULL(63);
- 	/* Set if [127:64] of last 128bit word has a valid pointer */
- 	count_eot = (num_ptrs % 2) ? 0ULL : 1ULL;
- 	/* Set AURA ID to free pointer */
-@@ -586,7 +591,7 @@ static inline void __cn10k_aura_freeptr(struct otx2_nic *pfvf, u64 aura,
- 			size++;
- 		tar_addr |=  ((size - 1) & 0x7) << 4;
- 	}
--	memcpy(lmt_addr, ptrs, sizeof(u64) * num_ptrs);
-+	memcpy((u64 *)lmt_info->lmt_addr, ptrs, sizeof(u64) * num_ptrs);
- 	/* Perform LMTST flush */
- 	cn10k_lmt_flush(val, tar_addr);
- }
-@@ -594,12 +599,11 @@ static inline void __cn10k_aura_freeptr(struct otx2_nic *pfvf, u64 aura,
- static inline void cn10k_aura_freeptr(void *dev, int aura, u64 buf)
- {
- 	struct otx2_nic *pfvf = dev;
--	struct otx2_pool *pool;
- 	u64 ptrs[2];
- 
--	pool = &pfvf->qset.pool[aura];
- 	ptrs[1] = buf;
--	__cn10k_aura_freeptr(pfvf, aura, ptrs, 2, pool->lmt_addr);
-+	/* Free only one buffer at time during init and teardown */
-+	__cn10k_aura_freeptr(pfvf, aura, ptrs, 2);
- }
- 
- /* Alloc pointer from pool/aura */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-index 799486c72177..dbfa3bc39e34 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-@@ -16,8 +16,8 @@
- #include "otx2_common.h"
- #include "otx2_ptp.h"
- 
--#define DRV_NAME	"octeontx2-nicpf"
--#define DRV_VF_NAME	"octeontx2-nicvf"
-+#define DRV_NAME	"rvu-nicpf"
-+#define DRV_VF_NAME	"rvu-nicvf"
- 
- struct otx2_stat {
- 	char name[ETH_GSTRING_LEN];
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index 2f2e8a3d7924..53df7fff92c4 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -1533,14 +1533,6 @@ int otx2_open(struct net_device *netdev)
- 	if (!qset->rq)
- 		goto err_free_mem;
- 
--	if (test_bit(CN10K_LMTST, &pf->hw.cap_flag)) {
--		/* Reserve LMT lines for NPA AURA batch free */
--		pf->hw.npa_lmt_base = pf->hw.lmt_base;
--		/* Reserve LMT lines for NIX TX */
--		pf->hw.nix_lmt_base = (u64 *)((u64)pf->hw.npa_lmt_base +
--				      (pf->npa_lmt_lines * LMT_LINE_SIZE));
--	}
--
- 	err = otx2_init_hw_resources(pf);
- 	if (err)
- 		goto err_free_mem;
-@@ -2668,6 +2660,8 @@ static int otx2_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- err_ptp_destroy:
- 	otx2_ptp_destroy(pf);
- err_detach_rsrc:
-+	if (pf->hw.lmt_info)
-+		free_percpu(pf->hw.lmt_info);
- 	if (test_bit(CN10K_LMTST, &pf->hw.cap_flag))
- 		qmem_free(pf->dev, pf->dync_lmt);
- 	otx2_detach_resources(&pf->mbox);
-@@ -2811,6 +2805,8 @@ static void otx2_remove(struct pci_dev *pdev)
- 	otx2_mcam_flow_del(pf);
- 	otx2_shutdown_tc(pf);
- 	otx2_detach_resources(&pf->mbox);
-+	if (pf->hw.lmt_info)
-+		free_percpu(pf->hw.lmt_info);
- 	if (test_bit(CN10K_LMTST, &pf->hw.cap_flag))
- 		qmem_free(pf->dev, pf->dync_lmt);
- 	otx2_disable_mbox_intr(pf);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-index 869de5f59e73..3ff1ad79c001 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-@@ -80,7 +80,6 @@ struct otx2_snd_queue {
- 	u16			num_sqbs;
- 	u16			sqe_thresh;
- 	u8			sqe_per_sqb;
--	u32			lmt_id;
- 	u64			 io_addr;
- 	u64			*aura_fc_addr;
- 	u64			*lmt_addr;
-@@ -111,7 +110,6 @@ struct otx2_cq_poll {
- struct otx2_pool {
- 	struct qmem		*stack;
- 	struct qmem		*fc_addr;
--	u64			*lmt_addr;
- 	u16			rbsize;
- };
- 
-diff --git a/include/linux/soc/marvell/octeontx2/asm.h b/include/linux/soc/marvell/octeontx2/asm.h
-index 28c04d918f0f..fa1d6af0164e 100644
---- a/include/linux/soc/marvell/octeontx2/asm.h
-+++ b/include/linux/soc/marvell/octeontx2/asm.h
-@@ -22,12 +22,17 @@
- 			 : [rs]"r" (ioaddr));           \
- 	(result);                                       \
- })
-+/*
-+ * STEORL store to memory with release semantics.
-+ * This will avoid using DMB barrier after each LMTST
-+ * operation.
-+ */
- #define cn10k_lmt_flush(val, addr)			\
- ({							\
- 	__asm__ volatile(".cpu  generic+lse\n"		\
--			 "steor %x[rf],[%[rs]]"		\
--			 : [rf]"+r"(val)		\
--			 : [rs]"r"(addr));		\
-+			 "steorl %x[rf],[%[rs]]"		\
-+			 : [rf] "+r"(val)		\
-+			 : [rs] "r"(addr));		\
- })
- #else
- #define otx2_lmt_flush(ioaddr)          ({ 0; })
--- 
-2.17.1
+regards,
+dan carpenter
 
