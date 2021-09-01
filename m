@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8769A3FDACD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB6C3FDC9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245533AbhIAMfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:35:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34618 "EHLO mail.kernel.org"
+        id S1344968AbhIAMvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:51:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343493AbhIAMdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:33:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D17BA6109E;
-        Wed,  1 Sep 2021 12:31:48 +0000 (UTC)
+        id S1344569AbhIAMqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:46:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B4AF61102;
+        Wed,  1 Sep 2021 12:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499509;
-        bh=TQnjmA9IY4rpM2sotE7Dff9Feuq9Kflv+0/e3DRW+Cc=;
+        s=korg; t=1630500009;
+        bh=dqH+u+yPN9IzpdDnt2/tN+yeRwSbWdbhLz0AUOGkTjE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ewxbcf/Ifj9QrKvy5f87BHxYdP5SD2US9x9nqfUgsACGVqpkiaEHpqX4mZAvlXsdC
-         IoUOt9u5DikrOfIP8JkPV8DRkIXW2OT2cnr5v1gZagZXJ7vu4WQwXWatoAKbh9xzI6
-         A4sq038EH3UU1Lvwr9Qw9QEjww7lRloSMtH84578=
+        b=FP9W1zTuXK1rEHFOcB7qLOdHA3+mh16ft/xdmE2KWWLYkfUGr8sbZiT1ENJDtU4+m
+         BwwqsB8auZBuRq9W3CWlza50xTr4kkviKHRvqlUQutjLnaT49gSoeEb1wRDwuofZeJ
+         0r5LumMp06FVWx3Eta/ajGGkEFCHrBJ/oz/x+1O4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
+        stable@vger.kernel.org, Yufeng Mo <moyufeng@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 26/48] usb: gadget: u_audio: fix race condition on endpoint stop
+Subject: [PATCH 5.13 061/113] net: hns3: add waiting time before cmdq memory is released
 Date:   Wed,  1 Sep 2021 14:28:16 +0200
-Message-Id: <20210901122254.280454719@linuxfoundation.org>
+Message-Id: <20210901122303.998874355@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Yufeng Mo <moyufeng@huawei.com>
 
-[ Upstream commit 068fdad20454f815e61e6f6eb9f051a8b3120e88 ]
+[ Upstream commit a96d9330b02a3d051ae689bc2c5e7d3a2ba25594 ]
 
-If the endpoint completion callback is call right after the ep_enabled flag
-is cleared and before usb_ep_dequeue() is call, we could do a double free
-on the request and the associated buffer.
+After the cmdq registers are cleared, the firmware may take time to
+clear out possible left over commands in the cmdq. Driver must release
+cmdq memory only after firmware has completed processing of left over
+commands.
 
-Fix this by clearing ep_enabled after all the endpoint requests have been
-dequeued.
-
-Fixes: 7de8681be2cd ("usb: gadget: u_audio: Free requests only after callback")
-Cc: stable <stable@vger.kernel.org>
-Reported-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20210827092927.366482-1-jbrunet@baylibre.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 232d0d55fca6 ("net: hns3: uninitialize command queue while unloading PF driver")
+Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/u_audio.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c   | 6 +++++-
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h   | 1 +
+ drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c | 7 ++++++-
+ drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h | 1 +
+ 4 files changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/u_audio.c b/drivers/usb/gadget/function/u_audio.c
-index 223029fa8445..4e01ba0ab8ec 100644
---- a/drivers/usb/gadget/function/u_audio.c
-+++ b/drivers/usb/gadget/function/u_audio.c
-@@ -349,8 +349,6 @@ static inline void free_ep(struct uac_rtd_params *prm, struct usb_ep *ep)
- 	if (!prm->ep_enabled)
- 		return;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c
+index 76a482456f1f..91445521dde1 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c
+@@ -564,9 +564,13 @@ static void hclge_cmd_uninit_regs(struct hclge_hw *hw)
  
--	prm->ep_enabled = false;
--
- 	audio_dev = uac->audio_dev;
- 	params = &audio_dev->params;
- 
-@@ -368,11 +366,12 @@ static inline void free_ep(struct uac_rtd_params *prm, struct usb_ep *ep)
- 		}
- 	}
- 
-+	prm->ep_enabled = false;
-+
- 	if (usb_ep_disable(ep))
- 		dev_err(uac->card->dev, "%s:%d Error!\n", __func__, __LINE__);
- }
- 
--
- int u_audio_start_capture(struct g_audio *audio_dev)
+ void hclge_cmd_uninit(struct hclge_dev *hdev)
  {
- 	struct snd_uac_chip *uac = audio_dev->uac;
++	set_bit(HCLGE_STATE_CMD_DISABLE, &hdev->state);
++	/* wait to ensure that the firmware completes the possible left
++	 * over commands.
++	 */
++	msleep(HCLGE_CMDQ_CLEAR_WAIT_TIME);
+ 	spin_lock_bh(&hdev->hw.cmq.csq.lock);
+ 	spin_lock(&hdev->hw.cmq.crq.lock);
+-	set_bit(HCLGE_STATE_CMD_DISABLE, &hdev->state);
+ 	hclge_cmd_uninit_regs(&hdev->hw);
+ 	spin_unlock(&hdev->hw.cmq.crq.lock);
+ 	spin_unlock_bh(&hdev->hw.cmq.csq.lock);
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
+index 8e055e1ce793..a836bdba5a4d 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
+@@ -9,6 +9,7 @@
+ #include "hnae3.h"
+ 
+ #define HCLGE_CMDQ_TX_TIMEOUT		30000
++#define HCLGE_CMDQ_CLEAR_WAIT_TIME	200
+ #define HCLGE_DESC_DATA_LEN		6
+ 
+ struct hclge_dev;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c
+index d8c5c5810b99..2267832037d8 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c
+@@ -505,12 +505,17 @@ static void hclgevf_cmd_uninit_regs(struct hclgevf_hw *hw)
+ 
+ void hclgevf_cmd_uninit(struct hclgevf_dev *hdev)
+ {
++	set_bit(HCLGEVF_STATE_CMD_DISABLE, &hdev->state);
++	/* wait to ensure that the firmware completes the possible left
++	 * over commands.
++	 */
++	msleep(HCLGEVF_CMDQ_CLEAR_WAIT_TIME);
+ 	spin_lock_bh(&hdev->hw.cmq.csq.lock);
+ 	spin_lock(&hdev->hw.cmq.crq.lock);
+-	set_bit(HCLGEVF_STATE_CMD_DISABLE, &hdev->state);
+ 	hclgevf_cmd_uninit_regs(&hdev->hw);
+ 	spin_unlock(&hdev->hw.cmq.crq.lock);
+ 	spin_unlock_bh(&hdev->hw.cmq.csq.lock);
++
+ 	hclgevf_free_cmd_desc(&hdev->hw.cmq.csq);
+ 	hclgevf_free_cmd_desc(&hdev->hw.cmq.crq);
+ }
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h
+index c6dc11b32aa7..59f4c19bd846 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h
+@@ -8,6 +8,7 @@
+ #include "hnae3.h"
+ 
+ #define HCLGEVF_CMDQ_TX_TIMEOUT		30000
++#define HCLGEVF_CMDQ_CLEAR_WAIT_TIME	200
+ #define HCLGEVF_CMDQ_RX_INVLD_B		0
+ #define HCLGEVF_CMDQ_RX_OUTVLD_B	1
+ 
 -- 
 2.30.2
 
