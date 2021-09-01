@@ -2,107 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189003FE034
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395333FE041
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344159AbhIAQmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:42:21 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:52511 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S245557AbhIAQmG (ORCPT
+        id S1344135AbhIAQoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245462AbhIAQoB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:42:06 -0400
-Received: (qmail 406198 invoked by uid 1000); 1 Sep 2021 12:41:07 -0400
-Date:   Wed, 1 Sep 2021 12:41:07 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     neal_liu <neal_liu@aspeedtech.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tony Prisk <linux@prisktech.co.nz>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Tao Ren <rentao.bupt@gmail.com>, BMC-SW@aspeedtech.com
-Subject: Re: [PATCH v2] usb: ehci: handshake CMD_RUN instead of STS_HALT
-Message-ID: <20210901164107.GD404634@rowland.harvard.edu>
-References: <20210901035041.10810-1-neal_liu@aspeedtech.com>
+        Wed, 1 Sep 2021 12:44:01 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DC4C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:43:04 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id x19so271534pfu.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:43:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LyE0QH6lNCVSo0W1WYh5ma87v3T6xS6WMQH4anjXxD8=;
+        b=hLBmoaBaCbcq4MvyxjT0txS3dClmupWfLraSUXa87Blj+fBXUpstu5fZGMefAsjWyF
+         GaGh/WXcyIhTgVjxST9LNOfr/YvXRIW3jRhIfozyvOrAB/8ZL0Ir2cU8nk//MZu7cmsS
+         uY6fbGDumAJKvWObaHteP2TtA8l73i68XsfQCWocTyG/ZQiLd7BgZyMShwwtkcOMLGjt
+         lUFxZ6BFleL5n+19+/X5QLITDaT4g0cuI/5clkl1KDsihH2+LRvFTvbbL5Y8LQt8td2Q
+         7XBCZY2cgaCemvCom+nXRVSuvw0ukt9QiMntBw1NXc1G39EY9Hyz5lP6WsjXCdyGCrA1
+         CWWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LyE0QH6lNCVSo0W1WYh5ma87v3T6xS6WMQH4anjXxD8=;
+        b=mnal8OGoqxnGR8zElHXOYMR5+mgSZC+ZX/2dOGAEQUuKqqeAGnt3wSqBt7rtvAHJyp
+         oKI7VCqyJIQGu18zcmmoeerQLjZO354oTj88KzDl6Lfp/k3e5v1HYVPjG+0oDV0HZf0a
+         Pe1FAI+EC/gd37Ewc2pXXnHJe5FEKaVN9bZ27mUWYxP3rqS/cc9n2qtdZs2nM1RBZSyD
+         WHHSxRPoxWytT8GK0SP6ZrsY2lmsqHU2XmpF+bnFZ4cFVd18cuuBsQBIeva+w3yns6a9
+         IJjFoHEAoUufMdL/yyilpf4t/xwSTVgD6DqSQS1bWbObOdhZjaxyTxokq1glEd+6caiB
+         DgLw==
+X-Gm-Message-State: AOAM533AXDRpvXdjZhmyoNzOfBLD1qrYYSnbRtOwPKTJTTNSpJbtannd
+        oVgjJGbdvV5wXDRYz3wmsjA=
+X-Google-Smtp-Source: ABdhPJxgoUhwGeU62bEL9JMVlDAi7AOxd2bi/POtMEyR77uZVO+uc2ombyqI4rMEWiREbcDArP30NQ==
+X-Received: by 2002:a63:e40a:: with SMTP id a10mr24243pgi.414.1630514584228;
+        Wed, 01 Sep 2021 09:43:04 -0700 (PDT)
+Received: from adolin ([49.207.225.208])
+        by smtp.gmail.com with ESMTPSA id h4sm254632pgn.6.2021.09.01.09.43.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 09:43:03 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 22:11:39 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     melissa.srw@gmail.com
+Cc:     rodrigosiqueiramelo@gmail.com, hamohammed.sa@gmail.com,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V6 1/2] drm/vkms: Refactor vkms_composer_worker() to prep for
+ virtual_hw mode
+Message-ID: <2a8e24370f0e5f8df1e103a3aa40aee015e7f874.1630512292.git.sylphrenadin@gmail.com>
+References: <cover.1630512292.git.sylphrenadin@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210901035041.10810-1-neal_liu@aspeedtech.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <cover.1630512292.git.sylphrenadin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 11:50:41AM +0800, neal_liu wrote:
-> Retitle.
-> 
-> For Aspeed, HCHalted status depends on not only Run/Stop but also
-> ASS/PSS status.
-> Handshake CMD_RUN on startup instead.
-> 
-> Signed-off-by: neal_liu <neal_liu@aspeedtech.com>
+Add a new function vkms_composer_common(). The actual plane
+composition work has been moved to the helper function,
+vkms_composer_common() which is called by vkms_composer_worker()
+and will be called in the implementation of virtual_hw mode
+as well.
 
-I'm still a little doubtful about doing this, but if you guys say it works 
-for your hardware then I guess it's okay.
+Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+---
+Changes in V5:
+- Move vkms_crtc_composer() to the patch that introduces
+virtual_hw mode (Melissa)
+- Fix checkpatch errors(Melissa)
+Changes in V4:
+- Fix warning
+Changes in V3:
+- Refactor patchset (Melissa)
+Change in V2:
+- Add vkms_composer_common() (Daniel)
+---
+ drivers/gpu/drm/vkms/vkms_composer.c | 75 ++++++++++++++++------------
+ drivers/gpu/drm/vkms/vkms_drv.h      |  2 +
+ 2 files changed, 45 insertions(+), 32 deletions(-)
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
+index 9e8204be9a14..bca746fb5b53 100644
+--- a/drivers/gpu/drm/vkms/vkms_composer.c
++++ b/drivers/gpu/drm/vkms/vkms_composer.c
+@@ -206,6 +206,47 @@ static int compose_active_planes(void **vaddr_out,
+ 	return 0;
+ }
+ 
++int vkms_composer_common(struct vkms_crtc_state *crtc_state,
++			 struct vkms_output *out, bool wb_pending, uint32_t *crc32)
++{
++	struct vkms_composer *primary_composer = NULL;
++	struct vkms_plane_state *act_plane = NULL;
++	void *vaddr_out = NULL;
++	int ret;
++
++	if (crtc_state->num_active_planes >= 1) {
++		act_plane = crtc_state->active_planes[0];
++		if (act_plane->base.base.plane->type == DRM_PLANE_TYPE_PRIMARY)
++			primary_composer = act_plane->composer;
++	}
++
++	if (!primary_composer)
++		return -EINVAL;
++	if (wb_pending)
++		vaddr_out = crtc_state->active_writeback->data[0].vaddr;
++
++	ret = compose_active_planes(&vaddr_out, primary_composer, crtc_state);
++
++	if (ret) {
++		if ((ret == -EINVAL || ret == -ENOMEM) && !wb_pending)
++			kfree(vaddr_out);
++		return ret;
++	}
++
++	*crc32 = compute_crc(vaddr_out, primary_composer);
++
++	if (wb_pending) {
++		drm_writeback_signal_completion(&out->wb_connector, 0);
++		spin_lock_irq(&out->composer_lock);
++		crtc_state->wb_pending = false;
++		spin_unlock_irq(&out->composer_lock);
++	} else {
++		kfree(vaddr_out);
++	}
++
++	return 0;
++}
++
+ /**
+  * vkms_composer_worker - ordered work_struct to compute CRC
+  *
+@@ -222,10 +263,7 @@ void vkms_composer_worker(struct work_struct *work)
+ 						composer_work);
+ 	struct drm_crtc *crtc = crtc_state->base.crtc;
+ 	struct vkms_output *out = drm_crtc_to_vkms_output(crtc);
+-	struct vkms_composer *primary_composer = NULL;
+-	struct vkms_plane_state *act_plane = NULL;
+ 	bool crc_pending, wb_pending;
+-	void *vaddr_out = NULL;
+ 	u32 crc32 = 0;
+ 	u64 frame_start, frame_end;
+ 	int ret;
+@@ -247,37 +285,10 @@ void vkms_composer_worker(struct work_struct *work)
+ 	if (!crc_pending)
+ 		return;
+ 
+-	if (crtc_state->num_active_planes >= 1) {
+-		act_plane = crtc_state->active_planes[0];
+-		if (act_plane->base.base.plane->type == DRM_PLANE_TYPE_PRIMARY)
+-			primary_composer = act_plane->composer;
+-	}
+-
+-	if (!primary_composer)
++	ret = vkms_composer_common(crtc_state, out, wb_pending, &crc32);
++	if (ret == -EINVAL)
+ 		return;
+ 
+-	if (wb_pending)
+-		vaddr_out = crtc_state->active_writeback->data[0].vaddr;
+-
+-	ret = compose_active_planes(&vaddr_out, primary_composer,
+-				    crtc_state);
+-	if (ret) {
+-		if (ret == -EINVAL && !wb_pending)
+-			kfree(vaddr_out);
+-		return;
+-	}
+-
+-	crc32 = compute_crc(vaddr_out, primary_composer);
+-
+-	if (wb_pending) {
+-		drm_writeback_signal_completion(&out->wb_connector, 0);
+-		spin_lock_irq(&out->composer_lock);
+-		crtc_state->wb_pending = false;
+-		spin_unlock_irq(&out->composer_lock);
+-	} else {
+-		kfree(vaddr_out);
+-	}
+-
+ 	/*
+ 	 * The worker can fall behind the vblank hrtimer, make sure we catch up.
+ 	 */
+diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+index d48c23d40ce5..6f5f63591c20 100644
+--- a/drivers/gpu/drm/vkms/vkms_drv.h
++++ b/drivers/gpu/drm/vkms/vkms_drv.h
+@@ -137,6 +137,8 @@ int vkms_verify_crc_source(struct drm_crtc *crtc, const char *source_name,
+ 			   size_t *values_cnt);
+ 
+ /* Composer Support */
++int vkms_composer_common(struct vkms_crtc_state *crtc_state, struct vkms_output *out,
++			 bool wb_pending, uint32_t *crcs);
+ void vkms_composer_worker(struct work_struct *work);
+ void vkms_set_composer(struct vkms_output *out, bool enabled);
+ 
+-- 
+2.31.1
 
-> ---
->  drivers/usb/host/ehci-hcd.c      | 11 ++++++++++-
->  drivers/usb/host/ehci-platform.c |  6 ++++++
->  drivers/usb/host/ehci.h          |  1 +
->  3 files changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
-> index 10b0365f3439..01c022e46aa2 100644
-> --- a/drivers/usb/host/ehci-hcd.c
-> +++ b/drivers/usb/host/ehci-hcd.c
-> @@ -634,7 +634,16 @@ static int ehci_run (struct usb_hcd *hcd)
->  	/* Wait until HC become operational */
->  	ehci_readl(ehci, &ehci->regs->command);	/* unblock posted writes */
->  	msleep(5);
-> -	rc = ehci_handshake(ehci, &ehci->regs->status, STS_HALT, 0, 100 * 1000);
-> +
-> +	/* For Aspeed, STS_HALT also depends on ASS/PSS status.
-> +	 * Skip this check on startup.
-> +	 */
-> +	if (ehci->is_aspeed)
-> +		rc = ehci_handshake(ehci, &ehci->regs->command, CMD_RUN,
-> +				    1, 100 * 1000);
-> +	else
-> +		rc = ehci_handshake(ehci, &ehci->regs->status, STS_HALT,
-> +				    0, 100 * 1000);
->  
->  	up_write(&ehci_cf_port_reset_rwsem);
->  
-> diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
-> index c70f2d0b4aaf..c3dc906274d9 100644
-> --- a/drivers/usb/host/ehci-platform.c
-> +++ b/drivers/usb/host/ehci-platform.c
-> @@ -297,6 +297,12 @@ static int ehci_platform_probe(struct platform_device *dev)
->  					  "has-transaction-translator"))
->  			hcd->has_tt = 1;
->  
-> +		if (of_device_is_compatible(dev->dev.of_node,
-> +					    "aspeed,ast2500-ehci") ||
-> +		    of_device_is_compatible(dev->dev.of_node,
-> +					    "aspeed,ast2600-ehci"))
-> +			ehci->is_aspeed = 1;
-> +
->  		if (soc_device_match(quirk_poll_match))
->  			priv->quirk_poll = true;
->  
-> diff --git a/drivers/usb/host/ehci.h b/drivers/usb/host/ehci.h
-> index 80bb823aa9fe..fdd073cc053b 100644
-> --- a/drivers/usb/host/ehci.h
-> +++ b/drivers/usb/host/ehci.h
-> @@ -219,6 +219,7 @@ struct ehci_hcd {			/* one per controller */
->  	unsigned		need_oc_pp_cycle:1; /* MPC834X port power */
->  	unsigned		imx28_write_fix:1; /* For Freescale i.MX28 */
->  	unsigned		spurious_oc:1;
-> +	unsigned		is_aspeed:1;
->  
->  	/* required for usb32 quirk */
->  	#define OHCI_CTRL_HCFS          (3 << 6)
-> -- 
-> 2.17.1
-> 
