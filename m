@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CFD3FE13C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C97D93FE12C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344743AbhIARjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:39:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42459 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236428AbhIARjO (ORCPT
+        id S236428AbhIARfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:35:13 -0400
+Received: from mail-4317.protonmail.ch ([185.70.43.17]:53820 "EHLO
+        mail-4317.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231225AbhIARfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:39:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630517897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DWtkvJlMDUuSVpfpufPPMomOgMZOfFN4R7d4sEHZZ8Q=;
-        b=bvmboH6Qpn34XbzkNcJqginTZZ708IghLpcDh5dmYM4nRRynShZkLVsNORUfcjH98HqRG4
-        QvUkCrO4mW+aNtQHOxcvRc7ELYXUNjftVJd1Mz2uKmcGQzK2hcOve2KBZH8eKYu6/cfR1n
-        JNFn6xec963XCtUdbNSIe7kcJE07y6o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-560-d4wxk0hHOo6tRm1XpjtNJw-1; Wed, 01 Sep 2021 13:38:16 -0400
-X-MC-Unique: d4wxk0hHOo6tRm1XpjtNJw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F2C4501E3;
-        Wed,  1 Sep 2021 17:38:15 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C48305DEB8;
-        Wed,  1 Sep 2021 17:38:07 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 4C7A541752A0; Wed,  1 Sep 2021 14:34:01 -0300 (-03)
-Date:   Wed, 1 Sep 2021 14:34:01 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Nitesh Lal <nilal@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
-Subject: Re: [patch V3 2/8] add prctl task isolation prctl docs and samples
-Message-ID: <20210901173401.GB48995@fuller.cnet>
-References: <20210824152423.300346181@fuller.cnet>
- <20210824152646.706875395@fuller.cnet>
- <CAFki+Lnso5j+cbDsd74+YM+-sT-zTYuymyJLY2Sw1ho3SHW74Q@mail.gmail.com>
+        Wed, 1 Sep 2021 13:35:12 -0400
+Date:   Wed, 01 Sep 2021 17:34:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail; t=1630517653;
+        bh=4DZXoSZg/x86Vl6h/q4bF5QMWXnNiM9y1sUOzfxcIMI=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=i8STOvz0t8mkjlVrtjuWxWXd6gJ4Fg8bHGsl/o8YYiDiA8+zKrunBnWkRSzzMB1X/
+         XUcRCW+XUE60EaeqDxLaH8qi/x0q+RNBKWoRX63qWAzrQpsHw7NYiNSjq70P1AQHgw
+         MIxUSoTyKu0JjEe2X+u8fQQZM9Z6vUceJ/3og4WyaxpLXwVDk50T4r8tJe8ylESp9S
+         XhmnDwBBf0zATpL2lJ5cAFKd2nb+Vt4AVjUjpDwE8BL7oF351sa3frB4aK2Pfb/BA9
+         YZKnYmOezpKEnk1wqD3vtGR4WtiYdz8DB7UM0+AW+p/+eutbrdSWo0eF4moL5PbVlm
+         niQprq1j9KRLA==
+To:     Krish Jain <krishjain02939@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: Re: [PATCH] Declare the file_operations struct as const
+Message-ID: <20210901173357.2dfvw5xgpzjndesc@h510>
+In-Reply-To: <YS+vfVTV0fls6KuN@kroah.com>
+References: <20210829144531.c2syu4vv4s22dlg7@h510> <CAPGkw+wyH3Pj6DV_m8wqCV5yujhjRwTwVNs6dK4i9JO-Y3ys6w@mail.gmail.com> <20210831133533.6aayzjghdakrhy56@h510> <13366651.n50aozgL3V@localhost.localdomain> <20210831230014.cp46vho2hnndacjp@h510> <CAPGkw+zpYsovnXL_4GfjsQ60fqre+xyiwvwKuDj_fHPTKEfzeQ@mail.gmail.com> <YS+cexhuqldPaACs@kroah.com> <CAPGkw+z+uepM0hiNh48xjjD7=2rpgr+RSLzMcHbw2iE=8y+xqQ@mail.gmail.com> <YS+vfVTV0fls6KuN@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFki+Lnso5j+cbDsd74+YM+-sT-zTYuymyJLY2Sw1ho3SHW74Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 09:11:56AM -0400, Nitesh Lal wrote:
-> On Tue, Aug 24, 2021 at 11:42 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
+On this day, September  1, 2021, thus sayeth Greg KH:
+> On Wed, Sep 01, 2021 at 05:34:36PM +0200, Krish Jain wrote:
 > >
-> > Add documentation and userspace sample code for prctl
-> > task isolation interface.
-> >
-> > Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-> >
-> > ---
-> >  Documentation/userspace-api/task_isolation.rst |  211 +++++++++++++++++++++++++
-> >  samples/Kconfig                                |    7
-> >  samples/Makefile                               |    1
-> >  samples/task_isolation/Makefile                |    9 +
-> >  samples/task_isolation/task_isol.c             |   83 +++++++++
-> >  samples/task_isolation/task_isol.h             |    9 +
-> >  samples/task_isolation/task_isol_userloop.c    |   56 ++++++
-> >  7 files changed, 376 insertions(+)
-> 
-> [...]
-> 
-> > +       if (ret) {
-> > +               perror("mlock");
-> > +               return EXIT_FAILURE;
-> > +       }
-> > +
-> > +       ret = task_isol_setup();
-> > +       if (ret)
-> > +               return EXIT_FAILURE;
-> 
-> The above check condition should be 'ret == -1', isn't it?
+> > Can you tell me why this is the case?
+>
+> Again, it depends on your kernel configuration file as to what will, or
+> will not, be built.
+>
+> If you have some things set as modules, they can be built as a module,
+> but the ashmem code can not be built as a module, so you would never
+> build it if you did the above line.
+>
+> Here, look at this sequence, starting with a tree that does nothing if I
+> do a simple 'make' in it, as the whole kernel is already built, and
+> ashmem is enabled in the kernel configuration
+>
+> $ grep ASHMEM .config
+> CONFIG_ASHMEM=3Dy
+> $ make
+> $
+>
+> So, let's change the time stamp on the ashmem.c file and see what gets
+> built if you use the M=3D option:
+>
+> $ touch drivers/staging/android/ashmem.c
+> $ make M=3Ddrivers/staging/android
+>   MODPOST drivers/staging/android/Module.symvers
+> $
+>
+> Nothing gets built as ashmem is NOT a module, and M=3D only builds any
+> modules in the directory you specified.
+>
+> But, if you tell make to just build the whole subdirectory, no matter
+> what the setting is, it will be built:
+>
+> $ make drivers/staging/android/
+>   CALL    scripts/checksyscalls.sh
+>   CALL    scripts/atomic/check-atomics.sh
+>   DESCEND objtool
+>   CC      drivers/staging/android/ashmem.o
+>   AR      drivers/staging/android/built-in.a
+> $
+>
+> So that's the difference, "M=3D" builds modules in that directory, but if
+> you tell it to build the subdir, everything in there that needs to be
+> built, will be built.
+>
+> Be careful about your kernel configuration, that is the key for what
+> will, and will not, be built.
+>
 
-task_isol_setup returns 0 on success, so fail to see the point 
-of testing for ret == -1 rather than ret != 0 ?
+Ouch...
+
+I want to *really* apologize to you Krish for introducing so much
+confusion while you, and apparently I, am still learning. And for your
+persistence with seeking the correct answer here Krish.
+
+I did not notice that this could only be build as a built-in object.
+Thank you Greg for pointing out my mistake, and I apologize for dragging
+this out longer than it had to and the frustration this caused.
+
+It seems I will be reading the documentation again, along with Greg's
+book recommendation, "Linux Kernel in a Nutshell" over this merge
+window.
+
+Thank you again Krish and Greg
+~Bryan
 
