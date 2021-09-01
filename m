@@ -2,158 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558513FD07D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 02:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7853FD078
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 02:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241495AbhIAAyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 20:54:52 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:52181 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241459AbhIAAyv (ORCPT
+        id S241461AbhIAAyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 20:54:00 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54796 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231509AbhIAAx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 20:54:51 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210901005353epoutp028a4c8c9c8561c55c1f1f53261d8e689d~gjJQsYkFl1667316673epoutp025
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 00:53:53 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210901005353epoutp028a4c8c9c8561c55c1f1f53261d8e689d~gjJQsYkFl1667316673epoutp025
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1630457633;
-        bh=gGDb+7FigMgN4FxCep8kmlEfPBvC4hSxrozBLm2y1w0=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=QIfrvVP1l+GIurlBSQDe9d8OTHVnq9k7R5ekik1HScQc6Hur+OnGO2sOSl3HjfEaM
-         1nfTQtDhRE7Yxrj4gY61ewKov4PF/VElntP9DUlHH2JCYVkkgfZ3mGqvrMIZ9DPNMb
-         bULHMjHoCBsbnJEc6haU961c9IySYLRQH/uz4frg=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210901005352epcas1p191896656d4786e2329380bd05a3351e6~gjJP_PjUD1377213772epcas1p1v;
-        Wed,  1 Sep 2021 00:53:52 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.38.249]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4GzltR23RZz4x9QL; Wed,  1 Sep
-        2021 00:53:51 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BE.A6.09765.F1FCE216; Wed,  1 Sep 2021 09:53:51 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210901005350epcas1p10781b465ef299afd8b2f69e78b39cf5c~gjJOTpFzn1377213772epcas1p1o;
-        Wed,  1 Sep 2021 00:53:50 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210901005350epsmtrp27d2f1a57d8ca67db414a1579c4ea93bf~gjJOSswrs1888918889epsmtrp2_;
-        Wed,  1 Sep 2021 00:53:50 +0000 (GMT)
-X-AuditID: b6c32a37-915ff70000002625-89-612ecf1ffb1b
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F1.56.09091.E1FCE216; Wed,  1 Sep 2021 09:53:50 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.100.232]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210901005350epsmtip2a684a2801484bb9819b5c8493dd62906~gjJOFLWEb2900529005epsmtip2m;
-        Wed,  1 Sep 2021 00:53:50 +0000 (GMT)
-From:   Chanwoo Lee <cw9316.lee@samsung.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, daejun7.park@samsung.com,
-        beanhuo@micron.com, stanley.chu@mediatek.com,
-        keosung.park@samsung.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com,
-        ChanWoo Lee <cw9316.lee@samsung.com>
-Subject: [PATCH v2] scsi: ufs: ufshpb: Remove unused parameters
-Date:   Wed,  1 Sep 2021 09:46:20 +0900
-Message-Id: <20210901004620.29929-1-cw9316.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
+        Tue, 31 Aug 2021 20:53:59 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1810Y9nI045052;
+        Tue, 31 Aug 2021 20:52:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=S+vwLi+45krq88Ka4EYXVLoMuSWJAYuOgMxx8mDnubQ=;
+ b=deAYEqqU5aMCIswtLnTyk20aVNmtPFebxB6Tb3W2Q+RlZ1JZpkUg+bi3bh076TlO3Zqr
+ P95ZJCOPOYnHl6CZipEbclRZ0m4uKYbZN0c3X0DxnP/IFQsJ+0ArbYDxFfE0mc43xG+r
+ WENoBR7WakeYsK0HHbszjwW5d+TyCcbDprhvZ03BFiIM2N/U5AFozB6MT1+zeB3RoXbL
+ CXJ/wSxXNVG/DFGcDRe4THE92ijXKbp0H+vCb3QNjADQXQE/nBTn0liWMcgVvl7tHfFx
+ U73FzRipvJWl2mqhr5O4pEIQDkhgxyPSvjaB1u4kbzRPeA2tlf0Ni/I8TFKf9mi9/E6Q sg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3asxn70vg1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Aug 2021 20:52:25 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1810kmff086585;
+        Tue, 31 Aug 2021 20:52:24 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3asxn70vfm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 31 Aug 2021 20:52:24 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1810miJh026273;
+        Wed, 1 Sep 2021 00:52:23 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma04wdc.us.ibm.com with ESMTP id 3aqcsc2suu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 00:52:23 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1810qLa738142332
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 1 Sep 2021 00:52:21 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9DD6228066;
+        Wed,  1 Sep 2021 00:52:21 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 65BA028058;
+        Wed,  1 Sep 2021 00:52:17 +0000 (GMT)
+Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.211.95.128])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  1 Sep 2021 00:52:17 +0000 (GMT)
+Subject: Re: [PATCH v4 00/12] Enroll kernel keys thru MOK
+To:     Eric Snowberg <eric.snowberg@oracle.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
+        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+        scott.branden@broadcom.com, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        lszubowi@redhat.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org, pjones@redhat.com,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        Patrick Uiterwijk <patrick@puiterwijk.org>
+References: <20210819002109.534600-1-eric.snowberg@oracle.com>
+ <fcb30226f378ef12cd8bd15938f0af0e1a3977a2.camel@kernel.org>
+ <f76fcf41728fbdd65f2b3464df0821f248b2cba0.camel@linux.ibm.com>
+ <91B1FE51-C6FC-4ADF-B05A-B1E59E20132E@oracle.com>
+ <e7e251000432cf7c475e19c56b0f438b92fec16e.camel@linux.ibm.com>
+ <cedc77fefdf22b2cec086f3e0dd9cc698db9bca2.camel@kernel.org>
+ <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
+ <9526a4e0be9579a9e52064dd590a78c6496ee025.camel@linux.ibm.com>
+ <9067ff7142d097698b827f3c1630a751898a76bf.camel@kernel.org>
+ <bc37d1da3ef5aae16e69eeda25d6ce6fe6a51a77.camel@HansenPartnership.com>
+ <10bc1017-2b45-43f3-ad91-d09310b24c2c@linux.vnet.ibm.com>
+ <D07DE64F-FE8B-4020-8EC2-94C3C0F9920A@oracle.com>
+From:   Nayna <nayna@linux.vnet.ibm.com>
+Message-ID: <89a37802-1423-6b1c-c0ef-6f84e544ac33@linux.vnet.ibm.com>
+Date:   Tue, 31 Aug 2021 20:52:16 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <D07DE64F-FE8B-4020-8EC2-94C3C0F9920A@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPJsWRmVeSWpSXmKPExsWy7bCmrq78eb1Eg6OvOS0ezNvGZvHy51U2
-        i4MPO1ksZpxqY7VY9SDcYt+1k+wWv/6uZ7dYdGMbk8WO52fYLY6ffMdocXnXHDaL7us72CyW
-        H//HZNH0Zx+LxdKtNxkd+D0mLDrA6NFycj+Lx/f1HWweH5/eYvHo27KK0ePzJjmP9gPdTAHs
-        Udk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUB3KymU
-        JeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKzAr0ihNzi0vz0vXyUkusDA0MjEyBChOy
-        M1ZOKi54ylXx8+E9tgbG5xxdjBwcEgImEmuPiXYxcnEICexglFj64QY7hPOJUWLt0aMsEM43
-        RolpMxazdjFygnXM6uxnhEjsZZTYN7eHFcL5wihxbscUVpC5bAJaErePeYM0iAg0MUnsPlsF
-        UsMs0MUo8etgFwtIQljAXuLKohXMIDaLgKpEw9MrYDavgLXEzm3f2CG2yUv8ud8DFReUODnz
-        CVgvM1C8eetsZpChEgJTOST+/djNBvGQi8Tbs/UQvcISr45vgZojJfH53V42iPpmRolTs8+x
-        QzgtjBKvr9yAqjKW+PT5MyPIIGYBTYn1u/QhwooSO3/PZYRYzCfx7msPK8QuXomONiGIEhWJ
-        OV3n2GB2fbzxGKrEQ+Lz1WyQsJBArMTSh5sZJzDKz0LyzSwk38xC2LuAkXkVo1hqQXFuemqx
-        YYExPE6T83M3MYJTrpb5DsZpbz/oHWJk4mA8xCjBwawkwpv9RitRiDclsbIqtSg/vqg0J7X4
-        EKMpMHwnMkuJJucDk35eSbyhiaWBiZmRiYWxpbGZkjgv4yuZRCGB9MSS1OzU1ILUIpg+Jg5O
-        qQamE28ezDEw//hj8zwfJnvtadOF9C1UZxe8XLiz5GQr66IJOYG98W+lK6pKFCIdJDT+fXPs
-        c/N4uFpftMNZStYk66p24X2rTeHnXxUtXs+Qd9xI/cxc39oVCT7zORLPWF7c7ZP/lXPaNGOj
-        ql+HNFmKe3w0k6+lvQhlv6dW+ncKg81plQduV3vrs6wckoRulzmuv+YV8JT9y8al91kftMpN
-        5tJcm2SWZLfdlzk6dM7xeN2Zm6UsYm4Wr500996nb1/aqn2ZpRjv7vbZXLpD/92apY5Hr/gI
-        JPJYyXUvXJWkrn/X9oWBxNr6vnMOvcdcLpqEZ+TLvD856Uu5GM+OgrPuZ3yfG32q+PO1sHdq
-        WKgSS3FGoqEWc1FxIgDcV2NgQgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHLMWRmVeSWpSXmKPExsWy7bCSvK7ceb1Eg2v7ZS0ezNvGZvHy51U2
-        i4MPO1ksZpxqY7VY9SDcYt+1k+wWv/6uZ7dYdGMbk8WO52fYLY6ffMdocXnXHDaL7us72CyW
-        H//HZNH0Zx+LxdKtNxkd+D0mLDrA6NFycj+Lx/f1HWweH5/eYvHo27KK0ePzJjmP9gPdTAHs
-        UVw2Kak5mWWpRfp2CVwZKycVFzzlqvj58B5bA+Nzji5GTg4JAROJWZ39jCC2kMBuRomlLzMg
-        4lISu/efZ+ti5ACyhSUOHy7uYuQCKvnEKPH35wV2kDibgJbE7WPeIHERgT4miZ2r1jGCOMwC
-        ExglFl95ywwySFjAXuLKohVgNouAqkTD0ytgNq+AtcTObd/YIZbJS/y53wMVF5Q4OfMJC4jN
-        DBRv3jqbeQIj3ywkqVlIUgsYmVYxSqYWFOem5xYbFhjmpZbrFSfmFpfmpesl5+duYgRHgZbm
-        Dsbtqz7oHWJk4mA8xCjBwawkwpv9RitRiDclsbIqtSg/vqg0J7X4EKM0B4uSOO+FrpPxQgLp
-        iSWp2ampBalFMFkmDk6pBiYzCaV85XPz+Xkz2pvTqivCa8o51H9rGZxw3+G39V3YdL3ZjMWL
-        eE4FdX9Z6Vf7Yv+UXRKd32yV1M5v3dfzRXL1v6PR/3RezSm70dE0d6MTo1ecyceigAuTPjI0
-        s3gpHFQS/fLupso/W3Ymt29dIcvNS/dOf8BwMt79Z/7Pi+nb7z/ey7RvRVzBrMjm1cd60rq6
-        7NceDM1WsTBsbN58sLelvk+4ZMXO/G8ytz65lARtY25fOJdB9cp6M/n4lkth0hOEbJOnHu9r
-        X9G18O5rN0n2q/scdCo8JGJCdjbK3p0pe/vJvUfnz9xyL7WOW90rMi1ru67K98hYNenjRxn8
-        n7xcllSiItKx7+v8rXJKn5RYijMSDbWYi4oTAXzdOz3xAgAA
-X-CMS-MailID: 20210901005350epcas1p10781b465ef299afd8b2f69e78b39cf5c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210901005350epcas1p10781b465ef299afd8b2f69e78b39cf5c
-References: <CGME20210901005350epcas1p10781b465ef299afd8b2f69e78b39cf5c@epcas1p1.samsung.com>
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: WV_ZVu190WkpdPe5PqSJVTYkBc2NlkNX
+X-Proofpoint-ORIG-GUID: fXWlbOls-kFkB-Cmew8atS2JC6VEAo20
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-31_10:2021-08-31,2021-08-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ adultscore=0 impostorscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0
+ phishscore=0 spamscore=0 bulkscore=0 clxscore=1015 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2109010001
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChanWoo Lee <cw9316.lee@samsung.com>
 
-The following parameters are not used in the function.
-So, remove unused parameters.
+On 8/30/21 1:39 PM, Eric Snowberg wrote:
+>> On Aug 27, 2021, at 2:44 PM, Nayna <nayna@linux.vnet.ibm.com> wrote:
+>> On 8/25/21 6:27 PM, James Bottomley wrote:
+>>> Remember, a CA cert is a self signed cert with the CA:TRUE basic
+>>> constraint.  Pretty much no secure boot key satisfies this (secure boot
+>>> chose deliberately NOT to use CA certificates, so they're all some type
+>>> of intermediate or leaf), so the design seems to be only to pick out
+>>> the CA certificates you put in the MOK keyring.  Adding the _ca suffix
+>>> may deflect some of the "why aren't all my MOK certificates in the
+>>> keyring" emails ...
+>>
+>> My understanding is the .system_ca keyring should not be restricted only
+>> to self-signed CAs (Root CA). Any cert that can qualify as Root or
+>> Intermediate CA with Basic Constraints CA:TRUE should be allowed. In
+>> fact, the intermediate CA certificates closest to the leaf nodes would be
+>> best.
+> With an intermediate containing CA:TRUE, the intermediate cert would not
+> be self signed. Just for my clarification, does this mean I should remove
+> the check that validates if it is self signed and instead somehow check if
+> the CA flag is set?  Wouldn’t this potentially allow improperly signed certs
+> into this new keyring?
+>
+In this model, we are relying on the admin to ensure the authenticity of 
+the certificate(s) being loaded onto the new keyring. It is similar to 
+trusting the admin to enable the variable and add keys to MOK. Following 
+are the checks that must pass before adding it to .system_ca keyring.
 
-*func(): ufshpb_set_hpb_read_to_upiu
- -> struct ufshpb_lu *hpb
- -> u32 lpn
+1. Check against revocation_list.
+2. Check Basic Constraints: CA=TRUE.
+3. Check keyUsage = keyCertSign.
 
-Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+Thanks & Regards,
 
----
-v1->v2:
- * edit description.
----
- drivers/scsi/ufs/ufshpb.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 02fb51ae8b25..589af5f6b940 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -333,9 +333,8 @@ ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
- }
- 
- static void
--ufshpb_set_hpb_read_to_upiu(struct ufs_hba *hba, struct ufshpb_lu *hpb,
--			    struct ufshcd_lrb *lrbp, u32 lpn, __be64 ppn,
--			    u8 transfer_len, int read_id)
-+ufshpb_set_hpb_read_to_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp,
-+			    __be64 ppn, u8 transfer_len, int read_id)
- {
- 	unsigned char *cdb = lrbp->cmd->cmnd;
- 	__be64 ppn_tmp = ppn;
-@@ -703,8 +702,7 @@ int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 		}
- 	}
- 
--	ufshpb_set_hpb_read_to_upiu(hba, hpb, lrbp, lpn, ppn, transfer_len,
--				    read_id);
-+	ufshpb_set_hpb_read_to_upiu(hba, lrbp, ppn, transfer_len, read_id);
- 
- 	hpb->stats.hit_cnt++;
- 	return 0;
--- 
-2.29.0
+        - Nayna
 
