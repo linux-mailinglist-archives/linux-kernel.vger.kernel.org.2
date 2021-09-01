@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB413FD518
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350B93FD51B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243104AbhIAIQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:16:18 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14446 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243098AbhIAIQL (ORCPT
+        id S243092AbhIAIQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243005AbhIAIQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:16:11 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GzxbB0PPNzbgJT;
-        Wed,  1 Sep 2021 16:11:18 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 1 Sep 2021 16:15:12 +0800
-Received: from [10.174.178.247] (10.174.178.247) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 1 Sep 2021 16:15:12 +0800
-Subject: Re: [PATCH] ACPI / PPTT: get PPTT table in the first beginning
-To:     Zenghui Yu <yuzenghui@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-CC:     Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        <catalin.marinas@arm.com>, <will@kernel.org>, <rjw@rjwysocki.net>,
-        <viresh.kumar@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>
-References: <20210720112635.38565-1-wangxiongfeng2@huawei.com>
- <20210720133751.u6k6bdm7qco3gn65@bogus>
- <a1390a6f-62aa-4cfd-b34e-1dbf0aedfc50@huawei.com>
-From:   Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <30c0b347-54fa-4113-d533-74b101b90f46@huawei.com>
-Date:   Wed, 1 Sep 2021 16:15:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 1 Sep 2021 04:16:35 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908EBC061575;
+        Wed,  1 Sep 2021 01:15:38 -0700 (PDT)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2E1CF3D7;
+        Wed,  1 Sep 2021 10:15:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1630484135;
+        bh=hJ0SsO3gUOJUFGUmE/5bd8sdDQdAUobtiS3lpxemB1U=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=v7v2nHlA9i2mq6ZcBsqC4xSPUrb+tjJn9wxutcOO18EF7ccHMiQiyleFbXLoiICiq
+         +tBNF9gxCWlv9cN+i40yhR6D8ULgPzTjt53hJpEqcWOeXYEV6oaN6yNWsr4wOoX1Ng
+         0v10G3Ly44tpYspMUtJDWmjhEmPSp+Y9VmZI+1l4=
+Subject: Re: [PATCH] media: vsp1: Make use of the helper function
+ devm_platform_ioremap_resource()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210901055709.8079-1-caihuoqing@baidu.com>
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Message-ID: <8b184d7c-1e55-3227-c01a-41f45b3402b5@ideasonboard.com>
+Date:   Wed, 1 Sep 2021 09:15:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <a1390a6f-62aa-4cfd-b34e-1dbf0aedfc50@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210901055709.8079-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.247]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/1 15:29, Zenghui Yu wrote:
-> On 2021/7/20 21:37, Sudeep Holla wrote:
->> On Tue, Jul 20, 2021 at 07:26:35PM +0800, Xiongfeng Wang wrote:
->>> When I added might_sleep() in down_timeout(), I got the following
->>
->> Sorry it is not clear if you are able to reproduce this issue without
->> any other modifications in the mainline kernel ?
+On 01/09/2021 06:57, Cai Huoqing wrote:
+> Use the devm_platform_ioremap_resource() helper instead of
+> calling platform_get_resource() and devm_ioremap_resource()
+> separately
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/media/platform/vsp1/vsp1_drv.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> Jump in this thread as the exact splat is triggered at boot time
-> in the latest mainline kernel thanks to commit 99409b935c9a
-> ("locking/semaphore: Add might_sleep() to down_*() family").
-
-Please see the patch provided by Thomas Gleixner, it should
-fix this issue in a better way:
-
-https://lkml.org/lkml/2021/8/31/352
-
-Thanks
-Hanjun
+> diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
+> index de442d6c9926..8acd6d45d8d0 100644
+> --- a/drivers/media/platform/vsp1/vsp1_drv.c
+> +++ b/drivers/media/platform/vsp1/vsp1_drv.c
+> @@ -785,7 +785,6 @@ static int vsp1_probe(struct platform_device *pdev)
+>  	struct vsp1_device *vsp1;
+>  	struct device_node *fcp_node;
+>  	struct resource *irq;
+> -	struct resource *io;
+>  	unsigned int i;
+>  	int ret;
+>  
+> @@ -800,8 +799,7 @@ static int vsp1_probe(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, vsp1);
+>  
+>  	/* I/O and IRQ resources (clock managed by the clock PM domain). */
+> -	io = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	vsp1->mmio = devm_ioremap_resource(&pdev->dev, io);
+> +	vsp1->mmio = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(vsp1->mmio))
+>  		return PTR_ERR(vsp1->mmio);
+>  
+> 
