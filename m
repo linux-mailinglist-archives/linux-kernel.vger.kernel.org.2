@@ -2,75 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DCF3FD170
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FE23FD17C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241746AbhIACjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 22:39:11 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8992 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241726AbhIACjK (ORCPT
+        id S241749AbhIACsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 22:48:55 -0400
+Received: from mail-m17644.qiye.163.com ([59.111.176.44]:14934 "EHLO
+        mail-m17644.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231613AbhIACsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 22:39:10 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GzpB32SpXzYwWb;
-        Wed,  1 Sep 2021 10:37:31 +0800 (CST)
-Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 1 Sep 2021 10:38:05 +0800
-Received: from localhost.localdomain (10.175.112.125) by
- dggpemm000001.china.huawei.com (7.185.36.245) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 1 Sep 2021 10:38:05 +0800
-From:   Tong Tiangen <tongtiangen@huawei.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, <abdulras@google.com>
-CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next v3 3/3] riscv/vdso: make arch_setup_additional_pages wait for mmap_sem for write killable
-Date:   Wed, 1 Sep 2021 02:46:21 +0000
-Message-ID: <20210901024621.2528797-4-tongtiangen@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
-In-Reply-To: <20210901024621.2528797-1-tongtiangen@huawei.com>
-References: <20210901024621.2528797-1-tongtiangen@huawei.com>
+        Tue, 31 Aug 2021 22:48:54 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [58.213.83.158])
+        by mail-m17644.qiye.163.com (Hmail) with ESMTPA id 6F3D03201D2;
+        Wed,  1 Sep 2021 10:47:54 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Christian Lamparter <chunkeey@googlemail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] p54: Remove obsolete comment
+Date:   Wed,  1 Sep 2021 10:47:44 +0800
+Message-Id: <20210901024744.7013-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm000001.china.huawei.com (7.185.36.245)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRlCS0xWS0xJSklKGE5CHU
+        weVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nz46Txw4Mj9WVkgOTkg4PCsU
+        SBRPCj5VSlVKTUhLT01PT0xPQk1CVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJSkhVQ0hVSk5DWVdZCAFZQUpCSkg3Bg++
+X-HM-Tid: 0a7b9f417debd99akuws6f3d03201d2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-riscv architectures relying on mmap_sem for write in their
-arch_setup_additional_pages. If the waiting task gets killed by the oom killer
-it would block oom_reaper from asynchronous address space reclaim and reduce
-the chances of timely OOM resolving.  Wait for the lock in the killable mode
-and return with EINTR if the task got killed while waiting.
+In commit d249ff28b1d8 ("intersil: remove obsolete prism54 wireless driver"),
+prism54/isl_oid.h is deleted. The comment here is obsolete.
 
-Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- arch/riscv/kernel/vdso.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/intersil/p54/fwio.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/riscv/kernel/vdso.c b/arch/riscv/kernel/vdso.c
-index e7bd92d8749b..b70956d80408 100644
---- a/arch/riscv/kernel/vdso.c
-+++ b/arch/riscv/kernel/vdso.c
-@@ -77,7 +77,9 @@ int arch_setup_additional_pages(struct linux_binprm *bprm,
- 
- 	vdso_len = (vdso_pages + VVAR_NR_PAGES) << PAGE_SHIFT;
- 
--	mmap_write_lock(mm);
-+	if (mmap_write_lock_killable(mm))
-+		return -EINTR;
-+
- 	vdso_base = get_unmapped_area(NULL, 0, vdso_len, 0, 0);
- 	if (IS_ERR_VALUE(vdso_base)) {
- 		ret = vdso_base;
+diff --git a/drivers/net/wireless/intersil/p54/fwio.c b/drivers/net/wireless/intersil/p54/fwio.c
+index bece14e4ff0d..1fe072de3e63 100644
+--- a/drivers/net/wireless/intersil/p54/fwio.c
++++ b/drivers/net/wireless/intersil/p54/fwio.c
+@@ -583,7 +583,6 @@ int p54_set_edcf(struct p54_common *priv)
+ 	rtd = 3 * priv->coverage_class;
+ 	edcf->slottime += rtd;
+ 	edcf->round_trip_delay = cpu_to_le16(rtd);
+-	/* (see prism54/isl_oid.h for further details) */
+ 	edcf->frameburst = cpu_to_le16(0);
+ 	edcf->flags = 0;
+ 	memset(edcf->mapping, 0, sizeof(edcf->mapping));
 -- 
-2.18.0.huawei.25
+2.25.1
 
