@@ -2,129 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C80303FE0E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CDC3FE0EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344927AbhIARHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
+        id S1345551AbhIARJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232491AbhIARHn (ORCPT
+        with ESMTP id S232491AbhIARJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:07:43 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A2FC061760
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 10:06:46 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id g21so4850960edw.4
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:06:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=v7D+ZpOP2jntzUhyNP7p3Y9HCLh6jWy1EJ60T68kM+0=;
-        b=aMNPBLBMmygC7PJ1CMDUQmI19Zqe5nRwYxAfokj2kvZs6I0d/wmbofGnZhVSdD0gs+
-         bRzLWR4pd1rBArrfoOoYjpQBSdohzyyaoUkKZOHKF5D5pcB6feonaHWLZnQI97ZpSaZv
-         5twqVSuV8Iby/HKs77LFOzgeb98yMtenh3vTo52ryu3Nhx2ODCurlYnK/VkH6JxPNLuK
-         Rquo4+/tsAiiTXPTHqaprYw3sx5tiI1oEry4womwTpwlDRcZWtOR6NWwmPHD8KYot7rj
-         HTp91JenfUB8nqIMbKCb2uF1HLPZsmdvrpuUVsiD1sji+ht7AknuTzBLgmIktwhB0VU8
-         fZtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=v7D+ZpOP2jntzUhyNP7p3Y9HCLh6jWy1EJ60T68kM+0=;
-        b=kU8kuC3QaABVePCBNnz07WXBQDF0EyLj1HP2PJSrRH5Mt9GfCinDChqGQPaEBLi8oW
-         ENMucfQKyS4DzKv+a9UzRK0AvF9oU+myjCheyxVBpmJ0Pijq/BZzvbuIbBu4rYoshVJ6
-         o4zrNJZQBBlfK2h6eaCwTpXLPhDvdzZQdMw/Hx88UNxp3aObn7VPp0T4Th733CmezxgA
-         0EVS1FY9xQiFp1zr5zDz5tG8PIIgU0KVhtbKoMU+dSCkCP7sIzJAL1gzhh20NYnfcnHb
-         vyCkAkbfmVjd+PDSgjb5mRMThRj7CbFPkTYwAeSP84pS7M/hH6Bnt+ns2MNjZJqH0guM
-         CrlQ==
-X-Gm-Message-State: AOAM530B6s/oWhkkbWLl28KmX/PQlabRjXDuq4Rem6WYBj1ZW7g7Krv3
-        dZYIYLtfvpzhaKO3qfBkEytKQBx/86JFHvnK214=
-X-Google-Smtp-Source: ABdhPJw8KpMmeosA2JltlY8SWPFdE/JoT1o2gPWzxgJlEj92ZoErrGkUhPTirJgzeMJQTW1o8ToSFev0AtXVrXhb+Fw=
-X-Received: by 2002:aa7:d68b:: with SMTP id d11mr602020edr.243.1630516005095;
- Wed, 01 Sep 2021 10:06:45 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a17:906:1292:0:0:0:0 with HTTP; Wed, 1 Sep 2021 10:06:43
- -0700 (PDT)
-Reply-To: ubabankofficeorg77@gmail.com
-From:   POST OFFICE <waleefarryrepublic8585@gmail.com>
-Date:   Wed, 1 Sep 2021 19:06:43 +0200
-Message-ID: <CACRapQEsDPkj8CzAsryx_YkCAan9Xm831q-Oc7rZyiGH2q7M6w@mail.gmail.com>
-Subject: =?UTF-8?Q?Laba_diena_d=C4=81rgais?=
-To:     undisclosed-recipients:;
+        Wed, 1 Sep 2021 13:09:15 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E4FC061575;
+        Wed,  1 Sep 2021 10:08:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=/eEATaSgxKUQuEI/VyWcCLd2zs8bwbYE3icsNkYYsmw=;
+        t=1630516098; x=1631725698; b=RtAtVXaduob7xiT7IHVqDf4yVm7hZDPfHF61IRzyCKEwmJX
+        mSK8vDdF7RHjaN0vmn/QjTZnro8PJfs3ruUBvowAJZ5Vo4AC4CQWoITgxNG1Gu45dSv5x1n/B6s5b
+        wnEa1PGC2XikPYykvpU1K79Z0UAeRNA5BIM8KuTxP8mgPn5YOar0Q+3bNG62yZOMF8uFvNSxL2Qe6
+        xTgYsnDsI9IKwEMoasdU1/l6SxvAdyZ5oh3Xckr9PXuhDvUEDt+WcjfHU9HkcluFjti2Q/C8sZokH
+        QRKOw4aWovo4GQmc1HNP3Y/LaU3OOtWD4jJsv2QpmrDMOjgLA01Bj0Fq/lv/0blA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mLTiS-001Fyv-Ur; Wed, 01 Sep 2021 19:08:01 +0200
+Message-ID: <f293c619399ba8bd60240879a20ee34db1248255.camel@sipsolutions.net>
+Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Jonas =?ISO-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Date:   Wed, 01 Sep 2021 19:07:58 +0200
+In-Reply-To: <985049b8-bad7-6f18-c94f-368059dd6f95@gmail.com>
+References: <20210830123704.221494-1-verdre@v0yd.nl>
+         <20210830123704.221494-2-verdre@v0yd.nl>
+         <CAHp75VeAKs=nFw4E20etKc3C_Cszyz9AqN=mLsum7F-BdVK5Rg@mail.gmail.com>
+         <7e38931e-2f1c-066e-088e-b27b56c1245c@v0yd.nl>
+         <20210901155110.xgje2qrtq65loawh@pali>
+         <985049b8-bad7-6f18-c94f-368059dd6f95@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-God=C4=81tais kungs / kundze
+On Wed, 2021-09-01 at 18:51 +0200, Heiner Kallweit wrote:
+> On 01.09.2021 17:51, Pali Rohár wrote:
+> > On Wednesday 01 September 2021 16:01:54 Jonas Dreßler wrote:
+> > > On 8/30/21 2:49 PM, Andy Shevchenko wrote:
+> > > > On Mon, Aug 30, 2021 at 3:38 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
+> > > > > 
+> > > > > On the 88W8897 card it's very important the TX ring write pointer is
+> > > > > updated correctly to its new value before setting the TX ready
+> > > > > interrupt, otherwise the firmware appears to crash (probably because
+> > > > > it's trying to DMA-read from the wrong place).
+> > > > > 
+> 
+> This sounds somehow like the typical case where you write DMA descriptors
+> and then ring the doorbell. This normally requires a dma_wmb().
+> Maybe something like that is missing here?
 
-M=C4=93s sazin=C4=81mies ar jums saist=C4=ABb=C4=81 ar j=C5=ABsu nepiepras=
-=C4=ABtajiem ASV dol=C4=81ru
-(3,7 miljonu ASV dol=C4=81ru) kompens=C4=81cijas l=C4=ABdzek=C4=BCiem, ko m=
-=C5=ABsu biroj=C4=81
-noguld=C4=ABja Ecowas organiz=C4=81cija, un uzdeva mums nos=C5=ABt=C4=ABt j=
-ums naudu,
-izmantojot ATM VISA CARD VAI Money-Gram ONLINE p=C4=81rskait=C4=ABjumu maks=
-=C4=81jumu
-sist=C4=93mu. viegli piepras=C4=ABt savu naudu. J=C5=ABs esat nor=C4=81d=C4=
-=ABjis m=C5=ABsu =C4=80rvalstu
-maks=C4=81jumu p=C4=81rvedumu vien=C4=ABbai =C4=80frikas Apvienot=C4=81 ban=
-ka Lome Togo
-izsniegt jums kred=C4=ABtkarti. VISA debets, kur (3,7 miljoni USD) tiks
-norakst=C4=ABts no j=C5=ABsu fonda, lai turpin=C4=81tu iz=C5=86emt savu fon=
-du.
+But it looks like this "TX ring write pointer" is actually the register?
 
-Inform=C4=93jam j=C5=ABs, ka j=C5=ABsu kop=C4=93jie l=C4=ABdzek=C4=BCi 3,7 =
-miljonu ASV dol=C4=81ru apm=C4=93r=C4=81
-ir iepl=C4=81noti izmaks=C4=81t jums, izmantojot ATM VISA CARD. Un =C5=A1od=
-ien m=C4=93s
-j=C5=ABs inform=C4=93jam, ka j=C5=ABsu fonds ir ieskait=C4=ABts VISA kart=
-=C4=93 UBA Bank un ir
-gatavs ar=C4=AB pieg=C4=81dei, tagad sazinieties ar UBA bankas sekret=C4=81=
-ru, vi=C5=86a
-v=C4=81rds ir Dr. KENNEDY UZOKA.
+However, I would agree that doing it in mwifiex_write_reg() is possibly
+too big a hammer - could be done only for reg->tx_wrptr, not all the
+registers?
 
-Apvienot=C4=81s =C4=80frikas bankas r=C4=ABkot=C4=81jdirektors
+Actually, can two writes actually cross on PCI?
 
-Bankas vietne: http://www.ubagroup.com
+johannes
 
-VISA ATM UBA KARTES NODA=C4=BBA (UBA grupa (@UBAGroup)
-
-Nos=C5=ABtiet t=C4=81l=C4=81k nor=C4=81d=C4=ABto inform=C4=81ciju par j=C5=
-=ABsu kredit=C4=93t=C4=81s ATM VISA
-kartes pieg=C4=81di uz j=C5=ABsu adresi:
-
-a) J=C5=ABsu pilns v=C4=81rds: =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-
-b) J=C5=ABsu izcelsmes valsts: =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-c) J=C5=ABsu m=C4=81jas adrese: =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-d) J=C5=ABsu t=C4=81lru=C5=86a numurs: =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-e) J=C5=ABsu nodarbo=C5=A1an=C4=81s: =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-
-Inform=C4=93jam, ka esam nosl=C4=93gu=C5=A1i visus nepiecie=C5=A1amos pas=
-=C4=81kumus saist=C4=ABb=C4=81
-ar j=C5=ABsu maks=C4=81jumu, un j=C5=ABsu ATM VISA CARD ir gatava jums nos=
-=C5=ABt=C4=ABt,
-tikl=C4=ABdz sazin=C4=81sieties ar mums, nor=C4=81dot t=C4=81l=C4=81k snieg=
-to inform=C4=81ciju.
-
-Kontaktpersona: Vivian Francis kundze
-
-Kontaktpersonas e -pasts: (ubabankofficeorg77@gmail.com)
-
-T=C4=81p=C4=93c, lai izvair=C4=ABtos no nevajadz=C4=ABgas kav=C4=93=C5=A1an=
-=C4=81s, jums p=C4=93c iesp=C4=93jas
-=C4=81tr=C4=81k j=C4=81nos=C5=ABta Joseph Gloria ikuku kungam nepiecie=C5=
-=A1am=C4=81 inform=C4=81cija.
-
-Pateikties
-
-Joseph Gloria ikuku (SVF) (601) ier=C4=93dnis
