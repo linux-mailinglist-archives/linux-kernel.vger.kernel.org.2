@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B105F3FD6AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82763FD6B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243623AbhIAJWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:22:36 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:39999 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243617AbhIAJWd (ORCPT
+        id S243617AbhIAJWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243517AbhIAJWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:22:33 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id E18475C00C8;
-        Wed,  1 Sep 2021 05:21:36 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 01 Sep 2021 05:21:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=SMV9oK/iCgz0tHOqUaBZ0W1wgga
-        nshV5eQDf3FNQoRI=; b=s5qPyu1F7jbu6K8fJ9c9ACUyz8kcB+Xbwt6AIIQyW/w
-        Iok/NurG/pnB1rT1IDogrXs1NzuWKfvN5lbnn1U2nDQ4qmN5iNEhWPTXl9ys/e+x
-        8FN7XmDFetuMfq3nQkYZGNuvZApVCtNsEGXxH5Z44EHfunSg+oXj2VnZsyRFTT+N
-        ef+0wHrA2WvHw+iOiYWhCoBRWrkASW5a4VleBggZU+hNSdxAwh2ezN8o2yA6Tkux
-        QIj9YArDCC2t1yVl0RRO0nGSzjfWxH/SFVd3KzCzapzPeg0R3NCCjp8T07yI9Mj/
-        4qIp9LW0dwiK2EnX8uwmfwAPdPQANkvji6TV41pQnBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=SMV9oK
-        /iCgz0tHOqUaBZ0W1wgganshV5eQDf3FNQoRI=; b=w0VhMPOFQIM0LmxPrcInDI
-        ZRbfujw3ORTPWL3m1VJbXIxuQRNim6yqw6zmYo3VWzKLWk8r4FQs77XHESM86oI4
-        Uy9N1HRh5YdRMreSKv8z2aFl3GyfrZv5QsexdoDvGlG64us4VEGW5y7oQpgpme5B
-        XupaO3P+u8Ztws9TgUruxZ4Zx9GQs7qycJ452JxJSrh5vUgeces8l0WqPKCM2YPE
-        ZXBN9KfuXRDjFUHDu+m/AYG78YXJhe/66JKG3NAfrcQdX1DyDfNd0MWm5rgeBMQf
-        tKrg+t8WOtBVH9iUdtXUOwHELvoEURHdV5RIyzwUNHNwqaJPcIIt3GnA1/uK+n3A
-        ==
-X-ME-Sender: <xms:IEYvYWZi2x9wCzP6eZVmQ7vGWUpYpitUuqQoR-mhTsehfUqz7WickA>
-    <xme:IEYvYZalzhxSrOoPq5xB_GU7_fDbSiYsrttuMNMIRnCtvCtKZkwhFD3WQ2zb4XTWD
-    Ro-32MX9UJzePjPq30>
-X-ME-Received: <xmr:IEYvYQ-daZ52iogv_OjtnVDCXwPod3lMFi9AywmVTJWxbYD3hQzuh8YBLxq0BlwJDV3UHA0A30E0qblyTxxSJorK24d28Gc-uLsU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedgudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:IEYvYYrFymat351ET0_42yqZ1VejR7sJAD6BsmLzn7Hp8OypUo4b6w>
-    <xmx:IEYvYRrcS_UTk2R01t4gDl--jHtKVxx0Hhk7mzuG9ZJaSqDUizuyjw>
-    <xmx:IEYvYWSv6o3_Zkedr6HfzBAYG1aiC_vGr-XKztc6JzmNjtMzi1LuGA>
-    <xmx:IEYvYY2SCG_Qrs1vmG9Uphs_0UeMXGrRA1UddM3Z1A613TnuAMJHTA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Sep 2021 05:21:35 -0400 (EDT)
-Date:   Wed, 1 Sep 2021 11:21:34 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: cadence: Make use of the helper function
- devm_platform_ioremap_resource()
-Message-ID: <20210901092134.ehda5vimesuow3x2@gilmour>
-References: <20210901051421.5372-1-caihuoqing@baidu.com>
+        Wed, 1 Sep 2021 05:22:50 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E419C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 02:21:52 -0700 (PDT)
+Received: from localhost (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 84F25BC74ED;
+        Wed,  1 Sep 2021 11:21:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1630488110;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TXpryOL6VSO9ITcKmr0S/fF3J09GeRCANFPAKsu45ZY=;
+        b=nbd9fnXVBJas6fBLM2u7Cl5iI6ipsyCds4K4K7l0KElUcUzkA0mjAoP/9EZq0SsqVZmJuo
+        JrX/WVjfkCY4Ni1j+8iGiOafcTfJ2XM9FURaQ2dPlL9h64jrSZd+s4nHQ8OTI7P+D060BQ
+        oM3zRQwK58ahSYXodFgpPMyT0wo2UO0=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [RFC PATCH 0/1] mm: provide one common K(x) macro
+Date:   Wed,  1 Sep 2021 11:21:48 +0200
+Message-Id: <20210901092149.994791-1-oleksandr@natalenko.name>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ydu7rbnigvhmycoi"
-Content-Disposition: inline
-In-Reply-To: <20210901051421.5372-1-caihuoqing@baidu.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Based on discussion with Miaohe Lin [1].
 
---ydu7rbnigvhmycoi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There are various places where the K(x) macro is defined, sometimes
+under different names, sometimes it is just open-coded. In this RFC I
+suggest providing a common K(x) definition that replaces existing ones.
 
-On Wed, Sep 01, 2021 at 01:14:20PM +0800, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
->=20
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+For that, a new header, mm_tools.h, is created. I couldn't find a more
+appropriate place for K(x). Probably, an existing header like mm_inline.h
+would work as well. I tried placing this macro under mm.h, but then it
+conflicts with uapi/linux/keyboard.h.
 
-Acked-by: Maxime Ripard <maxime@cerno.tech>
+In case this approach is acceptable, replacing open-coded variants would
+be done in a separate patch. For now, I'm using `git grep -nE
+'<<\s?\(PAGE_SHIFT\s?\-\s?10\)'` to find such places.
 
-Maxime
+Also note, here I do not touch files under arch/ like
+arch/arc/include/asm/arcregs.h where PAGES_TO_KB() is defined, or
+arch/powerpc/platforms/pseries/cmm.c with PAGES2KB() as well as
+arch/s390/appldata/appldata_mem.c with P2K() as I'm not sure if it is
+appropriate to include another header file there.
 
---ydu7rbnigvhmycoi
-Content-Type: application/pgp-signature; name="signature.asc"
+The patch is based on top of next-20210831 and is compile-tested using
+allyesconfig.
 
------BEGIN PGP SIGNATURE-----
+Please let me know what you think.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYS9GHgAKCRDj7w1vZxhR
-xRGzAQD/+LRl+k0p/9tU1VLegXW97pYjGw5PTk0YMo9yrMrwjgD/XaRvvIwhrIwm
-5nsBK3iDiZ9ilAs4wZdm3XCKIqEqiwU=
-=chgT
------END PGP SIGNATURE-----
+Thanks.
 
---ydu7rbnigvhmycoi--
+[1] https://lore.kernel.org/linux-mm/9161665.bUqNH3lxUD@natalenko.name/
+
+Oleksandr Natalenko (1):
+  mm: provide one common K(x) macro
+
+ drivers/base/node.c                 |  2 +-
+ drivers/scsi/mpt3sas/mpt3sas_base.c |  5 ++---
+ drivers/xen/xen-balloon.c           | 11 +++++------
+ include/linux/mm_tools.h            |  9 +++++++++
+ include/trace/events/writeback.h    | 19 +++++++++----------
+ kernel/debug/kdb/kdb_main.c         |  2 +-
+ mm/backing-dev.c                    |  3 +--
+ mm/memcontrol.c                     |  2 +-
+ mm/oom_kill.c                       |  3 +--
+ mm/page_alloc.c                     |  3 +--
+ 10 files changed, 31 insertions(+), 28 deletions(-)
+ create mode 100644 include/linux/mm_tools.h
+
+-- 
+2.33.0
+
