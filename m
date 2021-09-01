@@ -2,100 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6B23FDD84
+	by mail.lfdr.de (Postfix) with ESMTP id E1BBD3FDD85
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244535AbhIAN4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 09:56:03 -0400
-Received: from mail-lf1-f45.google.com ([209.85.167.45]:42917 "EHLO
-        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbhIAN4C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 09:56:02 -0400
-Received: by mail-lf1-f45.google.com with SMTP id j4so6540460lfg.9;
-        Wed, 01 Sep 2021 06:55:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=1qbLir7t00tIXtsSOowis8wzBunbda5Sb7xAud87L5k=;
-        b=QJHFdFwOKDQb5JBqkff1XErqaxiXi7zRXZttRrX/7OAvy0XYZ2LAucXOd5lgdLY/w1
-         8rBqS6EVcmCe6bZaKZHoB5EoGydpr/IRejrfovqIb5KfBYJOtnV2YrpJd+mkif2HoE/t
-         2fV9su+Qgl4t3PxYYzKEHszG7SIvHxLU/utUkrRnaadWjzzXjcnqCmO4di1TCxtYHg7E
-         PwRo5bGKiqg6xISmLGtL9i1/37QCET1YuMbLd2h8WqKDjDyx8kthTYJn6UCjTR4oVPyh
-         3gYLzRVBgO8pjt1prsEaanaDfwcVcOKql4EbqWrK3VVON3NktYJvCuOF3DsNnT07CrXT
-         sHng==
-X-Gm-Message-State: AOAM531WtYQ/BSB9lQHz3FruOvJ4upSE0/tpCvQT5aS7+8zyS9Fk7nYX
-        bKR/il+SYdJrYDiLNgtwmwbDb0YtFbTOBA==
-X-Google-Smtp-Source: ABdhPJxnqaiKpaUsD1/Wf7HVOpnXIwDiz/oQkQPofTMkFyItLkXYwvqnNuFAr7cr4G3mnvYqWtGMmQ==
-X-Received: by 2002:a19:f015:: with SMTP id p21mr25478146lfc.32.1630504504031;
-        Wed, 01 Sep 2021 06:55:04 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id g21sm192581lfu.94.2021.09.01.06.55.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 06:55:03 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id l10so6587597lfg.4;
-        Wed, 01 Sep 2021 06:55:03 -0700 (PDT)
-X-Received: by 2002:a05:6512:3f89:: with SMTP id x9mr26306205lfa.233.1630504503566;
- Wed, 01 Sep 2021 06:55:03 -0700 (PDT)
+        id S244612AbhIAN4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 09:56:13 -0400
+Received: from mga04.intel.com ([192.55.52.120]:2865 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232598AbhIAN4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 09:56:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="216906150"
+X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
+   d="scan'208";a="216906150"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 06:55:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
+   d="scan'208";a="541807065"
+Received: from powerlab.fi.intel.com (HELO powerlab..) ([10.237.71.25])
+  by fmsmga002.fm.intel.com with ESMTP; 01 Sep 2021 06:55:13 -0700
+From:   Artem Bityutskiy <dedekind1@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tom Zanussi <zanussi@kernel.org>, linux-kernel@vger.kernel.org,
+        Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] tracing: synth events: increase max fields count
+Date:   Wed,  1 Sep 2021 16:55:13 +0300
+Message-Id: <20210901135513.3087062-1-dedekind1@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210901050526.45673-1-samuel@sholland.org> <20210901050526.45673-6-samuel@sholland.org>
-In-Reply-To: <20210901050526.45673-6-samuel@sholland.org>
-Reply-To: wens@csie.org
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Wed, 1 Sep 2021 21:54:52 +0800
-X-Gmail-Original-Message-ID: <CAGb2v668_prQ8zw9rX3=Xi9L73cqqo+KhUN_4m8OUzF0qhCH1A@mail.gmail.com>
-Message-ID: <CAGb2v668_prQ8zw9rX3=Xi9L73cqqo+KhUN_4m8OUzF0qhCH1A@mail.gmail.com>
-Subject: Re: [PATCH 5/8] clk: sunxi-ng: Export symbols used by CCU drivers
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 1:05 PM Samuel Holland <samuel@sholland.org> wrote:
->
-> For the individual drivers to be built as modules, the ops structs and
-> callback registration functions must be exported. None of the helper
-> functions are exported, because they are only referenced from the
-> corresponding ops structs. of_sunxi_ccu_probe is not exported, because
-> it is only used for built-in early OF clock providers.
->
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  drivers/clk/sunxi-ng/ccu_common.c | 2 ++
->  drivers/clk/sunxi-ng/ccu_div.c    | 1 +
->  drivers/clk/sunxi-ng/ccu_gate.c   | 1 +
->  drivers/clk/sunxi-ng/ccu_mp.c     | 2 ++
->  drivers/clk/sunxi-ng/ccu_mult.c   | 1 +
->  drivers/clk/sunxi-ng/ccu_mux.c    | 2 ++
->  drivers/clk/sunxi-ng/ccu_nk.c     | 1 +
->  drivers/clk/sunxi-ng/ccu_nkm.c    | 1 +
->  drivers/clk/sunxi-ng/ccu_nkmp.c   | 1 +
->  drivers/clk/sunxi-ng/ccu_nm.c     | 1 +
->  drivers/clk/sunxi-ng/ccu_phase.c  | 1 +
->  drivers/clk/sunxi-ng/ccu_reset.c  | 1 +
->  12 files changed, 15 insertions(+)
->
-> diff --git a/drivers/clk/sunxi-ng/ccu_common.c b/drivers/clk/sunxi-ng/ccu_common.c
-> index 31af8b6b5286..3ab109582646 100644
-> --- a/drivers/clk/sunxi-ng/ccu_common.c
-> +++ b/drivers/clk/sunxi-ng/ccu_common.c
-> @@ -83,6 +83,7 @@ int ccu_pll_notifier_register(struct ccu_pll_nb *pll_nb)
->         return clk_notifier_register(pll_nb->common->hw.clk,
->                                      &pll_nb->clk_nb);
->  }
-> +EXPORT_SYMBOL_GPL(ccu_pll_notifier_register);
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-These symbol names aren't exactly specific to sunxi. Maybe we could apply
-symbol namespaces?
+Sometimes it is useful to construct larger synthetic trace events. Increase
+'SYNTH_FIELDS_MAX' (maximum number of fields in a synthetic event) from 32 to
+64.
 
-ChenYu
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ kernel/trace/trace_synth.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/trace/trace_synth.h b/kernel/trace/trace_synth.h
+index 4007fe95cf42..b29595fe3ac5 100644
+--- a/kernel/trace/trace_synth.h
++++ b/kernel/trace/trace_synth.h
+@@ -5,7 +5,7 @@
+ #include "trace_dynevent.h"
+ 
+ #define SYNTH_SYSTEM		"synthetic"
+-#define SYNTH_FIELDS_MAX	32
++#define SYNTH_FIELDS_MAX	64
+ 
+ #define STR_VAR_LEN_MAX		MAX_FILTER_STR_VAL /* must be multiple of sizeof(u64) */
+ 
+-- 
+2.31.1
+
