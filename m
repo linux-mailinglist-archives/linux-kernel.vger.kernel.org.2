@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03243FD4CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980343FD4D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242803AbhIAIAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:00:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23943 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242622AbhIAIAS (ORCPT
+        id S242861AbhIAIBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:01:33 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:55638 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242777AbhIAIBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:00:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630483154;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iyKrp7I82f3wYzsbQR/1Jeu1cFgJoa6hSbBVeuarAhw=;
-        b=SVu3Ie7M7qe03EblygVArvpDQoYY1Nlm4MtpL7bRifjFZ3Vj6D5VeCSiez28rUVnVk56ez
-        yI5ZdaqGRZtgyovOLitsbUyOo5r540Cr/wEoYGcfKw16gquTJZB2NqXI0Rjhk064d6pyJy
-        ScDI4qBIMNjUOzgoJekNf+iEvjr1tBk=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-7R_0GtgQNDW9qrXmsJDAZQ-1; Wed, 01 Sep 2021 03:59:13 -0400
-X-MC-Unique: 7R_0GtgQNDW9qrXmsJDAZQ-1
-Received: by mail-wr1-f70.google.com with SMTP id h14-20020a056000000e00b001575b00eb08so493617wrx.13
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 00:59:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=iyKrp7I82f3wYzsbQR/1Jeu1cFgJoa6hSbBVeuarAhw=;
-        b=goQZxpmjZlTEolCmwmH+Q/Dm8SZ4K5UmNw2MHQYeYF8pL7G6EheknGG6FnJP9pwxzF
-         1skJPczjUQN7Y6YLjN80qHyTrCC2keNiFetiNEmW4/6a24dJFTKmqwaZP8MIyFGaABIV
-         kJ1YYreHXPoaFEiiVLWxyGpGH7knSffxRK/0dZ8k4TND6g35Exvhjuqw2AdYh7nXbW56
-         1NMArZQN+VSjr2jRpxeNBLdbkMhbMMf2bfBD48Ip+E+pDy3h6Cj8nFSQ6o6iAgh5mJbh
-         joeadVDXhyllMkkfKCa6f1sahykQAdI0PhqWOJJidAHeHJI6Den9ytN/NFRRrRgEYfsu
-         mKsw==
-X-Gm-Message-State: AOAM533Fgt8m8bewFoP0ASCkqypc5aiQg8UnpNZBeYUgPfWFstlesLUT
-        cFp5ZqKOqyeFYBs/HQdr8JVhAl5u0dpPT3dan02dZe2SxyRkyzuq0gqzBbbZVZINmbe7J7BkcGL
-        BLdGyNW4Hft5aWR+kLiGEIRSv
-X-Received: by 2002:adf:b318:: with SMTP id j24mr35920236wrd.84.1630483152538;
-        Wed, 01 Sep 2021 00:59:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz6qSKRkrppsPrE7xFz0DPwkHom7QW17kdpSLZeZaFEbxoQd+jkS4db/+oYTilJq6NO0oKDdw==
-X-Received: by 2002:adf:b318:: with SMTP id j24mr35920224wrd.84.1630483152355;
-        Wed, 01 Sep 2021 00:59:12 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-233-185.dyn.eolo.it. [146.241.233.185])
-        by smtp.gmail.com with ESMTPSA id o23sm8974034wro.76.2021.09.01.00.59.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 00:59:12 -0700 (PDT)
-Message-ID: <d49518ac90b2442fc293fd333d0315b1cff00671.camel@redhat.com>
-Subject: Re: [PATCH] [v3] mptcp: Fix duplicated argument in protocol.h
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Wan Jiabing <wanjiabing@vivo.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        mptcp@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Date:   Wed, 01 Sep 2021 09:59:10 +0200
-In-Reply-To: <20210901031932.7734-1-wanjiabing@vivo.com>
-References: <20210901031932.7734-1-wanjiabing@vivo.com>
-Content-Type: text/plain
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+        Wed, 1 Sep 2021 04:01:31 -0400
+Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 805A4CECEF;
+        Wed,  1 Sep 2021 10:00:33 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH] Bluetooth: btusb: btrtl: Add the new support ID for
+ Realtek RTL8852A
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210901074845.1000-1-max.chou@realtek.com>
+Date:   Wed, 1 Sep 2021 10:00:32 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        matthias.bgg@gmail.com,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, alex_lu@realsil.com.cn,
+        hildawu@realtek.com, christian.bauer1.external@fujitsu.com
+Content-Transfer-Encoding: 7bit
+Message-Id: <83B481E5-389E-423F-A948-DCEEC94C0618@holtmann.org>
+References: <20210901074845.1000-1-max.chou@realtek.com>
+To:     Max Chou <max.chou@realtek.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo=
+Hi Max,
 
+> Add the new support ID(0x04c5, 0x165c) to usb_device_id table for
+> Realtek RTL8852A.
+> 
+> The device info from /sys/kernel/debug/usb/devices as below.
+> 
+> T:  Bus=01 Lev=01 Prnt=01 Port=05 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
+> D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=04c5 ProdID=165c Rev= 0.00
+> S:  Manufacturer=Realtek
+> S:  Product=Bluetooth Radio
+> S:  SerialNumber=00e04c000001
+> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> 
+> Signed-off-by: Max Chou <max.chou@realtek.com>
+> Reviewed-by: Christian Bauer <christian.bauer1.external@fujitsu.com>
+> ---
+> drivers/bluetooth/btusb.c | 2 ++
+> 1 file changed, 2 insertions(+)
+
+patch has been applied to bluetooth-next tree.
+
+Regards
+
+Marcel
 
