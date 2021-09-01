@@ -2,152 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5943FDFB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641F43FDFA4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245385AbhIAQU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:20:56 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1746 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S245312AbhIAQUs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:20:48 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181G3emd143345;
-        Wed, 1 Sep 2021 12:18:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=k7jwf9mEpW9jMLXlEdUYvNg47RVo/cTl0rw993cyzzc=;
- b=VcjPk/5yS1kAMACqyb3V3u2u86H1AdJJhaaAf9xA9RVF4un99U52rI2kHIbJ7FvBJqdg
- JiLhg5gUKKNV1p1OTvWQpZbTfc2XeKi638BzUe5wRRvR09OyQ+DUGynqfMlgK54ysfd2
- finYC2MLPCptL5gfA24DuhXMQoEOXA/i9HlPskkCUt0i0LG9cxlD6/DNPxfcOU9HPsBT
- 2Kz5IEe6R+Xx9MQi/DDv4jpmCBrXvHwL8Gcd1Ir9j3eJ7XFEgNRoksD6nRtYAnAdrtlQ
- on5SU7JVNkP3AhS/S3x4/SwUZoXlVyZH4dfNufNzOCTDgeiI7yBJ8Er1LcIawSwF34i3 Lg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3atcnm0fn5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 12:18:22 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 181G3pKY144452;
-        Wed, 1 Sep 2021 12:18:21 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3atcnm0fmh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 12:18:21 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 181GCmkw011119;
-        Wed, 1 Sep 2021 16:18:20 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma05wdc.us.ibm.com with ESMTP id 3aqcsdcr1h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 16:18:20 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 181GIJK834210266
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Sep 2021 16:18:19 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 814AF78080;
-        Wed,  1 Sep 2021 16:18:19 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F348678068;
-        Wed,  1 Sep 2021 16:18:16 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.211.89.117])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  1 Sep 2021 16:18:16 +0000 (GMT)
-Message-ID: <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
- private memory
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Andy Lutomirski <luto@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-Date:   Wed, 01 Sep 2021 09:18:15 -0700
-In-Reply-To: <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
-References: <20210824005248.200037-1-seanjc@google.com>
-         <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
-         <YSlkzLblHfiiPyVM@google.com>
-         <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
-         <YS6lIg6kjNPI1EgF@google.com>
-         <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
-         <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S245224AbhIAQUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:20:32 -0400
+Received: from mail-dm6nam08on2066.outbound.protection.outlook.com ([40.107.102.66]:11296
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234245AbhIAQUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 12:20:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D3LQ4zF3c4+pMFBWLa8ea5z28ikLjUavvO6k1lc3t62TkztjyQIvSJBg5UZYSep7MEJfXy4t0NZLkoRZrLbubAgZJNaVGKopvKzdlz5J2+txmaAiZM7yoLTlXR9fD3AUDigHHWjHSJIEdVzChifG/gvDIGEHF4WLIqBD/KS/UahjE5igYf5Ufwy2v+REbuG+AqNj5ZQb1hxhHzvz8Ozt7uZs3jSeFWK1VDC9JcdvTYRBOXe+Edyot5ChShuj0iegjrv9Rick9Cd/IpDny1NkWIQyUt1vvQrRIqLIh7NoL6ti/3E1QO1pUJxNsTWdiQU/BbgbqppXyzaYJC38gPKySg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=39gy2c2raIcnF4r2Yto1C+/uXXeJYaLopbp4uHcVvHc=;
+ b=mW6TmBY5y+pGNsZx1r6QjxqtgoHJvRt2rZfE/2JjElE5fzefA0i99K1kTizU9dgpt0c/jzxC3a27SSadR5k19uYKB0s4k6/h1avb9I5IkGKYJpKOoj/nc+jGEg4wPI3bu11QUN97IzhgLEtMMcavSL3mwKdi7tQVQBzCVcd57EfcgneBJaCQdUHlLDPDAiuVBVtCBVxCMTjgRsq9NAWTfu97zH5j2U0rDpo+qYKRqoVJuM50q/dXldrFFILcsST0kPzi84q9vqp7bT2hJVcMisBHsHrRGpF2+wb7aVbAwP4ZMjlWju+PrJP86S6WfTIklCkK11yD/snL7hdZPtXWxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=39gy2c2raIcnF4r2Yto1C+/uXXeJYaLopbp4uHcVvHc=;
+ b=HEk63Q0VPbW7/wogOFRkfABRRViWa5tyWage7npJgLAZ863y5fp1hXe/zqEu6JCo2jQPt9Fh5yqwi3ID5ehgsXp9/RW1GulwAJwF3PZAjp6LJhDazhFy4sYH2d1xQUnOYr3jg28XX31yg5KRSg7LnuM/f0VoL5Y9CkfgZIqRUjQwsabAD7LPZz6euwPoyKiFF0lvuEXM1aMHACUf2l5Ql6ONyw9u+5HbV+d11SZzBF+V+rCMwyXMVtU5TG0HbuQz49qQeBjAX0k2I3vqUlaY+/MY4du4/hUZheJAA18BOFL6TNui4U2Y8EE2zrs3qwaBPnuHUi1v0+khn1R90Bpg6g==
+Received: from BN8PR04CA0052.namprd04.prod.outlook.com (2603:10b6:408:d4::26)
+ by DM6PR12MB2842.namprd12.prod.outlook.com (2603:10b6:5:4c::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.24; Wed, 1 Sep
+ 2021 16:19:31 +0000
+Received: from BN8NAM11FT034.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:d4:cafe::47) by BN8PR04CA0052.outlook.office365.com
+ (2603:10b6:408:d4::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend
+ Transport; Wed, 1 Sep 2021 16:19:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; alsa-project.org; dkim=none (message not signed)
+ header.d=none;alsa-project.org; dmarc=pass action=none
+ header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT034.mail.protection.outlook.com (10.13.176.139) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4478.19 via Frontend Transport; Wed, 1 Sep 2021 16:19:30 +0000
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 1 Sep
+ 2021 16:19:27 +0000
+Received: from audio.nvidia.com (172.20.187.6) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 1 Sep 2021 16:19:24 +0000
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
+        <thierry.reding@gmail.com>
+CC:     <jonathanh@nvidia.com>, <stephan@gerhold.net>,
+        <jbrunet@baylibre.com>, <aleandre.belloni@bootlin.com>,
+        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH 0/3] Convert name-prefix doc to json-schema
+Date:   Wed, 1 Sep 2021 21:48:28 +0530
+Message-ID: <1630513111-18776-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: cmJTtet4j-0_5Tu7NNTq16pd3vB50BKT
-X-Proofpoint-ORIG-GUID: 6b2-nvEpGw7ETdYGEPlsN8GDLSUDkpl9
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-01_05:2021-09-01,2021-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- bulkscore=0 phishscore=0 adultscore=0 malwarescore=0 spamscore=0
- suspectscore=0 priorityscore=1501 clxscore=1011 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2109010094
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 276c4a7a-4cce-47d3-a008-08d96d64472d
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2842:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB284293C08322CAF40FD6B78AA7CD9@DM6PR12MB2842.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lsHWwoEmVvggnDMVhkKCac5vToZ9FMXVbHI2Mi3ryxsf9AROZHvW/KzSqUe81Mpdqy0/aAx7UdBqZNCgkFwgtA588ZSoerbmJttGOUysd1OZyUJr8cV2caHCRaGdZipvbHwC71VwWRu4MT8eJNdB0H1uSuX9fr5ccLoOsLBCfLSAtvf60Cf/GAWhgZZi2/TRRfIm+6fNfe+yFRubWOATDNAtt27PwSXgOFXW6pm7c0JG5ye+wBZJPiIxgBFOVZ9923PzQnVi2dIbiz557VKC0t2mzqAZbHFfZpjbt5LzNXhexTmBeuF2qBpekuEOsYYf0yLw12Gzsz5inSFYO8tTCOn6bePmzAHhdxLivnLb5zspr4RaGNJEM9Wqbkt506TEjcci6mHth08wE8yluCvZHziyJsI8gNZ6BxRK+TP88gAypscLSMMzPDDiFwYfYTIPu7xViNxhTs5HuAJ7Z/hQOwFY9tGG+wweF/hmzAdo5D+4hrvEDmn6LnOSozqNWAnIUMqAmm/ovSZHsrofRH44HRb6dxBiChMesBUH5NK588c79IGswz6+YFkEB6kVmeL2yLTBmIhXxF47Ze6seEKXZ6EH5KyANZ/k+qv4gAi7ZmQ0A3uTYp/iXH/ByZ8CzNwivFbtGroz+dvU1Sm3/B/Tk/AYPs/tUvzZDycYdRKpp+49ECI7VYlSObYR5yIuTaH5P4y396R/GSOq9RjF1PS0+Q==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39860400002)(396003)(36840700001)(46966006)(356005)(36906005)(36860700001)(26005)(70206006)(70586007)(47076005)(8936002)(316002)(54906003)(4326008)(7416002)(110136005)(7636003)(336012)(83380400001)(107886003)(2906002)(186003)(82740400003)(5660300002)(426003)(8676002)(82310400003)(36756003)(86362001)(2616005)(7696005)(478600001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 16:19:30.6296
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 276c4a7a-4cce-47d3-a008-08d96d64472d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT034.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2842
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-01 at 08:54 -0700, Andy Lutomirski wrote:
-[...]
-> If you want to swap a page on TDX, you can't.  Sorry, go directly to
-> jail, do not collect $200.
+Following are the changes:
+  - Add json-schema for 'sound-name-prefix' documentation under
+    'name-perfix.yaml'
+  - Use schema references wherever needed.
+  - Remove txt based doc
 
-Actually, even on SEV-ES you can't either.  You can read the encrypted
-page and write it out if you want, but unless you swap it back to the
-exact same physical memory location, the encryption key won't work. 
-Since we don't guarantee this for swap, I think swap won't actually
-work for any confidential computing environment.
+Sameer Pujar (3):
+  ASoC: Add json-schema documentation for sound-name-prefix
+  ASoC: Use schema reference for sound-name-prefix
+  ASoC: Remove name-prefix.txt
 
-> So I think there are literally zero code paths that currently call
-> try_to_unmap() that will actually work like that on TDX.  If we run
-> out of memory on a TDX host, we can kill the guest completely and
-> reclaim all of its memory (which probably also involves killing QEMU
-> or whatever other user program is in charge), but that's really our
-> only option.
+ .../devicetree/bindings/sound/name-prefix.txt      | 24 ---------------
+ .../devicetree/bindings/sound/name-prefix.yaml     | 35 ++++++++++++++++++++++
+ .../bindings/sound/nvidia,tegra186-dspk.yaml       |  7 +----
+ .../bindings/sound/nvidia,tegra210-dmic.yaml       |  7 +----
+ .../bindings/sound/nvidia,tegra210-i2s.yaml        |  7 +----
+ .../devicetree/bindings/sound/nxp,tfa989x.yaml     |  5 +---
+ Documentation/devicetree/bindings/sound/rt5659.txt |  2 +-
+ .../bindings/sound/simple-audio-mux.yaml           |  5 +---
+ 8 files changed, 41 insertions(+), 51 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/name-prefix.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/name-prefix.yaml
 
-I think our only option for swap is guest co-operation.  We're going to
-have to inflate a balloon or something in the guest and have the guest
-driver do some type of bounce of the page, where it becomes an
-unencrypted page in the guest (so the host can read it without the
-physical address keying of the encryption getting in the way) but
-actually encrypted with a swap transfer key known only to the guest.  I
-assume we can use the page acceptance infrastructure currently being
-discussed elsewhere to do swap back in as well ... the host provides
-the guest with the encrypted swap page and the guest has to decrypt it
-and place it in encrypted guest memory.
-
-That way the swapped memory is securely encrypted, but can be swapped
-back in.
-
-James
-
+-- 
+2.7.4
 
