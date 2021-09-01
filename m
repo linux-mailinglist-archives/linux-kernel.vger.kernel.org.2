@@ -2,116 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE583FD341
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 07:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C963FD346
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 07:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242242AbhIAFts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S242172AbhIAFuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 01:50:02 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:45490 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S242232AbhIAFts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 1 Sep 2021 01:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242167AbhIAFtX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 01:49:23 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C272C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 22:48:27 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id s11so1620624pgr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 22:48:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=Fu7LKKRJjW440Z2ObsB6RluKhLefXiiAWgwLg8qYv3c=;
-        b=Ca2ji+kvbJuiGYX9IdmK4ysPPLPCfMfK8Jmqt0nbVM6mN09cSV5IhhdI+bA31RbABL
-         erE8lmntFDumv721Sv/YzC1VViPKNJs4B2pEovnokyi+0s7Oy+umj/EHQ5ufDiahHif7
-         OmiDOLOWS6SUg6Wzgq5+y/BgGUa9ow71YpHCPz+TwUwR3I7tUyK+Wvy7S2wzKPY32HH/
-         tsO++SaQR8HJXQbjUUbXXj1hJ2dLjtgRXO9QYM6fuqmtzcb/E5e3FnXvBuX9lStXnUFy
-         c9c9AWZSAYWFddLJZFAhap6qaG7UZFQfEo/886u+OHzaCCXzXMYOzR1F89Oizq86iB1o
-         QhxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=Fu7LKKRJjW440Z2ObsB6RluKhLefXiiAWgwLg8qYv3c=;
-        b=im/v3a9FZ7f4KKeaIs9uJfs2rYOnP9lh8IrPFYPloeHK5djTzQm87UuhlKWJq1MTx7
-         iqrI/VDgSvPX6NDjMwg/Z1QuSYXeTqOra8Zmh9IRQmMq/EeOmiIUXDtcSPCgwbe+ZfXW
-         K/hpLQ99WDdvtnVXpkNK60SqCllISZHfp2QLvcG407/XmGMH7TDULTOdoAcHLHoWSobO
-         jHcsw3FmQLsnyB7GVJXHzXZKo45Cyr0lQSnKytOtWp+KGawix2qc6lYQNe6tIZRFv1IH
-         R7fc3ch0gEEeUu3xcdw3tcHUOyl03p9UTT/eMb5Hh1TYQ9SFYETubTwzcV99p+8JhfW1
-         0e5g==
-X-Gm-Message-State: AOAM530xB6Tk4s5nHPt9dXL3/RJYhIedsl/zLvPoC+RbsJGurWH4kTH4
-        PAYyPASUFR+hjfPXXbpKRxrLIQ==
-X-Google-Smtp-Source: ABdhPJwD+9Ue+IoeaBYIvCfAqgAjhGKwCFzKaMHRiBmF+UcAq5RjUQpsKzIb6maIoEjI3ltNLVx86A==
-X-Received: by 2002:a63:d814:: with SMTP id b20mr30365995pgh.268.1630475306650;
-        Tue, 31 Aug 2021 22:48:26 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id o15sm4233026pjr.0.2021.08.31.22.48.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 22:48:25 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 11:18:24 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v10 3/8] opp: Change type of
- dev_pm_opp_attach_genpd(names) argument
-Message-ID: <20210901054824.yfse5txuyeoj5j2l@vireshk-i7>
-References: <20210831135450.26070-1-digetx@gmail.com>
- <20210831135450.26070-4-digetx@gmail.com>
- <20210901044117.abfwfebqw5lbn5zj@vireshk-i7>
- <e166f6e8-6de1-6e10-2607-78fbdc196a9d@gmail.com>
+Received: from BJHW-Mail-Ex09.internal.baidu.com (unknown [10.127.64.32])
+        by Forcepoint Email with ESMTPS id CB2395939C1EB0DD24DA;
+        Wed,  1 Sep 2021 13:48:49 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BJHW-Mail-Ex09.internal.baidu.com (10.127.64.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Wed, 1 Sep 2021 13:48:49 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Wed, 1 Sep 2021 13:48:49 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] media: cec: s5p_cec: Make use of the helper function devm_platform_ioremap_resource()
+Date:   Wed, 1 Sep 2021 13:48:42 +0800
+Message-ID: <20210901054843.6267-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e166f6e8-6de1-6e10-2607-78fbdc196a9d@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BJHW-Mail-Ex11.internal.baidu.com (10.127.64.34) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex09_2021-09-01 13:48:49:821
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-09-21, 08:44, Dmitry Osipenko wrote:
-> 01.09.2021 07:41, Viresh Kumar пишет:
-> > On 31-08-21, 16:54, Dmitry Osipenko wrote:
-> >> Elements of the 'names' array are not changed by the code, constify them
-> >> for consistency.
-> >>
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >> ---
-> >>  drivers/opp/core.c     | 6 +++---
-> >>  include/linux/pm_opp.h | 8 ++++----
-> >>  2 files changed, 7 insertions(+), 7 deletions(-)
-> >>
-> >> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> >> index 602e502d092e..d4e706a8b70d 100644
-> >> --- a/drivers/opp/core.c
-> >> +++ b/drivers/opp/core.c
-> >> @@ -2359,12 +2359,12 @@ static void _opp_detach_genpd(struct opp_table *opp_table)
-> >>   * "required-opps" are added in DT.
-> >>   */
-> >>  struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
-> >> -		const char **names, struct device ***virt_devs)
-> >> +		const char * const *names, struct device ***virt_devs)
-> > 
-> > I am sure there are issues around space around * here. Please run
-> > checkpatch with --strict option for your series.
-> > 
-> 
-> It is the other way around. This fixes the checkpatch warning and that's
-> what checkpatch wants. You may also grep the kernel to find that this is
-> the only variant used in practice.
+Use the devm_platform_ioremap_resource() helper instead of
+calling platform_get_resource() and devm_ioremap_resource()
+separately
 
-Heh, you are right. I somehow thought that * never has a space right
-after.
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/media/cec/platform/s5p/s5p_cec.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
+diff --git a/drivers/media/cec/platform/s5p/s5p_cec.c b/drivers/media/cec/platform/s5p/s5p_cec.c
+index 028a09a7531e..ce9a9d922f11 100644
+--- a/drivers/media/cec/platform/s5p/s5p_cec.c
++++ b/drivers/media/cec/platform/s5p/s5p_cec.c
+@@ -178,7 +178,6 @@ static int s5p_cec_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct device *hdmi_dev;
+-	struct resource *res;
+ 	struct s5p_cec_dev *cec;
+ 	bool needs_hpd = of_property_read_bool(pdev->dev.of_node, "needs-hpd");
+ 	int ret;
+@@ -212,8 +211,7 @@ static int s5p_cec_probe(struct platform_device *pdev)
+ 	if (IS_ERR(cec->pmu))
+ 		return -EPROBE_DEFER;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	cec->reg = devm_ioremap_resource(dev, res);
++	cec->reg = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(cec->reg))
+ 		return PTR_ERR(cec->reg);
+ 
 -- 
-viresh
+2.25.1
+
