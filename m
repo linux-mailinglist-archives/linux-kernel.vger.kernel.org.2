@@ -2,107 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0809B3FD63F
+	by mail.lfdr.de (Postfix) with ESMTP id E66C83FD642
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243484AbhIAJNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
+        id S243492AbhIAJNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243446AbhIAJNK (ORCPT
+        with ESMTP id S243449AbhIAJNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:13:10 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB13C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 02:12:14 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id v123so1512370pfb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:12:14 -0700 (PDT)
+        Wed, 1 Sep 2021 05:13:14 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED03C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 02:12:17 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id w8so2118420pgf.5
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:12:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9awTdNZXeyUkH/oFOCLr7e4LdyXBILhh3s1aaJszUyk=;
-        b=ihEuaUERWeKow9ehEulv8jzIYo4APivhosmQp5knPz8bLu9qf2kiJ526U48rO2uRnL
-         p2gR9SCalooNAenTmIRj30SJOyHBuPevEvt2DN+UFuSBw6SLeP7SRC1deAzXrIFHEoFN
-         XqzPr7bevLHVks7G+mZXpn71JI+0nbgN8MKVAJ2NKpyRnNoLOQWzEhIlQ2HmOVXgmGdh
-         zMranfIMmYNrrKN60W3XQuBEd0HVgzTBXqnhpVpJ0CZq8YX6YjY+TF7imRJADHn9/lvm
-         sJB0d5CW9cwyNYBI8M7w4vDbjdl/mxv3hhgTE0u1CRw5HvpoYnRQKCV5mlR5y6B8Pt8i
-         q8pg==
+        bh=rSLnBv6HzrzRT2E+OrtX7br/e1aM+QCsCVPYd1HLzdc=;
+        b=gamJq1iYdnzqTJXSjm+5RkT6COhyrD+KFLc/YuFGGAyOn10TEbeOJ+VJJ/PMMkbAbb
+         X8TVF4KZGYZKD2YBT1ll8KLrV6NMxqEdNpP27Hfce9FAbTSmzKiVRXIa6h1SdrK5/3oS
+         QgcGhCmBL9ANHdpdCml7SSM8VwC53T7fEDYi3DwyXO8n7sPg7VgW8CdDoL828KmOZwiO
+         uY7q60iFvh7y5e6/kpwIG6tXxZrvbUQNYj+7afblhj1EWFnXxAclrcdHvUq4SHeOWTba
+         YRNchczQ0me0e6DJrm9o87wVIEpn9ad82xPYPIPQ98xjHX/J2eE0hkeCFp7YR9YTgeMb
+         blUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9awTdNZXeyUkH/oFOCLr7e4LdyXBILhh3s1aaJszUyk=;
-        b=rJquRBm5fsqoMkRDnV0zTCO3cEYnsP9XqNVrYfBRNnC81pQoeBd4xeJ00UBsp4aB/9
-         D+oTv8rJ7YEfPI6MAlOHqlU7yuzXopkfGHUKXwFXR16Lz48b/0m/3DHj42CdD3kV8lxJ
-         E+dRpn2kFgIlxWl227hV9HGqdv1KvL0e0iXxIbkE/tTqeUDZWPmddCZ0q2ly9BC095Y1
-         vV4QXW7ROizOHbrToP0uJNF58V8s+TAtTqnVJjEj5gbpDrh5YkRGT+S06F9MxJLYZj44
-         pFiM+VWEH1DgzaV8FMWk3Ze7WqNl9TxV7wiPP5cdVpj7WtRWZ7DsVPgXyBCOS2GvFY/B
-         TZVQ==
-X-Gm-Message-State: AOAM531o+ZULG1mvjeIDXrl/QclKF3N87/W8TwDtFEhL+X9NhhuS55Oc
-        Vv4eQFAF9Nrf78Rj2b5qKABvPQ==
-X-Google-Smtp-Source: ABdhPJzXC3xDk2lbyoJmViBzLMbFm4JFysm5CrC+l/MMJFZq9mvpJS/kohLSc3tRGDIhCjVdJqNccw==
-X-Received: by 2002:a63:444c:: with SMTP id t12mr31095067pgk.212.1630487533654;
-        Wed, 01 Sep 2021 02:12:13 -0700 (PDT)
+        bh=rSLnBv6HzrzRT2E+OrtX7br/e1aM+QCsCVPYd1HLzdc=;
+        b=lYgIcYkBNMajeuIIZGKZGWzTLoekvaq4OLSSAFceAUIuisrJ4J4fEDsOz13wR3dmEo
+         fGbiovu3otK9fKXgVO8sAHxBq93MX+dqwg+YHYL4w9cmpHXrJhikT1J8Em5f5/2OoWe4
+         zC4PH3Mij7PZjV/9UfHNvKNw/L+DTrTeyI7CB6kqJmfJ01qO/hZuYxcGQF+d3ZsICEeA
+         OWbw54k05MziTgG8Gy7CTM6WOURoUfo4a7eNdvghKyDNkk2JicG4khQx6b/FFoiFUFH1
+         wG577BJ5yM9Xb3+MGno8Co/u5ewqARfmwdy1Z4KpH+uZxr+4qeS08iRQQuA3XtmRN+gX
+         kwLg==
+X-Gm-Message-State: AOAM532/Pq+vsztk5vY1Ed7x5hkz7VOROLCHR8DJJcAvq4ABuDqn5Jhp
+        B7KquLLauW0DOWFM8AuaqlPfuw==
+X-Google-Smtp-Source: ABdhPJx3GapedXo1LpKHC7Vvi+SwU4/wP2MNKKT+1JUHstrRZUG0Jx8e4bs6LSJDFeo5HtO+2iR6kA==
+X-Received: by 2002:a65:648b:: with SMTP id e11mr30941505pgv.138.1630487537479;
+        Wed, 01 Sep 2021 02:12:17 -0700 (PDT)
 Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id k190sm12341642pgc.11.2021.09.01.02.12.12
+        by smtp.gmail.com with ESMTPSA id o15sm4900093pjr.0.2021.09.01.02.12.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 02:12:13 -0700 (PDT)
+        Wed, 01 Sep 2021 02:12:17 -0700 (PDT)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>
 Cc:     linux-pm@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] cpufreq: sh: Remove sh_cpufreq_cpu_ready()
-Date:   Wed,  1 Sep 2021 14:41:56 +0530
-Message-Id: <2c81cd66e09dccb9189221d39f0871d9fc7192d3.1630487322.git.viresh.kumar@linaro.org>
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 3/3] cpufreq: Remove ready() callback
+Date:   Wed,  1 Sep 2021 14:41:57 +0530
+Message-Id: <9c2435b18039fe50328b8f443dcd4dbb009f4618.1630487322.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 In-Reply-To: <cover.1630487322.git.viresh.kumar@linaro.org>
 References: <cover.1630487322.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ->ready() callback is going away and since we don't do any important
-stuff in sh_cpufreq_cpu_ready(), remove it.
+This isn't used anymore, get rid of it.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/cpufreq/sh-cpufreq.c | 11 -----------
- 1 file changed, 11 deletions(-)
+ Documentation/cpu-freq/cpu-drivers.rst                    | 3 ---
+ Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst | 2 --
+ drivers/cpufreq/cpufreq.c                                 | 4 ----
+ include/linux/cpufreq.h                                   | 3 ---
+ 4 files changed, 12 deletions(-)
 
-diff --git a/drivers/cpufreq/sh-cpufreq.c b/drivers/cpufreq/sh-cpufreq.c
-index 1a251e635ebd..b8704232c27b 100644
---- a/drivers/cpufreq/sh-cpufreq.c
-+++ b/drivers/cpufreq/sh-cpufreq.c
-@@ -145,16 +145,6 @@ static int sh_cpufreq_cpu_exit(struct cpufreq_policy *policy)
- 	return 0;
- }
+diff --git a/Documentation/cpu-freq/cpu-drivers.rst b/Documentation/cpu-freq/cpu-drivers.rst
+index d84ededb66f9..3b32336a7803 100644
+--- a/Documentation/cpu-freq/cpu-drivers.rst
++++ b/Documentation/cpu-freq/cpu-drivers.rst
+@@ -75,9 +75,6 @@ And optionally
+  .resume - A pointer to a per-policy resume function which is called
+  with interrupts disabled and _before_ the governor is started again.
  
--static void sh_cpufreq_cpu_ready(struct cpufreq_policy *policy)
--{
--	struct device *dev = get_cpu_device(policy->cpu);
+- .ready - A pointer to a per-policy ready function which is called after
+- the policy is fully initialized.
 -
--	dev_info(dev, "CPU Frequencies - Minimum %u.%03u MHz, "
--	       "Maximum %u.%03u MHz.\n",
--	       policy->min / 1000, policy->min % 1000,
--	       policy->max / 1000, policy->max % 1000);
--}
--
- static struct cpufreq_driver sh_cpufreq_driver = {
- 	.name		= "sh",
- 	.flags		= CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING,
-@@ -163,7 +153,6 @@ static struct cpufreq_driver sh_cpufreq_driver = {
- 	.verify		= sh_cpufreq_verify,
- 	.init		= sh_cpufreq_cpu_init,
- 	.exit		= sh_cpufreq_cpu_exit,
--	.ready		= sh_cpufreq_cpu_ready,
- 	.attr		= cpufreq_generic_attr,
- };
+  .attr - A pointer to a NULL-terminated list of "struct freq_attr" which
+  allow to export values to sysfs.
  
+diff --git a/Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst b/Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst
+index 5ae9cfa2ec55..334f30ae198b 100644
+--- a/Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst
++++ b/Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst
+@@ -80,8 +80,6 @@ 并且可选择
+  .resume - 一个指向per-policy恢复函数的指针，该函数在关中断且在调节器再一次开始前被
+  调用。
+ 
+- .ready - 一个指向per-policy准备函数的指针，该函数在策略完全初始化之后被调用。
+-
+  .attr - 一个指向NULL结尾的"struct freq_attr"列表的指针，该函数允许导出值到
+  sysfs。
+ 
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index 7d5f170ecad1..5782b15a8caa 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -1517,10 +1517,6 @@ static int cpufreq_online(unsigned int cpu)
+ 
+ 	kobject_uevent(&policy->kobj, KOBJ_ADD);
+ 
+-	/* Callback for handling stuff after policy is ready */
+-	if (cpufreq_driver->ready)
+-		cpufreq_driver->ready(policy);
+-
+ 	if (cpufreq_thermal_control_enabled(cpufreq_driver))
+ 		policy->cdev = of_cpufreq_cooling_register(policy);
+ 
+diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+index c65a1d7385f8..fe6acc04e5e5 100644
+--- a/include/linux/cpufreq.h
++++ b/include/linux/cpufreq.h
+@@ -367,9 +367,6 @@ struct cpufreq_driver {
+ 	int		(*suspend)(struct cpufreq_policy *policy);
+ 	int		(*resume)(struct cpufreq_policy *policy);
+ 
+-	/* Will be called after the driver is fully initialized */
+-	void		(*ready)(struct cpufreq_policy *policy);
+-
+ 	struct freq_attr **attr;
+ 
+ 	/* platform specific boost support code */
 -- 
 2.31.1.272.g89b43f80a514
 
