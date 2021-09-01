@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35CF3FD8EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1644E3FD8F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243911AbhIALnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 07:43:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243865AbhIALnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 07:43:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4007761056;
-        Wed,  1 Sep 2021 11:42:24 +0000 (UTC)
-Date:   Wed, 1 Sep 2021 13:42:22 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     torvalds@linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Folios: Can we resolve this please?
-Message-ID: <20210901114222.fm6enxi66nkynwc4@wittgenstein>
-References: <3285174.1630448147@warthog.procyon.org.uk>
+        id S243865AbhIALov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 07:44:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243356AbhIALou (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 07:44:50 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0CD5C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 04:43:53 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id y34so5709085lfa.8
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 04:43:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dv7SSHrzc+JrKmtfmOHwtcJ0mmdkld+UU+xFR+0sd1s=;
+        b=SPVgpEGg8weWIgr6ghEmwFMRW755IzX1VvDxe1QzAqsMJcTqN8WGm/DN/EeLe1D9hI
+         JCpiJ7DraFf/1cJHWba19usvWWJIqYPfpgbgwSHEfMAzfhghjOyvQn8wdSAbWQLUnAqK
+         aPjP7vHuNX1YX1AIphLQP5Nbyn7Pqsp6Z0HHQiT60jRSfL+HvHWLIyj/txLcRVCElCyD
+         utbcU2MZMZBgIt5UvxzoaXWXCjJQKN8NqtT60dPQgRSpzExtM0uWbBmHaB6pECdQkHFL
+         0Zr0Yb/ZkzfbWIKdI3JUKW7ID0Lqisb3mGnhfZSBfCVigrkMZF2dqD5kxcNQ9FsQa3FA
+         YThg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dv7SSHrzc+JrKmtfmOHwtcJ0mmdkld+UU+xFR+0sd1s=;
+        b=W6GkfLB9Es7YkUw8kGknuZVfsL95/SkYTF7JQJcX4TbQ7hPohD6gaei6Z+eic2DJcj
+         4au6YZZrFmjJBAP1+tVatjcNp9nmECctOslPBWZsjJ2D6IBURQ2/bACNinYbb20Xu0h7
+         5cow8mMdHZOltxaHYBxWwGUAivL2bpA9jgB+zDSnq1TiLnzhjAqW0AFXpPrnLSmnAJ6m
+         RGFkV8PGAl8wZzGDI2MkBiA2c9gaUNYFjh45IPYF9JWWHo9iT2OrHOenDhTNgy0wnimk
+         Ni9ToW0XFNHyC4stYE5KI3MqhfioyzAohL1sM6xw/AE9IqZwbsy1VNpUiyxkW6gwXXRk
+         NdYA==
+X-Gm-Message-State: AOAM531qdDaZeDloZXq+uDULvyJ9nTgJVodP/pxBpZg4V8HMY4QtjSY2
+        6fAlQFbXWyO1+A5yjeBTRaJoAw==
+X-Google-Smtp-Source: ABdhPJw9BEAZJkcsfe4dO67KihLaBhSi75YCfERe0uWPom1D/IOsHrPIguzc6NavdrcnD6hNXnfVNw==
+X-Received: by 2002:a05:6512:686:: with SMTP id t6mr21603337lfe.49.1630496631983;
+        Wed, 01 Sep 2021 04:43:51 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id k12sm2443762ljm.65.2021.09.01.04.43.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 04:43:51 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] regulator: qcom-rpmh-regulator: fix pm8009-1 ldo7 resource name
+Date:   Wed,  1 Sep 2021 14:43:50 +0300
+Message-Id: <20210901114350.1106073-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3285174.1630448147@warthog.procyon.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 11:15:47PM +0100, David Howells wrote:
-> Hi Linus, Andrew, Johannes,
-> 
-> Can we come to a quick resolution on folios?  I'd really like this to be
-> solved in this merge window if at all possible as I (and others) have stuff
-> that will depend on and will conflict with Willy's folio work.  It would be
-> great to get this sorted one way or another.
-> 
-> As I see it, there are three issues, I think, and I think they kind of go like
-> this:
-> 
->  (1) Johannes wants to get away from pages being used as the unit of memory
->      currency and thinks that folios aren't helpful in this regard[1].  There
->      seems to be some disagreement about where this is heading.
-> 
->  (2) Linus isn't entirely keen on Willy's approach[2], with a bottom up
->      approach hiding the page objects behind a new type from the pov of the
->      filesystem, but would rather see the page struct stay the main API type
->      and the changes be hidden transparently inside of that.
-> 
->      I think from what Linus said, he may be in favour (if that's not too
->      strong a word) of using a new type to make sure we don't miss the
->      necessary changes[3].
-> 
->  (3) Linus isn't in favour of the name 'folio' for the new type[2].  Various
->      names have been bandied around and Linus seems okay with "pageset"[4],
->      though it's already in minor(-ish) use[5][6].  Willy has an alternate
->      patchset with "folio" changed to "pageset"[7].
-> 
-> With regard to (1), I think the folio concept could be used in future to hide
-> at least some of the paginess from filesystems.
-> 
-> With regard to (2), I think a top-down approach won't work until and unless we
-> wrap all accesses to struct page by filesystems (and device drivers) in
-> wrapper functions - we need to stop filesystems fiddling with page internals
-> because what page internals may mean may change.
-> 
-> With regard to (3), I'm personally fine with the name "folio", as are other
-> people[8][9][10][11], but I could also live with a conversion to "pageset".
-> 
-> Is it possible to take the folios patchset as-is and just live with the name,
-> or just take Willy's rename-job (although it hasn't had linux-next soak time
-> yet)?  Or is the approach fundamentally flawed and in need of redoing?
+Fix a typo in the pm8009 LDO7 declaration, it uses resource name ldo%s6
+instead of ldo%s7.
 
-I can't speak to the deep technical mm problems but from a pure "user"
-perspective, I think this is a genuinely good patchset which simplifies
-and unifies a good set of things. Sure, it is a lot of changes. But the
-fact that a range of people have ported their patchsets to make use of
-the new folio api is a rather good sign imho.
+Fixes: 951384cabc5d ("regulator: qcom-rpmh-regulator: add pm8009-1 chip revision")
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
-If I saw a huge changeset like this coming in that I don't believe is
-worth it I wouldn't port my patches to it. So I think that expresses
-a decent amount of practial confidence in the changes and that the
-conversion has been done in a way that is tasteful. Of course there are
-other ways of doing it; there always are.
+Changes since v1:
+ - Dropped extra drm part which somehow got through to the patch.
 
-I don't have yet another clever name to propose. The "folio" prefix
-forms a very natural api over a wide range of helpers such as
-folio_memcg_kmem(), folio_file_mapping() et al. I found the other
-suggestions to be rather clunky compared to that. And compsci and
-science in general thrives on piling on additional meaning on existing
-concepts.
+---
+ drivers/regulator/qcom-rpmh-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Christian
+diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
+index 6cca910a76de..7f458d510483 100644
+--- a/drivers/regulator/qcom-rpmh-regulator.c
++++ b/drivers/regulator/qcom-rpmh-regulator.c
+@@ -991,7 +991,7 @@ static const struct rpmh_vreg_init_data pm8009_1_vreg_data[] = {
+ 	RPMH_VREG("ldo4",   "ldo%s4",  &pmic5_nldo,      "vdd-l4"),
+ 	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_pldo,      "vdd-l5-l6"),
+ 	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_pldo,      "vdd-l5-l6"),
+-	RPMH_VREG("ldo7",   "ldo%s6",  &pmic5_pldo_lv,   "vdd-l7"),
++	RPMH_VREG("ldo7",   "ldo%s7",  &pmic5_pldo_lv,   "vdd-l7"),
+ 	{}
+ };
+ 
+-- 
+2.33.0
+
