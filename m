@@ -2,150 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A289D3FE727
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 03:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 642CF3FE5CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbhIBBdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 21:33:10 -0400
-Received: from rosenzweig.io ([138.197.143.207]:45354 "EHLO rosenzweig.io"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232888AbhIBBdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 21:33:08 -0400
-Date:   Wed, 1 Sep 2021 17:10:09 -0400
-From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Alexander Graf <graf@amazon.com>,
-        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/8] iommu/dma: Disable get_sgtable for granule >
- PAGE_SIZE
-Message-ID: <YS/sMckPUJRMYwYq@sunset>
-References: <20210828153642.19396-1-sven@svenpeter.dev>
- <20210828153642.19396-4-sven@svenpeter.dev>
- <YS6fasuqPURbmC6X@sunset>
- <c8bc7f77-3b46-4675-a642-76871fcec963@www.fastmail.com>
+        id S244935AbhIAWog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 18:44:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241890AbhIAWof (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 18:44:35 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01088C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 15:43:38 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id k65so1663193yba.13
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 15:43:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U+r4CwgKG+yEodhHzC7nFI5Y9Wnbyo4zL9qFFX9zlnM=;
+        b=JOkMP8RXO6jdIjIDD6ZH3jrv9UvB6l279lUpP6filw3CBk6k1N1Hwj4bB+HLyMDRma
+         boD3ZbnLqtdnNwuqesuS2HLMkqRyrZHeaia+pvNPCT5BKtEqWOmyEyiXQxJAyJC7Tf9q
+         4ZnqybnkHfs+Ms/08GdCeE+nkY2Z4/6wD9jZtk51UPliBiGeD3r02osFUGdJfXWK+37N
+         Rh2HJkrC41dh2GjZCh7Y9ajtEv3CGhIGQOw3dol55gzG/dj6A8DAPpPCYb1Sl+W+o/jy
+         0sCXMnz+HIYSyDRFWFsuXdBSq+fQWnvW9N3oN7tIEn+y26OGONWz2qjuMjcUCQuC9gw/
+         GLqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U+r4CwgKG+yEodhHzC7nFI5Y9Wnbyo4zL9qFFX9zlnM=;
+        b=AEUxf0rgb2NMJzYMXxLDQnueJYaitOzAnM/+WBjwf/lNFekRdmcqja9TgQDxzPn5aG
+         T3IJI61TMkNIfA7CEFwNAOyCOPFFlBNNyUWLxfEJy1kh/XAF/Bbapq40GChcOPiJ9YYc
+         3RwsazoEMZqFBljrfh+BHXPpZcL8mJR49kq6BO/EQLRFsadmdb4DIdYb2s4wmlU6P7/a
+         70D4QnYURA+TTYd6hAAY9DKwLp+qzgv/gprJy6dZ0r356vrby+nKEcRjMZfk22I7+ST+
+         XX9yZfOCoR9gcUUTGjD+xts2aEgHjuYpmCawW8LFy3IwXVFnrhZOaC/HzXv8ojkF2gi8
+         fzEQ==
+X-Gm-Message-State: AOAM531z10ewW/uuJRrbcnT4wXtk3V8V5fqT8MSyWFNr2zCaO4MYitIJ
+        Oekm89hrSfrcFew34k9DIlBUS862j3Pyqopz5mWlRA==
+X-Google-Smtp-Source: ABdhPJzi+Lf0Xejnkm0ckXhh2uNvzEvpcGrgx17PRpTaVpfoZFF6sLe4mbguXZjsOTaBLHIIADIlXq1Ey2THBjkzhnc=
+X-Received: by 2002:a25:6507:: with SMTP id z7mr276648ybb.439.1630536217085;
+ Wed, 01 Sep 2021 15:43:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c8bc7f77-3b46-4675-a642-76871fcec963@www.fastmail.com>
+References: <20210901211412.4171835-1-rananta@google.com> <20210901211412.4171835-2-rananta@google.com>
+ <YS/vTVPi7Iam+ZXX@google.com>
+In-Reply-To: <YS/vTVPi7Iam+ZXX@google.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Wed, 1 Sep 2021 15:43:24 -0700
+Message-ID: <CAJHc60wx=ZN_5e9Co_s_GyFs4ytLxncbYr2-CzmTUh5DvvuuNQ@mail.gmail.com>
+Subject: Re: [PATCH v3 01/12] KVM: arm64: selftests: Add MMIO readl/writel support
+To:     Oliver Upton <oupton@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> My biggest issue is that I do not understand how this function is supposed
-> to be used correctly. It would work fine as-is if it only ever gets passed buffers
-> allocated by the coherent API but there's not way to check or guarantee that.
-> There may also be callers making assumptions that no longer hold when
-> iovad->granule > PAGE_SIZE.
-> 
-> Regarding your case: I'm not convinced the function is meant to be used there.
-> If I understand it correctly, your code first allocates memory with dma_alloc_coherent
-> (which possibly creates a sgt internally and then maps it with iommu_map_sg),
-> then coerces that back into a sgt with dma_get_sgtable, and then maps that sgt to
-> another iommu domain with dma_map_sg while assuming that the result will be contiguous
-> in IOVA space. It'll work out because dma_alloc_coherent is the very thing
-> meant to allocate pages that can be mapped into kernel and device VA space
-> as a single contiguous block and because both of your IOMMUs are different
-> instances of the same HW block. Anything allocated by dma_alloc_coherent for the
-> first IOMMU will have the right shape that will allow it to be mapped as
-> a single contiguous block for the second IOMMU.
-> 
-> What could be done in your case is to instead use the IOMMU API,
-> allocate the pages yourself (while ensuring the sgt your create is made up
-> of blocks with size and physaddr aligned to max(domain_a->granule, domain_b->granule))
-> and then just use iommu_map_sg for both domains which actually comes with the
-> guarantee that the result will be a single contiguous block in IOVA space and
-> doesn't required the sgt roundtrip.
+On Wed, Sep 1, 2021 at 2:23 PM Oliver Upton <oupton@google.com> wrote:
+>
+> On Wed, Sep 01, 2021 at 09:14:01PM +0000, Raghavendra Rao Ananta wrote:
+> > Define the readl() and writel() functions for the guests to
+> > access (4-byte) the MMIO region.
+> >
+> > The routines, and their dependents, are inspired from the kernel's
+> > arch/arm64/include/asm/io.h and arch/arm64/include/asm/barrier.h.
+> >
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > ---
+> >  .../selftests/kvm/include/aarch64/processor.h | 45 ++++++++++++++++++-
+> >  1 file changed, 44 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
+> > index c0273aefa63d..3cbaf5c1e26b 100644
+> > --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
+> > +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
+> > @@ -130,6 +130,49 @@ void vm_install_sync_handler(struct kvm_vm *vm,
+> >       val;                                                              \
+> >  })
+> >
+> > -#define isb()        asm volatile("isb" : : : "memory")
+> > +#define isb()                asm volatile("isb" : : : "memory")
+>
+> Is this a stray diff?
+>
+Oh no, that's intentional. Just trying to align with others below.
 
-In principle I agree. I am getting the sense this function can't be used
-correctly in general, and yet is the function that's meant to be used.
-If my interpretation of prior LKML discussion holds, the problems are
-far deeper than my code or indeed page size problems...
-
-If the right way to handle this is with the IOMMU and IOVA APIs, I really wish
-that dance were wrapped up in a safe helper function instead of open
-coding it in every driver that does cross device sharing.
-
-We might even call that helper... hmm... dma_map_sg.... *ducks*
-
-For context for people-other-than-Sven, the code in question from my
-tree appears below the break.
-
----------------------------------------------------------------------------------
-
-/*
- * Allocate an IOVA contiguous buffer mapped to the DCP. The buffer need not be
- * physically contigiuous, however we should save the sgtable in case the
- * buffer needs to be later mapped for PIODMA.
- */
-static bool dcpep_cb_allocate_buffer(struct apple_dcp *dcp, void *out, void *in)
-{
-        struct dcp_allocate_buffer_resp *resp = out;
-        struct dcp_allocate_buffer_req *req = in;
-        void *buf;
-
-        resp->dva_size = ALIGN(req->size, 4096);
-        resp->mem_desc_id = ++dcp->nr_mappings;
-
-        if (resp->mem_desc_id >= ARRAY_SIZE(dcp->mappings)) {
-                dev_warn(dcp->dev, "DCP overflowed mapping table, ignoring");
-                return true;
-        }
-
-        buf = dma_alloc_coherent(dcp->dev, resp->dva_size, &resp->dva,
-                                 GFP_KERNEL);
-
-        dma_get_sgtable(dcp->dev, &dcp->mappings[resp->mem_desc_id], buf,
-                        resp->dva, resp->dva_size);
-
-        WARN_ON(resp->mem_desc_id == 0);
-        return true;
-}
-
-/*
- * Callback to map a buffer allocated with allocate_buf for PIODMA usage.
- * PIODMA is separate from the main DCP and uses own IOVA space on a dedicated
- * stream of the display DART, rather than the expected DCP DART.
- *
- * XXX: This relies on dma_get_sgtable in concert with dma_map_sgtable, which
- * is a "fundamentally unsafe" operation according to the docs. And yet
- * everyone does it...
- */
-static bool dcpep_cb_map_piodma(struct apple_dcp *dcp, void *out, void *in)
-{
-        struct dcp_map_buf_resp *resp = out;
-        struct dcp_map_buf_req *req = in;
-        struct sg_table *map;
-
-        if (req->buffer >= ARRAY_SIZE(dcp->mappings))
-                goto reject;
-
-        map = &dcp->mappings[req->buffer];
-
-        if (!map->sgl)
-                goto reject;
-
-        /* XNU leaks a kernel VA here, breaking kASLR. Don't do that. */
-        resp->vaddr = 0;
-
-        /* Use PIODMA device instead of DCP to map against the right IOMMU. */
-        resp->ret = dma_map_sgtable(dcp->piodma, map, DMA_BIDIRECTIONAL, 0);
-
-        if (resp->ret)
-                dev_warn(dcp->dev, "failed to map for piodma %d\n", resp->ret);
-        else
-                resp->dva = sg_dma_address(map->sgl);
-
-        resp->ret = 0;
-        return true;
-
-reject:
-        dev_warn(dcp->dev, "denying map of invalid buffer %llx for pidoma\n",
-                 req->buffer);
-        resp->ret = EINVAL;
-        return true;
-}
+Regards,
+Raghavendra
+> Otherwise:
+>
+> Reviewed-by: Oliver Upton <oupton@google.com>
