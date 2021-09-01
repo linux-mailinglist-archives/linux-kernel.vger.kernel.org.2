@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4163FD44C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063253FD44D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242548AbhIAHPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:15:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242416AbhIAHPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:15:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EACF36108E;
-        Wed,  1 Sep 2021 07:14:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630480444;
-        bh=qcziVJPLfsI4jgwvd3Jl+wq1EsG++hPVbp6IUaXpG+I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XlM4WZ+zaIOvpAbDgwA+crg7DoMZ3BaqcovgkiTDFaOh5YSjT3T6GhHckZP8z+LaB
-         xh8MkC2nD2efzEKjMCbXy+tpRhEMMvGspQkprk2tLrzbU9CBkokKsTtNmXYIA8fDEp
-         TqIHM/lf+MLZX+q767TOEq3rPMnhlENd/TwH1Hi8=
-Date:   Wed, 1 Sep 2021 09:14:01 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        kernel-team@android.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] driver core: fw_devlink: Don't create device links
- for devices not on a bus
-Message-ID: <YS8oOWjFe4yQ1Q/v@kroah.com>
-References: <20210831224510.703253-1-saravanak@google.com>
- <YS8cncQxUZDRuhUG@kroah.com>
- <CAGETcx8d0KR3BeLxa6eKr_QkNgg=+dcq18tAu2A5M6W9pMFOHw@mail.gmail.com>
+        id S242562AbhIAHP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:15:59 -0400
+Received: from mail-vk1-f178.google.com ([209.85.221.178]:45980 "EHLO
+        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242416AbhIAHP6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 03:15:58 -0400
+Received: by mail-vk1-f178.google.com with SMTP id h13so632486vkc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 00:15:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QadCFZQ2SQPPYc3LZSgseGA9mPxC2ggiigDkQzPcZ7E=;
+        b=tWwuLhIqdXJAL+Vy1w5kKq6yGCZT4mSIORSxp/7YOJklBAvhq30cHShFL0o1W7jHPr
+         Nlh8i81uHBwC/rzRWWVw2Oux+k2mLmc2ZfBGT1+CEOrgdxHuro49zjw7lS/KhMpFT/GA
+         3JzferU/wgaVRKMgDHA4ndZQ8iM+lB/2WxnDYQo/46Y3tkgIUERxjAx8Xr2JXlmBJ+Sb
+         KVR7vUJB1+fsPVp5iOx6/CyX8KPTBirErKEzoph3ORdI0N+mbozqAhOqd9klCB2YdnZE
+         JyhuYu0peXh/fjB3rYiFW5DJ01Y9jzQX8+UhQkIaynnoZjS8balQrQH66Ws249FnlxRB
+         Za5g==
+X-Gm-Message-State: AOAM532VJ5NRFaI43nPuOpNOAJ0DHEgjvPFA1fmMco79WjBNcSZKdJrA
+        /1ezVQLt1RVaWBHSf/InlycQT2EAEAKal3yNaXA=
+X-Google-Smtp-Source: ABdhPJwsjmzlnZudgyUqICpu9dUfkd2zTmDDo4gWcc2mlI2J0tB7JsSrjrkZZ5a9NdFjWFziJSe1eOA2qgj7wUlPqbA=
+X-Received: by 2002:a1f:738f:: with SMTP id o137mr20861558vkc.2.1630480501855;
+ Wed, 01 Sep 2021 00:15:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx8d0KR3BeLxa6eKr_QkNgg=+dcq18tAu2A5M6W9pMFOHw@mail.gmail.com>
+References: <7e628e359bde04ceb9ddd74a45931059b4a4623c.1630415860.git.geert+renesas@glider.be>
+ <535478691c3a9ed31b508f59dc897be57c4213c0.camel@mediatek.com>
+In-Reply-To: <535478691c3a9ed31b508f59dc897be57c4213c0.camel@mediatek.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 1 Sep 2021 09:14:50 +0200
+Message-ID: <CAMuHMdUd+j7MYv3LXOH1C45UjEqVVjwm1mmyzpZyv+cuR3cDaw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: mediatek: SND_SOC_MT8195 should depend on ARCH_MEDIATEK
+To:     Trevor Wu <trevor.wu@mediatek.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mediatek@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 11:57:45PM -0700, Saravana Kannan wrote:
-> On Tue, Aug 31, 2021 at 11:24 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
+Hi Trevor,
+
+On Wed, Sep 1, 2021 at 5:48 AM Trevor Wu <trevor.wu@mediatek.com> wrote:
+> On Tue, 2021-08-31 at 15:18 +0200, Geert Uytterhoeven wrote:
+> > The Mediatek MT8195 sound hardware is only present on Mediatek MT8195
+> > SoCs.  Hence add a dependency on ARCH_MEDIATEK, to prevent asking the
+> > user about this driver when configuring a kernel without Mediatek SoC
+> > support.
 > >
-> > On Tue, Aug 31, 2021 at 03:45:10PM -0700, Saravana Kannan wrote:
-> > > Devices that are not on a bus will never have a driver bound to it. So,
-> > > fw_devlink should not create device links for it as it can cause probe
-> > > issues[1] or sync_state() call back issues[2].
-> > >
-> > > [1] - https://lore.kernel.org/lkml/CAGETcx_xJCqOWtwZ9Ee2+0sPGNLM5=F=djtbdYENkAYZa0ynqQ@mail.gmail.com/
-> > > [2] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-> > > Fixes: f9aa460672c9 ("driver core: Refactor fw_devlink feature")
-> > > Reported-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > ---
-> > >  drivers/base/core.c | 16 ++++++++++++++++
-> > >  1 file changed, 16 insertions(+)
-> > >
-> > > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > > index f6360490a4a3..304a06314656 100644
-> > > --- a/drivers/base/core.c
-> > > +++ b/drivers/base/core.c
-> > > @@ -1719,8 +1719,24 @@ static int fw_devlink_create_devlink(struct device *con,
-> > >       struct device *sup_dev;
-> > >       int ret = 0;
-> > >
-> > > +     /*
-> > > +      * If a consumer device is not on a bus (i.e. a driver will never bind
-> > > +      * to it), it doesn't make sense for fw_devlink to create device links
-> > > +      * for it.
-> > > +      */
-> > > +     if (con->bus == NULL)
-> > > +             return -EINVAL;
-> > > +
+> > Fixes: 6746cc858259985a ("ASoC: mediatek: mt8195: add platform
+> > driver")
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> >  sound/soc/mediatek/Kconfig | 1 +
+> >  1 file changed, 1 insertion(+)
 > >
-> > Why would a device not be on a bus that has to do with a driver needing
-> > it?  What types of devices are these?
-> 
-> I'm not sure what you are asking, because it seems like a question
-> you'd know the answer to. What I'm trying to say is that
-> bus_probe_device() is obviously only possible if the device is on a
-> bus. And fw_devlink creates managed device links that track if a
-> device is bound to a driver. So it doesn't make sense to create the
-> device link if the device is not on a bus.
-> 
-> There are plenty of examples for this -- like all the devices that get
-> added to a class? For example the platform bus or the mdio bus itself
-> are devices that are added to a class instead of a bus.
-> 
-> Not sure if I answered your question. Let me know.
+> > diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+> > index cf567a89f421b4c0..c8c815f599da90bf 100644
+> > --- a/sound/soc/mediatek/Kconfig
+> > +++ b/sound/soc/mediatek/Kconfig
+> > @@ -187,6 +187,7 @@ config SND_SOC_MT8192_MT6359_RT1015_RT5682
+> >
+> >  config SND_SOC_MT8195
+> >       tristate "ASoC support for Mediatek MT8195 chip"
+> > +     depends on ARCH_MEDIATEK || COMPILE_TEST
+> >       select SND_SOC_MEDIATEK
+> >       help
+> >         This adds ASoC platform driver support for Mediatek MT8195
+> > chip
+>
+> Hi Geert,
+>
+> Thanks for your patch first.
+> I really missed the dependency declaration.
+> But we only test "depends on ARCH_MEDIATEK" internally, maybe removing
+> "COMPILE_TEST" like other MTK series is better for the maintenance in
+> the future.
 
-Sorry, that was a vague question.
+If the driver compiles with CONFIG_ARCH_MEDIATEK=n, it is better
+to enable compile-testing, as that may catch issues.\
+I didn't change the existing MTK symbols, only new symbols.
+(adding missing dependencies to existing symbols is in my (huge) backlog ;-)
 
-I was trying to say, "how can a device that is not attached to a bus at
-all even be called for this?"  Who would be making that type of
-connection, what subsystem is causing this to happen?
+Gr{oetje,eeting}s,
 
-thanks,
+                        Geert
 
-greg k-h
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
