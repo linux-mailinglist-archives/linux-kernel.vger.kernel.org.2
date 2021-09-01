@@ -2,157 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382C43FD8E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505D03FD8E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243877AbhIALlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 07:41:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50572 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243867AbhIALlK (ORCPT
+        id S243888AbhIALmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 07:42:21 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:55448 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243879AbhIALmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 07:41:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630496413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=htX3SEQ964s41lDg9EGqcJ8fzTVeLHq32V4/nO823PM=;
-        b=ElkG6lmLvemwzbdGdlaYpnSbb1tknPYJ2hsLcNfCPR0el6A2rybgbb3BYFyzO4qnedJk1u
-        5fOZZhTY/7I9dn0B4+0qpO/DAJy9DsUjcHdvzuwmT+vghWVWrAWADXdO4DylitSinMQuMu
-        kcl/fy4V2WptQ6oPgfbSvDocrAc0NO0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-60-NYg33O1nP4GFmPD_AAUR2A-1; Wed, 01 Sep 2021 07:40:12 -0400
-X-MC-Unique: NYg33O1nP4GFmPD_AAUR2A-1
-Received: by mail-wr1-f71.google.com with SMTP id z16-20020adfdf90000000b00159083b5966so677656wrl.23
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 04:40:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=htX3SEQ964s41lDg9EGqcJ8fzTVeLHq32V4/nO823PM=;
-        b=YJLPS/ro32t8ZtqLzamjfBZsOVu78vjbH8WCSfWKZCFrCGS+LMB2Rvej2bLHhfJ/yF
-         4J7STMF2q0Tr3aM6gr5fimrbb8CqIx7MSO5t78ILbN+Lvz7H6LdH+rNJOALJnM/OjTo+
-         kZurVWT3tdf7CtJAkosU2l+gh2KVslZUWVRIo1VDRTfCD/RFcAc+JuKRYrEc1I1/M9iP
-         CT+aeUlHuAh630ajbXP+kDgdlwEKr8HU+Y8UdYIdEb42WvECrS71XOsUOeBn153OvFfm
-         EC04o3oh7qLf2N1hRYgOcq4VZydxCfZvcw8LHTqjiBiYOP5r37MubAd35TbMYJgxDYaF
-         IHdQ==
-X-Gm-Message-State: AOAM532yLQvpYRRj0b/Fd4Bxpb1d/J61ZkjN+4wUC9FIUmSw3pTDibDZ
-        KynnU7fERR+SWnV0QuNiDu6VC0R9Vb7jsygYua0XsJAn9Q4cr09M3ZdITgkvEZ+Mf9DCbQCxNId
-        k1lLiUq7l9qbEYuakunGXGYqhc+/3ZQ3/4Y8AAU8vWSbvjdgmotYgmYkhlPAlI6BqQt82FsiVuP
-        Tz
-X-Received: by 2002:a1c:a187:: with SMTP id k129mr9255079wme.66.1630496411388;
-        Wed, 01 Sep 2021 04:40:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxqN074acM9MZoe5SBgP0NRERPgwEIUkWaC5frtJM8C6IM5OiqoEuDa7hI8e3EHO9OQpryO3A==
-X-Received: by 2002:a1c:a187:: with SMTP id k129mr9255055wme.66.1630496411155;
-        Wed, 01 Sep 2021 04:40:11 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id g11sm20780933wrx.30.2021.09.01.04.40.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 04:40:10 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     linux-hyperv@vger.kernel.org, Andres Beltran <lkmlabelt@gmail.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Drivers: hv: vmbus: Fix kernel crash upon unbinding a
- device from uio_hv_generic driver
-In-Reply-To: <20210901112500.7q4oxjtesiuniop3@liuwe-devbox-debian-v2>
-References: <20210831143916.144983-1-vkuznets@redhat.com>
- <20210901112500.7q4oxjtesiuniop3@liuwe-devbox-debian-v2>
-Date:   Wed, 01 Sep 2021 13:40:09 +0200
-Message-ID: <878s0go76u.fsf@vitty.brq.redhat.com>
+        Wed, 1 Sep 2021 07:42:20 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 181Betbw002043;
+        Wed, 1 Sep 2021 06:40:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1630496455;
+        bh=Xpb1FcBWvzWF5SJEoAQG8wUxc92uDd/rzNCrD8V7YDs=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=gicr6BVkBuyaEUvQYbf4CsrscG4Xf8qMkmjgQsiRnQSXZHWrOROD07iJNaiB6Jyic
+         gyUxilNPy7kZJC1rLMowM7HwNEoFq4+WtCV81dCQvg7h0SZFwe7pv1qUk04X9Zj+PU
+         74EeeHa2tXoWZF3Mtmy7fBsfKZSocOtnSSxtPyME=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 181Betsx080673
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 1 Sep 2021 06:40:55 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 1
+ Sep 2021 06:40:54 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 1 Sep 2021 06:40:54 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 181BesxE094343;
+        Wed, 1 Sep 2021 06:40:54 -0500
+Date:   Wed, 1 Sep 2021 17:10:53 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: hisi-sfc: Make use of the helper function
+ devm_platform_ioremap_resource_byname()
+Message-ID: <20210901114051.5cokevyl5hpgwrju@ti.com>
+References: <20210901074259.9683-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210901074259.9683-1-caihuoqing@baidu.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Liu <wei.liu@kernel.org> writes:
+On 01/09/21 03:42PM, Cai Huoqing wrote:
+> Use the devm_platform_ioremap_resource_byname() helper instead of
+> calling platform_get_resource_byname() and devm_ioremap_resource()
+> separately
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-> On Tue, Aug 31, 2021 at 04:39:16PM +0200, Vitaly Kuznetsov wrote:
->> The following crash happens when a never-used device is unbound from
->> uio_hv_generic driver:
->> 
->>  kernel BUG at mm/slub.c:321!
->>  invalid opcode: 0000 [#1] SMP PTI
->>  CPU: 0 PID: 4001 Comm: bash Kdump: loaded Tainted: G               X --------- ---  5.14.0-0.rc2.23.el9.x86_64 #1
->>  Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090008  12/07/2018
->>  RIP: 0010:__slab_free+0x1d5/0x3d0
->> ...
->>  Call Trace:
->>   ? pick_next_task_fair+0x18e/0x3b0
->>   ? __cond_resched+0x16/0x40
->>   ? vunmap_pmd_range.isra.0+0x154/0x1c0
->>   ? __vunmap+0x22d/0x290
->>   ? hv_ringbuffer_cleanup+0x36/0x40 [hv_vmbus]
->>   kfree+0x331/0x380
->>   ? hv_uio_remove+0x43/0x60 [uio_hv_generic]
->>   hv_ringbuffer_cleanup+0x36/0x40 [hv_vmbus]
->>   vmbus_free_ring+0x21/0x60 [hv_vmbus]
->>   hv_uio_remove+0x4f/0x60 [uio_hv_generic]
->>   vmbus_remove+0x23/0x30 [hv_vmbus]
->>   __device_release_driver+0x17a/0x230
->>   device_driver_detach+0x3c/0xa0
->>   unbind_store+0x113/0x130
->> ...
->> 
->> The problem appears to be that we free 'ring_info->pkt_buffer' twice:
->> first, when the device is unbound from in-kernel driver (netvsc in this
->> case) and second from hv_uio_remove(). Normally, ring buffer is supposed
->> to be re-initialized from hv_uio_open() but this happens when UIO device
->> is being opened and this is not guaranteed to happen.
->> 
->> Generally, it is OK to call hv_ringbuffer_cleanup() twice for the same
->> channel (which is being handed over between in-kernel drivers and UIO) even
->> if we didn't call hv_ringbuffer_init() in between. We, however, need to
->> avoid kfree() call for an already freed pointer.
->> 
->> Fixes: adae1e931acd ("Drivers: hv: vmbus: Copy packets sent by Hyper-V out of the ring buffer")
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->>  drivers/hv/ring_buffer.c | 1 +
->>  1 file changed, 1 insertion(+)
->> 
->> diff --git a/drivers/hv/ring_buffer.c b/drivers/hv/ring_buffer.c
->> index 2aee356840a2..314015d9e912 100644
->> --- a/drivers/hv/ring_buffer.c
->> +++ b/drivers/hv/ring_buffer.c
->> @@ -245,6 +245,7 @@ void hv_ringbuffer_cleanup(struct hv_ring_buffer_info *ring_info)
->>  	mutex_unlock(&ring_info->ring_buffer_mutex);
->>  
->>  	kfree(ring_info->pkt_buffer);
->> +	ring_info->pkt_buffer = NULL;
->
-> This certainly won't hurt.
->
-> I would however like to wait till Andrea and Michael go over the
-> reasoning of this patch before doing anything.
->
-
-Thanks,
-
-the counter-intuitive thing here is that the channel sometimes continues
-to live after hv_ringbuffer_cleanup(): when we unbind a device from
-in-kernel driver and give it to uio_hv_generic the channel is handed
-over from one driver to another.
-
-> Wei.
->
->>  	ring_info->pkt_buffer_size = 0;
->>  }
->>  
->> -- 
->> 2.31.1
->> 
->
+Acked-by: Pratyush Yadav <p.yadav@ti.com>
 
 -- 
-Vitaly
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
