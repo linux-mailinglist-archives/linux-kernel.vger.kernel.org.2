@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375BD3FD527
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D2C3FD52F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243079AbhIAITA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:19:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242911AbhIAIS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:18:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9F8760698;
-        Wed,  1 Sep 2021 08:18:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630484282;
-        bh=GN6JRgy0rHxRTizsSUkISXXfC+FJ/NBJUSoc2dRDr7g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xIZkGOmGCE/bunr/cFptL+5FjMPJ7LXz1r467yWZRHpobP/JKN4rq8eN8UcfHwo5T
-         y8LATeNg6XgS82riUxzVxhzN3vD/httFgED35ka2QI/ZXDhPRqc1O7l733i9624Xtm
-         BFnK5IA+FW6ejqllALDbXeFkwzPqX3HZd6eNTjlQ=
-Date:   Wed, 1 Sep 2021 10:17:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Frieder Schrempf <frieder@fris.de>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        stable@vger.kernel.org,
-        voice INTER connect GmbH <developer@voiceinterconnect.de>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Felix Fietkau <nbd@nbd.name>, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-        YouChing Lin <ycllin@mxic.com.tw>
-Subject: Re: [PATCH v2 5.10.x] mtd: spinand: Fix incorrect parameters for
- on-die ECC
-Message-ID: <YS83NzasS7jExTya@kroah.com>
-References: <20210830130211.445728-1-frieder@fris.de>
+        id S243100AbhIAIUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:20:13 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:21468 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242974AbhIAIUI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 04:20:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1630484352; x=1662020352;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=glpD3sx8pjfoyRbPZ0APio9+kQRzeqTDwCL3Xp4f+bg=;
+  b=rvOVgm1/z0Ww7okSANb1stubm6C2muLSQn+dREF1FUP50No9Ng3ApBEz
+   zZbvxQjBojQOqIEGlkU76AD0E2ge5T3TLEG0jUQNLiJoX3aJk2wO35Q11
+   fzvvxQCMTKBVV887ikqQ5oUyp8yVAEYAT77Ln6euuNBmRp0ElG0jyCLTo
+   M=;
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 01 Sep 2021 01:19:10 -0700
+X-QCInternal: smtphost
+Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 01:19:10 -0700
+Received: from fenglinw-gv.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Wed, 1 Sep 2021 01:19:06 -0700
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sboyd@kernel.org>
+CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
+        <quic_fenglinw@quicinc.com>
+Subject: [RESEND PATCH v1 0/9] A bunch of fix and optimization patches in spmi-pmic-arb.c
+Date:   Wed, 1 Sep 2021 16:18:01 +0800
+Message-ID: <1630484290-28190-1-git-send-email-quic_fenglinw@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830130211.445728-1-frieder@fris.de>
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 03:02:10PM +0200, Frieder Schrempf wrote:
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
-> 
-> The new generic NAND ECC framework stores the configuration and
-> requirements in separate places since commit 93ef92f6f422 ("mtd: nand: Use
-> the new generic ECC object"). In 5.10.x The SPI NAND layer still uses only
-> the requirements to track the ECC properties. This mismatch leads to
-> values of zero being used for ECC strength and step_size in the SPI NAND
-> layer wherever nanddev_get_ecc_conf() is used and therefore breaks the SPI
-> NAND on-die ECC support in 5.10.x.
-> 
-> By using nanddev_get_ecc_requirements() instead of nanddev_get_ecc_conf()
-> for SPI NAND, we make sure that the correct parameters for the detected
-> chip are used. In later versions (5.11.x) this is fixed anyway with the
-> implementation of the SPI NAND on-die ECC engine.
-> 
-> Cc: stable@vger.kernel.org # 5.10.x
-> Reported-by: voice INTER connect GmbH <developer@voiceinterconnect.de>
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
-> Changes in v2:
->   * Fix checkpatch error/warnings for commit message style
->   * Add Miquel's A-b tag
+This change series includes some fixes and optimizations in spmi-pmic-arb.c.
+Please see change detail and description in each of the patch. Thanks!
 
-Now queued up, thanks.
+Abhijeet Dharmapurikar (1):
+  spmi: pmic-arb: add a print in cleanup_irq
 
-greg k-h
+Ashay Jaiswal (1):
+  spmi: pmic-arb: add support to dispatch interrupt based on IRQ status
+
+David Collins (5):
+  spmi: pmic-arb: check apid against limits before calling irq handler
+  spmi: pmic-arb: correct duplicate APID to PPID mapping logic
+  spmi: pmic-arb: block access for invalid PMIC arbiter v5 SPMI writes
+  spmi: pmic-arb: make interrupt support optional
+  spmi: pmic-arb: increase SPMI transaction timeout delay
+
+Subbaraman Narayanamurthy (1):
+  spmi: pmic-arb: do not ack and clear peripheral interrupts in
+    cleanup_irq
+
+Yimin Peng (1):
+  spmi: pmic-arb: support updating interrupt type flags
+
+ drivers/spmi/spmi-pmic-arb.c | 127 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 91 insertions(+), 36 deletions(-)
+
+-- 
+2.7.4
+
