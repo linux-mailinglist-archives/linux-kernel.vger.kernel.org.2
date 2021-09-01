@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB4E3FDBEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9693FDC17
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345103AbhIAMp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:45:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42100 "EHLO mail.kernel.org"
+        id S1344458AbhIAMqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:46:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343883AbhIAMky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:40:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BF726120A;
-        Wed,  1 Sep 2021 12:37:35 +0000 (UTC)
+        id S1344961AbhIAMmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:42:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC298611CE;
+        Wed,  1 Sep 2021 12:37:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499855;
-        bh=wDXf/Kjp0EA3Z2E98KVXQXTekKE7nY6mg8joA5djng4=;
+        s=korg; t=1630499858;
+        bh=qGPaQj73xkmgPoSQwd6WKS5+iUqYTWAl4B6wMKaSzwQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e2ktO4X1Pd4hdsTO1YnIbfPjC4okJlK9tJMfHhbo0fOoqBzJX6hOGR+HqDkuwtw2y
-         G/g/lojAO3XGjHegyjSztSkENuwmBz7lmlYNAmJaUuyIQbW+TB+u00YnHXyi55+Icn
-         sGDfAqdTdz+z2s9/T2DUa2vS3fS0kLUNh2sFCBUg=
+        b=JzY53316c4iqSJ68e73DJ/x3V7S9HSJ3warzbN14UGT+3RWHc5j0zFxtaaUMqLpa5
+         1R+O+sZm4UXVbjzNFNz8DPkl9X1KW/Nv3u6TRO5/g2ftOR5c0FnGLw4xYGplWIKQ/s
+         eRn3y8l9Kr+yJCJmAwlLQcuCBERfqVvxL6fuuLXs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadav Amit <nadav.amit@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 010/113] io_uring: rsrc ref lock needs to be IRQ safe
-Date:   Wed,  1 Sep 2021 14:27:25 +0200
-Message-Id: <20210901122302.320638650@linuxfoundation.org>
+        stable@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Bruno Goncalves <bgoncalv@redhat.com>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 011/113] blk-iocost: fix lockdep warning on blkcg->lock
+Date:   Wed,  1 Sep 2021 14:27:26 +0200
+Message-Id: <20210901122302.358651447@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
 References: <20210901122301.984263453@linuxfoundation.org>
@@ -39,106 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 4956b9eaad456a88b0d56947bef036e086250beb ]
+[ Upstream commit 11431e26c9c43fa26f6b33ee1a90989f57b86024 ]
 
-Nadav reports running into the below splat on re-enabling softirqs:
+blkcg->lock depends on q->queue_lock which may depend on another driver
+lock required in irq context, one example is dm-thin:
 
-WARNING: CPU: 2 PID: 1777 at kernel/softirq.c:364 __local_bh_enable_ip+0xaa/0xe0
-Modules linked in:
-CPU: 2 PID: 1777 Comm: umem Not tainted 5.13.1+ #161
-Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 07/22/2020
-RIP: 0010:__local_bh_enable_ip+0xaa/0xe0
-Code: a9 00 ff ff 00 74 38 65 ff 0d a2 21 8c 7a e8 ed 1a 20 00 fb 66 0f 1f 44 00 00 5b 41 5c 5d c3 65 8b 05 e6 2d 8c 7a 85 c0 75 9a <0f> 0b eb 96 e8 2d 1f 20 00 eb a5 4c 89 e7 e8 73 4f 0c 00 eb ae 65
-RSP: 0018:ffff88812e58fcc8 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: 0000000000000201 RCX: dffffc0000000000
-RDX: 0000000000000007 RSI: 0000000000000201 RDI: ffffffff8898c5ac
-RBP: ffff88812e58fcd8 R08: ffffffff8575dbbf R09: ffffed1028ef14f9
-R10: ffff88814778a7c3 R11: ffffed1028ef14f8 R12: ffffffff85c9e9ae
-R13: ffff88814778a000 R14: ffff88814778a7b0 R15: ffff8881086db890
-FS:  00007fbcfee17700(0000) GS:ffff8881e0300000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000c0402a5008 CR3: 000000011c1ac003 CR4: 00000000003706e0
-Call Trace:
- _raw_spin_unlock_bh+0x31/0x40
- io_rsrc_node_ref_zero+0x13e/0x190
- io_dismantle_req+0x215/0x220
- io_req_complete_post+0x1b8/0x720
- __io_complete_rw.isra.0+0x16b/0x1f0
- io_complete_rw+0x10/0x20
+	Chain exists of:
+	  &pool->lock#3 --> &q->queue_lock --> &blkcg->lock
 
-where it's clear we end up calling the percpu count release directly
-from the completion path, as it's in atomic mode and we drop the last
-ref. For file/block IO, this can be from IRQ context already, and the
-softirq locking for rsrc isn't enough.
+	 Possible interrupt unsafe locking scenario:
 
-Just make the lock fully IRQ safe, and ensure we correctly safe state
-from the release path as we don't know the full context there.
+	       CPU0                    CPU1
+	       ----                    ----
+	  lock(&blkcg->lock);
+	                               local_irq_disable();
+	                               lock(&pool->lock#3);
+	                               lock(&q->queue_lock);
+	  <Interrupt>
+	    lock(&pool->lock#3);
 
-Reported-by: Nadav Amit <nadav.amit@gmail.com>
-Tested-by: Nadav Amit <nadav.amit@gmail.com>
-Link: https://lore.kernel.org/io-uring/C187C836-E78B-4A31-B24C-D16919ACA093@gmail.com/
+Fix the issue by using spin_lock_irq(&blkcg->lock) in ioc_weight_write().
+
+Cc: Tejun Heo <tj@kernel.org>
+Reported-by: Bruno Goncalves <bgoncalv@redhat.com>
+Link: https://lore.kernel.org/linux-block/CA+QYu4rzz6079ighEanS3Qq_Dmnczcf45ZoJoHKVLVATTo1e4Q@mail.gmail.com/T/#u
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Link: https://lore.kernel.org/r/20210803070608.1766400-1-ming.lei@redhat.com
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c | 19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+ block/blk-iocost.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 9df82eee440a..f6ddc7182943 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -7105,16 +7105,6 @@ static void io_free_file_tables(struct io_file_table *table, unsigned nr_files)
- 	table->files = NULL;
- }
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index 5fac3757e6e0..0e56557cacf2 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -3061,19 +3061,19 @@ static ssize_t ioc_weight_write(struct kernfs_open_file *of, char *buf,
+ 		if (v < CGROUP_WEIGHT_MIN || v > CGROUP_WEIGHT_MAX)
+ 			return -EINVAL;
  
--static inline void io_rsrc_ref_lock(struct io_ring_ctx *ctx)
--{
--	spin_lock_bh(&ctx->rsrc_ref_lock);
--}
--
--static inline void io_rsrc_ref_unlock(struct io_ring_ctx *ctx)
--{
--	spin_unlock_bh(&ctx->rsrc_ref_lock);
--}
--
- static void io_rsrc_node_destroy(struct io_rsrc_node *ref_node)
- {
- 	percpu_ref_exit(&ref_node->refs);
-@@ -7131,9 +7121,9 @@ static void io_rsrc_node_switch(struct io_ring_ctx *ctx,
- 		struct io_rsrc_node *rsrc_node = ctx->rsrc_node;
+-		spin_lock(&blkcg->lock);
++		spin_lock_irq(&blkcg->lock);
+ 		iocc->dfl_weight = v * WEIGHT_ONE;
+ 		hlist_for_each_entry(blkg, &blkcg->blkg_list, blkcg_node) {
+ 			struct ioc_gq *iocg = blkg_to_iocg(blkg);
  
- 		rsrc_node->rsrc_data = data_to_kill;
--		io_rsrc_ref_lock(ctx);
-+		spin_lock_irq(&ctx->rsrc_ref_lock);
- 		list_add_tail(&rsrc_node->node, &ctx->rsrc_ref_list);
--		io_rsrc_ref_unlock(ctx);
-+		spin_unlock_irq(&ctx->rsrc_ref_lock);
+ 			if (iocg) {
+-				spin_lock_irq(&iocg->ioc->lock);
++				spin_lock(&iocg->ioc->lock);
+ 				ioc_now(iocg->ioc, &now);
+ 				weight_updated(iocg, &now);
+-				spin_unlock_irq(&iocg->ioc->lock);
++				spin_unlock(&iocg->ioc->lock);
+ 			}
+ 		}
+-		spin_unlock(&blkcg->lock);
++		spin_unlock_irq(&blkcg->lock);
  
- 		atomic_inc(&data_to_kill->refs);
- 		percpu_ref_kill(&rsrc_node->refs);
-@@ -7625,9 +7615,10 @@ static void io_rsrc_node_ref_zero(struct percpu_ref *ref)
- {
- 	struct io_rsrc_node *node = container_of(ref, struct io_rsrc_node, refs);
- 	struct io_ring_ctx *ctx = node->rsrc_data->ctx;
-+	unsigned long flags;
- 	bool first_add = false;
- 
--	io_rsrc_ref_lock(ctx);
-+	spin_lock_irqsave(&ctx->rsrc_ref_lock, flags);
- 	node->done = true;
- 
- 	while (!list_empty(&ctx->rsrc_ref_list)) {
-@@ -7639,7 +7630,7 @@ static void io_rsrc_node_ref_zero(struct percpu_ref *ref)
- 		list_del(&node->node);
- 		first_add |= llist_add(&node->llist, &ctx->rsrc_put_llist);
+ 		return nbytes;
  	}
--	io_rsrc_ref_unlock(ctx);
-+	spin_unlock_irqrestore(&ctx->rsrc_ref_lock, flags);
- 
- 	if (first_add)
- 		mod_delayed_work(system_wq, &ctx->rsrc_put_work, HZ);
 -- 
 2.30.2
 
