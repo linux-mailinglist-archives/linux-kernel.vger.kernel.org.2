@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBF03FD16F
+	by mail.lfdr.de (Postfix) with ESMTP id 552303FD16E
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241734AbhIACjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 22:39:09 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:15278 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241726AbhIACjI (ORCPT
+        id S241722AbhIACjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 22:39:03 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8805 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241649AbhIACjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 22:39:08 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GzpBN4tycz8D5H;
-        Wed,  1 Sep 2021 10:37:48 +0800 (CST)
+        Tue, 31 Aug 2021 22:39:02 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gzp9t2S4jzYw2l;
+        Wed,  1 Sep 2021 10:37:22 +0800 (CST)
 Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 1 Sep 2021 10:38:02 +0800
+ 15.1.2176.2; Wed, 1 Sep 2021 10:38:04 +0800
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm000001.china.huawei.com (7.185.36.245) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 1 Sep 2021 10:38:01 +0800
+ 15.1.2308.8; Wed, 1 Sep 2021 10:38:03 +0800
 From:   Tong Tiangen <tongtiangen@huawei.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmerdabbelt@google.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>, <abdulras@google.com>
 CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next v3 1/3] riscv/vdso: Refactor asm/vdso.h
-Date:   Wed, 1 Sep 2021 02:46:19 +0000
-Message-ID: <20210901024621.2528797-2-tongtiangen@huawei.com>
+Subject: [PATCH -next v3 2/3] riscv/vdso: Move vdso data page up front
+Date:   Wed, 1 Sep 2021 02:46:20 +0000
+Message-ID: <20210901024621.2528797-3-tongtiangen@huawei.com>
 X-Mailer: git-send-email 2.18.0.huawei.25
 In-Reply-To: <20210901024621.2528797-1-tongtiangen@huawei.com>
 References: <20210901024621.2528797-1-tongtiangen@huawei.com>
@@ -45,99 +45,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The asm/vdso.h will be included in vdso.lds.S in the next patch, the
-following cleanup is needed to avoid syntax error:
+As commit 601255ae3c98 ("arm64: vdso: move data page before code pages"), the
+same issue exists on riscv, testcase is shown below, make sure that vdso.so is
+bigger than page size,
 
- 1.the declaration of sys_riscv_flush_icache() is moved into asm/syscall.h.
- 2.the definition of struct vdso_data is moved into kernel/vdso.c.
- 2.the definition of VDSO_SYMBOL is placed under "#ifndef __ASSEMBLY__".
+  struct timespec tp;
+  clock_gettime(5, &tp);
+  printf("tv_sec: %ld, tv_nsec: %ld\n", tp.tv_sec, tp.tv_nsec);
 
-Also remove the redundant linux/types.h include.
+without this patch, test result : tv_sec: 0, tv_nsec: 0
+   with this patch, test result : tv_sec: 1629271537, tv_nsec: 748000000
 
+Move the vdso data page in front of the VDSO area to fix the issue.
+
+Fixes: ad5d1122b82fb ("riscv: use vDSO common flow to reduce the latency of the time-related functions")
 Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
 ---
- arch/riscv/include/asm/syscall.h  |  1 +
- arch/riscv/include/asm/vdso.h     | 13 ++++---------
- arch/riscv/kernel/syscall_table.c |  1 -
- arch/riscv/kernel/vdso.c          |  5 ++++-
- 4 files changed, 9 insertions(+), 11 deletions(-)
+ arch/riscv/include/asm/vdso.h     |  2 ++
+ arch/riscv/kernel/vdso.c          | 44 ++++++++++++++++++-------------
+ arch/riscv/kernel/vdso/vdso.lds.S |  3 ++-
+ 3 files changed, 30 insertions(+), 19 deletions(-)
 
-diff --git a/arch/riscv/include/asm/syscall.h b/arch/riscv/include/asm/syscall.h
-index b933b1583c9f..34fbb3ea21d5 100644
---- a/arch/riscv/include/asm/syscall.h
-+++ b/arch/riscv/include/asm/syscall.h
-@@ -82,4 +82,5 @@ static inline int syscall_get_arch(struct task_struct *task)
- #endif
- }
- 
-+asmlinkage long sys_riscv_flush_icache(uintptr_t, uintptr_t, uintptr_t);
- #endif	/* _ASM_RISCV_SYSCALL_H */
 diff --git a/arch/riscv/include/asm/vdso.h b/arch/riscv/include/asm/vdso.h
-index 893e47195e30..8a49f8ecfb52 100644
+index 8a49f8ecfb52..34210b22ba91 100644
 --- a/arch/riscv/include/asm/vdso.h
 +++ b/arch/riscv/include/asm/vdso.h
-@@ -8,26 +8,21 @@
- #ifndef _ASM_RISCV_VDSO_H
- #define _ASM_RISCV_VDSO_H
- 
--
- /*
-  * All systems with an MMU have a VDSO, but systems without an MMU don't
-  * support shared libraries and therefor don't have one.
+@@ -14,6 +14,8 @@
   */
  #ifdef CONFIG_MMU
  
--#include <linux/types.h>
--#include <generated/vdso-offsets.h>
-+#ifndef __ASSEMBLY__
++#define __VVAR_PAGES    1
++
+ #ifndef __ASSEMBLY__
  
--#ifndef CONFIG_GENERIC_TIME_VSYSCALL
--struct vdso_data {
--};
--#endif
-+#include <generated/vdso-offsets.h>
- 
- #define VDSO_SYMBOL(base, name)							\
- 	(void __user *)((unsigned long)(base) + __vdso_##name##_offset)
- 
--#endif /* CONFIG_MMU */
-+#endif /* !__ASSEMBLY__ */
- 
--asmlinkage long sys_riscv_flush_icache(uintptr_t, uintptr_t, uintptr_t);
-+#endif /* CONFIG_MMU */
- 
- #endif /* _ASM_RISCV_VDSO_H */
-diff --git a/arch/riscv/kernel/syscall_table.c b/arch/riscv/kernel/syscall_table.c
-index a63c667c27b3..44b1420a2270 100644
---- a/arch/riscv/kernel/syscall_table.c
-+++ b/arch/riscv/kernel/syscall_table.c
-@@ -7,7 +7,6 @@
- #include <linux/linkage.h>
- #include <linux/syscalls.h>
- #include <asm-generic/syscalls.h>
--#include <asm/vdso.h>
- #include <asm/syscall.h>
- 
- #undef __SYSCALL
+ #include <generated/vdso-offsets.h>
 diff --git a/arch/riscv/kernel/vdso.c b/arch/riscv/kernel/vdso.c
-index 25a3b8849599..72e93d218335 100644
+index 72e93d218335..e7bd92d8749b 100644
 --- a/arch/riscv/kernel/vdso.c
 +++ b/arch/riscv/kernel/vdso.c
-@@ -12,10 +12,13 @@
- #include <linux/binfmts.h>
- #include <linux/err.h>
- #include <asm/page.h>
-+#include <asm/vdso.h>
-+
- #ifdef CONFIG_GENERIC_TIME_VSYSCALL
- #include <vdso/datapage.h>
- #else
--#include <asm/vdso.h>
-+struct vdso_data {
-+};
- #endif
+@@ -23,6 +23,13 @@ struct vdso_data {
  
  extern char vdso_start[], vdso_end[];
+ 
++enum vvar_pages {
++	VVAR_DATA_PAGE_OFFSET,
++	VVAR_NR_PAGES,
++};
++
++#define VVAR_SIZE  (VVAR_NR_PAGES << PAGE_SHIFT)
++
+ static unsigned int vdso_pages __ro_after_init;
+ static struct page **vdso_pagelist __ro_after_init;
+ 
+@@ -41,7 +48,7 @@ static int __init vdso_init(void)
+ 
+ 	vdso_pages = (vdso_end - vdso_start) >> PAGE_SHIFT;
+ 	vdso_pagelist =
+-		kcalloc(vdso_pages + 1, sizeof(struct page *), GFP_KERNEL);
++		kcalloc(vdso_pages + VVAR_NR_PAGES, sizeof(struct page *), GFP_KERNEL);
+ 	if (unlikely(vdso_pagelist == NULL)) {
+ 		pr_err("vdso: pagelist allocation failed\n");
+ 		return -ENOMEM;
+@@ -66,7 +73,9 @@ int arch_setup_additional_pages(struct linux_binprm *bprm,
+ 	unsigned long vdso_base, vdso_len;
+ 	int ret;
+ 
+-	vdso_len = (vdso_pages + 1) << PAGE_SHIFT;
++	BUILD_BUG_ON(VVAR_NR_PAGES != __VVAR_PAGES);
++
++	vdso_len = (vdso_pages + VVAR_NR_PAGES) << PAGE_SHIFT;
+ 
+ 	mmap_write_lock(mm);
+ 	vdso_base = get_unmapped_area(NULL, 0, vdso_len, 0, 0);
+@@ -75,29 +84,28 @@ int arch_setup_additional_pages(struct linux_binprm *bprm,
+ 		goto end;
+ 	}
+ 
+-	/*
+-	 * Put vDSO base into mm struct. We need to do this before calling
+-	 * install_special_mapping or the perf counter mmap tracking code
+-	 * will fail to recognise it as a vDSO (since arch_vma_name fails).
+-	 */
+-	mm->context.vdso = (void *)vdso_base;
++	mm->context.vdso = NULL;
++	ret = install_special_mapping(mm, vdso_base, VVAR_SIZE,
++		(VM_READ | VM_MAYREAD), &vdso_pagelist[vdso_pages]);
++	if (unlikely(ret))
++		goto end;
+ 
+ 	ret =
+-	   install_special_mapping(mm, vdso_base, vdso_pages << PAGE_SHIFT,
++	   install_special_mapping(mm, vdso_base + VVAR_SIZE,
++		vdso_pages << PAGE_SHIFT,
+ 		(VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC),
+ 		vdso_pagelist);
+ 
+-	if (unlikely(ret)) {
+-		mm->context.vdso = NULL;
++	if (unlikely(ret))
+ 		goto end;
+-	}
+ 
+-	vdso_base += (vdso_pages << PAGE_SHIFT);
+-	ret = install_special_mapping(mm, vdso_base, PAGE_SIZE,
+-		(VM_READ | VM_MAYREAD), &vdso_pagelist[vdso_pages]);
++	/*
++	 * Put vDSO base into mm struct. We need to do this before calling
++	 * install_special_mapping or the perf counter mmap tracking code
++	 * will fail to recognise it as a vDSO (since arch_vma_name fails).
++	 */
++	mm->context.vdso = (void *)vdso_base + VVAR_SIZE;
+ 
+-	if (unlikely(ret))
+-		mm->context.vdso = NULL;
+ end:
+ 	mmap_write_unlock(mm);
+ 	return ret;
+@@ -108,7 +116,7 @@ const char *arch_vma_name(struct vm_area_struct *vma)
+ 	if (vma->vm_mm && (vma->vm_start == (long)vma->vm_mm->context.vdso))
+ 		return "[vdso]";
+ 	if (vma->vm_mm && (vma->vm_start ==
+-			   (long)vma->vm_mm->context.vdso + PAGE_SIZE))
++			   (long)vma->vm_mm->context.vdso - VVAR_SIZE))
+ 		return "[vdso_data]";
+ 	return NULL;
+ }
+diff --git a/arch/riscv/kernel/vdso/vdso.lds.S b/arch/riscv/kernel/vdso/vdso.lds.S
+index e6f558bca71b..e9111f700af0 100644
+--- a/arch/riscv/kernel/vdso/vdso.lds.S
++++ b/arch/riscv/kernel/vdso/vdso.lds.S
+@@ -3,12 +3,13 @@
+  * Copyright (C) 2012 Regents of the University of California
+  */
+ #include <asm/page.h>
++#include <asm/vdso.h>
+ 
+ OUTPUT_ARCH(riscv)
+ 
+ SECTIONS
+ {
+-	PROVIDE(_vdso_data = . + PAGE_SIZE);
++	PROVIDE(_vdso_data = . - __VVAR_PAGES * PAGE_SIZE);
+ 	. = SIZEOF_HEADERS;
+ 
+ 	.hash		: { *(.hash) }			:text
 -- 
 2.18.0.huawei.25
 
