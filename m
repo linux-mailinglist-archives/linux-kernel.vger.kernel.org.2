@@ -2,115 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7833FD776
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4263FD779
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbhIAKQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 06:16:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
+        id S233653AbhIAKRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 06:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231511AbhIAKQs (ORCPT
+        with ESMTP id S233327AbhIAKR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 06:16:48 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2280C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 03:15:51 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so4280722pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 03:15:51 -0700 (PDT)
+        Wed, 1 Sep 2021 06:17:26 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC8CC061764
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 03:16:29 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id f18so996668lfk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 03:16:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=a9Kfb7wAmZrrrmnSPc65CnKgobH9A43eRy/F3HVanHY=;
-        b=ktBaN4pw4D94xBPBGtv47AE7E824CWAXMo/jdRdOir8ofINSsb4P4J8usLGA+5daAn
-         e7kbuazNA5QrGI2mMsSamMzJrp0UQU/Yu7wJVUZLkKsAsghAFE4hVv45uKBG+lMKbmJx
-         p3u4DS5023sQ9mlY7jjUTNZHqHiCdD+rtxWLuSg84CpRbNbeyH9rYXUfJ4EEMx3Xm8qN
-         lErC5DHTpeGiLTLHMwXr+SCdjtG1LDD1QN+9niCTEitmNcRUflaZC9umWsC2AXc1fR1v
-         dTtVoVWnFcPVj6qz3TWZKs29xnLeSqns+EGqA+cEUyrA7HTDgGZXpsR2u5uxEZSsteAT
-         Chug==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=729GdT2MAhx/jAkVDNeGvCJtX9tbrZQ8mIDJwfE61ws=;
+        b=TsbNK53CZn8ef5BEtVqTZyY/QDW8Rq4bPoXqq311KEaLylPbm35GPM9rS4+xye8UcH
+         lIILdVPttftswk9PX0ZAsCjLZtKtqLoNdXChK9JCKAJm8Y/XoCjVdQHOqPO75UOli1ey
+         8KKDxOap/6WYDNgiMTqySf7cXWC/ufsRxAWdo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=a9Kfb7wAmZrrrmnSPc65CnKgobH9A43eRy/F3HVanHY=;
-        b=t3kItZ9wFDFxTReJwkAc4Y8u7YN470juCfLKbPYqaA5eDxnIMVl3WJroTWNS/O10Cp
-         mhKjvtz/AN2BNITDP+cAbEXIXffMmBaKu9RGusT26nGRfTuqafUAkg7CLmaJBsn6mNiY
-         BcUUUxwqnqfojODckFcdLrotd9bq4rAKFfnwt55L8qoitpACipuNU509Dbd9aEy20CuG
-         REeOOgRsf8pqSLe7MhySBs1XZJ659YlEKKTTyEuOF28aP9PEefBb2lILjEh++xzu9fE1
-         +GMtP4dUO2KiIY50TC0yBiBs2QNgYvfb1mVRoldVedy8PBgny1QuP218iZNbDeziREKv
-         UVow==
-X-Gm-Message-State: AOAM530nxQ0o+GGPcnT1EJt276ou/mEgRGURNFrARhf1oEzZt5hKt8OT
-        ZqW05l8s1CR6KhSsID6M5fLalQ==
-X-Google-Smtp-Source: ABdhPJxhe4FVoyyM9qgNUA7XB+DpgXLzpJWFs6gAwpaqEhpUPZjBR7TbfzzWilv9WL7YEhcES/OhIw==
-X-Received: by 2002:a17:90a:ae18:: with SMTP id t24mr10895503pjq.92.1630491351412;
-        Wed, 01 Sep 2021 03:15:51 -0700 (PDT)
-Received: from [10.254.210.255] ([139.177.225.254])
-        by smtp.gmail.com with ESMTPSA id y12sm23232967pgl.65.2021.09.01.03.15.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 03:15:51 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] mm: introduce pmd_install() helper
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     akpm@linux-foundation.org, tglx@linutronix.de, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
-        david@redhat.com, vbabka@suse.cz, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        songmuchun@bytedance.com
-References: <20210831132111.85437-1-zhengqi.arch@bytedance.com>
- <20210831132111.85437-2-zhengqi.arch@bytedance.com>
- <20210831232301.ilehcpc3n5bqodsz@box.shutemov.name>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-Message-ID: <cd4e882a-ecbb-6688-1288-112312e9251c@bytedance.com>
-Date:   Wed, 1 Sep 2021 18:15:42 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=729GdT2MAhx/jAkVDNeGvCJtX9tbrZQ8mIDJwfE61ws=;
+        b=k916rVMFoCfmv9V4K6DnVz6u/WdR4wIcYE3EESJ/PXIapLcHoTjpdUBl80xa5JMjoZ
+         iS3R/UTMgF46GnHBcIH1giQAgdXqf3eUuklwEur7hfjJIM7r+Qj5Dq+LfmeLKU2+zQLR
+         PmzivtgcOaTsrjxEhY9nf0ZIdyydputkAevMT5ofc2gxi9WVEVOGlNc/tYZt9Lh4f28s
+         T7XrhtbDJdrvLTmsF/etd0R+JgYHfkWP5Bl/sjdb/NhbbujcSMT3i7DSz4rfgZKPLhvJ
+         K8xx5h0aPnUmgh+/+vFQWsMTPFWiCVv2e7AWlaUB5ndQsvXwsGhPPiIL2wqhE/lgz/yc
+         QRfQ==
+X-Gm-Message-State: AOAM531jvwrZJY34UZQDOyWUvKgW+pFsNuNRBAYXfqlDxa2tZy1pNi4H
+        Sl5eRTV4ug9RCAOIvGq/fKb1i7KGXcgLg2/b2xcP+Q==
+X-Google-Smtp-Source: ABdhPJzaTQkdiTWOurV0MnyL5l8QjDiVDjzLfxezvLdsHxF6QsQIIMyf5M3YfDpHJWqLL0lbsbOs8FiJmtRBVKXRcv0=
+X-Received: by 2002:a05:6512:318a:: with SMTP id i10mr3805568lfe.444.1630491388108;
+ Wed, 01 Sep 2021 03:16:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210831232301.ilehcpc3n5bqodsz@box.shutemov.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210824100027.25989-1-moudy.ho@mediatek.com> <20210824100027.25989-4-moudy.ho@mediatek.com>
+ <YSU0TrfFCsaI1TqV@robh.at.kernel.org> <0092244acd520acac81208b8863b15fba58f4193.camel@mediatek.com>
+ <CAL_JsqJ_cProt35pdd2MjoHsSKtd+0n1Dwq6ooV+CJH5sfOFWg@mail.gmail.com> <39cec599a65eeb142cb7e729f954098a25652b2b.camel@mediatek.com>
+In-Reply-To: <39cec599a65eeb142cb7e729f954098a25652b2b.camel@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Wed, 1 Sep 2021 18:16:16 +0800
+Message-ID: <CAGXv+5GtDNwKpXEnont+UshVrSugQnTPyNF7VF3dVzTX9ruNdw@mail.gmail.com>
+Subject: Re: [PATCH v7 3/5] dt-binding: mt8183: Add Mediatek MDP3 dt-bindings
+To:     moudy ho <moudy.ho@mediatek.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Landley <rob@landley.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>, menghui.lin@mediatek.com,
+        Sj Huang <sj.huang@mediatek.com>, ben.lok@mediatek.com,
+        Randy Wu <randy.wu@mediatek.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 1, 2021 at 5:04 PM moudy ho <moudy.ho@mediatek.com> wrote:
+>
+> On Mon, 2021-08-30 at 10:05 -0500, Rob Herring wrote:
+> > On Mon, Aug 30, 2021 at 2:58 AM moudy ho <moudy.ho@mediatek.com>
+> > wrote:
+> > >
+> > > On Tue, 2021-08-24 at 13:02 -0500, Rob Herring wrote:
+> > > > On Tue, Aug 24, 2021 at 06:00:25PM +0800, Moudy Ho wrote:
+> > > > > This patch adds DT binding document for Media Data Path 3
+> > > > > (MDP3)
+> > > > > a unit in multimedia system used for scaling and color format
+> > > > > convert.
+> > > > >
+> > > > > Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+> > > > > ---
+> > > > >  .../bindings/media/mediatek,mdp3-ccorr.yaml   |  57 +++++
+> > > > >  .../bindings/media/mediatek,mdp3-rdma.yaml    | 207
+> > > > > ++++++++++++++++++
+> > > > >  .../bindings/media/mediatek,mdp3-rsz.yaml     |  65 ++++++
+> > > > >  .../bindings/media/mediatek,mdp3-wdma.yaml    |  71 ++++++
+> > > > >  .../bindings/media/mediatek,mdp3-wrot.yaml    |  71 ++++++
+> > > > >  5 files changed, 471 insertions(+)
+> > > > >  create mode 100644
+> > > > > Documentation/devicetree/bindings/media/mediatek,mdp3-
+> > > > > ccorr.yaml
+> > > > >  create mode 100644
+> > > > > Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
+> > > > >  create mode 100644
+> > > > > Documentation/devicetree/bindings/media/mediatek,mdp3-rsz.yaml
+> > > > >  create mode 100644
+> > > > > Documentation/devicetree/bindings/media/mediatek,mdp3-wdma.yaml
+> > > > >  create mode 100644
+> > > > > Documentation/devicetree/bindings/media/mediatek,mdp3-wrot.yaml
+> > > > >
+> > > > > diff --git
+> > > > > a/Documentation/devicetree/bindings/media/mediatek,mdp3-
+> > > > > ccorr.yaml
+> > > > > b/Documentation/devicetree/bindings/media/mediatek,mdp3-
+> > > > > ccorr.yaml
+> > > > > new file mode 100644
+> > > > > index 000000000000..59fd68b46022
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/media/mediatek,mdp3-
+> > > > > ccorr.yaml
+> > > > > @@ -0,0 +1,57 @@
+> > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > > +%YAML 1.2
+> > > > > +---
+> > > > > +$id:
+> > > > >
+> https://urldefense.com/v3/__http://devicetree.org/schemas/media/mediatek,mdp3-ccorr.yaml*__;Iw!!CTRNKA9wMg0ARbw!1C0ChLqzi7Zq8D2d4_S4IqCEei4GXdgy3_VCQg8MdsJP7n8TlxbGyajipusfH8hi$
+> > > > >
+> > > > > +$schema:
+> > > > >
+> https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml*__;Iw!!CTRNKA9wMg0ARbw!1C0ChLqzi7Zq8D2d4_S4IqCEei4GXdgy3_VCQg8MdsJP7n8TlxbGyajipi-OInix$
+> > > > >
+> > > > > +
+> > > > > +title: Mediatek Media Data Path 3 CCORR Device Tree Bindings
+> > > > > +
+> > > > > +maintainers:
+> > > > > +  - Daoyuan Huang <daoyuan.huang@mediatek.com>
+> > > > > +  - Moudy Ho <moudy.ho@mediatek.com>
+> > > > > +
+> > > > > +description: |
+> > > > > +  One of Media Data Path 3 (MDP3) components used to do color
+> > > > > correction with 3X3 matrix.
+> > > > > +
+> > > > > +properties:
+> > > > > +  compatible:
+> > > > > +    items:
+> > > > > +      - enum:
+> > > > > +        - mediatek,mt8183-mdp3-ccorr
+> > > > > +
+> > > > > +  mediatek,mdp3-id:
+> > > > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > > > +    maxItems: 1
+> > > > > +    description: |
+> > > > > +      HW index to distinguish same functionality modules.
+> > > >
+> > > > If we wanted h/w indexes in DT, we'd have a standard property.
+> > > > Why
+> > > > do
+> > > > you need this?
+> > > >
+> > >
+> > > I'm sorry not quite sure what HW indexes means (something like
+> > > aliases?)
+> >
+> > It means whatever you said in your description.
+> >
+> > And no, I'm not suggesting you use aliases.
+>
+> Sorry for the inaccuracy described here, the comment i mentioned before
+> should be "standard property" instead of "HW index".
+>
+> > > It was originally used to mark multiple identical modules in the
+> > > MDP
+> > > data path algorithm, so that appropriate paths can be dynamically
+> > > dispatched.
+> >
+> > If they are identical, then why do you need to distinguish them in
+> > DT?
+> > If there's some difference you need to know about such as connections
+> > to other blocks, then describe that. Another common example is
+> > needing
+> > to know what bits/registers to access in a syscon phandle. For that,
+> > make the register offset or bits be args to the phandle property.
+> >
+> > Rob
+>
+> Integrating the previous discussion, maybe I can revise the description
+> to the following:
+>     description: |
+>       There may be multiple blocks with the same function but different
+>       addresses in MDP3. In order to distinguish the connection with
+>       other blocks, a unique ID is needed to dynamically use one or
+>       more identical blocks to implement multiple pipelines.
+
+With display pipelines it is common to describe the pipeline with an OF
+graph. With the pipeline drawn out, you also get ways to derive identifiers
+for otherwise identical blocks, such as from port IDs.
+
+See Documentation/devicetree/bindings/display/allwinner,sun4i-a10-display-engine.yaml
+and arch/arm/boot/dts/sun9i-a80.dtsi for such an example.
 
 
-On 2021/9/1 AM7:23, Kirill A. Shutemov wrote:
-> On Tue, Aug 31, 2021 at 09:21:10PM +0800, Qi Zheng wrote:
->> Currently we have three times the same few lines repeated in the
->> code. Deduplicate them by newly introduced pmd_install() helper.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> Reviewed-by: David Hildenbrand <david@redhat.com>
->> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
->> ---
->>   include/linux/mm.h |  1 +
->>   mm/filemap.c       | 11 ++---------
->>   mm/memory.c        | 34 ++++++++++++++++------------------
->>   3 files changed, 19 insertions(+), 27 deletions(-)
->>
->> diff --git a/include/linux/mm.h b/include/linux/mm.h
->> index a3cc83d64564..0af420a7e382 100644
->> --- a/include/linux/mm.h
->> +++ b/include/linux/mm.h
->> @@ -2463,6 +2463,7 @@ static inline spinlock_t *pud_lock(struct mm_struct *mm, pud_t *pud)
->>   	return ptl;
->>   }
->>   
->> +extern void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte);
->>   extern void __init pagecache_init(void);
->>   extern void __init free_area_init_memoryless_node(int nid);
->>   extern void free_initmem(void);
-> 
-> mm/internal.h would be a better fit for the declaration.
-
-OK, I will update it in the next version.
-
-> 
-> Otherwise:
-> 
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> 
-
-Thanks,
-Qi
-
+ChenYu
