@@ -2,62 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027A53FE280
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A163FE285
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242198AbhIASsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:48:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234983AbhIASsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:48:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 19AB160FE6;
-        Wed,  1 Sep 2021 18:47:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630522038;
-        bh=dbWrfcfuWS1ZY1fqgdPDTRlNK4AHRzaBcTAxp0S7pC0=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=B9QXHim0qwYlPUe0R4k863vbDyl0oFAVqW/TLc+BxYPpzdGprgfTia2vZGjXIEo/N
-         Yemw8GcaD2nBufNnnPSJOks+tpzg0SIPMHXRx5ArXT0db9avrOEN1WaBkV6enHo6Gc
-         Ts304E6oPy4Zjeo9BGKHFPXerCqYpCN5nMgL2ANu83E5BUnfjGpEvEnPigbPzi3vCW
-         UWnpV/UH0m0f8jD93iiaKmVASio63gT1UCDj2/CY5cyJuCgiL1+VFvPHr0uPGjJ7St
-         9ddw9lxGuekWwmODNZnQFWfUg4ToqinPRyGXHiYSLwecmFycUZ4uLFWRwtILe/WYU3
-         ZXdpI5b5Q3qiQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0512E60173;
-        Wed,  1 Sep 2021 18:47:18 +0000 (UTC)
-Subject: Re: [git pull] drm for 5.15-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9txeN-qCRJvYV552zdo2H9iVy1ruVrq=YdZBP5Dmpc3Jmg@mail.gmail.com>
-References: <CAPM=9txeN-qCRJvYV552zdo2H9iVy1ruVrq=YdZBP5Dmpc3Jmg@mail.gmail.com>
-X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
- <dri-devel.lists.freedesktop.org>
-X-PR-Tracked-Message-Id: <CAPM=9txeN-qCRJvYV552zdo2H9iVy1ruVrq=YdZBP5Dmpc3Jmg@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-next-2021-08-31-1
-X-PR-Tracked-Commit-Id: 8f0284f190e6a0aa09015090568c03f18288231a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 477f70cd2a67904e04c2c2b9bd0fa2e95222f2f6
-Message-Id: <163052203795.3882.2878340645675304753.pr-tracker-bot@kernel.org>
-Date:   Wed, 01 Sep 2021 18:47:17 +0000
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        id S1345128AbhIAStH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344530AbhIAStE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 14:49:04 -0400
+Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57393C061764
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:48:07 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id B214B1F9D4;
+        Wed,  1 Sep 2021 20:48:05 +0200 (CEST)
+Subject: Re: [PATCH v4 1/5] interconnect: qcom: sdm660: Commonize RPM-QoS
+To:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>
+References: <20210901121518.152481-1-y.oudjana@protonmail.com>
+ <20210901121518.152481-2-y.oudjana@protonmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <9af0f031-101e-53b4-514e-9ead44320f4e@somainline.org>
+Date:   Wed, 1 Sep 2021 20:48:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <20210901121518.152481-2-y.oudjana@protonmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 31 Aug 2021 15:53:10 +1000:
+Il 01/09/21 14:15, Yassine Oudjana ha scritto:
+> SoCs such as MSM8996 also control bus QoS in a similar fashion to SDM660,
+> with some paths being controlled by RPM and others directly by the AP.
+> Move relevant functions and defines to a new object so that they can be used
+> in multiple drivers.
+> 
+> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-next-2021-08-31-1
+Hey guys!
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/477f70cd2a67904e04c2c2b9bd0fa2e95222f2f6
+I'm waiting for the interconnect RPM-QoS commonization to be merged as I have fresh
+interconnect drivers for MSM8998 and MSM8976, ready to send, that are also using
+the very same QoS mechanism as SDM660.
 
-Thank you!
+Yassine, please check Shawn's recent patches for SDM660 interconnect, which are
+fixing some bits for the QoS implementation and adding some required clocks to the
+SDM660 interconnect driver.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Adding Shawn to the Ccs as to make him aware of this patch;
+also adding Marijn and Konrad from SoMainline as probably interested parties.
+
+Cheers!
+- Angelo
