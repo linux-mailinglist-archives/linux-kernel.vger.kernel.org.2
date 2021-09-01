@@ -2,220 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0E93FD914
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA3B3FD90E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243714AbhIAL51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 07:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
+        id S243917AbhIALzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 07:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243893AbhIAL5Z (ORCPT
+        with ESMTP id S243865AbhIALzm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 07:57:25 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61EAC061760
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 04:56:28 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id m9so4139674wrb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 04:56:28 -0700 (PDT)
+        Wed, 1 Sep 2021 07:55:42 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD057C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 04:54:45 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id c8-20020a7bc008000000b002e6e462e95fso4573819wmb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 04:54:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0azurFEdIj3ZC2ZbeqfiGR0BlWdPTBZ0eY7HkyWHa2Y=;
-        b=ycqYpYprwv+8Vnwh7DpeornOkThIjfcXQU00tbtCKFpCHePBxPbNfxsWxS9+X/heuV
-         0+M9LzyIXjixhFh+xNYeHX4rJ2kn6sngjiL1rWYJPrqlFyAFMcCtMRsp/8UrBiSs/eys
-         x037ok1Hsh5ZoGocgpzEaOYXRCha8jvevbd7j+rToaPxjHC0axNKU8QGBvYlJeHROyLq
-         8uMJTirpZ7uo8zhWmAroylNa6158dtdBkcyWFfo3QyPnuitMd+2mFw1B67ItQC5Ksncv
-         vGpEOcCQ3o3ssY6fhd1bvaYu0c2D0EssflfbhkakAFm8UxPAWbRa+hOpBJSD8RCbVpZz
-         /w0A==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rDf09/KFN5QZpt6FbNdm+OOEGrC0WLzxPwgvwyd1B2s=;
+        b=IaOZ3ItjVkWMipeKPxxOEj7b65NIIcgmEsNf7DYTafwJMEqcbGq4+pbU/7GUGPowDQ
+         8m3FL1FrFvG86O+y6G5Xf3ovzL+VRLlZOaN5lkm/Lo7/m6/9lB3qNiyCamby168GUhOa
+         U8gWKNUBx+aVXr5AiHhoFBIlx342MlTRBNRs6cjppjSPa8uDd2g707NZBbd1W105evMC
+         ultCvSbSLXpVOQKKwnElfVH6n7aZ4HcFAJ3qANDih1pIT+zeZ4k1g1JQNg1pDNinUAgc
+         QW9NcxgAgYf5Jt1Za0tXZa4KiPGAr2mTSF9xLDXgrXGX3tjQk6tRpmIDNPpuqP7oq/GJ
+         27Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0azurFEdIj3ZC2ZbeqfiGR0BlWdPTBZ0eY7HkyWHa2Y=;
-        b=bqQk/RJLA6ALi8D50hGMLevnXohY8CaSZrKUB6aOfxd5dxnVfUKMGSC1JyURMWMVHr
-         y+cjFvdLzCdmvDAlUdQDZIvMHk8dQd1FDclc9lbO83eslPoJRJjxp4qOdHkMenMHz43S
-         EHPpnpN2WtorZavzexczRWBTO1ieKD4bkaMAJg0Pg/OYIPC3REvrJMYx/9sFKk0SskMW
-         WCH6i+XMLHF3dxw2dKnzL2rBhrNsAMRCBtx3+BuD/eFlGqrpkzu9APLqZUpaX5fTSh42
-         0AqsvYX4qOrUH2TeuH0SUWkMgkIFd84Fk0rmYsaJ2qSHQeMbZwC8vKMuWAKMzj5PPWyt
-         vcqg==
-X-Gm-Message-State: AOAM531xqAfVMaqwvbtmoK8/OoRjtMYr0TGY6bFJU0xuU9/jdYNgZm06
-        xfV79spaQsjPEvTJZgpSro/G+43JUE+yKIy9u1QppQ==
-X-Google-Smtp-Source: ABdhPJzRxVML9moiMgg+a03C/rFPY4kkvpXCjDbBd+shBLGf/JF/Hax8hkKGtVV6C2PckIB2I5y4IK/5UM0VeTmLVho=
-X-Received: by 2002:a5d:6ac7:: with SMTP id u7mr38038230wrw.390.1630497387244;
- Wed, 01 Sep 2021 04:56:27 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rDf09/KFN5QZpt6FbNdm+OOEGrC0WLzxPwgvwyd1B2s=;
+        b=YpTMHViqSdLvZwhV9O+qkyiRwhDCoHREQtpME3tzVKqFExJWeLZLDLxbu5B+I+KJFs
+         bXx1W1FJOCnAjNyLF17aRfOz4IKbbK8Dq4wvCtKethvyZHsl6MHnVg1raHlJQxGEIFN/
+         VyRwKlQJcRLDA/dEppkZMaKn7OqZYKLu2AkB6KWyw8depTiCsbXMOca49NJaJjTq2KBp
+         xpgIHiBPjTDe3pFhIEqwiXYwMih+LjmQFPbL+mPJBZQHzTBBjium1AJkyfdxieEs0zy+
+         xBF5KHU9nbO50c2BwPLO+NymQAZe0/HTNlPv1Rv+MzuBjbPpHIZmu9FBX/EWwEcw7gDD
+         RQWg==
+X-Gm-Message-State: AOAM533vkMsBYRH4k7AaGZahpakT+kVNRIEvojbiBjK0/s5bt3u29Hnf
+        60mrTWCsTAnHoWr6fL5IHZP1CMircbtjf3kv
+X-Google-Smtp-Source: ABdhPJxGgHr6Nx+lzKwjs7lpIVXMvBLteCbGxrmJ+TOV2UIDkjx6RtHb7uSvxeVEb9d1yG1Ncclumw==
+X-Received: by 2002:a1c:ed10:: with SMTP id l16mr9230740wmh.8.1630497284057;
+        Wed, 01 Sep 2021 04:54:44 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id r15sm5770339wmh.27.2021.09.01.04.54.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 04:54:43 -0700 (PDT)
+Subject: Re: [PATCH] wcn36xx: handle connection loss indication
+To:     Loic Poulain <loic.poulain@linaro.org>,
+        Benjamin Li <benl@squareup.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>, stable@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210901030542.17257-1-benl@squareup.com>
+ <CAMZdPi_frOfwf+9nfiUw2NJhfuSVgcPj3=Hx2g0d8UsaZza5MA@mail.gmail.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Message-ID: <b6157d1f-b548-13c0-3683-2d8c35964d1d@linaro.org>
+Date:   Wed, 1 Sep 2021 12:56:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210830041729.237252-1-anup.patel@wdc.com> <20210830041729.237252-6-anup.patel@wdc.com>
- <YS7WTPRYJWnPu2ii@robh.at.kernel.org>
-In-Reply-To: <YS7WTPRYJWnPu2ii@robh.at.kernel.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 1 Sep 2021 17:26:16 +0530
-Message-ID: <CAAhSdy1mttzt3_CnKc=xhpp5CKOEAasQVobTR-2L6Z26rstn+A@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 05/11] dt-bindings: interrupt-controller: Add
- ACLINT MSWI and SSWI bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>, Bin Meng <bmeng.cn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMZdPi_frOfwf+9nfiUw2NJhfuSVgcPj3=Hx2g0d8UsaZza5MA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 6:54 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Mon, Aug 30, 2021 at 09:47:23AM +0530, Anup Patel wrote:
-> > We add DT bindings documentation for the ACLINT MSWI and SSWI
-> > devices found on RISC-V SOCs.
-> >
-> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> > Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
-> > ---
-> >  .../riscv,aclint-swi.yaml                     | 95 +++++++++++++++++++
-> >  1 file changed, 95 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
-> > new file mode 100644
-> > index 000000000000..68563259ae24
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
-> > @@ -0,0 +1,95 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/interrupt-controller/riscv,aclint-swi.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: RISC-V ACLINT Software Interrupt Devices
-> > +
-> > +maintainers:
-> > +  - Anup Patel <anup.patel@wdc.com>
-> > +
-> > +description:
-> > +  RISC-V SOCs include an implementation of the M-level software interrupt
-> > +  (MSWI) device and the S-level software interrupt (SSWI) device defined
-> > +  in the RISC-V Advanced Core Local Interruptor (ACLINT) specification.
-> > +
-> > +  The ACLINT MSWI and SSWI devices are documented in the RISC-V ACLINT
-> > +  specification located at
-> > +  https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc.
-> > +
-> > +  The ACLINT MSWI and SSWI devices directly connect to the M-level and
-> > +  S-level software interrupt lines of various HARTs (or CPUs) respectively
-> > +  so the RISC-V per-HART (or per-CPU) local interrupt controller is the
-> > +  parent interrupt controller for the ACLINT MSWI and SSWI devices.
-> > +
-> > +allOf:
-> > +  - $ref: /schemas/interrupt-controller.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - items:
-> > +        - enum:
-> > +          - riscv,aclint-mswi
-> > +
-> > +      - items:
-> > +        - enum:
-> > +          - riscv,aclint-sswi
->
-> All this can be just:
->
-> enum:
->   - riscv,aclint-mswi
->   - riscv,aclint-sswi
->
-> However...
->
-> > +
-> > +    description:
-> > +      For ACLINT MSWI devices, it should be "riscv,aclint-mswi" OR
-> > +      "<vendor>,<chip>-aclint-mswi".
-> > +      For ACLINT SSWI devices, it should be "riscv,aclint-sswi" OR
-> > +      "<vendor>,<chip>-aclint-sswi".
->
-> s/OR/AND/
->
-> There must be a compatible for the implementation. Unless RiscV
-> implementations of specs are complete describing all clocks, power
-> domains, resets, etc. and are quirk free.
->
-> But don't write free form constraints...
+On 01/09/2021 07:40, Loic Poulain wrote:
+> iw wlan0 set power_save off
 
-It is possible that quite a few implementations (QEMU, FPGAs, and
-other simulators) will not require implementation specific compatible
-strings. Should we still mandate implementation specific compatible
-strings in DTS for such cases?
+I do this on wcn3680b and get no loss of signal
 
-I was not sure so I used "OR".
+If I do this though
 
-Regards,
-Anup
+diff --git a/drivers/net/wireless/ath/wcn36xx/smd.c 
+b/drivers/net/wireless/ath/wcn36xx/smd.c
+index 03966072f34c..ba613fbb728d 100644
+--- a/drivers/net/wireless/ath/wcn36xx/smd.c
++++ b/drivers/net/wireless/ath/wcn36xx/smd.c
+@@ -2345,6 +2345,8 @@ int wcn36xx_smd_feature_caps_exchange(struct 
+wcn36xx *wcn)
+                 set_feat_caps(msg_body.feat_caps, DOT11AC);
+                 set_feat_caps(msg_body.feat_caps, 
+ANTENNA_DIVERSITY_SELECTION);
+         }
++       set_feat_caps(msg_body.feat_caps, IBSS_HEARTBEAT_OFFLOAD);
++       set_feat_caps(msg_body.feat_caps, WLANACTIVE_OFFLOAD);
 
->
->
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  "#interrupt-cells":
-> > +    const: 0
-> > +
-> > +  interrupts-extended:
-> > +    minItems: 1
-> > +    maxItems: 4095
-> > +
-> > +  interrupt-controller: true
-> > +
-> > +additionalProperties: false
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts-extended
-> > +  - interrupt-controller
-> > +  - "#interrupt-cells"
-> > +
-> > +examples:
-> > +  - |
-> > +    // Example 1 (RISC-V MSWI device used by Linux RISC-V NoMMU kernel):
-> > +
-> > +    interrupt-controller@2000000 {
-> > +      compatible = "riscv,aclint-mswi";
-> > +      interrupts-extended = <&cpu1intc 3>,
-> > +                            <&cpu2intc 3>,
-> > +                            <&cpu3intc 3>,
-> > +                            <&cpu4intc 3>;
-> > +      reg = <0x2000000 0x4000>;
-> > +      interrupt-controller;
-> > +      #interrupt-cells = <0>;
-> > +    };
-> > +
-> > +  - |
-> > +    // Example 2 (RISC-V SSWI device used by Linux RISC-V MMU kernel):
-> > +
-> > +    interrupt-controller@2100000 {
-> > +      compatible = "riscv,aclint-sswi";
-> > +      interrupts-extended = <&cpu1intc 1>,
-> > +                            <&cpu2intc 1>,
-> > +                            <&cpu3intc 1>,
-> > +                            <&cpu4intc 1>;
-> > +      reg = <0x2100000 0x4000>;
-> > +      interrupt-controller;
-> > +      #interrupt-cells = <0>;
-> > +    };
-> > +...
-> > --
-> > 2.25.1
-> >
-> >
+         PREPARE_HAL_BUF(wcn->hal_buf, msg_body);
+
+@@ -2589,7 +2591,7 @@ static int wcn36xx_smd_missed_beacon_ind(struct 
+wcn36xx *wcn,
+         struct wcn36xx_hal_missed_beacon_ind_msg *rsp = buf;
+         struct ieee80211_vif *vif = NULL;
+         struct wcn36xx_vif *tmp;
+-
++wcn36xx_info("%s/%d\n", __func__, __LINE__);
+         /* Old FW does not have bss index */
+         if (wcn36xx_is_fw_version(wcn, 1, 2, 2, 24)) {
+                 list_for_each_entry(tmp, &wcn->vif_list, list) {
+@@ -2608,7 +2610,7 @@ static int wcn36xx_smd_missed_beacon_ind(struct 
+wcn36xx *wcn,
+
+         list_for_each_entry(tmp, &wcn->vif_list, list) {
+                 if (tmp->bss_index == rsp->bss_index) {
+-                       wcn36xx_dbg(WCN36XX_DBG_HAL, "beacon missed 
+bss_index %d\n",
++                       wcn36xx_info("beacon missed bss_index %d\n",
+                                     rsp->bss_index);
+                         vif = wcn36xx_priv_to_vif(tmp);
+                         ieee80211_connection_loss(vif);
+
+
+bingo
+
+root@linaro-developer:~# iw wlan0 set power_save off 
+ 
+
+
+# pulls plug on AP
+
+root@linaro-developer:~# [   83.290987] wcn36xx: 
+wcn36xx_smd_missed_beacon_ind/2594
+[   83.291070] wcn36xx: beacon missed bss_index 0
+[   83.295403] wlan0: Connection to AP e2:63:da:9c:a4:bd lost
+
+I'm not sure if both flags are required but, this is the behavior we want
+
