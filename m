@@ -2,155 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248773FD724
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018493FD729
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243769AbhIAJqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:46:15 -0400
-Received: from esa5.fujitsucc.c3s2.iphmx.com ([68.232.159.76]:9348 "EHLO
-        esa5.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232817AbhIAJqN (ORCPT
+        id S243812AbhIAJrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:47:09 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23852 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243803AbhIAJrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:46:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1630489517; x=1662025517;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=FM+dq1cjLgdFECqW4FE+6IN7pHzGxQo2eDcX9SnZBKo=;
-  b=iKPnX0TWBXsofvp0X6HghJqKRJSczNd24v5Kjm4vXs4so+IeciohCKzS
-   cbLvrICNlh2hVbMxe1lF7FnDlDoEDDH1q8VU+SPMbm2WtgDynXPiL4qsq
-   I7sjUR2mIDquoVU7NNyxieLk4Gkp27Jev/Ph9g/SMr+I230VwGsr8wcH7
-   RKkIVrbHzwpElDpV/5obLa8eIyqvKFIr+2zxhH9fE3pIib2j3FE4L0Wf3
-   aCPGX7CmPAjqWSk4Gga40OUYR3RaxIl3Gdt8tZihC3O/Oboy+P7rl13zU
-   FU51s5DyyLhMuozZshw4brJnJ0Mi4jibssNqRUlVGi3WixHx+Gzmgq6U5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="38291856"
-X-IronPort-AV: E=Sophos;i="5.84,368,1620658800"; 
-   d="scan'208";a="38291856"
-Received: from mail-os2jpn01lp2055.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.55])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 18:45:13 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eZwy35EGUhB9Wb9MqmboBI+MFOZNv4hiB1TByDUCmGt3XdvB3zPrnQBFFBrMOaO2R+4rYqe/hBp1Hcr2Jf1+7DtaaC7zFyorngvf0NxzyBnEiUka1LhaaI0ndjMSxvTz94iw0+Tuwy/qA7erZt1g93LKFb9TnO+B+1uyIli/21ADhvz5AOxhnSnYLPNyAKHRjI1wGPV9RNyPOXqbmAyBcaWW5bMNeL4y9dYaKl4AfQIAYLV/O7IGaO4D6Xl2IHQk2UTBY/8nFleVpnktOHXtivTVnxoAS8JPBoqJMr2IGQqCcDegI9eWN9pAsh4Jve3EnL7PYWQy4pnlToiFYhUaAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FM+dq1cjLgdFECqW4FE+6IN7pHzGxQo2eDcX9SnZBKo=;
- b=kWfXw5hIZPRa58zmvci62cQwERs6aAu6MVhTCByLavsFdDtSdZU88MgxQNlDUhDHLZMzP1PwbnLRr5F9ujmqVJ+xaPYXcMKP80YuOQaM4aGgkMW7eJqApnA42sX+hH3gBQOIxQADJFVIzy3mnbgZCgvpUvwxVMPSneftrXuExCSvRXVzVGfeFdjM7evFr0U+ekx9fxim9HqNczq/YVvQPcrJoHUdS/d+sS/dlkTb5wl73gAjX/4GZKHbOCGGkGjIoM/k/RhjqE8EXy/MBuaimqF6smepHMX9rnYAsT/c1A9ygPmnCbg2bktHfMFn8MVXwQ6n1oFxYjMjZGJO6kZaVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FM+dq1cjLgdFECqW4FE+6IN7pHzGxQo2eDcX9SnZBKo=;
- b=b5JuuGBr53jt8LuzO9xGLxD3ryxt7c9BGHDnIn1202JJudZoFOZUQI7C3KTIPj7zkGK+gOqvu75JvkGiMuh9KCllgJqiRnaC56lYcCLRZUF1nIH1yE15rWqtOrITb6CQBpOpjOY19Mrm3wsFTBudDayirrf1KfWlxS+DZIPcT8o=
-Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
- by OSAPR01MB4068.jpnprd01.prod.outlook.com (2603:1096:604:31::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Wed, 1 Sep
- 2021 09:45:10 +0000
-Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
- ([fe80::1906:fa19:335d:cd30]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
- ([fe80::1906:fa19:335d:cd30%7]) with mapi id 15.20.4478.019; Wed, 1 Sep 2021
- 09:45:10 +0000
-From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
-To:     "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        Rob Herring <robh@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
-Subject: libperf: lack of interface
-Thread-Topic: libperf: lack of interface
-Thread-Index: AQHXnxU1v7C7yDhEy0Gzl7rxTcNZhg==
-Date:   Wed, 1 Sep 2021 09:45:10 +0000
-Message-ID: <OSBPR01MB460016842A4310264B1CC5A0F7CD9@OSBPR01MB4600.jpnprd01.prod.outlook.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Enabled=True;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SiteId=a19f121d-81e1-4858-a9d8-736e267fd4c7;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SetDate=2021-09-01T09:45:10.078Z;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Name=FUJITSU-RESTRICTED;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_ContentBits=0;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Method=Standard;
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8c312cb9-5d1c-4b37-fd1c-08d96d2d30a1
-x-ms-traffictypediagnostic: OSAPR01MB4068:
-x-microsoft-antispam-prvs: <OSAPR01MB406853E91A2DE27E756AE50EF7CD9@OSAPR01MB4068.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6kJHouHPWuHN7NdK32U1cqxWtz4RT1VlhmY1ng91xQPn6xaLlIkTATQoUE5ciMZ0O2AkBHpYGXT78/2o42iAjSvFhsGNW0IR+5ZdhFe7W9w29SM94fqM0npDOkIFs9pdUe9gWwE8BmTRNLvDZhpBajHxEhYaxd9k0SPEseXpkMVU4IUrKkbsbe38Lz7aTcu71KnZ0IvbKBJoW8boopG1jEfJCad/G9loOqSCzgp33qtfVsWcxzg7Q48ttS9LXc9HlesZbUJsreoyIUBTvquhs+LjRdlRPqLJ+X94blqlx18n7ykemuv4LaLDqm5h8Wrb0pJJ3aS0uUcIK6/p96ffPHYrF2EvvIyGgdNznUIIDu0oPFAbZ2zZCLS6QC7HdAarSLUx1N/rehmbVM9y864m/HZjLtn5xHgnMGSb7o8X3wO8kcaoPsdC4qparFFEFDg2I424eadwGIT7Lq80exoLU+qvX7JoODxVqJxYirCe+p/aeU9fIrXxQbtH4NlNRgRKdct9RFzKrIavGJBxdE5P1IuqPOx+bffj6S6KUtyngGyKXW/t1odDKLsvbzuWrgfva15W/0f3n+WKfrYRn8ddKO+e8P+Xzh5Nd/qwsoyq2EpBcVhl20A7WcqCN8YQ4mRJEwrhzDlJ8pXTAWRxae1cvag85rFEpv0g0Su3TjET+uGriXy+moC2k5CRRjshBRfmVc1EgcB4CiXIOc+l8AexTgRDZYwfScxE9cML1ABdBWAzb3yWkllyrUQgYeFD0FRs94RWij9RMvFeYKNcDHSaxKhTo9nfMKgVKw6yy4aZrx0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(136003)(39860400002)(7696005)(52536014)(2906002)(64756008)(66446008)(66476007)(66946007)(26005)(8936002)(4326008)(76116006)(7416002)(122000001)(6506007)(66556008)(5660300002)(186003)(316002)(71200400001)(478600001)(54906003)(4744005)(86362001)(33656002)(9686003)(55016002)(110136005)(966005)(38100700002)(38070700005)(8676002)(85182001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?SVVmamxxM0JUVTAxZWYyRHMvMlo1aDB4M3VTWExuTzBjMk5xeWtSTmIv?=
- =?iso-2022-jp?B?M0JvV011VU1FcEZDMWsrVnpxa1k1cGxSRlZNajdoaDU0Q3RibTI4UU1N?=
- =?iso-2022-jp?B?SjNscEp2ME43WFovb3NQZWVGRmpzelc0Rk9UaDIwQUt5OWpNTFZNWGVM?=
- =?iso-2022-jp?B?M0Q4Y0Q1YWQ4d2RoUmhLdjRKdlp3TElhNUJDNUJJZ0xHQlF1MDRFV0xP?=
- =?iso-2022-jp?B?bzVHaUw4UmtLUlEzdFRBUmRMazVOMFFYS0JzbFNjU1BWMkg2c09MbWk4?=
- =?iso-2022-jp?B?NTkzM05xU0w2NG44T2pHVi9IQ0hYUm4yekE0ZFdCRzhVMjRJdUVhTndD?=
- =?iso-2022-jp?B?OUF4OWZHbktIRlZENWVQd3ZxNTlRdmRMWVNrbXBZZkZJM3doeDBweDlI?=
- =?iso-2022-jp?B?U3llSjI5UmhBQzdlcUtIN0tnN3FvUWh6ZzFxemZ3RzhqelZZOVF4S1hG?=
- =?iso-2022-jp?B?dCs4Q1BoWVZtTDJHZ2xZN3F4UXVzTkJ6SUxnMGtUNEZGYUJBcU5YdmdV?=
- =?iso-2022-jp?B?c25yemg4akh0OEdJY1J4VG1vaXRtU0ZHb045RHJtMEppSFdvbVo5YVcw?=
- =?iso-2022-jp?B?NmNXd0wxOGkxWThoYkFURkV5T1d4S3BFazFXRU8wb0tGSDNiVjBZa2ov?=
- =?iso-2022-jp?B?cUEwUUlnUkJacXNhYXpyUW9TQzZ3NGZydldnd0JNb1J2UGNtNnNXMytK?=
- =?iso-2022-jp?B?Y0ttZUhlUGtJRm5LM1lPeWhYaENLKzZidGdIeXRScXcrbEUxaWtabElQ?=
- =?iso-2022-jp?B?bDVPUk9KVzdJa2xBcmJjZ1B6eFVRQ2R5dU9pdldFT0F2bUVjclAxZTJw?=
- =?iso-2022-jp?B?VlB2dEhhZHh0UFo5THBCYlVTakl5ZjMxSzlDSUdwaXNYWVJ6OFRpNUZv?=
- =?iso-2022-jp?B?c0ZjdHpvSjdmNm5NME5OemVlTGhkV1NzaTRQTkdWVEY4bG8vTUFrRkZw?=
- =?iso-2022-jp?B?S2VNY0IrYVlMVnV4U1JWcDY3dVhYTXNDSVBXQkphS0w5WUhBVXVQRUll?=
- =?iso-2022-jp?B?UFk5cnNrYVJlWFh2Z2hGbUdOeXhjK3ZXSk9iUjVEQTRHV2U0RHlqQS9P?=
- =?iso-2022-jp?B?N2RjaUszQ0huSnJXekdFWVlEZG9PdGtJYnRFZ1VOK1JDS2NMZ1ZCM1I1?=
- =?iso-2022-jp?B?UUpUZFh4T3I0ZUxaN2xFeU9naUJJYzZOcG8rVjMzT29RTE0vTmtuS1pC?=
- =?iso-2022-jp?B?RVVNbTZ2clBxWkJYSXIzcmNIYVpNK1kxQjRlWWxoOG16Y1JnODNJbHBM?=
- =?iso-2022-jp?B?YmJPVUZncnFLVC83Z0l6RjU5ckYxSG0rV2VSbVZMditCaC9aYXFDVzhq?=
- =?iso-2022-jp?B?OXE3ZnBIMGU4LzdjTnd5eVJnZVJ6T3lMenJTYnZ0ZDhramVUNjFIdjd0?=
- =?iso-2022-jp?B?SkpMaFRvOFZWdmo5Umd4YUkzVnNuQi85VE15TXEyemhJaTRQZ1QzMWU4?=
- =?iso-2022-jp?B?SWhqaDE0cmxxWjlLdlJFTTEzSzRzWkI3OWp3c0NxdEs4WEFTY1MvMllI?=
- =?iso-2022-jp?B?ZWZ1ZTgrMzFWQUhLV05MK2dQb0F5WlNrclBCRFcya0xBNytrQ1FFS2dm?=
- =?iso-2022-jp?B?SGJhVitOY2tOejlZV0dFNzFKYXZSbTVPSkhaUHdLdlB5SVZUZ1JaQ0VD?=
- =?iso-2022-jp?B?K0lRYlBXWlBKQmowN0g3ZmN3VGZiTWQvdlUxSk5mU2FrUHVXL21JVDVs?=
- =?iso-2022-jp?B?RHdQTjVYUGFlTUZWU21MK2hzNEd0TFdTQlNXemVWSm0ydzhLYjkvYzVj?=
- =?iso-2022-jp?B?OVQ3aWFzUDNSYjVQQytuVlRQeUR3QmM0OE8wajcvOWNKV2tkYVZVNE8y?=
- =?iso-2022-jp?B?SW84b29namJVSTJaSm40R0RXdHJRT1ZWd2NaV3hvclpCcE1TSUs3MWwx?=
- =?iso-2022-jp?B?MGJsY3lFSlZaTjNNU1hBaEZidVJzPQ==?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 1 Sep 2021 05:47:07 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1819XbBM153630;
+        Wed, 1 Sep 2021 05:46:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=eU+PaGN6XosFMAZE0A8hOYQ9oWQnq+2fPo5QWJUN3ic=;
+ b=VMS0hMN1s2GqcU8RFndv+Xg6m6noBGVAptMk/rFC6GlePPdTqwrVPiOciJrIsOY7R9f1
+ oGX2X0RN4SkBEUB3RGyuyrZZbf/0LrQSlgho6P+YGdcT/AHlbdEsWSJfXXituQ4SP9jD
+ mmvCQENqoPcgQEog5+D0C+rRMU3c4veyMLrUJRIl0e2IT56qoYw19BVvdYRWqgv/wmv1
+ Yp+i8WCCQQxJErsPlfMPKkWEx/5MIlAvhg2lQ7Kps6t6s9ABPGySDyGqGwxrrx8OcNdo
+ cvV7L0/iR0hEC/ACgesz545H8HMuHpQ0hFcntzrmNiXlVrxqyT4ORjM9KkiOtpnENQAq UQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3at2hmqmtw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 05:46:11 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1819YEPc155494;
+        Wed, 1 Sep 2021 05:46:10 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3at2hmqmt4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 05:46:10 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1819baRd017791;
+        Wed, 1 Sep 2021 09:46:08 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 3aqcdjrdwy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 09:46:08 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1819k25055116192
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 1 Sep 2021 09:46:02 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3388AE057;
+        Wed,  1 Sep 2021 09:46:02 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A640AE087;
+        Wed,  1 Sep 2021 09:46:02 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.181.78])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  1 Sep 2021 09:46:02 +0000 (GMT)
+Subject: Re: [PATCH v3 2/3] s390x: KVM: Implementation of Multiprocessor
+ Topology-Change-Report
+To:     David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
+        thuth@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com
+References: <1627979206-32663-1-git-send-email-pmorel@linux.ibm.com>
+ <1627979206-32663-3-git-send-email-pmorel@linux.ibm.com>
+ <4d462f11-2990-6799-75e5-add0c39f9563@redhat.com>
+From:   Pierre Morel <pmorel@linux.ibm.com>
+Message-ID: <98d3b4fb-f875-d833-2a75-5412cd426ec7@linux.ibm.com>
+Date:   Wed, 1 Sep 2021 11:46:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c312cb9-5d1c-4b37-fd1c-08d96d2d30a1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2021 09:45:10.5554
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9QO6KRzXjZPLrGzSanxtQNWGaoPZ/+QhsJyrYmQ73gg60dSmSJuUIHY3DT56KEzi18HhoTiPL50buMflSmDdX8WOuuk8nexYYgrYhF6Ho5M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB4068
+In-Reply-To: <4d462f11-2990-6799-75e5-add0c39f9563@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: lwZB1hTWhSkCXX0YL12WjxFziYs8Hxve
+X-Proofpoint-ORIG-GUID: N24AoYAcubgT9d7rMQa1tzE1-qGLg0EB
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-01_03:2021-08-31,2021-09-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ bulkscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0 suspectscore=0
+ priorityscore=1501 malwarescore=0 phishscore=0 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2109010054
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.=0A=
-=0A=
-I'm trying to change rdpmc test in perf_event_tests[1] to use libperf, but =
-libperf doesn't have enough interfaces.=0A=
-Does anyone plan to implement any of these libperf features?=0A=
-=0A=
-- Interfaces that can run ioctl (PERF_EVENT_IOC_RESET) from userland=0A=
-- Interfaces that can run fcntl (SIGIO) from userland=0A=
-=0A=
-[1] https://github.com/deater/perf_event_tests/tree/master/tests/rdpmc=0A=
-=0A=
-=0A=
-Thanks.=0A=
-Shunsuke=
+
+
+On 8/31/21 4:03 PM, David Hildenbrand wrote:
+> On 03.08.21 10:26, Pierre Morel wrote:
+
+...snip...
+
+
+>> @@ -819,6 +820,23 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm, 
+>> struct kvm_enable_cap *cap)
+>>           icpt_operexc_on_all_vcpus(kvm);
+>>           r = 0;
+>>           break;
+>> +    case KVM_CAP_S390_CPU_TOPOLOGY:
+>> +        mutex_lock(&kvm->lock);
+>> +        if (kvm->created_vcpus) {
+>> +            r = -EBUSY;
+>> +        } else {
+>> +            set_kvm_facility(kvm->arch.model.fac_mask, 11);
+>> +            set_kvm_facility(kvm->arch.model.fac_list, 11);
+>> +            r = 0;
+>> +        }
+>> +        mutex_unlock(&kvm->lock);
+>> +        VM_EVENT(kvm, 3, "ENABLE: CPU TOPOLOGY %s",
+>> +             r ? "(not available)" : "(success)");
+>> +        break;
+>> +
+>> +        r = -EINVAL;
+>> +        break;
+>> +
+>>       default:
+>>           r = -EINVAL;
+>>           break;
+
+This above enables the facility 11.
+
+...snip...
+
+>> @@ -3198,6 +3239,11 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu 
+>> *vcpu)
+>>           vcpu->arch.sie_block->ecb |= ECB_HOSTPROTINT;
+>>       if (test_kvm_facility(vcpu->kvm, 9))
+>>           vcpu->arch.sie_block->ecb |= ECB_SRSI;
+>> +
+>> +    /* PTF needs both host and guest facilities to enable 
+>> interpretation */
+>> +    if (test_kvm_facility(vcpu->kvm, 11) && test_facility(11))
+>> +        vcpu->arch.sie_block->ecb |= ECB_PTF;
+> 
+> 
+> Again, doesn't test_kvm_facility(vcpu->kvm, 11) imply that we have host 
+> support by checking fac_mask?
+> 
+
+-- 
+Pierre Morel
+IBM Lab Boeblingen
