@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC4E3FD4E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097703FD4E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242913AbhIAIHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:07:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242909AbhIAIH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:07:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C5C06103D;
-        Wed,  1 Sep 2021 08:06:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630483589;
-        bh=HFXW2CXUVuj9t9Ig1elcp8R+lAYqA68TQyV8IJQJvmA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PrGxvohdSMKpxmdJwW5SPfczCcjE5fL6gAUWGavIuNT7hu0PyUfwKybImG0WvaXn2
-         z6nig86cxvCyPjpfz5yZUO20j9538S1kNeoDCyH/GkInabkNG0+Xz4WFvbgCUj+M23
-         rlhVNBwclhRUhpt1ReCG9oiLeAClaia2Vp8yZ2RCgxmFi4kIGLfZkNO62TylLX0dFC
-         Z03oFieXanxlH0WK1lRf5yvL/FvgayU4z2FOeY9BEgM8YKhHRMk0MgZnq1eFv8EHZm
-         65B5ZtdSWg+hyWNPERdua/0Q9JNMx5TZU6Ule3BpLYY+Sl2lh57XqawNLMw7GDofPr
-         LOin7K0sJnF4A==
-From:   Chao Yu <chao@kernel.org>
-To:     jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
-        Chao Yu <chao@kernel.org>, Zhang Yi <yi.zhang@huawei.com>,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH v2] f2fs: avoid attaching SB_ACTIVE flag during mount
-Date:   Wed,  1 Sep 2021 16:06:21 +0800
-Message-Id: <20210901080621.110319-1-chao@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S242923AbhIAIJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:09:13 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:28751 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242944AbhIAIJK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 04:09:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1630483694; x=1662019694;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=acPplmh0ZzLic81uLKmpts3O5q+lr1KahcYPlLs7V4k=;
+  b=DE+K/oK2jQzSGAimWE4+Xwq1MXpdIckGAx3srXcCxf2vHl0UHB8O8yiA
+   4R9CWPXdcpUBMIfyAIvGLNm/zeWTpaInDoEpA6lJ3baSaZ9PwkaTC+daG
+   TPLSLXsiMJf3yawVxRlylmLJHyS+ysUBnaLTkoJOPL9bFOIDpeZefeq1s
+   n/ALQ2afiIKb1xsfMSMlcZt5PYf5HgtZbJTfY3DiWnXxuJZ/lSB2IwS4V
+   xNIcUM+6HrfKzZuRp9Fxpl1VEd1XiKJ+inIcAswzaZm9T86wcRs4rfrwc
+   z4sDw3QgNmUUE3CxDdPGvQNIo8sqx8RjeDO5YB4Q0kWmO5NhE6rZeVqIw
+   w==;
+IronPort-SDR: kWMl6HsB5SgWyvu2N3W+ufhxksxZyoFQ8axuwNcDjIUF7M+7kjrnMO0jxZgjLoZefFOyl9B7lY
+ tkg7wh0DO52PljrkzAYUZZYuIigt6lhoCE83LCF09X799GS+351+bVZqAdm1XJEjF+8fM6pxJX
+ JgF1hAOFhGiyzzZFxSh9t3Ps76TMXFxHip3WO38/eJVaj0XHvLAjNi5J4twgY99TV0ZR/EN3L/
+ TWPQ8lDCXchCRdMVC/OGCZGO2Ru0kM7VhsVj8VrsqEEfQTOryhOMZamENN3x/XOe+2ouMQGgch
+ 8lxOziPK4PkpJqJPkAkHkwCg
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="134402103"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Sep 2021 01:08:13 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 1 Sep 2021 01:08:12 -0700
+Received: from [10.12.72.234] (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Wed, 1 Sep 2021 01:08:10 -0700
+Subject: Re: [PATCH v3 0/4] mmc: pwrseq: sd8787: add support wilc1000 devices
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210820092803.78523-1-claudiu.beznea@microchip.com>
+ <CAPDyKFrcBS2tf32H9+wsy7=TsHkaqtw0cZcSAgZc3XjnLzJ__w@mail.gmail.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <d8bf8840-4b13-7f95-8fe3-243c3d27a2e4@microchip.com>
+Date:   Wed, 1 Sep 2021 10:08:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPDyKFrcBS2tf32H9+wsy7=TsHkaqtw0cZcSAgZc3XjnLzJ__w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoted from [1]
+On 24/08/2021 at 16:56, Ulf Hansson wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On Fri, 20 Aug 2021 at 11:30, Claudiu Beznea
+> <claudiu.beznea@microchip.com> wrote:
+>>
+>> Hi,
+>>
+>> This series adds support for WILC1000 devices on pwrseq-sd8787 driver.
+>> WILC1000 devices needs a minimum delay of 5ms b/w reset and power lines.
+>> Adapt the sd8787 driver for this by adding a new compatible for WILC1000
+>> devices and specify the delay on .data field of struct of_device_id.
+>>
+>> Thank you,
+>> Claudiu Beznea
+>>
+>> Changes in v3:
+>> - fixed dt binding compilation
+>>
+>> Changes in v2:
+>> - changed cover letter title (it was: mmc: pwrseq: sd8787: add support
+>>    for selectable)
+>> - use new compatible in pwrseq-sd8787 driver instead of adding a new
+>>    binding for specifying the delay; with this, the patch 1/1 from v1 is
+>>    not necessary
+>> - adapt patch 3/3 from this version with the new compatible
+>>
+>>
+>> Claudiu Beznea (3):
+>>    dt-bindings: pwrseq-sd8787: add binding for wilc1000
+>>    mmc: pwrseq: sd8787: add support for wilc1000
+>>    mmc: pwrseq: add wilc1000_sdio dependency for pwrseq_sd8787
+>>
+>> Eugen Hristev (1):
+>>    ARM: dts: at91: sama5d27_wlsom1: add wifi device
+>>
+>>   .../bindings/mmc/mmc-pwrseq-sd8787.yaml       |  4 +-
+>>   arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi   | 71 +++++++++++++++++++
+>>   drivers/mmc/core/Kconfig                      |  2 +-
+>>   drivers/mmc/core/pwrseq_sd8787.c              | 11 ++-
+>>   4 files changed, 84 insertions(+), 4 deletions(-)
+>>
+> 
+> Applied patch1 -> patch3, thanks! I leave patch 4 for soc maintainers.
 
-"I do remember that I've added this code back then because otherwise
-orphan cleanup was losing updates to quota files. But you're right
-that now I don't see how that could be happening and it would be nice
-if we could get rid of this hack"
+Perfect, we take care of patch 4 through at91 -> arm-soc trees for 5.16 
+kernel timeframe.
 
-[1] https://lore.kernel.org/linux-ext4/99cce8ca-e4a0-7301-840f-2ace67c551f3@huawei.com/T/#m04990cfbc4f44592421736b504afcc346b2a7c00
+Best regards,
+   Nicolas
 
-Related fix in ext4 by
-commit 72ffb49a7b62 ("ext4: do not set SB_ACTIVE in ext4_orphan_cleanup()").
 
-f2fs has the same hack implementation in
-- f2fs_recover_orphan_inodes()
-- f2fs_recover_fsync_data()
-
-Let's get rid of this hack as well in f2fs.
-
-Cc: Zhang Yi <yi.zhang@huawei.com>
-Cc: Jan Kara <jack@suse.cz>
-Acked-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Chao Yu <chao@kernel.org>
----
-v2:
-- don't bother checkpoint disabling path
- fs/f2fs/checkpoint.c | 3 ---
- fs/f2fs/recovery.c   | 8 ++------
- 2 files changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index 83e9bc0f91ff..7d8803a4cbc2 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -705,9 +705,6 @@ int f2fs_recover_orphan_inodes(struct f2fs_sb_info *sbi)
- 	}
- 
- #ifdef CONFIG_QUOTA
--	/* Needed for iput() to work correctly and not trash data */
--	sbi->sb->s_flags |= SB_ACTIVE;
--
- 	/*
- 	 * Turn on quotas which were not enabled for read-only mounts if
- 	 * filesystem has quota feature, so that they are updated correctly.
-diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
-index 04655511d7f5..706ddb3c95c0 100644
---- a/fs/f2fs/recovery.c
-+++ b/fs/f2fs/recovery.c
-@@ -787,8 +787,6 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only)
- 	}
- 
- #ifdef CONFIG_QUOTA
--	/* Needed for iput() to work correctly and not trash data */
--	sbi->sb->s_flags |= SB_ACTIVE;
- 	/* Turn on quotas so that they are updated correctly */
- 	quota_enabled = f2fs_enable_quota_files(sbi, s_flags & SB_RDONLY);
- #endif
-@@ -816,10 +814,8 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only)
- 	err = recover_data(sbi, &inode_list, &tmp_inode_list, &dir_list);
- 	if (!err)
- 		f2fs_bug_on(sbi, !list_empty(&inode_list));
--	else {
--		/* restore s_flags to let iput() trash data */
--		sbi->sb->s_flags = s_flags;
--	}
-+	else
-+		f2fs_bug_on(sbi, sbi->sb->s_flags & SB_ACTIVE);
- skip:
- 	fix_curseg_write_pointer = !check_only || list_empty(&inode_list);
- 
 -- 
-2.32.0
-
+Nicolas Ferre
