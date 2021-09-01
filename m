@@ -2,308 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64F33FDE5E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A9F3FDE64
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343541AbhIAPRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233464AbhIAPRP (ORCPT
+        id S1343552AbhIAPR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:17:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49905 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233464AbhIAPR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:17:15 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBBDC061760
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 08:16:18 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id c206so5715966ybb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 08:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8Nl49q2NDkLMJG1QVFwZHwrmaWGvDxjcvww+Kzjh5Sg=;
-        b=dkJvfz2Thh5TWRlDWepzGsyCT4pB5Vi6GQHz6r/3EQeG0S0PNssP8PRBrrB/jz+Wkc
-         giwE5fLKlRj0GYfDTj1/OYajh5mN1ztpG3LgHVq4d3OJb8orPpBuLI+QKz4+5Prg0jTl
-         i8xJ8tHVpPfJfXXOXZkW5kjgP8/fKCB9gQ0VsKuykQR7xohKD7FZYkVBs5pfbaRAb4Vf
-         ++gipuHfQzcY6nFrbpmp18vbOKZbEAIUc/3WefyeYHHSd0k2rXIBm+wfh5wPeYTwlIHG
-         PvnN4nSflS6b16qc1VpZ7jyKxEbc3bmkpTTNwRNY912WWWg9CT1hj8ye3RChCkIM21nE
-         3bHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Nl49q2NDkLMJG1QVFwZHwrmaWGvDxjcvww+Kzjh5Sg=;
-        b=bI4n2ZOADTNL8/eYvEdm61wF6+MDdjV5k58HXJJEM+OJfocXFPIREh4KbqNMSll8g+
-         mstDPJBR8K9gba/4sD5eemzOXN0PqInIQf2GMPlBx9Pl73VIvvzP2o45RaWoiw3dEbD+
-         V/FETqGc0Tzf/jr++scQaohBlTCAPlzwyVySwjMwJdNigDP3aIJiiPxbcsfDTKxEBGk3
-         HdpfSa40VgmDU6S/PcP0rNczMZUoImKDoAtUj0PYkqgfTz2l9OuNe7+STLXBIs7YjCFt
-         y46Kd99pL6S4DdjXHx8xGzaOUOg73inQVoW4yoywwYmugeJoTSBNEpOPuYHq9qTDggDl
-         MViw==
-X-Gm-Message-State: AOAM533JwxZcJ421ba36CbtJ+88Fqi206l2ArM8XHuUI0E1qRAYxwBhu
-        ZBUeG92A0ooyRc/OKlDQoKAahyjDg7rjYE6w2pdKbQ==
-X-Google-Smtp-Source: ABdhPJwFwltRXLVDlzE9vqTyiYIvwMXZcg66icWV7WMeqGE/IST0BxaEcIQbFuRP9h+3g8xBpDX7Zc2I9TtRcywDctc=
-X-Received: by 2002:a05:6902:150f:: with SMTP id q15mr4304ybu.408.1630509377233;
- Wed, 01 Sep 2021 08:16:17 -0700 (PDT)
+        Wed, 1 Sep 2021 11:17:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630509421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Mh3cylghfHfvCDQ5ybQ0BmduttKnKOaYDqF4MlKkW9M=;
+        b=DtBM2Vk2CcJqk8a37vqbIKVM6FKCie/oZk3HG9bXfWd9I+fJ48iINl+VQy7rdvp1kT4k56
+        6QsjbEestRqj4X/rd5C2gADxQN6s+ArpYhX7oslHRec20uiENce65XO6bSU8cD/95X9chY
+        dnvqHGm0c0IOwe8OJffzCK4cft4rdSk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-Yuquzq97P3mmrLZTRAVsaQ-1; Wed, 01 Sep 2021 11:17:00 -0400
+X-MC-Unique: Yuquzq97P3mmrLZTRAVsaQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6BA41B2C980;
+        Wed,  1 Sep 2021 15:16:58 +0000 (UTC)
+Received: from fedora-t480.redhat.com (unknown [10.39.192.79])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F22FB60C9F;
+        Wed,  1 Sep 2021 15:16:54 +0000 (UTC)
+From:   Kate Hsuan <hpa@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>, Hans de Goede <hdegoede@redhat.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kate Hsuan <hpa@redhat.com>
+Subject: [PATCH v5] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860 and 870 SSD.
+Date:   Wed,  1 Sep 2021 23:16:43 +0800
+Message-Id: <20210901151643.13562-1-hpa@redhat.com>
 MIME-Version: 1.0
-References: <1630492744-60396-1-git-send-email-linyunsheng@huawei.com>
- <9c9ef2228dfcb950b5c75382bd421c6169e547a0.camel@redhat.com> <CANn89iJFeM=DgcQpDbaE38uhxTEL6REMWPnVFt7Am7Nuf4wpMw@mail.gmail.com>
-In-Reply-To: <CANn89iJFeM=DgcQpDbaE38uhxTEL6REMWPnVFt7Am7Nuf4wpMw@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 1 Sep 2021 08:16:05 -0700
-Message-ID: <CANn89iKbgtb84Lb4UOxUCb_WGrfB6ZoD=bVH2O06-Mm6FBmwpg@mail.gmail.com>
-Subject: Re: [PATCH net-next] tcp: add tcp_tx_skb_cache_key checking in sk_stream_alloc_skb()
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        MPTCP Upstream <mptcp@lists.linux.dev>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>
-Content-Type: multipart/mixed; boundary="0000000000003c433905caf08c8a"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000003c433905caf08c8a
-Content-Type: text/plain; charset="UTF-8"
+Many users are reporting that the Samsung 860 and 870 SSD are having
+various issues when combined with AMD SATA controllers and only
+completely disabling NCQ helps to avoid these issues.
 
-On Wed, Sep 1, 2021 at 8:06 AM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Wed, Sep 1, 2021 at 3:52 AM Paolo Abeni <pabeni@redhat.com> wrote:
-> >
-> > On Wed, 2021-09-01 at 18:39 +0800, Yunsheng Lin wrote:
-> > > Since tcp_tx_skb_cache is disabled by default in:
-> > > commit 0b7d7f6b2208 ("tcp: add tcp_tx_skb_cache sysctl")
-> > >
-> > > Add tcp_tx_skb_cache_key checking in sk_stream_alloc_skb() to
-> > > avoid possible branch-misses.
-> > >
-> > > Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> >
-> > Note that MPTCP is currently exploiting sk->sk_tx_skb_cache. If we get
-> > this patch goes in as-is, it will break mptcp.
-> >
-> > One possible solution would be to let mptcp usage enable sk-
-> > >sk_tx_skb_cache, but that has relevant side effects on plain TCP.
-> >
-> > Another options would be re-work once again the mptcp xmit path to
-> > avoid using sk->sk_tx_skb_cache.
-> >
->
-> Hmmm, I actually wrote a revert of this feature but forgot to submit
-> it last year.
->
-> commit c36cfbd791f62c0f7c6b32132af59dfdbe6be21b (HEAD -> listener_scale4)
-> Author: Eric Dumazet <edumazet@google.com>
-> Date:   Wed May 20 06:38:38 2020 -0700
->
->     tcp: remove sk_{tr}x_skb_cache
->
->     This reverts the following patches :
->
->     2e05fcae83c41eb2df10558338dc600dc783af47 ("tcp: fix compile error
-> if !CONFIG_SYSCTL")
->     4f661542a40217713f2cee0bb6678fbb30d9d367 ("tcp: fix zerocopy and
-> notsent_lowat issues")
->     472c2e07eef045145bc1493cc94a01c87140780a ("tcp: add one skb cache for tx")
->     8b27dae5a2e89a61c46c6dbc76c040c0e6d0ed4c ("tcp: add one skb cache for rx")
->
->     Having a cache of one skb (in each direction) per TCP socket is fragile,
->     since it can cause a significant increase of memory needs,
->     and not good enough for high speed flows anyway where more than one skb
->     is needed.
->
->     We want instead to add a generic infrastructure, with more flexible per-cpu
->     caches, for alien NUMA nodes.
->
->     Signed-off-by: Eric Dumazet <edumazet@google.com>
->
-> I will update this commit to also remove the part in MPTCP.
->
-> Let's remove this feature and replace it with something less costly.
+Always disabling NCQ for Samsung 860/870 SSDs regardless of the host
+SATA adapter vendor will cause I/O performance degradation with well
+behaved adapters. To limit the performance impact to AMD adapters,
+introduce the ATA_HORKAGE_NO_NCQ_ON_AMD flag to force disable NCQ
+only for these adapters.
 
-Paolo, can you work on MPTP side, so that my revert can be then applied ?
+Also, two libata.force parameters (noncqamd and ncqamd) are introduced
+to disable and enable the NCQ for the system which equiped with AMD
+SATA adapter and Samsung 860 and 870 SSDs. The user can determine NCQ
+function to be enabled or disabled according to the demand.
 
-Thanks !
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=201693
+Signed-off-by: Kate Hsuan <hpa@redhat.com>
+---
+Changes in v5:
+* The libata.force parameters ncqamd and noncqamd are used to enable and
+  disable the NCQ for the systems equiped with AMD SATA adapter and
+  Samsung 860 and 870 SSDs.
+* The character encoding of the patch comment was fixed.
 
---0000000000003c433905caf08c8a
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-tcp-remove-sk_-tr-x_skb_cache.patch"
-Content-Disposition: attachment; 
-	filename="0001-tcp-remove-sk_-tr-x_skb_cache.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kt1n6bhm0>
-X-Attachment-Id: f_kt1n6bhm0
+Changes in v4:
+* A function ata_dev_check_adapter() is added to check the vendor ID of
+  the adapter.
+* ATA_HORKAGE_NONCQ_ON_AMD was modified to ATA_HORKAGE_NO_NCQ_ON_AMD to
+  align with the naming convention.
+* Commit messages were improved according to reviewer comments.
 
-RnJvbSBjMzZjZmJkNzkxZjYyYzBmN2M2YjMyMTMyYWY1OWRmZGJlNmJlMjFiIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBFcmljIER1bWF6ZXQgPGVkdW1hemV0QGdvb2dsZS5jb20+CkRh
-dGU6IFdlZCwgMjAgTWF5IDIwMjAgMDY6Mzg6MzggLTA3MDAKU3ViamVjdDogW1BBVENIIG5ldC1u
-ZXh0XSB0Y3A6IHJlbW92ZSBza197dHJ9eF9za2JfY2FjaGUKClRoaXMgcmV2ZXJ0cyB0aGUgZm9s
-bG93aW5nIHBhdGNoZXMgOgoKMmUwNWZjYWU4M2M0MWViMmRmMTA1NTgzMzhkYzYwMGRjNzgzYWY0
-NyAoInRjcDogZml4IGNvbXBpbGUgZXJyb3IgaWYgIUNPTkZJR19TWVNDVEwiKQo0ZjY2MTU0MmE0
-MDIxNzcxM2YyY2VlMGJiNjY3OGZiYjMwZDlkMzY3ICgidGNwOiBmaXggemVyb2NvcHkgYW5kIG5v
-dHNlbnRfbG93YXQgaXNzdWVzIikKNDcyYzJlMDdlZWYwNDUxNDViYzE0OTNjYzk0YTAxYzg3MTQw
-NzgwYSAoInRjcDogYWRkIG9uZSBza2IgY2FjaGUgZm9yIHR4IikKOGIyN2RhZTVhMmU4OWE2MWM0
-NmM2ZGJjNzZjMDQwYzBlNmQwZWQ0YyAoInRjcDogYWRkIG9uZSBza2IgY2FjaGUgZm9yIHJ4IikK
-CkhhdmluZyBhIGNhY2hlIG9mIG9uZSBza2IgKGluIGVhY2ggZGlyZWN0aW9uKSBwZXIgVENQIHNv
-Y2tldCBpcyBmcmFnaWxlLApzaW5jZSBpdCBjYW4gY2F1c2UgYSBzaWduaWZpY2FudCBpbmNyZWFz
-ZSBvZiBtZW1vcnkgbmVlZHMsCmFuZCBub3QgZ29vZCBlbm91Z2ggZm9yIGhpZ2ggc3BlZWQgZmxv
-d3MgYW55d2F5IHdoZXJlIG1vcmUgdGhhbiBvbmUgc2tiCmlzIG5lZWRlZC4KCldlIHdhbnQgaW5z
-dGVhZCB0byBhZGQgYSBnZW5lcmljIGluZnJhc3RydWN0dXJlLCB3aXRoIG1vcmUgZmxleGlibGUg
-cGVyLWNwdQpjYWNoZXMsIGZvciBhbGllbiBOVU1BIG5vZGVzLgoKU2lnbmVkLW9mZi1ieTogRXJp
-YyBEdW1hemV0IDxlZHVtYXpldEBnb29nbGUuY29tPgotLS0KIERvY3VtZW50YXRpb24vbmV0d29y
-a2luZy9pcC1zeXNjdGwucnN0IHwgIDggLS0tLS0tLS0KIGluY2x1ZGUvbmV0L3NvY2suaCAgICAg
-ICAgICAgICAgICAgICAgIHwgMTkgLS0tLS0tLS0tLS0tLS0tLS0tLQogbmV0L2lwdjQvYWZfaW5l
-dC5jICAgICAgICAgICAgICAgICAgICAgfCAgNCAtLS0tCiBuZXQvaXB2NC9zeXNjdGxfbmV0X2lw
-djQuYyAgICAgICAgICAgICB8IDEyIC0tLS0tLS0tLS0tLQogbmV0L2lwdjQvdGNwLmMgICAgICAg
-ICAgICAgICAgICAgICAgICAgfCAyNiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogbmV0L2lw
-djQvdGNwX2lwdjQuYyAgICAgICAgICAgICAgICAgICAgfCAgNiAtLS0tLS0KIG5ldC9pcHY2L3Rj
-cF9pcHY2LmMgICAgICAgICAgICAgICAgICAgIHwgIDYgLS0tLS0tCiA3IGZpbGVzIGNoYW5nZWQs
-IDgxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vbmV0d29ya2luZy9p
-cC1zeXNjdGwucnN0IGIvRG9jdW1lbnRhdGlvbi9uZXR3b3JraW5nL2lwLXN5c2N0bC5yc3QKaW5k
-ZXggZDkxYWIyODcxOGQ0OTNiZjUxOTZmMmIwOGNiNTllYzJjMTM4ZThlNC4uMTZiOGJmNzJmZWFm
-NDI3NTMxMjFjMzY4NTMwYTRmMmU4NjRhNjU4ZiAxMDA2NDQKLS0tIGEvRG9jdW1lbnRhdGlvbi9u
-ZXR3b3JraW5nL2lwLXN5c2N0bC5yc3QKKysrIGIvRG9jdW1lbnRhdGlvbi9uZXR3b3JraW5nL2lw
-LXN5c2N0bC5yc3QKQEAgLTk4OSwxNCArOTg5LDYgQEAgdGNwX2NoYWxsZW5nZV9hY2tfbGltaXQg
-LSBJTlRFR0VSCiAJaW4gUkZDIDU5NjEgKEltcHJvdmluZyBUQ1AncyBSb2J1c3RuZXNzIHRvIEJs
-aW5kIEluLVdpbmRvdyBBdHRhY2tzKQogCURlZmF1bHQ6IDEwMDAKIAotdGNwX3J4X3NrYl9jYWNo
-ZSAtIEJPT0xFQU4KLQlDb250cm9scyBhIHBlciBUQ1Agc29ja2V0IGNhY2hlIG9mIG9uZSBza2Is
-IHRoYXQgbWlnaHQgaGVscAotCXBlcmZvcm1hbmNlIG9mIHNvbWUgd29ya2xvYWRzLiBUaGlzIG1p
-Z2h0IGJlIGRhbmdlcm91cwotCW9uIHN5c3RlbXMgd2l0aCBhIGxvdCBvZiBUQ1Agc29ja2V0cywg
-c2luY2UgaXQgaW5jcmVhc2VzCi0JbWVtb3J5IHVzYWdlLgotCi0JRGVmYXVsdDogMCAoZGlzYWJs
-ZWQpCi0KIFVEUCB2YXJpYWJsZXMKID09PT09PT09PT09PT0KIApkaWZmIC0tZ2l0IGEvaW5jbHVk
-ZS9uZXQvc29jay5oIGIvaW5jbHVkZS9uZXQvc29jay5oCmluZGV4IDY2YTlhOTBmOTU1OGU0Yzcz
-OWUwMTE5MmIzZjhjZWU5ZmEyNzFhZTkuLjcwOGI5ZGUzY2RiYjExNmViMmQxZTYzZWNiYzg2NzJk
-NTU2ZjA5NTEgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbmV0L3NvY2suaAorKysgYi9pbmNsdWRlL25l
-dC9zb2NrLmgKQEAgLTI2Miw3ICsyNjIsNiBAQCBzdHJ1Y3QgYnBmX2xvY2FsX3N0b3JhZ2U7CiAg
-ICoJQHNrX2RzdF9jYWNoZTogZGVzdGluYXRpb24gY2FjaGUKICAgKglAc2tfZHN0X3BlbmRpbmdf
-Y29uZmlybTogbmVlZCB0byBjb25maXJtIG5laWdoYm91cgogICAqCUBza19wb2xpY3k6IGZsb3cg
-cG9saWN5Ci0gICoJQHNrX3J4X3NrYl9jYWNoZTogY2FjaGUgY29weSBvZiByZWNlbnRseSBhY2Nl
-c3NlZCBSWCBza2IKICAgKglAc2tfcmVjZWl2ZV9xdWV1ZTogaW5jb21pbmcgcGFja2V0cwogICAq
-CUBza193bWVtX2FsbG9jOiB0cmFuc21pdCBxdWV1ZSBieXRlcyBjb21taXR0ZWQKICAgKglAc2tf
-dHNxX2ZsYWdzOiBUQ1AgU21hbGwgUXVldWVzIGZsYWdzCkBAIC0zMjgsNyArMzI3LDYgQEAgc3Ry
-dWN0IGJwZl9sb2NhbF9zdG9yYWdlOwogICAqCUBza19wZWVrX29mZjogY3VycmVudCBwZWVrX29m
-ZnNldCB2YWx1ZQogICAqCUBza19zZW5kX2hlYWQ6IGZyb250IG9mIHN0dWZmIHRvIHRyYW5zbWl0
-CiAgICoJQHRjcF9ydHhfcXVldWU6IFRDUCByZS10cmFuc21pdCBxdWV1ZSBbdW5pb24gd2l0aCBA
-c2tfc2VuZF9oZWFkXQotICAqCUBza190eF9za2JfY2FjaGU6IGNhY2hlIGNvcHkgb2YgcmVjZW50
-bHkgYWNjZXNzZWQgVFggc2tiCiAgICoJQHNrX3NlY3VyaXR5OiB1c2VkIGJ5IHNlY3VyaXR5IG1v
-ZHVsZXMKICAgKglAc2tfbWFyazogZ2VuZXJpYyBwYWNrZXQgbWFyawogICAqCUBza19jZ3JwX2Rh
-dGE6IGNncm91cCBkYXRhIGZvciB0aGlzIGNncm91cApAQCAtMzkzLDcgKzM5MSw2IEBAIHN0cnVj
-dCBzb2NrIHsKIAlhdG9taWNfdAkJc2tfZHJvcHM7CiAJaW50CQkJc2tfcmN2bG93YXQ7CiAJc3Ry
-dWN0IHNrX2J1ZmZfaGVhZAlza19lcnJvcl9xdWV1ZTsKLQlzdHJ1Y3Qgc2tfYnVmZgkJKnNrX3J4
-X3NrYl9jYWNoZTsKIAlzdHJ1Y3Qgc2tfYnVmZl9oZWFkCXNrX3JlY2VpdmVfcXVldWU7CiAJLyoK
-IAkgKiBUaGUgYmFja2xvZyBxdWV1ZSBpcyBzcGVjaWFsLCBpdCBpcyBhbHdheXMgdXNlZCB3aXRo
-CkBAIC00NDIsNyArNDM5LDYgQEAgc3RydWN0IHNvY2sgewogCQlzdHJ1Y3Qgc2tfYnVmZgkqc2tf
-c2VuZF9oZWFkOwogCQlzdHJ1Y3QgcmJfcm9vdAl0Y3BfcnR4X3F1ZXVlOwogCX07Ci0Jc3RydWN0
-IHNrX2J1ZmYJCSpza190eF9za2JfY2FjaGU7CiAJc3RydWN0IHNrX2J1ZmZfaGVhZAlza193cml0
-ZV9xdWV1ZTsKIAlfX3MzMgkJCXNrX3BlZWtfb2ZmOwogCWludAkJCXNrX3dyaXRlX3BlbmRpbmc7
-CkBAIC0xNTU1LDE4ICsxNTUxLDEwIEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBza19tZW1fdW5jaGFy
-Z2Uoc3RydWN0IHNvY2sgKnNrLCBpbnQgc2l6ZSkKIAkJX19za19tZW1fcmVjbGFpbShzaywgMSA8
-PCAyMCk7CiB9CiAKLURFQ0xBUkVfU1RBVElDX0tFWV9GQUxTRSh0Y3BfdHhfc2tiX2NhY2hlX2tl
-eSk7CiBzdGF0aWMgaW5saW5lIHZvaWQgc2tfd21lbV9mcmVlX3NrYihzdHJ1Y3Qgc29jayAqc2ss
-IHN0cnVjdCBza19idWZmICpza2IpCiB7CiAJc2tfd21lbV9xdWV1ZWRfYWRkKHNrLCAtc2tiLT50
-cnVlc2l6ZSk7CiAJc2tfbWVtX3VuY2hhcmdlKHNrLCBza2ItPnRydWVzaXplKTsKLQlpZiAoc3Rh
-dGljX2JyYW5jaF91bmxpa2VseSgmdGNwX3R4X3NrYl9jYWNoZV9rZXkpICYmCi0JICAgICFzay0+
-c2tfdHhfc2tiX2NhY2hlICYmICFza2JfY2xvbmVkKHNrYikpIHsKLQkJc2tiX2V4dF9yZXNldChz
-a2IpOwotCQlza2JfemNvcHlfY2xlYXIoc2tiLCB0cnVlKTsKLQkJc2stPnNrX3R4X3NrYl9jYWNo
-ZSA9IHNrYjsKLQkJcmV0dXJuOwotCX0KIAlfX2tmcmVlX3NrYihza2IpOwogfQogCkBAIC0yNTc1
-LDcgKzI1NjMsNiBAQCBzdGF0aWMgaW5saW5lIHZvaWQgc2tiX3NldHVwX3R4X3RpbWVzdGFtcChz
-dHJ1Y3Qgc2tfYnVmZiAqc2tiLCBfX3UxNiB0c2ZsYWdzKQogCQkJICAgJnNrYl9zaGluZm8oc2ti
-KS0+dHNrZXkpOwogfQogCi1ERUNMQVJFX1NUQVRJQ19LRVlfRkFMU0UodGNwX3J4X3NrYl9jYWNo
-ZV9rZXkpOwogLyoqCiAgKiBza19lYXRfc2tiIC0gUmVsZWFzZSBhIHNrYiBpZiBpdCBpcyBubyBs
-b25nZXIgbmVlZGVkCiAgKiBAc2s6IHNvY2tldCB0byBlYXQgdGhpcyBza2IgZnJvbQpAQCAtMjU4
-NywxMiArMjU3NCw2IEBAIERFQ0xBUkVfU1RBVElDX0tFWV9GQUxTRSh0Y3Bfcnhfc2tiX2NhY2hl
-X2tleSk7CiBzdGF0aWMgaW5saW5lIHZvaWQgc2tfZWF0X3NrYihzdHJ1Y3Qgc29jayAqc2ssIHN0
-cnVjdCBza19idWZmICpza2IpCiB7CiAJX19za2JfdW5saW5rKHNrYiwgJnNrLT5za19yZWNlaXZl
-X3F1ZXVlKTsKLQlpZiAoc3RhdGljX2JyYW5jaF91bmxpa2VseSgmdGNwX3J4X3NrYl9jYWNoZV9r
-ZXkpICYmCi0JICAgICFzay0+c2tfcnhfc2tiX2NhY2hlKSB7Ci0JCXNrLT5za19yeF9za2JfY2Fj
-aGUgPSBza2I7Ci0JCXNrYl9vcnBoYW4oc2tiKTsKLQkJcmV0dXJuOwotCX0KIAlfX2tmcmVlX3Nr
-Yihza2IpOwogfQogCmRpZmYgLS1naXQgYS9uZXQvaXB2NC9hZl9pbmV0LmMgYi9uZXQvaXB2NC9h
-Zl9pbmV0LmMKaW5kZXggMWQ4MTZhNWZkM2ViOTE0ZTBlM2EwNzFhN2FlMTU5ZDczMTEwNzNmOC4u
-NDA1NTgwMzNmODU3YzBjYTdkOThiNzc4ZjcwNDg3ZTE5NGYzZDA2NiAxMDA2NDQKLS0tIGEvbmV0
-L2lwdjQvYWZfaW5ldC5jCisrKyBiL25ldC9pcHY0L2FmX2luZXQuYwpAQCAtMTMzLDEwICsxMzMs
-NiBAQCB2b2lkIGluZXRfc29ja19kZXN0cnVjdChzdHJ1Y3Qgc29jayAqc2spCiAJc3RydWN0IGlu
-ZXRfc29jayAqaW5ldCA9IGluZXRfc2soc2spOwogCiAJX19za2JfcXVldWVfcHVyZ2UoJnNrLT5z
-a19yZWNlaXZlX3F1ZXVlKTsKLQlpZiAoc2stPnNrX3J4X3NrYl9jYWNoZSkgewotCQlfX2tmcmVl
-X3NrYihzay0+c2tfcnhfc2tiX2NhY2hlKTsKLQkJc2stPnNrX3J4X3NrYl9jYWNoZSA9IE5VTEw7
-Ci0JfQogCV9fc2tiX3F1ZXVlX3B1cmdlKCZzay0+c2tfZXJyb3JfcXVldWUpOwogCiAJc2tfbWVt
-X3JlY2xhaW0oc2spOwpkaWZmIC0tZ2l0IGEvbmV0L2lwdjQvc3lzY3RsX25ldF9pcHY0LmMgYi9u
-ZXQvaXB2NC9zeXNjdGxfbmV0X2lwdjQuYwppbmRleCA2ZjFlNjRkNDkyMzI4Nzc3YmY4ZjE2N2I1
-NmMwMWJjOTZiMTgyZTk4Li42ZWI0M2RjOTEyMThjZWExNDEzNGI2NmRmZDIyMzJmZjI2NTliYWJi
-IDEwMDY0NAotLS0gYS9uZXQvaXB2NC9zeXNjdGxfbmV0X2lwdjQuYworKysgYi9uZXQvaXB2NC9z
-eXNjdGxfbmV0X2lwdjQuYwpAQCAtNTk0LDE4ICs1OTQsNiBAQCBzdGF0aWMgc3RydWN0IGN0bF90
-YWJsZSBpcHY0X3RhYmxlW10gPSB7CiAJCS5leHRyYTEJCT0gJnN5c2N0bF9maWJfc3luY19tZW1f
-bWluLAogCQkuZXh0cmEyCQk9ICZzeXNjdGxfZmliX3N5bmNfbWVtX21heCwKIAl9LAotCXsKLQkJ
-LnByb2NuYW1lCT0gInRjcF9yeF9za2JfY2FjaGUiLAotCQkuZGF0YQkJPSAmdGNwX3J4X3NrYl9j
-YWNoZV9rZXkua2V5LAotCQkubW9kZQkJPSAwNjQ0LAotCQkucHJvY19oYW5kbGVyCT0gcHJvY19k
-b19zdGF0aWNfa2V5LAotCX0sCi0JewotCQkucHJvY25hbWUJPSAidGNwX3R4X3NrYl9jYWNoZSIs
-Ci0JCS5kYXRhCQk9ICZ0Y3BfdHhfc2tiX2NhY2hlX2tleS5rZXksCi0JCS5tb2RlCQk9IDA2NDQs
-Ci0JCS5wcm9jX2hhbmRsZXIJPSBwcm9jX2RvX3N0YXRpY19rZXksCi0JfSwKIAl7IH0KIH07CiAK
-ZGlmZiAtLWdpdCBhL25ldC9pcHY0L3RjcC5jIGIvbmV0L2lwdjQvdGNwLmMKaW5kZXggZThiNDhk
-ZjczYzg1MmE0OGU1MTc1NGVhOThiMWUwOGJmMDI0YmI5ZS4uNGEzNzUwMGY0YmQ0NDIyYmRhMjYw
-OWRlNTIwYjgzMDU2YzJjYjAxYSAxMDA2NDQKLS0tIGEvbmV0L2lwdjQvdGNwLmMKKysrIGIvbmV0
-L2lwdjQvdGNwLmMKQEAgLTMyNSwxMSArMzI1LDYgQEAgc3RydWN0IHRjcF9zcGxpY2Vfc3RhdGUg
-ewogdW5zaWduZWQgbG9uZyB0Y3BfbWVtb3J5X3ByZXNzdXJlIF9fcmVhZF9tb3N0bHk7CiBFWFBP
-UlRfU1lNQk9MX0dQTCh0Y3BfbWVtb3J5X3ByZXNzdXJlKTsKIAotREVGSU5FX1NUQVRJQ19LRVlf
-RkFMU0UodGNwX3J4X3NrYl9jYWNoZV9rZXkpOwotRVhQT1JUX1NZTUJPTCh0Y3Bfcnhfc2tiX2Nh
-Y2hlX2tleSk7Ci0KLURFRklORV9TVEFUSUNfS0VZX0ZBTFNFKHRjcF90eF9za2JfY2FjaGVfa2V5
-KTsKLQogdm9pZCB0Y3BfZW50ZXJfbWVtb3J5X3ByZXNzdXJlKHN0cnVjdCBzb2NrICpzaykKIHsK
-IAl1bnNpZ25lZCBsb25nIHZhbDsKQEAgLTg2NiwxOCArODYxLDYgQEAgc3RydWN0IHNrX2J1ZmYg
-KnNrX3N0cmVhbV9hbGxvY19za2Ioc3RydWN0IHNvY2sgKnNrLCBpbnQgc2l6ZSwgZ2ZwX3QgZ2Zw
-LAogewogCXN0cnVjdCBza19idWZmICpza2I7CiAKLQlpZiAobGlrZWx5KCFzaXplKSkgewotCQlz
-a2IgPSBzay0+c2tfdHhfc2tiX2NhY2hlOwotCQlpZiAoc2tiKSB7Ci0JCQlza2ItPnRydWVzaXpl
-ID0gU0tCX1RSVUVTSVpFKHNrYl9lbmRfb2Zmc2V0KHNrYikpOwotCQkJc2stPnNrX3R4X3NrYl9j
-YWNoZSA9IE5VTEw7Ci0JCQlwc2tiX3RyaW0oc2tiLCAwKTsKLQkJCUlOSVRfTElTVF9IRUFEKCZz
-a2ItPnRjcF90c29ydGVkX2FuY2hvcik7Ci0JCQlza2Jfc2hpbmZvKHNrYiktPnR4X2ZsYWdzID0g
-MDsKLQkJCW1lbXNldChUQ1BfU0tCX0NCKHNrYiksIDAsIHNpemVvZihzdHJ1Y3QgdGNwX3NrYl9j
-YikpOwotCQkJcmV0dXJuIHNrYjsKLQkJfQotCX0KIAkvKiBUaGUgVENQIGhlYWRlciBtdXN0IGJl
-IGF0IGxlYXN0IDMyLWJpdCBhbGlnbmVkLiAgKi8KIAlzaXplID0gQUxJR04oc2l6ZSwgNCk7CiAK
-QEAgLTI5MjAsMTEgKzI5MDMsNiBAQCB2b2lkIHRjcF93cml0ZV9xdWV1ZV9wdXJnZShzdHJ1Y3Qg
-c29jayAqc2spCiAJCXNrX3dtZW1fZnJlZV9za2Ioc2ssIHNrYik7CiAJfQogCXRjcF9ydHhfcXVl
-dWVfcHVyZ2Uoc2spOwotCXNrYiA9IHNrLT5za190eF9za2JfY2FjaGU7Ci0JaWYgKHNrYikgewot
-CQlfX2tmcmVlX3NrYihza2IpOwotCQlzay0+c2tfdHhfc2tiX2NhY2hlID0gTlVMTDsKLQl9CiAJ
-SU5JVF9MSVNUX0hFQUQoJnRjcF9zayhzayktPnRzb3J0ZWRfc2VudF9xdWV1ZSk7CiAJc2tfbWVt
-X3JlY2xhaW0oc2spOwogCXRjcF9jbGVhcl9hbGxfcmV0cmFuc19oaW50cyh0Y3Bfc2soc2spKTsK
-QEAgLTI5NjEsMTAgKzI5MzksNiBAQCBpbnQgdGNwX2Rpc2Nvbm5lY3Qoc3RydWN0IHNvY2sgKnNr
-LCBpbnQgZmxhZ3MpCiAKIAl0Y3BfY2xlYXJfeG1pdF90aW1lcnMoc2spOwogCV9fc2tiX3F1ZXVl
-X3B1cmdlKCZzay0+c2tfcmVjZWl2ZV9xdWV1ZSk7Ci0JaWYgKHNrLT5za19yeF9za2JfY2FjaGUp
-IHsKLQkJX19rZnJlZV9za2Ioc2stPnNrX3J4X3NrYl9jYWNoZSk7Ci0JCXNrLT5za19yeF9za2Jf
-Y2FjaGUgPSBOVUxMOwotCX0KIAlXUklURV9PTkNFKHRwLT5jb3BpZWRfc2VxLCB0cC0+cmN2X254
-dCk7CiAJdHAtPnVyZ19kYXRhID0gMDsKIAl0Y3Bfd3JpdGVfcXVldWVfcHVyZ2Uoc2spOwpkaWZm
-IC0tZ2l0IGEvbmV0L2lwdjQvdGNwX2lwdjQuYyBiL25ldC9pcHY0L3RjcF9pcHY0LmMKaW5kZXgg
-MmU2MmUwZDYzNzNhNmVlNWQ5ODc1NmZiMTk2N2JmZjk3NDNmZmEwMi4uMjlhNTdiZDE1OWYwYWE5
-OWU4OTJiYWM1NmI3NTk2MWMxMDdmODAzYSAxMDA2NDQKLS0tIGEvbmV0L2lwdjQvdGNwX2lwdjQu
-YworKysgYi9uZXQvaXB2NC90Y3BfaXB2NC5jCkBAIC0xOTQxLDcgKzE5NDEsNiBAQCBzdGF0aWMg
-dm9pZCB0Y3BfdjRfZmlsbF9jYihzdHJ1Y3Qgc2tfYnVmZiAqc2tiLCBjb25zdCBzdHJ1Y3QgaXBo
-ZHIgKmlwaCwKIGludCB0Y3BfdjRfcmN2KHN0cnVjdCBza19idWZmICpza2IpCiB7CiAJc3RydWN0
-IG5ldCAqbmV0ID0gZGV2X25ldChza2ItPmRldik7Ci0Jc3RydWN0IHNrX2J1ZmYgKnNrYl90b19m
-cmVlOwogCWludCBzZGlmID0gaW5ldF9zZGlmKHNrYik7CiAJaW50IGRpZiA9IGluZXRfaWlmKHNr
-Yik7CiAJY29uc3Qgc3RydWN0IGlwaGRyICppcGg7CkBAIC0yMDgyLDE3ICsyMDgxLDEyIEBAIGlu
-dCB0Y3BfdjRfcmN2KHN0cnVjdCBza19idWZmICpza2IpCiAJdGNwX3NlZ3NfaW4odGNwX3NrKHNr
-KSwgc2tiKTsKIAlyZXQgPSAwOwogCWlmICghc29ja19vd25lZF9ieV91c2VyKHNrKSkgewotCQlz
-a2JfdG9fZnJlZSA9IHNrLT5za19yeF9za2JfY2FjaGU7Ci0JCXNrLT5za19yeF9za2JfY2FjaGUg
-PSBOVUxMOwogCQlyZXQgPSB0Y3BfdjRfZG9fcmN2KHNrLCBza2IpOwogCX0gZWxzZSB7CiAJCWlm
-ICh0Y3BfYWRkX2JhY2tsb2coc2ssIHNrYikpCiAJCQlnb3RvIGRpc2NhcmRfYW5kX3JlbHNlOwot
-CQlza2JfdG9fZnJlZSA9IE5VTEw7CiAJfQogCWJoX3VubG9ja19zb2NrKHNrKTsKLQlpZiAoc2ti
-X3RvX2ZyZWUpCi0JCV9fa2ZyZWVfc2tiKHNrYl90b19mcmVlKTsKIAogcHV0X2FuZF9yZXR1cm46
-CiAJaWYgKHJlZmNvdW50ZWQpCmRpZmYgLS1naXQgYS9uZXQvaXB2Ni90Y3BfaXB2Ni5jIGIvbmV0
-L2lwdjYvdGNwX2lwdjYuYwppbmRleCAwY2U1MmQ0NmU0ZjgxYjIyMWE2YWNkNGEwZGQ3YjBkNDYy
-ZGJhYzdhLi44Y2Y1ZmYyZTk1MDQzZWMxYTJiMjc2NjFhYWU4ODRlYjEzZGNmOWViIDEwMDY0NAot
-LS0gYS9uZXQvaXB2Ni90Y3BfaXB2Ni5jCisrKyBiL25ldC9pcHY2L3RjcF9pcHY2LmMKQEAgLTE2
-MTgsNyArMTYxOCw2IEBAIHN0YXRpYyB2b2lkIHRjcF92Nl9maWxsX2NiKHN0cnVjdCBza19idWZm
-ICpza2IsIGNvbnN0IHN0cnVjdCBpcHY2aGRyICpoZHIsCiAKIElORElSRUNUX0NBTExBQkxFX1ND
-T1BFIGludCB0Y3BfdjZfcmN2KHN0cnVjdCBza19idWZmICpza2IpCiB7Ci0Jc3RydWN0IHNrX2J1
-ZmYgKnNrYl90b19mcmVlOwogCWludCBzZGlmID0gaW5ldDZfc2RpZihza2IpOwogCWludCBkaWYg
-PSBpbmV0Nl9paWYoc2tiKTsKIAljb25zdCBzdHJ1Y3QgdGNwaGRyICp0aDsKQEAgLTE3NTQsMTcg
-KzE3NTMsMTIgQEAgSU5ESVJFQ1RfQ0FMTEFCTEVfU0NPUEUgaW50IHRjcF92Nl9yY3Yoc3RydWN0
-IHNrX2J1ZmYgKnNrYikKIAl0Y3Bfc2Vnc19pbih0Y3Bfc2soc2spLCBza2IpOwogCXJldCA9IDA7
-CiAJaWYgKCFzb2NrX293bmVkX2J5X3VzZXIoc2spKSB7Ci0JCXNrYl90b19mcmVlID0gc2stPnNr
-X3J4X3NrYl9jYWNoZTsKLQkJc2stPnNrX3J4X3NrYl9jYWNoZSA9IE5VTEw7CiAJCXJldCA9IHRj
-cF92Nl9kb19yY3Yoc2ssIHNrYik7CiAJfSBlbHNlIHsKIAkJaWYgKHRjcF9hZGRfYmFja2xvZyhz
-aywgc2tiKSkKIAkJCWdvdG8gZGlzY2FyZF9hbmRfcmVsc2U7Ci0JCXNrYl90b19mcmVlID0gTlVM
-TDsKIAl9CiAJYmhfdW5sb2NrX3NvY2soc2spOwotCWlmIChza2JfdG9fZnJlZSkKLQkJX19rZnJl
-ZV9za2Ioc2tiX3RvX2ZyZWUpOwogcHV0X2FuZF9yZXR1cm46CiAJaWYgKHJlZmNvdW50ZWQpCiAJ
-CXNvY2tfcHV0KHNrKTsKLS0gCjIuMzMuMC4xNTMuZ2JhNTBjOGZhMjQtZ29vZwoK
---0000000000003c433905caf08c8a--
+Changes in v3:
+* ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL was modified to
+  ATA_HORKAGE_NONCQ_ON_AMD.
+* Codes were fixed to completely disable NCQ on AMD controller.
+
+---
+ drivers/ata/libata-core.c | 34 ++++++++++++++++++++++++++++++++--
+ include/linux/libata.h    |  1 +
+ 2 files changed, 33 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+index 3eda3291952b..e2e900085f99 100644
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -2199,6 +2199,25 @@ static void ata_dev_config_ncq_prio(struct ata_device *dev)
+
+ }
+
++static bool ata_dev_check_adapter(struct ata_device *dev,
++				  unsigned short vendor_id)
++{
++	struct pci_dev *pcidev = NULL;
++	struct device *parent_dev = NULL;
++
++	for (parent_dev = dev->tdev.parent; parent_dev != NULL;
++	     parent_dev = parent_dev->parent) {
++		if (dev_is_pci(parent_dev)) {
++			pcidev = to_pci_dev(parent_dev);
++			if (pcidev->vendor == vendor_id)
++				return true;
++			break;
++		}
++	}
++
++	return false;
++}
++
+ static int ata_dev_config_ncq(struct ata_device *dev,
+ 			       char *desc, size_t desc_sz)
+ {
+@@ -2217,6 +2236,13 @@ static int ata_dev_config_ncq(struct ata_device *dev,
+ 		snprintf(desc, desc_sz, "NCQ (not used)");
+ 		return 0;
+ 	}
++
++	if (dev->horkage & ATA_HORKAGE_NO_NCQ_ON_AMD &&
++	    ata_dev_check_adapter(dev, PCI_VENDOR_ID_AMD)) {
++		snprintf(desc, desc_sz, "NCQ (not used)");
++		return 0;
++	}
++
+ 	if (ap->flags & ATA_FLAG_NCQ) {
+ 		hdepth = min(ap->scsi_host->can_queue, ATA_MAX_QUEUE);
+ 		dev->flags |= ATA_DFLAG_NCQ;
+@@ -3951,9 +3977,11 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
+ 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+-						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++						ATA_HORKAGE_ZERO_AFTER_TRIM |
++						ATA_HORKAGE_NO_NCQ_ON_AMD, },
+ 	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+-						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++						ATA_HORKAGE_ZERO_AFTER_TRIM |
++						ATA_HORKAGE_NO_NCQ_ON_AMD, },
+ 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+
+@@ -6108,6 +6136,8 @@ static int __init ata_parse_force_one(char **cur,
+ 		{ "ncq",	.horkage_off	= ATA_HORKAGE_NONCQ },
+ 		{ "noncqtrim",	.horkage_on	= ATA_HORKAGE_NO_NCQ_TRIM },
+ 		{ "ncqtrim",	.horkage_off	= ATA_HORKAGE_NO_NCQ_TRIM },
++		{ "noncqamd",	.horkage_on	= ATA_HORKAGE_NO_NCQ_ON_AMD },
++		{ "ncqamd",	.horkage_off	= ATA_HORKAGE_NO_NCQ_ON_AMD },
+ 		{ "dump_id",	.horkage_on	= ATA_HORKAGE_DUMP_ID },
+ 		{ "pio0",	.xfer_mask	= 1 << (ATA_SHIFT_PIO + 0) },
+ 		{ "pio1",	.xfer_mask	= 1 << (ATA_SHIFT_PIO + 1) },
+diff --git a/include/linux/libata.h b/include/linux/libata.h
+index 3fcd24236793..ef1417152ecd 100644
+--- a/include/linux/libata.h
++++ b/include/linux/libata.h
+@@ -422,6 +422,7 @@ enum {
+ 	ATA_HORKAGE_NOTRIM	= (1 << 24),	/* don't use TRIM */
+ 	ATA_HORKAGE_MAX_SEC_1024 = (1 << 25),	/* Limit max sects to 1024 */
+ 	ATA_HORKAGE_MAX_TRIM_128M = (1 << 26),	/* Limit max trim size to 128M */
++	ATA_HORKAGE_NO_NCQ_ON_AMD = (1 << 27),	/* Disable NCQ on AMD chipset */
+
+ 	 /* DMA mask for user DMA control: User visible values; DO NOT
+ 	    renumber */
+--
+2.31.1
+
