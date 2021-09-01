@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260BA3FD6BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5913FD6C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243572AbhIAJ1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:27:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243418AbhIAJ1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:27:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85E9060462;
-        Wed,  1 Sep 2021 09:26:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630488383;
-        bh=pqLXY4HtrR+J0Jdtegd/3av7bnGcsxFJPqwBnp716Vw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cDWR4Ox1Uj5CAp+emITgvgRtQT/K2gSvoFh+Qmdxm6lexS/oZ9Ik1NL9CtHuOtGIJ
-         xOMq/TDG4XZxkRCKgeKoE0dzvY6UbQpW4DKPDEr3PK4TW5cS7YrbbIlbAPtDrmZ2FH
-         bfbK1RO1mj5wnPaHOX0xD1tAFS3GMeoUlnck0qps=
-Date:   Wed, 1 Sep 2021 11:26:21 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Salvatore Bonaccorso <carnil@debian.org>
-Cc:     Benjamin Berg <benjamin@sipsolutions.net>,
-        linux-usb@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org, Benjamin Berg <bberg@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Ian Turner <vectro@vectro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH 0/2] UCSI race condition resulting in wrong port state
-Message-ID: <YS9HPQV3O6D9N7L/@kroah.com>
-References: <20201009144047.505957-1-benjamin@sipsolutions.net>
- <20201028091043.GC1947336@kroah.com>
- <20201106104725.GC2785199@kroah.com>
- <YR+nwZtz9CQuyTn+@lorien.valinor.li>
- <YSDtCea3a9cuaEG3@kroah.com>
- <YSD5JlFfAGyq5Fpk@eldamar.lan>
+        id S243555AbhIAJ3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:29:38 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:41261 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243314AbhIAJ3h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 05:29:37 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 71BA8580B31;
+        Wed,  1 Sep 2021 05:28:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 01 Sep 2021 05:28:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=hjKhFYSRanqW3ieK7WfmVCGe65O
+        txH7oj5QcwBwcF/I=; b=kH7ZD4TbENRfccCEhk7bbqWw/tR+TJRq4arDsT7sBoR
+        3Ag2qPqjOIprqEh1Ke4KKAjE0kpuXex8gafDEvmcxn6QxrX6ItPwEnpTVyR0n2e5
+        IlI84zbpa2VEBk81hVYqV6Yy0g48VNJp/Yen2YqbViQiDqJ3UP9Y8LHUwh2QQbhe
+        tSE5qCMFadYPmXMBGzNWr3WcWN7UwHihq1Ne9ygJw1ppgpTp2+GxDKU0znyvf6DN
+        9UzUGSqLJAyoCLPMblUBR4GqafOhHqEF3HA1Py3l0rL664j6sqV34jKROo4D4ayr
+        zAtVlCr6tBFBfjhyEzT3BVn1qIW7U+35WX383rcH8oA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=hjKhFY
+        SRanqW3ieK7WfmVCGe65OtxH7oj5QcwBwcF/I=; b=UUO4osKr4lAXGXmd/Wcgm2
+        XNCDf3I5+NYFvgw/jEQbEhnKTUtW+dFiMqGf9BcdR2N+VT49HXbqMXXScak9WmAM
+        AxDg/ERJ5Gwcl+tKi/uO1lS6iW12K5E9ZpsiLAb2vFE8qQDGybZfz2pK9QEJyEmr
+        1r/UPoAS9ev5gpO6eRkxpbvna/QBsJlYHRR31oYCU4ijFjTdJndCehytsmUhT7ig
+        j9tcnBVo4q9wWE9GTiikXMoZfs0k+qfuqlgvdhSrkAgew8nEU8Dnwar1tDey5kNs
+        Q6Ad4xYJBoLFomH1ybqfQjkVdyS/7KVBn1RO3zrqA0VdIAAoec+DDvIN9kMy2UAg
+        ==
+X-ME-Sender: <xms:xkcvYYNWVqd0R3X-VOb3eOudZ3OBdhL2zAItJT26y2xSYWiFRm5Big>
+    <xme:xkcvYe-jNnTjfaSZIfQTHonWcEylQqgSInpqSSyIgxYYwrJYs9Ly2IRtBDlwmviYf
+    CnLhpa-uttcOQ>
+X-ME-Received: <xmr:xkcvYfTeQOygYOs-XPacW2GqgX_RW_ZV0KQMdBvar8LnPQfO7kZl7Qqr6FMiESlbOmP-I08nCUKXBu2S01uBhUY7dUB_X_1a>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:xkcvYQuSwUVRjF46xtUj1idAMdICA_myxKthNPm2ukIxxLBbQbXaTA>
+    <xmx:xkcvYQfVCAXY_4NmVAEsPaiXWae3JWT9XIvC_N55DNoSg3VfFNdEbA>
+    <xmx:xkcvYU2agQmAgPDCp0CwpmOnManxPEMQAp0wxj5ec3VrXV-Vv9T4rg>
+    <xmx:yEcvYTxIAokmDCwRpkbj5FYb1sTxiMCuS7wTwV56pt1uq5vRePzb2g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 1 Sep 2021 05:28:37 -0400 (EDT)
+Date:   Wed, 1 Sep 2021 11:28:34 +0200
+From:   Greg KH <greg@kroah.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     stable@vger.kernel.org, Vladimir Oltean <olteanv@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:MEDIATEK SWITCH DRIVER" <netdev@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5.4.y] net: dsa: mt7530: fix VLAN traffic leaks again
+Message-ID: <YS9HwpC9TulUvps/@kroah.com>
+References: <20210823070928.166082-1-dqfext@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YSD5JlFfAGyq5Fpk@eldamar.lan>
+In-Reply-To: <20210823070928.166082-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 21, 2021 at 03:01:26PM +0200, Salvatore Bonaccorso wrote:
-> Hi Greg,
+On Mon, Aug 23, 2021 at 03:09:27PM +0800, DENG Qingfang wrote:
+> [ Upstream commit 7428022b50d0fbb4846dd0f00639ea09d36dff02 ]
 > 
-> On Sat, Aug 21, 2021 at 02:09:45PM +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Aug 20, 2021 at 03:01:53PM +0200, Salvatore Bonaccorso wrote:
-> > > Hi Greg,
-> > > 
-> > > On Fri, Nov 06, 2020 at 11:47:25AM +0100, Greg Kroah-Hartman wrote:
-> > 
-> > Note, you are responding to an email from a very long time ago...
+> When a port leaves a VLAN-aware bridge, the current code does not clear
+> other ports' matrix field bit. If the bridge is later set to VLAN-unaware
+> mode, traffic in the bridge may leak to that port.
 > 
-> Yeah, was sort of purpose :) (to try to retain the original context of
-> the question of if the commits should be backported to stable series,
-> which back then had no need raised)
-> > 
-> > > > Due to the lack of response, I guess they don't need to go to any stable
-> > > > kernel, so will queue them up for 5.11-rc1.
-> > > 
-> > > At least one user in Debian (https://bugs.debian.org/992004) would be
-> > > happy to have those backported as well to the 5.10.y series (which we
-> > > will pick up).
-> > > 
-> > > So if Benjamin ack's this, this would be great to have in 5.10.y.
-> > 
-> > What are the git commit ids?  Just ask for them to be applied to stable
-> > like normal...
+> Remove the VLAN filtering check in mt7530_port_bridge_leave.
 > 
-> Right, aplogies. The two commits were
-> 47ea2929d58c35598e681212311d35b240c373ce and
-> 217504a055325fe76ec1142aa15f14d3db77f94f.
-> 
-> 47ea2929d58c ("usb: typec: ucsi: acpi: Always decode connector change information")
-> 217504a05532 ("usb: typec: ucsi: Work around PPM losing change information")
-> 
-> and in the followup Benjamin Berg mentioned to pick as well
-> 
-> 8c9b3caab3ac26db1da00b8117901640c55a69dd
-> 
-> 8c9b3caab3ac ("usb: typec: ucsi: Clear pending after acking connector change"
-> 
-> a related fix later on.
+> Fixes: 4fe4e1f48ba1 ("net: dsa: mt7530: fix VLAN traffic leaks")
+> Fixes: 83163f7dca56 ("net: dsa: mediatek: add VLAN support for MT7530")
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> ---
+>  drivers/net/dsa/mt7530.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
 
-All now queued up, thanks.
+Now queued up, thanks.
 
 greg k-h
