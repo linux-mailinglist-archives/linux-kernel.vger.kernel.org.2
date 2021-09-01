@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E009C3FDA56
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 848943FDA58
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244949AbhIAMbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:31:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59128 "EHLO mail.kernel.org"
+        id S244684AbhIAMb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:31:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244814AbhIAMbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:31:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3635E6102A;
-        Wed,  1 Sep 2021 12:30:17 +0000 (UTC)
+        id S244553AbhIAMbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:31:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 735EF60ED4;
+        Wed,  1 Sep 2021 12:30:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499418;
-        bh=I/8/ZbWpVpbEdrVwOQYSSYv8537Th8fnrFZEP/HQ+Qk=;
+        s=korg; t=1630499420;
+        bh=ruLLpsZ3Tr9dJthoFc07VLF+kVx6VIGCCXpLxxFwBys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JGXhZ1kJ3BCrBeLOeWp7Zc0yI9pLUTZeEw86HUnKzagdCFO0qBYpXmfonMFexpMrk
-         38TQ8jvxvykg9WXqctjhord6kBiSaah1tfFVNIMrWkTINYGBUl+uvnx5uZddl47fRp
-         k4guCfXn8zcf81Qm5Uu6T7UKIDO4bFh7qxUoi60A=
+        b=sAun4PUMrGT8W7Y4J4SsYaL7AxrEexnQ3LI01IKgi8MQjZ3g4Wwg9tdUx3kt7KcDc
+         7UuC2+iBuhk8AwitIO8TKlBwChIOWmDaeh8T3lhcaeo42yhHtDL8zklXsoXJ+9cUlP
+         Sh9xL7JfJxjysx0uLU8d5B7A51CX+yKsYKxzUa24=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4.19 08/33] can: usb: esd_usb2: esd_usb2_rx_event(): fix the interchange of the CAN RX and TX error counters
-Date:   Wed,  1 Sep 2021 14:27:57 +0200
-Message-Id: <20210901122251.060612951@linuxfoundation.org>
+        =?UTF-8?q?Paul=20Gr=C3=B6=C3=9Fel?= <pb.g@gmx.de>,
+        Willy Tarreau <w@1wt.eu>, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 09/33] Revert "USB: serial: ch341: fix character loss at high transfer rates"
+Date:   Wed,  1 Sep 2021 14:27:58 +0200
+Message-Id: <20210901122251.093256277@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
 References: <20210901122250.752620302@linuxfoundation.org>
@@ -40,37 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Mätje <stefan.maetje@esd.eu>
+From: Johan Hovold <johan@kernel.org>
 
-commit 044012b52029204900af9e4230263418427f4ba4 upstream.
+commit df7b16d1c00ecb3da3a30c999cdb39f273c99a2f upstream.
 
-This patch fixes the interchanged fetch of the CAN RX and TX error
-counters from the ESD_EV_CAN_ERROR_EXT message. The RX error counter
-is really in struct rx_msg::data[2] and the TX error counter is in
-struct rx_msg::data[3].
+This reverts commit 3c18e9baee0ef97510dcda78c82285f52626764b.
 
-Fixes: 96d8e90382dc ("can: Add driver for esd CAN-USB/2 device")
-Link: https://lore.kernel.org/r/20210825215227.4947-2-stefan.maetje@esd.eu
+These devices do not appear to send a zero-length packet when the
+transfer size is a multiple of the bulk-endpoint max-packet size. This
+means that incoming data may not be processed by the driver until a
+short packet is received or the receive buffer is full.
+
+Revert back to using endpoint-sized receive buffers to avoid stalled
+reads.
+
+Reported-by: Paul Größel <pb.g@gmx.de>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214131
+Fixes: 3c18e9baee0e ("USB: serial: ch341: fix character loss at high transfer rates")
 Cc: stable@vger.kernel.org
-Signed-off-by: Stefan Mätje <stefan.maetje@esd.eu>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/r/20210824121926.19311-1-johan@kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/usb/esd_usb2.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/serial/ch341.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/net/can/usb/esd_usb2.c
-+++ b/drivers/net/can/usb/esd_usb2.c
-@@ -236,8 +236,8 @@ static void esd_usb2_rx_event(struct esd
- 	if (id == ESD_EV_CAN_ERROR_EXT) {
- 		u8 state = msg->msg.rx.data[0];
- 		u8 ecc = msg->msg.rx.data[1];
--		u8 txerr = msg->msg.rx.data[2];
--		u8 rxerr = msg->msg.rx.data[3];
-+		u8 rxerr = msg->msg.rx.data[2];
-+		u8 txerr = msg->msg.rx.data[3];
- 
- 		skb = alloc_can_err_skb(priv->netdev, &cf);
- 		if (skb == NULL) {
+--- a/drivers/usb/serial/ch341.c
++++ b/drivers/usb/serial/ch341.c
+@@ -625,7 +625,6 @@ static struct usb_serial_driver ch341_de
+ 		.owner	= THIS_MODULE,
+ 		.name	= "ch341-uart",
+ 	},
+-	.bulk_in_size      = 512,
+ 	.id_table          = id_table,
+ 	.num_ports         = 1,
+ 	.open              = ch341_open,
 
 
