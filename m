@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E02F3FDABB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3093C3FDA89
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245495AbhIAMeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:34:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34466 "EHLO mail.kernel.org"
+        id S245629AbhIAMc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:32:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244798AbhIAMcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:32:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 735F2610D1;
-        Wed,  1 Sep 2021 12:31:43 +0000 (UTC)
+        id S244903AbhIAMbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:31:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E93D61090;
+        Wed,  1 Sep 2021 12:30:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499503;
-        bh=+JjioTiCd889hspoR4SIIbCMbw3odDQq58xvRFmUezE=;
+        s=korg; t=1630499446;
+        bh=KZj7r2rwRatg88XVRLTbBU6z0+dYmS7JKKEcrlFzO9k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u6/ewQ3Uut91UFus7/eurphc0UDKHQHegKJE3JoAFIQzg9eWH9+bL8lm8Bs1YqczX
-         zDO7lHdSweSiGul857V4rcQYSN9i6+JkUa3+RZ4oh8+TN4ZrFKZ1JQ+SbWTHGvhOz1
-         QRFQD68CsXfDkLfoa9FG3lftWSesAqaYmmJbPPTg=
+        b=GT6eaFxTXo3UXZAYZFTfm19TUVoslg2yI0fwri2FQi89KWcVZQ0y0E5CLfHZsQaMe
+         COfYSAdsjN6acZPGrxgYo7SYPvdjC9XvvhpTcfr7EhCbWLRRlY2vnl60uLIcFPZICx
+         hsIBP/HYyQT7mqfcCHwfRg98MfXg6hiHyj/xqHV4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Ariel Elior <aelior@marvell.com>,
+        Shai Malin <smalin@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 24/48] net: hns3: fix get wrong pfc_en when query PFC configuration
+Subject: [PATCH 4.19 25/33] qed: Fix null-pointer dereference in qed_rdma_create_qp()
 Date:   Wed,  1 Sep 2021 14:28:14 +0200
-Message-Id: <20210901122254.214545592@linuxfoundation.org>
+Message-Id: <20210901122251.623743558@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
+References: <20210901122250.752620302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+From: Shai Malin <smalin@marvell.com>
 
-[ Upstream commit 8c1671e0d13d4a0ba4fb3a0da932bf3736d7ff73 ]
+[ Upstream commit d33d19d313d3466abdf8b0428be7837aff767802 ]
 
-Currently, when query PFC configuration by dcbtool, driver will return
-PFC enable status based on TC. As all priorities are mapped to TC0 by
-default, if TC0 is enabled, then all priorities mapped to TC0 will be
-shown as enabled status when query PFC setting, even though some
-priorities have never been set.
+Fix a possible null-pointer dereference in qed_rdma_create_qp().
 
-for example:
-$ dcb pfc show dev eth0
-pfc-cap 4 macsec-bypass off delay 0
-prio-pfc 0:off 1:off 2:off 3:off 4:off 5:off 6:off 7:off
-$ dcb pfc set dev eth0 prio-pfc 0:on 1:on 2:on 3:on
-$ dcb pfc show dev eth0
-pfc-cap 4 macsec-bypass off delay 0
-prio-pfc 0:on 1:on 2:on 3:on 4:on 5:on 6:on 7:on
+Changes from V2:
+- Revert checkpatch fixes.
 
-To fix this problem, just returns user's PFC config parameter saved in
-driver.
-
-Fixes: cacde272dd00 ("net: hns3: Add hclge_dcb module for the support of DCB feature")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c  | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ drivers/net/ethernet/qlogic/qed/qed_rdma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-index a1790af73096..d16488bab86f 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-@@ -281,21 +281,12 @@ static int hclge_ieee_getpfc(struct hnae3_handle *h, struct ieee_pfc *pfc)
- 	u64 requests[HNAE3_MAX_TC], indications[HNAE3_MAX_TC];
- 	struct hclge_vport *vport = hclge_get_vport(h);
- 	struct hclge_dev *hdev = vport->back;
--	u8 i, j, pfc_map, *prio_tc;
- 	int ret;
-+	u8 i;
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_rdma.c b/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+index 909422d93903..3392982ff374 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_rdma.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+@@ -1244,8 +1244,7 @@ qed_rdma_create_qp(void *rdma_cxt,
  
- 	memset(pfc, 0, sizeof(*pfc));
- 	pfc->pfc_cap = hdev->pfc_max;
--	prio_tc = hdev->tm_info.prio_tc;
--	pfc_map = hdev->tm_info.hw_pfc_map;
--
--	/* Pfc setting is based on TC */
--	for (i = 0; i < hdev->tm_info.num_tc; i++) {
--		for (j = 0; j < HNAE3_MAX_USER_PRIO; j++) {
--			if ((prio_tc[j] == i) && (pfc_map & BIT(i)))
--				pfc->pfc_en |= BIT(j);
--		}
--	}
-+	pfc->pfc_en = hdev->tm_info.pfc_en;
- 
- 	ret = hclge_pfc_tx_stats_get(hdev, requests);
- 	if (ret)
+ 	if (!rdma_cxt || !in_params || !out_params ||
+ 	    !p_hwfn->p_rdma_info->active) {
+-		DP_ERR(p_hwfn->cdev,
+-		       "qed roce create qp failed due to NULL entry (rdma_cxt=%p, in=%p, out=%p, roce_info=?\n",
++		pr_err("qed roce create qp failed due to NULL entry (rdma_cxt=%p, in=%p, out=%p, roce_info=?\n",
+ 		       rdma_cxt, in_params, out_params);
+ 		return NULL;
+ 	}
 -- 
 2.30.2
 
