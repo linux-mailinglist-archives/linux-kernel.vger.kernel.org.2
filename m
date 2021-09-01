@@ -2,117 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9043FD264
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4213FD26C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237938AbhIAEgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 00:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhIAEgw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 00:36:52 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF585C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 21:35:55 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id j4so3643251lfg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 21:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lhspy1Lcz1PiiBOGE+v1mcRdMh4tYchPF+3AL6Zubvk=;
-        b=J93QWDCZT6uuBqffhguCrmmulYwP0uLkMtoO28ijrPVTOU+0AhmYQRXxSmEtUWr6Jr
-         9MgdRl+11hjg+mUW4dhUv4dTavhx30vBmZgVeQG4qdf3fxJpANvQHaUHm6NaRqE78sho
-         qw8ZTRLNXUYvPIxw8vQ8fB6SKwgd5fACA+XHU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lhspy1Lcz1PiiBOGE+v1mcRdMh4tYchPF+3AL6Zubvk=;
-        b=YX1gWGhRlonDvnCbg8Z1jHbizeYQHPUtv65q0D3FTvDP1LJvhDBs2MIXO23deTWmTC
-         EK4c28jjkOMbvkhY9sUcljHpMJDt8X5lje1jUEZFFUhxlFt9xNOOLyZurLrI2SgSd84w
-         nj3hGLmIe3sXaV450Ecch8sr9EbcaqyNRWF+DkRl0ULMlUwV2fkUr40aFdToYkwY6GlE
-         5gHDTFu9QG+ghVEd4WI3aYtDn3nfcuB8v1NcPWkA5sUjLC97GcYzGNymzcwX8XqrHLJ2
-         Bj/3Nja2R4+wiyvsVIeBdtwHh4tTKgj3Zebc4nCpad7xwUPrJaqQzhPV2Laj/47fE0Gs
-         SP7Q==
-X-Gm-Message-State: AOAM531qSXx5paWJz8ASUJ7TqoTSh76+D5nMe3nCIfEKGaNVmSZX1U6e
-        pa/fX47H5fWOtVot0RZAr/VCis9dkTSllm8TT+D1nw==
-X-Google-Smtp-Source: ABdhPJwE4jWrVsnG8qdYIOadYpldVmY+nJaGWsWtd2ijWGWx7vBq3pDPcJJ8hJSsKuUwLelkLoQY0/YgYsZN8Cvigzk=
-X-Received: by 2002:a19:6455:: with SMTP id b21mr24188573lfj.656.1630470954146;
- Tue, 31 Aug 2021 21:35:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210830003603.31864-1-zhiyong.tao@mediatek.com> <20210830003603.31864-2-zhiyong.tao@mediatek.com>
-In-Reply-To: <20210830003603.31864-2-zhiyong.tao@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Wed, 1 Sep 2021 12:35:43 +0800
-Message-ID: <CAGXv+5HeNj2Ly-T1bWMvnYXv6nP-Q1kv+D9QEd+5u4xfNVibOg@mail.gmail.com>
-Subject: Re: [PATCH v11 1/4] dt-bindings: pinctrl: mt8195: add rsel define
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
-        Light Hsieh <light.hsieh@mediatek.com>,
-        Biao Huang <biao.huang@mediatek.com>,
-        Hongzhou Yang <hongzhou.yang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+        id S240845AbhIAEiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 00:38:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233950AbhIAEh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 00:37:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD4FC60724;
+        Wed,  1 Sep 2021 04:36:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630471020;
+        bh=aT6JhjBCj79ufOLB8poaueC1tfx6jSufgh0krfkhD7c=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Rw9yCsWJYPRZu+laX4QMpdBg49gmJ/oTHReH2vS279U1RVHMvrP2JHsNvNAfZk37E
+         v7QAcTYqi/+DYN3hpmWwH/yP27lw4Ax21JWHWwBoxQJjMmZjeiiqqMXuUJxEzvPGlh
+         oui5PFg+agU5XiUvzHI4yiL3/IjXhRVARUrRBSVuqlB+2t3xGyyEweDzWQA+yzj/5I
+         EH7+x0sK17pSTOxjfBfbHvoaPba9QCArPE1KGMvZnknnFepKn2s2Q/vT7Eu6V5r/OQ
+         6vPUvDSj0w9G9rHe3fIh+WhUHD2JN5qhy+rvqK7hy23/ce7vy2Yw3KJepi3/dRaTNo
+         T5e/vBwr7Xm9A==
+Message-ID: <e2c7eaceed715a92887b3d5aeafad01e047b6fab.camel@kernel.org>
+Subject: Re: [PATCH v4 00/12] Enroll kernel keys thru MOK
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Nayna <nayna@linux.vnet.ibm.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
+        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+        scott.branden@broadcom.com, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        lszubowi@redhat.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org, pjones@redhat.com,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        Patrick Uiterwijk <patrick@puiterwijk.org>
+Date:   Wed, 01 Sep 2021 07:36:58 +0300
+In-Reply-To: <18c0a9ca6b3ab8103e3b9270a6f59539787f6e12.camel@kernel.org>
+References: <20210819002109.534600-1-eric.snowberg@oracle.com>
+         <fcb30226f378ef12cd8bd15938f0af0e1a3977a2.camel@kernel.org>
+         <f76fcf41728fbdd65f2b3464df0821f248b2cba0.camel@linux.ibm.com>
+         <91B1FE51-C6FC-4ADF-B05A-B1E59E20132E@oracle.com>
+         <e7e251000432cf7c475e19c56b0f438b92fec16e.camel@linux.ibm.com>
+         <cedc77fefdf22b2cec086f3e0dd9cc698db9bca2.camel@kernel.org>
+         <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
+         <9526a4e0be9579a9e52064dd590a78c6496ee025.camel@linux.ibm.com>
+         <9067ff7142d097698b827f3c1630a751898a76bf.camel@kernel.org>
+         <bc37d1da3ef5aae16e69eeda25d6ce6fe6a51a77.camel@HansenPartnership.com>
+         <10bc1017-2b45-43f3-ad91-d09310b24c2c@linux.vnet.ibm.com>
+         <18c0a9ca6b3ab8103e3b9270a6f59539787f6e12.camel@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 8:36 AM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
->
-> This patch adds rsel define for mt8195.
->
-> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-> ---
->  include/dt-bindings/pinctrl/mt65xx.h | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/include/dt-bindings/pinctrl/mt65xx.h b/include/dt-bindings/pinctrl/mt65xx.h
-> index 7e16e58fe1f7..f5934abcd1bd 100644
-> --- a/include/dt-bindings/pinctrl/mt65xx.h
-> +++ b/include/dt-bindings/pinctrl/mt65xx.h
-> @@ -16,6 +16,15 @@
->  #define MTK_PUPD_SET_R1R0_10 102
->  #define MTK_PUPD_SET_R1R0_11 103
->
-> +#define MTK_PULL_SET_RSEL_000  200
-> +#define MTK_PULL_SET_RSEL_001  201
-> +#define MTK_PULL_SET_RSEL_010  202
-> +#define MTK_PULL_SET_RSEL_011  203
-> +#define MTK_PULL_SET_RSEL_100  204
-> +#define MTK_PULL_SET_RSEL_101  205
-> +#define MTK_PULL_SET_RSEL_110  206
-> +#define MTK_PULL_SET_RSEL_111  207
+On Wed, 2021-09-01 at 07:34 +0300, Jarkko Sakkinen wrote:
+> On Fri, 2021-08-27 at 16:44 -0400, Nayna wrote:
+> > On 8/25/21 6:27 PM, James Bottomley wrote:
+> > > On Thu, 2021-08-26 at 01:21 +0300, Jarkko Sakkinen wrote:
+> > > > On Tue, 2021-08-24 at 10:34 -0400, Mimi Zohar wrote:
+> > > > > > > > Jarkko, I think the emphasis should not be on "machine" fro=
+m
+> > > > > > > > Machine Owner Key (MOK), but on "owner".  Whereas Nayna is
+> > > > > > > > focusing more on the "_ca" aspect of the name.   Perhaps
+> > > > > > > > consider naming it "system_owner_ca" or something along tho=
+se
+> > > > > > > > lines.
+> > > > > > > What do you gain such overly long identifier? Makes no sense.
+> > > > > > > What is "ca aspect of the name" anyway?
+> > > > > > As I mentioned previously, the main usage of this new keyring i=
+s
+> > > > > > that it should contain only CA keys which can be later used to
+> > > > > > vouch for user keys loaded onto secondary or IMA keyring at
+> > > > > > runtime. Having ca in the  name like .xxxx_ca, would make the
+> > > > > > keyring name self-describing. Since you preferred .system, we c=
+an
+> > > > > > call it .system_ca.
+> > > > > Sounds good to me.  Jarkko?
+> > > > >=20
+> > > > > thanks,
+> > > > >=20
+> > > > > Mimi
+> > > > I just wonder what you exactly gain with "_ca"?
+> > > Remember, a CA cert is a self signed cert with the CA:TRUE basic
+> > > constraint.  Pretty much no secure boot key satisfies this (secure bo=
+ot
+> > > chose deliberately NOT to use CA certificates, so they're all some ty=
+pe
+> > > of intermediate or leaf), so the design seems to be only to pick out
+> > > the CA certificates you put in the MOK keyring.  Adding the _ca suffi=
+x
+> > > may deflect some of the "why aren't all my MOK certificates in the
+> > > keyring" emails ...
+> >=20
+> > My understanding is the .system_ca keyring should not be restricted onl=
+y=20
+> > to self-signed CAs (Root CA). Any cert that can qualify as Root or=20
+> > Intermediate CA with Basic Constraints CA:TRUE should be allowed. In=
+=20
+> > fact, the intermediate CA certificates closest to the leaf nodes would=
+=20
+> > be best.
+> >=20
+> > Thanks for bringing up that adding the _ca suffix may deflect some of=
+=20
+> > the "why aren't all my MOK certificates in the keyring" emails.
+>=20
+> What the heck is the pragamatic gain of adding such a suffix? Makes
+> zero sense
 
-Could you keep the spacing between constants tighter, or have no spacing
-at all? Like having MTK_PULL_SET_RSEL_000 defined as 104 and so on. This
-would reduce the chance of new macro values colliding with actual resistor
-values set in the datasheets, plus a contiguous space would be easy to
-rule as macros.
+If this series needs both "system" and "system_ca" keyrings, then
+there would be some sanity in this.
 
-ChenYu
+Also, I still *fully* lack understanding of the use of word system.
 
->  #define MTK_DRIVE_2mA  2
->  #define MTK_DRIVE_4mA  4
->  #define MTK_DRIVE_6mA  6
-> --
-> 2.18.0
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Why MOK is not SOK then??
+
+/Jarkko
