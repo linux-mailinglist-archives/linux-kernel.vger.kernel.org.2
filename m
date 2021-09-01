@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526A33FDAD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9313FDA93
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245583AbhIAMfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:35:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34838 "EHLO mail.kernel.org"
+        id S244757AbhIAMdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:33:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343500AbhIAMdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:33:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44F75610CA;
-        Wed,  1 Sep 2021 12:31:54 +0000 (UTC)
+        id S244545AbhIAMbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:31:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67FDF610C9;
+        Wed,  1 Sep 2021 12:30:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499514;
-        bh=KBtAVMP+VFpQhLREu6k36qT5cu56hxJkOwhYETtEKyw=;
+        s=korg; t=1630499457;
+        bh=FXLTM2FmsjARSgGovu0OGsj2PLrYLKUBTC4PYZF2IOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nHPG/sYWwG9yZikXQFdcTnLquph/nou2d9jmFnZQU0Urfbu/IHV0/TPZG0Y7QBaae
-         I6njvFRPNYt6d8ikB7iFs1PnXk3Ur335SgoyI1lQGCtQhyLk+0opH4kkLyrE2WrByW
-         7exZVVNZ7Jxu4Zu5f91qtqJ5iBOU+I6hxAxYGsnU=
+        b=j6p9Zlg0G1lJ7VbBrTiKJ05oDqnKNZ8ooe/vJ0GifL4FYzlJB1qoOVP6ZWhF6+h36
+         okqPxm4xNPZyXP1sKmhKlOmiM+xd+r2sKDJjP/QmPVldmq7Xdf6voPQucwpQMGbiM4
+         sd56AsRnEreZIEIoRWCQWhcWIHcBlbhxdQqbBjLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 28/48] opp: remove WARN when no valid OPPs remain
+        stable@vger.kernel.org, Minh Yuan <yuanmingbuaa@gmail.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 29/33] vt_kdsetmode: extend console locking
 Date:   Wed,  1 Sep 2021 14:28:18 +0200
-Message-Id: <20210901122254.340170509@linuxfoundation.org>
+Message-Id: <20210901122251.746981984@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
+References: <20210901122250.752620302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 335ffab3ef864539e814b9a2903b0ae420c1c067 ]
+commit 2287a51ba822384834dafc1c798453375d1107c7 upstream.
 
-This WARN can be triggered per-core and the stack trace is not useful.
-Replace it with plain dev_err(). Fix a comment while at it.
+As per the long-suffering comment.
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Minh Yuan <yuanmingbuaa@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/opp/of.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/tty/vt/vt_ioctl.c |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index 249738e1e0b7..603c688fe23d 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -682,8 +682,9 @@ static int _of_add_opp_table_v2(struct device *dev, struct opp_table *opp_table)
+--- a/drivers/tty/vt/vt_ioctl.c
++++ b/drivers/tty/vt/vt_ioctl.c
+@@ -484,16 +484,19 @@ int vt_ioctl(struct tty_struct *tty,
+ 			ret = -EINVAL;
+ 			goto out;
  		}
- 	}
- 
--	/* There should be one of more OPP defined */
--	if (WARN_ON(!count)) {
-+	/* There should be one or more OPPs defined */
-+	if (!count) {
-+		dev_err(dev, "%s: no supported OPPs", __func__);
- 		ret = -ENOENT;
- 		goto remove_static_opp;
- 	}
--- 
-2.30.2
-
+-		/* FIXME: this needs the console lock extending */
+-		if (vc->vc_mode == (unsigned char) arg)
++		console_lock();
++		if (vc->vc_mode == (unsigned char) arg) {
++			console_unlock();
+ 			break;
++		}
+ 		vc->vc_mode = (unsigned char) arg;
+-		if (console != fg_console)
++		if (console != fg_console) {
++			console_unlock();
+ 			break;
++		}
+ 		/*
+ 		 * explicitly blank/unblank the screen if switching modes
+ 		 */
+-		console_lock();
+ 		if (arg == KD_TEXT)
+ 			do_unblank_screen(1);
+ 		else
 
 
