@@ -2,146 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0973FD4D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8A73FD4DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242875AbhIAIDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:03:34 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:15281 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242876AbhIAIDF (ORCPT
+        id S242899AbhIAIDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:03:47 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14445 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242777AbhIAIDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:03:05 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GzxN42MPjz8D9C;
-        Wed,  1 Sep 2021 16:01:40 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 1 Sep 2021 16:01:55 +0800
-Received: from [127.0.0.1] (10.40.192.131) by dggemi759-chm.china.huawei.com
- (10.1.198.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 1 Sep
- 2021 16:01:54 +0800
-From:   luojiaxing <luojiaxing@huawei.com>
-Subject: Some concurrent actions cause __device_links_no_driver to report the
- warning calltrace.
-To:     <rafael.j.wysocki@intel.com>, <linux-pm@vger.kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <02b78c8a-82e8-94d1-efe6-a1510e5f884d@huawei.com>
-Date:   Wed, 1 Sep 2021 16:01:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Wed, 1 Sep 2021 04:03:41 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GzxJj1BmyzbdQC;
+        Wed,  1 Sep 2021 15:58:45 +0800 (CST)
+Received: from [10.174.178.75] (10.174.178.75) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Wed, 1 Sep 2021 16:02:40 +0800
+Subject: Re: [PATCH 5/6] mm/page_alloc.c: avoid accessing uninitialized pcp
+ page migratetype
+To:     David Hildenbrand <david@redhat.com>
+CC:     <akpm@linux-foundation.org>, <vbabka@suse.cz>,
+        <sfr@canb.auug.org.au>, <peterz@infradead.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+References: <20210830141051.64090-1-linmiaohe@huawei.com>
+ <20210830141051.64090-6-linmiaohe@huawei.com>
+ <20210831134311.GG4128@techsingularity.net>
+ <877b7043-65c3-5e08-ac89-ad6f10e354b3@redhat.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <f801cd23-6897-53c7-a689-2ade60578d7e@huawei.com>
+Date:   Wed, 1 Sep 2021 16:02:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <877b7043-65c3-5e08-ac89-ad6f10e354b3@redhat.com>
+Content-Type: text/plain; charset="iso-8859-15"
 Content-Language: en-US
-X-Originating-IP: [10.40.192.131]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.75]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, rafael
+On 2021/8/31 22:23, David Hildenbrand wrote:
+> On 31.08.21 15:43, Mel Gorman wrote:
+>> On Mon, Aug 30, 2021 at 10:10:50PM +0800, Miaohe Lin wrote:
+>>> If it's not prepared to free unref page, the pcp page migratetype is
+>>> unset. Thus We will get rubbish from get_pcppage_migratetype() and
+>>> might list_del &page->lru again after it's already deleted from the
+>>> list leading to grumble about data corruption.
+>>>
+>>> Fixes: 3dcbe270d8ec ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
+>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>
+>> Acked-by: Mel Gorman <mgorman@techsingularity.net>
+>>
+>> This fix is fairly important. Take this patch out and send it on its own
+>> so it gets picked up relatively quickly. It does not belong in a series
+>> that is mostly cosmetic cleanups.
+> 
+> I think the commit id is wrong. Shouldn't that be
+> 
+> df1acc856923 ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
+> 
+> ?
+> 
 
+Many thanks for pointing this out.
 
-I found one issue about device link, and want to ask for your help.
+I used to save the git log in a file to make life easier. But it seems this leads
+to the old commit id above.
 
+commit 3dcbe270d8ec57e534f5c605279cdc3ceb1f044a
+Author: Mel Gorman <mgorman@techsingularity.net>
+Date:   Fri Jun 4 14:20:03 2021 +1000
 
-During the kernel test recently, we find that some concurrent actions 
-generate a calltrace, as shown in the following:
+    mm/page_alloc: avoid conflating IRQs disabled with zone->lock
 
-<4>[  606.102307] WARNING: CPU: 0 PID: 7 at drivers/base/core.c:1339 
-__device_links_no_driver+0x138/0x170
-<4>[  606.284685] Call trace:
-<4>[  606.287122]  __device_links_no_driver+0x138/0x170
-<4>[  606.291804]  device_links_driver_cleanup+0xb0/0xfc
-<4>[  606.296575]  __device_release_driver+0x148/0x1d8
-<4>[  606.301173]  device_release_driver+0x38/0x50
-<4>[  606.305423]  bus_remove_device+0x130/0x140
-<4>[  606.309502]  device_del+0x174/0x430
-<4>[  606.312975]  __scsi_remove_device+0x114/0x14c
-<4>[  606.317313]  scsi_remove_target+0x1bc/0x240
-<4>[  606.321469]  sas_rphy_remove+0x90/0x94
-<4>[  606.325202]  sas_rphy_delete+0x44/0x5c
-<4>[  606.328935]  sas_destruct_devices+0x64/0xa0 [libsas]
-<4>[  606.333883]  sas_revalidate_domain+0xf8/0x1d0 [libsas]
-<4>[  606.339002]  process_one_work+0x1dc/0x48c
-<4>[  606.342994]  worker_thread+0x15c/0x464
-<4>[  606.346726]  kthread+0x168/0x16c
-<4>[  606.349940]  ret_from_fork+0x10/0x18
-<4>[  606.353502] ---[ end trace cceb4f5db8bdcd25 ]---
+git name-rev 3dcbe270d8ec
+3dcbe270d8ec tags/next-20210604~2^2~196
 
+vs
 
-The test method is to rmmod device driver and perform hard reset on the 
-hard disk at the same time.
+commit df1acc856923c0a65c28b588585449106c316b71
+Author: Mel Gorman <mgorman@techsingularity.net>
+Date:   Mon Jun 28 19:42:00 2021 -0700
 
+    mm/page_alloc: avoid conflating IRQs disabled with zone->lock
 
-We know device_links_unbind_consumers() is called during rmmod device 
-driver to release all consumers under the device in sequence.
+git name-rev df1acc856923
+df1acc856923 tags/next-20210630~2^2~278
 
-As we are storage controller driver, so it look as follows:
-
-supplier: storage controller
-
-consumer: sda->sdb->sdc...
-
-As the device_links_unbind_consumers () releases the consumer device in 
-serial mode. If a concurrent action is performed to hard reset a hard 
-disk, as the following software call stack show :
-
-scsi_remove_target->device_del->bus_remove_device->device_release_driver->__device_links_no_driver().
-
-The hardreset process also calls __device_links_no_driver.
-
-Assume that device_links_unbind_consumers () is releasing sda and sdb is 
-queuing, but scsi_remove_target() calls __device_links_no_driver() to 
-release sdb in advance.Then a warning calltrace is generated.
-
-We got some further analysis, it shows that sdb's link->status is now 
-DL_STATE_ACTIVE(sda's sdb's link->status is modified to 
-DL_STATE_SUPPLIER_UNBIND by device_links_unbind_consumers).
-
-The if() in the following code will be false and pass through.
-
-if (link->status != DL_STATE_CONSUMER_PROBE &&
-     link->status != DL_STATE_ACTIVE)
-     continue;
-
-Since link->supplier->links.status has been set to DL_DEV_UNBINDING, 
-next code enters the else branch.
-
-if (link->supplier->links.status == DL_DEV_DRIVER_BOUND) {
-         WRITE_ONCE(link->status, DL_STATE_AVAILABLE);
-} else {
-         WARN_ON(!(link->flags & DL_FLAG_SYNC_STATE_ONLY));
-         WRITE_ONCE(link->status, DL_STATE_DORMANT);
-}
-
-
-Because link->flags is set to DL_FLAG_MANAGED, calltrace is generated 
-based on WARN_ON.
-
-
-In conclusion, we know that the call trace is generated because 
-link->supplier->links.status and link->status are not modified 
-synchronously.
-
-After link->supplier->links.status is changed to DL_DEV_UNBINDING, the 
-value of link->status is changed to DL_STATE_SUPPLIER_UNBIND in sequence.
-
-During this time difference, if a concurrent kernel thread invokes 
-__device_links_no_driver, warning calltrace will occurs.
-
-
-I wonder if there is any way to solve this warning call trace?
-
-
-Thanks
-
-Jiaxing
-
-
-
+Their contents are same but with different commit id. The previous one
+could have been git-rebased.
