@@ -2,79 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BBD3FD873
+	by mail.lfdr.de (Postfix) with ESMTP id CFDFC3FD875
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234640AbhIALKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 07:10:54 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:45438 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232095AbhIALIx (ORCPT
+        id S238988AbhIALK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 07:10:57 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46274 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237050AbhIALKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 07:08:53 -0400
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1671B3D7;
-        Wed,  1 Sep 2021 13:07:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1630494475;
-        bh=t3+akF/1OktgGWbEpyZiTnFe8I2naccDbiRpGqMi/+Y=;
-        h=Subject:To:Cc:References:From:Reply-To:Date:In-Reply-To:From;
-        b=mo2PGXkTOFQUc7xDNbYcoxvuQPp88vr0E+OXPddDYxL4eFsmlBDw46DwnpfspJJfz
-         qv3Jsi0CwOZAGeNum/zs2c5jdu7yLl1q0kyVNb/MU0ywIf+APLq1tylfXmMT1ZTGdu
-         zrIV5wCeQmX/SNs1fafKg5D7n/DS6SuVH4K9efos=
-Subject: Re: [PATCH] media: rcar-csi2: Make use of the helper function
- devm_platform_ioremap_resource()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210901055510.7279-1-caihuoqing@baidu.com>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Organization: Ideas on Board
-Message-ID: <91a4539d-0ebb-c24c-583f-e356d42c3ea8@ideasonboard.com>
-Date:   Wed, 1 Sep 2021 12:07:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 1 Sep 2021 07:10:32 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 220871C0B76; Wed,  1 Sep 2021 13:09:30 +0200 (CEST)
+Date:   Wed, 1 Sep 2021 13:09:29 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     "hamza.farooq@siemens.com" <hamza.farooq@siemens.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "henning.schild@siemens.com" <henning.schild@siemens.com>,
+        "jan.kiszka@siemens.com" <jan.kiszka@siemens.com>,
+        "Haeussler, Gerd" <gerd.haeussler.ext@siemens.com>
+Subject: Re: Define LEDs with mixed colors
+Message-ID: <20210901110929.GA18522@duo.ucw.cz>
+References: <DBAPR10MB42195CA4E52FDD30F0598AE98ACD9@DBAPR10MB4219.EURPRD10.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-In-Reply-To: <20210901055510.7279-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Disposition: inline
+In-Reply-To: <DBAPR10MB42195CA4E52FDD30F0598AE98ACD9@DBAPR10MB4219.EURPRD10.PROD.OUTLOOK.COM>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/2021 06:55, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  drivers/media/platform/rcar-vin/rcar-csi2.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> index 711b52ba42b5..a4952711b7b1 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-csi2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
-> @@ -1238,11 +1238,9 @@ static const struct media_entity_operations rcar_csi2_entity_ops = {
->  static int rcsi2_probe_resources(struct rcar_csi2 *priv,
->  				 struct platform_device *pdev)
->  {
-> -	struct resource *res;
->  	int irq, ret;
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	priv->base = devm_ioremap_resource(&pdev->dev, res);
-> +	priv->base = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(priv->base))
->  		return PTR_ERR(priv->base);
->  
-> 
+Hi!
 
+> I am toying with the idea of writing a multicolor LED GPIO driver. What w=
+ould be the right way to define mixed color LEDs (for leds-gpio), in device=
+ tree or ACPI?
+> Consider the following:
+>=20
+> leds {
+> 	compatible =3D "gpio-leds";
+> 	led0 {
+> 		gpios =3D <&mcu_pio 0 GPIO_ACTIVE_LOW>;
+> 		color =3D <LED_COLOR_ID_RED>;
+> 	};
+>=20
+> 	led1 {
+> 		gpios =3D <&mcu_pio 1 GPIO_ACTIVE_HIGH>;
+> 		color =3D <LED_COLOR_ID_GREEN>;
+> 	};
+> 	led2 {
+> 		gpios =3D <&mcu_pio 0 GPIO_ACTIVE_LOW
+> 			&mcu_pio 1 GPIO_ACTIVE_LOW>;
+> 		color =3D <LED_COLOR_ID_AMBER>;
+> 	};
+> };
+>=20
+> This probably won't work as "gpios" seem to be single object in gpio-leds=
+ driver code, but what can I do to achieve something similar?
+> It is important to define this LED in DT/ACPI in order for the user app t=
+o see it in the /sys/class/led folder, without having to write platform-spe=
+cific driver.
+>=20
+
+So you have one package with red and green LED, each connected to one
+GPIO?
+
+Can you take a look at Documentation/leds/leds-class-multicolor.rst?
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--EeQfGwPcQSOJBaQU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYS9faQAKCRAw5/Bqldv6
+8nVoAKCrWFL/Byw2H13dqN2vky8qfvlLnQCcD5X4J8/q3K060nGud0YOCgjvmt4=
+=TOrG
+-----END PGP SIGNATURE-----
+
+--EeQfGwPcQSOJBaQU--
