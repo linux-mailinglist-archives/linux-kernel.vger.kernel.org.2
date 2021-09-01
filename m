@@ -2,175 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A177F3FDFF8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 646283FE003
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245407AbhIAQeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:34:02 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1412 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232876AbhIAQeA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:34:00 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181G2lEV135862;
-        Wed, 1 Sep 2021 12:31:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : content-transfer-encoding : mime-version; s=pp1;
- bh=OK+UoipCQDRdmNhN8LKNcQBV5QECX7QgiiXDE1CWxU4=;
- b=T1/wsVCAR6dwC7SzPZYMOAO5GTEbQSnxFhT81B6soLD+eKCBveIYN31YbsCdcLgSeJM7
- IiNa/gjwakk9gXurnmUrrKxhpBqGHrmmzmyAFW9y3IgP7AR6FTe/ey7gj9gupIjx9yfZ
- VPdnjvrQcSWDQmY3faT/ZQ0+1O4kl5nkwRnBP8kX9tBkCfiKeLmK7UJIi186w+ekSpbm
- 6pYuT/Ds8yZvveCZqDh5Uua+H3yCi5WrG56Hd5pSDOrBBQSdoYo4hkGwnwBdwlE1Btrc
- dkG/0VhKFsZkyzU0a5mcK3u4gcoIHLptaJTR4WzGPp4hOixR9kdvdyLHip5Iizmod0Nc mA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3atafaddbw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 12:31:55 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 181G3ViV146149;
-        Wed, 1 Sep 2021 12:31:54 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3atafaddbf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 12:31:54 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 181GE1RM001502;
-        Wed, 1 Sep 2021 16:31:53 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma01wdc.us.ibm.com with ESMTP id 3aqcsdd4vd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 16:31:53 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 181GVqAW42074462
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Sep 2021 16:31:53 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D56857806B;
-        Wed,  1 Sep 2021 16:31:52 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3F6C17805E;
-        Wed,  1 Sep 2021 16:31:50 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.211.89.117])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  1 Sep 2021 16:31:50 +0000 (GMT)
-Message-ID: <0d6b2a7e22f5e27e03abc21795124ccd66655966.camel@linux.ibm.com>
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
- private memory
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     David Hildenbrand <david@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-Date:   Wed, 01 Sep 2021 09:31:49 -0700
-In-Reply-To: <a259e10d-39c9-c4a5-0ab4-f42a1b9bfaee@redhat.com>
-References: <20210824005248.200037-1-seanjc@google.com>
-         <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
-         <YSlkzLblHfiiPyVM@google.com>
-         <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
-         <YS6lIg6kjNPI1EgF@google.com>
-         <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
-         <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
-         <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
-         <a259e10d-39c9-c4a5-0ab4-f42a1b9bfaee@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 740NiI5iGR3hYxkUmw29dddhY5YGUAGA
-X-Proofpoint-GUID: u2xUgjuS-M1puQAP-rLX-ZO2m8UUaaDN
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-01_05:2021-09-01,2021-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 bulkscore=0 adultscore=0 impostorscore=0 spamscore=0
- suspectscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2109010094
+        id S232911AbhIAQgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:36:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245484AbhIAQeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 12:34:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1683661058;
+        Wed,  1 Sep 2021 16:33:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630513993;
+        bh=s2TucavZsd7zUPmOZwYMPKcyDfCf62bBfnuuMIJxfl4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LM6CZABzFl2LauwI67IXNiOC/pAh4lg3Y8W+lj9VBwMEpEKGvm7hhlz504bCsMhMz
+         9y85JFx04V6FwQLgOclNxr0Hy3OTyq842bi1PGNJlvWIDAeOs28Fa7x6SNVcMBt9wg
+         b1fsI+hCHhiwrtjcCdgfYpYSkOaEhvwAVIS+zydEtvhehpTNLfF3THpsRfngGq2kwT
+         XIrq41mjyrNa7V9FEjFWbrxp2kMMfGUU40WPDMBIUnSuXa0gD+q1RkEt5u1YJz6OjF
+         NEvUj6gQZ6mJGKTAOzM55SKoRmm5l9mC5yuabX0dS4fqIyJVccxqCyxxW8fn9yFG03
+         ngcAZ983zc5lA==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH 1/2] habanalabs: fix potential race in interrupt wait ioctl
+Date:   Wed,  1 Sep 2021 19:33:08 +0300
+Message-Id: <20210901163309.112126-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-01 at 18:22 +0200, David Hildenbrand wrote:
-> On 01.09.21 18:18, James Bottomley wrote:
-> > On Wed, 2021-09-01 at 08:54 -0700, Andy Lutomirski wrote:
-> > [...]
-> > > If you want to swap a page on TDX, you can't.  Sorry, go directly
-> > > to jail, do not collect $200.
-> > 
-> > Actually, even on SEV-ES you can't either.  You can read the
-> > encrypted page and write it out if you want, but unless you swap it
-> > back to the exact same physical memory location, the encryption key
-> > won't work.  Since we don't guarantee this for swap, I think swap
-> > won't actually work for any confidential computing environment.
-> > 
-> > > So I think there are literally zero code paths that currently
-> > > call try_to_unmap() that will actually work like that on TDX.  If
-> > > we run out of memory on a TDX host, we can kill the guest
-> > > completely and reclaim all of its memory (which probably also
-> > > involves killing QEMU or whatever other user program is in
-> > > charge), but that's really our only option.
-> > 
-> > I think our only option for swap is guest co-operation.  We're
-> > going to have to inflate a balloon or something in the guest and
-> > have the guest driver do some type of bounce of the page, where it
-> > becomes an unencrypted page in the guest (so the host can read it
-> > without the physical address keying of the encryption getting in
-> > the way) but actually encrypted with a swap transfer key known only
-> > to the guest.  I assume we can use the page acceptance
-> > infrastructure currently being discussed elsewhere to do swap back
-> > in as well ... the host provides the guest with the encrypted swap
-> > page and the guest has to decrypt it and place it in encrypted
-> > guest memory.
-> 
-> Ballooning is indeed *the* mechanism to avoid swapping in the
-> hypervisor  and much rather let the guest swap. Shame it requires
-> trusting a guest, which we, in general, can't. Not to mention other
-> issues we already do have with ballooning (latency, broken auto-
-> ballooning, over-inflating, ...).
+From: Ofir Bitton <obitton@habana.ai>
 
+We have a potential race where a user interrupt can be received
+in between user thread value comparison and before request was
+added to wait list. This means that if no consecutive interrupt
+will be received, user thread will timeout and fail.
 
-Well not necessarily, but it depends how clever we want to get.  If you
-look over on the OVMF/edk2 list, there's a proposal to do guest
-migration via a mirror VM that invokes a co-routine embedded in the
-OVMF binary:
+The solution is to add the request to wait list before we
+perform the comparison.
 
-https://patchew.org/EDK2/20210818212048.162626-1-tobin@linux.ibm.com/
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ .../habanalabs/common/command_submission.c    | 35 +++++++++++--------
+ 1 file changed, 21 insertions(+), 14 deletions(-)
 
-This gives us a page encryption mechanism that's provided by the host
-but accepted via the guest using attestation, meaning we have a
-mutually trusted piece of code that can use to extract encrypted pages.
-It does seem it could be enhanced to do swapping for us as well if
-that's a road we want to go down?
-
-James
-
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index 7b0516cf808b..9a8b9191c28c 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -2740,10 +2740,20 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	else
+ 		interrupt = &hdev->user_interrupt[interrupt_offset];
+ 
++	/* Add pending user interrupt to relevant list for the interrupt
++	 * handler to monitor
++	 */
++	spin_lock_irqsave(&interrupt->wait_list_lock, flags);
++	list_add_tail(&pend->wait_list_node, &interrupt->wait_list_head);
++	spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
++
++	/* We check for completion value as interrupt could have been received
++	 * before we added the node to the wait list
++	 */
+ 	if (copy_from_user(&completion_value, u64_to_user_ptr(user_address), 4)) {
+ 		dev_err(hdev->dev, "Failed to copy completion value from user\n");
+ 		rc = -EFAULT;
+-		goto free_fence;
++		goto remove_pending_user_interrupt;
+ 	}
+ 
+ 	if (completion_value >= target_value)
+@@ -2752,14 +2762,7 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ 		*status = CS_WAIT_STATUS_BUSY;
+ 
+ 	if (!timeout_us || (*status == CS_WAIT_STATUS_COMPLETED))
+-		goto free_fence;
+-
+-	/* Add pending user interrupt to relevant list for the interrupt
+-	 * handler to monitor
+-	 */
+-	spin_lock_irqsave(&interrupt->wait_list_lock, flags);
+-	list_add_tail(&pend->wait_list_node, &interrupt->wait_list_head);
+-	spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
++		goto remove_pending_user_interrupt;
+ 
+ wait_again:
+ 	/* Wait for interrupt handler to signal completion */
+@@ -2770,6 +2773,15 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	 * If comparison fails, keep waiting until timeout expires
+ 	 */
+ 	if (completion_rc > 0) {
++		spin_lock_irqsave(&interrupt->wait_list_lock, flags);
++		/* reinit_completion must be called before we check for user
++		 * completion value, otherwise, if interrupt is received after
++		 * the comparison and before the next wait_for_completion,
++		 * we will reach timeout and fail
++		 */
++		reinit_completion(&pend->fence.completion);
++		spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
++
+ 		if (copy_from_user(&completion_value, u64_to_user_ptr(user_address), 4)) {
+ 			dev_err(hdev->dev, "Failed to copy completion value from user\n");
+ 			rc = -EFAULT;
+@@ -2780,11 +2792,7 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ 		if (completion_value >= target_value) {
+ 			*status = CS_WAIT_STATUS_COMPLETED;
+ 		} else {
+-			spin_lock_irqsave(&interrupt->wait_list_lock, flags);
+-			reinit_completion(&pend->fence.completion);
+ 			timeout = completion_rc;
+-
+-			spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
+ 			goto wait_again;
+ 		}
+ 	} else if (completion_rc == -ERESTARTSYS) {
+@@ -2802,7 +2810,6 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	list_del(&pend->wait_list_node);
+ 	spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
+ 
+-free_fence:
+ 	kfree(pend);
+ 	hl_ctx_put(ctx);
+ 
+-- 
+2.17.1
 
