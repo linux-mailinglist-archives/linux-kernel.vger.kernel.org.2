@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650CE3FDAAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0023FDC65
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343587AbhIAMd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:33:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34264 "EHLO mail.kernel.org"
+        id S1346324AbhIAMtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:49:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244894AbhIAMcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:32:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3571C610CB;
-        Wed,  1 Sep 2021 12:31:28 +0000 (UTC)
+        id S1346011AbhIAMqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:46:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1244C610A4;
+        Wed,  1 Sep 2021 12:39:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499488;
-        bh=y0MmNWgRX5chVEjGuxM4JFyJqnnnRcqhozuIp+eYBb8=;
+        s=korg; t=1630499975;
+        bh=ByzqMabcrb7u0/9gS2Wcg3528tlofZxVs8tV5FBWh6M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2rn6SGvT6mDXOwHnZyvXH7dOjBTVi/3C3V2z8TZOgCYfVY24krcQTT34fqfbGzp5j
-         n8EXfwpfZZST6QNLw7rP5oGKYv6WGpL6C3mTYBPP7EvbHCEu6JkbXAetkBPGudUqDq
-         5owhndyzuNRt5CXyKsUjiIkBg0XREPEVM6YYvrkA=
+        b=IyZH8+CYYFVqC0UNAbblVbuYyOKJZ5x+brC9hmvpX3VDlzn/tg9mFQH3F0ECQFEsi
+         rIRPBCINdSC+NUhQY4LBeKwFBBHgEjnvspuLqXN2PbQzLO8DM67nJeJvb+OFZBtcbM
+         QwFFnUWnJFbpK0K0xYmg1p8ehQhdNCa/9eKb4T64=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Keyu Man <kman001@ucr.edu>, Wei Wang <weiwan@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 19/48] xgene-v2: Fix a resource leak in the error handling path of xge_probe()
+Subject: [PATCH 5.13 054/113] ipv6: use siphash in rt6_exception_hash()
 Date:   Wed,  1 Sep 2021 14:28:09 +0200
-Message-Id: <20210901122254.031128609@linuxfoundation.org>
+Message-Id: <20210901122303.774057853@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +42,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 5ed74b03eb4d08f5dd281dcb5f1c9bb92b363a8d ]
+[ Upstream commit 4785305c05b25a242e5314cc821f54ade4c18810 ]
 
-A successful 'xge_mdio_config()' call should be balanced by a corresponding
-'xge_mdio_remove()' call in the error handling path of the probe, as
-already done in the remove function.
+A group of security researchers brought to our attention
+the weakness of hash function used in rt6_exception_hash()
 
-Update the error handling path accordingly.
+Lets use siphash instead of Jenkins Hash, to considerably
+reduce security risks.
 
-Fixes: ea8ab16ab225 ("drivers: net: xgene-v2: Add MDIO support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Following patch deals with IPv4.
+
+Fixes: 35732d01fe31 ("ipv6: introduce a hash table to store dst cache")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Keyu Man <kman001@ucr.edu>
+Cc: Wei Wang <weiwan@google.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Acked-by: Wei Wang <weiwan@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/apm/xgene-v2/main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/ipv6/route.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/apm/xgene-v2/main.c b/drivers/net/ethernet/apm/xgene-v2/main.c
-index 02b4f3af02b5..848be6bf2fd1 100644
---- a/drivers/net/ethernet/apm/xgene-v2/main.c
-+++ b/drivers/net/ethernet/apm/xgene-v2/main.c
-@@ -677,11 +677,13 @@ static int xge_probe(struct platform_device *pdev)
- 	ret = register_netdev(ndev);
- 	if (ret) {
- 		netdev_err(ndev, "Failed to register netdev\n");
--		goto err;
-+		goto err_mdio_remove;
- 	}
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 09e84161b731..67c74469503a 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -41,6 +41,7 @@
+ #include <linux/nsproxy.h>
+ #include <linux/slab.h>
+ #include <linux/jhash.h>
++#include <linux/siphash.h>
+ #include <net/net_namespace.h>
+ #include <net/snmp.h>
+ #include <net/ipv6.h>
+@@ -1484,17 +1485,24 @@ static void rt6_exception_remove_oldest(struct rt6_exception_bucket *bucket)
+ static u32 rt6_exception_hash(const struct in6_addr *dst,
+ 			      const struct in6_addr *src)
+ {
+-	static u32 seed __read_mostly;
+-	u32 val;
++	static siphash_key_t rt6_exception_key __read_mostly;
++	struct {
++		struct in6_addr dst;
++		struct in6_addr src;
++	} __aligned(SIPHASH_ALIGNMENT) combined = {
++		.dst = *dst,
++	};
++	u64 val;
  
- 	return 0;
+-	net_get_random_once(&seed, sizeof(seed));
+-	val = jhash2((const u32 *)dst, sizeof(*dst)/sizeof(u32), seed);
++	net_get_random_once(&rt6_exception_key, sizeof(rt6_exception_key));
  
-+err_mdio_remove:
-+	xge_mdio_remove(ndev);
- err:
- 	free_netdev(ndev);
+ #ifdef CONFIG_IPV6_SUBTREES
+ 	if (src)
+-		val = jhash2((const u32 *)src, sizeof(*src)/sizeof(u32), val);
++		combined.src = *src;
+ #endif
+-	return hash_32(val, FIB6_EXCEPTION_BUCKET_SIZE_SHIFT);
++	val = siphash(&combined, sizeof(combined), &rt6_exception_key);
++
++	return hash_64(val, FIB6_EXCEPTION_BUCKET_SIZE_SHIFT);
+ }
  
+ /* Helper function to find the cached rt in the hash table
 -- 
 2.30.2
 
