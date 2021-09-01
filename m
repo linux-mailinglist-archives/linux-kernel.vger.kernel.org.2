@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F273FDD4C
+	by mail.lfdr.de (Postfix) with ESMTP id E07F53FDD4D
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243718AbhIAN2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 09:28:49 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:53902 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233820AbhIAN2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 09:28:48 -0400
-Received: from BC-Mail-Ex10.internal.baidu.com (unknown [172.31.51.50])
-        by Forcepoint Email with ESMTPS id F20DEC87C20556AC1684;
-        Wed,  1 Sep 2021 21:27:48 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex10.internal.baidu.com (172.31.51.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Wed, 1 Sep 2021 21:27:48 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Wed, 1 Sep 2021 21:27:48 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: mediatek: mt8195: Make use of the helper function devm_platform_ioremap_resource()
-Date:   Wed, 1 Sep 2021 21:27:41 +0800
-Message-ID: <20210901132742.31714-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S244150AbhIAN3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 09:29:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244113AbhIAN3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 09:29:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B392461026;
+        Wed,  1 Sep 2021 13:28:16 +0000 (UTC)
+Date:   Wed, 1 Sep 2021 14:28:14 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH V2] arm64/mm: Drop <asm/page-def.h>
+Message-ID: <YS9/7mE+5uieqKh8@arm.com>
+References: <1629457516-32306-1-git-send-email-anshuman.khandual@arm.com>
+ <20210820183520.GC23080@arm.com>
+ <84b647b6-9cee-5aad-78f8-7bc253300534@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex21.internal.baidu.com (172.31.51.15) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <84b647b6-9cee-5aad-78f8-7bc253300534@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the devm_platform_ioremap_resource() helper instead of
-calling platform_get_resource() and devm_ioremap_resource()
-separately
+On Tue, Aug 31, 2021 at 09:15:30AM +0530, Anshuman Khandual wrote:
+> On 8/21/21 12:05 AM, Catalin Marinas wrote:
+> > On Fri, Aug 20, 2021 at 04:35:16PM +0530, Anshuman Khandual wrote:
+> >> PAGE_SHIFT (PAGE_SIZE and PAGE_MASK) which is derived from ARM64_PAGE_SHIFT
+> >> should be moved into <asm/page.h> instead like in case for other platforms,
+> >> and then subsequently <asm/page-def.h> can be just dropped off completely.
+> > 
+> > These were moved to page-def.h as part of commit b6531456ba27 ("arm64:
+> > factor out PAGE_* and CONT_* definitions") to avoid some circular header
+> > dependencies.
+> > 
+> >> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> >> index 824a3655dd93..649d26396f9e 100644
+> >> --- a/arch/arm64/include/asm/memory.h
+> >> +++ b/arch/arm64/include/asm/memory.h
+> >> @@ -12,7 +12,7 @@
+> >>  
+> >>  #include <linux/const.h>
+> >>  #include <linux/sizes.h>
+> >> -#include <asm/page-def.h>
+> >> +#include <asm/page.h>
+> > 
+> > In 5.14-rc3, asm/page.h still includes asm/memory.h.
+> 
+> Dropping <asm/memory.h> from <asm/page.h> does not seem to cause
+> any problem, will change that. Afterwards build tested it across
+> page sizes and also with some random configs. Is that circular
+> dependency still present ? Also wondering why was <asm/memory.h>
+> included in <asm/page.h> to begin with ?
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- sound/soc/mediatek/mt8195/mt8195-afe-pcm.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+asm/memory.h is not included by any of the generic files, however it has
+essential definitions like PAGE_OFFSET, THREAD_SIZE. The expectations
+from the arch code is to have these defined in asm/page.h (see the
+asm-generic/page.h), hence the inclusion. It probably gets included by
+other arch headers and that's why you don't get any errors, but I
+wouldn't rely on this.
 
-diff --git a/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c b/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
-index 6635c3f72ecc..8c697f41d51d 100644
---- a/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
-@@ -3057,7 +3057,6 @@ static int mt8195_afe_pcm_dev_probe(struct platform_device *pdev)
- {
- 	struct mtk_base_afe *afe;
- 	struct mt8195_afe_private *afe_priv;
--	struct resource *res;
- 	struct device *dev = &pdev->dev;
- 	int i, irq_id, ret;
- 	struct snd_soc_component *component;
-@@ -3078,8 +3077,7 @@ static int mt8195_afe_pcm_dev_probe(struct platform_device *pdev)
- 	afe_priv = afe->platform_priv;
- 	afe->dev = &pdev->dev;
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	afe->base_addr = devm_ioremap_resource(&pdev->dev, res);
-+	afe->base_addr = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(afe->base_addr))
- 		return PTR_ERR(afe->base_addr);
- 
+I don't remember how we ended up with a separate memory.h file. On arm64
+we inherited it from arch/arm.
+
 -- 
-2.25.1
-
+Catalin
