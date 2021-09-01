@@ -2,113 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5093FE602
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D3B3FE605
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345094AbhIAXNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 19:13:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54777 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242052AbhIAXNi (ORCPT
+        id S1345112AbhIAXQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 19:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230015AbhIAXQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 19:13:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630537960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VbIfjKWHJ8KB1V8GBiccCt4CfSridAvT1ZyldnMra2Q=;
-        b=RNyzh0iE6CJ632P5+RWrtiHeQ5q++iaIcBDsONOwL6u6I+EYKtXpUSh0MfTVanyiAFEdUx
-        uAbYVg/93CfTq3+i6aR+7u9779qPKW/D53+voulYWAQc98mtUAH1nvE/mv4PFkORR/OP2T
-        QO3dgWwZ13twDcphkRrUTtDU332wbRg=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-120-2J6O-P_nP1GNQApmNAm_NA-1; Wed, 01 Sep 2021 19:12:39 -0400
-X-MC-Unique: 2J6O-P_nP1GNQApmNAm_NA-1
-Received: by mail-qt1-f200.google.com with SMTP id e8-20020a05622a110800b0029ecbdc1b2aso1104077qty.12
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:12:39 -0700 (PDT)
+        Wed, 1 Sep 2021 19:16:41 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278B3C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:15:44 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id v1so38866plo.10
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uLkRX3S7HGOH3GdjbZJv+B4Lvvu9s6EgNeW/1aZYJLQ=;
+        b=RN3BnZBwO96riciijRXqXoQFBTBrohC3wUD7MTVF1WCmDe3w4DQravBqkmmdjFODBP
+         s74FrqxTc7Zq5rmhv64juzrZcIWCB75JkO78J1my/hCcXt3A9XbXdgL0GQXOT7jRd57M
+         MIB8CTKEQBSNl7ej2ckj28Kaf0cFmsy9eOK7qgYS87ccMLERmzf95AI5kI+YfgtblSaK
+         Uspzks0jpCtsy4MVf51MU3hHPe2jcKkVMwCpny4qKYdXQM97iHzSOqFOnaA8Ir9IGNML
+         URO4db0po9HRciSzH0Yn15NC+0ugIVKxjUE9YnkQsMgHq/DJwDa5q5U1FubuMQtnfhJS
+         y5+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=VbIfjKWHJ8KB1V8GBiccCt4CfSridAvT1ZyldnMra2Q=;
-        b=EaYXWI5650oHuZKNcv2KHWrGa26IzjCorRzv/D/qPfEThoKBljmVP92M+Ep5Xnjfba
-         PktGX4m641XPHHvZi4xiDZ15km8wTqv0RuVs4m0CFLJnK64crKEmcXd+jE+xCgeXT4lK
-         rKzB+VDy3vUuU2gIH/XbCVizmesJvSJRURy9YjOpHP31QSTH6mI1yksnsl0YQclpgbAA
-         WeSg4ZAjbNOdYMSWODDdhPZ2b/nmn+mccEtbSEulebmqPikQrn59kfFiuGtS1/lPtmQx
-         mgl5yEqlv1ImjwqvZFrHTmBtBYkRnbctHv6Pd7hqPYGD3PRX4YUVHvkPpeDMr5i42eQS
-         ZAUA==
-X-Gm-Message-State: AOAM532RaRPx83+eyI8j4eE5UTXjniNN++oLmd5Am376sQyuCa7LKa1F
-        O4LUkeHBMxo7OXQCSH5gyAep5vWSAB7r/GICE1wJin4hnQJ7ardLp8Ph8bDfePCi479HXozrUjE
-        x8jx+EFUEIt3Ksj3C+ko1d20d
-X-Received: by 2002:a05:622a:44f:: with SMTP id o15mr240161qtx.260.1630537958531;
-        Wed, 01 Sep 2021 16:12:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyOT/s2C/lqO1N5pj2/GH+enIBmAzz3KZmz02wac1AEISnxd7j6xiH+IWWt96jE00AuM9qZvQ==
-X-Received: by 2002:a05:622a:44f:: with SMTP id o15mr240145qtx.260.1630537958310;
-        Wed, 01 Sep 2021 16:12:38 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a3:500::ad7f])
-        by smtp.gmail.com with ESMTPSA id c23sm96797qkk.50.2021.09.01.16.12.37
+        bh=uLkRX3S7HGOH3GdjbZJv+B4Lvvu9s6EgNeW/1aZYJLQ=;
+        b=iQhK8SNQzDvBh22Vie6NBhICj5vu89+6JDfQsS23+uFlShTkqA0xrQTyiSD2T26/ie
+         qnVZ0dUChaYOOvtvlIqkVRs+OelsrOSQSytFScNsx6j/c4EC9Aw51/o8t6zTxNTSXpKR
+         DX29tw2OBHlVPaSKmEuCFDkyp8q0YWcgpAKGIahuC/Rxw4kgRefkJSf6mi1iH7PZPUTE
+         k4yZfFHc4HNjWJ0oFqZiFRPN3xiUPt1co9c/ZTF40h4Aa18cWioBIlje8gVHS3eNYTI/
+         51pPbcQQXAHfA33A0VxEFxhBtk+HJNLhdaYaiqfHmL5w8MpLIm6j++TYuyVpP91NgQNd
+         xbkA==
+X-Gm-Message-State: AOAM533tBbWwJ5n5ytZt0P1NVSq0s9neTRxgBAGm+y+MG3scnOlsHCVj
+        xQyG+eJ19Felay+bP4vorqj99g==
+X-Google-Smtp-Source: ABdhPJwqLGVyEByKojljzYoFCXPfkkHvZPBB5tyavPSMOTWdQ8nggbgYu+Blphdrk3MKgt0ElJwjfg==
+X-Received: by 2002:a17:90a:49:: with SMTP id 9mr276332pjb.80.1630538143364;
+        Wed, 01 Sep 2021 16:15:43 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id i7sm35421pjm.55.2021.09.01.16.15.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 16:12:37 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 19:12:36 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Lei Cao <lei.cao@stratus.com>
-Subject: Re: arch/x86/kvm/../../../virt/kvm/dirty_ring.c:94:20: error: unused
- function 'kvm_dirty_gfn_invalid'
-Message-ID: <YTAI5NE6MZ+J+5oM@t490s>
-References: <202109020620.e6EZVLvS-lkp@intel.com>
+        Wed, 01 Sep 2021 16:15:42 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 23:15:39 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@intel.com, David Matlack <dmatlack@google.com>,
+        peterx@redhat.com
+Subject: Re: [PATCH 08/16] KVM: MMU: change handle_abnormal_pfn() arguments
+ to kvm_page_fault
+Message-ID: <YTAJm7c1a37N4adR@google.com>
+References: <20210807134936.3083984-1-pbonzini@redhat.com>
+ <20210807134936.3083984-9-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202109020620.e6EZVLvS-lkp@intel.com>
+In-Reply-To: <20210807134936.3083984-9-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 06:22:29AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   477f70cd2a67904e04c2c2b9bd0fa2e95222f2f6
-> commit: fb04a1eddb1a65b6588a021bdc132270d5ae48bb KVM: X86: Implement ring-based dirty memory tracking
-> date:   10 months ago
-> config: i386-randconfig-r005-20210901 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 4b1fde8a2b681dad2ce0c082a5d6422caa06b0bc)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fb04a1eddb1a65b6588a021bdc132270d5ae48bb
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout fb04a1eddb1a65b6588a021bdc132270d5ae48bb
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=i386 
+On Sat, Aug 07, 2021, Paolo Bonzini wrote:
+> Pass struct kvm_page_fault to handle_abnormal_pfn() instead of
+> extracting the arguments from the struct.
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> Suggested-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c         | 17 ++++++++---------
+>  arch/x86/kvm/mmu/paging_tmpl.h |  2 +-
+>  2 files changed, 9 insertions(+), 10 deletions(-)
 > 
-> All errors (new ones prefixed by >>):
-> 
-> >> arch/x86/kvm/../../../virt/kvm/dirty_ring.c:94:20: error: unused function 'kvm_dirty_gfn_invalid' [-Werror,-Wunused-function]
->    static inline bool kvm_dirty_gfn_invalid(struct kvm_dirty_gfn *gfn)
->                       ^
->    1 error generated.
-> 
-> 
-> vim +/kvm_dirty_gfn_invalid +94 arch/x86/kvm/../../../virt/kvm/dirty_ring.c
-> 
->     93	
->   > 94	static inline bool kvm_dirty_gfn_invalid(struct kvm_dirty_gfn *gfn)
->     95	{
->     96		return gfn->flags == 0;
->     97	}
->     98	
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index a6366f1c4197..cec59ac2e1cd 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3024,18 +3024,18 @@ static int kvm_handle_bad_page(struct kvm_vcpu *vcpu, gfn_t gfn, kvm_pfn_t pfn)
+>  	return -EFAULT;
+>  }
+>  
+> -static bool handle_abnormal_pfn(struct kvm_vcpu *vcpu, gva_t gva, gfn_t gfn,
+> -				kvm_pfn_t pfn, unsigned int access,
+> -				int *ret_val)
+> +static bool handle_abnormal_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+> +				unsigned int access, int *ret_val)
+>  {
+>  	/* The pfn is invalid, report the error! */
+> -	if (unlikely(is_error_pfn(pfn))) {
+> -		*ret_val = kvm_handle_bad_page(vcpu, gfn, pfn);
+> +	if (unlikely(is_error_pfn(fault->pfn))) {
+> +		*ret_val = kvm_handle_bad_page(vcpu, fault->gfn, fault->pfn);
+>  		return true;
+>  	}
+>  
+> -	if (unlikely(is_noslot_pfn(pfn))) {
+> -		vcpu_cache_mmio_info(vcpu, gva, gfn,
+> +	if (unlikely(is_noslot_pfn(fault->pfn))) {
+> +		gva_t gva = fault->is_tdp ? 0 : fault->addr;
 
-https://lore.kernel.org/lkml/20210901230904.15164-1-peterx@redhat.com
+Checkpatch wants a newline.  I'm also surprised you didn't abuse bitwise math:
 
-Thanks,
+		gva_t gva = fault->addr & ((u64)fault->is_tdp - 1);
 
--- 
-Peter Xu
+I am _not_ suggesting you actually do that ;-)
 
+> +		vcpu_cache_mmio_info(vcpu, gva, fault->gfn,
+>  				     access & shadow_mmio_access_mask);
+>  		/*
+>  		 * If MMIO caching is disabled, emulate immediately without
