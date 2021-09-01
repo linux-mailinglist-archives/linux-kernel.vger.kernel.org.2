@@ -2,207 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6ED3FE04A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDCC3FE04B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245229AbhIAQr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:47:56 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33754 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231419AbhIAQrz (ORCPT
+        id S245504AbhIAQsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231419AbhIAQsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:47:55 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181GXZMR103977;
-        Wed, 1 Sep 2021 12:45:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : content-transfer-encoding : mime-version; s=pp1;
- bh=hBTMZh4CPo/pCBgIgW9mpIyUDMUn1JnPJ0cD6eTbJJY=;
- b=sM/p5sAiW0/mYkdJIerBd2PfH9gA3FYZeqttait+2fhkWGSUH3yrefxLor21tTzKBM7p
- bU/UzSukpaWUMDu5VFn9qA/pEPfpBv1lNJZkGkt/ukSM/BK48Evz2UpZwn1vcBkaY5W6
- kLhHO7r5DNMgVGsKRaYdNv2OOXC9qcKxrzoWdZ/Qdw/54jSiCF3Ecs8v73xo5PG66yyE
- 5LPL5Q5tS/8wfhD+2rjMzL8p66Pgx3Blmlw2chRiZ1ZpdjyhzzHSc7ZOgatpSuUQl9VJ
- Td02phKv6bLOiRsHlntU+rcxLHa8/zdBkRg2gXfHIBh06PdEctb1XiEmk6fZ9E7by29b nQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ataf7dda2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 12:45:45 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 181GYokR106847;
-        Wed, 1 Sep 2021 12:45:44 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ataf7dd9b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 12:45:44 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 181GWmWt001816;
-        Wed, 1 Sep 2021 16:45:43 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma05wdc.us.ibm.com with ESMTP id 3aqcsdd9ap-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 16:45:43 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 181Gjg8u33423804
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Sep 2021 16:45:42 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 09FFE6A064;
-        Wed,  1 Sep 2021 16:45:42 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8235B6A04F;
-        Wed,  1 Sep 2021 16:45:39 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.211.89.117])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  1 Sep 2021 16:45:39 +0000 (GMT)
-Message-ID: <4b863492fd33dce28a3a61662d649987b7d5066d.camel@linux.ibm.com>
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
- private memory
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     David Hildenbrand <david@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-Date:   Wed, 01 Sep 2021 09:45:28 -0700
-In-Reply-To: <1a4a1548-7e14-c2b4-e210-cc60a2895acd@redhat.com>
-References: <20210824005248.200037-1-seanjc@google.com>
-         <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
-         <YSlkzLblHfiiPyVM@google.com>
-         <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
-         <YS6lIg6kjNPI1EgF@google.com>
-         <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
-         <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
-         <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
-         <a259e10d-39c9-c4a5-0ab4-f42a1b9bfaee@redhat.com>
-         <0d6b2a7e22f5e27e03abc21795124ccd66655966.camel@linux.ibm.com>
-         <1a4a1548-7e14-c2b4-e210-cc60a2895acd@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: N_EgrrJsAMrro0OcnpMGiKpZkFChbwcV
-X-Proofpoint-ORIG-GUID: -xi-B35r51Wy8aY0arJ_RrwmS_wL2zzp
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 1 Sep 2021 12:48:22 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34A5C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:47:25 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id 6so75184oiy.8
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:47:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qbfCjSBwignzsfCO1uRjwOAA6KxwOZtphxHrmz+1Gu0=;
+        b=R7ufEstAB7Hk31VQUuC8TGoHWJagans6L5oHz6Nfb5EVwqWhqk+b5r5WMMKw3/RcHs
+         TrEdqBCEjOzDH6m5auWpy1j/mXEJklid13yfhnguQufb936GLCvIyvbtv4kUhRhOoGO+
+         9lPtlPUnz/+mLzwvRdLHSoeekeWQqJlAeQyWqsKeuAyRjn48Gpr0nNDOV26W6UaiM17g
+         LY3n+Vy2+4UqCJYCFU2dRwZgEnhSgFAURl0B9ceFcVxLPjfn8k2bDtwoHaFuLVDgB7Yl
+         UsuIIiZrk+0TI7d19AgoKioHNqF7d3axrtVjtwEgFSJ4niX0SZ+Ze0zXPkkEyi49jEVt
+         qwAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=qbfCjSBwignzsfCO1uRjwOAA6KxwOZtphxHrmz+1Gu0=;
+        b=ZPk4qZC3EhBgRMWX7yyV5SCsLE+HwVp8ineXmGD1i8fWkFu44GXRxJki07JZ4PftIn
+         X+0fzQMVodLY1idH4Ueqbj7LNMlmBuhRIhXow+0o1tf26rZEZCS4hmirLBqu07rzZN0M
+         8srVmwKNl9vX44YaSnKgRpg+EtIin2ed/OKVBN7GXMJK2RzvDck5YbBh5EffH+a1IG0C
+         i05XI4yo2pHc2DPwMwu+NNJTIS2XI6C+pozo8dXXOtv17YocV/nHRVAYYfxSoOdYVpUQ
+         MnZ3iiiGGyKD9xE1UvGA7SHdKarvAbCxSo7H04mxn01D93dLsUPFU1pmVJqvwuXtLPfR
+         poGg==
+X-Gm-Message-State: AOAM530CnhjAbNmMhJrVZFVqzaYwTQMK9brTycuP76M9rF1tu4Pt+9Jr
+        XazB60Ix1/yldjU6IkXSIQ4=
+X-Google-Smtp-Source: ABdhPJzdlTLWWtmbFGLIUnyGadFumsp85MqI5rNlEwrp2tLKFgqhteHQs+ZTL+PkufASUGVvcfYCUg==
+X-Received: by 2002:aca:1717:: with SMTP id j23mr361682oii.43.1630514845197;
+        Wed, 01 Sep 2021 09:47:25 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 8sm84452oix.7.2021.09.01.09.47.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 09:47:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 1 Sep 2021 09:47:22 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Maurizio Lombardi <mlombard@redhat.com>
+Cc:     rppt@kernel.org, bp@alien8.de, tglx@linutronix.de, x86@kernel.org,
+        pjones@redhat.com, konrad@kernel.org, george.kennedy@oracle.com,
+        rafael@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3] iscsi_ibft: fix crash due to KASLR physical memory
+ remapping
+Message-ID: <20210901164722.GA2100627@roeck-us.net>
+References: <20210729135250.32212-1-mlombard@redhat.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-01_05:2021-09-01,2021-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- phishscore=0 priorityscore=1501 malwarescore=0 impostorscore=0 bulkscore=0
- suspectscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2109010096
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729135250.32212-1-mlombard@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-01 at 18:37 +0200, David Hildenbrand wrote:
-> On 01.09.21 18:31, James Bottomley wrote:
-> > On Wed, 2021-09-01 at 18:22 +0200, David Hildenbrand wrote:
-> > > On 01.09.21 18:18, James Bottomley wrote:
-> > > > On Wed, 2021-09-01 at 08:54 -0700, Andy Lutomirski wrote:
-> > > > [...]
-> > > > > If you want to swap a page on TDX, you can't.  Sorry, go
-> > > > > directly
-> > > > > to jail, do not collect $200.
-> > > > 
-> > > > Actually, even on SEV-ES you can't either.  You can read the
-> > > > encrypted page and write it out if you want, but unless you
-> > > > swap it back to the exact same physical memory location, the
-> > > > encryption key won't work.  Since we don't guarantee this for
-> > > > swap, I think swap won't actually work for any confidential
-> > > > computing environment.
-> > > > 
-> > > > > So I think there are literally zero code paths that currently
-> > > > > call try_to_unmap() that will actually work like that on
-> > > > > TDX.  If we run out of memory on a TDX host, we can kill the
-> > > > > guest completely and reclaim all of its memory (which
-> > > > > probably also involves killing QEMU or whatever other user
-> > > > > program is in charge), but that's really our only option.
-> > > > 
-> > > > I think our only option for swap is guest co-operation.  We're
-> > > > going to have to inflate a balloon or something in the guest
-> > > > and have the guest driver do some type of bounce of the page,
-> > > > where it becomes an unencrypted page in the guest (so the host
-> > > > can read it without the physical address keying of the
-> > > > encryption getting in the way) but actually encrypted with a
-> > > > swap transfer key known only to the guest.  I assume we can use
-> > > > the page acceptance infrastructure currently being discussed
-> > > > elsewhere to do swap back in as well ... the host provides the
-> > > > guest with the encrypted swap page and the guest has to decrypt
-> > > > it and place it in encrypted guest memory.
-> > > 
-> > > Ballooning is indeed *the* mechanism to avoid swapping in the
-> > > hypervisor  and much rather let the guest swap. Shame it requires
-> > > trusting a guest, which we, in general, can't. Not to mention
-> > > other issues we already do have with ballooning (latency, broken
-> > > auto-ballooning, over-inflating, ...).
-> > 
-> > Well not necessarily, but it depends how clever we want to get.  If
-> > you look over on the OVMF/edk2 list, there's a proposal to do guest
-> > migration via a mirror VM that invokes a co-routine embedded in the
-> > OVMF binary:
+On Thu, Jul 29, 2021 at 03:52:50PM +0200, Maurizio Lombardi wrote:
+> Starting with commit a799c2bd29d1
+> ("x86/setup: Consolidate early memory reservations")
+> memory reservations have been moved earlier during the boot process,
+> before the execution of the Kernel Address Space Layout Randomization code.
 > 
-> Yes, I heard of that. "Interesting" design.
-
-Heh, well what other suggestion do you have?  The problem is there
-needs to be code somewhere to perform some operations that's trusted by
-both the guest and the host.  The only element for a confidential VM
-that has this shared trust is the OVMF firmware, so it seems logical to
-use it.
-
+> setup_arch() calls the iscsi_ibft's find_ibft_region() function
+> to find and reserve the memory dedicated to the iBFT and this function
+> also saves a virtual pointer to the iBFT table for later use.
 > 
-> > https://patchew.org/EDK2/20210818212048.162626-1-tobin@linux.ibm.com/
-> > 
-> > This gives us a page encryption mechanism that's provided by the
-> > host but accepted via the guest using attestation, meaning we have
-> > a mutually trusted piece of code that can use to extract encrypted
-> > pages. It does seem it could be enhanced to do swapping for us as
-> > well if that's a road we want to go down?
+> The problem is that if KALSR is active, the physical memory gets
+> remapped somewhere else in the virtual address space and the pointer is
+> no longer valid, this will cause a kernel panic when the iscsi driver tries
+> to dereference it.
 > 
-> Right, but that's than no longer ballooning, unless I am missing 
-> something important. You'd ask the guest to export/import, and you
-> can trust it. But do we want to call something like that out of
-> random kernel context when swapping/writeback, ...? Hard to tell.
-> Feels like it won't win in a beauty contest.
+> [   37.764225] iBFT detected.
+> [   37.778877] BUG: unable to handle page fault for address: ffff888000099fd8
+> [   37.816542] #PF: supervisor read access in kernel mode
+> [   37.844304] #PF: error_code(0x0000) - not-present page
+> [   37.872857] PGD 0 P4D 0
+> [   37.886985] Oops: 0000 [#1] SMP PTI
+> [   37.904809] CPU: 46 PID: 1073 Comm: modprobe Tainted: G               X --------- ---  5.13.0-0.rc2.19.el9.x86_64 #1
+> [   37.956525] Hardware name: HP ProLiant DL580 G7, BIOS P65 10/01/2013
+> [   37.987170] RIP: 0010:ibft_init+0x3e/0xd42 [iscsi_ibft]
+> [   38.012976] Code: 04 25 28 00 00 00 48 89 44 24 08 31 c0 48 83 3d e1 cc 7e d7 00 74 28 48 c7 c7 21 81 1b c0 e8 b3 10 81 d5 48 8b 05 cc cc 7e d7 <0f> b6 70 08 48 63 50 04 40 80 fe 01 75 5e 31 f6 48 01 c2 eb 6e 83
+> [   38.106835] RSP: 0018:ffffb7d288fc3db0 EFLAGS: 00010246
+> [   38.131341] RAX: ffff888000099fd0 RBX: 0000000000000000 RCX: 0000000000000000
+> [   38.167110] RDX: 0000000000000000 RSI: ffff9ba7efb97c80 RDI: ffff9ba7efb97c80
+> [   38.200777] RBP: ffffffffc01c82be R08: 0000000000000000 R09: ffffb7d288fc3bf0
+> [   38.237188] R10: ffffb7d288fc3be8 R11: ffffffff96de70a8 R12: ffff9ba4059d6400
+> [   38.270940] R13: 000055689f1ac050 R14: 000055689df18962 R15: ffffb7d288fc3e78
+> [   38.307167] FS:  00007f9546720b80(0000) GS:ffff9ba7efb80000(0000) knlGS:0000000000000000
+> [   38.351204] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   38.381034] CR2: ffff888000099fd8 CR3: 000000044175e004 CR4: 00000000000206e0
+> [   38.419938] Call Trace:
+> [   38.432679]  ? ibft_create_kobject+0x1d2/0x1d2 [iscsi_ibft]
+> [   38.462584]  do_one_initcall+0x44/0x1d0
+> [   38.480856]  ? kmem_cache_alloc_trace+0x119/0x220
+> [   38.505554]  do_init_module+0x5c/0x270
+> [   38.526578]  __do_sys_init_module+0x12e/0x1b0
+> [   38.548699]  do_syscall_64+0x40/0x80
+> [   38.565679]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Fix this bug by saving the address of the physical location
+> of the ibft; later the driver will use isa_bus_to_virt() to get
+> the correct virtual address.
+> Simplify the code by renaming find_ibft_region()
+> to reserve_ibft_region() and remove all the wrappers.
+> 
+> v2: fix a comment in linux/iscsi_ibft.h
+> v3: fix the commit message
+> 
+> Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
 
-What I was thinking is that OVMF can emulate devices in this trusted
-code ... another potential use for it is a trusted vTPM for SEV-SNP so
-we can do measured boot.  To use it we'd give the guest kernel some
-type of virtual swap driver that attaches to this OVMF device.  I
-suppose by the time we've done this, it really does look like a
-balloon, but I'd like to think of it more as a paravirt memory
-controller since it might be used to make a guest more co-operative in
-a host overcommit situation.
+In addition to the x86 build failures, arm64:allmodconfig fails to build as
+well.
 
-That's not to say we *should* do this, merely that it doesn't have to
-look like a pig with lipstick.
+Building arm64:allmodconfig ... failed
+--------------
+Error log:
+drivers/firmware/iscsi_ibft.c: In function 'ibft_init':
+drivers/firmware/iscsi_ibft.c:868:29: error: implicit declaration of function 'isa_bus_to_virt' [-Werror=implicit-function-declaration]
+  868 |                 ibft_addr = isa_bus_to_virt(ibft_phys_addr);
+      |                             ^~~~~~~~~~~~~~~
 
-James
+ISCSI_IBFT now depends on ISA thanks to this patch.
+If that is intentional, it should be declared in Kconfig.
 
-
+Guenter
