@@ -2,115 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE7C3FDF6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA783FDF78
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245084AbhIAQKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:10:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245056AbhIAQKK (ORCPT
+        id S245093AbhIAQL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:11:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49016 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234245AbhIAQL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:10:10 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33066C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:09:14 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id u6so226743pfi.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:09:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FB3R6LeGmuXIo5hb7U8C3iodva/c8R+NqVfhGgpP4U0=;
-        b=s6xT8b9Z5MvXugh9aE3DH7QviFfmTsm+/948fGHfnT/mxvPoY35pWzy8+Nntmc8vGo
-         j4mblX+ULT64l4hiDNIOv++Vip0QN/JubwFNtkFgY/Px0wrggu7hLqttAQJmAbYcS+xd
-         SFlvZdaw/VW/WKp60BgUJ0pUIMD7cUwaxFYfwicMx3B67b2sQXKqdVCfA3Khi1+Galcn
-         nfGsJkjlTvv/b+jcENcBfs+qUOgdgJcTVf2N2jHJ2h2MtI33N8e3teUaTqp863Yshi9U
-         n+bKbyi/1HJH+hxR4rvibLjMsprRp9QNvrLhIMXEDsolU7Sll3aow9Xd1nf0tVSMZaH2
-         f7Yg==
+        Wed, 1 Sep 2021 12:11:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630512659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mT4QIhya+0xdZYe/0Zyc1Hnz1PU8Nz7fJMWnC7SmgOo=;
+        b=XAUYrMBPoq5sXrerogC+k4AMJCjksictOzTaq+WokV8oaGVnZs5xRngDHee+k3H00UAJVE
+        X3ohyaZAOVz8O/ZyVMaUD2rPtP8vCXVkTQRD/BbWKbFfjxSCBeG6hErro/HT0p//SsfBb7
+        vpTbzPvG6ad3/x8RpqKQWw36zk3/cB8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-2MQ0r732OWCoZ3xGrsTrnw-1; Wed, 01 Sep 2021 12:10:58 -0400
+X-MC-Unique: 2MQ0r732OWCoZ3xGrsTrnw-1
+Received: by mail-wm1-f71.google.com with SMTP id u1-20020a05600c210100b002e74fc5af71so85594wml.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:10:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FB3R6LeGmuXIo5hb7U8C3iodva/c8R+NqVfhGgpP4U0=;
-        b=JCVE1kP2Z8gk7mvuO3p8VOz4tX1uhgn9Di/V0nnjomPZzXSg5ltsVDcSlkA2oJzngV
-         /Lbyy3jR3JX/hFCr/Xb0W55OEzKntJjVqUQjgFWMRQSBcW9iKkDy2b6wsKFr/N6E2/FY
-         j1f6oFPbNNumtpUBGJaYrh5Xg2dNd0YqRjI5YOfK5sUwBT/cl7leHi9pDPdI2smKdR28
-         zS7Aup3ErB5kTnAk287Vagnb+yE7qWi6uTPsegT6ig/HNZGsWhA6nY133zZcZ3OxFNu8
-         s0BE9tEEfwiPskgtU2Dv429we6PKk/oNtxy/bXvOpPTLsy3aV10c57H9xZDrpm/DrBYe
-         mmiA==
-X-Gm-Message-State: AOAM532Sn4r112uFJR25EXrGzj+kIBEj/zKP9/vO5IAGsT11QqEvkPig
-        6IRlwN67q3L3P7lH6UTy+dhMRw==
-X-Google-Smtp-Source: ABdhPJxmvrUQTF6cUfVAdaaPU2mA6Fq+mBMHqFjB1d+G1mMoFmXqzvvBPt3F0qi34nZxQ/5t0yJd8Q==
-X-Received: by 2002:a63:784d:: with SMTP id t74mr218780pgc.112.1630512553446;
-        Wed, 01 Sep 2021 09:09:13 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id a10sm1021pfg.20.2021.09.01.09.09.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 09:09:12 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 16:09:09 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+200c08e88ae818f849ce@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/3] Revert "KVM: x86: mmu: Add guest physical address
- check in translate_gpa()"
-Message-ID: <YS+lpeqHHgoA6W8A@google.com>
-References: <20210831164224.1119728-1-seanjc@google.com>
- <20210831164224.1119728-2-seanjc@google.com>
- <87pmtsog4c.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=mT4QIhya+0xdZYe/0Zyc1Hnz1PU8Nz7fJMWnC7SmgOo=;
+        b=pnqFmCS8Ep5cUyZZ7PKKeSMd36pvVGF/rI/hqoN2FJk/mbpO+qb4Q1XxjBxujBmxca
+         GrBIe7moLeg3IJhwtf1oRnhL89qkVTFRt+fTpjqcz2E0BNRabdpm1qC+zZtH3LWMWGjN
+         C6tl7Eg5NgHnfomnMp8hng02nAp3ZBCyg4SUYEDwzBQvIFuXxXzVxODyX3GTvR/d/U3C
+         KZucNH7RZtbNbT9TU4+YbdG2zRI5Hy/bFxW4gzrC7YqRmnVNLM0cXitEYKHiXjv2zX9o
+         6VDqJkj/dlhqgACh0US5aPYeY6C2ecX3nxIANrkk901C38i23F3LY1QbnvAorT6yjoot
+         nxUw==
+X-Gm-Message-State: AOAM53311b7lEXy5hatLG5gM6U3FqyRv5NDz8V1NmPR8ObZ2QMjVxhqZ
+        TPayYauQIWSevjnTzFWmP7dqc34s6UarN09Eg/QUVrr3JgW0x0Jgku4qTZB9IB3flgRz1u/zR7Y
+        NSSR+WFwH3R2PC5f/GO7lO2fC
+X-Received: by 2002:adf:9e08:: with SMTP id u8mr78360wre.383.1630512657483;
+        Wed, 01 Sep 2021 09:10:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJybwshSMTwTpFwbu/boQ/+Fuo8ShMQQyVxqlM2ZX1sFjop+HUylkUhe8YE6xALeAwPvCgllUA==
+X-Received: by 2002:adf:9e08:: with SMTP id u8mr78325wre.383.1630512657206;
+        Wed, 01 Sep 2021 09:10:57 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
+        by smtp.gmail.com with ESMTPSA id l17sm1482748wrz.35.2021.09.01.09.10.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 09:10:56 -0700 (PDT)
+Subject: Re: [PATCH v2 0/9] Free user PTE page table pages
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
+        mika.penttila@nextfour.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        songmuchun@bytedance.com
+References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
+ <5b9348fc-95fe-5be2-e9df-7c906e0c9b81@redhat.com>
+ <20210901160742.GR1200268@ziepe.ca>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <0d2cb431-bd43-7064-4311-ab541f11fbf8@redhat.com>
+Date:   Wed, 1 Sep 2021 18:10:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pmtsog4c.fsf@vitty.brq.redhat.com>
+In-Reply-To: <20210901160742.GR1200268@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
+On 01.09.21 18:07, Jason Gunthorpe wrote:
+> On Wed, Sep 01, 2021 at 02:32:08PM +0200, David Hildenbrand wrote:
+>   
+>> b) pmd_trans_unstable_or_pte_try_get() and friends are really ugly.
 > 
-> > Revert a misguided illegal GPA check when "translating" a non-nested GPA.
-> > The check is woefully incomplete as it does not fill in @exception as
-> > expected by all callers, which leads to KVM attempting to inject a bogus
-> > exception, potentially exposing kernel stack information in the process.
-> >
-> >  WARNING: CPU: 0 PID: 8469 at arch/x86/kvm/x86.c:525 exception_type+0x98/0xb0 arch/x86/kvm/x86.c:525
-> >  CPU: 1 PID: 8469 Comm: syz-executor531 Not tainted 5.14.0-rc7-syzkaller #0
-> >  RIP: 0010:exception_type+0x98/0xb0 arch/x86/kvm/x86.c:525
-> >  Call Trace:
-> >   x86_emulate_instruction+0xef6/0x1460 arch/x86/kvm/x86.c:7853
-> >   kvm_mmu_page_fault+0x2f0/0x1810 arch/x86/kvm/mmu/mmu.c:5199
-> >   handle_ept_misconfig+0xdf/0x3e0 arch/x86/kvm/vmx/vmx.c:5336
-> >   __vmx_handle_exit arch/x86/kvm/vmx/vmx.c:6021 [inline]
-> >   vmx_handle_exit+0x336/0x1800 arch/x86/kvm/vmx/vmx.c:6038
-> >   vcpu_enter_guest+0x2a1c/0x4430 arch/x86/kvm/x86.c:9712
-> >   vcpu_run arch/x86/kvm/x86.c:9779 [inline]
-> >   kvm_arch_vcpu_ioctl_run+0x47d/0x1b20 arch/x86/kvm/x86.c:10010
-> >   kvm_vcpu_ioctl+0x49e/0xe50 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3652
-> >
-> > The bug has escaped notice because practically speaking the GPA check is
-> > useless.  The GPA check in question only comes into play when KVM is
-> > walking guest page tables (or "translating" CR3), and KVM already handles
-> > illegal GPA checks by setting reserved bits in rsvd_bits_mask for each
-> > PxE, or in the case of CR3 for loading PTDPTRs, manually checks for an
-> > illegal CR3.  This particular failure doesn't hit the existing reserved
-> > bits checks because syzbot sets guest.MAXPHYADDR=1, and IA32 architecture
-> > simply doesn't allow for such an absurd MAXPHADDR, e.g. 32-bit paging
+> I suspect the good API here is really more like:
+
+That was my exactly my first idea and I tried to rework the code for 
+roughly 2 days and failed.
+
+Especially in pagefault logic, we temporarily unmap/unlock to map/lock 
+again later and don't want the page table to just vanish.
+
+I think I met similar cases when allocating a page table and not wanting 
+it to vanish and not wanting to map/lock it. But I don't recall all the 
+corner cases: it didn't work for me.
+
 > 
-> "MAXPHYADDR"
+>    ptep = pte_try_map(pmdp, &pmd_value)
+>    if (!ptep) {
+>       // pmd_value is guarenteed to not be a PTE table pointer.
+>       if (pmd_XXX(pmd_value))
+>    }
+> 
+> Ie the core code will do whatever stuff, including the THP data race
+> avoidance, to either return the next level page table or the value of
+> a pmd that is not a enxt level page table. Callers are much clearer in
+> this way.
+> 
+> Eg this is a fairly representative sample user:
+> 
+> static int smaps_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
+> 			   struct mm_walk *walk)
+> {
+> 	if (pmd_trans_unstable(pmd))
+> 		goto out;
+> 	pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
+> 
+> And it is obviously pretty easy to integrate any refcount into
+> pte_try_map and pte_unmap as in my other email.
 
-Gah, I'm pretty sure I mistype that 50% of the time.
+It didn't work when I tried.
 
-> I'm, however, wondering if it would also make sense to forbid setting
-> nonsensical MAXPHYADDR, something like (compile-only tested):
+-- 
+Thanks,
 
-That crossed my mind as well, but I actually think letting userspace provide
-garbage is a good thing in this case.  From a kernel-safety perspective, KVM
-does not and _should_ not make any assumptions about guest.MAXPHYADDR.  IMO, the
-added test coverage gaind by allowing truly outrageous values outweighs the
-potential danger, e.g. this bogus code would likely have gone unnoticed forever.
+David / dhildenb
+
