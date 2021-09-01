@@ -2,102 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1AC3FE37A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4A33FE382
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240444AbhIAT7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:59:17 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:37127 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbhIAT7O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:59:14 -0400
-Received: from leknes.fjasle.eu ([92.116.70.90]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1M1HqM-1mIlDi0VIo-002pWJ; Wed, 01 Sep 2021 21:58:12 +0200
-Received: by leknes.fjasle.eu (Postfix, from userid 1000)
-        id F1FC63C07C; Wed,  1 Sep 2021 21:58:09 +0200 (CEST)
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com,
+        id S231373AbhIAUEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 16:04:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:41206 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231246AbhIAUEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 16:04:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 66A441063;
+        Wed,  1 Sep 2021 13:03:38 -0700 (PDT)
+Received: from [10.57.15.112] (unknown [10.57.15.112])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13E343F766;
+        Wed,  1 Sep 2021 13:03:36 -0700 (PDT)
+Subject: Re: [PATCH v3] coresight: tmc-etr: Speed up for bounce buffer in flat
+ mode
+To:     Leo Yan <leo.yan@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Cc:     Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH] fscache: re-match MODULE_PARM_DESC() calls to module parameters
-Date:   Wed,  1 Sep 2021 21:57:59 +0200
-Message-Id: <20210901195759.2166674-1-nicolas@fjasle.eu>
-X-Mailer: git-send-email 2.30.1
+References: <20210829135409.186732-1-leo.yan@linaro.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <a94acd88-dab9-048d-ed9b-b4cac6c4d794@arm.com>
+Date:   Wed, 1 Sep 2021 21:03:30 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:rDCCjeLjAJM3z5VvVIexmAD/bY3AKKzjqSzuTrUTtirjUuMw1eC
- wwLNRcAtKKm7PqL6iqdIFFIiT7O+AeLSqfPbhrZBS0Ko9k/aYxeztZGZxxiBzVNctz6b88B
- VrxpIoDzGQUs106nftIu3h/TmWYMCtwBFEEV52+5szAi+pdcD1wT+7QUmuftM7tiXkCbLPr
- ynHb5pnVv+e/9PMAInveQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tXDixzSUFrk=:HfRr3slyXCLkUhXFDjNLEH
- Frdyh9BcrtfDG4xBvvSGMSXWBfAK+cDMOxGBO9RDpn2uHVykxSjgJl983n5cUrbf/YfoGovG3
- Dgl8JvQgMweTVqThPUfTob+6Omf2JshyXkn1tGXJ4srEuUc8NOghI33iDFJghxncW7bcik1rU
- kmEtnT52Vmkqmvs2GdO+5+XVLeLI4YYhA+gmRIpoocFhUkgIvJUVsRcPXOjFTr+cuINwlfZ4H
- UrgBNAyI4BXOjKq8M2LH+/lDUwHwfI4+l9eJhZK0wRHU2UBVG6hAsXf45akgndJaJi0/H5fjY
- brBNe8LDtJHmWDZdxU8QTCEjRvvyStA72LsAZd18GXsAQhSd2AwRAU7m0rBedRGQQ9TRfXHTP
- S8Ymah0Kgo1crxMhU5sRXCPnFwUZwm5w8p7O+/iVKNDIo1tkQU2cQ7L5e3gsPNCvxwo09mgjK
- vtqlKgQkKlnpNaYNIzfuGMwjlndMP0KgLD2xWQNQI2/AR84WWdvYc01IUVRJws0kER7CucSA1
- iImyO+oYNTOYksOsxfVm2iZPr/4+dKjS3Io4tEp6+FuAYDpZYzVtgGq1V4EUkya4la7iCx6IT
- gq7CCwkGtLatInwTXsTihw4fD75WkaIT/iyFVcEI5wQKa/bloiA6enNACD5sqnQmIEcCpC8d4
- AbZszZk7UlSQ3irG7dWRUflJY5jQvwit2iu9fEFp1FCZWQWjKfm2lApaqztDd2K6uUzqkRBRB
- /h26KMjHs5tBmj6MDVDaF77WDMkHCpj+mrULVg==
+In-Reply-To: <20210829135409.186732-1-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix calls of MODULE_PARM_DESC() such that the first argument matches the
-actual module parameter name.  This changes the 'parm' section in the
-output of `modinfo fscache` from:
+On 2021-08-29 14:54, Leo Yan wrote:
+> The AUX bounce buffer is allocated with API dma_alloc_coherent(), in the
+> low level's architecture code, e.g. for Arm64, it maps the memory with
+> the attribution "Normal non-cacheable"; this can be concluded from the
+> definition for pgprot_dmacoherent() in arch/arm64/include/asm/pgtable.h.
+> 
+> Later when access the AUX bounce buffer, since the memory mapping is
+> non-cacheable, it's low efficiency due to every load instruction must
+> reach out DRAM.
+> 
+> This patch changes to allocate pages with alloc_pages_node(), thus the
+> driver can access the memory with cacheable mapping in the kernel linear
+> virtual address; therefore, because load instructions can fetch data
+> from cache lines rather than always read data from DRAM, the driver can
+> boost memory coping performance.  After using the cacheable mapping, the
+> driver uses dma_sync_single_for_cpu() to invalidate cacheline prior to
+> read bounce buffer so can avoid read stale trace data.
+> 
+> By measurement the duration for function tmc_update_etr_buffer() with
+> ftrace function_graph tracer, it shows the performance significant
+> improvement for copying 4MiB data from bounce buffer:
+> 
+>    # echo tmc_etr_get_data_flat_buf > set_graph_notrace // avoid noise
+>    # echo tmc_update_etr_buffer > set_graph_function
+>    # echo function_graph > current_tracer
+> 
+>    before:
+> 
+>    # CPU  DURATION                  FUNCTION CALLS
+>    # |     |   |                     |   |   |   |
+>    2)               |    tmc_update_etr_buffer() {
+>    ...
+>    2) # 8148.320 us |    }
+> 
+>    after:
+> 
+>    # CPU  DURATION                  FUNCTION CALLS
+>    # |     |   |                     |   |   |   |
+>    2)               |  tmc_update_etr_buffer() {
+>    ...
+>    2) # 2463.980 us |  }
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+> 
+> Changes from v2:
+> Sync the entire buffer in one go when the tracing is wrap around
+> (Suzuki);
+> Add Suzuki's review tage.
+> 
+> Changes from v1:
+> Set "flat_buf->daddr" to 0 when fails to map DMA region; and dropped the
+> unexpected if condition change in tmc_etr_free_flat_buf().
+> 
+>   .../hwtracing/coresight/coresight-tmc-etr.c   | 47 ++++++++++++++++---
+>   1 file changed, 40 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> index 13fd1fc730ed..ac37e9376d2b 100644
+> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> @@ -21,6 +21,7 @@
+>   
+>   struct etr_flat_buf {
+>   	struct device	*dev;
+> +	struct page	*pages;
+>   	dma_addr_t	daddr;
+>   	void		*vaddr;
+>   	size_t		size;
+> @@ -600,6 +601,7 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+>   {
+>   	struct etr_flat_buf *flat_buf;
+>   	struct device *real_dev = drvdata->csdev->dev.parent;
+> +	ssize_t	aligned_size;
+>   
+>   	/* We cannot reuse existing pages for flat buf */
+>   	if (pages)
+> @@ -609,11 +611,18 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+>   	if (!flat_buf)
+>   		return -ENOMEM;
+>   
+> -	flat_buf->vaddr = dma_alloc_coherent(real_dev, etr_buf->size,
+> -					     &flat_buf->daddr, GFP_KERNEL);
+> -	if (!flat_buf->vaddr) {
+> -		kfree(flat_buf);
+> -		return -ENOMEM;
+> +	aligned_size = PAGE_ALIGN(etr_buf->size);
+> +	flat_buf->pages = alloc_pages_node(node, GFP_KERNEL | __GFP_ZERO,
+> +					   get_order(aligned_size));
+> +	if (!flat_buf->pages)
+> +		goto fail_alloc_pages;
+> +
+> +	flat_buf->vaddr = page_address(flat_buf->pages);
+> +	flat_buf->daddr = dma_map_page(real_dev, flat_buf->pages, 0,
+> +				       aligned_size, DMA_FROM_DEVICE);
 
-    parm: defer_lookup:uint
-    parm: fscache_defer_lookup:Defer cookie lookup to background thread
-    parm: defer_create:uint
-    parm: fscache_defer_create:Defer cookie creation to background thread
-    parm: debug:uint
-    parm: fscache_debug:FS-Cache debugging mask
+Use dma_alloc_noncoherent() rather than open-coding this - bare 
+alloc_pages() has no understanding of DMA masks, and you wouldn't want 
+to end up in the worst case of dma_map_page() bounce-buffering your 
+bounce buffer...
 
-into:
+Robin.
 
-    parm: defer_lookup:Defer cookie lookup to background thread (uint)
-    parm: defer_create:Defer cookie creation to background thread (uint)
-    parm: debug:FS-Cache debugging mask (uint)
-.
-
-Signed-off-by: Nicolas Schier <nicolas@fjasle.eu>
----
- fs/fscache/main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/fs/fscache/main.c b/fs/fscache/main.c
-index c1e6cc9091aa..ccb06dc0a6e9 100644
---- a/fs/fscache/main.c
-+++ b/fs/fscache/main.c
-@@ -22,19 +22,19 @@ MODULE_LICENSE("GPL");
- unsigned fscache_defer_lookup = 1;
- module_param_named(defer_lookup, fscache_defer_lookup, uint,
- 		   S_IWUSR | S_IRUGO);
--MODULE_PARM_DESC(fscache_defer_lookup,
-+MODULE_PARM_DESC(defer_lookup,
- 		 "Defer cookie lookup to background thread");
- 
- unsigned fscache_defer_create = 1;
- module_param_named(defer_create, fscache_defer_create, uint,
- 		   S_IWUSR | S_IRUGO);
--MODULE_PARM_DESC(fscache_defer_create,
-+MODULE_PARM_DESC(defer_create,
- 		 "Defer cookie creation to background thread");
- 
- unsigned fscache_debug;
- module_param_named(debug, fscache_debug, uint,
- 		   S_IWUSR | S_IRUGO);
--MODULE_PARM_DESC(fscache_debug,
-+MODULE_PARM_DESC(debug,
- 		 "FS-Cache debugging mask");
- 
- struct kobject *fscache_root;
--- 
-2.30.1
-
+> +	if (dma_mapping_error(real_dev, flat_buf->daddr)) {
+> +		flat_buf->daddr = 0;
+> +		goto fail_dma_map_page;
+>   	}
+>   
+>   	flat_buf->size = etr_buf->size;
+> @@ -622,6 +631,12 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+>   	etr_buf->mode = ETR_MODE_FLAT;
+>   	etr_buf->private = flat_buf;
+>   	return 0;
+> +
+> +fail_dma_map_page:
+> +	__free_pages(flat_buf->pages, get_order(aligned_size));
+> +fail_alloc_pages:
+> +	kfree(flat_buf);
+> +	return -ENOMEM;
+>   }
+>   
+>   static void tmc_etr_free_flat_buf(struct etr_buf *etr_buf)
+> @@ -630,15 +645,20 @@ static void tmc_etr_free_flat_buf(struct etr_buf *etr_buf)
+>   
+>   	if (flat_buf && flat_buf->daddr) {
+>   		struct device *real_dev = flat_buf->dev->parent;
+> +		ssize_t aligned_size = PAGE_ALIGN(etr_buf->size);
+>   
+> -		dma_free_coherent(real_dev, flat_buf->size,
+> -				  flat_buf->vaddr, flat_buf->daddr);
+> +		dma_unmap_page(real_dev, flat_buf->daddr, aligned_size,
+> +			       DMA_FROM_DEVICE);
+> +		__free_pages(flat_buf->pages, get_order(aligned_size));
+>   	}
+>   	kfree(flat_buf);
+>   }
+>   
+>   static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
+>   {
+> +	struct etr_flat_buf *flat_buf = etr_buf->private;
+> +	struct device *real_dev = flat_buf->dev->parent;
+> +
+>   	/*
+>   	 * Adjust the buffer to point to the beginning of the trace data
+>   	 * and update the available trace data.
+> @@ -648,6 +668,19 @@ static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
+>   		etr_buf->len = etr_buf->size;
+>   	else
+>   		etr_buf->len = rwp - rrp;
+> +
+> +	/*
+> +	 * The driver always starts tracing at the beginning of the buffer,
+> +	 * the only reason why we would get a wrap around is when the buffer
+> +	 * is full.  Sync the entire buffer in one go for this case.
+> +	 */
+> +	if (etr_buf->offset + etr_buf->len > etr_buf->size)
+> +		dma_sync_single_for_cpu(real_dev, flat_buf->daddr,
+> +					etr_buf->size, DMA_FROM_DEVICE);
+> +	else
+> +		dma_sync_single_for_cpu(real_dev,
+> +					flat_buf->daddr + etr_buf->offset,
+> +					etr_buf->len, DMA_FROM_DEVICE);
+>   }
+>   
+>   static ssize_t tmc_etr_get_data_flat_buf(struct etr_buf *etr_buf,
+> 
