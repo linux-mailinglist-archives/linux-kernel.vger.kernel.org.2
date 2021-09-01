@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1533FE452
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A4F3FE453
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239966AbhIAU5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 16:57:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32493 "EHLO
+        id S238488AbhIAU5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 16:57:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24013 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229653AbhIAU51 (ORCPT
+        by vger.kernel.org with ESMTP id S238528AbhIAU53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 16:57:27 -0400
+        Wed, 1 Sep 2021 16:57:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630529790;
+        s=mimecast20190719; t=1630529792;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uUFjqTEK/Z5AKo1Agn+ijWYpHJREXXiYmYHdAc5BzAA=;
-        b=iPtQ6v8gkKydPOiqfVmHrpRkLwCg6jiDH9dCrNMdpKq/4IIewkE0KMbBnvGhU/WufajKmX
-        rbDiKdoR+SRNXQStDA/bt7UAoP9ZtpVDfy5R92vRqp4p0kX2pp8H+yl8jSHFyiNMjmo27E
-        GWJFL0f9IN/UUyxpTAuF2ZUHm1eF/nk=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-316-lGKpOB_EO4i3PpgABTrAOQ-1; Wed, 01 Sep 2021 16:56:29 -0400
-X-MC-Unique: lGKpOB_EO4i3PpgABTrAOQ-1
-Received: by mail-qk1-f197.google.com with SMTP id h186-20020a3785c3000000b00425f37f792aso795875qkd.22
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:56:29 -0700 (PDT)
+        bh=H80HJYI0qyzkG5zbmWICcaBUu/kpdbMbG4peNGDuQ4A=;
+        b=AQwDPwF/i0xiMQ5H5Y4IHAurf78a6FP9bfIDaGJ8Ejo/InSpzh2H8qLAV1JRHYfI/stkxs
+        9xaoaq3kjIedOsox2lESN2/ON8+ARbTOiYd3f68LUMQ8p4wYFyzG2G6ZEuYSZHxpPhDo2t
+        By0bGK8FRUsAz3QrxTkrT/msDW7++tE=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-462-I8XtxldKMlaTrocXcnSB3g-1; Wed, 01 Sep 2021 16:56:31 -0400
+X-MC-Unique: I8XtxldKMlaTrocXcnSB3g-1
+Received: by mail-qt1-f200.google.com with SMTP id q19-20020ac87353000000b0029a09eca2afso843349qtp.21
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:56:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uUFjqTEK/Z5AKo1Agn+ijWYpHJREXXiYmYHdAc5BzAA=;
-        b=kXy6P0aYcRVOtlEG6PBVu+B1sn3jrnQIl7fhT66NAcKGnCS0gFGPw7mxU5sgfc2bb7
-         l6OlvjPouDOkr4ob7Y0WleMAadiKDJjwPr6H0InwpPOKDFu0fZHKxi+2aoPkLJewK2kl
-         HofOru0IrMJbrYAlZObZRLL6mQZsIHSbqXGW1/QAEDZuF/viaB3zW4R2d1LCPRoArfon
-         j3q6/J2/jtlPWzCSNRCdqn+Yyx4bYx7AouXFXaOTwUaibgzUfiTdKlTD0DUQLpo92APG
-         m6Mnl6eACEHn9uH8eO3dfTJ1g7eo7b+ao/wEVK5sB6s33YXAlO0ooyIEo/ytRxD84HUx
-         YO5Q==
-X-Gm-Message-State: AOAM533kCZq6WHN3nd5uSmvb01Utgit7CsykkKma5j7JNw/sdKJj2vc+
-        lWo9vKy7xx+jppD/9GCvwvrKF+t+0sASmdTShZCNmOJEhXczd1+1bJc/QjhBm4AGN0+IWG3NebN
-        OLO/zOdcopHaeo22Zq5sYYCdG8EPHzhhKJWLp5A185XSTWMRH3BzSzy+W0OilW2iFUNmHhkc4QA
+        bh=H80HJYI0qyzkG5zbmWICcaBUu/kpdbMbG4peNGDuQ4A=;
+        b=i/3m96dKHkMXEPojh0Rj2EQU5U3+FNb5TEf7Xqn0/kZ28hVtxJjhBjerD6nV4UOHq2
+         4qm0aKOAOefD7l9UFjEqM/0qPGfVOJys3/NT0RNVjlOhE7qwDoz/IcecLq5w/NiL2N9/
+         3S1lXLK6sx5n1+T0P4O8KqdQtiqAFSkXrHnYKXEOAwUI6t6pNg/G4AopAxmj46uc7z+1
+         rwjYOq1EpxObdOKrr9h/Lk0mUteKjGsTM/GhmU1c2XUytOKbXKDCAC67xA9HAF6yQA4M
+         adqx+2Utt2v9oC6OokvMYP8dg7JEukA5qvqvIpS+TJgSZ6hfMS//Z+/QaPWT3gGzYhib
+         FwMg==
+X-Gm-Message-State: AOAM530JA4uyYgNFU/URs3i/Jf9y+VN9dLA4dfj0gIjjObJj+tQyDUMY
+        GgcAdGADxBKODAdn3uOrAEnkWjiS4TrBUNLJMA7OeoZEyRpPBBcV6GA6FX1sNko+rD+bKOcm6Ec
+        pJcFf1YRLsAqj6UCJalEWjvcRDTSgw/0PV48RGfRFnLeuJgcltIletBfBuk4QoZC/dn9LYw7VnA
         ==
-X-Received: by 2002:a37:741:: with SMTP id 62mr1642020qkh.490.1630529788123;
-        Wed, 01 Sep 2021 13:56:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyg27bfuu/yWSrJR+ACgldtYrxoQNg/w2ohixTNUzohW/oZaLbtRecN5m3ghvaicA92Bsp6WQ==
-X-Received: by 2002:a37:741:: with SMTP id 62mr1641988qkh.490.1630529787864;
-        Wed, 01 Sep 2021 13:56:27 -0700 (PDT)
+X-Received: by 2002:ac8:4241:: with SMTP id r1mr433343qtm.296.1630529790220;
+        Wed, 01 Sep 2021 13:56:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxfX94m0Q5rz7prZMT3zggqIDbw5ktE9Et7MQf17IWYgA/u195BGGhxvkI+Dg/upwPF/Y2ASQ==
+X-Received: by 2002:ac8:4241:: with SMTP id r1mr433306qtm.296.1630529789960;
+        Wed, 01 Sep 2021 13:56:29 -0700 (PDT)
 Received: from t490s.redhat.com ([2607:fea8:56a3:500::ad7f])
-        by smtp.gmail.com with ESMTPSA id f3sm624865qti.65.2021.09.01.13.56.26
+        by smtp.gmail.com with ESMTPSA id f3sm624865qti.65.2021.09.01.13.56.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 13:56:27 -0700 (PDT)
+        Wed, 01 Sep 2021 13:56:29 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Andrea Arcangeli <aarcange@redhat.com>,
@@ -64,11 +64,10 @@ Cc:     Andrea Arcangeli <aarcange@redhat.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
         "Kirill A . Shutemov" <kirill@shutemov.name>,
         Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>
-Subject: [PATCH 1/5] mm/shmem: Unconditionally set pte dirty in mfill_atomic_install_pte
-Date:   Wed,  1 Sep 2021 16:56:18 -0400
-Message-Id: <20210901205622.6935-2-peterx@redhat.com>
+        Hugh Dickins <hughd@google.com>
+Subject: [PATCH 2/5] mm: Clear vmf->pte after pte_unmap_same() returns
+Date:   Wed,  1 Sep 2021 16:56:19 -0400
+Message-Id: <20210901205622.6935-3-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210901205622.6935-1-peterx@redhat.com>
 References: <20210901205622.6935-1-peterx@redhat.com>
@@ -78,69 +77,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was conditionally done previously, as there's one shmem special case that we
-use SetPageDirty() instead.  However that's not necessary and it should be
-easier and cleaner to do it unconditionally in mfill_atomic_install_pte().
+pte_unmap_same() will always unmap the pte pointer.  After the unmap, vmf->pte
+will not be valid any more, we should clear it.
 
-The most recent discussion about this is here, where Hugh explained the history
-of SetPageDirty() and why it's possible that it's not required at all:
+It was safe only because no one is accessing vmf->pte after pte_unmap_same()
+returns, since the only caller of pte_unmap_same() (so far) is do_swap_page(),
+where vmf->pte will in most cases be overwritten very soon.
 
-https://lore.kernel.org/lkml/alpine.LSU.2.11.2104121657050.1097@eggly.anvils/
+Directly pass in vmf into pte_unmap_same() and then we can also avoid the long
+parameter list too, which should be a nice cleanup.
 
-Currently mfill_atomic_install_pte() has three callers:
-
-        1. shmem_mfill_atomic_pte
-        2. mcopy_atomic_pte
-        3. mcontinue_atomic_pte
-
-After the change: case (1) should have its SetPageDirty replaced by the dirty
-bit on pte (so we unify them together, finally), case (2) should have no
-functional change at all as it has page_in_cache==false, case (3) may add a
-dirty bit to the pte.  However since case (3) is UFFDIO_CONTINUE for shmem,
-it's merely 100% sure the page is dirty after all, so should not make a real
-difference either.
-
-This should make it much easier to follow on which case will set dirty for
-uffd, as we'll simply set it all now for all uffd related ioctls.  Meanwhile,
-no special handling of SetPageDirty() if there's no need.
-
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/shmem.c       | 1 -
- mm/userfaultfd.c | 3 +--
- 2 files changed, 1 insertion(+), 3 deletions(-)
+ mm/memory.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index dacda7463d54..3f91c8ce4d02 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2437,7 +2437,6 @@ int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
- 	shmem_recalc_inode(inode);
- 	spin_unlock_irq(&info->lock);
+diff --git a/mm/memory.c b/mm/memory.c
+index 25fc46e87214..204141e8a53d 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2724,19 +2724,20 @@ EXPORT_SYMBOL_GPL(apply_to_existing_page_range);
+  * proceeding (but do_wp_page is only called after already making such a check;
+  * and do_anonymous_page can safely check later on).
+  */
+-static inline int pte_unmap_same(struct mm_struct *mm, pmd_t *pmd,
+-				pte_t *page_table, pte_t orig_pte)
++static inline int pte_unmap_same(struct vm_fault *vmf)
+ {
+ 	int same = 1;
+ #if defined(CONFIG_SMP) || defined(CONFIG_PREEMPTION)
+ 	if (sizeof(pte_t) > sizeof(unsigned long)) {
+-		spinlock_t *ptl = pte_lockptr(mm, pmd);
++		spinlock_t *ptl = pte_lockptr(vmf->vma->vm_mm, vmf->pmd);
+ 		spin_lock(ptl);
+-		same = pte_same(*page_table, orig_pte);
++		same = pte_same(*vmf->pte, vmf->orig_pte);
+ 		spin_unlock(ptl);
+ 	}
+ #endif
+-	pte_unmap(page_table);
++	pte_unmap(vmf->pte);
++	/* After unmap of pte, the pointer is invalid now - clear it. */
++	vmf->pte = NULL;
+ 	return same;
+ }
  
--	SetPageDirty(page);
- 	unlock_page(page);
- 	return 0;
- out_delete_from_cache:
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 0e2132834bc7..b30a3724c701 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -69,10 +69,9 @@ int mfill_atomic_install_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
- 	pgoff_t offset, max_off;
+@@ -3487,7 +3488,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 	vm_fault_t ret = 0;
+ 	void *shadow = NULL;
  
- 	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
-+	_dst_pte = pte_mkdirty(_dst_pte);
- 	if (page_in_cache && !vm_shared)
- 		writable = false;
--	if (writable || !page_in_cache)
--		_dst_pte = pte_mkdirty(_dst_pte);
- 	if (writable) {
- 		if (wp_copy)
- 			_dst_pte = pte_mkuffd_wp(_dst_pte);
+-	if (!pte_unmap_same(vma->vm_mm, vmf->pmd, vmf->pte, vmf->orig_pte))
++	if (!pte_unmap_same(vmf))
+ 		goto out;
+ 
+ 	entry = pte_to_swp_entry(vmf->orig_pte);
 -- 
 2.31.1
 
