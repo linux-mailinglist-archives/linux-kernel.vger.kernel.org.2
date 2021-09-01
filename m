@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E5F3FDAA4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A583FDBBF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244830AbhIAMds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:33:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35196 "EHLO mail.kernel.org"
+        id S1344921AbhIAMnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:43:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244860AbhIAMcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:32:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 518B861075;
-        Wed,  1 Sep 2021 12:31:14 +0000 (UTC)
+        id S1344505AbhIAMjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:39:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 052F6611C6;
+        Wed,  1 Sep 2021 12:35:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499474;
-        bh=IVm3XYFjMac4aOXUM8P88sMnUNrYq7e/msifdBw5VKo=;
+        s=korg; t=1630499712;
+        bh=ZZcorKwKzcJ2Pe7iZyvuFq8GrwRmhRqlcU1yR0JcaVg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uY/uaRmmG06Id3BCidwF5plIzXVM2CZAnWV8AXVpU64K+GRWzasC9ebW038DHH/BX
-         kD8CtwWdBhNSUZ0m2cLmqFvNsc0RiKTZqCA/nBPrfAo/4ZiZhUB6zvkPX+aju/22Os
-         hAVQ5s7CKSQkoMn3g8bRiIO+nX53Yu0SYVtrpmGA=
+        b=wh7YZ642lYiuNiXofVkyHftF38LiifuUvwrvRlqQvxsWytKxMII6kjWLg56Ptpky8
+         SgXJr6w4dLyRnLXq11w+0YZHsIsm6HvxL4chtt4QKNF/FF5p+PY4cisvzTrlAhHP6f
+         Yz9sXod23x0oNtoUw24Yr2hnXZCo3yDMuQttgja0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 14/48] RDMA/bnxt_re: Add missing spin lock initialization
-Date:   Wed,  1 Sep 2021 14:28:04 +0200
-Message-Id: <20210901122253.877697762@linuxfoundation.org>
+Subject: [PATCH 5.10 055/103] opp: remove WARN when no valid OPPs remain
+Date:   Wed,  1 Sep 2021 14:28:05 +0200
+Message-Id: <20210901122302.424091085@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,34 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-[ Upstream commit 17f2569dce1848080825b8336e6b7c6900193b44 ]
+[ Upstream commit 335ffab3ef864539e814b9a2903b0ae420c1c067 ]
 
-Add the missing initialization of srq lock.
+This WARN can be triggered per-core and the stack trace is not useful.
+Replace it with plain dev_err(). Fix a comment while at it.
 
-Fixes: 37cb11acf1f7 ("RDMA/bnxt_re: Add SRQ support for Broadcom adapters")
-Link: https://lore.kernel.org/r/1629343553-5843-3-git-send-email-selvin.xavier@broadcom.com
-Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/opp/of.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 58c021648b7c..a96f9142fe08 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -1404,6 +1404,7 @@ int bnxt_re_create_srq(struct ib_srq *ib_srq,
- 	if (nq)
- 		nq->budget++;
- 	atomic_inc(&rdev->srq_count);
-+	spin_lock_init(&srq->lock);
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index 363277b31ecb..d92a1bfe1690 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -870,8 +870,9 @@ static int _of_add_opp_table_v2(struct device *dev, struct opp_table *opp_table)
+ 		}
+ 	}
  
- 	return 0;
- 
+-	/* There should be one of more OPP defined */
+-	if (WARN_ON(!count)) {
++	/* There should be one or more OPPs defined */
++	if (!count) {
++		dev_err(dev, "%s: no supported OPPs", __func__);
+ 		ret = -ENOENT;
+ 		goto remove_static_opp;
+ 	}
 -- 
 2.30.2
 
