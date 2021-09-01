@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2C13FD3F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 08:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F14B3FD3F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 08:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242379AbhIAGsA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 1 Sep 2021 02:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242381AbhIAGrz (ORCPT
+        id S242385AbhIAGsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 02:48:06 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:39446 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242386AbhIAGsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 02:47:55 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C853C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 23:46:59 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mLK1M-00063S-OG; Wed, 01 Sep 2021 08:46:52 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mLK1M-00031h-6G; Wed, 01 Sep 2021 08:46:52 +0200
-Message-ID: <4a27833cea3752e7f8f88a577d83d70783f8d584.camel@pengutronix.de>
-Subject: Re: [PATCH] media: coda: Make use of the helper function
- devm_platform_ioremap_resource()
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Wed, 1 Sep 2021 02:48:04 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Umr7Ulw_1630478825;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0Umr7Ulw_1630478825)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 01 Sep 2021 14:47:06 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Wed, 01 Sep 2021 08:46:52 +0200
-In-Reply-To: <20210901055109.6529-1-caihuoqing@baidu.com>
-References: <20210901055109.6529-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH] block/mq-deadline: Fix unused-function compilation warning
+Date:   Wed,  1 Sep 2021 14:47:05 +0800
+Message-Id: <20210901064705.55071-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-01 at 13:51 +0800, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/media/platform/coda/imx-vdoa.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/coda/imx-vdoa.c b/drivers/media/platform/coda/imx-vdoa.c
-> index 8bc0d8371819..6996d4571e36 100644
-> --- a/drivers/media/platform/coda/imx-vdoa.c
-> +++ b/drivers/media/platform/coda/imx-vdoa.c
-> @@ -301,8 +301,7 @@ static int vdoa_probe(struct platform_device *pdev)
->  		return PTR_ERR(vdoa->vdoa_clk);
->  	}
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	vdoa->regs = devm_ioremap_resource(vdoa->dev, res);
-> +	vdoa->regs = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(vdoa->regs))
->  		return PTR_ERR(vdoa->regs);
->  
+If CONFIG_BLK_DEBUG_FS is not defined, the following compilation warning
+will be reported:
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+  block/mq-deadline.c:274:12: warning: ‘dd_queued’ defined but not used [-Wunused-function]
+   static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
 
-regards
-Philipp
+Move the function dd_queued() to the scope of this config and mark it
+inline.
+
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+---
+ block/mq-deadline.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/block/mq-deadline.c b/block/mq-deadline.c
+index 3c3693c34f06..084314ee878d 100644
+--- a/block/mq-deadline.c
++++ b/block/mq-deadline.c
+@@ -270,12 +270,6 @@ deadline_move_request(struct deadline_data *dd, struct dd_per_prio *per_prio,
+ 	deadline_remove_request(rq->q, per_prio, rq);
+ }
+ 
+-/* Number of requests queued for a given priority level. */
+-static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
+-{
+-	return dd_sum(dd, inserted, prio) - dd_sum(dd, completed, prio);
+-}
+-
+ /*
+  * deadline_check_fifo returns 0 if there are no expired requests on the fifo,
+  * 1 otherwise. Requires !list_empty(&dd->fifo_list[data_dir])
+@@ -953,6 +947,12 @@ static int dd_async_depth_show(void *data, struct seq_file *m)
+ 	return 0;
+ }
+ 
++/* Number of requests queued for a given priority level. */
++static inline u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
++{
++	return dd_sum(dd, inserted, prio) - dd_sum(dd, completed, prio);
++}
++
+ static int dd_queued_show(void *data, struct seq_file *m)
+ {
+ 	struct request_queue *q = data;
+-- 
+2.19.1.3.ge56e4f7
+
