@@ -2,96 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300BB3FDF18
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C4E3FDF1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343921AbhIAPzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:55:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244935AbhIAPzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:55:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E948361075;
-        Wed,  1 Sep 2021 15:54:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630511678;
-        bh=/4wn19eKOOwryeccB2/BNC/IzR5o0qm/E+ohvyEmRO8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=thftqGNBdiUWbRlW+UIfbUC/d/fD7K17RIGz8nV9JtHqvkNlTokryn3ICyPjretd7
-         tX2N9rKKEG31ywzbUMEu0PaKaUDpCPnn/IaDqykZ6U3yzclLXuwMUZBtUbaOZhqsuZ
-         t1e7C5rgz8QVAMOwHleg/kxYpfOil1GoINYoI3hInmdMIX7lR8KtA8LLNWI2lvCMcj
-         j1KL0ITY239lrrmEJ0a91F5RYgrGAHSezredDq4BczqxxoB0dlT1bIjv3PJRQ8ltN4
-         Tc9+tMdZI6k8GomXDrfPf5sPn4vPWD9MMDGMoZy0Ir2x9H729savbajoQjYSPyC2kw
-         A3ASNUHkwPGuw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A2DE24007E; Wed,  1 Sep 2021 12:54:34 -0300 (-03)
-Date:   Wed, 1 Sep 2021 12:54:34 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
-        mike.leach@linaro.org, suzuki.poulose@arm.com,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] perf cs-etm: Show a warning for an unknown magic
- number
-Message-ID: <YS+iOrcPTzQfmbqU@kernel.org>
-References: <20210806134109.1182235-1-james.clark@arm.com>
- <20210806134109.1182235-10-james.clark@arm.com>
- <20210824083615.GF204566@leoy-ThinkPad-X240s>
+        id S1343918AbhIAP5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245022AbhIAP5H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 11:57:07 -0400
+Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [IPv6:2001:4b7a:2000:18::162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA35C061575;
+        Wed,  1 Sep 2021 08:56:10 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 574061FAF9;
+        Wed,  1 Sep 2021 17:56:08 +0200 (CEST)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     robh+dt@kernel.org
+Cc:     bjorn.andersson@linaro.org, sboyd@kernel.org, vireshk@kernel.org,
+        agross@kernel.org, nm@ti.com, ilia.lin@kernel.org,
+        niklas.cassel@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH 1/2] dt-bindings: opp: qcom-opp: Convert to DT schema
+Date:   Wed,  1 Sep 2021 17:55:58 +0200
+Message-Id: <20210901155559.627491-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824083615.GF204566@leoy-ThinkPad-X240s>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Aug 24, 2021 at 04:36:15PM +0800, Leo Yan escreveu:
-> On Fri, Aug 06, 2021 at 02:41:09PM +0100, James Clark wrote:
-> > Currently perf reports "Cannot allocate memory" which isn't very helpful
-> > for a potentially user facing issue. If we add a new magic number in
-> > the future, perf will be able to report unrecognised magic numbers.
-> > 
-> > Signed-off-by: James Clark <james.clark@arm.com>
-> 
-> Reviewed-by: Leo Yan <leo.yan@linaro.org>
+Rewrite the qcom-opp as qcom-level-opp in dt schema format.
 
-Applies cleanly to my tree, test building it now, holler if there is
-something that prevents it from being merged.
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+---
+ .../bindings/opp/qcom-level-opp.yaml          | 68 +++++++++++++++++++
+ .../devicetree/bindings/opp/qcom-opp.txt      | 19 ------
+ 2 files changed, 68 insertions(+), 19 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/opp/qcom-level-opp.yaml
+ delete mode 100644 Documentation/devicetree/bindings/opp/qcom-opp.txt
 
-- Arnaldo
- 
-> > ---
-> >  tools/perf/util/cs-etm.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> > index 788ad5a099f6..5b276bdb96a6 100644
-> > --- a/tools/perf/util/cs-etm.c
-> > +++ b/tools/perf/util/cs-etm.c
-> > @@ -2973,6 +2973,11 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
-> >  
-> >  			/* ETE shares first part of metadata with ETMv4 */
-> >  			trcidr_idx = CS_ETMV4_TRCTRACEIDR;
-> > +		} else {
-> > +			ui__error("CS ETM Trace: Unrecognised magic number %#"PRIx64". File could be from a newer version of perf.\n",
-> > +				  ptr[i]);
-> > +			err = -EINVAL;
-> > +			goto err_free_metadata;
-> >  		}
-> >  
-> >  		if (!metadata[j]) {
-> > -- 
-> > 2.28.0
-> > 
-
+diff --git a/Documentation/devicetree/bindings/opp/qcom-level-opp.yaml b/Documentation/devicetree/bindings/opp/qcom-level-opp.yaml
+new file mode 100644
+index 000000000000..65dd2d5d9566
+--- /dev/null
++++ b/Documentation/devicetree/bindings/opp/qcom-level-opp.yaml
+@@ -0,0 +1,68 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/opp/qcom-level-opp.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm OPP bindings for fuse and voltage level OPPs
++
++maintainers:
++  - AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
++  - Niklas Cassel <niklas.cassel@linaro.org>
++
++allOf:
++  - $ref: opp-v2-base.yaml#
++
++properties:
++  compatible:
++    const: operating-points-v2-qcom-level
++
++  opp-shared: true
++
++required:
++  - compatible
++
++patternProperties:
++  '^opp-?[0-9]+$':
++    type: object
++
++    properties:
++      opp-level: true
++      qcom,opp-fuse-level:
++        description:
++          At least one positive value representing the fuse corner or level
++          associated with this OPP node. In case this is used for CPR >=v3,
++          multiple array entries are referring to different CPR threads.
++          Sometimes several corners/levels shares a certain fuse
++          corner/level. A fuse corner/level contains e.g. ref uV, min uV,
++          and max uV.
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++
++    required:
++      - opp-level
++      - qcom,opp-fuse-level
++
++    unevaluatedProperties: false
++
++additionalProperties: false
++
++examples:
++  - |
++    cpr_opp_table: opp-table-cpr {
++        compatible = "operating-points-v2-qcom-level";
++
++        cpr_opp1: opp1 {
++            opp-level = <1>;
++            qcom,opp-fuse-level = <1>;
++        };
++        cpr_opp2: opp2 {
++            opp-level = <2>;
++            qcom,opp-fuse-level = <2>;
++        };
++        cpr_opp3: opp3 {
++            opp-level = <3>;
++            qcom,opp-fuse-level = <3>;
++        };
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/opp/qcom-opp.txt b/Documentation/devicetree/bindings/opp/qcom-opp.txt
+deleted file mode 100644
+index 41d3e4ff2dc3..000000000000
+--- a/Documentation/devicetree/bindings/opp/qcom-opp.txt
++++ /dev/null
+@@ -1,19 +0,0 @@
+-Qualcomm OPP bindings to describe OPP nodes
+-
+-The bindings are based on top of the operating-points-v2 bindings
+-described in Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+-Additional properties are described below.
+-
+-* OPP Table Node
+-
+-Required properties:
+-- compatible: Allow OPPs to express their compatibility. It should be:
+-  "operating-points-v2-qcom-level"
+-
+-* OPP Node
+-
+-Required properties:
+-- qcom,opp-fuse-level: A positive value representing the fuse corner/level
+-  associated with this OPP node. Sometimes several corners/levels shares
+-  a certain fuse corner/level. A fuse corner/level contains e.g. ref uV,
+-  min uV, and max uV.
 -- 
+2.32.0
 
-- Arnaldo
