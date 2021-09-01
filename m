@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1C23FD3A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 08:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872EB3FD3AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 08:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242198AbhIAGDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 02:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
+        id S242223AbhIAGGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 02:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242085AbhIAGDY (ORCPT
+        with ESMTP id S242148AbhIAGGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 02:03:24 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BE6C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 23:02:28 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id e1so840527plt.11
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 23:02:28 -0700 (PDT)
+        Wed, 1 Sep 2021 02:06:17 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B00C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 23:05:20 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id r2so1664826pgl.10
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 23:05:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=ziNI5peMvYej2c86szG+b+RIN9vcpD2Q6jiK+c9Dsp0=;
-        b=VppkQ1L5OP7WzN9sX4JjF6uR/tB1ixdRKfkAFndlNli8KnSwM198Yd6xqfJsB4lS7b
-         R0fn6Co3ZrF9bQJ3GlVu+J06fi+0vErxRuan0Z5Rg5zBSsM+ODoV4v/H7Br7cAtG5U19
-         6QOS3M4oDk74qmMUijl2VmzPvHqRz66gPOEE4sTb8ZR/fJV8d7FtbGIc0TYzuL0BJto2
-         sbgZYZTd843DV9Xgc662DGz9N679pFBLFojVXhERhX3qcbDy9Y1z5/BQixVOglh5RH/s
-         Pov/xZ2cKhDyuor1e+cqMui9X6DnbVTllyB171am+kRyQKYjoWISx/4IEC0zDtcNwAcs
-         y/dQ==
+         :content-disposition:in-reply-to:user-agent;
+        bh=EyJuGn8lU3B/NQmQ+F0Gr7GFa88roaDiQ1XSKR7WpgU=;
+        b=Iv4SdfAQ6JYYeQeBWQWRc2NSbGPphdIFylJZQ6CG8Fhm0h+k3u599YMDiqDlcPsvI9
+         S7NfbeSQDdqLL4pco4ohsatTpHl7B+pPuN7Sf5x0SSTvgPCm67YdEe1jq1RyHCy5fnoL
+         Y61u+eBK3iU2cwZyT3Rms+ed3qepElUnIGI1utGIxDapexCdvw3vENjXUecJcGoy2XmL
+         V+VKoGkrD1LqzKN9o39VLzk2tYPYrs9684KUgxe1lK3rud+HPdJuxJ+kLzErV+hUzgQu
+         R/a2tOFs93nVM1zm4k9bajmTxJgKC8vHAeu2BUy365WtI80Av7uovePoWj2N0TSYzdML
+         +e+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=ziNI5peMvYej2c86szG+b+RIN9vcpD2Q6jiK+c9Dsp0=;
-        b=tpkTxb9Z+LeqwK7T5+ZeaMS4Klk1vJXyJfUGyeo/8UgPTCyrcS74qMQPlzuVxATCUo
-         WQHYwPXBQey6ukdw98PNfw5unpsGQF8lbMDxsQICAI8Ilquy5fCBHD9Ze5FKeJt/D/3z
-         62IZxKC1ma7x7G8NYFuakiTR2HV1wmfE/+DnlFnY/ebv/7h85FGZCAYS+3BWmI4jLAX7
-         yBCh+N+PdxwFFIhwSX9VdIc9QNLb6wW3TI0udRKUwe3m+pKqXU80TrpBx+IcibgkkqrL
-         nsSf8OIiUxJwbcgXV2OArCPr/EDAwX/uyy6i0YC7raUFxFTmth0bs9GCpyiTCrrQE0m6
-         /IrA==
-X-Gm-Message-State: AOAM531jFQ8MJmlAXIDIpybP7N7uabM/fWo9P/MHzzoXIjM4vHKxQNkV
-        6chNIBIcEuk2gEX0QdXJu87rnw==
-X-Google-Smtp-Source: ABdhPJxttiK+IAdc3GQskh/5HBoecSoXKKeBhgWeJNiLAtIEvUw+mJsJhOKk0TcuJDQtQUqAH/1v7g==
-X-Received: by 2002:a17:902:7e47:b0:137:60bd:c08f with SMTP id a7-20020a1709027e4700b0013760bdc08fmr8287953pln.8.1630476146931;
-        Tue, 31 Aug 2021 23:02:26 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EyJuGn8lU3B/NQmQ+F0Gr7GFa88roaDiQ1XSKR7WpgU=;
+        b=c6vTNT3pewUeKHkFH7jBRA6azNjzUQYLWxLr35o/zfzv/xDb3Iz2LXNUqtOgQNLJgr
+         /vLUWO6xKKKmEYPPgf1BTtUs46IUn+2JmDantyD93qc5VZiKQ4UKtsy7IqGDReHISJiD
+         COnnKE7h0sR44oCXpkknxTWsITDFYzQ1UeGI3998K5/zH1maNNgFkZkAMspJqNESbGjL
+         EJ7YNHYlSQ5lt10er8jmET+to3QfcudzzCPGFG4auDOTl9+cNeU8K2PNe2cjppZSZjlb
+         ovSofFdQzLNOAhP6mlwStiApgl4TPeZRpE1IJhYk0yqqowfhdeUJyF1n3T2Vfb+cfUoH
+         RoEA==
+X-Gm-Message-State: AOAM530wLchakrRLTiJQcKc8XV940s1XNirq4lWfv0nQ6SMevafLcbDX
+        HqvjlsB6Ydqsc5e5aOA6Uv6J7A==
+X-Google-Smtp-Source: ABdhPJw7MMZ+vkCKUSYJMPruV7ag6WBQqZfid3Yt32sYpnZFZaoTQ7oXZiWOPjgPnzmtfJ4S1r0qww==
+X-Received: by 2002:aa7:8718:0:b0:405:1645:16c3 with SMTP id b24-20020aa78718000000b00405164516c3mr7293043pfo.32.1630476320273;
+        Tue, 31 Aug 2021 23:05:20 -0700 (PDT)
 Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id i14sm19420357pfd.112.2021.08.31.23.02.26
+        by smtp.gmail.com with ESMTPSA id l2sm18658730pfc.157.2021.08.31.23.05.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 23:02:26 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 11:32:24 +0530
+        Tue, 31 Aug 2021 23:05:19 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 11:35:18 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Dmitry Osipenko <digetx@gmail.com>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
@@ -62,38 +60,27 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
         linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-pm@vger.kernel.org
-Subject: Re: [PATCH v10 2/8] opp: Allow dev_pm_opp_set_clkname() to replace
- released clock
-Message-ID: <20210901060224.lulxhpwya7jguphi@vireshk-i7>
+Subject: Re: [PATCH v10 1/8] opp: Add dev_pm_opp_get_current()
+Message-ID: <20210901060518.yxkmpjfljt7yj53p@vireshk-i7>
 References: <20210831135450.26070-1-digetx@gmail.com>
- <20210831135450.26070-3-digetx@gmail.com>
- <20210901044235.2je35y3ajtctrall@vireshk-i7>
- <6010b244-4260-8ae9-2b8a-7fd689781d36@gmail.com>
+ <20210831135450.26070-2-digetx@gmail.com>
+ <20210901043953.va4v3fwgs6ldtwar@vireshk-i7>
+ <e9d9f288-fe37-a6f5-2f5f-fba227dba0c7@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6010b244-4260-8ae9-2b8a-7fd689781d36@gmail.com>
+In-Reply-To: <e9d9f288-fe37-a6f5-2f5f-fba227dba0c7@gmail.com>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-09-21, 08:46, Dmitry Osipenko wrote:
-> 01.09.2021 07:42, Viresh Kumar пишет:
-> > On 31-08-21, 16:54, Dmitry Osipenko wrote:
-> >> The opp_table->clk is set to error once clock is released by
-> >> dev_pm_opp_put_clkname(). This doesn't allow to set clock again,
-> > 
-> > I am not sure why are you required to set the clk again here ? I mean,
-> > users aren't expected to put clkname in the middle of using it. The
-> > set-name API also checks that the OPP list should be empty in such a
-> > case.
-> 
-> I added explanatory comment to tegra_pmc_pd_dev_get_performance_state(),
-> isn't it enough?
+On 01-09-21, 08:43, Dmitry Osipenko wrote:
+> You will get OPP which corresponds to the lowest freq, while h/w runs on
+> unsupported high freq. This may end with a tragedy.
 
-It confused me even more. Lemme comment there.
+Yeah, because you are setting a performance state with this, it can be
+a problem.
 
 -- 
 viresh
