@@ -2,135 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624B63FD50F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E843FD513
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243065AbhIAIPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243047AbhIAIPl (ORCPT
+        id S243072AbhIAIPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:15:50 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:60477 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243041AbhIAIPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:15:41 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6DEC061764
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 01:14:45 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id o39-20020a05600c512700b002e74638b567so1299283wms.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rXb4cGIZn6Gdm/5BqKVC12dJx5JJGvLKFEx8SKKKyuQ=;
-        b=kZ5l50Zne0I2QYElYM2Ts4GrCDwGZLNXT/NczUEQ6qLa5fU537DXvqfzW0hrQ1OokU
-         r9TQF/XmVD+akIjSJU9meYZedrhLpCNRtCup+/3UMiCf+dPll1pYcWpa+Yg2G5krWvfv
-         3Z+NbJk2WGyxUQauLD0oamStiP2Qy4itn/q8ZPUULWNcupbhQzxnzPIbgJOxhbF7VyYX
-         rFZiq34NOLqqjw5DrS8mkF2j7/b/+Yp+D5koVuloGflrybGHyY+pAaqplx/7lORmT6Fe
-         qwo1BTSpfq285lerc8si2xyOkj4IEfpt0o6SAsXVKKx1dy45bVQ+IMG2K/0tCC2qOh8v
-         7tsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=rXb4cGIZn6Gdm/5BqKVC12dJx5JJGvLKFEx8SKKKyuQ=;
-        b=twLddaBEGJMEe+mGHPqmsHkMe7eWkTdIU52heZVt99jxeUKSzReWk3V10iAGORJ0wy
-         B3Rg1a4t5lGHjWRP1zJisR33t7imaNxtjw0Qg8MIiInFGQRHb3SR4Xup81J249ghsTbB
-         rLcdpunuf/Q7FnoeLiEIUPgOE3P6Ws23xdOj29s5cr+i2jN8UwzMJAfbXyLzbiPfA9aF
-         KfcUKE3ym6c4w2Pgi9qjHIgosnM5xVrsL3jC6gvINO0TwMGa6BnsIAKmpjEoN7Vm2oyk
-         S51oW1SkYiVIifvUfhvwPEGBj40dVSVxCmlQ6XZvkoRi7Lo/qlo2G5hkW3+oFCPpkbZW
-         LQow==
-X-Gm-Message-State: AOAM5314km+gt6a52sglRWjAAzEn53cd5Y+lx/AKUvqQ9NDJi+BfjYOo
-        oRyV99w7GVToCSBuF5HSFrx89qAxbGF9p6zv
-X-Google-Smtp-Source: ABdhPJzYxHE8weTllEHo+KjrzjPaX6EX9pjHZ/VPL4c0s4ptMTyp6/+yI1E02sHi8tFTziVAjvtYIg==
-X-Received: by 2002:a1c:7f8e:: with SMTP id a136mr8504168wmd.34.1630484083419;
-        Wed, 01 Sep 2021 01:14:43 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:dc57:bccf:6106:11d1? ([2001:861:44c0:66c0:dc57:bccf:6106:11d1])
-        by smtp.gmail.com with ESMTPSA id l35sm2409757wms.40.2021.09.01.01.14.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 01:14:43 -0700 (PDT)
-Subject: Re: [PATCH] media: cec: ao-cec: Make use of the helper function
- devm_platform_ioremap_resource()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210901054535.6215-1-caihuoqing@baidu.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <4b41b556-b2cd-5ffa-0462-5f41f2d33f85@baylibre.com>
-Date:   Wed, 1 Sep 2021 10:14:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 1 Sep 2021 04:15:45 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 84A245C00F3;
+        Wed,  1 Sep 2021 04:14:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 01 Sep 2021 04:14:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=BuvuRLiclI2ZPDHjAVTSSUhPf+B
+        EZ0r+raCKQUzMmyY=; b=MBA0jEPWTM4N3BfTJlHCkBjK8gMHaHAaR0/ANSYbvCM
+        WehbVNhWQKyRQJxx/GAlhNk6kjlNsoq/c7v9fHqNYVf+CyG3Q/VqwfFU0kLJ7TgB
+        YBziO5bQtTEmEqAInz2c0NGCrirKo5xcDWCOVjP38quSADIsraeYD2lVJkX5mZ+/
+        hvSvgYQiKY38wcKzOzrGYxvuXXW5WT1DBBIjKFJD4EvCv+eey26sWihnbynklEyl
+        37exUUIegHInU+vZy8KwCnH0y03fTBR7o635gRAt+fQZrQaDIIsLFQH6JwPOWldu
+        5fP6cJuwjXFR7RuxlXKtum/cH9zlNHgaNd/2VPhysmA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=BuvuRL
+        iclI2ZPDHjAVTSSUhPf+BEZ0r+raCKQUzMmyY=; b=LwL+UOuStjzHuA8KbAZDeT
+        Ye7zhlllqH3xXR5BRZoF1DNbvs/tBxn0RBP7h+sW/ziUj3m7h/iZGxsqNDymbvfo
+        8Np+BavaAzMmajv4u1mz/5HZ6AeyTznlMoYkoAGccW0TCMgNtUYU+IuapQ/K8FRM
+        pkdqYWY2ybVz5/m34pM4/42U7K7He9lOig3vlDrf0oUA2jPpi7CJHmjD9vrx5cNo
+        t7ntzCn5TzTAM0QzG+8UXLBhjdDQBhst4FQKtcTXCHYZhhxKIUNySCVlrjbclj0L
+        K3MLJoWsFf2GXYGuzBb0k220NynqSyeX1+DbVkTkoJWnJR+U1qKl6xMxDNnO23mA
+        ==
+X-ME-Sender: <xms:eDYvYRGIhggwWmsiJqUp7MbDzGoDthXtvykPdoFA1QLwj7fcrjxAAg>
+    <xme:eDYvYWVRKfVIqdNOJKsWdWWA4iQz8N7InnTvD1yiTEqbCvpEyM_xzxSjeMk10rPfv
+    77V-F7kuih9Lg>
+X-ME-Received: <xmr:eDYvYTK-NBiNOuMDw_TovX8BdcEosUAb_HHenPPOqnDSLsF6ws8O9Vys3V5yLb8Ek-pDcddjiXJGZdtL1M-5w6TmR7B-I0s0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedgtdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:eDYvYXFTUahAG_q5weLx3iSH7S4QZ5kdf_wjd4x26eSoS9JPNWKRpQ>
+    <xmx:eDYvYXXRB-JnoT9K--Mv6tZsA1wvm3E7BAiJ5GPYpxoDP-QtaN9z6A>
+    <xmx:eDYvYSPpRVLD1s5JolYyv9GQzn7-NZKH5gc34a7WqFo9Hig4IHDwqA>
+    <xmx:eDYvYTqXN7Xeil6-9Ox33aOKcM1oOyTSw7wef1PrxwBZLPuODZmV7w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 1 Sep 2021 04:14:47 -0400 (EDT)
+Date:   Wed, 1 Sep 2021 10:14:45 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH stable-5.9.y, stable-5.10.y] btrfs: fix race between
+ marking inode needs to be logged and log syncing
+Message-ID: <YS82dS2FmcKYDXwv@kroah.com>
+References: <2f474ee209a89b42c2471aab71a0df038f7e8d4c.1629969541.git.anand.jain@oracle.com>
+ <7701f6238b7a6905164fa85d343d6328554414ea.1630270929.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210901054535.6215-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7701f6238b7a6905164fa85d343d6328554414ea.1630270929.git.anand.jain@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/2021 07:45, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
+On Mon, Aug 30, 2021 at 05:42:17AM +0800, Anand Jain wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/media/cec/platform/meson/ao-cec-g12a.c | 4 +---
->  drivers/media/cec/platform/meson/ao-cec.c      | 4 +---
->  2 files changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/cec/platform/meson/ao-cec-g12a.c b/drivers/media/cec/platform/meson/ao-cec-g12a.c
-> index 891533060d49..68fe6d6a8178 100644
-> --- a/drivers/media/cec/platform/meson/ao-cec-g12a.c
-> +++ b/drivers/media/cec/platform/meson/ao-cec-g12a.c
-> @@ -633,7 +633,6 @@ static int meson_ao_cec_g12a_probe(struct platform_device *pdev)
->  {
->  	struct meson_ao_cec_g12a_device *ao_cec;
->  	struct device *hdmi_dev;
-> -	struct resource *res;
->  	void __iomem *base;
->  	int ret, irq;
->  
-> @@ -664,8 +663,7 @@ static int meson_ao_cec_g12a_probe(struct platform_device *pdev)
->  
->  	ao_cec->adap->owner = THIS_MODULE;
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	base = devm_ioremap_resource(&pdev->dev, res);
-> +	base = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(base)) {
->  		ret = PTR_ERR(base);
->  		goto out_probe_adapter;
-> diff --git a/drivers/media/cec/platform/meson/ao-cec.c b/drivers/media/cec/platform/meson/ao-cec.c
-> index 09aff82c3773..6b440f0635d9 100644
-> --- a/drivers/media/cec/platform/meson/ao-cec.c
-> +++ b/drivers/media/cec/platform/meson/ao-cec.c
-> @@ -602,7 +602,6 @@ static int meson_ao_cec_probe(struct platform_device *pdev)
->  {
->  	struct meson_ao_cec_device *ao_cec;
->  	struct device *hdmi_dev;
-> -	struct resource *res;
->  	int ret, irq;
->  
->  	hdmi_dev = cec_notifier_parse_hdmi_phandle(&pdev->dev);
-> @@ -626,8 +625,7 @@ static int meson_ao_cec_probe(struct platform_device *pdev)
->  
->  	ao_cec->adap->owner = THIS_MODULE;
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	ao_cec->base = devm_ioremap_resource(&pdev->dev, res);
-> +	ao_cec->base = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(ao_cec->base)) {
->  		ret = PTR_ERR(ao_cec->base);
->  		goto out_probe_adapter;
+> commit bc0939fcfab0d7efb2ed12896b1af3d819954a14 upstream.
 > 
 
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Both now queued up, thanks.
+
+greg k-h
