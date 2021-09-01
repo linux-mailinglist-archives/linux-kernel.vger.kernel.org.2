@@ -2,108 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C6A3FDF5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C423FDF59
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241890AbhIAQH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:07:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241778AbhIAQHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:07:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6C896103A;
-        Wed,  1 Sep 2021 16:06:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630512388;
-        bh=7QX3Kxr7bXUh4h7TnUfEwUUan5kKwq4tFnWGdO/tCkQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XvUhBOu8DTpNcf94/RDbJnGx7anVZCA7eXI66B7eNfe/37VwrqJN9+dhojpjShF5M
-         6genJGxCPKyhRj0uH2Cm1+SurHDU+q6CEsVizHx0Z17Do+rA7CalEFHhk7SLvg8wXU
-         KZDinRDyPEnfFkYT0zKakVag4k3P1ebdNl5YNbTI/TKxnka9pgZ4EnzLM0Zxjvp5yO
-         eWDz6msjkMDACrrM+jlpZijZsfnwz9BgCTWyvOsi9hv4RMrsliIpNdnK1aCIPpw4ek
-         XYHZyMIsnDYxsDGyJhFVk01gn4EYfHgyMbjGIWeg+ZrEmNutHC4hCjh6l0tLuZcSYE
-         /lysZQ2Y6SNqw==
-Date:   Wed, 1 Sep 2021 17:05:55 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Lee Jones <lee.jones@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Biwen Li <biwen.li@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] regmap: teach regmap to use raw spinlocks if
- requested in the config
-Message-ID: <20210901160555.GG5976@sirena.org.uk>
-References: <20210825205041.927788-1-vladimir.oltean@nxp.com>
- <20210825205041.927788-2-vladimir.oltean@nxp.com>
- <875yvr3j5c.ffs@tglx>
- <YSzM5S3VKOBXniRu@sirena.org.uk>
- <87bl5fggrf.ffs@tglx>
+        id S241626AbhIAQHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235086AbhIAQHS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 12:07:18 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FFA1C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:06:21 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id a13so4710273iol.5
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:06:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=nsH4CrKT3J6+fs9dWVy3c039Y9wb3g5ZuRIL9UvGmwA=;
+        b=dnnh+PJ58rHv8KJd3JIsPZ3PARpJU+40W7/qQ9+HYRozahMzfR42HI1vKfzAZYoVfb
+         uWoHKQENkdr8tMIWqDxSvCA2V2+fOre21PQbvhozmnQkUCpaQqMIeYuRyRo5Le3wtXZ9
+         EDiJN26XR+zvm4Skf47lA+9tH16gBwXTONxvkUONLZ24F+ettSt4snmmcPmNdPkcuKEe
+         wHcFp+xLXDCwuZl03ZXB+bBKCgfghuoBAQfKLD1lCcN9VDftbBPuv0tbYJbStm3xYeTH
+         mbU3YEU4tMpdNpZfEZOsp3qUE2uimZbvbRRLgBqhRy4iXyn9p2JU/KnguUqGKn6FERH4
+         If9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=nsH4CrKT3J6+fs9dWVy3c039Y9wb3g5ZuRIL9UvGmwA=;
+        b=LBars05UgJGBa/ypklFe5SmrcQPpjNRcXbcHy3GlGUvZie33f9CdOeNqFuXuFyn1C0
+         gH2ZlPOXtAkEy/JzBPbnan2qWDrI32de82IdgqlOj+LzhKL/Dewu879bHlELS6UtIJuX
+         hLir6gHYNVycWQk+Xg+1mVJsrEArJXbtDgm7nsPT/s6xFJvp3yu8fVrcxeqNrTiDsMLI
+         BMwYfy2nV0cy3/6QsTqTRkrJDi7HK6rfkBR+pQeU8oAbWEI7hNgsMerRIyr/3gaKRvko
+         gy0kR7rI/tFW9a0ehDHaE4a8R8RbTKkS7ss84gSbd/T279WbOXeM1ipiJdxDPZYVWDbP
+         yGdg==
+X-Gm-Message-State: AOAM5301mU+ubVieHHq3wcZmCcenyurbINR3T2Ucis+zcd7kjIueVL6j
+        3vtQ1ZEM8u3U7/6jFQVJDx3Grzx2lc08QeGnKKs=
+X-Google-Smtp-Source: ABdhPJzrIJA41dve0B++jq/D8DJTNJfoCv399vfiPs5ZfbpAJ9uyKVA3SD2XrdD3siSegR7SEmn6yEDVwSpBCzUqyTU=
+X-Received: by 2002:a05:6638:148f:: with SMTP id j15mr318662jak.61.1630512380616;
+ Wed, 01 Sep 2021 09:06:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7DO5AaGCk89r4vaK"
-Content-Disposition: inline
-In-Reply-To: <87bl5fggrf.ffs@tglx>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: hack91597@gmail.com
+Received: by 2002:a05:6e02:1d8f:0:0:0:0 with HTTP; Wed, 1 Sep 2021 09:06:20
+ -0700 (PDT)
+From:   Jemy Ross <jrs61644@gmail.com>
+Date:   Wed, 1 Sep 2021 16:06:20 +0000
+X-Google-Sender-Auth: mQ0MWUiG3rPcUHCEa0u3GXpAuMo
+Message-ID: <CAJP48VDGuZ=n9z6CgoxNSEh9m8+Po4=j8OuRQHTnsBttnSVNsw@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---7DO5AaGCk89r4vaK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Aug 30, 2021 at 04:16:04PM +0200, Thomas Gleixner wrote:
-> On Mon, Aug 30 2021 at 13:19, Mark Brown wrote:
-
-> > That probably does make sense, I think we're just using regular
-> > spinlocks for spinlocks mainly because they're the default rather
-> > than because anyone put huge amounts of thought into it.  IIRC
-> > the first users were using spinlocks for their locking when they
-> > were converted.
-
-> So if the actual spinlock protected operations are not doing any other
-> business than accessing preallocated cache memory and a few MMIO
-> operations then converting them to raw spinlocks should have no real
-> impact on RT.
-
-I think Vladimir's point that something might try to use one of the APIs
-that can do multiple register writes atomically to generate a very long
-register write sequence is valid here.  It's far from the common case
-but it'd be hard to audit, it's going to be a lot easier to handle going
-to raw spinlocks in the cases where it's specifically needed than to
-keep on top of ensuring that none of the users are causing issues or
-start causing issues in the future.  This does make me feel it's a bit
-safer to leave the default the way it is since if you get it wrong then
-lockdep will tend to notice very quickly while it's less likely that
-we'd get tooling spotting issues the other way around.
-
-> One way to do that is obviously starting with the patch from Vladimir
-> and then convert them one by one, so the assumption that they are not
-> doing anything nasty (in the RT sense) can be validated.
-
-Vladimir's patch is in Linus' tree now so users that can safely do so
-can start using raw spinlocks.
-
---7DO5AaGCk89r4vaK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEvpOIACgkQJNaLcl1U
-h9AFIQf/bE5viYQeyIDVsUQaOdSbUGtzoUNU4V3tf1pDOpXf/OJGxUeekjut/A36
-LI+l575vY04LCU33tvlHnQ1KWKjphXKxc5xBrFvtjLl3pLqD89LBedMZw6RUs4xP
-GgyiIelfxz2ei2U65yRAM+CqnJJ7zWvHiMYKODMyoNTeB1r6X2B3oHsLJj8VaODJ
-K0WmtEmicRaxoC4+wye89csiwT0jvBbMtBjGY/eSmXH/yQR4krARZQ+O3XTP8Z+7
-OsMh8toL5f00yvCiyVEvIWGT6XT/QXeqpmz/734FHtt005I+Cy/iyN9wFM9jNj4N
-dwSVMsl85U1rV5VkLIjDXLx30eqeTw==
-=br0m
------END PGP SIGNATURE-----
-
---7DO5AaGCk89r4vaK--
+Hello, my name is Jenny Ross, please your attention is needed, i have
+something to share with you.
