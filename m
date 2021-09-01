@@ -2,75 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63C93FDFFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3383FDF49
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245469AbhIAQe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:34:26 -0400
-Received: from mail.repatriados.gov.py ([168.90.176.63]:21503 "EHLO
-        mail.repatriados.gov.py" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344006AbhIAQeS (ORCPT
+        id S243670AbhIAQD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234157AbhIAQDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:34:18 -0400
-X-Greylist: delayed 11146 seconds by postgrey-1.27 at vger.kernel.org; Wed, 01 Sep 2021 12:34:17 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.repatriados.gov.py (Postfix) with ESMTP id 059786A0C4;
-        Wed,  1 Sep 2021 02:08:26 -0400 (-04)
-Received: from mail.repatriados.gov.py ([127.0.0.1])
-        by localhost (mail.repatriados.gov.py [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id KOxG0U8B-xbI; Wed,  1 Sep 2021 02:08:22 -0400 (-04)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.repatriados.gov.py (Postfix) with ESMTP id 2EB7B68446;
-        Wed,  1 Sep 2021 00:38:56 -0400 (-04)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.repatriados.gov.py 2EB7B68446
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=repatriados.gov.py;
-        s=66AB3A4C-4957-11E8-AF15-073A956E488A; t=1630471137;
-        bh=re+Bi7IjhFEavKutGVOnSLzHkgr9hnVuewhYSbG4AUw=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=0PCMjVRlV0H84geXMEsA9uYYno485t4lYhQX/q/FZFIl0XljB3EgSAQXf9BfvqkCg
-         +uG6u+GKozrw3h8bMfxFu2hmBjO+3HJB/TThRRjXQn7bmLEmRWPgLP10HnxIHuAIce
-         Ty5Azj7usA7wXyu6fFopu2qWtk3YofwMGOJGKHSyNO6KCpgDuoeDEyS9aPLbFvg9kO
-         R+zDqqUQgdgKRi6cFAsWcY9DJlSke5cehxCqTIX1JDDl0n+sk1c8LIkPtACBFH3feY
-         vyDxFdP2n0LF5JiTFbwsKredfwQkAp54x1MMmIiaLbnd4GIIT/dARmlYMvsncUqTkU
-         XJqU0CI2VULAg==
-X-Virus-Scanned: amavisd-new at repatriados.gov.py
-Received: from mail.repatriados.gov.py ([127.0.0.1])
-        by localhost (mail.repatriados.gov.py [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id rBvINQLpY_XD; Wed,  1 Sep 2021 00:38:55 -0400 (-04)
-Received: from cris-PC.www.huaweimobilewifi.com (unknown [105.4.4.195])
-        by mail.repatriados.gov.py (Postfix) with ESMTPSA id 3E02B66A7B;
-        Tue, 31 Aug 2021 22:03:00 -0400 (-04)
-Content-Type: text/plain; charset="iso-8859-1"
+        Wed, 1 Sep 2021 12:03:25 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF160C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:02:28 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id z5so6131311ybj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:02:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0K3Oyq5eTmkdoN2xYNtCvvot7voY0qHtA/Ba90V0kts=;
+        b=HjiiGKx103VY/SJhoVDzvuGUO+raoSLhUeJaASZftY6NXzdlXoRkXi3MImBbpnVgML
+         JxiKhvCKwVniNSh+THyacwEE3b23wLiKY7bE9HNCnOS0XooBAEjrhyJw8nYIANVDvUR3
+         OKP3uMPr/kVONQixycUYirMvycX2cOg8lgDh3r4p/R/7tIm2rxyZdiRTqOyg/ArnR2PA
+         gFtvIk8teUELlNqja7STeXCBhsisCYVcH1qXEDek18GtIt187x8Lnpojlr6jiwq5/RJ2
+         us3dQ+L3AkhpM8wjgDxqz9e+5g4PS0OR2LwfFXM1ZJBzkPvQ0rHYIn9Xy2+Jn6Mu6ijq
+         l2+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0K3Oyq5eTmkdoN2xYNtCvvot7voY0qHtA/Ba90V0kts=;
+        b=hfmaOOADgSWOmTbEMbS+tJFgOAYtn6/Qk+YbLD2MwJQ1pRcVc4G2Y7VdUmLDG0q2ri
+         k1cw7p8qf59YxiBur58G6PmNfoVw0AI6/ppxEtkvZ2xZ/FLzI9Jp6ZetLrzDIQQwGtIA
+         9Ck6h/N9H3HY1jEAACAQc/No6f6XC4hhdBqzjvAej4leHXWBwpV8U9UYfRjUid2dwO6l
+         XO870k1ZswLCu8jXbOoUzt0wSlrQKh3Tn71Pt8ZSeCj0N/g87i4+RRMtckzyNkR7anlj
+         HII8DJyjHxIjFSR1Vkl1JFeFVTalwDqsvlxj731y8k5n8RiqyhCtrfC16JhvRvmYeExc
+         JjOg==
+X-Gm-Message-State: AOAM5318cgYBye3Gr5ptxH6nQuqwhUOvSdAF98ydyCHUkR2iAZ386ZK6
+        mcLP/QmGGchskggEaBFav8OtdRQdxlZZF8ezF/nQnw==
+X-Google-Smtp-Source: ABdhPJzKeORwXLC+ic8sTU3fSxHjhp9H+f/v8Ki8LzInVyMdQYglGhw9+1JThSy0dN1uo8r8jBQoxxMwMCeIeNozQdo=
+X-Received: by 2002:a25:6994:: with SMTP id e142mr277447ybc.364.1630512147758;
+ Wed, 01 Sep 2021 09:02:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Euro?=
-To:     Recipients <mdominguez@repatriados.gov.py>
-From:   ''Charles jackon'' <mdominguez@repatriados.gov.py>
-Date:   Wed, 01 Sep 2021 04:03:31 +0200
-Reply-To: charlesjacksonjr001@gmail.com
-Message-Id: <20210901020302.3E02B66A7B@mail.repatriados.gov.py>
+References: <1630492744-60396-1-git-send-email-linyunsheng@huawei.com>
+ <9c9ef2228dfcb950b5c75382bd421c6169e547a0.camel@redhat.com>
+ <CANn89iJFeM=DgcQpDbaE38uhxTEL6REMWPnVFt7Am7Nuf4wpMw@mail.gmail.com>
+ <CANn89iKbgtb84Lb4UOxUCb_WGrfB6ZoD=bVH2O06-Mm6FBmwpg@mail.gmail.com>
+ <c40a178110ee705b2be32272b9b3e512a40a4cae.camel@redhat.com> <59ad13bb312805bb1d183c5817d5f7b6fd6a90dd.camel@redhat.com>
+In-Reply-To: <59ad13bb312805bb1d183c5817d5f7b6fd6a90dd.camel@redhat.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 1 Sep 2021 09:02:16 -0700
+Message-ID: <CANn89iJ-Vx9V2_N6PRysNuK0W7TshMNo_crYtnEzrw=crF6OOg@mail.gmail.com>
+Subject: Re: [PATCH net-next] tcp: add tcp_tx_skb_cache_key checking in sk_stream_alloc_skb()
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        MPTCP Upstream <mptcp@lists.linux.dev>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo
+On Wed, Sep 1, 2021 at 9:01 AM Paolo Abeni <pabeni@redhat.com> wrote:
+>
 
-Ich bin Charles W. Jackson aus North Carolina, Vereinigte Staaten von Ameri=
-ka, und ich bin der Gewinner des Mega-Millionen-Jackpots von 344 Millionen =
-US-Dollar. Ich spende die Summe von 2.000.000 Millionen Euro als Teil der H=
-ilfsgelder f=FCr das Corona-Virus.
+>
+> I think the easiest way and the one with less code duplication will
+> require accessing the tcp_mark_push() and skb_entail() helpers from the
+> MPTCP code, making them not static and exposing them e.g. in net/tcp.h.
+> Would that be acceptable or should I look for other options?
+>
 
-Dies ist Ihr Spendencode: [CJ530342019]
-
-www.youtube.com/watch?v=3DBSr8myiLPMQ
-
-
-Bitte antworten Sie auf diese E-Mail mit dem SPENDERCODE:
-
-charlesjacksonjr001@gmail.com
-
-Ich hoffe, dass Sie und Ihre Familie dies durchkommen
-
-
-Herr Charles Jackson
+I think this is fine, really.
