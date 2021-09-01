@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAEF3FE3E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52303FE3E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344894AbhIAUWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 16:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
+        id S1343918AbhIAUWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 16:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344495AbhIAUVy (ORCPT
+        with ESMTP id S1344774AbhIAUV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 16:21:54 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4AAC0612E7
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 13:20:49 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so548888pjw.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:20:49 -0700 (PDT)
+        Wed, 1 Sep 2021 16:21:56 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370CBC0612A8
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 13:20:51 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id n18so375316plp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:20:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=En6x69sL3hTc+UYa+WLCwjsEYtRF8klkVgi/rOm/KVI=;
-        b=KTuo11JigzbSnEwPH9xtMKkJ28wO8kx94IfguY7k6LcDARpSbCVxyLRT7Y5b3G5Pai
-         qph5rriT4lSORdvesAVI0yGgswFjNt8uv/LK84IOqjmFqTYz//XAHXb8u1LKf5PUzRT9
-         LLdJZDl2qQ2xz+3zI7iKcvH0h0dk92J9xR6X0=
+        bh=dXkXwd4vEP4bwY9rQawnEqC6kwS+NIIDi4QUwZ6cGtQ=;
+        b=EjRpUS2pwumz9y0I78cbBHrql1evvQsWCNm51l0dM73D/8WNx855hwhFYSzlErwRHk
+         YcS15dy5jZkeq0WUu21+obBJn5yMCRcK32TO3GSQKrmQRdNaYUdDMSuuyR8WI30GWU4g
+         JqjwHgBivWnaa1uyreX+etFVlEzjH/1onRP3Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=En6x69sL3hTc+UYa+WLCwjsEYtRF8klkVgi/rOm/KVI=;
-        b=RMlIl+CdjHZGcNHSMMHVPDh77+nQkXIvddw0SKdxE0kBs0zVmEr9q2O5sPhINxhRXg
-         R4AcIbpoXiLV6L5JetKMW8OSPbx0+ip7NkyuNRjOJrXp3gPrBHIEvVpGwNgS6+Oqv636
-         VjY/hXMtsJ5otwKS9CdbdQhk8KAfrmJFXu7cj1OhlA9jt8lwPSZ5Qkai1rNSioyN1RwV
-         HYiV8y29D94s/wxpml+GB6HcSbpnfGREFNKE5QO22tE300bczVwSFFff8DuSlL5ViwTF
-         UApcvSybH7l3vJrT/S/x82ZyYxN3OuCFf+MiBLmyrjrwph53K1h6QtTwhltSqk1qY3Zz
-         pTuA==
-X-Gm-Message-State: AOAM5319yYcBxPctuprqn8iQcZqJjPaTFMo/W03XByN2b/rPw16AN3Ou
-        9ElO+6JuF60ZN6fhqgEjLHhxGw==
-X-Google-Smtp-Source: ABdhPJy3sl76AUZp6REH5FR6I28P7DSpvT9Fy2yc7xuj9dB9yMLjA6kzzPm6ZxZppu26KH55uyei4w==
-X-Received: by 2002:a17:90a:8808:: with SMTP id s8mr1170769pjn.214.1630527649321;
-        Wed, 01 Sep 2021 13:20:49 -0700 (PDT)
+        bh=dXkXwd4vEP4bwY9rQawnEqC6kwS+NIIDi4QUwZ6cGtQ=;
+        b=qE52r+aGWH7FicNRVrTiC0ZylwdRcTqPpRByOOTohMp9mO/SHaHJIx+aThFnIXc5Em
+         vsNtKBGRz7tj9LnLawjjP8xOwODN/0sApRuLrYMabvciCljc2HzgnlA5zvNpaP8i3JUD
+         C9oO89ukAnZ0VV1IchBh3lOk+VbsdBqTOK6/pfbK+bYFyML1hn5C363TlTbtnOeV36G5
+         ae4eeHeXyvStQWd3kIRPITh4jQMvji2Y94IatF5HZRUMqy6G7lOsa71g6sBnccPWF97U
+         /WCjmbf2xBFYu3GE6sHgK9LSUyfb7iN9wGq3iTbAJW7fvVk1WN7dGVfeUvYGO4PXOkkw
+         Mxkg==
+X-Gm-Message-State: AOAM533WMb5rvCaiZJJ/vUE/waMLRtlL4qlfIq8BSTFva8Irn1fjpYU9
+        RbZjwRAkM7jTyG5c0bcD/qQXmA==
+X-Google-Smtp-Source: ABdhPJwL4AOuiR68h4fnDH1vn8eNeonNevqm7uEBhMAzmdJMIoUAPeb/6W9tokMMB5TvMjAgjvxvgQ==
+X-Received: by 2002:a17:902:c406:b0:138:c28f:a779 with SMTP id k6-20020a170902c40600b00138c28fa779mr833921plk.1.1630527650785;
+        Wed, 01 Sep 2021 13:20:50 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:958b:b561:a735:e774])
-        by smtp.gmail.com with ESMTPSA id x15sm321178pfq.31.2021.09.01.13.20.48
+        by smtp.gmail.com with ESMTPSA id x15sm321178pfq.31.2021.09.01.13.20.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 13:20:49 -0700 (PDT)
+        Wed, 01 Sep 2021 13:20:50 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -61,9 +61,9 @@ Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         dri-devel@lists.freedesktop.org,
         Douglas Anderson <dianders@chromium.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 12/16] drm/panel-simple-edp: Better describe eDP panel delays
-Date:   Wed,  1 Sep 2021 13:19:30 -0700
-Message-Id: <20210901131531.v3.12.I2d798dd015332661c5895ef744bc8ec5cd2e06ca@changeid>
+Subject: [PATCH v3 13/16] drm/panel-simple-edp: hpd_reliable shouldn't be subtraced from hpd_absent
+Date:   Wed,  1 Sep 2021 13:19:31 -0700
+Message-Id: <20210901131531.v3.13.I2522235fca3aa6790ede0bf22a93d79a1f694e6b@changeid>
 X-Mailer: git-send-email 2.33.0.259.gc128427fd7-goog
 In-Reply-To: <20210901201934.1084250-1-dianders@chromium.org>
 References: <20210901201934.1084250-1-dianders@chromium.org>
@@ -73,291 +73,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the eDP panel driver only handles eDP panels we can make
-better sense of the delays here. Let's describe them in terms of the
-standard eDP timing diagram from the eDP spec.
+Now that the delays are named / described with eDP-centric names, it
+becomes clear that we should really specify the "hpd_reliable" and
+"hpd_absent" separately without taking the other into account. Let's
+fix it.
 
-As part of this, it becomes pretty clear that some eDP panels have too
-long of a "hpd_reliable_delay". This used to be the "prepare"
-delay. It's the fixed delay that we do in the panel driver after
-powering on our panel before we look at the HPD signal. To understand
-this better, first realize that there could be 3 paths we follow
-depending on how HPD is hooked up. Let's walk through them:
-1. HPD is handled by the eDP controller driver. Until "recently"
-   (commit 48834e6084f1 ("drm/panel-simple: Support hpd-gpios for
-   delaying prepare()") in May 2020) this was the only supported
-   way. This is supposed to be when the controller driver gets HPD
-   straight to a dedicated pin. In this case the controller driver
-   should be waiting for HPD in its pre_enable() routine which should
-   be called right after the panel's prepare() function is
-   called. That means that the old "prepare" delay was only needed as
-   a delay after powering the panel but before looking at HPD.
-2. HPD is handled via hpd-gpios in the panel. This is much like #1 but
-   much easier to follow since all the handling is in the panel
-   driver.
-3. The no-hpd case. This is also easy to follow.
-
-In any case, even though it seems like some old panel data was using
-this incorrectly, let's not touch the old data structures but we'll
-add a note indicating that something seems off.
+This should be a no-op change and just adjust how we specify
+things. The actual delays should be the same before and after for the
+one panel that currently species both "hpd_reliable" and "hpd_absent".
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
-Changes in v3:
-- ("Better describe eDP panel delays") new for v3.
+(no changes since v1)
 
- drivers/gpu/drm/panel/panel-simple-edp.c | 82 +++++++++++++++---------
- 1 file changed, 53 insertions(+), 29 deletions(-)
+ drivers/gpu/drm/panel/panel-simple-edp.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-simple-edp.c b/drivers/gpu/drm/panel/panel-simple-edp.c
-index d227adba92ec..ede5e3e4920b 100644
+index ede5e3e4920b..762589ef66c3 100644
 --- a/drivers/gpu/drm/panel/panel-simple-edp.c
 +++ b/drivers/gpu/drm/panel/panel-simple-edp.c
-@@ -45,20 +45,28 @@
-  */
- struct panel_delay {
- 	/**
--	 * @prepare: Time for the panel to become ready.
-+	 * @hpd_reliable: Time for HPD to be reliable
- 	 *
--	 * The time (in milliseconds) that it takes for the panel to
--	 * become ready and start receiving video data
-+	 * The time (in milliseconds) that it takes after powering the panel
-+	 * before the HPD signal is reliable. Ideally this is 0 but some panels,
-+	 * board designs, or bad pulldown configs can cause a glitch here.
-+	 *
-+	 * NOTE: on some old panel data this number appers to be much too big.
-+	 * Presumably some old panels simply didn't have HPD hooked up and put
-+	 * the hpd_absent here because this field predates the
-+	 * hpd_absent. While that works, it's non-ideal.
- 	 */
--	unsigned int prepare;
-+	unsigned int hpd_reliable;
+@@ -423,7 +423,7 @@ static int panel_edp_prepare_once(struct panel_edp *p)
  
- 	/**
--	 * @hpd_absent_delay: Time to wait if HPD isn't hooked up.
-+	 * @hpd_absent: Time to wait if HPD isn't hooked up.
- 	 *
--	 * Add this to the prepare delay if we know Hot Plug Detect
--	 * isn't used.
-+	 * Add this to the prepare delay if we know Hot Plug Detect isn't used.
-+	 *
-+	 * This is T3-max on eDP timing diagrams or the delay from power on
-+	 * until HPD is guaranteed to be asserted.
- 	 */
--	unsigned int hpd_absent_delay;
-+	unsigned int hpd_absent;
- 
- 	/**
- 	 * @prepare_to_enable: Time between prepare and enable.
-@@ -87,6 +95,10 @@ struct panel_delay {
- 	 *   enable()
- 	 *     // do fixed enable delay
- 	 *     // enforce prepare_to_enable min time
-+	 *
-+	 * This is not specified in a standard way on eDP timing diagrams.
-+	 * It is effectively the time from HPD going high till you can
-+	 * turn on the backlight.
- 	 */
- 	unsigned int prepare_to_enable;
- 
-@@ -96,6 +108,10 @@ struct panel_delay {
- 	 * The time (in milliseconds) that it takes for the panel to
- 	 * display the first valid frame after starting to receive
- 	 * video data.
-+	 *
-+	 * This is (T6-min + max(T7-max, T8-min)) on eDP timing diagrams or
-+	 * the delay after link training finishes until we can turn the
-+	 * backlight on and see valid data.
- 	 */
- 	unsigned int enable;
- 
-@@ -104,6 +120,9 @@ struct panel_delay {
- 	 *
- 	 * The time (in milliseconds) that it takes for the panel to
- 	 * turn the display off (no content is visible).
-+	 *
-+	 * This is T9-min (delay from backlight off to end of valid video
-+	 * data) on eDP timing diagrams. It is not common to set.
- 	 */
- 	unsigned int disable;
- 
-@@ -117,6 +136,8 @@ struct panel_delay {
- 	 * starting until at least this many milliseconds has passed.
- 	 * If at prepare time less time has passed since unprepare
- 	 * finished, the driver waits for the remaining time.
-+	 *
-+	 * This is T12-min on eDP timing diagrams.
- 	 */
- 	unsigned int unprepare;
- };
-@@ -400,15 +421,15 @@ static int panel_edp_prepare_once(struct panel_edp *p)
- 
- 	gpiod_set_value_cansleep(p->enable_gpio, 1);
- 
--	delay = p->desc->delay.prepare;
-+	delay = p->desc->delay.hpd_reliable;
+ 	delay = p->desc->delay.hpd_reliable;
  	if (p->no_hpd)
--		delay += p->desc->delay.hpd_absent_delay;
-+		delay += p->desc->delay.hpd_absent;
+-		delay += p->desc->delay.hpd_absent;
++		delay = max(delay, p->desc->delay.hpd_absent);
  	if (delay)
  		msleep(delay);
  
- 	if (p->hpd_gpio) {
--		if (p->desc->delay.hpd_absent_delay)
--			hpd_wait_us = p->desc->delay.hpd_absent_delay * 1000UL;
-+		if (p->desc->delay.hpd_absent)
-+			hpd_wait_us = p->desc->delay.hpd_absent * 1000UL;
- 		else
- 			hpd_wait_us = 2000000;
- 
-@@ -772,7 +793,7 @@ static const struct panel_desc auo_b116xak01 = {
- 		.height = 144,
- 	},
- 	.delay = {
--		.hpd_absent_delay = 200,
-+		.hpd_absent = 200,
- 	},
- };
- 
-@@ -823,7 +844,7 @@ static const struct panel_desc auo_b133han05 = {
- 		.height = 165,
- 	},
- 	.delay = {
--		.prepare = 100,
-+		.hpd_reliable = 100,
- 		.enable = 20,
- 		.unprepare = 50,
- 	},
-@@ -850,7 +871,7 @@ static const struct panel_desc auo_b133htn01 = {
- 		.height = 165,
- 	},
- 	.delay = {
--		.prepare = 105,
-+		.hpd_reliable = 105,
- 		.enable = 20,
- 		.unprepare = 50,
- 	},
-@@ -899,7 +920,7 @@ static const struct panel_desc auo_b140han06 = {
- 		.height = 174,
- 	},
- 	.delay = {
--		.prepare = 100,
-+		.hpd_reliable = 100,
- 		.enable = 20,
- 		.unprepare = 50,
- 	},
-@@ -939,7 +960,8 @@ static const struct panel_desc boe_nv101wxmn51 = {
- 		.height = 136,
- 	},
- 	.delay = {
--		.prepare = 210,
-+		/* TODO: should be hpd-absent and no-hpd should be set? */
-+		.hpd_reliable = 210,
- 		.enable = 50,
- 		.unprepare = 160,
- 	},
-@@ -981,7 +1003,7 @@ static const struct panel_desc boe_nv110wtm_n61 = {
- 		.height = 155,
- 	},
- 	.delay = {
--		.hpd_absent_delay = 200,
-+		.hpd_absent = 200,
- 		.prepare_to_enable = 80,
- 		.enable = 50,
- 		.unprepare = 500,
-@@ -1018,14 +1040,14 @@ static const struct panel_desc boe_nv133fhm_n61 = {
+@@ -1039,15 +1039,13 @@ static const struct panel_desc boe_nv133fhm_n61 = {
+ 		 * spike on the HPD line.  It was explained that this spike
  		 * was until the TCON data download was complete.  On
  		 * one system this was measured at 8 ms.  We'll put 15 ms
- 		 * in the prepare delay just to be safe and take it away
--		 * from the hpd_absent_delay (which would otherwise be 200 ms)
-+		 * from the hpd_absent (which would otherwise be 200 ms)
- 		 * to handle this.  That means:
+-		 * in the prepare delay just to be safe and take it away
+-		 * from the hpd_absent (which would otherwise be 200 ms)
+-		 * to handle this.  That means:
++		 * in the prepare delay just to be safe.  That means:
  		 * - If HPD isn't hooked up you still have 200 ms delay.
  		 * - If HPD is hooked up we won't try to look at it for the
  		 *   first 15 ms.
  		 */
--		.prepare = 15,
--		.hpd_absent_delay = 185,
-+		.hpd_reliable = 15,
-+		.hpd_absent = 185,
+ 		.hpd_reliable = 15,
+-		.hpd_absent = 185,
++		.hpd_absent = 200,
  
  		.unprepare = 500,
- 	},
-@@ -1054,7 +1076,8 @@ static const struct panel_desc boe_nv140fhmn49 = {
- 		.height = 174,
- 	},
- 	.delay = {
--		.prepare = 210,
-+		/* TODO: should be hpd-absent and no-hpd should be set? */
-+		.hpd_reliable = 210,
- 		.enable = 50,
- 		.unprepare = 160,
- 	},
-@@ -1082,7 +1105,7 @@ static const struct panel_desc innolux_n116bca_ea1 = {
- 		.height = 144,
- 	},
- 	.delay = {
--		.hpd_absent_delay = 200,
-+		.hpd_absent = 200,
- 		.prepare_to_enable = 80,
- 		.unprepare = 500,
- 	},
-@@ -1165,7 +1188,7 @@ static const struct panel_desc innolux_p120zdg_bf1 = {
- 		.height = 169,
- 	},
- 	.delay = {
--		.hpd_absent_delay = 200,
-+		.hpd_absent = 200,
- 		.unprepare = 500,
- 	},
- };
-@@ -1192,7 +1215,7 @@ static const struct panel_desc ivo_m133nwf4_r0 = {
- 		.height = 165,
- 	},
- 	.delay = {
--		.hpd_absent_delay = 200,
-+		.hpd_absent = 200,
- 		.unprepare = 500,
- 	},
- };
-@@ -1219,7 +1242,7 @@ static const struct panel_desc kingdisplay_kd116n21_30nv_a010 = {
- 		.height = 144,
- 	},
- 	.delay = {
--		.hpd_absent_delay = 200,
-+		.hpd_absent = 200,
- 	},
- };
- 
-@@ -1345,7 +1368,7 @@ static const struct panel_desc neweast_wjfh116008a = {
- 		.height = 150,
- 	},
- 	.delay = {
--		.prepare = 110,
-+		.hpd_reliable = 110,
- 		.enable = 20,
- 		.unprepare = 500,
- 	},
-@@ -1439,7 +1462,7 @@ static const struct panel_desc sharp_lq123p1jx31 = {
- 		.height = 173,
- 	},
- 	.delay = {
--		.prepare = 110,
-+		.hpd_reliable = 110,
- 		.enable = 50,
- 		.unprepare = 550,
- 	},
-@@ -1466,7 +1489,8 @@ static const struct panel_desc starry_kr122ea0sra = {
- 		.height = 164,
- 	},
- 	.delay = {
--		.prepare = 10 + 200,
-+		/* TODO: should be hpd-absent and no-hpd should be set? */
-+		.hpd_reliable = 10 + 200,
- 		.enable = 50,
- 		.unprepare = 10 + 500,
  	},
 -- 
 2.33.0.259.gc128427fd7-goog
