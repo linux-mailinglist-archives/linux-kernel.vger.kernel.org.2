@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240B93FD256
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935CB3FD25C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237920AbhIAE1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 00:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbhIAE1d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 00:27:33 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427B2C061575;
-        Tue, 31 Aug 2021 21:26:37 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id e7so1495091pgk.2;
-        Tue, 31 Aug 2021 21:26:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=m3+x6eamp7airoZfilCRdbz7+5OQzTJOBB6pMEhx4vg=;
-        b=Qdva0mO/jU8xhmjzTJw0+fCZ8gRJVJ7M0n7TFrg9LIujotS/bfp4tZgrVlA+y6ns6c
-         NfR7q7wg8IjDhKBKxi0LIwXgS8Xeyk8I3xU+EkXOv1hf7CATtZYvbJ+GmGd2346sG9sc
-         OvJ2nvHENEzZxSYqsLqibsZncXkmuOOZ6qSPLmnwNazZMSDDpC7MJLGnPCQkwssweofd
-         YLiqugHH9pIyrtrU0tag/qdLp6h7dvluEO9JwH+qVq3qdokg2MR82ph0h9bgHla18w2s
-         briguaIKGbC86NJvxjsdFksspf1fw/1bm1f2ZhOt3Z0QKzeGJPtCvr+k5HywnzHHma7d
-         Dygg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=m3+x6eamp7airoZfilCRdbz7+5OQzTJOBB6pMEhx4vg=;
-        b=qye9H8yB3Ijs6S6126It92lPpwOyxS4+p67Ohk9HLjnHrJQtLuvkS2x7Fg42XjqHK0
-         We5eX+efcUgXikWh1+J5JD5JK47mv5j7iDatQ+dagf1fFc3ALn3OasAAlZ5HoCKvt1LU
-         DwmSCfB3sK1nneEV+bPgiPi2U/Z6sRNXCDoUPOlGb1W03sjj6u7kGGoTU9rUGYSmqd8g
-         kHve0bArOuoHJQY1BdJB+mWD/NtZFI0DtgfG2uUnKOEXlTuugZX5eHbSnKUxmXdKb+dz
-         i3sXMIcPBYjJGdRiPtdoQI4Pwh9dwbj12wsNcwUe67F0HT+Z/E3fmlB20F4mf1DSg1Wi
-         XBJA==
-X-Gm-Message-State: AOAM531xYGeOAjlMlShGB+SxFVL4LLQjciPwquheRmm1asUKVafaPvsD
-        MNYU0wvIpG/nA2bL4OLquV0=
-X-Google-Smtp-Source: ABdhPJxj8vxWY8DO1ZQyUEokpWKcicJ3hv/lpz3OVFN/kyaVbkQsiBykCfaQ/VnCXTpWoIuFrffa1g==
-X-Received: by 2002:a65:4286:: with SMTP id j6mr30401823pgp.10.1630470396434;
-        Tue, 31 Aug 2021 21:26:36 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id z65sm4532286pjj.43.2021.08.31.21.26.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 21:26:35 -0700 (PDT)
-Subject: Re: [syzbot] WARNING: refcount bug in qrtr_node_lookup
-To:     syzbot <syzbot+c613e88b3093ebf3686e@syzkaller.appspotmail.com>,
-        bjorn.andersson@linaro.org, dan.carpenter@oracle.com,
-        hdanton@sina.com, linux-kernel@vger.kernel.org,
-        manivannan.sadhasivam@linaro.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <0000000000004b732105cae6d6f1@google.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <9b98fb89-c9a1-d220-2583-66e89c765d23@gmail.com>
-Date:   Tue, 31 Aug 2021 21:26:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234759AbhIAEbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 00:31:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229572AbhIAEbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 00:31:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA92560FC0;
+        Wed,  1 Sep 2021 04:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630470610;
+        bh=6Pd7NVaPvTBHVJ+6pPfix/RK4uk0493kPdeAJvIYMRQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=qeTmQuaFI8KshseRv4i7205ktGPr6zI29DnTJGUEjjHasILmX8ohSdHtco2BGBhNO
+         EkAcq0k3oqTl3V9BY4I3lJ+yZxzJ1hjzq0+npcp5AOIEGGAdtDvGU1Kpj5+I9Zk4XU
+         2P5j63wt2bQnbRssOV8Ci5/sylCgOn9by54lvuVpsE7kJoJRVCKc5UBgCl5QuVghII
+         8ZgUty/bGmDth4xJCNYusfFWZqR+K51rO0XwHVJz+gyp9majpihH2s3JPv36BW1GKF
+         G2ku5trPglLbX3wFx4DGDLlmfd4CNJ/E7G1T7KOIRvVGzLvBucfvD1atnjs46RUjBH
+         Hv4sCjAgudlIw==
+Message-ID: <9a74226ba3f76474c934cf366fc621cc933fbfbb.camel@kernel.org>
+Subject: Re: [PATCH v4 2/6] x86/sgx: Add infrastructure to identify SGX EPC
+ pages
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Tony Luck <tony.luck@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Cathy Zhang <cathy.zhang@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 01 Sep 2021 07:30:07 +0300
+In-Reply-To: <20210827195543.1667168-3-tony.luck@intel.com>
+References: <20210728204653.1509010-1-tony.luck@intel.com>
+         <20210827195543.1667168-1-tony.luck@intel.com>
+         <20210827195543.1667168-3-tony.luck@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <0000000000004b732105cae6d6f1@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2021-08-27 at 12:55 -0700, Tony Luck wrote:
+> X86 machine check architecture reports a physical address when there
+> is a memory error. Handling that error requires a method to determine
+> whether the physical address reported is in any of the areas reserved
+> for EPC pages by BIOS.
+>=20
+> SGX EPC pages do not have Linux "struct page" associated with them.
+>=20
+> Keep track of the mapping from ranges of EPC pages to the sections
+> that contain them using an xarray.
+>=20
+> Create a function sgx_is_epc_page() that simply reports whether an addres=
+s
+> is an EPC page for use elsewhere in the kernel. The ACPI error injection
+> code needs this function and is typically built as a module, so export it=
+.
+>=20
+> Note that sgx_is_epc_page() will be slower than other similar "what type
+> is this page" functions that can simply check bits in the "struct page".
+> If there is some future performance critical user of this function it
+> may need to be implemented in a more efficient way.
+>=20
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  arch/x86/kernel/cpu/sgx/main.c | 10 ++++++++++
+>  arch/x86/kernel/cpu/sgx/sgx.h  |  1 +
+>  2 files changed, 11 insertions(+)
+>=20
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
+n.c
+> index 4a5b51d16133..261f81b3f8af 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -20,6 +20,7 @@ struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SEC=
+TIONS];
+>  static int sgx_nr_epc_sections;
+>  static struct task_struct *ksgxd_tsk;
+>  static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
+> +static DEFINE_XARRAY(epc_page_ranges);
 
+Maybe we could just call this "sgx_epc_address_space"?
 
-On 8/31/21 8:41 PM, syzbot wrote:
-> Hello,
-> 
-> syzbot tried to test the proposed patch but the build/boot failed:
-> 
-> arch/x86/kernel/setup.c:916:6: error: implicit declaration of function 'acpi_mps_check' [-Werror,-Wimplicit-function-declaration]
-> arch/x86/kernel/setup.c:1110:2: error: implicit declaration of function 'acpi_table_upgrade' [-Werror,-Wimplicit-function-declaration]
-> arch/x86/kernel/setup.c:1112:2: error: implicit declaration of function 'acpi_boot_table_init' [-Werror,-Wimplicit-function-declaration]
-> arch/x86/kernel/setup.c:1120:2: error: implicit declaration of function 'early_acpi_boot_init' [-Werror,-Wimplicit-function-declaration]
-> arch/x86/kernel/setup.c:1162:2: error: implicit declaration of function 'acpi_boot_init' [-Werror,-Wimplicit-function-declaration]
-> 
-> 
-> Tested on:
-> 
-> commit:         9e9fb765 Merge tag 'net-next-5.15' of git://git.kernel..
-> git tree:       upstream
-> dashboard link: https://syzkaller.appspot.com/bug?extid=c613e88b3093ebf3686e
-> compiler:       
-> patch:          https://syzkaller.appspot.com/x/patch.diff?x=1413e2f5300000
-> 
+/Jarkko
 
-Tree seems broken, no idea why the following is needed.
-
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 63b20536c8d236083336c2b50dc5f54225a80eab..6edec9a28293ea3241bd7842ab5555a1691e6cea 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -22,6 +22,7 @@
- #include <linux/usb/xhci-dbgp.h>
- #include <linux/static_call.h>
- #include <linux/swiotlb.h>
-+#include <linux/acpi.h>
- 
- #include <uapi/linux/mount.h>
- 
