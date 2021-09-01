@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6953FE5CE
+	by mail.lfdr.de (Postfix) with ESMTP id B75263FE5CF
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245377AbhIAWpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 18:45:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57506 "EHLO mail.kernel.org"
+        id S245283AbhIAWpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 18:45:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237109AbhIAWpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 18:45:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 89FEE610CC;
-        Wed,  1 Sep 2021 22:44:10 +0000 (UTC)
+        id S237109AbhIAWpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 18:45:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8E42660FDA;
+        Wed,  1 Sep 2021 22:44:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630536250;
-        bh=5cTMzqnw9yf52gtqpbEJSVyU1/D0eiohoxnJNUEHjSM=;
+        s=k20201202; t=1630536255;
+        bh=UZHMcsY0Yl4c7OEtOchGD1z9El16WGCvK86PtzL2Pz8=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=O/HhtZLXhMOV6J4j2cIFbQtdubd9qDw4SUI22hMV8zZtQJXXfhBO0COZYiNNRFO2b
-         xfbyNFSAi/4lf1QOX3keP4+feTUn7Vzk+znuneBm/XxVGlUJrQt5Vwle2KTgt7L7Qo
-         5IdjY+Wfu++dJiSVzCZa/KB7M8ijsAd6sExKYVhq0erWNqBUAt2vurnvLrkgY73Qsm
-         A0dgjQnL0cVQ3hTE2VQtIIwvYHYsoqi+mIwjmN9XtMCS+dQwJHPCtl0yunFXvwLLQP
-         X9Ha919b1Htme8s0UQdPXrARDVELbjIgs/qn2Ed/jgWW7D1OaV/uAV/NpY6Xjwn4we
-         QPA3I07kIASZw==
+        b=M0VK+P9uQp1PpgHnntV7JCD3dpK9Ce2atQEu3nFZEd72ltZxKadNjBH92tKk2Tgdk
+         bZjSUPmptb+sNZ+1c/NHXvqdnnZCNuPlAVGr2NzRw6l2n81ClSpm1L8n4t4QFgpBr3
+         RhMMoxZNmit0aUP4tvIPvL8r0ZMNaaEYmkW1yCJnkxyQL5c3UHIsc437MmP3lsi52R
+         AwrltZkKl31KZl0Py2NhPZMpw6Hh9LpY/S83xFQHJng8pW+AhMW0su+LzNeHVRhenM
+         CZ3HsBE7ULnhKRePdeyAIqFDJZ89N2jE9G+jybbaQrWza04SilyxtYQmbZO/9Hmzyx
+         mGgakC9DfmtWg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 837B0600AB;
-        Wed,  1 Sep 2021 22:44:10 +0000 (UTC)
-Subject: Re: [GIT PULL] asm-generic changes for 5.15
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 87D62600AB;
+        Wed,  1 Sep 2021 22:44:15 +0000 (UTC)
+Subject: Re: [GIT PULL] Final si_trapno bits for v5.15
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAK8P3a0cc_d-NTemhNJzeSHgAwLcc31JB1AF61VDUH7FCTVDRg@mail.gmail.com>
-References: <CAK8P3a0cc_d-NTemhNJzeSHgAwLcc31JB1AF61VDUH7FCTVDRg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-arch.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAK8P3a0cc_d-NTemhNJzeSHgAwLcc31JB1AF61VDUH7FCTVDRg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git tags/asm-generic-5.15
-X-PR-Tracked-Commit-Id: 8f76f9c46952659dd925c21c3f62a0d05a3f3e71
+In-Reply-To: <877dg1a8fd.fsf@disp2133>
+References: <877dg1a8fd.fsf@disp2133>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <877dg1a8fd.fsf@disp2133>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git siginfo-si_trapno-for-v5.15
+X-PR-Tracked-Commit-Id: ee53488cc74143cadbe752d5332b1e3fd87eed49
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4cdc4cc2ad35f92338497d53d3e8b7876cf2a51d
-Message-Id: <163053625053.31944.1109644293922872894.pr-tracker-bot@kernel.org>
-Date:   Wed, 01 Sep 2021 22:44:10 +0000
-To:     Arnd Bergmann <arnd@kernel.org>
+X-PR-Merge-Commit-Id: 48983701a1e0e252faa4aab274ba14419cb286fa
+Message-Id: <163053625554.31944.14091290379298991796.pr-tracker-bot@kernel.org>
+Date:   Wed, 01 Sep 2021 22:44:15 +0000
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        linux-kernel@vger.kernel.org, Marco Elver <elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 1 Sep 2021 19:53:34 +0000:
+The pull request you sent on Tue, 31 Aug 2021 11:24:54 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git tags/asm-generic-5.15
+> git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git siginfo-si_trapno-for-v5.15
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4cdc4cc2ad35f92338497d53d3e8b7876cf2a51d
+https://git.kernel.org/torvalds/c/48983701a1e0e252faa4aab274ba14419cb286fa
 
 Thank you!
 
