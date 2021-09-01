@@ -2,186 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812593FDD0F
+	by mail.lfdr.de (Postfix) with ESMTP id C96E03FDD10
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344159AbhIANKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 09:10:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343918AbhIANKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 09:10:12 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB1E961074;
-        Wed,  1 Sep 2021 13:09:15 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mLPzN-008RSi-NI; Wed, 01 Sep 2021 14:09:13 +0100
+        id S1343798AbhIANLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 09:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343710AbhIANLk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 09:11:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD0BC0613D9;
+        Wed,  1 Sep 2021 06:10:42 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 15:10:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630501840;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=3anV4hQHnkObcm4SjLFFqpqzk/b83hbJC8mwLZK5Ipc=;
+        b=RcYA3tU5KeXRH8VIO5jT/Xi6dn5JTmxAZ/sEh+/TiBj5cNXlb5weeOube+DJtRJ5Ba8WdK
+        KSV2KgV12llAQ8sReu0YPgiQ+LOTKOsoRcl7uHQTAGGSGYwf7OrO/mymcC7lr78fxtEyxw
+        b1PR2gH0cLYQTOpzzAJval86ePL5Nd0uqEe0PYVu2Z9MgI5u0Ow4rB0a2ZWswvMv7hbjHz
+        P6GCqZZCt5mHAm4lAxTDItkyffzlHxvUVLqAVbvlZZ1U23qq/QtlAXyzVCKVCtw/F3zAEk
+        amyRy8E4FSaIcEwGkyBwp+SWYBlN53INARl8Ip9nCUxEilXnhf3GXlELKQqxYA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630501840;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=3anV4hQHnkObcm4SjLFFqpqzk/b83hbJC8mwLZK5Ipc=;
+        b=pEXdxuxyDd54/pg+DTvsT3iDodWWm6N1BOTwSnyEBqcxdbIzq58BkiwXvjWUUumcbJHySG
+        ww8Wg5EHfIdYb+DA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.14-rt16
+Message-ID: <20210901131038.dyjltwgr4xjkujyq@linutronix.de>
 MIME-Version: 1.0
-Date:   Wed, 01 Sep 2021 14:09:13 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan.Cameron@huawei.com, bilbao@vt.edu,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        leon@kernel.org, linux-pci@vger.kernel.org,
-        Linuxarm <linuxarm@huawei.com>, luzmaximilian@gmail.com,
-        mchehab+huawei@kernel.org, schnelle@linux.ibm.com,
-        intel-wired-lan@lists.osuosl.org
-Subject: Re: [PCI/MSI] a4fc4cf388:
- dmesg.genirq:Flags_mismatch_irq##(mei_me)vs.#(xhci_hcd)
-In-Reply-To: <CAGsJ_4y45TyWibu0cOLbopO_k3RbwxQe0C2yp8v4=fF7etMOTg@mail.gmail.com>
-References: <20210825102636.52757-4-21cnbao@gmail.com>
- <20210829145552.GA11556@xsang-OptiPlex-9020>
- <CAGsJ_4yYwjuWsEeK3CvnOhc10mbBNYWXqxqp+mR5587R2FD3gQ@mail.gmail.com>
- <1132a536516f15ab6b338ab868ec3705@kernel.org>
- <CAGsJ_4y45TyWibu0cOLbopO_k3RbwxQe0C2yp8v4=fF7etMOTg@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <04a0587a5d7854494e9ccfd1fdf39951@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: 21cnbao@gmail.com, oliver.sang@intel.com, lkp@intel.com, jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com, song.bao.hua@hisilicon.com, linux-kernel@vger.kernel.org, lkp@lists.01.org, bhelgaas@google.com, tglx@linutronix.de, Jonathan.Cameron@huawei.com, bilbao@vt.edu, corbet@lwn.net, gregkh@linuxfoundation.org, leon@kernel.org, linux-pci@vger.kernel.org, linuxarm@huawei.com, luzmaximilian@gmail.com, mchehab+huawei@kernel.org, schnelle@linux.ibm.com, intel-wired-lan@lists.osuosl.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-31 22:36, Barry Song wrote:
-> On Tue, Aug 31, 2021 at 8:08 PM Marc Zyngier <maz@kernel.org> wrote:
->> 
->> On 2021-08-31 02:21, Barry Song wrote:
->> > On Mon, Aug 30, 2021 at 2:38 AM kernel test robot
->> > <oliver.sang@intel.com> wrote:
->> >>
->> >>
->> >>
->> >> Greeting,
->> >>
->> >> FYI, we noticed the following commit (built with gcc-9):
->> >>
->> >> commit: a4fc4cf388319ea957ffbdab5073bdd267de9082 ("[PATCH v3 3/3]
->> >> PCI/MSI: remove msi_attrib.default_irq in msi_desc")
->> >> url:
->> >> https://github.com/0day-ci/linux/commits/Barry-Song/PCI-MSI-Clarify-the-IRQ-sysfs-ABI-for-PCI-devices/20210825-183018
->> >> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git
->> >> 6e764bcd1cf72a2846c0e53d3975a09b242c04c9
->> >>
->> >> in testcase: kernel-selftests
->> >> version: kernel-selftests-x86_64-ebaa603b-1_20210825
->> >> with following parameters:
->> >>
->> >>         group: pidfd
->> >>         ucode: 0xe2
->> >>
->> >> test-description: The kernel contains a set of "self tests" under the
->> >> tools/testing/selftests/ directory. These are intended to be small
->> >> unit tests to exercise individual code paths in the kernel.
->> >> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
->> >>
->> >>
->> >> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz
->> >> with 32G memory
->> >>
->> >> caused below changes (please refer to attached dmesg/kmsg for entire
->> >> log/backtrace):
->> >>
->> >>
->> >>
->> >> If you fix the issue, kindly add following tag
->> >> Reported-by: kernel test robot <oliver.sang@intel.com>
->> >>
->> >>
->> >>
->> >> [  179.602028][   T34] genirq: Flags mismatch irq 16. 00002000
->> >> (mei_me) vs. 00000000 (xhci_hcd)
->> >> [  179.614073][   T34] CPU: 2 PID: 34 Comm: kworker/u8:2 Not tainted
->> >> 5.14.0-rc7-00014-ga4fc4cf38831 #1
->> >> [  179.623225][   T34] Hardware name: Dell Inc. OptiPlex 7040/0Y7WYT,
->> >> BIOS 1.8.1 12/05/2017
->> >> [  179.631432][   T34] Workqueue: events_unbound async_run_entry_fn
->> >> [  179.637543][   T34] Call Trace:
->> >> [  179.640789][   T34]  dump_stack_lvl+0x45/0x59
->> >> [  179.645253][   T34]  __setup_irq.cold+0x50/0xd4
->> >> [  179.649893][   T34]  ? mei_me_pg_exit_sync+0x480/0x480 [mei_me]
->> >> [  179.655923][   T34]  request_threaded_irq+0x10c/0x180
->> >> [  179.661073][   T34]  ? mei_me_irq_quick_handler+0x240/0x240
->> >> [mei_me]
->> >> [  179.667528][   T34]  mei_me_probe+0x131/0x300 [mei_me]
->> >> [  179.672767][   T34]  local_pci_probe+0x42/0x80
->> >> [  179.677313][   T34]  pci_device_probe+0x107/0x1c0
->> >> [  179.682118][   T34]  really_probe+0xb6/0x380
->> >> [  179.687094][   T34]  __driver_probe_device+0xfe/0x180
->> >> [  179.692242][   T34]  driver_probe_device+0x1e/0xc0
->> >> [  179.697133][   T34]  __driver_attach_async_helper+0x2b/0x80
->> >> [  179.702802][   T34]  async_run_entry_fn+0x30/0x140
->> >> [  179.707693][   T34]  process_one_work+0x274/0x5c0
->> >> [  179.712503][   T34]  worker_thread+0x50/0x3c0
->> >> [  179.716959][   T34]  ? process_one_work+0x5c0/0x5c0
->> >> [  179.721936][   T34]  kthread+0x14f/0x180
->> >> [  179.725958][   T34]  ? set_kthread_struct+0x40/0x40
->> >> [  179.730935][   T34]  ret_from_fork+0x22/0x30
->> >> [  179.735699][   T34] mei_me 0000:00:16.0: request_threaded_irq
->> >> failure. irq = 16
->> >> [  179.743125][   T34] mei_me 0000:00:16.0: initialization failed.
->> >> [  179.749399][   T34] mei_me: probe of 0000:00:16.0 failed with error
->> >> -16
->> >>
->> >>
->> >
->> > it seems there is a direct reference to pdev->irq.
->> > Hi Oliver, would you try if the below patch can fix the problem:
->> >
->> > diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
->> > index c3393b383e59..a45a2d4257a6 100644
->> > --- a/drivers/misc/mei/pci-me.c
->> > +++ b/drivers/misc/mei/pci-me.c
->> > @@ -216,7 +216,7 @@ static int mei_me_probe(struct pci_dev *pdev,
->> > const struct pci_device_id *ent)
->> >
->> >         pci_enable_msi(pdev);
->> >
->> > -       hw->irq = pdev->irq;
->> > +       hw->irq = pci_irq_vector(pdev, 0);
->> >
->> >          /* request and enable interrupt */
->> >         irqflags = pci_dev_msi_enabled(pdev) ? IRQF_ONESHOT :
->> > IRQF_SHARED;
->> >
->> 
->> Ah! one victim, 3000 to go! :D
->> 
-> 
-> yep.
-> 
->> That's exactly the kind of stuff I was mentioning when we
->> discussed this patch. Exposing the MSI vector as the INTx
->> IRQ has led to all sorts of broken drivers.
-> 
-> I guess drivers should depend on int pci_irq_vector(struct pci_dev
-> *dev, unsigned int nr)
-> rather than hardcodely use pdev->irq.
-> 
-> pci_irq_vector() supports all cases(intx, msi, msi-x)
+Dear RT folks!
 
-Yes, that'd be a sensible approach. Feels like a job for
-a coccinelle script!
+I'm pleased to announce the v5.14-rt16 patch set. 
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Changes since v5.14-rt15:
+
+  - The scheduler related "balance_push()" fix in the previous release
+    had a logic error which has been now corrected. Patch by Thomas
+    Gleixner.
+
+  - The kcov related warning, reported by Clark Williams, has been
+    addressed.
+
+Known issues
+     - netconsole triggers WARN.
+
+     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
+
+     - A RCU and ARM64 warning has been fixed by Valentin Schneider. It is
+       still not clear if the RCU related change is correct.
+
+     - Clark Williams reported issues in i915 (execlists_dequeue_irq())
+
+     - Valentin Schneider reported a few splats on ARM64, see
+          https://https://lkml.kernel.org/r/.kernel.org/lkml/20210810134127.1394269-1-valentin.schneider@arm.com/
+
+The delta patch against v5.14-rt15 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/incr/patch-5.14-rt15-rt16.patch.xz
+
+You can get this release via the git tree at:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.14-rt16
+
+The RT patch against v5.14 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patch-5.14-rt16.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patches-5.14-rt16.tar.xz
+
+Sebastian
+
+diff --git a/Documentation/dev-tools/kcov.rst b/Documentation/dev-tools/kcov.rst
+index d2c4c27e1702d..d83c9ab494275 100644
+--- a/Documentation/dev-tools/kcov.rst
++++ b/Documentation/dev-tools/kcov.rst
+@@ -50,6 +50,7 @@ The following program demonstrates coverage collection from within a test
+     #include <sys/mman.h>
+     #include <unistd.h>
+     #include <fcntl.h>
++    #include <linux/types.h>
+ 
+     #define KCOV_INIT_TRACE			_IOR('c', 1, unsigned long)
+     #define KCOV_ENABLE			_IO('c', 100)
+@@ -177,6 +178,8 @@ Comparison operands collection
+ 	/* Read number of comparisons collected. */
+ 	n = __atomic_load_n(&cover[0], __ATOMIC_RELAXED);
+ 	for (i = 0; i < n; i++) {
++		uint64_t ip;
++
+ 		type = cover[i * KCOV_WORDS_PER_CMP + 1];
+ 		/* arg1 and arg2 - operands of the comparison. */
+ 		arg1 = cover[i * KCOV_WORDS_PER_CMP + 2];
+@@ -251,6 +254,8 @@ selectively from different subsystems.
+ 
+ .. code-block:: c
+ 
++    /* Same includes and defines as above. */
++
+     struct kcov_remote_arg {
+ 	__u32		trace_mode;
+ 	__u32		area_size;
+diff --git a/kernel/kcov.c b/kernel/kcov.c
+index 80bfe71bbe13e..36ca640c4f8e7 100644
+--- a/kernel/kcov.c
++++ b/kernel/kcov.c
+@@ -88,6 +88,7 @@ static struct list_head kcov_remote_areas = LIST_HEAD_INIT(kcov_remote_areas);
+ 
+ struct kcov_percpu_data {
+ 	void			*irq_area;
++	local_lock_t		lock;
+ 
+ 	unsigned int		saved_mode;
+ 	unsigned int		saved_size;
+@@ -96,7 +97,9 @@ struct kcov_percpu_data {
+ 	int			saved_sequence;
+ };
+ 
+-static DEFINE_PER_CPU(struct kcov_percpu_data, kcov_percpu_data);
++static DEFINE_PER_CPU(struct kcov_percpu_data, kcov_percpu_data) = {
++	.lock = INIT_LOCAL_LOCK(lock),
++};
+ 
+ /* Must be called with kcov_remote_lock locked. */
+ static struct kcov_remote *kcov_remote_find(u64 handle)
+@@ -824,7 +827,7 @@ void kcov_remote_start(u64 handle)
+ 	if (!in_task() && !in_serving_softirq())
+ 		return;
+ 
+-	local_irq_save(flags);
++	local_lock_irqsave(&kcov_percpu_data.lock, flags);
+ 
+ 	/*
+ 	 * Check that kcov_remote_start() is not called twice in background
+@@ -832,7 +835,7 @@ void kcov_remote_start(u64 handle)
+ 	 */
+ 	mode = READ_ONCE(t->kcov_mode);
+ 	if (WARN_ON(in_task() && kcov_mode_enabled(mode))) {
+-		local_irq_restore(flags);
++		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
+ 		return;
+ 	}
+ 	/*
+@@ -841,14 +844,15 @@ void kcov_remote_start(u64 handle)
+ 	 * happened while collecting coverage from a background thread.
+ 	 */
+ 	if (WARN_ON(in_serving_softirq() && t->kcov_softirq)) {
+-		local_irq_restore(flags);
++		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
+ 		return;
+ 	}
+ 
+ 	spin_lock(&kcov_remote_lock);
+ 	remote = kcov_remote_find(handle);
+ 	if (!remote) {
+-		spin_unlock_irqrestore(&kcov_remote_lock, flags);
++		spin_unlock(&kcov_remote_lock);
++		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
+ 		return;
+ 	}
+ 	kcov_debug("handle = %llx, context: %s\n", handle,
+@@ -869,19 +873,19 @@ void kcov_remote_start(u64 handle)
+ 		size = CONFIG_KCOV_IRQ_AREA_SIZE;
+ 		area = this_cpu_ptr(&kcov_percpu_data)->irq_area;
+ 	}
+-	spin_unlock_irqrestore(&kcov_remote_lock, flags);
++	spin_unlock(&kcov_remote_lock);
+ 
+ 	/* Can only happen when in_task(). */
+ 	if (!area) {
++		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
+ 		area = vmalloc(size * sizeof(unsigned long));
+ 		if (!area) {
+ 			kcov_put(kcov);
+ 			return;
+ 		}
++		local_lock_irqsave(&kcov_percpu_data.lock, flags);
+ 	}
+ 
+-	local_irq_save(flags);
+-
+ 	/* Reset coverage size. */
+ 	*(u64 *)area = 0;
+ 
+@@ -891,7 +895,7 @@ void kcov_remote_start(u64 handle)
+ 	}
+ 	kcov_start(t, kcov, size, area, mode, sequence);
+ 
+-	local_irq_restore(flags);
++	local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
+ 
+ }
+ EXPORT_SYMBOL(kcov_remote_start);
+@@ -965,12 +969,12 @@ void kcov_remote_stop(void)
+ 	if (!in_task() && !in_serving_softirq())
+ 		return;
+ 
+-	local_irq_save(flags);
++	local_lock_irqsave(&kcov_percpu_data.lock, flags);
+ 
+ 	mode = READ_ONCE(t->kcov_mode);
+ 	barrier();
+ 	if (!kcov_mode_enabled(mode)) {
+-		local_irq_restore(flags);
++		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
+ 		return;
+ 	}
+ 	/*
+@@ -978,12 +982,12 @@ void kcov_remote_stop(void)
+ 	 * actually found the remote handle and started collecting coverage.
+ 	 */
+ 	if (in_serving_softirq() && !t->kcov_softirq) {
+-		local_irq_restore(flags);
++		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
+ 		return;
+ 	}
+ 	/* Make sure that kcov_softirq is only set when in softirq. */
+ 	if (WARN_ON(!in_serving_softirq() && t->kcov_softirq)) {
+-		local_irq_restore(flags);
++		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
+ 		return;
+ 	}
+ 
+@@ -1013,7 +1017,7 @@ void kcov_remote_stop(void)
+ 		spin_unlock(&kcov_remote_lock);
+ 	}
+ 
+-	local_irq_restore(flags);
++	local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
+ 
+ 	/* Get in kcov_remote_start(). */
+ 	kcov_put(kcov);
+@@ -1034,8 +1038,8 @@ static int __init kcov_init(void)
+ 	int cpu;
+ 
+ 	for_each_possible_cpu(cpu) {
+-		void *area = vmalloc(CONFIG_KCOV_IRQ_AREA_SIZE *
+-				sizeof(unsigned long));
++		void *area = vmalloc_node(CONFIG_KCOV_IRQ_AREA_SIZE *
++				sizeof(unsigned long), cpu_to_node(cpu));
+ 		if (!area)
+ 			return -ENOMEM;
+ 		per_cpu_ptr(&kcov_percpu_data, cpu)->irq_area = area;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 7ce1935e74540..bb115218bb78b 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8686,7 +8686,7 @@ static void balance_push(struct rq *rq)
+ 	 * Only active while going offline and when invoked on the outgoing
+ 	 * CPU.
+ 	 */
+-	if (!cpu_dying(rq->cpu) && rq == this_rq())
++	if (!cpu_dying(rq->cpu) || rq != this_rq())
+ 		return;
+ 
+ 	/*
+diff --git a/localversion-rt b/localversion-rt
+index 18777ec0c27d4..1199ebade17b4 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt15
++-rt16
