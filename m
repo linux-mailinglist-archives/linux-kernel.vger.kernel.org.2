@@ -2,171 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04383FDDC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4ED53FDDCA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244659AbhIAOYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 10:24:25 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52982 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232449AbhIAOYY (ORCPT
+        id S245044AbhIAO0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 10:26:55 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:41750 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236539AbhIAO0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 10:24:24 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181E9qwj182066;
-        Wed, 1 Sep 2021 10:23:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=qtGkWcWIfIT2o6KIzYTlv0wcqQyNONQNavuF82l46pw=;
- b=DKH5jCD3XXI1sx4p2JeZFBdioa+i+fwt6c1wk1SZTo2N2A3WGfuPW2wSPk/VNXcEnvfG
- 8at2AovM6Eqjh+2XwsPgZAG8igRI2p9mPx8c2QyVWQj27KycTlxZ3YaSaKGDsgTgJWWf
- 0MGNQow6u5+vi2qzo+g/hQdaSDc2t8dYK/AapcD39Bx+smXI77JiIVBpJZE9+axuvVf2
- mQUbrAe/q2LOmM7H9UrkDsnAz9tlQECCzYBZrHIhJJOiAxeLJEoDpUeps16TQpLJvQL6
- O6ggQTW/DdKEiJbukopgDiBAJkbQ7jf3ILmOUFBK1X/kho/T+qaAu3eomVJ90gitN7qd lg== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3at6xm7nua-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 10:23:15 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 181E2f4K010729;
-        Wed, 1 Sep 2021 14:23:14 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma04dal.us.ibm.com with ESMTP id 3aqcse57va-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 14:23:14 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 181ENDxE33620324
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Sep 2021 14:23:13 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 310C9AE062;
-        Wed,  1 Sep 2021 14:23:13 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1DA36AE05C;
-        Wed,  1 Sep 2021 14:23:12 +0000 (GMT)
-Received: from localhost (unknown [9.211.58.54])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Wed,  1 Sep 2021 14:23:11 +0000 (GMT)
-From:   Fabiano Rosas <farosas@linux.ibm.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@ozlabs.org>
-Subject: Re: [PATCH kernel] KVM: PPC: Book3S HV: Make unique debugfs nodename
-In-Reply-To: <2fe01488-5a9b-785e-7c05-1d527dead18d@ozlabs.ru>
-References: <20210707041344.3803554-1-aik@ozlabs.ru>
- <be02290c-60a0-48af-0491-61e8a6d5b7b7@ozlabs.ru>
- <87pmubu306.fsf@linux.ibm.com>
- <a1be1913-f564-924b-1750-03efa859a0b1@ozlabs.ru>
- <2fe01488-5a9b-785e-7c05-1d527dead18d@ozlabs.ru>
-Date:   Wed, 01 Sep 2021 11:23:08 -0300
-Message-ID: <87lf4gv0hf.fsf@linux.ibm.com>
+        Wed, 1 Sep 2021 10:26:54 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:59342)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mLRBd-0005s9-1h; Wed, 01 Sep 2021 08:25:57 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:44984 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mLRBa-00D7Uh-Kn; Wed, 01 Sep 2021 08:25:56 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com,
+        Alexey Gladkov <legion@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+References: <20210901122300.503008474@linuxfoundation.org>
+        <20210901122301.773759848@linuxfoundation.org>
+Date:   Wed, 01 Sep 2021 09:25:25 -0500
+In-Reply-To: <20210901122301.773759848@linuxfoundation.org> (Greg
+        Kroah-Hartman's message of "Wed, 1 Sep 2021 14:27:46 +0200")
+Message-ID: <87v93k4bl6.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Oxrg4cnMxpRPZAwMEWuhiXMGxe0kH9PR
-X-Proofpoint-ORIG-GUID: Oxrg4cnMxpRPZAwMEWuhiXMGxe0kH9PR
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-01_04:2021-09-01,2021-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 mlxscore=0 impostorscore=0 suspectscore=0 spamscore=0
- lowpriorityscore=0 adultscore=0 clxscore=1011 mlxlogscore=999 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2109010084
+Content-Type: text/plain
+X-XM-SPF: eid=1mLRBa-00D7Uh-Kn;;;mid=<87v93k4bl6.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19QIAuZJddGFdPEK0hgriK6CNXn2W6bA5A=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: ****
+X-Spam-Status: No, score=4.6 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,LotsOfNums_01,
+        T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,XMSubLong,
+        XM_Sft_Co_L33T autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 XM_Sft_Co_L33T No description available.
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ****;Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1573 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 10 (0.6%), b_tie_ro: 9 (0.6%), parse: 0.96 (0.1%),
+         extract_message_metadata: 19 (1.2%), get_uri_detail_list: 3.3 (0.2%),
+        tests_pri_-1000: 33 (2.1%), tests_pri_-950: 1.21 (0.1%),
+        tests_pri_-900: 1.01 (0.1%), tests_pri_-90: 135 (8.6%), check_bayes:
+        132 (8.4%), b_tokenize: 12 (0.7%), b_tok_get_all: 12 (0.8%),
+        b_comp_prob: 2.9 (0.2%), b_tok_touch_all: 101 (6.4%), b_finish: 0.93
+        (0.1%), tests_pri_0: 443 (28.1%), check_dkim_signature: 0.81 (0.1%),
+        check_dkim_adsp: 3.2 (0.2%), poll_dns_idle: 910 (57.9%), tests_pri_10:
+        3.7 (0.2%), tests_pri_500: 923 (58.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 5.10 036/103] ucounts: Increase ucounts reference counter before the security hook
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Kardashevskiy <aik@ozlabs.ru> writes:
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
 
-> On 24/08/2021 18:37, Alexey Kardashevskiy wrote:
->>=20
->>=20
->> On 18/08/2021 08:20, Fabiano Rosas wrote:
->>> Alexey Kardashevskiy <aik@ozlabs.ru> writes:
->>>
->>>> On 07/07/2021 14:13, Alexey Kardashevskiy wrote:
->>>
->>>> alternatively move this debugfs stuff under the platform-independent
->>>> directory, how about that?
->>>
->>> That's a good idea. I only now realized we have two separate directories
->>> for the same guest:
->>>
->>> $ ls /sys/kernel/debug/kvm/ | grep $pid
->>> 19062-11
->>> vm19062
->>>
->>> Looks like we would have to implement kvm_arch_create_vcpu_debugfs for
->>> the vcpu information and add a similar hook for the vm.
->>=20
->> Something like that. From the git history, it looks like the ppc folder=
-=20
->> was added first and then the generic kvm folder was added but apparently=
-=20
->> they did not notice the ppc one due to natural reasons :)
->>=20
->> If you are not too busy, can you please merge the ppc one into the=20
->> generic one and post the patch, so we won't need to fix these=20
->> duplication warnings again? Thanks,
+> From: Alexey Gladkov <legion@kernel.org>
 >
+> [ Upstream commit bbb6d0f3e1feb43d663af089c7dedb23be6a04fb ]
 >
->
-> Turns out it is not that straight forward as I thought as the common KVM=
-=20
-> debugfs entry is created after PPC HV KVM created its own and there is=20
-> no obvious way to change the order (no "post init" hook in
-> kvmppc_ops).
+> We need to increment the ucounts reference counter befor security_prepare_creds()
+> because this function may fail and abort_creds() will try to decrement
+> this reference.
 
-That is why I mentioned creating a hook similar to
-kvm_create_vcpu_debugfs in the common KVM code. kvm_create_vm_debugfs or
-something.
+Has the conversion of the rlimits to ucounts been backported?
 
-Alternatively, maybe kvm_create_vm_debugfs could be moved earlier into
-kvm_create_vm, before kvm_arch_post_init_vm and we could move our code
-into kvm_arch_post_init_vm.
+Semantically the code is an improvement but I don't know of any cases
+where it makes enough of a real-world difference to make it worth
+backporting the code.
 
+Certainly the ucount/rlimit conversions do not meet the historical
+criteria for backports.  AKA simple obviously correct patches.
+
+The fact we have been applying fixes for the entire v5.14 stabilization
+period is a testament to the code not quite being obviously correct.
+
+Without backports the code only affects v5.14 so I have not been
+including a Cc stable on any of the commits.
+
+So color me very puzzled about what is going on here.
+
+Eric
+
+
+> [   96.465056][ T8641] FAULT_INJECTION: forcing a failure.
+> [   96.465056][ T8641] name fail_page_alloc, interval 1, probability 0, space 0, times 0
+> [   96.478453][ T8641] CPU: 1 PID: 8641 Comm: syz-executor668 Not tainted 5.14.0-rc6-syzkaller #0
+> [   96.487215][ T8641] Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> [   96.497254][ T8641] Call Trace:
+> [   96.500517][ T8641]  dump_stack_lvl+0x1d3/0x29f
+> [   96.505758][ T8641]  ? show_regs_print_info+0x12/0x12
+> [   96.510944][ T8641]  ? log_buf_vmcoreinfo_setup+0x498/0x498
+> [   96.516652][ T8641]  should_fail+0x384/0x4b0
+> [   96.521141][ T8641]  prepare_alloc_pages+0x1d1/0x5a0
+> [   96.526236][ T8641]  __alloc_pages+0x14d/0x5f0
+> [   96.530808][ T8641]  ? __rmqueue_pcplist+0x2030/0x2030
+> [   96.536073][ T8641]  ? lockdep_hardirqs_on_prepare+0x3e2/0x750
+> [   96.542056][ T8641]  ? alloc_pages+0x3f3/0x500
+> [   96.546635][ T8641]  allocate_slab+0xf1/0x540
+> [   96.551120][ T8641]  ___slab_alloc+0x1cf/0x350
+> [   96.555689][ T8641]  ? kzalloc+0x1d/0x30
+> [   96.559740][ T8641]  __kmalloc+0x2e7/0x390
+> [   96.563980][ T8641]  ? kzalloc+0x1d/0x30
+> [   96.568029][ T8641]  kzalloc+0x1d/0x30
+> [   96.571903][ T8641]  security_prepare_creds+0x46/0x220
+> [   96.577174][ T8641]  prepare_creds+0x411/0x640
+> [   96.581747][ T8641]  __sys_setfsuid+0xe2/0x3a0
+> [   96.586333][ T8641]  do_syscall_64+0x3d/0xb0
+> [   96.590739][ T8641]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   96.596611][ T8641] RIP: 0033:0x445a69
+> [   96.600483][ T8641] Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> [   96.620152][ T8641] RSP: 002b:00007f1054173318 EFLAGS: 00000246 ORIG_RAX: 000000000000007a
+> [   96.628543][ T8641] RAX: ffffffffffffffda RBX: 00000000004ca4c8 RCX: 0000000000445a69
+> [   96.636600][ T8641] RDX: 0000000000000010 RSI: 00007f10541732f0 RDI: 0000000000000000
+> [   96.644550][ T8641] RBP: 00000000004ca4c0 R08: 0000000000000001 R09: 0000000000000000
+> [   96.652500][ T8641] R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ca4cc
+> [   96.660631][ T8641] R13: 00007fffffe0b62f R14: 00007f1054173400 R15: 0000000000022000
 >
-> Also, unlike the common KVM debugfs setup, we do not allocate structures=
-=20
-> to support debugfs nodes so we do not leak anything to bother with a=20
-> mutex like 85cd39af14f4 did.
+> Fixes: 905ae01c4ae2 ("Add a reference to ucounts for each cred")
+> Reported-by: syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com
+> Signed-off-by: Alexey Gladkov <legion@kernel.org>
+> Link: https://lkml.kernel.org/r/97433b1742c3331f02ad92de5a4f07d673c90613.1629735352.git.legion@kernel.org
+> Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  kernel/cred.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 >
-> So I'd stick to the original patch to reduce the noise in the dmesg, and=
-=20
-> it also exposes lpid which I find rather useful for finding the right=20
-> partition scope tree in partition_tb.
->
-> Michael?
->
->
->>=20
->>=20
->>=20
->>>>> ---
->>>>> =C2=A0=C2=A0 arch/powerpc/kvm/book3s_hv.c | 2 +-
->>>>> =C2=A0=C2=A0 1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/arch/powerpc/kvm/book3s_hv.c=20
->>>>> b/arch/powerpc/kvm/book3s_hv.c
->>>>> index 1d1fcc290fca..0223ddc0eed0 100644
->>>>> --- a/arch/powerpc/kvm/book3s_hv.c
->>>>> +++ b/arch/powerpc/kvm/book3s_hv.c
->>>>> @@ -5227,7 +5227,7 @@ static int kvmppc_core_init_vm_hv(struct kvm=20
->>>>> *kvm)
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Create a debugfs directo=
-ry for the VM
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>>> -=C2=A0=C2=A0=C2=A0 snprintf(buf, sizeof(buf), "vm%d", current->pid);
->>>>> +=C2=A0=C2=A0=C2=A0 snprintf(buf, sizeof(buf), "vm%d-lp%ld", current-=
->pid, lpid);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm->arch.debugfs_dir =3D debugf=
-s_create_dir(buf,=20
->>>>> kvm_debugfs_dir);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvmppc_mmu_debugfs_init(kvm);
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (radix_enabled())
->>>>>
->>=20
+> diff --git a/kernel/cred.c b/kernel/cred.c
+> index 098213d4a39c..8c0983fa794a 100644
+> --- a/kernel/cred.c
+> +++ b/kernel/cred.c
+> @@ -286,13 +286,13 @@ struct cred *prepare_creds(void)
+>  	new->security = NULL;
+>  #endif
+>  
+> -	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
+> -		goto error;
+> -
+>  	new->ucounts = get_ucounts(new->ucounts);
+>  	if (!new->ucounts)
+>  		goto error;
+>  
+> +	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
+> +		goto error;
+> +
+>  	validate_creds(new);
+>  	return new;
+>  
+> @@ -753,13 +753,13 @@ struct cred *prepare_kernel_cred(struct task_struct *daemon)
+>  #ifdef CONFIG_SECURITY
+>  	new->security = NULL;
+>  #endif
+> -	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
+> -		goto error;
+> -
+>  	new->ucounts = get_ucounts(new->ucounts);
+>  	if (!new->ucounts)
+>  		goto error;
+>  
+> +	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
+> +		goto error;
+> +
+>  	put_cred(old);
+>  	validate_creds(new);
+>  	return new;
