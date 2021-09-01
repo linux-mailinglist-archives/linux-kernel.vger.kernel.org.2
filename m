@@ -2,55 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6D13FDD07
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304E43FDD0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343782AbhIANDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 09:03:12 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52214 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344156AbhIANC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 09:02:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=XJ9p4HdwD5YVUcVStTTsObEbtRFsXgvAQSj9U5CFgnE=; b=TP
-        QM18l9B4f9qsw7IzMoazkOEE/HDhmGx12HRdP7pWFYesmTMah+2WRpIPgTpuZQp/0NCm+0LchzOuv
-        OF5d/l58xV8LWGZL2ZGcCSdVu61NyqvfOwjWWkxXsdthAEuEMG5BI1CZbOOXC7xRdK/I3yJ/haHhn
-        i8POquXSXk+S92c=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mLPsI-004rkE-IL; Wed, 01 Sep 2021 15:01:54 +0200
-Date:   Wed, 1 Sep 2021 15:01:54 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?utf-8?B?6ams5by6?= <maqianga@uniontech.com>
-Cc:     "f.fainelli" <f.fainelli@gmail.com>, davem <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ming Wang <wangming01@loongson.cn>
-Subject: Re: [PATCH] net: phy: fix autoneg invalid error state of GBSR
- register.
-Message-ID: <YS95wn6kLkM9vHUl@lunn.ch>
-References: <20210901105608.29776-1-maqianga@uniontech.com>
- <YS91biZov3jE+Lrd@lunn.ch>
- <tencent_405C539D1A6BA06876B7AC05@qq.com>
+        id S1346508AbhIANHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 09:07:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30268 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346128AbhIANHJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 09:07:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630501571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6YZViCnYs0eR5/63fdWEJvo5ozOWVgp0c50/QeWT3bM=;
+        b=bCM/kHztsVIXAwyEG1y67Y1KqKZUB+I10+Mrw7ci1RPRFo8oBs8a7b6Df3DlfS5FXbhjAK
+        qO7fRvEC3Z0cJvdAGEYZbu5EC/fTJareJGaZp7yTSU0KM88aHyqEB3EO1xTQy2bSzTvbj/
+        WZDPKoRyf9yJEG8CEgGMifTDeLbfrbs=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-4tHKzDgUPU238yobkDBX7g-1; Wed, 01 Sep 2021 09:06:09 -0400
+X-MC-Unique: 4tHKzDgUPU238yobkDBX7g-1
+Received: by mail-lf1-f72.google.com with SMTP id d10-20020ac24c8a000000b003dce50ea2c4so1020294lfl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 06:06:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6YZViCnYs0eR5/63fdWEJvo5ozOWVgp0c50/QeWT3bM=;
+        b=RE+GVH0YQW6OK2QjXNhVQkzIU2EobFcMHiqEn750x34Sq4B9pV4LVKM+CBLz4jBItt
+         TTQdIMbzkXjgACWieV50+B+8Nt7wm2k1Ez+u0Myf/nWbiR44x6JqoPoHsIn27YH0tDHq
+         Fj6/DgM3gLnBoM10uSf3+Xgavxu4EAp4PIbwrYgW1Eqti2jNXhJ6QK/0g444LBf0ZUtV
+         lJQNqhLdVSC9bINEbv8+HTGzIrWGqgJiokhfw4I8v7Q0GQe8frIQ/WlG/mTw8ubkPEIl
+         gtnsSasNhBZc/QF9primUEywR+ujUvTCg7L+DUDgE9mANo/Bvy8M5aaURRFPp0cK9rjJ
+         MMBg==
+X-Gm-Message-State: AOAM532kcw2STsU2LgsP+K6Sj3LwWm+Pn82cYQHWS1+BMulM+zCSOusV
+        yEiObcv2KgtPWJf1HQsAo1tGdJCGB/O+Vshr+mM03592t9MWnlyR62VghSTTaGL97s81pDKQK/H
+        kHGabDXmWoolhntg/QtlwAmHIbdZGEfwBBFpZidec
+X-Received: by 2002:a2e:6c09:: with SMTP id h9mr29879243ljc.30.1630501566606;
+        Wed, 01 Sep 2021 06:06:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx4KgSc7FdbP3ZCPei50jhJPE9x61plgM6g2/l28VIOxCxWA9hGn77raRvHcCEIZypl+16IpdgtwN7PDzwupHg=
+X-Received: by 2002:a2e:6c09:: with SMTP id h9mr29879177ljc.30.1630501565974;
+ Wed, 01 Sep 2021 06:06:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <tencent_405C539D1A6BA06876B7AC05@qq.com>
+References: <20210824152423.300346181@fuller.cnet> <20210824152646.948424573@fuller.cnet>
+In-Reply-To: <20210824152646.948424573@fuller.cnet>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Wed, 1 Sep 2021 09:05:55 -0400
+Message-ID: <CAFki+LkNcwFATSth4cvU=-7aBZjaLLNU6UFWYv1DxkeYwkeuSg@mail.gmail.com>
+Subject: Re: [patch V3 8/8] mm: vmstat_refresh: avoid queueing work item if
+ cpu stats are clean
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > It looks like you are using an old tree.
-> Yes, it is linux-4.19.y, since 4.19.y does not have autoneg_complete flag,，
-> This patch adds the condition before
-> reading GBSR register to fix this error state.
+Hi Marcelo,
 
-So you first need to fix it in net/master, and then backport it to
-older kernels.
+On Tue, Aug 24, 2021 at 11:42 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
+>
+> It is not necessary to queue work item to run refresh_vm_stats
+> on a remote CPU if that CPU has no dirty stats and no per-CPU
+> allocations for remote nodes.
+>
+> This fixes sosreport hang (which uses vmstat_refresh) with
+> spinning SCHED_FIFO process.
+>
 
-   Andrew
+I was still able to reproduce the sosreport hang with this patchset and I
+am wondering if that is because right now we do vmstat_sync and then cancel
+any pending jobs on a CPU in the context of one task.
+
+However, while this task is running another process can come in and can
+dirty the stats resulting in vmstat job getting placed on CPUs running
+SCHED_FIFO tasks.
+Am I missing something?
+
+What we can probably do is to communicate that a CPU is running on task
+isolation mode to any other process that is trying to run and schedule
+jobs there.
+
+-- 
+Thanks
+Nitesh
+
