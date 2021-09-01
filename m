@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFED3FDBDB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F80C3FDCA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345890AbhIAMpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:45:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42970 "EHLO mail.kernel.org"
+        id S1345080AbhIAMwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:52:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344922AbhIAMkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:40:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C200560F23;
-        Wed,  1 Sep 2021 12:36:10 +0000 (UTC)
+        id S1345024AbhIAMsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:48:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93937610FF;
+        Wed,  1 Sep 2021 12:40:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499771;
-        bh=m5/WhXy3/wigBf/4jbl3/caFt8uE823huKibzAyCNIk=;
+        s=korg; t=1630500023;
+        bh=H2sxlv4wC46sr2gVC0mQVZ+b/yWRiKneOTTxHlG0VPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uww0uF3YLUpFsMor9FoGJLYLS5HiyljBnwNGGLWD8g4DohH8g4bKei5WxM02VJ1Sq
-         l/6d77DIyWQRWr8XhlbbtueOOGKiYig5dyAeistnmvwXDUDVB1l/iBVEkLyhjwSbZ/
-         6Q8RIdI0w6zrTm1nw5BEpEHf1JtxrbIeqYlmKmSU=
+        b=MJUFQJqZlmBZbPSpvoGs3Cy/KrM0DMaItruv0WpUpkTpcjAEU86q8qXbp+uIMUSGz
+         SvTD5tVt4cSQo2IuFTjBm+AitFQXEyFGijDNs3/NTNa5Tzb4bHxiVyqZEcf9VLJn3v
+         TtgpCo1Kj6FiTCtLkNXsPikSLJ/sJTDW9WRFmgi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Subject: [PATCH 5.10 079/103] riscv: Fixup patch_text panic in ftrace
+        stable@vger.kernel.org, Yaara Baruch <yaara.baruch@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 074/113] iwlwifi: add new SoF with JF devices
 Date:   Wed,  1 Sep 2021 14:28:29 +0200
-Message-Id: <20210901122303.210854169@linuxfoundation.org>
+Message-Id: <20210901122304.461675820@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
-References: <20210901122300.503008474@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,155 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+From: Yaara Baruch <yaara.baruch@intel.com>
 
-commit 5ad84adf5456313e285734102367c861c436c5ed upstream.
+[ Upstream commit a5bf1d4434b93394fa37494d78fe9f3513557185 ]
 
-Just like arm64, we can't trace the function in the patch_text path.
+Add new SoF JF devices to the driver.
 
-Here is the bug log:
-
-[   45.234334] Unable to handle kernel paging request at virtual address ffffffd38ae80900
-[   45.242313] Oops [#1]
-[   45.244600] Modules linked in:
-[   45.247678] CPU: 0 PID: 11 Comm: migration/0 Not tainted 5.9.0-00025-g9b7db83-dirty #215
-[   45.255797] epc: ffffffe00021689a ra : ffffffe00021718e sp : ffffffe01afabb58
-[   45.262955]  gp : ffffffe00136afa0 tp : ffffffe01af94d00 t0 : 0000000000000002
-[   45.270200]  t1 : 0000000000000000 t2 : 0000000000000001 s0 : ffffffe01afabc08
-[   45.277443]  s1 : ffffffe0013718a8 a0 : 0000000000000000 a1 : ffffffe01afabba8
-[   45.284686]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : c4c16ad38ae80900
-[   45.291929]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000052464e43
-[   45.299173]  s2 : 0000000000000001 s3 : ffffffe000206a60 s4 : ffffffe000206a60
-[   45.306415]  s5 : 00000000000009ec s6 : ffffffe0013718a8 s7 : c4c16ad38ae80900
-[   45.313658]  s8 : 0000000000000004 s9 : 0000000000000001 s10: 0000000000000001
-[   45.320902]  s11: 0000000000000003 t3 : 0000000000000001 t4 : ffffffffd192fe79
-[   45.328144]  t5 : ffffffffb8f80000 t6 : 0000000000040000
-[   45.333472] status: 0000000200000100 badaddr: ffffffd38ae80900 cause: 000000000000000f
-[   45.341514] ---[ end trace d95102172248fdcf ]---
-[   45.346176] note: migration/0[11] exited with preempt_count 1
-
-(gdb) x /2i $pc
-=> 0xffffffe00021689a <__do_proc_dointvec+196>: sd      zero,0(s7)
-   0xffffffe00021689e <__do_proc_dointvec+200>: li      s11,0
-
-(gdb) bt
-0  __do_proc_dointvec (tbl_data=0x0, table=0xffffffe01afabba8,
-write=0, buffer=0x0, lenp=0x7bf897061f9a0800, ppos=0x4, conv=0x0,
-data=0x52464e43) at kernel/sysctl.c:581
-1  0xffffffe00021718e in do_proc_dointvec (data=<optimized out>,
-conv=<optimized out>, ppos=<optimized out>, lenp=<optimized out>,
-buffer=<optimized out>, write=<optimized out>, table=<optimized out>)
-at kernel/sysctl.c:964
-2  proc_dointvec_minmax (ppos=<optimized out>, lenp=<optimized out>,
-buffer=<optimized out>, write=<optimized out>, table=<optimized out>)
-at kernel/sysctl.c:964
-3  proc_do_static_key (table=<optimized out>, write=1, buffer=0x0,
-lenp=0x0, ppos=0x7bf897061f9a0800) at kernel/sysctl.c:1643
-4  0xffffffe000206792 in ftrace_make_call (rec=<optimized out>,
-addr=<optimized out>) at arch/riscv/kernel/ftrace.c:109
-5  0xffffffe0002c9c04 in __ftrace_replace_code
-(rec=0xffffffe01ae40c30, enable=3) at kernel/trace/ftrace.c:2503
-6  0xffffffe0002ca0b2 in ftrace_replace_code (mod_flags=<optimized
-out>) at kernel/trace/ftrace.c:2530
-7  0xffffffe0002ca26a in ftrace_modify_all_code (command=5) at
-kernel/trace/ftrace.c:2677
-8  0xffffffe0002ca30e in __ftrace_modify_code (data=<optimized out>)
-at kernel/trace/ftrace.c:2703
-9  0xffffffe0002c13b0 in multi_cpu_stop (data=0x0) at kernel/stop_machine.c:224
-10 0xffffffe0002c0fde in cpu_stopper_thread (cpu=<optimized out>) at
-kernel/stop_machine.c:491
-11 0xffffffe0002343de in smpboot_thread_fn (data=0x0) at kernel/smpboot.c:165
-12 0xffffffe00022f8b4 in kthread (_create=0xffffffe01af0c040) at
-kernel/kthread.c:292
-13 0xffffffe000201fac in handle_exception () at arch/riscv/kernel/entry.S:236
-
-   0xffffffe00020678a <+114>:   auipc   ra,0xffffe
-   0xffffffe00020678e <+118>:   jalr    -118(ra) # 0xffffffe000204714 <patch_text_nosync>
-   0xffffffe000206792 <+122>:   snez    a0,a0
-
-(gdb) disassemble patch_text_nosync
-Dump of assembler code for function patch_text_nosync:
-   0xffffffe000204714 <+0>:     addi    sp,sp,-32
-   0xffffffe000204716 <+2>:     sd      s0,16(sp)
-   0xffffffe000204718 <+4>:     sd      ra,24(sp)
-   0xffffffe00020471a <+6>:     addi    s0,sp,32
-   0xffffffe00020471c <+8>:     auipc   ra,0x0
-   0xffffffe000204720 <+12>:    jalr    -384(ra) # 0xffffffe00020459c <patch_insn_write>
-   0xffffffe000204724 <+16>:    beqz    a0,0xffffffe00020472e <patch_text_nosync+26>
-   0xffffffe000204726 <+18>:    ld      ra,24(sp)
-   0xffffffe000204728 <+20>:    ld      s0,16(sp)
-   0xffffffe00020472a <+22>:    addi    sp,sp,32
-   0xffffffe00020472c <+24>:    ret
-   0xffffffe00020472e <+26>:    sd      a0,-24(s0)
-   0xffffffe000204732 <+30>:    auipc   ra,0x4
-   0xffffffe000204736 <+34>:    jalr    -1464(ra) # 0xffffffe00020817a <flush_icache_all>
-   0xffffffe00020473a <+38>:    ld      a0,-24(s0)
-   0xffffffe00020473e <+42>:    ld      ra,24(sp)
-   0xffffffe000204740 <+44>:    ld      s0,16(sp)
-   0xffffffe000204742 <+46>:    addi    sp,sp,32
-   0xffffffe000204744 <+48>:    ret
-
-(gdb) disassemble flush_icache_all-4
-Dump of assembler code for function flush_icache_all:
-   0xffffffe00020817a <+0>:     addi    sp,sp,-8
-   0xffffffe00020817c <+2>:     sd      ra,0(sp)
-   0xffffffe00020817e <+4>:     auipc   ra,0xfffff
-   0xffffffe000208182 <+8>:     jalr    -1822(ra) # 0xffffffe000206a60 <ftrace_caller>
-   0xffffffe000208186 <+12>:    ld      ra,0(sp)
-   0xffffffe000208188 <+14>:    addi    sp,sp,8
-   0xffffffe00020818a <+0>:     addi    sp,sp,-16
-   0xffffffe00020818c <+2>:     sd      s0,0(sp)
-   0xffffffe00020818e <+4>:     sd      ra,8(sp)
-   0xffffffe000208190 <+6>:     addi    s0,sp,16
-   0xffffffe000208192 <+8>:     li      a0,0
-   0xffffffe000208194 <+10>:    auipc   ra,0xfffff
-   0xffffffe000208198 <+14>:    jalr    -410(ra) # 0xffffffe000206ffa <sbi_remote_fence_i>
-   0xffffffe00020819c <+18>:    ld      s0,0(sp)
-   0xffffffe00020819e <+20>:    ld      ra,8(sp)
-   0xffffffe0002081a0 <+22>:    addi    sp,sp,16
-   0xffffffe0002081a2 <+24>:    ret
-
-(gdb) frame 5
-(rec=0xffffffe01ae40c30, enable=3) at kernel/trace/ftrace.c:2503
-2503                    return ftrace_make_call(rec, ftrace_addr);
-(gdb) p /x rec->ip
-$2 = 0xffffffe00020817a -> flush_icache_all !
-
-When we modified flush_icache_all's patchable-entry with ftrace_caller:
- - Insert ftrace_caller at flush_icache_all prologue.
- - Call flush_icache_all to sync I/Dcache, but flush_icache_all is
-just we modified by half.
-
-Link: https://lore.kernel.org/linux-riscv/CAJF2gTT=oDWesWe0JVWvTpGi60-gpbNhYLdFWN_5EbyeqoEDdw@mail.gmail.com/T/#t
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Reviewed-by: Atish Patra <atish.patra@wdc.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Yaara Baruch <yaara.baruch@intel.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210719144523.0545d8964ff2.I3498879d8c184e42b1578a64aa7b7c99a18b75fb@changeid
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/kernel/Makefile |    1 +
- arch/riscv/mm/Makefile     |    1 +
- 2 files changed, 2 insertions(+)
+ drivers/net/wireless/intel/iwlwifi/pcie/drv.c | 34 +++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -6,6 +6,7 @@
- ifdef CONFIG_FTRACE
- CFLAGS_REMOVE_ftrace.o	= $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_patch.o	= $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_sbi.o	= $(CC_FLAGS_FTRACE)
- endif
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
+index d94bd8d732e9..cd204a9ec87d 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
+@@ -1103,6 +1103,40 @@ static const struct iwl_dev_info iwl_dev_info_table[] = {
+ 		      IWL_CFG_ANY, IWL_CFG_ANY, IWL_CFG_NO_CDB,
+ 		      iwl_cfg_bz_a0_mr_a0, iwl_ax211_name),
  
- extra-y += head.o
---- a/arch/riscv/mm/Makefile
-+++ b/arch/riscv/mm/Makefile
-@@ -3,6 +3,7 @@
- CFLAGS_init.o := -mcmodel=medany
- ifdef CONFIG_FTRACE
- CFLAGS_REMOVE_init.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_cacheflush.o = $(CC_FLAGS_FTRACE)
- endif
- 
- KCOV_INSTRUMENT_init.o := n
++/* SoF with JF2 */
++	_IWL_DEV_INFO(IWL_CFG_ANY, IWL_CFG_ANY,
++		      IWL_CFG_MAC_TYPE_SOF, IWL_CFG_ANY,
++		      IWL_CFG_RF_TYPE_JF2, IWL_CFG_RF_ID_JF,
++		      IWL_CFG_160, IWL_CFG_CORES_BT, IWL_CFG_NO_CDB,
++		      iwlax210_2ax_cfg_so_jf_b0, iwl9560_160_name),
++	_IWL_DEV_INFO(IWL_CFG_ANY, IWL_CFG_ANY,
++		      IWL_CFG_MAC_TYPE_SOF, IWL_CFG_ANY,
++		      IWL_CFG_RF_TYPE_JF2, IWL_CFG_RF_ID_JF,
++		      IWL_CFG_NO_160, IWL_CFG_CORES_BT, IWL_CFG_NO_CDB,
++		      iwlax210_2ax_cfg_so_jf_b0, iwl9560_name),
++
++/* SoF with JF */
++	_IWL_DEV_INFO(IWL_CFG_ANY, IWL_CFG_ANY,
++		      IWL_CFG_MAC_TYPE_SOF, IWL_CFG_ANY,
++		      IWL_CFG_RF_TYPE_JF1, IWL_CFG_RF_ID_JF1,
++		      IWL_CFG_160, IWL_CFG_CORES_BT, IWL_CFG_NO_CDB,
++		      iwlax210_2ax_cfg_so_jf_b0, iwl9461_160_name),
++	_IWL_DEV_INFO(IWL_CFG_ANY, IWL_CFG_ANY,
++		      IWL_CFG_MAC_TYPE_SOF, IWL_CFG_ANY,
++		      IWL_CFG_RF_TYPE_JF1, IWL_CFG_RF_ID_JF1_DIV,
++		      IWL_CFG_160, IWL_CFG_CORES_BT, IWL_CFG_NO_CDB,
++		      iwlax210_2ax_cfg_so_jf_b0, iwl9462_160_name),
++	_IWL_DEV_INFO(IWL_CFG_ANY, IWL_CFG_ANY,
++		      IWL_CFG_MAC_TYPE_SOF, IWL_CFG_ANY,
++		      IWL_CFG_RF_TYPE_JF1, IWL_CFG_RF_ID_JF1,
++		      IWL_CFG_NO_160, IWL_CFG_CORES_BT, IWL_CFG_NO_CDB,
++		      iwlax210_2ax_cfg_so_jf_b0, iwl9461_name),
++	_IWL_DEV_INFO(IWL_CFG_ANY, IWL_CFG_ANY,
++		      IWL_CFG_MAC_TYPE_SOF, IWL_CFG_ANY,
++		      IWL_CFG_RF_TYPE_JF1, IWL_CFG_RF_ID_JF1_DIV,
++		      IWL_CFG_NO_160, IWL_CFG_CORES_BT, IWL_CFG_NO_CDB,
++		      iwlax210_2ax_cfg_so_jf_b0, iwl9462_name),
++
+ /* So with GF */
+ 	_IWL_DEV_INFO(IWL_CFG_ANY, IWL_CFG_ANY,
+ 		      IWL_CFG_MAC_TYPE_SO, IWL_CFG_ANY,
+-- 
+2.30.2
+
 
 
