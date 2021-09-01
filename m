@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B71F3FD334
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 07:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD69E3FD336
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 07:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242096AbhIAFrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 01:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbhIAFr3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 01:47:29 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34782C061575;
-        Tue, 31 Aug 2021 22:46:33 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id x27so4019043lfu.5;
-        Tue, 31 Aug 2021 22:46:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7hRPX2dZswgsfHn1YLjeDaSIlOhVuOR93qiJSB96BN8=;
-        b=uM7mCPdZWbjo9We9gk9bs3YDzJd/dn5hLXnWhFrMcvSeMphQBzz5E9SWhxzZ2sJkZZ
-         xIXE/LY4sGKgw0rk/l+i0gIRSZlvF3n5STTEps54w3qnluO4Y8UiAS4pWV/UZ6picKtE
-         9a4HAuNiheFiJLCXiUb9PBUR4p84pk4FtuWayMc+Gib0Z7aP3VGdrI/O96IJQEyZqxJ/
-         1EdV2XBMVGgneOA2ARgl7OA5DSe+dFYpvhcDSBQ45qceTvaMoRsmdhQoIudLuKQo+t8f
-         wagdE/1/KWnnw0wLryzVUpIAcKLHFWz4v3B6BZkJ50jKgy8lOpo+d5BC8kGF8ObESlQP
-         TigQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7hRPX2dZswgsfHn1YLjeDaSIlOhVuOR93qiJSB96BN8=;
-        b=mnwxXeaRDzR6QeqRZtOIVNWIUva/3g0n06WUHz/geTtzT/zwzdMyHvqTwHb/Jk/Qo8
-         piXjp+yjTOdOQfdrLFfNu5zfYYxJyiM33meTO8Xf8/dWOUNq9LlRu9LGP9FucGyYns16
-         5YgIrTCB8lSCmRx0A6KJjXP+FVP2CsiFNerRyFsKi+cWqWUohS39zy1zwEMM5TrI1wtQ
-         K1TZd7GxmRT2LuybmKDgw0h/T82DE++lS+vBjyUQ9ttiK7tatP99VtkKj/ITgSFbF8Lg
-         yVBc/bEwg4oGouZZJH6CQruywu7RIIbacq/WH544SxGIRLEiBEHDy+1izSFTV9gHa72w
-         wRvg==
-X-Gm-Message-State: AOAM5327uJxvmq2JxbOITvbOgqaUhlkTPiwMcIqcRXl8dj0lZ4TgeG5Y
-        DLRAfe1miDQljW5XRuFjwXFn1JkeNOA=
-X-Google-Smtp-Source: ABdhPJzqfB1IavgEmOYEH0Pth4rYnyIB9Dlcg9NuqlXETLTG328MQjEVQe63D0kwcU/LUyaJpt1SRg==
-X-Received: by 2002:ac2:4c41:: with SMTP id o1mr4082926lfk.52.1630475191480;
-        Tue, 31 Aug 2021 22:46:31 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-26-37.dynamic.spd-mgts.ru. [46.138.26.37])
-        by smtp.googlemail.com with ESMTPSA id g38sm2109328lfv.210.2021.08.31.22.46.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 22:46:31 -0700 (PDT)
-Subject: Re: [PATCH v10 2/8] opp: Allow dev_pm_opp_set_clkname() to replace
- released clock
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210831135450.26070-1-digetx@gmail.com>
- <20210831135450.26070-3-digetx@gmail.com>
- <20210901044235.2je35y3ajtctrall@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <6010b244-4260-8ae9-2b8a-7fd689781d36@gmail.com>
-Date:   Wed, 1 Sep 2021 08:46:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210901044235.2je35y3ajtctrall@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S242128AbhIAFs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 01:48:27 -0400
+Received: from mga11.intel.com ([192.55.52.93]:8840 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231195AbhIAFs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 01:48:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="215505852"
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="215505852"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 22:47:10 -0700
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="690423555"
+Received: from rortega-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.254.25.13])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 22:47:07 -0700
+Date:   Wed, 1 Sep 2021 17:47:05 +1200
+From:   Kai Huang <kai.huang@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
+Message-Id: <20210901174705.3b1a943ef8c4bb09323c6d76@intel.com>
+In-Reply-To: <6a9fccdb6a458960e43a63afcce87cc62184adf9.camel@kernel.org>
+References: <20210825235234.153013-1-jarkko@kernel.org>
+        <20210825235234.153013-2-jarkko@kernel.org>
+        <20210826141959.5f13ff3c9c560c23b58443b1@intel.com>
+        <54923ac01fc303e5105cadca06b7c5cbd322d815.camel@kernel.org>
+        <20210828000335.1d40dfff0f408b2d91467491@intel.com>
+        <04b90a702328712204430db604b2a92ddfe8f990.camel@kernel.org>
+        <20210901173322.78f94b694b4be6b1225bee98@intel.com>
+        <6a9fccdb6a458960e43a63afcce87cc62184adf9.camel@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.09.2021 07:42, Viresh Kumar пишет:
-> On 31-08-21, 16:54, Dmitry Osipenko wrote:
->> The opp_table->clk is set to error once clock is released by
->> dev_pm_opp_put_clkname(). This doesn't allow to set clock again,
+On Wed, 01 Sep 2021 08:41:12 +0300 Jarkko Sakkinen wrote:
+> On Wed, 2021-09-01 at 17:33 +1200, Kai Huang wrote:
+> > On Wed, 01 Sep 2021 05:02:45 +0300 Jarkko Sakkinen wrote:
+> > > On Sat, 2021-08-28 at 00:03 +1200, Kai Huang wrote:
+> > > > > > > -/* The free page list lock protected variables prepend the lock. */
+> > > > > > > +/* The number of usable EPC pages in the system. */
+> > > > > > > +unsigned long sgx_nr_all_pages;
+> > > > > > > +
+> > > > > > > +/* The number of free EPC pages in all nodes. */
+> > > > > > >  static unsigned long sgx_nr_free_pages;
+> > > > > > >  
+> > > > > > >  /* Nodes with one or more EPC sections. */
+> > > > > > > @@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+> > > > > > >  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
+> > > > > > >  	}
+> > > > > > >  
+> > > > > > > +	sgx_nr_all_pages += nr_pages;
+> > > > > > > +
+> > > > > > 
+> > > > > > EPC sections can be freed again in sgx_init() after they are successfully
+> > > > > > initialized, when any further initialization fails (i.e. when fails to create
+> > > > > > ksgxd, or fails to register /dev/sgx_provision).  In which case, I think
+> > > > > > sgx_nr_all_pages should also be cleared.  But current sgx_init() seems doesn't
+> > > > > > reset it.  Do you need to fix that too?
+> > > > > 
+> > > > > sgx_nr_all_pages tells just the total pages in the system, i.e. it's a constant.
+> > > > > 
+> > > > > Maybe a rename to "sgx_nr_total_pages" would be a good idea? Would match with
+> > > > > the meminfo field better too.
+> > > > 
+> > > > I don't have preference on name.  I just think if there's no actual user of
+> > > > EPC (when both driver and KVM SGX cannot be enabled), it's pointless to print
+> > > > number of EPC pages.
+> > > 
+> > > I'd presume that you refer to the code, which prints the number of *bytes* in
+> > > the system because code printing the number of pages does not exist in this
+> > > patch set.
+> > > 
+> > > I have troubles the decipher your statement.
+> > > 
+> > > You think that only if both the driver and KVM are *both* enabled, only then
+> > > it makes sense to have this information available for sysadmin?
+> > 
+> > Only if at least one of them is enabled.
 > 
-> I am not sure why are you required to set the clk again here ? I mean,
-> users aren't expected to put clkname in the middle of using it. The
-> set-name API also checks that the OPP list should be empty in such a
-> case.
+> OK, thank you, that does make sense.
+> 
+> What would happen if neither is enabled is that SGX_MemTotal would
+> state that there is zero bytes of EPC. 
 
-I added explanatory comment to tegra_pmc_pd_dev_get_performance_state(),
-isn't it enough?
+This is the problem I pointed out at the beginning, that (if I read code
+correctly), it seems your current patch doesn't clear sgx_nr_all_pages when
+neither is enabled (in sgx_init() in sgx/main.c).
+
