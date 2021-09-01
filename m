@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989853FDB9F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650CE3FDAAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344171AbhIAMml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:42:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42974 "EHLO mail.kernel.org"
+        id S1343587AbhIAMd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:33:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344548AbhIAMji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:39:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C37C26115B;
-        Wed,  1 Sep 2021 12:35:19 +0000 (UTC)
+        id S244894AbhIAMcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:32:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3571C610CB;
+        Wed,  1 Sep 2021 12:31:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499720;
-        bh=3RyVr52Scbm+6zErqN/+kNzLJPXHXbPHyDQWw6xT7wc=;
+        s=korg; t=1630499488;
+        bh=y0MmNWgRX5chVEjGuxM4JFyJqnnnRcqhozuIp+eYBb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yqe5i/v6TOxJzqyKYl/M5TKpax5K/K1fnKPqSeHZqj/FS3SGR1fGzQKwMNQ29iuKI
-         Jpm2KCcowcC40Jt8zkjX6xuJMPTKnYmb2JHriyRnuuMLzuyp81F/xDYWhsQUVnyu1K
-         zaJHraEXUyF+pd3s/WpSEtUbEe7aB+TE0RN0wGHY=
+        b=2rn6SGvT6mDXOwHnZyvXH7dOjBTVi/3C3V2z8TZOgCYfVY24krcQTT34fqfbGzp5j
+         n8EXfwpfZZST6QNLw7rP5oGKYv6WGpL6C3mTYBPP7EvbHCEu6JkbXAetkBPGudUqDq
+         5owhndyzuNRt5CXyKsUjiIkBg0XREPEVM6YYvrkA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 058/103] virtio_pci: Support surprise removal of virtio pci device
-Date:   Wed,  1 Sep 2021 14:28:08 +0200
-Message-Id: <20210901122302.520588260@linuxfoundation.org>
+Subject: [PATCH 5.4 19/48] xgene-v2: Fix a resource leak in the error handling path of xge_probe()
+Date:   Wed,  1 Sep 2021 14:28:09 +0200
+Message-Id: <20210901122254.031128609@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
-References: <20210901122300.503008474@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,78 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 43bb40c5b92659966bdf4bfe584fde0a3575a049 ]
+[ Upstream commit 5ed74b03eb4d08f5dd281dcb5f1c9bb92b363a8d ]
 
-When a virtio pci device undergo surprise removal (aka async removal in
-PCIe spec), mark the device as broken so that any upper layer drivers can
-abort any outstanding operation.
+A successful 'xge_mdio_config()' call should be balanced by a corresponding
+'xge_mdio_remove()' call in the error handling path of the probe, as
+already done in the remove function.
 
-When a virtio net pci device undergo surprise removal which is used by a
-NetworkManager, a below call trace was observed.
+Update the error handling path accordingly.
 
-kernel:watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [kworker/1:1:27059]
-watchdog: BUG: soft lockup - CPU#1 stuck for 52s! [kworker/1:1:27059]
-CPU: 1 PID: 27059 Comm: kworker/1:1 Tainted: G S      W I  L    5.13.0-hotplug+ #8
-Hardware name: Dell Inc. PowerEdge R640/0H28RR, BIOS 2.9.4 11/06/2020
-Workqueue: events linkwatch_event
-RIP: 0010:virtnet_send_command+0xfc/0x150 [virtio_net]
-Call Trace:
- virtnet_set_rx_mode+0xcf/0x2a7 [virtio_net]
- ? __hw_addr_create_ex+0x85/0xc0
- __dev_mc_add+0x72/0x80
- igmp6_group_added+0xa7/0xd0
- ipv6_mc_up+0x3c/0x60
- ipv6_find_idev+0x36/0x80
- addrconf_add_dev+0x1e/0xa0
- addrconf_dev_config+0x71/0x130
- addrconf_notify+0x1f5/0xb40
- ? rtnl_is_locked+0x11/0x20
- ? __switch_to_asm+0x42/0x70
- ? finish_task_switch+0xaf/0x2c0
- ? raw_notifier_call_chain+0x3e/0x50
- raw_notifier_call_chain+0x3e/0x50
- netdev_state_change+0x67/0x90
- linkwatch_do_dev+0x3c/0x50
- __linkwatch_run_queue+0xd2/0x220
- linkwatch_event+0x21/0x30
- process_one_work+0x1c8/0x370
- worker_thread+0x30/0x380
- ? process_one_work+0x370/0x370
- kthread+0x118/0x140
- ? set_kthread_struct+0x40/0x40
- ret_from_fork+0x1f/0x30
-
-Hence, add the ability to abort the command on surprise removal
-which prevents infinite loop and system lockup.
-
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Link: https://lore.kernel.org/r/20210721142648.1525924-5-parav@nvidia.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Fixes: ea8ab16ab225 ("drivers: net: xgene-v2: Add MDIO support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/virtio/virtio_pci_common.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/ethernet/apm/xgene-v2/main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-index 222d630c41fc..b35bb2d57f62 100644
---- a/drivers/virtio/virtio_pci_common.c
-+++ b/drivers/virtio/virtio_pci_common.c
-@@ -576,6 +576,13 @@ static void virtio_pci_remove(struct pci_dev *pci_dev)
- 	struct virtio_pci_device *vp_dev = pci_get_drvdata(pci_dev);
- 	struct device *dev = get_device(&vp_dev->vdev.dev);
+diff --git a/drivers/net/ethernet/apm/xgene-v2/main.c b/drivers/net/ethernet/apm/xgene-v2/main.c
+index 02b4f3af02b5..848be6bf2fd1 100644
+--- a/drivers/net/ethernet/apm/xgene-v2/main.c
++++ b/drivers/net/ethernet/apm/xgene-v2/main.c
+@@ -677,11 +677,13 @@ static int xge_probe(struct platform_device *pdev)
+ 	ret = register_netdev(ndev);
+ 	if (ret) {
+ 		netdev_err(ndev, "Failed to register netdev\n");
+-		goto err;
++		goto err_mdio_remove;
+ 	}
  
-+	/*
-+	 * Device is marked broken on surprise removal so that virtio upper
-+	 * layers can abort any ongoing operation.
-+	 */
-+	if (!pci_device_is_present(pci_dev))
-+		virtio_break_device(&vp_dev->vdev);
-+
- 	pci_disable_sriov(pci_dev);
+ 	return 0;
  
- 	unregister_virtio_device(&vp_dev->vdev);
++err_mdio_remove:
++	xge_mdio_remove(ndev);
+ err:
+ 	free_netdev(ndev);
+ 
 -- 
 2.30.2
 
