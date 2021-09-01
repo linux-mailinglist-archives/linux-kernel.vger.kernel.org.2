@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60FF23FDA3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E783FDAA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244721AbhIAMbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:31:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60878 "EHLO mail.kernel.org"
+        id S244877AbhIAMdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:33:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244585AbhIAMao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:30:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A3A961027;
-        Wed,  1 Sep 2021 12:29:47 +0000 (UTC)
+        id S245002AbhIAMcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:32:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D69DE61027;
+        Wed,  1 Sep 2021 12:31:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499387;
-        bh=/Fs+cK0e/l5ga+iFQMx2uqIsuSYlzeygkx2+CF/CrQ0=;
+        s=korg; t=1630499472;
+        bh=SijOpYyQqdDkOkhH1GYx8Q4As3/+YQr7M6n8X6rjOwg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cXnb/kw81Dm4/SI1B7fVtjhQZa7j9aK+gcjFH12vHypNbWO2CLk7vYh+6d6+SAx0/
-         R3SyMRdzN4y36OIIMp7jseGbDzUGwICYta2MjLsu9KsTTKHWO7UBMXO9KPsCHtRij8
-         p3P/XT92jrOYYTjiDSUeMlEnGZ7SzsD0x2T6KFSY=
+        b=L0x+E0jpb3ESISoHu0hH+rouDuA4yHyQoVO6L+r4FlB8L80XsvyRjnHLslWTx8gl2
+         1EyW6jR/ntUApO0Vt+nTRtIi6iINZqUvhPS6nbss0Qn6EqWuFCS/rLZnp8KkmoL+q0
+         u9zKIfKiwQndLzStlduDzwNkbSxVY56xXpqjd23s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yee Li <seven.yi.lee@gmail.com>,
-        Sasha Neftin <sasha.neftin@intel.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 14/33] e1000e: Fix the max snoop/no-snoop latency for 10M
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Li Jinlin <lijinlin3@huawei.com>,
+        Qiu Laibin <qiulaibin@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.4 13/48] scsi: core: Fix hang of freezing queue between blocking and running device
 Date:   Wed,  1 Sep 2021 14:28:03 +0200
-Message-Id: <20210901122251.250683707@linuxfoundation.org>
+Message-Id: <20210901122253.840151831@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
-References: <20210901122250.752620302@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,76 +41,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sasha Neftin <sasha.neftin@intel.com>
+From: Li Jinlin <lijinlin3@huawei.com>
 
-[ Upstream commit 44a13a5d99c71bf9e1676d9e51679daf4d7b3d73 ]
+commit 02c6dcd543f8f051973ee18bfbc4dc3bd595c558 upstream.
 
-We should decode the latency and the max_latency before directly compare.
-The latency should be presented as lat_enc = scale x value:
-lat_enc_d = (lat_enc & 0x0x3ff) x (1U << (5*((max_ltr_enc & 0x1c00)
->> 10)))
+We found a hang, the steps to reproduce  are as follows:
 
-Fixes: cf8fb73c23aa ("e1000e: add support for LTR on I217/I218")
-Suggested-by: Yee Li <seven.yi.lee@gmail.com>
-Signed-off-by: Sasha Neftin <sasha.neftin@intel.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  1. blocking device via scsi_device_set_state()
+
+  2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
+
+  3. echo none > /sys/block/sda/queue/scheduler
+
+  4. echo "running" >/sys/block/sda/device/state
+
+Step 3 and 4 should complete after step 4, but they hang.
+
+  CPU#0               CPU#1                CPU#2
+  ---------------     ----------------     ----------------
+                                           Step 1: blocking device
+
+                                           Step 2: dd xxxx
+                                                  ^^^^^^ get request
+                                                         q_usage_counter++
+
+                      Step 3: switching scheculer
+                      elv_iosched_store
+                        elevator_switch
+                          blk_mq_freeze_queue
+                            blk_freeze_queue
+                              > blk_freeze_queue_start
+                                ^^^^^^ mq_freeze_depth++
+
+                              > blk_mq_run_hw_queues
+                                ^^^^^^ can't run queue when dev blocked
+
+                              > blk_mq_freeze_queue_wait
+                                ^^^^^^ Hang here!!!
+                                       wait q_usage_counter==0
+
+  Step 4: running device
+  store_state_field
+    scsi_rescan_device
+      scsi_attach_vpd
+        scsi_vpd_inquiry
+          __scsi_execute
+            blk_get_request
+              blk_mq_alloc_request
+                blk_queue_enter
+                ^^^^^^ Hang here!!!
+                       wait mq_freeze_depth==0
+
+    blk_mq_run_hw_queues
+    ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
+
+                            blk_mq_unfreeze_queue
+                            ^^^^^ mq_freeze_depth--
+
+To fix this, we need to run queue before rescanning device when the device
+state changes to SDEV_RUNNING.
+
+Link: https://lore.kernel.org/r/20210824025921.3277629-1-lijinlin3@huawei.com
+Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
+Signed-off-by: Qiu Laibin <qiulaibin@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/e1000e/ich8lan.c | 14 +++++++++++++-
- drivers/net/ethernet/intel/e1000e/ich8lan.h |  3 +++
- 2 files changed, 16 insertions(+), 1 deletion(-)
+ drivers/scsi/scsi_sysfs.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.c b/drivers/net/ethernet/intel/e1000e/ich8lan.c
-index 7998a73b6a0f..fbad77450725 100644
---- a/drivers/net/ethernet/intel/e1000e/ich8lan.c
-+++ b/drivers/net/ethernet/intel/e1000e/ich8lan.c
-@@ -995,6 +995,8 @@ static s32 e1000_platform_pm_pch_lpt(struct e1000_hw *hw, bool link)
- {
- 	u32 reg = link << (E1000_LTRV_REQ_SHIFT + E1000_LTRV_NOSNOOP_SHIFT) |
- 	    link << E1000_LTRV_REQ_SHIFT | E1000_LTRV_SEND;
-+	u16 max_ltr_enc_d = 0;	/* maximum LTR decoded by platform */
-+	u16 lat_enc_d = 0;	/* latency decoded */
- 	u16 lat_enc = 0;	/* latency encoded */
- 
- 	if (link) {
-@@ -1048,7 +1050,17 @@ static s32 e1000_platform_pm_pch_lpt(struct e1000_hw *hw, bool link)
- 				     E1000_PCI_LTR_CAP_LPT + 2, &max_nosnoop);
- 		max_ltr_enc = max_t(u16, max_snoop, max_nosnoop);
- 
--		if (lat_enc > max_ltr_enc)
-+		lat_enc_d = (lat_enc & E1000_LTRV_VALUE_MASK) *
-+			     (1U << (E1000_LTRV_SCALE_FACTOR *
-+			     ((lat_enc & E1000_LTRV_SCALE_MASK)
-+			     >> E1000_LTRV_SCALE_SHIFT)));
-+
-+		max_ltr_enc_d = (max_ltr_enc & E1000_LTRV_VALUE_MASK) *
-+				 (1U << (E1000_LTRV_SCALE_FACTOR *
-+				 ((max_ltr_enc & E1000_LTRV_SCALE_MASK)
-+				 >> E1000_LTRV_SCALE_SHIFT)));
-+
-+		if (lat_enc_d > max_ltr_enc_d)
- 			lat_enc = max_ltr_enc;
+--- a/drivers/scsi/scsi_sysfs.c
++++ b/drivers/scsi/scsi_sysfs.c
+@@ -788,12 +788,15 @@ store_state_field(struct device *dev, st
+ 	ret = scsi_device_set_state(sdev, state);
+ 	/*
+ 	 * If the device state changes to SDEV_RUNNING, we need to
+-	 * rescan the device to revalidate it, and run the queue to
+-	 * avoid I/O hang.
++	 * run the queue to avoid I/O hang, and rescan the device
++	 * to revalidate it. Running the queue first is necessary
++	 * because another thread may be waiting inside
++	 * blk_mq_freeze_queue_wait() and because that call may be
++	 * waiting for pending I/O to finish.
+ 	 */
+ 	if (ret == 0 && state == SDEV_RUNNING) {
+-		scsi_rescan_device(dev);
+ 		blk_mq_run_hw_queues(sdev->request_queue, true);
++		scsi_rescan_device(dev);
  	}
+ 	mutex_unlock(&sdev->state_mutex);
  
-diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.h b/drivers/net/ethernet/intel/e1000e/ich8lan.h
-index 1502895eb45d..e757896287eb 100644
---- a/drivers/net/ethernet/intel/e1000e/ich8lan.h
-+++ b/drivers/net/ethernet/intel/e1000e/ich8lan.h
-@@ -274,8 +274,11 @@
- 
- /* Latency Tolerance Reporting */
- #define E1000_LTRV			0x000F8
-+#define E1000_LTRV_VALUE_MASK		0x000003FF
- #define E1000_LTRV_SCALE_MAX		5
- #define E1000_LTRV_SCALE_FACTOR		5
-+#define E1000_LTRV_SCALE_SHIFT		10
-+#define E1000_LTRV_SCALE_MASK		0x00001C00
- #define E1000_LTRV_REQ_SHIFT		15
- #define E1000_LTRV_NOSNOOP_SHIFT	16
- #define E1000_LTRV_SEND			(1 << 30)
--- 
-2.30.2
-
 
 
