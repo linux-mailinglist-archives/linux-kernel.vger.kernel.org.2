@@ -2,121 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95BF83FD62D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACEFB3FD631
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243397AbhIAJIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:08:36 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57120 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239862AbhIAJIf (ORCPT
+        id S243412AbhIAJIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:08:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56625 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243394AbhIAJIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:08:35 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CE290202A3;
-        Wed,  1 Sep 2021 09:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630487257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Wed, 1 Sep 2021 05:08:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630487272;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=z3jeCbfsUFcHiHKv3bA+MeCKvFKq2zsYwKYFQ0RSEWc=;
-        b=LteYd9tBQXEEtiYmRamrsRzXsxjk4Vsh/7J2d0zl2ORjaIunNKsSOFLceM2zfp6nnoJMZM
-        dDl29fP4Yd80K7AKv+xhpXPu4qJsLqcOOXlSB7Pr85ltnE/IIsXMERRY0rqd+x3KSKgNH7
-        zPTFXBiLlFD/Q5UE1CZb2QSPIXoM36M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630487257;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z3jeCbfsUFcHiHKv3bA+MeCKvFKq2zsYwKYFQ0RSEWc=;
-        b=78P8IW8OTZR4dAREobDMk3MfpLxLVNXiC2Gru0i8OFNeN3OOThY07xHRG8tVXuHqxCj5F4
-        IDovntQgOskonJCw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id ADD2713A41;
-        Wed,  1 Sep 2021 09:07:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id EskUKdlCL2FoFQAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Wed, 01 Sep 2021 09:07:37 +0000
-Message-ID: <f425e27a-8f4a-7687-589e-b726085c5c7a@suse.cz>
-Date:   Wed, 1 Sep 2021 11:07:37 +0200
+        bh=pC5DFZzc9UewsBvUzJjXQABLpwkycaRX2qmvMdvRQvg=;
+        b=RI15EVFEjUgWbkqwtdyNbBu9F8gxydws/cFpnA7nK12tnoEckrz7c4BgWk8YVHM464dQ7o
+        buF2cjsrKh/6I5eUD2NMLwQt7eOSYYCzgPtZA0SJBTQAIu2IIvs6KbawwFPkJ/ZYaRKrDa
+        uBZDBn9/GN42s7urRmI69w37VPcTqG8=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-591-0-8-fRR-PSaTbA3J45QWzA-1; Wed, 01 Sep 2021 05:07:51 -0400
+X-MC-Unique: 0-8-fRR-PSaTbA3J45QWzA-1
+Received: by mail-lf1-f69.google.com with SMTP id bi21-20020a0565120e9500b003df0c58083fso787789lfb.16
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:07:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pC5DFZzc9UewsBvUzJjXQABLpwkycaRX2qmvMdvRQvg=;
+        b=ViOeora+BJunWAlKfvSAn0llF/T32RXTA35CW0Tc29oJ0+o7MF1l6vuMRfSVhFV9UG
+         m/JltvJHBmalPZJ/47PqLbIBZrSxkz2hVJ/wGydMxMczZ7MUiOjLwWW5DsdNr2m63Ip6
+         WtxufTeK8dH9MLDpyJR4J6h4GqAtefcQdRPJmEeRPeNaLVbawHBHRnBf4faPF0CbWoEl
+         2srjHwFMqFqadrKwGz0/5z7kfcKogscw3p02+9TKjXxr6UlYe3YJi4CQn5ayr3GAezZx
+         rOAS62X8pWKaTLcDuOiEYSMZ1n5TAYZoId12cheozmiHf4NJ9+6NLL+4VbTlTYO0WYyr
+         4LTg==
+X-Gm-Message-State: AOAM533Bp2SjcvW1/3ZcmkcOkxZ2Y+QhHI/G9s1oUJA309JF72hceGn3
+        FoBgY75d+Fjpiz9bfleogpeGaarw+bw/O7a7YG1e6gsKk1W26XkfuvO6lvvzrYsv0bep3Y85Crk
+        k3cjYxgtvuUptF2CZCtn8y2npqEXBbGNlkKBjzUaV
+X-Received: by 2002:ac2:5f99:: with SMTP id r25mr24899368lfe.119.1630487269831;
+        Wed, 01 Sep 2021 02:07:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzCjlIr93XXbKArF0PJ73dglUAoKTqvfHM73COi+OYKKLISM5JVJXEYtGbt4lUK6eOmo4eqSWzqXe6z3Flhvvc=
+X-Received: by 2002:ac2:5f99:: with SMTP id r25mr24899355lfe.119.1630487269593;
+ Wed, 01 Sep 2021 02:07:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Content-Language: en-US
-To:     Imran Khan <imran.f.khan@oracle.com>, geert@linux-m68k.org,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Alexander Potapenko <glider@google.com>
-References: <20210901051914.971603-1-imran.f.khan@oracle.com>
- <20210901051914.971603-3-imran.f.khan@oracle.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC PATCH 2/2] lib, stackdepot: Add helper to print stack
- entries.
-In-Reply-To: <20210901051914.971603-3-imran.f.khan@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20210825051710.GA5358@xsang-OptiPlex-9020> <cf358b73cbda90fd6c023f3a59a8df94698cf0bc.camel@kernel.org>
+ <20210901030357.GD14661@xsang-OptiPlex-9020>
+In-Reply-To: <20210901030357.GD14661@xsang-OptiPlex-9020>
+From:   Murphy Zhou <xzhou@redhat.com>
+Date:   Wed, 1 Sep 2021 17:07:38 +0800
+Message-ID: <CALWRkkhxg7pyL7yagJzdBarfkEc70q8te-xy2-LAAqrJu3Lw+w@mail.gmail.com>
+Subject: Re: [LTP] [fs] f7e33bdbd6: ltp.ftruncate04_64.fail
+To:     Oliver Sang <oliver.sang@intel.com>
+Cc:     Jeff Layton <jlayton@kernel.org>, lkp@lists.01.org,
+        LKML <linux-kernel@vger.kernel.org>, ltp@lists.linux.it,
+        lkp@intel.com, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/21 07:19, Imran Khan wrote:
-> To print a stack entries, users of stackdepot, first
-> use stack_depot_fetch to get a list of stack entries
-> and then use stack_trace_print to print this list.
-> Provide a helper in stackdepot to print stack entries
-> based on stackdepot handle.
-> 
-> Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
-> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+In my test, CONFIG_MANDATORY_FILE_LOCKING is not set.
 
-You should convert existing users together with the patch that introduces
-the helper. I think print_stack() in mm/kasan/report.c, and
-__dump_page_owner() could use this.
+# mount(NULL, MNTPOINT, NULL, MS_REMOUNT|MS_MANDLOCK, NULL);
 
-> ---
->  lib/stackdepot.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
+But the mount call in setup() returns 0, with setting errno to EFAULT.
 
-It's missing a declaration in include/linux/stackdepot.h
-Perhaps it could be all be a static inline there anyway.
+This testcase needs some tweaking to have an accurate verdict about manlock.
 
-> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> index 1d42ef9ef766..eab4476b060b 100644
-> --- a/lib/stackdepot.c
-> +++ b/lib/stackdepot.c
-> @@ -214,6 +214,23 @@ static inline struct stack_record *find_stack(struct stack_record *bucket,
->  	return NULL;
->  }
->  
-> +/**
-> + * stack_depot_print - print stack entries from a depot
-> + *
-> + * @handle:		Stack depot handle which was returned from
-> + *			stack_depot_save().
-> + *
-> + */
-> +void stack_depot_print(depot_stack_handle_t stack)
-> +{
-> +	unsigned long *entries;
-> +	unsigned int nr_entries;
-> +
-> +	nr_entries = stack_depot_fetch(stack, &entries);
-> +	stack_trace_print(entries, nr_entries, 0);
-> +}
-> +EXPORT_SYMBOL_GPL(stack_depot_print);
-> +
->  /**
->   * stack_depot_fetch - Fetch stack entries from a depot
->   *
-> 
+The kernel return value for mount looks buggy too.
+
+On Wed, Sep 1, 2021 at 10:46 AM Oliver Sang <oliver.sang@intel.com> wrote:
+>
+> Hi Jeff,
+>
+> On Wed, Aug 25, 2021 at 06:32:38AM -0400, Jeff Layton wrote:
+> > On Wed, 2021-08-25 at 13:17 +0800, kernel test robot wrote:
+> > >
+> > > Greeting,
+> > >
+> > > FYI, we noticed the following commit (built with gcc-9):
+> > >
+> > > commit: f7e33bdbd6d1bdf9c3df8bba5abcf3399f957ac3 ("fs: remove mandatory file locking support")
+> > > https://git.kernel.org/cgit/linux/kernel/git/jlayton/linux.git locks-next
+> > >
+> > >
+> > > in testcase: ltp
+> > > version: ltp-x86_64-14c1f76-1_20210821
+> > > with following parameters:
+> > >
+> > >     disk: 1HDD
+> > >     fs: ext4
+> > >     test: syscalls-07
+> > >     ucode: 0xe2
+> > >
+> > > test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+> > > test-url: http://linux-test-project.github.io/
+> > >
+> > >
+> > > on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
+> > >
+> > > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > >
+> > >
+> > >
+> >
+> > [...]
+> >
+> > > <<<test_start>>>
+> > > tag=ftruncate04_64 stime=1629792639
+> > > cmdline="ftruncate04_64"
+> > > contacts=""
+> > > analysis=exit
+> > > <<<test_output>>>
+> > > tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+> > > tst_test.c:916: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+> > > mke2fs 1.44.5 (15-Dec-2018)
+> > > tst_test.c:1348: TINFO: Timeout per run is 0h 25m 00s
+> > > ftruncate04.c:116: TINFO: Child locks file
+> > > ftruncate04.c:49: TFAIL: ftruncate() offset before lock succeeded unexpectedly
+> > > ftruncate04.c:49: TFAIL: ftruncate() offset in lock succeeded unexpectedly
+> > > ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
+> > > ftruncate04.c:127: TINFO: Child unlocks file
+> > > ftruncate04.c:84: TPASS: ftruncate() offset in lock succeded
+> > > ftruncate04.c:84: TPASS: ftruncate() offset before lock succeded
+> > > ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
+> > >
+> > > Summary:
+> > > passed   4
+> > > failed   2
+> > > broken   0
+> > > skipped  0
+> > > warnings 0
+> >
+> > I think this failed because of the above, which is expected now that we
+> > ignore the "mand" mount option (and mandatory locking support is gone).
+> >
+> > Oliver, you may need to update the expected test output for this test.
+>
+> Thanks for the information! we will do the corresponding change ASAP
+>
+> >
+> > Thanks,
+> > --
+> > Jeff Layton <jlayton@kernel.org>
+> >
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+>
 
