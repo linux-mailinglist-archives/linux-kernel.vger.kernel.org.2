@@ -2,121 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097ED3FD3FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 08:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E863FD403
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 08:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242377AbhIAGwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 02:52:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242018AbhIAGvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 02:51:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1972761026;
-        Wed,  1 Sep 2021 06:50:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630479059;
-        bh=nuifr3ris37q+Y5JGJfMUBRYEWniYo1DWffXeGtMmxU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=i9IqqT94pUcFlO/OH1o/g+x3IP8QKvFP9vtmlNJi04OuOuwUtMcllybisPsv0bF4o
-         T9R2fydFMFBOoQ4IQgBz7fMeHlX9/ubAdGzcDRFAnaMPlavofriJ1ZT+cIGEqEkXOy
-         JutgAwBM1B2EsIfywt6295cr+1GvGqClzkZe9bSifF4OqkrVsGrvyHy04dKt//f5l3
-         86ChPbHsHmSltPolXxnezMyL8jKzZ4d4jIwObwQ+mPivabAtgSVhjVh0P0FuxE3mJ/
-         0hUnSdxyfGck+zSg963UtENyWzQwQjaO0ydVW4LxxbryM7XLfaV7IbvHhZdIE7KZ9g
-         Ekz23d3r1dy8g==
-Received: by mail-oi1-f173.google.com with SMTP id n27so2646589oij.0;
-        Tue, 31 Aug 2021 23:50:59 -0700 (PDT)
-X-Gm-Message-State: AOAM533+Xifd2xNoXxwcb7Vmap4GH/mhiIU/0vv8ptU53R4Fou6kOM/Y
-        tmVQc6D5fan8GQSiLOBh5iF/efGtCUl1jNp7EM0=
-X-Google-Smtp-Source: ABdhPJyNLgCZp34W88Uie1F+sI5ioPLOVxDGAn9K5700mn+kYeeNw0qY9yRJOgR99xJKKif2ULpG7mguhuhucd6g+EY=
-X-Received: by 2002:aca:eb97:: with SMTP id j145mr6118513oih.33.1630479058436;
- Tue, 31 Aug 2021 23:50:58 -0700 (PDT)
+        id S242407AbhIAGxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 02:53:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37744 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242381AbhIAGx2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 02:53:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630479152;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sS+ENc/4EvCCf2zYfOqIzQcGTVPDUUcKwCPkNAq9cUI=;
+        b=RYFom7Sg4ICvHbInMaklbLildyPBgpCrujyWUVkGfXiR2UcOHQhTe9KNeak5Gi45R0FY8J
+        DiCRh2+Dv03hRa8Lkil39FzCC0cY17DunthWvJDQdlBTEvjPvqJOiRRK/FxgcuFgH26CwI
+        1vULeiN5KTgv59rhaClZo7tgLopHEmA=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-481-axRPtqn0OPmD0p0ASS9pkw-1; Wed, 01 Sep 2021 02:52:31 -0400
+X-MC-Unique: axRPtqn0OPmD0p0ASS9pkw-1
+Received: by mail-pg1-f197.google.com with SMTP id v21-20020a63d5550000b029023c8042ce63so1167707pgi.8
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 23:52:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=sS+ENc/4EvCCf2zYfOqIzQcGTVPDUUcKwCPkNAq9cUI=;
+        b=HAEgY4ZdSZC+RtttIiYZOkS6x/H+PZYeWRKXcacVJuxrml1BoGysrA5Jj6qrmjEYcY
+         ykiUwSPjt+Ah40vef6vjtco9Sg3ADT41SD2UasDXP0sFgvYRpiXaQql7dpTg4nITW0mt
+         s+ctr/U7Cn23SPWORcT/w/Aw7IboIqt2K3/q2dSsvY+tnX5pbVnY3OCjs7sXrlbqgkzI
+         fiUUy9cpyDwb1/+bO4GPse/oigyeSI6Fl2tf+DjPFxcdHddXHwnD/ipxNZyp78PCdYA2
+         s6XQLlUSbSWQGJdun0XWO4GlbfF+JTeD99oOAVz1Jh9x1xMpuoNCyDM/BMcWAVWwPwYI
+         wL1w==
+X-Gm-Message-State: AOAM533ktM4kgjJO/f3u53+l/1cfLo4MVe1hQxVifuv5AtUylLCZPp1/
+        5wQ45VarbL/6D3diKqQtWzsmnT6Gy2XpCh4N6W42YxG7KFasX3+1mrHzV5XHIUm0jtHLA40HgOa
+        U6/xnoIeVsap1ANI1pfVVBCmrRThV3ZIVu2j4CWtqt0Hv3mQenlEYVkgO6rTo5sW54vEbkFS9KO
+        yM
+X-Received: by 2002:a17:90a:29a6:: with SMTP id h35mr9935673pjd.188.1630479150044;
+        Tue, 31 Aug 2021 23:52:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw4M3DXDMra5cGnJcANgV7r3NSOaqkzwzYcCrm2jEsJTplrnszIxVJ/2Amugs0pRJMh26FPwA==
+X-Received: by 2002:a17:90a:29a6:: with SMTP id h35mr9935634pjd.188.1630479149555;
+        Tue, 31 Aug 2021 23:52:29 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id u24sm21205082pfm.81.2021.08.31.23.52.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 23:52:29 -0700 (PDT)
+Subject: Re: [RFC PATCH 1/3] drivers/net/virtio_net: Fixed vheader to use v1.
+To:     Andrew Melnychenko <andrew@daynix.com>, mst@redhat.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210818175440.128691-1-andrew@daynix.com>
+ <20210818175440.128691-2-andrew@daynix.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <65fe6644-bccd-00aa-7c72-53da385bd47e@redhat.com>
+Date:   Wed, 1 Sep 2021 14:52:20 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <163014706409.25758.9928933953235257712.tip-bot2@tip-bot2>
- <d18d2c6fd87f552def3210930da34fd276b4fd6d.camel@perches.com>
- <CAMj1kXGhnzwP2OP=ECwNK4sG383wvmybCbvUz5YrqNUHSPgOBQ@mail.gmail.com> <44c6c9b3-bade-41ab-2166-b4cd1ed97408@arm.com>
-In-Reply-To: <44c6c9b3-bade-41ab-2166-b4cd1ed97408@arm.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 1 Sep 2021 08:50:47 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGs36bL111qfv8HsOxuZ_GAHTkCSij7qzp7E_mprk=EgQ@mail.gmail.com>
-Message-ID: <CAMj1kXGs36bL111qfv8HsOxuZ_GAHTkCSij7qzp7E_mprk=EgQ@mail.gmail.com>
-Subject: Re: [tip: efi/core] efi: cper: fix scnprintf() use in cper_mem_err_location()
-To:     James Morse <james.morse@arm.com>
-Cc:     Joe Perches <joe@perches.com>, Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210818175440.128691-2-andrew@daynix.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 at 18:02, James Morse <james.morse@arm.com> wrote:
->
-> Hi guys,
->
-> On 28/08/2021 13:18, Ard Biesheuvel wrote:
-> > (add RAS/APEI folks)
-> >
-> > On Sat, 28 Aug 2021 at 13:31, Joe Perches <joe@perches.com> wrote:
-> >>
-> >> On Sat, 2021-08-28 at 10:37 +0000, tip-bot2 for Rasmus Villemoes wrote:
-> >>> The following commit has been merged into the efi/core branch of tip:
-> >> []
-> >>> efi: cper: fix scnprintf() use in cper_mem_err_location()
-> >>>
-> >>> The last two if-clauses fail to update n, so whatever they might have
-> >>> written at &msg[n] would be cut off by the final nul-termination.
-> >>>
-> >>> That nul-termination is redundant; scnprintf(), just like snprintf(),
-> >>> guarantees a nul-terminated output buffer, provided the buffer size is
-> >>> positive.
-> >>>
-> >>> And there's no need to discount one byte from the initial buffer;
-> >>> vsnprintf() expects to be given the full buffer size - it's not going
-> >>> to write the nul-terminator one beyond the given (buffer, size) pair.
-> >> []
-> >>> diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-> >> []
-> >>> @@ -221,7 +221,7 @@ static int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
-> >>>               return 0;
-> >>>
-> >>>
-> >>>       n = 0;
-> >>> -     len = CPER_REC_LEN - 1;
-> >>> +     len = CPER_REC_LEN;
-> >>>       if (mem->validation_bits & CPER_MEM_VALID_NODE)
-> >>>               n += scnprintf(msg + n, len - n, "node: %d ", mem->node);
-> >>>       if (mem->validation_bits & CPER_MEM_VALID_CARD)
-> >>
-> >> [etc...]
-> >>
-> >> Is this always single threaded?
-> >>
-> >> It doesn't seem this is safe for reentry as the output buffer
-> >> being written into is a single static
-> >>
-> >> static char rcd_decode_str[CPER_REC_LEN];
->
-> > Good question. CPER error record decoding typically occurs in response
-> > to an error event raised by firmware, so I think this happens to work
-> > fine in practice. Whether this is guaranteed, I'm not so sure ...
->
-> There is locking to prevent concurrent access to the firmware buffer, but that only
-> serialises the CPER records being copied. The printing may happen in parallel on different
-> CPUs if there are multiple errors.
->
-> cper_estatus_print() is called in NMI context if an NMI indicates a fatal error. See
-> __ghes_panic().
->
 
-OK, better to fix it then - there does not seem to be a good reason
-for using a buffer in BSS here anyway.
+在 2021/8/19 上午1:54, Andrew Melnychenko 写道:
+> The header v1 provides additional info about RSS.
+> Added changes to computing proper header length.
+> In the next patches, the header may contain RSS hash info
+> for the hash population.
+>
+> Signed-off-by: Andrew Melnychenko <andrew@daynix.com>
+> ---
+>   drivers/net/virtio_net.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 56c3f8519093..85427b4f51bc 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -240,13 +240,13 @@ struct virtnet_info {
+>   };
+>   
+>   struct padded_vnet_hdr {
+> -	struct virtio_net_hdr_mrg_rxbuf hdr;
+> +	struct virtio_net_hdr_v1_hash hdr;
+>   	/*
+>   	 * hdr is in a separate sg buffer, and data sg buffer shares same page
+>   	 * with this header sg. This padding makes next sg 16 byte aligned
+>   	 * after the header.
+>   	 */
+> -	char padding[4];
+> +	char padding[12];
+>   };
 
-I'll send out a patch.
 
-Thanks,
-Ard.
+So we had:
+
+         if (vi->mergeable_rx_bufs)
+                 hdr_padded_len = sizeof(*hdr);
+         else
+                 hdr_padded_len = sizeof(struct padded_vnet_hdr);
+
+I wonder if it's better to add one ore condition for the hash header 
+instead of enforcing it even if it was not negotiated.
+
+
+>   
+>   static bool is_xdp_frame(void *ptr)
+> @@ -1258,7 +1258,7 @@ static unsigned int get_mergeable_buf_len(struct receive_queue *rq,
+>   					  struct ewma_pkt_len *avg_pkt_len,
+>   					  unsigned int room)
+>   {
+> -	const size_t hdr_len = sizeof(struct virtio_net_hdr_mrg_rxbuf);
+> +	const size_t hdr_len = ((struct virtnet_info *)(rq->vq->vdev->priv))->hdr_len;
+>   	unsigned int len;
+>   
+>   	if (room)
+> @@ -1642,7 +1642,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+>   	const unsigned char *dest = ((struct ethhdr *)skb->data)->h_dest;
+>   	struct virtnet_info *vi = sq->vq->vdev->priv;
+>   	int num_sg;
+> -	unsigned hdr_len = vi->hdr_len;
+> +	unsigned int hdr_len = vi->hdr_len;
+
+
+Looks like an unnecessary change.
+
+
+>   	bool can_push;
+>   
+>   	pr_debug("%s: xmit %p %pM\n", vi->dev->name, skb, dest);
+> @@ -2819,7 +2819,7 @@ static void virtnet_del_vqs(struct virtnet_info *vi)
+>    */
+>   static unsigned int mergeable_min_buf_len(struct virtnet_info *vi, struct virtqueue *vq)
+>   {
+> -	const unsigned int hdr_len = sizeof(struct virtio_net_hdr_mrg_rxbuf);
+> +	const unsigned int hdr_len = vi->hdr_len;
+
+
+I think the change here and get_mergeable_buf_len() should be a separate 
+patch.
+
+Thanks
+
+
+>   	unsigned int rq_size = virtqueue_get_vring_size(vq);
+>   	unsigned int packet_len = vi->big_packets ? IP_MAX_MTU : vi->dev->max_mtu;
+>   	unsigned int buf_len = hdr_len + ETH_HLEN + VLAN_HLEN + packet_len;
+
