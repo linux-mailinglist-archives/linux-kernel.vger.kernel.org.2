@@ -2,185 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3E33FE454
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4493FE457
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243402AbhIAU5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 16:57:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31187 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238818AbhIAU5c (ORCPT
+        id S243159AbhIAU54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 16:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238818AbhIAU5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 16:57:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630529794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wyvbaiG0U5DtzGIoOe88A1mEk7hd6gPkepgpidPNJQ0=;
-        b=MbCsp2yRNzBOfuLQRdHbd1btzQDBBYGxphPRR9d+oURAcRdjn5JBJ6KutjeuJ1AOdJiCLP
-        BQZTc1Mu1GWKgw8rkGkMYd2aweyGUWOdOeeLNcRTSxIW20rUJEtnKN6vuoFwfgzK2SMDZP
-        xm91vZ6IVPZqaFq/B9MT8nETTdHtJ/A=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-54-D6TkGEtrNC-TOIrQUXP-ZA-1; Wed, 01 Sep 2021 16:56:34 -0400
-X-MC-Unique: D6TkGEtrNC-TOIrQUXP-ZA-1
-Received: by mail-qk1-f198.google.com with SMTP id 21-20020a370815000000b003d5a81a4d12so867117qki.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:56:33 -0700 (PDT)
+        Wed, 1 Sep 2021 16:57:54 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCC3C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 13:56:57 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id r4so1271206ybp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:56:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L0G6R62N1gO7DOjfEZAPNKqynBW5XZ5XNt6xZIMqank=;
+        b=u4SEUsyX5hLbDNCYJrkK/Dq3ED5N6gzAoGqvPapHzprtM++i9ndf4lKuBAebuB3Xif
+         VZH3nWhY/dR+Zs4fJg4ZZ6PoJ+tnml+weetYIwbOsyjJNbfwVCwsxvQaeXOrN7paZlo/
+         vo5HRCSvtQ+mZgOd7pOwxXVXqGjVEbZNfbSow13HA2/Eq+58R82NmEKWnd4uArDPHtWw
+         z0H1hH0zf19jG8Cs5DHbQR06BHcK+vrSD6lfIL8T7TmlXILI9qVAmsOP2nIQIlSXVDfG
+         lTwOR4y7cyiLt4m8gld7ZI9Kj+iZS1kSOOKp4b6cyN567suVGHJLacrMqiRuxIevaT4o
+         O3oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wyvbaiG0U5DtzGIoOe88A1mEk7hd6gPkepgpidPNJQ0=;
-        b=qVOlN76fXo20f+cjz3JnW5U/GwgKVoeILM6948RMH4ebPNJVwTBqBz+sB1eLFJtHtj
-         AxXv08AxsfD1LwdY+k04sqdb0RhYTeevUUPMXZ25HjrdTgtbdCkYiedfFo54ZXoMXHMQ
-         8HuhYCauNEt8dznSurW2h3zx0CGH4wWJmgZHHZ6fF6DBFXOqiVzV6pK0cUNEXCdeXPq/
-         1xbeESE8ZeF+leVZjTMsJ/f3OgAqHumun3lwOZpTv2rpAzZVr5bl3QfNK1hiVuNe6t5O
-         CgtGoZEJTpDZI4CAzSpLt4BiALMa+4P67WgOIr6lUjb5fdqUlwkEulJh9kSFbVPKRzA3
-         51VA==
-X-Gm-Message-State: AOAM530vUwcpi5pENRRzmRnou2noqz/z63g9Aqzq6K7aguvJQDjEzRpf
-        F5P41VwcwTcRMReHsnJrnf3rHPks8Z9wepLQSXU+DMJAUlL9Q/nkerGCHGGEE6jpy32AmzibrLZ
-        ppZBjC3vi41ubE44Qm5Tzt1Ytp74yRawIDnUjC1lD3hrP+wN5A0p+aTlp9V7cvqg9TOTGzK0MOQ
-        ==
-X-Received: by 2002:ac8:4d90:: with SMTP id a16mr1427483qtw.190.1630529792166;
-        Wed, 01 Sep 2021 13:56:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzA6t7HDUB1HpglkSgCMBRTVio39DwymdQJ8VWpp6mifRs9LMiBKPHS8XxadRgIFxFNScBadw==
-X-Received: by 2002:ac8:4d90:: with SMTP id a16mr1427452qtw.190.1630529791909;
-        Wed, 01 Sep 2021 13:56:31 -0700 (PDT)
-Received: from t490s.redhat.com ([2607:fea8:56a3:500::ad7f])
-        by smtp.gmail.com with ESMTPSA id f3sm624865qti.65.2021.09.01.13.56.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 13:56:31 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>, peterx@redhat.com,
-        Jerome Glisse <jglisse@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>
-Subject: [PATCH 3/5] mm: Drop first_index/last_index in zap_details
-Date:   Wed,  1 Sep 2021 16:56:20 -0400
-Message-Id: <20210901205622.6935-4-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210901205622.6935-1-peterx@redhat.com>
-References: <20210901205622.6935-1-peterx@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L0G6R62N1gO7DOjfEZAPNKqynBW5XZ5XNt6xZIMqank=;
+        b=YYVUbrP7IyL+2xqOV30N8ti0EZrTgnz6xXVtBSjvbo3UwvG3cgxYc7ZMtCNn0zgnIM
+         /36yQkAK7eEWoIUdUp4DZUMSkUaDHBRE3PKPtrLuCmEIzrf6VwnsYQAnXE0ldo+Zu+m3
+         CSn8+z8ZXwFuvTNa2fVbb5tXLottkTXJD2GNGr8zRbs802ZN3BhYCGjcV3h3r28qm03h
+         5m6tV0kLop69H0Qs9S9B7T4ex9WRguLn31qrulQlqDnrjWvM1wGRDZTkXulydlpvhioc
+         4U8Smuzh4dBCRKg00qxs7ynCuFZpAV/VM2wfnTQLb+5GvmbWgtALSG662TKhK1dBrrz/
+         p5Sg==
+X-Gm-Message-State: AOAM531s1uWAIj1petjZxUKKOXrlkTJqBnFCCQQpZlWhh/0l2bZVkz+X
+        KpRDy1iuwUz7yrtrXnRe2cR4/UWrsRGojcdfHqAoig==
+X-Google-Smtp-Source: ABdhPJzF7Zt72N0YmUtW1wz8l2WyJWxKJcMNBmyngHxWM/3Tu2UpcRUGekYR0bcdcfaQBUAjDifDWgmEvC0bo9QmANc=
+X-Received: by 2002:a25:6746:: with SMTP id b67mr2325216ybc.96.1630529816125;
+ Wed, 01 Sep 2021 13:56:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210831102125.624661-1-ulf.hansson@linaro.org>
+ <CAGETcx868QWj0jMJ+U-eL62jT-LO_LTOw5EcwEKptfFOVa=A5A@mail.gmail.com> <CAPDyKFopTW=ZoB9FYJ-ozRZTnJDTT_gFtz0XDiU-weYb1Q9bkQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFopTW=ZoB9FYJ-ozRZTnJDTT_gFtz0XDiU-weYb1Q9bkQ@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 1 Sep 2021 13:56:20 -0700
+Message-ID: <CAGETcx_e7kCQ_0yC9=k1jzjJJEqdOMuA=JkD81=2-Nb4fcS0+w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] of: property: fw_devlink: Rename 'node_not_dev' to 'optional_con_dev'
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>, DTML <devicetree@vger.kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first_index/last_index parameters in zap_details are actually only used in
-unmap_mapping_range_tree().  At the meantime, this function is only called by
-unmap_mapping_pages() once.  Instead of passing these two variables through the
-whole stack of page zapping code, remove them from zap_details and let them
-simply be parameters of unmap_mapping_range_tree(), which is inlined.
+On Wed, Sep 1, 2021 at 12:45 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Tue, 31 Aug 2021 at 19:31, Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Tue, Aug 31, 2021 at 3:21 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > In the struct supplier_bindings the member 'node_not_dev' is described as
+> > > "The consumer node containing the property is never a device.", but that
+> > > doesn't match the behaviour of the code in of_link_property().
+> > >
+> > > To make the behaviour consistent with the description, let's rename the
+> > > member to "optional_con_dev" and clarify the corresponding comment.
+> > >
+> > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > ---
+> > >  drivers/of/property.c | 9 +++++----
+> > >  1 file changed, 5 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > > index 6c028632f425..2babb1807228 100644
+> > > --- a/drivers/of/property.c
+> > > +++ b/drivers/of/property.c
+> > > @@ -1249,7 +1249,8 @@ static struct device_node *parse_##fname(struct device_node *np,       \
+> > >   * @parse_prop.index: For properties holding a list of phandles, this is the
+> > >   *                   index into the list
+> > >   * @optional: Describes whether a supplier is mandatory or not
+> > > - * @node_not_dev: The consumer node containing the property is never a device.
+> > > + * @optional_con_dev: The consumer node containing the property may not be a
+> > > + *                   device, then try finding one from an ancestor node.
+> >
+> > Nak. This flag is not about "may not be". This is explicitly for
+> > "never a device". It has to do with stuff like remote-endpoint which
+> > is never listed under the root node of the device node. Your
+> > documentation change is changing the meaning of the flag.
+>
+> Okay, fair enough.
+>
+> Although, as stated in the commit message this isn't the way code
+> behaves. Shouldn't we at least make the behaviour consistent with the
+> description of the 'node_not_dev' flag?
 
-Reviewed-by: Alistair Popple <apopple@nvidia.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- include/linux/mm.h |  2 --
- mm/memory.c        | 29 ++++++++++++++++-------------
- 2 files changed, 16 insertions(+), 15 deletions(-)
+I know what you mean, but if you use the flag correctly (where the
+phandle pointed to will never be a device with compatible property),
+the existing code would work correctly. And since the flag is relevant
+only in this file, it's easy to keep it correct. I'd just leave it as
+is.
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 7ca22e6e694a..69259229f090 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1721,8 +1721,6 @@ extern void user_shm_unlock(size_t, struct ucounts *);
-  */
- struct zap_details {
- 	struct address_space *check_mapping;	/* Check page->mapping if set */
--	pgoff_t	first_index;			/* Lowest page->index to unmap */
--	pgoff_t last_index;			/* Highest page->index to unmap */
- 	struct page *single_page;		/* Locked page to be unmapped */
- };
- 
-diff --git a/mm/memory.c b/mm/memory.c
-index 204141e8a53d..3b860f6a51ac 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3322,20 +3322,20 @@ static void unmap_mapping_range_vma(struct vm_area_struct *vma,
- }
- 
- static inline void unmap_mapping_range_tree(struct rb_root_cached *root,
-+					    pgoff_t first_index,
-+					    pgoff_t last_index,
- 					    struct zap_details *details)
- {
- 	struct vm_area_struct *vma;
- 	pgoff_t vba, vea, zba, zea;
- 
--	vma_interval_tree_foreach(vma, root,
--			details->first_index, details->last_index) {
--
-+	vma_interval_tree_foreach(vma, root, first_index, last_index) {
- 		vba = vma->vm_pgoff;
- 		vea = vba + vma_pages(vma) - 1;
--		zba = details->first_index;
-+		zba = first_index;
- 		if (zba < vba)
- 			zba = vba;
--		zea = details->last_index;
-+		zea = last_index;
- 		if (zea > vea)
- 			zea = vea;
- 
-@@ -3361,18 +3361,21 @@ void unmap_mapping_page(struct page *page)
- {
- 	struct address_space *mapping = page->mapping;
- 	struct zap_details details = { };
-+	pgoff_t	first_index, last_index;
- 
- 	VM_BUG_ON(!PageLocked(page));
- 	VM_BUG_ON(PageTail(page));
- 
-+	first_index = page->index;
-+	last_index = page->index + thp_nr_pages(page) - 1;
-+
- 	details.check_mapping = mapping;
--	details.first_index = page->index;
--	details.last_index = page->index + thp_nr_pages(page) - 1;
- 	details.single_page = page;
- 
- 	i_mmap_lock_write(mapping);
- 	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
--		unmap_mapping_range_tree(&mapping->i_mmap, &details);
-+		unmap_mapping_range_tree(&mapping->i_mmap, first_index,
-+					 last_index, &details);
- 	i_mmap_unlock_write(mapping);
- }
- 
-@@ -3391,17 +3394,17 @@ void unmap_mapping_page(struct page *page)
- void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
- 		pgoff_t nr, bool even_cows)
- {
-+	pgoff_t	first_index = start, last_index = start + nr - 1;
- 	struct zap_details details = { };
- 
- 	details.check_mapping = even_cows ? NULL : mapping;
--	details.first_index = start;
--	details.last_index = start + nr - 1;
--	if (details.last_index < details.first_index)
--		details.last_index = ULONG_MAX;
-+	if (last_index < first_index)
-+		last_index = ULONG_MAX;
- 
- 	i_mmap_lock_write(mapping);
- 	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
--		unmap_mapping_range_tree(&mapping->i_mmap, &details);
-+		unmap_mapping_range_tree(&mapping->i_mmap, first_index,
-+					 last_index, &details);
- 	i_mmap_unlock_write(mapping);
- }
- 
--- 
-2.31.1
+-Saravana
 
+
+>
+> Along the lines of the below patch then?
+>
+> From: Ulf Hansson <ulf.hansson@linaro.org>
+> Date: Wed, 1 Sep 2021 09:28:03 +0200
+> Subject: [PATCH] of: property: fw_devlink: Fixup behaviour when 'node_not_dev'
+>  is set
+>
+> In the struct supplier_bindings the member 'node_not_dev' is described as
+> "The consumer node containing the property is never a device.", but that is
+> inconsistent with the behaviour of the code in of_link_property(), as it
+> calls of_get_compat_node() that starts parsing for a compatible property,
+> starting from the node it gets passed to it.
+>
+> Make the behaviour consistent with the description of the 'node_not_dev'
+> flag, by passing the parent node to of_get_compat_node() instead.
+>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>  drivers/of/property.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index 6c028632f425..16ee017884b8 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -1075,6 +1075,17 @@ static struct device_node
+> *of_get_compat_node(struct device_node *np)
+>         return np;
+>  }
+>
+> +static struct device_node *of_get_compat_node_parent(struct device_node *np)
+> +{
+> +       struct device_node *parent, *node;
+> +
+> +       parent = of_get_parent(np);
+> +       node = of_get_compat_node(parent);
+> +       of_node_put(parent);
+> +
+> +       return node;
+> +}
+> +
+>  /**
+>   * of_link_to_phandle - Add fwnode link to supplier from supplier phandle
+>   * @con_np: consumer device tree node
+> @@ -1416,7 +1427,7 @@ static int of_link_property(struct device_node
+> *con_np, const char *prop_name)
+>                         struct device_node *con_dev_np;
+>
+>                         con_dev_np = s->node_not_dev
+> -                                       ? of_get_compat_node(con_np)
+> +                                       ? of_get_compat_node_parent(con_np)
+>                                         : of_node_get(con_np);
+>                         matched = true;
+>                         i++;
+> --
+> 2.25.1
+>
+> [...]
+>
+> Kind regards
+> Uffe
