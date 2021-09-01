@@ -2,273 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913AD3FE0F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1383FE13A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345608AbhIARLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:11:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236271AbhIARLN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:11:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C839C61058;
-        Wed,  1 Sep 2021 17:10:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630516216;
-        bh=BeSjTyk8IACcdnvMjm5tLUlTS5W7wDTBRMg6jrANFuw=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=PdQElsi7VKnwDy88y+JdYK1So+Eu+TwJoL7hzyymopjEWpRiPjwEfAVF3LDSHvO2/
-         ZSBZT9dDyfeqjeil3NrwxlCywVnR0NPDFOgz53ARsvbH4BmQdFB2rLpElFKD+bAzvS
-         K1JclkPoKH4T4vhxs4Xht9T5hSPHbez4GcM0Y68o2P17l3ghjvt2kTb86YcJVblGpm
-         2teVT33ZeTO7ggBxsjx9zbBjBQfoH2onaYZmK+jOjrlzdq54CBCkDVPMz6vQbM/upm
-         acrao1ghIRgjgbfRm9jFRn5Q3ySiuGNrfPjQ+A1wPgl9ecLIgLDvdjxkH8jYSMo86l
-         1hO9oW1OWBfRA==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id F2B4D27C005A;
-        Wed,  1 Sep 2021 13:10:13 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute6.internal (MEProxy); Wed, 01 Sep 2021 13:10:13 -0400
-X-ME-Sender: <xms:8bMvYYpCXUaX87ZNfovzBsIL0l2kt7JSUBNSkM7Me_HUvu9XnZucrQ>
-    <xme:8bMvYepsqwqGedYrNcczCqPecCKz7T1v4Ucm7Fc4H84s7tIZgZlbl6yf-Ox9wE3JH
-    F1JnzRFP5wVGc4X_6Y>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedguddtlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieev
-    ieeufeevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
-    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
-    hugidrlhhuthhordhush
-X-ME-Proxy: <xmx:8bMvYdPz79kC1d4xlLxGp-fxRlsUj7XQa3VllBVc_CLVNwtlws4KRg>
-    <xmx:8bMvYf7OoWXSKdaBQHOJtSD25fDftaDl1B10amGjfXPDklZ4uSNRiQ>
-    <xmx:8bMvYX4aSfgupLti9k4CUV2OkdeLUig6Mm37FfqDyEe5A7LqokIvfA>
-    <xmx:9bMvYTOV_Vb3JvMrqUw14mvxrHOm4zjlHRd5bfeiRTkJohRGh5IbqwBr7yw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 62C92A002E4; Wed,  1 Sep 2021 13:10:09 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1126-g6962059b07-fm-20210901.001-g6962059b
-Mime-Version: 1.0
-Message-Id: <e7513990-47c9-478d-a636-f16caef62a60@www.fastmail.com>
-In-Reply-To: <37d70069-b59f-04c7-f9af-a08af18d0339@redhat.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
- <YSlkzLblHfiiPyVM@google.com>
- <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
- <YS6lIg6kjNPI1EgF@google.com>
- <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
- <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
- <37d70069-b59f-04c7-f9af-a08af18d0339@redhat.com>
-Date:   Wed, 01 Sep 2021 10:09:48 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "David Hildenbrand" <david@redhat.com>,
-        "Sean Christopherson" <seanjc@google.com>
-Cc:     "Paolo Bonzini" <pbonzini@redhat.com>,
-        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
-        "Wanpeng Li" <wanpengli@tencent.com>,
-        "Jim Mattson" <jmattson@google.com>,
-        "Joerg Roedel" <joro@8bytes.org>, "kvm list" <kvm@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Borislav Petkov" <bp@alien8.de>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Joerg Roedel" <jroedel@suse.de>,
-        "Andi Kleen" <ak@linux.intel.com>,
-        "David Rientjes" <rientjes@google.com>,
-        "Vlastimil Babka" <vbabka@suse.cz>,
-        "Tom Lendacky" <thomas.lendacky@amd.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        "Varad Gautam" <varad.gautam@suse.com>,
-        "Dario Faggioli" <dfaggioli@suse.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>, linux-mm@kvack.org,
-        linux-coco@lists.linux.dev,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        "Sathyanarayanan Kuppuswamy" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Yu Zhang" <yu.c.zhang@linux.intel.com>
-Subject: =?UTF-8?Q?Re:_[RFC]_KVM:_mm:_fd-based_approach_for_supporting_KVM_guest_?=
- =?UTF-8?Q?private_memory?=
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S1344515AbhIARjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:39:05 -0400
+Received: from mail-bn1nam07on2050.outbound.protection.outlook.com ([40.107.212.50]:8503
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236428AbhIARjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 13:39:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZegPdCe9Tmk80SpN95d86cTzno8+VFHRNEaZw5QB+fWIOT+xye9A6oZkYm9Zs3Td4L/wOdIyBK8vKfODwJdZMR5OI+lHDqSFJNNap8/BewzMfj1v83N9BMTAZGBZMOCpVIs17X/GeMbti4jBCeyO2mJMEfbbr+RjqQjOK8riea+cizj3KUn66WIYWivRuGpsCoA/8nwr4JZH9Sg76Ibbp0tCNJlrEQrrEq56B3mODVnVpERDfNQnRYJdsHhWFnXpXyXrpqLVxvhQ8p2bPC9CVy7ZjSkMUZ8XDouKPvTGPSYAwt4JTMXL1Jxk0bFcJddPYLqSr5QSLyWzJuHr7FweOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=O0VotvFPcWfC/1NnMfVZgsj3SfXF36tJ/ordOWnnC1w=;
+ b=cJrci5J4xgD13Z50ptGcEzORMaBLTCKaHZNTzCVTuYrkAU/FuvKMMx1dUXdbDTerMI1E2TJyX0wBfq4IT1ecSGoApHFNxIFmTovlhL2JqkZsY8fc8//iXLwdJ7rRBud4t/0Dryz+p1Hph4DBH55bMxgWReleUIh8/8+481mkr/uw2hkIDtY2vr6QsZGEWg/DjusawByCJGw8cPPmrr3/gZqyUzJYIa7XwOYzX1ia5K6k5jtvHtPnASPNftZETpc14pk8q7oxO1tVRMiSdJbg8ZDYq3QNotp2qTw5OXmQkTPCNfL/Lg1p5IlZCtRHWkWE5IpQBGQeOQV5pEOH980p7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O0VotvFPcWfC/1NnMfVZgsj3SfXF36tJ/ordOWnnC1w=;
+ b=jv1H+y1o0FGMe9fezkg+Vcr8Lf6YWOymH+TqQHMIXW+lzC6zNUNCnWAjZWKCgSimazmWZ4A+1hBuLxfvMuAUojV7KDp5Gr9rFUTYAp8tzZ2kiUZoSt9pXJucacoNVM0MMRbh2YkzbkD7ln2j1/+Da4OmHNdLTdZ01WdsvCgKdCORn5oUIYM8U3ZC5UyGHrAGX6Owm6ZrRw6xDyK1+CTNRrcB7pDYNDcR/ViBRkejzXAgirM4AU9mcBml0GvTEIbp9MmzTbsrXYoGy84ZgBvdF2zCYfJedYy1Z6Hyr8Kho1JWlkwnFvMEfUXnYnqfLrYPiRrjwNfVnj+MrKf+X7K6qg==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5538.namprd12.prod.outlook.com (2603:10b6:208:1c9::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.20; Wed, 1 Sep
+ 2021 17:38:03 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4478.020; Wed, 1 Sep 2021
+ 17:38:03 +0000
+Date:   Wed, 1 Sep 2021 14:10:39 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
+        mika.penttila@nextfour.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        songmuchun@bytedance.com
+Subject: Re: [PATCH v2 6/9] mm: free user PTE page table pages
+Message-ID: <20210901171039.GO1721383@nvidia.com>
+References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
+ <20210819031858.98043-7-zhengqi.arch@bytedance.com>
+ <20210901135314.GA1859446@nvidia.com>
+ <0c9766c9-6e8b-5445-83dc-9f2b71a76b4f@redhat.com>
+ <20210901153247.GJ1721383@nvidia.com>
+ <7789261d-6a64-c47b-be6c-c9be680e5d33@redhat.com>
+ <20210901161613.GN1721383@nvidia.com>
+ <e8ebb0bb-b268-c43b-6fc1-e5240dc085c9@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e8ebb0bb-b268-c43b-6fc1-e5240dc085c9@redhat.com>
+X-ClientProxiedBy: MN2PR06CA0014.namprd06.prod.outlook.com
+ (2603:10b6:208:23d::19) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR06CA0014.namprd06.prod.outlook.com (2603:10b6:208:23d::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.17 via Frontend Transport; Wed, 1 Sep 2021 17:38:02 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mLTl1-007tmP-5r; Wed, 01 Sep 2021 14:10:39 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ff0e80f3-367d-4100-1977-08d96d6f3fc5
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5538:
+X-Microsoft-Antispam-PRVS: <BL0PR12MB553888FDF449F899F237052DC2CD9@BL0PR12MB5538.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: r4cXr4erfmKo+Y1NERY3lpBU5RyrysIIVpNO+9iDtuddS/pKHYc1ISQiwG1N63eFGwaoK8ZS1+G5wiAfuYOKP87ZCN7NsG/iyLHNJkUX9Z+LqCW556tLrl5SVoDBwDxPTPuN8AFUkkcpLaby5usg6kaygQblBmlAFIhL1hqxEGGQFN/v766kmZt2VYTb2HEtsll/VRxCIknL4x1dw0kB2l7BN9aQ4PNC20O7MrpseRR90X8etKbqLeohlzIpPoLjQuNAypodqFQ3p86cx1Y2qydsl8wepZcYbLXDaTn0MoKVh5uXWziu9XkiBDo/LYsYLnij9V9w/ZYRRtMvRljxiS0NzkDE4X+1o5TMkOUDrFP996jxVJgPl13VDtnn7lYJu00DR4qOc+/yOawvyDdAeBiONxIz27dENsm/cY8Xg/JPn/PmRfU/UX62lHT3mHF+/iwEUP5v3nNykh2FOKh03f+tOzO5eCyXmdSiHCs1va8HNzjRBErxCRDWx0volR7BvrpOMXs5gqrVuV+oUxTB/ngcAJ8Lsh+jc0U4Cvl7cjY6xC6iiT5HX91mctZnii5UyLVsY3VfVtM+4CKl9XvTJX+zmozFWJEk53u+n6+E6SxSICCrGxLfWaesv+w0Sx8U0K83KauZVe3+gWhSABm1Dw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(346002)(366004)(396003)(9746002)(83380400001)(9786002)(478600001)(5660300002)(2906002)(2616005)(6916009)(1076003)(316002)(8936002)(66946007)(86362001)(66556008)(66476007)(33656002)(4326008)(26005)(8676002)(36756003)(186003)(426003)(38100700002)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BEanolIKe1FvI4ca+Sqsq7x3WkJUYzKyVPzxNNZa+1hq7GBr3TCku2wWsBhX?=
+ =?us-ascii?Q?cW0Hm9ZanDU8vPtvAQYFBkhEfnzQP62NvSPmRZm+UL7qOOLnwYeV2Sdp6aZr?=
+ =?us-ascii?Q?elr0AJ7FPULW41uxyshMUKTWvN5LwmjSAjUfH5bHkXqacwNffGQi9LdaDr/A?=
+ =?us-ascii?Q?G7fthSbQtFrkY9ijDeYOg1Ozx0yafrPhvC4B2jwCiXw64riNQ/zeq5zo6KWD?=
+ =?us-ascii?Q?XAIHyLeHC2tsXAHd4s7mbg0pOQa8vvHG4hYMiTusFhmXVnoxkqt3xyT7NfZs?=
+ =?us-ascii?Q?VeMyVel37jbZrjqEFhcZf1D4+8e7CWWNo8fyAwZiESk2hbnEquMnYlfFycJf?=
+ =?us-ascii?Q?qzw6Ggp7zil+SGm66k4RH8145NbNCqPsr2//Eqn6LbxWFba+MzmfUCv0k5qJ?=
+ =?us-ascii?Q?54mVj8e/MhIo0IypOcnFGSvrvKuNXLk4uypbjeZkgk1hgNVqHoyGLEM8xPJl?=
+ =?us-ascii?Q?AgmnQp8ExICcgZnMmlolIB8DcYIhLKvAPY1U7BC+wqM7yW7vNo4wHsGOkCT8?=
+ =?us-ascii?Q?cRGnhi/OfbKI/Ed3dQ0kY9Davlqu/1ofpB+LcqVy7hfphPm1ehX7XjieX4fA?=
+ =?us-ascii?Q?IwueW14YCsYbXe3Hdb7YIbnGlciPP1/0HonTjahTQ0c51t/CtfVggzt04Bz3?=
+ =?us-ascii?Q?z6YVosVyKOSwQzWdwL+bu3EaIWP440XEC8CZTekVMmuCDX6AUnZJhGu2IyFb?=
+ =?us-ascii?Q?EGj0VMJftnSC0nnetuxFzJhLXuRd/DipzM+XE9/uT3ju/UwwZWD3vZdKyTDz?=
+ =?us-ascii?Q?pQlvd+uZzTJvGdChlZB1CLurqMzpI28XlRCtzgxHH+wQEtJfyQs9dmb91LJG?=
+ =?us-ascii?Q?sySVy//ue+ZtHxrOZljLxFvPS0F8lFQ23XbWQ3V6+auu6uLP6mXWCMCs8VN1?=
+ =?us-ascii?Q?5VGIomYCbu5HwuUZ+blukOtfbtiPbgObi47kM10NCgsTP4J5EH5gurh9xBhR?=
+ =?us-ascii?Q?qnlYb1f60sj8WJmrVeYzUdIx5hdw+O8tW+c6QFf+4YprI4jiwwG20o+IrUoM?=
+ =?us-ascii?Q?RyqwgFbEqM54YYGzOrWf7wx6+YUurTfOufruzQEnD50FqzqBnu4+DBStW2j3?=
+ =?us-ascii?Q?FbNYWX8WiDVPXxLKpgqQhpZITGhz7jAJ/odYzgIqTJqwEHtB+wZctRWKqGKj?=
+ =?us-ascii?Q?qU6Xpe8ISgLeBGC5ZAr2xbNbwvwRSazLjDbQxdGioSRdi2djHgoAxxuHruyl?=
+ =?us-ascii?Q?nWIY9RlM5pkIDsMhK2rWpTDIKBqlEHYhKKksfAxRmIIOMy0JSe0sd6/AHvVE?=
+ =?us-ascii?Q?qvLp8Xq/0ygsw4NJoixpWISOdidF6aER953foYzHtDicEGqt+5duubx+NAAD?=
+ =?us-ascii?Q?A4H79b5PK9uTGrdOZpTYc7ds?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff0e80f3-367d-4100-1977-08d96d6f3fc5
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 17:38:03.2257
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tKoN6tqjDdsQqSZ+JoTYEkPs0YtXzFdEPRuG0O2ZDouEIJ1P9pGdFOnY3dvoPK9R
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5538
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 01, 2021 at 06:19:03PM +0200, David Hildenbrand wrote:
 
+> > I wouldn't think it works everywhere, bit it works in a lot of places,
+> > and it is a heck of a lot better than what is proposed here. I'd
+> > rather see the places that can use it be moved, and the few places
+> > that can't be opencoded.
+> 
+> Well, I used ptep_get_map_lock() and friends. But hacking directly into
+> ptep_map_lock() and friends wasn't possible due to all the corner cases.
 
-On Wed, Sep 1, 2021, at 9:16 AM, David Hildenbrand wrote:
-> On 01.09.21 17:54, Andy Lutomirski wrote:
-> > On Wed, Sep 1, 2021, at 1:09 AM, David Hildenbrand wrote:
-> >>>> Do we have to protect from that? How would KVM protect from user =
-space
-> >>>> replacing private pages by shared pages in any of the models we d=
-iscuss?
-> >>>
-> >>> The overarching rule is that KVM needs to guarantee a given pfn is=
- never mapped[*]
-> >>> as both private and shared, where "shared" also incorporates any m=
-apping from the
-> >>> host.  Essentially it boils down to the kernel ensuring that a pfn=
- is unmapped
-> >>> before it's converted to/from private, and KVM ensuring that it ho=
-nors any
-> >>> unmap notifications from the kernel, e.g. via mmu_notifier or via =
-a direct callback
-> >>> as proposed in this RFC.
-> >>
-> >> Okay, so the fallocate(PUNCHHOLE) from user space could trigger the
-> >> respective unmapping and freeing of backing storage.
-> >>
-> >>>
-> >>> As it pertains to PUNCH_HOLE, the responsibilities are no differen=
-t than when the
-> >>> backing-store is destroyed; the backing-store needs to notify down=
-stream MMUs
-> >>> (a.k.a. KVM) to unmap the pfn(s) before freeing the associated mem=
-ory.
-> >>
-> >> Right.
-> >>
-> >>>
-> >>> [*] Whether or not the kernel's direct mapping needs to be removed=
- is debatable,
-> >>>       but my argument is that that behavior is not visible to user=
-space and thus
-> >>>       out of scope for this discussion, e.g. zapping/restoring the=
- direct map can
-> >>>       be added/removed without impacting the userspace ABI.
-> >>
-> >> Right. Removing it shouldn't also be requited IMHO. There are other=
- ways
-> >> to teach the kernel to not read/write some online pages (filter
-> >> /proc/kcore, disable hibernation, strict access checks for /dev/mem=
- ...).
-> >>
-> >>>
-> >>>>>> Define "ordinary" user memory slots as overlay on top of "encry=
-pted" memory
-> >>>>>> slots.  Inside KVM, bail out if you encounter such a VMA inside=
- a normal
-> >>>>>> user memory slot. When creating a "encryped" user memory slot, =
-require that
-> >>>>>> the whole VMA is covered at creation time. You know the VMA can=
-'t change
-> >>>>>> later.
-> >>>>>
-> >>>>> This can work for the basic use cases, but even then I'd strongl=
-y prefer not to
-> >>>>> tie memslot correctness to the VMAs.  KVM doesn't truly care wha=
-t lies behind
-> >>>>> the virtual address of a memslot, and when it does care, it tend=
-s to do poorly,
-> >>>>> e.g. see the whole PFNMAP snafu.  KVM cares about the pfn<->gfn =
-mappings, and
-> >>>>> that's reflected in the infrastructure.  E.g. KVM relies on the =
-mmu_notifiers
-> >>>>> to handle mprotect()/munmap()/etc...
-> >>>>
-> >>>> Right, and for the existing use cases this worked. But encrypted =
-memory
-> >>>> breaks many assumptions we once made ...
-> >>>>
-> >>>> I have somewhat mixed feelings about pages that are mapped into $=
-WHATEVER
-> >>>> page tables but not actually mapped into user space page tables. =
-There is no
-> >>>> way to reach these via the rmap.
-> >>>>
-> >>>> We have something like that already via vfio. And that is fundame=
-ntally
-> >>>> broken when it comes to mmu notifiers, page pinning, page migrati=
-on, ...
-> >>>
-> >>> I'm not super familiar with VFIO internals, but the idea with the =
-fd-based
-> >>> approach is that the backing-store would be in direct communicatio=
-n with KVM and
-> >>> would handle those operations through that direct channel.
-> >>
-> >> Right. The problem I am seeing is that e.g., try_to_unmap() might n=
-ot be
-> >> able to actually fully unmap a page, because some non-synchronized =
-KVM
-> >> MMU still maps a page. It would be great to evaluate how the fd
-> >> callbacks would fit into the whole picture, including the current r=
-map.
-> >>
-> >> I guess I'm missing the bigger picture how it all fits together on =
-the
-> >> !KVM side.
-> >=20
-> > The big picture is fundamentally a bit nasty.  Logically (ignoring t=
-he implementation details of rmap, mmu_notifier, etc), you can call try_=
-to_unmap and end up with a page that is Just A Bunch Of Bytes (tm).  The=
-n you can write it to disk, memcpy to another node, compress it, etc. Wh=
-en it gets faulted back in, you make sure the same bytes end up somewher=
-e and put the PTEs back.
-> >=20
-> > With guest-private memory, this doesn't work.  Forget about the impl=
-ementation: you simply can't take a page of private memory, quiesce it s=
-o the guest can't access it without faulting, and turn it into Just A Bu=
-nch Of Bytes.  TDX does not have that capability.  (Any system with inte=
-grity-protected memory won't without having >PAGE_SIZE bytes or otherwis=
-e storing metadata, but TDX can't do this at all.)  SEV-ES *can* (I thin=
-k -- I asked the lead architect), but that's not the same thing as sayin=
-g it's a good idea.
-> >=20
-> > So if you want to migrate a TDX page from one NUMA node to another, =
-you need to do something different (I don't know all the details), you w=
-ill have to ask Intel to explain how this might work in the future (it w=
-asn't in the public docs last time I looked), but I'm fairly confident t=
-hat it does not resemble try_to_unmap().
-> >=20
-> > Even on SEV, where a page *can* be transformed into a Just A Bunch O=
-f Bytes, the operation doesn't really look like try_to_unmap().  As I un=
-derstand it, it's more of:
-> >=20
-> > look up the one-and-only guest and GPA at which this page is mapped.
-> > tear down the NPT PTE.  (SEV, unlike TDX, uses paging structures in =
-normal memory.)
-> > Ask the magic SEV mechanism to turn the page into swappable data
-> > Go to town.
-> >=20
-> > This doesn't really resemble the current rmap + mmu_notifier code, a=
-nd shoehorning this into mmu_notifier seems like it may be uglier and mo=
-re code than implementing it more directly in the backing store.
-> >=20
-> > If you actually just try_to_unmap() a SEV-ES page (and it worked, wh=
-ich it currently won't), you will have data corruption or cache incohere=
-ncy.
-> >=20
-> > If you want to swap a page on TDX, you can't.  Sorry, go directly to=
- jail, do not collect $200.
-> >=20
-> > So I think there are literally zero code paths that currently call t=
-ry_to_unmap() that will actually work like that on TDX.  If we run out o=
-f memory on a TDX host, we can kill the guest completely and reclaim all=
- of its memory (which probably also involves killing QEMU or whatever ot=
-her user program is in charge), but that's really our only option.
->=20
-> try_to_unmap() would actually do the right thing I think. It's the use=
-rs=20
-> that access page content (migration, swapping) that need additional ca=
-re=20
-> to special-case these pages. Completely agree that these would be brok=
-en.
+Sure, I'm not surprised you can't get every single case, but that just
+suggest we need two API families, today's to support the special cases
+and a different one for the other regular simple cases. 
 
-I suspect that the eventual TDX numa migration flow will involve asking =
-the TD module to relocate the page without unmapping it first. TDX doesn=
-=E2=80=99t really have a nondestructive unmap operation.
+A new function family pte_try_map/_locked() and paired unmap that can
+internally do the recounting and THP trickery and convert the easy
+callsites.
 
->=20
->=20
-> --=20
-> Thanks,
->=20
-> David / dhildenb
->=20
->=20
+Very rough counting suggest at least half of the pte_offset_map_lock()
+call sites can trivially use the simpler API.
+
+The other cases can stay as is and get open coded refcounts, or maybe
+someone will have a better idea once they are more clearly identified.
+
+But I don't think we should take a performance hit of additional
+atomics in cases like GUP where this is trivially delt with by using a
+better API.
+
+I'd start with a series to pull pmd_trans_unstable() into some
+pte_try_map() and it looks like about 25 call sites can be trivially
+converted.
+
+Several more can be converted but need a bit of work.
+
+Jason
