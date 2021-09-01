@@ -2,135 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291A93FE1AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393D33FE1B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344478AbhIASDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51346 "EHLO
+        id S1344981AbhIASFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344568AbhIASDe (ORCPT
+        with ESMTP id S239445AbhIASFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:03:34 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B90DC0613D9
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:02:36 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id n18so230125pgm.12
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 11:02:36 -0700 (PDT)
+        Wed, 1 Sep 2021 14:05:44 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD17C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:04:47 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id x19so464780pfu.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 11:04:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=squareup.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=y30if3F3NS1+QkGYwwybS7kbIaoempyrzf9jSIfoY3A=;
-        b=ESredNTJViz+fzZkQ9m1MSPT3f0f154gcIeOGNFX7Q4gaI0pDTE1Gg9QpIhLX/bsIN
-         sqJZ5ZbH7QAo4eMn/tf4BQ0lWmYVvghCuMBoolH58nH9Vx5aewNop+MmfSIff6JTs+Z5
-         jmze25Fq8cVXjxxwX+KqnBae1gP4cflG5UP/w=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jT1FBNDJ8Khy+4TE63B+kK4MLXv82MCEzJzPE6StIGA=;
+        b=or7AB9ZV4bVmEp4PVKukG70PMdtkEQxYh/YAe0wSDizgWal1xd4rZSzAdBjtBNWkA9
+         ngIN0iV4SSX3qNm05mmTzS4VW/cXtLKC8p5emiUoY1ueLhAmLC+0w+KdFE5cLwda1+Zp
+         w5w0wdVr0SJwWRX8SOrSEYyWu0YHLQc1NkWnSM/stYb9QdqEINRvfugVOp5wtnL5d4Lw
+         tLnKVzQeLf0IhmiB71Q4+OM2uJFrNIvf1J46Zyw1fBf/h4wpqrv/DwSFVAjEIvgq3NhR
+         iJwCcZ15OQERcEEoGVvtPOBhx7se70wUeOoXVKldG2Vx5GhUxYjHOj6FXYZbK/2dcjVS
+         oNtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y30if3F3NS1+QkGYwwybS7kbIaoempyrzf9jSIfoY3A=;
-        b=AV3WTj+b1pQw89yMU41dssF/FWo4DN4PlKTSPsuJ/f1aiagZtnm1uM8O2sK8JgOdDr
-         RNMGBz74Kr85Qe7b0Ukq8s9fuSHR/n8milI+ANNCHfMv9UYBvzf/IxxB+TK8lM/vAztN
-         3736G/H0N2Io3m2jdWDkKNudCvzEzoH2eWvbGHZH5esjWBhDrMnF2hFikwYsPQGU1ocL
-         VRqHZSUdyvQJ5agv17GGKyTB1SISQFS6TA0bYY9UCM3e8X8LtS16a7cTCMqntTqiCJdr
-         4Nq4T+eoMUTGtXfEPCXeEzQ4ffa+w5TTQruct1KCPkAwpOr9Yrz81t7H9iXhEsNh8nkb
-         hj4g==
-X-Gm-Message-State: AOAM533a46+cbo4xW81Ve6yYmMuVNBWtoeX+ZDM+6VryKrWY/f3zhoIx
-        ZtpZp6M8nOY6GBkmTnYhZhRPs08z5lqqgSew
-X-Google-Smtp-Source: ABdhPJzsAsOgDwSLPteGex0dqQAwNeVXY4yZb23xomFOALrmZvS9rc7jQepSJ7jUP15ZkXZ0ai76og==
-X-Received: by 2002:aa7:9ae9:0:b0:3f5:e1a7:db23 with SMTP id y9-20020aa79ae9000000b003f5e1a7db23mr718513pfp.42.1630519355340;
-        Wed, 01 Sep 2021 11:02:35 -0700 (PDT)
-Received: from benl-m5lvdt.local ([2600:6c50:4d00:2376:c5f1:a747:4b09:56ac])
-        by smtp.gmail.com with ESMTPSA id v190sm147942pfv.166.2021.09.01.11.02.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 11:02:34 -0700 (PDT)
-Subject: Re: [PATCH] wcn36xx: handle connection loss indication
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>
-Cc:     Kalle Valo <kvalo@codeaurora.org>, stable@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org,
-        Network Development <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210901030542.17257-1-benl@squareup.com>
- <CAMZdPi_frOfwf+9nfiUw2NJhfuSVgcPj3=Hx2g0d8UsaZza5MA@mail.gmail.com>
- <b6157d1f-b548-13c0-3683-2d8c35964d1d@linaro.org>
-From:   Benjamin Li <benl@squareup.com>
-Message-ID: <168f96a5-58ec-fea9-c0d3-61f925bd1129@squareup.com>
-Date:   Wed, 1 Sep 2021 11:02:32 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jT1FBNDJ8Khy+4TE63B+kK4MLXv82MCEzJzPE6StIGA=;
+        b=BjT9HcJJVfT6bfCV4JYUS2SRJkJj2IYhg+Ng7F6iVd5vnqxf1sUdtqFGbxW1VjQod6
+         i2EwrIb/Tv61C1z8W1V8dd+Ok1mLTLRLTB8VMnV4fsakMHaq/NempHDfAum6D/We5q9L
+         gIFBx1qoWPJvpNd1PyEYqHf2eGtUFg0tQFjrZCAOCkIve5JPaqWUuVq6GQBEqZ1YcGoP
+         AoXu9nqZ42LWZEWhxKWLgpb+UDEQxc2hQNwXmmgJO4nIRS29enfIf7Q1Xs1kpFWs/S9L
+         SSiZvHVqJqbm5q+K3LyGKVGRCq+T/uDyNnL1bQ4Mw6RvDQbGoG65d6zZN9syj8dcwUCE
+         3YzA==
+X-Gm-Message-State: AOAM530lkRsKsa1lFMBoETibtiakLdioTKCHf4zEK51nKAJs4g1E+MsT
+        rYm7ovYQU4IkSHUqnJQVxP3c1cghItN4Y7xPTXhaB7MTAl1kig==
+X-Google-Smtp-Source: ABdhPJy8K1Q75bsso7kyj+rHAgxfosvMbi5oINX7JEzYAdQYaPMgHfOVQ8YZGaxUhcW97rxmaF3b2Apn5sconoGEqWg=
+X-Received: by 2002:a63:fc1d:: with SMTP id j29mr345547pgi.54.1630519486834;
+ Wed, 01 Sep 2021 11:04:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b6157d1f-b548-13c0-3683-2d8c35964d1d@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210829144531.c2syu4vv4s22dlg7@h510> <CAPGkw+wyH3Pj6DV_m8wqCV5yujhjRwTwVNs6dK4i9JO-Y3ys6w@mail.gmail.com>
+ <20210831133533.6aayzjghdakrhy56@h510> <13366651.n50aozgL3V@localhost.localdomain>
+ <20210831230014.cp46vho2hnndacjp@h510> <CAPGkw+zpYsovnXL_4GfjsQ60fqre+xyiwvwKuDj_fHPTKEfzeQ@mail.gmail.com>
+ <YS+cexhuqldPaACs@kroah.com> <CAPGkw+z+uepM0hiNh48xjjD7=2rpgr+RSLzMcHbw2iE=8y+xqQ@mail.gmail.com>
+ <YS+vfVTV0fls6KuN@kroah.com> <20210901173357.2dfvw5xgpzjndesc@h510>
+In-Reply-To: <20210901173357.2dfvw5xgpzjndesc@h510>
+From:   Krish Jain <krishjain02939@gmail.com>
+Date:   Wed, 1 Sep 2021 20:04:35 +0200
+Message-ID: <CAPGkw+zhb=zC8fKyK8uUiNxNqCUR9Trg6N7fBjaAcBc9rmkmUg@mail.gmail.com>
+Subject: Re: [PATCH] Declare the file_operations struct as const
+To:     Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the investigation!
+On Wed, Sep 1, 2021 at 7:34 PM Bryan Brattlof <hello@bryanbrattlof.com> wrote:
+>
+> On this day, September  1, 2021, thus sayeth Greg KH:
+> > On Wed, Sep 01, 2021 at 05:34:36PM +0200, Krish Jain wrote:
+> > >
+> > > Can you tell me why this is the case?
+> >
+> > Again, it depends on your kernel configuration file as to what will, or
+> > will not, be built.
+> >
+> > If you have some things set as modules, they can be built as a module,
+> > but the ashmem code can not be built as a module, so you would never
+> > build it if you did the above line.
+> >
+> > Here, look at this sequence, starting with a tree that does nothing if I
+> > do a simple 'make' in it, as the whole kernel is already built, and
+> > ashmem is enabled in the kernel configuration
+> >
+> > $ grep ASHMEM .config
+> > CONFIG_ASHMEM=y
+> > $ make
+> > $
+> >
+> > So, let's change the time stamp on the ashmem.c file and see what gets
+> > built if you use the M= option:
+> >
+> > $ touch drivers/staging/android/ashmem.c
+> > $ make M=drivers/staging/android
+> >   MODPOST drivers/staging/android/Module.symvers
+> > $
+> >
+> > Nothing gets built as ashmem is NOT a module, and M= only builds any
+> > modules in the directory you specified.
+> >
+> > But, if you tell make to just build the whole subdirectory, no matter
+> > what the setting is, it will be built:
+> >
+> > $ make drivers/staging/android/
+> >   CALL    scripts/checksyscalls.sh
+> >   CALL    scripts/atomic/check-atomics.sh
+> >   DESCEND objtool
+> >   CC      drivers/staging/android/ashmem.o
+> >   AR      drivers/staging/android/built-in.a
+> > $
+> >
+> > So that's the difference, "M=" builds modules in that directory, but if
+> > you tell it to build the subdir, everything in there that needs to be
+> > built, will be built.
+> >
+> > Be careful about your kernel configuration, that is the key for what
+> > will, and will not, be built.
+> >
+>
+> Ouch...
+>
+> I want to *really* apologize to you Krish for introducing so much
+> confusion while you, and apparently I, am still learning. And for your
+> persistence with seeking the correct answer here Krish.
+>
+> I did not notice that this could only be build as a built-in object.
+> Thank you Greg for pointing out my mistake, and I apologize for dragging
+> this out longer than it had to and the frustration this caused.
+>
+> It seems I will be reading the documentation again, along with Greg's
+> book recommendation, "Linux Kernel in a Nutshell" over this merge
+> window.
+>
+> Thank you again Krish and Greg
+> ~Bryan
+>
 
-As discussed offline, I will send v2 with Fixes: removed, and Bryan will test and submit a separate patch to add the additional feat_caps for the power_save off case.
+Yes, lots of reading to do :) . I had a look at the book and it seems
+better than the documentation too, I don't know, maybe the writing
+style? Love it, Greg. Lastly just out of curiosity, Bryan,  if this
+can only be built as a built-in object then how come "As for your
+patch, I built the driver using:
 
-Depending on DB410c testing, these feat_caps may need to be gated for WCN3680 only, in which case Loic's patch to re-enable CONNECTION_MONITOR (but gated for WCN3660/3620) would still be needed.
+  $ make CCFLAGS=-Werror W=1 M=drivers/staging/android"
 
-Ben
+got you the errors that I desired? Aren't you building as a module here?
 
-On 9/1/21 4:56 AM, Bryan O'Donoghue wrote:
-> On 01/09/2021 07:40, Loic Poulain wrote:
->> iw wlan0 set power_save off
-> 
-> I do this on wcn3680b and get no loss of signal
-> 
-> If I do this though
-> 
-> diff --git a/drivers/net/wireless/ath/wcn36xx/smd.c b/drivers/net/wireless/ath/wcn36xx/smd.c
-> index 03966072f34c..ba613fbb728d 100644
-> --- a/drivers/net/wireless/ath/wcn36xx/smd.c
-> +++ b/drivers/net/wireless/ath/wcn36xx/smd.c
-> @@ -2345,6 +2345,8 @@ int wcn36xx_smd_feature_caps_exchange(struct wcn36xx *wcn)
->                 set_feat_caps(msg_body.feat_caps, DOT11AC);
->                 set_feat_caps(msg_body.feat_caps, ANTENNA_DIVERSITY_SELECTION);
->         }
-> +       set_feat_caps(msg_body.feat_caps, IBSS_HEARTBEAT_OFFLOAD);
-> +       set_feat_caps(msg_body.feat_caps, WLANACTIVE_OFFLOAD);
-> 
->         PREPARE_HAL_BUF(wcn->hal_buf, msg_body);
-> 
-> @@ -2589,7 +2591,7 @@ static int wcn36xx_smd_missed_beacon_ind(struct wcn36xx *wcn,
->         struct wcn36xx_hal_missed_beacon_ind_msg *rsp = buf;
->         struct ieee80211_vif *vif = NULL;
->         struct wcn36xx_vif *tmp;
-> -
-> +wcn36xx_info("%s/%d\n", __func__, __LINE__);
->         /* Old FW does not have bss index */
->         if (wcn36xx_is_fw_version(wcn, 1, 2, 2, 24)) {
->                 list_for_each_entry(tmp, &wcn->vif_list, list) {
-> @@ -2608,7 +2610,7 @@ static int wcn36xx_smd_missed_beacon_ind(struct wcn36xx *wcn,
-> 
->         list_for_each_entry(tmp, &wcn->vif_list, list) {
->                 if (tmp->bss_index == rsp->bss_index) {
-> -                       wcn36xx_dbg(WCN36XX_DBG_HAL, "beacon missed bss_index %d\n",
-> +                       wcn36xx_info("beacon missed bss_index %d\n",
->                                     rsp->bss_index);
->                         vif = wcn36xx_priv_to_vif(tmp);
->                         ieee80211_connection_loss(vif);
-> 
-> 
-> bingo
-> 
-> root@linaro-developer:~# iw wlan0 set power_save off
-> 
-> 
-> # pulls plug on AP
-> 
-> root@linaro-developer:~# [   83.290987] wcn36xx: wcn36xx_smd_missed_beacon_ind/2594
-> [   83.291070] wcn36xx: beacon missed bss_index 0
-> [   83.295403] wlan0: Connection to AP e2:63:da:9c:a4:bd lost
-> 
-> I'm not sure if both flags are required but, this is the behavior we want
-> 
+
+Warm Regards
