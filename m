@@ -2,163 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42383FD19F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 221433FD196
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241707AbhIADEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 23:04:38 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:15331 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233556AbhIADEh (ORCPT
+        id S241758AbhIAC5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 22:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241648AbhIAC53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 23:04:37 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210901030339epoutp0299a6ee70f47068a23b688dcf2e135a17~gk6kBOnpF2834828348epoutp02G
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 03:03:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210901030339epoutp0299a6ee70f47068a23b688dcf2e135a17~gk6kBOnpF2834828348epoutp02G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1630465419;
-        bh=lc8zeqoqaH49vhsvrGLKaucQCSd1wvO3g9kCje9XZSo=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=QjSrDPYGezK7R6pTHFPfjcFGDZryf73zDsD4uDAmiioIHSRZVqNT6y6Qe0PDXQ/Td
-         TBnscNc9fqwDnLFLPQUj4cwKzAo09WhGqcy/IqjOTASfIrgvYw+mozjjFeBbeu9+we
-         Ag6Wa615+5HXZDU2geS85M34Z1usQMUZqpGlLiPk=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210901030338epcas1p354ed9d3fdc9769986f3f09faf7d1e729~gk6jA98l20057900579epcas1p33;
-        Wed,  1 Sep 2021 03:03:38 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.38.242]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4Gzpm90xQXz4x9QK; Wed,  1 Sep
-        2021 03:03:37 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2C.AA.09910.88DEE216; Wed,  1 Sep 2021 12:03:36 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210901030336epcas1p160bcf6510e1eb742316bf0b052051a30~gk6hWWDdj0092400924epcas1p1y;
-        Wed,  1 Sep 2021 03:03:36 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210901030336epsmtrp2eee72885a965eee6923fe504465403e6~gk6hVWomt2998129981epsmtrp2J;
-        Wed,  1 Sep 2021 03:03:36 +0000 (GMT)
-X-AuditID: b6c32a35-c2fff700000026b6-39-612eed884c57
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        63.14.09091.88DEE216; Wed,  1 Sep 2021 12:03:36 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.100.232]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210901030336epsmtip27514b700e4e636be39cf8bcd59bcaa24~gk6hFDYPe0971309713epsmtip2K;
-        Wed,  1 Sep 2021 03:03:36 +0000 (GMT)
-From:   Chanwoo Lee <cw9316.lee@samsung.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, daejun7.park@samsung.com,
-        beanhuo@micron.com, stanley.chu@mediatek.com,
-        keosung.park@samsung.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com,
-        ChanWoo Lee <cw9316.lee@samsung.com>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: [PATCH v3] scsi: ufs: ufshpb: Remove unused parameters
-Date:   Wed,  1 Sep 2021 11:56:17 +0900
-Message-Id: <20210901025617.31174-1-cw9316.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
+        Tue, 31 Aug 2021 22:57:29 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F3EC061575;
+        Tue, 31 Aug 2021 19:56:33 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id q68so1273909pga.9;
+        Tue, 31 Aug 2021 19:56:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=P909qM3GriJXOMBE2UzD0eEKIV6Rucgk31rWOM3ko20=;
+        b=UJIdyRpj2VdZ31P6PGyQrLjENQu2wGCdFgwqHQyiL85KfvWsDfoMv/kdX36NGHxoQb
+         R86AqShbIlV8nUNDfIv7OBPpl8MIo+N7WXd/UEzK11AIq/p63KEYwuiyyU4WwfCwpn0e
+         ijpW3EXqIchb+bjVjQ7Xoj492BaDBMaqXCAIB9rnpAxy6YMoy5nBwO0MAp2sgH4nYrwm
+         Tb71jXbMj+x1MTPKI13BoX9CVuJS8kZlonHciOePA881OAM2GQxoqQI4a81D5Yo6wZeu
+         +SK60o6g7vA0JOeB/iHa5TAqMarNwcA68aMBrrwdQ6cmdielBbrN0PWHGwNZMNtpSmyG
+         ClBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=P909qM3GriJXOMBE2UzD0eEKIV6Rucgk31rWOM3ko20=;
+        b=gz47ShsG9YWWRm9s844H+MAaVpJVnXVWkBqOhlyfh4ZbVp/QG3QtRpF1aDmdsiru5c
+         kGFklAHqMhsPQvKBRnNQbyn5JlbeK9iemrbaL9Kg/WDWXK4dyD5a1TKbqPzaHdw02rjj
+         9pB1RwCU40zjYuc8doZAKR1Lt8r2bc+yLAgjlaBqbW2PvAM3zav6wofYqmo86PmqL1ma
+         a9uOqfEE521/M2Ms1haxzmXjfIb9bPxwhu1yLllNA8mUpfcR++2m2+4vqd2GmX1+vGiD
+         U6MEmsZ6N3LNFyDsYjJYtibAfGILto6VtfHKOGThV+dvOFQHq3BIxKcijAqpLd2OwibG
+         FU4Q==
+X-Gm-Message-State: AOAM5326AK7Mr5aJdI459ypnSScURCeRrhu0Im8rkvIy+/C8hWpu2q2L
+        Em5k+TnR1N9mqK9EcqNnFYLtHZ34Pupf+BJayaE=
+X-Google-Smtp-Source: ABdhPJyOPkYEgZTwYHXIkHbGdvtfffCDWg3vf3xDaA6Vrl3zhHvkyXYgbGNg6EC4zkTlxo+ISoQkK6Kx7aDV64y+MNc=
+X-Received: by 2002:a63:b59:: with SMTP id a25mr29469814pgl.373.1630464993271;
+ Tue, 31 Aug 2021 19:56:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta0xTZxjO19OeHjDdzlrcPmCbeKIGWFoptx1uzqghh2AGsh+6OYUTOGlr
-        29OuFzf5sUBhlYsQwOCgxW2QORMCw1VBxMugLrLicMnACSMoOtABaS2WjXDRrOWUzX/P837P
-        8z3v+10wRHwVjcBUrIkxsLSGQEP5PTdjpNJKt4yO6/iQnPqqByVnl++i5MDDSj55xruMkE1D
-        VgHZPnWQvPG7S0iuPO8Skm1jPTyy98kvQnLQ5QHkSF8LSlbf60XJ84MveKRl7QafPNc9Dnbj
-        1MhoNlXX1g+octePfGqpqwKlFmb+4FO1l9oB5XO8TZ3sr+blYh+p05UMXcQYohi2UFekYhUZ
-        RPYH+Xvzk5Lj5FJ5CvkuEcXSWiaD2Lc/V5qp0vj7J6KO0xqzv5RLG43Ezl3pBp3ZxEQpdUZT
-        BsHoizT6ZL3MSGuNZlYhYxlTqjwuLj7JLyxQK13uOVT/dNNnFue4oATcD6kCIRjEE2Hn7BJa
-        BUIxMd4LYIevl8eRZwBOrPwg4Mg/AJ5xtIINS+tFe3DhOoDf908GySKAfTOP/X4MQ/FYOHEr
-        O2AIwy08eHW4OKBBcAeATbaG9Z0k+Huweda+jvn4djhQMyEMYBGeBh31iyiXtgWuPTiFcPXX
-        oKt5mh/AiL9e1m1HAptCvBOD8/ctAs6wD9b+PCfksATODV4K4gjo81xHOUMZgEP2O0KOlAM4
-        PzoWVCXAZz4fCIyA4DGwq28nV94Kr6yeBVzyK9Dz9ylBQAJxEaywijnJNthSdQfdyFoY+zPY
-        DwVvd6yuYzF+BJZN2Ph1YIvtpXlsL81j+z/4G4C0g9cZvVGrYIxyvfy/ey3UaR1g/RXHJvWC
-        erdX5gQ8DDgBxBAiTCR4KKPFoiL6RDFj0OUbzBrG6ARJ/hOuRyI2F+r834A15csTU+ISk+MT
-        yYSUhGTiDRGYe5MW4wraxKgZRs8YNnw8LCSihOesUUsjL48QTxUP9hwq2C05uaPfuziQc7om
-        eiF/c+r56br5Q50tGceveZ74Ss23w9SMI3r12FnP+/fkjQMvxL/m7BU1fMmE7381zT7L3nUv
-        ufccWLYeBepPqOG/VJGuakme/tZhcz0zqPdOtjfJvTexcToT/elImrWt4jJPS3eFso92ddvE
-        hy98d/Rz3J3KnxRcfGcqT5v1OO+0yfB14kJ3X83236wX0mMLHSWMh2ycwIdUn155a0xlaQyn
-        Zw6u4FWPmmNqz7VudZ7YNHotS7nNgyUTK9GVBTkLzzPXDpRm4eKZ4vD4yLSw1m9Ly3XxOxpo
-        72pe3sdfkMOS2mPTdQTfqKTlsYjBSP8LrLzl6U4EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJLMWRmVeSWpSXmKPExsWy7bCSvG7HW71Eg487uSwezNvGZvHy51U2
-        i4MPO1kspn34yWwx41Qbq8WqB+EW+66dZLf49Xc9u8WiG9uYLHY8P8NucfzkO0aLy7vmsFl0
-        X9/BZrH8+D8mi6Y/+1gslm69yegg4HH5irfHhEUHGD1aTu5n8fi+voPN4+PTWywefVtWMXp8
-        3iTn0X6gmymAI4rLJiU1J7MstUjfLoEr4+TbV2wF77krmg7dZG1gvMfZxcjJISFgIrFw82zW
-        LkYuDiGB3YwSi3e0MUIkpCR27z/P1sXIAWQLSxw+XAxR84lR4sbGx6wgcTYBLYnbx7xB4iIC
-        fUwSO1etYwRxmAV2MEpMXr+QDWSQsIC9xMyXs8GGsgioShzsvc0OYvMKWEtsmviFDWKZvMSf
-        +z3MEHFBiZMzn7CA2MxA8eats5knMPLNQpKahSS1gJFpFaNkakFxbnpusWGBYV5quV5xYm5x
-        aV66XnJ+7iZGcGxoae5g3L7qg94hRiYOxkOMEhzMSiK8rA/1EoV4UxIrq1KL8uOLSnNSiw8x
-        SnOwKInzXug6GS8kkJ5YkpqdmlqQWgSTZeLglGpgErD9lCEd9i3pwOu7LHevJKq+WGh6xEqb
-        v3bW07VN90P2vNjFbfG0/sLZeLPnEq0iL/PaXvQwzMsItFppvT1J69HRK56L/597JjIvftqm
-        68fs+Z8d5DVwnpI781mHkePHiKuiT9f7zT7xZ/Lkqz8brm4W+JJ3P/LEA5u37j7LZlv3npas
-        N0x7vLjn75Km8678IR7TP26Ti+qe3mrWnqLH+7uFdfHm+UuKjyy2X13yWHanoef2jOp+DSsm
-        1ys2rU++btzVvLVWaO1zzU97EnNiwh87JPLxcW9z5l88IWhR1bqHh3e1vYo6EHG9pH3dRLtf
-        +pFPNouJtTX431JZs39iWd+JL/5TnYtPVfi+PKIcaafEUpyRaKjFXFScCABpL8xp/AIAAA==
-X-CMS-MailID: 20210901030336epcas1p160bcf6510e1eb742316bf0b052051a30
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210901030336epcas1p160bcf6510e1eb742316bf0b052051a30
-References: <CGME20210901030336epcas1p160bcf6510e1eb742316bf0b052051a30@epcas1p1.samsung.com>
+References: <20210901023205.5049-1-wanjiabing@vivo.com>
+In-Reply-To: <20210901023205.5049-1-wanjiabing@vivo.com>
+From:   Geliang Tang <geliangtang@gmail.com>
+Date:   Wed, 1 Sep 2021 10:56:22 +0800
+Message-ID: <CA+WQbwvjzadxGi2yCs+PRdJpwYnj64jkXdgiYset8oX0PZX6xw@mail.gmail.com>
+Subject: Re: [PATCH] mptcp: Fix duplicated argument in protocol.h
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        MPTCP Upstream <mptcp@lists.linux.dev>,
+        "To: Phillip Lougher <phillip@squashfs.org.uk>, Andrew Morton
+        <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, Coly Li
+        <colyli@suse.de>, linux-fsdevel@vger.kernel.org," 
+        <linux-kernel@vger.kernel.org>, kael_w@yeah.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChanWoo Lee <cw9316.lee@samsung.com>
+Hi Jiabing,
 
-The following parameters are not used in the function.
-So, remove unused parameters.
+Wan Jiabing <wanjiabing@vivo.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=881=E6=97=
+=A5=E5=91=A8=E4=B8=89 =E4=B8=8A=E5=8D=8810:40=E5=86=99=E9=81=93=EF=BC=9A
+>
+> ./net/mptcp/protocol.h:36:50-73: duplicated argument to & or |
+>
+> The OPTION_MPTCP_MPJ_SYNACK here is duplicate.
+> Here should be OPTION_MPTCP_MPJ_ACK.
+>
 
-*func(): ufshpb_set_hpb_read_to_upiu
- -> struct ufshpb_lu *hpb
- -> u32 lpn
+Good catch!
 
-Reviewed-by: Daejun Park <daejun7.park@samsung.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+Acked-by: Geliang Tang <geliangtang@gmail.com>
 
----
-v2->v3:
- * Add tag information.
-v1->v2:
- * edit description.
----
- drivers/scsi/ufs/ufshpb.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Please add a Fixes-tag here in v2 like this:
 
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 02fb51ae8b25..589af5f6b940 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -333,9 +333,8 @@ ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
- }
- 
- static void
--ufshpb_set_hpb_read_to_upiu(struct ufs_hba *hba, struct ufshpb_lu *hpb,
--			    struct ufshcd_lrb *lrbp, u32 lpn, __be64 ppn,
--			    u8 transfer_len, int read_id)
-+ufshpb_set_hpb_read_to_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp,
-+			    __be64 ppn, u8 transfer_len, int read_id)
- {
- 	unsigned char *cdb = lrbp->cmd->cmnd;
- 	__be64 ppn_tmp = ppn;
-@@ -703,8 +702,7 @@ int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 		}
- 	}
- 
--	ufshpb_set_hpb_read_to_upiu(hba, hpb, lrbp, lpn, ppn, transfer_len,
--				    read_id);
-+	ufshpb_set_hpb_read_to_upiu(hba, lrbp, ppn, transfer_len, read_id);
- 
- 	hpb->stats.hit_cnt++;
- 	return 0;
--- 
-2.29.0
+Fixes: 74c7dfbee3e18 ("mptcp: consolidate in_opt sub-options fields in
+a bitmask")
 
+Thanks,
+-Geliang
+
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+>  net/mptcp/protocol.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+> index d7aba1c4dc48..64c9a30e0871 100644
+> --- a/net/mptcp/protocol.h
+> +++ b/net/mptcp/protocol.h
+> @@ -34,7 +34,7 @@
+>  #define OPTIONS_MPTCP_MPC      (OPTION_MPTCP_MPC_SYN | OPTION_MPTCP_MPC_=
+SYNACK | \
+>                                  OPTION_MPTCP_MPC_ACK)
+>  #define OPTIONS_MPTCP_MPJ      (OPTION_MPTCP_MPJ_SYN | OPTION_MPTCP_MPJ_=
+SYNACK | \
+> -                                OPTION_MPTCP_MPJ_SYNACK)
+> +                                OPTION_MPTCP_MPJ_ACK)
+>
+>  /* MPTCP option subtypes */
+>  #define MPTCPOPT_MP_CAPABLE    0
+> --
+> 2.25.1
+>
+>
