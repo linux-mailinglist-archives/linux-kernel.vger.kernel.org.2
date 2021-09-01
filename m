@@ -2,87 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C023FDE9E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1553FDEA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343727AbhIAP1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:27:21 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47394 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343713AbhIAP1U (ORCPT
+        id S1343634AbhIAP3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244284AbhIAP3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:27:20 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181F36v7108365;
-        Wed, 1 Sep 2021 11:26:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=o9gDLNcRFjSNsFzIPCKeyxaw9Ra4/1Hcw6ozwNSHkVo=;
- b=YM83bdR7jkhS2OhLgSu5xrtbvMtvyagp+ZfS89aru7FOJ30IlU4u87L4QDJHKT6npVWU
- 0LW3ADqVcsKc/mB1uCYkVj7VwLMF7DnDz1mj2UBSRJxfuGmicygWmdtbXZ87KOYiXz2H
- DyKamxAswX6HGidoCmRpZFWRe3uRrpla+jXPSQMXmi+qOKTwvcXrwRegyT8FGS/3Fwqc
- XE2yHa8gg6Dhy6390x/mCgoF7S0lWde2I2+3FmMhFxpxJzBmnLeWY7bRrfteT7c0U9c/
- KTCvgg0K/ozlM9BhQ9Lu4I9b1r8ebx5F5K1AnS/SnhKkt6K+a/94Z6SZF/gw60k9Yt6/ pQ== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3atafabhp4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 11:26:08 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 181FIfGA031727;
-        Wed, 1 Sep 2021 15:26:06 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma04dal.us.ibm.com with ESMTP id 3aqcse7g7f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 15:26:06 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 181FQ5up43581950
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Sep 2021 15:26:05 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E991311207D;
-        Wed,  1 Sep 2021 15:26:04 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E149A112072;
-        Wed,  1 Sep 2021 15:26:03 +0000 (GMT)
-Received: from localhost (unknown [9.211.58.54])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Wed,  1 Sep 2021 15:26:03 +0000 (GMT)
-From:   Fabiano Rosas <farosas@linux.ibm.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@ozlabs.org>
-Subject: Re: [PATCH kernel] KVM: PPC: Book3S HV: Make unique debugfs nodename
-In-Reply-To: <87lf4gv0hf.fsf@linux.ibm.com>
-References: <20210707041344.3803554-1-aik@ozlabs.ru>
- <be02290c-60a0-48af-0491-61e8a6d5b7b7@ozlabs.ru>
- <87pmubu306.fsf@linux.ibm.com>
- <a1be1913-f564-924b-1750-03efa859a0b1@ozlabs.ru>
- <2fe01488-5a9b-785e-7c05-1d527dead18d@ozlabs.ru>
- <87lf4gv0hf.fsf@linux.ibm.com>
-Date:   Wed, 01 Sep 2021 12:26:00 -0300
-Message-ID: <87czpsuxkn.fsf@linux.ibm.com>
+        Wed, 1 Sep 2021 11:29:43 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E33C061764
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 08:28:46 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id n126so5862617ybf.6
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 08:28:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+GlOqsOpw3zZfxlN+CxYu9jIfOzsHv5cSyt625Vybl8=;
+        b=pouVvtouO9DCggJX7QWS3tCOWjs/IVuHjqBQMcHhQ0STgWiOvIiZCSSrNXAY5ld81f
+         LZ1tSIspJ93Le8JyfMvoJul1UlvtVWAf3Ztf2FqwZPU6rjLOwLaDy2z27rSUE5xeXbjs
+         QLUk6yb4SBxpBWd9Ak1A2Z/ZZchEHnkRsFFSh7Hp74C0IIwTPtxicZvUFOz24o01Dwqu
+         8PTDkYunv439Eipf41iI9fhCJBZN/ubgyxj1LESHmh5f7wxAPOm5SEwzYAHjC/qqTKZI
+         18CwG0LwTneoTDEOQIHDU1N8oo2XrfLx49c7cxf2mvzUQ4wXyPFrbnQvKkLWtZ6b5kWg
+         4+1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+GlOqsOpw3zZfxlN+CxYu9jIfOzsHv5cSyt625Vybl8=;
+        b=KVLPtEPEDoLelVydDa2RGI5awutmWDdwoIP4NmVQ1Cscs+v5OpBhzDSzcahkbAnmmd
+         U0cCpdsRrnlgYqVqqNfkoq9ra72vevdLknk2+1jw2X3Uk1U159SukI7ZlcsH6DN7aAEN
+         RlUhLaqOt+0fK7pWpHGObk/2EjFWD62EG4hbW0fRnEPkzhYzf7kIF3UkJ1t1s50IGzod
+         Yr3ynCv4cKVLxelL2S9YLoFttBzjU896r6Nb1hzps9H+8oMmOWwixFzLecaOPzBYq0hl
+         /iVMiu0+f2N5j/wLDplIeJR7ESSMhBlKKcoX3Gz5IUZwKKiKqGvPrTi3UvNILp77Vx9j
+         rPMA==
+X-Gm-Message-State: AOAM530/SI7kQw0XRsNFuVLGGsgNqMl+8JAPFuEDpju1++KO55vEQaO+
+        +5jynbL6ocDiH/RLXX/czEAnUJyHhlS+0WrzWoJa8Q==
+X-Google-Smtp-Source: ABdhPJzhZM0GkaML7l5NDkIdjuUzVHwpLZu9eyWoVcLH5iiYwRQjA1Xhn5CpBr/9c59LJQdRbh+17vthAETK0dGKDdw=
+X-Received: by 2002:a25:4757:: with SMTP id u84mr23681yba.397.1630510125588;
+ Wed, 01 Sep 2021 08:28:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: CFkKSQvx1QVx1ajLDPnoLgxB4hboUs5Y
-X-Proofpoint-GUID: CFkKSQvx1QVx1ajLDPnoLgxB4hboUs5Y
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-01_05:2021-09-01,2021-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 bulkscore=0 adultscore=0 impostorscore=0 spamscore=0
- suspectscore=0 lowpriorityscore=0 mlxlogscore=795 mlxscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2109010087
+References: <20210827191858.2037087-1-surenb@google.com> <20210827191858.2037087-3-surenb@google.com>
+ <YS81MDMgrL1tpcN7@dhcp22.suse.cz>
+In-Reply-To: <YS81MDMgrL1tpcN7@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 1 Sep 2021 08:28:34 -0700
+Message-ID: <CAJuCfpEahzbzD4OD0drrkDM-u4vG-jYG6DjkVUojix=+JsYBpg@mail.gmail.com>
+Subject: Re: [PATCH v8 2/3] mm: add a field to store names for private
+ anonymous memory
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fabiano Rosas <farosas@linux.ibm.com> writes:
+On Wed, Sep 1, 2021 at 1:09 AM 'Michal Hocko' via kernel-team
+<kernel-team@android.com> wrote:
+>
+> On Fri 27-08-21 12:18:57, Suren Baghdasaryan wrote:
+> [...]
+> > Userspace can set the name for a region of memory by calling
+> > prctl(PR_SET_VMA, PR_SET_VMA_ANON_NAME, start, len, (unsigned long)name);
+> > Setting the name to NULL clears it.
+>
+> Maybe I am missing this part but I do not see this being handled
+> anywhere.
 
-> That is why I mentioned creating a hook similar to
-> kvm_create_vcpu_debugfs in the common KVM code. kvm_create_vm_debugfs or
-> something.
+It's handled in replace_vma_anon_name(). When name==NULL we call
+free_vma_anon_name() which frees and resets anon_name pointer. Except
+that, as you noticed, the check after strndup_user() will prevent NULL
+to be passed here. I forgot to test this case after conversion to
+strndup_user() and missed this important point. Thanks for pointing it
+out. Will fix and retest.
 
-s/kvm/kvm_arch/
+>
+> [...]
+> > @@ -3283,5 +3283,16 @@ static inline int seal_check_future_write(int seals, struct vm_area_struct *vma)
+> >       return 0;
+> >  }
+> >
+> > +#ifdef CONFIG_ADVISE_SYSCALLS
+> > +int madvise_set_anon_name(struct mm_struct *mm, unsigned long start,
+> > +                       unsigned long len_in, const char *name);
+> > +#else
+> > +static inline int
+> > +madvise_set_anon_name(struct mm_struct *mm, unsigned long start,
+> > +                   unsigned long len_in, const char *name) {
+> > +     return 0;
+> > +}
+> > +#endif
+>
+> You want to make this depend on CONFIG_PROC_FS.
 
+Ack.
+
+>
+> [...]
+> > +#ifdef CONFIG_MMU
+> > +
+> > +#define ANON_VMA_NAME_MAX_LEN        64
+> > +
+> > +static int prctl_set_vma(unsigned long opt, unsigned long addr,
+> > +                      unsigned long size, unsigned long arg)
+> > +{
+> > +     struct mm_struct *mm = current->mm;
+> > +     char *name, *pch;
+> > +     int error;
+> > +
+> > +     switch (opt) {
+> > +     case PR_SET_VMA_ANON_NAME:
+> > +             name = strndup_user((const char __user *)arg,
+> > +                                 ANON_VMA_NAME_MAX_LEN);
+> > +
+> > +             if (IS_ERR(name))
+> > +                     return PTR_ERR(name);
+>
+> unless I am missing something NULL name would lead to an error rather
+> than a name clearing as advertised above.
+
+Correct, I missed that. Will fix.
+
+>
+> > +
+> > +             for (pch = name; *pch != '\0'; pch++) {
+> > +                     if (!isprint(*pch)) {
+> > +                             kfree(name);
+> > +                             return -EINVAL;
+> > +                     }
+> > +             }
+> > +
+> > +             mmap_write_lock(mm);
+> > +             error = madvise_set_anon_name(mm, addr, size, name);
+> > +             mmap_write_unlock(mm);
+> > +             kfree(name);
+> > +             break;
+> > +     default:
+> > +             error = -EINVAL;
+> > +     }
+> > +
+> > +     return error;
+> --
+> Michal Hocko
+> SUSE Labs
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
