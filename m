@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54ACB3FD436
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D7D3FD435
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242502AbhIAHIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39048 "EHLO
+        id S242480AbhIAHIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242472AbhIAHIy (ORCPT
+        with ESMTP id S242472AbhIAHIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:08:54 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DD1C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 00:07:58 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id n27so4464681eja.5
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 00:07:58 -0700 (PDT)
+        Wed, 1 Sep 2021 03:08:37 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B446C061575;
+        Wed,  1 Sep 2021 00:07:40 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id s12so3274671ljg.0;
+        Wed, 01 Sep 2021 00:07:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:subject:message-id:date:user-agent
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ttiQ81PexZJ9BGCM+uGkFoS9kvTRFiKEGPrljwS10qs=;
-        b=U/iZjFHthqroFyYfcY2w4kGxTYoCptbQhhNwDDtk/TKEFMN4j2jXGu2cxCVRSLWbE6
-         bHkgM/97NkydlwKz0wjdfsBAO3lzrPbA6YZ0waUUbfjvPd/XnVxcCYRE8Ua//nnwJgEu
-         pQ0l5D5GnXMcq1ENAa+YDGWEH6LT/oXojyGppV6z5Uhg1pvsGDcH0g/x1nliHOEU197t
-         W4j5WZt67tRNDW2GbTW6qNHAJZU6iMkHcDBkxgeO2IV8yTXc1UkUDhlI19scxotKgto2
-         by1apb6E8b2I8cCXbaiG4T4EPY4R2PFeV2s3Rl2EfJ2AzCwH6PWxCaABygYpv3xTt/ai
-         VxDg==
+        bh=tkBnSZ8tPceYf/KAGSxnZEdY1ZtMechZKaYpAIYU2LU=;
+        b=JpZndJyO+xZ+tPnCYMD2xifEVddZnLPmd+brJFxJkwgMGOki8Lmrj1E5wmSr96IMF2
+         S2Apqee7gU620BrjYj372ooKP+8t9+eOpanhgTbBXxuyW1S1QJdek8diuRmJnZWBSHP0
+         f8x73VwBsyNvw8onW+48c7JbZjT/DCDNyA0vsq7xZocBUOVHgMuHajEYEwa4rQrzualO
+         pFJGL87zIX0WAtdWO9FdmeIubO/opQkioRArXx5apfDvDl7UbupTCfjwlIOa/IS1hozI
+         YIiI68VsoRZf5cZRnVcWpLbvJcpgHr+p8mRnRd7DYMOuMqGgRGDcpwiNgsUOa00/uAss
+         1fDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ttiQ81PexZJ9BGCM+uGkFoS9kvTRFiKEGPrljwS10qs=;
-        b=EmSadNN4IZ992zb4vsn/xNmvtv/kAJjjv9xV6IRn0w50bJ+3ibKbZ0uxbtDkgVrUAc
-         9tXf6VfvREV3pKW/zGX4ciyhLF07KOW+sXoeavT4iDjAdtn/SjKU17BNkIboKtfk3eXz
-         X/ugMVQBCy/s5cJdMvN4dFKUwfoutiDLbd6QGYr5tvWuHNQP2WPA/Av3ilkFOvZECyb8
-         KceBx2JxBsIpwW/V6vJwyyBaKwM2YWjGzd9IvQJld6ioRGgO0RYh4suwud6ouguWMyr9
-         zHS1FOAqoQqujwnRQXkI/i2wqN2vgBkzK0EdrjLsZm46Fm+MBpPylu/pe2Zo+0iYb2Dr
-         PYlQ==
-X-Gm-Message-State: AOAM53346JPR76Afs8cy6XKVXSlWnEnnei7ifHEbbiPwJSuXHRAkn74R
-        5arfL5jpPmA6P9dstCNimSTS+g==
-X-Google-Smtp-Source: ABdhPJxZelQA90F5Buio/vqxtgsumcQADmv4H9aCrXzl4D7WxUkP6IhSFyso/oUkwAW/xm65amt1LA==
-X-Received: by 2002:a17:906:d20a:: with SMTP id w10mr36630482ejz.426.1630480076830;
-        Wed, 01 Sep 2021 00:07:56 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net (94.105.103.227.dyn.edpnet.net. [94.105.103.227])
-        by smtp.gmail.com with ESMTPSA id f30sm9177868ejl.78.2021.09.01.00.07.55
+        bh=tkBnSZ8tPceYf/KAGSxnZEdY1ZtMechZKaYpAIYU2LU=;
+        b=WDOpA3ktNUIuYvIMCmmwZ4okXhrY8s0+LBZIuRAROXJzYNpaox0oMdedmmvfQDMB0j
+         vStLcM9v19o3JtqstDUZtmPT0jnmVNdjrB+vfnBiV0/egQsFIc6YUlN6QVIkVCD0TYPh
+         b9kIN0k0cfj1dmemCNMYO/8CoybEGclGwCkgLgnDQ+5o1r5cNAaeZDnsIuAPBiENXGEU
+         81InCLsqZE7+70WLa2sc8fzUDYPhp8D1gNv/C1OPInDc28+ezdg03ALWtEooH8hW6tyR
+         QD4J250Veggd3hxNu2C6Pf1B6ED174BjPwWkimp/C7IxYVVMmbN/n57p545FdPS2oQjz
+         sQ+Q==
+X-Gm-Message-State: AOAM533hbgdBmZy6E7VDGzenOBmZVhuv26VvQ9ldcUX3BVi4buDnJAsr
+        s4YIRLHZbxtdp/z+BdeV4ObIB/673vur9E5l
+X-Google-Smtp-Source: ABdhPJzBtCI4VowD9Iwme8UWUOdfX0tOvBmQwSrdCZKL4TslD81zSa8XW6GbUD12UflGAFZbRun0ew==
+X-Received: by 2002:a05:651c:2120:: with SMTP id a32mr28497251ljq.252.1630480058455;
+        Wed, 01 Sep 2021 00:07:38 -0700 (PDT)
+Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
+        by smtp.gmail.com with ESMTPSA id j5sm1942288lfu.1.2021.09.01.00.07.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 00:07:56 -0700 (PDT)
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Maurizio Lombardi <mlombard@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Konrad Rzeszutek Wilk <konrad@kernel.org>
-References: <20210901021510.1561219-1-nathan@kernel.org>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: Re: [PATCH] x86/setup: Explicitly include acpi.h
-Message-ID: <35bd6f7e-1dd3-da75-c8c8-464f0b2bdd9d@tessares.net>
-Date:   Wed, 1 Sep 2021 09:07:55 +0200
+        Wed, 01 Sep 2021 00:07:37 -0700 (PDT)
+Subject: Re: [PATCH] kconfig: forbid symbols that end with '_MODULE'
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org, Networking <netdev@vger.kernel.org>
+References: <20210825041637.365171-1-masahiroy@kernel.org>
+ <9df591f6-53fc-4567-8758-0eb1be4eade5@gmail.com>
+ <CAK7LNATDMzR1DnwwAcQFHaKZeGVYDZ1oDKL-QOe_7DaB_yByAA@mail.gmail.com>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Message-ID: <d9e777dc-d274-92ee-4d77-711bfd553611@gmail.com>
+Date:   Wed, 1 Sep 2021 10:07:57 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210901021510.1561219-1-nathan@kernel.org>
+In-Reply-To: <CAK7LNATDMzR1DnwwAcQFHaKZeGVYDZ1oDKL-QOe_7DaB_yByAA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nathan,
 
-On 01/09/2021 04:15, Nathan Chancellor wrote:
-> After commit 342f43af70db ("iscsi_ibft: fix crash due to KASLR physical
-> memory remapping"), certain configurations show the following errors:
+On 26/08/2021 05:28, Masahiro Yamada wrote:
+> On Wed, Aug 25, 2021 at 8:59 PM Péter Ujfalusi <peter.ujfalusi@gmail.com> wrote:
 
-Thank you for the patch!
+...
 
-It fixes the same issue on my side using a configuration based on
-x86_64_defconfig with a few extras on the Networking side only. My CI
-also noticed it was failing with a config based on tinyconfig.
+>>> diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
+>>> index 698d7bc84dcf..c56a5789056f 100644
+>>> --- a/sound/soc/ti/Kconfig
+>>> +++ b/sound/soc/ti/Kconfig
+>>> @@ -211,7 +211,7 @@ config SND_SOC_DM365_VOICE_CODEC
+>>>         Say Y if you want to add support for SoC On-chip voice codec
+>>>  endchoice
+>>>
+>>> -config SND_SOC_DM365_VOICE_CODEC_MODULE
+>>> +config SND_SOC_DM365_VOICE_CODEC_MODULAR
+>>
+>> This Kconfig option is only used to select the codecs needed for the
+>> voice mode, I think it would be better to use something like
+>>
+>> SND_SOC_DM365_SELECT_VOICE_CODECS ?
+> 
+> I do not have a strong opinion.
+> I am fine with any name unless it ends with _MODULE.
+> 
+> 
+> The sound subsystem maintainers and Arnd,
+> author of 147162f575152db800 are CC'ed.
+> 
+> If they suggest a better name, I'd be happy to adopt it.
+> 
 
-Tested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Can you resend (a separate patch would be even better) with
+SND_SOC_DM365_SELECT_VOICE_CODECS
 
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+for sound/soc/ti/Kconfig ?
+
+Thank you,
+Péter
