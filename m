@@ -2,165 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCA93FD3E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 08:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619EC3FD3E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 08:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242283AbhIAGju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 02:39:50 -0400
-Received: from mga01.intel.com ([192.55.52.88]:8764 "EHLO mga01.intel.com"
+        id S242281AbhIAGjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 02:39:24 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:44667 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242203AbhIAGjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 02:39:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="240919475"
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="240919475"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 23:38:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="520072356"
-Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 31 Aug 2021 23:38:39 -0700
-Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mLJtO-0007eC-Fy; Wed, 01 Sep 2021 06:38:38 +0000
-Date:   Wed, 01 Sep 2021 14:38:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:auto-latest] BUILD SUCCESS
- 689db7cba0d84858b80b0f54a32702d2ae0f2737
-Message-ID: <612f1fd8.IKy2XbIJjXpA4BMA%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231501AbhIAGjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 02:39:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630478305;
+        bh=+P+jRAAoHJInhbNG/oriIYBjdXcWSMHExv29E1M8JbM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=so2jUWO366M+SYsYAI/+T49i8RtNG/CQD6qHtUcqP+lLn/kfZ8omEQRL2xNzLvY5n
+         pLVCd4djNA4Jh1rOLg7i2F/pj+Lkg+10QswjxWaB4kZjohbHIlSQ+TOBmwXzPLsTFD
+         XWPwvbeddQ8DPK2IMXA/lxVuuxvG1fDzAhUj5fC8hkqT/D4C6sba5drbTi7L8JkDUb
+         F8zkz8ZzKU6wdIQCZkzAwEoNBCwd8DjWuCACCqWCJJ+zhqEJOtpp6mtHgBZ4CI4SqI
+         nB/YhWhj4AS7t5oghlknaOjZ/lVTKU3ZFgfEptO893FvMaF5TnthAChIlYFFd1WuJl
+         NQwkZZJZPtiTg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GzvX06Bwxz9sXk;
+        Wed,  1 Sep 2021 16:38:24 +1000 (AEST)
+Date:   Wed, 1 Sep 2021 16:38:22 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Konrad Rzeszutek Wilk <konrad@kernel.org>,
+        Maurizio Lombardi <mlombard@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the net-next tree
+Message-ID: <20210901163822.65beb208@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/41EVaJjowJ1ijmM/dv3QE1G";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git auto-latest
-branch HEAD: 689db7cba0d84858b80b0f54a32702d2ae0f2737  Merge branch 'locking/debug'
+--Sig_/41EVaJjowJ1ijmM/dv3QE1G
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-elapsed time: 1635m
+Hi all,
 
-configs tested: 106
-configs skipped: 3
+After merging the net-next tree, today's linux-next build (X86_64
+allnoconfig) failed like this:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+arch/x86/kernel/setup.c: In function 'setup_arch':
+arch/x86/kernel/setup.c:916:6: error: implicit declaration of function 'acp=
+i_mps_check' [-Werror=3Dimplicit-function-declaration]
+  916 |  if (acpi_mps_check()) {
+      |      ^~~~~~~~~~~~~~
+arch/x86/kernel/setup.c:1110:2: error: implicit declaration of function 'ac=
+pi_table_upgrade' [-Werror=3Dimplicit-function-declaration]
+ 1110 |  acpi_table_upgrade();
+      |  ^~~~~~~~~~~~~~~~~~
+arch/x86/kernel/setup.c:1112:2: error: implicit declaration of function 'ac=
+pi_boot_table_init' [-Werror=3Dimplicit-function-declaration]
+ 1112 |  acpi_boot_table_init();
+      |  ^~~~~~~~~~~~~~~~~~~~
+arch/x86/kernel/setup.c:1120:2: error: implicit declaration of function 'ea=
+rly_acpi_boot_init'; did you mean 'early_cpu_init'? [-Werror=3Dimplicit-fun=
+ction-declaration]
+ 1120 |  early_acpi_boot_init();
+      |  ^~~~~~~~~~~~~~~~~~~~
+      |  early_cpu_init
+arch/x86/kernel/setup.c:1162:2: error: implicit declaration of function 'ac=
+pi_boot_init' [-Werror=3Dimplicit-function-declaration]
+ 1162 |  acpi_boot_init();
+      |  ^~~~~~~~~~~~~~
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210831
-arc                 nsimosci_hs_smp_defconfig
-m68k                          atari_defconfig
-arm                         s3c2410_defconfig
-sh                          rsk7201_defconfig
-parisc                           alldefconfig
-arm                           u8500_defconfig
-arm                          lpd270_defconfig
-arm                        oxnas_v6_defconfig
-arm                        spear3xx_defconfig
-mips                           mtx1_defconfig
-sh                          r7785rp_defconfig
-powerpc                      katmai_defconfig
-arm                      jornada720_defconfig
-sh                           se7722_defconfig
-arc                         haps_hs_defconfig
-sh                             espt_defconfig
-sh                        edosk7705_defconfig
-arm                          imote2_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210831
-x86_64               randconfig-a001-20210831
-x86_64               randconfig-a003-20210831
-x86_64               randconfig-a002-20210831
-x86_64               randconfig-a004-20210831
-x86_64               randconfig-a006-20210831
-i386                 randconfig-a005-20210831
-i386                 randconfig-a002-20210831
-i386                 randconfig-a003-20210831
-i386                 randconfig-a006-20210831
-i386                 randconfig-a004-20210831
-i386                 randconfig-a001-20210831
-arc                  randconfig-r043-20210831
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Caused by commit
 
-clang tested configs:
-i386                 randconfig-c001-20210831
-s390                 randconfig-c005-20210831
-riscv                randconfig-c006-20210831
-powerpc              randconfig-c003-20210831
-mips                 randconfig-c004-20210831
-arm                  randconfig-c002-20210831
-x86_64               randconfig-c007-20210831
-x86_64               randconfig-a014-20210831
-x86_64               randconfig-a015-20210831
-x86_64               randconfig-a013-20210831
-x86_64               randconfig-a016-20210831
-x86_64               randconfig-a012-20210831
-x86_64               randconfig-a011-20210831
-i386                 randconfig-a016-20210831
-i386                 randconfig-a011-20210831
-i386                 randconfig-a015-20210831
-i386                 randconfig-a014-20210831
-i386                 randconfig-a012-20210831
-i386                 randconfig-a013-20210831
-s390                 randconfig-r044-20210831
-hexagon              randconfig-r041-20210831
-hexagon              randconfig-r045-20210831
-riscv                randconfig-r042-20210831
+  342f43af70db ("iscsi_ibft: fix crash due to KASLR physical memory remappi=
+ng")
 
+Unfortunately that commit has now been merged into Linus' tree as well.
+
+I have added the following fix patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 1 Sep 2021 16:31:32 +1000
+Subject: [PATCH] x86: include acpi.h when using acpi functions
+
+The removal of the include of linux/acpi.h from include/linux/iscsi_ibft.h
+by commit
+
+  342f43af70db ("iscsi_ibft: fix crash due to KASLR physical memory remappi=
+ng")
+
+exposed this build failure.
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ arch/x86/kernel/setup.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 63b20536c8d2..da0a4b64880f 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -13,6 +13,7 @@
+ #include <linux/init_ohci1394_dma.h>
+ #include <linux/initrd.h>
+ #include <linux/iscsi_ibft.h>
++#include <linux/acpi.h>
+ #include <linux/memblock.h>
+ #include <linux/panic_notifier.h>
+ #include <linux/pci.h>
+--=20
+2.32.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/41EVaJjowJ1ijmM/dv3QE1G
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEvH94ACgkQAVBC80lX
+0GxOQwf/T8m8+Tqc33+IK3OjriQHCNRR+al8xPZWweHJfTouB/OJyV21zPck4uxn
+D4FaDhDFVIgGXAaf22euc4zH/IbEetBszV8WoXH04hexQMxiTV/oiE6ZAEPMZiyw
+baiwKYD03KN5XcD+rFG2rOMRbQiAi28sXLEUQiGClrqk9s+owixf6Qup01+EDofv
+19Qt6JCOAprU6SBOHpDOHT6L022dWytGtXd8je195cL56JZVephSlZDXmUBI5zrd
+hkC4HtW7OT7AwKlWgAQmj7Kx8zm2b9DMd+eNUMGJ8JJ4o4xPg2nRc9YY3z3JhFnT
+1j7XgmsPaawcMu9lbieWxKmX8dVqTw==
+=jFds
+-----END PGP SIGNATURE-----
+
+--Sig_/41EVaJjowJ1ijmM/dv3QE1G--
