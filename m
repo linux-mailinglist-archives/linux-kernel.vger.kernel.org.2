@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0AE3FD63D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0809B3FD63F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243443AbhIAJNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39884 "EHLO
+        id S243484AbhIAJNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243431AbhIAJNH (ORCPT
+        with ESMTP id S243446AbhIAJNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:13:07 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163A4C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 02:12:11 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id k24so2096034pgh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:12:11 -0700 (PDT)
+        Wed, 1 Sep 2021 05:13:10 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB13C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 02:12:14 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id v123so1512370pfb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:12:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gWah+IetMQ7aNpxLyaztsF0WudYoMWYnrUia/FiXZFE=;
-        b=aazJOhw6HmE6zAcrZkuwG0M7/uRCKODFPzfpvRHRaD6cLUQwpOsG1cDMogCOJZysEb
-         Q4F2+2YU/y3IVyGuj9Bcx66RAX+frBRLcM9vPPd4HFo+COp6uOq4fZCZXtHSSMqMeSzE
-         bGJpPBzsntnWAZcje8IrxGaXJYDH1LLwYVEU2fNh3Xisv1pezDu3TOCxa7Nhlo1VdR39
-         WERAywUyhhAP02r07m8yqwp5VinT2c5wCAerCFHgkDo4p9v6GlS39o3fuXdA72QBeivf
-         hfzQWQSJ2UkxwnJ4OHS2J1HvjLMHe1OsIrm4VlI3Zx6kUfFdU/i1ZGq96Phb1JJ8Qmo7
-         UMvw==
+        bh=9awTdNZXeyUkH/oFOCLr7e4LdyXBILhh3s1aaJszUyk=;
+        b=ihEuaUERWeKow9ehEulv8jzIYo4APivhosmQp5knPz8bLu9qf2kiJ526U48rO2uRnL
+         p2gR9SCalooNAenTmIRj30SJOyHBuPevEvt2DN+UFuSBw6SLeP7SRC1deAzXrIFHEoFN
+         XqzPr7bevLHVks7G+mZXpn71JI+0nbgN8MKVAJ2NKpyRnNoLOQWzEhIlQ2HmOVXgmGdh
+         zMranfIMmYNrrKN60W3XQuBEd0HVgzTBXqnhpVpJ0CZq8YX6YjY+TF7imRJADHn9/lvm
+         sJB0d5CW9cwyNYBI8M7w4vDbjdl/mxv3hhgTE0u1CRw5HvpoYnRQKCV5mlR5y6B8Pt8i
+         q8pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gWah+IetMQ7aNpxLyaztsF0WudYoMWYnrUia/FiXZFE=;
-        b=Snj1ivXbsJeeimShBPlB7f/ORLU6pGt9QQNJvSWOJMh+Kb3+NLlUwTAAinr06ZFT+I
-         uSw9/cpNqTnCkgQrCx20H2hus9QmqZuknR35Jjee3Y/lLc1sFfpyMYoyCDE+cp2VtYIU
-         hCo/D2yVthDGU74rlfHTLnZERfAH3fdcirHBonqNHud05SjXbZ3Vkqv7TK03fR43vpHq
-         aY3yXLF07Bvpc8myW9bWh2IQS4M7VM0QmkFDhMMU/vpHqDRMK9M0/xPaGgz6w7dUEqm+
-         3xTXo+V6XC1DvHpyXVy2oMsYbPhzQYE1zJxHTP/j2/zv/dyg+ZpHIvYT2vG/ZXjKjp2F
-         +5kw==
-X-Gm-Message-State: AOAM531sV77h8G+dokBd6HRt7zJUL2Ldsn2sxdRSU1+sOkLhn0ERGcew
-        BXhRy6B5avJ/EoloE70eiszztg==
-X-Google-Smtp-Source: ABdhPJxx6arFHFXDgUFd17DleCNzFJq2OuN3u1BoBfcAtbs/82aMpkj/d3w5nFAGcQdzTMYAS+DH8w==
-X-Received: by 2002:a63:8f4a:: with SMTP id r10mr31328737pgn.337.1630487530535;
-        Wed, 01 Sep 2021 02:12:10 -0700 (PDT)
+        bh=9awTdNZXeyUkH/oFOCLr7e4LdyXBILhh3s1aaJszUyk=;
+        b=rJquRBm5fsqoMkRDnV0zTCO3cEYnsP9XqNVrYfBRNnC81pQoeBd4xeJ00UBsp4aB/9
+         D+oTv8rJ7YEfPI6MAlOHqlU7yuzXopkfGHUKXwFXR16Lz48b/0m/3DHj42CdD3kV8lxJ
+         E+dRpn2kFgIlxWl227hV9HGqdv1KvL0e0iXxIbkE/tTqeUDZWPmddCZ0q2ly9BC095Y1
+         vV4QXW7ROizOHbrToP0uJNF58V8s+TAtTqnVJjEj5gbpDrh5YkRGT+S06F9MxJLYZj44
+         pFiM+VWEH1DgzaV8FMWk3Ze7WqNl9TxV7wiPP5cdVpj7WtRWZ7DsVPgXyBCOS2GvFY/B
+         TZVQ==
+X-Gm-Message-State: AOAM531o+ZULG1mvjeIDXrl/QclKF3N87/W8TwDtFEhL+X9NhhuS55Oc
+        Vv4eQFAF9Nrf78Rj2b5qKABvPQ==
+X-Google-Smtp-Source: ABdhPJzXC3xDk2lbyoJmViBzLMbFm4JFysm5CrC+l/MMJFZq9mvpJS/kohLSc3tRGDIhCjVdJqNccw==
+X-Received: by 2002:a63:444c:: with SMTP id t12mr31095067pgk.212.1630487533654;
+        Wed, 01 Sep 2021 02:12:13 -0700 (PDT)
 Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id g141sm1062034pfb.128.2021.09.01.02.12.09
+        by smtp.gmail.com with ESMTPSA id k190sm12341642pgc.11.2021.09.01.02.12.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 02:12:10 -0700 (PDT)
+        Wed, 01 Sep 2021 02:12:13 -0700 (PDT)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Rafael Wysocki <rjw@rjwysocki.net>,
         Viresh Kumar <viresh.kumar@linaro.org>
 Cc:     linux-pm@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] cpufreq: acpi: Remove acpi_cpufreq_cpu_ready()
-Date:   Wed,  1 Sep 2021 14:41:55 +0530
-Message-Id: <f8f67df9cc5ebc37b0417b2320471f117598b10d.1630487322.git.viresh.kumar@linaro.org>
+Subject: [PATCH 2/3] cpufreq: sh: Remove sh_cpufreq_cpu_ready()
+Date:   Wed,  1 Sep 2021 14:41:56 +0530
+Message-Id: <2c81cd66e09dccb9189221d39f0871d9fc7192d3.1630487322.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 In-Reply-To: <cover.1630487322.git.viresh.kumar@linaro.org>
 References: <cover.1630487322.git.viresh.kumar@linaro.org>
@@ -66,57 +66,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ready() callback was implemented earlier for acpi-cpufreq driver as
-we wanted to use policy->cpuinfo.max_freq for which the policy was
-required to be verified.
-
-That is no longer the case and we can do the pr_warn() right from
-->init() callback now. Remove acpi_cpufreq_cpu_ready().
+The ->ready() callback is going away and since we don't do any important
+stuff in sh_cpufreq_cpu_ready(), remove it.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/cpufreq/acpi-cpufreq.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ drivers/cpufreq/sh-cpufreq.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-index b49612895c78..28467d83c745 100644
---- a/drivers/cpufreq/acpi-cpufreq.c
-+++ b/drivers/cpufreq/acpi-cpufreq.c
-@@ -889,6 +889,9 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	policy->fast_switch_possible = !acpi_pstate_strict &&
- 		!(policy_is_shared(policy) && policy->shared_type != CPUFREQ_SHARED_TYPE_ANY);
- 
-+	if (perf->states[0].core_frequency * 1000 != freq_table[0].frequency)
-+		pr_warn(FW_WARN "P-state 0 is not max freq\n");
-+
- 	return result;
- 
- err_unreg:
-@@ -918,16 +921,6 @@ static int acpi_cpufreq_cpu_exit(struct cpufreq_policy *policy)
+diff --git a/drivers/cpufreq/sh-cpufreq.c b/drivers/cpufreq/sh-cpufreq.c
+index 1a251e635ebd..b8704232c27b 100644
+--- a/drivers/cpufreq/sh-cpufreq.c
++++ b/drivers/cpufreq/sh-cpufreq.c
+@@ -145,16 +145,6 @@ static int sh_cpufreq_cpu_exit(struct cpufreq_policy *policy)
  	return 0;
  }
  
--static void acpi_cpufreq_cpu_ready(struct cpufreq_policy *policy)
+-static void sh_cpufreq_cpu_ready(struct cpufreq_policy *policy)
 -{
--	struct acpi_processor_performance *perf = per_cpu_ptr(acpi_perf_data,
--							      policy->cpu);
--	unsigned int freq = policy->freq_table[0].frequency;
+-	struct device *dev = get_cpu_device(policy->cpu);
 -
--	if (perf->states[0].core_frequency * 1000 != freq)
--		pr_warn(FW_WARN "P-state 0 is not max freq\n");
+-	dev_info(dev, "CPU Frequencies - Minimum %u.%03u MHz, "
+-	       "Maximum %u.%03u MHz.\n",
+-	       policy->min / 1000, policy->min % 1000,
+-	       policy->max / 1000, policy->max % 1000);
 -}
 -
- static int acpi_cpufreq_resume(struct cpufreq_policy *policy)
- {
- 	struct acpi_cpufreq_data *data = policy->driver_data;
-@@ -955,7 +948,6 @@ static struct cpufreq_driver acpi_cpufreq_driver = {
- 	.bios_limit	= acpi_processor_get_bios_limit,
- 	.init		= acpi_cpufreq_cpu_init,
- 	.exit		= acpi_cpufreq_cpu_exit,
--	.ready		= acpi_cpufreq_cpu_ready,
- 	.resume		= acpi_cpufreq_resume,
- 	.name		= "acpi-cpufreq",
- 	.attr		= acpi_cpufreq_attr,
+ static struct cpufreq_driver sh_cpufreq_driver = {
+ 	.name		= "sh",
+ 	.flags		= CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING,
+@@ -163,7 +153,6 @@ static struct cpufreq_driver sh_cpufreq_driver = {
+ 	.verify		= sh_cpufreq_verify,
+ 	.init		= sh_cpufreq_cpu_init,
+ 	.exit		= sh_cpufreq_cpu_exit,
+-	.ready		= sh_cpufreq_cpu_ready,
+ 	.attr		= cpufreq_generic_attr,
+ };
+ 
 -- 
 2.31.1.272.g89b43f80a514
 
