@@ -2,84 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B8B3FDDFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DAC3FDE05
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbhIAOui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 10:50:38 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:47826 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbhIAOue (ORCPT
+        id S233613AbhIAOwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 10:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231804AbhIAOwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 10:50:34 -0400
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9CD32559;
-        Wed,  1 Sep 2021 16:49:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1630507775;
-        bh=SzJdlaBw2o7qjms5gbWvAmffcgZIJGKBfa2wvQ36ybo=;
-        h=Subject:To:Cc:References:Reply-To:From:Date:In-Reply-To:From;
-        b=GguQUHRQF3m6G/R2aRSuo5pWJdzg7h85XeSNFzMO4vv722B3f1LfuB8b0uzuRPWLd
-         6Zsgl+AOXAU4lBAJj1Vxykgz/R5ioEk4Y87AbiIKhQ+YDecPCXzxfXODQe6dh6hD4G
-         +DY1EqJcl8BcMkSIuq+Qfz4pLNGEYs9+eqkY6q0M=
-Subject: Re: [PATCH v4] media: rcar_drif: Make use of the helper function
- devm_platform_get_and_ioremap_resource()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210901114459.31493-1-caihuoqing@baidu.com>
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <7c75aa3a-8b1f-2d63-4c30-2c638d60e2c6@ideasonboard.com>
-Date:   Wed, 1 Sep 2021 15:49:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 1 Sep 2021 10:52:03 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DC9C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 07:51:06 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id r6so3518616ilt.13
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 07:51:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=A0nlS22iBMThZqfXPVdS9Dl/ch7oDO0XrvxMcmZOkEg=;
+        b=LHSRcRoSkLln3X891+DbV/aOttQkwtG6ItlAHN344XfzcxNRyDONi1LHvw8qvmU7WD
+         b/xSZe67+mijmNJkIqHlaG/pteTkwozIoLVSyjR0FecxeoZ547bNPcOId3RSDTHShBtI
+         DMf9mS0RXSqV8ZRi0K+rwKtqbrme1NLFcwlWaFQUhtYFmDdRySIY+9OasbTDqfdUwnG5
+         8cXE58UFqInk6VrGDCCZAncIXBQaDPAI2/5GEvQNiIxWF+Axnhl+ePkmwwnKPU+mnkG5
+         t/0MHstNs0hSyXVYPcldaCXExeo91289i3YRZUs0REzD5bK913jr+yMB9weityO88feh
+         4C4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=A0nlS22iBMThZqfXPVdS9Dl/ch7oDO0XrvxMcmZOkEg=;
+        b=ipb7Wuxk74jHeeGlc0f0iP61B+PJ2z42Oo1TR2t6siAi+bAWU56bvqkwO0Y1WamfWy
+         vyhHK/NtX2eE5Cyqe38hoJXDWQxYg+qkRyXEp6EmEHcn5HsMcsdwWIZNVmNm/3tltJb/
+         Qw0c/vGY8vAaU+U90OCohyWR8ZkblfNfgXkJoVw9S9xLUZNXAFwkdLeGg6f7z+8kjdap
+         mk3t2EEuxhwd3ndR1scCgudjMJIfbK74PigE9nyoV7QZcgwJIeJfps7wV4XRzZ0nU4DD
+         lQRixP4+AWSQfqxbWvo9iJa3pq+PUjbTfF/JchgrKLPAK8FPMcrKir/3Kym3jdCmwovu
+         AHiA==
+X-Gm-Message-State: AOAM533tDXeXBooW+j6gI8S6ydBlK57NNh79dDwQe8WS7Rmtonh+v4LO
+        IM1LQtHocpIlWEBNmXPwCt+vB7gRQl0I1G9sQBI=
+X-Google-Smtp-Source: ABdhPJw1W230UQ6Lp40vKCd20J4n97P6kcBoZUSwlFnF/C/G7SNibbrxN8fp15yxct/DV+De+Y8+edphIyTFca6HUiw=
+X-Received: by 2002:a92:ca89:: with SMTP id t9mr25557592ilo.178.1630507865881;
+ Wed, 01 Sep 2021 07:51:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210901114459.31493-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Wed, 1 Sep 2021 09:50:55 -0500
+Message-ID: <CABb+yY08XqC40=vNuRfOU97bXHFo+R69LQvKavPv_N0NoF2PkQ@mail.gmail.com>
+Subject: [GIT PULL] Mailbox changes for v5.15
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/2021 12:44, Cai Huoqing wrote:
-> Use the devm_platform_get_and_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately.
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Hi Linus,
 
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+The following changes since commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
 
-> ---
-> v1->v2:
-> Use devm_platform_get_and_ioremap_resource() instead of
-> devm_platform_ioremap_resource().
-> v2->v3:
-> Update commit message.
-> v3->v4:
-> Remove the change - "struct resource *res"
->  
->  drivers/media/platform/rcar_drif.c | 3 +--
->  1 file changed, 1 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/rcar_drif.c b/drivers/media/platform/rcar_drif.c
-> index a505d991548b..e50673276d93 100644
-> --- a/drivers/media/platform/rcar_drif.c
-> +++ b/drivers/media/platform/rcar_drif.c
-> @@ -1395,8 +1395,7 @@ static int rcar_drif_probe(struct platform_device *pdev)
->  	}
->  
->  	/* Register map */
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	ch->base = devm_ioremap_resource(&pdev->dev, res);
-> +	ch->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
->  	if (IS_ERR(ch->base))
->  		return PTR_ERR(ch->base);
->  
-> 
+  Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
 
+are available in the Git repository at:
+
+  git://git.linaro.org/landing-teams/working/fujitsu/integration.git
+tags/mailbox-v5.15
+
+for you to fetch changes up to 85dfdbfc13ea9614a2168ce4a7d2cd089d84cb64:
+
+  mailbox: cmdq: add multi-gce clocks support for mt8195 (2021-08-31
+22:57:45 -0500)
+
+----------------------------------------------------------------
+- mtk: added support for mt8192 and mt8195
+minor fix regarding address shift.
+- qcom: added compatibles for MSM8953, SM6350 and SM6115
+enable loading IPCC as a module
+- misc: change Altera maintainer
+fix sti kernel-doc warnings
+
+----------------------------------------------------------------
+Amit Pundir (1):
+      mailbox: qcom-ipcc: Enable loading QCOM_IPCC as a module
+
+Iskren Chernev (2):
+      dt-bindings: mailbox: qcom: Add SM6115 APCS compatible
+      mailbox: qcom: Add support for SM6115 APCS IPC
+
+Joyce Ooi (1):
+      MAINTAINERS: Replace Ley Foon Tan as Altera Mailbox maintainer
+
+Konrad Dybcio (1):
+      dt-bindings: mailbox: qcom-ipcc: Add compatible for SM6350
+
+Randy Dunlap (1):
+      mailbox: sti: quieten kernel-doc warnings
+
+Vladimir Lypak (2):
+      dt-bindings: mailbox: Add compatible for the MSM8953
+      mailbox: qcom-apcs-ipc: Add compatible for MSM8953 SoC
+
+Yongqiang Niu (3):
+      dt-binding: gce: add gce header file for mt8192
+      mailbox: cmdq: add mt8192 support
+      soc: mediatek: cmdq: add address shift in jump
+
+jason-jh.lin (4):
+      dt-bindings: mailbox: add definition for mt8195
+      dt-bindings: gce: add gce header file for mt8195
+      mailbox: cmdq: add mediatek mailbox support for mt8195
+      mailbox: cmdq: add multi-gce clocks support for mt8195
+
+ .../devicetree/bindings/mailbox/mtk-gce.txt        |   9 +-
+ .../bindings/mailbox/qcom,apcs-kpss-global.yaml    |   2 +
+ .../devicetree/bindings/mailbox/qcom-ipcc.yaml     |   1 +
+ MAINTAINERS                                        |   2 +-
+ drivers/mailbox/Kconfig                            |   2 +-
+ drivers/mailbox/mailbox-sti.c                      |  16 +-
+ drivers/mailbox/mtk-cmdq-mailbox.c                 | 109 ++-
+ drivers/mailbox/qcom-apcs-ipc-mailbox.c            |   2 +
+ drivers/mailbox/qcom-ipcc.c                        |   1 +
+ include/dt-bindings/gce/mt8192-gce.h               | 335 +++++++++
+ include/dt-bindings/gce/mt8195-gce.h               | 812 +++++++++++++++++++++
+ 11 files changed, 1257 insertions(+), 34 deletions(-)
+ create mode 100644 include/dt-bindings/gce/mt8192-gce.h
+ create mode 100644 include/dt-bindings/gce/mt8195-gce.h
