@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8C43FDAE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73E13FDCDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245755AbhIAMfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:35:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34264 "EHLO mail.kernel.org"
+        id S1345603AbhIAMxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:53:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244662AbhIAMd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:33:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 787A6610CC;
-        Wed,  1 Sep 2021 12:32:19 +0000 (UTC)
+        id S1346405AbhIAMuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:50:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A237561104;
+        Wed,  1 Sep 2021 12:41:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499540;
-        bh=e9FOK3hE7ppakL8i/xLcGFGvFPB+l0tdIXhg9/AfHQY=;
+        s=korg; t=1630500094;
+        bh=sL1J6GCX0cXYB6pTbhNmDiPsvxDkc/vNW2Pl3uUkdy8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lQ5c94pC3G17aK6AkWxrQUe2TeXvqLC1uAwdJM8fNiidtvx6nJkHRnQ9pmP6p6zN2
-         U/SMy4hHe7PsAJ0rbsOTxhazmeGYaDjPElXM1Tx+n9c0uzKoYVADTM0rzz7WxbnOTQ
-         HnCAu1mvdQPa91bCiXjdPc0JUrhLfRFmAMYzLOSg=
+        b=Ue4YI4YK65/pecEGNNdIIFHcmM86gQFhI1yi8lRCij2gJLAXNko894cArvt9bWPVu
+         VsWQFEAjytWd71n5StdZaN1hfosFf9rAKf+lz0S9QMzD+MEijqRoU153ncyFIkgmwN
+         P3o+uECdWrxOXt590osM4Gpgo5Q7Os/SCXoAPjOY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org, Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 31/48] vringh: Use wiov->used to check for read/write desc order
-Date:   Wed,  1 Sep 2021 14:28:21 +0200
-Message-Id: <20210901122254.434540872@linuxfoundation.org>
+Subject: [PATCH 5.13 067/113] net: stmmac: add mutex lock to protect est parameters
+Date:   Wed,  1 Sep 2021 14:28:22 +0200
+Message-Id: <20210901122304.222144856@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +40,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neeraj Upadhyay <neeraju@codeaurora.org>
+From: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
 
-[ Upstream commit e74cfa91f42c50f7f649b0eca46aa049754ccdbd ]
+[ Upstream commit b2aae654a4794ef898ad33a179f341eb610f6b85 ]
 
-As __vringh_iov() traverses a descriptor chain, it populates
-each descriptor entry into either read or write vring iov
-and increments that iov's ->used member. So, as we iterate
-over a descriptor chain, at any point, (riov/wriov)->used
-value gives the number of descriptor enteries available,
-which are to be read or written by the device. As all read
-iovs must precede the write iovs, wiov->used should be zero
-when we are traversing a read descriptor. Current code checks
-for wiov->i, to figure out whether any previous entry in the
-current descriptor chain was a write descriptor. However,
-iov->i is only incremented, when these vring iovs are consumed,
-at a later point, and remain 0 in __vringh_iov(). So, correct
-the check for read and write descriptor order, to use
-wiov->used.
+Add a mutex lock to protect est structure parameters so that the
+EST parameters can be updated by other threads.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-Link: https://lore.kernel.org/r/1624591502-4827-1-git-send-email-neeraju@codeaurora.org
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vhost/vringh.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c | 12 +++++++++++-
+ include/linux/stmmac.h                          |  1 +
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-index 026a37ee4177..4653de001e26 100644
---- a/drivers/vhost/vringh.c
-+++ b/drivers/vhost/vringh.c
-@@ -331,7 +331,7 @@ __vringh_iov(struct vringh *vrh, u16 i,
- 			iov = wiov;
- 		else {
- 			iov = riov;
--			if (unlikely(wiov && wiov->i)) {
-+			if (unlikely(wiov && wiov->used)) {
- 				vringh_bad("Readable desc %p after writable",
- 					   &descs[i]);
- 				err = -EINVAL;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+index 4e70efc45458..fb5207dcbcaa 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+@@ -775,14 +775,18 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
+ 					 GFP_KERNEL);
+ 		if (!plat->est)
+ 			return -ENOMEM;
++
++		mutex_init(&priv->plat->est->lock);
+ 	} else {
+ 		memset(plat->est, 0, sizeof(*plat->est));
+ 	}
+ 
+ 	size = qopt->num_entries;
+ 
++	mutex_lock(&priv->plat->est->lock);
+ 	priv->plat->est->gcl_size = size;
+ 	priv->plat->est->enable = qopt->enable;
++	mutex_unlock(&priv->plat->est->lock);
+ 
+ 	for (i = 0; i < size; i++) {
+ 		s64 delta_ns = qopt->entries[i].interval;
+@@ -813,6 +817,7 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
+ 		priv->plat->est->gcl[i] = delta_ns | (gates << wid);
+ 	}
+ 
++	mutex_lock(&priv->plat->est->lock);
+ 	/* Adjust for real system time */
+ 	priv->ptp_clock_ops.gettime64(&priv->ptp_clock_ops, &current_time);
+ 	current_time_ns = timespec64_to_ktime(current_time);
+@@ -837,8 +842,10 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
+ 	priv->plat->est->ctr[0] = do_div(ctr, NSEC_PER_SEC);
+ 	priv->plat->est->ctr[1] = (u32)ctr;
+ 
+-	if (fpe && !priv->dma_cap.fpesel)
++	if (fpe && !priv->dma_cap.fpesel) {
++		mutex_unlock(&priv->plat->est->lock);
+ 		return -EOPNOTSUPP;
++	}
+ 
+ 	/* Actual FPE register configuration will be done after FPE handshake
+ 	 * is success.
+@@ -847,6 +854,7 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
+ 
+ 	ret = stmmac_est_configure(priv, priv->ioaddr, priv->plat->est,
+ 				   priv->plat->clk_ptp_rate);
++	mutex_unlock(&priv->plat->est->lock);
+ 	if (ret) {
+ 		netdev_err(priv->dev, "failed to configure EST\n");
+ 		goto disable;
+@@ -862,9 +870,11 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
+ 	return 0;
+ 
+ disable:
++	mutex_lock(&priv->plat->est->lock);
+ 	priv->plat->est->enable = false;
+ 	stmmac_est_configure(priv, priv->ioaddr, priv->plat->est,
+ 			     priv->plat->clk_ptp_rate);
++	mutex_unlock(&priv->plat->est->lock);
+ 
+ 	priv->plat->fpe_cfg->enable = false;
+ 	stmmac_fpe_configure(priv, priv->ioaddr,
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index 0db36360ef21..cb7fbd747ae1 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -115,6 +115,7 @@ struct stmmac_axi {
+ 
+ #define EST_GCL		1024
+ struct stmmac_est {
++	struct mutex lock;
+ 	int enable;
+ 	u32 btr_offset[2];
+ 	u32 btr[2];
 -- 
 2.30.2
 
