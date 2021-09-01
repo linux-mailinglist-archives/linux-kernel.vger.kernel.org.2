@@ -2,121 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908A13FDD90
+	by mail.lfdr.de (Postfix) with ESMTP id 470573FDD8F
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244924AbhIAN7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 09:59:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55149 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232598AbhIAN7N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 09:59:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630504696;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AtcCp/E1mJH1qo6IRVdtwg5GdGZiUHZsdrfrSmluGPA=;
-        b=Ldk0iK3NYp/7XndnaOxxAF42saYLUAHkZ8s3iJUQRl0bRrS7m/kIXtXLS3mSAws3tEMxZR
-        /+WxwY/rfjTr23FmJafobFNzU3rp6b67aNngl6Fmafu0U07xBelN1+EAnKI3IDHKaWf0NG
-        mBgfVVLNPeRuV1gnI99Do9McdyViqLA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-OkIPh8snPE-S-gmu3U7yUg-1; Wed, 01 Sep 2021 09:57:12 -0400
-X-MC-Unique: OkIPh8snPE-S-gmu3U7yUg-1
-Received: by mail-wm1-f69.google.com with SMTP id a201-20020a1c7fd2000000b002e748bf0544so2875032wmd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 06:57:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=AtcCp/E1mJH1qo6IRVdtwg5GdGZiUHZsdrfrSmluGPA=;
-        b=pZkaWM1hda9rlueS7CJqzeuOnkisxeWOit5w1lclG9dGlIsrAtSTNONvJKOYahmFtb
-         eaXFukx2vELJIMBVjgENzdeG9Yws6biU9s7SugV8gJwotuMS3hj4y7QRByoQoy7//Mh5
-         4pdju9aj7cAjg0q+q6g/o1SgVwzOklZ4iVnKpyvbfX44QXgzt/svqHayDIGzsP6aflba
-         WkAjFWooSe5Xp02wv1mZ3Rn1bwXRKlYZu7A1fa9QLwj5+ZcMWdI9tWtWRsUyoBLFLAXa
-         SROUUVEUjM/H5R6BhFxfc8JKOmWv3KfBX0wKLEWAI4a/WpenCi11rlVNeOodscPNlf1v
-         QA2g==
-X-Gm-Message-State: AOAM530BcxHLsHL4odTK4KoF2cXalmIln8CSD/hZKOxgFMoJwSx/H91s
-        wckVhIsNEffubN5U3j2FqJ+JgNH3sL0I5sq6l5QFQn1LzR2umiNwAJ9TXu4IAVWOSot05pmRytG
-        f5PUzhgc+A+EEP1e6c0JXvQO6
-X-Received: by 2002:adf:f403:: with SMTP id g3mr36321521wro.206.1630504631348;
-        Wed, 01 Sep 2021 06:57:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw8AAzCiaIzpXWN507TidFNNd5TOET80fPvXM2IZjrsm98BojK/EWo12Z9GfuLAARluEbknaA==
-X-Received: by 2002:adf:f403:: with SMTP id g3mr36321499wro.206.1630504631115;
-        Wed, 01 Sep 2021 06:57:11 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
-        by smtp.gmail.com with ESMTPSA id u16sm5978489wmc.41.2021.09.01.06.57.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 06:57:10 -0700 (PDT)
-Subject: Re: [PATCH v2 6/9] mm: free user PTE page table pages
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, tglx@linutronix.de, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com
-References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
- <20210819031858.98043-7-zhengqi.arch@bytedance.com>
- <20210901135314.GA1859446@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <0c9766c9-6e8b-5445-83dc-9f2b71a76b4f@redhat.com>
-Date:   Wed, 1 Sep 2021 15:57:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S244759AbhIAN67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 09:58:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232598AbhIAN66 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 09:58:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F5F961027;
+        Wed,  1 Sep 2021 13:58:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630504681;
+        bh=4W4xcNeNj8GfQiciEBIsSsUKEEzijV2sr68dhE9kOVY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mtktZLdDjwmU0v5d2MJEiClFYk6aeiKcvi04xWnnV3pBAEdmVMq0UUQ+OCh7VVNUB
+         jJ9GIfQ7Jke/cpiKmdrNenHrU/411YDEQyufpIBYpq9DYGeLY2A8EUH5SU5tgyCjGm
+         Hzz/O2ukOy8mWIaerSlVkgW4BRnQalTajkAaR8QoiPgPzLd1l6btkxCq7dw88kmP3Q
+         HYEKItyWDZzKMHD4wkbYokkNYCW12B4t0yZpr5M6NshlRWxUfd/o3rCeLVNWELywx/
+         cOLOB5C4uzuEHUr/IWWbceFp9bTVjbXEL77bGUtSWQHtt7Jzs3HkxTZH4MfJXVnvmc
+         Vq3TP8iG1IJIw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3BBC14007E; Wed,  1 Sep 2021 10:57:58 -0300 (-03)
+Date:   Wed, 1 Sep 2021 10:57:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, rickyman7@gmail.com,
+        john.garry@huawei.com, Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [PATCH v6 1/2] perf pmu: Add PMU alias support
+Message-ID: <YS+G5s41RWX0GIqG@kernel.org>
+References: <20210901054602.17010-1-yao.jin@linux.intel.com>
+ <20210901054602.17010-2-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210901135314.GA1859446@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901054602.17010-2-yao.jin@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.21 15:53, Jason Gunthorpe wrote:
-> On Thu, Aug 19, 2021 at 11:18:55AM +0800, Qi Zheng wrote:
-> 
->> diff --git a/mm/gup.c b/mm/gup.c
->> index 2630ed1bb4f4..30757f3b176c 100644
->> +++ b/mm/gup.c
->> @@ -500,6 +500,9 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
->>   	if (unlikely(pmd_bad(*pmd)))
->>   		return no_page_table(vma, flags);
->>   
->> +	if (!pte_try_get(mm, pmd))
->> +		return no_page_table(vma, flags);
->> +
->>   	ptep = pte_offset_map_lock(mm, pmd, address, &ptl);
-> 
-> This is not good on a performance path, the pte_try_get() is
-> locking/locking the same lock that pte_offset_map_lock() is getting.
+Em Wed, Sep 01, 2021 at 01:46:01PM +0800, Jin Yao escreveu:
+<SNIP>
 
-Yes, and we really need patch #8, anything else is just confusing reviewers.
+> +++ b/tools/perf/arch/x86/util/pmu.c
 
-> 
-> This would be much better if the map_lock infra could manage the
-> refcount itself.
-> 
-> I'm also not really keen on adding ptl level locking to all the
-> currently no-lock paths. If we are doing that then the no-lock paths
-> should rely on the ptl for alot more of their operations and avoid the
-> complicatred no-lock data access we have. eg 'pte_try_get()' should
-> also copy the pte_t under the lock.
-> 
-> Also, I don't really understand how this scheme works with
-> get_user_pages_fast.
+<SNIP>
 
-With the RCU change it in #8 it should work just fine, because RCU 
-synchronize has to wait either until all other CPUs have left the RCU 
-read section, or re-enabled interrupts.
+> +static int setup_pmu_alias_list(void)
+> +{
+> +	char path[PATH_MAX];
+> +	DIR *dir;
+> +	struct dirent *dent;
+> +	const char *sysfs = sysfs__mountpoint();
+> +	struct perf_pmu_alias_name *pmu;
+> +	char buf[MAX_PMU_NAME_LEN];
+> +	FILE *file;
+> +	int ret = 0;
+> +
+> +	if (!sysfs)
+> +		return -1;
+> +
+> +	snprintf(path, PATH_MAX,
+> +		 "%s" EVENT_SOURCE_DEVICE_PATH, sysfs);
+> +
+> +	dir = opendir(path);
+> +	if (!dir)
+> +		return -1;
+> +
+> +	while ((dent = readdir(dir))) {
+> +		if (!strcmp(dent->d_name, ".") ||
+> +		    !strcmp(dent->d_name, ".."))
+> +			continue;
+> +
+> +		snprintf(path, PATH_MAX,
+> +			 TEMPLATE_ALIAS, sysfs, dent->d_name);
+> +
+> +		if (!file_available(path))
+> +			continue;
+> +
+> +		file = fopen(path, "r");
+> +		if (!file)
+> +			continue;
+> +
+> +		if (!fgets(buf, sizeof(buf), file)) {
+> +			fclose(file);
+> +			continue;
+> +		}
+> +
+> +		fclose(file);
+> +
+> +		pmu = zalloc(sizeof(*pmu));
+> +		if (!pmu) {
+> +			ret = -ENOMEM;
+> +			break;
+> +		}
+> +
+> +		/* Remove the last '\n' */
+> +		buf[strlen(buf) - 1] = 0;
+> +
+> +		pmu->alias = strdup(buf);
+> +		if (!pmu->alias)
+> +			goto mem_err;
 
--- 
-Thanks,
+This isn't returning -ENOMEM like when zalloc() fails above. Also you're
+mixing 'return -1' with 'return -ENOMEM', please be consistent. Please
+find some -E errno for the !sysfs case, perhaps -ENODEV?
 
-David / dhildenb
+> +
+> +		pmu->name = strdup(dent->d_name);
+> +		if (!pmu->name)
+> +			goto mem_err;
+> +
+> +		list_add_tail(&pmu->list, &pmu_alias_name_list);
+> +		continue;
 
+
+Don't we have a 'struct pmu' constructor/destructor pair? I.e. instead
+of doing all this in an open coded way as above, why not have:
+
+void pmu__delete(struct pmu *pmu)
+{
+	if (!pmu)
+		return;
+
+	zfree(&pmu->name);
+	zfree(&pmu->alias);
+	free(pmu);
+}
+
+struct pmu *pmu__new(const char *name, const char *alias)
+{
+	struct pmu *pmu = zalloc(sizeof(*pmu));
+
+	if (pmu) {
+		pmu->name = strdup(name);
+		if (!pmu->name)
+			goto out_delete;
+
+		pmu->alias = strdup(alias);
+		if (!pmu->alias)
+			goto out_delete;
+	}
+
+	return pmu;
+out_err:
+	pmu__delete(pmu);
+	return NULL;
+}
+
+	And then just:
+
+	pmu = pmu__new(dent->d_name, buf);
+	if (!pmu)
+		goto out_closedir;
+
+	list_add_tail(&pmu->list, &pmu_alias_name_list);
+
+And then you don't need the 'continue', as this is the end of the loop
+block.
+		
+That 'ret' probably should start with -ENOMEM and you end the function
+with:
+
+	ret = 0;
+out_closedir:
+	closedir(dir);
+	return ret;
+}
+
+
+The pmu__delete() should be used in perf's shutdown when running it
+using memory leak detectors, when not using it, its ok to just leave it
+as is to speed up the shutdown.
+
+- Arnaldo
+
+> +mem_err:
+> +		free(pmu->alias);
+> +		free(pmu->name);
+> +		free(pmu);
+> +		break;
+> +	}
+> +
+> +	closedir(dir);
+> +	return ret;
+> +}
+> +
+> +static char *__pmu_find_real_name(const char *name)
+> +{
+> +	struct perf_pmu_alias_name *pmu;
+> +
+> +	list_for_each_entry(pmu, &pmu_alias_name_list, list) {
+> +		if (!strcmp(name, pmu->alias))
+> +			return pmu->name;
+> +	}
+> +
+> +	return (char *)name;
+> +}
+> +
+> +char *pmu_find_real_name(const char *name)
+> +{
+> +	if (cached_list)
+> +		return __pmu_find_real_name(name);
+> +
+> +	setup_pmu_alias_list();
+> +	cached_list = true;
+> +
+> +	return __pmu_find_real_name(name);
+> +}
+> +
+> +static char *__pmu_find_alias_name(const char *name)
+> +{
+> +	struct perf_pmu_alias_name *pmu;
+> +
+> +	list_for_each_entry(pmu, &pmu_alias_name_list, list) {
+> +		if (!strcmp(name, pmu->name))
+> +			return pmu->alias;
+> +	}
+> +	return NULL;
+> +}
+> +
+> +char *pmu_find_alias_name(const char *name)
+> +{
+> +	if (cached_list)
+> +		return __pmu_find_alias_name(name);
+> +
+> +	setup_pmu_alias_list();
+> +	cached_list = true;
+> +
+> +	return __pmu_find_alias_name(name);
+> +}
+> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+> index 9321bd0e2f76..d94e48e1ff9b 100644
+> --- a/tools/perf/util/parse-events.y
+> +++ b/tools/perf/util/parse-events.y
+> @@ -316,7 +316,8 @@ event_pmu_name opt_pmu_config
+>  			if (!strncmp(name, "uncore_", 7) &&
+>  			    strncmp($1, "uncore_", 7))
+>  				name += 7;
+> -			if (!perf_pmu__match(pattern, name, $1)) {
+> +			if (!perf_pmu__match(pattern, name, $1) ||
+> +			    !perf_pmu__match(pattern, pmu->alias_name, $1)) {
+>  				if (parse_events_copy_term_list(orig_terms, &terms))
+>  					CLEANUP_YYABORT;
+>  				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 6cdbee8a12e7..1a35915edf68 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -945,6 +945,18 @@ perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
+>  	return NULL;
+>  }
+>  
+> +char * __weak
+> +pmu_find_real_name(const char *name)
+> +{
+> +	return (char *)name;
+> +}
+> +
+> +char * __weak
+> +pmu_find_alias_name(const char *name __maybe_unused)
+> +{
+> +	return NULL;
+> +}
+> +
+>  static int pmu_max_precise(const char *name)
+>  {
+>  	char path[PATH_MAX];
+> @@ -958,13 +970,15 @@ static int pmu_max_precise(const char *name)
+>  	return max_precise;
+>  }
+>  
+> -static struct perf_pmu *pmu_lookup(const char *name)
+> +static struct perf_pmu *pmu_lookup(const char *lookup_name)
+>  {
+>  	struct perf_pmu *pmu;
+>  	LIST_HEAD(format);
+>  	LIST_HEAD(aliases);
+>  	__u32 type;
+> +	char *name = pmu_find_real_name(lookup_name);
+>  	bool is_hybrid = perf_pmu__hybrid_mounted(name);
+> +	char *alias_name;
+>  
+>  	/*
+>  	 * Check pmu name for hybrid and the pmu may be invalid in sysfs
+> @@ -995,6 +1009,16 @@ static struct perf_pmu *pmu_lookup(const char *name)
+>  
+>  	pmu->cpus = pmu_cpumask(name);
+>  	pmu->name = strdup(name);
+> +	if (!pmu->name)
+> +		goto err;
+> +
+> +	alias_name = pmu_find_alias_name(name);
+> +	if (alias_name) {
+> +		pmu->alias_name = strdup(alias_name);
+> +		if (!pmu->alias_name)
+> +			goto err;
+> +	}
+> +
+>  	pmu->type = type;
+>  	pmu->is_uncore = pmu_is_uncore(name);
+>  	if (pmu->is_uncore)
+> @@ -1017,15 +1041,22 @@ static struct perf_pmu *pmu_lookup(const char *name)
+>  	pmu->default_config = perf_pmu__get_default_config(pmu);
+>  
+>  	return pmu;
+> +err:
+> +	if (pmu->name)
+> +		free(pmu->name);
+> +	free(pmu);
+> +	return NULL;
+>  }
+>  
+>  static struct perf_pmu *pmu_find(const char *name)
+>  {
+>  	struct perf_pmu *pmu;
+>  
+> -	list_for_each_entry(pmu, &pmus, list)
+> -		if (!strcmp(pmu->name, name))
+> +	list_for_each_entry(pmu, &pmus, list) {
+> +		if (!strcmp(pmu->name, name) ||
+> +		    (pmu->alias_name && !strcmp(pmu->alias_name, name)))
+>  			return pmu;
+> +	}
+>  
+>  	return NULL;
+>  }
+> @@ -1919,6 +1950,9 @@ bool perf_pmu__has_hybrid(void)
+>  
+>  int perf_pmu__match(char *pattern, char *name, char *tok)
+>  {
+> +	if (!name)
+> +		return -1;
+> +
+>  	if (fnmatch(pattern, name, 0))
+>  		return -1;
+>  
+> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> index 033e8211c025..6b122f97acf3 100644
+> --- a/tools/perf/util/pmu.h
+> +++ b/tools/perf/util/pmu.h
+> @@ -21,6 +21,7 @@ enum {
+>  #define PERF_PMU_FORMAT_BITS 64
+>  #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
+>  #define CPUS_TEMPLATE_CPU	"%s/bus/event_source/devices/%s/cpus"
+> +#define MAX_PMU_NAME_LEN 128
+>  
+>  struct perf_event_attr;
+>  
+> @@ -32,6 +33,7 @@ struct perf_pmu_caps {
+>  
+>  struct perf_pmu {
+>  	char *name;
+> +	char *alias_name;
+>  	char *id;
+>  	__u32 type;
+>  	bool selectable;
+> @@ -136,4 +138,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
+>  bool perf_pmu__has_hybrid(void);
+>  int perf_pmu__match(char *pattern, char *name, char *tok);
+>  
+> +char *pmu_find_real_name(const char *name);
+> +char *pmu_find_alias_name(const char *name);
+> +
+>  #endif /* __PMU_H */
+> -- 
+> 2.17.1
