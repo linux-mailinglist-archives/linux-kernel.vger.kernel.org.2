@@ -2,194 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6FA3FE58A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41FB83FE58F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244552AbhIAWmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 18:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbhIAWmm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 18:42:42 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1F3C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 15:41:45 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id 2so87307pfo.8
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 15:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3NRYGbQG6UX30AqNmUtI7t7dPAOy9Ipa6jbNHk92/oY=;
-        b=kl7crTyanbSy2UXfXA3Wou6TvpU8o2k7DIs/hsyl4HUy2mMMnRlxAItMfrzVYFyhs6
-         ypHxuUVf8YzjKIc8uCQj2mkC6lWfeKjPTjKL9YKItWyuKSL8sERYS1LzL95jkcNPJJhv
-         5OV8TyO8m4uzWDC7lC3WGY607fIYH9LuHgi4CRJR+wqZLqnG7VQPn+0aH3TtXJl0Aymh
-         /srhoPyJvch+nksJBUWGtUVWcPNSwKKwQeXD1e0SNE2wDxP0K73Gupa1wxjFzX92t1a9
-         zTfjbsn9rFgbSLw9Vk4iRiAwYXd705col894ZTXBBWFFVjUiQ1XzVYcSuJ1X7esBJBYa
-         WlRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3NRYGbQG6UX30AqNmUtI7t7dPAOy9Ipa6jbNHk92/oY=;
-        b=cYPCtHL3br4xplNt/orGE2l1XeDQOn2YhCR3Z5/OqYNQTYcCdaHyW3Y9td1Khk9YsB
-         WaiYDaXopHS/Ai1xr3uYvMA/O2QMN07n6zwb9fX0VX8YAdIEIt19MiM8gnMSJqI+2+mg
-         abv/PyqrKXCMGXcO4R3qH9w0DquJWSviY6gIU2qZx6msOClOkayo08LJHM3Jn6cymTeC
-         mazN9+y40nhu3UE/j9fKAUjOibDz+kurGmjy9XDHFDltbL+ukUd2IqwB5uNunjyv9DQ4
-         8gOrCy1m0HPtiYxkKQsQPlD7kLt3zwrVk/YCkXR5/u3AMjyvX+EmKScztb9qhJ3BrY0V
-         fLMw==
-X-Gm-Message-State: AOAM531i6QWKkoQpKULkmz/M8FP5bO9JijLXq+JEIYC8TUWEi8uHfE80
-        O8Xd8DDkq0L7CeDJQTaLMAJAUA==
-X-Google-Smtp-Source: ABdhPJxBfJJQdPBhA8L8/oHzvypAYhFXCZBTr7W2qH2Su2I2/jYavct8zDw+qdTg98pZl5YPPP2AeA==
-X-Received: by 2002:a63:6e02:: with SMTP id j2mr3697pgc.157.1630536104537;
-        Wed, 01 Sep 2021 15:41:44 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id r22sm15239pjp.7.2021.09.01.15.41.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 15:41:44 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 22:41:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-coco@lists.linux.dev,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v2.1 3/4] KVM: SVM: Add support for Hypervisor Feature
- support MSR protocol
-Message-ID: <YTABpNDxSkO84VAf@google.com>
-References: <20210722115245.16084-1-joro@8bytes.org>
- <20210722115245.16084-4-joro@8bytes.org>
- <YPleNFvmsEi3kBZk@8bytes.org>
+        id S245295AbhIAWmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 18:42:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244935AbhIAWmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 18:42:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEBD961074;
+        Wed,  1 Sep 2021 22:41:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630536116;
+        bh=77MmJsqsUPuSG3h/bnm06TfCwbXA3EPH83b89+5uW2U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=dHI0LJk+dZT0xgWylN+Z8LTmxrxVvhsu0AbsTFI7fFAlwazcnAWHy6vN63t6/8G6c
+         6pNDmTea8P8WSmcE6dm4GzpzKaX+YuurwHH3n21y8rpPqjwEoYgryadtOXQ46igxyl
+         vMS6XZbd2QnXfO6fEO/+qFxx+/C17apOvMES3/lEsPvF97YsPcySswuUHM18DYnOJ0
+         klE0Tryzru9qi8FjpcsIzq6SqRcvZ/t8Zs4NyGiICuGcC7X3ZkZXLUzmnxPh1rJcps
+         ET0d6/6X8y6u27fA6zNy/1qCMZ9uiMM6RWQO8xE5CJ1e+rP2cUEMl5sAlBn0iYFNky
+         kvwUDj9VMLUtA==
+Date:   Wed, 1 Sep 2021 17:41:54 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
+Message-ID: <20210901224154.GA230445@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YPleNFvmsEi3kBZk@8bytes.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f293c619399ba8bd60240879a20ee34db1248255.camel@sipsolutions.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021, Joerg Roedel wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
+On Wed, Sep 01, 2021 at 07:07:58PM +0200, Johannes Berg wrote:
+> On Wed, 2021-09-01 at 18:51 +0200, Heiner Kallweit wrote:
+> > On 01.09.2021 17:51, Pali Roh·r wrote:
+> > > On Wednesday 01 September 2021 16:01:54 Jonas Dreﬂler wrote:
+> > > > On 8/30/21 2:49 PM, Andy Shevchenko wrote:
+> > > > > On Mon, Aug 30, 2021 at 3:38 PM Jonas Dreﬂler <verdre@v0yd.nl> wrote:
+> > > > > > 
+> > > > > > On the 88W8897 card it's very important the TX ring write pointer is
+> > > > > > updated correctly to its new value before setting the TX ready
+> > > > > > interrupt, otherwise the firmware appears to crash (probably because
+> > > > > > it's trying to DMA-read from the wrong place).
+> > > > > > 
+> > 
+> > This sounds somehow like the typical case where you write DMA descriptors
+> > and then ring the doorbell. This normally requires a dma_wmb().
+> > Maybe something like that is missing here?
 > 
-> Version 2 of the GHCB specification introduced advertisement of
-> supported Hypervisor SEV features. This request is required to support
-> a the GHCB version 2 protocol.
+> But it looks like this "TX ring write pointer" is actually the register?
 > 
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/include/uapi/asm/svm.h |  1 +
->  arch/x86/kvm/svm/sev.c          | 21 +++++++++++++++++++++
->  arch/x86/kvm/svm/svm.h          |  1 +
->  3 files changed, 23 insertions(+)
+> However, I would agree that doing it in mwifiex_write_reg() is possibly
+> too big a hammer - could be done only for reg->tx_wrptr, not all the
+> registers?
 > 
-> diff --git a/arch/x86/include/uapi/asm/svm.h b/arch/x86/include/uapi/asm/svm.h
-> index efa969325ede..fbb6f8d27a80 100644
-> --- a/arch/x86/include/uapi/asm/svm.h
-> +++ b/arch/x86/include/uapi/asm/svm.h
-> @@ -108,6 +108,7 @@
->  #define SVM_VMGEXIT_AP_JUMP_TABLE		0x80000005
->  #define SVM_VMGEXIT_SET_AP_JUMP_TABLE		0
->  #define SVM_VMGEXIT_GET_AP_JUMP_TABLE		1
-> +#define SVM_VMGEXIT_HV_FT			0x8000fffd
+> Actually, can two writes actually cross on PCI?
 
-For this KVM-only (for all intents and purposes) name, please use the verbose
-SVM_VMGEXIT_HYPERVISOR_FEATURES.
+Per PCIe r5.0, sec 2.4.1,
 
-https://lkml.kernel.org/r/b73ad44e-7719-cde7-d543-df34e5acf9a5@amd.com
+  A2a  A Posted Request must not pass another Posted Request unless A2b
+       applies.
 
->  #define SVM_VMGEXIT_UNSUPPORTED_EVENT		0x8000ffff
->  
->  /* Exit code reserved for hypervisor/software use */
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index a32ef011025f..4565c360d87d 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -2180,6 +2180,7 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
->  	case SVM_VMGEXIT_AP_HLT_LOOP:
->  	case SVM_VMGEXIT_AP_JUMP_TABLE:
->  	case SVM_VMGEXIT_UNSUPPORTED_EVENT:
-> +	case SVM_VMGEXIT_HV_FT:
->  		break;
->  	default:
->  		goto vmgexit_err;
-> @@ -2361,6 +2362,16 @@ static void set_ghcb_msr_ap_rst_resp(struct vcpu_svm *svm, u64 value)
->  	svm->vmcb->control.ghcb_gpa = GHCB_MSR_AP_RESET_HOLD_RESP | (value << GHCB_DATA_LOW);
->  }
->  
-> +static void set_ghcb_msr_hv_feat_resp(struct vcpu_svm *svm, u64 value)
-> +{
-> +	u64 msr;
-> +
-> +	msr  = GHCB_MSR_HV_FT_RESP;
-> +	msr |= (value << GHCB_DATA_LOW);
-> +
-> +	svm->vmcb->control.ghcb_gpa = msr;
-> +}
-> +
->  static void set_ghcb_msr(struct vcpu_svm *svm, u64 value)
->  {
->  	svm->vmcb->control.ghcb_gpa = value;
-> @@ -2425,6 +2436,10 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
->  
->  		break;
->  	}
-> +	case GHCB_MSR_HV_FT_REQ: {
-> +		set_ghcb_msr_hv_feat_resp(svm, GHCB_HV_FT_SUPPORTED);
+  A2b  A Posted Request with RO Set is permitted to pass another
+       Posted Request.  A Posted Request with IDO Set is permitted to
+       pass another Posted Request if the two Requester IDs are
+       different or if both Requests contain a PASID TLP Prefix and
+       the two PASID values are different.
 
-I definitely think there are too many small wrappers that bury the write to
-svm->vmcb->control.ghcb_gpa.  E.g. with a rename, this
+A few drivers enable RO (Relaxed Ordering) for their devices, which
+means the *device* is permitted to set the RO bit in transactions it
+initiates.
 
-		control->ghcb_msr = GHCB_MSR_HV_FT_RESP |
-				    (GHCB_HV_FT_SUPPORTED << GHCB_DATA_LOW);
+BUt IIUC we're talking about MMIO writes initiated by a CPU, and they
+won't have the RO bit set unless the Root Port has Relaxed Ordering
+enabled, and Linux generally does not enable that.  So A2a should
+apply, and writes should be ordered on PCI.
 
-or maybe add a generic helper for simple data responses?  E.g. GHCB_MSR_AP_RESET_HOLD_REQ
-can share a macro.
+There are a few wrinkles that I worry about:
 
-		control->ghcb_msr = GHCB_MSR_RESP_WITH_DATA(GHCB_MSR_HV_FT_RESP,
-							    GHCB_HV_FT_SUPPORTED);
+  d1e714db8129 ("mtip32xx: Fix ERO and NoSnoop values in PCIe upstream
+  on AMD systems") [1] turns off RO for some AMD Root Ports, which
+  makes me think BIOS might be enabling RO in these Root Ports.
 
-> +		break;
-> +	}
+  c56d4450eb68 ("PCI: Turn off Request Attributes to avoid Chelsio T5
+  Completion erratum") [2] turns off RO for all Root Ports leading to
+  Chelsio T5 devices, which again makes me think there's firmware that
+  enables RO in Root Ports.  Follow-up [3].
 
-Unnecessary braces.
+  77ffc1465cec ("tegra: add PCI Express support") [4] (see
+  tegra_pcie_relax_enable()) enables RO for Tegra Root Ports due to
+  some hardware issue.  I don't whether these Root Ports every
+  actually *set* RO in the PCIe transactions they generate.  Follow-up
+  [5].
 
->  	case GHCB_MSR_TERM_REQ: {
->  		u64 reason_set, reason_code;
->  
-> @@ -2537,6 +2552,12 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
->  		ret = 1;
->  		break;
->  	}
-> +	case SVM_VMGEXIT_HV_FT: {
-> +		ghcb_set_sw_exit_info_2(ghcb, GHCB_HV_FT_SUPPORTED);
-> +
-> +		ret = 1;
-> +		break;
-> +	}
+These concern me because I don't think we have a way for drivers to
+specify whether their writes should use strong ordering or relaxed
+ordering, and I think they depend on strong ordering.  If Root Ports
+have RO enabled, I think we are at risk, so I suspect Linux should
+actively *disable* RO for Root Ports.
 
-Unnecessary braces.
-
->  	case SVM_VMGEXIT_UNSUPPORTED_EVENT:
->  		vcpu_unimpl(vcpu,
->  			    "vmgexit: unsupported event - exit_info_1=%#llx, exit_info_2=%#llx\n",
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 7e2090752d8f..9cafeba3340e 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -550,6 +550,7 @@ void svm_vcpu_unblocking(struct kvm_vcpu *vcpu);
->  #define GHCB_VERSION_MAX	1ULL
->  #define GHCB_VERSION_MIN	1ULL
->  
-> +#define GHCB_HV_FT_SUPPORTED	0
->  
->  extern unsigned int max_sev_asid;
->  
-> -- 
-> 2.31.1
-> 
+[1] https://git.kernel.org/linus/d1e714db8129
+[2] https://git.kernel.org/linus/c56d4450eb68
+[3] https://lore.kernel.org/r/20210901222353.GA251391@bjorn-Precision-5520
+[4] https://git.kernel.org/linus/77ffc1465cec
+[5] https://lore.kernel.org/r/20210901204045.GA236987@bjorn-Precision-5520
