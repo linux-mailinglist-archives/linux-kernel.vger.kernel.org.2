@@ -2,125 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE24F3FD90A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0E93FD914
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243893AbhIALyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 07:54:33 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:48385 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243737AbhIALyb (ORCPT
+        id S243714AbhIAL51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 07:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243893AbhIAL5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 07:54:31 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 60EF15C0136;
-        Wed,  1 Sep 2021 07:53:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 01 Sep 2021 07:53:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=z4qIXy
-        LcujV2U5CyH1bzUJqLI8i07tbLSNrRKX1gOog=; b=v9wQbBaWV9uoucX3bZfEk1
-        pOezAv9s2miXludOgBWk0nsHf2ktrBq9HRX7vWbjeOYkQav2eY56TzxbdkH7eqiy
-        8UFH2kmVuCJgpKKkiMf2CK1G2V1sZWQIWU2Z3xp7ZbN8Het4xftTJIkPb9o4nlWO
-        jSkhhvtC2UTsloa/qf6o+fL4qd1b7Ftq72xHrUHCMPYtcWwvqnbLaRZHoFqup5oD
-        3JG+5v/HCgnUAqSu56L9EJX0AuDyYNE/Sf+F/qIPQh9ishOb1jJlZtMn8NTPfnlT
-        dpc8N+swoYUTW1WUqvevSoZpoMXEgOe1p8lEDgUrQkN3XYcoEU0W13dh9dS/OUEg
-        ==
-X-ME-Sender: <xms:vWkvYYbSp86gKDQ2DPLdYIoB_tYNSnqbQu9JJA5XsXl5Hzz_T8WbuA>
-    <xme:vWkvYTYjF1QJiX2CIUWAm46S4JjNoQl-sIv8w19aMU0e3s-pXCzNLHFABT_cOt27Z
-    zzvJzC6Nvna7xw>
-X-ME-Received: <xmr:vWkvYS_apNhSzs2g8RyYkRKZhE8TUCNfAnj6N1UYb8kOt6W6loHYsMJz4OiWvXp1HzeJa3ZNLE7gbfajcmsd7e1CL9vmXA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedtffekkeefudffveegueejffejhfetgfeuuefgvedtieehudeuueekhfduheel
-    teenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiug
-    hoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:vWkvYSqMboSQ_X-0GZddopgn0a9nUgEF3bMnNxCHCVQ-aq8GW6JAfg>
-    <xmx:vWkvYTou-5PLlYzw4ls2mp92HqPXxe8VaZPDQ6po2cx_dBZr0bxZog>
-    <xmx:vWkvYQRn2RcI6AGnS47CUlwE_tdVjuu82_LqgBK-MhME9OGY9cljdg>
-    <xmx:vmkvYfLmB68LkzfD77nHyiV_hss1GtIlMQewrOz56S2qjP6ZratKPA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Sep 2021 07:53:32 -0400 (EDT)
-Date:   Wed, 1 Sep 2021 14:53:29 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
-        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, pshelar@nicira.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/2 net] ip_gre: add validation for csum_start
-Message-ID: <YS9puVgl/exGgrr3@shredder>
-References: <20210819100447.00201b26@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210821071425.512834-1-chouhan.shreyansh630@gmail.com>
- <CA+FuTSeWY-0+VtERqAxNwmHAwmarYh_HQUoF3b0wHiwAaL+h+A@mail.gmail.com>
+        Wed, 1 Sep 2021 07:57:25 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61EAC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 04:56:28 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id m9so4139674wrb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 04:56:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0azurFEdIj3ZC2ZbeqfiGR0BlWdPTBZ0eY7HkyWHa2Y=;
+        b=ycqYpYprwv+8Vnwh7DpeornOkThIjfcXQU00tbtCKFpCHePBxPbNfxsWxS9+X/heuV
+         0+M9LzyIXjixhFh+xNYeHX4rJ2kn6sngjiL1rWYJPrqlFyAFMcCtMRsp/8UrBiSs/eys
+         x037ok1Hsh5ZoGocgpzEaOYXRCha8jvevbd7j+rToaPxjHC0axNKU8QGBvYlJeHROyLq
+         8uMJTirpZ7uo8zhWmAroylNa6158dtdBkcyWFfo3QyPnuitMd+2mFw1B67ItQC5Ksncv
+         vGpEOcCQ3o3ssY6fhd1bvaYu0c2D0EssflfbhkakAFm8UxPAWbRa+hOpBJSD8RCbVpZz
+         /w0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0azurFEdIj3ZC2ZbeqfiGR0BlWdPTBZ0eY7HkyWHa2Y=;
+        b=bqQk/RJLA6ALi8D50hGMLevnXohY8CaSZrKUB6aOfxd5dxnVfUKMGSC1JyURMWMVHr
+         y+cjFvdLzCdmvDAlUdQDZIvMHk8dQd1FDclc9lbO83eslPoJRJjxp4qOdHkMenMHz43S
+         EHPpnpN2WtorZavzexczRWBTO1ieKD4bkaMAJg0Pg/OYIPC3REvrJMYx/9sFKk0SskMW
+         WCH6i+XMLHF3dxw2dKnzL2rBhrNsAMRCBtx3+BuD/eFlGqrpkzu9APLqZUpaX5fTSh42
+         0AqsvYX4qOrUH2TeuH0SUWkMgkIFd84Fk0rmYsaJ2qSHQeMbZwC8vKMuWAKMzj5PPWyt
+         vcqg==
+X-Gm-Message-State: AOAM531xqAfVMaqwvbtmoK8/OoRjtMYr0TGY6bFJU0xuU9/jdYNgZm06
+        xfV79spaQsjPEvTJZgpSro/G+43JUE+yKIy9u1QppQ==
+X-Google-Smtp-Source: ABdhPJzRxVML9moiMgg+a03C/rFPY4kkvpXCjDbBd+shBLGf/JF/Hax8hkKGtVV6C2PckIB2I5y4IK/5UM0VeTmLVho=
+X-Received: by 2002:a5d:6ac7:: with SMTP id u7mr38038230wrw.390.1630497387244;
+ Wed, 01 Sep 2021 04:56:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+FuTSeWY-0+VtERqAxNwmHAwmarYh_HQUoF3b0wHiwAaL+h+A@mail.gmail.com>
+References: <20210830041729.237252-1-anup.patel@wdc.com> <20210830041729.237252-6-anup.patel@wdc.com>
+ <YS7WTPRYJWnPu2ii@robh.at.kernel.org>
+In-Reply-To: <YS7WTPRYJWnPu2ii@robh.at.kernel.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 1 Sep 2021 17:26:16 +0530
+Message-ID: <CAAhSdy1mttzt3_CnKc=xhpp5CKOEAasQVobTR-2L6Z26rstn+A@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 05/11] dt-bindings: interrupt-controller: Add
+ ACLINT MSWI and SSWI bindings
+To:     Rob Herring <robh@kernel.org>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>, Bin Meng <bmeng.cn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 21, 2021 at 09:41:14AM -0400, Willem de Bruijn wrote:
-> On Sat, Aug 21, 2021 at 3:14 AM Shreyansh Chouhan
-> <chouhan.shreyansh630@gmail.com> wrote:
+On Wed, Sep 1, 2021 at 6:54 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, Aug 30, 2021 at 09:47:23AM +0530, Anup Patel wrote:
+> > We add DT bindings documentation for the ACLINT MSWI and SSWI
+> > devices found on RISC-V SOCs.
 > >
-> > Validate csum_start in gre_handle_offloads before we call _gre_xmit so
-> > that we do not crash later when the csum_start value is used in the
-> > lco_csum function call.
+> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> > Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
+> > ---
+> >  .../riscv,aclint-swi.yaml                     | 95 +++++++++++++++++++
+> >  1 file changed, 95 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
 > >
-> > This patch deals with ipv4 code.
+> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
+> > new file mode 100644
+> > index 000000000000..68563259ae24
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
+> > @@ -0,0 +1,95 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/interrupt-controller/riscv,aclint-swi.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: RISC-V ACLINT Software Interrupt Devices
+> > +
+> > +maintainers:
+> > +  - Anup Patel <anup.patel@wdc.com>
+> > +
+> > +description:
+> > +  RISC-V SOCs include an implementation of the M-level software interrupt
+> > +  (MSWI) device and the S-level software interrupt (SSWI) device defined
+> > +  in the RISC-V Advanced Core Local Interruptor (ACLINT) specification.
+> > +
+> > +  The ACLINT MSWI and SSWI devices are documented in the RISC-V ACLINT
+> > +  specification located at
+> > +  https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc.
+> > +
+> > +  The ACLINT MSWI and SSWI devices directly connect to the M-level and
+> > +  S-level software interrupt lines of various HARTs (or CPUs) respectively
+> > +  so the RISC-V per-HART (or per-CPU) local interrupt controller is the
+> > +  parent interrupt controller for the ACLINT MSWI and SSWI devices.
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/interrupt-controller.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - items:
+> > +        - enum:
+> > +          - riscv,aclint-mswi
+> > +
+> > +      - items:
+> > +        - enum:
+> > +          - riscv,aclint-sswi
+>
+> All this can be just:
+>
+> enum:
+>   - riscv,aclint-mswi
+>   - riscv,aclint-sswi
+>
+> However...
+>
+> > +
+> > +    description:
+> > +      For ACLINT MSWI devices, it should be "riscv,aclint-mswi" OR
+> > +      "<vendor>,<chip>-aclint-mswi".
+> > +      For ACLINT SSWI devices, it should be "riscv,aclint-sswi" OR
+> > +      "<vendor>,<chip>-aclint-sswi".
+>
+> s/OR/AND/
+>
+> There must be a compatible for the implementation. Unless RiscV
+> implementations of specs are complete describing all clocks, power
+> domains, resets, etc. and are quirk free.
+>
+> But don't write free form constraints...
+
+It is possible that quite a few implementations (QEMU, FPGAs, and
+other simulators) will not require implementation specific compatible
+strings. Should we still mandate implementation specific compatible
+strings in DTS for such cases?
+
+I was not sure so I used "OR".
+
+Regards,
+Anup
+
+>
+>
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  "#interrupt-cells":
+> > +    const: 0
+> > +
+> > +  interrupts-extended:
+> > +    minItems: 1
+> > +    maxItems: 4095
+> > +
+> > +  interrupt-controller: true
+> > +
+> > +additionalProperties: false
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts-extended
+> > +  - interrupt-controller
+> > +  - "#interrupt-cells"
+> > +
+> > +examples:
+> > +  - |
+> > +    // Example 1 (RISC-V MSWI device used by Linux RISC-V NoMMU kernel):
+> > +
+> > +    interrupt-controller@2000000 {
+> > +      compatible = "riscv,aclint-mswi";
+> > +      interrupts-extended = <&cpu1intc 3>,
+> > +                            <&cpu2intc 3>,
+> > +                            <&cpu3intc 3>,
+> > +                            <&cpu4intc 3>;
+> > +      reg = <0x2000000 0x4000>;
+> > +      interrupt-controller;
+> > +      #interrupt-cells = <0>;
+> > +    };
+> > +
+> > +  - |
+> > +    // Example 2 (RISC-V SSWI device used by Linux RISC-V MMU kernel):
+> > +
+> > +    interrupt-controller@2100000 {
+> > +      compatible = "riscv,aclint-sswi";
+> > +      interrupts-extended = <&cpu1intc 1>,
+> > +                            <&cpu2intc 1>,
+> > +                            <&cpu3intc 1>,
+> > +                            <&cpu4intc 1>;
+> > +      reg = <0x2100000 0x4000>;
+> > +      interrupt-controller;
+> > +      #interrupt-cells = <0>;
+> > +    };
+> > +...
+> > --
+> > 2.25.1
 > >
-> > Fixes: c54419321455 ("GRE: Refactor GRE tunneling code.")
-> > Reported-by: syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
-> > Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-> 
-> Reviewed-by: Willem de Bruijn <willemb@google.com>
-
-Hi Shreyansh, Willem,
-
-I bisected packet drops with a GRE tunnel to this patch. With the
-following debug patch [1], I'm getting this output [2].
-
-Tested with IPv4 underlay only, but I assume problem exists with ip6gre
-as well.
-
-Thanks
-
-[1]
-diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
-index 177d26d8fb9c..cf4e13db030b 100644
---- a/net/ipv4/ip_gre.c
-+++ b/net/ipv4/ip_gre.c
-@@ -473,8 +473,11 @@ static void __gre_xmit(struct sk_buff *skb, struct net_device *dev,
- 
- static int gre_handle_offloads(struct sk_buff *skb, bool csum)
- {
--       if (csum && skb_checksum_start(skb) < skb->data)
-+       if (csum && skb_checksum_start(skb) < skb->data) {
-+               if (net_ratelimit())
-+                       skb_dump(KERN_WARNING, skb, false);
-                return -EINVAL;
-+       }
-        return iptunnel_handle_offloads(skb, csum ? SKB_GSO_GRE_CSUM : SKB_GSO_GRE);
- }
-
-[2]
-skb len=84 headroom=78 headlen=84 tailroom=15902
-mac=(78,0) net=(78,20) trans=98
-shinfo(txflags=0 nr_frags=0 gso(size=0 type=0 segs=0))
-csum(0x0 ip_summed=0 complete_sw=0 valid=0 level=0)
-hash(0x0 sw=0 l4=0) proto=0x0800 pkttype=0 iif=32
-dev name=g1a feat=0x0x00000006401d5869
-skb linear:   00000000: 45 00 00 54 be 12 40 00 3f 01 f9 82 c0 00 02 01
-skb linear:   00000010: c0 00 02 12 08 00 fe ad 8c 39 00 01 7c 65 2f 61
-skb linear:   00000020: 00 00 00 00 f8 7d 0a 00 00 00 00 00 10 11 12 13
-skb linear:   00000030: 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f 20 21 22 23
-skb linear:   00000040: 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f 30 31 32 33
-skb linear:   00000050: 34 35 36 37
+> >
