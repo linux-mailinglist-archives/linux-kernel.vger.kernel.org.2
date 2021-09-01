@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882623FDCB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 681133FDBE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245598AbhIAMxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:53:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54158 "EHLO mail.kernel.org"
+        id S1344243AbhIAMpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346056AbhIAMtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:49:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA94660FD7;
-        Wed,  1 Sep 2021 12:41:07 +0000 (UTC)
+        id S1345095AbhIAMko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:40:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BE2561100;
+        Wed,  1 Sep 2021 12:36:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630500068;
-        bh=oZXMUwiTIOfEwuL3OmK/Oe+3RaJsvtrPBajd7B6CjoI=;
+        s=korg; t=1630499820;
+        bh=vnPqbr+xlZk1FuW1/mSsJ3hRghBhnkIStU/5Cl7ncv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JPpd0qmdxlUyaNcKJMi0x1gN5FW8Ygnm5cwB0gntRzZa54O9uJq8RKhFvIlQSSLyB
-         1YmO17sgZ7md2K7UcVSaghaMznzqu8Pk7NRILanj/B8QLBIO7fiW67wUhXgcf5bQix
-         3+dKkz+5K4NccPk/QPoRiCpPr37C+BdRCkN1oXnU=
+        b=vwWRlvUhYyW7O9r0/0hylMW9WoZRMFhbFFF6s6LvwCj0a+buOM+PyZ+iJlWtty9lP
+         X6VDPGTayruFEqPo5pXl5hf7y/NkYmydLmKdpr81+9xYFdBgEurYTVz1vzOy1T8oYu
+         G9+/i9PZPwmCuGmBiTxbi482plw3bcK7sDrUPNvg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guojia Liao <liaoguojia@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 063/113] net: hns3: fix duplicate node in VLAN list
+        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Lyude Paul <lyude@redhat.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 068/103] drm/nouveau/disp: power down unused DP links during init
 Date:   Wed,  1 Sep 2021 14:28:18 +0200
-Message-Id: <20210901122304.066801665@linuxfoundation.org>
+Message-Id: <20210901122302.859384711@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +39,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guojia Liao <liaoguojia@huawei.com>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-[ Upstream commit 94391fae82f71c98ecc7716a32611fcca73c74eb ]
+[ Upstream commit 6eaa1f3c59a707332e921e32782ffcad49915c5e ]
 
-VLAN list should not be added duplicate VLAN node, otherwise it would
-cause "add failed" when restore VLAN from VLAN list, so this patch adds
-VLAN ID check before adding node into VLAN list.
+When booted with multiple displays attached, the EFI GOP driver on (at
+least) Ampere, can leave DP links powered up that aren't being used to
+display anything.  This confuses our tracking of SOR routing, with the
+likely result being a failed modeset and display engine hang.
 
-Fixes: c6075b193462 ("net: hns3: Record VF vlan tables")
-Signed-off-by: Guojia Liao <liaoguojia@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fix this by (ab?)using the DisableLT IED script to power-down the link,
+restoring HW to a state the driver expects.
+
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c   | 2 +-
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h   | 1 +
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c | 9 +++++++++
+ 3 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 00254d167904..f105ff9e3f4c 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -9869,7 +9869,11 @@ static int hclge_init_vlan_config(struct hclge_dev *hdev)
- static void hclge_add_vport_vlan_table(struct hclge_vport *vport, u16 vlan_id,
- 				       bool writen_to_tbl)
- {
--	struct hclge_vport_vlan_cfg *vlan;
-+	struct hclge_vport_vlan_cfg *vlan, *tmp;
-+
-+	list_for_each_entry_safe(vlan, tmp, &vport->vlan_list, node)
-+		if (vlan->vlan_id == vlan_id)
-+			return;
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
+index 3800aeb507d0..2a7b8bc3ec4d 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
+@@ -419,7 +419,7 @@ nvkm_dp_train(struct nvkm_dp *dp, u32 dataKBps)
+ 	return ret;
+ }
  
- 	vlan = kzalloc(sizeof(*vlan), GFP_KERNEL);
- 	if (!vlan)
+-static void
++void
+ nvkm_dp_disable(struct nvkm_outp *outp, struct nvkm_ior *ior)
+ {
+ 	struct nvkm_dp *dp = nvkm_dp(outp);
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h
+index 428b3f488f03..e484d0c3b0d4 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h
+@@ -32,6 +32,7 @@ struct nvkm_dp {
+ 
+ int nvkm_dp_new(struct nvkm_disp *, int index, struct dcb_output *,
+ 		struct nvkm_outp **);
++void nvkm_dp_disable(struct nvkm_outp *, struct nvkm_ior *);
+ 
+ /* DPCD Receiver Capabilities */
+ #define DPCD_RC00_DPCD_REV                                              0x00000
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c
+index dffcac249211..129982fef7ef 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c
+@@ -22,6 +22,7 @@
+  * Authors: Ben Skeggs
+  */
+ #include "outp.h"
++#include "dp.h"
+ #include "ior.h"
+ 
+ #include <subdev/bios.h>
+@@ -257,6 +258,14 @@ nvkm_outp_init_route(struct nvkm_outp *outp)
+ 	if (!ior->arm.head || ior->arm.proto != proto) {
+ 		OUTP_DBG(outp, "no heads (%x %d %d)", ior->arm.head,
+ 			 ior->arm.proto, proto);
++
++		/* The EFI GOP driver on Ampere can leave unused DP links routed,
++		 * which we don't expect.  The DisableLT IED script *should* get
++		 * us back to where we need to be.
++		 */
++		if (ior->func->route.get && !ior->arm.head && outp->info.type == DCB_OUTPUT_DP)
++			nvkm_dp_disable(outp, ior);
++
+ 		return;
+ 	}
+ 
 -- 
 2.30.2
 
