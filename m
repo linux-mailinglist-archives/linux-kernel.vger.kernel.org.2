@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967323FE305
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87F93FE308
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243908AbhIAT3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:29:35 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39106 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233472AbhIAT3f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:29:35 -0400
-Date:   Wed, 01 Sep 2021 19:28:35 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630524517;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ikhT/bNDDiuyvn8y/gZbDDhHdEz/w7q7Zp6oSh20Hes=;
-        b=I7L3Sx8Z7hlIMmtCIO4WPRcAmf8U6guzl+SGC79xFVK3/9qkhV8EqiO+5Mwt/TTzNn3N6d
-        LmhE69rU6xGS1yy/L4uDYMKYFWINIzmZdzdkHVwT+XWgLLZwSQ1R9nG4rrW+Q/ezsDLpZG
-        KEFqxjobKt82WM6E+sb96H8XauziMUgJ/JZO9lZl+c1w9TOoOVCJGkqfVUaYHj1kgEdN3r
-        TJT8heGuqPrOSovn9N03vAmqCkFCDjR7G2YABGz1pcgY//jTZSBPwsvA/5v1gkZj2sACa1
-        z/PD3Q9HhZw9gr32p4aZcpwev/1WkM0P8njVS2o16xet95fSFl7rL3NuUfBbwA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630524517;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ikhT/bNDDiuyvn8y/gZbDDhHdEz/w7q7Zp6oSh20Hes=;
-        b=v7BT0ugc/apqXlHX3Fw48F2TZOCSKAdvKgHG+8FsRFpvz8tuUqHKiYbxEq9tLsceqEDUr6
-        JbMBa4flyK1OTxCQ==
-From:   "tip-bot2 for Colin Ian King" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] futex: Return error code instead of assigning
- it without effect
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        andrealmeid@collabora.com, x86@kernel.org,
+        id S244454AbhIATaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:30:21 -0400
+Received: from mail.z3ntu.xyz ([128.199.32.197]:35858 "EHLO mail.z3ntu.xyz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233472AbhIATaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 15:30:20 -0400
+Received: from g550jk.localnet (ip-213-127-63-121.ip.prioritytelecom.net [213.127.63.121])
+        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 4280ACA11B;
+        Wed,  1 Sep 2021 19:29:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1630524559; bh=0H/X2fUD2T06MoUgfBCJPfMjregzSG/7Yg0C8emnr9M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=eKxmw25/GlXk8ZgdZq1qnrFluDvsDRg+0AGxqUiqp9JyElSo/UnkDtjzPRM/1N//w
+         pjkMeEpP/jPg9VJpMMEVa9zkZQyBOSbEBfiFWsOosYObhELen29s7ek5vN2xaCRU6H
+         PPOhDZCJtPg4xC0KuZ/5t6wAV8T/wI9fTYboOJT4=
+From:   Luca Weiss <luca@z3ntu.xyz>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-fbdev@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Hans de Goede <hdegoede@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210818131840.34262-1-colin.king@canonical.com>
-References: <20210818131840.34262-1-colin.king@canonical.com>
+Subject: Re: [PATCH] dt-bindings: display: add missing simple-framebuffer formats
+Date:   Wed, 01 Sep 2021 21:29:18 +0200
+Message-ID: <1648705.hQpMTjSAMY@g550jk>
+In-Reply-To: <YS6fZ4nFgic1DYhR@robh.at.kernel.org>
+References: <20210828110206.142899-1-luca@z3ntu.xyz> <YS6fZ4nFgic1DYhR@robh.at.kernel.org>
 MIME-Version: 1.0
-Message-ID: <163052451566.25758.7272209152781403112.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+Hi Rob,
 
-Commit-ID:     1f15eb89144fdd4c881ef7181d51e989a732f4f0
-Gitweb:        https://git.kernel.org/tip/1f15eb89144fdd4c881ef7181d51e989a73=
-2f4f0
-Author:        Colin Ian King <colin.king@canonical.com>
-AuthorDate:    Wed, 18 Aug 2021 14:18:40 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 01 Sep 2021 21:26:33 +02:00
+On Dienstag, 31. August 2021 23:30:15 CEST Rob Herring wrote:
+> On Sat, Aug 28, 2021 at 01:02:05PM +0200, Luca Weiss wrote:
+> > Document all formats currently present in include/linux/platform_data/
+> > simplefb.h
+> > 
+> > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> > ---
+> > 
+> >  .../bindings/display/simple-framebuffer.yaml         | 12 ++++++++++++
+> >  1 file changed, 12 insertions(+)
+> > 
+> > diff --git
+> > a/Documentation/devicetree/bindings/display/simple-framebuffer.yaml
+> > b/Documentation/devicetree/bindings/display/simple-framebuffer.yaml index
+> > c2499a7906f5..c1acd2859ae8 100644
+> > --- a/Documentation/devicetree/bindings/display/simple-framebuffer.yaml
+> > +++ b/Documentation/devicetree/bindings/display/simple-framebuffer.yaml
+> > 
+> > @@ -83,13 +83,25 @@ properties:
+> >    format:
+> >      description: >
+> >      
+> >        Format of the framebuffer:
+> > +        * `a1r5g5b5` - 16-bit pixels, d[15]=a, d[14:10]=r, d[9:5]=g,
+> > d[4:0]=b +        * `a2r10g10b10` - 32-bit pixels, d[31:30]=a,
+> > d[29:20]=r, d[19:10]=g, d[9:0]=b
+> Not a new problem, but are these 32-bit big or little endian words? That
+> should be figured out before we add more.
 
-futex: Return error code instead of assigning it without effect
+As I'm neither involved in the driver nor really have any knowledge on pixel 
+formats, maybe the maintainers of the binding can help out here?
+(Bartlomiej Zolnierkiewicz & Hans de Goede, both are CC'ed)
 
-The check on the rt_waiter and top_waiter->pi_state is assigning an error
-return code to ret but this later gets re-assigned, hence the check is
-ineffective.
+I can probably dig through the sources and guess but documentation should be 
+written without guessing :)
 
-Return -EINVAL rather than assigning it to ret which was the original
-intent.
+Regards
+Luca
 
-Fixes: dc7109aaa233 ("futex: Validate waiter correctly in futex_proxy_trylock=
-_atomic()")
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
-Link: https://lore.kernel.org/r/20210818131840.34262-1-colin.king@canonical.c=
-om
----
- kernel/futex.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/futex.c b/kernel/futex.c
-index e7b4c61..30e7dae 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -2025,7 +2025,7 @@ futex_proxy_trylock_atomic(u32 __user *pifutex, struct =
-futex_hash_bucket *hb1,
- 	 * and waiting on the 'waitqueue' futex which is always !PI.
- 	 */
- 	if (!top_waiter->rt_waiter || top_waiter->pi_state)
--		ret =3D -EINVAL;
-+		return -EINVAL;
-=20
- 	/* Ensure we requeue to the expected futex. */
- 	if (!match_futex(top_waiter->requeue_pi_key, key2))
+
+
