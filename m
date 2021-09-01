@@ -2,239 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379A63FD4FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAD13FD500
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243010AbhIAINO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 1 Sep 2021 04:13:14 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:56891 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242992AbhIAINL (ORCPT
+        id S242966AbhIAIOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242921AbhIAIOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:13:11 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 339C760005;
-        Wed,  1 Sep 2021 08:12:10 +0000 (UTC)
-Date:   Wed, 1 Sep 2021 10:12:09 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
- samples
-Message-ID: <20210901101209.31703187@xps13>
-In-Reply-To: <MW4PR03MB6363BC976F039550906B6ED399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
-References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
-        <20210818111139.330636-4-miquel.raynal@bootlin.com>
-        <SJ0PR03MB6359415E120CFD3EFAF417F599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
-        <20210830110756.733d5201@jic23-huawei>
-        <MW4PR03MB6363FE3BAF40A383D244ADC399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
-        <20210830152956.58331a8d@jic23-huawei>
-        <MW4PR03MB6363BC976F039550906B6ED399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 1 Sep 2021 04:14:00 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9A1C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 01:13:04 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id c8so4730212lfi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:13:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x2tKAP/1aZjb1THg3HM096zaMHW+UEhDKNrwvOztN+o=;
+        b=NtdFfLlMBvvwmCb3CWPpIKNwfwDjzXrs9rRY0SFXdfUlT+qdz9Su5Ptd4lNpsXckXV
+         wymW4+zGn+9GDI4Qh/wk/gLLDJVfQBuqAEhHLk565ytuia6g8Y2vYC7z0DzwmwRkhU22
+         stPv6sldloGbiFxEcEprQr93tsb9hhR8/efVxzERsFIqg8RK1O7CSUT2kTmjI0vUyevv
+         2ihP59qDk8Xly7x43n4Z7pObGikldxv2cCbzbBOlnoDEUtZNk8cf3etRHcqneLLmV6TQ
+         ESaP5kSJzmkCnp0Tr0xyayje1gOJmPDeaO5kJEVx9p6vSQjUVRz5oUUDCulxt/jHKkZL
+         JQiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x2tKAP/1aZjb1THg3HM096zaMHW+UEhDKNrwvOztN+o=;
+        b=IbwGlKu1fQiSQE+V7U4hvMyJ43qi2jcmSJKMyCUMlHht/tHhroc0vvyjBFKKS691RL
+         1WsFeF5x1SpxWvBLumpHEsoTfP5c9BCT/PjsTKgj+BrthLl0gXPHBeQM0E80/PkjHeY6
+         omt6RuIOjqwQgIczfBbi/jLrjAvp69VMSfT5dWWvbpud0ppqDQXLYhRu/aP+a8EWa3Fp
+         SFi6teWvNmkFnlwKalgh5/+Ny7bErsJZEW6wS3PPWQoWUcCoug/58Y9JRz0i29IMbgds
+         HlHi1w2XbU7BWQzzfD7KigmSKPfWdIhDtMq80HRRwrJGtESX+A/ewCDgrt9wmSZkP/Vi
+         3K4Q==
+X-Gm-Message-State: AOAM532OsFJdj0JJKm9iDjyT6sVwapXoDrhwPqIRkleos+7XXReFuwjq
+        oJq/QFmQPhHJ0+RUBJjRqvY/1rjQhQCc31waWUwb9w==
+X-Google-Smtp-Source: ABdhPJzq8baOlGTK2GwvtcD99p4jRPFD/7gsxAm2hrNPt8zCt6zdxwd4ae6WRjr3X66BQKEonrqMI3gmqCxmWhAvYIc=
+X-Received: by 2002:a19:c107:: with SMTP id r7mr24899153lff.29.1630483982545;
+ Wed, 01 Sep 2021 01:13:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210831102141.624725-1-ulf.hansson@linaro.org> <CAGETcx8FKnmeCh3dD1b2TYXf3gwHnW-iWwfz0q-9UzeP2VZSDw@mail.gmail.com>
+In-Reply-To: <CAGETcx8FKnmeCh3dD1b2TYXf3gwHnW-iWwfz0q-9UzeP2VZSDw@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 1 Sep 2021 10:12:26 +0200
+Message-ID: <CAPDyKFq7aD_VXyY6=Kvp3t2Ph1_+CheZWDA6j2AoPK6ExX4h0g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] of: property: fw_devlink: Set 'optional_con_dev' for parse_power_domains
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh@kernel.org>, DTML <devicetree@vger.kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 31 Aug 2021 at 19:51, Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Tue, Aug 31, 2021 at 3:21 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >
+> > The power-domain DT bindings [1] doesn't enforce a compatible string for a
+> > provider node, even if this is common to use. In particular, when
+> > describing a hierarchy with parent/child power-domains, as the psci DT
+> > bindings [2] for example, it's sometimes not applicable to use a compatible
+> > string.
+>
+> Ok, and fw_devlink handles that -- provider not having a compatible
+> string is pretty common. In these cases, the parent node is the actual
+> device that gets probed and registers the provider. So fw_devlink will
+> create a link from the consumer to the parent device node.
 
-"Sa, Nuno" <Nuno.Sa@analog.com> wrote on Mon, 30 Aug 2021 15:02:26
-+0000:
+Yes, correct. That is working fine and isn't a problem.
 
-> > -----Original Message-----
-> > From: Jonathan Cameron <jic23@kernel.org>
-> > Sent: Monday, August 30, 2021 4:30 PM
-> > To: Sa, Nuno <Nuno.Sa@analog.com>
-> > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter Clausen
-> > <lars@metafoo.de>; Thomas Petazzoni
-> > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org; linux-
-> > kernel@vger.kernel.org
-> > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
-> > samples
-> > 
-> > [External]
-> > 
-> > On Mon, 30 Aug 2021 10:49:50 +0000
-> > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
-> >   
-> > > > -----Original Message-----
-> > > > From: Jonathan Cameron <jic23@kernel.org>
-> > > > Sent: Monday, August 30, 2021 12:08 PM
-> > > > To: Sa, Nuno <Nuno.Sa@analog.com>
-> > > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter  
-> > Clausen  
-> > > > <lars@metafoo.de>; Thomas Petazzoni
-> > > > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org;  
-> > linux-  
-> > > > kernel@vger.kernel.org
-> > > > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the  
-> > requested  
-> > > > samples
-> > > >
-> > > > [External]
-> > > >
-> > > > On Fri, 20 Aug 2021 07:10:48 +0000
-> > > > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
-> > > >  
-> > > > > > -----Original Message-----
-> > > > > > From: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > > > > Sent: Wednesday, August 18, 2021 1:11 PM
-> > > > > > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
-> > > > > > <lars@metafoo.de>
-> > > > > > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>; linux-
-> > > > > > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel  
-> > Raynal  
-> > > > > > <miquel.raynal@bootlin.com>
-> > > > > > Subject: [PATCH 03/16] iio: adc: max1027: Push only the  
-> > requested  
-> > > > > > samples
-> > > > > >
-> > > > > > [External]
-> > > > > >
-> > > > > > When a triggered scan occurs, the identity of the desired  
-> > channels  
-> > > > is  
-> > > > > > known in indio_dev->active_scan_mask. Instead of reading and
-> > > > > > pushing to
-> > > > > > the IIO buffers all channels each time, scan the minimum  
-> > amount  
-> > > > of  
-> > > > > > channels (0 to maximum requested chan, to be exact) and only
-> > > > > > provide the
-> > > > > > samples requested by the user.
-> > > > > >
-> > > > > > For example, if the user wants channels 1, 4 and 5, all channels  
-> > > > from  
-> > > > > > 0 to 5 will be scanned but only the desired channels will be  
-> > pushed  
-> > > > to  
-> > > > > > the IIO buffers.
-> > > > > >
-> > > > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > > > > ---
-> > > > > >  drivers/iio/adc/max1027.c | 25 +++++++++++++++++++++----
-> > > > > >  1 file changed, 21 insertions(+), 4 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/iio/adc/max1027.c  
-> > b/drivers/iio/adc/max1027.c  
-> > > > > > index b753658bb41e..8ab660f596b5 100644
-> > > > > > --- a/drivers/iio/adc/max1027.c
-> > > > > > +++ b/drivers/iio/adc/max1027.c
-> > > > > > @@ -360,6 +360,9 @@ static int  
-> > max1027_set_trigger_state(struct  
-> > > > > > iio_trigger *trig, bool state)
-> > > > > >  	struct max1027_state *st = iio_priv(indio_dev);
-> > > > > >  	int ret;
-> > > > > >
-> > > > > > +	if (bitmap_empty(indio_dev->active_scan_mask,  
-> > indio_dev-  
-> > > > > > >masklength))  
-> > > > > > +		return -EINVAL;
-> > > > > > +  
-> > > > >
-> > > > > I'm not sure this can actually happen. If you try to enable the  
-> > buffer  
-> > > > > with no scan element, it should give you an error before you  
-> > reach  
-> > > > > this point...
-> > > > >  
-> > > > > >  	if (state) {
-> > > > > >  		/* Start acquisition on cnvst */
-> > > > > >  		st->reg = MAX1027_SETUP_REG |
-> > > > > > MAX1027_CKS_MODE0 |
-> > > > > > @@ -368,9 +371,12 @@ static int  
-> > max1027_set_trigger_state(struct  
-> > > > > > iio_trigger *trig, bool state)
-> > > > > >  		if (ret < 0)
-> > > > > >  			return ret;
-> > > > > >
-> > > > > > -		/* Scan from 0 to max */
-> > > > > > -		st->reg = MAX1027_CONV_REG |  
-> > MAX1027_CHAN(0) |  
-> > > > > > -			  MAX1027_SCAN_N_M |  
-> > MAX1027_TEMP;  
-> > > > > > +		/*
-> > > > > > +		 * Scan from 0 to the highest requested  
-> > channel. The  
-> > > > > > temperature
-> > > > > > +		 * could be avoided but it simplifies a bit the  
-> > logic.  
-> > > > > > +		 */
-> > > > > > +		st->reg = MAX1027_CONV_REG |
-> > > > > > MAX1027_SCAN_0_N | MAX1027_TEMP;
-> > > > > > +		st->reg |= MAX1027_CHAN(fls(*indio_dev-  
-> > > > > > >active_scan_mask) - 2);  
-> > > > > >  		ret = spi_write(st->spi, &st->reg, 1);
-> > > > > >  		if (ret < 0)
-> > > > > >  			return ret;
-> > > > > > @@ -391,11 +397,22 @@ static irqreturn_t
-> > > > > > max1027_trigger_handler(int irq, void *private)
-> > > > > >  	struct iio_poll_func *pf = private;
-> > > > > >  	struct iio_dev *indio_dev = pf->indio_dev;
-> > > > > >  	struct max1027_state *st = iio_priv(indio_dev);
-> > > > > > +	unsigned int scanned_chans = fls(*indio_dev-  
-> > > > > > >active_scan_mask);  
-> > > > > > +	u16 *buf = st->buffer;  
-> > > > >
-> > > > > I think sparse will complain here. buffer is a __be16 restricted
-> > > > > type so you should not mix those...  
-> > > > > > +	unsigned int bit;
-> > > > > >
-> > > > > >  	pr_debug("%s(irq=%d, private=0x%p)\n", __func__,  
-> > irq,  
-> > > > > >  
-> > > >  
-> > private);in/20210818_miquel_raynal_bring_software_triggers_support  
-> > > > _to_max1027_like_adcs.mbx  
-> > > > > >
-> > > > > >  	/* fill buffer with all channel */
-> > > > > > -	spi_read(st->spi, st->buffer, indio_dev->masklength *  
-> > 2);  
-> > > > > > +	spi_read(st->spi, st->buffer, scanned_chans * 2);
-> > > > > > +
-> > > > > > +	/* Only keep the channels selected by the user */
-> > > > > > +	for_each_set_bit(bit, indio_dev->active_scan_mask,
-> > > > > > +			 indio_dev->masklength) {
-> > > > > > +		if (buf[0] != st->buffer[bit])
-> > > > > > +			buf[0] = st->buffer[bit];  
-> > > > >
-> > > > > Since we are here, when looking into the driver, I realized
-> > > > > that st->buffer is not DMA safe. In IIO, we kind of want to  
-> > enforce  
-> > > > > that all buffers that are passed to spi/i2c buses are safe... Maybe
-> > > > > this is something you can include in your series.  
-> > > >
-> > > > Why is it not?  st->buffer is result of a devm_kmalloc_array() call  
-> > and  
-> > > > that should provide a DMA safe buffer as I understand it.
-> > > >  
-> > >
-> > > That's a good question. I'm not sure how I came to that conclusion  
-> > which  
-> > > is clearly wrong. Though I think the buffer might share the line with  
-> > the  
-> > > mutex...  
-> > Pointer shares a line.  The buffer it points to doesn't as allocated
-> > by separate heap allocation.
-> >   
-> 
-> Ups, sure :facepalm:
+The first problem (I think) is that fw_devlink creates a fw_devlink
+from a child provider node (consumer without compatible string) to a
+parent node (supplier with a compatible string). I don't understand
+the reason why this is needed, perhaps you can elaborate on why?
 
-My understanding [1] was that devm_ allocations were generally not
-suitable for DMA and should not be used for this particular purpose
-because of the extra 16 bytes allocated for storing the devm magic
-somewhere, which shifts the entire buffer and prevents it to always be
-aligned on a cache line. I will propose a patch to switch to
-kmalloc_array() instead.
+I come to the second and follow up problem from this behaviour, see below.
 
-[1] https://linux-arm-kernel.infradead.narkive.com/vyJqy0RQ/question-devm-kmalloc-for-dma
+>
+> > Therefore, let's set the 'optional_con_dev' to true to avoid creating
+> > incorrect fw_devlinks for power-domains.
+>
+> This part doesn't make sense or is incomplete. What is being done incorrectly?
 
-Thanks,
-Miquèl
+See below.
+
+>
+> >
+> > [1] Documentation/devicetree/bindings/power/power-domain.yaml
+> > [2] Documentation/devicetree/bindings/arm/psci.yaml
+> >
+> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > ---
+> >
+> > Some more details of what goes on here. I have added a debug print in
+> > of_link_to_phandle() to see the fw_devlinks that gets created.
+> >
+> > This is what happens on Dragonboard 410c when 'optional_con_dev' isn't set:
+> > ...
+> > [    0.041274] device: 'psci': device_add
+> > [    0.041366] OF: Linking power-domain-cpu0 (consumer) to psci (supplier)
+> > [    0.041395] OF: Linking power-domain-cpu1 (consumer) to psci (supplier)
+> > [    0.041423] OF: Linking power-domain-cpu2 (consumer) to psci (supplier)
+> > [    0.041451] OF: Linking power-domain-cpu3 (consumer) to psci (supplier)
+> > [    0.041494] device: 'platform:psci--platform:psci': device_add
+> > [    0.041556] platform psci: Linked as a sync state only consumer to psci
+
+Because we created a fw_devlink for the child provider nodes
+(consumer) that lacks compatible properties, we end up creating a sync
+state only devlink. I don't think it serves a purpose, but I may be
+wrong!?
+
+Additionally, the actual devlink that is created, has the same
+supplier and consumer device, which indicates that this isn't the
+right thing to do.
+
+> > ...
+> >
+> > This is what happens on Dragonboard 410c when 'optional_con_dev' is set:
+> > ...
+> > [    0.041179] device: 'psci': device_add
+> > [    0.041265] OF: Not linking psci to psci - is descendant
+> > [    0.041293] OF: Not linking psci to psci - is descendant
+> > [    0.041319] OF: Not linking psci to psci - is descendant
+> > [    0.041346] OF: Not linking psci to psci - is descendant
+> > ...
+>
+> Can you please explain what exactly is going on that's wrong here? I
+> notice that psci is not probed as a device at all. And when you aren't
+> setting this flag the only difference I see is the creating of a sync
+> state only link -- which shouldn't matter here because you don't even
+> have a driver implemented.
+
+See above.
+
+>
+> > The relevant dtsi file:
+> > arch/arm64/boot/dts/qcom/msm8916.dtsi
+> >
+> > Kind regards
+> > Ulf Hansson
+> >
+> > ---
+> >  drivers/of/property.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > index 2babb1807228..4d607fdbea24 100644
+> > --- a/drivers/of/property.c
+> > +++ b/drivers/of/property.c
+> > @@ -1356,7 +1356,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+> >         { .parse_prop = parse_io_channels, },
+> >         { .parse_prop = parse_interrupt_parent, },
+> >         { .parse_prop = parse_dmas, .optional = true, },
+> > -       { .parse_prop = parse_power_domains, },
+> > +       { .parse_prop = parse_power_domains, .optional_con_dev = true, },
+>
+> This change is just shooting in dark/completely unrelated to the
+> commit text. This is just saying the actual consumer is a level up
+> from where the property is listed (eg: remote-endpoint). It just
+> happens to fix your case for unrelated reasons.
+
+Again, see above.
+
+>
+> Definite Nak as this *will* break other cases.
+
+In what way will this break other cases?
+
+Would you mind elaborating for my understanding and perhaps point me
+to an example where it will break?
+
+>
+> -Saravana
+>
+>
+> >         { .parse_prop = parse_hwlocks, },
+> >         { .parse_prop = parse_extcon, },
+> >         { .parse_prop = parse_nvmem_cells, },
+> > --
+> > 2.25.1
+> >
+
+Kind regards
+Uffe
