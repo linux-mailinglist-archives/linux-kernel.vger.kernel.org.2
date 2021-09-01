@@ -2,114 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D38E13FD293
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541713FD296
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241883AbhIAEvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 00:51:35 -0400
-Received: from mga17.intel.com ([192.55.52.151]:60750 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229731AbhIAEve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 00:51:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="198859348"
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="198859348"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 21:50:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="498543345"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by fmsmga008.fm.intel.com with ESMTP; 31 Aug 2021 21:50:33 -0700
-Date:   Wed, 1 Sep 2021 12:50:32 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Koutn?? <mkoutny@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        andi.kleen@intel.com, kernel test robot <oliver.sang@intel.com>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>
-Subject: Re: [mm] 2d146aa3aa: vm-scalability.throughput -36.4% regression
-Message-ID: <20210901045032.GA21937@shbuild999.sh.intel.com>
-References: <CAHk-=wiSHHSuSQsCCLOxQA+cbcvjmEeMsTCMWPT1sFVngd9-ig@mail.gmail.com>
- <20210812031910.GA63920@shbuild999.sh.intel.com>
- <20210816032855.GB72770@shbuild999.sh.intel.com>
- <YRrbpRsvdDoom9iG@cmpxchg.org>
- <20210817024500.GC72770@shbuild999.sh.intel.com>
- <20210817164737.GA23342@blackbody.suse.cz>
- <20210818023004.GA17956@shbuild999.sh.intel.com>
- <YSzwWIeapkzNElwV@blackbook>
- <20210831063036.GA46357@shbuild999.sh.intel.com>
- <20210831092304.GA17119@blackbody.suse.cz>
+        id S234535AbhIAExj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 00:53:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54831 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230483AbhIAExh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 00:53:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630471960;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=P3aBHLWZDnmUXAALkI/MtBHbtK557Aojjg+2/1MJnAU=;
+        b=eBlSydANyw3NzcOTj+Qm7IeI/1kyJKJOIKJbuflT4ttx44pI0QqR7BiDyRiyuOT8bdTn5g
+        gjowpXwtbyMFF9Aaof1sLd2NcqtUDaXDn4ZSqKNn3Ro0V366ldH2ZDOw6x5ZYN6YcQe9jq
+        1TLTjXqm60csCALCmor6RR8UbGCIWQQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-406-6WWXWk_SNlCTV2NEgJHwRQ-1; Wed, 01 Sep 2021 00:52:39 -0400
+X-MC-Unique: 6WWXWk_SNlCTV2NEgJHwRQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF4938799E0;
+        Wed,  1 Sep 2021 04:52:38 +0000 (UTC)
+Received: from fedora-t480.rhtw.internal (unknown [10.39.192.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CBE5F18A6A;
+        Wed,  1 Sep 2021 04:52:34 +0000 (UTC)
+From:   Kate Hsuan <hpa@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>, Hans de Goede <hdegoede@redhat.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kate Hsuan <hpa@redhat.com>
+Subject: [PATCH v4] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860 and 870 SSD.
+Date:   Wed,  1 Sep 2021 12:52:20 +0800
+Message-Id: <20210901045220.27746-1-hpa@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210831092304.GA17119@blackbody.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 11:23:04AM +0200, Michal Koutn?? wrote:
-> On Tue, Aug 31, 2021 at 02:30:36PM +0800, Feng Tang <feng.tang@intel.com> wrote:
-> > Yes, I tried many re-arrangement of the members of cgroup_subsys_state,
-> > and even close members of memcg, but there were no obvious changes.
-> > What can recover the regresion is adding 128 bytes padding in the css,
-> > no matter at the start, end or in the middle.
-> 
-> Do you mean the padding added outside the .cgroup--.refcnt members area
-> also restores the benchmark results? (Or you refer to paddings that move
-> .cgroup and .refcnt across a cacheline border ?) I'm asking to be sure
-> we have correct understanding of what members are contended (what's the
-> frequent writer).
+Many users are reporting that the Samsung 860 and 870 SSD are having
+various issues when combined with AMD SATA controllers and only
+completely disabling NCQ helps to avoid these issues.
 
-Yes, the tests I did is no matter where the 128B padding is added, the
-performance can be restored and even improved.
+Always disabling NCQ for Samsung 860/870 SSDs regardless of the host
+SATA adapter vendor will cause I/O performance degradation with well
+behaved adapters. To limit the performance impact to AMD adapters,
+introduce the ATA_HORKAGE_NO_NCQ_ON_AMD flag to force disable NCQ
+only for these adapters.
 
-struct cgroup_subsys_state {
-				   <----------------- padding
-	struct cgroup *cgroup;
-	struct cgroup_subsys *ss;
-				   <----------------- padding
-	struct percpu_ref refcnt;
-	struct list_head sibling;
-	struct list_head children;
-	struct list_head rstat_css_node;
-	int id;
-	unsigned int flags;
-	u64 serial_nr;
-	atomic_t online_cnt;
-	struct work_struct destroy_work;
-	struct rcu_work destroy_rwork;
-	struct cgroup_subsys_state *parent;
-				   <----------------- padding
-};
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=201693
+Signed-off-by: Kate Hsuan <hpa@redhat.com>
+---
+Changes in v4:
+* A function ata_dev_check_adapter() is added to check the vendor ID of
+  the adapter.
+* ATA_HORKAGE_NONCQ_ON_AMD was modified to ATA_HORKAGE_NO_NCQ_ON_AMD to
+  align with the naming convention.
+* Commit messages were improved according to reviewer comments.
 
-Other tries I did are moving the untouched members around,
-to separate the serveral hottest members, but no much effect.
+Changes in v3:
+* ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL was modified to
+  ATA_HORKAGE_NONCQ_ON_AMD.
+* Codes were fixed to completely disable NCQ on AMD controller.
 
-From the data from perf-tool, 3 members are frequently accessed
-(read actually): 'cgroup', 'refcnt', 'flags'
+---
+ drivers/ata/libata-core.c | 32 ++++++++++++++++++++++++++++++--
+ include/linux/libata.h    |  1 +
+ 2 files changed, 31 insertions(+), 2 deletions(-)
 
-I also used 'perf mem' command tryint to catch read/write to
-the css, and haven't found any _write_ operation, nor can the
-code reading.
+diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+index c861c93d1e84..49049cd713e4 100644
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -2186,6 +2186,25 @@ static void ata_dev_config_ncq_prio(struct ata_device *dev)
+ 	dev->flags &= ~ATA_DFLAG_NCQ_PRIO;
+ }
 
-That led me to go check the "HW cache prefetcher", as in my
-laste email. And all these test results make me think it's
-data access pattern caused HW prefetcher related performance
-change.
++static bool ata_dev_check_adapter(struct ata_device *dev,
++				  unsigned short vendor_id)
++{
++	struct pci_dev *pcidev = NULL;
++	struct device *parent_dev = NULL;
++
++	for (parent_dev = dev->tdev.parent; parent_dev != NULL;
++	     parent_dev = parent_dev->parent) {
++		if (dev_is_pci(parent_dev)) {
++			pcidev = to_pci_dev(parent_dev);
++			if (pcidev->vendor == vendor_id)
++				return true;
++			break;
++		}
++	}
++
++	return false;
++}
++
+ static int ata_dev_config_ncq(struct ata_device *dev,
+ 			       char *desc, size_t desc_sz)
+ {
+@@ -2204,6 +2223,13 @@ static int ata_dev_config_ncq(struct ata_device *dev,
+ 		snprintf(desc, desc_sz, "NCQ (not used)");
+ 		return 0;
+ 	}
++
++	if (dev->horkage & ATA_HORKAGE_NO_NCQ_ON_AMD &&
++	    ata_dev_check_adapter(dev, PCI_VENDOR_ID_AMD)) {
++		snprintf(desc, desc_sz, "NCQ (not used)");
++		return 0;
++	}
++
+ 	if (ap->flags & ATA_FLAG_NCQ) {
+ 		hdepth = min(ap->scsi_host->can_queue, ATA_MAX_QUEUE);
+ 		dev->flags |= ATA_DFLAG_NCQ;
+@@ -3971,9 +3997,11 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
+ 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 	{ "Samsung SSD 860*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
+-						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++						ATA_HORKAGE_ZERO_AFTER_TRIM |
++						ATA_HORKAGE_NO_NCQ_ON_AMD, },
+ 	{ "Samsung SSD 870*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
+-						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++						ATA_HORKAGE_ZERO_AFTER_TRIM |
++						ATA_HORKAGE_NO_NCQ_ON_AMD, },
+ 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
 
-Thanks,
-Feng
+diff --git a/include/linux/libata.h b/include/linux/libata.h
+index 860e63f5667b..cdc248a15763 100644
+--- a/include/linux/libata.h
++++ b/include/linux/libata.h
+@@ -426,6 +426,7 @@ enum {
+ 	ATA_HORKAGE_NOTRIM	= (1 << 24),	/* don't use TRIM */
+ 	ATA_HORKAGE_MAX_SEC_1024 = (1 << 25),	/* Limit max sects to 1024 */
+ 	ATA_HORKAGE_MAX_TRIM_128M = (1 << 26),	/* Limit max trim size to 128M */
++	ATA_HORKAGE_NO_NCQ_ON_AMD = (1 << 27),	/* Disable NCQ on AMD chipset */
 
+ 	 /* DMA mask for user DMA control: User visible values; DO NOT
+ 	    renumber */
+--
+2.31.1
 
-> Thanks,
-> Michal
