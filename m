@@ -2,169 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D283FE16B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1561B3FE136
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346718AbhIARvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:51:37 -0400
-Received: from mga11.intel.com ([192.55.52.93]:16284 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347528AbhIARvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:51:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="215694376"
-X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
-   d="scan'208";a="215694376"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 10:49:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
-   d="scan'208";a="499022534"
-Received: from silpixa00400294.ir.intel.com ([10.237.222.100])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Sep 2021 10:49:54 -0700
-From:   Wojciech Ziemba <wojciech.ziemba@intel.com>
-To:     herbert@gondor.apana.org.au
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qat-linux@intel.com, Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [PATCH 4/4] crypto: qat - free irq in case of failure
-Date:   Wed,  1 Sep 2021 18:36:08 +0100
-Message-Id: <20210901173608.16777-5-wojciech.ziemba@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210901173608.16777-1-wojciech.ziemba@intel.com>
-References: <20210901173608.16777-1-wojciech.ziemba@intel.com>
+        id S1344495AbhIARh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:37:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23365 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231852AbhIARh6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 13:37:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630517820;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xhdpu5W1fJXLeojM24bKC1MSSzMuWR+Cf49l2mlXcbA=;
+        b=QYhBsp8LKCkVthp2pGFQp4b53rwNsuYnxeg+pARmkaEKdokzl2hJax6xeRzDx4qHEQDXyk
+        LqrtCikHgoP87X0qkhSjlGRhDlazEfSFuXagWUjkyJ9Bk+dxYChiexVavtNxnCwC49jkZv
+        qHbQAvPDMHwmDMQSTJln9jB4WyQOoBI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-vPtR8mibOjGdW4PL0N-50A-1; Wed, 01 Sep 2021 13:36:59 -0400
+X-MC-Unique: vPtR8mibOjGdW4PL0N-50A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2A7C801A92;
+        Wed,  1 Sep 2021 17:36:57 +0000 (UTC)
+Received: from x2.localnet (unknown [10.22.8.210])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 74C9A5C1BB;
+        Wed,  1 Sep 2021 17:36:56 +0000 (UTC)
+From:   Steve Grubb <sgrubb@redhat.com>
+To:     Cai Huoqing <caihuoqing@baidu.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>
+Cc:     linux-audit@redhat.com,
+        strace development discussions <strace-devel@lists.strace.io>,
+        linux-api@vger.kernel.org, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ldv@strace.io
+Subject: Re: [PATCH 1/2] net: Remove net/ipx.h and uapi/linux/ipx.h header files
+Date:   Wed, 01 Sep 2021 13:36:54 -0400
+Message-ID: <1797920.tdWV9SEqCh@x2>
+Organization: Red Hat
+In-Reply-To: <20210901165202.GA4518@asgard.redhat.com>
+References: <20210813120803.101-1-caihuoqing@baidu.com> <20210901160244.GA5957@asgard.redhat.com> <20210901165202.GA4518@asgard.redhat.com>
 MIME-Version: 1.0
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If devm_request_irq() fails inside adf_request_irqs(), unwind properly by
-freeing the allocated irqs.
+Hello,
 
-Signed-off-by: Wojciech Ziemba <wojciech.ziemba@intel.com>
-Co-developed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
----
- drivers/crypto/qat/qat_common/adf_isr.c | 63 +++++++++++++------------
- 1 file changed, 34 insertions(+), 29 deletions(-)
+Thanks for the heads up.
 
-diff --git a/drivers/crypto/qat/qat_common/adf_isr.c b/drivers/crypto/qat/qat_common/adf_isr.c
-index 861a9368b9db..c55a9f14b0d2 100644
---- a/drivers/crypto/qat/qat_common/adf_isr.c
-+++ b/drivers/crypto/qat/qat_common/adf_isr.c
-@@ -126,6 +126,31 @@ static irqreturn_t adf_msix_isr_ae(int irq, void *dev_ptr)
- 	return IRQ_NONE;
- }
- 
-+static void adf_free_irqs(struct adf_accel_dev *accel_dev)
-+{
-+	struct adf_accel_pci *pci_dev_info = &accel_dev->accel_pci_dev;
-+	struct adf_hw_device_data *hw_data = accel_dev->hw_device;
-+	struct adf_irq *irqs = pci_dev_info->msix_entries.irqs;
-+	struct adf_etr_data *etr_data = accel_dev->transport;
-+	int clust_irq = hw_data->num_banks;
-+	int irq, i = 0;
-+
-+	if (pci_dev_info->msix_entries.num_entries > 1) {
-+		for (i = 0; i < hw_data->num_banks; i++) {
-+			if (irqs[i].enabled) {
-+				irq = pci_irq_vector(pci_dev_info->pci_dev, i);
-+				irq_set_affinity_hint(irq, NULL);
-+				free_irq(irq, &etr_data->banks[i]);
-+			}
-+		}
-+	}
-+
-+	if (irqs[i].enabled) {
-+		irq = pci_irq_vector(pci_dev_info->pci_dev, clust_irq);
-+		free_irq(irq, accel_dev);
-+	}
-+}
-+
- static int adf_request_irqs(struct adf_accel_dev *accel_dev)
- {
- 	struct adf_accel_pci *pci_dev_info = &accel_dev->accel_pci_dev;
-@@ -150,7 +175,8 @@ static int adf_request_irqs(struct adf_accel_dev *accel_dev)
- 				dev_err(&GET_DEV(accel_dev),
- 					"Failed to get IRQ number of device vector %d - %s\n",
- 					i, name);
--				return irq;
-+				ret = irq;
-+				goto err;
- 			}
- 			ret = request_irq(irq, adf_msix_isr_bundle, 0,
- 					  &name[0], bank);
-@@ -158,7 +184,7 @@ static int adf_request_irqs(struct adf_accel_dev *accel_dev)
- 				dev_err(&GET_DEV(accel_dev),
- 					"Failed to allocate IRQ %d for %s\n",
- 					irq, name);
--				return ret;
-+				goto err;
- 			}
- 
- 			cpu = ((accel_dev->accel_id * hw_data->num_banks) +
-@@ -177,41 +203,20 @@ static int adf_request_irqs(struct adf_accel_dev *accel_dev)
- 		dev_err(&GET_DEV(accel_dev),
- 			"Failed to get IRQ number of device vector %d - %s\n",
- 			i, name);
--		return irq;
-+		ret = irq;
-+		goto err;
- 	}
- 	ret = request_irq(irq, adf_msix_isr_ae, 0, &name[0], accel_dev);
- 	if (ret) {
- 		dev_err(&GET_DEV(accel_dev),
- 			"Failed to allocate IRQ %d for %s\n", irq, name);
--		return ret;
-+		goto err;
- 	}
- 	irqs[i].enabled = true;
- 	return ret;
--}
--
--static void adf_free_irqs(struct adf_accel_dev *accel_dev)
--{
--	struct adf_accel_pci *pci_dev_info = &accel_dev->accel_pci_dev;
--	struct adf_hw_device_data *hw_data = accel_dev->hw_device;
--	struct adf_irq *irqs = pci_dev_info->msix_entries.irqs;
--	struct adf_etr_data *etr_data = accel_dev->transport;
--	int clust_irq = hw_data->num_banks;
--	int irq, i = 0;
--
--	if (pci_dev_info->msix_entries.num_entries > 1) {
--		for (i = 0; i < hw_data->num_banks; i++) {
--			if (irqs[i].enabled) {
--				irq = pci_irq_vector(pci_dev_info->pci_dev, i);
--				irq_set_affinity_hint(irq, NULL);
--				free_irq(irq, &etr_data->banks[i]);
--			}
--		}
--	}
--
--	if (irqs[i].enabled) {
--		irq = pci_irq_vector(pci_dev_info->pci_dev, clust_irq);
--		free_irq(irq, accel_dev);
--	}
-+err:
-+	adf_free_irqs(accel_dev);
-+	return ret;
- }
- 
- static int adf_isr_alloc_msix_vectors_data(struct adf_accel_dev *accel_dev)
--- 
-2.29.2
+On Wednesday, September 1, 2021 12:52:02 PM EDT Eugene Syromiatnikov wrote:
+> Adding linux-audit, strace-devel, and linux-api to CC:.
+> 
+> On Wed, Sep 01, 2021 at 06:02:44PM +0200, Eugene Syromiatnikov wrote:
+> > On Fri, Aug 13, 2021 at 08:08:02PM +0800, Cai Huoqing wrote:
+> > > commit <47595e32869f> ("<MAINTAINERS: Mark some staging directories>")
+> > > indicated the ipx network layer as obsolete in Jan 2018,
+> > > updated in the MAINTAINERS file
+> > > 
+> > > now, after being exposed for 3 years to refactoring, so to
+> > > delete uapi/linux/ipx.h and net/ipx.h header files for good.
+> > > additionally, there is no module that depends on ipx.h except
+> > > a broken staging driver(r8188eu)
+> > > 
+> > > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> > 
+> > This removal breaks audit[1] and potentially breaks strace[2][3], at
+> > least.
 
---------------------------------------------------------------
-Intel Research and Development Ireland Limited
-Registered in Ireland
-Registered Office: Collinstown Industrial Park, Leixlip, County Kildare
-Registered Number: 308263
+I wouldn't say breaks so much as needs coordination with. :-)   If ipx is 
+being dropped in its entirety, I can just make that part of the code 
+conditional to the header existing.
+
+-Steve
+
+> > [1]
+> > https://github.com/linux-audit/audit-userspace/blob/ce58837d44b7d9fcb4e1
+> > 40c23f68e0c94d95ab6e/auparse/interpret.c#L48 [2]
+> > https://gitlab.com/strace/strace/-/blob/9fe63f42df8badd22fb7eef9c12fc07e
+> > d7106d6b/src/net.c#L34 [3]
+> > https://gitlab.com/strace/strace/-/blob/9fe63f42df8badd22fb7eef9c12fc07e
+> > d7106d6b/src/sockaddr.c#L30
 
 
-This e-mail and any attachments may contain confidential material for the sole
-use of the intended recipient(s). Any review or distribution by others is
-strictly prohibited. If you are not the intended recipient, please contact the
-sender and delete all copies.
+
 
