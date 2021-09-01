@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2CA3FE3F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C17C3FE3FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhIAU3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 16:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhIAU25 (ORCPT
+        id S231273AbhIAUaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 16:30:07 -0400
+Received: from mail-4322.protonmail.ch ([185.70.43.22]:10715 "EHLO
+        mail-4322.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230320AbhIAUaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 16:28:57 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEAB4C061575;
-        Wed,  1 Sep 2021 13:27:59 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id i6so1526567wrv.2;
-        Wed, 01 Sep 2021 13:27:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DQAD0N+udeECzx16YIJli0IUl03N+RKAVdrliP6oQj4=;
-        b=gbbwDRg4pFi7AS5en8siz/ayh4gFKQdabvMpDfHgziwsZ699s1PX9bey9l2jHgvlyP
-         2jsuo52+Q9X17Mf0thhHOZbazSOUBS2xIRCGa9Z+6tFbgYz8GwjGq8/qylo7UaupZfOO
-         TWpgtClNm9onVITgW7iPYp+gr13NmmV5xFY5UeMhE0htzaGcCtzpCGJ7F4IYx73c3N9G
-         Z/9FNB/GRRW/pqbiPlfXy+QVaC+nMBbMMF1uC1KmAFk+dBq+ktQWS4Hn1kyy5hs7gtv6
-         rdUJKTcy/EBNXSDe571IGQR0pvJiiN3163pkjLIckhkWgsFiy8kWr+6VJFrm9abqkOnD
-         SyaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DQAD0N+udeECzx16YIJli0IUl03N+RKAVdrliP6oQj4=;
-        b=Am5+dO5y7zQqxKUeIJDyNZoQExZlO5VRK6IwH6xEeA7Qp7Lee5xrwmGZoASTC08iYJ
-         RYQlIolRqQNXTusOzhH3/MCNq1z+h6+v3mSN0P/403ca3yIRMYOEJWJSgPrpa0jsBNQs
-         qAj3VlA/DIGXpgBPUkHfMN/opno1cgcf1brsIEI34ha8A4RqaUCIZSwWWOXGuHmj7UnQ
-         1/euhYz+85dCZ7NC4FP/yebNyLhclikM61hN5ZmHAXzB78mfD1JvSqWZsZALwKf2+TaA
-         tipP3WN58CX85uU+LPwhKlV5WK2tKEZH0d2/5XNiZct2oUdJ6OfeYethusp23dlDdIit
-         BA/Q==
-X-Gm-Message-State: AOAM531exr7vO7yRH+QBZ9/ZTyKhjlM89U+QVQGr1Pddqi0HLszukUTf
-        Ix0gk+ccCS+NcUE7jgTcvicV1JOqNCB8ol4FMJhz+5KTDBI=
-X-Google-Smtp-Source: ABdhPJwjxjBk07sOzJAdSIoAkbtVr3k87Cc0VMULoeaess9zkn5uqKv1yCG2Ia+gY/sgnLaceWzxYCzsdpofqZOCaDs=
-X-Received: by 2002:adf:804a:: with SMTP id 68mr1338603wrk.236.1630528078536;
- Wed, 01 Sep 2021 13:27:58 -0700 (PDT)
+        Wed, 1 Sep 2021 16:30:06 -0400
+Date:   Wed, 01 Sep 2021 20:29:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail; t=1630528147;
+        bh=WVOsQI5nD1PtXvSuDOtR2xqDg1KdImjbJxPWDJVWN2I=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=hKwqPPNrZm8VnLoyFPUke5rYmRryiW7+1RiC5lX8+vK60EpgTqXD06rCHuuC6ylq/
+         /mTnDOVFyUIk2zx4zjhYbRHt0hiQLgBUuRhCG7PTzbUnKktH1jhLM8ZkHVjqwZpM4l
+         O5Byvp2TDqM5SDfFN1LttfSz2YIg1Uk/Pq6cEK7ZQ9ObB9XuGs5cQCbCancVXD0Tvb
+         xyKYTWoZXD0oLJixV9wPYtqEDfE0BNkaw0MWZV+ESYgHhCqtkhcvqZQrlc37PYx93b
+         jF8h9Tgnv0oDjYolSF0MI8PSdNIaV/yYCx0giAAwe+mBEqtBmuNHkGHXr0uO2GKVH3
+         pz6KRpBDrTWtQ==
+To:     Krish Jain <krishjain02939@gmail.com>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: Re: [PATCH] Declare the file_operations struct as const
+Message-ID: <20210901202855.fnoidizshw2uwo3q@h510>
+In-Reply-To: <CAPGkw+zhb=zC8fKyK8uUiNxNqCUR9Trg6N7fBjaAcBc9rmkmUg@mail.gmail.com>
+References: <20210829144531.c2syu4vv4s22dlg7@h510> <13366651.n50aozgL3V@localhost.localdomain> <20210831230014.cp46vho2hnndacjp@h510> <CAPGkw+zpYsovnXL_4GfjsQ60fqre+xyiwvwKuDj_fHPTKEfzeQ@mail.gmail.com> <YS+cexhuqldPaACs@kroah.com> <CAPGkw+z+uepM0hiNh48xjjD7=2rpgr+RSLzMcHbw2iE=8y+xqQ@mail.gmail.com> <YS+vfVTV0fls6KuN@kroah.com> <20210901173357.2dfvw5xgpzjndesc@h510> <CAPGkw+zhb=zC8fKyK8uUiNxNqCUR9Trg6N7fBjaAcBc9rmkmUg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210901192229.29864-1-rpimentel.silva@gmail.com> <4e8ad91c-2554-4b8f-94db-aa5add5f524d@denx.de>
-In-Reply-To: <4e8ad91c-2554-4b8f-94db-aa5add5f524d@denx.de>
-From:   Rogerio Pimentel <rpimentel.silva@gmail.com>
-Date:   Wed, 1 Sep 2021 17:27:47 -0300
-Message-ID: <CAOkaPuUYQQHQZrjj3CcS1dOZrA=rH=nJJPKaPNNdBJaXO_t7ng@mail.gmail.com>
-Subject: Re: [PATCH] Input: ili210x - Set the device name according to the
- device model
-To:     Marek Vasut <marex@denx.de>
-Cc:     dmitry.torokhov@gmail.com, hansemro@outlook.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 4:46 PM Marek Vasut <marex@denx.de> wrote:
+On this day, September  1, 2021, thus sayeth Krish Jain:
 >
-> On 9/1/21 9:22 PM, Rogerio Pimentel wrote:
+> Yes, lots of reading to do :) . I had a look at the book and it seems
+> better than the documentation too, I don't know, maybe the writing
+> style? Love it, Greg. Lastly just out of curiosity, Bryan,  if this
+> can only be built as a built-in object then how come "As for your
+> patch, I built the driver using:
 >
-> [...]
+>   $ make CCFLAGS=3D-Werror W=3D1 M=3Ddrivers/staging/android"
 >
-> > diff --git a/drivers/input/touchscreen/ili210x.c b/drivers/input/touchscreen/ili210x.c
-> > index 30576a5f2f04..ca7af4a6f588 100644
-> > --- a/drivers/input/touchscreen/ili210x.c
-> > +++ b/drivers/input/touchscreen/ili210x.c
-> > @@ -19,6 +19,8 @@
-> >   #define ILI251X_DATA_SIZE1  31
-> >   #define ILI251X_DATA_SIZE2  20
-> >
-> > +#define ILI_NAME_LEN         27
-> > +
-> >   /* Touchscreen commands */
-> >   #define REG_TOUCHDATA               0x10
-> >   #define REG_PANEL_INFO              0x20
-> > @@ -394,6 +396,7 @@ static int ili210x_i2c_probe(struct i2c_client *client,
-> >       struct input_dev *input;
-> >       int error;
-> >       unsigned int max_xy;
-> > +     char *model_name;
-> >
-> >       dev_dbg(dev, "Probing for ILI210X I2C Touschreen driver");
-> >
-> > @@ -440,7 +443,11 @@ static int ili210x_i2c_probe(struct i2c_client *client,
-> >       i2c_set_clientdata(client, priv);
-> >
-> >       /* Setup input device */
-> > -     input->name = "ILI210x Touchscreen";
-> > +     input->name = "Ilitek         Touchscreen";
-> > +     model_name = (char *)input->name;
-> > +     snprintf(model_name, ILI_NAME_LEN, "Ilitek %s Touchscreen",
+> got you the errors that I desired? Aren't you building as a module here?
 >
-> Which ilitek devices do you have available exactly ?
->
-> There is a firmware interface which does report the device type, but I
-> don't know whether it works on all the ilitek touchscreen devices. If it
-> does, then it could be used here to pull the type from the firmware and
-> then use this instead
->
-> snprintf(model_name, ILI_NAME_LEN, "Ilitek ILI%04x Touchscreen", type);
->
-> Try this command against the touch controller, it sends it command 0x61
-> and reads two bytes of the reply:
-> i2ctransfer -f -y 1 w1@0x41 0x61 r2
-> 0x10 0x25 # <---- on ILI2510 it reports 0x25 0x10 in reverse
 
-Thanks for the comments and suggestions. I'll make the changes and send V2.
+That's a good question Krish!
+
+The command I sent you does not build built-in modules or create the
+output I sent you!
+
+As Greg said, ASHMEM cannot be built as a loadable module!
+
+It is odd, when retracing my steps just now, I must have known at some
+point that ASHMEM was a built-in module as menuconfig will not let you
+select the <M> or loadable module option. The only thing I can think I
+did was build the module without using the M=3D option, copied the error
+message, then retyped the wrong 'make' command I had used to produce it.
+
+What is *very* embarrassing is I had multiple opportunities to catch my
+mistake. Somewhere between building your patch and writing the email I
+truly lost the critical piece "this is a built-in module".
+
+Even the CCFLAGS command Greg talked about is not a great command to be
+using! I should not have sent you CCFLAGS or the less worse KCFLAGS that
+I should not be using. Both really have no need here in drivers/staging/
+and only add to the confusion.
+
+I will say, for your next patch that I am eagerly waiting for, the W=3D1
+option is a good way to catch subtle errors that Greg may ask you to fix
+and resend. I got one thing right :/
+
+I don't know, I truly lost my marbles on this one.
+
+I apologize again for my goof, it must have been very frustrating.
+~Bryan
+
+
