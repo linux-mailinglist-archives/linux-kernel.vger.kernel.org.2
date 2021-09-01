@@ -2,66 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BFE63FD44B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7C23FD449
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242551AbhIAHOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242416AbhIAHOU (ORCPT
+        id S242545AbhIAHNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:13:55 -0400
+Received: from mail-vk1-f178.google.com ([209.85.221.178]:35711 "EHLO
+        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242416AbhIAHNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:14:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD07C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 00:13:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=A92WeF+kj3phhIB/9I/v0gWemxSspb1vvpSTLDBhecw=; b=ohwIT00KIygWGe4ZXM1/96S8c6
-        bIIeP/EufoYmeKybPLzB/0n5tzdbXJWSM8lzAEBrfIatzjqlHhqvOTsmPPUzkwSZhUlDr6pug5bgB
-        VbvolTFQEsGApIUkS1XyZVqq7fV7k+B8FUhtML651m3tL8qftwwdUnelghyo/RV1f+fHMZA3HjBM0
-        6SnSkdsZKlWiyG+2aP+Lm+jkec1erAd3Vf50qrA0OLvfKkITJ6KJvUbG+QWfPDgwu+l3DoT/5TGhf
-        qXwP0ZkLjb5JMjfqBFobJOaOHDv57IbwN4+f3ukFgLJ/Hf6uWkKtB8Bu0ONld6/ac3cEsxypD6nAf
-        Q/aHVTjA==;
-Received: from [2001:4bb8:180:a30:2deb:705a:5588:bf7d] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLKQF-001ypG-5o; Wed, 01 Sep 2021 07:12:41 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     torvalds@linux-foundation.org, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] x86: make setup.c build again
-Date:   Wed,  1 Sep 2021 09:12:32 +0200
-Message-Id: <20210901071232.1258388-1-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
+        Wed, 1 Sep 2021 03:13:53 -0400
+Received: by mail-vk1-f178.google.com with SMTP id ay16so654562vkb.2;
+        Wed, 01 Sep 2021 00:12:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5OIZaaJOxzSwlBAyVUTzzSJStZdPh3eIjP+iaY26uus=;
+        b=FHXuojNTTpC+ZyjBVdhvYEHNzW/PCMoIvyGyU5Excw/vlwxtwlfeQnDBDULuku+jtr
+         81Qo2w5pc201jqXkDXQY10+3nBtGDke+MM5zSyBpTsq8m2pHJ/CmoAZq+kugjX1xCUvT
+         R7egXRToay0PDzytwqyGaKcEMTRd92/2QixFhFVlCtrwEYC4jvZ9RqRuCZFsO/UQmYPP
+         zD8henrwJ8xfxYggxsGS42JMI2UMx7Cv2midoKj1BSipmZygtSKsfqCdSiAhG5igSMcn
+         uHz6wXNtBqfyg6UpBR9FVtbxM/94e8UeaWWI3HVOQxfLCVRnAvMDWvuHLxfpFdl5w//r
+         AY4Q==
+X-Gm-Message-State: AOAM531wMcwQEG/grPCwMO9f2u9g114kLUVk4fcNNSS7l2TIr1LPEl5D
+        iWkUQkT5SdGhxzDHF012Y3XlPJ76pG5cZ02Bmbu5LvYg
+X-Google-Smtp-Source: ABdhPJwQRLNOZObA78mZsGR2waDSEdFHfN+IPMckzWjh/Ic7JlwZtxoUt2HD8opLWAKvAPdjb/g3GaV+9/HP/TK9CG8=
+X-Received: by 2002:a1f:2c97:: with SMTP id s145mr20725423vks.24.1630480377050;
+ Wed, 01 Sep 2021 00:12:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <000000000000815b9605c70e74f8@google.com> <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
+ <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
+ <339bfb21-8e80-c7d9-46dd-c416f87c50c0@infradead.org> <535e404d-03bf-8e7a-b296-132a2a98c599@i-love.sakura.ne.jp>
+ <CAMuHMdWX7s63X_zR9329canbQkPGBVxZNG4O+_=jUut60aGR9g@mail.gmail.com>
+ <5c6d2b95-31d7-0d59-5e62-2593d9a0e1fe@i-love.sakura.ne.jp>
+ <CAMuHMdWbSUGRGAVi-17C3hyDBZnGLAsmbAs+wXPHiCNWWLbMpA@mail.gmail.com>
+ <CAKMK7uF1cnen2UVWeOL164z1CCqOuRMC5SmM+5GvRvi7C-UOTw@mail.gmail.com>
+ <CAMuHMdWNYaZxZB0Td4PFb76rrtQMumKu6cJgLi2aNnW-9NmG8A@mail.gmail.com>
+ <CAKMK7uHuOQWUnsiH00QFbHKgTdjjryK0ra9We2stojXMiAVgJA@mail.gmail.com> <750ed1ae-de80-b232-4aea-79d60c212fab@i-love.sakura.ne.jp>
+In-Reply-To: <750ed1ae-de80-b232-4aea-79d60c212fab@i-love.sakura.ne.jp>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 1 Sep 2021 09:12:45 +0200
+Message-ID: <CAMuHMdX_AM4Dg-5d9D5M=7V-PjGQZ6hYWWMmhTc4tvuq_PcdDg@mail.gmail.com>
+Subject: Re: [PATCH v2] fbmem: don't allow too huge resolutions
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Colin King <colin.king@canonical.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a <linux/acpi.h> include to setup.c to ensure it compiles without
-any config-dependent implicit includes of that header.
+On Wed, Sep 1, 2021 at 3:15 AM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+> syzbot is reporting page fault at vga16fb_fillrect() [1], for
+> vga16fb_check_var() is failing to detect multiplication overflow.
+>
+>   if (vxres * vyres > maxmem) {
+>     vyres = maxmem / vxres;
+>     if (vyres < yres)
+>       return -ENOMEM;
+>   }
+>
+> Since no module would accept too huge resolutions where multiplication
+> overflow happens, let's reject in the common path.
+>
+> Link: https://syzkaller.appspot.com/bug?extid=04168c8063cfdde1db5e [1]
+> Reported-by: syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>
+> Debugged-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/x86/kernel/setup.c | 1 +
- 1 file changed, 1 insertion(+)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 63b20536c8d23..6edec9a28293e 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -22,6 +22,7 @@
- #include <linux/usb/xhci-dbgp.h>
- #include <linux/static_call.h>
- #include <linux/swiotlb.h>
-+#include <linux/acpi.h>
- 
- #include <uapi/linux/mount.h>
- 
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.30.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
