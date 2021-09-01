@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4D83FDD48
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7E13FDD4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242530AbhIANZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 09:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234295AbhIANZt (ORCPT
+        id S243667AbhIAN1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 09:27:20 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:54060 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233820AbhIAN1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 09:25:49 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6628BC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 06:24:52 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id bq28so6363741lfb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 06:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=QemmkFCPO2XG2CVrKSAGiBckmZ349ANW8qbai2Np90w=;
-        b=SZpMER4hKSqMQ6aYsX4MQM1Rgw6YufSMtrsBxKsTySz+4wTNo2lCSC5JOMo58bZTRp
-         3W4Pb3FBCVeiYGO3d7sDNnx2Kksvt75iN9CEmMmlqGJbiJ1hU2VwTXM8aHTF1nsBfWZ9
-         nqE9AOkDO2lMurOBG9Mi5sEPM7ZsSnwZ60hBzCYIA7iVKJNcEm2W/KFPv3Zr2zRRUoXO
-         1YvmMb4yF5VCnQqdKG++EYAGc3JokgF9akCL37M9zWpj2IPZ+1uE4mTLpCy30LRARbnY
-         JuXkq54GdvFr2kz2jUl40SDgBjq+w26SpRpzp6mjG14MI2eXBVTvCWzfXe1HzypUpcKv
-         KnQQ==
+        Wed, 1 Sep 2021 09:27:19 -0400
+Received: by mail-io1-f70.google.com with SMTP id n189-20020a6b8bc6000000b005b92c64b625so1614885iod.20
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 06:26:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=QemmkFCPO2XG2CVrKSAGiBckmZ349ANW8qbai2Np90w=;
-        b=AQ13GXsYVxD8CEOBt5XycgyIvHre0XKJOyRK+dwleAs8lRMiEJ1MmGjyprkVPQjz0V
-         zGpAUpAboUDoZIm5IU/B7VswZYYXNGa21aCmMRA22IEJWA3FKgg4XITZ0f4N9j7G9lZv
-         3/t1AcA/QJA2GoZw+iso/cmW+j7ZNLwsLDx28QTjZFI5t1Uz3HB1cH9KomIUvRiA8/Wm
-         8egevOgN+vXx2tWdbCvdYztJgoCViNsIb0RHNbZHs/Dak3Qv1hgFFyk4d+PAS2Mse957
-         SOEyOHcKqBsu9cDZno/+Y9bu3Mo5ZXYFKisurcIbbU4nUksnRqFrUxjIe2lDxawdbAi8
-         c0Uw==
-X-Gm-Message-State: AOAM533TG2c5sL/0YI6GOfsW09gbZ6OduDU+5VzEv8Xvnn3fXjHegUZo
-        0WehvuVfma2a3iAYKPfeEy5LLbOTWz4=
-X-Google-Smtp-Source: ABdhPJw8kxMfoCdm6f55Xe/Dr9DRmQLIbBhJiWXx91a/912clcMF5Q/aJkx6UVdYSC3BAojmGlHq/Q==
-X-Received: by 2002:a05:6512:3b94:: with SMTP id g20mr2877227lfv.409.1630502690740;
-        Wed, 01 Sep 2021 06:24:50 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id x74sm312309lff.179.2021.09.01.06.24.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 06:24:50 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 16:24:48 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] fs/ntfs3: Use kmalloc_array over kmalloc with
- multiply
-Message-ID: <20210901132448.mgkkyvqszc7lsnwy@kari-VirtualBox>
-References: <20210831181505.1074767-1-kari.argillander@gmail.com>
- <20210831181505.1074767-2-kari.argillander@gmail.com>
- <5197939870d1867dd2131a8fdff8842b777c6016.camel@perches.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=97OI2aiCfZTzehYBVPUAfTzBWyV58rvy2rJKLAtYCmg=;
+        b=IufRBlcrI6mtmtMPq8lfBZb8bueK+tlRKHzRjsJFCnRF1EULQMFmDrrXyLt8Tg+yF9
+         neVsmFkd40HfmuVoxCCvMu921I7FzsMQOhyBoYpGfRwzb6orHc0C6TqHbgc5nvy2SXrS
+         BZsJ95RuFvsZYmUDhpgqXg38WOtAEyk5Y8mlbl1AeVOU7r1s0kJKD2KJhR2RpaSgI8hL
+         I7h+SFMROc4KYNmoRCohcqu6AVRCLbgD+hSY2CcFsCWR5p4C51ioA2yX2JaIlXz4pldT
+         /1of2hvbQUh5Z5r4VMBAXMNOM+zdNHQpNV3GosQ4Bdb+8qTKj+44I/wj2EatZisYrt/A
+         hIkw==
+X-Gm-Message-State: AOAM530iu8isiHKSL/DBRvk4WvTzGBokcoF3DxByyWHqyEQYIALJMEqU
+        sR7q5ZMPzqBzucbnkuPW7ibIIpglVIneNyyqTv5BXWur1s0q
+X-Google-Smtp-Source: ABdhPJzSAk8Kfq0gWWvRwJUKa9vnT89L8mpTY0XZzH1G1LXmUzYMN2BjSJEV5Tp8QZFRnURnGeBLnLB0fUdUN3ZHcIS0/WPT6P4x
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5197939870d1867dd2131a8fdff8842b777c6016.camel@perches.com>
+X-Received: by 2002:a02:9082:: with SMTP id x2mr7929307jaf.44.1630502782717;
+ Wed, 01 Sep 2021 06:26:22 -0700 (PDT)
+Date:   Wed, 01 Sep 2021 06:26:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002b577805caef03d8@google.com>
+Subject: [syzbot] WARNING in futex_requeue
+From:   syzbot <syzbot+4d1bd0725ef09168e1a0@syzkaller.appspotmail.com>
+To:     dave@stgolabs.net, dvhart@infradead.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 07:40:58PM -0700, Joe Perches wrote:
-> On Tue, 2021-08-31 at 21:15 +0300, Kari Argillander wrote:
-> > If we do not use kmalloc_array we get checkpatch warning. It is also
-> > little safer if something goes wrong with coding.
-> []
-> > diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-> []
-> > @@ -707,7 +707,7 @@ static struct NTFS_DE *hdr_find_e(const struct ntfs_index *indx,
-> >  		u16 *ptr;
-> >  		int new_slots = ALIGN(2 * nslots, 8);
-> >  
-> > 
-> > -		ptr = kmalloc(sizeof(u16) * new_slots, GFP_NOFS);
-> > +		ptr = kmalloc_array(new_slots, sizeof(u16), GFP_NOFS);
-> >  		if (ptr)
-> >  			memcpy(ptr, offs, sizeof(u16) * max_idx);
-> 
-> This multiplication could also overflow.
-> 
-> Maybe use krealloc?
+Hello,
 
-Seems to fit lot better here. But as I was watching this it seems that
-we do not even need to resize this array. It is quite costly operation
-compared to what entry compare cost.
+syzbot found the following issue on:
 
-We just need to compare it and if entry diff > 0 then we start entry
-table again from zero without need resize array. It may be that we do
-not even need to allocate memory. We can probably survive with stack,
-but let's think that later.
+HEAD commit:    b91db6a0b52e Merge tag 'for-5.15/io_uring-vfs-2021-08-30' ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17907235300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=961d30359ac81f8c
+dashboard link: https://syzkaller.appspot.com/bug?extid=4d1bd0725ef09168e1a0
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1222185d300000
 
-This can also speed up search a lot. It is quite odd that we always fill
-whole table and will not never check if we are over. Worst case is very
-very bad. With this change this will be more like jump search but I
-think it will be good in this case because we won't need memory allocation.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4d1bd0725ef09168e1a0@syzkaller.appspotmail.com
 
-Thanks Joe.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5701 at kernel/futex.c:2259 futex_requeue+0x1467/0x2d50 kernel/futex.c:2259
+Modules linked in:
+CPU: 1 PID: 5701 Comm: syz-executor.0 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:futex_requeue+0x1467/0x2d50 kernel/futex.c:2259
+Code: 02 00 00 4c 8d 84 24 90 02 00 00 e8 63 6a 00 00 41 89 c7 31 ff 89 c6 e8 a7 4d 0c 00 45 85 ff 0f 84 d8 13 00 00 e8 89 49 0c 00 <0f> 0b eb 05 e8 80 49 0c 00 4c 89 fb 89 df 48 c7 c6 70 7c 73 8c e8
+RSP: 0018:ffffc90001d5f640 EFLAGS: 00010293
+RAX: ffffffff8174a337 RBX: 0000000000000df3 RCX: ffff888020e7b880
+RDX: 0000000000000000 RSI: 00000000fffffffd RDI: 0000000000000000
+RBP: ffffc90001d5f948 R08: ffffffff8174a329 R09: ffffed1005174a9e
+R10: ffffed1005174a9e R11: 0000000000000000 R12: 0000000020048000
+R13: dffffc0000000000 R14: 0000000000000000 R15: 00000000fffffffd
+FS:  00007f4d7080c700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd72dab690 CR3: 000000001cf4d000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ do_futex+0x1b87/0x32b0 kernel/futex.c:3958
+ __do_sys_futex kernel/futex.c:4009 [inline]
+ __se_sys_futex+0x11c/0x4d0 kernel/futex.c:3990
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f4d7080c188 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: ffffffffffffffda RBX: 000000000056c038 RCX: 00000000004665f9
+RDX: 0000000000000001 RSI: 000000000000000c RDI: 000000002000cffc
+RBP: 00000000004bfcc4 R08: 0000000020048000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c038
+R13: 00007fff6069004f R14: 00007f4d7080c300 R15: 0000000000022000
 
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
