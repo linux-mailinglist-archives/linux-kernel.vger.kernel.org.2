@@ -2,145 +2,416 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4853FD28A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580B23FD28F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241877AbhIAEr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 00:47:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241684AbhIAErz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 00:47:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3427661008;
-        Wed,  1 Sep 2021 04:46:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630471619;
-        bh=6mPcbqd3sra2Eh4c8H6A89Ite2nAKh2TgjuRTl49Vag=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=NT7M1T+hYKngyLYyi2TW+0++hwLLmqhfDEvn+yIbz2aCCdq0StaqWYvrr5SXGFBTU
-         DGqxGNvEibsvCSmdzTAcMcbTN362OQyHIyskhn0PAcTsOXxaf0tqyETk1EGECIwfgU
-         AFvklTNxr3diXlr0wwTvLE2r711mtWFwq2RKghfa2i9IvKcBqtEZmKHPAgvbVBPSSQ
-         hcSe6HTLgYhVSBNlCy+reE5zD8S2jliInHVWot6SDM291iiCZD0zZYd+e/Avv9dyNV
-         T1SothX5F9wxNowWTRw9fpN1ZIr+tHL62OEUQ9M6JL8AgTFyrg1XOEwjrzOxIf6vJM
-         dsDRo8VU2XEVQ==
-Message-ID: <809185b33150a7d25da6b11323af3d8dbe549836.camel@kernel.org>
-Subject: Re: [PATCH v4 00/12] Enroll kernel keys thru MOK
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Nayna <nayna@linux.vnet.ibm.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     keyrings@vger.kernel.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
-        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-        scott.branden@broadcom.com, weiyongjun1@huawei.com,
-        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        lszubowi@redhat.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org, pjones@redhat.com,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        Patrick Uiterwijk <patrick@puiterwijk.org>
-Date:   Wed, 01 Sep 2021 07:46:57 +0300
-In-Reply-To: <e2c7eaceed715a92887b3d5aeafad01e047b6fab.camel@kernel.org>
-References: <20210819002109.534600-1-eric.snowberg@oracle.com>
-         <fcb30226f378ef12cd8bd15938f0af0e1a3977a2.camel@kernel.org>
-         <f76fcf41728fbdd65f2b3464df0821f248b2cba0.camel@linux.ibm.com>
-         <91B1FE51-C6FC-4ADF-B05A-B1E59E20132E@oracle.com>
-         <e7e251000432cf7c475e19c56b0f438b92fec16e.camel@linux.ibm.com>
-         <cedc77fefdf22b2cec086f3e0dd9cc698db9bca2.camel@kernel.org>
-         <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
-         <9526a4e0be9579a9e52064dd590a78c6496ee025.camel@linux.ibm.com>
-         <9067ff7142d097698b827f3c1630a751898a76bf.camel@kernel.org>
-         <bc37d1da3ef5aae16e69eeda25d6ce6fe6a51a77.camel@HansenPartnership.com>
-         <10bc1017-2b45-43f3-ad91-d09310b24c2c@linux.vnet.ibm.com>
-         <18c0a9ca6b3ab8103e3b9270a6f59539787f6e12.camel@kernel.org>
-         <e2c7eaceed715a92887b3d5aeafad01e047b6fab.camel@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S241865AbhIAEul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 00:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229731AbhIAEuj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 00:50:39 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AAFC061575;
+        Tue, 31 Aug 2021 21:49:43 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id w7so1483999pgk.13;
+        Tue, 31 Aug 2021 21:49:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bef5IjLVoT72adyD47DZ01SSLENdSYPaD4RluPge8MU=;
+        b=CYWnvBZWrO1fApnv7iWmWacFgrB/ouyzFEWVT33VYj3ZvF1GX0h30OWe4UuyJopXtN
+         HZUpuZ2D9VALCsb+dj/xP2zEh5v53s9Kdh9PbDhlCVHnmxXNabP8O0CxbD02tIOVYLPd
+         vHuY0I9bfQ9y+Anlkatjec6+JHNU76T+x2opbkp4+bSkswrZzZ9ddqNHYmVOAMkpGsY1
+         Nfzl2r/3ik36HpRZcASs/lsLb4c8Njxgr6XAryGO7nXxxCkUPJot9/dU+uhXWh7NfZlR
+         25X2hlbJ+8GLh50B3MRNlw4CfagOXs3FEi9VZsp5IbfajifqfD2mjZbGlemqt+IPfv0p
+         4bXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bef5IjLVoT72adyD47DZ01SSLENdSYPaD4RluPge8MU=;
+        b=JYC7wd7E4rqWJB4JSrDtlZTSn/wCSLrVIy9b4kdVMz25yD+6Mma5Y6Ia/lsLV3Tncu
+         Ub6tFaHGWflCANwHBc67JcHgfL0Fq0RUzSIXpUTMx1b59vSTs2FwrME+AjfHJnYEvr0V
+         Rf6MCfGIkbL9QGadFaqwZ1BrfC/J5YQk3aJ6vF9ivP1wI/+JnBw+QGmWhr37I8d2j3A0
+         RiD0mCkdtPxib/mh8uPqGKQN+y7tPVb+6VN54q4DQLNii31Ds3f7YDJ0nb1jpHQo16fU
+         fa4/dSOw3eoZUwGvUq++ATpz8T2WYWAxFVXa1sTp/bB8XRc7sybmriXfnVB0AYxR+1dL
+         JATQ==
+X-Gm-Message-State: AOAM533qGNTElvmUJ4cCBDIIPqZ/lI1AdX1R1jZtFwPGr1C+aAzYfEMT
+        wcZ5PWzTjHUexEkPWu4AvG0=
+X-Google-Smtp-Source: ABdhPJzd/WpcpC0hx/7NO4K09idm2hFva16vxd84oofB3/YbqI9PCKZzxmiDryxCqc4weHMgetMWeg==
+X-Received: by 2002:a63:4cd:: with SMTP id 196mr30306492pge.239.1630471782897;
+        Tue, 31 Aug 2021 21:49:42 -0700 (PDT)
+Received: from localhost.localdomain ([162.219.34.246])
+        by smtp.gmail.com with ESMTPSA id q126sm11729806pfc.156.2021.08.31.21.49.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 31 Aug 2021 21:49:42 -0700 (PDT)
+From:   kerneljasonxing@gmail.com
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kerneljasonxing@gmail.com, Jason Xing <xingwanli@kuaishou.com>,
+        kernel test robot <lkp@intel.com>,
+        Shujin Li <lishujin@kuaishou.com>
+Subject: [PATCH v6] ixgbe: let the xdpdrv work with more than 64 cpus
+Date:   Wed,  1 Sep 2021 12:49:33 +0800
+Message-Id: <20210901044933.47230-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-01 at 07:36 +0300, Jarkko Sakkinen wrote:
-> On Wed, 2021-09-01 at 07:34 +0300, Jarkko Sakkinen wrote:
-> > On Fri, 2021-08-27 at 16:44 -0400, Nayna wrote:
-> > > On 8/25/21 6:27 PM, James Bottomley wrote:
-> > > > On Thu, 2021-08-26 at 01:21 +0300, Jarkko Sakkinen wrote:
-> > > > > On Tue, 2021-08-24 at 10:34 -0400, Mimi Zohar wrote:
-> > > > > > > > > Jarkko, I think the emphasis should not be on "machine" f=
-rom
-> > > > > > > > > Machine Owner Key (MOK), but on "owner".  Whereas Nayna i=
-s
-> > > > > > > > > focusing more on the "_ca" aspect of the name.   Perhaps
-> > > > > > > > > consider naming it "system_owner_ca" or something along t=
-hose
-> > > > > > > > > lines.
-> > > > > > > > What do you gain such overly long identifier? Makes no sens=
-e.
-> > > > > > > > What is "ca aspect of the name" anyway?
-> > > > > > > As I mentioned previously, the main usage of this new keyring=
- is
-> > > > > > > that it should contain only CA keys which can be later used t=
-o
-> > > > > > > vouch for user keys loaded onto secondary or IMA keyring at
-> > > > > > > runtime. Having ca in the  name like .xxxx_ca, would make the
-> > > > > > > keyring name self-describing. Since you preferred .system, we=
- can
-> > > > > > > call it .system_ca.
-> > > > > > Sounds good to me.  Jarkko?
-> > > > > >=20
-> > > > > > thanks,
-> > > > > >=20
-> > > > > > Mimi
-> > > > > I just wonder what you exactly gain with "_ca"?
-> > > > Remember, a CA cert is a self signed cert with the CA:TRUE basic
-> > > > constraint.  Pretty much no secure boot key satisfies this (secure =
-boot
-> > > > chose deliberately NOT to use CA certificates, so they're all some =
-type
-> > > > of intermediate or leaf), so the design seems to be only to pick ou=
-t
-> > > > the CA certificates you put in the MOK keyring.  Adding the _ca suf=
-fix
-> > > > may deflect some of the "why aren't all my MOK certificates in the
-> > > > keyring" emails ...
-> > >=20
-> > > My understanding is the .system_ca keyring should not be restricted o=
-nly=20
-> > > to self-signed CAs (Root CA). Any cert that can qualify as Root or=
-=20
-> > > Intermediate CA with Basic Constraints CA:TRUE should be allowed. In=
-=20
-> > > fact, the intermediate CA certificates closest to the leaf nodes woul=
-d=20
-> > > be best.
-> > >=20
-> > > Thanks for bringing up that adding the _ca suffix may deflect some of=
-=20
-> > > the "why aren't all my MOK certificates in the keyring" emails.
-> >=20
-> > What the heck is the pragamatic gain of adding such a suffix? Makes
-> > zero sense
->=20
-> If this series needs both "system" and "system_ca" keyrings, then
-> there would be some sanity in this.
->=20
-> Also, I still *fully* lack understanding of the use of word system.
->=20
-> Why MOK is not SOK then??
+From: Jason Xing <xingwanli@kuaishou.com>
 
-Please just call it "machine". You have machines that hold the keyring.
+Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
+server is equipped with more than 64 cpus online. So it turns out that
+the loading of xdpdrv causes the "NOMEM" failure.
 
-"system" does not mean anything concrete. I don't know what a "system"
-is.
+Actually, we can adjust the algorithm and then make it work through
+mapping the current cpu to some xdp ring with the protect of @tx_lock.
 
-/Jarkko
+Here're some numbers before/after applying this patch with xdp-example
+loaded on the eth0X:
+
+As client (tx path):
+                     Before    After
+TCP_STREAM send-64   734.14    714.20
+TCP_STREAM send-128  1401.91   1395.05
+TCP_STREAM send-512  5311.67   5292.84
+TCP_STREAM send-1k   9277.40   9356.22 (not stable)
+TCP_RR     send-1    22559.75  21844.22
+TCP_RR     send-128  23169.54  22725.13
+TCP_RR     send-512  21670.91  21412.56
+
+As server (rx path):
+                     Before    After
+TCP_STREAM send-64   1416.49   1383.12
+TCP_STREAM send-128  3141.49   3055.50
+TCP_STREAM send-512  9488.73   9487.44
+TCP_STREAM send-1k   9491.17   9356.22 (not stable)
+TCP_RR     send-1    23617.74  23601.60
+...
+
+Notice: the TCP_RR mode is unstable as the official document explaines.
+
+I tested many times with different parameters combined through netperf.
+Though the result is not that accurate, I cannot see much influence on
+this patch. The static key is places on the hot path, but it actually
+shouldn't cause a huge regression theoretically.
+
+Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
+Reported-by: kernel test robot <lkp@intel.com>
+Co-developed-by: Shujin Li <lishujin@kuaishou.com>
+Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+---
+v6:
+- Move the declaration of static-key to the proper position (Test Robot)
+- Add reported-by tag (Jason)
+- Add more detailed performance test results (Jason)
+
+v5:
+- Change back to nr_cpu_ids (Eric)
+
+v4:
+- Update the wrong commit messages. (Jason)
+
+v3:
+- Change nr_cpu_ids to num_online_cpus() (Maciej)
+- Rename MAX_XDP_QUEUES to IXGBE_MAX_XDP_QS (Maciej)
+- Rename ixgbe_determine_xdp_cpu() to ixgbe_determine_xdp_q_idx() (Maciej)
+- Wrap ixgbe_xdp_ring_update_tail() with lock into one function (Maciej)
+
+v2:
+- Adjust cpu id in ixgbe_xdp_xmit(). (Jesper)
+- Add a fallback path. (Maciej)
+- Adjust other parts related to xdp ring.
+---
+ drivers/net/ethernet/intel/ixgbe/ixgbe.h           | 15 ++++-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c       |  9 ++-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      | 64 ++++++++++++++++------
+ .../net/ethernet/intel/ixgbe/ixgbe_txrx_common.h   |  1 +
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |  9 +--
+ 5 files changed, 73 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+index a604552..1dcddea 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+@@ -351,6 +351,7 @@ struct ixgbe_ring {
+ 	};
+ 	u16 rx_offset;
+ 	struct xdp_rxq_info xdp_rxq;
++	spinlock_t tx_lock;	/* used in XDP mode */
+ 	struct xsk_buff_pool *xsk_pool;
+ 	u16 ring_idx;		/* {rx,tx,xdp}_ring back reference idx */
+ 	u16 rx_buf_len;
+@@ -375,11 +376,13 @@ enum ixgbe_ring_f_enum {
+ #define IXGBE_MAX_FCOE_INDICES		8
+ #define MAX_RX_QUEUES			(IXGBE_MAX_FDIR_INDICES + 1)
+ #define MAX_TX_QUEUES			(IXGBE_MAX_FDIR_INDICES + 1)
+-#define MAX_XDP_QUEUES			(IXGBE_MAX_FDIR_INDICES + 1)
++#define IXGBE_MAX_XDP_QS		(IXGBE_MAX_FDIR_INDICES + 1)
+ #define IXGBE_MAX_L2A_QUEUES		4
+ #define IXGBE_BAD_L2A_QUEUE		3
+ #define IXGBE_MAX_MACVLANS		63
+ 
++DECLARE_STATIC_KEY_FALSE(ixgbe_xdp_locking_key);
++
+ struct ixgbe_ring_feature {
+ 	u16 limit;	/* upper limit on feature indices */
+ 	u16 indices;	/* current value of indices */
+@@ -629,7 +632,7 @@ struct ixgbe_adapter {
+ 
+ 	/* XDP */
+ 	int num_xdp_queues;
+-	struct ixgbe_ring *xdp_ring[MAX_XDP_QUEUES];
++	struct ixgbe_ring *xdp_ring[IXGBE_MAX_XDP_QS];
+ 	unsigned long *af_xdp_zc_qps; /* tracks AF_XDP ZC enabled rings */
+ 
+ 	/* TX */
+@@ -772,6 +775,14 @@ struct ixgbe_adapter {
+ #endif /* CONFIG_IXGBE_IPSEC */
+ };
+ 
++static inline int ixgbe_determine_xdp_q_idx(int cpu)
++{
++	if (static_key_enabled(&ixgbe_xdp_locking_key))
++		return cpu % IXGBE_MAX_XDP_QS;
++	else
++		return cpu;
++}
++
+ static inline u8 ixgbe_max_rss_indices(struct ixgbe_adapter *adapter)
+ {
+ 	switch (adapter->hw.mac.type) {
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+index 0218f6c..86b1116 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+@@ -299,7 +299,10 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
+ 
+ static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
+ {
+-	return adapter->xdp_prog ? nr_cpu_ids : 0;
++	int queues;
++
++	queues = min_t(int, IXGBE_MAX_XDP_QS, nr_cpu_ids);
++	return adapter->xdp_prog ? queues : 0;
+ }
+ 
+ #define IXGBE_RSS_64Q_MASK	0x3F
+@@ -947,6 +950,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
+ 		ring->count = adapter->tx_ring_count;
+ 		ring->queue_index = xdp_idx;
+ 		set_ring_xdp(ring);
++		spin_lock_init(&ring->tx_lock);
+ 
+ 		/* assign ring to adapter */
+ 		WRITE_ONCE(adapter->xdp_ring[xdp_idx], ring);
+@@ -1032,6 +1036,9 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
+ 	adapter->q_vector[v_idx] = NULL;
+ 	__netif_napi_del(&q_vector->napi);
+ 
++	if (static_key_enabled(&ixgbe_xdp_locking_key))
++		static_branch_dec(&ixgbe_xdp_locking_key);
++
+ 	/*
+ 	 * after a call to __netif_napi_del() napi may still be used and
+ 	 * ixgbe_get_stats64() might access the rings on this vector,
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 14aea40..bec29f5 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -165,6 +165,9 @@ static int ixgbe_notify_dca(struct notifier_block *, unsigned long event,
+ MODULE_DESCRIPTION("Intel(R) 10 Gigabit PCI Express Network Driver");
+ MODULE_LICENSE("GPL v2");
+ 
++DEFINE_STATIC_KEY_FALSE(ixgbe_xdp_locking_key);
++EXPORT_SYMBOL(ixgbe_xdp_locking_key);
++
+ static struct workqueue_struct *ixgbe_wq;
+ 
+ static bool ixgbe_check_cfg_remove(struct ixgbe_hw *hw, struct pci_dev *pdev);
+@@ -2422,13 +2425,10 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
+ 		xdp_do_flush_map();
+ 
+ 	if (xdp_xmit & IXGBE_XDP_TX) {
+-		struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
++		int index = ixgbe_determine_xdp_q_idx(smp_processor_id());
++		struct ixgbe_ring *ring = adapter->xdp_ring[index];
+ 
+-		/* Force memory writes to complete before letting h/w
+-		 * know there are new descriptors to fetch.
+-		 */
+-		wmb();
+-		writel(ring->next_to_use, ring->tail);
++		ixgbe_xdp_ring_update_tail_locked(ring);
+ 	}
+ 
+ 	u64_stats_update_begin(&rx_ring->syncp);
+@@ -6320,7 +6320,7 @@ static int ixgbe_sw_init(struct ixgbe_adapter *adapter,
+ 	if (ixgbe_init_rss_key(adapter))
+ 		return -ENOMEM;
+ 
+-	adapter->af_xdp_zc_qps = bitmap_zalloc(MAX_XDP_QUEUES, GFP_KERNEL);
++	adapter->af_xdp_zc_qps = bitmap_zalloc(IXGBE_MAX_XDP_QS, GFP_KERNEL);
+ 	if (!adapter->af_xdp_zc_qps)
+ 		return -ENOMEM;
+ 
+@@ -8539,21 +8539,32 @@ static u16 ixgbe_select_queue(struct net_device *dev, struct sk_buff *skb,
+ int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
+ 			struct xdp_frame *xdpf)
+ {
+-	struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
+ 	struct ixgbe_tx_buffer *tx_buffer;
+ 	union ixgbe_adv_tx_desc *tx_desc;
++	struct ixgbe_ring *ring;
+ 	u32 len, cmd_type;
+ 	dma_addr_t dma;
++	int index, ret;
+ 	u16 i;
+ 
+ 	len = xdpf->len;
+ 
+-	if (unlikely(!ixgbe_desc_unused(ring)))
+-		return IXGBE_XDP_CONSUMED;
++	index = ixgbe_determine_xdp_q_idx(smp_processor_id());
++	ring = adapter->xdp_ring[index];
++
++	if (static_branch_unlikely(&ixgbe_xdp_locking_key))
++		spin_lock(&ring->tx_lock);
++
++	if (unlikely(!ixgbe_desc_unused(ring))) {
++		ret = IXGBE_XDP_CONSUMED;
++		goto out;
++	}
+ 
+ 	dma = dma_map_single(ring->dev, xdpf->data, len, DMA_TO_DEVICE);
+-	if (dma_mapping_error(ring->dev, dma))
+-		return IXGBE_XDP_CONSUMED;
++	if (dma_mapping_error(ring->dev, dma)) {
++		ret = IXGBE_XDP_CONSUMED;
++		goto out;
++	}
+ 
+ 	/* record the location of the first descriptor for this packet */
+ 	tx_buffer = &ring->tx_buffer_info[ring->next_to_use];
+@@ -8590,7 +8601,11 @@ int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
+ 	tx_buffer->next_to_watch = tx_desc;
+ 	ring->next_to_use = i;
+ 
+-	return IXGBE_XDP_TX;
++	ret = IXGBE_XDP_TX;
++out:
++	if (static_branch_unlikely(&ixgbe_xdp_locking_key))
++		spin_unlock(&ring->tx_lock);
++	return ret;
+ }
+ 
+ netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *skb,
+@@ -10130,8 +10145,13 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+ 			return -EINVAL;
+ 	}
+ 
+-	if (nr_cpu_ids > MAX_XDP_QUEUES)
++	/* if the number of cpus is much larger than the maximum of queues,
++	 * we should stop it and then return with NOMEM like before.
++	 */
++	if (nr_cpu_ids > IXGBE_MAX_XDP_QS * 2)
+ 		return -ENOMEM;
++	else if (nr_cpu_ids > IXGBE_MAX_XDP_QS)
++		static_branch_inc(&ixgbe_xdp_locking_key);
+ 
+ 	old_prog = xchg(&adapter->xdp_prog, prog);
+ 	need_reset = (!!prog != !!old_prog);
+@@ -10195,12 +10215,22 @@ void ixgbe_xdp_ring_update_tail(struct ixgbe_ring *ring)
+ 	writel(ring->next_to_use, ring->tail);
+ }
+ 
++void ixgbe_xdp_ring_update_tail_locked(struct ixgbe_ring *ring)
++{
++	if (static_branch_unlikely(&ixgbe_xdp_locking_key))
++		spin_lock(&ring->tx_lock);
++	ixgbe_xdp_ring_update_tail(ring);
++	if (static_branch_unlikely(&ixgbe_xdp_locking_key))
++		spin_unlock(&ring->tx_lock);
++}
++
+ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
+ 			  struct xdp_frame **frames, u32 flags)
+ {
+ 	struct ixgbe_adapter *adapter = netdev_priv(dev);
+ 	struct ixgbe_ring *ring;
+ 	int nxmit = 0;
++	int index;
+ 	int i;
+ 
+ 	if (unlikely(test_bit(__IXGBE_DOWN, &adapter->state)))
+@@ -10209,10 +10239,12 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+ 		return -EINVAL;
+ 
++	index = ixgbe_determine_xdp_q_idx(smp_processor_id());
++
+ 	/* During program transitions its possible adapter->xdp_prog is assigned
+ 	 * but ring has not been configured yet. In this case simply abort xmit.
+ 	 */
+-	ring = adapter->xdp_prog ? adapter->xdp_ring[smp_processor_id()] : NULL;
++	ring = adapter->xdp_prog ? adapter->xdp_ring[index] : NULL;
+ 	if (unlikely(!ring))
+ 		return -ENXIO;
+ 
+@@ -10230,7 +10262,7 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
+ 	}
+ 
+ 	if (unlikely(flags & XDP_XMIT_FLUSH))
+-		ixgbe_xdp_ring_update_tail(ring);
++		ixgbe_xdp_ring_update_tail_locked(ring);
+ 
+ 	return nxmit;
+ }
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+index 2aeec78..f6426d9 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
+@@ -23,6 +23,7 @@ void ixgbe_process_skb_fields(struct ixgbe_ring *rx_ring,
+ void ixgbe_rx_skb(struct ixgbe_q_vector *q_vector,
+ 		  struct sk_buff *skb);
+ void ixgbe_xdp_ring_update_tail(struct ixgbe_ring *ring);
++void ixgbe_xdp_ring_update_tail_locked(struct ixgbe_ring *ring);
+ void ixgbe_irq_rearm_queues(struct ixgbe_adapter *adapter, u64 qmask);
+ 
+ void ixgbe_txrx_ring_disable(struct ixgbe_adapter *adapter, int ring);
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+index b1d22e4..82d00e4 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+@@ -334,13 +334,10 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
+ 		xdp_do_flush_map();
+ 
+ 	if (xdp_xmit & IXGBE_XDP_TX) {
+-		struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
++		int index = ixgbe_determine_xdp_q_idx(smp_processor_id());
++		struct ixgbe_ring *ring = adapter->xdp_ring[index];
+ 
+-		/* Force memory writes to complete before letting h/w
+-		 * know there are new descriptors to fetch.
+-		 */
+-		wmb();
+-		writel(ring->next_to_use, ring->tail);
++		ixgbe_xdp_ring_update_tail_locked(ring);
+ 	}
+ 
+ 	u64_stats_update_begin(&rx_ring->syncp);
+-- 
+1.8.3.1
+
