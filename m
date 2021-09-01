@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980343FD4D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA11F3FD4CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242861AbhIAIBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:01:33 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:55638 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242777AbhIAIBb (ORCPT
+        id S242852AbhIAIAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:00:38 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3711 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242827AbhIAIAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:01:31 -0400
-Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 805A4CECEF;
-        Wed,  1 Sep 2021 10:00:33 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH] Bluetooth: btusb: btrtl: Add the new support ID for
- Realtek RTL8852A
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210901074845.1000-1-max.chou@realtek.com>
-Date:   Wed, 1 Sep 2021 10:00:32 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        matthias.bgg@gmail.com,
-        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, alex_lu@realsil.com.cn,
-        hildawu@realtek.com, christian.bauer1.external@fujitsu.com
+        Wed, 1 Sep 2021 04:00:36 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GzxHy6cjKz67ZbW;
+        Wed,  1 Sep 2021 15:58:06 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 1 Sep 2021 09:59:37 +0200
+Received: from [10.47.95.192] (10.47.95.192) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 1 Sep 2021
+ 08:59:37 +0100
+Subject: Re: arm scsi drivers
+To:     Hannes Reinecke <hare@suse.de>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hannes Reinecke <hare@suse.com>,
+        "Christoph Hellwig" <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <5a72842f-99db-8787-120b-6d85e7884e2d@huawei.com>
+ <9552a506-e53a-3fd3-b38e-3cec81e713a6@huawei.com>
+ <20210827150938.GU22278@shell.armlinux.org.uk>
+ <087d1fa0-8796-5b97-36fc-379498f53380@suse.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <cbd7991e-0634-83c1-0a6a-c834324ec72d@huawei.com>
+Date:   Wed, 1 Sep 2021 09:03:28 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <087d1fa0-8796-5b97-36fc-379498f53380@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Message-Id: <83B481E5-389E-423F-A948-DCEEC94C0618@holtmann.org>
-References: <20210901074845.1000-1-max.chou@realtek.com>
-To:     Max Chou <max.chou@realtek.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+X-Originating-IP: [10.47.95.192]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Max,
+On 27/08/2021 16:23, Hannes Reinecke wrote:
+> On 8/27/21 5:09 PM, Russell King (Oracle) wrote:
+>> I haven't, sorry.
+>>
+>> I have run 5.x kernels on the hardware, and do have a set of patches
+>> kicking around for the SCSI drivers that do some cleanups. It looks
+>> like the fixup is pretty simple from the links you've sent - using
+>> scsi_cmd_to_rq() to get the tag.
 
-> Add the new support ID(0x04c5, 0x165c) to usb_device_id table for
-> Realtek RTL8852A.
-> 
-> The device info from /sys/kernel/debug/usb/devices as below.
-> 
-> T:  Bus=01 Lev=01 Prnt=01 Port=05 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
-> D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-> P:  Vendor=04c5 ProdID=165c Rev= 0.00
-> S:  Manufacturer=Realtek
-> S:  Product=Bluetooth Radio
-> S:  SerialNumber=00e04c000001
-> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
-> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> 
-> Signed-off-by: Max Chou <max.chou@realtek.com>
-> Reviewed-by: Christian Bauer <christian.bauer1.external@fujitsu.com>
-> ---
-> drivers/bluetooth/btusb.c | 2 ++
-> 1 file changed, 2 insertions(+)
+I'm not sure. The SCSI midlayer does nothing with that tag field, apart 
+from set it to the block layer request tag, and it seems that these 
+drivers reuse that field for their own tag management. But Hannes is 
+confident that we may just use scsi_cmd_to_rq().
 
-patch has been applied to bluetooth-next tree.
+>>
+>> That said, I think I may only had one SCSI drive that came anywhere
+>> close to supported tagged queuing, so I never put much effort into
+>> tagged command support. Both acornscsi and fas216 have it disabled
+>> for this reason, so it's probably easier just to rip the tag code
+>> out of these drivers.
+>>
+> That's what I figured, too.
+> And that's what my patches do, killing the tag support from arm drivers 
+> which had them disabled since the dawn of git history.
 
-Regards
+These are the patches:
+https://lore.kernel.org/linux-scsi/20210819084007.79233-1-hare@suse.de/T/#t
 
-Marcel
+Hannes, please consider resending, cc'ing Russell.
 
+Thanks,
+John
