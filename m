@@ -2,154 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEFB3FD631
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F523FD635
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243412AbhIAJIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:08:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56625 "EHLO
+        id S243420AbhIAJJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:09:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27139 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243394AbhIAJIt (ORCPT
+        by vger.kernel.org with ESMTP id S243389AbhIAJJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:08:49 -0400
+        Wed, 1 Sep 2021 05:09:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630487272;
+        s=mimecast20190719; t=1630487294;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pC5DFZzc9UewsBvUzJjXQABLpwkycaRX2qmvMdvRQvg=;
-        b=RI15EVFEjUgWbkqwtdyNbBu9F8gxydws/cFpnA7nK12tnoEckrz7c4BgWk8YVHM464dQ7o
-        buF2cjsrKh/6I5eUD2NMLwQt7eOSYYCzgPtZA0SJBTQAIu2IIvs6KbawwFPkJ/ZYaRKrDa
-        uBZDBn9/GN42s7urRmI69w37VPcTqG8=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-0-8-fRR-PSaTbA3J45QWzA-1; Wed, 01 Sep 2021 05:07:51 -0400
-X-MC-Unique: 0-8-fRR-PSaTbA3J45QWzA-1
-Received: by mail-lf1-f69.google.com with SMTP id bi21-20020a0565120e9500b003df0c58083fso787789lfb.16
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:07:51 -0700 (PDT)
+        bh=sb1gUtd0hXcMtoF0AKF7BtNjs4zgBEQQbBwZxit0nlE=;
+        b=KdLQSo9D0hjJ6eNw4tN7+hFOy11F84dl5i/2/SwFopCGlWwEROf9cv8imVwGxXG5xpVAZZ
+        iMN6DwNervBAHa6vWPKFeaOC4oJnV46NQZRDBr7f/m9B0SU04vedKCbRrtfsI2wtYei1Nx
+        PhIX5yFCDLUM/bLH86Ck6ceLPcElspk=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-210-kwPaahEzOWSple_tzvm7vA-1; Wed, 01 Sep 2021 05:08:13 -0400
+X-MC-Unique: kwPaahEzOWSple_tzvm7vA-1
+Received: by mail-wr1-f69.google.com with SMTP id h6-20020a5d4fc6000000b00157503046afso569169wrw.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:08:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pC5DFZzc9UewsBvUzJjXQABLpwkycaRX2qmvMdvRQvg=;
-        b=ViOeora+BJunWAlKfvSAn0llF/T32RXTA35CW0Tc29oJ0+o7MF1l6vuMRfSVhFV9UG
-         m/JltvJHBmalPZJ/47PqLbIBZrSxkz2hVJ/wGydMxMczZ7MUiOjLwWW5DsdNr2m63Ip6
-         WtxufTeK8dH9MLDpyJR4J6h4GqAtefcQdRPJmEeRPeNaLVbawHBHRnBf4faPF0CbWoEl
-         2srjHwFMqFqadrKwGz0/5z7kfcKogscw3p02+9TKjXxr6UlYe3YJi4CQn5ayr3GAezZx
-         rOAS62X8pWKaTLcDuOiEYSMZ1n5TAYZoId12cheozmiHf4NJ9+6NLL+4VbTlTYO0WYyr
-         4LTg==
-X-Gm-Message-State: AOAM533Bp2SjcvW1/3ZcmkcOkxZ2Y+QhHI/G9s1oUJA309JF72hceGn3
-        FoBgY75d+Fjpiz9bfleogpeGaarw+bw/O7a7YG1e6gsKk1W26XkfuvO6lvvzrYsv0bep3Y85Crk
-        k3cjYxgtvuUptF2CZCtn8y2npqEXBbGNlkKBjzUaV
-X-Received: by 2002:ac2:5f99:: with SMTP id r25mr24899368lfe.119.1630487269831;
-        Wed, 01 Sep 2021 02:07:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzCjlIr93XXbKArF0PJ73dglUAoKTqvfHM73COi+OYKKLISM5JVJXEYtGbt4lUK6eOmo4eqSWzqXe6z3Flhvvc=
-X-Received: by 2002:ac2:5f99:: with SMTP id r25mr24899355lfe.119.1630487269593;
- Wed, 01 Sep 2021 02:07:49 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sb1gUtd0hXcMtoF0AKF7BtNjs4zgBEQQbBwZxit0nlE=;
+        b=MmFtkZCEI6+npRR2qK3CN2NVSRIezpQwbF0q1fnj4SKGYsj+1r/FaVyiy5heDJpLAO
+         SrNLh/GhRNyri/ShH7dKKzQLq94VM8ng7/BujihXQlXW0pclTJgoil6aUb8zoAXR9Vvj
+         3b/DcmNZ5u0Qm/fklV6/wuVMGCpqR4VuEo2IuWffM7mDExx2A0E/EsV+xgYGHwgTUgjj
+         OYkA9iDn3Z4IS1X0MCMef7QdBTjkAQPu/2i+mfD57obt85FDTGqEYM3LSamyQl2VHuDU
+         TGEEcf73DefuepRSdxVX6yvnNu9PEIqf7IVAfMaOJQlD4jxgmX7L8Tj6fwJnf1lvHvYK
+         Jt1g==
+X-Gm-Message-State: AOAM532ynY2Lr1PBtTqNHrzkYdEKMG2xt2aJcGWP/ah8B47QSGIQME2C
+        UPAtBDXxnOnQn06GcQ6Zmg0kurBYvXSwGgxlXHKgFMY3fXxx9fOEdQdFVH27E7AAc20msm831oU
+        lIY6CN1MHG/kV97Uaqteg6IZr
+X-Received: by 2002:a05:6000:23a:: with SMTP id l26mr35782793wrz.369.1630487292143;
+        Wed, 01 Sep 2021 02:08:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxJVpF+a4RLY2ojCpEsLP4x9qa6h6EWAkPZshm1oL9/N1tpkEHx6iVx4+dMTAUDoMkqzH46XA==
+X-Received: by 2002:a05:6000:23a:: with SMTP id l26mr35782773wrz.369.1630487291925;
+        Wed, 01 Sep 2021 02:08:11 -0700 (PDT)
+Received: from [192.168.1.101] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id i68sm21120783wri.26.2021.09.01.02.08.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 02:08:11 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/4] Allow to use DRM fbdev emulation layer with
+ CONFIG_FB disabled
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        x86@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fbdev@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>,
+        David Airlie <airlied@linux.ie>
+References: <20210827100027.1577561-1-javierm@redhat.com>
+ <bb5d045c-c9de-b6df-cf45-32b1a866264a@suse.de>
+ <YSlI+ryYqoRxM7aB@phenom.ffwll.local>
+ <a7395626-f022-5c89-07cd-c30d0d52d3dd@redhat.com>
+ <YS4iIR689bAZ4QT9@phenom.ffwll.local>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+Message-ID: <b6ba8f6b-4f0c-53cc-e384-ecea3af78410@redhat.com>
+Date:   Wed, 1 Sep 2021 11:08:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210825051710.GA5358@xsang-OptiPlex-9020> <cf358b73cbda90fd6c023f3a59a8df94698cf0bc.camel@kernel.org>
- <20210901030357.GD14661@xsang-OptiPlex-9020>
-In-Reply-To: <20210901030357.GD14661@xsang-OptiPlex-9020>
-From:   Murphy Zhou <xzhou@redhat.com>
-Date:   Wed, 1 Sep 2021 17:07:38 +0800
-Message-ID: <CALWRkkhxg7pyL7yagJzdBarfkEc70q8te-xy2-LAAqrJu3Lw+w@mail.gmail.com>
-Subject: Re: [LTP] [fs] f7e33bdbd6: ltp.ftruncate04_64.fail
-To:     Oliver Sang <oliver.sang@intel.com>
-Cc:     Jeff Layton <jlayton@kernel.org>, lkp@lists.01.org,
-        LKML <linux-kernel@vger.kernel.org>, ltp@lists.linux.it,
-        lkp@intel.com, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YS4iIR689bAZ4QT9@phenom.ffwll.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In my test, CONFIG_MANDATORY_FILE_LOCKING is not set.
+On 8/31/21 2:35 PM, Daniel Vetter wrote:
+> On Sat, Aug 28, 2021 at 12:02:21AM +0200, Javier Martinez Canillas wrote:
 
-# mount(NULL, MNTPOINT, NULL, MS_REMOUNT|MS_MANDLOCK, NULL);
+[snip]
 
-But the mount call in setup() returns 0, with setting errno to EFAULT.
+>>
+>> We talked about a drmcon with Peter Robinson as well but then decided that a
+>> way to disable CONFIG_FB but still having the DRM fbdev emulation could be a
+>> intermediary step, hence these RFC patches.
+>>
+>> But yes, I agree that a drmcon would be the proper approach for this, to not
+>> need any fbdev support at all. We will just keep the explicit disable for the
+>> fbdev drivers then in the meantime.
+> 
+> I think the only intermediate step would be to disable the fbdev uapi
+> (char node and anything in sysfs), while still registering against the
+> fbcon layer so you have a console.
+>
 
-This testcase needs some tweaking to have an accurate verdict about manlock.
+Right, $subject disabled the sysfs interface but left the fbdev chardev. I can
+try to do a v2 that also disables that interface but just keep the fbcon part.
+ 
+> But looking at the things syzbot finds the really problematic code is all
+> in the fbcon and console layer in general, and /dev/fb0 seems pretty
+> solid.
+>
 
-The kernel return value for mount looks buggy too.
+Yes, but still would be an improvement in the sense that no legacy fbdev uAPI
+will be exposed and so user-space would only depend on the DRM/KMS interface.
 
-On Wed, Sep 1, 2021 at 10:46 AM Oliver Sang <oliver.sang@intel.com> wrote:
+> I think for a substantial improvement here in robustness what you really
+> want is
+> - kmscon in userspace
+> - disable FB layer
+> - ideally also disable console/vt layer in the kernel
+
+Earlier in the thread it was mentioned that an in-kernel drmcon could be used
+instead. My worry with kmscon is that moving something as critical as console
+output to user-space might make harder to troubleshoot early booting issues.
+
+And also that will require user-space changes. An in-kernel drmcon could be a
+drop-in replacement though.
+
+> - have a minimal emergency/boot-up log thing in drm, patches for that
+>   floated around a few times
 >
-> Hi Jeff,
->
-> On Wed, Aug 25, 2021 at 06:32:38AM -0400, Jeff Layton wrote:
-> > On Wed, 2021-08-25 at 13:17 +0800, kernel test robot wrote:
-> > >
-> > > Greeting,
-> > >
-> > > FYI, we noticed the following commit (built with gcc-9):
-> > >
-> > > commit: f7e33bdbd6d1bdf9c3df8bba5abcf3399f957ac3 ("fs: remove mandatory file locking support")
-> > > https://git.kernel.org/cgit/linux/kernel/git/jlayton/linux.git locks-next
-> > >
-> > >
-> > > in testcase: ltp
-> > > version: ltp-x86_64-14c1f76-1_20210821
-> > > with following parameters:
-> > >
-> > >     disk: 1HDD
-> > >     fs: ext4
-> > >     test: syscalls-07
-> > >     ucode: 0xe2
-> > >
-> > > test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> > > test-url: http://linux-test-project.github.io/
-> > >
-> > >
-> > > on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
-> > >
-> > > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> > >
-> > >
-> > >
-> >
-> > [...]
-> >
-> > > <<<test_start>>>
-> > > tag=ftruncate04_64 stime=1629792639
-> > > cmdline="ftruncate04_64"
-> > > contacts=""
-> > > analysis=exit
-> > > <<<test_output>>>
-> > > tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
-> > > tst_test.c:916: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-> > > mke2fs 1.44.5 (15-Dec-2018)
-> > > tst_test.c:1348: TINFO: Timeout per run is 0h 25m 00s
-> > > ftruncate04.c:116: TINFO: Child locks file
-> > > ftruncate04.c:49: TFAIL: ftruncate() offset before lock succeeded unexpectedly
-> > > ftruncate04.c:49: TFAIL: ftruncate() offset in lock succeeded unexpectedly
-> > > ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
-> > > ftruncate04.c:127: TINFO: Child unlocks file
-> > > ftruncate04.c:84: TPASS: ftruncate() offset in lock succeded
-> > > ftruncate04.c:84: TPASS: ftruncate() offset before lock succeded
-> > > ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
-> > >
-> > > Summary:
-> > > passed   4
-> > > failed   2
-> > > broken   0
-> > > skipped  0
-> > > warnings 0
-> >
-> > I think this failed because of the above, which is expected now that we
-> > ignore the "mand" mount option (and mandatory locking support is gone).
-> >
-> > Oliver, you may need to update the expected test output for this test.
->
-> Thanks for the information! we will do the corresponding change ASAP
->
-> >
-> > Thanks,
-> > --
-> > Jeff Layton <jlayton@kernel.org>
-> >
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
->
+
+Interesting. Do you have any pointers for this? My search-fu failed me when
+trying to find these patches.
+
+Best regards,
+-- 
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
 
