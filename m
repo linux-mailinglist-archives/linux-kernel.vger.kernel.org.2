@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51B13FE23C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9CB3FE23D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344974AbhIASQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:16:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52770 "EHLO mail.kernel.org"
+        id S1345076AbhIASQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:16:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345027AbhIASQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:16:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55BA3610E8;
-        Wed,  1 Sep 2021 18:15:27 +0000 (UTC)
+        id S1344701AbhIASQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 14:16:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 139AE610CA;
+        Wed,  1 Sep 2021 18:15:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630520127;
-        bh=3L67LVXG3RetBW0+Au0YysC6Ac0wjuq3UwkXEFY4DSo=;
+        s=k20201202; t=1630520135;
+        bh=F3PsqF8kI1YopDkw1jrsG80A5fXXJVkd7n6uEtryW9U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fWvVE/FUPAGe9f6U4fr7EPTzUZofW55UT/vXCXcjLEI4QnfG36ZeAvbdLkZ8Sok2X
-         Es31UEQ5WSqSJ6b7L8pzJom9FQy+tQsyWS1JjzNmpeIVVACSSQLNVmUbB26KhuDn3X
-         5E76ujvdIIOqDs02/bCMVHFQGLRVLyHrQBSBoJMvWljKgtHumyrZS9slYyMg5XbO/5
-         c19F7O4bA+TnCaycPGRx+M2KBjeTWWw0y2eQaqNfhVBn2GM/MEoTBB6MoXc1vemB+E
-         Y4uSLSi89oXErPlWzX1SxaD9ecyZrP+6HV7hmRzY0Q71sVL9S76T+ioHcNChGYXRnV
-         64vxdd5bR1MBw==
+        b=mZgKgvjQxxELJfFRNv8ApXFEG4ksWKr9Tfr1mg9T5x3awqaB/7OTXIneqIer7IJrt
+         BYg6f0CJAbffLI1fhSMN5dFH6YNjSnqrhPBetHlUjpqXls383MYDIMauBtnhMcz2YB
+         V8iOEe1Tib8zZYZIvGJBTl6UYEpaKOgrB6L1dZaWFx9ukY2zz9XZOWhwP83Ygyni5x
+         sLYnix6tC1keHVU/UKCj3ZZ1OWowQpbJHI+/M/RVmkGBTXGddFV+JpiMIbzP4J3kwI
+         ZTgdisv9fetcQiNr39m4ZBVXn0uTTy+/LoP3LHQzwD3y9C18Tt4kCpuPvjismuEk+V
+         ywQwwkHU6WOVQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Colin King <colin.king@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: samsung: s3c24xx_simtec: fix spelling mistake "devicec" -> "device"
-Date:   Wed,  1 Sep 2021 19:14:44 +0100
-Message-Id: <163051912510.21630.1337130075674390913.b4-ty@kernel.org>
+To:     tiwai@suse.com, matthias.bgg@gmail.com,
+        Trevor Wu <trevor.wu@mediatek.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: mediatek: mt8195: add MTK_PMIC_WRAP dependency
+Date:   Wed,  1 Sep 2021 19:14:47 +0100
+Message-Id: <163051912509.21630.1658074283329712845.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210827185003.507006-1-colin.king@canonical.com>
-References: <20210827185003.507006-1-colin.king@canonical.com>
+In-Reply-To: <20210831021303.5230-1-trevor.wu@mediatek.com>
+References: <20210831021303.5230-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,12 +42,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Aug 2021 19:50:03 +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Tue, 31 Aug 2021 10:13:03 +0800, Trevor Wu wrote:
+> randconfig builds show the warning below,
 > 
-> There is a spelling mistake in a dev_err error message. Fix it.
+> WARNING: unmet direct dependencies detected for SND_SOC_MT6359
+>    Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && MTK_PMIC_WRAP [=n]
+>    Selected by [y]:
+>    - SND_SOC_MT8195_MT6359_RT1019_RT5682 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=y] && SND_SOC_MT8195 [=y]
 > 
-> 
+> [...]
 
 Applied to
 
@@ -58,8 +58,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: samsung: s3c24xx_simtec: fix spelling mistake "devicec" -> "device"
-      commit: 2a6a0a03117ee349308ab77ac0925fdca8ef32f5
+[1/1] ASoC: mediatek: mt8195: add MTK_PMIC_WRAP dependency
+      commit: cd5e4efde23ad8050921672ed777ec3f7aa310ec
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
