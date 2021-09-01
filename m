@@ -2,160 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA3C3FE459
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585B23FE45B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243468AbhIAU63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 16:58:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24880 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231340AbhIAU62 (ORCPT
+        id S231340AbhIAVAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 17:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232634AbhIAVAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 16:58:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630529850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pWrZC5R796B6AxPjLXJOHfEspvF6TQvhNiM+3hpUqTo=;
-        b=Za3fQZtPQmNQ17zeDL8QfmpZT5Tcg//BvnzrY4pirjKJHT0rH38mtggaapCy6bJvmkJ7co
-        lQNnnTHxmp6+DKTV/aaHe4ka7u5tsylwJ5ipcl8IRZIuEKW6Uz3ikyodfSJrUD8/TO82sg
-        6SI61+uBkNyGnkr7SSKgDUziz6oBxrA=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-LfwW54pPOYmzewx3FcUgOg-1; Wed, 01 Sep 2021 16:57:29 -0400
-X-MC-Unique: LfwW54pPOYmzewx3FcUgOg-1
-Received: by mail-qk1-f197.google.com with SMTP id h186-20020a3785c3000000b00425f37f792aso798154qkd.22
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:57:29 -0700 (PDT)
+        Wed, 1 Sep 2021 17:00:04 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A6FC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 13:59:07 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so614058pjr.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:59:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=vZaPFR910A+peByQ064AQctC74vcmHflxe3uQT3LOKI=;
+        b=kCHoTXp68Dh71TAwR2mPmmz1sLUQC/IyjUrgvToj63qxt1KMR0esatlr3Le/TzH+gw
+         kaWVKM7+dNqbjVVYQP/yW+J8OrHEILsbDU7f9upQgoSQG9ii+VGFerLrkF3iVnlVveeX
+         6oeMRSknNUSWbXZllnF6jSB8PTw8RlIeTNL0DF7yD0KmQf3tPL5LBy0BtA8PVJsH/70A
+         sFDJTeXGcXAOL0vrz11kPmFao9bWwkrV1A4a6WYoAUp9jXZDAi3Ut5wJOgLqPvlAeA9f
+         iKtt4H8vJmsVf0KMxBVoHgf66rmqRu5WGvP9uyK+iGhkYvhhU+pxQFFgobz9POhmj0UO
+         xLZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pWrZC5R796B6AxPjLXJOHfEspvF6TQvhNiM+3hpUqTo=;
-        b=FPM/x44kdA4+O/hQncG9VXFNsEQ4r2BS2hK4b+6U/blF1+mNMhTmM5U0yyUtCBnFhf
-         kyBj7Im4jRJBiY3f5E6/Sfr+J8XczJQLa2mJzlbT685RSGrJvsBm3yCSv2bjDHKfQad3
-         qKDHg+VNJSGpDTS66G7KktfIV0f5M/Dv4vhjhhVEmeiv2TzK9lt4dtEioTfWUwZ/i9wg
-         hvetBOs1MG4w9grg35PjvvEXRtwk184dbSlbPczqK0kXA4z+8BnHFCi1n1zJNqU9Usib
-         fT4iPDUy2dHxd3g+cXFfmW4xycAdJJadV1zbSRc0Z6wU7jnCbUMoVlqUnAUyNk1i3CIm
-         TB4Q==
-X-Gm-Message-State: AOAM532F0pFE2D+fyi3Jm6T3VnTVmCtFfWGg9zYQAeWhSxeyGj74s35i
-        fTuURAk8lztNRGhvlzt56f4O6CfFgf/hta+4IngAiP16tLEwLFgWiQZBZbZREfOJVo3Xfbud5dm
-        q8z5xYj31L/dU4D95LkqzSqeO8w+4n6lGrPbPP/XhIJLPPUN325j7eEC2EE6TxcX+lacWmdTvrA
-        ==
-X-Received: by 2002:a37:6c2:: with SMTP id 185mr1619304qkg.260.1630529849165;
-        Wed, 01 Sep 2021 13:57:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwAT0cwh0fiCuGBlVwkSIV+oBHm4p8ri9MOokNJ6Nf3K4EOtcbAo8KK7ymA6ffmkzusdLOapw==
-X-Received: by 2002:a37:6c2:: with SMTP id 185mr1619264qkg.260.1630529848869;
-        Wed, 01 Sep 2021 13:57:28 -0700 (PDT)
-Received: from t490s.redhat.com ([2607:fea8:56a3:500::ad7f])
-        by smtp.gmail.com with ESMTPSA id h17sm562359qtu.68.2021.09.01.13.57.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 13:57:28 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Hugh Dickins <hughd@google.com>,
-        David Hildenbrand <david@redhat.com>, peterx@redhat.com,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>
-Subject: [PATCH 5/5] mm: Introduce ZAP_FLAG_SKIP_SWAP
-Date:   Wed,  1 Sep 2021 16:57:25 -0400
-Message-Id: <20210901205725.7381-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210901205622.6935-1-peterx@redhat.com>
-References: <20210901205622.6935-1-peterx@redhat.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=vZaPFR910A+peByQ064AQctC74vcmHflxe3uQT3LOKI=;
+        b=POYlFzyGBnNWhuyGduXMnJcWgComTLm+YCzzxyFS/GVu7NreBujA3kdOQMueo8rLFE
+         b/p/qwdPAhfMgcJ2ghtC7KDj8ldyXYmrzo+qwkYvpxNSSxJHUm536FK0ciK7iKkf7MoJ
+         qlwnblwhqQjMvvi6nYgL5p8A/qnq55oqhHdm/2Mjr8c09x4qd8IMTR5zIuypQXH0Iu20
+         wwwI03ArBTPvz+UmytFYmvOZ/l4KdFF8Qx7hTXU+vYHsuAMqvFm6B+Dh6mKyeRE+aQex
+         RmX21JkNHYE97JqwrmVy/dJICqSc+IWSfiO0+oUETFZXKoqyHvpMCEpayZwVM+NIPaDt
+         K3+w==
+X-Gm-Message-State: AOAM533YJpyKQS4TLw5fdfsBwqQYPNHv9BrjXhiyTatoqvmw5CacvA3p
+        t6VymUXCHNhJdz5HrCuuR34DdPa/E8Dza5hwMYk=
+X-Google-Smtp-Source: ABdhPJyuHslppk+qr3pxgIfewgC03RDZGAdXMKXIeFOQTyVRaPbg+eTEKkctaDh/p5H/M2ro/gU0zMAuoehpQfyPFTI=
+X-Received: by 2002:a17:90a:520c:: with SMTP id v12mr1303547pjh.105.1630529946799;
+ Wed, 01 Sep 2021 13:59:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Krish Jain <krishjain02939@gmail.com>
+Date:   Wed, 1 Sep 2021 22:58:55 +0200
+Message-ID: <CAPGkw+zcW+mG2hnvQZqPzeS3T2AobYmZkoPKkqHo-KK3MSKTaA@mail.gmail.com>
+Subject: [PATCH] Fix formatting for file "hsdma-mt7621.c" by fixing formatting
+ of lines ending with "("
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firstly, the comment in zap_pte_range() is misleading because it checks against
-details rather than check_mappings, so it's against what the code did.
+From: Krish Jain <krishjain02939@gmail.com>
 
-Meanwhile, it's confusing too on not explaining why passing in the details
-pointer would mean to skip all swap entries.  New user of zap_details could
-very possibly miss this fact if they don't read deep until zap_pte_range()
-because there's no comment at zap_details talking about it at all, so swap
-entries could be errornously skipped without being noticed.
+This patch fixes the format of the code. It properly formats lines
+that should not end with a '(' as suggested by checkpath.pl.
 
-This partly reverts 3e8715fdc03e ("mm: drop zap_details::check_swap_entries"),
-but introduce ZAP_FLAG_SKIP_SWAP flag, which means the opposite of previous
-"details" parameter: the caller should explicitly set this to skip swap
-entries, otherwise swap entries will always be considered (which is still the
-major case here).
+Signed-off-by: Krish Jain <krishjain02939@gmail.com>
 
-Cc: Kirill A. Shutemov <kirill@shutemov.name>
-Reviewed-by: Alistair Popple <apopple@nvidia.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- include/linux/mm.h | 12 ++++++++++++
- mm/memory.c        |  8 +++++---
- 2 files changed, 17 insertions(+), 3 deletions(-)
+ drivers/staging/mt7621-dma/hsdma-mt7621.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index fcbc1c4f8e8e..f798f5e4baa5 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1718,6 +1718,8 @@ extern void user_shm_unlock(size_t, struct ucounts *);
- 
- /* Whether to check page->mapping when zapping */
- #define  ZAP_FLAG_CHECK_MAPPING             BIT(0)
-+/* Whether to skip zapping swap entries */
-+#define  ZAP_FLAG_SKIP_SWAP                 BIT(1)
- 
- /*
-  * Parameter block passed down to zap_pte_range in exceptional cases.
-@@ -1741,6 +1743,16 @@ zap_skip_check_mapping(struct zap_details *details, struct page *page)
- 	return details->zap_mapping != page_rmapping(page);
- }
- 
-+/* Return true if skip swap entries, false otherwise */
-+static inline bool
-+zap_skip_swap(struct zap_details *details)
-+{
-+	if (!details)
-+		return false;
-+
-+	return details->zap_flags & ZAP_FLAG_SKIP_SWAP;
-+}
-+
- struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
- 			     pte_t pte);
- struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
-diff --git a/mm/memory.c b/mm/memory.c
-index 05ccacda4fe9..79957265afb4 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1379,8 +1379,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 			continue;
- 		}
- 
--		/* If details->check_mapping, we leave swap entries. */
--		if (unlikely(details))
-+		if (unlikely(zap_skip_swap(details)))
- 			continue;
- 
- 		if (!non_swap_entry(entry))
-@@ -3379,7 +3378,10 @@ void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
- 		pgoff_t nr, bool even_cows)
+diff --git a/drivers/staging/mt7621-dma/hsdma-mt7621.c
+b/drivers/staging/mt7621-dma/hsdma-mt7621.c
+index b0ed935de7ac..89b72a802800 100644
+--- a/drivers/staging/mt7621-dma/hsdma-mt7621.c
++++ b/drivers/staging/mt7621-dma/hsdma-mt7621.c
+@@ -162,8 +162,7 @@ struct mtk_hsdam_engine {
+  struct mtk_hsdma_chan chan[1];
+ };
+
+-static inline struct mtk_hsdam_engine *mtk_hsdma_chan_get_dev(
+- struct mtk_hsdma_chan *chan)
++static inline struct mtk_hsdam_engine *mtk_hsdma_chan_get_dev(struct
+mtk_hsdma_chan *chan)
  {
- 	pgoff_t	first_index = start, last_index = start + nr - 1;
--	struct zap_details details = { .zap_mapping = mapping };
-+	struct zap_details details = {
-+		.zap_mapping = mapping,
-+		.zap_flags = ZAP_FLAG_SKIP_SWAP,
-+	};
- 
- 	if (!even_cows)
- 		details.zap_flags |= ZAP_FLAG_CHECK_MAPPING;
--- 
-2.31.1
+  return container_of(chan->vchan.chan.device, struct mtk_hsdam_engine,
+  ddev);
+@@ -174,8 +173,7 @@ static inline struct mtk_hsdma_chan
+*to_mtk_hsdma_chan(struct dma_chan *c)
+  return container_of(c, struct mtk_hsdma_chan, vchan.chan);
+ }
 
+-static inline struct mtk_hsdma_desc *to_mtk_hsdma_desc(
+- struct virt_dma_desc *vdesc)
++static inline struct mtk_hsdma_desc *to_mtk_hsdma_desc(struct
+virt_dma_desc *vdesc)
+ {
+  return container_of(vdesc, struct mtk_hsdma_desc, vdesc);
+ }
+@@ -457,9 +455,7 @@ static void mtk_hsdma_issue_pending(struct dma_chan *c)
+  spin_unlock_bh(&chan->vchan.lock);
+ }
+
+-static struct dma_async_tx_descriptor *mtk_hsdma_prep_dma_memcpy(
+- struct dma_chan *c, dma_addr_t dest, dma_addr_t src,
+- size_t len, unsigned long flags)
++static struct dma_async_tx_descriptor
+*mtk_hsdma_prep_dma_memcpy(struct dma_chan *c, dma_addr_t dest,
+dma_addr_t src, size_t len, unsigned long flags)
+ {
+  struct mtk_hsdma_chan *chan = to_mtk_hsdma_chan(c);
+  struct mtk_hsdma_desc *desc;
+-- 
+2.25.1
