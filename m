@@ -2,118 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029AB3FDE3A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4FE3FDE3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245551AbhIAPID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231807AbhIAPIC (ORCPT
+        id S245719AbhIAPIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:08:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39316 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245659AbhIAPIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:08:02 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F527C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 08:07:05 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id e133so5855191ybh.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 08:07:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kAtBgHF0gcwAmOsoBYgbtR9s6UnHjuUv/WK3PPaU+Vk=;
-        b=wOCETBUhws2xVptafq9Ls+XIFtkF/TtQ2NwqJrghoobiNV0wgCNZIl8Se6VuLJrvL2
-         riPy9GCBMi6LH+XjVfa8cpbaQ3OgWKeLmmMGU0A4rYHYv6Kjrcs4/NraerKnYO4ZKm9+
-         cm7zrI0NZDW0QS/NAzAgGoGubAqsnkISCCChMNg7hIGxqwwVCnsjD9FeSfbJ/i8wFGBH
-         N0ygzBLZtV2Xp8udATxzWD9KsNVSQ0IiIwv1w2o/nbyAfOIjo1FRwyKRVaS2p7ERJE4+
-         RikJiBpdE9JsxudSJQI+9PwcNvZOiRWZ7avjd6DieJYJzaSmwOUcn0Hph7gyWQSBhRQ6
-         Sj5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kAtBgHF0gcwAmOsoBYgbtR9s6UnHjuUv/WK3PPaU+Vk=;
-        b=Lt8b11ejCZu51XtRYYf7N2QDNkheI0YoamnUeRmnOuH+9hgz6inUo/W85wvR3SCvsj
-         H+fdBX+aWtvj2wqKW/XKe0rmw1V1R0heLxgGxDax2zigS6F9Yx/y/IAEIn3AstrPKYik
-         BdDCZIFzQJe3jkQU0MQJRfvtTBH/baapd5nKioK9uDarT4Ee3fnW4vv3MEv3LDRHHMyD
-         MV6wwQQ+PT1TK6Mfe74knpHEiS5qG9XeNO+Mq7zbvVT2yijfPhBKZuyiZjm6U69Py+WQ
-         EjuZK7Cf6tt5zIwRS2aD2WNPBBCASYoLYZYrrjL3hbuoYAliHkPR1fYLs0hMn8OM8Oua
-         8gTQ==
-X-Gm-Message-State: AOAM533H+8SUcbaGqjSYBcByGD60lvHuKDdcqzMPyuC+3ER4JuQZR0p0
-        xaPOdc/zzfjKzK7SETPCqJz/ZxHACK5aWQf/v7rVJXl6oPou0Q==
-X-Google-Smtp-Source: ABdhPJw81YE1nSp7A2a5fybL82s8uxTBaubafVneXY32MJGi/egWWr7wMBfIA0/7dYRW7ZXq/Wuh0rwZ1wZ0693gKUo=
-X-Received: by 2002:a25:444:: with SMTP id 65mr38851184ybe.520.1630508824013;
- Wed, 01 Sep 2021 08:07:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <1630492744-60396-1-git-send-email-linyunsheng@huawei.com> <9c9ef2228dfcb950b5c75382bd421c6169e547a0.camel@redhat.com>
-In-Reply-To: <9c9ef2228dfcb950b5c75382bd421c6169e547a0.camel@redhat.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 1 Sep 2021 08:06:52 -0700
-Message-ID: <CANn89iJFeM=DgcQpDbaE38uhxTEL6REMWPnVFt7Am7Nuf4wpMw@mail.gmail.com>
-Subject: Re: [PATCH net-next] tcp: add tcp_tx_skb_cache_key checking in sk_stream_alloc_skb()
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        MPTCP Upstream <mptcp@lists.linux.dev>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>
+        Wed, 1 Sep 2021 11:08:49 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181F3E6h109346;
+        Wed, 1 Sep 2021 11:07:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=WubeIqV+bNHaxDT9oH2jQj2VFae/G2tEpJEEH2xmuRA=;
+ b=jK0ZvE9bXuPpXwyCuebtRZGkn9REAU23/RgbFFYuiUHRJDD0wDke2ED3RAIRTlCzTdua
+ 8xHmCBdWKwQLnWkxttctC9iG7C+A1gb11u9H/bqRrqA4WnipDPakPB+gkf2J0uwN4+vX
+ txv6ZpNYbk9AYHVftdIAq6SF2nYKw1moB2NFBS+Og26r6PwyJ2jY3OsAyAb+X6Kj7SlK
+ JzZN9BKCxOMqg8pFrhTnySZ2BddmziQqO6WClF7zwsZL6lsnvojZzWzvWRN5n04d7KVP
+ RkdgP5g463yZ8xK4I6gv9NPEM3HZ0XpRpLk5WpVDzXSV8foIovMZoa2/NqQttIGX8ZRb iQ== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3atafaax55-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 11:07:30 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 181F4Zgu028916;
+        Wed, 1 Sep 2021 15:07:29 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma03dal.us.ibm.com with ESMTP id 3aqcsdpjdc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 15:07:29 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 181F7S9t31326684
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 1 Sep 2021 15:07:28 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 44C41B201A;
+        Wed,  1 Sep 2021 15:07:28 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A4008B2014;
+        Wed,  1 Sep 2021 15:07:26 +0000 (GMT)
+Received: from v0005c16 (unknown [9.163.14.239])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  1 Sep 2021 15:07:26 +0000 (GMT)
+Message-ID: <46edf81d60a38747f7d2511f840253a1c6867652.camel@linux.ibm.com>
+Subject: Re: [PATCH v3] media: aspeed-video: ignore interrupts that aren't
+ enabled
+From:   Eddie James <eajames@linux.ibm.com>
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        linux-aspeed@lists.ozlabs.org, Andrew Jeffery <andrew@aj.id.au>,
+        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Date:   Wed, 01 Sep 2021 10:07:24 -0500
+In-Reply-To: <20210617220229.7352-1-zev@bewilderbeest.net>
+References: <20210617220229.7352-1-zev@bewilderbeest.net>
+Organization: IBM
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: zdqbiPxpgkzQjwtL_Sk62UEYgccaUkzp
+X-Proofpoint-GUID: zdqbiPxpgkzQjwtL_Sk62UEYgccaUkzp
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-01_05:2021-09-01,2021-09-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 bulkscore=0 adultscore=0 impostorscore=0 spamscore=0
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2109010087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 3:52 AM Paolo Abeni <pabeni@redhat.com> wrote:
->
-> On Wed, 2021-09-01 at 18:39 +0800, Yunsheng Lin wrote:
-> > Since tcp_tx_skb_cache is disabled by default in:
-> > commit 0b7d7f6b2208 ("tcp: add tcp_tx_skb_cache sysctl")
-> >
-> > Add tcp_tx_skb_cache_key checking in sk_stream_alloc_skb() to
-> > avoid possible branch-misses.
-> >
-> > Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->
-> Note that MPTCP is currently exploiting sk->sk_tx_skb_cache. If we get
-> this patch goes in as-is, it will break mptcp.
->
-> One possible solution would be to let mptcp usage enable sk-
-> >sk_tx_skb_cache, but that has relevant side effects on plain TCP.
->
-> Another options would be re-work once again the mptcp xmit path to
-> avoid using sk->sk_tx_skb_cache.
->
+On Thu, 2021-06-17 at 17:02 -0500, Zev Weiss wrote:
+> As partially addressed in commit 65d270acb2d6 ("media: aspeed: clear
+> garbage interrupts"), the ASpeed video engine sometimes asserts
+> interrupts that the driver hasn't enabled.  In addition to the
+> CAPTURE_COMPLETE and FRAME_COMPLETE interrupts dealt with in that
+> patch, COMP_READY has also been observed.  Instead of playing
+> whack-a-mole with each one individually, we can instead just blanket
+> ignore everything we haven't explicitly enabled.
 
-Hmmm, I actually wrote a revert of this feature but forgot to submit
-it last year.
+Suspect this will fix an intermittent problem on AST2500 with
+screensaver. Change looks good, thanks!
 
-commit c36cfbd791f62c0f7c6b32132af59dfdbe6be21b (HEAD -> listener_scale4)
-Author: Eric Dumazet <edumazet@google.com>
-Date:   Wed May 20 06:38:38 2020 -0700
+Reviewed-by: Eddie James <eajames@linux.ibm.com>
 
-    tcp: remove sk_{tr}x_skb_cache
+> 
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> ---
+> 
+> Changes since v2 [1]:
+>  - minor commit message improvements
+> 
+> Changes since v1 [0]:
+>  - dropped error message
+>  - switched to a blanket-ignore approach as suggested by Ryan
+> 
+> [0] 
+> https://lore.kernel.org/linux-arm-kernel/20201215024542.18888-1-zev@bewilderbeest.net/
+> [1] 
+> https://lore.kernel.org/openbmc/20210506234048.3214-1-zev@bewilderbeest.net/
+> 
+>  drivers/media/platform/aspeed-video.c | 16 ++++++----------
+>  1 file changed, 6 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/media/platform/aspeed-video.c
+> b/drivers/media/platform/aspeed-video.c
+> index 7bb6babdcade..77611c296a25 100644
+> --- a/drivers/media/platform/aspeed-video.c
+> +++ b/drivers/media/platform/aspeed-video.c
+> @@ -563,6 +563,12 @@ static irqreturn_t aspeed_video_irq(int irq,
+> void *arg)
+>  	struct aspeed_video *video = arg;
+>  	u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
+>  
+> +	/*
+> +	 * Hardware sometimes asserts interrupts that we haven't
+> actually
+> +	 * enabled; ignore them if so.
+> +	 */
+> +	sts &= aspeed_video_read(video, VE_INTERRUPT_CTRL);
+> +
+>  	/*
+>  	 * Resolution changed or signal was lost; reset the engine and
+>  	 * re-initialize
+> @@ -629,16 +635,6 @@ static irqreturn_t aspeed_video_irq(int irq,
+> void *arg)
+>  			aspeed_video_start_frame(video);
+>  	}
+>  
+> -	/*
+> -	 * CAPTURE_COMPLETE and FRAME_COMPLETE interrupts come even
+> when these
+> -	 * are disabled in the VE_INTERRUPT_CTRL register so clear them
+> to
+> -	 * prevent unnecessary interrupt calls.
+> -	 */
+> -	if (sts & VE_INTERRUPT_CAPTURE_COMPLETE)
+> -		sts &= ~VE_INTERRUPT_CAPTURE_COMPLETE;
+> -	if (sts & VE_INTERRUPT_FRAME_COMPLETE)
+> -		sts &= ~VE_INTERRUPT_FRAME_COMPLETE;
+> -
+>  	return sts ? IRQ_NONE : IRQ_HANDLED;
+>  }
+>  
 
-    This reverts the following patches :
-
-    2e05fcae83c41eb2df10558338dc600dc783af47 ("tcp: fix compile error
-if !CONFIG_SYSCTL")
-    4f661542a40217713f2cee0bb6678fbb30d9d367 ("tcp: fix zerocopy and
-notsent_lowat issues")
-    472c2e07eef045145bc1493cc94a01c87140780a ("tcp: add one skb cache for tx")
-    8b27dae5a2e89a61c46c6dbc76c040c0e6d0ed4c ("tcp: add one skb cache for rx")
-
-    Having a cache of one skb (in each direction) per TCP socket is fragile,
-    since it can cause a significant increase of memory needs,
-    and not good enough for high speed flows anyway where more than one skb
-    is needed.
-
-    We want instead to add a generic infrastructure, with more flexible per-cpu
-    caches, for alien NUMA nodes.
-
-    Signed-off-by: Eric Dumazet <edumazet@google.com>
-
-I will update this commit to also remove the part in MPTCP.
-
-Let's remove this feature and replace it with something less costly.
