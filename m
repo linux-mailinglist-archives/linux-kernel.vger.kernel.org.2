@@ -2,261 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166DE3FD56C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52BB03FD582
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243208AbhIAIbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:31:21 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:49869 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242943AbhIAIbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:31:21 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Gzy1B6Kngz9sTQ;
-        Wed,  1 Sep 2021 10:30:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Bg4E-lIXqjZ7; Wed,  1 Sep 2021 10:30:22 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gzy1B5F34z9sT9;
-        Wed,  1 Sep 2021 10:30:22 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 987E68B81F;
-        Wed,  1 Sep 2021 10:30:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id uUNSHlIDpySo; Wed,  1 Sep 2021 10:30:22 +0200 (CEST)
-Received: from po18078vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 30E888B81E;
-        Wed,  1 Sep 2021 10:30:22 +0200 (CEST)
-Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id EF42B6BCA3; Wed,  1 Sep 2021 08:30:21 +0000 (UTC)
-Message-Id: <6ec2a7865ed6a5ec54ab46d026785bafe1d837ea.1630484892.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3] powerpc/32: Add support for out-of-line static calls
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed,  1 Sep 2021 08:30:21 +0000 (UTC)
+        id S243265AbhIAIdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:33:19 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:42780 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S242943AbhIAIdS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 04:33:18 -0400
+X-UUID: 856cffb399cb400ba9538a58177eca88-20210901
+X-UUID: 856cffb399cb400ba9538a58177eca88-20210901
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1573207313; Wed, 01 Sep 2021 16:32:20 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkexhb01.mediatek.inc (172.21.101.102) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 1 Sep 2021 16:32:19 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Wed, 1 Sep 2021 16:32:18 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 1 Sep 2021 16:32:17 +0800
+From:   Yunfei Dong <yunfei.dong@mediatek.com>
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        "Tzung-Bi Shih" <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        "Fritz Koenig" <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v6, 00/15] Using component framework to support multi hardware decode
+Date:   Wed, 1 Sep 2021 16:32:00 +0800
+Message-ID: <20210901083215.25984-1-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for out-of-line static calls on PPC32. This change
-improve performance of calls to global function pointers by
-using direct calls instead of indirect calls.
+This series adds support for multi hardware decode into mtk-vcodec, by first
+adding component framework to manage each hardware information: interrupt,
+clock, register bases and power. Secondly add core thread to deal with core
+hardware message, at the same time, add msg queue for different hardware
+share messages. Lastly, the architecture of different specs are not the same,
+using specs type to separate them.
 
-The trampoline is initialy populated with a 'blr' or branch to target,
-followed by an unreachable long jump sequence.
+This series has been tested with both MT8183 and MT8173. Decoding was working
+for both chips.
 
-In order to cater with parallele execution, the trampoline needs to
-be updated in a way that ensures it remains consistent at all time.
-This means we can't use the traditional lis/addi to load r12 with
-the target address, otherwise there would be a window during which
-the first instruction contains the upper part of the new target
-address while the second instruction still contains the lower part of
-the old target address. To avoid that the target address is stored
-just after the 'bctr' and loaded from there with a single instruction.
+Patches 1~3 rewrite get register bases and power on/off interface.
 
-Then, depending on the target distance, arch_static_call_transform()
-will either replace the first instruction by a direct 'bl <target>' or
-'nop' in order to have the trampoline fall through the long jump
-sequence.
+Patch 4 add component framework to support multi hardware.
 
-For the special case of __static_call_return0(), to avoid the risk of
-a far branch, a version of it is inlined at the end of the trampoline.
+Patch 5 separate video encoder and decoder document
 
-Performancewise the long jump sequence is probably not better than
-the indirect calls set by GCC when we don't use static calls, but
-such calls are unlikely to be required on powerpc32: With most
-configurations the kernel size is far below 32 Mbytes so only
-modules may happen to be too far. And even modules are likely to
-be close enough as they are allocated below the kernel core and
-as close as possible of the kernel text.
+Patches 6-15 add interfaces to support core hardware.
+----
+This patch dependents on : "media: mtk-vcodec: support for MT8183 decoder"[1] and
+"Mediatek MT8192 clock support"[2].
 
-static_call selftest is running successfully with this change.
+1: Multi hardware decode is based on stateless decoder, MT8183 is the first time
+to add stateless decoder. Otherwise it will cause conflict. This patch will be
+accepted in 5.15[1].
 
-With this patch, __do_irq() has the following sequence to trace
-irq entries:
+2: The definition of decoder clocks are in mt8192-clk.h, this patch already in clk tree[2].
 
-	c0004a00 <__SCT__tp_func_irq_entry>:
-	c0004a00:	48 00 00 e0 	b       c0004ae0 <__traceiter_irq_entry>
-	c0004a04:	3d 80 c0 00 	lis     r12,-16384
-	c0004a08:	81 8c 4a 1c 	lwz     r12,18972(r12)
-	c0004a0c:	7d 89 03 a6 	mtctr   r12
-	c0004a10:	4e 80 04 20 	bctr
-	c0004a14:	38 60 00 00 	li      r3,0
-	c0004a18:	4e 80 00 20 	blr
-	c0004a1c:	00 00 00 00 	.long 0x0
-...
-	c0005654 <__do_irq>:
-...
-	c0005664:	7c 7f 1b 78 	mr      r31,r3
-...
-	c00056a0:	81 22 00 00 	lwz     r9,0(r2)
-	c00056a4:	39 29 00 01 	addi    r9,r9,1
-	c00056a8:	91 22 00 00 	stw     r9,0(r2)
-	c00056ac:	3d 20 c0 af 	lis     r9,-16209
-	c00056b0:	81 29 74 cc 	lwz     r9,29900(r9)
-	c00056b4:	2c 09 00 00 	cmpwi   r9,0
-	c00056b8:	41 82 00 10 	beq     c00056c8 <__do_irq+0x74>
-	c00056bc:	80 69 00 04 	lwz     r3,4(r9)
-	c00056c0:	7f e4 fb 78 	mr      r4,r31
-	c00056c4:	4b ff f3 3d 	bl      c0004a00 <__SCT__tp_func_irq_entry>
+[1]https://patchwork.linuxtv.org/project/linux-media/list/?series=5826
+[2]https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/commit/?h=clk-next&id=f35f1a23e0e12e3173e9e9dedbc150d139027189
+----
+Changes compared with v5:
+-Add decoder hardware block diagram for patch 13/15
 
-Before this patch, __do_irq() was doing the following to trace irq
-entries:
+Changes compared with v4:
+- Fix comments for patch 4/15
+  >> +     if (dev->is_comp_supported) {
+  >> +             ret = mtk_vcodec_init_master(dev);
+  >> +             if (ret < 0)
+  >> +                     goto err_component_match;
+  >> +     } else {
+  >> +             platform_set_drvdata(pdev, dev);
+  >> +     }
+  Fix platform_set_drvdata.
+- Fix build error for patch 9/15
+- Add depend patch in case of error header file for patch 13/15
 
-	c0005700 <__do_irq>:
-...
-	c0005710:	7c 7e 1b 78 	mr      r30,r3
-...
-	c000574c:	93 e1 00 0c 	stw     r31,12(r1)
-	c0005750:	81 22 00 00 	lwz     r9,0(r2)
-	c0005754:	39 29 00 01 	addi    r9,r9,1
-	c0005758:	91 22 00 00 	stw     r9,0(r2)
-	c000575c:	3d 20 c0 af 	lis     r9,-16209
-	c0005760:	83 e9 f4 cc 	lwz     r31,-2868(r9)
-	c0005764:	2c 1f 00 00 	cmpwi   r31,0
-	c0005768:	41 82 00 24 	beq     c000578c <__do_irq+0x8c>
-	c000576c:	81 3f 00 00 	lwz     r9,0(r31)
-	c0005770:	80 7f 00 04 	lwz     r3,4(r31)
-	c0005774:	7d 29 03 a6 	mtctr   r9
-	c0005778:	7f c4 f3 78 	mr      r4,r30
-	c000577c:	4e 80 04 21 	bctrl
-	c0005780:	85 3f 00 0c 	lwzu    r9,12(r31)
-	c0005784:	2c 09 00 00 	cmpwi   r9,0
-	c0005788:	40 82 ff e4 	bne     c000576c <__do_irq+0x6c>
+Changes compared with v3:
+- Fix return value for patch 1/15
+- Fix comments for patch 4/15
+  > Looking up "mediatek,mtk-vcodec-core" to determine if it uses component framwork sounds like...
+  Add prameter in pdata, for all platform will use compoent after mt8183
 
-Behind the fact of now using a direct 'bl' instead of a
-'load/mtctr/bctr' sequence, we can also see that we get one less
-register on the stack.
+  >> +     if (dev->is_comp_supported) {
+  >> +             ret = mtk_vcodec_init_master(dev);
+  >> +             if (ret < 0)
+  >> +                     goto err_component_match;
+  >> +     } else {
+  >> +             platform_set_drvdata(pdev, dev);
+  >> +     }
+  > + Has asked the same question in [1].  Why it removes the
+  > +platform_set_drvdata() above?  mtk_vcodec_init_master() also calls platform_set_drvdata().
+  Must call component_master_add_with_match after platform_set_drvdata for component architecture.
+- Fix yaml files check fail for patch 5/15
+- Fix yaml file check fail for patch 14/15
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v3: Adding the special case of __static_call_return0()
+Changes compared with v1:
+- Fix many comments for patch 3/14
+- Remove unnecessary code for patch 4/14
+- Using enum mtk_vdec_hw_count instead of magic numbers for patch 6/14
+- Reconstructed get/put lat buffer for lat and core hardware for patch 7/14
+- Using yaml format to instead of txt file for patch 12/14
 
-v2: Use indirect load in long jump sequence to cater with parallele execution and preemption.
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/Kconfig                   |  1 +
- arch/powerpc/include/asm/static_call.h | 28 +++++++++++++++++++
- arch/powerpc/kernel/Makefile           |  2 +-
- arch/powerpc/kernel/static_call.c      | 37 ++++++++++++++++++++++++++
- 4 files changed, 67 insertions(+), 1 deletion(-)
- create mode 100644 arch/powerpc/include/asm/static_call.h
- create mode 100644 arch/powerpc/kernel/static_call.c
+Yunfei Dong (15):
+  media: mtk-vcodec: Get numbers of register bases from DT
+  media: mtk-vcodec: Align vcodec wake up interrupt interface
+  media: mtk-vcodec: Refactor vcodec pm interface
+  media: mtk-vcodec: Use component framework to manage each hardware
+    information
+  dt-bindings: media: mtk-vcodec: Separate video encoder and decoder
+    dt-bindings
+  media: mtk-vcodec: Use pure single core for MT8183
+  media: mtk-vcodec: Add irq interface for multi hardware
+  media: mtk-vcodec: Add msg queue feature for lat and core architecture
+  media: mtk-vcodec: Generalize power and clock on/off interfaces
+  media: mtk-vcodec: Add new interface to lock different hardware
+  media: mtk-vcodec: Add core thread
+  media: mtk-vcodec: Support 34bits dma address for vdec
+  dt-bindings: media: mtk-vcodec: Adds decoder dt-bindings for mt8192
+  media: mtk-vcodec: Add core dec and dec end ipi msg
+  media: mtk-vcodec: Use codec type to separate different hardware
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 36b72d972568..a0fe69d8ec83 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -247,6 +247,7 @@ config PPC
- 	select HAVE_SOFTIRQ_ON_OWN_STACK
- 	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
- 	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
-+	select HAVE_STATIC_CALL			if PPC32
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_VIRT_CPU_ACCOUNTING
- 	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
-diff --git a/arch/powerpc/include/asm/static_call.h b/arch/powerpc/include/asm/static_call.h
-new file mode 100644
-index 000000000000..0a0bc79bd1fa
---- /dev/null
-+++ b/arch/powerpc/include/asm/static_call.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_POWERPC_STATIC_CALL_H
-+#define _ASM_POWERPC_STATIC_CALL_H
-+
-+#define __PPC_SCT(name, inst)					\
-+	asm(".pushsection .text, \"ax\"				\n"	\
-+	    ".align 5						\n"	\
-+	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
-+	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
-+	    inst "						\n"	\
-+	    "	lis	12,2f@ha				\n"	\
-+	    "	lwz	12,2f@l(12)				\n"	\
-+	    "	mtctr	12					\n"	\
-+	    "	bctr						\n"	\
-+	    "1:	li	3, 0					\n"	\
-+	    "	blr						\n"	\
-+	    "2:	.long 0						\n"	\
-+	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
-+	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
-+	    ".popsection					\n")
-+
-+#define PPC_SCT_RET0		20		/* Offset of label 1 */
-+#define PPC_SCT_DATA		28		/* Offset of label 2 */
-+
-+#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)	__PPC_SCT(name, "b " #func)
-+#define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)	__PPC_SCT(name, "blr")
-+
-+#endif /* _ASM_POWERPC_STATIC_CALL_H */
-diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
-index 7be36c1e1db6..0e3640e14eb1 100644
---- a/arch/powerpc/kernel/Makefile
-+++ b/arch/powerpc/kernel/Makefile
-@@ -106,7 +106,7 @@ extra-y				+= vmlinux.lds
- 
- obj-$(CONFIG_RELOCATABLE)	+= reloc_$(BITS).o
- 
--obj-$(CONFIG_PPC32)		+= entry_32.o setup_32.o early_32.o
-+obj-$(CONFIG_PPC32)		+= entry_32.o setup_32.o early_32.o static_call.o
- obj-$(CONFIG_PPC64)		+= dma-iommu.o iommu.o
- obj-$(CONFIG_KGDB)		+= kgdb.o
- obj-$(CONFIG_BOOTX_TEXT)	+= btext.o
-diff --git a/arch/powerpc/kernel/static_call.c b/arch/powerpc/kernel/static_call.c
-new file mode 100644
-index 000000000000..863a7aa24650
---- /dev/null
-+++ b/arch/powerpc/kernel/static_call.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/memory.h>
-+#include <linux/static_call.h>
-+
-+#include <asm/code-patching.h>
-+
-+void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
-+{
-+	int err;
-+	bool is_ret0 = (func == __static_call_return0);
-+	unsigned long target = (unsigned long)(is_ret0 ? tramp + PPC_SCT_RET0 : func);
-+	bool is_short = is_offset_in_branch_range((long)target - (long)tramp);
-+
-+	if (!tramp)
-+		return;
-+
-+	mutex_lock(&text_mutex);
-+
-+	if (func && !is_short) {
-+		err = patch_instruction(tramp + PPC_SCT_DATA, ppc_inst(target));
-+		if (err)
-+			goto out;
-+	}
-+
-+	if (!func)
-+		err = patch_instruction(tramp, ppc_inst(PPC_RAW_BLR()));
-+	else if (is_short)
-+		err = patch_branch(tramp, target, 0);
-+	else
-+		err = patch_instruction(tramp, ppc_inst(PPC_RAW_NOP()));
-+out:
-+	mutex_unlock(&text_mutex);
-+
-+	if (err)
-+		panic("%s: patching failed %pS at %pS\n", __func__, func, tramp);
-+}
-+EXPORT_SYMBOL_GPL(arch_static_call_transform);
+ .../media/mediatek,vcodec-comp-decoder.yaml   | 192 ++++++++++++
+ .../media/mediatek,vcodec-decoder.yaml        | 175 +++++++++++
+ .../media/mediatek,vcodec-encoder.yaml        | 185 +++++++++++
+ .../bindings/media/mediatek-vcodec.txt        | 130 --------
+ drivers/media/platform/mtk-vcodec/Makefile    |   2 +
+ .../platform/mtk-vcodec/mtk_vcodec_dec.c      |   4 +-
+ .../platform/mtk-vcodec/mtk_vcodec_dec.h      |   1 +
+ .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  | 276 ++++++++++++++---
+ .../platform/mtk-vcodec/mtk_vcodec_dec_hw.c   | 184 +++++++++++
+ .../platform/mtk-vcodec/mtk_vcodec_dec_hw.h   |  53 ++++
+ .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c   |  98 ++++--
+ .../platform/mtk-vcodec/mtk_vcodec_dec_pm.h   |  13 +-
+ .../mtk-vcodec/mtk_vcodec_dec_stateful.c      |   2 +
+ .../mtk-vcodec/mtk_vcodec_dec_stateless.c     |   2 +
+ .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  71 ++++-
+ .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  |  12 +-
+ .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   |   1 -
+ .../platform/mtk-vcodec/mtk_vcodec_intr.c     |  27 +-
+ .../platform/mtk-vcodec/mtk_vcodec_intr.h     |   4 +-
+ .../platform/mtk-vcodec/mtk_vcodec_util.c     |  87 +++++-
+ .../platform/mtk-vcodec/mtk_vcodec_util.h     |   8 +-
+ .../platform/mtk-vcodec/vdec/vdec_h264_if.c   |   2 +-
+ .../mtk-vcodec/vdec/vdec_h264_req_if.c        |   2 +-
+ .../platform/mtk-vcodec/vdec/vdec_vp8_if.c    |   2 +-
+ .../platform/mtk-vcodec/vdec/vdec_vp9_if.c    |   2 +-
+ .../media/platform/mtk-vcodec/vdec_drv_if.c   |  21 +-
+ .../media/platform/mtk-vcodec/vdec_ipi_msg.h  |  16 +-
+ .../platform/mtk-vcodec/vdec_msg_queue.c      | 290 ++++++++++++++++++
+ .../platform/mtk-vcodec/vdec_msg_queue.h      | 157 ++++++++++
+ .../media/platform/mtk-vcodec/vdec_vpu_if.c   |  46 ++-
+ .../media/platform/mtk-vcodec/vdec_vpu_if.h   |  22 ++
+ .../platform/mtk-vcodec/venc/venc_h264_if.c   |   2 +-
+ .../platform/mtk-vcodec/venc/venc_vp8_if.c    |   2 +-
+ 33 files changed, 1812 insertions(+), 279 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-decoder.yaml
+ create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml
+ delete mode 100644 Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_hw.h
+ create mode 100644 drivers/media/platform/mtk-vcodec/vdec_msg_queue.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/vdec_msg_queue.h
+
 -- 
-2.25.0
+2.25.1
 
