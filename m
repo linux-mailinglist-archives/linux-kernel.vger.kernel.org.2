@@ -2,77 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B913FD488
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B003FD486
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242654AbhIAHiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:38:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242604AbhIAHiv (ORCPT
+        id S242651AbhIAHiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:38:50 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:18997 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242604AbhIAHit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:38:51 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D280DC061575;
-        Wed,  1 Sep 2021 00:37:54 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:105:465:1:4:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4Gzwrb4yg3zQkc2;
-        Wed,  1 Sep 2021 09:37:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :subject:subject:message-id:from:from:date:date:received; s=
-        mail20150812; t=1630481868; bh=9YqRG27+xPGV0Cpg5gHZ7vy/BeFssIGzk
-        V6Zzsyit68=; b=dlrOVZ7HZqVC589EOkd/cMvxxS2OHupGkSAmPY0yBNi7SG3di
-        zpbADx2c5g8K6XFZh1IKcS9orqX5DYPhusCeaelnS/oT0yLRIWL+FWtaxlwxC3uI
-        CLTMciyWWMN8pXlfRCG6uQSQ8KtZ+P4yvlxVFuY8RmvyWALxxp12Y44ZrkjZQ3z+
-        5xXkgyi+6txHoOgnT6zg9+IpY7XRXiM4O3qGOmsHXxU6xRcZwlfGTZ/CPs5ffdHj
-        0BbaQc+Mh4Rt2zQeYVT4jnitGzh898PiSDsjJGRYaoCQpzdFXWKMQetw1dBsvUir
-        izG06xsn/XXVKS1aK/WDvYm4Q4cZab1gCHusQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1630481870;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=9YqRG27+xPGV0Cpg5gHZ7vy/BeFssIGzkV6Zzsyit68=;
-        b=QSjYjuHCxec/FP7UGrKqFX1vo8TsmGlT85EcRzDoZxWe0c0fLYhYjhYThqMNqxu5RZ3vga
-        5n8erzKQDDEGw84cKNd13fS7ekS+3Cp1czhAJwzZcACEBjW4LNdSs2f3+xkIfsVabOYPCg
-        aCjjXvvO5H+m+j38GuLMXi2fYy+4iLcQ1VzZw029xNRkCwBn8nJa8pG4EiLODdZEzKHy7F
-        HCzSHnPtCELUgxkvhOSuHSsiEaslZotDo7/38ioj8PGgmETKSYs1C42p8nomQmuSyCit8C
-        sWFvlFK4FNibCoGySO8DNRfvjN696SVRIrTU+gNFjt1stO6BnclLWK8BzMEvOg==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Date:   Wed, 1 Sep 2021 09:37:48 +0200 (CEST)
-From:   torvic9@mailbox.org
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hpa@redhat.com" <hpa@redhat.com>
-Cc:     "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>
-Message-ID: <1876334901.51676.1630481868266@office.mailbox.org>
-Subject: Re: [PATCH v4] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung
- 860 and 870 SSD.
+        Wed, 1 Sep 2021 03:38:49 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gzwm30xNnzblCM;
+        Wed,  1 Sep 2021 15:33:55 +0800 (CST)
+Received: from [10.174.178.75] (10.174.178.75) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Wed, 1 Sep 2021 15:37:49 +0800
+Subject: Re: [PATCH 2/6] mm/page_alloc.c: simplify the code by using macro K()
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+CC:     <vbabka@suse.cz>, <sfr@canb.auug.org.au>, <peterz@infradead.org>,
+        <mgorman@techsingularity.net>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210830141051.64090-1-linmiaohe@huawei.com>
+ <9161665.bUqNH3lxUD@natalenko.name>
+ <52bbb8f2-db63-8c56-ea49-d982c13ba541@huawei.com>
+ <9426505.MgecbftzqH@natalenko.name>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <03653d41-abe0-46f0-9eee-28cad9f5edea@huawei.com>
+Date:   Wed, 1 Sep 2021 15:37:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Rspamd-Queue-Id: CA9B326E
+In-Reply-To: <9426505.MgecbftzqH@natalenko.name>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.75]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Sorry for not doing a proper reply)
+On 2021/8/31 22:19, Oleksandr Natalenko wrote:
+> Hello.
+> 
+> On úterý 31. srpna 2021 13:08:42 CEST Miaohe Lin wrote:
+>> On 2021/8/31 16:54, Oleksandr Natalenko wrote:
+>>> Hello.
+>>>
+>>> On pondělí 30. srpna 2021 16:10:47 CEST Miaohe Lin wrote:
+>>>> Use helper macro K() to convert the pages to the corresponding size.
+>>>> Minor readability improvement.
+>>>>
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> ---
+>>>>
+>>>>  mm/page_alloc.c | 12 +++++-------
+>>>>  1 file changed, 5 insertions(+), 7 deletions(-)
+>>>>
+>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>>> index dbb3338d9287..d3983244f56f 100644
+>>>> --- a/mm/page_alloc.c
+>>>> +++ b/mm/page_alloc.c
+>>>> @@ -8134,8 +8134,7 @@ unsigned long free_reserved_area(void *start, void
+>>>> *end, int poison, const char }
+>>>>
+>>>>  	if (pages && s)
+>>>>
+>>>> -		pr_info("Freeing %s memory: %ldK\n",
+>>>> -			s, pages << (PAGE_SHIFT - 10));
+>>>> +		pr_info("Freeing %s memory: %ldK\n", s, K(pages));
+>>>>
+>>>>  	return pages;
+>>>>  
+>>>>  }
+>>>>
+>>>> @@ -8180,14 +8179,13 @@ void __init mem_init_print_info(void)
+>>>>
+>>>>  		", %luK highmem"
+>>>>  
+>>>>  #endif
+>>>>  
+>>>>  		")\n",
+>>>>
+>>>> -		nr_free_pages() << (PAGE_SHIFT - 10),
+>>>> -		physpages << (PAGE_SHIFT - 10),
+>>>> +		K(nr_free_pages()), K(physpages),
+>>>>
+>>>>  		codesize >> 10, datasize >> 10, rosize >> 10,
+>>>>  		(init_data_size + init_code_size) >> 10, bss_size >> 10,
+>>>>
+>>>> -		(physpages - totalram_pages() - totalcma_pages) << (PAGE_SHIFT
+>>>
+>>> - 10),
+>>>
+>>>> -		totalcma_pages << (PAGE_SHIFT - 10)
+>>>> +		K(physpages - totalram_pages() - totalcma_pages),
+>>>> +		K(totalcma_pages)
+>>>>
+>>>>  #ifdef	CONFIG_HIGHMEM
+>>>>
+>>>> -		, totalhigh_pages() << (PAGE_SHIFT - 10)
+>>>> +		, K(totalhigh_pages())
+>>>>
+>>>>  #endif
+>>>>  
+>>>>  		);
+>>>>  
+>>>>  }
+>>>
+>>> (my concern is not quite within the scope of this submission, but I'll ask
+>>> anyway)
+>>>
+>>> Given we have this:
+>>>
+>>> ```
+>>> git grep '#define K(x)' v5.14
+>>> v5.14:drivers/base/node.c:#define K(x) ((x) << (PAGE_SHIFT - 10))
+>>> v5.14:drivers/net/hamradio/scc.c:#define K(x) kiss->x
+>>> v5.14:kernel/debug/kdb/kdb_main.c:#define K(x) ((x) << (PAGE_SHIFT - 10))
+>>> v5.14:mm/backing-dev.c:#define K(x) ((x) << (PAGE_SHIFT - 10))
+>>> v5.14:mm/memcontrol.c:#define K(x) ((x) << (PAGE_SHIFT-10))
+>>> v5.14:mm/oom_kill.c:#define K(x) ((x) << (PAGE_SHIFT-10))
+>>> v5.14:mm/page_alloc.c:#define K(x) ((x) << (PAGE_SHIFT-10))
+>>> ```
+>>>
+>>> Shouldn't this macro go to some header file instead to get rid of define
+>>> repetitions?
+>>
+>> Many thanks for figuring this out. I think we should get rid of these
+>> repetitions too. But I'am not sure where this definition should be. Any
+>> suggestion? Thanks.
+> 
+> I'm not sure what place suits best. At first I thought maybe linux/mm.h or 
+> linux/mm_inline.h, but since PAGE_SHIFT is declared in asm-generic/page.h, 
+> probably K(x) can also go there as well?
 
-Hello,
-Noob here.
-I have a Samsung 860 Pro connected to a AMD X570 chipset mainboard and
-it just works flawlessly on 5.13 and 5.14.
-Are you sure that *every* 860/870 is concerned by this problem on
-*every* AMD controller? Isn't this too restrictive?
-Or am I simply missing something?
+K(x) is relevant with PAGE_SHIFT. So I think K(x) can also go asm-generic/page.h too.
+Am I supposed to do this when free or will you kindly do this?
 
-Thanks,
-Tor
+Many thanks.
+
+> 
+
