@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC35A3FDC11
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDA33FDCBE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344484AbhIAMqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:46:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43102 "EHLO mail.kernel.org"
+        id S1344200AbhIAMxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:53:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345138AbhIAMkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:40:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DADBB61183;
-        Wed,  1 Sep 2021 12:37:04 +0000 (UTC)
+        id S1346164AbhIAMt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:49:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 980B961216;
+        Wed,  1 Sep 2021 12:41:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499825;
-        bh=kHchV+KwZwfPlVmQdaqFWb9t3kmZdUgkIwJNkQdUk+w=;
+        s=korg; t=1630500071;
+        bh=TzDkHWbm1aqqP/QD0DwYRBsztmwOsXXIIpYLomeTdD0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v80J85u8YrxW2YztoOPUH7EfWWuKBdWsHr+bR5ufrh6IODXsqSC02zjN3L0P4ewun
-         wh8C7fTqai7GCuc5ZrxLAH/MdOM1TwSt20F7efh57O08QLv/A3/sRSaC4yb1iC59Yq
-         02/VzPxPNZdoX1m8i2XRDn5RkEqwcwTpEOlKcFfo=
+        b=rPAl6i4YTnnfN23q9f67KhfcYN11B0UJ3sDTd4L/PLpuZHeT7x+B8aTc9NT9oIBmU
+         TDWcS0kqf12eiHS3VPrjFAqYx0VwydCqz+j0ozqfIyxaJngpq5+q/h4L4YyIYVYSFf
+         Y8mbJHn7UhXVqv2mDrhso2M8TgVqxf5XA4BspmfQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Benjamin Berg <bberg@redhat.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 5.10 094/103] usb: typec: ucsi: Clear pending after acking connector change
-Date:   Wed,  1 Sep 2021 14:28:44 +0200
-Message-Id: <20210901122303.692592741@linuxfoundation.org>
+        =?UTF-8?q?Michel=20D=C3=A4nzer?= <mdaenzer@redhat.com>,
+        Mark Yacoub <markyacoub@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 090/113] drm: Copy drm_wait_vblank to user before returning
+Date:   Wed,  1 Sep 2021 14:28:45 +0200
+Message-Id: <20210901122304.967675045@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
-References: <20210901122300.503008474@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Mark Yacoub <markyacoub@google.com>
 
-commit 8c9b3caab3ac26db1da00b8117901640c55a69dd upstream.
+[ Upstream commit fa0b1ef5f7a694f48e00804a391245f3471aa155 ]
 
-It's possible that the interrupt handler for the UCSI driver signals a
-connector changes after the handler clears the PENDING bit, but before
-it has sent the acknowledge request. The result is that the handler is
-invoked yet again, to ack the same connector change.
+[Why]
+Userspace should get back a copy of drm_wait_vblank that's been modified
+even when drm_wait_vblank_ioctl returns a failure.
 
-At least some versions of the Qualcomm UCSI firmware will not handle the
-second - "spurious" - acknowledgment gracefully. So make sure to not
-clear the pending flag until the change is acknowledged.
+Rationale:
+drm_wait_vblank_ioctl modifies the request and expects the user to read
+it back. When the type is RELATIVE, it modifies it to ABSOLUTE and updates
+the sequence to become current_vblank_count + sequence (which was
+RELATIVE), but now it became ABSOLUTE.
+drmWaitVBlank (in libdrm) expects this to be the case as it modifies
+the request to be Absolute so it expects the sequence to would have been
+updated.
 
-Any connector changes coming in after the acknowledgment, that would
-have the pending flag incorrectly cleared, would afaict be covered by
-the subsequent connector status check.
+The change is in compat_drm_wait_vblank, which is called by
+drm_compat_ioctl. This change of copying the data back regardless of the
+return number makes it en par with drm_ioctl, which always copies the
+data before returning.
 
-Fixes: 217504a05532 ("usb: typec: ucsi: Work around PPM losing change information")
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Acked-By: Benjamin Berg <bberg@redhat.com>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20210516040953.622409-1-bjorn.andersson@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[How]
+Return from the function after everything has been copied to user.
+
+Fixes IGT:kms_flip::modeset-vs-vblank-race-interruptible
+Tested on ChromeOS Trogdor(msm)
+
+Reviewed-by: Michel Dänzer <mdaenzer@redhat.com>
+Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
+Signed-off-by: Sean Paul <seanpaul@chromium.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210812194917.1703356-1-markyacoub@chromium.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/typec/ucsi/ucsi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/drm_ioc32.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/usb/typec/ucsi/ucsi.c
-+++ b/drivers/usb/typec/ucsi/ucsi.c
-@@ -703,8 +703,8 @@ static void ucsi_handle_connector_change
- 	ucsi_send_command(con->ucsi, command, NULL, 0);
+diff --git a/drivers/gpu/drm/drm_ioc32.c b/drivers/gpu/drm/drm_ioc32.c
+index 33390f02f5eb..e41d3a69a02a 100644
+--- a/drivers/gpu/drm/drm_ioc32.c
++++ b/drivers/gpu/drm/drm_ioc32.c
+@@ -856,8 +856,6 @@ static int compat_drm_wait_vblank(struct file *file, unsigned int cmd,
+ 	req.request.sequence = req32.request.sequence;
+ 	req.request.signal = req32.request.signal;
+ 	err = drm_ioctl_kernel(file, drm_wait_vblank_ioctl, &req, DRM_UNLOCKED);
+-	if (err)
+-		return err;
  
- 	/* 3. ACK connector change */
--	clear_bit(EVENT_PENDING, &ucsi->flags);
- 	ret = ucsi_acknowledge_connector_change(ucsi);
-+	clear_bit(EVENT_PENDING, &ucsi->flags);
- 	if (ret) {
- 		dev_err(ucsi->dev, "%s: ACK failed (%d)", __func__, ret);
- 		goto out_unlock;
+ 	req32.reply.type = req.reply.type;
+ 	req32.reply.sequence = req.reply.sequence;
+@@ -866,7 +864,7 @@ static int compat_drm_wait_vblank(struct file *file, unsigned int cmd,
+ 	if (copy_to_user(argp, &req32, sizeof(req32)))
+ 		return -EFAULT;
+ 
+-	return 0;
++	return err;
+ }
+ 
+ #if defined(CONFIG_X86)
+-- 
+2.30.2
+
 
 
