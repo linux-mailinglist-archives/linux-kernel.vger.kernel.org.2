@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DE93FDCA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1634E3FDD00
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344888AbhIAMwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:52:16 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:43616 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1345514AbhIAMrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:47:55 -0400
-Received: from BC-Mail-Ex22.internal.baidu.com (unknown [172.31.51.16])
-        by Forcepoint Email with ESMTPS id 9975EBDFBB94475CD40E;
-        Wed,  1 Sep 2021 20:46:56 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex22.internal.baidu.com (172.31.51.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Wed, 1 Sep 2021 20:46:56 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Wed, 1 Sep 2021 20:46:56 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] usb: stkwebcam: Update the reference count of the usb device structure
-Date:   Wed, 1 Sep 2021 20:46:49 +0800
-Message-ID: <20210901124650.31653-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S1344161AbhIANC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 09:02:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344530AbhIAM7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:59:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53C5360F23;
+        Wed,  1 Sep 2021 12:58:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630501123;
+        bh=Fs+Ei850S/AfoXruaZpaxBAI0iXC8n1giB7EbO3rJOU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hlHStViLm82AieCjlQ46Lrn2UwKHUxLtsmClsGnjxYRfnQXXD0Cr+m1obtcWVRCHE
+         NyvGl2K0GNeWXci3i2flnId7bgYcRxv1ebOmm/UJEuqDwjVJDzDSKKKOqFbqA8ncX6
+         Ux/CtirmtcVQyrOyeYxJne4Vl1Zr3M9sK1/hVAqouPZhA48uBQFE1Vb44FiZLw3mOf
+         thlPffimqvhwVJTLbeKvlHCp+YVKzDpGPLUa0fXtnSoonHguDczvjQVeX2A8u6MAro
+         1Ur2rnheW/kJ9bYC66eJSxO2Wt4cKh9dp0qHn4S6ygN89/yTQc9p/TlZd0kncL2nJh
+         tEhBtqqOl1nqg==
+Date:   Wed, 1 Sep 2021 15:58:37 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YS94/aRcG6F9Su9R@kernel.org>
+References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
+ <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <1957060.1629820467@warthog.procyon.org.uk>
+ <YSUy2WwO9cuokkW0@casper.infradead.org>
+ <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
+ <YSVCAJDYShQke6Sy@casper.infradead.org>
+ <CAHk-=wisF580D_g+wFt0B_uijSX+mCgz6tRRT5KADnO7Y97t-g@mail.gmail.com>
+ <YSVHI9iaamxTGmI7@casper.infradead.org>
+ <YSVMMMrzqxyFjHlw@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex07.internal.baidu.com (10.127.64.17) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSVMMMrzqxyFjHlw@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use usb_get_dev() to increment the reference count of the usb device
-structure in order to avoid releasing the structure while it is still in
-use. And use usb_put_dev() to decrement the reference count and thus,
-when it will be equal to 0 the structure will be released.
+On Tue, Aug 24, 2021 at 03:44:48PM -0400, Theodore Ts'o wrote:
+> On Tue, Aug 24, 2021 at 08:23:15PM +0100, Matthew Wilcox wrote:
+>
+> So if someone sees "kmem_cache_alloc()", they can probably make a
+> guess what it means, and it's memorable once they learn it.
+> Similarly, something like "head_page", or "mempages" is going to a bit
+> more obvious to a kernel newbie.  So if we can make a tiny gesture
+> towards comprehensibility, it would be good to do so while it's still
+> easier to change the name.
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
-v2->v3:
-*call usb_put_dev() in the error path of stk_camera_probe
-*move v4l2_ctrl_handler_free/v4l2_device_unregister/kfree(dev)
- from stk_camera_disconnect() to stk_v4l_dev_release()
+Talking about being newbie friendly, how about we'll just add a piece of
+documentation along with the new type for a change?
+
+Something along those lines (I'm sure willy can add several more sentences
+for Folio description)
+
+diff --git a/Documentation/vm/memory-model.rst b/Documentation/vm/memory-model.rst
+index 30e8fbed6914..b5b39ebe67cf 100644
+--- a/Documentation/vm/memory-model.rst
++++ b/Documentation/vm/memory-model.rst
+@@ -30,6 +30,29 @@ Each memory model defines :c:func:`pfn_to_page` and :c:func:`page_to_pfn`
+ helpers that allow the conversion from PFN to `struct page` and vice
+ versa.
  
-drivers/media/usb/stkwebcam/stk-webcam.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/media/usb/stkwebcam/stk-webcam.c b/drivers/media/usb/stkwebcam/stk-webcam.c
-index 0e231e576dc3..9f445e6ab5fa 100644
---- a/drivers/media/usb/stkwebcam/stk-webcam.c
-+++ b/drivers/media/usb/stkwebcam/stk-webcam.c
-@@ -1234,6 +1234,11 @@ static void stk_v4l_dev_release(struct video_device *vd)
- 	if (dev->sio_bufs != NULL || dev->isobufs != NULL)
- 		pr_err("We are leaking memory\n");
- 	usb_put_intf(dev->interface);
-+	usb_put_dev(dev->udev);
++Pages
++-----
 +
-+	v4l2_ctrl_handler_free(&dev->hdl);
-+	v4l2_device_unregister(&dev->v4l2_dev);
-+	kfree(dev);
- }
- 
- static const struct video_device stk_v4l_data = {
-@@ -1309,7 +1314,7 @@ static int stk_camera_probe(struct usb_interface *interface,
- 	init_waitqueue_head(&dev->wait_frame);
- 	dev->first_init = 1; /* webcam LED management */
- 
--	dev->udev = udev;
-+	dev->udev = usb_get_dev(udev);
- 	dev->interface = interface;
- 	usb_get_intf(interface);
- 
-@@ -1365,6 +1370,7 @@ static int stk_camera_probe(struct usb_interface *interface,
- 
- error_put:
- 	usb_put_intf(interface);
-+	usb_put_dev(dev->udev);
- error:
- 	v4l2_ctrl_handler_free(hdl);
- 	v4l2_device_unregister(&dev->v4l2_dev);
-@@ -1385,9 +1391,6 @@ static void stk_camera_disconnect(struct usb_interface *interface)
- 		video_device_node_name(&dev->vdev));
- 
- 	video_unregister_device(&dev->vdev);
--	v4l2_ctrl_handler_free(&dev->hdl);
--	v4l2_device_unregister(&dev->v4l2_dev);
--	kfree(dev);
- }
- 
- #ifdef CONFIG_PM
--- 
-2.25.1
++Each physical page frame in the system is represented by a `struct page`.
++This structure aggregatates several types, each corresponding to a
++particular usage of a page frame, such as anonymous memory, SLAB caches,
++file-backed memory etc. These types are define within unions in the struct
++page to reduce memory footprint of the memory map.
++
++The actual type of the particular insance of struct page is determined by
++values of the fields shared between the different types and can be quired
++using page flag operatoins defined in ``include/linux/page-flags.h``
++
++Folios
++------
++
++For many use cases, single page frame granularity is too small. In such
++cases a contiguous range of memory can be referred by `struct folio`.
++
++A folio is a physically, virtually and logically contiguous range of
++bytes. It is a power-of-two in size, and it is aligned to that same
++power-of-two. It is at least as large as PAGE_SIZE.
++
+ FLATMEM
+ =======
 
+-- 
+Sincerely yours,
+Mike.
