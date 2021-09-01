@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C45E3FDBC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ED83FDBA6
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245690AbhIAMnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:43:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43410 "EHLO mail.kernel.org"
+        id S1345217AbhIAMm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:42:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344628AbhIAMjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:39:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93D1161027;
-        Wed,  1 Sep 2021 12:35:32 +0000 (UTC)
+        id S1344640AbhIAMju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:39:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 272A86102A;
+        Wed,  1 Sep 2021 12:35:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499733;
-        bh=7jMIjn6s+IhzSVUWGhybjNp62m+Hdg9IPQqugU2pdj0=;
+        s=korg; t=1630499735;
+        bh=p0sK5D8Q+TYYIViGSLpRcHKYImVJPzRcGIILvkNfRkI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kzehQues9inovEMpCB+OTM/qTY5/c40/rDNFNxwyBVUkb2IA4aYZpOtn3k4qe0vnF
-         3CXmd+m8V0WH0G8v7P+XXZmZVfR7HjBpjkXKA0j+aeeXeVpiBrCcnKFTbEXylBb8K1
-         HOXfxsI1X4mn6y93euxAA9BEeG4dDL+QtrRCPJ1s=
+        b=MJDX7xdG0dhbtkQggWRauyrAqXxhSN0KZUJlgJyzVUDZuIkSsUAvAQiHedYhpYxxL
+         MiQq+Rb4hoPKMm4BJ99MZTU7/LJP/MYtCWlx2ZtXaIFzkg95V3deFF83nxOpWI9Jmf
+         Yt6BVCT5PgzHQv/v6hfMVeY0u8ETp3N03wMaofjQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dima Ruinskiy <dima.ruinskiy@intel.com>,
-        Vitaly Lifshits <vitaly.lifshits@intel.com>,
-        Sasha Neftin <sasha.neftin@intel.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Firas JahJah <firasj@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 031/103] e1000e: Do not take care about recovery NVM checksum
-Date:   Wed,  1 Sep 2021 14:27:41 +0200
-Message-Id: <20210901122301.600906392@linuxfoundation.org>
+Subject: [PATCH 5.10 032/103] RDMA/efa: Free IRQ vectors on error flow
+Date:   Wed,  1 Sep 2021 14:27:42 +0200
+Message-Id: <20210901122301.632764792@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
 References: <20210901122300.503008474@linuxfoundation.org>
@@ -43,56 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sasha Neftin <sasha.neftin@intel.com>
+From: Gal Pressman <galpress@amazon.com>
 
-[ Upstream commit 4051f68318ca9f3d3becef3b54e70ad2c146df97 ]
+[ Upstream commit dbe986bdfd6dfe6ef24b833767fff4151e024357 ]
 
-On new platforms, the NVM is read-only. Attempting to update the NVM
-is causing a lockup to occur. Do not attempt to write to the NVM
-on platforms where it's not supported.
-Emit an error message when the NVM checksum is invalid.
+Make sure to free the IRQ vectors in case the allocation doesn't return
+the expected number of IRQs.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=213667
-Fixes: fb776f5d57ee ("e1000e: Add support for Tiger Lake")
-Suggested-by: Dima Ruinskiy <dima.ruinskiy@intel.com>
-Suggested-by: Vitaly Lifshits <vitaly.lifshits@intel.com>
-Signed-off-by: Sasha Neftin <sasha.neftin@intel.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: b7f5e880f377 ("RDMA/efa: Add the efa module")
+Link: https://lore.kernel.org/r/20210811151131.39138-2-galpress@amazon.com
+Reviewed-by: Firas JahJah <firasj@amazon.com>
+Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
+Signed-off-by: Gal Pressman <galpress@amazon.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e1000e/ich8lan.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ drivers/infiniband/hw/efa/efa_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.c b/drivers/net/ethernet/intel/e1000e/ich8lan.c
-index 5f0f1bd522f0..854c585de2e1 100644
---- a/drivers/net/ethernet/intel/e1000e/ich8lan.c
-+++ b/drivers/net/ethernet/intel/e1000e/ich8lan.c
-@@ -4134,13 +4134,17 @@ static s32 e1000_validate_nvm_checksum_ich8lan(struct e1000_hw *hw)
- 		return ret_val;
- 
- 	if (!(data & valid_csum_mask)) {
--		data |= valid_csum_mask;
--		ret_val = e1000_write_nvm(hw, word, 1, &data);
--		if (ret_val)
--			return ret_val;
--		ret_val = e1000e_update_nvm_checksum(hw);
--		if (ret_val)
--			return ret_val;
-+		e_dbg("NVM Checksum Invalid\n");
-+
-+		if (hw->mac.type < e1000_pch_cnp) {
-+			data |= valid_csum_mask;
-+			ret_val = e1000_write_nvm(hw, word, 1, &data);
-+			if (ret_val)
-+				return ret_val;
-+			ret_val = e1000e_update_nvm_checksum(hw);
-+			if (ret_val)
-+				return ret_val;
-+		}
+diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
+index 6faed3a81e08..ffdd18f4217f 100644
+--- a/drivers/infiniband/hw/efa/efa_main.c
++++ b/drivers/infiniband/hw/efa/efa_main.c
+@@ -377,6 +377,7 @@ static int efa_enable_msix(struct efa_dev *dev)
  	}
  
- 	return e1000e_validate_nvm_checksum_generic(hw);
+ 	if (irq_num != msix_vecs) {
++		efa_disable_msix(dev);
+ 		dev_err(&dev->pdev->dev,
+ 			"Allocated %d MSI-X (out of %d requested)\n",
+ 			irq_num, msix_vecs);
 -- 
 2.30.2
 
