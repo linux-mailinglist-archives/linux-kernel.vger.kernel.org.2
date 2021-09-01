@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F373FD1AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4360A3FD1B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241626AbhIADOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 23:14:14 -0400
-Received: from mail-lf1-f48.google.com ([209.85.167.48]:41668 "EHLO
-        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236106AbhIADOK (ORCPT
+        id S241742AbhIADUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 23:20:38 -0400
+Received: from mail-m17644.qiye.163.com ([59.111.176.44]:9478 "EHLO
+        mail-m17644.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231660AbhIADUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 23:14:10 -0400
-Received: by mail-lf1-f48.google.com with SMTP id y34so3326540lfa.8;
-        Tue, 31 Aug 2021 20:13:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=d55o8VRMccw0pmcvesAE8Rz9x+AqcwcttzF+pmxCfek=;
-        b=E3BLgVvx+QOcTFO4S7s0rxlsuZ7TLLseKvuc3NCkzFENw07eXkgbCM+madxtJYH9PI
-         WFGBEDRuaIU6T4La6kQMg2zzL1j5vkk1R+SglmjrVSJkn/970a5+XpNMV2sqfhi6FH+Y
-         Vru2C8tG+VsJLwdExrR0ajywplEdUWr9aVSx27FXOhDfML3WnNpDj31oI17DU5Is3ObT
-         1xa6/Hwzn69LQidlp1vi7Cys/aSQ8Ty34jgMbhyimPPPWea27BlS40s/GL5nmK/I6Dmo
-         8F0o05NQv1d6gVPQZTRV6cLmI2ixiGGeXYAoXGvNabzc4vbHip7Ce/cuzijpNIM38rZ4
-         c6gg==
-X-Gm-Message-State: AOAM5301srTPIipdVR+SOWf0wjhVhD0VUWfT1BO4tMj+rRBFo4j2JECl
-        vNKzsUuDeXLm/92pTMqNEnkOwaNCKMel/g==
-X-Google-Smtp-Source: ABdhPJwHLvqZyHza8PQP2FOiCndnruv1kADugN2L1a/jgRvlj4L9sgH/hDIblvQ+/wuVM753QFO1jA==
-X-Received: by 2002:a05:6512:4da:: with SMTP id w26mr10844837lfq.576.1630465993065;
-        Tue, 31 Aug 2021 20:13:13 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id y35sm2403920lje.127.2021.08.31.20.13.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 20:13:12 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id p38so3508818lfa.0;
-        Tue, 31 Aug 2021 20:13:12 -0700 (PDT)
-X-Received: by 2002:a05:6512:3b27:: with SMTP id f39mr23258174lfv.303.1630465992483;
- Tue, 31 Aug 2021 20:13:12 -0700 (PDT)
+        Tue, 31 Aug 2021 23:20:37 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [58.213.83.158])
+        by mail-m17644.qiye.163.com (Hmail) with ESMTPA id 74E483201D0;
+        Wed,  1 Sep 2021 11:19:38 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        mptcp@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] [v3] mptcp: Fix duplicated argument in protocol.h
+Date:   Wed,  1 Sep 2021 11:19:32 +0800
+Message-Id: <20210901031932.7734-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210831184819.93670-1-jernej.skrabec@gmail.com>
-In-Reply-To: <20210831184819.93670-1-jernej.skrabec@gmail.com>
-Reply-To: wens@csie.org
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Wed, 1 Sep 2021 11:13:01 +0800
-X-Gmail-Original-Message-ID: <CAGb2v67TNrkeP438t3nLcquFvGTfS+F0MvBmGAS=qmZ5JZFmag@mail.gmail.com>
-Message-ID: <CAGb2v67TNrkeP438t3nLcquFvGTfS+F0MvBmGAS=qmZ5JZFmag@mail.gmail.com>
-Subject: Re: [PATCH] drm/sun4i: Fix macros in sun8i_csc.h
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Roman Stratiienko <r.stratiienko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUIdGU5WQ0MaSkkaSRgaHU
+        JLVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kzo6OCo5Pj8BKUgjTQIeQxQu
+        FhIwCyJVSlVKTUhLT01NSExCS0tNVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJSkhVQ0hVSk5DWVdZCAFZQUlKQ0s3Bg++
+X-HM-Tid: 0a7b9f5e8b96d99akuws74e483201d0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 2:48 AM Jernej Skrabec <jernej.skrabec@gmail.com> wrote:
->
-> Macros SUN8I_CSC_CTRL() and SUN8I_CSC_COEFF() don't follow usual
-> recommendation of having arguments enclosed in parenthesis. While that
-> didn't change anything for quiet sometime, it actually become important
+Fix the following coccicheck warning:
+./net/mptcp/protocol.h:36:50-73: duplicated argument to & or |
 
-                             ^ Typo
+The OPTION_MPTCP_MPJ_SYNACK here is duplicate.
+Here should be OPTION_MPTCP_MPJ_ACK.
 
-> after CSC code rework with commit ea067aee45a8 ("drm/sun4i: de2/de3:
-> Remove redundant CSC matrices").
->
-> Without this fix, colours are completely off for supported YVU formats
-> on SoCs with DE2 (A64, H3, R40, etc.).
->
-> Fix the issue by enclosing macro arguments in parenthesis.
->
-> Cc: stable@vger.kernel.org # 5.12+
-> Fixes: 883029390550 ("drm/sun4i: Add DE2 CSC library")
-> Reported-by: Roman Stratiienko <r.stratiienko@gmail.com>
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Fixes: 74c7dfbee3e18 ("mptcp: consolidate in_opt sub-options fields in a bitmask")
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+Changelog:
+v2:
+- Add a Fixes-tag.
+v3:
+- Make Fixes-tag to be a single line.
+---
+ net/mptcp/protocol.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Otherwise,
+diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+index d7aba1c4dc48..64c9a30e0871 100644
+--- a/net/mptcp/protocol.h
++++ b/net/mptcp/protocol.h
+@@ -34,7 +34,7 @@
+ #define OPTIONS_MPTCP_MPC	(OPTION_MPTCP_MPC_SYN | OPTION_MPTCP_MPC_SYNACK | \
+ 				 OPTION_MPTCP_MPC_ACK)
+ #define OPTIONS_MPTCP_MPJ	(OPTION_MPTCP_MPJ_SYN | OPTION_MPTCP_MPJ_SYNACK | \
+-				 OPTION_MPTCP_MPJ_SYNACK)
++				 OPTION_MPTCP_MPJ_ACK)
+ 
+ /* MPTCP option subtypes */
+ #define MPTCPOPT_MP_CAPABLE	0
+-- 
+2.25.1
 
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
