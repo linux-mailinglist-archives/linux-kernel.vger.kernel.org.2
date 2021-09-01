@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673643FD52A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 479BD3FD542
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243043AbhIAITz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:19:55 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14447 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243060AbhIAITw (ORCPT
+        id S243232AbhIAIUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:20:50 -0400
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:44063 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243163AbhIAIUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:19:52 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GzxgR09kbzbg6S;
-        Wed,  1 Sep 2021 16:14:59 +0800 (CST)
-Received: from [10.174.178.75] (10.174.178.75) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 1 Sep 2021 16:18:53 +0800
-Subject: Re: [PATCH 5/6] mm/page_alloc.c: avoid accessing uninitialized pcp
- page migratetype
-To:     David Hildenbrand <david@redhat.com>
-CC:     <akpm@linux-foundation.org>, <vbabka@suse.cz>,
-        <sfr@canb.auug.org.au>, <peterz@infradead.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-References: <20210830141051.64090-1-linmiaohe@huawei.com>
- <20210830141051.64090-6-linmiaohe@huawei.com>
- <20210831134311.GG4128@techsingularity.net>
- <877b7043-65c3-5e08-ac89-ad6f10e354b3@redhat.com>
- <f801cd23-6897-53c7-a689-2ade60578d7e@huawei.com>
- <e7f834ec-5551-07d7-f439-7e20e4345389@redhat.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <bc14adc2-e688-1a46-be08-7626c69e6eb1@huawei.com>
-Date:   Wed, 1 Sep 2021 16:18:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 1 Sep 2021 04:20:44 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id LLT9mbwvPlQKhLLTAmHxWp; Wed, 01 Sep 2021 10:19:41 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1630484381; bh=1oA3g4WV8hAam/6kv0LvNABd7SgAakZdIKN0HgyLQxU=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=QCDJV7u3aXa61qVWFiMoqu9/CyJCBST2bJd/nRzKGzkdVewHJnSzM8w6nSjBcZ7tJ
+         hhaZ2qEIRLxXx7iYjDHsdLj/VyniHq4HTqpldyKYa+cMdEeEXF1SeaRTlNKTn1gPM3
+         wQmqa3PayN2IoZoJ2qSp3XtXhvvUk8SCnDdFfH1uY0UMbWUPCtGZihqsQQjOe+SMD7
+         KQUT61YblFMVbi6MEuTzjNaIeK4MAv9DU44eXCgBsLUqIc318eoCuenlhpuxAD8+RI
+         PD/1ixO0d3VhwtR0TaVZxPZfvcl5RzXL5/Js9zc9DpRauSf5rh9Ggvg0AVZlDJYUTQ
+         7dSV7Vq6/qrZQ==
+Subject: Re: [PATCH] media: rcar_drif: Make use of the helper function
+ devm_platform_ioremap_resource()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210901055517.7329-1-caihuoqing@baidu.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <fe294624-3ad4-2f4e-7a1f-cd4ac3d6b387@xs4all.nl>
+Date:   Wed, 1 Sep 2021 10:19:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <e7f834ec-5551-07d7-f439-7e20e4345389@redhat.com>
-Content-Type: text/plain; charset="iso-8859-15"
+In-Reply-To: <20210901055517.7329-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.75]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+X-CMAE-Envelope: MS4xfIDlik5mjhflElGwtSmDwaYXi9gSZLE+y2/z8xRdmWW/RlXvmth2F9ZgcLV3K+7AGiQhzdMXG4GYrto/ntIs1K1VkTxPOKFtmaOI/f4vIMT8Q/5nX8mc
+ EP/RcrGIlejq3VT2r4LYkOyFv4NvNI+ww9FnEf9ldC1K7CPUqRGqx6DkjtyviGApWiaQt/+u3k3E0lAqgxOUWUp2YL+aE5svRxG8Wwk3TqgSyshlNVbU5S2S
+ 0mZ/r9mbn+hs5IngcsRQmdAxT25Q3jSaBtC6pa84dF6Ps5CHib5polpWpAsbnGV7rfICf+BD+7yHfasf1ommz8OfA6bkNnJl0AziyVN3BNCgCa7rmluSDTjb
+ 59VRWo593RB0R84sSgLu6oETkTFUmwjC7T7J4lspExW2JRF1VoO/thEcQgm4kNr3a2d2WgxhCjEvPx3L1Vm0PeRogALUTVamByKYJa2rf6zqdHdin+S+aGy2
+ 7Fq5LvXJax3VK4cR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/1 16:10, David Hildenbrand wrote:
-> On 01.09.21 10:02, Miaohe Lin wrote:
->> On 2021/8/31 22:23, David Hildenbrand wrote:
->>> On 31.08.21 15:43, Mel Gorman wrote:
->>>> On Mon, Aug 30, 2021 at 10:10:50PM +0800, Miaohe Lin wrote:
->>>>> If it's not prepared to free unref page, the pcp page migratetype is
->>>>> unset. Thus We will get rubbish from get_pcppage_migratetype() and
->>>>> might list_del &page->lru again after it's already deleted from the
->>>>> list leading to grumble about data corruption.
->>>>>
->>>>> Fixes: 3dcbe270d8ec ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
->>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>>
->>>> Acked-by: Mel Gorman <mgorman@techsingularity.net>
->>>>
->>>> This fix is fairly important. Take this patch out and send it on its own
->>>> so it gets picked up relatively quickly. It does not belong in a series
->>>> that is mostly cosmetic cleanups.
->>>
->>> I think the commit id is wrong. Shouldn't that be
->>>
->>> df1acc856923 ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
->>>
->>> ?
->>>
->>
->> Many thanks for pointing this out.
->>
->> I used to save the git log in a file to make life easier. But it seems this leads
->> to the old commit id above.
->>
->> commit 3dcbe270d8ec57e534f5c605279cdc3ceb1f044a
->> Author: Mel Gorman <mgorman@techsingularity.net>
->> Date:   Fri Jun 4 14:20:03 2021 +1000
->>
->>      mm/page_alloc: avoid conflating IRQs disabled with zone->lock
->>
->> git name-rev 3dcbe270d8ec
->> 3dcbe270d8ec tags/next-20210604~2^2~196
->>
->> vs
->>
->> commit df1acc856923c0a65c28b588585449106c316b71
->> Author: Mel Gorman <mgorman@techsingularity.net>
->> Date:   Mon Jun 28 19:42:00 2021 -0700
->>
->>      mm/page_alloc: avoid conflating IRQs disabled with zone->lock
->>
->> git name-rev df1acc856923
->> df1acc856923 tags/next-20210630~2^2~278
->>
->> Their contents are same but with different commit id. The previous one
->> could have been git-rebased.
->>
+On 01/09/2021 07:55, Cai Huoqing wrote:
+> Use the devm_platform_ioremap_resource() helper instead of
+> calling platform_get_resource() and devm_ioremap_resource()
+> separately
 > 
-> -mm tree commit ids keep changing until patches are upstream. Therefore, you can observe changing commit ids in -next. Always use the ones from Linus' tree, they are stable.
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/media/platform/rcar_drif.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-Many thanks for your advice, David. :)
+> diff --git a/drivers/media/platform/rcar_drif.c b/drivers/media/platform/rcar_drif.c
+> index a505d991548b..f0a1edb57841 100644
+> --- a/drivers/media/platform/rcar_drif.c
+> +++ b/drivers/media/platform/rcar_drif.c
+> @@ -1376,7 +1376,6 @@ static int rcar_drif_probe(struct platform_device *pdev)
+>  	struct rcar_drif_sdr *sdr;
+>  	struct device_node *np;
+>  	struct rcar_drif *ch;
+> -	struct resource	*res;
+>  	int ret;
+>  
+>  	/* Reserve memory for enabled channel */
+> @@ -1395,8 +1394,7 @@ static int rcar_drif_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	/* Register map */
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	ch->base = devm_ioremap_resource(&pdev->dev, res);
+> +	ch->base = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(ch->base))
+>  		return PTR_ERR(ch->base);
+>  
+> 
+
+Compile error:
+
+drivers/media/platform/rcar_drif.c: In function â€˜rcar_drif_probeâ€™:
+drivers/media/platform/rcar_drif.c:1401:14: error: â€˜resâ€™ undeclared (first use in this function); did you mean â€˜retâ€™?
+ 1401 |  ch->start = res->start;
+      |              ^~~
+      |              ret
+drivers/media/platform/rcar_drif.c:1401:14: note: each undeclared identifier is reported only once for each function it appears in
+
+Regards,
+
+	Hans
