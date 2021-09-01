@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACD43FDB0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EC83FDB12
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244651AbhIAMh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:37:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60574 "EHLO mail.kernel.org"
+        id S1343543AbhIAMhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:37:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344042AbhIAMfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:35:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58782610CE;
-        Wed,  1 Sep 2021 12:33:21 +0000 (UTC)
+        id S1343566AbhIAMgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:36:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F033661090;
+        Wed,  1 Sep 2021 12:33:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499601;
-        bh=/Vbtolf7Wtj+zZa8OIMa+MTe96rh0C/4eW+B4g47CHI=;
+        s=korg; t=1630499604;
+        bh=LpVbVT5UPCEoz8bnrnxcToj1FZ2Pxvrd8UXF5JNzSio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HYZsftF8690CG7TTSO7lELp5207jaDieFUV9nfP/qEDdWMm5lRILrRivbqBNoABh5
-         8ZoHotfT8kR4PM91LXjEhaijdH0H0wGU3Aub3W1JAT58NZ4yHsGKxi/zradoeMLS+7
-         OIjjjYtVdHR6UEDEF5oBQwmwyrkEOp9hZHyHcWKs=
+        b=q4GxxdDCgSlw/sLGo5zwbS+nq4engvp9oDcrSFMPk4ByDKVAevm8lQTBP8MW/vy94
+         khXgu5DUpdakq9F5bAxD2+l7+KLfF1HL4b0HPlHqadOUmGp1+ybN7hBXddaQpCQjy2
+         nzGc6JqDLzLrQPgbbW5R/m0iz26XITsiMxF3Ravg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vincent Chen <vincent.chen@sifive.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH 5.10 014/103] riscv: Ensure the value of FP registers in the core dump file is up to date
-Date:   Wed,  1 Sep 2021 14:27:24 +0200
-Message-Id: <20210901122301.006330592@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.10 015/103] Revert "btrfs: compression: dont try to compress if we dont have enough pages"
+Date:   Wed,  1 Sep 2021 14:27:25 +0200
+Message-Id: <20210901122301.043928981@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
 References: <20210901122300.503008474@linuxfoundation.org>
@@ -40,48 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Chen <vincent.chen@sifive.com>
+From: Qu Wenruo <wqu@suse.com>
 
-commit 379eb01c21795edb4ca8d342503bd2183a19ec3a upstream.
+commit 4e9655763b82a91e4c341835bb504a2b1590f984 upstream.
 
-The value of FP registers in the core dump file comes from the
-thread.fstate. However, kernel saves the FP registers to the thread.fstate
-only before scheduling out the process. If no process switch happens
-during the exception handling process, kernel will not have a chance to
-save the latest value of FP registers to thread.fstate. It will cause the
-value of FP registers in the core dump file may be incorrect. To solve this
-problem, this patch force lets kernel save the FP register into the
-thread.fstate if the target task_struct equals the current.
+This reverts commit f2165627319ffd33a6217275e5690b1ab5c45763.
 
-Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
-Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
-Fixes: b8c8a9590e4f ("RISC-V: Add FP register ptrace support for gdb.")
-Cc: stable@vger.kernel.org
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+[BUG]
+It's no longer possible to create compressed inline extent after commit
+f2165627319f ("btrfs: compression: don't try to compress if we don't
+have enough pages").
+
+[CAUSE]
+For compression code, there are several possible reasons we have a range
+that needs to be compressed while it's no more than one page.
+
+- Compressed inline write
+  The data is always smaller than one sector and the test lacks the
+  condition to properly recognize a non-inline extent.
+
+- Compressed subpage write
+  For the incoming subpage compressed write support, we require page
+  alignment of the delalloc range.
+  And for 64K page size, we can compress just one page into smaller
+  sectors.
+
+For those reasons, the requirement for the data to be more than one page
+is not correct, and is already causing regression for compressed inline
+data writeback.  The idea of skipping one page to avoid wasting CPU time
+could be revisited in the future.
+
+[FIX]
+Fix it by reverting the offending commit.
+
+Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Link: https://lore.kernel.org/linux-btrfs/afa2742.c084f5d6.17b6b08dffc@tnonline.net
+Fixes: f2165627319f ("btrfs: compression: don't try to compress if we don't have enough pages")
+CC: stable@vger.kernel.org # 4.4+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/riscv/kernel/ptrace.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ fs/btrfs/inode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/riscv/kernel/ptrace.c
-+++ b/arch/riscv/kernel/ptrace.c
-@@ -10,6 +10,7 @@
- #include <asm/ptrace.h>
- #include <asm/syscall.h>
- #include <asm/thread_info.h>
-+#include <asm/switch_to.h>
- #include <linux/audit.h>
- #include <linux/ptrace.h>
- #include <linux/elf.h>
-@@ -56,6 +57,9 @@ static int riscv_fpr_get(struct task_str
- {
- 	struct __riscv_d_ext_state *fstate = &target->thread.fstate;
- 
-+	if (target == current)
-+		fstate_save(current, task_pt_regs(current));
-+
- 	membuf_write(&to, fstate, offsetof(struct __riscv_d_ext_state, fcsr));
- 	membuf_store(&to, fstate->fcsr);
- 	return membuf_zero(&to, 4);	// explicitly pad
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -547,7 +547,7 @@ again:
+ 	 * inode has not been flagged as nocompress.  This flag can
+ 	 * change at any time if we discover bad compression ratios.
+ 	 */
+-	if (nr_pages > 1 && inode_need_compress(BTRFS_I(inode), start, end)) {
++	if (inode_need_compress(BTRFS_I(inode), start, end)) {
+ 		WARN_ON(pages);
+ 		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
+ 		if (!pages) {
 
 
