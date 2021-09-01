@@ -2,197 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3C63FE397
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66553FE39A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245118AbhIAUST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 16:18:19 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:40630 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbhIAUSS (ORCPT
+        id S243319AbhIAUUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 16:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231590AbhIAUUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 16:18:18 -0400
-Received: by mail-io1-f71.google.com with SMTP id i26-20020a5e851a000000b005bb55343e9bso339661ioj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:17:21 -0700 (PDT)
+        Wed, 1 Sep 2021 16:20:05 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E4BC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 13:19:08 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id m21so823615qkm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:19:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=iDwVaPK9X9X7QqzlEWrxBrm4lRKmxDVWpkSHqBeXa6Q=;
+        b=jb6vhiVbOjJj3RHow243t+jTzPnCGOtF1VUzxd+TY3SQLlY5yUtFL/+JWFWNjmoSaI
+         r/1kcAwSP20TYzCHqIPofu02SV+6X1o96IZAcV4ySBuEtDqNPvBtd7woi2oWcPZvV7Jm
+         3FxpoYzzrNVUn1E/N17S6loynm1JTrSa/j0HjSkMwItFCw0iR3/4go3v/ULTzcv7Mh95
+         qKMYL3DxPb3M0unAGxe5cBW9yOtDMVYISOGbQKXIuyee90RnYkRCKzfIX4Uj5xJElK7y
+         hNpxj7LQ6svkOT4Is9Y3vbru8IP/7Y1j0YG+s3PU20ufXINCLQ7QGoCTsy0lSH0D0vDN
+         aMpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=FNMy+qj19qsqpjiRjE2NyPkIAsyhDlbzF8yjiFo18h0=;
-        b=LC4Me5KIFxw0OOYFnHp4NMp0cRkQ3+bU/QRg4YwBiiAARGessS81qRGg21rfEFfzmz
-         pSpGLW72POkWOEMj7vcMfXduBUPAkz38KopHU5SL1xI9meKuudMBlAkncd4vdWbWF7hw
-         3DTjlXI5Rp77MLhI3oyyT2nbCU4hQshIqcI1c2/gaESbKKjfu6okasUA1D5luLGvDFcy
-         /lSIie8sl+8WXYksPAUseIzSpB4Sr8HNhg8jpi7EZ9D6E9p/dAGOfLLmLjWVhe+VDPmH
-         RTJ2bHPC4EQWsMqgkg7hlst8qoI4Lz0TGg2EhZGlDG17Mh3diqlXCGLyXBTXusVcx6Fm
-         pgvA==
-X-Gm-Message-State: AOAM532SvZBO0JXRTJJHUa+SBQLlErlXfykDtKzICfMJSJd2xZQul/KJ
-        19TJ50oKTRiwgxnPJk5jI4vcGIYXU4i0xhomHApXDWWFIGXU
-X-Google-Smtp-Source: ABdhPJxyNuOj2mKccd1MJdaNAlwEVU80bWC9fHmvHystXIIrZZduAmQuWiJpu8GvdRKcgfYkhAT10oooWFKvXUiFqN+dIKtN43+a
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=iDwVaPK9X9X7QqzlEWrxBrm4lRKmxDVWpkSHqBeXa6Q=;
+        b=IlhVeFwz7S4foeXXtf/y8gV2tWjy/aeiKFQnbG21YIP00xJIJpogR35NoG5m6Tm1rS
+         OIBwtGRU/7/mMpH6kv4w849HVeBlvUvF7UQyj6WnUsVQsYIV+BV9Fgy/X/AW2wVlLfPt
+         Ro7hxWd6xJjKlrJgP68kPrbdD5aJW6fDDYR3zwNZLG298zvwv09afYGsntsDJoL79V4s
+         PVKuHhZeI1wa0a0ehTPhcYl8cNxCK292+qIW+Rwj901usRgbb+6mMPvYawgTC7BFVRxF
+         uW9WfJA+My2pO2Obm6V023YXo2n1jzfxPJruUgz+m1TcMp+QMB4i+f7tWzJyw79Z0Buk
+         porQ==
+X-Gm-Message-State: AOAM5321N2GP3mBgA+xMTC6kVUSAa5e5oEgwrZG+x3FBVdcPj/1ty/yR
+        Lvg3cmH9QYqltqxqOVLi2+ADklzgXKd1EQ==
+X-Google-Smtp-Source: ABdhPJzvpjXETWwxlLwjFzzhQrEHOCRNK3UAY3FTqH8Sn4TtHSDf77Aabons5yT0/ngs+sKTkxi/ig==
+X-Received: by 2002:a05:620a:b0f:: with SMTP id t15mr1470344qkg.352.1630527547450;
+        Wed, 01 Sep 2021 13:19:07 -0700 (PDT)
+Received: from [192.168.15.5] ([186.204.255.226])
+        by smtp.gmail.com with ESMTPSA id 191sm472080qkh.81.2021.09.01.13.19.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 13:19:07 -0700 (PDT)
+From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Subject: VKMS: New plane formats
+To:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Message-ID: <d1ceaa32-e143-8d3c-4bfb-7b31673cc76c@gmail.com>
+Date:   Wed, 1 Sep 2021 17:19:03 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:5b5:: with SMTP id b21mr1212044jar.109.1630527440969;
- Wed, 01 Sep 2021 13:17:20 -0700 (PDT)
-Date:   Wed, 01 Sep 2021 13:17:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ea643805caf4c00a@google.com>
-Subject: [syzbot] INFO: task hung in __sync_dirty_buffer
-From:   syzbot <syzbot+91dccab7c64e2850a4e5@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+I'm working to add new plane formats to vkms. But I don't know what 
+should be the behavior in the situation that we received multiple planes 
+with different formats from the users-space.
 
-HEAD commit:    64b4fc45bea6 Merge tag 'block-5.14-2021-08-27' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c81d85300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=94074b5caf8665c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=91dccab7c64e2850a4e5
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10bfe1a9300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=136c35fe300000
+For example, if the user chooses:
+- DRM_FORMAT_ARGB16161616 to the primary plane
+- DRM_FORMAT_ARGB8888 to the cursor
+- DRM_FORMAT_YUV42 to the overlay
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+What should be the output format that will be used to calculate the crc? 
+DRM_FORMAT_ARGB16161616?
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13831da9300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10431da9300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17831da9300000
+My idea was to convert all the planes to the primary, but I'm not sure 
+if it is the right approach.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+91dccab7c64e2850a4e5@syzkaller.appspotmail.com
-
-INFO: task syz-executor409:8464 blocked for more than 143 seconds.
-      Not tainted 5.14.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor409 state:D stack:25624 pid: 8464 ppid:  8463 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4681 [inline]
- __schedule+0x93a/0x26f0 kernel/sched/core.c:5938
- schedule+0xd3/0x270 kernel/sched/core.c:6017
- io_schedule+0xba/0x130 kernel/sched/core.c:7988
- bit_wait_io+0x12/0xd0 kernel/sched/wait_bit.c:209
- __wait_on_bit_lock+0x121/0x1a0 kernel/sched/wait_bit.c:90
- out_of_line_wait_on_bit_lock+0xd5/0x110 kernel/sched/wait_bit.c:117
- wait_on_bit_lock_io include/linux/wait_bit.h:208 [inline]
- __lock_buffer fs/buffer.c:69 [inline]
- lock_buffer include/linux/buffer_head.h:368 [inline]
- __sync_dirty_buffer+0x363/0x3f0 fs/buffer.c:3138
- __ext4_handle_dirty_metadata+0x28f/0x720 fs/ext4/ext4_jbd2.c:361
- ext4_convert_inline_data_nolock+0x67a/0xf30 fs/ext4/inline.c:1237
- ext4_convert_inline_data+0x31a/0x490 fs/ext4/inline.c:1990
- ext4_fallocate+0x1ae/0x3ff0 fs/ext4/extents.c:4666
- vfs_fallocate+0x48d/0xd80 fs/open.c:311
- ksys_fallocate fs/open.c:334 [inline]
- __do_sys_fallocate fs/open.c:342 [inline]
- __se_sys_fallocate fs/open.c:340 [inline]
- __x64_sys_fallocate+0xcf/0x140 fs/open.c:340
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x444b09
-RSP: 002b:00007fff1122eaa8 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
-RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 0000000000444b09
-RDX: 0000000000000000 RSI: 0000000100000001 RDI: 0000000000000006
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-R10: 000000002811fdff R11: 0000000000000246 R12: 00007fff1122ead0
-R13: 0000000000000000 R14: 431bde82d7b634db R15: 00000000004004a0
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/1654:
- #0: ffffffff8b97c280 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
-2 locks held by syz-executor409/8464:
- #0: ffff88802f05a460 (sb_writers#5){.+.+}-{0:0}, at: ksys_fallocate fs/open.c:334 [inline]
- #0: ffff88802f05a460 (sb_writers#5){.+.+}-{0:0}, at: __do_sys_fallocate fs/open.c:342 [inline]
- #0: ffff88802f05a460 (sb_writers#5){.+.+}-{0:0}, at: __se_sys_fallocate fs/open.c:340 [inline]
- #0: ffff88802f05a460 (sb_writers#5){.+.+}-{0:0}, at: __x64_sys_fallocate+0xcf/0x140 fs/open.c:340
- #1: ffff8880379ea8a8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
- #1: ffff8880379ea8a8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_convert_inline_data+0x21e/0x490 fs/ext4/inline.c:1988
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1654 Comm: khungtaskd Not tainted 5.14.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
- watchdog+0xd0a/0xfc0 kernel/hung_task.c:295
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 8471 Comm: kworker/u4:0 Not tainted 5.14.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound toggle_allocation_gate
-RIP: 0010:kasan_check_range+0x15/0x180 mm/kasan/generic.c:188
-Code: 39 02 0f 1f 00 48 89 f2 be f8 00 00 00 e9 a3 aa 39 02 0f 1f 00 48 85 f6 0f 84 70 01 00 00 49 89 f9 41 54 44 0f b6 c2 49 01 f1 <55> 53 0f 82 18 01 00 00 48 b8 ff ff ff ff ff 7f ff ff 48 39 c7 0f
-RSP: 0018:ffffc900015af948 EFLAGS: 00000286
-RAX: 0000000000000000 RBX: 1ffff920002b5f2d RCX: ffffffff815b2948
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffffffff8d6c81d0
-RBP: 0000000000000001 R08: 0000000000000000 R09: ffffffff8d6c81d8
-R10: ffffffff819871c0 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffffffff8b847e48 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd7c14da000 CR3: 000000000b68e000 CR4: 0000000000350ee0
-Call Trace:
- instrument_atomic_read include/linux/instrumented.h:71 [inline]
- test_bit include/asm-generic/bitops/instrumented-non-atomic.h:134 [inline]
- cpumask_test_cpu include/linux/cpumask.h:344 [inline]
- cpu_online include/linux/cpumask.h:895 [inline]
- trace_lock_acquire include/trace/events/lock.h:13 [inline]
- lock_acquire+0xb8/0x510 kernel/locking/lockdep.c:5596
- __mutex_lock_common kernel/locking/mutex.c:959 [inline]
- __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
- arch_jump_label_transform_queue+0x58/0x100 arch/x86/kernel/jump_label.c:136
- __jump_label_update+0x12e/0x400 kernel/jump_label.c:451
- jump_label_update+0x1d5/0x430 kernel/jump_label.c:830
- static_key_disable_cpuslocked+0x152/0x1b0 kernel/jump_label.c:207
- static_key_disable+0x16/0x20 kernel/jump_label.c:215
- toggle_allocation_gate mm/kfence/core.c:637 [inline]
- toggle_allocation_gate+0x185/0x390 mm/kfence/core.c:615
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-----------------
-Code disassembly (best guess):
-   0:	39 02                	cmp    %eax,(%rdx)
-   2:	0f 1f 00             	nopl   (%rax)
-   5:	48 89 f2             	mov    %rsi,%rdx
-   8:	be f8 00 00 00       	mov    $0xf8,%esi
-   d:	e9 a3 aa 39 02       	jmpq   0x239aab5
-  12:	0f 1f 00             	nopl   (%rax)
-  15:	48 85 f6             	test   %rsi,%rsi
-  18:	0f 84 70 01 00 00    	je     0x18e
-  1e:	49 89 f9             	mov    %rdi,%r9
-  21:	41 54                	push   %r12
-  23:	44 0f b6 c2          	movzbl %dl,%r8d
-  27:	49 01 f1             	add    %rsi,%r9
-* 2a:	55                   	push   %rbp <-- trapping instruction
-  2b:	53                   	push   %rbx
-  2c:	0f 82 18 01 00 00    	jb     0x14a
-  32:	48 b8 ff ff ff ff ff 	movabs $0xffff7fffffffffff,%rax
-  39:	7f ff ff
-  3c:	48 39 c7             	cmp    %rax,%rdi
-  3f:	0f                   	.byte 0xf
-
-
+Best regards,
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Igor M. A. Torrente
