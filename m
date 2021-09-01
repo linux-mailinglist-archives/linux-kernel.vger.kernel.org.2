@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E88C3FDA94
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958563FDBE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343499AbhIAMdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:33:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33492 "EHLO mail.kernel.org"
+        id S1344659AbhIAMpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:45:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244070AbhIAMb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:31:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F68960232;
-        Wed,  1 Sep 2021 12:30:58 +0000 (UTC)
+        id S1345097AbhIAMko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:40:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADC5261106;
+        Wed,  1 Sep 2021 12:37:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499459;
-        bh=oZLfST+fZeckfbcHYORaBw8qhlYlN8ehRkZ4EU2b5KU=;
+        s=korg; t=1630499823;
+        bh=MfxQUixaNveeg5Rc43ZBxvP6pdrnZIwt6nbzLKYpHJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i20SY0B82yNSWggQrRM2wnZ9NRaxONhuKVsI2vqBAqA/nDuT5AU/bVtzhrHOTHM0R
-         QqU27mWXXzvA1owmWfLPk1CwZoFxPKp+SjAJN5NkcZyIWuXX77V+i2N8af5LBEKCz/
-         oh3f/JRwpzwe4ut1d0uVmANtu/tUOhz84S8U1vN0=
+        b=GXLWVfp7wDeegTbOffaVla23TPg+zC7fFEFRWM0YR8lv8HWhgerm8D1Qr4VI6VUSn
+         s1N9adv2msBemiSCbxVaE/5dvbP7SQB7OxZclm2kCp6xeuYvdHxHvUpApMzuv615Zt
+         C7V2OvL9OxLT7pGohLemUcg2BmgWn/0OEJK9G3uA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 20/33] opp: remove WARN when no valid OPPs remain
+Subject: [PATCH 5.10 059/103] virtio_vdpa: reject invalid vq indices
 Date:   Wed,  1 Sep 2021 14:28:09 +0200
-Message-Id: <20210901122251.460053963@linuxfoundation.org>
+Message-Id: <20210901122302.554625515@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
-References: <20210901122250.752620302@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
 
-[ Upstream commit 335ffab3ef864539e814b9a2903b0ae420c1c067 ]
+[ Upstream commit cb5d2c1f6cc0e5769099a7d44b9d08cf58cae206 ]
 
-This WARN can be triggered per-core and the stack trace is not useful.
-Replace it with plain dev_err(). Fix a comment while at it.
+Do not call vDPA drivers' callbacks with vq indicies larger than what
+the drivers indicate that they support.  vDPA drivers do not bounds
+check the indices.
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Link: https://lore.kernel.org/r/20210701114652.21956-1-vincent.whitchurch@axis.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/opp/of.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/virtio/virtio_vdpa.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index d64a13d7881b..a53123356697 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -423,8 +423,9 @@ static int _of_add_opp_table_v2(struct device *dev, struct device_node *opp_np)
- 		}
- 	}
+diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+index 4a9ddb44b2a7..3f95dedccceb 100644
+--- a/drivers/virtio/virtio_vdpa.c
++++ b/drivers/virtio/virtio_vdpa.c
+@@ -149,6 +149,9 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+ 	if (!name)
+ 		return NULL;
  
--	/* There should be one of more OPP defined */
--	if (WARN_ON(!count)) {
-+	/* There should be one or more OPPs defined */
-+	if (!count) {
-+		dev_err(dev, "%s: no supported OPPs", __func__);
- 		ret = -ENOENT;
- 		goto put_opp_table;
- 	}
++	if (index >= vdpa->nvqs)
++		return ERR_PTR(-ENOENT);
++
+ 	/* Queue shouldn't already be set up. */
+ 	if (ops->get_vq_ready(vdpa, index))
+ 		return ERR_PTR(-ENOENT);
 -- 
 2.30.2
 
