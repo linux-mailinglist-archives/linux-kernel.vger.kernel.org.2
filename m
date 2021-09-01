@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABCD3FDE11
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6813FDE0E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244981AbhIAOx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 10:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34722 "EHLO
+        id S239646AbhIAOxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 10:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244176AbhIAOx2 (ORCPT
+        with ESMTP id S231320AbhIAOxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 10:53:28 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA05C061575;
-        Wed,  1 Sep 2021 07:52:31 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id m9so5006688wrb.1;
-        Wed, 01 Sep 2021 07:52:31 -0700 (PDT)
+        Wed, 1 Sep 2021 10:53:21 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECE8C061575;
+        Wed,  1 Sep 2021 07:52:24 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so2243722pjq.1;
+        Wed, 01 Sep 2021 07:52:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=message-id:date:from:in-reply-to:subject:to:cc
          :content-transfer-encoding;
-        bh=YKUsiLrEjEckeebWqhS6BfbDvc5bYqy4ztmYo/I0y4s=;
-        b=ZHPsjZfdOqIyKtqI6ty2vp38b46NTXU9YBc/yTjmUuNJPDZNIR+uzQU5DJ0YsPaHlY
-         HNYoWx72+MTf03F80iHwxIKopLTNeU90/QZRL0S2ux9qEDkU2WNpbsrEtRghMxe/KDyH
-         2DvM9ERjPwv5CYWqoNL+aHtdzLZ0Vawnnq061MuiStqehqudg9G7P/wK3dFx1DEwMnci
-         Nbx8VoXlAtWlS2RvUa+K+VSxsbDbWlQ6NtHzD0ES2wVT2q5NtYDU4kFa/q0RVTpgXk5J
-         4yyz6UUMe/kbpYax2bQ4IESJMYSzQYwz8lyZLK6gR/CV755mP7ez5y6K8zm6XgVRBC0u
-         64qQ==
+        bh=0+XXJhScY19oZMVL+l3pgoV6l2jBpGbQQo6LlQzT0QY=;
+        b=TP99TCI6DWcwaxgbCBfc+z2SnIx3udQtYhQ3pWiGQx7mZIm4U8VGUquiZmE3WCEzUd
+         /ftTtcSrCidWfw8/CHsPh5hH1ZUwuTELcI3gy2s+z1yB606Dcp5UFhnQg8ZYOkXvp4KL
+         FBIGnBB8qj9wzdU+hA/zjzVcJoLjO2a+TbGJ0zTXyy1lEvlTM2hS7C6XL9EIo3sDhabJ
+         2r2o0wGg9RTnoirXzomYQVLcXDLfMOt3lrbXHGVXPyXblTvW6C+LjMtuMiv3FbQSyjJC
+         63bJx7BeeIxb3KiRkgh7gTDD7ec2GTeXSSXeQYZHGDWs4dzP+OpB+eG0BYe2NeZZJIKo
+         uJfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
          :content-transfer-encoding;
-        bh=YKUsiLrEjEckeebWqhS6BfbDvc5bYqy4ztmYo/I0y4s=;
-        b=qjDOb9bOIJcRGzh+krxyQsQFh+epfC2Hycoi+FoqtHY7Y/mvbLmsdyhIW9ss5ZHaqQ
-         rHWHDVvKxOpMxR9erEHj9ZrhDB33W8ZeDgjFUN3BrNchKW4BnQYhyqorZLbpja8wcZKJ
-         hGeMCwPnvvZvzJVNGwwIhOwWWi0DM7Z8oGsyYn320jlN6eMrHc7/rcxdvmkGftYc97zP
-         nR2qNtjBglPwddKibGU0TNvg/gFEcGJtPQMBW/hCc7RfqOnKlB1ZXGLQkL+503zgECUt
-         h6rq1HIev6hsihnPbXV/LNDttMyQlOqbMLGAgB6zJFytX1d13pUcYYhEXOoG4qyAHakX
-         9zfA==
-X-Gm-Message-State: AOAM530qeb0Vu+WZyffcRlh02dIz0i/ol7pCzau5JL9UAHpP2TFhsqdH
-        7+P/KmBWYTj8pzKYHk7a/2rx0gQvx1DKMw==
-X-Google-Smtp-Source: ABdhPJyC+sH/bLl3UMv0/f1SaO382fcA8duFEet0xxGP36LvwydXiZnvMw24pQQRQtiiZ0op6Iw/4A==
-X-Received: by 2002:adf:c184:: with SMTP id x4mr23410302wre.266.1630507950168;
-        Wed, 01 Sep 2021 07:52:30 -0700 (PDT)
-Received: from localhost.localdomain ([147.235.73.50])
-        by smtp.googlemail.com with ESMTPSA id o12sm5573131wmr.2.2021.09.01.07.52.28
+        bh=0+XXJhScY19oZMVL+l3pgoV6l2jBpGbQQo6LlQzT0QY=;
+        b=pu6yDPyiZF1Dib63tpKsgjNOrIoJp+ibjonpUCFJhBIEglW+tv3XqzWV6UJxWsBxMX
+         dvIgxbwZB+AxC02AhVAUQppkxejYO9N6CEAKkAzKm7ljh1/W6zU49db1TGx4ofzJDw3D
+         vwkNUB/czwImA6cYmuP+MYKV2Wn2C6xGgEE4yRViixB8hxwwIouqBL8Lde1V0G9gx4bc
+         ohVC/U+NB3UGDaVS4gYnY1oRDjFs6a/v0YdHkcQB3AMLYco+4v66MJ7mohMyTp0raJW7
+         xJMQHTACHm0WwpDknoHRb6O1MXfHqTwwdgXegeW2SuJf9iLPpejqsyGIxcV8otOo7kxQ
+         NLxQ==
+X-Gm-Message-State: AOAM532E7Famq/p/3N0zvVboSZWKtCLPqaVc9IoleOG8X0jvLv22aCwr
+        RtbqtXJYSeYVUZZm1lxj2pvqFDzQ12q7Qckmg7E=
+X-Google-Smtp-Source: ABdhPJzkc4SJOT1RNawGQpaq3B6e/jDBE9m4cDNZZ0yAAVI6rcjOpDsdqV7mSNj88bVMKsIFwb7dtQ==
+X-Received: by 2002:a17:902:7892:b0:133:a1a4:5917 with SMTP id q18-20020a170902789200b00133a1a45917mr10153701pll.17.1630507943378;
+        Wed, 01 Sep 2021 07:52:23 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
+        by smtp.gmail.com with ESMTPSA id x16sm18933pgc.49.2021.09.01.07.52.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 07:52:29 -0700 (PDT)
-From:   Ariel Marcovitch <arielmarcovitch@gmail.com>
-To:     masahiroy@kernel.org, valentinrothberg@gmail.com
-Cc:     arielmarcovitch@gmail.com, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH v2] checkkconfigsymbols.py: Forbid passing 'HEAD' to --commit
-Date:   Wed,  1 Sep 2021 17:52:12 +0300
-Message-Id: <20210901145212.478066-1-arielmarcovitch@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 01 Sep 2021 07:52:22 -0700 (PDT)
+Message-ID: <612f93a6.1c69fb81.e57fc.00eb@mx.google.com>
+Date:   Wed, 01 Sep 2021 07:52:22 -0700 (PDT)
+X-Google-Original-Date: Wed, 01 Sep 2021 14:52:16 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+Subject: RE: [PATCH 5.13 000/113] 5.13.14-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As opposed to the --diff option, --commit can get ref names instead of
-commit hashes.
+On Wed,  1 Sep 2021 14:27:15 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.13.14 release.
+> There are 113 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.14-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-When using the --commit option, the script resets the working directory
-to the commit before the given ref, by adding '~' to the end of the ref.
-
-However, the 'HEAD' ref is relative, and so when the working directory
-is reset to 'HEAD~', 'HEAD' points to what was 'HEAD~'. Then when the
-script resets to 'HEAD' it actually stays in the same commit. In this
-case, the script won't report any cases because there is no diff between
-the cases of the two refs.
-
-Prevent the user from using HEAD refs.
-
-A better solution might be to resolve the refs before doing the
-reset, but for now just disallow such refs.
-
-Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
- scripts/checkkconfigsymbols.py | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/scripts/checkkconfigsymbols.py b/scripts/checkkconfigsymbols.py
-index b9b0f15e5880..c57c990c3244 100755
---- a/scripts/checkkconfigsymbols.py
-+++ b/scripts/checkkconfigsymbols.py
-@@ -102,6 +102,9 @@ def parse_options():
-                      "continue.")
- 
-     if args.commit:
-+        if args.commit.startswith('HEAD'):
-+            sys.exit("The --commit option can't use the HEAD ref")
-+
-         args.find = False
- 
-     if args.ignore:
-
-base-commit: 087e856cfb76e9eef9a3a6e000854794f3c36e24
--- 
-2.25.1
+5.13.14-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
