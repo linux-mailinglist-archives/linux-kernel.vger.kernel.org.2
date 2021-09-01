@@ -2,81 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1913FD177
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D023FD152
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241700AbhIACpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 22:45:02 -0400
-Received: from mga17.intel.com ([192.55.52.151]:6423 "EHLO mga17.intel.com"
+        id S241535AbhIAC2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 22:28:41 -0400
+Received: from mga02.intel.com ([134.134.136.20]:51686 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231613AbhIACpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 22:45:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="198843984"
+        id S241128AbhIAC2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 22:28:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="205830241"
 X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="198843984"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 19:44:05 -0700
-X-ExtLoop1: 1
+   d="scan'208";a="205830241"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 19:27:43 -0700
 X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="531611425"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 31 Aug 2021 19:44:03 -0700
-Date:   Wed, 1 Sep 2021 10:44:02 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     David Rientjes <rientjes@google.com>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mm/oom: detect and kill task which has allocation
- forbidden by cpuset limit
-Message-ID: <20210901024402.GB46357@shbuild999.sh.intel.com>
-References: <1630399085-70431-1-git-send-email-feng.tang@intel.com>
- <YS5RTiVgydjszmjn@dhcp22.suse.cz>
- <52d80e9-cf27-9a59-94fd-d27a1e2dac6f@google.com>
+   d="scan'208";a="460497806"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.41])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 19:27:41 -0700
+Date:   Wed, 1 Sep 2021 10:45:18 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, elver@google.com
+Subject: Re: [mm]  f9ce0be71d:
+ BUG:KCSAN:data-race_in_next_uptodate_page/next_uptodate_page
+Message-ID: <20210901024518.GB14661@xsang-OptiPlex-9020>
+References: <20210826144157.GA26950@xsang-OptiPlex-9020>
+ <20210827154232.rrpetqsh5xxklkej@box.shutemov.name>
+ <20210831131313.GC31712@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <52d80e9-cf27-9a59-94fd-d27a1e2dac6f@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210831131313.GC31712@willie-the-truck>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David and Michal,
+hi Will,
 
-On Tue, Aug 31, 2021 at 06:06:17PM -0700, David Rientjes wrote:
-> On Tue, 31 Aug 2021, Michal Hocko wrote:
+On Tue, Aug 31, 2021 at 02:13:14PM +0100, Will Deacon wrote:
+> [+Marco]
 > 
-> > I do not like this solution TBH. We know that that it is impossible to
-> > satisfy the allocation at the page allocator level so dealing with it at
-> > the OOM killer level is just a bad layering and a lot of wasted cycles
-> > to reach that point. Why cannot we simply fail the allocation if cpusets
-> > filtering leads to an empty zone intersection?
+> On Fri, Aug 27, 2021 at 06:42:32PM +0300, Kirill A. Shutemov wrote:
+> > On Thu, Aug 26, 2021 at 10:41:57PM +0800, kernel test robot wrote:
+> > > commit: f9ce0be71d1fbb038ada15ced83474b0e63f264d ("mm: Cleanup faultaround and finish_fault() codepaths")
+> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > > 
+> > > in testcase: trinity
+> > > version: 
+> > > with following parameters:
+> > > 
+> > > 	number: 99999
+> > > 	group: group-04
+> > > 
+> > > test-description: Trinity is a linux system call fuzz tester.
+> > > test-url: http://codemonkey.org.uk/projects/trinity/
+> > > 
+> > > 
+> > > on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> > > 
+> > > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > > 
+> > > +------------------------------------------------------------------------+-----------+------------+
+> > > |                                                                        | v5.11-rc4 | f9ce0be71d |
+> > > +------------------------------------------------------------------------+-----------+------------+
+> > > | BUG:KCSAN:data-race_in_next_uptodate_page/next_uptodate_page           | 0         | 19         |
+> > > | BUG:KCSAN:data-race_in_mark_page_accessed/next_uptodate_page           | 0         | 17         |
+> > > | BUG:KCSAN:data-race_in_next_uptodate_page/page_memcg                   | 0         | 13         |
+> > > | BUG:KCSAN:data-race_in_next_uptodate_page/unlock_page                  | 0         | 13         |
+> > > +------------------------------------------------------------------------+-----------+------------+
+> > > 
+> > > [  184.717904][ T1873] ==================================================================
+> > > [  184.718938][ T1873] BUG: KCSAN: data-race in next_uptodate_page / unlock_page
+> > > [  184.719828][ T1873]
+> > > [  184.720103][ T1873] write (marked) to 0xffffea00050f37c0 of 8 bytes by task 1872 on cpu 1:
+> > > [  184.721024][ T1873]  unlock_page+0x102/0x1b0
+> > > [  184.721533][ T1873]  filemap_map_pages+0x6c6/0x890
+> > > [  184.722102][ T1873]  handle_mm_fault+0x179c/0x27f0
+> > > [  184.722672][ T1873]  do_user_addr_fault+0x3fb/0x830
+> > > [  184.723263][ T1873]  exc_page_fault+0xc3/0x1a0
+> > > [  184.723845][ T1873]  asm_exc_page_fault+0x1e/0x30
+> > > [  184.724427][ T1873]
+> > > [  184.724720][ T1873] read to 0xffffea00050f37c0 of 8 bytes by task 1873 on cpu 0:
+> > > [  184.725575][ T1873]  next_uptodate_page+0x456/0x830
+> > > [  184.726161][ T1873]  filemap_map_pages+0x728/0x890
+> > > [  184.726747][ T1873]  handle_mm_fault+0x179c/0x27f0
+> > > [  184.727332][ T1873]  do_user_addr_fault+0x3fb/0x830
+> > > [  184.727905][ T1873]  exc_page_fault+0xc3/0x1a0
+> > > [  184.728440][ T1873]  asm_exc_page_fault+0x1e/0x30
+> > > [  184.729027][ T1873]
+> > > [  184.729313][ T1873] Reported by Kernel Concurrency Sanitizer on:
+> > > [  184.730019][ T1873] CPU: 0 PID: 1873 Comm: systemd-udevd Not tainted 5.11.0-rc4-00001-gf9ce0be71d1f #1
+> > > [  184.731103][ T1873] ==================================================================
+> > 
+> > Line annotation would be helpful.
 > 
-> Cpusets will guarantee our effective nodemask will include at least one 
-> node in N_MEMORY (cpuset_mems_allowed()) so we'll always have at least one 
-> zone in our zonelist.
+> Agreed.
+
+Thanks a lot for suggestion! we will add line annotation.
+
 > 
-> Issue in this case appears to be that the zone will never satisfy 
-> non-movable allocations.  I think this would be very similar to a GFP_DMA 
-> allocation when bound to a node without lowmem, in which case we get a 
-> page allocation failure.  We don't kill current like this patch.
- 
-Thanks for sharing the case, the DMA case is quite simliar. And in our usage,
-the allocating task is finally killed after many OS routine/GUI tasks get
-killed.
-
-> So I'd agree in this case that it would be better to simply fail the 
-> allocation.
-
-I agree with yours and Michal's comments, putting it in the OOM code
-is a little late and wastes cpu cycles.
-
-> Feng, would you move this check to __alloc_pages_may_oom() like the other 
-> special cases and simply fail rather than call into the oom killer?
-
-Will explore more in this direction, thanks!
-
-- Feng
+> > And I'm not very familiar with KCSAN. My guess it reports PageLock() vs.
+> > clearing PG_locked. In this context it looks safe, unless I miss
+> > something.
+> 
+> The access in clear_bit_unlock() is annotated as a full sizeof(long) atomic
+> write, so we could be racing with a non-atomic read of another bit in the
+> page flags but I can't spot where that happens before the trylock_page() in
+> next_uptodate_page().
+> 
+> > Do we need some annotation to help KCSAN?
+> 
+> clear_bit_unlock() is already instrumented and _most_ of the helpers in
+> page-flags.h look they should be as well by virtue of using test_bit().
+> 
+> Will
