@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3EF3FDB54
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B483FDB4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344267AbhIAMks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:40:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42766 "EHLO mail.kernel.org"
+        id S1345092AbhIAMko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:40:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245691AbhIAMhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:37:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F05EF6113D;
-        Wed,  1 Sep 2021 12:34:21 +0000 (UTC)
+        id S245698AbhIAMhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:37:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8050761153;
+        Wed,  1 Sep 2021 12:34:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499662;
-        bh=p7UtEXnDzeICHHCrbJzo0vhGMNCeEPqeo8eCNoNmNiA=;
+        s=korg; t=1630499665;
+        bh=F0MW1db5OjgHtF2kTSOyksu1a1+W3Mq7CZ0qKIUJMMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nPZ2gfYZ4IWFjLPkCvmjXyd3UqocdfX3dl/Pbmmrk1hzFVbZIx+vbcBEzj9BYxeYz
-         ZnoRW6SWzJ/lauf3G30uSIYddshV7+FfTntZbwCpU1m25XNM9q9zQEaXq2ah+0bM0V
-         ucJb4TKH3eb5svj9tbQGGu6Xoc218Z+85OsCQyg4=
+        b=khbJXpM5PK7w2h8L/3kqEuFyNSkBipdSysd2kDZuyZL2cAyQpFkOdZWqQ81eCPIa1
+         pUzgMo27D9VB0SjAEf97KxzoEOm88K8dYHMUb6WCCa7Ui90u6TmaFIhomdGCVcdbMO
+         pHvm9+kUhs7aFwHB+qLBOzHKwIOM3wE14jNdnw/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Keyu Man <kman001@ucr.edu>, Wei Wang <weiwan@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Keyu Man <kman001@ucr.edu>, Willy Tarreau <w@1wt.eu>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 038/103] ipv6: use siphash in rt6_exception_hash()
-Date:   Wed,  1 Sep 2021 14:27:48 +0200
-Message-Id: <20210901122301.844223210@linuxfoundation.org>
+Subject: [PATCH 5.10 039/103] ipv4: use siphash instead of Jenkins in fnhe_hashfun()
+Date:   Wed,  1 Sep 2021 14:27:49 +0200
+Message-Id: <20210901122301.873854687@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
 References: <20210901122300.503008474@linuxfoundation.org>
@@ -44,71 +43,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 4785305c05b25a242e5314cc821f54ade4c18810 ]
+[ Upstream commit 6457378fe796815c973f631a1904e147d6ee33b1 ]
 
 A group of security researchers brought to our attention
-the weakness of hash function used in rt6_exception_hash()
+the weakness of hash function used in fnhe_hashfun().
 
 Lets use siphash instead of Jenkins Hash, to considerably
 reduce security risks.
 
-Following patch deals with IPv4.
+Also remove the inline keyword, this really is distracting.
 
-Fixes: 35732d01fe31 ("ipv6: introduce a hash table to store dst cache")
+Fixes: d546c621542d ("ipv4: harden fnhe_hashfun()")
 Signed-off-by: Eric Dumazet <edumazet@google.com>
 Reported-by: Keyu Man <kman001@ucr.edu>
-Cc: Wei Wang <weiwan@google.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Acked-by: Wei Wang <weiwan@google.com>
+Cc: Willy Tarreau <w@1wt.eu>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/route.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ net/ipv4/route.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 62db3c98424b..bcf4fae83a9b 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -41,6 +41,7 @@
- #include <linux/nsproxy.h>
- #include <linux/slab.h>
- #include <linux/jhash.h>
-+#include <linux/siphash.h>
- #include <net/net_namespace.h>
- #include <net/snmp.h>
- #include <net/ipv6.h>
-@@ -1482,17 +1483,24 @@ static void rt6_exception_remove_oldest(struct rt6_exception_bucket *bucket)
- static u32 rt6_exception_hash(const struct in6_addr *dst,
- 			      const struct in6_addr *src)
- {
--	static u32 seed __read_mostly;
--	u32 val;
-+	static siphash_key_t rt6_exception_key __read_mostly;
-+	struct {
-+		struct in6_addr dst;
-+		struct in6_addr src;
-+	} __aligned(SIPHASH_ALIGNMENT) combined = {
-+		.dst = *dst,
-+	};
-+	u64 val;
- 
--	net_get_random_once(&seed, sizeof(seed));
--	val = jhash2((const u32 *)dst, sizeof(*dst)/sizeof(u32), seed);
-+	net_get_random_once(&rt6_exception_key, sizeof(rt6_exception_key));
- 
- #ifdef CONFIG_IPV6_SUBTREES
- 	if (src)
--		val = jhash2((const u32 *)src, sizeof(*src)/sizeof(u32), val);
-+		combined.src = *src;
- #endif
--	return hash_32(val, FIB6_EXCEPTION_BUCKET_SIZE_SHIFT);
-+	val = siphash(&combined, sizeof(combined), &rt6_exception_key);
-+
-+	return hash_64(val, FIB6_EXCEPTION_BUCKET_SIZE_SHIFT);
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index e15c1d8b7c8d..3d9946fd41f3 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -624,14 +624,14 @@ static struct fib_nh_exception *fnhe_oldest(struct fnhe_hash_bucket *hash)
+ 	return oldest;
  }
  
- /* Helper function to find the cached rt in the hash table
+-static inline u32 fnhe_hashfun(__be32 daddr)
++static u32 fnhe_hashfun(__be32 daddr)
+ {
+-	static u32 fnhe_hashrnd __read_mostly;
+-	u32 hval;
++	static siphash_key_t fnhe_hash_key __read_mostly;
++	u64 hval;
+ 
+-	net_get_random_once(&fnhe_hashrnd, sizeof(fnhe_hashrnd));
+-	hval = jhash_1word((__force u32)daddr, fnhe_hashrnd);
+-	return hash_32(hval, FNHE_HASH_SHIFT);
++	net_get_random_once(&fnhe_hash_key, sizeof(fnhe_hash_key));
++	hval = siphash_1u32((__force u32)daddr, &fnhe_hash_key);
++	return hash_64(hval, FNHE_HASH_SHIFT);
+ }
+ 
+ static void fill_route_from_fnhe(struct rtable *rt, struct fib_nh_exception *fnhe)
 -- 
 2.30.2
 
