@@ -2,292 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1093FE4C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9363FE4C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345083AbhIAVQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 17:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344873AbhIAVPx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 17:15:53 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52C8C0612A9
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 14:14:48 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id c2-20020a17090a558200b001873dcb7f09so266965pji.7
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 14:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=WG0Fg/Yf+a11z7ESLkqU5iQE0sXU2MSi6aUV/LVfUZw=;
-        b=Fku6usIivlbptUqnUNKQ0v8l7RlTIYoQtevPGUFobKjPmZRWSwQ064olfLL/Qas4HL
-         Z1qqnf3VZiDLfYxUOpc9pR7TuaVGp02hVQ9VvlxOyDKaJXQnLVtrorlzY1H7eVzh73CL
-         0eNx3EydGh8xiaeWztLNghUqSt6QJrnzdmouO6z8+Jl/Xgs4oyTSKkuWR+ZviJ3G/PCC
-         1dpIU8731qLTxdK6B/B4D6S6ZfHODp9aPyNf1P3fPgD7IR4XejcpU5FUrDT/ve0aqnCw
-         M0MXQegNOqg0Jijov3TK18134xhWs22DzO2Hk/rXRamIDK4tokxZAIT83T5yqiTw66vk
-         5ncw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=WG0Fg/Yf+a11z7ESLkqU5iQE0sXU2MSi6aUV/LVfUZw=;
-        b=TxeiIRymtAwWjnCeF7oxWRlgX+tv6M6Q9jGiK4W4B5kXJgOeH35Snx8FiPxgyfHjju
-         ySFBfwe14LPUpNTWmt7W6Ig8HephNmJA5eiVK6+o2xIazsxhMp000SdPg9DQfz1ZDUW7
-         oF9xYvx7Xw/YWo11UM2AhFen1ujPPXwgybH4yOx05ivd1kyzQezIkd/hRSePA69OYx4G
-         pv1aND0udxDvmvQh7Kx21ljuaOoP2isrwWQwg92brhTuRU70dX50ol/k+jFczApy+7lL
-         wExXl6ZFRbsELGhIVn8GEdl5TNrP87Ik3xCmimD4buRfeaImHzNucEfrOBK65J18ocQx
-         RUVw==
-X-Gm-Message-State: AOAM531kaGaUQvdSoF3aVanDNnxtEr0yNlP4auSR4UlEIgbUvYZ5mrId
-        rv0hv3sAo0Elo6A79bhAfrqsHZuX2wWg
-X-Google-Smtp-Source: ABdhPJyLwKx++f51vmUbjpY9Z8DI9cb27LEwjBp0tPaXfU+HpIg1XRabm5+K56DHo3WKL5KJLIyEVcbTkuvm
-X-Received: from rananta-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1bcc])
- (user=rananta job=sendgmr) by 2002:a17:90b:ec8:: with SMTP id
- gz8mr1417499pjb.41.1630530888390; Wed, 01 Sep 2021 14:14:48 -0700 (PDT)
-Date:   Wed,  1 Sep 2021 21:14:12 +0000
-In-Reply-To: <20210901211412.4171835-1-rananta@google.com>
-Message-Id: <20210901211412.4171835-13-rananta@google.com>
-Mime-Version: 1.0
-References: <20210901211412.4171835-1-rananta@google.com>
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH v3 12/12] KVM: arm64: selftests: arch_timer: Support vCPU migration
-From:   Raghavendra Rao Ananta <rananta@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Raghavendra Rao Anata <rananta@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S231840AbhIAVTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 17:19:42 -0400
+Received: from mga09.intel.com ([134.134.136.24]:40680 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231664AbhIAVTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 17:19:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="218880201"
+X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
+   d="scan'208";a="218880201"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 14:18:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
+   d="scan'208";a="461093183"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga007.fm.intel.com with ESMTP; 01 Sep 2021 14:18:39 -0700
+Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 1 Sep 2021 14:18:38 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Wed, 1 Sep 2021 14:18:38 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Wed, 1 Sep 2021 14:18:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LgfkR36CiYqLQy3d8/pN/4EENgkRVopgNJFmuUEB3yrHoTLeLd6ate/ylsn5rPlgWeiV5DWvsRDcMDpHx9jd2chTzebjsQTZ0YLgt0vC12mKKJl/s8MCHp5CGscclQQuuATIjHsQuAkaRS0qRqMNLz3H7Z/hZXDTpGERMrFAf49FaVdhn1WtL9eZfTaEITv4weRfhdWiYGsBdLNrTxE/0+8c57j8P3Zfj9rEYfTgdovWqhkpG4Cq/qcHda0nFSTJsaDuRZ4Kq+JJOj2NWscGbCLoJOTgPaQVKQ5L07pnkl7DB7q2Rb4ocftT22OkNEXffdD0yfIFZTVrxYIs2nQWfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=RKdYUdUD0POptcEw7mJmY8/wDE7PEvPBqxnCLnBh34I=;
+ b=XEjhb9SfYvMshL3zgqT4/+Gq3Ape5kt6WOKzqxveMOUjtZkzPdhxHzugowtJocjG+ktvbwmQZDmvBFeRbZwCPO1GqCs+QXvPwOEot96DEw75Zdx0v5W0MW7daNR6OHdbGRIQ6PyZypvUHMv8DzEwEueRaLglrJLxxhr33vSXZNTNzry7vCctzHXLZehoqQ4C4MO07aM7RnZD6te8YL1+jXIj5505mrvdTMgifSbcDd7zVOqxGv+Ri3APhkZ6qH1Ohx3fsw73vZjNXvIdUqWbXlE484uT4IorikHWSRmqqLOrVPboI47cN3X1KDf2nfcrNx2XrC9Gnn8LZR17xuzg9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RKdYUdUD0POptcEw7mJmY8/wDE7PEvPBqxnCLnBh34I=;
+ b=kBF4STfW6ROTKtnza6n4drDasNCY1GX9YdUx5U6T2h3zNUBWx3Xgiszimpr9zSGZB9mDMXJZpE14t9kMwvU2ZKG+MAn/4sgfdhcIFYeYHkWE/hcACU4EFMmAN3qVq5+yv4b9PPiN5ulnFrmyKUn7Bo76I9UTG/4khj2pJb+HcYE=
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=intel.com;
+Received: from BN0PR11MB5744.namprd11.prod.outlook.com (2603:10b6:408:166::16)
+ by BN6PR1101MB2257.namprd11.prod.outlook.com (2603:10b6:405:5a::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Wed, 1 Sep
+ 2021 21:18:37 +0000
+Received: from BN0PR11MB5744.namprd11.prod.outlook.com
+ ([fe80::d47c:525:2aef:f6a]) by BN0PR11MB5744.namprd11.prod.outlook.com
+ ([fe80::d47c:525:2aef:f6a%3]) with mapi id 15.20.4478.019; Wed, 1 Sep 2021
+ 21:18:37 +0000
+Subject: Re: [PATCH v1 01/20] x86/resctrl: Kill off alloc_enabled
+To:     James Morse <james.morse@arm.com>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        <shameerali.kolothum.thodi@huawei.com>,
+        Jamie Iles <jamie@nuviainc.com>,
+        "D Scott Phillips OS" <scott@os.amperecomputing.com>,
+        <lcherian@marvell.com>, <bobo.shaobowang@huawei.com>
+References: <20210729223610.29373-1-james.morse@arm.com>
+ <20210729223610.29373-2-james.morse@arm.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <620fbdc7-8fab-ea02-75e5-8f5788a85ad2@intel.com>
+Date:   Wed, 1 Sep 2021 14:18:32 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
+In-Reply-To: <20210729223610.29373-2-james.morse@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0209.namprd03.prod.outlook.com
+ (2603:10b6:303:b8::34) To BN0PR11MB5744.namprd11.prod.outlook.com
+ (2603:10b6:408:166::16)
+MIME-Version: 1.0
+Received: from [192.168.1.217] (71.238.111.198) by MW4PR03CA0209.namprd03.prod.outlook.com (2603:10b6:303:b8::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Wed, 1 Sep 2021 21:18:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cf9fd45e-1fac-4853-f7ca-08d96d8e0ffb
+X-MS-TrafficTypeDiagnostic: BN6PR1101MB2257:
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN6PR1101MB2257C80D00D6F23EFBB0DD67F8CD9@BN6PR1101MB2257.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wx/ELleI23rs/l/9biDA/HaPWhVRatNQFbwTt2zKOHl1sZ8v157pethcybnZX/MBeLHW2rWnt1or1G8OeZlb/oFRjBjEOrng15d9M7ajcj/Ed9Nsc/Ro51sHgVX6O8d6kWdyWJlrTfqaTRbx+SWYPclHDlvyJMcwje5D3H6ZORGaWvdmjbKjmVOioyHyatbxtLLoZ2DDXBPDnpPwFpQ+7sdGxAhyaF4YfJSzImyq6LAtOPEK0qcm2POoLCQjJcYKV6g0RuPFs4bcJHmFX+z2xz1xCOqw9Fpv+rVqmNUS1rmZPDRD5sfToIaM1fLt/11iH27VCfcV0HzMW7k1i6rcNHWhKV4o2TAE0TAsZqYENlbsYZEwBjWybh1kijKBuh2jrffeGDur5rK+TH1638eN4rHT7srNzcms5tZHldIMN1VAF+IkLvbbeCtP2w8FtrW9+bbH1Gt6ZDLjJnOiRalGPZoQxvWYg/7tRf05Q2nCWX4HHQvn19xw8ecd70FlhCVW++Xf2wvUryPbfQITSzRo77tgMaURek/GAPys5FU1wvzcI/CneEipGPvGMiTPM2BsmlP9pVH4f0AI+A1MtgZDdUrTCwjGB6Z9thzyOvptsiP46G9qGtnY42qXhHKg7Zxa3pOoxCI8ppyg5it/Ow92/423S9BmvgLhrtAzdf07b/YICwuwISb4bRGuEhSvk/tzdSMbuSQndctBFvDlJ1yaE83D0emUuGdlrfrrSB/W5AzHyB4p9O3f1Rjs/8lyeUZU
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR11MB5744.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(366004)(39860400002)(376002)(44832011)(186003)(6666004)(2616005)(8676002)(54906003)(316002)(16576012)(31696002)(2906002)(86362001)(26005)(6486002)(7416002)(36756003)(4326008)(31686004)(8936002)(66946007)(5660300002)(478600001)(558084003)(53546011)(38100700002)(66476007)(956004)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TGQvUGRKQm9ycXMxOE1POVBpSHluaEN0ODkxZ2VHUTZSTG1vdUltdDA5N20w?=
+ =?utf-8?B?YWRoSTE1emdHdkpKaGcwMlBDU1V0b2gzeXVJQ3Y4U2lrcVovcS9qUUpCZ3Fu?=
+ =?utf-8?B?bys5S25rQ3FicjlqVDd5L1BaSlpad25nbHhRS3BKTlc0NmNIWWNXVkpvbWV2?=
+ =?utf-8?B?MHhvQkxLckR0MEtFMXNDb1JTblVUdjRYNSswdGdjVGJIRDgyd3dPamhGZ3BB?=
+ =?utf-8?B?MkhzcU1USjl2cEsvOSsxQTMvM0ZyeC9tMm1uSkNBQk9xWHVJVjhwVDBKaFpR?=
+ =?utf-8?B?Y0R1djlEeDNsdzhralZlczRlVnJrekM2T0pHQXhWTGxQQkJCcWVUWlN0ci90?=
+ =?utf-8?B?YW0zRFN0eWFPKzhXMlg4ZktqVE4xNnM2MXRXNkx4Z3VmOWhTc2x0bzdsVGVq?=
+ =?utf-8?B?WWdGZmUvbGNUTFMxMU5XWEdmdm5QVDRmVWQwSUpqMHIxaWxJOU1CS1JFY1py?=
+ =?utf-8?B?dXB3cXZlSDBsS2ZJb1JHcmVwZC8vNnZoaXV6R3RNRjVTVEx0MFA4eVdKWkI1?=
+ =?utf-8?B?ZXRJRlc3dnNSbFdzT0VJVTFkUnlhRHlNN2wwY2RIVGtpVjAyM0IvZlQ0czZk?=
+ =?utf-8?B?MHh2RjlSRmxGTC9IQ1dSTVZJU3dza1E4V0xnR2t2VjArb1JGUTVnVlBUbjhN?=
+ =?utf-8?B?TXNYYVJNc3hPSUdtRVZCRE5WVE5CN1JOZlEwbDNzWWd0OCs1Z25ZYndXQ0x1?=
+ =?utf-8?B?Rm1WTkowNkptL3liMXl5Y3FwSkRReWJHUHVlOXYrNGhIQm1VQTJFZzc4VmRM?=
+ =?utf-8?B?ajlsVmVjSm84MmJ3UlF6bk40OUdyK2dOdHl1NS9ldVJXZGlDMWcwd0FscDE1?=
+ =?utf-8?B?cFVGeDBUQWRrMkJGZmVuQnJ2eVdzY1ovaHEwdVlFU2djeFdHc0U3OWhFSWpU?=
+ =?utf-8?B?YlIwa3lYaXB3MFJqcUFPWUppWEhJSU96VnRXbTJHOHpaL2xMc08vbFJmdmR3?=
+ =?utf-8?B?VUg0L1BsTjI5V2YzbnpCREF1NWZ1T0I4SVMwQ045Ui9hMS9NdzFWTWlEVElu?=
+ =?utf-8?B?dGNIdDN6MlF4cHkzUUhxQ3Ewa0EzUTZCcjdmaWlFVHJHOGtQcjZvY252TWp4?=
+ =?utf-8?B?U0d4WnRwTVlEamFjMHdON2dTQklQYXFrb0Irc3BsakZFemx6WFpvUzZkZjFw?=
+ =?utf-8?B?MWh4cS81Wll3QU5uUkozOUVDS203TWJiQllMZ2V4TWZGd0hxWGNtWHZqZEZ3?=
+ =?utf-8?B?d1hmbmFuNUNXejNoaEJjQTkvY3I0REdzQzRkWnpLZjNxWVVXY0ZqVFNiN0pO?=
+ =?utf-8?B?NDVYZkJUR0Ywd3dTV2E5bG9WaTFqdmJyVzJlaCtTNTlWVUF3eWx1akRXVzhw?=
+ =?utf-8?B?eERmN1l3RVdsZGNORnZ6MlBRWGlCaFBFblR2UjdMa2l5bUkrQXVwODlLNUNa?=
+ =?utf-8?B?N1JMT2hPRXRrY1E5V2laTVlzZDJmaW9YR1FrT0d6Y2pUS09EczdSOFY2bGl2?=
+ =?utf-8?B?T0Rya0RNNGY3dkVJMzFUYUJDSU5sNUVCQkhZNk02Z2E4RmdtNmMwdVNGNEpx?=
+ =?utf-8?B?Ui83eE40Y2JVZm42THZWZ2xnQmp4b3ZnbVl5K1RlMHdIM3RjSFJaY1pYYUFk?=
+ =?utf-8?B?aVJ0dlplSTZUNGVMdjBZYmpRRHlLMEVJMEo2eCtqcDJQdzRzVTMwaWxSeTF4?=
+ =?utf-8?B?U0lPcGRhN1hxaUlNUGdvT3BRS0lFdmRteFJIRUdNbzNDTUVhWXBVTHp6c2dp?=
+ =?utf-8?B?d1hQZGk4T2JkNC9HWVpyUlZUQTlsUElodzdkcFNncHgvOHpjYTdydzdqM01Z?=
+ =?utf-8?Q?57yOer2gPpCd6ammiyjW9F94K6WV2syfr2qLTY+?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf9fd45e-1fac-4853-f7ca-08d96d8e0ffb
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR11MB5744.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 21:18:37.2054
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ivEN8grYM964NXLp2i61kQmGUoJwKYQyAKHrDoWQKwfXLQZPFnOi4bIIsRk/amoaR4fGaXATd1od4o2vedAAEzq2IWh9moPofafbDpumSmQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1101MB2257
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the timer stack (hardware and KVM) is per-CPU, there
-are potential chances for races to occur when the scheduler
-decides to migrate a vCPU thread to a different physical CPU.
-Hence, include an option to stress-test this part as well by
-forcing the vCPUs to migrate across physical CPUs in the
-system at a particular rate.
+Hi James,
 
-Originally, the bug for the fix with commit 3134cc8beb69d0d
-("KVM: arm64: vgic: Resample HW pending state on deactivation")
-was discovered using arch_timer test with vCPU migrations and
-can be easily reproduced.
+On 7/29/2021 3:35 PM, James Morse wrote:
+> rdt_resources_all[] used to have extra entries for L2CODE/L2DATA entries.
 
-Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
----
- .../selftests/kvm/aarch64/arch_timer.c        | 108 +++++++++++++++++-
- 1 file changed, 107 insertions(+), 1 deletion(-)
+The double "entries" seem redundant above. Perhaps just 
+"rdt_resources_all[] used to have entries for L2CODE/L2DATA resources." ?
 
-diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-index 1383f33850e9..de246c7afab2 100644
---- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
-+++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-@@ -14,6 +14,8 @@
-  *
-  * The test provides command-line options to configure the timer's
-  * period (-p), number of vCPUs (-n), and iterations per stage (-i).
-+ * To stress-test the timer stack even more, an option to migrate the
-+ * vCPUs across pCPUs (-m), at a particular rate, is also provided.
-  *
-  * Copyright (c) 2021, Google LLC.
-  */
-@@ -24,6 +26,8 @@
- #include <pthread.h>
- #include <linux/kvm.h>
- #include <linux/sizes.h>
-+#include <linux/bitmap.h>
-+#include <sys/sysinfo.h>
- 
- #include "kvm_util.h"
- #include "processor.h"
-@@ -41,12 +45,14 @@ struct test_args {
- 	int nr_vcpus;
- 	int nr_iter;
- 	int timer_period_ms;
-+	int migration_freq_ms;
- };
- 
- static struct test_args test_args = {
- 	.nr_vcpus = NR_VCPUS_DEF,
- 	.nr_iter = NR_TEST_ITERS_DEF,
- 	.timer_period_ms = TIMER_TEST_PERIOD_MS_DEF,
-+	.migration_freq_ms = 0,		/* Turn off migrations by default */
- };
- 
- #define msecs_to_usecs(msec)		((msec) * 1000LL)
-@@ -81,6 +87,9 @@ struct test_vcpu {
- static struct test_vcpu test_vcpu[KVM_MAX_VCPUS];
- static struct test_vcpu_shared_data vcpu_shared_data[KVM_MAX_VCPUS];
- 
-+static unsigned long *vcpu_done_map;
-+static pthread_mutex_t vcpu_done_map_lock;
-+
- static void
- guest_configure_timer_action(struct test_vcpu_shared_data *shared_data)
- {
-@@ -216,6 +225,11 @@ static void *test_vcpu_run(void *arg)
- 
- 	vcpu_run(vm, vcpuid);
- 
-+	/* Currently, any exit from guest is an indication of completion */
-+	pthread_mutex_lock(&vcpu_done_map_lock);
-+	set_bit(vcpuid, vcpu_done_map);
-+	pthread_mutex_unlock(&vcpu_done_map_lock);
-+
- 	switch (get_ucall(vm, vcpuid, &uc)) {
- 	case UCALL_SYNC:
- 	case UCALL_DONE:
-@@ -235,9 +249,73 @@ static void *test_vcpu_run(void *arg)
- 	return NULL;
- }
- 
-+static uint32_t test_get_pcpu(void)
-+{
-+	uint32_t pcpu;
-+	unsigned int nproc_conf;
-+	cpu_set_t online_cpuset;
-+
-+	nproc_conf = get_nprocs_conf();
-+	sched_getaffinity(0, sizeof(cpu_set_t), &online_cpuset);
-+
-+	/* Randomly find an available pCPU to place a vCPU on */
-+	do {
-+		pcpu = rand() % nproc_conf;
-+	} while (!CPU_ISSET(pcpu, &online_cpuset));
-+
-+	return pcpu;
-+}
-+static int test_migrate_vcpu(struct test_vcpu *vcpu)
-+{
-+	int ret;
-+	cpu_set_t cpuset;
-+	uint32_t new_pcpu = test_get_pcpu();
-+
-+	CPU_ZERO(&cpuset);
-+	CPU_SET(new_pcpu, &cpuset);
-+	ret = pthread_setaffinity_np(vcpu->pt_vcpu_run,
-+					sizeof(cpuset), &cpuset);
-+
-+	/* Allow the error where the vCPU thread is already finished */
-+	TEST_ASSERT(ret == 0 || ret == ESRCH,
-+			"Failed to migrate the vCPU:%u to pCPU: %u; ret: %d\n",
-+			vcpu->vcpuid, new_pcpu, ret);
-+
-+	return ret;
-+}
-+static void *test_vcpu_migration(void *arg)
-+{
-+	unsigned int i, n_done;
-+	bool vcpu_done;
-+
-+	do {
-+		usleep(msecs_to_usecs(test_args.migration_freq_ms));
-+
-+		for (n_done = 0, i = 0; i < test_args.nr_vcpus; i++) {
-+			pthread_mutex_lock(&vcpu_done_map_lock);
-+			vcpu_done = test_bit(i, vcpu_done_map);
-+			pthread_mutex_unlock(&vcpu_done_map_lock);
-+
-+			if (vcpu_done) {
-+				n_done++;
-+				continue;
-+			}
-+
-+			test_migrate_vcpu(&test_vcpu[i]);
-+		}
-+	} while (test_args.nr_vcpus != n_done);
-+
-+	return NULL;
-+}
-+
- static void test_run(struct kvm_vm *vm)
- {
- 	int i, ret;
-+	pthread_t pt_vcpu_migration;
-+
-+	pthread_mutex_init(&vcpu_done_map_lock, NULL);
-+	vcpu_done_map = bitmap_alloc(test_args.nr_vcpus);
-+	TEST_ASSERT(vcpu_done_map, "Failed to allocate vcpu done bitmap\n");
- 
- 	for (i = 0; i < test_args.nr_vcpus; i++) {
- 		ret = pthread_create(&test_vcpu[i].pt_vcpu_run, NULL,
-@@ -245,8 +323,23 @@ static void test_run(struct kvm_vm *vm)
- 		TEST_ASSERT(!ret, "Failed to create vCPU-%d pthread\n", i);
- 	}
- 
-+	/* Spawn a thread to control the vCPU migrations */
-+	if (test_args.migration_freq_ms) {
-+		srand(time(NULL));
-+
-+		ret = pthread_create(&pt_vcpu_migration, NULL,
-+					test_vcpu_migration, NULL);
-+		TEST_ASSERT(!ret, "Failed to create the migration pthread\n");
-+	}
-+
-+
- 	for (i = 0; i < test_args.nr_vcpus; i++)
- 		pthread_join(test_vcpu[i].pt_vcpu_run, NULL);
-+
-+	if (test_args.migration_freq_ms)
-+		pthread_join(pt_vcpu_migration, NULL);
-+
-+	bitmap_free(vcpu_done_map);
- }
- 
- static struct kvm_vm *test_vm_create(void)
-@@ -286,6 +379,7 @@ static void test_print_help(char *name)
- 		NR_TEST_ITERS_DEF);
- 	pr_info("\t-p: Periodicity (in ms) of the guest timer (default: %u)\n",
- 		TIMER_TEST_PERIOD_MS_DEF);
-+	pr_info("\t-m: Frequency (in ms) of vCPUs to migrate to different pCPU. 0 to turn off (default: 0)\n");
- 	pr_info("\t-h: print this help screen\n");
- }
- 
-@@ -293,7 +387,7 @@ static bool parse_args(int argc, char *argv[])
- {
- 	int opt;
- 
--	while ((opt = getopt(argc, argv, "hn:i:p:")) != -1) {
-+	while ((opt = getopt(argc, argv, "hn:i:p:m:")) != -1) {
- 		switch (opt) {
- 		case 'n':
- 			test_args.nr_vcpus = atoi(optarg);
-@@ -320,6 +414,13 @@ static bool parse_args(int argc, char *argv[])
- 				goto err;
- 			}
- 			break;
-+		case 'm':
-+			test_args.migration_freq_ms = atoi(optarg);
-+			if (test_args.migration_freq_ms < 0) {
-+				pr_info("0 or positive value needed for -m\n");
-+				goto err;
-+			}
-+			break;
- 		case 'h':
- 		default:
- 			goto err;
-@@ -343,6 +444,11 @@ int main(int argc, char *argv[])
- 	if (!parse_args(argc, argv))
- 		exit(KSFT_SKIP);
- 
-+	if (get_nprocs() < 2) {
-+		print_skip("At least two physical CPUs needed for vCPU migration");
-+		exit(KSFT_SKIP);
-+	}
-+
- 	vm = test_vm_create();
- 	test_run(vm);
- 	kvm_vm_free(vm);
--- 
-2.33.0.153.gba50c8fa24-goog
-
+Reinette
