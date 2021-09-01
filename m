@@ -2,111 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4352A3FDEC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856433FDED3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343767AbhIAPgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343755AbhIAPf6 (ORCPT
+        id S1343781AbhIAPki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:40:38 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:39610 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244612AbhIAPkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:35:58 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FCEC061760;
-        Wed,  1 Sep 2021 08:35:01 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id c6so2155278pjv.1;
-        Wed, 01 Sep 2021 08:35:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hvCpZTAygKwbhMNtaHrStRromIJWQVL8XPEWvMCummI=;
-        b=Mv/UAatQ80eXiPU6Awpr2EUrDsQDr68BfzI/sUBQMHfHeySiay4USN7guY3Hjo4eKl
-         MpIPFfg7CqP7j+SZVEiSslbXoPxnYly4ZLUgDfHbhZ2yEYiHhwjJRVK1U+k94lj19XET
-         Aempl5Nwl9PGodjtW1i8GkGjjDmjVvPr1hmHIfTypqqYXLG9/29quKLdpxmcFfG9kUUz
-         1SWE4xbAJON0pKwBFNmnGxBLVOc7deihTi90gbMzvaHTLWVWipthE2Eagr2sOOThggBO
-         96Yyx2Jfkx/aL+C/a+w2XsfTEuDA0dL4UHdJVmARsXFpM+ebtYDoyT3cOTyi2VkMYa5N
-         yOxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hvCpZTAygKwbhMNtaHrStRromIJWQVL8XPEWvMCummI=;
-        b=kxrCyXXndf8MqjxmsSobfOmRPjE9KkzMcI0jRX97SOhR+Idp+6FFY59/GvBhaq2NhP
-         i7o7nHTTIu7RkhMvq2vowiL7W3vKHG0RyT5nH2VBzEO6m5flsNkdtkjQVNG9jp4HkPrS
-         igvxiwAUNiKXjfzoOXO81BBdjRpNj3FP3AY37LtXXoaiHgV34i8lTbP1WjICYHthyz8z
-         38N7CyAMl3/unnJ5ZgY4V7vCz8KjXM3HprBlY8pV+o36VVnz9uTPCQhXLzYWh+YY80SH
-         UL/qL5CTMGa+nwN75zPqlyFdoQq8Rmp7mcrOBh7fI7VAAzw4zPxDXv+fFGlLVBWoNxNg
-         wwcQ==
-X-Gm-Message-State: AOAM533t7sLSz2MhZiRfM5d2xIy7YQUMsuolwWswbFUMnNXtqsmNdNbo
-        NZAb/09JbOid3YtSawGfLGY=
-X-Google-Smtp-Source: ABdhPJxRATpCmliOkp20ZZdvq4n6gdmDSkssTiQ0n+9K2jjmxAhKTq8dbkJZzNAOuGdrbP9c5/QXIQ==
-X-Received: by 2002:a17:90a:1982:: with SMTP id 2mr12118734pji.112.1630510500954;
-        Wed, 01 Sep 2021 08:35:00 -0700 (PDT)
-Received: from localhost.localdomain ([222.238.85.219])
-        by smtp.gmail.com with ESMTPSA id x15sm336650pfq.31.2021.09.01.08.34.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 01 Sep 2021 08:35:00 -0700 (PDT)
-From:   Jiwon Kim <jiwonaid0@gmail.com>
-To:     davem@davemloft.net
-Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiwon Kim <jiwonaid0@gmail.com>
-Subject: [PATCH net-next] ipv6: change return type from int to void for mld_process_v2
-Date:   Thu,  2 Sep 2021 00:34:49 +0900
-Message-Id: <20210901153449.26067-1-jiwonaid0@gmail.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Wed, 1 Sep 2021 11:40:37 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mLSGg-000H8s-IX; Wed, 01 Sep 2021 15:35:14 +0000
+Date:   Wed, 1 Sep 2021 15:35:14 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Dmitry Kadashev <dkadashev@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Stephen Brennan <stephen.s.brennan@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] namei: get rid of unused filename_parentat()
+Message-ID: <YS+dstZ3xfcLxhoB@zeniv-ca.linux.org.uk>
+References: <20210901150040.3875227-1-dkadashev@gmail.com>
+ <YS+csMTV2tTXKg3s@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YS+csMTV2tTXKg3s@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mld_process_v2 only returned 0.
+On Wed, Sep 01, 2021 at 03:30:56PM +0000, Al Viro wrote:
+> On Wed, Sep 01, 2021 at 10:00:40PM +0700, Dmitry Kadashev wrote:
+> > After the switch of kern_path_locked() to __filename_parentat() (to
+> > address use after free bug) nothing is using filename_parentat(). Also,
+> > filename_parentat() is inherently buggy: the "last" output arg
+> > always point to freed memory.
+> > 
+> > Drop filename_parentat() and rename __filename_parentat() to
+> > filename_parentat().
+> 
+> I'd rather fold that into previous patch.
+> 
+> And it might be better to fold filename_create() into its 2 callers
+> and rename __filename_create() as well.
+> 
+> Let me poke around a bit...
 
-So, the return type is changed to void.
+BTW, if you look at the only caller of filename_lookup() outside of
+fs/namei.c, you'll see this:
+        f->refcnt++; /* filename_lookup() drops our ref. */
+	ret = filename_lookup(param->dirfd, f, flags, _path, NULL);
+IOW, that thing would be better off with calling the current
+__filename_lookup().
 
-Signed-off-by: Jiwon Kim <jiwonaid0@gmail.com>
----
- net/ipv6/mcast.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
-index cd951faa2fac..bed8155508c8 100644
---- a/net/ipv6/mcast.c
-+++ b/net/ipv6/mcast.c
-@@ -1356,8 +1356,8 @@ static int mld_process_v1(struct inet6_dev *idev, struct mld_msg *mld,
- 	return 0;
- }
- 
--static int mld_process_v2(struct inet6_dev *idev, struct mld2_query *mld,
--			  unsigned long *max_delay)
-+static void mld_process_v2(struct inet6_dev *idev, struct mld2_query *mld,
-+			   unsigned long *max_delay)
- {
- 	*max_delay = max(msecs_to_jiffies(mldv2_mrc(mld)), 1UL);
- 
-@@ -1367,7 +1367,7 @@ static int mld_process_v2(struct inet6_dev *idev, struct mld2_query *mld,
- 
- 	idev->mc_maxdelay = *max_delay;
- 
--	return 0;
-+	return;
- }
- 
- /* called with rcu_read_lock() */
-@@ -1454,9 +1454,7 @@ static void __mld_query_work(struct sk_buff *skb)
- 
- 		mlh2 = (struct mld2_query *)skb_transport_header(skb);
- 
--		err = mld_process_v2(idev, mlh2, &max_delay);
--		if (err < 0)
--			goto out;
-+		mld_process_v2(idev, mlh2, &max_delay);
- 
- 		if (group_type == IPV6_ADDR_ANY) { /* general query */
- 			if (mlh2->mld2q_nsrcs)
--- 
-2.25.1
-
+Might be better to rename filename_lookup to something different,
+turn __filename_lookup() into filename_lookup() and use _that_ in
+fs/fs_parser.c...
