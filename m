@@ -2,62 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E8F3FE064
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7B73FE06B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235410AbhIAQxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:53:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344251AbhIAQxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:53:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4DB3961058;
-        Wed,  1 Sep 2021 16:52:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630515128;
-        bh=RbvbxIEYnH3J2SmzfIM291yjJNX+agc0UgFMiIgA4MM=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=O4TZNf+YgWhMNLYgdHrUzp7TftFi6sz8uAKKxUOxxlzwffjkeg7XSyS14BPzJbx8h
-         in7l7VuTlobFUEuMm7ioPhaHErOohV7Etp/snBQ0yZrepDphJIrZs6CkwvrSVX/KPt
-         2bljm9S7pq66BxlsHwgYf3+wWb3EPCIZT70QDMuLYTNNqQWANX7TafXYEK8mKFUFOA
-         J0HV4v3cHK0kpU7R6AwhDcgTtVPwDEo9Cp342e60P6grPB89dhd7nTi21P+XQUM+zY
-         hDQI+M41hx+cR7JoWwRp0c3SHcWQlJ+UP8UxLBF+P4pF7m5erjKm3Oa6WXwGDNEQ7a
-         q61gDTsno0QXw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 47C9D600AB;
-        Wed,  1 Sep 2021 16:52:08 +0000 (UTC)
-Subject: Re: [GIT PULL] Driver core changes for 5.15-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YS+LQJnyf5w93K+A@kroah.com>
-References: <YS+LQJnyf5w93K+A@kroah.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YS+LQJnyf5w93K+A@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.15-rc1
-X-PR-Tracked-Commit-Id: 049d1693db78144c979b34e2084287ada912cf7f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c6c3c5704ba70820f6b632982abde06661b7222a
-Message-Id: <163051512828.18728.15364417774736831907.pr-tracker-bot@kernel.org>
-Date:   Wed, 01 Sep 2021 16:52:08 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Saravana Kannan <saravanak@google.com>
+        id S1344682AbhIAQyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:54:03 -0400
+Received: from mail-40140.protonmail.ch ([185.70.40.140]:25695 "EHLO
+        mail-40140.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344633AbhIAQx6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 12:53:58 -0400
+Date:   Wed, 01 Sep 2021 16:52:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1630515179;
+        bh=gt/cf6/XfcH/698kF86Uqsw0P7cStjMWQEnDsNGVdjI=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=O7naTcCmTTy1J+CUwMWFfRf+vufMPpWjRxudvOdVNN1yZrMbfFDektMJvI9jheArC
+         pkZDZ48pwxgflKKibqsAIAusmcWbZsL3rOZT0JhwguvhRqimg59/F5+/0rPQix9MRj
+         xFkaTwrckadigA1Inj48rmoExNVMntpNfCBsiQv0=
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [PATCH v3 0/2] Input: cypress-sf - Add support for Cypress Streetfighter touchkeys
+Message-ID: <20210901165231.236728-1-y.oudjana@protonmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 1 Sep 2021 16:16:32 +0200:
+This patchset adds support for Cypress StreetFighter touchkeys.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.15-rc1
+Due to lack of documentation, this driver is entirely based on information
+gathered from a driver written for an old Android kernel fork[1][2].
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c6c3c5704ba70820f6b632982abde06661b7222a
+[1] https://github.com/LineageOS/android_kernel_xiaomi_msm8996/blob/lineage=
+-18.1/drivers/input/touchscreen/cyttsp_button.c
+[2] https://github.com/LineageOS/android_kernel_xiaomi_msm8996/blob/lineage=
+-18.1/arch/arm/boot/dts/qcom/a4-msm8996-mtp.dtsi#L291-L314
 
-Thank you!
+Changes since v2:
+ - Code style fixes.
+ - Added copyright statement.
+Changes since v1:
+ - Changed version variables in probe to int to allow storing error codes.
+ - Fixed some issues in dt binding.
+=20
+Yassine Oudjana (2):
+  Input: cypress-sf - Add Cypress StreetFighter touchkey driver
+  dt-bindings: input: Add binding for cypress-sf
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+ .../devicetree/bindings/input/cypress-sf.yaml |  61 +++++
+ drivers/input/keyboard/Kconfig                |  10 +
+ drivers/input/keyboard/Makefile               |   1 +
+ drivers/input/keyboard/cypress-sf.c           | 223 ++++++++++++++++++
+ 4 files changed, 295 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/cypress-sf.yaml
+ create mode 100644 drivers/input/keyboard/cypress-sf.c
+
+--=20
+2.33.0
+
+
