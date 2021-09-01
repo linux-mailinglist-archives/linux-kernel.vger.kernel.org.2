@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0753E3FDC5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB153FDADD
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346050AbhIAMtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:49:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49984 "EHLO mail.kernel.org"
+        id S244996AbhIAMfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:35:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345674AbhIAMoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:44:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A45261156;
-        Wed,  1 Sep 2021 12:39:06 +0000 (UTC)
+        id S1343557AbhIAMdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:33:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D270610FB;
+        Wed,  1 Sep 2021 12:32:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499946;
-        bh=OAm03vm4hTKjAxOEVjAFVjlLbXz5uEbS8KvH8NpLo+E=;
+        s=korg; t=1630499534;
+        bh=qFwnu/huM5cmbh38yn1X3QJt7kkDyJ8iPygs11575fQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Krt/kUd75XM57nAmU9tZ4uW95fY3vaDbAguZUyBVGtm77w1EjMYcrt0RBK3MK93xk
-         19fth9m7qJKAO30yzgz6mcUAhvidWLFfzCUh/vJ2lNZkk8fCpUHgEofsiM9N+8URB0
-         kxLQqaW5xNvCDXw2d8VvvOngHsemzNBGiiBnUAHg=
+        b=XbLU9C+3h5/KjfTGayWqVMKd11l1fmBcPNoSMST1A/dkNwAdg2+C/8WYfd7kmdYpP
+         uMpqG9iLKjkv2zE3Iyhvm/KTmr1YDJgn1PHStF+O2Inr4YAIsY1PP2Gur4JdkNRhZ4
+         18oU5+dxgtgt9ge38Zkso33SC9I8DAZNu/PFLTNo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Toshiki Nishioka <toshiki.nishioka@intel.com>,
-        Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>,
-        Sasha Neftin <sasha.neftin@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 044/113] igc: Use num_tx_queues when iterating over tx_ring queue
+        =?UTF-8?q?Paul=20Gr=C3=B6=C3=9Fel?= <pb.g@gmx.de>,
+        Willy Tarreau <w@1wt.eu>, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 09/48] Revert "USB: serial: ch341: fix character loss at high transfer rates"
 Date:   Wed,  1 Sep 2021 14:27:59 +0200
-Message-Id: <20210901122303.454088228@linuxfoundation.org>
+Message-Id: <20210901122253.709711719@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Toshiki Nishioka <toshiki.nishioka@intel.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 691bd4d7761992914a0e83c27a4ce57d01474cda ]
+commit df7b16d1c00ecb3da3a30c999cdb39f273c99a2f upstream.
 
-Use num_tx_queues rather than the IGC_MAX_TX_QUEUES fixed number 4 when
-iterating over tx_ring queue since instantiated queue count could be
-less than 4 where on-line cpu count is less than 4.
+This reverts commit 3c18e9baee0ef97510dcda78c82285f52626764b.
 
-Fixes: ec50a9d437f0 ("igc: Add support for taprio offloading")
-Signed-off-by: Toshiki Nishioka <toshiki.nishioka@intel.com>
-Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-Tested-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-Acked-by: Sasha Neftin <sasha.neftin@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+These devices do not appear to send a zero-length packet when the
+transfer size is a multiple of the bulk-endpoint max-packet size. This
+means that incoming data may not be processed by the driver until a
+short packet is received or the receive buffer is full.
+
+Revert back to using endpoint-sized receive buffers to avoid stalled
+reads.
+
+Reported-by: Paul Größel <pb.g@gmx.de>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214131
+Fixes: 3c18e9baee0e ("USB: serial: ch341: fix character loss at high transfer rates")
+Cc: stable@vger.kernel.org
+Cc: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/r/20210824121926.19311-1-johan@kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/igc/igc_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/serial/ch341.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 3db86daf3568..9b85fdf01297 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -5080,7 +5080,7 @@ static bool validate_schedule(struct igc_adapter *adapter,
- 		if (e->command != TC_TAPRIO_CMD_SET_GATES)
- 			return false;
- 
--		for (i = 0; i < IGC_MAX_TX_QUEUES; i++) {
-+		for (i = 0; i < adapter->num_tx_queues; i++) {
- 			if (e->gate_mask & BIT(i))
- 				queue_uses[i]++;
- 
-@@ -5137,7 +5137,7 @@ static int igc_save_qbv_schedule(struct igc_adapter *adapter,
- 
- 		end_time += e->interval;
- 
--		for (i = 0; i < IGC_MAX_TX_QUEUES; i++) {
-+		for (i = 0; i < adapter->num_tx_queues; i++) {
- 			struct igc_ring *ring = adapter->tx_ring[i];
- 
- 			if (!(e->gate_mask & BIT(i)))
--- 
-2.30.2
-
+--- a/drivers/usb/serial/ch341.c
++++ b/drivers/usb/serial/ch341.c
+@@ -678,7 +678,6 @@ static struct usb_serial_driver ch341_de
+ 		.owner	= THIS_MODULE,
+ 		.name	= "ch341-uart",
+ 	},
+-	.bulk_in_size      = 512,
+ 	.id_table          = id_table,
+ 	.num_ports         = 1,
+ 	.open              = ch341_open,
 
 
