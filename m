@@ -2,175 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE6E3FD4BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1323FD4BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242780AbhIAHrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:47:19 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:54978 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242622AbhIAHrS (ORCPT
+        id S242747AbhIAHuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:50:23 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:41888 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242622AbhIAHuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:47:18 -0400
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 54E60BC723F;
-        Wed,  1 Sep 2021 09:46:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1630482380;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jd8pd6oI+wsSrsbrPr6mq4lPlotp13CxG8uyl5WvZqw=;
-        b=ZcKLDnuAz/oVfROxqCJ3N35+BMHxdHJXjyYqPvAcIt+Rou6yktmDIYunqnYlk/3IXQX/Se
-        K50Ij23wvsVp2ubtz7+piVDXcTPIP7Mb/Qhrr4SPv/4ewvtsBe9yoPSEPV128K89fVYI2G
-        jUL5pf6CKcPD8EW4Bdlc/46gRWnfTYQ=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     vbabka@suse.cz, sfr@canb.auug.org.au, peterz@infradead.org,
-        mgorman@techsingularity.net, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 2/6] mm/page_alloc.c: simplify the code by using macro K()
-Date:   Wed, 01 Sep 2021 09:46:17 +0200
-Message-ID: <5931202.uRb02ylMo7@natalenko.name>
-In-Reply-To: <03653d41-abe0-46f0-9eee-28cad9f5edea@huawei.com>
-References: <20210830141051.64090-1-linmiaohe@huawei.com> <9426505.MgecbftzqH@natalenko.name> <03653d41-abe0-46f0-9eee-28cad9f5edea@huawei.com>
+        Wed, 1 Sep 2021 03:50:21 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1817mxE93015275, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 1817mxE93015275
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 1 Sep 2021 15:48:59 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 1 Sep 2021 15:48:59 +0800
+Received: from localhost (172.21.132.198) by RTEXMBS03.realtek.com.tw
+ (172.21.6.96) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 1 Sep 2021
+ 15:48:58 +0800
+From:   <max.chou@realtek.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <luiz.dentz@gmail.com>, <matthias.bgg@gmail.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     <alex_lu@realsil.com.cn>, <hildawu@realtek.com>,
+        <christian.bauer1.external@fujitsu.com>, <max.chou@realtek.com>
+Subject: [PATCH] Bluetooth: btusb: btrtl: Add the new support ID for Realtek RTL8852A
+Date:   Wed, 1 Sep 2021 15:48:45 +0800
+Message-ID: <20210901074845.1000-1-max.chou@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [172.21.132.198]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS03.realtek.com.tw (172.21.6.96)
+X-KSE-ServerInfo: RTEXMBS03.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: trusted connection
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 09/01/2021 07:21:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzkvMSCkV6TIIDA2OjAwOjAw?=
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 09/01/2021 07:18:51
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165895 [Sep 01 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: max.chou@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 460 460 984a5b846aca9773080f7b1ec5049bf53f1b6f95
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 09/01/2021 07:21:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+From: Max Chou <max.chou@realtek.com>
 
-On st=C5=99eda 1. z=C3=A1=C5=99=C3=AD 2021 9:37:49 CEST Miaohe Lin wrote:
-> On 2021/8/31 22:19, Oleksandr Natalenko wrote:
-> > On =C3=BAter=C3=BD 31. srpna 2021 13:08:42 CEST Miaohe Lin wrote:
-> >> On 2021/8/31 16:54, Oleksandr Natalenko wrote:
-> >>> On pond=C4=9Bl=C3=AD 30. srpna 2021 16:10:47 CEST Miaohe Lin wrote:
-> >>>> Use helper macro K() to convert the pages to the corresponding size.
-> >>>> Minor readability improvement.
-> >>>>=20
-> >>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> >>>> ---
-> >>>>=20
-> >>>>  mm/page_alloc.c | 12 +++++-------
-> >>>>  1 file changed, 5 insertions(+), 7 deletions(-)
-> >>>>=20
-> >>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> >>>> index dbb3338d9287..d3983244f56f 100644
-> >>>> --- a/mm/page_alloc.c
-> >>>> +++ b/mm/page_alloc.c
-> >>>> @@ -8134,8 +8134,7 @@ unsigned long free_reserved_area(void *start,
-> >>>> void
-> >>>> *end, int poison, const char }
-> >>>>=20
-> >>>>  	if (pages && s)
-> >>>>=20
-> >>>> -		pr_info("Freeing %s memory: %ldK\n",
-> >>>> -			s, pages << (PAGE_SHIFT - 10));
-> >>>> +		pr_info("Freeing %s memory: %ldK\n", s, K(pages));
-> >>>>=20
-> >>>>  	return pages;
-> >>>> =20
-> >>>>  }
-> >>>>=20
-> >>>> @@ -8180,14 +8179,13 @@ void __init mem_init_print_info(void)
-> >>>>=20
-> >>>>  		", %luK highmem"
-> >>>> =20
-> >>>>  #endif
-> >>>> =20
-> >>>>  		")\n",
-> >>>>=20
-> >>>> -		nr_free_pages() << (PAGE_SHIFT - 10),
-> >>>> -		physpages << (PAGE_SHIFT - 10),
-> >>>> +		K(nr_free_pages()), K(physpages),
-> >>>>=20
-> >>>>  		codesize >> 10, datasize >> 10, rosize >> 10,
-> >>>>  		(init_data_size + init_code_size) >> 10, bss_size >> 10,
-> >>>>=20
-> >>>> -		(physpages - totalram_pages() - totalcma_pages) <<=20
-(PAGE_SHIFT
-> >>>=20
-> >>> - 10),
-> >>>=20
-> >>>> -		totalcma_pages << (PAGE_SHIFT - 10)
-> >>>> +		K(physpages - totalram_pages() - totalcma_pages),
-> >>>> +		K(totalcma_pages)
-> >>>>=20
-> >>>>  #ifdef	CONFIG_HIGHMEM
-> >>>>=20
-> >>>> -		, totalhigh_pages() << (PAGE_SHIFT - 10)
-> >>>> +		, K(totalhigh_pages())
-> >>>>=20
-> >>>>  #endif
-> >>>> =20
-> >>>>  		);
-> >>>> =20
-> >>>>  }
-> >>>=20
-> >>> (my concern is not quite within the scope of this submission, but I'll
-> >>> ask
-> >>> anyway)
-> >>>=20
-> >>> Given we have this:
-> >>>=20
-> >>> ```
-> >>> git grep '#define K(x)' v5.14
-> >>> v5.14:drivers/base/node.c:#define K(x) ((x) << (PAGE_SHIFT - 10))
-> >>> v5.14:drivers/net/hamradio/scc.c:#define K(x) kiss->x
-> >>> v5.14:kernel/debug/kdb/kdb_main.c:#define K(x) ((x) << (PAGE_SHIFT -
-> >>> 10))
-> >>> v5.14:mm/backing-dev.c:#define K(x) ((x) << (PAGE_SHIFT - 10))
-> >>> v5.14:mm/memcontrol.c:#define K(x) ((x) << (PAGE_SHIFT-10))
-> >>> v5.14:mm/oom_kill.c:#define K(x) ((x) << (PAGE_SHIFT-10))
-> >>> v5.14:mm/page_alloc.c:#define K(x) ((x) << (PAGE_SHIFT-10))
-> >>> ```
-> >>>=20
-> >>> Shouldn't this macro go to some header file instead to get rid of def=
-ine
-> >>> repetitions?
-> >>=20
-> >> Many thanks for figuring this out. I think we should get rid of these
-> >> repetitions too. But I'am not sure where this definition should be. Any
-> >> suggestion? Thanks.
-> >=20
-> > I'm not sure what place suits best. At first I thought maybe linux/mm.h=
- or
-> > linux/mm_inline.h, but since PAGE_SHIFT is declared in asm-generic/page=
-=2Eh,
-> > probably K(x) can also go there as well?
->=20
-> K(x) is relevant with PAGE_SHIFT. So I think K(x) can also go
-> asm-generic/page.h too.
+Add the new support ID(0x04c5, 0x165c) to usb_device_id table for
+Realtek RTL8852A.
 
-Actually, the comment in this file says:
+The device info from /sys/kernel/debug/usb/devices as below.
 
-```
-4 /*
-5  * Generic page.h implementation, for NOMMU architectures.
-6  * This provides the dummy definitions for the memory management.
-7  */
-```
+T:  Bus=01 Lev=01 Prnt=01 Port=05 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
+D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=04c5 ProdID=165c Rev= 0.00
+S:  Manufacturer=Realtek
+S:  Product=Bluetooth Radio
+S:  SerialNumber=00e04c000001
+C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
 
-so it seems I was wrong about this being an appropriate place.
+Signed-off-by: Max Chou <max.chou@realtek.com>
+Reviewed-by: Christian Bauer <christian.bauer1.external@fujitsu.com>
+---
+ drivers/bluetooth/btusb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> Am I supposed to do this when free or will you
-> kindly do this?
-
-Let me just try to cram this into mm.h and send it out, and then we'll see=
-=20
-what comments people suggest.
-
-Thanks.
-
-=2D-=20
-Oleksandr Natalenko (post-factum)
-
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 60d2fce59a71..ccc956290e8d 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -384,6 +384,8 @@ static const struct usb_device_id blacklist_table[] = {
+ 	/* Realtek 8852AE Bluetooth devices */
+ 	{ USB_DEVICE(0x0bda, 0xc852), .driver_info = BTUSB_REALTEK |
+ 						     BTUSB_WIDEBAND_SPEECH },
++	{ USB_DEVICE(0x04c5, 0x165c), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
+ 
+ 	/* Realtek Bluetooth devices */
+ 	{ USB_VENDOR_AND_INTERFACE_INFO(0x0bda, 0xe0, 0x01, 0x01),
+-- 
+2.17.1
 
