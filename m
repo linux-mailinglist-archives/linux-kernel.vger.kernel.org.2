@@ -2,647 +2,1558 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EDD3FE44A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94703FE450
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbhIAU4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 16:56:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhIAU4I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 16:56:08 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B865CC061575;
-        Wed,  1 Sep 2021 13:55:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Type:In-Reply-To:MIME-Version
-        :Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TdF34R3d7QjACS61H8R5p+MSSbukN2CK8z+/PLVYeqQ=; b=uSdPuHUDZqSzdj7x+2AKguNVQz
-        n5pkn8EjLa2oMmHQZ74eP3QjWrdsWNk3cSgsuhd0/OgmL/r7Dv7bQxMKFne0goHJ/q6OAMXwT6GlM
-        ib+EHCo0ZTBRSx8nkg8wqcKq6F/8c9dqwMB9GL0lwmAvivzwNhlERC8bc4M+iku3eIYm6Oim8GqN1
-        w2F1DX44Agkiki+FbYNOFZAXpWxDSBd250E3FsTc+nyhIiKSLcv9LAkNEDs8WBqRN9QudGJeVM32G
-        /bF51/ZNmiRIg4EXdLNgq2+K09KaUiSFY58ygG97KTpX7bQyq+zEt6fFXuq1e4x0hQtFSu8rByjYw
-        Tcty9iaQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLXGF-007Ktj-DY; Wed, 01 Sep 2021 20:55:07 +0000
-Subject: Re: linux-next: Tree for Sep 1
- [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko]
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Trevor Wu <trevor.wu@mediatek.com>,
-        Bicycle Tsai <bicycle.tsai@mediatek.com>
-References: <20210901181740.3a0a69f2@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3ee0b878-b78c-2483-1a0b-7570bda0132b@infradead.org>
-Date:   Wed, 1 Sep 2021 13:55:06 -0700
+        id S239759AbhIAU5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 16:57:35 -0400
+Received: from mail-dm6nam12on2066.outbound.protection.outlook.com ([40.107.243.66]:41365
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232685AbhIAU51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 16:57:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eykubkAnOu3wxXyZG9mMGVEutcnUX+sDALUY15EjlwsS91quTJ1RGXqytLY2eJEu9cHO1wPtoIX9ZoZYDCg43jqo30iTlftnTYBwbkGYEf1RY5EJwnp7IItT1vSW0te5JexK4H8Q7CqtJaS75gpkypwVc6GTsH1/VeJwmThwJjjB6zCRwqNM1IcIb0HZcy5wcgT0HrCwtvEdMg8FD3RVpMQ7hlKvM7eP5oFXQAARBcZmUKDdkVCrvCWk0QMJ6lIsX9tnorjwR1wabpZu07Jk+zWVIy5T33PsxmPMfSOpE1Vhj4xoV33hPhwwJSGQoqxWhyXFrT4xgAhry5CN6CWx5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NAN2G+BJBcx60bWOlawLHFaw8Dq0uvIgcShMA19mrEQ=;
+ b=eOnQaLkW6JKwcDPzBMUt+DRxE/oNnpMw65utvCW8WKWVPja+vHXS2wMvW4QTZMgPLeNlOezVJR6USNXkejdLiRKHxOMncitRFn8KQqsd2m3YI2uC+IKIayOik+r7S73rC71D0D7rLqDkrnWuz53mAfrg88noe6Cb8V8e3QJnATiciO943PkY6SOgL7HoAxJYrGVc23d1WevZztwDxU4d6K6/dgZb4W7+Nq123rPviVtTbarim322Fx3M5RrjQLpNSVF9K3JXfGUHU0AanbbeHCclcArUlgtvznOg1vRtL8DcT1S5fRLNgPNE9Nv4TY/dStxCLCyMudxNFRu9uX7soQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NAN2G+BJBcx60bWOlawLHFaw8Dq0uvIgcShMA19mrEQ=;
+ b=o8ZgmK3YX2JKJ4bI4KknyxQCI3KFtzacELp/fHJmbhdKhPoBgWIGBkEPBDj2+6iFckv+1AiHwnYuXONtX6ls0SDkz4Iy1Jksu5OgnLV7Gsuxtl6N/zpdt/ESrOc4fc2uDH1noBhCXWD+cp+8rkzyG1wjM1H5uv6fE0wF4SOu4T3pi0hH92U8S2kxl2PC2Kqd1gtxy3JXmG5Tfop2p2iX3KbP6DiZcuHLBVwWHhGoDWgJDmbGJqEFqr3Uft5s3myoR4We6tlK4rmYRH2rpJhgnWrkzErnPfCYvMftBy40ilLthO5R11L36fc//8t054KulxxcjcZQDg/56HZdazJ+Ng==
+Received: from BN9PR03CA0990.namprd03.prod.outlook.com (2603:10b6:408:109::35)
+ by BN6PR12MB1170.namprd12.prod.outlook.com (2603:10b6:404:20::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.20; Wed, 1 Sep
+ 2021 20:56:26 +0000
+Received: from BN8NAM11FT047.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:109:cafe::6) by BN9PR03CA0990.outlook.office365.com
+ (2603:10b6:408:109::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18 via Frontend
+ Transport; Wed, 1 Sep 2021 20:56:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ BN8NAM11FT047.mail.protection.outlook.com (10.13.177.220) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4478.19 via Frontend Transport; Wed, 1 Sep 2021 20:56:26 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 1 Sep
+ 2021 13:56:20 -0700
+Received: from [10.26.49.12] (172.20.187.6) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 1 Sep 2021
+ 20:56:17 +0000
+Subject: Re: [PATCH v3 2/4] dmaengine: tegra: Add tegra gpcdma driver
+To:     Akhil R <akhilrajeev@nvidia.com>, <rgumasta@nvidia.com>
+CC:     <dan.j.williams@intel.com>, <dmaengine@vger.kernel.org>,
+        <kyarlagadda@nvidia.com>, <ldewangan@nvidia.com>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <p.zabel@pengutronix.de>, <thierry.reding@gmail.com>,
+        <vkoul@kernel.org>, Pavan Kunapuli <pkunapuli@nvidia.com>
+References: <MN2PR12MB41438B94148A6D522C056771A2A70@MN2PR12MB4143.namprd12.prod.outlook.com>
+ <1630044294-21169-1-git-send-email-akhilrajeev@nvidia.com>
+ <1630044294-21169-3-git-send-email-akhilrajeev@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <4f0293e1-01de-8735-40e7-0622d185188a@nvidia.com>
+Date:   Wed, 1 Sep 2021 21:56:15 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210901181740.3a0a69f2@canb.auug.org.au>
-Content-Type: multipart/mixed;
- boundary="------------3A1F296E64FB021F9C64CEB3"
+In-Reply-To: <1630044294-21169-3-git-send-email-akhilrajeev@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a2c21607-6213-45c1-7b09-08d96d8af718
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1170:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB117022EE23934D3DC3DF585BD9CD9@BN6PR12MB1170.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7E99IUxVKTYYyyvecS8y730rl/H/u4ace0fMrbwcNCA9P+5oD+h09CGnEG+tIbbAvRBB0hw+Ih3L4SJOCld05faYacFGifWwuSwMKIT2/vcQzP4/lSfJItUbRAAiGI3sTQs0N+qlIqz4JNi4AO2SilkkKciM2OMCG/rRktpyPJaSU2GEmtFzukX+c8kwsm/9Kxb2e/kju+YYEVPuEOcTatoShmstUyXfnUTmVQDYgXPyskatxnRAvKbn1vHjkGXu45Qa8pO1KQGcbhA3QE1r5fnl8biElMiQLoECoWO7i+MLIs09RKVhjbEWsigKKh5/n7X0xazdCCqsKznl6cymPPpKBpPW112WIV+do7jm6q8nBAk0iDMClZ4j2LCeULV32lpdmzNBMAlsbZ/ZoSdbKNba4JrVyZijgwS/8M3tfKtL9tG06fKBTYFedHOI5FFDNCVq6jX2o1Nb9TRCse8DM5y9Wjn5AIa+GAAnKsTEurjCdBUpjbUNqShwah50MTdflgAmjmV6SQvcLZaRZfVXOwqqG+KeVbJG11FlDQtSWFzgN/MmnJMbiTQL2WydgWok1NBtUepAg7hIX142CwYwM7lJT1B52TkVpDyebanfJGzmdejz0K5OOcd4jaJtaUd9wW3M9BzNkDVKooW0UdFxoAeD9WU80ZV1SaaDATvtqHGuGRYKXGx2fvHm3XK3z9aprUI9VhxkM0gFJhyN4LcaqI9buqT0a8oKZZk1dg0shuE=
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(376002)(136003)(36840700001)(46966006)(16526019)(6636002)(8936002)(47076005)(86362001)(30864003)(53546011)(2616005)(36860700001)(5660300002)(82310400003)(4326008)(8676002)(31686004)(478600001)(83380400001)(31696002)(26005)(82740400003)(110136005)(336012)(70586007)(426003)(107886003)(16576012)(36756003)(54906003)(7636003)(70206006)(356005)(316002)(2906002)(186003)(43740500002)(579004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 20:56:26.6447
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2c21607-6213-45c1-7b09-08d96d8af718
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT047.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1170
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------3A1F296E64FB021F9C64CEB3
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 9/1/21 1:17 AM, Stephen Rothwell wrote:
-> Hi all,
+On 27/08/2021 07:04, Akhil R wrote:
+> Adding GPC DMA controller driver for Tegra186 and Tegra194. The driver
+> supports dma transfers between memory to memory, IO peripheral to memory
+> and memory to IO peripheral.
 > 
-> Please do not add any v5.16 related code to your linux-next included
-> branches until after v5.15-rc1 has been released.
+> Signed-off-by: Pavan Kunapuli <pkunapuli@nvidia.com>
+> Signed-off-by: Rajesh Gumasta <rgumasta@nvidia.com>
+> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> ---
+>   drivers/dma/Kconfig         |   12 +
+>   drivers/dma/Makefile        |    1 +
+>   drivers/dma/tegra-gpc-dma.c | 1343 +++++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 1356 insertions(+)
+>   create mode 100644 drivers/dma/tegra-gpc-dma.c
 > 
-> Changes since 20210831:
+> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+> index 39b5b46..9d1d93d 100644
+> --- a/drivers/dma/Kconfig
+> +++ b/drivers/dma/Kconfig
+> @@ -632,6 +632,18 @@ config TEGRA210_ADMA
+>   	  peripheral and vice versa. It does not support memory to
+>   	  memory data transfer.
+>   
+> +config TEGRA_GPC_DMA
+> +	tristate "NVIDIA Tegra GPC DMA support"
+> +	depends on ARCH_TEGRA_186_SOC || ARCH_TEGRA_194_SOC || COMPILE_TEST
+> +	select DMA_ENGINE
+> +	help
+> +	  Support for the NVIDIA Tegra186 and Tegra194 GPC DMA controller
+> +	  driver. The DMA controller has multiple DMA channels which can
+> +	  be configured for different peripherals like UART, SPI, etc
+> +	  which are on APB bus.
+> +	  This DMA controller transfers data from memory to peripheral FIFO
+> +	  or vice versa. It also supports memory to memory data transfer.
+> +
+>   config TIMB_DMA
+>   	tristate "Timberdale FPGA DMA support"
+>   	depends on MFD_TIMBERDALE || COMPILE_TEST
+> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
+> index aa69094..943e8d7 100644
+> --- a/drivers/dma/Makefile
+> +++ b/drivers/dma/Makefile
+> @@ -73,6 +73,7 @@ obj-$(CONFIG_S3C24XX_DMAC) += s3c24xx-dma.o
+>   obj-$(CONFIG_TXX9_DMAC) += txx9dmac.o
+>   obj-$(CONFIG_TEGRA20_APB_DMA) += tegra20-apb-dma.o
+>   obj-$(CONFIG_TEGRA210_ADMA) += tegra210-adma.o
+> +obj-$(CONFIG_TEGRA_GPC_DMA) += tegra-gpc-dma.o
+>   obj-$(CONFIG_TIMB_DMA) += timb_dma.o
+>   obj-$(CONFIG_UNIPHIER_MDMAC) += uniphier-mdmac.o
+>   obj-$(CONFIG_UNIPHIER_XDMAC) += uniphier-xdmac.o
+> diff --git a/drivers/dma/tegra-gpc-dma.c b/drivers/dma/tegra-gpc-dma.c
+> new file mode 100644
+> index 0000000..d990121
+> --- /dev/null
+> +++ b/drivers/dma/tegra-gpc-dma.c
+> @@ -0,0 +1,1343 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * DMA driver for Nvidia's Tegra186 and Tegra194 GPC DMA controller.
+> + *
+> + * Copyright (c) 2014-2020, NVIDIA CORPORATION.  All rights reserved.
+> + */
+> +
+> +#include <linux/bitops.h>
+> +#include <linux/delay.h>
+> +#include <linux/dmaengine.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/err.h>
+> +#include <linux/init.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/mm.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_dma.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm.h>
+> +#include <linux/reset.h>
+> +#include <linux/slab.h>
+> +#include <linux/version.h>
+> +#include <dt-bindings/memory/tegra186-mc.h>
+> +#include "virt-dma.h"
+> +
+> +/* CSR register */
+> +#define TEGRA_GPCDMA_CHAN_CSR			0x00
+> +#define TEGRA_GPCDMA_CSR_ENB			BIT(31)
+> +#define TEGRA_GPCDMA_CSR_IE_EOC			BIT(30)
+> +#define TEGRA_GPCDMA_CSR_ONCE			BIT(27)
+> +
+> +#define TEGRA_GPCDMA_CSR_FC_MODE		GENMASK(25, 24)
+> +#define TEGRA_GPCDMA_CSR_FC_MODE_NO_MMIO	\
+> +					FIELD_PREP(TEGRA_GPCDMA_CSR_FC_MODE, 0)
+> +#define TEGRA_GPCDMA_CSR_FC_MODE_ONE_MMIO	\
+> +					FIELD_PREP(TEGRA_GPCDMA_CSR_FC_MODE, 1)
+> +#define TEGRA_GPCDMA_CSR_FC_MODE_TWO_MMIO	\
+> +					FIELD_PREP(TEGRA_GPCDMA_CSR_FC_MODE, 2)
+> +#define TEGRA_GPCDMA_CSR_FC_MODE_FOUR_MMIO	\
+> +					FIELD_PREP(TEGRA_GPCDMA_CSR_FC_MODE, 3)
+> +
+> +#define TEGRA_GPCDMA_CSR_DMA			GENMASK(23, 21)
+> +#define TEGRA_GPCDMA_CSR_DMA_IO2MEM_NO_FC	\
+> +					FIELD_PREP(TEGRA_GPCDMA_CSR_DMA, 0)
+> +#define TEGRA_GPCDMA_CSR_DMA_IO2MEM_FC		\
+> +					FIELD_PREP(TEGRA_GPCDMA_CSR_DMA, 1)
+> +#define TEGRA_GPCDMA_CSR_DMA_MEM2IO_NO_FC	\
+> +					FIELD_PREP(TEGRA_GPCDMA_CSR_DMA, 2)
+> +#define TEGRA_GPCDMA_CSR_DMA_MEM2IO_FC		\
+> +					FIELD_PREP(TEGRA_GPCDMA_CSR_DMA, 3)
+> +#define TEGRA_GPCDMA_CSR_DMA_MEM2MEM		\
+> +					FIELD_PREP(TEGRA_GPCDMA_CSR_DMA, 4)
+> +#define TEGRA_GPCDMA_CSR_DMA_FIXED_PAT		\
+> +					FIELD_PREP(TEGRA_GPCDMA_CSR_DMA, 6)
+> +
+> +#define TEGRA_GPCDMA_CSR_REQ_SEL_MASK		GENMASK(20, 16)
+> +#define TEGRA_GPCDMA_CSR_REQ_SEL_UNUSED		\
+> +					FIELD_PREP(TEGRA_GPCDMA_CSR_REQ_SEL_MASK, 4)
+> +#define TEGRA_GPCDMA_CSR_IRQ_MASK			BIT(15)
+> +#define TEGRA_GPCDMA_CSR_WEIGHT				GENMASK(13, 10)
+> +
+> +/* STATUS register */
+> +#define TEGRA_GPCDMA_CHAN_STATUS			0x004
+> +#define TEGRA_GPCDMA_STATUS_BUSY			BIT(31)
+> +#define TEGRA_GPCDMA_STATUS_ISE_EOC			BIT(30)
+> +#define TEGRA_GPCDMA_STATUS_PING_PONG		BIT(28)
+> +#define TEGRA_GPCDMA_STATUS_DMA_ACTIVITY	BIT(27)
+> +#define TEGRA_GPCDMA_STATUS_CHANNEL_PAUSE	BIT(26)
+> +#define TEGRA_GPCDMA_STATUS_CHANNEL_RX		BIT(25)
+> +#define TEGRA_GPCDMA_STATUS_CHANNEL_TX		BIT(24)
+> +#define TEGRA_GPCDMA_STATUS_IRQ_INTR_STA	BIT(23)
+> +#define TEGRA_GPCDMA_STATUS_IRQ_STA			BIT(21)
+> +#define TEGRA_GPCDMA_STATUS_IRQ_TRIG_STA	BIT(20)
+> +
+> +#define TEGRA_GPCDMA_CHAN_CSRE				0x008
+> +#define TEGRA_GPCDMA_CHAN_CSRE_PAUSE		BIT(31)
+> +
+> +/* Source address */
+> +#define TEGRA_GPCDMA_CHAN_SRC_PTR			0x00C
+> +
+> +/* Destination address */
+> +#define TEGRA_GPCDMA_CHAN_DST_PTR			0x010
+> +
+> +/* High address pointer */
+> +#define TEGRA_GPCDMA_CHAN_HIGH_ADDR_PTR		0x014
+> +#define TEGRA_GPCDMA_HIGH_ADDR_SRC_PTR		GENMASK(7, 0)
+> +#define TEGRA_GPCDMA_HIGH_ADDR_DST_PTR		GENMASK(23, 16)
+> +
+> +/* MC sequence register */
+> +#define TEGRA_GPCDMA_CHAN_MCSEQ			0x18
+> +#define TEGRA_GPCDMA_MCSEQ_DATA_SWAP	BIT(31)
+> +#define TEGRA_GPCDMA_MCSEQ_REQ_COUNT	GENMASK(30, 25)
+> +#define TEGRA_GPCDMA_MCSEQ_BURST		GENMASK(24, 23)
+> +#define TEGRA_GPCDMA_MCSEQ_BURST_2		\
+> +					FIELD_PREP(TEGRA_GPCDMA_MCSEQ_BURST, 0)
+> +#define TEGRA_GPCDMA_MCSEQ_BURST_16		\
+> +					FIELD_PREP(TEGRA_GPCDMA_MCSEQ_BURST, 3)
+> +#define TEGRA_GPCDMA_MCSEQ_WRAP1		GENMASK(22, 20)
+> +#define TEGRA_GPCDMA_MCSEQ_WRAP0		GENMASK(19, 17)
+> +#define TEGRA_GPCDMA_MCSEQ_WRAP_NONE		0
+> +
+> +#define TEGRA_GPCDMA_MCSEQ_STREAM_ID1_MASK	GENMASK(13, 7)
+> +#define TEGRA_GPCDMA_MCSEQ_STREAM_ID0_MASK	GENMASK(6, 0)
+> +
+> +/* MMIO sequence register */
+> +#define TEGRA_GPCDMA_CHAN_MMIOSEQ			0x01c
+> +#define TEGRA_GPCDMA_MMIOSEQ_DBL_BUF		BIT(31)
+> +#define TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH		GENMASK(30, 28)
+> +#define TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH_8	\
+> +					FIELD_PREP(TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH, 0)
+> +#define TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH_16	\
+> +					FIELD_PREP(TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH, 1)
+> +#define TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH_32	\
+> +					FIELD_PREP(TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH, 2)
+> +#define TEGRA_GPCDMA_MMIOSEQ_DATA_SWAP		BIT(27)
+> +#define TEGRA_GPCDMA_MMIOSEQ_BURST			GENMASK(26, 23)
+> +#define TEGRA_GPCDMA_MMIOSEQ_BURST_1		\
+> +					FIELD_PREP(TEGRA_GPCDMA_MMIOSEQ_BURST, 0)
+> +#define TEGRA_GPCDMA_MMIOSEQ_BURST_2		\
+> +					FIELD_PREP(TEGRA_GPCDMA_MMIOSEQ_BURST, 1)
+> +#define TEGRA_GPCDMA_MMIOSEQ_BURST_4		\
+> +					FIELD_PREP(TEGRA_GPCDMA_MMIOSEQ_BURST, 3)
+> +#define TEGRA_GPCDMA_MMIOSEQ_BURST_8		\
+> +					FIELD_PREP(TEGRA_GPCDMA_MMIOSEQ_BURST, 7)
+> +#define TEGRA_GPCDMA_MMIOSEQ_BURST_16		\
+> +					FIELD_PREP(TEGRA_GPCDMA_MMIOSEQ_BURST, 15)
+> +#define TEGRA_GPCDMA_MMIOSEQ_MASTER_ID		GENMASK(22, 19)
+> +#define TEGRA_GPCDMA_MMIOSEQ_WRAP_WORD		GENMASK(18, 16)
+> +#define TEGRA_GPCDMA_MMIOSEQ_MMIO_PROT		GENMASK(8, 7)
+> +
+> +/* Channel WCOUNT */
+> +#define TEGRA_GPCDMA_CHAN_WCOUNT		0x20
+> +
+> +/* Transfer count */
+> +#define TEGRA_GPCDMA_CHAN_XFER_COUNT		0x24
+> +
+> +/* DMA byte count status */
+> +#define TEGRA_GPCDMA_CHAN_DMA_BYTE_STATUS	0x28
+> +
+> +/* Error Status Register */
+> +#define TEGRA_GPCDMA_CHAN_ERR_STATUS		0x30
+> +#define TEGRA_GPCDMA_CHAN_ERR_TYPE_SHIFT	(8)
+> +#define TEGRA_GPCDMA_CHAN_ERR_TYPE_MASK	(0xF)
+> +#define TEGRA_GPCDMA_CHAN_ERR_TYPE(err)	(			\
+> +		((err) >> TEGRA_GPCDMA_CHAN_ERR_TYPE_SHIFT) &	\
+> +		TEGRA_GPCDMA_CHAN_ERR_TYPE_MASK)
+> +#define TEGRA_DMA_BM_FIFO_FULL_ERR		(0xF)
+> +#define TEGRA_DMA_PERIPH_FIFO_FULL_ERR		(0xE)
+> +#define TEGRA_DMA_PERIPH_ID_ERR			(0xD)
+> +#define TEGRA_DMA_STREAM_ID_ERR			(0xC)
+> +#define TEGRA_DMA_MC_SLAVE_ERR			(0xB)
+> +#define TEGRA_DMA_MMIO_SLAVE_ERR		(0xA)
+> +
+> +/* Fixed Pattern */
+> +#define TEGRA_GPCDMA_CHAN_FIXED_PATTERN		0x34
+> +
+> +#define TEGRA_GPCDMA_CHAN_TZ			0x38
+> +#define TEGRA_GPCDMA_CHAN_TZ_MMIO_PROT_1	BIT(0)
+> +#define TEGRA_GPCDMA_CHAN_TZ_MC_PROT_1		BIT(1)
+> +
+> +#define TEGRA_GPCDMA_CHAN_SPARE			0x3c
+> +#define TEGRA_GPCDMA_CHAN_SPARE_EN_LEGACY_FC	BIT(16)
+> +
+> +/*
+> + * If any burst is in flight and DMA paused then this is the time to complete
+> + * on-flight burst and update DMA status register.
+> + */
+> +#define TEGRA_GPCDMA_BURST_COMPLETE_TIME	20
+> +#define TEGRA_GPCDMA_BURST_COMPLETION_TIMEOUT	100
+> +
+> +/* Channel base address offset from GPCDMA base address */
+> +#define TEGRA_GPCDMA_CHANNEL_BASE_ADD_OFFSET	0x10000
+> +
+> +struct tegra_dma;
+> +
+> +/*
+> + * tegra_dma_chip_data Tegra chip specific DMA data
+> + * @nr_channels: Number of channels available in the controller.
+> + * @channel_reg_size: Channel register size.
+> + * @max_dma_count: Maximum DMA transfer count supported by DMA controller.
+> + * @hw_support_pause: DMA HW engine support pause of the channel.
+> + */
+> +struct tegra_dma_chip_data {
+> +	int nr_channels;
+> +	int channel_reg_size;
+> +	int max_dma_count;
+> +	bool hw_support_pause;
+> +};
+> +
+> +/* DMA channel registers */
+> +struct tegra_dma_channel_regs {
+> +	unsigned long csr;
+> +	unsigned long src_ptr;
+> +	unsigned long dst_ptr;
+> +	unsigned long high_addr_ptr;
+> +	unsigned long mc_seq;
+> +	unsigned long mmio_seq;
+> +	unsigned long wcount;
+> +	unsigned long fixed_pattern;
+> +};
+> +
+> +/*
+> + * tegra_dma_desc: Tegra DMA descriptors which uses virt_dma_desc to
+> + * manage client request and keep track of transfer status, callbacks
+> + * and request counts etc.
+> + */
+> +struct tegra_dma_desc {
+> +	struct virt_dma_desc vd;
+> +	int bytes_requested;
+> +	int bytes_transferred;
+> +	struct tegra_dma_channel *tdc;
+> +	struct tegra_dma_channel_regs ch_regs;
+> +};
+> +
+> +struct tegra_dma_channel;
+> +
+> +typedef void (*dma_isr_handler)(struct tegra_dma_channel *tdc,
+> +				bool to_terminate);
+> +
+> +/*
+> + * tegra_dma_channel: Channel specific information
+> + */
+> +struct tegra_dma_channel {
+> +	struct virt_dma_chan vc;
+> +	struct tegra_dma_desc *dma_desc;
+> +	char name[30];
+> +	bool config_init;
+> +	int id;
+> +	int irq;
+> +	unsigned int stream_id;
+> +	unsigned long chan_base_offset;
+> +	raw_spinlock_t lock;
+> +	bool busy;
+> +	bool is_pending;
+> +	struct tegra_dma *tdma;
+> +	dma_isr_handler isr_handler;
+> +	int slave_id;
+> +	struct dma_slave_config dma_sconfig;
+> +};
+> +
+> +/*
+> + * tegra_dma: Tegra DMA specific information
+> + */
+> +struct tegra_dma {
+> +	struct dma_device dma_dev;
+> +	struct device *dev;
+> +	void __iomem *base_addr;
+> +	const struct tegra_dma_chip_data *chip_data;
+> +	struct reset_control *rst;
+> +	struct tegra_dma_channel channels[0];
+> +};
+> +
+> +static inline void tdc_write(struct tegra_dma_channel *tdc,
+> +			     u32 reg, u32 val)
+> +{
+> +	writel_relaxed(val, tdc->tdma->base_addr + tdc->chan_base_offset + reg);
+> +}
+> +
+> +static inline u32 tdc_read(struct tegra_dma_channel *tdc, u32 reg)
+> +{
+> +	return readl_relaxed(tdc->tdma->base_addr + tdc->chan_base_offset + reg);
+> +}
+> +
+> +static inline struct tegra_dma_channel *to_tegra_dma_chan(struct dma_chan *dc)
+> +{
+> +	return container_of(dc, struct tegra_dma_channel, vc.chan);
+> +}
+> +
+> +static inline struct tegra_dma_desc *vd_to_tegra_dma_desc(struct virt_dma_desc *vd)
+> +{
+> +	return container_of(vd, struct tegra_dma_desc, vd);
+> +}
+> +
+> +static inline struct device *tdc2dev(struct tegra_dma_channel *tdc)
+> +{
+> +	return tdc->vc.chan.device->dev;
+> +}
+> +
+> +static void tegra_dma_dump_chan_regs(struct tegra_dma_channel *tdc)
+> +{
+> +	dev_dbg(tdc2dev(tdc), "DMA Channel %d name %s register dump:\n",
+> +		tdc->id, tdc->name);
+> +	dev_dbg(tdc2dev(tdc), "CSR %x STA %x CSRE %x SRC %x DST %x\n",
+> +		tdc_read(tdc, TEGRA_GPCDMA_CHAN_CSR),
+> +		tdc_read(tdc, TEGRA_GPCDMA_CHAN_STATUS),
+> +		tdc_read(tdc, TEGRA_GPCDMA_CHAN_CSRE),
+> +		tdc_read(tdc, TEGRA_GPCDMA_CHAN_SRC_PTR),
+> +		tdc_read(tdc, TEGRA_GPCDMA_CHAN_DST_PTR)
+> +	);
+> +	dev_dbg(tdc2dev(tdc), "MCSEQ %x IOSEQ %x WCNT %x XFER %x BSTA %x\n",
+> +		tdc_read(tdc, TEGRA_GPCDMA_CHAN_MCSEQ),
+> +		tdc_read(tdc, TEGRA_GPCDMA_CHAN_MMIOSEQ),
+> +		tdc_read(tdc, TEGRA_GPCDMA_CHAN_WCOUNT),
+> +		tdc_read(tdc, TEGRA_GPCDMA_CHAN_XFER_COUNT),
+> +		tdc_read(tdc, TEGRA_GPCDMA_CHAN_DMA_BYTE_STATUS)
+> +	);
+> +	dev_dbg(tdc2dev(tdc), "DMA ERR_STA %x\n",
+> +		tdc_read(tdc, TEGRA_GPCDMA_CHAN_ERR_STATUS));
+> +}
+> +
+> +static void tegra_dma_desc_free(struct virt_dma_desc *vd)
+> +{
+> +	struct tegra_dma_desc *dma_desc = vd_to_tegra_dma_desc(vd);
+> +	struct tegra_dma_channel *tdc = dma_desc->tdc;
+> +	unsigned long flags;
+> +
+> +	if (dma_desc) {
+> +		raw_spin_lock_irqsave(&tdc->lock, flags);
+> +		kfree(dma_desc);
+> +		raw_spin_unlock_irqrestore(&tdc->lock, flags);
+> +	}
+> +}
+
+
+I think that this can be simplified to simply ...
+
+  static void tegra_dma_desc_free(struct virt_dma_desc *vd)
+  {
+          kfree(container_of(vd, struct tegra_dma_desc, vd));
+  }
+
+> +
+> +static int tegra_dma_slave_config(struct dma_chan *dc,
+> +				  struct dma_slave_config *sconfig)
+> +{
+> +	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
+> +
+> +	if (tdc->dma_desc) {
+
+Any reason not to check config_init here instead?
+
+> +		dev_err(tdc2dev(tdc), "Configuration not allowed\n");
+> +		return -EBUSY;
+> +	}
+> +
+> +	memcpy(&tdc->dma_sconfig, sconfig, sizeof(*sconfig));
+> +	if (tdc->slave_id == -1)
+> +		tdc->slave_id = sconfig->slave_id;
+
+How do you ensure that you are not trying to use an ID that is already 
+being used? If you look at the tegra210-adma.c driver you will see that 
+we have a bit mask for determining if the IDs are in used or not (see 
+tx_requests_reserved and rx_requests_reserved).
+
+> +	tdc->config_init = true;
+> +	return 0;
+> +}
+> +
+> +static int tegra_dma_pause(struct tegra_dma_channel *tdc)
+> +{
+> +	u32 val;
+> +	int ret;
+> +
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_CSRE, TEGRA_GPCDMA_CHAN_CSRE_PAUSE);
+> +
+> +	/* Wait until busy bit is de-asserted */
+> +	ret = readl_relaxed_poll_timeout_atomic(tdc->tdma->base_addr +
+> +			tdc->chan_base_offset + TEGRA_GPCDMA_CHAN_STATUS,
+> +			val,
+> +			!(val & TEGRA_GPCDMA_STATUS_BUSY),
+> +			TEGRA_GPCDMA_BURST_COMPLETE_TIME,
+> +			TEGRA_GPCDMA_BURST_COMPLETION_TIMEOUT);
+> +
+> +	if (ret)
+> +		dev_err(tdc2dev(tdc), "DMA pause timed out\n");
+> +
+> +	return ret;
+> +}
+> +
+> +static void tegra_dma_stop(struct tegra_dma_channel *tdc)
+> +{
+> +	u32 csr, status;
+> +
+> +	csr = tdc_read(tdc, TEGRA_GPCDMA_CHAN_CSR);
+> +
+> +	/* Disable interrupts */
+> +	csr &= ~TEGRA_GPCDMA_CSR_IE_EOC;
+> +
+> +	/* Disable DMA */
+> +	csr &= ~TEGRA_GPCDMA_CSR_ENB;
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_CSR, csr);
+> +
+> +	/* Clear interrupt status if it is there */
+> +	status = tdc_read(tdc, TEGRA_GPCDMA_CHAN_STATUS);
+> +	if (status & TEGRA_GPCDMA_STATUS_ISE_EOC) {
+> +		dev_dbg(tdc2dev(tdc), "%s():clearing interrupt\n", __func__);
+> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_STATUS, status);
+> +	}
+> +	tdc->busy = false;
+> +}
+> +
+> +static void tegra_dma_start(struct tegra_dma_channel *tdc)
+> +{
+> +	struct tegra_dma_channel_regs *ch_regs = &tdc->dma_desc->ch_regs;
+> +
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_WCOUNT, ch_regs->wcount);
+> +
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_CSR, 0);
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_SRC_PTR, ch_regs->src_ptr);
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_DST_PTR, ch_regs->dst_ptr);
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_HIGH_ADDR_PTR, ch_regs->high_addr_ptr);
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_FIXED_PATTERN, ch_regs->fixed_pattern);
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_MMIOSEQ, ch_regs->mmio_seq);
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_MCSEQ, ch_regs->mc_seq);
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_CSRE, 0);
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_CSR, ch_regs->csr);
+> +
+> +	/* Start DMA */
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_CSR,
+> +		  ch_regs->csr | TEGRA_GPCDMA_CSR_ENB);
+> +}
+> +
+> +static void tdc_start_head_req(struct tegra_dma_channel *tdc)
+> +{
+> +	struct virt_dma_desc *vdesc;
+> +
+> +	if (tdc->is_pending)
+> +		return;
+> +
+> +	vdesc = vchan_next_desc(&tdc->vc);
+> +	if (!vdesc)
+> +		return;
+> +
+> +	tdc->dma_desc = vd_to_tegra_dma_desc(vdesc);
+> +	if (!tdc->dma_desc)
+> +		return;
+> +
+> +	list_del(&vdesc->node);
+> +
+> +	tdc->is_pending = true;
+
+Is is_pending really needed?
+
+> +	tdc->dma_desc->tdc = tdc;
+> +	tegra_dma_start(tdc);
+
+I would combine this function and tegra_dma_start() into a single 
+function called tegra_dma_start().
+
+> +	tdc->busy = true;
+> +}
+> +
+> +static void tegra_dma_abort_all(struct tegra_dma_channel *tdc)
+> +{
+> +	kfree(tdc->dma_desc);
+> +	tdc->isr_handler = NULL;
+> +}
+> +
+> +static void handle_once_dma_done(struct tegra_dma_channel *tdc,
+> +				 bool to_terminate)
+
+This function name is not very descriptive. Maybe just 
+tegra_dma_isr_callback().
+
+> +{
+> +	struct tegra_dma_desc *dma_desc;
+> +
+> +	tdc->busy = false;
+> +	dma_desc = tdc->dma_desc;
+> +	dma_desc->bytes_transferred += dma_desc->bytes_requested;
+> +
+> +	vchan_cookie_complete(&tdc->dma_desc->vd);
+> +	tdc->is_pending = false;
+> +	kfree(tdc->dma_desc);
+> +
+> +	if (to_terminate)
+> +		return;
+> +
+> +	tdc_start_head_req(tdc);
+> +}
+> +
+> +static void tegra_dma_chan_decode_error(struct tegra_dma_channel *tdc,
+> +					unsigned int err_status)
+> +{
+> +	switch (TEGRA_GPCDMA_CHAN_ERR_TYPE(err_status)) {
+> +	case TEGRA_DMA_BM_FIFO_FULL_ERR:
+> +		dev_err(tdc->tdma->dev,
+> +			"GPCDMA CH%d bm fifo full\n", tdc->id);
+> +		break;
+> +
+> +	case TEGRA_DMA_PERIPH_FIFO_FULL_ERR:
+> +		dev_err(tdc->tdma->dev,
+> +			"GPCDMA CH%d peripheral fifo full\n", tdc->id);
+> +		break;
+> +
+> +	case TEGRA_DMA_PERIPH_ID_ERR:
+> +		dev_err(tdc->tdma->dev,
+> +			"GPCDMA CH%d illegal peripheral id\n", tdc->id);
+> +		break;
+> +
+> +	case TEGRA_DMA_STREAM_ID_ERR:
+> +		dev_err(tdc->tdma->dev,
+> +			"GPCDMA CH%d illegal stream id\n", tdc->id);
+> +		break;
+> +
+> +	case TEGRA_DMA_MC_SLAVE_ERR:
+> +		dev_err(tdc->tdma->dev,
+> +			"GPCDMA CH%d mc slave error\n", tdc->id);
+> +		break;
+> +
+> +	case TEGRA_DMA_MMIO_SLAVE_ERR:
+> +		dev_err(tdc->tdma->dev,
+> +			"GPCDMA CH%d mmio slave error\n", tdc->id);
+> +		break;
+> +
+> +	default:
+> +		dev_err(tdc->tdma->dev,
+> +			"GPCDMA CH%d security violation %x\n", tdc->id,
+> +			err_status);
+> +	}
+> +}
+> +
+> +static irqreturn_t tegra_dma_isr(int irq, void *dev_id)
+> +{
+> +	struct tegra_dma_channel *tdc = dev_id;
+> +	irqreturn_t ret = IRQ_NONE;
+> +	unsigned int err_status;
+> +	unsigned long status;
+> +
+> +	raw_spin_lock(&tdc->lock);
+> +
+> +	status = tdc_read(tdc, TEGRA_GPCDMA_CHAN_STATUS);
+> +	err_status = tdc_read(tdc, TEGRA_GPCDMA_CHAN_ERR_STATUS);
+> +
+> +	if (err_status) {
+> +		tegra_dma_chan_decode_error(tdc, err_status);
+> +		tegra_dma_dump_chan_regs(tdc);
+> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_ERR_STATUS, 0xFFFFFFFF);
+> +	}
+> +
+> +	if (status & TEGRA_GPCDMA_STATUS_ISE_EOC) {
+> +		tdc_write(tdc, TEGRA_GPCDMA_CHAN_STATUS,
+> +			  TEGRA_GPCDMA_STATUS_ISE_EOC);
+> +		if (tdc->isr_handler) {
+> +			tdc->isr_handler(tdc, false);
+> +		} else {
+> +			dev_err(tdc->tdma->dev,
+> +				"GPCDMA CH%d: status %lx ISR handler absent!\n",
+> +				tdc->id, status);
+> +			tegra_dma_dump_chan_regs(tdc);
+> +		}
+> +		ret = IRQ_HANDLED;
+> +	}
+> +
+> +	raw_spin_unlock(&tdc->lock);
+> +	return ret;
+> +}
+> +
+> +static void tegra_dma_issue_pending(struct dma_chan *dc)
+> +{
+> +	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
+> +	unsigned long flags;
+> +
+> +	raw_spin_lock_irqsave(&tdc->lock, flags);
+> +
+> +	if (!tdc->busy)
+> +		if (vchan_issue_pending(&tdc->vc))
+> +			tdc_start_head_req(tdc);
+> +
+> +	raw_spin_unlock_irqrestore(&tdc->lock, flags);
+> +}
+> +
+> +static void tegra_dma_reset_client(struct tegra_dma_channel *tdc)
+> +{
+> +	u32 csr = tdc_read(tdc, TEGRA_GPCDMA_CHAN_CSR);
+> +
+> +	csr &= ~(TEGRA_GPCDMA_CSR_REQ_SEL_MASK);
+> +	csr |= TEGRA_GPCDMA_CSR_REQ_SEL_UNUSED;
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_CSR, csr);
+> +}
+> +
+> +static int tegra_dma_terminate_all(struct dma_chan *dc)
+> +{
+> +	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
+> +	unsigned long wcount = 0;
+> +	unsigned long status;
+> +	unsigned long flags;
+> +	bool was_busy;
+> +	int err;
+> +
+> +	raw_spin_lock_irqsave(&tdc->lock, flags);
+> +
+> +	if (!tdc->dma_desc) {
+> +		raw_spin_unlock_irqrestore(&tdc->lock, flags);
+> +		return 0;
+> +	}
+> +
+> +	if (!tdc->busy)
+> +		goto skip_dma_stop;
+> +
+> +	if (tdc->tdma->chip_data->hw_support_pause) {
+> +		err = tegra_dma_pause(tdc);
+> +		if (err) {
+> +			raw_spin_unlock_irqrestore(&tdc->lock, flags);
+> +			return err;
+> +		}
+> +	} else {
+> +		/* Before Reading DMA status to figure out number
+> +		 * of bytes transferred by DMA channel:
+> +		 * Change the client associated with the DMA channel
+> +		 * to stop DMA engine from starting any more bursts for
+> +		 * the given client and wait for in flight bursts to complete
+> +		 */
+> +		tegra_dma_reset_client(tdc);
+> +
+> +		/* Wait for in flight data transfer to finish */
+> +		udelay(TEGRA_GPCDMA_BURST_COMPLETE_TIME);
+> +
+> +		/* If TX/RX path is still active wait till it becomes
+> +		 * inactive
+> +		 */
+> +
+> +		if (readl_relaxed_poll_timeout_atomic(tdc->tdma->base_addr +
+> +				tdc->chan_base_offset +
+> +				TEGRA_GPCDMA_CHAN_STATUS,
+> +				status,
+> +				!(status & (TEGRA_GPCDMA_STATUS_CHANNEL_TX |
+> +				TEGRA_GPCDMA_STATUS_CHANNEL_RX)),
+> +				5,
+> +				TEGRA_GPCDMA_BURST_COMPLETION_TIMEOUT)) {
+> +			dev_dbg(tdc2dev(tdc), "Timeout waiting for DMA burst completion!\n");
+> +			tegra_dma_dump_chan_regs(tdc);
+> +		}
+
+I would be tempted to make the code in the 'else' clause 
+tegra_dma_sw_pause(). Then you could have tegra_dma_hw_pause() and 
+tegra_dma_sw_pause().
+
+> +	}
+> +
+> +	status = tdc_read(tdc, TEGRA_GPCDMA_CHAN_STATUS);
+> +	wcount = tdc_read(tdc, TEGRA_GPCDMA_CHAN_XFER_COUNT);
+> +	if (status & TEGRA_GPCDMA_STATUS_ISE_EOC) {
+> +		dev_dbg(tdc2dev(tdc), "%s():handling isr\n", __func__);
+> +		tdc->isr_handler(tdc, true);
+> +		status = tdc_read(tdc, TEGRA_GPCDMA_CHAN_STATUS);
+> +		wcount = tdc_read(tdc, TEGRA_GPCDMA_CHAN_XFER_COUNT);
+> +	}
+> +
+> +	was_busy = tdc->busy;
+> +
+> +	tegra_dma_stop(tdc);
+> +	if (tdc->dma_desc && was_busy)
+> +		tdc->dma_desc->bytes_transferred +=
+> +			tdc->dma_desc->bytes_requested - (wcount * 4);
+> +
+> +skip_dma_stop:
+> +	tegra_dma_abort_all(tdc);
+> +	vchan_free_chan_resources(&tdc->vc);
+> +	if (tdc->is_pending) {
+> +		tdc->is_pending = false;
+> +		kfree(tdc->dma_desc);
+> +	}
+> +
+> +	raw_spin_unlock_irqrestore(&tdc->lock, flags);
+> +	return 0;
+> +}
+> +
+> +static enum dma_status tegra_dma_tx_status(struct dma_chan *dc,
+> +					   dma_cookie_t cookie,
+> +					   struct dma_tx_state *txstate)
+> +{
+> +	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
+> +	struct tegra_dma_desc *dma_desc = NULL;
+> +	struct virt_dma_desc *vd;
+> +	unsigned int residual;
+> +	enum dma_status ret;
+> +	unsigned long flags;
+> +
+> +	raw_spin_lock_irqsave(&tdc->lock, flags);
+> +
+> +	ret = dma_cookie_status(dc, cookie, txstate);
+> +	if (ret == DMA_COMPLETE) {
+> +		raw_spin_unlock_irqrestore(&tdc->lock, flags);
+> +		return ret;
+> +	}
+> +
+> +	vd = vchan_find_desc(&tdc->vc, cookie);
+> +	if (vd)
+> +		dma_desc = vd_to_tegra_dma_desc(vd);
+> +
+> +	if (dma_desc) {
+> +		residual =  dma_desc->bytes_requested -
+> +					(dma_desc->bytes_transferred %
+> +					dma_desc->bytes_requested);
+> +		dma_set_residue(txstate, residual);
+> +		kfree(dma_desc);
+> +	} else {
+> +		dev_err(tdc2dev(tdc), "cookie %d is not found\n", cookie);
+> +	}
+> +
+> +	raw_spin_unlock_irqrestore(&tdc->lock, flags);
+> +	return ret;
+> +}
+> +
+> +static inline int get_bus_width(struct tegra_dma_channel *tdc,
+> +				enum dma_slave_buswidth slave_bw)
+> +{
+> +	switch (slave_bw) {
+> +	case DMA_SLAVE_BUSWIDTH_1_BYTE:
+> +		return TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH_8;
+> +	case DMA_SLAVE_BUSWIDTH_2_BYTES:
+> +		return TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH_16;
+> +	case DMA_SLAVE_BUSWIDTH_4_BYTES:
+> +		return TEGRA_GPCDMA_MMIOSEQ_BUS_WIDTH_32;
+> +	default:
+> +		dev_err(tdc2dev(tdc), "given slave bw is not supported\n");
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static inline int get_burst_size_by_len(int len)
+> +{
+> +	int ret;
+> +
+> +	switch (len) {
+> +	case BIT(0) ... BIT(2):
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_1;
+> +		break;
+> +	case BIT(3):
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_2;
+> +		break;
+> +	case BIT(4):
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_4;
+> +		break;
+> +	case BIT(5):
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_8;
+> +		break;
+> +	default:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_16;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static inline int get_burst_size(struct tegra_dma_channel *tdc,
+> +				 u32 burst_size,
+> +				 enum dma_slave_buswidth slave_bw,
+> +				 int len)
+> +{
+> +	int burst_mmio_width, burst_byte, ret;
+> +
+> +	/*
+> +	 * burst_size from client is in terms of the bus_width.
+> +	 * convert that into words.
+> +	 */
+> +	burst_byte = burst_size * slave_bw;
+> +	burst_mmio_width = burst_byte / 4;
+> +
+> +	switch (burst_mmio_width) {
+> +	case 0:
+> +		ret = get_burst_size_by_len(len);
+> +		break;
+> +	case 1:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_1;
+> +		break;
+> +	case 2 ... 3:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_2;
+> +		break;
+> +	case 4 ... 7:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_4;
+> +		break;
+> +	case 8 ... 15:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_8;
+> +		break;
+> +	default:
+> +		ret = TEGRA_GPCDMA_MMIOSEQ_BURST_16;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int get_transfer_param(struct tegra_dma_channel *tdc,
+> +			      enum dma_transfer_direction direction,
+> +				  unsigned long *apb_addr,
+> +			      unsigned long *mmio_seq,
+> +				  unsigned long *csr,
+> +			      unsigned int *burst_size,
+> +			      enum dma_slave_buswidth *slave_bw)
+> +{
+> +	switch (direction) {
+> +	case DMA_MEM_TO_DEV:
+> +		*apb_addr = tdc->dma_sconfig.dst_addr;
+> +		*mmio_seq = get_bus_width(tdc, tdc->dma_sconfig.dst_addr_width);
+> +		*burst_size = tdc->dma_sconfig.dst_maxburst;
+> +		*slave_bw = tdc->dma_sconfig.dst_addr_width;
+> +		*csr = TEGRA_GPCDMA_CSR_DMA_MEM2IO_FC;
+> +		return 0;
+> +
+> +	case DMA_DEV_TO_MEM:
+> +		*apb_addr = tdc->dma_sconfig.src_addr;
+> +		*mmio_seq = get_bus_width(tdc, tdc->dma_sconfig.src_addr_width);
+> +		*burst_size = tdc->dma_sconfig.src_maxburst;
+> +		*slave_bw = tdc->dma_sconfig.src_addr_width;
+> +		*csr = TEGRA_GPCDMA_CSR_DMA_IO2MEM_FC;
+> +		return 0;
+> +	case DMA_MEM_TO_MEM:
+> +		*burst_size = tdc->dma_sconfig.src_addr_width;
+> +		*csr = TEGRA_GPCDMA_CSR_DMA_MEM2MEM;
+> +		return 0;
+> +	default:
+> +		dev_err(tdc2dev(tdc), "Dma direction is not supported\n");
+> +		return -EINVAL;
+> +	}
+> +	return -EINVAL;
+> +}
+> +
+> +static struct dma_async_tx_descriptor *
+> +tegra_dma_prep_dma_memset(struct dma_chan *dc, dma_addr_t dest, int value,
+> +			  size_t len, unsigned long flags)
+> +{
+> +	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
+> +	struct tegra_dma_desc *dma_desc;
+> +	unsigned long csr, mc_seq;
+> +
+> +	/* Set dma mode to fixed pattern */
+> +	csr = TEGRA_GPCDMA_CSR_DMA_FIXED_PAT;
+> +	/* Enable once or continuous mode */
+> +	csr |= TEGRA_GPCDMA_CSR_ONCE;
+> +	/* Enable IRQ mask */
+> +	csr |= TEGRA_GPCDMA_CSR_IRQ_MASK;
+> +	/* Enable the dma interrupt */
+> +	if (flags & DMA_PREP_INTERRUPT)
+> +		csr |= TEGRA_GPCDMA_CSR_IE_EOC;
+> +	/* Configure default priority weight for the channel */
+> +	csr |= FIELD_PREP(TEGRA_GPCDMA_CSR_WEIGHT, 1);
+> +
+> +	mc_seq =  tdc_read(tdc, TEGRA_GPCDMA_CHAN_MCSEQ);
+> +	/* retain stream-id and clean rest */
+> +	mc_seq &= TEGRA_GPCDMA_MCSEQ_STREAM_ID0_MASK;
+> +
+> +	/* Set the address wrapping */
+> +	mc_seq |= FIELD_PREP(TEGRA_GPCDMA_MCSEQ_WRAP0,
+> +						TEGRA_GPCDMA_MCSEQ_WRAP_NONE);
+> +	mc_seq |= FIELD_PREP(TEGRA_GPCDMA_MCSEQ_WRAP1,
+> +						TEGRA_GPCDMA_MCSEQ_WRAP_NONE);
+> +
+> +	/* Program outstanding MC requests */
+> +	mc_seq |= FIELD_PREP(TEGRA_GPCDMA_MCSEQ_REQ_COUNT, 1);
+> +	/* Set burst size */
+> +	mc_seq |= TEGRA_GPCDMA_MCSEQ_BURST_16;
+> +
+> +	dma_desc = kzalloc(sizeof(*dma_desc), GFP_NOWAIT);
+> +	if (!dma_desc)
+> +		return NULL;
+> +
+> +	dma_desc->bytes_requested = 0;
+> +	dma_desc->bytes_transferred = 0;
+> +
+> +	if ((len & 3) || (dest & 3) ||
+> +	    len > tdc->tdma->chip_data->max_dma_count) {
+> +		dev_err(tdc2dev(tdc),
+> +			"Dma length/memory address is not supported\n");
+> +		kfree(dma_desc);
+> +		return NULL;
+> +	}
+> +
+> +	dma_desc->bytes_requested += len;
+> +	dma_desc->ch_regs.src_ptr = 0;
+> +	dma_desc->ch_regs.dst_ptr = dest;
+> +	dma_desc->ch_regs.high_addr_ptr =
+> +			FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_DST_PTR, (dest >> 32));
+> +	dma_desc->ch_regs.fixed_pattern = value;
+> +	/* Word count reg takes value as (N +1) words */
+> +	dma_desc->ch_regs.wcount = ((len - 4) >> 2);
+> +	dma_desc->ch_regs.csr = csr;
+> +	dma_desc->ch_regs.mmio_seq = 0;
+> +	dma_desc->ch_regs.mc_seq = mc_seq;
+> +
+> +	tdc->dma_desc = dma_desc;
+> +
+> +	if (!tdc->isr_handler)
+> +		tdc->isr_handler = handle_once_dma_done;
+
+Is this actually set to anything other than handle_once_dma_done? In not 
+you can get rid of the function pointer completely.
+
+> +
+> +	return vchan_tx_prep(&tdc->vc, &dma_desc->vd, flags);
+> +}
+> +
+> +static struct dma_async_tx_descriptor *
+> +tegra_dma_prep_dma_memcpy(struct dma_chan *dc, dma_addr_t dest,
+> +			  dma_addr_t src,	size_t len, unsigned long flags)
+> +{
+> +	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
+> +	struct tegra_dma_desc *dma_desc;
+> +	unsigned long csr, mc_seq;
+> +
+> +	/* Set dma mode to memory to memory transfer */
+> +	csr = TEGRA_GPCDMA_CSR_DMA_MEM2MEM;
+> +	/* Enable once or continuous mode */
+> +	csr |= TEGRA_GPCDMA_CSR_ONCE;
+> +	/* Enable IRQ mask */
+> +	csr |= TEGRA_GPCDMA_CSR_IRQ_MASK;
+> +	/* Enable the dma interrupt */
+> +	if (flags & DMA_PREP_INTERRUPT)
+> +		csr |= TEGRA_GPCDMA_CSR_IE_EOC;
+> +	/* Configure default priority weight for the channel */
+> +	csr |= FIELD_PREP(TEGRA_GPCDMA_CSR_WEIGHT, 1);
+> +
+> +	mc_seq =  tdc_read(tdc, TEGRA_GPCDMA_CHAN_MCSEQ);
+> +	/* retain stream-id and clean rest */
+> +	mc_seq &= (TEGRA_GPCDMA_MCSEQ_STREAM_ID0_MASK) |
+> +				(TEGRA_GPCDMA_MCSEQ_STREAM_ID1_MASK);
+> +
+> +	/* Set the address wrapping */
+> +	mc_seq |= FIELD_PREP(TEGRA_GPCDMA_MCSEQ_WRAP0,
+> +						TEGRA_GPCDMA_MCSEQ_WRAP_NONE);
+> +	mc_seq |= FIELD_PREP(TEGRA_GPCDMA_MCSEQ_WRAP1,
+> +						TEGRA_GPCDMA_MCSEQ_WRAP_NONE);
+> +
+> +	/* Program outstanding MC requests */
+> +	mc_seq |= FIELD_PREP(TEGRA_GPCDMA_MCSEQ_REQ_COUNT, 1);
+> +	/* Set burst size */
+> +	mc_seq |= TEGRA_GPCDMA_MCSEQ_BURST_16;
+> +
+> +	dma_desc = kzalloc(sizeof(*dma_desc), GFP_NOWAIT);
+> +	if (!dma_desc)
+> +		return NULL;
+> +
+> +	dma_desc->bytes_requested = 0;
+> +	dma_desc->bytes_transferred = 0;
+> +
+> +	if ((len & 3) || (src & 3) || (dest & 3) ||
+> +	    len > tdc->tdma->chip_data->max_dma_count) {
+> +		dev_err(tdc2dev(tdc),
+> +			"Dma length/memory address is not supported\n");
+> +		kfree(dma_desc);
+> +		return NULL;
+> +	}
+> +
+> +	dma_desc->bytes_requested += len;
+> +	dma_desc->ch_regs.src_ptr = src;
+> +	dma_desc->ch_regs.dst_ptr = dest;
+> +	dma_desc->ch_regs.high_addr_ptr =
+> +		FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_SRC_PTR, (src >> 32));
+> +	dma_desc->ch_regs.high_addr_ptr |=
+> +		FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_DST_PTR, (dest >> 32));
+> +	/* Word count reg takes value as (N +1) words */
+> +	dma_desc->ch_regs.wcount = ((len - 4) >> 2);
+> +	dma_desc->ch_regs.csr = csr;
+> +	dma_desc->ch_regs.mmio_seq = 0;
+> +	dma_desc->ch_regs.mc_seq = mc_seq;
+> +
+> +	if (!tdc->isr_handler)
+> +		tdc->isr_handler = handle_once_dma_done;
+> +
+> +	return vchan_tx_prep(&tdc->vc, &dma_desc->vd, flags);
+> +}
+> +
+> +static struct dma_async_tx_descriptor *
+> +tegra_dma_prep_slave_sg(struct dma_chan *dc, struct scatterlist *sgl,
+> +			unsigned int sg_len, enum dma_transfer_direction direction,
+> +		unsigned long flags, void *context)
+> +{
+> +	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
+> +	unsigned long csr, mc_seq, apb_ptr = 0, mmio_seq = 0;
+> +	enum dma_slave_buswidth slave_bw;
+> +	struct tegra_dma_desc *dma_desc;
+> +	struct scatterlist *sg;
+> +	u32 burst_size;
+> +	unsigned int i;
+> +	int ret;
+> +
+> +	if (!tdc->config_init) {
+> +		dev_err(tdc2dev(tdc), "dma channel is not configured\n");
+> +		return NULL;
+> +	}
+> +	if (sg_len < 1) {
+> +		dev_err(tdc2dev(tdc), "Invalid segment length %d\n", sg_len);
+> +		return NULL;
+> +	}
+> +
+> +	ret = get_transfer_param(tdc, direction, &apb_ptr, &mmio_seq, &csr,
+> +				 &burst_size, &slave_bw);
+> +	if (ret < 0)
+> +		return NULL;
+> +
+> +	/* Enable once or continuous mode */
+> +	csr |= TEGRA_GPCDMA_CSR_ONCE;
+> +	/* Program the slave id in requestor select */
+> +	csr |= FIELD_PREP(TEGRA_GPCDMA_CSR_REQ_SEL_MASK, tdc->slave_id);
+> +	/* Enable IRQ mask */
+> +	csr |= TEGRA_GPCDMA_CSR_IRQ_MASK;
+> +	/* Configure default priority weight for the channel*/
+> +	csr |= FIELD_PREP(TEGRA_GPCDMA_CSR_WEIGHT, 1);
+> +
+> +	/* Enable the dma interrupt */
+> +	if (flags & DMA_PREP_INTERRUPT)
+> +		csr |= TEGRA_GPCDMA_CSR_IE_EOC;
+> +
+> +	mc_seq =  tdc_read(tdc, TEGRA_GPCDMA_CHAN_MCSEQ);
+> +	/* retain stream-id and clean rest */
+> +	mc_seq &= TEGRA_GPCDMA_MCSEQ_STREAM_ID0_MASK;
+> +
+> +	/* Set the address wrapping on both MC and MMIO side */
+> +
+> +	mc_seq |= FIELD_PREP(TEGRA_GPCDMA_MCSEQ_WRAP0,
+> +							TEGRA_GPCDMA_MCSEQ_WRAP_NONE);
+> +	mc_seq |= FIELD_PREP(TEGRA_GPCDMA_MCSEQ_WRAP1,
+> +							TEGRA_GPCDMA_MCSEQ_WRAP_NONE);
+> +	mmio_seq |= FIELD_PREP(TEGRA_GPCDMA_MMIOSEQ_WRAP_WORD, 1);
+> +
+> +	/* Program 2 MC outstanding requests by default. */
+> +	mc_seq |= FIELD_PREP(TEGRA_GPCDMA_MCSEQ_REQ_COUNT, 1);
+> +
+> +	/* Setting MC burst size depending on MMIO burst size */
+> +	if (burst_size == 64)
+> +		mc_seq |= TEGRA_GPCDMA_MCSEQ_BURST_16;
+> +	else
+> +		mc_seq |= TEGRA_GPCDMA_MCSEQ_BURST_2;
+> +
+> +	dma_desc = kzalloc(sizeof(*dma_desc), GFP_NOWAIT);
+> +	if (!dma_desc)
+> +		return NULL;
+> +
+> +	dma_desc->bytes_requested = 0;
+> +	dma_desc->bytes_transferred = 0;
+> +
+> +	/* Make transfer requests */
+> +	for_each_sg(sgl, sg, sg_len, i) {
+> +		u32 len;
+> +		dma_addr_t mem;
+> +
+> +		mem = sg_dma_address(sg);
+> +		len = sg_dma_len(sg);
+> +
+> +		if ((len & 3) || (mem & 3) ||
+> +		    len > tdc->tdma->chip_data->max_dma_count) {
+> +			dev_err(tdc2dev(tdc),
+> +				"Dma length/memory address is not supported\n");
+> +			kfree(dma_desc);
+> +			return NULL;
+> +		}
+> +
+> +		mmio_seq |= get_burst_size(tdc, burst_size, slave_bw, len);
+> +		dma_desc->bytes_requested += len;
+> +
+> +		if (direction == DMA_MEM_TO_DEV) {
+> +			dma_desc->ch_regs.src_ptr = mem;
+> +			dma_desc->ch_regs.dst_ptr = apb_ptr;
+> +			dma_desc->ch_regs.high_addr_ptr =
+> +				FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_SRC_PTR, (mem >> 32));
+> +		} else if (direction == DMA_DEV_TO_MEM) {
+> +			dma_desc->ch_regs.src_ptr = apb_ptr;
+> +			dma_desc->ch_regs.dst_ptr = mem;
+> +			dma_desc->ch_regs.high_addr_ptr =
+> +				FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_DST_PTR, (mem >> 32));
+> +		}
+> +
+> +		/*
+> +		 * Word count register takes input in words. Writing a value
+> +		 * of N into word count register means a req of (N+1) words.
+> +		 */
+> +		dma_desc->ch_regs.wcount = ((len - 4) >> 2);
+> +		dma_desc->ch_regs.csr = csr;
+> +		dma_desc->ch_regs.mmio_seq = mmio_seq;
+> +		dma_desc->ch_regs.mc_seq = mc_seq;
+> +		tdc->dma_desc = dma_desc;
+> +	}
+> +
+> +	/*
+> +	 * Make sure that mode should not be conflicting with currently
+> +	 * configured mode.
+> +	 */
+> +	if (!tdc->isr_handler)
+> +		tdc->isr_handler = handle_once_dma_done;
+> +
+> +	return vchan_tx_prep(&tdc->vc, &dma_desc->vd, flags);
+> +}
+> +
+> +static int tegra_dma_alloc_chan_resources(struct dma_chan *dc)
+> +{
+> +	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
+> +
+> +	dma_cookie_init(&tdc->vc.chan);
+> +	tdc->config_init = false;
+> +	return 0;
+> +}
+> +
+> +static void tegra_dma_chan_synchronize(struct dma_chan *dc)
+> +{
+> +	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
+> +
+> +	vchan_synchronize(&tdc->vc);
+> +}
+> +
+> +static void tegra_dma_free_chan_resources(struct dma_chan *dc)
+> +{
+> +	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
+> +	unsigned long flags;
+> +
+> +	dev_dbg(tdc2dev(tdc), "Freeing channel %d\n", tdc->id);
+> +
+> +	if (tdc->busy)
+> +		tegra_dma_terminate_all(dc);
+> +
+> +	tegra_dma_chan_synchronize(dc);
+> +
+> +	tasklet_kill(&tdc->vc.task);
+> +	raw_spin_lock_irqsave(&tdc->lock, flags);
+> +	tdc->config_init = false;
+> +	tdc->isr_handler = NULL;
+> +	tdc->slave_id = -1;
+> +	raw_spin_unlock_irqrestore(&tdc->lock, flags);
+> +}
+> +
+> +static struct dma_chan *tegra_dma_of_xlate(struct of_phandle_args *dma_spec,
+> +					   struct of_dma *ofdma)
+> +{
+> +	struct tegra_dma *tdma = ofdma->of_dma_data;
+> +	struct tegra_dma_channel *tdc;
+> +	struct dma_chan *chan;
+> +
+> +	chan = dma_get_any_slave_channel(&tdma->dma_dev);
+> +	if (!chan)
+> +		return NULL;
+> +
+> +	tdc = to_tegra_dma_chan(chan);
+> +	tdc->slave_id = dma_spec->args[0];
+> +
+> +	return chan;
+> +}
+> +
+> +static const struct tegra_dma_chip_data tegra186_dma_chip_data = {
+> +	.nr_channels = 31,
+> +	.channel_reg_size = SZ_64K,
+> +	.max_dma_count = SZ_1G,
+> +	.hw_support_pause = false,
+> +};
+> +
+> +static const struct tegra_dma_chip_data tegra194_dma_chip_data = {
+> +	.nr_channels = 31,
+> +	.channel_reg_size = SZ_64K,
+> +	.max_dma_count = SZ_1G,
+> +	.hw_support_pause = true,
+> +};
+> +
+> +static const struct of_device_id tegra_dma_of_match[] = {
+> +	{
+> +		.compatible = "nvidia,tegra186-gpcdma",
+> +		.data = &tegra186_dma_chip_data,
+> +	}, {
+> +		.compatible = "nvidia,tegra194-gpcdma",
+> +		.data = &tegra194_dma_chip_data,
+> +	}, {
+> +	},
+> +};
+> +MODULE_DEVICE_TABLE(of, tegra_dma_of_match);
+> +
+> +static int tegra_dma_program_sid(struct tegra_dma_channel *tdc,
+> +				 int chan, int stream_id)
+> +{
+> +	unsigned int reg_val =  tdc_read(tdc, TEGRA_GPCDMA_CHAN_MCSEQ);
+> +
+> +	reg_val &= ~(TEGRA_GPCDMA_MCSEQ_STREAM_ID0_MASK);
+> +	reg_val &= ~(TEGRA_GPCDMA_MCSEQ_STREAM_ID1_MASK);
+> +
+> +	reg_val |= FIELD_PREP(TEGRA_GPCDMA_MCSEQ_STREAM_ID0_MASK, stream_id);
+> +	reg_val |= FIELD_PREP(TEGRA_GPCDMA_MCSEQ_STREAM_ID1_MASK, stream_id);
+> +
+> +	tdc_write(tdc, TEGRA_GPCDMA_CHAN_MCSEQ, reg_val);
+> +	return 0;
+> +}
+> +
+> +static int tegra_dma_probe(struct platform_device *pdev)
+> +{
+> +	const struct tegra_dma_chip_data *cdata = NULL;
+> +	const unsigned int start_chan_idx = 1;
+
+What is this?
+
+> +	unsigned int stream_id, i;
+> +	struct tegra_dma *tdma;
+> +	struct resource	*res;
+> +	int ret;
+> +
+> +	cdata = of_device_get_match_data(&pdev->dev);
+> +
+> +	ret = of_property_read_u32(pdev->dev.of_node,
+> +				   "nvidia,stream-id", &stream_id);
+
+Property not mentioned in the binding doc.
+
+> +	if (ret)
+> +		stream_id = TEGRA186_SID_GPCDMA_0;
+> +
+> +	tdma = devm_kzalloc(&pdev->dev, sizeof(*tdma) + cdata->nr_channels *
+> +			sizeof(struct tegra_dma_channel), GFP_KERNEL);
+> +	if (!tdma)
+> +		return -ENOMEM;
+> +
+> +	tdma->dev = &pdev->dev;
+> +	tdma->chip_data = cdata;
+> +	platform_set_drvdata(pdev, tdma);
+> +
+> +	tdma->base_addr = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(tdma->base_addr))
+> +		return PTR_ERR(tdma->base_addr);
+> +
+> +	tdma->rst = devm_reset_control_get_exclusive(&pdev->dev, "gpcdma");
+> +	if (IS_ERR(tdma->rst)) {
+> +		if (!(PTR_ERR(tdma->rst) == -EPROBE_DEFER))
+> +			dev_err(&pdev->dev, "Missing controller reset\n");
+
+dev_err_probe()
+
+> +		return PTR_ERR(tdma->rst);
+> +	}
+> +	reset_control_reset(tdma->rst);
+> +
+> +	tdma->dma_dev.dev = &pdev->dev;
+> +
+> +	INIT_LIST_HEAD(&tdma->dma_dev.channels);
+> +	for (i = 0; i < cdata->nr_channels; i++) {
+> +		struct tegra_dma_channel *tdc = &tdma->channels[i];
+> +
+> +		tdc->chan_base_offset = TEGRA_GPCDMA_CHANNEL_BASE_ADD_OFFSET +
+> +					start_chan_idx * cdata->channel_reg_size +
+> +					i * cdata->channel_reg_size;
+> +		res = platform_get_resource(pdev, IORESOURCE_IRQ,
+> +					    start_chan_idx + i);
+> +		if (!res) {
+> +			ret = -EINVAL;
+> +			dev_err(&pdev->dev, "No irq resource for chan %d\n", i);
+> +			goto err_irq;
+
+Is this goto needed?
+
+> +		}
+> +		tdc->irq = res->start;
+> +		snprintf(tdc->name, sizeof(tdc->name), "gpcdma.%d", i);
+> +
+> +		tdc->tdma = tdma;
+> +		tdc->id = i;
+> +		tdc->slave_id = -1;
+> +
+> +		vchan_init(&tdc->vc, &tdma->dma_dev);
+> +		tdc->vc.desc_free = tegra_dma_desc_free;
+> +		raw_spin_lock_init(&tdc->lock);
+> +
+> +		/* program stream-id for this channel */
+> +		tegra_dma_program_sid(tdc, i, stream_id);
+> +		tdc->stream_id = stream_id;
+> +	}
+> +
+> +	dma_cap_set(DMA_SLAVE, tdma->dma_dev.cap_mask);
+> +	dma_cap_set(DMA_PRIVATE, tdma->dma_dev.cap_mask);
+> +	dma_cap_set(DMA_MEMCPY, tdma->dma_dev.cap_mask);
+> +	dma_cap_set(DMA_MEMSET, tdma->dma_dev.cap_mask);
+> +
+> +	/*
+> +	 * Only word aligned transfers are supported. Set the copy
+> +	 * alignment shift.
+> +	 */
+> +	tdma->dma_dev.copy_align = 2;
+> +	tdma->dma_dev.fill_align = 2;
+> +	tdma->dma_dev.device_alloc_chan_resources =
+> +					tegra_dma_alloc_chan_resources;
+> +	tdma->dma_dev.device_free_chan_resources =
+> +					tegra_dma_free_chan_resources;
+> +	tdma->dma_dev.device_prep_slave_sg = tegra_dma_prep_slave_sg;
+> +	tdma->dma_dev.device_prep_dma_memcpy = tegra_dma_prep_dma_memcpy;
+> +	tdma->dma_dev.device_prep_dma_memset = tegra_dma_prep_dma_memset;
+> +	tdma->dma_dev.device_config = tegra_dma_slave_config;
+> +	tdma->dma_dev.device_terminate_all = tegra_dma_terminate_all;
+> +	tdma->dma_dev.device_tx_status = tegra_dma_tx_status;
+> +	tdma->dma_dev.device_issue_pending = tegra_dma_issue_pending;
+> +	tdma->dma_dev.device_synchronize = tegra_dma_chan_synchronize;
+> +	tdma->dma_dev.residue_granularity = DMA_RESIDUE_GRANULARITY_BURST;
+> +
+> +	/* Register DMA channel interrupt handlers after everything is setup */
+> +	for (i = 0; i < cdata->nr_channels; i++) {
+> +		struct tegra_dma_channel *tdc = &tdma->channels[i];
+> +
+> +		ret = devm_request_irq(&pdev->dev, tdc->irq,
+> +				       tegra_dma_isr, 0, tdc->name, tdc);
+> +		if (ret) {
+> +			dev_err(&pdev->dev,
+> +				"request_irq failed with err %d channel %d\n",
+> +				i, ret);
+> +			goto err_irq;
+> +		}
+> +	}
+> +
+> +	ret = dma_async_device_register(&tdma->dma_dev);
+> +	if (ret < 0) {
+> +		dev_err(&pdev->dev,
+> +			"GPC DMA driver registration failed %d\n", ret);
+> +		goto err_irq;
+> +	}
+> +
+> +	ret = of_dma_controller_register(pdev->dev.of_node,
+> +					 tegra_dma_of_xlate, tdma);
+> +	if (ret < 0) {
+> +		dev_err(&pdev->dev,
+> +			"GPC DMA OF registration failed %d\n", ret);
+> +		goto err_unregister_dma_dev;
+> +	}
+> +
+> +	dev_info(&pdev->dev, "GPC DMA driver register %d channels\n",
+> +		 cdata->nr_channels);
+> +
+> +	return 0;
+> +
+> +err_unregister_dma_dev:
+> +	dma_async_device_unregister(&tdma->dma_dev);
+> +err_irq:
+> +	return ret;
+> +}
+> +
+> +static int tegra_dma_remove(struct platform_device *pdev)
+> +{
+> +	struct tegra_dma *tdma = platform_get_drvdata(pdev);
+> +
+> +	of_dma_controller_free(pdev->dev.of_node);
+> +	dma_async_device_unregister(&tdma->dma_dev);
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Save and restore csr and channel register on pm_suspend
+> + * and pm_resume respectively
+> + */
+> +static int __maybe_unused tegra_dma_pm_suspend(struct device *dev)
+> +{
+> +	struct tegra_dma *tdma = dev_get_drvdata(dev);
+> +	unsigned long flags;
+> +	unsigned int i;
+> +	bool busy;
+> +
+> +	for (i = 0; i < tdma->chip_data->nr_channels; i++) {
+> +		struct tegra_dma_channel *tdc = &tdma->channels[i];
+> +
+> +		raw_spin_lock_irqsave(&tdc->lock, flags);
+> +		busy = tdc->busy;
+> +		raw_spin_unlock_irqrestore(&tdc->lock, flags);
+> +
+> +		if (busy) {
+> +			dev_err(tdma->dev, "channel %u busy\n", i);
+> +			return -EBUSY;
+> +		}
+> +	}
+
+Do we need to ensure that no one attempts to start the DMA after it has 
+been suspended?
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused tegra_dma_pm_resume(struct device *dev)
+> +{
+> +	struct tegra_dma *tdma = dev_get_drvdata(dev);
+> +	unsigned int i;
+> +
+> +	reset_control_reset(tdma->rst);
+> +
+> +	for (i = 0; i < tdma->chip_data->nr_channels; i++) {
+> +		struct tegra_dma_channel *tdc = &tdma->channels[i];
+> +
+> +		tegra_dma_program_sid(tdc, i, tdc->stream_id);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct __maybe_unused dev_pm_ops tegra_dma_dev_pm_ops = {
+> +	SET_SYSTEM_SLEEP_PM_OPS(tegra_dma_pm_suspend, tegra_dma_pm_resume)
+> +};
+> +
+> +static struct platform_driver tegra_dmac_driver = {
+> +	.driver = {
+> +		.name	= "tegra-gpcdma",
+> +		.owner = THIS_MODULE,
+> +		.pm	= &tegra_dma_dev_pm_ops,
+> +		.of_match_table = tegra_dma_of_match,
+> +	},
+> +	.probe		= tegra_dma_probe,
+> +	.remove		= tegra_dma_remove,
+> +};
+> +
+> +module_platform_driver(tegra_dmac_driver);
+> +
+> +MODULE_ALIAS("platform:tegra-gpc-dma");
+> +MODULE_DESCRIPTION("NVIDIA Tegra GPC DMA Controller driver");
+> +MODULE_AUTHOR("Pavan Kunapuli <pkunapuli@nvidia.com>");
+> +MODULE_AUTHOR("Rajesh Gumasta <rgumasta@nvidia.com>");
+> +MODULE_LICENSE("GPL v2");
 > 
-
-
-on x86_64:
-
-ERROR: modpost: "clkdev_add" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
-ERROR: modpost: "clkdev_drop" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
-ERROR: modpost: "clk_unregister_gate" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
-ERROR: modpost: "clk_register_gate" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
-
-Full randconfig file is attached.
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-
-
---------------3A1F296E64FB021F9C64CEB3
-Content-Type: application/gzip;
- name="config-r1850.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="config-r1850.gz"
-
-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
---------------3A1F296E64FB021F9C64CEB3--
