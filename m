@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7893FDCE4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F2F3FDBC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346742AbhIAMy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:54:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54324 "EHLO mail.kernel.org"
+        id S1343577AbhIAMn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:43:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346410AbhIAMuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:50:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C8B611C2;
-        Wed,  1 Sep 2021 12:41:36 +0000 (UTC)
+        id S1344716AbhIAMj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:39:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A0106112F;
+        Wed,  1 Sep 2021 12:35:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630500096;
-        bh=0rzdbB/9aZc3a0ybYkaty3lEVv01xxaRqF55lbJ0qnU=;
+        s=korg; t=1630499753;
+        bh=lZwH8zxKEBCqM8hgNeOLnFpdLMREYnKK2RrxL4Hem1w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PgERuG2lwmLQj2T/tM2mEfYnjUZngBPNLkXpGLfKmr40BkSLJRJ8Xy07BomKhVlJy
-         DMVQWiPZT/tpT58Eb43/NpMTsGc/FOJeKUEp3USLsfhQjct17SxEj0Xt8HqlCkEx64
-         NZKgbYA5uycaqhxV3aX2EhfBTbUN3RbjinFps900=
+        b=anyUQDZ1sXXVZkCAH+q8YVLc6SsxY1Ha/+G63y06nh7cH3diLZGA+CyEZMN1cLVci
+         uh2Nf2ohN0dCYKy9nO0rkJQ74ZgTiCax1V9pKZs4lZqSJ7WTRDMLi1Fbihgj8iLSJb
+         ssJE9LgLdUl+BHOOPVRFAKFJVmGXkmc+C4ctkRPQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 068/113] net: stmmac: fix kernel panic due to NULL pointer dereference of plat->est
+        stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 073/103] pipe: do FASYNC notifications for every pipe IO, not just state changes
 Date:   Wed,  1 Sep 2021 14:28:23 +0200
-Message-Id: <20210901122304.253560070@linuxfoundation.org>
+Message-Id: <20210901122303.022351907@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,82 +41,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 82a44ae113b7b35850f4542f0443fcab221e376a ]
+commit fe67f4dd8daa252eb9aa7acb61555f3cc3c1ce4c upstream.
 
-In the case of taprio offload is not enabled, the error handling path
-causes a kernel crash due to kernel NULL pointer deference.
+It turns out that the SIGIO/FASYNC situation is almost exactly the same
+as the EPOLLET case was: user space really wants to be notified after
+every operation.
 
-Fix this by adding check for NULL before attempt to access 'plat->est'
-on the mutex_lock() call.
+Now, in a perfect world it should be sufficient to only notify user
+space on "state transitions" when the IO state changes (ie when a pipe
+goes from unreadable to readable, or from unwritable to writable).  User
+space should then do as much as possible - fully emptying the buffer or
+what not - and we'll notify it again the next time the state changes.
 
-The following kernel panic is observed without this patch:
+But as with EPOLLET, we have at least one case (stress-ng) where the
+kernel sent SIGIO due to the pipe being marked for asynchronous
+notification, but the user space signal handler then didn't actually
+necessarily read it all before returning (it read more than what was
+written, but since there could be multiple writes, it could leave data
+pending).
 
-RIP: 0010:mutex_lock+0x10/0x20
-Call Trace:
-tc_setup_taprio+0x482/0x560 [stmmac]
-kmem_cache_alloc_trace+0x13f/0x490
-taprio_disable_offload.isra.0+0x9d/0x180 [sch_taprio]
-taprio_destroy+0x6c/0x100 [sch_taprio]
-qdisc_create+0x2e5/0x4f0
-tc_modify_qdisc+0x126/0x740
-rtnetlink_rcv_msg+0x12b/0x380
-_raw_spin_lock_irqsave+0x19/0x40
-_raw_spin_unlock_irqrestore+0x18/0x30
-create_object+0x212/0x340
-rtnl_calcit.isra.0+0x110/0x110
-netlink_rcv_skb+0x50/0x100
-netlink_unicast+0x191/0x230
-netlink_sendmsg+0x243/0x470
-sock_sendmsg+0x5e/0x60
-____sys_sendmsg+0x20b/0x280
-copy_msghdr_from_user+0x5c/0x90
-__mod_memcg_state+0x87/0xf0
- ___sys_sendmsg+0x7c/0xc0
-lru_cache_add+0x7f/0xa0
-_raw_spin_unlock+0x16/0x30
-wp_page_copy+0x449/0x890
-handle_mm_fault+0x921/0xfc0
-__sys_sendmsg+0x59/0xa0
-do_syscall_64+0x33/0x40
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
----[ end trace b1f19b24368a96aa ]---
+The user space code then expected to get another SIGIO for subsequent
+writes - even though the pipe had been readable the whole time - and
+would only then read more.
 
-Fixes: b60189e0392f ("net: stmmac: Integrate EST with TAPRIO scheduler API")
-Cc: <stable@vger.kernel.org> # 5.10.x
-Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This is arguably a user space bug - and Colin King already fixed the
+stress-ng code in question - but the kernel regression rules are clear:
+it doesn't matter if kernel people think that user space did something
+silly and wrong.  What matters is that it used to work.
+
+So if user space depends on specific historical kernel behavior, it's a
+regression when that behavior changes.  It's on us: we were silly to
+have that non-optimal historical behavior, and our old kernel behavior
+was what user space was tested against.
+
+Because of how the FASYNC notification was tied to wakeup behavior, this
+was first broken by commits f467a6a66419 and 1b6b26ae7053 ("pipe: fix
+and clarify pipe read/write wakeup logic"), but at the time it seems
+nobody noticed.  Probably because the stress-ng problem case ends up
+being timing-dependent too.
+
+It was then unwittingly fixed by commit 3a34b13a88ca ("pipe: make pipe
+writes always wake up readers") only to be broken again when by commit
+3b844826b6c6 ("pipe: avoid unnecessary EPOLLET wakeups under normal
+loads").
+
+And at that point the kernel test robot noticed the performance
+refression in the stress-ng.sigio.ops_per_sec case.  So the "Fixes" tag
+below is somewhat ad hoc, but it matches when the issue was noticed.
+
+Fix it for good (knock wood) by simply making the kill_fasync() case
+separate from the wakeup case.  FASYNC is quite rare, and we clearly
+shouldn't even try to use the "avoid unnecessary wakeups" logic for it.
+
+Link: https://lore.kernel.org/lkml/20210824151337.GC27667@xsang-OptiPlex-9020/
+Fixes: 3b844826b6c6 ("pipe: avoid unnecessary EPOLLET wakeups under normal loads")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Tested-by: Oliver Sang <oliver.sang@intel.com>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ fs/pipe.c |   20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-index fb5207dcbcaa..c7554db2962f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-@@ -870,11 +870,13 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
- 	return 0;
+--- a/fs/pipe.c
++++ b/fs/pipe.c
+@@ -363,10 +363,9 @@ pipe_read(struct kiocb *iocb, struct iov
+ 		 * _very_ unlikely case that the pipe was full, but we got
+ 		 * no data.
+ 		 */
+-		if (unlikely(was_full)) {
++		if (unlikely(was_full))
+ 			wake_up_interruptible_sync_poll(&pipe->wr_wait, EPOLLOUT | EPOLLWRNORM);
+-			kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
+-		}
++		kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
  
- disable:
--	mutex_lock(&priv->plat->est->lock);
--	priv->plat->est->enable = false;
--	stmmac_est_configure(priv, priv->ioaddr, priv->plat->est,
--			     priv->plat->clk_ptp_rate);
--	mutex_unlock(&priv->plat->est->lock);
-+	if (priv->plat->est) {
-+		mutex_lock(&priv->plat->est->lock);
-+		priv->plat->est->enable = false;
-+		stmmac_est_configure(priv, priv->ioaddr, priv->plat->est,
-+				     priv->plat->clk_ptp_rate);
-+		mutex_unlock(&priv->plat->est->lock);
-+	}
+ 		/*
+ 		 * But because we didn't read anything, at this point we can
+@@ -385,12 +384,11 @@ pipe_read(struct kiocb *iocb, struct iov
+ 		wake_next_reader = false;
+ 	__pipe_unlock(pipe);
  
- 	priv->plat->fpe_cfg->enable = false;
- 	stmmac_fpe_configure(priv, priv->ioaddr,
--- 
-2.30.2
-
+-	if (was_full) {
++	if (was_full)
+ 		wake_up_interruptible_sync_poll(&pipe->wr_wait, EPOLLOUT | EPOLLWRNORM);
+-		kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
+-	}
+ 	if (wake_next_reader)
+ 		wake_up_interruptible_sync_poll(&pipe->rd_wait, EPOLLIN | EPOLLRDNORM);
++	kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
+ 	if (ret > 0)
+ 		file_accessed(filp);
+ 	return ret;
+@@ -565,10 +563,9 @@ pipe_write(struct kiocb *iocb, struct io
+ 		 * become empty while we dropped the lock.
+ 		 */
+ 		__pipe_unlock(pipe);
+-		if (was_empty) {
++		if (was_empty)
+ 			wake_up_interruptible_sync_poll(&pipe->rd_wait, EPOLLIN | EPOLLRDNORM);
+-			kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
+-		}
++		kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
+ 		wait_event_interruptible_exclusive(pipe->wr_wait, pipe_writable(pipe));
+ 		__pipe_lock(pipe);
+ 		was_empty = pipe_empty(pipe->head, pipe->tail);
+@@ -591,10 +588,9 @@ out:
+ 	 * Epoll nonsensically wants a wakeup whether the pipe
+ 	 * was already empty or not.
+ 	 */
+-	if (was_empty || pipe->poll_usage) {
++	if (was_empty || pipe->poll_usage)
+ 		wake_up_interruptible_sync_poll(&pipe->rd_wait, EPOLLIN | EPOLLRDNORM);
+-		kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
+-	}
++	kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
+ 	if (wake_next_writer)
+ 		wake_up_interruptible_sync_poll(&pipe->wr_wait, EPOLLOUT | EPOLLWRNORM);
+ 	if (ret > 0 && sb_start_write_trylock(file_inode(filp)->i_sb)) {
 
 
