@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F703FD82D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D783FD833
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235853AbhIAKvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 06:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238520AbhIAKvl (ORCPT
+        id S238700AbhIAKxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 06:53:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57065 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237715AbhIAKxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 06:51:41 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9290C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 03:50:44 -0700 (PDT)
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 5184CBC775E;
-        Wed,  1 Sep 2021 12:50:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1630493442;
+        Wed, 1 Sep 2021 06:53:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630493529;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zW+p1tJu2N9Wjpk2M7abVhvtcvMOJ1OzLqdRmccxpbk=;
-        b=bHKixlgHso8h1k0nJUYPuLqMnU0iXL+FpzIsKt+e0pn9cx8G2b78yuZjp0Q0W7WWbqYY5E
-        jpAmQ9pk0EMzP65egoUoEIQUsN/csZzqR5rp9N0KvDZsOpMlniLR6AGE46n7ZNJ/mTfffg
-        vrPqKDsVHCs95HkSwmRFa9vilR0flT8=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [RFC PATCH 1/1] mm: provide one common K(x) macro
-Date:   Wed, 01 Sep 2021 12:50:40 +0200
-Message-ID: <5529272.KFOknHQvy8@natalenko.name>
-In-Reply-To: <YS9WiF6enhSo8sYc@dhcp22.suse.cz>
-References: <20210901092149.994791-1-oleksandr@natalenko.name> <20210901092149.994791-2-oleksandr@natalenko.name> <YS9WiF6enhSo8sYc@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        bh=lm4mR3JYlL5ip2He+sEf0zphXUTsvwT6BkT7jCH1eyc=;
+        b=ZGVYoHmBsTYdlDbrUdJjEQNfL0+FMnTEaJ/rUTjrxrO5he+3J/tfaDsKwJXSqaq/hsLIj6
+        AvzohNT1vQEcbN0GWEec/AQl2EAVuFa+LT5lE1cSo0tXXuZIjC12DqEWq61stgTxqbHMrh
+        bo+7HBtr9ip712BjNkDxcv9I3QoVgL8=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-vW96852BMSqDtf-BqzRwfA-1; Wed, 01 Sep 2021 06:52:08 -0400
+X-MC-Unique: vW96852BMSqDtf-BqzRwfA-1
+Received: by mail-wr1-f72.google.com with SMTP id r17-20020adfda510000b02901526f76d738so677527wrl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 03:52:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=lm4mR3JYlL5ip2He+sEf0zphXUTsvwT6BkT7jCH1eyc=;
+        b=GEBuCxTrN13bnJBWvPaYcmz/pS9v01X/1GmkrdxgWC355NhYK70F2miM7itvQox44C
+         dhq26OCZ5PWb49Uhvuq2B35foSJPNyD3gLMq3Ho85KpPMNU+DYgbCRHVYM2opJzltfXV
+         tkf/K/2We83IPGemKsNpPovzYjt1y5qWRn+h0U7L53BfJLZZSVp708N7VX7H5yjpk2U4
+         d1TZedoOY2Dnv1mkZhJ31uXtXGQ0mq1rREjrOM0wvYBsASfrj/3q79VAAe+BVVyZ+ow2
+         bG31SX+/sNlhV3naUyBltT5vVfdi0wzZqoMA6KKp0Q3GGmE2DUWPAZNBI6+S6xk/T6iF
+         Pk2g==
+X-Gm-Message-State: AOAM530vsI1VovxUfRw8LramgSFrIKT/BUfi/+zsyxFiiArtm1E9W8ed
+        f+h0/c4k8ScrlBsnbbfA/6w8Vbrs0WOp+z+Sz1bJVu/gIYMbIScsaK2RN4Tdt4a/1TQr0FldLXZ
+        MEZt+Y2fTtSo5L8ARvbDRB3xI
+X-Received: by 2002:a05:6000:1081:: with SMTP id y1mr35464985wrw.415.1630493526918;
+        Wed, 01 Sep 2021 03:52:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwyAY00ddiyzLDaqJY4HYxreDLtYrqdI7O3mR8VxvpDttJ01uAFBJixyKRBDKpoz3ljAanyXg==
+X-Received: by 2002:a05:6000:1081:: with SMTP id y1mr35464967wrw.415.1630493526747;
+        Wed, 01 Sep 2021 03:52:06 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-233-185.dyn.eolo.it. [146.241.233.185])
+        by smtp.gmail.com with ESMTPSA id a10sm4932882wmj.44.2021.09.01.03.52.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 03:52:06 -0700 (PDT)
+Message-ID: <9c9ef2228dfcb950b5c75382bd421c6169e547a0.camel@redhat.com>
+Subject: Re: [PATCH net-next] tcp: add tcp_tx_skb_cache_key checking in
+ sk_stream_alloc_skb()
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        kuba@kernel.org, MPTCP Upstream <mptcp@lists.linux.dev>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@openeuler.org, edumazet@google.com,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org
+Date:   Wed, 01 Sep 2021 12:52:05 +0200
+In-Reply-To: <1630492744-60396-1-git-send-email-linyunsheng@huawei.com>
+References: <1630492744-60396-1-git-send-email-linyunsheng@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+On Wed, 2021-09-01 at 18:39 +0800, Yunsheng Lin wrote:
+> Since tcp_tx_skb_cache is disabled by default in:
+> commit 0b7d7f6b2208 ("tcp: add tcp_tx_skb_cache sysctl")
+> 
+> Add tcp_tx_skb_cache_key checking in sk_stream_alloc_skb() to
+> avoid possible branch-misses.
+> 
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 
-On st=C5=99eda 1. z=C3=A1=C5=99=C3=AD 2021 12:31:36 CEST Michal Hocko wrote:
-> On Wed 01-09-21 11:21:49, Oleksandr Natalenko wrote:
-> > There are various places where the K(x) macro is defined. This commit
-> > gets rid of multiple definitions and provides a common one.
-> >=20
-> > This doesn't solve open-coding this macro in various other places. This
-> > should be addressed by another subsequent commit.
->=20
-> Why is this an improvement? You are adding a header file for a single
-> macro which sounds like an overkill.
+Note that MPTCP is currently exploiting sk->sk_tx_skb_cache. If we get
+this patch goes in as-is, it will break mptcp.
 
-I agree a separate header file is an overkill for just one #define, hence
-still looking for a suggestion on a better place for it.
+One possible solution would be to let mptcp usage enable sk-
+>sk_tx_skb_cache, but that has relevant side effects on plain TCP. 
 
-> The overall net outcome is added
-> lines of code.
+Another options would be re-work once again the mptcp xmit path to
+avoid using sk->sk_tx_skb_cache.
 
-Not always. There are some long statements like:
+Cheers,
 
-```
-seq_printf(seq, ",size=3D%luk",
-        sbinfo->max_blocks << (PAGE_SHIFT - 10));
-```
+Paolo
 
-that are split into two lines. With the macro those take one line only:
-
-```
-seq_printf(seq, ",size=3D%luk", K(sbinfo->max_blocks));
-```
-
-As of now (counting unposted open-coding replacements) the grand total is:
-
-```
-31 files changed, 104 insertions(+), 90 deletions(-)
-```
-
-which is not that horrible.
-
-> It is not like K() or any of its variant is adding a
-> maintenance burden due to code duplication. So why do we want to change
-> the existing state?
-
-=46or me it's about readability. Compare, for instance:
-
-```
-seq_put_decimal_ull_width(m, str, (val) << (PAGE_SHIFT-10), 8)
-```
-
-and
-
-```
-seq_put_decimal_ull_width(m, str, K(val), 8)
-```
-
-It's a small yet visible difference.
-
-Thanks.
-
-=2D-=20
-Oleksandr Natalenko (post-factum)
 
 
