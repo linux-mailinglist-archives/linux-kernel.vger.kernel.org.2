@@ -2,89 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017383FD3E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 08:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B22B3FD3EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 08:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242330AbhIAGle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 02:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242238AbhIAGlc (ORCPT
+        id S242352AbhIAGmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 02:42:06 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:36522 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242273AbhIAGmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 02:41:32 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0725CC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 23:40:36 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id j12so3011025ljg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 23:40:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=epJdN4f3MfJWPEsQ1/2NvR+leSyxvmf6Ol/q7Sv91t8=;
-        b=mRVlvuMlRKfisqKuC3luRtD+7lHZt9EoAXjdWbTWH6cNuQQC6mg1w29lzT09vielVb
-         I2Obog5PZudIXYal36CZLEgxg9Fw4Ix5JiTMy8r1Hwukl5bZ6CPXUGdD7YGLZoaLdSu/
-         8Iki5swJ0F1Lhp74MeQCyy+v58G/u1o7jLxgg=
+        Wed, 1 Sep 2021 02:42:05 -0400
+Received: by mail-il1-f198.google.com with SMTP id s15-20020a056e02216f00b002276040aa1dso1244841ilv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 23:41:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=epJdN4f3MfJWPEsQ1/2NvR+leSyxvmf6Ol/q7Sv91t8=;
-        b=Aj/mJwSjjnZQaHjXgYRg/6ZK8V151TeEsK/EFdT3QftJB10LrYZRp9UzFcSaiCTq20
-         g98TjM11vUiYrvyl859iT4B88hxbJ+hml0RBUa2T00BHHveC7iAuRECS81USZFpCGcGL
-         zp9KJzP/KmaeYPGt8hPGAHS3gjs3XzblL00E5ig7mTpzmTMIEF7qTmjgZxL09n03+bj1
-         PXUZBPM3RFkfwiDuA8D4eq7SJRm0fY0V8V5HynnQl8Stkwj4J+Oc7F2BZ95M+jodyTSh
-         GtdwC1bnLwzpuh+vwIb91N1pnFWZVGAf3y9J3RBhoD9AqW1D3xzXieIajaxrL1W4Ljx/
-         uEEQ==
-X-Gm-Message-State: AOAM531vzinVlgomCxN2BkD1LfH/02LouQtnRkJe1wP8wWfxb6gw/BeF
-        hOCjuAaVkEEAwvEnhHuFXWG2WhgLn3Fo+V2wOwb50g==
-X-Google-Smtp-Source: ABdhPJxj9wv3Q6Dl3qKpne3tkDBgA3ZLpglT9zE4jEZ+fPT/uXAvjzBpHCDwCs+0syRRHL3naD7W0r8tTExh0x6HsH0=
-X-Received: by 2002:a2e:b0e2:: with SMTP id h2mr27468860ljl.23.1630478434422;
- Tue, 31 Aug 2021 23:40:34 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=P/IMCvQrvg+8vgiRvuUq0CwJ8bLlyNbWMfPV5tYVEzM=;
+        b=Qc52Z7cjj6llHFieHBZhHYlqtD7YdZBjSgilEOjxG1tPcHHELI+dyMid/VvZeB4sS9
+         I94vA6FwZkWFxro+tV+xYU/ZoKTV4+Xa0shC8tl5ncyHqWFajkL2Q3kUHSsezijoWUvm
+         1pAwilKZquiPlJhg7kf48hN+DOD98z+LEAzTD/V3mTXkJiICrYpCGRVARBH9q5EKXT95
+         8psPstcbpToTXZ02bE1DNrlySquPcHZHKOOiCdgLfxzO2FU3T8XRAI4jZTVc7jxFTSKc
+         W5lE6kvekngL4Nw7c7FSrUmhI2NO2Y0O9bcIb4TcOKY3oY/DrMPjLKUlYTx0DxYGu+3K
+         Ovwg==
+X-Gm-Message-State: AOAM532LUK/uDWycnMI0k8/7EqI8CSkL7ygWFMgPg5upt0U+gJmYmNqt
+        UjEzQOldtY4nkD64o2EpoHsEVElLgP3mpLybCIxbJ2ogDgDS
+X-Google-Smtp-Source: ABdhPJwjbVl36PRGrxPo3VWFpYPdF3rcxUyLcJL+kpHKRktKIhGPoUpcjjA/JpOC4UE7iVT+Raz2Xf8nGOR5VzvFVVs5vlXj6ozj
 MIME-Version: 1.0
-References: <1627890365-22992-1-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1627890365-22992-1-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Wed, 1 Sep 2021 14:40:23 +0800
-Message-ID: <CAGXv+5GNbx6jJ2MuCtmMF=ABuoqtS84OvhYoGr_nOrwqCs392A@mail.gmail.com>
-Subject: Re: [PATCH v6 0/3] support gce on mt8192 platform
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
+X-Received: by 2002:a6b:f908:: with SMTP id j8mr25814233iog.22.1630478468594;
+ Tue, 31 Aug 2021 23:41:08 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 23:41:08 -0700
+In-Reply-To: <0000000000006d354305cae2253f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ef423f05cae95929@google.com>
+Subject: Re: [syzbot] general protection fault in __io_file_supports_nowait
+From:   syzbot <syzbot+e51249708aaa9b0e4d2c@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, haoxu@linux.alibaba.com,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 3:47 PM Yongqiang Niu <yongqiang.niu@mediatek.com> wrote:
->
-> Change since v5:
-> -rebase on linux 5.14-rc1
->
-> Yongqiang Niu (3):
->   dt-binding: gce: add gce header file for mt8192
->   arm64: dts: mt8192: add gce node
->   mailbox: cmdq: add mt8192 support
+syzbot has bisected this issue to:
 
-Looks like all the driver parts are in -next, but the dts patch is not.
-Can you resend that patch after the merge window?
+commit a8295b982c46d4a7c259a4cdd58a2681929068a9
+Author: Hao Xu <haoxu@linux.alibaba.com>
+Date:   Fri Aug 27 09:46:09 2021 +0000
 
-Thanks
-ChenYu
+    io_uring: fix failed linkchain code logic
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=147a8045300000
+start commit:   b91db6a0b52e Merge tag 'for-5.15/io_uring-vfs-2021-08-30' ..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=167a8045300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=127a8045300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=961d30359ac81f8c
+dashboard link: https://syzkaller.appspot.com/bug?extid=e51249708aaa9b0e4d2c
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a91625300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12512291300000
+
+Reported-by: syzbot+e51249708aaa9b0e4d2c@syzkaller.appspotmail.com
+Fixes: a8295b982c46 ("io_uring: fix failed linkchain code logic")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
