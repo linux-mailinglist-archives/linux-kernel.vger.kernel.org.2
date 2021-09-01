@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66803FDB2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 518943FDC24
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344067AbhIAMip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:38:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41562 "EHLO mail.kernel.org"
+        id S1345391AbhIAMrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:47:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343986AbhIAMg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:36:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6BAF610E6;
-        Wed,  1 Sep 2021 12:33:59 +0000 (UTC)
+        id S1345275AbhIAMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:42:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 828906120C;
+        Wed,  1 Sep 2021 12:38:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499640;
-        bh=3LtPGqVFszrceez7FmDhpht4gkC4FP08zQUorIghOx0=;
+        s=korg; t=1630499897;
+        bh=d6nwFUt6VjHfJhTwsTeTPvBApRxDuqUwS984hXWMpVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZQPOmYOQRtumGmQKPDSoQflHmM0Gh43YKOQ0Md8k340ZfrYNOni5QSFAC30E5J5xA
-         eOqVC/nIZTKkroSRCqzjx1fQCO+5vPRh3hZx5W2lQYoGLizoxYcY9yyWnuvfbW+BTU
-         Q2gCQPNxFOouw4HDi2M/df74t3p22Hv7NUjqPPm0=
+        b=RTEKWQS6eG7iHN3HWTi0h9xQlcSseveVbVAYLmyPb3gskXM+AqLQqmGWSeVzjeEx/
+         bQkYXYKfJUpZK/rpyr66ymyEEBV1vATEBOZPA1DxA1aYfIfQAApNXnc0L1+HZXLRMX
+         p5Bn9WotN92p7zd7uO9sT110fSIAbOaN9kpfa+78=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Hannes Frederic Sowa <hannes@stressinduktion.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Minmin chen <chenmingmin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 008/103] once: Fix panic when module unload
-Date:   Wed,  1 Sep 2021 14:27:18 +0200
-Message-Id: <20210901122300.804851532@linuxfoundation.org>
+Subject: [PATCH 5.13 004/113] ASoC: component: Remove misplaced prefix handling in pin control functions
+Date:   Wed,  1 Sep 2021 14:27:19 +0200
+Message-Id: <20210901122302.124183185@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
-References: <20210901122300.503008474@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,121 +42,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit 1027b96ec9d34f9abab69bc1a4dc5b1ad8ab1349 ]
+[ Upstream commit 31428c78748cafdd9352e1f622eb89bf453d9700 ]
 
-DO_ONCE
-DEFINE_STATIC_KEY_TRUE(___once_key);
-__do_once_done
-  once_disable_jump(once_key);
-    INIT_WORK(&w->work, once_deferred);
-    struct once_work *w;
-    w->key = key;
-    schedule_work(&w->work);                     module unload
-                                                   //*the key is
-destroy*
-process_one_work
-  once_deferred
-    BUG_ON(!static_key_enabled(work->key));
-       static_key_count((struct static_key *)x)    //*access key, crash*
+When the component level pin control functions were added they for some
+no longer obvious reason handled adding prefixing of widget names. This
+meant that when the lack of prefix handling in the DAPM level pin
+operations was fixed by ae4fc532244b3bb4d (ASoC: dapm: use component
+prefix when checking widget names) the one device using the component
+level API ended up with the prefix being applied twice, causing all
+lookups to fail.
 
-When module uses DO_ONCE mechanism, it could crash due to the above
-concurrency problem, we could reproduce it with link[1].
+Fix this by removing the redundant prefixing from the component code,
+which has the nice side effect of also making that code much simpler.
 
-Fix it by add/put module refcount in the once work process.
-
-[1] https://lore.kernel.org/netdev/eaa6c371-465e-57eb-6be9-f4b16b9d7cbf@huawei.com/
-
-Cc: Hannes Frederic Sowa <hannes@stressinduktion.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Reported-by: Minmin chen <chenmingmin@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Acked-by: Hannes Frederic Sowa <hannes@stressinduktion.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Tested-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20210726194123.54585-1-broonie@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/once.h |  4 ++--
- lib/once.c           | 11 ++++++++---
- 2 files changed, 10 insertions(+), 5 deletions(-)
+ sound/soc/soc-component.c | 63 +++++++++++++++++----------------------
+ 1 file changed, 27 insertions(+), 36 deletions(-)
 
-diff --git a/include/linux/once.h b/include/linux/once.h
-index 9225ee6d96c7..ae6f4eb41cbe 100644
---- a/include/linux/once.h
-+++ b/include/linux/once.h
-@@ -7,7 +7,7 @@
- 
- bool __do_once_start(bool *done, unsigned long *flags);
- void __do_once_done(bool *done, struct static_key_true *once_key,
--		    unsigned long *flags);
-+		    unsigned long *flags, struct module *mod);
- 
- /* Call a function exactly once. The idea of DO_ONCE() is to perform
-  * a function call such as initialization of random seeds, etc, only
-@@ -46,7 +46,7 @@ void __do_once_done(bool *done, struct static_key_true *once_key,
- 			if (unlikely(___ret)) {				     \
- 				func(__VA_ARGS__);			     \
- 				__do_once_done(&___done, &___once_key,	     \
--					       &___flags);		     \
-+					       &___flags, THIS_MODULE);	     \
- 			}						     \
- 		}							     \
- 		___ret;							     \
-diff --git a/lib/once.c b/lib/once.c
-index 8b7d6235217e..59149bf3bfb4 100644
---- a/lib/once.c
-+++ b/lib/once.c
-@@ -3,10 +3,12 @@
- #include <linux/spinlock.h>
- #include <linux/once.h>
- #include <linux/random.h>
-+#include <linux/module.h>
- 
- struct once_work {
- 	struct work_struct work;
- 	struct static_key_true *key;
-+	struct module *module;
- };
- 
- static void once_deferred(struct work_struct *w)
-@@ -16,10 +18,11 @@ static void once_deferred(struct work_struct *w)
- 	work = container_of(w, struct once_work, work);
- 	BUG_ON(!static_key_enabled(work->key));
- 	static_branch_disable(work->key);
-+	module_put(work->module);
- 	kfree(work);
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index 3a5e84e16a87..c8dfd0de30e4 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -148,86 +148,75 @@ int snd_soc_component_set_bias_level(struct snd_soc_component *component,
+ 	return soc_component_ret(component, ret);
  }
  
--static void once_disable_jump(struct static_key_true *key)
-+static void once_disable_jump(struct static_key_true *key, struct module *mod)
+-static int soc_component_pin(struct snd_soc_component *component,
+-			     const char *pin,
+-			     int (*pin_func)(struct snd_soc_dapm_context *dapm,
+-					     const char *pin))
+-{
+-	struct snd_soc_dapm_context *dapm =
+-		snd_soc_component_get_dapm(component);
+-	char *full_name;
+-	int ret;
+-
+-	if (!component->name_prefix) {
+-		ret = pin_func(dapm, pin);
+-		goto end;
+-	}
+-
+-	full_name = kasprintf(GFP_KERNEL, "%s %s", component->name_prefix, pin);
+-	if (!full_name) {
+-		ret = -ENOMEM;
+-		goto end;
+-	}
+-
+-	ret = pin_func(dapm, full_name);
+-	kfree(full_name);
+-end:
+-	return soc_component_ret(component, ret);
+-}
+-
+ int snd_soc_component_enable_pin(struct snd_soc_component *component,
+ 				 const char *pin)
  {
- 	struct once_work *w;
- 
-@@ -29,6 +32,8 @@ static void once_disable_jump(struct static_key_true *key)
- 
- 	INIT_WORK(&w->work, once_deferred);
- 	w->key = key;
-+	w->module = mod;
-+	__module_get(mod);
- 	schedule_work(&w->work);
+-	return soc_component_pin(component, pin, snd_soc_dapm_enable_pin);
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
++	return snd_soc_dapm_enable_pin(dapm, pin);
  }
+ EXPORT_SYMBOL_GPL(snd_soc_component_enable_pin);
  
-@@ -53,11 +58,11 @@ bool __do_once_start(bool *done, unsigned long *flags)
- EXPORT_SYMBOL(__do_once_start);
- 
- void __do_once_done(bool *done, struct static_key_true *once_key,
--		    unsigned long *flags)
-+		    unsigned long *flags, struct module *mod)
- 	__releases(once_lock)
+ int snd_soc_component_enable_pin_unlocked(struct snd_soc_component *component,
+ 					  const char *pin)
  {
- 	*done = true;
- 	spin_unlock_irqrestore(&once_lock, *flags);
--	once_disable_jump(once_key);
-+	once_disable_jump(once_key, mod);
+-	return soc_component_pin(component, pin, snd_soc_dapm_enable_pin_unlocked);
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
++	return snd_soc_dapm_enable_pin_unlocked(dapm, pin);
  }
- EXPORT_SYMBOL(__do_once_done);
+ EXPORT_SYMBOL_GPL(snd_soc_component_enable_pin_unlocked);
+ 
+ int snd_soc_component_disable_pin(struct snd_soc_component *component,
+ 				  const char *pin)
+ {
+-	return soc_component_pin(component, pin, snd_soc_dapm_disable_pin);
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
++	return snd_soc_dapm_disable_pin(dapm, pin);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_disable_pin);
+ 
+ int snd_soc_component_disable_pin_unlocked(struct snd_soc_component *component,
+ 					   const char *pin)
+ {
+-	return soc_component_pin(component, pin, snd_soc_dapm_disable_pin_unlocked);
++	struct snd_soc_dapm_context *dapm = 
++		snd_soc_component_get_dapm(component);
++	return snd_soc_dapm_disable_pin_unlocked(dapm, pin);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_disable_pin_unlocked);
+ 
+ int snd_soc_component_nc_pin(struct snd_soc_component *component,
+ 			     const char *pin)
+ {
+-	return soc_component_pin(component, pin, snd_soc_dapm_nc_pin);
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
++	return snd_soc_dapm_nc_pin(dapm, pin);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_nc_pin);
+ 
+ int snd_soc_component_nc_pin_unlocked(struct snd_soc_component *component,
+ 				      const char *pin)
+ {
+-	return soc_component_pin(component, pin, snd_soc_dapm_nc_pin_unlocked);
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
++	return snd_soc_dapm_nc_pin_unlocked(dapm, pin);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_nc_pin_unlocked);
+ 
+ int snd_soc_component_get_pin_status(struct snd_soc_component *component,
+ 				     const char *pin)
+ {
+-	return soc_component_pin(component, pin, snd_soc_dapm_get_pin_status);
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
++	return snd_soc_dapm_get_pin_status(dapm, pin);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_get_pin_status);
+ 
+ int snd_soc_component_force_enable_pin(struct snd_soc_component *component,
+ 				       const char *pin)
+ {
+-	return soc_component_pin(component, pin, snd_soc_dapm_force_enable_pin);
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
++	return snd_soc_dapm_force_enable_pin(dapm, pin);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_force_enable_pin);
+ 
+@@ -235,7 +224,9 @@ int snd_soc_component_force_enable_pin_unlocked(
+ 	struct snd_soc_component *component,
+ 	const char *pin)
+ {
+-	return soc_component_pin(component, pin, snd_soc_dapm_force_enable_pin_unlocked);
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
++	return snd_soc_dapm_force_enable_pin_unlocked(dapm, pin);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_force_enable_pin_unlocked);
+ 
 -- 
 2.30.2
 
