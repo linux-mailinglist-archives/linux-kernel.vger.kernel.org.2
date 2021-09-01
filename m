@@ -2,248 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F723FD61F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0A53FD622
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243387AbhIAJDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243336AbhIAJDK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:03:10 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DCAC061575;
-        Wed,  1 Sep 2021 02:02:13 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id u15-20020a05600c19cf00b002f6445b8f55so1018181wmq.0;
-        Wed, 01 Sep 2021 02:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PD5wfgfnh77RuRP2uKllqFvkE7i4Iu1qornbBmeqn3I=;
-        b=M2t8dZQyO7K+Y2KlQQOyoZSztsorIhedH5Z+ynVfPL84/9ZleT/3AvceUhTTovZ7Mp
-         Q7+d/HTQdELYQCUlQ8B+FuhDag4sWpbH050h1pOsIhjfOqxCE9IlGu3d+5/vNZbBLCh+
-         nP6w5y4Phvz/jO22O7N2o9SeUgqDr2XNpUMP5Eg/lz9EAv8KJskJA08eo6VALn0jWLvv
-         vZ0KvWH97VagDoY3l0dr7fmHvnRYy/+OJI2DnSW5Kb59q1MhQ48asq9DK3a3v6ySmd6h
-         gyVEaMkQZOhME9pEebPtT/HRRzhR1Iym7O4i1l8n9GIHBjbT5qFMfvQnxdXcGnnnA5y8
-         TFXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PD5wfgfnh77RuRP2uKllqFvkE7i4Iu1qornbBmeqn3I=;
-        b=R9cVMXfqOXJeIxswAZCPbCqTcQKCEmv+pZJUGx+aBol2j08f2WOOZfx6s1lVHyA5bT
-         O42zWfUPnMHUlBtyHwzjUZ9Jua4rFQ7Wsvuh/Me/UtOO9k1PW+8QttW0JDr+JwnLQUxB
-         CkJnkSOQOeBRjIXNvdBfobE0uaxFDEXxHzhOFW1xzSHxqGk3mumf9gdY+xilaT1MRz0V
-         Fwt1gXJ/Ii8KArWBZ7rea/A7ReElzPJaAaebvn+X3S8dIi70QyteiN4AOuF4JmwyRMau
-         MJ0L7rDz9Ie7QjvIuRmN7nbpLmFCyVlZglQi+juyfWs/apHjVL/ztKRxA8rY9LTJUdaw
-         +hAw==
-X-Gm-Message-State: AOAM530hhRVCzbPawlZk+GUS+ItPpx9QH3ueIovRuW1KQZNyuJKkjrf4
-        v8Y7gs13XGgksswpTfTq1v8=
-X-Google-Smtp-Source: ABdhPJxtT//6ZtQ2O7IF7mVRyWnkykls5bXT0fm0DhUns5lzocjHsmT8hFLdj5HESvKGEnQZPz/8uw==
-X-Received: by 2002:a7b:c014:: with SMTP id c20mr8503914wmb.81.1630486931446;
-        Wed, 01 Sep 2021 02:02:11 -0700 (PDT)
-Received: from skbuf ([82.78.148.104])
-        by smtp.gmail.com with ESMTPSA id n15sm20903742wrv.48.2021.09.01.02.02.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 02:02:10 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 12:02:09 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
- FWNODE_FLAG_BROKEN_PARENT
-Message-ID: <20210901090209.f4na6cwu7lsa57pv@skbuf>
-References: <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
- <YS4rw7NQcpRmkO/K@lunn.ch>
- <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
- <YS6nxLp5TYCK+mJP@lunn.ch>
- <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
- <YS608fdIhH4+qJsn@lunn.ch>
- <20210831231804.zozyenear45ljemd@skbuf>
- <20210901012826.iuy2bhvkrgahhrl7@skbuf>
- <20210901013830.yst73ubhsrlml54i@skbuf>
- <CAGETcx8r7o9u9bveQx6TAXG8YLH+aiuz9VZ5pLACm=S6KxNpWQ@mail.gmail.com>
+        id S243317AbhIAJEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:04:38 -0400
+Received: from mail-eopbgr1310120.outbound.protection.outlook.com ([40.107.131.120]:30659
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241783AbhIAJEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 05:04:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fdOWAfk0koRweF/q2V1ZlJL2mCSiUeASfgjAZQC06Ricqeo3nuK7Y/4bRtaCEGXfcIBzje3ZhCwPHTC56iLTpHtHM1wvfyPrVbAfR3ZadYXdJfKL+KEADV3AFj1oIM8YopVUBX1sZoPu0/9Yac2Dyqyew9PYpFpdkMEmpAjwFLMSXbiihhT14hKRWoZT+5uUI42ksncdnXvhHDlSZYlnxhoY5W6mEXk84bU8OXORW8fYfNKFfvq2SJf7EGQ6rBHNqkVa3HjU8N5+R9tfbn3SJTgW9VwWDEHVAASv2HRffFOrJek+mexiPT43v+ZtPI9ohLwCGZ66MBEw/hstUtqIUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RR2f0rdn3TURpPvgRooU3gTkDi8DhqpeZVedLUE80+U=;
+ b=P/0AWQvVHN5pc2p2fZPDWMnzqTsQ2DrgaMWe2vb4WONaDJb2JotWGHT2TXVQ4Ru/E+oD3Uf4LMVwysPMXNk0HC0GBvsrNlQ56+tYACDiW15TNdhQSJ9rPoham/z+jJ1K3GBcnyNGCKCMqjMVpMk33DjfcRkh1reQZmID+K8cSO9JpablscNj/0PyxI0Gpd0uq/BLRun5zxgC1Wq/KyqBU6P8mL4uasVqOzahkQIAFaq5fXRSkEKYPja71TRheoc0187njwDtZ1iEA2vU2ftoDMTObWtIvKj3lVpzaDZc/WX5N5hhJeKvNp+6cm3i0rwPpPTzBXbutRL0aQ/bpMdCig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RR2f0rdn3TURpPvgRooU3gTkDi8DhqpeZVedLUE80+U=;
+ b=Vhcqqqt339lzQmhMyHfTOoFff9MqGfoRNDUkJZH4eyCBkVzeX8a5IiHcpI+x5KZ0W20ZPuuDm/stEmK3Zzo5mHNI4iGs98yHEhpakp+O5PD91ES6oPp/KH/vQvgmUBqxVvrU89zIjG30gqFKOSEfEVAMHQdIwBTpSJYYe/PzJrYo8mHrnIzj9dk8pqhnR0PFN/iyCn+Kh0r/f0hsB2OTP6kcRIr+Jf0s7nECKqr89KvDDtOS27pMJnGYtoGe7vqnNZKQcGe8n0pK5GVXuEZ6OAP/jqNoSpvEIdIWssAcmB4jCiwFpbOvcEScIMernAkfwK35emY1btoPcCAMzc13dw==
+Received: from HK0PR06MB3380.apcprd06.prod.outlook.com (2603:1096:203:82::18)
+ by HK0PR06MB3683.apcprd06.prod.outlook.com (2603:1096:203:ae::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Wed, 1 Sep
+ 2021 09:03:35 +0000
+Received: from HK0PR06MB3380.apcprd06.prod.outlook.com
+ ([fe80::81e4:c1:aa1a:aa75]) by HK0PR06MB3380.apcprd06.prod.outlook.com
+ ([fe80::81e4:c1:aa1a:aa75%7]) with mapi id 15.20.4457.024; Wed, 1 Sep 2021
+ 09:03:35 +0000
+From:   Ryan Chen <ryan_chen@aspeedtech.com>
+To:     Joel Stanley <joel@jms.id.au>
+CC:     BMC-SW <BMC-SW@aspeedtech.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/1] clk:aspeed:Fix AST2600 hpll calculate formula
+Thread-Topic: [PATCH 1/1] clk:aspeed:Fix AST2600 hpll calculate formula
+Thread-Index: AQHXlAfOpk4IkpKafEKaZAc4PCbzJ6uO0vIAgAAkjtA=
+Date:   Wed, 1 Sep 2021 09:03:35 +0000
+Message-ID: <HK0PR06MB3380B6BF97DE000002CECA15F2CD9@HK0PR06MB3380.apcprd06.prod.outlook.com>
+References: <20210818080518.9491-1-ryan_chen@aspeedtech.com>
+ <20210818080518.9491-2-ryan_chen@aspeedtech.com>
+ <CACPK8XfrR-m6HOx5VOQ1-AVf0r9-0BKsr019D7T6y9Qd4qL9gA@mail.gmail.com>
+In-Reply-To: <CACPK8XfrR-m6HOx5VOQ1-AVf0r9-0BKsr019D7T6y9Qd4qL9gA@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: jms.id.au; dkim=none (message not signed)
+ header.d=none;jms.id.au; dmarc=none action=none header.from=aspeedtech.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d4d00e88-bf7e-484d-72ec-08d96d276164
+x-ms-traffictypediagnostic: HK0PR06MB3683:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK0PR06MB368390FCFF385CAD9A5406FDF2CD9@HK0PR06MB3683.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zoLYpuUf3+pjfX1yY0Z2Tv0yQZICUPmJC+KcS3MTv3Kt/sWnzx0lvOTt7uCoqkX6I65TT7yRwBJx6hlOFgNO0f7dR2QFjELsJ36bhIjFPW15l5EhqCEandQn42tjl0Wj9dZHcgWJFWflfrWpZWVr3cg/gIFMQo7LE6RtZ8HtTIYvumFxQxexrc1RXucYjpZvRNtmhlOfHqvi2dbbwTE8L+ODYXsJICPNUWltNEsDB276ke7up57DWlrDHRdQ1w5hX1M6WyaZr0yui+TNXOj+53QGT9U7qgHlLxR94vgNWBFTID4Xu15ta8YFvnrN25c+/Oo7FrRlcSxVntsWLH1WHSSRQj19CJgQ13QaTRjq/jCm8+v22bpPkJFGI3Q9MO0NsZ8CbyU/lMudhScTWkjBRDHRecqL1jLefm+rBlQKwCpB2uVvNBUfflNu72KOI1OiLs8QMPKLaGP0qUPnUgmMZkbo++BdINmpPUr09Jd4MJNLN/EG0HV2NPx2s2Ub7Al3SRM0HFykOvpLK38Rigq4Q/gn7uktzi8lhdm/igX3zfZ5ZYfdEPxhq7TjFDlV8pdfIWjCUwPVdBuhWkdhCNOQsrZP7+WM6KZPtnGMwuKhNFZfiR12tdsoqS6JDoYndB3a7pWeSXLT8BQYNzNHOlUqLxsfbymmn5BWI2Iv7VxQbGK+FGSIavgZ+MUIb4LlbJ78/hHzjMkmdpf4tP4OVzebTA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3380.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(136003)(39840400004)(366004)(5660300002)(316002)(76116006)(2906002)(478600001)(6916009)(71200400001)(8676002)(52536014)(38100700002)(122000001)(38070700005)(86362001)(54906003)(83380400001)(7696005)(4326008)(6506007)(53546011)(8936002)(186003)(33656002)(66446008)(55016002)(64756008)(66946007)(66476007)(9686003)(66556008)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YWdURTNpQ0hib3VYbjk5dVUrUkxxdTdQRUZwRnJWb3p2WDUxYzZNM3luNFhm?=
+ =?utf-8?B?cXhaSmt3S1hqSmg1T2ZjazdHSlErYmFYdlBoemZWOHNGN3BkVE1rN2FHT2x2?=
+ =?utf-8?B?dUV3TzluVjZlc3Uwd1lYeXA4STArYUY3VlpkdTI5Z0ZuSm02LzJENTgyY2hn?=
+ =?utf-8?B?V3hyTHFZU09lM0dkTGRmRmVrQW1RdUs1S245Um56Q3BMc2VDN0lkcWswNVBJ?=
+ =?utf-8?B?S3RyWGNydU1Uczg4WG0yd3IvYmtxemRxSW00cTgrU3YwYlEveHRzQU8veVBt?=
+ =?utf-8?B?b2YyT1lMSDUvMGJPaEJGbFAvenpERWNpNFRSZ0RQajBDOVhZc0JKVHdTazNG?=
+ =?utf-8?B?aFFHUDF5KzlBNElhVlJtRGh6U0FabWJvUFlLeitiaGl0UTZtblZpNTJTVUtI?=
+ =?utf-8?B?Nm1za3EvQU96cmlMRjhIVU9HQVJyUEt2YkRJOTdHNUpQNWxLTmRCZ3phRkpj?=
+ =?utf-8?B?YWRVUXZYVy9zQnNsdCtpN3FVa2diVndyandqU1l6aGRUQjhhQ0loQ2Zadk02?=
+ =?utf-8?B?MnB6blNiRDEvN21PeDZrc0c5cE1xWFVRSHdEYlIvbXY0SkhKOVZ4WkFjeEli?=
+ =?utf-8?B?bHNMT1NneVM2MFZ2NXptMGFxRVRKWlJIV0dYRW5TSFZ4N1B4alYxU0pHTyti?=
+ =?utf-8?B?NVQzejBkRUhwdHRuTGtrSFNHTTNWQ3FuWjlKTDQwKzBGcmQ4VEU4Rk1KNFBt?=
+ =?utf-8?B?eUY1SndIU040aXRPY1RTNVMwR0YvdFBnZklrcnBrcHd4QzE4SjN6YW5FMytu?=
+ =?utf-8?B?NXNZSmZ3VysyclQ0MnNSWXM3M0d6RGdORWQ2MVNUakJiVDEvRVdZNTVaa01r?=
+ =?utf-8?B?MDhOWUpJb2Njd29UV2J1aGp5ZWtnbWFEMU9nWktnZ1JoRmdMRWZ0cllQcXBp?=
+ =?utf-8?B?cGlhNTViVXd1M3N1dDN2U1NiaU1rYTJTZkNrNXZBUk9Qd053YVQ1Q1JQRTZ1?=
+ =?utf-8?B?aFBMWHlnWWlnVHBad0lLUUFWQjJEM0hxUHZSWFd2WVA5ekZOU2p1WG1tY0xn?=
+ =?utf-8?B?akxSRFVtQ2VmV2xaWDdhSys0QmlRMHd5enVGU1JkSjlaOGthM1FmVWQ2K2I0?=
+ =?utf-8?B?Z3Fodk16OWo3cjlYT0JIalJCSk1kTjNVZGxCUFBHSlRTeHpuNmErdWhjUHBu?=
+ =?utf-8?B?aEpwYThFZXdFRFNFOW9UdWVBY29INE1YS3V2Qis0QWVhOFVWeDJCQ0tPZWor?=
+ =?utf-8?B?aHF2R1ZrMW80S29DZHJoMS82R2FvT2QrdERaZXdTSWpTM2UxUURzMlVYa0hY?=
+ =?utf-8?B?YjJYYnV6alJQRlY5K0xheGNCK2VlaW50NWhtQkd3TU4yQjZZSlpmVVk2SSs0?=
+ =?utf-8?B?SW44VnlQNGJPTVZHOHlqSmVSeGNVazlpc1VnZE5VZ0FLck1Zei96M2ljOVdT?=
+ =?utf-8?B?K0tzd0c1Z005ZkFybHp6TE5kcGRpMVA3d0MzYlY5TmVQbnUyTXB2WHRsaGlG?=
+ =?utf-8?B?Tk13eVU1aGJWKzJpNU5xc2V1ODJ3c0xidWQ5cklJWDIyYzFPTFBKQjNqTU1V?=
+ =?utf-8?B?MkZ6OWJ3d1dKa3dQR3hTK0dnc3pBUGdiTmdIUVpiZlVWczFsbmJGVmZaY1Fh?=
+ =?utf-8?B?NXFRVTdXalNkQmpDTk5zK3RUWlNwcEdsaUxGQjEzWkRScVhaS3hOYXFlNUZJ?=
+ =?utf-8?B?QmpQbTQzMlltd1ozUjhzNjdvcUMrVHBCanBqcFNLOFJtV0xHa3lhM0hGbkpH?=
+ =?utf-8?B?K3pJbXRvRUlZWFNYaGVzMkZ5Wlo0ZXplelJTNkpUQnRGRnpTM2tRQ09EVkpw?=
+ =?utf-8?Q?kGmjm9mAAIBZbWDI89ndXypeWthJ2/Q8ZORwH86?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx8r7o9u9bveQx6TAXG8YLH+aiuz9VZ5pLACm=S6KxNpWQ@mail.gmail.com>
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3380.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4d00e88-bf7e-484d-72ec-08d96d276164
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2021 09:03:35.3521
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: e3FR0A2GeVyGoknsVLnF33QSYEQPNNMSWRqF0a0OUG6ngLsP6iSomFMX5+EWEkbvBjwSl9v+XODF8Imj17ZrsjN3C1RgZh6tAdr89CkfSik=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB3683
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 07:19:40PM -0700, Saravana Kannan wrote:
-> On Tue, Aug 31, 2021 at 6:38 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> >
-> > On Wed, Sep 01, 2021 at 04:28:26AM +0300, Vladimir Oltean wrote:
-> > > On Wed, Sep 01, 2021 at 02:18:04AM +0300, Vladimir Oltean wrote:
-> > > > On Wed, Sep 01, 2021 at 01:02:09AM +0200, Andrew Lunn wrote:
-> > > > > Rev B is interesting because switch0 and switch1 got genphy, while
-> > > > > switch2 got the correct Marvell PHY driver. switch2 PHYs don't have
-> > > > > interrupt properties, so don't loop back to their parent device.
-> > > >
-> > > > This is interesting and not what I really expected to happen. It goes to
-> > > > show that we really need more time to understand all the subtleties of
-> > > > device dependencies before jumping on patching stuff.
-> > >
-> > > There is an even more interesting variation which I would like to point
-> > > out. It seems like a very odd loophole in the device links.
-> > >
-> > > Take the example of the mv88e6xxx DSA driver. On my board
-> > > (arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts), even after I
-> > > had to declare the switches as interrupt controller and add interrupts
-> > > to their internal PHYs, I still need considerable force to 'break' this
-> > > board in the way discussed in this thread. The correct PHY driver insists
-> > > to probe, and not genphy. Let me explain.
-> > >
-> > > The automatic device links between the switch (supplier, as interrupt-controller)
-> > > and PHYs (consumers) are added by fwnode_link_add, called from of_link_to_phandle.
-> > >
-> > > Important note: fwnode_link_add does not link devices, it links OF nodes.
-> > >
-> > > Even more important node, in the form of a comment:
-> > >
-> > >  * The driver core will use the fwnode link to create a device link between the
-> > >  * two device objects corresponding to @con and @sup when they are created. The
-> > >  * driver core will automatically delete the fwnode link between @con and @sup
-> > >  * after doing that.
-> > >
-> > > Okay?!
-> > >
-> > > What seems to be omitted is that the DSA switch driver's probing itself
-> > > can be deferred. For example:
-> > >
-> > > dsa_register_switch
-> > > -> dsa_switch_probe
-> > >    -> dsa_switch_parse_of
-> > >       -> dsa_switch_parse_ports_of
-> > >          -> dsa_port_parse_of
-> > >             -> of_find_net_device_by_node(of_parse_phandle(dn, "ethernet", 0));
-> > >             -> not found => return -EPROBE_DEFER
-> > >
-> > > When dsa_register_switch() returns -EPROBE_DEFER, it is effectively
-> > > an error path. So the reverse of initialization is performed.
-> > >
-> > > The mv88e6xxx driver calls mv88e6xxx_mdios_register() right _before_
-> > > dsa_register_switch. So when dsa_register_switch returns error code,
-> > > mv88e6xxx_mdios_unregister() will be called.
-> > >
-> > > When mv88e6xxx_mdios_unregister() is called, the MDIO buses with
-> > > internal PHYs are destroyed. So the PHY devices themselves are destroyed
-> > > too. And the device links between the DSA switch and the internal PHYs,
-> > > those created based on the firmware node links created by fwnode_link_add,
-> > > are dropped too.
-> > >
-> > > Now remember the comment that the device links created based on
-> > > fwnode_link_add are not restored.
-> > >
-> > > So probing of the DSA switch finally resumes, and this time
-> > > device_links_check_suppliers() is effectively bypassed, the PHYs no
-> > > longer request probe deferral due to their supplier not being ready,
-> > > because the device link no longer exists.
-> > >
-> > > Isn't this self-sabotaging?!
-> 
-> Yeah, this is a known "issue". I'm saying "issue" because at worst
-> it'd allow a few unnecessary deferred probes. And if you want to break
-> or get fw_devlink to ignore your child devices or your consumers,
-> there are simpler APIs to do it without having to intentionally defer
-> a probe.  Fixing this "issue" would just use up more memory and
-> increase boot time for no meaningful benefit.
-
-But I mean, if the goal of fw_devlink is to infer a probing order based
-on phandles, and it is faced with a long chain of devices, then any
--EPROBE_DEFER of a device on top of the chain will break the probing
-order for all devices beneath it. It is self-defeating, it is already
-memory used for nothing.
-
-> > >
-> > > Now generally, DSA drivers defer probing because they probe in parallel
-> > > with the DSA master. This is typical if the switch is on a SPI bus, or
-> > > I2C, or on an MDIO bus provided by a _standalone_ MDIO controller.
-> > >
-> > > If the MDIO controller is not standalone, but is provided by Ethernet
-> > > controller that is the DSA master itself, then things change a lot,
-> > > because probing can never be parallel. The DSA master probes,
-> > > initializes its MDIO bus, and this triggers the probing of the MDIO
-> > > devices on that bus, one of which is the DSA switch. So DSA can no
-> > > longer defer the probe due to that reason.
-> > >
-> > > Secondly, in DSA we even have variation between drivers as to where they
-> > > register their internal MDIO buses. The mv88e6xxx driver does this in
-> > > mv88e6xxx_probe (the probe function on the MDIO bus). The rtl8366rb
-> > > driver calls realtek_smi_setup_mdio() from rtl8366rb_setup(), and this
-> > > is important. DSA provides drivers with a .setup() callback, which is
-> > > guaranteed to take place after nothing can defer the switch's probe
-> > > anymore.
-> > >
-> > > So putting two and two together, sure enough, if I move mv88e6xxx_mdios_register
-> > > from mv88e6xxx_probe to mv88e6xxx_setup, then I can reliably break this
-> > > setup, because the device links framework isn't sabotaging itself anymore.
-> > >
-> > > Conversely, I am pretty sure that if rtl8366rb was to call of_mdiobus_register()
-> > > from the probe method and not the setup method, the entire design issue
-> > > with interrupts on internal DSA switch ports would have went absolutely
-> > > unnoticed for a few more years.
-> > >
-> > > I have not tested this, but it also seems plausible that DSA can
-> > > trivially and reliably bypass any fw_devlink=on restrictions by simply
-> > > moving all of_mdiobus_register() driver calls from the .setup() method
-> > > to their respective probe methods (prior to calling dsa_register_switch),
-> > > then effectively fabricate an -EPROBE_DEFER during the first probe attempt.
-> > > I mean, who will know whether that probe deferral request was justified
-> > > or not?
-> >
-> > Pushing the thought even further, it is not even necessary to move the
-> > of_mdiobus_register() call to the probe function. Where it is (in .setup)
-> > is already good enough. It is sufficient to return -EOPNOTSUPP once
-> > (the first time) immediately _after_ the call to of_mdiobus_register
-> > (and have a proper error path, i.e. call mdiobus_unregister too).
-> 
-> Right, there are plenty of ways to intentionally break fw_devlink. I
-> hope that's not the point :) And I don't think -EOPNOTSUPP would work
-> because your device wouldn't be probed again.
-
-Yes, -EPROBE_DEFER is what I meant.
-
-> >
-> > > Anyway, I'm not sure everyone agrees with this type of "solution" (even
-> > > though it's worth pointing it out as a fw_devlink limitation). In any
-> > > case, we need some sort of lightweight "fix" to the chicken-and-egg
-> > > problem, which will give me enough time to think of something better.
-> 
-> I think the generic DSA patch I gave would be the lightweight fix to
-> address this chicken-and-egg issue.
-> 
-> As for the long term fix, I'd really suggest looking into using the
-> component device model. I'd even be happy to help make any driver
-> core/component device improvements you might need.
-> 
-> I'm also interested in looking into improving the PHY probing so that
-> the genphy never probes a device that has a driver that could probe
-> it. Even outside of all this fw_devlink thing, they way PHY is handled
-> now, if any of the supplier really isn't ready yet (say a clock), then
-> the genphy gets used -- which isn't good.
-
-I think this is the real problem which needs to be addressed. The
-trouble is, I don't know if phy_attach_direct can find out the reason
-for which d->driver is NULL, i.e. that there was a driver which matched
-and attempted the probe, but returned -EPROBE_DEFER.
-
-> -Saravana
-> 
-> > > I hope it is at least clearer now that there are subtleties and nuances,
-> > > and we cannot just assess how many boards are broken by looking at the
-> > > device trees. By design, all are, sure, but they might still work, and
-> > > that's better than nothing...
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2VsIFN0YW5sZXkgPGpvZWxA
+am1zLmlkLmF1Pg0KPiBTZW50OiBXZWRuZXNkYXksIFNlcHRlbWJlciAxLCAyMDIxIDI6NDkgUE0N
+Cj4gVG86IFJ5YW4gQ2hlbiA8cnlhbl9jaGVuQGFzcGVlZHRlY2guY29tPg0KPiBDYzogQk1DLVNX
+IDxCTUMtU1dAYXNwZWVkdGVjaC5jb20+OyBNaWNoYWVsIFR1cnF1ZXR0ZQ0KPiA8bXR1cnF1ZXR0
+ZUBiYXlsaWJyZS5jb20+OyBTdGVwaGVuIEJveWQgPHNib3lkQGtlcm5lbC5vcmc+OyBBbmRyZXcN
+Cj4gSmVmZmVyeSA8YW5kcmV3QGFqLmlkLmF1PjsgbGludXgtY2xrQHZnZXIua2VybmVsLm9yZzsg
+TGludXggS2VybmVsIE1haWxpbmcgTGlzdA0KPiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
+Zz4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCAxLzFdIGNsazphc3BlZWQ6Rml4IEFTVDI2MDAgaHBs
+bCBjYWxjdWxhdGUgZm9ybXVsYQ0KPiANCj4gSGVsbG8gUnlhbiwNCj4gDQo+IFRoYW5rcyBmb3Ig
+dGhlIHBhdGNoLiBJIGhhdmUgc29tZSBxdWVzdGlvbnMgYWJvdXQgaXQgYmVsb3cuDQo+IA0KPiBP
+biBXZWQsIDE4IEF1ZyAyMDIxIGF0IDA4OjA1LCBSeWFuIENoZW4gPHJ5YW5fY2hlbkBhc3BlZWR0
+ZWNoLmNvbT4NCj4gd3JvdGU6DQo+ID4NCj4gPiBBU1QyNjAwIEhQTEwgY2FsY3VsYXRlIGZvcm11
+bGEgW1NDVTIwMF0gSFBMTCBOdW1lcmF0b3IoTSk6IGhhdmUgZml4ZWQNCj4gPiB2YWx1ZSBkZXBl
+bmQgb24gU0NVIHN0cmFwLg0KPiA+IE0gPSBTQ1U1MDBbMTBdID8gMHg1RiA6IFNDVTUwMFs4XSA/
+IDB4QkYgOiBTQ1UyMDBbMTI6MF0NCj4gDQo+IEkgc2VlIGZyb20gdGhlIGRhdGFzaGVldDoNCj4g
+DQo+IENQVSBmcmVxdWVuY3kgc2VsZWN0aW9uDQo+IDAwMCAxLjJHSHoNCj4gMDAxIDEuNkdIeg0K
+PiAwMTAgMS4yR0h6DQo+IDAxMSAxLjZHSHoNCj4gMTAwIDgwME1Ieg0KPiAxMDEgODAwTUh6DQo+
+IDExMCA4MDBNSHoNCj4gMTExIDgwME1Ieg0KPiANCj4gU28gd2hlbiB0aGUgc3lzdGVtIGlzIHJ1
+bm5pbmcgYXQgODAwTUh6IG9yIDEuNkdIeiwgdGhlIHZhbHVlIGZvciB0aGUNCj4gbnVtZXJhdG9y
+IChtKSBpbiBTQ1UyMDQgaXMgaW5jb3JyZWN0LCBhbmQgbXVzdCBiZSBvdmVycmlkZGVuPw0KPiAN
+Ck0gaXMgaW4gU0NVMjAwIG5vdCBTQ1UyMDQuDQpUaGUgcGF0Y2ggY29kZSBpcyBwb2ludCBvdXQg
+dGhlIGlzc3VlLCB0aGF0IG5vdCBvbmx5IGNoZWNrIHRoZSBTQ1UyMDAgdG8gY2FsY3VsYXRlIHRo
+ZSBocGxsLCANCmJ1dCBhbHNvIG5lZWQgY2hlY2sgdGhlIFNDVTUwMFsxMF0gYW5kIFNDVTUxMFs4
+XSwgaXQgd2lsbCBlZmZlY3QgdGhlIE0gdmFsdWUuDQoNCj4gPiBpZiBTQ1U1MDBbMTBdID0gMSwg
+TT0weDVGLg0KPiA+IGVsc2UgaWYgU0NVNTAwWzEwXT0wICYgU0NVNTAwWzhdPTEsIE09MHhCRi4N
+Cj4gPiBvdGhlcnMgKFNDVTUxMFsxMF09MCBhbmQgU0NVNTEwWzhdPTApDQo+ID4gZGVwZW5kIG9u
+IFNDVTIwMFsxMjowXSAoZGVmYXVsdCAweDhGKSByZWdpc3RlciBzZXR0aW5nLg0KPiA+DQo+ID4g
+SFBMTCBEZW51bWVyYXRvciAoTikgPSAgU0NVMjAwWzE4OjEzXSAoZGVmYXVsdCAweDIpDQo+ID4g
+SFBMTCBEaXZpZGVyIChQKSAgICAgICAgID0gICAgICBTQ1UyMDBbMjI6MTldIChkZWZhdWx0IDB4
+MCkNCj4gDQo+IElzIHRoaXMgdGhlIGNhc2UgZm9yIGFsbCByZXZpc2lvbnMgb2YgdGhlIHNvYywg
+ZnJvbSBBMCB0aHJvdWdoIHRvIEEzPw0KWWVzLiBpdCBpcy4NCj4gDQo+IERvIHlvdSBoYXZlIGEg
+ZGF0YXNoZWV0IHVwZGF0ZSB0aGF0IGNhcHR1cmVzIHRoaXMgaW5mb3JtYXRpb24/DQpOby4NCj4g
+DQo+IFdoZW4geW91IHJlc2VuZCwgcGxlYXNlIGFkZCBhIGZpeGVzIGxpbmUgYXMgZm9sbG93cywg
+YXMgdGhpcyBjb2RlIGhhcyBiZWVuDQo+IHByZXNlbnQgc2luY2Ugd2UgaW50cm9kdWNlZCB0aGUg
+ZHJpdmVyOg0KVGhhbmtzIGEgbG90Lg0KPiANCj4gRml4ZXM6IGQzZDA0ZjZjMzMwYSAoImNsazog
+QWRkIHN1cHBvcnQgZm9yIEFTVDI2MDAgU29DIikNCj4gDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBSeWFuIENoZW4gPHJ5YW5fY2hlbkBhc3BlZWR0ZWNoLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJp
+dmVycy9jbGsvY2xrLWFzdDI2MDAuYyB8IDI5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKyst
+DQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyOCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+
+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsvY2xrLWFzdDI2MDAuYyBiL2RyaXZlcnMv
+Y2xrL2Nsay1hc3QyNjAwLmMNCj4gPiBpbmRleCAwODVkMGExOGIyYjYuLjVkOGM0NmJjZjIzNyAx
+MDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2Nsay9jbGstYXN0MjYwMC5jDQo+ID4gKysrIGIvZHJp
+dmVycy9jbGsvY2xrLWFzdDI2MDAuYw0KPiA+IEBAIC0xNjksNiArMTY5LDMzIEBAIHN0YXRpYyBj
+b25zdCBzdHJ1Y3QgY2xrX2Rpdl90YWJsZQ0KPiA+IGFzdDI2MDBfZGl2X3RhYmxlW10gPSB7ICB9
+Ow0KPiA+DQo+ID4gIC8qIEZvciBocGxsL2RwbGwvZXBsbC9tcGxsICovDQo+IA0KPiBUaGlzIGNv
+bW1lbnQgbmVlZHMgdG8gc3RheSB3aXRoIGFzdDI2MDBfY2FsY19wbGwsIGFuZCBqdXN0IGRyb3Ag
+aHBsbCBmcm9tIHRoZQ0KPiBsaXN0Lg0KPiANCj4gPiArc3RhdGljIHN0cnVjdCBjbGtfaHcgKmFz
+dDI2MDBfY2FsY19ocGxsKGNvbnN0IGNoYXIgKm5hbWUsIHUzMiB2YWwpIHsNCj4gPiArICAgICAg
+IHVuc2lnbmVkIGludCBtdWx0LCBkaXY7DQo+ID4gKyAgICAgICB1MzIgaHdzdHJhcCA9IHJlYWRs
+KHNjdV9nNl9iYXNlICsgQVNQRUVEX0c2X1NUUkFQMSk7DQo+ID4gKw0KPiA+ICsgICAgICAgaWYg
+KHZhbCAmIEJJVCgyNCkpIHsNCj4gPiArICAgICAgICAgICAgICAgLyogUGFzcyB0aHJvdWdoIG1v
+ZGUgKi8NCj4gPiArICAgICAgICAgICAgICAgbXVsdCA9IGRpdiA9IDE7DQo+ID4gKyAgICAgICB9
+IGVsc2Ugew0KPiA+ICsgICAgICAgICAgICAgICAvKiBGID0gMjVNaHogKiBbKE0gKyAyKSAvIChu
+ICsgMSldIC8gKHAgKyAxKSAqLw0KPiA+ICsgICAgICAgICAgICAgICB1MzIgbSA9IHZhbCAgJiAw
+eDFmZmY7DQo+ID4gKyAgICAgICAgICAgICAgIHUzMiBuID0gKHZhbCA+PiAxMykgJiAweDNmOw0K
+PiA+ICsgICAgICAgICAgICAgICB1MzIgcCA9ICh2YWwgPj4gMTkpICYgMHhmOw0KPiA+ICsNCj4g
+PiArICAgICAgICAgICAgICAgaWYgKGh3c3RyYXAgJiBCSVQoMTApKQ0KPiANCj4gU28gdGhpcyBp
+cyB0ZXN0aW5nIGlmIHRoZSBDUFUgaXMgcnVubmluZyBhdCA4MDBNaHouDQo+IA0KPiA+ICsgICAg
+ICAgICAgICAgICAgICAgICAgIG0gPSAweDVGOw0KPiA+ICsgICAgICAgICAgICAgICBlbHNlIHsN
+Cj4gPiArICAgICAgICAgICAgICAgICAgICAgICBpZiAoaHdzdHJhcCAmIEJJVCg4KSkNCj4gDQo+
+IEFuZCB0aGlzIGlzIHRlc3RpbmcgaWYgdGhlIENQVSBpcyBydW5uaW5nIGF0IDEuNkdIei4NCj4g
+DQo+IEkgd291bGQgd3JpdGUgaXQgbGlrZSB0aGlzOg0KPiANCj4gdTMyIG07DQo+IA0KPiBpZiAo
+aHdzdHJhcCAmIEJJVCgxMCkpIHsNCj4gICAgIC8qIENQVSBydW5uaW5nIGF0IDgwME1IeiAqLw0K
+PiAgICBtID0gOTU7DQo+IH0gZWxzZSBpZiAoaHdzdHJhcCAmIEJJVCgxMCkpIHsNCj4gICAgIC8q
+IENQVSBydW5uaW5nIGF0IDEuNkdIeiAqLw0KPiAgIG0gID0gMTkxOw0KPiB9IGVsc2Ugew0KPiAg
+ICAvKiBDUFUgcnVubmluZyBhdCAxLjJHaHogKi8NCj4gICBtID0gdmFsICAmIDB4MWZmZjsNCj4g
+fQ0KPiANCj4gQ2hlZXJzLA0KPiANCj4gSm9lbA0K
