@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C669A3FDAEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE37C3FDBD2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343513AbhIAMg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:36:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34618 "EHLO mail.kernel.org"
+        id S1345694AbhIAMo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:44:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343869AbhIAMeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:34:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 002A7610E7;
-        Wed,  1 Sep 2021 12:32:39 +0000 (UTC)
+        id S1345006AbhIAMkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:40:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 946BC6108E;
+        Wed,  1 Sep 2021 12:36:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499560;
-        bh=YziR1fsf/bmGJmDODenRBsNjphPIpyzEjUivFEO8ulM=;
+        s=korg; t=1630499793;
+        bh=OeXOECg83tGksMwCNTdERexJ1xATeYk2A0Su0X60Jns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0rvJ6j8eK4HOKj9fHmvj7e6slrgmp2xG/sNlJkCsgLWhq2JXXmHohNvl017HQ0vuo
-         XkM0oF7cJYfcRJmncMbET+QlJzpDl7jCemUpKnvm0t8vpccFFklwBvVYjEodrnnQNj
-         r+ZP840jhkXq4Axedr8nPztV6wY9P1ltYoUvtBQY=
+        b=R6iiMm/x6l3A1jSgYf5wuqVh/L437y/5TJZgkbRKj4t3WGL76Z1lCOHpV995QQ2k4
+         e0V6N/Y6CTg/sEExySsJQ8N01qjdrtDIUSkoLjcr9dbou2FtH0G++9tRwgpTDSi0Kw
+         u3Yu4rivlRskZyTEM1lorrdCj/qEg1nPrO6QMIUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 47/48] net: dont unconditionally copy_from_user a struct ifreq for socket ioctls
-Date:   Wed,  1 Sep 2021 14:28:37 +0200
-Message-Id: <20210901122254.926851214@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 5.10 088/103] srcu: Provide internal interface to start a Tiny SRCU grace period
+Date:   Wed,  1 Sep 2021 14:28:38 +0200
+Message-Id: <20210901122303.496935499@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,80 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Collingbourne <pcc@google.com>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-commit d0efb16294d145d157432feda83877ae9d7cdf37 upstream.
+commit 1a893c711a600ab57526619b56e6f6b7be00956e upstream.
 
-A common implementation of isatty(3) involves calling a ioctl passing
-a dummy struct argument and checking whether the syscall failed --
-bionic and glibc use TCGETS (passing a struct termios), and musl uses
-TIOCGWINSZ (passing a struct winsize). If the FD is a socket, we will
-copy sizeof(struct ifreq) bytes of data from the argument and return
--EFAULT if that fails. The result is that the isatty implementations
-may return a non-POSIX-compliant value in errno in the case where part
-of the dummy struct argument is inaccessible, as both struct termios
-and struct winsize are smaller than struct ifreq (at least on arm64).
+There is a need for a polling interface for SRCU grace periods.
+This polling needs to initiate an SRCU grace period without
+having to queue (and manage) a callback.  This commit therefore
+splits the Tiny SRCU call_srcu() function into callback-queuing and
+start-grace-period portions, with the latter in a new function named
+srcu_gp_start_if_needed().
 
-Although there is usually enough stack space following the argument
-on the stack that this did not present a practical problem up to now,
-with MTE stack instrumentation it's more likely for the copy to fail,
-as the memory following the struct may have a different tag.
-
-Fix the problem by adding an early check for whether the ioctl is a
-valid socket ioctl, and return -ENOTTY if it isn't.
-
-Fixes: 44c02a2c3dc5 ("dev_ioctl(): move copyin/copyout to callers")
-Link: https://linux-review.googlesource.com/id/I869da6cf6daabc3e4b7b82ac979683ba05e27d4d
-Signed-off-by: Peter Collingbourne <pcc@google.com>
-Cc: <stable@vger.kernel.org> # 4.19
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/netdevice.h |    4 ++++
- net/socket.c              |    6 +++++-
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ kernel/rcu/srcutiny.c |   17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -3684,6 +3684,10 @@ int netdev_rx_handler_register(struct ne
- void netdev_rx_handler_unregister(struct net_device *dev);
- 
- bool dev_valid_name(const char *name);
-+static inline bool is_socket_ioctl_cmd(unsigned int cmd)
-+{
-+	return _IOC_TYPE(cmd) == SOCK_IOC_TYPE;
-+}
- int dev_ioctl(struct net *net, unsigned int cmd, struct ifreq *ifr,
- 		bool *need_copyout);
- int dev_ifconf(struct net *net, struct ifconf *, int);
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -1053,7 +1053,7 @@ static long sock_do_ioctl(struct net *ne
- 		rtnl_unlock();
- 		if (!err && copy_to_user(argp, &ifc, sizeof(struct ifconf)))
- 			err = -EFAULT;
--	} else {
-+	} else if (is_socket_ioctl_cmd(cmd)) {
- 		struct ifreq ifr;
- 		bool need_copyout;
- 		if (copy_from_user(&ifr, argp, sizeof(struct ifreq)))
-@@ -1062,6 +1062,8 @@ static long sock_do_ioctl(struct net *ne
- 		if (!err && need_copyout)
- 			if (copy_to_user(argp, &ifr, sizeof(struct ifreq)))
- 				return -EFAULT;
-+	} else {
-+		err = -ENOTTY;
- 	}
- 	return err;
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -151,6 +151,16 @@ void srcu_drive_gp(struct work_struct *w
  }
-@@ -3228,6 +3230,8 @@ static int compat_ifr_data_ioctl(struct
- 	struct ifreq ifreq;
- 	u32 data32;
+ EXPORT_SYMBOL_GPL(srcu_drive_gp);
  
-+	if (!is_socket_ioctl_cmd(cmd))
-+		return -ENOTTY;
- 	if (copy_from_user(ifreq.ifr_name, u_ifreq32->ifr_name, IFNAMSIZ))
- 		return -EFAULT;
- 	if (get_user(data32, &u_ifreq32->ifr_data))
++static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
++{
++	if (!READ_ONCE(ssp->srcu_gp_running)) {
++		if (likely(srcu_init_done))
++			schedule_work(&ssp->srcu_work);
++		else if (list_empty(&ssp->srcu_work.entry))
++			list_add(&ssp->srcu_work.entry, &srcu_boot_list);
++	}
++}
++
+ /*
+  * Enqueue an SRCU callback on the specified srcu_struct structure,
+  * initiating grace-period processing if it is not already running.
+@@ -166,12 +176,7 @@ void call_srcu(struct srcu_struct *ssp,
+ 	*ssp->srcu_cb_tail = rhp;
+ 	ssp->srcu_cb_tail = &rhp->next;
+ 	local_irq_restore(flags);
+-	if (!READ_ONCE(ssp->srcu_gp_running)) {
+-		if (likely(srcu_init_done))
+-			schedule_work(&ssp->srcu_work);
+-		else if (list_empty(&ssp->srcu_work.entry))
+-			list_add(&ssp->srcu_work.entry, &srcu_boot_list);
+-	}
++	srcu_gp_start_if_needed(ssp);
+ }
+ EXPORT_SYMBOL_GPL(call_srcu);
+ 
 
 
