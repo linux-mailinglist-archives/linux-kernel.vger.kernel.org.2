@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5783FDCAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB103FDCD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346069AbhIAMwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49976 "EHLO mail.kernel.org"
+        id S1345366AbhIAMxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:53:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345849AbhIAMsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:48:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 381C861103;
-        Wed,  1 Sep 2021 12:40:45 +0000 (UTC)
+        id S1345850AbhIAMsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:48:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1689061185;
+        Wed,  1 Sep 2021 12:40:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630500045;
-        bh=HigKvF2qlGkAo5mFN3wN0d0VrImeDgmCAblcxl/51ZQ=;
+        s=korg; t=1630500048;
+        bh=jVGFFhgQPDsIekeU6Mj58mUSZo3WAIr1rV2jD2J8/kA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aSbKhtDUURNglPSxoVoOR0KGOeIdUvSFzd6k3H6ghD7ondw5Zk+rCisy8fOR6AvLy
-         4LeN0UuhRPsIpnOUAC+S4J1uIDgTBHwz8yU9BPK+NMMIl7fvUNTrBAgVX1+eolHrNA
-         yhYQuzm/V5r7IEmvKOcDyKVxa9Zpi1xK0cyRwZB0=
+        b=F627+7klED6+bEEBtebMwnm1y8DHpof6xVWeZJkw5Gk5WWfqlde1QzEr+9ZgU4zZw
+         FgALsckA4pajyMZXS8k1C/AVk187G/zK5kTsb/UNpjBaVlzeSVrxjI9DAKkAJOiE8W
+         FbI6r+5U9xoeL+W/MR5higkScq9xLwBCKfM9X+KY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 081/113] vringh: Use wiov->used to check for read/write desc order
-Date:   Wed,  1 Sep 2021 14:28:36 +0200
-Message-Id: <20210901122304.682785667@linuxfoundation.org>
+Subject: [PATCH 5.13 082/113] tools/virtio: fix build
+Date:   Wed,  1 Sep 2021 14:28:37 +0200
+Message-Id: <20210901122304.721106091@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
 References: <20210901122301.984263453@linuxfoundation.org>
@@ -42,48 +39,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neeraj Upadhyay <neeraju@codeaurora.org>
+From: Michael S. Tsirkin <mst@redhat.com>
 
-[ Upstream commit e74cfa91f42c50f7f649b0eca46aa049754ccdbd ]
+[ Upstream commit a24ce06c70fe7df795a846ad713ccaa9b56a7666 ]
 
-As __vringh_iov() traverses a descriptor chain, it populates
-each descriptor entry into either read or write vring iov
-and increments that iov's ->used member. So, as we iterate
-over a descriptor chain, at any point, (riov/wriov)->used
-value gives the number of descriptor enteries available,
-which are to be read or written by the device. As all read
-iovs must precede the write iovs, wiov->used should be zero
-when we are traversing a read descriptor. Current code checks
-for wiov->i, to figure out whether any previous entry in the
-current descriptor chain was a write descriptor. However,
-iov->i is only incremented, when these vring iovs are consumed,
-at a later point, and remain 0 in __vringh_iov(). So, correct
-the check for read and write descriptor order, to use
-wiov->used.
+We use a spinlock now so add a stub.
+Ignore bogus uninitialized variable warnings.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-Link: https://lore.kernel.org/r/1624591502-4827-1-git-send-email-neeraju@codeaurora.org
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vhost/vringh.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/virtio/Makefile         |  3 +-
+ tools/virtio/linux/spinlock.h | 56 +++++++++++++++++++++++++++++++++++
+ tools/virtio/linux/virtio.h   |  2 ++
+ 3 files changed, 60 insertions(+), 1 deletion(-)
+ create mode 100644 tools/virtio/linux/spinlock.h
 
-diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-index 4af8fa259d65..14e2043d7685 100644
---- a/drivers/vhost/vringh.c
-+++ b/drivers/vhost/vringh.c
-@@ -359,7 +359,7 @@ __vringh_iov(struct vringh *vrh, u16 i,
- 			iov = wiov;
- 		else {
- 			iov = riov;
--			if (unlikely(wiov && wiov->i)) {
-+			if (unlikely(wiov && wiov->used)) {
- 				vringh_bad("Readable desc %p after writable",
- 					   &descs[i]);
- 				err = -EINVAL;
+diff --git a/tools/virtio/Makefile b/tools/virtio/Makefile
+index b587b9a7a124..0d7bbe49359d 100644
+--- a/tools/virtio/Makefile
++++ b/tools/virtio/Makefile
+@@ -4,7 +4,8 @@ test: virtio_test vringh_test
+ virtio_test: virtio_ring.o virtio_test.o
+ vringh_test: vringh_test.o vringh.o virtio_ring.o
+ 
+-CFLAGS += -g -O2 -Werror -Wall -I. -I../include/ -I ../../usr/include/ -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-common -MMD -U_FORTIFY_SOURCE -include ../../include/linux/kconfig.h
++CFLAGS += -g -O2 -Werror -Wno-maybe-uninitialized -Wall -I. -I../include/ -I ../../usr/include/ -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-common -MMD -U_FORTIFY_SOURCE -include ../../include/linux/kconfig.h
++LDFLAGS += -lpthread
+ vpath %.c ../../drivers/virtio ../../drivers/vhost
+ mod:
+ 	${MAKE} -C `pwd`/../.. M=`pwd`/vhost_test V=${V}
+diff --git a/tools/virtio/linux/spinlock.h b/tools/virtio/linux/spinlock.h
+new file mode 100644
+index 000000000000..028e3cdcc5d3
+--- /dev/null
++++ b/tools/virtio/linux/spinlock.h
+@@ -0,0 +1,56 @@
++#ifndef SPINLOCK_H_STUB
++#define SPINLOCK_H_STUB
++
++#include <pthread.h>
++
++typedef pthread_spinlock_t  spinlock_t;
++
++static inline void spin_lock_init(spinlock_t *lock)
++{
++	int r = pthread_spin_init(lock, 0);
++	assert(!r);
++}
++
++static inline void spin_lock(spinlock_t *lock)
++{
++	int ret = pthread_spin_lock(lock);
++	assert(!ret);
++}
++
++static inline void spin_unlock(spinlock_t *lock)
++{
++	int ret = pthread_spin_unlock(lock);
++	assert(!ret);
++}
++
++static inline void spin_lock_bh(spinlock_t *lock)
++{
++	spin_lock(lock);
++}
++
++static inline void spin_unlock_bh(spinlock_t *lock)
++{
++	spin_unlock(lock);
++}
++
++static inline void spin_lock_irq(spinlock_t *lock)
++{
++	spin_lock(lock);
++}
++
++static inline void spin_unlock_irq(spinlock_t *lock)
++{
++	spin_unlock(lock);
++}
++
++static inline void spin_lock_irqsave(spinlock_t *lock, unsigned long f)
++{
++	spin_lock(lock);
++}
++
++static inline void spin_unlock_irqrestore(spinlock_t *lock, unsigned long f)
++{
++	spin_unlock(lock);
++}
++
++#endif
+diff --git a/tools/virtio/linux/virtio.h b/tools/virtio/linux/virtio.h
+index 5d90254ddae4..363b98228301 100644
+--- a/tools/virtio/linux/virtio.h
++++ b/tools/virtio/linux/virtio.h
+@@ -3,6 +3,7 @@
+ #define LINUX_VIRTIO_H
+ #include <linux/scatterlist.h>
+ #include <linux/kernel.h>
++#include <linux/spinlock.h>
+ 
+ struct device {
+ 	void *parent;
+@@ -12,6 +13,7 @@ struct virtio_device {
+ 	struct device dev;
+ 	u64 features;
+ 	struct list_head vqs;
++	spinlock_t vqs_list_lock;
+ };
+ 
+ struct virtqueue {
 -- 
 2.30.2
 
