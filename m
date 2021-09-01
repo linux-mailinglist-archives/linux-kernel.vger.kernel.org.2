@@ -2,74 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A163FE285
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60EE03FE28A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345128AbhIAStH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34000 "EHLO
+        id S243755AbhIASwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344530AbhIAStE (ORCPT
+        with ESMTP id S244423AbhIASwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:49:04 -0400
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57393C061764
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:48:07 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id B214B1F9D4;
-        Wed,  1 Sep 2021 20:48:05 +0200 (CEST)
-Subject: Re: [PATCH v4 1/5] interconnect: qcom: sdm660: Commonize RPM-QoS
-To:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>
-References: <20210901121518.152481-1-y.oudjana@protonmail.com>
- <20210901121518.152481-2-y.oudjana@protonmail.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <9af0f031-101e-53b4-514e-9ead44320f4e@somainline.org>
-Date:   Wed, 1 Sep 2021 20:48:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Wed, 1 Sep 2021 14:52:43 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8D8C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:51:45 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id q11-20020a9d4b0b000000b0051acbdb2869so971812otf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 11:51:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WpMrHx2xrjALxDo2+qnSwUhR97fWUA7NiL67FnzoBbs=;
+        b=e0RtJHV/x1N7itMnl6FhNdz+AWN7rEUsOba8pGEb/GUQf8QzzGBLO/6NdlnDBtHOAL
+         mZTXK4KBBNp4du3di0UJDTtOGr2LkdET0W2eonjElLZhYtR3s4XT2F0/509vgq3dZUv/
+         xpMndW6JBu3Uc/gxHrcFHsach9TXFR+W7WmwlaUBqId3hsBiXeqjSdJRjZwLBiBaApA3
+         8AhN3BCUrjIgmcYriMpojx7fTh1kFKpSTudSN3SXNFsLwl50DSbqomsVHQ691wcTRzJz
+         I0nEDJsrLfT7YBpSxVVmncx9NZdGd5+tKZVl2SuQ1G0r115AYm+uPOfDPTbFz8CNitj1
+         1yFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WpMrHx2xrjALxDo2+qnSwUhR97fWUA7NiL67FnzoBbs=;
+        b=qbwxQ8EnWkOMNdlt7m5OhTLPWKO52hTpYNFiWiJuhBd6nwZt4lTDaqOXr/BWUEhDjW
+         6AAGe6BLrAVsg/h23bUf7jm6gh4GUW0u84angdx0608mjmR+KdinRjO+uOI+oARr3wd2
+         K+joxnsGhc57C1kGu8x1QxODie1d7aU3Gyi0PIHgf2LkLnmkwRRWXPhViudRB4EabgPP
+         Sdbv6sgSlSWX6EczDK4oQS3MIu0Hjkgyst4ZqaYtvV5kVWkKtGfv8MfDK1IQDK0cnWIe
+         OazmUk7YKANO45dx6Tau+eUOydsMYTon5b5V8EfDvQAhwNItOnDqwnOvvczMV9wxjEkl
+         vPKA==
+X-Gm-Message-State: AOAM533YTLx3nGrpFb0UEgflXb21V8B0PVa8IfQDMJR4Y3MXSKLSiQ3Q
+        /5OSIKnCT5zcb/ofYhlytoX6nQH4J+0X97OaPRD83wjk
+X-Google-Smtp-Source: ABdhPJw8t4vsqP/7Q9PflPtjlczDwGn9Ca+aw7OmDyIMY4azGHA/6DyJI9o6HDQ2fy8EvZf613m/TDLq3FE8zD/9Jl0=
+X-Received: by 2002:a05:6830:4:: with SMTP id c4mr765105otp.23.1630522305399;
+ Wed, 01 Sep 2021 11:51:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210901121518.152481-2-y.oudjana@protonmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAPM=9txeN-qCRJvYV552zdo2H9iVy1ruVrq=YdZBP5Dmpc3Jmg@mail.gmail.com>
+ <CAHk-=whP_v5nrK9B5vefnZS6Xz3-vZDFxUvSmW8W82hhNh67sA@mail.gmail.com> <CAHk-=wiyPpwYLBXTdXi0DyMFhTKsTstmqU-LLjgD5fNxUnB_WA@mail.gmail.com>
+In-Reply-To: <CAHk-=wiyPpwYLBXTdXi0DyMFhTKsTstmqU-LLjgD5fNxUnB_WA@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 1 Sep 2021 14:51:33 -0400
+Message-ID: <CADnq5_N9GgDuAdLmYED19Mx2z=5fhc1JCPj5_icFMZ-U1bO-Sg@mail.gmail.com>
+Subject: Re: [git pull] drm for 5.15-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Dave Airlie <airlied@gmail.com>,
+        John Clements <john.clements@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 01/09/21 14:15, Yassine Oudjana ha scritto:
-> SoCs such as MSM8996 also control bus QoS in a similar fashion to SDM660,
-> with some paths being controlled by RPM and others directly by the AP.
-> Move relevant functions and defines to a new object so that they can be used
-> in multiple drivers.
-> 
-> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+On Wed, Sep 1, 2021 at 2:33 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Wed, Sep 1, 2021 at 10:57 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > No worries. I enjoyed seeing the AMD code-names in the conflicts, they
+> > are using positively kernel-level naming.
+>
+> Oh, I spoke too soon.
+>
+> The conflict in amdgpu_ras_eeprom.c is trivial to fix up, but the
+> *code* is garbage.
+>
+> It does this (from commit 14fb496a84f1: "drm/amdgpu: set RAS EEPROM
+> address from VBIOS"):
+>
+>         ...
+>         control->i2c_address = 0;
+>
+>         if (amdgpu_atomfirmware_ras_rom_addr(adev,
+> (uint8_t*)&control->i2c_address))
+>         {
+>                 if (control->i2c_address == 0xA0)
+>                         control->i2c_address = 0;
+>         ...
+>
+> and honestly, that just hurts to look at. It's completely wrong, even
+> if it happens to work on a little-endian machine.
+>
+> Yes, yes, BE is irrelevant, and doubly so for an AMD GPU driver, but still.
+>
+> It's assigning a 8-bit value to a 32-bit entity by doing a pointer
+> cast on the address, and then mixing things up by using/assigning to
+> that same field.
+>
+> That's just *wrong* and nasty.
+>
+> Oh, the resolution would be easy - just take that broken code as-is -
+> but I can't actually make myself do that.
+>
+> So I fixed it up to not be that incredibly ugly garbage.
+>
+> Please holler if I did something wrong.
 
-Hey guys!
+Fix looks good.  Thanks,
 
-I'm waiting for the interconnect RPM-QoS commonization to be merged as I have fresh
-interconnect drivers for MSM8998 and MSM8976, ready to send, that are also using
-the very same QoS mechanism as SDM660.
-
-Yassine, please check Shawn's recent patches for SDM660 interconnect, which are
-fixing some bits for the QoS implementation and adding some required clocks to the
-SDM660 interconnect driver.
-
-Adding Shawn to the Ccs as to make him aware of this patch;
-also adding Marijn and Konrad from SoMainline as probably interested parties.
-
-Cheers!
-- Angelo
+Alex
