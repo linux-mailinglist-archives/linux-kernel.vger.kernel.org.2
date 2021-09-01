@@ -2,103 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C413A3FD88D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE6B3FD899
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238659AbhIALT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 07:19:26 -0400
-Received: from mga01.intel.com ([192.55.52.88]:30490 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239191AbhIALTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 07:19:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="240988251"
-X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
-   d="scan'208";a="240988251"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 04:18:22 -0700
-X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
-   d="scan'208";a="498795819"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 04:18:20 -0700
-Received: from andy by smile with local (Exim 4.95-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mLOG1-00GLXp-8T;
-        Wed, 01 Sep 2021 14:18:17 +0300
-Date:   Wed, 1 Sep 2021 14:18:17 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>
-Subject: Re: drivers/crypto/qat/qat_c62xvf/adf_c62xvf_hw_data.c:102:28:
- warning: taking address of packed member 'csr_ops' of class or structure
- 'adf_hw_device_data' may result in an unaligned pointer value
-Message-ID: <YS9heetW+E+1Nr1w@smile.fi.intel.com>
-References: <202109010001.5r11IRSX-lkp@intel.com>
+        id S242472AbhIALV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 07:21:29 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:61197 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234678AbhIALV2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 07:21:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1630495232; x=1662031232;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=9GsEs5OGmH4RMxW3IdDWH0nI6ePaUnPFoWEE+mXeB7M=;
+  b=s5R/L7K4AInholvS5Y0Taw8bHu/oroA4xB7F5dQyBpVnDHVBI8JOsM48
+   xx77sPq+T86e3HqfbcmXN82juedb89t+gH5X04Hcma6msQ2rW99c4YeVx
+   2JbQEzcdVurPGJ7excQjXpEFcL0F9+6s9ra0oiCiFHY3jdVV5soepd4On
+   U=;
+X-IronPort-AV: E=Sophos;i="5.84,369,1620691200"; 
+   d="scan'208";a="136822473"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-546beb46.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 01 Sep 2021 11:20:25 +0000
+Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-546beb46.us-east-1.amazon.com (Postfix) with ESMTPS id 0D4F4A0962;
+        Wed,  1 Sep 2021 11:20:19 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.52) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Wed, 1 Sep 2021 11:20:11 +0000
+Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
+To:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>
+CC:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>
+References: <20210819230602.GU543798@ziepe.ca>
+ <CAKMK7uGgQWcs4Va6TGN9akHSSkmTs1i0Kx+6WpeiXWhJKpasLA@mail.gmail.com>
+ <20210820123316.GV543798@ziepe.ca>
+ <0fc94ac0-2bb9-4835-62b8-ea14f85fe512@amazon.com>
+ <20210820143248.GX543798@ziepe.ca>
+ <da6364b7-9621-a384-23b0-9aa88ae232e5@amazon.com>
+ <fa124990-ee0c-7401-019e-08109e338042@amd.com>
+ <e2c47256-de89-7eaa-e5c2-5b96efcec834@amazon.com>
+ <6b819064-feda-b70b-ea69-eb0a4fca6c0c@amd.com>
+ <a9604a39-d08f-6263-4c5b-a2bc9a70583d@nvidia.com>
+ <20210824173228.GE543798@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <b961e093-b14c-fcdc-e2fc-6ca00cde000c@amazon.com>
+Date:   Wed, 1 Sep 2021 14:20:02 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202109010001.5r11IRSX-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210824173228.GE543798@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.162.52]
+X-ClientProxiedBy: EX13D27UWB003.ant.amazon.com (10.43.161.195) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 12:19:08AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   b91db6a0b52e019b6bdabea3f1dbe36d85c7e52c
-> commit: f9c697c4bfc6002d92e8015b65fe2a79acadb416 crypto: qat - split transport CSR access logic
-> date:   10 months ago
-> config: i386-randconfig-r012-20210831 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 4b1fde8a2b681dad2ce0c082a5d6422caa06b0bc)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f9c697c4bfc6002d92e8015b65fe2a79acadb416
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout f9c697c4bfc6002d92e8015b65fe2a79acadb416
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=i386 
+On 24/08/2021 20:32, Jason Gunthorpe wrote:
+> On Tue, Aug 24, 2021 at 10:27:23AM -0700, John Hubbard wrote:
+>> On 8/24/21 2:32 AM, Christian König wrote:
+>>> Am 24.08.21 um 11:06 schrieb Gal Pressman:
+>>>> On 23/08/2021 13:43, Christian König wrote:
+>>>>> Am 21.08.21 um 11:16 schrieb Gal Pressman:
+>>>>>> On 20/08/2021 17:32, Jason Gunthorpe wrote:
+>>>>>>> On Fri, Aug 20, 2021 at 03:58:33PM +0300, Gal Pressman wrote:
+>> ...
+>>>>>> IIUC, we're talking about three different exporter "types":
+>>>>>> - Dynamic with move_notify (requires ODP)
+>>>>>> - Dynamic with revoke_notify
+>>>>>> - Static
+>>>>>>
+>>>>>> Which changes do we need to make the third one work?
+>>>>> Basically none at all in the framework.
+>>>>>
+>>>>> You just need to properly use the dma_buf_pin() function when you start using a
+>>>>> buffer (e.g. before you create an attachment) and the dma_buf_unpin() function
+>>>>> after you are done with the DMA-buf.
+>>>> I replied to your previous mail, but I'll ask again.
+>>>> Doesn't the pin operation migrate the memory to host memory?
+>>>
+>>> Sorry missed your previous reply.
+>>>
+>>> And yes at least for the amdgpu driver we migrate the memory to host
+>>> memory as soon as it is pinned and I would expect that other GPU drivers
+>>> do something similar.
+>>
+>> Well...for many topologies, migrating to host memory will result in a
+>> dramatically slower p2p setup. For that reason, some GPU drivers may
+>> want to allow pinning of video memory in some situations.
+>>
+>> Ideally, you've got modern ODP devices and you don't even need to pin.
+>> But if not, and you still hope to do high performance p2p between a GPU
+>> and a non-ODP Infiniband device, then you would need to leave the pinned
+>> memory in vidmem.
+>>
+>> So I think we don't want to rule out that behavior, right? Or is the
+>> thinking more like, "you're lucky that this old non-ODP setup works at
+>> all, and we'll make it work by routing through host/cpu memory, but it
+>> will be slow"?
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    clang-14: warning: optimization flag '-falign-jumps=0' is not supported [-Wignored-optimization-argument]
->    In file included from drivers/crypto/qat/qat_c62xvf/adf_c62xvf_hw_data.c:3:
->    In file included from drivers/crypto/qat/qat_c62xvf/../qat_common/adf_accel_devices.h:5:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:5:
->    In file included from include/linux/context_tracking_state.h:5:
->    In file included from include/linux/percpu.h:6:
->    In file included from include/linux/preempt.h:78:
->    In file included from arch/x86/include/asm/preempt.h:7:
->    In file included from include/linux/thread_info.h:38:
->    arch/x86/include/asm/thread_info.h:183:13: warning: calling '__builtin_frame_address' with a nonzero argument is unsafe [-Wframe-address]
->            oldframe = __builtin_frame_address(1);
->                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/x86/include/asm/thread_info.h:185:11: warning: calling '__builtin_frame_address' with a nonzero argument is unsafe [-Wframe-address]
->                    frame = __builtin_frame_address(2);
+> I think it depends on the user, if the user creates memory which is
+> permanently located on the GPU then it should be pinnable in this way
+> without force migration. But if the memory is inherently migratable
+> then it just cannot be pinned in the GPU at all as we can't
+> indefinately block migration from happening eg if the CPU touches it
+> later or something.
 
-Funny, but it's not related to the reported issue.
-
->                            ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> >> drivers/crypto/qat/qat_c62xvf/adf_c62xvf_hw_data.c:102:28: warning: taking address of packed member 'csr_ops' of class or structure 'adf_hw_device_data' may result in an unaligned pointer value [-Waddress-of-packed-member]
->            adf_gen2_init_hw_csr_ops(&hw_data->csr_ops);
->                                      ^~~~~~~~~~~~~~~~
->    3 warnings generated.
-
-
-Why on Earth the struct adf_hw_device_data, that contains a lot of pointers,
-marked as __packed?! That __packed has to be dropped.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+So are we OK with exporters implementing dma_buf_pin() without migrating the memory?
+If so, do we still want a move_notify callback for non-dynamic importers? A noop?
