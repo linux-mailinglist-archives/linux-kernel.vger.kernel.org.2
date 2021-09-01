@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996823FDC2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CDA3FDC25
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345265AbhIAMrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:47:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43544 "EHLO mail.kernel.org"
+        id S1345479AbhIAMrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:47:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345276AbhIAMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345278AbhIAMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 1 Sep 2021 08:42:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2C7D61207;
-        Wed,  1 Sep 2021 12:38:08 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DE9D611CC;
+        Wed,  1 Sep 2021 12:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499889;
-        bh=dVkNF5RLoDqMfNKE7FzU+5N5tY8h+mel0CLlKqy+e6s=;
+        s=korg; t=1630499891;
+        bh=ikYgbC297fiIFBz93rM5Hb9aIdkxMY/8iUMvt0FWg1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K9NF6JNw6PLL1ff3fAhvIO94BV7DWI9bW7kCOYE1Hwjv3q84uosHyGnNbpZZwGRMO
-         rpL6Wu9jsZdT6MYhqwd+mLPCzbV42y9s7jF0UFZCT55+IkeBAsYxvJm7ltv3COAPrB
-         v5VXHARNcHaVuoj1uzb7QnTFANy36RFAwo78B/us=
+        b=RCRn4VkcaI/JbNRcNFip79Kcl0lpo64lt/ImVwINiZSxJtLm9uob2EASziUa1LLhH
+         2oVvLnS2ECI8dOjpew4QXjwaODlgsK+rlM3y38Y6mWB3brWEbtFdEBk+47iY5Gjsgu
+         y9zuM3ouIqG5Uj/l+k8P8B/j7i6lfXvTZ3H1IuQc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
-        Song Yoong Siang <yoong.siang.song@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.13 022/113] net: stmmac: fix kernel panic due to NULL pointer dereference of buf->xdp
-Date:   Wed,  1 Sep 2021 14:27:37 +0200
-Message-Id: <20210901122302.721001578@linuxfoundation.org>
+        stable@vger.kernel.org, Matthew Brost <matthew.brost@intel.com>,
+        John Harrison <John.C.Harrison@Intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.13 023/113] drm/i915: Fix syncmap memory leak
+Date:   Wed,  1 Sep 2021 14:27:38 +0200
+Message-Id: <20210901122302.761468316@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
 References: <20210901122301.984263453@linuxfoundation.org>
@@ -40,61 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Song Yoong Siang <yoong.siang.song@intel.com>
+From: Matthew Brost <matthew.brost@intel.com>
 
-commit 2b9fff64f03219d78044d1ab40dde8e3d42e968a upstream.
+commit a63bcf08f0efb5348105bb8e0e1e8c6671077753 upstream.
 
-Ensure a valid XSK buffer before proceed to free the xdp buffer.
+A small race exists between intel_gt_retire_requests_timeout and
+intel_timeline_exit which could result in the syncmap not getting
+free'd. Rather than work to hard to seal this race, simply cleanup the
+syncmap on fini.
 
-The following kernel panic is observed without this patch:
+unreferenced object 0xffff88813bc53b18 (size 96):
+  comm "gem_close_race", pid 5410, jiffies 4294917818 (age 1105.600s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 0a 00 00 00  ................
+    00 00 00 00 00 00 00 00 6b 6b 6b 6b 06 00 00 00  ........kkkk....
+  backtrace:
+    [<00000000120b863a>] __sync_alloc_leaf+0x1e/0x40 [i915]
+    [<00000000042f6959>] __sync_set+0x1bb/0x240 [i915]
+    [<0000000090f0e90f>] i915_request_await_dma_fence+0x1c7/0x400 [i915]
+    [<0000000056a48219>] i915_request_await_object+0x222/0x360 [i915]
+    [<00000000aaac4ee3>] i915_gem_do_execbuffer+0x1bd0/0x2250 [i915]
+    [<000000003c9d830f>] i915_gem_execbuffer2_ioctl+0x405/0xce0 [i915]
+    [<00000000fd7a8e68>] drm_ioctl_kernel+0xb0/0xf0 [drm]
+    [<00000000e721ee87>] drm_ioctl+0x305/0x3c0 [drm]
+    [<000000008b0d8986>] __x64_sys_ioctl+0x71/0xb0
+    [<0000000076c362a4>] do_syscall_64+0x33/0x80
+    [<00000000eb7a4831>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-RIP: 0010:xp_free+0x5/0x40
-Call Trace:
-stmmac_napi_poll_rxtx+0x332/0xb30 [stmmac]
-? stmmac_tx_timer+0x3c/0xb0 [stmmac]
-net_rx_action+0x13d/0x3d0
-__do_softirq+0xfc/0x2fb
-? smpboot_register_percpu_thread+0xe0/0xe0
-run_ksoftirqd+0x32/0x70
-smpboot_thread_fn+0x1d8/0x2c0
-kthread+0x169/0x1a0
-? kthread_park+0x90/0x90
-ret_from_fork+0x1f/0x30
----[ end trace 0000000000000002 ]---
-
-Fixes: bba2556efad6 ("net: stmmac: Enable RX via AF_XDP zero-copy")
-Cc: <stable@vger.kernel.org> # 5.13.x
-Suggested-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Matthew Brost <matthew.brost@intel.com>
+Fixes: 531958f6f357 ("drm/i915/gt: Track timeline activeness in enter/exit")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: John Harrison <John.C.Harrison@Intel.com>
+Signed-off-by: John Harrison <John.C.Harrison@Intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210730195342.110234-1-matthew.brost@intel.com
+(cherry picked from commit faf890985e30d5e88cc3a7c50c1bcad32f89ab7c)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/i915/gt/intel_timeline.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -4925,6 +4925,10 @@ read_again:
+--- a/drivers/gpu/drm/i915/gt/intel_timeline.c
++++ b/drivers/gpu/drm/i915/gt/intel_timeline.c
+@@ -127,6 +127,15 @@ static void intel_timeline_fini(struct r
  
- 		prefetch(np);
- 
-+		/* Ensure a valid XSK buffer before proceed */
-+		if (!buf->xdp)
-+			break;
+ 	i915_vma_put(timeline->hwsp_ggtt);
+ 	i915_active_fini(&timeline->active);
 +
- 		if (priv->extend_desc)
- 			stmmac_rx_extended_status(priv, &priv->dev->stats,
- 						  &priv->xstats,
-@@ -4945,10 +4949,6 @@ read_again:
- 			continue;
- 		}
++	/*
++	 * A small race exists between intel_gt_retire_requests_timeout and
++	 * intel_timeline_exit which could result in the syncmap not getting
++	 * free'd. Rather than work to hard to seal this race, simply cleanup
++	 * the syncmap on fini.
++	 */
++	i915_syncmap_free(&timeline->sync);
++
+ 	kfree(timeline);
+ }
  
--		/* Ensure a valid XSK buffer before proceed */
--		if (!buf->xdp)
--			break;
--
- 		/* XSK pool expects RX frame 1:1 mapped to XSK buffer */
- 		if (likely(status & rx_not_ls)) {
- 			xsk_buff_free(buf->xdp);
 
 
