@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074AF3FE632
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A26B3FE644
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242237AbhIAXi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 19:38:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44478 "EHLO
+        id S243187AbhIAXjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 19:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235987AbhIAXi6 (ORCPT
+        with ESMTP id S242439AbhIAXi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 19:38:58 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D49C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:38:00 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id n18so9617pgm.12
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:38:00 -0700 (PDT)
+        Wed, 1 Sep 2021 19:38:59 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554F8C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:38:02 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id 2so176998pfo.8
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:38:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RxdL+VgiEITm77P72mXqj1juue9pFyRDnlJ226qSqOk=;
-        b=Jbl9R7AetfXUtlTSqQfQeMt5goiVd9fYlyH88ROwH+bq+V9EQVo5UoZSeOShvsQISz
-         Sg+XZ7RNLdgSBf4shb2MQTL3sGq9ldrNVXHbq8vqnOSst5D39rfjszhKkU18XZ5z/OiV
-         2f+YgNBt7eBWEDcDexEYe+vyafUeY4b0a5m4Y=
+        bh=VvPvP0nRsxQ3kkX46yakySUL2CaA4lERj2AqfItHK10=;
+        b=DwoX6EoLPPfWYs1uWTq18V8HVxBlevpESu8u4ShmR/6zIERDN5mRiVY3osfpafSTuf
+         xwTY1WuqT9sGbJG8RMqfCyKnJkFuIpiREO+0P7yznZjqdkamQkvs4eiv59hVUM7tKPpw
+         lTOzSQM923igOuXmyStOd8iiJIiT3aVbsMcO0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RxdL+VgiEITm77P72mXqj1juue9pFyRDnlJ226qSqOk=;
-        b=D2FZsrsx4Z1GlT/Spi+SHJgzGF8v8FTstEoP34v5mmQzcH8snclIgK9LQE4b/JP8vx
-         BDGYgzwhJO/Xd4W2KFRGwboW4maPR+zQGw71TdqKVBdGBI3JbwaSb7by86albae+1n8o
-         OvKiEXxuw/OsnG2sO5eApdXINC7P6FRD+oM3yUgviHRiH2oVlH5XpruQgmdMO8W9O2Fa
-         3BhZQoIfVn87M0XalrtTIzjjWmB1GctM5Hxc/O11fwlWsfihfoDUN5Z6fclN9ekWxwNK
-         ocAQepPvu/7luJDqHjW/8PF9OKYcPUO1Ga/+6lWaO6t16S59H4+52taqiqLwj0l31gZm
-         Pbvg==
-X-Gm-Message-State: AOAM531W1pwBB+JpaVF+Ys/HSmhCe0wrBmM2G+kms564eusBiTo0NqpD
-        ThZBcrztPHfv36HHvYgc07zxOQ==
-X-Google-Smtp-Source: ABdhPJxT2cTby+PY8aMY7trtE+gYWoZMu+G6MSnOS/xdIcoJvz/BnEcjifQyuX5rHVbTHt9iSDGEFw==
-X-Received: by 2002:a65:6785:: with SMTP id e5mr194762pgr.199.1630539480296;
-        Wed, 01 Sep 2021 16:38:00 -0700 (PDT)
+        bh=VvPvP0nRsxQ3kkX46yakySUL2CaA4lERj2AqfItHK10=;
+        b=mSDOoNZkXAfiWa+ON3u/q+l4gx0YCM9q+BTMYizP40YJwLjOVLF+N/WTI7srYunVyL
+         kBzuKoqvExGuqlcgFeKMigLs11Ocrm5WDMRfRyEesaeZVmKz8MLtCfhZnAhenXexigf4
+         NRtvXtiFj0DyOUd8O1m7ifshu91FC+XG8604WMxff1AZoM4vaDsF9RqeZTjJFIfpc+SR
+         fLZy4tZ94/OzaDy8qvmtLI4UOM9E7VqyCSXrKsAxpAvGqFUvkMdgufK/+4DVFvoaK0gM
+         NAx+v6w6QrtKmn1Jlx5juqawqSkmFMkqDszUs3ldzyqqHgXzcX+C3ATbvSI1hm0HwCrj
+         LVOw==
+X-Gm-Message-State: AOAM533WqJXy5RN+2HB6k7Y7CrpT7q94V/mh9ZSb7l5pR0lD/H85vpzU
+        NAYVxauXbGty0fZN671fFZR6uw==
+X-Google-Smtp-Source: ABdhPJx9VQ87Fi72gnvZ9lzkqt8HoWMcG2PGehz0JFkvV2InNksLBR3JT/5Uy3vn1h2GdcYLwpSd5A==
+X-Received: by 2002:a63:b91d:: with SMTP id z29mr207957pge.436.1630539481956;
+        Wed, 01 Sep 2021 16:38:01 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h4sm46709pgn.6.2021.09.01.16.37.59
+        by smtp.gmail.com with ESMTPSA id a142sm80572pfd.172.2021.09.01.16.37.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 01 Sep 2021 16:37:59 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Josh Poimboeuf <jpoimboe@redhat.com>
 Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jessica Yu <jeyu@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        linux-arch@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
+        linux-arch@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
         Alexander Egorenkov <egorenar@linux.ibm.com>,
@@ -61,68 +61,103 @@ Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
         Sami Tolvanen <samitolvanen@google.com>,
         linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
         linux-hardening@vger.kernel.org
-Subject: [PATCH 2/4] vmlinux.lds.h: Split .static_call_sites from .static_call_tramp_key
-Date:   Wed,  1 Sep 2021 16:37:55 -0700
-Message-Id: <20210901233757.2571878-3-keescook@chromium.org>
+Subject: [PATCH 3/4] module: Use a list of strings for ro_after_init sections
+Date:   Wed,  1 Sep 2021 16:37:56 -0700
+Message-Id: <20210901233757.2571878-4-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210901233757.2571878-1-keescook@chromium.org>
 References: <20210901233757.2571878-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1632; h=from:subject; bh=56oU5NReCT+37O4WLHXZ85h0ziLuQWtTwnsC2nNGLJ8=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhMA7UhoSvWtO81e3TFXafwBzjsYLbvYhWr+qC5Mo9 +YqFZyKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYTAO1AAKCRCJcvTf3G3AJj4mEA CSolxL5P/inpJXqh5EZIzgbFYXSHCVgnhosBd2gSUUcJj7WSJTZKprQS8u0LuwbErkqEw5P+/6ipkW lbpyRwIuzRVbCO7ZTJ2QT8HJ60iBvotFZruzGxSlYjp6XW3UY2nJWh9jFgxVrfCaJzlTeptyUnGAbh vs8FwUxVjvMzUFi2cEHkul9wJRYM7qTO/YDcEPQ2Gzo9lakGbj+4Y66qRws7Zf9/3CLnT6vgtZ+ICT 644LxnGmKXWnWmnJPA6QoQfV6lxwa0NeaQOgK6FWb0g75fctrINKtL/+gbVtS6e87FiLJAfrzfMSNw P0f9NjntwVFyXAMnBtvaBX9QrDDICK/rdadtB1CyCEOd06U21nWvT4WuiN14nsEA/eNH5oDBiBEKLd zr9ZjasRAKRRH/haIyrdPs66nWV7JAaanN/fFIZzBg6t9Fe83MWvwlz2rvX4GGn6t85czeapWUKG8Z qGBamm9ADH6O55H4wXjtC+DYNY9Jy8ZnL4sLmQ2XfUt4+1SR5n56hy9By+AKUPnfZeWdRa3oHz+zF8 NwVOZciw3hwIXJKobG6aeuXF8HqFthU643Iqx/PvdZtEvHpCBIyffQDTpFf9hzd06dPdd+OqvtLXIz 3EztP6U/BTUINzzamAGRcchHXQ1fwVh197yy0Qsx6Hj3L9Fq+USBuVbQtqnA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3174; h=from:subject; bh=Ok3nFwFwt1wHYs8UapY8Q4P5KHfmbREksRDyR3/xqoI=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhMA7VgNoX/TyNQu2ZCFYBTWLfvfIumM2gB94VWaFO dyRIIB2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYTAO1QAKCRCJcvTf3G3AJvAOD/ wPxMVQA6Vmz9d/0SDtspYT1KR1euVl+8Xff9h/ruugR3+rxx879yMUqBZPSVI3PdxwW99f5QcPqSEx b6O5ZSyJQXu98M1iITlyEN/WFiGSXUngPrnfylUHR3k4iGCJQKyuwmImfCtwanF3SBLJtkyFyrLnQv JwtSOBUR3J7wNVtJdytQitI5RRho2650NunUlCWZ0k5vxdc3QteoDmDuucrInUi83T0a3a/KF7PfPs r+TecNOCliA7TRzSgoUNrek3xZy7DEFWRSdSqA1a7NNzoBXOV0AryDuIozXbSY3FdFMOnN7ByucqK5 tt88/yTrCBkICByhkDons8qyuCsZrI0LxkjjUeV5+yOgB4IXqZKHu/Qw02WymJPXZH+WMg1uHbs7Qi aKBsi+k4keSRr0LrTJ+B7cKef+cph9og0yxzvdkCjSNXE04R48baHJ8WWwddqPmZr2trA2UY8MUUb1 smxYUUdThpmqUfVz4t6txKUG/cuQTBXAYaPekWDFtGgwnJUbfCZbgtkd42ak3Jxn6R6E04xOHpMmW8 fkQUDa1HqwCGSBQojbwo22f1Y4Tx4vT6PTCxdDDFHmgemg8IjGUMZACqwSQhCaSPb3KnUxZEfLvvY2 HbLpZQzbst9yCYNXOsrK8I2bsUaV8Bnvg5AsKLJRknfGCApgdbIeuFfreNjw==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These two sections are ro_after_init and .rodata respectively. While
-they will ultimately become read-only, there's no reason to confuse
-their macro names.
+Instead of open-coding the section names, use a list for the sections that
+need to be marked read-only after init. Unfortunately, it seems we can't
+do normal section merging with scripts/module.lds.S as ld.bfd doesn't
+correctly update symbol tables. For more details, see commit 6a3193cdd5e5
+("kbuild: lto: Merge module sections if and only if CONFIG_LTO_CLANG
+is enabled").
 
 Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Jessica Yu <jeyu@kernel.org>
 Cc: Josh Poimboeuf <jpoimboe@redhat.com>
 Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
 Cc: linux-arch@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- include/asm-generic/vmlinux.lds.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/asm-generic/vmlinux.lds.h |  4 +++-
+ kernel/module.c                   | 28 ++++++++++++++++------------
+ 2 files changed, 19 insertions(+), 13 deletions(-)
 
 diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 70c74fdf9c9b..4781a8154254 100644
+index 4781a8154254..d532baadaeae 100644
 --- a/include/asm-generic/vmlinux.lds.h
 +++ b/include/asm-generic/vmlinux.lds.h
-@@ -396,17 +396,22 @@
- 	. = __start_init_task + THREAD_SIZE;				\
- 	__end_init_task = .;
+@@ -418,7 +418,9 @@
  
-+/* Sorted during __init. */
- #define JUMP_TABLE_RO_AFTER_INIT_DATA					\
- 	. = ALIGN(8);							\
- 	__start___jump_table = .;					\
- 	KEEP(*(__jump_table))						\
- 	__stop___jump_table = .;
+ /*
+  * Allow architectures to handle ro_after_init data on their
+- * own by defining an empty RO_AFTER_INIT_DATA.
++ * own by defining an empty RO_AFTER_INIT_DATA. Any sections
++ * added here must be explicitly marked SHF_RO_AFTER_INIT
++ * via module_sections_ro_after_init[] in kernel/module.c.
+  */
+ #ifndef RO_AFTER_INIT_DATA
+ #define RO_AFTER_INIT_DATA						\
+diff --git a/kernel/module.c b/kernel/module.c
+index ed13917ea5f3..b0ff82cc48fe 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -3514,10 +3514,21 @@ static bool blacklisted(const char *module_name)
+ }
+ core_param(module_blacklist, module_blacklist, charp, 0400);
  
-+/* Sorted during __init. */
- #define STATIC_CALL_RO_AFTER_INIT_DATA					\
- 	. = ALIGN(8);							\
- 	__start_static_call_sites = .;					\
- 	KEEP(*(.static_call_sites))					\
- 	__stop_static_call_sites = .;					\
++/*
++ * List of sections to be marked read-only after init. This should match
++ * the RO_AFTER_INIT_DATA macro in include/asm-generic/vmlinux.lds.h.
++ */
++static const char * const module_sections_ro_after_init[] = {
++	".data..ro_after_init",
++	"__jump_table",
++	NULL
++};
 +
-+#define STATIC_CALL_RODATA						\
-+	. = ALIGN(8);							\
- 	__start_static_call_tramp_key = .;				\
- 	KEEP(*(.static_call_tramp_key))					\
- 	__stop_static_call_tramp_key = .;
-@@ -434,6 +439,7 @@
- 		__start_rodata = .;					\
- 		*(.rodata) *(.rodata.*)					\
- 		SCHED_RODATA						\
-+		STATIC_CALL_RODATA					\
- 		RO_AFTER_INIT_DATA	/* Read only after init */	\
- 		. = ALIGN(8);						\
- 		__start___tracepoints_ptrs = .;				\
+ static struct module *layout_and_allocate(struct load_info *info, int flags)
+ {
+ 	struct module *mod;
+ 	unsigned int ndx;
++	const char * const *section;
+ 	int err;
+ 
+ 	err = check_modinfo(info->mod, info, flags);
+@@ -3543,18 +3554,11 @@ static struct module *layout_and_allocate(struct load_info *info, int flags)
+ 	 * layout_sections() can put it in the right place.
+ 	 * Note: ro_after_init sections also have SHF_{WRITE,ALLOC} set.
+ 	 */
+-	ndx = find_sec(info, ".data..ro_after_init");
+-	if (ndx)
+-		info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
+-	/*
+-	 * Mark the __jump_table section as ro_after_init as well: these data
+-	 * structures are never modified, with the exception of entries that
+-	 * refer to code in the __init section, which are annotated as such
+-	 * at module load time.
+-	 */
+-	ndx = find_sec(info, "__jump_table");
+-	if (ndx)
+-		info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
++	for (section = module_sections_ro_after_init; *section; section++) {
++		ndx = find_sec(info, *section);
++		if (ndx)
++			info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
++	}
+ 
+ 	/*
+ 	 * Determine total sizes, and put offsets in sh_entsize.  For now
 -- 
 2.30.2
 
