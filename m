@@ -2,175 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4115B3FD20A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CF73FD211
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232298AbhIAEJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 00:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54664 "EHLO
+        id S232648AbhIAET2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 00:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhIAEJz (ORCPT
+        with ESMTP id S229441AbhIAET1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 00:09:55 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 155EFC061575;
-        Tue, 31 Aug 2021 21:08:59 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id z18so2560699ybg.8;
-        Tue, 31 Aug 2021 21:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4T6MpzYWaQVP7um/e/Du343DWTOvDE+C03sra0qPBIk=;
-        b=WGBmb8M/vFrlx3/toZSSDbVUD9cViBwQl1L2jjh9j/wzYwyKMSWmyCreoQBYHhBqJQ
-         3BxQaCdVs1AwUVzJzUO63+RJiucH+Q4R3yEvITR0Iaq8iShJUHNsx78n4AwJ8JDVHzfu
-         abr9jg1DtNXvOtVUYuzlEHqNtNtz7FxvgdK+WDCjtBJsSTekL/sBf2G2UA30lrKLn3NX
-         PQ/kTneSQchfHlpw1zuEO3gtD2WdrhPql0tmp/f5nPTJjodc6jbYLwGRGZm6wYTgnZss
-         9l21FjpO2C1HwOpPMYxpNsi0bbwV0/TMCF9CJ95v3GSxtSu5APFulU/+2A+aBIyHVmVB
-         Cczw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4T6MpzYWaQVP7um/e/Du343DWTOvDE+C03sra0qPBIk=;
-        b=cqZojPVL1pQiw986u05RrIX8XBo1RxkbBcK9kJ8mXSHwK2bPo4N3lKxSNV+cY78Jxu
-         qks1r3e7Nce7sILB7ZB1Dw4oAf52bFpODCmnAkSC7FkAQDe4COXsErOdbyHqV0w1xC+u
-         tzA1bcUWJzKA3y+Znl+OuRtNqzLzpz+LTXE84xEky5l/3nHeNkpMHEbQssYG6ETF/Qp+
-         u6VVxpZI9eDOudjnXUYQVS4tALGeEXE+dhsPlkGXaqeqZGXhNwFQvGBl0jbIr36PWLi3
-         pwm6l7iup2gAmEWNxnsyYqV32YwKgPo7yuCCKQm1sBxdQs1B2YN15D+tuXmdkenbwHgE
-         LwzA==
-X-Gm-Message-State: AOAM531OBa52AVoqbwEDinWy0OPQaz8L0Jeno6P9Es3nnUJ9ygTRLRHs
-        N8Qb9EbFxT4vlOExOR5JhQ7Wd7jCp5fLYuq83+c=
-X-Google-Smtp-Source: ABdhPJx0KQievz8CGByVCBB9wA9HsV7RMN304eYLbOtjjIXRLcrg9gUf8unSMQ0zCkQ6R0wNKFLyjwssmsKlAH8lwWg=
-X-Received: by 2002:a25:4941:: with SMTP id w62mr35416729yba.230.1630469338253;
- Tue, 31 Aug 2021 21:08:58 -0700 (PDT)
+        Wed, 1 Sep 2021 00:19:27 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBCEC061575;
+        Tue, 31 Aug 2021 21:18:30 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GzrQV6ysBz9sRN;
+        Wed,  1 Sep 2021 14:18:26 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630469908;
+        bh=E9tsZTTqR9vbxLmCakTeubeQtIsl4XhvknXxX/iWkqE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cY0ipTD25tlicSa9VGZXtkniIGGLSACgvID/6Xxid9FHP6sf5mV7TKOyAeFVpVGVI
+         PQk7t6t1Sl3WDUviQZGeUXbiLS8HnsoJAfRK+ouduSPxpyf22t2DbaXmcnOgfaULwk
+         dQJZNjZ7lgksSVuew/ikKu21kIqGWejcKiyRkQfaCgqGokRIMK+Fcjxl4hh5/3nSee
+         C5PUFawCQwHVdxsQKtkxFj4jFevVJSdNzrgHiERkz3fn6RiytkfivgCb8rHe1VNh41
+         juHTXRZcphQol4y6abOltTmqy1ox4qKs+h8z1usU1vMS02QmFRmcxdi+RBRK+kZrS2
+         SY7BNUQ/02qyQ==
+Date:   Wed, 1 Sep 2021 14:18:26 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5p?= =?UTF-8?B?Zw==?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: linux-next: manual merge of the vhost tree with the driver-core
+ tree
+Message-ID: <20210901141826.0c21c43e@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210901003517.3953145-1-songliubraving@fb.com> <20210901003517.3953145-4-songliubraving@fb.com>
-In-Reply-To: <20210901003517.3953145-4-songliubraving@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 31 Aug 2021 21:08:47 -0700
-Message-ID: <CAEf4BzZrEcZFNSH=YDi_NmT2oqaOhmgQvPv0THXKy4haEzBFvQ@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 3/3] selftests/bpf: add test for bpf_get_branch_snapshot
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/oMktb5DbwdM3bizovvr7h/M";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 7:01 PM Song Liu <songliubraving@fb.com> wrote:
->
-> This test uses bpf_get_branch_snapshot from a fexit program. The test uses
-> a target function (bpf_testmod_loop_test) and compares the record against
-> kallsyms. If there isn't enough record matching kallsyms, the test fails.
->
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
+--Sig_/oMktb5DbwdM3bizovvr7h/M
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-LGTM, few minor nits below
+Hi all,
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Today's linux-next merge of the vhost tree got a conflict in:
 
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  14 ++-
->  .../bpf/prog_tests/get_branch_snapshot.c      | 101 ++++++++++++++++++
->  .../selftests/bpf/progs/get_branch_snapshot.c |  44 ++++++++
->  tools/testing/selftests/bpf/trace_helpers.c   |  37 +++++++
->  tools/testing/selftests/bpf/trace_helpers.h   |   5 +
->  5 files changed, 200 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
->  create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot.c
->
+  drivers/virtio/virtio.c
 
-[...]
+between commit:
 
-> +
-> +void test_get_branch_snapshot(void)
-> +{
-> +       struct get_branch_snapshot *skel = NULL;
-> +       int err;
-> +
-> +       if (create_perf_events()) {
-> +               test__skip();  /* system doesn't support LBR */
-> +               goto cleanup;
-> +       }
-> +
-> +       skel = get_branch_snapshot__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "get_branch_snapshot__open_and_load"))
-> +               goto cleanup;
-> +
-> +       err = kallsyms_find("bpf_testmod_loop_test", &skel->bss->address_low);
-> +       if (!ASSERT_OK(err, "kallsyms_find"))
-> +               goto cleanup;
-> +
-> +       err = kallsyms_find_next("bpf_testmod_loop_test", &skel->bss->address_high);
-> +       if (!ASSERT_OK(err, "kallsyms_find_next"))
-> +               goto cleanup;
-> +
-> +       err = get_branch_snapshot__attach(skel);
-> +       if (!ASSERT_OK(err, "get_branch_snapshot__attach"))
-> +               goto cleanup;
-> +
-> +       /* trigger the program */
-> +       system("cat /sys/kernel/bpf_testmod > /dev/null 2>& 1");
+  fc7a6209d571 ("bus: Make remove callback return void")
 
-ugh :( see prog_tests/module_attach.c, we can extract and reuse
-trigger_module_test_read() and trigger_module_test_write()
+from the driver-core tree and commit:
 
-> +
-> +       if (skel->bss->total_entries < 16) {
-> +               /* too few entries for the hit/waste test */
-> +               test__skip();
-> +               goto cleanup;
-> +       }
-> +
+  fd704f203ca1 ("virtio: Bind virtio device to device-tree node")
 
-[...]
+from the vhost tree.
 
-> +SEC("fexit/bpf_testmod_loop_test")
-> +int BPF_PROG(test1, int n, int ret)
-> +{
-> +       long i;
-> +
-> +       total_entries = bpf_get_branch_snapshot(entries, sizeof(entries), 0);
-> +       total_entries /= sizeof(struct perf_branch_entry);
-> +
-> +       bpf_printk("total_entries %lu\n", total_entries);
-> +
-> +       for (i = 0; i < PERF_MAX_BRANCH_SNAPSHOT; i++) {
-> +               if (i >= total_entries)
-> +                       break;
-> +               if (in_range(entries[i].from) && in_range(entries[i].to))
-> +                       test1_hits++;
-> +               else if (!test1_hits)
-> +                       wasted_entries++;
-> +               bpf_printk("i %d from %llx to %llx", i, entries[i].from,
-> +                          entries[i].to);
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-debug leftovers? this will be polluting trace_pipe unnecessarily; same
-for above total_entries bpf_printk()
+--=20
+Cheers,
+Stephen Rothwell
 
-> +       }
-> +       return 0;
-> +}
-> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-> index e7a19b04d4eaf..5100a169b72b1 100644
-> --- a/tools/testing/selftests/bpf/trace_helpers.c
-> +++ b/tools/testing/selftests/bpf/trace_helpers.c
-> @@ -1,4 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
-> +#include <ctype.h>
->  #include <stdio.h>
->  #include <stdlib.h>
->  #include <string.h>
-> @@ -117,6 +118,42 @@ int kallsyms_find(const char *sym, unsigned long long *addr)
->         return err;
->  }
->
+diff --cc drivers/virtio/virtio.c
+index 1ea0c1f6a1fd,c46cc1fbc7ae..000000000000
+--- a/drivers/virtio/virtio.c
++++ b/drivers/virtio/virtio.c
+@@@ -292,6 -293,10 +293,8 @@@ static void virtio_dev_remove(struct de
+ =20
+  	/* Acknowledge the device's existence again. */
+  	virtio_add_status(dev, VIRTIO_CONFIG_S_ACKNOWLEDGE);
++=20
++ 	of_node_put(dev->dev.of_node);
+ -
+ -	return 0;
+  }
+ =20
+  static struct bus_type virtio_bus =3D {
 
-[...]
+--Sig_/oMktb5DbwdM3bizovvr7h/M
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEu/xIACgkQAVBC80lX
+0GwcfAf/fHk1KXEeIh2Zcw5zMvJeuU9gY+FDyFg3fwti+52qFOg767ofBGJfyijR
+JNU9NNNrJeu7CxhTKnj6pAIiJFdhuiNXRYTbbmDXatHpyphCZXyn2ly6eH4GCpnm
+P3CmPB32g6yvUQiZEr51cXaDMyHNIVwsKTzsv5Jf6T/wIZ2iwLzYC/j9G3I/s4NJ
+ZkmX6EOtpbb97y+Gkq808G0oNR7xvNjuViRNxgfn92TMzrlI6R7YjhaEzFUGmyiC
+BN7itKg6tv7AbgiwRyAbUWBKWqFjiPGFa+NxVTuhxXUU+xdAvGIQW7+QDgkVLQ4K
+24Aadh7P5fcXdVyZ7b6tQNMpZiGj0A==
+=En91
+-----END PGP SIGNATURE-----
+
+--Sig_/oMktb5DbwdM3bizovvr7h/M--
