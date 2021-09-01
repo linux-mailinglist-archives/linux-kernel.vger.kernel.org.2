@@ -2,141 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A1B3FE182
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C53D3FE18B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344493AbhIARyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:54:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38357 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230007AbhIARyw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:54:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630518834;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GiGBsFuqRCBAADb2SjkWOZz2ABAMuafv28YaxO7HPu8=;
-        b=Y+EqcuQoQDB9DHPb4hvPP3kknmNJ/60ZTTPELczR1dwcTt2BvmeOmXz1ViyggnzL/kL9c7
-        58wo+f5S+EDs7YEePWxmfM+N2oLLnu+s3IYsPDBGWRo5mZ1IIJL04CCHwVxfOgFHYphOLO
-        fIWEoo8S5Le/PvuOzQyGQNB07jAmewI=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-ZV-vdDmLNdesneW86zCglA-1; Wed, 01 Sep 2021 13:53:53 -0400
-X-MC-Unique: ZV-vdDmLNdesneW86zCglA-1
-Received: by mail-wm1-f71.google.com with SMTP id p5-20020a7bcc85000000b002e7563efc4cso112701wma.4
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:53:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=GiGBsFuqRCBAADb2SjkWOZz2ABAMuafv28YaxO7HPu8=;
-        b=NMQgOc98wVybzaXoF6UT2q7dVe+tklI/gvfVT443IBCaYK49i4zkdLi8EYFJY0c0O3
-         Un0oPYNHz5OqQiO2lqe8o0Pxcnm8lyWUQ7YApXSfJlAL3/YstYBfEDT0G7+lD5n+3gGN
-         iydPdKe30AnL0AbE/glzpvVLit03GVh6AoazbOzZcIcetV5bK+6nhJhP9Or6xhIy23lR
-         aTuqOTsiBpVC5nxo7fxEU0zjaLnW59SOzUTqyBUubuLmydq8MydMbMRe+to6u3o+zyRA
-         dvyn8N3sChSM8Jn3b+gZxRoA5gQHEHgF1J+9WziBC3SQ4bW/iW4AKtLxJTjAR9/6n342
-         B6xQ==
-X-Gm-Message-State: AOAM532KcnoqZUHVqAP6Zp55ZPYCSA0+M+6FPrwcUpEZDDx6BtmsKRwa
-        9xLDfPhtkkSE6V4/hOZG5sOD0UJ6R78UlUn7ZMJCs8Mc/ZLWxbx2cVpNa+v/fuFKVDRC8SS2yI/
-        lR92ppXSqf8sW9jE/nwQZBi/1
-X-Received: by 2002:a1c:20d7:: with SMTP id g206mr717775wmg.153.1630518832800;
-        Wed, 01 Sep 2021 10:53:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzId1EJQWuCXd4wDXaMAQVTM5bqXfZadYfJq5hfT4+k85e5baXrLRntNgIiFg9LFycxTroBXw==
-X-Received: by 2002:a1c:20d7:: with SMTP id g206mr717764wmg.153.1630518832630;
-        Wed, 01 Sep 2021 10:53:52 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
-        by smtp.gmail.com with ESMTPSA id r10sm127194wrc.85.2021.09.01.10.53.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 10:53:52 -0700 (PDT)
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
- memory
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     jejb@linux.ibm.com, Andy Lutomirski <luto@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-References: <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
- <YS6lIg6kjNPI1EgF@google.com>
- <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
- <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
- <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
- <a259e10d-39c9-c4a5-0ab4-f42a1b9bfaee@redhat.com>
- <0d6b2a7e22f5e27e03abc21795124ccd66655966.camel@linux.ibm.com>
- <1a4a1548-7e14-c2b4-e210-cc60a2895acd@redhat.com>
- <4b863492fd33dce28a3a61662d649987b7d5066d.camel@linux.ibm.com>
- <214ca837-3102-d6d1-764e-6b4cd1bab368@redhat.com>
- <YS+9VHzC0XQF/9NK@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <3b63a5d9-30e4-2ae8-2f01-a92b758e81de@redhat.com>
-Date:   Wed, 1 Sep 2021 19:53:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1344602AbhIARzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:55:45 -0400
+Received: from rosenzweig.io ([138.197.143.207]:45114 "EHLO rosenzweig.io"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236754AbhIARzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 13:55:44 -0400
+From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Subject: [PATCH 1/5] drm: Add drm_fixed_16_16 helper
+Date:   Wed,  1 Sep 2021 13:54:27 -0400
+Message-Id: <20210901175431.14060-1-alyssa@rosenzweig.io>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YS+9VHzC0XQF/9NK@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.21 19:50, Sean Christopherson wrote:
-> On Wed, Sep 01, 2021, David Hildenbrand wrote:
->>>>> Well not necessarily, but it depends how clever we want to get.  If
->>>>> you look over on the OVMF/edk2 list, there's a proposal to do guest
->>>>> migration via a mirror VM that invokes a co-routine embedded in the
->>>>> OVMF binary:
->>>>
->>>> Yes, I heard of that. "Interesting" design.
->>>
->>> Heh, well what other suggestion do you have?  The problem is there
->>> needs to be code somewhere to perform some operations that's trusted by
->>> both the guest and the host.  The only element for a confidential VM
->>> that has this shared trust is the OVMF firmware, so it seems logical to
->>> use it.
->>
->> <offtopic>
->>
->> Let me put it this way: I worked with another architecture that doesn't
->> fault on access of a secure page, but instead automatically exports/encrypts
-> 
-> I thought s390 does fault on insecure accesses to secure pages, and it's the
-> kernel's fault handler that "automatically" converts the page?  E.g. trap 0x3d
-> -> do_secure_storage_access() -> arch_make_page_accessible().
+This constructs a fixed 16.16 rational, useful to specify the minimum
+and maximum scaling in drm_atomic_helper_check_plane_state. It is
+open-coded as a macro in multiple drivers, so let's share the helper.
 
-"automatic" as in "the kernel can do it easily automatically under the 
-hood when accessing such memory", yes that's what I meant :)
+Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+---
+ include/drm/drm_fixed.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
+index 553210c02ee0..df1f369b4918 100644
+--- a/include/drm/drm_fixed.h
++++ b/include/drm/drm_fixed.h
+@@ -208,4 +208,9 @@ static inline s64 drm_fixp_exp(s64 x)
+ 	return sum;
+ }
+ 
++static inline int drm_fixed_16_16(s32 mult, s32 div)
++{
++	return (mult << 16) / div;
++}
++
+ #endif
 -- 
-Thanks,
-
-David / dhildenb
+2.30.2
 
