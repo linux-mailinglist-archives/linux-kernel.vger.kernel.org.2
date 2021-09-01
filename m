@@ -2,119 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E16B43FD4F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6D53FD4F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242766AbhIAILs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242975AbhIAILr (ORCPT
+        id S242958AbhIAILU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:11:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39296 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242766AbhIAILR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:11:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1788C061575;
-        Wed,  1 Sep 2021 01:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UgE8oOhcYItxHRaauZXzcwpXXnO6S/obdfdZNIGK2Do=; b=QevioqBDRV8/nKus9Pug5tKlNu
-        AZ4DiCNiajHdIj07MCyAdy3mNlq76VE16WWDJ3Y5eOHLLnvIdvm1pESHDMpHa6ZO5oEcaAUN50QKa
-        hivgaGlPqumUNuCIMOeT4xK2whX+mO5t0i+Gjfs74ndrwhW2K6LSOqr9ZZJ+68SBgjrn+4tWprhw4
-        GwFVKo6icE5+yZidn6MwcbWW8efynMNrkr7s+VCO6bwheb675Un54nJjZPUBJLxvuqxuwhEDGQ5oF
-        NYQeyABJGn5kCDPtf8nqk0z+kL5ediPFl+/cNbvT7hw2o5nBtctnk/EAKxVhL0MfWaG+U9PSwAkyh
-        EHED9TPA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLLJY-0021cZ-Ej; Wed, 01 Sep 2021 08:09:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CDBC830030A;
-        Wed,  1 Sep 2021 10:09:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B36C720AEBF26; Wed,  1 Sep 2021 10:09:43 +0200 (CEST)
-Date:   Wed, 1 Sep 2021 10:09:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kernel-janitors@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [bug report] locking/rtmutex: Return success on deadlock for
- ww_mutex waiters
-Message-ID: <YS81R45p7mYbhmrT@hirez.programming.kicks-ass.net>
-References: <20210831082152.GC9846@kili>
+        Wed, 1 Sep 2021 04:11:17 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id ACB58224B8;
+        Wed,  1 Sep 2021 08:10:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630483818; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GHTY9I51VG4C7aTV8oDtjnPiG0Wf5YKwTyayXS/Ire4=;
+        b=ILCGDl0sDjQqHhpMDxu05cHf7kKxPWynTyaTuP+hTxgRpsq4gZpONxzwWlqt958hOfg9WW
+        9vnj3ooGOTm2ZAE/21dJtE2RsDuNMuymiwoJcMrmIwatyxasL1Pqg+qjh7d+lMJJUW5jKK
+        tJv/0rqvwKPw4Kc9auN8DbvUSd+WRWo=
+Received: from suse.cz (mhocko.udp.ovpn2.prg.suse.de [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 57C29A3B9B;
+        Wed,  1 Sep 2021 08:10:18 +0000 (UTC)
+Date:   Wed, 1 Sep 2021 10:10:17 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, ccross@google.com,
+        sumit.semwal@linaro.org, dave.hansen@intel.com,
+        keescook@chromium.org, willy@infradead.org,
+        kirill.shutemov@linux.intel.com, vbabka@suse.cz,
+        hannes@cmpxchg.org, corbet@lwn.net, viro@zeniv.linux.org.uk,
+        rdunlap@infradead.org, kaleshsingh@google.com, peterx@redhat.com,
+        rppt@kernel.org, peterz@infradead.org, catalin.marinas@arm.com,
+        vincenzo.frascino@arm.com, chinwen.chang@mediatek.com,
+        axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com,
+        will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com,
+        tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com,
+        pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk,
+        legion@kernel.org, eb@emlix.com, songmuchun@bytedance.com,
+        viresh.kumar@linaro.org, thomascedeno@google.com,
+        sashal@kernel.org, cxfcosmos@gmail.com, linux@rasmusvillemoes.dk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v8 2/3] mm: add a field to store names for private
+ anonymous memory
+Message-ID: <YS81abHD8KZMrX8D@dhcp22.suse.cz>
+References: <20210827191858.2037087-1-surenb@google.com>
+ <20210827191858.2037087-3-surenb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210831082152.GC9846@kili>
+In-Reply-To: <20210827191858.2037087-3-surenb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 11:21:52AM +0300, Dan Carpenter wrote:
-> Hello Peter Zijlstra,
+On Fri 27-08-21 12:18:57, Suren Baghdasaryan wrote:
+[...]
+> +static void replace_vma_anon_name(struct vm_area_struct *vma, const char *name)
+> +{
+> +	if (!name) {
+> +		free_vma_anon_name(vma);
+> +		return;
+> +	}
+> +
+> +	if (vma->anon_name) {
+> +		/* Should never happen, to dup use dup_vma_anon_name() */
+> +		WARN_ON(vma->anon_name == name);
 
-Hi Dan :-)
+What is the point of this warning?
 
-> This is a semi-automatic email about new static checker warnings.
-> 
-> The patch a055fcc132d4: "locking/rtmutex: Return success on deadlock
-> for ww_mutex waiters" from Aug 26, 2021, leads to the following
-> Smatch complaint:
-> 
->     kernel/locking/rtmutex.c:756 rt_mutex_adjust_prio_chain()
->     error: we previously assumed 'orig_waiter' could be null (see line 644)
-> 
-> kernel/locking/rtmutex.c
->    643		 */
->    644		if (orig_waiter && !rt_mutex_owner(orig_lock))
->                     ^^^^^^^^^^^
-> A lot of this code assumes "orig_waiter" can be NULL.
-> 
-
->    735		/*
->    736		 * [6] check_exit_conditions_2() protected by task->pi_lock and
->    737		 * lock->wait_lock.
->    738		 *
->    739		 * Deadlock detection. If the lock is the same as the original
->    740		 * lock which caused us to walk the lock chain or if the
->    741		 * current lock is owned by the task which initiated the chain
->    742		 * walk, we detected a deadlock.
->    743		 */
->    744		if (lock == orig_lock || rt_mutex_owner(lock) == top_task) {
->                     ^^^^^^^^^^^^^^^^^
-> This might mean it's a false positive, but Smatch isn't clever enough to
-> figure it out.  And I'm stupid too!  Plus lazy...  and ugly.
-> 
->    745			ret = -EDEADLK;
->    746	
->    747			/*
->    748			 * When the deadlock is due to ww_mutex; also see above. Don't
->    749			 * report the deadlock and instead let the ww_mutex wound/die
->    750			 * logic pick which of the contending threads gets -EDEADLK.
->    751			 *
->    752			 * NOTE: assumes the cycle only contains a single ww_class; any
->    753			 * other configuration and we fail to report; also, see
->    754			 * lockdep.
->    755			 */
->    756			if (IS_ENABLED(CONFIG_PREEMPT_RT) && orig_waiter->ww_ctx)
->                                                              ^^^^^^^^^^^^^^^^^^^
-> Unchecked dereference.
-
-
-This is difficult... and I'm glad you flagged it. The normal de-boost
-path is through rt_mutex_adjust_prio() and that has: .orig_lock == NULL
-&& .orig_waiter == NULL. And as such it would never trigger the above
-case.
-
-However, there is remove_waiter() which is called on rt_mutex_lock()'s
-failure paths and that doesn't have .orig_lock == NULL, and as such
-*could* conceivably trigger this.
-
-Let me figure out what the right thing to do is.
-
-Thanks!
+> +
+> +		/* Same name, nothing to do here */
+> +		if (!strcmp(name, vma->anon_name))
+> +			return;
+> +
+> +		free_vma_anon_name(vma);
+> +	}
+> +	vma->anon_name = kstrdup(name, GFP_KERNEL);
+> +}
+-- 
+Michal Hocko
+SUSE Labs
