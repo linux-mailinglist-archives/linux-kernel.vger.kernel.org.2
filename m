@@ -2,138 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDF23FE3ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B923FE41E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344169AbhIAUXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 16:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344607AbhIAUWR (ORCPT
+        id S231447AbhIAUd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 16:33:27 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57236 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230109AbhIAUdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 16:22:17 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A21C0617A8;
-        Wed,  1 Sep 2021 13:21:03 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id j4so1559052lfg.9;
-        Wed, 01 Sep 2021 13:21:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to;
-        bh=pJPyEbgDyxweejpYMD0yQbh+6nlqZ4ZcT25PJQyPPOk=;
-        b=pmj0972aM1frEH65nbRcoB7jrY8gTCr7sumnzbQp5BgL/Dmc9vL4c5KZUFMpPAcccC
-         Li+YdWnRsQ4VABSzrLxnLwHKwYqxv8AAndz8wLdiHOj4eKkvmZRzms73sljrszxXvqji
-         DPbCjbu92vI7yCMh0GjX1FngiayfstVEowP8QkKIIfVrLSvJ85NvE5KgPDsLLatBlj5K
-         cQipi3UD5wig3j09mM1AUR7/qOaOxp8XKZYxPTBw65HfLw7+uaL4jGm55u9B4kHH9KXC
-         mB7JKG3UQVFTQYKWZAdW1jKN/668PZkFWR+NO2ddEapUlbA6LIU8k0/+cMjNPItl667u
-         PMgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to;
-        bh=pJPyEbgDyxweejpYMD0yQbh+6nlqZ4ZcT25PJQyPPOk=;
-        b=NTIvCduWCgXyzjM2E1r2gnjuUrrYMFIrRy4OmlVXa+5D0Uivc6chagnuECSuaOp+IT
-         VkGsKNXGw/1crE3WNQX6uw/Rz7bPRa0WgMtIDzJDgbPkHJD9fDNxT1iIW7WDi+3zC8TW
-         5X+nqiymmTo3hUGCBbzoSy43rbdouWdiPtab0+i4mRNFN2CQAn+2MVxzeSSY8rFEguEF
-         G/XGKmTDFDfJ4Tm0nlHw+Rf0qIf/JYhYNYq4BatSx8c/5Q0WrdkM3sSfmNOAXZMPARIx
-         ELhimMefUpwTXkeMnUzEHHCE3+jb6cJQXSfoxcPowJ3wpssMectxVmkZbeOhgLF/hWDi
-         u0EQ==
-X-Gm-Message-State: AOAM530dt3wohcspKOamMItyAd2sQ7tGBZJDa4jvtrg60RYQLQVrFsad
-        BkPSuYyPqcEm7BYcsJzqCO4=
-X-Google-Smtp-Source: ABdhPJx3WkDXZWFAcAsSQ2LvjNhW6y9+inRcy8YF161mA7fjHvamtzs7D/xQjJ2r0wx+PH24K+epWw==
-X-Received: by 2002:a05:6512:2148:: with SMTP id s8mr900047lfr.317.1630527661817;
-        Wed, 01 Sep 2021 13:21:01 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.229.213])
-        by smtp.gmail.com with UTF8SMTPSA id j1sm71761lji.124.2021.09.01.13.21.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 13:21:01 -0700 (PDT)
-Content-Type: multipart/mixed; boundary="------------dKn190a6SKK3cd0KsH6Gjlpw"
-Message-ID: <983049ea-3023-8dbe-cbb4-51fb5661d2cb@gmail.com>
-Date:   Wed, 1 Sep 2021 23:21:00 +0300
+        Wed, 1 Sep 2021 16:33:23 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 781EB202E1;
+        Wed,  1 Sep 2021 20:22:53 +0000 (UTC)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 25A0113B03;
+        Wed,  1 Sep 2021 20:22:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QYQbOxrhL2HtBQAAMHmgww
+        (envelope-from <dave@stgolabs.net>); Wed, 01 Sep 2021 20:22:50 +0000
+Date:   Wed, 1 Sep 2021 13:22:42 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
+ fastpath reader
+Message-ID: <20210901202242.2bzb6fbwyorfux3f@offworld>
+References: <20210901150627.620830-1-boqun.feng@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.1
-Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in xfrm_get_default
-Content-Language: en-US
-To:     syzbot <syzbot+b2be9dd8ca6f6c73ee2d@syzkaller.appspotmail.com>,
-        antony.antony@secunet.com, christian.langrock@secunet.com,
-        davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
-References: <0000000000005a8dc805caf4b92e@google.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <0000000000005a8dc805caf4b92e@google.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210901150627.620830-1-boqun.feng@gmail.com>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------dKn190a6SKK3cd0KsH6Gjlpw
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Wed, 01 Sep 2021, Boqun Feng wrote:
+>diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
+>index 4ba15088e640..a1886fd8bde6 100644
+>--- a/kernel/locking/rwbase_rt.c
+>+++ b/kernel/locking/rwbase_rt.c
+>@@ -41,6 +41,12 @@
+>  * The risk of writer starvation is there, but the pathological use cases
+>  * which trigger it are not necessarily the typical RT workloads.
+>  *
+>+ * Fast-path orderings:
+>+ * The lock/unlock of readers can run in fast paths: lock and unlock are only
+>+ * atomic ops, and there is no inner lock to provide ACQUIRE and RELEASE
+>+ * semantics of rwbase_rt. Atomic ops then should be stronger than _acquire()
+>+ * and _release() to provide necessary ordering guarantee.
 
-On 9/1/21 23:15, syzbot wrote:
-> Hello,
-> 
-> syzbot tried to test the proposed patch but the build/boot failed:
-> 
-> arch/x86/kernel/setup.c:916:6: error: implicit declaration of function 'acpi_mps_check' [-Werror=implicit-function-declaration]
-> arch/x86/kernel/setup.c:1110:2: error: implicit declaration of function 'acpi_table_upgrade' [-Werror=implicit-function-declaration]
-> arch/x86/kernel/setup.c:1112:2: error: implicit declaration of function 'acpi_boot_table_init' [-Werror=implicit-function-declaration]
-> arch/x86/kernel/setup.c:1120:2: error: implicit declaration of function 'early_acpi_boot_init'; did you mean 'early_cpu_init'? [-Werror=implicit-function-declaration]
-> arch/x86/kernel/setup.c:1162:2: error: implicit declaration of function 'acpi_boot_init' [-Werror=implicit-function-declaration]
-> 
-> 
-> Tested on:
-> 
-> commit:         9e9fb765 Merge tag 'net-next-5.15' of git://git.kernel..
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git master
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b2be9dd8ca6f6c73ee2d
-> compiler:
-> patch:          https://syzkaller.appspot.com/x/patch.diff?x=14a2a34d300000
-> 
+Perhaps the following instead?
 
-Ok, net-next is also broken....
++ * Ordering guarantees: As with any locking primitive, (load)-ACQUIRE and
++ * (store)-RELEASE semantics are guaranteed for lock and unlock operations,
++ * respectively; such that nothing leaks out of the critical region. When
++ * writers are involved this is provided through the rtmutex. However, for
++ * reader fast-paths, the atomics provide at least such guarantees.
 
-#syz test:
-git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git master
+Also, I think you could remove most of the comments wrt _acquire or _release
+in the fastpath for each ->readers atomic op, unless it isn't obvious.
 
+>+ *
+>  * Common code shared between RT rw_semaphore and rwlock
+>  */
+>
+>@@ -53,6 +59,7 @@ static __always_inline int rwbase_read_trylock(struct rwbase_rt *rwb)
+>	 * set.
+>	 */
+>	for (r = atomic_read(&rwb->readers); r < 0;) {
 
+Unrelated, but we probably wanna get rid of these abusing for-loops throughout.
 
+>+		/* Fully-ordered if cmpxchg() succeeds, provides ACQUIRE */
+>		if (likely(atomic_try_cmpxchg(&rwb->readers, &r, r + 1)))
 
-With regards,
-Pavel Skripkin
---------------dKn190a6SKK3cd0KsH6Gjlpw
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-net-xfrm-fix-shift-out-of-bounds-in-xfrm_get_default.patch"
-Content-Disposition: attachment;
- filename*0="0001-net-xfrm-fix-shift-out-of-bounds-in-xfrm_get_default.pa";
- filename*1="tch"
-Content-Transfer-Encoding: base64
+As Waiman suggested, this can be _acquire() - albeit we're only missing
+an L->L for acquire semantics upon returning, per the control dependency
+already guaranteeing L->S. That way we would loop with _relaxed().
 
-RnJvbSAxNzJjMzUxODY5ZTU5MjA2MzBmMjdkMjA5NzZiMDc5ZmNhMzA2NTBjIE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBQYXZlbCBTa3JpcGtpbiA8cGFza3JpcGtpbkBnbWFp
-bC5jb20+CkRhdGU6IFdlZCwgMSBTZXAgMjAyMSAyMTo1NToyNSArMDMwMApTdWJqZWN0OiBb
-UEFUQ0hdIG5ldDogeGZybTogZml4IHNoaWZ0LW91dC1vZi1ib3VuZHMgaW4geGZybV9nZXRf
-ZGVmYXVsdAoKLyogLi4uICovCgpTaWduZWQtb2ZmLWJ5OiBQYXZlbCBTa3JpcGtpbiA8cGFz
-a3JpcGtpbkBnbWFpbC5jb20+Ci0tLQogYXJjaC94ODYva2VybmVsL3NldHVwLmMgfCAxICsK
-IG5ldC94ZnJtL3hmcm1fdXNlci5jICAgIHwgMyArKysKIDIgZmlsZXMgY2hhbmdlZCwgNCBp
-bnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvYXJjaC94ODYva2VybmVsL3NldHVwLmMgYi9h
-cmNoL3g4Ni9rZXJuZWwvc2V0dXAuYwppbmRleCBkYTBhNGI2NDg4MGYuLmM5ZTNhMTdiOTRm
-OSAxMDA2NDQKLS0tIGEvYXJjaC94ODYva2VybmVsL3NldHVwLmMKKysrIGIvYXJjaC94ODYv
-a2VybmVsL3NldHVwLmMKQEAgLTIzLDYgKzIzLDcgQEAKICNpbmNsdWRlIDxsaW51eC91c2Iv
-eGhjaS1kYmdwLmg+CiAjaW5jbHVkZSA8bGludXgvc3RhdGljX2NhbGwuaD4KICNpbmNsdWRl
-IDxsaW51eC9zd2lvdGxiLmg+CisjaW5jbHVkZSA8bGludXgvYWNwaS5oPgogCiAjaW5jbHVk
-ZSA8dWFwaS9saW51eC9tb3VudC5oPgogCmRpZmYgLS1naXQgYS9uZXQveGZybS94ZnJtX3Vz
-ZXIuYyBiL25ldC94ZnJtL3hmcm1fdXNlci5jCmluZGV4IGI3Yjk4NjUyMGRjNy4uYTFkZDM4
-NTI1OTU3IDEwMDY0NAotLS0gYS9uZXQveGZybS94ZnJtX3VzZXIuYworKysgYi9uZXQveGZy
-bS94ZnJtX3VzZXIuYwpAQCAtMjAwNyw2ICsyMDA3LDkgQEAgc3RhdGljIGludCB4ZnJtX2dl
-dF9kZWZhdWx0KHN0cnVjdCBza19idWZmICpza2IsIHN0cnVjdCBubG1zZ2hkciAqbmxoLAog
-CiAJcl91cCA9IG5sbXNnX2RhdGEocl9ubGgpOwogCisJaWYgKHVwLT5kaXJtYXNrID49IFhG
-Uk1fVVNFUlBPTElDWV9ESVJNQVNLX01BWCkKKwkJcmV0dXJuIC1FSU5WQUw7CisKIAlyX3Vw
-LT5hY3Rpb24gPSAoKG5ldC0+eGZybS5wb2xpY3lfZGVmYXVsdCAmICgxIDw8IHVwLT5kaXJt
-YXNrKSkgPj4gdXAtPmRpcm1hc2spOwogCXJfdXAtPmRpcm1hc2sgPSB1cC0+ZGlybWFzazsK
-IAlubG1zZ19lbmQocl9za2IsIHJfbmxoKTsKLS0gCjIuMzMuMAoK
---------------dKn190a6SKK3cd0KsH6Gjlpw--
+>			return 1;
+>	}
+>@@ -162,6 +169,8 @@ static __always_inline void rwbase_read_unlock(struct rwbase_rt *rwb,
+>	/*
+>	 * rwb->readers can only hit 0 when a writer is waiting for the
+>	 * active readers to leave the critical section.
+>+	 *
+>+	 * dec_and_test() is fully ordered, provides RELEASE.
+>	 */
+>	if (unlikely(atomic_dec_and_test(&rwb->readers)))
+>		__rwbase_read_unlock(rwb, state);
+>@@ -172,7 +181,11 @@ static inline void __rwbase_write_unlock(struct rwbase_rt *rwb, int bias,
+> {
+>	struct rt_mutex_base *rtm = &rwb->rtmutex;
+>
+>-	atomic_add(READER_BIAS - bias, &rwb->readers);
+>+	/*
+>+	 * _release() is needed in case that reader is in fast path, pairing
+>+	 * with atomic_try_cmpxchg() in rwbase_read_trylock(), provides RELEASE
+>+	 */
+>+	(void)atomic_add_return_release(READER_BIAS - bias, &rwb->readers);
 
+Hmmm while defined, there are no users atomic_add_return_release (yet?). I think
+this is because the following is preferred when the return value is not really
+wanted, but only the Rmw ordering it provides:
+
++       smp_mb__before_atomic(); /* provide RELEASE semantics */
+	atomic_add(READER_BIAS - bias, &rwb->readers);
+	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+	rwbase_rtmutex_unlock(rtm);
+
+>	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+>	rwbase_rtmutex_unlock(rtm);
+> }
+
+Thanks,
+Davidlohr
