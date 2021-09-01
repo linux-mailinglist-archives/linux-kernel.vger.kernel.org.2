@@ -2,114 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EE03FE28A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A062D3FE28C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243755AbhIASwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
+        id S242301AbhIASxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244423AbhIASwn (ORCPT
+        with ESMTP id S238538AbhIASxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:52:43 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8D8C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:51:45 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id q11-20020a9d4b0b000000b0051acbdb2869so971812otf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 11:51:45 -0700 (PDT)
+        Wed, 1 Sep 2021 14:53:08 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA6FC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:52:07 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id 2so556351pfo.8
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 11:52:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=raspberrypi.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WpMrHx2xrjALxDo2+qnSwUhR97fWUA7NiL67FnzoBbs=;
-        b=e0RtJHV/x1N7itMnl6FhNdz+AWN7rEUsOba8pGEb/GUQf8QzzGBLO/6NdlnDBtHOAL
-         mZTXK4KBBNp4du3di0UJDTtOGr2LkdET0W2eonjElLZhYtR3s4XT2F0/509vgq3dZUv/
-         xpMndW6JBu3Uc/gxHrcFHsach9TXFR+W7WmwlaUBqId3hsBiXeqjSdJRjZwLBiBaApA3
-         8AhN3BCUrjIgmcYriMpojx7fTh1kFKpSTudSN3SXNFsLwl50DSbqomsVHQ691wcTRzJz
-         I0nEDJsrLfT7YBpSxVVmncx9NZdGd5+tKZVl2SuQ1G0r115AYm+uPOfDPTbFz8CNitj1
-         1yFg==
+        bh=sbf/teTkcTse7KRUsjEqIHjpIzQLStMnWn28ldspcAs=;
+        b=SIvdDffiIgZk4ci4f9wIl69Mcot7yqIpGiCvURLKYQ5QpxM5nwpwc4l9732E/qhQYd
+         EJ+8viZ7H5Akdg4gf7efHvSvZZhf8H4DI+tHtu+OsZ+358DS1EDs5NLfrhzX/nmRiSV5
+         JM88RALM61+C2aLH5Ok7Hx8HDA4ZElmC28evr0f4HI4XMKmcP+A7yxg5S//qzNgtLxiz
+         Q8XPp1h+zYDIMwa7937oJ12nmWtvOHtsBwjL3F+QRnwntUOkzonp1qAHh2QTdqp1cclH
+         pDx11btg8O1qoQH1Ck9rxvvoZNMEEAndOSl6TC0GM9jvPdcRhNrq1C9dnSaIR8UuQt4u
+         mPUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WpMrHx2xrjALxDo2+qnSwUhR97fWUA7NiL67FnzoBbs=;
-        b=qbwxQ8EnWkOMNdlt7m5OhTLPWKO52hTpYNFiWiJuhBd6nwZt4lTDaqOXr/BWUEhDjW
-         6AAGe6BLrAVsg/h23bUf7jm6gh4GUW0u84angdx0608mjmR+KdinRjO+uOI+oARr3wd2
-         K+joxnsGhc57C1kGu8x1QxODie1d7aU3Gyi0PIHgf2LkLnmkwRRWXPhViudRB4EabgPP
-         Sdbv6sgSlSWX6EczDK4oQS3MIu0Hjkgyst4ZqaYtvV5kVWkKtGfv8MfDK1IQDK0cnWIe
-         OazmUk7YKANO45dx6Tau+eUOydsMYTon5b5V8EfDvQAhwNItOnDqwnOvvczMV9wxjEkl
-         vPKA==
-X-Gm-Message-State: AOAM533YTLx3nGrpFb0UEgflXb21V8B0PVa8IfQDMJR4Y3MXSKLSiQ3Q
-        /5OSIKnCT5zcb/ofYhlytoX6nQH4J+0X97OaPRD83wjk
-X-Google-Smtp-Source: ABdhPJw8t4vsqP/7Q9PflPtjlczDwGn9Ca+aw7OmDyIMY4azGHA/6DyJI9o6HDQ2fy8EvZf613m/TDLq3FE8zD/9Jl0=
-X-Received: by 2002:a05:6830:4:: with SMTP id c4mr765105otp.23.1630522305399;
- Wed, 01 Sep 2021 11:51:45 -0700 (PDT)
+        bh=sbf/teTkcTse7KRUsjEqIHjpIzQLStMnWn28ldspcAs=;
+        b=J3Yntvs7BXSiLlyFSgeS1Flp/C2PQQfGYYMDy9EyJUFvlRtgizhknNHf4aERmj8Ueh
+         ZILuMg/mXP3BYfy3v95MST8JUORe6XVNzlWtRKkhBhuIiXupMsqtAm1GNEeH/JZj55V4
+         HrzvrV4712T2/j5vh5X3OxLqkegQ+oo/N2hPSdkGuzm34CTzdM6HV3jHeTY2t+cpNtcN
+         jnXdZWjl//2tFBxtQlSGYbdhe2t34gynbrjYa7e85tE16PL+7MuQCXa4hDI5jB20olkX
+         5MRVX2xAeonisi7MAWfe34cXP4fRR1rDOzitsYxDjPPyjLRiEvWHhwpjwLIA9QsmvD7o
+         O3tg==
+X-Gm-Message-State: AOAM530NJ2HPhq/b2vM7gOqh5XLxKC1j9OAdKBdxrEGPhV271PNHRev9
+        RxgTBoPKioubEr6grXp5ITjSKXswySQPjfhSdyV+HQ==
+X-Google-Smtp-Source: ABdhPJxSRsvVVRAZC3F+OvzhtgcSVGQucahCWt94PfVjWkwm5HtxVw/ImnpyPUrX8kuzSjO91vcc3CcPmt0gxQqKoiE=
+X-Received: by 2002:a63:3503:: with SMTP id c3mr458395pga.393.1630522327255;
+ Wed, 01 Sep 2021 11:52:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAPM=9txeN-qCRJvYV552zdo2H9iVy1ruVrq=YdZBP5Dmpc3Jmg@mail.gmail.com>
- <CAHk-=whP_v5nrK9B5vefnZS6Xz3-vZDFxUvSmW8W82hhNh67sA@mail.gmail.com> <CAHk-=wiyPpwYLBXTdXi0DyMFhTKsTstmqU-LLjgD5fNxUnB_WA@mail.gmail.com>
-In-Reply-To: <CAHk-=wiyPpwYLBXTdXi0DyMFhTKsTstmqU-LLjgD5fNxUnB_WA@mail.gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 1 Sep 2021 14:51:33 -0400
-Message-ID: <CADnq5_N9GgDuAdLmYED19Mx2z=5fhc1JCPj5_icFMZ-U1bO-Sg@mail.gmail.com>
-Subject: Re: [git pull] drm for 5.15-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        John Clements <john.clements@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210831160259.2392459-1-phil@raspberrypi.com>
+ <3830571c-566c-ef13-bc08-60206a634253@linux.intel.com> <f2fa6738-29f1-3434-70f2-7fba0b1b2567@raspberrypi.com>
+In-Reply-To: <f2fa6738-29f1-3434-70f2-7fba0b1b2567@raspberrypi.com>
+From:   Jonathan Bell <jonathan@raspberrypi.com>
+Date:   Wed, 1 Sep 2021 19:51:55 +0100
+Message-ID: <CADQZjwee7Zupdd0LVxFBouoiME4t32v6Hr85EAouAvPXi_Targ@mail.gmail.com>
+Subject: Re: [PATCH] xhci: guard accesses to ep_state in xhci_endpoint_reset()
+To:     Phil Elwell <phil@raspberrypi.com>
+Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 2:33 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Wed, 1 Sept 2021 at 14:15, Phil Elwell <phil@raspberrypi.com> wrote:
 >
-> On Wed, Sep 1, 2021 at 10:57 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
+> Hi Mathias,
+>
+> On 01/09/2021 10:21, Mathias Nyman wrote:
+> > On 31.8.2021 19.02, Phil Elwell wrote:
+> >> From: Jonathan Bell <jonathan@raspberrypi.com>
+> >>
+> >> See https://github.com/raspberrypi/linux/issues/3981
 > >
-> > No worries. I enjoyed seeing the AMD code-names in the conflicts, they
-> > are using positively kernel-level naming.
+> > Thanks, so in a nutshell the issue looks something like:
+> >
+> > [827586.220071] xhci_hcd 0000:01:00.0: WARN Cannot submit Set TR Deq Ptr
+> > [827586.220087] xhci_hcd 0000:01:00.0: A Set TR Deq Ptr command is pending.
+> > [827723.160680] INFO: task usb-storage:93 blocked for more than 122 seconds.
+> >
+> > The blocked task is probably because xhci driver failed to give back the
+> > URB after failing to submit a "Set TR Deq Ptr" command. This part should
+> > be fixed in:
+> > https://lore.kernel.org/r/20210820123503.2605901-4-mathias.nyman@linux.intel.com
+> > which is currently in usb-next, and should be in 5.15-rc1 and future 5.12+ stable.
+> >
+> >>
+> >> Two read-modify-write cycles on ep->ep_state are not guarded by
+> >> xhci->lock. Fix these.
+> >>
+> >
+> > This is probably one cause for the "Warn Cannot submit Set TR Deq Ptr A Set TR
+> > Deq Ptr command is pending" message.
+> > Another possibility is that with UAS and streams we have several transfer rings
+> > per endpoint, meaning that if two TDs on separate stream rings on the same
+> > endpoint both stall, or are cancelled we could see this message.
+> >
+> > The SET_DEQ_PENDING flag in ep->ep_state should probably be per ring, not per
+> > endpoint. Then we also need a "rings_with_pending_set_deq" counter per endpoint
+> > to keep track when all set_tr_deq commands complete, and we can restart the endpoint
 >
-> Oh, I spoke too soon.
->
-> The conflict in amdgpu_ras_eeprom.c is trivial to fix up, but the
-> *code* is garbage.
->
-> It does this (from commit 14fb496a84f1: "drm/amdgpu: set RAS EEPROM
-> address from VBIOS"):
->
->         ...
->         control->i2c_address = 0;
->
->         if (amdgpu_atomfirmware_ras_rom_addr(adev,
-> (uint8_t*)&control->i2c_address))
->         {
->                 if (control->i2c_address == 0xA0)
->                         control->i2c_address = 0;
->         ...
->
-> and honestly, that just hurts to look at. It's completely wrong, even
-> if it happens to work on a little-endian machine.
->
-> Yes, yes, BE is irrelevant, and doubly so for an AMD GPU driver, but still.
->
-> It's assigning a 8-bit value to a 32-bit entity by doing a pointer
-> cast on the address, and then mixing things up by using/assigning to
-> that same field.
->
-> That's just *wrong* and nasty.
->
-> Oh, the resolution would be easy - just take that broken code as-is -
-> but I can't actually make myself do that.
->
-> So I fixed it up to not be that incredibly ugly garbage.
->
-> Please holler if I did something wrong.
+> Jonathan, the author of the patch, may give some detailed feedback on these
+> statements when he has a moment - "Well, sort of... it's complicated" was the
+> summary.
 
-Fix looks good.  Thanks,
+The bug in this case was apparent only on usb-storage devices, so no streams.
+The testcase in the linked github issue repeatedly invoked smartctl on
+a device that didn't
+support that particular ATA command so stalled the endpoint.
 
-Alex
+The unguarded read-modify-write raced with the completion of the Set
+TR Deq command
+being executed by the controller, and the SET_DEQ_PENDING flag would
+get overwritten
+with an invalid '1'.
+
+I've not investigated how the xhci driver responds to stalls on stream
+endpoints in detail
+as I've not seen any user reports of uas active and this error message
+appearing, but in
+a wider context, getting a stall on a streaming endpoint on a Pi 4
+seems to be generally
+fatal until the device receives a reset and I've not determined which
+of the HCD, controller,
+or device is stuck.
+
+Thanks
+Jonathan
