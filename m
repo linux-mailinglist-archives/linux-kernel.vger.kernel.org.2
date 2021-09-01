@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AFA3FDCD7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561943FDBAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244976AbhIAMxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:53:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53630 "EHLO mail.kernel.org"
+        id S1344835AbhIAMnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:43:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346374AbhIAMty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:49:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0724D611C0;
-        Wed,  1 Sep 2021 12:41:25 +0000 (UTC)
+        id S1344678AbhIAMjy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:39:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AD67610A4;
+        Wed,  1 Sep 2021 12:35:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630500086;
-        bh=WPbEOBKBC6jdJIBzrm6mHtnk9ru3jB8C/pS+rDGsTcs=;
+        s=korg; t=1630499743;
+        bh=SeOgXlnqHRSabu3WEknI16YpzR/RvSvtxZtiiLLS0OY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2OoHJ8iKjnu6MOeEm16sVGnIwj7gcn0uHJA9g3uHL7ogke+1rXkR25JrO0baAJjfy
-         9aY9uzsrFLuS31T67uce7WogUwU17wNEnk8XnIpxzQpGEbIK79bhBkEaAy8yOJVltl
-         wQd7mN7dYCqYWQzG/rodjls7Y5xO9kzT+Wv6ZvrU=
+        b=eCTyTCjFFwvnQKTVVvqOJALQqp/vLezHADlhFNi+8lMMusJyeL6CVxtnhUNCGTT8s
+         ejJpncZcCN8g4jIa4MwX41H8/dfLVKUQRwkycDHx+EyuwUn/SSuYF/MpzawQF4+Kqt
+         Q2U5YV1pqi9HBvYRJsyxOY4s26yjqjrcbYbwUFdQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 064/113] net: hns3: fix get wrong pfc_en when query PFC configuration
+        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Lyude Paul <lyude@redhat.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 069/103] drm/nouveau/kms/nv50: workaround EFI GOP window channel format differences
 Date:   Wed,  1 Sep 2021 14:28:19 +0200
-Message-Id: <20210901122304.104851901@linuxfoundation.org>
+Message-Id: <20210901122302.892707751@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +39,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-[ Upstream commit 8c1671e0d13d4a0ba4fb3a0da932bf3736d7ff73 ]
+[ Upstream commit e78b1b545c6cfe9f87fc577128e00026fff230ba ]
 
-Currently, when query PFC configuration by dcbtool, driver will return
-PFC enable status based on TC. As all priorities are mapped to TC0 by
-default, if TC0 is enabled, then all priorities mapped to TC0 will be
-shown as enabled status when query PFC setting, even though some
-priorities have never been set.
+Should fix some initial modeset failures on (at least) Ampere boards.
 
-for example:
-$ dcb pfc show dev eth0
-pfc-cap 4 macsec-bypass off delay 0
-prio-pfc 0:off 1:off 2:off 3:off 4:off 5:off 6:off 7:off
-$ dcb pfc set dev eth0 prio-pfc 0:on 1:on 2:on 3:on
-$ dcb pfc show dev eth0
-pfc-cap 4 macsec-bypass off delay 0
-prio-pfc 0:on 1:on 2:on 3:on 4:on 5:on 6:on 7:on
-
-To fix this problem, just returns user's PFC config parameter saved in
-driver.
-
-Fixes: cacde272dd00 ("net: hns3: Add hclge_dcb module for the support of DCB feature")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c  | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/nouveau/dispnv50/disp.c | 27 +++++++++++++++++++++++++
+ drivers/gpu/drm/nouveau/dispnv50/head.c | 13 ++++++++----
+ drivers/gpu/drm/nouveau/dispnv50/head.h |  1 +
+ 3 files changed, 37 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-index 5bf5db91d16c..39f56f245d84 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-@@ -255,21 +255,12 @@ static int hclge_ieee_getpfc(struct hnae3_handle *h, struct ieee_pfc *pfc)
- 	u64 requests[HNAE3_MAX_TC], indications[HNAE3_MAX_TC];
- 	struct hclge_vport *vport = hclge_get_vport(h);
- 	struct hclge_dev *hdev = vport->back;
--	u8 i, j, pfc_map, *prio_tc;
- 	int ret;
-+	u8 i;
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+index 5b8cabb099eb..c2d34c91e840 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+@@ -2202,6 +2202,33 @@ nv50_disp_atomic_commit_tail(struct drm_atomic_state *state)
+ 		interlock[NV50_DISP_INTERLOCK_CORE] = 0;
+ 	}
  
- 	memset(pfc, 0, sizeof(*pfc));
- 	pfc->pfc_cap = hdev->pfc_max;
--	prio_tc = hdev->tm_info.prio_tc;
--	pfc_map = hdev->tm_info.hw_pfc_map;
--
--	/* Pfc setting is based on TC */
--	for (i = 0; i < hdev->tm_info.num_tc; i++) {
--		for (j = 0; j < HNAE3_MAX_USER_PRIO; j++) {
--			if ((prio_tc[j] == i) && (pfc_map & BIT(i)))
--				pfc->pfc_en |= BIT(j);
--		}
--	}
-+	pfc->pfc_en = hdev->tm_info.pfc_en;
++	/* Finish updating head(s)...
++	 *
++	 * NVD is rather picky about both where window assignments can change,
++	 * *and* about certain core and window channel states matching.
++	 *
++	 * The EFI GOP driver on newer GPUs configures window channels with a
++	 * different output format to what we do, and the core channel update
++	 * in the assign_windows case above would result in a state mismatch.
++	 *
++	 * Delay some of the head update until after that point to workaround
++	 * the issue.  This only affects the initial modeset.
++	 *
++	 * TODO: handle this better when adding flexible window mapping
++	 */
++	for_each_oldnew_crtc_in_state(state, crtc, old_crtc_state, new_crtc_state, i) {
++		struct nv50_head_atom *asyh = nv50_head_atom(new_crtc_state);
++		struct nv50_head *head = nv50_head(crtc);
++
++		NV_ATOMIC(drm, "%s: set %04x (clr %04x)\n", crtc->name,
++			  asyh->set.mask, asyh->clr.mask);
++
++		if (asyh->set.mask) {
++			nv50_head_flush_set_wndw(head, asyh);
++			interlock[NV50_DISP_INTERLOCK_CORE] = 1;
++		}
++	}
++
+ 	/* Update plane(s). */
+ 	for_each_new_plane_in_state(state, plane, new_plane_state, i) {
+ 		struct nv50_wndw_atom *asyw = nv50_wndw_atom(new_plane_state);
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/head.c b/drivers/gpu/drm/nouveau/dispnv50/head.c
+index 841edfaf5b9d..61826cac3061 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/head.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/head.c
+@@ -49,11 +49,8 @@ nv50_head_flush_clr(struct nv50_head *head,
+ }
  
- 	ret = hclge_pfc_tx_stats_get(hdev, requests);
- 	if (ret)
+ void
+-nv50_head_flush_set(struct nv50_head *head, struct nv50_head_atom *asyh)
++nv50_head_flush_set_wndw(struct nv50_head *head, struct nv50_head_atom *asyh)
+ {
+-	if (asyh->set.view   ) head->func->view    (head, asyh);
+-	if (asyh->set.mode   ) head->func->mode    (head, asyh);
+-	if (asyh->set.core   ) head->func->core_set(head, asyh);
+ 	if (asyh->set.olut   ) {
+ 		asyh->olut.offset = nv50_lut_load(&head->olut,
+ 						  asyh->olut.buffer,
+@@ -61,6 +58,14 @@ nv50_head_flush_set(struct nv50_head *head, struct nv50_head_atom *asyh)
+ 						  asyh->olut.load);
+ 		head->func->olut_set(head, asyh);
+ 	}
++}
++
++void
++nv50_head_flush_set(struct nv50_head *head, struct nv50_head_atom *asyh)
++{
++	if (asyh->set.view   ) head->func->view    (head, asyh);
++	if (asyh->set.mode   ) head->func->mode    (head, asyh);
++	if (asyh->set.core   ) head->func->core_set(head, asyh);
+ 	if (asyh->set.curs   ) head->func->curs_set(head, asyh);
+ 	if (asyh->set.base   ) head->func->base    (head, asyh);
+ 	if (asyh->set.ovly   ) head->func->ovly    (head, asyh);
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/head.h b/drivers/gpu/drm/nouveau/dispnv50/head.h
+index dae841dc05fd..0bac6be9ba34 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/head.h
++++ b/drivers/gpu/drm/nouveau/dispnv50/head.h
+@@ -21,6 +21,7 @@ struct nv50_head {
+ 
+ struct nv50_head *nv50_head_create(struct drm_device *, int index);
+ void nv50_head_flush_set(struct nv50_head *head, struct nv50_head_atom *asyh);
++void nv50_head_flush_set_wndw(struct nv50_head *head, struct nv50_head_atom *asyh);
+ void nv50_head_flush_clr(struct nv50_head *head,
+ 			 struct nv50_head_atom *asyh, bool flush);
+ 
 -- 
 2.30.2
 
