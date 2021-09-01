@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541AD3FDADF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CF83FDCAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245127AbhIAMfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:35:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35716 "EHLO mail.kernel.org"
+        id S1345545AbhIAMw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:52:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245174AbhIAMeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:34:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AAAB610C9;
-        Wed,  1 Sep 2021 12:32:24 +0000 (UTC)
+        id S1345141AbhIAMsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:48:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D5256115B;
+        Wed,  1 Sep 2021 12:40:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499545;
-        bh=ExXHcUQcEnPzayFTARJ+KSvjZgY8S7DqwcUihJu/rwc=;
+        s=korg; t=1630500028;
+        bh=uICdctrZDG7chxVYHm4pT2aNQKVTK9JiuHzWHULc8xk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PJUTlXaZCGQn3PiR6RKL7HOU1vx7lv5gKEYsssyiHtBNnDFV/5z2pOl9bg504HOBs
-         WEePG/8DKlHDoICEabx88K5fMz0KhXIUjhMLNWQF3OhnZJEg3pEjpuvmZwbsE8R0az
-         DSBTnQcSBInmIfNQloqtO1yhHq0JbnfFsp0Th/ZU=
+        b=IdzSa6KdbyUnlA0g8V0O+0KPsfox+v3hzHWlswCkCxyi90Qy6nvNHIJLhGAvj1+jP
+         u4629MGPcfsqyeGpetY4zSB3m1yT1CEkiVeSjBCPNfJiusPxI07WNKDEyFjF1dUrfs
+         tLxQ5qIeAA4tJ2Wh+Q/AjO9F/sApV+DDuaqlQ+LU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 41/48] net: dsa: mt7530: fix VLAN traffic leaks again
+        stable@vger.kernel.org,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 076/113] opp: remove WARN when no valid OPPs remain
 Date:   Wed,  1 Sep 2021 14:28:31 +0200
-Message-Id: <20210901122254.743879558@linuxfoundation.org>
+Message-Id: <20210901122304.523261226@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: DENG Qingfang <dqfext@gmail.com>
+From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-commit 7428022b50d0fbb4846dd0f00639ea09d36dff02 upstream.
+[ Upstream commit 335ffab3ef864539e814b9a2903b0ae420c1c067 ]
 
-When a port leaves a VLAN-aware bridge, the current code does not clear
-other ports' matrix field bit. If the bridge is later set to VLAN-unaware
-mode, traffic in the bridge may leak to that port.
+This WARN can be triggered per-core and the stack trace is not useful.
+Replace it with plain dev_err(). Fix a comment while at it.
 
-Remove the VLAN filtering check in mt7530_port_bridge_leave.
-
-Fixes: 474a2ddaa192 ("net: dsa: mt7530: fix VLAN traffic leaks")
-Fixes: 83163f7dca56 ("net: dsa: mediatek: add VLAN support for MT7530")
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/mt7530.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/opp/of.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -842,11 +842,8 @@ mt7530_port_bridge_leave(struct dsa_swit
- 		/* Remove this port from the port matrix of the other ports
- 		 * in the same bridge. If the port is disabled, port matrix
- 		 * is kept and not being setup until the port becomes enabled.
--		 * And the other port's port matrix cannot be broken when the
--		 * other port is still a VLAN-aware port.
- 		 */
--		if (dsa_is_user_port(ds, i) && i != port &&
--		   !dsa_port_is_vlan_filtering(&ds->ports[i])) {
-+		if (dsa_is_user_port(ds, i) && i != port) {
- 			if (dsa_to_port(ds, i)->bridge_dev != bridge)
- 				continue;
- 			if (priv->ports[i].enable)
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index c582a9ca397b..01feeba78426 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -985,8 +985,9 @@ static int _of_add_opp_table_v2(struct device *dev, struct opp_table *opp_table)
+ 		}
+ 	}
+ 
+-	/* There should be one of more OPP defined */
+-	if (WARN_ON(!count)) {
++	/* There should be one or more OPPs defined */
++	if (!count) {
++		dev_err(dev, "%s: no supported OPPs", __func__);
+ 		ret = -ENOENT;
+ 		goto remove_static_opp;
+ 	}
+-- 
+2.30.2
+
 
 
