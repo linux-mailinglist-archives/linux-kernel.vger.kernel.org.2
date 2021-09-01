@@ -2,70 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7649B3FE534
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F6C3FE536
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243412AbhIAWFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 18:05:19 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:37564 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232025AbhIAWFS (ORCPT
+        id S243734AbhIAWGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 18:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243208AbhIAWGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 18:05:18 -0400
-X-UUID: f2d4b787ce034378bb80a742a64efce9-20210902
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=dechZ3xSa+k6eciQYNq2w2jcJKlpQJ63PvPD4NTpepM=;
-        b=SQU1gIwhzcwrNYRwtiDrAsJ6ax2tYANm3kmm6W3ubEsDz1H9CQNhg4olDUjOPH+id3ekEyb88srRJ/+rzOQ4elzNt46XGCGeS6eQxGct5K/c0EK903nOzphlZFo7QUEG8PNLNK7zltSLNcudFsVEI4xZFWE+BhRC1yF2ikvk88E=;
-X-UUID: f2d4b787ce034378bb80a742a64efce9-20210902
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1029753929; Thu, 02 Sep 2021 06:04:18 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 2 Sep 2021 06:04:16 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 2 Sep 2021 06:04:16 +0800
-Message-ID: <67a7d4bccfc56c5960ca370bcbfb5ca6c9693f21.camel@mediatek.com>
-Subject: Re: [RESEND PATCH 3/4] clk: mediatek: support COMMON_CLK_MT6779
- module build
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Stephen Boyd <sboyd@kernel.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Wendell Lin <wendell.lin@mediatek.com>,
-        "Hanks Chen" <hanks.chen@mediatek.com>,
-        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Lee Jones <lee.jones@linaro.org>
-Date:   Thu, 2 Sep 2021 06:04:16 +0800
-In-Reply-To: <163047434049.42057.5688419707288938766@swboyd.mtv.corp.google.com>
-References: <20210813032429.14715-1-miles.chen@mediatek.com>
-         <20210813032429.14715-4-miles.chen@mediatek.com>
-         <163021049667.2676726.10138202396240942833@swboyd.mtv.corp.google.com>
-         <1630348984.24981.2.camel@mtkswgap22>
-         <163047434049.42057.5688419707288938766@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Wed, 1 Sep 2021 18:06:08 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929A5C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 15:05:11 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id h29so836484ila.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 15:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+DuLck7trE3/jeuLJyQqFOD4gSDy3mwIoW3d+ThIoWc=;
+        b=ue60hZ708cIr7G42kkYJi/pAO26l3GQIlDpRhHkRx9vrX7fkrGwcxv381hWQHI/80W
+         u697z+xufWYfztWIL9kzUPbDj+ybhEp3ZG4QiSDxRsFBVYWZhhiadTaAty6AcHC1yd9s
+         +RtPFgqGxGPHaBXwIGpGCa/G0bn8zAC5+mwkup6bTH+Ybsz7vXo5hFvzG7kxwf5kJnQX
+         mCOcBpbHGFnARtedqKBlXB95AWHySM3o4dW9WeC4PFn7tLnsDhQQFB0XSPli72Glti9S
+         5PNsiN0EZfP0B1y9voI1vv+Wx7UuCoYBBbTI5YMtJ9ZqNUut17oqsZ4+Y1pvn+g+sG9N
+         NP2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+DuLck7trE3/jeuLJyQqFOD4gSDy3mwIoW3d+ThIoWc=;
+        b=juts0q5Ge8QJMGTqO0VNzsH5tRUwfF4NrQWcV2TvOBJe88maoWRYdb+Mawt/rb5YW8
+         DmwbuyGP6GlQBuuu+TKH4jFmc8HjPEJNBUy3CuDnARgh9u/PUO66BIdZovJSIjwY0lFw
+         tmkWANmedGmnnL2Mt4cHA7WHi7Htdnxs8AibfUsbjnerluk/OyPq9LVQBvn5UqAISGtq
+         1t17G60WRmZlGVhawBMkBteTBNp6H2ycIBlU5z3J+KTNvhjCDJuobOL0u0bGPXbI16A4
+         c2Zr6RQNsafMMnocPqCWOp2DQyy8g7QrLgiqEyYDhn89SBesr/T9iEU3zTu3R3fH581i
+         Enww==
+X-Gm-Message-State: AOAM532wDg6HsGo5EzJ5K4NkASRaf6V/tsKXYGBcLmK01IggGFYIArqd
+        mKLv9P0oKsS67UXRpCq6Wn3kaA==
+X-Google-Smtp-Source: ABdhPJyz03AQjKq617pC8w9b66FNA0eCW4EBtDeYY+hkxM2sCWzfoOh7yUadawftcIzUoT8TCwMRug==
+X-Received: by 2002:a92:c609:: with SMTP id p9mr1138171ilm.135.1630533910160;
+        Wed, 01 Sep 2021 15:05:10 -0700 (PDT)
+Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
+        by smtp.gmail.com with ESMTPSA id h9sm518789ioz.30.2021.09.01.15.05.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 15:05:09 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 22:05:06 +0000
+From:   Oliver Upton <oupton@google.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        drjones@redhat.com
+Subject: Re: [PATCH v3 00/12] KVM: arm64: selftests: Introduce arch_timer
+ selftest
+Message-ID: <YS/5EjjPSWjWb6BI@google.com>
+References: <20210901211412.4171835-1-rananta@google.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901211412.4171835-1-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA4LTMxIGF0IDIyOjMyIC0wNzAwLCBTdGVwaGVuIEJveWQgd3JvdGU6DQo+
-IFF1b3RpbmcgTWlsZXMgQ2hlbiAoMjAyMS0wOC0zMCAxMTo0MzowNCkNCj4gPiANCj4gPiBzb3Jy
-eSBmb3IgbXkgbGF0ZSByZXNwb25zZS4gDQo+ID4gDQo+ID4gVGhhbmtzIGZvciBwb2ludGluZyB0
-aGlzIG91dC4gSSBoYXZlIHRoZSBzYW1lIHF1ZXN0aW9uIHdoZW4gSSB3YXMNCj4gPiBidWlsZGlu
-ZyB0aGlzIHBhdGNoLiBUaGF0IHRpbWUgSSBmb3VuZCBzb21lIGV4YW1wbGVzIHdoZXJlDQo+ID4g
-dGhleSBhcmUgdXNpbmcgYnVpbHRpbl9wbGF0Zm9ybV9kcml2ZXIgYW5kIGNhbiBiZSBidWlsdCBh
-cyANCj4gPiBrZXJuZWwgbW9kdWxlczoNCj4gPiANCj4gPiBjb25maWcgQ0xLX0lNWDhRWFAgKHRy
-aXN0YXRlKSAmJiBkcml2ZXJzL2Nsay9pbXgvY2xrLWlteDhxeHAtbHBjZy5jDQo+ID4gY29uZmln
-IENMS19SSzMzOTkgKHRyaXN0YXRlKSAmJiBkcml2ZXJzL2Nsay9yb2NrY2hpcC9jbGstcmszMzk5
-LmMNCj4gDQo+IFdlIHNob3VsZCBmaXggdGhvc2UgZHJpdmVycy4gQ2FyZSB0byBzZW5kIGEgcGF0
-Y2g/DQoNCk5vIHByb2JsZW0uIEkgd2lsbCBjaGVjayBkcnZpZXJzL2NsayBhbmQgc3VibWl0IGZp
-eCBwYXRjaGVzLg0KDQpNaWxlcw0K
++cc Andrew Jones
 
+On Wed, Sep 01, 2021 at 09:14:00PM +0000, Raghavendra Rao Ananta wrote:
+> Hello,
+> 
+> The patch series adds a KVM selftest to validate the behavior of
+> ARM's generic timer (patch-11). The test programs the timer IRQs
+> periodically, and for each interrupt, it validates the behaviour
+> against the architecture specifications. The test further provides
+> a command-line interface to configure the number of vCPUs, the
+> period of the timer, and the number of iterations that the test
+> has to run for.
+> 
+> Patch-12 adds an option to randomly migrate the vCPUs to different
+> physical CPUs across the system. The bug for the fix provided by
+> Marc with commit 3134cc8beb69d0d ("KVM: arm64: vgic: Resample HW
+> pending state on deactivation") was discovered using arch_timer
+> test with vCPU migrations.
+> 
+> Since the test heavily depends on interrupts, patch-10 adds a host
+> library to setup ARM Generic Interrupt Controller v3 (GICv3). This
+> includes creating a vGIC device, setting up distributor and
+> redistributor attributes, and mapping the guest physical addresses.
+> Symmetrical to this, patch-9 adds a guest library to talk to the vGIC,
+> which includes initializing the controller, enabling/disabling the
+> interrupts, and so on.
+> 
+> Furthermore, additional processor utilities such as accessing the MMIO
+> (via readl/writel), read/write to assembler unsupported registers,
+> basic delay generation, enable/disable local IRQs, and so on, are also
+> introduced that the test/GICv3 takes advantage of (patches 1 through 8).
+> 
+> The patch series, specifically the library support, is derived from the
+> kvm-unit-tests and the kernel itself.
+> 
+> Regards,
+> Raghavendra
+> 
+> v2 -> v3:
+> 
+> - Addressed the comments from Ricardo regarding moving the vGIC host
+>   support for selftests to its own library.
+> - Added an option (-m) to migrate the guest vCPUs to physical CPUs
+>   in the system.
+> 
+> v1 -> v2:
+> 
+> Addressed comments from Zenghui in include/aarch64/arch_timer.h:
+> - Correct the header description
+> - Remove unnecessary inclusion of linux/sizes.h
+> - Re-arrange CTL_ defines in ascending order
+> - Remove inappropriate 'return' from timer_set_* functions, which
+>   returns 'void'.
+> 
+> Raghavendra Rao Ananta (12):
+>   KVM: arm64: selftests: Add MMIO readl/writel support
+>   KVM: arm64: selftests: Add write_sysreg_s and read_sysreg_s
+>   KVM: arm64: selftests: Add support for cpu_relax
+>   KVM: arm64: selftests: Add basic support for arch_timers
+>   KVM: arm64: selftests: Add basic support to generate delays
+>   KVM: arm64: selftests: Add support to disable and enable local IRQs
+>   KVM: arm64: selftests: Add support to get the vcpuid from MPIDR_EL1
+>   KVM: arm64: selftests: Add light-weight spinlock support
+>   KVM: arm64: selftests: Add basic GICv3 support
+>   KVM: arm64: selftests: Add host support for vGIC
+>   KVM: arm64: selftests: Add arch_timer test
+>   KVM: arm64: selftests: arch_timer: Support vCPU migration
+> 
+>  tools/testing/selftests/kvm/.gitignore        |   1 +
+>  tools/testing/selftests/kvm/Makefile          |   3 +-
+>  .../selftests/kvm/aarch64/arch_timer.c        | 457 ++++++++++++++++++
+>  .../kvm/include/aarch64/arch_timer.h          | 142 ++++++
+>  .../selftests/kvm/include/aarch64/delay.h     |  25 +
+>  .../selftests/kvm/include/aarch64/gic.h       |  21 +
+>  .../selftests/kvm/include/aarch64/processor.h | 140 +++++-
+>  .../selftests/kvm/include/aarch64/spinlock.h  |  13 +
+>  .../selftests/kvm/include/aarch64/vgic.h      |  14 +
+>  tools/testing/selftests/kvm/lib/aarch64/gic.c |  93 ++++
+>  .../selftests/kvm/lib/aarch64/gic_private.h   |  21 +
+>  .../selftests/kvm/lib/aarch64/gic_v3.c        | 240 +++++++++
+>  .../selftests/kvm/lib/aarch64/gic_v3.h        |  70 +++
+>  .../selftests/kvm/lib/aarch64/spinlock.c      |  27 ++
+>  .../testing/selftests/kvm/lib/aarch64/vgic.c  |  67 +++
+>  15 files changed, 1332 insertions(+), 2 deletions(-)
+>  create mode 100644 tools/testing/selftests/kvm/aarch64/arch_timer.c
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/arch_timer.h
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/delay.h
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/gic.h
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/spinlock.h
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/vgic.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic.c
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_private.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_v3.c
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_v3.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/spinlock.c
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/vgic.c
+> 
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+> 
