@@ -2,150 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76D23FDE8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293013FDE8F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343668AbhIAPZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:25:28 -0400
-Received: from mga04.intel.com ([192.55.52.120]:11524 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243718AbhIAPZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:25:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="216932058"
-X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
-   d="scan'208";a="216932058"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 08:24:29 -0700
-X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
-   d="scan'208";a="690739825"
-Received: from davidj-mobl1.amr.corp.intel.com (HELO [10.212.161.93]) ([10.212.161.93])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 08:24:27 -0700
-Subject: Re: [PATCH v29 23/32] x86/cet/shstk: Add user-mode shadow stack
- support
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Rick P Edgecombe <rick.p.edgecombe@intel.com>
-References: <20210820181201.31490-1-yu-cheng.yu@intel.com>
- <20210820181201.31490-24-yu-cheng.yu@intel.com> <YSfAbaMxQegvmN2p@zn.tnic>
- <fa372ba8-7019-46d6-3520-03859e44cad9@intel.com> <YSktDrcJIAo9mQBV@zn.tnic>
- <ab5bfeb4-af66-35b4-40da-829c7f98dcc2@intel.com> <YS95VzrNhDhFpsop@zn.tnic>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <7fa20642-4841-30b4-2ced-828f34a6d397@intel.com>
-Date:   Wed, 1 Sep 2021 08:24:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1343698AbhIAPZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:25:42 -0400
+Received: from mail-4323.protonmail.ch ([185.70.43.23]:49618 "EHLO
+        mail-4323.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343673AbhIAPZl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 11:25:41 -0400
+Date:   Wed, 01 Sep 2021 15:24:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1630509882;
+        bh=JM4uDiMJsApQbN3SvBBRU1K31XYBclLBZcIW1vSbVtk=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=KkJ6n9nT8J4FgWAH+gPcfiAF1jmryaH0oUkIajigLutkBcsD26LyCNvKqZ6XZEUrF
+         oQjIxB3611QDA7NcjGD1trcub4a/zBsjC2hK0J6NTHIEiaQq/CypT+/fuVMhM1Kwb0
+         MaV6IS6Vcl4/0kifp6S/fH5+l/dY+gL/QJ5Zsp2A=
+To:     Luke Jones <luke@ljones.dev>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     linux-kernel@vger.kernel.org, hdegoede@redhat.com,
+        linux@roeck-us.net, platform-driver-x86@vger.kernel.org
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v7] asus-wmi: Add support for custom fan curves
+Message-ID: <Z3uTWHyeRPzaHU0iSW56m1ltGsYr5DOfRoJLyGlfnObU0ph-mVf9M6KCbSV66AeY_voEARTrP6bOtqXS1ZubuSj4Cu25VSRu0VMBIf3whow=@protonmail.com>
+In-Reply-To: <BLFOYQ.DC67MOSNFFNW2@ljones.dev>
+References: <20210830113137.1338683-1-luke@ljones.dev> <20210830113137.1338683-2-luke@ljones.dev> <1o94oJFiia_xvrFrSPI_zG1Xfv4FAlJNY96x39rg-zX3-3N5Czw4KmTiJtzCy1So7kYXLu0FTkRkmwUUudeuTyLHSsx5sJGhfsZaYrXKEic=@protonmail.com> <BLFOYQ.DC67MOSNFFNW2@ljones.dev>
 MIME-Version: 1.0
-In-Reply-To: <YS95VzrNhDhFpsop@zn.tnic>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/21 6:00 AM, Borislav Petkov wrote:
->> So, this code takes the coward's way out: it *forces* TIF_NEED_FPU_LOAD
->> to be clear by making the registers live with fpregs_restore_userregs().
->>  That lets it just use WRMSR instead of dealing with the XSAVE buffer
->> directly.  If it didn't do this with the *WHOLE* set of user FPU state,
->> we'd need more fine-granted "NEED_*_LOAD" tracking than our one FPU bit.
->>
->> This is also *only* safe because the task is newly-exec()'d and the FPU
->> state was just reset.  Otherwise, we might have had to worry that the
->> non-PL3 SSPs have garbage or that non-SHSTK bits are set in MSR_IA32_U_CET.
->>
->> That said, after staring at it, I *think* this code is functionally
->> correct and OK performance-wise.
-> Right, except that that is being done in
-> setup_signal_shadow_stack()/restore_signal_shadow_stack() too, for the
-> restore token.
-> 
-> Which means, a potential XRSTOR each time just for a single MSR. That
-> means, twice per signal in the worst case.
-> 
-> Which means, shadow stack should be pretty noticeable in signal-heavy
-> benchmarks...
+Hi
 
-Ahh, good point.  I totally missed the signal side.
 
-Yu-cheng, it would probably be wise to take a look at where
-TIF_NEED_FPU_LOAD is set in the signal paths.  I suspect the new shadow
-stack code is clearing it pretty quickly.  That's not *necessarily* a
-waste because it has to be XRSTOR'd somewhere before returning to
-userspace.  But, it does impose an extra XSAVE/XRSTOR burden if the code
-is preempted somewhere between
-setup_signal_shadow_stack()/restore_signal_shadow_stack() and the return
-to usersspace.
+> [...]
+> >>  --- a/drivers/platform/x86/asus-wmi.c
+> >>  +++ b/drivers/platform/x86/asus-wmi.c
+> >>  [...]
+> >>  +/*
+> >>  + * Returns as an error if the method output is not a buffer.
+> >> Typically this
+> >
+> > It seems to me it will simply leave the output buffer uninitialized
+> > if something
+> > other than ACPI_TYPE_BUFFER and ACPI_TYPE_INTEGER is encountered and
+> > return 0.
+>
+> Oops, see below inline reply:
+>
+> >
+> >
+> >>  + * means that the method called is unsupported.
+> >>  + */
+> >>  +static int asus_wmi_evaluate_method_buf(u32 method_id,
+> >>  +=09=09u32 arg0, u32 arg1, u8 *ret_buffer)
+> >>  +{
+> >>  +=09struct bios_args args =3D {
+> >>  +=09=09.arg0 =3D arg0,
+> >>  +=09=09.arg1 =3D arg1,
+> >>  +=09=09.arg2 =3D 0,
+> >>  +=09};
+> >>  +=09struct acpi_buffer input =3D { (acpi_size) sizeof(args), &args };
+> >>  +=09struct acpi_buffer output =3D { ACPI_ALLOCATE_BUFFER, NULL };
+> >>  +=09acpi_status status;
+> >>  +=09union acpi_object *obj;
+> >>  +=09u32 int_tmp =3D 0;
+> >>  +
+> >>  +=09status =3D wmi_evaluate_method(ASUS_WMI_MGMT_GUID, 0, method_id,
+> >>  +=09=09=09=09     &input, &output);
+> >>  +
+> >>  +=09if (ACPI_FAILURE(status))
+> >>  +=09=09return -EIO;
+> >>  +
+> >>  +=09obj =3D (union acpi_object *)output.pointer;
+> >>  +
+> >>  +=09if (obj && obj->type =3D=3D ACPI_TYPE_INTEGER) {
+> >>  +=09=09int_tmp =3D (u32) obj->integer.value;
+> >>  +=09=09if (int_tmp =3D=3D ASUS_WMI_UNSUPPORTED_METHOD)
+> >>  +=09=09=09return -ENODEV;
+> >>  +=09=09return int_tmp;
+> >
+> > Is anything known about the possible values? You are later
+> > using it as if it was an errno (e.g. in `custom_fan_check_present()`).
+> >
+> > And `obj` is leaked in both of the previous two returns.
+>
+> The return for the method we're calling in this patch returns 0 if the
+> input arg has no match.
+>
+> >
+> >
+> >>  +=09}
+> >>  +
+> >>  +=09if (obj && obj->type =3D=3D ACPI_TYPE_BUFFER)
+> >>  +=09=09memcpy(ret_buffer, obj->buffer.pointer, obj->buffer.length);
+> >
+> > I would suggest you add a "size_t size" argument to this function, and
+> > return -ENOSPC/-ENODATA depending on whether the returned buffer is
+> > too
+> > big/small. Maybe return -ENODATA if `obj` is NULL, too.
+>
+> Got it. So something like this would be suitable?
+>
+> =09if (obj && obj->type =3D=3D ACPI_TYPE_BUFFER)
+> =09=09if (obj->buffer.length < size)
+> =09=09=09err =3D -ENOSPC;
+> =09=09if (!obj->buffer.length)
+> =09=09=09err =3D -ENODATA;
+> =09=09if (err) {
+> =09=09=09kfree(obj);
+> =09=09=09return err;
+> =09=09}
+> =09=09memcpy(ret_buffer, obj->buffer.pointer, obj->buffer.length);
+> =09}
+>
+> =09if (obj && obj->type =3D=3D ACPI_TYPE_INTEGER)
+> =09=09int_tmp =3D (u32) obj->integer.value;
+>
+> =09kfree(obj);
+>
+> =09if (int_tmp =3D=3D ASUS_WMI_UNSUPPORTED_METHOD)
+> =09=09return -ENODEV;
+>
+> =09/* There is at least one method that returns a 0 with no buffer */
+> =09if (obj =3D=3D NULL || int_tmp =3D=3D 0)
+> =09=09return -ENODATA;
+>
+> =09return 0;
+>
 
-Some performance numbers would be nice.
+I had something like the following in mind:
 
-Even nicer would be to make your code work without requiring
-TIF_NEED_FPU_LOAD to be clear, or actively clearing it.
+  int err =3D 0;
+  /* ... */
+  obj =3D output.pointer;
+  if (!obj)
+    return -ENODATA;
+
+  switch (obj->type) {
+  case ACPI_TYPE_BUFFER:
+    if (obj->buffer.length < size)
+      err =3D -ENODATA;
+    else if (obj->buffer.length > size)
+      err =3D -ENOSPC;
+    else
+      memcpy(ret_buffer, obj->buffer.pointer, size);
+    break;
+  case ACPI_TYPE_INTEGER:
+    switch (obj->integer.value) {
+      case ASUS_WMI_UNSUPPORTED_METHOD:
+        err =3D -EOPNOTSUPP;
+=09break;
+      default:
+        err =3D -ENODATA;
+=09break;
+    }
+    break;
+  default:
+    err =3D -ENODATA;
+    break;
+  }
+
+  kfree(obj);
+
+  return err;
+
+
+> >
+> >
+> >>  +
+> >>  +=09kfree(obj);
+> >>  +
+> >>  +=09return 0;
+> >>  +}
+> [...]
+> >>  +/*
+> >>  + * Called only by throttle_thermal_policy_write()
+> >>  + */
+> >
+> > Am I correct in thinking that the firmware does not actually
+> > support specifying fan curves for each mode, only a single one,
+> > and the fan curve switching is done by this driver when
+> > the performance mode is changed?
+>
+> I'm not 100% certain on this. The WMI method 0x00110024 takes an arg
+> 0,1,2 which then returns some factory stored fan profiles, these fit
+> the profiles of ASUS_THROTTLE_THERMAL_POLICY_*, but with 1 and 2
+> swapped.
+>
+> Looking at the SET part, it seems to write to a different location than
+> where the GET is fetching information.
+>
+
+The, unfortunately, that is not as simple as I initially thought...
+
+
+> Because of the fact there are three sets of curves to get, I thought it
+> would be good for users to be able to set per profile. I don't think
+> the set is retained in acpi if the profile is switched.
+>
+> Do you think it would be best to not have the ability to store per
+> profile in kernel?
+
+If there was a method to set a fan curve, and one to retrieve it,
+I would suggest just exposing that via the pwmN_auto_pointM_{pwm,temp}
+attributes on a hwmon device, and that the profile-dependent switching
+be implemented somewhere else. As far as I see, there is already
+existing infrastructure for integrating such a feature [0]
+(but please correct me if I'm wrong).
+
+This would simplify the kernel code, add no new ABI, and
+potentially provide greater control over policy for the
+user space.
+
+
+> How would I choose which profile get to populate the
+> initial data with if so?
+
+I assume there isn't a method that can query
+the current fan curve (or it is unknown)?
+
+
+> [...]
+
+[0]: https://gitlab.com/asus-linux/asusctl
+
+
+Best regards,
+Barnab=C3=A1s P=C5=91cze
