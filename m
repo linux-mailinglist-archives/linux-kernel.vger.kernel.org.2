@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A60D3FDA7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A16F3FDBD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244799AbhIAMco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:32:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34088 "EHLO mail.kernel.org"
+        id S1345621AbhIAMov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:44:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244881AbhIAMbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:31:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9549A610A8;
-        Wed,  1 Sep 2021 12:30:38 +0000 (UTC)
+        id S1345021AbhIAMkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:40:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C76556117A;
+        Wed,  1 Sep 2021 12:36:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499439;
-        bh=XmfFrVRY0rOuV9JryH8DCWide7HqkddN8WML/NnQJl8=;
+        s=korg; t=1630499795;
+        bh=yYIXePsMDMr4LSqP3OftBiaHJtUfw08euqDDpGm+8Og=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VF8aHJVA1YMfAdm8yjVzeRkM/b8djX6ig8OyfrR//eBNmnvV5Df225znkUCjkjQuD
-         YoUvdkL1VM5ILaXz3cvh+zy8886b+3YBbEBn4y6uu8+ZHYQrpCt8xcIRcKS07s7fXc
-         XvcJqU8CUejJfb/miVDqCLKKmBkKARsWb86v+En0=
+        b=YS6rMRUniYsyxwUMOaxNwdAp2uPdA7JZWacVj6M4A9QDMgJnh/EqNgvkTESJfPzzU
+         eAMTZu5ppacUtFhzs/R8zkmEJQ+q5JKSOiFsCGLmtGXYyD6LrXoqVFCBn0vN4u9+TJ
+         If+OTX8ILegtxbjar+1QHZHbDzoadpYOFTAQePq8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org, Ariel Elior <aelior@marvell.com>,
+        Shai Malin <smalin@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 22/33] virtio_pci: Support surprise removal of virtio pci device
-Date:   Wed,  1 Sep 2021 14:28:11 +0200
-Message-Id: <20210901122251.529897592@linuxfoundation.org>
+Subject: [PATCH 5.10 062/103] qed: qed ll2 race condition fixes
+Date:   Wed,  1 Sep 2021 14:28:12 +0200
+Message-Id: <20210901122302.652917728@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
-References: <20210901122250.752620302@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,78 +41,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+From: Shai Malin <smalin@marvell.com>
 
-[ Upstream commit 43bb40c5b92659966bdf4bfe584fde0a3575a049 ]
+[ Upstream commit 37110237f31105d679fc0aa7b11cdec867750ea7 ]
 
-When a virtio pci device undergo surprise removal (aka async removal in
-PCIe spec), mark the device as broken so that any upper layer drivers can
-abort any outstanding operation.
+Avoiding qed ll2 race condition and NULL pointer dereference as part
+of the remove and recovery flows.
 
-When a virtio net pci device undergo surprise removal which is used by a
-NetworkManager, a below call trace was observed.
+Changes form V1:
+- Change (!p_rx->set_prod_addr).
+- qed_ll2.c checkpatch fixes.
 
-kernel:watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [kworker/1:1:27059]
-watchdog: BUG: soft lockup - CPU#1 stuck for 52s! [kworker/1:1:27059]
-CPU: 1 PID: 27059 Comm: kworker/1:1 Tainted: G S      W I  L    5.13.0-hotplug+ #8
-Hardware name: Dell Inc. PowerEdge R640/0H28RR, BIOS 2.9.4 11/06/2020
-Workqueue: events linkwatch_event
-RIP: 0010:virtnet_send_command+0xfc/0x150 [virtio_net]
-Call Trace:
- virtnet_set_rx_mode+0xcf/0x2a7 [virtio_net]
- ? __hw_addr_create_ex+0x85/0xc0
- __dev_mc_add+0x72/0x80
- igmp6_group_added+0xa7/0xd0
- ipv6_mc_up+0x3c/0x60
- ipv6_find_idev+0x36/0x80
- addrconf_add_dev+0x1e/0xa0
- addrconf_dev_config+0x71/0x130
- addrconf_notify+0x1f5/0xb40
- ? rtnl_is_locked+0x11/0x20
- ? __switch_to_asm+0x42/0x70
- ? finish_task_switch+0xaf/0x2c0
- ? raw_notifier_call_chain+0x3e/0x50
- raw_notifier_call_chain+0x3e/0x50
- netdev_state_change+0x67/0x90
- linkwatch_do_dev+0x3c/0x50
- __linkwatch_run_queue+0xd2/0x220
- linkwatch_event+0x21/0x30
- process_one_work+0x1c8/0x370
- worker_thread+0x30/0x380
- ? process_one_work+0x370/0x370
- kthread+0x118/0x140
- ? set_kthread_struct+0x40/0x40
- ret_from_fork+0x1f/0x30
+Change from V2:
+- Revert "qed_ll2.c checkpatch fixes".
 
-Hence, add the ability to abort the command on surprise removal
-which prevents infinite loop and system lockup.
-
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Link: https://lore.kernel.org/r/20210721142648.1525924-5-parav@nvidia.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/virtio/virtio_pci_common.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/ethernet/qlogic/qed/qed_ll2.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-index 45b04bc91f24..b7cc63f556ee 100644
---- a/drivers/virtio/virtio_pci_common.c
-+++ b/drivers/virtio/virtio_pci_common.c
-@@ -579,6 +579,13 @@ static void virtio_pci_remove(struct pci_dev *pci_dev)
- 	struct virtio_pci_device *vp_dev = pci_get_drvdata(pci_dev);
- 	struct device *dev = get_device(&vp_dev->vdev.dev);
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_ll2.c b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
+index 49783f365079..f2c8273dce67 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_ll2.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
+@@ -327,6 +327,9 @@ static int qed_ll2_txq_completion(struct qed_hwfn *p_hwfn, void *p_cookie)
+ 	unsigned long flags;
+ 	int rc = -EINVAL;
  
-+	/*
-+	 * Device is marked broken on surprise removal so that virtio upper
-+	 * layers can abort any ongoing operation.
-+	 */
-+	if (!pci_device_is_present(pci_dev))
-+		virtio_break_device(&vp_dev->vdev);
++	if (!p_ll2_conn)
++		return rc;
 +
- 	pci_disable_sriov(pci_dev);
+ 	spin_lock_irqsave(&p_tx->lock, flags);
+ 	if (p_tx->b_completing_packet) {
+ 		rc = -EBUSY;
+@@ -500,7 +503,16 @@ static int qed_ll2_rxq_completion(struct qed_hwfn *p_hwfn, void *cookie)
+ 	unsigned long flags = 0;
+ 	int rc = 0;
  
- 	unregister_virtio_device(&vp_dev->vdev);
++	if (!p_ll2_conn)
++		return rc;
++
+ 	spin_lock_irqsave(&p_rx->lock, flags);
++
++	if (!QED_LL2_RX_REGISTERED(p_ll2_conn)) {
++		spin_unlock_irqrestore(&p_rx->lock, flags);
++		return 0;
++	}
++
+ 	cq_new_idx = le16_to_cpu(*p_rx->p_fw_cons);
+ 	cq_old_idx = qed_chain_get_cons_idx(&p_rx->rcq_chain);
+ 
+@@ -821,6 +833,9 @@ static int qed_ll2_lb_rxq_completion(struct qed_hwfn *p_hwfn, void *p_cookie)
+ 	struct qed_ll2_info *p_ll2_conn = (struct qed_ll2_info *)p_cookie;
+ 	int rc;
+ 
++	if (!p_ll2_conn)
++		return 0;
++
+ 	if (!QED_LL2_RX_REGISTERED(p_ll2_conn))
+ 		return 0;
+ 
+@@ -844,6 +859,9 @@ static int qed_ll2_lb_txq_completion(struct qed_hwfn *p_hwfn, void *p_cookie)
+ 	u16 new_idx = 0, num_bds = 0;
+ 	int rc;
+ 
++	if (!p_ll2_conn)
++		return 0;
++
+ 	if (!QED_LL2_TX_REGISTERED(p_ll2_conn))
+ 		return 0;
+ 
+@@ -1725,6 +1743,8 @@ int qed_ll2_post_rx_buffer(void *cxt,
+ 	if (!p_ll2_conn)
+ 		return -EINVAL;
+ 	p_rx = &p_ll2_conn->rx_queue;
++	if (!p_rx->set_prod_addr)
++		return -EIO;
+ 
+ 	spin_lock_irqsave(&p_rx->lock, flags);
+ 	if (!list_empty(&p_rx->free_descq))
 -- 
 2.30.2
 
