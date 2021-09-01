@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05B03FDFCF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5517F3FDFD2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245347AbhIAQ0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbhIAQ0M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:26:12 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D460EC061575;
-        Wed,  1 Sep 2021 09:25:15 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d17so1789657plr.12;
-        Wed, 01 Sep 2021 09:25:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=oqL6EDzYuXNUvTxvrVzelOftjt/CPMA940sWYCAx/B8=;
-        b=RukhJW1ke9rdVijzSf11RPwvnyI69MvAGBt3OPJ2Ll8OoECjPjSi4ySYQMBXOaZtAb
-         3NNvGoJBex4bSu6Y+NZLeHMUM6KaDTEIwMB0NRQdt1MXpFttR3Z8zc1V/fV8dRdkgFjn
-         j7E+VK0Jkqoa44M1o0hrWp56h42WqBcXXcq+m0StxxaENoBjQp4oH/JmaE1A8etSrtEa
-         Hlkj09iUmvGV6jldmifb584HD/9G35qK/bjti6p7UgD2o0aEiw2PNA1YO2fKy97kamXx
-         9SASijuJiG0BrgfLGhrkA99QeVLImyCHMsUL79MBFt/Kk0juw6H/AuUxssyJm9Ir5EQ0
-         vvoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=oqL6EDzYuXNUvTxvrVzelOftjt/CPMA940sWYCAx/B8=;
-        b=P1fEGwAeni7Kw9UEIKBAD8p5fBAQluqoJ7QZ91mIDeshIC69jbci3W2t7Z6pmyqZlt
-         Gn+3gH9r9kGVsGrEwHee+VQDLi4cPZ4mwG3oTPq1d9q0tODPT0ZoU8BycHz6mI0Sj3Hh
-         IA9aKt4lRUjZg3jH44nxsHP590Tbtgg79yYDPqhwC3LSLOvaUnVwIBeVc1o4+eUpYokV
-         qPmHj8b6YotWBXCHjLBjqVYT8CNuboPLg7tdXW2HJ3AXGFOcAhdJYqclLT0KvIPn19uz
-         T2mCojlvjAxIR2d5gkhV3LEVE2NtmoWJC/DBK67OF5ed7kIfpCkCSlWBAi6m7A2hyLbK
-         Cx6g==
-X-Gm-Message-State: AOAM532sMZ6Mi4g6hkdLn5kdjlXwMU/jvO0bGy+9DXeaUaHnFpsJ0Oua
-        v8+F5tafig5BH1rCupLZUj8=
-X-Google-Smtp-Source: ABdhPJybduXhbyw6svZ8eOybdj7+PkHjCvWGKcCqJcusNS0beuuvOqdph/hJ0aUJ1IWrTyOyXyUIrw==
-X-Received: by 2002:a17:90b:4d0c:: with SMTP id mw12mr201571pjb.123.1630513515170;
-        Wed, 01 Sep 2021 09:25:15 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id c11sm22463pfm.55.2021.09.01.09.25.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 09:25:14 -0700 (PDT)
-Message-ID: <b0766dfd-566d-8fe3-d2ef-69cb45911a0a@gmail.com>
-Date:   Wed, 1 Sep 2021 09:25:06 -0700
+        id S245385AbhIAQ0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:26:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229820AbhIAQ0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 12:26:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8607F61026;
+        Wed,  1 Sep 2021 16:25:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630513540;
+        bh=6XGIessxCdstb1MMTQL+7eNQhowuUPMqPTFcz8N7HFY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QDReyLgUFD8AGU1OgU1f2rxSgz3EmMgeeN5NXrDXT1Uyo3fvU3H6qs9Ojo8HbzxEL
+         2OH9CpZzEKNml2BMqKpmgY32xDGerER2vj4mS7CShaJnGpRkkIyO3D6gE8Tl3Zr1Rk
+         XkBKi+SN4u/cjjL7OJzpqrQHOF6zLH06+lH4Ebpb124UrpME9L9pSETdMAZiqxQW5D
+         0ATeVxhZhs06Aq/TxPOdaamE1BYXHVFrGl1lAxLBgSouTAxjib/usI9//FTIMOFoW7
+         Ge/oyFpiWDe8boqMg5ZeOfDhDbUtOkS97wgS0zJo8MUrPCnY7nw9tKk0URHJDI0DFj
+         ACwmX2b9Xp9/w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C043E4007E; Wed,  1 Sep 2021 13:25:37 -0300 (-03)
+Date:   Wed, 1 Sep 2021 13:25:37 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
+        mike.leach@linaro.org, suzuki.poulose@arm.com,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 9/9] perf cs-etm: Show a warning for an unknown magic
+ number
+Message-ID: <YS+pgZMpFmnRlMuT@kernel.org>
+References: <20210806134109.1182235-1-james.clark@arm.com>
+ <20210806134109.1182235-10-james.clark@arm.com>
+ <20210824083615.GF204566@leoy-ThinkPad-X240s>
+ <YS+iOrcPTzQfmbqU@kernel.org>
+ <YS+lTXyuC+9VTrxd@kernel.org>
+ <YS+neCZler56Hs2D@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH 5.13 000/113] 5.13.14-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210901122301.984263453@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YS+neCZler56Hs2D@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/1/2021 5:27 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.14 release.
-> There are 113 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Em Wed, Sep 01, 2021 at 01:16:56PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, Sep 01, 2021 at 01:07:41PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Wed, Sep 01, 2021 at 12:54:34PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Tue, Aug 24, 2021 at 04:36:15PM +0800, Leo Yan escreveu:
+> > > > On Fri, Aug 06, 2021 at 02:41:09PM +0100, James Clark wrote:
+> > > > > Currently perf reports "Cannot allocate memory" which isn't very helpful
+> > > > > for a potentially user facing issue. If we add a new magic number in
+> > > > > the future, perf will be able to report unrecognised magic numbers.
+> > > > > 
+> > > > > Signed-off-by: James Clark <james.clark@arm.com>
+> > > > 
+> > > > Reviewed-by: Leo Yan <leo.yan@linaro.org>
+> > > 
+> > > Applies cleanly to my tree, test building it now, holler if there is
+> > > something that prevents it from being merged.
+> > 
+> > I´m now trying to fix this up, I applied it using 'b4', so no patch
+> > should have gone missing...
 > 
-> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
-> Anything received after that time might be too late.
+> So its probably related to:
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.14-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
+> ⬢[acme@toolbox perf]$ rpm -qa | grep opencsd
+> opencsd-1.0.0-1.fc34.x86_64
+> opencsd-devel-1.0.0-1.fc34.x86_64
+> ⬢[acme@toolbox perf]$
 > 
-> thanks,
-> 
-> greg k-h
+> In which case the usual mechanism is to test if we have what is needed
+> via tools/build/feature/test-_____.c, lemme check...
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+There is a test and it fails, of course:
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+⬢[acme@toolbox perf]$ cat /tmp/build/perf/feature/test-libopencsd.make.output
+test-libopencsd.c:9:2: error: #error "OpenCSD >= 1.1.1 is required"
+    9 | #error "OpenCSD >= 1.1.1 is required"
+      |  ^~~~~
+⬢[acme@toolbox perf]$
+
+But the fact that I ask for CORESIGHT=1 should have the build fail then,
+i.e. if one explicitely asks for a feature and it can't be built, fail
+the whole build.
+
+- Arnaldo
