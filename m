@@ -2,128 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335973FD431
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54ACB3FD436
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242462AbhIAHII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:08:08 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:64307 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242424AbhIAHIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:08:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630480030; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=L22obe0p898qJXX0hILjMKUiF4qgcHKEEeB63dfBMRY=;
- b=VQV7wCh7GHSH8tkOACP4+Rv65GBOEGm+65c3e9U7I6j3Qqe08tafA8XueXa2kNZq59NXr+qu
- jp2oVvSKpSO/Q8Zmd+5fh03/lFN1jGrWnpWVJREF8rMVqlO6Yf5ncf6fjcDmYBPIh332ts5F
- YaOYpDJx9h25foILCVQ3bTqNz2o=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 612f26924d644b7d1c412267 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 01 Sep 2021 07:06:58
- GMT
-Sender: rajpat=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 912D8C4360C; Wed,  1 Sep 2021 07:06:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rajpat)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C4F5CC4338F;
-        Wed,  1 Sep 2021 07:06:57 +0000 (UTC)
+        id S242502AbhIAHIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242472AbhIAHIy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 03:08:54 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DD1C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 00:07:58 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id n27so4464681eja.5
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 00:07:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ttiQ81PexZJ9BGCM+uGkFoS9kvTRFiKEGPrljwS10qs=;
+        b=U/iZjFHthqroFyYfcY2w4kGxTYoCptbQhhNwDDtk/TKEFMN4j2jXGu2cxCVRSLWbE6
+         bHkgM/97NkydlwKz0wjdfsBAO3lzrPbA6YZ0waUUbfjvPd/XnVxcCYRE8Ua//nnwJgEu
+         pQ0l5D5GnXMcq1ENAa+YDGWEH6LT/oXojyGppV6z5Uhg1pvsGDcH0g/x1nliHOEU197t
+         W4j5WZt67tRNDW2GbTW6qNHAJZU6iMkHcDBkxgeO2IV8yTXc1UkUDhlI19scxotKgto2
+         by1apb6E8b2I8cCXbaiG4T4EPY4R2PFeV2s3Rl2EfJ2AzCwH6PWxCaABygYpv3xTt/ai
+         VxDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ttiQ81PexZJ9BGCM+uGkFoS9kvTRFiKEGPrljwS10qs=;
+        b=EmSadNN4IZ992zb4vsn/xNmvtv/kAJjjv9xV6IRn0w50bJ+3ibKbZ0uxbtDkgVrUAc
+         9tXf6VfvREV3pKW/zGX4ciyhLF07KOW+sXoeavT4iDjAdtn/SjKU17BNkIboKtfk3eXz
+         X/ugMVQBCy/s5cJdMvN4dFKUwfoutiDLbd6QGYr5tvWuHNQP2WPA/Av3ilkFOvZECyb8
+         KceBx2JxBsIpwW/V6vJwyyBaKwM2YWjGzd9IvQJld6ioRGgO0RYh4suwud6ouguWMyr9
+         zHS1FOAqoQqujwnRQXkI/i2wqN2vgBkzK0EdrjLsZm46Fm+MBpPylu/pe2Zo+0iYb2Dr
+         PYlQ==
+X-Gm-Message-State: AOAM53346JPR76Afs8cy6XKVXSlWnEnnei7ifHEbbiPwJSuXHRAkn74R
+        5arfL5jpPmA6P9dstCNimSTS+g==
+X-Google-Smtp-Source: ABdhPJxZelQA90F5Buio/vqxtgsumcQADmv4H9aCrXzl4D7WxUkP6IhSFyso/oUkwAW/xm65amt1LA==
+X-Received: by 2002:a17:906:d20a:: with SMTP id w10mr36630482ejz.426.1630480076830;
+        Wed, 01 Sep 2021 00:07:56 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net (94.105.103.227.dyn.edpnet.net. [94.105.103.227])
+        by smtp.gmail.com with ESMTPSA id f30sm9177868ejl.78.2021.09.01.00.07.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 00:07:56 -0700 (PDT)
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Maurizio Lombardi <mlombard@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Konrad Rzeszutek Wilk <konrad@kernel.org>
+References: <20210901021510.1561219-1-nathan@kernel.org>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: Re: [PATCH] x86/setup: Explicitly include acpi.h
+Message-ID: <35bd6f7e-1dd3-da75-c8c8-464f0b2bdd9d@tessares.net>
+Date:   Wed, 1 Sep 2021 09:07:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 01 Sep 2021 12:36:57 +0530
-From:   rajpat@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, dianders@chromium.org
-Subject: Re: [PATCH V5 3/7] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
-In-Reply-To: <YSfwxuX22Ix4fqX2@google.com>
-References: <1628754078-29779-1-git-send-email-rajpat@codeaurora.org>
- <1628754078-29779-4-git-send-email-rajpat@codeaurora.org>
- <YRUsr6x9vqvaBB9i@google.com>
- <114d7419b0a85fcacf775cc34f279f0e@codeaurora.org>
- <YSfwxuX22Ix4fqX2@google.com>
-Message-ID: <c34a664d9f88d29013ed31e398729640@codeaurora.org>
-X-Sender: rajpat@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20210901021510.1561219-1-nathan@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-27 01:21, Matthias Kaehlcke wrote:
-> On Thu, Aug 26, 2021 at 06:37:02PM +0530, rajpat@codeaurora.org wrote:
->> On 2021-08-12 19:44, Matthias Kaehlcke wrote:
->> > On Thu, Aug 12, 2021 at 01:11:14PM +0530, Rajesh Patil wrote:
->> > > From: Roja Rani Yarubandi <rojay@codeaurora.org>
->> > >
->> > > Add QUPv3 wrapper_0 DT nodes for SC7280 SoC.
->> > >
->> > > Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
->> > > Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
->> > > ---
->> > >  arch/arm64/boot/dts/qcom/sc7280.dtsi | 720
->> > > +++++++++++++++++++++++++++++++++++
->> > >  1 file changed, 720 insertions(+)
->> > >
->> > > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> > > b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> > > index f8dd5ff..e461395 100644
->> > > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> > > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> > >
->> > > ...
->> > >
->> > > +			spi0: spi@980000 {
->> > > +				compatible = "qcom,geni-spi";
->> > > +				reg = <0 0x00980000 0 0x4000>;
->> > > +				clock-names = "se";
->> > > +				clocks = <&gcc GCC_QUPV3_WRAP0_S0_CLK>;
->> > > +				pinctrl-names = "default";
->> > > +				pinctrl-0 = <&qup_spi0_data_clk>, <&qup_spi0_cs>,
->> > > <&qup_spi0_cs_gpio>;
->> >
->> > What is the story behind 'qup_spiN_cs' and 'qup_spiN_cs_gpio'? Both
->> > configure
->> > the CS pin with a different function:
->> >
->> 
->> As per discussion here [1], we have split like this.
->> 
->> [1] https://lore.kernel.org/patchwork/patch/1393353/#1591826
-> 
-> IIUC that's only about having separate configs for each pin, instead of
-> groups like 'qup-spi0-default'. What you are doing above with 
-> 'qup_spi0_cs'
-> and 'qup_spi0_cs_gpio' is to configure the same pin (GPIO 3) both as 
-> SPI
-> chip select and as GPIO. Which one is it?
-> 
-> I imagine we want to have both pinctrl definitions to allow a board to
-> configure the pin either as SPI CS or GPIO. However it should be only 
-> one
-> of the two at a time, and the SoC .dtsi should provide a reasonable
-> default, which probably is SPI CS.
-> 
+Hi Nathan,
 
-I agree. Will remove it in next version.
+On 01/09/2021 04:15, Nathan Chancellor wrote:
+> After commit 342f43af70db ("iscsi_ibft: fix crash due to KASLR physical
+> memory remapping"), certain configurations show the following errors:
 
-> Maybe I'm missing something, if so please provide details on why it is
-> necessary to have this config.
+Thank you for the patch!
+
+It fixes the same issue on my side using a configuration based on
+x86_64_defconfig with a few extras on the Networking side only. My CI
+also noticed it was failing with a config based on tinyconfig.
+
+Tested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
