@@ -2,170 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8E53FD4FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379A63FD4FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243004AbhIAIMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:12:47 -0400
-Received: from relay.sw.ru ([185.231.240.75]:53326 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243005AbhIAIMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:12:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=PJZZjDyBNOIjs8GiNqd0ybx+nNz59jj3Cxjs7xjbVeE=; b=iIZKmpFvAiRf5inKMZG
-        7y1PmO13/d5QAKRXFGTgwtmD0O0mHzd79Qo6PzXvnu0qkF5cqxTZZWMox1zrHeiI6yb8d7G0H+kef
-        UrlOJ8kpLmiOS8Sr4j6x61H4DEu+Oeszfcz2Nnv1CELEvmSlUATagFXPZ8tZDkCRjKWVRZoPkNg=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mLLLP-000RZJ-HM; Wed, 01 Sep 2021 11:11:39 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH net-next v4] skb_expand_head() adjust skb->truesize
- incorrectly
-To:     Christoph Paasch <christoph.paasch@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@openvz.org, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Julian Wiedmann <jwi@linux.ibm.com>
-References: <b653692b-1550-e17a-6c51-894832c56065@virtuozzo.com>
-Message-ID: <ee5b763a-c39d-80fd-3dd4-bca159b5f5ac@virtuozzo.com>
-Date:   Wed, 1 Sep 2021 11:11:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S243010AbhIAINO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 1 Sep 2021 04:13:14 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:56891 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242992AbhIAINL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 04:13:11 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 339C760005;
+        Wed,  1 Sep 2021 08:12:10 +0000 (UTC)
+Date:   Wed, 1 Sep 2021 10:12:09 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     "Sa, Nuno" <Nuno.Sa@analog.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
+ samples
+Message-ID: <20210901101209.31703187@xps13>
+In-Reply-To: <MW4PR03MB6363BC976F039550906B6ED399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
+References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
+        <20210818111139.330636-4-miquel.raynal@bootlin.com>
+        <SJ0PR03MB6359415E120CFD3EFAF417F599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
+        <20210830110756.733d5201@jic23-huawei>
+        <MW4PR03MB6363FE3BAF40A383D244ADC399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
+        <20210830152956.58331a8d@jic23-huawei>
+        <MW4PR03MB6363BC976F039550906B6ED399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <b653692b-1550-e17a-6c51-894832c56065@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Paasch reports [1] about incorrect skb->truesize
-after skb_expand_head() call in ip6_xmit.
-This may happen because of two reasons:
-- skb_set_owner_w() for newly cloned skb is called too early,
-before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
-- pskb_expand_head() does not adjust truesize in (skb->sk) case.
-In this case sk->sk_wmem_alloc should be adjusted too.
+Hello,
 
-[1] https://lkml.org/lkml/2021/8/20/1082
+"Sa, Nuno" <Nuno.Sa@analog.com> wrote on Mon, 30 Aug 2021 15:02:26
++0000:
 
-Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
-Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
-v4: decided to use is_skb_wmem() after pskb_expand_head() call
-    fixed 'return (EXPRESSION);' in os_skb_wmem according to Eric Dumazet
-v3: removed __pskb_expand_head(),
-    added is_skb_wmem() helper for skb with wmem-compatible destructors
-    there are 2 ways to use it:
-     - before pskb_expand_head(), to create skb clones
-     - after successfull pskb_expand_head() to change owner on extended skb.
-v2: based on patch version from Eric Dumazet,
-    added __pskb_expand_head() function, which can be forced
-    to adjust skb->truesize and sk->sk_wmem_alloc.
----
- include/net/sock.h |  1 +
- net/core/skbuff.c  | 35 ++++++++++++++++++++++++++---------
- net/core/sock.c    |  8 ++++++++
- 3 files changed, 35 insertions(+), 9 deletions(-)
+> > -----Original Message-----
+> > From: Jonathan Cameron <jic23@kernel.org>
+> > Sent: Monday, August 30, 2021 4:30 PM
+> > To: Sa, Nuno <Nuno.Sa@analog.com>
+> > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter Clausen
+> > <lars@metafoo.de>; Thomas Petazzoni
+> > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org; linux-
+> > kernel@vger.kernel.org
+> > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
+> > samples
+> > 
+> > [External]
+> > 
+> > On Mon, 30 Aug 2021 10:49:50 +0000
+> > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+> >   
+> > > > -----Original Message-----
+> > > > From: Jonathan Cameron <jic23@kernel.org>
+> > > > Sent: Monday, August 30, 2021 12:08 PM
+> > > > To: Sa, Nuno <Nuno.Sa@analog.com>
+> > > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter  
+> > Clausen  
+> > > > <lars@metafoo.de>; Thomas Petazzoni
+> > > > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org;  
+> > linux-  
+> > > > kernel@vger.kernel.org
+> > > > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the  
+> > requested  
+> > > > samples
+> > > >
+> > > > [External]
+> > > >
+> > > > On Fri, 20 Aug 2021 07:10:48 +0000
+> > > > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+> > > >  
+> > > > > > -----Original Message-----
+> > > > > > From: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > > > Sent: Wednesday, August 18, 2021 1:11 PM
+> > > > > > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
+> > > > > > <lars@metafoo.de>
+> > > > > > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>; linux-
+> > > > > > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel  
+> > Raynal  
+> > > > > > <miquel.raynal@bootlin.com>
+> > > > > > Subject: [PATCH 03/16] iio: adc: max1027: Push only the  
+> > requested  
+> > > > > > samples
+> > > > > >
+> > > > > > [External]
+> > > > > >
+> > > > > > When a triggered scan occurs, the identity of the desired  
+> > channels  
+> > > > is  
+> > > > > > known in indio_dev->active_scan_mask. Instead of reading and
+> > > > > > pushing to
+> > > > > > the IIO buffers all channels each time, scan the minimum  
+> > amount  
+> > > > of  
+> > > > > > channels (0 to maximum requested chan, to be exact) and only
+> > > > > > provide the
+> > > > > > samples requested by the user.
+> > > > > >
+> > > > > > For example, if the user wants channels 1, 4 and 5, all channels  
+> > > > from  
+> > > > > > 0 to 5 will be scanned but only the desired channels will be  
+> > pushed  
+> > > > to  
+> > > > > > the IIO buffers.
+> > > > > >
+> > > > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > > > ---
+> > > > > >  drivers/iio/adc/max1027.c | 25 +++++++++++++++++++++----
+> > > > > >  1 file changed, 21 insertions(+), 4 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/iio/adc/max1027.c  
+> > b/drivers/iio/adc/max1027.c  
+> > > > > > index b753658bb41e..8ab660f596b5 100644
+> > > > > > --- a/drivers/iio/adc/max1027.c
+> > > > > > +++ b/drivers/iio/adc/max1027.c
+> > > > > > @@ -360,6 +360,9 @@ static int  
+> > max1027_set_trigger_state(struct  
+> > > > > > iio_trigger *trig, bool state)
+> > > > > >  	struct max1027_state *st = iio_priv(indio_dev);
+> > > > > >  	int ret;
+> > > > > >
+> > > > > > +	if (bitmap_empty(indio_dev->active_scan_mask,  
+> > indio_dev-  
+> > > > > > >masklength))  
+> > > > > > +		return -EINVAL;
+> > > > > > +  
+> > > > >
+> > > > > I'm not sure this can actually happen. If you try to enable the  
+> > buffer  
+> > > > > with no scan element, it should give you an error before you  
+> > reach  
+> > > > > this point...
+> > > > >  
+> > > > > >  	if (state) {
+> > > > > >  		/* Start acquisition on cnvst */
+> > > > > >  		st->reg = MAX1027_SETUP_REG |
+> > > > > > MAX1027_CKS_MODE0 |
+> > > > > > @@ -368,9 +371,12 @@ static int  
+> > max1027_set_trigger_state(struct  
+> > > > > > iio_trigger *trig, bool state)
+> > > > > >  		if (ret < 0)
+> > > > > >  			return ret;
+> > > > > >
+> > > > > > -		/* Scan from 0 to max */
+> > > > > > -		st->reg = MAX1027_CONV_REG |  
+> > MAX1027_CHAN(0) |  
+> > > > > > -			  MAX1027_SCAN_N_M |  
+> > MAX1027_TEMP;  
+> > > > > > +		/*
+> > > > > > +		 * Scan from 0 to the highest requested  
+> > channel. The  
+> > > > > > temperature
+> > > > > > +		 * could be avoided but it simplifies a bit the  
+> > logic.  
+> > > > > > +		 */
+> > > > > > +		st->reg = MAX1027_CONV_REG |
+> > > > > > MAX1027_SCAN_0_N | MAX1027_TEMP;
+> > > > > > +		st->reg |= MAX1027_CHAN(fls(*indio_dev-  
+> > > > > > >active_scan_mask) - 2);  
+> > > > > >  		ret = spi_write(st->spi, &st->reg, 1);
+> > > > > >  		if (ret < 0)
+> > > > > >  			return ret;
+> > > > > > @@ -391,11 +397,22 @@ static irqreturn_t
+> > > > > > max1027_trigger_handler(int irq, void *private)
+> > > > > >  	struct iio_poll_func *pf = private;
+> > > > > >  	struct iio_dev *indio_dev = pf->indio_dev;
+> > > > > >  	struct max1027_state *st = iio_priv(indio_dev);
+> > > > > > +	unsigned int scanned_chans = fls(*indio_dev-  
+> > > > > > >active_scan_mask);  
+> > > > > > +	u16 *buf = st->buffer;  
+> > > > >
+> > > > > I think sparse will complain here. buffer is a __be16 restricted
+> > > > > type so you should not mix those...  
+> > > > > > +	unsigned int bit;
+> > > > > >
+> > > > > >  	pr_debug("%s(irq=%d, private=0x%p)\n", __func__,  
+> > irq,  
+> > > > > >  
+> > > >  
+> > private);in/20210818_miquel_raynal_bring_software_triggers_support  
+> > > > _to_max1027_like_adcs.mbx  
+> > > > > >
+> > > > > >  	/* fill buffer with all channel */
+> > > > > > -	spi_read(st->spi, st->buffer, indio_dev->masklength *  
+> > 2);  
+> > > > > > +	spi_read(st->spi, st->buffer, scanned_chans * 2);
+> > > > > > +
+> > > > > > +	/* Only keep the channels selected by the user */
+> > > > > > +	for_each_set_bit(bit, indio_dev->active_scan_mask,
+> > > > > > +			 indio_dev->masklength) {
+> > > > > > +		if (buf[0] != st->buffer[bit])
+> > > > > > +			buf[0] = st->buffer[bit];  
+> > > > >
+> > > > > Since we are here, when looking into the driver, I realized
+> > > > > that st->buffer is not DMA safe. In IIO, we kind of want to  
+> > enforce  
+> > > > > that all buffers that are passed to spi/i2c buses are safe... Maybe
+> > > > > this is something you can include in your series.  
+> > > >
+> > > > Why is it not?  st->buffer is result of a devm_kmalloc_array() call  
+> > and  
+> > > > that should provide a DMA safe buffer as I understand it.
+> > > >  
+> > >
+> > > That's a good question. I'm not sure how I came to that conclusion  
+> > which  
+> > > is clearly wrong. Though I think the buffer might share the line with  
+> > the  
+> > > mutex...  
+> > Pointer shares a line.  The buffer it points to doesn't as allocated
+> > by separate heap allocation.
+> >   
+> 
+> Ups, sure :facepalm:
 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 95b2577..173d58c 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -1695,6 +1695,7 @@ struct sk_buff *sock_wmalloc(struct sock *sk, unsigned long size, int force,
- 			     gfp_t priority);
- void __sock_wfree(struct sk_buff *skb);
- void sock_wfree(struct sk_buff *skb);
-+bool is_skb_wmem(const struct sk_buff *skb);
- struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
- 			     gfp_t priority);
- void skb_orphan_partial(struct sk_buff *skb);
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index f931176..09991cb 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -1804,28 +1804,45 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
- struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
- {
- 	int delta = headroom - skb_headroom(skb);
-+	int osize = skb_end_offset(skb);
-+	struct sk_buff *oskb = NULL;
-+	struct sock *sk = skb->sk;
- 
- 	if (WARN_ONCE(delta <= 0,
- 		      "%s is expecting an increase in the headroom", __func__))
- 		return skb;
- 
--	/* pskb_expand_head() might crash, if skb is shared */
-+	delta = SKB_DATA_ALIGN(delta);
-+	/* pskb_expand_head() might crash, if skb is shared.
-+	 * Also we should clone skb if its destructor does
-+	 * not adjust skb->truesize and sk->sk_wmem_alloc
-+ 	 */
- 	if (skb_shared(skb)) {
- 		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
- 
--		if (likely(nskb)) {
--			if (skb->sk)
--				skb_set_owner_w(nskb, skb->sk);
--			consume_skb(skb);
--		} else {
-+		if (unlikely(!nskb)) {
- 			kfree_skb(skb);
-+			return NULL;
- 		}
-+		oskb = skb;
- 		skb = nskb;
- 	}
--	if (skb &&
--	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-+	if (pskb_expand_head(skb, delta, 0, GFP_ATOMIC)) {
- 		kfree_skb(skb);
--		skb = NULL;
-+		kfree_skb(oskb);
-+		return NULL;
-+	}
-+	if (oskb) {
-+		if (sk)
-+			skb_set_owner_w(skb, sk);
-+		consume_skb(oskb);
-+	} else if (sk) {
-+		delta = osize - skb_end_offset(skb);
-+		if (!is_skb_wmem(skb))
-+			skb_set_owner_w(skb, sk);
-+		skb->truesize += delta;
-+		if (sk_fullsock(sk))
-+			refcount_add(delta, &sk->sk_wmem_alloc);
- 	}
- 	return skb;
- }
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 950f1e7..6cbda43 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2227,6 +2227,14 @@ void skb_set_owner_w(struct sk_buff *skb, struct sock *sk)
- }
- EXPORT_SYMBOL(skb_set_owner_w);
- 
-+bool is_skb_wmem(const struct sk_buff *skb)
-+{
-+	return skb->destructor == sock_wfree ||
-+	       skb->destructor == __sock_wfree ||
-+	       (IS_ENABLED(CONFIG_INET) && skb->destructor == tcp_wfree);
-+}
-+EXPORT_SYMBOL(is_skb_wmem);
-+
- static bool can_skb_orphan_partial(const struct sk_buff *skb)
- {
- #ifdef CONFIG_TLS_DEVICE
--- 
-1.8.3.1
+My understanding [1] was that devm_ allocations were generally not
+suitable for DMA and should not be used for this particular purpose
+because of the extra 16 bytes allocated for storing the devm magic
+somewhere, which shifts the entire buffer and prevents it to always be
+aligned on a cache line. I will propose a patch to switch to
+kmalloc_array() instead.
 
+[1] https://linux-arm-kernel.infradead.narkive.com/vyJqy0RQ/question-devm-kmalloc-for-dma
+
+Thanks,
+Miquèl
