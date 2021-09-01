@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED683FD3BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 08:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6B93FD3C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 08:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242020AbhIAGXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 02:23:19 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:40790 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241794AbhIAGXS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 02:23:18 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 18163GIS058025;
-        Wed, 1 Sep 2021 14:03:16 +0800 (GMT-8)
-        (envelope-from chiawei_wang@aspeedtech.com)
-Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 1 Sep
- 2021 14:22:17 +0800
-From:   Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <osk@google.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>
-Subject: [PATCH 2/2] ARM: dts: aspeed: Add uart routing to device tree
-Date:   Wed, 1 Sep 2021 14:22:16 +0800
-Message-ID: <20210901062216.32675-3-chiawei_wang@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210901062216.32675-1-chiawei_wang@aspeedtech.com>
-References: <20210901062216.32675-1-chiawei_wang@aspeedtech.com>
+        id S242052AbhIAGZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 02:25:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231501AbhIAGZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 02:25:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B33A560FE6;
+        Wed,  1 Sep 2021 06:24:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630477472;
+        bh=owYWeMNxRWHqiz4Ls+78+kJdlpX2ot1Aci5dyemJqEQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vm7rX9XNGZJGt1FcOVRYNqEvPXHqOs52Ph0PA4oH8nLjNHpg6D8S6J5vlOsZCcQhf
+         XmDTfrcGKtBmSYTpIUmSWUHtd6Znx4aLB90i0XbufniVREUT0xTSb7BD/flF2o7mPL
+         +gS1vhbGjHOCgvbUmtVAEjlMo8lUZhwFJTSGwGn0=
+Date:   Wed, 1 Sep 2021 08:24:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] driver core: fw_devlink: Don't create device links
+ for devices not on a bus
+Message-ID: <YS8cncQxUZDRuhUG@kroah.com>
+References: <20210831224510.703253-1-saravanak@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.66]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 18163GIS058025
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831224510.703253-1-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add LPC uart routing to the device tree for Aspeed AST25xx/AST26xx SoCs.
+On Tue, Aug 31, 2021 at 03:45:10PM -0700, Saravana Kannan wrote:
+> Devices that are not on a bus will never have a driver bound to it. So,
+> fw_devlink should not create device links for it as it can cause probe
+> issues[1] or sync_state() call back issues[2].
+> 
+> [1] - https://lore.kernel.org/lkml/CAGETcx_xJCqOWtwZ9Ee2+0sPGNLM5=F=djtbdYENkAYZa0ynqQ@mail.gmail.com/
+> [2] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+> Fixes: f9aa460672c9 ("driver core: Refactor fw_devlink feature")
+> Reported-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+>  drivers/base/core.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index f6360490a4a3..304a06314656 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -1719,8 +1719,24 @@ static int fw_devlink_create_devlink(struct device *con,
+>  	struct device *sup_dev;
+>  	int ret = 0;
+>  
+> +	/*
+> +	 * If a consumer device is not on a bus (i.e. a driver will never bind
+> +	 * to it), it doesn't make sense for fw_devlink to create device links
+> +	 * for it.
+> +	 */
+> +	if (con->bus == NULL)
+> +		return -EINVAL;
+> +
 
-Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
----
- arch/arm/boot/dts/aspeed-g5.dtsi | 6 ++++++
- arch/arm/boot/dts/aspeed-g6.dtsi | 6 ++++++
- 2 files changed, 12 insertions(+)
+Why would a device not be on a bus that has to do with a driver needing
+it?  What types of devices are these?
 
-diff --git a/arch/arm/boot/dts/aspeed-g5.dtsi b/arch/arm/boot/dts/aspeed-g5.dtsi
-index 329eaeef66fb..ba7744cb0842 100644
---- a/arch/arm/boot/dts/aspeed-g5.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g5.dtsi
-@@ -492,6 +492,12 @@
- 					#reset-cells = <1>;
- 				};
- 
-+				lpc_uart_routing: lpc-uart-routing@98 {
-+					compatible = "aspeed,ast2500-lpc-uart-routing";
-+					reg = <0x98 0x8>;
-+					status = "disabled";
-+				};
-+
- 				lhc: lhc@a0 {
- 					compatible = "aspeed,ast2500-lhc";
- 					reg = <0xa0 0x24 0xc8 0x8>;
-diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-index f96607b7b4e2..3699c50a2945 100644
---- a/arch/arm/boot/dts/aspeed-g6.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-@@ -523,6 +523,12 @@
- 					#reset-cells = <1>;
- 				};
- 
-+				lpc_uart_routing: lpc-uart-routing@98 {
-+					compatible = "aspeed,ast2600-lpc-uart-routing";
-+					reg = <0x98 0x8>;
-+					status = "disabled";
-+				};
-+
- 				ibt: ibt@140 {
- 					compatible = "aspeed,ast2600-ibt-bmc";
- 					reg = <0x140 0x18>;
--- 
-2.17.1
+thanks,
 
+greg k-h
