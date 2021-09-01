@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E2D3FDC38
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C263FDB36
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344478AbhIAMsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:48:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48328 "EHLO mail.kernel.org"
+        id S1344071AbhIAMi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:38:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344776AbhIAMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:42:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 773A661209;
-        Wed,  1 Sep 2021 12:37:55 +0000 (UTC)
+        id S245528AbhIAMhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:37:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2B04610E9;
+        Wed,  1 Sep 2021 12:34:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499876;
-        bh=d1Qf3OsZwmL4ZO08kHR9JddNHKHIWQJyuTHXHe/qw/E=;
+        s=korg; t=1630499647;
+        bh=O+6z9eBuFWGHa5ZrGh80Yl4rv6jePYsWzfCMnOW57TE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ihKsmhYzEmsLqHghosI+5Olh8hKylt4NpHgK3eUUaYfARObtH9EUP/96Fo+VMNlVh
-         f0iC6JPnVnh9jhueRiaT4vfVUiukDEzHnNiK6HmcIOIlrS4VTA2yNfeg1FSrOL4Zz2
-         RvReUSBnDYdrL51cqCtBEFGXYZpE7ktzUgnTro2A=
+        b=rzIMyzMcI9/rSlJgL/IZzIIsXYauuh/J9cb7oWURcNqZxUO6oEOnJQYjVDn9eGIOy
+         +EVtT+XZVLIOpC+nOhXJmi/vxaxbGjGhhIUyI6EIpkl4TAKVPnxqg8lrKFp91Bb1jd
+         QPlpXD6bcoQtSXW8pFhkIQXkjNgQnjV4BBwjfiFI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Daniel Axtens <dja@axtens.net>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.13 018/113] powerpc: Re-enable ARCH_ENABLE_SPLIT_PMD_PTLOCK
-Date:   Wed,  1 Sep 2021 14:27:33 +0200
-Message-Id: <20210901122302.587592459@linuxfoundation.org>
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Tuo Li <islituo@gmail.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 024/103] IB/hfi1: Fix possible null-pointer dereference in _extend_sdma_tx_descs()
+Date:   Wed,  1 Sep 2021 14:27:34 +0200
+Message-Id: <20210901122301.333589207@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +42,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Tuo Li <islituo@gmail.com>
 
-commit 310d2e83cb9b7f1e7232319880e3fcb57592fa10 upstream.
+[ Upstream commit cbe71c61992c38f72c2b625b2ef25916b9f0d060 ]
 
-Commit 66f24fa766e3 ("mm: drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK")
-broke PMD split page table lock for powerpc.
+kmalloc_array() is called to allocate memory for tx->descp. If it fails,
+the function __sdma_txclean() is called:
+  __sdma_txclean(dd, tx);
 
-It selects the non-existent config ARCH_ENABLE_PMD_SPLIT_PTLOCK in
-arch/powerpc/platforms/Kconfig.cputype, but clearly intended to
-select ARCH_ENABLE_SPLIT_PMD_PTLOCK (notice the word swapping!), as
-that commit did for all other architectures.
+However, in the function __sdma_txclean(), tx-descp is dereferenced if
+tx->num_desc is not zero:
+  sdma_unmap_desc(dd, &tx->descp[0]);
 
-Fix it by selecting the correct symbol ARCH_ENABLE_SPLIT_PMD_PTLOCK.
+To fix this possible null-pointer dereference, assign the return value of
+kmalloc_array() to a local variable descp, and then assign it to tx->descp
+if it is not NULL. Otherwise, go to enomem.
 
-Fixes: 66f24fa766e3 ("mm: drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK")
-Cc: stable@vger.kernel.org # v5.13+
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Reviewed-by: Daniel Axtens <dja@axtens.net>
-[mpe: Reword change log to make it clear this is a bug fix]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210819113954.17515-3-lukas.bulwahn@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+Link: https://lore.kernel.org/r/20210806133029.194964-1-islituo@gmail.com
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+Tested-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Acked-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/Kconfig.cputype |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hfi1/sdma.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -97,7 +97,7 @@ config PPC_BOOK3S_64
- 	select PPC_HAVE_PMU_SUPPORT
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
- 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
--	select ARCH_ENABLE_PMD_SPLIT_PTLOCK
-+	select ARCH_ENABLE_SPLIT_PMD_PTLOCK
- 	select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
- 	select ARCH_SUPPORTS_HUGETLBFS
- 	select ARCH_SUPPORTS_NUMA_BALANCING
+diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
+index a307d4c8b15a..ac6f87137b63 100644
+--- a/drivers/infiniband/hw/hfi1/sdma.c
++++ b/drivers/infiniband/hw/hfi1/sdma.c
+@@ -3055,6 +3055,7 @@ static void __sdma_process_event(struct sdma_engine *sde,
+ static int _extend_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
+ {
+ 	int i;
++	struct sdma_desc *descp;
+ 
+ 	/* Handle last descriptor */
+ 	if (unlikely((tx->num_desc == (MAX_DESC - 1)))) {
+@@ -3075,12 +3076,10 @@ static int _extend_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
+ 	if (unlikely(tx->num_desc == MAX_DESC))
+ 		goto enomem;
+ 
+-	tx->descp = kmalloc_array(
+-			MAX_DESC,
+-			sizeof(struct sdma_desc),
+-			GFP_ATOMIC);
+-	if (!tx->descp)
++	descp = kmalloc_array(MAX_DESC, sizeof(struct sdma_desc), GFP_ATOMIC);
++	if (!descp)
+ 		goto enomem;
++	tx->descp = descp;
+ 
+ 	/* reserve last descriptor for coalescing */
+ 	tx->desc_limit = MAX_DESC - 1;
+-- 
+2.30.2
+
 
 
