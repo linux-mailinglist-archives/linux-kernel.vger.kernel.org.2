@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73E13FDCDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2173FDAF9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345603AbhIAMxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:53:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54322 "EHLO mail.kernel.org"
+        id S1343898AbhIAMgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:36:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346405AbhIAMuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:50:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A237561104;
-        Wed,  1 Sep 2021 12:41:33 +0000 (UTC)
+        id S1343892AbhIAMei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:34:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1138661075;
+        Wed,  1 Sep 2021 12:32:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630500094;
-        bh=sL1J6GCX0cXYB6pTbhNmDiPsvxDkc/vNW2Pl3uUkdy8=;
+        s=korg; t=1630499565;
+        bh=oOL6UTqDbg0OcKR1M4Omks0SqDMR+Q807rMevmkjvuQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ue4YI4YK65/pecEGNNdIIFHcmM86gQFhI1yi8lRCij2gJLAXNko894cArvt9bWPVu
-         VsWQFEAjytWd71n5StdZaN1hfosFf9rAKf+lz0S9QMzD+MEijqRoU153ncyFIkgmwN
-         P3o+uECdWrxOXt590osM4Gpgo5Q7Os/SCXoAPjOY=
+        b=Dewf3m0tf2d3go28TtZS/eYYrz8JsxxHq8qh1jtuRKWp0qooXJEnKhujkk2rHLYLO
+         jkxyl4xyDG4Jn8wHtz2HWq0VZ2nO57XzfUciivjb6NEtgcwH46xPwd8IKqLg03E3Jx
+         n/lSluQwBbSfnajiBcNoMlPIdv45NasnCGbu7QZc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        stable@vger.kernel.org, Ariel Elior <aelior@marvell.com>,
+        Shai Malin <smalin@marvell.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 067/113] net: stmmac: add mutex lock to protect est parameters
+Subject: [PATCH 5.4 32/48] qed: qed ll2 race condition fixes
 Date:   Wed,  1 Sep 2021 14:28:22 +0200
-Message-Id: <20210901122304.222144856@linuxfoundation.org>
+Message-Id: <20210901122254.465317040@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,96 +41,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+From: Shai Malin <smalin@marvell.com>
 
-[ Upstream commit b2aae654a4794ef898ad33a179f341eb610f6b85 ]
+[ Upstream commit 37110237f31105d679fc0aa7b11cdec867750ea7 ]
 
-Add a mutex lock to protect est structure parameters so that the
-EST parameters can be updated by other threads.
+Avoiding qed ll2 race condition and NULL pointer dereference as part
+of the remove and recovery flows.
 
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Changes form V1:
+- Change (!p_rx->set_prod_addr).
+- qed_ll2.c checkpatch fixes.
+
+Change from V2:
+- Revert "qed_ll2.c checkpatch fixes".
+
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c | 12 +++++++++++-
- include/linux/stmmac.h                          |  1 +
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/qlogic/qed/qed_ll2.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-index 4e70efc45458..fb5207dcbcaa 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-@@ -775,14 +775,18 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
- 					 GFP_KERNEL);
- 		if (!plat->est)
- 			return -ENOMEM;
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_ll2.c b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
+index 19a1a58d60f8..c449ecc0add2 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_ll2.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
+@@ -353,6 +353,9 @@ static int qed_ll2_txq_completion(struct qed_hwfn *p_hwfn, void *p_cookie)
+ 	unsigned long flags;
+ 	int rc = -EINVAL;
+ 
++	if (!p_ll2_conn)
++		return rc;
 +
-+		mutex_init(&priv->plat->est->lock);
- 	} else {
- 		memset(plat->est, 0, sizeof(*plat->est));
- 	}
+ 	spin_lock_irqsave(&p_tx->lock, flags);
+ 	if (p_tx->b_completing_packet) {
+ 		rc = -EBUSY;
+@@ -526,7 +529,16 @@ static int qed_ll2_rxq_completion(struct qed_hwfn *p_hwfn, void *cookie)
+ 	unsigned long flags = 0;
+ 	int rc = 0;
  
- 	size = qopt->num_entries;
- 
-+	mutex_lock(&priv->plat->est->lock);
- 	priv->plat->est->gcl_size = size;
- 	priv->plat->est->enable = qopt->enable;
-+	mutex_unlock(&priv->plat->est->lock);
- 
- 	for (i = 0; i < size; i++) {
- 		s64 delta_ns = qopt->entries[i].interval;
-@@ -813,6 +817,7 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
- 		priv->plat->est->gcl[i] = delta_ns | (gates << wid);
- 	}
- 
-+	mutex_lock(&priv->plat->est->lock);
- 	/* Adjust for real system time */
- 	priv->ptp_clock_ops.gettime64(&priv->ptp_clock_ops, &current_time);
- 	current_time_ns = timespec64_to_ktime(current_time);
-@@ -837,8 +842,10 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
- 	priv->plat->est->ctr[0] = do_div(ctr, NSEC_PER_SEC);
- 	priv->plat->est->ctr[1] = (u32)ctr;
- 
--	if (fpe && !priv->dma_cap.fpesel)
-+	if (fpe && !priv->dma_cap.fpesel) {
-+		mutex_unlock(&priv->plat->est->lock);
- 		return -EOPNOTSUPP;
++	if (!p_ll2_conn)
++		return rc;
++
+ 	spin_lock_irqsave(&p_rx->lock, flags);
++
++	if (!QED_LL2_RX_REGISTERED(p_ll2_conn)) {
++		spin_unlock_irqrestore(&p_rx->lock, flags);
++		return 0;
 +	}
++
+ 	cq_new_idx = le16_to_cpu(*p_rx->p_fw_cons);
+ 	cq_old_idx = qed_chain_get_cons_idx(&p_rx->rcq_chain);
  
- 	/* Actual FPE register configuration will be done after FPE handshake
- 	 * is success.
-@@ -847,6 +854,7 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
+@@ -847,6 +859,9 @@ static int qed_ll2_lb_rxq_completion(struct qed_hwfn *p_hwfn, void *p_cookie)
+ 	struct qed_ll2_info *p_ll2_conn = (struct qed_ll2_info *)p_cookie;
+ 	int rc;
  
- 	ret = stmmac_est_configure(priv, priv->ioaddr, priv->plat->est,
- 				   priv->plat->clk_ptp_rate);
-+	mutex_unlock(&priv->plat->est->lock);
- 	if (ret) {
- 		netdev_err(priv->dev, "failed to configure EST\n");
- 		goto disable;
-@@ -862,9 +870,11 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
- 	return 0;
++	if (!p_ll2_conn)
++		return 0;
++
+ 	if (!QED_LL2_RX_REGISTERED(p_ll2_conn))
+ 		return 0;
  
- disable:
-+	mutex_lock(&priv->plat->est->lock);
- 	priv->plat->est->enable = false;
- 	stmmac_est_configure(priv, priv->ioaddr, priv->plat->est,
- 			     priv->plat->clk_ptp_rate);
-+	mutex_unlock(&priv->plat->est->lock);
+@@ -870,6 +885,9 @@ static int qed_ll2_lb_txq_completion(struct qed_hwfn *p_hwfn, void *p_cookie)
+ 	u16 new_idx = 0, num_bds = 0;
+ 	int rc;
  
- 	priv->plat->fpe_cfg->enable = false;
- 	stmmac_fpe_configure(priv, priv->ioaddr,
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index 0db36360ef21..cb7fbd747ae1 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -115,6 +115,7 @@ struct stmmac_axi {
++	if (!p_ll2_conn)
++		return 0;
++
+ 	if (!QED_LL2_TX_REGISTERED(p_ll2_conn))
+ 		return 0;
  
- #define EST_GCL		1024
- struct stmmac_est {
-+	struct mutex lock;
- 	int enable;
- 	u32 btr_offset[2];
- 	u32 btr[2];
+@@ -1642,6 +1660,8 @@ int qed_ll2_post_rx_buffer(void *cxt,
+ 	if (!p_ll2_conn)
+ 		return -EINVAL;
+ 	p_rx = &p_ll2_conn->rx_queue;
++	if (!p_rx->set_prod_addr)
++		return -EIO;
+ 
+ 	spin_lock_irqsave(&p_rx->lock, flags);
+ 	if (!list_empty(&p_rx->free_descq))
 -- 
 2.30.2
 
