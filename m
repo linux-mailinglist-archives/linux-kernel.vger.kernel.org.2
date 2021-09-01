@@ -2,283 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB113FE48F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1E63FE490
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344241AbhIAVJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 17:09:30 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:43980 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343826AbhIAVJ0 (ORCPT
+        id S243887AbhIAVKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 17:10:21 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:38932 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245159AbhIAVKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 17:09:26 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 181I45tf008937;
-        Wed, 1 Sep 2021 21:08:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2021-07-09;
- bh=Ux34rEi+oVVlTMiJ9LMJkt3ssy1Fz/sBcVLy0Xx3yLw=;
- b=B0jph2yG87PMEjljQnFdc11DZ3jBd/bca9YrC7Yy8i61WAlM6utrknM1L5U3xAc7bSdf
- mOO086nLe2Nt/3jBetNzneUxNAKOZWCR5wVxZ4IGblm0GbrhoV5anZsMgLfLopF9xvXl
- bkj799YLl9j3J+FgDpw8tmwGxozJNi52XlS3ekOUENLD1bSdQsjwhcR8cuxTmeIXBvg+
- asDF8F1GAsTE6m/kNYHFphNo59Co+BzuPPU4nQKjn/Yio8cz4Z+Fpo/Yx5QTWHYR5r6l
- 8PbLLckR4ARVhbxSEZNKOOBQIBUExQQVAwMdCxVDgeN6cZkj/uD8udH9kE2B74Ph8avL hw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2020-01-29;
- bh=Ux34rEi+oVVlTMiJ9LMJkt3ssy1Fz/sBcVLy0Xx3yLw=;
- b=owDGvKIVJz1IWsSzNB6ICOYCGO1Y2cWbgn1Bc3LQq8OX0BLScMgP0zW2UK8BABwStNUE
- ESj4U0cw6fPpx8rWbIGRSu2SxYkF45rPT4njLuiflFTgnLvcmrN9JJT5CTejNgLIpPBi
- hb4NLtq4hyudzUXXx7ZZXcUeua/u7ib5sW0YlkS/w5dusmEmAlVhbtmGi4fBQpg8garP
- IersZhwa8a0yp/prfIBBsm7EcyNeTKsmqNwU34EqwhHlH4JPLU1byd41q493XbWkJe6f
- YA88ulbORpD8DSsa0V+BuINToY3bQ9FkYLr29Hm3i5zg5rjU4CVo0sHUJTXQa6ztxZoj ow== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3atdw0gjj9-1
+        Wed, 1 Sep 2021 17:10:05 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 181I4xxM004466;
+        Wed, 1 Sep 2021 21:09:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to :
+ subject : message-id : content-type : mime-version; s=corp-2021-07-09;
+ bh=ifvPz1rdMc+YZ+xR0/Zx10uCNTr81KT9P6CI9kNeKlM=;
+ b=IrCXGhiAahFpCkp+g8lyKsw66PLEkIHaFLgQDnYTEYiVBrsarrBaqSYBpfLeJvNN6QLC
+ obRya7B/v50udLcHZ5xyIBKfzOntc6maH1k3JlFiSLvg73Fm2798rC15lSJcg8z4jNvh
+ e2UW6GCTlQB438/3S1G3kaeblhVkshNaRcNSt4yXvvSG1Q2YmE1g4sJg41y1EXTR4hg8
+ fvLOmhQOQKisOMDynqDvUmmBzfPs5ctenHMm8oB/mDpzGnv1xtM8hw+fqsJ0YDofQEFk
+ UI91IMfAVcZRhJ1zBJZbl44y9LIzEtlIb9kxpSQTZiNDTWvNIbw4PONC8TZokBkkkzUg ig== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to :
+ subject : message-id : content-type : mime-version; s=corp-2020-01-29;
+ bh=ifvPz1rdMc+YZ+xR0/Zx10uCNTr81KT9P6CI9kNeKlM=;
+ b=EC9ms4Ui8qlNUSa0ux1HycLUSZnJB8FndgsXk/ykJrIPwJ6Fx90g56AV8w8euG2E1jHR
+ 8J9QYRGGiOe7ht+yjWcwCt6lAJQ7btZTfCqH/5AgiJizx2pC/j3/QB2Zg0xjFmroYa1Q
+ NPpsr1NPwDdvgOAnvSH/FE3tLSuaI9qz/R2a5fS5xAGFQMK54/fE6fKuris9RjMQVEYg
+ blM0hFYhFsEdxVJbuYfH4IGsfWi3GDKoUh3ePLSOgvnlECCGWg9yU72JEk9QdA/dEEaX
+ dA4vfcE2boinPfWri8u8zsAOOeYNGlkU89CbytPJGvIorb3hMYg4yHD7qJkZb9vj35et tg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3atdw18k7x-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 01 Sep 2021 21:08:20 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 181L6PdK027409;
-        Wed, 1 Sep 2021 21:08:19 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2048.outbound.protection.outlook.com [104.47.66.48])
-        by userp3030.oracle.com with ESMTP id 3ate04rppy-1
+        Wed, 01 Sep 2021 21:09:03 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 181L5f0r063689;
+        Wed, 1 Sep 2021 21:09:02 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+        by aserp3020.oracle.com with ESMTP id 3atdyuge01-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 01 Sep 2021 21:08:19 +0000
+        Wed, 01 Sep 2021 21:09:02 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OpqnNbIXBtGXjFnZpKKG6hQx/AgNv0v2mDfvAbDkXGPle94QnS/bWou7drJKRsapAL5QAA8P3hM4FX6xhKVGYH7NsYDr3njM6l67jUPJ0IOzbF5TUXT7hU4RndZA6FG5avpYyEcajiCdGPCAtbhvezopj3wDAYHaFG2TH/VfRxb2AQBTNdnQeohFFlBktT1zOVRnL7Jxoyyk+62ZYfusyGwTzY7OuR70O3hzaXI0Ij6VujElEHBqlvj+QiQNwz++eUtO0UOpQuZGlAM7wPsGAzA5HUUCicoowX8kbHCBk7HjygBtTTjBwQBoRCkpkx0Ob/JjU4ciBh1uyIBUj1ah1w==
+ b=lQFAJ8BMQbASe0n4CIJXAOQ1DWykzY4U4BrPOqMa66zs5Inux1iRq0fAgu8uSqMRC4A1L4r9fp0/BA49DpSJyBTnZNvC0UyfQ624aJzk55McakvruOW6MrtvwgMBcPYci68/+F1Nu3MaIcI2wpYeHzNW9EzHp/GWoBCijzOTXKTBkzuWdTLgkGBofWD8Gbmv0XKvTRK6jM+SpSZpzZyX6yLdivU8zsJCVflXLiYl9NGadObTAi2NQ1YKrY67iiGL9Nb3lCs7P4MmLd99zEVQukIjUZdp0Yijb4+q/YtMUVW5IYK4odaonvkXjKOy/hNiLtXA61eJkxMIWeZXOayXiw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=Ux34rEi+oVVlTMiJ9LMJkt3ssy1Fz/sBcVLy0Xx3yLw=;
- b=QTifDvmbkQC3kJtcDxZjiKIDsSgzpoTz7LRPfYvLGpQqqHj/fbNIstnm/aTZO6IEDsUwnxB/3gM9DTL0rmIawrEd8/yqaGPTEJ+zllwT7YgVeDOzxal8uSsq9DCdSy3oAS7amkD4I/n4pOR060XkS0a/S0LBcLMt/rNKE0HrQu0BAjxBo/AKkn9AW/SjJyduuG3oB4tYOghaywH8+nepT+ZuxbNUaxofP2hWtDAPfQ3Z3Y/3aQzK/NI8axfI0dBfkMFQ0qxNTP/XHdPSosnBpkUzFHywloNyXC6WrW6qUiRV143iPNaVVLFLPUgZ1Xscjv+Is3Jz7qu5e0VcGFpKGQ==
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ifvPz1rdMc+YZ+xR0/Zx10uCNTr81KT9P6CI9kNeKlM=;
+ b=BcWcKltCyMLVUY/QCHxPIKaJA9TgF7aCVUGi18nI+cHUIdOVZsfyxGzip3MGCjyTka4U4IjnRWwDFBOj47Ma4c8XTo27Jdx+ijLNEgZysYt2+iPRwcV538WiStj3MW+X99TGOtRBmUg5ig5ZO+ebB0pEYea1ZF3Z2UVC/GFumGhOAKNF7yvpgJvx2aV7E158LAuikQOH5aQHtSNy3q/RimoY+PP5wWqTJLx3D+QbCLbfc7lOpPz1f5SoyXQAJpHWCUhEm2ZFFPthnrOoxD6UHwge17NnFi9EoJgkUhOz7BSXA9LBs/zMpsx04JG2S1oQOn1y2xvQJzixuPKFqDtCWA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ux34rEi+oVVlTMiJ9LMJkt3ssy1Fz/sBcVLy0Xx3yLw=;
- b=OIpKumI8UwXJl3CswhY+9iOAehsV9Cv2em4E07obdECdXZnG5tVaaK7MThueqpVHMbPCERf8+gxj3mZ6dn0pQufd6XHZ1p2rV+SooMjhUBlQ62ELJ7MvANRCHTM0pFTD/K8cUWUFA1hRBxae4t79D1x0Q+h/mAiwTLcotSPaz+I=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=oracle.com;
-Received: from CH2PR10MB4166.namprd10.prod.outlook.com (2603:10b6:610:78::20)
- by CH0PR10MB5211.namprd10.prod.outlook.com (2603:10b6:610:df::14) with
+ bh=ifvPz1rdMc+YZ+xR0/Zx10uCNTr81KT9P6CI9kNeKlM=;
+ b=SH5vwTrhofH/7P49zVJg21gpszW8M6H3H5XcCGWpH6A2nSIiqc/Y97T92WVgzaMVB0j6/0uhbGIUrYAXvkRWhpjnexqsn3TM4ESZWxZtkPZTJZH7cu44fndkYxYuaAxCFIiu7p7dMRcDcPxZgfQo888WOAQdIm96t2tCBqon/mE=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by BYAPR10MB3160.namprd10.prod.outlook.com (2603:10b6:a03:151::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.17; Wed, 1 Sep
- 2021 21:08:15 +0000
-Received: from CH2PR10MB4166.namprd10.prod.outlook.com
- ([fe80::2c22:7eb8:a2f0:e027]) by CH2PR10MB4166.namprd10.prod.outlook.com
- ([fe80::2c22:7eb8:a2f0:e027%7]) with mapi id 15.20.4457.025; Wed, 1 Sep 2021
- 21:08:15 +0000
-From:   Stephen Brennan <stephen.s.brennan@oracle.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     Stephen Brennan <stephen.s.brennan@oracle.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] perf script python: Allow reporting [un]throttle
-Date:   Wed,  1 Sep 2021 14:08:15 -0700
-Message-Id: <20210901210815.133251-1-stephen.s.brennan@oracle.com>
-X-Mailer: git-send-email 2.30.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SA9PR13CA0149.namprd13.prod.outlook.com
- (2603:10b6:806:27::34) To CH2PR10MB4166.namprd10.prod.outlook.com
- (2603:10b6:610:78::20)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.21; Wed, 1 Sep
+ 2021 21:08:57 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::cdbb:4673:98bd:7f2c]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::cdbb:4673:98bd:7f2c%5]) with mapi id 15.20.4457.024; Wed, 1 Sep 2021
+ 21:08:57 +0000
+Date:   Wed, 1 Sep 2021 17:08:53 -0400
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     tientzu@chromium.org, will@kernel.org, pasic@linux.ibm.com,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [GIT PULL] (swiotlb) stable/for-linus-5.15
+Message-ID: <YS/r5eaf/ps5ekie@localhost.localdomain>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-ClientProxiedBy: MN2PR14CA0011.namprd14.prod.outlook.com
+ (2603:10b6:208:23e::16) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (148.87.23.10) by SA9PR13CA0149.namprd13.prod.outlook.com (2603:10b6:806:27::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.4 via Frontend Transport; Wed, 1 Sep 2021 21:08:15 +0000
+Received: from localhost.localdomain (130.44.160.152) by MN2PR14CA0011.namprd14.prod.outlook.com (2603:10b6:208:23e::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Wed, 1 Sep 2021 21:08:56 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 16c82270-6a3e-42c3-829d-08d96d8c9d76
-X-MS-TrafficTypeDiagnostic: CH0PR10MB5211:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CH0PR10MB5211EA972C69A013FCE0309CDBCD9@CH0PR10MB5211.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Office365-Filtering-Correlation-Id: eb09bcea-5483-44b6-22fb-08d96d8cb675
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3160:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB3160AEF6C411E53C49DEEAF989CD9@BYAPR10MB3160.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?y+261XZeOQI6PZdUnZ6rMYiImfaKb2UFtk3P3t0ZVK/wytbmlztiTkMvnmeK?=
- =?us-ascii?Q?xa/18fZNtFqFb+sVFiX2O5b4qInNMnvMgmcMIXM0vZa9bSi4/5+WL6dDw7Mm?=
- =?us-ascii?Q?kTbKjgOswsFfkapsEtEosXhhPLIIJ/bB8QwN/BohVHfy0/awLuXRPFQrx/0K?=
- =?us-ascii?Q?HuSD+VvfupCA1sX15xYwT/Pz0Xe45tSlLLZFpEwJNF+dGuJd+NLBfPUXM1C4?=
- =?us-ascii?Q?NbuchggCiNCnqz3NAJo+lxq3U+qOGV3mRMRGAsaY1WlqCWUh+cCDppH81QDK?=
- =?us-ascii?Q?rN366sx9g4ZQxlepJ+Az2A0/03B3UDVG90Byeyc8gO1sAVWB0fKyWR6tXq2A?=
- =?us-ascii?Q?x2zEpkL5wr245VeQ3FlfCdjL8WDyerIyqssphR5+zoi0hspHoxHHGM003MXE?=
- =?us-ascii?Q?WlA0vn5UqrTNgllXHblaVMC36y/jfkBMzNX4OKLNCrbbylARBmyl/tWURKBM?=
- =?us-ascii?Q?hz4E68k0EO1BeRndtIUQbst6oRni5mL65oBPp1mHRFPux1Squ7yGQOYZUlKS?=
- =?us-ascii?Q?2S9kJ3HXZIm2XijfecpVI9EgAEWC2MosR3vf1lDWbN6XPIS2vnuDqMr9XRG6?=
- =?us-ascii?Q?cJLVV2vZ9vk6boZEMmos0dVSMqB08C2WtonZxReJQGvNV0ShVqcc7QUY1n/F?=
- =?us-ascii?Q?+uTNXumTHpBP8hLlavwZKIO1gQWKybsN2aZG/qUXLH8iA/jZob51WHnva+Lg?=
- =?us-ascii?Q?85+NnB6pvK51Or8t0hN3RzXxS0F5NW6SImRl74vLQ1+E4YzYJWQCnr2u3jNQ?=
- =?us-ascii?Q?iNj1Yvvc8DbJBk7ivznKUDgdnoz6NaQ+Ial0fYjyt2RqNYA+sodvxz9MX/nF?=
- =?us-ascii?Q?udArOB2js4YGA/vboBUjntZDa20/l90SJgWBzRu5NSFA+jNMmtZmk4JJR+ZN?=
- =?us-ascii?Q?nbUH+f7TWCuV+02c/Wf+afcFYAocaFH2WfVXUmVSlUfRg+u4NSapZ0Yw2m+F?=
- =?us-ascii?Q?ZTW7LeYvh7etKkO7oQ4GnM4urY/AAxx0Z2FUM0MzpOUbdK31gN5PI0D6id/3?=
- =?us-ascii?Q?U6J5zCMOIe4TXNk42Z6cYExNGb7g6LA5U79aH+r9ksocbGk=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:CH2PR10MB4166.namprd10.prod.outlook.com;PTR:;CAT:OSPM;SFS:(376002)(39860400002)(136003)(396003)(366004)(346002)(36756003)(26005)(6496006)(8676002)(956004)(38350700002)(38100700002)(186003)(110136005)(8936002)(83380400001)(6486002)(66556008)(66476007)(52116002)(66946007)(103116003)(2616005)(1076003)(2906002)(5660300002)(4326008)(86362001)(316002)(478600001)(23200700001);DIR:OUT;SFP:1501;
+X-Microsoft-Antispam-Message-Info: nIeMD4AF4XpS8CSN8hG9bn/2ZSo+HtfeE9Td6TxUoVflz70q1JfGO5PPHdIzPf85reWj1u4j8V8SW2KL5yauoxYVM7tvIIFWwZGjK5qGob3RAWsUYOlcrd6vdw1Q4CRuuSoeUwi+T5cnsIwdJeGOBnMl96LHnKrAsuQBAXLXaLzrljwClcdm2BiJuJDpvwMWRNQ9Gl/8ArM3Ro1LTcp0eioSOLeQ9sy31zxq+VuA3SBLvvdni4Hq5K9uPicXOGf4GkZfclJ9XPJZK2GAxDfPxvITcln5lC0HMwY6dMXu4O194v5E+e34xRfNy3cx9Jn+9P9Gxs/3zsdrKrdK1XBVtI+nGhM2FBMV6VLzlPFWuNSa9tWpQ7QPGOgxn6ApLkVWlCuGAm2iIy8V+H9NgI/qdszneTxSZRFcSOXqnz4aRY1GjYmUCSr87126XpjUxmfaftRStvbNud8OKv/s9vYwxULsXqXNZSc/vhScy+5Tr95wDIhVLafDKxnzOSFUV5FoHqdieXLFSBdS1vCORj1LICXJOF99yWQdyAI37AVqSp0LY/DkEIfyTUpo9n8fy4S6B50fpoQYW9jO9ztV5khxzcMX6xl8+WFTxkkOMVl1B1/GMWAE7hQQAM1lgfqM0R7fzQqUa0wmB1Ruj9T9vHemgw7ZeLmxv9djHW+QXrptE4Mwe7V89BriasHSKwkqTm4voP0WIs1kFOBk2AsypPK8IQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(346002)(136003)(39860400002)(376002)(52116002)(478600001)(6506007)(7696005)(66556008)(956004)(8676002)(66476007)(5660300002)(9686003)(6666004)(66946007)(83380400001)(316002)(186003)(38350700002)(26005)(6916009)(38100700002)(2906002)(86362001)(8936002)(55016002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9hLSBNGIkc/Q+a65IIWYcTimwkGcPB//q+9DeHg+RW4Wgg3+SE9U2L72CfpW?=
- =?us-ascii?Q?RIwW49ss0j+8GI8sqktRkdIRfwce9KMEwKaH3uqS6HdeK+atLbEDuVzWXBdM?=
- =?us-ascii?Q?pfEBidOlVxPjr+XJMHiF7Xb3kWir2x9StNtxywXkHBJ1pZsGUHem3nPf/U3Y?=
- =?us-ascii?Q?m9vMeD2EAiMGYwHEBPKQjR/JWEFFyOxHJcMa/J1Jl6MAxSkucMOIdGfxQgrM?=
- =?us-ascii?Q?DZO396e0yaBENraNwfsnHJkMi3x0GVbpBXGrM+BYEedtrmAw8wYMBXQ2AI+f?=
- =?us-ascii?Q?lj/dWT4N24xB2KJFLTCZApEwwH9gaLVRtgFMB/h8/iu7L4jfOTuuQb4k32qX?=
- =?us-ascii?Q?fpPsAo7/ib6WVbPfyM4w9H3CAjcmIqIN1OAFX6vahfT/8DkBsPXVmllzbyXl?=
- =?us-ascii?Q?fcIdZGxnLagntHDbniV52qnm/HUMYcsaurR6W5cZqsVzSOQn7W3RQ8jHQC5W?=
- =?us-ascii?Q?SLRMkg9c8MogztFKw42Unr2KFkv1zfDMdKj3LNCSKF0rLCXvpME8RHzMjXRL?=
- =?us-ascii?Q?LhJxlsLyls2ryai7EI+JWs9idj4qmSKkwLJkCI3xk8jM1ofxMvJwprRKfi3g?=
- =?us-ascii?Q?9kMPxWUnMtPygDAXB6vsfhFOMU9wlmzItUQZdgJ4+7B4N6LpmDXpf3uIvxlm?=
- =?us-ascii?Q?1N34E7IZKLBy3SYQ7L37uuCtpg/3wFvqsYnvfMcuaTWzLWu6r0lCVEvhOypM?=
- =?us-ascii?Q?Y0MnLN6+JJUd/bQgM/wIBdOgRZpyEHNrHtxDdxVzqmrLrSLcuLXI0TaGXZRp?=
- =?us-ascii?Q?jASoqVk7YOVML/+bX5PKK3GdgvQCaJPa4Gqtsm+zC1ExLoQ7Ly/YoTTHRPHC?=
- =?us-ascii?Q?S5F0s9wcfwDGUv0cbery2u5fmz39F3GQF/b30XZ8fz3C45HAI9eYLEpOBKxG?=
- =?us-ascii?Q?l76CBJeSyn0yKAcwNjieQ1V77KsPc2FAZopOkD/hgI01ecOSu1aqcU7/v+JD?=
- =?us-ascii?Q?EU3zt6wnJ/foEWcvL7F499ZI4yWwVxhQh4f64aqa9SVf9k5qoRqlhPjciBhN?=
- =?us-ascii?Q?0hNfY1htjrVtoi4v7qHOzSlYqgocPXeofkUOl7WZPYu7EGs4KdxAPUDQmsaG?=
- =?us-ascii?Q?xmWalk3Ci9nbcvVInQQDlkcDqS0+3Ehpw72dwfB6p/Dk/TeZjKXvuO7Phj99?=
- =?us-ascii?Q?i11H/6+8LbIg0g9QiB8AG7ZIrf5KauV9rvnIZk4SEWuca45m7TFhEp8pe/eo?=
- =?us-ascii?Q?B7A9uPQDQV+h0LPWyyiF8oZDfT3mhA7wvbjxqBMGMwegoQsGpshf2E6pDgUt?=
- =?us-ascii?Q?lLwBbvjacv0NgXbH9uQ3uXCiR5diattxhjfFIhQiYer+4qu8sqU2bGcKBxWy?=
- =?us-ascii?Q?n/dlB/LsYskEN166EfdTDEok?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZKKEqfHK+J1FYzlbdgtLtwDjh34i4LCOG7G3vmmK1fl0LFKOnd98OcOrU8oU?=
+ =?us-ascii?Q?n4qpjSt5ZkN2ybpmArL49FxK+dWiwefAXcts6572Q6oOOoUHkFEXrl1+aTxd?=
+ =?us-ascii?Q?LMDvekQrpKESAMNb2HtjDLo4O/+SnttRqzxbke915nnrWg1/CJnw2nJ0k2qT?=
+ =?us-ascii?Q?6SbRiqFukJGJUNbG/Sey08zH6NoWmPPCl1+H2926tPLPQ6LS0FTEp11hZsKR?=
+ =?us-ascii?Q?gkB8eQpsQRpHK/rRqT/IPKXa4z+nrVb9RAFtpk/el+lMPPSZgCgft7eAOCEE?=
+ =?us-ascii?Q?oQ8//zudn2ebpaP2Uxk99O4Px4abfOCzi/HifnfskITsVjBm1Wc44yIsP+H4?=
+ =?us-ascii?Q?7LPKrvuRQvsbeEJ3zAsKO6OGgOmQxNKPLYE1tciIWWaN5IRk1xREPeoSWznt?=
+ =?us-ascii?Q?CgAQY6wMXarzjS9P1bxcx/2bjSutj3ktvIOg96f9K75CVta2Xpl7FEibyocU?=
+ =?us-ascii?Q?O7vjfo+ccHBRD7A1ZfLPGk4+z9K2aZMtG0YRgffa7OGeHpy0vREWGva+SfW+?=
+ =?us-ascii?Q?8RJc9qZxDy+Rx0nLJaOVev1VajMphJl00M4dMxeSrp6ZlUdmbQj1ksau9jwF?=
+ =?us-ascii?Q?UklwpfuwLpMybtoXbN9iFesjh9Fnt7rbufxPzkfF1VVe59Md1b76gqVu0CAK?=
+ =?us-ascii?Q?pC6/3dBKmHa8OFTISwCOL4+j9QjGgUw/a0weUbq6M/v3pATLMqvrnYXWXkB1?=
+ =?us-ascii?Q?TToHy5yaXISUjoznazF5wSe14FeiVQaZHArTdeKmS6RRyomiM6XrguHkNMo/?=
+ =?us-ascii?Q?wqJ76hP0KBjX3eO3Gv/Uady9a2yZA2EwYFao6ldXVKTTQoa6ViiIReMnQcaO?=
+ =?us-ascii?Q?UGSfxSYvWgXqy0QAN8ZWn9X2BohDP0B3tfoK8NiRQYp344SCBv0a04ysMs1o?=
+ =?us-ascii?Q?LGwOlYki3RDSJoOPuVXVbXExAhfM8qdbxjTXur9DhXnM9h/UQN36JYd53YMV?=
+ =?us-ascii?Q?VgXRyko0cxho94/ZwMSxf/w0BSo6ygpa00/5wocix0pXD51vg/Auj4c2mlo/?=
+ =?us-ascii?Q?xs7JpvsNR/lXtO4IsFv5VWtASZYL3KE6ueP+Q6uUjZv6hD/X6HLgzuvvelyi?=
+ =?us-ascii?Q?cOr0Wa3Wwmq0MxcJ7Heu30Cr5qhxAN+DGi90EEquwkR37/uDk2BPDanA0qba?=
+ =?us-ascii?Q?8qUqE3wOqouk0MctJI3baB6QAFvBzU/2ISr7m+IDuJSmSISNBvuQJ+uX9Rpr?=
+ =?us-ascii?Q?BwDTpKr30Zsp3JVGK49jT3k9mNi6bpz9hv1WZOKI+dzOxBiypv1TDKrb5a1q?=
+ =?us-ascii?Q?0OtczcOVw+/OuyCeQGADV4TTY7ugaDVwLw4yWCHEU7bOPwkvwdLgl4Fz+KUc?=
+ =?us-ascii?Q?92KokqwZ3wel+1CaWpQmmFWx?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16c82270-6a3e-42c3-829d-08d96d8c9d76
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4166.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb09bcea-5483-44b6-22fb-08d96d8cb675
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 21:08:15.6116
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 21:08:57.5323
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5PBZXuM1cr3/8bWWNoPs/J7OLYnYkLB39A8HzYclc18rdwoFlvjONqLVw8cmMcyI2qQXCSST9eTQvzIXontS34DF/hx/U4Zn5SVeHvTNTGg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5211
+X-MS-Exchange-CrossTenant-UserPrincipalName: W79DNFL9tdV8EZEKJDqbFzP/+f38IsSTWMBoLIBu5je60xJVY8h10t0CT6inVqFh2sDMolP2IgEPTBP3THnSOw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3160
 X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10094 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 mlxscore=0
- phishscore=0 malwarescore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
+ suspectscore=0 phishscore=0 adultscore=0 mlxscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2108310000
  definitions=main-2109010123
-X-Proofpoint-GUID: 9ICeD3x-A4cfRapEoXlKj8hAJWLDIAdB
-X-Proofpoint-ORIG-GUID: 9ICeD3x-A4cfRapEoXlKj8hAJWLDIAdB
+X-Proofpoint-GUID: muGHJaUafeg2ckBRqWIQa0OHQbNiseaQ
+X-Proofpoint-ORIG-GUID: muGHJaUafeg2ckBRqWIQa0OHQbNiseaQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-perf_events may sometimes throttle an event due to creating too many
-samples during a given timer tick. As of now, the perf tool will not
-report on throttling, which means this is a silent error. Implement a
-callback for the throttle and unthrottle events within the Python
-scripting engine, which can allow scripts to detect and report when
-events may have been lost due to throttling. The simplest script to
-report throttle events is:
+Hey Linus,
 
-def throttle(*args):
-    print("throttle" + repr(args))
-def unthrottle(*args):
-    print("unthrottle" + repr(args))
+Please git pull the following branch:
 
-Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
----
- tools/perf/builtin-script.c                   | 13 ++++++++
- .../scripting-engines/trace-event-python.c    | 32 +++++++++++++++++++
- tools/perf/util/trace-event.h                 |  3 ++
- 3 files changed, 48 insertions(+)
+git://git.kernel.org/pub/scm/linux/kernel/git/konrad/swiotlb.git stable/for-linus-5.15
 
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 064da7f3618d..072869a35f85 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -2492,6 +2492,17 @@ process_lost_event(struct perf_tool *tool,
- 			   sample->tid);
- }
- 
-+static int
-+process_throttle_event(struct perf_tool *tool __maybe_unused,
-+		       union perf_event *event,
-+		       struct perf_sample *sample,
-+		       struct machine *machine)
-+{
-+	if (scripting_ops && scripting_ops->process_throttle)
-+		scripting_ops->process_throttle(event, sample, machine);
-+	return 0;
-+}
-+
- static int
- process_finished_round_event(struct perf_tool *tool __maybe_unused,
- 			     union perf_event *event,
-@@ -3652,6 +3663,8 @@ int cmd_script(int argc, const char **argv)
- 			.stat_config	 = process_stat_config_event,
- 			.thread_map	 = process_thread_map_event,
- 			.cpu_map	 = process_cpu_map_event,
-+			.throttle	 = process_throttle_event,
-+			.unthrottle	 = process_throttle_event,
- 			.ordered_events	 = true,
- 			.ordering_requires_timestamps = true,
- 		},
-diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-index 69129e2aa7a1..c0c010350bc2 100644
---- a/tools/perf/util/scripting-engines/trace-event-python.c
-+++ b/tools/perf/util/scripting-engines/trace-event-python.c
-@@ -1422,6 +1422,37 @@ static void python_process_event(union perf_event *event,
- 	}
- }
- 
-+static void python_process_throttle(union perf_event *event,
-+				    struct perf_sample *sample,
-+				    struct machine *machine)
-+{
-+	const char *handler_name;
-+	PyObject *handler, *t;
-+
-+	if (event->header.type == PERF_RECORD_THROTTLE)
-+		handler_name = "throttle";
-+	else
-+		handler_name = "unthrottle";
-+	handler = get_handler(handler_name);
-+	if (!handler)
-+		return;
-+
-+	t = tuple_new(6);
-+	if (!t)
-+		return;
-+
-+	tuple_set_u64(t, 0, event->throttle.time);
-+	tuple_set_u64(t, 1, event->throttle.id);
-+	tuple_set_u64(t, 2, event->throttle.stream_id);
-+	tuple_set_s32(t, 3, sample->cpu);
-+	tuple_set_s32(t, 4, sample->pid);
-+	tuple_set_s32(t, 5, sample->tid);
-+
-+	call_object(handler, t, handler_name);
-+
-+	Py_DECREF(t);
-+}
-+
- static void python_do_process_switch(union perf_event *event,
- 				     struct perf_sample *sample,
- 				     struct machine *machine)
-@@ -2079,5 +2110,6 @@ struct scripting_ops python_scripting_ops = {
- 	.process_auxtrace_error	= python_process_auxtrace_error,
- 	.process_stat		= python_process_stat,
- 	.process_stat_interval	= python_process_stat_interval,
-+	.process_throttle	= python_process_throttle,
- 	.generate_script	= python_generate_script,
- };
-diff --git a/tools/perf/util/trace-event.h b/tools/perf/util/trace-event.h
-index 54aadeedf28c..640981105788 100644
---- a/tools/perf/util/trace-event.h
-+++ b/tools/perf/util/trace-event.h
-@@ -90,6 +90,9 @@ struct scripting_ops {
- 	void (*process_stat)(struct perf_stat_config *config,
- 			     struct evsel *evsel, u64 tstamp);
- 	void (*process_stat_interval)(u64 tstamp);
-+	void (*process_throttle)(union perf_event *event,
-+				 struct perf_sample *sample,
-+				 struct machine *machine);
- 	int (*generate_script) (struct tep_handle *pevent, const char *outfile);
- };
- 
--- 
-2.30.2
+which has a new feature called restricted DMA pools. It allows SWIOTLB to utilize
+per-device (or per-platform) allocated memory pools instead of using the global one.
+
+The first big user of this is ARM Confidential Computing where the memory for DMA
+operations can be set per platform.
+
+Please pull:
+
+ .../bindings/reserved-memory/reserved-memory.txt   |  36 ++-
+ arch/powerpc/platforms/pseries/svm.c               |   6 +
+ arch/s390/mm/init.c                                |   2 +-
+ drivers/base/core.c                                |   4 +
+ drivers/gpu/drm/i915/gem/i915_gem_internal.c       |   2 +-
+ drivers/gpu/drm/nouveau/nouveau_ttm.c              |   2 +-
+ drivers/iommu/dma-iommu.c                          |  12 +-
+ drivers/of/device.c                                |  40 +++
+ drivers/pci/xen-pcifront.c                         |   2 +-
+ drivers/xen/swiotlb-xen.c                          |   8 +-
+ include/linux/device.h                             |   4 +
+ include/linux/swiotlb.h                            |  57 +++-
+ kernel/dma/Kconfig                                 |  13 +
+ kernel/dma/direct.c                                |  59 +++-
+ kernel/dma/direct.h                                |   8 +-
+ kernel/dma/swiotlb.c                               | 352 +++++++++++++++------
+ 16 files changed, 469 insertions(+), 138 deletions(-)
+
+Claire Chang (14):
+      swiotlb: Refactor swiotlb init functions
+      swiotlb: Refactor swiotlb_create_debugfs
+      swiotlb: Set dev->dma_io_tlb_mem to the swiotlb pool used
+      swiotlb: Update is_swiotlb_buffer to add a struct device argument
+      swiotlb: Update is_swiotlb_active to add a struct device argument
+      swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing
+      swiotlb: Move alloc_size to swiotlb_find_slots
+      swiotlb: Refactor swiotlb_tbl_unmap_single
+      swiotlb: Add restricted DMA alloc/free support
+      swiotlb: Add restricted DMA pool initialization
+      dt-bindings: of: Add restricted DMA pool
+      of: Add plumbing for restricted DMA pool
+      swiotlb: fix implicit debugfs declarations
+      swiotlb: use depends on for DMA_RESTRICTED_POOL
+
+Dominique Martinet (1):
+      swiotlb: add overflow checks to swiotlb_bounce
+
+Halil Pasic (1):
+      s390/pv: fix the forcing of the swiotlb
+
+Will Deacon (7):
+      of: Return success from of_dma_set_restricted_buffer() when !OF_ADDRESS
+      swiotlb: Convert io_default_tlb_mem to static allocation
+      swiotlb: Emit diagnostic in swiotlb_exit()
+      swiotlb: Free tbl memory in swiotlb_exit()
+      powerpc/svm: Don't issue ultracalls if !mem_encrypt_active()
+      of: Move of_dma_set_restricted_buffer() into device.c
+      of: restricted dma: Don't fail device probe on rmem init failure
 
