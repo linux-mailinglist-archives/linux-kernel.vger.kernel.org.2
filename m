@@ -2,65 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C093FD6C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA3F3FD6C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243609AbhIAJbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:31:22 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:49210 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S242467AbhIAJbV (ORCPT
+        id S243631AbhIAJbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243514AbhIAJbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:31:21 -0400
-X-UUID: 784632d0a4e74f0293e348cc97810f7a-20210901
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3H7PGSjS1HZq3ytiXyBDn6JR2baQSPIgF5JrLTFj+do=;
-        b=ecwU46dF94rgaDgWXB+ndRpDYLTqjs1Em1wlw3G5uoLMLrMuobui7qyMNocATePw+yacbogwgkk4JK5Qds5gyRhtCxte3y96M8av/IWXIhuDWj8SV0sdvGfLlfbzvQ12DjKOTPuAKztDrxg8BVv6wCLcKuu7WjcRkuycYW17RFw=;
-X-UUID: 784632d0a4e74f0293e348cc97810f7a-20210901
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 979383038; Wed, 01 Sep 2021 17:30:20 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 1 Sep 2021 17:30:19 +0800
-Received: from [10.17.3.153] (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 1 Sep 2021 17:30:18 +0800
-Message-ID: <1630488618.11251.4.camel@mhfsdcap03>
-Subject: Re: [PATCH v6 2/7] i2c: mediatek: Reset the handshake signal
- between i2c and dma
-From:   Qii Wang <qii.wang@mediatek.com>
-To:     Kewei Xu <kewei.xu@mediatek.com>
-CC:     <wsa@the-dreams.de>, <matthias.bgg@gmail.com>,
-        <robh+dt@kernel.org>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <liguo.zhang@mediatek.com>, <caiyu.chen@mediatek.com>,
-        <ot_daolong.zhu@mediatek.com>, <yuhan.wei@mediatek.com>
-Date:   Wed, 1 Sep 2021 17:30:18 +0800
-In-Reply-To: <1630147859-17031-3-git-send-email-kewei.xu@mediatek.com>
-References: <1630147859-17031-1-git-send-email-kewei.xu@mediatek.com>
-         <1630147859-17031-3-git-send-email-kewei.xu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Wed, 1 Sep 2021 05:31:37 -0400
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3E3C061575;
+        Wed,  1 Sep 2021 02:30:41 -0700 (PDT)
+Received: from localhost (cpc147930-brnt3-2-0-cust60.4-2.cable.virginm.net [86.15.196.61])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id AE0FA4CE6846B;
+        Wed,  1 Sep 2021 02:30:38 -0700 (PDT)
+Date:   Wed, 01 Sep 2021 10:30:33 +0100 (BST)
+Message-Id: <20210901.103033.925382819044968737.davem@davemloft.net>
+To:     yun.wang@linux.alibaba.com
+Cc:     paul@paul-moore.com, kuba@kernel.org, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net: fix NULL pointer reference in cipso_v4_doi_free
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <1ed31e79-809b-7ac9-2760-869570ac22ea@linux.alibaba.com>
+References: <84262e7b-fda6-9d7d-b0bd-1bb0e945e6f9@linux.alibaba.com>
+        <CAHC9VhRPUa-oD_85j6RcAVvp7sLZQEAGGapYYP1fEt7Ax5LMfA@mail.gmail.com>
+        <1ed31e79-809b-7ac9-2760-869570ac22ea@linux.alibaba.com>
+X-Mailer: Mew version 6.8 on Emacs 27.2
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=iso-2022-jp
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Wed, 01 Sep 2021 02:30:40 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIxLTA4LTI4IGF0IDE4OjUwICswODAwLCBLZXdlaSBYdSB3cm90ZToNCj4gRHVl
-IHRvIGNoYW5nZXMgaW4gdGhlIGhhcmR3YXJlIGRlc2lnbiBvZiB0aGUgaGFuZHNoYWtpbmcgc2ln
-bmFsDQo+IGJldHdlZW4gaTJjIGFuZCBkbWEsIGl0IGlzIG5lY2Vzc2FyeSB0byByZXNldCB0aGUg
-aGFuZHNoYWtpbmcNCj4gc2lnbmFsIGJlZm9yZSBlYWNoIHRyYW5zZmVyIHRvIGVuc3VyZSB0aGF0
-IHRoZSBtdWx0aS1tc2dzIGNhbg0KPiBiZSB0cmFuc2ZlcnJlZCBjb3JyZWN0bHkuDQo+IA0KPiBT
-aWduZWQtb2ZmLWJ5OiBLZXdlaSBYdSA8a2V3ZWkueHVAbWVkaWF0ZWsuY29tPg0KPiAtLS0NCj4g
-IGRyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXQ2NXh4LmMgfCAyNiArKysrKysrKysrKysrKysrKysr
-KysrKysrKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDI2IGluc2VydGlvbnMoKykNCj4gDQoNClJldmll
-d2VkLWJ5OiBRaWkgV2FuZyA8cWlpLndhbmdAbWVkaWF0ZWsuY29tPg0KDQo=
+From: 王贇 <yun.wang@linux.alibaba.com>
+Date: Wed, 1 Sep 2021 09:51:28 +0800
 
+> 
+> 
+> On 2021/8/31 下午9:48, Paul Moore wrote:
+>> On Mon, Aug 30, 2021 at 10:42 PM 王贇 <yun.wang@linux.alibaba.com> wrote:
+>>> On 2021/8/31 上午12:50, Paul Moore wrote:
+>>> [SNIP]
+>>>>>>> Reported-by: Abaci <abaci@linux.alibaba.com>
+>>>>>>> Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+>>>>>>> ---
+>>>>>>>  net/netlabel/netlabel_cipso_v4.c | 4 ++--
+>>>>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>>>
+>>>>>> I see this was already merged, but it looks good to me, thanks for
+>>>>>> making those changes.
+>>>>>
+>>>>> FWIW it looks like v1 was also merged:
+>>>>>
+>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=733c99ee8b
+>>>>
+>>>> Yeah, that is unfortunate, there was a brief discussion about that
+>>>> over on one of the -stable patches for the v1 patch (odd that I never
+>>>> saw a patchbot post for the v1 patch?).  Having both merged should be
+>>>> harmless, but we want to revert the v1 patch as soon as we can.
+>>>> Michael, can you take care of this?
+>>>
+>>> As v1 already merged, may be we could just goon with it?
+>>>
+>>> Actually both working to fix the problem, v1 will cover all the
+>>> cases, v2 take care one case since that's currently the only one,
+>>> but maybe there will be more in future.
+>> 
+>> No.  Please revert v1 and stick with the v2 patch.  The v1 patch is in
+>> my opinion a rather ugly hack that addresses the symptom of the
+>> problem and not the root cause.
+>> 
+>> It isn't your fault that both v1 and v2 were merged, but I'm asking
+>> you to help cleanup the mess.  If you aren't able to do that please
+>> let us know so that others can fix this properly.
+> 
+> No problem I can help on that, just try to make sure it's not a
+> meaningless work.
+> 
+> So would it be fine to send out a v3 which revert v1 and apply v2?
+
+Please don't do things this way just send the relative change.
+
+Thanks.
