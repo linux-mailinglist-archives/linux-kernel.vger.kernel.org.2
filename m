@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6753FE1CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E3B3FE1CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346782AbhIASIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:08:53 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38878 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346742AbhIASIw (ORCPT
+        id S1346784AbhIASJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344544AbhIASJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:08:52 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181I3qek107666;
-        Wed, 1 Sep 2021 14:07:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=wkYjLWX8rXhdvLuWE8NESy6EQAHoacFiv3Ea4fPekEs=;
- b=FYfcFWnLbiqRtoym4DYsZfiQ5vIgw1t7zPfi0ve2ESNWQGnlC+9BX/4ObAaKDVFk8qQy
- GIBCgT3+bEbvrjKpTyB7IryNsCp6nzD63m5on25qFQNtnv63wDkb83SHfTrB2OSbbV2O
- EvqJnzxU18j28uosxA+WixgVK2npV22TDz039cMPIdY809ixlUK7lPdnY6tI97kkLbeT
- JZMDNIucejtBkUker5bsm6UD7oIcHLNClVQpVauOUP4i2QlKz+1OVyF5kGYWaIk0nlSy
- 1wMK+jcSI6B+Ub7b6BdidWOWA/Rc0Qv/jCgMlnLY7oMNmKG5uWsFOm4t4e9g5dLYJGbV cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ateffr40f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 14:07:46 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 181I7jjR131768;
-        Wed, 1 Sep 2021 14:07:45 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ateffr3yk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 14:07:45 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 181I3gsm012145;
-        Wed, 1 Sep 2021 18:07:43 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 3atdxs8bf4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 18:07:43 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 181I7di654919586
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Sep 2021 18:07:39 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 000D0AE058;
-        Wed,  1 Sep 2021 18:07:38 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 947A2AE051;
-        Wed,  1 Sep 2021 18:07:38 +0000 (GMT)
-Received: from osiris (unknown [9.145.33.173])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  1 Sep 2021 18:07:38 +0000 (GMT)
-Date:   Wed, 1 Sep 2021 20:07:37 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, qemu-s390x <qemu-s390x@nongnu.org>
-Subject: Re: [PATCH] s390/unwind: use current_frame_address() to unwind
- current task
-Message-ID: <YS/BaQcbMkEji9Zg@osiris>
-References: <your-ad-here.call-01630505035-ext-2999@work.hours>
- <patch.git-04dd26be3043.your-ad-here.call-01630504868-ext-6188@work.hours>
- <CANpmjNOJN4yG8g+Qz0icppRK6coVdN5yKMhyTCQeBRFq7_YpfA@mail.gmail.com>
+        Wed, 1 Sep 2021 14:09:48 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18266C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:08:51 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so305250pjx.5
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 11:08:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yE8tcmnQlRJkc01OrA9qzGQH/BC22e0N905Nd/q0a5A=;
+        b=mh1HFa3BDF9XsEzQwT2IgOMTU1lJ4iCmRyngLUo7jXJFb9BvG7iBgMxNtUubJ49zuv
+         SB6D/BNHv4zvHAUlg8ujmYVlc3kd0h3kGIT/6E9GihkDNAz64wokdoVVkXn3GU+rgbXD
+         jb3CztKFdKS96k1ZK7TQrOhaRAkKzaz4ps56ugtDVbZKDu7Wy9f89HWNxx7lQMOkP6Z3
+         zkn5lf0nFkU1OVotasdkafDqhjWlRu6aclNSw+LPWLYI1Yq0O69iF9GjpjSniZU8Wf/s
+         2QjU9mrvD32T//BGH3eRSOMdaj5aVPOxQRmrCl0/mE7BpCbJf3ClBSgTNHALMKuDvhD8
+         +NPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yE8tcmnQlRJkc01OrA9qzGQH/BC22e0N905Nd/q0a5A=;
+        b=gkbt3a+/bdIp/LGsvL7K7Xq8XW/26x3c7SV16hdlIcVQHgM2WcpJZgNTGNL4lCCH3f
+         1jM+qyliird6SZ100DfMrFDisJaOC59ATV0Ar4CBlP/qKHOzjDGnSsssKtA0Zdrv/Fek
+         KDN/NEPmvhsD5EgW9FlfHn7EH1nRX7k/SqH60egts6cbskPl1kghIVDz6+cg+yk9jWQZ
+         tddU2RQSlSwBNRtxV8rsfN1sYg3brGPSVndToZ9vmyc2uKzo6mr2VSj9X2rFeMSFhZiM
+         uGl+B0801nwnooGEACLnQTeoFCUmUkzN+obG/6ZNTU0oQ0/l17WH2803QGsQ724MAGSZ
+         FBRw==
+X-Gm-Message-State: AOAM530xexWdWz1ckJK/Hmr904wzPSFysR9Iv2QWvJtCks43ENmoxmDE
+        JOoNYxH/cICrrTZOJViX/p01ug==
+X-Google-Smtp-Source: ABdhPJzgbcGlONSiOJrjgEmp15VZlZpb9iyDbFitWh2eTJuQj4QhvRFl9hllIBIDdul7S4FakyxxjQ==
+X-Received: by 2002:a17:90a:9205:: with SMTP id m5mr688869pjo.172.1630519730398;
+        Wed, 01 Sep 2021 11:08:50 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j16sm166837pfi.165.2021.09.01.11.08.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 11:08:49 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 18:08:46 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Chenyi Qiang <chenyi.qiang@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: nVMX: Fix nested bus lock VM exit
+Message-ID: <YS/BrirERUK4uDaI@google.com>
+References: <20210827085110.6763-1-chenyi.qiang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANpmjNOJN4yG8g+Qz0icppRK6coVdN5yKMhyTCQeBRFq7_YpfA@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: v-npZZ7suGUKNXWT00l8P8Pk2Mur_NlB
-X-Proofpoint-GUID: t0sPbzVL_w0oFUWrkLU-SJAVzDU4tuoo
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-01_05:2021-09-01,2021-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 lowpriorityscore=0
- impostorscore=0 clxscore=1015 adultscore=0 suspectscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109010104
+In-Reply-To: <20210827085110.6763-1-chenyi.qiang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 07:51:06PM +0200, Marco Elver wrote:
-> On Wed, 1 Sept 2021 at 16:06, Vasily Gorbik <gor@linux.ibm.com> wrote:
-> > current_stack_pointer() simply returns current value of %r15. If
-> > current_stack_pointer() caller allocates stack (which is the case in
-> > unwind code) %r15 points to a stack frame allocated for callees, meaning
-> > current_stack_pointer() caller (e.g. stack_trace_save) will end up in
-> > the stacktrace. This is not expected by stack_trace_save*() callers and
-> > causes problems.
-> >
-> > current_frame_address() on the other hand returns function stack frame
-> > address, which matches %r15 upon function invocation. Using it in
-> > get_stack_pointer() makes it more aligned with x86 implementation
-> > (according to BACKTRACE_SELF_TEST output) and meets stack_trace_save*()
-> > caller's expectations, notably KCSAN.
-> >
-> > Also make sure unwind_start is always inlined.
-> >
-> > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> > Suggested-by: Marco Elver <elver@google.com>
-> > Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+On Fri, Aug 27, 2021, Chenyi Qiang wrote:
+> Nested bus lock VM exits are not supported yet. If L2 triggers bus lock
+> VM exit, it will be directed to L1 VMM, which would cause unexpected
+> behavior. Therefore, handle L2's bus lock VM exits in L0 directly.
 > 
-> Tested-by: Marco Elver <elver@google.com>
+> Fixes: fe6b6bc802b4 ("KVM: VMX: Enable bus lock VM exit")
+> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Thanks!
-> 
-> > ---
-> >  arch/s390/include/asm/stacktrace.h | 20 ++++++++++----------
-> >  arch/s390/include/asm/unwind.h     |  8 ++++----
-> >  2 files changed, 14 insertions(+), 14 deletions(-)
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index bc6327950657..754f53cf0f7a 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -5873,6 +5873,8 @@ static bool nested_vmx_l0_wants_exit(struct kvm_vcpu *vcpu,
+>  	case EXIT_REASON_VMFUNC:
+>  		/* VM functions are emulated through L2->L0 vmexits. */
+>  		return true;
+> +	case EXIT_REASON_BUS_LOCK:
+> +		return true;
 
-Applied, thanks!
+Hmm, unless there is zero chance of ever exposing BUS_LOCK_DETECTION to L1, it
+might be better to handle this in nested_vmx_l1_wants_exit(), e.g.
+
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index b3f77d18eb5a..793534b7eaba 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -6024,6 +6024,8 @@ static bool nested_vmx_l1_wants_exit(struct kvm_vcpu *vcpu,
+                        SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE);
+        case EXIT_REASON_ENCLS:
+                return nested_vmx_exit_handled_encls(vcpu, vmcs12);
++       case EXIT_REASON_BUS_LOCK:
++               return nested_cpu_has2(vmcs12, SECONDARY_EXEC_BUS_LOCK_DETECTION);
+        default:
+                return true;
+        }
+
+It's a rather roundabout way of reaching the same result, but I'd prefer to limit
+nested_vmx_l0_wants_exit() to cases where L0 wants to handle the exit regardless
+of what L1 wants.  This kinda fits that model, but it's not really that L0 "wants"
+the exit, it's that L1 can't want the exit.  Does that make sense?
+
+
+>  	default:
+>  		break;
+>  	}
+> -- 
+> 2.17.1
+> 
