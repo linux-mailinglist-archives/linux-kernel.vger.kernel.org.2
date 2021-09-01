@@ -2,283 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96E03FDD10
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924DC3FDD15
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343798AbhIANLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 09:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343710AbhIANLk (ORCPT
+        id S229767AbhIANNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 09:13:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39834 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242470AbhIANNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 09:11:40 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD0BC0613D9;
-        Wed,  1 Sep 2021 06:10:42 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 15:10:38 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630501840;
+        Wed, 1 Sep 2021 09:13:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630501930;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=3anV4hQHnkObcm4SjLFFqpqzk/b83hbJC8mwLZK5Ipc=;
-        b=RcYA3tU5KeXRH8VIO5jT/Xi6dn5JTmxAZ/sEh+/TiBj5cNXlb5weeOube+DJtRJ5Ba8WdK
-        KSV2KgV12llAQ8sReu0YPgiQ+LOTKOsoRcl7uHQTAGGSGYwf7OrO/mymcC7lr78fxtEyxw
-        b1PR2gH0cLYQTOpzzAJval86ePL5Nd0uqEe0PYVu2Z9MgI5u0Ow4rB0a2ZWswvMv7hbjHz
-        P6GCqZZCt5mHAm4lAxTDItkyffzlHxvUVLqAVbvlZZ1U23qq/QtlAXyzVCKVCtw/F3zAEk
-        amyRy8E4FSaIcEwGkyBwp+SWYBlN53INARl8Ip9nCUxEilXnhf3GXlELKQqxYA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630501840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=3anV4hQHnkObcm4SjLFFqpqzk/b83hbJC8mwLZK5Ipc=;
-        b=pEXdxuxyDd54/pg+DTvsT3iDodWWm6N1BOTwSnyEBqcxdbIzq58BkiwXvjWUUumcbJHySG
-        ww8Wg5EHfIdYb+DA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.14-rt16
-Message-ID: <20210901131038.dyjltwgr4xjkujyq@linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V5zc5pVy5AQE8f2hIOP2bxIi4X/stfjf8ftLgm/AZ+k=;
+        b=Dyb+BDr29aTtfrmAIpOBtKovr8Gqvny4IABySeV4OFDzgXiVZGNSnmWeabkqzVLo5DYe3N
+        mnjCnQder2QR6tiylwdh3WlRhrfTofGXkOos+b1CkjdDKZqdllra8y4IigsU973iBAhpP5
+        AtEYuHGRMdBaxAtj4XU3GzruYKziKG4=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-281-s_CHxEmsMci2FufmXCSbnQ-1; Wed, 01 Sep 2021 09:12:09 -0400
+X-MC-Unique: s_CHxEmsMci2FufmXCSbnQ-1
+Received: by mail-lj1-f200.google.com with SMTP id m9-20020a2e5809000000b001dccccc2bf6so759179ljb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 06:12:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V5zc5pVy5AQE8f2hIOP2bxIi4X/stfjf8ftLgm/AZ+k=;
+        b=tOjsSSkdTy3MFiY1iWIjztTqt4lrj6najlqRzbcy9MAgOU3rdZe/Ea6tVxU7DRmlaw
+         jDDq6h/vvSNb0YST7a2LpSTDncpcibnKFepUjnv8NnWb2Rmm1qWOCGd9PLdBXHYvw+5n
+         oLPd7Q9IDIKuWXFabskugPfSg6BYYQ8vVoySCo2c/GK8kk1R5rb8kSP/QMWf+g0D9+Kz
+         2Ce0p0PP3jsUIRR6kWYzVuA6HiJ8xOu/frjH4xFxx6l4nLsAEKVXCcNvrAXEY6TwfrfH
+         Evwv2uTfrSay6Iz7FT6ubI6VC0ZvgxWn009npmobIXoyBOKR9u6JVXNYNQkL/BMMNJaC
+         wlGA==
+X-Gm-Message-State: AOAM533TaNzIseBiYuTTL5sDE7bFcrUBh/J8S05Tyn/g5HbaCtbPP3Il
+        XLB1MDmXSZYkcg1wVUiBV7ka4iwfg9ATLJixXzZZHfZ2jKrnKTfPO0GjBLOhSTQOn5xT8tznfPP
+        a89JvwnVFyf1NfDRZWs9OYxjTz4oDyewvyVkqM61M
+X-Received: by 2002:a05:6512:2009:: with SMTP id a9mr6375333lfb.647.1630501927782;
+        Wed, 01 Sep 2021 06:12:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxB0QOBH84GtxMizOBl72HtxuAM5apgtrZH9DoyD/yNZzxzbNyEUI/v+eXareIkLTvGLn4Coob6TWtCox0EZJc=
+X-Received: by 2002:a05:6512:2009:: with SMTP id a9mr6375307lfb.647.1630501927523;
+ Wed, 01 Sep 2021 06:12:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20210824152423.300346181@fuller.cnet> <20210824152646.706875395@fuller.cnet>
+In-Reply-To: <20210824152646.706875395@fuller.cnet>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Wed, 1 Sep 2021 09:11:56 -0400
+Message-ID: <CAFki+Lnso5j+cbDsd74+YM+-sT-zTYuymyJLY2Sw1ho3SHW74Q@mail.gmail.com>
+Subject: Re: [patch V3 2/8] add prctl task isolation prctl docs and samples
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On Tue, Aug 24, 2021 at 11:42 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
+>
+> Add documentation and userspace sample code for prctl
+> task isolation interface.
+>
+> Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+>
+> ---
+>  Documentation/userspace-api/task_isolation.rst |  211 +++++++++++++++++++++++++
+>  samples/Kconfig                                |    7
+>  samples/Makefile                               |    1
+>  samples/task_isolation/Makefile                |    9 +
+>  samples/task_isolation/task_isol.c             |   83 +++++++++
+>  samples/task_isolation/task_isol.h             |    9 +
+>  samples/task_isolation/task_isol_userloop.c    |   56 ++++++
+>  7 files changed, 376 insertions(+)
 
-I'm pleased to announce the v5.14-rt16 patch set. 
+[...]
 
-Changes since v5.14-rt15:
+> +       if (ret) {
+> +               perror("mlock");
+> +               return EXIT_FAILURE;
+> +       }
+> +
+> +       ret = task_isol_setup();
+> +       if (ret)
+> +               return EXIT_FAILURE;
 
-  - The scheduler related "balance_push()" fix in the previous release
-    had a logic error which has been now corrected. Patch by Thomas
-    Gleixner.
+The above check condition should be 'ret == -1', isn't it?
 
-  - The kcov related warning, reported by Clark Williams, has been
-    addressed.
+-- 
+Thanks
+Nitesh
 
-Known issues
-     - netconsole triggers WARN.
-
-     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
-
-     - A RCU and ARM64 warning has been fixed by Valentin Schneider. It is
-       still not clear if the RCU related change is correct.
-
-     - Clark Williams reported issues in i915 (execlists_dequeue_irq())
-
-     - Valentin Schneider reported a few splats on ARM64, see
-          https://https://lkml.kernel.org/r/.kernel.org/lkml/20210810134127.1394269-1-valentin.schneider@arm.com/
-
-The delta patch against v5.14-rt15 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/incr/patch-5.14-rt15-rt16.patch.xz
-
-You can get this release via the git tree at:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.14-rt16
-
-The RT patch against v5.14 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patch-5.14-rt16.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patches-5.14-rt16.tar.xz
-
-Sebastian
-
-diff --git a/Documentation/dev-tools/kcov.rst b/Documentation/dev-tools/kcov.rst
-index d2c4c27e1702d..d83c9ab494275 100644
---- a/Documentation/dev-tools/kcov.rst
-+++ b/Documentation/dev-tools/kcov.rst
-@@ -50,6 +50,7 @@ The following program demonstrates coverage collection from within a test
-     #include <sys/mman.h>
-     #include <unistd.h>
-     #include <fcntl.h>
-+    #include <linux/types.h>
- 
-     #define KCOV_INIT_TRACE			_IOR('c', 1, unsigned long)
-     #define KCOV_ENABLE			_IO('c', 100)
-@@ -177,6 +178,8 @@ Comparison operands collection
- 	/* Read number of comparisons collected. */
- 	n = __atomic_load_n(&cover[0], __ATOMIC_RELAXED);
- 	for (i = 0; i < n; i++) {
-+		uint64_t ip;
-+
- 		type = cover[i * KCOV_WORDS_PER_CMP + 1];
- 		/* arg1 and arg2 - operands of the comparison. */
- 		arg1 = cover[i * KCOV_WORDS_PER_CMP + 2];
-@@ -251,6 +254,8 @@ selectively from different subsystems.
- 
- .. code-block:: c
- 
-+    /* Same includes and defines as above. */
-+
-     struct kcov_remote_arg {
- 	__u32		trace_mode;
- 	__u32		area_size;
-diff --git a/kernel/kcov.c b/kernel/kcov.c
-index 80bfe71bbe13e..36ca640c4f8e7 100644
---- a/kernel/kcov.c
-+++ b/kernel/kcov.c
-@@ -88,6 +88,7 @@ static struct list_head kcov_remote_areas = LIST_HEAD_INIT(kcov_remote_areas);
- 
- struct kcov_percpu_data {
- 	void			*irq_area;
-+	local_lock_t		lock;
- 
- 	unsigned int		saved_mode;
- 	unsigned int		saved_size;
-@@ -96,7 +97,9 @@ struct kcov_percpu_data {
- 	int			saved_sequence;
- };
- 
--static DEFINE_PER_CPU(struct kcov_percpu_data, kcov_percpu_data);
-+static DEFINE_PER_CPU(struct kcov_percpu_data, kcov_percpu_data) = {
-+	.lock = INIT_LOCAL_LOCK(lock),
-+};
- 
- /* Must be called with kcov_remote_lock locked. */
- static struct kcov_remote *kcov_remote_find(u64 handle)
-@@ -824,7 +827,7 @@ void kcov_remote_start(u64 handle)
- 	if (!in_task() && !in_serving_softirq())
- 		return;
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&kcov_percpu_data.lock, flags);
- 
- 	/*
- 	 * Check that kcov_remote_start() is not called twice in background
-@@ -832,7 +835,7 @@ void kcov_remote_start(u64 handle)
- 	 */
- 	mode = READ_ONCE(t->kcov_mode);
- 	if (WARN_ON(in_task() && kcov_mode_enabled(mode))) {
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
- 		return;
- 	}
- 	/*
-@@ -841,14 +844,15 @@ void kcov_remote_start(u64 handle)
- 	 * happened while collecting coverage from a background thread.
- 	 */
- 	if (WARN_ON(in_serving_softirq() && t->kcov_softirq)) {
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
- 		return;
- 	}
- 
- 	spin_lock(&kcov_remote_lock);
- 	remote = kcov_remote_find(handle);
- 	if (!remote) {
--		spin_unlock_irqrestore(&kcov_remote_lock, flags);
-+		spin_unlock(&kcov_remote_lock);
-+		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
- 		return;
- 	}
- 	kcov_debug("handle = %llx, context: %s\n", handle,
-@@ -869,19 +873,19 @@ void kcov_remote_start(u64 handle)
- 		size = CONFIG_KCOV_IRQ_AREA_SIZE;
- 		area = this_cpu_ptr(&kcov_percpu_data)->irq_area;
- 	}
--	spin_unlock_irqrestore(&kcov_remote_lock, flags);
-+	spin_unlock(&kcov_remote_lock);
- 
- 	/* Can only happen when in_task(). */
- 	if (!area) {
-+		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
- 		area = vmalloc(size * sizeof(unsigned long));
- 		if (!area) {
- 			kcov_put(kcov);
- 			return;
- 		}
-+		local_lock_irqsave(&kcov_percpu_data.lock, flags);
- 	}
- 
--	local_irq_save(flags);
--
- 	/* Reset coverage size. */
- 	*(u64 *)area = 0;
- 
-@@ -891,7 +895,7 @@ void kcov_remote_start(u64 handle)
- 	}
- 	kcov_start(t, kcov, size, area, mode, sequence);
- 
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
- 
- }
- EXPORT_SYMBOL(kcov_remote_start);
-@@ -965,12 +969,12 @@ void kcov_remote_stop(void)
- 	if (!in_task() && !in_serving_softirq())
- 		return;
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&kcov_percpu_data.lock, flags);
- 
- 	mode = READ_ONCE(t->kcov_mode);
- 	barrier();
- 	if (!kcov_mode_enabled(mode)) {
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
- 		return;
- 	}
- 	/*
-@@ -978,12 +982,12 @@ void kcov_remote_stop(void)
- 	 * actually found the remote handle and started collecting coverage.
- 	 */
- 	if (in_serving_softirq() && !t->kcov_softirq) {
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
- 		return;
- 	}
- 	/* Make sure that kcov_softirq is only set when in softirq. */
- 	if (WARN_ON(!in_serving_softirq() && t->kcov_softirq)) {
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
- 		return;
- 	}
- 
-@@ -1013,7 +1017,7 @@ void kcov_remote_stop(void)
- 		spin_unlock(&kcov_remote_lock);
- 	}
- 
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
- 
- 	/* Get in kcov_remote_start(). */
- 	kcov_put(kcov);
-@@ -1034,8 +1038,8 @@ static int __init kcov_init(void)
- 	int cpu;
- 
- 	for_each_possible_cpu(cpu) {
--		void *area = vmalloc(CONFIG_KCOV_IRQ_AREA_SIZE *
--				sizeof(unsigned long));
-+		void *area = vmalloc_node(CONFIG_KCOV_IRQ_AREA_SIZE *
-+				sizeof(unsigned long), cpu_to_node(cpu));
- 		if (!area)
- 			return -ENOMEM;
- 		per_cpu_ptr(&kcov_percpu_data, cpu)->irq_area = area;
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 7ce1935e74540..bb115218bb78b 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8686,7 +8686,7 @@ static void balance_push(struct rq *rq)
- 	 * Only active while going offline and when invoked on the outgoing
- 	 * CPU.
- 	 */
--	if (!cpu_dying(rq->cpu) && rq == this_rq())
-+	if (!cpu_dying(rq->cpu) || rq != this_rq())
- 		return;
- 
- 	/*
-diff --git a/localversion-rt b/localversion-rt
-index 18777ec0c27d4..1199ebade17b4 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt15
-+-rt16
