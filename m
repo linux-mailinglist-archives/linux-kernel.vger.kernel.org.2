@@ -2,127 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EABFC3FD0FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBF63FD103
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241708AbhIACBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 22:01:22 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:36587 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241677AbhIACBU (ORCPT
+        id S241723AbhIACCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 22:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241656AbhIACCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 22:01:20 -0400
-Received: by mail-io1-f72.google.com with SMTP id e187-20020a6bb5c4000000b005b5fe391cf9so708741iof.3
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 19:00:24 -0700 (PDT)
+        Tue, 31 Aug 2021 22:02:31 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E7AC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 19:01:35 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id v26so22068ybd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 19:01:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wGf0CBf7Tu/z6D0lNg7ihUdE2JvD3e3Vtv/fQHec648=;
+        b=YmSq0+bWCymGEFH+CXNH4EwHLCnhnw+M+d6hWq6smLmdS+GV57gbbjyBLM/uPToPY1
+         51iU7WHx67Fw1MIefKAH817ioZ0E6suxsrLjIvLmdLCutUqcGf+0oC1RTzYsmVJqQmnY
+         l9VOCvYVyb7LgVBt+Tv0H4ic7xi7yJLf8RoxHrDM16NHbNIfOGC1xLIe1D95ePlc5cLz
+         2a84XENy2oJl3CLZ+TpH7z4td1iRinNGQPsppAcMQBwomHXFwBeO0eGy+snzj2Br+IFz
+         FLrBPKRDEZcjHxw+XFZY7ObbDA+Be0hUdsWKneO8ZFyXKpZ2MyhHLYNh+nqaD8ApD6ex
+         j7ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=M6ewVAPbO/i5ZRnfbguGk+MVnZhkA3eB63sbFYEWhO0=;
-        b=KJDeOGO/z9+g7C0J2TrpvSb+Qm4JZAyX47tglF3wVctnZ8L63d5Wh9UbZbv5VKhpsO
-         rAPGXCUuOhpsARECd0PTeqL9WqcsGzuDjIowOzJGLxEAVIQSc2PVkG8ba/iocEKkrZIF
-         2/M5Kzti7P5y6Gzg+pIwEnQjeniUFkmSr1Gbzp+fG9ehUCxTFsFG+yqMjeu5+3IMTo2R
-         E5mOFUdXU5Q3WcONmOIZaLdYkYoIBtAAyQLF1RAkRfjDTvyTRz5peAcbsRqp1dkFpOv+
-         8+WIiewkxUI+DOcOX32K9GOHDwMo+UvdmlsnqYwNEx9QlI93EZQcOOzHVA0sZttp/RwO
-         fZ7w==
-X-Gm-Message-State: AOAM530APBuEM7cWAPT7WVN0PxTNKmRXAlaO7ozomHKnoYoxp+tsk2GD
-        jLAwHbNxI5oE0P3Lhucb+/cfw5pokLsuApTLzoxvR9iXbmsb
-X-Google-Smtp-Source: ABdhPJwFoeLYEE3K/VEdjf7b1fW+5ExXTWG210ng8YQxRo1vrGeiIRzpHuYR+5QoezbtfzUj5pyjywx+jirLDY0qZu+E4TYP9w47
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wGf0CBf7Tu/z6D0lNg7ihUdE2JvD3e3Vtv/fQHec648=;
+        b=tpyU0pTcCYTSbZsY2RpVkqGme6u65PTChKC9eLev/n13E2asqbgw4eopOsFrmc13g4
+         Eq5lbETAPDBf99fovbxi6UsYyqutzdSBlt33lZcbUGx24KVvfcHbxAYtySyHIWjDWPec
+         W0cdwMO1TscGuHKx6cQHxMO4/heIAuf21geF+JvO8b31hBo6N2rHePv6/b94qPczJ138
+         Kq3VePLMAAxIHzqWPpuH+8yi5thED6FfPN/hHiyK39FViTd0ITfN6Y+5mMqjbMDfnL57
+         uhPGDtCu2NSdB0SF94jzHSHvoADT3bAJnwtJfRhXzI2fhsHKc6VuU6QkeqVbIJnUjiRl
+         ulig==
+X-Gm-Message-State: AOAM533GZDcATa+KXEjMv+y02l3hqWY4SrEOrWYX1Iaujv84Tbu2lWa0
+        KAADoUmjV7p698hCvT/XLnNehdy2uOAaB7sw2clYpQ==
+X-Google-Smtp-Source: ABdhPJzS7FEQLRCVO4eB7zcbXBfM/3bpCfq0Sb6/vCuY1JPZSdsXPS2l/TYnXb0DygQv9KJKHtWoGYr+Jwlq5e1MuKo=
+X-Received: by 2002:a25:9c01:: with SMTP id c1mr33882582ybo.228.1630461694456;
+ Tue, 31 Aug 2021 19:01:34 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8d06:: with SMTP id p6mr25833176ioj.7.1630461624447;
- Tue, 31 Aug 2021 19:00:24 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 19:00:24 -0700
-In-Reply-To: <0000000000006d354305cae2253f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f1f81105cae56d48@google.com>
-Subject: Re: [syzbot] general protection fault in __io_file_supports_nowait
-From:   syzbot <syzbot+e51249708aaa9b0e4d2c@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <CAGETcx_vMNZbT-5vCAvvpQNMMHy-19oR-mSfrg6=eSO49vLScQ@mail.gmail.com>
+ <YSlG4XRGrq5D1/WU@lunn.ch> <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
+ <YSpr/BOZj2PKoC8B@lunn.ch> <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
+ <YS4rw7NQcpRmkO/K@lunn.ch> <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
+ <YS6nxLp5TYCK+mJP@lunn.ch> <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
+ <YS608fdIhH4+qJsn@lunn.ch> <20210831231804.zozyenear45ljemd@skbuf>
+In-Reply-To: <20210831231804.zozyenear45ljemd@skbuf>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 31 Aug 2021 19:00:58 -0700
+Message-ID: <CAGETcx-ktuU1RqXwj_qV8tCOLAg3DXU-wCAm6+NukyxRencSjw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Tue, Aug 31, 2021 at 4:18 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+>
+> On Wed, Sep 01, 2021 at 01:02:09AM +0200, Andrew Lunn wrote:
+> > Rev B is interesting because switch0 and switch1 got genphy, while
+> > switch2 got the correct Marvell PHY driver. switch2 PHYs don't have
+> > interrupt properties, so don't loop back to their parent device.
+>
+> This is interesting and not what I really expected to happen. It goes to
+> show that we really need more time to understand all the subtleties of
+> device dependencies before jumping on patching stuff.
+>
+> In case the DSA tree contains more than one switch, different things
+> will happen in dsa_register_switch().
+> The tree itself is only initialized when the last switch calls
+> dsa_register_switch(). All the other switches just mark themselves as
+> present and exit probing early. See this piece of code in dsa_tree_setup:
+>
+>         complete = dsa_tree_setup_routing_table(dst);
+>         if (!complete)
+>                 return 0;
+>
+> So it should be a general property of cross-chip DSA trees that all
+> switches except the last one will have the specific PHY driver probed
+> properly, and not the genphy.
+>
+> Because all (N - 1) switches of a tree exit early in dsa_register_switch,
+> they have successfully probed by the time the last switch brings up the
+> tree, and brings up the PHYs on behalf of every other switch.
+>
+> The last switch can connect to the PHY on behalf of the other switches
+> past their probe ending, and those PHYs should not defer probing because
+> their supplier is now probed. It is only that the last switch cannot
+> connect to the PHYs of its own ports.
 
-HEAD commit:    b91db6a0b52e Merge tag 'for-5.15/io_uring-vfs-2021-08-30' ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12718683300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=210537ff2ddcc232
-dashboard link: https://syzkaller.appspot.com/bug?extid=e51249708aaa9b0e4d2c
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12615c35300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c57845300000
+I'm not saying this with any intention of making things easier for me
+(I'm not even sure it does). But your description about how multiple
+switches are handled by DSA has me even more convinced than before
+that DSA needs to use a component device model. This is like the
+textbook example for component devices.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e51249708aaa9b0e4d2c@syzkaller.appspotmail.com
 
-general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-CPU: 0 PID: 13214 Comm: iou-sqp-13213 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:file_inode include/linux/fs.h:1344 [inline]
-RIP: 0010:__io_file_supports_nowait+0x26/0x500 fs/io_uring.c:2785
-Code: 00 00 00 00 41 55 41 54 41 89 f4 55 48 89 fd 53 e8 6f 61 96 ff 48 8d 7d 20 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 2d 04 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b
-RSP: 0018:ffffc9000305f800 EFLAGS: 00010212
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000004 RSI: ffffffff81dfb791 RDI: 0000000000000020
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff81e28292 R11: 0000000000000001 R12: 0000000000000000
-R13: ffffc9000305f8d8 R14: 0000000000000000 R15: 0000000000000001
-FS:  00007fa1a4652700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000084 CR3: 0000000027153000 CR4: 0000000000350ef0
-Call Trace:
- io_file_supports_nowait fs/io_uring.c:2823 [inline]
- io_file_supports_nowait fs/io_uring.c:2816 [inline]
- io_read+0x4a9/0x1140 fs/io_uring.c:3440
- io_issue_sqe+0x209/0x6ba0 fs/io_uring.c:6558
- __io_queue_sqe+0x90/0xb50 fs/io_uring.c:6864
- io_req_task_submit+0xbf/0x1b0 fs/io_uring.c:2218
- tctx_task_work+0x166/0x610 fs/io_uring.c:2143
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- tracehook_notify_signal include/linux/tracehook.h:212 [inline]
- io_run_task_work fs/io_uring.c:2403 [inline]
- io_run_task_work fs/io_uring.c:2399 [inline]
- io_sq_thread+0x867/0x1370 fs/io_uring.c:7337
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Modules linked in:
----[ end trace f12dea0e85a314d8 ]---
-RIP: 0010:file_inode include/linux/fs.h:1344 [inline]
-RIP: 0010:__io_file_supports_nowait+0x26/0x500 fs/io_uring.c:2785
-Code: 00 00 00 00 41 55 41 54 41 89 f4 55 48 89 fd 53 e8 6f 61 96 ff 48 8d 7d 20 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 2d 04 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b
-RSP: 0018:ffffc9000305f800 EFLAGS: 00010212
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000004 RSI: ffffffff81dfb791 RDI: 0000000000000020
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff81e28292 R11: 0000000000000001 R12: 0000000000000000
-R13: ffffc9000305f8d8 R14: 0000000000000000 R15: 0000000000000001
-FS:  00007fa1a4652700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f7e4803c008 CR3: 0000000027153000 CR4: 0000000000350ee0
-----------------
-Code disassembly (best guess):
-   0:	00 00                	add    %al,(%rax)
-   2:	00 00                	add    %al,(%rax)
-   4:	41 55                	push   %r13
-   6:	41 54                	push   %r12
-   8:	41 89 f4             	mov    %esi,%r12d
-   b:	55                   	push   %rbp
-   c:	48 89 fd             	mov    %rdi,%rbp
-   f:	53                   	push   %rbx
-  10:	e8 6f 61 96 ff       	callq  0xff966184
-  15:	48 8d 7d 20          	lea    0x20(%rbp),%rdi
-  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  20:	fc ff df
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2e:	0f 85 2d 04 00 00    	jne    0x461
-  34:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  3b:	fc ff df
-  3e:	4c                   	rex.WR
-  3f:	8b                   	.byte 0x8b
-
+-Saravana
