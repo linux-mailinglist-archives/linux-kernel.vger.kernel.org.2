@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F743FDD9D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A5B3FDDA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244981AbhIAOE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 10:04:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244850AbhIAOEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 10:04:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31DD461056;
-        Wed,  1 Sep 2021 14:03:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630505037;
-        bh=nX6C2DRBXiBkE79Xdd4pyWzyoxxhjeSK8IZ79WR96nc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RgBb0MwFXE4yguaCPfNxHQ/4fIPuvD09hONxNLn8i7e2M1rYy6SH03i+w5KmJX6Hy
-         IJqWbUqbbL/lMNdlKyG6mzGC6seuXjMWA+9aEXJuEh8if1ehmtsY1YYwC4ycG6gcvj
-         YK1/6I4mflU22vTF/BWkkHl4fBYMdUAcN5S78nYIHXMR8p8LH8RvGOzeGPZ4wIiu3V
-         VtjPdYJM8/pbDebu66h9EtdMb+V1XmhaWVaOk/q7FaeccswfeIRHwYWO68W4HY2TiS
-         yBQRZ1dudOuxje4NEmdppuxNmFnHddFh5A2gHMw5ib2fYR5AbaTmuA7JHjq6ueAd5K
-         60ZajFp5EQW6w==
-Date:   Wed, 1 Sep 2021 07:03:56 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     Peter Collingbourne <pcc@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Arnd Bergmann" <arnd@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] net: don't unconditionally copy_from_user a struct
- ifreq for socket ioctls
-Message-ID: <20210901070356.750ea996@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <bf0f47974d7141358d810d512d4b9a00@AcuMS.aculab.com>
-References: <20210826194601.3509717-1-pcc@google.com>
-        <20210831093006.6db30672@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <bf0f47974d7141358d810d512d4b9a00@AcuMS.aculab.com>
+        id S245028AbhIAOGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 10:06:42 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51822 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244136AbhIAOGl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 10:06:41 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 801B52246F;
+        Wed,  1 Sep 2021 14:05:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630505143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A5CQMxYr8Knsq3vFDrRQ8ixBT4QrOt3iGkhDaaK15bg=;
+        b=b8OJW+ywPOul9Qh4Eymlc7uE3F2l3lui6G2CvNsm63X50+tvXuOAnQRE8mKJPEkSNI1xIu
+        8FNCJj49fRnCBmnpiboHxw9PKpONP+vnzIEbWGF2s1l1Bj28Kk5NnH4UfP7t5XIh2RbTWb
+        hkT5hsTcTpxH/sWO7hKaOYEmH5YuCuk=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 28B7DA3B9C;
+        Wed,  1 Sep 2021 14:05:43 +0000 (UTC)
+Date:   Wed, 1 Sep 2021 16:05:40 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian@brauner.io>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] mm/oom: detect and kill task which has allocation
+ forbidden by cpuset limit
+Message-ID: <YS+ItADNn08hCLPY@dhcp22.suse.cz>
+References: <1630399085-70431-1-git-send-email-feng.tang@intel.com>
+ <YS5RTiVgydjszmjn@dhcp22.suse.cz>
+ <52d80e9-cf27-9a59-94fd-d27a1e2dac6f@google.com>
+ <20210901024402.GB46357@shbuild999.sh.intel.com>
+ <20210901134200.GA50993@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901134200.GA50993@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Sep 2021 08:22:42 +0000 David Laight wrote:
-> From: Jakub Kicinski
-> > Sent: 31 August 2021 17:30
-> > 
-> > On Thu, 26 Aug 2021 12:46:01 -0700 Peter Collingbourne wrote:  
-> > > @@ -3306,6 +3308,8 @@ static int compat_ifr_data_ioctl(struct net *net, unsigned int cmd,
-> > >  	struct ifreq ifreq;
-> > >  	u32 data32;
-> > >
-> > > +	if (!is_socket_ioctl_cmd(cmd))
-> > > +		return -ENOTTY;
-> > >  	if (copy_from_user(ifreq.ifr_name, u_ifreq32->ifr_name, IFNAMSIZ))
-> > >  		return -EFAULT;
-> > >  	if (get_user(data32, &u_ifreq32->ifr_data))  
-> > 
-> > Hi Peter, when resolving the net -> net-next merge conflict I couldn't
-> > figure out why this chunk is needed. It seems all callers of
-> > compat_ifr_data_ioctl() already made sure it's a socket IOCTL.
-> > Please double check my resolution (tip of net-next) and if this is
-> > indeed unnecessary perhaps send a cleanup? Thanks!  
-> 
-> To stop the copy_from_user() faulting when the user buffer
-> isn't long enough.
-> In particular for iasatty() on arm with tagged pointers.
+On Wed 01-09-21 21:42:00, Feng Tang wrote:
+[...]
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index eeb3a9cb36bb..d1ae77be45a2 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -4271,10 +4271,18 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
+>  		.gfp_mask = gfp_mask,
+>  		.order = order,
+>  	};
+> -	struct page *page;
+> +	struct page *page = NULL;
+> +	struct zoneref *z;
+>  
+>  	*did_some_progress = 0;
+>  
+> +	if (cpusets_enabled() && (gfp_mask & __GFP_HARDWALL)) {
+> +		z = first_zones_zonelist(ac->zonelist,
+> +			gfp_zone(gfp_mask), &cpuset_current_mems_allowed);
+> +		if (!z->zone)
+> +			goto out;
+> +	}
+> +
 
-Let me rephrase. is_socket_ioctl_cmd() is always true here. There were
-only two callers, both check cmd is of specific, "sockety" type.
+This looks better than the previous attempt. It would be still better to
+solve this at the page allocator layer. The slowpath is already doing
+this for the nodemask. E.g.
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index eeb3a9cb36bb..a3193134540d 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4929,6 +4929,17 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+ 	if (!ac->preferred_zoneref->zone)
+ 		goto nopage;
+ 
++	/*
++	 * Check for insane configurations where the cpuset doesn't contain any suitable
++	 * zone to satisfy the request - e.g. kernel allocations from MOVABLE nodes only
++	 */
++	if (cpusets_enabled() && (gfp_mask & __GFP_HARDWALL)) {
++		struct zoneref *z = first_zones_zonelist(ac->zonelist, ac->highest_zoneidx,
++				&cpuset_current_mems_allowed);
++		if (!z->zone)
++			goto nopage;
++	}
++
+ 	if (alloc_flags & ALLOC_KSWAPD)
+ 		wake_all_kswapds(order, gfp_mask, ac);
+ 
+if this is seen as an additional overhead for an insane configuration
+then we can add insane_cpusets_enabled() which would be a static branch
+enabled when somebody actually tries to configure movable only cpusets
+or potentially other dubious usage.
+-- 
+Michal Hocko
+SUSE Labs
