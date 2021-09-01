@@ -2,112 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BE23FE170
+	by mail.lfdr.de (Postfix) with ESMTP id 959B33FE172
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347074AbhIARvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:51:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58773 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347522AbhIARvF (ORCPT
+        id S1346661AbhIARvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346526AbhIARvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:51:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630518607;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AOn7fSZJaIGeWUiIESF3Y7phWVytJU/xylBpJF5XsWA=;
-        b=TGnqTOC34uHWLR9MLa6TVgPjFOK1ME/LYtLFuZkdBCpasFm/QiQkS9Nvvi8BKf1sqOsh+P
-        XrcirCsd5v0Qv+QcaW9pEaF2v19KtrsfnxR3RCgqVnW5xXiJD+sZkLd8/xTBpHd6CnKgqs
-        5kMhG0vD/o+srX3xKXWEmt3X728YW0M=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-rMwFWYAHM1-f4S3-Sr45ig-1; Wed, 01 Sep 2021 13:50:06 -0400
-X-MC-Unique: rMwFWYAHM1-f4S3-Sr45ig-1
-Received: by mail-lf1-f70.google.com with SMTP id bi21-20020a0565120e9500b003df0c58083fso106857lfb.16
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:50:06 -0700 (PDT)
+        Wed, 1 Sep 2021 13:51:23 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0A3C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 10:50:17 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id q21so133747plq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:50:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lTCwx671qN0Uv7CtZL+BVS1+Oy6Uwn1k3lSPRkK+jKg=;
+        b=tX+iQK/XObeHHie9CEoItYwWrUuxY48SNGKS8OIkVuSOl9Zy8ONZjSy2CselzwLN6U
+         fyDvLPYuMEHd2HtKTTBEpeJFwD9IiR/4nv0idT+PmOH6YFqIuelzoQtvb0nTX4PVmdXv
+         OWdqauuhaUkvyAW9xaC+yanWAiLb+viasEaEDcErrr4YaU66XQV37GdSUJlrAI18OJ58
+         Xf2pXFmsPLt9vio2mK5Noy6PET+oEXr+jLkXY/5X2AQu7JJ++uEMK2w4L6v0f84FrkGP
+         aOmqGtD7El0+sCcQxz1LVQjZB3IidTm9OdswbBH+7IPFy1A9z08/jb25AhGGV9cLIDNs
+         V6HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AOn7fSZJaIGeWUiIESF3Y7phWVytJU/xylBpJF5XsWA=;
-        b=GIVq6UJLBRccU9wxaVEte7oWw3De+ZjIr99wmKe4j3BNUBqHRxrGg63f2dLdmSCWMy
-         DECCCdGfsNnjn5rXDYa5BiFSi3ObB1iBfRALhxKjQGNYqo2sa4sTs4S3UItwoVTGkhF6
-         30JzfXM2Y9EkImmcCypRE1B4ZvrKAzY1D45HvgfOF9n8fcXzFmhZpImn1ngZJ04/bk9d
-         4FQDnFCpP2kiLYHZqUMQu8AKYLGDjdt7t98fsdLOLYAPbqa7fEXZyMNct0LGmLTw/Dqd
-         BD2Xt4/nCaOQm3thXmMuKpTjY3HbDgPp+S+JYISKoagwFXKyWN0OyYVHn/znexIFbLfN
-         GrMw==
-X-Gm-Message-State: AOAM531g/kL/TyKcT+sQWheqcVIojVkWXmYkniSPFrAAZhHwELAa/NgV
-        6pY4sgBz9ImMCSvIgEkaRemIWKywnLVAEyjpFT4X4rXgLMBINdWi8HyKSGeFwwdTMsgyD3N84mH
-        ruNpHokIYOu+Njvp52/dRYGnTcfUilET1aitEtnOc
-X-Received: by 2002:a05:6512:128b:: with SMTP id u11mr497506lfs.384.1630518604930;
-        Wed, 01 Sep 2021 10:50:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxEDNBVG4gILtj0UYj77EqEvvd8q6fLfcY7Frsta/WGEY0WxRYqF0jJY35AtfStIVSBSdqSz9M5rI0y4po0/80=
-X-Received: by 2002:a05:6512:128b:: with SMTP id u11mr497486lfs.384.1630518604722;
- Wed, 01 Sep 2021 10:50:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lTCwx671qN0Uv7CtZL+BVS1+Oy6Uwn1k3lSPRkK+jKg=;
+        b=PuDMb40q/wsPGIfEG4gfgw8utkQF0aHvmArLpLSLfbQBOb6qr4V0pvAiJcw1elpL3g
+         XquM3d3pdI/RV03z7cqMVfzsPONE0IT70rGSsCuY5BejJI4nn71gPKt54KXwtDLwYeDt
+         mvQX5hfUmqkdx3AI21Aa34tmBEEkb3eqTVvQzxz21EX7NHhph5K+aCwkGhok1FMVOEov
+         EVqUZlzIDsNTpVO19Sj5DTeckPw7UmUtrUtvApQNQ3G+MNML/SSlQh2MJuh+rMYPgxLw
+         yYCIw8IpfelxI0uz0YdGpcx47VFYQSG7sMRnqs1DbJBAJjpLMZH7mIWiy1k5Zw4kcpmG
+         dCwg==
+X-Gm-Message-State: AOAM530fcdK6GgB4LfIP0Ko+4/lMG/K0hlOSjmQnUO5kp3CIyZMpd8Ui
+        qZOGw3RXFR5LqJdFWVrgW9oNSA==
+X-Google-Smtp-Source: ABdhPJyTBcvoxYT1UazLo75DFYLRiAcTN2BKdr2FfvtOwvNd4cqBc9u77mrXNn/DJzvrSUbkCYr6XQ==
+X-Received: by 2002:a17:902:f683:b0:138:fe47:4e47 with SMTP id l3-20020a170902f68300b00138fe474e47mr675191plg.60.1630518617183;
+        Wed, 01 Sep 2021 10:50:17 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id o10sm122146pfk.212.2021.09.01.10.50.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 10:50:16 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 17:50:12 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     jejb@linux.ibm.com, Andy Lutomirski <luto@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
+ private memory
+Message-ID: <YS+9VHzC0XQF/9NK@google.com>
+References: <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
+ <YS6lIg6kjNPI1EgF@google.com>
+ <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
+ <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
+ <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
+ <a259e10d-39c9-c4a5-0ab4-f42a1b9bfaee@redhat.com>
+ <0d6b2a7e22f5e27e03abc21795124ccd66655966.camel@linux.ibm.com>
+ <1a4a1548-7e14-c2b4-e210-cc60a2895acd@redhat.com>
+ <4b863492fd33dce28a3a61662d649987b7d5066d.camel@linux.ibm.com>
+ <214ca837-3102-d6d1-764e-6b4cd1bab368@redhat.com>
 MIME-Version: 1.0
-References: <20210824152423.300346181@fuller.cnet> <20210824152646.706875395@fuller.cnet>
- <CAFki+Lnso5j+cbDsd74+YM+-sT-zTYuymyJLY2Sw1ho3SHW74Q@mail.gmail.com> <20210901173401.GB48995@fuller.cnet>
-In-Reply-To: <20210901173401.GB48995@fuller.cnet>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Wed, 1 Sep 2021 13:49:53 -0400
-Message-ID: <CAFki+L=wYqKZon8TRdMhOHfS3goh7yHXQFDb7RXM=iOJeZJBPw@mail.gmail.com>
-Subject: Re: [patch V3 2/8] add prctl task isolation prctl docs and samples
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <214ca837-3102-d6d1-764e-6b4cd1bab368@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 1:38 PM Marcelo Tosatti <mtosatti@redhat.com> wrote:
->
-> On Wed, Sep 01, 2021 at 09:11:56AM -0400, Nitesh Lal wrote:
-> > On Tue, Aug 24, 2021 at 11:42 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
-> > >
-> > > Add documentation and userspace sample code for prctl
-> > > task isolation interface.
-> > >
-> > > Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-> > >
-> > > ---
-> > >  Documentation/userspace-api/task_isolation.rst |  211 +++++++++++++++++++++++++
-> > >  samples/Kconfig                                |    7
-> > >  samples/Makefile                               |    1
-> > >  samples/task_isolation/Makefile                |    9 +
-> > >  samples/task_isolation/task_isol.c             |   83 +++++++++
-> > >  samples/task_isolation/task_isol.h             |    9 +
-> > >  samples/task_isolation/task_isol_userloop.c    |   56 ++++++
-> > >  7 files changed, 376 insertions(+)
-> >
-> > [...]
-> >
-> > > +       if (ret) {
-> > > +               perror("mlock");
-> > > +               return EXIT_FAILURE;
-> > > +       }
-> > > +
-> > > +       ret = task_isol_setup();
-> > > +       if (ret)
-> > > +               return EXIT_FAILURE;
-> >
-> > The above check condition should be 'ret == -1', isn't it?
->
-> task_isol_setup returns 0 on success, so fail to see the point
-> of testing for ret == -1 rather than ret != 0 ?
->
+On Wed, Sep 01, 2021, David Hildenbrand wrote:
+> > > > Well not necessarily, but it depends how clever we want to get.  If
+> > > > you look over on the OVMF/edk2 list, there's a proposal to do guest
+> > > > migration via a mirror VM that invokes a co-routine embedded in the
+> > > > OVMF binary:
+> > > 
+> > > Yes, I heard of that. "Interesting" design.
+> > 
+> > Heh, well what other suggestion do you have?  The problem is there
+> > needs to be code somewhere to perform some operations that's trusted by
+> > both the guest and the host.  The only element for a confidential VM
+> > that has this shared trust is the OVMF firmware, so it seems logical to
+> > use it.
+> 
+> <offtopic>
+> 
+> Let me put it this way: I worked with another architecture that doesn't
+> fault on access of a secure page, but instead automatically exports/encrypts
 
-Hmm, could be something that I misinterpreted.
-I will double-check.
+I thought s390 does fault on insecure accesses to secure pages, and it's the
+kernel's fault handler that "automatically" converts the page?  E.g. trap 0x3d
+-> do_secure_storage_access() -> arch_make_page_accessible().
 
--- 
-Thanks
-Nitesh
+> it so it can be swapped. It doesn't send a MCE and kills the host. It
+> doesn't require fancy code in the guest firmware to export a page.
+> 
+> The code runs in the ultravisor -- yes, I'm talking about s390x. Now, I am
+> not an expert on all of the glory details of TDX, SEV, ... to say which
+> attack surface they introduced with that design, and if it can't be
+> mitigated. I can only assume that there are real reasons (e.g., supporting
+> an ultravisor is problematic, patents? ;) ) why x86-64 is different.
+>
+> So whenever I see something really complicated to work around such issues,
+> it feels to me like a hardware/platform limitation is making our life hard
+> and forces us to come up with such "interesting" designs.
 
+Oh, 100% agree, the TDX "limitation" of poisoning cache line and leaving a land
+mine to trip over is absolutely abhorrent.  SEV-ES and SEV aren't much better in
+that they happily corrupt guest memory.  I am quite jealous of s390 behavior of
+simply faulting on the actual access.
+
+SEV-SNP does fault on the access and could do something similar to s390, but I'm
+not totally convinced that's actually desirable as it has ramifications with
+respect to debugging host and/or guest.  But it'd be nice to have the option...
+
+> Sure, it's logical in this context, but it feels like "The house doesn't
+
+Heh, for some definitions of "logical".
+
+> have a door, so I'll have to climb through the window.". It gets the job
+> done but isn't ideally what you'd want to have. If you understand what I am
+> trying to say :)
+> 
+> </offtopic>
