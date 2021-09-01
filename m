@@ -2,171 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3B63FE129
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792433FE13B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345008AbhIARca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:32:30 -0400
-Received: from relay01.th.seeweb.it ([5.144.164.162]:51575 "EHLO
-        relay01.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344958AbhIARc2 (ORCPT
+        id S1344603AbhIARjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:39:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36576 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344571AbhIARjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:32:28 -0400
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Wed, 1 Sep 2021 13:39:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630517897;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ovzfigQ9PjumMi6vv/w8A1YnKSQyDl5eGNpklc8y6No=;
+        b=V3TDEpT3IuWaKkxiiB/W/KUd12D/Lq+VXHoJQfkLXug4dKTkfZsaHX5MYsqKT2Q1oQ9CYA
+        LP4WwC3um/kMar0wvHieowBMkgbZeH2kc4T/OO1K8oO8AoczvNwHSnIkY5I62IiGSWSjfG
+        ntQBU2cABvtjuQ/TcBHmhDO5cfJ91fs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-130-9TQ3AenOOs-ms0RjhFq3lg-1; Wed, 01 Sep 2021 13:38:16 -0400
+X-MC-Unique: 9TQ3AenOOs-ms0RjhFq3lg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id D9736200D6;
-        Wed,  1 Sep 2021 19:31:29 +0200 (CEST)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     thierry.reding@gmail.com
-Cc:     sam@ravnborg.org, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org, paul.bouchara@somainline.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH 2/2] dt-bindings: display: Add bindings for Novatek NT35950
-Date:   Wed,  1 Sep 2021 19:31:27 +0200
-Message-Id: <20210901173127.998901-2-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210901173127.998901-1-angelogioacchino.delregno@somainline.org>
-References: <20210901173127.998901-1-angelogioacchino.delregno@somainline.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4EE37802921;
+        Wed,  1 Sep 2021 17:38:15 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C6D7F5FC23;
+        Wed,  1 Sep 2021 17:38:07 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 983C64175292; Wed,  1 Sep 2021 14:32:04 -0300 (-03)
+Date:   Wed, 1 Sep 2021 14:32:04 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Nitesh Lal <nilal@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Subject: Re: [patch V3 8/8] mm: vmstat_refresh: avoid queueing work item if
+ cpu stats are clean
+Message-ID: <20210901173204.GA48995@fuller.cnet>
+References: <20210824152423.300346181@fuller.cnet>
+ <20210824152646.948424573@fuller.cnet>
+ <CAFki+LkNcwFATSth4cvU=-7aBZjaLLNU6UFWYv1DxkeYwkeuSg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFki+LkNcwFATSth4cvU=-7aBZjaLLNU6UFWYv1DxkeYwkeuSg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The nt35950 IC from Novatek is a Driver IC used to drive MIPI-DSI panels,
-with Static RAM for content retention in command mode and also supports
-video mode with VESA Frame Buffer Compression or Display Stream Compression
-on single, or dual dsi port(s).
-This DDIC is also capable of upscaling an input image to the panel's native
-resolution, for example it can upscale a 1920x1080 input to 3840x2160 with
-either bilinear interpolation or pixel duplication.
+On Wed, Sep 01, 2021 at 09:05:55AM -0400, Nitesh Lal wrote:
+> Hi Marcelo,
+> 
+> On Tue, Aug 24, 2021 at 11:42 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
+> >
+> > It is not necessary to queue work item to run refresh_vm_stats
+> > on a remote CPU if that CPU has no dirty stats and no per-CPU
+> > allocations for remote nodes.
+> >
+> > This fixes sosreport hang (which uses vmstat_refresh) with
+> > spinning SCHED_FIFO process.
+> >
+> 
+> I was still able to reproduce the sosreport hang with this patchset and I
+> am wondering if that is because right now we do vmstat_sync and then cancel
+> any pending jobs on a CPU in the context of one task.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- .../display/panel/novatek,nt35950.yaml        | 106 ++++++++++++++++++
- 1 file changed, 106 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/panel/novatek,nt35950.yaml
+Hi Nitesh,
 
-diff --git a/Documentation/devicetree/bindings/display/panel/novatek,nt35950.yaml b/Documentation/devicetree/bindings/display/panel/novatek,nt35950.yaml
-new file mode 100644
-index 000000000000..377a05d48a02
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/panel/novatek,nt35950.yaml
-@@ -0,0 +1,106 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/panel/novatek,nt35950.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Novatek NT35950-based display panels
-+
-+maintainers:
-+  - AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-+
-+description: |
-+  The nt35950 IC from Novatek is a Driver IC used to drive MIPI-DSI panels,
-+  with Static RAM for content retention in command mode and also supports
-+  video mode with VESA Frame Buffer Compression or Display Stream Compression
-+  on single, or dual dsi port(s).
-+  This DDIC is also capable of upscaling an input image to the panel's native
-+  resolution, for example it can upscale a 1920x1080 input to 3840x2160 with
-+  either bilinear interpolation or pixel duplication.
-+
-+allOf:
-+  - $ref: panel-common.yaml#
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - sharp,ls055d1sx04
-+      - const: novatek,nt35950
-+    description: This indicates the panel manufacturer of the panel
-+      that is in turn using the NT35950 panel driver. The compatible
-+      string determines how the NT35950 panel driver shall be configured
-+      to work with the indicated panel. The novatek,nt35950 compatible shall
-+      always be provided as a fallback.
-+
-+  reset-gpios:
-+    maxItems: 1
-+    description: phandle of gpio for reset line - This should be 8mA, gpio
-+      can be configured using mux, pinctrl, pinctrl-names (active high)
-+
-+  avdd-supply:
-+    description: positive boost supply regulator
-+  avee-supply:
-+    description: negative boost supply regulator
-+  dvdd-supply:
-+    description: regulator that supplies the digital voltage
-+  vddio-supply:
-+    description: regulator that supplies the I/O voltage
-+
-+  backlight: true
-+  ports: true
-+  reg: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - reset-gpios
-+  - avdd-supply
-+  - avee-supply
-+  - dvdd-supply
-+  - vddio-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    dsi0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        panel@0 {
-+            compatible = "sharp,ls055d1sx04", "novatek,nt35950";
-+            reg = <0>;
-+
-+            backlight = <&pmi8998_wled>;
-+            reset-gpios = <&tlmm 94 GPIO_ACTIVE_HIGH>;
-+
-+            avdd-supply = <&lab>;
-+            avee-supply = <&ibb>;
-+            dvdd-supply = <&disp_dvdd_vreg>;
-+            vddio-supply = <&vreg_l14a_1p85>;
-+
-+            ports {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+
-+                port@0 {
-+                    reg = <0>;
-+                    panel_in0: endpoint {
-+                        remote-endpoint = <&dsi0_out>;
-+                    };
-+                };
-+
-+                port@1 {
-+                    reg = <1>;
-+                    panel_in1: endpoint {
-+                        remote-endpoint = <&dsi1_out>;
-+                    };
-+                };
-+            };
-+        };
-+    };
-+
-+...
--- 
-2.32.0
+Did you use chisol (with proper flags) and the modified oslat?
+
+Tested with "echo 1 > /proc/sys/vmstat_refresh" and it was successful
+(no hangs).
+
+> However, while this task is running another process can come in and can
+> dirty the stats resulting in vmstat job getting placed on CPUs running
+> SCHED_FIFO tasks.
+> Am I missing something?
+> What we can probably do is to communicate that a CPU is running on task
+> isolation mode to any other process that is trying to run and schedule
+> jobs there.
+
+No, that can happen. Can use sched notifiers to handle this problem.
+Good point.
 
