@@ -2,257 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3E23FD09C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 03:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDD13FD09D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 03:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241542AbhIABPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 21:15:09 -0400
-Received: from mga02.intel.com ([134.134.136.20]:38589 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234036AbhIABPI (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 21:15:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="205823001"
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="205823001"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 18:14:12 -0700
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="541278746"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.2.86]) ([10.238.2.86])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 18:14:06 -0700
-Subject: Re: [PATCH v5 1/2] perf pmu: Add PMU alias support
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
-        rickyman7@gmail.com, john.garry@huawei.com,
-        Kan Liang <kan.liang@linux.intel.com>
-References: <20210817051933.16978-1-yao.jin@linux.intel.com>
- <20210817051933.16978-2-yao.jin@linux.intel.com> <YS6CCNpd3+557fQZ@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <dfe8f4d2-37de-babe-92af-e8bf72761be2@linux.intel.com>
-Date:   Wed, 1 Sep 2021 09:14:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S241560AbhIABPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 21:15:47 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:62337 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234036AbhIABPp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 21:15:45 -0400
+Received: from fsav415.sakura.ne.jp (fsav415.sakura.ne.jp [133.242.250.114])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 1811ElQO061022;
+        Wed, 1 Sep 2021 10:14:47 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav415.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp);
+ Wed, 01 Sep 2021 10:14:47 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 1811EkXj061015
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 1 Sep 2021 10:14:46 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: [PATCH v2] fbmem: don't allow too huge resolutions
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Colin King <colin.king@canonical.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <000000000000815b9605c70e74f8@google.com>
+ <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
+ <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
+ <339bfb21-8e80-c7d9-46dd-c416f87c50c0@infradead.org>
+ <535e404d-03bf-8e7a-b296-132a2a98c599@i-love.sakura.ne.jp>
+ <CAMuHMdWX7s63X_zR9329canbQkPGBVxZNG4O+_=jUut60aGR9g@mail.gmail.com>
+ <5c6d2b95-31d7-0d59-5e62-2593d9a0e1fe@i-love.sakura.ne.jp>
+ <CAMuHMdWbSUGRGAVi-17C3hyDBZnGLAsmbAs+wXPHiCNWWLbMpA@mail.gmail.com>
+ <CAKMK7uF1cnen2UVWeOL164z1CCqOuRMC5SmM+5GvRvi7C-UOTw@mail.gmail.com>
+ <CAMuHMdWNYaZxZB0Td4PFb76rrtQMumKu6cJgLi2aNnW-9NmG8A@mail.gmail.com>
+ <CAKMK7uHuOQWUnsiH00QFbHKgTdjjryK0ra9We2stojXMiAVgJA@mail.gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <750ed1ae-de80-b232-4aea-79d60c212fab@i-love.sakura.ne.jp>
+Date:   Wed, 1 Sep 2021 10:14:43 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YS6CCNpd3+557fQZ@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAKMK7uHuOQWUnsiH00QFbHKgTdjjryK0ra9We2stojXMiAVgJA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+syzbot is reporting page fault at vga16fb_fillrect() [1], for
+vga16fb_check_var() is failing to detect multiplication overflow.
 
-On 9/1/2021 3:24 AM, Jiri Olsa wrote:
-> On Tue, Aug 17, 2021 at 01:19:32PM +0800, Jin Yao wrote:
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> A perf uncore PMU may have two PMU names, a real name and an alias. The
->> alias is exported at /sys/bus/event_source/devices/uncore_*/alias.
->> The perf tool should support the alias as well.
->>
->> Add alias_name in the struct perf_pmu to store the alias. For the PMU
->> which doesn't have an alias. It's NULL.
->>
->> Introduce two X86 specific functions to retrieve the real name and the
->> alias separately.
->>
->> Only go through the sysfs to retrieve the mapping between the real name
->> and the alias once. The result is cached in a list, uncore_pmu_list.
->>
->> Nothing changed for the other ARCHs.
->>
->> With the patch, the perf tool can monitor the PMU with either the real
->> name or the alias.
->>
->> Use the real name,
->>   $ perf stat -e uncore_cha_2/event=1/ -x,
->>     4044879584,,uncore_cha_2/event=1/,2528059205,100.00,,
->>
->> Use the alias,
->>   $ perf stat -e uncore_type_0_2/event=1/ -x,
->>     3659675336,,uncore_type_0_2/event=1/,2287306455,100.00,,
->>
->> Co-developed-by: Jin Yao <yao.jin@linux.intel.com>
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> 
-> SNIP
-> 
->> +static char *__pmu_find_real_name(const char *name)
->> +{
->> +	struct perf_pmu_alias_name *pmu;
->> +
->> +	list_for_each_entry(pmu, &pmu_alias_name_list, list) {
->> +		if (!strcmp(name, pmu->alias))
->> +			return pmu->name;
->> +	}
->> +
->> +	return (char *)name;
->> +}
->> +
->> +char *pmu_find_real_name(const char *name)
->> +{
->> +	static bool cached_list;
->> +
->> +	if (cached_list)
->> +		return __pmu_find_real_name(name);
->> +
->> +	setup_pmu_alias_list();
->> +	cached_list = true;
->> +
->> +	return __pmu_find_real_name(name);
->> +}
->> +
->> +char *pmu_find_alias_name(const char *name)
->> +{
->> +	struct perf_pmu_alias_name *pmu;
-> 
-> should this one call setup_pmu_alias_list as well?
-> 
+  if (vxres * vyres > maxmem) {
+    vyres = maxmem / vxres;
+    if (vyres < yres)
+      return -ENOMEM;
+  }
 
-Yes, you're right! We'd better call setup_pmu_alias_list in pmu_find_alias_name too.
+Since no module would accept too huge resolutions where multiplication
+overflow happens, let's reject in the common path.
 
->> +
->> +	list_for_each_entry(pmu, &pmu_alias_name_list, list) {
->> +		if (!strcmp(name, pmu->name))
->> +			return pmu->alias;
->> +	}
->> +	return NULL;
->> +}
->> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
->> index 9321bd0e2f76..d94e48e1ff9b 100644
->> --- a/tools/perf/util/parse-events.y
->> +++ b/tools/perf/util/parse-events.y
->> @@ -316,7 +316,8 @@ event_pmu_name opt_pmu_config
->>   			if (!strncmp(name, "uncore_", 7) &&
->>   			    strncmp($1, "uncore_", 7))
->>   				name += 7;
->> -			if (!perf_pmu__match(pattern, name, $1)) {
->> +			if (!perf_pmu__match(pattern, name, $1) ||
->> +			    !perf_pmu__match(pattern, pmu->alias_name, $1)) {
->>   				if (parse_events_copy_term_list(orig_terms, &terms))
->>   					CLEANUP_YYABORT;
->>   				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
->> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->> index 6cdbee8a12e7..9df874155370 100644
->> --- a/tools/perf/util/pmu.c
->> +++ b/tools/perf/util/pmu.c
->> @@ -945,6 +945,18 @@ perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
->>   	return NULL;
->>   }
->>   
->> +char * __weak
->> +pmu_find_real_name(const char *name)
->> +{
->> +	return (char *)name;
->> +}
->> +
->> +char * __weak
->> +pmu_find_alias_name(const char *name __maybe_unused)
->> +{
->> +	return NULL;
->> +}
->> +
->>   static int pmu_max_precise(const char *name)
->>   {
->>   	char path[PATH_MAX];
->> @@ -958,13 +970,15 @@ static int pmu_max_precise(const char *name)
->>   	return max_precise;
->>   }
->>   
->> -static struct perf_pmu *pmu_lookup(const char *name)
->> +static struct perf_pmu *pmu_lookup(const char *lookup_name)
->>   {
->>   	struct perf_pmu *pmu;
->>   	LIST_HEAD(format);
->>   	LIST_HEAD(aliases);
->>   	__u32 type;
->> +	char *name = pmu_find_real_name(lookup_name);
->>   	bool is_hybrid = perf_pmu__hybrid_mounted(name);
->> +	char *alias_name;
->>   
->>   	/*
->>   	 * Check pmu name for hybrid and the pmu may be invalid in sysfs
->> @@ -995,6 +1009,9 @@ static struct perf_pmu *pmu_lookup(const char *name)
->>   
->>   	pmu->cpus = pmu_cpumask(name);
->>   	pmu->name = strdup(name);
->> +	alias_name = pmu_find_alias_name(name);
->> +	if (alias_name)
->> +		pmu->alias_name = strdup(alias_name);
-> 
-> please add pmu->name and pmu->alias_name check
-> 
+Link: https://syzkaller.appspot.com/bug?extid=04168c8063cfdde1db5e [1]
+Reported-by: syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>
+Debugged-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+Changes in v2:
+  Use check_mul_overflow(), suggested by Geert Uytterhoeven <geert@linux-m68k.org>.
 
-OK. I will add the checks.
+ drivers/video/fbdev/core/fbmem.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Thanks
-Jin Yao
+diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+index 1c855145711b..53d23b3d010c 100644
+--- a/drivers/video/fbdev/core/fbmem.c
++++ b/drivers/video/fbdev/core/fbmem.c
+@@ -962,6 +962,7 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
+ 	struct fb_var_screeninfo old_var;
+ 	struct fb_videomode mode;
+ 	struct fb_event event;
++	u32 unused;
+ 
+ 	if (var->activate & FB_ACTIVATE_INV_MODE) {
+ 		struct fb_videomode mode1, mode2;
+@@ -1008,6 +1009,11 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
+ 	if (var->xres < 8 || var->yres < 8)
+ 		return -EINVAL;
+ 
++	/* Too huge resolution causes multiplication overflow. */
++	if (check_mul_overflow(var->xres, var->yres, &unused) ||
++	    check_mul_overflow(var->xres_virtual, var->yres_virtual, &unused))
++		return -EINVAL;
++
+ 	ret = info->fbops->fb_check_var(var, info);
+ 
+ 	if (ret)
+-- 
+2.25.1
 
-> thanks,
-> jirka
-> 
->>   	pmu->type = type;
->>   	pmu->is_uncore = pmu_is_uncore(name);
->>   	if (pmu->is_uncore)
->> @@ -1023,9 +1040,11 @@ static struct perf_pmu *pmu_find(const char *name)
->>   {
->>   	struct perf_pmu *pmu;
->>   
->> -	list_for_each_entry(pmu, &pmus, list)
->> -		if (!strcmp(pmu->name, name))
->> +	list_for_each_entry(pmu, &pmus, list) {
->> +		if (!strcmp(pmu->name, name) ||
->> +		    (pmu->alias_name && !strcmp(pmu->alias_name, name)))
->>   			return pmu;
->> +	}
->>   
->>   	return NULL;
->>   }
->> @@ -1919,6 +1938,9 @@ bool perf_pmu__has_hybrid(void)
->>   
->>   int perf_pmu__match(char *pattern, char *name, char *tok)
->>   {
->> +	if (!name)
->> +		return -1;
->> +
->>   	if (fnmatch(pattern, name, 0))
->>   		return -1;
->>   
->> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
->> index 033e8211c025..6b122f97acf3 100644
->> --- a/tools/perf/util/pmu.h
->> +++ b/tools/perf/util/pmu.h
->> @@ -21,6 +21,7 @@ enum {
->>   #define PERF_PMU_FORMAT_BITS 64
->>   #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
->>   #define CPUS_TEMPLATE_CPU	"%s/bus/event_source/devices/%s/cpus"
->> +#define MAX_PMU_NAME_LEN 128
->>   
->>   struct perf_event_attr;
->>   
->> @@ -32,6 +33,7 @@ struct perf_pmu_caps {
->>   
->>   struct perf_pmu {
->>   	char *name;
->> +	char *alias_name;
->>   	char *id;
->>   	__u32 type;
->>   	bool selectable;
->> @@ -136,4 +138,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
->>   bool perf_pmu__has_hybrid(void);
->>   int perf_pmu__match(char *pattern, char *name, char *tok);
->>   
->> +char *pmu_find_real_name(const char *name);
->> +char *pmu_find_alias_name(const char *name);
->> +
->>   #endif /* __PMU_H */
->> -- 
->> 2.17.1
->>
-> 
+
