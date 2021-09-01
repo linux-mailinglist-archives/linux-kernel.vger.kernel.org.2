@@ -2,155 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1E73FE29A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E793FE292
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242795AbhIAS4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:56:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44919 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347215AbhIASyj (ORCPT
+        id S244998AbhIASzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244827AbhIASzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:54:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630522421;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RbAFmH4NRZDrzTXv6FfKUSaQhi153qBbaeJVhJBO8Pc=;
-        b=PECwhlHv6Nzzzndbrj1QxYOj+2rJitIZrUPa/Mra3tz3kbki6OR3fswty6OpI3Sd5W7qsf
-        oo/ZiRyaI+quuLrPx42T1jLZC6lyCf1getAYoaY2zEay0xHs2WrIeskT9JypzD96RkJKRH
-        mHfLLuUsgZ25vEyhwdZ3PY+IC4nbWyk=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-Q_lkAIg6MZWdGjHGZwV7bw-1; Wed, 01 Sep 2021 14:53:40 -0400
-X-MC-Unique: Q_lkAIg6MZWdGjHGZwV7bw-1
-Received: by mail-qk1-f198.google.com with SMTP id 23-20020a05620a071700b00426392c0e6eso326557qkc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 11:53:40 -0700 (PDT)
+        Wed, 1 Sep 2021 14:55:15 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FF1C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:54:17 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id a10so508529qka.12
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 11:54:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=itfac-mrt-ac-lk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yACBHeKeTEMDk9G3lLdGdDWvtaeZqYr0jQBUvqwglB4=;
+        b=Idwyh/ZOPXWdXddScG9pysT9Y1D20q4/aaYdSHfPuGvxdq8UBrqgS0gGKzb2RyhlFG
+         1ixEQaGyJhPCSvAIC9kVBRrsdpYew405vHVNIMYDMr2eCGTJT5aNsIennOISX/1fSbLB
+         vw0hxgb9xxUjp5BnURN8EsrzaTSVLcoqF18z4bqyAsWyeb4EZJdmVa1YIGjA5BKRW83M
+         c+R0ypRvgnYpol8jKW5URb6aIZ8R57CHUt66XSfw2GJe6RwKawG6pI8KBuT8dzCDAY1T
+         ++89cqPwwX4CefMn1INBz7ULDzTtB40xZ344utxHy1zRKa9QDMKQxLlZ87RofmhBTNE5
+         f3bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=RbAFmH4NRZDrzTXv6FfKUSaQhi153qBbaeJVhJBO8Pc=;
-        b=VZ3KpRH7WKSrCmmY5C/3mQYnw49qYxZqXaUrKf7qtgGq4Etguxy0Mgox6qPBX+Fu89
-         JiNY+3oB4u/l0dMmdHPNIj0fFVCCHQP7/kYNCFVFFgQ8qGMe2Re9p3IIpfBhPLQC1HRt
-         yX9xATO7ub0wMiXOMGrASiPFDMcE4KZzprgFu6tznxEspyxB8LXBbXk9l/GVslQDCDzp
-         RlZMs4vASvm+vr5PExQC9uxLUxHhWz7odAjGMbIO0xPIwi9HrV/4v0OY3mPaVlGMwiar
-         hqWwYj3tRCbJ/u7JH+hgSLkpgXZ4WB+LF2S+JoVjpE7SeMQcm1PCge9VSE35WRUipx5g
-         nopw==
-X-Gm-Message-State: AOAM5313YDA6t8W18Gm+APOOdEnrWOuW4E66doohjVZFwlF++ZpKtxoR
-        r0dIFF16X5Mb+JdTwFcX8LXw3VW/4tRvk+7GErxaSp9McoG969BUEzxjXSklqHXIS9E/E1Bcits
-        Oa0zYKG072b78yKCYy5eB/AWs7ll+6t0wxqSj0Uf8W7+c+6NsV5TithXui/qtEUJ3LjxTTjCF
-X-Received: by 2002:ad4:54e9:: with SMTP id k9mr815593qvx.4.1630522419620;
-        Wed, 01 Sep 2021 11:53:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxKi7vfN6quLYIR7M0PS7vUWjPFKYW6/sPR+vWMiSg6Dwl4YdkAoFQp4//ijlpvpOLeTJX+fg==
-X-Received: by 2002:ad4:54e9:: with SMTP id k9mr815563qvx.4.1630522419329;
-        Wed, 01 Sep 2021 11:53:39 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id j3sm263353qki.104.2021.09.01.11.53.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 11:53:38 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
- fastpath reader
-To:     Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Will Deacon <will@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210901150627.620830-1-boqun.feng@gmail.com>
-Message-ID: <afd149f2-b3ad-f7e1-7478-ca35685d2340@redhat.com>
-Date:   Wed, 1 Sep 2021 14:53:37 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yACBHeKeTEMDk9G3lLdGdDWvtaeZqYr0jQBUvqwglB4=;
+        b=d1wsJVDhpTEq/mik40CQPJNTUyIduBYzblY44mufdi4jAQDyvgy1dZ4b0Ksb3BldsZ
+         nM6GUH/KOmpBbjGBHOttZfXq5Fw3tangxi/+XIAvIYbxpywikDRmAchCGJ6eKC92sHkp
+         7U9YZwuKSBFKu0bab+gHemF/qOs5pWM07zE1samJ9d66Vq4xQRrLqfEQPG7QMnfXgt9A
+         tz3xGL9SL9Ev+Uq4Shixq5Sd7VR2x7fbxsUjlKCPfIvoIjpV3/fj0eTuWpr/DspRHNf4
+         fS6nnN/htKmX/OZPC+gXvcqzKh9qEnr6T5VdEMtEqxf9b2P2qdC4EU/2Hj6F2BrnSYgn
+         YpAg==
+X-Gm-Message-State: AOAM530tpd8MKcNPs0oyhF2Aid+ytNwzsiEKYXV+Ys0haH83vTBKHdUQ
+        bh2Mv3EC0ntUS3HlAFApPK2bzY7oSdV8VTZATRmRy5FcgwaV
+X-Google-Smtp-Source: ABdhPJwxUAWGvA4IBMn5mMg38sMi31Mre6YzUnRruh8cQT7hDfLAJ8Qn5kmdWmS5DDnWKzNCtLE9LtF6dBqjhJRtPZ8=
+X-Received: by 2002:a05:620a:1379:: with SMTP id d25mr1128331qkl.238.1630522456666;
+ Wed, 01 Sep 2021 11:54:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210901150627.620830-1-boqun.feng@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210830193355.11338-1-asha.16@itfac.mrt.ac.lk> <20210831084735.GL12231@kadam>
+In-Reply-To: <20210831084735.GL12231@kadam>
+From:   "F.A. SULAIMAN" <asha.16@itfac.mrt.ac.lk>
+Date:   Thu, 2 Sep 2021 00:24:05 +0530
+Message-ID: <CAHnw0NAMaByr5m5Ai2APBc6Az_Lbb=TyCWmSdotVWKBJLPfVqg@mail.gmail.com>
+Subject: Re: [PATCH] staging: rtl8723bs: fix memory leak error
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/21 11:06 AM, Boqun Feng wrote:
-> Readers of rwbase can lock and unlock without taking any inner lock, if
-> that happens, we need the ordering provided by atomic operations to
-> satisfy the ordering semantics of lock/unlock. Without that, considering
-> the follow case:
+On Tue, Aug 31, 2021 at 2:18 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
 >
-> 	{ X = 0 initially }
+> On Tue, Aug 31, 2021 at 01:03:55AM +0530, F.A.Sulaiman wrote:
+> > Smatch reported memory leak bug in rtl8723b_FirmwareDownload function.
+> > The problem is pFirmware memory is not released in release_fw1.
+> > Instead of redirecting to release_fw1 we can turn it into exit
+> > and free the memory.
+> >
+> > Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
+> > ---
+> >  drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> > index de8caa6cd418..b59c2aa3a9d8 100644
+> > --- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> > +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> > @@ -436,7 +436,7 @@ s32 rtl8723b_FirmwareDownload(struct adapter *padapter, bool  bUsedWoWLANFw)
+> >       if (pFirmware->fw_length > FW_8723B_SIZE) {
+> >               rtStatus = _FAIL;
+> >               DBG_871X_LEVEL(_drv_emerg_, "Firmware size:%u exceed %u\n", pFirmware->fw_length, FW_8723B_SIZE);
+> > -             goto release_fw1;
+> > +             goto exit;
+> >       }
 >
-> 	CPU 0			CPU 1
-> 	=====			=====
-> 				rt_write_lock();
-> 				X = 1
-> 				rt_write_unlock():
-> 				  atomic_add(READER_BIAS - WRITER_BIAS, ->readers);
-> 				  // ->readers is READER_BIAS.
-> 	rt_read_lock():
-> 	  if ((r = atomic_read(->readers)) < 0) // True
-> 	    atomic_try_cmpxchg(->readers, r, r + 1); // succeed.
-> 	  <acquire the read lock via fast path>
+> The current tree doesn't have DBG_871X_LEVEL() so you must be working
+> against something old.  You need to work against linux-next or staging
+> next.
 >
-> 	r1 = X;	// r1 may be 0, because nothing prevent the reordering
-> 	        // of "X=1" and atomic_add() on CPU 1.
+> Your patch fixes a bug, but it would be better to just re-write the
+> error handling for this function.  There is another bug that a bunch
+> of error paths don't call release_firmware(fw).  Use the "Free the Last
+> Thing" method.
 >
-> Therefore audit every usage of atomic operations that may happen in a
-> fast path, and add necessary barriers.
+>         pFirmware = kzalloc(sizeof(struct rt_firmware), GFP_KERNEL);
+>         if (!pFirmware)
+>                 return _FAIL;
 >
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> ---
-> Hi Thomas and Peter,
+> The last thing we allocated is "pFirmware" so free that if we have an
+> error.
 >
-> Sorry I'm late for the party of PREEMPT_RT lock review. Just want to
-> point the problem with this patch. Not even compile test, but show the
-> idea and check if I'm missing something subtle.
+>         pBTFirmware = kzalloc(sizeof(struct rt_firmware), GFP_KERNEL);
+>         if (!pBTFirmware) {
+>                 rtStatus = _FAIL;
+>                 goto free_firmware;
+>         }
 >
-> Regards,
-> Boqun
+> Now the last thing is pBTFirmware.
 >
+>         rtStatus = request_firmware(&fw, fwfilepath, device);
+>         if (rtStatus) {
+>                 rtStatus = _FAIL;
+>                 goto free_bt_firmware;
+>         }
 >
->   kernel/locking/rwbase_rt.c | 34 ++++++++++++++++++++++++++++++----
->   1 file changed, 30 insertions(+), 4 deletions(-)
+> Now the last thing is "fw".  But this is a bit tricky because we're
+> going to release it as soon as possible and not wait until the end of
+> the function.  There isn't a reason for this...  We can change that or
+> keep it as-is.  If we keep it as is, then the we'll just call
+> release_firmware(fw); before the goto free_bt_firmware;  The current
+> code leaks fw on a bunch of error paths.
 >
-> diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
-> index 4ba15088e640..a1886fd8bde6 100644
-> --- a/kernel/locking/rwbase_rt.c
-> +++ b/kernel/locking/rwbase_rt.c
-> @@ -41,6 +41,12 @@
->    * The risk of writer starvation is there, but the pathological use cases
->    * which trigger it are not necessarily the typical RT workloads.
->    *
-> + * Fast-path orderings:
-> + * The lock/unlock of readers can run in fast paths: lock and unlock are only
-> + * atomic ops, and there is no inner lock to provide ACQUIRE and RELEASE
-> + * semantics of rwbase_rt. Atomic ops then should be stronger than _acquire()
-> + * and _release() to provide necessary ordering guarantee.
-> + *
->    * Common code shared between RT rw_semaphore and rwlock
->    */
->   
-> @@ -53,6 +59,7 @@ static __always_inline int rwbase_read_trylock(struct rwbase_rt *rwb)
->   	 * set.
->   	 */
->   	for (r = atomic_read(&rwb->readers); r < 0;) {
-> +		/* Fully-ordered if cmpxchg() succeeds, provides ACQUIRE */
->   		if (likely(atomic_try_cmpxchg(&rwb->readers, &r, r + 1)))
+>         pFirmware->fw_buffer_sz = kmemdup(fw->data, fw->size, GFP_KERNEL);
+>         if (!pFirmware->fw_buffer_sz) {
+>                 rtStatus = _FAIL;
+>                 release_firmware(fw);
+>                 goto free_bt_firmware;
+>         }
+>
+> Or:
+>
+>         pFirmware->fw_buffer_sz = kmemdup(fw->data, fw->size, GFP_KERNEL);
+>         if (!pFirmware->fw_buffer_sz) {
+>                 rtStatus = _FAIL;
+>                 goto release_fw;
+>         }
+>
+> Now the last thing is pFirmware->fw_buffer_sz.  Etc.
+>
+> Then at the end it's just:
+>
+> free_fw_buffer:
+>         kfree(pFirmware->fw_buffer_sz);
+> release_fw:
+>         release_firmware(fw);
+> free_bt_firmware:
+>         kfree(pBTFirmware);
+> free_firmware:
+>         kfree(pFirmware);
+>
+>         return rtStatus;
+> }
+>
 
-Should we also change *cmpxchg() to cmpxchg_acquire() as it is a little 
-cheaper for ll/sc arches?
+Thank you! I'll do the changes and send you a v2 patch.
 
-The other changes look good to me.
-
-Cheers,
-Longman
-
+Best Regards,
+Asha Sulaiman.
