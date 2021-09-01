@@ -2,139 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805003FD780
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6243FD792
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234280AbhIAKTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 06:19:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42004 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232662AbhIAKTO (ORCPT
+        id S234678AbhIAKWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 06:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231903AbhIAKWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 06:19:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630491497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pfADcfJ+X6OH5HhkKuNHIMe8xl+JwSPkUuOE45UHKJk=;
-        b=jQ9/tBGG0UWBc1e8Wjlfvn3h9EITfwFkYGAd1yaa4QiKMHFYz3OztXnVbSqE+s7xdlUBmE
-        X629/OEIRU2GinLOoknRzKI4ht3o+I5SXGAwPhVx86Iq7ebHpfBYeXG9tdIVLvpJOAG/7+
-        /jkQ6ZXd8oVW8hpKRi57+v0v4Diltnc=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-126-77K9f22YPhm-keHrKYAVLg-1; Wed, 01 Sep 2021 06:18:16 -0400
-X-MC-Unique: 77K9f22YPhm-keHrKYAVLg-1
-Received: by mail-wr1-f69.google.com with SMTP id h6-20020a5d4fc6000000b00157503046afso630062wrw.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 03:18:16 -0700 (PDT)
+        Wed, 1 Sep 2021 06:22:47 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C82C061764
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 03:21:50 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id l18so3933700lji.12
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 03:21:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mgYfR3/CpQ3YFz8SbMrcJmhQtblgI9cHByyIJ0goOBI=;
+        b=eWVsHdCtUIQxAlqIqaA9KKdn3ovd4zMoXEx2w4VxVZ4sy2vrn74BKX9DJH6nV6/1Al
+         aLop/fzzMw45Lo6jMK04X/WVagNiH7iG2IYhIoKUvHwFiedVaFaXUiVBEdCcMUQwnJMd
+         sVDmB0MR92tBXbGf2gdX/3C2Kc33dlgSVrhXc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=pfADcfJ+X6OH5HhkKuNHIMe8xl+JwSPkUuOE45UHKJk=;
-        b=s5cz5ELB04FjFvD3dB8n76rWO/3wzEPcbxGwhqqWRUNOV34ZBFqOS5Dr5XOy6pCEuW
-         XNlnqSkoawg4Q0E4xMxkVxyRtDwx7OZSXxQzRC56XmQtHuUuF0Gb6oJB/tI9ZaC4gyWK
-         Fkrcx7Zh6O9DgIqYGIzwqfawEWjcALwtMce2DLKDvxZPikgrVFrXOlpjOUOGuZ57lTXn
-         VkB+3/givhDwPrTR3UMK683CeBpj4PItWvX25oaGDl203CD9EvGYD1kXtsIRecASWH7Z
-         hp2elfKfocTR9T8+d/rkykQjwnR6TPz/A6y3DovyB/WaMZBDItrcb4KoiA2hcBXi1M4l
-         nHMA==
-X-Gm-Message-State: AOAM5326xQ+kurag9ho/TX2tufYfJR/RHtONrcuhTeYogTcgUZUZ1TYD
-        cbVRB3/9UKt1QQQYiQgMRMnXu8ZxJFjifiwyS/FIV53lf28SJr3UboUyskCDIFHZS5bDCQ40Hve
-        hVW4KT1DrJYNj+grVy0XhkmSpGTno42j8QcHsRlBXDXAk6W6Y5aZ9i51Yf2YqB4pGvMLUL/BZ
-X-Received: by 2002:adf:ded1:: with SMTP id i17mr36067484wrn.303.1630491495246;
-        Wed, 01 Sep 2021 03:18:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzBQ2JXSxWqoEFQjgI3t+tVxFgFMPLx+PPKEC08FLlesLGiXIaz3K39pW+9UMEpvpCe4gfxaA==
-X-Received: by 2002:adf:ded1:: with SMTP id i17mr36067455wrn.303.1630491494984;
-        Wed, 01 Sep 2021 03:18:14 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
-        by smtp.gmail.com with ESMTPSA id b24sm4670541wmj.43.2021.09.01.03.18.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 03:18:14 -0700 (PDT)
-To:     David Howells <dhowells@redhat.com>, torvalds@linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <3285174.1630448147@warthog.procyon.org.uk>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: Folios: Can we resolve this please?
-Message-ID: <3c0833bd-4731-aeb2-e9d4-bd480276ae6c@redhat.com>
-Date:   Wed, 1 Sep 2021 12:18:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mgYfR3/CpQ3YFz8SbMrcJmhQtblgI9cHByyIJ0goOBI=;
+        b=ChzAu6YNHgY6OwhGs1s93o7NYru/JllCMfE7LczRzDMIxWNXz1xVwkiARrtVjTL7NV
+         WkGSbfAxGrHklDRcjvDhk+rISinrP08KePbbFbImO/3WKETWJynNXtH+xUSLwJr3VKOO
+         bpBQRiKOVHU0wpnF4vqKhAI+N+EJ6Qhn9EDOGh+36J4EYZh6J3NZQzenrUZuqgkD2b7i
+         8GpwHMhY3eTMyoC6bYKy/2Z0BoHCf7pxS+m2xDUxAWoijWA/87wKvgeWRBresvRHK6iK
+         WkqwO8QRjXRo9o3K+eUgD488sj23rcv0JJkUTRRP6gZUlQFBjEqv0so+xgVarNp9QAB8
+         F8gQ==
+X-Gm-Message-State: AOAM533vy4Zyx7a5MBbg4EeK3bkTmMpdH4IpPUBYAfjjHjWbSe87qTgi
+        dlmXArGnzje7zmpU43hiN/phkbo7nqbSQinL4yOK4Q==
+X-Google-Smtp-Source: ABdhPJyrlHHkley1jLqdJEA9M3j2B5m5WxNfwf3JuAH+EwmCKfYibJMfqcFndwA7usdLIL6NyzfXvJC3GLizwiSgejs=
+X-Received: by 2002:a2e:964b:: with SMTP id z11mr17242550ljh.91.1630491708890;
+ Wed, 01 Sep 2021 03:21:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3285174.1630448147@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210830003603.31864-1-zhiyong.tao@mediatek.com>
+ <20210830003603.31864-3-zhiyong.tao@mediatek.com> <YS6pbO4hmNyX//tP@robh.at.kernel.org>
+ <1630461636.21764.1.camel@mhfsdcap03>
+In-Reply-To: <1630461636.21764.1.camel@mhfsdcap03>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Wed, 1 Sep 2021 18:21:37 +0800
+Message-ID: <CAGXv+5H2-o91VGHwBUB_Gui1pa5m9jz6xTjHvP3+ue8=-ZWGvQ@mail.gmail.com>
+Subject: Re: [PATCH v11 2/4] dt-bindings: pinctrl: mt8195: change pull up/down description
+To:     "zhiyong.tao" <zhiyong.tao@mediatek.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
+        Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.21 00:15, David Howells wrote:
-> Hi Linus, Andrew, Johannes,
-> 
-> Can we come to a quick resolution on folios?  I'd really like this to be
-> solved in this merge window if at all possible as I (and others) have stuff
-> that will depend on and will conflict with Willy's folio work.  It would be
-> great to get this sorted one way or another.
-> 
-> As I see it, there are three issues, I think, and I think they kind of go like
-> this:
-> 
->   (1) Johannes wants to get away from pages being used as the unit of memory
->       currency and thinks that folios aren't helpful in this regard[1].  There
->       seems to be some disagreement about where this is heading.
-> 
->   (2) Linus isn't entirely keen on Willy's approach[2], with a bottom up
->       approach hiding the page objects behind a new type from the pov of the
->       filesystem, but would rather see the page struct stay the main API type
->       and the changes be hidden transparently inside of that.
-> 
->       I think from what Linus said, he may be in favour (if that's not too
->       strong a word) of using a new type to make sure we don't miss the
->       necessary changes[3].
-> 
->   (3) Linus isn't in favour of the name 'folio' for the new type[2].  Various
->       names have been bandied around and Linus seems okay with "pageset"[4],
->       though it's already in minor(-ish) use[5][6].  Willy has an alternate
->       patchset with "folio" changed to "pageset"[7].
-> 
-> With regard to (1), I think the folio concept could be used in future to hide
-> at least some of the paginess from filesystems.
-> 
-> With regard to (2), I think a top-down approach won't work until and unless we
-> wrap all accesses to struct page by filesystems (and device drivers) in
-> wrapper functions - we need to stop filesystems fiddling with page internals
-> because what page internals may mean may change.
-> 
-> With regard to (3), I'm personally fine with the name "folio", as are other
-> people[8][9][10][11], but I could also live with a conversion to "pageset".
-> 
-> Is it possible to take the folios patchset as-is and just live with the name,
-> or just take Willy's rename-job (although it hasn't had linux-next soak time
-> yet)?  Or is the approach fundamentally flawed and in need of redoing?
+On Wed, Sep 1, 2021 at 10:01 AM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
+>
+> On Tue, 2021-08-31 at 17:13 -0500, Rob Herring wrote:
+> > On Mon, Aug 30, 2021 at 08:36:01AM +0800, Zhiyong Tao wrote:
+> > > Change pull up/down description
+> >
+> > Every commit is a 'change'. Your commit msg should explain 'why', not
+> > what the diff is.
+> >
+> Hi robh,
+> we will add 'why' explanation in the commit msg in v12.
+>
+>
+> > >
+> > > Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> > > ---
+> > >  .../bindings/pinctrl/pinctrl-mt8195.yaml      | 32 +++++++++++++++++--
+> > >  1 file changed, 29 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
+> > > index 2f12ec59eee5..a341ed9f0095 100644
+> > > --- a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
+> > > +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
+> > > @@ -85,9 +85,35 @@ patternProperties:
+> > >            2/4/6/8/10/12/14/16mA in mt8195.
+> > >          enum: [0, 1, 2, 3, 4, 5, 6, 7]
+> > >
+> > > -      bias-pull-down: true
+> > > -
+> > > -      bias-pull-up: true
+> > > +      bias-pull-down:
+> > > +        description: |
+> > > +          For pull down type is normal, it don't need add RSEL & R1R0 define
+> > > +          and resistance value.
+> > > +          For pull down type is PUPD/R0/R1 type, it can add R1R0 define to
+> > > +          set different resistance. It can support "MTK_PUPD_SET_R1R0_00" &
+> > > +          "MTK_PUPD_SET_R1R0_01" & "MTK_PUPD_SET_R1R0_10" & "MTK_PUPD_SET_R1R0_11"
+> > > +          define in mt8195.
+> > > +          For pull down type is RSEL, it can add RSEL define & resistance value(ohm)
+> > > +          to set different resistance. It can support "MTK_PULL_SET_RSEL_000" &
+> > > +          "MTK_PULL_SET_RSEL_001" & "MTK_PULL_SET_RSEL_010" & "MTK_PULL_SET_RSEL_011" &
+> > > +          "MTK_PULL_SET_RSEL_100" & "MTK_PULL_SET_RSEL_101" & "MTK_PULL_SET_RSEL_110" &
+> > > +          "MTK_PULL_SET_RSEL_111" define in mt8195. It can also support resistance value(ohm)
+> > > +          "75000" & "5000" in mt8195.
+> >
+> > Sounds like constraints on the values. Please write a schema.
+> >
+> we will add a schema here in v12.
 
-Whatever we do, it would be great to get it out of -next one way (merge) 
-or the other (drop) ASAP, as it's a lot of code churn, affecting various 
-subsystems.
+Could the description be written to encourage device tree authors to
+use SI units instead of the macros?
 
-But merging it in a (for some people) suboptimal state just to get it 
-out of -next might not necessarily be what we want.
+Thanks
+ChenYu
 
--- 
-Thanks,
-
-David / dhildenb
-
+>
+> Thanks
+> > > +
+> > > +      bias-pull-up:
+> > > +        description: |
+> > > +          For pull up type is normal, it don't need add RSEL & R1R0 define
+> > > +          and resistance value.
+> > > +          For pull up type is PUPD/R0/R1 type, it can add R1R0 define to
+> > > +          set different resistance. It can support "MTK_PUPD_SET_R1R0_00" &
+> > > +          "MTK_PUPD_SET_R1R0_01" & "MTK_PUPD_SET_R1R0_10" & "MTK_PUPD_SET_R1R0_11"
+> > > +          define in mt8195.
+> > > +          For pull up type is RSEL, it can add RSEL define & resistance value(ohm)
+> > > +          to set different resistance. It can support "MTK_PULL_SET_RSEL_000" &
+> > > +          "MTK_PULL_SET_RSEL_001" & "MTK_PULL_SET_RSEL_010" & "MTK_PULL_SET_RSEL_011" &
+> > > +          "MTK_PULL_SET_RSEL_100" & "MTK_PULL_SET_RSEL_101" & "MTK_PULL_SET_RSEL_110" &
+> > > +          "MTK_PULL_SET_RSEL_111" define in mt8195. It can also support resistance value(ohm)
+> > > +          "1000" & "1500" & "2000" & "3000" & "4000" & "5000" & "10000" & "75000" in mt8195.
+> > >
+> > >        bias-disable: true
+> > >
+> > > --
+> > > 2.18.0
+> > >
+> > >
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
