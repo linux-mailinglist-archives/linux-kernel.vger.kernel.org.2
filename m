@@ -2,130 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4E23FD187
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABE23FD182
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241774AbhIACxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 22:53:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30736 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241757AbhIACxA (ORCPT
+        id S241679AbhIACwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 22:52:50 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:40193 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231588AbhIACwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 22:53:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630464723;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=22daRUQV9U4yr6Wt0e3afK9IF5RqMvZ3yQMarWKzKaw=;
-        b=JxkWfQ7EGfdRby2Hd9j56rPsXil9S4cm2C3FAZXX5OO7cUDSxFTYinqBbb3iSpD6TdXSJT
-        6PrikPnEDTcBMAOb1V26OPOx1bsNDR+/Rg4qYR1bHBBiYO3xsUrVrBd9lpGTuUWxbipX6o
-        bPgZ3hpHWHlyTA3A+VvZuKPecQT/dm4=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-563-juygSrn9OdWmTscsLyvZWg-1; Tue, 31 Aug 2021 22:52:02 -0400
-X-MC-Unique: juygSrn9OdWmTscsLyvZWg-1
-Received: by mail-pf1-f199.google.com with SMTP id d13-20020a056a0010cd00b003eb385150d1so649329pfu.10
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 19:52:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=22daRUQV9U4yr6Wt0e3afK9IF5RqMvZ3yQMarWKzKaw=;
-        b=jmOFtJyV8H+Y6obm65kJ+nnVahOWRr4RAvUFIRml2lEOjzvahB57kBAZn2O8it/blQ
-         8F0E0u1S9TvsEclQidnDnbPW5zWYdjqYNItQIAaTrGSChMesEB5dKDURu34bMqj9FDzR
-         qW5l/PFOV1MUc2uJm1SjTwmGO7X9beqn/RynzDDkciCTfkTVuwsTRj3vYiA3JY9Zfmng
-         fb9BViQSPLD/r4ZDkWYamXCSYsr41Rm57awkgzlSgVtiBGVq28BDbFkk0HfP8fLyqO0U
-         MN04qpWy6u8mOkjMb5u8yJcEMyqiZQACSunGAw5lbfKseB95q0PYricbC4djvtz0zetx
-         /AbA==
-X-Gm-Message-State: AOAM530gT6PRkenf+2kMpTD6j2nkm5OCOYYKvDNajLDk88UDedDzySkZ
-        w3/Ira3+dBzrDqBOo5eVVLCyAWxigseHkdU1HR2IpHryVG5cZYPYQNZLa8rTAWAEj9+topGtlo5
-        UCX1QERJIsl1hs22fk/R+04JU2KcxrOtIuc1ch8gCxNSG1/ly+jG9RiNn5hmR4Ly8bMGDODwQdC
-        gq
-X-Received: by 2002:a17:902:ea89:b0:134:7eb7:b4d7 with SMTP id x9-20020a170902ea8900b001347eb7b4d7mr7633997plb.43.1630464721202;
-        Tue, 31 Aug 2021 19:52:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwTWS6gU6vtbRqrdbv/Yqpra3725hn41k3JbwUi9Z5AqTrEe2L3d1WI2eNmIrtm6tnQdkeYWQ==
-X-Received: by 2002:a17:902:ea89:b0:134:7eb7:b4d7 with SMTP id x9-20020a170902ea8900b001347eb7b4d7mr7633932plb.43.1630464720692;
-        Tue, 31 Aug 2021 19:52:00 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id b7sm19703920pgs.64.2021.08.31.19.51.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 19:51:59 -0700 (PDT)
-Subject: Re: [PATCH v13 02/13] eventfd: Export eventfd_wake_count to modules
-To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
-        stefanha@redhat.com, sgarzare@redhat.com, parav@nvidia.com,
-        hch@infradead.org, christian.brauner@canonical.com,
-        rdunlap@infradead.org, willy@infradead.org,
-        viro@zeniv.linux.org.uk, axboe@kernel.dk, bcrl@kvack.org,
-        corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org,
-        gregkh@linuxfoundation.org, zhe.he@windriver.com,
-        xiaodong.liu@intel.com, joe@perches.com, robin.murphy@arm.com,
-        will@kernel.org, john.garry@huawei.com
-Cc:     songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20210831103634.33-1-xieyongji@bytedance.com>
- <20210831103634.33-3-xieyongji@bytedance.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <0e486c0a-0055-e698-ffd2-31c4b75dae5d@redhat.com>
-Date:   Wed, 1 Sep 2021 10:50:40 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Tue, 31 Aug 2021 22:52:49 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8DEDA5C01A0;
+        Tue, 31 Aug 2021 22:51:52 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Tue, 31 Aug 2021 22:51:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=h6mkqTj0IPa8aXBcl
+        zyhfaTXQ0S5i0ciy6PPsLCCCew=; b=X9K7ltETgS0aclxAnkH5nsNbhPi6Pknqf
+        ZRV0JOMn3uLdvcIMTtRmwz9gt32hxlNrqgdGlJIfMuQWyD+z+gJpfZ4Ns91Q184c
+        dRM8QnJEakRuYunvc6gJoEV55gcooJnuPufJ9CnEVdBPGKDxaZkRBTHtyvC/2ePP
+        wsLxUT/5ZdHcdV7GsDTw5jaFf+JwliDfqunLc0Vnt+Y9wBRT6hNdLLbPIkZfx3Fc
+        RtopxiKTbj4inEH/ooF74r4fqU6Gzvc+dt5xqOjtbJOAH0LSukp4wob+iG1t6XdZ
+        FySfQ9gsU2CQkVnFpUWBybglXoHLntjGwV0EnTf/gR2xQmPjgA20A==
+X-ME-Sender: <xms:x-ouYeQhxdJMBaRdqTVI3JumPHCk_19y2-hdJeaKRObfeHMRN6Wzrg>
+    <xme:x-ouYTxiiBgveBFiUUOcMd0oJeQAU1ZKPYYRdYjCbImbMNfsKZQKvnKANl0f30-pn
+    yKMqDJZKhgdNuWb3XY>
+X-ME-Received: <xmr:x-ouYb0TBIkUXiOV1E9X78W7U5U1eJGOwMaxO1OPs3G5S3pU5WOA7rji8pKB>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvvddgieefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvgeslhhjohhn
+    vghsrdguvghvqeenucggtffrrghtthgvrhhnpeelffelhfeltdfhtdevuefgveeuueekge
+    etiefgiefhgfejvdetvdeuvedthfdvkeenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:x-ouYaChl12wK1ErYFdHeEcn7NJpuFS-7AxuMvkyA_qGX8hF7zl5Cg>
+    <xmx:x-ouYXhViRBTod-qj74f9wbidVRIUY0F7ZbYWBa4C30y6vq9QIY0qg>
+    <xmx:x-ouYWrQych7LvU4aarW6wl5MjYjINnMbVqmkcCEbXMKacRaE9Jx-Q>
+    <xmx:yOouYUsZcBVw4eRI-e5HqRb8mLyguZpuHYx3lRDDtJYRHoCIWFuNrw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 31 Aug 2021 22:51:48 -0400 (EDT)
+From:   "Luke D. Jones" <luke@ljones.dev>
+To:     linux-kernel@vger.kernel.org
+Cc:     hdegoede@redhat.com, pobrn@protonmail.com, linux@roeck-us.net,
+        platform-driver-x86@vger.kernel.org,
+        "Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH v8 0/1] asus-wmi: Add support for custom fan curves
+Date:   Wed,  1 Sep 2021 14:51:40 +1200
+Message-Id: <20210901025141.1225029-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210831103634.33-3-xieyongji@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add support for custom fan curves found on some ASUS ROG laptops.
 
-在 2021/8/31 下午6:36, Xie Yongji 写道:
-> Export eventfd_wake_count so that some modules can use
-> the eventfd_signal_count() to check whether the
-> eventfd_signal() call should be deferred to a safe context.
->
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+- V1
+  + Initial patch work
+- V2
+  + Don't fail and remove wmi driver if error from
+    asus_wmi_evaluate_method_buf() if error is -ENODEV
+- V3
+  + Store the "default" fan curves
+  + Call throttle_thermal_policy_write() if a curve is erased to ensure
+    that the factory default for a profile is applied again
+- V4
+  + Do not apply default curves by default. Testers have found that the
+    default curves don't quite match actual no-curve behaviours
+  + Add method to enable/disable curves for each profile
+- V5
+  + Remove an unrequired function left over from previous iterations
+  + Ensure default curves are applied if user writes " " to a curve path
+  + Rename "active_fan_curve_profiles" to "enabled_fan_curve_profiles" to
+    better reflect the behavious of this setting
+  + Move throttle_thermal_policy_write_*pu_curves() and rename to
+    fan_curve_*pu_write()
+  + Merge fan_curve_check_valid() and fan_curve_write()
+  + Remove some leftover debug statements
+- V6
+  + Refactor data structs to store  array or u8 instead of strings.
+    This affects the entire patch except the enabled_fan_curves block
+  + Use sysfs_match_string in enabled_fan_curve block
+  + Add some extra comments to describe things
+  + Allow some variation in how fan curve input can be formatted
+  + Use SENSOR_DEVICE_ATTR_2_RW() to reduce the amount of lines per
+    fan+profile combo drastically
+- V7
+  + Further refactor to use pwm1_auto_point1_temp + pwm1_auto_point1_pwm
+    format, creating two blocks of attributes for CPU and GPU fans
+  + Remove storing of defualt curves and method to reset them. The
+    factory defaults are still populated in to structs on module load
+    so users have a starting point
+- V8
+  + Make asus_wmi_evaluate_method_buf() safe
+  + Take in to account machines that do not have throttle_thermal_policy
+    but do have a single custom fan curve. Thes machines can't use a 
+    throttle_thermal mode change to reset the fans to factory default if
+    fan curve is disabled so we need to write their stored default back.
+  + Formatting tidy and dev_err() use
+  + Extra comments to make certain things (such as above) more clear
+  + Give generated hwmon a more descriptive `name asus_custom_fan_curve`
 
+Luke D. Jones (1):
+  asus-wmi: Add support for custom fan curves
 
-And this matches the comment inside eventfd_signal():
+ drivers/platform/x86/asus-wmi.c            | 494 ++++++++++++++++++++-
+ include/linux/platform_data/x86/asus-wmi.h |   2 +
+ 2 files changed, 492 insertions(+), 4 deletions(-)
 
-         /*
-          * Deadlock or stack overflow issues can happen if we recurse here
-          * through waitqueue wakeup handlers. If the caller users 
-potentially
-          * nested waitqueues with custom wakeup handlers, then it should
-          * check eventfd_signal_count() before calling this function. If
-          * it returns true, the eventfd_signal() call should be 
-deferred to a
-          * safe context.
-          */
-
-
-So:
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> ---
->   fs/eventfd.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/fs/eventfd.c b/fs/eventfd.c
-> index e265b6dd4f34..1b3130b8d6c1 100644
-> --- a/fs/eventfd.c
-> +++ b/fs/eventfd.c
-> @@ -26,6 +26,7 @@
->   #include <linux/uio.h>
->   
->   DEFINE_PER_CPU(int, eventfd_wake_count);
-> +EXPORT_PER_CPU_SYMBOL_GPL(eventfd_wake_count);
->   
->   static DEFINE_IDA(eventfd_ida);
->   
+-- 
+2.31.1
 
