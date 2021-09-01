@@ -2,96 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2FA3FE36F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C443FE373
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237526AbhIATyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:54:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46073 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237319AbhIATyC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:54:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630525985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bFy1F+QsYxR5COx5bC/TDu7Bi/by603yH1cn5pidm4Q=;
-        b=T+w0Bbwkdu2qAkNcWIZCANPaMoBkVMAKsmfxdWfxiiXWaD2FKroVFLeC2AfHoY6ySc2ptd
-        CTpNhCZcOdYI3tIdtahZhQqk3uzCPbiTgizKVAyRQVl9daRrkjAoCZRzQIJQ8XAjqQygE2
-        lffqTzs0/xWdQXTUo9S+4WyH6baFB5A=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-225-5nl0XGZZNzqr0BbkHlaoCA-1; Wed, 01 Sep 2021 15:53:04 -0400
-X-MC-Unique: 5nl0XGZZNzqr0BbkHlaoCA-1
-Received: by mail-wr1-f71.google.com with SMTP id p1-20020adfcc81000000b001576cccf12cso264382wrj.6
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 12:53:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bFy1F+QsYxR5COx5bC/TDu7Bi/by603yH1cn5pidm4Q=;
-        b=Nfyhv1tzvpluThP7pl/MG6ADNI7Qs62fW+aEU8qIEMCVtMUiucAPiUAoEbnN4AxMQ5
-         HnAbSEvVnJLH3CShMR47AQj5Wt07RwA0Kdu1ohjWOVVGYE6UcYbHjEOWKoUPMsFY7dGV
-         lXVIsz0Hyq/7rsyCjJvViL5QyTzhLoyqVmPUMkfzmQON0HBaXqU6wnmMpgMY9SVnr1bC
-         3BTA6vUs8/mwD3b7Am5/iY5tk3X/w6cnMxpfzScS60AHZ0/WWDXXpKEyxQdD86PutE0j
-         I+dA31kaHJHPXaRW4Sjm2d4ZDVqL7XoJ6yI0Kz0eQLav1j0jvCDXopvp1lN9Fufdkd79
-         nd9w==
-X-Gm-Message-State: AOAM5312AhkaI75o6ZMiBUgh+KZQkQ+Yy4DqOOuaBw6mrF5qaIPuj2/K
-        5X+IQC+17gV45KFK5PTC23h6Jg2H9O11dKR6Zb+kW0pUUvHsrzYxg6Cu6wU4R/2J53mFFt7eUwT
-        TYuEiVNTn2H5wOXJSlR7EqbqmqkFEsGYCgj7isSNJ
-X-Received: by 2002:a5d:674b:: with SMTP id l11mr1134419wrw.357.1630525983085;
-        Wed, 01 Sep 2021 12:53:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy13a9+qZa6g03QLR52J8E62dIEzq7mnQQkvBXnCkrMx+s+g3F4vOoKLHB3KfUO0ib83MII2IoHGfd93bk24N8=
-X-Received: by 2002:a5d:674b:: with SMTP id l11mr1134407wrw.357.1630525982924;
- Wed, 01 Sep 2021 12:53:02 -0700 (PDT)
+        id S237930AbhIATyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:54:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237319AbhIATyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 15:54:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B0AC60F3A;
+        Wed,  1 Sep 2021 19:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630526032;
+        bh=rfB/OZJ7E1Hj9VqBxmUsABsSJk4KkSB/8hCzlAcGzRA=;
+        h=From:Date:Subject:To:Cc:From;
+        b=Z1xDWnU+zobUzHPtpALjRb6XEZaxozK2v/0c4xp57zbv6QM4J/oRJWbqt6euvnOQ7
+         bAss8exMDL3KIT4nK0xezZJabx+RfJL6dgvAtzScxCN+3/dDpMZ7yFZgHVKbSBCdua
+         e86ifdZUCh0EkAczMpdlE4X9f+7DuidaiVKhw9P4KiI+0rb2H8O1LR0tRLSIIrXjdI
+         WMD3aUMvacBKkMNaEVNOuhM+K+z21jfQ9mZ0dZCSDrFOJENyDh9aje6iXR4RUON9OC
+         bA2lpTYS4XFaFQzInlFE1n0OQIvYOtkNxsibnkJDUooy24UcvxcoQbwCBe38+LW5+U
+         B/f1nbHh6Snlg==
+Received: by mail-wr1-f49.google.com with SMTP id n5so1308533wro.12;
+        Wed, 01 Sep 2021 12:53:52 -0700 (PDT)
+X-Gm-Message-State: AOAM533jPfpVCcqYSPL2J8KF4oJqDLAQi+EFKmzxh9wzLpIdl3ejoAVF
+        XEjk9dpz2phu6N2DQtAYh21LSFCyHF5jgUsdmJ4=
+X-Google-Smtp-Source: ABdhPJxrJeKlyrk+RR3EOknpylVmjIXq7+0/9+LvXgnHCmLOmZGJwjR4OstNXD05J6lCidfCaBvIILLmyvYWDjsVQHM=
+X-Received: by 2002:adf:b781:: with SMTP id s1mr1181579wre.165.1630526030743;
+ Wed, 01 Sep 2021 12:53:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210827164926.1726765-1-agruenba@redhat.com> <CAHk-=wiUtyoTWuzroNJQwQDM9GHRXvq4974VL=y8T_3tUxDbkA@mail.gmail.com>
-In-Reply-To: <CAHk-=wiUtyoTWuzroNJQwQDM9GHRXvq4974VL=y8T_3tUxDbkA@mail.gmail.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Wed, 1 Sep 2021 21:52:51 +0200
-Message-ID: <CAHc6FU7K0Ho=nH6fCK+Amc7zEg2G31v+gE3920ric3NE4MfH=A@mail.gmail.com>
-Subject: Re: [PATCH v7 00/19] gfs2: Fix mmap + page fault deadlocks
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 1 Sep 2021 19:53:34 +0000
+X-Gmail-Original-Message-ID: <CAK8P3a0cc_d-NTemhNJzeSHgAwLcc31JB1AF61VDUH7FCTVDRg@mail.gmail.com>
+Message-ID: <CAK8P3a0cc_d-NTemhNJzeSHgAwLcc31JB1AF61VDUH7FCTVDRg@mail.gmail.com>
+Subject: [GIT PULL] asm-generic changes for 5.15
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 7:17 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Fri, Aug 27, 2021 at 9:49 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
-> >
-> > here's another update on top of v5.14-rc7.  Changes:
-> >
-> >  * Some of the patch descriptions have been improved.
-> >
-> >  * Patch "gfs2: Eliminate ip->i_gh" has been moved further to the front.
-> >
-> > At this point, I'm not aware of anything that still needs fixing,
->
-> From a quick scan, I didn't see anything that raised my hackles.
+The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
 
-So there's a minor merge conflict between Christoph's iomap_iter
-conversion and this patch queue now, and I should probably clarify the
-description of "iomap: Add done_before argument to iomap_dio_rw" that
-Darrick ran into. Then there are the user copy issues that Al has
-pointed out. Fixing those will create superficial conflicts with this
-patch queue, but probably nothing serious.
+  Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
 
-So how should I proceed: do you expect a v8 of this patch queue on top
-of the current mainline?
+are available in the git repository at:
 
-Thanks,
-Andreas
+  git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git
+tags/asm-generic-5.15
 
+for you to fetch changes up to 8f76f9c46952659dd925c21c3f62a0d05a3f3e71:
+
+  bitops/non-atomic: make @nr unsigned to avoid any DIV (2021-08-14
+13:07:42 +0200)
+
+----------------------------------------------------------------
+asm-generic changes for 5.15
+
+The main content for 5.15 is a series that cleans up the handling of
+strncpy_from_user() and strnlen_user(), removing a lot of slightly
+incorrect versions of these in favor of the lib/strn*.c helpers
+that implement these correctly and more efficiently.
+
+The only architectures that retain a private version now are
+mips, ia64, um and parisc. I had offered to convert those at all,
+but Thomas Bogendoerfer wanted to keep the mips version for the
+moment until he had a chance to do regression testing.
+
+The branch also contains two patches for bitops and for ffs().
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+----------------------------------------------------------------
+Arnd Bergmann (10):
+      asm-generic/uaccess.h: remove __strncpy_from_user/__strnlen_user
+      h8300: remove stale strncpy_from_user
+      hexagon: use generic strncpy/strnlen from_user
+      arc: use generic strncpy/strnlen from_user
+      csky: use generic strncpy/strnlen from_user
+      microblaze: use generic strncpy/strnlen from_user
+      asm-generic: uaccess: remove inline strncpy_from_user/strnlen_user
+      asm-generic: remove extra strn{cpy_from,len}_user declarations
+      asm-generic: reverse GENERIC_{STRNCPY_FROM,STRNLEN}_USER symbols
+      Merge branch 'asm-generic-uaccess-7' of
+git://git.kernel.org/.../arnd/asm-generic into asm-generic
+
+Geert Uytterhoeven (1):
+      asm-generic: ffs: Drop bogus reference to ffz location
+
+Heiko Carstens (1):
+      s390: use generic strncpy/strnlen from_user
+
+Vineet Gupta (1):
+      bitops/non-atomic: make @nr unsigned to avoid any DIV
+
+ arch/alpha/Kconfig                        |   2 -
+ arch/arc/include/asm/uaccess.h            |  72 -----------------
+ arch/arc/mm/extable.c                     |  12 ---
+ arch/arm/Kconfig                          |   2 -
+ arch/arm64/Kconfig                        |   2 -
+ arch/csky/include/asm/uaccess.h           |   6 --
+ arch/csky/lib/usercopy.c                  | 102 ------------------------
+ arch/h8300/kernel/h8300_ksyms.c           |   2 -
+ arch/h8300/lib/Makefile                   |   2 +-
+ arch/h8300/lib/strncpy.S                  |  35 ---------
+ arch/hexagon/include/asm/uaccess.h        |  31 --------
+ arch/hexagon/kernel/hexagon_ksyms.c       |   1 -
+ arch/hexagon/mm/Makefile                  |   2 +-
+ arch/hexagon/mm/strnlen_user.S            | 126 ------------------------------
+ arch/ia64/Kconfig                         |   2 +
+ arch/m68k/Kconfig                         |   2 -
+ arch/microblaze/include/asm/uaccess.h     |  21 +----
+ arch/microblaze/kernel/microblaze_ksyms.c |   1 -
+ arch/microblaze/lib/uaccess_old.S         |  90 ---------------------
+ arch/mips/Kconfig                         |   2 +
+ arch/nds32/Kconfig                        |   2 -
+ arch/nios2/Kconfig                        |   2 -
+ arch/openrisc/Kconfig                     |   2 -
+ arch/parisc/Kconfig                       |   2 +-
+ arch/powerpc/Kconfig                      |   2 -
+ arch/riscv/Kconfig                        |   2 -
+ arch/s390/include/asm/uaccess.h           |  18 +----
+ arch/s390/lib/uaccess.c                   |  52 ------------
+ arch/sh/Kconfig                           |   2 -
+ arch/sparc/Kconfig                        |   2 -
+ arch/um/Kconfig                           |   2 +
+ arch/um/include/asm/uaccess.h             |   5 +-
+ arch/um/kernel/skas/uaccess.c             |  14 +++-
+ arch/x86/Kconfig                          |   2 -
+ arch/xtensa/Kconfig                       |   3 +-
+ arch/xtensa/include/asm/uaccess.h         |   3 +-
+ arch/xtensa/kernel/xtensa_ksyms.c         |   2 +-
+ include/asm-generic/bitops/builtin-ffs.h  |   2 +-
+ include/asm-generic/bitops/ffs.h          |   2 +-
+ include/asm-generic/bitops/non-atomic.h   |  14 ++--
+ include/asm-generic/uaccess.h             |  53 +++----------
+ lib/Kconfig                               |  10 ++-
+ 42 files changed, 56 insertions(+), 657 deletions(-)
+ delete mode 100644 arch/h8300/lib/strncpy.S
+ delete mode 100644 arch/hexagon/mm/strnlen_user.S
