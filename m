@@ -2,126 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089483FE167
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02BE23FE170
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346679AbhIARv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:51:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30419 "EHLO
+        id S1347074AbhIARvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:51:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58773 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347118AbhIARuZ (ORCPT
+        by vger.kernel.org with ESMTP id S1347522AbhIARvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:50:25 -0400
+        Wed, 1 Sep 2021 13:51:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630518567;
+        s=mimecast20190719; t=1630518607;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wcSS0stjCZ+EufNjuLhGnQ5APuKOPn6/83B2E8zhIVk=;
-        b=L35zbBWaTpQyBE30YMm/Y05kdl03eEoJSSs3Xwn3FDOHPQ+xO07zoR7xroWE32r9bEcj1k
-        v00Z/1awy+E18gGkS4bI9et19S+8ZZqzwcaIgnC0mPQYcgqOTfJjwoJcx1ihNt9T/hxogl
-        0X2sCsivXPSnbGk3z+ymYw6FiJlIViw=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-32-6_99skLmOiWDyQz_0B6Yhw-1; Wed, 01 Sep 2021 13:49:26 -0400
-X-MC-Unique: 6_99skLmOiWDyQz_0B6Yhw-1
-Received: by mail-wm1-f69.google.com with SMTP id x125-20020a1c3183000000b002e73f079eefso155179wmx.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:49:26 -0700 (PDT)
+        bh=AOn7fSZJaIGeWUiIESF3Y7phWVytJU/xylBpJF5XsWA=;
+        b=TGnqTOC34uHWLR9MLa6TVgPjFOK1ME/LYtLFuZkdBCpasFm/QiQkS9Nvvi8BKf1sqOsh+P
+        XrcirCsd5v0Qv+QcaW9pEaF2v19KtrsfnxR3RCgqVnW5xXiJD+sZkLd8/xTBpHd6CnKgqs
+        5kMhG0vD/o+srX3xKXWEmt3X728YW0M=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-rMwFWYAHM1-f4S3-Sr45ig-1; Wed, 01 Sep 2021 13:50:06 -0400
+X-MC-Unique: rMwFWYAHM1-f4S3-Sr45ig-1
+Received: by mail-lf1-f70.google.com with SMTP id bi21-20020a0565120e9500b003df0c58083fso106857lfb.16
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:50:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=wcSS0stjCZ+EufNjuLhGnQ5APuKOPn6/83B2E8zhIVk=;
-        b=f/KgdZabdFo/ZDrQ+yL0a4Dt4ZJf32ycOWFGgm4+TuO0o2WmiCBst39RhiNtkSQwFZ
-         0jxuRyW4/vKXz1SI6Rwv0nFYvVN8av5HlVczC7uu0EcNY3FzwR47Cydle01yIc6yKgfA
-         SatWI2nxPIMuPOTuO1zPP/7LuMB+8BSTxRy5j+D8ftVIm0w+q9FG8yepWVGsB5nPcCbu
-         6JNIdyuC2/G5KYszIrND/0zG0WYIjezgbE9h2XA4N47hEpJs/9bfBfXhnMJP5R4DxFOC
-         DrirCVUdANN1z8Uipd4Ocr+dhx3GWtAXFbTPDpFXOWvXXJK3k50bYyAhN9s9hvP/Pwif
-         tphg==
-X-Gm-Message-State: AOAM530RIPhfZGO1NT3RFUaWcA6s7Ck2i5dMAeNTvEzEEGHjJcIIO3fw
-        zNPAIFCu9U07tf97Z/wCR5oz6xORbPea5OmXkBBwmAV9NNUy2683qgYBno1Yx0XiVR9NkEXqZfs
-        K59lFgDE7HzdnEsB5dASTyWom
-X-Received: by 2002:a1c:19c6:: with SMTP id 189mr717979wmz.174.1630518565342;
-        Wed, 01 Sep 2021 10:49:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy/NrrsbhKylVigxv7rpdncN0pJ4zbcVXVZJsfupW2ppJ5IrimVhHTvVn8Y5YEQ7YGxyE6BKQ==
-X-Received: by 2002:a1c:19c6:: with SMTP id 189mr717962wmz.174.1630518565124;
-        Wed, 01 Sep 2021 10:49:25 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
-        by smtp.gmail.com with ESMTPSA id q11sm192401wmc.41.2021.09.01.10.49.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 10:49:24 -0700 (PDT)
-Subject: Re: [PATCH v2 6/9] mm: free user PTE page table pages
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
-        mika.penttila@nextfour.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        songmuchun@bytedance.com
-References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
- <20210819031858.98043-7-zhengqi.arch@bytedance.com>
- <20210901135314.GA1859446@nvidia.com>
- <0c9766c9-6e8b-5445-83dc-9f2b71a76b4f@redhat.com>
- <20210901153247.GJ1721383@nvidia.com>
- <7789261d-6a64-c47b-be6c-c9be680e5d33@redhat.com>
- <20210901161613.GN1721383@nvidia.com>
- <e8ebb0bb-b268-c43b-6fc1-e5240dc085c9@redhat.com>
- <20210901171039.GO1721383@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <ef7a722d-0bc0-1c68-b11b-9ede073516e0@redhat.com>
-Date:   Wed, 1 Sep 2021 19:49:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AOn7fSZJaIGeWUiIESF3Y7phWVytJU/xylBpJF5XsWA=;
+        b=GIVq6UJLBRccU9wxaVEte7oWw3De+ZjIr99wmKe4j3BNUBqHRxrGg63f2dLdmSCWMy
+         DECCCdGfsNnjn5rXDYa5BiFSi3ObB1iBfRALhxKjQGNYqo2sa4sTs4S3UItwoVTGkhF6
+         30JzfXM2Y9EkImmcCypRE1B4ZvrKAzY1D45HvgfOF9n8fcXzFmhZpImn1ngZJ04/bk9d
+         4FQDnFCpP2kiLYHZqUMQu8AKYLGDjdt7t98fsdLOLYAPbqa7fEXZyMNct0LGmLTw/Dqd
+         BD2Xt4/nCaOQm3thXmMuKpTjY3HbDgPp+S+JYISKoagwFXKyWN0OyYVHn/znexIFbLfN
+         GrMw==
+X-Gm-Message-State: AOAM531g/kL/TyKcT+sQWheqcVIojVkWXmYkniSPFrAAZhHwELAa/NgV
+        6pY4sgBz9ImMCSvIgEkaRemIWKywnLVAEyjpFT4X4rXgLMBINdWi8HyKSGeFwwdTMsgyD3N84mH
+        ruNpHokIYOu+Njvp52/dRYGnTcfUilET1aitEtnOc
+X-Received: by 2002:a05:6512:128b:: with SMTP id u11mr497506lfs.384.1630518604930;
+        Wed, 01 Sep 2021 10:50:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxEDNBVG4gILtj0UYj77EqEvvd8q6fLfcY7Frsta/WGEY0WxRYqF0jJY35AtfStIVSBSdqSz9M5rI0y4po0/80=
+X-Received: by 2002:a05:6512:128b:: with SMTP id u11mr497486lfs.384.1630518604722;
+ Wed, 01 Sep 2021 10:50:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210901171039.GO1721383@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210824152423.300346181@fuller.cnet> <20210824152646.706875395@fuller.cnet>
+ <CAFki+Lnso5j+cbDsd74+YM+-sT-zTYuymyJLY2Sw1ho3SHW74Q@mail.gmail.com> <20210901173401.GB48995@fuller.cnet>
+In-Reply-To: <20210901173401.GB48995@fuller.cnet>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Wed, 1 Sep 2021 13:49:53 -0400
+Message-ID: <CAFki+L=wYqKZon8TRdMhOHfS3goh7yHXQFDb7RXM=iOJeZJBPw@mail.gmail.com>
+Subject: Re: [patch V3 2/8] add prctl task isolation prctl docs and samples
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.21 19:10, Jason Gunthorpe wrote:
-> On Wed, Sep 01, 2021 at 06:19:03PM +0200, David Hildenbrand wrote:
-> 
->>> I wouldn't think it works everywhere, bit it works in a lot of places,
->>> and it is a heck of a lot better than what is proposed here. I'd
->>> rather see the places that can use it be moved, and the few places
->>> that can't be opencoded.
->>
->> Well, I used ptep_get_map_lock() and friends. But hacking directly into
->> ptep_map_lock() and friends wasn't possible due to all the corner cases.
-> 
-> Sure, I'm not surprised you can't get every single case, but that just
-> suggest we need two API families, today's to support the special cases
-> and a different one for the other regular simple cases.
-> 
-> A new function family pte_try_map/_locked() and paired unmap that can
-> internally do the recounting and THP trickery and convert the easy
-> callsites.
-> 
-> Very rough counting suggest at least half of the pte_offset_map_lock()
-> call sites can trivially use the simpler API.
-> 
-> The other cases can stay as is and get open coded refcounts, or maybe
-> someone will have a better idea once they are more clearly identified.
-> 
-> But I don't think we should take a performance hit of additional
-> atomics in cases like GUP where this is trivially delt with by using a
-> better API.
+On Wed, Sep 1, 2021 at 1:38 PM Marcelo Tosatti <mtosatti@redhat.com> wrote:
+>
+> On Wed, Sep 01, 2021 at 09:11:56AM -0400, Nitesh Lal wrote:
+> > On Tue, Aug 24, 2021 at 11:42 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
+> > >
+> > > Add documentation and userspace sample code for prctl
+> > > task isolation interface.
+> > >
+> > > Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+> > >
+> > > ---
+> > >  Documentation/userspace-api/task_isolation.rst |  211 +++++++++++++++++++++++++
+> > >  samples/Kconfig                                |    7
+> > >  samples/Makefile                               |    1
+> > >  samples/task_isolation/Makefile                |    9 +
+> > >  samples/task_isolation/task_isol.c             |   83 +++++++++
+> > >  samples/task_isolation/task_isol.h             |    9 +
+> > >  samples/task_isolation/task_isol_userloop.c    |   56 ++++++
+> > >  7 files changed, 376 insertions(+)
+> >
+> > [...]
+> >
+> > > +       if (ret) {
+> > > +               perror("mlock");
+> > > +               return EXIT_FAILURE;
+> > > +       }
+> > > +
+> > > +       ret = task_isol_setup();
+> > > +       if (ret)
+> > > +               return EXIT_FAILURE;
+> >
+> > The above check condition should be 'ret == -1', isn't it?
+>
+> task_isol_setup returns 0 on success, so fail to see the point
+> of testing for ret == -1 rather than ret != 0 ?
+>
 
-Right, but as I said in the cover letter, we can happily optimize once 
-we have the basic infrastructure in place and properly reviewed. Getting 
-rid of some unnecessary atomics by introducing additional fancy helpers 
-falls under that category.
-
-The performance hit shouldn't exist if this feature is not compiled in.
+Hmm, could be something that I misinterpreted.
+I will double-check.
 
 -- 
-Thanks,
-
-David / dhildenb
+Thanks
+Nitesh
 
