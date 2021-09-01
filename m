@@ -2,185 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18143FDFDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 800763FDFF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245407AbhIAQ21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:28:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32425 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245218AbhIAQ2W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:28:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630513645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TCAH52YqS9JZQzJKa7DRR1Gpuc8EPZCmTZ5AQVbYtWA=;
-        b=CQSXfa1RsLb8cees6QT9Hv5mRreNLsW5HcBvOcAgXOXFdtnlUYIv8ZrxLTbUPb59GwkJUa
-        dQqvHNVvBvcGGvV7ZyRB9xOaw0ibOKu0yptS5I8P0cI5Pfvo0NXoPZ9BtKiknc2U695N7r
-        gFOSR/rywuYjLZE23EjnzDN9ifKSQEw=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-484-apohYhG0NAeahmusu-pLbQ-1; Wed, 01 Sep 2021 12:27:23 -0400
-X-MC-Unique: apohYhG0NAeahmusu-pLbQ-1
-Received: by mail-wm1-f72.google.com with SMTP id p11-20020a05600c204b00b002f05aff1663so36625wmg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:27:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=TCAH52YqS9JZQzJKa7DRR1Gpuc8EPZCmTZ5AQVbYtWA=;
-        b=fYGTR3UJdQEDiAK5Q8TlL9YPzZUAxeyJoFCTT2riGE9g6JuOwzv5xLz9htACruGxT/
-         ZuvTJuOKy+4QkWWRYgWh1J+4+nqoBpOxP8QVK46ogiR4A1gsc+Wd2cSCJnTyV8vSX/BB
-         7PK7UUidxaAX6ffQL/2kJZKVW29QRAgeov9PguY6CTWL/D59eXR6Q5zPBpFp22jBFObR
-         fHl36+n+a5B8L7Qe4vVX4dDsOY7OMlx8fC2v6zsIceo4SFayaIDeXH8RS7M6zNGA79xf
-         w18Pf2Ee3poSdO5qRRChXD22F02Y0llGtffuIq3gw9ApeiPf5Oa83DTvmgzpGohe5CGR
-         kWUg==
-X-Gm-Message-State: AOAM5320j+TC0HCr4a7ugNcwzeXM+FyYZZB5pm2y9gelWUMIFInBmeVv
-        2rsDIyhmgNMSTE2WBctNKrySNyfrhcKuPVLmYHEhYM8lZA6laoPeN0KUTaTSDkrJJ9+2U0OsDcy
-        GqCSunYgmXIFa8CoDm/r1Z8XZ
-X-Received: by 2002:adf:f9cb:: with SMTP id w11mr259292wrr.382.1630513642555;
-        Wed, 01 Sep 2021 09:27:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzGHmzuvAvqEcnBZI7Y23pSv8aObIhsarRJKP+kEp6VN4fOLNmhGpMU3DYltGLE2gcg2FV3PQ==
-X-Received: by 2002:adf:f9cb:: with SMTP id w11mr259251wrr.382.1630513642352;
-        Wed, 01 Sep 2021 09:27:22 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
-        by smtp.gmail.com with ESMTPSA id k17sm225645wmj.0.2021.09.01.09.27.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 09:27:21 -0700 (PDT)
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
- memory
-To:     Andy Lutomirski <luto@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
- <20210827023150.jotwvom7mlsawjh4@linux.intel.com>
- <8f3630ff-bd6d-4d57-8c67-6637ea2c9560@www.fastmail.com>
- <20210901102437.g5wrgezmrjqn3mvy@linux.intel.com>
- <f37a61ba-b7ef-c789-5763-f7f237ae41cc@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <2b2740ec-fa89-e4c3-d175-824e439874a6@redhat.com>
-Date:   Wed, 1 Sep 2021 18:27:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S245327AbhIAQct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:32:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232876AbhIAQcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 12:32:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64B0E61058;
+        Wed,  1 Sep 2021 16:31:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630513911;
+        bh=y1c/D5zmMC7JOawbBXs6fSznzulN2NVBOiAlLNEuXjQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nJfILASUEEvPpkbVT3jXOHbnpOLmaCtRY+zj8Hkk/381At+HqeYDbjdk6jg4zpBGf
+         oisPk9SEFbfgBc/f34pmOy0jFLgSzl2B5C5jmLA/UTGh7QrocNq0PV8gw7dge9B39S
+         XMahVwAjFGVzfAnoOO5FMROUS+hpQLG4cKmPOED4hCsV0/Cwq72QeCYp4gKm8lXsbE
+         R1nb2xuERJUBkpc0trcENT9pTJi5KsKV9MTLMPogur073v23ZFW72HnxQw8csxlE6I
+         Ni19M9xpCn/tlBM6UL+6+P5xdiO8D39XPgLo5beT2/rjM92oiEo3VQy+SQbJjz/xNV
+         10AFAhYiDS3QQ==
+Date:   Wed, 1 Sep 2021 17:31:19 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc:     heiko@sntech.de, linux-rockchip@lists.infradead.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ASoC: rockchip: i2s: Fix concurrency between tx/rx
+Message-ID: <20210901163119.GA39417@sirena.org.uk>
+References: <1630305525-65759-1-git-send-email-sugar.zhang@rock-chips.com>
 MIME-Version: 1.0
-In-Reply-To: <f37a61ba-b7ef-c789-5763-f7f237ae41cc@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cWoXeonUoKmBZSoM"
+Content-Disposition: inline
+In-Reply-To: <1630305525-65759-1-git-send-email-sugar.zhang@rock-chips.com>
+X-Cookie: Walk softly and carry a BFG-9000.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.21 18:07, Andy Lutomirski wrote:
-> On 9/1/21 3:24 AM, Yu Zhang wrote:
->> On Tue, Aug 31, 2021 at 09:53:27PM -0700, Andy Lutomirski wrote:
->>>
->>>
->>> On Thu, Aug 26, 2021, at 7:31 PM, Yu Zhang wrote:
->>>> On Thu, Aug 26, 2021 at 12:15:48PM +0200, David Hildenbrand wrote:
->>>
->>>> Thanks a lot for this summary. A question about the requirement: do we or
->>>> do we not have plan to support assigned device to the protected VM?
->>>>
->>>> If yes. The fd based solution may need change the VFIO interface as well(
->>>> though the fake swap entry solution need mess with VFIO too). Because:
->>>>
->>>> 1> KVM uses VFIO when assigning devices into a VM.
->>>>
->>>> 2> Not knowing which GPA ranges may be used by the VM as DMA buffer, all
->>>> guest pages will have to be mapped in host IOMMU page table to host pages,
->>>> which are pinned during the whole life cycle fo the VM.
->>>>
->>>> 3> IOMMU mapping is done during VM creation time by VFIO and IOMMU driver,
->>>> in vfio_dma_do_map().
->>>>
->>>> 4> However, vfio_dma_do_map() needs the HVA to perform a GUP to get the HPA
->>>> and pin the page.
->>>>
->>>> But if we are using fd based solution, not every GPA can have a HVA, thus
->>>> the current VFIO interface to map and pin the GPA(IOVA) wont work. And I
->>>> doubt if VFIO can be modified to support this easily.
->>>>
->>>>
->>>
->>> Do you mean assigning a normal device to a protected VM or a hypothetical protected-MMIO device?
->>>
->>> If the former, it should work more or less like with a non-protected VM. mmap the VFIO device, set up a memslot, and use it.  I'm not sure whether anyone will actually do this, but it should be possible, at least in principle.  Maybe someone will want to assign a NIC to a TDX guest.  An NVMe device with the understanding that the guest can't trust it wouldn't be entirely crazy ether.
->>>
->>> If the latter, AFAIK there is no spec for how it would work even in principle. Presumably it wouldn't work quite like VFIO -- instead, the kernel could have a protection-virtual-io-fd mechanism, and that fd could be bound to a memslot in whatever way we settle on for binding secure memory to a memslot.
->>>
->>
->> Thanks Andy. I was asking the first scenario.
->>
->> Well, I agree it is doable if someone really want some assigned
->> device in TD guest. As Kevin mentioned in his reply, HPA can be
->> generated, by extending VFIO with a new mapping protocol which
->> uses fd+offset, instead of HVA.
-> 
-> I'm confused.  I don't see why any new code is needed for this at all.
-> Every proposal I've seen for handling TDX memory continues to handle TDX
-> *shared* memory exactly like regular guest memory today.  The only
-> differences are that more hole punching will be needed, which will
-> require lightweight memslots (to have many of them), memslots with
-> holes, or mappings backing memslots with holes (which can be done with
-> munmap() on current kernels).
-> 
-> So you can literally just mmap a VFIO device and expect it to work,
-> exactly like it does right now.  Whether the guest will be willing to
-> use the device will depend on the guest security policy (all kinds of
-> patches about that are flying around), but if the guest tries to use it,
-> it really should just work.
 
-... but if you end up mapping private memory into IOMMU of the device 
-and the device ends up accessing that memory, we're in the same position 
-that the host might get capped, just like access from user space, no?
+--cWoXeonUoKmBZSoM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Sure, you can map only the complete duplicate shared-memory region into 
-the IOMMU of the device, that would work. Shame vfio mostly always pins 
-all guest memory and you essentially cannot punch holes into the shared 
-memory anymore -- resulting in the worst case in a duplicate memory 
-consumption for your VM.
+On Mon, Aug 30, 2021 at 02:38:45PM +0800, Sugar Zhang wrote:
+> This patch adds lock to fix comcurrency between tx/rx
+> to fix 'rockchip-i2s ff070000.i2s; fail to clear'
 
-So you'd actually want to map only the *currently* shared pieces into 
-the IOMMU and update the mappings on demand. Having worked on something 
-related, I can only say that 64k individual mappings, and not being able 
-to modify existing mappings except completely deleting them to replace 
-with something new (!atomic), can be quite an issue for bigger VMs.
+This doesn't apply against current code, please check and resend.
 
--- 
-Thanks,
+--cWoXeonUoKmBZSoM
+Content-Type: application/pgp-signature; name="signature.asc"
 
-David / dhildenb
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEvqtYACgkQJNaLcl1U
+h9BxBgf/RAh8wv4l2S8GAWfb2mR6GABSQYH7DftN+pPbe66GT0X+/FYi45mTxL/D
+9i3Ya1ynoYCArBhICLM6UCKgYLLRE2pgT6EYyGK8u6aBrpT6XzHDx/cB1oBsZY18
+avB/Jl7c6nbNRcF3njxkB2WmefKJ9HW3aNh6QyDxz2s0u78vzj8yWzkjBsAKETHC
+kHD8dEAI9pTx6lX35vqzUv0chFU1xgBa4BrWjZRAiMu1W7HCrJeIIoe+K5LbZh6/
+Wo2x+YRGdtbaq6vQ0pZCGcPFL25u+JSnEI0o5aMyhNtUh4n8IFnuhI0fzMSpDkFK
+JA35vTg1ULgBhuAvLtJW28lVK1J0Iw==
+=4hGe
+-----END PGP SIGNATURE-----
+
+--cWoXeonUoKmBZSoM--
