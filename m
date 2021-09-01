@@ -2,116 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D3B3FE605
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765953FE608
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345112AbhIAXQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 19:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhIAXQl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 19:16:41 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278B3C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:15:44 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id v1so38866plo.10
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uLkRX3S7HGOH3GdjbZJv+B4Lvvu9s6EgNeW/1aZYJLQ=;
-        b=RN3BnZBwO96riciijRXqXoQFBTBrohC3wUD7MTVF1WCmDe3w4DQravBqkmmdjFODBP
-         s74FrqxTc7Zq5rmhv64juzrZcIWCB75JkO78J1my/hCcXt3A9XbXdgL0GQXOT7jRd57M
-         MIB8CTKEQBSNl7ej2ckj28Kaf0cFmsy9eOK7qgYS87ccMLERmzf95AI5kI+YfgtblSaK
-         Uspzks0jpCtsy4MVf51MU3hHPe2jcKkVMwCpny4qKYdXQM97iHzSOqFOnaA8Ir9IGNML
-         URO4db0po9HRciSzH0Yn15NC+0ugIVKxjUE9YnkQsMgHq/DJwDa5q5U1FubuMQtnfhJS
-         y5+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uLkRX3S7HGOH3GdjbZJv+B4Lvvu9s6EgNeW/1aZYJLQ=;
-        b=iQhK8SNQzDvBh22Vie6NBhICj5vu89+6JDfQsS23+uFlShTkqA0xrQTyiSD2T26/ie
-         qnVZ0dUChaYOOvtvlIqkVRs+OelsrOSQSytFScNsx6j/c4EC9Aw51/o8t6zTxNTSXpKR
-         DX29tw2OBHlVPaSKmEuCFDkyp8q0YWcgpAKGIahuC/Rxw4kgRefkJSf6mi1iH7PZPUTE
-         k4yZfFHc4HNjWJ0oFqZiFRPN3xiUPt1co9c/ZTF40h4Aa18cWioBIlje8gVHS3eNYTI/
-         51pPbcQQXAHfA33A0VxEFxhBtk+HJNLhdaYaiqfHmL5w8MpLIm6j++TYuyVpP91NgQNd
-         xbkA==
-X-Gm-Message-State: AOAM533tBbWwJ5n5ytZt0P1NVSq0s9neTRxgBAGm+y+MG3scnOlsHCVj
-        xQyG+eJ19Felay+bP4vorqj99g==
-X-Google-Smtp-Source: ABdhPJwqLGVyEByKojljzYoFCXPfkkHvZPBB5tyavPSMOTWdQ8nggbgYu+Blphdrk3MKgt0ElJwjfg==
-X-Received: by 2002:a17:90a:49:: with SMTP id 9mr276332pjb.80.1630538143364;
-        Wed, 01 Sep 2021 16:15:43 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id i7sm35421pjm.55.2021.09.01.16.15.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 16:15:42 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 23:15:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@intel.com, David Matlack <dmatlack@google.com>,
-        peterx@redhat.com
-Subject: Re: [PATCH 08/16] KVM: MMU: change handle_abnormal_pfn() arguments
- to kvm_page_fault
-Message-ID: <YTAJm7c1a37N4adR@google.com>
-References: <20210807134936.3083984-1-pbonzini@redhat.com>
- <20210807134936.3083984-9-pbonzini@redhat.com>
+        id S230015AbhIAXRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 19:17:39 -0400
+Received: from mga06.intel.com ([134.134.136.31]:10077 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345132AbhIAXRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 19:17:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="279908024"
+X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
+   d="scan'208";a="279908024"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 16:16:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
+   d="scan'208";a="461137748"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by fmsmga007.fm.intel.com with ESMTP; 01 Sep 2021 16:16:40 -0700
+Date:   Wed, 1 Sep 2021 16:18:06 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com,
+        netdev@vger.kernel.org
+Subject: [PATCH] smackfs: Fix use-after-free in netlbl_catmap_walk()
+Message-ID: <53d3eb4e5b3c6f2a0754a5be2b36c38adf32a1dd.1630537810.git.pawan.kumar.gupta@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210807134936.3083984-9-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 07, 2021, Paolo Bonzini wrote:
-> Pass struct kvm_page_fault to handle_abnormal_pfn() instead of
-> extracting the arguments from the struct.
-> 
-> Suggested-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c         | 17 ++++++++---------
->  arch/x86/kvm/mmu/paging_tmpl.h |  2 +-
->  2 files changed, 9 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index a6366f1c4197..cec59ac2e1cd 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3024,18 +3024,18 @@ static int kvm_handle_bad_page(struct kvm_vcpu *vcpu, gfn_t gfn, kvm_pfn_t pfn)
->  	return -EFAULT;
->  }
->  
-> -static bool handle_abnormal_pfn(struct kvm_vcpu *vcpu, gva_t gva, gfn_t gfn,
-> -				kvm_pfn_t pfn, unsigned int access,
-> -				int *ret_val)
-> +static bool handle_abnormal_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
-> +				unsigned int access, int *ret_val)
->  {
->  	/* The pfn is invalid, report the error! */
-> -	if (unlikely(is_error_pfn(pfn))) {
-> -		*ret_val = kvm_handle_bad_page(vcpu, gfn, pfn);
-> +	if (unlikely(is_error_pfn(fault->pfn))) {
-> +		*ret_val = kvm_handle_bad_page(vcpu, fault->gfn, fault->pfn);
->  		return true;
->  	}
->  
-> -	if (unlikely(is_noslot_pfn(pfn))) {
-> -		vcpu_cache_mmio_info(vcpu, gva, gfn,
-> +	if (unlikely(is_noslot_pfn(fault->pfn))) {
-> +		gva_t gva = fault->is_tdp ? 0 : fault->addr;
+Syzkaller reported use-after-free bug as described in [1]. The bug is
+triggered when smk_set_cipso() tries to free stale category bitmaps
+while there are concurrent readers using those bitmaps.
 
-Checkpatch wants a newline.  I'm also surprised you didn't abuse bitwise math:
+Wait for RCU grace period to finish before freeing the category bitmaps
+in smk_set_cipso(). This makes sure that there are no more readers using
+the stale bitmaps and freeing them is safe.
 
-		gva_t gva = fault->addr & ((u64)fault->is_tdp - 1);
+[1] https://lore.kernel.org/netdev/000000000000a814c505ca657a4e@google.com/
 
-I am _not_ suggesting you actually do that ;-)
+Reported-by: syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+---
+ security/smack/smackfs.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> +		vcpu_cache_mmio_info(vcpu, gva, fault->gfn,
->  				     access & shadow_mmio_access_mask);
->  		/*
->  		 * If MMIO caching is disabled, emulate immediately without
+diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+index 3a75d2a8f517..9d853c0e55b8 100644
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -831,6 +831,7 @@ static int smk_open_cipso(struct inode *inode, struct file *file)
+ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
+ 				size_t count, loff_t *ppos, int format)
+ {
++	struct netlbl_lsm_catmap *old_cat;
+ 	struct smack_known *skp;
+ 	struct netlbl_lsm_secattr ncats;
+ 	char mapcatset[SMK_CIPSOLEN];
+@@ -920,9 +921,11 @@ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
+ 
+ 	rc = smk_netlbl_mls(maplevel, mapcatset, &ncats, SMK_CIPSOLEN);
+ 	if (rc >= 0) {
+-		netlbl_catmap_free(skp->smk_netlabel.attr.mls.cat);
++		old_cat = skp->smk_netlabel.attr.mls.cat;
+ 		skp->smk_netlabel.attr.mls.cat = ncats.attr.mls.cat;
+ 		skp->smk_netlabel.attr.mls.lvl = ncats.attr.mls.lvl;
++		synchronize_rcu();
++		netlbl_catmap_free(old_cat);
+ 		rc = count;
+ 		/*
+ 		 * This mapping may have been cached, so clear the cache.
+
+base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
+-- 
+2.31.1
+
