@@ -2,137 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDCC3FE04B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8783FE04D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245504AbhIAQsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        id S1344071AbhIAQsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbhIAQsW (ORCPT
+        with ESMTP id S231419AbhIAQse (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:48:22 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34A5C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:47:25 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id 6so75184oiy.8
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:47:25 -0700 (PDT)
+        Wed, 1 Sep 2021 12:48:34 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05DBC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:47:37 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id 7so262524pfl.10
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:47:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=qbfCjSBwignzsfCO1uRjwOAA6KxwOZtphxHrmz+1Gu0=;
-        b=R7ufEstAB7Hk31VQUuC8TGoHWJagans6L5oHz6Nfb5EVwqWhqk+b5r5WMMKw3/RcHs
-         TrEdqBCEjOzDH6m5auWpy1j/mXEJklid13yfhnguQufb936GLCvIyvbtv4kUhRhOoGO+
-         9lPtlPUnz/+mLzwvRdLHSoeekeWQqJlAeQyWqsKeuAyRjn48Gpr0nNDOV26W6UaiM17g
-         LY3n+Vy2+4UqCJYCFU2dRwZgEnhSgFAURl0B9ceFcVxLPjfn8k2bDtwoHaFuLVDgB7Yl
-         UsuIIiZrk+0TI7d19AgoKioHNqF7d3axrtVjtwEgFSJ4niX0SZ+Ze0zXPkkEyi49jEVt
-         qwAQ==
+        bh=SdndLapjv5LLI+r4ct9MCxqBfsmBR7H3bxUJRnVikqY=;
+        b=dOBBBVTa1DZoDUJneDk9k44TNY6OkY16SFNkp4fXbZJ85WgYPVg7JB5Imiv1DWwTV5
+         f3dwrtsJ3F6XIqlZNtFLAG1dK0a6COKSA8ybbaVccnwyKgSaYrnlH6AgOWqHLTBQSFyn
+         /u+Z+onhgYoUrg+jXBkwHYU10jg2ONbgFunRvSxLd048Wj7ucv4nf7TxY3XOpNN3+o25
+         pfR88e7/msu/dJzRE9tHhBCY0jXnmQSm241aEBFRUAVPwB66geVmGNGXL7dGye6jUfJn
+         GLtmarHe10RKzFv/pSU2ccZX9GihupbP6W0R0iAUYP9BDWWQNXIJlMc2oDnD8y1FYI32
+         4o2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=qbfCjSBwignzsfCO1uRjwOAA6KxwOZtphxHrmz+1Gu0=;
-        b=ZPk4qZC3EhBgRMWX7yyV5SCsLE+HwVp8ineXmGD1i8fWkFu44GXRxJki07JZ4PftIn
-         X+0fzQMVodLY1idH4Ueqbj7LNMlmBuhRIhXow+0o1tf26rZEZCS4hmirLBqu07rzZN0M
-         8srVmwKNl9vX44YaSnKgRpg+EtIin2ed/OKVBN7GXMJK2RzvDck5YbBh5EffH+a1IG0C
-         i05XI4yo2pHc2DPwMwu+NNJTIS2XI6C+pozo8dXXOtv17YocV/nHRVAYYfxSoOdYVpUQ
-         MnZ3iiiGGyKD9xE1UvGA7SHdKarvAbCxSo7H04mxn01D93dLsUPFU1pmVJqvwuXtLPfR
-         poGg==
-X-Gm-Message-State: AOAM530CnhjAbNmMhJrVZFVqzaYwTQMK9brTycuP76M9rF1tu4Pt+9Jr
-        XazB60Ix1/yldjU6IkXSIQ4=
-X-Google-Smtp-Source: ABdhPJzdlTLWWtmbFGLIUnyGadFumsp85MqI5rNlEwrp2tLKFgqhteHQs+ZTL+PkufASUGVvcfYCUg==
-X-Received: by 2002:aca:1717:: with SMTP id j23mr361682oii.43.1630514845197;
-        Wed, 01 Sep 2021 09:47:25 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 8sm84452oix.7.2021.09.01.09.47.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SdndLapjv5LLI+r4ct9MCxqBfsmBR7H3bxUJRnVikqY=;
+        b=JeJnhxgDzDCn1pmjaXalWCsx6zvLROe9QJ2Z7umiuIV40VnlD5vEb4miIIFlColHLr
+         V64VDO0EX8EA7Ikn+4GRECTq55Qnc+t7bERHbnmL9OujQYlQJI5IYJX7ntdiZkiBQhl/
+         sSDBGWi8eNJoh2sY6PqupCUxFU7nluDfPSOJtFAhUHjzaAazokjSA6qA4gqNTfLXuC1U
+         GPiyt3EP5Y58m4R6xknokbLqPY3LtJp08PJPmYLiIrGM/oBQLu4HuQKXC4Pb/M+DVtH8
+         rjirWCDfJBRwKfZggCWlkt70IHBqZOIXLsDabOePjNiLaN9GQiEae5wIR3cYC97D/GwD
+         qEoA==
+X-Gm-Message-State: AOAM5304JL1axr6UGJV4nhJz9LqZb4+HNJg8t/9OGJGMlx2W1I+jJjAs
+        Bc8pOjS+y/x0JER9pZF9rf0sug==
+X-Google-Smtp-Source: ABdhPJzM6h7XNegbyAJ6khqh7exjDCV3dX8Es1EnZyIbn4kWQsszYnMHLy6RuuG0nIZQ3XbYka4LRQ==
+X-Received: by 2002:a63:154d:: with SMTP id 13mr40488pgv.404.1630514857136;
+        Wed, 01 Sep 2021 09:47:37 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id e5sm77010pjv.44.2021.09.01.09.47.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 09:47:24 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 1 Sep 2021 09:47:22 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Maurizio Lombardi <mlombard@redhat.com>
-Cc:     rppt@kernel.org, bp@alien8.de, tglx@linutronix.de, x86@kernel.org,
-        pjones@redhat.com, konrad@kernel.org, george.kennedy@oracle.com,
-        rafael@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3] iscsi_ibft: fix crash due to KASLR physical memory
- remapping
-Message-ID: <20210901164722.GA2100627@roeck-us.net>
-References: <20210729135250.32212-1-mlombard@redhat.com>
+        Wed, 01 Sep 2021 09:47:36 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 16:47:32 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
+ restore_fpregs_from_user()
+Message-ID: <YS+upEmTfpZub3s9@google.com>
+References: <20210830154702.247681585@linutronix.de>
+ <20210830162545.374070793@linutronix.de>
+ <YS0ylo9nTHD9NiAp@zn.tnic>
+ <87zgsyg0eg.ffs@tglx>
+ <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
+ <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
+ <87r1e8cxp5.ffs@tglx>
+ <87o89ccmyu.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210729135250.32212-1-mlombard@redhat.com>
+In-Reply-To: <87o89ccmyu.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 03:52:50PM +0200, Maurizio Lombardi wrote:
-> Starting with commit a799c2bd29d1
-> ("x86/setup: Consolidate early memory reservations")
-> memory reservations have been moved earlier during the boot process,
-> before the execution of the Kernel Address Space Layout Randomization code.
+On Wed, Sep 01, 2021, Thomas Gleixner wrote:
+> On Wed, Sep 01 2021 at 14:00, Thomas Gleixner wrote:
+> >
+> > commit b2f9d678e28c ("x86/mce: Check for faults tagged in
+> > EXTABLE_CLASS_FAULT exception table entries") made use of this in MCE to
+> > allow in kernel recovery. The only thing it uses is checking the
+> > exception handler type.
+> >
+> > Bah. I'll fix that up to make that less obscure.
+> >
+> > The remaining two use cases (SGX and FPU) make use of the stored trap
+> > number.
 > 
-> setup_arch() calls the iscsi_ibft's find_ibft_region() function
-> to find and reserve the memory dedicated to the iBFT and this function
-> also saves a virtual pointer to the iBFT table for later use.
+> Though while for the FPU use case we really want to handle the #MC case,
+> it's not clear to me whether this is actually correct for SGX.
 > 
-> The problem is that if KALSR is active, the physical memory gets
-> remapped somewhere else in the virtual address space and the pointer is
-> no longer valid, this will cause a kernel panic when the iscsi driver tries
-> to dereference it.
-> 
-> [   37.764225] iBFT detected.
-> [   37.778877] BUG: unable to handle page fault for address: ffff888000099fd8
-> [   37.816542] #PF: supervisor read access in kernel mode
-> [   37.844304] #PF: error_code(0x0000) - not-present page
-> [   37.872857] PGD 0 P4D 0
-> [   37.886985] Oops: 0000 [#1] SMP PTI
-> [   37.904809] CPU: 46 PID: 1073 Comm: modprobe Tainted: G               X --------- ---  5.13.0-0.rc2.19.el9.x86_64 #1
-> [   37.956525] Hardware name: HP ProLiant DL580 G7, BIOS P65 10/01/2013
-> [   37.987170] RIP: 0010:ibft_init+0x3e/0xd42 [iscsi_ibft]
-> [   38.012976] Code: 04 25 28 00 00 00 48 89 44 24 08 31 c0 48 83 3d e1 cc 7e d7 00 74 28 48 c7 c7 21 81 1b c0 e8 b3 10 81 d5 48 8b 05 cc cc 7e d7 <0f> b6 70 08 48 63 50 04 40 80 fe 01 75 5e 31 f6 48 01 c2 eb 6e 83
-> [   38.106835] RSP: 0018:ffffb7d288fc3db0 EFLAGS: 00010246
-> [   38.131341] RAX: ffff888000099fd0 RBX: 0000000000000000 RCX: 0000000000000000
-> [   38.167110] RDX: 0000000000000000 RSI: ffff9ba7efb97c80 RDI: ffff9ba7efb97c80
-> [   38.200777] RBP: ffffffffc01c82be R08: 0000000000000000 R09: ffffb7d288fc3bf0
-> [   38.237188] R10: ffffb7d288fc3be8 R11: ffffffff96de70a8 R12: ffff9ba4059d6400
-> [   38.270940] R13: 000055689f1ac050 R14: 000055689df18962 R15: ffffb7d288fc3e78
-> [   38.307167] FS:  00007f9546720b80(0000) GS:ffff9ba7efb80000(0000) knlGS:0000000000000000
-> [   38.351204] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   38.381034] CR2: ffff888000099fd8 CR3: 000000044175e004 CR4: 00000000000206e0
-> [   38.419938] Call Trace:
-> [   38.432679]  ? ibft_create_kobject+0x1d2/0x1d2 [iscsi_ibft]
-> [   38.462584]  do_one_initcall+0x44/0x1d0
-> [   38.480856]  ? kmem_cache_alloc_trace+0x119/0x220
-> [   38.505554]  do_init_module+0x5c/0x270
-> [   38.526578]  __do_sys_init_module+0x12e/0x1b0
-> [   38.548699]  do_syscall_64+0x40/0x80
-> [   38.565679]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Fix this bug by saving the address of the physical location
-> of the ibft; later the driver will use isa_bus_to_virt() to get
-> the correct virtual address.
-> Simplify the code by renaming find_ibft_region()
-> to reserve_ibft_region() and remove all the wrappers.
-> 
-> v2: fix a comment in linux/iscsi_ibft.h
-> v3: fix the commit message
-> 
-> Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
+> Jarkko, Sean, Dave?
 
-In addition to the x86 build failures, arm64:allmodconfig fails to build as
-well.
+Are you asking about #MC specifically, or about SGX consuming the trap number in
+general?
 
-Building arm64:allmodconfig ... failed
---------------
-Error log:
-drivers/firmware/iscsi_ibft.c: In function 'ibft_init':
-drivers/firmware/iscsi_ibft.c:868:29: error: implicit declaration of function 'isa_bus_to_virt' [-Werror=implicit-function-declaration]
-  868 |                 ibft_addr = isa_bus_to_virt(ibft_phys_addr);
-      |                             ^~~~~~~~~~~~~~~
+For #MC, it's probably a moot point because #MC on ENCLS is not recoverable for
+current hardware.  If #MC somehow occurs on ENCLS and doesn't kill the platform,
+"handling" the #MC in SGX is probably wrong.  Note, Tony is working on a series to
+support recoverable #MC on SGX stuff on future hardware[*], but I'm not sure that's
+relevant to this discussion.
 
-ISCSI_IBFT now depends on ISA thanks to this patch.
-If that is intentional, it should be declared in Kconfig.
+As for SGX consuming the trap number in general, it's correct.  For non-KVM usage,
+it's nice to have but not strictly necessary.  Any fault except #PF on ENCLS is
+guaranteed to be a kernel or hardware bug; SGX uses the trap number to WARN on a
+!#PF exception, e.g. on #GP or #UD.  Not having the trap number would mean losing
+those sanity checks, which have been useful in the past.
 
-Guenter
+For virtualizing SGX, KVM needs the trap number so that it can inject the correct
+exception into the guest, e.g. if the guest violates the ENCLS concurrency rules
+it should get a #GP, whereas a EPCM violation should #PF.
+
+[*] https://lore.kernel.org/lkml/20210827195543.1667168-1-tony.luck@intel.com
