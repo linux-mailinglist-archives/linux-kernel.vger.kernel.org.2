@@ -2,99 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70523FE50F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148813FE512
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242161AbhIAVtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 17:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47642 "EHLO
+        id S1344881AbhIAVtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 17:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbhIAVtG (ORCPT
+        with ESMTP id S231808AbhIAVto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 17:49:06 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5EDC061575;
-        Wed,  1 Sep 2021 14:48:08 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 17so887864pgp.4;
-        Wed, 01 Sep 2021 14:48:08 -0700 (PDT)
+        Wed, 1 Sep 2021 17:49:44 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AEFC061575;
+        Wed,  1 Sep 2021 14:48:47 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id x10-20020a056830408a00b004f26cead745so1543999ott.10;
+        Wed, 01 Sep 2021 14:48:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:from:subject:to:cc
-         :references:content-language:in-reply-to:content-transfer-encoding;
-        bh=qKCxtiziZJ7ouXgy5e72LsOyc7Mm7+2JHQj25q8XJYo=;
-        b=ZP6HS0gNK00iSFZ5/LCv8P8n8VQtTB6X0HDHIFdSIY/0fWNadtpHxuw/pWt+y5HhC6
-         gJx5zg0ItT6dc0HT/upAyBErxqAxelxQd/ovnEHOxtYazm0CyDZ1e2Eq/IVJ3i1zjcaX
-         Awsm1UxF+tzEpPfvdyPmMIfdQnZakTR/U+oU7or/Ftclh0Dwz3x34uwytNCFrCgzgbWX
-         XyxTD/kaTpoBNrGiwn8RnvixjbG91xcXlsc3KWGCvio0ItRjuh4PxnMUrKLZ3tyrzDgo
-         4xuogE3nh52nUCQQYfpAR2om8NGbMKN76de88aQdH3QwdoGmN9R+ClWD6xEHSwCgyXHO
-         nitw==
+        h=sender:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=bM/DObiZ9PUO+ooQ6bmBOKRWIQZ3cIe0ybO6KHu8cTQ=;
+        b=foUJrSLb8NoGrGAcbGQtZOC9HiFzsYHciEyZlDitunIZtfznW49Y4/U7lkVY3yVm/G
+         hQDvlegv0nC9pmpowUW/4wuCHT0IOSa+XVE6gF4Rw4id6djAc/CUPSYJgmUC0EQl1AVy
+         EoPn0TZ0TBC1bKZEn/dl7SFqaGAE41K8uc/W+jNQ0agzUmrWSO9DNbyd4pUmX9KRAab1
+         0tm2HCcxN486zLS/3y4JV6lLn0nGu0/Z9pkFBxKbmXuLGAWRHWoPkS9Tz2CDHGvaWHSz
+         BgYhvFKyKR5aAMG1g/h5F79levteWJPKMZ+iDwLyLvKHwiqPx5kjrRodUwXSujTlRBKB
+         lmtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
-         :subject:to:cc:references:content-language:in-reply-to
+        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+         :subject:content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=qKCxtiziZJ7ouXgy5e72LsOyc7Mm7+2JHQj25q8XJYo=;
-        b=lR43caPSbZ6N4t471jwqDaMsHSl4Ew/5fKbaWrxLd0rBSo55lycfBDsh+98oOkxo7/
-         aLdlFm23s1BOGkKRZbUln6XLo22zEljN7OuTxAGGmqBS0BC9TsU9vdEcbfqJhb6X9Df2
-         MTMbubeoTkbDNAMrsEl67zOW9MadFJZh8+5PCu4gU/G0F9T/ytzWDU20t+bnjhQocpTQ
-         zINpclheIiAWAFZ0kcyJNMYVzhAeyx3y+GB8Q2YfM+nKkpDVuu0wsL1VUtVsIzARw25A
-         4Hb22Qn6TQKACF2njxzdMtMn3NVEefYEqOn0/K1TgehpFzEjuwhZTWovSCWzKM6AotMu
-         rTtw==
-X-Gm-Message-State: AOAM533xV9Nyx7uIIvGKVgvL/HvkLgrftGmCNwXtnTbdTuUm4Y+OuT6p
-        6o0wksX72bq/tmAxOdn5z4Q=
-X-Google-Smtp-Source: ABdhPJyQpCLx641e/Je5p3h0qENF2oqHbiYpBvcN2erWTsLAVaEv1hSHkQYwRujI4KcUYMA6H/ca/A==
-X-Received: by 2002:a62:8287:0:b0:3ec:f6dc:9672 with SMTP id w129-20020a628287000000b003ecf6dc9672mr1348389pfd.65.1630532888456;
-        Wed, 01 Sep 2021 14:48:08 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id gd14sm413662pjb.49.2021.09.01.14.48.06
+        bh=bM/DObiZ9PUO+ooQ6bmBOKRWIQZ3cIe0ybO6KHu8cTQ=;
+        b=qoIfYRfuxE4tSI/xRn9Gd+fM3dG7Mvs7zCrWAnuvRoabzs+LoEerXxi0UwYcT43j2k
+         O+EH4HiEwfwRpFdlZTVCv6bPXKMoNGXGjEpg44pxTxd+U5QiYIvfX8xXFxsNgeNA0AvH
+         7U0BqAVo7StK64b7vWCleu5f7/iY4ErGI387RAF229SS1q8SRwLTwKe09otpPUbTBDWB
+         j6CZORFwd47aKplE+8s+w39dg5oSDMbh+wiVwr2n0ZMYwxN+80/mlKG6E3493fnTlCnQ
+         bRZSPjCKP4ERObUTxSEhQw3RoKhT5XyYi4b+c15NgsUHrhgglWwD1iRoosR2C/z4y4/c
+         YmpA==
+X-Gm-Message-State: AOAM533O7PV6Q88ilwQ+xiTJSMtbQlaktQVNvrMeCVhfOffwuwS+IOaq
+        0fcN2zjgZmsXMEvXaBFVBhk=
+X-Google-Smtp-Source: ABdhPJxSxIeSetO6ZBqwHPOtR8ynpEZFfmXOoDs2IWjEExxm6adHf6GyW0d7soNrcwmU3QMUWszA9w==
+X-Received: by 2002:a05:6830:2443:: with SMTP id x3mr1375906otr.12.1630532926987;
+        Wed, 01 Sep 2021 14:48:46 -0700 (PDT)
+Received: from ?IPV6:2603:8090:2005:39b3::1023? (2603-8090-2005-39b3-0000-0000-0000-1023.res6.spectrum.com. [2603:8090:2005:39b3::1023])
+        by smtp.gmail.com with UTF8SMTPSA id bg38sm5348oib.26.2021.09.01.14.48.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 14:48:07 -0700 (PDT)
-Message-ID: <94fd2615-9f3c-1ecc-f094-b3c36c10b893@gmail.com>
-Date:   Wed, 1 Sep 2021 14:48:05 -0700
+        Wed, 01 Sep 2021 14:48:46 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Message-ID: <3e1db007-1ffa-6e84-a0f7-a36fa0820768@lwfinger.net>
+Date:   Wed, 1 Sep 2021 16:48:44 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 5.10 000/103] 5.10.62-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210901122300.503008474@linuxfoundation.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [GIT PULL] Networking for v5.15
 Content-Language: en-US
-In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        David Miller <davem@davemloft.net>,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-wireless@vger.kernel.org,
+        Miri Korenblit <miriam.rachel.korenblit@intel.com>
+References: <20210831203727.3852294-1-kuba@kernel.org>
+ <CAHk-=wjB_zBwZ+WR9LOpvgjvaQn=cqryoKigod8QnZs=iYGEhA@mail.gmail.com>
+ <20210901124131.0bc62578@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <4dfae09cd2ea3f5fe4b8fa5097d1e0cc8a34e848.camel@sipsolutions.net>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+In-Reply-To: <4dfae09cd2ea3f5fe4b8fa5097d1e0cc8a34e848.camel@sipsolutions.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/1/2021 5:27 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.62 release.
-> There are 103 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 9/1/21 14:49, Johannes Berg wrote:
+> On Wed, 2021-09-01 at 12:41 -0700, Jakub Kicinski wrote:
+>>
+>>>
+>>> They all seem to have that same issue, and it looks like the fix would
+>>> be to get the RTN lock in iwl_mvm_init_mcc(), but I didn't really look
+>>> into it very much.
+>>>
+>>> This is on my desktop, and I actually don't _use_ the wireless on this
+>>> machine. I assume it still works despite the warnings, but they should
+>>> get fixed.
+>>>
+>>> I *don't* see these warnings on my laptop where I actually use
+>>> wireless, but that one uses ath10k_pci, so it seems this is purely a
+>>> iwlwifi issue.
+>>>
+>>> I can't be the only one that sees this. Hmm?
+>>
+>> Mm. Looking thru the recent commits there is a suspicious rtnl_unlock()
+>> in commit eb09ae93dabf ("iwlwifi: mvm: load regdomain at INIT stage").
 > 
-> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
-> Anything received after that time might be too late.
+> Huh! That's not the version of the commit I remember - it had an
+> rtnl_lock() in there too (just before the mutex_lock)?! Looks like that
+> should really be there, not sure how/where it got lost along the way.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.62-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> That unbalanced rtnl_unlock() makes no sense anyway. Wonder why it
+> doesn't cause more assertions/problems at that point, clearly it's
+> unbalanced. Pretty sure it's missing the rtnl_lock() earlier in the
+> function for some reason.
 > 
-> thanks,
+> Luca and I will look at it tomorrow, getting late here, sorry.
 > 
-> greg k-h
+> johannes
+> 
+I am seeing the same problem, and it does happen in lots of places. For example
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+finger@2603-8090-2005-39b3-0000-0000-0000-1023:~/rtl8812au>dmesg | grep 
+assertion\ failed
+[    6.465589] RTNL: assertion failed at net/core/rtnetlink.c (1702)
+[    6.465948] RTNL: assertion failed at net/core/devlink.c (11496)
+[    6.466263] RTNL: assertion failed at net/core/rtnetlink.c (1412)
+[    6.466500] RTNL: assertion failed at net/core/dev.c (1987)
+[    6.466708] RTNL: assertion failed at net/core/fib_rules.c (1227)
+[    6.466902] RTNL: assertion failed at net/ipv4/devinet.c (1526)
+[    6.467097] RTNL: assertion failed at net/ipv4/igmp.c (1779)
+[    6.467291] RTNL: assertion failed at net/ipv4/igmp.c (1432)
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+I am in the process of bisecting the problem, just in case it happens some other 
+place than your suspicion leads you.
+
+Larry
 
