@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5613FDC63
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92FE3FDAAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346281AbhIAMtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:49:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47722 "EHLO mail.kernel.org"
+        id S1343582AbhIAMdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:33:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345254AbhIAMqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:46:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E3526101B;
-        Wed,  1 Sep 2021 12:39:27 +0000 (UTC)
+        id S245058AbhIAMcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:32:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 787E6610A4;
+        Wed,  1 Sep 2021 12:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499967;
-        bh=L3Dw+72v7UVBotWSzFei0eHE6DAeOmwvD9SuM/XoKGc=;
+        s=korg; t=1630499486;
+        bh=zeEvUuszwiYqTY6ggz3znMNZIDpSJn+dcgcebvlWcy4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xPlrc6h9/sGpOwHC2MJYBTqXL5LR/VdJhddGFLaAjJ2HQ0vsfUQk/46koKM58BpIx
-         Udv+N8yuvEQReuVmvtYU7I3BrmBHzdoryi+SJjk7F08UPdpcHJiP/CV0UuvehOAIDA
-         kzAEapMoCkcRSMEXzFnkDkA0EbLQGZOfyPW7IsN0=
+        b=xPDQNB/kE6E5BReckhXOFfZ1PFRrJ4sm23L3sXmnME9ZpubabzXgkXNuoy7ngSVFe
+         8lmzxDRzb0vu13GAc9FK43wPNzAmzZv+ilSedbcL+ii0EWiRdLIIJo996WyTF/bSmh
+         dn0kXWsf3gZijd9OtENxb10y+YZfGaM7NeOt8doY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
-        Davide Caratti <dcaratti@redhat.com>,
+        stable@vger.kernel.org,
+        syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com,
+        Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 052/113] net/sched: ets: fix crash when flipping from strict to quantum
-Date:   Wed,  1 Sep 2021 14:28:07 +0200
-Message-Id: <20210901122303.714131006@linuxfoundation.org>
+Subject: [PATCH 5.4 18/48] ip_gre: add validation for csum_start
+Date:   Wed,  1 Sep 2021 14:28:08 +0200
+Message-Id: <20210901122254.001761921@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,101 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Davide Caratti <dcaratti@redhat.com>
+From: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
 
-[ Upstream commit cd9b50adc6bb9ad3f7d244590a389522215865c4 ]
+[ Upstream commit 1d011c4803c72f3907eccfc1ec63caefb852fcbf ]
 
-While running kselftests, Hangbin observed that sch_ets.sh often crashes,
-and splats like the following one are seen in the output of 'dmesg':
+Validate csum_start in gre_handle_offloads before we call _gre_xmit so
+that we do not crash later when the csum_start value is used in the
+lco_csum function call.
 
- BUG: kernel NULL pointer dereference, address: 0000000000000000
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 159f12067 P4D 159f12067 PUD 159f13067 PMD 0
- Oops: 0000 [#1] SMP NOPTI
- CPU: 2 PID: 921 Comm: tc Not tainted 5.14.0-rc6+ #458
- Hardware name: Red Hat KVM, BIOS 1.11.1-4.module+el8.1.0+4066+0f1aadab 04/01/2014
- RIP: 0010:__list_del_entry_valid+0x2d/0x50
- Code: 48 8b 57 08 48 b9 00 01 00 00 00 00 ad de 48 39 c8 0f 84 ac 6e 5b 00 48 b9 22 01 00 00 00 00 ad de 48 39 ca 0f 84 cf 6e 5b 00 <48> 8b 32 48 39 fe 0f 85 af 6e 5b 00 48 8b 50 08 48 39 f2 0f 85 94
- RSP: 0018:ffffb2da005c3890 EFLAGS: 00010217
- RAX: 0000000000000000 RBX: ffff9073ba23f800 RCX: dead000000000122
- RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff9073ba23fbc8
- RBP: ffff9073ba23f890 R08: 0000000000000001 R09: 0000000000000001
- R10: 0000000000000001 R11: 0000000000000001 R12: dead000000000100
- R13: ffff9073ba23fb00 R14: 0000000000000002 R15: 0000000000000002
- FS:  00007f93e5564e40(0000) GS:ffff9073bba00000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000000 CR3: 000000014ad34000 CR4: 0000000000350ee0
- Call Trace:
-  ets_qdisc_reset+0x6e/0x100 [sch_ets]
-  qdisc_reset+0x49/0x1d0
-  tbf_reset+0x15/0x60 [sch_tbf]
-  qdisc_reset+0x49/0x1d0
-  dev_reset_queue.constprop.42+0x2f/0x90
-  dev_deactivate_many+0x1d3/0x3d0
-  dev_deactivate+0x56/0x90
-  qdisc_graft+0x47e/0x5a0
-  tc_get_qdisc+0x1db/0x3e0
-  rtnetlink_rcv_msg+0x164/0x4c0
-  netlink_rcv_skb+0x50/0x100
-  netlink_unicast+0x1a5/0x280
-  netlink_sendmsg+0x242/0x480
-  sock_sendmsg+0x5b/0x60
-  ____sys_sendmsg+0x1f2/0x260
-  ___sys_sendmsg+0x7c/0xc0
-  __sys_sendmsg+0x57/0xa0
-  do_syscall_64+0x3a/0x80
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
- RIP: 0033:0x7f93e44b8338
- Code: 89 02 48 c7 c0 ff ff ff ff eb b5 0f 1f 80 00 00 00 00 f3 0f 1e fa 48 8d 05 25 43 2c 00 8b 00 85 c0 75 17 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 41 54 41 89 d4 55
- RSP: 002b:00007ffc0db737a8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
- RAX: ffffffffffffffda RBX: 0000000061255c06 RCX: 00007f93e44b8338
- RDX: 0000000000000000 RSI: 00007ffc0db73810 RDI: 0000000000000003
- RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
- R10: 000000000000000b R11: 0000000000000246 R12: 0000000000000001
- R13: 0000000000687880 R14: 0000000000000000 R15: 0000000000000000
- Modules linked in: sch_ets sch_tbf dummy rfkill iTCO_wdt iTCO_vendor_support intel_rapl_msr intel_rapl_common joydev i2c_i801 pcspkr i2c_smbus lpc_ich virtio_balloon ip_tables xfs libcrc32c crct10dif_pclmul crc32_pclmul crc32c_intel ahci libahci ghash_clmulni_intel libata serio_raw virtio_blk virtio_console virtio_net net_failover failover sunrpc dm_mirror dm_region_hash dm_log dm_mod
- CR2: 0000000000000000
+This patch deals with ipv4 code.
 
-When the change() function decreases the value of 'nstrict', we must take
-into account that packets might be already enqueued on a class that flips
-from 'strict' to 'quantum': otherwise that class will not be added to the
-bandwidth-sharing list. Then, a call to ets_qdisc_reset() will attempt to
-do list_del(&alist) with 'alist' filled with zero, hence the NULL pointer
-dereference.
-For classes flipping from 'strict' to 'quantum', initialize an empty list
-and eventually add it to the bandwidth-sharing list, if there are packets
-already enqueued. In this way, the kernel will:
- a) prevent crashing as described above.
- b) avoid retaining the backlog packets (for an arbitrarily long time) in
-    case no packet is enqueued after a change from 'strict' to 'quantum'.
-
-Reported-by: Hangbin Liu <liuhangbin@gmail.com>
-Fixes: dcc68b4d8084 ("net: sch_ets: Add a new Qdisc")
-Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+Fixes: c54419321455 ("GRE: Refactor GRE tunneling code.")
+Reported-by: syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
+Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+Reviewed-by: Willem de Bruijn <willemb@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_ets.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ net/ipv4/ip_gre.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/sched/sch_ets.c b/net/sched/sch_ets.c
-index c1e84d1eeaba..c76701ac35ab 100644
---- a/net/sched/sch_ets.c
-+++ b/net/sched/sch_ets.c
-@@ -660,6 +660,13 @@ static int ets_qdisc_change(struct Qdisc *sch, struct nlattr *opt,
- 	sch_tree_lock(sch);
+diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
+index fedad3a3e61b..fd8298b8b1c5 100644
+--- a/net/ipv4/ip_gre.c
++++ b/net/ipv4/ip_gre.c
+@@ -446,6 +446,8 @@ static void __gre_xmit(struct sk_buff *skb, struct net_device *dev,
  
- 	q->nbands = nbands;
-+	for (i = nstrict; i < q->nstrict; i++) {
-+		INIT_LIST_HEAD(&q->classes[i].alist);
-+		if (q->classes[i].qdisc->q.qlen) {
-+			list_add_tail(&q->classes[i].alist, &q->active);
-+			q->classes[i].deficit = quanta[i];
-+		}
-+	}
- 	q->nstrict = nstrict;
- 	memcpy(q->prio2band, priomap, sizeof(priomap));
+ static int gre_handle_offloads(struct sk_buff *skb, bool csum)
+ {
++	if (csum && skb_checksum_start(skb) < skb->data)
++		return -EINVAL;
+ 	return iptunnel_handle_offloads(skb, csum ? SKB_GSO_GRE_CSUM : SKB_GSO_GRE);
+ }
  
 -- 
 2.30.2
