@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEFC3FDA9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D9F3FDA3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343525AbhIAMdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:33:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32780 "EHLO mail.kernel.org"
+        id S244594AbhIAMbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:31:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244962AbhIAMcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:32:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE7916102A;
-        Wed,  1 Sep 2021 12:31:06 +0000 (UTC)
+        id S244709AbhIAMaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:30:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61B936102A;
+        Wed,  1 Sep 2021 12:29:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499467;
-        bh=l+woQWnwutifp6/I7WasWYPNy7tXqpL38ZJONvF7NLA=;
+        s=korg; t=1630499382;
+        bh=oOlaypyNay5klkLI7YX8rBgaDoueHnQ+uOIETut5Go0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lXn4Mlf3z7QNv85kY0vzwgg15QQ7xEfH2xo88CxWCt2RM1DmhTwjOupv8xz/KrrXS
-         Zh3V0/QgtqlEHUdnUSs0dWoDh+Gs6hr/YqR/Fng8Hgoaj6Q2ALSR7vN5BoxSa4/fIX
-         L4a2bOgSo8yVuhUaFWp0LJ5em/CWsCv7ZMbHAglA=
+        b=Fe/JbgChzw2yWOhwSjObxNIaYFXFX1THdWN+JQSCg5ucX1uvMFT0U3IGFyhM+G80Z
+         dsR81hgKP6hyOU9CUMfDmROInxsMASSbzUfMoUy8lWTtFGIoF9GxBzaYpmx7Ui9Y2h
+         HKxHwkQY/aYrY4uzLNyJhC0oYBikrvABRZZhLiEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Subject: [PATCH 5.4 11/48] usb: dwc3: gadget: Fix dwc3_calc_trbs_left()
+        stable@vger.kernel.org, Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH 4.19 12/33] usb: dwc3: gadget: Stop EP0 transfers during pullup disable
 Date:   Wed,  1 Sep 2021 14:28:01 +0200
-Message-Id: <20210901122253.778479964@linuxfoundation.org>
+Message-Id: <20210901122251.184723740@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
+References: <20210901122250.752620302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,60 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Wesley Cheng <wcheng@codeaurora.org>
 
-commit 51f1954ad853d01ba4dc2b35dee14d8490ee05a1 upstream.
+commit 4a1e25c0a029b97ea4a3d423a6392bfacc3b2e39 upstream.
 
-We can't depend on the TRB's HWO bit to determine if the TRB ring is
-"full". A TRB is only available when the driver had processed it, not
-when the controller consumed and relinquished the TRB's ownership to the
-driver. Otherwise, the driver may overwrite unprocessed TRBs. This can
-happen when many transfer events accumulate and the system is slow to
-process them and/or when there are too many small requests.
+During a USB cable disconnect, or soft disconnect scenario, a pending
+SETUP transaction may not be completed, leading to the following
+error:
 
-If a request is in the started_list, that means there is one or more
-unprocessed TRBs remained. Check this instead of the TRB's HWO bit
-whether the TRB ring is full.
+    dwc3 a600000.dwc3: timed out waiting for SETUP phase
 
-Fixes: c4233573f6ee ("usb: dwc3: gadget: prepare TRBs on update transfers too")
+If this occurs, then the entire pullup disable routine is skipped and
+proper cleanup and halting of the controller does not complete.
+
+Instead of returning an error (which is ignored from the UDC
+perspective), allow the pullup disable routine to continue, which
+will also handle disabling of EP0/1.  This will end any active
+transfers as well.  Ensure to clear any delayed_status also, as the
+timeout could happen within the STATUS stage.
+
+Fixes: bb0147364850 ("usb: dwc3: gadget: don't clear RUN/STOP when it's invalid to do so")
 Cc: <stable@vger.kernel.org>
+Reviewed-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Link: https://lore.kernel.org/r/e91e975affb0d0d02770686afc3a5b9eb84409f6.1629335416.git.Thinh.Nguyen@synopsys.com
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+Link: https://lore.kernel.org/r/20210825042855.7977-1-wcheng@codeaurora.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/gadget.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/usb/dwc3/gadget.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 --- a/drivers/usb/dwc3/gadget.c
 +++ b/drivers/usb/dwc3/gadget.c
-@@ -894,19 +894,19 @@ static struct dwc3_trb *dwc3_ep_prev_trb
+@@ -1805,10 +1805,8 @@ static int dwc3_gadget_pullup(struct usb
  
- static u32 dwc3_calc_trbs_left(struct dwc3_ep *dep)
- {
--	struct dwc3_trb		*tmp;
- 	u8			trbs_left;
+ 		ret = wait_for_completion_timeout(&dwc->ep0_in_setup,
+ 				msecs_to_jiffies(DWC3_PULL_UP_TIMEOUT));
+-		if (ret == 0) {
+-			dev_err(dwc->dev, "timed out waiting for SETUP phase\n");
+-			return -ETIMEDOUT;
+-		}
++		if (ret == 0)
++			dev_warn(dwc->dev, "timed out waiting for SETUP phase\n");
+ 	}
  
- 	/*
--	 * If enqueue & dequeue are equal than it is either full or empty.
--	 *
--	 * One way to know for sure is if the TRB right before us has HWO bit
--	 * set or not. If it has, then we're definitely full and can't fit any
--	 * more transfers in our ring.
-+	 * If the enqueue & dequeue are equal then the TRB ring is either full
-+	 * or empty. It's considered full when there are DWC3_TRB_NUM-1 of TRBs
-+	 * pending to be processed by the driver.
- 	 */
- 	if (dep->trb_enqueue == dep->trb_dequeue) {
--		tmp = dwc3_ep_prev_trb(dep, dep->trb_enqueue);
--		if (tmp->ctrl & DWC3_TRB_CTRL_HWO)
-+		/*
-+		 * If there is any request remained in the started_list at
-+		 * this point, that means there is no TRB available.
-+		 */
-+		if (!list_empty(&dep->started_list))
- 			return 0;
+ 	spin_lock_irqsave(&dwc->lock, flags);
+@@ -1946,6 +1944,7 @@ static int __dwc3_gadget_start(struct dw
+ 	/* begin to receive SETUP packets */
+ 	dwc->ep0state = EP0_SETUP_PHASE;
+ 	dwc->link_state = DWC3_LINK_STATE_SS_DIS;
++	dwc->delayed_status = false;
+ 	dwc3_ep0_out_start(dwc);
  
- 		return DWC3_TRB_NUM - 1;
+ 	dwc3_gadget_enable_irq(dwc);
 
 
