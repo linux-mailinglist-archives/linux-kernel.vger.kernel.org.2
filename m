@@ -2,148 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393D33FE1B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663AD3FE1BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344981AbhIASFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51882 "EHLO
+        id S1346707AbhIASHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239445AbhIASFo (ORCPT
+        with ESMTP id S1346742AbhIASHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:05:44 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD17C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:04:47 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id x19so464780pfu.4
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 11:04:47 -0700 (PDT)
+        Wed, 1 Sep 2021 14:07:20 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF97C0613D9
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:06:23 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so310373pjr.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 11:06:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jT1FBNDJ8Khy+4TE63B+kK4MLXv82MCEzJzPE6StIGA=;
-        b=or7AB9ZV4bVmEp4PVKukG70PMdtkEQxYh/YAe0wSDizgWal1xd4rZSzAdBjtBNWkA9
-         ngIN0iV4SSX3qNm05mmTzS4VW/cXtLKC8p5emiUoY1ueLhAmLC+0w+KdFE5cLwda1+Zp
-         w5w0wdVr0SJwWRX8SOrSEYyWu0YHLQc1NkWnSM/stYb9QdqEINRvfugVOp5wtnL5d4Lw
-         tLnKVzQeLf0IhmiB71Q4+OM2uJFrNIvf1J46Zyw1fBf/h4wpqrv/DwSFVAjEIvgq3NhR
-         iJwCcZ15OQERcEEoGVvtPOBhx7se70wUeOoXVKldG2Vx5GhUxYjHOj6FXYZbK/2dcjVS
-         oNtA==
+        d=squareup.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=H+/Lyfz9TNtbqDe9NxLVaW+b1GlctI9OD0MfTlvmgNc=;
+        b=WTP4TEMkzedv2yNtgJ7iDgcDBULVbrjObJdUgjDn0wOttDyvbplSm9LzhYwaH0ZsdU
+         radkKLHEnURIzLZwbFhTCRpakKcKorkRDX47yml3+6703UxiM2slo7NTCOKkJK/yPvU1
+         nolHGLuFlZacTTrh4OewVEMIQJ/ZLaQriiJcA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jT1FBNDJ8Khy+4TE63B+kK4MLXv82MCEzJzPE6StIGA=;
-        b=BjT9HcJJVfT6bfCV4JYUS2SRJkJj2IYhg+Ng7F6iVd5vnqxf1sUdtqFGbxW1VjQod6
-         i2EwrIb/Tv61C1z8W1V8dd+Ok1mLTLRLTB8VMnV4fsakMHaq/NempHDfAum6D/We5q9L
-         gIFBx1qoWPJvpNd1PyEYqHf2eGtUFg0tQFjrZCAOCkIve5JPaqWUuVq6GQBEqZ1YcGoP
-         AoXu9nqZ42LWZEWhxKWLgpb+UDEQxc2hQNwXmmgJO4nIRS29enfIf7Q1Xs1kpFWs/S9L
-         SSiZvHVqJqbm5q+K3LyGKVGRCq+T/uDyNnL1bQ4Mw6RvDQbGoG65d6zZN9syj8dcwUCE
-         3YzA==
-X-Gm-Message-State: AOAM530lkRsKsa1lFMBoETibtiakLdioTKCHf4zEK51nKAJs4g1E+MsT
-        rYm7ovYQU4IkSHUqnJQVxP3c1cghItN4Y7xPTXhaB7MTAl1kig==
-X-Google-Smtp-Source: ABdhPJy8K1Q75bsso7kyj+rHAgxfosvMbi5oINX7JEzYAdQYaPMgHfOVQ8YZGaxUhcW97rxmaF3b2Apn5sconoGEqWg=
-X-Received: by 2002:a63:fc1d:: with SMTP id j29mr345547pgi.54.1630519486834;
- Wed, 01 Sep 2021 11:04:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210829144531.c2syu4vv4s22dlg7@h510> <CAPGkw+wyH3Pj6DV_m8wqCV5yujhjRwTwVNs6dK4i9JO-Y3ys6w@mail.gmail.com>
- <20210831133533.6aayzjghdakrhy56@h510> <13366651.n50aozgL3V@localhost.localdomain>
- <20210831230014.cp46vho2hnndacjp@h510> <CAPGkw+zpYsovnXL_4GfjsQ60fqre+xyiwvwKuDj_fHPTKEfzeQ@mail.gmail.com>
- <YS+cexhuqldPaACs@kroah.com> <CAPGkw+z+uepM0hiNh48xjjD7=2rpgr+RSLzMcHbw2iE=8y+xqQ@mail.gmail.com>
- <YS+vfVTV0fls6KuN@kroah.com> <20210901173357.2dfvw5xgpzjndesc@h510>
-In-Reply-To: <20210901173357.2dfvw5xgpzjndesc@h510>
-From:   Krish Jain <krishjain02939@gmail.com>
-Date:   Wed, 1 Sep 2021 20:04:35 +0200
-Message-ID: <CAPGkw+zhb=zC8fKyK8uUiNxNqCUR9Trg6N7fBjaAcBc9rmkmUg@mail.gmail.com>
-Subject: Re: [PATCH] Declare the file_operations struct as const
-To:     Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=H+/Lyfz9TNtbqDe9NxLVaW+b1GlctI9OD0MfTlvmgNc=;
+        b=aICYyxUIni0t1iSbQgqfgEtUfroMmhVBdlr/JpySMaMR3neToKC9UWhaxQ2IvHl4R6
+         EeQ2WPStbiQZjDxMUECeTMd9zTr7f6ZNFbgDMq6GU9v9Jgqt0U4lxUBXRZougdvZGn6g
+         jNTb3fvxQo8NyVksCW78BaDj+iE3L1TH51vvPCVAptPtMyXM4EL2IHOlU049Epf3Yh5g
+         7KyBaxNZJbzR6ZFiGZj1CpOvx2BbGTBgOAWYueCkHwSvsUjhpTBcGwH1tnyVUSFQ6vhN
+         +GU+ic0I6OGLpQKF2E2vlJ4+4ev/6zLQJiTdvT9Z5U2p/S3Mhzc9sx71zYcjAhPXJuYW
+         m24A==
+X-Gm-Message-State: AOAM530Zp9ljDEgOETAjgqHr2bJ3VwyNUVq3gn+KPIp38jQZawhK9Bxu
+        vCjAiycAx9PcNqqtMeDuPzfHrA==
+X-Google-Smtp-Source: ABdhPJxYow6k47ju8zaGAxZ3QDUvTl7R69BptJmcg9HIkO/wrTRp5zileffx5LsgJSu/+VcPjnXxvg==
+X-Received: by 2002:a17:90a:6b4d:: with SMTP id x13mr613010pjl.88.1630519582734;
+        Wed, 01 Sep 2021 11:06:22 -0700 (PDT)
+Received: from localhost (138-229-239-060.res.spectrum.com. [138.229.239.60])
+        by smtp.gmail.com with ESMTPSA id i5sm181241pjk.47.2021.09.01.11.06.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 01 Sep 2021 11:06:21 -0700 (PDT)
+From:   Benjamin Li <benl@squareup.com>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Benjamin Li <benl@squareup.com>, stable@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] wcn36xx: handle connection loss indication
+Date:   Wed,  1 Sep 2021 11:06:05 -0700
+Message-Id: <20210901180606.11686-1-benl@squareup.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 7:34 PM Bryan Brattlof <hello@bryanbrattlof.com> wrote:
->
-> On this day, September  1, 2021, thus sayeth Greg KH:
-> > On Wed, Sep 01, 2021 at 05:34:36PM +0200, Krish Jain wrote:
-> > >
-> > > Can you tell me why this is the case?
-> >
-> > Again, it depends on your kernel configuration file as to what will, or
-> > will not, be built.
-> >
-> > If you have some things set as modules, they can be built as a module,
-> > but the ashmem code can not be built as a module, so you would never
-> > build it if you did the above line.
-> >
-> > Here, look at this sequence, starting with a tree that does nothing if I
-> > do a simple 'make' in it, as the whole kernel is already built, and
-> > ashmem is enabled in the kernel configuration
-> >
-> > $ grep ASHMEM .config
-> > CONFIG_ASHMEM=y
-> > $ make
-> > $
-> >
-> > So, let's change the time stamp on the ashmem.c file and see what gets
-> > built if you use the M= option:
-> >
-> > $ touch drivers/staging/android/ashmem.c
-> > $ make M=drivers/staging/android
-> >   MODPOST drivers/staging/android/Module.symvers
-> > $
-> >
-> > Nothing gets built as ashmem is NOT a module, and M= only builds any
-> > modules in the directory you specified.
-> >
-> > But, if you tell make to just build the whole subdirectory, no matter
-> > what the setting is, it will be built:
-> >
-> > $ make drivers/staging/android/
-> >   CALL    scripts/checksyscalls.sh
-> >   CALL    scripts/atomic/check-atomics.sh
-> >   DESCEND objtool
-> >   CC      drivers/staging/android/ashmem.o
-> >   AR      drivers/staging/android/built-in.a
-> > $
-> >
-> > So that's the difference, "M=" builds modules in that directory, but if
-> > you tell it to build the subdir, everything in there that needs to be
-> > built, will be built.
-> >
-> > Be careful about your kernel configuration, that is the key for what
-> > will, and will not, be built.
-> >
->
-> Ouch...
->
-> I want to *really* apologize to you Krish for introducing so much
-> confusion while you, and apparently I, am still learning. And for your
-> persistence with seeking the correct answer here Krish.
->
-> I did not notice that this could only be build as a built-in object.
-> Thank you Greg for pointing out my mistake, and I apologize for dragging
-> this out longer than it had to and the frustration this caused.
->
-> It seems I will be reading the documentation again, along with Greg's
-> book recommendation, "Linux Kernel in a Nutshell" over this merge
-> window.
->
-> Thank you again Krish and Greg
-> ~Bryan
->
+Firmware sends delete_sta_context_ind when it detects the AP has gone
+away in STA mode. Right now the handler for that indication only handles
+AP mode; fix it to also handle STA mode.
 
-Yes, lots of reading to do :) . I had a look at the book and it seems
-better than the documentation too, I don't know, maybe the writing
-style? Love it, Greg. Lastly just out of curiosity, Bryan,  if this
-can only be built as a built-in object then how come "As for your
-patch, I built the driver using:
+Cc: stable@vger.kernel.org
+Signed-off-by: Benjamin Li <benl@squareup.com>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+---
+ drivers/net/wireless/ath/wcn36xx/smd.c | 44 +++++++++++++++++++-------
+ 1 file changed, 33 insertions(+), 11 deletions(-)
 
-  $ make CCFLAGS=-Werror W=1 M=drivers/staging/android"
+diff --git a/drivers/net/wireless/ath/wcn36xx/smd.c b/drivers/net/wireless/ath/wcn36xx/smd.c
+index 57fa857b290b..f6bea896abe8 100644
+--- a/drivers/net/wireless/ath/wcn36xx/smd.c
++++ b/drivers/net/wireless/ath/wcn36xx/smd.c
+@@ -2623,30 +2623,52 @@ static int wcn36xx_smd_delete_sta_context_ind(struct wcn36xx *wcn,
+ 					      size_t len)
+ {
+ 	struct wcn36xx_hal_delete_sta_context_ind_msg *rsp = buf;
+-	struct wcn36xx_vif *tmp;
++	struct wcn36xx_vif *vif_priv;
++	struct ieee80211_vif *vif;
++	struct ieee80211_bss_conf *bss_conf;
+ 	struct ieee80211_sta *sta;
++	bool found = false;
+ 
+ 	if (len != sizeof(*rsp)) {
+ 		wcn36xx_warn("Corrupted delete sta indication\n");
+ 		return -EIO;
+ 	}
+ 
+-	wcn36xx_dbg(WCN36XX_DBG_HAL, "delete station indication %pM index %d\n",
+-		    rsp->addr2, rsp->sta_id);
++	wcn36xx_dbg(WCN36XX_DBG_HAL,
++		    "delete station indication %pM index %d reason %d\n",
++		    rsp->addr2, rsp->sta_id, rsp->reason_code);
+ 
+-	list_for_each_entry(tmp, &wcn->vif_list, list) {
++	list_for_each_entry(vif_priv, &wcn->vif_list, list) {
+ 		rcu_read_lock();
+-		sta = ieee80211_find_sta(wcn36xx_priv_to_vif(tmp), rsp->addr2);
+-		if (sta)
+-			ieee80211_report_low_ack(sta, 0);
++		vif = wcn36xx_priv_to_vif(vif_priv);
++
++		if (vif->type == NL80211_IFTYPE_STATION) {
++			/* We could call ieee80211_find_sta too, but checking
++			 * bss_conf is clearer.
++			 */
++			bss_conf = &vif->bss_conf;
++			if (vif_priv->sta_assoc &&
++			    !memcmp(bss_conf->bssid, rsp->addr2, ETH_ALEN)) {
++				found = true;
++				wcn36xx_dbg(WCN36XX_DBG_HAL,
++					    "connection loss bss_index %d\n",
++					    vif_priv->bss_index);
++				ieee80211_connection_loss(vif);
++			}
++		} else {
++			sta = ieee80211_find_sta(vif, rsp->addr2);
++			if (sta) {
++				found = true;
++				ieee80211_report_low_ack(sta, 0);
++			}
++		}
++
+ 		rcu_read_unlock();
+-		if (sta)
++		if (found)
+ 			return 0;
+ 	}
+ 
+-	wcn36xx_warn("STA with addr %pM and index %d not found\n",
+-		     rsp->addr2,
+-		     rsp->sta_id);
++	wcn36xx_warn("BSS or STA with addr %pM not found\n", rsp->addr2);
+ 	return -ENOENT;
+ }
+ 
+-- 
+2.17.1
 
-got you the errors that I desired? Aren't you building as a module here?
-
-
-Warm Regards
