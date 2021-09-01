@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D5C3FDA34
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53413FDC40
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244520AbhIAMbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:31:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60552 "EHLO mail.kernel.org"
+        id S1345215AbhIAMsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:48:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244528AbhIAMaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:30:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1547561090;
-        Wed,  1 Sep 2021 12:29:32 +0000 (UTC)
+        id S1345490AbhIAMoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:44:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BCD161101;
+        Wed,  1 Sep 2021 12:38:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499373;
-        bh=VYLnrJHl436UIhJJAl6DJJMvGLV9Ffn8pByb0Xk52hM=;
+        s=korg; t=1630499919;
+        bh=wuv4NmPovmBUw1ySGVGnSdzCNgfiKlNHr5zpos2VBSk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dLlikcX0Loj+cpIsG8XpuxMJpyRf8mfyxTSj83lfZ1BkGeIb5A4dQWWz4hj1cWJOG
-         3MXFXNX+nNS99N4YzjXu6Jd8VWBTJeBuW1VX6Ag57V9AhqnjMtKHlM4I9byhmcPQaM
-         AhCcdVv8W/wpqhc9Wp/9KY/n9PmV8diLVWBlWR98=
+        b=wykwyfMbO4Ap3XobPJkZC26KhsMpdt8ZKxb9uo9bzI6ZNvMq87GwyiaqsUzj557FI
+         a3l/LqXGt1l5uAV6Cwb9N9NOOwFkQpQEuz2OWFQFRdbJNC6WUxtmfq23W0shBu66RQ
+         HDU4yk25Jhv0DG3zWiy5/xEFMp1rVvr85R/eBuUY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Xiaolong Huang <butterflyhuangxx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 01/33] net: qrtr: fix another OOB Read in qrtr_endpoint_post
+        stable@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 035/113] RDMA/mlx5: Fix crash when unbind multiport slave
 Date:   Wed,  1 Sep 2021 14:27:50 +0200
-Message-Id: <20210901122250.798320864@linuxfoundation.org>
+Message-Id: <20210901122303.160087956@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
-References: <20210901122250.752620302@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,47 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaolong Huang <butterflyhuangxx@gmail.com>
+From: Maor Gottlieb <maorg@nvidia.com>
 
-commit 7e78c597c3ebfd0cb329aa09a838734147e4f117 upstream.
+[ Upstream commit da78fe5fb35737058de52364484ffed74e7d329b ]
 
-This check was incomplete, did not consider size is 0:
+Fix the below crash when deleting a slave from the unaffiliated list
+twice. First time when the slave is bound to the master and the second
+when the slave is unloaded.
 
-	if (len != ALIGN(size, 4) + hdrlen)
-                    goto err;
+Fix it by checking if slave is unaffiliated (doesn't have ib device)
+before removing from the list.
 
-if size from qrtr_hdr is 0, the result of ALIGN(size, 4)
-will be 0, In case of len == hdrlen and size == 0
-in header this check won't fail and
+  RIP: 0010:mlx5r_mp_remove+0x4e/0xa0 [mlx5_ib]
+  Call Trace:
+   auxiliary_bus_remove+0x18/0x30
+   __device_release_driver+0x177/x220
+   device_release_driver+0x24/0x30
+   bus_remove_device+0xd8/0x140
+   device_del+0x18a/0x3e0
+   mlx5_rescan_drivers_locked+0xa9/0x210 [mlx5_core]
+   mlx5_unregister_device+0x34/0x60 [mlx5_core]
+   mlx5_uninit_one+0x32/0x100 [mlx5_core]
+   remove_one+0x6e/0xe0 [mlx5_core]
+   pci_device_remove+0x36/0xa0
+   __device_release_driver+0x177/0x220
+   device_driver_detach+0x3c/0xa0
+   unbind_store+0x113/0x130
+   kernfs_fop_write_iter+0x110/0x1a0
+   new_sync_write+0x116/0x1a0
+   vfs_write+0x1ba/0x260
+   ksys_write+0x5f/0xe0
+   do_syscall_64+0x3d/0x90
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-	if (cb->type == QRTR_TYPE_NEW_SERVER) {
-                /* Remote node endpoint can bridge other distant nodes */
-                const struct qrtr_ctrl_pkt *pkt = data + hdrlen;
-
-                qrtr_node_assign(node, le32_to_cpu(pkt->server.node));
-        }
-
-will also read out of bound from data, which is hdrlen allocated block.
-
-Fixes: 194ccc88297a ("net: qrtr: Support decoding incoming v2 packets")
-Fixes: ad9d24c9429e ("net: qrtr: fix OOB Read in qrtr_endpoint_post")
-Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 93f8244431ad ("RDMA/mlx5: Convert mlx5_ib to use auxiliary bus")
+Link: https://lore.kernel.org/r/17ec98989b0ba88f7adfbad68eb20bce8d567b44.1628587493.git.leonro@nvidia.com
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/qrtr/qrtr.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -321,7 +321,7 @@ int qrtr_endpoint_post(struct qrtr_endpo
- 		goto err;
- 	}
- 
--	if (len != ALIGN(size, 4) + hdrlen)
-+	if (!size || len != ALIGN(size, 4) + hdrlen)
- 		goto err;
- 
- 	if (cb->dst_port != QRTR_PORT_CTRL && cb->type != QRTR_TYPE_DATA)
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index cca7296b12d0..9bb562c7cd24 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -4444,7 +4444,8 @@ static void mlx5r_mp_remove(struct auxiliary_device *adev)
+ 	mutex_lock(&mlx5_ib_multiport_mutex);
+ 	if (mpi->ibdev)
+ 		mlx5_ib_unbind_slave_port(mpi->ibdev, mpi);
+-	list_del(&mpi->list);
++	else
++		list_del(&mpi->list);
+ 	mutex_unlock(&mlx5_ib_multiport_mutex);
+ 	kfree(mpi);
+ }
+-- 
+2.30.2
+
 
 
