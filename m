@@ -2,90 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E51A3FE19B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FB83FE19E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344953AbhIAR6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235811AbhIAR6t (ORCPT
+        id S236885AbhIAR7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:59:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23735 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233691AbhIAR7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:58:49 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7CAC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 10:57:52 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id s12so557835ljg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:57:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e56BZ5hXZwdZQAhiBk+g+d3p7hy50ZxnDyqlFRLPbEM=;
-        b=RQ09MJkGQrhwqn/8fWS6q3ZRok81XPPuE9PHGsJAPyM9/fsl7dQy8cQDsJzGPFWqOI
-         TW2C/QFJL9uWMi6kMns1ljR6PA1iLPxony2Q4uzq4iH0xlbwuya43BLSz2XR4OP2tRA5
-         LX91IISfhrJsw0PoemGcrYNwtU7KOuq7Vkx+Q=
+        Wed, 1 Sep 2021 13:59:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630519131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i0smCMwmVwKCQLrLP9ThmbbkbGXWzmsdDycWPMRoaPI=;
+        b=FqeA51nNxEr45U1Hodx0kjGDpjN84euYLpZkB/Olc6ERQETkVDdUyvNFdNrUMINXfpDjx2
+        jD3q8IGyqDA7ctFe1YpIY195KoviQ+hA+yoqp5Vw9gYzfjwXybt3GFW8a2p9a9Lla8JeBK
+        nLUF8H90m04e8i111DlOWekTLQZ6Djw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-181-RvHv0luAMrSHHJ8-8JnbJQ-1; Wed, 01 Sep 2021 13:58:50 -0400
+X-MC-Unique: RvHv0luAMrSHHJ8-8JnbJQ-1
+Received: by mail-wm1-f71.google.com with SMTP id r4-20020a1c4404000000b002e728beb9fbso135945wma.9
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:58:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e56BZ5hXZwdZQAhiBk+g+d3p7hy50ZxnDyqlFRLPbEM=;
-        b=JLFwScuHixeJv2Z0PaS8JU1WwlW5tSk9lHB/zO9LByF7UpxHiQ15tEMDumNWqqW9nD
-         pEG4urgIgpBXccDFnW/QXZ9zoBpYaVOHZfGX6BjDKPaJU4LrvD9ddfxA5NdOx9ADNJ2J
-         /abwKdgsqN+tm354oZy5OV7y2R4Spy/V62tn3VGIKUTQ2y5VB3+mHM53Sd/ynFzgcK7s
-         3TB7ZvVm9ADpjqr1HTOGkHa503bONyYQpv9hjwMUfs2GzTzW49+ezc9Rjz3td5m3hrtx
-         wxcKp1f7kEEHgjFExlOmChHjWx+MBck+dfl/PZdPILEkivmn0gf+mA2OSWh5WKmPJIRV
-         n3Lg==
-X-Gm-Message-State: AOAM5304Ms3wAEw0J/qPDHGAqpyFlNZ1zyNvuZ2cy7ZlyoNkvMLXXBcc
-        602L7bw4U0JYi/RLAR4fDZomjQxZVr/amSnc
-X-Google-Smtp-Source: ABdhPJx0LFreWgVml0Up9cWK/8S4XmVrYKlUkOb8ekWf2Y8YNLKn1RObODLsXpCBhU+cGCJYx66GYg==
-X-Received: by 2002:a05:651c:490:: with SMTP id s16mr743783ljc.214.1630519070436;
-        Wed, 01 Sep 2021 10:57:50 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id u20sm39985ljl.76.2021.09.01.10.57.49
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=i0smCMwmVwKCQLrLP9ThmbbkbGXWzmsdDycWPMRoaPI=;
+        b=aFNIhf3l5xq2OoYmKAbs9sy5CqoDzxqubol/6IgP3R6Y43sFGMRFBIlaH1Lw3jlocT
+         5VwALe+GigK40QdSBEhCj0YpTI1tJTZT59C01UD3uOTOI0yO0LZ4kDU2q/LjzLYo3zR6
+         zE1dfntsr6AztyFw1gkfLq7x678mcL63lE5THV8nqiyQ0hgctRhyfZoQPMnAWfvmxfQk
+         wV+Ew9MmzadNeb8ai0viBaBY4sbwJp8HoPWugxi+XI3wuvrSiUyh4uqo5i0UNLpGEd+R
+         a3N2uG6FBnIq9yv0+iAVw6qvs+LM/u9g/hnPBNGIoCVZrv6l6+XVpxlNFaSjiANSJ+5D
+         XvFA==
+X-Gm-Message-State: AOAM530vwQX7cJn2CsDHpL3ySkDGsVu+GpKZ1F171mPGwYYcLbMGOu/F
+        OdieKTCx1uS7LB82tyv9UN8UB/OUN0w7hz3Zmlg1fpGrDxVIfFK53yfXNzT3hqTAnbugspyCeYe
+        7N/9fjrrAtF/8IR7k+cnUBZW9
+X-Received: by 2002:a1c:1904:: with SMTP id 4mr632316wmz.93.1630519129027;
+        Wed, 01 Sep 2021 10:58:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJznn407qu+Ost99CYfe2lcliOS2h2St5mYG0lHHVc+4MOX4G0xXAv7RYLIHHtKhlQzOV2LngA==
+X-Received: by 2002:a1c:1904:: with SMTP id 4mr632301wmz.93.1630519128815;
+        Wed, 01 Sep 2021 10:58:48 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
+        by smtp.gmail.com with ESMTPSA id t14sm224966wmi.12.2021.09.01.10.58.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 10:57:49 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id m4so437887ljq.8
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:57:49 -0700 (PDT)
-X-Received: by 2002:a2e:84c7:: with SMTP id q7mr737503ljh.61.1630519069193;
- Wed, 01 Sep 2021 10:57:49 -0700 (PDT)
+        Wed, 01 Sep 2021 10:58:48 -0700 (PDT)
+Subject: Re: [PATCH v2 6/9] mm: free user PTE page table pages
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
+        mika.penttila@nextfour.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        songmuchun@bytedance.com
+References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
+ <20210819031858.98043-7-zhengqi.arch@bytedance.com>
+ <20210901135314.GA1859446@nvidia.com>
+ <0c9766c9-6e8b-5445-83dc-9f2b71a76b4f@redhat.com>
+ <20210901153247.GJ1721383@nvidia.com>
+ <7789261d-6a64-c47b-be6c-c9be680e5d33@redhat.com>
+ <20210901161613.GN1721383@nvidia.com>
+ <e8ebb0bb-b268-c43b-6fc1-e5240dc085c9@redhat.com>
+ <20210901171039.GO1721383@nvidia.com>
+ <ef7a722d-0bc0-1c68-b11b-9ede073516e0@redhat.com>
+ <20210901175547.GP1721383@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <52ba8125-0382-3270-a958-ed113ae1db2a@redhat.com>
+Date:   Wed, 1 Sep 2021 19:58:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CAPM=9txeN-qCRJvYV552zdo2H9iVy1ruVrq=YdZBP5Dmpc3Jmg@mail.gmail.com>
-In-Reply-To: <CAPM=9txeN-qCRJvYV552zdo2H9iVy1ruVrq=YdZBP5Dmpc3Jmg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 1 Sep 2021 10:57:32 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whP_v5nrK9B5vefnZS6Xz3-vZDFxUvSmW8W82hhNh67sA@mail.gmail.com>
-Message-ID: <CAHk-=whP_v5nrK9B5vefnZS6Xz3-vZDFxUvSmW8W82hhNh67sA@mail.gmail.com>
-Subject: Re: [git pull] drm for 5.15-rc1
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210901175547.GP1721383@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 10:53 PM Dave Airlie <airlied@gmail.com> wrote:
->
-> There are a bunch of conflicts with your tree, but none of them seem
-> too serious, but I might have missed something.
+On 01.09.21 19:55, Jason Gunthorpe wrote:
+> On Wed, Sep 01, 2021 at 07:49:23PM +0200, David Hildenbrand wrote:
+>> On 01.09.21 19:10, Jason Gunthorpe wrote:
+>>> On Wed, Sep 01, 2021 at 06:19:03PM +0200, David Hildenbrand wrote:
+>>>
+>>>>> I wouldn't think it works everywhere, bit it works in a lot of places,
+>>>>> and it is a heck of a lot better than what is proposed here. I'd
+>>>>> rather see the places that can use it be moved, and the few places
+>>>>> that can't be opencoded.
+>>>>
+>>>> Well, I used ptep_get_map_lock() and friends. But hacking directly into
+>>>> ptep_map_lock() and friends wasn't possible due to all the corner cases.
+>>>
+>>> Sure, I'm not surprised you can't get every single case, but that just
+>>> suggest we need two API families, today's to support the special cases
+>>> and a different one for the other regular simple cases.
+>>>
+>>> A new function family pte_try_map/_locked() and paired unmap that can
+>>> internally do the recounting and THP trickery and convert the easy
+>>> callsites.
+>>>
+>>> Very rough counting suggest at least half of the pte_offset_map_lock()
+>>> call sites can trivially use the simpler API.
+>>>
+>>> The other cases can stay as is and get open coded refcounts, or maybe
+>>> someone will have a better idea once they are more clearly identified.
+>>>
+>>> But I don't think we should take a performance hit of additional
+>>> atomics in cases like GUP where this is trivially delt with by using a
+>>> better API.
+>>
+>> Right, but as I said in the cover letter, we can happily optimize once we
+>> have the basic infrastructure in place and properly reviewed. Getting rid of
+>> some unnecessary atomics by introducing additional fancy helpers falls under
+>> that category.
+> 
+> I'm not sure I agree given how big and wide this patch series is. It
+> would be easier to review if it was touching less places. The helpers
+> are not fancy, it is a logical re-arrangement of existing code that
+> shrinks the LOC of this series and makes it more reviewable.
 
-No worries. I enjoyed seeing the AMD code-names in the conflicts, they
-are using positively kernel-level naming.
+You'll most likely have to touch each and every place either way, for 
+example when suddenly returning "null" instead of a pte. It's just a 
+matter of making this easier to review and the changes as minimal and as 
+clear as possible.
 
-That said, I wonder why AMD people can't use consistent formatting,
-mixing ALL-CAPS with underscores, spaces, whatever:
+> 
+> Or stated another way, a niche feature like this try much harder not
+> to add more complexity everywhere.
 
-        /* Sienna_Cichlid */
-        /* Yellow Carp */
-        /* Navy_Flounder */
-        /* DIMGREY_CAVEFISH */
-        /* Aldebaran */
-        /* CYAN_SKILLFISH */
-        /* BEIGE_GOBY */
+I fully agree.
 
-which shows a distinct lack of professionalism and caring in the silly naming.
+-- 
+Thanks,
 
-             Linus
+David / dhildenb
+
