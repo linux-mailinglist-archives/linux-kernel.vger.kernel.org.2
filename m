@@ -2,144 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9D83FE2B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9925F3FE2B9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234453AbhIATCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:02:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37080 "EHLO
+        id S231887AbhIATFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244983AbhIATCO (ORCPT
+        with ESMTP id S230063AbhIATFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:02:14 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F206C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 12:01:17 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id t19so1033411lfe.13
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 12:01:17 -0700 (PDT)
+        Wed, 1 Sep 2021 15:05:31 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F6AEC061575;
+        Wed,  1 Sep 2021 12:04:34 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id q3so255186plx.4;
+        Wed, 01 Sep 2021 12:04:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=npd1RU7mbNsF3k0GeBkr9d4yP6Ob5CEAADTVG3CYCjw=;
-        b=ErHaIpxZiEMxxjypsttdmUORwYq4vP1VZ+xYSjVl8afEmUE0mZp3Aj9x4LVzPgegFp
-         QxCWY5+Gxwtt2L2qth2RgEkh1nozrNfG4UGJESfbueNOy10Bzrii0P8RVC60ibu3uR99
-         Ri6W/fH6hsL0OtQOBkjpL0U0EcWE6CxP3PMa4=
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=AxPYDeiJSv/dmbz8T28Qfe/Oj+46o1Bnyxjlz4pBDqc=;
+        b=cjBW0IhpSYLggIxlnqAWsY9I1wm2UxdA/NKN67qvkMwoZG9ypsm8G71z8jDPFJgkm+
+         q2yssThueXFVVgNJc4Kgdr1KMHQTG7UdR36y+xwxVUcnFRpUMOFAn/DA0JvQT1FIm8RM
+         gi7ml0tVJXSpHcZqQOQyi4bAArsIgrDqHsJ6Pqt/ifIO652x7giNfUrFfy/p4SSA+w1Y
+         8SX+RvA/uwe62aO88nnMiFxiTLvIhOdhHf5Yfu1HrL/rpr5Gmpe9vCa5Xu+svFU+ZN13
+         Kgvst3oCI0LwENq7elJuBlKBtinUpj8V5vWKuFFXEE3ZcqRTZz8oUQ40CdIId4N1otLK
+         +jJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=npd1RU7mbNsF3k0GeBkr9d4yP6Ob5CEAADTVG3CYCjw=;
-        b=Hy/TJe1jNKkRCVpSc0AFAil0DJmKlypXIqFl2tX5/8mcxTiBGhZ/p/juT0MDiqX//O
-         l1DnsNIlYqOzEECujbFazA80ttN5K4E0ztDE5cqJC7egPs5JbSLsNQ8+J7ILglDpLdeE
-         Y6+1f8nXp5XDFPkpHyGPrJIFu7cx9LJOhCqlAWIcYLHpcDdayQYkZgizwJrzPepUTU7P
-         M6O5XmXhNSyrOjzhxBv5ADge3tDZfkBIkS/nRFMRgASG0EDeucqTLQLKbk+LriC92E0u
-         NujIxTSUwpvfoMtXULclLz4vo3c1Ga8YaJ9KIMoJswzoo6VcwN/2lDtUpEsDd7fb9Fru
-         uMLw==
-X-Gm-Message-State: AOAM5333ROTy0McDPimxS88xJInHAYRt1qxkD8TOr9vJR3/J4VWOXqQq
-        W02Sm5CaSI9mzpoyCPAMYi0tVjf0NF87/QBE
-X-Google-Smtp-Source: ABdhPJwqJXhGTgyddOtotVk7XboI0KL+uIZ88kvApBaG7EJ8eyIgwTzAtjDzweICnxblS2U2dZwieQ==
-X-Received: by 2002:a05:6512:32ca:: with SMTP id f10mr629199lfg.557.1630522874671;
-        Wed, 01 Sep 2021 12:01:14 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id j20sm31304lfr.248.2021.09.01.12.01.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 12:01:14 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id i28so761759ljm.7
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 12:01:13 -0700 (PDT)
-X-Received: by 2002:a2e:3004:: with SMTP id w4mr888035ljw.465.1630522873162;
- Wed, 01 Sep 2021 12:01:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210831203727.3852294-1-kuba@kernel.org>
-In-Reply-To: <20210831203727.3852294-1-kuba@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 1 Sep 2021 12:00:57 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjB_zBwZ+WR9LOpvgjvaQn=cqryoKigod8QnZs=iYGEhA@mail.gmail.com>
-Message-ID: <CAHk-=wjB_zBwZ+WR9LOpvgjvaQn=cqryoKigod8QnZs=iYGEhA@mail.gmail.com>
-Subject: Re: [GIT PULL] Networking for v5.15
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=AxPYDeiJSv/dmbz8T28Qfe/Oj+46o1Bnyxjlz4pBDqc=;
+        b=f9QSYxI1HzoAZpo2ruCFjb23woHM6apRj7OFN4/4gMtkOlZXOa0DYk4H1nG9RFGHyr
+         QGdUSlsk4CRNaiGF5r3n8gpZkIiZ83D3ZAS1CvHfMfnfAZEWTQJ/Ugdcb6JqoyvIjgDW
+         6BJs8sLZwfE2kdg7bFzdFhByHXJFd8Jt1iy5PFPjyVpDi+oAKzDSa1BIraJivvjztG0U
+         ICxRO+lFaQNlUShIrk7MBW41Hf5NDqMx6o1byh0fRBmxChc3hh8EZOtWfiZ0KBuRGprL
+         t0EbeHYtCi9OzLd/OakX1c0qdepZfOQp2D4HtaG1k2NnB4DsfvVBfF/3bCsUDkC7wVA+
+         8A/w==
+X-Gm-Message-State: AOAM533Cp6A103SKtqDkfOKQyD5+B2b/mHa7EishQZ9IWe92gxwzppZ2
+        c5XD1f0X3b43f7/dcTwR+PaStuGFA8j6mqq3hPI=
+X-Google-Smtp-Source: ABdhPJxrP/qMJlcQ2C3HaVuBal+S1tLQfyQ+FdOZhQ2Q8/3tezryw733droFDoVal4ZX8DGNhV6VCw==
+X-Received: by 2002:a17:902:b188:b029:11b:1549:da31 with SMTP id s8-20020a170902b188b029011b1549da31mr563725plr.7.1630523073228;
+        Wed, 01 Sep 2021 12:04:33 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id g19sm264050pjl.25.2021.09.01.12.04.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 12:04:32 -0700 (PDT)
+Message-ID: <612fcec0.1c69fb81.13708.11f3@mx.google.com>
+Date:   Wed, 01 Sep 2021 12:04:32 -0700 (PDT)
+X-Google-Original-Date: Wed, 01 Sep 2021 19:04:31 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210901122249.520249736@linuxfoundation.org>
+Subject: RE: [PATCH 5.14 00/11] 5.14.1-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 1:37 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> No conflicts at the time of writing. There were conflicts with
-> char-misc but I believe Greg dropped the commits in question.
+On Wed,  1 Sep 2021 14:29:08 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.14.1 release.
+> There are 11 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.1-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Hmm. I already merged this earlier, but didn't notice a new warning on
-my desktop:
+5.14.1-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-  RTNL: assertion failed at net/wireless/reg.c (4025)
-  WARNING: CPU: 60 PID: 1720 at net/wireless/reg.c:4025
-regulatory_set_wiphy_regd_sync+0x7f/0x90 [cfg80211]
-  Call Trace:
-   iwl_mvm_init_mcc+0x170/0x190 [iwlmvm]
-   iwl_op_mode_mvm_start+0x824/0xa60 [iwlmvm]
-   iwl_opmode_register+0xd0/0x130 [iwlwifi]
-   init_module+0x23/0x1000 [iwlmvm]
-
-and
-
-  RTNL: assertion failed at net/wireless/reg.c (3106)
-  WARNING: CPU: 60 PID: 1720 at net/wireless/reg.c:3106
-reg_process_self_managed_hint+0x26c/0x280 [cfg80211]
-  Call Trace:
-   regulatory_set_wiphy_regd_sync+0x3a/0x90 [cfg80211]
-   iwl_mvm_init_mcc+0x170/0x190 [iwlmvm]
-   iwl_op_mode_mvm_start+0x824/0xa60 [iwlmvm]
-   iwl_opmode_register+0xd0/0x130 [iwlwifi]
-   init_module+0x23/0x1000 [iwlmvm]
-
-and
-
-  RTNL: assertion failed at net/wireless/core.c (84)
-  WARNING: CPU: 60 PID: 1720 at net/wireless/core.c:84
-wiphy_idx_to_wiphy+0x97/0xd0 [cfg80211]
-  Call Trace:
-   nl80211_common_reg_change_event+0xf9/0x1e0 [cfg80211]
-   reg_process_self_managed_hint+0x23d/0x280 [cfg80211]
-   regulatory_set_wiphy_regd_sync+0x3a/0x90 [cfg80211]
-   iwl_mvm_init_mcc+0x170/0x190 [iwlmvm]
-   iwl_op_mode_mvm_start+0x824/0xa60 [iwlmvm]
-   iwl_opmode_register+0xd0/0x130 [iwlwifi]
-   init_module+0x23/0x1000 [iwlmvm]
-
-and
-
-  RTNL: assertion failed at net/wireless/core.c (61)
-  WARNING: CPU: 60 PID: 1720 at net/wireless/core.c:61
-wiphy_idx_to_wiphy+0xbf/0xd0 [cfg80211]
-  Call Trace:
-   nl80211_common_reg_change_event+0xf9/0x1e0 [cfg80211]
-   reg_process_self_managed_hint+0x23d/0x280 [cfg80211]
-   regulatory_set_wiphy_regd_sync+0x3a/0x90 [cfg80211]
-   iwl_mvm_init_mcc+0x170/0x190 [iwlmvm]
-   iwl_op_mode_mvm_start+0x824/0xa60 [iwlmvm]
-   iwl_opmode_register+0xd0/0x130 [iwlwifi]
-   init_module+0x23/0x1000 [iwlmvm]
-
-They all seem to have that same issue, and it looks like the fix would
-be to get the RTN lock in iwl_mvm_init_mcc(), but I didn't really look
-into it very much.
-
-This is on my desktop, and I actually don't _use_ the wireless on this
-machine. I assume it still works despite the warnings, but they should
-get fixed.
-
-I *don't* see these warnings on my laptop where I actually use
-wireless, but that one uses ath10k_pci, so it seems this is purely a
-iwlwifi issue.
-
-I can't be the only one that sees this. Hmm?
-
-                 Linus
