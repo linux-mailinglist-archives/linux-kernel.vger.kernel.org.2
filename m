@@ -2,145 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E163FDED4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6983FDED7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343794AbhIAPkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343783AbhIAPkr (ORCPT
+        id S1343803AbhIAPlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:41:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21952 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244612AbhIAPlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:40:47 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82E7C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 08:39:50 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id u3so3791ejz.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 08:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Gtxtlf+IvPbb5S4KUDPGBv/IseOgDOneCJ4TI1+PC5w=;
-        b=W9ttA5JKJsbe0026yGjy3AiJE2JS0BQJeNEshdziMVwGYYqu4uTR16v5ftqqA5LoTd
-         R0kfilGPdNJzDInnXmcLdLsV89icUPFbRoWSULCF7JpvmJdYIsxjbfYvzPk9E5yST5pL
-         mhFJ4LKxRqjO5VuaKtvGCFeEg9wfXGX1XXLwbn0HsvuQ+WudH2hiQE8r54d16beCvUBd
-         tScsJ8V8h0Cq4BG+N008WF3PjMDu51fGjfRF6r2N2dZU3GyUV1k94Y0WWnPAdqlXbZYA
-         p31PLd+vlxa47cVzrp3ubhBBbVPDAlyeyqITHb81u5M4F2xO2Ow+FPta/XQqCr9JMUIq
-         mNPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Gtxtlf+IvPbb5S4KUDPGBv/IseOgDOneCJ4TI1+PC5w=;
-        b=bcJtbHOzk+AN0gEWubu6aMkOF5Cm+5NA5MFKz3FmCPBCgDCMq6xgFC8NgJ48dL6qoH
-         ruCv+oBfi9jddtrK83FoWAPSFQu+7BC73NxiyF2Ky+Ax+Iw/06SVVyOLP+cyR+ybiO5X
-         l4rguBbeMbOKlP63A67RSDF27m+/sSVrHlN0XrF01xNRPrEmI+dLG8luQs8JuZ+/INrZ
-         JnwA5ZZSHOwiG4BT8mgH5wNyos4+V8VxYiwMyHWmLw0KHEmhPHJSQuWW8EHxLSOBxwhs
-         QhCSBlER5rz4l3ecVea63hu5AL1dpFDXgQnW4AtaHlxaikTe7sA5Z0FMAcDEWm4yhUuF
-         KJBw==
-X-Gm-Message-State: AOAM532ysucEGFg+VrsiurdiOM1AO+j3fgu4mDNZ6yp0d9De9KgMOrMi
-        lZrL7McY9W9Hs6YU+uKQ6gs=
-X-Google-Smtp-Source: ABdhPJy43iwSCZVMf2T5xtACWqKltQuAv2LAC08MVHPt3txFGtmVbJKC2vEoNDAeA6yK6ZRYJRi8bg==
-X-Received: by 2002:a17:906:a0a:: with SMTP id w10mr54387ejf.416.1630510789079;
-        Wed, 01 Sep 2021 08:39:49 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id qq16sm17102ejb.120.2021.09.01.08.39.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 08:39:48 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alex Elder <elder@kernel.org>, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org
-Subject: Re: [greybus-dev] [PATCH v4] staging: greybus: Convert uart.c from IDR to XArray
-Date:   Wed, 01 Sep 2021 17:39:46 +0200
-Message-ID: <2942098.x5hDSQIzYV@localhost.localdomain>
-In-Reply-To: <YS+ORkbD9NuEOl0D@casper.infradead.org>
-References: <20210829092250.25379-1-fmdefrancesco@gmail.com> <8914101.vIO1HAjRha@localhost.localdomain> <YS+ORkbD9NuEOl0D@casper.infradead.org>
+        Wed, 1 Sep 2021 11:41:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630510823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5WinnYXvg2iYFpy0z2oAKoDwNk1Mt/0CpYI65fqO58k=;
+        b=MToFF0kc/fK9VUDSAqIGsnHQjGwstj6tWmS0qvh1bGEMT4MqZfMRBwgFlSdGFWnYCtsAtB
+        bB5pfUvfQMPdCDdrrZy5/b8K2hrFAUWds4LvqcYuDFipeqN/i7tyVSXaxh0x6wA4Jfmheq
+        1gL1Pit0QsuA86++T8ybXRrEppCnjAk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-387-LWUEAZCJPDWgAxZ0z7TwRw-1; Wed, 01 Sep 2021 11:40:22 -0400
+X-MC-Unique: LWUEAZCJPDWgAxZ0z7TwRw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C41CEFC80;
+        Wed,  1 Sep 2021 15:40:19 +0000 (UTC)
+Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BB32B6ACFF;
+        Wed,  1 Sep 2021 15:40:08 +0000 (UTC)
+From:   Jeff Moyer <jmoyer@redhat.com>
+To:     dan.j.williams@intel.com
+Cc:     David Hildenbrand <david@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Borislav Petkov <bp@alien8.de>, linux-edac@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [patch, v2] x86/pat: pass valid address to sanitize_phys()
+References: <x49o8a3pu5i.fsf@segfault.boston.devel.redhat.com>
+X-PGP-KeyID: 1F78E1B4
+X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
+Date:   Wed, 01 Sep 2021 11:41:32 -0400
+In-Reply-To: <x49o8a3pu5i.fsf@segfault.boston.devel.redhat.com> (Jeff Moyer's
+        message of "Wed, 11 Aug 2021 17:07:37 -0400")
+Message-ID: <x49zgswfglv.fsf@segfault.boston.devel.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, September 1, 2021 4:29:26 PM CEST Matthew Wilcox wrote:
-> On Wed, Sep 01, 2021 at 03:56:20PM +0200, Fabio M. De Francesco wrote:
-> > Anyway I tried to reason about it. I perfectly know what is required to 
-> > protect critical sections of code, but I don't know how drivers work; I 
-mean 
-> > I don't know whether or not different threads that run concurrently could 
-> > really interfere in that specific section. This is because I simply 
-reason in 
-> > terms of general rules of protection of critical section but I really 
-don't 
-> > know how Greybus works or (more in general) how drivers work.
-> 
-> From a quick look, it is indeed possible to get rid of the mutex.
-> If this were a high-performance path which needed to have many threads
-> simultaneously looking up the gb_tty, or it were core kernel code, I
-> would say that you should use kfree_rcu() to free gb_tty and then
-> you could replace the mutex_lock() on lookup with a rcu_read_lock().
-> 
-> Since this is low-performance and driver code, I think you're better off
-> simply doing this:
-> 
-> 	xa_lock((&tty_minors);
-> 	gb_tty = xa_load(&tty_minors, minor);
-> 	... establish a refcount ...
-> 	xa_unlock(&tty_minors);
-> 
-> EXCEPT ...
-> 
-> establishing a refcount currently involves taking a mutex.  So you can't
-> do that.  First, you have to convert the gb_tty mutex to a spinlock
-> (which looks fine to me), and then you can do this.  But this is where
-> you need to work with the driver authors to make sure it's OK.
+Ping?
 
-Dear Matthew,
+Jeff Moyer <jmoyer@redhat.com> writes:
 
-I think that I understand your suggestion and, as far as my experience with 
-concurrency in userspace may have any relevance here, I often use reference 
-counting with objects that are shared by multiple threads.
-
-Unfortunately, this is not the point. The *real* issue is that I am not able 
-to provide good reasons for doing IDR to XArray conversions in Greybus code. 
-I tried to provide some sort of motivation by using your own words that I 
-still remember from a message you sent a couple of months ago: 
-
-More or less you wrote:
-
-"The abstract data type XArray is more memory-efficient, parallelisable, and 
-cache friendly. It takes advantage of RCU to perform lookups without locking. 
-Furthermore, IDR is deprecated because XArray has a better (cleaner and more 
-consistent) API.".
-
-I can reason on the "cleaner and more consistent API" and for what I 
-understand from the grand design of the implementation of XArray I may also 
-attempt to discuss some of the other parts of the above-mentioned statement.
-
-Anyway I must respect the point of view of Johan H.: "And remember that a 
-good commit message describing the motivation for the change (avoiding 
-boiler-plate marketing terms) is a good start if you want to get your patches 
-accepted.". That's absolutely fair and, I say that seriously, I must follow  
-this rule. Since I'm not able to do that I understand that I have to desist.
-
-If it depended on me I'd like to convert as many possible drivers from IDR to 
-XArray, but it seems that many maintainers don't care (even if the work was 
-perfect in every detail since v1). I guess they have their reason to think 
-that the trade-off isn't even worth the time to review. I'm yet not sure that 
-IDA to XArray is worth as much as IDR to XArray is. But for the latter I 
-would bet it is.
-
-Please, nobody should misunderstand me. I know that I'm going well beyond 
-what my experience may permit to say about this matter. I'm just expressing 
-my opinion with no intentions to push anybody in any direction. Please 
-forgive me if this is what it may seem to the readers that are following this 
-thread.
-
-Thanks,
-
-Fabio
-
+> The end address passed to memtype_reserve() is handed directly to
+> sanitize_phys().  However, end is exclusive and sanitize_phys() expects
+> an inclusive address.  If end falls at the end of the physical address
+> space, sanitize_phys() will return 0.  This can result in drivers
+> failing to load, and the following warning:
+>
+> [    9.999440] mpt3sas version 29.100.01.00 loaded
+> [    9.999817] mpt3sas_cm0: 64 BIT PCI BUS DMA ADDRESSING SUPPORTED, total mem (65413664 kB)
+> [    9.999819] ------------[ cut here ]------------
+> [    9.999826] WARNING: CPU: 26 PID: 749 at arch/x86/mm/pat.c:354 reserve_memtype+0x262/0x450
+> [    9.999828] reserve_memtype failed: [mem 0x3ffffff00000-0xffffffffffffffff], req uncached-minus
+> [    9.999828] Modules linked in: mpt3sas(+) bnxt_en(+) ahci(+) crct10dif_pclmul crct10dif_common nvme crc32c_intel libahci nvme_core libata raid_class scsi_transport_sas devlink drm_panel_orientation_quirks nfit libnvdimm dm_mirror dm_region_hash dm_log dm_mod
+> [    9.999840] CPU: 26 PID: 749 Comm: systemd-udevd Not tainted 3.10.0-1077.el7_7.mpt3sas_test008.x86_64 #1
+> [    9.999842] Hardware name: Inspur SA5112M5/SA5112M5, BIOS 4.1.12 02/24/2021
+> [    9.999843] Call Trace:
+> [    9.999851]  [<ffffffffa497c4e4>] dump_stack+0x19/0x1b
+> [    9.999857]  [<ffffffffa429bc08>] __warn+0xd8/0x100
+> [    9.999859]  [<ffffffffa429bc8f>] warn_slowpath_fmt+0x5f/0x80
+> [    9.999861]  [<ffffffffa427b1f2>] reserve_memtype+0x262/0x450
+> [    9.999867]  [<ffffffffa4276254>] __ioremap_caller+0xf4/0x330
+> [    9.999872]  [<ffffffffc04620a1>] ? mpt3sas_base_map_resources+0x151/0xa60 [mpt3sas]
+> [    9.999875]  [<ffffffffa42764aa>] ioremap_nocache+0x1a/0x20
+> [    9.999879]  [<ffffffffc04620a1>] mpt3sas_base_map_resources+0x151/0xa60 [mpt3sas]
+> [    9.999884]  [<ffffffffa442656b>] ? __kmalloc+0x1eb/0x230
+> [    9.999889]  [<ffffffffc0465555>] mpt3sas_base_attach+0xf5/0xa50 [mpt3sas]
+> [    9.999894]  [<ffffffffc046af3c>] _scsih_probe+0x4ec/0xb00 [mpt3sas]
+> [    9.999901]  [<ffffffffa45d297a>] local_pci_probe+0x4a/0xb0
+> [    9.999903]  [<ffffffffa45d40c9>] pci_device_probe+0x109/0x160
+> [    9.999909]  [<ffffffffa46b7225>] driver_probe_device+0xc5/0x3e0
+> [    9.999910]  [<ffffffffa46b7623>] __driver_attach+0x93/0xa0
+> [    9.999912]  [<ffffffffa46b7590>] ? __device_attach+0x50/0x50
+> [    9.999914]  [<ffffffffa46b4dc5>] bus_for_each_dev+0x75/0xc0
+> [    9.999916]  [<ffffffffa46b6b9e>] driver_attach+0x1e/0x20
+> [    9.999918]  [<ffffffffa46b6640>] bus_add_driver+0x200/0x2d0
+> [    9.999920]  [<ffffffffa46b7cb4>] driver_register+0x64/0xf0
+> [    9.999922]  [<ffffffffa45d3905>] __pci_register_driver+0xa5/0xc0
+> [    9.999924]  [<ffffffffc049b000>] ? 0xffffffffc049afff
+> [    9.999928]  [<ffffffffc049b16e>] _mpt3sas_init+0x16e/0x1000 [mpt3sas]
+> [    9.999933]  [<ffffffffa420210a>] do_one_initcall+0xba/0x240
+> [    9.999940]  [<ffffffffa431e95a>] load_module+0x271a/0x2bb0
+> [    9.999946]  [<ffffffffa45b0600>] ? ddebug_proc_write+0x100/0x100
+> [    9.999948]  [<ffffffffa431eedf>] SyS_init_module+0xef/0x140
+> [    9.999954]  [<ffffffffa498fed2>] system_call_fastpath+0x25/0x2a
+> [    9.999955] ---[ end trace 6d6eea4438db89ef ]---
+> [    9.999957] ioremap reserve_memtype failed -22
+> [   10.000087] mpt3sas_cm0: unable to map adapter memory! or resource not found
+> [   10.000334] mpt3sas_cm0: failure at drivers/scsi/mpt3sas/mpt3sas_scsih.c:10597/_scsih_probe()!
+>
+> (Note that this warning was from an older distribution kernel, so line
+> numbers and file names may not line up with the current tree.)
+>
+> Fix this by passing the inclusive end address to sanitize_phys().
+>
+> Fixes: 510ee090abc3 ("x86/mm/pat: Prepare {reserve, free}_memtype() for "decoy" addresses")
+> Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+>
+> ---
+> v2:
+> - Add the warning splat to the commit log. (tglx)
+> - Use parenthesis when referring to function names. (tglx)
+> - Add a comment to the code. (tglx)
+> - Use inclusive/exclusive instead of interval notation.
+>
+> diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
+> index 3112ca7786ed..4ba2a3ee4bce 100644
+> --- a/arch/x86/mm/pat/memtype.c
+> +++ b/arch/x86/mm/pat/memtype.c
+> @@ -583,7 +583,12 @@ int memtype_reserve(u64 start, u64 end, enum page_cache_mode req_type,
+>  	int err = 0;
+>  
+>  	start = sanitize_phys(start);
+> -	end = sanitize_phys(end);
+> +
+> +	/*
+> +	 * The end address passed into this function is exclusive, but
+> +	 * sanitize_phys() expects an inclusive address.
+> +	 */
+> +	end = sanitize_phys(end - 1) + 1;
+>  	if (start >= end) {
+>  		WARN(1, "%s failed: [mem %#010Lx-%#010Lx], req %s\n", __func__,
+>  				start, end - 1, cattr_name(req_type));
 
