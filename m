@@ -2,331 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF0C3FE529
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964C73FE527
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242801AbhIAWCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 18:02:46 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:49221 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232860AbhIAWCp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 18:02:45 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id B700D3200124;
-        Wed,  1 Sep 2021 18:01:46 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 01 Sep 2021 18:01:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=eD2Cp1itsRC6wxZANFuIexTHV/hakXfB0J2wP7kN2
-        CA=; b=iE3bNH4VTtaonrnWiYCkd3Q2rfCo7Vhrm9r4U3mbUf+AX4ADuuivIrNf8
-        eNB126mKq6/wXVEDUN6UvqYNUkfKFe35Fc7FkYokkp/HGjMcMqa+2eb2bHQu8gIZ
-        FHhQ9MgDZQIDxU61Aoxkmio6BopT6d9dccLsshOpP9JKLFVLAlBFAVPihh9G91L0
-        uGuc0fUmgJTbVesDui5cmvl5bJuctyryDw53/qWi/oxjANnUBjf9Bh7fYVtieZVm
-        AlWZjuE5AYh1qVJ6wnduE+O3ElNFX/8D7jgJfaOD3z/0POovgVuFXCUgNxgvm95U
-        TWAnrpmb+ROIXbht5b3bD7xF/8Fug==
-X-ME-Sender: <xms:SfgvYdMFC9_0-y_GqEWvzgYIb_xMRR2hKIjB0aVtWBqZ8jRxgiBjKg>
-    <xme:SfgvYf8oZ39cXFds_usPIAw1vu-jtPBvJ-FFaCnst3ZDkYCGyHXExOHDdyMNimtmC
-    olkzCVbPrvWQYYMo_g>
-X-ME-Received: <xmr:SfgvYcTmNdJuCyfw3KcA9F6pwJvwDIoGl2EaXyZ1xXcfJoZ0SET3SWSKHRGtxORbcCNrYA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgedgtdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffuvffkjghfofggtgfgsehtqh
-    ertdertdhsnecuhfhrohhmpefnuhhkvgculfhonhgvshcuoehluhhkvgeslhhjohhnvghs
-    rdguvghvqeenucggtffrrghtthgvrhhnpeefleetjeeihffgveeiffelleeuteeiueejff
-    evkeduteegfeelffehleduhfdtffenucffohhmrghinhepghhithhlrggsrdgtohhmnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvse
-    hljhhonhgvshdruggvvh
-X-ME-Proxy: <xmx:SfgvYZvF2uf3GatXtZ3kTBdnwVZsnrmAmapWONDFb8XnadTG9BhwbA>
-    <xmx:SfgvYVcp1xY4G9je8bcoUv0zJI-MnCnXwMBDTwEr0rkuy-ZwuqFqvA>
-    <xmx:SfgvYV1g2xcq6emHhukedlDzFCQXzZozl_d8eeGGr9HPFnD9tHFdFg>
-    <xmx:SvgvYWpqx1Nl1syu5GjjKiV-lchSowMUIo9lFWXx7OqaM3jUWlwI-A>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Sep 2021 18:01:40 -0400 (EDT)
-Date:   Thu, 02 Sep 2021 10:01:24 +1200
-From:   Luke Jones <luke@ljones.dev>
-Subject: Re: [PATCH v7] asus-wmi: Add support for custom fan curves
-To:     =?iso-8859-2?q?Barnab=E1s_P=F5cze?= <pobrn@protonmail.com>
-Cc:     linux-kernel@vger.kernel.org, hdegoede@redhat.com,
-        linux@roeck-us.net, platform-driver-x86@vger.kernel.org
-Message-Id: <CUZRYQ.HUS5YU6QXUBU@ljones.dev>
-In-Reply-To: <Z3uTWHyeRPzaHU0iSW56m1ltGsYr5DOfRoJLyGlfnObU0ph-mVf9M6KCbSV66AeY_voEARTrP6bOtqXS1ZubuSj4Cu25VSRu0VMBIf3whow=@protonmail.com>
-References: <20210830113137.1338683-1-luke@ljones.dev>
-        <20210830113137.1338683-2-luke@ljones.dev>
-        <1o94oJFiia_xvrFrSPI_zG1Xfv4FAlJNY96x39rg-zX3-3N5Czw4KmTiJtzCy1So7kYXLu0FTkRkmwUUudeuTyLHSsx5sJGhfsZaYrXKEic=@protonmail.com>
-        <BLFOYQ.DC67MOSNFFNW2@ljones.dev>
-        <Z3uTWHyeRPzaHU0iSW56m1ltGsYr5DOfRoJLyGlfnObU0ph-mVf9M6KCbSV66AeY_voEARTrP6bOtqXS1ZubuSj4Cu25VSRu0VMBIf3whow=@protonmail.com>
-X-Mailer: geary/40.0
+        id S233019AbhIAWCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 18:02:30 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:38423 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232860AbhIAWC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 18:02:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630533689;
+        bh=BmOhYKXE2qZFZfsXd4GE6m5wy+5xaYYXRavSABb85Xs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kUwMjkpmDxp1jp8EEC09mKkUmAD9D3u9tYzRrriQKkS+NEZp6cCQptNKJrwXuxmd3
+         eteZmx9YIlArV8ZB5EfrqELziHixzMr2r4SBWY5g5FgxUzpJiWEtD2Rq4fYaBfC3ar
+         5HjndCDuTSUAUoj2q6QpPTBddHSUsXXYvsGH3/hZzJtpkNekSnZj6p6PiWMNunC7l0
+         MkfjC0abHs5wXF2P5Y0Sp398obMONd5bfXzfV9Q+81a3eTdr/3E8oxR+kaMmXmqpvX
+         XxNJiQw2umgHwKQW9wWw/VKaJi9rDH4pUwwhytcAcER6kJYiqaSnGUFEpMjqcolvAF
+         bBLww/9GNtZQA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H0J126w99z9sPf;
+        Thu,  2 Sep 2021 08:01:26 +1000 (AEST)
+Date:   Thu, 2 Sep 2021 08:01:25 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas =?UTF-8?B?SGVsbHN0?= =?UTF-8?B?csO2bQ==?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>
+Subject: Re: linux-next: build failure after merge of the hmm tree
+Message-ID: <20210902080125.2872628b@canb.auug.org.au>
+In-Reply-To: <20210823175027.3f3fabd7@canb.auug.org.au>
+References: <20210823175027.3f3fabd7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/stlCEP4gLQ3cyH/reb0cPfS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/stlCEP4gLQ3cyH/reb0cPfS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi ,
 
-On Wed, Sep 1 2021 at 15:24:40 +0000, Barnab=E1s P=F5cze=20
-<pobrn@protonmail.com> wrote:
-> Hi
+On Mon, 23 Aug 2021 17:50:27 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Hi all,
 >=20
+> After merging the hmm tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
 >=20
->>  [...]
->>  >>  --- a/drivers/platform/x86/asus-wmi.c
->>  >>  +++ b/drivers/platform/x86/asus-wmi.c
->>  >>  [...]
->>  >>  +/*
->>  >>  + * Returns as an error if the method output is not a buffer.
->>  >> Typically this
->>  >
->>  > It seems to me it will simply leave the output buffer=20
->> uninitialized
->>  > if something
->>  > other than ACPI_TYPE_BUFFER and ACPI_TYPE_INTEGER is encountered=20
->> and
->>  > return 0.
->>=20
->>  Oops, see below inline reply:
->>=20
->>  >
->>  >
->>  >>  + * means that the method called is unsupported.
->>  >>  + */
->>  >>  +static int asus_wmi_evaluate_method_buf(u32 method_id,
->>  >>  +		u32 arg0, u32 arg1, u8 *ret_buffer)
->>  >>  +{
->>  >>  +	struct bios_args args =3D {
->>  >>  +		.arg0 =3D arg0,
->>  >>  +		.arg1 =3D arg1,
->>  >>  +		.arg2 =3D 0,
->>  >>  +	};
->>  >>  +	struct acpi_buffer input =3D { (acpi_size) sizeof(args), &args=20
->> };
->>  >>  +	struct acpi_buffer output =3D { ACPI_ALLOCATE_BUFFER, NULL };
->>  >>  +	acpi_status status;
->>  >>  +	union acpi_object *obj;
->>  >>  +	u32 int_tmp =3D 0;
->>  >>  +
->>  >>  +	status =3D wmi_evaluate_method(ASUS_WMI_MGMT_GUID, 0, method_id,
->>  >>  +				     &input, &output);
->>  >>  +
->>  >>  +	if (ACPI_FAILURE(status))
->>  >>  +		return -EIO;
->>  >>  +
->>  >>  +	obj =3D (union acpi_object *)output.pointer;
->>  >>  +
->>  >>  +	if (obj && obj->type =3D=3D ACPI_TYPE_INTEGER) {
->>  >>  +		int_tmp =3D (u32) obj->integer.value;
->>  >>  +		if (int_tmp =3D=3D ASUS_WMI_UNSUPPORTED_METHOD)
->>  >>  +			return -ENODEV;
->>  >>  +		return int_tmp;
->>  >
->>  > Is anything known about the possible values? You are later
->>  > using it as if it was an errno (e.g. in=20
->> `custom_fan_check_present()`).
->>  >
->>  > And `obj` is leaked in both of the previous two returns.
->>=20
->>  The return for the method we're calling in this patch returns 0 if=20
->> the
->>  input arg has no match.
->>=20
->>  >
->>  >
->>  >>  +	}
->>  >>  +
->>  >>  +	if (obj && obj->type =3D=3D ACPI_TYPE_BUFFER)
->>  >>  +		memcpy(ret_buffer, obj->buffer.pointer, obj->buffer.length);
->>  >
->>  > I would suggest you add a "size_t size" argument to this=20
->> function, and
->>  > return -ENOSPC/-ENODATA depending on whether the returned buffer=20
->> is
->>  > too
->>  > big/small. Maybe return -ENODATA if `obj` is NULL, too.
->>=20
->>  Got it. So something like this would be suitable?
->>=20
->>  	if (obj && obj->type =3D=3D ACPI_TYPE_BUFFER)
->>  		if (obj->buffer.length < size)
->>  			err =3D -ENOSPC;
->>  		if (!obj->buffer.length)
->>  			err =3D -ENODATA;
->>  		if (err) {
->>  			kfree(obj);
->>  			return err;
->>  		}
->>  		memcpy(ret_buffer, obj->buffer.pointer, obj->buffer.length);
->>  	}
->>=20
->>  	if (obj && obj->type =3D=3D ACPI_TYPE_INTEGER)
->>  		int_tmp =3D (u32) obj->integer.value;
->>=20
->>  	kfree(obj);
->>=20
->>  	if (int_tmp =3D=3D ASUS_WMI_UNSUPPORTED_METHOD)
->>  		return -ENODEV;
->>=20
->>  	/* There is at least one method that returns a 0 with no buffer */
->>  	if (obj =3D=3D NULL || int_tmp =3D=3D 0)
->>  		return -ENODATA;
->>=20
->>  	return 0;
->>=20
+> drivers/gpu/drm/i915/gem/i915_gem_ttm.c: In function 'i915_ttm_tt_get_st':
+> drivers/gpu/drm/i915/gem/i915_gem_ttm.c:396:7: error: implicit declaratio=
+n of function '__sg_alloc_table_from_pages'; did you mean 'sg_alloc_table_f=
+rom_pages'? [-Werror=3Dimplicit-function-declaration]
+>   396 |  sg =3D __sg_alloc_table_from_pages
+>       |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>       |       sg_alloc_table_from_pages
+> drivers/gpu/drm/i915/gem/i915_gem_ttm.c:396:5: warning: assignment to 'st=
+ruct scatterlist *' from 'int' makes pointer from integer without a cast [-=
+Wint-conversion]
+>   396 |  sg =3D __sg_alloc_table_from_pages
+>       |     ^
 >=20
-> I had something like the following in mind:
+> Caused by commit
 >=20
->   int err =3D 0;
->   /* ... */
->   obj =3D output.pointer;
->   if (!obj)
->     return -ENODATA;
+>   fcbfe956561b ("lib/scatterlist: Provide a dedicated function to support=
+ table append")
 >=20
->   switch (obj->type) {
->   case ACPI_TYPE_BUFFER:
->     if (obj->buffer.length < size)
->       err =3D -ENODATA;
->     else if (obj->buffer.length > size)
->       err =3D -ENOSPC;
->     else
->       memcpy(ret_buffer, obj->buffer.pointer, size);
->     break;
->   case ACPI_TYPE_INTEGER:
->     switch (obj->integer.value) {
->       case ASUS_WMI_UNSUPPORTED_METHOD:
->         err =3D -EOPNOTSUPP;
-> 	break;
->       default:
->         err =3D -ENODATA;
-> 	break;
->     }
->     break;
->   default:
->     err =3D -ENODATA;
->     break;
->   }
+> interacting with commit
 >=20
->   kfree(obj);
+>   213d50927763 ("drm/i915/ttm: Introduce a TTM i915 gem object backend")
 >=20
->   return err;
+> from the drm tree.
 >=20
+> I have applied the following merge resolution patch.
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 23 Aug 2021 17:46:27 +1000
+> Subject: [PATCH] drm/i915/ttm: fix up for "lib/scatterlist: Provide a
+>  dedicated function to support tableappend"
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/gpu/drm/i915/gem/i915_gem_ttm.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c b/drivers/gpu/drm/i9=
+15/gem/i915_gem_ttm.c
+> index 771eb2963123..d3d95934a047 100644
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
+> @@ -382,7 +382,6 @@ i915_ttm_region(struct ttm_device *bdev, int ttm_mem_=
+type)
+>  static struct sg_table *i915_ttm_tt_get_st(struct ttm_tt *ttm)
+>  {
+>  	struct i915_ttm_tt *i915_tt =3D container_of(ttm, typeof(*i915_tt), ttm=
+);
+> -	struct scatterlist *sg;
+>  	struct sg_table *st;
+>  	int ret;
+> =20
+> @@ -393,13 +392,13 @@ static struct sg_table *i915_ttm_tt_get_st(struct t=
+tm_tt *ttm)
+>  	if (!st)
+>  		return ERR_PTR(-ENOMEM);
+> =20
+> -	sg =3D __sg_alloc_table_from_pages
+> +	ret =3D sg_alloc_table_from_pages_segment
+>  		(st, ttm->pages, ttm->num_pages, 0,
+>  		 (unsigned long)ttm->num_pages << PAGE_SHIFT,
+> -		 i915_sg_segment_size(), NULL, 0, GFP_KERNEL);
+> -	if (IS_ERR(sg)) {
+> +		 i915_sg_segment_size(), GFP_KERNEL);
+> +	if (ret) {
+>  		kfree(st);
+> -		return ERR_CAST(sg);
+> +		return ERR_PTR(ret);
+>  	}
+> =20
+>  	ret =3D dma_map_sgtable(i915_tt->dev, st, DMA_BIDIRECTIONAL, 0);
 
-Got it. Sometimes I forget switch/case exists. I'll adjust the v8 patch=20
-I sent out earlier.
+I am now applying this merge fix patch to the merge of the rdma tree
+(since that has merged the hmm tree and the drm tree has been merged
+upstream).
 
->=20
->>  >
->>  >
->>  >>  +
->>  >>  +	kfree(obj);
->>  >>  +
->>  >>  +	return 0;
->>  >>  +}
->>  [...]
->>  >>  +/*
->>  >>  + * Called only by throttle_thermal_policy_write()
->>  >>  + */
->>  >
->>  > Am I correct in thinking that the firmware does not actually
->>  > support specifying fan curves for each mode, only a single one,
->>  > and the fan curve switching is done by this driver when
->>  > the performance mode is changed?
->>=20
->>  I'm not 100% certain on this. The WMI method 0x00110024 takes an arg
->>  0,1,2 which then returns some factory stored fan profiles, these fit
->>  the profiles of ASUS_THROTTLE_THERMAL_POLICY_*, but with 1 and 2
->>  swapped.
->>=20
->>  Looking at the SET part, it seems to write to a different location=20
->> than
->>  where the GET is fetching information.
->>=20
->=20
-> The, unfortunately, that is not as simple as I initially thought...
+--=20
+Cheers,
+Stephen Rothwell
 
-We can add the fact that a variation exists with a more typical setup=20
-also. The G713Q has no throttle_thermal and in the dsdt dump looks like=20
-it possible can read back the curve that is set by the user. This works=20
-in our favour though.
+--Sig_/stlCEP4gLQ3cyH/reb0cPfS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
->=20
->=20
->>  Because of the fact there are three sets of curves to get, I=20
->> thought it
->>  would be good for users to be able to set per profile. I don't think
->>  the set is retained in acpi if the profile is switched.
->>=20
->>  Do you think it would be best to not have the ability to store per
->>  profile in kernel?
->=20
-> If there was a method to set a fan curve, and one to retrieve it,
-> I would suggest just exposing that via the pwmN_auto_pointM_{pwm,temp}
-> attributes on a hwmon device, and that the profile-dependent switching
-> be implemented somewhere else. As far as I see, there is already
-> existing infrastructure for integrating such a feature [0]
-> (but please correct me if I'm wrong).
+-----BEGIN PGP SIGNATURE-----
 
-There is. I develop asusctl in conjunction with these patches. I'd=20
-certainly like to find the best way to fit all of this together.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEv+DUACgkQAVBC80lX
+0Gx9WAf9EPASlxghM4C7XRvD7i/Ap/naEcc9lkxTPGlLfZuyg+sevCTU2HTadYNq
+7e4QNotQV8nHaXvCzSwwJ83uYHtVf85mKVgXb+w5cV48E0lk0ASVX5w6KGLOAdpo
+WkJUu2CCkxCTPXFrPeK4gBvSLw4Xekv0QskQB/nAon2jfJmQkYXtBPWf2VULegsN
+Rp6xj4txXVGj4MEBhGZpFQF2q3D1a+6h/JcbpMUJKTo7n7QEjgzlP6gsLlWng5Qh
+FUIYW8GAAZrqcDBaaHsmJHUr/Y5Ow3Jjw4f1imTy72hRHpaF2cn12G+uyK0N39A6
+EEc2mV+4nQ1YqrfUC2a1qb1yZlOhjw==
+=iXH5
+-----END PGP SIGNATURE-----
 
->=20
-> This would simplify the kernel code, add no new ABI, and
-> potentially provide greater control over policy for the
-> user space.
-
-I agree.
-
->=20
->=20
->>  How would I choose which profile get to populate the
->>  initial data with if so?
->=20
-> I assume there isn't a method that can query
-> the current fan curve (or it is unknown)?
-
-It looks like I need to adjust how pwm[n]_enable works anyway:
-
-`pwm[1-*]_enable`
-Fan speed control method:
-- 0: no fan speed control (i.e. fan at full speed)
-- 1: manual fan speed control enabled (using `pwm[1-*]`)
-- 2+: automatic fan speed control enabled
-
-So maybe on "manual" I can make it so the get method does what is in=20
-fan_curve_check_present() (and change that part also) and fetches the=20
-"defaults" on enable. This might even give us the fan curve that was=20
-set (and looks like it will on the machine that has no thermal throttle=20
-profile, v8 patch) - I'll try this anyway and see what it looks like.=20
-This seems to be the best approach given how the G713Q works anyway.
-
-The issue I have with the above is that it overwrites any curve set.=20
-But given that it'll most likely be managed in userspace that's maybe=20
-*not* an issue. Otherwise would it be sensible to add something like=20
-`pwm1_reset`? I don't see anything like that in the related docs=20
-though. `pwm1_reset` would be to re-read the defaults from the acpi=20
-method.
-
-Central to the above is that we can still read 0, 1, 2 curves from acpi=20
-- I was thinking to use the throttle_thermal mode to choose which one=20
-and that would be the only use of it. And won't store them as=20
-per-profile, which becomes a moot point when userspace is managing it=20
-anyway.
-
-Many thanks,
-Luke.
-
-
->=20
->=20
->>  [...]
->=20
-> [0]: https://gitlab.com/asus-linux/asusctl
->=20
->=20
-> Best regards,
-> Barnab=E1s P=F5cze
-
-
+--Sig_/stlCEP4gLQ3cyH/reb0cPfS--
