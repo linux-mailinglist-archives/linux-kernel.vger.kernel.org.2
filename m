@@ -2,164 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903583FE10F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD773FE101
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344915AbhIARTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:19:03 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27894 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1344594AbhIARTC (ORCPT
+        id S1344563AbhIARPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:15:46 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:57977 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238873AbhIARPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:19:02 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181H2hFi162524;
-        Wed, 1 Sep 2021 13:14:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=/ympYdJM3XRWQJFFpSJOM0Ubg/CJuYugMsPvn7VHyGs=;
- b=XW36RHTxqwO1NWf86WhdmzT+kjmPc6x1qjQaaQIGlAwhf5Zic0OBkN8bABo3ZrJz+fwy
- 0mYJkREuQypGov0pE0iov+321SdavRBqyzTQW30/dVEguFpEn4HiciKg6PgPJ7QH0JIP
- hgXVG1SCK5FFNOi2yAH4hOOY6VBtWSR6Noi0KHUZ5DcdPg5UDnEOpjyFZ5Qa6WkTpkwh
- 2f8c7dqf0T1rvxN9bkl3D3BmiaRkHgx4Uy5Ujpn7UJ049SPSbHhbEJ5kPMM+24h184dd
- PH5LlueOohgB4WsE3sOrEmHUA8iBBmLpUY5LAdI/uKVcVeDa8EMzyms96YfnXgZ+qPxf ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3atd3kh0yg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 13:14:04 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 181H2p84163299;
-        Wed, 1 Sep 2021 13:14:03 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3atd3kh0xh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 13:14:03 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 181HCllP017210;
-        Wed, 1 Sep 2021 17:14:02 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02dal.us.ibm.com with ESMTP id 3aqcseahw5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 17:14:02 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 181HE0Q440698160
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Sep 2021 17:14:00 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6AFD878078;
-        Wed,  1 Sep 2021 17:14:00 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E1B577805C;
-        Wed,  1 Sep 2021 17:13:57 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.211.89.117])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  1 Sep 2021 17:13:57 +0000 (GMT)
-Message-ID: <95da4155a7d65a5085955b83a6d25aaadeb1d88e.camel@linux.ibm.com>
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
- private memory
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Andy Lutomirski <luto@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-Date:   Wed, 01 Sep 2021 10:13:56 -0700
-In-Reply-To: <85b1dabf-f7be-490a-a856-28227a85ab3a@www.fastmail.com>
-References: <20210824005248.200037-1-seanjc@google.com>
-         <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
-         <YSlkzLblHfiiPyVM@google.com>
-         <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
-         <YS6lIg6kjNPI1EgF@google.com>
-         <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
-         <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
-         <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
-         <85b1dabf-f7be-490a-a856-28227a85ab3a@www.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0TxHihYJkq5cDi4z8E0PEVP336--GHLZ
-X-Proofpoint-ORIG-GUID: K2bKnIWqtE-C5aGE46gfB3IBKWxJjcd8
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-01_05:2021-09-01,2021-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 clxscore=1015 impostorscore=0 bulkscore=0 suspectscore=0
- mlxlogscore=999 phishscore=0 mlxscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2109010098
+        Wed, 1 Sep 2021 13:15:45 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 1BB1B5C0076;
+        Wed,  1 Sep 2021 13:14:48 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute1.internal (MEProxy); Wed, 01 Sep 2021 13:14:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=PjI/Na3u99SdyJiZLuyCXPem/Uar
+        db9RSRjNBRnAjTs=; b=UdwBpIi5+aPrVMeubICwqzZ+llcAdAR05tucL01juVRT
+        nGKaB+eE/Iy0StUKvrPNyTMRa5Ob/wahSGNbK3/Oa5r70yJ0jp6TBRhoKddJNpeh
+        M3iy54fDqlgE7TitGBKfPp6fj5JKuU44ANcLFXh1oJN9ScYBovp9qTAD3eC2Cfme
+        lp+dz+9mVa/b25VrDfNgxuhyE0zfhA+mbP7OwenJ2zLeNTqkDaOC1DvyzTRsM5A4
+        rxi+OOZ8wncpD9ItTeXVJeL8iaqDaMu6/l2dp8sm0S6bgbHjf2gLsTmff3BA6kE9
+        phgNq7Y44jC0ZvkF6QbkiklatyS3a2eL+YNIlqwZ2A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=PjI/Na
+        3u99SdyJiZLuyCXPem/Uardb9RSRjNBRnAjTs=; b=qy6Y0tkBC5GAe4YphlEuTp
+        Gj2DToBLWWn022elJsSRXYOy7MkorEbyu7ghipPnL0kk+oMwTj/aKIutsJ2Tyhq/
+        ncYlMQ6OUW/OGGQhA2VThCfr33apDPFGbSj3/eYFktwLGT+cA+2I/KfkNkwKc8+k
+        /YyYFMSnArCzb7vq2hOUf9huZl63dlgVo9gk56kPdTs1nUNfr72uc3S81JPx+xJ7
+        7hVbvT7GJWG964ruks4Ku/cQU3rpbseIgREaa7KPXa6BeYspCUXy6PukuQQZ51YB
+        pb4XDuXp3dU1nQemEnFXmJpvXmSHtIaEeCR/g4GaM/xrelvxYoBe1HT4bczf/7Jw
+        ==
+X-ME-Sender: <xms:BbUvYQ1sNZhPhSWZ8wIVBe4sSyytxkhOf_z9JCSwcl03vMZPCBfnVA>
+    <xme:BbUvYbHLxPe1UnR19Mh0Iz_PGkO5OCoFmF3Wr_QnrhXk-rmzgzuJDHaoaHfZbcf2n
+    felhpgWMqlinKYmASY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedguddutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhv
+    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
+    grthhtvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudeh
+    vdefkeffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:BbUvYY4YWIp3Eb0cjlTcK1NGDzD1hrSg7GgJW2rxK-EuY4W2S8kHBw>
+    <xmx:BbUvYZ10XRl0fzvhCwZqF4SUKtlI4YUGzihYB7hXH5q8SHvrCx4PaQ>
+    <xmx:BbUvYTF5j6atbFgqgrjN_jnYqxpqZx84e1kINutI5izBjfKDKxOq5w>
+    <xmx:CLUvYS2kLBGQjA-3vfiLoeN_eHZSpnyrNkz9Yvh7O3ivVbhnvwUvmg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7845151C0061; Wed,  1 Sep 2021 13:14:45 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1126-g6962059b07-fm-20210901.001-g6962059b
+Mime-Version: 1.0
+Message-Id: <adee671d-976a-4906-8592-c7391da9906b@www.fastmail.com>
+In-Reply-To: <YS6hl0gAOMoMxNhf@sunset>
+References: <20210828153642.19396-1-sven@svenpeter.dev>
+ <20210828153642.19396-7-sven@svenpeter.dev> <YS6hl0gAOMoMxNhf@sunset>
+Date:   Wed, 01 Sep 2021 19:14:24 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
+Cc:     iommu@lists.linux-foundation.org, "Joerg Roedel" <joro@8bytes.org>,
+        "Will Deacon" <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Alexander Graf" <graf@amazon.com>,
+        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/8] iommu: Move IOMMU pagesize check to attach_device
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-01 at 10:08 -0700, Andy Lutomirski wrote:
+
+
+On Tue, Aug 31, 2021, at 23:39, Alyssa Rosenzweig wrote:
+> > +	if ((1 << __ffs(domain->pgsize_bitmap)) > PAGE_SIZE) {
 > 
-> On Wed, Sep 1, 2021, at 9:18 AM, James Bottomley wrote:
-> > On Wed, 2021-09-01 at 08:54 -0700, Andy Lutomirski wrote:
-> > [...]
-> > > If you want to swap a page on TDX, you can't.  Sorry, go directly
-> > > to jail, do not collect $200.
-> > 
-> > Actually, even on SEV-ES you can't either.  You can read the
-> > encrypted page and write it out if you want, but unless you swap it
-> > back to the exact same physical memory location, the encryption key
-> > won't work.  Since we don't guarantee this for swap, I think swap
-> > won't actually work for any confidential computing environment.
-> > 
-> > > So I think there are literally zero code paths that currently
-> > > call try_to_unmap() that will actually work like that on TDX.  If
-> > > we run out of memory on a TDX host, we can kill the guest
-> > > completely and reclaim all of its memory (which probably also
-> > > involves killing QEMU or whatever other user program is in
-> > > charge), but that's really our only option.
-> > 
-> > I think our only option for swap is guest co-operation.  We're
-> > going to have to inflate a balloon or something in the guest and
-> > have the guest driver do some type of bounce of the page, where it
-> > becomes an unencrypted page in the guest (so the host can read it
-> > without the physical address keying of the encryption getting in
-> > the way) but actually encrypted with a swap transfer key known only
-> > to the guest.  I assume we can use the page acceptance
-> > infrastructure currently being discussed elsewhere to do swap back
-> > in as well ... the host provides the guest with the encrypted swap
-> > page and the guest has to decrypt it and place it in encrypted
-> > guest memory.
+> Not a fan of this construction. Could you assign `(1 <<
+> __ffs(domain->pgsize_bitmap))` to an appropriately named temporary (e.g
+> min_io_pgsize) so it's clearer what's going on?
+
+Good point, will do that for the next version.
+
 > 
-> I asked David, and he said the PSP offers a swapping mechanism for
-> SEV-ES.  I haven’t read the details, but they should all be public.
+> > +		pr_warn("IOMMU page size cannot represent CPU pages.\n");
+> 
+> "Represent" how?
+> 
 
-Well it does, but it's not useful: we can't use the PSP for bulk
-encryption, it's too slow.  That's why we're having to fuss about fast
-migration in the first place.  In theory the two PSPs can co-operate to
-migrate a guest but only if you have about a year to wait for it to
-happen.
-
-James
+Looks like I dropped an "exactly" there when taking this line from iova.c :)
 
 
+
+Thanks,
+
+
+Sven
