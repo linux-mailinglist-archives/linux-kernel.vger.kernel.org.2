@@ -2,144 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FC23FD1A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C383FD1A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241755AbhIADGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 23:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241438AbhIADGn (ORCPT
+        id S241746AbhIADIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 23:08:24 -0400
+Received: from mail-m17644.qiye.163.com ([59.111.176.44]:25174 "EHLO
+        mail-m17644.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231712AbhIADIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 23:06:43 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511C8C0613D9
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 20:05:47 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so3603484pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 20:05:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=squareup.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=nyOJ9iZETVTEFk6iWhg2g1yikDtoNUIcwl8+erJ8BFY=;
-        b=d1V6u3ysAEYUUAHURWSacyDQzOtUqDO+ucg+6rnhcJevnwInrzshAWGb/fRLWLMwla
-         cuFmZBqSoqtR3njWqQ2qYCmhP3gd3jLtSBV4DjFpwkNu5EM4ZRupyrAVEWSw0KpM6qhv
-         645zstCpXVFvmC3fyKt0XuANOdSmyUHDvepPQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=nyOJ9iZETVTEFk6iWhg2g1yikDtoNUIcwl8+erJ8BFY=;
-        b=AauoYpWhCC/7kpKYBdIvYJAvE2osk0xpqWBoOH54oFjOHaurE/KbAQSDEe8IOknuwA
-         kgFfmQBPYUOGGROEuV5VVnkYCAFQ2rMjY+R4myHL8Nv87nmdZEbz7OVzxVR3uhiWKzX9
-         48Ca/BONMz3utYBko45EklD+JDSjeDyf0DIoNaAE4kTTJ8mhilAloLdGtpAg/LPfXZNY
-         tCWNVIeZLSPhJCXAO2AvZ924QSbOVlp6iVqsoS1bA0DyBdekgW5fyj1ZVvtSuD8F7WjZ
-         Cqa4c8T+86pvHGSfhiNslveWpR7IbI0n0J1gI0MiMCvqZa5vaOjiZcB7fhza0sRgPJYE
-         85ew==
-X-Gm-Message-State: AOAM531JOaqbf4NihwadwbO7K/GpCw7Ujs38rRW+PpJ1jksGggSXNPOa
-        DIk40rvmctAtzcrpkU7OawcAoQ==
-X-Google-Smtp-Source: ABdhPJwIDQ1redj58uqfaouUGUpSY5cLZfiK40nKf7S/m9qcC6EahuadQ5zCgv6Fu3HiSg47QDsp0Q==
-X-Received: by 2002:a17:90a:5d12:: with SMTP id s18mr9226138pji.35.1630465546442;
-        Tue, 31 Aug 2021 20:05:46 -0700 (PDT)
-Received: from localhost (138-229-239-060.res.spectrum.com. [138.229.239.60])
-        by smtp.gmail.com with ESMTPSA id 77sm10856219pfz.118.2021.08.31.20.05.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 31 Aug 2021 20:05:45 -0700 (PDT)
-From:   Benjamin Li <benl@squareup.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Benjamin Li <benl@squareup.com>, stable@vger.kernel.org,
+        Tue, 31 Aug 2021 23:08:22 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [58.213.83.158])
+        by mail-m17644.qiye.163.com (Hmail) with ESMTPA id AF8CD3200D6;
+        Wed,  1 Sep 2021 11:07:24 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] wcn36xx: handle connection loss indication
-Date:   Tue, 31 Aug 2021 20:05:41 -0700
-Message-Id: <20210901030542.17257-1-benl@squareup.com>
-X-Mailer: git-send-email 2.17.1
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        mptcp@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] [v2] mptcp: Fix duplicated argument in protocol.h
+Date:   Wed,  1 Sep 2021 11:06:56 +0800
+Message-Id: <20210901030656.7383-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUNCSE1WT0tIQkMZHR9DTR
+        hJVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NyI6FDo6FT8BSEguCAFJSRYo
+        OQ8aCQFVSlVKTUhLT01OTU9OSEhKVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlO
+        Q1VJSkhVQ0hVSk5DWVdZCAFZQUlKSEw3Bg++
+X-HM-Tid: 0a7b9f53595ed99akuwsaf8cd3200d6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firmware sends delete_sta_context_ind when it detects the AP has gone
-away in STA mode. Right now the handler for that indication only handles
-AP mode; fix it to also handle STA mode.
+Fix the following coccicheck warning:
+./net/mptcp/protocol.h:36:50-73: duplicated argument to & or |
 
-Cc: stable@vger.kernel.org
-Fixes: 8def9ec46a5f ("wcn36xx: Enable firmware link monitoring")
-Signed-off-by: Benjamin Li <benl@squareup.com>
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+The OPTION_MPTCP_MPJ_SYNACK here is duplicate.
+Here should be OPTION_MPTCP_MPJ_ACK.
+
+Fixes: 74c7dfbee3e18 ("mptcp: consolidate in_opt sub-options fields in
+a bitmask")
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- drivers/net/wireless/ath/wcn36xx/smd.c | 44 +++++++++++++++++++-------
- 1 file changed, 33 insertions(+), 11 deletions(-)
+Changelog:
+v2:
+- Add a Fixes-tag.
+---
+ net/mptcp/protocol.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/wcn36xx/smd.c b/drivers/net/wireless/ath/wcn36xx/smd.c
-index 57fa857b290b..f6bea896abe8 100644
---- a/drivers/net/wireless/ath/wcn36xx/smd.c
-+++ b/drivers/net/wireless/ath/wcn36xx/smd.c
-@@ -2623,30 +2623,52 @@ static int wcn36xx_smd_delete_sta_context_ind(struct wcn36xx *wcn,
- 					      size_t len)
- {
- 	struct wcn36xx_hal_delete_sta_context_ind_msg *rsp = buf;
--	struct wcn36xx_vif *tmp;
-+	struct wcn36xx_vif *vif_priv;
-+	struct ieee80211_vif *vif;
-+	struct ieee80211_bss_conf *bss_conf;
- 	struct ieee80211_sta *sta;
-+	bool found = false;
+diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+index d7aba1c4dc48..64c9a30e0871 100644
+--- a/net/mptcp/protocol.h
++++ b/net/mptcp/protocol.h
+@@ -34,7 +34,7 @@
+ #define OPTIONS_MPTCP_MPC	(OPTION_MPTCP_MPC_SYN | OPTION_MPTCP_MPC_SYNACK | \
+ 				 OPTION_MPTCP_MPC_ACK)
+ #define OPTIONS_MPTCP_MPJ	(OPTION_MPTCP_MPJ_SYN | OPTION_MPTCP_MPJ_SYNACK | \
+-				 OPTION_MPTCP_MPJ_SYNACK)
++				 OPTION_MPTCP_MPJ_ACK)
  
- 	if (len != sizeof(*rsp)) {
- 		wcn36xx_warn("Corrupted delete sta indication\n");
- 		return -EIO;
- 	}
- 
--	wcn36xx_dbg(WCN36XX_DBG_HAL, "delete station indication %pM index %d\n",
--		    rsp->addr2, rsp->sta_id);
-+	wcn36xx_dbg(WCN36XX_DBG_HAL,
-+		    "delete station indication %pM index %d reason %d\n",
-+		    rsp->addr2, rsp->sta_id, rsp->reason_code);
- 
--	list_for_each_entry(tmp, &wcn->vif_list, list) {
-+	list_for_each_entry(vif_priv, &wcn->vif_list, list) {
- 		rcu_read_lock();
--		sta = ieee80211_find_sta(wcn36xx_priv_to_vif(tmp), rsp->addr2);
--		if (sta)
--			ieee80211_report_low_ack(sta, 0);
-+		vif = wcn36xx_priv_to_vif(vif_priv);
-+
-+		if (vif->type == NL80211_IFTYPE_STATION) {
-+			/* We could call ieee80211_find_sta too, but checking
-+			 * bss_conf is clearer.
-+			 */
-+			bss_conf = &vif->bss_conf;
-+			if (vif_priv->sta_assoc &&
-+			    !memcmp(bss_conf->bssid, rsp->addr2, ETH_ALEN)) {
-+				found = true;
-+				wcn36xx_dbg(WCN36XX_DBG_HAL,
-+					    "connection loss bss_index %d\n",
-+					    vif_priv->bss_index);
-+				ieee80211_connection_loss(vif);
-+			}
-+		} else {
-+			sta = ieee80211_find_sta(vif, rsp->addr2);
-+			if (sta) {
-+				found = true;
-+				ieee80211_report_low_ack(sta, 0);
-+			}
-+		}
-+
- 		rcu_read_unlock();
--		if (sta)
-+		if (found)
- 			return 0;
- 	}
- 
--	wcn36xx_warn("STA with addr %pM and index %d not found\n",
--		     rsp->addr2,
--		     rsp->sta_id);
-+	wcn36xx_warn("BSS or STA with addr %pM not found\n", rsp->addr2);
- 	return -ENOENT;
- }
- 
+ /* MPTCP option subtypes */
+ #define MPTCPOPT_MP_CAPABLE	0
 -- 
-2.17.1
+2.25.1
 
