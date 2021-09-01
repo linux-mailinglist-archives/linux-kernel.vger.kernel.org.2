@@ -2,143 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A4D3FD839
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139663FD838
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238597AbhIAK4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 06:56:35 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:63071 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230491AbhIAK4e (ORCPT
+        id S238327AbhIAK4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 06:56:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236965AbhIAK4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 06:56:34 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630493738; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=i/rV9eRMsBXO4MHz9MLGdRubgAKJZJUODTtpd0gk+CQ=;
- b=fXPQUb2CABG+iafqDiRxHun7vs7fWQaE+oo4OFT1DNd8zkwupH6/JLCrDHWUwLs3JROcECA7
- n6wUl2lO3Dpif/z2t3ygMCvSdkrcoM2RLTi1Dq2wSF+Gi/4uCRKYuDNOeAxcIN0nXV0Mognu
- 2+lslGLy4sv2UKOlRCueepUTq3Q=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 612f5c15cd680e89691f72cb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 01 Sep 2021 10:55:17
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7B546C43617; Wed,  1 Sep 2021 10:55:16 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B8945C43460;
-        Wed,  1 Sep 2021 10:55:15 +0000 (UTC)
+        Wed, 1 Sep 2021 06:56:32 -0400
+Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5684DC061575;
+        Wed,  1 Sep 2021 03:55:35 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id LNtxmJYIX0e6wLNtymQ7BH; Wed, 01 Sep 2021 12:55:32 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1630493732; bh=3CR+//ZxhJt9SvSfSJN0ubf+WZpbZg5T/z9jzNJLfFw=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=JuHBV1abuHmEeV6iCn7c2sw7BQJDxzn7qfiJ/HId0GOQKX24YI0VbMKEOp4CmCEnO
+         ZMs4VWwiM3M8qvO6n3zqa5gxqcOS6ptsNbZElDLifHIW+ivei92N+t7fohS+Ur8oF6
+         AWBstphX4Bb7pGb8EVxG4+jOQlDJJ7lWF76BlCwpOvfST+T3690Bo6XVwsIirShREK
+         VlhsJYryuV3MnKv57GETkwzRJ3kKhgDC+feNRp5un28y4Y53PyzCZTzLiTO5MQawaA
+         q1jzOf9CssjvCHt+I9AWx1ldqsj5UfVPJvgMHNFe0sTkUYpmjYL76kHbH9prKTdj5/
+         rsNUGOy6cLfdQ==
+Subject: Re: [PATCH v2] usb: stkwebcam: update the reference count of the usb
+ device structure
+To:     Salah Triki <salah.triki@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Cai Huoqing <caihuoqing@baidu.com>
+References: <20210731161831.GA909851@pc>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <ab85c4e6-d3f4-5861-f998-028cdab5fe5a@xs4all.nl>
+Date:   Wed, 1 Sep 2021 12:55:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 01 Sep 2021 16:25:15 +0530
-From:   mdalam@codeaurora.org
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     mani@kernel.org, boris.brezillon@collabora.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org, stable@kernel.org
-Subject: Re: [PATCH V2] mtd: rawnand: qcom: Update code word value for raw
- read
-In-Reply-To: <20210831134231.14413a4f@xps13>
-References: <1630400200-2522-1-git-send-email-mdalam@codeaurora.org>
- <20210831134231.14413a4f@xps13>
-Message-ID: <114bc85cdd51cb6c885b00d4d2819df9@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20210731161831.GA909851@pc>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfJuBWBuoZ5MLRLDrRIZFbRcF/uoyY7AETq9z/srKgOsXZp8S2mUwaeWniWVJmxUFnBOzyWq167wEdLaQSVW6Ajo6OsDCFYP41xf1RdbVdVvrLpndrbHN
+ 9lhdSGpzlSQwAV7TRqiDhJMcEN4AnCoOUu4NXPx/RFPPXt9OUg75Qt2M7xIOytD9jDq2VdPzo7M7p53QhRdclNHwl0TE01P8zebmZQuPEqiSeMi1Z+/y90Z+
+ QLRJVMtzcvB0cT82CpF+olv9dpZbMT5R/j7EBr2njwRHIM9/fHlmHxGBMw2fEhJMVHMkzHKWjqPxHcb04giHV3fC7a++nkkY7AZELf6NFnpWMmpYbTvRsrvX
+ V29QWJKW4wpplpztKD5hxsGamkVKbiMdaa0tReaplskVaBatk0ayquWrHRnX63ecn8O4f6TL0He0o6qG9zhkvJogNjLOCZ5/yeiZHlD5RF/dIRzNbM8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-31 17:12, Miquel Raynal wrote:
-> Hi Md,
-> 
-> Md Sadre Alam <mdalam@codeaurora.org> wrote on Tue, 31 Aug 2021
-> 14:26:40 +0530:
-> 
->> From QPIC V2 onwards there is a separate register to read
->> last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
->> 
->> qcom_nandc_read_cw_raw() is used to read only one code word
->> at a time. If we will configure number of code words to 1 in
->> in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
->> its reading the last code word, since from QPIC V2 onwards
->> we are having separate register to read the last code word,
->> we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
->> register to fetch data from controller buffer to system
->> memory.
->> 
->> Cc: stable@kernel.org
-> 
-> You miss the Fixes tag which is certainly the most important.
+Hi Salah, Cai,
 
-   Updated in V3 patch.
-> 
->> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
->> 
->> [V2]
->>  * Added stable tags
-> 
-> The changelog should not be part of the commit message.
-> You should put it...
-> 
-   Updated in V3 patch.
+I received patches for this from both of you, but both have issues:
 
->> ---
+On 31/07/2021 18:18, Salah Triki wrote:
+> Use usb_get_dev() to increment the reference count of the usb device
+> structure in order to avoid releasing the structure while it is still in
+> use. And use usb_put_dev() to decrement the reference count and thus,
+> when it will be equal to 0 the structure will be released.
 > 
-> ...here.
+> Signed-off-by: Salah Triki <salah.triki@gmail.com>
+> ---
+> Change since v1:
+> 	Modification of the description
 > 
->>  drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
->>  1 file changed, 6 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c 
->> b/drivers/mtd/nand/raw/qcom_nandc.c
->> index ef0bade..04e6f7b 100644
->> --- a/drivers/mtd/nand/raw/qcom_nandc.c
->> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
->> @@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, 
->> struct nand_chip *chip,
->>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
->>  	int data_size1, data_size2, oob_size1, oob_size2;
->>  	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
->> +	int raw_cw = cw;
->> 
->>  	nand_read_page_op(chip, page, 0, NULL, 0);
->>  	host->use_ecc = false;
->> 
->> +	if (nandc->props->qpic_v2)
->> +		raw_cw = ecc->steps - 1;
->> +
->>  	clear_bam_transaction(nandc);
->>  	set_address(host, host->cw_size * cw, page);
->> -	update_rw_regs(host, 1, true, cw);
->> +	update_rw_regs(host, 1, true, raw_cw);
->>  	config_nand_page_read(chip);
->> 
->>  	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
->> @@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, 
->> struct nand_chip *chip,
->>  		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
->>  	}
->> 
->> -	config_nand_cw_read(chip, false, cw);
->> +	config_nand_cw_read(chip, false, raw_cw);
->> 
->>  	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
->>  	reg_off += data_size1;
+>  drivers/media/usb/stkwebcam/stk-webcam.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Thanks,
-> Miquèl
+> diff --git a/drivers/media/usb/stkwebcam/stk-webcam.c b/drivers/media/usb/stkwebcam/stk-webcam.c
+> index a45d464427c4..3b14679829ed 100644
+> --- a/drivers/media/usb/stkwebcam/stk-webcam.c
+> +++ b/drivers/media/usb/stkwebcam/stk-webcam.c
+> @@ -1309,7 +1309,7 @@ static int stk_camera_probe(struct usb_interface *interface,
+>  	init_waitqueue_head(&dev->wait_frame);
+>  	dev->first_init = 1; /* webcam LED management */
+>  
+> -	dev->udev = udev;
+> +	dev->udev = usb_get_dev(udev);
+>  	dev->interface = interface;
+>  	usb_get_intf(interface);
+
+In the error path of stk_camera_probe you need to call usb_put_dev(), otherwise
+the udev refcount won't go to 0.
+
+>  
+> @@ -1376,6 +1376,7 @@ static void stk_camera_disconnect(struct usb_interface *interface)
+>  
+>  	usb_set_intfdata(interface, NULL);
+>  	unset_present(dev);
+> +	usb_put_dev(interface_to_usbdev(interface));
+
+Cai just used usb_put_dev(dev->udev) here which makes more sense.
+
+Cai also moved this to the stk_v4l_dev_release() function, which is probably
+a better place.
+
+However, there is another bug here as well: these lines in stk_camera_disconnect()
+should be moved to stk_v4l_dev_release():
+
+        v4l2_ctrl_handler_free(&dev->hdl);
+        v4l2_device_unregister(&dev->v4l2_dev);
+        kfree(dev);
+
+When the last user of the video device has closed their fh, then stk_v4l_dev_release()
+is called, so any cleanup of resources/memory should happen there. Right now if you are
+streaming and the webcam is disconnected (or the device forcibly unloaded), the dev
+pointer is freed in disconnect, but stk_v4l_dev_release() is called later and will
+reference freed memory.
+
+I'm not sure who of the two of you will make a v3, I leave that to you to fight out :-)
+
+Regards,
+
+	Hans
+
+>  
+>  	wake_up_interruptible(&dev->wait_frame);
+>  
+> 
+
