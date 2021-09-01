@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F463FDA87
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6453FDABE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245569AbhIAMct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:32:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34264 "EHLO mail.kernel.org"
+        id S244902AbhIAMes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:34:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244901AbhIAMbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:31:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A44DD610C7;
-        Wed,  1 Sep 2021 12:30:43 +0000 (UTC)
+        id S244795AbhIAMcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:32:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB001610CE;
+        Wed,  1 Sep 2021 12:31:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499444;
-        bh=dpZviuB18/f2+QVvv/GObX4eLrcajeiFgytlhcVkGzI=;
+        s=korg; t=1630499501;
+        bh=vIPqLVxU8JpdLAM9GSc3B+uDioxIjvzFNcsB3uiDjlI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S8yAz1fxssOlG9dTDScjtLBzVCA/g0sZhSR7QXIh8KvVkZUxoiAUUgUm3bXohSbFU
-         HQw5d385zMqxpqxxPg4PUTe3CS975NSSN3XFSN/qP3gum+JkFjCCoLujp5AKmrpdCb
-         HrsZQR425dt6T+ENbah8hPE2BVxwXmvntrStZzCc=
+        b=IqR/wDDWp2T06wEzBYA6DgLsg9SciXAKwduNGBIIHMU1MTDBA/ZZXE5+hqNFyC806
+         ZQXVunoXfZLLYR1xVaUboNtAlAm7h5Ve8yjl7bE+4UyzLh7pYpRH414PKCiN/E+jS7
+         H+wths5qNt94UMvUHEnqDzbMaH9cN941+rSEOb40=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ariel Elior <aelior@marvell.com>,
-        Shai Malin <smalin@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Guojia Liao <liaoguojia@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 24/33] qed: qed ll2 race condition fixes
+Subject: [PATCH 5.4 23/48] net: hns3: fix duplicate node in VLAN list
 Date:   Wed,  1 Sep 2021 14:28:13 +0200
-Message-Id: <20210901122251.591791007@linuxfoundation.org>
+Message-Id: <20210901122254.175251794@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
-References: <20210901122250.752620302@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,88 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shai Malin <smalin@marvell.com>
+From: Guojia Liao <liaoguojia@huawei.com>
 
-[ Upstream commit 37110237f31105d679fc0aa7b11cdec867750ea7 ]
+[ Upstream commit 94391fae82f71c98ecc7716a32611fcca73c74eb ]
 
-Avoiding qed ll2 race condition and NULL pointer dereference as part
-of the remove and recovery flows.
+VLAN list should not be added duplicate VLAN node, otherwise it would
+cause "add failed" when restore VLAN from VLAN list, so this patch adds
+VLAN ID check before adding node into VLAN list.
 
-Changes form V1:
-- Change (!p_rx->set_prod_addr).
-- qed_ll2.c checkpatch fixes.
-
-Change from V2:
-- Revert "qed_ll2.c checkpatch fixes".
-
-Signed-off-by: Ariel Elior <aelior@marvell.com>
-Signed-off-by: Shai Malin <smalin@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: c6075b193462 ("net: hns3: Record VF vlan tables")
+Signed-off-by: Guojia Liao <liaoguojia@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qed/qed_ll2.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_ll2.c b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
-index 2847509a183d..cb3569ac85f7 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_ll2.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_ll2.c
-@@ -354,6 +354,9 @@ static int qed_ll2_txq_completion(struct qed_hwfn *p_hwfn, void *p_cookie)
- 	unsigned long flags;
- 	int rc = -EINVAL;
- 
-+	if (!p_ll2_conn)
-+		return rc;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+index 28e260439196..aa402e267121 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+@@ -8006,7 +8006,11 @@ static int hclge_init_vlan_config(struct hclge_dev *hdev)
+ static void hclge_add_vport_vlan_table(struct hclge_vport *vport, u16 vlan_id,
+ 				       bool writen_to_tbl)
+ {
+-	struct hclge_vport_vlan_cfg *vlan;
++	struct hclge_vport_vlan_cfg *vlan, *tmp;
 +
- 	spin_lock_irqsave(&p_tx->lock, flags);
- 	if (p_tx->b_completing_packet) {
- 		rc = -EBUSY;
-@@ -527,7 +530,16 @@ static int qed_ll2_rxq_completion(struct qed_hwfn *p_hwfn, void *cookie)
- 	unsigned long flags = 0;
- 	int rc = 0;
++	list_for_each_entry_safe(vlan, tmp, &vport->vlan_list, node)
++		if (vlan->vlan_id == vlan_id)
++			return;
  
-+	if (!p_ll2_conn)
-+		return rc;
-+
- 	spin_lock_irqsave(&p_rx->lock, flags);
-+
-+	if (!QED_LL2_RX_REGISTERED(p_ll2_conn)) {
-+		spin_unlock_irqrestore(&p_rx->lock, flags);
-+		return 0;
-+	}
-+
- 	cq_new_idx = le16_to_cpu(*p_rx->p_fw_cons);
- 	cq_old_idx = qed_chain_get_cons_idx(&p_rx->rcq_chain);
- 
-@@ -848,6 +860,9 @@ static int qed_ll2_lb_rxq_completion(struct qed_hwfn *p_hwfn, void *p_cookie)
- 	struct qed_ll2_info *p_ll2_conn = (struct qed_ll2_info *)p_cookie;
- 	int rc;
- 
-+	if (!p_ll2_conn)
-+		return 0;
-+
- 	if (!QED_LL2_RX_REGISTERED(p_ll2_conn))
- 		return 0;
- 
-@@ -871,6 +886,9 @@ static int qed_ll2_lb_txq_completion(struct qed_hwfn *p_hwfn, void *p_cookie)
- 	u16 new_idx = 0, num_bds = 0;
- 	int rc;
- 
-+	if (!p_ll2_conn)
-+		return 0;
-+
- 	if (!QED_LL2_TX_REGISTERED(p_ll2_conn))
- 		return 0;
- 
-@@ -1628,6 +1646,8 @@ int qed_ll2_post_rx_buffer(void *cxt,
- 	if (!p_ll2_conn)
- 		return -EINVAL;
- 	p_rx = &p_ll2_conn->rx_queue;
-+	if (!p_rx->set_prod_addr)
-+		return -EIO;
- 
- 	spin_lock_irqsave(&p_rx->lock, flags);
- 	if (!list_empty(&p_rx->free_descq))
+ 	vlan = kzalloc(sizeof(*vlan), GFP_KERNEL);
+ 	if (!vlan)
 -- 
 2.30.2
 
