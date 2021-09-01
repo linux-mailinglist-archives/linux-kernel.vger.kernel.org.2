@@ -2,110 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36EB83FE14C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBAD3FE14F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345768AbhIARlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:41:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
+        id S1344802AbhIARmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345543AbhIARlA (ORCPT
+        with ESMTP id S1346140AbhIARmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:41:00 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9159BC061575;
-        Wed,  1 Sep 2021 10:40:03 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id c8-20020a7bc008000000b002e6e462e95fso245738wmb.2;
-        Wed, 01 Sep 2021 10:40:03 -0700 (PDT)
+        Wed, 1 Sep 2021 13:42:16 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC15C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 10:41:19 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id t4so244907qkb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:41:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NwiEX4/BmUHjFjLm/pps/RMvagHoU8AMBDUAk6ldmoA=;
-        b=XqttsRYNlYYkM99XNLfcCtTtSZ5/0zYjcvuvVsEJ8NRRrDHdiIsmRx1HmOpglU73Ha
-         TyUch1MzJwDhPjWpjOss5Hm1kzwms3qYBfBlz2h0FSyzwdJhVArezy+quIx7QeFI8r1k
-         Q14ABlDcTc0OQdeVeSb/ZEmJyD/EuuYq8kZmn2IA7Xg3B524PpLcI4mItpEXF8WXmI3b
-         BidUOB03PeFecnHivH6QhzEni1pstRz3qskOjTiTPr79OKOQqWW/J7nBRbrkeeGoLSeq
-         ZpDd/eqCB96rVMPFuVSrdggFiLvuPVI6NdseTFGqf0lK6v4RLCXwazGcgOha55P61L/p
-         LgQA==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=X47a3I4hEhBZ7dlV+A+sHbc97pXib7+eoy5ndeUC/TI=;
+        b=VqOKKbbrSBuhFKMRNR0Ia2mNf7T780bVKLBOQH84t92wPPPn6N0g6OT3TZtoskO4e3
+         JGlGPI66p6JPQErA6IaIqLkM9PSaiMowv5iVt69X6K2zpu2u4wxVGC/XmHbXf6yV7Ac0
+         Bhnvain85DjiZ5r6nwm48n1VGerr0s7KiwaKr0dSeG/FFUcHwP7/N+mVBNYfXo43P9Rd
+         ENIxm8aM3fmxuEx4WCeDq7dCcPDD2YUfNlq92bdaWqewTyvCbkiqgaFXdVXfNu17tfwb
+         +h/V8thxXYKgnP7+Oi9WSSGfuCiDoWVcxoY8aWchVGrmqxtj1btIJnhfXLjaMn+RndhW
+         36jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NwiEX4/BmUHjFjLm/pps/RMvagHoU8AMBDUAk6ldmoA=;
-        b=OwPZmM6Ig3Cu4A1jL/UbrpfkEeQdxdLixLnZjC10zTjO9KvjigZj4Cr3w6UwpEpp4T
-         jz/rHSLbZTS9GQ9SoSmiQnwwBFSHuSW4ZEEaAB3QMOj8TshGGzhS3zkGZht+ndre4OBU
-         Q8V/RNzcr3VxIMYnGv58jUKEwsWp5ZmISddc1lBpy/SLLokbTDOM0RwRq3Tj44NtqKZT
-         tgZACsUhzNSXkW7m/U0jwvKuDcSor+6+jnRQOxRVuyQedb6ocmZTT4+4cv+Iarlov4xE
-         Z9ExEuHB4B+TDtCHIC+yM8mfTt1LmHuakb1qPnE7MnSdqp68/jpBJt2aXr47bE4GgPjl
-         RmPA==
-X-Gm-Message-State: AOAM5315G3VpixgrNSXxWLZE8AlTjuMSbGjg9sE+vlTFNepaWOnFg6a2
-        aIh171c8ZMDh3kwoxTmxsKvPhsOByD8=
-X-Google-Smtp-Source: ABdhPJyanR3u0J1KdpUYbubSEoP0tYiXAY82tfxGC7QyoAaVGAjxr6KWybOhdcy81G006H+UCFJxqA==
-X-Received: by 2002:a05:600c:a05:: with SMTP id z5mr585300wmp.73.1630518002158;
-        Wed, 01 Sep 2021 10:40:02 -0700 (PDT)
-Received: from debian64.daheim (p5b0d7864.dip0.t-ipconnect.de. [91.13.120.100])
-        by smtp.gmail.com with ESMTPSA id k16sm96413wrx.87.2021.09.01.10.40.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=X47a3I4hEhBZ7dlV+A+sHbc97pXib7+eoy5ndeUC/TI=;
+        b=QHbhYP6atk0ob2suwGMp5n48WJn/Fxv3VDdA0PQM3Ab9sz7nsv9lCJiPDEP+Oh0H7P
+         IxUCO9CRvHwVO9An3d+gIGEbMHdONcVRE9c1dWMGWy808f3zXY7o1JYvSAdjLLbPoWLK
+         KofsUbh1wWQj/I8/OwsfV0yPF0pAqQdMSXW3/PEAA/Ppgq8PGkAvXX5OdQ3/GYo2zrhU
+         2bwQ2Y3dyH+pNYPsk+h7XOYQxU/KxRXR25KeI407xrVoqaR5RSlawEfY7X4cOWKOG3R5
+         6rE3+4syDr0Z+0M/eF0EcmmPk2rwgv9sWiaRYcfn8jOiIj1IvkdKpZIyH8rXiAP71Mhp
+         u0MA==
+X-Gm-Message-State: AOAM5310o3ocqzRPsD3BSTBwInyqTM9t1CR10SNRr6pmyWulGuy8Jg7L
+        TO/eidSwcSyc7nK9Yi2fWVNn4Q==
+X-Google-Smtp-Source: ABdhPJz67u5SOCvcRFUZ/9z75OUbkd1IVLeBx70CkD5mv/yNfKQJDwzQJMI0LHgKc9PiM6OxxyDy1Q==
+X-Received: by 2002:a05:620a:1388:: with SMTP id k8mr823968qki.152.1630518078495;
+        Wed, 01 Sep 2021 10:41:18 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id g1sm292244qti.56.2021.09.01.10.41.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 10:40:01 -0700 (PDT)
-Received: from localhost.daheim ([127.0.0.1])
-        by debian64.daheim with esmtp (Exim 4.95-RC2)
-        (envelope-from <chunkeey@gmail.com>)
-        id 1mLSLF-000Jxk-Pl;
-        Wed, 01 Sep 2021 19:40:00 +0200
-Subject: Re: [PATCH] p54: Remove obsolete comment
-To:     Wan Jiabing <wanjiabing@vivo.com>,
-        Christian Lamparter <chunkeey@googlemail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-References: <20210901024744.7013-1-wanjiabing@vivo.com>
-From:   Christian Lamparter <chunkeey@gmail.com>
-Message-ID: <1ac57e49-30e0-3ca1-c324-3aea2aec598b@gmail.com>
-Date:   Wed, 1 Sep 2021 19:40:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 01 Sep 2021 10:41:17 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 13:43:03 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YS+7pzI7pttxtFHT@cmpxchg.org>
+References: <YSU7WCYAY+ZRy+Ke@cmpxchg.org>
+ <YSVMAS2pQVq+xma7@casper.infradead.org>
+ <YSZeKfHxOkEAri1q@cmpxchg.org>
+ <20210826004555.GF12597@magnolia>
+ <YSjxlNl9jeEX2Yff@cmpxchg.org>
+ <YSkyjcX9Ih816mB9@casper.infradead.org>
+ <YS0WR38gCSrd6r41@cmpxchg.org>
+ <YS0h4cFhwYoW3MBI@casper.infradead.org>
+ <YS0/GHBG15+2Mglk@cmpxchg.org>
+ <YS1PzKLr2AWenbHF@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210901024744.7013-1-wanjiabing@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YS1PzKLr2AWenbHF@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/2021 04:47, Wan Jiabing wrote:
-> In commit d249ff28b1d8 ("intersil: remove obsolete prism54 wireless driver"),
-> prism54/isl_oid.h is deleted. The comment here is obsolete.
+On Mon, Aug 30, 2021 at 10:38:20PM +0100, Matthew Wilcox wrote:
+> On Mon, Aug 30, 2021 at 04:27:04PM -0400, Johannes Weiner wrote:
+> > Right, page tables only need a pfn. The struct page is for us to
+> > maintain additional state about the object.
+> > 
+> > For the objects that are subpage sized, we should be able to hold that
+> > state (shrinker lru linkage, referenced bit, dirtiness, ...) inside
+> > ad-hoc allocated descriptors.
+> > 
+> > Descriptors which could well be what struct folio {} is today, IMO. As
+> > long as it doesn't innately assume, or will assume, in the API the
+> > 1:1+ mapping to struct page that is inherent to the compound page.
 > 
-Instead of removing said "obsolete" comment, why not copy the
-excellent comment about that "frameburst technology" from the
-prism54/isl_oid.h file there?
+> Maybe this is where we fundamentally disagree.  I don't think there's
+> any point in *managing* memory in a different size from that in which it
+> is *allocated*.  There's no point in tracking dirtiness, LRU position,
+> locked, etc, etc in different units from allocation size.  The point of
+> tracking all these things is so we can allocate and free memory.  If
+> a 'cache descriptor' reaches the end of the LRU and should be reclaimed,
+> that's wasted effort in tracking if the rest of the 'cache descriptor'
+> is dirty and heavily in use.  So a 'cache descriptor' should always be
+> at least a 'struct page' in size (assuming you're using 'struct page'
+> to mean "the size of the smallest allocation unit from the page
+> allocator")
 
-Cheers,
-Christian
+First off, we've been doing this with the slab shrinker for decades.
 
+Second, you'll still be doing this when you track 4k struct pages in a
+system that is trying to serve primarily higher-order pages. Whether
+you free N cache descriptors to free a page, or free N pages to free a
+compound page, it's the same thing. You won't avoid this problem.
 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->   drivers/net/wireless/intersil/p54/fwio.c | 1 -
->   1 file changed, 1 deletion(-)
+> > > > Well yes, once (and iff) everybody is doing that. But for the
+> > > > foreseeable future we're expecting to stay in a world where the
+> > > > *majority* of memory is in larger chunks, while we continue to see 4k
+> > > > cache entries, anon pages, and corresponding ptes, yes?
+> > > 
+> > > No.  4k page table entries are demanded by the architecture, and there's
+> > > little we can do about that.
+> > 
+> > I wasn't claiming otherwise..?
 > 
-> diff --git a/drivers/net/wireless/intersil/p54/fwio.c b/drivers/net/wireless/intersil/p54/fwio.c
-> index bece14e4ff0d..1fe072de3e63 100644
-> --- a/drivers/net/wireless/intersil/p54/fwio.c
-> +++ b/drivers/net/wireless/intersil/p54/fwio.c
-> @@ -583,7 +583,6 @@ int p54_set_edcf(struct p54_common *priv)
->   	rtd = 3 * priv->coverage_class;
->   	edcf->slottime += rtd;
->   	edcf->round_trip_delay = cpu_to_le16(rtd);
-> -	/* (see prism54/isl_oid.h for further details) */
->   	edcf->frameburst = cpu_to_le16(0);
->   	edcf->flags = 0;
->   	memset(edcf->mapping, 0, sizeof(edcf->mapping));
-> 
+> You snipped the part of my paragraph that made the 'No' make sense.
+> I'm agreeing that page tables will continue to be a problem, but
+> everything else (page cache, anon, networking, slab) I expect to be
+> using higher order allocations within the next year.
 
+Some, maybe, but certainly not all of them. I'd like to remind you of
+this analysis that Al did on the linux source tree with various page
+sizes:
+
+https://lore.kernel.org/linux-mm/YGVUobKUMUtEy1PS@zeniv-ca.linux.org.uk/
+
+Page size	Footprint
+4Kb		1128Mb
+8Kb		1324Mb
+16Kb		1764Mb
+32Kb		2739Mb
+64Kb		4832Mb
+128Kb		9191Mb
+256Kb		18062Mb
+512Kb		35883Mb
+1Mb		71570Mb
+2Mb		142958Mb
+
+Even just going to 32k more than doubles the cache footprint of this
+one repo. This is a no-go from a small-file scalability POV.
+
+I think my point stands: for the foreseeable future, we're going to
+continue to see demand for 4k cache entries as well as an increasing
+demand for 2M blocks in the page cache and for anonymous mappings.
+
+We're going to need an allocation model that can handle this. Luckily,
+we already do...
+
+> > > > The slab allocator has proven to be an excellent solution to this
+> > > > problem, because the mailing lists are not flooded with OOM reports
+> > > > where smaller allocations fragmented the 4k page space. And even large
+> > > > temporary slab explosions (inodes, dentries etc.) are usually pushed
+> > > > back with fairly reasonable CPU overhead.
+> > > 
+> > > You may not see the bug reports, but they exist.  Right now, we have
+> > > a service that is echoing 2 to drop_caches every hour on systems which
+> > > are lightly loaded, otherwise the dcache swamps the entire machine and
+> > > takes hours or days to come back under control.
+> > 
+> > Sure, but compare that to the number of complaints about higher-order
+> > allocations failing or taking too long (THP in the fault path e.g.)...
+> 
+> Oh, we have those bug reports too ...
+> 
+> > Typegrouping isn't infallible for fighting fragmentation, but it seems
+> > to be good enough for most cases. Unlike the buddy allocator.
+> 
+> You keep saying that the buddy allocator isn't given enough information to
+> do any better, but I think it is.  Page cache and anon memory are marked
+> with GFP_MOVABLE.  Slab, network and page tables aren't.  Is there a
+> reason that isn't enough?
+
+Anon and cache don't have the same lifetime, and anon isn't
+reclaimable without swap. Yes, movable means we don't have to reclaim
+them, but background reclaim happens anyway due to the watermarks, and
+if that doesn't produce contiguous blocks by itself already then
+compaction has to run on top of that. This is where we tend to see the
+allocation latencies that prohibit THP allocations during page faults.
+
+I would say the same is true for page tables allocated alongside
+network buffers and unreclaimable slab pages. I.e. a burst in
+short-lived network buffer allocations being interleaved with
+long-lived page table allocations. Ongoing concurrency scaling is
+going to increase the likelihood of those happening.
+
+> I think something that might actually help is if we added a pair of new
+> GFP flags, __GFP_FAST and __GFP_DENSE.  Dense allocations are those which
+> are expected to live for a long time, and so the page allocator should
+> try to group them with other dense allocations.  Slab and page tables
+> should use DENSE,
+
+You're really just recreating a crappier, less maintainable version of
+the object packing that *slab already does*.
+
+It's *slab* that is supposed to deal with internal fragmentation, not
+the page allocator.
+
+The page allocator is good at cranking out uniform, slightly big
+memory blocks. The slab allocator is good at subdividing those into
+smaller objects, neatly packed and grouped to facilitate contiguous
+reclaim, while providing detailed breakdowns of per-type memory usage
+and internal fragmentation to the user and to kernel developers.
+
+[ And introspection and easy reporting from production are *really
+  important*, because fragmentation issues develop over timelines that
+  extend the usual testing horizon of kernel developers. ]
+
+By trying to make compound pages the norm, you're making internal
+fragmentation a first-class problem of the page allocator. This
+conflates the problem space between slab and the page allocator and it
+forces you to duplicate large parts of the solution.
+
+This is not about whether it's technically achievable. It's about
+making an incomprehensible mess of the allocator layering and having
+to solve a difficult MM problem in two places. Because you're trying
+to make compound pages into something they were never meant to be.
+
+They're fine for the odd optimistic allocation that can either wait
+forever to defragment or fall back gracefully. But there is just no
+way these things are going to be the maintainable route for
+transitioning to a larger page size.
+
+As long as this is your ambition with the folio, I'm sorry but it's a
+NAK from me.
