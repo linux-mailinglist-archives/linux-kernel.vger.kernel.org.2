@@ -2,340 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15D03FD1AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F373FD1AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241706AbhIADLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 23:11:44 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:18996 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231712AbhIADLm (ORCPT
+        id S241626AbhIADOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 23:14:14 -0400
+Received: from mail-lf1-f48.google.com ([209.85.167.48]:41668 "EHLO
+        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236106AbhIADOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 23:11:42 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gzpqr6Y8fzbl8m;
-        Wed,  1 Sep 2021 11:06:48 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 1 Sep 2021 11:10:43 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 1 Sep 2021
- 11:10:43 +0800
-Subject: Re: [PATCH net-next 2/2] skbuff: keep track of pp page when
- __skb_frag_ref() is called
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-CC:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Kevin Hao" <haokexin@gmail.com>, <nogikh@google.com>,
-        Marco Elver <elver@google.com>, <memxor@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>
-References: <1630286290-43714-1-git-send-email-linyunsheng@huawei.com>
- <1630286290-43714-3-git-send-email-linyunsheng@huawei.com>
- <CAKgT0UfmcB93Hn1AS_o2a_h98xxZMouTiGzJfG09qsWf+O6L1Q@mail.gmail.com>
- <9cf28179-0cd5-a8c5-2bfd-bd844315ad1a@huawei.com>
- <CAKgT0UdheXoe3fK9yJLvj1TQcZLEa5utxV9E6Fn6EkdSabT=nQ@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <dcefe74d-40f0-fcbe-6cf1-fa003a2f4a30@huawei.com>
-Date:   Wed, 1 Sep 2021 11:10:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Tue, 31 Aug 2021 23:14:10 -0400
+Received: by mail-lf1-f48.google.com with SMTP id y34so3326540lfa.8;
+        Tue, 31 Aug 2021 20:13:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=d55o8VRMccw0pmcvesAE8Rz9x+AqcwcttzF+pmxCfek=;
+        b=E3BLgVvx+QOcTFO4S7s0rxlsuZ7TLLseKvuc3NCkzFENw07eXkgbCM+madxtJYH9PI
+         WFGBEDRuaIU6T4La6kQMg2zzL1j5vkk1R+SglmjrVSJkn/970a5+XpNMV2sqfhi6FH+Y
+         Vru2C8tG+VsJLwdExrR0ajywplEdUWr9aVSx27FXOhDfML3WnNpDj31oI17DU5Is3ObT
+         1xa6/Hwzn69LQidlp1vi7Cys/aSQ8Ty34jgMbhyimPPPWea27BlS40s/GL5nmK/I6Dmo
+         8F0o05NQv1d6gVPQZTRV6cLmI2ixiGGeXYAoXGvNabzc4vbHip7Ce/cuzijpNIM38rZ4
+         c6gg==
+X-Gm-Message-State: AOAM5301srTPIipdVR+SOWf0wjhVhD0VUWfT1BO4tMj+rRBFo4j2JECl
+        vNKzsUuDeXLm/92pTMqNEnkOwaNCKMel/g==
+X-Google-Smtp-Source: ABdhPJwHLvqZyHza8PQP2FOiCndnruv1kADugN2L1a/jgRvlj4L9sgH/hDIblvQ+/wuVM753QFO1jA==
+X-Received: by 2002:a05:6512:4da:: with SMTP id w26mr10844837lfq.576.1630465993065;
+        Tue, 31 Aug 2021 20:13:13 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id y35sm2403920lje.127.2021.08.31.20.13.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 20:13:12 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id p38so3508818lfa.0;
+        Tue, 31 Aug 2021 20:13:12 -0700 (PDT)
+X-Received: by 2002:a05:6512:3b27:: with SMTP id f39mr23258174lfv.303.1630465992483;
+ Tue, 31 Aug 2021 20:13:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UdheXoe3fK9yJLvj1TQcZLEa5utxV9E6Fn6EkdSabT=nQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <20210831184819.93670-1-jernej.skrabec@gmail.com>
+In-Reply-To: <20210831184819.93670-1-jernej.skrabec@gmail.com>
+Reply-To: wens@csie.org
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Wed, 1 Sep 2021 11:13:01 +0800
+X-Gmail-Original-Message-ID: <CAGb2v67TNrkeP438t3nLcquFvGTfS+F0MvBmGAS=qmZ5JZFmag@mail.gmail.com>
+Message-ID: <CAGb2v67TNrkeP438t3nLcquFvGTfS+F0MvBmGAS=qmZ5JZFmag@mail.gmail.com>
+Subject: Re: [PATCH] drm/sun4i: Fix macros in sun8i_csc.h
+To:     Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-sunxi@lists.linux.dev,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Roman Stratiienko <r.stratiienko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/31 22:30, Alexander Duyck wrote:
-> On Tue, Aug 31, 2021 at 12:20 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2021/8/30 23:14, Alexander Duyck wrote:
->>> On Sun, Aug 29, 2021 at 6:19 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>>
->>>> As the skb->pp_recycle and page->pp_magic may not be enough
->>>> to track if a frag page is from page pool after the calling
->>>> of __skb_frag_ref(), mostly because of a data race, see:
->>>> commit 2cc3aeb5eccc ("skbuff: Fix a potential race while
->>>> recycling page_pool packets").
->>>>
->>>> There may be clone and expand head case that might lose the
->>>> track if a frag page is from page pool or not.
->>>>
->>>> So increment the frag count when __skb_frag_ref() is called,
->>>> and only use page->pp_magic to indicate if a frag page is from
->>>> page pool, to avoid the above data race.
->>>>
->>>> For 32 bit systems with 64 bit dma, we preserve the orginial
->>>> behavior as frag count is used to trace how many time does a
->>>> frag page is called with __skb_frag_ref().
->>>>
->>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>>
->>> Is this really a common enough case to justify adding this extra overhead?
->>
->> I am not sure I understand what does extra overhead mean here.
->> But it seems this patch does not add any explicit overhead?
->> As the added page_pool_is_pp_page() checking in __skb_frag_ref() is
->> neutralized by avoiding the recycle checking in __skb_frag_unref(),
->> and the atomic operation is with either pp_frag_count or _refcount?
-> 
-> My concern is maintenance overhead. Specifically what you are doing is
-> forking the code path in __skb_frag_ref so there are cases where it
-> will increment the page reference count and there are others where it
-> will increment the frag count. Changing things like this means we have
-> to be certain that any paths that are expecting the reference count to
-> be updated have been addressed and it means that any code dealing with
-> the reference count in the future will be that much more complex.
+On Wed, Sep 1, 2021 at 2:48 AM Jernej Skrabec <jernej.skrabec@gmail.com> wrote:
+>
+> Macros SUN8I_CSC_CTRL() and SUN8I_CSC_COEFF() don't follow usual
+> recommendation of having arguments enclosed in parenthesis. While that
+> didn't change anything for quiet sometime, it actually become important
 
-But it seems we are already doing that(calling page_pool_put_full_page() or
-put_page() depends on skb->pp_recycle and page->pp_magic) in __skb_frag_unref(),
-it seems symmetric to do the similar thing in __skb_frag_ref()?
+                             ^ Typo
 
-> 
->>>
->>>> ---
->>>>  include/linux/skbuff.h  | 13 ++++++++++++-
->>>>  include/net/page_pool.h | 17 +++++++++++++++++
->>>>  net/core/page_pool.c    | 12 ++----------
->>>>  3 files changed, 31 insertions(+), 11 deletions(-)
->>>>
->>>> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
->>>> index 6bdb0db..8311482 100644
->>>> --- a/include/linux/skbuff.h
->>>> +++ b/include/linux/skbuff.h
->>>> @@ -3073,6 +3073,16 @@ static inline struct page *skb_frag_page(const skb_frag_t *frag)
->>>>   */
->>>>  static inline void __skb_frag_ref(skb_frag_t *frag)
->>>>  {
->>>> +       struct page *page = skb_frag_page(frag);
->>>> +
->>>> +#ifdef CONFIG_PAGE_POOL
->>>> +       if (!PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
->>>> +           page_pool_is_pp_page(page)) {
->>>> +               page_pool_atomic_inc_frag_count(page);
->>>> +               return;
->>>> +       }
->>>> +#endif
->>>> +
->>>>         get_page(skb_frag_page(frag));
->>>>  }
->>>>
->>>
->>> This just seems like a bad idea in general. We are likely increasing
->>> the potential for issues with this patch instead of avoiding them. I
->>
->> Yes, I am agreed that calling the __skb_frag_ref() without calling the
->> __skb_frag_unref() for the same page might be more likely to cause problem
->> for this patch. But we are already depending on the calling of
->> __skb_frag_unref() to free the pp page, making it more likely just enable
->> us to catch the bug more quickly?
-> 
-> The problem is one of the things our earlier fix had changed is that
-> you could only have one skb running around with skb->pp_recycle after
-> cloning the head. So skb_frag_unref will not do the
-> page_pool_return_skb_page because it is cleared and it will likely
-> trigger a reference undercount since we incremented the frag count
-> instead of the reference count.
+> after CSC code rework with commit ea067aee45a8 ("drm/sun4i: de2/de3:
+> Remove redundant CSC matrices").
+>
+> Without this fix, colours are completely off for supported YVU formats
+> on SoCs with DE2 (A64, H3, R40, etc.).
+>
+> Fix the issue by enclosing macro arguments in parenthesis.
+>
+> Cc: stable@vger.kernel.org # 5.12+
+> Fixes: 883029390550 ("drm/sun4i: Add DE2 CSC library")
+> Reported-by: Roman Stratiienko <r.stratiienko@gmail.com>
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-As the below change in this patch, the __skb_frag_unref() has been changed
-to bypass the skb->pp_recycle checking and always call page_pool_return_skb_page()
-for normal systems, page->pp_magic is the only checking to indicate if a page
-is from page pool, which is symmetric to the checking in __skb_frag_ref().
+Otherwise,
 
-
-@@ -3101,7 +3111,8 @@ static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
-        struct page *page = skb_frag_page(frag);
-
-#ifdef CONFIG_PAGE_POOL
--       if (recycle && page_pool_return_skb_page(page))
-+       if ((!PAGE_POOL_DMA_USE_PP_FRAG_COUNT || recycle) &&
-+           page_pool_return_skb_page(page))
-                 return;
-#endif
-         put_page(page);
-
-> 
->> Or is there other situation that I am not awared of, which might cause
->> issues?
-> 
-> I'm pretty sure this breaks the case that was already called out in
-> commit 2cc3aeb5eccc ("skbuff: Fix a potential race while recycling
-> page_pool packets"). The problem is the clone would then need to
-> convert over the frag count to page references in order to move
-> forward. What it effectively does is lock the pages into the skb and
-> prevent them from being used elsewhere.
-
-As my understanding, after this patch, the skb->pp_recycle is only used
-to indicate if a head page is a pp page, the frag page is decided using
-only the page->pp_magic(we might be able to do that for head page too,
-and remove the skb->pp_recycle completely).
-
-And cloning is happening in the netstack, it seems it is in our hand to
-make sure that won't break the page pool reference counting.
-
-So this patch does not seems to break the above commit?
-
-> 
->>> really feel it would be better for us to just give up on the page and
->>> kick it out of the page pool if we are cloning frames and multiple
->>> references are being taken on the pages.
->>
->> For Rx, it seems fine for normal case.
->> For Tx, it seems the cloning and multiple references happens when
->> tso_fragment() is called in tcp_write_xmit(), and the driver need to
->> reliable way to tell if a page is from the page pool, so that the
->> dma mapping can be avoided for Tx too.
-> 
-> The problem is cloning and page pool do not play well together. We are
-
-Yes, this patch is trying to make sure cloning and page pool play well
-together.
-
-For skb_split() case in tso_fragment(), if there is a skb comming from
-the wire(supposing all frag pages of the skb is from a page pool) happens
-to retransmit back to the wire using the TCP, it seems we might have bug
-here?
-
-Supposing skb1 has 3 frag pages, all coming from the page pool, and is
-splitted to skb2 and skb3:
-skb2: first frag page + first half of second frag page
-skb3: second half of second frag page + third frag page
-
-How do we set the skb->pp_recycle of skb1 and skb2?
-1. If we set both of them to 1, then we may have a similar race as the
-   above commit for second frag page.
-2. If we set only one of them to 1, then we may have resouce leaking
-   problem as both first frag page and third frag page are indeed from
-   page pool.
-
-> better off just avoiding the page pool entirely for Tx. Now if we are
-> wanting to store the DMA for the page until it is freed that is one
-> thing, but the current page pool doesn't work well with cloning and
-> such because of all the refcount tricks that have to be played.
-
-Storing the DMA for the page until it is freed means we need to do
-mapping/unmapping every time a page is used, and not recycling?
-
-As disscussion with Eric in below thread, it seems:
-"So it seems the IOMMU overhead does not only related to how many
-frag does a skb have, but also related to the length of each frag,
-as the IOMMU mapping is based on 4K/2M granularity(for arm64), so it
-may still take a lot of time to write each 4K page entry to the page
-table when mapping and invalidate each 4K page entry when unmapping."
-
-https://www.spinics.net/lists/kernel/msg4053130.html
-
-
-And my arm64 system:
-memcpy a buffer of 32768 bytes took ~2337 ns
-
-And doing mapping/unmapping for the same buffer took above the same time
-as memcpy for one thread case in strict mode(and IOMMU is known to scale
-poorly for multi threads case):
-root@(none):~# ./dma_map_benchmark -t 1 -s 10 -n 0 -g 8
-dma mapping benchmark: threads:1 seconds:10 node:0 dir:BIDIRECTIONAL granule: 8
-average map latency(us):0.7 standard deviation:0.1
-average unmap latency(us):1.6 standard deviation:0.4
-
-So it seems the IOMMU overhead is still there even with reduing the number
-of mapping/unmapping or TX ZC?
-
-> 
-> The main issue is that page pool assumes single producer, single
-> consumer. In the Tx path that isn't necessarily guaranteed since for
-> things like TCP we end up having to hold onto clones of the packets
-> until the transmission is completed.
-
-The main bottleneck for page pool seems to be the scalablity of ptr_ring
-for multi threads.
-How about making ptr_ring support multi-producers and multi-consumers
-lockless?
-
-> 
->>>
->>>> @@ -3101,7 +3111,8 @@ static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
->>>>         struct page *page = skb_frag_page(frag);
->>>>
->>>>  #ifdef CONFIG_PAGE_POOL
->>>> -       if (recycle && page_pool_return_skb_page(page))
->>>> +       if ((!PAGE_POOL_DMA_USE_PP_FRAG_COUNT || recycle) &&
->>>> +           page_pool_return_skb_page(page))
->>>>                 return;
->>>>  #endif
->>>>         put_page(page);
->>>> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
->>>> index 2ad0706..8b43e3d9 100644
->>>> --- a/include/net/page_pool.h
->>>> +++ b/include/net/page_pool.h
->>>> @@ -244,6 +244,23 @@ static inline void page_pool_set_frag_count(struct page *page, long nr)
->>>>         atomic_long_set(&page->pp_frag_count, nr);
->>>>  }
->>>>
->>>> +static inline void page_pool_atomic_inc_frag_count(struct page *page)
->>>> +{
->>>> +       atomic_long_inc(&page->pp_frag_count);
->>>> +}
->>>> +
->>>> +static inline bool page_pool_is_pp_page(struct page *page)
->>>> +{
->>>> +       /* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
->>>> +        * in order to preserve any existing bits, such as bit 0 for the
->>>> +        * head page of compound page and bit 1 for pfmemalloc page, so
->>>> +        * mask those bits for freeing side when doing below checking,
->>>> +        * and page_is_pfmemalloc() is checked in __page_pool_put_page()
->>>> +        * to avoid recycling the pfmemalloc page.
->>>> +        */
->>>> +       return (page->pp_magic & ~0x3UL) == PP_SIGNATURE;
->>>> +}
->>>> +
->>>>  static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
->>>>                                                           long nr)
->>>>  {
->>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->>>> index ba9f14d..442d37b 100644
->>>> --- a/net/core/page_pool.c
->>>> +++ b/net/core/page_pool.c
->>>> @@ -24,7 +24,7 @@
->>>>  #define DEFER_TIME (msecs_to_jiffies(1000))
->>>>  #define DEFER_WARN_INTERVAL (60 * HZ)
->>>>
->>>> -#define BIAS_MAX       LONG_MAX
->>>> +#define BIAS_MAX       (LONG_MAX / 2)
->>>
->>> This piece needs some explaining in the patch. Why are you changing
->>> the BIAS_MAX?
->>
->> When __skb_frag_ref() is called for the pp page that is not drained yet,
->> the pp_frag_count could be overflowed if the BIAS is too big.
-> 
-> Aren't we only checking against 0 though? We are calling LONG_MAX
-> which is already half the maximum possible value since it is dropping
-> the signed bit. If we are treating the value like it is unsigned and
-> only testing against 0 that would leave half the space still available
-> anyway.
-
-Yes, if we are treating the value like it is unsigned, LONG_MAX does not
-need changing.
-
-But we are treating the value like it is signed now, and (LONG_MAX / 2)
-seems large enough for the number of page user and frag count?
-
-> .
-> 
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
