@@ -2,103 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A313FD1DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 251BE3FD1E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241791AbhIADfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 23:35:39 -0400
-Received: from mga02.intel.com ([134.134.136.20]:25251 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241452AbhIADfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 23:35:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="205836477"
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="205836477"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 20:34:41 -0700
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="531657052"
-Received: from zhibosun-mobl2.ccr.corp.intel.com (HELO localhost) ([10.255.31.93])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 20:34:32 -0700
-Date:   Wed, 1 Sep 2021 11:34:29 +0800
-From:   Yu Zhang <yu.c.zhang@linux.intel.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
- private memory
-Message-ID: <20210901033429.4c2dh5cwlppjvz2h@linux.intel.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
- <20210827023150.jotwvom7mlsawjh4@linux.intel.com>
- <243bc6a3-b43b-cd18-9cbb-1f42a5de802f@redhat.com>
- <765e9bbe-2df5-3dcc-9329-347770dc091d@linux.intel.com>
- <4677f310-5987-0c13-5caf-fd3b625b4344@redhat.com>
- <cf24c39e-2e87-f596-4375-9368ed8ef813@linux.intel.com>
+        id S241834AbhIADmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 23:42:07 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:51975 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241825AbhIADmG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 23:42:06 -0400
+Received: by mail-io1-f70.google.com with SMTP id i11-20020a056602134b00b005be82e3028bso768077iov.18
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 20:41:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=0beOg+MnIe4h9OCbsLE4S8EBVJhiyel3Re+mX7gXaLg=;
+        b=sDTAJJuR2IZ4ecPhefU2DSLIarpCZYSU8KWgEQZHfWWNoC6kLVHhwZqiYXOJ/0a7wX
+         ixWazHPK5WIu8Xu9HaXX4pUVHEv2cBa+2qKHR4TZpQgqilycaiReUZ/l+4ZhpjiQozsO
+         Xnjw4hzkWDEZGNLALxISm8gM4X+/cQPQg/Rr1IRBWDzlLAVhtRtdnN+KhOZht2vNsdn7
+         iYzfuiuKeGU/citIxhyBZ74IepXmkKXc5D2aa8aTCMkBUcVRMkNWVQ1RHJMNy7BJqFP6
+         vOKc9zVkY2PN7X+iH1rz189lKMvkm0AC7bCC4kbnETfJHTgeT/HlH2BR2ujNm8wgs1VK
+         KpfQ==
+X-Gm-Message-State: AOAM532+rW6E+5G1eZM63vV29CP324s4Bi9viIWdffGGDtiAoMafEVdh
+        Sq+ATNyBVNl/utRRK8lXO5B0Buj3dYcjnq2Bl/t3DG85+A68
+X-Google-Smtp-Source: ABdhPJwcRouK3MNpdsLyB3uITFnuOZQgmH7wdDL4dTob9ukhwMaq/IdUSJeoLsAgHDjQ4rNwFn2tcWAEE1TaClmauJO65kieMAfb
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cf24c39e-2e87-f596-4375-9368ed8ef813@linux.intel.com>
-User-Agent: NeoMutt/20171215
+X-Received: by 2002:a05:6602:26cb:: with SMTP id g11mr25688183ioo.110.1630467670108;
+ Tue, 31 Aug 2021 20:41:10 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 20:41:10 -0700
+In-Reply-To: <20210901030636.2336-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004b732105cae6d6f1@google.com>
+Subject: Re: [syzbot] WARNING: refcount bug in qrtr_node_lookup
+From:   syzbot <syzbot+c613e88b3093ebf3686e@syzkaller.appspotmail.com>
+To:     bjorn.andersson@linaro.org, dan.carpenter@oracle.com,
+        hdanton@sina.com, linux-kernel@vger.kernel.org,
+        manivannan.sadhasivam@linaro.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 01:39:31PM -0700, Andi Kleen wrote:
-> 
-> On 8/31/2021 1:15 PM, David Hildenbrand wrote:
-> > On 31.08.21 22:01, Andi Kleen wrote:
-> > > 
-> > > > > Thanks a lot for this summary. A question about the requirement: do
-> > > > > we or
-> > > > > do we not have plan to support assigned device to the protected VM?
-> > > > 
-> > > > Good question, I assume that is stuff for the far far future.
-> > > 
-> > > It is in principle possible with the current TDX, but not secure. But
-> > > someone might decide to do it. So it would be good to have basic support
-> > > at least.
-> > 
-> > Can you elaborate the "not secure" part? Do you mean, making the device
-> > only access "shared" memory, not secure/encrypted/whatsoever?
-> 
-> 
-> Yes that's right. It can only access shared areas.
+Hello,
 
-Thanks, Andy & David.
+syzbot tried to test the proposed patch but the build/boot failed:
 
-Actually, enabling of device assinment needs quite some effort, e.g.,
-to guarantee only shared pages are mapped in IOMMU page table (using
-shared GFNs). And the buffer copying inside TD is still unavoidable,
-thus not much performance benefit.
+arch/x86/kernel/setup.c:916:6: error: implicit declaration of function 'acpi_mps_check' [-Werror,-Wimplicit-function-declaration]
+arch/x86/kernel/setup.c:1110:2: error: implicit declaration of function 'acpi_table_upgrade' [-Werror,-Wimplicit-function-declaration]
+arch/x86/kernel/setup.c:1112:2: error: implicit declaration of function 'acpi_boot_table_init' [-Werror,-Wimplicit-function-declaration]
+arch/x86/kernel/setup.c:1120:2: error: implicit declaration of function 'early_acpi_boot_init' [-Werror,-Wimplicit-function-declaration]
+arch/x86/kernel/setup.c:1162:2: error: implicit declaration of function 'acpi_boot_init' [-Werror,-Wimplicit-function-declaration]
 
-Maybe we should just *disable* VFIO device in TDX first. 
 
-As to the fd-based private memory, enventually we will have to tolerate
-its impact on any place where GUP is needed in virtualization. :)
+Tested on:
 
-B.R.
-Yu
+commit:         9e9fb765 Merge tag 'net-next-5.15' of git://git.kernel..
+git tree:       upstream
+dashboard link: https://syzkaller.appspot.com/bug?extid=c613e88b3093ebf3686e
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1413e2f5300000
+
