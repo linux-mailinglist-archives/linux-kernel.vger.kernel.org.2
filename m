@@ -2,144 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CB43FE499
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B48A3FE49C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239661AbhIAVNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 17:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
+        id S245267AbhIAVNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 17:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231685AbhIAVNJ (ORCPT
+        with ESMTP id S245209AbhIAVNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 17:13:09 -0400
+        Wed, 1 Sep 2021 17:13:12 -0400
 Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04714C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 14:12:11 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 8so796704pga.7
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 14:12:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA92C061764
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 14:12:15 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id n18so771197pgm.12
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 14:12:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NmD6NfZ4ntJSAzZVeHzGwx+9LMKE03Sdt9CwYbMKD7Y=;
-        b=rrRU0L93Wl3dd/9llX/ZnoKYuGFSdDWKG1uN8Gv1fFTegETF12B23Ag/5WGRKWIWau
-         O8EFhntrOcOx6d3AuhaU2V/BjDQCb3DDLPHbovVi9M84wf1HCPIfdTV3Ba9ZKbS4IcCZ
-         6YwnCs8Zp7jc6H4EJrtjsZ2KLjXqnLzng7NRbloC/ZV8ZeG9KOkOWoMxlnk4mkCW/ld7
-         KBqQbYocAZvotTNrQotqhaBCSrQ83H2JX/t6VU/1//LmZ3sJZKp0o6j2aD3IYvNDDn9D
-         MVfd+v7Ryf93lGSGYO8a9PhqJoN1GODF+EVDV18LG2HXaHV9nfFd6fumgo4HVnFq9yqu
-         0N1g==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=egGMiPBBKlMbvE9KfJkUfu/tC90iKtmhmrZtESxeA28=;
+        b=ncreY0Gm4kTVQgl+kXCW0CKEReUCKnUK13+j8VNBk3y9UZw+yTehvdd/AY70Kv2rhM
+         1Cdw1qYid5Nd/nyvRZ5m48JFj44/RkoiiV9o82xeVWF4q3aE1f5qX22OSK40jCSy2BAY
+         hc/66Mxogl+2uVO+FcHPtfoCXVMoNAEsiGlKdJd0gLmxQXO62S6JRtvPZfK5GfpQlnXg
+         aY70KSzqfqfEMBfimNc6hBVUHSYO29XSZ65jwxHwc/4Ds6HliyWNgw1tZRPl/6geHSW+
+         AOVWvfND7s1JWPMF+7XKgIf8OXGQwS+QCvMfH0JB6TbPXDs7aZmymFSaZQBU0eH58nhp
+         2USg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NmD6NfZ4ntJSAzZVeHzGwx+9LMKE03Sdt9CwYbMKD7Y=;
-        b=fvK+t3vXg7rfF5oz/TgmSZOxDNFZBwqRSq9ckOPUdGVduYgikHY6/Izv7tfgmySon7
-         0Y0eOBN9LAcTJRwcdZHwErCTKqGnsrvP5N3rDVVfw2Gun0/XlDD30JU/gWJ7zJWkAjg9
-         TNMUmD3DF4WBWwa/BUUUuIa6L0EwxnJz1qQRO7y9vY4P2gsi2jR3/St0IJR/jhzdcgfx
-         FqFN9sGE5pwghMorL4SGvkNbqGtEO8QosE/LQOD5hLPVDJlbVnGYXjwJi4UFVKE62b1m
-         +Q8+n7EzEfdKBtGwmuCoVWkz+kLMYphuOt/wCo89Axtg278auhw74BlBDIqPhyMQ8uvZ
-         FqtQ==
-X-Gm-Message-State: AOAM531d2siMUWExxNx7nVpW6xUcDn8Nbw3ylKolzDBEy8OGW8f3GdUI
-        kvuOVUqn8e6MoDbuyk2FLtFoRHB5v8RuJHThh4SKDA==
-X-Google-Smtp-Source: ABdhPJylbGieillP4v3Sou9GfiOafHmfSdD7JjHyJBYaAf+EOtB7ue7nViFrVdrgxVrSReapdfqxB6ae0ZGRSPj/Qs0=
-X-Received: by 2002:a65:44c4:: with SMTP id g4mr981021pgs.254.1630530731360;
- Wed, 01 Sep 2021 14:12:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=egGMiPBBKlMbvE9KfJkUfu/tC90iKtmhmrZtESxeA28=;
+        b=WnfbFaJz4399XonIhvecK5up0hDHNdV/O3dliZPKLpQhftVdHk2ljYEVzNeyLviyjw
+         7iatq4mO38Vm/FainEq0xOgptvMonup4mG4zhah3ZyYLNLxkegv6d2oTCju0Th74z3qE
+         ag1W/xdK8MDoRKKnGVlwlJEipl8ysYlaXm7UPqto3/FyOdBUAG3m0wAiOMPnQDVtK7tt
+         fx8ay12qcU/r8dCTO9AsDSv3PuJbBGJYwEl6IIoPGe+HwK7TVsW0a3NEs9G7I77J8gsV
+         /JHQN1mEPzif3v5GGy0o1eRES+fxbXkxwVnl83wRX/9tQabkBUmpuGJ6nqVYAzuWPMyU
+         YXhQ==
+X-Gm-Message-State: AOAM531Ohd+9Cb9TS+encf1BDE/VSVg9L1R0i6NKLE9f1bMdRgCnnwtO
+        IZcqlwhmRK9EYgr0SY/lPNJoBA==
+X-Google-Smtp-Source: ABdhPJy3VX9/rugZqsvUuY11nVn0KvcSxu495Gm1ySWZOt0bryjTUs7dumso/OrB8JrD71zF4IUzcA==
+X-Received: by 2002:a05:6a00:15c4:b0:3eb:2447:97bd with SMTP id o4-20020a056a0015c400b003eb244797bdmr1343500pfu.4.1630530734724;
+        Wed, 01 Sep 2021 14:12:14 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id y12sm550751pgl.65.2021.09.01.14.12.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 14:12:14 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 21:12:10 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-coco@lists.linux.dev,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: [PATCH v2 1/4] KVM: SVM: Get rid of *ghcb_msr_bits() functions
+Message-ID: <YS/sqmgbS6ACRfSD@google.com>
+References: <20210722115245.16084-1-joro@8bytes.org>
+ <20210722115245.16084-2-joro@8bytes.org>
 MIME-Version: 1.0
-References: <20210901201934.1084250-1-dianders@chromium.org> <20210901131531.v3.6.I02250cd7d4799661b068bcc65849a456ed411734@changeid>
-In-Reply-To: <20210901131531.v3.6.I02250cd7d4799661b068bcc65849a456ed411734@changeid>
-From:   Olof Johansson <olof@lixom.net>
-Date:   Wed, 1 Sep 2021 14:12:00 -0700
-Message-ID: <CAOesGMjp4pscuxciHZo7br-acgbkZSdRA_mUWNpcz0OfF7zOSA@mail.gmail.com>
-Subject: Re: [PATCH v3 06/16] ARM: configs: Everyone who had PANEL_SIMPLE now
- gets PANEL_SIMPLE_EDP
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DTML <devicetree@vger.kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lionel Debieve <lionel.debieve@st.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        =?UTF-8?Q?Martin_J=C3=BCcker?= <martin.juecker@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Otavio Salvador <otavio@ossystems.com.br>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Razvan Stefanescu <razvan.stefanescu@microchip.com>,
-        Robert Richter <rric@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>, linux-sunxi@lists.linux.dev,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>,
-        =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722115245.16084-2-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 1:20 PM Douglas Anderson <dianders@chromium.org> wrote:
->
-> In the patch ("drm/panel-simple-edp: Split eDP panels out of
-> panel-simple") we split the PANEL_SIMPLE driver in 2. By default let's
-> give everyone who had the old driver enabled the new driver too. If
-> folks want to opt-out of one or the other they always can later.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+On Thu, Jul 22, 2021, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> Replace the get function with macros and the set function with
+> hypercall specific setters. This will avoid preserving any previous
+> bits in the GHCB-MSR and improved code readability.
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>  arch/x86/include/asm/sev-common.h |  9 +++++++
+>  arch/x86/kvm/svm/sev.c            | 41 +++++++++++--------------------
+>  2 files changed, 24 insertions(+), 26 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
+> index 2cef6c5a52c2..8540972cad04 100644
+> --- a/arch/x86/include/asm/sev-common.h
+> +++ b/arch/x86/include/asm/sev-common.h
+> @@ -50,6 +50,10 @@
+>  		(GHCB_MSR_CPUID_REQ | \
+>  		(((unsigned long)reg & GHCB_MSR_CPUID_REG_MASK) << GHCB_MSR_CPUID_REG_POS) | \
+>  		(((unsigned long)fn) << GHCB_MSR_CPUID_FUNC_POS))
+> +#define GHCB_MSR_CPUID_FN(msr)		\
+> +	(((msr) >> GHCB_MSR_CPUID_FUNC_POS) & GHCB_MSR_CPUID_FUNC_MASK)
+> +#define GHCB_MSR_CPUID_REG(msr)		\
+> +	(((msr) >> GHCB_MSR_CPUID_REG_POS) & GHCB_MSR_CPUID_REG_MASK)
+>  
+>  /* AP Reset Hold */
+>  #define GHCB_MSR_AP_RESET_HOLD_REQ		0x006
+> @@ -67,6 +71,11 @@
+>  #define GHCB_SEV_TERM_REASON(reason_set, reason_val)						  \
+>  	(((((u64)reason_set) &  GHCB_MSR_TERM_REASON_SET_MASK) << GHCB_MSR_TERM_REASON_SET_POS) | \
+>  	((((u64)reason_val) & GHCB_MSR_TERM_REASON_MASK) << GHCB_MSR_TERM_REASON_POS))
+> +#define GHCB_MSR_TERM_REASON_SET(msr)	\
+> +	(((msr) >> GHCB_MSR_TERM_REASON_SET_POS) & GHCB_MSR_TERM_REASON_SET_MASK)
+> +#define GHCB_MSR_TERM_REASON(msr)	\
+> +	(((msr) >> GHCB_MSR_TERM_REASON_POS) & GHCB_MSR_TERM_REASON_MASK)
+> +
+>  
+>  #define GHCB_SEV_ES_REASON_GENERAL_REQUEST	0
+>  #define GHCB_SEV_ES_REASON_PROTOCOL_UNSUPPORTED	1
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 6710d9ee2e4b..d7b3557b8dbb 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -2342,16 +2342,15 @@ static bool setup_vmgexit_scratch(struct vcpu_svm *svm, bool sync, u64 len)
+>  	return true;
+>  }
+>  
+> -static void set_ghcb_msr_bits(struct vcpu_svm *svm, u64 value, u64 mask,
+> -			      unsigned int pos)
+> +static void set_ghcb_msr_cpuid_resp(struct vcpu_svm *svm, u64 reg, u64 value)
+>  {
+> -	svm->vmcb->control.ghcb_gpa &= ~(mask << pos);
+> -	svm->vmcb->control.ghcb_gpa |= (value & mask) << pos;
+> -}
+> +	u64 msr;
+>  
+> -static u64 get_ghcb_msr_bits(struct vcpu_svm *svm, u64 mask, unsigned int pos)
+> -{
+> -	return (svm->vmcb->control.ghcb_gpa >> pos) & mask;
+> +	msr  = GHCB_MSR_CPUID_RESP;
+> +	msr |= (reg & GHCB_MSR_CPUID_REG_MASK) << GHCB_MSR_CPUID_REG_POS;
+> +	msr |= (value & GHCB_MSR_CPUID_VALUE_MASK) << GHCB_MSR_CPUID_VALUE_POS;
+> +
+> +	svm->vmcb->control.ghcb_gpa = msr;
 
-Isn't this a case where the new option should just have had the old
-option as the default value to avoid this kind of churn and possibly
-broken platforms?
+I would rather have the get/set pairs be roughly symmetric, i.e. both functions
+or both macros, and both work on svm->vmcb->control.ghcb_gpa or both be purely
+functional (that may not be the correct word).
+
+I don't have a strong preference on function vs. macro.  But for the second one,
+my preference would be to have the helper generate the value as opposed to taken
+and filling a pointer, e.g. to yield something like:
+
+		cpuid_reg = GHCB_MSR_CPUID_REG(control->ghcb_gpa);
+
+		if (cpuid_reg == 0)
+			cpuid_value = vcpu->arch.regs[VCPU_REGS_RAX];
+		else if (cpuid_reg == 1)
+			cpuid_value = vcpu->arch.regs[VCPU_REGS_RBX];
+		else if (cpuid_reg == 2)
+			cpuid_value = vcpu->arch.regs[VCPU_REGS_RCX];
+		else
+			cpuid_value = vcpu->arch.regs[VCPU_REGS_RDX];
+
+		control->ghcb_gpa = MAKE_GHCB_MSR_RESP(cpuid_reg, cpuid_value);
 
 
--Olof
+The advantage is that it's obvious from the code that control->ghcb_gpa is being
+read _and_ written.
+
+>  	case GHCB_MSR_TERM_REQ: {
+>  		u64 reason_set, reason_code;
+>  
+> -		reason_set = get_ghcb_msr_bits(svm,
+> -					       GHCB_MSR_TERM_REASON_SET_MASK,
+> -					       GHCB_MSR_TERM_REASON_SET_POS);
+> -		reason_code = get_ghcb_msr_bits(svm,
+> -						GHCB_MSR_TERM_REASON_MASK,
+> -						GHCB_MSR_TERM_REASON_POS);
+> +		reason_set  = GHCB_MSR_TERM_REASON_SET(control->ghcb_gpa);
+> +		reason_code = GHCB_MSR_TERM_REASON(control->ghcb_gpa);
+> +
+>  		pr_info("SEV-ES guest requested termination: %#llx:%#llx\n",
+>  			reason_set, reason_code);
+> +
+>  		fallthrough;
+
+Not related to this patch, but why use fallthrough and more importantly, why is
+this an -EINVAL return?  Why wouldn't KVM forward the request to userspace instead
+of returning an opaque -EINVAL?
+
+>  	}
+>  	default:
+> -- 
+> 2.31.1
+> 
