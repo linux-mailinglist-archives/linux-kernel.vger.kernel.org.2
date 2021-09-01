@@ -2,178 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4493FE457
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE20F3FE458
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243159AbhIAU54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 16:57:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238818AbhIAU5y (ORCPT
+        id S242413AbhIAU61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 16:58:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33496 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231340AbhIAU60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 16:57:54 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCC3C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 13:56:57 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id r4so1271206ybp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:56:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L0G6R62N1gO7DOjfEZAPNKqynBW5XZ5XNt6xZIMqank=;
-        b=u4SEUsyX5hLbDNCYJrkK/Dq3ED5N6gzAoGqvPapHzprtM++i9ndf4lKuBAebuB3Xif
-         VZH3nWhY/dR+Zs4fJg4ZZ6PoJ+tnml+weetYIwbOsyjJNbfwVCwsxvQaeXOrN7paZlo/
-         vo5HRCSvtQ+mZgOd7pOwxXVXqGjVEbZNfbSow13HA2/Eq+58R82NmEKWnd4uArDPHtWw
-         z0H1hH0zf19jG8Cs5DHbQR06BHcK+vrSD6lfIL8T7TmlXILI9qVAmsOP2nIQIlSXVDfG
-         lTwOR4y7cyiLt4m8gld7ZI9Kj+iZS1kSOOKp4b6cyN567suVGHJLacrMqiRuxIevaT4o
-         O3oA==
+        Wed, 1 Sep 2021 16:58:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630529848;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hq9ANBDJCBArw0iPPGA88rqVQpepBRZET67OXkoqBVo=;
+        b=TwY5Ql6xfwiArfjGLHYStbc4R68P3OzjThebrnm6X5di4DK6YdD7CwawlpR0XKOfkOeDLw
+        5xcb+N+b6cGhnobfLgnoEvzJNS9eZqsuxuvkKJHeOkyLHh3S3aLDRMm/gEgIxCvfQrLvq0
+        qad24tWHNeFakGbAoUisI7Qx72GT3ho=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-515-icRmAvYPMDG3V80KQag1qQ-1; Wed, 01 Sep 2021 16:57:28 -0400
+X-MC-Unique: icRmAvYPMDG3V80KQag1qQ-1
+Received: by mail-qk1-f198.google.com with SMTP id w2-20020a3794020000b02903b54f40b442so900371qkd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:57:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L0G6R62N1gO7DOjfEZAPNKqynBW5XZ5XNt6xZIMqank=;
-        b=YYVUbrP7IyL+2xqOV30N8ti0EZrTgnz6xXVtBSjvbo3UwvG3cgxYc7ZMtCNn0zgnIM
-         /36yQkAK7eEWoIUdUp4DZUMSkUaDHBRE3PKPtrLuCmEIzrf6VwnsYQAnXE0ldo+Zu+m3
-         CSn8+z8ZXwFuvTNa2fVbb5tXLottkTXJD2GNGr8zRbs802ZN3BhYCGjcV3h3r28qm03h
-         5m6tV0kLop69H0Qs9S9B7T4ex9WRguLn31qrulQlqDnrjWvM1wGRDZTkXulydlpvhioc
-         4U8Smuzh4dBCRKg00qxs7ynCuFZpAV/VM2wfnTQLb+5GvmbWgtALSG662TKhK1dBrrz/
-         p5Sg==
-X-Gm-Message-State: AOAM531s1uWAIj1petjZxUKKOXrlkTJqBnFCCQQpZlWhh/0l2bZVkz+X
-        KpRDy1iuwUz7yrtrXnRe2cR4/UWrsRGojcdfHqAoig==
-X-Google-Smtp-Source: ABdhPJzF7Zt72N0YmUtW1wz8l2WyJWxKJcMNBmyngHxWM/3Tu2UpcRUGekYR0bcdcfaQBUAjDifDWgmEvC0bo9QmANc=
-X-Received: by 2002:a25:6746:: with SMTP id b67mr2325216ybc.96.1630529816125;
- Wed, 01 Sep 2021 13:56:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Hq9ANBDJCBArw0iPPGA88rqVQpepBRZET67OXkoqBVo=;
+        b=MHPRdCB1Yaf5/PP2aB9OmfPrW7r1KRaIYy6U8R6lInk+xO7qFw/Fti2UXcRe94sqpx
+         a60oCR6qDAymD5CIxYUgIVdXxqN6QpqUcjo53BUMDW5l+J8mT2K6R1YVYwVt5yvwinaF
+         CnmQ6XSQ8KxFYAwzBXW1vNd1n7OZWXbSB2a16YZ9y+olGXSZkH26RHeq8LFMQcI4Emra
+         r6ZAQZQk7eELNfOogExuq9bVDLePju/ysPLcUJ1ctrFXvEiz9I5gsOk/o0xi0rJganfu
+         kFQzS25h/hHE0ZQG6/5B8jHPb6L58fTR8+5+xkxI4tXlunAz3opBw9F5eHrl8MD0Ljlf
+         SVUg==
+X-Gm-Message-State: AOAM531xrpLfzy0SEMD3+Po+gS8wqzidPlDyzjw5oPcoBn3sKhDtPLru
+        h9Kx/3x4NtZnjhHATkaA4wOwsKGxfOnaOCLJfUpzIxDslTd/YTTjyo8sXiWR2OzPqIpCk0jLd7D
+        8510uV13dXuIVFB7vV/ZuAO+IN91KfIyI7Z+pzns0/UcH6wQ6JBdsbfUf5pamVj/MwSSYLwZvXg
+        ==
+X-Received: by 2002:a05:6214:c23:: with SMTP id a3mr1816168qvd.34.1630529845556;
+        Wed, 01 Sep 2021 13:57:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy5+HjiwKW042yLAjnBDFXBymG7aWJsJmhLIvkEnkATvTWvbu1mTRN3D2vspZ0i+cjMM8yc8Q==
+X-Received: by 2002:a05:6214:c23:: with SMTP id a3mr1816129qvd.34.1630529845236;
+        Wed, 01 Sep 2021 13:57:25 -0700 (PDT)
+Received: from t490s.redhat.com ([2607:fea8:56a3:500::ad7f])
+        by smtp.gmail.com with ESMTPSA id t28sm529163qkt.70.2021.09.01.13.57.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 13:57:24 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Hugh Dickins <hughd@google.com>,
+        David Hildenbrand <david@redhat.com>, peterx@redhat.com,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>
+Subject: [PATCH 4/5] mm: Introduce zap_details.zap_flags
+Date:   Wed,  1 Sep 2021 16:57:22 -0400
+Message-Id: <20210901205722.7328-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210901205622.6935-1-peterx@redhat.com>
+References: <20210901205622.6935-1-peterx@redhat.com>
 MIME-Version: 1.0
-References: <20210831102125.624661-1-ulf.hansson@linaro.org>
- <CAGETcx868QWj0jMJ+U-eL62jT-LO_LTOw5EcwEKptfFOVa=A5A@mail.gmail.com> <CAPDyKFopTW=ZoB9FYJ-ozRZTnJDTT_gFtz0XDiU-weYb1Q9bkQ@mail.gmail.com>
-In-Reply-To: <CAPDyKFopTW=ZoB9FYJ-ozRZTnJDTT_gFtz0XDiU-weYb1Q9bkQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 1 Sep 2021 13:56:20 -0700
-Message-ID: <CAGETcx_e7kCQ_0yC9=k1jzjJJEqdOMuA=JkD81=2-Nb4fcS0+w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] of: property: fw_devlink: Rename 'node_not_dev' to 'optional_con_dev'
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, DTML <devicetree@vger.kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 12:45 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Tue, 31 Aug 2021 at 19:31, Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Tue, Aug 31, 2021 at 3:21 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > >
-> > > In the struct supplier_bindings the member 'node_not_dev' is described as
-> > > "The consumer node containing the property is never a device.", but that
-> > > doesn't match the behaviour of the code in of_link_property().
-> > >
-> > > To make the behaviour consistent with the description, let's rename the
-> > > member to "optional_con_dev" and clarify the corresponding comment.
-> > >
-> > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > ---
-> > >  drivers/of/property.c | 9 +++++----
-> > >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > index 6c028632f425..2babb1807228 100644
-> > > --- a/drivers/of/property.c
-> > > +++ b/drivers/of/property.c
-> > > @@ -1249,7 +1249,8 @@ static struct device_node *parse_##fname(struct device_node *np,       \
-> > >   * @parse_prop.index: For properties holding a list of phandles, this is the
-> > >   *                   index into the list
-> > >   * @optional: Describes whether a supplier is mandatory or not
-> > > - * @node_not_dev: The consumer node containing the property is never a device.
-> > > + * @optional_con_dev: The consumer node containing the property may not be a
-> > > + *                   device, then try finding one from an ancestor node.
-> >
-> > Nak. This flag is not about "may not be". This is explicitly for
-> > "never a device". It has to do with stuff like remote-endpoint which
-> > is never listed under the root node of the device node. Your
-> > documentation change is changing the meaning of the flag.
->
-> Okay, fair enough.
->
-> Although, as stated in the commit message this isn't the way code
-> behaves. Shouldn't we at least make the behaviour consistent with the
-> description of the 'node_not_dev' flag?
+Instead of trying to introduce one variable for every new zap_details fields,
+let's introduce a flag so that it can start to encode true/false informations.
 
-I know what you mean, but if you use the flag correctly (where the
-phandle pointed to will never be a device with compatible property),
-the existing code would work correctly. And since the flag is relevant
-only in this file, it's easy to keep it correct. I'd just leave it as
-is.
+Let's start to use this flag first to clean up the only check_mapping variable.
+Firstly, the name "check_mapping" implies this is a "boolean", but actually it
+stores the mapping inside, just in a way that it won't be set if we don't want
+to check the mapping.
 
--Saravana
+To make things clearer, introduce the 1st zap flag ZAP_FLAG_CHECK_MAPPING, so
+that we only check against the mapping if this bit set.  At the same time, we
+can rename check_mapping into zap_mapping and set it always.
 
+Since at it, introduce another helper zap_check_mapping_skip() and use it in
+zap_pte_range() properly.
 
->
-> Along the lines of the below patch then?
->
-> From: Ulf Hansson <ulf.hansson@linaro.org>
-> Date: Wed, 1 Sep 2021 09:28:03 +0200
-> Subject: [PATCH] of: property: fw_devlink: Fixup behaviour when 'node_not_dev'
->  is set
->
-> In the struct supplier_bindings the member 'node_not_dev' is described as
-> "The consumer node containing the property is never a device.", but that is
-> inconsistent with the behaviour of the code in of_link_property(), as it
-> calls of_get_compat_node() that starts parsing for a compatible property,
-> starting from the node it gets passed to it.
->
-> Make the behaviour consistent with the description of the 'node_not_dev'
-> flag, by passing the parent node to of_get_compat_node() instead.
->
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
->  drivers/of/property.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index 6c028632f425..16ee017884b8 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1075,6 +1075,17 @@ static struct device_node
-> *of_get_compat_node(struct device_node *np)
->         return np;
->  }
->
-> +static struct device_node *of_get_compat_node_parent(struct device_node *np)
-> +{
-> +       struct device_node *parent, *node;
-> +
-> +       parent = of_get_parent(np);
-> +       node = of_get_compat_node(parent);
-> +       of_node_put(parent);
-> +
-> +       return node;
-> +}
-> +
->  /**
->   * of_link_to_phandle - Add fwnode link to supplier from supplier phandle
->   * @con_np: consumer device tree node
-> @@ -1416,7 +1427,7 @@ static int of_link_property(struct device_node
-> *con_np, const char *prop_name)
->                         struct device_node *con_dev_np;
->
->                         con_dev_np = s->node_not_dev
-> -                                       ? of_get_compat_node(con_np)
-> +                                       ? of_get_compat_node_parent(con_np)
->                                         : of_node_get(con_np);
->                         matched = true;
->                         i++;
-> --
-> 2.25.1
->
-> [...]
->
-> Kind regards
-> Uffe
+Some old comments have been removed in zap_pte_range() because they're
+duplicated, and since now we're with ZAP_FLAG_CHECK_MAPPING flag, it'll be very
+easy to grep this information by simply grepping the flag.
+
+It'll also make life easier when we want to e.g. pass in zap_flags into the
+callers like unmap_mapping_pages() (instead of adding new booleans besides the
+even_cows parameter).
+
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ include/linux/mm.h | 19 ++++++++++++++++++-
+ mm/memory.c        | 34 ++++++++++------------------------
+ 2 files changed, 28 insertions(+), 25 deletions(-)
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 69259229f090..fcbc1c4f8e8e 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1716,14 +1716,31 @@ static inline bool can_do_mlock(void) { return false; }
+ extern int user_shm_lock(size_t, struct ucounts *);
+ extern void user_shm_unlock(size_t, struct ucounts *);
+ 
++/* Whether to check page->mapping when zapping */
++#define  ZAP_FLAG_CHECK_MAPPING             BIT(0)
++
+ /*
+  * Parameter block passed down to zap_pte_range in exceptional cases.
+  */
+ struct zap_details {
+-	struct address_space *check_mapping;	/* Check page->mapping if set */
++	struct address_space *zap_mapping;
+ 	struct page *single_page;		/* Locked page to be unmapped */
++	unsigned long zap_flags;
+ };
+ 
++/* Return true if skip zapping this page, false otherwise */
++static inline bool
++zap_skip_check_mapping(struct zap_details *details, struct page *page)
++{
++	if (!details || !page)
++		return false;
++
++	if (!(details->zap_flags & ZAP_FLAG_CHECK_MAPPING))
++		return false;
++
++	return details->zap_mapping != page_rmapping(page);
++}
++
+ struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+ 			     pte_t pte);
+ struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
+diff --git a/mm/memory.c b/mm/memory.c
+index 3b860f6a51ac..05ccacda4fe9 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1333,16 +1333,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 			struct page *page;
+ 
+ 			page = vm_normal_page(vma, addr, ptent);
+-			if (unlikely(details) && page) {
+-				/*
+-				 * unmap_shared_mapping_pages() wants to
+-				 * invalidate cache without truncating:
+-				 * unmap shared but keep private pages.
+-				 */
+-				if (details->check_mapping &&
+-				    details->check_mapping != page_rmapping(page))
+-					continue;
+-			}
++			if (unlikely(zap_skip_check_mapping(details, page)))
++				continue;
+ 			ptent = ptep_get_and_clear_full(mm, addr, pte,
+ 							tlb->fullmm);
+ 			tlb_remove_tlb_entry(tlb, pte, addr);
+@@ -1375,17 +1367,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 		    is_device_exclusive_entry(entry)) {
+ 			struct page *page = pfn_swap_entry_to_page(entry);
+ 
+-			if (unlikely(details && details->check_mapping)) {
+-				/*
+-				 * unmap_shared_mapping_pages() wants to
+-				 * invalidate cache without truncating:
+-				 * unmap shared but keep private pages.
+-				 */
+-				if (details->check_mapping !=
+-				    page_rmapping(page))
+-					continue;
+-			}
+-
++			if (unlikely(zap_skip_check_mapping(details, page)))
++				continue;
+ 			pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+ 			rss[mm_counter(page)]--;
+ 
+@@ -3369,8 +3352,9 @@ void unmap_mapping_page(struct page *page)
+ 	first_index = page->index;
+ 	last_index = page->index + thp_nr_pages(page) - 1;
+ 
+-	details.check_mapping = mapping;
++	details.zap_mapping = mapping;
+ 	details.single_page = page;
++	details.zap_flags = ZAP_FLAG_CHECK_MAPPING;
+ 
+ 	i_mmap_lock_write(mapping);
+ 	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
+@@ -3395,9 +3379,11 @@ void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
+ 		pgoff_t nr, bool even_cows)
+ {
+ 	pgoff_t	first_index = start, last_index = start + nr - 1;
+-	struct zap_details details = { };
++	struct zap_details details = { .zap_mapping = mapping };
++
++	if (!even_cows)
++		details.zap_flags |= ZAP_FLAG_CHECK_MAPPING;
+ 
+-	details.check_mapping = even_cows ? NULL : mapping;
+ 	if (last_index < first_index)
+ 		last_index = ULONG_MAX;
+ 
+-- 
+2.31.1
+
