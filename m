@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D533FE49D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE52B3FE4A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243468AbhIAVPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 17:15:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238488AbhIAVPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 17:15:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 263D860F90;
-        Wed,  1 Sep 2021 21:14:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630530844;
-        bh=7z3vWMPPeJNHqr9rK0ISrbSO6GXWv+7nWgnuE5I8epI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I9SOLwgnb6ulbLnZb+3QlfFT9bqHEObLXFTlEvJpIQTTAEmX/yKZhCOZs3iG9DPec
-         5f5xRmmmy5FKSyO3SsHpVNPqFCw+O1Pag5gAFjXlybdgx0y71NzxL+EcFxOZ0M0iBf
-         TIFTeGnXXH4/I/Rzn2U9SBQEUcSUNfWgVeFrdfNE=
-Date:   Wed, 1 Sep 2021 23:14:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Krish Jain <krishjain02939@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] Fix formatting for file "hsdma-mt7621.c" by fixing
- formatting of lines ending with "("
-Message-ID: <YS/tGreHTw0XcVs5@kroah.com>
-References: <CAPGkw+zcW+mG2hnvQZqPzeS3T2AobYmZkoPKkqHo-KK3MSKTaA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPGkw+zcW+mG2hnvQZqPzeS3T2AobYmZkoPKkqHo-KK3MSKTaA@mail.gmail.com>
+        id S1343891AbhIAVPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 17:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343708AbhIAVP1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 17:15:27 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5D9C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 14:14:28 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id y185-20020a3764c20000b02903d2c78226ceso890153qkb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 14:14:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=Isvx4DjIyZ95UhyLPtghW+KyLIgzd4+t6VBStaNZel4=;
+        b=qyxdd1Im2YrMFUu2970w/b6BrYgp0K2RtFaSPBbFajB/Z4ILFmH5RtNIhZahtm5Owk
+         aezBt9A1JRyOWIRSYlCyfnap0LuVFZ7p20vC3ErhfaylqfBt3hKgkpE6HkPGooQtsfS2
+         DI8qbreTIGfFkQ04tVXq7jD6kr9SV0BoxM5RCoRCzxeNpi21SrJ2DUoVDXg/xrRkEeJ0
+         bXprxLBdvjeVfEFi6WQvG3MoEvTutHilR+thPeWgioFEqV+DY0IcuYzJuK95PjuHGUAR
+         CyVYsF8IsaDRkVxuM2uo4sczHkZ4yguHAb1PkC10Tdr6G6RJxMBQY+tGevXPPcPsVhK5
+         OlWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Isvx4DjIyZ95UhyLPtghW+KyLIgzd4+t6VBStaNZel4=;
+        b=WDzxj9Em8Cf78MHS/vnn1P0pgvuUJawNP7YMPJu5hpcAnsW+WkGXsaZ+CqjcJe50kK
+         IUwmJlIUN6Hn9y2WPo7ycbhwxA5A9DXruGRrVlSzBgLO9RdhX4T05dhPAXxOnVnkxSyS
+         DPzdKtIPYxK2QghRohF5GmpfHqi3xIxXCIsV8pWAlWD5EmxYJfnfmw+RI9aE8Vxc9oIk
+         qQP8FAgC+m193fOD9aTeusnAMPMsPFcTBGeBsjwVKFy3Ww1gHDgNewnS2T4sx6J2njDx
+         koUlFT9IHHTrupECK097ALQe1VaEjs2imHQbyKqaZR/VBICeQBvS1qx+1jNOp684jepO
+         MiBg==
+X-Gm-Message-State: AOAM531sqFCcUkA1OB30Jf30LN/aSbG50PcF624FX0mwMex6deT/gMTv
+        pJYmvTR6KdwYg22o7BvZT4yR4rSqVCKR
+X-Google-Smtp-Source: ABdhPJwlth2Eo5IAldYMKFCB7G6X17abdCy5ScWqLZRgKQwhrRMlUTBR9716k8Lrh7gJV88fgE5xC5aFUA+J
+X-Received: from rananta-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1bcc])
+ (user=rananta job=sendgmr) by 2002:a0c:9c4d:: with SMTP id
+ w13mr1802546qve.43.1630530867766; Wed, 01 Sep 2021 14:14:27 -0700 (PDT)
+Date:   Wed,  1 Sep 2021 21:14:03 +0000
+In-Reply-To: <20210901211412.4171835-1-rananta@google.com>
+Message-Id: <20210901211412.4171835-4-rananta@google.com>
+Mime-Version: 1.0
+References: <20210901211412.4171835-1-rananta@google.com>
+X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
+Subject: [PATCH v3 03/12] KVM: arm64: selftests: Add support for cpu_relax
+From:   Raghavendra Rao Ananta <rananta@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 10:58:55PM +0200, Krish Jain wrote:
-> From: Krish Jain <krishjain02939@gmail.com>
-> 
-> This patch fixes the format of the code. It properly formats lines
-> that should not end with a '(' as suggested by checkpath.pl.
-> 
-> Signed-off-by: Krish Jain <krishjain02939@gmail.com>
-> 
-> ---
->  drivers/staging/mt7621-dma/hsdma-mt7621.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/staging/mt7621-dma/hsdma-mt7621.c
-> b/drivers/staging/mt7621-dma/hsdma-mt7621.c
-> index b0ed935de7ac..89b72a802800 100644
-> --- a/drivers/staging/mt7621-dma/hsdma-mt7621.c
-> +++ b/drivers/staging/mt7621-dma/hsdma-mt7621.c
-> @@ -162,8 +162,7 @@ struct mtk_hsdam_engine {
->   struct mtk_hsdma_chan chan[1];
->  };
-> 
-> -static inline struct mtk_hsdam_engine *mtk_hsdma_chan_get_dev(
-> - struct mtk_hsdma_chan *chan)
-> +static inline struct mtk_hsdam_engine *mtk_hsdma_chan_get_dev(struct
-> mtk_hsdma_chan *chan)
->  {
->   return container_of(chan->vchan.chan.device, struct mtk_hsdam_engine,
->   ddev);
-> @@ -174,8 +173,7 @@ static inline struct mtk_hsdma_chan
-> *to_mtk_hsdma_chan(struct dma_chan *c)
->   return container_of(c, struct mtk_hsdma_chan, vchan.chan);
->  }
-> 
-> -static inline struct mtk_hsdma_desc *to_mtk_hsdma_desc(
-> - struct virt_dma_desc *vdesc)
-> +static inline struct mtk_hsdma_desc *to_mtk_hsdma_desc(struct
-> virt_dma_desc *vdesc)
->  {
->   return container_of(vdesc, struct mtk_hsdma_desc, vdesc);
->  }
-> @@ -457,9 +455,7 @@ static void mtk_hsdma_issue_pending(struct dma_chan *c)
->   spin_unlock_bh(&chan->vchan.lock);
->  }
-> 
-> -static struct dma_async_tx_descriptor *mtk_hsdma_prep_dma_memcpy(
-> - struct dma_chan *c, dma_addr_t dest, dma_addr_t src,
-> - size_t len, unsigned long flags)
-> +static struct dma_async_tx_descriptor
-> *mtk_hsdma_prep_dma_memcpy(struct dma_chan *c, dma_addr_t dest,
-> dma_addr_t src, size_t len, unsigned long flags)
->  {
->   struct mtk_hsdma_chan *chan = to_mtk_hsdma_chan(c);
->   struct mtk_hsdma_desc *desc;
-> -- 
-> 2.25.1
-> 
+Implement the guest helper routine, cpu_relax(), to yield
+the processor to other tasks.
 
-Hi,
+The function was derived from
+arch/arm64/include/asm/vdso/processor.h.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+---
+ tools/testing/selftests/kvm/include/aarch64/processor.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
+index 082cc97ad8d3..78df059dc974 100644
+--- a/tools/testing/selftests/kvm/include/aarch64/processor.h
++++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
+@@ -191,6 +191,11 @@ asm(
+ 	val;								  \
+ })
+ 
++static inline void cpu_relax(void)
++{
++	asm volatile("yield" ::: "memory");
++}
++
+ #define isb()		asm volatile("isb" : : : "memory")
+ #define dsb(opt)	asm volatile("dsb " #opt : : : "memory")
+ #define dmb(opt)	asm volatile("dmb " #opt : : : "memory")
+-- 
+2.33.0.153.gba50c8fa24-goog
 
-- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
-  and can not be applied.  Please read the file,
-  Documentation/email-clients.txt in order to fix this.
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what a proper Subject: line should
-  look like.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
