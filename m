@@ -2,132 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEF73FDD98
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E95EC3FDD9F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244812AbhIAODB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 10:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240837AbhIAODA (ORCPT
+        id S245000AbhIAOFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 10:05:20 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22810 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244850AbhIAOFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 10:03:00 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278AEC061575;
-        Wed,  1 Sep 2021 07:02:03 -0700 (PDT)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [80.241.60.233])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4H05Ms116kzQkF0;
-        Wed,  1 Sep 2021 16:02:01 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-References: <20210830123704.221494-1-verdre@v0yd.nl>
- <20210830123704.221494-2-verdre@v0yd.nl>
- <CAHp75VeAKs=nFw4E20etKc3C_Cszyz9AqN=mLsum7F-BdVK5Rg@mail.gmail.com>
-From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
-Message-ID: <7e38931e-2f1c-066e-088e-b27b56c1245c@v0yd.nl>
-Date:   Wed, 1 Sep 2021 16:01:54 +0200
+        Wed, 1 Sep 2021 10:05:19 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181E3DOj073302;
+        Wed, 1 Sep 2021 10:04:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=TtIJ/iDRD0pdW3QWEMkMJXfThrFgoj8j3h60Ls4dEys=;
+ b=GIGm4YHSCWeJRdDMpAVT6lCvZ3p9Zx5yy/ZgzrIPQAOEzC37k475BXsaM3MOCAORgXXr
+ 7jgjKncD5rVyK4r0tixxBu6bVG43PkSElvtjZeY5ezHmXI8F9Fl/aslS20dAbuFyusuV
+ J4ngm2HYrfI+0HBP5XGIH8XRbi5f+upYNf2gjxJQOU6reOHEXq3TvGN5xzJCOkgHdbu4
+ fHb+9kCffeMCWoco5BBJHL4t8hZApM1Q1FRNbYlSjvlj10+TRQjaZ4JuceQ8JOcGg07n
+ KWBteuAv+/Rw4jq3ZC5kk3vrYOf5GpcaCPqMdvfQuSZAPjz8sENkbpRiuuzCVUz3D+ef pQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3at9jvasv2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 10:04:07 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 181E3MjE081566;
+        Wed, 1 Sep 2021 10:04:06 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3at9jvassr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 10:04:06 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 181E3g5l009639;
+        Wed, 1 Sep 2021 14:04:02 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 3aqcs9v4pq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 14:04:02 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 181E3wnf52822362
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 1 Sep 2021 14:03:58 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1B33342068;
+        Wed,  1 Sep 2021 14:03:58 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1EE394204D;
+        Wed,  1 Sep 2021 14:03:57 +0000 (GMT)
+Received: from localhost (unknown [9.171.90.254])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  1 Sep 2021 14:03:57 +0000 (GMT)
+Date:   Wed, 1 Sep 2021 16:03:55 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, qemu-s390x <qemu-s390x@nongnu.org>
+Subject: Re: [GIT PULL] s390 updates for 5.15 merge window
+Message-ID: <your-ad-here.call-01630505035-ext-2999@work.hours>
+References: <YSzZFgBt6nMvpVgc@osiris>
+ <YS2RrUma2oOSYtIc@Ryzen-9-3900X.localdomain>
+ <82161448-2770-158c-fdd3-d253b4ae476f@de.ibm.com>
+ <YS4AufXrOCa4rzN0@osiris>
+ <CANpmjNPp3dAcr+WfYxM6_uQOmFmDf60aL-LbXF12NCzP6P3-6Q@mail.gmail.com>
+ <YS5Ed4Cyf+rOf9MR@elver.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YS5Ed4Cyf+rOf9MR@elver.google.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 1KssbIApeupReSu_e4oN6WGB67spKk13
+X-Proofpoint-GUID: tSRKcDxSDA6DLmd5B9vs1d7EVUZms_QF
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VeAKs=nFw4E20etKc3C_Cszyz9AqN=mLsum7F-BdVK5Rg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: CEE9126D
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-01_04:2021-09-01,2021-09-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ spamscore=0 mlxscore=0 adultscore=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 malwarescore=0 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2109010084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/21 2:49 PM, Andy Shevchenko wrote:
- > On Mon, Aug 30, 2021 at 3:38 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
- >>
- >> On the 88W8897 card it's very important the TX ring write pointer is
- >> updated correctly to its new value before setting the TX ready
- >> interrupt, otherwise the firmware appears to crash (probably because
- >> it's trying to DMA-read from the wrong place).
- >>
- >> Since PCI uses "posted writes" when writing to a register, it's not
- >> guaranteed that a write will happen immediately. That means the pointer
- >> might be outdated when setting the TX ready interrupt, leading to
- >> firmware crashes especially when ASPM L1 and L1 substates are enabled
- >> (because of the higher link latency, the write will probably take
- >> longer).
- >>
- >> So fix those firmware crashes by always forcing non-posted writes. We do
- >> that by simply reading back the register after writing it, just as a lot
- >> of other drivers do.
- >>
- >> There are two reproducers that are fixed with this patch:
- >>
- >> 1) During rx/tx traffic and with ASPM L1 substates enabled (the enabled
- >> substates are platform dependent), the firmware crashes and eventually a
- >> command timeout appears in the logs. That crash is fixed by using a
- >> non-posted write in mwifiex_pcie_send_data().
- >>
- >> 2) When sending lots of commands to the card, waking it up from sleep in
- >> very quick intervals, the firmware eventually crashes. That crash
- >> appears to be fixed by some other non-posted write included here.
- >
- > Thanks for all this work!
- >
- > Nevertheless, do we have any commits that may be a good candidate to
- > be in the Fixes tag here?
- >
+On Tue, Aug 31, 2021 at 05:02:15PM +0200, Marco Elver wrote:
+> 2. stack_trace_save() is subtly broken on s390: it starts the trace in
+>    stack_trace_save() itself. This is incorrect, as the trace should
+>    start with the caller. We reported something similar to arm64, also
+>    because one of our sanitizer tests failed:
+>    https://lkml.kernel.org/r/20210319184106.5688-1-mark.rutland@arm.com
 
-I don't think there's any commit we could point to, given that the bug 
-is probably somewhere in the firmware code.
+Thanks a lot for looking into it and debugging it!
 
- >> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
- >> ---
- >>   drivers/net/wireless/marvell/mwifiex/pcie.c | 6 ++++++
- >>   1 file changed, 6 insertions(+)
- >>
- >> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c 
-b/drivers/net/wireless/marvell/mwifiex/pcie.c
- >> index c6ccce426b49..bfd6e135ed99 100644
- >> --- a/drivers/net/wireless/marvell/mwifiex/pcie.c
- >> +++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
- >> @@ -237,6 +237,12 @@ static int mwifiex_write_reg(struct 
-mwifiex_adapter *adapter, int reg, u32 data)
- >>
- >>          iowrite32(data, card->pci_mmap1 + reg);
- >>
- >> +       /* Do a read-back, which makes the write non-posted, 
-ensuring the
- >> +        * completion before returning.
- >
- >> +        * The firmware of the 88W8897 card is buggy and this avoids 
-crashes.
- >
- > Any firmware version reference? Would be nice to have just for the
- > sake of record.
- >
+> Fix it by skipping the initial entry in s390's arch_stack_walk().
 
-Pretty sure the crash is present in every firmware that has been 
-released, I've tried most of them. FTR, the current firmware version is 
-15.68.19.p21.
+...
 
- >> +        */
- >> +       ioread32(card->pci_mmap1 + reg);
- >> +
- >>          return 0;
- >>   }
- >
- >
+> diff --git a/arch/s390/kernel/stacktrace.c b/arch/s390/kernel/stacktrace.c
+> index 101477b3e263..47d1841af03e 100644
+> --- a/arch/s390/kernel/stacktrace.c
+> +++ b/arch/s390/kernel/stacktrace.c
+> @@ -16,11 +16,16 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+>  {
+>  	struct unwind_state state;
+>  	unsigned long addr;
+> +	bool init = true;
+>  
+>  	unwind_for_each_frame(&state, task, regs, 0) {
+>  		addr = unwind_get_return_address(&state);
+> -		if (!addr || !consume_entry(cookie, addr))
+> +		if (!addr)
+> +			break;
+> +
+> +		if (!init && !consume_entry(cookie, addr))
+>  			break;
+> +		init = false;
+>  	}
+
+I believe we don't need to skip the first unwinder result if task != current
+or regs != NULL. Same for arch_stack_walk_reliable.
+
+But after you pinpointed the problem I see that the actual difference
+with x86 implementation comes from get_stack_pointer(). I'll send a patch
+as reply.
