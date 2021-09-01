@@ -2,127 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3613FD608
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DC73FD60F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243318AbhIAI5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:57:17 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:47926
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243292AbhIAI5O (ORCPT
+        id S243331AbhIAI6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242951AbhIAI6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:57:14 -0400
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
+        Wed, 1 Sep 2021 04:58:15 -0400
+Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3389BC061760;
+        Wed,  1 Sep 2021 01:57:19 -0700 (PDT)
+Received: from Marijn-Arch-PC.localdomain (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C647B3F325
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 08:56:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630486576;
-        bh=gwLLa2UOi6T+wtyiAz6ZhhzZsScQOUi/vsbQy5aqFIA=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=pRAcKYSICWmktF4fCJt9ypKrebUFlBZNaJaLPbKUDehkGwTGhhONrhElVGqGyO+vM
-         3SXcB8kxHo3YEF/Zf0s/xe1O8/hw/FBNYQtTzGpCp7k6yJwnDgpr5udpQu0xia2TP7
-         bu7+16VWHDgHSnuvfIqGlVld6/Qw7s6EZPfalXaNmrcrDb04qJNxqUQAt9DcwJDleT
-         9mc6BWe5KQJQv987/nVUaYQgV5/QzOFraCxJcd20Y7jTkGEuMFaotbdL4PeESVO3IY
-         NoXDdUI5DOG0MYzcrCksK7JBae0GAiPhMYxNPfCqTznwEC2mxPvmsqWqProJM/PMFC
-         +iHfMV3pgzUQA==
-Received: by mail-wr1-f70.google.com with SMTP id j1-20020adff541000000b001593715d384so179476wrp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:56:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gwLLa2UOi6T+wtyiAz6ZhhzZsScQOUi/vsbQy5aqFIA=;
-        b=O1wk/RP34uVL3k5Zj35EgAp2I5SXmE/pVwm2Y/iZYOTHPWkK1FOaVwOvrwV02YD12v
-         hubakFcTQVfPZDG2yh+3knXh+hEHwyypUpd91FhJEsdRLptVpsXzZOqOa2YLlOxPsKX1
-         5UO607jO+gtMmOhGH5cpzkO6B3XPJFAaLQ5WOSZrp241I8O33QS4nEcLAYK2rw/MPCsd
-         B/OkECpLCLjKdEtr1vC6k7cy0CEw3E6+7ipkQsN2W2UyaTJzDJRQ1uOOsNTlnYX7XtLG
-         L2XYNG+xbWzy3rBNt0MkoXwuJjwM75euJfSnUnDHRWfRB0S2jZPYC4Gf2H+6Y1Fds9hN
-         UoHA==
-X-Gm-Message-State: AOAM530aoNUcgr7vBhsriC1Xpl+VcLLJJ3QK3UwmShdbv6+TPkAKRhsB
-        xdkHNapTCuq/7vjhL3kM52d9NKCEV0HcWe0dXVTH1CR/mZzU+GT6FsCvDEMIkaJVyPF/Hlfk5mg
-        8U/DqCRmNQNoIf0dlp6EtOAoK2LYi3scAWMNDIXTizw==
-X-Received: by 2002:a1c:21c3:: with SMTP id h186mr8626349wmh.186.1630486576012;
-        Wed, 01 Sep 2021 01:56:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyEaOo9BEZwzFqFpTCJEA4aMjN7D27ED7IHNXmy9KLSmHPPhFG2nBCpG9+r5QNlOXsLoAMZWg==
-X-Received: by 2002:a1c:21c3:: with SMTP id h186mr8626335wmh.186.1630486575883;
-        Wed, 01 Sep 2021 01:56:15 -0700 (PDT)
-Received: from [192.168.3.211] ([79.98.113.122])
-        by smtp.gmail.com with ESMTPSA id r10sm16036787wrc.85.2021.09.01.01.56.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 01:56:15 -0700 (PDT)
-Subject: Re: [PATCH] pwm: samsung: Simplify using devm_pwmchip_add()
-To:     zhaoxiao <zhaoxiao@uniontech.com>, thierry.reding@gmail.com,
-        lee.jones@linaro.org
-Cc:     u.kleine-koenig@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210901054230.29678-1-zhaoxiao@uniontech.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <79e46f2f-c3ed-d187-2553-e64e0aac4c13@canonical.com>
-Date:   Wed, 1 Sep 2021 10:56:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 8A81D2013F;
+        Wed,  1 Sep 2021 10:57:16 +0200 (CEST)
+Date:   Wed, 1 Sep 2021 10:57:15 +0200
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Subject: Re: [PATCH v2 2/2] clk: qcom: gcc-sdm660: Remove transient global
+ "xo" clock
+Message-ID: <YS9Aa0tADAf5KMSl@Marijn-Arch-PC.localdomain>
+References: <20210830182445.167527-1-marijn.suijten@somainline.org>
+ <20210830182445.167527-3-marijn.suijten@somainline.org>
+ <163047455623.42057.15513441659841056105@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210901054230.29678-1-zhaoxiao@uniontech.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163047455623.42057.15513441659841056105@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/2021 07:42, zhaoxiao wrote:
-> With devm_pwmchip_add() we can drop pwmchip_remove() from the device
-> remove callback. The latter can then go away, too and as this is the
-> only user of platform_get_drvdata(), the respective call to
-> platform_set_drvdata() can go, too.
+On 2021-08-31 22:35:56, Stephen Boyd wrote:
+> Quoting Marijn Suijten (2021-08-30 11:24:45)
+> > The DSI PHY/PLL was relying on a global "xo" clock to be found, but the
+> > real clock is named "xo_board" in the DT.  The standard nowadays is to
+> > never use global clock names anymore but require the firmware (DT) to
+> > provide every clock binding explicitly with .fw_name.  The DSI PLLs have
+> > since been converted to this mechanism (specifically 14nm for SDM660)
+> > and this transient clock can now be removed.
+> > 
+> > This issue was originally discovered in:
+> > https://lore.kernel.org/linux-arm-msm/386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org/
+> > and prevented the removal of "xo" at that time.
+> > 
+> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > ---
 > 
-> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
-> ---
->  drivers/pwm/pwm-samsung.c | 18 +-----------------
->  1 file changed, 1 insertion(+), 17 deletions(-)
-> 
-> diff --git a/drivers/pwm/pwm-samsung.c b/drivers/pwm/pwm-samsung.c
-> index f6c528f02d43..b860a7b8bbdf 100644
-> --- a/drivers/pwm/pwm-samsung.c
-> +++ b/drivers/pwm/pwm-samsung.c
-> @@ -560,9 +560,7 @@ static int pwm_samsung_probe(struct platform_device *pdev)
->  	chip->tclk0 = devm_clk_get(&pdev->dev, "pwm-tclk0");
->  	chip->tclk1 = devm_clk_get(&pdev->dev, "pwm-tclk1");
->  
-> -	platform_set_drvdata(pdev, chip);
+> Presumably this wants to go with the first one.
 
-The test looks untested because this should cause bug during resume.
-> -
-> -	ret = pwmchip_add(&chip->chip);
-> +	ret = devm_pwmchip_add(&pdev->dev, &chip->chip);
->  	if (ret < 0) {
->  		dev_err(dev, "failed to register PWM chip\n");
->  		clk_disable_unprepare(chip->base_clk);
-> @@ -577,19 +575,6 @@ static int pwm_samsung_probe(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -static int pwm_samsung_remove(struct platform_device *pdev)
-> -{
-> -	struct samsung_pwm_chip *chip = platform_get_drvdata(pdev);
-> -	int ret;
-> -
-> -	ret = pwmchip_remove(&chip->chip);
-> -	if (ret < 0)
-> -		return ret;
-> -
-> -	clk_disable_unprepare(chip->base_clk);
+What are you referring to with "the first one"?  This patch can only go
+in after patch 1/2 of this series, unless you are suggesting to squash
+it with Bjorns cleanup and making sure that lands after the fix in the
+DSI?
 
-NAK, the patch looks bad. You cannot remove some code from remove()
-callback just "because".
-
-
-Best regards,
-Krzysztof
+> Acked-by: Stephen Boyd <sboyd@kernel.org>
