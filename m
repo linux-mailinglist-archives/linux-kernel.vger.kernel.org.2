@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BE43FDC64
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1623FDB38
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346302AbhIAMtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:49:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49846 "EHLO mail.kernel.org"
+        id S1344115AbhIAMjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:39:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346005AbhIAMqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:46:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CDC8610A1;
-        Wed,  1 Sep 2021 12:39:31 +0000 (UTC)
+        id S1344163AbhIAMhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:37:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 879FB61131;
+        Wed,  1 Sep 2021 12:34:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499972;
-        bh=dkmQky7MqGdCrJ2LkA6T01hj9azqS7CDCxRUQm6Gpd0=;
+        s=korg; t=1630499650;
+        bh=GUKhH7urC3fWP/dJb2D4FsZqyIFxSwiQuVhO0ShoeFg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=adV1gsNaFE7rify3E97aAT5vyhnKKK60Ea53HuuXHPcrtiYkwYKcuWPSnNz3kXvhN
-         Vcw/V7FHkuSVXP3BRjDmvO3CVl6EAhwva7nQ6K3nUtyMdmslS6wDb/59/DdJQp9rNf
-         nUi0Qqs5616zKqga8ak55w/gt8fk28cUHDKaICFc=
+        b=Rb3cKMPmShq5DpquZd+Kzn9lCGZvUO6SqGQ49z2lKIEsi55nhIHT0LarYMgEpX512
+         6Yb6NhQnDDv+GYWAORaDmu/81fQTMVNkwN/V7nN4mYWQqSmhowtjn6GIW0OF1yU+HY
+         JTUl59JuSAGmeQOP0KtbmWTmzCRlSqRaoAWlLUMc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lijo Lazar <lijo.lazar@amd.com>,
-        Borislav Petkov <bp@suse.de>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.13 027/113] drm/amdgpu: Fix build with missing pm_suspend_target_state module export
-Date:   Wed,  1 Sep 2021 14:27:42 +0200
-Message-Id: <20210901122302.904408427@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com,
+        Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 033/103] ip_gre: add validation for csum_start
+Date:   Wed,  1 Sep 2021 14:27:43 +0200
+Message-Id: <20210901122301.663406152@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
 
-commit c41a4e877a185241d8e83501453326fb98f67354 upstream.
+[ Upstream commit 1d011c4803c72f3907eccfc1ec63caefb852fcbf ]
 
-Building a randconfig here triggered:
+Validate csum_start in gre_handle_offloads before we call _gre_xmit so
+that we do not crash later when the csum_start value is used in the
+lco_csum function call.
 
-  ERROR: modpost: "pm_suspend_target_state" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
+This patch deals with ipv4 code.
 
-because the module export of that symbol happens in
-kernel/power/suspend.c which is enabled with CONFIG_SUSPEND.
-
-The ifdef guards in amdgpu_acpi_is_s0ix_supported(), however, test for
-CONFIG_PM_SLEEP which is defined like this:
-
-  config PM_SLEEP
-          def_bool y
-          depends on SUSPEND || HIBERNATE_CALLBACKS
-
-and that randconfig has:
-
-  # CONFIG_SUSPEND is not set
-  CONFIG_HIBERNATE_CALLBACKS=y
-
-leading to the module export missing.
-
-Change the ifdeffery to depend directly on CONFIG_SUSPEND.
-
-Fixes: 5706cb3c910c ("drm/amdgpu: fix checking pmops when PM_SLEEP is not enabled")
-Reviewed-by: Lijo Lazar <lijo.lazar@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/YSP6Lv53QV0cOAsd@zn.tnic
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: c54419321455 ("GRE: Refactor GRE tunneling code.")
+Reported-by: syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
+Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv4/ip_gre.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-@@ -904,7 +904,7 @@ void amdgpu_acpi_fini(struct amdgpu_devi
-  */
- bool amdgpu_acpi_is_s0ix_supported(struct amdgpu_device *adev)
+diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
+index e70291748889..a0829495b211 100644
+--- a/net/ipv4/ip_gre.c
++++ b/net/ipv4/ip_gre.c
+@@ -468,6 +468,8 @@ static void __gre_xmit(struct sk_buff *skb, struct net_device *dev,
+ 
+ static int gre_handle_offloads(struct sk_buff *skb, bool csum)
  {
--#if IS_ENABLED(CONFIG_AMD_PMC) && IS_ENABLED(CONFIG_PM_SLEEP)
-+#if IS_ENABLED(CONFIG_AMD_PMC) && IS_ENABLED(CONFIG_SUSPEND)
- 	if (acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0) {
- 		if (adev->flags & AMD_IS_APU)
- 			return pm_suspend_target_state == PM_SUSPEND_TO_IDLE;
++	if (csum && skb_checksum_start(skb) < skb->data)
++		return -EINVAL;
+ 	return iptunnel_handle_offloads(skb, csum ? SKB_GSO_GRE_CSUM : SKB_GSO_GRE);
+ }
+ 
+-- 
+2.30.2
+
 
 
