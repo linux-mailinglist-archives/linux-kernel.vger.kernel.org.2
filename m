@@ -2,117 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8783FE04D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BA53FE053
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344071AbhIAQsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:48:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
+        id S1344156AbhIAQvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbhIAQse (ORCPT
+        with ESMTP id S238589AbhIAQvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:48:34 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05DBC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:47:37 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id 7so262524pfl.10
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:47:37 -0700 (PDT)
+        Wed, 1 Sep 2021 12:51:04 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C12C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:50:07 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id p38so421488lfa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:50:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SdndLapjv5LLI+r4ct9MCxqBfsmBR7H3bxUJRnVikqY=;
-        b=dOBBBVTa1DZoDUJneDk9k44TNY6OkY16SFNkp4fXbZJ85WgYPVg7JB5Imiv1DWwTV5
-         f3dwrtsJ3F6XIqlZNtFLAG1dK0a6COKSA8ybbaVccnwyKgSaYrnlH6AgOWqHLTBQSFyn
-         /u+Z+onhgYoUrg+jXBkwHYU10jg2ONbgFunRvSxLd048Wj7ucv4nf7TxY3XOpNN3+o25
-         pfR88e7/msu/dJzRE9tHhBCY0jXnmQSm241aEBFRUAVPwB66geVmGNGXL7dGye6jUfJn
-         GLtmarHe10RKzFv/pSU2ccZX9GihupbP6W0R0iAUYP9BDWWQNXIJlMc2oDnD8y1FYI32
-         4o2A==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w6CphMFgf5XtmkIUIZdS3zg3lS0CLaheDoiUHPnX0Fk=;
+        b=XWORPcX4JUiWNYhys31DRm5lPzmQ8u3sh4J6BqTmpr0mg4ugdlAnpEPUP/nDyLFoi4
+         LXOKc1TEP4Rcp3WKfC9pWuacs8HoE5v93ke7gWjPkYyZRbmnql6lTS3lcu+Nee5S2CQs
+         4KLUoQY7eshWi4Uj/Y8cdKSRMXIp/YYbL9Ypo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SdndLapjv5LLI+r4ct9MCxqBfsmBR7H3bxUJRnVikqY=;
-        b=JeJnhxgDzDCn1pmjaXalWCsx6zvLROe9QJ2Z7umiuIV40VnlD5vEb4miIIFlColHLr
-         V64VDO0EX8EA7Ikn+4GRECTq55Qnc+t7bERHbnmL9OujQYlQJI5IYJX7ntdiZkiBQhl/
-         sSDBGWi8eNJoh2sY6PqupCUxFU7nluDfPSOJtFAhUHjzaAazokjSA6qA4gqNTfLXuC1U
-         GPiyt3EP5Y58m4R6xknokbLqPY3LtJp08PJPmYLiIrGM/oBQLu4HuQKXC4Pb/M+DVtH8
-         rjirWCDfJBRwKfZggCWlkt70IHBqZOIXLsDabOePjNiLaN9GQiEae5wIR3cYC97D/GwD
-         qEoA==
-X-Gm-Message-State: AOAM5304JL1axr6UGJV4nhJz9LqZb4+HNJg8t/9OGJGMlx2W1I+jJjAs
-        Bc8pOjS+y/x0JER9pZF9rf0sug==
-X-Google-Smtp-Source: ABdhPJzM6h7XNegbyAJ6khqh7exjDCV3dX8Es1EnZyIbn4kWQsszYnMHLy6RuuG0nIZQ3XbYka4LRQ==
-X-Received: by 2002:a63:154d:: with SMTP id 13mr40488pgv.404.1630514857136;
-        Wed, 01 Sep 2021 09:47:37 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id e5sm77010pjv.44.2021.09.01.09.47.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 09:47:36 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 16:47:32 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
- restore_fpregs_from_user()
-Message-ID: <YS+upEmTfpZub3s9@google.com>
-References: <20210830154702.247681585@linutronix.de>
- <20210830162545.374070793@linutronix.de>
- <YS0ylo9nTHD9NiAp@zn.tnic>
- <87zgsyg0eg.ffs@tglx>
- <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
- <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
- <87r1e8cxp5.ffs@tglx>
- <87o89ccmyu.ffs@tglx>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w6CphMFgf5XtmkIUIZdS3zg3lS0CLaheDoiUHPnX0Fk=;
+        b=JfuGzXqpnQ0gwXjotzjRokmFqHuUJ88vRSJrJivFzIogdauB1wmjL7mzs1qc1RN8df
+         FiSZEc01YC+/mS6pr+wPds6iEEx9xrfAZw3Luh7DBUj+4tJxsruoIUAuLVybzlIstSdV
+         5tUZAvzdUuyI415TCfbAKrLCv6nA2wJ9oq3pa5SSlTjnGbpWpNK3raZ50ICgThU672nL
+         H5rab9skHZKwRg8vOamtfHKkAsuxbS0Dqy4C8TxfsEJX35rb2nwENFzKEDZdWAqWtIy5
+         RlILQ3nuGwa8F+cDhUnTW8X+nB9iN+vTX7OV9CfORNWK7RuDsZDGTuI5WnwM4x+59FpM
+         8siw==
+X-Gm-Message-State: AOAM530imQ2xK0KC84Ogdm/zWgbqah/vef5AcwD2rn4gRd+CMq2zEQAM
+        MpRRl0BScK6tt+mCseEaqvrL4mevK3/V55S+
+X-Google-Smtp-Source: ABdhPJyaC5nZygLU2VtdQ29CLuiWrkY96LWmceeu9iC8sBNk2otpydeVqNoZNoWlz6vFaBJDVATF0A==
+X-Received: by 2002:a05:6512:25d:: with SMTP id b29mr271374lfo.261.1630515005320;
+        Wed, 01 Sep 2021 09:50:05 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id d20sm3081lfv.117.2021.09.01.09.50.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 09:50:04 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id bq28so276227lfb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:50:03 -0700 (PDT)
+X-Received: by 2002:a05:6512:1053:: with SMTP id c19mr273608lfb.201.1630515003669;
+ Wed, 01 Sep 2021 09:50:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o89ccmyu.ffs@tglx>
+References: <YS+LXqoDGk0CqU1Q@kroah.com>
+In-Reply-To: <YS+LXqoDGk0CqU1Q@kroah.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 1 Sep 2021 09:49:47 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whqN1gAZk0ZD_4JxGemdbpnQkDaNFY9MjW==v-kb1J-fw@mail.gmail.com>
+Message-ID: <CAHk-=whqN1gAZk0ZD_4JxGemdbpnQkDaNFY9MjW==v-kb1J-fw@mail.gmail.com>
+Subject: Re: [GIT PULL] Staging / IIO driver changes for 5.15-rc1
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021, Thomas Gleixner wrote:
-> On Wed, Sep 01 2021 at 14:00, Thomas Gleixner wrote:
-> >
-> > commit b2f9d678e28c ("x86/mce: Check for faults tagged in
-> > EXTABLE_CLASS_FAULT exception table entries") made use of this in MCE to
-> > allow in kernel recovery. The only thing it uses is checking the
-> > exception handler type.
-> >
-> > Bah. I'll fix that up to make that less obscure.
-> >
-> > The remaining two use cases (SGX and FPU) make use of the stored trap
-> > number.
-> 
-> Though while for the FPU use case we really want to handle the #MC case,
-> it's not clear to me whether this is actually correct for SGX.
-> 
-> Jarkko, Sean, Dave?
+On Wed, Sep 1, 2021 at 7:17 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> Lots of churn in some staging drivers, we dropped the "old" rtl8188eu
+> driver and replaced it with a newer version of the driver that had been
+> maintained out-of-tree by Larry with the end goal of actually being able
+> to get this driver out of staging eventually.  Despite that driver being
+> "newer" the line count of this pull request is going up.
 
-Are you asking about #MC specifically, or about SGX consuming the trap number in
-general?
+Ugh.
 
-For #MC, it's probably a moot point because #MC on ENCLS is not recoverable for
-current hardware.  If #MC somehow occurs on ENCLS and doesn't kill the platform,
-"handling" the #MC in SGX is probably wrong.  Note, Tony is working on a series to
-support recoverable #MC on SGX stuff on future hardware[*], but I'm not sure that's
-relevant to this discussion.
+So this had a conflict with the networking tree, and commit
+89939e890605 ("staging: rtlwifi: use siocdevprivate") in particular.
 
-As for SGX consuming the trap number in general, it's correct.  For non-KVM usage,
-it's nice to have but not strictly necessary.  Any fault except #PF on ENCLS is
-guaranteed to be a kernel or hardware bug; SGX uses the trap number to WARN on a
-!#PF exception, e.g. on #GP or #UD.  Not having the trap number would mean losing
-those sanity checks, which have been useful in the past.
+Ok, so that conflict looked annoying but harmless - git saw the new
+driver as a rename of the old one, and tried to actually apply the
+changes from that commit to the new one.
 
-For virtualizing SGX, KVM needs the trap number so that it can inject the correct
-exception into the guest, e.g. if the guest violates the ENCLS concurrency rules
-it should get a #GP, whereas a EPCM violation should #PF.
+And git actually did a reasonable job, everything considered. There
+were enough similarities that it wasn't entirely crazy, and enough
+differences that it caused conflicts.
 
-[*] https://lore.kernel.org/lkml/20210827195543.1667168-1-tony.luck@intel.com
+HOWEVER.
+
+Actually then looking at the root causes of the conflicts, as part of
+just trying to finish what git had started, I notice that a lot of the
+code in the new driver was just completely dead.
+
+As of commit ae7471cae00a ("staging: r8188eu: remove rtw_ioctl
+function") the only caller of rtw_android_priv_cmd() is entirely gone.
+
+But rtw_android_priv_cmd() was kept around, and was in fact the only
+reason that the files
+
+    drivers/staging/r8188eu/include/rtw_android.h
+    drivers/staging/r8188eu/os_dep/rtw_android.c
+
+existed at all.
+
+End result: instead of trying to fix up the conflict in dead code, I
+just ripped out the code completely.
+
+So my merge actually looks simple and clean: when you look at the
+conflict diff of my merge, all you see is that I removed
+'os_dep/rtw_android.o' from drivers/staging/r8188eu/Makefile.
+
+What you don't actually see as a conflict, is that I removed those
+files entirely. That removal doesn't show up as "conflicts", because
+that filename didn't exist in my HEAD commit before the merge at all
+(because my tree had that old "rtl8188eu" driver).
+
+So this email is just a long explanation for what I did, to make
+people aware that maybe I screwed up. It builds for me, and honestly,
+it makes sense to me in ways that your git tree did not, but I can't
+test any of it.
+
+Added Arnd (for the siocdevprivate conversion) and Phillip/Larry (for
+the r8188eu driver side) - can you please double-check what I did.
+
+                   Linus
