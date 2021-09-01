@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D493FD113
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 102363FD10A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241460AbhIACJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 22:09:03 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:27887 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240762AbhIACJC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 22:09:02 -0400
-Received: from epcas3p2.samsung.com (unknown [182.195.41.20])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210901020805epoutp0114836765355e289f3843789979afb09d~gkKC11Gqr2712627126epoutp01W
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 02:08:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210901020805epoutp0114836765355e289f3843789979afb09d~gkKC11Gqr2712627126epoutp01W
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1630462085;
-        bh=0kFO7Rz9JYkOhgKVXFWXP3pObUCIGbv4Xk00n5yHx7U=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=D0nWRRWEE8tF1acBQ+bnnM11mv3fUk94QTAosu1SmOykGntsfFGTnPp8cM+K2LIPp
-         wU/LfbMILqsVcsTIaUT+IgrduewDqpKJ0qrevDy1dKLgNdqf2ZJR4V9Va3wlIfaHRy
-         caZdcClw3w3fn6AA3jOx6IM0IZ+p80OzXJAUkb6I=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas3p1.samsung.com (KnoxPortal) with ESMTP id
-        20210901020803epcas3p13f87323d38d206506bbfe508e4399c70~gkKBeAcYW0690206902epcas3p1B;
-        Wed,  1 Sep 2021 02:08:03 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp3.localdomain
-        (Postfix) with ESMTP id 4GznX31nJ2z4x9QF; Wed,  1 Sep 2021 02:08:03 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: [PATCH v2] scsi: ufs: ufshpb: Remove unused parameters
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     ChanWoo Lee <cw9316.lee@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     wonsuk Jung <grant.jung@samsung.com>,
-        Jin-Tae Jang <jt77.jang@samsung.com>,
-        Doo-Hyun Hwang <dh0421.hwang@samsung.com>,
-        Seunghui Lee <sh043.lee@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20210901004620.29929-1-cw9316.lee@samsung.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <2038148563.21630462083241.JavaMail.epsvc@epcpadp4>
-Date:   Wed, 01 Sep 2021 11:02:19 +0900
-X-CMS-MailID: 20210901020219epcms2p30d291dffa58f8cca05d580cbddd60d37
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210901005350epcas1p10781b465ef299afd8b2f69e78b39cf5c
-References: <20210901004620.29929-1-cw9316.lee@samsung.com>
-        <CGME20210901005350epcas1p10781b465ef299afd8b2f69e78b39cf5c@epcms2p3>
+        id S241732AbhIACDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 22:03:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231249AbhIACDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 22:03:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF6876102A;
+        Wed,  1 Sep 2021 02:02:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630461768;
+        bh=itf0YPIBFQSTV5XdA/fydfXnNEXgRwQUfxUzkZjmh3c=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Xmb3jiGQ373MJCK1YeQ6gIPfz/fSmEUFJh0eS/syA8MTggweyK1RDpNvRmRtCxczr
+         k1Bsmb45KegENAbbNygdtE4i8jlO/7XcQmd8D1NFsiBojWrvwuEV5rjvum+XRUEK2s
+         0/c4nzZYhAkhKkK87WZKbGCH5kabEqXdYwem677RYuNPWjOo53URzi+aW3WCnFNEHG
+         +uSO5fketS+OFfhCezT4lqs15zbmmXuKAnWliQbCA48UHG/FxxEVxMMf70mWsgQV9V
+         x9i60KYRj/x9cRxh0v1JqdmxDlAUQAjdq5KJRLltSFWKWImqyVjWqMICQn7xv+aNZR
+         VwrpcZEasW26A==
+Message-ID: <04b90a702328712204430db604b2a92ddfe8f990.camel@kernel.org>
+Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Wed, 01 Sep 2021 05:02:45 +0300
+In-Reply-To: <20210828000335.1d40dfff0f408b2d91467491@intel.com>
+References: <20210825235234.153013-1-jarkko@kernel.org>
+         <20210825235234.153013-2-jarkko@kernel.org>
+         <20210826141959.5f13ff3c9c560c23b58443b1@intel.com>
+         <54923ac01fc303e5105cadca06b7c5cbd322d815.camel@kernel.org>
+         <20210828000335.1d40dfff0f408b2d91467491@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi ChanWoo Lee,
+On Sat, 2021-08-28 at 00:03 +1200, Kai Huang wrote:
+> > > > -/* The free page list lock protected variables prepend the lock. *=
+/
+> > > > +/* The number of usable EPC pages in the system. */
+> > > > +unsigned long sgx_nr_all_pages;
+> > > > +
+> > > > +/* The number of free EPC pages in all nodes. */
+> > > >  static unsigned long sgx_nr_free_pages;
+> > > > =20
+> > > >  /* Nodes with one or more EPC sections. */
+> > > > @@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_section(u64 ph=
+ys_addr, u64 size,
+> > > >  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
+> > > >  	}
+> > > > =20
+> > > > +	sgx_nr_all_pages +=3D nr_pages;
+> > > > +
+> > >=20
+> > > EPC sections can be freed again in sgx_init() after they are successf=
+ully
+> > > initialized, when any further initialization fails (i.e. when fails t=
+o create
+> > > ksgxd, or fails to register /dev/sgx_provision).  In which case, I th=
+ink
+> > > sgx_nr_all_pages should also be cleared.  But current sgx_init() seem=
+s doesn't
+> > > reset it.  Do you need to fix that too?
+> >=20
+> > sgx_nr_all_pages tells just the total pages in the system, i.e. it's a =
+constant.
+> >=20
+> > Maybe a rename to "sgx_nr_total_pages" would be a good idea? Would matc=
+h with
+> > the meminfo field better too.
+>=20
+> I don't have preference on name.  I just think if there's no actual user =
+of
+> EPC (when both driver and KVM SGX cannot be enabled), it's pointless to p=
+rint
+> number of EPC pages.
 
->From: ChanWoo Lee <cw9316.lee@samsung.com>
-> 
->The following parameters are not used in the function.
->So, remove unused parameters.
-> 
->*func(): ufshpb_set_hpb_read_to_upiu
-> -> struct ufshpb_lu *hpb
-> -> u32 lpn
-> 
->Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+I'd presume that you refer to the code, which prints the number of *bytes* =
+in
+the system because code printing the number of pages does not exist in this
+patch set.
 
-Please add Bart's tag above your signed-off tag.
+I have troubles the decipher your statement.
 
-Reviewed-by: Daejun Park <daejun7.park@samsung.com>
+You think that only if both the driver and KVM are *both* enabled, only the=
+n
+it makes sense to have this information available for sysadmin?
+
+I don't get this logic, if I understood what you mean in the first place.
+
+/Jarkko
+
