@@ -2,142 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00EA93FE051
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B0B3FE055
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245390AbhIAQuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:50:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231419AbhIAQuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:50:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A132260525;
-        Wed,  1 Sep 2021 16:49:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630514994;
-        bh=qfbWT7+qcpIOR2ilM3lTfkuFQnLJW5YbueLjEBSnZyY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oR3FDJQStaL1ofpT2swCRp2pWYRhoVGq3++Hbqjrbole3eG6IIu6rrAoWSLL6CmSr
-         Z2sGMTQjhKVdidwUSA0dFIlekvqxO26VE45ToS0LQV2x6eMCqklNwRgwzMh8pMmwqn
-         YNZ/3OOMrAIFpxgOAo9D9a3xyRTepCk2AvHjG/lWW/X39mlcH7v2Vqa/UplBi0LfZC
-         BSOD//t5YdnM5ze3j2ANGQHKzxvYjzsEKEdVN5U4RNkijseE2YxoiZA5RP8VSl2JX+
-         WsaSHT287Z2F4RrCG69LIaeH+IEGgAMVaU8oN2DdKXdvN4xr1WQ+ULND4hjF1l2ZQI
-         qp6kcQ4CknSOA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 666A34007E; Wed,  1 Sep 2021 13:49:51 -0300 (-03)
-Date:   Wed, 1 Sep 2021 13:49:51 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
-        mike.leach@linaro.org, suzuki.poulose@arm.com,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] perf cs-etm: Show a warning for an unknown magic
- number
-Message-ID: <YS+vL2SYCCVLAXVp@kernel.org>
-References: <20210806134109.1182235-1-james.clark@arm.com>
- <20210806134109.1182235-10-james.clark@arm.com>
- <20210824083615.GF204566@leoy-ThinkPad-X240s>
- <YS+iOrcPTzQfmbqU@kernel.org>
- <YS+lTXyuC+9VTrxd@kernel.org>
- <YS+neCZler56Hs2D@kernel.org>
- <YS+pgZMpFmnRlMuT@kernel.org>
+        id S1344149AbhIAQvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344169AbhIAQvH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 12:51:07 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A162EC061575;
+        Wed,  1 Sep 2021 09:50:10 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id x2-20020a1c7c02000000b002e6f1f69a1eso117974wmc.5;
+        Wed, 01 Sep 2021 09:50:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k8MyIsdgA5KIZjl0zzly0Kpk8tSTOvLttUpP4Sw/Hmk=;
+        b=kl/okPfBUIdSmH0wOZRFIMbyFtHFEVDKLTMQCKqq0RiOAY8gTqvoDUIr3kuWZv3NX2
+         mRb+YW6QEkJgB2/LoysciVXavGzEL+b7xX7OvFeBMSC9pG3pPIw2qFyTotFMRgcW+qZC
+         wHl4b0UXX2CFEJuFAvqecbnsweTF3M4ZbbUZ/MILt5qlG7TQ8qMJdTbQuEh18R9asc2y
+         nvFE0MMd8W2bjhYbEOqTWaWqsk73zRomZzEdtI4hc4FDN8RhzHn1Zo8SCOJWV0lL8eXS
+         RWniBlDCMbTZb19FRrYJZO9S8F8XXQ+OCDumW9tJR178z5AnlbjF24n5glfELUt/9JEY
+         L5bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k8MyIsdgA5KIZjl0zzly0Kpk8tSTOvLttUpP4Sw/Hmk=;
+        b=WZ54qBSrN8+od9MaLvPqhnpSD+nDc+qQxinTMBFbuhK39v79bvQsUc429wxyKC6Ew6
+         zloiqRbUVC1l6VmhEYlAI9nvWHogyMvTF0vpt1whR26u/8tW6YUYOvkzf9+Ti1EtmVMf
+         zeKDDGqnhlkUoNUKT98kWjFwN/SLJF2qdr1pME2hi1vzljFW0R1lw2JykoPH4bwImMTB
+         DyrE5G0bLa82U+6sHhlhZyJNURtoWh24amkr7t84RkXXY8snl6Gu9S55X5gKweY1XQiR
+         XdSqYOQNmIeJ0znutyQgWs1vTOy3lr1rynFZL1l8pMEk034mFDr1JhsNPrqsVT1GyLm4
+         8sJA==
+X-Gm-Message-State: AOAM533+9fVeXLWnchR43zjSoPqWht7fIKGSE7QRFYs7WQnV03lFGPZA
+        xql2FgEeRGPe/4WnNb/i5cY=
+X-Google-Smtp-Source: ABdhPJxNVzCpxzumP4psu/qnGdKFuffDBPPE3NGWQ10IJEFi0CIT5N9c0Z2Q3XDOOnB4BQ83oVr1Rw==
+X-Received: by 2002:a05:600c:b4e:: with SMTP id k14mr443670wmr.139.1630515009240;
+        Wed, 01 Sep 2021 09:50:09 -0700 (PDT)
+Received: from localhost.localdomain ([147.235.73.50])
+        by smtp.googlemail.com with ESMTPSA id s205sm61798wme.4.2021.09.01.09.50.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 09:50:08 -0700 (PDT)
+From:   Ariel Marcovitch <arielmarcovitch@gmail.com>
+To:     masahiroy@kernel.org, valentinrothberg@gmail.com
+Cc:     arielmarcovitch@gmail.com, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: [PATCH v2] checkkconfigsymbols.py: Remove skipping of help lines in parse_kconfig_file
+Date:   Wed,  1 Sep 2021 19:49:52 +0300
+Message-Id: <20210901164952.538834-1-arielmarcovitch@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YS+pgZMpFmnRlMuT@kernel.org>
-X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 01, 2021 at 01:25:37PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Sep 01, 2021 at 01:16:56PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Wed, Sep 01, 2021 at 01:07:41PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Wed, Sep 01, 2021 at 12:54:34PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > > Applies cleanly to my tree, test building it now, holler if there is
-> > > > something that prevents it from being merged.
+When parsing Kconfig files to find symbol definitions and references,
+lines after a 'help' line are skipped until a new config definition
+starts.
 
-> > > I´m now trying to fix this up, I applied it using 'b4', so no patch
-> > > should have gone missing...
+However, Kconfig statements can actually be after a help section, as
+long as these have shallower indentation. These are skipped by the
+parser.
 
-> > So its probably related to:
+This means that symbols referenced in this kind of statements are
+ignored by this function and thus are not considered undefined
+references in case the symbol is not defined.
 
-> > ⬢[acme@toolbox perf]$ rpm -qa | grep opencsd
-> > opencsd-1.0.0-1.fc34.x86_64
-> > opencsd-devel-1.0.0-1.fc34.x86_64
-> > ⬢[acme@toolbox perf]$
+Remove the 'skip' logic entirely, as it is not needed if we just use the
+STMT regex to find the end of help lines.
 
-> > In which case the usual mechanism is to test if we have what is needed
-> > via tools/build/feature/test-_____.c, lemme check...
+However, this means that keywords that appear as part of the help
+message (i.e. with the same indentation as the help lines) it will be
+considered as a reference/definition. This can happen now as well, but
+only with REGEX_KCONFIG_DEF lines. Also, the keyword must have a SYMBOL
+after it, which probably means that someone referenced a config in the
+help so it seems like a bonus :)
 
-> There is a test and it fails, of course:
+The real solution is to keep track of the indentation when a the first
+help line in encountered and then handle DEF and STMT lines only if the
+indentation is shallower.
 
-> ⬢[acme@toolbox perf]$ cat /tmp/build/perf/feature/test-libopencsd.make.output
-> test-libopencsd.c:9:2: error: #error "OpenCSD >= 1.1.1 is required"
->     9 | #error "OpenCSD >= 1.1.1 is required"
->       |  ^~~~~
-> ⬢[acme@toolbox perf]$
+Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
+---
+ scripts/checkkconfigsymbols.py | 8 --------
+ 1 file changed, 8 deletions(-)
 
-> But the fact that I ask for CORESIGHT=1 should have the build fail then,
-> i.e. if one explicitely asks for a feature and it can't be built, fail
-> the whole build.
+diff --git a/scripts/checkkconfigsymbols.py b/scripts/checkkconfigsymbols.py
+index b9b0f15e5880..4f9dc98f3f60 100755
+--- a/scripts/checkkconfigsymbols.py
++++ b/scripts/checkkconfigsymbols.py
+@@ -34,7 +34,6 @@ REGEX_SOURCE_SYMBOL = re.compile(SOURCE_SYMBOL)
+ REGEX_KCONFIG_DEF = re.compile(DEF)
+ REGEX_KCONFIG_EXPR = re.compile(EXPR)
+ REGEX_KCONFIG_STMT = re.compile(STMT)
+-REGEX_KCONFIG_HELP = re.compile(r"^\s+help\s*$")
+ REGEX_FILTER_SYMBOLS = re.compile(r"[A-Za-z0-9]$")
+ REGEX_NUMERIC = re.compile(r"0[xX][0-9a-fA-F]+|[0-9]+")
+ REGEX_QUOTES = re.compile("(\"(.*?)\")")
+@@ -432,7 +431,6 @@ def parse_kconfig_file(kfile):
+     lines = []
+     defined = []
+     references = []
+-    skip = False
+ 
+     if not os.path.exists(kfile):
+         return defined, references
+@@ -448,12 +446,6 @@ def parse_kconfig_file(kfile):
+         if REGEX_KCONFIG_DEF.match(line):
+             symbol_def = REGEX_KCONFIG_DEF.findall(line)
+             defined.append(symbol_def[0])
+-            skip = False
+-        elif REGEX_KCONFIG_HELP.match(line):
+-            skip = True
+-        elif skip:
+-            # ignore content of help messages
+-            pass
+         elif REGEX_KCONFIG_STMT.match(line):
+             line = REGEX_QUOTES.sub("", line)
+             symbols = get_symbols_in_line(line)
 
-So after uninstalling the libopencsd that comes with fedora 34 and
-cloning the upstream OpenCSD git repo, building it and installing in
-/usr/local/ it seems to work as expected:
+base-commit: 087e856cfb76e9eef9a3a6e000854794f3c36e24
+-- 
+2.25.1
 
-⬢[acme@toolbox perf]$ rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf ;
-⬢[acme@toolbox perf]$ make O=/tmp/build/perf VF=1 CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin |& grep -i opencsd
-...                    libopencsd: [ on  ]
-⬢[acme@toolbox perf]$ cat /tmp/build/perf/feature/test-libopencsd.make.output
-⬢[acme@toolbox perf]$
-⬢[acme@toolbox perf]$
-⬢[acme@toolbox perf]$ ldd ~/bin/perf | grep opencsd
-	libopencsd_c_api.so.1 => not found
-⬢[acme@toolbox perf]$ export LD_LIBRARY_PATH=/usr/local/lib
-⬢[acme@toolbox perf]$ ldd ~/bin/perf | grep opencsd
-	libopencsd_c_api.so.1 => /usr/local/lib/libopencsd_c_api.so.1 (0x00007f839e8b2000)
-	libopencsd.so.1 => /usr/local/lib/libopencsd.so.1 (0x00007f839da3c000)
-⬢[acme@toolbox perf]$
-⬢[acme@toolbox perf]$
-⬢[acme@toolbox perf]$
-⬢[acme@toolbox perf]$ ldd /tmp/build/perf/feature/test-libopencsd.bin
-	linux-vdso.so.1 (0x00007ffd669b3000)
-	libopencsd_c_api.so.1 => /usr/local/lib/libopencsd_c_api.so.1 (0x00007fe608b8c000)
-	libopencsd.so.1 => /usr/local/lib/libopencsd.so.1 (0x00007fe608af5000)
-	libc.so.6 => /lib64/libc.so.6 (0x00007fe60891e000)
-	libstdc++.so.6 => /lib64/libstdc++.so.6 (0x00007fe6086ff000)
-	libm.so.6 => /lib64/libm.so.6 (0x00007fe6085bb000)
-	libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fe6085a0000)
-	/lib64/ld-linux-x86-64.so.2 (0x00007fe608ba2000)
-⬢[acme@toolbox perf]$ ls -la /usr/local/lib/libopencsd*
--rw-r--r--. 1 root root 1641364 Sep  1 13:41 /usr/local/lib/libopencsd.a
--rw-r--r--. 1 root root  168022 Sep  1 13:41 /usr/local/lib/libopencsd_c_api.a
-lrwxrwxrwx. 1 root root      21 Sep  1 13:41 /usr/local/lib/libopencsd_c_api.so -> libopencsd_c_api.so.1
-lrwxrwxrwx. 1 root root      25 Sep  1 13:41 /usr/local/lib/libopencsd_c_api.so.1 -> libopencsd_c_api.so.1.1.1
--rw-r--r--. 1 root root  104968 Sep  1 13:41 /usr/local/lib/libopencsd_c_api.so.1.1.1
-lrwxrwxrwx. 1 root root      15 Sep  1 13:41 /usr/local/lib/libopencsd.so -> libopencsd.so.1
-lrwxrwxrwx. 1 root root      19 Sep  1 13:41 /usr/local/lib/libopencsd.so.1 -> libopencsd.so.1.1.1
--rw-r--r--. 1 root root  762432 Sep  1 13:41 /usr/local/lib/libopencsd.so.1.1.1
-⬢[acme@toolbox perf]$
-
-This doesn't explain that 'make -C tools/perf build-test' error, perhaps
-it is reusing the feature dump (feature detection), done without
-CORESIGHT=1, when building with CORESIGHT=1 :-\
-
-Anyway, please consider making the build fail when CORESIGHT=1 is passed
-explicitely and that tools/build/feature-libopencsd.c feature test fails
-instead of silently building the tool _without_ the explicitely asked
-for feature.
-
-Thanks,
-
-- Arnaldo
