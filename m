@@ -2,114 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E983FE274
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548543FE272
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245380AbhIASfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:35:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60687 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245252AbhIASfA (ORCPT
+        id S245231AbhIASew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:34:52 -0400
+Received: from relay06.th.seeweb.it ([5.144.164.167]:39699 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhIASev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:35:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630521243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eoBhMvgpUyVFmtcdbP63Ins4CKJl/eFrVZgtETSUvtU=;
-        b=YkZMIN1U+tMLCNmPYTaaWLzbbunWrng09HIIUrBWGpFpC49uTG9AKNuxohcbvXIIF4pBKa
-        Z+QjiQEwcbK9eloTZmHNBA6+/B8HM0F4rjzrc4iQGyljuBE5BVEAkSA+bJ6hjqlgRftFxW
-        E2yVGoiZIH2+0LtD8WKF7+djc8bbux8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-sgV21N80M0-ipD00FMLbbg-1; Wed, 01 Sep 2021 14:34:01 -0400
-X-MC-Unique: sgV21N80M0-ipD00FMLbbg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 1 Sep 2021 14:34:51 -0400
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C86AC6D4E6;
-        Wed,  1 Sep 2021 18:34:00 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C925110027C4;
-        Wed,  1 Sep 2021 18:33:53 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 965644172EDE; Wed,  1 Sep 2021 15:33:45 -0300 (-03)
-Date:   Wed, 1 Sep 2021 15:33:45 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Nitesh Lal <nilal@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
-Subject: Re: [patch V3 8/8] mm: vmstat_refresh: avoid queueing work item if
- cpu stats are clean
-Message-ID: <20210901183345.GA51358@fuller.cnet>
-References: <20210824152423.300346181@fuller.cnet>
- <20210824152646.948424573@fuller.cnet>
- <CAFki+LkNcwFATSth4cvU=-7aBZjaLLNU6UFWYv1DxkeYwkeuSg@mail.gmail.com>
- <20210901173204.GA48995@fuller.cnet>
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 7829B3F36E;
+        Wed,  1 Sep 2021 20:33:52 +0200 (CEST)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        paul.bouchara@somainline.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>
+Subject: [PATCH] arm64: dts: qcom: pmi8998: Add node for WLED
+Date:   Wed,  1 Sep 2021 20:33:51 +0200
+Message-Id: <20210901183351.1090256-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901173204.GA48995@fuller.cnet>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 02:32:04PM -0300, Marcelo Tosatti wrote:
-> On Wed, Sep 01, 2021 at 09:05:55AM -0400, Nitesh Lal wrote:
-> > Hi Marcelo,
-> > 
-> > On Tue, Aug 24, 2021 at 11:42 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
-> > >
-> > > It is not necessary to queue work item to run refresh_vm_stats
-> > > on a remote CPU if that CPU has no dirty stats and no per-CPU
-> > > allocations for remote nodes.
-> > >
-> > > This fixes sosreport hang (which uses vmstat_refresh) with
-> > > spinning SCHED_FIFO process.
-> > >
-> > 
-> > I was still able to reproduce the sosreport hang with this patchset and I
-> > am wondering if that is because right now we do vmstat_sync and then cancel
-> > any pending jobs on a CPU in the context of one task.
-> 
-> Hi Nitesh,
-> 
-> Did you use chisol (with proper flags) and the modified oslat?
-> 
-> Tested with "echo 1 > /proc/sys/vmstat_refresh" and it was successful
-> (no hangs).
-> 
-> > However, while this task is running another process can come in and can
-> > dirty the stats resulting in vmstat job getting placed on CPUs running
-> > SCHED_FIFO tasks.
-> > Am I missing something?
-> > What we can probably do is to communicate that a CPU is running on task
-> > isolation mode to any other process that is trying to run and schedule
-> > jobs there.
-> 
-> No, that can happen. Can use sched notifiers to handle this problem.
-> Good point.
+The PMI8998 PMIC has a WLED backlight controller, which is used on
+most MSM8998 and SDM845 based devices: add a base configuration for
+it and keep it disabled.
 
-Well, actually: the goal is an isolated CPU.
+This contains only the PMIC specific configuration that does not
+change across boards; parameters like number of strings, OVP and
+current limits are product specific and shall be specified in the
+product DT in order to achieve functionality.
 
-So task A (latency sensitive, in task isolated mode, polling) executing on
-an isolated CPU will require something like stalld to execute this other
-task that dirties the vmstats.
+Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+---
+ arch/arm64/boot/dts/qcom/pmi8998.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Therefore stalld can also sched-in/sched-out vmstat_worker, with similar
-impact to latency.
-
-
-
-
-
-
+diff --git a/arch/arm64/boot/dts/qcom/pmi8998.dtsi b/arch/arm64/boot/dts/qcom/pmi8998.dtsi
+index d230c510d4b7..0fef5f113f05 100644
+--- a/arch/arm64/boot/dts/qcom/pmi8998.dtsi
++++ b/arch/arm64/boot/dts/qcom/pmi8998.dtsi
+@@ -41,5 +41,17 @@ lab: lab {
+ 				interrupt-names = "sc-err", "ocp";
+ 			};
+ 		};
++
++		pmi8998_wled: leds@d800 {
++			compatible = "qcom,pmi8998-wled";
++			reg = <0xd800 0xd900>;
++			interrupts = <0x3 0xd8 0x1 IRQ_TYPE_EDGE_RISING>,
++				     <0x3 0xd8 0x2 IRQ_TYPE_EDGE_RISING>;
++			interrupt-names = "ovp", "short";
++			label = "backlight";
++
++			status = "disabled";
++		};
++
+ 	};
+ };
+-- 
+2.32.0
 
