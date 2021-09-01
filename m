@@ -2,109 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639103FDE7B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE683FDE7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343631AbhIAPVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
+        id S237123AbhIAPWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbhIAPVW (ORCPT
+        with ESMTP id S233979AbhIAPWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:21:22 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2AFC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 08:20:26 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso4923011pjh.5
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 08:20:26 -0700 (PDT)
+        Wed, 1 Sep 2021 11:22:07 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF3CC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 08:21:10 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id r4so5837247ybp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 08:21:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HR/bUY4CIHX9QEwg/un6BIIYxuxD5D3OcyVLAtXISWY=;
-        b=LOd3elatHJFf7Gf2t37DAlQRgFANZpUI2tnhD8w15Wo10rbeqHHtfGzzBLG/LcV1gy
-         e5u6AsS1VgZRp5Y3WA2wBQ/D6j3z7zMxYZkcLEvet100v33cSrZMGUfIXx1GA50OKwu5
-         fBka8gaBIEsgVi5Dnh/A9MupJ2jQws7fBmJ6HclM5+hbo7zG1tA7dCjxv1v/06T8rC0P
-         GFcs21spJ+h8ijM46Yg0+YVWRbGkRnTn2wa9q8Vty1g4SgC2vHl7blanHSLQcBKMWIi2
-         N3/RnZ5BTVaxIxNBvIExBj6hazRou22EtZ6KjO3hdJwetp0lnXaEB1KuK0Uedx0VuUqr
-         hHSQ==
+        bh=gig1xV75WPgcWCbAVzUvwyldJADLtKmZKbsQEozsnG4=;
+        b=dOM8D5qIzsW661dVNjtSDVLtY8HEj17CwQ303RFpZhRW0ybAO3FO1liGDHTVNq0LHx
+         EHtOOtu8m7lGVn7zzjRiqUiYZ8ntD+t3P6CkeUjMeKV73mlxuxanMBaL+SrEVyBxA6oB
+         vmy6VDJvppQ8fGD3uRA2znX2yadW7DT22a+fGGGrDgstM8MfSO7dmZnGhpjudIxAh70S
+         g702AunVPNBeAxCq5OFnwjH3UvGBFhGAXCcAr4g3kD7BXtVOvnoj8F87QNlGoaCrwBHD
+         XZwh7/tRHOVCs4wGiLHG7wla6wDrlpwwxlCCflF1aKgheONCy1IK8G2UZwWBVjlFSQMs
+         fOpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HR/bUY4CIHX9QEwg/un6BIIYxuxD5D3OcyVLAtXISWY=;
-        b=FXfF9VrkdtnyJIA5ecfI2nsBzrHO6UlZGJcDGP161pPrzOwtRTPrLyOmUE3ygEI82W
-         8yvg3iPU1wZhyhv+fZ7yPlr4LeimtXv92o7V4j6pSCt33t5hdVfikyzcNCo0X6QFXbdH
-         KRp0Wg4xzEUiYIDAs+8IU76BZmjBwIVM2akhWiLzKrzhwnObGP/bVXgcrdJtl7KosYbL
-         mT+Vc0jtCmFf9lyclFC0S9csXM3C5mJJjlpivIVBVR8ZqjsIAvwhrhVjhd0QZXhAa9Tg
-         Z0iOMlRo88AZYxdhEi0CioYeRbuVhTcrNhCtcOTY15m1dtjDHeUR3rFUeReSEaQZVabx
-         VWnQ==
-X-Gm-Message-State: AOAM530YSoXLl5wPhTMvPrysqSHc1uwVwKnAIOG0DQiTtwc6kxzmYkF5
-        sn19GIP2ID+Lg59lWl90V6Y6yDmgNK5q06E7tVk=
-X-Google-Smtp-Source: ABdhPJxIgLhZBL45IOznzbHYHZCmTzMjImXoJJOCaE7zeKJ1SaSLhSQEupQx718O2F5WgW3hPkK4q7vd+uVbg364uwA=
-X-Received: by 2002:a17:902:ab53:b029:12c:57a6:13ae with SMTP id
- ij19-20020a170902ab53b029012c57a613aemr10175518plb.53.1630509625523; Wed, 01
- Sep 2021 08:20:25 -0700 (PDT)
+        bh=gig1xV75WPgcWCbAVzUvwyldJADLtKmZKbsQEozsnG4=;
+        b=ZOkAfVNALHGCIRyLPvGeKiy+1gsDx/R8/zOzGzz2pvIK/9DX3RG6Sw3QdS1WBWXGYD
+         UkCeZeJiuW54b0j+bqwW43U2eWJgR8eoKmXYUy06qGR/IiMTouVsQmOQVoSkcroCjyow
+         P6DH/j6K9hy5PPf2zVr21Nb3UySJUF7d/koznbvCBQfUeVxUIYZCq8B21WwQEPZ3DGVh
+         UznH45VabIN/fbvxRISD5OjPk9nj9dkiDXxV+3ZJG0WtvBMy+Dm2dlGgtU+vfX82TAps
+         aE1LUWV8jcS4O+BYNwcXB/UCpusSxfzdcXENjOCVyqWjCCeUtBa2S+PvjqIqt7Nb5nBb
+         /0nQ==
+X-Gm-Message-State: AOAM530QL9TZJ2+sf8MrF6oMJKDvZrhTUick60CPQUwfNyQ0YVxFiCSj
+        z/F7MCKEgnLP7SkqXilNg6OoENyLmv+xxsMr/JeXlA==
+X-Google-Smtp-Source: ABdhPJyLcSd7XPV6PDHJyvHdaldJi+y8H56wMrkSA8uIbWC5NoEgYggZtX8Sj6DS8TUKOyyq6zI2DAzaXKyqL34wk8w=
+X-Received: by 2002:a25:6c05:: with SMTP id h5mr35958ybc.380.1630509669857;
+ Wed, 01 Sep 2021 08:21:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210829144531.c2syu4vv4s22dlg7@h510> <CAPGkw+wyH3Pj6DV_m8wqCV5yujhjRwTwVNs6dK4i9JO-Y3ys6w@mail.gmail.com>
- <20210831133533.6aayzjghdakrhy56@h510> <13366651.n50aozgL3V@localhost.localdomain>
- <20210831230014.cp46vho2hnndacjp@h510>
-In-Reply-To: <20210831230014.cp46vho2hnndacjp@h510>
-From:   Krish Jain <krishjain02939@gmail.com>
-Date:   Wed, 1 Sep 2021 17:20:13 +0200
-Message-ID: <CAPGkw+zpYsovnXL_4GfjsQ60fqre+xyiwvwKuDj_fHPTKEfzeQ@mail.gmail.com>
-Subject: Re: [PATCH] Declare the file_operations struct as const
-To:     Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210825154043.247764-1-yan2228598786@gmail.com>
+ <CANn89iJO8jzjFWvJ610TPmKDE8WKi8ojTr_HWXLz5g=4pdQHEA@mail.gmail.com>
+ <20210825231942.18f9b17e@rorschach.local.home> <CAE40pdd+yHnh6fyjYV0UDcZ_ZwTCzP019Mf4_tTKWFc_5M6gaw@mail.gmail.com>
+ <8BA159CD-11AC-425C-9C7F-AA943CE9179F@goodmis.org>
+In-Reply-To: <8BA159CD-11AC-425C-9C7F-AA943CE9179F@goodmis.org>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 1 Sep 2021 08:20:58 -0700
+Message-ID: <CANn89i+rHC4AC88-V8QqBU36waaOxTVoii0xaEKk+oerzC3Egw@mail.gmail.com>
+Subject: Re: [PATCH] net: tcp_drop adds `reason` parameter for tracing v2
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Zhongya Yan <yan2228598786@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, hengqi.chen@gmail.com,
+        Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 1:00 AM Bryan Brattlof <hello@bryanbrattlof.com> wrote:
+On Wed, Sep 1, 2021 at 7:36 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> On this day, August 31, 2021, thus sayeth Fabio M. De Francesco:
-> >
-> > I just want to *really* thank you for the hard work you got involved and that
-> > you carried out with one of the highest levels of professionalism (and
-> > patience :)) very few of us could ever equal (not I, for sure).
-> >
-> > I thank you also not for the technical hints you gave to Krish, instead for
-> > your your choice "to not rob [you] Krish the opportunity to learn".
-> >
-> > Actually I was tempted to write something like "first do this, than that, and
-> > finally run this tool". But I was able to desist, by learning from you how
-> > people should be helped for real.
-> >
-> > Most of us here should learn by your attitude.
-> >
-> > Thanks again, seriously.
-> >
+> On Thu, 26 Aug 2021 15:13:07 +1000
+> Brendan Gregg <brendan.d.gregg@gmail.com> wrote:
 >
-> Thank you for such kind words, Fabio.
+> > On Thu, Aug 26, 2021 at 1:20 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > >
+> > > On Wed, 25 Aug 2021 08:47:46 -0700
+> > > Eric Dumazet <edumazet@google.com> wrote:
+> > >
+> > > > > @@ -5703,15 +5700,15 @@ static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
+> > > > >                         TCP_INC_STATS(sock_net(sk), TCP_MIB_INERRS);
+> > > > >                 NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPSYNCHALLENGE);
+> > > > >                 tcp_send_challenge_ack(sk, skb);
+> > > > > -               goto discard;
+> > > > > +               tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_VALIDATE_INCOMING));
+> > > >
+> > > > I'd rather use a string. So that we can more easily identify _why_ the
+> > > > packet was drop, without looking at the source code
+> > > > of the exact kernel version to locate line number 1057
+> > > >
+> > > > You can be sure that we will get reports in the future from users of
+> > > > heavily modified kernels.
+> > > > Having to download a git tree, or apply semi-private patches is a no go.
+> > > >
+> > > > If you really want to include __FILE__ and __LINE__, these both can be
+> > > > stringified and included in the report, with the help of macros.
+> > >
+> > > I agree the __LINE__ is pointless, but if this has a tracepoint
+> > > involved, then you can simply enable the stacktrace trigger to it and
+> > > it will save a stack trace in the ring buffer for you.
+> > >
+> > >    echo stacktrace > /sys/kernel/tracing/events/tcp/tcp_drop/trigger
+> > >
+> > > And when the event triggers it will record a stack trace. You can also
+> > > even add a filter to do it only for specific reasons.
+> > >
+> > >    echo 'stacktrace if reason == 1' > /sys/kernel/tracing/events/tcp/tcp_drop/trigger
+> > >
+> > > And it even works for flags:
+> > >
+> > >    echo 'stacktrace if reason & 0xa' > /sys/kernel/tracing/events/tcp/tcp_drop/trigger
+> > >
+> > > Which gives another reason to use an enum over a string.
+> >
+> > You can't do string comparisons? The more string support Ftrace has,
+> > the more convenient they will be. Using bpftrace as an example of
+> > convenience and showing drop frequency counted by human-readable
+> > reason and stack trace:
 >
-> I was very lucky to be, and still am, surrounded by people who
-> demonstrated this idea to me when I was young. I am very happy to see
-> others here see how beneficial and helpful (in the long term) learning
-> this way can be.
+> Yes, you can (and pretty much always had this ability), but having
+> flags is usually makes it easier (and faster).
 >
-> I'm grateful to have found and be a part of this community.
-> ~Bryan
+> You can have 'stacktrace if reason ~ "*string*"' which will match
+> anything with "string" in it.
 >
+> My main argument against strings is more of the space they take up in
+> the ring buffer than the ability to filter.
 
+Understood the concern about size, but it seems the trace includes many things.
+Can we have an estimate of the size needed per event ?
+If we do not use symbolic, but numbers, I am afraid this trace event
+will only be used by a few TCP experts.
 
-
-Interesting.
-
-"make drivers/staging/android/ " works now (finally!) and shows me the
-errors when I mess up in the file  ashmem.c for example.
-Furthermore, " make CCFLAGS=-Werror W=1 drivers/staging/android/    "
-outputs the same errors too just more verbose. So it works completely
-now, However, "make CCFLAGS=-Werror W=1 M=drivers/staging/android/
-" just takes to new prompt line and does not output anything. Do you
-know why?
-
-
-Thanks
++               TP_printk("src=%pISpc dest=%pISpc mark=%#x data_len=%d
+snd_nxt=%#x snd_una=%#x \
++                               snd_cwnd=%u ssthresh=%u snd_wnd=%u
+srtt=%u rcv_wnd=%u \
++                               sock_cookie=%llx reason=%d
+reason_type=%s reason_line=%d",
+                                __entry->saddr, __entry->daddr, __entry->mark,
+                                __entry->data_len, __entry->snd_nxt,
+__entry->snd_una,
+                                __entry->snd_cwnd, __entry->ssthresh,
+__entry->snd_wnd,
+-                               __entry->srtt, __entry->rcv_wnd,
+__entry->sock_cookie, __entry->reason)
++                               __entry->srtt, __entry->rcv_wnd,
+__entry->sock_cookie,
++                               __entry->reason,
++                               __print_symbolic(__entry->reason_code,
+TCP_DROP_REASON),
++                               __entry->reason_line)
+ );
