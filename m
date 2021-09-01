@@ -2,117 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E50D3FDD60
+	by mail.lfdr.de (Postfix) with ESMTP id AD64B3FDD61
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244434AbhIANnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 09:43:00 -0400
-Received: from mail-vs1-f41.google.com ([209.85.217.41]:34805 "EHLO
-        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244221AbhIANm4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 09:42:56 -0400
-Received: by mail-vs1-f41.google.com with SMTP id x137so2482229vsx.1;
-        Wed, 01 Sep 2021 06:41:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/xOCv7duiKV85YEAr3p0lxEIgvNf6vJOyFaux8D3sgc=;
-        b=tTJsIW8G76Ko+0qC28Fjc+u1PpSMSgMFW8pzVHf7vS1SdUpuobL33jbLSopx1LDhGN
-         En/sqoiL4srVhdcxVc3ZnfS8VJ4NEb4ifVMOE0ZWusFNP9u53wX2QT+2qo6OGh2E5Qoc
-         lsrwfsgwzNGXvFfjEWNf1uEYDZRhqYNaJO3xIIqjazgj6sWbzBlN5RldqvHeyqS8oc1S
-         V5G2XD2hNgSNCjqxX/XGw36fp7Hd1wVPRyGVFbHnqLZZUWw3yZEdrAu89eOywp9GKzao
-         yULWfjSACIZ0QfSo1WfcBjo7ccGTC+5iUlC4ie9a+TadcPjYQstff0QoIzXdw43jQZK4
-         fKmg==
-X-Gm-Message-State: AOAM530MU4piOMLXJFv/lbIChk/u+Ts/Fhx2tG2IuwuiN3hRJt6G718o
-        CTTUk5JnPXw5Gx7ZiUS5XLTRwvyhQI+VEErAHFDYcpBg
-X-Google-Smtp-Source: ABdhPJx/jw1Hd9z5dejjk2bylHrBEE4LNmlEMO2utTQ/YLBtNm+pHtrY/uki14hOKxAFDVFkelRD3cReRgD5NymWjeI=
-X-Received: by 2002:a05:6102:34c9:: with SMTP id a9mr18408820vst.26.1630503718663;
- Wed, 01 Sep 2021 06:41:58 -0700 (PDT)
+        id S244459AbhIANnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 09:43:10 -0400
+Received: from mga03.intel.com ([134.134.136.65]:48731 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244221AbhIANnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 09:43:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="218805028"
+X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
+   d="scan'208";a="218805028"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 06:42:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
+   d="scan'208";a="498900664"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Sep 2021 06:42:00 -0700
+Date:   Wed, 1 Sep 2021 21:42:00 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     David Rientjes <rientjes@google.com>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian@brauner.io>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] mm/oom: detect and kill task which has allocation
+ forbidden by cpuset limit
+Message-ID: <20210901134200.GA50993@shbuild999.sh.intel.com>
+References: <1630399085-70431-1-git-send-email-feng.tang@intel.com>
+ <YS5RTiVgydjszmjn@dhcp22.suse.cz>
+ <52d80e9-cf27-9a59-94fd-d27a1e2dac6f@google.com>
+ <20210901024402.GB46357@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-References: <20210830221000.179369-1-mcgrof@kernel.org> <20210830221000.179369-2-mcgrof@kernel.org>
-In-Reply-To: <20210830221000.179369-2-mcgrof@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 1 Sep 2021 15:41:47 +0200
-Message-ID: <CAMuHMdUUrp-ktVmOPRs7KinykrVKEMx-dG42RapPc-egxODNnQ@mail.gmail.com>
-Subject: Re: [PATCH 01/15] z2ram: add error handling support for add_disk()
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, justin@coraid.com,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Hannes Reinecke <hare@suse.de>, Tejun Heo <tj@kernel.org>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        chris.obbard@collabora.com,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        YiFei Zhu <zhuyifei1999@gmail.com>, thehajime@gmail.com,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Tim Waugh <tim@cyberelk.net>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Lars Ellenberg <drbd-dev@lists.linbit.com>,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901024402.GB46357@shbuild999.sh.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luis,
+On Wed, Sep 01, 2021 at 10:44:02AM +0800, Tang, Feng wrote:
+[SNIP]
+> > So I'd agree in this case that it would be better to simply fail the 
+> > allocation.
+> 
+> I agree with yours and Michal's comments, putting it in the OOM code
+> is a little late and wastes cpu cycles.
+> 
+> > Feng, would you move this check to __alloc_pages_may_oom() like the other 
+> > special cases and simply fail rather than call into the oom killer?
+> 
+> Will explore more in this direction, thanks!
+ 
+I tried below patch, which can solve the blindly killing issue, that
+the docker processes will see page allocation errors, and eventually 
+quit running.
 
-On Tue, Aug 31, 2021 at 12:10 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling. Only the disk is cleaned up inside
-> z2ram_register_disk() as the caller deals with the rest.
->
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Thanks,
+Feng
 
-Thanks for your patch!
-
-> --- a/drivers/block/z2ram.c
-> +++ b/drivers/block/z2ram.c
-> @@ -318,6 +318,7 @@ static const struct blk_mq_ops z2_mq_ops = {
->  static int z2ram_register_disk(int minor)
->  {
->         struct gendisk *disk;
-> +       int err;
->
->         disk = blk_mq_alloc_disk(&tag_set, NULL);
->         if (IS_ERR(disk))
-> @@ -333,8 +334,10 @@ static int z2ram_register_disk(int minor)
->                 sprintf(disk->disk_name, "z2ram");
->
->         z2ram_gendisk[minor] = disk;
-> -       add_disk(disk);
-> -       return 0;
-> +       err = add_disk(disk);
-> +       if (err)
-> +               blk_cleaup_disk(disk);
-
-blk_cleanup_disk()?
-
-Seems like lkp already detected this back in July...
-
-> +       return err;
->  }
->
->  static int __init z2_init(void)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+---
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index eeb3a9cb36bb..d1ae77be45a2 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4271,10 +4271,18 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
+ 		.gfp_mask = gfp_mask,
+ 		.order = order,
+ 	};
+-	struct page *page;
++	struct page *page = NULL;
++	struct zoneref *z;
+ 
+ 	*did_some_progress = 0;
+ 
++	if (cpusets_enabled() && (gfp_mask & __GFP_HARDWALL)) {
++		z = first_zones_zonelist(ac->zonelist,
++			gfp_zone(gfp_mask), &cpuset_current_mems_allowed);
++		if (!z->zone)
++			goto out;
++	}
++
+ 	/*
+ 	 * Acquire the oom lock.  If that fails, somebody else is
+ 	 * making progress for us.
