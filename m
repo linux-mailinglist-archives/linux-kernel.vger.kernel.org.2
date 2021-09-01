@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80A13FDB22
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 613063FDBA4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344372AbhIAMiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:38:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34986 "EHLO mail.kernel.org"
+        id S1344724AbhIAMmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:42:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343733AbhIAMga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:36:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AFBD6109E;
-        Wed,  1 Sep 2021 12:33:44 +0000 (UTC)
+        id S1344642AbhIAMju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:39:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D6A1610A1;
+        Wed,  1 Sep 2021 12:35:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499625;
-        bh=uFoGyHp9snzNt123frTbdjiDX9s2ycIlpFAozepiU4g=;
+        s=korg; t=1630499738;
+        bh=dKA32apQBghroQQaMnexSRfBljkENbuWIrpf1wYT4u8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iXE2oEbuxTEiYVQBsusQXLHFVE8cQlOKxras3Ohin8MJC76hHRKRhHDkQoyBiQfZA
-         eAuHt8EVIqdu5OSy5dc28RHvYWuUOnGMzZ6SHyvXXzEkNBdKpi+No6z2ht0YQazREs
-         +Z3xBthuy9ixH7HH8CE0z0FtDMvmEIfx6iyN5hqM=
+        b=1x8Q1zE3v6LSWasVkz1H86X8yazLifv7f9MfeGwclszTNL6At3hHsvcQBROZoX3N7
+         8oTGbSbYxgjKZ6Vdqvh02ms6FoW8FTHU+UkiSZKlJj/qIp4HQkGJLYVlhfGtvpkksK
+         LZ8eqIwHmCC1HbQRe+jsO9gx3nI3YKq+roWRcO94=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Li Jinlin <lijinlin3@huawei.com>,
-        Qiu Laibin <qiulaibin@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 022/103] scsi: core: Fix hang of freezing queue between blocking and running device
-Date:   Wed,  1 Sep 2021 14:27:32 +0200
-Message-Id: <20210901122301.275002938@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 023/103] RDMA/bnxt_re: Add missing spin lock initialization
+Date:   Wed,  1 Sep 2021 14:27:33 +0200
+Message-Id: <20210901122301.304153557@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
 References: <20210901122300.503008474@linuxfoundation.org>
@@ -41,97 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Jinlin <lijinlin3@huawei.com>
+From: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
 
-commit 02c6dcd543f8f051973ee18bfbc4dc3bd595c558 upstream.
+[ Upstream commit 17f2569dce1848080825b8336e6b7c6900193b44 ]
 
-We found a hang, the steps to reproduce  are as follows:
+Add the missing initialization of srq lock.
 
-  1. blocking device via scsi_device_set_state()
-
-  2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
-
-  3. echo none > /sys/block/sda/queue/scheduler
-
-  4. echo "running" >/sys/block/sda/device/state
-
-Step 3 and 4 should complete after step 4, but they hang.
-
-  CPU#0               CPU#1                CPU#2
-  ---------------     ----------------     ----------------
-                                           Step 1: blocking device
-
-                                           Step 2: dd xxxx
-                                                  ^^^^^^ get request
-                                                         q_usage_counter++
-
-                      Step 3: switching scheculer
-                      elv_iosched_store
-                        elevator_switch
-                          blk_mq_freeze_queue
-                            blk_freeze_queue
-                              > blk_freeze_queue_start
-                                ^^^^^^ mq_freeze_depth++
-
-                              > blk_mq_run_hw_queues
-                                ^^^^^^ can't run queue when dev blocked
-
-                              > blk_mq_freeze_queue_wait
-                                ^^^^^^ Hang here!!!
-                                       wait q_usage_counter==0
-
-  Step 4: running device
-  store_state_field
-    scsi_rescan_device
-      scsi_attach_vpd
-        scsi_vpd_inquiry
-          __scsi_execute
-            blk_get_request
-              blk_mq_alloc_request
-                blk_queue_enter
-                ^^^^^^ Hang here!!!
-                       wait mq_freeze_depth==0
-
-    blk_mq_run_hw_queues
-    ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
-
-                            blk_mq_unfreeze_queue
-                            ^^^^^ mq_freeze_depth--
-
-To fix this, we need to run queue before rescanning device when the device
-state changes to SDEV_RUNNING.
-
-Link: https://lore.kernel.org/r/20210824025921.3277629-1-lijinlin3@huawei.com
-Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
-Signed-off-by: Qiu Laibin <qiulaibin@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 37cb11acf1f7 ("RDMA/bnxt_re: Add SRQ support for Broadcom adapters")
+Link: https://lore.kernel.org/r/1629343553-5843-3-git-send-email-selvin.xavier@broadcom.com
+Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_sysfs.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/scsi/scsi_sysfs.c
-+++ b/drivers/scsi/scsi_sysfs.c
-@@ -808,12 +808,15 @@ store_state_field(struct device *dev, st
- 	ret = scsi_device_set_state(sdev, state);
- 	/*
- 	 * If the device state changes to SDEV_RUNNING, we need to
--	 * rescan the device to revalidate it, and run the queue to
--	 * avoid I/O hang.
-+	 * run the queue to avoid I/O hang, and rescan the device
-+	 * to revalidate it. Running the queue first is necessary
-+	 * because another thread may be waiting inside
-+	 * blk_mq_freeze_queue_wait() and because that call may be
-+	 * waiting for pending I/O to finish.
- 	 */
- 	if (ret == 0 && state == SDEV_RUNNING) {
--		scsi_rescan_device(dev);
- 		blk_mq_run_hw_queues(sdev->request_queue, true);
-+		scsi_rescan_device(dev);
- 	}
- 	mutex_unlock(&sdev->state_mutex);
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 266de55f5719..441952a5eca4 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -1691,6 +1691,7 @@ int bnxt_re_create_srq(struct ib_srq *ib_srq,
+ 	if (nq)
+ 		nq->budget++;
+ 	atomic_inc(&rdev->srq_count);
++	spin_lock_init(&srq->lock);
  
+ 	return 0;
+ 
+-- 
+2.30.2
+
 
 
