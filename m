@@ -2,110 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A5B3FDDA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905B03FDDA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245028AbhIAOGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 10:06:42 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51822 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244136AbhIAOGl (ORCPT
+        id S245068AbhIAOHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 10:07:21 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56318 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244136AbhIAOHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 10:06:41 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 801B52246F;
-        Wed,  1 Sep 2021 14:05:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630505143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A5CQMxYr8Knsq3vFDrRQ8ixBT4QrOt3iGkhDaaK15bg=;
-        b=b8OJW+ywPOul9Qh4Eymlc7uE3F2l3lui6G2CvNsm63X50+tvXuOAnQRE8mKJPEkSNI1xIu
-        8FNCJj49fRnCBmnpiboHxw9PKpONP+vnzIEbWGF2s1l1Bj28Kk5NnH4UfP7t5XIh2RbTWb
-        hkT5hsTcTpxH/sWO7hKaOYEmH5YuCuk=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 28B7DA3B9C;
-        Wed,  1 Sep 2021 14:05:43 +0000 (UTC)
-Date:   Wed, 1 Sep 2021 16:05:40 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian@brauner.io>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] mm/oom: detect and kill task which has allocation
- forbidden by cpuset limit
-Message-ID: <YS+ItADNn08hCLPY@dhcp22.suse.cz>
-References: <1630399085-70431-1-git-send-email-feng.tang@intel.com>
- <YS5RTiVgydjszmjn@dhcp22.suse.cz>
- <52d80e9-cf27-9a59-94fd-d27a1e2dac6f@google.com>
- <20210901024402.GB46357@shbuild999.sh.intel.com>
- <20210901134200.GA50993@shbuild999.sh.intel.com>
+        Wed, 1 Sep 2021 10:07:18 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181E4OJE055077;
+        Wed, 1 Sep 2021 10:06:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Q8g9oUFhXBKWyakPDka0bj0QPytnDIcQr8xFgIfNqZw=;
+ b=OjfHcMPmaYKJZ/8O+5y4/29OKIID+QjUgViRX3J9LRXGTpCMc+VQUOZjgFPbOFTCwfwA
+ IIg+T4KJ8mdBYzW6wZgVRfS2JwqzdcPgwM9DSeKcKboRWyiFoGAof6+sJnJ8onWd3r4V
+ QKwWdvg/hK60Qhu0TaTJIytmbwCfkW8KwEJbfnwpdzzTico9rgMNKS931jxQlDC8mPxB
+ CqMSreXYTawc5FfnBfzlI4ebzmTfq2dTEJqDdWVakSvsY2BGis43jv7H33MKOAqDmN9R
+ QXu+f/gUM9qXvTzmBSeK77qY6OSAXMwDj3CF2H1KHIpMu940bHTmQZqkjB30MzkIMqEf GA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3at7tkx108-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 10:06:10 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 181E5wvN064390;
+        Wed, 1 Sep 2021 10:06:09 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3at7tkx0xp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 10:06:09 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 181E38Lv004630;
+        Wed, 1 Sep 2021 14:06:07 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 3aqcs9ad3v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 14:06:07 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 181E23Hb54591814
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 1 Sep 2021 14:02:03 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ACB07A4040;
+        Wed,  1 Sep 2021 14:06:02 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A550FA4057;
+        Wed,  1 Sep 2021 14:06:01 +0000 (GMT)
+Received: from localhost (unknown [9.171.90.254])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  1 Sep 2021 14:06:01 +0000 (GMT)
+Date:   Wed, 1 Sep 2021 16:05:59 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Marco Elver <elver@google.com>, Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, qemu-s390x <qemu-s390x@nongnu.org>
+Subject: [PATCH] s390/unwind: use current_frame_address() to unwind current
+ task
+Message-ID: <patch.git-04dd26be3043.your-ad-here.call-01630504868-ext-6188@work.hours>
+References: <your-ad-here.call-01630505035-ext-2999@work.hours>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210901134200.GA50993@shbuild999.sh.intel.com>
+In-Reply-To: <your-ad-here.call-01630505035-ext-2999@work.hours>
+X-Patchwork-Bot: notify
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: LgNjbPh1LHt0botEu7dDzn-ePANPkbcB
+X-Proofpoint-ORIG-GUID: -sRqof_5nzDHJhVxWUU-YWkrKxsQ1vSR
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-01_04:2021-09-01,2021-09-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 spamscore=0 suspectscore=0 impostorscore=0 phishscore=0
+ adultscore=0 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2109010084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 01-09-21 21:42:00, Feng Tang wrote:
-[...]
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index eeb3a9cb36bb..d1ae77be45a2 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4271,10 +4271,18 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
->  		.gfp_mask = gfp_mask,
->  		.order = order,
->  	};
-> -	struct page *page;
-> +	struct page *page = NULL;
-> +	struct zoneref *z;
->  
->  	*did_some_progress = 0;
->  
-> +	if (cpusets_enabled() && (gfp_mask & __GFP_HARDWALL)) {
-> +		z = first_zones_zonelist(ac->zonelist,
-> +			gfp_zone(gfp_mask), &cpuset_current_mems_allowed);
-> +		if (!z->zone)
-> +			goto out;
-> +	}
-> +
+current_stack_pointer() simply returns current value of %r15. If
+current_stack_pointer() caller allocates stack (which is the case in
+unwind code) %r15 points to a stack frame allocated for callees, meaning
+current_stack_pointer() caller (e.g. stack_trace_save) will end up in
+the stacktrace. This is not expected by stack_trace_save*() callers and
+causes problems.
 
-This looks better than the previous attempt. It would be still better to
-solve this at the page allocator layer. The slowpath is already doing
-this for the nodemask. E.g.
+current_frame_address() on the other hand returns function stack frame
+address, which matches %r15 upon function invocation. Using it in
+get_stack_pointer() makes it more aligned with x86 implementation
+(according to BACKTRACE_SELF_TEST output) and meets stack_trace_save*()
+caller's expectations, notably KCSAN.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index eeb3a9cb36bb..a3193134540d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4929,6 +4929,17 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 	if (!ac->preferred_zoneref->zone)
- 		goto nopage;
+Also make sure unwind_start is always inlined.
+
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Suggested-by: Marco Elver <elver@google.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+---
+ arch/s390/include/asm/stacktrace.h | 20 ++++++++++----------
+ arch/s390/include/asm/unwind.h     |  8 ++++----
+ 2 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/arch/s390/include/asm/stacktrace.h b/arch/s390/include/asm/stacktrace.h
+index 3d8a4b94c620..22c41d7fd95c 100644
+--- a/arch/s390/include/asm/stacktrace.h
++++ b/arch/s390/include/asm/stacktrace.h
+@@ -34,16 +34,6 @@ static inline bool on_stack(struct stack_info *info,
+ 	return addr >= info->begin && addr + len <= info->end;
+ }
  
-+	/*
-+	 * Check for insane configurations where the cpuset doesn't contain any suitable
-+	 * zone to satisfy the request - e.g. kernel allocations from MOVABLE nodes only
-+	 */
-+	if (cpusets_enabled() && (gfp_mask & __GFP_HARDWALL)) {
-+		struct zoneref *z = first_zones_zonelist(ac->zonelist, ac->highest_zoneidx,
-+				&cpuset_current_mems_allowed);
-+		if (!z->zone)
-+			goto nopage;
-+	}
+-static __always_inline unsigned long get_stack_pointer(struct task_struct *task,
+-						       struct pt_regs *regs)
+-{
+-	if (regs)
+-		return (unsigned long) kernel_stack_pointer(regs);
+-	if (task == current)
+-		return current_stack_pointer();
+-	return (unsigned long) task->thread.ksp;
+-}
+-
+ /*
+  * Stack layout of a C stack frame.
+  */
+@@ -74,6 +64,16 @@ struct stack_frame {
+ 	((unsigned long)__builtin_frame_address(0) -			\
+ 	 offsetof(struct stack_frame, back_chain))
+ 
++static __always_inline unsigned long get_stack_pointer(struct task_struct *task,
++						       struct pt_regs *regs)
++{
++	if (regs)
++		return (unsigned long) kernel_stack_pointer(regs);
++	if (task == current)
++		return current_frame_address();
++	return (unsigned long) task->thread.ksp;
++}
 +
- 	if (alloc_flags & ALLOC_KSWAPD)
- 		wake_all_kswapds(order, gfp_mask, ac);
+ /*
+  * To keep this simple mark register 2-6 as being changed (volatile)
+  * by the called function, even though register 6 is saved/nonvolatile.
+diff --git a/arch/s390/include/asm/unwind.h b/arch/s390/include/asm/unwind.h
+index de9006b0cfeb..5ebf534ef753 100644
+--- a/arch/s390/include/asm/unwind.h
++++ b/arch/s390/include/asm/unwind.h
+@@ -55,10 +55,10 @@ static inline bool unwind_error(struct unwind_state *state)
+ 	return state->error;
+ }
  
-if this is seen as an additional overhead for an insane configuration
-then we can add insane_cpusets_enabled() which would be a static branch
-enabled when somebody actually tries to configure movable only cpusets
-or potentially other dubious usage.
+-static inline void unwind_start(struct unwind_state *state,
+-				struct task_struct *task,
+-				struct pt_regs *regs,
+-				unsigned long first_frame)
++static __always_inline void unwind_start(struct unwind_state *state,
++					 struct task_struct *task,
++					 struct pt_regs *regs,
++					 unsigned long first_frame)
+ {
+ 	task = task ?: current;
+ 	first_frame = first_frame ?: get_stack_pointer(task, regs);
 -- 
-Michal Hocko
-SUSE Labs
+2.25.4
