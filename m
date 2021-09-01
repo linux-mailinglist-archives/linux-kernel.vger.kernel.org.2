@@ -2,111 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6948E3FD4C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03243FD4CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242777AbhIAHyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:54:47 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:41818 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230161AbhIAHyq (ORCPT
+        id S242803AbhIAIAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:00:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23943 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242622AbhIAIAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:54:46 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 1817luOu002739;
-        Wed, 1 Sep 2021 09:53:33 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=Xx86pN97kMtAWkcw0/SusOoJIl8xWRKhEOTJbhiBsmI=;
- b=TQ2qF4PPwKBDVP45Mnp7RPZ1DA6i4TERhPj6C2TGkr8/N3yRZX7MeR0WPaIdLMDk0NPH
- 2zBWyAhSYOdYFQnJs//ltzXtNFXMbCqHr68lirUPxESxduYtGNSHWpv0JkYmRMzJ35nT
- DwhEqVUNhZxMkhr14vrjo+v8knl99BR3QaMt2YVejF7xVkGSLSy9lo3rJoLeMeL0GMgl
- emUaGmLycAeApQep9CEEO7nCXJQw5M/8+rQbMOfnIosyIkFGM2ghAymjVzCKi7Cpev9k
- 3jTYHD64Q4jr+pIuPvkanZ2j5y/3sMPiPOR6qaZFAqm7jf9dfcUuI8b1A/G8UuTNPU+7 1A== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3asxg027r7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 09:53:33 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A533C10002A;
-        Wed,  1 Sep 2021 09:53:32 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 95BF52138DA;
-        Wed,  1 Sep 2021 09:53:32 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 1 Sep
- 2021 09:53:31 +0200
-Subject: Re: [PATCH] media: sti/c8sectpfe: Make use of the helper function
- devm_platform_ioremap_resource_byname()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210901055631.7829-1-caihuoqing@baidu.com>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <73002944-80b0-ba24-f490-0aaefd4ea08b@foss.st.com>
-Date:   Wed, 1 Sep 2021 09:53:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 1 Sep 2021 04:00:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630483154;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iyKrp7I82f3wYzsbQR/1Jeu1cFgJoa6hSbBVeuarAhw=;
+        b=SVu3Ie7M7qe03EblygVArvpDQoYY1Nlm4MtpL7bRifjFZ3Vj6D5VeCSiez28rUVnVk56ez
+        yI5ZdaqGRZtgyovOLitsbUyOo5r540Cr/wEoYGcfKw16gquTJZB2NqXI0Rjhk064d6pyJy
+        ScDI4qBIMNjUOzgoJekNf+iEvjr1tBk=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-7R_0GtgQNDW9qrXmsJDAZQ-1; Wed, 01 Sep 2021 03:59:13 -0400
+X-MC-Unique: 7R_0GtgQNDW9qrXmsJDAZQ-1
+Received: by mail-wr1-f70.google.com with SMTP id h14-20020a056000000e00b001575b00eb08so493617wrx.13
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 00:59:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=iyKrp7I82f3wYzsbQR/1Jeu1cFgJoa6hSbBVeuarAhw=;
+        b=goQZxpmjZlTEolCmwmH+Q/Dm8SZ4K5UmNw2MHQYeYF8pL7G6EheknGG6FnJP9pwxzF
+         1skJPczjUQN7Y6YLjN80qHyTrCC2keNiFetiNEmW4/6a24dJFTKmqwaZP8MIyFGaABIV
+         kJ1YYreHXPoaFEiiVLWxyGpGH7knSffxRK/0dZ8k4TND6g35Exvhjuqw2AdYh7nXbW56
+         1NMArZQN+VSjr2jRpxeNBLdbkMhbMMf2bfBD48Ip+E+pDy3h6Cj8nFSQ6o6iAgh5mJbh
+         joeadVDXhyllMkkfKCa6f1sahykQAdI0PhqWOJJidAHeHJI6Den9ytN/NFRRrRgEYfsu
+         mKsw==
+X-Gm-Message-State: AOAM533Fgt8m8bewFoP0ASCkqypc5aiQg8UnpNZBeYUgPfWFstlesLUT
+        cFp5ZqKOqyeFYBs/HQdr8JVhAl5u0dpPT3dan02dZe2SxyRkyzuq0gqzBbbZVZINmbe7J7BkcGL
+        BLdGyNW4Hft5aWR+kLiGEIRSv
+X-Received: by 2002:adf:b318:: with SMTP id j24mr35920236wrd.84.1630483152538;
+        Wed, 01 Sep 2021 00:59:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz6qSKRkrppsPrE7xFz0DPwkHom7QW17kdpSLZeZaFEbxoQd+jkS4db/+oYTilJq6NO0oKDdw==
+X-Received: by 2002:adf:b318:: with SMTP id j24mr35920224wrd.84.1630483152355;
+        Wed, 01 Sep 2021 00:59:12 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-233-185.dyn.eolo.it. [146.241.233.185])
+        by smtp.gmail.com with ESMTPSA id o23sm8974034wro.76.2021.09.01.00.59.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 00:59:12 -0700 (PDT)
+Message-ID: <d49518ac90b2442fc293fd333d0315b1cff00671.camel@redhat.com>
+Subject: Re: [PATCH] [v3] mptcp: Fix duplicated argument in protocol.h
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        mptcp@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Date:   Wed, 01 Sep 2021 09:59:10 +0200
+In-Reply-To: <20210901031932.7734-1-wanjiabing@vivo.com>
+References: <20210901031932.7734-1-wanjiabing@vivo.com>
+Content-Type: text/plain
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20210901055631.7829-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-01_02,2021-08-31_01,2020-04-07_01
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cai
+DQo=
 
-On 9/1/21 7:56 AM, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource_byname() helper instead of
-> calling platform_get_resource_byname() and devm_ioremap_resource()
-> separately
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c b/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
-> index 02dc78bd7fab..9f05984f711a 100644
-> --- a/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
-> +++ b/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
-> @@ -665,7 +665,6 @@ static int c8sectpfe_probe(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  	struct device_node *child, *np = dev->of_node;
->  	struct c8sectpfei *fei;
-> -	struct resource *res;
->  	int ret, index = 0;
->  	struct channel_info *tsin;
->  
-> @@ -676,14 +675,11 @@ static int c8sectpfe_probe(struct platform_device *pdev)
->  
->  	fei->dev = dev;
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "c8sectpfe");
-> -	fei->io = devm_ioremap_resource(dev, res);
-> +	fei->io = devm_platform_ioremap_resource_byname(pdev, "c8sectpfe");
->  	if (IS_ERR(fei->io))
->  		return PTR_ERR(fei->io);
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> -					"c8sectpfe-ram");
-> -	fei->sram = devm_ioremap_resource(dev, res);
-> +	fei->sram = devm_platform_ioremap_resource_byname(pdev, "c8sectpfe-ram");
->  	if (IS_ERR(fei->sram))
->  		return PTR_ERR(fei->sram);
->  
-> 
-Reviewed-by: Patrice Chotard <patrice.chotard@foss.st.com>
 
-Thanks
-Patrice
