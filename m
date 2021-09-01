@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7932F3FDC3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA273FDC29
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345193AbhIAMsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:48:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43410 "EHLO mail.kernel.org"
+        id S1344644AbhIAMrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:47:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345277AbhIAMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345279AbhIAMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 1 Sep 2021 08:42:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4489A610E8;
-        Wed,  1 Sep 2021 12:38:01 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F09BC61208;
+        Wed,  1 Sep 2021 12:38:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499881;
-        bh=sS4iCWWeDvKhp/KqBSQkAVKHX7N8oer4nRAAKtHaes4=;
+        s=korg; t=1630499894;
+        bh=JaVsE/qfaG5QwU8mhxxYf4ZmaSlkCE/lnVpo/qNCLtE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bfC8zfSTwzqLc2UT2cfW9DZOaQsfZcwDMiWuf20nMLQb4OaR9xH8B4rWaUVtY2Npe
-         HjSJPTPHsT5mpEtX+537O/VnOj8RrUHIedwUHnXC8LAekbaEMCHrQ/bX9hbb7+VWkc
-         QQyLfHQU8Vt69czlG1U1e1eEcugCST0QmDFJaSVU=
+        b=jr4ntMkg5ipVUr6INq9dEkzjQM+TIEiOGYPjfOKLFZP3SY6I5NXHlQ5t7sIF4zdtH
+         CN2gIqbaBxZngPjeDQtQfT/FHxJ86G+qL49jD7/DkrsUPOfAIDUSWHRNzfeRuEwmR5
+         osREptUXvm5KJdG0vmTBeosALCUvlEBmDpAl44Oc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH 5.13 002/113] bpf: Fix ringbuf helper function compatibility
-Date:   Wed,  1 Sep 2021 14:27:17 +0200
-Message-Id: <20210901122302.062245760@linuxfoundation.org>
+        stable@vger.kernel.org, Derek Fang <derek.fang@realtek.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 003/113] ASoC: rt5682: Adjust headset volume button threshold
+Date:   Wed,  1 Sep 2021 14:27:18 +0200
+Message-Id: <20210901122302.093851934@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
 References: <20210901122301.984263453@linuxfoundation.org>
@@ -39,54 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Derek Fang <derek.fang@realtek.com>
 
-commit 5b029a32cfe4600f5e10e36b41778506b90fd4de upstream.
+[ Upstream commit 6d20bf7c020f417fdef1810a22da17c126603472 ]
 
-Commit 457f44363a88 ("bpf: Implement BPF ring buffer and verifier support
-for it") extended check_map_func_compatibility() by enforcing map -> helper
-function match, but not helper -> map type match.
+Adjust the threshold of headset button volume+ to fix
+the wrong button detection issue with some brand headsets.
 
-Due to this all of the bpf_ringbuf_*() helper functions could be used with
-a wrong map type such as array or hash map, leading to invalid access due
-to type confusion.
-
-Also, both BPF_FUNC_ringbuf_{submit,discard} have ARG_PTR_TO_ALLOC_MEM as
-argument and not a BPF map. Therefore, their check_map_func_compatibility()
-presence is incorrect since it's only for map type checking.
-
-Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier support for it")
-Reported-by: Ryota Shiga (Flatt Security)
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Derek Fang <derek.fang@realtek.com>
+Link: https://lore.kernel.org/r/20210721133121.12333-1-derek.fang@realtek.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5682.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5148,8 +5148,6 @@ static int check_map_func_compatibility(
- 	case BPF_MAP_TYPE_RINGBUF:
- 		if (func_id != BPF_FUNC_ringbuf_output &&
- 		    func_id != BPF_FUNC_ringbuf_reserve &&
--		    func_id != BPF_FUNC_ringbuf_submit &&
--		    func_id != BPF_FUNC_ringbuf_discard &&
- 		    func_id != BPF_FUNC_ringbuf_query)
- 			goto error;
- 		break;
-@@ -5258,6 +5256,12 @@ static int check_map_func_compatibility(
- 		if (map->map_type != BPF_MAP_TYPE_PERF_EVENT_ARRAY)
- 			goto error;
- 		break;
-+	case BPF_FUNC_ringbuf_output:
-+	case BPF_FUNC_ringbuf_reserve:
-+	case BPF_FUNC_ringbuf_query:
-+		if (map->map_type != BPF_MAP_TYPE_RINGBUF)
-+			goto error;
-+		break;
- 	case BPF_FUNC_get_stackid:
- 		if (map->map_type != BPF_MAP_TYPE_STACK_TRACE)
- 			goto error;
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index abcd6f483788..51ecaa2abcd1 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -44,6 +44,7 @@ static const struct reg_sequence patch_list[] = {
+ 	{RT5682_I2C_CTRL, 0x000f},
+ 	{RT5682_PLL2_INTERNAL, 0x8266},
+ 	{RT5682_SAR_IL_CMD_3, 0x8365},
++	{RT5682_SAR_IL_CMD_6, 0x0180},
+ };
+ 
+ void rt5682_apply_patch_list(struct rt5682_priv *rt5682, struct device *dev)
+-- 
+2.30.2
+
 
 
