@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC4D3FDBC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAF03FDA78
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344870AbhIAMn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:43:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44060 "EHLO mail.kernel.org"
+        id S245303AbhIAMcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:32:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344714AbhIAMj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:39:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E6D9610FD;
-        Wed,  1 Sep 2021 12:35:50 +0000 (UTC)
+        id S244067AbhIAMbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:31:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA672610A2;
+        Wed,  1 Sep 2021 12:30:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499750;
-        bh=Q6rXKBWCCKY5HIZgH5Af2QbmjSkd7dUsSf7b64pcaug=;
+        s=korg; t=1630499436;
+        bh=+Q9Lm4XYrb1EMIgmdn4gmR88RXZAQDDKbrjK5B0akXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ooXJBMb5HiLFYevxJ4XhQHjBCeHZOIjUfeGrhKSJUhWiP2DE0Onnfkex77XNxoKuB
-         ukkj1+Hfo6wFKW9Nq3SY1CWrVJ+IMdHZoicfnoD7fay98uDIsXrlTDJ6T/xHBdofrH
-         K6lmeBfGEdAGmYc/9J7IGSKsnIGmxAA+C737rEYg=
+        b=tnHCoJiYHS6V/IG69jezjZF1XKuEy+5jOPZQ2vE6chsqXbKfyLVXJsSqcnIuqV/Ms
+         L2m3vvholhiKHUp5bVWM8/v7VfwpYOtHDoKe4yJbc6GAtibOGN8SRzYQU3Dag1pyDS
+         1FiSJ/nsA6OdEbDdwHfP8p0Hkvm9Kv9z5XNybycU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
-        Sandeep Patil <sspatil@android.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 072/103] pipe: avoid unnecessary EPOLLET wakeups under normal loads
+        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 33/33] net: dont unconditionally copy_from_user a struct ifreq for socket ioctls
 Date:   Wed,  1 Sep 2021 14:28:22 +0200
-Message-Id: <20210901122302.991450110@linuxfoundation.org>
+Message-Id: <20210901122251.867511719@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
-References: <20210901122300.503008474@linuxfoundation.org>
+In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
+References: <20210901122250.752620302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,119 +39,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Peter Collingbourne <pcc@google.com>
 
-commit 3b844826b6c6affa80755254da322b017358a2f4 upstream.
+commit d0efb16294d145d157432feda83877ae9d7cdf37 upstream.
 
-I had forgotten just how sensitive hackbench is to extra pipe wakeups,
-and commit 3a34b13a88ca ("pipe: make pipe writes always wake up
-readers") ended up causing a quite noticeable regression on larger
-machines.
+A common implementation of isatty(3) involves calling a ioctl passing
+a dummy struct argument and checking whether the syscall failed --
+bionic and glibc use TCGETS (passing a struct termios), and musl uses
+TIOCGWINSZ (passing a struct winsize). If the FD is a socket, we will
+copy sizeof(struct ifreq) bytes of data from the argument and return
+-EFAULT if that fails. The result is that the isatty implementations
+may return a non-POSIX-compliant value in errno in the case where part
+of the dummy struct argument is inaccessible, as both struct termios
+and struct winsize are smaller than struct ifreq (at least on arm64).
 
-Now, hackbench isn't necessarily a hugely meaningful benchmark, and it's
-not clear that this matters in real life all that much, but as Mel
-points out, it's used often enough when comparing kernels and so the
-performance regression shows up like a sore thumb.
+Although there is usually enough stack space following the argument
+on the stack that this did not present a practical problem up to now,
+with MTE stack instrumentation it's more likely for the copy to fail,
+as the memory following the struct may have a different tag.
 
-It's easy enough to fix at least for the common cases where pipes are
-used purely for data transfer, and you never have any exciting poll
-usage at all.  So set a special 'poll_usage' flag when there is polling
-activity, and make the ugly "EPOLLET has crazy legacy expectations"
-semantics explicit to only that case.
+Fix the problem by adding an early check for whether the ioctl is a
+valid socket ioctl, and return -ENOTTY if it isn't.
 
-I would love to limit it to just the broken EPOLLET case, but the pipe
-code can't see the difference between epoll and regular select/poll, so
-any non-read/write waiting will trigger the extra wakeup behavior.  That
-is sufficient for at least the hackbench case.
-
-Apart from making the odd extra wakeup cases more explicitly about
-EPOLLET, this also makes the extra wakeup be at the _end_ of the pipe
-write, not at the first write chunk.  That is actually much saner
-semantics (as much as you can call any of the legacy edge-triggered
-expectations for EPOLLET "sane") since it means that you know the wakeup
-will happen once the write is done, rather than possibly in the middle
-of one.
-
-[ For stable people: I'm putting a "Fixes" tag on this, but I leave it
-  up to you to decide whether you actually want to backport it or not.
-  It likely has no impact outside of synthetic benchmarks  - Linus ]
-
-Link: https://lore.kernel.org/lkml/20210802024945.GA8372@xsang-OptiPlex-9020/
-Fixes: 3a34b13a88ca ("pipe: make pipe writes always wake up readers")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Tested-by: Sandeep Patil <sspatil@android.com>
-Tested-by: Mel Gorman <mgorman@techsingularity.net>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 44c02a2c3dc5 ("dev_ioctl(): move copyin/copyout to callers")
+Link: https://linux-review.googlesource.com/id/I869da6cf6daabc3e4b7b82ac979683ba05e27d4d
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Cc: <stable@vger.kernel.org> # 4.19
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/pipe.c                 |   15 +++++++++------
- include/linux/pipe_fs_i.h |    2 ++
- 2 files changed, 11 insertions(+), 6 deletions(-)
+ include/linux/netdevice.h |    4 ++++
+ net/socket.c              |    6 +++++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -444,9 +444,6 @@ pipe_write(struct kiocb *iocb, struct io
- #endif
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3594,6 +3594,10 @@ int netdev_rx_handler_register(struct ne
+ void netdev_rx_handler_unregister(struct net_device *dev);
  
- 	/*
--	 * Epoll nonsensically wants a wakeup whether the pipe
--	 * was already empty or not.
--	 *
- 	 * If it wasn't empty we try to merge new data into
- 	 * the last buffer.
- 	 *
-@@ -455,9 +452,9 @@ pipe_write(struct kiocb *iocb, struct io
- 	 * spanning multiple pages.
- 	 */
- 	head = pipe->head;
--	was_empty = true;
-+	was_empty = pipe_empty(head, pipe->tail);
- 	chars = total_len & (PAGE_SIZE-1);
--	if (chars && !pipe_empty(head, pipe->tail)) {
-+	if (chars && !was_empty) {
- 		unsigned int mask = pipe->ring_size - 1;
- 		struct pipe_buffer *buf = &pipe->bufs[(head - 1) & mask];
- 		int offset = buf->offset + buf->len;
-@@ -590,8 +587,11 @@ out:
- 	 * This is particularly important for small writes, because of
- 	 * how (for example) the GNU make jobserver uses small writes to
- 	 * wake up pending jobs
-+	 *
-+	 * Epoll nonsensically wants a wakeup whether the pipe
-+	 * was already empty or not.
- 	 */
--	if (was_empty) {
-+	if (was_empty || pipe->poll_usage) {
- 		wake_up_interruptible_sync_poll(&pipe->rd_wait, EPOLLIN | EPOLLRDNORM);
- 		kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
+ bool dev_valid_name(const char *name);
++static inline bool is_socket_ioctl_cmd(unsigned int cmd)
++{
++	return _IOC_TYPE(cmd) == SOCK_IOC_TYPE;
++}
+ int dev_ioctl(struct net *net, unsigned int cmd, struct ifreq *ifr,
+ 		bool *need_copyout);
+ int dev_ifconf(struct net *net, struct ifconf *, int);
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -1030,7 +1030,7 @@ static long sock_do_ioctl(struct net *ne
+ 		rtnl_unlock();
+ 		if (!err && copy_to_user(argp, &ifc, sizeof(struct ifconf)))
+ 			err = -EFAULT;
+-	} else {
++	} else if (is_socket_ioctl_cmd(cmd)) {
+ 		struct ifreq ifr;
+ 		bool need_copyout;
+ 		if (copy_from_user(&ifr, argp, sizeof(struct ifreq)))
+@@ -1039,6 +1039,8 @@ static long sock_do_ioctl(struct net *ne
+ 		if (!err && need_copyout)
+ 			if (copy_to_user(argp, &ifr, sizeof(struct ifreq)))
+ 				return -EFAULT;
++	} else {
++		err = -ENOTTY;
  	}
-@@ -654,6 +654,9 @@ pipe_poll(struct file *filp, poll_table
- 	struct pipe_inode_info *pipe = filp->private_data;
- 	unsigned int head, tail;
+ 	return err;
+ }
+@@ -3064,6 +3066,8 @@ static int compat_ifr_data_ioctl(struct
+ 	struct ifreq ifreq;
+ 	u32 data32;
  
-+	/* Epoll has some historical nasty semantics, this enables them */
-+	pipe->poll_usage = 1;
-+
- 	/*
- 	 * Reading pipe state only -- no need for acquiring the semaphore.
- 	 *
---- a/include/linux/pipe_fs_i.h
-+++ b/include/linux/pipe_fs_i.h
-@@ -48,6 +48,7 @@ struct pipe_buffer {
-  *	@files: number of struct file referring this pipe (protected by ->i_lock)
-  *	@r_counter: reader counter
-  *	@w_counter: writer counter
-+ *	@poll_usage: is this pipe used for epoll, which has crazy wakeups?
-  *	@fasync_readers: reader side fasync
-  *	@fasync_writers: writer side fasync
-  *	@bufs: the circular array of pipe buffers
-@@ -70,6 +71,7 @@ struct pipe_inode_info {
- 	unsigned int files;
- 	unsigned int r_counter;
- 	unsigned int w_counter;
-+	unsigned int poll_usage;
- 	struct page *tmp_page;
- 	struct fasync_struct *fasync_readers;
- 	struct fasync_struct *fasync_writers;
++	if (!is_socket_ioctl_cmd(cmd))
++		return -ENOTTY;
+ 	if (copy_from_user(ifreq.ifr_name, u_ifreq32->ifr_name, IFNAMSIZ))
+ 		return -EFAULT;
+ 	if (get_user(data32, &u_ifreq32->ifr_data))
 
 
