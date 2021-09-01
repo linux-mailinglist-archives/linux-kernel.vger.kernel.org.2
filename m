@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD64B3FDD61
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B65483FDD64
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244459AbhIANnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 09:43:10 -0400
-Received: from mga03.intel.com ([134.134.136.65]:48731 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244221AbhIANnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 09:43:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="218805028"
-X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
-   d="scan'208";a="218805028"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 06:42:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
-   d="scan'208";a="498900664"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Sep 2021 06:42:00 -0700
-Date:   Wed, 1 Sep 2021 21:42:00 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     David Rientjes <rientjes@google.com>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian@brauner.io>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] mm/oom: detect and kill task which has allocation
- forbidden by cpuset limit
-Message-ID: <20210901134200.GA50993@shbuild999.sh.intel.com>
-References: <1630399085-70431-1-git-send-email-feng.tang@intel.com>
- <YS5RTiVgydjszmjn@dhcp22.suse.cz>
- <52d80e9-cf27-9a59-94fd-d27a1e2dac6f@google.com>
- <20210901024402.GB46357@shbuild999.sh.intel.com>
+        id S244479AbhIANo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 09:44:56 -0400
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:37710 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242470AbhIANoz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 09:44:55 -0400
+Received: by mail-ua1-f53.google.com with SMTP id g2so1363941uad.4;
+        Wed, 01 Sep 2021 06:43:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gWwkSDKtYGpqljVYI1y+WfrFXR09Q3LdZi5r8xigkjk=;
+        b=m1HTLPNjsWXmfN6HerDCFvrWzQD7uaJ6ME2c79x3oWwCbeGW71g729vuzQuVWK1amV
+         m/gG5PdsI9OW8YZmKhxGoQTD9UZozHxkRlbdjwSkfPytpnH4cLS2gpQiDKg6lfqnmvak
+         ek3y+mHOPP2KGM01N0HSvx+hGNSvqNUwnfhUr5/lXdCXgfChRahtJpJrQYBb59qaAYvF
+         yL5awjgGtNGjRIS0ZnP+GgigOMLps3gnu8wBZ+mJ2mDDdfOkfTU0i+3CjljsB2UrRbJ1
+         W/pDdTk8x5VF49bzjVlsQYFiR4n1FleQOCHcUACBpK5fxsCA6yk0B3KSp7sngMpZbWTZ
+         Sc4A==
+X-Gm-Message-State: AOAM532hra/ABhnITQ9bz/3V7nHBPjrXVhxf/CzwoFujfzBfij8xD/aw
+        vqUeQ5XDwQiousuy3qJk9DYzWvkZSQ9qZaFtpDE=
+X-Google-Smtp-Source: ABdhPJwQuBYdXPN25peyItUun+pLAld/i8v6Ep8jdmiUeF2ltHZxB5QeDFZxYSpkK7+IOC5bnXvgZm+ETQziLUn4arE=
+X-Received: by 2002:ab0:2989:: with SMTP id u9mr22973907uap.122.1630503838209;
+ Wed, 01 Sep 2021 06:43:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901024402.GB46357@shbuild999.sh.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20210830221000.179369-1-mcgrof@kernel.org> <20210830221000.179369-4-mcgrof@kernel.org>
+In-Reply-To: <20210830221000.179369-4-mcgrof@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 1 Sep 2021 15:43:46 +0200
+Message-ID: <CAMuHMdXCUhrnXSmjFP7nJKHZp2joVRz-Ka2BUNMcZFA06CJ1wQ@mail.gmail.com>
+Subject: Re: [PATCH 03/15] m68k/emu/nfblock: add error handling support for add_disk()
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, justin@coraid.com,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Hannes Reinecke <hare@suse.de>, Tejun Heo <tj@kernel.org>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        chris.obbard@collabora.com,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        YiFei Zhu <zhuyifei1999@gmail.com>, thehajime@gmail.com,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Tim Waugh <tim@cyberelk.net>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Lars Ellenberg <drbd-dev@lists.linbit.com>,
+        linux-block@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 10:44:02AM +0800, Tang, Feng wrote:
-[SNIP]
-> > So I'd agree in this case that it would be better to simply fail the 
-> > allocation.
-> 
-> I agree with yours and Michal's comments, putting it in the OOM code
-> is a little late and wastes cpu cycles.
-> 
-> > Feng, would you move this check to __alloc_pages_may_oom() like the other 
-> > special cases and simply fail rather than call into the oom killer?
-> 
-> Will explore more in this direction, thanks!
- 
-I tried below patch, which can solve the blindly killing issue, that
-the docker processes will see page allocation errors, and eventually 
-quit running.
+On Tue, Aug 31, 2021 at 12:10 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
+>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-Thanks,
-Feng
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
----
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index eeb3a9cb36bb..d1ae77be45a2 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4271,10 +4271,18 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
- 		.gfp_mask = gfp_mask,
- 		.order = order,
- 	};
--	struct page *page;
-+	struct page *page = NULL;
-+	struct zoneref *z;
- 
- 	*did_some_progress = 0;
- 
-+	if (cpusets_enabled() && (gfp_mask & __GFP_HARDWALL)) {
-+		z = first_zones_zonelist(ac->zonelist,
-+			gfp_zone(gfp_mask), &cpuset_current_mems_allowed);
-+		if (!z->zone)
-+			goto out;
-+	}
-+
- 	/*
- 	 * Acquire the oom lock.  If that fails, somebody else is
- 	 * making progress for us.
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
