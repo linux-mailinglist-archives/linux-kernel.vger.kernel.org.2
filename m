@@ -2,140 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01073FD72F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8AF3FD731
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243786AbhIAJs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:48:26 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:10382 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232817AbhIAJsZ (ORCPT
+        id S243801AbhIAJss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:48:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232817AbhIAJsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:48:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1630489648; x=1662025648;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=lp2GmPd+gvoAEGs3uUb8OYJK6vgjUO8JTiGxQhCryIY=;
-  b=diMYo4EPL/3z8ciAZp6TRnyFXteb7hAAM7LinbSndVGsR2YCaukGTPYm
-   CX9pC1IvzOat+WJbZdHLUv5V8ydrfJG935OPsPFYRu4/wBrvZBI+eDXeP
-   zQtlbJFflLI4PWM4+d+mbXVS8PElKN8kI8QjwzvBt3wbzInOda52OH1IO
-   ellYg7D4IGsqxObVMeNOnw8HlA07HOrobRnkL2iilfz2ByuoNwy7XXR22
-   BP/+yFEKbAHusJpshtzfk0MLFwU+bsQUB8Dz9V5EU8mXr3q8LRGHf4nrr
-   2bAX8cpUh8dBwwdaw3w9eGyJacRLq4NYKhA4c6S4qpkp/NowJBGGMzsre
-   w==;
-IronPort-SDR: 5q10mBN8g3OzA/+ZiqxMWcz9qD+FySN6LEaXrtJ7DtAiH6I2nVCOqYOoDJ8zK6FpEW5j/gDnOa
- wJPhVRdx0al836MHOWy6of58tdbrxAeny5LxjBZR1dkTMDuzoCGbfPV3H3xCXDdvr5IG3ARKlO
- xAQG7hW9SZ2ZtJWSSd1gVipuEOAh3YmG5qg+g7l+p29PUMYBqSzXgRUMFnOUj6nr8dEWsU07bh
- Uyr7akkMSefDSPOX2mibZtdzm428FoKWL0CRZs9x7rl9vVGgstRgMHzEdhx/pqXB9Hf7uuN/ap
- UsxiF4Gg3BMDyaxRggTTe6CT
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="142388954"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Sep 2021 02:47:27 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 1 Sep 2021 02:47:14 -0700
-Received: from [10.12.72.234] (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Wed, 1 Sep 2021 02:47:13 -0700
-Subject: Re: [PATCH v2 00/10] iio: adc: at91-sama5d2_adc: add support for
- sama7g5
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>
-CC:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <ludovic.desroches@microchip.com>
-References: <20210824115441.681253-1-eugen.hristev@microchip.com>
- <20210830132636.16dde030@jic23-huawei>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <b6f37986-59c6-3890-8337-96d9ad057d6e@microchip.com>
-Date:   Wed, 1 Sep 2021 11:47:12 +0200
+        Wed, 1 Sep 2021 05:48:46 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D76C061575;
+        Wed,  1 Sep 2021 02:47:50 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id v20-20020a1cf714000000b002e71f4d2026so3417048wmh.1;
+        Wed, 01 Sep 2021 02:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=aMg3NODH8Ey3eCpI+t2A6v0su9qdk4Ke/uuuhl535ws=;
+        b=OrjvQJy00TNBAB3Ai2WQzeBw7QDdfslCsOrFIzWbyyX/zH8LJzYNFTNdDwd56x+hQj
+         AydFWj50UXXPBVEXMdqtrZ+JRDN1lbbd6EC5NeJ1d//auqIvRiPljYD6r7Teg2o1YfwA
+         VidXwRernBLawiBDsAWSxy4w8qroxDmU4i8hZy03Urp0SK3H6eqkBho4/tLoRXomXsAT
+         Uw9Rd5fW2uofWrVmDbRkwgcWoMcFQsvF8473Du1u86GcCLdYfx/9ocnKaitxZMxS+jvx
+         BoVoHUs/8NMT8jtMyK1ngmKXHDyJFHFLHOuzfpXAW23PgCCnW08BVs1jaRDpa11L9rmO
+         oiQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aMg3NODH8Ey3eCpI+t2A6v0su9qdk4Ke/uuuhl535ws=;
+        b=LSaM5JnnHJ8XH7K+K2l0PAiOFP4oHoGQuoU6xYU/OwISPzqbC3eR9HO2FkZXhHKGjm
+         ejT4LJkZAhHMso5aARpeiSTohI1xSOaJwXLxl6kdaEYj4Zzv182y7wggVVn1LezZY2Fw
+         wryR3bmOVgLqNFrbizSzZ0H5jJPBNWorsxk2I82ovLms6SixBPbA4z++krmYnfgSfd/2
+         sjpdhuTd9kulHeLUz1RbUjsvR776u77dbOGStLi4qsXjrEhK8QqBsiJtvGnaFF9fqlyb
+         On5NqYtviV5byYLKsjFqNIYSiD8dRGbA4Ey9DWk1CNd+XmtIYE/m6oJyvETFY9Q0gJBN
+         yEZw==
+X-Gm-Message-State: AOAM531Feq23dKqdaYjGHMQXGFLdeRHONOZSwKLx57p6/mhvVVjqUp0G
+        xCcX+tDjOBg5s3G/VWMfChHi7HLvgvA=
+X-Google-Smtp-Source: ABdhPJycsBV7lugiVztxDKyEIVMLSWx1ESn1pMe8wIzVuPyGIArAIZkJW0HZ9AJNMpyx4QfgMubvUA==
+X-Received: by 2002:a05:600c:1457:: with SMTP id h23mr8701530wmi.143.1630489668414;
+        Wed, 01 Sep 2021 02:47:48 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.233.192])
+        by smtp.gmail.com with ESMTPSA id x21sm4883743wmi.15.2021.09.01.02.47.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 02:47:48 -0700 (PDT)
+Subject: Re: [RFC PATCH] io_uring: stop issue failed request to fix panic
+To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "open list:IO_URING" <io-uring@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <b04adedd-a78a-634f-f28b-5840d5ec01df@linux.alibaba.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <b2bd9fd0-736d-668f-7c32-3dda6f862758@gmail.com>
+Date:   Wed, 1 Sep 2021 10:47:15 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210830132636.16dde030@jic23-huawei>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <b04adedd-a78a-634f-f28b-5840d5ec01df@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/08/2021 at 14:26, Jonathan Cameron wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+On 9/1/21 10:39 AM, 王贇 wrote:
+> We observed panic:
+>   BUG: kernel NULL pointer dereference, address:0000000000000028
+>   [skip]
+>   Oops: 0000 [#1] SMP PTI
+>   CPU: 1 PID: 737 Comm: a.out Not tainted 5.14.0+ #58
+>   Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
+>   RIP: 0010:vfs_fadvise+0x1e/0x80
+>   [skip]
+>   Call Trace:
+>    ? tctx_task_work+0x111/0x2a0
+>    io_issue_sqe+0x524/0x1b90
+
+Most likely it was fixed yesterday. Can you try?
+https://git.kernel.dk/cgit/linux-block/log/?h=for-5.15/io_uring
+
+Or these two patches in particular
+
+https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.15/io_uring&id=c6d3d9cbd659de8f2176b4e4721149c88ac096d4
+https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.15/io_uring&id=b8ce1b9d25ccf81e1bbabd45b963ed98b2222df8
+
+> This is caused by io_wq_submit_work() calling io_issue_sqe()
+> on a failed fadvise request, and the io_init_req() return error
+> before initialize the file for it, lead into the panic when
+> vfs_fadvise() try to access 'req->file'.
 > 
-> On Tue, 24 Aug 2021 14:54:31 +0300
-> Eugen Hristev <eugen.hristev@microchip.com> wrote:
+> This patch add the missing check & handle for failed request
+> before calling io_issue_sqe().
 > 
->> Hi,
->>
->> This series adds support for sama7g5.
->>
->> The sama7g5 is slightly different from sama5d2, but has the same basic
->> operations. The register map is a bit different, so, I added some primitives
->> to differentiate between the two classes of hardware blocks (sama5d2-sam9x60
->> and sama7g5).
->>
->> Sama7g5 has 16 channels ADC, no resistive touch, and extra features
->> (FIFOs, better oversampling , not implemented yet).
->>
->> It is a rework of the series initially sent here:
->> https://marc.info/?l=linux-iio&m=161461656807826&w=2
->>
->> I reworked this according to review by Jonathan, meaning that first I created
->> a no-op patch that will convert the driver to a more platform specific data
->> dedicated type of driver. This adds various structures that hold things like
->> register layout and channel information.
->> After this I created few patches that implement the main differences between
->> sama7g5 and older products: the end-of-conversion new register. I added
->> helper functions to make code more easy to read and more simple.
->> One the last patches adds the layout and channels for sama7g5.
->> At this moment in linux-next, the DT for sama7g5 and sama7g5ek is present,
->> and the last patches add and enable this node in DT for this board.
->>
->> Eugen
-> 0-8 applied with the minor tweak mentioned in a reply to relevant patch.
+> Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+> ---
+>  fs/io_uring.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> I'll assume 9-10 will got via normal soc related tree.
-
-Yep, we'll take them through at91 -> arm-soc trees...
-
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 6f35b12..bfec7bf 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -2214,7 +2214,8 @@ static void io_req_task_submit(struct io_kiocb *req, bool *locked)
 > 
-> Note that I'm queuing these up for the merge window after this one now
-> (5.16).
-
-Yes, soc/dt parts will be queued for 5.16 too.
-
-Thanks Eugen, thanks Jonathan, best regards,
-   Nicolas
-
->> Eugen Hristev (10):
->>    dt-bindings: iio: adc: at91-sama5d2: add compatible for sama7g5-adc
->>    iio: adc: at91-sama5d2_adc: initialize hardware after clock is started
->>    iio: adc: at91-sama5d2_adc: remove unused definition
->>    iio: adc: at91-sama5d2_adc: convert to platform specific data
->>      structures
->>    iio: adc: at91-sama5d2-adc: add support for separate end of conversion
->>      registers
->>    iio: adc: at91-sama5d2_adc: add helper for COR register
->>    iio: adc: at91-sama5d2_adc: add support for sama7g5 device
->>    iio: adc: at91-sama5d2_adc: update copyright and authors information
->>    ARM: dts: at91: sama7g5: add node for the ADC
->>    ARM: dts: at91: sama7g5ek: enable ADC on the board
->>
->>   .../bindings/iio/adc/atmel,sama5d2-adc.yaml   |   1 +
->>   arch/arm/boot/dts/at91-sama7g5ek.dts          |   8 +
->>   arch/arm/boot/dts/sama7g5.dtsi                |  16 +
->>   drivers/iio/adc/at91-sama5d2_adc.c            | 586 ++++++++++++------
->>   4 files changed, 425 insertions(+), 186 deletions(-)
->>
+>  	io_tw_lock(ctx, locked);
+>  	/* req->task == current here, checking PF_EXITING is safe */
+> -	if (likely(!(req->task->flags & PF_EXITING)))
+> +	if (likely(!(req->task->flags & PF_EXITING) &&
+> +		   !(req->flags & REQ_F_FAIL)))
+>  		__io_queue_sqe(req);
+>  	else
+>  		io_req_complete_failed(req, -EFAULT);
+> @@ -6704,7 +6705,10 @@ static void io_wq_submit_work(struct io_wq_work *work)
 > 
-
+>  	if (!ret) {
+>  		do {
+> -			ret = io_issue_sqe(req, 0);
+> +			if (likely(!(req->flags & REQ_F_FAIL)))
+> +				ret = io_issue_sqe(req, 0);
+> +			else
+> +				io_req_complete_failed(req, -EFAULT);
+>  			/*
+>  			 * We can get EAGAIN for polled IO even though we're
+>  			 * forcing a sync submission from here, since we can't
+> 
 
 -- 
-Nicolas Ferre
+Pavel Begunkov
