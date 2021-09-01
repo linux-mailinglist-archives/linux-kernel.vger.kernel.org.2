@@ -2,257 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BFE3FD8B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77BF3FD8BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243767AbhIAL2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 07:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238424AbhIAL2v (ORCPT
+        id S243781AbhIALaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 07:30:22 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:63913 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238424AbhIALaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 07:28:51 -0400
-Received: from lb2-smtp-cloud7.xs4all.net (lb2-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A94C061575;
-        Wed,  1 Sep 2021 04:27:53 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id LOPFmJkhu0e6wLOPGmQF42; Wed, 01 Sep 2021 13:27:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1630495672; bh=7MjIq9DrLqf2feI45rNo8/0rkK8PmdE54UQ5xesuT1Q=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=RcBymD3JlDdYh7JVdfp8f80cg20/EBQGZJaGM1srAA/+XHdY1+zhLrvOp3B1jba0r
-         dDdIMDY/spgDEe3IhxUluXZkLhVMs/7ArxmwEWJOk0irs2gcYVE8RTefzUwSHAPcKa
-         m2627W5CCGjxw/NvPcGgSqHuVXXFB2snd9X0nbvyW0SZbxZxtnIMiIDTntvXCH3RDd
-         uE/EO/EZdTeraituJH+RWpPPekNHDzmp8DeVr6hB4dm3LON/lKo0DEc20H4WUaBobF
-         vouitnTobqL4l59mDbY0xtXPqODy18Q21UnpIUjf75XkU08WRA8e+Py2+a0IpD7ZVp
-         2fzotB1flTDFA==
-Subject: Re: [PATCH] media: hantro: Trace hevc hw cycles performance register
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
-        Ezequiel Garcia <elezegarcia@gmail.com>
-References: <20210823135606.633052-1-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <f9edaa49-31cb-b98f-1c79-13b151513077@xs4all.nl>
-Date:   Wed, 1 Sep 2021 13:27:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210823135606.633052-1-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfC4xkAZsoqg+9dmEoRPAO2iiF1UV7C3dEE2KqskEwbdc/GySvbVsjVzfDap+9vxAz2hGienCE7N+1dPgxs291LOUN5rxkd0M2M+3alEPmQC01WkkKJTV
- a2O337cJLuQAjAZGHFHCDHJvrbQMgtaqSUjDSS+wvnnbRzyfxDHDNKaFl3ai3QGn3aUyPLLpLC9j957fa/hskAYWeW86+KtUFBDtqV39c4fOsCMzRgCfRT+4
- sJRsn+rTBvA5f9hgzOVVh14MTN9IsrCok/UfgAhDoCpLfmpnlpqQPba02xnbu/scRm9zowUdik7O9voa1EzHSoJ1aNHO/SGX1O7Scb5yuHbViOhPm66rQsuH
- Wi3YNNTJ5XeH+AVk3xdbl8bBpw2486WAIuSvooe99XkpCmQu1fTKrnW5BPfIO5KVsh6HYEjZhhgP5ls1mZojrvhJZm2xAfzuAj18SoCPrR8f3N6kn6fkBVuw
- eHHYtkdf8+f5S8ccDZiB1hCAR+RAHN3q666LX31Owe9xSJu4CAspBPYQqjIYUl9igdE/ni/7du1zx2z/VoKAI0JijJhZug5DMDICgJMyHwn43vySU4gEJDxs
- aVEZ9V+Vgt/gNXRxm8+1zil2mOg1+3+W16krKuP31hlEw6crKuoiJry5NJoTd3oRiVdmMUJTOJvqqDfk3wuh8X/wPQ62NzDA2oAqPnftcV5WmiLEXrzlg+Xk
- vA+Au+KZv8IhVw6m6ox3ZFpaOIab4XdYQmf2XejMVB+RuVDEJjx0KxuT84hv24FB+u/yIZLe4QWqEMEGxv/jWbalWXo+G7inV40SXclHFyIMMNEt4D5FJvnH
- rnYgE8a+ZHaOHhhh4lC8oylj4s/64Soy7LsSEg9u
+        Wed, 1 Sep 2021 07:30:21 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id ddf5f73a;
+        Wed, 1 Sep 2021 13:29:22 +0200 (CEST)
+Date:   Wed, 1 Sep 2021 13:29:22 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, alyssa@rosenzweig.io,
+        kettenis@openbsd.org, tglx@linutronix.de, maz@kernel.org,
+        marcan@marcan.st, bhelgaas@google.com, jim2101024@gmail.com,
+        nsaenz@kernel.org, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        daire.mcnamara@microchip.com, nsaenzjulienne@suse.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
+In-Reply-To: <YS6dWI4wwg7XkuNA@robh.at.kernel.org> (message from Rob Herring
+        on Tue, 31 Aug 2021 16:21:28 -0500)
+Subject: Re: [PATCH v4 3/4] dt-bindings: pci: Add DT bindings for apple,pcie
+References: <20210827171534.62380-1-mark.kettenis@xs4all.nl>
+ <20210827171534.62380-4-mark.kettenis@xs4all.nl> <YS6dWI4wwg7XkuNA@robh.at.kernel.org>
+Message-ID: <561431b178447575@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
-
-I'm confused: this is also part of '[PATCH v4 0/9] Additional features for Hantro HEVC', so
-do you want to merge this independently from that series? Are there differences between v4 1/9
-and this patch, or are they identical?
-
-In any case, I'd like to have a Reviewed-by or Acked-by from Ezequiel before merging this.
-
-Regards,
-
-	Hans
-
-On 23/08/2021 15:56, Benjamin Gaignard wrote:
-> After each hevc decoded frame trace the hardware performance.
-> It provides the number of hw cycles spend per decoded macroblock.
+> Date: Tue, 31 Aug 2021 16:21:28 -0500
+> From: Rob Herring <robh@kernel.org>
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  Documentation/admin-guide/media/hantro.rst    | 14 +++++++
->  .../admin-guide/media/v4l-drivers.rst         |  1 +
->  drivers/staging/media/hantro/hantro_drv.c     |  3 ++
->  .../staging/media/hantro/hantro_g2_hevc_dec.c | 16 ++++++++
->  drivers/staging/media/hantro/hantro_g2_regs.h |  1 +
->  drivers/staging/media/hantro/hantro_hw.h      |  1 +
->  drivers/staging/media/hantro/hantro_trace.h   | 41 +++++++++++++++++++
->  drivers/staging/media/hantro/imx8m_vpu_hw.c   |  1 +
->  8 files changed, 78 insertions(+)
->  create mode 100644 Documentation/admin-guide/media/hantro.rst
->  create mode 100644 drivers/staging/media/hantro/hantro_trace.h
+> On Fri, Aug 27, 2021 at 07:15:28PM +0200, Mark Kettenis wrote:
+> > From: Mark Kettenis <kettenis@openbsd.org>
+> > 
+> > The Apple PCIe host controller is a PCIe host controller with
+> > multiple root ports present in Apple ARM SoC platforms, including
+> > various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > 
+> > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> > ---
+> >  .../devicetree/bindings/pci/apple,pcie.yaml   | 165 ++++++++++++++++++
+> >  MAINTAINERS                                   |   1 +
+> >  2 files changed, 166 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > new file mode 100644
+> > index 000000000000..97a126db935a
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > @@ -0,0 +1,165 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Apple PCIe host controller
+> > +
+> > +maintainers:
+> > +  - Mark Kettenis <kettenis@openbsd.org>
+> > +
+> > +description: |
+> > +  The Apple PCIe host controller is a PCIe host controller with
+> > +  multiple root ports present in Apple ARM SoC platforms, including
+> > +  various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > +  The controller incorporates Synopsys DesigWare PCIe logic to
+> > +  implements its root ports.  But the ATU found on most DesignWare
+> > +  PCIe host bridges is absent.
+> > +
+> > +  All root ports share a single ECAM space, but separate GPIOs are
+> > +  used to take the PCI devices on those ports out of reset.  Therefore
+> > +  the standard "reset-gpios" and "max-link-speed" properties appear on
+> > +  the child nodes that represent the PCI bridges that correspond to
+> > +  the individual root ports.
+> > +
+> > +  MSIs are handled by the PCIe controller and translated into regular
+> > +  interrupts.  A range of 32 MSIs is provided.  These 32 MSIs can be
+> > +  distributed over the root ports as the OS sees fit by programming
+> > +  the PCIe controller's port registers.
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > +  - $ref: ../interrupt-controller/msi-controller.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: apple,t8103-pcie
+> > +      - const: apple,pcie
+> > +
+> > +  reg:
+> > +    minItems: 3
+> > +    maxItems: 5
+> > +
+> > +  reg-names:
+> > +    minItems: 3
+> > +    maxItems: 5
+> > +    items:
+> > +      - const: config
+> > +      - const: rc
+> > +      - const: port0
+> > +      - const: port1
+> > +      - const: port2
+> > +
+> > +  ranges:
+> > +    minItems: 2
+> > +    maxItems: 2
+> > +
+> > +  interrupts:
+> > +    description:
+> > +      Interrupt specifiers, one for each root port.
+> > +    minItems: 1
+> > +    maxItems: 3
+> > +
+> > +  msi-parent: true
 > 
-> diff --git a/Documentation/admin-guide/media/hantro.rst b/Documentation/admin-guide/media/hantro.rst
-> new file mode 100644
-> index 000000000000..6cb552a5dfcb
-> --- /dev/null
-> +++ b/Documentation/admin-guide/media/hantro.rst
-> @@ -0,0 +1,14 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=================
-> +The hantro driver
-> +=================
-> +
-> +Trace
-> +~~~~~
-> +
-> +You can trace the hardware decoding performances by using event tracing::
-> +
-> +    # echo hantro_hevc_perf >> /sys/kernel/debug/tracing/set_event
-> +
-> +That will keep a log of the number of hardware cycles spend per decoded macroblock
-> diff --git a/Documentation/admin-guide/media/v4l-drivers.rst b/Documentation/admin-guide/media/v4l-drivers.rst
-> index 9c7ebe2ca3bd..4f2f72a2b3b5 100644
-> --- a/Documentation/admin-guide/media/v4l-drivers.rst
-> +++ b/Documentation/admin-guide/media/v4l-drivers.rst
-> @@ -15,6 +15,7 @@ Video4Linux (V4L) driver-specific documentation
->  	cx88
->  	davinci-vpbe
->  	fimc
-> +        hantro
->  	imx
->  	imx7
->  	ipu3
-> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> index 8a2edd67f2c6..236160c51e59 100644
-> --- a/drivers/staging/media/hantro/hantro_drv.c
-> +++ b/drivers/staging/media/hantro/hantro_drv.c
-> @@ -28,6 +28,9 @@
->  #include "hantro.h"
->  #include "hantro_hw.h"
->  
-> +#define CREATE_TRACE_POINTS
-> +#include "hantro_trace.h"
-> +
->  #define DRIVER_NAME "hantro-vpu"
->  
->  int hantro_debug;
-> diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-> index 340efb57fd18..fef16d1724da 100644
-> --- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-> +++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-> @@ -7,6 +7,7 @@
->  
->  #include "hantro_hw.h"
->  #include "hantro_g2_regs.h"
-> +#include "hantro_trace.h"
->  
->  #define HEVC_DEC_MODE	0xC
->  
-> @@ -22,6 +23,21 @@ static inline void hantro_write_addr(struct hantro_dev *vpu,
->  	vdpu_write(vpu, addr & 0xffffffff, offset);
->  }
->  
-> +void hantro_g2_hevc_dec_done(struct hantro_ctx *ctx)
-> +{
-> +	const struct hantro_hevc_dec_ctrls *ctrls = &ctx->hevc_dec.ctrls;
-> +	const struct v4l2_ctrl_hevc_sps *sps = ctrls->sps;
-> +	struct hantro_dev *vpu = ctx->dev;
-> +	u32 hw_cycles = 0;
-> +	u32 mbs = (sps->pic_width_in_luma_samples *
-> +		   sps->pic_height_in_luma_samples) >> 8;
-> +
-> +	if (mbs)
-> +		hw_cycles = vdpu_read(vpu, G2_HW_PERFORMANCE) / mbs;
-> +
-> +	trace_hantro_hevc_perf(ctx, hw_cycles);
-> +}
-> +
->  static void prepare_tile_info_buffer(struct hantro_ctx *ctx)
->  {
->  	struct hantro_dev *vpu = ctx->dev;
-> diff --git a/drivers/staging/media/hantro/hantro_g2_regs.h b/drivers/staging/media/hantro/hantro_g2_regs.h
-> index bb22fa921914..17d84ec9c5c2 100644
-> --- a/drivers/staging/media/hantro/hantro_g2_regs.h
-> +++ b/drivers/staging/media/hantro/hantro_g2_regs.h
-> @@ -177,6 +177,7 @@
->  #define G2_REG_CONFIG_DEC_CLK_GATE_E		BIT(16)
->  #define G2_REG_CONFIG_DEC_CLK_GATE_IDLE_E	BIT(17)
->  
-> +#define G2_HW_PERFORMANCE	(G2_SWREG(63))
->  #define G2_ADDR_DST		(G2_SWREG(65))
->  #define G2_REG_ADDR_REF(i)	(G2_SWREG(67)  + ((i) * 0x8))
->  #define G2_ADDR_DST_CHR		(G2_SWREG(99))
-> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-> index df7b5e3a57b9..ab6f379354cc 100644
-> --- a/drivers/staging/media/hantro/hantro_hw.h
-> +++ b/drivers/staging/media/hantro/hantro_hw.h
-> @@ -250,6 +250,7 @@ void hantro_h264_dec_exit(struct hantro_ctx *ctx);
->  int hantro_hevc_dec_init(struct hantro_ctx *ctx);
->  void hantro_hevc_dec_exit(struct hantro_ctx *ctx);
->  int hantro_g2_hevc_dec_run(struct hantro_ctx *ctx);
-> +void hantro_g2_hevc_dec_done(struct hantro_ctx *ctx);
->  int hantro_hevc_dec_prepare_run(struct hantro_ctx *ctx);
->  dma_addr_t hantro_hevc_get_ref_buf(struct hantro_ctx *ctx, int poc);
->  void hantro_hevc_ref_remove_unused(struct hantro_ctx *ctx);
-> diff --git a/drivers/staging/media/hantro/hantro_trace.h b/drivers/staging/media/hantro/hantro_trace.h
-> new file mode 100644
-> index 000000000000..fa8fec26fa3c
-> --- /dev/null
-> +++ b/drivers/staging/media/hantro/hantro_trace.h
-> @@ -0,0 +1,41 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#if !defined(__HANTRO_TRACE_H__) || defined(TRACE_HEADER_MULTI_READ)
-> +#define __HANTRO_TRACE_H__
-> +
-> +#include <linux/tracepoint.h>
-> +#include <media/videobuf2-v4l2.h>
-> +
-> +#include "hantro.h"
-> +
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM hantro
-> +#define TRACE_INCLUDE_FILE hantro_trace
-> +
-> +TRACE_EVENT(hantro_hevc_perf,
-> +	TP_PROTO(struct hantro_ctx *ctx, u32 hw_cycles),
-> +
-> +	TP_ARGS(ctx, hw_cycles),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(int, minor)
-> +		__field(struct v4l2_fh *, fh)
-> +		__field(u32, hw_cycles)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->minor = ctx->fh.vdev->minor;
-> +		__entry->fh = &ctx->fh;
-> +		__entry->hw_cycles = hw_cycles;
-> +	),
-> +
-> +	TP_printk("minor = %d, fh = %p, %8d cycles / mb",
-> +		  __entry->minor, __entry->fh, __entry->hw_cycles)
-> +);
-> +
-> +#endif /* __HANTRO_TRACE_H__ */
-> +
-> +#undef TRACE_INCLUDE_PATH
-> +#define TRACE_INCLUDE_PATH ../../drivers/staging/media/hantro
-> +
-> +/* This part must be outside protection */
-> +#include <trace/define_trace.h>
-> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> index ea919bfb9891..7e9e24bb5057 100644
-> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> @@ -239,6 +239,7 @@ static const struct hantro_codec_ops imx8mq_vpu_g2_codec_ops[] = {
->  		.reset = imx8m_vpu_g2_reset,
->  		.init = hantro_hevc_dec_init,
->  		.exit = hantro_hevc_dec_exit,
-> +		.done = hantro_g2_hevc_dec_done,
->  	},
->  };
->  
-> 
+> I still think this should be dropped as it is meaningless with 
+> 'msi-controller' present.
 
+Hmm.  As far as I can tell all current arm64 device trees that
+describe hardware with an MSI controller integrated on the PCI host
+bridge have both the 'msi-controller' and 'msi-parent' properties.
+See arch/arm64/boot/dts/marvell/aramada-37xx.dtsi and
+arch/arm64/boot/dts/xilinx/zynqmp.dtsi.
+
+The current OpenBSD code will fail to map the MSIs if 'msi-parent'
+isn't there, although Linux seems to fall back on an MSI domain that's
+directly attached to the host bridge if the 'msi-parent' property is
+missing.  I think it makes sense to be explicit here, but if both you
+and Marc think it shouldn't be there, I probably can change the
+OpenBSD to do a similar fallback.
+
+> > +
+> > +#  msi-ranges:
+> > +#    description:
+> > +#      A list of pairs <intid span>, where "intid" is the first
+> > +#      interrupt number that can be used as an MSI, and "span" the size
+> > +#      of that range.
+> > +#    $ref: /schemas/types.yaml#/definitions/phandle-array
+> 
+> Here, you'll want just 'maxItems: 1' as there's only 1 entry.
+
+Right.  As far as I can tell the Apple hardware only supports a single
+range.
+
+> > +
+> > +  iommu-map: true
+> > +  iommu-map-mask: true
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - reg-names
+> > +  - bus-range
+> > +  - interrupts
+> > +  - msi-controller
+> > +  - msi-parent
+> > +  - msi-ranges
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/apple-aic.h>
+> > +
+> > +    soc {
+> > +      #address-cells = <2>;
+> > +      #size-cells = <2>;
+> > +
+> > +      pcie0: pcie@690000000 {
+> > +        compatible = "apple,t8103-pcie", "apple,pcie";
+> > +        device_type = "pci";
+> > +
+> > +        reg = <0x6 0x90000000 0x0 0x1000000>,
+> > +              <0x6 0x80000000 0x0 0x4000>,
+> > +              <0x6 0x81000000 0x0 0x8000>,
+> > +              <0x6 0x82000000 0x0 0x8000>,
+> > +              <0x6 0x83000000 0x0 0x8000>;
+> > +        reg-names = "config", "rc", "port0", "port1", "port2";
+> > +
+> > +        interrupt-parent = <&aic>;
+> > +        interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>;
+> > +
+> > +        msi-controller;
+> > +        msi-parent = <&pcie0>;
+> > +        msi-ranges = <&aic AIC_IRQ 704 IRQ_TYPE_EDGE_RISING 32>;
+> > +
+> > +        iommu-map = <0x100 &dart0 1 1>,
+> > +                    <0x200 &dart1 1 1>,
+> > +                    <0x300 &dart2 1 1>;
+> > +        iommu-map-mask = <0xff00>;
+> > +
+> > +        bus-range = <0 3>;
+> > +        #address-cells = <3>;
+> > +        #size-cells = <2>;
+> > +        ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
+> > +                 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
+> > +
+> > +        clocks = <&pcie_core_clk>, <&pcie_aux_clk>, <&pcie_ref_clk>;
+> > +        pinctrl-0 = <&pcie_pins>;
+> > +        pinctrl-names = "default";
+> > +
+> > +        pci@0,0 {
+> > +          device_type = "pci";
+> > +          reg = <0x0 0x0 0x0 0x0 0x0>;
+> > +          reset-gpios = <&pinctrl_ap 152 0>;
+> > +          max-link-speed = <2>;
+> > +
+> > +          #address-cells = <3>;
+> > +          #size-cells = <2>;
+> > +          ranges;
+> > +        };
+> > +
+> > +        pci@1,0 {
+> > +          device_type = "pci";
+> > +          reg = <0x800 0x0 0x0 0x0 0x0>;
+> > +          reset-gpios = <&pinctrl_ap 153 0>;
+> > +          max-link-speed = <2>;
+> > +
+> > +          #address-cells = <3>;
+> > +          #size-cells = <2>;
+> > +          ranges;
+> > +        };
+> > +
+> > +        pci@2,0 {
+> > +          device_type = "pci";
+> > +          reg = <0x1000 0x0 0x0 0x0 0x0>;
+> > +          reset-gpios = <&pinctrl_ap 33 0>;
+> > +          max-link-speed = <1>;
+> > +
+> > +          #address-cells = <3>;
+> > +          #size-cells = <2>;
+> > +          ranges;
+> > +        };
+> > +      };
+> > +    };
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index c6b8a720c0bc..30bea4042e7e 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -1694,6 +1694,7 @@ C:	irc://chat.freenode.net/asahi-dev
+> >  T:	git https://github.com/AsahiLinux/linux.git
+> >  F:	Documentation/devicetree/bindings/arm/apple.yaml
+> >  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+> > +F:	Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> >  F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> >  F:	arch/arm64/boot/dts/apple/
+> >  F:	drivers/irqchip/irq-apple-aic.c
+> > -- 
+> > 2.32.0
+> > 
+> > 
+> 
