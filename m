@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29723FDA90
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526A33FDAD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245760AbhIAMdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:33:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34562 "EHLO mail.kernel.org"
+        id S245583AbhIAMfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:35:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244930AbhIAMbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:31:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA474610CC;
-        Wed,  1 Sep 2021 12:30:53 +0000 (UTC)
+        id S1343500AbhIAMdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:33:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44F75610CA;
+        Wed,  1 Sep 2021 12:31:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499454;
-        bh=QONAH+3jqD003oDlj6R3c/flRDJM4gzHyhBoBu7qr1k=;
+        s=korg; t=1630499514;
+        bh=KBtAVMP+VFpQhLREu6k36qT5cu56hxJkOwhYETtEKyw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DlBaxC+DD+qqTlG+OKlIq/IEZe0K71WXOmDnHj43Qo2c2e9IxDNAMkvHy6w0TkzYG
-         C7848lVt5Q81Ji5C4YWeSW7OpaLLpvNNzSx7G+3LYO4oIZhFXpzzBuOIMkjWeE26e2
-         fpXSSF1DVMbUtMT1IHxFeO1QvJPAPzdXkju+Wa1U=
+        b=nHPG/sYWwG9yZikXQFdcTnLquph/nou2d9jmFnZQU0Urfbu/IHV0/TPZG0Y7QBaae
+         I6njvFRPNYt6d8ikB7iFs1PnXk3Ur335SgoyI1lQGCtQhyLk+0opH4kkLyrE2WrByW
+         7exZVVNZ7Jxu4Zu5f91qtqJ5iBOU+I6hxAxYGsnU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gerd Rausch <gerd.rausch@oracle.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 28/33] net/rds: dma_map_sg is entitled to merge entries
-Date:   Wed,  1 Sep 2021 14:28:17 +0200
-Message-Id: <20210901122251.715429510@linuxfoundation.org>
+Subject: [PATCH 5.4 28/48] opp: remove WARN when no valid OPPs remain
+Date:   Wed,  1 Sep 2021 14:28:18 +0200
+Message-Id: <20210901122254.340170509@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
-References: <20210901122250.752620302@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gerd Rausch <gerd.rausch@oracle.com>
+From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-[ Upstream commit fb4b1373dcab086d0619c29310f0466a0b2ceb8a ]
+[ Upstream commit 335ffab3ef864539e814b9a2903b0ae420c1c067 ]
 
-Function "dma_map_sg" is entitled to merge adjacent entries
-and return a value smaller than what was passed as "nents".
+This WARN can be triggered per-core and the stack trace is not useful.
+Replace it with plain dev_err(). Fix a comment while at it.
 
-Subsequently "ib_map_mr_sg" needs to work with this value ("sg_dma_len")
-rather than the original "nents" parameter ("sg_len").
-
-This old RDS bug was exposed and reliably causes kernel panics
-(using RDMA operations "rds-stress -D") on x86_64 starting with:
-commit c588072bba6b ("iommu/vt-d: Convert intel iommu driver to the iommu ops")
-
-Simply put: Linux 5.11 and later.
-
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Link: https://lore.kernel.org/r/60efc69f-1f35-529d-a7ef-da0549cad143@oracle.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/rds/ib_frmr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/opp/of.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/rds/ib_frmr.c b/net/rds/ib_frmr.c
-index 6431a023ac89..46988c009a3e 100644
---- a/net/rds/ib_frmr.c
-+++ b/net/rds/ib_frmr.c
-@@ -111,9 +111,9 @@ static int rds_ib_post_reg_frmr(struct rds_ib_mr *ibmr)
- 		cpu_relax();
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index 249738e1e0b7..603c688fe23d 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -682,8 +682,9 @@ static int _of_add_opp_table_v2(struct device *dev, struct opp_table *opp_table)
+ 		}
  	}
  
--	ret = ib_map_mr_sg_zbva(frmr->mr, ibmr->sg, ibmr->sg_len,
-+	ret = ib_map_mr_sg_zbva(frmr->mr, ibmr->sg, ibmr->sg_dma_len,
- 				&off, PAGE_SIZE);
--	if (unlikely(ret != ibmr->sg_len))
-+	if (unlikely(ret != ibmr->sg_dma_len))
- 		return ret < 0 ? ret : -EINVAL;
- 
- 	/* Perform a WR for the fast_reg_mr. Each individual page
+-	/* There should be one of more OPP defined */
+-	if (WARN_ON(!count)) {
++	/* There should be one or more OPPs defined */
++	if (!count) {
++		dev_err(dev, "%s: no supported OPPs", __func__);
+ 		ret = -ENOENT;
+ 		goto remove_static_opp;
+ 	}
 -- 
 2.30.2
 
