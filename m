@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87F93FE308
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74293FE30D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244454AbhIATaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:30:21 -0400
-Received: from mail.z3ntu.xyz ([128.199.32.197]:35858 "EHLO mail.z3ntu.xyz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233472AbhIATaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:30:20 -0400
-Received: from g550jk.localnet (ip-213-127-63-121.ip.prioritytelecom.net [213.127.63.121])
-        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 4280ACA11B;
-        Wed,  1 Sep 2021 19:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1630524559; bh=0H/X2fUD2T06MoUgfBCJPfMjregzSG/7Yg0C8emnr9M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=eKxmw25/GlXk8ZgdZq1qnrFluDvsDRg+0AGxqUiqp9JyElSo/UnkDtjzPRM/1N//w
-         pjkMeEpP/jPg9VJpMMEVa9zkZQyBOSbEBfiFWsOosYObhELen29s7ek5vN2xaCRU6H
-         PPOhDZCJtPg4xC0KuZ/5t6wAV8T/wI9fTYboOJT4=
-From:   Luca Weiss <luca@z3ntu.xyz>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-fbdev@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Hans de Goede <hdegoede@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: display: add missing simple-framebuffer formats
-Date:   Wed, 01 Sep 2021 21:29:18 +0200
-Message-ID: <1648705.hQpMTjSAMY@g550jk>
-In-Reply-To: <YS6fZ4nFgic1DYhR@robh.at.kernel.org>
-References: <20210828110206.142899-1-luca@z3ntu.xyz> <YS6fZ4nFgic1DYhR@robh.at.kernel.org>
+        id S244492AbhIATcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:32:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244954AbhIATcm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 15:32:42 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBA2C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 12:31:44 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id p38so1422934lfa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 12:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mhceOkZW/Lw79AULcxOwhUdsCICxdzvZ661/jsJbbQs=;
+        b=ADe55B0ktqUUkzvIT1RzXepW8sk7HHlHGxmQB292D+H+GdV7yQH6JpWbwKEgi6k04C
+         1I0RSEkL6IDfktI8iowp8q3DjUY7mybAGnROqzOMFvNxKg2dbBqgRlCfLQnroqnKIsr0
+         jnsWzK2YcI3B7IUhK7F7CwRABmnnYLoj2FD4G2W+fZ3YeD2UF79+hHWAp/viAx/WEw4K
+         ohlq58Og6aWaLSfkN2RaJsPVEq6KqWLg4aI2E9c2S1LqCABZnqs04K4w+pivlcQFYKQq
+         76ghks6yH4v3rmBdZkZCdoVJq3mq7Ub4Ur4fJglY+CddBJh4O4DeZBm5pOr9wW4/exdR
+         ijZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mhceOkZW/Lw79AULcxOwhUdsCICxdzvZ661/jsJbbQs=;
+        b=HaPM7F/An8urjbUi/mqlYrQiO9k8c2nIx6erFZ2x7227kf8x7F66EjGgthiutQyeB4
+         tSS9xwz/KxXcDCyOutZyseBByECukQ3rMAQ0lWZg1R6wgT03VJcnQ48DtaisMVh0R88y
+         b/jzVOZaX4NWJYuG3lOBLyVpy9Aj6YJJzrGkHqQYiZ5/d++fyxaU4fFyHRNbgz4qAvAk
+         KBFzUZwT30LUuKOWV0JkFtRZY0jlnsvrMb6fzdQlCxyY+iLFjoFC9Ev9d0BdoP21CcqZ
+         kDeSOgQBddHXvBmgyXMRGYHtVwBLuPHEdH/02rEhjN8nAo7eTz59lYt22X02gXyp2ASz
+         BZ+A==
+X-Gm-Message-State: AOAM532s0EhEvd3H2fSps2MTJkCA7dkLHMkH40lzokHP/TsSBmGvN6UW
+        P8gojh3v1at4qF9Z+7tfrXFtiWdqBQowYzyv31FuqA==
+X-Google-Smtp-Source: ABdhPJyCbbpcIqH9pWpTHrFhlzCzND3oDcxn/8oKC7RMCOisPoPm3ujZA6d59OL5bAfD11tOwx0Hd0z4fvXXvhGq8Cw=
+X-Received: by 2002:a19:c350:: with SMTP id t77mr725925lff.7.1630524703051;
+ Wed, 01 Sep 2021 12:31:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <cover.1630498020.git.mchehab+huawei@kernel.org> <b1ea71426ecf21bbfd598a6bf7951d884fcc5e1a.1630498020.git.mchehab+huawei@kernel.org>
+In-Reply-To: <b1ea71426ecf21bbfd598a6bf7951d884fcc5e1a.1630498020.git.mchehab+huawei@kernel.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 1 Sep 2021 12:31:31 -0700
+Message-ID: <CALAqxLW6MeZFLT2eGyu+oipBfF=L-zLoGq-wS_N5SJbKkVUGPg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm64: dts: hisilicon: Add usb mux hub for hikey960
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Wed, Sep 1, 2021 at 5:23 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> From: John Stultz <john.stultz@linaro.org>
+>
 
-On Dienstag, 31. August 2021 23:30:15 CEST Rob Herring wrote:
-> On Sat, Aug 28, 2021 at 01:02:05PM +0200, Luca Weiss wrote:
-> > Document all formats currently present in include/linux/platform_data/
-> > simplefb.h
-> > 
-> > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> > ---
-> > 
-> >  .../bindings/display/simple-framebuffer.yaml         | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> > 
-> > diff --git
-> > a/Documentation/devicetree/bindings/display/simple-framebuffer.yaml
-> > b/Documentation/devicetree/bindings/display/simple-framebuffer.yaml index
-> > c2499a7906f5..c1acd2859ae8 100644
-> > --- a/Documentation/devicetree/bindings/display/simple-framebuffer.yaml
-> > +++ b/Documentation/devicetree/bindings/display/simple-framebuffer.yaml
-> > 
-> > @@ -83,13 +83,25 @@ properties:
-> >    format:
-> >      description: >
-> >      
-> >        Format of the framebuffer:
-> > +        * `a1r5g5b5` - 16-bit pixels, d[15]=a, d[14:10]=r, d[9:5]=g,
-> > d[4:0]=b +        * `a2r10g10b10` - 32-bit pixels, d[31:30]=a,
-> > d[29:20]=r, d[19:10]=g, d[9:0]=b
-> Not a new problem, but are these 32-bit big or little endian words? That
-> should be figured out before we add more.
+My apologies for not writing a proper patch description & s-o-b on the
+commit you pulled this from!
+I had split it out from an earlier patch that was sent upstream and
+didn't get to cleaning it up.
 
-As I'm neither involved in the driver nor really have any knowledge on pixel 
-formats, maybe the maintainers of the binding can help out here?
-(Bartlomiej Zolnierkiewicz & Hans de Goede, both are CC'ed)
+> Add dt bindings for Kirin 960 USB HUB. Such board comes with an
+> integrated USB HUB provided via a Microchip USB5734 4-port high-speed
+> hub controller.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-I can probably dig through the sources and guess but documentation should be 
-written without guessing :)
+Feel free to add:
+  Signed-off-by: John Stultz <john.stultz@linaro.org>
+to the patch.
 
-Regards
-Luca
-
-
-
-
+Thanks for continuing to push this upstream!
+-john
