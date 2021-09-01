@@ -2,111 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241DC3FD56A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166DE3FD56C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243263AbhIAIaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243104AbhIAIav (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:30:51 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D69BC061575;
-        Wed,  1 Sep 2021 01:29:55 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so4089706pjb.0;
-        Wed, 01 Sep 2021 01:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uEF7gvqwfbmwW2Wlh9BZzPOgxlqZXBD1tP6d5gmOMzA=;
-        b=sSDUcl7oLVlDkyo52pdEZM1V1Xl0bBb9tDAJ4/PMbqIS1gy5t9mc+pT3LQuiDrycda
-         60S67vEHa81Jq1BdakqxN8cxJgp5Xy8HjHz66se03Uj52cyu8DETsx9noSVwdgTm2iaY
-         ERzqhXKGtK+XVO5jjh6AudunXd87z/gA5d15bbIeClz0Ey8MyImTInsEvogqkC3nADkk
-         ZFzg8JMG8Sa60ydadlxjH0Gfpsq5wXtGAo8mWwj5C05ouUkQ+GHeKS1klvUYQYlH2Bji
-         npaS0ePftf8kMH7YjtNAcN4WMFOL8XEQ4SqHoDp1cWQCZA5zqJ4matQ92HBqmV04MWoR
-         hLfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uEF7gvqwfbmwW2Wlh9BZzPOgxlqZXBD1tP6d5gmOMzA=;
-        b=nDI895MzFTCFgJqg9dURN4Jw3RxyDfPOfjbNUNzfvhGnyEqUgtI1K+1F8aSPAYycUI
-         c3Ur7dustcniQK8u2dNkUADlRKur1/Z1PKEWjZnXEB2Ip+euxpLXJgYJ7EFCAwiSLtA6
-         3f+xXK33h1Q1CvvNW3BP324I1EC3mU7xa/Qb3reqHFcnvAwnBK63jHU2dd+ETCCixjD6
-         BU6HFyx81IOeOPa0BWHfz9JbBzPItpOism6S3OpaTmLfqaSzDAlpymGjDjU7bFSsjgC4
-         SO4xbQI+2pBj3HmASb2dVVIjQ7YjmNjkc/uz/ebgPr1nJF5jJB1CUwgDQdBkt61J2vHu
-         CWKA==
-X-Gm-Message-State: AOAM531NTBDKk5oWJ0LXUCS8YUMoMTk8thGwn9lYX0OVgHiYXnXvImBx
-        dP4KmY8FnSJ2FQY/Y71S9LVDTcKZlCLWPHhmC8U=
-X-Google-Smtp-Source: ABdhPJx5if/okyK4OD2r1W9Kp91JPxGpTqwgPma1p/eDWUd9raCWGQpTPLtztEVZPRUznt5kWHNcoQ==
-X-Received: by 2002:a17:90a:6503:: with SMTP id i3mr10299929pjj.42.1630484994939;
-        Wed, 01 Sep 2021 01:29:54 -0700 (PDT)
-Received: from ownia.. ([173.248.225.217])
-        by smtp.gmail.com with ESMTPSA id d20sm19509159pfu.36.2021.09.01.01.29.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 01:29:54 -0700 (PDT)
-From:   Weizhao Ouyang <o451686892@gmail.com>
-To:     arnd@arndb.de, akpm@linux-foundation.org
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Weizhao Ouyang <o451686892@gmail.com>
-Subject: [PATCH 1/1] mm/early_ioremap.c: remove redundant early_ioremap_shutdown()
-Date:   Wed,  1 Sep 2021 16:29:17 +0800
-Message-Id: <20210901082917.399953-1-o451686892@gmail.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S243208AbhIAIbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:31:21 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:49869 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242943AbhIAIbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 04:31:21 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Gzy1B6Kngz9sTQ;
+        Wed,  1 Sep 2021 10:30:22 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Bg4E-lIXqjZ7; Wed,  1 Sep 2021 10:30:22 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gzy1B5F34z9sT9;
+        Wed,  1 Sep 2021 10:30:22 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 987E68B81F;
+        Wed,  1 Sep 2021 10:30:22 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id uUNSHlIDpySo; Wed,  1 Sep 2021 10:30:22 +0200 (CEST)
+Received: from po18078vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 30E888B81E;
+        Wed,  1 Sep 2021 10:30:22 +0200 (CEST)
+Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id EF42B6BCA3; Wed,  1 Sep 2021 08:30:21 +0000 (UTC)
+Message-Id: <6ec2a7865ed6a5ec54ab46d026785bafe1d837ea.1630484892.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3] powerpc/32: Add support for out-of-line static calls
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed,  1 Sep 2021 08:30:21 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-early_ioremap_reset() reserved a weak function so that architectures can
-provide a specific cleanup. Now no architectures use it, remove this
-redundant function.
+Add support for out-of-line static calls on PPC32. This change
+improve performance of calls to global function pointers by
+using direct calls instead of indirect calls.
 
-Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
+The trampoline is initialy populated with a 'blr' or branch to target,
+followed by an unreachable long jump sequence.
+
+In order to cater with parallele execution, the trampoline needs to
+be updated in a way that ensures it remains consistent at all time.
+This means we can't use the traditional lis/addi to load r12 with
+the target address, otherwise there would be a window during which
+the first instruction contains the upper part of the new target
+address while the second instruction still contains the lower part of
+the old target address. To avoid that the target address is stored
+just after the 'bctr' and loaded from there with a single instruction.
+
+Then, depending on the target distance, arch_static_call_transform()
+will either replace the first instruction by a direct 'bl <target>' or
+'nop' in order to have the trampoline fall through the long jump
+sequence.
+
+For the special case of __static_call_return0(), to avoid the risk of
+a far branch, a version of it is inlined at the end of the trampoline.
+
+Performancewise the long jump sequence is probably not better than
+the indirect calls set by GCC when we don't use static calls, but
+such calls are unlikely to be required on powerpc32: With most
+configurations the kernel size is far below 32 Mbytes so only
+modules may happen to be too far. And even modules are likely to
+be close enough as they are allocated below the kernel core and
+as close as possible of the kernel text.
+
+static_call selftest is running successfully with this change.
+
+With this patch, __do_irq() has the following sequence to trace
+irq entries:
+
+	c0004a00 <__SCT__tp_func_irq_entry>:
+	c0004a00:	48 00 00 e0 	b       c0004ae0 <__traceiter_irq_entry>
+	c0004a04:	3d 80 c0 00 	lis     r12,-16384
+	c0004a08:	81 8c 4a 1c 	lwz     r12,18972(r12)
+	c0004a0c:	7d 89 03 a6 	mtctr   r12
+	c0004a10:	4e 80 04 20 	bctr
+	c0004a14:	38 60 00 00 	li      r3,0
+	c0004a18:	4e 80 00 20 	blr
+	c0004a1c:	00 00 00 00 	.long 0x0
+...
+	c0005654 <__do_irq>:
+...
+	c0005664:	7c 7f 1b 78 	mr      r31,r3
+...
+	c00056a0:	81 22 00 00 	lwz     r9,0(r2)
+	c00056a4:	39 29 00 01 	addi    r9,r9,1
+	c00056a8:	91 22 00 00 	stw     r9,0(r2)
+	c00056ac:	3d 20 c0 af 	lis     r9,-16209
+	c00056b0:	81 29 74 cc 	lwz     r9,29900(r9)
+	c00056b4:	2c 09 00 00 	cmpwi   r9,0
+	c00056b8:	41 82 00 10 	beq     c00056c8 <__do_irq+0x74>
+	c00056bc:	80 69 00 04 	lwz     r3,4(r9)
+	c00056c0:	7f e4 fb 78 	mr      r4,r31
+	c00056c4:	4b ff f3 3d 	bl      c0004a00 <__SCT__tp_func_irq_entry>
+
+Before this patch, __do_irq() was doing the following to trace irq
+entries:
+
+	c0005700 <__do_irq>:
+...
+	c0005710:	7c 7e 1b 78 	mr      r30,r3
+...
+	c000574c:	93 e1 00 0c 	stw     r31,12(r1)
+	c0005750:	81 22 00 00 	lwz     r9,0(r2)
+	c0005754:	39 29 00 01 	addi    r9,r9,1
+	c0005758:	91 22 00 00 	stw     r9,0(r2)
+	c000575c:	3d 20 c0 af 	lis     r9,-16209
+	c0005760:	83 e9 f4 cc 	lwz     r31,-2868(r9)
+	c0005764:	2c 1f 00 00 	cmpwi   r31,0
+	c0005768:	41 82 00 24 	beq     c000578c <__do_irq+0x8c>
+	c000576c:	81 3f 00 00 	lwz     r9,0(r31)
+	c0005770:	80 7f 00 04 	lwz     r3,4(r31)
+	c0005774:	7d 29 03 a6 	mtctr   r9
+	c0005778:	7f c4 f3 78 	mr      r4,r30
+	c000577c:	4e 80 04 21 	bctrl
+	c0005780:	85 3f 00 0c 	lwzu    r9,12(r31)
+	c0005784:	2c 09 00 00 	cmpwi   r9,0
+	c0005788:	40 82 ff e4 	bne     c000576c <__do_irq+0x6c>
+
+Behind the fact of now using a direct 'bl' instead of a
+'load/mtctr/bctr' sequence, we can also see that we get one less
+register on the stack.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- include/asm-generic/early_ioremap.h | 6 ------
- mm/early_ioremap.c                  | 5 -----
- 2 files changed, 11 deletions(-)
+v3: Adding the special case of __static_call_return0()
 
-diff --git a/include/asm-generic/early_ioremap.h b/include/asm-generic/early_ioremap.h
-index 9def22e6e2b3..9d0479f50f97 100644
---- a/include/asm-generic/early_ioremap.h
-+++ b/include/asm-generic/early_ioremap.h
-@@ -19,12 +19,6 @@ extern void *early_memremap_prot(resource_size_t phys_addr,
- extern void early_iounmap(void __iomem *addr, unsigned long size);
- extern void early_memunmap(void *addr, unsigned long size);
+v2: Use indirect load in long jump sequence to cater with parallele execution and preemption.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/Kconfig                   |  1 +
+ arch/powerpc/include/asm/static_call.h | 28 +++++++++++++++++++
+ arch/powerpc/kernel/Makefile           |  2 +-
+ arch/powerpc/kernel/static_call.c      | 37 ++++++++++++++++++++++++++
+ 4 files changed, 67 insertions(+), 1 deletion(-)
+ create mode 100644 arch/powerpc/include/asm/static_call.h
+ create mode 100644 arch/powerpc/kernel/static_call.c
+
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 36b72d972568..a0fe69d8ec83 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -247,6 +247,7 @@ config PPC
+ 	select HAVE_SOFTIRQ_ON_OWN_STACK
+ 	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
+ 	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
++	select HAVE_STATIC_CALL			if PPC32
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HAVE_VIRT_CPU_ACCOUNTING
+ 	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
+diff --git a/arch/powerpc/include/asm/static_call.h b/arch/powerpc/include/asm/static_call.h
+new file mode 100644
+index 000000000000..0a0bc79bd1fa
+--- /dev/null
++++ b/arch/powerpc/include/asm/static_call.h
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_POWERPC_STATIC_CALL_H
++#define _ASM_POWERPC_STATIC_CALL_H
++
++#define __PPC_SCT(name, inst)					\
++	asm(".pushsection .text, \"ax\"				\n"	\
++	    ".align 5						\n"	\
++	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
++	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
++	    inst "						\n"	\
++	    "	lis	12,2f@ha				\n"	\
++	    "	lwz	12,2f@l(12)				\n"	\
++	    "	mtctr	12					\n"	\
++	    "	bctr						\n"	\
++	    "1:	li	3, 0					\n"	\
++	    "	blr						\n"	\
++	    "2:	.long 0						\n"	\
++	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
++	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
++	    ".popsection					\n")
++
++#define PPC_SCT_RET0		20		/* Offset of label 1 */
++#define PPC_SCT_DATA		28		/* Offset of label 2 */
++
++#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)	__PPC_SCT(name, "b " #func)
++#define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)	__PPC_SCT(name, "blr")
++
++#endif /* _ASM_POWERPC_STATIC_CALL_H */
+diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
+index 7be36c1e1db6..0e3640e14eb1 100644
+--- a/arch/powerpc/kernel/Makefile
++++ b/arch/powerpc/kernel/Makefile
+@@ -106,7 +106,7 @@ extra-y				+= vmlinux.lds
  
--/*
-- * Weak function called by early_ioremap_reset(). It does nothing, but
-- * architectures may provide their own version to do any needed cleanups.
-- */
--extern void early_ioremap_shutdown(void);
--
- #if defined(CONFIG_GENERIC_EARLY_IOREMAP) && defined(CONFIG_MMU)
- /* Arch-specific initialization */
- extern void early_ioremap_init(void);
-diff --git a/mm/early_ioremap.c b/mm/early_ioremap.c
-index 164607c7cdf1..74984c23a87e 100644
---- a/mm/early_ioremap.c
-+++ b/mm/early_ioremap.c
-@@ -38,13 +38,8 @@ pgprot_t __init __weak early_memremap_pgprot_adjust(resource_size_t phys_addr,
- 	return prot;
- }
+ obj-$(CONFIG_RELOCATABLE)	+= reloc_$(BITS).o
  
--void __init __weak early_ioremap_shutdown(void)
--{
--}
--
- void __init early_ioremap_reset(void)
- {
--	early_ioremap_shutdown();
- 	after_paging_init = 1;
- }
- 
+-obj-$(CONFIG_PPC32)		+= entry_32.o setup_32.o early_32.o
++obj-$(CONFIG_PPC32)		+= entry_32.o setup_32.o early_32.o static_call.o
+ obj-$(CONFIG_PPC64)		+= dma-iommu.o iommu.o
+ obj-$(CONFIG_KGDB)		+= kgdb.o
+ obj-$(CONFIG_BOOTX_TEXT)	+= btext.o
+diff --git a/arch/powerpc/kernel/static_call.c b/arch/powerpc/kernel/static_call.c
+new file mode 100644
+index 000000000000..863a7aa24650
+--- /dev/null
++++ b/arch/powerpc/kernel/static_call.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/memory.h>
++#include <linux/static_call.h>
++
++#include <asm/code-patching.h>
++
++void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
++{
++	int err;
++	bool is_ret0 = (func == __static_call_return0);
++	unsigned long target = (unsigned long)(is_ret0 ? tramp + PPC_SCT_RET0 : func);
++	bool is_short = is_offset_in_branch_range((long)target - (long)tramp);
++
++	if (!tramp)
++		return;
++
++	mutex_lock(&text_mutex);
++
++	if (func && !is_short) {
++		err = patch_instruction(tramp + PPC_SCT_DATA, ppc_inst(target));
++		if (err)
++			goto out;
++	}
++
++	if (!func)
++		err = patch_instruction(tramp, ppc_inst(PPC_RAW_BLR()));
++	else if (is_short)
++		err = patch_branch(tramp, target, 0);
++	else
++		err = patch_instruction(tramp, ppc_inst(PPC_RAW_NOP()));
++out:
++	mutex_unlock(&text_mutex);
++
++	if (err)
++		panic("%s: patching failed %pS at %pS\n", __func__, func, tramp);
++}
++EXPORT_SYMBOL_GPL(arch_static_call_transform);
 -- 
-2.30.2
+2.25.0
 
