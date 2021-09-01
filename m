@@ -2,122 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722343FE1C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6753FE1CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346773AbhIASIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:08:38 -0400
-Received: from mail-4324.protonmail.ch ([185.70.43.24]:31395 "EHLO
-        mail-4324.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346752AbhIASIg (ORCPT
+        id S1346782AbhIASIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:08:53 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38878 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346742AbhIASIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:08:36 -0400
-Date:   Wed, 01 Sep 2021 18:07:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1630519656;
-        bh=hpiMhb7xaOG5AAFkGBjxr0I36weG/Yx7rV+awK0m7/Y=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=hknCXgjmK2oau81RE8Rr2N5Tq9ls7bQi8KUOFK733CyX/8jF2dehPtMq1Yp7WM+Wb
-         ge4Wewyu4PCdF73vIltxlkSw2K3XFXSLIxmiEAPqWcl7ChbXf7NIkt2LhNMDdgYP9K
-         dBeYNZDCuiJkxtA/+PPqeAXiash3wNlxQqJ7TzdA=
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        linux-kernel@vger.kernel.org
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH 2/2] dt-bindings: display: Add binding for LG.Philips SW43101
-Message-ID: <20210901180644.248177-3-y.oudjana@protonmail.com>
-In-Reply-To: <20210901180644.248177-1-y.oudjana@protonmail.com>
-References: <20210901180644.248177-1-y.oudjana@protonmail.com>
+        Wed, 1 Sep 2021 14:08:52 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181I3qek107666;
+        Wed, 1 Sep 2021 14:07:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=wkYjLWX8rXhdvLuWE8NESy6EQAHoacFiv3Ea4fPekEs=;
+ b=FYfcFWnLbiqRtoym4DYsZfiQ5vIgw1t7zPfi0ve2ESNWQGnlC+9BX/4ObAaKDVFk8qQy
+ GIBCgT3+bEbvrjKpTyB7IryNsCp6nzD63m5on25qFQNtnv63wDkb83SHfTrB2OSbbV2O
+ EvqJnzxU18j28uosxA+WixgVK2npV22TDz039cMPIdY809ixlUK7lPdnY6tI97kkLbeT
+ JZMDNIucejtBkUker5bsm6UD7oIcHLNClVQpVauOUP4i2QlKz+1OVyF5kGYWaIk0nlSy
+ 1wMK+jcSI6B+Ub7b6BdidWOWA/Rc0Qv/jCgMlnLY7oMNmKG5uWsFOm4t4e9g5dLYJGbV cw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ateffr40f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 14:07:46 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 181I7jjR131768;
+        Wed, 1 Sep 2021 14:07:45 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ateffr3yk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 14:07:45 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 181I3gsm012145;
+        Wed, 1 Sep 2021 18:07:43 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 3atdxs8bf4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 01 Sep 2021 18:07:43 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 181I7di654919586
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 1 Sep 2021 18:07:39 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 000D0AE058;
+        Wed,  1 Sep 2021 18:07:38 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 947A2AE051;
+        Wed,  1 Sep 2021 18:07:38 +0000 (GMT)
+Received: from osiris (unknown [9.145.33.173])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  1 Sep 2021 18:07:38 +0000 (GMT)
+Date:   Wed, 1 Sep 2021 20:07:37 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, qemu-s390x <qemu-s390x@nongnu.org>
+Subject: Re: [PATCH] s390/unwind: use current_frame_address() to unwind
+ current task
+Message-ID: <YS/BaQcbMkEji9Zg@osiris>
+References: <your-ad-here.call-01630505035-ext-2999@work.hours>
+ <patch.git-04dd26be3043.your-ad-here.call-01630504868-ext-6188@work.hours>
+ <CANpmjNOJN4yG8g+Qz0icppRK6coVdN5yKMhyTCQeBRFq7_YpfA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNOJN4yG8g+Qz0icppRK6coVdN5yKMhyTCQeBRFq7_YpfA@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: v-npZZ7suGUKNXWT00l8P8Pk2Mur_NlB
+X-Proofpoint-GUID: t0sPbzVL_w0oFUWrkLU-SJAVzDU4tuoo
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-01_05:2021-09-01,2021-09-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 clxscore=1015 adultscore=0 suspectscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109010104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a device tree binding for LG.Philips SW43101.
+On Wed, Sep 01, 2021 at 07:51:06PM +0200, Marco Elver wrote:
+> On Wed, 1 Sept 2021 at 16:06, Vasily Gorbik <gor@linux.ibm.com> wrote:
+> > current_stack_pointer() simply returns current value of %r15. If
+> > current_stack_pointer() caller allocates stack (which is the case in
+> > unwind code) %r15 points to a stack frame allocated for callees, meaning
+> > current_stack_pointer() caller (e.g. stack_trace_save) will end up in
+> > the stacktrace. This is not expected by stack_trace_save*() callers and
+> > causes problems.
+> >
+> > current_frame_address() on the other hand returns function stack frame
+> > address, which matches %r15 upon function invocation. Using it in
+> > get_stack_pointer() makes it more aligned with x86 implementation
+> > (according to BACKTRACE_SELF_TEST output) and meets stack_trace_save*()
+> > caller's expectations, notably KCSAN.
+> >
+> > Also make sure unwind_start is always inlined.
+> >
+> > Reported-by: Nathan Chancellor <nathan@kernel.org>
+> > Suggested-by: Marco Elver <elver@google.com>
+> > Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+> 
+> Tested-by: Marco Elver <elver@google.com>
+> 
+> Thanks!
+> 
+> > ---
+> >  arch/s390/include/asm/stacktrace.h | 20 ++++++++++----------
+> >  arch/s390/include/asm/unwind.h     |  8 ++++----
+> >  2 files changed, 14 insertions(+), 14 deletions(-)
 
-Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
----
- .../display/panel/lgphilips,sw43101.yaml      | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/panel/lgphili=
-ps,sw43101.yaml
-
-diff --git a/Documentation/devicetree/bindings/display/panel/lgphilips,sw43=
-101.yaml b/Documentation/devicetree/bindings/display/panel/lgphilips,sw4310=
-1.yaml
-new file mode 100644
-index 000000000000..da049e9f244e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/panel/lgphilips,sw43101.yam=
-l
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: BSD-3-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/panel/lgphilips,sw43101.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: LG.Philips SW43101 1080x1920 OLED panel
-+
-+maintainers:
-+  - Yassine Oudjana <y.oudjana@protonmail.com>
-+
-+allOf:
-+  - $ref: panel-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: lgphilips,sw43101
-+
-+  port: true
-+  reg: true
-+  reset-gpios: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - reset-gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    dsi {
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+
-+        panel@0 {
-+            compatible =3D "lgphilips,sw43101";
-+            reg =3D <0>;
-+
-+            reset-gpios =3D <&msmgpio 8 GPIO_ACTIVE_LOW>;
-+
-+            port {
-+                panel_in: endpoint {
-+                    remote-endpoint =3D <&dsi_out>;
-+                };
-+            };
-+        };
-+    };
-+
-+...
---=20
-2.33.0
-
-
+Applied, thanks!
