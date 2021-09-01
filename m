@@ -2,198 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0728B3FD964
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 14:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5683FD96A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 14:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243966AbhIAMRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:17:44 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:36401 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243964AbhIAMRf (ORCPT
+        id S244046AbhIAMSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243964AbhIAMSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:17:35 -0400
-Date:   Wed, 01 Sep 2021 12:16:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1630498595;
-        bh=gJxYhcWcE6Z1Ka9oTpUEQ6eNRdg3NGC2Xf2gJSDdzCA=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=KgqoJYAeYBvjDqKNhThFACvtuZexzJNVTFyVvpTGrn1vWWig64ySd9s9XjlnzjJBl
-         3VoW53KLr/iSXtvaK/MjJk6U3+L3aiRak3v4ExBNS+wTRDo8vUfqW8qWNsmPYjsdDX
-         Vkfys7MSDbwyE1OpAdc4KJUYH8Lc6MoH/7s7+Hwg=
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH v4 5/5] arm64: dts: qcom: msm8996: Add interconnect support
-Message-ID: <20210901121518.152481-6-y.oudjana@protonmail.com>
-In-Reply-To: <20210901121518.152481-1-y.oudjana@protonmail.com>
-References: <20210901121518.152481-1-y.oudjana@protonmail.com>
+        Wed, 1 Sep 2021 08:18:15 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86580C061575;
+        Wed,  1 Sep 2021 05:17:18 -0700 (PDT)
+Received: from [IPv6:2a02:810a:880:f54:2851:934a:bc81:97e6] (unknown [IPv6:2a02:810a:880:f54:2851:934a:bc81:97e6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E017F1F41DED;
+        Wed,  1 Sep 2021 13:17:13 +0100 (BST)
+Subject: Re: [PATCH v6, 15/15] media: mtk-vcodec: Use codec type to separate
+ different hardware
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20210901083215.25984-1-yunfei.dong@mediatek.com>
+ <20210901083215.25984-16-yunfei.dong@mediatek.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <cf57148f-430b-2023-5f62-b57b12a960b7@collabora.com>
+Date:   Wed, 1 Sep 2021 14:17:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <20210901083215.25984-16-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add interconnect providers for the multiple NoCs available on the platform,
-and assign interconnects used by some blocks.
+Hi
 
-Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
----
-Changes since v2:
- - Remove interconnect paths from CPUs since cpufreq driver doesn't support=
- icc scaling yet.
+On 01.09.21 10:32, Yunfei Dong wrote:
+> There are just one core thread, in order to separeate different
+> hardware, using codec type to separeate it in scp driver.
 
- arch/arm64/boot/dts/qcom/msm8996.dtsi | 80 +++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
+this code seems to relate to the vpu driver not the scp driver.
+Is there a corresponding code added to the vpu driver that test the codec_type?
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qc=
-om/msm8996.dtsi
-index 52df22ab3f6a..6c98869688bc 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -7,6 +7,7 @@
- #include <dt-bindings/clock/qcom,mmcc-msm8996.h>
- #include <dt-bindings/clock/qcom,rpmcc.h>
- #include <dt-bindings/power/qcom-rpmpd.h>
-+#include <dt-bindings/interconnect/qcom,msm8996.h>
- #include <dt-bindings/soc/qcom,apr.h>
- #include <dt-bindings/thermal/thermal.h>
-=20
-@@ -683,6 +684,15 @@ gcc: clock-controller@300000 {
- =09=09=09clock-names =3D "cxo2";
- =09=09};
-=20
-+=09=09bimc: interconnect@408000 {
-+=09=09=09compatible =3D "qcom,msm8996-bimc";
-+=09=09=09reg =3D <0x00408000 0x5a000>;
-+=09=09=09#interconnect-cells =3D <1>;
-+=09=09=09clock-names =3D "bus", "bus_a";
-+=09=09=09clocks =3D <&rpmcc RPM_SMD_BIMC_CLK>,
-+=09=09=09=09 <&rpmcc RPM_SMD_BIMC_A_CLK>;
-+=09=09};
-+
- =09=09tsens0: thermal-sensor@4a9000 {
- =09=09=09compatible =3D "qcom,msm8996-tsens", "qcom,tsens-v2";
- =09=09=09reg =3D <0x004a9000 0x1000>, /* TM */
-@@ -705,6 +715,61 @@ tsens1: thermal-sensor@4ad000 {
- =09=09=09#thermal-sensor-cells =3D <1>;
- =09=09};
-=20
-+=09=09cnoc: interconnect@500000 {
-+=09=09=09compatible =3D "qcom,msm8996-cnoc";
-+=09=09=09reg =3D <0x00500000 0x1000>;
-+=09=09=09#interconnect-cells =3D <1>;
-+=09=09=09clock-names =3D "bus", "bus_a";
-+=09=09=09clocks =3D <&rpmcc RPM_SMD_CNOC_CLK>,
-+=09=09=09=09 <&rpmcc RPM_SMD_CNOC_A_CLK>;
-+=09=09};
-+
-+=09=09snoc: interconnect@524000 {
-+=09=09=09compatible =3D "qcom,msm8996-snoc";
-+=09=09=09reg =3D <0x00524000 0x1c000>;
-+=09=09=09#interconnect-cells =3D <1>;
-+=09=09=09clock-names =3D "bus", "bus_a";
-+=09=09=09clocks =3D <&rpmcc RPM_SMD_SNOC_CLK>,
-+=09=09=09=09 <&rpmcc RPM_SMD_SNOC_A_CLK>;
-+=09=09};
-+
-+=09=09a1noc: interconnect@562000 {
-+=09=09=09compatible =3D "qcom,msm8996-a1noc";
-+=09=09=09reg =3D <0x00562000 0x5000>;
-+=09=09=09#interconnect-cells =3D <1>;
-+=09=09=09clock-names =3D "bus", "bus_a";
-+=09=09=09clocks =3D <&rpmcc RPM_SMD_AGGR1_NOC_CLK>,
-+=09=09=09=09 <&rpmcc RPM_SMD_AGGR1_NOC_A_CLK>;
-+=09=09};
-+
-+=09=09a2noc: interconnect@583000 {
-+=09=09=09compatible =3D "qcom,msm8996-a2noc";
-+=09=09=09reg =3D <0x00583000 0x7000>;
-+=09=09=09#interconnect-cells =3D <1>;
-+=09=09=09clock-names =3D "bus", "bus_a";
-+=09=09=09clocks =3D <&rpmcc RPM_SMD_AGGR2_NOC_CLK>,
-+=09=09=09=09 <&rpmcc RPM_SMD_AGGR2_NOC_A_CLK>;
-+=09=09};
-+
-+=09=09mnoc: interconnect@5a4000 {
-+=09=09=09compatible =3D "qcom,msm8996-mnoc";
-+=09=09=09reg =3D <0x005a4000 0x1c000>;
-+=09=09=09#interconnect-cells =3D <1>;
-+=09=09=09clock-names =3D "bus", "bus_a", "iface";
-+=09=09=09clocks =3D <&rpmcc RPM_SMD_MMAXI_CLK>,
-+=09=09=09=09 <&rpmcc RPM_SMD_MMAXI_A_CLK>,
-+=09=09=09=09 <&mmcc AHB_CLK_SRC>;
-+=09=09};
-+
-+=09=09pnoc: interconnect@5c0000 {
-+=09=09=09compatible =3D "qcom,msm8996-pnoc";
-+=09=09=09reg =3D <0x005c0000 0x3000>;
-+=09=09=09#interconnect-cells =3D <1>;
-+=09=09=09clock-names =3D "bus", "bus_a";
-+=09=09=09clocks =3D <&rpmcc RPM_SMD_PCNOC_CLK>,
-+=09=09=09=09 <&rpmcc RPM_SMD_PCNOC_A_CLK>;
-+=09=09};
-+
- =09=09tcsr_mutex_regs: syscon@740000 {
- =09=09=09compatible =3D "syscon";
- =09=09=09reg =3D <0x00740000 0x40000>;
-@@ -784,6 +849,11 @@ mdp: mdp@901000 {
- =09=09=09=09assigned-clock-rates =3D <300000000>,
- =09=09=09=09=09 <19200000>;
-=20
-+=09=09=09=09interconnects =3D <&mnoc MASTER_MDP_PORT0 &bimc SLAVE_EBI_CH0>=
-,
-+=09=09=09=09=09=09<&mnoc MASTER_MDP_PORT1 &bimc SLAVE_EBI_CH0>,
-+=09=09=09=09=09=09<&mnoc MASTER_ROTATOR &bimc SLAVE_EBI_CH0>;
-+=09=09=09=09interconnect-names =3D "mdp0-mem", "mdp1-mem", "rotator-mem";
-+
- =09=09=09=09ports {
- =09=09=09=09=09#address-cells =3D <1>;
- =09=09=09=09=09#size-cells =3D <0>;
-@@ -959,6 +1029,9 @@ gpu: gpu@b00000 {
- =09=09=09=09"mem",
- =09=09=09=09"mem_iface";
-=20
-+=09=09=09interconnects =3D <&bimc MASTER_GRAPHICS_3D &bimc SLAVE_EBI_CH0>;
-+=09=09=09interconnect-names =3D "gfx-mem";
-+
- =09=09=09power-domains =3D <&mmcc GPU_GX_GDSC>;
- =09=09=09iommus =3D <&adreno_smmu 0>;
-=20
-@@ -1953,6 +2026,9 @@ venus: video-codec@c00000 {
- =09=09=09=09 <&mmcc VIDEO_AXI_CLK>,
- =09=09=09=09 <&mmcc VIDEO_MAXI_CLK>;
- =09=09=09clock-names =3D "core", "iface", "bus", "mbus";
-+=09=09=09interconnects =3D <&mnoc MASTER_VIDEO_P0 &bimc SLAVE_EBI_CH0>,
-+=09=09=09=09=09<&bimc MASTER_AMPSS_M0 &mnoc SLAVE_VENUS_CFG>;
-+=09=09=09interconnect-names =3D "video-mem", "cpu-cfg";
- =09=09=09iommus =3D <&venus_smmu 0x00>,
- =09=09=09=09 <&venus_smmu 0x01>,
- =09=09=09=09 <&venus_smmu 0x0a>,
-@@ -2569,6 +2645,10 @@ usb3: usb@6af8800 {
- =09=09=09=09=09  <&gcc GCC_USB30_MASTER_CLK>;
- =09=09=09assigned-clock-rates =3D <19200000>, <120000000>;
-=20
-+=09=09=09interconnects =3D <&a2noc MASTER_USB3 &bimc SLAVE_EBI_CH0>,
-+=09=09=09=09=09<&bimc MASTER_AMPSS_M0 &snoc SLAVE_USB3>;
-+=09=09=09interconnect-names =3D "usb-ddr", "apps-usb";
-+
- =09=09=09power-domains =3D <&gcc USB30_GDSC>;
- =09=09=09status =3D "disabled";
-=20
---=20
-2.33.0
+> 
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> ---
+>   .../media/platform/mtk-vcodec/vdec_ipi_msg.h  | 12 ++++---
+>   .../media/platform/mtk-vcodec/vdec_vpu_if.c   | 34 ++++++++++++++++---
+>   .../media/platform/mtk-vcodec/vdec_vpu_if.h   |  4 +++
+>   3 files changed, 41 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/media/platform/mtk-vcodec/vdec_ipi_msg.h b/drivers/media/platform/mtk-vcodec/vdec_ipi_msg.h
+> index 9d8079c4f976..c488f0c40190 100644
+> --- a/drivers/media/platform/mtk-vcodec/vdec_ipi_msg.h
+> +++ b/drivers/media/platform/mtk-vcodec/vdec_ipi_msg.h
+> @@ -35,6 +35,8 @@ enum vdec_ipi_msgid {
+>    * @msg_id	: vdec_ipi_msgid
+>    * @vpu_inst_addr : VPU decoder instance address. Used if ABI version < 2.
+>    * @inst_id     : instance ID. Used if the ABI version >= 2.
+> + * @codec_type	: Codec fourcc
+> + * @reserved	: reserved param
+>    */
+>   struct vdec_ap_ipi_cmd {
+>   	uint32_t msg_id;
+> @@ -42,6 +44,8 @@ struct vdec_ap_ipi_cmd {
+>   		uint32_t vpu_inst_addr;
+>   		uint32_t inst_id;
+>   	};
+> +	uint32_t codec_type;
+> +	uint32_t reserved;
+>   };
+>   
+>   /**
+> @@ -59,12 +63,12 @@ struct vdec_vpu_ipi_ack {
+>   /**
+>    * struct vdec_ap_ipi_init - for AP_IPIMSG_DEC_INIT
+>    * @msg_id	: AP_IPIMSG_DEC_INIT
+> - * @reserved	: Reserved field
+> + * @codec_type	: Codec fourcc
+>    * @ap_inst_addr	: AP video decoder instance address
+>    */
+>   struct vdec_ap_ipi_init {
+>   	uint32_t msg_id;
+> -	uint32_t reserved;
+> +	uint32_t codec_type;
+>   	uint64_t ap_inst_addr;
+>   };
+>   
+> @@ -77,7 +81,7 @@ struct vdec_ap_ipi_init {
+>    *	H264 decoder [0]:buf_sz [1]:nal_start
+>    *	VP8 decoder  [0]:width/height
+>    *	VP9 decoder  [0]:profile, [1][2] width/height
+> - * @reserved	: Reserved field
+> + * @codec_type	: Codec fourcc
+>    */
+>   struct vdec_ap_ipi_dec_start {
+>   	uint32_t msg_id;
+> @@ -86,7 +90,7 @@ struct vdec_ap_ipi_dec_start {
+>   		uint32_t inst_id;
+>   	};
+>   	uint32_t data[3];
+> -	uint32_t reserved;
+> +	uint32_t codec_type;
+>   };
+>   
+>   /**
+> diff --git a/drivers/media/platform/mtk-vcodec/vdec_vpu_if.c b/drivers/media/platform/mtk-vcodec/vdec_vpu_if.c
+> index bfd8e87dceff..c84fac52fe26 100644
+> --- a/drivers/media/platform/mtk-vcodec/vdec_vpu_if.c
+> +++ b/drivers/media/platform/mtk-vcodec/vdec_vpu_if.c
+> @@ -100,18 +100,29 @@ static void vpu_dec_ipi_handler(void *data, unsigned int len, void *priv)
+>   
+>   static int vcodec_vpu_send_msg(struct vdec_vpu_inst *vpu, void *msg, int len)
+>   {
+> -	int err;
+> +	int err, id, msgid;
+>   
+> -	mtk_vcodec_debug(vpu, "id=%X", *(uint32_t *)msg);
+> +	msgid = *(uint32_t *)msg;
+> +	mtk_vcodec_debug(vpu, "id=%X", msgid);
+>   
+>   	vpu->failure = 0;
+>   	vpu->signaled = 0;
+>   
+> -	err = mtk_vcodec_fw_ipi_send(vpu->ctx->dev->fw_handler, vpu->id, msg,
+> +	if (vpu->ctx->dev->vdec_pdata->hw_arch == MTK_VDEC_LAT_SINGLE_CORE) {
+> +		if (msgid == AP_IPIMSG_DEC_CORE ||
+> +			msgid == AP_IPIMSG_DEC_CORE_END)
+> +			id = vpu->core_id;
+> +		else
+> +			id = vpu->id;
+> +	} else {
+> +		id = vpu->id;
+> +	}
+> +
+> +	err = mtk_vcodec_fw_ipi_send(vpu->ctx->dev->fw_handler, id, msg,
+>   				     len, 2000);
 
+so
+>   	if (err) {
+>   		mtk_vcodec_err(vpu, "send fail vpu_id=%d msg_id=%X status=%d",
+> -			       vpu->id, *(uint32_t *)msg, err);
+> +			       id, msgid, err);
+>   		return err;
+>   	}
+>   
+> @@ -131,6 +142,7 @@ static int vcodec_send_ap_ipi(struct vdec_vpu_inst *vpu, unsigned int msg_id)
+>   		msg.vpu_inst_addr = vpu->inst_addr;
+>   	else
+>   		msg.inst_id = vpu->inst_id;
+> +	msg.codec_type = vpu->codec_type;
+>   
+>   	err = vcodec_vpu_send_msg(vpu, &msg, sizeof(msg));
+>   	mtk_vcodec_debug(vpu, "- id=%X ret=%d", msg_id, err);
+> @@ -149,14 +161,25 @@ int vpu_dec_init(struct vdec_vpu_inst *vpu)
+>   
+>   	err = mtk_vcodec_fw_ipi_register(vpu->ctx->dev->fw_handler, vpu->id,
+>   					 vpu->handler, "vdec", NULL);
+> -	if (err != 0) {
+> +	if (err) {
 
+could be nice to send a patch with other such fixes,
+anyway it is better to send unrelated fixes in a separate patch
+
+>   		mtk_vcodec_err(vpu, "vpu_ipi_register fail status=%d", err);
+>   		return err;
+>   	}
+>   
+> +	if (vpu->ctx->dev->vdec_pdata->hw_arch == MTK_VDEC_LAT_SINGLE_CORE) {
+> +		err = mtk_vcodec_fw_ipi_register(vpu->ctx->dev->fw_handler,
+> +					 vpu->core_id, vpu->handler,
+> +					 "vdec", NULL);
+> +		if (err) {
+> +			mtk_vcodec_err(vpu, "vpu_ipi_register core fail status=%d", err);
+> +			return err;
+> +		}
+> +	}
+> +
+>   	memset(&msg, 0, sizeof(msg));
+>   	msg.msg_id = AP_IPIMSG_DEC_INIT;
+>   	msg.ap_inst_addr = (unsigned long)vpu;
+> +	msg.codec_type = vpu->codec_type;
+>   
+>   	mtk_vcodec_debug(vpu, "vdec_inst=%p", vpu);
+>   
+> @@ -187,6 +210,7 @@ int vpu_dec_start(struct vdec_vpu_inst *vpu, uint32_t *data, unsigned int len)
+>   
+>   	for (i = 0; i < len; i++)
+>   		msg.data[i] = data[i];
+> +	msg.codec_type = vpu->codec_type;
+
+I don't see where is the vpu->codec_type initialzied
+
+Thanks,
+Dafna
+
+>   
+>   	err = vcodec_vpu_send_msg(vpu, (void *)&msg, sizeof(msg));
+>   	mtk_vcodec_debug(vpu, "- ret=%d", err);
+> diff --git a/drivers/media/platform/mtk-vcodec/vdec_vpu_if.h b/drivers/media/platform/mtk-vcodec/vdec_vpu_if.h
+> index ae24b75d1649..802660770a87 100644
+> --- a/drivers/media/platform/mtk-vcodec/vdec_vpu_if.h
+> +++ b/drivers/media/platform/mtk-vcodec/vdec_vpu_if.h
+> @@ -14,6 +14,7 @@ struct mtk_vcodec_ctx;
+>   /**
+>    * struct vdec_vpu_inst - VPU instance for video codec
+>    * @id          : ipi msg id for each decoder
+> + * @core_id     : core id used to separate different hardware
+>    * @vsi         : driver structure allocated by VPU side and shared to AP side
+>    *                for control and info share
+>    * @failure     : VPU execution result status, 0: success, others: fail
+> @@ -26,9 +27,11 @@ struct mtk_vcodec_ctx;
+>    * @dev		: platform device of VPU
+>    * @wq          : wait queue to wait VPU message ack
+>    * @handler     : ipi handler for each decoder
+> + * @codec_type     : used codec type to separate different codecs
+>    */
+>   struct vdec_vpu_inst {
+>   	int id;
+> +	int core_id;
+>   	void *vsi;
+>   	int32_t failure;
+>   	uint32_t inst_addr;
+> @@ -38,6 +41,7 @@ struct vdec_vpu_inst {
+>   	struct mtk_vcodec_ctx *ctx;
+>   	wait_queue_head_t wq;
+>   	mtk_vcodec_ipi_handler handler;
+> +	unsigned int codec_type;
+>   };
+>   
+>   /**
+> 
