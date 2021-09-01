@@ -2,66 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341293FD172
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1913FD177
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241679AbhIACl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 22:41:59 -0400
-Received: from smtprelay0132.hostedemail.com ([216.40.44.132]:51820 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231613AbhIACl6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 22:41:58 -0400
-Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 2F702100E7B45;
-        Wed,  1 Sep 2021 02:41:01 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 6A68B13D97;
-        Wed,  1 Sep 2021 02:41:00 +0000 (UTC)
-Message-ID: <5197939870d1867dd2131a8fdff8842b777c6016.camel@perches.com>
-Subject: Re: [PATCH 1/5] fs/ntfs3: Use kmalloc_array over kmalloc with
- multiply
-From:   Joe Perches <joe@perches.com>
-To:     Kari Argillander <kari.argillander@gmail.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev
-Cc:     linux-kernel@vger.kernel.org
-Date:   Tue, 31 Aug 2021 19:40:58 -0700
-In-Reply-To: <20210831181505.1074767-2-kari.argillander@gmail.com>
-References: <20210831181505.1074767-1-kari.argillander@gmail.com>
-         <20210831181505.1074767-2-kari.argillander@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S241700AbhIACpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 22:45:02 -0400
+Received: from mga17.intel.com ([192.55.52.151]:6423 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231613AbhIACpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 22:45:01 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="198843984"
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="198843984"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 19:44:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="531611425"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 31 Aug 2021 19:44:03 -0700
+Date:   Wed, 1 Sep 2021 10:44:02 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     David Rientjes <rientjes@google.com>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mm/oom: detect and kill task which has allocation
+ forbidden by cpuset limit
+Message-ID: <20210901024402.GB46357@shbuild999.sh.intel.com>
+References: <1630399085-70431-1-git-send-email-feng.tang@intel.com>
+ <YS5RTiVgydjszmjn@dhcp22.suse.cz>
+ <52d80e9-cf27-9a59-94fd-d27a1e2dac6f@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=6.31
-X-Stat-Signature: ocpfoi6u79nnsuqi3qfgc1bwhd7u4rmf
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 6A68B13D97
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18uSKCNe+O15Z6+tqeiXjSvmPXVWSJxc2w=
-X-HE-Tag: 1630464060-919141
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <52d80e9-cf27-9a59-94fd-d27a1e2dac6f@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-31 at 21:15 +0300, Kari Argillander wrote:
-> If we do not use kmalloc_array we get checkpatch warning. It is also
-> little safer if something goes wrong with coding.
-[]
-> diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-[]
-> @@ -707,7 +707,7 @@ static struct NTFS_DE *hdr_find_e(const struct ntfs_index *indx,
->  		u16 *ptr;
->  		int new_slots = ALIGN(2 * nslots, 8);
->  
+Hi David and Michal,
+
+On Tue, Aug 31, 2021 at 06:06:17PM -0700, David Rientjes wrote:
+> On Tue, 31 Aug 2021, Michal Hocko wrote:
 > 
-> -		ptr = kmalloc(sizeof(u16) * new_slots, GFP_NOFS);
-> +		ptr = kmalloc_array(new_slots, sizeof(u16), GFP_NOFS);
->  		if (ptr)
->  			memcpy(ptr, offs, sizeof(u16) * max_idx);
+> > I do not like this solution TBH. We know that that it is impossible to
+> > satisfy the allocation at the page allocator level so dealing with it at
+> > the OOM killer level is just a bad layering and a lot of wasted cycles
+> > to reach that point. Why cannot we simply fail the allocation if cpusets
+> > filtering leads to an empty zone intersection?
+> 
+> Cpusets will guarantee our effective nodemask will include at least one 
+> node in N_MEMORY (cpuset_mems_allowed()) so we'll always have at least one 
+> zone in our zonelist.
+> 
+> Issue in this case appears to be that the zone will never satisfy 
+> non-movable allocations.  I think this would be very similar to a GFP_DMA 
+> allocation when bound to a node without lowmem, in which case we get a 
+> page allocation failure.  We don't kill current like this patch.
+ 
+Thanks for sharing the case, the DMA case is quite simliar. And in our usage,
+the allocating task is finally killed after many OS routine/GUI tasks get
+killed.
 
-This multiplication could also overflow.
+> So I'd agree in this case that it would be better to simply fail the 
+> allocation.
 
-Maybe use krealloc?
+I agree with yours and Michal's comments, putting it in the OOM code
+is a little late and wastes cpu cycles.
 
+> Feng, would you move this check to __alloc_pages_may_oom() like the other 
+> special cases and simply fail rather than call into the oom killer?
 
+Will explore more in this direction, thanks!
+
+- Feng
