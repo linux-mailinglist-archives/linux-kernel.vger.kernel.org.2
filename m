@@ -2,140 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2343FD600
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3503FD607
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243240AbhIAI4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:56:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46758 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241376AbhIAI4k (ORCPT
+        id S243309AbhIAI5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241376AbhIAI5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:56:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630486543;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xT6YX/8MTeduh5vXDIw9ZgKlPqVeou/Tf3S3Uzgm3TM=;
-        b=Z6wViVhIQj9pZx9Cbw9cvWecdXC0DC+FE1usdiUMIitHCEPjUIOqrpb0NUzORQfA6SP3zg
-        s6i4oa3iXjYi8QLrLCeynIsKTs/SI0MWRrGhtudM3Ldk14TksTQvONUl42jbcOHp1k5rQH
-        +KBdcVIAJml8bsyJ+6XZ/QlrEQ6FR1E=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-eDiHdM1pN7KE_mbXonCjzA-1; Wed, 01 Sep 2021 04:55:40 -0400
-X-MC-Unique: eDiHdM1pN7KE_mbXonCjzA-1
-Received: by mail-ej1-f72.google.com with SMTP id r21-20020a1709067055b02904be5f536463so1125659ejj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:55:40 -0700 (PDT)
+        Wed, 1 Sep 2021 04:57:10 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EF8C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 01:56:14 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id d16so3637564ljq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0RkP4boPB+hwm43igbyjeBM2G7tQ31bVoeCGcwryyz0=;
+        b=t46HYZlq1rIsGdLMNDoBKZWl/E8RXSUWcuDx79JwCq4iW/EDBXUGSOa6t9becNEhH6
+         EJuBZc9hszqF9s15MyIJnQENEre/JyXTZc66MW/1oCbgBncTlMcsluJYAhUBitmboJUB
+         6Ycl0BcBsfloU3YN1FmoBmLBoS6B4P6fwBKyAz56T5IxTTPNq478rnenDRKbWuEd7lTj
+         66Bl9QbPKTdm0tQs1gcREbbNCmIe0sW/8vEfCKOWCsbJd4tgzRP2nGjHLJh4k9vIshQS
+         WAHcnBscC3oqkosnnp7hfgeVzCIRmxZLSUpRGSj/Z3/6bQpToQJIC+RDlyvhFH2XEpFg
+         MUYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xT6YX/8MTeduh5vXDIw9ZgKlPqVeou/Tf3S3Uzgm3TM=;
-        b=e/d/Xqm057rIDxIiiR6KtAVubgogLYn2MndaxN+sdWWE6DPDR55IqbAJavgZaRRYKW
-         DGJNNT0wc4MTpDsOx4M0kmP2PDy2QevawdzpFDsV7hMGU0hPqnxgwLPa/w8mNXEg9ylO
-         ozEqfXlpqaohgnSP7UXsQOzlkK0q2PBrrucrY+H3fvS94XWF/7EYmsstUm297ITLMYqM
-         QeRG6Pmpm+k5K8ZyAXLaEQWWmiAcyqI91QhLbzNfBBIFznfRx8WVLiJ8SvGfcF4reheH
-         wVH+syEshiu/UYRe5GZbgnB1q3D2A2rxlMruIJD+oNAfhqwR6E4BbpydEqA1JCKLNXNv
-         1pzg==
-X-Gm-Message-State: AOAM5311+L2WCwkgIqtAZ/a+QO64irMBfn7DLN7eJ1+pta5FlmLUUFNm
-        /7uuleTMlFa4s2Nkq+wqS7E8ZNLnJdPuepBjtkeyPYoAg7OORVkwqGKs+gN9caQzmvPmB65weA1
-        kDt8yoQV2a6ZYmCnIHbb4J1jJ
-X-Received: by 2002:a17:906:9742:: with SMTP id o2mr36279527ejy.532.1630486539218;
-        Wed, 01 Sep 2021 01:55:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxFIoEaIgWKck82cXtSM07ZddrJn3BIknjQk8s4oo2zco1Yv8nJyyD9+kS8jjRjyPmIccm80A==
-X-Received: by 2002:a17:906:9742:: with SMTP id o2mr36279509ejy.532.1630486539013;
-        Wed, 01 Sep 2021 01:55:39 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id v24sm10611583edq.79.2021.09.01.01.55.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 01:55:38 -0700 (PDT)
-Subject: Re: [PATCH v4] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860
- and 870 SSD.
-To:     torvic9@mailbox.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hpa@redhat.com" <hpa@redhat.com>
-Cc:     "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>
-References: <1876334901.51676.1630481868266@office.mailbox.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <e6f9921d-0fb6-da30-4dc5-53b4cb7b5270@redhat.com>
-Date:   Wed, 1 Sep 2021 10:55:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0RkP4boPB+hwm43igbyjeBM2G7tQ31bVoeCGcwryyz0=;
+        b=imARHrFsb8uAL9IP+s6YQrMyZ4L0XnAH63ANFI/mx/6N7pVxHmZ0/AdH6l6Xujsq4q
+         WYBmTGOCALHiPH//T2zGeIEEFLNIyBz9ghY6uIM55+gAUvZGNVFoV2GFnHsYtcCLSH+5
+         W0uxmlH1f9Y1K9Idl0XtlXaujl0orANoLkhDr6V1gfjZUmibO4f4sRvKnZZfH7IG8aXg
+         yaNH5K3lCPXHGiPjvX9u+kn7yYeCnVYahPJHlm9OSJyKJkhI9BlL18ByiCH+VDT/ztHP
+         guy2srRERVbTN3uYTSSktT7UitI+dBnEik7lGw92yW9nUuLzmWEBU69dNpThfZt4eXYH
+         aIZg==
+X-Gm-Message-State: AOAM530zSKDy8PFwS7FETS1+nv2HUsn8vct1R2ObSrDVwcZG6+8WLsrT
+        NxVilVYemBqoyF2UIXLPcAtjjw0HMVlc8w2ft7en2g==
+X-Google-Smtp-Source: ABdhPJzOLrom9w8R6tPJaewkr7Uo8YA704UR65WrPfKGn9ty9MGKcizq1Pva3OHpUhkOy7JekGI5W9f/nx7oj+qmp3c=
+X-Received: by 2002:a05:651c:3d9:: with SMTP id f25mr27885067ljp.334.1630486572194;
+ Wed, 01 Sep 2021 01:56:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1876334901.51676.1630481868266@office.mailbox.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210826092854.58694-1-woodylin@google.com> <YSdjgnUwt76cknQ6@kroah.com>
+ <CAHn4Deczc6gSSsxys6UeAMB99p1jHMZmLFj+KwZ2QhH7dx8E8w@mail.gmail.com>
+ <YSdy1pAS1hkLVEH9@kroah.com> <CAHn4Dee0d+cdSmMCB4YVMp-9swo=0UQ5gm4kz43RVY11KFnM1w@mail.gmail.com>
+ <YSiQxH5VehWoAcvO@kroah.com>
+In-Reply-To: <YSiQxH5VehWoAcvO@kroah.com>
+From:   Woody Lin <woodylin@google.com>
+Date:   Wed, 1 Sep 2021 16:56:00 +0800
+Message-ID: <CAHn4DeeTwCs0v8G8deLFzeoKFE=bNe3LFTG6ZAXT1YGNu-YCaw@mail.gmail.com>
+Subject: Re: [PATCH] ANDROID: staging: add userpanic-dev driver
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Todd Kjos <tkjos@android.com>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tor,
+On Fri, Aug 27, 2021 at 3:14 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, Aug 27, 2021 at 11:51:03AM +0800, Woody Lin wrote:
+> > On Thu, Aug 26, 2021 at 6:54 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Thu, Aug 26, 2021 at 06:23:53PM +0800, Woody Lin wrote:
+> > > > On Thu, Aug 26, 2021 at 5:48 PM Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > On Thu, Aug 26, 2021 at 05:28:54PM +0800, Woody Lin wrote:
+> > > > > > Add char device driver 'userpanic-dev' that exposes an interface to
+> > > > > > userspace processes to request a system panic with customized panic
+> > > > > > message.
+> > > > > >
+> > > > > > Signed-off-by: Woody Lin <woodylin@google.com>
+> > > > > > ---
+> > > > > >  drivers/staging/android/Kconfig         |  12 +++
+> > > > > >  drivers/staging/android/Makefile        |   1 +
+> > > > > >  drivers/staging/android/userpanic-dev.c | 110 ++++++++++++++++++++++++
+> > > > >
+> > > > > Why is this in staging?  What is wrong with it that it can not just go
+> > > > > into the real part of the kernel?  A TODO file is needed explaining what
+> > > > > needs to be done here in order for it to be accepted.
+> > > >
+> > > > Got it. No more TODO for this driver and I will move it to drivers/android/.
+> > > >
+> > > > >
+> > > > > But why is this really needed at all?  Why would userspace want to panic
+> > > > > the kernel in yet-another-way?
+> > > >
+> > > > The idea is to panic the kernel with a panic message specified by the userspace
+> > > > process requesting the panic. Without this the panic handler can only collect
+> > > > panic message "sysrq triggered crash" for a panic triggered by user processes.
+> > > > Using this driver, user processes can put an informative description -
+> > > > process name,
+> > > > reason ...etc. - to the panic message.
+> > >
+> > > What custom userspace tool is going to use this new user/kernel api and
+> > > again, why is it needed?  Who needs to panic the kernel with a custom
+> > > message and where is that used?
+> >
+> > It's for Android's services. Currently there are usages like these:
+> >
+> > * init requests panic in InitFatalReboot (abort handler).
+> > https://android.googlesource.com/platform/system/core/+/master/init/reboot_utils.cpp#170
+> >   android::base::WriteStringToFile("c", PROC_SYSRQ);
+> >
+> > * llkd requests panic to recover kernel live-lock.
+> > https://android.googlesource.com/platform/system/core/+/master/llkd/libllkd.cpp#564
+> >   android::base::WriteStringToFd("c", sysrqTriggerFd);
+> >
+> > * Watchdog requests panic to recover timeout-loop.
+> > https://android.googlesource.com/platform/frameworks/base/+/master/services/core/java/com/android/server/Watchdog.java#847
+> >   doSysRq('c');
+> >
+> > So to improve the panic message from "sysrq triggered crash" to a more
+> > informative one (e.g.: "Watchdog break timeout-loop", "llkd panic
+> > live-lock"), we'd like to add this driver to expose a dedicated
+> > interface for userspace to panic the kernel with a custom message. Later
+> > the panic handler implemented per platform can collect the message and
+> > use it to build the crash report. A crash report with a more readable
+> > title (compared to the generic "sysrq triggered crash") will be easier
+> > to categorize, triage, etc.
+>
+> But you can do that today from userspace, just write to the kernel log
+> before doing the sysrq call.  That way your tools can pick up what you
+> need later on, no kernel changes should be needed at all.
 
-On 9/1/21 9:37 AM, torvic9@mailbox.org wrote:
-> (Sorry for not doing a proper reply)
-> 
-> Hello,
-> Noob here.
-> I have a Samsung 860 Pro connected to a AMD X570 chipset mainboard and
-> it just works flawlessly on 5.13 and 5.14.
-> Are you sure that *every* 860/870 is concerned by this problem on
-> *every* AMD controller?
+Thanks for the idea. I actually need it in panic message because in our
+platforms, the message is saved in a specific buffer that can be
+accessed by a crash handler (not running in the same execution level as
+Linux) which is also used to build crash reports. So parsing log buffer
+can be too complex for it when compared to reading from the dedicated
+buffer. But I understand this may not be a good reason to phase in
+interfaces like this to the kernel? If so, I am starting from building it as
+a vendor module and giving up covering the early stage of "init" for now.
 
-I am pretty sure that every 860 / 870 EVO is affected,
-I am not sure if the PRO is also affected.
+And also thanks for the suggestions on the patch, I will revise them
+accordingly when submitting it to the internal kernel modules repo.
 
-As for *every* AMD controller, chances are that more recent
-AMD controllers are fine.
-
-We have been trying to resolve various issues with this combo
-for a long time now, see:
-
-https://bugzilla.kernel.org/show_bug.cgi?id=201693
-https://bugzilla.kernel.org/show_bug.cgi?id=203475
-
-> Isn't this too restrictive?
-> Or am I simply missing something?
-
-The problem is that when users are hit by this they end up with
-a non functional system and even fs / data  corruption. Where
-as OTOH disabling NCQ leads to a (significant) performance
-degradation but affected systems will still work fine.
-
-So I believe that it is best to err on the safe side here
-and accept the performance degradation as a trade-of for
-fixing the fs / data corruption.
-
-With that said, I do believe that we should allow re-enabling
-ncq on this combo through libata.force on the kernel cmdline
-by adding this extra bit to the patch:
-
-diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -6136,6 +6136,8 @@ static int __init ata_parse_force_one(char **cur,
- 		{ "ncq",	.horkage_off	= ATA_HORKAGE_NONCQ },
- 		{ "noncqtrim",	.horkage_on	= ATA_HORKAGE_NO_NCQ_TRIM },
- 		{ "ncqtrim",	.horkage_off	= ATA_HORKAGE_NO_NCQ_TRIM },
-+		{ "noncqamd",	.horkage_on	= ATA_HORKAGE_NO_NCQ_ON_AMD },
-+		{ "ncqamd",	.horkage_off	= ATA_HORKAGE_NO_NCQ_ON_AMD },
- 		{ "dump_id",	.horkage_on	= ATA_HORKAGE_DUMP_ID },
- 		{ "pio0",	.xfer_mask	= 1 << (ATA_SHIFT_PIO + 0) },
- 		{ "pio1",	.xfer_mask	= 1 << (ATA_SHIFT_PIO + 1) },
-
-And I will also add a comment to both linked bugs to see if we can maybe
-exclude the pro models from this quirk and if we can maybe narrow it down
-to a subset of the AMD SATA controllers.
-
-But that narrowing down is probably best done as a follow up fix, while just
-going with this "err on the safe side" approach for now.
-
-Regards,
-
-Hans
-
+>
+> > And the reason to submit this to upstream, instead of making it a vendor
+> > module, is that we'd like to enable it for the early stage of "init", where
+> > none of the kernel module has been mounted.
+>
+> Helps if it would actually build :(
+>
+> thanks,
+>
+> greg k-h
