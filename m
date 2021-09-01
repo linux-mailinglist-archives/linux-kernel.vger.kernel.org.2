@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4813FE554
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6EA3FE555
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345056AbhIAWLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 18:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
+        id S242045AbhIAWNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 18:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344976AbhIAWLb (ORCPT
+        with ESMTP id S239808AbhIAWNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 18:11:31 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF281C061764
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 15:10:33 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id p21-20020ac846150000b02902982d999bfbso1027389qtn.7
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 15:10:33 -0700 (PDT)
+        Wed, 1 Sep 2021 18:13:14 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0138C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 15:12:16 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id bq28so2161052lfb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 15:12:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=85Auo0aSzk3nfNcW1bmCTcsI/q3yXEtuah9rbZbe7Sk=;
-        b=ROwUg/uj+ZrimUXkCPG5t+P2y2tppRQbkZdxqZrhDxW2EpuA0pWV+iEvA7EJJQKGyJ
-         C+GTFyS745S8iRNSo8iXu7f6NZQ4awEGkvMntG+d6PFYsvSrAB3CgRsJnqvhTLr9I4vs
-         ZNu/+4bhUhHFv6DcUdKeilS1PHNb4XNDkwa74dBRM5bNDfeKhoaRg38XbLaNvknCdPVM
-         BlrbbJsN1XnvVtvv+g1huLZk9bz6EvElWqO5GNj8ZnB2//+4WwMbpYOoQ05f3OcQcRH7
-         JQUsM1gG/WAudUBFC18CqNk3AKfsgiTCARxJPzYoimzKjz9V17EgybtCJNKK4Ofo76rp
-         43lg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E+Fyv92PXA9gzok5ITdHGOFJ4zvWuLPttWT0sXiwbuY=;
+        b=P/zjsvYhVimH53GVm3VRIHavK0TzTVWZ3S20XWcHZtI3Ok6nbwmxVVjZuG29EQHbXA
+         a/J+j8WiV8ej5TNHY6GACl2uRX6tD1/4jLPNEy98S0vxmJ8i9j3QShEiwZfLwVTPKqEI
+         C40i+OSOLwUfQzOZKEjYmMOYnz11oqk48f+7Z4ToliRvyCPPwEBey2ViEWt7JWwKSYAl
+         85sQ7ANblqrrYaoAFH0grmD9PNRkhjPyIGlBuTnOxZUsQMsOeEAcBaA6s/JbwMKmBaIu
+         E6DqdD1G9TOV7SxqtbH3tiFkbA54oeHs1EPYdetmP4YNbnUjpv+5EmxWyEduLcU79B4a
+         Iing==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=85Auo0aSzk3nfNcW1bmCTcsI/q3yXEtuah9rbZbe7Sk=;
-        b=Lu/u2UMgH1+2XtEgOgeLCK55Eoqm4z909ovw2dkF+tL1IO4EUm0MTngAx+7XelvZ6u
-         cKVCZpl0ei5/Mnr6TLQ1scWSvhLqwGK93OoMUySX+96zarc54ofdqQ3EPezlcTX+CIaJ
-         /UNSh7TUbhXJHpR2llymlXxN63bJVAtaB2Hmep+RcDNRPGf6246V5zwCzqvjNePC7/1N
-         /NU9G34I3PBjBU85TgCrJzkQ/kuzdu2weDYlASGwpLIKAsesTh629GVN8JWYOhNwnjCc
-         i+5ZwRy6Gi0p2n3sJq6xGIsbN+5FyRogfvfNVgpG5A4vAIat+jRSVaaIiXNg8j2P7hQ8
-         z8fg==
-X-Gm-Message-State: AOAM5338RJghA0/iU8s8ihFgqi0xJ5lc8UIjnm8mqLRySVrfIJEnYaC1
-        edYlb6uvSJTOYvjS8+6hjaJ83zBwq7U=
-X-Google-Smtp-Source: ABdhPJwq0TFETxJvrtioq/apVCW5kBI0Q3UH87046kBtvkT8VELH8XWus5fY34hy82yjtG2oTotp25+ZJ5U=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:9935:5a5e:c7b6:e649])
- (user=seanjc job=sendgmr) by 2002:a05:6214:acd:: with SMTP id
- g13mr125496qvi.23.1630534233010; Wed, 01 Sep 2021 15:10:33 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed,  1 Sep 2021 15:10:23 -0700
-In-Reply-To: <20210901221023.1303578-1-seanjc@google.com>
-Message-Id: <20210901221023.1303578-4-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210901221023.1303578-1-seanjc@google.com>
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH 3/3] KVM: x86/mmu: Move lpage_disallowed_link further "down"
- in kvm_mmu_page
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jia He <justin.he@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E+Fyv92PXA9gzok5ITdHGOFJ4zvWuLPttWT0sXiwbuY=;
+        b=KxQYmEiUJ4vxqMvRZuiMuncgDNAQkld8T0CwzwAdZPwndOFPbR3X5V2XGKkyal5dUT
+         h6maWVIyoGNUSTsBIYGOxgCmVjZq8cwzH+Sxoe0BTsUfYTtBJFnUXmPdlAyN4jPDzQkQ
+         jp61J/zucSo0utn3YvWW9M3SxIOIygMbjiQfJ8w3lw2ujCFjpT7BWMU+m3sjol3Z4104
+         sctBToJ8boW2G8SSn9XC5+eZ1xWkx/R12GDasnzndt0cqtiELiA/F9LlvkJBowSz4d1M
+         r7E/laYUUYv0/UWue3XPGLo561qpvHthbrwT+IvXatJtPBzQRYkslWlI4kWguH2Kdl+k
+         1dMw==
+X-Gm-Message-State: AOAM531bz/0ndUXaxcprCcsfQhi0JsWOiNy2MFmIgc0UOjMlc7rgN9wU
+        wUd9vA3bLIit5rDcwYKN/IbfMmIlafP5EHpagzgx3Q==
+X-Google-Smtp-Source: ABdhPJw+dCMd39zqq9Qpu8A85lu5ZdzynczxT9xWlHKMOvrCsrRBBwqsLI5/Ugo+E+qf5lGRCOfCq2yu0xk9f8m+mvk=
+X-Received: by 2002:a05:6512:1084:: with SMTP id j4mr36628lfg.113.1630534335106;
+ Wed, 01 Sep 2021 15:12:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210831224510.703253-1-saravanak@google.com> <YS8cncQxUZDRuhUG@kroah.com>
+ <CAGETcx8d0KR3BeLxa6eKr_QkNgg=+dcq18tAu2A5M6W9pMFOHw@mail.gmail.com>
+ <YS8oOWjFe4yQ1Q/v@kroah.com> <CAGETcx8B-9GJr_wCRLqH=eBKY+f=Cd+LGWfM+GQGt6HzOj1TdQ@mail.gmail.com>
+In-Reply-To: <CAGETcx8B-9GJr_wCRLqH=eBKY+f=Cd+LGWfM+GQGt6HzOj1TdQ@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 2 Sep 2021 00:11:38 +0200
+Message-ID: <CAPDyKFrfe8joPPiUqkRv9BHmewwphWQshZzpBPbQiZ53z1CZow@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: fw_devlink: Don't create device links for
+ devices not on a bus
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move "lpage_disallowed_link" out of the first 64 bytes, i.e. out of the
-first cache line, of kvm_mmu_page so that "spt" and to a lesser extent
-"gfns" land in the first cache line.  "lpage_disallowed_link" is accessed
-relatively infrequently compared to "spt", which is accessed any time KVM
-is walking and/or manipulating the shadow page tables.
+[...]
 
-No functional change intended.
+> fw_devlink trying to interpret DT dependencies can sometimes end up in
+> this situation for some uncommon cases. But it's not helping [1] or
+> [2], so for now let's drop this patch. I'll come back to this if I
+> need this to fix any real issue.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/mmu_internal.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Just to be clear, the issue is really there, with the psci power
+domain, for example.
 
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 4b06e6040e90..cae932afc8d3 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -31,9 +31,12 @@ extern bool dbg;
- #define IS_VALID_PAE_ROOT(x)	(!!(x))
- 
- struct kvm_mmu_page {
-+	/*
-+	 * Note, "link" through "spt" fit in a single 64 byte cache line on
-+	 * 64-bit kernels, keep it that way unless there's a reason not to.
-+	 */
- 	struct list_head link;
- 	struct hlist_node hash_link;
--	struct list_head lpage_disallowed_link;
- 
- 	bool tdp_mmu_page;
- 	bool unsync;
-@@ -59,6 +62,7 @@ struct kvm_mmu_page {
- 	struct kvm_rmap_head parent_ptes; /* rmap pointers to parent sptes */
- 	DECLARE_BITMAP(unsync_child_bitmap, 512);
- 
-+	struct list_head lpage_disallowed_link;
- #ifdef CONFIG_X86_32
- 	/*
- 	 * Used out of the mmu-lock to avoid reading spte values while an
--- 
-2.33.0.153.gba50c8fa24-goog
+I am working with an ARM vendor on a platform that has a child node
+below the common soc node and which child node is a consumer of the
+psci power domain provider node. We fail to get the ->sync_state() to
+be called, for reasons that have been explained by now, I think.
 
+The reason for explaining the problem with a superficial example was
+to try to easier point out the problem.
+
+That said, I would certainly appreciate your help to get this fixed,
+in one way or the other.
+
+>
+> -Saravana
+
+Kind regards
+Uffe
