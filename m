@@ -2,49 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E973F3FD84A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259283FD856
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238733AbhIAK7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 06:59:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234901AbhIAK7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 06:59:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39AAD61058;
-        Wed,  1 Sep 2021 10:58:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630493924;
-        bh=jaJYQCkVx50jcmDjK8CMOwrT2+J+DckFvsNJFBKDHw0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oM/tQ/pvTbkXsmIRbsCTUmeJn8c7rJUHH6wMyNzVDdAwDe4s3MWytzi0wj8t18fh4
-         qb7Zsoimg1lxV4qGi9gKu6ORFiToVNrDrOUOMbj5tcuRNSVtJHgymuO/1XoKaixbPn
-         Rn5mE+c6cjIo5GJmRiISQopnk0CvnbCLisGW2d/A=
-Date:   Wed, 1 Sep 2021 12:58:42 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     ebiggers@google.com, toybox@lists.landley.net,
-        stable-commits@vger.kernel.org
-Subject: Re: Patch "fscrypt: add fscrypt_symlink_getattr() for computing
- st_size" has been added to the 5.4-stable tree
-Message-ID: <YS9c4qZP9MeiEp2U@kroah.com>
-References: <1630493566193250@kroah.com>
+        id S238865AbhIALDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 07:03:54 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:60456 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234901AbhIALDv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 07:03:51 -0400
+Received: from ert768.prtnl (ert768.prtnl [192.168.224.11])
+        by sparta.prtnl (Postfix) with ESMTP id A0FEA44A024D;
+        Wed,  1 Sep 2021 13:02:52 +0200 (CEST)
+From:   Roan van Dijk <roan@protonic.nl>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, david@protonic.nl,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Roan van Dijk <roan@protonic.nl>
+Subject: [PATCH v1 0/3] iio: chemical: Add support for Sensirion SCD4x CO2 sensor
+Date:   Wed,  1 Sep 2021 12:59:08 +0200
+Message-Id: <20210901105911.178646-1-roan@protonic.nl>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1630493566193250@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 12:52:46PM +0200, gregkh@linuxfoundation.org wrote:
-> 
-> This is a note to let you know that I've just added the patch titled
-> 
->     fscrypt: add fscrypt_symlink_getattr() for computing st_size
-> 
-> to the 5.4-stable tree which can be found at:
->     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+This series adds support for the Sensirion SCD4x sensor.
 
-Dropped from 5.4 as there is no need for it now that the other patches
-failed :(
+The driver supports continuous reads of temperature, relative humdity and CO2
+concentration. There is an interval of 5 seconds between readings. During
+this interval the drivers checks if the sensor has new data available.
+
+The driver is based on the scd30 driver. However, The scd4x has become too
+different to just expand the scd30 driver. I made a new driver instead of
+expanding the scd30 driver. I hope I made the right choice by doing so?
+
+Changes since v1:
+dt-bindings:
+  - Separated compatible string for each sensor type
+scd4x.c:
+  - Changed probe, resume and suspend functions to static
+  - Added SIMPLE_DEV_PM_OPS function call for power management
+    operations.
+
+Roan van Dijk (3):
+  dt-bindings: iio: chemical: sensirion,scd4x: Add yaml description
+  MAINTAINERS: Add myself as maintainer of the scd4x driver
+  drivers: iio: chemical: Add support for Sensirion SCD4x CO2 sensor
+
+ .../iio/chemical/sensirion,scd4x.yaml         |  46 ++
+ MAINTAINERS                                   |   6 +
+ drivers/iio/chemical/Kconfig                  |  13 +
+ drivers/iio/chemical/Makefile                 |   1 +
+ drivers/iio/chemical/scd4x.c                  | 708 ++++++++++++++++++
+ 5 files changed, 774 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
+ create mode 100644 drivers/iio/chemical/scd4x.c
+
+-- 
+2.30.2
+
