@@ -2,433 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E3A3FD458
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CC93FD45E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242568AbhIAHVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242500AbhIAHVg (ORCPT
+        id S242579AbhIAHWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:22:34 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:40623 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242572AbhIAHW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:21:36 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67AC3C061575;
-        Wed,  1 Sep 2021 00:20:39 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so551323ooh.7;
-        Wed, 01 Sep 2021 00:20:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3IvzHq5Yny970U4/p+nZK1Gm1cRQFIkEdSa1vVhInf4=;
-        b=XadFirG9eNdjPEIsJG5IYzvBe/O8gdJU/GVam4jJ/cjwohDbFxkgkg/+zqtRTPcZdI
-         FurzPOwxcWUQWo6sRos/+UhByw61M8TvLd/7hSw4QZaWVz5+QhzBt9v8mhc+8gwcWoCy
-         1Jbg4WCUOV93N6zQcpD3dM0kmmQgmwx6oEtFMvZbW2vdBgp1+0clMyZR+gEaARb999kl
-         n8VoqaNHjWyVYSuGiUXTbn/B9bCNWwDaUM/sTCYlcfK4e+ulD/d5mAtzRnqXCpVQpP79
-         VoXI56pF2NuqZgzYytJ294vPvWE4g2ZdQsY/JHt5d+yO5T6PQiBbVU5N3mTFMVKN5X6M
-         22Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3IvzHq5Yny970U4/p+nZK1Gm1cRQFIkEdSa1vVhInf4=;
-        b=G/mo829JX949Zrxw4+1N1ZdIDJCrEMG9KvN7RrkXr4tt8qwt22iTz0nFfHJzg/r2X0
-         rEhkU0bJOS1Vr/ozETdNve0XkbKoPM0VWG7rTgNDG9fWC8N9/jYdDYlO+sRubblUdEG7
-         6RG5D6aeqvjh3rBStTwAIHDlhGecip16WyzkOiuap0V+DJ76rWraxINCKRiS1SxR5ENk
-         nhFCqL6Vt2RhclkjngY0O6cGJPM5+F61F49qvlKBMotE0kJqQ3KFM+6qKw0TAjhcVw1a
-         /jVfZ3PDAKIUU8zS9xYgL9gqw+RaGuWX8d/rAuGGgFSaUMYCCqsLM/l9ToiklTxVR3Ue
-         reYg==
-X-Gm-Message-State: AOAM533roYQFrjjRRMlQK3yiiTmupBwrBIon3Hl5y81iHcJH+ldg+whA
-        3GsCsZbQAYAFO1RDhuNQ3FXM6Nj5oD2XtXD/ivg=
-X-Google-Smtp-Source: ABdhPJwSuyZXf7PrN0uKFGDSn2mi4veYMn+eTnouqdK53qiYI6j0eJmq80mTIqEWkbF+sF46ABaJThej3NjhJldOX5o=
-X-Received: by 2002:a4a:5742:: with SMTP id u63mr17926821ooa.87.1630480838323;
- Wed, 01 Sep 2021 00:20:38 -0700 (PDT)
+        Wed, 1 Sep 2021 03:22:27 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 48546580727;
+        Wed,  1 Sep 2021 03:21:28 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 01 Sep 2021 03:21:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=zMYrNt50zg0sXSYvGdt7SlhrCQS
+        UOKJddsQ6H2t32ts=; b=HKf3lzcL8BB1ZnQtI4KTLccSAjmG/eQAY1XTz/7UNWn
+        3Z+FaYF2i+b4z27XNvOSmFRotl2X5AyFkLVDCFDkhUR5Uzg0ZLXP658dsBNSoAz8
+        xWon6W4Z7W7mYFFJxs9WH2fY9sTutEhpWlrJWX6NXIY2GyOfmu0d0q3C/J0RKseS
+        tVrto/uwOZ6KDID1Steb6b29glTIfzvJ3JnVYJGCvpPIUP6jaBC4XBcl24gN6LMR
+        YIc66vkB0IRpvwOMPSyGc3zo2CspROJZtQNFZJizSEtomF3Vf37nBhiHa72E99Qp
+        ym9zznrR/xDyLs7Hrz4vIx7fu7YQ5hfByFOX3QqLuFg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=zMYrNt
+        50zg0sXSYvGdt7SlhrCQSUOKJddsQ6H2t32ts=; b=XZg4vAau/WT2bEN6ypK9Af
+        gzL2VDRuImjgOTq1ERgD2I5E8DAESqlgYoNYH1dUPCOb/isTM5MVrMS95pkbl9qu
+        uadYEuYAl0tMREQmM4AjTR/xjhhkjMVg20li6AvANgMPPvD9rYKvOwvpc6qT5jAE
+        HiLQzqllRaOeZP2tLT1x+amjwVDVIoc8qsoUqFm5w3sWYIZhA3fouzFMGO//aGLG
+        DtYugwcveznEUqChZM4bNfrW+5EMxbI99BtWrtsere5H9reTVq7noaf8q+gPaH/T
+        3FYwA9rb5FKE6omoZYq6UUDrxVqAS/Q5t87j2/SAoySCwN9/twfFpbrNLdfgwMag
+        ==
+X-ME-Sender: <xms:9ikvYYfzxvLSQ30b8gD94QZ7MqdeTfESMfmbGdk2CQPUDUM_JlWZ6Q>
+    <xme:9ikvYaMW6_cdlWYxCy0IZUhRcaGASOiktzMbFmGCOYpUJciEy-LJA9XygMP73D0YX
+    RCNv_vRGRBidtQ01OY>
+X-ME-Received: <xmr:9ikvYZhtE_XAP2dRpf76wFVZzdIyGif9znVCIDKBc1QpUmuenvodd89M-cFc05Y2TxzaqRiR1Nl_5b_Jml4rNrW9VqcLrPikM2G2>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvvddguddukecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:9ikvYd-lv-o57J9pidUNBz-vpwE8uQOaevJX9h8utaOAK6mO3NsQXw>
+    <xmx:9ikvYUu-d6oq6GcXaIc9MzC_IcAZXZTYGzVaxaPC2rYNpeiLuEMchw>
+    <xmx:9ikvYUEE_iGXiilRPUj7OJrFwFiz7CJ2gHeesIciqiFYSML7tYqEWg>
+    <xmx:-CkvYRPWy_cTQp3I98g1djSMZO_OLXFkqSFlOdGNvaFk2Giv59By3w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 1 Sep 2021 03:21:26 -0400 (EDT)
+Date:   Wed, 1 Sep 2021 09:21:23 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v8 02/11] dt-bindings: rtc: sun6i: Add H616 compatible
+ string
+Message-ID: <20210901072123.gqfua52rupsrmtks@gilmour>
+References: <20210723153838.6785-1-andre.przywara@arm.com>
+ <20210723153838.6785-3-andre.przywara@arm.com>
+ <20210726144137.6dauuxdssu7yszox@gilmour>
+ <20210802013938.29fa18ed@slackpad.fritz.box>
+ <20210817073810.7stuzrppyjf4spab@gilmour>
+ <20210818100407.7cf7cfb7@slackpad.fritz.box>
 MIME-Version: 1.0
-References: <20210901044933.47230-1-kerneljasonxing@gmail.com> <7ca5bca6-16eb-4102-0b29-504edb80a21b@gmail.com>
-In-Reply-To: <7ca5bca6-16eb-4102-0b29-504edb80a21b@gmail.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Wed, 1 Sep 2021 15:20:02 +0800
-Message-ID: <CAL+tcoChbdau88Ge2A4DntnNHisEZtg8cBHd6J55LR0ZYCRNWQ@mail.gmail.com>
-Subject: Re: [PATCH v6] ixgbe: let the xdpdrv work with more than 64 cpus
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        kernel test robot <lkp@intel.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rjkq6bidgpvhb43g"
+Content-Disposition: inline
+In-Reply-To: <20210818100407.7cf7cfb7@slackpad.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 1:13 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
->
->
->
-> On 8/31/21 9:49 PM, kerneljasonxing@gmail.com wrote:
-> > From: Jason Xing <xingwanli@kuaishou.com>
-> >
-> > Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
-> > server is equipped with more than 64 cpus online. So it turns out that
-> > the loading of xdpdrv causes the "NOMEM" failure.
-> >
-> > Actually, we can adjust the algorithm and then make it work through
-> > mapping the current cpu to some xdp ring with the protect of @tx_lock.
-> >
-> > Here're some numbers before/after applying this patch with xdp-example
-> > loaded on the eth0X:
-> >
-> > As client (tx path):
-> >                      Before    After
-> > TCP_STREAM send-64   734.14    714.20
-> > TCP_STREAM send-128  1401.91   1395.05
-> > TCP_STREAM send-512  5311.67   5292.84
-> > TCP_STREAM send-1k   9277.40   9356.22 (not stable)
-> > TCP_RR     send-1    22559.75  21844.22
-> > TCP_RR     send-128  23169.54  22725.13
-> > TCP_RR     send-512  21670.91  21412.56
-> >
-> > As server (rx path):
-> >                      Before    After
-> > TCP_STREAM send-64   1416.49   1383.12
-> > TCP_STREAM send-128  3141.49   3055.50
-> > TCP_STREAM send-512  9488.73   9487.44
-> > TCP_STREAM send-1k   9491.17   9356.22 (not stable)
-> > TCP_RR     send-1    23617.74  23601.60
-> > ...
-> >
-> > Notice: the TCP_RR mode is unstable as the official document explaines.
-> >
-> > I tested many times with different parameters combined through netperf.
-> > Though the result is not that accurate, I cannot see much influence on
-> > this patch. The static key is places on the hot path, but it actually
-> > shouldn't cause a huge regression theoretically.
-> >
-> > Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-> > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-> > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
-> > ---
-> > v6:
-> > - Move the declaration of static-key to the proper position (Test Robot)
-> > - Add reported-by tag (Jason)
-> > - Add more detailed performance test results (Jason)
-> >
-> > v5:
-> > - Change back to nr_cpu_ids (Eric)
-> >
-> > v4:
-> > - Update the wrong commit messages. (Jason)
-> >
-> > v3:
-> > - Change nr_cpu_ids to num_online_cpus() (Maciej)
-> > - Rename MAX_XDP_QUEUES to IXGBE_MAX_XDP_QS (Maciej)
-> > - Rename ixgbe_determine_xdp_cpu() to ixgbe_determine_xdp_q_idx() (Maciej)
-> > - Wrap ixgbe_xdp_ring_update_tail() with lock into one function (Maciej)
-> >
-> > v2:
-> > - Adjust cpu id in ixgbe_xdp_xmit(). (Jesper)
-> > - Add a fallback path. (Maciej)
-> > - Adjust other parts related to xdp ring.
-> > ---
-> >  drivers/net/ethernet/intel/ixgbe/ixgbe.h           | 15 ++++-
-> >  drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c       |  9 ++-
-> >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      | 64 ++++++++++++++++------
-> >  .../net/ethernet/intel/ixgbe/ixgbe_txrx_common.h   |  1 +
-> >  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |  9 +--
-> >  5 files changed, 73 insertions(+), 25 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> > index a604552..1dcddea 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> > @@ -351,6 +351,7 @@ struct ixgbe_ring {
-> >       };
-> >       u16 rx_offset;
-> >       struct xdp_rxq_info xdp_rxq;
-> > +     spinlock_t tx_lock;     /* used in XDP mode */
-> >       struct xsk_buff_pool *xsk_pool;
-> >       u16 ring_idx;           /* {rx,tx,xdp}_ring back reference idx */
-> >       u16 rx_buf_len;
-> > @@ -375,11 +376,13 @@ enum ixgbe_ring_f_enum {
-> >  #define IXGBE_MAX_FCOE_INDICES               8
-> >  #define MAX_RX_QUEUES                        (IXGBE_MAX_FDIR_INDICES + 1)
-> >  #define MAX_TX_QUEUES                        (IXGBE_MAX_FDIR_INDICES + 1)
-> > -#define MAX_XDP_QUEUES                       (IXGBE_MAX_FDIR_INDICES + 1)
-> > +#define IXGBE_MAX_XDP_QS             (IXGBE_MAX_FDIR_INDICES + 1)
-> >  #define IXGBE_MAX_L2A_QUEUES         4
-> >  #define IXGBE_BAD_L2A_QUEUE          3
-> >  #define IXGBE_MAX_MACVLANS           63
-> >
-> > +DECLARE_STATIC_KEY_FALSE(ixgbe_xdp_locking_key);
-> > +
-> >  struct ixgbe_ring_feature {
-> >       u16 limit;      /* upper limit on feature indices */
-> >       u16 indices;    /* current value of indices */
-> > @@ -629,7 +632,7 @@ struct ixgbe_adapter {
-> >
-> >       /* XDP */
-> >       int num_xdp_queues;
-> > -     struct ixgbe_ring *xdp_ring[MAX_XDP_QUEUES];
-> > +     struct ixgbe_ring *xdp_ring[IXGBE_MAX_XDP_QS];
-> >       unsigned long *af_xdp_zc_qps; /* tracks AF_XDP ZC enabled rings */
-> >
-> >       /* TX */
-> > @@ -772,6 +775,14 @@ struct ixgbe_adapter {
-> >  #endif /* CONFIG_IXGBE_IPSEC */
-> >  };
-> >
-> > +static inline int ixgbe_determine_xdp_q_idx(int cpu)
-> > +{
-> > +     if (static_key_enabled(&ixgbe_xdp_locking_key))
-> > +             return cpu % IXGBE_MAX_XDP_QS;
-> > +     else
-> > +             return cpu;
-> > +}
-> > +
-> >  static inline u8 ixgbe_max_rss_indices(struct ixgbe_adapter *adapter)
-> >  {
-> >       switch (adapter->hw.mac.type) {
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> > index 0218f6c..86b1116 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> > @@ -299,7 +299,10 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
-> >
-> >  static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
-> >  {
-> > -     return adapter->xdp_prog ? nr_cpu_ids : 0;
-> > +     int queues;
-> > +
-> > +     queues = min_t(int, IXGBE_MAX_XDP_QS, nr_cpu_ids);
-> > +     return adapter->xdp_prog ? queues : 0;
-> >  }
-> >
-> >  #define IXGBE_RSS_64Q_MASK   0x3F
-> > @@ -947,6 +950,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
-> >               ring->count = adapter->tx_ring_count;
-> >               ring->queue_index = xdp_idx;
-> >               set_ring_xdp(ring);
-> > +             spin_lock_init(&ring->tx_lock);
-> >
-> >               /* assign ring to adapter */
-> >               WRITE_ONCE(adapter->xdp_ring[xdp_idx], ring);
-> > @@ -1032,6 +1036,9 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
-> >       adapter->q_vector[v_idx] = NULL;
-> >       __netif_napi_del(&q_vector->napi);
-> >
-> > +     if (static_key_enabled(&ixgbe_xdp_locking_key))
-> > +             static_branch_dec(&ixgbe_xdp_locking_key);
-> > +
-> >       /*
-> >        * after a call to __netif_napi_del() napi may still be used and
-> >        * ixgbe_get_stats64() might access the rings on this vector,
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > index 14aea40..bec29f5 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > @@ -165,6 +165,9 @@ static int ixgbe_notify_dca(struct notifier_block *, unsigned long event,
-> >  MODULE_DESCRIPTION("Intel(R) 10 Gigabit PCI Express Network Driver");
-> >  MODULE_LICENSE("GPL v2");
-> >
-> > +DEFINE_STATIC_KEY_FALSE(ixgbe_xdp_locking_key);
-> > +EXPORT_SYMBOL(ixgbe_xdp_locking_key);
-> > +
-> >  static struct workqueue_struct *ixgbe_wq;
-> >
-> >  static bool ixgbe_check_cfg_remove(struct ixgbe_hw *hw, struct pci_dev *pdev);
-> > @@ -2422,13 +2425,10 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
-> >               xdp_do_flush_map();
-> >
-> >       if (xdp_xmit & IXGBE_XDP_TX) {
-> > -             struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
-> > +             int index = ixgbe_determine_xdp_q_idx(smp_processor_id());
-> > +             struct ixgbe_ring *ring = adapter->xdp_ring[index];
-> >
-> > -             /* Force memory writes to complete before letting h/w
-> > -              * know there are new descriptors to fetch.
-> > -              */
-> > -             wmb();
-> > -             writel(ring->next_to_use, ring->tail);
-> > +             ixgbe_xdp_ring_update_tail_locked(ring);
-> >       }
-> >
-> >       u64_stats_update_begin(&rx_ring->syncp);
-> > @@ -6320,7 +6320,7 @@ static int ixgbe_sw_init(struct ixgbe_adapter *adapter,
-> >       if (ixgbe_init_rss_key(adapter))
-> >               return -ENOMEM;
-> >
-> > -     adapter->af_xdp_zc_qps = bitmap_zalloc(MAX_XDP_QUEUES, GFP_KERNEL);
-> > +     adapter->af_xdp_zc_qps = bitmap_zalloc(IXGBE_MAX_XDP_QS, GFP_KERNEL);
-> >       if (!adapter->af_xdp_zc_qps)
-> >               return -ENOMEM;
-> >
-> > @@ -8539,21 +8539,32 @@ static u16 ixgbe_select_queue(struct net_device *dev, struct sk_buff *skb,
-> >  int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
-> >                       struct xdp_frame *xdpf)
-> >  {
-> > -     struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
-> >       struct ixgbe_tx_buffer *tx_buffer;
-> >       union ixgbe_adv_tx_desc *tx_desc;
-> > +     struct ixgbe_ring *ring;
-> >       u32 len, cmd_type;
-> >       dma_addr_t dma;
-> > +     int index, ret;
-> >       u16 i;
-> >
-> >       len = xdpf->len;
-> >
-> > -     if (unlikely(!ixgbe_desc_unused(ring)))
-> > -             return IXGBE_XDP_CONSUMED;
-> > +     index = ixgbe_determine_xdp_q_idx(smp_processor_id());
-> > +     ring = adapter->xdp_ring[index];
-> > +
-> > +     if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-> > +             spin_lock(&ring->tx_lock);
-> > +
-> > +     if (unlikely(!ixgbe_desc_unused(ring))) {
-> > +             ret = IXGBE_XDP_CONSUMED;
-> > +             goto out;
-> > +     }
-> >
-> >       dma = dma_map_single(ring->dev, xdpf->data, len, DMA_TO_DEVICE);
-> > -     if (dma_mapping_error(ring->dev, dma))
-> > -             return IXGBE_XDP_CONSUMED;
-> > +     if (dma_mapping_error(ring->dev, dma)) {
-> > +             ret = IXGBE_XDP_CONSUMED;
-> > +             goto out;
-> > +     }
-> >
-> >       /* record the location of the first descriptor for this packet */
-> >       tx_buffer = &ring->tx_buffer_info[ring->next_to_use];
-> > @@ -8590,7 +8601,11 @@ int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
-> >       tx_buffer->next_to_watch = tx_desc;
-> >       ring->next_to_use = i;
-> >
-> > -     return IXGBE_XDP_TX;
-> > +     ret = IXGBE_XDP_TX;
-> > +out:
-> > +     if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-> > +             spin_unlock(&ring->tx_lock);
-> > +     return ret;
-> >  }
-> >
-> >  netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *skb,
-> > @@ -10130,8 +10145,13 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
-> >                       return -EINVAL;
-> >       }
-> >
-> > -     if (nr_cpu_ids > MAX_XDP_QUEUES)
-> > +     /* if the number of cpus is much larger than the maximum of queues,
-> > +      * we should stop it and then return with NOMEM like before.
-> > +      */
-> > +     if (nr_cpu_ids > IXGBE_MAX_XDP_QS * 2)
-> >               return -ENOMEM;
-> > +     else if (nr_cpu_ids > IXGBE_MAX_XDP_QS)
-> > +             static_branch_inc(&ixgbe_xdp_locking_key);
-> >
-> >       old_prog = xchg(&adapter->xdp_prog, prog);
-> >       need_reset = (!!prog != !!old_prog);
-> > @@ -10195,12 +10215,22 @@ void ixgbe_xdp_ring_update_tail(struct ixgbe_ring *ring)
-> >       writel(ring->next_to_use, ring->tail);
-> >  }
-> >
-> > +void ixgbe_xdp_ring_update_tail_locked(struct ixgbe_ring *ring)
-> > +{
-> > +     if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-> > +             spin_lock(&ring->tx_lock);
-> > +     ixgbe_xdp_ring_update_tail(ring);
-> > +     if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-> > +             spin_unlock(&ring->tx_lock);
-> > +}
->
-> It is not clear why you use a pair of spin_lock()/unlock for each ixgbe_xmit_xdp_ring()
-> call, plus one other for ixgbe_xdp_ring_update_tail()
->
-> I guess this could be factorized to a single spin lock/unlock in ixgbe_xdp_xmit(),
-> and thus not have this ixgbe_xdp_ring_update_tail_locked() helper ?
->
 
-I agree with what you said in ixgbe_xdp_xmit(). Two pairs of
-spin_lock/unlock could be factorized to a single one, which could
-decrease the times of calling lock and unlock.
+--rjkq6bidgpvhb43g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Jason
+On Wed, Aug 18, 2021 at 10:04:07AM +0100, Andre Przywara wrote:
+> On Tue, 17 Aug 2021 09:38:10 +0200
+> Maxime Ripard <maxime@cerno.tech> wrote:
+>=20
+> Hi Maxime,
+>=20
+> > On Mon, Aug 02, 2021 at 01:39:38AM +0100, Andre Przywara wrote:
+> > > On Mon, 26 Jul 2021 16:41:37 +0200
+> > > Maxime Ripard <maxime@cerno.tech> wrote:
+> > >  =20
+> > > > Hi,
+> > > >=20
+> > > > On Fri, Jul 23, 2021 at 04:38:29PM +0100, Andre Przywara wrote: =20
+> > > > > Add the obvious compatible name to the existing RTC binding.
+> > > > > The actual RTC part of the device uses a different day/month/year
+> > > > > storage scheme, so it's not compatible with the previous devices.
+> > > > > Also the clock part is quite different, as there is no external 3=
+2K LOSC
+> > > > > oscillator input.
+> > > > >=20
+> > > > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> > > > >
+> > > > > ---
+> > > > >  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml      | 14 ++++++++=
+++++++
+> > > > >  1 file changed, 14 insertions(+)
+> > > > >=20
+> > > > > diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6=
+i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-=
+rtc.yaml
+> > > > > index beeb90e55727..d8a6500e5840 100644
+> > > > > --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-r=
+tc.yaml
+> > > > > +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-r=
+tc.yaml
+> > > > > @@ -26,6 +26,7 @@ properties:
+> > > > >            - const: allwinner,sun50i-a64-rtc
+> > > > >            - const: allwinner,sun8i-h3-rtc
+> > > > >        - const: allwinner,sun50i-h6-rtc
+> > > > > +      - const: allwinner,sun50i-h616-rtc
+> > > > > =20
+> > > > >    reg:
+> > > > >      maxItems: 1
+> > > > > @@ -104,6 +105,19 @@ allOf:
+> > > > >            minItems: 3
+> > > > >            maxItems: 3
+> > > > > =20
+> > > > > +  - if:
+> > > > > +      properties:
+> > > > > +        compatible:
+> > > > > +          contains:
+> > > > > +            const: allwinner,sun50i-h616-rtc
+> > > > > +
+> > > > > +    then:
+> > > > > +      properties:
+> > > > > +        clock-output-names:
+> > > > > +          minItems: 3
+> > > > > +          maxItems: 3   =20
+> > > >=20
+> > > > You don't need both of them when they are equal
+> > > >  =20
+> > > > > +        clocks: false
+> > > > > +   =20
+> > > >=20
+> > > > It's not entirely clear to me what those clocks are about though. I=
+f we
+> > > > look at the clock output in the user manual, it looks like there's =
+only
+> > > > two clocks that are actually being output: the 32k "fanout" clock a=
+nd
+> > > > the losc. What are the 3 you're talking about?] =20
+> > >=20
+> > > I see three: the raw SYSTEM "CLK32K_LOSC", the RTC input + debounce
+> > > clock (/32), and the multiplexed PAD. =20
+> >=20
+> > But the input and debounce clock is only for the RTC itself right? So it
+> > should be local to the driver and doesn't need to be made available to
+> > the other drivers
+>=20
+> I understood "debounce" as being the clock used for the pinctrl
+> debouncer. What would it debounce otherwise? Do you think that this
+> "debounce circuit" is something internal to the RTC and is totally
+> irrelevant for us?
 
-> > +
-> >  static int ixgbe_xdp_xmit(struct net_device *dev, int n,
-> >                         struct xdp_frame **frames, u32 flags)
-> >  {
-> >       struct ixgbe_adapter *adapter = netdev_priv(dev);
-> >       struct ixgbe_ring *ring;
-> >       int nxmit = 0;
-> > +     int index;
-> >       int i;
-> >
-> >       if (unlikely(test_bit(__IXGBE_DOWN, &adapter->state)))
-> > @@ -10209,10 +10239,12 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
-> >       if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
-> >               return -EINVAL;
-> >
-> > +     index = ixgbe_determine_xdp_q_idx(smp_processor_id());
-> > +
-> >       /* During program transitions its possible adapter->xdp_prog is assigned
-> >        * but ring has not been configured yet. In this case simply abort xmit.
-> >        */
-> > -     ring = adapter->xdp_prog ? adapter->xdp_ring[smp_processor_id()] : NULL;
-> > +     ring = adapter->xdp_prog ? adapter->xdp_ring[index] : NULL;
-> >       if (unlikely(!ring))
-> >               return -ENXIO;
-> >
-> > @@ -10230,7 +10262,7 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
-> >       }
-> >
-> >       if (unlikely(flags & XDP_XMIT_FLUSH))
-> > -             ixgbe_xdp_ring_update_tail(ring);
-> > +             ixgbe_xdp_ring_update_tail_locked(ring);
-> >
-> >       return nxmit;
-> >  }
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-> > index 2aeec78..f6426d9 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-> > @@ -23,6 +23,7 @@ void ixgbe_process_skb_fields(struct ixgbe_ring *rx_ring,
-> >  void ixgbe_rx_skb(struct ixgbe_q_vector *q_vector,
-> >                 struct sk_buff *skb);
-> >  void ixgbe_xdp_ring_update_tail(struct ixgbe_ring *ring);
-> > +void ixgbe_xdp_ring_update_tail_locked(struct ixgbe_ring *ring);
-> >  void ixgbe_irq_rearm_queues(struct ixgbe_adapter *adapter, u64 qmask);
-> >
-> >  void ixgbe_txrx_ring_disable(struct ixgbe_adapter *adapter, int ring);
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> > index b1d22e4..82d00e4 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> > @@ -334,13 +334,10 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
-> >               xdp_do_flush_map();
-> >
-> >       if (xdp_xmit & IXGBE_XDP_TX) {
-> > -             struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
-> > +             int index = ixgbe_determine_xdp_q_idx(smp_processor_id());
-> > +             struct ixgbe_ring *ring = adapter->xdp_ring[index];
-> >
-> > -             /* Force memory writes to complete before letting h/w
-> > -              * know there are new descriptors to fetch.
-> > -              */
-> > -             wmb();
-> > -             writel(ring->next_to_use, ring->tail);
-> > +             ixgbe_xdp_ring_update_tail_locked(ring);
-> >       }
-> >
-> >       u64_stats_update_begin(&rx_ring->syncp);
-> >
+I don't think that's it.
+
+The Debounce circuit is after the 32 divider, so we have a clock rate of
+1kHz (Figure 3-35, page 275)
+
+The PIO Interrupt debouncing can use either a 32kHz or 24MHz clock, so
+the rates don't match, and given the naming would rather be clocked from
+CLK32K_LOSC.
+
+The DCXO_CTRL_REG (Section 3.13.6.13) hints at something different
+though, it says:
+
+"
+CLK16M_RC_EN
+1: Enable
+0: Disable
+The related register configuration is necessary to ensure the reset debounce
+circuit has a stable clock source.
+The first time SoC starts up, by default, the reset debounce circuit of SoC
+uses 32K divided by RC16M. In power-off, software reads the related bit to
+ensure whether EXT32K is working normally, if it is normal, first switch the
+clock source of debounce circuit to EXT32K, then close RC16M.
+Without EXT32K scenario or external RTC scenario, software confirms firstly
+whether EXT32K is working normally before switching, or software does not
+close RC16M.
+"
+
+I'm not sure why it would be useful for though
+
+> But in general I looked at how many *different* clocks this diagram
+> describes, and I count: one unaltered ("SYSTEM"), one "div by
+> 32" (RTC/debounce), and one multiplexed. My aim was to avoid
+> DT binding changes when we later discover we do need one of them for
+> something (as happened in the past). So three seemed to be the safe
+> choice here, to avoid surprises. In the worst case we just will never
+> reference one of them.
+
+My concern is the pretty much the opposite: if we ever need to remove it
+for whatever reason, if it's in the DT, we can't. While we can totally
+add it if we need it.
+
+> > Either way, what this list is must be documented.
+>=20
+> You mean to overwrite the "description" stanza for clock-output-names?
+
+Yes
+
+> And can this be done in the per-SoC parts in the later part of the
+> binding, keeping the existing description?
+
+Sure
+
+Maxime
+
+--rjkq6bidgpvhb43g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYS8p8wAKCRDj7w1vZxhR
+xRE2AQDYlqDEaHf5/1IED5BleAAc0RHp5WOyINtMRFzdAjEIzAEApmTJW3tJsci4
+DiJ796ury4C9KXYVjkGtfFmLnozADQ0=
+=3GAS
+-----END PGP SIGNATURE-----
+
+--rjkq6bidgpvhb43g--
