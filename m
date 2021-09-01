@@ -2,108 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0143FDC66
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C993FDD06
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345568AbhIAMum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:50:42 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:45752 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346071AbhIAMq3 (ORCPT
+        id S233464AbhIANDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 09:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347634AbhIANCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:46:29 -0400
-Received: by mail-ot1-f50.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso3221559otv.12;
-        Wed, 01 Sep 2021 05:45:28 -0700 (PDT)
+        Wed, 1 Sep 2021 09:02:13 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02449C00F760
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 05:46:31 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id bt14so6408984ejb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 05:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=1eYpRrKuq5ZgpaR7KFaa/OqjmqBojbgOC4rUwGRD3Vc=;
+        b=Ow4DgO+XUX/KRgaa6j9ptxEycq/MyLM3NIKnlM/8xV2ODdborxsSSthK5im3sSMObU
+         fl5QTECdev2+X/XWOi7co1t9DKm3M4VMeZCMkBMs/8QM9bWRMfXLnJ4GAje8JNTX2lxF
+         5EAsztLErwhPs58nzn0a4tf0J95x4PWHuiNa1KUoLcvYIR4fwibzswVzU+OXsNwIZ1cf
+         k8EpOQm2U1PWipRnciDcNAzcGwu8MJJfibOHo8HQL99/xIZ8x1xl6sykS2GiT0kX6/Zh
+         mKYeiH0y++sutzPO/5Jt7K1OoXffcmAGhxPF8LAHOI0VG7Nuf2zfPA2WM8DVM9tFaGo4
+         Zc7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o6/i3NZnet89UyQ9e4UbJHMSWylrIr0dvo/VnaEs/+4=;
-        b=qp/PlfbODaNOdNZ3Qms5M/CfXYLcDNGcxMwruFymfGnD18qTFL3erig1tgV34FzIUd
-         mrOxaE0N/9AZR/mqZJO4Nt+ts0tDXKbA5WPt2+eb3DvzRTXYcMn3XZ/732iVhSS4P4RH
-         YctFszQ9dNezYgJcGzrkpHFI8VNbMS47RqPcdxoP5U+I6xioYZpMmr7wt/zUOw4dkFkT
-         kg6ne2BBKQ5lQsxGajoonW1oc08sgGjhjoyx32N26p4pV6tlhtBtJ/QQeUBIVunDIE8s
-         xSXSTQ20nOPCe0qJJAr6v3dvHER/OJVpFTfoI5nAjwgXgVdFWjutVNu875daSQD64TjE
-         kMbA==
-X-Gm-Message-State: AOAM5326ESWjGrF5fO/kr0KSrFFdOIQo5WjzbzGazjxIMV0qi8MIcXXj
-        npKsRfOndwql0PaDwOkEMQ+jZSTPs5BmFxr/uqI=
-X-Google-Smtp-Source: ABdhPJz1ArAHLAscwIWQjhp8pZZZSSKCKqX+ZqvZTsLPtnV2JVffdIdHjP7mJ2V7Ci06i+AqdgwDnNlj8lb5v6Ehj0k=
-X-Received: by 2002:a9d:705d:: with SMTP id x29mr1487576otj.260.1630500327788;
- Wed, 01 Sep 2021 05:45:27 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=1eYpRrKuq5ZgpaR7KFaa/OqjmqBojbgOC4rUwGRD3Vc=;
+        b=rB06iIxRpCdR85POSpJzihuLPLRo5b+pHSUBMwTOcvs+G/zpg8Ti7C3zHPIOhRI8By
+         a5O80rjHOYgIkmn6i31llDKtUpd6Dt/8RekYEMTqENVtpNxOMImytaYe+3pYbKBKHvx1
+         ee//XezArteoFd6ZNFFceXem9iAS1+0fPuNobYDdXIjhuCaIG5E30M79ofanDEtzlGcP
+         AH2HZxT8Ta1BShCiVoYBN8s5z4jzJYfXQ7Q1hW+jyo3AHnL+UcCSBoZI4XYjrlv29QaC
+         qUFGKqPj+uJfpauxGW7Z0ga+ofABPnjC8MemVaOh9oiPCBn+QyUr2M25U1VUsCaQ5m2f
+         Umlw==
+X-Gm-Message-State: AOAM533/Cl4Z/9ZjVplpNhuNeGWfPBmjmn4L7JcVTHgQfWk9LK+mCzbD
+        IxgO712Niy8s9wcZE3xvpUnOA6pkdzzUpcYPtHf59vj61ao=
+X-Google-Smtp-Source: ABdhPJzwFCWiMdF2QV3MksklNLypVvXZKi/z/X+1s5JZAMYBu0bTnDOM5u8XDxjDfHicad97eF/0t57Vx5d3k3+uLhE=
+X-Received: by 2002:a17:906:f117:: with SMTP id gv23mr35161512ejb.406.1630500389353;
+ Wed, 01 Sep 2021 05:46:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210819004305.20203-1-deepak.sharma@amd.com> <CAJZ5v0jWX=H=aZ25PzHdH05bRJvtYbGHfyTgH_68k4kfYkZc5A@mail.gmail.com>
- <951c4f8f-30ee-77d3-afb7-46e45c84213d@amd.com>
-In-Reply-To: <951c4f8f-30ee-77d3-afb7-46e45c84213d@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 1 Sep 2021 14:45:15 +0200
-Message-ID: <CAJZ5v0ic+0MKDbebrxnyxr=rRJbqP4LmB4g1fVVAVJWh98e=MA@mail.gmail.com>
-Subject: Re: [PATCH] x86/ACPI/State: Optimize C3 entry on AMD CPUs
-To:     Deepak Sharma <deesharm@amd.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
+From:   Zach Hopkins <hopkinsza@gmail.com>
+Date:   Wed, 1 Sep 2021 08:46:18 -0400
+Message-ID: <CAMUM20j2Z7mL4w1-SkHUd1LN0h9wUs-1+aOTeZExFkRhx4=dKw@mail.gmail.com>
+Subject: kill(2) Syscall Behavior with pid=-1
+To:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 4:14 AM Deepak Sharma <deesharm@amd.com> wrote:
->
->
-> On 8/25/21 11:07 AM, Rafael J. Wysocki wrote:
-> > On Thu, Aug 19, 2021 at 2:43 AM Deepak Sharma <deepak.sharma@amd.com> wrote:
-> >> AMD CPU which support C3 shares cache. Its not necessary to flush the
-> >> caches in software before entering C3. This will cause performance drop
-> >> for the cores which share some caches. ARB_DIS is not used with current
-> >> AMD C state implementation. So set related flags correctly.
-> >>
-> >> Signed-off-by: Deepak Sharma <deepak.sharma@amd.com>
-> > Applied as 5.15 material under the edited subject "x86: ACPI: cstate:
-> > Optimize C3 entry on AMD CPUs", thanks!
->
-> I might need to send subsequent patch for this. Can you please point me
-> to git and branch where this has been merged.
+Howdy,
 
-git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+I believe I may have found an edge case where kill(2) exhibits
+unexpected behavior. The context is with only 2 processes running atop
+the kernel -- an init and a compiled C binary. According to the kill(2)
+man page, it seems that `kill(-1, SIGTERM)' should return -1 with
+errno=ESRCH in this scenario (when run in the C binary), but instead it
+returns 0.
 
-> >> ---
-> >>   arch/x86/kernel/acpi/cstate.c | 15 +++++++++++++++
-> >>   1 file changed, 15 insertions(+)
-> >>
-> >> diff --git a/arch/x86/kernel/acpi/cstate.c b/arch/x86/kernel/acpi/cstate.c
-> >> index 7de599eba7f0..62a5986d625a 100644
-> >> --- a/arch/x86/kernel/acpi/cstate.c
-> >> +++ b/arch/x86/kernel/acpi/cstate.c
-> >> @@ -79,6 +79,21 @@ void acpi_processor_power_init_bm_check(struct acpi_processor_flags *flags,
-> >>                   */
-> >>                  flags->bm_control = 0;
-> >>          }
-> >> +       if (c->x86_vendor == X86_VENDOR_AMD) {
-> >> +               /*
-> >> +                * For all AMD CPUs that support C3, caches should not be
-> >> +                * flushed by software while entering C3 type state. Set
-> >> +                * bm->check to 1 so that kernel doesn't need to execute
-> >> +                * cache flush operation.
-> >> +                */
-> >> +               flags->bm_check = 1;
-> >> +               /*
-> >> +                * In current AMD C state implementation ARB_DIS is no longer
-> >> +                * used. So set bm_control to zero to indicate ARB_DIS is not
-> >> +                * required while entering C3 type state.
-> >> +                */
-> >> +               flags->bm_control = 0;
-> >> +       }
-> >>   }
-> >>   EXPORT_SYMBOL(acpi_processor_power_init_bm_check);
-> >>
-> >> --
-> >> 2.25.1
-> >>
+Relevant parts of the linux man page are as follows:
+
+1. "If pid equals -1, then sig is sent to every process for which the
+calling process has permission to send signals, except for process 1
+(init)"
+
+2. "On success (at least one signal was sent), zero is returned"
+
+3. "on Linux the call kill(-1,sig) does not signal the calling process"
+
+In this scenario, the init and the C binary are the only processes
+running on the system. With pid=-1, no signal should be sent to init or
+itself due to exhibits 1 and 3. There are no other processes which could
+possibly be signaled, so therefore the kill() should return -1 with
+errno=ESRCH (No such process).
+
+This was found while running Linux 5.13.0 via qemu. Testing the same
+situation on NetBSD 9.2 gave the initially expected results.
+
+Thank you for your time, and let me know if there's any more information
+or context that would be helpful.
