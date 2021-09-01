@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CA63FDA40
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579583FDB90
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244606AbhIAMbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:31:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60760 "EHLO mail.kernel.org"
+        id S1344148AbhIAMmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:42:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244269AbhIAMam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:30:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFFCF6101B;
-        Wed,  1 Sep 2021 12:29:44 +0000 (UTC)
+        id S1343832AbhIAMi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:38:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DB5561157;
+        Wed,  1 Sep 2021 12:35:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499385;
-        bh=ZUv3joNRiauI2Q+hGrlJ7FIUTTNUnyfSy5gQnQtYWTY=;
+        s=korg; t=1630499702;
+        bh=PYHfj4GEWq0eTFSrJVfK1HR3dplmiuS/195zDvu1X1k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d+aVoPKqyZ2Y0ZiaEQLRjzvbxyp60d5f+gzWXIhkx3tw3VVsy5NLqkuFpvH0jZAH2
-         Qg1NfuWKtGyTBMuj0TGCDWq1IY2e5u+g8dzJxvrbcJXUlAh82ZWl55nroGV6qxK/wK
-         +UHc9i5BUDIDUVmOSQUEckLDzWFiiErnE1B3KY6M=
+        b=bi1TlI51OG28gq2JtLxnCvqRmZ0Mmfi0zsxqVvVIhv5GFyeuO5wkcjv2VIm4pHPcl
+         eKPJxk+hmBBYST/6JS7ogJGqLRzVuzRZo2OYdwg04shS5coBnfz2z3HhBb7eI/7viK
+         ssRGLwbZZCgttahOEFj2p7dlvht8li7/j4bRWa/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Tuo Li <islituo@gmail.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 13/33] IB/hfi1: Fix possible null-pointer dereference in _extend_sdma_tx_descs()
+Subject: [PATCH 5.10 052/103] perf/x86/intel/uncore: Fix integer overflow on 23 bit left shift of a u32
 Date:   Wed,  1 Sep 2021 14:28:02 +0200
-Message-Id: <20210901122251.214677096@linuxfoundation.org>
+Message-Id: <20210901122302.315941763@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
-References: <20210901122250.752620302@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,62 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuo Li <islituo@gmail.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit cbe71c61992c38f72c2b625b2ef25916b9f0d060 ]
+[ Upstream commit 0b3a8738b76fe2087f7bc2bd59f4c78504c79180 ]
 
-kmalloc_array() is called to allocate memory for tx->descp. If it fails,
-the function __sdma_txclean() is called:
-  __sdma_txclean(dd, tx);
+The u32 variable pci_dword is being masked with 0x1fffffff and then left
+shifted 23 places. The shift is a u32 operation,so a value of 0x200 or
+more in pci_dword will overflow the u32 and only the bottow 32 bits
+are assigned to addr. I don't believe this was the original intent.
+Fix this by casting pci_dword to a resource_size_t to ensure no
+overflow occurs.
 
-However, in the function __sdma_txclean(), tx-descp is dereferenced if
-tx->num_desc is not zero:
-  sdma_unmap_desc(dd, &tx->descp[0]);
+Note that the mask and 12 bit left shift operation does not need this
+because the mask SNR_IMC_MMIO_MEM0_MASK and shift is always a 32 bit
+value.
 
-To fix this possible null-pointer dereference, assign the return value of
-kmalloc_array() to a local variable descp, and then assign it to tx->descp
-if it is not NULL. Otherwise, go to enomem.
-
-Fixes: 7724105686e7 ("IB/hfi1: add driver files")
-Link: https://lore.kernel.org/r/20210806133029.194964-1-islituo@gmail.com
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
-Tested-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Acked-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: ee49532b38dd ("perf/x86/intel/uncore: Add IMC uncore support for Snow Ridge")
+Addresses-Coverity: ("Unintentional integer overflow")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Link: https://lore.kernel.org/r/20210706114553.28249-1-colin.king@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hfi1/sdma.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ arch/x86/events/intel/uncore_snbep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
-index 291c12f588b5..38258de75a94 100644
---- a/drivers/infiniband/hw/hfi1/sdma.c
-+++ b/drivers/infiniband/hw/hfi1/sdma.c
-@@ -3055,6 +3055,7 @@ static void __sdma_process_event(struct sdma_engine *sde,
- static int _extend_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
- {
- 	int i;
-+	struct sdma_desc *descp;
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index 9c936d06fb61..2701f87a9a7c 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -4669,7 +4669,7 @@ static void __snr_uncore_mmio_init_box(struct intel_uncore_box *box,
+ 		return;
  
- 	/* Handle last descriptor */
- 	if (unlikely((tx->num_desc == (MAX_DESC - 1)))) {
-@@ -3075,12 +3076,10 @@ static int _extend_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
- 	if (unlikely(tx->num_desc == MAX_DESC))
- 		goto enomem;
+ 	pci_read_config_dword(pdev, SNR_IMC_MMIO_BASE_OFFSET, &pci_dword);
+-	addr = (pci_dword & SNR_IMC_MMIO_BASE_MASK) << 23;
++	addr = ((resource_size_t)pci_dword & SNR_IMC_MMIO_BASE_MASK) << 23;
  
--	tx->descp = kmalloc_array(
--			MAX_DESC,
--			sizeof(struct sdma_desc),
--			GFP_ATOMIC);
--	if (!tx->descp)
-+	descp = kmalloc_array(MAX_DESC, sizeof(struct sdma_desc), GFP_ATOMIC);
-+	if (!descp)
- 		goto enomem;
-+	tx->descp = descp;
- 
- 	/* reserve last descriptor for coalescing */
- 	tx->desc_limit = MAX_DESC - 1;
+ 	pci_read_config_dword(pdev, mem_offset, &pci_dword);
+ 	addr |= (pci_dword & SNR_IMC_MMIO_MEM0_MASK) << 12;
 -- 
 2.30.2
 
