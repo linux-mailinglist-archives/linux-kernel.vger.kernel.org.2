@@ -2,154 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959B33FE172
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB643FE174
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346661AbhIARvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        id S236468AbhIARw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346526AbhIARvX (ORCPT
+        with ESMTP id S1346725AbhIARwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:51:23 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0A3C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 10:50:17 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id q21so133747plq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:50:17 -0700 (PDT)
+        Wed, 1 Sep 2021 13:52:22 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA9CC0612A8
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 10:51:19 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso792558otu.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:51:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lTCwx671qN0Uv7CtZL+BVS1+Oy6Uwn1k3lSPRkK+jKg=;
-        b=tX+iQK/XObeHHie9CEoItYwWrUuxY48SNGKS8OIkVuSOl9Zy8ONZjSy2CselzwLN6U
-         fyDvLPYuMEHd2HtKTTBEpeJFwD9IiR/4nv0idT+PmOH6YFqIuelzoQtvb0nTX4PVmdXv
-         OWdqauuhaUkvyAW9xaC+yanWAiLb+viasEaEDcErrr4YaU66XQV37GdSUJlrAI18OJ58
-         Xf2pXFmsPLt9vio2mK5Noy6PET+oEXr+jLkXY/5X2AQu7JJ++uEMK2w4L6v0f84FrkGP
-         aOmqGtD7El0+sCcQxz1LVQjZB3IidTm9OdswbBH+7IPFy1A9z08/jb25AhGGV9cLIDNs
-         V6HA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qMRUOCqOVIv4foBGm6C/Vv7PH/IIzLrp9kfxhKpHcIw=;
+        b=jvKPcdqC0GlMbzK5toeSIUrMUWAbAc8Bx0ZbhT5SUpXJImrj7qGGaxgiMzLDQe8lHp
+         N+3YMKrP7gwnmMBlb2PjUKz/GKXFuuq0rvJJzFsMkqXYjyDEfT5BOBTzgYNmocur7yg7
+         QFWdr7YSYxJmZxrdlwFf65dcz7azzgc6/ZBlKprNBwBSDCE3O4dhMSsEi9S0sbSax3Cz
+         RYi4EJPv1c/ipRVIcMUaENLTR3xl5bSqOm+Yqqek4Z2etCa3c0nTpp7qR3aHk4vuZsXF
+         +kv5Mh3f4h9qlOPnQvXDEqCdwdCv348VH083aYAQo4hjDyPHLpMio+Mjz1dt5V4mQg+Q
+         CZzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lTCwx671qN0Uv7CtZL+BVS1+Oy6Uwn1k3lSPRkK+jKg=;
-        b=PuDMb40q/wsPGIfEG4gfgw8utkQF0aHvmArLpLSLfbQBOb6qr4V0pvAiJcw1elpL3g
-         XquM3d3pdI/RV03z7cqMVfzsPONE0IT70rGSsCuY5BejJI4nn71gPKt54KXwtDLwYeDt
-         mvQX5hfUmqkdx3AI21Aa34tmBEEkb3eqTVvQzxz21EX7NHhph5K+aCwkGhok1FMVOEov
-         EVqUZlzIDsNTpVO19Sj5DTeckPw7UmUtrUtvApQNQ3G+MNML/SSlQh2MJuh+rMYPgxLw
-         yYCIw8IpfelxI0uz0YdGpcx47VFYQSG7sMRnqs1DbJBAJjpLMZH7mIWiy1k5Zw4kcpmG
-         dCwg==
-X-Gm-Message-State: AOAM530fcdK6GgB4LfIP0Ko+4/lMG/K0hlOSjmQnUO5kp3CIyZMpd8Ui
-        qZOGw3RXFR5LqJdFWVrgW9oNSA==
-X-Google-Smtp-Source: ABdhPJyTBcvoxYT1UazLo75DFYLRiAcTN2BKdr2FfvtOwvNd4cqBc9u77mrXNn/DJzvrSUbkCYr6XQ==
-X-Received: by 2002:a17:902:f683:b0:138:fe47:4e47 with SMTP id l3-20020a170902f68300b00138fe474e47mr675191plg.60.1630518617183;
-        Wed, 01 Sep 2021 10:50:17 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id o10sm122146pfk.212.2021.09.01.10.50.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 10:50:16 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 17:50:12 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     jejb@linux.ibm.com, Andy Lutomirski <luto@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
- private memory
-Message-ID: <YS+9VHzC0XQF/9NK@google.com>
-References: <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
- <YS6lIg6kjNPI1EgF@google.com>
- <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
- <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
- <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
- <a259e10d-39c9-c4a5-0ab4-f42a1b9bfaee@redhat.com>
- <0d6b2a7e22f5e27e03abc21795124ccd66655966.camel@linux.ibm.com>
- <1a4a1548-7e14-c2b4-e210-cc60a2895acd@redhat.com>
- <4b863492fd33dce28a3a61662d649987b7d5066d.camel@linux.ibm.com>
- <214ca837-3102-d6d1-764e-6b4cd1bab368@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qMRUOCqOVIv4foBGm6C/Vv7PH/IIzLrp9kfxhKpHcIw=;
+        b=Tg0GL0MJCW1i4ukXaMTxmkDPF0fqug+6MurweL9PtleDoHTp1r3lfYAnpmNIWQ0r3V
+         6drJxGzWuepJDDMfmza1QxSsP0e6loBcciosJn3wrf+zvCDg8DdAr2QUo6GZVRuctcR+
+         A2n96dvnFIK2/BXxDpaGFN7oAhal3rlcfw4bL+21m0vBatB8bf6uiNf5SGWMpvM24LHi
+         1fEnY4PTUHSrE64JFF7diypi7mqrCR25Y3lKz+9khPUXszra78GE3Ve64/BFe8BpdZ4Y
+         MRvagr15cxN/kFLcL9MoWnKGFZ3h6Vx3m5GboXUFXQxAXixSwRsPC/6mLpbtYoTfnhga
+         kLNQ==
+X-Gm-Message-State: AOAM532LPOR3VWdPG0BpL447/MR+uSk7iJJz1HTQvSnnFmCA9670cRD3
+        lNNVDfMoHHllCEdRF4egPRQ8TBvDOYZtANbEn3VRXA==
+X-Google-Smtp-Source: ABdhPJwA4LeX6YWvTfv/OV5qP4snN9Vrjl/4j4SDhVOMXuJBREbvZKw7o94RdZH1pJxLystNlCfwgU7MTJpMPOQepdQ=
+X-Received: by 2002:a05:6830:88:: with SMTP id a8mr521010oto.233.1630518678382;
+ Wed, 01 Sep 2021 10:51:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <214ca837-3102-d6d1-764e-6b4cd1bab368@redhat.com>
+References: <your-ad-here.call-01630505035-ext-2999@work.hours> <patch.git-04dd26be3043.your-ad-here.call-01630504868-ext-6188@work.hours>
+In-Reply-To: <patch.git-04dd26be3043.your-ad-here.call-01630504868-ext-6188@work.hours>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 1 Sep 2021 19:51:06 +0200
+Message-ID: <CANpmjNOJN4yG8g+Qz0icppRK6coVdN5yKMhyTCQeBRFq7_YpfA@mail.gmail.com>
+Subject: Re: [PATCH] s390/unwind: use current_frame_address() to unwind
+ current task
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, qemu-s390x <qemu-s390x@nongnu.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021, David Hildenbrand wrote:
-> > > > Well not necessarily, but it depends how clever we want to get.  If
-> > > > you look over on the OVMF/edk2 list, there's a proposal to do guest
-> > > > migration via a mirror VM that invokes a co-routine embedded in the
-> > > > OVMF binary:
-> > > 
-> > > Yes, I heard of that. "Interesting" design.
-> > 
-> > Heh, well what other suggestion do you have?  The problem is there
-> > needs to be code somewhere to perform some operations that's trusted by
-> > both the guest and the host.  The only element for a confidential VM
-> > that has this shared trust is the OVMF firmware, so it seems logical to
-> > use it.
-> 
-> <offtopic>
-> 
-> Let me put it this way: I worked with another architecture that doesn't
-> fault on access of a secure page, but instead automatically exports/encrypts
-
-I thought s390 does fault on insecure accesses to secure pages, and it's the
-kernel's fault handler that "automatically" converts the page?  E.g. trap 0x3d
--> do_secure_storage_access() -> arch_make_page_accessible().
-
-> it so it can be swapped. It doesn't send a MCE and kills the host. It
-> doesn't require fancy code in the guest firmware to export a page.
-> 
-> The code runs in the ultravisor -- yes, I'm talking about s390x. Now, I am
-> not an expert on all of the glory details of TDX, SEV, ... to say which
-> attack surface they introduced with that design, and if it can't be
-> mitigated. I can only assume that there are real reasons (e.g., supporting
-> an ultravisor is problematic, patents? ;) ) why x86-64 is different.
+On Wed, 1 Sept 2021 at 16:06, Vasily Gorbik <gor@linux.ibm.com> wrote:
+> current_stack_pointer() simply returns current value of %r15. If
+> current_stack_pointer() caller allocates stack (which is the case in
+> unwind code) %r15 points to a stack frame allocated for callees, meaning
+> current_stack_pointer() caller (e.g. stack_trace_save) will end up in
+> the stacktrace. This is not expected by stack_trace_save*() callers and
+> causes problems.
 >
-> So whenever I see something really complicated to work around such issues,
-> it feels to me like a hardware/platform limitation is making our life hard
-> and forces us to come up with such "interesting" designs.
+> current_frame_address() on the other hand returns function stack frame
+> address, which matches %r15 upon function invocation. Using it in
+> get_stack_pointer() makes it more aligned with x86 implementation
+> (according to BACKTRACE_SELF_TEST output) and meets stack_trace_save*()
+> caller's expectations, notably KCSAN.
+>
+> Also make sure unwind_start is always inlined.
+>
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Suggested-by: Marco Elver <elver@google.com>
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 
-Oh, 100% agree, the TDX "limitation" of poisoning cache line and leaving a land
-mine to trip over is absolutely abhorrent.  SEV-ES and SEV aren't much better in
-that they happily corrupt guest memory.  I am quite jealous of s390 behavior of
-simply faulting on the actual access.
+Tested-by: Marco Elver <elver@google.com>
 
-SEV-SNP does fault on the access and could do something similar to s390, but I'm
-not totally convinced that's actually desirable as it has ramifications with
-respect to debugging host and/or guest.  But it'd be nice to have the option...
+Thanks!
 
-> Sure, it's logical in this context, but it feels like "The house doesn't
-
-Heh, for some definitions of "logical".
-
-> have a door, so I'll have to climb through the window.". It gets the job
-> done but isn't ideally what you'd want to have. If you understand what I am
-> trying to say :)
-> 
-> </offtopic>
+> ---
+>  arch/s390/include/asm/stacktrace.h | 20 ++++++++++----------
+>  arch/s390/include/asm/unwind.h     |  8 ++++----
+>  2 files changed, 14 insertions(+), 14 deletions(-)
+>
+> diff --git a/arch/s390/include/asm/stacktrace.h b/arch/s390/include/asm/stacktrace.h
+> index 3d8a4b94c620..22c41d7fd95c 100644
+> --- a/arch/s390/include/asm/stacktrace.h
+> +++ b/arch/s390/include/asm/stacktrace.h
+> @@ -34,16 +34,6 @@ static inline bool on_stack(struct stack_info *info,
+>         return addr >= info->begin && addr + len <= info->end;
+>  }
+>
+> -static __always_inline unsigned long get_stack_pointer(struct task_struct *task,
+> -                                                      struct pt_regs *regs)
+> -{
+> -       if (regs)
+> -               return (unsigned long) kernel_stack_pointer(regs);
+> -       if (task == current)
+> -               return current_stack_pointer();
+> -       return (unsigned long) task->thread.ksp;
+> -}
+> -
+>  /*
+>   * Stack layout of a C stack frame.
+>   */
+> @@ -74,6 +64,16 @@ struct stack_frame {
+>         ((unsigned long)__builtin_frame_address(0) -                    \
+>          offsetof(struct stack_frame, back_chain))
+>
+> +static __always_inline unsigned long get_stack_pointer(struct task_struct *task,
+> +                                                      struct pt_regs *regs)
+> +{
+> +       if (regs)
+> +               return (unsigned long) kernel_stack_pointer(regs);
+> +       if (task == current)
+> +               return current_frame_address();
+> +       return (unsigned long) task->thread.ksp;
+> +}
+> +
+>  /*
+>   * To keep this simple mark register 2-6 as being changed (volatile)
+>   * by the called function, even though register 6 is saved/nonvolatile.
+> diff --git a/arch/s390/include/asm/unwind.h b/arch/s390/include/asm/unwind.h
+> index de9006b0cfeb..5ebf534ef753 100644
+> --- a/arch/s390/include/asm/unwind.h
+> +++ b/arch/s390/include/asm/unwind.h
+> @@ -55,10 +55,10 @@ static inline bool unwind_error(struct unwind_state *state)
+>         return state->error;
+>  }
+>
+> -static inline void unwind_start(struct unwind_state *state,
+> -                               struct task_struct *task,
+> -                               struct pt_regs *regs,
+> -                               unsigned long first_frame)
+> +static __always_inline void unwind_start(struct unwind_state *state,
+> +                                        struct task_struct *task,
+> +                                        struct pt_regs *regs,
+> +                                        unsigned long first_frame)
+>  {
+>         task = task ?: current;
+>         first_frame = first_frame ?: get_stack_pointer(task, regs);
+> --
+> 2.25.4
