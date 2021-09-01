@@ -2,216 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284893FE2B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9D83FE2B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244861AbhIATCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36940 "EHLO
+        id S234453AbhIATCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347659AbhIATBm (ORCPT
+        with ESMTP id S244983AbhIATCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:01:42 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E08C061575;
-        Wed,  1 Sep 2021 12:00:45 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id k65so541630yba.13;
-        Wed, 01 Sep 2021 12:00:45 -0700 (PDT)
+        Wed, 1 Sep 2021 15:02:14 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F206C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 12:01:17 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id t19so1033411lfe.13
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 12:01:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rSQvSdNEB0WdYPKaFlNQd28Ylc/UkTwMjKACbNyZydg=;
-        b=crpOTMhXZ6DtUin5kX4I/74nObdvgvulsy9i1cF275A1w4UAGHJgN1/IpHk4FUtpjE
-         MpfFceTnvgneptUBSrzOSzGHDFkNWxlnzWUOhEfpNYYuqADqLJwLmbPVnhk4jSL5Y82U
-         3pr7sGU2BteRLfS8MTQnpf7NHcjR2178XJ/SPxTjR66J5KN2u3vhJQ1FHB7ypmk81eWR
-         iQLc96TAjU8YywNjDOo5g4KqogqHa/dLflVa0Vo78QJmMXEOstAU83C8cuL6tyUW7CqV
-         /HCHcaQ7RPtZj4WSxyVdqoIlq0L3G9aJRVB1cl3bIPH81geUwToIvXj5ndvb2dVgXYlY
-         NdnA==
+        bh=npd1RU7mbNsF3k0GeBkr9d4yP6Ob5CEAADTVG3CYCjw=;
+        b=ErHaIpxZiEMxxjypsttdmUORwYq4vP1VZ+xYSjVl8afEmUE0mZp3Aj9x4LVzPgegFp
+         QxCWY5+Gxwtt2L2qth2RgEkh1nozrNfG4UGJESfbueNOy10Bzrii0P8RVC60ibu3uR99
+         Ri6W/fH6hsL0OtQOBkjpL0U0EcWE6CxP3PMa4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rSQvSdNEB0WdYPKaFlNQd28Ylc/UkTwMjKACbNyZydg=;
-        b=rEGdO4rXTgEtQ+2RTQTaUh0ieDaQziBmWHTqmk7OaGFFtIkIMPY7Mf5CUlirdt5xin
-         CiWuZtIlgmcY3Y39CAat/I1BVNxdRQ/wET3W9tbfj1KjWgfPIrKdxrzOTv+m0a8dHV2m
-         pxSmQmqAROhtnB07MPu0JtssKVrwmBqnsq163OX09pknm1+81UqJtNjFUYp+/y7JhL8L
-         y5m1kr+cdoWZ1OnkCIK1uhRyOWh1kPA0XQ/vNr/iEqvQ3YFWpaBcItid4b1rVmAx1KhS
-         QWHBRxXFVdjW6kIhpXkm83axGBbtHxPAvnTHctXxbKBKxfmbNnvRJDShNMqmsSK1Zzcv
-         2sGQ==
-X-Gm-Message-State: AOAM531tmewDIcwCfU1KE4FwP2fZHVh1NZItVeevZHJPfVcjUZI93LuB
-        o5xvCM3xHJzXiqftnBOBf6Er/q074MtTjDnx7/0=
-X-Google-Smtp-Source: ABdhPJwbwFt3tEsWWSkU1jbRgG1p5Z2O7MqkQm8mPd16UuWi5zRxmXnfOYQF48IsEQl7/Zc3oh30ahQZccV/9LjOj/8=
-X-Received: by 2002:a05:6902:70b:: with SMTP id k11mr940462ybt.510.1630522844468;
- Wed, 01 Sep 2021 12:00:44 -0700 (PDT)
+        bh=npd1RU7mbNsF3k0GeBkr9d4yP6Ob5CEAADTVG3CYCjw=;
+        b=Hy/TJe1jNKkRCVpSc0AFAil0DJmKlypXIqFl2tX5/8mcxTiBGhZ/p/juT0MDiqX//O
+         l1DnsNIlYqOzEECujbFazA80ttN5K4E0ztDE5cqJC7egPs5JbSLsNQ8+J7ILglDpLdeE
+         Y6+1f8nXp5XDFPkpHyGPrJIFu7cx9LJOhCqlAWIcYLHpcDdayQYkZgizwJrzPepUTU7P
+         M6O5XmXhNSyrOjzhxBv5ADge3tDZfkBIkS/nRFMRgASG0EDeucqTLQLKbk+LriC92E0u
+         NujIxTSUwpvfoMtXULclLz4vo3c1Ga8YaJ9KIMoJswzoo6VcwN/2lDtUpEsDd7fb9Fru
+         uMLw==
+X-Gm-Message-State: AOAM5333ROTy0McDPimxS88xJInHAYRt1qxkD8TOr9vJR3/J4VWOXqQq
+        W02Sm5CaSI9mzpoyCPAMYi0tVjf0NF87/QBE
+X-Google-Smtp-Source: ABdhPJwqJXhGTgyddOtotVk7XboI0KL+uIZ88kvApBaG7EJ8eyIgwTzAtjDzweICnxblS2U2dZwieQ==
+X-Received: by 2002:a05:6512:32ca:: with SMTP id f10mr629199lfg.557.1630522874671;
+        Wed, 01 Sep 2021 12:01:14 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id j20sm31304lfr.248.2021.09.01.12.01.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 12:01:14 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id i28so761759ljm.7
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 12:01:13 -0700 (PDT)
+X-Received: by 2002:a2e:3004:: with SMTP id w4mr888035ljw.465.1630522873162;
+ Wed, 01 Sep 2021 12:01:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210901003517.3953145-1-songliubraving@fb.com>
- <20210901003517.3953145-3-songliubraving@fb.com> <CAEf4BzaPuPJKnVJ+Bi4aNs57A2x0jRnM3V-ud37U6V=wThHAYQ@mail.gmail.com>
- <0B76C4B1-F113-41F4-A141-163A2A71F4B8@fb.com>
-In-Reply-To: <0B76C4B1-F113-41F4-A141-163A2A71F4B8@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 1 Sep 2021 12:00:33 -0700
-Message-ID: <CAEf4BzbcbXD5jzpxMKi8_nnRBCfDCnb=Dst-Nk34xSPRuTacvw@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 2/3] bpf: introduce helper bpf_get_branch_snapshot
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Kernel Team <Kernel-team@fb.com>
+References: <20210831203727.3852294-1-kuba@kernel.org>
+In-Reply-To: <20210831203727.3852294-1-kuba@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 1 Sep 2021 12:00:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjB_zBwZ+WR9LOpvgjvaQn=cqryoKigod8QnZs=iYGEhA@mail.gmail.com>
+Message-ID: <CAHk-=wjB_zBwZ+WR9LOpvgjvaQn=cqryoKigod8QnZs=iYGEhA@mail.gmail.com>
+Subject: Re: [GIT PULL] Networking for v5.15
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 8:41 AM Song Liu <songliubraving@fb.com> wrote:
+On Tue, Aug 31, 2021 at 1:37 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
->
->
-> > On Aug 31, 2021, at 9:02 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Aug 31, 2021 at 7:01 PM Song Liu <songliubraving@fb.com> wrote:
-> >>
-> >> Introduce bpf_get_branch_snapshot(), which allows tracing pogram to get
-> >> branch trace from hardware (e.g. Intel LBR). To use the feature, the
-> >> user need to create perf_event with proper branch_record filtering
-> >> on each cpu, and then calls bpf_get_branch_snapshot in the bpf function.
-> >> On Intel CPUs, VLBR event (raw event 0x1b00) can be use for this.
-> >>
-> >> Signed-off-by: Song Liu <songliubraving@fb.com>
-> >> ---
-> >> include/uapi/linux/bpf.h       | 22 +++++++++++++++++++
-> >> kernel/bpf/trampoline.c        |  3 ++-
-> >> kernel/trace/bpf_trace.c       | 40 ++++++++++++++++++++++++++++++++++
-> >> tools/include/uapi/linux/bpf.h | 22 +++++++++++++++++++
-> >> 4 files changed, 86 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >> index 791f31dd0abee..c986e6fad5bc0 100644
-> >> --- a/include/uapi/linux/bpf.h
-> >> +++ b/include/uapi/linux/bpf.h
-> >> @@ -4877,6 +4877,27 @@ union bpf_attr {
-> >>  *             Get the struct pt_regs associated with **task**.
-> >>  *     Return
-> >>  *             A pointer to struct pt_regs.
-> >> + *
-> >> + * long bpf_get_branch_snapshot(void *entries, u32 size, u64 flags)
-> >> + *     Description
-> >> + *             Get branch trace from hardware engines like Intel LBR. The
-> >> + *             branch trace is taken soon after the trigger point of the
-> >> + *             BPF program, so it may contain some entries after the
-> >> + *             trigger point. The user need to filter these entries
-> >> + *             accordingly.
-> >> + *
-> >> + *             The data is stored as struct perf_branch_entry into output
-> >> + *             buffer *entries*. *size* is the size of *entries* in bytes.
-> >> + *             *flags* is reserved for now and must be zero.
-> >> + *
-> >> + *     Return
-> >> + *             On success, number of bytes written to *buf*. On error, a
-> >> + *             negative value.
-> >> + *
-> >> + *             **-EINVAL** if arguments invalid or **size** not a multiple
-> >> + *             of **sizeof**\ (**struct perf_branch_entry**\ ).
-> >> + *
-> >> + *             **-ENOENT** if architecture does not support branch records.
-> >>  */
-> >> #define __BPF_FUNC_MAPPER(FN)          \
-> >>        FN(unspec),                     \
-> >> @@ -5055,6 +5076,7 @@ union bpf_attr {
-> >>        FN(get_func_ip),                \
-> >>        FN(get_attach_cookie),          \
-> >>        FN(task_pt_regs),               \
-> >> +       FN(get_branch_snapshot),        \
-> >>        /* */
-> >>
-> >> /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> >> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> >> index fe1e857324e66..39eaaff81953d 100644
-> >> --- a/kernel/bpf/trampoline.c
-> >> +++ b/kernel/bpf/trampoline.c
-> >> @@ -10,6 +10,7 @@
-> >> #include <linux/rcupdate_trace.h>
-> >> #include <linux/rcupdate_wait.h>
-> >> #include <linux/module.h>
-> >> +#include <linux/static_call.h>
-> >>
-> >> /* dummy _ops. The verifier will operate on target program's ops. */
-> >> const struct bpf_verifier_ops bpf_extension_verifier_ops = {
-> >> @@ -526,7 +527,7 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
-> >> }
-> >>
-> >> #define NO_START_TIME 1
-> >> -static u64 notrace bpf_prog_start_time(void)
-> >> +static __always_inline u64 notrace bpf_prog_start_time(void)
-> >> {
-> >>        u64 start = NO_START_TIME;
-> >>
-> >> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> >> index 8e2eb950aa829..a8ec3634a3329 100644
-> >> --- a/kernel/trace/bpf_trace.c
-> >> +++ b/kernel/trace/bpf_trace.c
-> >> @@ -1017,6 +1017,44 @@ static const struct bpf_func_proto bpf_get_attach_cookie_proto_pe = {
-> >>        .arg1_type      = ARG_PTR_TO_CTX,
-> >> };
-> >>
-> >> +static DEFINE_PER_CPU(struct perf_branch_snapshot, bpf_perf_branch_snapshot);
-> >> +
-> >> +BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
-> >> +{
-> >> +#ifndef CONFIG_X86
-> >> +       return -ENOENT;
-> >
-> > nit: -EOPNOTSUPP probably makes more sense for this?
->
-> I had -EOPNOTSUPP in earlier version. But bpf_read_branch_records uses
-> -ENOENT, so I updated here in v4. I guess -ENOENT also makes sense? I
-> won't insist if you think -EOPNOTSUPP is better.
+> No conflicts at the time of writing. There were conflicts with
+> char-misc but I believe Greg dropped the commits in question.
 
-Hm... ok, I guess consistency takes priority, let's keep -ENOENT then.
+Hmm. I already merged this earlier, but didn't notice a new warning on
+my desktop:
 
->
-> >
-> >> +#else
-> >> +       static const u32 br_entry_size = sizeof(struct perf_branch_entry);
-> >> +       u32 to_copy;
-> >> +
-> >> +       if (unlikely(flags))
-> >> +               return -EINVAL;
-> >> +
-> >> +       if (!buf || (size % br_entry_size != 0))
-> >> +               return -EINVAL;
-> >> +
-> >> +       static_call(perf_snapshot_branch_stack)(this_cpu_ptr(&bpf_perf_branch_snapshot));
-> >
-> > First, you have four this_cpu_ptr(&bpf_perf_branch_snapshot)
-> > invocations in this function, probably cleaner to store the pointer in
-> > local variable?
-> >
-> > But second, this still has the reentrancy problem, right? And further,
-> > we copy the same LBR data twice (to per-cpu buffer and into
-> > user-provided destination).
-> >
-> > What if we change perf_snapshot_branch_stack signature to this:
-> >
-> > int perf_snapshot_branch_stack(struct perf_branch_entry *entries, int
-> > max_nr_entries);
-> >
-> > with the semantics that it will copy only min(max_nr_entreis,
-> > PERF_MAX_BRANCH_RECORDS) * sizeof(struct perf_branch_entry) bytes.
-> > That way we can copy directly into a user-provided buffer with no
-> > per-cpu storage. Of course, perf_snapshot_branch_stack will return
-> > number of entries copied, either as return result, or if static calls
-> > don't support that, as another int *nr_entries output argument.
->
-> I like this idea. Once we get feedback from Peter, I will change this
-> in v5.
+  RTNL: assertion failed at net/wireless/reg.c (4025)
+  WARNING: CPU: 60 PID: 1720 at net/wireless/reg.c:4025
+regulatory_set_wiphy_regd_sync+0x7f/0x90 [cfg80211]
+  Call Trace:
+   iwl_mvm_init_mcc+0x170/0x190 [iwlmvm]
+   iwl_op_mode_mvm_start+0x824/0xa60 [iwlmvm]
+   iwl_opmode_register+0xd0/0x130 [iwlwifi]
+   init_module+0x23/0x1000 [iwlmvm]
 
-Sounds good, thanks!
+and
 
->
-> Thanks,
-> Song
->
+  RTNL: assertion failed at net/wireless/reg.c (3106)
+  WARNING: CPU: 60 PID: 1720 at net/wireless/reg.c:3106
+reg_process_self_managed_hint+0x26c/0x280 [cfg80211]
+  Call Trace:
+   regulatory_set_wiphy_regd_sync+0x3a/0x90 [cfg80211]
+   iwl_mvm_init_mcc+0x170/0x190 [iwlmvm]
+   iwl_op_mode_mvm_start+0x824/0xa60 [iwlmvm]
+   iwl_opmode_register+0xd0/0x130 [iwlwifi]
+   init_module+0x23/0x1000 [iwlmvm]
+
+and
+
+  RTNL: assertion failed at net/wireless/core.c (84)
+  WARNING: CPU: 60 PID: 1720 at net/wireless/core.c:84
+wiphy_idx_to_wiphy+0x97/0xd0 [cfg80211]
+  Call Trace:
+   nl80211_common_reg_change_event+0xf9/0x1e0 [cfg80211]
+   reg_process_self_managed_hint+0x23d/0x280 [cfg80211]
+   regulatory_set_wiphy_regd_sync+0x3a/0x90 [cfg80211]
+   iwl_mvm_init_mcc+0x170/0x190 [iwlmvm]
+   iwl_op_mode_mvm_start+0x824/0xa60 [iwlmvm]
+   iwl_opmode_register+0xd0/0x130 [iwlwifi]
+   init_module+0x23/0x1000 [iwlmvm]
+
+and
+
+  RTNL: assertion failed at net/wireless/core.c (61)
+  WARNING: CPU: 60 PID: 1720 at net/wireless/core.c:61
+wiphy_idx_to_wiphy+0xbf/0xd0 [cfg80211]
+  Call Trace:
+   nl80211_common_reg_change_event+0xf9/0x1e0 [cfg80211]
+   reg_process_self_managed_hint+0x23d/0x280 [cfg80211]
+   regulatory_set_wiphy_regd_sync+0x3a/0x90 [cfg80211]
+   iwl_mvm_init_mcc+0x170/0x190 [iwlmvm]
+   iwl_op_mode_mvm_start+0x824/0xa60 [iwlmvm]
+   iwl_opmode_register+0xd0/0x130 [iwlwifi]
+   init_module+0x23/0x1000 [iwlmvm]
+
+They all seem to have that same issue, and it looks like the fix would
+be to get the RTN lock in iwl_mvm_init_mcc(), but I didn't really look
+into it very much.
+
+This is on my desktop, and I actually don't _use_ the wireless on this
+machine. I assume it still works despite the warnings, but they should
+get fixed.
+
+I *don't* see these warnings on my laptop where I actually use
+wireless, but that one uses ath10k_pci, so it seems this is purely a
+iwlwifi issue.
+
+I can't be the only one that sees this. Hmm?
+
+                 Linus
