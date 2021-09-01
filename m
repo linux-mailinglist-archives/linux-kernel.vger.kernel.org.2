@@ -2,144 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FB83FE19E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E7B3FE1A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236885AbhIAR7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:59:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23735 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233691AbhIAR7v (ORCPT
+        id S1344186AbhIASAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235904AbhIASAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:59:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630519131;
+        Wed, 1 Sep 2021 14:00:10 -0400
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8C6C061575;
+        Wed,  1 Sep 2021 10:59:13 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4H0BdW0VV4zQjbT;
+        Wed,  1 Sep 2021 19:59:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-language:content-type
+        :content-type:in-reply-to:mime-version:date:date:message-id:from
+        :from:references:subject:subject:received; s=mail20150812; t=
+        1630519147; bh=BMj3hHFHRab3vlCbBIFiLrtUb0q1SMSErlMPxYYkAjs=; b=u
+        9Im9+uznUf76xF68xyuBs6wbDnxO22FyxbuEJJSHD5m6Iu10WU8ckS8LvHbUgQ+H
+        UlyczrgAZjk6g8zRnvm7Df5qUIzcdKrOQiwraE8owPfVUvgFcrOL36dgXXlOlJ83
+        HQgtVdtefYHCrG5QIhb2CfN1U4GFje1FwCuWA13WVuqakZqbyfZAjNldYVGljAo7
+        13XaP3Lxb7YEDgvTBW9kdovxJ5ODwcdlBjyr+ezHwdZZie7JSM0vM3sToU8nalsF
+        zM1z8Tv+7jIlmj3GDeS9XDCo4uEh7z+OYgFg5yxVa3drt923zzdKwL9wi2ynEOn7
+        pcWlKDeQSmTDuAiYHpBHA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1630519149;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=i0smCMwmVwKCQLrLP9ThmbbkbGXWzmsdDycWPMRoaPI=;
-        b=FqeA51nNxEr45U1Hodx0kjGDpjN84euYLpZkB/Olc6ERQETkVDdUyvNFdNrUMINXfpDjx2
-        jD3q8IGyqDA7ctFe1YpIY195KoviQ+hA+yoqp5Vw9gYzfjwXybt3GFW8a2p9a9Lla8JeBK
-        nLUF8H90m04e8i111DlOWekTLQZ6Djw=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-RvHv0luAMrSHHJ8-8JnbJQ-1; Wed, 01 Sep 2021 13:58:50 -0400
-X-MC-Unique: RvHv0luAMrSHHJ8-8JnbJQ-1
-Received: by mail-wm1-f71.google.com with SMTP id r4-20020a1c4404000000b002e728beb9fbso135945wma.9
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:58:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=i0smCMwmVwKCQLrLP9ThmbbkbGXWzmsdDycWPMRoaPI=;
-        b=aFNIhf3l5xq2OoYmKAbs9sy5CqoDzxqubol/6IgP3R6Y43sFGMRFBIlaH1Lw3jlocT
-         5VwALe+GigK40QdSBEhCj0YpTI1tJTZT59C01UD3uOTOI0yO0LZ4kDU2q/LjzLYo3zR6
-         zE1dfntsr6AztyFw1gkfLq7x678mcL63lE5THV8nqiyQ0hgctRhyfZoQPMnAWfvmxfQk
-         wV+Ew9MmzadNeb8ai0viBaBY4sbwJp8HoPWugxi+XI3wuvrSiUyh4uqo5i0UNLpGEd+R
-         a3N2uG6FBnIq9yv0+iAVw6qvs+LM/u9g/hnPBNGIoCVZrv6l6+XVpxlNFaSjiANSJ+5D
-         XvFA==
-X-Gm-Message-State: AOAM530vwQX7cJn2CsDHpL3ySkDGsVu+GpKZ1F171mPGwYYcLbMGOu/F
-        OdieKTCx1uS7LB82tyv9UN8UB/OUN0w7hz3Zmlg1fpGrDxVIfFK53yfXNzT3hqTAnbugspyCeYe
-        7N/9fjrrAtF/8IR7k+cnUBZW9
-X-Received: by 2002:a1c:1904:: with SMTP id 4mr632316wmz.93.1630519129027;
-        Wed, 01 Sep 2021 10:58:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJznn407qu+Ost99CYfe2lcliOS2h2St5mYG0lHHVc+4MOX4G0xXAv7RYLIHHtKhlQzOV2LngA==
-X-Received: by 2002:a1c:1904:: with SMTP id 4mr632301wmz.93.1630519128815;
-        Wed, 01 Sep 2021 10:58:48 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
-        by smtp.gmail.com with ESMTPSA id t14sm224966wmi.12.2021.09.01.10.58.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 10:58:48 -0700 (PDT)
-Subject: Re: [PATCH v2 6/9] mm: free user PTE page table pages
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
-        mika.penttila@nextfour.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        songmuchun@bytedance.com
-References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
- <20210819031858.98043-7-zhengqi.arch@bytedance.com>
- <20210901135314.GA1859446@nvidia.com>
- <0c9766c9-6e8b-5445-83dc-9f2b71a76b4f@redhat.com>
- <20210901153247.GJ1721383@nvidia.com>
- <7789261d-6a64-c47b-be6c-c9be680e5d33@redhat.com>
- <20210901161613.GN1721383@nvidia.com>
- <e8ebb0bb-b268-c43b-6fc1-e5240dc085c9@redhat.com>
- <20210901171039.GO1721383@nvidia.com>
- <ef7a722d-0bc0-1c68-b11b-9ede073516e0@redhat.com>
- <20210901175547.GP1721383@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <52ba8125-0382-3270-a958-ed113ae1db2a@redhat.com>
-Date:   Wed, 1 Sep 2021 19:58:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=MdLpmrxP2ooqH61k5jccYeKJaNQbe1umwKmOIiwgD1g=;
+        b=cEu9n+1FrejwgxjwN1NKTGOtD0LksEjqDQLPhzeaxAHu2TKW274qTkXiXxLxAf+CrLZDDS
+        3hgmMRpyYOBdwcEXY0OjvfeXzdAE4H9OyGZceBlHtaykkatQ9qscMw9981HQxc7jlpfmv1
+        rYyXrIIVhrLp7HLMQbKT1/g7Z1sANNIrmfnOqFc84IKRvovVb8dtQJIwaBq2aZaHWdREc5
+        xdT2MTgh2KfhFBJ0lSzN1EMr5xsUwBwpklIFaHQK89zdBi2fXnQ/3ipQLvISIRwMxBIyzM
+        n35sJA2eeotMZNZXDKGmjqU+iP+ojfI1dUm8OzfLVg8jIOtElJNPB/KqOeSh5w==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Subject: Re: [PATCH v4] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860
+ and 870 SSD.
+To:     Hans de Goede <hdegoede@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hpa@redhat.com" <hpa@redhat.com>
+Cc:     "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>
+References: <1876334901.51676.1630481868266@office.mailbox.org>
+ <e6f9921d-0fb6-da30-4dc5-53b4cb7b5270@redhat.com>
+ <2df1c3d5-301d-dc46-7f9f-d28be2933bd3@redhat.com>
+From:   Tor Vic <torvic9@mailbox.org>
+Message-ID: <aee2ea3b-bd3f-7273-13dc-a0c231021421@mailbox.org>
+Date:   Wed, 1 Sep 2021 17:59:06 +0000
 MIME-Version: 1.0
-In-Reply-To: <20210901175547.GP1721383@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <2df1c3d5-301d-dc46-7f9f-d28be2933bd3@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: E2446183C
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.21 19:55, Jason Gunthorpe wrote:
-> On Wed, Sep 01, 2021 at 07:49:23PM +0200, David Hildenbrand wrote:
->> On 01.09.21 19:10, Jason Gunthorpe wrote:
->>> On Wed, Sep 01, 2021 at 06:19:03PM +0200, David Hildenbrand wrote:
->>>
->>>>> I wouldn't think it works everywhere, bit it works in a lot of places,
->>>>> and it is a heck of a lot better than what is proposed here. I'd
->>>>> rather see the places that can use it be moved, and the few places
->>>>> that can't be opencoded.
->>>>
->>>> Well, I used ptep_get_map_lock() and friends. But hacking directly into
->>>> ptep_map_lock() and friends wasn't possible due to all the corner cases.
->>>
->>> Sure, I'm not surprised you can't get every single case, but that just
->>> suggest we need two API families, today's to support the special cases
->>> and a different one for the other regular simple cases.
->>>
->>> A new function family pte_try_map/_locked() and paired unmap that can
->>> internally do the recounting and THP trickery and convert the easy
->>> callsites.
->>>
->>> Very rough counting suggest at least half of the pte_offset_map_lock()
->>> call sites can trivially use the simpler API.
->>>
->>> The other cases can stay as is and get open coded refcounts, or maybe
->>> someone will have a better idea once they are more clearly identified.
->>>
->>> But I don't think we should take a performance hit of additional
->>> atomics in cases like GUP where this is trivially delt with by using a
->>> better API.
+
+
+On 01.09.21 09:38, Hans de Goede wrote:
+> Hi,
+> 
+> On 9/1/21 10:55 AM, Hans de Goede wrote:
+>> Hi Tor,
 >>
->> Right, but as I said in the cover letter, we can happily optimize once we
->> have the basic infrastructure in place and properly reviewed. Getting rid of
->> some unnecessary atomics by introducing additional fancy helpers falls under
->> that category.
+>> On 9/1/21 9:37 AM, torvic9@mailbox.org wrote:
+>>> (Sorry for not doing a proper reply)
+>>>
+>>> Hello,
+>>> Noob here.
+>>> I have a Samsung 860 Pro connected to a AMD X570 chipset mainboard and
+>>> it just works flawlessly on 5.13 and 5.14.
+>>> Are you sure that *every* 860/870 is concerned by this problem on
+>>> *every* AMD controller?
+>>
+>> I am pretty sure that every 860 / 870 EVO is affected,
+>> I am not sure if the PRO is also affected.
 > 
-> I'm not sure I agree given how big and wide this patch series is. It
-> would be easier to review if it was touching less places. The helpers
-> are not fancy, it is a logical re-arrangement of existing code that
-> shrinks the LOC of this series and makes it more reviewable.
+> So while reading https://bugzilla.kernel.org/show_bug.cgi?id=201693
+> again to add a comment asking if anyone was seeing this on a
+> pro to I found existing comments of both queued-trims being
+> an issue on the 860 pro, as well as the 860 pro having issues
+> with some AMD sata controllers.
+> 
+> So it seems safe to say that the 860 pro has the same issues
+> as the 860 and 870 evo models. Chances are you don't have
+> discard support enabled causing you to not see the queued-trim
+> issues (which means you also won't see any difference from
+> disabling support for queued-trim commands).
+> 
+> So this just leaves your question of:
+> 
+> "concerned by this problem on *every* AMD controller?"
+> 
+> Where "this problem" is needing to completely disable NCQ
+> and I guess the answer is no, not every AMD controller
+> is affected. Still the plan is to err on the safe side for now,
+> allowing overriding this from the kernel cmdline with:
+> 
+> libata.force=ncqamd
+> 
+> I will add a comment to:
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=201693
+> 
+> Asking for PCI-ids of the controllers where people are seeing
+> this and then maybe we can narrow down the "AMD" check in a
+> future follow up patch.
 
-You'll most likely have to touch each and every place either way, for 
-example when suddenly returning "null" instead of a pte. It's just a 
-matter of making this easier to review and the changes as minimal and as 
-clear as possible.
+$ lspci -nn | grep -i sata
+
+
+06:00.0 SATA controller [0106]: Advanced Micro Devices, Inc. [AMD] FCH
+SATA Controller [AHCI mode] [1022:7901] (rev 51)
+07:00.0 SATA controller [0106]: Advanced Micro Devices, Inc. [AMD] FCH
+SATA Controller [AHCI mode] [1022:7901] (rev 51)
+
+Both Samsung 860 Pro and 860 Evo are connected to these.
 
 > 
-> Or stated another way, a niche feature like this try much harder not
-> to add more complexity everywhere.
-
-I fully agree.
-
--- 
-Thanks,
-
-David / dhildenb
-
+> Regards,
+> 
+> Hans
+> 
