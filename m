@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28DC3FDAA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838B83FDA46
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244350AbhIAMdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:33:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35322 "EHLO mail.kernel.org"
+        id S244776AbhIAMb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:31:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244874AbhIAMcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:32:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF211610A1;
-        Wed,  1 Sep 2021 12:31:19 +0000 (UTC)
+        id S244629AbhIAMav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:30:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C5F4610A8;
+        Wed,  1 Sep 2021 12:29:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499480;
-        bh=3Uufrk8sdD6bVa77cdL11TUsdKg6Ppd7wI7p2uHNkAc=;
+        s=korg; t=1630499395;
+        bh=dm3BJSABfAX194zetsoEMYdmZlHA2mUFqBQ3j7zivLw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B+RYG9zdqbU1lKWdHZPQ2sa7dfsCNnU1R/N5zCxYVG4za94Yuhh2uJj10v+UzoxXS
-         FJ2YVllgKXavQYYIaFQSl3WZglbsMaXwtsqi2lSzePxlJ+LAjn24mELysltoNc5sFS
-         hmOnlGiDZNfurL6ZeiDlLZbhwZFOJ+I3LsoIfxAc=
+        b=K7MEYiEouaEDlpkocyCdIEhCifTfBzSOvHEsmCN93LNb09n/FGs9AWz8nYBmqD30l
+         aTWYHJLqF0sGuAwVIif0wNK1GYWCftnNTKdwPJrmIWhqtF0Sf2Xn8ShgnRBSaTrSRk
+         4VcI4B3PCfGdCkhVNvE5PSbBm3lPhTaLl3pGnd8M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yee Li <seven.yi.lee@gmail.com>,
-        Sasha Neftin <sasha.neftin@intel.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Maxim Kiselev <bigunclemax@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 16/48] e1000e: Fix the max snoop/no-snoop latency for 10M
+Subject: [PATCH 4.19 17/33] net: marvell: fix MVNETA_TX_IN_PRGRS bit number
 Date:   Wed,  1 Sep 2021 14:28:06 +0200
-Message-Id: <20210901122253.939838145@linuxfoundation.org>
+Message-Id: <20210901122251.358311264@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
+References: <20210901122250.752620302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,74 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sasha Neftin <sasha.neftin@intel.com>
+From: Maxim Kiselev <bigunclemax@gmail.com>
 
-[ Upstream commit 44a13a5d99c71bf9e1676d9e51679daf4d7b3d73 ]
+[ Upstream commit 359f4cdd7d78fdf8c098713b05fee950a730f131 ]
 
-We should decode the latency and the max_latency before directly compare.
-The latency should be presented as lat_enc = scale x value:
-lat_enc_d = (lat_enc & 0x0x3ff) x (1U << (5*((max_ltr_enc & 0x1c00)
->> 10)))
+According to Armada XP datasheet bit at 0 position is corresponding for
+TxInProg indication.
 
-Fixes: cf8fb73c23aa ("e1000e: add support for LTR on I217/I218")
-Suggested-by: Yee Li <seven.yi.lee@gmail.com>
-Signed-off-by: Sasha Neftin <sasha.neftin@intel.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: c5aff18204da ("net: mvneta: driver for Marvell Armada 370/XP network unit")
+Signed-off-by: Maxim Kiselev <bigunclemax@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e1000e/ich8lan.c | 14 +++++++++++++-
- drivers/net/ethernet/intel/e1000e/ich8lan.h |  3 +++
- 2 files changed, 16 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/marvell/mvneta.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.c b/drivers/net/ethernet/intel/e1000e/ich8lan.c
-index a1fab77b2096..58ff747a42ae 100644
---- a/drivers/net/ethernet/intel/e1000e/ich8lan.c
-+++ b/drivers/net/ethernet/intel/e1000e/ich8lan.c
-@@ -995,6 +995,8 @@ static s32 e1000_platform_pm_pch_lpt(struct e1000_hw *hw, bool link)
- {
- 	u32 reg = link << (E1000_LTRV_REQ_SHIFT + E1000_LTRV_NOSNOOP_SHIFT) |
- 	    link << E1000_LTRV_REQ_SHIFT | E1000_LTRV_SEND;
-+	u16 max_ltr_enc_d = 0;	/* maximum LTR decoded by platform */
-+	u16 lat_enc_d = 0;	/* latency decoded */
- 	u16 lat_enc = 0;	/* latency encoded */
- 
- 	if (link) {
-@@ -1048,7 +1050,17 @@ static s32 e1000_platform_pm_pch_lpt(struct e1000_hw *hw, bool link)
- 				     E1000_PCI_LTR_CAP_LPT + 2, &max_nosnoop);
- 		max_ltr_enc = max_t(u16, max_snoop, max_nosnoop);
- 
--		if (lat_enc > max_ltr_enc)
-+		lat_enc_d = (lat_enc & E1000_LTRV_VALUE_MASK) *
-+			     (1U << (E1000_LTRV_SCALE_FACTOR *
-+			     ((lat_enc & E1000_LTRV_SCALE_MASK)
-+			     >> E1000_LTRV_SCALE_SHIFT)));
-+
-+		max_ltr_enc_d = (max_ltr_enc & E1000_LTRV_VALUE_MASK) *
-+				 (1U << (E1000_LTRV_SCALE_FACTOR *
-+				 ((max_ltr_enc & E1000_LTRV_SCALE_MASK)
-+				 >> E1000_LTRV_SCALE_SHIFT)));
-+
-+		if (lat_enc_d > max_ltr_enc_d)
- 			lat_enc = max_ltr_enc;
- 	}
- 
-diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.h b/drivers/net/ethernet/intel/e1000e/ich8lan.h
-index 1502895eb45d..e757896287eb 100644
---- a/drivers/net/ethernet/intel/e1000e/ich8lan.h
-+++ b/drivers/net/ethernet/intel/e1000e/ich8lan.h
-@@ -274,8 +274,11 @@
- 
- /* Latency Tolerance Reporting */
- #define E1000_LTRV			0x000F8
-+#define E1000_LTRV_VALUE_MASK		0x000003FF
- #define E1000_LTRV_SCALE_MAX		5
- #define E1000_LTRV_SCALE_FACTOR		5
-+#define E1000_LTRV_SCALE_SHIFT		10
-+#define E1000_LTRV_SCALE_MASK		0x00001C00
- #define E1000_LTRV_REQ_SHIFT		15
- #define E1000_LTRV_NOSNOOP_SHIFT	16
- #define E1000_LTRV_SEND			(1 << 30)
+diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+index fda5dd8c71eb..382d010e1294 100644
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -100,7 +100,7 @@
+ #define      MVNETA_DESC_SWAP                    BIT(6)
+ #define      MVNETA_TX_BRST_SZ_MASK(burst)       ((burst) << 22)
+ #define MVNETA_PORT_STATUS                       0x2444
+-#define      MVNETA_TX_IN_PRGRS                  BIT(1)
++#define      MVNETA_TX_IN_PRGRS                  BIT(0)
+ #define      MVNETA_TX_FIFO_EMPTY                BIT(8)
+ #define MVNETA_RX_MIN_FRAME_SIZE                 0x247c
+ #define MVNETA_SERDES_CFG			 0x24A0
 -- 
 2.30.2
 
