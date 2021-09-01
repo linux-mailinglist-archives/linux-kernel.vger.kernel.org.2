@@ -2,128 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8C73FD062
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 02:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA99A3FD054
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 02:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241495AbhIAAmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 20:42:52 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:54167 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241020AbhIAAmv (ORCPT
+        id S241399AbhIAAgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 20:36:24 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9014 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230062AbhIAAgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 20:42:51 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210901004153epoutp049c6e90ba97b7d63dbd4e319379227c90~gi_ydwq-51755617556epoutp04L
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 00:41:53 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210901004153epoutp049c6e90ba97b7d63dbd4e319379227c90~gi_ydwq-51755617556epoutp04L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1630456913;
-        bh=75MYQUynygglmFP6dlS0zEFz0RaqCD2+34Yy2vZ851I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oi5m7ef3TlT6uyppaSBzyaYOek3RkfmajdkVApa1dYgYEX4Kk7vUlCAul4vz49jCc
-         M8T+1eqyFEO0xvGOoXaS48CEwfgCC+k31ZI1qFzCl41869SsO895JPvfjBL0pvHmVn
-         llz3YEUDfSxJcoBfI3tks/WgMhccpOk5eb0vZNOQ=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210901004149epcas1p1c7c60af3a2c9933ff60ce6c2d69cbcd1~gi_u-9jM20155501555epcas1p1B;
-        Wed,  1 Sep 2021 00:41:49 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.38.247]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4GzlcX2lQ6z4x9Px; Wed,  1 Sep
-        2021 00:41:48 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        8A.E3.09827.C4CCE216; Wed,  1 Sep 2021 09:41:48 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210901004146epcas1p336b99f1c66e27c2df92982e6fc796b22~gi_sKwZVX2142021420epcas1p3L;
-        Wed,  1 Sep 2021 00:41:46 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210901004146epsmtrp18dabc9d9e6df2e41290ccd61b11580e0~gi_sJ0-hk1641616416epsmtrp1I;
-        Wed,  1 Sep 2021 00:41:46 +0000 (GMT)
-X-AuditID: b6c32a36-c7bff70000002663-b2-612ecc4c2b9b
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B1.85.08750.A4CCE216; Wed,  1 Sep 2021 09:41:46 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.100.232]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210901004146epsmtip2cc75944705365eb71860273adcaf5f19~gi_r6mMHc1939819398epsmtip2G;
-        Wed,  1 Sep 2021 00:41:46 +0000 (GMT)
-From:   Chanwoo Lee <cw9316.lee@samsung.com>
-To:     bvanassche@acm.org
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, beanhuo@micron.com,
-        cw9316.lee@samsung.com, daejun7.park@samsung.com,
-        dh0421.hwang@samsung.com, grant.jung@samsung.com,
-        jejb@linux.ibm.com, jt77.jang@samsung.com,
-        keosung.park@samsung.com, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        sh043.lee@samsung.com, stanley.chu@mediatek.com
-Subject: Re: Re: [PATCH] scsi: ufs: ufshpb: Remove unused parameters
-Date:   Wed,  1 Sep 2021 09:34:32 +0900
-Message-Id: <20210901003432.28784-1-cw9316.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <634f24b5-c47e-0303-f462-8a63c3453af8@acm.org>
+        Tue, 31 Aug 2021 20:36:23 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1810Ufet025279
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 17:35:27 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=xfJaQgEFutNFXHwxqE5t89p1I7MO4YmmYJYKZbVwTU4=;
+ b=RoxxkhAlCK6II/ZzjpnpNSUOByRltX/hfQCzmnISFlMiYpzjU6gL4bKY7/ikRxeyAbAt
+ Q7T0SN4OurkWX7GjjLsiVV6hwhPbXXz4iqXO/0zstpYZrCHFf8nYTKIsXIKzjy+o5sdC
+ f2qvyPHkIWgPTMB4p0V47Yf+jh7LEAsBhh4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3asmx9dfe1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 17:35:26 -0700
+Received: from intmgw001.05.ash7.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 31 Aug 2021 17:35:26 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 92286F58687E; Tue, 31 Aug 2021 17:35:20 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <kjain@linux.ibm.com>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH v4 bpf-next 0/3] bpf: introduce bpf_get_branch_snapshot
+Date:   Tue, 31 Aug 2021 17:35:14 -0700
+Message-ID: <20210901003517.3953145-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: G_fSZonTKCrdTTTpWW84cKhGqHZbr1lj
+X-Proofpoint-GUID: G_fSZonTKCrdTTTpWW84cKhGqHZbr1lj
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOJsWRmVeSWpSXmKPExsWy7bCmnq7PGb1Eg5dH+S0ezNvGZvHy51U2
-        i4MPO1kspn34yWwx41Qbq8WqB+EW+66dZLf49Xc9u8WiG9uYLHY8P8NucfzkO0aLy7vmsFl0
-        X9/BZrH8+D8mi6Y/+1gslm69yegg4HH5irfHhEUHGD1aTu5n8fi+voPN4+PTWywefVtWMXp8
-        3iTn0X6gmymAIyrbJiM1MSW1SCE1Lzk/JTMv3VbJOzjeOd7UzMBQ19DSwlxJIS8xN9VWycUn
-        QNctMwfoASWFssScUqBQQGJxsZK+nU1RfmlJqkJGfnGJrVJqQUpOgVmBXnFibnFpXrpeXmqJ
-        laGBgZEpUGFCdkb3gcWMBcuZK1Z15TQwXmfqYuTkkBAwkfg8eQdrFyMXh5DADkaJh+96mCCc
-        T4wSsy5cZwOpEhL4DOScs4Pp2PD8K1THLkaJU1v3MUM4Xxglpl47CNTOwcEmoCVx+5g3SIOI
-        gJjE5S/fGEFqmAX+MUmsOnGXBSQhLOAicX3eGbA7WARUJe7uWcAMYvMKWEtc2fSNBWKbvMSf
-        +z1gcU6g+LdLh9ghagQlTs58AlbDDFTTvHU22BESAgc4JL5em8IG0ewicXzWNkYIW1ji1fEt
-        7BC2lMTL/jZ2iIZmoBdmn4NyWhglXl+5AVVlLPHp82dGkHeYBTQl1u/ShwgrSuz8PZcRYjOf
-        xLuvPawgJRICvBIdbUIQJSoSc7rOscHs+njjMSuE7SFx5t1ZaND1MUo8nrqCfQKjwiwkD81C
-        8tAshM0LGJlXMYqlFhTnpqcWGxYYwaM4OT93EyM4RWuZ7WCc9PaD3iFGJg7GQ4wSHMxKIrzZ
-        b7QShXhTEiurUovy44tKc1KLDzGaAoN7IrOUaHI+MEvklcQbmlgamJgZmVgYWxqbKYnzMr6S
-        SRQSSE8sSc1OTS1ILYLpY+LglGpgyuReqii3jc3MYEHFvDdnGt6oVOuw+HbPKqlfcOTj32yO
-        LfML5E+vFVi8lWF+hU6zrvuUg6rHzv4tr796d79N4haj9PuhH+xvl922zfBsUNin5zlTaVJI
-        n5P/jUff80/oh21m+r1P5s/cT3fkN51Y4m7+0Oefe0Cn/O2ny/dYnjrPsFZ4gz1fUzmvTs9U
-        Qf7jPOquU3f0sUzUzzy3TqODW8nTedGMS+ezZW1fT91yYHnwTLtHDF1Fz399Y839+MCfN26b
-        acL9o3dkM/7nPJj+p7dghfFTzmLzQoVJR6etOrs+Nlfv+dRlhuelS5PyLsy2mLZObkPt6gwP
-        u88VJooOwesv8Ol73em9pP6hVuZPgBJLcUaioRZzUXEiAPbZMtFaBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPLMWRmVeSWpSXmKPExsWy7bCSvK7XGb1EgycdKhYP5m1js3j58yqb
-        xcGHnSwW0z78ZLaYcaqN1WLVg3CLfddOslv8+rue3WLRjW1MFjuen2G3OH7yHaPF5V1z2Cy6
-        r+9gs1h+/B+TRdOffSwWS7feZHQQ8Lh8xdtjwqIDjB4tJ/ezeHxf38Hm8fHpLRaPvi2rGD0+
-        b5LzaD/QzRTAEcVlk5Kak1mWWqRvl8CV0X1gMWPBcuaKVV05DYzXmboYOTkkBEwkNjz/ytrF
-        yMUhJLCDUWLuw3ZmiISUxO7959m6GDmAbGGJw4eLIWo+MUo87fjJBBJnE9CSuH3MG6RcREBM
-        4vKXb4wgNcwCE5gldvcuZQVJCAu4SFyfdwZsGYuAqsTdPQvA5vMKWEtc2fSNBWKXvMSf+z1g
-        cU6g+LdLh9hBbCEBK4npCyazQ9QLSpyc+QSsnhmovnnrbOYJjAKzkKRmIUktYGRaxSiZWlCc
-        m55bbFhglJdarlecmFtcmpeul5yfu4kRHEdaWjsY96z6oHeIkYmD8RCjBAezkghv9hutRCHe
-        lMTKqtSi/Pii0pzU4kOM0hwsSuK8F7pOxgsJpCeWpGanphakFsFkmTg4pRqYCpky3l7w7Fw8
-        2ZC7Xud41zr5WSoJcQFe0dNud11Vfs7zuurcl6LTS2PVHAry1in9cRFaM1HJxV9WoKdAyI05
-        6+/sg6uOrbu7ac10RwU7q6Lwfi9jtfhJh/Zffsxz4PydP77Zjkfq70zhjdO2LtPPPS/bXRdl
-        llQcdjMnaU1ge/y8efuM11YsyL6zZZOsS9PEtcucf51RYOfdttHPLuJQzeSKdtGuv0+TPldu
-        Pr5yjsTFR0HTHiksXx77VO35wr0L7rzeZfqt0jrNQu+S7pdnbhPXLZVadOIYb16mxl3/VqPL
-        Xcemf5rIpe3qXqyv4+StxvReiYEpy3D3m9LqlTVbHr2Y+6LnvK1GwVdtp7WVSizFGYmGWsxF
-        xYkAC/pHuRIDAAA=
-X-CMS-MailID: 20210901004146epcas1p336b99f1c66e27c2df92982e6fc796b22
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210901004146epcas1p336b99f1c66e27c2df92982e6fc796b22
-References: <634f24b5-c47e-0303-f462-8a63c3453af8@acm.org>
-        <CGME20210901004146epcas1p336b99f1c66e27c2df92982e6fc796b22@epcas1p3.samsung.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-31_10:2021-08-31,2021-08-31 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ mlxlogscore=960 mlxscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
+ bulkscore=0 priorityscore=1501 phishscore=0 suspectscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2109010001
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 8/31/21 00:04, Chanwoo Lee wrote:
->> From: ChanWoo Lee <cw9316.lee@samsung.com>
->> 
->> Remove unused parameters
->> * ufshpb_set_hpb_read_to_upiu()
->>   -> struct ufshpb_lu *hpb
->>   -> u32 lpn
->
->Please use full sentences in the patch description for future patch 
->submissions. Anyway:
->
->Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+changes v3 =3D> v4:
+1. Do not reshuffle intel_pmu_disable_all(). Use some inline to save LBR
+   entries. (Peter)
+2. Move static_call(perf_snapshot_branch_stack) to the helper. (Alexei)
+3. Add argument flags to bpf_get_branch_snapshot. (Andrii)
+4. Make MAX_BRANCH_SNAPSHOT an enum (Andrii). And rename it as
+   PERF_MAX_BRANCH_SNAPSHOT
+5. Make bpf_get_branch_snapshot similar to bpf_read_branch_records.
+   (Andrii)
+6. Move the test target function to bpf_testmod. Updated kallsyms_find_next
+   to work properly with modules. (Andrii)
 
-Thank you, I will edit the description and upload it again.//v2
+Changes v2 =3D> v3:
+1. Fix the use of static_call. (Peter)
+2. Limit the use to perfmon version >=3D 2. (Peter)
+3. Modify intel_pmu_snapshot_branch_stack() to use intel_pmu_disable_all
+   and intel_pmu_enable_all().
+
+Changes v1 =3D> v2:
+1. Rename the helper as bpf_get_branch_snapshot;
+2. Fix/simplify the use of static_call;
+3. Instead of percpu variables, let intel_pmu_snapshot_branch_stack output
+   branch records to an output argument of type perf_branch_snapshot.
+
+Branch stack can be very useful in understanding software events. For
+example, when a long function, e.g. sys_perf_event_open, returns an errno,
+it is not obvious why the function failed. Branch stack could provide very
+helpful information in this type of scenarios.
+
+This set adds support to read branch stack with a new BPF helper
+bpf_get_branch_trace(). Currently, this is only supported in Intel systems.
+It is also possible to support the same feaure for PowerPC.
+
+The hardware that records the branch stace is not stopped automatically on
+software events. Therefore, it is necessary to stop it in software soon.
+Otherwise, the hardware buffers/registers will be flushed. One of the key
+design consideration in this set is to minimize the number of branch record
+entries between the event triggers and the hardware recorder is stopped.
+Based on this goal, current design is different from the discussions in
+original RFC [1]:
+ 1) Static call is used when supported, to save function pointer
+    dereference;
+ 2) intel_pmu_lbr_disable_all is used instead of perf_pmu_disable(),
+    because the latter uses about 10 entries before stopping LBR.
+
+With current code, on Intel CPU, LBR is stopped after 10 branch entries
+after fexit triggers:
+
+ID: 0 from intel_pmu_lbr_disable_all+58 to intel_pmu_lbr_disable_all+93
+ID: 1 from intel_pmu_lbr_disable_all+54 to intel_pmu_lbr_disable_all+58
+ID: 2 from intel_pmu_snapshot_branch_stack+88 to intel_pmu_lbr_disable_all+0
+ID: 3 from bpf_get_branch_snapshot+77 to intel_pmu_snapshot_branch_stack+0
+ID: 4 from __brk_limit+478052814 to bpf_get_branch_snapshot+0
+ID: 5 from __brk_limit+478036039 to __brk_limit+478052760
+ID: 6 from __bpf_prog_enter+34 to __brk_limit+478036027
+ID: 7 from migrate_disable+60 to __bpf_prog_enter+9
+ID: 8 from __bpf_prog_enter+4 to migrate_disable+0
+ID: 9 from __brk_limit+478036022 to __bpf_prog_enter+0
+ID: 10 from bpf_testmod_loop_test+22 to __brk_limit+478036003
+ID: 11 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
+ID: 12 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
+ID: 13 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
+...
+
+[1] https://lore.kernel.org/bpf/20210818012937.2522409-1-songliubraving@fb.=
+com/
+
+Song Liu (3):
+  perf: enable branch record for software events
+  bpf: introduce helper bpf_get_branch_snapshot
+  selftests/bpf: add test for bpf_get_branch_snapshot
+
+ arch/x86/events/intel/core.c                  |  26 ++++-
+ arch/x86/events/intel/ds.c                    |   8 --
+ arch/x86/events/perf_event.h                  |  10 +-
+ include/linux/perf_event.h                    |  26 +++++
+ include/uapi/linux/bpf.h                      |  22 ++++
+ kernel/bpf/trampoline.c                       |   3 +-
+ kernel/events/core.c                          |   2 +
+ kernel/trace/bpf_trace.c                      |  40 +++++++
+ tools/include/uapi/linux/bpf.h                |  22 ++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  14 ++-
+ .../bpf/prog_tests/get_branch_snapshot.c      | 101 ++++++++++++++++++
+ .../selftests/bpf/progs/get_branch_snapshot.c |  44 ++++++++
+ tools/testing/selftests/bpf/trace_helpers.c   |  37 +++++++
+ tools/testing/selftests/bpf/trace_helpers.h   |   5 +
+ 14 files changed, 345 insertions(+), 15 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_snaps=
+hot.c
+ create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot.c
+
+--
+2.30.2
