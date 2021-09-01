@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E0A3FDC5E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AEB73FDA43
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346187AbhIAMtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:49:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49254 "EHLO mail.kernel.org"
+        id S244740AbhIAMbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:31:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345869AbhIAMpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:45:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33A7661159;
-        Wed,  1 Sep 2021 12:39:19 +0000 (UTC)
+        id S244603AbhIAMaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:30:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91E9760ED4;
+        Wed,  1 Sep 2021 12:29:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499959;
-        bh=GSrMGi3p2ZVGJglgw3oyssmrlkN+AUsMS7KZAjFK5ko=;
+        s=korg; t=1630499390;
+        bh=NfwsYjf7WGiV3nGH6I7Tki7h7cfIT8cSvUGBslzuQXA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X7uTQZCoWJuYROW1EaxOlqIBB7h0oPTLpa0zgbMAfaIuv4ZglU43SipQmnPuGvxWv
-         cHsPQaAzU0Ks2bh00VCcq7IV1UpzBxGjf0wVuQbqHvOgloA9oxWHl9X8gm6gFzhxqk
-         uh91vk/rUG/VDhE2FE8uh+z6rD4jls7kDpcQlioY=
+        b=mbR1piCAT9tgQsw+KCJRhJL6P7joOQos9ONTcjGSAxih3Z267uigA0UmwETQICzhF
+         1IoKz/gqjxcEV02XnfbmYuWngGhoArFl3cVQOWNK3VaS7j+L4yorICtzDosc/5A+bp
+         6zEpJ5ZIp+gTWuU03mT8+GqWkHc8TWK8ak4spjSo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com,
+        Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 049/113] xgene-v2: Fix a resource leak in the error handling path of xge_probe()
+Subject: [PATCH 4.19 15/33] ip_gre: add validation for csum_start
 Date:   Wed,  1 Sep 2021 14:28:04 +0200
-Message-Id: <20210901122303.610040575@linuxfoundation.org>
+Message-Id: <20210901122251.282344640@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
+References: <20210901122250.752620302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
 
-[ Upstream commit 5ed74b03eb4d08f5dd281dcb5f1c9bb92b363a8d ]
+[ Upstream commit 1d011c4803c72f3907eccfc1ec63caefb852fcbf ]
 
-A successful 'xge_mdio_config()' call should be balanced by a corresponding
-'xge_mdio_remove()' call in the error handling path of the probe, as
-already done in the remove function.
+Validate csum_start in gre_handle_offloads before we call _gre_xmit so
+that we do not crash later when the csum_start value is used in the
+lco_csum function call.
 
-Update the error handling path accordingly.
+This patch deals with ipv4 code.
 
-Fixes: ea8ab16ab225 ("drivers: net: xgene-v2: Add MDIO support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Fixes: c54419321455 ("GRE: Refactor GRE tunneling code.")
+Reported-by: syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
+Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+Reviewed-by: Willem de Bruijn <willemb@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/apm/xgene-v2/main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/ipv4/ip_gre.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/apm/xgene-v2/main.c b/drivers/net/ethernet/apm/xgene-v2/main.c
-index 860c18fb7aae..80399c8980bd 100644
---- a/drivers/net/ethernet/apm/xgene-v2/main.c
-+++ b/drivers/net/ethernet/apm/xgene-v2/main.c
-@@ -677,11 +677,13 @@ static int xge_probe(struct platform_device *pdev)
- 	ret = register_netdev(ndev);
- 	if (ret) {
- 		netdev_err(ndev, "Failed to register netdev\n");
--		goto err;
-+		goto err_mdio_remove;
- 	}
+diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
+index de6f89511a21..a8a37d112820 100644
+--- a/net/ipv4/ip_gre.c
++++ b/net/ipv4/ip_gre.c
+@@ -449,6 +449,8 @@ static void __gre_xmit(struct sk_buff *skb, struct net_device *dev,
  
- 	return 0;
- 
-+err_mdio_remove:
-+	xge_mdio_remove(ndev);
- err:
- 	free_netdev(ndev);
+ static int gre_handle_offloads(struct sk_buff *skb, bool csum)
+ {
++	if (csum && skb_checksum_start(skb) < skb->data)
++		return -EINVAL;
+ 	return iptunnel_handle_offloads(skb, csum ? SKB_GSO_GRE_CSUM : SKB_GSO_GRE);
+ }
  
 -- 
 2.30.2
