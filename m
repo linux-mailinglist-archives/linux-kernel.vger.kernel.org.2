@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD6D3FE552
+	by mail.lfdr.de (Postfix) with ESMTP id CC4813FE554
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344720AbhIAWLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 18:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52834 "EHLO
+        id S1345056AbhIAWLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 18:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344171AbhIAWL3 (ORCPT
+        with ESMTP id S1344976AbhIAWLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 18:11:29 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3743C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 15:10:31 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id et12-20020a056214176c00b0037279a2ce4cso24200qvb.13
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 15:10:31 -0700 (PDT)
+        Wed, 1 Sep 2021 18:11:31 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF281C061764
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 15:10:33 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id p21-20020ac846150000b02902982d999bfbso1027389qtn.7
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 15:10:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=ijYiSiDDUHb3AX8DewnNIKO+XanSVwO3pukxO/BIptQ=;
-        b=PIaib/UOcr8eqZtZtxH8TsMegPAAIPuTuFSHWDsKDNgXUi7HFb111cDWFixwg+vn1J
-         yH74Vi9zPrwcpnOM43NTlCWphRUYs+X/VVstAxnZiwKv4NsgZfd9xfyjSJC3BVWcNh/U
-         noBXYMev1g/hIMm/41n9iutstqp5C2xv5Wghy3hlSw4LTKbPGzKVcc9BZFoa0m/SHIoc
-         12G6Qcgpj3u+u98e9mxUxsv+OROUxDU66XjMab7LzGXJTM8BjftTDUTVC8G1PjwQu9MO
-         oSAGWoQG7lJ6bdQai/CvUlZ4DeUvaSmXE4XBWesj8P8Pq94P0rJcROPOyrFQDKFhqvXC
-         zEVA==
+        bh=85Auo0aSzk3nfNcW1bmCTcsI/q3yXEtuah9rbZbe7Sk=;
+        b=ROwUg/uj+ZrimUXkCPG5t+P2y2tppRQbkZdxqZrhDxW2EpuA0pWV+iEvA7EJJQKGyJ
+         C+GTFyS745S8iRNSo8iXu7f6NZQ4awEGkvMntG+d6PFYsvSrAB3CgRsJnqvhTLr9I4vs
+         ZNu/+4bhUhHFv6DcUdKeilS1PHNb4XNDkwa74dBRM5bNDfeKhoaRg38XbLaNvknCdPVM
+         BlrbbJsN1XnvVtvv+g1huLZk9bz6EvElWqO5GNj8ZnB2//+4WwMbpYOoQ05f3OcQcRH7
+         JQUsM1gG/WAudUBFC18CqNk3AKfsgiTCARxJPzYoimzKjz9V17EgybtCJNKK4Ofo76rp
+         43lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=ijYiSiDDUHb3AX8DewnNIKO+XanSVwO3pukxO/BIptQ=;
-        b=rjYzoiEnafR/uH1wEMQWY+ZQ14st/pl67Ri7fiHPGkcQVW6bBZUwVBrj2UVUFQwtnZ
-         a2BmBQ3fQ1tQQ48ZA8qCiAkAEowiem/NNYhl852cYCwZ8okDBu3FkQyQETSv5l2t/lA6
-         dOEoobbIeA3rbl4OYe+UxVStSAIpS4HabOMJi7NVOZZpPdBIyirwKxrNTwX0lBGOHPka
-         ix52Kai4gD8O85moI1LQ/voCH+6Uqsd5TIUZASyu4RMBPfGsw8Ngq+FnAcYUGd0yvt5A
-         BLYjEWEYQvu/aLSylHpfDj36ID5/+SGfV6rhHW884pS2Mv5u4TNgwcWDMqxnvO8zEdtU
-         oz6Q==
-X-Gm-Message-State: AOAM530f2FDLT/1RX6n34aUYalCIVbBAgSjGrNZMhgSKfjxO9dEPPKFS
-        eEj23hVjCqnA36+fYX3ADSIhcTnyDj0=
-X-Google-Smtp-Source: ABdhPJwhT9bVSOgLzaDSDP/gOkZ1+NUgU5lq9FeD0s0kVgkw4RiNzBPbJEp0bal8001VwUfDiAQcmnRMmgM=
+        bh=85Auo0aSzk3nfNcW1bmCTcsI/q3yXEtuah9rbZbe7Sk=;
+        b=Lu/u2UMgH1+2XtEgOgeLCK55Eoqm4z909ovw2dkF+tL1IO4EUm0MTngAx+7XelvZ6u
+         cKVCZpl0ei5/Mnr6TLQ1scWSvhLqwGK93OoMUySX+96zarc54ofdqQ3EPezlcTX+CIaJ
+         /UNSh7TUbhXJHpR2llymlXxN63bJVAtaB2Hmep+RcDNRPGf6246V5zwCzqvjNePC7/1N
+         /NU9G34I3PBjBU85TgCrJzkQ/kuzdu2weDYlASGwpLIKAsesTh629GVN8JWYOhNwnjCc
+         i+5ZwRy6Gi0p2n3sJq6xGIsbN+5FyRogfvfNVgpG5A4vAIat+jRSVaaIiXNg8j2P7hQ8
+         z8fg==
+X-Gm-Message-State: AOAM5338RJghA0/iU8s8ihFgqi0xJ5lc8UIjnm8mqLRySVrfIJEnYaC1
+        edYlb6uvSJTOYvjS8+6hjaJ83zBwq7U=
+X-Google-Smtp-Source: ABdhPJwq0TFETxJvrtioq/apVCW5kBI0Q3UH87046kBtvkT8VELH8XWus5fY34hy82yjtG2oTotp25+ZJ5U=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:9935:5a5e:c7b6:e649])
- (user=seanjc job=sendgmr) by 2002:a0c:e910:: with SMTP id a16mr1602642qvo.37.1630534230980;
- Wed, 01 Sep 2021 15:10:30 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:acd:: with SMTP id
+ g13mr125496qvi.23.1630534233010; Wed, 01 Sep 2021 15:10:33 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed,  1 Sep 2021 15:10:22 -0700
+Date:   Wed,  1 Sep 2021 15:10:23 -0700
 In-Reply-To: <20210901221023.1303578-1-seanjc@google.com>
-Message-Id: <20210901221023.1303578-3-seanjc@google.com>
+Message-Id: <20210901221023.1303578-4-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210901221023.1303578-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH 2/3] KVM: x86/mmu: Relocate kvm_mmu_page.tdp_mmu_page for
- better cache locality
+Subject: [PATCH 3/3] KVM: x86/mmu: Move lpage_disallowed_link further "down"
+ in kvm_mmu_page
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,46 +67,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move "tdp_mmu_page" into the 1-byte void left by the recently removed
-"mmio_cached" so that it resides in the first 64 bytes of kvm_mmu_page,
-i.e. in the same cache line as the most commonly accessed fields.
-
-Don't bother wrapping tdp_mmu_page in CONFIG_X86_64, including the field in
-32-bit builds doesn't affect the size of kvm_mmu_page, and a future patch
-can always wrap the field in the unlikely event KVM gains a 1-byte flag
-that is 32-bit specific.
-
-Note, the size of kvm_mmu_page is also unchanged on CONFIG_X86_64=y due
-to it previously sharing an 8-byte chunk with write_flooding_count.
+Move "lpage_disallowed_link" out of the first 64 bytes, i.e. out of the
+first cache line, of kvm_mmu_page so that "spt" and to a lesser extent
+"gfns" land in the first cache line.  "lpage_disallowed_link" is accessed
+relatively infrequently compared to "spt", which is accessed any time KVM
+is walking and/or manipulating the shadow page tables.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu_internal.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/x86/kvm/mmu/mmu_internal.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 9bfa46b35201..4b06e6040e90 100644
+index 4b06e6040e90..cae932afc8d3 100644
 --- a/arch/x86/kvm/mmu/mmu_internal.h
 +++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -35,6 +35,7 @@ struct kvm_mmu_page {
+@@ -31,9 +31,12 @@ extern bool dbg;
+ #define IS_VALID_PAE_ROOT(x)	(!!(x))
+ 
+ struct kvm_mmu_page {
++	/*
++	 * Note, "link" through "spt" fit in a single 64 byte cache line on
++	 * 64-bit kernels, keep it that way unless there's a reason not to.
++	 */
+ 	struct list_head link;
  	struct hlist_node hash_link;
- 	struct list_head lpage_disallowed_link;
+-	struct list_head lpage_disallowed_link;
  
-+	bool tdp_mmu_page;
+ 	bool tdp_mmu_page;
  	bool unsync;
- 	u8 mmu_valid_gen;
- 	bool lpage_disallowed; /* Can't be replaced by an equiv large page */
-@@ -70,8 +71,6 @@ struct kvm_mmu_page {
- 	atomic_t write_flooding_count;
+@@ -59,6 +62,7 @@ struct kvm_mmu_page {
+ 	struct kvm_rmap_head parent_ptes; /* rmap pointers to parent sptes */
+ 	DECLARE_BITMAP(unsync_child_bitmap, 512);
  
- #ifdef CONFIG_X86_64
--	bool tdp_mmu_page;
--
- 	/* Used for freeing the page asynchronously if it is a TDP MMU page. */
- 	struct rcu_head rcu_head;
- #endif
++	struct list_head lpage_disallowed_link;
+ #ifdef CONFIG_X86_32
+ 	/*
+ 	 * Used out of the mmu-lock to avoid reading spte values while an
 -- 
 2.33.0.153.gba50c8fa24-goog
 
