@@ -2,105 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90F03FDDDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C29543FDDF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244752AbhIAOhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 10:37:18 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:52067 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233814AbhIAOhR (ORCPT
+        id S231515AbhIAOrT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 1 Sep 2021 10:47:19 -0400
+Received: from smtprelay0089.hostedemail.com ([216.40.44.89]:57968 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229748AbhIAOrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 10:37:17 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 2C93CC0005;
-        Wed,  1 Sep 2021 14:36:16 +0000 (UTC)
-Date:   Wed, 1 Sep 2021 16:36:15 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Md Sadre Alam <mdalam@codeaurora.org>
-Cc:     mani@kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org,
-        stable@kernel.org
-Subject: Re: [PATCH V3] mtd: rawnand: qcom: Update code word value for raw
- read
-Message-ID: <20210901163615.090c6f24@xps13>
-In-Reply-To: <1630493613-8158-1-git-send-email-mdalam@codeaurora.org>
-References: <1630493613-8158-1-git-send-email-mdalam@codeaurora.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 1 Sep 2021 10:47:18 -0400
+X-Greylist: delayed 579 seconds by postgrey-1.27 at vger.kernel.org; Wed, 01 Sep 2021 10:47:18 EDT
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave08.hostedemail.com (Postfix) with ESMTP id B2C201801C50A;
+        Wed,  1 Sep 2021 14:36:43 +0000 (UTC)
+Received: from omf11.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 3C62918211CD1;
+        Wed,  1 Sep 2021 14:36:41 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf11.hostedemail.com (Postfix) with ESMTPA id 1666920A299;
+        Wed,  1 Sep 2021 14:36:39 +0000 (UTC)
+Date:   Wed, 01 Sep 2021 10:36:36 -0400
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAE40pdd+yHnh6fyjYV0UDcZ_ZwTCzP019Mf4_tTKWFc_5M6gaw@mail.gmail.com>
+References: <20210825154043.247764-1-yan2228598786@gmail.com> <CANn89iJO8jzjFWvJ610TPmKDE8WKi8ojTr_HWXLz5g=4pdQHEA@mail.gmail.com> <20210825231942.18f9b17e@rorschach.local.home> <CAE40pdd+yHnh6fyjYV0UDcZ_ZwTCzP019Mf4_tTKWFc_5M6gaw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Subject: Re: [PATCH] net: tcp_drop adds `reason` parameter for tracing v2
+To:     Brendan Gregg <brendan.d.gregg@gmail.com>
+CC:     Eric Dumazet <edumazet@google.com>,
+        Zhongya Yan <yan2228598786@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, hengqi.chen@gmail.com,
+        Yonghong Song <yhs@fb.com>
+From:   Steven Rostedt <rostedt@goodmis.org>
+Message-ID: <8BA159CD-11AC-425C-9C7F-AA943CE9179F@goodmis.org>
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 1666920A299
+X-Spam-Status: No, score=-1.36
+X-Stat-Signature: jpet5ridbywf63q8syd6xnbg433ik3o5
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX1/0p6giWY1Hn7URsSP2OX8RatZ7gAtDwwM=
+X-HE-Tag: 1630506999-675233
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 26 Aug 2021 15:13:07 +1000
+Brendan Gregg <brendan.d.gregg@gmail.com> wrote:
 
-Md Sadre Alam <mdalam@codeaurora.org> wrote on Wed,  1 Sep 2021
-16:23:33 +0530:
-
-> Fixes: 503ee5aa ("mtd: rawnand: qcom: update last code word register")
-> Cc: stable@kernel.org
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-> ---
-> [V3]
->  * Added Fixes tag
->  * Removed change log from commit message.
+> On Thu, Aug 26, 2021 at 1:20 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Wed, 25 Aug 2021 08:47:46 -0700
+> > Eric Dumazet <edumazet@google.com> wrote:
+> >  
+> > > > @@ -5703,15 +5700,15 @@ static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
+> > > >                         TCP_INC_STATS(sock_net(sk), TCP_MIB_INERRS);
+> > > >                 NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPSYNCHALLENGE);
+> > > >                 tcp_send_challenge_ack(sk, skb);
+> > > > -               goto discard;
+> > > > +               tcp_drop(sk, skb, TCP_DROP_MASK(__LINE__, TCP_VALIDATE_INCOMING));  
+> > >
+> > > I'd rather use a string. So that we can more easily identify _why_ the
+> > > packet was drop, without looking at the source code
+> > > of the exact kernel version to locate line number 1057
+> > >
+> > > You can be sure that we will get reports in the future from users of
+> > > heavily modified kernels.
+> > > Having to download a git tree, or apply semi-private patches is a no go.
+> > >
+> > > If you really want to include __FILE__ and __LINE__, these both can be
+> > > stringified and included in the report, with the help of macros.  
+> >
+> > I agree the __LINE__ is pointless, but if this has a tracepoint
+> > involved, then you can simply enable the stacktrace trigger to it and
+> > it will save a stack trace in the ring buffer for you.
+> >
+> >    echo stacktrace > /sys/kernel/tracing/events/tcp/tcp_drop/trigger
+> >
+> > And when the event triggers it will record a stack trace. You can also
+> > even add a filter to do it only for specific reasons.
+> >
+> >    echo 'stacktrace if reason == 1' > /sys/kernel/tracing/events/tcp/tcp_drop/trigger
+> >
+> > And it even works for flags:
+> >
+> >    echo 'stacktrace if reason & 0xa' > /sys/kernel/tracing/events/tcp/tcp_drop/trigger
+> >
+> > Which gives another reason to use an enum over a string.  
 > 
->     From QPIC V2 onwards there is a separate register to read
->     last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
-> 
->     qcom_nandc_read_cw_raw() is used to read only one code word
->     at a time. If we will configure number of code words to 1 in
->     in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
->     its reading the last code word, since from QPIC V2 onwards
->     we are having separate register to read the last code word,
->     we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
->     register to fetch data from controller buffer to system
->     memory.
+> You can't do string comparisons? The more string support Ftrace has,
+> the more convenient they will be. Using bpftrace as an example of
+> convenience and showing drop frequency counted by human-readable
+> reason and stack trace:
 
-Really?
+Yes, you can (and pretty much always had this ability), but having
+flags is usually makes it easier (and faster).
 
-It's not your first contribution, you know what a changelog is and what
-a commit message is, right? So please, keep the commit message
-("why" your change is needed) where it was and only put
-the changelog (the differences between two versions) below the three
-dashes '---'.
+You can have 'stacktrace if reason ~ "*string*"' which will match
+anything with "string" in it.
 
->  
->  drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index ef0bade..04e6f7b 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
->  	struct nand_ecc_ctrl *ecc = &chip->ecc;
->  	int data_size1, data_size2, oob_size1, oob_size2;
->  	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
-> +	int raw_cw = cw;
->  
->  	nand_read_page_op(chip, page, 0, NULL, 0);
->  	host->use_ecc = false;
->  
-> +	if (nandc->props->qpic_v2)
-> +		raw_cw = ecc->steps - 1;
-> +
->  	clear_bam_transaction(nandc);
->  	set_address(host, host->cw_size * cw, page);
-> -	update_rw_regs(host, 1, true, cw);
-> +	update_rw_regs(host, 1, true, raw_cw);
->  	config_nand_page_read(chip);
->  
->  	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
-> @@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
->  		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
->  	}
->  
-> -	config_nand_cw_read(chip, false, cw);
-> +	config_nand_cw_read(chip, false, raw_cw);
->  
->  	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
->  	reg_off += data_size1;
+My main argument against strings is more of the space they take up in
+the ring buffer than the ability to filter.
 
+-- Steve
+
+-- 
+Sent from my Android device with K-9 Mail. Please excuse my brevity and top posting.
