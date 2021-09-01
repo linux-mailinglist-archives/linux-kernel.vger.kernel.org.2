@@ -2,119 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221F63FE276
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB67E3FE278
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbhIASjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:39:49 -0400
-Received: from mga17.intel.com ([192.55.52.151]:1931 "EHLO mga17.intel.com"
+        id S234983AbhIASlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:41:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229638AbhIASjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:39:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="199069331"
-X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
-   d="scan'208";a="199069331"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 11:38:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
-   d="scan'208";a="520477639"
-Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Sep 2021 11:38:38 -0700
-Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mLV8A-0008Bx-9E; Wed, 01 Sep 2021 18:38:38 +0000
-Date:   Thu, 02 Sep 2021 02:37:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- e872fac703deb7f04a93eb3633f08e3b08799516
-Message-ID: <612fc878.6hP61ABKupziVB6X%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232127AbhIASlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 14:41:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5998461054;
+        Wed,  1 Sep 2021 18:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630521609;
+        bh=8afMMciDK3FgvWZZofxFhdPG1VUj8cy2ss3izUea/cI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cHJcBnTuMoq3mFPrmbdzbCZNUQvvpmahoc1uVyv1dELx9uUbMleGbmD+0HDRp7Od2
+         W3bRavTxn2Xk5THzTpzsGPnR5WfEurHnMB1Hs+pOqq3K4HviuA0ubeKJcfTRCgwAZO
+         LiWB8gNEunmxd6LLJQT7VEzs4VSzoQZNAeRmf8sI=
+Date:   Wed, 1 Sep 2021 20:40:03 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: linux-next: manual merge of the vhost tree with the driver-core
+ tree
+Message-ID: <YS/JA6tFEHRCHiJ7@kroah.com>
+References: <20210901141826.0c21c43e@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210901141826.0c21c43e@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: e872fac703deb7f04a93eb3633f08e3b08799516  Merge branch 'locking/urgent'
+On Wed, Sep 01, 2021 at 02:18:26PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the vhost tree got a conflict in:
+> 
+>   drivers/virtio/virtio.c
+> 
+> between commit:
+> 
+>   fc7a6209d571 ("bus: Make remove callback return void")
+> 
+> from the driver-core tree and commit:
+> 
+>   fd704f203ca1 ("virtio: Bind virtio device to device-tree node")
+> 
+> from the vhost tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc drivers/virtio/virtio.c
+> index 1ea0c1f6a1fd,c46cc1fbc7ae..000000000000
+> --- a/drivers/virtio/virtio.c
+> +++ b/drivers/virtio/virtio.c
+> @@@ -292,6 -293,10 +293,8 @@@ static void virtio_dev_remove(struct de
+>   
+>   	/* Acknowledge the device's existence again. */
+>   	virtio_add_status(dev, VIRTIO_CONFIG_S_ACKNOWLEDGE);
+> + 
+> + 	of_node_put(dev->dev.of_node);
+>  -
+>  -	return 0;
+>   }
+>   
+>   static struct bus_type virtio_bus = {
 
-elapsed time: 721m
+Fix looks correct to me, thanks!
 
-configs tested: 61
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210831
-x86_64               randconfig-a001-20210831
-x86_64               randconfig-a003-20210831
-x86_64               randconfig-a002-20210831
-x86_64               randconfig-a004-20210831
-x86_64               randconfig-a006-20210831
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-s390                 randconfig-r044-20210831
-hexagon              randconfig-r041-20210831
-hexagon              randconfig-r045-20210831
-riscv                randconfig-r042-20210831
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+greg k-h
