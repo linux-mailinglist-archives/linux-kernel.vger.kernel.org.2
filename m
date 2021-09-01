@@ -2,207 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C073FD79A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114753FD79E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbhIAKYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 06:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231903AbhIAKYk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 06:24:40 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148AFC061575;
-        Wed,  1 Sep 2021 03:23:44 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id s29so1665236pfw.5;
-        Wed, 01 Sep 2021 03:23:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:subject:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XvXMSHbU+THAhLHihGL5O8BC1MEnybNiRpWcJSnCFq8=;
-        b=vCcdzsC5mN8BKv7yF05P9EC3GSgVwYy4A5BxE205tbJQ5TCC3VjLw63EPsxw208K6v
-         g+Ou45q9vaMnVSYRUQ7xTqHpwpcdKqJfKvBXg+s6eYCpQ9Ok17IAs3QA2bVsq101rzmv
-         xS7KpGXVkF5jVLThpdWuzqXMTnwhLh2dSWiOKzCNGVnG+DPzskYSSJLDmQ6/XAttr+oE
-         upZriN68MTKOiNxJ8DyrFzTSwGceAehco+0BYG+g0zmf/LUvpg+CuxFVmO7vhZkFrDeC
-         foCz6/TqvTeGkB0pECXwSofmsXlDWudN3fPgrwuDv7ww2lduC7EhQeiLE9jw+zxPOgEH
-         6szA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:subject:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XvXMSHbU+THAhLHihGL5O8BC1MEnybNiRpWcJSnCFq8=;
-        b=ATgkyzNDWZllLwO8ewSBom/KmnUQr2LkUpMxXi3jM2PrVdRHZraE3i1UkajRBCkeuM
-         ArwsqtHB0YWXWs4iXk8sCxfppGAML7Jm/dfpSC9C8loHoaQDyzhx7LPRKvdo20iDrV8I
-         1sa37LXuv7ETp7XrMIJT32qFYvK0jPr9w32HvwaHCOcjHyRvj/ihjbMce+ftA78Xvfss
-         8xQHI3aYywLDz5JISHuDjrMvDXFr6RPWLdN7vY2mnUnbZ7ID93y3l8nhDNgbMt7++9L3
-         bPT+h6vDX+iEBfnxFQonuE+VEkX/oqj39N35mi8SLtvu634lF5LX8EzQQPIuak5CZFMv
-         nwSg==
-X-Gm-Message-State: AOAM531WluzW1hLZz78TWPL2xREZA+1ctncWcpZEM0ggz6zdPNsOGvqo
-        Ip4253aKT1uBabL27yABUxo=
-X-Google-Smtp-Source: ABdhPJyFQWzVHq1SuxONZMLModl2znpRbEGYKPZ9VGNV3rN1VoslhuY0oD2x8DmHvm5c1RxbacG1Ig==
-X-Received: by 2002:a65:620d:: with SMTP id d13mr31847979pgv.36.1630491823510;
-        Wed, 01 Sep 2021 03:23:43 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id m13sm5814363pjv.20.2021.09.01.03.23.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 03:23:43 -0700 (PDT)
-To:     corbet@lwn.net, src.res@email.cn
-Cc:     linux-doc-tw-discuss@lists.sourceforge.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>
-References: <87o89mljgn.fsf@meer.lwn.net>
-Subject: Re: [PATCH 1/3] docs/zh_TW: add translations for zh_TW/arm64
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <150c0a8e-2254-10b4-a31f-35a70273afee@gmail.com>
-Date:   Wed, 1 Sep 2021 19:23:39 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234905AbhIAKZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 06:25:48 -0400
+Received: from mga03.intel.com ([134.134.136.65]:31593 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231903AbhIAKZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 06:25:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="218758489"
+X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
+   d="scan'208";a="218758489"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 03:24:50 -0700
+X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
+   d="scan'208";a="645686130"
+Received: from zhibosun-mobl2.ccr.corp.intel.com (HELO localhost) ([10.255.31.93])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 03:24:40 -0700
+Date:   Wed, 1 Sep 2021 18:24:37 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
+ private memory
+Message-ID: <20210901102437.g5wrgezmrjqn3mvy@linux.intel.com>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+ <20210827023150.jotwvom7mlsawjh4@linux.intel.com>
+ <8f3630ff-bd6d-4d57-8c67-6637ea2c9560@www.fastmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87o89mljgn.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8f3630ff-bd6d-4d57-8c67-6637ea2c9560@www.fastmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 13:40:40 -0600, Jonathan Corbet wrote:
-> Hu Haowen <src.res@email.cn> writes:
->=20
->> Create new translations for zh_TW/arm64 and link them to index.
->>
->> Signed-off-by: Hu Haowen <src.res@email.cn>
->> ---
->>  .../translations/zh_TW/arm64/amu.rst          | 104 ++++++++
->>  .../translations/zh_TW/arm64/booting.txt      | 251 +++++++++++++++++=
-+
->>  .../translations/zh_TW/arm64/elf_hwcaps.rst   | 244 +++++++++++++++++=
+On Tue, Aug 31, 2021 at 09:53:27PM -0700, Andy Lutomirski wrote:
+> 
+> 
+> On Thu, Aug 26, 2021, at 7:31 PM, Yu Zhang wrote:
+> > On Thu, Aug 26, 2021 at 12:15:48PM +0200, David Hildenbrand wrote:
+> 
+> > Thanks a lot for this summary. A question about the requirement: do we or
+> > do we not have plan to support assigned device to the protected VM?
+> > 
+> > If yes. The fd based solution may need change the VFIO interface as well(
+> > though the fake swap entry solution need mess with VFIO too). Because:
+> > 
+> > 1> KVM uses VFIO when assigning devices into a VM.
+> > 
+> > 2> Not knowing which GPA ranges may be used by the VM as DMA buffer, all
+> > guest pages will have to be mapped in host IOMMU page table to host pages,
+> > which are pinned during the whole life cycle fo the VM.
+> > 
+> > 3> IOMMU mapping is done during VM creation time by VFIO and IOMMU driver,
+> > in vfio_dma_do_map().
+> > 
+> > 4> However, vfio_dma_do_map() needs the HVA to perform a GUP to get the HPA
+> > and pin the page. 
+> > 
+> > But if we are using fd based solution, not every GPA can have a HVA, thus
+> > the current VFIO interface to map and pin the GPA(IOVA) wont work. And I
+> > doubt if VFIO can be modified to support this easily.
+> > 
+> > 
+> 
+> Do you mean assigning a normal device to a protected VM or a hypothetical protected-MMIO device?
+> 
+> If the former, it should work more or less like with a non-protected VM. mmap the VFIO device, set up a memslot, and use it.  I'm not sure whether anyone will actually do this, but it should be possible, at least in principle.  Maybe someone will want to assign a NIC to a TDX guest.  An NVMe device with the understanding that the guest can't trust it wouldn't be entirely crazy ether.
+> 
+> If the latter, AFAIK there is no spec for how it would work even in principle. Presumably it wouldn't work quite like VFIO -- instead, the kernel could have a protection-virtual-io-fd mechanism, and that fd could be bound to a memslot in whatever way we settle on for binding secure memory to a memslot.
+> 
 
->>  .../translations/zh_TW/arm64/hugetlbpage.rst  |  49 ++++
->>  .../translations/zh_TW/arm64/index.rst        |  23 ++
->>  .../zh_TW/arm64/legacy_instructions.txt       |  77 ++++++
->>  .../translations/zh_TW/arm64/memory.txt       | 119 +++++++++
->>  .../translations/zh_TW/arm64/perf.rst         |  88 ++++++
->>  .../zh_TW/arm64/silicon-errata.txt            |  79 ++++++
->>  .../zh_TW/arm64/tagged-pointers.txt           |  57 ++++
->>  Documentation/translations/zh_TW/index.rst    |   5 +
->>  11 files changed, 1096 insertions(+)
->>  create mode 100644 Documentation/translations/zh_TW/arm64/amu.rst
->>  create mode 100644 Documentation/translations/zh_TW/arm64/booting.txt=
+Thanks Andy. I was asking the first scenario.
 
->>  create mode 100644 Documentation/translations/zh_TW/arm64/elf_hwcaps.=
-rst
->>  create mode 100644 Documentation/translations/zh_TW/arm64/hugetlbpage=
-=2Erst
->>  create mode 100644 Documentation/translations/zh_TW/arm64/index.rst
->>  create mode 100644 Documentation/translations/zh_TW/arm64/legacy_inst=
-ructions.txt
->>  create mode 100644 Documentation/translations/zh_TW/arm64/memory.txt
->>  create mode 100644 Documentation/translations/zh_TW/arm64/perf.rst
->>  create mode 100644 Documentation/translations/zh_TW/arm64/silicon-err=
-ata.txt
->>  create mode 100644 Documentation/translations/zh_TW/arm64/tagged-poin=
-ters.txt
+Well, I agree it is doable if someone really want some assigned
+device in TD guest. As Kevin mentioned in his reply, HPA can be
+generated, by extending VFIO with a new mapping protocol which
+uses fd+offset, instead of HVA. 
 
-Hi Jon,
+Another issue is current TDX does not support DMA encryption, and
+only shared GPA memory shall be mapped in the VT-d. So to support
+this, KVM may need to work with VFIO to dynamically program host
+IOPT(IOMMU Page Table) when TD guest notifies a shared GFN range(e.g.,
+with a MAP_GPA TDVMCALL), instead of prepopulating the IOPT at VM
+creation time, by mapping entire GFN ranges of a guest.
 
->=20
-> I have gone ahead and applied this set.  I really do have to ask,
-> though: is there really nobody with sufficient interest to review these=
+So my inclination would be to just disallow using of VFIO device in
+TDX first, until we have real requirement(with above enabling work
+finished). 
 
-> patches?  The zh_CN translators have done a good job of organizing
-> themselves to review this work; could you please try to do the same?
-> Otherwise I'm being asked to add lots of material that, as far as I can=
-
-> tell, nobody has looked at...
-
-I expected there would be some response from Haowen to your concern.
-I'm an outsider of the zh_TW translation effort (except for the font
-setting for pdfdocs) and does not read Chinese, but let me describe
-my observation of what Haowen is up to in the hope of making you feel
-better.
-(I might be missing something important, though.)
-
-The zh_TW work is not a direct translation from English documents,
-rather, it is based on the zh_CN translations.
-
-This is not explicitly mentioned in the change logs of Haowan's patch set=
-s,
-but if you compare the "Translator" fields under zh_TW to that of under
-zh_CN, the chain of translation/conversion can be seen easily.
-
-For example, the head of Documentation/translations/zh_CN/arm64/amu.rst
-reads:
-
-------
-    .. include:: ../disclaimer-zh_CN.rst
-   =20
-    :Original: :ref:`Documentation/arm64/amu.rst <amu_index>`
-   =20
-    Translator: Bailu Lin <bailu.lin@vivo.com>
-   =20
-    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-    AArch64 Linux =E4=B8=AD=E6=89=A9=E5=B1=95=E7=9A=84=E6=B4=BB=E5=8A=A8=E7=
-=9B=91=E6=8E=A7=E5=8D=95=E5=85=83
-    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-------
-
-, while the head of Documentation/translations/zh_TW/arm64/amu.rst
-reads:
-
-------
-    .. SPDX-License-Identifier: GPL-2.0
-   =20
-    .. include:: ../disclaimer-zh_TW.rst
-   =20
-    :Original: :ref:`Documentation/arm64/amu.rst <amu_index>`
-   =20
-    Translator: Bailu Lin <bailu.lin@vivo.com>
-                Hu Haowen <src.res@email.cn>
-   =20
-    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-    AArch64 Linux =E4=B8=AD=E6=93=B4=E5=B1=95=E7=9A=84=E6=B4=BB=E5=8B=95=E7=
-=9B=A3=E6=8E=A7=E5=96=AE=E5=85=83
-    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-------
-
-My interpretation of above is that the zh_TW work is based on the
-zh_CN translation by Bailu Lin, which has got proper reviews by
-the zh_CN community.
-
-IIUC, changes in zh_CN -> zh_TW are mostly "Simplified Chinese" ->
-"Traditional Chinese" character substitutions.
-They can be done semi-automatically based on a character mapping.
-Exception is that some of the character mapping are one (SC) to
-many (TC) [1].
-And simply substituting characters might end up in unnatural wording
-in the zh_TW documents due to vocabulary/convention differences.
-This is where human intervention is required occasionally.
-
-So, Huawen's patches can be regarded nearly as good as that of
-the zh_CN counterparts even if they don't have anyone's
-Reviewed-by tags, I suppose.
-
-Of course, it would be much better to have regular reviewers.=20
-
-Haowen, if I'm saying something far from reality, please let
-me know.
-
-[1]: https://en.wikipedia.org/wiki/Ambiguities_in_Chinese_character_simpl=
-ification
-
-        Thanks, Akira
-=20
->=20
-> Thanks,
->=20
-> jon
-
-
+B.R.
+Yu
