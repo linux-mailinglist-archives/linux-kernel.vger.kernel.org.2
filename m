@@ -2,175 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3733FE00F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA6A3FE016
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245462AbhIAQiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:38:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36842 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245434AbhIAQiX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:38:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630514246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eaXvq8CHBS7mwji7NsTxccjCmayM+ohRvagESdHP8T4=;
-        b=SYEgL0K16LDaJORfP5hEWNCMorGvnGZ5lxS4iedYWZa5kgwA16jlEDjU1IDY6AfwdTsIPs
-        tT2IVUq6o++2+8963qmnrunvhoKbaeHNJLLq57Xx9pqPmdQUkMQ1RRyQWrYHl9smeO8kMT
-        8dJW21ePwmMzgliYrPObUiNQmevDFtQ=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-99urWw8hNDmytgUVmD3zDg-1; Wed, 01 Sep 2021 12:37:25 -0400
-X-MC-Unique: 99urWw8hNDmytgUVmD3zDg-1
-Received: by mail-wm1-f71.google.com with SMTP id p11-20020a05600c204b00b002f05aff1663so46431wmg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:37:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=eaXvq8CHBS7mwji7NsTxccjCmayM+ohRvagESdHP8T4=;
-        b=bnmM+Wl17RaEZcK2Q7enS6IjawBksHimrANH/hgePr6QdGI07VsT5VBqdVgegB7N40
-         VA+lUUKi9TD3tFGtRpVQ/wa006/Qw3jVyX+Y0mpPnSJePYTA7PuBd6N4fBzFHgl2Uf9r
-         9O5qhgX7akdF3ww2UGL6qDAc5g4ExVP3SgQ4mdhUoGJmAZdyscK0NVGmnw0k+PsOwy8C
-         ef/eSSMhQNoQRuQ9nBVIBkYyF/hMU4w44FpFF9AYQi/13bKR2iZegy/ggufzaZhZYmqK
-         C0i1hoKpQAlqSlxxz+zEnR/XAX33lw/JTHKovbg+094u/ZAZIYBy3xe7ksjK8xi06Gmo
-         q8sg==
-X-Gm-Message-State: AOAM531QaxArKt7Z+MTZ4d/xKBbXCKOqw9IDEgqzqUOzSyeF+AktLO3s
-        +WJaqDbSY9KfIU7ljG43MUHxkWQafelDZjalSM1v1Jpplbu7evh3gBzk401jJnIeVVAsegmNbm7
-        l9fYNNU+u4Q+IzbgJVQL0wPff
-X-Received: by 2002:adf:eac5:: with SMTP id o5mr367669wrn.22.1630514242966;
-        Wed, 01 Sep 2021 09:37:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0zI5HF4KggMhqr5cBDmXzqiVSCZVqk3w0Sggt+1+T/x/p4eO8o9zUUZVCVxj4ftt8Wn1rJg==
-X-Received: by 2002:adf:eac5:: with SMTP id o5mr367624wrn.22.1630514242736;
-        Wed, 01 Sep 2021 09:37:22 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
-        by smtp.gmail.com with ESMTPSA id n1sm21391441wrp.49.2021.09.01.09.37.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 09:37:22 -0700 (PDT)
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
- memory
-To:     jejb@linux.ibm.com, Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
- <YSlkzLblHfiiPyVM@google.com>
- <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
- <YS6lIg6kjNPI1EgF@google.com>
- <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
- <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
- <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
- <a259e10d-39c9-c4a5-0ab4-f42a1b9bfaee@redhat.com>
- <0d6b2a7e22f5e27e03abc21795124ccd66655966.camel@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <1a4a1548-7e14-c2b4-e210-cc60a2895acd@redhat.com>
-Date:   Wed, 1 Sep 2021 18:37:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S245492AbhIAQjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:39:55 -0400
+Received: from mga01.intel.com ([192.55.52.88]:58989 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232317AbhIAQjy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 12:39:54 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="241075131"
+X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
+   d="scan'208";a="241075131"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 09:38:57 -0700
+X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
+   d="scan'208";a="510487177"
+Received: from seware-mobl.amr.corp.intel.com (HELO vcostago-mobl2.amr.corp.intel.com) ([10.209.104.177])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 09:38:57 -0700
+From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
+To:     Colin King <colin.king@canonical.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] igc: remove redundant continue statement
+In-Reply-To: <20210829165150.531678-1-colin.king@canonical.com>
+References: <20210829165150.531678-1-colin.king@canonical.com>
+Date:   Wed, 01 Sep 2021 09:38:57 -0700
+Message-ID: <878s0g2qu6.fsf@vcostago-mobl2.amr.corp.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <0d6b2a7e22f5e27e03abc21795124ccd66655966.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.21 18:31, James Bottomley wrote:
-> On Wed, 2021-09-01 at 18:22 +0200, David Hildenbrand wrote:
->> On 01.09.21 18:18, James Bottomley wrote:
->>> On Wed, 2021-09-01 at 08:54 -0700, Andy Lutomirski wrote:
->>> [...]
->>>> If you want to swap a page on TDX, you can't.  Sorry, go directly
->>>> to jail, do not collect $200.
->>>
->>> Actually, even on SEV-ES you can't either.  You can read the
->>> encrypted page and write it out if you want, but unless you swap it
->>> back to the exact same physical memory location, the encryption key
->>> won't work.  Since we don't guarantee this for swap, I think swap
->>> won't actually work for any confidential computing environment.
->>>
->>>> So I think there are literally zero code paths that currently
->>>> call try_to_unmap() that will actually work like that on TDX.  If
->>>> we run out of memory on a TDX host, we can kill the guest
->>>> completely and reclaim all of its memory (which probably also
->>>> involves killing QEMU or whatever other user program is in
->>>> charge), but that's really our only option.
->>>
->>> I think our only option for swap is guest co-operation.  We're
->>> going to have to inflate a balloon or something in the guest and
->>> have the guest driver do some type of bounce of the page, where it
->>> becomes an unencrypted page in the guest (so the host can read it
->>> without the physical address keying of the encryption getting in
->>> the way) but actually encrypted with a swap transfer key known only
->>> to the guest.  I assume we can use the page acceptance
->>> infrastructure currently being discussed elsewhere to do swap back
->>> in as well ... the host provides the guest with the encrypted swap
->>> page and the guest has to decrypt it and place it in encrypted
->>> guest memory.
->>
->> Ballooning is indeed *the* mechanism to avoid swapping in the
->> hypervisor  and much rather let the guest swap. Shame it requires
->> trusting a guest, which we, in general, can't. Not to mention other
->> issues we already do have with ballooning (latency, broken auto-
->> ballooning, over-inflating, ...).
-> 
-> 
-> Well not necessarily, but it depends how clever we want to get.  If you
-> look over on the OVMF/edk2 list, there's a proposal to do guest
-> migration via a mirror VM that invokes a co-routine embedded in the
-> OVMF binary:
+Colin King <colin.king@canonical.com> writes:
 
-Yes, I heard of that. "Interesting" design.
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The continue statement at the end of a for-loop has no effect,
+> remove it.
+>
+> Addresses-Coverity: ("Continue has no effect")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/net/ethernet/intel/igc/igc_ptp.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/intel/igc/igc_ptp.c b/drivers/net/ethernet/intel/igc/igc_ptp.c
+> index 0f021909b430..b615a980f563 100644
+> --- a/drivers/net/ethernet/intel/igc/igc_ptp.c
+> +++ b/drivers/net/ethernet/intel/igc/igc_ptp.c
+> @@ -860,7 +860,6 @@ static int igc_phc_get_syncdevicetime(ktime_t *device,
+>  			 * so write the previous error status to clear it.
+>  			 */
+>  			wr32(IGC_PTM_STAT, stat);
+> -			continue;
 
-> 
-> https://patchew.org/EDK2/20210818212048.162626-1-tobin@linux.ibm.com/
-> 
-> This gives us a page encryption mechanism that's provided by the host
-> but accepted via the guest using attestation, meaning we have a
-> mutually trusted piece of code that can use to extract encrypted pages.
-> It does seem it could be enhanced to do swapping for us as well if
-> that's a road we want to go down?
+Just a bit of background.
 
-Right, but that's than no longer ballooning, unless I am missing 
-something important. You'd ask the guest to export/import, and you can 
-trust it. But do we want to call something like that out of random 
-kernel context when swapping/writeback, ...? Hard to tell. Feels like it 
-won't win in a beauty contest.
+I added the "continue" here more as documentation: we handled an error,
+and we want to try again, I felt that the continue helps making that
+clearer.
 
+But I am not completely opposed about removing it.
+
+>  		}
+>  	} while (--count);
+>  
+> -- 
+> 2.32.0
+>
+
+Cheers,
 -- 
-Thanks,
-
-David / dhildenb
-
+Vinicius
