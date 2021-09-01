@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25693FDC5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ADC53FDA45
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346205AbhIAMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49728 "EHLO mail.kernel.org"
+        id S244396AbhIAMbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:31:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345917AbhIAMpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:45:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B504061027;
-        Wed,  1 Sep 2021 12:39:21 +0000 (UTC)
+        id S244729AbhIAMat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:30:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E2A061054;
+        Wed,  1 Sep 2021 12:29:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499962;
-        bh=JEd+8Xp1YGXP325hpWXdlEMZVoVaLY7ECgc9TY/vB6g=;
+        s=korg; t=1630499392;
+        bh=vo+0wE1OvcoQmdBPeqEYanvNLCv7gekrs7aUx+UHX78=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rYYa+rIoaGDQFzRfOxYGbMjyFm9+RfUk8SuBfyiYvLnTK2vEXebVpwdhv4FN+vHwa
-         RyXwP7ZZ5LKb/eW6XX82RMAIwN84edf1pmsA52RnHq0a98cJiSGjU+pSmN7C3kX1Eo
-         yTWoFE9RhD1e0AQDVLPOTrkacHvthYQbDNIX4oO0=
+        b=N6X9gtRoklfK0YNwCr2595qh6tK7V1P+/rtj2dtcQAtjrnAGLdDRQnYndfHTfPH2N
+         5ik3dYhVF2s1MjkGNJtpw2vycxwycHeaLGrauHc+Lrjme9Qo+7hHohXDGYDh2jKIO9
+         WpZ9tTtVZ0xLvEvMOt/cHpNp+Ye2wJc74RI1jSJY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Kiselev <bigunclemax@gmail.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 050/113] net: marvell: fix MVNETA_TX_IN_PRGRS bit number
+Subject: [PATCH 4.19 16/33] xgene-v2: Fix a resource leak in the error handling path of xge_probe()
 Date:   Wed,  1 Sep 2021 14:28:05 +0200
-Message-Id: <20210901122303.654506724@linuxfoundation.org>
+Message-Id: <20210901122251.319649711@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
+References: <20210901122250.752620302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Kiselev <bigunclemax@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 359f4cdd7d78fdf8c098713b05fee950a730f131 ]
+[ Upstream commit 5ed74b03eb4d08f5dd281dcb5f1c9bb92b363a8d ]
 
-According to Armada XP datasheet bit at 0 position is corresponding for
-TxInProg indication.
+A successful 'xge_mdio_config()' call should be balanced by a corresponding
+'xge_mdio_remove()' call in the error handling path of the probe, as
+already done in the remove function.
 
-Fixes: c5aff18204da ("net: mvneta: driver for Marvell Armada 370/XP network unit")
-Signed-off-by: Maxim Kiselev <bigunclemax@gmail.com>
+Update the error handling path accordingly.
+
+Fixes: ea8ab16ab225 ("drivers: net: xgene-v2: Add MDIO support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvneta.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/apm/xgene-v2/main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 618623014180..76c680515764 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -105,7 +105,7 @@
- #define	MVNETA_VLAN_PRIO_TO_RXQ			 0x2440
- #define      MVNETA_VLAN_PRIO_RXQ_MAP(prio, rxq) ((rxq) << ((prio) * 3))
- #define MVNETA_PORT_STATUS                       0x2444
--#define      MVNETA_TX_IN_PRGRS                  BIT(1)
-+#define      MVNETA_TX_IN_PRGRS                  BIT(0)
- #define      MVNETA_TX_FIFO_EMPTY                BIT(8)
- #define MVNETA_RX_MIN_FRAME_SIZE                 0x247c
- /* Only exists on Armada XP and Armada 370 */
+diff --git a/drivers/net/ethernet/apm/xgene-v2/main.c b/drivers/net/ethernet/apm/xgene-v2/main.c
+index 0f2ad50f3bd7..7f37e7cb687e 100644
+--- a/drivers/net/ethernet/apm/xgene-v2/main.c
++++ b/drivers/net/ethernet/apm/xgene-v2/main.c
+@@ -691,11 +691,13 @@ static int xge_probe(struct platform_device *pdev)
+ 	ret = register_netdev(ndev);
+ 	if (ret) {
+ 		netdev_err(ndev, "Failed to register netdev\n");
+-		goto err;
++		goto err_mdio_remove;
+ 	}
+ 
+ 	return 0;
+ 
++err_mdio_remove:
++	xge_mdio_remove(ndev);
+ err:
+ 	free_netdev(ndev);
+ 
 -- 
 2.30.2
 
