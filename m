@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DF23FDC74
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1B13FDAEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344651AbhIAMu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:50:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48326 "EHLO mail.kernel.org"
+        id S244812AbhIAMgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:36:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346094AbhIAMqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:46:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7040360041;
-        Wed,  1 Sep 2021 12:39:42 +0000 (UTC)
+        id S244778AbhIAMcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:32:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 198ED61090;
+        Wed,  1 Sep 2021 12:31:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499983;
-        bh=b4QX9l2JeanhLuJ65fU+MfkH0dwo1GAb0KNh5+IyX0s=;
+        s=korg; t=1630499498;
+        bh=/XDQEDnQln0hiTBQHAQvOvFQW8FoxrwQCmgAZZU/al0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W5sgOqDQFnn2ZnEJCC1F9v+GHe3engJus63xX168+jui2x738rd8AwudE4z06k0tR
-         1ZMuhdokYm2wkEIhcmczhu4w5ye231smF7YM7ONtXVFxqYmNcaYH4aeStYjlofG258
-         G5/KiE34TZpK+xsurvwrGoPJZ3a11WzHpNuW4a9I=
+        b=0gnQiImod4aeU7z1sRM1aW48HnkRLLBwkVW54GdQBWVFHXzqVWNEBGfxtDvPMXzFG
+         Y5mT3k7LAieOuF4CYq8bvCDDHPI+mvRX4QzOh3gi+c3tMKfUM2BD/o/Yo1jP/6gmhy
+         7SYgf4J1TITUAyqJbFg+owPY/NJPVt4cUjspzpGE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kurt Kanzenbach <kurt@linutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Yufeng Mo <moyufeng@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 057/113] net: dsa: hellcreek: Fix incorrect setting of GCL
+Subject: [PATCH 5.4 22/48] net: hns3: clear hardware resource when loading driver
 Date:   Wed,  1 Sep 2021 14:28:12 +0200
-Message-Id: <20210901122303.873808465@linuxfoundation.org>
+Message-Id: <20210901122254.140697782@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +42,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kurt Kanzenbach <kurt@linutronix.de>
+From: Yufeng Mo <moyufeng@huawei.com>
 
-[ Upstream commit a7db5ed8632c88c029254d5d74765d52614af3fd ]
+[ Upstream commit 1a6d281946c330cee2855f6d0cd796616e54601f ]
 
-Currently the gate control list which is programmed into the hardware is
-incorrect resulting in wrong traffic schedules. The problem is the loop
-variables are incremented before they are referenced. Therefore, move the
-increment to the end of the loop.
+If a PF is bonded to a virtual machine and the virtual machine exits
+unexpectedly, some hardware resource cannot be cleared. In this case,
+loading driver may cause exceptions. Therefore, the hardware resource
+needs to be cleared when the driver is loaded.
 
-Fixes: 24dfc6eb39b2 ("net: dsa: hellcreek: Add TAPRIO offloading support")
-Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 46a3df9f9718 ("net: hns3: Add HNS3 Acceleration Engine & Compatibility Layer Support")
+Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
+Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/hirschmann/hellcreek.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../hisilicon/hns3/hns3pf/hclge_cmd.h         |  3 +++
+ .../hisilicon/hns3/hns3pf/hclge_main.c        | 26 +++++++++++++++++++
+ 2 files changed, 29 insertions(+)
 
-diff --git a/drivers/net/dsa/hirschmann/hellcreek.c b/drivers/net/dsa/hirschmann/hellcreek.c
-index 50109218baad..3aab01c25f9a 100644
---- a/drivers/net/dsa/hirschmann/hellcreek.c
-+++ b/drivers/net/dsa/hirschmann/hellcreek.c
-@@ -1473,9 +1473,6 @@ static void hellcreek_setup_gcl(struct hellcreek *hellcreek, int port,
- 		u16 data;
- 		u8 gates;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
+index e34e0854635c..d64cded30eeb 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
+@@ -257,6 +257,9 @@ enum hclge_opcode_type {
+ 	/* Led command */
+ 	HCLGE_OPC_LED_STATUS_CFG	= 0xB000,
  
--		cur++;
--		next++;
--
- 		if (i == schedule->num_entries)
- 			gates = initial->gate_mask ^
- 				cur->gate_mask;
-@@ -1504,6 +1501,9 @@ static void hellcreek_setup_gcl(struct hellcreek *hellcreek, int port,
- 			(initial->gate_mask <<
- 			 TR_GCLCMD_INIT_GATE_STATES_SHIFT);
- 		hellcreek_write(hellcreek, data, TR_GCLCMD);
++	/* clear hardware resource command */
++	HCLGE_OPC_CLEAR_HW_RESOURCE	= 0x700B,
 +
-+		cur++;
-+		next++;
+ 	/* NCL config command */
+ 	HCLGE_OPC_QUERY_NCL_CONFIG	= 0x7011,
+ 	/* M7 stats command */
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+index 93f3865b679b..28e260439196 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+@@ -9165,6 +9165,28 @@ static void hclge_clear_resetting_state(struct hclge_dev *hdev)
  	}
  }
  
++static int hclge_clear_hw_resource(struct hclge_dev *hdev)
++{
++	struct hclge_desc desc;
++	int ret;
++
++	hclge_cmd_setup_basic_desc(&desc, HCLGE_OPC_CLEAR_HW_RESOURCE, false);
++
++	ret = hclge_cmd_send(&hdev->hw, &desc, 1);
++	/* This new command is only supported by new firmware, it will
++	 * fail with older firmware. Error value -EOPNOSUPP can only be
++	 * returned by older firmware running this command, to keep code
++	 * backward compatible we will override this value and return
++	 * success.
++	 */
++	if (ret && ret != -EOPNOTSUPP) {
++		dev_err(&hdev->pdev->dev,
++			"failed to clear hw resource, ret = %d\n", ret);
++		return ret;
++	}
++	return 0;
++}
++
+ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
+ {
+ 	struct pci_dev *pdev = ae_dev->pdev;
+@@ -9206,6 +9228,10 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
+ 	if (ret)
+ 		goto err_cmd_uninit;
+ 
++	ret  = hclge_clear_hw_resource(hdev);
++	if (ret)
++		goto err_cmd_uninit;
++
+ 	ret = hclge_get_cap(hdev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "get hw capability error, ret = %d.\n",
 -- 
 2.30.2
 
