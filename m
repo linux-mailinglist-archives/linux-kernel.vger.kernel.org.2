@@ -2,179 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D54C3FDF11
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445FB3FDF17
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343842AbhIAPyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:54:40 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:53927 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244935AbhIAPyj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:54:39 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 363D232003C0;
-        Wed,  1 Sep 2021 11:53:41 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 01 Sep 2021 11:53:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=UiSTps
-        M3QALh0eXo4eM6pKPHSFI/8X46NXPxLbMcCTM=; b=gT0Bd5jw7ZIO4OqS+okZWf
-        MhSlUmEvjQ6JRYWJkft0Mp/Rr4e0GxuAcjzWIU0TbC4p2i9bSgyHSLsIKpetZ3f0
-        WFftTgXM3DHlwiwryXIJduO1d5W00pRqw8EO5zYPhaTD67IvpnhfpM8CiMCqSQiL
-        Wi3GIJtjmta5yc4rsOaCSshnpL2faSSgZf35SbET2Cmb4vdyY9H++b898NjUm/e2
-        NaA+5MeyOdLc1vkqFgFnq2qzk80qHOrSf8TBxus4VS3iwQwHpxu3jm659gCPxZnh
-        t6Q0faR4ceIJaSpBMTyoE7rgHr10vfawhDKOSEqblCaMG6jRa+2s9D/SMg5Bg1lA
-        ==
-X-ME-Sender: <xms:A6IvYTfQupKB3E1wFLwzpofWBOotVd0ep5yUd4Y8cokAJOGghcuXrg>
-    <xme:A6IvYZMtRj2W1yJIcuhmsTSqte-FXu9XXWWYArMHFoqOt4ScJb_lRr0itOPSUx3bD
-    PRAr7G22XTDNMA>
-X-ME-Received: <xmr:A6IvYcjRt5j_75DNLtyWKatHEkUdP4I0GpUbaE0Zh37_LtALGqE_uEiNtMd205qeF4baehXb0hRE-2s5R7s3S8mKaOitSw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedgleefucetufdoteggodetrfdotf
+        id S1343898AbhIAPzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:55:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244935AbhIAPzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 11:55:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2908A61027;
+        Wed,  1 Sep 2021 15:54:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630511674;
+        bh=rLGcbcuexPZZqKGMPzQ7o2DdekXmW57gDobAJ62qy1c=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=ncrlQPza2dPS4GXdhHyt3VmJVAW0nfjSF5MJEPqHls+Aa1zkTTFh5BFFUP6Q4jVQd
+         ns+w4qJZZFrmQKFR1tQ6oMvJyLoqgn1Np8PkFl+8M7CBybYJcEQRLNyRJyxnPJ0nD+
+         kJweF8aIJWsDcj+yXHcQ2kt8t5xRq/t7o6DuCuuaRnQqKxjPLruXsxfKv8uhn3i8Bw
+         w2sO9eBazO7ApsmcUphuRkZpQZgTSGpNOtIWWt9KGsD1h3pqrUYlE0UQTSmG9bU5Zm
+         zP0l9hLrNAtuEGAAURJpxi9+6UvRV9siKn0JJmR4Ur//Qr0kT6cCJ/9Lgrxqipc2/n
+         zRLnnUrq1/kcw==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 43B1027C0054;
+        Wed,  1 Sep 2021 11:54:31 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute6.internal (MEProxy); Wed, 01 Sep 2021 11:54:31 -0400
+X-ME-Sender: <xms:M6IvYV97U_LYg7Yc-D0gAG4SQkMTffLae3HtSDV2H79jQqbsRRS0wg>
+    <xme:M6IvYZv97JPomvBjbmYRJ_oUrlIPUPFpDbbq_UdfI8iq9s-vwDmEOnvMurXGpVnxr
+    zRN9vhGmu6B_OvwHHM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedgleegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedtffekkeefudffveegueejffejhfetgfeuuefgvedtieehudeuueekhfduheel
-    teenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiug
-    hoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:A6IvYU9uAUbNBQEes4hlmiwKWXklvyhLd3ZPfzGzo_sGJgPvoYaqvg>
-    <xmx:A6IvYfu1zoYqWfvxIbYJ8z77KgQ-8OfIpyCZIHsSajUaMthU13SLfw>
-    <xmx:A6IvYTGazQsFQhvhmrtOqwZ73zkAdVeCSFo65Ib6n3rkBGkpoXXnzQ>
-    <xmx:BKIvYY9CMtRRkpAD6oJ5pgdH03VhCIjD1eHZ4OLiosgFSxwsnGl58g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Sep 2021 11:53:38 -0400 (EDT)
-Date:   Wed, 1 Sep 2021 18:53:34 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
-        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, pshelar@nicira.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/2 net] ip_gre: add validation for csum_start
-Message-ID: <YS+h/tqCJJiQei+W@shredder>
-References: <20210819100447.00201b26@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210821071425.512834-1-chouhan.shreyansh630@gmail.com>
- <CA+FuTSeWY-0+VtERqAxNwmHAwmarYh_HQUoF3b0wHiwAaL+h+A@mail.gmail.com>
- <YS9puVgl/exGgrr3@shredder>
- <CA+FuTSfTCufYmJg5Vum1Q-ndUYh+1P1hLecFht9Qd1-AdnHmaQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+FuTSfTCufYmJg5Vum1Q-ndUYh+1P1hLecFht9Qd1-AdnHmaQ@mail.gmail.com>
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpeegjefghfdtledvfeegfeelvedtgfevkeeugfekffdvveeffeetieeh
+    ueetveekfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
+    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
+    drlhhuthhordhush
+X-ME-Proxy: <xmx:M6IvYTCVBRS5Uj8oxAw4N-DxWBZGX2TNG-4G71ASbMUQ6NK_6lmlpg>
+    <xmx:M6IvYZcRjffvDfI5LVr0SHNRvNxZ51ZsOwEsEMFXbkUvxYi79olieg>
+    <xmx:M6IvYaPrVYrq9_f9tuIxz9T-FSeUvU2lmsVHqs3QNanNjb6UIp2Ocg>
+    <xmx:N6IvYdjcCsGxn0PMH_lRIilnFCEmryC9wQ5YUcrR4WWN_igb2M7wecBzurQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 81596A002E4; Wed,  1 Sep 2021 11:54:27 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1126-g6962059b07-fm-20210901.001-g6962059b
+Mime-Version: 1.0
+Message-Id: <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
+In-Reply-To: <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+ <YSlkzLblHfiiPyVM@google.com>
+ <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
+ <YS6lIg6kjNPI1EgF@google.com>
+ <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
+Date:   Wed, 01 Sep 2021 08:54:02 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "David Hildenbrand" <david@redhat.com>,
+        "Sean Christopherson" <seanjc@google.com>
+Cc:     "Paolo Bonzini" <pbonzini@redhat.com>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
+        "Wanpeng Li" <wanpengli@tencent.com>,
+        "Jim Mattson" <jmattson@google.com>,
+        "Joerg Roedel" <joro@8bytes.org>, "kvm list" <kvm@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Joerg Roedel" <jroedel@suse.de>,
+        "Andi Kleen" <ak@linux.intel.com>,
+        "David Rientjes" <rientjes@google.com>,
+        "Vlastimil Babka" <vbabka@suse.cz>,
+        "Tom Lendacky" <thomas.lendacky@amd.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Varad Gautam" <varad.gautam@suse.com>,
+        "Dario Faggioli" <dfaggioli@suse.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>, linux-mm@kvack.org,
+        linux-coco@lists.linux.dev,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        "Sathyanarayanan Kuppuswamy" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Yu Zhang" <yu.c.zhang@linux.intel.com>
+Subject: =?UTF-8?Q?Re:_[RFC]_KVM:_mm:_fd-based_approach_for_supporting_KVM_guest_?=
+ =?UTF-8?Q?private_memory?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the quick reply, Willem.
-
-On Wed, Sep 01, 2021 at 09:46:48AM -0400, Willem de Bruijn wrote:
-> Thanks for the detailed report, Ido.
+On Wed, Sep 1, 2021, at 1:09 AM, David Hildenbrand wrote:
+> >> Do we have to protect from that? How would KVM protect from user space
+> >> replacing private pages by shared pages in any of the models we discuss?
+> > 
+> > The overarching rule is that KVM needs to guarantee a given pfn is never mapped[*]
+> > as both private and shared, where "shared" also incorporates any mapping from the
+> > host.  Essentially it boils down to the kernel ensuring that a pfn is unmapped
+> > before it's converted to/from private, and KVM ensuring that it honors any
+> > unmap notifications from the kernel, e.g. via mmu_notifier or via a direct callback
+> > as proposed in this RFC.
 > 
-> This is a gre tunnel device with csum/ocsum enabled, correct?
-
-Correct.
-
+> Okay, so the fallocate(PUNCHHOLE) from user space could trigger the 
+> respective unmapping and freeing of backing storage.
 > 
-> How was this packet generated: does it come from the local stack or is
-> it a custom packet injected from userspace, e.g., with a packet socket
-> with vnet_hdr?
+> > 
+> > As it pertains to PUNCH_HOLE, the responsibilities are no different than when the
+> > backing-store is destroyed; the backing-store needs to notify downstream MMUs
+> > (a.k.a. KVM) to unmap the pfn(s) before freeing the associated memory.
+> 
+> Right.
+> 
+> > 
+> > [*] Whether or not the kernel's direct mapping needs to be removed is debatable,
+> >      but my argument is that that behavior is not visible to userspace and thus
+> >      out of scope for this discussion, e.g. zapping/restoring the direct map can
+> >      be added/removed without impacting the userspace ABI.
+> 
+> Right. Removing it shouldn't also be requited IMHO. There are other ways 
+> to teach the kernel to not read/write some online pages (filter 
+> /proc/kcore, disable hibernation, strict access checks for /dev/mem ...).
+> 
+> > 
+> >>>> Define "ordinary" user memory slots as overlay on top of "encrypted" memory
+> >>>> slots.  Inside KVM, bail out if you encounter such a VMA inside a normal
+> >>>> user memory slot. When creating a "encryped" user memory slot, require that
+> >>>> the whole VMA is covered at creation time. You know the VMA can't change
+> >>>> later.
+> >>>
+> >>> This can work for the basic use cases, but even then I'd strongly prefer not to
+> >>> tie memslot correctness to the VMAs.  KVM doesn't truly care what lies behind
+> >>> the virtual address of a memslot, and when it does care, it tends to do poorly,
+> >>> e.g. see the whole PFNMAP snafu.  KVM cares about the pfn<->gfn mappings, and
+> >>> that's reflected in the infrastructure.  E.g. KVM relies on the mmu_notifiers
+> >>> to handle mprotect()/munmap()/etc...
+> >>
+> >> Right, and for the existing use cases this worked. But encrypted memory
+> >> breaks many assumptions we once made ...
+> >>
+> >> I have somewhat mixed feelings about pages that are mapped into $WHATEVER
+> >> page tables but not actually mapped into user space page tables. There is no
+> >> way to reach these via the rmap.
+> >>
+> >> We have something like that already via vfio. And that is fundamentally
+> >> broken when it comes to mmu notifiers, page pinning, page migration, ...
+> > 
+> > I'm not super familiar with VFIO internals, but the idea with the fd-based
+> > approach is that the backing-store would be in direct communication with KVM and
+> > would handle those operations through that direct channel.
+> 
+> Right. The problem I am seeing is that e.g., try_to_unmap() might not be 
+> able to actually fully unmap a page, because some non-synchronized KVM 
+> MMU still maps a page. It would be great to evaluate how the fd 
+> callbacks would fit into the whole picture, including the current rmap.
+> 
+> I guess I'm missing the bigger picture how it all fits together on the 
+> !KVM side.
 
-The packet is received by a physical port and injected to the kernel's
-Rx path by mlxsw (which does not support checksumming). The IPv4 routing
-code then forwards the packet to the GRE tunnel.
+The big picture is fundamentally a bit nasty.  Logically (ignoring the implementation details of rmap, mmu_notifier, etc), you can call try_to_unmap and end up with a page that is Just A Bunch Of Bytes (tm).  Then you can write it to disk, memcpy to another node, compress it, etc. When it gets faulted back in, you make sure the same bytes end up somewhere and put the PTEs back.
 
-I was able to reproduce the issue using veth pairs and a packet socket
-[1]. Running the reproducer with the debug patch from before, I get the
-following output [2].
+With guest-private memory, this doesn't work.  Forget about the implementation: you simply can't take a page of private memory, quiesce it so the guest can't access it without faulting, and turn it into Just A Bunch Of Bytes.  TDX does not have that capability.  (Any system with integrity-protected memory won't without having >PAGE_SIZE bytes or otherwise storing metadata, but TDX can't do this at all.)  SEV-ES *can* (I think -- I asked the lead architect), but that's not the same thing as saying it's a good idea.
 
-[1]
-#!/bin/bash
+So if you want to migrate a TDX page from one NUMA node to another, you need to do something different (I don't know all the details), you will have to ask Intel to explain how this might work in the future (it wasn't in the public docs last time I looked), but I'm fairly confident that it does not resemble try_to_unmap().
 
-ip link add name veth0 type veth peer name veth1
-ip link add name veth2 type veth peer name veth3
-ip link add name veth4 type veth peer name veth5
+Even on SEV, where a page *can* be transformed into a Just A Bunch Of Bytes, the operation doesn't really look like try_to_unmap().  As I understand it, it's more of:
 
-ip netns add h1
-ip netns add r1
-ip netns add r2
-ip netns add h2
+look up the one-and-only guest and GPA at which this page is mapped.
+tear down the NPT PTE.  (SEV, unlike TDX, uses paging structures in normal memory.)
+Ask the magic SEV mechanism to turn the page into swappable data
+Go to town.
 
-# h1
-ip -n h1 link set dev lo up
-ip link set dev veth0 netns h1
-ip -n h1 link set dev veth0 up
-ip -n h1 address add 192.0.2.1/28 dev veth0
-ip -n h1 route add default via 192.0.2.2
+This doesn't really resemble the current rmap + mmu_notifier code, and shoehorning this into mmu_notifier seems like it may be uglier and more code than implementing it more directly in the backing store.
 
-# r1
-## underlay
-ip netns exec r1 sysctl -wq net.ipv4.conf.all.forwarding=1
-ip -n r1 link set dev lo up
-ip -n r1 address add 1.1.1.1/32 dev lo
-ip link set dev veth1 netns r1
-ip link set dev veth2 netns r1
-ip -n r1 link set dev veth1 up
-ip -n r1 link set dev veth2 up
-ip -n r1 address add 192.0.2.2/28 dev veth1
-ip -n r1 address add 192.0.2.17/28 dev veth2
-ip -n r1 route add 2.2.2.2/32 via 192.0.2.18
-## overlay
-ip -n r1 tunnel add name gre2 mode gre local 1.1.1.1 remote 2.2.2.2 csum
-ip -n r1 link set dev gre2 up
-ip -n r1 route add 192.0.2.34/32 dev gre2
+If you actually just try_to_unmap() a SEV-ES page (and it worked, which it currently won't), you will have data corruption or cache incoherency.
 
-# r2
-## underlay
-ip netns exec r2 sysctl -wq net.ipv4.conf.all.forwarding=1
-ip -n r2 link set dev lo up
-ip -n r2 address add 2.2.2.2/32 dev lo
-ip link set dev veth3 netns r2
-ip link set dev veth4 netns r2
-ip -n r2 link set dev veth3 up
-ip -n r2 link set dev veth4 up
-ip -n r2 address add 192.0.2.18/28 dev veth3
-ip -n r2 address add 192.0.2.33/28 dev veth4
-ip -n r2 route add 1.1.1.1/32 via 192.0.2.17
-## overlay
-ip -n r2 tunnel add name gre2 mode gre local 2.2.2.2 remote 1.1.1.1 csum
-ip -n r2 link set dev gre2 up
-ip -n r2 route add 192.0.2.1/32 dev gre2
+If you want to swap a page on TDX, you can't.  Sorry, go directly to jail, do not collect $200.
 
-# h2
-ip -n h2 link set dev lo up
-ip link set dev veth5 netns h2
-ip -n h2 link set dev veth5 up
-ip -n h2 address add 192.0.2.34/28 dev veth5
-ip -n h2 route add default via 192.0.2.33
+So I think there are literally zero code paths that currently call try_to_unmap() that will actually work like that on TDX.  If we run out of memory on a TDX host, we can kill the guest completely and reclaim all of its memory (which probably also involves killing QEMU or whatever other user program is in charge), but that's really our only option.
 
-# test
-dmac=$(ip -n r1 -j -p link show dev veth1 | jq -r '.[]["address"]')
-ip netns exec h1 mausezahn -a own -b "$dmac" -A 192.0.2.1 -B 192.0.2.34 \
-	-t udp "sp=12345,dp=54321" -p 100 -c 10 -d 1msec -q
-
-ip -n r1 -s link show dev gre2
-
-ip netns del h2
-ip netns del r2
-ip netns del r1
-ip netns del h1
-
-[2]
-skb len=128 headroom=80 headlen=128 tailroom=496
-mac=(80,0) net=(80,20) trans=100
-shinfo(txflags=0 nr_frags=0 gso(size=0 type=0 segs=0))
-csum(0x0 ip_summed=0 complete_sw=0 valid=0 level=0)
-hash(0x0 sw=0 l4=0) proto=0x0800 pkttype=0 iif=16
-dev name=gre2 feat=0x0x00000006401d5869
-skb linear:   00000000: 45 00 00 80 00 00 00 00 fe 11 38 49 c0 00 02 01
-skb linear:   00000010: c0 00 02 22 30 39 d4 31 00 6c 85 96 42 42 42 42
-skb linear:   00000020: 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42
-skb linear:   00000030: 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42
-skb linear:   00000040: 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42
-skb linear:   00000050: 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42
-skb linear:   00000060: 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42
-skb linear:   00000070: 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42
+--Andy
