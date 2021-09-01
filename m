@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BAD3FDBCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3CD3FDB01
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345469AbhIAMoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:44:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42766 "EHLO mail.kernel.org"
+        id S1343982AbhIAMg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:36:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344894AbhIAMkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:40:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAFC060E98;
-        Wed,  1 Sep 2021 12:36:05 +0000 (UTC)
+        id S245391AbhIAMer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:34:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C40E61103;
+        Wed,  1 Sep 2021 12:33:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499766;
-        bh=9dLoX9qhRExAidc7yab+5IM5sB1k09jKXcJrIlxLTeQ=;
+        s=korg; t=1630499581;
+        bh=FXLTM2FmsjARSgGovu0OGsj2PLrYLKUBTC4PYZF2IOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GyP83F+S18IdwUOrgAV+A3FWcW14un1igAPq3XjcyjYym+kxfoSSUborvWZOXP45v
-         i4RF2Y02TQPeCBcGXtMNBmCXrq6Q3RcE5R7rMVoMLwhlwBHIjp3d6iqqqzKN9A1JuG
-         OxXKsh6EILXxHt0ZmNgP5YCkSHoZ3P8g7DDTARZA=
+        b=BtC2+3OfDkR9qQ5IQXrhYM1R2qgu8L0ozqIkTYi354VSTTztkyHBDAMs8HuX+aSTW
+         MoxwuNvANuFc+iDRDA1G00rKRQD/7qJa74NL7PBgML6L+ROBUPLwOQaZ7uDxbMJkzG
+         lDNArgV7xNWcFdNlyZS+2+bwgIhPQv1DHiKGthcw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Subject: [PATCH 5.10 078/103] riscv: Fixup wrong ftrace remove cflag
+        stable@vger.kernel.org, Minh Yuan <yuanmingbuaa@gmail.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 38/48] vt_kdsetmode: extend console locking
 Date:   Wed,  1 Sep 2021 14:28:28 +0200
-Message-Id: <20210901122303.180582648@linuxfoundation.org>
+Message-Id: <20210901122254.650849097@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
-References: <20210901122300.503008474@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 67d945778099b14324811fe67c5aff2cda7a7ad5 upstream.
+commit 2287a51ba822384834dafc1c798453375d1107c7 upstream.
 
-We must use $(CC_FLAGS_FTRACE) instead of directly using -pg. It
-will cause -fpatchable-function-entry error.
+As per the long-suffering comment.
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Reported-by: Minh Yuan <yuanmingbuaa@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/riscv/kernel/Makefile |    4 ++--
- arch/riscv/mm/Makefile     |    2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/tty/vt/vt_ioctl.c |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -4,8 +4,8 @@
- #
- 
- ifdef CONFIG_FTRACE
--CFLAGS_REMOVE_ftrace.o	= -pg
--CFLAGS_REMOVE_patch.o	= -pg
-+CFLAGS_REMOVE_ftrace.o	= $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_patch.o	= $(CC_FLAGS_FTRACE)
- endif
- 
- extra-y += head.o
---- a/arch/riscv/mm/Makefile
-+++ b/arch/riscv/mm/Makefile
-@@ -2,7 +2,7 @@
- 
- CFLAGS_init.o := -mcmodel=medany
- ifdef CONFIG_FTRACE
--CFLAGS_REMOVE_init.o = -pg
-+CFLAGS_REMOVE_init.o = $(CC_FLAGS_FTRACE)
- endif
- 
- KCOV_INSTRUMENT_init.o := n
+--- a/drivers/tty/vt/vt_ioctl.c
++++ b/drivers/tty/vt/vt_ioctl.c
+@@ -484,16 +484,19 @@ int vt_ioctl(struct tty_struct *tty,
+ 			ret = -EINVAL;
+ 			goto out;
+ 		}
+-		/* FIXME: this needs the console lock extending */
+-		if (vc->vc_mode == (unsigned char) arg)
++		console_lock();
++		if (vc->vc_mode == (unsigned char) arg) {
++			console_unlock();
+ 			break;
++		}
+ 		vc->vc_mode = (unsigned char) arg;
+-		if (console != fg_console)
++		if (console != fg_console) {
++			console_unlock();
+ 			break;
++		}
+ 		/*
+ 		 * explicitly blank/unblank the screen if switching modes
+ 		 */
+-		console_lock();
+ 		if (arg == KD_TEXT)
+ 			do_unblank_screen(1);
+ 		else
 
 
