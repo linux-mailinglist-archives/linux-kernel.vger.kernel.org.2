@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537E73FDC99
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6D13FDB3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345960AbhIAMva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:51:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49980 "EHLO mail.kernel.org"
+        id S244752AbhIAMkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:40:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343640AbhIAMqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:46:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9B0E60E98;
-        Wed,  1 Sep 2021 12:39:55 +0000 (UTC)
+        id S1343494AbhIAMhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:37:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E92D2610C9;
+        Wed,  1 Sep 2021 12:34:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499996;
-        bh=OYeaMIIOBNuPwhpnFGcyy0uOKPLSDi3ejwPR1ER5Ma4=;
+        s=korg; t=1630499657;
+        bh=62xQxK18jFc/cJz5yiyqEyAAfzwLKbOwlcrognj9Z5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WG3VIl6T7E8WPFEarYGioAiDfCEYr3r+ksvtUdR3RVIE44ojCG3xftGrzJBpoSvLn
-         p8Sfs3DsOXbMdc+1Yxq7EOWFCDDgAqBQS1mWq9ydb5sqBMCExSn4uW35v3cWvdRcYT
-         8KRGWIY5suW5ceiSzin8Xu+JicKPf7snk+LVo97w=
+        b=dBL08dZO0s7lcD2t+DHyavqywqUL62rrFFPx/kuzOybVe1luwLRShtMWc0JU8dPP7
+         OQoI+BFFKdS4mt+emocxYhDLo7yJXIHuU21VtZi/h5EBRNxiG9kvV0bizQWwMG7iP4
+         r4gzwUwTjLPy3zjp6egEjKQGA0VDLD0wiL7JWNyg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.13 030/113] usb: renesas-xhci: Prefer firmware loading on unknown ROM state
-Date:   Wed,  1 Sep 2021 14:27:45 +0200
-Message-Id: <20210901122302.995956828@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com,
+        Alexey Gladkov <legion@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 036/103] ucounts: Increase ucounts reference counter before the security hook
+Date:   Wed,  1 Sep 2021 14:27:46 +0200
+Message-Id: <20210901122301.773759848@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,123 +42,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Alexey Gladkov <legion@kernel.org>
 
-commit c82cacd2f1e622a461a77d275a75d7e19e7635a3 upstream.
+[ Upstream commit bbb6d0f3e1feb43d663af089c7dedb23be6a04fb ]
 
-The recent attempt to handle an unknown ROM state in the commit
-d143825baf15 ("usb: renesas-xhci: Fix handling of unknown ROM state")
-resulted in a regression and reverted later by the commit 44cf53602f5a
-("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"").
-The problem of the former fix was that it treated the failure of
-firmware loading as a fatal error.  Since the firmware files aren't
-included in the standard linux-firmware tree, most users don't have
-them, hence they got the non-working system after that.  The revert
-fixed the regression, but also it didn't make the firmware loading
-triggered even on the devices that do need it.  So we need still a fix
-for them.
+We need to increment the ucounts reference counter befor security_prepare_creds()
+because this function may fail and abort_creds() will try to decrement
+this reference.
 
-This is another attempt to handle the unknown ROM state.  Like the
-previous fix, this also tries to load the firmware when ROM shows
-unknown state.  In this patch, however, the failure of a firmware
-loading (such as a missing firmware file) isn't handled as a fatal
-error any longer when ROM has been already detected, but it falls back
-to the ROM mode like before.  The error is returned only when no ROM
-is detected and the firmware loading failed.
+[   96.465056][ T8641] FAULT_INJECTION: forcing a failure.
+[   96.465056][ T8641] name fail_page_alloc, interval 1, probability 0, space 0, times 0
+[   96.478453][ T8641] CPU: 1 PID: 8641 Comm: syz-executor668 Not tainted 5.14.0-rc6-syzkaller #0
+[   96.487215][ T8641] Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+[   96.497254][ T8641] Call Trace:
+[   96.500517][ T8641]  dump_stack_lvl+0x1d3/0x29f
+[   96.505758][ T8641]  ? show_regs_print_info+0x12/0x12
+[   96.510944][ T8641]  ? log_buf_vmcoreinfo_setup+0x498/0x498
+[   96.516652][ T8641]  should_fail+0x384/0x4b0
+[   96.521141][ T8641]  prepare_alloc_pages+0x1d1/0x5a0
+[   96.526236][ T8641]  __alloc_pages+0x14d/0x5f0
+[   96.530808][ T8641]  ? __rmqueue_pcplist+0x2030/0x2030
+[   96.536073][ T8641]  ? lockdep_hardirqs_on_prepare+0x3e2/0x750
+[   96.542056][ T8641]  ? alloc_pages+0x3f3/0x500
+[   96.546635][ T8641]  allocate_slab+0xf1/0x540
+[   96.551120][ T8641]  ___slab_alloc+0x1cf/0x350
+[   96.555689][ T8641]  ? kzalloc+0x1d/0x30
+[   96.559740][ T8641]  __kmalloc+0x2e7/0x390
+[   96.563980][ T8641]  ? kzalloc+0x1d/0x30
+[   96.568029][ T8641]  kzalloc+0x1d/0x30
+[   96.571903][ T8641]  security_prepare_creds+0x46/0x220
+[   96.577174][ T8641]  prepare_creds+0x411/0x640
+[   96.581747][ T8641]  __sys_setfsuid+0xe2/0x3a0
+[   96.586333][ T8641]  do_syscall_64+0x3d/0xb0
+[   96.590739][ T8641]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   96.596611][ T8641] RIP: 0033:0x445a69
+[   96.600483][ T8641] Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+[   96.620152][ T8641] RSP: 002b:00007f1054173318 EFLAGS: 00000246 ORIG_RAX: 000000000000007a
+[   96.628543][ T8641] RAX: ffffffffffffffda RBX: 00000000004ca4c8 RCX: 0000000000445a69
+[   96.636600][ T8641] RDX: 0000000000000010 RSI: 00007f10541732f0 RDI: 0000000000000000
+[   96.644550][ T8641] RBP: 00000000004ca4c0 R08: 0000000000000001 R09: 0000000000000000
+[   96.652500][ T8641] R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ca4cc
+[   96.660631][ T8641] R13: 00007fffffe0b62f R14: 00007f1054173400 R15: 0000000000022000
 
-Along with it, for simplifying the code flow, the detection and the
-check of ROM is factored out from renesas_fw_check_running() and done
-in the caller side, renesas_xhci_check_request_fw().  It avoids the
-redundant ROM checks.
-
-The patch was tested on Lenovo Thinkpad T14 gen (BIOS 1.34).  Also it
-was confirmed that no regression is seen on another Thinkpad T14
-machine that has worked without the patch, too.
-
-Fixes: 44cf53602f5a ("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1189207
-Link: https://lore.kernel.org/r/20210826124127.14789-1-tiwai@suse.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 905ae01c4ae2 ("Add a reference to ucounts for each cred")
+Reported-by: syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com
+Signed-off-by: Alexey Gladkov <legion@kernel.org>
+Link: https://lkml.kernel.org/r/97433b1742c3331f02ad92de5a4f07d673c90613.1629735352.git.legion@kernel.org
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci-pci-renesas.c | 35 +++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 12 deletions(-)
+ kernel/cred.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-pci-renesas.c b/drivers/usb/host/xhci-pci-renesas.c
-index 5923844ed821..ef5e91a5542d 100644
---- a/drivers/usb/host/xhci-pci-renesas.c
-+++ b/drivers/usb/host/xhci-pci-renesas.c
-@@ -207,7 +207,8 @@ static int renesas_check_rom_state(struct pci_dev *pdev)
- 			return 0;
+diff --git a/kernel/cred.c b/kernel/cred.c
+index 098213d4a39c..8c0983fa794a 100644
+--- a/kernel/cred.c
++++ b/kernel/cred.c
+@@ -286,13 +286,13 @@ struct cred *prepare_creds(void)
+ 	new->security = NULL;
+ #endif
  
- 		case RENESAS_ROM_STATUS_NO_RESULT: /* No result yet */
--			return 0;
-+			dev_dbg(&pdev->dev, "Unknown ROM status ...\n");
-+			return -ENOENT;
- 
- 		case RENESAS_ROM_STATUS_ERROR: /* Error State */
- 		default: /* All other states are marked as "Reserved states" */
-@@ -224,14 +225,6 @@ static int renesas_fw_check_running(struct pci_dev *pdev)
- 	u8 fw_state;
- 	int err;
- 
--	/* Check if device has ROM and loaded, if so skip everything */
--	err = renesas_check_rom(pdev);
--	if (err) { /* we have rom */
--		err = renesas_check_rom_state(pdev);
--		if (!err)
--			return err;
--	}
+-	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
+-		goto error;
 -
- 	/*
- 	 * Test if the device is actually needing the firmware. As most
- 	 * BIOSes will initialize the device for us. If the device is
-@@ -591,21 +584,39 @@ int renesas_xhci_check_request_fw(struct pci_dev *pdev,
- 			(struct xhci_driver_data *)id->driver_data;
- 	const char *fw_name = driver_data->firmware;
- 	const struct firmware *fw;
-+	bool has_rom;
- 	int err;
+ 	new->ucounts = get_ucounts(new->ucounts);
+ 	if (!new->ucounts)
+ 		goto error;
  
-+	/* Check if device has ROM and loaded, if so skip everything */
-+	has_rom = renesas_check_rom(pdev);
-+	if (has_rom) {
-+		err = renesas_check_rom_state(pdev);
-+		if (!err)
-+			return 0;
-+		else if (err != -ENOENT)
-+			has_rom = false;
-+	}
++	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
++		goto error;
 +
- 	err = renesas_fw_check_running(pdev);
- 	/* Continue ahead, if the firmware is already running. */
- 	if (err == 0)
- 		return 0;
+ 	validate_creds(new);
+ 	return new;
  
-+	/* no firmware interface available */
- 	if (err != 1)
--		return err;
-+		return has_rom ? 0 : err;
+@@ -753,13 +753,13 @@ struct cred *prepare_kernel_cred(struct task_struct *daemon)
+ #ifdef CONFIG_SECURITY
+ 	new->security = NULL;
+ #endif
+-	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
+-		goto error;
+-
+ 	new->ucounts = get_ucounts(new->ucounts);
+ 	if (!new->ucounts)
+ 		goto error;
  
- 	pci_dev_get(pdev);
--	err = request_firmware(&fw, fw_name, &pdev->dev);
-+	err = firmware_request_nowarn(&fw, fw_name, &pdev->dev);
- 	pci_dev_put(pdev);
- 	if (err) {
--		dev_err(&pdev->dev, "request_firmware failed: %d\n", err);
-+		if (has_rom) {
-+			dev_info(&pdev->dev, "failed to load firmware %s, fallback to ROM\n",
-+				 fw_name);
-+			return 0;
-+		}
-+		dev_err(&pdev->dev, "failed to load firmware %s: %d\n",
-+			fw_name, err);
- 		return err;
- 	}
- 
++	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
++		goto error;
++
+ 	put_cred(old);
+ 	validate_creds(new);
+ 	return new;
 -- 
-2.32.0
+2.30.2
 
 
 
