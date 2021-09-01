@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EFB3FD545
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CD43FD54B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243170AbhIAIVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:21:32 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:54405 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243072AbhIAIVa (ORCPT
+        id S243141AbhIAIXq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 1 Sep 2021 04:23:46 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:23162 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243004AbhIAIXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:21:30 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id LLTumbxEylQKhLLTvmHxed; Wed, 01 Sep 2021 10:20:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1630484430; bh=GfCHqSZv2nZlr8KsNnFiMZi9+oWhMPoyCqpwjG+OdiE=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=cevdEFABsVf5kVrWj4kTmLhuAArUTVho1wy+fLzKmWs63SXLDvGQwrAyVtVDNHE08
-         NbJxU7ydFxjX8MfoNyolX2QvEMOXIkWasr+PeFdtnmcGAE48blnE8HVoiuZS8xNLos
-         Socp/WsGnBRArsGpcXUwwqpk/391O4MT3IXrIdaE6itCG3i9UABvInj5a+i+3n6eTS
-         uivaZKfWMipq3NoYlxpAjWFsYBSNSda0OJ6QvIFB0W7c9JZMgUqbP8sxczsaCrqADy
-         1482EOrWQYiuiIX3QJ7nAlvO+Zenvb3DIGq3QdJ7BVwGPklDUvE9cEYFDGg8x3ZAMZ
-         YaIWuBiFE37lA==
-Subject: Re: [PATCH] media: sti/c8sectpfe: Make use of the helper function
- devm_platform_ioremap_resource_byname()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Patrice Chotard <patrice.chotard@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210901055631.7829-1-caihuoqing@baidu.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <91245ea5-215f-5e60-0a97-7c29ceb7c3a9@xs4all.nl>
-Date:   Wed, 1 Sep 2021 10:20:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 1 Sep 2021 04:23:42 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-100-_u3ncUtINZaJltL-_PpvhA-1; Wed, 01 Sep 2021 09:22:44 +0100
+X-MC-Unique: _u3ncUtINZaJltL-_PpvhA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Wed, 1 Sep 2021 09:22:42 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Wed, 1 Sep 2021 09:22:42 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jakub Kicinski' <kuba@kernel.org>,
+        Peter Collingbourne <pcc@google.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH v2] net: don't unconditionally copy_from_user a struct
+ ifreq for socket ioctls
+Thread-Topic: [PATCH v2] net: don't unconditionally copy_from_user a struct
+ ifreq for socket ioctls
+Thread-Index: AQHXnoV4A6XjTyzNuk62FGlW78jf5auO1z/Q
+Date:   Wed, 1 Sep 2021 08:22:42 +0000
+Message-ID: <bf0f47974d7141358d810d512d4b9a00@AcuMS.aculab.com>
+References: <20210826194601.3509717-1-pcc@google.com>
+ <20210831093006.6db30672@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210831093006.6db30672@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210901055631.7829-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfJRoayrIqmcHfdDz2ck/bNwHScVxGGQWvquTGIyrIs576AcabdctUNUbGEj+i494562eYjGHj0UVa70tJWJuO4uud54+g/wh83pgODOiGDexGiuBjZtO
- nMkD4naXo1NJR9paGA7PLOzwL+EwM0v0onjBBBs4Idu0huK9cyQT2OE5TzFADN11hscON0n2uglKXcknJWvzGeQ+7LPT171ViNY9XFR0TgFqoZ59AEfHYr/z
- dPn1Bnfks5usPN4SVihU2fH6JH2lFsNHL6n5lWWZwwNYJL/OuT8owx2rpzr8A1Q9Q13z0nvmYOsGCU2q3Tkhn4L1DTqMz/CLLCLHA0GcC+szcwSSw4NwvL+3
- u88IE8f99yhumFwJXnQ4N+zwkBxgBkyHj0KpEm7g6Edd53zgXZOKzNmHndDYnm1jM6Sk8gyqEEhrIdqEsiJ7qgqZL7ErY2Api+QjQmz6yOfEPGyijIQZlwAj
- 1Rdqg+R7kn3AVMoR
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/2021 07:56, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource_byname() helper instead of
-> calling platform_get_resource_byname() and devm_ioremap_resource()
-> separately
+From: Jakub Kicinski
+> Sent: 31 August 2021 17:30
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
+> On Thu, 26 Aug 2021 12:46:01 -0700 Peter Collingbourne wrote:
+> > @@ -3306,6 +3308,8 @@ static int compat_ifr_data_ioctl(struct net *net, unsigned int cmd,
+> >  	struct ifreq ifreq;
+> >  	u32 data32;
+> >
+> > +	if (!is_socket_ioctl_cmd(cmd))
+> > +		return -ENOTTY;
+> >  	if (copy_from_user(ifreq.ifr_name, u_ifreq32->ifr_name, IFNAMSIZ))
+> >  		return -EFAULT;
+> >  	if (get_user(data32, &u_ifreq32->ifr_data))
 > 
-> diff --git a/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c b/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
-> index 02dc78bd7fab..9f05984f711a 100644
-> --- a/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
-> +++ b/drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c
-> @@ -665,7 +665,6 @@ static int c8sectpfe_probe(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  	struct device_node *child, *np = dev->of_node;
->  	struct c8sectpfei *fei;
-> -	struct resource *res;
->  	int ret, index = 0;
->  	struct channel_info *tsin;
->  
-> @@ -676,14 +675,11 @@ static int c8sectpfe_probe(struct platform_device *pdev)
->  
->  	fei->dev = dev;
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "c8sectpfe");
-> -	fei->io = devm_ioremap_resource(dev, res);
-> +	fei->io = devm_platform_ioremap_resource_byname(pdev, "c8sectpfe");
->  	if (IS_ERR(fei->io))
->  		return PTR_ERR(fei->io);
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> -					"c8sectpfe-ram");
-> -	fei->sram = devm_ioremap_resource(dev, res);
-> +	fei->sram = devm_platform_ioremap_resource_byname(pdev, "c8sectpfe-ram");
->  	if (IS_ERR(fei->sram))
->  		return PTR_ERR(fei->sram);
->  
-> 
+> Hi Peter, when resolving the net -> net-next merge conflict I couldn't
+> figure out why this chunk is needed. It seems all callers of
+> compat_ifr_data_ioctl() already made sure it's a socket IOCTL.
+> Please double check my resolution (tip of net-next) and if this is
+> indeed unnecessary perhaps send a cleanup? Thanks!
 
-Compile error:
+To stop the copy_from_user() faulting when the user buffer
+isn't long enough.
+In particular for iasatty() on arm with tagged pointers.
 
-drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c: In function ‘c8sectpfe_probe’:
-drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c:686:33: error: ‘res’ undeclared (first use in this function); did you mean ‘ret’?
-  686 |  fei->sram_size = resource_size(res);
-      |                                 ^~~
-      |                                 ret
-drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c:686:33: note: each undeclared identifier is reported only once for each function it appears in
+	David
 
-Regards,
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-	Hans
