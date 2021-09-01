@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002EA3FE698
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09073FE6A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242409AbhIAXuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 19:50:21 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:53766 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235391AbhIAXuN (ORCPT
+        id S232322AbhIAXyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 19:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230110AbhIAXyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 19:50:13 -0400
+        Wed, 1 Sep 2021 19:54:36 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2DFC061757;
+        Wed,  1 Sep 2021 16:53:37 -0700 (PDT)
 Received: from Monstersaurus.local (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C4EDF1909;
-        Thu,  2 Sep 2021 01:49:13 +0200 (CEST)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CD1421516;
+        Thu,  2 Sep 2021 01:53:35 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1630540154;
-        bh=KR+5ekX2d7jbFxpRvg5s+HRzyRMzZ198XHNPIp2ghgg=;
+        s=mail; t=1630540416;
+        bh=e2on+6nnHUEaEoE7ujMr2rV+rbpLzkiDLzQOxlXzjeQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OxpYBnfqPpr3kLhTcfrGIHXxISWsGQrRVUXPdf2fTkLEIlh/g4zSeCYDQaABBqzrx
-         TCnMJMALK3epIW7VS+BC7lve8DikMiMS1tu7mLLGvUEBaUKYwR3tEpAAQ7u709KXd3
-         khBme0lOeUXzrespriNV+YKTbNp/gTa72mKuD350=
+        b=T1gew15VmhIrU5rnBi3DMJk4QpG/bjcVk6CRxujz0GiL23l3x/smv0+fKLHoEPWUo
+         ELj3Gudei9DDPC8QWEG4f8Hl9hH4F1RL5bU41b4U3MWHZ18sYTJpBVfS7Az7QR5dLX
+         arYymdLEBecRomw28Zejg5iCZpPdgL6lVgnwMnms=
 From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-To:     linux-renesas-soc@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Geert Uytterhoeven <geert@glider.be>,
+        linux-renesas-soc@vger.kernel.org
 Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS FOR RENESAS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 5/5] drm: rcar-du: Add r8a779a0 device support
-Date:   Thu,  2 Sep 2021 00:49:07 +0100
-Message-Id: <20210901234907.1608896-6-kieran.bingham@ideasonboard.com>
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/3] arm64: dts: renesas: r8a779a0: Add DU support
+Date:   Thu,  2 Sep 2021 00:53:28 +0100
+Message-Id: <20210901235330.1611086-2-kieran.bingham@ideasonboard.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210901234907.1608896-1-kieran.bingham@ideasonboard.com>
-References: <20210901234907.1608896-1-kieran.bingham@ideasonboard.com>
+In-Reply-To: <20210901235330.1611086-1-kieran.bingham@ideasonboard.com>
+References: <20210901235330.1611086-1-kieran.bingham@ideasonboard.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -44,116 +49,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
-Extend the rcar_du_device_info structure and rcar_du_output enum to
-support DSI outputs and utilise these additions to provide support for
-the R8A779A0 V3U platform.
+Provide the device nodes for the DU on the V3U platforms.
 
-While the DIDSR register field is now named "DSI/CSI-2-TX-IF0 Dot Clock
-Select" the existing define LVDS0 is used, and is directly compatible
-from other DU variants.
-
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
 ---
+v2
+ - Use a single clock specification for the whole DU.
 
-I can add a macro named DIDSR_LDCS_DSI0 duplicating DIDSR_LDCS_LVDS0 if
-it's deemed better.
+ arch/arm64/boot/dts/renesas/r8a779a0.dtsi | 30 +++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-v2:
- - No longer requires a direct interface with the DSI encoder
- - Use correct field naming (LDCS)
- - Remove per-crtc clock feature.
-
- drivers/gpu/drm/rcar-du/rcar_du_crtc.h  |  2 ++
- drivers/gpu/drm/rcar-du/rcar_du_drv.c   | 20 ++++++++++++++++++++
- drivers/gpu/drm/rcar-du/rcar_du_drv.h   |  2 ++
- drivers/gpu/drm/rcar-du/rcar_du_group.c |  2 ++
- 4 files changed, 26 insertions(+)
-
-diff --git a/drivers/gpu/drm/rcar-du/rcar_du_crtc.h b/drivers/gpu/drm/rcar-du/rcar_du_crtc.h
-index 440e6b4fbb58..26e79b74898c 100644
---- a/drivers/gpu/drm/rcar-du/rcar_du_crtc.h
-+++ b/drivers/gpu/drm/rcar-du/rcar_du_crtc.h
-@@ -96,6 +96,8 @@ struct rcar_du_crtc_state {
- enum rcar_du_output {
- 	RCAR_DU_OUTPUT_DPAD0,
- 	RCAR_DU_OUTPUT_DPAD1,
-+	RCAR_DU_OUTPUT_DSI0,
-+	RCAR_DU_OUTPUT_DSI1,
- 	RCAR_DU_OUTPUT_HDMI0,
- 	RCAR_DU_OUTPUT_HDMI1,
- 	RCAR_DU_OUTPUT_LVDS0,
-diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.c b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-index 8a094d5b9c77..8b4c8851b6bc 100644
---- a/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-+++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-@@ -489,6 +489,25 @@ static const struct rcar_du_device_info rcar_du_r8a7799x_info = {
- 	.lvds_clk_mask =  BIT(1) | BIT(0),
- };
+diff --git a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+index 631d520cebee..3241f7e7c01e 100644
+--- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+@@ -1142,6 +1142,36 @@ vspd1: vsp@fea28000 {
+ 			renesas,fcp = <&fcpvd1>;
+ 		};
  
-+static const struct rcar_du_device_info rcar_du_r8a779a0_info = {
-+	.gen = 3,
-+	.features = RCAR_DU_FEATURE_CRTC_IRQ
-+		  | RCAR_DU_FEATURE_VSP1_SOURCE,
-+	.channels_mask = BIT(1) | BIT(0),
-+	.routes = {
-+		/* R8A779A0 has two MIPI DSI outputs. */
-+		[RCAR_DU_OUTPUT_DSI0] = {
-+			.possible_crtcs = BIT(0),
-+			.port = 0,
-+		},
-+		[RCAR_DU_OUTPUT_DSI1] = {
-+			.possible_crtcs = BIT(1),
-+			.port = 1,
-+		},
-+	},
-+	.dsi_clk_mask =  BIT(1) | BIT(0),
-+};
++		du: display@feb00000 {
++			compatible = "renesas,du-r8a779a0";
++			reg = <0 0xfeb00000 0 0x40000>;
++			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cpg CPG_MOD 411>;
++			clock-names = "du";
++			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
++			resets = <&cpg 411>;
++			vsps = <&vspd0 0>, <&vspd1 0>;
++			status = "disabled";
 +
- static const struct of_device_id rcar_du_of_table[] = {
- 	{ .compatible = "renesas,du-r8a7742", .data = &rcar_du_r8a7790_info },
- 	{ .compatible = "renesas,du-r8a7743", .data = &rzg1_du_r8a7743_info },
-@@ -513,6 +532,7 @@ static const struct of_device_id rcar_du_of_table[] = {
- 	{ .compatible = "renesas,du-r8a77980", .data = &rcar_du_r8a77970_info },
- 	{ .compatible = "renesas,du-r8a77990", .data = &rcar_du_r8a7799x_info },
- 	{ .compatible = "renesas,du-r8a77995", .data = &rcar_du_r8a7799x_info },
-+	{ .compatible = "renesas,du-r8a779a0", .data = &rcar_du_r8a779a0_info },
- 	{ }
- };
- 
-diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.h b/drivers/gpu/drm/rcar-du/rcar_du_drv.h
-index 5fe9152454ff..cf98d43d72d0 100644
---- a/drivers/gpu/drm/rcar-du/rcar_du_drv.h
-+++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.h
-@@ -57,6 +57,7 @@ struct rcar_du_output_routing {
-  * @routes: array of CRTC to output routes, indexed by output (RCAR_DU_OUTPUT_*)
-  * @num_lvds: number of internal LVDS encoders
-  * @dpll_mask: bit mask of DU channels equipped with a DPLL
-+ * @dsi_clk_mask: bitmask of channels that can use the DSI clock as dot clock
-  * @lvds_clk_mask: bitmask of channels that can use the LVDS clock as dot clock
-  */
- struct rcar_du_device_info {
-@@ -67,6 +68,7 @@ struct rcar_du_device_info {
- 	struct rcar_du_output_routing routes[RCAR_DU_OUTPUT_MAX];
- 	unsigned int num_lvds;
- 	unsigned int dpll_mask;
-+	unsigned int dsi_clk_mask;
- 	unsigned int lvds_clk_mask;
- };
- 
-diff --git a/drivers/gpu/drm/rcar-du/rcar_du_group.c b/drivers/gpu/drm/rcar-du/rcar_du_group.c
-index a984eef265d2..27c912bab76e 100644
---- a/drivers/gpu/drm/rcar-du/rcar_du_group.c
-+++ b/drivers/gpu/drm/rcar-du/rcar_du_group.c
-@@ -124,6 +124,8 @@ static void rcar_du_group_setup_didsr(struct rcar_du_group *rgrp)
- 		if (rcdu->info->lvds_clk_mask & BIT(rcrtc->index))
- 			didsr |= DIDSR_LDCS_LVDS0(i)
- 			      |  DIDSR_PDCS_CLK(i, 0);
-+		else if (rcdu->info->dsi_clk_mask & BIT(rcrtc->index))
-+			didsr |= DIDSR_LDCS_LVDS0(i);
- 		else
- 			didsr |= DIDSR_LDCS_DCLKIN(i)
- 			      |  DIDSR_PDCS_CLK(i, 0);
++			ports {
++				#address-cells = <1>;
++				#size-cells = <0>;
++
++				port@0 {
++					reg = <0>;
++					du_out_dsi0: endpoint {
++					};
++				};
++
++				port@1 {
++					reg = <1>;
++					du_out_dsi1: endpoint {
++					};
++				};
++			};
++		};
++
+ 		prr: chipid@fff00044 {
+ 			compatible = "renesas,prr";
+ 			reg = <0 0xfff00044 0 4>;
 -- 
 2.30.2
 
