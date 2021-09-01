@@ -2,94 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4FF3FE31D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D613FE31C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245070AbhIATed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:34:33 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:40804 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244879AbhIATe2 (ORCPT
+        id S1343607AbhIATea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:34:30 -0400
+Received: from mail-4325.protonmail.ch ([185.70.43.25]:42065 "EHLO
+        mail-4325.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245070AbhIATeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:34:28 -0400
-Received: by mail-ot1-f52.google.com with SMTP id 107-20020a9d0bf4000000b0051b8be1192fso1107581oth.7;
-        Wed, 01 Sep 2021 12:33:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MN8A84FtJZYLcjJOsAhof11b/DtEYUBV+PxXI/9y4CI=;
-        b=QegkAfuyT+Iqwsa/wkUcPKB/ENaiTT2bMZbsVFjWW7HDqd+LqwxycMzsw+A3C88uyF
-         QhQTNMR2ADTdDunXKPfkda0bc0UpXOLIpBvHcMFkmtm1BBHetJbrEZWhVowyloW2zxXf
-         mmy1YkA5ZURVwTMS6tlrUOwwZlsR/KHJqnqNYPtoY9z1F+2lZHaEeZ2JVjiElfV9PTXU
-         oBKEfEdceE4rchVtOT0PY0u+hYgUaL2EcHWCD34BZRusyw5q2uCvOF9gJsv1FPGNFzvI
-         gIE2wBCAs1DCbvR/XEvFGiPg1UY13sTSE2K5rAEfbTkHeGSgOxKpXXjxSYlVCQGEGLyT
-         xZyA==
-X-Gm-Message-State: AOAM531BoEkkcLWorT+kez/hO0kXjXK8n+BNLjt7IjV1epiCJPnMU7He
-        QMZ4vdFXTknWfcDxkbPbFRI8VRR2X0cPdWqoP0A=
-X-Google-Smtp-Source: ABdhPJwZWzfXpat3iSK/prDXMONscYHzvSJ1A+J23/4E9AH0hNKTvNz2tYR+TH8I/hrS5liTFQASeeDGXz3idsQnoxI=
-X-Received: by 2002:a9d:705d:: with SMTP id x29mr944614otj.260.1630524811473;
- Wed, 01 Sep 2021 12:33:31 -0700 (PDT)
+        Wed, 1 Sep 2021 15:34:25 -0400
+X-Greylist: delayed 26248 seconds by postgrey-1.27 at vger.kernel.org; Wed, 01 Sep 2021 15:34:25 EDT
+Date:   Wed, 01 Sep 2021 19:33:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1630524807;
+        bh=2mAEu7nrS11Je4C2dPB8KcRtC9+APx4d3X7m/pti9Ng=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=vPUQfrpGWFiO5EJpOKbyaSzhFlfm5EXDWd0E2k2RzVOHHo2sidgslt57zf+yp7CEB
+         gys+bUbiwDNZ2D9SKG90BVchV3RuV7YT1lyyR9FU0hpUdzTk8ORCLqHjD/ufoswImc
+         GhSSBIYbUJmdl6dlkp7X1JRD54xcgMAtxF6aCjKY=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [PATCH 1/4] arm64: dts: qcom: db820c: Move blsp1_uart2 pin states to msm8996.dtsi
+Message-ID: <20210901193214.250375-2-y.oudjana@protonmail.com>
+In-Reply-To: <20210901193214.250375-1-y.oudjana@protonmail.com>
+References: <20210901193214.250375-1-y.oudjana@protonmail.com>
 MIME-Version: 1.0
-References: <20210824122054.29481-1-joro@8bytes.org>
-In-Reply-To: <20210824122054.29481-1-joro@8bytes.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 1 Sep 2021 21:33:20 +0200
-Message-ID: <CAJZ5v0jqwgvmRrRts4Nf4ySmrp5gwmv_iJWBh3OjN54ZU+qneQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] PCI/ACPI: Simplify PCIe _OSC feature negotiation
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <jroedel@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 2:21 PM Joerg Roedel <joro@8bytes.org> wrote:
->
-> From: Joerg Roedel <jroedel@suse.de>
->
-> Hi,
->
-> here is the third version of my patches to simplify the _OSC
-> negotiation of PCIe features between Linux and the firmware.
->
-> This version is a complete rewrite, so there is no changelog to the
-> previous version. Patches 1-3 are cleanups and small restructurings of
-> the code as a preparation for patch 4.
->
-> The last patch gets rid of the dedicated _OSC query to check for _OSC
-> support and merges that functionality into acpi_pci_osc_control_set().
->
-> This allows to simplify and/or remove other functions and consilidate
-> error handling in negotiate_os_control().
->
-> I have tested the patches with and without 'pcie_ports=compat' and
-> found no regressions on my test machine.
+Move blsp1_uart2_default and blsp1_uart2_sleep to the SoC device tree to
+avoid duplicating them in other device trees.
 
-I have reviewed the patches, so if you want me to queue up this
-series, please let me know.
+Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+---
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 29 --------------------
+ arch/arm64/boot/dts/qcom/msm8996.dtsi        | 17 ++++++++++++
+ 2 files changed, 17 insertions(+), 29 deletions(-)
 
-Thanks,
-Rafael
+diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot=
+/dts/qcom/apq8096-db820c.dtsi
+index 51e17094d7b1..eca428ab2517 100644
+--- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
++++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
+@@ -148,9 +148,6 @@ &blsp1_spi1 {
+ &blsp1_uart2 {
+ =09label =3D "BT-UART";
+ =09status =3D "okay";
+-=09pinctrl-names =3D "default", "sleep";
+-=09pinctrl-0 =3D <&blsp1_uart2_default>;
+-=09pinctrl-1 =3D <&blsp1_uart2_sleep>;
+=20
+ =09bluetooth {
+ =09=09compatible =3D "qcom,qca6174-bt";
+@@ -437,32 +434,6 @@ config {
+ =09=09};
+ =09};
+=20
+-=09blsp1_uart2_default: blsp1_uart2_default {
+-=09=09mux {
+-=09=09=09pins =3D "gpio41", "gpio42", "gpio43", "gpio44";
+-=09=09=09function =3D "blsp_uart2";
+-=09=09};
+-
+-=09=09config {
+-=09=09=09pins =3D "gpio41", "gpio42", "gpio43", "gpio44";
+-=09=09=09drive-strength =3D <16>;
+-=09=09=09bias-disable;
+-=09=09};
+-=09};
+-
+-=09blsp1_uart2_sleep: blsp1_uart2_sleep {
+-=09=09mux {
+-=09=09=09pins =3D "gpio41", "gpio42", "gpio43", "gpio44";
+-=09=09=09function =3D "gpio";
+-=09=09};
+-
+-=09=09config {
+-=09=09=09pins =3D "gpio41", "gpio42", "gpio43", "gpio44";
+-=09=09=09drive-strength =3D <2>;
+-=09=09=09bias-disable;
+-=09=09};
+-=09};
+-
+ =09hdmi_hpd_active: hdmi_hpd_active {
+ =09=09mux {
+ =09=09=09pins =3D "gpio34";
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qc=
+om/msm8996.dtsi
+index 52df22ab3f6a..23c3435ab888 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -1211,6 +1211,20 @@ wake {
+ =09=09=09=09};
+ =09=09=09};
+=20
++=09=09=09blsp1_uart2_default: blsp1-uart2-default {
++=09=09=09=09pins =3D "gpio41", "gpio42", "gpio43", "gpio44";
++=09=09=09=09function =3D "blsp_uart2";
++=09=09=09=09drive-strength =3D <16>;
++=09=09=09=09bias-disable;
++=09=09=09};
++
++=09=09=09blsp1_uart2_sleep: blsp1-uart2-sleep {
++=09=09=09=09pins =3D "gpio41", "gpio42", "gpio43", "gpio44";
++=09=09=09=09function =3D "gpio";
++=09=09=09=09drive-strength =3D <2>;
++=09=09=09=09bias-disable;
++=09=09=09};
++
+ =09=09=09blsp1_i2c3_default: blsp1-i2c2-default {
+ =09=09=09=09pins =3D "gpio47", "gpio48";
+ =09=09=09=09function =3D "blsp_i2c3";
+@@ -2704,6 +2718,9 @@ blsp1_uart2: serial@7570000 {
+ =09=09=09clocks =3D <&gcc GCC_BLSP1_UART2_APPS_CLK>,
+ =09=09=09=09 <&gcc GCC_BLSP1_AHB_CLK>;
+ =09=09=09clock-names =3D "core", "iface";
++=09=09=09pinctrl-names =3D "default", "sleep";
++=09=09=09pinctrl-0 =3D <&blsp1_uart2_default>;
++=09=09=09pinctrl-1 =3D <&blsp1_uart2_sleep>;
+ =09=09=09dmas =3D <&blsp1_dma 2>, <&blsp1_dma 3>;
+ =09=09=09dma-names =3D "tx", "rx";
+ =09=09=09status =3D "disabled";
+--=20
+2.33.0
 
 
-> Joerg Roedel (4):
->   PCI/ACPI: Remove OSC_PCI_SUPPORT_MASKS and OSC_PCI_CONTROL_MASKS
->   PCI/ACPI: Move supported and control calculations to separaten
->     functions
->   PCI/ACPI: Move _OSC query checks to separate function
->   PCI/ACPI: Check for _OSC support in acpi_pci_osc_control_set()
->
->  drivers/acpi/pci_root.c | 161 +++++++++++++++++++++-------------------
->  include/linux/acpi.h    |   2 -
->  2 files changed, 84 insertions(+), 79 deletions(-)
->
-> --
-> 2.32.0
->
