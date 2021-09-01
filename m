@@ -2,118 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B423FE531
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7649B3FE534
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbhIAWFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 18:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232025AbhIAWFG (ORCPT
+        id S243412AbhIAWFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 18:05:19 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:37564 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232025AbhIAWFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 18:05:06 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B156EC061757
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 15:04:09 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id n24so1074849ion.10
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 15:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uAcZD9SKFW1AVCpO9fy2xcE9RkcQWlr+7iJy1aKTS5k=;
-        b=IqadqVyNMf/GZSVQLByPmoGST5Yoe6VHJSXDJKjBpMmn12ALTuYElYhDRaFxgUJUnh
-         Ei97BB4BG2dhB0qxmaygwLY66TG2qW8NKDzECdYdgqAl8nmRSlDYtcr3TI42eifXXsRf
-         MtTeSKtV9bxupkt2+vheAfn70IzWWR3OgdmgxiY6RCP+/kIpsMylxa88a9gECQKYBM12
-         QorJM/x/GLXBb/UWm+hzcrkGhoCM/gBGgmi1sB9G7jJUnEXBvG+5ngzDKj2d+aV7WZJS
-         fgMm5+8NEGJTfXvzf0xCZHa9BSFI3GGL68GZkKT/EJ18Ym4XqeRflMw+VXgeQEZmaJFk
-         VAoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uAcZD9SKFW1AVCpO9fy2xcE9RkcQWlr+7iJy1aKTS5k=;
-        b=FzEPgJyUlf1QJGRoFKjFn1RtpWceo4XyRzl2aXkfWmcNJuRBJfBKuYaL0NlOxPy0Cf
-         KchttEDehpdodPb9LiMMLnk9dt5VG9oS6hWjWnmH2RUAxsKlzg2Ad0yzv807gmsjHkeQ
-         omS0zYvYNAMyXD7dXP4/ibgDikYSnRQfgkzwMi6hYj6ubpl4IGgL4CXNl6HUfVAuivRN
-         0oL8sUUF5r5u61LBSRT5udrUxYx9X40oZ0Cb0q+93CoaxhiK54VxO7jy8JyfhU44yV7I
-         W9xjbg+iH6lmYXgzPrlFYMMAZj+gi6ownZUyTEQF8L4X4A+50zcQ2VOv/i7XRJpn9V7r
-         qDvw==
-X-Gm-Message-State: AOAM533F2MbIhPcyB+Gb+a597ldoasm/QBdJdwBM3iYDESLsbRxSH4Cq
-        XfdmyeEouAYHXM/0ViseZmUuvw==
-X-Google-Smtp-Source: ABdhPJwTRdJFJ6ex11gPL8dYES9aQ8TT1xcF+pPFPuvFnHsEfoKjvOB5PvAT01pIWLgFdsX/2UcxFA==
-X-Received: by 2002:a5d:8d06:: with SMTP id p6mr20177ioj.7.1630533848737;
-        Wed, 01 Sep 2021 15:04:08 -0700 (PDT)
-Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
-        by smtp.gmail.com with ESMTPSA id g14sm418990ila.28.2021.09.01.15.04.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 15:04:08 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 22:04:04 +0000
-From:   Oliver Upton <oupton@google.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v3 00/12] KVM: arm64: selftests: Introduce arch_timer
- selftest
-Message-ID: <YS/41Mj4KES1VMrm@google.com>
-References: <20210901211412.4171835-1-rananta@google.com>
+        Wed, 1 Sep 2021 18:05:18 -0400
+X-UUID: f2d4b787ce034378bb80a742a64efce9-20210902
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=dechZ3xSa+k6eciQYNq2w2jcJKlpQJ63PvPD4NTpepM=;
+        b=SQU1gIwhzcwrNYRwtiDrAsJ6ax2tYANm3kmm6W3ubEsDz1H9CQNhg4olDUjOPH+id3ekEyb88srRJ/+rzOQ4elzNt46XGCGeS6eQxGct5K/c0EK903nOzphlZFo7QUEG8PNLNK7zltSLNcudFsVEI4xZFWE+BhRC1yF2ikvk88E=;
+X-UUID: f2d4b787ce034378bb80a742a64efce9-20210902
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <miles.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1029753929; Thu, 02 Sep 2021 06:04:18 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 2 Sep 2021 06:04:16 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 2 Sep 2021 06:04:16 +0800
+Message-ID: <67a7d4bccfc56c5960ca370bcbfb5ca6c9693f21.camel@mediatek.com>
+Subject: Re: [RESEND PATCH 3/4] clk: mediatek: support COMMON_CLK_MT6779
+ module build
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Wendell Lin <wendell.lin@mediatek.com>,
+        "Hanks Chen" <hanks.chen@mediatek.com>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        Lee Jones <lee.jones@linaro.org>
+Date:   Thu, 2 Sep 2021 06:04:16 +0800
+In-Reply-To: <163047434049.42057.5688419707288938766@swboyd.mtv.corp.google.com>
+References: <20210813032429.14715-1-miles.chen@mediatek.com>
+         <20210813032429.14715-4-miles.chen@mediatek.com>
+         <163021049667.2676726.10138202396240942833@swboyd.mtv.corp.google.com>
+         <1630348984.24981.2.camel@mtkswgap22>
+         <163047434049.42057.5688419707288938766@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901211412.4171835-1-rananta@google.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 09:14:00PM +0000, Raghavendra Rao Ananta wrote:
-> Hello,
-> 
-> The patch series adds a KVM selftest to validate the behavior of
-> ARM's generic timer (patch-11). The test programs the timer IRQs
-> periodically, and for each interrupt, it validates the behaviour
-> against the architecture specifications. The test further provides
-> a command-line interface to configure the number of vCPUs, the
-> period of the timer, and the number of iterations that the test
-> has to run for.
-> 
-> Patch-12 adds an option to randomly migrate the vCPUs to different
-> physical CPUs across the system. The bug for the fix provided by
-> Marc with commit 3134cc8beb69d0d ("KVM: arm64: vgic: Resample HW
-> pending state on deactivation") was discovered using arch_timer
-> test with vCPU migrations.
-> 
-> Since the test heavily depends on interrupts, patch-10 adds a host
-> library to setup ARM Generic Interrupt Controller v3 (GICv3). This
-> includes creating a vGIC device, setting up distributor and
-> redistributor attributes, and mapping the guest physical addresses.
-> Symmetrical to this, patch-9 adds a guest library to talk to the vGIC,
-> which includes initializing the controller, enabling/disabling the
-> interrupts, and so on.
-> 
-> Furthermore, additional processor utilities such as accessing the MMIO
-> (via readl/writel), read/write to assembler unsupported registers,
-> basic delay generation, enable/disable local IRQs, and so on, are also
-> introduced that the test/GICv3 takes advantage of (patches 1 through 8).
-> 
-> The patch series, specifically the library support, is derived from the
-> kvm-unit-tests and the kernel itself.
-> 
-> Regards,
-> Raghavendra
+T24gVHVlLCAyMDIxLTA4LTMxIGF0IDIyOjMyIC0wNzAwLCBTdGVwaGVuIEJveWQgd3JvdGU6DQo+
+IFF1b3RpbmcgTWlsZXMgQ2hlbiAoMjAyMS0wOC0zMCAxMTo0MzowNCkNCj4gPiANCj4gPiBzb3Jy
+eSBmb3IgbXkgbGF0ZSByZXNwb25zZS4gDQo+ID4gDQo+ID4gVGhhbmtzIGZvciBwb2ludGluZyB0
+aGlzIG91dC4gSSBoYXZlIHRoZSBzYW1lIHF1ZXN0aW9uIHdoZW4gSSB3YXMNCj4gPiBidWlsZGlu
+ZyB0aGlzIHBhdGNoLiBUaGF0IHRpbWUgSSBmb3VuZCBzb21lIGV4YW1wbGVzIHdoZXJlDQo+ID4g
+dGhleSBhcmUgdXNpbmcgYnVpbHRpbl9wbGF0Zm9ybV9kcml2ZXIgYW5kIGNhbiBiZSBidWlsdCBh
+cyANCj4gPiBrZXJuZWwgbW9kdWxlczoNCj4gPiANCj4gPiBjb25maWcgQ0xLX0lNWDhRWFAgKHRy
+aXN0YXRlKSAmJiBkcml2ZXJzL2Nsay9pbXgvY2xrLWlteDhxeHAtbHBjZy5jDQo+ID4gY29uZmln
+IENMS19SSzMzOTkgKHRyaXN0YXRlKSAmJiBkcml2ZXJzL2Nsay9yb2NrY2hpcC9jbGstcmszMzk5
+LmMNCj4gDQo+IFdlIHNob3VsZCBmaXggdGhvc2UgZHJpdmVycy4gQ2FyZSB0byBzZW5kIGEgcGF0
+Y2g/DQoNCk5vIHByb2JsZW0uIEkgd2lsbCBjaGVjayBkcnZpZXJzL2NsayBhbmQgc3VibWl0IGZp
+eCBwYXRjaGVzLg0KDQpNaWxlcw0K
 
-For later submissions, can you include a lore.kernel.org link to your
-older revisions of the series? NBD now, its easy to find in my inbox but
-just for future reference.
-
---
-Best,
-Oliver
