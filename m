@@ -2,141 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26893FDE97
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6899B3FDE9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343732AbhIAP0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343726AbhIAP0J (ORCPT
+        id S1343743AbhIAP0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:26:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57082 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343727AbhIAP0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:26:09 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861D5C061575;
-        Wed,  1 Sep 2021 08:25:12 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id q17so4400163edv.2;
-        Wed, 01 Sep 2021 08:25:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=b8PqCqBTpRcV16xsLLDnhr5LuVBDAMakK1uy+SsVjMM=;
-        b=FOQzkMv5slkXaelBQlgnyGuCYkgbB2QLK2471cEIXDAHGND9IRukuMHgsbTp0cNNWw
-         8D4kBijOvqPBF+plun9g6qP6ZSfGRxiNvY7kU9Y86wABVJ/P8b0ZvjJH/OO3zwvAnLDk
-         mTluMHYEe6nRyfxjoqLEm8Y2AbXakmiaFDXWM/5Lpnl87ko+czwPM7dw/QhpHYs9ErcA
-         bxzy7QYMRwvbqYgCeWdkBm3InMz/vFSurqF3Rtjao/00nIwiUp3TtERTHMaGOYCf2kl3
-         oWPtPaSwr3jjF33GcL1YSM82Y9t+wstiS848oHkv/f/GKL/Jr6oW8Pp33F/5UPFhYp00
-         1zNA==
+        Wed, 1 Sep 2021 11:26:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630509926;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LbMtRgNEu6wcJvmOGHgsCvmtkF0iMKnVXOQQbGFWdA4=;
+        b=QVe6yq0aDpPoW/Y5jO7BRXKW2/3GxADiui73yy5axSj9DD6h3E0mrZ8Jm/2vxf3jUGKp9t
+        vGDwl+eAuxPeM9wiKic8p3wvvgbl+67fgYuhCETkstklhN7PSArj6MMKpYlCxMleWne94s
+        EcLQ4RzeDH6oNUPayDEi2K2XIagB5fE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-3S5nLfbJMTurvkpA5qSQbw-1; Wed, 01 Sep 2021 11:25:25 -0400
+X-MC-Unique: 3S5nLfbJMTurvkpA5qSQbw-1
+Received: by mail-wr1-f72.google.com with SMTP id b8-20020a5d5508000000b001574e8e9237so9699wrv.16
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 08:25:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b8PqCqBTpRcV16xsLLDnhr5LuVBDAMakK1uy+SsVjMM=;
-        b=Mvw06/21g8eDPBBZZvAjpFhUt5eJa79vTbGcDpp+wstRgVnvUUPmd44+Zhmx9zCs0G
-         5ifHgz6GsKewCfio5LNcJszi6gV+4G36YuqAX4bYOA6W3KqY4mJh+lAOSP7O3VIxYJdN
-         iRXYqwmFYOzzpi1iIOcZ1OhwxnwUTiJbmcJdlcxYFbR2oIFIGT87nWa8caD3Wmz5LHW/
-         DBWJgI3otMyoiNVSbsqgObqBjYBBygGRzmtn6faKGUeA00jDfLn/dtcGdo9f9pw6LdsO
-         uAK4+CxeGnVUdiO/yqUsLoTg7nZNvuU+dbm2kF7+ehBuImbVdH/WewEGkeEiP0GgAu0p
-         slpg==
-X-Gm-Message-State: AOAM5314iBlxvHPRZaHgXOgW0W2makS3ufheyTJsE/j5I4SwlZFP/Gal
-        N0rmSFrjgelayL7VurzoQTS9Bir2dHHvGyJG
-X-Google-Smtp-Source: ABdhPJxWOum36f060/87nuVq8ONvaORBy5QFGXZod7eQu7pkvd1J1WQkC/4bV4H+8/c0e5PofSm1Cw==
-X-Received: by 2002:a05:6402:cab:: with SMTP id cn11mr113964edb.293.1630509910872;
-        Wed, 01 Sep 2021 08:25:10 -0700 (PDT)
-Received: from anparri (host-79-24-20-93.retail.telecomitalia.it. [79.24.20.93])
-        by smtp.gmail.com with ESMTPSA id x9sm95851edj.95.2021.09.01.08.25.09
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=LbMtRgNEu6wcJvmOGHgsCvmtkF0iMKnVXOQQbGFWdA4=;
+        b=Rj3sWx9LLsjTRT4UhwKI+pu2CdxaPbjsnt4LKWhmrDsBdvKR6usey4Cm71r8bQapaI
+         NBTNfbYxvlW1ZUtG9OBGUi5Xx+fyQNKMU7bfQr1zIRwoAuifcYCc3G8OAAHqh5Mmx5Bf
+         YWv1dzPuQGDYkraSI7SDlhNjH9bwKgisAG6yz2fB0yxG64GsO3WzP6kVZ+gCQJ0GJSaZ
+         U3qczN2o4l6q7X2CwTa9s50JJSHgYIsLhiwZ9OSlIMWMYeAD0aokWmUHpcs1RMIc8VF2
+         zes0mClsae4yiRTVT1kLpIwTM4C1AUQJ1O0kKHd7udGHRaDvJ/XW9zlKS5rWX1+XYPs7
+         Xy/Q==
+X-Gm-Message-State: AOAM530WhU+GAt5uaY640hee4d6z9VhT3q9xzERNZmNE4zWfZqsnuCsd
+        Sy6Hk1QUgBeTd+GMcrJ/kFkpPdffpwYNk5HYkCr3YywiCPAHwlmU7buBMoNpfbjkrDW9UGqcXsL
+        VeqgVEMrZdRbeO3Y4DeoQm5du
+X-Received: by 2002:a05:6000:128f:: with SMTP id f15mr38465532wrx.262.1630509922866;
+        Wed, 01 Sep 2021 08:25:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyd4lpd2AFvfgLjXE3GXlhFsPaJTwhhsrpD9tqcy+NNG37vP3+MuiRQrfhe3pXFPQZ2sZQYjw==
+X-Received: by 2002:a05:6000:128f:: with SMTP id f15mr38465493wrx.262.1630509922597;
+        Wed, 01 Sep 2021 08:25:22 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-233-185.dyn.eolo.it. [146.241.233.185])
+        by smtp.gmail.com with ESMTPSA id b12sm25212322wrx.72.2021.09.01.08.25.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 08:25:10 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 17:25:02 +0200
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     linux-hyperv@vger.kernel.org, Andres Beltran <lkmlabelt@gmail.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Drivers: hv: vmbus: Fix kernel crash upon unbinding a
- device from uio_hv_generic driver
-Message-ID: <20210901152502.GA4349@anparri>
-References: <20210831143916.144983-1-vkuznets@redhat.com>
+        Wed, 01 Sep 2021 08:25:22 -0700 (PDT)
+Message-ID: <c40a178110ee705b2be32272b9b3e512a40a4cae.camel@redhat.com>
+Subject: Re: [PATCH net-next] tcp: add tcp_tx_skb_cache_key checking in
+ sk_stream_alloc_skb()
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        MPTCP Upstream <mptcp@lists.linux.dev>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>
+Date:   Wed, 01 Sep 2021 17:25:21 +0200
+In-Reply-To: <CANn89iKbgtb84Lb4UOxUCb_WGrfB6ZoD=bVH2O06-Mm6FBmwpg@mail.gmail.com>
+References: <1630492744-60396-1-git-send-email-linyunsheng@huawei.com>
+         <9c9ef2228dfcb950b5c75382bd421c6169e547a0.camel@redhat.com>
+         <CANn89iJFeM=DgcQpDbaE38uhxTEL6REMWPnVFt7Am7Nuf4wpMw@mail.gmail.com>
+         <CANn89iKbgtb84Lb4UOxUCb_WGrfB6ZoD=bVH2O06-Mm6FBmwpg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210831143916.144983-1-vkuznets@redhat.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 04:39:16PM +0200, Vitaly Kuznetsov wrote:
-> The following crash happens when a never-used device is unbound from
-> uio_hv_generic driver:
+On Wed, 2021-09-01 at 08:16 -0700, Eric Dumazet wrote:
+> On Wed, Sep 1, 2021 at 8:06 AM Eric Dumazet <edumazet@google.com> wrote:
+> > On Wed, Sep 1, 2021 at 3:52 AM Paolo Abeni <pabeni@redhat.com> wrote:
+> > > On Wed, 2021-09-01 at 18:39 +0800, Yunsheng Lin wrote:
+> > > > Since tcp_tx_skb_cache is disabled by default in:
+> > > > commit 0b7d7f6b2208 ("tcp: add tcp_tx_skb_cache sysctl")
+> > > > 
+> > > > Add tcp_tx_skb_cache_key checking in sk_stream_alloc_skb() to
+> > > > avoid possible branch-misses.
+> > > > 
+> > > > Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> > > 
+> > > Note that MPTCP is currently exploiting sk->sk_tx_skb_cache. If we get
+> > > this patch goes in as-is, it will break mptcp.
+> > > 
+> > > One possible solution would be to let mptcp usage enable sk-
+> > > > sk_tx_skb_cache, but that has relevant side effects on plain TCP.
+> > > 
+> > > Another options would be re-work once again the mptcp xmit path to
+> > > avoid using sk->sk_tx_skb_cache.
+> > > 
+> > 
+> > Hmmm, I actually wrote a revert of this feature but forgot to submit
+> > it last year.
+> > 
+> > commit c36cfbd791f62c0f7c6b32132af59dfdbe6be21b (HEAD -> listener_scale4)
+> > Author: Eric Dumazet <edumazet@google.com>
+> > Date:   Wed May 20 06:38:38 2020 -0700
+> > 
+> >     tcp: remove sk_{tr}x_skb_cache
+> > 
+> >     This reverts the following patches :
+> > 
+> >     2e05fcae83c41eb2df10558338dc600dc783af47 ("tcp: fix compile error
+> > if !CONFIG_SYSCTL")
+> >     4f661542a40217713f2cee0bb6678fbb30d9d367 ("tcp: fix zerocopy and
+> > notsent_lowat issues")
+> >     472c2e07eef045145bc1493cc94a01c87140780a ("tcp: add one skb cache for tx")
+> >     8b27dae5a2e89a61c46c6dbc76c040c0e6d0ed4c ("tcp: add one skb cache for rx")
+> > 
+> >     Having a cache of one skb (in each direction) per TCP socket is fragile,
+> >     since it can cause a significant increase of memory needs,
+> >     and not good enough for high speed flows anyway where more than one skb
+> >     is needed.
+> > 
+> >     We want instead to add a generic infrastructure, with more flexible per-cpu
+> >     caches, for alien NUMA nodes.
+> > 
+> >     Signed-off-by: Eric Dumazet <edumazet@google.com>
+> > 
+> > I will update this commit to also remove the part in MPTCP.
+> > 
+> > Let's remove this feature and replace it with something less costly.
 > 
->  kernel BUG at mm/slub.c:321!
->  invalid opcode: 0000 [#1] SMP PTI
->  CPU: 0 PID: 4001 Comm: bash Kdump: loaded Tainted: G               X --------- ---  5.14.0-0.rc2.23.el9.x86_64 #1
->  Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090008  12/07/2018
->  RIP: 0010:__slab_free+0x1d5/0x3d0
-> ...
->  Call Trace:
->   ? pick_next_task_fair+0x18e/0x3b0
->   ? __cond_resched+0x16/0x40
->   ? vunmap_pmd_range.isra.0+0x154/0x1c0
->   ? __vunmap+0x22d/0x290
->   ? hv_ringbuffer_cleanup+0x36/0x40 [hv_vmbus]
->   kfree+0x331/0x380
->   ? hv_uio_remove+0x43/0x60 [uio_hv_generic]
->   hv_ringbuffer_cleanup+0x36/0x40 [hv_vmbus]
->   vmbus_free_ring+0x21/0x60 [hv_vmbus]
->   hv_uio_remove+0x4f/0x60 [uio_hv_generic]
->   vmbus_remove+0x23/0x30 [hv_vmbus]
->   __device_release_driver+0x17a/0x230
->   device_driver_detach+0x3c/0xa0
->   unbind_store+0x113/0x130
-> ...
-> 
-> The problem appears to be that we free 'ring_info->pkt_buffer' twice:
-> first, when the device is unbound from in-kernel driver (netvsc in this
-> case) and second from hv_uio_remove(). Normally, ring buffer is supposed
-> to be re-initialized from hv_uio_open() but this happens when UIO device
-> is being opened and this is not guaranteed to happen.
-> 
-> Generally, it is OK to call hv_ringbuffer_cleanup() twice for the same
-> channel (which is being handed over between in-kernel drivers and UIO) even
-> if we didn't call hv_ringbuffer_init() in between. We, however, need to
-> avoid kfree() call for an already freed pointer.
-> 
-> Fixes: adae1e931acd ("Drivers: hv: vmbus: Copy packets sent by Hyper-V out of the ring buffer")
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Paolo, can you work on MPTP side, so that my revert can be then applied ?
 
-LGTM.
+You are way too fast, I was still replying to your previous email,
+asking if I could help :)
 
-Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
+I'll a look ASAP. Please, allow for some latency: I'm way slower!
 
-ae6935ed7d424f appears to have anticipated this problem on ->ring_buffer
-and adopted the solution proposed here by Vitaly.
+Cheers,
 
-  Andrea
+Paolo
 
-
-> ---
->  drivers/hv/ring_buffer.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/hv/ring_buffer.c b/drivers/hv/ring_buffer.c
-> index 2aee356840a2..314015d9e912 100644
-> --- a/drivers/hv/ring_buffer.c
-> +++ b/drivers/hv/ring_buffer.c
-> @@ -245,6 +245,7 @@ void hv_ringbuffer_cleanup(struct hv_ring_buffer_info *ring_info)
->  	mutex_unlock(&ring_info->ring_buffer_mutex);
->  
->  	kfree(ring_info->pkt_buffer);
-> +	ring_info->pkt_buffer = NULL;
->  	ring_info->pkt_buffer_size = 0;
->  }
->  
-> -- 
-> 2.31.1
-> 
