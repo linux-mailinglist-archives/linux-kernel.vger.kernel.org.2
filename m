@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC59C3FDC30
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A123FDC5B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244935AbhIAMrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:47:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49840 "EHLO mail.kernel.org"
+        id S1346079AbhIAMtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:49:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345453AbhIAMoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:44:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A85066121D;
-        Wed,  1 Sep 2021 12:38:33 +0000 (UTC)
+        id S1345669AbhIAMoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:44:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F36EB610E5;
+        Wed,  1 Sep 2021 12:39:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499914;
-        bh=lkl9IhQYZq7pUCItvbsDFzR36V6UUhsT1POw9ODn8eE=;
+        s=korg; t=1630499944;
+        bh=2+owa3xvviWgBFdf1buQiFV/ZaTCSRUbBMwh1p4ZiLE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zbs6/ayQ3K15mHX0HafbKF8lN1Bs4VGW1/g68juTlLhbH0EdtrlT4iJCHZWSpNtUj
-         T8HDdA20ruYMeiYUASsYvuBQ9BS19J/yfV4z8tVQY3KVl+dE6hBAN8RkXuJaCCmd4i
-         vxpWGsH3fWO2J+Pewge+Nw6CHqotZzC995wYoCIU=
+        b=VEwRBdpuMwtNBCufmXk0lWEG8lNGmQhTaM8WjB3EAwBkm3mDGJphnmqNDU3L+SQ9M
+         kRoMnJlyq7zgfADB6rlqnHrkWMdxk2CAoSw8QWLMbMenaMlvDKENJbJxPCsvraGleC
+         ldQVuhrBzv+3wKhlzlc6xUzFC9Qe34xCDCFtqmzo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        =?UTF-8?q?Michel=20D=C3=A4nzer?= <mdaenzer@redhat.com>,
+        stable@vger.kernel.org, Shashank Sharma <Shashank.sharma@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
-        Lijo Lazar <lijo.lazar@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Subject: [PATCH 5.13 025/113] drm/amdgpu: Cancel delayed work when GFXOFF is disabled
-Date:   Wed,  1 Sep 2021 14:27:40 +0200
-Message-Id: <20210901122302.842477293@linuxfoundation.org>
+Subject: [PATCH 5.13 026/113] drm/amdgpu: use the preferred pin domain after the check
+Date:   Wed,  1 Sep 2021 14:27:41 +0200
+Message-Id: <20210901122302.874591692@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
 References: <20210901122301.984263453@linuxfoundation.org>
@@ -42,119 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michel Dänzer <mdaenzer@redhat.com>
+From: Christian König <christian.koenig@amd.com>
 
-commit 32bc8f8373d2d6a681c96e4b25dca60d4d1c6016 upstream.
+commit 2a7b9a8437130fd328001f4edfac8eec98dfe298 upstream.
 
-schedule_delayed_work does not push back the work if it was already
-scheduled before, so amdgpu_device_delay_enable_gfx_off ran ~100 ms
-after the first time GFXOFF was disabled and re-enabled, even if GFXOFF
-was disabled and re-enabled again during those 100 ms.
+For some reason we run into an use case where a BO is already pinned
+into GTT, but should be pinned into VRAM|GTT again.
 
-This resulted in frame drops / stutter with the upcoming mutter 41
-release on Navi 14, due to constantly enabling GFXOFF in the HW and
-disabling it again (for getting the GPU clock counter).
+Handle that case gracefully as well.
 
-To fix this, call cancel_delayed_work_sync when the disable count
-transitions from 0 to 1, and only schedule the delayed work on the
-reverse transition, not if the disable count was already 0. This makes
-sure the delayed work doesn't run at unexpected times, and allows it to
-be lock-free.
-
-v2:
-* Use cancel_delayed_work_sync & mutex_trylock instead of
-  mod_delayed_work.
-v3:
-* Make amdgpu_device_delay_enable_gfx_off lock-free (Christian König)
-v4:
-* Fix race condition between amdgpu_gfx_off_ctrl incrementing
-  adev->gfx.gfx_off_req_count and amdgpu_device_delay_enable_gfx_off
-  checking for it to be 0 (Evan Quan)
-
-Cc: stable@vger.kernel.org
-Reviewed-by: Evan Quan <evan.quan@amd.com>
-Reviewed-by: Lijo Lazar <lijo.lazar@amd.com> # v3
-Acked-by: Christian König <christian.koenig@amd.com> # v3
-Signed-off-by: Michel Dänzer <mdaenzer@redhat.com>
+Reviewed-by: Shashank Sharma <Shashank.sharma@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c |   11 +++-----
- drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c    |   38 +++++++++++++++++++----------
- 2 files changed, 31 insertions(+), 18 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_object.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -2690,12 +2690,11 @@ static void amdgpu_device_delay_enable_g
- 	struct amdgpu_device *adev =
- 		container_of(work, struct amdgpu_device, gfx.gfx_off_delay_work.work);
- 
--	mutex_lock(&adev->gfx.gfx_off_mutex);
--	if (!adev->gfx.gfx_off_state && !adev->gfx.gfx_off_req_count) {
--		if (!amdgpu_dpm_set_powergating_by_smu(adev, AMD_IP_BLOCK_TYPE_GFX, true))
--			adev->gfx.gfx_off_state = true;
--	}
--	mutex_unlock(&adev->gfx.gfx_off_mutex);
-+	WARN_ON_ONCE(adev->gfx.gfx_off_state);
-+	WARN_ON_ONCE(adev->gfx.gfx_off_req_count);
-+
-+	if (!amdgpu_dpm_set_powergating_by_smu(adev, AMD_IP_BLOCK_TYPE_GFX, true))
-+		adev->gfx.gfx_off_state = true;
- }
- 
- /**
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c
-@@ -563,24 +563,38 @@ void amdgpu_gfx_off_ctrl(struct amdgpu_d
- 
- 	mutex_lock(&adev->gfx.gfx_off_mutex);
- 
--	if (!enable)
--		adev->gfx.gfx_off_req_count++;
--	else if (adev->gfx.gfx_off_req_count > 0)
-+	if (enable) {
-+		/* If the count is already 0, it means there's an imbalance bug somewhere.
-+		 * Note that the bug may be in a different caller than the one which triggers the
-+		 * WARN_ON_ONCE.
-+		 */
-+		if (WARN_ON_ONCE(adev->gfx.gfx_off_req_count == 0))
-+			goto unlock;
-+
- 		adev->gfx.gfx_off_req_count--;
- 
--	if (enable && !adev->gfx.gfx_off_state && !adev->gfx.gfx_off_req_count) {
--		schedule_delayed_work(&adev->gfx.gfx_off_delay_work, GFX_OFF_DELAY_ENABLE);
--	} else if (!enable && adev->gfx.gfx_off_state) {
--		if (!amdgpu_dpm_set_powergating_by_smu(adev, AMD_IP_BLOCK_TYPE_GFX, false)) {
--			adev->gfx.gfx_off_state = false;
--
--			if (adev->gfx.funcs->init_spm_golden) {
--				dev_dbg(adev->dev, "GFXOFF is disabled, re-init SPM golden settings\n");
--				amdgpu_gfx_init_spm_golden(adev);
-+		if (adev->gfx.gfx_off_req_count == 0 && !adev->gfx.gfx_off_state)
-+			schedule_delayed_work(&adev->gfx.gfx_off_delay_work, GFX_OFF_DELAY_ENABLE);
-+	} else {
-+		if (adev->gfx.gfx_off_req_count == 0) {
-+			cancel_delayed_work_sync(&adev->gfx.gfx_off_delay_work);
-+
-+			if (adev->gfx.gfx_off_state &&
-+			    !amdgpu_dpm_set_powergating_by_smu(adev, AMD_IP_BLOCK_TYPE_GFX, false)) {
-+				adev->gfx.gfx_off_state = false;
-+
-+				if (adev->gfx.funcs->init_spm_golden) {
-+					dev_dbg(adev->dev,
-+						"GFXOFF is disabled, re-init SPM golden settings\n");
-+					amdgpu_gfx_init_spm_golden(adev);
-+				}
- 			}
- 		}
-+
-+		adev->gfx.gfx_off_req_count++;
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+@@ -937,11 +937,6 @@ int amdgpu_bo_pin_restricted(struct amdg
+ 			return -EINVAL;
  	}
  
-+unlock:
- 	mutex_unlock(&adev->gfx.gfx_off_mutex);
- }
+-	/* This assumes only APU display buffers are pinned with (VRAM|GTT).
+-	 * See function amdgpu_display_supported_domains()
+-	 */
+-	domain = amdgpu_bo_get_preferred_pin_domain(adev, domain);
+-
+ 	if (bo->tbo.pin_count) {
+ 		uint32_t mem_type = bo->tbo.mem.mem_type;
+ 		uint32_t mem_flags = bo->tbo.mem.placement;
+@@ -966,6 +961,11 @@ int amdgpu_bo_pin_restricted(struct amdg
+ 		return 0;
+ 	}
+ 
++	/* This assumes only APU display buffers are pinned with (VRAM|GTT).
++	 * See function amdgpu_display_supported_domains()
++	 */
++	domain = amdgpu_bo_get_preferred_pin_domain(adev, domain);
++
+ 	if (bo->tbo.base.import_attach)
+ 		dma_buf_pin(bo->tbo.base.import_attach);
  
 
 
