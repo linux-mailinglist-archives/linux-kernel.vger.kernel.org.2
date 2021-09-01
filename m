@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC8C3FD7B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA6C3FD7EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbhIAKcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 06:32:39 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44328 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbhIAKci (ORCPT
+        id S237235AbhIAKoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 06:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237132AbhIAKoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 06:32:38 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id C2DFD202B3;
-        Wed,  1 Sep 2021 10:31:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630492300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EO3JsQqvzkTHmENKGP7Sv2zsa9Ofobc6JGxvJ/VjjBE=;
-        b=TAZQ9GQ46WKV1lDwWzq/TwKyqgsnYxzNbxk/WDr4KnUScH5O/iNRJkpMy5obw1wL5X2/7/
-        gzUfhgCX/qs/TY9bn6b8o/2SBA+s0m5gvT8GlrJ2hh63mneZ3HPG3NseoVFX3gwA97wftB
-        ZDl+K3uGckg21CEEEBlDSGeDpU7LOtQ=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DBD4AA3B95;
-        Wed,  1 Sep 2021 10:31:39 +0000 (UTC)
-Date:   Wed, 1 Sep 2021 12:31:36 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [RFC PATCH 1/1] mm: provide one common K(x) macro
-Message-ID: <YS9WiF6enhSo8sYc@dhcp22.suse.cz>
-References: <20210901092149.994791-1-oleksandr@natalenko.name>
- <20210901092149.994791-2-oleksandr@natalenko.name>
+        Wed, 1 Sep 2021 06:44:38 -0400
+X-Greylist: delayed 417 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 01 Sep 2021 03:43:41 PDT
+Received: from forward107j.mail.yandex.net (forward107j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::252])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB45C061575;
+        Wed,  1 Sep 2021 03:43:41 -0700 (PDT)
+Received: from myt6-ecec3fffc7db.qloud-c.yandex.net (myt6-ecec3fffc7db.qloud-c.yandex.net [IPv6:2a02:6b8:c12:4681:0:640:ecec:3fff])
+        by forward107j.mail.yandex.net (Yandex) with ESMTP id AE866886488;
+        Wed,  1 Sep 2021 13:36:40 +0300 (MSK)
+Received: from myt3-5a0d70690205.qloud-c.yandex.net (myt3-5a0d70690205.qloud-c.yandex.net [2a02:6b8:c12:4f2b:0:640:5a0d:7069])
+        by myt6-ecec3fffc7db.qloud-c.yandex.net (mxback/Yandex) with ESMTP id 1fZrkdnbPm-adH4Jkep;
+        Wed, 01 Sep 2021 13:36:40 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1630492600;
+        bh=bJRqLiOEp8JXTGlpq3+JJAn5wnhGgMPYEfxoudaUc8g=;
+        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
+        b=DwvxWzy8/FIiSbgtrncqM9p7Q32h5dWjPq1krdFgsqH/bnpE/scvmCLeuVHPVscxQ
+         sGsDwCTvss2J0yq2kkjk2TMtVqWLK5+rtiiC56H31xhJ/ZQ0rT50fnjGPgKTx3YzLm
+         Hu/880HcH/uUoaFfHCg9GdodZhTtlR/omQ1vnMMg=
+Authentication-Results: myt6-ecec3fffc7db.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by myt3-5a0d70690205.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id Z5XXDbYXRx-acB8hfbS;
+        Wed, 01 Sep 2021 13:36:38 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+To:     atish.patra@wdc.com
+Cc:     alankao@andestech.com, anup.patel@wdc.com, bpf@vger.kernel.org,
+        daniel.lezcano@linaro.org, guoren@linux.alibaba.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
+        mick@ics.forth.gr, nickhu@andestech.com, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, vincent.chen@sifive.com,
+        wangkefeng.wang@huawei.com, xypron.glpk@gmx.de
+Subject: Not compiling with CONFIG_BPF_SYSCALL enabled
+Date:   Wed,  1 Sep 2021 13:36:34 +0300
+Message-Id: <20210901103634.26558-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210528184405.1793783-2-atish.patra@wdc.com>
+References: <20210528184405.1793783-2-atish.patra@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901092149.994791-2-oleksandr@natalenko.name>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 01-09-21 11:21:49, Oleksandr Natalenko wrote:
-> There are various places where the K(x) macro is defined. This commit
-> gets rid of multiple definitions and provides a common one.
-> 
-> This doesn't solve open-coding this macro in various other places. This
-> should be addressed by another subsequent commit.
+Hello, Atish.
 
-Why is this an improvement? You are adding a header file for a single
-macro which sounds like an overkill. The overall net outcome is added
-lines of code. It is not like K() or any of its variant is adding a
-maintenance burden due to code duplication. So why do we want to change
-the existing state?
--- 
-Michal Hocko
-SUSE Labs
+The above series won't compile with CONFIG_BPF_SYSCALL set:
+
+linux/kernel/events/core.c:9912:18: error: assignment to 
+'bpf_user_pt_regs_t *' {aka 'struct user_regs_struct *'} 
+from incompatible pointer type 'struct pt_regs *' 
+[-Werror=incompatible-pointer-types]
+ 9912 |         ctx.regs = perf_arch_bpf_user_pt_regs(regs);
+
+Just informing you - hope this is helpful.
+
+Yours,
+Nikita Shubin
+
