@@ -2,128 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0BF3FD6E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B623FD6FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243697AbhIAJhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:37:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:35006 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243672AbhIAJg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:36:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E4AB1042;
-        Wed,  1 Sep 2021 02:36:02 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 67E0B3F766;
-        Wed,  1 Sep 2021 02:36:01 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 10:35:58 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     rishabhb@codeaurora.org
-Cc:     sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, avajid@codeaurora.org,
-        adharmap@codeaurora.org
-Subject: Re: [PATCH v3] firmware: arm_scmi: Free mailbox channels if probe
- fails
-Message-ID: <20210901093558.GL13160@e120937-lin>
-References: <1628111999-21595-1-git-send-email-rishabhb@codeaurora.org>
- <20210805105427.GU6592@e120937-lin>
- <51782599a01a6a22409d01e5fc1f8a50@codeaurora.org>
- <20210831054835.GJ13160@e120937-lin>
+        id S243683AbhIAJjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:39:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24840 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243509AbhIAJjj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 05:39:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630489123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NUMgUGMek2BTIcQrz1eRbN4kQSB1Pe9L2E40QgP/xs8=;
+        b=PwDTRQax26L2BOWk8CGwkI6v/emlFwmMloMRci9/q/81QjvNJASxeuan415Ez4FM7OXj+/
+        KzCOtqvT4tRgTxBw64r+yd9bb5yoC1jHNqEjk8heEwem0yURy1uSixxYy88R7EMgF7JL04
+        55W23x54AKFgMe0qbd9FI7mfhmsBiUQ=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-549--zeSp4kDP7KMOCcKBsCAzA-1; Wed, 01 Sep 2021 05:38:41 -0400
+X-MC-Unique: -zeSp4kDP7KMOCcKBsCAzA-1
+Received: by mail-ej1-f69.google.com with SMTP id s11-20020a170906060b00b005be824f15daso1148690ejb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:38:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NUMgUGMek2BTIcQrz1eRbN4kQSB1Pe9L2E40QgP/xs8=;
+        b=kMlaz2MnjaF3iBte2xQVu2bHYrCzCl71U4VBzyI08Rg3cGpltkXRDWQNbFkB6kOaph
+         XrT9HRGeoBSjQtmGO8sPoVVc8H5TotY8lqxFOxTR/weRS6dxqAYK5krOt25LOBMtM0py
+         bRd6a0QnhbVWrRbPOK+VAkh0jD2feN0QRa/vekEfpE8q15Ud2gsmz4d9OetoMAsXjwjS
+         Uy72X4AkJnG5RERx5M2JXkCnrEWKn93IaQruNbOO+dHCHsYsqe18CrsYvKzdrOPlRdBf
+         olUUMe/b+CfV9bjdWtpVzv+FNX/jY4/JyyZ2nXcerE4unrDgwUlj+FDpY1Ir2B4IPAi/
+         ZtOw==
+X-Gm-Message-State: AOAM532hQc7rQRv1u2hR8wp6Rv3imWu50tLVWPCXFWzCsvaMgxBKWNe6
+        0GKvm30LYe/GqmITqd4nH7+PnCc/6CA6vWRyCE0LI1FUgHg7Xudh31OkwWo20aDuVz8pukjAWai
+        Np2WDXs0gBxOgRYuN0hM4h34F
+X-Received: by 2002:a17:906:8258:: with SMTP id f24mr36087121ejx.375.1630489120721;
+        Wed, 01 Sep 2021 02:38:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxUk8ZJu+eEk5NcdDPpvkbaWhIRni/SaBDSt2prHH6gMkc6bodJqhTQdUkN7Hsh/4YZm1cH5A==
+X-Received: by 2002:a17:906:8258:: with SMTP id f24mr36087099ejx.375.1630489120489;
+        Wed, 01 Sep 2021 02:38:40 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id q18sm9654169ejc.84.2021.09.01.02.38.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 02:38:40 -0700 (PDT)
+Subject: Re: [PATCH v4] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860
+ and 870 SSD.
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     torvic9@mailbox.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hpa@redhat.com" <hpa@redhat.com>
+Cc:     "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>
+References: <1876334901.51676.1630481868266@office.mailbox.org>
+ <e6f9921d-0fb6-da30-4dc5-53b4cb7b5270@redhat.com>
+Message-ID: <2df1c3d5-301d-dc46-7f9f-d28be2933bd3@redhat.com>
+Date:   Wed, 1 Sep 2021 11:38:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210831054835.GJ13160@e120937-lin>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <e6f9921d-0fb6-da30-4dc5-53b4cb7b5270@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 06:48:35AM +0100, Cristian Marussi wrote:
-> On Mon, Aug 30, 2021 at 02:09:37PM -0700, rishabhb@codeaurora.org wrote:
-> > Hi Christian
-> 
-> Hi Rishabh,
-> 
-> thanks for looking into this kind of bad interactions.
-> 
-> > There seems to be another issue here. The response from agent can be delayed
-> > causing a timeout during base protocol acquire,
-> > which leads to the probe failure. What I have observed is sometimes the
-> > failure of probe and rx_callback (due to a delayed message)
-> > happens at the same time on different cpus.
-> > Because of this race, the device memory may be cleared while the
-> > interrupt(rx_callback) is executing on another cpu.
-> 
-> You are right that concurrency was not handled properly in this kind of
-> context and moreover, if you think about it, even the case of out of
-> order reception of responses and delayed_responses (type2 SCMI messages)
-> for asynchronous SCMI commands was not handled properly.
-> 
-> > How do you propose we solve this? Do you think it is better to take the
-> > setting up of base and other protocols out of probe and
-> > in some delayed work? That would imply the device memory is not released
-> > until remove is called. Or should we add locking to
-> > the interrupt handler(scmi_rx_callback) and the cleanup in probe to avoid
-> > the race?
-> > 
-> 
-> These issues were more easily exposed by SCMI Virtio transport, so in
-> the series where I introduced scmi-virtio:
-> 
-> https://lore.kernel.org/linux-arm-kernel/162848483974.232214.9506203742448269364.b4-ty@arm.com/
-> 
-> (which is now queued for v5.15 ...  now on -next I think...finger crossed)
-> 
-> I took the chance to rectify a couple of other things in the SCMI core
-> in the initial commits.
-> As an example, in the above series
-> 
->  [PATCH v7 05/15] firmware: arm_scmi: Handle concurrent and out-of-order messages
-> 
-> cares to add a refcount to xfers and some locking on xfers between TX
-> and RX path to avoid that a timed out xfer can vanish while the rx path
-> is concurrently working on it (as you said); moreover I handle the
-> condition (rare if not unplausible anyway) in which a transport delivers
-> out of order responses and delayed responses.
-> 
-> I tested this scenarios on some fake emulated SCMI Virtio transport
-> where I could play any sort of mess and tricks to stress this limit
-> conditions, but you're more than welcome to verify if the race you are
-> seeing on Base protocol time out is solved (as I would hope :D) by this
-> series of mine.
-> 
-> Let me know, any feedback is welcome.
-> 
-> Btw, in the series above there are also other minor changes, but there
-> is also another more radical change needed to ensure correctness and
-> protection against stale old messages which maybe could interest you
-> in general if you are looking into SCMI:
-> 
-> [PATCH v7 04/15] firmware: arm_scmi: Introduce monotonically increasing tokens 
-> 
-> Let me know if yo have other concerns.
-> 
+Hi,
 
-Hi Rishabhb,
+On 9/1/21 10:55 AM, Hans de Goede wrote:
+> Hi Tor,
+> 
+> On 9/1/21 9:37 AM, torvic9@mailbox.org wrote:
+>> (Sorry for not doing a proper reply)
+>>
+>> Hello,
+>> Noob here.
+>> I have a Samsung 860 Pro connected to a AMD X570 chipset mainboard and
+>> it just works flawlessly on 5.13 and 5.14.
+>> Are you sure that *every* 860/870 is concerned by this problem on
+>> *every* AMD controller?
+> 
+> I am pretty sure that every 860 / 870 EVO is affected,
+> I am not sure if the PRO is also affected.
 
-just a quick remark, thinking again about your fail @probe scenario above
-I realized that while the concurrency patch I mentioned above could help on
-races against vanishing xfers when late timed-out responses are delivered,
-here we really are then also shutting down everything on failure, so there
-could be further issues between a very late invokation of scmi_rx_callback
-and the core devm_ helpers freeing the underlying xfer/cinfo/etc.. structs
-used by scmi-rx-callback itself (maybe this was already what you meant and
-I didn't get it,...sorry)
+So while reading https://bugzilla.kernel.org/show_bug.cgi?id=201693
+again to add a comment asking if anyone was seeing this on a
+pro to I found existing comments of both queued-trims being
+an issue on the 860 pro, as well as the 860 pro having issues
+with some AMD sata controllers.
 
-On the other side, I don't feel that delaying Base init to a deferred
-worker is a viable solution since we need Base protocol init to be
-initialized and we need to just give up if we cannot communicate with
-the SCMI platform fw in such early stages. (Base protocol is really the
-only mandatory proto is I remember correctly the spec)
+So it seems safe to say that the 860 pro has the same issues
+as the 860 and 870 evo models. Chances are you don't have
+discard support enabled causing you to not see the queued-trim
+issues (which means you also won't see any difference from
+disabling support for queued-trim commands).
 
-Currenly I'm off and only glancing at mails but I'll have a thought about
-these issues once back in a few weeks time.
+So this just leaves your question of:
 
-Thanks,
-Cristian
+"concerned by this problem on *every* AMD controller?"
+
+Where "this problem" is needing to completely disable NCQ
+and I guess the answer is no, not every AMD controller
+is affected. Still the plan is to err on the safe side for now,
+allowing overriding this from the kernel cmdline with:
+
+libata.force=ncqamd
+
+I will add a comment to:
+
+https://bugzilla.kernel.org/show_bug.cgi?id=201693
+
+Asking for PCI-ids of the controllers where people are seeing
+this and then maybe we can narrow down the "AMD" check in a
+future follow up patch.
+
+Regards,
+
+Hans
+
