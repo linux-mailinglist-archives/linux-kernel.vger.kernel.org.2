@@ -2,186 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB6D3FE131
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FDD3FE161
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344494AbhIARfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:35:21 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:55890 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344171AbhIARfT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:35:19 -0400
-Received: by mail-io1-f71.google.com with SMTP id o128-20020a6bbe86000000b005bd06eaeca6so2122196iof.22
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:34:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=srJXkmAF+nWxT8ylL4FoVSjjMIocddytugD8qbgQiqA=;
-        b=L0Q9W2AEm8OcHdebg0Gt01xqerL1G37K19nEUbF5Yb2XQGQRDWGR32DZbJMuGrr8Il
-         BUsF4eGZFum+tAgxAX5H+S//9ixRyoCD4TabKKap3JV5aJQMZeseeF4U/3dshA5W7x4u
-         eJmUf+F1dVOftm6jqpO81rH705ti8l75DaUvH9/Y73QBSCEwR7APuCkliADWTFL2CM2G
-         Z1yeyV0p69ETaiMs9rI+U+Cbk7vVU2hIknDz3mhKXRrQyRloTVt1UYZZgTze5+5trYOY
-         ZuKUN9Iv4txVyLmTkDLI5G+1aMu08ok52sxb7ZHI+j9wXD9awQS3LwWTyJLIrtzBxyl5
-         ra8Q==
-X-Gm-Message-State: AOAM531JI6PeBtvx9LeD0ofCV8t1awU2eO8k1mjEYLg5VvDrgwb2pHV8
-        7GFwkNyjJQfJWKsf4VTUjsHv4Y/actxVLERCNQK49fDMMiSR
-X-Google-Smtp-Source: ABdhPJysO4SrV5NdATT56CNymcoOrBjFyk6PjVpycBli2j2+fHNftPLkUCbG4hrSOTHJKEXG1AGQ0ASSyLp0wuvGMVhBvkYHyX+f
+        id S1346649AbhIARvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:51:23 -0400
+Received: from mga06.intel.com ([134.134.136.31]:24802 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347065AbhIARuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 13:50:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="279832870"
+X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
+   d="scan'208";a="279832870"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 10:49:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
+   d="scan'208";a="499021970"
+Received: from silpixa00400294.ir.intel.com ([10.237.222.100])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Sep 2021 10:49:19 -0700
+From:   Wojciech Ziemba <wojciech.ziemba@intel.com>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qat-linux@intel.com, Wojciech Ziemba <wojciech.ziemba@intel.com>
+Subject: [PATCH 0/4] crypto: qat - replace deprecated MSI API
+Date:   Wed,  1 Sep 2021 18:36:04 +0100
+Message-Id: <20210901173608.16777-1-wojciech.ziemba@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d9c:: with SMTP id h28mr466630ila.266.1630517661979;
- Wed, 01 Sep 2021 10:34:21 -0700 (PDT)
-Date:   Wed, 01 Sep 2021 10:34:21 -0700
-In-Reply-To: <000000000000b1c39505c99bd67c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000ada7405caf27aba@google.com>
-Subject: Re: [syzbot] INFO: task can't die in __lock_sock
-From:   syzbot <syzbot+7d51f807c81b190a127d@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, desmondcheongzx@gmail.com,
-        johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+This set of patches replaces deprecated MSI API.
+It also fixes handling of freeing IRQs in case of failure of probing of
+modules by tracking which IRQs were allocated.
 
-HEAD commit:    c1b13fe76e95 Add linux-next specific files for 20210901
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12c6034d300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e2afff7bc32736e5
-dashboard link: https://syzkaller.appspot.com/bug?extid=7d51f807c81b190a127d
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d42469300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1107d815300000
+Maksim Lukoshkov (1):
+  crypto: qat - free irqs only if allocated
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7d51f807c81b190a127d@syzkaller.appspotmail.com
+Wojciech Ziemba (3):
+  crypto: qat - replace deprecated MSI API
+  crypto: qat - remove unmatched CPU affinity to cluster IRQ
+  crypto: qat - free irq in case of failure
 
-INFO: task syz-executor157:6562 blocked for more than 143 seconds.
-      Not tainted 5.14.0-next-20210901-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor157 state:D stack:26880 pid: 6562 ppid:  6530 flags:0x00004006
-Call Trace:
- context_switch kernel/sched/core.c:4955 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6302
- schedule+0xd3/0x270 kernel/sched/core.c:6381
- __lock_sock+0x13d/0x260 net/core/sock.c:2644
- lock_sock_nested+0xf6/0x120 net/core/sock.c:3185
- lock_sock include/net/sock.h:1612 [inline]
- rfcomm_sk_state_change+0xb4/0x390 net/bluetooth/rfcomm/sock.c:73
- __rfcomm_dlc_close+0x1b6/0x8a0 net/bluetooth/rfcomm/core.c:489
- rfcomm_dlc_close+0x1ea/0x240 net/bluetooth/rfcomm/core.c:520
- __rfcomm_sock_close+0xac/0x260 net/bluetooth/rfcomm/sock.c:220
- rfcomm_sock_shutdown+0xe9/0x210 net/bluetooth/rfcomm/sock.c:931
- rfcomm_sock_release+0x5f/0x140 net/bluetooth/rfcomm/sock.c:951
- __sock_release+0xcd/0x280 net/socket.c:649
- sock_close+0x18/0x20 net/socket.c:1314
- __fput+0x288/0x9f0 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0xbae/0x2a30 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2160 kernel/signal.c:2868
- arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x445fe9
-RSP: 002b:00007fff85049fe8 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
-RAX: fffffffffffffffc RBX: 0000000000000003 RCX: 0000000000445fe9
-RDX: 0000000000000080 RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 0000000000000003 R08: 000000ff00000001 R09: 000000ff00000001
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000014112b8
-R13: 0000000000000072 R14: 00007fff8504a040 R15: 0000000000000003
+ .../crypto/qat/qat_common/adf_accel_devices.h |  11 +-
+ drivers/crypto/qat/qat_common/adf_isr.c       | 170 +++++++++---------
+ drivers/crypto/qat/qat_common/adf_vf_isr.c    |  24 ++-
+ 3 files changed, 101 insertions(+), 104 deletions(-)
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/26:
- #0: ffffffff8b97fbe0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
-1 lock held by krfcommd/2876:
- #0: ffffffff8d31ede8 (rfcomm_mutex){+.+.}-{3:3}, at: rfcomm_process_sessions net/bluetooth/rfcomm/core.c:1979 [inline]
- #0: ffffffff8d31ede8 (rfcomm_mutex){+.+.}-{3:3}, at: rfcomm_run+0x2ed/0x4a20 net/bluetooth/rfcomm/core.c:2086
-1 lock held by in:imklog/6232:
-4 locks held by syz-executor157/6562:
- #0: ffff888145e26210 (&sb->s_type->i_mutex_key#13){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:786 [inline]
- #0: ffff888145e26210 (&sb->s_type->i_mutex_key#13){+.+.}-{3:3}, at: __sock_release+0x86/0x280 net/socket.c:648
- #1: ffff88801d622120 (sk_lock-AF_BLUETOOTH-BTPROTO_RFCOMM){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1612 [inline]
- #1: ffff88801d622120 (sk_lock-AF_BLUETOOTH-BTPROTO_RFCOMM){+.+.}-{0:0}, at: rfcomm_sock_shutdown+0x54/0x210 net/bluetooth/rfcomm/sock.c:928
- #2: ffffffff8d31ede8 (rfcomm_mutex){+.+.}-{3:3}, at: rfcomm_dlc_close+0x34/0x240 net/bluetooth/rfcomm/core.c:507
- #3: ffff88807edd9928 (&d->lock){+.+.}-{3:3}, at: __rfcomm_dlc_close+0x162/0x8a0 net/bluetooth/rfcomm/core.c:487
+-- 
+2.29.2
 
-=============================================
+--------------------------------------------------------------
+Intel Research and Development Ireland Limited
+Registered in Ireland
+Registered Office: Collinstown Industrial Park, Leixlip, County Kildare
+Registered Number: 308263
 
-NMI backtrace for cpu 1
-CPU: 1 PID: 26 Comm: khungtaskd Not tainted 5.14.0-next-20210901-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:254 [inline]
- watchdog+0xcb7/0xed0 kernel/hung_task.c:339
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 2958 Comm: systemd-journal Not tainted 5.14.0-next-20210901-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
-RIP: 0010:__sanitizer_cov_trace_pc+0x7/0x60 kernel/kcov.c:197
-Code: fd ff ff b9 ff ff ff ff ba 08 00 00 00 4d 8b 03 48 0f bd ca 49 8b 45 00 48 63 c9 e9 64 ff ff ff 0f 1f 00 65 8b 05 39 e6 8b 7e <89> c1 48 8b 34 24 81 e1 00 01 00 00 65 48 8b 14 25 40 f0 01 00 a9
-RSP: 0018:ffffc900014dfde0 EFLAGS: 00000282
-RAX: 0000000080000000 RBX: ffffc900014dff58 RCX: 1ffff9200029bfc7
-RDX: dffffc0000000000 RSI: 1ffff9200029bfcd RDI: ffffc900014dfe38
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff8176c71a
-R10: ffffffff81765c97 R11: 0000000000000002 R12: 0000000000000053
-R13: 0000000000000002 R14: 0000000000000000 R15: ffffc900014dfe30
-FS:  00007f43756768c0(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f4372a49000 CR3: 000000001a5d4000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- get_current arch/x86/include/asm/current.h:15 [inline]
- seccomp_run_filters kernel/seccomp.c:402 [inline]
- __seccomp_filter+0x88/0x1040 kernel/seccomp.c:1180
- __secure_computing+0xfc/0x360 kernel/seccomp.c:1311
- syscall_trace_enter.constprop.0+0x94/0x270 kernel/entry/common.c:68
- do_syscall_64+0x16/0xb0 arch/x86/entry/common.c:76
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f4374931687
-Code: 00 b8 ff ff ff ff c3 0f 1f 40 00 48 8b 05 09 d8 2b 00 64 c7 00 5f 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 d7 2b 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffc79978938 EFLAGS: 00000293 ORIG_RAX: 0000000000000053
-RAX: ffffffffffffffda RBX: 00007ffc7997b850 RCX: 00007f4374931687
-RDX: 00007f43753a2a00 RSI: 00000000000001ed RDI: 00005646c59898a0
-RBP: 00007ffc79978970 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000069 R11: 0000000000000293 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007ffc7997b850 R15: 00007ffc79978e60
-----------------
-Code disassembly (best guess), 3 bytes skipped:
-   0:	b9 ff ff ff ff       	mov    $0xffffffff,%ecx
-   5:	ba 08 00 00 00       	mov    $0x8,%edx
-   a:	4d 8b 03             	mov    (%r11),%r8
-   d:	48 0f bd ca          	bsr    %rdx,%rcx
-  11:	49 8b 45 00          	mov    0x0(%r13),%rax
-  15:	48 63 c9             	movslq %ecx,%rcx
-  18:	e9 64 ff ff ff       	jmpq   0xffffff81
-  1d:	0f 1f 00             	nopl   (%rax)
-  20:	65 8b 05 39 e6 8b 7e 	mov    %gs:0x7e8be639(%rip),%eax        # 0x7e8be660
-* 27:	89 c1                	mov    %eax,%ecx <-- trapping instruction
-  29:	48 8b 34 24          	mov    (%rsp),%rsi
-  2d:	81 e1 00 01 00 00    	and    $0x100,%ecx
-  33:	65 48 8b 14 25 40 f0 	mov    %gs:0x1f040,%rdx
-  3a:	01 00
-  3c:	a9                   	.byte 0xa9
+
+This e-mail and any attachments may contain confidential material for the sole
+use of the intended recipient(s). Any review or distribution by others is
+strictly prohibited. If you are not the intended recipient, please contact the
+sender and delete all copies.
 
