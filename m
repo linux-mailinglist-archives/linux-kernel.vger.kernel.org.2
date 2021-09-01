@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609873FDB6C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8216A3FDAD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243971AbhIAMlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:41:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43410 "EHLO mail.kernel.org"
+        id S245623AbhIAMfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:35:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344383AbhIAMiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:38:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0DCB61166;
-        Wed,  1 Sep 2021 12:34:41 +0000 (UTC)
+        id S244994AbhIAMdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:33:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CB51610F7;
+        Wed,  1 Sep 2021 12:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499682;
-        bh=UuYecAlZmT18iwBA1sFNEa8Y7iVFhqj3CtNc9KvuAgc=;
+        s=korg; t=1630499524;
+        bh=PzJh8m5YlA4RKogp/AH540axtYUK9XSISkigre4dzaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vR5/YX6NA8RSlyvpNiJHHhkbzyhrP7PhGP160Fjt1+VimE9YKTUPUGbdTZLYpKbrx
-         pu+imMA4rp32+3itPPhy5HK0mPCPyknHAYwR47Gb2Q+wlHWWUGLbP167v+TteBIaLE
-         mUEsI0CeLVgCYCzZ3EtPDNBYtjTxxUj/0rOFUX5w=
+        b=G8nNrA/uKSG26VTe+sBvqIaNx2Imt1bTN/xi0AjKoUwPxE9E2mMm7DXesbZu/G/JA
+         5T8vy3MD31GqkgzNCMzNtxK7woGDlluffns9I/ChRgyzWbCd9QGRndeuIhYWFcXgLY
+         0xDoC13skDzRmnrQB2SdeBZF19wM/Qvenmjv3CdY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guojia Liao <liaoguojia@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 044/103] net: hns3: fix duplicate node in VLAN list
-Date:   Wed,  1 Sep 2021 14:27:54 +0200
-Message-Id: <20210901122302.061298057@linuxfoundation.org>
+Subject: [PATCH 5.4 05/48] ovl: fix uninitialized pointer read in ovl_lookup_real_one()
+Date:   Wed,  1 Sep 2021 14:27:55 +0200
+Message-Id: <20210901122253.570920785@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
-References: <20210901122300.503008474@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guojia Liao <liaoguojia@huawei.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-[ Upstream commit 94391fae82f71c98ecc7716a32611fcca73c74eb ]
+[ Upstream commit 580c610429b3994e8db24418927747cf28443cde ]
 
-VLAN list should not be added duplicate VLAN node, otherwise it would
-cause "add failed" when restore VLAN from VLAN list, so this patch adds
-VLAN ID check before adding node into VLAN list.
+One error path can result in release_dentry_name_snapshot() being called
+before "name" was initialized by take_dentry_name_snapshot().
 
-Fixes: c6075b193462 ("net: hns3: Record VF vlan tables")
-Signed-off-by: Guojia Liao <liaoguojia@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fix by moving the release_dentry_name_snapshot() to immediately after the
+only use.
+
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/overlayfs/export.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index c48c845472ca..2261de5caf86 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -8792,7 +8792,11 @@ static int hclge_init_vlan_config(struct hclge_dev *hdev)
- static void hclge_add_vport_vlan_table(struct hclge_vport *vport, u16 vlan_id,
- 				       bool writen_to_tbl)
- {
--	struct hclge_vport_vlan_cfg *vlan;
-+	struct hclge_vport_vlan_cfg *vlan, *tmp;
-+
-+	list_for_each_entry_safe(vlan, tmp, &vport->vlan_list, node)
-+		if (vlan->vlan_id == vlan_id)
-+			return;
+diff --git a/fs/overlayfs/export.c b/fs/overlayfs/export.c
+index 11dd8177770d..19574ef17470 100644
+--- a/fs/overlayfs/export.c
++++ b/fs/overlayfs/export.c
+@@ -395,6 +395,7 @@ static struct dentry *ovl_lookup_real_one(struct dentry *connected,
+ 	 */
+ 	take_dentry_name_snapshot(&name, real);
+ 	this = lookup_one_len(name.name.name, connected, name.name.len);
++	release_dentry_name_snapshot(&name);
+ 	err = PTR_ERR(this);
+ 	if (IS_ERR(this)) {
+ 		goto fail;
+@@ -409,7 +410,6 @@ static struct dentry *ovl_lookup_real_one(struct dentry *connected,
+ 	}
  
- 	vlan = kzalloc(sizeof(*vlan), GFP_KERNEL);
- 	if (!vlan)
+ out:
+-	release_dentry_name_snapshot(&name);
+ 	dput(parent);
+ 	inode_unlock(dir);
+ 	return this;
 -- 
 2.30.2
 
