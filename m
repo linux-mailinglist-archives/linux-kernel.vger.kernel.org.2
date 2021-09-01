@@ -2,131 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BA53FE053
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EA93FE051
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344156AbhIAQvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238589AbhIAQvE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:51:04 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C12C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:50:07 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id p38so421488lfa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:50:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w6CphMFgf5XtmkIUIZdS3zg3lS0CLaheDoiUHPnX0Fk=;
-        b=XWORPcX4JUiWNYhys31DRm5lPzmQ8u3sh4J6BqTmpr0mg4ugdlAnpEPUP/nDyLFoi4
-         LXOKc1TEP4Rcp3WKfC9pWuacs8HoE5v93ke7gWjPkYyZRbmnql6lTS3lcu+Nee5S2CQs
-         4KLUoQY7eshWi4Uj/Y8cdKSRMXIp/YYbL9Ypo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w6CphMFgf5XtmkIUIZdS3zg3lS0CLaheDoiUHPnX0Fk=;
-        b=JfuGzXqpnQ0gwXjotzjRokmFqHuUJ88vRSJrJivFzIogdauB1wmjL7mzs1qc1RN8df
-         FiSZEc01YC+/mS6pr+wPds6iEEx9xrfAZw3Luh7DBUj+4tJxsruoIUAuLVybzlIstSdV
-         5tUZAvzdUuyI415TCfbAKrLCv6nA2wJ9oq3pa5SSlTjnGbpWpNK3raZ50ICgThU672nL
-         H5rab9skHZKwRg8vOamtfHKkAsuxbS0Dqy4C8TxfsEJX35rb2nwENFzKEDZdWAqWtIy5
-         RlILQ3nuGwa8F+cDhUnTW8X+nB9iN+vTX7OV9CfORNWK7RuDsZDGTuI5WnwM4x+59FpM
-         8siw==
-X-Gm-Message-State: AOAM530imQ2xK0KC84Ogdm/zWgbqah/vef5AcwD2rn4gRd+CMq2zEQAM
-        MpRRl0BScK6tt+mCseEaqvrL4mevK3/V55S+
-X-Google-Smtp-Source: ABdhPJyaC5nZygLU2VtdQ29CLuiWrkY96LWmceeu9iC8sBNk2otpydeVqNoZNoWlz6vFaBJDVATF0A==
-X-Received: by 2002:a05:6512:25d:: with SMTP id b29mr271374lfo.261.1630515005320;
-        Wed, 01 Sep 2021 09:50:05 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id d20sm3081lfv.117.2021.09.01.09.50.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 09:50:04 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id bq28so276227lfb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:50:03 -0700 (PDT)
-X-Received: by 2002:a05:6512:1053:: with SMTP id c19mr273608lfb.201.1630515003669;
- Wed, 01 Sep 2021 09:50:03 -0700 (PDT)
+        id S245390AbhIAQuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:50:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231419AbhIAQuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 12:50:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A132260525;
+        Wed,  1 Sep 2021 16:49:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630514994;
+        bh=qfbWT7+qcpIOR2ilM3lTfkuFQnLJW5YbueLjEBSnZyY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oR3FDJQStaL1ofpT2swCRp2pWYRhoVGq3++Hbqjrbole3eG6IIu6rrAoWSLL6CmSr
+         Z2sGMTQjhKVdidwUSA0dFIlekvqxO26VE45ToS0LQV2x6eMCqklNwRgwzMh8pMmwqn
+         YNZ/3OOMrAIFpxgOAo9D9a3xyRTepCk2AvHjG/lWW/X39mlcH7v2Vqa/UplBi0LfZC
+         BSOD//t5YdnM5ze3j2ANGQHKzxvYjzsEKEdVN5U4RNkijseE2YxoiZA5RP8VSl2JX+
+         WsaSHT287Z2F4RrCG69LIaeH+IEGgAMVaU8oN2DdKXdvN4xr1WQ+ULND4hjF1l2ZQI
+         qp6kcQ4CknSOA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 666A34007E; Wed,  1 Sep 2021 13:49:51 -0300 (-03)
+Date:   Wed, 1 Sep 2021 13:49:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
+        mike.leach@linaro.org, suzuki.poulose@arm.com,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 9/9] perf cs-etm: Show a warning for an unknown magic
+ number
+Message-ID: <YS+vL2SYCCVLAXVp@kernel.org>
+References: <20210806134109.1182235-1-james.clark@arm.com>
+ <20210806134109.1182235-10-james.clark@arm.com>
+ <20210824083615.GF204566@leoy-ThinkPad-X240s>
+ <YS+iOrcPTzQfmbqU@kernel.org>
+ <YS+lTXyuC+9VTrxd@kernel.org>
+ <YS+neCZler56Hs2D@kernel.org>
+ <YS+pgZMpFmnRlMuT@kernel.org>
 MIME-Version: 1.0
-References: <YS+LXqoDGk0CqU1Q@kroah.com>
-In-Reply-To: <YS+LXqoDGk0CqU1Q@kroah.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 1 Sep 2021 09:49:47 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whqN1gAZk0ZD_4JxGemdbpnQkDaNFY9MjW==v-kb1J-fw@mail.gmail.com>
-Message-ID: <CAHk-=whqN1gAZk0ZD_4JxGemdbpnQkDaNFY9MjW==v-kb1J-fw@mail.gmail.com>
-Subject: Re: [GIT PULL] Staging / IIO driver changes for 5.15-rc1
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YS+pgZMpFmnRlMuT@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 7:17 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> Lots of churn in some staging drivers, we dropped the "old" rtl8188eu
-> driver and replaced it with a newer version of the driver that had been
-> maintained out-of-tree by Larry with the end goal of actually being able
-> to get this driver out of staging eventually.  Despite that driver being
-> "newer" the line count of this pull request is going up.
+Em Wed, Sep 01, 2021 at 01:25:37PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, Sep 01, 2021 at 01:16:56PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Wed, Sep 01, 2021 at 01:07:41PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Wed, Sep 01, 2021 at 12:54:34PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > > Applies cleanly to my tree, test building it now, holler if there is
+> > > > something that prevents it from being merged.
 
-Ugh.
+> > > I´m now trying to fix this up, I applied it using 'b4', so no patch
+> > > should have gone missing...
 
-So this had a conflict with the networking tree, and commit
-89939e890605 ("staging: rtlwifi: use siocdevprivate") in particular.
+> > So its probably related to:
 
-Ok, so that conflict looked annoying but harmless - git saw the new
-driver as a rename of the old one, and tried to actually apply the
-changes from that commit to the new one.
+> > ⬢[acme@toolbox perf]$ rpm -qa | grep opencsd
+> > opencsd-1.0.0-1.fc34.x86_64
+> > opencsd-devel-1.0.0-1.fc34.x86_64
+> > ⬢[acme@toolbox perf]$
 
-And git actually did a reasonable job, everything considered. There
-were enough similarities that it wasn't entirely crazy, and enough
-differences that it caused conflicts.
+> > In which case the usual mechanism is to test if we have what is needed
+> > via tools/build/feature/test-_____.c, lemme check...
 
-HOWEVER.
+> There is a test and it fails, of course:
 
-Actually then looking at the root causes of the conflicts, as part of
-just trying to finish what git had started, I notice that a lot of the
-code in the new driver was just completely dead.
+> ⬢[acme@toolbox perf]$ cat /tmp/build/perf/feature/test-libopencsd.make.output
+> test-libopencsd.c:9:2: error: #error "OpenCSD >= 1.1.1 is required"
+>     9 | #error "OpenCSD >= 1.1.1 is required"
+>       |  ^~~~~
+> ⬢[acme@toolbox perf]$
 
-As of commit ae7471cae00a ("staging: r8188eu: remove rtw_ioctl
-function") the only caller of rtw_android_priv_cmd() is entirely gone.
+> But the fact that I ask for CORESIGHT=1 should have the build fail then,
+> i.e. if one explicitely asks for a feature and it can't be built, fail
+> the whole build.
 
-But rtw_android_priv_cmd() was kept around, and was in fact the only
-reason that the files
+So after uninstalling the libopencsd that comes with fedora 34 and
+cloning the upstream OpenCSD git repo, building it and installing in
+/usr/local/ it seems to work as expected:
 
-    drivers/staging/r8188eu/include/rtw_android.h
-    drivers/staging/r8188eu/os_dep/rtw_android.c
+⬢[acme@toolbox perf]$ rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf ;
+⬢[acme@toolbox perf]$ make O=/tmp/build/perf VF=1 CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin |& grep -i opencsd
+...                    libopencsd: [ on  ]
+⬢[acme@toolbox perf]$ cat /tmp/build/perf/feature/test-libopencsd.make.output
+⬢[acme@toolbox perf]$
+⬢[acme@toolbox perf]$
+⬢[acme@toolbox perf]$ ldd ~/bin/perf | grep opencsd
+	libopencsd_c_api.so.1 => not found
+⬢[acme@toolbox perf]$ export LD_LIBRARY_PATH=/usr/local/lib
+⬢[acme@toolbox perf]$ ldd ~/bin/perf | grep opencsd
+	libopencsd_c_api.so.1 => /usr/local/lib/libopencsd_c_api.so.1 (0x00007f839e8b2000)
+	libopencsd.so.1 => /usr/local/lib/libopencsd.so.1 (0x00007f839da3c000)
+⬢[acme@toolbox perf]$
+⬢[acme@toolbox perf]$
+⬢[acme@toolbox perf]$
+⬢[acme@toolbox perf]$ ldd /tmp/build/perf/feature/test-libopencsd.bin
+	linux-vdso.so.1 (0x00007ffd669b3000)
+	libopencsd_c_api.so.1 => /usr/local/lib/libopencsd_c_api.so.1 (0x00007fe608b8c000)
+	libopencsd.so.1 => /usr/local/lib/libopencsd.so.1 (0x00007fe608af5000)
+	libc.so.6 => /lib64/libc.so.6 (0x00007fe60891e000)
+	libstdc++.so.6 => /lib64/libstdc++.so.6 (0x00007fe6086ff000)
+	libm.so.6 => /lib64/libm.so.6 (0x00007fe6085bb000)
+	libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007fe6085a0000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007fe608ba2000)
+⬢[acme@toolbox perf]$ ls -la /usr/local/lib/libopencsd*
+-rw-r--r--. 1 root root 1641364 Sep  1 13:41 /usr/local/lib/libopencsd.a
+-rw-r--r--. 1 root root  168022 Sep  1 13:41 /usr/local/lib/libopencsd_c_api.a
+lrwxrwxrwx. 1 root root      21 Sep  1 13:41 /usr/local/lib/libopencsd_c_api.so -> libopencsd_c_api.so.1
+lrwxrwxrwx. 1 root root      25 Sep  1 13:41 /usr/local/lib/libopencsd_c_api.so.1 -> libopencsd_c_api.so.1.1.1
+-rw-r--r--. 1 root root  104968 Sep  1 13:41 /usr/local/lib/libopencsd_c_api.so.1.1.1
+lrwxrwxrwx. 1 root root      15 Sep  1 13:41 /usr/local/lib/libopencsd.so -> libopencsd.so.1
+lrwxrwxrwx. 1 root root      19 Sep  1 13:41 /usr/local/lib/libopencsd.so.1 -> libopencsd.so.1.1.1
+-rw-r--r--. 1 root root  762432 Sep  1 13:41 /usr/local/lib/libopencsd.so.1.1.1
+⬢[acme@toolbox perf]$
 
-existed at all.
+This doesn't explain that 'make -C tools/perf build-test' error, perhaps
+it is reusing the feature dump (feature detection), done without
+CORESIGHT=1, when building with CORESIGHT=1 :-\
 
-End result: instead of trying to fix up the conflict in dead code, I
-just ripped out the code completely.
+Anyway, please consider making the build fail when CORESIGHT=1 is passed
+explicitely and that tools/build/feature-libopencsd.c feature test fails
+instead of silently building the tool _without_ the explicitely asked
+for feature.
 
-So my merge actually looks simple and clean: when you look at the
-conflict diff of my merge, all you see is that I removed
-'os_dep/rtw_android.o' from drivers/staging/r8188eu/Makefile.
+Thanks,
 
-What you don't actually see as a conflict, is that I removed those
-files entirely. That removal doesn't show up as "conflicts", because
-that filename didn't exist in my HEAD commit before the merge at all
-(because my tree had that old "rtl8188eu" driver).
-
-So this email is just a long explanation for what I did, to make
-people aware that maybe I screwed up. It builds for me, and honestly,
-it makes sense to me in ways that your git tree did not, but I can't
-test any of it.
-
-Added Arnd (for the siocdevprivate conversion) and Phillip/Larry (for
-the r8188eu driver side) - can you please double-check what I did.
-
-                   Linus
+- Arnaldo
