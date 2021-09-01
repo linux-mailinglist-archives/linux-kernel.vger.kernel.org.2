@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A4D3FDA49
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 871193FDC62
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244645AbhIAMbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:31:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33016 "EHLO mail.kernel.org"
+        id S1346260AbhIAMtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:49:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244759AbhIAMa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:30:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9095D610C7;
-        Wed,  1 Sep 2021 12:29:59 +0000 (UTC)
+        id S1345257AbhIAMqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:46:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9282A61075;
+        Wed,  1 Sep 2021 12:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499400;
-        bh=LNw1LN2KmhdUknF9aVBkHRYrex1DUDnnDZvCD9OTWqo=;
+        s=korg; t=1630499970;
+        bh=h8HYeRSMPhwCEiHN7UhHG7WhfHOKYEcSPPoWVRnUrPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0K5aA6lp//rsTXV1IF5G63nT0FvpBVru63P/OIu7ik364gn4vYJkzrhyzz79bSxPK
-         NYh6Qhdan1rJ1OSkbQMM5NAGpQRq2so4D2VIkOBF5ceO07sLa3/LB4pFjJoalFdr5E
-         dUMungLQ8J9Lg6GhWOz0VJ5HKc0wd5jLtx+ifdxI=
+        b=phDqVu1Gc7BLBraTxTyPUKEC7UoKPyxBuLMQL5avrg2uHtgFdC+qdZifOMdQt3MUq
+         cmPeMofgPgu/OfOToo4CZ1IxjwgxaDkWo7wNCEasuY8ptzERkhzwRqKvhrVw+qLSD/
+         A9/v8bnBpTpjt+5lRS1tIJLZTmhGX3nUXWc9t+Sc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "J. Bruce Fields" <bfields@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 19/33] usb: gadget: u_audio: fix race condition on endpoint stop
+Subject: [PATCH 5.13 053/113] SUNRPC: Fix XPT_BUSY flag leakage in svc_handle_xprt()...
 Date:   Wed,  1 Sep 2021 14:28:08 +0200
-Message-Id: <20210901122251.421638380@linuxfoundation.org>
+Message-Id: <20210901122303.743147206@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
-References: <20210901122250.752620302@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 068fdad20454f815e61e6f6eb9f051a8b3120e88 ]
+[ Upstream commit 062b829c52ef4ed5df14f4850fc07651bb7c3b33 ]
 
-If the endpoint completion callback is call right after the ep_enabled flag
-is cleared and before usb_ep_dequeue() is call, we could do a double free
-on the request and the associated buffer.
+If the attempt to reserve a slot fails, we currently leak the XPT_BUSY
+flag on the socket. Among other things, this make it impossible to close
+the socket.
 
-Fix this by clearing ep_enabled after all the endpoint requests have been
-dequeued.
-
-Fixes: 7de8681be2cd ("usb: gadget: u_audio: Free requests only after callback")
-Cc: stable <stable@vger.kernel.org>
-Reported-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20210827092927.366482-1-jbrunet@baylibre.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 82011c80b3ec ("SUNRPC: Move svc_xprt_received() call sites")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/u_audio.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/sunrpc/svc_xprt.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/function/u_audio.c b/drivers/usb/gadget/function/u_audio.c
-index 0cb0c638fd13..168303f21bf4 100644
---- a/drivers/usb/gadget/function/u_audio.c
-+++ b/drivers/usb/gadget/function/u_audio.c
-@@ -349,8 +349,6 @@ static inline void free_ep(struct uac_rtd_params *prm, struct usb_ep *ep)
- 	if (!prm->ep_enabled)
- 		return;
- 
--	prm->ep_enabled = false;
--
- 	audio_dev = uac->audio_dev;
- 	params = &audio_dev->params;
- 
-@@ -368,11 +366,12 @@ static inline void free_ep(struct uac_rtd_params *prm, struct usb_ep *ep)
- 		}
- 	}
- 
-+	prm->ep_enabled = false;
-+
- 	if (usb_ep_disable(ep))
- 		dev_err(uac->card->dev, "%s:%d Error!\n", __func__, __LINE__);
- }
- 
--
- int u_audio_start_capture(struct g_audio *audio_dev)
- {
- 	struct snd_uac_chip *uac = audio_dev->uac;
+diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
+index d66a8e44a1ae..dbb41821b1b8 100644
+--- a/net/sunrpc/svc_xprt.c
++++ b/net/sunrpc/svc_xprt.c
+@@ -835,7 +835,8 @@ static int svc_handle_xprt(struct svc_rqst *rqstp, struct svc_xprt *xprt)
+ 		rqstp->rq_stime = ktime_get();
+ 		rqstp->rq_reserved = serv->sv_max_mesg;
+ 		atomic_add(rqstp->rq_reserved, &xprt->xpt_reserved);
+-	}
++	} else
++		svc_xprt_received(xprt);
+ out:
+ 	trace_svc_handle_xprt(xprt, len);
+ 	return len;
 -- 
 2.30.2
 
