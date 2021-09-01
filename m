@@ -2,150 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B003FD486
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68ABD3FD48B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242651AbhIAHiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:38:50 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:18997 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242604AbhIAHit (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:38:49 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gzwm30xNnzblCM;
-        Wed,  1 Sep 2021 15:33:55 +0800 (CST)
-Received: from [10.174.178.75] (10.174.178.75) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+        id S242622AbhIAHks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:40:48 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:51142 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S242536AbhIAHkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 03:40:47 -0400
+Received: from BC-Mail-Ex17.internal.baidu.com (unknown [172.31.51.11])
+        by Forcepoint Email with ESMTPS id 8B2E7113A80747849D84;
+        Wed,  1 Sep 2021 15:39:48 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex17.internal.baidu.com (172.31.51.11) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 1 Sep 2021 15:37:49 +0800
-Subject: Re: [PATCH 2/6] mm/page_alloc.c: simplify the code by using macro K()
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-CC:     <vbabka@suse.cz>, <sfr@canb.auug.org.au>, <peterz@infradead.org>,
-        <mgorman@techsingularity.net>, <linux-mm@kvack.org>,
+ 15.1.2242.12; Wed, 1 Sep 2021 15:39:48 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Wed, 1 Sep 2021 15:39:47 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Ryder Lee <ryder.lee@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210830141051.64090-1-linmiaohe@huawei.com>
- <9161665.bUqNH3lxUD@natalenko.name>
- <52bbb8f2-db63-8c56-ea49-d982c13ba541@huawei.com>
- <9426505.MgecbftzqH@natalenko.name>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <03653d41-abe0-46f0-9eee-28cad9f5edea@huawei.com>
-Date:   Wed, 1 Sep 2021 15:37:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH] PCI: mediatek: Make use of the helper function devm_platform_ioremap_resource_byname()
+Date:   Wed, 1 Sep 2021 15:39:41 +0800
+Message-ID: <20210901073942.8733-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <9426505.MgecbftzqH@natalenko.name>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.75]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BJHW-Mail-Ex07.internal.baidu.com (10.127.64.17) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/31 22:19, Oleksandr Natalenko wrote:
-> Hello.
-> 
-> On úterý 31. srpna 2021 13:08:42 CEST Miaohe Lin wrote:
->> On 2021/8/31 16:54, Oleksandr Natalenko wrote:
->>> Hello.
->>>
->>> On pondělí 30. srpna 2021 16:10:47 CEST Miaohe Lin wrote:
->>>> Use helper macro K() to convert the pages to the corresponding size.
->>>> Minor readability improvement.
->>>>
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>> ---
->>>>
->>>>  mm/page_alloc.c | 12 +++++-------
->>>>  1 file changed, 5 insertions(+), 7 deletions(-)
->>>>
->>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->>>> index dbb3338d9287..d3983244f56f 100644
->>>> --- a/mm/page_alloc.c
->>>> +++ b/mm/page_alloc.c
->>>> @@ -8134,8 +8134,7 @@ unsigned long free_reserved_area(void *start, void
->>>> *end, int poison, const char }
->>>>
->>>>  	if (pages && s)
->>>>
->>>> -		pr_info("Freeing %s memory: %ldK\n",
->>>> -			s, pages << (PAGE_SHIFT - 10));
->>>> +		pr_info("Freeing %s memory: %ldK\n", s, K(pages));
->>>>
->>>>  	return pages;
->>>>  
->>>>  }
->>>>
->>>> @@ -8180,14 +8179,13 @@ void __init mem_init_print_info(void)
->>>>
->>>>  		", %luK highmem"
->>>>  
->>>>  #endif
->>>>  
->>>>  		")\n",
->>>>
->>>> -		nr_free_pages() << (PAGE_SHIFT - 10),
->>>> -		physpages << (PAGE_SHIFT - 10),
->>>> +		K(nr_free_pages()), K(physpages),
->>>>
->>>>  		codesize >> 10, datasize >> 10, rosize >> 10,
->>>>  		(init_data_size + init_code_size) >> 10, bss_size >> 10,
->>>>
->>>> -		(physpages - totalram_pages() - totalcma_pages) << (PAGE_SHIFT
->>>
->>> - 10),
->>>
->>>> -		totalcma_pages << (PAGE_SHIFT - 10)
->>>> +		K(physpages - totalram_pages() - totalcma_pages),
->>>> +		K(totalcma_pages)
->>>>
->>>>  #ifdef	CONFIG_HIGHMEM
->>>>
->>>> -		, totalhigh_pages() << (PAGE_SHIFT - 10)
->>>> +		, K(totalhigh_pages())
->>>>
->>>>  #endif
->>>>  
->>>>  		);
->>>>  
->>>>  }
->>>
->>> (my concern is not quite within the scope of this submission, but I'll ask
->>> anyway)
->>>
->>> Given we have this:
->>>
->>> ```
->>> git grep '#define K(x)' v5.14
->>> v5.14:drivers/base/node.c:#define K(x) ((x) << (PAGE_SHIFT - 10))
->>> v5.14:drivers/net/hamradio/scc.c:#define K(x) kiss->x
->>> v5.14:kernel/debug/kdb/kdb_main.c:#define K(x) ((x) << (PAGE_SHIFT - 10))
->>> v5.14:mm/backing-dev.c:#define K(x) ((x) << (PAGE_SHIFT - 10))
->>> v5.14:mm/memcontrol.c:#define K(x) ((x) << (PAGE_SHIFT-10))
->>> v5.14:mm/oom_kill.c:#define K(x) ((x) << (PAGE_SHIFT-10))
->>> v5.14:mm/page_alloc.c:#define K(x) ((x) << (PAGE_SHIFT-10))
->>> ```
->>>
->>> Shouldn't this macro go to some header file instead to get rid of define
->>> repetitions?
->>
->> Many thanks for figuring this out. I think we should get rid of these
->> repetitions too. But I'am not sure where this definition should be. Any
->> suggestion? Thanks.
-> 
-> I'm not sure what place suits best. At first I thought maybe linux/mm.h or 
-> linux/mm_inline.h, but since PAGE_SHIFT is declared in asm-generic/page.h, 
-> probably K(x) can also go there as well?
+Use the devm_platform_ioremap_resource_byname() helper instead of
+calling platform_get_resource_byname() and devm_ioremap_resource()
+separately
 
-K(x) is relevant with PAGE_SHIFT. So I think K(x) can also go asm-generic/page.h too.
-Am I supposed to do this when free or will you kindly do this?
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/pci/controller/pcie-mediatek.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-Many thanks.
-
-> 
+diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
+index 4cb5ea8e1069..90913025da05 100644
+--- a/drivers/pci/controller/pcie-mediatek.c
++++ b/drivers/pci/controller/pcie-mediatek.c
+@@ -980,16 +980,12 @@ static int mtk_pcie_subsys_powerup(struct mtk_pcie *pcie)
+ {
+ 	struct device *dev = pcie->dev;
+ 	struct platform_device *pdev = to_platform_device(dev);
+-	struct resource *regs;
+ 	int err;
+ 
+ 	/* get shared registers, which are optional */
+-	regs = platform_get_resource_byname(pdev, IORESOURCE_MEM, "subsys");
+-	if (regs) {
+-		pcie->base = devm_ioremap_resource(dev, regs);
+-		if (IS_ERR(pcie->base))
+-			return PTR_ERR(pcie->base);
+-	}
++	pcie->base = devm_platform_ioremap_resource_byname(pdev, "subsys");
++	if (IS_ERR(pcie->base))
++		return PTR_ERR(pcie->base);
+ 
+ 	pcie->free_ck = devm_clk_get(dev, "free_ck");
+ 	if (IS_ERR(pcie->free_ck)) {
+-- 
+2.25.1
 
