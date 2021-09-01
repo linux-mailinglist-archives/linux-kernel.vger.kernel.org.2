@@ -2,86 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06CEF3FD4DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC4E3FD4E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242907AbhIAIGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:06:46 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8995 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232072AbhIAIGo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:06:44 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GzxRy4nFYzYwXJ;
-        Wed,  1 Sep 2021 16:05:02 +0800 (CST)
-Received: from [10.174.178.75] (10.174.178.75) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 1 Sep 2021 16:05:44 +0800
-Subject: Re: [PATCH 6/6] mm/page_alloc.c: avoid allocating highmem pages via
- alloc_pages_exact_nid()
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>
-CC:     <akpm@linux-foundation.org>, <sfr@canb.auug.org.au>,
-        <peterz@infradead.org>, <mgorman@techsingularity.net>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20210830141051.64090-1-linmiaohe@huawei.com>
- <20210830141051.64090-7-linmiaohe@huawei.com>
- <YSzqDt/13YbOAyo4@casper.infradead.org>
- <d90329db-b13a-ac28-c381-758f12c679c2@huawei.com>
- <cde527a6-36cf-8a01-16b9-41e950676e48@suse.cz>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <d3cc4289-c62d-49d2-ef55-85f3e5c2e588@huawei.com>
-Date:   Wed, 1 Sep 2021 16:05:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S242913AbhIAIHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:07:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242909AbhIAIH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 04:07:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C5C06103D;
+        Wed,  1 Sep 2021 08:06:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630483589;
+        bh=HFXW2CXUVuj9t9Ig1elcp8R+lAYqA68TQyV8IJQJvmA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PrGxvohdSMKpxmdJwW5SPfczCcjE5fL6gAUWGavIuNT7hu0PyUfwKybImG0WvaXn2
+         z6nig86cxvCyPjpfz5yZUO20j9538S1kNeoDCyH/GkInabkNG0+Xz4WFvbgCUj+M23
+         rlhVNBwclhRUhpt1ReCG9oiLeAClaia2Vp8yZ2RCgxmFi4kIGLfZkNO62TylLX0dFC
+         Z03oFieXanxlH0WK1lRf5yvL/FvgayU4z2FOeY9BEgM8YKhHRMk0MgZnq1eFv8EHZm
+         65B5ZtdSWg+hyWNPERdua/0Q9JNMx5TZU6Ule3BpLYY+Sl2lh57XqawNLMw7GDofPr
+         LOin7K0sJnF4A==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
+        Chao Yu <chao@kernel.org>, Zhang Yi <yi.zhang@huawei.com>,
+        Jan Kara <jack@suse.cz>
+Subject: [PATCH v2] f2fs: avoid attaching SB_ACTIVE flag during mount
+Date:   Wed,  1 Sep 2021 16:06:21 +0800
+Message-Id: <20210901080621.110319-1-chao@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <cde527a6-36cf-8a01-16b9-41e950676e48@suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.75]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/1 0:37, Vlastimil Babka wrote:
-> On 8/31/21 03:56, Miaohe Lin wrote:
->> On 2021/8/30 22:24, Matthew Wilcox wrote:
->>> On Mon, Aug 30, 2021 at 10:10:51PM +0800, Miaohe Lin wrote:
->>>> Don't use with __GFP_HIGHMEM because page_address() cannot represent
->>>> highmem pages without kmap(). Newly allocated pages would leak as
->>>> page_address() will return NULL for highmem pages here. But It works
->>>> now because the only caller does not specify __GFP_HIGHMEM now.
->>>
->>> This is a misunderstanding of how alloc_pages_exact() /
->>> alloc_pages_exact_nid() work.  You simply can't call them with
->>> GFP_HIGHMEM.
->>>
->>
->> Yep, they can't work with GFP_HIGHMEM. So IMO it might be better to
->> get rid of GFP_HIGHMEM explicitly or add a comment to clarify this
->> situation to avoid future misbehavior. But this may be a unnecessary
->> worry... Do you prefer to not change anything here?
-> 
-> I agree with the suggestion below...
-> 
->> Many thanks.
->>
->>> If you really must change anything here,
->>> s/__GFP_COMP/(__GFP_COMP|__GFP_HIGHMEM)/g throughout both
->>> alloc_pages_exact() and alloc_pages_exact_nid().
-> 
-> ... which means __GFP_HIGHMEM would be stripped and additionally there would
-> be a warning.
-> 
+Quoted from [1]
 
-Looks good for me. Will do. Many thanks!
+"I do remember that I've added this code back then because otherwise
+orphan cleanup was losing updates to quota files. But you're right
+that now I don't see how that could be happening and it would be nice
+if we could get rid of this hack"
 
-> .
-> 
+[1] https://lore.kernel.org/linux-ext4/99cce8ca-e4a0-7301-840f-2ace67c551f3@huawei.com/T/#m04990cfbc4f44592421736b504afcc346b2a7c00
+
+Related fix in ext4 by
+commit 72ffb49a7b62 ("ext4: do not set SB_ACTIVE in ext4_orphan_cleanup()").
+
+f2fs has the same hack implementation in
+- f2fs_recover_orphan_inodes()
+- f2fs_recover_fsync_data()
+
+Let's get rid of this hack as well in f2fs.
+
+Cc: Zhang Yi <yi.zhang@huawei.com>
+Cc: Jan Kara <jack@suse.cz>
+Acked-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+v2:
+- don't bother checkpoint disabling path
+ fs/f2fs/checkpoint.c | 3 ---
+ fs/f2fs/recovery.c   | 8 ++------
+ 2 files changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index 83e9bc0f91ff..7d8803a4cbc2 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -705,9 +705,6 @@ int f2fs_recover_orphan_inodes(struct f2fs_sb_info *sbi)
+ 	}
+ 
+ #ifdef CONFIG_QUOTA
+-	/* Needed for iput() to work correctly and not trash data */
+-	sbi->sb->s_flags |= SB_ACTIVE;
+-
+ 	/*
+ 	 * Turn on quotas which were not enabled for read-only mounts if
+ 	 * filesystem has quota feature, so that they are updated correctly.
+diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
+index 04655511d7f5..706ddb3c95c0 100644
+--- a/fs/f2fs/recovery.c
++++ b/fs/f2fs/recovery.c
+@@ -787,8 +787,6 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only)
+ 	}
+ 
+ #ifdef CONFIG_QUOTA
+-	/* Needed for iput() to work correctly and not trash data */
+-	sbi->sb->s_flags |= SB_ACTIVE;
+ 	/* Turn on quotas so that they are updated correctly */
+ 	quota_enabled = f2fs_enable_quota_files(sbi, s_flags & SB_RDONLY);
+ #endif
+@@ -816,10 +814,8 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only)
+ 	err = recover_data(sbi, &inode_list, &tmp_inode_list, &dir_list);
+ 	if (!err)
+ 		f2fs_bug_on(sbi, !list_empty(&inode_list));
+-	else {
+-		/* restore s_flags to let iput() trash data */
+-		sbi->sb->s_flags = s_flags;
+-	}
++	else
++		f2fs_bug_on(sbi, sbi->sb->s_flags & SB_ACTIVE);
+ skip:
+ 	fix_curseg_write_pointer = !check_only || list_empty(&inode_list);
+ 
+-- 
+2.32.0
 
