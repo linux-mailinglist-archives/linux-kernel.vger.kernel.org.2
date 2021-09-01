@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C383FD1A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDB93FD17E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241746AbhIADIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 23:08:24 -0400
-Received: from mail-m17644.qiye.163.com ([59.111.176.44]:25174 "EHLO
-        mail-m17644.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231712AbhIADIW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 23:08:22 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [58.213.83.158])
-        by mail-m17644.qiye.163.com (Hmail) with ESMTPA id AF8CD3200D6;
-        Wed,  1 Sep 2021 11:07:24 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        mptcp@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] [v2] mptcp: Fix duplicated argument in protocol.h
-Date:   Wed,  1 Sep 2021 11:06:56 +0800
-Message-Id: <20210901030656.7383-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        id S241522AbhIACvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 22:51:08 -0400
+Received: from mga14.intel.com ([192.55.52.115]:29330 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231588AbhIACvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 22:51:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="218327662"
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="218327662"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 19:50:04 -0700
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="531615897"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.41])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 19:50:01 -0700
+Date:   Wed, 1 Sep 2021 11:07:39 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Marc Zyngier <maz@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        feng.tang@intel.com, zhengjun.xing@linux.intel.com
+Subject: Re: [PCI/MSI]  77e89afc25:  will-it-scale.per_process_ops -2.6%
+ regression
+Message-ID: <20210901030739.GE14661@xsang-OptiPlex-9020>
+References: <20210818145122.GC1721@xsang-OptiPlex-9020>
+ <87eeaf3khx.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWUNCSE1WT0tIQkMZHR9DTR
-        hJVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NyI6FDo6FT8BSEguCAFJSRYo
-        OQ8aCQFVSlVKTUhLT01OTU9OSEhKVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlO
-        Q1VJSkhVQ0hVSk5DWVdZCAFZQUlKSEw3Bg++
-X-HM-Tid: 0a7b9f53595ed99akuwsaf8cd3200d6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87eeaf3khx.ffs@tglx>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
-./net/mptcp/protocol.h:36:50-73: duplicated argument to & or |
+Hi Thomas,
 
-The OPTION_MPTCP_MPJ_SYNACK here is duplicate.
-Here should be OPTION_MPTCP_MPJ_ACK.
+On Fri, Aug 27, 2021 at 12:32:26AM +0200, Thomas Gleixner wrote:
+> On Wed, Aug 18 2021 at 22:51, kernel report robot wrote:
+> 
+> > Greeting,
+> >
+> > FYI, we noticed a -2.6% regression of will-it-scale.per_process_ops due to commit:
+> >
+> >
+> > commit: 77e89afc25f30abd56e76a809ee2884d7c1b63ce ("PCI/MSI: Protect msi_desc::masked for multi-MSI")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> >
+> >
+> > in testcase: will-it-scale
+> > on test machine: 128 threads 2 sockets Intel(R) Xeon(R) Gold 6338 CPU @ 2.00GHz with 256G memory
+> > with following parameters:
+> >
+> > 	nr_task: 100%
+> > 	mode: process
+> > 	test: lseek2
+> > 	cpufreq_governor: performance
+> > 	ucode: 0xd000280
+> >
+> > test-description: Will It Scale takes a testcase and runs it from 1 through to n parallel copies to see if the testcase will scale. It builds both a process and threads based test in order to see any differences between the two.
+> > test-url: https://github.com/antonblanchard/will-it-scale
+> >
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> 
+> There is nothing to fix. The commit cures an incorrectness. Comparing
+> buggy code to correct code is futile.
 
-Fixes: 74c7dfbee3e18 ("mptcp: consolidate in_opt sub-options fields in
-a bitmask")
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
-Changelog:
-v2:
-- Add a Fixes-tag.
----
- net/mptcp/protocol.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Got it! the change is a functionality fix. Thanks for information.
 
-diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
-index d7aba1c4dc48..64c9a30e0871 100644
---- a/net/mptcp/protocol.h
-+++ b/net/mptcp/protocol.h
-@@ -34,7 +34,7 @@
- #define OPTIONS_MPTCP_MPC	(OPTION_MPTCP_MPC_SYN | OPTION_MPTCP_MPC_SYNACK | \
- 				 OPTION_MPTCP_MPC_ACK)
- #define OPTIONS_MPTCP_MPJ	(OPTION_MPTCP_MPJ_SYN | OPTION_MPTCP_MPJ_SYNACK | \
--				 OPTION_MPTCP_MPJ_SYNACK)
-+				 OPTION_MPTCP_MPJ_ACK)
- 
- /* MPTCP option subtypes */
- #define MPTCPOPT_MP_CAPABLE	0
--- 
-2.25.1
-
+> 
+> Thanks,
+> 
+>         tglx
