@@ -2,128 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6FF3FDD1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB06B3FDD47
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343657AbhIANQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 09:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244317AbhIANQS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 09:16:18 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5A8C0613A3
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 06:15:16 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id g138so1847177wmg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 06:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=ZJ1ShBvERXE8NJcgrC2YbDFePHvYv0jlDQrPsvc3VFw=;
-        b=AHjEXIzMKU5DvTRjxziioS6maD1NUDuXDvmVF0dw8SY3s00PkZTgAKCFQaG5VV17/4
-         jlBUpgu30gQhBLIErVIKTjzKdrgMudqaUu5lskTMWmdNjkftzM5Ml0QYeI+keYQduNwH
-         0kabGRBE1NphoreJmQnqulLGzggh0GQevtL9udRevrGFVIzo8n+MzBihg3Pf80XFlwCl
-         ieAW9kpVT2cp1ZY6tN2E7HVryMGV+35KIxePcjxrODr36UBWLhRXKM5yCkSTUGa7ltml
-         DEBkbUla2lw/eTK0ZHPm+FwjKw+X0kuZKYU5n5Z+pE3SaRyWbPWobfISDWhd+hjA30m2
-         83PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZJ1ShBvERXE8NJcgrC2YbDFePHvYv0jlDQrPsvc3VFw=;
-        b=igaxQcvi+BvVTP1TVtsxq9hx9v06RQ0swXxQZLSiZ9Ka4EPymvOCcdUDD5b6zNp9Hv
-         VabMk7zjzFelFjEg8BiMdZRn807Kmqz0aPXkNir6Stium72bwLApuil6RqFhhwDzWNT2
-         PyU5LM5d44HQh7m2BUVMmUclA/xOS0FPff5BSpEP98DwXp2zt1sPpOIThBhpMsCXMo2+
-         PEIj+0RyvQ1+a4r9KgqK+zOIaUACVEFhC4XtJr+vxZnpP0N729Pz02l3Rl1hTBQo8kb0
-         sakuhQ5zqAuh2usqpwRnVZLcPJ1wp2ddxYtof/dIO3YgHZ8yo943kXe5UHKoUai6H0c9
-         QNCQ==
-X-Gm-Message-State: AOAM531vIyWd5nNIFqQIi3oOnNpT8Gkj/iF4gyYS9MMV7uMy2KfL0ytA
-        NZosPRvhhiGPx2x8uLFSRnPBZlJ1PxsUjg==
-X-Google-Smtp-Source: ABdhPJwpXNc7JmkOl6sW/c8wpqPEEZ+cnPv41Ub2/rO70HdAAVP2nx/GEepEFJiZL/4Eujp/OVxH4g==
-X-Received: by 2002:a1c:28b:: with SMTP id 133mr9641042wmc.138.1630502114478;
-        Wed, 01 Sep 2021 06:15:14 -0700 (PDT)
-Received: from ?IPv6:2a00:1098:3142:14:7c9e:cf18:6a35:10e2? ([2a00:1098:3142:14:7c9e:cf18:6a35:10e2])
-        by smtp.gmail.com with ESMTPSA id t14sm21321972wrw.59.2021.09.01.06.15.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 06:15:13 -0700 (PDT)
-Subject: Re: [PATCH] xhci: guard accesses to ep_state in xhci_endpoint_reset()
-To:     Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Bell <jonathan@raspberrypi.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210831160259.2392459-1-phil@raspberrypi.com>
- <3830571c-566c-ef13-bc08-60206a634253@linux.intel.com>
-From:   Phil Elwell <phil@raspberrypi.com>
-Message-ID: <f2fa6738-29f1-3434-70f2-7fba0b1b2567@raspberrypi.com>
-Date:   Wed, 1 Sep 2021 14:15:14 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S244584AbhIANVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 09:21:49 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:57099 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234295AbhIANVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 09:21:45 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H04SH4Pzxz9sT4;
+        Wed,  1 Sep 2021 15:20:47 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id MCcCl9jOCGME; Wed,  1 Sep 2021 15:20:47 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H04SH3CfNz9sSq;
+        Wed,  1 Sep 2021 15:20:47 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 549078B83E;
+        Wed,  1 Sep 2021 15:20:47 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 5hNxn9rxWebo; Wed,  1 Sep 2021 15:20:47 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.107])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1E3748B83C;
+        Wed,  1 Sep 2021 15:20:47 +0200 (CEST)
+Subject: Re: [linuxppc:next-test 71/141]
+ drivers/net/ethernet/sfc/falcon/farch.c:994:10: warning: shift count is
+ negative
+To:     kernel test robot <lkp@intel.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+References: <202109011018.QFMpsm0d-lkp@intel.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <f96f87e8-1a9c-a43c-82ef-787de35deef2@csgroup.eu>
+Date:   Wed, 1 Sep 2021 15:20:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <3830571c-566c-ef13-bc08-60206a634253@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <202109011018.QFMpsm0d-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathias,
 
-On 01/09/2021 10:21, Mathias Nyman wrote:
-> On 31.8.2021 19.02, Phil Elwell wrote:
->> From: Jonathan Bell <jonathan@raspberrypi.com>
->>
->> See https://github.com/raspberrypi/linux/issues/3981
+
+Le 01/09/2021 à 04:54, kernel test robot a écrit :
+> tree:   https://github.com/linuxppc/linux next-test
+> head:   c7dee506ec3450717e84518ab3a6a3f2ce755cf6
+> commit: 1e688dd2a3d6759d416616ff07afc4bb836c4213 [71/141] powerpc/bug: Provide better flexibility to WARN_ON/__WARN_FLAGS() with asm goto
+> config: powerpc-randconfig-r031-20210901 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 4b1fde8a2b681dad2ce0c082a5d6422caa06b0bc)
+
+Apparently a clang problem. This doesn't happen with GCC.
+
+
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # install powerpc cross compiling tool for clang build
+>          # apt-get install binutils-powerpc64-linux-gnu
+>          # https://github.com/linuxppc/linux/commit/1e688dd2a3d6759d416616ff07afc4bb836c4213
+>          git remote add linuxppc https://github.com/linuxppc/linux
+>          git fetch --no-tags linuxppc next-test
+>          git checkout 1e688dd2a3d6759d416616ff07afc4bb836c4213
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc
 > 
-> Thanks, so in a nutshell the issue looks something like:
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> [827586.220071] xhci_hcd 0000:01:00.0: WARN Cannot submit Set TR Deq Ptr
-> [827586.220087] xhci_hcd 0000:01:00.0: A Set TR Deq Ptr command is pending.
-> [827723.160680] INFO: task usb-storage:93 blocked for more than 122 seconds.
+> All warnings (new ones prefixed by >>):
 > 
-> The blocked task is probably because xhci driver failed to give back the
-> URB after failing to submit a "Set TR Deq Ptr" command. This part should
-> be fixed in:
-> https://lore.kernel.org/r/20210820123503.2605901-4-mathias.nyman@linux.intel.com
-> which is currently in usb-next, and should be in 5.15-rc1 and future 5.12+ stable.
-> 
->>
->> Two read-modify-write cycles on ep->ep_state are not guarded by
->> xhci->lock. Fix these.
->>
-> 
-> This is probably one cause for the "Warn Cannot submit Set TR Deq Ptr A Set TR
-> Deq Ptr command is pending" message.
-> Another possibility is that with UAS and streams we have several transfer rings
-> per endpoint, meaning that if two TDs on separate stream rings on the same
-> endpoint both stall, or are cancelled we could see this message.
-> 
-> The SET_DEQ_PENDING flag in ep->ep_state should probably be per ring, not per
-> endpoint. Then we also need a "rings_with_pending_set_deq" counter per endpoint
-> to keep track when all set_tr_deq commands complete, and we can restart the endpoint
+>>> drivers/net/ethernet/sfc/falcon/farch.c:994:10: warning: shift count is negative [-Wshift-count-negative]
+>             WARN_ON(EF4_QWORD_FIELD(*event, FSF_AZ_RX_EV_Q_LABEL) !=
+>             ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     drivers/net/ethernet/sfc/falcon/bitfield.h:222:26: note: expanded from macro 'EF4_QWORD_FIELD'
+>     #define EF4_QWORD_FIELD         EF4_QWORD_FIELD64
+>                                     ^
+>     drivers/net/ethernet/sfc/falcon/bitfield.h:173:2: note: expanded from macro 'EF4_QWORD_FIELD64'
+>             EF4_EXTRACT_QWORD64(qword, EF4_LOW_BIT(field),          \
+>             ^
+>     drivers/net/ethernet/sfc/falcon/bitfield.h:149:3: note: expanded from macro 'EF4_EXTRACT_QWORD64'
+>             (EF4_EXTRACT64((qword).u64[0], 0, 63, low, high) &              \
+>              ^
+>     note: (skipping 2 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+>     arch/powerpc/include/asm/bug.h:122:30: note: expanded from macro 'WARN_ON'
+>                                        __label_warn_on, "r" (x));   \
+>                                        ~~~~~~~~~~~~~~~~~~~~~~^~~
+>     arch/powerpc/include/asm/bug.h:75:7: note: expanded from macro 'WARN_ENTRY'
+>                       ##__VA_ARGS__ : : label)
+>                       ~~^~~~~~~~~~~~~~~~~~~~~~
+>     include/linux/compiler_types.h:254:42: note: expanded from macro 'asm_volatile_goto'
+>     #define asm_volatile_goto(x...) asm goto(x)
+>                                              ^
+>     1 warning generated.
 
-Jonathan, the author of the patch, may give some detailed feedback on these 
-statements when he has a moment - "Well, sort of... it's complicated" was the 
-summary.
 
-> Anyway, my patch linked above together with this patch should make these errors
-> a lot more harmless.
+Complete with -fmacro-backtrace-limit=0 :
 
-Yes, I think that's true. We have a downstream patch to warn about a pending
-Set TR Deq Ptr command but proceed anyway, allowing systems to recover, but with 
-the additional spin lock usage our users are reporting no failures _and_ no
-warnings.
+   CC      drivers/net/ethernet/sfc/falcon/farch.o
+drivers/net/ethernet/sfc/falcon/farch.c:994:10: warning: shift count is 
+negative [-Wshift-count-negative]
+         WARN_ON(EF4_QWORD_FIELD(*event, FSF_AZ_RX_EV_Q_LABEL) !=
+         ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/sfc/falcon/bitfield.h:222:26: note: expanded from 
+macro 'EF4_QWORD_FIELD'
+#define EF4_QWORD_FIELD         EF4_QWORD_FIELD64
+                                 ^
+drivers/net/ethernet/sfc/falcon/bitfield.h:173:2: note: expanded from 
+macro 'EF4_QWORD_FIELD64'
+         EF4_EXTRACT_QWORD64(qword, EF4_LOW_BIT(field),          \
+         ^
+drivers/net/ethernet/sfc/falcon/bitfield.h:149:3: note: expanded from 
+macro 'EF4_EXTRACT_QWORD64'
+         (EF4_EXTRACT64((qword).u64[0], 0, 63, low, high) &              \
+          ^
+drivers/net/ethernet/sfc/falcon/bitfield.h:134:2: note: expanded from 
+macro 'EF4_EXTRACT64'
+         EF4_EXTRACT_NATIVE(le64_to_cpu(element), min, max, low, high)
+         ^
+drivers/net/ethernet/sfc/falcon/bitfield.h:127:20: note: expanded from 
+macro 'EF4_EXTRACT_NATIVE'
+          (native_element) << ((min) - (low)))
+                           ^
+./arch/powerpc/include/asm/bug.h:122:30: note: expanded from macro 'WARN_ON'
+                                    __label_warn_on, "r" (x));   \
+                                    ~~~~~~~~~~~~~~~~~~~~~~^~~
+./arch/powerpc/include/asm/bug.h:75:7: note: expanded from macro 
+'WARN_ENTRY'
+                   ##__VA_ARGS__ : : label)
+                   ~~^~~~~~~~~~~~~~~~~~~~~~
+./include/linux/compiler_types.h:254:42: note: expanded from macro 
+'asm_volatile_goto'
+#define asm_volatile_goto(x...) asm goto(x)
+                                          ^
+1 warning generated.
 
-> Let me know if you can trigger the issue with both these patches applied.
 
-We've not tried your patch yet.
 
-> I'll add your patch to the queue as well.
+The warning makes no sense because this part of the macro is as follows 
+so there is no way the shift can be negative.
 
-Many thanks,
+	 (low) > (min) ?					\
+	 (native_element) >> ((low) - (min)) :			\
+	 (native_element) << ((min) - (low)))
 
-Phil
+
+Christophe
