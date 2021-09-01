@@ -2,83 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E843FD513
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179D13FD514
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243072AbhIAIPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:15:50 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:60477 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243041AbhIAIPp (ORCPT
+        id S243078AbhIAIPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243047AbhIAIPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:15:45 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 84A245C00F3;
-        Wed,  1 Sep 2021 04:14:48 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 01 Sep 2021 04:14:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=BuvuRLiclI2ZPDHjAVTSSUhPf+B
-        EZ0r+raCKQUzMmyY=; b=MBA0jEPWTM4N3BfTJlHCkBjK8gMHaHAaR0/ANSYbvCM
-        WehbVNhWQKyRQJxx/GAlhNk6kjlNsoq/c7v9fHqNYVf+CyG3Q/VqwfFU0kLJ7TgB
-        YBziO5bQtTEmEqAInz2c0NGCrirKo5xcDWCOVjP38quSADIsraeYD2lVJkX5mZ+/
-        hvSvgYQiKY38wcKzOzrGYxvuXXW5WT1DBBIjKFJD4EvCv+eey26sWihnbynklEyl
-        37exUUIegHInU+vZy8KwCnH0y03fTBR7o635gRAt+fQZrQaDIIsLFQH6JwPOWldu
-        5fP6cJuwjXFR7RuxlXKtum/cH9zlNHgaNd/2VPhysmA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=BuvuRL
-        iclI2ZPDHjAVTSSUhPf+BEZ0r+raCKQUzMmyY=; b=LwL+UOuStjzHuA8KbAZDeT
-        Ye7zhlllqH3xXR5BRZoF1DNbvs/tBxn0RBP7h+sW/ziUj3m7h/iZGxsqNDymbvfo
-        8Np+BavaAzMmajv4u1mz/5HZ6AeyTznlMoYkoAGccW0TCMgNtUYU+IuapQ/K8FRM
-        pkdqYWY2ybVz5/m34pM4/42U7K7He9lOig3vlDrf0oUA2jPpi7CJHmjD9vrx5cNo
-        t7ntzCn5TzTAM0QzG+8UXLBhjdDQBhst4FQKtcTXCHYZhhxKIUNySCVlrjbclj0L
-        K3MLJoWsFf2GXYGuzBb0k220NynqSyeX1+DbVkTkoJWnJR+U1qKl6xMxDNnO23mA
-        ==
-X-ME-Sender: <xms:eDYvYRGIhggwWmsiJqUp7MbDzGoDthXtvykPdoFA1QLwj7fcrjxAAg>
-    <xme:eDYvYWVRKfVIqdNOJKsWdWWA4iQz8N7InnTvD1yiTEqbCvpEyM_xzxSjeMk10rPfv
-    77V-F7kuih9Lg>
-X-ME-Received: <xmr:eDYvYTK-NBiNOuMDw_TovX8BdcEosUAb_HHenPPOqnDSLsF6ws8O9Vys3V5yLb8Ek-pDcddjiXJGZdtL1M-5w6TmR7B-I0s0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:eDYvYXFTUahAG_q5weLx3iSH7S4QZ5kdf_wjd4x26eSoS9JPNWKRpQ>
-    <xmx:eDYvYXXRB-JnoT9K--Mv6tZsA1wvm3E7BAiJ5GPYpxoDP-QtaN9z6A>
-    <xmx:eDYvYSPpRVLD1s5JolYyv9GQzn7-NZKH5gc34a7WqFo9Hig4IHDwqA>
-    <xmx:eDYvYTqXN7Xeil6-9Ox33aOKcM1oOyTSw7wef1PrxwBZLPuODZmV7w>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Sep 2021 04:14:47 -0400 (EDT)
-Date:   Wed, 1 Sep 2021 10:14:45 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH stable-5.9.y, stable-5.10.y] btrfs: fix race between
- marking inode needs to be logged and log syncing
-Message-ID: <YS82dS2FmcKYDXwv@kroah.com>
-References: <2f474ee209a89b42c2471aab71a0df038f7e8d4c.1629969541.git.anand.jain@oracle.com>
- <7701f6238b7a6905164fa85d343d6328554414ea.1630270929.git.anand.jain@oracle.com>
+        Wed, 1 Sep 2021 04:15:47 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086E3C061760
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 01:14:51 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id t15so3133333wrg.7
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:14:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0kNi+lHjT7XSbTIRmVqe8NrtAKLHSCB9511ZIsHzw8c=;
+        b=Xk/9LzB/mLcmSdOGB85ZKeBG/oBz6bm38CwERpRHUUJ9AaKuMsCwhkgLCG/+X5i3AK
+         EIZmCVrrTF5rVnqiL//gSzJcTyed9aBeMW/ySQbiPqWnVisNDoFUtbgFWSq04YBzBA6G
+         VJ9+xAt5UnHDNSI1qsIuUBTU+G66rVMHY8VUj2u04wca76ogcfkX0RI4LgbE0eQRBOMg
+         /6wpLebSIHUkpsD/TFuzRqYf93nhprwpP27S3iyarcyyvSi/6zvj6kWL/JWSUBY81+wl
+         S/fMlaFJfSzvh/4SNPZo2cVhEV5isuofxeahTxn0ECQYFU4DMSU5G6h6D1lvFe+LuZEe
+         M+ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=0kNi+lHjT7XSbTIRmVqe8NrtAKLHSCB9511ZIsHzw8c=;
+        b=g96pvYja9L6NnOPz24iTpAG4Vdmst5YA59vWPfxIx0VyfmHKS14IauqWtPvgK6YB4l
+         s1MmQjalOdKYtwmHGGj3fxQtZ5pCw/kScmYiJI0PJ/XYpOpN79E8HTeEokw6bb11j6IH
+         +6RGAf6aOJaIVhCuSZduxRbcXSYlWQot0cYdtCgmtqKevqQU0YoTBRZN4Khp6Qr7NCsA
+         xtOS66Aq4oNleK/jqBrD2Dqn81211kgtD5yH03SRyii3vrL93tZh3LGjSib0cE7poBl/
+         08Nv/GOMC0c0uZdiGm0PyNSyEK0btsRSWTxdxFXvWpHRe3GOdv1r7MWUVT8EEhqE9HDZ
+         c7jQ==
+X-Gm-Message-State: AOAM530it/QO59i4UdUMLHu22rhqkrAVsrOemOeSssBvneEiUj5f9b3Y
+        ZHZP9T7kaG2hKgkbROL6qghZPUVL2sucXcv0
+X-Google-Smtp-Source: ABdhPJyxbURZu+cLTiD/wlnG7JzpRrfrVGAn3YWSSrKy3Nz3G7pMEs0idSjVO2BC50bYQzXi63uBLA==
+X-Received: by 2002:a05:6000:18a:: with SMTP id p10mr36999170wrx.40.1630484089188;
+        Wed, 01 Sep 2021 01:14:49 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:dc57:bccf:6106:11d1? ([2001:861:44c0:66c0:dc57:bccf:6106:11d1])
+        by smtp.gmail.com with ESMTPSA id t7sm22625455wrq.90.2021.09.01.01.14.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 01:14:48 -0700 (PDT)
+Subject: Re: [PATCH] media: meson: ge2d: Make use of the helper function
+ devm_platform_ioremap_resource()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210901055154.6829-1-caihuoqing@baidu.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <afd73707-2bbd-611a-2498-df8c7f109275@baylibre.com>
+Date:   Wed, 1 Sep 2021 10:14:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7701f6238b7a6905164fa85d343d6328554414ea.1630270929.git.anand.jain@oracle.com>
+In-Reply-To: <20210901055154.6829-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 05:42:17AM +0800, Anand Jain wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On 01/09/2021 07:51, Cai Huoqing wrote:
+> Use the devm_platform_ioremap_resource() helper instead of
+> calling platform_get_resource() and devm_ioremap_resource()
+> separately
 > 
-> commit bc0939fcfab0d7efb2ed12896b1af3d819954a14 upstream.
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/media/platform/meson/ge2d/ge2d.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/platform/meson/ge2d/ge2d.c b/drivers/media/platform/meson/ge2d/ge2d.c
+> index 9b1e973e78da..ccda18e5a377 100644
+> --- a/drivers/media/platform/meson/ge2d/ge2d.c
+> +++ b/drivers/media/platform/meson/ge2d/ge2d.c
+> @@ -922,7 +922,6 @@ static int ge2d_probe(struct platform_device *pdev)
+>  	struct reset_control *rst;
+>  	struct video_device *vfd;
+>  	struct meson_ge2d *ge2d;
+> -	struct resource *res;
+>  	void __iomem *regs;
+>  	int ret = 0;
+>  	int irq;
+> @@ -937,8 +936,7 @@ static int ge2d_probe(struct platform_device *pdev)
+>  	ge2d->dev = &pdev->dev;
+>  	mutex_init(&ge2d->mutex);
+>  
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	regs = devm_ioremap_resource(ge2d->dev, res);
+> +	regs = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(regs))
+>  		return PTR_ERR(regs);
+>  
 > 
 
-Both now queued up, thanks.
-
-greg k-h
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
