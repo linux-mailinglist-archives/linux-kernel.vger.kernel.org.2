@@ -2,79 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96453FE066
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0E03FE062
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344314AbhIAQxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:53:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48398 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344325AbhIAQxP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:53:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630515137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TFvsn1Vu39hsNbhEPHNzOXZ3d4CPqiedKNbByx0eETA=;
-        b=RU55tzVXdm+wTLnfb05d6aEPexdA9WMqTDkXoM/ydHoDPw6l5uAYWsgxHNiHzOOJa3T4Ga
-        RKWQGCsBLEwQQmun/wziUUJDr+iegZ6X5XWCwkNlgcXNSCavz3d/YtC9phn/I7+w6TugdR
-        6UrkGW3ogPaAyCgXmRxf+yOUGbYGIHI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-38-5lVYr0grPgqxlMWjHEDMAA-1; Wed, 01 Sep 2021 12:52:14 -0400
-X-MC-Unique: 5lVYr0grPgqxlMWjHEDMAA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 79BC76D581;
-        Wed,  1 Sep 2021 16:52:12 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5B6DC5C1BB;
-        Wed,  1 Sep 2021 16:52:05 +0000 (UTC)
-Date:   Wed, 1 Sep 2021 18:52:02 +0200
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     linux-audit@redhat.com,
-        strace development discussions <strace-devel@lists.strace.io>,
-        linux-api@vger.kernel.org, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ldv@strace.io
-Subject: Re: [PATCH 1/2] net: Remove net/ipx.h and uapi/linux/ipx.h header
- files
-Message-ID: <20210901165202.GA4518@asgard.redhat.com>
-References: <20210813120803.101-1-caihuoqing@baidu.com>
- <20210813120803.101-2-caihuoqing@baidu.com>
- <20210901160244.GA5957@asgard.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901160244.GA5957@asgard.redhat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        id S1344210AbhIAQxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:53:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245469AbhIAQxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 12:53:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6E61060E98;
+        Wed,  1 Sep 2021 16:52:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630515123;
+        bh=T+4sluKSoKgjkdQ7wWIDcExSljgArqcFTueJwqyFE8w=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=T0hs+5NA6U6T3hV2OJ/97tCoub+BrVQl7E3PFiZbAllP/Hy2krGyDYTT8WMIlMCcm
+         N/WJCd+DiCqT4Nsdy7GW0L0DGd1+huncV3WqQ2/qVFd80CvyI1Dyk4KkvGleC4gKNT
+         5VJ6s/qq085uw3LF8CmaxRni415wL1K1rwZMV4Rqloc1lv8KHyzy9/Poz9L/xoZ7aE
+         Ba2lYnPSu1K5qgYQXZfIlNblM8e5GecuGhZIUAz6hegKz2NFFoZXbkebfudQj5tyXV
+         jpliSrMnZwfRZusoWbJXxukPYNlBI6AKt+l6TVuoB0DDNkdvVJtXMiubWSXoxAeHqc
+         YFnGda3KErZCQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5E744600AB;
+        Wed,  1 Sep 2021 16:52:03 +0000 (UTC)
+Subject: Re: [GIT PULL] Staging / IIO driver changes for 5.15-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YS+LXqoDGk0CqU1Q@kroah.com>
+References: <YS+LXqoDGk0CqU1Q@kroah.com>
+X-PR-Tracked-List-Id: <linux-staging.lists.linux.dev>
+X-PR-Tracked-Message-Id: <YS+LXqoDGk0CqU1Q@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.15-rc1
+X-PR-Tracked-Commit-Id: 4adb389e08c95fdf91995271932c59250ff0d561
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ebf435d3b51b22340ef047aad0c2936ec4833ab2
+Message-Id: <163051512332.18728.3117437173081787944.pr-tracker-bot@kernel.org>
+Date:   Wed, 01 Sep 2021 16:52:03 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding linux-audit, strace-devel, and linux-api to CC:.
+The pull request you sent on Wed, 1 Sep 2021 16:17:02 +0200:
 
-On Wed, Sep 01, 2021 at 06:02:44PM +0200, Eugene Syromiatnikov wrote:
-> On Fri, Aug 13, 2021 at 08:08:02PM +0800, Cai Huoqing wrote:
-> > commit <47595e32869f> ("<MAINTAINERS: Mark some staging directories>")
-> > indicated the ipx network layer as obsolete in Jan 2018,
-> > updated in the MAINTAINERS file
-> > 
-> > now, after being exposed for 3 years to refactoring, so to
-> > delete uapi/linux/ipx.h and net/ipx.h header files for good.
-> > additionally, there is no module that depends on ipx.h except
-> > a broken staging driver(r8188eu)
-> > 
-> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> 
-> This removal breaks audit[1] and potentially breaks strace[2][3], at least.
-> 
-> [1] https://github.com/linux-audit/audit-userspace/blob/ce58837d44b7d9fcb4e140c23f68e0c94d95ab6e/auparse/interpret.c#L48
-> [2] https://gitlab.com/strace/strace/-/blob/9fe63f42df8badd22fb7eef9c12fc07ed7106d6b/src/net.c#L34
-> [3] https://gitlab.com/strace/strace/-/blob/9fe63f42df8badd22fb7eef9c12fc07ed7106d6b/src/sockaddr.c#L30
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.15-rc1
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ebf435d3b51b22340ef047aad0c2936ec4833ab2
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
