@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0083FDC5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674653FDB9B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346136AbhIAMtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:49:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48350 "EHLO mail.kernel.org"
+        id S244152AbhIAMmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:42:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345677AbhIAMoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:44:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79828610F9;
-        Wed,  1 Sep 2021 12:39:16 +0000 (UTC)
+        id S1344442AbhIAMja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:39:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 046B0610F9;
+        Wed,  1 Sep 2021 12:35:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499957;
-        bh=dTsJCAZDOJCYDHAGrT/XoFuf+ypbwnsqUGqkEhSBU+M=;
+        s=korg; t=1630499707;
+        bh=DMseKcXPlJ0eQwvrZsYnP0lIdsti2YeWRPnMmmG9wno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tVq/cJxtogv7CchCm+SaVZIhfG/rO4ygG+OoslxaVFTP831WKfDRD97gDnGcZggj+
-         c2YBocdYvzhh6zQF653pLjQmHmGpASGT72lsNlVwRxDq/mhJ1D0bkxoedfBzVmy/SU
-         iCdZckPQv/jruO+j1FcB+t9QjHAPF3bBchWl1ltA=
+        b=EBb4oOYiI4pfQlih83qIvSc5CHWQe+pOSPIeIwL5z3vfI2KJ00KJXZEtJa2NCX2BX
+         b0oP9ywJREgYlhii90q2Lsez9ZaS8GOv0gZmvnGqnBqbkgHVjfPCSs5fpHuhtY/Rnw
+         teKpoaymQZy4dYe8Dtbt4Lirm2IzJAwQThHF+SIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com,
-        Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 048/113] ip_gre: add validation for csum_start
+Subject: [PATCH 5.10 053/103] clk: renesas: rcar-usb2-clock-sel: Fix kernel NULL pointer dereference
 Date:   Wed,  1 Sep 2021 14:28:03 +0200
-Message-Id: <20210901122303.573563008@linuxfoundation.org>
+Message-Id: <20210901122302.353455604@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+From: Adam Ford <aford173@gmail.com>
 
-[ Upstream commit 1d011c4803c72f3907eccfc1ec63caefb852fcbf ]
+[ Upstream commit 1669a941f7c4844ae808cf441db51dde9e94db07 ]
 
-Validate csum_start in gre_handle_offloads before we call _gre_xmit so
-that we do not crash later when the csum_start value is used in the
-lco_csum function call.
+The probe was manually passing NULL instead of dev to devm_clk_hw_register.
+This caused a Unable to handle kernel NULL pointer dereference error.
+Fix this by passing 'dev'.
 
-This patch deals with ipv4 code.
-
-Fixes: c54419321455 ("GRE: Refactor GRE tunneling code.")
-Reported-by: syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
-Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Fixes: a20a40a8bbc2 ("clk: renesas: rcar-usb2-clock-sel: Fix error handling in .probe()")
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/ip_gre.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/clk/renesas/rcar-usb2-clock-sel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
-index a68bf4c6fe9b..ff34cde983d4 100644
---- a/net/ipv4/ip_gre.c
-+++ b/net/ipv4/ip_gre.c
-@@ -468,6 +468,8 @@ static void __gre_xmit(struct sk_buff *skb, struct net_device *dev,
+diff --git a/drivers/clk/renesas/rcar-usb2-clock-sel.c b/drivers/clk/renesas/rcar-usb2-clock-sel.c
+index 0ccc6e709a38..7a64dcb7209e 100644
+--- a/drivers/clk/renesas/rcar-usb2-clock-sel.c
++++ b/drivers/clk/renesas/rcar-usb2-clock-sel.c
+@@ -190,7 +190,7 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
+ 	init.num_parents = 0;
+ 	priv->hw.init = &init;
  
- static int gre_handle_offloads(struct sk_buff *skb, bool csum)
- {
-+	if (csum && skb_checksum_start(skb) < skb->data)
-+		return -EINVAL;
- 	return iptunnel_handle_offloads(skb, csum ? SKB_GSO_GRE_CSUM : SKB_GSO_GRE);
- }
+-	ret = devm_clk_hw_register(NULL, &priv->hw);
++	ret = devm_clk_hw_register(dev, &priv->hw);
+ 	if (ret)
+ 		goto pm_put;
  
 -- 
 2.30.2
