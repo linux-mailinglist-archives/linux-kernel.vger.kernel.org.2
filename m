@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0303FE318
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4FF3FE31D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244992AbhIATe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:34:29 -0400
-Received: from mail-4325.protonmail.ch ([185.70.43.25]:50575 "EHLO
-        mail-4325.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245751AbhIATeW (ORCPT
+        id S245070AbhIATed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:34:33 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:40804 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244879AbhIATe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:34:22 -0400
-Date:   Wed, 01 Sep 2021 19:33:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1630524803;
-        bh=sSDzVTTrE408jUhidHBHISAmsEwqh1RTwW36cNCflTc=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=v0kUj6kz/dnIVIH4/aaBUJhO7RixPdl2c3PRIvjdYgtt2JSu/8J0sadQ5j/n7w/uj
-         iU3oQQIStTdzfvmdGpLcX4h0b2e3ked3W2fnMwYR0j+Kpu8NpV7h/vWbAiCuEa7Chh
-         nL2FVVawEu9+O8/Ya9PXKvm/2lYCCBQfGHhErKAA=
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH 0/4] Add support for the Xiaomi MSM8996 platform
-Message-ID: <20210901193214.250375-1-y.oudjana@protonmail.com>
+        Wed, 1 Sep 2021 15:34:28 -0400
+Received: by mail-ot1-f52.google.com with SMTP id 107-20020a9d0bf4000000b0051b8be1192fso1107581oth.7;
+        Wed, 01 Sep 2021 12:33:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MN8A84FtJZYLcjJOsAhof11b/DtEYUBV+PxXI/9y4CI=;
+        b=QegkAfuyT+Iqwsa/wkUcPKB/ENaiTT2bMZbsVFjWW7HDqd+LqwxycMzsw+A3C88uyF
+         QhQTNMR2ADTdDunXKPfkda0bc0UpXOLIpBvHcMFkmtm1BBHetJbrEZWhVowyloW2zxXf
+         mmy1YkA5ZURVwTMS6tlrUOwwZlsR/KHJqnqNYPtoY9z1F+2lZHaEeZ2JVjiElfV9PTXU
+         oBKEfEdceE4rchVtOT0PY0u+hYgUaL2EcHWCD34BZRusyw5q2uCvOF9gJsv1FPGNFzvI
+         gIE2wBCAs1DCbvR/XEvFGiPg1UY13sTSE2K5rAEfbTkHeGSgOxKpXXjxSYlVCQGEGLyT
+         xZyA==
+X-Gm-Message-State: AOAM531BoEkkcLWorT+kez/hO0kXjXK8n+BNLjt7IjV1epiCJPnMU7He
+        QMZ4vdFXTknWfcDxkbPbFRI8VRR2X0cPdWqoP0A=
+X-Google-Smtp-Source: ABdhPJwZWzfXpat3iSK/prDXMONscYHzvSJ1A+J23/4E9AH0hNKTvNz2tYR+TH8I/hrS5liTFQASeeDGXz3idsQnoxI=
+X-Received: by 2002:a9d:705d:: with SMTP id x29mr944614otj.260.1630524811473;
+ Wed, 01 Sep 2021 12:33:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20210824122054.29481-1-joro@8bytes.org>
+In-Reply-To: <20210824122054.29481-1-joro@8bytes.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 1 Sep 2021 21:33:20 +0200
+Message-ID: <CAJZ5v0jqwgvmRrRts4Nf4ySmrp5gwmv_iJWBh3OjN54ZU+qneQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] PCI/ACPI: Simplify PCIe _OSC feature negotiation
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <jroedel@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds support for the Xiaomi MSM8996 platform, which includes 5 =
-devices:
+On Tue, Aug 24, 2021 at 2:21 PM Joerg Roedel <joro@8bytes.org> wrote:
+>
+> From: Joerg Roedel <jroedel@suse.de>
+>
+> Hi,
+>
+> here is the third version of my patches to simplify the _OSC
+> negotiation of PCIe features between Linux and the firmware.
+>
+> This version is a complete rewrite, so there is no changelog to the
+> previous version. Patches 1-3 are cleanups and small restructurings of
+> the code as a preparation for patch 4.
+>
+> The last patch gets rid of the dedicated _OSC query to check for _OSC
+> support and merges that functionality into acpi_pci_osc_control_set().
+>
+> This allows to simplify and/or remove other functions and consilidate
+> error handling in negotiate_os_control().
+>
+> I have tested the patches with and without 'pcie_ports=compat' and
+> found no regressions on my test machine.
 
- - Mi 5 (gemini): MSM8996 + PMI8994
- - Mi Note 2 (scorpio): MSM8996 Pro + PMI8996
- - Mi 5s (capricorn): MSM8996 Pro + PMI8996
- - Mi Mix (lithium): MSM8996 Pro + PMI8996
- - Mi 5s Plus (natrium): MSM8996 Pro + PMI8996
+I have reviewed the patches, so if you want me to queue up this
+series, please let me know.
 
-These devices share a common board design with only a few differences.
-Out of these 5 devices, this series adds initial support for the Mi Note 2 =
-and the Mi 5.
-Adding support for the remaining 3 would only require adding a DTS for each=
-, while
-accounting for hardware differences such as different panels.
-
-Raffaele Tranquillini (1):
-  arm64: dts: qcom: msm8996: xiaomi-gemini: Add support for Xiaomi Mi 5
-
-Yassine Oudjana (3):
-  arm64: dts: qcom: db820c: Move blsp1_uart2 pin states to msm8996.dtsi
-  arm64: dts: qcom: msm8996: Add blsp2_i2c3
-  arm64: dts: qcom: Add support for the Xiaomi MSM8996 platform
-
- arch/arm64/boot/dts/qcom/Makefile             |   2 +
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi  |  29 -
- .../boot/dts/qcom/msm8996-xiaomi-common.dtsi  | 673 ++++++++++++++++++
- .../boot/dts/qcom/msm8996-xiaomi-gemini.dts   | 431 +++++++++++
- .../boot/dts/qcom/msm8996-xiaomi-scorpio.dts  | 431 +++++++++++
- arch/arm64/boot/dts/qcom/msm8996.dtsi         |  49 ++
- 6 files changed, 1586 insertions(+), 29 deletions(-)
- create mode 100644 arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
- create mode 100644 arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts
- create mode 100644 arch/arm64/boot/dts/qcom/msm8996-xiaomi-scorpio.dts
-
---=20
-2.33.0
+Thanks,
+Rafael
 
 
+> Joerg Roedel (4):
+>   PCI/ACPI: Remove OSC_PCI_SUPPORT_MASKS and OSC_PCI_CONTROL_MASKS
+>   PCI/ACPI: Move supported and control calculations to separaten
+>     functions
+>   PCI/ACPI: Move _OSC query checks to separate function
+>   PCI/ACPI: Check for _OSC support in acpi_pci_osc_control_set()
+>
+>  drivers/acpi/pci_root.c | 161 +++++++++++++++++++++-------------------
+>  include/linux/acpi.h    |   2 -
+>  2 files changed, 84 insertions(+), 79 deletions(-)
+>
+> --
+> 2.32.0
+>
