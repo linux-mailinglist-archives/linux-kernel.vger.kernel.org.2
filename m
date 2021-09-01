@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47D83FDA8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8769A3FDACD
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245675AbhIAMdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:33:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34466 "EHLO mail.kernel.org"
+        id S245533AbhIAMfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:35:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244500AbhIAMbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:31:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CA196109E;
-        Wed,  1 Sep 2021 12:30:51 +0000 (UTC)
+        id S1343493AbhIAMdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:33:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D17BA6109E;
+        Wed,  1 Sep 2021 12:31:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499451;
-        bh=VrsQIPaHzdglb66XduYrB24NyHPFMRYRLea94YBVTMA=;
+        s=korg; t=1630499509;
+        bh=TQnjmA9IY4rpM2sotE7Dff9Feuq9Kflv+0/e3DRW+Cc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iUI2mY2xKnKqa/KMrTUubUrg6xlJ3V1Rtimkjy0Y40BUqhnrA8lwxyCNdcQiMLg9+
-         i3axrgH0n55UycTsUi6FMEB+kdUJAK02xC83ObEd3tzL0M4lBJzsBOIrBg3PsQqsKD
-         /ZSMJ+FaB/ISMeNWAR7Jx0HRBv/aF7DIuKxK41ok=
+        b=ewxbcf/Ifj9QrKvy5f87BHxYdP5SD2US9x9nqfUgsACGVqpkiaEHpqX4mZAvlXsdC
+         IoUOt9u5DikrOfIP8JkPV8DRkIXW2OT2cnr5v1gZagZXJ7vu4WQwXWatoAKbh9xzI6
+         A4sq038EH3UU1Lvwr9Qw9QEjww7lRloSMtH84578=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Lyude Paul <lyude@redhat.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 27/33] drm/nouveau/disp: power down unused DP links during init
+        stable@vger.kernel.org, Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 26/48] usb: gadget: u_audio: fix race condition on endpoint stop
 Date:   Wed,  1 Sep 2021 14:28:16 +0200
-Message-Id: <20210901122251.685195728@linuxfoundation.org>
+Message-Id: <20210901122254.280454719@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
-References: <20210901122250.752620302@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,79 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Skeggs <bskeggs@redhat.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-[ Upstream commit 6eaa1f3c59a707332e921e32782ffcad49915c5e ]
+[ Upstream commit 068fdad20454f815e61e6f6eb9f051a8b3120e88 ]
 
-When booted with multiple displays attached, the EFI GOP driver on (at
-least) Ampere, can leave DP links powered up that aren't being used to
-display anything.  This confuses our tracking of SOR routing, with the
-likely result being a failed modeset and display engine hang.
+If the endpoint completion callback is call right after the ep_enabled flag
+is cleared and before usb_ep_dequeue() is call, we could do a double free
+on the request and the associated buffer.
 
-Fix this by (ab?)using the DisableLT IED script to power-down the link,
-restoring HW to a state the driver expects.
+Fix this by clearing ep_enabled after all the endpoint requests have been
+dequeued.
 
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
+Fixes: 7de8681be2cd ("usb: gadget: u_audio: Free requests only after callback")
+Cc: stable <stable@vger.kernel.org>
+Reported-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20210827092927.366482-1-jbrunet@baylibre.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c   | 2 +-
- drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h   | 1 +
- drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c | 9 +++++++++
- 3 files changed, 11 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/function/u_audio.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
-index 818d21bd28d3..1d2837c5a8f2 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
-@@ -419,7 +419,7 @@ nvkm_dp_train(struct nvkm_dp *dp, u32 dataKBps)
- 	return ret;
- }
- 
--static void
-+void
- nvkm_dp_disable(struct nvkm_outp *outp, struct nvkm_ior *ior)
- {
- 	struct nvkm_dp *dp = nvkm_dp(outp);
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h
-index 495f665a0ee6..12d6ff4cfa95 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h
-@@ -32,6 +32,7 @@ struct nvkm_dp {
- 
- int nvkm_dp_new(struct nvkm_disp *, int index, struct dcb_output *,
- 		struct nvkm_outp **);
-+void nvkm_dp_disable(struct nvkm_outp *, struct nvkm_ior *);
- 
- /* DPCD Receiver Capabilities */
- #define DPCD_RC00_DPCD_REV                                              0x00000
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c
-index c62030c96fba..4b1c72fd8f03 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c
-@@ -22,6 +22,7 @@
-  * Authors: Ben Skeggs
-  */
- #include "outp.h"
-+#include "dp.h"
- #include "ior.h"
- 
- #include <subdev/bios.h>
-@@ -216,6 +217,14 @@ nvkm_outp_init_route(struct nvkm_outp *outp)
- 	if (!ior->arm.head || ior->arm.proto != proto) {
- 		OUTP_DBG(outp, "no heads (%x %d %d)", ior->arm.head,
- 			 ior->arm.proto, proto);
-+
-+		/* The EFI GOP driver on Ampere can leave unused DP links routed,
-+		 * which we don't expect.  The DisableLT IED script *should* get
-+		 * us back to where we need to be.
-+		 */
-+		if (ior->func->route.get && !ior->arm.head && outp->info.type == DCB_OUTPUT_DP)
-+			nvkm_dp_disable(outp, ior);
-+
+diff --git a/drivers/usb/gadget/function/u_audio.c b/drivers/usb/gadget/function/u_audio.c
+index 223029fa8445..4e01ba0ab8ec 100644
+--- a/drivers/usb/gadget/function/u_audio.c
++++ b/drivers/usb/gadget/function/u_audio.c
+@@ -349,8 +349,6 @@ static inline void free_ep(struct uac_rtd_params *prm, struct usb_ep *ep)
+ 	if (!prm->ep_enabled)
  		return;
+ 
+-	prm->ep_enabled = false;
+-
+ 	audio_dev = uac->audio_dev;
+ 	params = &audio_dev->params;
+ 
+@@ -368,11 +366,12 @@ static inline void free_ep(struct uac_rtd_params *prm, struct usb_ep *ep)
+ 		}
  	}
  
++	prm->ep_enabled = false;
++
+ 	if (usb_ep_disable(ep))
+ 		dev_err(uac->card->dev, "%s:%d Error!\n", __func__, __LINE__);
+ }
+ 
+-
+ int u_audio_start_capture(struct g_audio *audio_dev)
+ {
+ 	struct snd_uac_chip *uac = audio_dev->uac;
 -- 
 2.30.2
 
