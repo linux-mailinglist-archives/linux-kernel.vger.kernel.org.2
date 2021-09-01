@@ -2,86 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAFC3FE3F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66FD3FE3F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhIAUZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 16:25:39 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56488 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhIAUZi (ORCPT
+        id S230109AbhIAU0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 16:26:52 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:40879 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhIAU0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 16:25:38 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 01E52202E2;
-        Wed,  1 Sep 2021 20:24:32 +0000 (UTC)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B66313B03;
-        Wed,  1 Sep 2021 20:24:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id F//bCH7hL2FmBgAAMHmgww
-        (envelope-from <dave@stgolabs.net>); Wed, 01 Sep 2021 20:24:30 +0000
-Date:   Wed, 1 Sep 2021 13:24:25 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] futex: fix assigned ret variable that is never read
-Message-ID: <20210901202425.v5sym64dqjzakimb@offworld>
-References: <20210818131840.34262-1-colin.king@canonical.com>
+        Wed, 1 Sep 2021 16:26:51 -0400
+Date:   Wed, 01 Sep 2021 20:24:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail; t=1630527892;
+        bh=wvdyfuuvgWLif0GJRW36mFo+P+Mh6ICaw07RdRnThMg=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=FrOHTCIqt3I61txak4+8iO45X6EB6GXHWcTHEKdddUWY4TMJs3jk6y9iRunsikf29
+         qxgUBzAuDs+6z/AtVYTrrAqGdbtnsRES5dYDjUhiK996OGbms/vNwaQlSS52QX762A
+         c2Er8dhAynJU55dGgf/PsxJpqXGP9k614B8zUIWLD/q4M9FXwrOpQkIQqZGavRXAo7
+         anAkGzcOPMk07mYhB6PotWuIQv3JlVbI7Kd/OzvykK1+nmRITr22gKri6oveI4bcTc
+         upn39DNKvUZ1wyVU4qvWhjiwdu7HxcTna4lXh8vcpc+r03cU4Ws58Wk46GD9vAAvSm
+         HUZPw/Q4fFM9g==
+To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: VKMS: New plane formats
+Message-ID: <Qkd7rIf9j9Y-IlDoCbF8VB8T5sIKykTIuTfZIc1pCFPfvnfwIBGOMTnFo8i5jAWqGitlGEBH865MLF3C2jdIVk7TbRRFb_KVlte_FI0hjgI=@emersion.fr>
+In-Reply-To: <d1ceaa32-e143-8d3c-4bfb-7b31673cc76c@gmail.com>
+References: <d1ceaa32-e143-8d3c-4bfb-7b31673cc76c@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210818131840.34262-1-colin.king@canonical.com>
-User-Agent: NeoMutt/20201120
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021, Colin King wrote:
+Ideally the final composition format would have enough precision for
+all of the planes. I think it'd make sense to use ARGB16161616 if the
+primary plane uses ARGB8888 and an overlay plane uses ARGB16161616.
 
->From: Colin Ian King <colin.king@canonical.com>
->
->Currently the check on the rt_waiter and top_waiter->pi_state is
->assigning an error return code to ret but this later gets re-assigned,
->hence the check is currently ineffective. I believe the original
->intent was to return -EINVAL rather than assign it to ret. Fix this.
-
-LGTM.
-
-Acked-by: Davidlohr Bueso <dbueso@suse.de>
-
->
->Addresses-Coverity: ("Unused value")
->Fixes: dc7109aaa233 ("futex: Validate waiter correctly in futex_proxy_trylock_atomic()")
->Signed-off-by: Colin Ian King <colin.king@canonical.com>
->---
-> kernel/futex.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/kernel/futex.c b/kernel/futex.c
->index e7b4c6121da4..30e7daebaec8 100644
->--- a/kernel/futex.c
->+++ b/kernel/futex.c
->@@ -2025,7 +2025,7 @@ futex_proxy_trylock_atomic(u32 __user *pifutex, struct futex_hash_bucket *hb1,
->	 * and waiting on the 'waitqueue' futex which is always !PI.
->	 */
->	if (!top_waiter->rt_waiter || top_waiter->pi_state)
->-		ret = -EINVAL;
->+		return -EINVAL;
->
->	/* Ensure we requeue to the expected futex. */
->	if (!match_futex(top_waiter->requeue_pi_key, key2))
->--
->2.32.0
->
+To simplify the code, maybe it's fine to always use ARGB16161616 for
+the output, and add getters which fetch an ARGB16161616 row for each
+supported plane format.
