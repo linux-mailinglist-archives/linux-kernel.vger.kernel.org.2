@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CA53FE312
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0303FE318
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344678AbhIATcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244842AbhIATcx (ORCPT
+        id S244992AbhIATe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:34:29 -0400
+Received: from mail-4325.protonmail.ch ([185.70.43.25]:50575 "EHLO
+        mail-4325.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245751AbhIATeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:32:53 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7819CC061760;
-        Wed,  1 Sep 2021 12:31:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=aHeB5tLgbX1mWI1LAUsWRTzA7m8n3phXSwvcMOX63Oo=; b=LH72Tn5h9o3IkQs7klgTVV8YDm
-        rJOrYgTpWSRflJu/ID3D+cnWc4lOmMG6wbChjN6CjmoXtxC+6DAmZkdqEb67vMB61GNXOKraDDo7t
-        oGgAaV6U4LNM9FKDWj8vE9UpojoJH6+lljbAq2OPQYh5IZ7O9rRWxi5PDPKx2ytNmGkTqiL58sUN8
-        CtX9EkfBfEvznKpZnyw2thXEtAVWlBEJ54dXOzBNwEdFT+nmejaBThedIefO/B1aew6WO0ru5h7S6
-        7dZNKtdbMmfqsflZ1lBmK4+kt2jLT5Rsu6CCH0z439exJ74FD07IvYIE3UawwQE0qeP45rQEy+8Vm
-        FY0BeKjw==;
-Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.153])
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLVxj-00761J-Df; Wed, 01 Sep 2021 19:31:55 +0000
-Subject: Re: [PATCH v3 1/1] ishtp: Add support for Intel ishtp eclite driver
-To:     sumesh.k.naduvalath@intel.com, hdegoede@redhat.com,
-        mgross@linux.intel.com, srinivas.pandruvada@linux.intel.com
-Cc:     srinivas.pandruvada@intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ganapathi.chinnu@intel.com,
-        nachiketa.kumar@intel.com
-References: <20210901124307.16886-1-sumesh.k.naduvalath@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2e82bbb6-59c1-e713-f153-57ddd1e68163@infradead.org>
-Date:   Wed, 1 Sep 2021 12:31:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 1 Sep 2021 15:34:22 -0400
+Date:   Wed, 01 Sep 2021 19:33:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1630524803;
+        bh=sSDzVTTrE408jUhidHBHISAmsEwqh1RTwW36cNCflTc=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=v0kUj6kz/dnIVIH4/aaBUJhO7RixPdl2c3PRIvjdYgtt2JSu/8J0sadQ5j/n7w/uj
+         iU3oQQIStTdzfvmdGpLcX4h0b2e3ked3W2fnMwYR0j+Kpu8NpV7h/vWbAiCuEa7Chh
+         nL2FVVawEu9+O8/Ya9PXKvm/2lYCCBQfGHhErKAA=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [PATCH 0/4] Add support for the Xiaomi MSM8996 platform
+Message-ID: <20210901193214.250375-1-y.oudjana@protonmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210901124307.16886-1-sumesh.k.naduvalath@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/21 5:43 AM, sumesh.k.naduvalath@intel.com wrote:
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index d12db6c316ea..8a0945ed1182 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1176,6 +1176,22 @@ config INTEL_CHTDC_TI_PWRBTN
->   	  To compile this driver as a module, choose M here: the module
->   	  will be called intel_chtdc_ti_pwrbtn.
->   
-> +config INTEL_ISHTP_ECLITE
-> +	tristate "Intel ISHTP eclite controller"
-> +	depends on INTEL_ISH_HID
-> +	depends on ACPI
-> +	help
-> +	  This driver is for accessing the PSE (Programmable Service Engine),
-> +	  an Embedded Controller like IP, using ISHTP (Integrated Sensor Hub
+This series adds support for the Xiaomi MSM8996 platform, which includes 5 =
+devices:
 
-Which "IP" is that?  "an Embedded Controller like IP" doesn't make sense IMO.
+ - Mi 5 (gemini): MSM8996 + PMI8994
+ - Mi Note 2 (scorpio): MSM8996 Pro + PMI8996
+ - Mi 5s (capricorn): MSM8996 Pro + PMI8996
+ - Mi Mix (lithium): MSM8996 Pro + PMI8996
+ - Mi 5s Plus (natrium): MSM8996 Pro + PMI8996
 
+These devices share a common board design with only a few differences.
+Out of these 5 devices, this series adds initial support for the Mi Note 2 =
+and the Mi 5.
+Adding support for the remaining 3 would only require adding a DTS for each=
+, while
+accounting for hardware differences such as different panels.
 
-> +	  Transport Protocol) to get battery, thermal and UCSI (USB Type-C
-> +          Connector System Software Interface) related data from the platform.
+Raffaele Tranquillini (1):
+  arm64: dts: qcom: msm8996: xiaomi-gemini: Add support for Xiaomi Mi 5
 
-Indent above line with tab + 2 spaces instead of many spaces.
+Yassine Oudjana (3):
+  arm64: dts: qcom: db820c: Move blsp1_uart2 pin states to msm8996.dtsi
+  arm64: dts: qcom: msm8996: Add blsp2_i2c3
+  arm64: dts: qcom: Add support for the Xiaomi MSM8996 platform
 
-> +	  Users who don't want to use discrete Embedded Controller on Intel's
-> +	  Elkhartlake platform, can leverage this integrated solution of
+ arch/arm64/boot/dts/qcom/Makefile             |   2 +
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi  |  29 -
+ .../boot/dts/qcom/msm8996-xiaomi-common.dtsi  | 673 ++++++++++++++++++
+ .../boot/dts/qcom/msm8996-xiaomi-gemini.dts   | 431 +++++++++++
+ .../boot/dts/qcom/msm8996-xiaomi-scorpio.dts  | 431 +++++++++++
+ arch/arm64/boot/dts/qcom/msm8996.dtsi         |  49 ++
+ 6 files changed, 1586 insertions(+), 29 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/msm8996-xiaomi-scorpio.dts
 
-	Drop this comma       ^
+--=20
+2.33.0
 
-> +	  ECLite which is part of PSE subsystem.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called intel_ishtp_eclite
-
-End the last sentence with a period ('.').
-
-
-thanks.
--- 
-~Randy
 
