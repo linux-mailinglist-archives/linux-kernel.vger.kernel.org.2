@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B1A3FDEF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9AF3FDEF9
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343815AbhIAPqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47006 "EHLO
+        id S1343826AbhIAPtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343821AbhIAPqa (ORCPT
+        with ESMTP id S232757AbhIAPtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:46:30 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE71EC061575;
-        Wed,  1 Sep 2021 08:45:33 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id r2so3164978pgl.10;
-        Wed, 01 Sep 2021 08:45:33 -0700 (PDT)
+        Wed, 1 Sep 2021 11:49:20 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E529C061575;
+        Wed,  1 Sep 2021 08:48:23 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id x19so130470pfu.4;
+        Wed, 01 Sep 2021 08:48:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=vtJboLj6DWizBsUGIabivZ4ZpzzyeGX1x3GJ6kiUpbs=;
-        b=kz0c/j+oXtU7PthGgru+9CmqWRQloQxtCePOAmvlpuL3/uVdEvyyF7n3xf9VBPRuLp
-         EmdAFY/6MFxoULU9Ri+SKezEQeEjOXwfAQPaTiHrvnE8RiI88C2wadglCRCLu8Se5R9r
-         OvAxCUKd6Tl4p1hbwYieJzTFj6X5tLW8lsGRzZFWTtjPL1/VS+G/0hhVDCD+JnSNO3n6
-         7+buZYwRRT1MT+q0sUCcmfSBIsMQSX6z67DmLScVG9ovwbmfz9/E82vBH30x4sIREQBn
-         IA/NyaHXcXfEHu0oeIYechI1pJM5YuPwT1dZnCtcb844HsfDnJU/aOUAGNSUFxJS6YOc
-         Gq0A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vmclqQ0WSX1nYlOYWUqAexZ2LxQ9qNPAJcM+COYyC7M=;
+        b=XByNdOk3/cONjGR+FAVB++rBl97wKVkKZqE0ONlZpU6LHNjDaXfbw6xYGY6ah004aB
+         z9LmsUhR9wJjBYiq6DVKwYAWeuuULQQu0bRNF92+eJWQrHGlKY/0eEZy5KQHxPKkENWH
+         LZB7XbYPtt4yLzcqkaLT7zt8uxYIgd5w1cMdya53kcPdPY5WjfotUunAZ2S+QnWqwuBZ
+         i+iTtClpz1Fwvzg5w+l4v5dZDqtrey+5U1QQ81ayt2+UFdDWiJQ8h6u6JyWxU3TVqode
+         MsvPBWE4RfMgMFyPrZJqVDFIZhwQyRNC9IDWQMQBX3j9jPa0du9xVny5h75NFMdDKMmb
+         I3XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=vtJboLj6DWizBsUGIabivZ4ZpzzyeGX1x3GJ6kiUpbs=;
-        b=IMqxpgtcbObweDvL/wCAD+jnzZx/PgAxBo9QFRDNTy9V06s082R6gfJKCvUUSATnAb
-         ZeqtdpUkXNVr8CIFIWJmhcUVbApGIRBhIN25k+CzATS0E2TlDps8d8p4oMxe+IxMGEHc
-         R31J9d53lW2fdJb9SWlAm9/oGaaE63kPKoqikUqCEYKYiFOGN5sphUvUq5ImUbK5XHex
-         IW1EFsmWTfpQNXzJWxCMVEqwNNn0fBI7DskleS61gvhXB0WLoWLRLnNTu96i2VIPJGev
-         kPvTTqLGfhCyHGrjQahIZF/XNMtXW+yrdvhvMH1z4PVcX+jISarnyBEbf4175gESR+ct
-         RbwQ==
-X-Gm-Message-State: AOAM530FyoteHIpjXzlwTR/NFk3nLegpUAiu41+qMPKPfHX1cs2O4Pbj
-        liCcpdT5SGZ5zFoqahzMelKoMeIXlkQ=
-X-Google-Smtp-Source: ABdhPJxGkAOH0BjGf4nTs5tRBTgfRD0EDYs1ZzWbvaKdQsa4TsbnN13epgpcRewHQpxAIp+N91CjkQ==
-X-Received: by 2002:a63:c101:: with SMTP id w1mr100544pgf.53.1630511133061;
-        Wed, 01 Sep 2021 08:45:33 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id x19sm359415pfa.104.2021.09.01.08.45.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 08:45:32 -0700 (PDT)
-Message-ID: <575e9768-f064-87d3-b816-d514a17b5fde@gmail.com>
-Date:   Wed, 1 Sep 2021 08:45:30 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vmclqQ0WSX1nYlOYWUqAexZ2LxQ9qNPAJcM+COYyC7M=;
+        b=RI7wLezZ8tUwapNgT6WZQ9oBFdI++oXd3uqx9FRrbjzJnrrDeCNFoD87F1OY1TEsB8
+         NmfbbkzA5ugFP3HOosGl3BY3AwRp8vnwITgdPPhA2Sw3R88kKc9sVf60eOw4AmpT8WG5
+         PhBZy2/Ql6bbMms9tYt0l4q5os9Qlzc6maa81uArW/W6ux7kjoDCH8TK3gx2In/1cm7G
+         yFlvKq+n+RVMNksvmT6RGkYxXHWFbehFA8mLx4f1SDu6MMbgIl8f2TRB3/OubSUEY6aq
+         +fhIiKNtszSY4sorMGqUl+WCtYDLMfBJP1XzK4pLbvs7oITsvXQruYUyP21Yxe9KcHde
+         r7Ww==
+X-Gm-Message-State: AOAM532OMIg+PhmtKxIUmH+oslhCZsUpFrAvNNLxBkn1Od4XmqEg0qwv
+        LkmzSKEcqjEKzZ4ILxKlsSBrrtB1d7tfa8oDGeo=
+X-Google-Smtp-Source: ABdhPJz9k2s+gvuJecOLz5VorZBzX4Ibo7UwKfkK9GaFwnjmCU6wfZQhw5cIiPNfzbt8gZhO1+KW+sZzYMCaA4/3tZs=
+X-Received: by 2002:aa7:875a:0:b0:3f1:c4c8:5f0d with SMTP id
+ g26-20020aa7875a000000b003f1c4c85f0dmr155319pfo.40.1630511302856; Wed, 01 Sep
+ 2021 08:48:22 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH 4.9 00/16] 4.9.282-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210901122248.920548099@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210901122248.920548099@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210830123704.221494-1-verdre@v0yd.nl> <20210830123704.221494-2-verdre@v0yd.nl>
+ <CAHp75VeAKs=nFw4E20etKc3C_Cszyz9AqN=mLsum7F-BdVK5Rg@mail.gmail.com> <7e38931e-2f1c-066e-088e-b27b56c1245c@v0yd.nl>
+In-Reply-To: <7e38931e-2f1c-066e-088e-b27b56c1245c@v0yd.nl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 1 Sep 2021 18:47:46 +0300
+Message-ID: <CAHp75VeKws85JMG_GjYPzgcqu7pGf66bLbUowNi-4z_=uda+HQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
+To:     =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 1, 2021 at 5:02 PM Jonas Dre=C3=9Fler <verdre@v0yd.nl> wrote:
+> On 8/30/21 2:49 PM, Andy Shevchenko wrote:
+>  > On Mon, Aug 30, 2021 at 3:38 PM Jonas Dre=C3=9Fler <verdre@v0yd.nl> wr=
+ote:
 
+...
 
-On 9/1/2021 5:26 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.282 release.
-> There are 16 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.282-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+>  > Thanks for all this work!
+>  >
+>  > Nevertheless, do we have any commits that may be a good candidate to
+>  > be in the Fixes tag here?
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+> I don't think there's any commit we could point to, given that the bug
+> is probably somewhere in the firmware code.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Here (in the commit message)...
+
+>  >> +       /* Do a read-back, which makes the write non-posted,
+> ensuring the
+>  >> +        * completion before returning.
+>  >
+>  >> +        * The firmware of the 88W8897 card is buggy and this avoids
+> crashes.
+>  >
+>  > Any firmware version reference? Would be nice to have just for the
+>  > sake of record.
+>
+> Pretty sure the crash is present in every firmware that has been
+> released, I've tried most of them. FTR, the current firmware version is
+> 15.68.19.p21.
+
+...and here it would be nice to state this version, so in the future
+we will have a right landmark.
+
+>  >> +        */
+
+--=20
+With Best Regards,
+Andy Shevchenko
