@@ -2,196 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAD13FD500
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736443FD505
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242966AbhIAIOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242921AbhIAIOA (ORCPT
+        id S242958AbhIAIOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:14:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59507 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242766AbhIAIOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:14:00 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9A1C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 01:13:04 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id c8so4730212lfi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:13:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x2tKAP/1aZjb1THg3HM096zaMHW+UEhDKNrwvOztN+o=;
-        b=NtdFfLlMBvvwmCb3CWPpIKNwfwDjzXrs9rRY0SFXdfUlT+qdz9Su5Ptd4lNpsXckXV
-         wymW4+zGn+9GDI4Qh/wk/gLLDJVfQBuqAEhHLk565ytuia6g8Y2vYC7z0DzwmwRkhU22
-         stPv6sldloGbiFxEcEprQr93tsb9hhR8/efVxzERsFIqg8RK1O7CSUT2kTmjI0vUyevv
-         2ihP59qDk8Xly7x43n4Z7pObGikldxv2cCbzbBOlnoDEUtZNk8cf3etRHcqneLLmV6TQ
-         ESaP5kSJzmkCnp0Tr0xyayje1gOJmPDeaO5kJEVx9p6vSQjUVRz5oUUDCulxt/jHKkZL
-         JQiA==
+        Wed, 1 Sep 2021 04:14:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630484028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uyDrxtsR94VMPU5MaJ7LybPMEr60Xgeln0jH3Y/pfWo=;
+        b=XfQUZ9459Mkp9CXknjwL4UHFFjaCWlzAWC3bSwLbkArAyXFXsv1lhFajSg5ZxryYSKE0Ap
+        GMSQzFq/b3Uhhl7IGCNd1lI0shORTUhVt5Bt60H41hswCp58Fi+FPT4WYYc2VXfc2f9tv/
+        hOY9rYIa6T9v5SOrOda2bSZsRiPw0WA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-473-8DUBKaJsPP-iLw6b2alC9w-1; Wed, 01 Sep 2021 04:13:47 -0400
+X-MC-Unique: 8DUBKaJsPP-iLw6b2alC9w-1
+Received: by mail-wr1-f71.google.com with SMTP id j1-20020adff541000000b001593715d384so143675wrp.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:13:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x2tKAP/1aZjb1THg3HM096zaMHW+UEhDKNrwvOztN+o=;
-        b=IbwGlKu1fQiSQE+V7U4hvMyJ43qi2jcmSJKMyCUMlHht/tHhroc0vvyjBFKKS691RL
-         1WsFeF5x1SpxWvBLumpHEsoTfP5c9BCT/PjsTKgj+BrthLl0gXPHBeQM0E80/PkjHeY6
-         omt6RuIOjqwQgIczfBbi/jLrjAvp69VMSfT5dWWvbpud0ppqDQXLYhRu/aP+a8EWa3Fp
-         SFi6teWvNmkFnlwKalgh5/+Ny7bErsJZEW6wS3PPWQoWUcCoug/58Y9JRz0i29IMbgds
-         HlHi1w2XbU7BWQzzfD7KigmSKPfWdIhDtMq80HRRwrJGtESX+A/ewCDgrt9wmSZkP/Vi
-         3K4Q==
-X-Gm-Message-State: AOAM532OsFJdj0JJKm9iDjyT6sVwapXoDrhwPqIRkleos+7XXReFuwjq
-        oJq/QFmQPhHJ0+RUBJjRqvY/1rjQhQCc31waWUwb9w==
-X-Google-Smtp-Source: ABdhPJzq8baOlGTK2GwvtcD99p4jRPFD/7gsxAm2hrNPt8zCt6zdxwd4ae6WRjr3X66BQKEonrqMI3gmqCxmWhAvYIc=
-X-Received: by 2002:a19:c107:: with SMTP id r7mr24899153lff.29.1630483982545;
- Wed, 01 Sep 2021 01:13:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210831102141.624725-1-ulf.hansson@linaro.org> <CAGETcx8FKnmeCh3dD1b2TYXf3gwHnW-iWwfz0q-9UzeP2VZSDw@mail.gmail.com>
-In-Reply-To: <CAGETcx8FKnmeCh3dD1b2TYXf3gwHnW-iWwfz0q-9UzeP2VZSDw@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 1 Sep 2021 10:12:26 +0200
-Message-ID: <CAPDyKFq7aD_VXyY6=Kvp3t2Ph1_+CheZWDA6j2AoPK6ExX4h0g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] of: property: fw_devlink: Set 'optional_con_dev' for parse_power_domains
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh@kernel.org>, DTML <devicetree@vger.kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=uyDrxtsR94VMPU5MaJ7LybPMEr60Xgeln0jH3Y/pfWo=;
+        b=Y3j6RV+BxU2nMABkLV+RVi8d2LoZ1YSHNneHtb7VDFkuSgtFNhx+1HR9z4D/0YXXiQ
+         7IXgnOCjP33tpmuAdM4GZjPXSHe0x04PMfcmmQLgADVCuN9tMbTYvCQHa396EaL9GnrT
+         V6S542L8lTjO9QZZ65r5rVzp97N3F0RTqNentGktaYPTd8L2dxUxhvRByuI01pMIAwtc
+         p/jc0+dmzrho/nSuRfzDop3/cAs5qsG3Ij5Yx0lR1WsRNsIHEp7Nz1MbIysIWteAAE2p
+         VyMAk8ljSHvHX+dQw3uozTIVN1tmCvLZ38fkY6LmtP4oIhmUK1pZBS8KyznL/KCpu/Mr
+         x0cg==
+X-Gm-Message-State: AOAM533i7yvw1Tm68dQEUWEwgmf0NJfLh3BDXbn7xPRIGm4POSASN37Y
+        Kqo6MmAjcI/UARhBoW5l9luAJjnz+MOpGno93qvmaGLs+Dbrq+fcVk9mwjTg1TA13NyKmncOww1
+        gus0l2EhKyrw+YNlJyfBIYRle
+X-Received: by 2002:adf:c3d4:: with SMTP id d20mr36069380wrg.358.1630484026644;
+        Wed, 01 Sep 2021 01:13:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyrnLwgdxjrPnEWEVBAyYagEpAefLy0ZBMaW08Mk0jB8RfFU+GX3ibBFf9h6AshyJy/RQ8VRg==
+X-Received: by 2002:adf:c3d4:: with SMTP id d20mr36069361wrg.358.1630484026470;
+        Wed, 01 Sep 2021 01:13:46 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-233-185.dyn.eolo.it. [146.241.233.185])
+        by smtp.gmail.com with ESMTPSA id u25sm4703254wmj.10.2021.09.01.01.13.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 01:13:46 -0700 (PDT)
+Message-ID: <0b030119a755fb246a617f3ab30c7664d4f95323.camel@redhat.com>
+Subject: Re: [PATCH] [v3] mptcp: Fix duplicated argument in protocol.h
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        mptcp@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Date:   Wed, 01 Sep 2021 10:13:45 +0200
+In-Reply-To: <20210901031932.7734-1-wanjiabing@vivo.com>
+References: <20210901031932.7734-1-wanjiabing@vivo.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 at 19:51, Saravana Kannan <saravanak@google.com> wrote:
->
-> On Tue, Aug 31, 2021 at 3:21 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > The power-domain DT bindings [1] doesn't enforce a compatible string for a
-> > provider node, even if this is common to use. In particular, when
-> > describing a hierarchy with parent/child power-domains, as the psci DT
-> > bindings [2] for example, it's sometimes not applicable to use a compatible
-> > string.
->
-> Ok, and fw_devlink handles that -- provider not having a compatible
-> string is pretty common. In these cases, the parent node is the actual
-> device that gets probed and registers the provider. So fw_devlink will
-> create a link from the consumer to the parent device node.
+Hello,
 
-Yes, correct. That is working fine and isn't a problem.
+On Wed, 2021-09-01 at 11:19 +0800, Wan Jiabing wrote:
+> Fix the following coccicheck warning:
+> ./net/mptcp/protocol.h:36:50-73: duplicated argument to & or |
+> 
+> The OPTION_MPTCP_MPJ_SYNACK here is duplicate.
+> Here should be OPTION_MPTCP_MPJ_ACK.
+> 
+> Fixes: 74c7dfbee3e18 ("mptcp: consolidate in_opt sub-options fields in a bitmask")
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 
-The first problem (I think) is that fw_devlink creates a fw_devlink
-from a child provider node (consumer without compatible string) to a
-parent node (supplier with a compatible string). I don't understand
-the reason why this is needed, perhaps you can elaborate on why?
+Not sure what happen to my previous reply, most probably PEBKAC, sorry.
 
-I come to the second and follow up problem from this behaviour, see below.
+WRT this patch, note that the dup is harmless, as in the input path we
+always use the mask and not the individual bit - vice versa in the
+output path. Still the cleanup is worthy and patch LGTM.
+Acked-by: Paolo Abeni <pabeni@redhat.com>
 
->
-> > Therefore, let's set the 'optional_con_dev' to true to avoid creating
-> > incorrect fw_devlinks for power-domains.
->
-> This part doesn't make sense or is incomplete. What is being done incorrectly?
-
-See below.
-
->
-> >
-> > [1] Documentation/devicetree/bindings/power/power-domain.yaml
-> > [2] Documentation/devicetree/bindings/arm/psci.yaml
-> >
-> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > ---
-> >
-> > Some more details of what goes on here. I have added a debug print in
-> > of_link_to_phandle() to see the fw_devlinks that gets created.
-> >
-> > This is what happens on Dragonboard 410c when 'optional_con_dev' isn't set:
-> > ...
-> > [    0.041274] device: 'psci': device_add
-> > [    0.041366] OF: Linking power-domain-cpu0 (consumer) to psci (supplier)
-> > [    0.041395] OF: Linking power-domain-cpu1 (consumer) to psci (supplier)
-> > [    0.041423] OF: Linking power-domain-cpu2 (consumer) to psci (supplier)
-> > [    0.041451] OF: Linking power-domain-cpu3 (consumer) to psci (supplier)
-> > [    0.041494] device: 'platform:psci--platform:psci': device_add
-> > [    0.041556] platform psci: Linked as a sync state only consumer to psci
-
-Because we created a fw_devlink for the child provider nodes
-(consumer) that lacks compatible properties, we end up creating a sync
-state only devlink. I don't think it serves a purpose, but I may be
-wrong!?
-
-Additionally, the actual devlink that is created, has the same
-supplier and consumer device, which indicates that this isn't the
-right thing to do.
-
-> > ...
-> >
-> > This is what happens on Dragonboard 410c when 'optional_con_dev' is set:
-> > ...
-> > [    0.041179] device: 'psci': device_add
-> > [    0.041265] OF: Not linking psci to psci - is descendant
-> > [    0.041293] OF: Not linking psci to psci - is descendant
-> > [    0.041319] OF: Not linking psci to psci - is descendant
-> > [    0.041346] OF: Not linking psci to psci - is descendant
-> > ...
->
-> Can you please explain what exactly is going on that's wrong here? I
-> notice that psci is not probed as a device at all. And when you aren't
-> setting this flag the only difference I see is the creating of a sync
-> state only link -- which shouldn't matter here because you don't even
-> have a driver implemented.
-
-See above.
-
->
-> > The relevant dtsi file:
-> > arch/arm64/boot/dts/qcom/msm8916.dtsi
-> >
-> > Kind regards
-> > Ulf Hansson
-> >
-> > ---
-> >  drivers/of/property.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > index 2babb1807228..4d607fdbea24 100644
-> > --- a/drivers/of/property.c
-> > +++ b/drivers/of/property.c
-> > @@ -1356,7 +1356,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
-> >         { .parse_prop = parse_io_channels, },
-> >         { .parse_prop = parse_interrupt_parent, },
-> >         { .parse_prop = parse_dmas, .optional = true, },
-> > -       { .parse_prop = parse_power_domains, },
-> > +       { .parse_prop = parse_power_domains, .optional_con_dev = true, },
->
-> This change is just shooting in dark/completely unrelated to the
-> commit text. This is just saying the actual consumer is a level up
-> from where the property is listed (eg: remote-endpoint). It just
-> happens to fix your case for unrelated reasons.
-
-Again, see above.
-
->
-> Definite Nak as this *will* break other cases.
-
-In what way will this break other cases?
-
-Would you mind elaborating for my understanding and perhaps point me
-to an example where it will break?
-
->
-> -Saravana
->
->
-> >         { .parse_prop = parse_hwlocks, },
-> >         { .parse_prop = parse_extcon, },
-> >         { .parse_prop = parse_nvmem_cells, },
-> > --
-> > 2.25.1
-> >
-
-Kind regards
-Uffe
