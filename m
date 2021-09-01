@@ -2,86 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4232E3FE60D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727633FE610
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345202AbhIAXVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 19:21:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229948AbhIAXVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 19:21:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46E6B60F4B;
-        Wed,  1 Sep 2021 23:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630538412;
-        bh=jRDi0tXYcFMrWm0Yh9b1bdEmEczF5T2ak4Op6iKq0ao=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NxvRQDGcBoFWPfpKZbJO6U1ejv3xRHNzmu5RnOJMjMI+RY/i4ERucpAHr2NDMsoSs
-         U4Nq1t6w0D30e+9gQWxf0Jh5vRvwb2uGkw9jzYGXXcMKxbmUWAAiC2HiW4jKug/bC/
-         hF0i7UNL9NLkknlPXnLY+bEhcCGpFiuAZgOSseAuqMZEXltqh3HppTjDDJZw4ySTxJ
-         W7cedSq+MzWcNcfutQQoNrYsVWEWxhl9hxZTuPEi0JtwaPDhazHh3M+gj4EZGgN1hE
-         Meh6s4fkcOpZjzrSplkRerQhuPjFdQJxf001ikiUIkdTswfvN5qXpGreGt3XPYSz2u
-         mjWudzNK+JWMA==
-Date:   Wed, 1 Sep 2021 16:20:11 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Peter Collingbourne <pcc@google.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] net: don't unconditionally copy_from_user a struct
- ifreq for socket ioctls
-Message-ID: <20210901162011.3ce5f012@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAMn1gO5OmHg_10s698tNqf4X-hJ_gn17D8afyRhbW1nKpvLzWQ@mail.gmail.com>
-References: <20210826194601.3509717-1-pcc@google.com>
-        <20210831093006.6db30672@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <bf0f47974d7141358d810d512d4b9a00@AcuMS.aculab.com>
-        <20210901070356.750ea996@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAMn1gO5OmHg_10s698tNqf4X-hJ_gn17D8afyRhbW1nKpvLzWQ@mail.gmail.com>
+        id S1345243AbhIAXVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 19:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229948AbhIAXVj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 19:21:39 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02643C061575;
+        Wed,  1 Sep 2021 16:20:41 -0700 (PDT)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3CC3B24F;
+        Thu,  2 Sep 2021 01:20:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1630538438;
+        bh=+m+FMYnJYzRMCkZH9Bnprd6sDpe051YonvSHy1HVvf4=;
+        h=From:Subject:To:Cc:References:Date:In-Reply-To:From;
+        b=jtkDNJEWpK9zwGEyxdknyNoWXq0oMQDfwJOv63c7kP2A2rwQ6Z9Zm/CYBWnP81pJ5
+         oVty+vcnHPM+T/LU4e8fjHJnfXPjRR5ZgNwehxG+svOLEUFpjiJGUsvkFDnVpcAsR2
+         9Y495YgZz+E1xU7gHO9HcB6wRp1lLH35sAtME9XU=
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Subject: Re: [PATCH] dt-bindings: display: renesas,du: Provide bindings for
+ r8a779a0
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVERS FOR RENESAS" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210622231146.3208404-1-kieran.bingham@ideasonboard.com>
+ <CAMuHMdW8vYC3+gVCv5eG_vkX79vU8RQL-6fSJd9McetDzikzSA@mail.gmail.com>
+ <22bf664e-4a28-3ae2-0106-5913a8643625@ideasonboard.com>
+ <YS/7BlBvEsU+rkXP@pendragon.ideasonboard.com>
+Message-ID: <bd2f468b-40de-1fc6-bd97-3099c5d62f4e@ideasonboard.com>
+Date:   Thu, 2 Sep 2021 00:20:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YS/7BlBvEsU+rkXP@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Sep 2021 11:01:32 -0700 Peter Collingbourne wrote:
-> > > To stop the copy_from_user() faulting when the user buffer
-> > > isn't long enough.
-> > > In particular for iasatty() on arm with tagged pointers.  
-> >
-> > Let me rephrase. is_socket_ioctl_cmd() is always true here. There were
-> > only two callers, both check cmd is of specific, "sockety" type.  
+Hi Laurent,
+
+On 01/09/2021 23:13, Laurent Pinchart wrote:
+> Hi Kieran,
 > 
-> I see, it looks like we don't need the check on the compat path then.
+> On Wed, Sep 01, 2021 at 11:01:11PM +0100, Kieran Bingham wrote:
+>> On 23/06/2021 13:53, Geert Uytterhoeven wrote:
+>>> On Wed, Jun 23, 2021 at 1:11 AM Kieran Bingham wrote:
+>>>> From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+>>>>
+>>>> Extend the Renesas DU display bindings to support the r8a779a0 V3U.
+>>>>
+>>>> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+>>>
+>>> Thanks for your patch!
+>>>
+>>>> --- a/Documentation/devicetree/bindings/display/renesas,du.yaml
+>>>> +++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
+>>>> @@ -39,6 +39,7 @@ properties:
+>>>>        - renesas,du-r8a77980 # for R-Car V3H compatible DU
+>>>>        - renesas,du-r8a77990 # for R-Car E3 compatible DU
+>>>>        - renesas,du-r8a77995 # for R-Car D3 compatible DU
+>>>> +      - renesas,du-r8a779a0 # for R-Car V3U compatible DU
+>>>>
+>>>>    reg:
+>>>>      maxItems: 1
+>>>> @@ -774,6 +775,57 @@ allOf:
+>>>>          - reset-names
+>>>>          - renesas,vsps
+>>>>
+>>>> +  - if:
+>>>> +      properties:
+>>>> +        compatible:
+>>>> +          contains:
+>>>> +            enum:
+>>>> +              - renesas,du-r8a779a0
+>>>> +    then:
+>>>> +      properties:
+>>>> +        clocks:
+>>>> +          items:
+>>>> +            - description: Functional clock for DU0
+>>>> +            - description: Functional clock for DU1
+>>>> +
+>>>> +        clock-names:
+>>>> +          items:
+>>>> +            - const: du.0
+>>>> +            - const: du.1
+>>>
+>>> The hardware block has only a single function clock for both channels,
+>>> like on R-Car H1.
+>>
+>> Indeed, but I believe both channels still need to set them, if they can
+>> be operated independently, the driver looks up the clock based on the
+>> du.%d, and so for DU1, it is simply expressed as the same clock in DT.
+>>
+>> Is this acceptable? or is there further issues there?
 > 
-> I can send a followup to clean this up but given that I got a comment
-> from another reviewer saying that we should try to make the native and
-> compat paths as similar as possible, maybe it isn't too bad to leave
-> things as is?
+> Could we handle that on the driver side, like we do for H1 by not
+> setting RCAR_DU_FEATURE_CRTC_IRQ_CLOCK ? We would probably need to split
+> that flag in two, as there are two interrupts.
 
-I have a weak preference to get rid of it, the code is a little
-complex and extra dead code makes it harder to follow, but up to you.
+Ok, that's not so bad to split, Done.
 
-IMO the "right place" for the check is:
 
-static long sock_ioctl(struct file *file, unsigned cmd, unsigned long arg)
-[...]
-		default:
-			/* --> here <-- */
-			err = sock_do_ioctl(net, sock, cmd, arg);
-			break;
-
-Since that's the point where we take all the remaining cmd values and
-call a function which assumes struct ifreq.
-
-Compat code does not have a default statement.
-
-But as I said no big deal, feel free to ignore.
+> It's a bit annoying not knowing what the MSTP bits do exactly, we've
+> modelled them as gates for the functional clock, but maybe in cases like
+> this one the mapping isn't fully correct, I'm not sure.
+> 
+>>> And what about DU_DOTCLKIN?
+>>
+>> This thread has already discussed this with Laurent, and I concur -
+>> There doesn't appear to be any relevant reference to DU_DOTCLKIN on the
+>> DU side.
+> 
