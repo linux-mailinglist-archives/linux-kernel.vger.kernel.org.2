@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB07E3FE5EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0FD3FE5EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhIAXE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 19:04:28 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43516 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbhIAXE1 (ORCPT
+        id S229797AbhIAXFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 19:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229776AbhIAXFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 19:04:27 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BEE8522574;
-        Wed,  1 Sep 2021 23:03:28 +0000 (UTC)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7367913B2A;
-        Wed,  1 Sep 2021 23:03:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1jXID74GMGEiLgAAMHmgww
-        (envelope-from <dave@stgolabs.net>); Wed, 01 Sep 2021 23:03:26 +0000
-Date:   Wed, 1 Sep 2021 16:03:20 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     tglx@linutronix.de
-Cc:     peterz@infradead.org, mingo@kernel.org, rostedt@goodmis.org,
-        longman@redhat.com, bigeasy@linutronix.de, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 2/2] locking/rwbase_rt: Lockless reader waking up a writer
-Message-ID: <20210901230320.3pogmlyzfgwpvw77@offworld>
-References: <20210901222825.6313-1-dave@stgolabs.net>
- <20210901222825.6313-3-dave@stgolabs.net>
+        Wed, 1 Sep 2021 19:05:07 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6533C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:04:09 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 17so1056723pgp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:04:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HxwuV0BeQWwpRI/6sMdLU80DQpiU/qy8K3f3w8+UPd8=;
+        b=YgccQiWfa0BA9wl5D4A783k/FalQF0lNHO4CTlk62dckfSkCv2umLqsVmA4WOY9Uhu
+         /uKCmHiSmee+sZmM7URFxlal/t+4wUNjAYv9qo1H3XYjnlR4yEiIsWl2w5iqQJdc4HcA
+         8LurG6+D/DZZxa3coCp1vKSk7DAHrep7HsfjBVSlptdQAgqt4VrACpu7jw1K4w/VU/SM
+         9XfO89VmNU2VK6QP/VgS8LrZflFFNdpOB9lSYv+eHZ1FiKpJa5c4ED4e0gRhi4wQXUNw
+         eQGdcdK1prxWmFmOXVJmiTw0hJ2bxrH2M3YXfgzbEjZZ4o6t5MWZtMmPNY+hKTTaagoM
+         e3IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HxwuV0BeQWwpRI/6sMdLU80DQpiU/qy8K3f3w8+UPd8=;
+        b=cwM0NMQZduwDQmPxVWkIPdlLeUj4ebkdjxKi7fUKXyBuUgIjJrD4dddV5wIOsh7GcI
+         UYXH4Wf02yHxLruIEHa1G3Hrc5HuRR/UQG9UG5Hl83nYZYPLZLHRDxQRo0p/i4ECwlmj
+         1IAMCZqXAhVoVV0UAwVgl50YPZg54WFuW+G6Fc0INQG8rS+9FARf+ITG17H+I7DheY4Z
+         Ryh1g2iHKX6dFkkUe/9j8oKyh+TkSEs1LryMe8XGIuIBZtB0rsXgWVManMKSjX9eZafr
+         V/ArJWfL5P3XNDVlmMl1XEgBsq5itjwL7e8XlRXHsvxjplzgAaBBcEa8Zz5buJaQL3FZ
+         N4ZQ==
+X-Gm-Message-State: AOAM533JaKyblLR4pLoXukxtCkcA1D+QE1A9q5SPNZeFjimBvCcdezPK
+        Bo1y2TPtkLMEkgN0AqfaD0yGcg==
+X-Google-Smtp-Source: ABdhPJxdBfTPmVgabIaZnNcUrXB9D85oAvIJmKM+/BPP5iSbVGIX6qA6iBfEfa9p4qZHwhnY/mApCQ==
+X-Received: by 2002:aa7:864a:0:b0:3ee:a4f6:af02 with SMTP id a10-20020aa7864a000000b003eea4f6af02mr223134pfo.23.1630537449197;
+        Wed, 01 Sep 2021 16:04:09 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id 17sm52662pfp.28.2021.09.01.16.04.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 16:04:08 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 23:04:05 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@intel.com, David Matlack <dmatlack@google.com>,
+        peterx@redhat.com
+Subject: Re: [PATCH 06/16] KVM: MMU: change page_fault_handle_page_track()
+ arguments to kvm_page_fault
+Message-ID: <YTAG5We5dS9THNJm@google.com>
+References: <20210807134936.3083984-1-pbonzini@redhat.com>
+ <20210807134936.3083984-7-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210901222825.6313-3-dave@stgolabs.net>
-User-Agent: NeoMutt/20201120
+In-Reply-To: <20210807134936.3083984-7-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 01 Sep 2021, Bueso wrote:
+On Sat, Aug 07, 2021, Paolo Bonzini wrote:
+> -	if (handle_abnormal_pfn(vcpu, fault->is_tdp ? 0 : gpa, gfn, pfn, ACC_ALL, &r))
+> +	if (handle_abnormal_pfn(vcpu, fault->is_tdp ? 0 : gpa,
+> +	                        fault->gfn, pfn, ACC_ALL, &r))
 
->As with the rest of our sleeping locks, use a wake_q to
->allow waking up the writer without having to hold the
->wait_lock across the operation. While this is ideally
->for batching wakeups, single wakeup usage as still shown
->to be beneficial vs the cost of try_to_wakeup when the
->lock is contended.
->
->Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
->---
-> kernel/locking/rwbase_rt.c |  4 +++-
-> kernel/sched/core.c        | 16 +++++++++++++---
+Spaces!
 
-Bleh, this of course is missing:
+ERROR: code indent should use tabs where possible
+#90: FILE: arch/x86/kvm/mmu/mmu.c:3991:
++^I                        fault->gfn, pfn, ACC_ALL, &r))$
 
-diff --git a/include/linux/sched/wake_q.h b/include/linux/sched/wake_q.h
-index 06cd8fb2f409..695efd987b56 100644
---- a/include/linux/sched/wake_q.h
-+++ b/include/linux/sched/wake_q.h
-@@ -62,5 +62,6 @@ static inline bool wake_q_empty(struct wake_q_head *head)
-  extern void wake_q_add(struct wake_q_head *head, struct task_struct *task);
-  extern void wake_q_add_safe(struct wake_q_head *head, struct task_struct *task);
-  extern void wake_up_q(struct wake_q_head *head);
-+extern void wake_up_q_state(struct wake_q_head *head, unsigned int state);
-  
-  #endif /* _LINUX_SCHED_WAKE_Q_H */
+total: 1 errors, 0 warnings, 84 lines checked
+
+
+>  		return r;
+>  
+>  	r = RET_PF_RETRY;
