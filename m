@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711023FDDFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B8B3FDDFE
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhIAOuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 10:50:23 -0400
-Received: from mga05.intel.com ([192.55.52.43]:46629 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229748AbhIAOuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 10:50:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="304345466"
-X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
-   d="scan'208";a="304345466"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 07:49:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
-   d="scan'208";a="476209028"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga008.jf.intel.com with ESMTP; 01 Sep 2021 07:48:59 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 1 Sep 2021 07:48:55 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 1 Sep 2021 07:48:54 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.010;
- Wed, 1 Sep 2021 07:48:54 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>
-CC:     "Zhang, Cathy" <cathy.zhang@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 0/6] Basic recovery for machine checks inside SGX
-Thread-Topic: [PATCH v4 0/6] Basic recovery for machine checks inside SGX
-Thread-Index: AQHXm32MyPf8RXAnE0Sr1W4mUEjgwauO6mmAgABfXfA=
-Date:   Wed, 1 Sep 2021 14:48:54 +0000
-Message-ID: <febb021cc72140509cc47a89ce14dd09@intel.com>
-References: <20210728204653.1509010-1-tony.luck@intel.com>
-         <20210827195543.1667168-1-tony.luck@intel.com>
- <bc4503dafe26269876057701ad6342bff73cbc45.camel@kernel.org>
-In-Reply-To: <bc4503dafe26269876057701ad6342bff73cbc45.camel@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S232286AbhIAOui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 10:50:38 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:47826 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229748AbhIAOue (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 10:50:34 -0400
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9CD32559;
+        Wed,  1 Sep 2021 16:49:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1630507775;
+        bh=SzJdlaBw2o7qjms5gbWvAmffcgZIJGKBfa2wvQ36ybo=;
+        h=Subject:To:Cc:References:Reply-To:From:Date:In-Reply-To:From;
+        b=GguQUHRQF3m6G/R2aRSuo5pWJdzg7h85XeSNFzMO4vv722B3f1LfuB8b0uzuRPWLd
+         6Zsgl+AOXAU4lBAJj1Vxykgz/R5ioEk4Y87AbiIKhQ+YDecPCXzxfXODQe6dh6hD4G
+         +DY1EqJcl8BcMkSIuq+Qfz4pLNGEYs9+eqkY6q0M=
+Subject: Re: [PATCH v4] media: rcar_drif: Make use of the helper function
+ devm_platform_get_and_ioremap_resource()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210901114459.31493-1-caihuoqing@baidu.com>
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <7c75aa3a-8b1f-2d63-4c30-2c638d60e2c6@ideasonboard.com>
+Date:   Wed, 1 Sep 2021 15:49:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210901114459.31493-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBXb3VsZCBiZSBuaWNlIHRvIGdldCB0aGlzIGFsc28gdG8gbGludXgtc2d4QHZnZXIua2VybmVs
-Lm9yZyBpbg0KPiBmdXR1cmUuDQoNCldpbGwgYWRkIHRvIGxpc3QgZm9yIG5leHQgdmVyc2lvbi4N
-Cg0KVGhhbmtzDQoNCi1Ub255DQo=
+On 01/09/2021 12:44, Cai Huoqing wrote:
+> Use the devm_platform_get_and_ioremap_resource() helper instead of
+> calling platform_get_resource() and devm_ioremap_resource()
+> separately.
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+> ---
+> v1->v2:
+> Use devm_platform_get_and_ioremap_resource() instead of
+> devm_platform_ioremap_resource().
+> v2->v3:
+> Update commit message.
+> v3->v4:
+> Remove the change - "struct resource *res"
+>  
+>  drivers/media/platform/rcar_drif.c | 3 +--
+>  1 file changed, 1 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/rcar_drif.c b/drivers/media/platform/rcar_drif.c
+> index a505d991548b..e50673276d93 100644
+> --- a/drivers/media/platform/rcar_drif.c
+> +++ b/drivers/media/platform/rcar_drif.c
+> @@ -1395,8 +1395,7 @@ static int rcar_drif_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	/* Register map */
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	ch->base = devm_ioremap_resource(&pdev->dev, res);
+> +	ch->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+>  	if (IS_ERR(ch->base))
+>  		return PTR_ERR(ch->base);
+>  
+> 
+
