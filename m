@@ -2,51 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E377C3FDE46
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8DD73FDE47
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245689AbhIAPMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245176AbhIAPMG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:12:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D81DC061575;
-        Wed,  1 Sep 2021 08:11:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=OYQUqvAmts4cX/ntkiXZU2arw8
-        p0znEhtw02ofYEPeoo2ZiA4wzLcgbIsgqi3feo77xBHLsrD4dVbBFKt7ZRs3+L4kUiBP/wfeotPE9
-        E48tLopvQ7MWIrg8TwbcsDu9HTs60jgd2fV35zfMDRgv2Yq3YdrGT8L26Cc/talkev1lxoqgs9h0O
-        JtT0YOeznrO5fQBz4o4Jf/BCmz6k6RUSm7CInn0WvOgOyDl3HaLL9+SiH/5/3DXlw9wBbSYI2pqNc
-        GckStlacUmNqO5LLY1WhDcAcEEfZ5HaVwhQXe+MJ+aaQ/h2jC+65V1ht8dNHnGMNWnmpDE3xd+pBQ
-        wK1Hx24A==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLRrP-002Suh-81; Wed, 01 Sep 2021 15:09:20 +0000
-Date:   Wed, 1 Sep 2021 16:09:07 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Dmitry Kadashev <dkadashev@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Stephen Brennan <stephen.s.brennan@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] namei: get rid of unused filename_parentat()
-Message-ID: <YS+XkxQMb5Yz2F5x@infradead.org>
-References: <20210901150040.3875227-1-dkadashev@gmail.com>
+        id S245608AbhIAPNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:13:52 -0400
+Received: from mga01.intel.com ([192.55.52.88]:50231 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231807AbhIAPNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 11:13:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="241048314"
+X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
+   d="scan'208";a="241048314"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 08:12:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,369,1620716400"; 
+   d="scan'208";a="541844834"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.74.11])
+  by fmsmga002.fm.intel.com with ESMTP; 01 Sep 2021 08:12:25 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id 091F8301C52; Wed,  1 Sep 2021 08:12:25 -0700 (PDT)
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Michal Koutn?? <mkoutny@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        andi.kleen@intel.com, kernel test robot <oliver.sang@intel.com>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang\, Ying" <ying.huang@intel.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>
+Subject: Re: [mm] 2d146aa3aa: vm-scalability.throughput -36.4% regression
+References: <CAHk-=wiSHHSuSQsCCLOxQA+cbcvjmEeMsTCMWPT1sFVngd9-ig@mail.gmail.com>
+        <20210812031910.GA63920@shbuild999.sh.intel.com>
+        <20210816032855.GB72770@shbuild999.sh.intel.com>
+        <YRrbpRsvdDoom9iG@cmpxchg.org>
+        <20210817024500.GC72770@shbuild999.sh.intel.com>
+        <20210817164737.GA23342@blackbody.suse.cz>
+        <20210818023004.GA17956@shbuild999.sh.intel.com>
+        <YSzwWIeapkzNElwV@blackbook>
+        <20210831063036.GA46357@shbuild999.sh.intel.com>
+        <20210831092304.GA17119@blackbody.suse.cz>
+        <20210901045032.GA21937@shbuild999.sh.intel.com>
+Date:   Wed, 01 Sep 2021 08:12:24 -0700
+In-Reply-To: <20210901045032.GA21937@shbuild999.sh.intel.com> (Feng Tang's
+        message of "Wed, 1 Sep 2021 12:50:32 +0800")
+Message-ID: <877dg0wcrr.fsf@linux.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901150040.3875227-1-dkadashev@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,
+Feng Tang <feng.tang@intel.com> writes:
+>
+> Yes, the tests I did is no matter where the 128B padding is added, the
+> performance can be restored and even improved.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+I wonder if we can find some cold, rarely accessed, data to put into the
+padding to not waste it. Perhaps some name strings? Or the destroy
+support, which doesn't sound like its commonly used.
+
+-Andi
