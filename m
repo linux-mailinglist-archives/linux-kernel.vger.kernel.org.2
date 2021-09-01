@@ -2,117 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C601B3FDCE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963523FDCFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346799AbhIAMyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:54:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54204 "EHLO mail.kernel.org"
+        id S1343916AbhIAM4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:56:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346595AbhIAMub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:50:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED37C6109E;
-        Wed,  1 Sep 2021 12:42:01 +0000 (UTC)
+        id S1345191AbhIAMvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:51:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DD2561252;
+        Wed,  1 Sep 2021 12:42:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630500122;
-        bh=5FY/X+oqPoTzwQrL0zIKquHnJCsfwfI6X0lqh7AqJcQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NIs2SiYA35zwLb4VYAa7rj85pXlHh4pGcqCnhxnt/lSJByv1GFvPZ3EYIyRX59c8V
-         JGt7/AXYOh6ozj90W7zk/NJk/emqWvKdPKqeBDtYxeupVUtKEEoDB9RWOqUzrj2Q1p
-         ppHUgsQWOWXE9+86I0GocUVZqP0Rnem4eQljTU+U=
+        s=korg; t=1630500178;
+        bh=NSrvlgG1OGAPzejKZYW5fTPnbUmv1NIH6dDo2OIK7gc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TwTlOfHUGBNrnMbClw7KYH0bobDzVZzPu5Hmk/MOBbhXaVSOKdkuUm/nPXecu9w7X
+         NOmjmCE6mOuCnyZHRY8S1SCh9aYx6Z+s+Dh4KL45N/2RVGy47ZrBid7qzEj5Js5S7a
+         hl04bdKPjdd/Mb3rAm+sHToW7p3VP7ks4HTHhMXs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.13 112/113] net: dont unconditionally copy_from_user a struct ifreq for socket ioctls
-Date:   Wed,  1 Sep 2021 14:29:07 +0200
-Message-Id: <20210901122305.659486760@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.14 00/11] 5.14.1-rc1 review
+Date:   Wed,  1 Sep 2021 14:29:08 +0200
+Message-Id: <20210901122249.520249736@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.1-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.14.1-rc1
+X-KernelTest-Deadline: 2021-09-03T12:22+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Collingbourne <pcc@google.com>
+This is the start of the stable review cycle for the 5.14.1 release.
+There are 11 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit d0efb16294d145d157432feda83877ae9d7cdf37 upstream.
+Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
+Anything received after that time might be too late.
 
-A common implementation of isatty(3) involves calling a ioctl passing
-a dummy struct argument and checking whether the syscall failed --
-bionic and glibc use TCGETS (passing a struct termios), and musl uses
-TIOCGWINSZ (passing a struct winsize). If the FD is a socket, we will
-copy sizeof(struct ifreq) bytes of data from the argument and return
--EFAULT if that fails. The result is that the isatty implementations
-may return a non-POSIX-compliant value in errno in the case where part
-of the dummy struct argument is inaccessible, as both struct termios
-and struct winsize are smaller than struct ifreq (at least on arm64).
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.1-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+and the diffstat can be found below.
 
-Although there is usually enough stack space following the argument
-on the stack that this did not present a practical problem up to now,
-with MTE stack instrumentation it's more likely for the copy to fail,
-as the memory following the struct may have a different tag.
+thanks,
 
-Fix the problem by adding an early check for whether the ioctl is a
-valid socket ioctl, and return -ENOTTY if it isn't.
+greg k-h
 
-Fixes: 44c02a2c3dc5 ("dev_ioctl(): move copyin/copyout to callers")
-Link: https://linux-review.googlesource.com/id/I869da6cf6daabc3e4b7b82ac979683ba05e27d4d
-Signed-off-by: Peter Collingbourne <pcc@google.com>
-Cc: <stable@vger.kernel.org> # 4.19
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/linux/netdevice.h |    4 ++++
- net/socket.c              |    6 +++++-
- 2 files changed, 9 insertions(+), 1 deletion(-)
+-------------
+Pseudo-Shortlog of commits:
 
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -4012,6 +4012,10 @@ int netdev_rx_handler_register(struct ne
- void netdev_rx_handler_unregister(struct net_device *dev);
- 
- bool dev_valid_name(const char *name);
-+static inline bool is_socket_ioctl_cmd(unsigned int cmd)
-+{
-+	return _IOC_TYPE(cmd) == SOCK_IOC_TYPE;
-+}
- int dev_ioctl(struct net *net, unsigned int cmd, struct ifreq *ifr,
- 		bool *need_copyout);
- int dev_ifconf(struct net *net, struct ifconf *, int);
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -1054,7 +1054,7 @@ static long sock_do_ioctl(struct net *ne
- 		rtnl_unlock();
- 		if (!err && copy_to_user(argp, &ifc, sizeof(struct ifconf)))
- 			err = -EFAULT;
--	} else {
-+	} else if (is_socket_ioctl_cmd(cmd)) {
- 		struct ifreq ifr;
- 		bool need_copyout;
- 		if (copy_from_user(&ifr, argp, sizeof(struct ifreq)))
-@@ -1063,6 +1063,8 @@ static long sock_do_ioctl(struct net *ne
- 		if (!err && need_copyout)
- 			if (copy_to_user(argp, &ifr, sizeof(struct ifreq)))
- 				return -EFAULT;
-+	} else {
-+		err = -ENOTTY;
- 	}
- 	return err;
- }
-@@ -3251,6 +3253,8 @@ static int compat_ifr_data_ioctl(struct
- 	struct ifreq ifreq;
- 	u32 data32;
- 
-+	if (!is_socket_ioctl_cmd(cmd))
-+		return -ENOTTY;
- 	if (copy_from_user(ifreq.ifr_name, u_ifreq32->ifr_name, IFNAMSIZ))
- 		return -EFAULT;
- 	if (get_user(data32, &u_ifreq32->ifr_data))
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.14.1-rc1
+
+Richard Guy Briggs <rgb@redhat.com>
+    audit: move put_tree() to avoid trim_trees refcount underflow and UAF
+
+Peter Collingbourne <pcc@google.com>
+    net: don't unconditionally copy_from_user a struct ifreq for socket ioctls
+
+Eric Biggers <ebiggers@google.com>
+    ubifs: report correct st_size for encrypted symlinks
+
+Eric Biggers <ebiggers@google.com>
+    f2fs: report correct st_size for encrypted symlinks
+
+Eric Biggers <ebiggers@google.com>
+    ext4: report correct st_size for encrypted symlinks
+
+Eric Biggers <ebiggers@google.com>
+    fscrypt: add fscrypt_symlink_getattr() for computing st_size
+
+Denis Efremov <efremov@linux.com>
+    Revert "floppy: reintroduce O_NDELAY fix"
+
+Qu Wenruo <wqu@suse.com>
+    btrfs: fix NULL pointer dereference when deleting device by invalid id
+
+DENG Qingfang <dqfext@gmail.com>
+    net: dsa: mt7530: fix VLAN traffic leaks again
+
+Pauli Virtanen <pav@iki.fi>
+    Bluetooth: btusb: check conditions before enabling USB ALT 3 for WBS
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    vt_kdsetmode: extend console locking
+
+
+-------------
+
+Diffstat:
+
+ Makefile                  |  4 ++--
+ drivers/block/floppy.c    | 30 +++++++++++++++---------------
+ drivers/bluetooth/btusb.c | 22 ++++++++++++++--------
+ drivers/net/dsa/mt7530.c  |  5 +----
+ drivers/tty/vt/vt_ioctl.c | 10 ++++++----
+ fs/btrfs/volumes.c        |  2 +-
+ fs/crypto/hooks.c         | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ fs/ext4/symlink.c         | 12 +++++++++++-
+ fs/f2fs/namei.c           | 12 +++++++++++-
+ fs/ubifs/file.c           | 13 ++++++++++++-
+ include/linux/fscrypt.h   |  7 +++++++
+ include/linux/netdevice.h |  4 ++++
+ kernel/audit_tree.c       |  2 +-
+ net/socket.c              |  6 +++++-
+ 14 files changed, 134 insertions(+), 39 deletions(-)
 
 
