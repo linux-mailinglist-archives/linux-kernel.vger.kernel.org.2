@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A4F3FE453
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3E33FE454
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 22:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238488AbhIAU5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 16:57:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24013 "EHLO
+        id S243402AbhIAU5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 16:57:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31187 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238528AbhIAU53 (ORCPT
+        by vger.kernel.org with ESMTP id S238818AbhIAU5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 16:57:29 -0400
+        Wed, 1 Sep 2021 16:57:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630529792;
+        s=mimecast20190719; t=1630529794;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=H80HJYI0qyzkG5zbmWICcaBUu/kpdbMbG4peNGDuQ4A=;
-        b=AQwDPwF/i0xiMQ5H5Y4IHAurf78a6FP9bfIDaGJ8Ejo/InSpzh2H8qLAV1JRHYfI/stkxs
-        9xaoaq3kjIedOsox2lESN2/ON8+ARbTOiYd3f68LUMQ8p4wYFyzG2G6ZEuYSZHxpPhDo2t
-        By0bGK8FRUsAz3QrxTkrT/msDW7++tE=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-462-I8XtxldKMlaTrocXcnSB3g-1; Wed, 01 Sep 2021 16:56:31 -0400
-X-MC-Unique: I8XtxldKMlaTrocXcnSB3g-1
-Received: by mail-qt1-f200.google.com with SMTP id q19-20020ac87353000000b0029a09eca2afso843349qtp.21
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:56:31 -0700 (PDT)
+        bh=wyvbaiG0U5DtzGIoOe88A1mEk7hd6gPkepgpidPNJQ0=;
+        b=MbCsp2yRNzBOfuLQRdHbd1btzQDBBYGxphPRR9d+oURAcRdjn5JBJ6KutjeuJ1AOdJiCLP
+        BQZTc1Mu1GWKgw8rkGkMYd2aweyGUWOdOeeLNcRTSxIW20rUJEtnKN6vuoFwfgzK2SMDZP
+        xm91vZ6IVPZqaFq/B9MT8nETTdHtJ/A=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-54-D6TkGEtrNC-TOIrQUXP-ZA-1; Wed, 01 Sep 2021 16:56:34 -0400
+X-MC-Unique: D6TkGEtrNC-TOIrQUXP-ZA-1
+Received: by mail-qk1-f198.google.com with SMTP id 21-20020a370815000000b003d5a81a4d12so867117qki.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 13:56:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=H80HJYI0qyzkG5zbmWICcaBUu/kpdbMbG4peNGDuQ4A=;
-        b=i/3m96dKHkMXEPojh0Rj2EQU5U3+FNb5TEf7Xqn0/kZ28hVtxJjhBjerD6nV4UOHq2
-         4qm0aKOAOefD7l9UFjEqM/0qPGfVOJys3/NT0RNVjlOhE7qwDoz/IcecLq5w/NiL2N9/
-         3S1lXLK6sx5n1+T0P4O8KqdQtiqAFSkXrHnYKXEOAwUI6t6pNg/G4AopAxmj46uc7z+1
-         rwjYOq1EpxObdOKrr9h/Lk0mUteKjGsTM/GhmU1c2XUytOKbXKDCAC67xA9HAF6yQA4M
-         adqx+2Utt2v9oC6OokvMYP8dg7JEukA5qvqvIpS+TJgSZ6hfMS//Z+/QaPWT3gGzYhib
-         FwMg==
-X-Gm-Message-State: AOAM530JA4uyYgNFU/URs3i/Jf9y+VN9dLA4dfj0gIjjObJj+tQyDUMY
-        GgcAdGADxBKODAdn3uOrAEnkWjiS4TrBUNLJMA7OeoZEyRpPBBcV6GA6FX1sNko+rD+bKOcm6Ec
-        pJcFf1YRLsAqj6UCJalEWjvcRDTSgw/0PV48RGfRFnLeuJgcltIletBfBuk4QoZC/dn9LYw7VnA
+        bh=wyvbaiG0U5DtzGIoOe88A1mEk7hd6gPkepgpidPNJQ0=;
+        b=qVOlN76fXo20f+cjz3JnW5U/GwgKVoeILM6948RMH4ebPNJVwTBqBz+sB1eLFJtHtj
+         AxXv08AxsfD1LwdY+k04sqdb0RhYTeevUUPMXZ25HjrdTgtbdCkYiedfFo54ZXoMXHMQ
+         8HuhYCauNEt8dznSurW2h3zx0CGH4wWJmgZHHZ6fF6DBFXOqiVzV6pK0cUNEXCdeXPq/
+         1xbeESE8ZeF+leVZjTMsJ/f3OgAqHumun3lwOZpTv2rpAzZVr5bl3QfNK1hiVuNe6t5O
+         CgtGoZEJTpDZI4CAzSpLt4BiALMa+4P67WgOIr6lUjb5fdqUlwkEulJh9kSFbVPKRzA3
+         51VA==
+X-Gm-Message-State: AOAM530vUwcpi5pENRRzmRnou2noqz/z63g9Aqzq6K7aguvJQDjEzRpf
+        F5P41VwcwTcRMReHsnJrnf3rHPks8Z9wepLQSXU+DMJAUlL9Q/nkerGCHGGEE6jpy32AmzibrLZ
+        ppZBjC3vi41ubE44Qm5Tzt1Ytp74yRawIDnUjC1lD3hrP+wN5A0p+aTlp9V7cvqg9TOTGzK0MOQ
         ==
-X-Received: by 2002:ac8:4241:: with SMTP id r1mr433343qtm.296.1630529790220;
-        Wed, 01 Sep 2021 13:56:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxfX94m0Q5rz7prZMT3zggqIDbw5ktE9Et7MQf17IWYgA/u195BGGhxvkI+Dg/upwPF/Y2ASQ==
-X-Received: by 2002:ac8:4241:: with SMTP id r1mr433306qtm.296.1630529789960;
-        Wed, 01 Sep 2021 13:56:29 -0700 (PDT)
+X-Received: by 2002:ac8:4d90:: with SMTP id a16mr1427483qtw.190.1630529792166;
+        Wed, 01 Sep 2021 13:56:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzA6t7HDUB1HpglkSgCMBRTVio39DwymdQJ8VWpp6mifRs9LMiBKPHS8XxadRgIFxFNScBadw==
+X-Received: by 2002:ac8:4d90:: with SMTP id a16mr1427452qtw.190.1630529791909;
+        Wed, 01 Sep 2021 13:56:31 -0700 (PDT)
 Received: from t490s.redhat.com ([2607:fea8:56a3:500::ad7f])
-        by smtp.gmail.com with ESMTPSA id f3sm624865qti.65.2021.09.01.13.56.28
+        by smtp.gmail.com with ESMTPSA id f3sm624865qti.65.2021.09.01.13.56.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 13:56:29 -0700 (PDT)
+        Wed, 01 Sep 2021 13:56:31 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Andrea Arcangeli <aarcange@redhat.com>,
@@ -65,9 +65,9 @@ Cc:     Andrea Arcangeli <aarcange@redhat.com>,
         "Kirill A . Shutemov" <kirill@shutemov.name>,
         Matthew Wilcox <willy@infradead.org>,
         Hugh Dickins <hughd@google.com>
-Subject: [PATCH 2/5] mm: Clear vmf->pte after pte_unmap_same() returns
-Date:   Wed,  1 Sep 2021 16:56:19 -0400
-Message-Id: <20210901205622.6935-3-peterx@redhat.com>
+Subject: [PATCH 3/5] mm: Drop first_index/last_index in zap_details
+Date:   Wed,  1 Sep 2021 16:56:20 -0400
+Message-Id: <20210901205622.6935-4-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210901205622.6935-1-peterx@redhat.com>
 References: <20210901205622.6935-1-peterx@redhat.com>
@@ -77,61 +77,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pte_unmap_same() will always unmap the pte pointer.  After the unmap, vmf->pte
-will not be valid any more, we should clear it.
+The first_index/last_index parameters in zap_details are actually only used in
+unmap_mapping_range_tree().  At the meantime, this function is only called by
+unmap_mapping_pages() once.  Instead of passing these two variables through the
+whole stack of page zapping code, remove them from zap_details and let them
+simply be parameters of unmap_mapping_range_tree(), which is inlined.
 
-It was safe only because no one is accessing vmf->pte after pte_unmap_same()
-returns, since the only caller of pte_unmap_same() (so far) is do_swap_page(),
-where vmf->pte will in most cases be overwritten very soon.
-
-Directly pass in vmf into pte_unmap_same() and then we can also avoid the long
-parameter list too, which should be a nice cleanup.
-
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Alistair Popple <apopple@nvidia.com>
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/memory.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ include/linux/mm.h |  2 --
+ mm/memory.c        | 29 ++++++++++++++++-------------
+ 2 files changed, 16 insertions(+), 15 deletions(-)
 
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 7ca22e6e694a..69259229f090 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1721,8 +1721,6 @@ extern void user_shm_unlock(size_t, struct ucounts *);
+  */
+ struct zap_details {
+ 	struct address_space *check_mapping;	/* Check page->mapping if set */
+-	pgoff_t	first_index;			/* Lowest page->index to unmap */
+-	pgoff_t last_index;			/* Highest page->index to unmap */
+ 	struct page *single_page;		/* Locked page to be unmapped */
+ };
+ 
 diff --git a/mm/memory.c b/mm/memory.c
-index 25fc46e87214..204141e8a53d 100644
+index 204141e8a53d..3b860f6a51ac 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -2724,19 +2724,20 @@ EXPORT_SYMBOL_GPL(apply_to_existing_page_range);
-  * proceeding (but do_wp_page is only called after already making such a check;
-  * and do_anonymous_page can safely check later on).
-  */
--static inline int pte_unmap_same(struct mm_struct *mm, pmd_t *pmd,
--				pte_t *page_table, pte_t orig_pte)
-+static inline int pte_unmap_same(struct vm_fault *vmf)
- {
- 	int same = 1;
- #if defined(CONFIG_SMP) || defined(CONFIG_PREEMPTION)
- 	if (sizeof(pte_t) > sizeof(unsigned long)) {
--		spinlock_t *ptl = pte_lockptr(mm, pmd);
-+		spinlock_t *ptl = pte_lockptr(vmf->vma->vm_mm, vmf->pmd);
- 		spin_lock(ptl);
--		same = pte_same(*page_table, orig_pte);
-+		same = pte_same(*vmf->pte, vmf->orig_pte);
- 		spin_unlock(ptl);
- 	}
- #endif
--	pte_unmap(page_table);
-+	pte_unmap(vmf->pte);
-+	/* After unmap of pte, the pointer is invalid now - clear it. */
-+	vmf->pte = NULL;
- 	return same;
+@@ -3322,20 +3322,20 @@ static void unmap_mapping_range_vma(struct vm_area_struct *vma,
  }
  
-@@ -3487,7 +3488,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	vm_fault_t ret = 0;
- 	void *shadow = NULL;
+ static inline void unmap_mapping_range_tree(struct rb_root_cached *root,
++					    pgoff_t first_index,
++					    pgoff_t last_index,
+ 					    struct zap_details *details)
+ {
+ 	struct vm_area_struct *vma;
+ 	pgoff_t vba, vea, zba, zea;
  
--	if (!pte_unmap_same(vma->vm_mm, vmf->pmd, vmf->pte, vmf->orig_pte))
-+	if (!pte_unmap_same(vmf))
- 		goto out;
+-	vma_interval_tree_foreach(vma, root,
+-			details->first_index, details->last_index) {
+-
++	vma_interval_tree_foreach(vma, root, first_index, last_index) {
+ 		vba = vma->vm_pgoff;
+ 		vea = vba + vma_pages(vma) - 1;
+-		zba = details->first_index;
++		zba = first_index;
+ 		if (zba < vba)
+ 			zba = vba;
+-		zea = details->last_index;
++		zea = last_index;
+ 		if (zea > vea)
+ 			zea = vea;
  
- 	entry = pte_to_swp_entry(vmf->orig_pte);
+@@ -3361,18 +3361,21 @@ void unmap_mapping_page(struct page *page)
+ {
+ 	struct address_space *mapping = page->mapping;
+ 	struct zap_details details = { };
++	pgoff_t	first_index, last_index;
+ 
+ 	VM_BUG_ON(!PageLocked(page));
+ 	VM_BUG_ON(PageTail(page));
+ 
++	first_index = page->index;
++	last_index = page->index + thp_nr_pages(page) - 1;
++
+ 	details.check_mapping = mapping;
+-	details.first_index = page->index;
+-	details.last_index = page->index + thp_nr_pages(page) - 1;
+ 	details.single_page = page;
+ 
+ 	i_mmap_lock_write(mapping);
+ 	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
+-		unmap_mapping_range_tree(&mapping->i_mmap, &details);
++		unmap_mapping_range_tree(&mapping->i_mmap, first_index,
++					 last_index, &details);
+ 	i_mmap_unlock_write(mapping);
+ }
+ 
+@@ -3391,17 +3394,17 @@ void unmap_mapping_page(struct page *page)
+ void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
+ 		pgoff_t nr, bool even_cows)
+ {
++	pgoff_t	first_index = start, last_index = start + nr - 1;
+ 	struct zap_details details = { };
+ 
+ 	details.check_mapping = even_cows ? NULL : mapping;
+-	details.first_index = start;
+-	details.last_index = start + nr - 1;
+-	if (details.last_index < details.first_index)
+-		details.last_index = ULONG_MAX;
++	if (last_index < first_index)
++		last_index = ULONG_MAX;
+ 
+ 	i_mmap_lock_write(mapping);
+ 	if (unlikely(!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root)))
+-		unmap_mapping_range_tree(&mapping->i_mmap, &details);
++		unmap_mapping_range_tree(&mapping->i_mmap, first_index,
++					 last_index, &details);
+ 	i_mmap_unlock_write(mapping);
+ }
+ 
 -- 
 2.31.1
 
