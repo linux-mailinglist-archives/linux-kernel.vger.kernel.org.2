@@ -2,120 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA2C3FE507
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218783FE50D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbhIAVlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 17:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45910 "EHLO
+        id S1344171AbhIAVqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 17:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344905AbhIAVlX (ORCPT
+        with ESMTP id S232085AbhIAVqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 17:41:23 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D071C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 14:40:26 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id x11so2388342ejv.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 14:40:25 -0700 (PDT)
+        Wed, 1 Sep 2021 17:46:36 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72AA8C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 14:45:39 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id 18so878013pfh.9
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 14:45:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U8R5nb1aeTJ3ns8dBCSRYtGDb21lrE9rr+79sQCQT80=;
-        b=lceJUcTDFESBP3oN2FuTdNO5BP1gJaIGCWNaz9fEMs0L8lMoXCVbTnJyEwEJs6ic57
-         yEJ65qmZXvZHGoFDjHNtcOA1VrcqwVCNg/njVRBwoLmg8yGQtGc6W7e7KgaKuiz87hgj
-         sB7Wce70kR4SmBWKusaLfsjgROIXHWIQKRgSLZYB1kYG6yl0zdYXNydgiVaoLJZk7xXS
-         PrT6bRapPF97P5XNoB//HYGu5A6ciTd3yGusZtL8IyjHVf/Kple/Hy3BgUvcv+a0xH95
-         kThesPR2ygaY3ZRji1F0bfYDFQHnoHX6api6tGy0z5QqwYteeqbctiVcbXxoq0qzqwu/
-         mwrQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dSXGTY+JbdvvDZ3iVz3szNk7yWsQ5juNTM8UNa0I5HY=;
+        b=iOJguTgfI7Y49ou+2QSfxVWUN+qUbZM92T5KJprLmUT4JRcQ2B5ZhNYeLVK+IFiGce
+         sbP3YMsWrEa1x3ld+0Rx3FSshNhBfLH7h8SY5rMBiJDwIokFG1EFgzr3NcxRx+nCBkE3
+         Ddt1oYGbHz4rd/fQjglwD2b9q3GhebLWG0hvfQD07Kice4+fegC2IUhMH5g0QSjvrpy2
+         ky/UvghuauKjYtifOSlOmh+ewCdQYr/CFoOEgRwFoYgRmDseGePyfGnpmcA5yAnvSbxP
+         AVRoPW3l5P6iSuWRGym8l54imtxxiJB8JHokCmsjBi4l1SXKa3EywK/fbLO6hMpBHPR3
+         fivA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U8R5nb1aeTJ3ns8dBCSRYtGDb21lrE9rr+79sQCQT80=;
-        b=B90zMMzLNdrPbhcasy72fkefg//6EdeDGa4p0WI/2HsnqKR4mq0VpvrtXvUgh10Ft/
-         k/GUgyY7tmiGr89RsOTEUbyk4P3pi4QL5zsS4f455eCPPMH1xklSJeWkGh7XDj8QQeWy
-         ApMP8xVlMwV1K3ktwbdWEGG/cwxRsy0H5mNj+J+0cDB0Ki4ppUcZWBKcXXSNqsYqYgwc
-         gblH686EZwfV7lLvtVlsV5sIlxhdGJHPIuzEwHUjwGIbUx6zg4Y2mG8ulBQeT3w2W3n+
-         ocUHo16p7+1RzUFOCXJ802ceDkjgokVxV6BzXxoDiN3JY3S+N3dskB2n2rgsGFI5Lrw/
-         VeXQ==
-X-Gm-Message-State: AOAM531hLgLlfk74aO7FAx6pYgmfNNyCC2/t9pF4S1O/TyGJpPxti0eD
-        1fXwZ9hgLm8p/bNvElB1LA2EVjKJ40BaBw==
-X-Google-Smtp-Source: ABdhPJzQD2VWIxRDMOMBY+UY8+s9B/WNmkcX43imYYBssxJlEh0RAKFuQJkFD39fRfyjg/Xt7x5a5g==
-X-Received: by 2002:a17:906:144e:: with SMTP id q14mr1745649ejc.19.1630532424619;
-        Wed, 01 Sep 2021 14:40:24 -0700 (PDT)
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
-        by smtp.gmail.com with ESMTPSA id e19sm423712eja.48.2021.09.01.14.40.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 14:40:23 -0700 (PDT)
-Received: by mail-wm1-f52.google.com with SMTP id o39-20020a05600c512700b002e74638b567so649155wms.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 14:40:23 -0700 (PDT)
-X-Received: by 2002:a1c:2bc6:: with SMTP id r189mr1380207wmr.183.1630532422682;
- Wed, 01 Sep 2021 14:40:22 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dSXGTY+JbdvvDZ3iVz3szNk7yWsQ5juNTM8UNa0I5HY=;
+        b=g0xiGNJ+6fq3gKjrIgtsYwSoDEW2f6711AJ4G4yuGwgBufz8Kiqxu8Q0yHzp2ZhhPa
+         oeIPO7+hU3FTfE4GkNokqrKVpQF/4JrIpc0LITketoE875SVL9tQtBUbRt1nIdtNSduS
+         D5jJKhFjnYs4VXXkb/8BXywIRXJL2QEOVMG+0On5bikHlM6usbHHq4peQpoRQRf0+a+i
+         j2uZxkJRDSVtJx64WTbCFO7yLmk8EUcV0G67j3jO6a1ERoRSfHC68gDDu2D/MPDExzRZ
+         tb7NMks7mvlT4EK1DRgysD1odknl+v+cIbLJsI0BB4i+NbjpRBDhKHm4o1Syu49GrPof
+         DGmw==
+X-Gm-Message-State: AOAM533s6xrRAFHSLn57bJAFfBaghM9hv5IcHPMqIU68wa+aaPJoWhGQ
+        0pTt9iydcyLFkkDbsMpwQk75Yw==
+X-Google-Smtp-Source: ABdhPJxqCPYMnf14dYD413H0wg7Hve3pCUiL5XI0sQEuitsB8Jjel3mMPEsoPu0r2pA+On6512q4Zg==
+X-Received: by 2002:a62:a20d:0:b029:35b:73da:dc8d with SMTP id m13-20020a62a20d0000b029035b73dadc8dmr31695pff.54.1630532738568;
+        Wed, 01 Sep 2021 14:45:38 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id m21sm387659pfa.137.2021.09.01.14.45.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 14:45:37 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 21:45:34 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-coco@lists.linux.dev,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: [PATCH v2 2/4] KVM: SVM: Add support to handle AP reset MSR
+ protocol
+Message-ID: <YS/0fnLXTPDnRfVQ@google.com>
+References: <20210722115245.16084-1-joro@8bytes.org>
+ <20210722115245.16084-3-joro@8bytes.org>
 MIME-Version: 1.0
-References: <20210819100447.00201b26@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210821071425.512834-1-chouhan.shreyansh630@gmail.com> <CA+FuTSeWY-0+VtERqAxNwmHAwmarYh_HQUoF3b0wHiwAaL+h+A@mail.gmail.com>
- <YS9puVgl/exGgrr3@shredder> <CA+FuTSfTCufYmJg5Vum1Q-ndUYh+1P1hLecFht9Qd1-AdnHmaQ@mail.gmail.com>
- <YS+h/tqCJJiQei+W@shredder>
-In-Reply-To: <YS+h/tqCJJiQei+W@shredder>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Wed, 1 Sep 2021 17:39:45 -0400
-X-Gmail-Original-Message-ID: <CA+FuTScx8cCQEOqsmj1eazMkRPqfb-EaqrqH+kmS_sKCFfr7kg@mail.gmail.com>
-Message-ID: <CA+FuTScx8cCQEOqsmj1eazMkRPqfb-EaqrqH+kmS_sKCFfr7kg@mail.gmail.com>
-Subject: Re: [PATCH 1/2 net] ip_gre: add validation for csum_start
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
-        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, pshelar@nicira.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com,
-        Edward Cree <ecree@solarflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722115245.16084-3-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 11:53 AM Ido Schimmel <idosch@idosch.org> wrote:
->
-> Thanks for the quick reply, Willem.
->
-> On Wed, Sep 01, 2021 at 09:46:48AM -0400, Willem de Bruijn wrote:
-> > Thanks for the detailed report, Ido.
-> >
-> > This is a gre tunnel device with csum/ocsum enabled, correct?
->
-> Correct.
->
-> >
-> > How was this packet generated: does it come from the local stack or is
-> > it a custom packet injected from userspace, e.g., with a packet socket
-> > with vnet_hdr?
->
-> The packet is received by a physical port and injected to the kernel's
-> Rx path by mlxsw (which does not support checksumming). The IPv4 routing
-> code then forwards the packet to the GRE tunnel.
->
-> I was able to reproduce the issue using veth pairs and a packet socket
-> [1]. Running the reproducer with the debug patch from before, I get the
-> following output [2].
+On Thu, Jul 22, 2021, Joerg Roedel wrote:
+> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
+> index 8540972cad04..04470aab421b 100644
+> --- a/arch/x86/include/asm/sev-common.h
+> +++ b/arch/x86/include/asm/sev-common.h
+> @@ -11,6 +11,7 @@
+>  #define GHCB_MSR_INFO_POS		0
+>  #define GHCB_DATA_LOW			12
+>  #define GHCB_MSR_INFO_MASK		(BIT_ULL(GHCB_DATA_LOW) - 1)
+> +#define GHCB_DATA_MASK			GENMASK_ULL(51, 0)
 
-Thanks for that device independent repro.
+Note used in this patch, not sure if it's intended to be used in GHCB_DATA below?
 
-As expected, the following fixes it for these packets:
+>  #define GHCB_DATA(v)			\
+>  	(((unsigned long)(v) & ~GHCB_MSR_INFO_MASK) >> GHCB_DATA_LOW)
+> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+> index e322676039f4..5a28f223a9a8 100644
+> --- a/arch/x86/include/asm/svm.h
+> +++ b/arch/x86/include/asm/svm.h
+> @@ -164,7 +164,6 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
+>  	u8 reserved_sw[32];
+>  };
+>  
+> -
 
--       if (csum && skb_checksum_start(skb) < skb->data)
-+       if (csum && skb->ip_summed == CHECKSUM_PARTIAL &&
-+           skb_checksum_start(skb) < skb->data)
+Unrelated whitespace change.
 
-The question is whether we're doing the right thing when CHECKSUM_PARTIAL
-is set.
-
-Local checksum offload allows for cheap calculation of outer checksums, by
-relying on the fact that the inner packet with the checksum field filled in will
-sum to zero. It relies on checksum offload to compute this inner checksum,
-so expects csum_start and csum_off to point after the GRE header.
-
-If so, then the existing fix won't break correctly configured skbs as it only
-drops packets for which this does not hold.
+>  #define TLB_CONTROL_DO_NOTHING 0
+>  #define TLB_CONTROL_FLUSH_ALL_ASID 1
+>  #define TLB_CONTROL_FLUSH_ASID 3
