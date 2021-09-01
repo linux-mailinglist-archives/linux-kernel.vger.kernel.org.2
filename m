@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E783FDAA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2C13FDB9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244877AbhIAMdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:33:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
+        id S1344323AbhIAMmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:42:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245002AbhIAMcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:32:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D69DE61027;
-        Wed,  1 Sep 2021 12:31:11 +0000 (UTC)
+        id S1344446AbhIAMja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:39:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88EF360232;
+        Wed,  1 Sep 2021 12:35:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499472;
-        bh=SijOpYyQqdDkOkhH1GYx8Q4As3/+YQr7M6n8X6rjOwg=;
+        s=korg; t=1630499710;
+        bh=3FEbFjT3yU9J6PMogKjc+hEPRYy3y/390wSZa2VRkU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L0x+E0jpb3ESISoHu0hH+rouDuA4yHyQoVO6L+r4FlB8L80XsvyRjnHLslWTx8gl2
-         1EyW6jR/ntUApO0Vt+nTRtIi6iINZqUvhPS6nbss0Qn6EqWuFCS/rLZnp8KkmoL+q0
-         u9zKIfKiwQndLzStlduDzwNkbSxVY56xXpqjd23s=
+        b=YTdhdi+PcdG9WlbsvpZCh197Llc/QS5N3VOv5nlor5IxzrArUtj1dH+WAfpzcUqWG
+         JxB/4syo4le4tg3+/woCR8wIOXC089J/xVeBkCAuzE3a8xuj/kF/FYpIjIPe2KIi63
+         huJPe7VNe8/fnMM6NaJE9dQUQ66sph9ncpSkh6k8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Li Jinlin <lijinlin3@huawei.com>,
-        Qiu Laibin <qiulaibin@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.4 13/48] scsi: core: Fix hang of freezing queue between blocking and running device
-Date:   Wed,  1 Sep 2021 14:28:03 +0200
-Message-Id: <20210901122253.840151831@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 054/103] iwlwifi: pnvm: accept multiple HW-type TLVs
+Date:   Wed,  1 Sep 2021 14:28:04 +0200
+Message-Id: <20210901122302.392692021@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,97 +40,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Jinlin <lijinlin3@huawei.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 02c6dcd543f8f051973ee18bfbc4dc3bd595c558 upstream.
+[ Upstream commit 0f673c16c850250db386537a422c11d248fb123c ]
 
-We found a hang, the steps to reproduce  are as follows:
+Some products (So) may have two different types of products
+with different mac-type that are otherwise equivalent, and
+have the same PNVM data, so the PNVM file will contain two
+(or perhaps later more) HW-type TLVs. Accept the file and
+use the data section that contains any matching entry.
 
-  1. blocking device via scsi_device_set_state()
-
-  2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
-
-  3. echo none > /sys/block/sda/queue/scheduler
-
-  4. echo "running" >/sys/block/sda/device/state
-
-Step 3 and 4 should complete after step 4, but they hang.
-
-  CPU#0               CPU#1                CPU#2
-  ---------------     ----------------     ----------------
-                                           Step 1: blocking device
-
-                                           Step 2: dd xxxx
-                                                  ^^^^^^ get request
-                                                         q_usage_counter++
-
-                      Step 3: switching scheculer
-                      elv_iosched_store
-                        elevator_switch
-                          blk_mq_freeze_queue
-                            blk_freeze_queue
-                              > blk_freeze_queue_start
-                                ^^^^^^ mq_freeze_depth++
-
-                              > blk_mq_run_hw_queues
-                                ^^^^^^ can't run queue when dev blocked
-
-                              > blk_mq_freeze_queue_wait
-                                ^^^^^^ Hang here!!!
-                                       wait q_usage_counter==0
-
-  Step 4: running device
-  store_state_field
-    scsi_rescan_device
-      scsi_attach_vpd
-        scsi_vpd_inquiry
-          __scsi_execute
-            blk_get_request
-              blk_mq_alloc_request
-                blk_queue_enter
-                ^^^^^^ Hang here!!!
-                       wait mq_freeze_depth==0
-
-    blk_mq_run_hw_queues
-    ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
-
-                            blk_mq_unfreeze_queue
-                            ^^^^^ mq_freeze_depth--
-
-To fix this, we need to run queue before rescanning device when the device
-state changes to SDEV_RUNNING.
-
-Link: https://lore.kernel.org/r/20210824025921.3277629-1-lijinlin3@huawei.com
-Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
-Signed-off-by: Qiu Laibin <qiulaibin@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210719140154.a6a86e903035.Ic0b1b75c45d386698859f251518e8a5144431938@changeid
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_sysfs.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/fw/pnvm.c | 25 +++++++++++++-------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
---- a/drivers/scsi/scsi_sysfs.c
-+++ b/drivers/scsi/scsi_sysfs.c
-@@ -788,12 +788,15 @@ store_state_field(struct device *dev, st
- 	ret = scsi_device_set_state(sdev, state);
- 	/*
- 	 * If the device state changes to SDEV_RUNNING, we need to
--	 * rescan the device to revalidate it, and run the queue to
--	 * avoid I/O hang.
-+	 * run the queue to avoid I/O hang, and rescan the device
-+	 * to revalidate it. Running the queue first is necessary
-+	 * because another thread may be waiting inside
-+	 * blk_mq_freeze_queue_wait() and because that call may be
-+	 * waiting for pending I/O to finish.
- 	 */
- 	if (ret == 0 && state == SDEV_RUNNING) {
--		scsi_rescan_device(dev);
- 		blk_mq_run_hw_queues(sdev->request_queue, true);
-+		scsi_rescan_device(dev);
- 	}
- 	mutex_unlock(&sdev->state_mutex);
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c b/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
+index 37ce4fe136c5..cdea741be6f6 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
++++ b/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
+@@ -38,6 +38,7 @@ static int iwl_pnvm_handle_section(struct iwl_trans *trans, const u8 *data,
+ 	u32 sha1 = 0;
+ 	u16 mac_type = 0, rf_id = 0;
+ 	u8 *pnvm_data = NULL, *tmp;
++	bool hw_match = false;
+ 	u32 size = 0;
+ 	int ret;
  
+@@ -84,6 +85,9 @@ static int iwl_pnvm_handle_section(struct iwl_trans *trans, const u8 *data,
+ 				break;
+ 			}
+ 
++			if (hw_match)
++				break;
++
+ 			mac_type = le16_to_cpup((__le16 *)data);
+ 			rf_id = le16_to_cpup((__le16 *)(data + sizeof(__le16)));
+ 
+@@ -91,15 +95,9 @@ static int iwl_pnvm_handle_section(struct iwl_trans *trans, const u8 *data,
+ 				     "Got IWL_UCODE_TLV_HW_TYPE mac_type 0x%0x rf_id 0x%0x\n",
+ 				     mac_type, rf_id);
+ 
+-			if (mac_type != CSR_HW_REV_TYPE(trans->hw_rev) ||
+-			    rf_id != CSR_HW_RFID_TYPE(trans->hw_rf_id)) {
+-				IWL_DEBUG_FW(trans,
+-					     "HW mismatch, skipping PNVM section, mac_type 0x%0x, rf_id 0x%0x.\n",
+-					     CSR_HW_REV_TYPE(trans->hw_rev), trans->hw_rf_id);
+-				ret = -ENOENT;
+-				goto out;
+-			}
+-
++			if (mac_type == CSR_HW_REV_TYPE(trans->hw_rev) &&
++			    rf_id == CSR_HW_RFID_TYPE(trans->hw_rf_id))
++				hw_match = true;
+ 			break;
+ 		case IWL_UCODE_TLV_SEC_RT: {
+ 			struct iwl_pnvm_section *section = (void *)data;
+@@ -150,6 +148,15 @@ static int iwl_pnvm_handle_section(struct iwl_trans *trans, const u8 *data,
+ 	}
+ 
+ done:
++	if (!hw_match) {
++		IWL_DEBUG_FW(trans,
++			     "HW mismatch, skipping PNVM section (need mac_type 0x%x rf_id 0x%x)\n",
++			     CSR_HW_REV_TYPE(trans->hw_rev),
++			     CSR_HW_RFID_TYPE(trans->hw_rf_id));
++		ret = -ENOENT;
++		goto out;
++	}
++
+ 	if (!size) {
+ 		IWL_DEBUG_FW(trans, "Empty PNVM, skipping.\n");
+ 		ret = -ENOENT;
+-- 
+2.30.2
+
 
 
