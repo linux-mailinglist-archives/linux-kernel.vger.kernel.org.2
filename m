@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B51B3FD6B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260BA3FD6BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243544AbhIAJ01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:26:27 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60280 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243418AbhIAJ00 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:26:26 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 1303F1FED2;
-        Wed,  1 Sep 2021 09:25:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1630488329; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=+YRDyHEd0/BbrJjaiTEJ0u9b/syuNDaZjHPGP+HRcTk=;
-        b=gxZAuuRYo4um9VhWmQFpBfBzUkO/Vvk6T+X3j6soRekCeo9n2WkXLR+VdAGXgd69xuIm4+
-        vu5ihxduiVqWosyO5yVWspxwM3jJoHK7hCoRAmrO6jxIBy/Xd96OIHMExRFscPFV9jJCEj
-        2pCXl/PbWWkElgsSKnwCGmQkBrLGZjg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1630488329;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=+YRDyHEd0/BbrJjaiTEJ0u9b/syuNDaZjHPGP+HRcTk=;
-        b=Q5ZeS9YcXGgTK6kCB8wv6MUKYl1FiJ9GAlmTRGQnMNpDwnSHEATh6C2MQji69bGpmWYMma
-        EvsNgdyHP2yxXKAQ==
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 0D54EA3B9C;
-        Wed,  1 Sep 2021 09:25:29 +0000 (UTC)
-Received: by adalid.arch.suse.de (Postfix, from userid 17828)
-        id F3DE5518DE46; Wed,  1 Sep 2021 11:25:28 +0200 (CEST)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v1] nvme: only call synhronize_srcu when clearing current path
-Date:   Wed,  1 Sep 2021 11:25:24 +0200
-Message-Id: <20210901092524.131610-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
+        id S243572AbhIAJ1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:27:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243418AbhIAJ1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 05:27:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85E9060462;
+        Wed,  1 Sep 2021 09:26:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630488383;
+        bh=pqLXY4HtrR+J0Jdtegd/3av7bnGcsxFJPqwBnp716Vw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cDWR4Ox1Uj5CAp+emITgvgRtQT/K2gSvoFh+Qmdxm6lexS/oZ9Ik1NL9CtHuOtGIJ
+         xOMq/TDG4XZxkRCKgeKoE0dzvY6UbQpW4DKPDEr3PK4TW5cS7YrbbIlbAPtDrmZ2FH
+         bfbK1RO1mj5wnPaHOX0xD1tAFS3GMeoUlnck0qps=
+Date:   Wed, 1 Sep 2021 11:26:21 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Salvatore Bonaccorso <carnil@debian.org>
+Cc:     Benjamin Berg <benjamin@sipsolutions.net>,
+        linux-usb@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, Benjamin Berg <bberg@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Ian Turner <vectro@vectro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH 0/2] UCSI race condition resulting in wrong port state
+Message-ID: <YS9HPQV3O6D9N7L/@kroah.com>
+References: <20201009144047.505957-1-benjamin@sipsolutions.net>
+ <20201028091043.GC1947336@kroah.com>
+ <20201106104725.GC2785199@kroah.com>
+ <YR+nwZtz9CQuyTn+@lorien.valinor.li>
+ <YSDtCea3a9cuaEG3@kroah.com>
+ <YSD5JlFfAGyq5Fpk@eldamar.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSD5JlFfAGyq5Fpk@eldamar.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function nmve_mpath_clear_current_path returns true if the current
-path has changed. In this case we have to wait for all concurrent
-submissions to finish. But if we didn't change the current path, there
-is no point in waiting for another RCU period to finish.
+On Sat, Aug 21, 2021 at 03:01:26PM +0200, Salvatore Bonaccorso wrote:
+> Hi Greg,
+> 
+> On Sat, Aug 21, 2021 at 02:09:45PM +0200, Greg Kroah-Hartman wrote:
+> > On Fri, Aug 20, 2021 at 03:01:53PM +0200, Salvatore Bonaccorso wrote:
+> > > Hi Greg,
+> > > 
+> > > On Fri, Nov 06, 2020 at 11:47:25AM +0100, Greg Kroah-Hartman wrote:
+> > 
+> > Note, you are responding to an email from a very long time ago...
+> 
+> Yeah, was sort of purpose :) (to try to retain the original context of
+> the question of if the commits should be backported to stable series,
+> which back then had no need raised)
+> > 
+> > > > Due to the lack of response, I guess they don't need to go to any stable
+> > > > kernel, so will queue them up for 5.11-rc1.
+> > > 
+> > > At least one user in Debian (https://bugs.debian.org/992004) would be
+> > > happy to have those backported as well to the 5.10.y series (which we
+> > > will pick up).
+> > > 
+> > > So if Benjamin ack's this, this would be great to have in 5.10.y.
+> > 
+> > What are the git commit ids?  Just ask for them to be applied to stable
+> > like normal...
+> 
+> Right, aplogies. The two commits were
+> 47ea2929d58c35598e681212311d35b240c373ce and
+> 217504a055325fe76ec1142aa15f14d3db77f94f.
+> 
+> 47ea2929d58c ("usb: typec: ucsi: acpi: Always decode connector change information")
+> 217504a05532 ("usb: typec: ucsi: Work around PPM losing change information")
+> 
+> and in the followup Benjamin Berg mentioned to pick as well
+> 
+> 8c9b3caab3ac26db1da00b8117901640c55a69dd
+> 
+> 8c9b3caab3ac ("usb: typec: ucsi: Clear pending after acking connector change"
+> 
+> a related fix later on.
 
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
- drivers/nvme/host/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+All now queued up, thanks.
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index d3d5cc947525..5b3c74fa89bd 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -3814,8 +3814,8 @@ static void nvme_ns_remove(struct nvme_ns *ns)
- 	mutex_unlock(&ns->ctrl->subsys->lock);
- 
- 	synchronize_rcu(); /* guarantee not available in head->list */
--	nvme_mpath_clear_current_path(ns);
--	synchronize_srcu(&ns->head->srcu); /* wait for concurrent submissions */
-+	if (nvme_mpath_clear_current_path(ns))
-+		synchronize_srcu(&ns->head->srcu); /* wait for concurrent submissions */
- 
- 	if (ns->disk->flags & GENHD_FL_UP) {
- 		if (!nvme_ns_head_multipath(ns->head))
--- 
-2.29.2
-
+greg k-h
