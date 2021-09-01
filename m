@@ -2,112 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CAAC3FD17A
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FC23FD1A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241730AbhIACrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 22:47:19 -0400
-Received: from mga07.intel.com ([134.134.136.100]:43484 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231613AbhIACrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 22:47:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="282323654"
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="282323654"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 19:46:21 -0700
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="541298153"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.41])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 19:46:19 -0700
-Date:   Wed, 1 Sep 2021 11:03:57 +0800
-From:   Oliver Sang <oliver.sang@intel.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ltp@lists.linux.it
-Subject: Re: [fs]  f7e33bdbd6: ltp.ftruncate04_64.fail
-Message-ID: <20210901030357.GD14661@xsang-OptiPlex-9020>
-References: <20210825051710.GA5358@xsang-OptiPlex-9020>
- <cf358b73cbda90fd6c023f3a59a8df94698cf0bc.camel@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cf358b73cbda90fd6c023f3a59a8df94698cf0bc.camel@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S241755AbhIADGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 23:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241438AbhIADGn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 23:06:43 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511C8C0613D9
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 20:05:47 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so3603484pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 20:05:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=squareup.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=nyOJ9iZETVTEFk6iWhg2g1yikDtoNUIcwl8+erJ8BFY=;
+        b=d1V6u3ysAEYUUAHURWSacyDQzOtUqDO+ucg+6rnhcJevnwInrzshAWGb/fRLWLMwla
+         cuFmZBqSoqtR3njWqQ2qYCmhP3gd3jLtSBV4DjFpwkNu5EM4ZRupyrAVEWSw0KpM6qhv
+         645zstCpXVFvmC3fyKt0XuANOdSmyUHDvepPQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=nyOJ9iZETVTEFk6iWhg2g1yikDtoNUIcwl8+erJ8BFY=;
+        b=AauoYpWhCC/7kpKYBdIvYJAvE2osk0xpqWBoOH54oFjOHaurE/KbAQSDEe8IOknuwA
+         kgFfmQBPYUOGGROEuV5VVnkYCAFQ2rMjY+R4myHL8Nv87nmdZEbz7OVzxVR3uhiWKzX9
+         48Ca/BONMz3utYBko45EklD+JDSjeDyf0DIoNaAE4kTTJ8mhilAloLdGtpAg/LPfXZNY
+         tCWNVIeZLSPhJCXAO2AvZ924QSbOVlp6iVqsoS1bA0DyBdekgW5fyj1ZVvtSuD8F7WjZ
+         Cqa4c8T+86pvHGSfhiNslveWpR7IbI0n0J1gI0MiMCvqZa5vaOjiZcB7fhza0sRgPJYE
+         85ew==
+X-Gm-Message-State: AOAM531JOaqbf4NihwadwbO7K/GpCw7Ujs38rRW+PpJ1jksGggSXNPOa
+        DIk40rvmctAtzcrpkU7OawcAoQ==
+X-Google-Smtp-Source: ABdhPJwIDQ1redj58uqfaouUGUpSY5cLZfiK40nKf7S/m9qcC6EahuadQ5zCgv6Fu3HiSg47QDsp0Q==
+X-Received: by 2002:a17:90a:5d12:: with SMTP id s18mr9226138pji.35.1630465546442;
+        Tue, 31 Aug 2021 20:05:46 -0700 (PDT)
+Received: from localhost (138-229-239-060.res.spectrum.com. [138.229.239.60])
+        by smtp.gmail.com with ESMTPSA id 77sm10856219pfz.118.2021.08.31.20.05.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 31 Aug 2021 20:05:45 -0700 (PDT)
+From:   Benjamin Li <benl@squareup.com>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Benjamin Li <benl@squareup.com>, stable@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] wcn36xx: handle connection loss indication
+Date:   Tue, 31 Aug 2021 20:05:41 -0700
+Message-Id: <20210901030542.17257-1-benl@squareup.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeff,
+Firmware sends delete_sta_context_ind when it detects the AP has gone
+away in STA mode. Right now the handler for that indication only handles
+AP mode; fix it to also handle STA mode.
 
-On Wed, Aug 25, 2021 at 06:32:38AM -0400, Jeff Layton wrote:
-> On Wed, 2021-08-25 at 13:17 +0800, kernel test robot wrote:
-> > 
-> > Greeting,
-> > 
-> > FYI, we noticed the following commit (built with gcc-9):
-> > 
-> > commit: f7e33bdbd6d1bdf9c3df8bba5abcf3399f957ac3 ("fs: remove mandatory file locking support")
-> > https://git.kernel.org/cgit/linux/kernel/git/jlayton/linux.git locks-next
-> > 
-> > 
-> > in testcase: ltp
-> > version: ltp-x86_64-14c1f76-1_20210821
-> > with following parameters:
-> > 
-> > 	disk: 1HDD
-> > 	fs: ext4
-> > 	test: syscalls-07
-> > 	ucode: 0xe2
-> > 
-> > test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> > test-url: http://linux-test-project.github.io/
-> > 
-> > 
-> > on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
-> > 
-> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> > 
-> > 
-> > 
-> 
-> [...]
-> 
-> > <<<test_start>>>
-> > tag=ftruncate04_64 stime=1629792639
-> > cmdline="ftruncate04_64"
-> > contacts=""
-> > analysis=exit
-> > <<<test_output>>>
-> > tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
-> > tst_test.c:916: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
-> > mke2fs 1.44.5 (15-Dec-2018)
-> > tst_test.c:1348: TINFO: Timeout per run is 0h 25m 00s
-> > ftruncate04.c:116: TINFO: Child locks file
-> > ftruncate04.c:49: TFAIL: ftruncate() offset before lock succeeded unexpectedly
-> > ftruncate04.c:49: TFAIL: ftruncate() offset in lock succeeded unexpectedly
-> > ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
-> > ftruncate04.c:127: TINFO: Child unlocks file
-> > ftruncate04.c:84: TPASS: ftruncate() offset in lock succeded
-> > ftruncate04.c:84: TPASS: ftruncate() offset before lock succeded
-> > ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
-> > 
-> > Summary:
-> > passed   4
-> > failed   2
-> > broken   0
-> > skipped  0
-> > warnings 0
-> 
-> I think this failed because of the above, which is expected now that we
-> ignore the "mand" mount option (and mandatory locking support is gone).
-> 
-> Oliver, you may need to update the expected test output for this test.
+Cc: stable@vger.kernel.org
+Fixes: 8def9ec46a5f ("wcn36xx: Enable firmware link monitoring")
+Signed-off-by: Benjamin Li <benl@squareup.com>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+---
+ drivers/net/wireless/ath/wcn36xx/smd.c | 44 +++++++++++++++++++-------
+ 1 file changed, 33 insertions(+), 11 deletions(-)
 
-Thanks for the information! we will do the corresponding change ASAP
+diff --git a/drivers/net/wireless/ath/wcn36xx/smd.c b/drivers/net/wireless/ath/wcn36xx/smd.c
+index 57fa857b290b..f6bea896abe8 100644
+--- a/drivers/net/wireless/ath/wcn36xx/smd.c
++++ b/drivers/net/wireless/ath/wcn36xx/smd.c
+@@ -2623,30 +2623,52 @@ static int wcn36xx_smd_delete_sta_context_ind(struct wcn36xx *wcn,
+ 					      size_t len)
+ {
+ 	struct wcn36xx_hal_delete_sta_context_ind_msg *rsp = buf;
+-	struct wcn36xx_vif *tmp;
++	struct wcn36xx_vif *vif_priv;
++	struct ieee80211_vif *vif;
++	struct ieee80211_bss_conf *bss_conf;
+ 	struct ieee80211_sta *sta;
++	bool found = false;
+ 
+ 	if (len != sizeof(*rsp)) {
+ 		wcn36xx_warn("Corrupted delete sta indication\n");
+ 		return -EIO;
+ 	}
+ 
+-	wcn36xx_dbg(WCN36XX_DBG_HAL, "delete station indication %pM index %d\n",
+-		    rsp->addr2, rsp->sta_id);
++	wcn36xx_dbg(WCN36XX_DBG_HAL,
++		    "delete station indication %pM index %d reason %d\n",
++		    rsp->addr2, rsp->sta_id, rsp->reason_code);
+ 
+-	list_for_each_entry(tmp, &wcn->vif_list, list) {
++	list_for_each_entry(vif_priv, &wcn->vif_list, list) {
+ 		rcu_read_lock();
+-		sta = ieee80211_find_sta(wcn36xx_priv_to_vif(tmp), rsp->addr2);
+-		if (sta)
+-			ieee80211_report_low_ack(sta, 0);
++		vif = wcn36xx_priv_to_vif(vif_priv);
++
++		if (vif->type == NL80211_IFTYPE_STATION) {
++			/* We could call ieee80211_find_sta too, but checking
++			 * bss_conf is clearer.
++			 */
++			bss_conf = &vif->bss_conf;
++			if (vif_priv->sta_assoc &&
++			    !memcmp(bss_conf->bssid, rsp->addr2, ETH_ALEN)) {
++				found = true;
++				wcn36xx_dbg(WCN36XX_DBG_HAL,
++					    "connection loss bss_index %d\n",
++					    vif_priv->bss_index);
++				ieee80211_connection_loss(vif);
++			}
++		} else {
++			sta = ieee80211_find_sta(vif, rsp->addr2);
++			if (sta) {
++				found = true;
++				ieee80211_report_low_ack(sta, 0);
++			}
++		}
++
+ 		rcu_read_unlock();
+-		if (sta)
++		if (found)
+ 			return 0;
+ 	}
+ 
+-	wcn36xx_warn("STA with addr %pM and index %d not found\n",
+-		     rsp->addr2,
+-		     rsp->sta_id);
++	wcn36xx_warn("BSS or STA with addr %pM not found\n", rsp->addr2);
+ 	return -ENOENT;
+ }
+ 
+-- 
+2.17.1
 
-> 
-> Thanks,
-> -- 
-> Jeff Layton <jlayton@kernel.org>
-> 
