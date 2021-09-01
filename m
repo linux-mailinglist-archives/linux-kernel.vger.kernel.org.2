@@ -2,77 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1B83FD0F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 03:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABFC3FD0FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241714AbhIABxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 21:53:53 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:57414 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231567AbhIABxx (ORCPT
+        id S241708AbhIACBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 22:01:22 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:36587 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241677AbhIACBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 21:53:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jnwang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UmngFf-_1630461173;
-Received: from B-VE2WML7H-1820.local(mailfrom:jnwang@linux.alibaba.com fp:SMTPD_---0UmngFf-_1630461173)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 01 Sep 2021 09:52:54 +0800
-Subject: Re: kernel hang during reboot when cmdline include a non-exist
- console device
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHk-=wj+G8MXRUk5HRCvUr8gOpbR+zXQ6WNTB0E7n32fTUjKxQ@mail.gmail.com>
- <YS2fZ1sknFYKtJFi@google.com> <YS3k5TRf5oLLEdKu@alley>
- <YS3stL0cTn5ZQSNx@google.com>
- <fc18d17a-b185-7a1e-2135-ec83f3f8c70f@linux.alibaba.com>
- <YS490P27YM6UlB2z@alley>
- <e66f501a-0ba9-77f1-b5a2-9a759f8e00d6@linux.alibaba.com>
- <YS5CPGm4JENsFIem@alley>
-From:   James Wang <jnwang@linux.alibaba.com>
-Message-ID: <e670c6c0-dd24-bb26-a78f-e8cac10970eb@linux.alibaba.com>
-Date:   Wed, 1 Sep 2021 09:52:54 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Tue, 31 Aug 2021 22:01:20 -0400
+Received: by mail-io1-f72.google.com with SMTP id e187-20020a6bb5c4000000b005b5fe391cf9so708741iof.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 19:00:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=M6ewVAPbO/i5ZRnfbguGk+MVnZhkA3eB63sbFYEWhO0=;
+        b=KJDeOGO/z9+g7C0J2TrpvSb+Qm4JZAyX47tglF3wVctnZ8L63d5Wh9UbZbv5VKhpsO
+         rAPGXCUuOhpsARECd0PTeqL9WqcsGzuDjIowOzJGLxEAVIQSc2PVkG8ba/iocEKkrZIF
+         2/M5Kzti7P5y6Gzg+pIwEnQjeniUFkmSr1Gbzp+fG9ehUCxTFsFG+yqMjeu5+3IMTo2R
+         E5mOFUdXU5Q3WcONmOIZaLdYkYoIBtAAyQLF1RAkRfjDTvyTRz5peAcbsRqp1dkFpOv+
+         8+WIiewkxUI+DOcOX32K9GOHDwMo+UvdmlsnqYwNEx9QlI93EZQcOOzHVA0sZttp/RwO
+         fZ7w==
+X-Gm-Message-State: AOAM530APBuEM7cWAPT7WVN0PxTNKmRXAlaO7ozomHKnoYoxp+tsk2GD
+        jLAwHbNxI5oE0P3Lhucb+/cfw5pokLsuApTLzoxvR9iXbmsb
+X-Google-Smtp-Source: ABdhPJwFoeLYEE3K/VEdjf7b1fW+5ExXTWG210ng8YQxRo1vrGeiIRzpHuYR+5QoezbtfzUj5pyjywx+jirLDY0qZu+E4TYP9w47
 MIME-Version: 1.0
-In-Reply-To: <YS5CPGm4JENsFIem@alley>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:8d06:: with SMTP id p6mr25833176ioj.7.1630461624447;
+ Tue, 31 Aug 2021 19:00:24 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 19:00:24 -0700
+In-Reply-To: <0000000000006d354305cae2253f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f1f81105cae56d48@google.com>
+Subject: Re: [syzbot] general protection fault in __io_file_supports_nowait
+From:   syzbot <syzbot+e51249708aaa9b0e4d2c@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
 
-在 2021/8/31 PM10:52, Petr Mladek 写道:
-> On Tue 2021-08-31 22:38:42, James Wang wrote:
->> 在 2021/8/31 PM10:33, Petr Mladek 写道:
->>> On Tue 2021-08-31 21:45:05, James Wang wrote:
->>>> 在 2021/8/31 PM4:47, Sergey Senozhatsky 写道:
->>>>> And may I ask, just in case, if James can revert a revert of Petr's commit:
->>>>>
->>>>>           revert a91bd6223ecd46addc71ee6fcd432206d39365d2
->>>>>
->>>>> boot with wrong console argument and see if the kernel reboots without
->>>>> any problems.
->>>> After test, revert Petr's commit can work; reboot without any problem;
->>> Interesting, it looks like the panic() is really caused by missing
->>> stdout, stdin, and stderr, for the init process.
->>>
->>> Unfortunately, the fix is not easy, as described in the commit
->>> a91bd6223ecd46addc71e ("Revert "init/console: Use ttynull as
->>> a fallback when there is no console").
->> OK. But I suppose you could find a quick workaround to mitigate this issue.
-> You could either remove the invalid console=ttyUSB0,115200
-> parameter. As a result, tty0 will become the default console and
-> it will be used by the init process.
+HEAD commit:    b91db6a0b52e Merge tag 'for-5.15/io_uring-vfs-2021-08-30' ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12718683300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=210537ff2ddcc232
+dashboard link: https://syzkaller.appspot.com/bug?extid=e51249708aaa9b0e4d2c
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12615c35300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c57845300000
 
-No，I just want to use a "invalid" console parameter for "boot up", 
-because It could help me "drop" kernel/systemd log, keep the kernel logo 
-on the screen;
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e51249708aaa9b0e4d2c@syzkaller.appspotmail.com
 
-
-James
-
+general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
+CPU: 0 PID: 13214 Comm: iou-sqp-13213 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:file_inode include/linux/fs.h:1344 [inline]
+RIP: 0010:__io_file_supports_nowait+0x26/0x500 fs/io_uring.c:2785
+Code: 00 00 00 00 41 55 41 54 41 89 f4 55 48 89 fd 53 e8 6f 61 96 ff 48 8d 7d 20 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 2d 04 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b
+RSP: 0018:ffffc9000305f800 EFLAGS: 00010212
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000004 RSI: ffffffff81dfb791 RDI: 0000000000000020
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81e28292 R11: 0000000000000001 R12: 0000000000000000
+R13: ffffc9000305f8d8 R14: 0000000000000000 R15: 0000000000000001
+FS:  00007fa1a4652700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000084 CR3: 0000000027153000 CR4: 0000000000350ef0
+Call Trace:
+ io_file_supports_nowait fs/io_uring.c:2823 [inline]
+ io_file_supports_nowait fs/io_uring.c:2816 [inline]
+ io_read+0x4a9/0x1140 fs/io_uring.c:3440
+ io_issue_sqe+0x209/0x6ba0 fs/io_uring.c:6558
+ __io_queue_sqe+0x90/0xb50 fs/io_uring.c:6864
+ io_req_task_submit+0xbf/0x1b0 fs/io_uring.c:2218
+ tctx_task_work+0x166/0x610 fs/io_uring.c:2143
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_signal include/linux/tracehook.h:212 [inline]
+ io_run_task_work fs/io_uring.c:2403 [inline]
+ io_run_task_work fs/io_uring.c:2399 [inline]
+ io_sq_thread+0x867/0x1370 fs/io_uring.c:7337
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Modules linked in:
+---[ end trace f12dea0e85a314d8 ]---
+RIP: 0010:file_inode include/linux/fs.h:1344 [inline]
+RIP: 0010:__io_file_supports_nowait+0x26/0x500 fs/io_uring.c:2785
+Code: 00 00 00 00 41 55 41 54 41 89 f4 55 48 89 fd 53 e8 6f 61 96 ff 48 8d 7d 20 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 2d 04 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b
+RSP: 0018:ffffc9000305f800 EFLAGS: 00010212
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000004 RSI: ffffffff81dfb791 RDI: 0000000000000020
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81e28292 R11: 0000000000000001 R12: 0000000000000000
+R13: ffffc9000305f8d8 R14: 0000000000000000 R15: 0000000000000001
+FS:  00007fa1a4652700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7e4803c008 CR3: 0000000027153000 CR4: 0000000000350ee0
+----------------
+Code disassembly (best guess):
+   0:	00 00                	add    %al,(%rax)
+   2:	00 00                	add    %al,(%rax)
+   4:	41 55                	push   %r13
+   6:	41 54                	push   %r12
+   8:	41 89 f4             	mov    %esi,%r12d
+   b:	55                   	push   %rbp
+   c:	48 89 fd             	mov    %rdi,%rbp
+   f:	53                   	push   %rbx
+  10:	e8 6f 61 96 ff       	callq  0xff966184
+  15:	48 8d 7d 20          	lea    0x20(%rbp),%rdi
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 2d 04 00 00    	jne    0x461
+  34:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  3b:	fc ff df
+  3e:	4c                   	rex.WR
+  3f:	8b                   	.byte 0x8b
 
