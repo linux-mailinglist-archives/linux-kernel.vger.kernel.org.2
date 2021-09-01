@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AAF3FDBC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFBC3FDAFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345380AbhIAMoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:44:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42458 "EHLO mail.kernel.org"
+        id S1344062AbhIAMgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:36:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344821AbhIAMkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:40:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49D6A60041;
-        Wed,  1 Sep 2021 12:35:57 +0000 (UTC)
+        id S1343925AbhIAMek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:34:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F17C4610A1;
+        Wed,  1 Sep 2021 12:32:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499758;
-        bh=M7QszsJE42cbAyy9TIx8m5nHBt7j1XoZrdLWCrBVbaI=;
+        s=korg; t=1630499573;
+        bh=3oFpym5obWf4C7G1zWW6A0n3Sifg6VWGqL+h9dzyjYo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aabhbjSeueopWPFxgMmff5O5Z0hbo9SOgr17zHMszDs+rMi3l/jdPNLuwKT0IUjC1
-         wf03GrA5mny4aTSBeKYtW1FkBg0jMGrUhOjoDzxD0tjxmtCCEkMY9yiXZXt7U13li+
-         FRQnjh/ziZzWdQCzdVNETgNnJmDNY9enjPZpTR/4=
+        b=G8s+MZ3XfL80vpwmmehtcPh339ffVh7ssYuljGPcTuHk5uqv3qhdEm8a/5xH9smzH
+         Cy6oEUCRhYY41+rU8Obmoye334VQGELPFD810EWTQ4AQbtrbJZljEPpgRLfLJ01WCV
+         8+H44pgrsxHUZFGI79y7ooGsz2XlgLPulN5OHUGY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuang Li <shuali@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH 5.10 075/103] tipc: call tipc_wait_for_connect only when dlen is not 0
+        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Lyude Paul <lyude@redhat.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 35/48] drm/nouveau/disp: power down unused DP links during init
 Date:   Wed,  1 Sep 2021 14:28:25 +0200
-Message-Id: <20210901122303.082040847@linuxfoundation.org>
+Message-Id: <20210901122254.558518430@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
-References: <20210901122300.503008474@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +39,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-commit 7387a72c5f84f0dfb57618f9e4770672c0d2e4c9 upstream.
+[ Upstream commit 6eaa1f3c59a707332e921e32782ffcad49915c5e ]
 
-__tipc_sendmsg() is called to send SYN packet by either tipc_sendmsg()
-or tipc_connect(). The difference is in tipc_connect(), it will call
-tipc_wait_for_connect() after __tipc_sendmsg() to wait until connecting
-is done. So there's no need to wait in __tipc_sendmsg() for this case.
+When booted with multiple displays attached, the EFI GOP driver on (at
+least) Ampere, can leave DP links powered up that aren't being used to
+display anything.  This confuses our tracking of SOR routing, with the
+likely result being a failed modeset and display engine hang.
 
-This patch is to fix it by calling tipc_wait_for_connect() only when dlen
-is not 0 in __tipc_sendmsg(), which means it's called by tipc_connect().
+Fix this by (ab?)using the DisableLT IED script to power-down the link,
+restoring HW to a state the driver expects.
 
-Note this also fixes the failure in tipcutils/test/ptts/:
-
-  # ./tipcTS &
-  # ./tipcTC 9
-  (hang)
-
-Fixes: 36239dab6da7 ("tipc: fix implicit-connect for SYN+")
-Reported-by: Shuang Li <shuali@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/socket.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c   | 2 +-
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h   | 1 +
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c | 9 +++++++++
+ 3 files changed, 11 insertions(+), 1 deletion(-)
 
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -1511,7 +1511,7 @@ static int __tipc_sendmsg(struct socket
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
+index 818d21bd28d3..1d2837c5a8f2 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
+@@ -419,7 +419,7 @@ nvkm_dp_train(struct nvkm_dp *dp, u32 dataKBps)
+ 	return ret;
+ }
  
- 	if (unlikely(syn && !rc)) {
- 		tipc_set_sk_state(sk, TIPC_CONNECTING);
--		if (timeout) {
-+		if (dlen && timeout) {
- 			timeout = msecs_to_jiffies(timeout);
- 			tipc_wait_for_connect(sock, &timeout);
- 		}
+-static void
++void
+ nvkm_dp_disable(struct nvkm_outp *outp, struct nvkm_ior *ior)
+ {
+ 	struct nvkm_dp *dp = nvkm_dp(outp);
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h
+index 428b3f488f03..e484d0c3b0d4 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.h
+@@ -32,6 +32,7 @@ struct nvkm_dp {
+ 
+ int nvkm_dp_new(struct nvkm_disp *, int index, struct dcb_output *,
+ 		struct nvkm_outp **);
++void nvkm_dp_disable(struct nvkm_outp *, struct nvkm_ior *);
+ 
+ /* DPCD Receiver Capabilities */
+ #define DPCD_RC00_DPCD_REV                                              0x00000
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c
+index c62030c96fba..4b1c72fd8f03 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/outp.c
+@@ -22,6 +22,7 @@
+  * Authors: Ben Skeggs
+  */
+ #include "outp.h"
++#include "dp.h"
+ #include "ior.h"
+ 
+ #include <subdev/bios.h>
+@@ -216,6 +217,14 @@ nvkm_outp_init_route(struct nvkm_outp *outp)
+ 	if (!ior->arm.head || ior->arm.proto != proto) {
+ 		OUTP_DBG(outp, "no heads (%x %d %d)", ior->arm.head,
+ 			 ior->arm.proto, proto);
++
++		/* The EFI GOP driver on Ampere can leave unused DP links routed,
++		 * which we don't expect.  The DisableLT IED script *should* get
++		 * us back to where we need to be.
++		 */
++		if (ior->func->route.get && !ior->arm.head && outp->info.type == DCB_OUTPUT_DP)
++			nvkm_dp_disable(outp, ior);
++
+ 		return;
+ 	}
+ 
+-- 
+2.30.2
+
 
 
