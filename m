@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4462D3FD7CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014803FD7E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236310AbhIAKlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 06:41:22 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9391 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231903AbhIAKlS (ORCPT
+        id S236858AbhIAKmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 06:42:54 -0400
+Received: from smtpbg704.qq.com ([203.205.195.105]:47587 "EHLO
+        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236042AbhIAKmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 06:41:18 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H00pF12N2z8x9K;
-        Wed,  1 Sep 2021 18:36:05 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 1 Sep 2021 18:40:19 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 1 Sep 2021 18:40:19 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <edumazet@google.com>,
-        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>
-Subject: [PATCH net-next] tcp: add tcp_tx_skb_cache_key checking in sk_stream_alloc_skb()
-Date:   Wed, 1 Sep 2021 18:39:04 +0800
-Message-ID: <1630492744-60396-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+        Wed, 1 Sep 2021 06:42:53 -0400
+X-QQ-mid: bizesmtp50t1630492892tewf9ssh
+Received: from localhost.localdomain (unknown [114.91.2.95])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Wed, 01 Sep 2021 18:41:31 +0800 (CST)
+X-QQ-SSF: 0140000000700070R000B00A0000000
+X-QQ-FEAT: Q1yiNCT1ez4fbPXBeC6Bm3VQ2PP3bbKDosNG1uYhLFxyMZ/nTsMXs4fpEGtAZ
+        uvxMwWW3pO6sMCAOUwGV087M4b3x93+/oQwZaovu5FphFhD1OwetBo0WYwT1jvxx89aZ839
+        v5VHm4mhyySW5+dCsOqiGZV7z5EiAawtN15QubM9iAMTm5F6r2BG5dDLTWTFMEbPGolrPp/
+        n2sJk9R+L46K+h4qDiw7V3f3vrXC/sDJm5vPrlJzGcXkX+bGEDvwiZRFO2EinQe8CUKArnc
+        UmyxyZ1kc5PMKZQnr/HExNSb7pV/WyBzPL3oG8yTpjYSy1srBHvnB9u9j5ucBmg1GX2w==
+X-QQ-GoodBg: 2
+From:   xiaoming <2014500726@smail.xtu.edu.cn>
+To:     Gabriel Somlo <somlo@cmu.edu>
+Cc:     "Michael S . Tsirkin" <mst@redhat.com>, qemu-devel@nongnu.org,
+        linux-kernel@vger.kernel.org,
+        xiaoming <2014500726@smail.xtu.edu.cn>
+Subject: [PATCH] [PATCH] drivers/firmware/qemu_fw_cfg: add RISCV support
+Date:   Wed,  1 Sep 2021 18:41:30 +0800
+Message-Id: <20210901104130.10185-1-2014500726@smail.xtu.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:smail.xtu.edu.cn:qybgforeign:qybgforeign1
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since tcp_tx_skb_cache is disabled by default in:
-commit 0b7d7f6b2208 ("tcp: add tcp_tx_skb_cache sysctl")
+In the latest release of qemu (qemu 6.0.0 or higher) riscv virt already supports fw_cfg, but
+drivers/firmware/qemu_fw_cfg not support.
 
-Add tcp_tx_skb_cache_key checking in sk_stream_alloc_skb() to
-avoid possible branch-misses.
-
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: xiaoming <2014500726@smail.xtu.edu.cn>
 ---
-Also, the sk->sk_tx_skb_cache may be both changed by allocation
-and freeing side, I assume there may be some implicit protection
-here too, such as the NAPI protection for rx?
----
- net/ipv4/tcp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/Kconfig       | 2 +-
+ drivers/firmware/qemu_fw_cfg.c | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index e8b48df..226ddef 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -866,7 +866,7 @@ struct sk_buff *sk_stream_alloc_skb(struct sock *sk, int size, gfp_t gfp,
- {
- 	struct sk_buff *skb;
+diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+index 1db738d5b..4eb8d8a3a 100644
+--- a/drivers/firmware/Kconfig
++++ b/drivers/firmware/Kconfig
+@@ -186,7 +186,7 @@ config RASPBERRYPI_FIRMWARE
  
--	if (likely(!size)) {
-+	if (static_branch_unlikely(&tcp_tx_skb_cache_key) && likely(!size)) {
- 		skb = sk->sk_tx_skb_cache;
- 		if (skb) {
- 			skb->truesize = SKB_TRUESIZE(skb_end_offset(skb));
+ config FW_CFG_SYSFS
+ 	tristate "QEMU fw_cfg device support in sysfs"
+-	depends on SYSFS && (ARM || ARM64 || PARISC || PPC_PMAC || SPARC || X86)
++	depends on SYSFS && (ARM || ARM64 || PARISC || PPC_PMAC || SPARC || X86 || RISCV)
+ 	depends on HAS_IOPORT_MAP
+ 	default n
+ 	help
+diff --git a/drivers/firmware/qemu_fw_cfg.c b/drivers/firmware/qemu_fw_cfg.c
+index 172c751a4..36b5b2612 100644
+--- a/drivers/firmware/qemu_fw_cfg.c
++++ b/drivers/firmware/qemu_fw_cfg.c
+@@ -225,6 +225,10 @@ static void fw_cfg_io_cleanup(void)
+ #  define FW_CFG_CTRL_OFF 0x00
+ #  define FW_CFG_DATA_OFF 0x01
+ #  define FW_CFG_DMA_OFF 0x04
++# elif defined(CONFIG_RISCV)
++#  define FW_CFG_CTRL_OFF 0x08
++#  define FW_CFG_DATA_OFF 0x00
++#  define FW_CFG_DMA_OFF 0x10
+ # else
+ #  error "QEMU FW_CFG not available on this architecture!"
+ # endif
 -- 
-2.7.4
+2.17.1
+
+
 
