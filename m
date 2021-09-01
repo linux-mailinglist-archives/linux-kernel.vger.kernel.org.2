@@ -2,109 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CE53FDF08
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95843FDF0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343859AbhIAPws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:52:48 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44048 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244935AbhIAPwr (ORCPT
+        id S1343887AbhIAPxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:53:24 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38046 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244935AbhIAPxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:52:47 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 231F62255C;
-        Wed,  1 Sep 2021 15:51:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630511509; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Wed, 1 Sep 2021 11:53:23 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630511545;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ow6/rWz+rfX4gHhV3kQzt1ewiKyuiNJvRdwHyzz/Cvs=;
-        b=1LN9ZpaRki1JWzgNAofUEzqPUUyIqfp4tazYFhkzpkoGlEN92/XOVKEzV+xdGfyi2B0wik
-        cWItf6sWDgW/0xEsWKRINbAZjbgFuumOK6UtTwqPBZ63GDQTLfS1BlowsCHHveoROol9SX
-        V+X2ajB1fztPXWV61bgFCbI+OsBmRgg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630511509;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        bh=T+yda3g4fKSFe6XDTsrt7qrSW4bNugPlghIrwmhx3x0=;
+        b=C/5O4ExxT+IFac5OHCKVNVEfI+hFfrc9JlxjqNnk8bWiLyx5+Y46tloXH2GSNEZOiG4Ch1
+        66JW0ynhR0Myk/q/ywfsCVLK4lEhsNEcbvYcLgNu7/5nBZNyXi0Yxo4IuLOIA6T+UhZzEf
+        /bnZ+NtxNbCue0fsRMJP0Wf80Hw0DSuLqgH4u2koUgod3DZ4TkC8cAxuB5R774kYeRYs16
+        6q5ZReVT7DeSYkNRx3rWFm5szBCOlfjBrY0HjzM+2KJqIQMRU2yT5/xo4jcDLbw3pCU6rO
+        gGDl/z4sP7rpzqxMznLeQSt+dNRYYZvlrhlD1iMJzoZ4FoKyRl7LtC9/Opmyvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630511545;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ow6/rWz+rfX4gHhV3kQzt1ewiKyuiNJvRdwHyzz/Cvs=;
-        b=LPOoiGyfTgGnylJ1dlSM80ROzUFVXFTx7QdB4A3ChI6dn6unOsFWN1hEDUgAyCJmcEbswd
-        BOOm3NMP1NCLZ5CA==
-Received: from lion.mk-sys.cz (unknown [10.100.200.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id F1477A3BA3;
-        Wed,  1 Sep 2021 15:51:48 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id D0686603E0; Wed,  1 Sep 2021 17:51:45 +0200 (CEST)
-Date:   Wed, 1 Sep 2021 17:51:45 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
-Message-ID: <20210901155145.qflw5s4zqiud7gke@lion.mk-sys.cz>
-References: <20210819195300.GA8613@rowland.harvard.edu>
- <000000000000c322ab05c9f2e880@google.com>
- <20210820140620.GA35867@rowland.harvard.edu>
- <nycvar.YFH.7.76.2108241351490.15313@cbobk.fhfr.pm>
- <CAO-hwJ+i4MqOj0umUW9kFgYSZLt3QMb6hDZHQwb8AKH9pKxSTg@mail.gmail.com>
- <20210901153811.GA403560@rowland.harvard.edu>
+        bh=T+yda3g4fKSFe6XDTsrt7qrSW4bNugPlghIrwmhx3x0=;
+        b=WSkcx623E69QR+EzfTbdZ5qRr9Fck28tLewB/UrRjoY5u5rFmJcQadzz+YfPL+GeJo0cyV
+        VQgk1AWIrgeLcQCw==
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
+ restore_fpregs_from_user()
+In-Reply-To: <87r1e8cxp5.ffs@tglx>
+References: <20210830154702.247681585@linutronix.de>
+ <20210830162545.374070793@linutronix.de> <YS0ylo9nTHD9NiAp@zn.tnic>
+ <87zgsyg0eg.ffs@tglx> <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
+ <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
+ <87r1e8cxp5.ffs@tglx>
+Date:   Wed, 01 Sep 2021 17:52:25 +0200
+Message-ID: <87o89ccmyu.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gp77egl6iokcy2xv"
-Content-Disposition: inline
-In-Reply-To: <20210901153811.GA403560@rowland.harvard.edu>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 01 2021 at 14:00, Thomas Gleixner wrote:
+>
+> commit b2f9d678e28c ("x86/mce: Check for faults tagged in
+> EXTABLE_CLASS_FAULT exception table entries") made use of this in MCE to
+> allow in kernel recovery. The only thing it uses is checking the
+> exception handler type.
+>
+> Bah. I'll fix that up to make that less obscure.
+>
+> The remaining two use cases (SGX and FPU) make use of the stored trap
+> number.
 
---gp77egl6iokcy2xv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Though while for the FPU use case we really want to handle the #MC case,
+it's not clear to me whether this is actually correct for SGX.
 
-On Wed, Sep 01, 2021 at 11:38:11AM -0400, Alan Stern wrote:
-> On Tue, Aug 31, 2021 at 11:51:31AM +0200, Benjamin Tissoires wrote:
-> > Tested-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> >=20
-> > Alan, would you mind resending the patch with the various tags with a
-> > commit description? (unless I missed it...)
->=20
-> I plan to break this up into three patches, each doing a single thing.  T=
-he=20
-> first patch in the series will be the one written by Michal.  The second=
-=20
-> will fix the problem found by syzbot, and the third will be a general=20
-> cleanup.
->=20
-> Michal, is it okay to add your Signed-off-by: tag to the first patch?
+Jarkko, Sean, Dave?
 
-Yes, sure.
+Thanks,
 
-Michal
-
---gp77egl6iokcy2xv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAmEvoYwACgkQ538sG/LR
-dpWh5AgAuhHDWsvQPRZVb7cY81aSjYIx1Khz3vIrDxpsvBsDmL2cHS2xRBmBek4r
-ajEvsMKOSuiu2QJbMGpawJJkaBrFyeYai3sGFlXSJcoBBYw8w2WiD6EL65NDELu/
-6aC81GCRhnFPlhK0QgIjBcjmCBTxKWlHpl8e2bL8RLhpCSGh/QGXBkdWTVvNoErZ
-hvnhXhtojdjV2gm5tyjyGq9n8gOFFJLk72l7dx5vgM52VM93np2qcNsL3PTK7pMd
-1Ii6sRdM+0RNZyrp8py3udQgZp576FJ9vrc/cAR0drRje83menl5/STgYiBXlaqt
-Xj9BYHN8Bo6q3t7SvDbvVqMgI34TIg==
-=yV4p
------END PGP SIGNATURE-----
-
---gp77egl6iokcy2xv--
+        tglx
