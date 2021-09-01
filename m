@@ -2,131 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95EC3FDD9F
+	by mail.lfdr.de (Postfix) with ESMTP id 57F743FDD9D
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245000AbhIAOFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 10:05:20 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22810 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244850AbhIAOFT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 10:05:19 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181E3DOj073302;
-        Wed, 1 Sep 2021 10:04:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=TtIJ/iDRD0pdW3QWEMkMJXfThrFgoj8j3h60Ls4dEys=;
- b=GIGm4YHSCWeJRdDMpAVT6lCvZ3p9Zx5yy/ZgzrIPQAOEzC37k475BXsaM3MOCAORgXXr
- 7jgjKncD5rVyK4r0tixxBu6bVG43PkSElvtjZeY5ezHmXI8F9Fl/aslS20dAbuFyusuV
- J4ngm2HYrfI+0HBP5XGIH8XRbi5f+upYNf2gjxJQOU6reOHEXq3TvGN5xzJCOkgHdbu4
- fHb+9kCffeMCWoco5BBJHL4t8hZApM1Q1FRNbYlSjvlj10+TRQjaZ4JuceQ8JOcGg07n
- KWBteuAv+/Rw4jq3ZC5kk3vrYOf5GpcaCPqMdvfQuSZAPjz8sENkbpRiuuzCVUz3D+ef pQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3at9jvasv2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 10:04:07 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 181E3MjE081566;
-        Wed, 1 Sep 2021 10:04:06 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3at9jvassr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 10:04:06 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 181E3g5l009639;
-        Wed, 1 Sep 2021 14:04:02 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 3aqcs9v4pq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 14:04:02 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 181E3wnf52822362
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Sep 2021 14:03:58 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1B33342068;
-        Wed,  1 Sep 2021 14:03:58 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1EE394204D;
-        Wed,  1 Sep 2021 14:03:57 +0000 (GMT)
-Received: from localhost (unknown [9.171.90.254])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  1 Sep 2021 14:03:57 +0000 (GMT)
-Date:   Wed, 1 Sep 2021 16:03:55 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, qemu-s390x <qemu-s390x@nongnu.org>
-Subject: Re: [GIT PULL] s390 updates for 5.15 merge window
-Message-ID: <your-ad-here.call-01630505035-ext-2999@work.hours>
-References: <YSzZFgBt6nMvpVgc@osiris>
- <YS2RrUma2oOSYtIc@Ryzen-9-3900X.localdomain>
- <82161448-2770-158c-fdd3-d253b4ae476f@de.ibm.com>
- <YS4AufXrOCa4rzN0@osiris>
- <CANpmjNPp3dAcr+WfYxM6_uQOmFmDf60aL-LbXF12NCzP6P3-6Q@mail.gmail.com>
- <YS5Ed4Cyf+rOf9MR@elver.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YS5Ed4Cyf+rOf9MR@elver.google.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 1KssbIApeupReSu_e4oN6WGB67spKk13
-X-Proofpoint-GUID: tSRKcDxSDA6DLmd5B9vs1d7EVUZms_QF
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S244981AbhIAOE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 10:04:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244850AbhIAOEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 10:04:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31DD461056;
+        Wed,  1 Sep 2021 14:03:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630505037;
+        bh=nX6C2DRBXiBkE79Xdd4pyWzyoxxhjeSK8IZ79WR96nc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RgBb0MwFXE4yguaCPfNxHQ/4fIPuvD09hONxNLn8i7e2M1rYy6SH03i+w5KmJX6Hy
+         IJqWbUqbbL/lMNdlKyG6mzGC6seuXjMWA+9aEXJuEh8if1ehmtsY1YYwC4ycG6gcvj
+         YK1/6I4mflU22vTF/BWkkHl4fBYMdUAcN5S78nYIHXMR8p8LH8RvGOzeGPZ4wIiu3V
+         VtjPdYJM8/pbDebu66h9EtdMb+V1XmhaWVaOk/q7FaeccswfeIRHwYWO68W4HY2TiS
+         yBQRZ1dudOuxje4NEmdppuxNmFnHddFh5A2gHMw5ib2fYR5AbaTmuA7JHjq6ueAd5K
+         60ZajFp5EQW6w==
+Date:   Wed, 1 Sep 2021 07:03:56 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Peter Collingbourne <pcc@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] net: don't unconditionally copy_from_user a struct
+ ifreq for socket ioctls
+Message-ID: <20210901070356.750ea996@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <bf0f47974d7141358d810d512d4b9a00@AcuMS.aculab.com>
+References: <20210826194601.3509717-1-pcc@google.com>
+        <20210831093006.6db30672@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <bf0f47974d7141358d810d512d4b9a00@AcuMS.aculab.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-01_04:2021-09-01,2021-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
- spamscore=0 mlxscore=0 adultscore=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 malwarescore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2109010084
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 05:02:15PM +0200, Marco Elver wrote:
-> 2. stack_trace_save() is subtly broken on s390: it starts the trace in
->    stack_trace_save() itself. This is incorrect, as the trace should
->    start with the caller. We reported something similar to arm64, also
->    because one of our sanitizer tests failed:
->    https://lkml.kernel.org/r/20210319184106.5688-1-mark.rutland@arm.com
+On Wed, 1 Sep 2021 08:22:42 +0000 David Laight wrote:
+> From: Jakub Kicinski
+> > Sent: 31 August 2021 17:30
+> > 
+> > On Thu, 26 Aug 2021 12:46:01 -0700 Peter Collingbourne wrote:  
+> > > @@ -3306,6 +3308,8 @@ static int compat_ifr_data_ioctl(struct net *net, unsigned int cmd,
+> > >  	struct ifreq ifreq;
+> > >  	u32 data32;
+> > >
+> > > +	if (!is_socket_ioctl_cmd(cmd))
+> > > +		return -ENOTTY;
+> > >  	if (copy_from_user(ifreq.ifr_name, u_ifreq32->ifr_name, IFNAMSIZ))
+> > >  		return -EFAULT;
+> > >  	if (get_user(data32, &u_ifreq32->ifr_data))  
+> > 
+> > Hi Peter, when resolving the net -> net-next merge conflict I couldn't
+> > figure out why this chunk is needed. It seems all callers of
+> > compat_ifr_data_ioctl() already made sure it's a socket IOCTL.
+> > Please double check my resolution (tip of net-next) and if this is
+> > indeed unnecessary perhaps send a cleanup? Thanks!  
+> 
+> To stop the copy_from_user() faulting when the user buffer
+> isn't long enough.
+> In particular for iasatty() on arm with tagged pointers.
 
-Thanks a lot for looking into it and debugging it!
-
-> Fix it by skipping the initial entry in s390's arch_stack_walk().
-
-...
-
-> diff --git a/arch/s390/kernel/stacktrace.c b/arch/s390/kernel/stacktrace.c
-> index 101477b3e263..47d1841af03e 100644
-> --- a/arch/s390/kernel/stacktrace.c
-> +++ b/arch/s390/kernel/stacktrace.c
-> @@ -16,11 +16,16 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
->  {
->  	struct unwind_state state;
->  	unsigned long addr;
-> +	bool init = true;
->  
->  	unwind_for_each_frame(&state, task, regs, 0) {
->  		addr = unwind_get_return_address(&state);
-> -		if (!addr || !consume_entry(cookie, addr))
-> +		if (!addr)
-> +			break;
-> +
-> +		if (!init && !consume_entry(cookie, addr))
->  			break;
-> +		init = false;
->  	}
-
-I believe we don't need to skip the first unwinder result if task != current
-or regs != NULL. Same for arch_stack_walk_reliable.
-
-But after you pinpointed the problem I see that the actual difference
-with x86 implementation comes from get_stack_pointer(). I'll send a patch
-as reply.
+Let me rephrase. is_socket_ioctl_cmd() is always true here. There were
+only two callers, both check cmd is of specific, "sockety" type.
