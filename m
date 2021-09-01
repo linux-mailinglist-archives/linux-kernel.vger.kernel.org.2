@@ -2,107 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063253FD44D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7D63FD454
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242562AbhIAHP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:15:59 -0400
-Received: from mail-vk1-f178.google.com ([209.85.221.178]:45980 "EHLO
-        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242416AbhIAHP6 (ORCPT
+        id S242556AbhIAHRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242540AbhIAHRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:15:58 -0400
-Received: by mail-vk1-f178.google.com with SMTP id h13so632486vkc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 00:15:02 -0700 (PDT)
+        Wed, 1 Sep 2021 03:17:54 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9401DC061764
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 00:16:58 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id y17so1290506pfl.13
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 00:16:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=fK1hxzGPP+bRHVx+JgiIY9qnUBt2WSwxa8uxIoUSUjk=;
+        b=rwa5g+l6jUuwr8ituGkSlLBoLGT07VYq2buj0bN8iLhrddET1atpcndaUqcz3llVYD
+         Xn3c/EGkgR7lHBQ9vU4yOcVTisK6aL1Ytl7pjwiLrh3HC6Rlvx8RCnlydidOO1IzKBCe
+         y5tkw3igDB+S1Kqu85tCapWzJsve6mopa5hy8bEGtveI55wxbQ/W4vd1I1ZrYR/Jm+dU
+         R8B+V4RtFErDjwGlDZUX/xzlSLPY6GZojQGXxanC2o+iMlVbHYUYPpp2DnpHg2mxmrHS
+         XaulLpTm7trS2CSdxakUTacmaWcEkXfEA61rX7L4T1dsfSGb4JyAyGApBhCgphtHbDRJ
+         WSWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QadCFZQ2SQPPYc3LZSgseGA9mPxC2ggiigDkQzPcZ7E=;
-        b=tWwuLhIqdXJAL+Vy1w5kKq6yGCZT4mSIORSxp/7YOJklBAvhq30cHShFL0o1W7jHPr
-         Nlh8i81uHBwC/rzRWWVw2Oux+k2mLmc2ZfBGT1+CEOrgdxHuro49zjw7lS/KhMpFT/GA
-         3JzferU/wgaVRKMgDHA4ndZQ8iM+lB/2WxnDYQo/46Y3tkgIUERxjAx8Xr2JXlmBJ+Sb
-         KVR7vUJB1+fsPVp5iOx6/CyX8KPTBirErKEzoph3ORdI0N+mbozqAhOqd9klCB2YdnZE
-         JyhuYu0peXh/fjB3rYiFW5DJ01Y9jzQX8+UhQkIaynnoZjS8balQrQH66Ws249FnlxRB
-         Za5g==
-X-Gm-Message-State: AOAM532VJ5NRFaI43nPuOpNOAJ0DHEgjvPFA1fmMco79WjBNcSZKdJrA
-        /1ezVQLt1RVaWBHSf/InlycQT2EAEAKal3yNaXA=
-X-Google-Smtp-Source: ABdhPJwsjmzlnZudgyUqICpu9dUfkd2zTmDDo4gWcc2mlI2J0tB7JsSrjrkZZ5a9NdFjWFziJSe1eOA2qgj7wUlPqbA=
-X-Received: by 2002:a1f:738f:: with SMTP id o137mr20861558vkc.2.1630480501855;
- Wed, 01 Sep 2021 00:15:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=fK1hxzGPP+bRHVx+JgiIY9qnUBt2WSwxa8uxIoUSUjk=;
+        b=JIKcmcvHwF7+W9vo/Rr75y/jAjQpiXIECmXuPqnDIrFoBBcFD4P9fkEvYerANlQcPn
+         YXj78PadAzUNbLWe2y2uMWSJxlRwtyUiyS45H8b/8UE09uNnVnl5Ukr0rMxl9g8/IyYn
+         C4ULP+HKIy2rBe3mnyjSQg6NfTDCmnLC/zXLpZrcXFd86alGrj1l0LHTkHfpu9vFyzKQ
+         xBVniqHw7nFOY2TDvSlQe75lN3CmCJgPiih9U7Fk35OjzizrocohWZYhzqmvFOS51A7z
+         NihAPMkfMkpgyLr5+Dw5CURmk/iHvkUKR4OnjjJloNDNOPSpuxdrhSTyGtHbsmJJ2JfE
+         6o5w==
+X-Gm-Message-State: AOAM532RDWw/kzPCwMTL9af7qhF0sWeoR3ez1eMB6aZP/vUutvZ3yLVQ
+        wAzTrqRr2qaa6TZXtv7P8pX5/g==
+X-Google-Smtp-Source: ABdhPJymhkj8MgaZ1wwWze96evwPJrZV6MvOLCZbsHYlnr8SdHRIUnwaXQoRe8la8qscdqGhp/EICw==
+X-Received: by 2002:a62:920b:0:b0:3ec:7912:82be with SMTP id o11-20020a62920b000000b003ec791282bemr32461929pfd.34.1630480618067;
+        Wed, 01 Sep 2021 00:16:58 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id j16sm20731066pfi.165.2021.09.01.00.16.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 00:16:57 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 12:46:55 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v10 5/8] soc/tegra: pmc: Implement
+ dev_get_performance_state() callback
+Message-ID: <20210901071655.gf6qg7piisddg2a3@vireshk-i7>
+References: <20210831135450.26070-1-digetx@gmail.com>
+ <20210831135450.26070-6-digetx@gmail.com>
+ <20210901061050.4x3t4cc434zdwx3a@vireshk-i7>
+ <7f4f5ab0-cf23-3e27-211e-4dcd8903f96f@gmail.com>
 MIME-Version: 1.0
-References: <7e628e359bde04ceb9ddd74a45931059b4a4623c.1630415860.git.geert+renesas@glider.be>
- <535478691c3a9ed31b508f59dc897be57c4213c0.camel@mediatek.com>
-In-Reply-To: <535478691c3a9ed31b508f59dc897be57c4213c0.camel@mediatek.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 1 Sep 2021 09:14:50 +0200
-Message-ID: <CAMuHMdUd+j7MYv3LXOH1C45UjEqVVjwm1mmyzpZyv+cuR3cDaw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: mediatek: SND_SOC_MT8195 should depend on ARCH_MEDIATEK
-To:     Trevor Wu <trevor.wu@mediatek.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7f4f5ab0-cf23-3e27-211e-4dcd8903f96f@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Trevor,
+On 01-09-21, 09:57, Dmitry Osipenko wrote:
+> 01.09.2021 09:10, Viresh Kumar пишет:
+> > So you create the OPP table and just after that you remove it ? Just
+> > to get the current OPP and pstate ? This doesn't look okay.
+> > 
+> > Moreover, this routine must be implemented with the expectation that
+> > the genpd core can call it anytime it wants, not just at the
+> > beginning. And so if the table is already setup by someone else then,
+> > then this all will just fail.
+> 
+> This is not doable using the current OPP API, it doesn't allow to
+> re-use initialized OPP table.
 
-On Wed, Sep 1, 2021 at 5:48 AM Trevor Wu <trevor.wu@mediatek.com> wrote:
-> On Tue, 2021-08-31 at 15:18 +0200, Geert Uytterhoeven wrote:
-> > The Mediatek MT8195 sound hardware is only present on Mediatek MT8195
-> > SoCs.  Hence add a dependency on ARCH_MEDIATEK, to prevent asking the
-> > user about this driver when configuring a kernel without Mediatek SoC
-> > support.
-> >
-> > Fixes: 6746cc858259985a ("ASoC: mediatek: mt8195: add platform
-> > driver")
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> >  sound/soc/mediatek/Kconfig | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-> > index cf567a89f421b4c0..c8c815f599da90bf 100644
-> > --- a/sound/soc/mediatek/Kconfig
-> > +++ b/sound/soc/mediatek/Kconfig
-> > @@ -187,6 +187,7 @@ config SND_SOC_MT8192_MT6359_RT1015_RT5682
-> >
-> >  config SND_SOC_MT8195
-> >       tristate "ASoC support for Mediatek MT8195 chip"
-> > +     depends on ARCH_MEDIATEK || COMPILE_TEST
-> >       select SND_SOC_MEDIATEK
-> >       help
-> >         This adds ASoC platform driver support for Mediatek MT8195
-> > chip
->
-> Hi Geert,
->
-> Thanks for your patch first.
-> I really missed the dependency declaration.
-> But we only test "depends on ARCH_MEDIATEK" internally, maybe removing
-> "COMPILE_TEST" like other MTK series is better for the maintenance in
-> the future.
+That isn't correct, you can call dev_pm_opp_of_add_table() as many
+times as you want. It will just increase the refcount and return the
+next time.
 
-If the driver compiles with CONFIG_ARCH_MEDIATEK=n, it is better
-to enable compile-testing, as that may catch issues.\
-I didn't change the existing MTK symbols, only new symbols.
-(adding missing dependencies to existing symbols is in my (huge) backlog ;-)
+Yes, you can call the APIs like set-clk-name or supported-hw, since
+they are supposed to be set only once.
 
-Gr{oetje,eeting}s,
+> The current limitation is okay because genpd core doesn't call
+> routine anytime.
 
-                        Geert
+Yeah, but is broken by design. People can make changes to genpd core
+later on to call it as many times and they aren't required to have a
+look at all the users to see who abused the API and who didn't.
+
+> > Can you give the sequence in which the whole thing works out with
+> > respect to the OPP core? who calls
+> > devm_tegra_core_dev_init_opp_table() and when, and when exactly will
+> > this routine get called, etc ?
+> > 
+> 
+> gr3d_probe(struct platform_device *pdev)
+
+Thanks for this.
+
+> {
+> 	gr3d_init_power(dev)
+> 	{
+> 		static const char * const opp_genpd_names[] = { "3d0", "3d1", NULL };
+> 
+> 		devm_pm_opp_attach_genpd(dev, opp_genpd_names)
+> 		{
+> 			dev_pm_opp_attach_genpd(dev, names, virt_devs)
+> 			{
+> 				// takes and holds table reference
+> 				opp_table = _add_opp_table(dev, false);
+> 
+> 				while (*name) {
+> 					// first attachment succeeds, 
+> 					// second fails with "tegra-gr3d 54180000.gr3d: failed to set OPP clk: -EBUSY"
+> 					dev_pm_domain_attach_by_name(dev, *name)
+> 					{
+> 						tegra_pmc_pd_dev_get_performance_state(dev)
+> 						{
+> 							dev_pm_opp_set_clkname(dev, NULL);
+> 							dev_pm_opp_of_add_table(dev);
+
+What you end up doing here is pretty much like
+devm_tegra_core_dev_init_opp_table_simple(), right ?
+
+> 							opp = dev_pm_opp_get_current(dev);
+> 							dev_pm_opp_of_remove_table(dev);
+> 							dev_pm_opp_put_clkname(opp_table);
+
+You shouldn't be required to do this at all.
+
+> 							...
+> 						}
+> 						// opp_table->clk = ERR_PTR(-EINVAL) after the first attachment
+> 					}
+> 				}
+> 			}
+> 		}
+> 	}
+> 
+> 	devm_tegra_core_dev_init_opp_table_simple(&pdev->dev);
+
+Can we make the call at the beginning ? before calling
+gr3d_init_power() ? I mean you should only be required to initialize
+the OPP table just once.
+
+If not, then what about calling
+devm_tegra_core_dev_init_opp_table_simple() from here and from
+tegra_pmc_pd_dev_get_performance_state() as well ?
+
+And update devm_tegra_core_dev_init_opp_table_simple() to call
+dev_pm_opp_get_opp_table() first and return early if the OPP table is
+already initialized ?
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+viresh
