@@ -2,149 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7853FD078
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 02:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992583FD092
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 03:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241461AbhIAAyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 20:54:00 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54796 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231509AbhIAAx7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 20:53:59 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1810Y9nI045052;
-        Tue, 31 Aug 2021 20:52:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=S+vwLi+45krq88Ka4EYXVLoMuSWJAYuOgMxx8mDnubQ=;
- b=deAYEqqU5aMCIswtLnTyk20aVNmtPFebxB6Tb3W2Q+RlZ1JZpkUg+bi3bh076TlO3Zqr
- P95ZJCOPOYnHl6CZipEbclRZ0m4uKYbZN0c3X0DxnP/IFQsJ+0ArbYDxFfE0mc43xG+r
- WENoBR7WakeYsK0HHbszjwW5d+TyCcbDprhvZ03BFiIM2N/U5AFozB6MT1+zeB3RoXbL
- CXJ/wSxXNVG/DFGcDRe4THE92ijXKbp0H+vCb3QNjADQXQE/nBTn0liWMcgVvl7tHfFx
- U73FzRipvJWl2mqhr5O4pEIQDkhgxyPSvjaB1u4kbzRPeA2tlf0Ni/I8TFKf9mi9/E6Q sg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3asxn70vg1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 20:52:25 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1810kmff086585;
-        Tue, 31 Aug 2021 20:52:24 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3asxn70vfm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 31 Aug 2021 20:52:24 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1810miJh026273;
-        Wed, 1 Sep 2021 00:52:23 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma04wdc.us.ibm.com with ESMTP id 3aqcsc2suu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 00:52:23 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1810qLa738142332
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Sep 2021 00:52:21 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9DD6228066;
-        Wed,  1 Sep 2021 00:52:21 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 65BA028058;
-        Wed,  1 Sep 2021 00:52:17 +0000 (GMT)
-Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.211.95.128])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  1 Sep 2021 00:52:17 +0000 (GMT)
-Subject: Re: [PATCH v4 00/12] Enroll kernel keys thru MOK
-To:     Eric Snowberg <eric.snowberg@oracle.com>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
-        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-        scott.branden@broadcom.com, weiyongjun1@huawei.com,
-        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        lszubowi@redhat.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org, pjones@redhat.com,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        Patrick Uiterwijk <patrick@puiterwijk.org>
-References: <20210819002109.534600-1-eric.snowberg@oracle.com>
- <fcb30226f378ef12cd8bd15938f0af0e1a3977a2.camel@kernel.org>
- <f76fcf41728fbdd65f2b3464df0821f248b2cba0.camel@linux.ibm.com>
- <91B1FE51-C6FC-4ADF-B05A-B1E59E20132E@oracle.com>
- <e7e251000432cf7c475e19c56b0f438b92fec16e.camel@linux.ibm.com>
- <cedc77fefdf22b2cec086f3e0dd9cc698db9bca2.camel@kernel.org>
- <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
- <9526a4e0be9579a9e52064dd590a78c6496ee025.camel@linux.ibm.com>
- <9067ff7142d097698b827f3c1630a751898a76bf.camel@kernel.org>
- <bc37d1da3ef5aae16e69eeda25d6ce6fe6a51a77.camel@HansenPartnership.com>
- <10bc1017-2b45-43f3-ad91-d09310b24c2c@linux.vnet.ibm.com>
- <D07DE64F-FE8B-4020-8EC2-94C3C0F9920A@oracle.com>
-From:   Nayna <nayna@linux.vnet.ibm.com>
-Message-ID: <89a37802-1423-6b1c-c0ef-6f84e544ac33@linux.vnet.ibm.com>
-Date:   Tue, 31 Aug 2021 20:52:16 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S241550AbhIABEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 21:04:48 -0400
+Received: from mail-co1nam11on2063.outbound.protection.outlook.com ([40.107.220.63]:39520
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241544AbhIABEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 21:04:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VBHEhm5ufbv1cuwCtaG91ThHPnSIa4QtXmN127YqoPRsXmeSSODiC2jcdyoujy3Cq7Of4inhuBUYvdZzC+lD3RDFCAppx8CN6R3KjlkjB44eAUlkXNWwgpXsehUWJ2acurYXCDCkmZrN77sUUcPAOGjIdeZCv7UnHl0ZWBB11pioqla3iQ9dVKG8gESrNgP5fU/zxNo7kSDIHwKr5XcENS6sI0gEJqW+aWxksHX364sXn1gk3tvBaJ0NVfHcgOx3Wt4RV4VWcLNGTmP3abWJ6iERJB9o/tpiWq0nDGEanrbsS9X5uORLdkhEA4IGWkECt0t/7WNY7xtNua73EMMCfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wh2oHMArEH4Nx+/9A5fLqUvoRevYnAlOcPspQAx8h/Y=;
+ b=kLgWYLNz7ao/QWvv7mT6sRfbp2r12I1hjShgNmn0oNQEsQ/dn1cKysckIJ/oFOyQYKQHpmX5WqTtTfA72jxRZhwdON8cl/903bXUTwoJ1qJT6ihyhgYJzgOEYD6lJ/835HWe2Fw98f1sCJIHdEhVQmrmJpTDh18+p5Olqs1/hb4+JoyWGdcTOc67tBdwjDjUNI7VV8krCOomVF7WiEN4xWuXHDE9weC3kH1HdEFeQYhIUhX1B0fLv5d6X7yCuQMqjTkJid9+watUaSUPBhhIXck9c1h3mk2zu8OUsUNs/Z9E91Fk6HK0/YvtqxoMHno42B2GRvSp1OS/nQ2FGyaHLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wh2oHMArEH4Nx+/9A5fLqUvoRevYnAlOcPspQAx8h/Y=;
+ b=3lvAclBIYbodye5w6//PMYzxMpcpYrQWDEX47FoWr+BIuJ5EA54aNzYTDMGyLAI+NGfbdWe8SHZJnM+qlHyRSvt81N3V9Lxx8czenrZjjom6HqqLG8AhuhukUF/ZwXsgXD/2xN9wdKVJscKncjgydP45kxrBwgLBjBF7PaQVohI=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
+Received: from CH2PR12MB4133.namprd12.prod.outlook.com (2603:10b6:610:7a::13)
+ by CH2PR12MB4823.namprd12.prod.outlook.com (2603:10b6:610:11::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17; Wed, 1 Sep
+ 2021 01:03:42 +0000
+Received: from CH2PR12MB4133.namprd12.prod.outlook.com
+ ([fe80::f5af:373a:5a75:c353]) by CH2PR12MB4133.namprd12.prod.outlook.com
+ ([fe80::f5af:373a:5a75:c353%6]) with mapi id 15.20.4457.024; Wed, 1 Sep 2021
+ 01:03:42 +0000
+Date:   Tue, 31 Aug 2021 20:03:25 -0500
+From:   Michael Roth <michael.roth@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 28/38] x86/compressed/64: enable
+ SEV-SNP-validated CPUID in #VC handler
+Message-ID: <20210901010325.3nqw7d44vhsdzryb@amd.com>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-29-brijesh.singh@amd.com>
+ <YSaXtpKT+iE7dxYq@zn.tnic>
+ <20210827164601.fzr45veg7a6r4lbp@amd.com>
+ <YS3+saDefHwkYwny@zn.tnic>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YS3+saDefHwkYwny@zn.tnic>
+X-ClientProxiedBy: SA9PR13CA0178.namprd13.prod.outlook.com
+ (2603:10b6:806:28::33) To CH2PR12MB4133.namprd12.prod.outlook.com
+ (2603:10b6:610:7a::13)
 MIME-Version: 1.0
-In-Reply-To: <D07DE64F-FE8B-4020-8EC2-94C3C0F9920A@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: WV_ZVu190WkpdPe5PqSJVTYkBc2NlkNX
-X-Proofpoint-ORIG-GUID: fXWlbOls-kFkB-Cmew8atS2JC6VEAo20
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-31_10:2021-08-31,2021-08-31 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- adultscore=0 impostorscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0
- phishscore=0 spamscore=0 bulkscore=0 clxscore=1015 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2109010001
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (165.204.77.1) by SA9PR13CA0178.namprd13.prod.outlook.com (2603:10b6:806:28::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.9 via Frontend Transport; Wed, 1 Sep 2021 01:03:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f132e3ef-7381-47dc-cc38-08d96ce456cd
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4823:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CH2PR12MB482347D07C712DEBFC050E3095CD9@CH2PR12MB4823.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: j3bpRzP0spx0ZGtSGUnEhEGpQjzPEIvdky6kMBrzBpC2WiZrtvla0VVKyN2YxmI//wb6lNhVvXCehNFW8J+4XpnaI0S2bCi409WJ5nqJ4ofh0rbFiR5KrpG6sNsLIh+9RLggvMz6cbbHE/9L+V20ZWbB08aMwZOhvOVbZJPC6lHwXUzdIq1v96lzU3DDsyfn9VCRZS2fj2Wc2v9Npnq48hbQkQwa/Xw0jDDjsmyRwEIXq4cRRLR5YYwKX1A00XNbUOgTtuzp9rveXxyU5jzMRruTCw5R6/WW+fR2BHeOlZ5gnwegTiyK+jCrdJbzUqnsg7UMsDKZShWnfWzkUFb0W+9qjhmjquimqNEZPc04GPVkKt1gySKi3fNa9Z3G6zkCTWOiy4ivc0WpqBsgqirBYBJExQdUKeOT+0i+T+2v0vjqufh5X9PfYOYvBnUbP3k4QuwAOrQ6Kwsb+PDi6U7aL9t24Gz4hfoQyK747t1AyTUPajZPIb4Z6y4QErT/16m8ND+kIAV5ehgP/FMwEtEElH+hTn5BtCKwvqimb7ozg+PxQkKyD4OBEiDv0SkjwnsXfCMns2fREZPi3/FklFQ+u6QIgmXMxLcGfHyDxKQbTEHXyUCf7mh+sUfD4RhfBXHIBDOBE3c6+uwLA9kVXhjVz2I9o2UFYn9KbiIbwNKOq3uHSO9JL78NgD6hzUqI+/y3688ldYKNxqLKvtNpwyWvPw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB4133.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(366004)(39860400002)(376002)(8676002)(6666004)(86362001)(1076003)(8936002)(6486002)(186003)(36756003)(52116002)(26005)(66946007)(66556008)(83380400001)(38100700002)(38350700002)(6496006)(66476007)(6916009)(2616005)(956004)(5660300002)(2906002)(478600001)(44832011)(7416002)(7406005)(4326008)(54906003)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dzjHCdGh+AdsDYWflQjAfH0iNfGbwIumJg4B5MipRsnKjaTu9XmBSgHpa8Up?=
+ =?us-ascii?Q?IcQhh41pF1SFyCz9KXXw9eoeDVHt7QE/JEWmk4xWzYyIGItS8xxiTqxQtWO/?=
+ =?us-ascii?Q?Vb0eWJwYbGuod9WIXzDc5mckgW4eV1ZI3NHThGuCR379cN4ibSy8Bev1UQQ3?=
+ =?us-ascii?Q?NnTTMwjPML5OO2hSLTpG4DV5ZL9sqCfhVdheYFbEylxnYZG3rLbKLR7uTJI7?=
+ =?us-ascii?Q?2xLgt9xPzhfV2h5+5jVk07dD0+/AUsjtSXHc6UCdakW+BtiC5p5Nv+bG3+65?=
+ =?us-ascii?Q?MlKwyQFVsB7JcZazlce6VaFEMWG9V5HgaaFjHGOG7CgPIR/PaKAIcA/2kQWS?=
+ =?us-ascii?Q?1ANLtKT63UMmW058grGxDfr/hWVsYNevkRVlViCGbFInYb09iw5hXw3jG6Am?=
+ =?us-ascii?Q?kRlXAalwMDCHY6o449RwpKQL47M2Ke/7pKyKi0oXCSXTs0uYWX3CQEti4Ppg?=
+ =?us-ascii?Q?Ts3d+W6nEtFG1AEGHChNbMlYEYDUlqN+jV0WQnQN4ANyV5Xc1YuUJURaMMql?=
+ =?us-ascii?Q?OatYvU4zLU52cvoNdbu8JvqQFX6jgkIwX6PjSfVQXztFsr0vWaOdnLtVyqQq?=
+ =?us-ascii?Q?LNiDrQyvp4HpDII1W8pfL4VmAey/Mu1UdCqbgeIiuCBCFytr8HeJpORgSGma?=
+ =?us-ascii?Q?gFOVwTwyUwqlE1NLZLDU3eDgmzL2/2kVrE3kpGxqITH3ejte+H3HE9/HD8Ob?=
+ =?us-ascii?Q?RnTKZnC53uvbar/z93ovaFa8EnBiPtAQuSjrVUHLEHOiANP9qV//Eb2gumx2?=
+ =?us-ascii?Q?px5MblW1fc8FCE5crLJENSbTVXc3oquKoxYclAx9uEb9QPl1gGr1dDdvXMW2?=
+ =?us-ascii?Q?KTXYV48Y3vjJg+qeRKJvPN3TktZAk0hYlbxC1WYijzIDhPe3pX1cm8TjOaRY?=
+ =?us-ascii?Q?dE8OnhnnYwhMJxNLwpwjDaQDkJYFh3ZUrIV1/tguWm1aECWf6fELsINjQYkl?=
+ =?us-ascii?Q?5qdD5dc5+B4GBa2Aw+TNwVImJnYp32qrft192xndLg+Lz1pa9F4tp+IAl5+U?=
+ =?us-ascii?Q?QaXlImJ7+yX1WEV+6bEYclH1jvZHsrWSY94/NsDp+g9JZzfbj65hyoUsfIvD?=
+ =?us-ascii?Q?QolFRDmiVvIKgc1zoxXJJXhP89H0crg+JHS1kIjUZgqLMUU/6uSuN0bYkYFU?=
+ =?us-ascii?Q?UPT55zvbzZ8CgSft7+LfRrTH87XPIzkliy+lJ635DqZ9oK5cFCbXAB4HtlyU?=
+ =?us-ascii?Q?IfIzdxgbPQxuM/qEyRRcCdJ/mNWjmpnNTldRaKpqZL3rcXmbZeW8NmuapwQJ?=
+ =?us-ascii?Q?hzhVsx1oYPZHpUs53Sfl+XYqeV1BROuR8aHiBYbLG6s7WFAGcOAPZALFN1xP?=
+ =?us-ascii?Q?SKdp7+rlLUqLuoveR6fHBYAY?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f132e3ef-7381-47dc-cc38-08d96ce456cd
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB4133.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 01:03:41.8080
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dSFYioyk3kjt47ctFiUnzelIR86hqWFAXIc7nifuQSXs4qKwVLoHurigh2m0yxlEI/bdUm2yYNEADSAsTIMMlg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4823
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 31, 2021 at 12:04:33PM +0200, Borislav Petkov wrote:
+> On Fri, Aug 27, 2021 at 11:46:01AM -0500, Michael Roth wrote:
+> > Will make sure to great these together, but there seems to be a convention
+> > of including misc.h first, since it does some fixups for subsequent
+> > includes. So maybe that should be moved to the top? There's a comment in
+> > boot/compressed/sev.c:
+> > 
+> > /*
+> >  * misc.h needs to be first because it knows how to include the other kernel
+> >  * headers in the pre-decompression code in a way that does not break
+> >  * compilation.
+> >  */
+> > 
+> > And while it's not an issue here, asm/sev.h now needs to have
+> > __BOOT_COMPRESSED #define'd in advance. So maybe that #define should be
+> > moved into misc.h so it doesn't have to happen before each include?
+> 
+> Actually, I'd like to avoid all such nasty games, if possible, with the
+> compressed kernel includes because this is where it leads us: sprinkling
+> defines left and right and all kinds of magic include order which is
+> fragile and error prone.
+> 
+> So please try to be very conservative here with all the including games.
+> 
+> So I'd like to understand first *why* asm/sev.h needs to have
+> __BOOT_COMPRESSED defined and can that be avoided? Maybe in a separate
+> mail because this one already deals with a bunch of things.
 
-On 8/30/21 1:39 PM, Eric Snowberg wrote:
->> On Aug 27, 2021, at 2:44 PM, Nayna <nayna@linux.vnet.ibm.com> wrote:
->> On 8/25/21 6:27 PM, James Bottomley wrote:
->>> Remember, a CA cert is a self signed cert with the CA:TRUE basic
->>> constraint.  Pretty much no secure boot key satisfies this (secure boot
->>> chose deliberately NOT to use CA certificates, so they're all some type
->>> of intermediate or leaf), so the design seems to be only to pick out
->>> the CA certificates you put in the MOK keyring.  Adding the _ca suffix
->>> may deflect some of the "why aren't all my MOK certificates in the
->>> keyring" emails ...
->>
->> My understanding is the .system_ca keyring should not be restricted only
->> to self-signed CAs (Root CA). Any cert that can qualify as Root or
->> Intermediate CA with Basic Constraints CA:TRUE should be allowed. In
->> fact, the intermediate CA certificates closest to the leaf nodes would be
->> best.
-> With an intermediate containing CA:TRUE, the intermediate cert would not
-> be self signed. Just for my clarification, does this mean I should remove
-> the check that validates if it is self signed and instead somehow check if
-> the CA flag is set?  Wouldn’t this potentially allow improperly signed certs
-> into this new keyring?
->
-In this model, we are relying on the admin to ensure the authenticity of 
-the certificate(s) being loaded onto the new keyring. It is similar to 
-trusting the admin to enable the variable and add keys to MOK. Following 
-are the checks that must pass before adding it to .system_ca keyring.
+I think I just convinced myself at some point that that's where all
+these sev-shared.c declarations are supposed to go, but you're right, I
+could just as easily move all the __BOOT_COMPRESSED-only definitions
+into boot/compressed/misc.h and avoid the mess.
 
-1. Check against revocation_list.
-2. Check Basic Constraints: CA=TRUE.
-3. Check keyUsage = keyCertSign.
+That'll make it nicer if I can get some of the __BOOT_COMPRESSED-guarded
+definitions in sev-shared.c moved out boot/compressed/sev.c and
+kernel/sev.c as well, with the help of some common setter/getter helpers
+to still keep most of the core logic/data structures contained in
+sev-shared.c.
 
-Thanks & Regards,
+> 
+> > cpuid.h is for cpuid_function_is_indexed(), which was introduced in this
+> > series with patch "KVM: x86: move lookup of indexed CPUID leafs to helper".
+> 
+> Ok, if we keep cpuid.h only strictly with cpuid-specific helpers, I
+> guess that's fine.
+> 
+> > efi.h is for EFI_CC_BLOB_GUID, which gets referenced by sev-shared.c
+> > when it gets included here. However, misc.h seems to already include it,
+> > so it can be safely dropped from this patch.
+> 
+> Yeah, and this is what I mean: efi.h includes a bunch of linux/
+> namespace headers and then we have to go deal with compressed
+> pulling all kinds of definitions from kernel proper, with hacks like
+> __BOOT_COMPRESSED, for example.
+> 
+> That EFI_CC_BLOB_GUID is only needed in the compressed kernel, right?
+> That is, if you move all the CC blob parsing to the compressed kernel
+> and supply the thusly parsed info to kernel proper. In that case, you
+> can simply define in there, in efi.c or so.
 
-        - Nayna
-
+It was used previously in kernel proper to get at the secrets page later,
+but now it's obtained via the cached entry in boot_params.cc_blob_address.
+Unfortunately it uses EFI_GUID() macro, so maybe efi.c or misc.h where
+it makes more sense to add a copy of the macro?
