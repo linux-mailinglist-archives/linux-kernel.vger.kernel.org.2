@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461143FDAF4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E7B3FDBD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343736AbhIAMga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:36:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33492 "EHLO mail.kernel.org"
+        id S1345654AbhIAMoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:44:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343873AbhIAMeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:34:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6429B6101B;
-        Wed,  1 Sep 2021 12:32:42 +0000 (UTC)
+        id S1345022AbhIAMkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:40:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 061E5611AD;
+        Wed,  1 Sep 2021 12:36:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499562;
-        bh=1qwlMTCwX3PCcmkFnA7S1Z4+zxtyGF4FyrniO142TGU=;
+        s=korg; t=1630499797;
+        bh=7tbVTn4xSds3qmU1rNabZ45Hm3sMmMXSWEqLze0MOR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BRmK+OIZmRmK7S9qHC3A447dtnXZxPY43EjBVvN8Su0HdIhy9WwBDNxyT6SPu4ISJ
-         mVRoVSmGLgHD0veKWNhstdBOtXMHZA1IoDkuTmt7jRi1BDOYmToIOve+JF6hCK4Xe6
-         RbTlob+hZwSJ60IsUDpxc3LUqMIjnGbUoriyvBFI=
+        b=1aZrDlZcdS1v908k6VGRcn2ol/LDf+bekO+cLPueWZ9RaBmb9rRGBShrr6UGAvXyu
+         jnOoiSf/LpwhwEfti/QCuACuMkIqZ6q7DwVyVMYNHLALrMWzNZt5qoRvRlhPrdkl5T
+         7c0qhqTDJKnGunoD2y4BGYw+VOSFhfYule6xZ6ek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Seiji Nishikawa <snishika@redhat.com>,
-        Richard Guy Briggs <rgb@redhat.com>,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.4 48/48] audit: move put_tree() to avoid trim_trees refcount underflow and UAF
-Date:   Wed,  1 Sep 2021 14:28:38 +0200
-Message-Id: <20210901122254.957547573@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 5.10 089/103] srcu: Make Tiny SRCU use multi-bit grace-period counter
+Date:   Wed,  1 Sep 2021 14:28:39 +0200
+Message-Id: <20210901122303.534998185@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +41,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Guy Briggs <rgb@redhat.com>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-commit 67d69e9d1a6c889d98951c1d74b19332ce0565af upstream.
+commit 74612a07b83fc46c2b2e6f71a541d55b024ebefc upstream.
 
-AUDIT_TRIM is expected to be idempotent, but multiple executions resulted
-in a refcount underflow and use-after-free.
+There is a need for a polling interface for SRCU grace periods.  This
+polling needs to distinguish between an SRCU instance being idle on the
+one hand or in the middle of a grace period on the other.  This commit
+therefore converts the Tiny SRCU srcu_struct structure's srcu_idx from
+a defacto boolean to a free-running counter, using the bottom bit to
+indicate that a grace period is in progress.  The second-from-bottom
+bit is thus used as the index returned by srcu_read_lock().
 
-git bisect fingered commit fb041bb7c0a9	("locking/refcount: Consolidate
-implementations of refcount_t") but this patch with its more thorough
-checking that wasn't in the x86 assembly code merely exposed a previously
-existing tree refcount imbalance in the case of tree trimming code that
-was refactored with prune_one() to remove a tree introduced in
-commit 8432c7006297 ("audit: Simplify locking around untag_chunk()")
-
-Move the put_tree() to cover only the prune_one() case.
-
-Passes audit-testsuite and 3 passes of "auditctl -t" with at least one
-directory watch.
-
-Cc: Jan Kara <jack@suse.cz>
-Cc: Will Deacon <will@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Seiji Nishikawa <snishika@redhat.com>
-Cc: stable@vger.kernel.org
-Fixes: 8432c7006297 ("audit: Simplify locking around untag_chunk()")
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-[PM: reformatted/cleaned-up the commit description]
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+[ paulmck: Fix ->srcu_lock_nesting[] indexing per Neeraj Upadhyay. ]
+Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/audit_tree.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/srcutiny.h |    6 +++---
+ kernel/rcu/srcutiny.c    |    5 +++--
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
---- a/kernel/audit_tree.c
-+++ b/kernel/audit_tree.c
-@@ -595,7 +595,6 @@ static void prune_tree_chunks(struct aud
- 		spin_lock(&hash_lock);
- 	}
- 	spin_unlock(&hash_lock);
--	put_tree(victim);
- }
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -15,7 +15,7 @@
  
- /*
-@@ -604,6 +603,7 @@ static void prune_tree_chunks(struct aud
- static void prune_one(struct audit_tree *victim)
+ struct srcu_struct {
+ 	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
+-	short srcu_idx;			/* Current reader array element. */
++	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
+ 	u8 srcu_gp_running;		/* GP workqueue running? */
+ 	u8 srcu_gp_waiting;		/* GP waiting for readers? */
+ 	struct swait_queue_head srcu_wq;
+@@ -59,7 +59,7 @@ static inline int __srcu_read_lock(struc
  {
- 	prune_tree_chunks(victim, false);
-+	put_tree(victim);
- }
+ 	int idx;
  
- /* trim the uncommitted chunks from tree */
+-	idx = READ_ONCE(ssp->srcu_idx);
++	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+ 	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
+ 	return idx;
+ }
+@@ -80,7 +80,7 @@ static inline void srcu_torture_stats_pr
+ {
+ 	int idx;
+ 
+-	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
++	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+ 	pr_alert("%s%s Tiny SRCU per-CPU(idx=%d): (%hd,%hd)\n",
+ 		 tt, tf, idx,
+ 		 READ_ONCE(ssp->srcu_lock_nesting[!idx]),
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -124,11 +124,12 @@ void srcu_drive_gp(struct work_struct *w
+ 	ssp->srcu_cb_head = NULL;
+ 	ssp->srcu_cb_tail = &ssp->srcu_cb_head;
+ 	local_irq_enable();
+-	idx = ssp->srcu_idx;
+-	WRITE_ONCE(ssp->srcu_idx, !ssp->srcu_idx);
++	idx = (ssp->srcu_idx & 0x2) / 2;
++	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+ 	WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wakes! */
+ 	swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nesting[idx]));
+ 	WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() cheap. */
++	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+ 
+ 	/* Invoke the callbacks we removed above. */
+ 	while (lh) {
 
 
