@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0223FDCA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBBD3FDAFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345410AbhIAMwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:52:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49254 "EHLO mail.kernel.org"
+        id S1343963AbhIAMgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:36:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344224AbhIAMrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:47:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38A8F6112E;
-        Wed,  1 Sep 2021 12:40:11 +0000 (UTC)
+        id S1343931AbhIAMel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:34:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C876D610CF;
+        Wed,  1 Sep 2021 12:32:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630500011;
-        bh=PR5+UzwjhjiHksRjiJxo2SybVQtKJ2lalyfiAKsmi+Q=;
+        s=korg; t=1630499576;
+        bh=lKfRqbPBA5wqqoVsOu1k9FXGDg1cI20CZHXQg7wY26A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E8EFUZUuTYUG/MEiQDBt2dP0gbKpnBZVeMXe9H1X7vIyJhYUua83eE/LNqJ6XK2hP
-         wt0cOfXnENC0wzonc1G5oICX+niCttzqsZeEGrNN8BXOm+QsQDHKRdlyhx3AfwNxZc
-         GoiGtETTZbMo8wiotb8grJND+b75u84ybwC5F5LA=
+        b=OWH8XFEJuVqf5PKUUP6cJOrzpsAv/HvjgxpZSHytDRiuAnc/T+T1OngGbLD9oorGC
+         wGxiz7Nl/Oll32gvCwBiSViqQHEoo5TnwO+kvIMdepvB/Pb0JDRj2dpr8YuJ936ZS4
+         ywA2ISQtmCRXCmlfL/+7Mj6+hz3X16RnBLM25OpU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
+        stable@vger.kernel.org, Gerd Rausch <gerd.rausch@oracle.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 070/113] perf/x86/intel/uncore: Fix integer overflow on 23 bit left shift of a u32
-Date:   Wed,  1 Sep 2021 14:28:25 +0200
-Message-Id: <20210901122304.330892212@linuxfoundation.org>
+Subject: [PATCH 5.4 36/48] net/rds: dma_map_sg is entitled to merge entries
+Date:   Wed,  1 Sep 2021 14:28:26 +0200
+Message-Id: <20210901122254.588697184@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,46 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Gerd Rausch <gerd.rausch@oracle.com>
 
-[ Upstream commit 0b3a8738b76fe2087f7bc2bd59f4c78504c79180 ]
+[ Upstream commit fb4b1373dcab086d0619c29310f0466a0b2ceb8a ]
 
-The u32 variable pci_dword is being masked with 0x1fffffff and then left
-shifted 23 places. The shift is a u32 operation,so a value of 0x200 or
-more in pci_dword will overflow the u32 and only the bottow 32 bits
-are assigned to addr. I don't believe this was the original intent.
-Fix this by casting pci_dword to a resource_size_t to ensure no
-overflow occurs.
+Function "dma_map_sg" is entitled to merge adjacent entries
+and return a value smaller than what was passed as "nents".
 
-Note that the mask and 12 bit left shift operation does not need this
-because the mask SNR_IMC_MMIO_MEM0_MASK and shift is always a 32 bit
-value.
+Subsequently "ib_map_mr_sg" needs to work with this value ("sg_dma_len")
+rather than the original "nents" parameter ("sg_len").
 
-Fixes: ee49532b38dd ("perf/x86/intel/uncore: Add IMC uncore support for Snow Ridge")
-Addresses-Coverity: ("Unintentional integer overflow")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-Link: https://lore.kernel.org/r/20210706114553.28249-1-colin.king@canonical.com
+This old RDS bug was exposed and reliably causes kernel panics
+(using RDMA operations "rds-stress -D") on x86_64 starting with:
+commit c588072bba6b ("iommu/vt-d: Convert intel iommu driver to the iommu ops")
+
+Simply put: Linux 5.11 and later.
+
+Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Link: https://lore.kernel.org/r/60efc69f-1f35-529d-a7ef-da0549cad143@oracle.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/intel/uncore_snbep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/rds/ib_frmr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 1f7bb4898a9d..a8f02c889ae8 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -4701,7 +4701,7 @@ static void __snr_uncore_mmio_init_box(struct intel_uncore_box *box,
- 		return;
+diff --git a/net/rds/ib_frmr.c b/net/rds/ib_frmr.c
+index 06ecf9d2d4bf..ef6acd721118 100644
+--- a/net/rds/ib_frmr.c
++++ b/net/rds/ib_frmr.c
+@@ -131,9 +131,9 @@ static int rds_ib_post_reg_frmr(struct rds_ib_mr *ibmr)
+ 		cpu_relax();
+ 	}
  
- 	pci_read_config_dword(pdev, SNR_IMC_MMIO_BASE_OFFSET, &pci_dword);
--	addr = (pci_dword & SNR_IMC_MMIO_BASE_MASK) << 23;
-+	addr = ((resource_size_t)pci_dword & SNR_IMC_MMIO_BASE_MASK) << 23;
+-	ret = ib_map_mr_sg_zbva(frmr->mr, ibmr->sg, ibmr->sg_len,
++	ret = ib_map_mr_sg_zbva(frmr->mr, ibmr->sg, ibmr->sg_dma_len,
+ 				&off, PAGE_SIZE);
+-	if (unlikely(ret != ibmr->sg_len))
++	if (unlikely(ret != ibmr->sg_dma_len))
+ 		return ret < 0 ? ret : -EINVAL;
  
- 	pci_read_config_dword(pdev, mem_offset, &pci_dword);
- 	addr |= (pci_dword & SNR_IMC_MMIO_MEM0_MASK) << 12;
+ 	if (cmpxchg(&frmr->fr_state,
 -- 
 2.30.2
 
