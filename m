@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958563FDBE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517173FDC6D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344659AbhIAMpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:45:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42974 "EHLO mail.kernel.org"
+        id S1344390AbhIAMuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:50:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345097AbhIAMko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:40:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADC5261106;
-        Wed,  1 Sep 2021 12:37:02 +0000 (UTC)
+        id S1344468AbhIAMqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:46:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 846586112F;
+        Wed,  1 Sep 2021 12:39:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499823;
-        bh=MfxQUixaNveeg5Rc43ZBxvP6pdrnZIwt6nbzLKYpHJY=;
+        s=korg; t=1630499977;
+        bh=m3rQmegEvjV+Cpnu1wQLHbUdV8WiWDw3yFLIIPHbw+Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GXLWVfp7wDeegTbOffaVla23TPg+zC7fFEFRWM0YR8lv8HWhgerm8D1Qr4VI6VUSn
-         s1N9adv2msBemiSCbxVaE/5dvbP7SQB7OxZclm2kCp6xeuYvdHxHvUpApMzuv615Zt
-         C7V2OvL9OxLT7pGohLemUcg2BmgWn/0OEJK9G3uA=
+        b=lh9ToBGRkhukqDTNvvFVQoa5zbg47QWBAoydNnQFgpQ9iLQa44DCegwPm7aeJAkgr
+         Dq80ofKf3Axji6iAi6qbwPgFTukAnS0fG8F4TAD5fit8TTkuepiqIG3veV+L0IlttK
+         QrfXrZ4ymtmtRlOU1gmRWL9VjwQTfpMKFXuw8bkQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Keyu Man <kman001@ucr.edu>, Willy Tarreau <w@1wt.eu>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 059/103] virtio_vdpa: reject invalid vq indices
-Date:   Wed,  1 Sep 2021 14:28:09 +0200
-Message-Id: <20210901122302.554625515@linuxfoundation.org>
+Subject: [PATCH 5.13 055/113] ipv4: use siphash instead of Jenkins in fnhe_hashfun()
+Date:   Wed,  1 Sep 2021 14:28:10 +0200
+Message-Id: <20210901122303.804423454@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
-References: <20210901122300.503008474@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit cb5d2c1f6cc0e5769099a7d44b9d08cf58cae206 ]
+[ Upstream commit 6457378fe796815c973f631a1904e147d6ee33b1 ]
 
-Do not call vDPA drivers' callbacks with vq indicies larger than what
-the drivers indicate that they support.  vDPA drivers do not bounds
-check the indices.
+A group of security researchers brought to our attention
+the weakness of hash function used in fnhe_hashfun().
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Link: https://lore.kernel.org/r/20210701114652.21956-1-vincent.whitchurch@axis.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Lets use siphash instead of Jenkins Hash, to considerably
+reduce security risks.
+
+Also remove the inline keyword, this really is distracting.
+
+Fixes: d546c621542d ("ipv4: harden fnhe_hashfun()")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Keyu Man <kman001@ucr.edu>
+Cc: Willy Tarreau <w@1wt.eu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/virtio/virtio_vdpa.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/ipv4/route.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-index 4a9ddb44b2a7..3f95dedccceb 100644
---- a/drivers/virtio/virtio_vdpa.c
-+++ b/drivers/virtio/virtio_vdpa.c
-@@ -149,6 +149,9 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
- 	if (!name)
- 		return NULL;
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index 78d1e5afc452..d8811e1fbd6c 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -600,14 +600,14 @@ static struct fib_nh_exception *fnhe_oldest(struct fnhe_hash_bucket *hash)
+ 	return oldest;
+ }
  
-+	if (index >= vdpa->nvqs)
-+		return ERR_PTR(-ENOENT);
-+
- 	/* Queue shouldn't already be set up. */
- 	if (ops->get_vq_ready(vdpa, index))
- 		return ERR_PTR(-ENOENT);
+-static inline u32 fnhe_hashfun(__be32 daddr)
++static u32 fnhe_hashfun(__be32 daddr)
+ {
+-	static u32 fnhe_hashrnd __read_mostly;
+-	u32 hval;
++	static siphash_key_t fnhe_hash_key __read_mostly;
++	u64 hval;
+ 
+-	net_get_random_once(&fnhe_hashrnd, sizeof(fnhe_hashrnd));
+-	hval = jhash_1word((__force u32)daddr, fnhe_hashrnd);
+-	return hash_32(hval, FNHE_HASH_SHIFT);
++	net_get_random_once(&fnhe_hash_key, sizeof(fnhe_hash_key));
++	hval = siphash_1u32((__force u32)daddr, &fnhe_hash_key);
++	return hash_64(hval, FNHE_HASH_SHIFT);
+ }
+ 
+ static void fill_route_from_fnhe(struct rtable *rt, struct fib_nh_exception *fnhe)
 -- 
 2.30.2
 
