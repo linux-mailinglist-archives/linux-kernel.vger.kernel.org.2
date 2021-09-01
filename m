@@ -2,132 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4053F3FE628
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FD63FE640
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237129AbhIAXih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 19:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
+        id S243064AbhIAXjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 19:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhIAXig (ORCPT
+        with ESMTP id S240233AbhIAXi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 19:38:36 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FA5C061575;
-        Wed,  1 Sep 2021 16:37:38 -0700 (PDT)
-Received: from Monstersaurus.local (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0D789340;
-        Thu,  2 Sep 2021 01:37:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1630539457;
-        bh=owpnSPQqGQmaNGyck4yspbdFSOJJfgASvCWk/miDPok=;
-        h=From:To:Cc:Subject:Date:From;
-        b=L867jHafIbUIjodQwm916Gwt0zhfYrjzgLZEQ7icSj4y/uOfHaXjcmmb0E3wU00dV
-         gNAfsZPQS9kNoE+QWOCexItBn3VWKYILf7LaRNPocYyShBVsaQ3NJHNSMspvH0nkdD
-         1I49inWNoGG5bpMAqroInTpZ5bJh6OTHY4W1BU+o=
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-To:     linux-renesas-soc@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS FOR RENESAS),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] dt-bindings: display: renesas,du: Provide bindings for r8a779a0
-Date:   Thu,  2 Sep 2021 00:36:54 +0100
-Message-Id: <20210901233655.1602308-1-kieran.bingham@ideasonboard.com>
+        Wed, 1 Sep 2021 19:38:58 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265C9C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:38:01 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id c17so63920pgc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tl7TywVZic9PhfHq2BmWEfnSDIUToLj1FPGq3mOdgmw=;
+        b=amPN+xrpXeCcUvsXZ2d7UHDE2nH9GBoGfLpr/Zq1IJmdo/pqCdlZwLqKWbBbEKvD4u
+         ryvzcTzvvpj8VE22IBXoux6mnmBeTmz8rQKRLRvtp3fCsCNSoA5vuIX5ioGrz3CexbzP
+         1YShB1JcwaoXaca8CoKe5VbjNjK+gCCwbTCO4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tl7TywVZic9PhfHq2BmWEfnSDIUToLj1FPGq3mOdgmw=;
+        b=YPC8Ni1Rflb3Lh9O/G/UYWdW7mqYOIBzFSh9ZcvwNwbxrV8lN7oDY2gEzOXGDjevMd
+         YpsS5JRiMcHlqd4fvOvPMLPqthXWakuwQxmVXshRhLeh7ChQRXyY8GE+MlNUdnt9Gp8c
+         GIvzH7I+PC6xCFUvoJq1UiXF2d6DZHl+/hzBJJY9MY9FQ+Z1kfiY8mqziL7yvbj4642P
+         AmrTHoiCl9OU6u4T5TmxeikxVQwnasXmgDZstTXcYUk/eHNgsViFQ2jHiuEOwehDgVoG
+         R7oFpbtoCBpZO7A7StvEgnfEXd/9Yt1ew84QrPz67y8zNIT6JSki1d0AgebCHxzpL8D2
+         amrQ==
+X-Gm-Message-State: AOAM533cY2PKc7TaY2Q1/cXsG7zo++2Ltr0XVBtGqwwB24C39LyZIIaZ
+        BMYmSBbQp5/i/XCXvCIswTmqsg==
+X-Google-Smtp-Source: ABdhPJw6iwsYq9xnv36qxIxw0UUdgDQijR/zSF04ZL0MjVxWr8jae0SafkiRcENHLnowa/XoNb6S0A==
+X-Received: by 2002:a63:f80a:: with SMTP id n10mr187132pgh.303.1630539480763;
+        Wed, 01 Sep 2021 16:38:00 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u24sm87353pfm.81.2021.09.01.16.37.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 16:37:59 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH 0/4] Fix ro_after_init vs static_call
+Date:   Wed,  1 Sep 2021 16:37:53 -0700
+Message-Id: <20210901233757.2571878-1-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=751; h=from:subject; bh=LMtX30+lHx9d1AiyntE3juWOs+vNiZc4QnLUTVqvMfk=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhMA7UmpG1QrLCXLyjRwNizAoMH23KjhJdgmQwH3oR fiBTMdOJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYTAO1AAKCRCJcvTf3G3AJhMUD/ 9jCNxxAKmyPneQY5gEfnpbv479Oor6moPazSiSEojXx1xulI+ViTPAcS/XqzP98X8/14oKEKVBdpq0 DlK1bjtgs4o3rVcMsHQ/8aH+JeLqzL0IHYCqQeZkB9D0Ruan0SJuN/3elxAWK1MdODurM1SW1Feosd QkHHg589WJdFLo9KzxnxSlmZlW/neMOKqguXhv0lRLc39NmcGjPCp5eN9koPYOi0GH+aa6g/uPu5fv jQm4KGT2KSMSGFZVs3fa8c9BLw9Tk60/PozJshlh9CG8nR16A9Eg6warfWkjjN+sLOXgT6XTjbHCZo TmE1ZRi5Gb1Jn1ySSYanQCvGyiAhsLCKNhJgy+BlGDw6t7J4ZysUEkroOU787UAdsCDZ+LViu6nFkB YKiBo1rrsPhz4+mJlhQp3o/s7qZuBuT+gpC45Y7AqUcl8ZqqTDsc8pUgeUcfx459NIUwPeOmilyoV4 kbyPdmETgDf/qGm0/t1Eef6/Rjcp8nwFg8heK5Dm47NTTm4vzAuCfjqm/GykG7ACHNG2+I5j5s7RX2 n3TmSWONZve8dL2xQjoIkgjICM7bIbdiu8wSfukzjyZSkFzA80GtNt0lMBJoBY67XrOBq2EvztxOpW gX1jQZR2Yg5Dee5YMMqC/hyntgUM5gSGnnjaHB82XdikWFP0FiDFwot8eFXA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Hi,
 
-Extend the Renesas DU display bindings to support the r8a779a0 V3U.
+It seems the .static_call_sites section was not being marked as
+ro-after-init in modules. Adjust the macro names, add comments, refactor
+the module section list, and fix .static_call_sites.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
----
-v2:
- - Collected Laurent's tag
- - Remove clock-names requirement
- - Specify only a single clock
+Thanks!
 
- .../bindings/display/renesas,du.yaml          | 50 +++++++++++++++++++
- 1 file changed, 50 insertions(+)
+-Kees
 
-diff --git a/Documentation/devicetree/bindings/display/renesas,du.yaml b/Documentation/devicetree/bindings/display/renesas,du.yaml
-index e3ca5389c17d..a6f7ef30fbb4 100644
---- a/Documentation/devicetree/bindings/display/renesas,du.yaml
-+++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
-@@ -39,6 +39,7 @@ properties:
-       - renesas,du-r8a77980 # for R-Car V3H compatible DU
-       - renesas,du-r8a77990 # for R-Car E3 compatible DU
-       - renesas,du-r8a77995 # for R-Car D3 compatible DU
-+      - renesas,du-r8a779a0 # for R-Car V3U compatible DU
- 
-   reg:
-     maxItems: 1
-@@ -773,6 +774,55 @@ allOf:
-         - reset-names
-         - renesas,vsps
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - renesas,du-r8a779a0
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: Functional clock
-+
-+        clock-names:
-+          maxItems: 1
-+          items:
-+            - const: du
-+
-+        interrupts:
-+          maxItems: 2
-+
-+        resets:
-+          maxItems: 1
-+
-+        reset-names:
-+          items:
-+            - const: du.0
-+
-+        ports:
-+          properties:
-+            port@0:
-+              description: DSI 0
-+            port@1:
-+              description: DSI 1
-+            port@2: false
-+            port@3: false
-+
-+          required:
-+            - port@0
-+            - port@1
-+
-+        renesas,vsps:
-+          minItems: 2
-+
-+      required:
-+        - interrupts
-+        - resets
-+        - reset-names
-+        - renesas,vsps
-+
- additionalProperties: false
- 
- examples:
+Kees Cook (4):
+  vmlinux.lds.h: Use regular *RODATA and *RO_AFTER_INIT_DATA suffixes
+  vmlinux.lds.h: Split .static_call_sites from .static_call_tramp_key
+  module: Use a list of strings for ro_after_init sections
+  module: Include .static_call_sites in module ro_after_init
+
+ arch/s390/kernel/vmlinux.lds.S    |  2 +-
+ include/asm-generic/vmlinux.lds.h | 22 +++++++++++++++-------
+ kernel/module.c                   | 29 +++++++++++++++++------------
+ 3 files changed, 33 insertions(+), 20 deletions(-)
+
 -- 
 2.30.2
 
