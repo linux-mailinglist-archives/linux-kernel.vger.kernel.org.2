@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB6C3FDC9E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75203FDACB
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344968AbhIAMvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:51:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48350 "EHLO mail.kernel.org"
+        id S1344007AbhIAMfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:35:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344569AbhIAMqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:46:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B4AF61102;
-        Wed,  1 Sep 2021 12:40:08 +0000 (UTC)
+        id S244820AbhIAMdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:33:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96C7C610D2;
+        Wed,  1 Sep 2021 12:31:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630500009;
-        bh=dqH+u+yPN9IzpdDnt2/tN+yeRwSbWdbhLz0AUOGkTjE=;
+        s=korg; t=1630499512;
+        bh=xGeeZpq2HAygFPk++Gk7ModHNahau+QWrL/yPLyjIIk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FP9W1zTuXK1rEHFOcB7qLOdHA3+mh16ft/xdmE2KWWLYkfUGr8sbZiT1ENJDtU4+m
-         BwwqsB8auZBuRq9W3CWlza50xTr4kkviKHRvqlUQutjLnaT49gSoeEb1wRDwuofZeJ
-         0r5LumMp06FVWx3Eta/ajGGkEFCHrBJ/oz/x+1O4=
+        b=wGFdPhjHTP49kS3laur1ITZ2OYUJT/i5Fwt6mxUE9vBnX/0iAcdHZYeiCxqaghss0
+         ev00XpgS9/T9Zmzew0I1FvbVsFev1xRaC1RenC8XM3wv8KTxzDSAqtqX9bxXK8W7yy
+         aIUvNpb/96aNg7u70itSAlU4UcIyfnNV7+RFk2EI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yufeng Mo <moyufeng@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 061/113] net: hns3: add waiting time before cmdq memory is released
-Date:   Wed,  1 Sep 2021 14:28:16 +0200
-Message-Id: <20210901122303.998874355@linuxfoundation.org>
+Subject: [PATCH 5.4 27/48] perf/x86/intel/uncore: Fix integer overflow on 23 bit left shift of a u32
+Date:   Wed,  1 Sep 2021 14:28:17 +0200
+Message-Id: <20210901122254.310509992@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,93 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yufeng Mo <moyufeng@huawei.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit a96d9330b02a3d051ae689bc2c5e7d3a2ba25594 ]
+[ Upstream commit 0b3a8738b76fe2087f7bc2bd59f4c78504c79180 ]
 
-After the cmdq registers are cleared, the firmware may take time to
-clear out possible left over commands in the cmdq. Driver must release
-cmdq memory only after firmware has completed processing of left over
-commands.
+The u32 variable pci_dword is being masked with 0x1fffffff and then left
+shifted 23 places. The shift is a u32 operation,so a value of 0x200 or
+more in pci_dword will overflow the u32 and only the bottow 32 bits
+are assigned to addr. I don't believe this was the original intent.
+Fix this by casting pci_dword to a resource_size_t to ensure no
+overflow occurs.
 
-Fixes: 232d0d55fca6 ("net: hns3: uninitialize command queue while unloading PF driver")
-Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Note that the mask and 12 bit left shift operation does not need this
+because the mask SNR_IMC_MMIO_MEM0_MASK and shift is always a 32 bit
+value.
+
+Fixes: ee49532b38dd ("perf/x86/intel/uncore: Add IMC uncore support for Snow Ridge")
+Addresses-Coverity: ("Unintentional integer overflow")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Link: https://lore.kernel.org/r/20210706114553.28249-1-colin.king@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c   | 6 +++++-
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h   | 1 +
- drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c | 7 ++++++-
- drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h | 1 +
- 4 files changed, 13 insertions(+), 2 deletions(-)
+ arch/x86/events/intel/uncore_snbep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c
-index 76a482456f1f..91445521dde1 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c
-@@ -564,9 +564,13 @@ static void hclge_cmd_uninit_regs(struct hclge_hw *hw)
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index 40751af62dd3..9096a1693942 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -4382,7 +4382,7 @@ static void snr_uncore_mmio_init_box(struct intel_uncore_box *box)
+ 		return;
  
- void hclge_cmd_uninit(struct hclge_dev *hdev)
- {
-+	set_bit(HCLGE_STATE_CMD_DISABLE, &hdev->state);
-+	/* wait to ensure that the firmware completes the possible left
-+	 * over commands.
-+	 */
-+	msleep(HCLGE_CMDQ_CLEAR_WAIT_TIME);
- 	spin_lock_bh(&hdev->hw.cmq.csq.lock);
- 	spin_lock(&hdev->hw.cmq.crq.lock);
--	set_bit(HCLGE_STATE_CMD_DISABLE, &hdev->state);
- 	hclge_cmd_uninit_regs(&hdev->hw);
- 	spin_unlock(&hdev->hw.cmq.crq.lock);
- 	spin_unlock_bh(&hdev->hw.cmq.csq.lock);
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
-index 8e055e1ce793..a836bdba5a4d 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
-@@ -9,6 +9,7 @@
- #include "hnae3.h"
+ 	pci_read_config_dword(pdev, SNR_IMC_MMIO_BASE_OFFSET, &pci_dword);
+-	addr = (pci_dword & SNR_IMC_MMIO_BASE_MASK) << 23;
++	addr = ((resource_size_t)pci_dword & SNR_IMC_MMIO_BASE_MASK) << 23;
  
- #define HCLGE_CMDQ_TX_TIMEOUT		30000
-+#define HCLGE_CMDQ_CLEAR_WAIT_TIME	200
- #define HCLGE_DESC_DATA_LEN		6
- 
- struct hclge_dev;
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c
-index d8c5c5810b99..2267832037d8 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c
-@@ -505,12 +505,17 @@ static void hclgevf_cmd_uninit_regs(struct hclgevf_hw *hw)
- 
- void hclgevf_cmd_uninit(struct hclgevf_dev *hdev)
- {
-+	set_bit(HCLGEVF_STATE_CMD_DISABLE, &hdev->state);
-+	/* wait to ensure that the firmware completes the possible left
-+	 * over commands.
-+	 */
-+	msleep(HCLGEVF_CMDQ_CLEAR_WAIT_TIME);
- 	spin_lock_bh(&hdev->hw.cmq.csq.lock);
- 	spin_lock(&hdev->hw.cmq.crq.lock);
--	set_bit(HCLGEVF_STATE_CMD_DISABLE, &hdev->state);
- 	hclgevf_cmd_uninit_regs(&hdev->hw);
- 	spin_unlock(&hdev->hw.cmq.crq.lock);
- 	spin_unlock_bh(&hdev->hw.cmq.csq.lock);
-+
- 	hclgevf_free_cmd_desc(&hdev->hw.cmq.csq);
- 	hclgevf_free_cmd_desc(&hdev->hw.cmq.crq);
- }
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h
-index c6dc11b32aa7..59f4c19bd846 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.h
-@@ -8,6 +8,7 @@
- #include "hnae3.h"
- 
- #define HCLGEVF_CMDQ_TX_TIMEOUT		30000
-+#define HCLGEVF_CMDQ_CLEAR_WAIT_TIME	200
- #define HCLGEVF_CMDQ_RX_INVLD_B		0
- #define HCLGEVF_CMDQ_RX_OUTVLD_B	1
- 
+ 	pci_read_config_dword(pdev, SNR_IMC_MMIO_MEM0_OFFSET, &pci_dword);
+ 	addr |= (pci_dword & SNR_IMC_MMIO_MEM0_MASK) << 12;
 -- 
 2.30.2
 
