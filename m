@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC8A3FDCA4
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342203FDBDC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344940AbhIAMv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:51:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49972 "EHLO mail.kernel.org"
+        id S1345907AbhIAMpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:45:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346108AbhIAMqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:46:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C8760F21;
-        Wed,  1 Sep 2021 12:39:44 +0000 (UTC)
+        id S1344065AbhIAMkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:40:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AF8561155;
+        Wed,  1 Sep 2021 12:36:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499985;
-        bh=61Y4GfhL+M18hLC2f3AjSkmVlrnA73wa5mJG+u5J43w=;
+        s=korg; t=1630499808;
+        bh=F9yoIotIzFik7ysVZVflN4Wd+6wIU7YL3+6ONdX9auI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wSMjB7RNwNx1ENS99Zj6y8txzzcIr5VONTJBnAGr2ZKTJjXPBsYMERam5ZkFhp9wF
-         /juI5H/JnqT76QYuQsW/0MWu5PGY4QP3Y++uXM+5r8X0LLvEWZaaoveLos3iNbvt+c
-         9riVSbqxdrNP61qPwXidWigNhKDdAVPi9FJYVoLw=
+        b=CW/3GlSN4ruQNp9q4Y3wmzJc0RPXwCgIm4TaovYp/bX6tjtO+MVopGe17Q/hQqUry
+         CvwkEuaKs/a3zbnNO3tRCuAJGG+9DC5O+stElpkTTju36+sYHeAd6N2QBIHjX8xv0+
+         9m+tkfDDAZgM20/3tGqZlAFvoPAPl9DyNIU09aJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kurt Kanzenbach <kurt@linutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Ariel Elior <aelior@marvell.com>,
+        Shai Malin <smalin@marvell.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 058/113] net: dsa: hellcreek: Adjust schedule look ahead window
+Subject: [PATCH 5.10 063/103] qed: Fix null-pointer dereference in qed_rdma_create_qp()
 Date:   Wed,  1 Sep 2021 14:28:13 +0200
-Message-Id: <20210901122303.908423946@linuxfoundation.org>
+Message-Id: <20210901122302.689525134@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kurt Kanzenbach <kurt@linutronix.de>
+From: Shai Malin <smalin@marvell.com>
 
-[ Upstream commit b7658ed35a5f5900f0f658e375f366513f3eb781 ]
+[ Upstream commit d33d19d313d3466abdf8b0428be7837aff767802 ]
 
-Traffic schedules can only be started up to eight seconds within the
-future. Therefore, the driver periodically checks every two seconds whether the
-admin base time provided by the user is inside that window. If so the schedule
-is started. Otherwise the check is deferred.
+Fix a possible null-pointer dereference in qed_rdma_create_qp().
 
-However, according to the programming manual the look ahead window size should
-be four - not eight - seconds. By using the proposed value of four seconds
-starting a schedule at a specified admin base time actually works as expected.
+Changes from V2:
+- Revert checkpatch fixes.
 
-Fixes: 24dfc6eb39b2 ("net: dsa: hellcreek: Add TAPRIO offloading support")
-Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/hirschmann/hellcreek.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/qlogic/qed/qed_rdma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/dsa/hirschmann/hellcreek.c b/drivers/net/dsa/hirschmann/hellcreek.c
-index 3aab01c25f9a..512b1810a8bd 100644
---- a/drivers/net/dsa/hirschmann/hellcreek.c
-+++ b/drivers/net/dsa/hirschmann/hellcreek.c
-@@ -1551,7 +1551,7 @@ static bool hellcreek_schedule_startable(struct hellcreek *hellcreek, int port)
- 	/* Calculate difference to admin base time */
- 	base_time_ns = ktime_to_ns(hellcreek_port->current_schedule->base_time);
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_rdma.c b/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+index da864d12916b..4f4b79250a2b 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_rdma.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+@@ -1285,8 +1285,7 @@ qed_rdma_create_qp(void *rdma_cxt,
  
--	return base_time_ns - current_ns < (s64)8 * NSEC_PER_SEC;
-+	return base_time_ns - current_ns < (s64)4 * NSEC_PER_SEC;
- }
- 
- static void hellcreek_start_schedule(struct hellcreek *hellcreek, int port)
+ 	if (!rdma_cxt || !in_params || !out_params ||
+ 	    !p_hwfn->p_rdma_info->active) {
+-		DP_ERR(p_hwfn->cdev,
+-		       "qed roce create qp failed due to NULL entry (rdma_cxt=%p, in=%p, out=%p, roce_info=?\n",
++		pr_err("qed roce create qp failed due to NULL entry (rdma_cxt=%p, in=%p, out=%p, roce_info=?\n",
+ 		       rdma_cxt, in_params, out_params);
+ 		return NULL;
+ 	}
 -- 
 2.30.2
 
