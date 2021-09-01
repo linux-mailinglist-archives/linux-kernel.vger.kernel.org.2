@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E126F3FDBA0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BC53FDBA1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344410AbhIAMmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:42:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40918 "EHLO mail.kernel.org"
+        id S1344498AbhIAMmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:42:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344586AbhIAMjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:39:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA54561168;
-        Wed,  1 Sep 2021 12:35:24 +0000 (UTC)
+        id S1344592AbhIAMjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:39:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9870C61179;
+        Wed,  1 Sep 2021 12:35:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499725;
-        bh=L7Y6cP91N7pNB5AZQsdaJ8q6ABuRbahrbd+47pIa91g=;
+        s=korg; t=1630499728;
+        bh=Xds0caNBGsvrEbSX4KgRyhhNwjd2j0kw4FUUFbk0lEo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ofQlWmxykDbNu1Z7cMCeKiuF/MwPRZCi/3D0YaZ7DoUo0lu6FI7CpgsOVXkGyv6PD
-         8wMkQbd8RGtbBQtuk0nBpepqLa03iT+eLHFwcgvYl69bq+nyWbSasVsDkgKBsZI50q
-         MlLpTomEUd0blb7EaVtQzTCfdC7BDgcb9PSL9HX0=
+        b=NnWD//nSo+tYJLgBbPCW67QDRRbj4kz9bqoAqlxyS6g92a3HvidEz4w6rhkGU39IF
+         CJZ2JKuxYcS1Qd5GQUv/bsw4NwEpJMJwt2riVZrAa2gk5S1Kzw4WYym608AbS4dzCx
+         nU3OSvQrz+Z7SqlYszQw2XwOPbf5Clcnc2DzW8bQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aaron Ma <aaron.ma@canonical.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
+        stable@vger.kernel.org,
+        Toshiki Nishioka <toshiki.nishioka@intel.com>,
+        Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>,
+        Sasha Neftin <sasha.neftin@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 028/103] igc: fix page fault when thunderbolt is unplugged
-Date:   Wed,  1 Sep 2021 14:27:38 +0200
-Message-Id: <20210901122301.482963121@linuxfoundation.org>
+Subject: [PATCH 5.10 029/103] igc: Use num_tx_queues when iterating over tx_ring queue
+Date:   Wed,  1 Sep 2021 14:27:39 +0200
+Message-Id: <20210901122301.534031704@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
 References: <20210901122300.503008474@linuxfoundation.org>
@@ -41,109 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aaron Ma <aaron.ma@canonical.com>
+From: Toshiki Nishioka <toshiki.nishioka@intel.com>
 
-[ Upstream commit 4b79959510e6612d80f8d86022e0cb44eee6f4a2 ]
+[ Upstream commit 691bd4d7761992914a0e83c27a4ce57d01474cda ]
 
-After unplug thunderbolt dock with i225, pciehp interrupt is triggered,
-remove call will read/write mmio address which is already disconnected,
-then cause page fault and make system hang.
+Use num_tx_queues rather than the IGC_MAX_TX_QUEUES fixed number 4 when
+iterating over tx_ring queue since instantiated queue count could be
+less than 4 where on-line cpu count is less than 4.
 
-Check PCI state to remove device safely.
-
-Trace:
-BUG: unable to handle page fault for address: 000000000000b604
-Oops: 0000 [#1] SMP NOPTI
-RIP: 0010:igc_rd32+0x1c/0x90 [igc]
-Call Trace:
-igc_ptp_suspend+0x6c/0xa0 [igc]
-igc_ptp_stop+0x12/0x50 [igc]
-igc_remove+0x7f/0x1c0 [igc]
-pci_device_remove+0x3e/0xb0
-__device_release_driver+0x181/0x240
-
-Fixes: 13b5b7fd6a4a ("igc: Add support for Tx/Rx rings")
-Fixes: b03c49cde61f ("igc: Save PTP time before a reset")
-Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+Fixes: ec50a9d437f0 ("igc: Add support for taprio offloading")
+Signed-off-by: Toshiki Nishioka <toshiki.nishioka@intel.com>
+Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+Tested-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+Acked-by: Sasha Neftin <sasha.neftin@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igc/igc_main.c | 32 ++++++++++++++---------
- drivers/net/ethernet/intel/igc/igc_ptp.c  |  3 ++-
- 2 files changed, 21 insertions(+), 14 deletions(-)
+ drivers/net/ethernet/intel/igc/igc_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index b9fe2785f573..66f181d12578 100644
+index 66f181d12578..013dd2955381 100644
 --- a/drivers/net/ethernet/intel/igc/igc_main.c
 +++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -138,6 +138,9 @@ static void igc_release_hw_control(struct igc_adapter *adapter)
- 	struct igc_hw *hw = &adapter->hw;
- 	u32 ctrl_ext;
+@@ -4761,7 +4761,7 @@ static bool validate_schedule(struct igc_adapter *adapter,
+ 		if (e->command != TC_TAPRIO_CMD_SET_GATES)
+ 			return false;
  
-+	if (!pci_device_is_present(adapter->pdev))
-+		return;
-+
- 	/* Let firmware take over control of h/w */
- 	ctrl_ext = rd32(IGC_CTRL_EXT);
- 	wr32(IGC_CTRL_EXT,
-@@ -3782,26 +3785,29 @@ void igc_down(struct igc_adapter *adapter)
+-		for (i = 0; i < IGC_MAX_TX_QUEUES; i++) {
++		for (i = 0; i < adapter->num_tx_queues; i++) {
+ 			if (e->gate_mask & BIT(i))
+ 				queue_uses[i]++;
  
- 	igc_ptp_suspend(adapter);
+@@ -4818,7 +4818,7 @@ static int igc_save_qbv_schedule(struct igc_adapter *adapter,
  
--	/* disable receives in the hardware */
--	rctl = rd32(IGC_RCTL);
--	wr32(IGC_RCTL, rctl & ~IGC_RCTL_EN);
--	/* flush and sleep below */
--
-+	if (pci_device_is_present(adapter->pdev)) {
-+		/* disable receives in the hardware */
-+		rctl = rd32(IGC_RCTL);
-+		wr32(IGC_RCTL, rctl & ~IGC_RCTL_EN);
-+		/* flush and sleep below */
-+	}
- 	/* set trans_start so we don't get spurious watchdogs during reset */
- 	netif_trans_update(netdev);
+ 		end_time += e->interval;
  
- 	netif_carrier_off(netdev);
- 	netif_tx_stop_all_queues(netdev);
+-		for (i = 0; i < IGC_MAX_TX_QUEUES; i++) {
++		for (i = 0; i < adapter->num_tx_queues; i++) {
+ 			struct igc_ring *ring = adapter->tx_ring[i];
  
--	/* disable transmits in the hardware */
--	tctl = rd32(IGC_TCTL);
--	tctl &= ~IGC_TCTL_EN;
--	wr32(IGC_TCTL, tctl);
--	/* flush both disables and wait for them to finish */
--	wrfl();
--	usleep_range(10000, 20000);
-+	if (pci_device_is_present(adapter->pdev)) {
-+		/* disable transmits in the hardware */
-+		tctl = rd32(IGC_TCTL);
-+		tctl &= ~IGC_TCTL_EN;
-+		wr32(IGC_TCTL, tctl);
-+		/* flush both disables and wait for them to finish */
-+		wrfl();
-+		usleep_range(10000, 20000);
- 
--	igc_irq_disable(adapter);
-+		igc_irq_disable(adapter);
-+	}
- 
- 	adapter->flags &= ~IGC_FLAG_NEED_LINK_UPDATE;
- 
-diff --git a/drivers/net/ethernet/intel/igc/igc_ptp.c b/drivers/net/ethernet/intel/igc/igc_ptp.c
-index 545f4d0e67cf..4ab46eee3d93 100644
---- a/drivers/net/ethernet/intel/igc/igc_ptp.c
-+++ b/drivers/net/ethernet/intel/igc/igc_ptp.c
-@@ -557,7 +557,8 @@ void igc_ptp_suspend(struct igc_adapter *adapter)
- 	adapter->ptp_tx_skb = NULL;
- 	clear_bit_unlock(__IGC_PTP_TX_IN_PROGRESS, &adapter->state);
- 
--	igc_ptp_time_save(adapter);
-+	if (pci_device_is_present(adapter->pdev))
-+		igc_ptp_time_save(adapter);
- }
- 
- /**
+ 			if (!(e->gate_mask & BIT(i)))
 -- 
 2.30.2
 
