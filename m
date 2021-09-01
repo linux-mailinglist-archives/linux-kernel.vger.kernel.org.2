@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A423FD77B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805003FD780
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233620AbhIAKTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 06:19:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60537 "EHLO
+        id S234280AbhIAKTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 06:19:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42004 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232662AbhIAKTG (ORCPT
+        by vger.kernel.org with ESMTP id S232662AbhIAKTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 06:19:06 -0400
+        Wed, 1 Sep 2021 06:19:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630491489;
+        s=mimecast20190719; t=1630491497;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
         bh=pfADcfJ+X6OH5HhkKuNHIMe8xl+JwSPkUuOE45UHKJk=;
-        b=XY2qi/ppI4cW6wbjX6aYb302euGNH5x2vI6Tdm90wUnQvbRhfN3Ri74tSYy7XeGtRmXasY
-        4x7FLyeDJ1+SCDON+xx1m5RFhSCmWyx51tDbDAkYE5r+SrJPsff4cgv475mIqypeega/KI
-        /NjWoRVi1Vq5G8Y6igI5wgYalSUC5Bo=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-CSLu-RU0PPuqgTVi_GE7gA-1; Wed, 01 Sep 2021 06:18:08 -0400
-X-MC-Unique: CSLu-RU0PPuqgTVi_GE7gA-1
-Received: by mail-wm1-f71.google.com with SMTP id a201-20020a1c7fd2000000b002e748bf0544so2618375wmd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 03:18:08 -0700 (PDT)
+        b=jQ9/tBGG0UWBc1e8Wjlfvn3h9EITfwFkYGAd1yaa4QiKMHFYz3OztXnVbSqE+s7xdlUBmE
+        X629/OEIRU2GinLOoknRzKI4ht3o+I5SXGAwPhVx86Iq7ebHpfBYeXG9tdIVLvpJOAG/7+
+        /jkQ6ZXd8oVW8hpKRi57+v0v4Diltnc=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-126-77K9f22YPhm-keHrKYAVLg-1; Wed, 01 Sep 2021 06:18:16 -0400
+X-MC-Unique: 77K9f22YPhm-keHrKYAVLg-1
+Received: by mail-wr1-f69.google.com with SMTP id h6-20020a5d4fc6000000b00157503046afso630062wrw.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 03:18:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:to:cc:references:from:organization:subject
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
         bh=pfADcfJ+X6OH5HhkKuNHIMe8xl+JwSPkUuOE45UHKJk=;
-        b=b0R5wjvKbGWet0D5Ix0RYgPai7zfEMD4s5eAiXYeZgXif2d8qgSeMoIRM8CAaLhb4G
-         XLLJhp4rQBzBJ2mR2GIKwMMICMiiq0UUK0kJiq68+9Rwj+6qMvLLZigePw5nrLuO8Mzi
-         DtO43RaOYmvonvqzRuen4n9wa6so49nmQzaUzVF1F/lJ/LVIgMU9jVR7/ydCE9l4JGlD
-         yDE0fQPZoqYJQAvMkXBOkPHkhMB1qIF9K+je2G7uduT2n04hgaxUXaUoAAsZbVvTRsGb
-         ItKkWg6N5yttLfef0PXCTki4aK+xkWf+huNPoKv/JTp21R4BQndrrbT4+7QQV66FBVxH
-         pkRA==
-X-Gm-Message-State: AOAM532oR66mKB7tWlJePpunFAPkWEDvBC7CenJnJzqyIYOW6DdHLKSl
-        3wG/0qCBMWYfIu7FLte4v4TXXdaLiq3I9oSfYyCykASWJQJ7uMcZuHcB9WJKn26WWQ3+ZQh3m2S
-        lnxS8ECYIwdBiyxKg3fciyurKyuc9QbhMRGVXAngXRBzoifjx2zs71/KQtIVB5BbFlN+KI38T
-X-Received: by 2002:a1c:2090:: with SMTP id g138mr8834537wmg.98.1630491487024;
-        Wed, 01 Sep 2021 03:18:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxl4CYnbiwwajv/e6oPH+L4f9i90VhhHOcBQshd70NAqISR3VMqozAHnGwKKB1AQuJpML/yRQ==
-X-Received: by 2002:a1c:2090:: with SMTP id g138mr8834484wmg.98.1630491486611;
-        Wed, 01 Sep 2021 03:18:06 -0700 (PDT)
+        b=s5cz5ELB04FjFvD3dB8n76rWO/3wzEPcbxGwhqqWRUNOV34ZBFqOS5Dr5XOy6pCEuW
+         XNlnqSkoawg4Q0E4xMxkVxyRtDwx7OZSXxQzRC56XmQtHuUuF0Gb6oJB/tI9ZaC4gyWK
+         Fkrcx7Zh6O9DgIqYGIzwqfawEWjcALwtMce2DLKDvxZPikgrVFrXOlpjOUOGuZ57lTXn
+         VkB+3/givhDwPrTR3UMK683CeBpj4PItWvX25oaGDl203CD9EvGYD1kXtsIRecASWH7Z
+         hp2elfKfocTR9T8+d/rkykQjwnR6TPz/A6y3DovyB/WaMZBDItrcb4KoiA2hcBXi1M4l
+         nHMA==
+X-Gm-Message-State: AOAM5326xQ+kurag9ho/TX2tufYfJR/RHtONrcuhTeYogTcgUZUZ1TYD
+        cbVRB3/9UKt1QQQYiQgMRMnXu8ZxJFjifiwyS/FIV53lf28SJr3UboUyskCDIFHZS5bDCQ40Hve
+        hVW4KT1DrJYNj+grVy0XhkmSpGTno42j8QcHsRlBXDXAk6W6Y5aZ9i51Yf2YqB4pGvMLUL/BZ
+X-Received: by 2002:adf:ded1:: with SMTP id i17mr36067484wrn.303.1630491495246;
+        Wed, 01 Sep 2021 03:18:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzBQ2JXSxWqoEFQjgI3t+tVxFgFMPLx+PPKEC08FLlesLGiXIaz3K39pW+9UMEpvpCe4gfxaA==
+X-Received: by 2002:adf:ded1:: with SMTP id i17mr36067455wrn.303.1630491494984;
+        Wed, 01 Sep 2021 03:18:14 -0700 (PDT)
 Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
-        by smtp.gmail.com with ESMTPSA id g136sm4891862wmg.30.2021.09.01.03.18.05
+        by smtp.gmail.com with ESMTPSA id b24sm4670541wmj.43.2021.09.01.03.18.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 03:18:06 -0700 (PDT)
+        Wed, 01 Sep 2021 03:18:14 -0700 (PDT)
 To:     David Howells <dhowells@redhat.com>, torvalds@linux-foundation.org,
         Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>
@@ -69,8 +69,8 @@ References: <3285174.1630448147@warthog.procyon.org.uk>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
 Subject: Re: Folios: Can we resolve this please?
-Message-ID: <01ed765d-449d-fa5f-2f08-1b74e7f6a9c8@redhat.com>
-Date:   Wed, 1 Sep 2021 12:18:04 +0200
+Message-ID: <3c0833bd-4731-aeb2-e9d4-bd480276ae6c@redhat.com>
+Date:   Wed, 1 Sep 2021 12:18:13 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
