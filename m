@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F61E3FD330
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 07:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE843FD33B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 07:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242110AbhIAFqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 01:46:46 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:42288 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230046AbhIAFql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 01:46:41 -0400
-Received: from BJHW-Mail-Ex07.internal.baidu.com (unknown [10.127.64.17])
-        by Forcepoint Email with ESMTPS id 5C518D4C053D243FE942;
-        Wed,  1 Sep 2021 13:45:42 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-Mail-Ex07.internal.baidu.com (10.127.64.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Wed, 1 Sep 2021 13:45:42 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Wed, 1 Sep 2021 13:45:41 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Neil Armstrong <narmstrong@baylibre.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Kevin Hilman" <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        "Martin Blumenstingl" <martin.blumenstingl@googlemail.com>,
-        <linux-media@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] media: cec: ao-cec: Make use of the helper function devm_platform_ioremap_resource()
-Date:   Wed, 1 Sep 2021 13:45:35 +0800
-Message-ID: <20210901054535.6215-1-caihuoqing@baidu.com>
+        id S242146AbhIAFtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 01:49:10 -0400
+Received: from mga12.intel.com ([192.55.52.136]:22076 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231195AbhIAFtI (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 01:49:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="198198147"
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="198198147"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 22:48:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="688126541"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga006.fm.intel.com with ESMTP; 31 Aug 2021 22:48:07 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
+        rickyman7@gmail.com, john.garry@huawei.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v6 0/2] perf tools: Add PMU alias support
+Date:   Wed,  1 Sep 2021 13:46:00 +0800
+Message-Id: <20210901054602.17010-1-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex09.internal.baidu.com (10.127.64.32) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex07_2021-09-01 13:45:42:259
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the devm_platform_ioremap_resource() helper instead of
-calling platform_get_resource() and devm_ioremap_resource()
-separately
+A perf uncore PMU may have two PMU names, a real name and an alias name.
+With this patch set, the perf tool can monitor the PMU with either the
+real name or the alias.
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Use the real name,
+ $ perf stat -e uncore_cha_2/event=1/ -x,
+   4044879584,,uncore_cha_2/event=1/,2528059205,100.00,,
+
+Use the alias,
+ $ perf stat -e uncore_type_0_2/event=1/ -x,
+   3659675336,,uncore_type_0_2/event=1/,2287306455,100.00,,
+
+v6:
 ---
- drivers/media/cec/platform/meson/ao-cec-g12a.c | 4 +---
- drivers/media/cec/platform/meson/ao-cec.c      | 4 +---
- 2 files changed, 2 insertions(+), 6 deletions(-)
+1. Call setup_pmu_alias_list in pmu_find_alias_name.
+2. Check pmu->name and pmu->alias_name after strdup in pmu_lookup.
 
-diff --git a/drivers/media/cec/platform/meson/ao-cec-g12a.c b/drivers/media/cec/platform/meson/ao-cec-g12a.c
-index 891533060d49..68fe6d6a8178 100644
---- a/drivers/media/cec/platform/meson/ao-cec-g12a.c
-+++ b/drivers/media/cec/platform/meson/ao-cec-g12a.c
-@@ -633,7 +633,6 @@ static int meson_ao_cec_g12a_probe(struct platform_device *pdev)
- {
- 	struct meson_ao_cec_g12a_device *ao_cec;
- 	struct device *hdmi_dev;
--	struct resource *res;
- 	void __iomem *base;
- 	int ret, irq;
- 
-@@ -664,8 +663,7 @@ static int meson_ao_cec_g12a_probe(struct platform_device *pdev)
- 
- 	ao_cec->adap->owner = THIS_MODULE;
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	base = devm_ioremap_resource(&pdev->dev, res);
-+	base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(base)) {
- 		ret = PTR_ERR(base);
- 		goto out_probe_adapter;
-diff --git a/drivers/media/cec/platform/meson/ao-cec.c b/drivers/media/cec/platform/meson/ao-cec.c
-index 09aff82c3773..6b440f0635d9 100644
---- a/drivers/media/cec/platform/meson/ao-cec.c
-+++ b/drivers/media/cec/platform/meson/ao-cec.c
-@@ -602,7 +602,6 @@ static int meson_ao_cec_probe(struct platform_device *pdev)
- {
- 	struct meson_ao_cec_device *ao_cec;
- 	struct device *hdmi_dev;
--	struct resource *res;
- 	int ret, irq;
- 
- 	hdmi_dev = cec_notifier_parse_hdmi_phandle(&pdev->dev);
-@@ -626,8 +625,7 @@ static int meson_ao_cec_probe(struct platform_device *pdev)
- 
- 	ao_cec->adap->owner = THIS_MODULE;
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	ao_cec->base = devm_ioremap_resource(&pdev->dev, res);
-+	ao_cec->base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(ao_cec->base)) {
- 		ret = PTR_ERR(ao_cec->base);
- 		goto out_probe_adapter;
+v5:
+---
+1. Don't use strdup in find functions (pmu_find_real_name and
+   pmu_find_alias_name). Just return name and keep the
+   'pmu->name = strdup(name);' in pmu_lookup.
+
+2. Remove invalid comment for alias_name in struct perf_pmu.
+
+v4:
+---
+1. Fix memory leaks in pmu_lookup.
+2. Rebase to perf/core.
+
+v3:
+---
+1. Use fgets() to replace fscanf().
+2. Resource cleanup.
+
+v2:
+---
+Add test case to verify the real name and alias name having same effect.
+
+Jin Yao (1):
+  perf tests: Test for PMU alias
+
+Kan Liang (1):
+  perf pmu: Add PMU alias support
+
+ tools/perf/arch/x86/util/pmu.c  | 139 +++++++++++++++++++++++++++++++-
+ tools/perf/tests/parse-events.c |  92 +++++++++++++++++++++
+ tools/perf/util/parse-events.y  |   3 +-
+ tools/perf/util/pmu.c           |  40 ++++++++-
+ tools/perf/util/pmu.h           |   5 ++
+ 5 files changed, 274 insertions(+), 5 deletions(-)
+
 -- 
-2.25.1
+2.17.1
 
