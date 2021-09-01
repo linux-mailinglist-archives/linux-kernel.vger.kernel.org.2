@@ -2,243 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CC93FD45E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3E13FD462
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242579AbhIAHWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:22:34 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:40623 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242572AbhIAHW1 (ORCPT
+        id S242594AbhIAHXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:23:16 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:25837 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242513AbhIAHXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:22:27 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 48546580727;
-        Wed,  1 Sep 2021 03:21:28 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 01 Sep 2021 03:21:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=zMYrNt50zg0sXSYvGdt7SlhrCQS
-        UOKJddsQ6H2t32ts=; b=HKf3lzcL8BB1ZnQtI4KTLccSAjmG/eQAY1XTz/7UNWn
-        3Z+FaYF2i+b4z27XNvOSmFRotl2X5AyFkLVDCFDkhUR5Uzg0ZLXP658dsBNSoAz8
-        xWon6W4Z7W7mYFFJxs9WH2fY9sTutEhpWlrJWX6NXIY2GyOfmu0d0q3C/J0RKseS
-        tVrto/uwOZ6KDID1Steb6b29glTIfzvJ3JnVYJGCvpPIUP6jaBC4XBcl24gN6LMR
-        YIc66vkB0IRpvwOMPSyGc3zo2CspROJZtQNFZJizSEtomF3Vf37nBhiHa72E99Qp
-        ym9zznrR/xDyLs7Hrz4vIx7fu7YQ5hfByFOX3QqLuFg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=zMYrNt
-        50zg0sXSYvGdt7SlhrCQSUOKJddsQ6H2t32ts=; b=XZg4vAau/WT2bEN6ypK9Af
-        gzL2VDRuImjgOTq1ERgD2I5E8DAESqlgYoNYH1dUPCOb/isTM5MVrMS95pkbl9qu
-        uadYEuYAl0tMREQmM4AjTR/xjhhkjMVg20li6AvANgMPPvD9rYKvOwvpc6qT5jAE
-        HiLQzqllRaOeZP2tLT1x+amjwVDVIoc8qsoUqFm5w3sWYIZhA3fouzFMGO//aGLG
-        DtYugwcveznEUqChZM4bNfrW+5EMxbI99BtWrtsere5H9reTVq7noaf8q+gPaH/T
-        3FYwA9rb5FKE6omoZYq6UUDrxVqAS/Q5t87j2/SAoySCwN9/twfFpbrNLdfgwMag
-        ==
-X-ME-Sender: <xms:9ikvYYfzxvLSQ30b8gD94QZ7MqdeTfESMfmbGdk2CQPUDUM_JlWZ6Q>
-    <xme:9ikvYaMW6_cdlWYxCy0IZUhRcaGASOiktzMbFmGCOYpUJciEy-LJA9XygMP73D0YX
-    RCNv_vRGRBidtQ01OY>
-X-ME-Received: <xmr:9ikvYZhtE_XAP2dRpf76wFVZzdIyGif9znVCIDKBc1QpUmuenvodd89M-cFc05Y2TxzaqRiR1Nl_5b_Jml4rNrW9VqcLrPikM2G2>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvvddguddukecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:9ikvYd-lv-o57J9pidUNBz-vpwE8uQOaevJX9h8utaOAK6mO3NsQXw>
-    <xmx:9ikvYUu-d6oq6GcXaIc9MzC_IcAZXZTYGzVaxaPC2rYNpeiLuEMchw>
-    <xmx:9ikvYUEE_iGXiilRPUj7OJrFwFiz7CJ2gHeesIciqiFYSML7tYqEWg>
-    <xmx:-CkvYRPWy_cTQp3I98g1djSMZO_OLXFkqSFlOdGNvaFk2Giv59By3w>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 1 Sep 2021 03:21:26 -0400 (EDT)
-Date:   Wed, 1 Sep 2021 09:21:23 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v8 02/11] dt-bindings: rtc: sun6i: Add H616 compatible
- string
-Message-ID: <20210901072123.gqfua52rupsrmtks@gilmour>
-References: <20210723153838.6785-1-andre.przywara@arm.com>
- <20210723153838.6785-3-andre.przywara@arm.com>
- <20210726144137.6dauuxdssu7yszox@gilmour>
- <20210802013938.29fa18ed@slackpad.fritz.box>
- <20210817073810.7stuzrppyjf4spab@gilmour>
- <20210818100407.7cf7cfb7@slackpad.fritz.box>
+        Wed, 1 Sep 2021 03:23:11 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210901072214euoutp018646747a3b05e7b1672ce70382f2bf53~gocVba5-m2752727527euoutp01Q
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 07:22:14 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210901072214euoutp018646747a3b05e7b1672ce70382f2bf53~gocVba5-m2752727527euoutp01Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1630480934;
+        bh=ryqrHQmQcbbdSKaFCDai31okoTqu1dRnNF5WAQkVKk8=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=o6mT9Aswu9tmZ2ZUz0vXCX05qBwaYTqEL/wKzPCesL/z8GiSzz0qnrDJCkTQyRTnh
+         Mm98SUJZ0eqiSPjHbJ7mgLmvyHa6PSRsMEqyHrjozGdAt2iHPcvAEhewmySexdMGLC
+         poi+UuDQ/EWWV6JAXccSZN4uOQwB8/GTJzX6pjPs=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210901072213eucas1p24c002712599e64af3543d690befb98e1~gocVHDiwI3011130111eucas1p2Q;
+        Wed,  1 Sep 2021 07:22:13 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 8E.76.42068.52A2F216; Wed,  1
+        Sep 2021 08:22:13 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210901072213eucas1p1efe4f900cbd06f27ecf7821d52d66e23~gocUmCxVs0663406634eucas1p1k;
+        Wed,  1 Sep 2021 07:22:13 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210901072213eusmtrp1c474fd908e2a5ddcbf8d6d9262d30c4e~gocUlMKfE2206322063eusmtrp1x;
+        Wed,  1 Sep 2021 07:22:13 +0000 (GMT)
+X-AuditID: cbfec7f4-c71ff7000002a454-bb-612f2a259fc9
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 74.21.20981.52A2F216; Wed,  1
+        Sep 2021 08:22:13 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210901072212eusmtip286395602945bdb3b13fa594a07116756~gocT4-pi_0779207792eusmtip27;
+        Wed,  1 Sep 2021 07:22:12 +0000 (GMT)
+Subject: Re: [PATCH v2] of: property: fw_devlink: Add support for
+ "phy-handle" property
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
+        kernel-team@android.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <2023d07e-18bb-e129-760a-18b17ff772cd@samsung.com>
+Date:   Wed, 1 Sep 2021 09:22:11 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rjkq6bidgpvhb43g"
-Content-Disposition: inline
-In-Reply-To: <20210818100407.7cf7cfb7@slackpad.fritz.box>
+In-Reply-To: <CAGETcx-SqTeGdKF=CD9=Ujo2xrWMw3NnimE7zj+d-4HckmaJVQ@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGKsWRmVeSWpSXmKPExsWy7djPc7qqWvqJBh+nqlicv3uI2WL+kXOs
+        FjPf/Gez2LFdxGLBbG6Ly7vmsFkc6ou2OLZAzKJ17xF2i65Df9kcuDy27d7G6vH+Riu7x85Z
+        d9k9Fmwq9di0qpPNY/OSeo+dOz4zeXzeJBfAEcVlk5Kak1mWWqRvl8CV8XRiD3PBadWKfVMs
+        GhgXyHcxcnJICJhI9H3ZwtbFyMUhJLCCUWLVkdksEM4XRonGR9cYIZzPjBIrP/1mh2mZ8rQb
+        qmo5o8SpeYegqj4ySlxZ9p0NpEpYIFLi7L69YLaIgJbEpmuPwTqYBVYySdxe/4gFJMEmYCjR
+        9bYLrIhXwE5i6uyXzCA2i4CKxMGDh8DWiQokS0x8MokVokZQ4uTMJ0C9HBycAoESV1dYgYSZ
+        BeQltr+dwwxhi0vcejKfCWSXhMB/DomZnx6yQZztIvGhaScThC0s8er4Fqh3ZCROT+5hgWho
+        ZpR4eG4tO4TTwyhxuWkGI0SVtcSdc7/YQDYzC2hKrN+lDxF2lPjd/pgVJCwhwCdx460gxBF8
+        EpO2TWeGCPNKdLQJQVSrScw6vg5u7cELl5gnMCrNQvLZLCTvzELyziyEvQsYWVYxiqeWFuem
+        pxYb5aWW6xUn5haX5qXrJefnbmIEJq3T/45/2cG4/NVHvUOMTByMhxglOJiVRHhZH+olCvGm
+        JFZWpRblxxeV5qQWH2KU5mBREudN2rImXkggPbEkNTs1tSC1CCbLxMEp1cCksWZJv8WhtndX
+        Ow+cPm7DvUu02J19RUiJu7Widk53aprB9Yp9cUFKj/nZbbPZYpOyTga2ThW5HF2UesyI81fN
+        pKcMgm/X2+47kL2nfbv07Nt/jTTiHz7lfXdsI6fdh3evNmkb1KxvTjDw4nNXeB4/+f+qWwf+
+        cjqcCBSYw/S82e1tqPPSdq1tP+Mdbv98blfiI+N6xjZizrIXJUl6Hwpd/qt21nMoG1W8SQ15
+        clFpXeizn4dszKQD+5NWymnx9dczqF8XuvFC3XdG2Tmf+U84lqoXBm28d6/yCm/u5oCDP1cE
+        npSyEq2p05bXSefUn9618IP+vGd+8wts9EXCDf9v0Zr+Srflje/7ma7MMkosxRmJhlrMRcWJ
+        AGgJ/jrJAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOIsWRmVeSWpSXmKPExsVy+t/xe7qqWvqJBhcaWSzO3z3EbDH/yDlW
+        i5lv/rNZ7NguYrFgNrfF5V1z2CwO9UVbHFsgZtG69wi7Rdehv2wOXB7bdm9j9Xh/o5XdY+es
+        u+weCzaVemxa1cnmsXlJvcfOHZ+ZPD5vkgvgiNKzKcovLUlVyMgvLrFVija0MNIztLTQMzKx
+        1DM0No+1MjJV0rezSUnNySxLLdK3S9DLeDqxh7ngtGrFvikWDYwL5LsYOTkkBEwkpjztZuli
+        5OIQEljKKPHv6y52iISMxMlpDawQtrDEn2tdbBBF7xklZi+ZDVYkLBAp8f3ZSUYQW0RAS2LT
+        tccsIDazwEomiZWPyiEazjFL7O/+DDaJTcBQoustyCRODl4BO4mps18yg9gsAioSBw8eAhsq
+        KpAs8eH0UlaIGkGJkzOfAA3l4OAUCJS4usIKYr6ZxLzND5khbHmJ7W/nQNniEreezGeawCg0
+        C0n3LCQts5C0zELSsoCRZRWjSGppcW56brGRXnFibnFpXrpecn7uJkZgjG479nPLDsaVrz7q
+        HWJk4mA8xCjBwawkwsv6UC9RiDclsbIqtSg/vqg0J7X4EKMp0DsTmaVEk/OBSSKvJN7QzMDU
+        0MTM0sDU0sxYSZzX5MiaeCGB9MSS1OzU1ILUIpg+Jg5OqQYmdk2r/pf2iWei7Wa91p2ikr17
+        ceeR23fiBFe95V1ctMbJuHL2jI9BGaveRTEoR4os8ypld4y6GSK8bMn/xYG+V/8m2eb0zkpg
+        XC/7fJGdKEPR7uQZF7g3Z6/Nn/f458myRw2i/w7mbGe/fuT3SoGnZd1rv2+qCazxOs6ecf5u
+        z/tT/vfySwU5GDqfCIfM6JFIXLLdg69CN36tD/thiQ7JWfOMjnk8MXmeJS6T6ZG3eItqyrnE
+        WuF9ytN3LPzt99Nc8/HkhNbZaR6nDujFbijI/eZ+dd7csiPL4kyinTZZdAlLz5aY4eERdcI3
+        9w+jv+/x/72Xq/YmLzn74G08f8hTqdifCjdsnxen3M+f7GCqxFKckWioxVxUnAgAm5c7uloD
+        AAA=
+X-CMS-MailID: 20210901072213eucas1p1efe4f900cbd06f27ecf7821d52d66e23
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210823120849eucas1p11d3919886444358472be3edd1c662755
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210823120849eucas1p11d3919886444358472be3edd1c662755
+References: <CGME20210823120849eucas1p11d3919886444358472be3edd1c662755@eucas1p1.samsung.com>
+        <20210818021717.3268255-1-saravanak@google.com>
+        <0a2c4106-7f48-2bb5-048e-8c001a7c3fda@samsung.com>
+        <CAGETcx_xJCqOWtwZ9Ee2+0sPGNLM5=F=djtbdYENkAYZa0ynqQ@mail.gmail.com>
+        <427ce8cd-977b-03ae-2020-f5ddc7439390@samsung.com>
+        <CAGETcx8cRXDciKiRMSb=ybKo8=SyiNyAv=7oeHU1HUhkZ60qmg@mail.gmail.com>
+        <CAGETcx-SqTeGdKF=CD9=Ujo2xrWMw3NnimE7zj+d-4HckmaJVQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Saravana,
 
---rjkq6bidgpvhb43g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 01.09.2021 04:37, Saravana Kannan wrote:
+> On Tue, Aug 24, 2021 at 12:31 AM Saravana Kannan <saravanak@google.com> wrote:
+>> On Tue, Aug 24, 2021 at 12:03 AM Marek Szyprowski
+>> <m.szyprowski@samsung.com> wrote:
+>>> On 23.08.2021 20:22, Saravana Kannan wrote:
+>>>> On Mon, Aug 23, 2021 at 5:08 AM Marek Szyprowski
+>>>> <m.szyprowski@samsung.com> wrote:
+>>>>> On 18.08.2021 04:17, Saravana Kannan wrote:
+>>>>>> Allows tracking dependencies between Ethernet PHYs and their consumers.
+>>>>>>
+>>>>>> Cc: Andrew Lunn <andrew@lunn.ch>
+>>>>>> Cc: netdev@vger.kernel.org
+>>>>>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+>>>>> This patch landed recently in linux-next as commit cf4b94c8530d ("of:
+>>>>> property: fw_devlink: Add support for "phy-handle" property"). It breaks
+>>>>> ethernet operation on my Amlogic-based ARM64 boards: Odroid C4
+>>>>> (arm64/boot/dts/amlogic/meson-sm1-odroid-c4.dts) and N2
+>>>>> (meson-g12b-odroid-n2.dts) as well as Khadas VIM3/VIM3l
+>>>>> (meson-g12b-a311d-khadas-vim3.dts and meson-sm1-khadas-vim3l.dts).
+>>>>>
+>>>>> In case of OdroidC4 I see the following entries in the
+>>>>> /sys/kernel/debug/devices_deferred:
+>>>>>
+>>>>> ff64c000.mdio-multiplexer
+>>>>> ff3f0000.ethernet
+>>>>>
+>>>>> Let me know if there is anything I can check to help debugging this issue.
+>>>> I'm fairly certain you are hitting this issue because the PHY device
+>>>> doesn't have a compatible property. And so the device link dependency
+>>>> is propagated up to the mdio bus. But busses as suppliers aren't good
+>>>> because busses never "probe".
+>>>>
+>>>> PHY seems to be one of those cases where it's okay to have the
+>>>> compatible property but also okay to not have it. You can confirm my
+>>>> theory by checking for the list of suppliers under
+>>>> ff64c000.mdio-multiplexer. You'd see mdio@0 (ext_mdio) and if you look
+>>>> at the "status" file under the folder it should be "dormant". If you
+>>>> add a compatible property that fits the formats a PHY node can have,
+>>>> that should also fix your issue (not the solution though).
+>>> Where should I look for the mentioned device links 'status' file?
+>>>
+>>> # find /sys -name ff64c000.mdio-multiplexer
+>>> /sys/devices/platform/soc/ff600000.bus/ff64c000.mdio-multiplexer
+>>> /sys/bus/platform/devices/ff64c000.mdio-multiplexer
+>>>
+>>> # ls -l /sys/devices/platform/soc/ff600000.bus/ff64c000.mdio-multiplexer
+>>> total 0
+>> This is the folder I wanted you to check.
+>>
+>>> lrwxrwxrwx 1 root root    0 Jan  1 00:04
+>>> consumer:platform:ff3f0000.ethernet ->
+>>> ../../../../virtual/devlink/platform:ff64c000.mdio-multiplexer--platform:ff3f0000.ethernet
+>> But I should have asked to look for the consumer list and not the
+>> supplier list. In any case, we can see that the ethernet is marked as
+>> the consumer of the mdio-multiplexer instead of the PHY device. So my
+>> hunch seems to be right.
+>>
+>>> -rw-r--r-- 1 root root 4096 Jan  1 00:04 driver_override
+>>> -r--r--r-- 1 root root 4096 Jan  1 00:04 modalias
+>>> lrwxrwxrwx 1 root root    0 Jan  1 00:04 of_node ->
+>>> ../../../../../firmware/devicetree/base/soc/bus@ff600000/mdio-multiplexer@4c000
+>>> drwxr-xr-x 2 root root    0 Jan  1 00:02 power
+>>> lrwxrwxrwx 1 root root    0 Jan  1 00:04 subsystem ->
+>>> ../../../../../bus/platform
+>>> lrwxrwxrwx 1 root root    0 Jan  1 00:04
+>>> supplier:platform:ff63c000.system-controller:clock-controller ->
+>>> ../../../../virtual/devlink/platform:ff63c000.system-controller:clock-controller--platform:ff64c000.mdio-multiplexer
+>>> -rw-r--r-- 1 root root 4096 Jan  1 00:04 uevent
+>>> -r--r--r-- 1 root root 4096 Jan  1 00:04 waiting_for_supplier
+>>>
+>>> # cat
+>>> /sys/devices/platform/soc/ff600000.bus/ff64c000.mdio-multiplexer/waiting_for_supplier
+>>> 0
+>>>
+>>> I'm also not sure what compatible string should I add there.
+>> It should have been added to external_phy: ethernet-phy@0. But don't
+>> worry about it (because you need to use a specific format for the
+>> compatible string).
+>>
+> Marek,
+>
+> Can you give this a shot?
+> https://lore.kernel.org/lkml/20210831224510.703253-1-saravanak@google.com/
+>
+> This is not the main fix for the case you brought up, but it should
+> fix your issue as a side effect of fixing another issue.
 
-On Wed, Aug 18, 2021 at 10:04:07AM +0100, Andre Przywara wrote:
-> On Tue, 17 Aug 2021 09:38:10 +0200
-> Maxime Ripard <maxime@cerno.tech> wrote:
->=20
-> Hi Maxime,
->=20
-> > On Mon, Aug 02, 2021 at 01:39:38AM +0100, Andre Przywara wrote:
-> > > On Mon, 26 Jul 2021 16:41:37 +0200
-> > > Maxime Ripard <maxime@cerno.tech> wrote:
-> > >  =20
-> > > > Hi,
-> > > >=20
-> > > > On Fri, Jul 23, 2021 at 04:38:29PM +0100, Andre Przywara wrote: =20
-> > > > > Add the obvious compatible name to the existing RTC binding.
-> > > > > The actual RTC part of the device uses a different day/month/year
-> > > > > storage scheme, so it's not compatible with the previous devices.
-> > > > > Also the clock part is quite different, as there is no external 3=
-2K LOSC
-> > > > > oscillator input.
-> > > > >=20
-> > > > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > > > >
-> > > > > ---
-> > > > >  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml      | 14 ++++++++=
-++++++
-> > > > >  1 file changed, 14 insertions(+)
-> > > > >=20
-> > > > > diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6=
-i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-=
-rtc.yaml
-> > > > > index beeb90e55727..d8a6500e5840 100644
-> > > > > --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-r=
-tc.yaml
-> > > > > +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-r=
-tc.yaml
-> > > > > @@ -26,6 +26,7 @@ properties:
-> > > > >            - const: allwinner,sun50i-a64-rtc
-> > > > >            - const: allwinner,sun8i-h3-rtc
-> > > > >        - const: allwinner,sun50i-h6-rtc
-> > > > > +      - const: allwinner,sun50i-h616-rtc
-> > > > > =20
-> > > > >    reg:
-> > > > >      maxItems: 1
-> > > > > @@ -104,6 +105,19 @@ allOf:
-> > > > >            minItems: 3
-> > > > >            maxItems: 3
-> > > > > =20
-> > > > > +  - if:
-> > > > > +      properties:
-> > > > > +        compatible:
-> > > > > +          contains:
-> > > > > +            const: allwinner,sun50i-h616-rtc
-> > > > > +
-> > > > > +    then:
-> > > > > +      properties:
-> > > > > +        clock-output-names:
-> > > > > +          minItems: 3
-> > > > > +          maxItems: 3   =20
-> > > >=20
-> > > > You don't need both of them when they are equal
-> > > >  =20
-> > > > > +        clocks: false
-> > > > > +   =20
-> > > >=20
-> > > > It's not entirely clear to me what those clocks are about though. I=
-f we
-> > > > look at the clock output in the user manual, it looks like there's =
-only
-> > > > two clocks that are actually being output: the 32k "fanout" clock a=
-nd
-> > > > the losc. What are the 3 you're talking about?] =20
-> > >=20
-> > > I see three: the raw SYSTEM "CLK32K_LOSC", the RTC input + debounce
-> > > clock (/32), and the multiplexed PAD. =20
-> >=20
-> > But the input and debounce clock is only for the RTC itself right? So it
-> > should be local to the driver and doesn't need to be made available to
-> > the other drivers
->=20
-> I understood "debounce" as being the clock used for the pinctrl
-> debouncer. What would it debounce otherwise? Do you think that this
-> "debounce circuit" is something internal to the RTC and is totally
-> irrelevant for us?
+I've just checked it and it doesn't help in my case. 
+ff64c000.mdio-multiplexer and ff3f0000.ethernet are still not probed 
+after applying this patch.
 
-I don't think that's it.
+> The main fix for your issue would be to teach fw_devlink that
+> phy-handle always points to the actual DT node that'll become a device
+> even if it doesn't have a compatible property. I'll send that out
+> later.
 
-The Debounce circuit is after the 32 divider, so we have a clock rate of
-1kHz (Figure 3-35, page 275)
+I'm waiting for the proper fix then.
 
-The PIO Interrupt debouncing can use either a 32kHz or 24MHz clock, so
-the rates don't match, and given the naming would rather be clocked from
-CLK32K_LOSC.
+Best regards
 
-The DCXO_CTRL_REG (Section 3.13.6.13) hints at something different
-though, it says:
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-"
-CLK16M_RC_EN
-1: Enable
-0: Disable
-The related register configuration is necessary to ensure the reset debounce
-circuit has a stable clock source.
-The first time SoC starts up, by default, the reset debounce circuit of SoC
-uses 32K divided by RC16M. In power-off, software reads the related bit to
-ensure whether EXT32K is working normally, if it is normal, first switch the
-clock source of debounce circuit to EXT32K, then close RC16M.
-Without EXT32K scenario or external RTC scenario, software confirms firstly
-whether EXT32K is working normally before switching, or software does not
-close RC16M.
-"
-
-I'm not sure why it would be useful for though
-
-> But in general I looked at how many *different* clocks this diagram
-> describes, and I count: one unaltered ("SYSTEM"), one "div by
-> 32" (RTC/debounce), and one multiplexed. My aim was to avoid
-> DT binding changes when we later discover we do need one of them for
-> something (as happened in the past). So three seemed to be the safe
-> choice here, to avoid surprises. In the worst case we just will never
-> reference one of them.
-
-My concern is the pretty much the opposite: if we ever need to remove it
-for whatever reason, if it's in the DT, we can't. While we can totally
-add it if we need it.
-
-> > Either way, what this list is must be documented.
->=20
-> You mean to overwrite the "description" stanza for clock-output-names?
-
-Yes
-
-> And can this be done in the per-SoC parts in the later part of the
-> binding, keeping the existing description?
-
-Sure
-
-Maxime
-
---rjkq6bidgpvhb43g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYS8p8wAKCRDj7w1vZxhR
-xRE2AQDYlqDEaHf5/1IED5BleAAc0RHp5WOyINtMRFzdAjEIzAEApmTJW3tJsci4
-DiJ796ury4C9KXYVjkGtfFmLnozADQ0=
-=3GAS
------END PGP SIGNATURE-----
-
---rjkq6bidgpvhb43g--
