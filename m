@@ -2,41 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E193FE2F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE7E3FE2FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344590AbhIATYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:24:00 -0400
-Received: from mga07.intel.com ([134.134.136.100]:7013 "EHLO mga07.intel.com"
+        id S1344590AbhIAT1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:27:09 -0400
+Received: from mga02.intel.com ([134.134.136.20]:2527 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344574AbhIATX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:23:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="282556826"
+        id S236087AbhIAT1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 15:27:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="206069613"
 X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
-   d="scan'208";a="282556826"
+   d="scan'208";a="206069613"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 12:23:01 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 12:26:09 -0700
 X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
-   d="scan'208";a="690852490"
+   d="scan'208";a="690853274"
 Received: from davidj-mobl1.amr.corp.intel.com (HELO [10.212.161.93]) ([10.212.161.93])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 12:23:00 -0700
-Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
- restore_fpregs_from_user()
-To:     Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 12:26:07 -0700
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
+ memory
+To:     jejb@linux.ibm.com, Andy Lutomirski <luto@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Borislav Petkov <bp@alien8.de>,
-        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
         the arch/x86 maintainers <x86@kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-References: <20210830154702.247681585@linutronix.de>
- <20210830162545.374070793@linutronix.de> <YS0ylo9nTHD9NiAp@zn.tnic>
- <87zgsyg0eg.ffs@tglx> <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
- <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
- <87r1e8cxp5.ffs@tglx> <87o89ccmyu.ffs@tglx> <YS+upEmTfpZub3s9@google.com>
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+ <YSlkzLblHfiiPyVM@google.com>
+ <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
+ <YS6lIg6kjNPI1EgF@google.com>
+ <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
+ <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
+ <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -81,12 +102,12 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <1adc3f68-f7b4-4c4c-c014-7037f3046a8c@intel.com>
-Date:   Wed, 1 Sep 2021 12:22:58 -0700
+Message-ID: <cb3b2281-8651-672a-53e0-d0c7a9407643@intel.com>
+Date:   Wed, 1 Sep 2021 12:26:07 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YS+upEmTfpZub3s9@google.com>
+In-Reply-To: <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -94,13 +115,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/21 9:47 AM, Sean Christopherson wrote:
-> As for SGX consuming the trap number in general, it's correct.  For non-KVM usage,
-> it's nice to have but not strictly necessary.  Any fault except #PF on ENCLS is
-> guaranteed to be a kernel or hardware bug; SGX uses the trap number to WARN on a
-> !#PF exception, e.g. on #GP or #UD.  Not having the trap number would mean losing
-> those sanity checks, which have been useful in the past.
+On 9/1/21 9:18 AM, James Bottomley wrote:
+>> So I think there are literally zero code paths that currently call
+>> try_to_unmap() that will actually work like that on TDX.  If we run
+>> out of memory on a TDX host, we can kill the guest completely and
+>> reclaim all of its memory (which probably also involves killing QEMU
+>> or whatever other user program is in charge), but that's really our
+>> only option.
+> I think our only option for swap is guest co-operation.
 
-Yeah, for bare-metal SGX, the trap number only determines if we get a
-warning or not.  There's no attempt at recovery or any consequential
-change in behavior due to the trap number (other than the warning).
+Yes, today that's the only choice.  Both TDX and SEV-SNP can
+*theoretically* extend their architectures to enable swap with
+uncooperative guests.  But, frankly, nobody has been asking for it.
+
+If you care, please ask Intel and AMD to fix this gap.
