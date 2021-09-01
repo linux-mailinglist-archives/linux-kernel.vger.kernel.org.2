@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FC63FDCCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145DD3FDAE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346433AbhIAMx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:53:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49966 "EHLO mail.kernel.org"
+        id S1343552AbhIAMgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:36:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345718AbhIAMsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:48:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3A9861163;
-        Wed,  1 Sep 2021 12:40:30 +0000 (UTC)
+        id S245285AbhIAMeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:34:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF6A2610FC;
+        Wed,  1 Sep 2021 12:32:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630500031;
-        bh=O9cNfkCI8vw3QsL7QGHGe3UudqJkNC6WFqUr1fVJRI8=;
+        s=korg; t=1630499547;
+        bh=+/bDeTDqT9R78MrU/SYXzS0e/UpDi2+qtnVRKKL9+vY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VSIPXBw8+eKz+5AODzfufVnXHfPMXBssmHgNB8trDCYId2kVvDV4zfhh5jdDHLuGt
-         23TD7pP8hDaAyRAEu2kWgbLMRcwKvtb1BC7uTADWlAi4kf99Ffd6XblS8lJHBftAp6
-         YqFQbA3plAC6baVpHeGA8z4gzzrUA4lc1GlPygaA=
+        b=Oij8+13n8cbd6+78+83BMUgNt7gpPonASpu+bsOOJlRNNDhJepRTWCDmtR/GBx6NB
+         hlYga3MA3DItvjiX2qlboNHnIaKREUp8vSLLETbJ1IhUp7VAnwPVlyvO6BrlTUm9yP
+         1mn7n9OipmlyMZeVDgcXKfWST2MqktV1ngX1SQg8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 077/113] cpufreq: blocklist Qualcomm sm8150 in cpufreq-dt-platdev
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 5.4 42/48] KVM: x86/mmu: Treat NX as used (not reserved) for all !TDP shadow MMUs
 Date:   Wed,  1 Sep 2021 14:28:32 +0200
-Message-Id: <20210901122304.560892506@linuxfoundation.org>
+Message-Id: <20210901122254.772205495@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thara Gopinath <thara.gopinath@linaro.org>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit 5d79e5ce5489b489cbc4c327305be9dfca0fc9ce ]
+commit 112022bdb5bc372e00e6e43cb88ee38ea67b97bd upstream
 
-The Qualcomm sm8150 platform uses the qcom-cpufreq-hw driver, so
-add it to the cpufreq-dt-platdev driver's blocklist.
+Mark NX as being used for all non-nested shadow MMUs, as KVM will set the
+NX bit for huge SPTEs if the iTLB mutli-hit mitigation is enabled.
+Checking the mitigation itself is not sufficient as it can be toggled on
+at any time and KVM doesn't reset MMU contexts when that happens.  KVM
+could reset the contexts, but that would require purging all SPTEs in all
+MMUs, for no real benefit.  And, KVM already forces EFER.NX=1 when TDP is
+disabled (for WP=0, SMEP=1, NX=0), so technically NX is never reserved
+for shadow MMUs.
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: b8e8c8303ff2 ("kvm: mmu: ITLB_MULTIHIT mitigation")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210622175739.3610207-3-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[sudip: use old path]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kvm/mmu.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index 5e07065ec22f..1f8dc1164ba2 100644
---- a/drivers/cpufreq/cpufreq-dt-platdev.c
-+++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-@@ -138,6 +138,7 @@ static const struct of_device_id blacklist[] __initconst = {
- 	{ .compatible = "qcom,qcs404", },
- 	{ .compatible = "qcom,sc7180", },
- 	{ .compatible = "qcom,sdm845", },
-+	{ .compatible = "qcom,sm8150", },
- 
- 	{ .compatible = "st,stih407", },
- 	{ .compatible = "st,stih410", },
--- 
-2.30.2
-
+--- a/arch/x86/kvm/mmu.c
++++ b/arch/x86/kvm/mmu.c
+@@ -4666,7 +4666,15 @@ static void reset_rsvds_bits_mask_ept(st
+ void
+ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
+ {
+-	bool uses_nx = context->nx ||
++	/*
++	 * KVM uses NX when TDP is disabled to handle a variety of scenarios,
++	 * notably for huge SPTEs if iTLB multi-hit mitigation is enabled and
++	 * to generate correct permissions for CR0.WP=0/CR4.SMEP=1/EFER.NX=0.
++	 * The iTLB multi-hit workaround can be toggled at any time, so assume
++	 * NX can be used by any non-nested shadow MMU to avoid having to reset
++	 * MMU contexts.  Note, KVM forces EFER.NX=1 when TDP is disabled.
++	 */
++	bool uses_nx = context->nx || !tdp_enabled ||
+ 		context->mmu_role.base.smep_andnot_wp;
+ 	struct rsvd_bits_validate *shadow_zero_check;
+ 	int i;
 
 
