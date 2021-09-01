@@ -2,63 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C79C3FD096
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 03:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3E23FD09C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 03:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241328AbhIABJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 21:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234036AbhIABJs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 21:09:48 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4144C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 18:08:52 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id x11so3100923ejv.0
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 18:08:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=OU19b05FqiqzdVzNwgc17RH86GOgsobOY+hnqPe2MIc=;
-        b=vVJPNXHizC91fSgi5MkkK+5MYuIqRn1qbFNIsv0Afj+pVc6jOUMbnRtyvzD+OULubA
-         94LGCG1a2jwvXwCmsBeZBSTHRPPv3U5aEop/3E8sUW0aNbneQwnUihkH/1ZL+K/LXASd
-         EcPG691uk8XjjI9Yy62pofcIEk4UOMwfVDPHf8DhO+t0sNpIuFiEojWt3M0sFKdRv3lH
-         ItsSvP0++jpSa+QIQGVpelNG3sIpRVaXzZBkUQpTbz691TjiORGLFtibxa1rWaJ67tnz
-         9fHqno57ALj/eT0LjrZR92WORqIjaa67auCNXjmB9DUbgwcMZIsoolzEthBDXzeRsbak
-         ImUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=OU19b05FqiqzdVzNwgc17RH86GOgsobOY+hnqPe2MIc=;
-        b=uVwJWfXFa6aKufjjsFJVkzXAQu3Tr+X6bRoBrXBOAsOgJKo6hCrU4N5Fmpv/cG3dyv
-         aamwFfjMIUA6I4V0SJ7k5Wv5gkL5Y4P9sZPYVehKXR4XuKGLbHaGl/jYn/5Mqfao0mbG
-         x2Kw1eYWhxzKQpQeN/rt3xBM8zXNew/hhQBoO0B+JH3noJPVUzZPH1z70mDIOFxepupS
-         I9ZVp0Z9NeSyufIls4xoKmPu09La4Q8+sHNU6KE7qhpcFzS6+Jj/4Ma6peNnXELSwgky
-         U9euXQDAXC63djiyKSv0wk5g9bRJF7BECXQVP89rQHlKT37IMPZuqDkGX6L/vNU8t+6r
-         53Nw==
-X-Gm-Message-State: AOAM5322jj7TnEG8xmIA62ZvQKf/VMn8teXNKEim74brzR18V66JXOdM
-        k5mPFTwtXVC4sXEURfKqoDuxJFEaIinLH9J1UuA=
-X-Google-Smtp-Source: ABdhPJyT+nCn6utuN48k6/go4Cn9RT7dZ6ab4uwTUey2eCQdWMKY5YEhGefqpvMAqEozEuPHtnuYgsgyhVAAS3F/zbc=
-X-Received: by 2002:a17:906:1510:: with SMTP id b16mr34540934ejd.332.1630458531431;
- Tue, 31 Aug 2021 18:08:51 -0700 (PDT)
+        id S241542AbhIABPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 21:15:09 -0400
+Received: from mga02.intel.com ([134.134.136.20]:38589 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234036AbhIABPI (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 21:15:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="205823001"
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="205823001"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 18:14:12 -0700
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="541278746"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.2.86]) ([10.238.2.86])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 18:14:06 -0700
+Subject: Re: [PATCH v5 1/2] perf pmu: Add PMU alias support
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
+        rickyman7@gmail.com, john.garry@huawei.com,
+        Kan Liang <kan.liang@linux.intel.com>
+References: <20210817051933.16978-1-yao.jin@linux.intel.com>
+ <20210817051933.16978-2-yao.jin@linux.intel.com> <YS6CCNpd3+557fQZ@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <dfe8f4d2-37de-babe-92af-e8bf72761be2@linux.intel.com>
+Date:   Wed, 1 Sep 2021 09:14:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:a17:906:4bc6:0:0:0:0 with HTTP; Tue, 31 Aug 2021 18:08:51
- -0700 (PDT)
-From:   "mrhabibkonekonem5@gmail.com" <pkbrayane@gmail.com>
-Date:   Wed, 1 Sep 2021 01:08:51 +0000
-Message-ID: <CABRu+hJ6xsrfSNfjT36FNaJHN84JowjfBLSsRjLFxgi38DOr3Q@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YS6CCNpd3+557fQZ@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kindly Contact me Asap regarding your late Brother Fund Amounted to
-the sum of USD$9.5 Million deposited in a Bank here in Togo before his
-demise. He Died on a ghastly Auto Accident alongside his wife and only
-Daughter, please kindly contact me for claims and transfer of the
-funds to you and for more details on what's up at +228 91688179 or
-Email at
-mrhabibkonekonem5@gmail.com
+Hi Jiri,
+
+On 9/1/2021 3:24 AM, Jiri Olsa wrote:
+> On Tue, Aug 17, 2021 at 01:19:32PM +0800, Jin Yao wrote:
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> A perf uncore PMU may have two PMU names, a real name and an alias. The
+>> alias is exported at /sys/bus/event_source/devices/uncore_*/alias.
+>> The perf tool should support the alias as well.
+>>
+>> Add alias_name in the struct perf_pmu to store the alias. For the PMU
+>> which doesn't have an alias. It's NULL.
+>>
+>> Introduce two X86 specific functions to retrieve the real name and the
+>> alias separately.
+>>
+>> Only go through the sysfs to retrieve the mapping between the real name
+>> and the alias once. The result is cached in a list, uncore_pmu_list.
+>>
+>> Nothing changed for the other ARCHs.
+>>
+>> With the patch, the perf tool can monitor the PMU with either the real
+>> name or the alias.
+>>
+>> Use the real name,
+>>   $ perf stat -e uncore_cha_2/event=1/ -x,
+>>     4044879584,,uncore_cha_2/event=1/,2528059205,100.00,,
+>>
+>> Use the alias,
+>>   $ perf stat -e uncore_type_0_2/event=1/ -x,
+>>     3659675336,,uncore_type_0_2/event=1/,2287306455,100.00,,
+>>
+>> Co-developed-by: Jin Yao <yao.jin@linux.intel.com>
+>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> 
+> SNIP
+> 
+>> +static char *__pmu_find_real_name(const char *name)
+>> +{
+>> +	struct perf_pmu_alias_name *pmu;
+>> +
+>> +	list_for_each_entry(pmu, &pmu_alias_name_list, list) {
+>> +		if (!strcmp(name, pmu->alias))
+>> +			return pmu->name;
+>> +	}
+>> +
+>> +	return (char *)name;
+>> +}
+>> +
+>> +char *pmu_find_real_name(const char *name)
+>> +{
+>> +	static bool cached_list;
+>> +
+>> +	if (cached_list)
+>> +		return __pmu_find_real_name(name);
+>> +
+>> +	setup_pmu_alias_list();
+>> +	cached_list = true;
+>> +
+>> +	return __pmu_find_real_name(name);
+>> +}
+>> +
+>> +char *pmu_find_alias_name(const char *name)
+>> +{
+>> +	struct perf_pmu_alias_name *pmu;
+> 
+> should this one call setup_pmu_alias_list as well?
+> 
+
+Yes, you're right! We'd better call setup_pmu_alias_list in pmu_find_alias_name too.
+
+>> +
+>> +	list_for_each_entry(pmu, &pmu_alias_name_list, list) {
+>> +		if (!strcmp(name, pmu->name))
+>> +			return pmu->alias;
+>> +	}
+>> +	return NULL;
+>> +}
+>> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+>> index 9321bd0e2f76..d94e48e1ff9b 100644
+>> --- a/tools/perf/util/parse-events.y
+>> +++ b/tools/perf/util/parse-events.y
+>> @@ -316,7 +316,8 @@ event_pmu_name opt_pmu_config
+>>   			if (!strncmp(name, "uncore_", 7) &&
+>>   			    strncmp($1, "uncore_", 7))
+>>   				name += 7;
+>> -			if (!perf_pmu__match(pattern, name, $1)) {
+>> +			if (!perf_pmu__match(pattern, name, $1) ||
+>> +			    !perf_pmu__match(pattern, pmu->alias_name, $1)) {
+>>   				if (parse_events_copy_term_list(orig_terms, &terms))
+>>   					CLEANUP_YYABORT;
+>>   				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
+>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+>> index 6cdbee8a12e7..9df874155370 100644
+>> --- a/tools/perf/util/pmu.c
+>> +++ b/tools/perf/util/pmu.c
+>> @@ -945,6 +945,18 @@ perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
+>>   	return NULL;
+>>   }
+>>   
+>> +char * __weak
+>> +pmu_find_real_name(const char *name)
+>> +{
+>> +	return (char *)name;
+>> +}
+>> +
+>> +char * __weak
+>> +pmu_find_alias_name(const char *name __maybe_unused)
+>> +{
+>> +	return NULL;
+>> +}
+>> +
+>>   static int pmu_max_precise(const char *name)
+>>   {
+>>   	char path[PATH_MAX];
+>> @@ -958,13 +970,15 @@ static int pmu_max_precise(const char *name)
+>>   	return max_precise;
+>>   }
+>>   
+>> -static struct perf_pmu *pmu_lookup(const char *name)
+>> +static struct perf_pmu *pmu_lookup(const char *lookup_name)
+>>   {
+>>   	struct perf_pmu *pmu;
+>>   	LIST_HEAD(format);
+>>   	LIST_HEAD(aliases);
+>>   	__u32 type;
+>> +	char *name = pmu_find_real_name(lookup_name);
+>>   	bool is_hybrid = perf_pmu__hybrid_mounted(name);
+>> +	char *alias_name;
+>>   
+>>   	/*
+>>   	 * Check pmu name for hybrid and the pmu may be invalid in sysfs
+>> @@ -995,6 +1009,9 @@ static struct perf_pmu *pmu_lookup(const char *name)
+>>   
+>>   	pmu->cpus = pmu_cpumask(name);
+>>   	pmu->name = strdup(name);
+>> +	alias_name = pmu_find_alias_name(name);
+>> +	if (alias_name)
+>> +		pmu->alias_name = strdup(alias_name);
+> 
+> please add pmu->name and pmu->alias_name check
+> 
+
+OK. I will add the checks.
+
+Thanks
+Jin Yao
+
+> thanks,
+> jirka
+> 
+>>   	pmu->type = type;
+>>   	pmu->is_uncore = pmu_is_uncore(name);
+>>   	if (pmu->is_uncore)
+>> @@ -1023,9 +1040,11 @@ static struct perf_pmu *pmu_find(const char *name)
+>>   {
+>>   	struct perf_pmu *pmu;
+>>   
+>> -	list_for_each_entry(pmu, &pmus, list)
+>> -		if (!strcmp(pmu->name, name))
+>> +	list_for_each_entry(pmu, &pmus, list) {
+>> +		if (!strcmp(pmu->name, name) ||
+>> +		    (pmu->alias_name && !strcmp(pmu->alias_name, name)))
+>>   			return pmu;
+>> +	}
+>>   
+>>   	return NULL;
+>>   }
+>> @@ -1919,6 +1938,9 @@ bool perf_pmu__has_hybrid(void)
+>>   
+>>   int perf_pmu__match(char *pattern, char *name, char *tok)
+>>   {
+>> +	if (!name)
+>> +		return -1;
+>> +
+>>   	if (fnmatch(pattern, name, 0))
+>>   		return -1;
+>>   
+>> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+>> index 033e8211c025..6b122f97acf3 100644
+>> --- a/tools/perf/util/pmu.h
+>> +++ b/tools/perf/util/pmu.h
+>> @@ -21,6 +21,7 @@ enum {
+>>   #define PERF_PMU_FORMAT_BITS 64
+>>   #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
+>>   #define CPUS_TEMPLATE_CPU	"%s/bus/event_source/devices/%s/cpus"
+>> +#define MAX_PMU_NAME_LEN 128
+>>   
+>>   struct perf_event_attr;
+>>   
+>> @@ -32,6 +33,7 @@ struct perf_pmu_caps {
+>>   
+>>   struct perf_pmu {
+>>   	char *name;
+>> +	char *alias_name;
+>>   	char *id;
+>>   	__u32 type;
+>>   	bool selectable;
+>> @@ -136,4 +138,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
+>>   bool perf_pmu__has_hybrid(void);
+>>   int perf_pmu__match(char *pattern, char *name, char *tok);
+>>   
+>> +char *pmu_find_real_name(const char *name);
+>> +char *pmu_find_alias_name(const char *name);
+>> +
+>>   #endif /* __PMU_H */
+>> -- 
+>> 2.17.1
+>>
+> 
