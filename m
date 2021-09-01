@@ -2,108 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FE73FE22D
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFC23FE236
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344384AbhIASOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232459AbhIASOU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:14:20 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE2AC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:13:22 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 98EFA559;
-        Wed,  1 Sep 2021 20:13:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1630520000;
-        bh=BDl0EmauITqkvN6b/L6wjyoZWA3yqKvMu0HJWSPXVEU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ucoRfpQEdOL5uWiJHPl4jRLJICaNAL5SCAJcbYTw57fqz6f46uYHeDfj1y/scMT25
-         wijEhCS5NbSCTmWwQB44Jf1aPl7ADNgmaqlr6CVpNDLt5XVCxwDJo8rkGYgnpChKr8
-         NxkykMaOVW8YiPowN9atrwmqi+FyI5NJjXJGKXMc=
-Date:   Wed, 1 Sep 2021 21:13:04 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Cc:     dri-devel@lists.freedesktop.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] drm: Add drm_fixed_16_16 helper
-Message-ID: <YS/CsCSqKeFYF9x7@pendragon.ideasonboard.com>
-References: <20210901175431.14060-1-alyssa@rosenzweig.io>
+        id S1344470AbhIASQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:16:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230063AbhIASQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 14:16:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76932610CA;
+        Wed,  1 Sep 2021 18:15:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630520120;
+        bh=WeLEa/IQW8mZoaZdVjZki0IYsQTHhIvg0zU0r+hyVdM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gm4r8awO2hKuC/ixokWZ72Mkm+I7VYkmMDItk/W1GV9bpjEO43UNKnbrvjYtVVBs8
+         s+aZeMkaq8E7PgR9D8tfeZ0bCddaC+G5wva2wvcll6Gm3o7ZtlFuOGKssOfV4NOZRl
+         rN6RzqRZkdWEDW89cDkaf2yJlZ6Jw+TK9YAtUswTmnl/QldtlMGZhVH4LN222YbKyo
+         loL8V0yA6lG9UJnAIx5if/Rx0z4pn/MeE6eQa4SMCq/9MM3oD7A4wUD6nSp8t2BsCO
+         GBrBp1JftctFTn7p4LIxhBEjYUtJAf9wIF8f1bgLBEgBZzxrcnozbA3FJkZuicYsOP
+         jL27X1pJg13OA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] regulator: qcom-rpmh-regulator: fix pm8009-1 ldo7 resource name
+Date:   Wed,  1 Sep 2021 19:14:41 +0100
+Message-Id: <163051927361.21773.14106624092156452594.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210901114350.1106073-1-dmitry.baryshkov@linaro.org>
+References: <20210901114350.1106073-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210901175431.14060-1-alyssa@rosenzweig.io>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alyssa,
-
-Thank you for the patch.
-
-On Wed, Sep 01, 2021 at 01:54:27PM -0400, Alyssa Rosenzweig wrote:
-> This constructs a fixed 16.16 rational, useful to specify the minimum
-> and maximum scaling in drm_atomic_helper_check_plane_state. It is
-> open-coded as a macro in multiple drivers, so let's share the helper.
+On Wed, 1 Sep 2021 14:43:50 +0300, Dmitry Baryshkov wrote:
+> Fix a typo in the pm8009 LDO7 declaration, it uses resource name ldo%s6
+> instead of ldo%s7.
 > 
-> Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
-> ---
->  include/drm/drm_fixed.h | 5 +++++
->  1 file changed, 5 insertions(+)
 > 
-> diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
-> index 553210c02ee0..df1f369b4918 100644
-> --- a/include/drm/drm_fixed.h
-> +++ b/include/drm/drm_fixed.h
-> @@ -208,4 +208,9 @@ static inline s64 drm_fixp_exp(s64 x)
->  	return sum;
->  }
->  
 
-Missing documentation :-)
+Applied to
 
-> +static inline int drm_fixed_16_16(s32 mult, s32 div)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-You should return a s32.
+Thanks!
 
-The function name isn't very explicit, and departs from the naming
-scheme of other functions in the same file. As fixed-point numbers are
-stored in a s64 for the drm_fixp_* helpers, we shouldn't rese the
-drm_fixp_ prefix, maybe drm_fixp_s16_16_ would be a good prefix. The
-function should probably be named drm_fixp_s16_16 from_fraction() then,
-but then the same logic should possibly be replicated to ensure optimal
-precision. I wonder if it wouldn't be best to simply use
-drm_fixp_from_fraction() and shift the result right by 16 bits.
+[1/1] regulator: qcom-rpmh-regulator: fix pm8009-1 ldo7 resource name
+      commit: 863580418bc82062083be854355f2213d3d804f5
 
-> +{
-> +	return (mult << 16) / div;
-> +}
-> +
->  #endif
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
--- 
-Regards,
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Laurent Pinchart
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
