@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BDD3FDCDE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588EB3FDC13
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346579AbhIAMyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:54:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53708 "EHLO mail.kernel.org"
+        id S1345649AbhIAMqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:46:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346422AbhIAMuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:50:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCB0561100;
-        Wed,  1 Sep 2021 12:41:43 +0000 (UTC)
+        id S1345147AbhIAMkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:40:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DC0161107;
+        Wed,  1 Sep 2021 12:37:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630500104;
-        bh=RraiY9EupY4eMBstcRZsBdE0zqlScNj3R6G7l/dTIn8=;
+        s=korg; t=1630499827;
+        bh=3Kq52ylVp0/PL8C3rzKcUQLbuu4uAnZ3NVmvuFniZU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j7qtVvcveoVp0/eRXkJ7jn7QXJ4OPjucytnb2mnw2ojjvzp150tdm2PO9VnuOJrIe
-         /fU0GL5BgSiJbFVHxbznaPZRfAlvVuPT2IeJFJS58raKzMGvivPDOfeiMbdaObC0/L
-         of+2ieqPM+BZhydWtZpeAql6up0N8VtEAqu4Ga20=
+        b=cBI0CGfcHPsnBS3hgYQWN7Ged+9K8vdvm5mybBmAWaAtDhsfPTp/F3vuLbir41kYl
+         aDydOZQvZtmTCn/8rbdWLQXJjACAX5GLsHkzN9DG8z8eZCHsJ5jN7EI5rVMIMwZttx
+         6TzVIXvtfgAuV5w038TrbjZ5Jdtivyq4w1TFIFgM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oupton@google.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 097/113] arm64: initialize all of CNTHCTL_EL2
-Date:   Wed,  1 Sep 2021 14:28:52 +0200
-Message-Id: <20210901122305.187252773@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Seiji Nishikawa <snishika@redhat.com>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        Paul Moore <paul@paul-moore.com>
+Subject: [PATCH 5.10 103/103] audit: move put_tree() to avoid trim_trees refcount underflow and UAF
+Date:   Wed,  1 Sep 2021 14:28:53 +0200
+Message-Id: <20210901122303.992463581@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,68 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Richard Guy Briggs <rgb@redhat.com>
 
-[ Upstream commit bde8fff82e4a4b0f000dbf4d5eadab2079be0b56 ]
+commit 67d69e9d1a6c889d98951c1d74b19332ce0565af upstream.
 
-In __init_el2_timers we initialize CNTHCTL_EL2.{EL1PCEN,EL1PCTEN} with a
-RMW sequence, leaving all other bits UNKNOWN.
+AUDIT_TRIM is expected to be idempotent, but multiple executions resulted
+in a refcount underflow and use-after-free.
 
-In general, we should initialize all bits in a register rather than
-using an RMW sequence, since most bits are UNKNOWN out of reset, and as
-new bits are added to the reigster their reset value might not result in
-expected behaviour.
+git bisect fingered commit fb041bb7c0a9	("locking/refcount: Consolidate
+implementations of refcount_t") but this patch with its more thorough
+checking that wasn't in the x86 assembly code merely exposed a previously
+existing tree refcount imbalance in the case of tree trimming code that
+was refactored with prune_one() to remove a tree introduced in
+commit 8432c7006297 ("audit: Simplify locking around untag_chunk()")
 
-In the case of CNTHCTL_EL2, FEAT_ECV added a number of new control bits
-in previously RES0 bits, which reset to UNKNOWN values, and may cause
-issues for EL1 and EL0:
+Move the put_tree() to cover only the prune_one() case.
 
-* CNTHCTL_EL2.ECV enables the CNTPOFF_EL2 offset (which itself resets to
-  an UNKNOWN value) at EL0 and EL1. Since the offset could reset to
-  distinct values across CPUs, when the control bit resets to 1 this
-  could break timekeeping generally.
+Passes audit-testsuite and 3 passes of "auditctl -t" with at least one
+directory watch.
 
-* CNTHCTL_EL2.{EL1TVT,EL1TVCT} trap EL0 and EL1 accesses to the EL1
-  virtual timer/counter registers to EL2. When reset to 1, this could
-  cause unexpected traps to EL2.
-
-Initializing these bits to zero avoids these problems, and all other
-bits in CNTHCTL_EL2 other than EL1PCEN and EL1PCTEN can safely be reset
-to zero.
-
-This patch ensures we initialize CNTHCTL_EL2 accordingly, only setting
-EL1PCEN and EL1PCTEN, and setting all other bits to zero.
-
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Oliver Upton <oupton@google.com>
+Cc: Jan Kara <jack@suse.cz>
 Cc: Will Deacon <will@kernel.org>
-Reviewed-by: Oliver Upton <oupton@google.com>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210818161535.52786-1-mark.rutland@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Seiji Nishikawa <snishika@redhat.com>
+Cc: stable@vger.kernel.org
+Fixes: 8432c7006297 ("audit: Simplify locking around untag_chunk()")
+Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+[PM: reformatted/cleaned-up the commit description]
+Signed-off-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/include/asm/el2_setup.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/audit_tree.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
-index 21fa330f498d..b83fb24954b7 100644
---- a/arch/arm64/include/asm/el2_setup.h
-+++ b/arch/arm64/include/asm/el2_setup.h
-@@ -33,8 +33,7 @@
-  * EL2.
-  */
- .macro __init_el2_timers
--	mrs	x0, cnthctl_el2
--	orr	x0, x0, #3			// Enable EL1 physical timers
-+	mov	x0, #3				// Enable EL1 physical timers
- 	msr	cnthctl_el2, x0
- 	msr	cntvoff_el2, xzr		// Clear virtual offset
- .endm
--- 
-2.30.2
-
+--- a/kernel/audit_tree.c
++++ b/kernel/audit_tree.c
+@@ -593,7 +593,6 @@ static void prune_tree_chunks(struct aud
+ 		spin_lock(&hash_lock);
+ 	}
+ 	spin_unlock(&hash_lock);
+-	put_tree(victim);
+ }
+ 
+ /*
+@@ -602,6 +601,7 @@ static void prune_tree_chunks(struct aud
+ static void prune_one(struct audit_tree *victim)
+ {
+ 	prune_tree_chunks(victim, false);
++	put_tree(victim);
+ }
+ 
+ /* trim the uncommitted chunks from tree */
 
 
