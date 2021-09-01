@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7C23FD449
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4163FD44C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242545AbhIAHNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:13:55 -0400
-Received: from mail-vk1-f178.google.com ([209.85.221.178]:35711 "EHLO
-        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242416AbhIAHNx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:13:53 -0400
-Received: by mail-vk1-f178.google.com with SMTP id ay16so654562vkb.2;
-        Wed, 01 Sep 2021 00:12:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5OIZaaJOxzSwlBAyVUTzzSJStZdPh3eIjP+iaY26uus=;
-        b=FHXuojNTTpC+ZyjBVdhvYEHNzW/PCMoIvyGyU5Excw/vlwxtwlfeQnDBDULuku+jtr
-         81Qo2w5pc201jqXkDXQY10+3nBtGDke+MM5zSyBpTsq8m2pHJ/CmoAZq+kugjX1xCUvT
-         R7egXRToay0PDzytwqyGaKcEMTRd92/2QixFhFVlCtrwEYC4jvZ9RqRuCZFsO/UQmYPP
-         zD8henrwJ8xfxYggxsGS42JMI2UMx7Cv2midoKj1BSipmZygtSKsfqCdSiAhG5igSMcn
-         uHz6wXNtBqfyg6UpBR9FVtbxM/94e8UeaWWI3HVOQxfLCVRnAvMDWvuHLxfpFdl5w//r
-         AY4Q==
-X-Gm-Message-State: AOAM531wMcwQEG/grPCwMO9f2u9g114kLUVk4fcNNSS7l2TIr1LPEl5D
-        iWkUQkT5SdGhxzDHF012Y3XlPJ76pG5cZ02Bmbu5LvYg
-X-Google-Smtp-Source: ABdhPJwQRLNOZObA78mZsGR2waDSEdFHfN+IPMckzWjh/Ic7JlwZtxoUt2HD8opLWAKvAPdjb/g3GaV+9/HP/TK9CG8=
-X-Received: by 2002:a1f:2c97:: with SMTP id s145mr20725423vks.24.1630480377050;
- Wed, 01 Sep 2021 00:12:57 -0700 (PDT)
+        id S242548AbhIAHPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:15:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242416AbhIAHPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 03:15:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EACF36108E;
+        Wed,  1 Sep 2021 07:14:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630480444;
+        bh=qcziVJPLfsI4jgwvd3Jl+wq1EsG++hPVbp6IUaXpG+I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XlM4WZ+zaIOvpAbDgwA+crg7DoMZ3BaqcovgkiTDFaOh5YSjT3T6GhHckZP8z+LaB
+         xh8MkC2nD2efzEKjMCbXy+tpRhEMMvGspQkprk2tLrzbU9CBkokKsTtNmXYIA8fDEp
+         TqIHM/lf+MLZX+q767TOEq3rPMnhlENd/TwH1Hi8=
+Date:   Wed, 1 Sep 2021 09:14:01 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] driver core: fw_devlink: Don't create device links
+ for devices not on a bus
+Message-ID: <YS8oOWjFe4yQ1Q/v@kroah.com>
+References: <20210831224510.703253-1-saravanak@google.com>
+ <YS8cncQxUZDRuhUG@kroah.com>
+ <CAGETcx8d0KR3BeLxa6eKr_QkNgg=+dcq18tAu2A5M6W9pMFOHw@mail.gmail.com>
 MIME-Version: 1.0
-References: <000000000000815b9605c70e74f8@google.com> <131b24e5-ee31-6f7b-42b4-c34583711913@infradead.org>
- <2fccb5d3-191c-924e-159f-1c9d423e282f@i-love.sakura.ne.jp>
- <339bfb21-8e80-c7d9-46dd-c416f87c50c0@infradead.org> <535e404d-03bf-8e7a-b296-132a2a98c599@i-love.sakura.ne.jp>
- <CAMuHMdWX7s63X_zR9329canbQkPGBVxZNG4O+_=jUut60aGR9g@mail.gmail.com>
- <5c6d2b95-31d7-0d59-5e62-2593d9a0e1fe@i-love.sakura.ne.jp>
- <CAMuHMdWbSUGRGAVi-17C3hyDBZnGLAsmbAs+wXPHiCNWWLbMpA@mail.gmail.com>
- <CAKMK7uF1cnen2UVWeOL164z1CCqOuRMC5SmM+5GvRvi7C-UOTw@mail.gmail.com>
- <CAMuHMdWNYaZxZB0Td4PFb76rrtQMumKu6cJgLi2aNnW-9NmG8A@mail.gmail.com>
- <CAKMK7uHuOQWUnsiH00QFbHKgTdjjryK0ra9We2stojXMiAVgJA@mail.gmail.com> <750ed1ae-de80-b232-4aea-79d60c212fab@i-love.sakura.ne.jp>
-In-Reply-To: <750ed1ae-de80-b232-4aea-79d60c212fab@i-love.sakura.ne.jp>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 1 Sep 2021 09:12:45 +0200
-Message-ID: <CAMuHMdX_AM4Dg-5d9D5M=7V-PjGQZ6hYWWMmhTc4tvuq_PcdDg@mail.gmail.com>
-Subject: Re: [PATCH v2] fbmem: don't allow too huge resolutions
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Colin King <colin.king@canonical.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx8d0KR3BeLxa6eKr_QkNgg=+dcq18tAu2A5M6W9pMFOHw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 3:15 AM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
-> syzbot is reporting page fault at vga16fb_fillrect() [1], for
-> vga16fb_check_var() is failing to detect multiplication overflow.
->
->   if (vxres * vyres > maxmem) {
->     vyres = maxmem / vxres;
->     if (vyres < yres)
->       return -ENOMEM;
->   }
->
-> Since no module would accept too huge resolutions where multiplication
-> overflow happens, let's reject in the common path.
->
-> Link: https://syzkaller.appspot.com/bug?extid=04168c8063cfdde1db5e [1]
-> Reported-by: syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>
-> Debugged-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+On Tue, Aug 31, 2021 at 11:57:45PM -0700, Saravana Kannan wrote:
+> On Tue, Aug 31, 2021 at 11:24 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Tue, Aug 31, 2021 at 03:45:10PM -0700, Saravana Kannan wrote:
+> > > Devices that are not on a bus will never have a driver bound to it. So,
+> > > fw_devlink should not create device links for it as it can cause probe
+> > > issues[1] or sync_state() call back issues[2].
+> > >
+> > > [1] - https://lore.kernel.org/lkml/CAGETcx_xJCqOWtwZ9Ee2+0sPGNLM5=F=djtbdYENkAYZa0ynqQ@mail.gmail.com/
+> > > [2] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+> > > Fixes: f9aa460672c9 ("driver core: Refactor fw_devlink feature")
+> > > Reported-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > ---
+> > >  drivers/base/core.c | 16 ++++++++++++++++
+> > >  1 file changed, 16 insertions(+)
+> > >
+> > > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > > index f6360490a4a3..304a06314656 100644
+> > > --- a/drivers/base/core.c
+> > > +++ b/drivers/base/core.c
+> > > @@ -1719,8 +1719,24 @@ static int fw_devlink_create_devlink(struct device *con,
+> > >       struct device *sup_dev;
+> > >       int ret = 0;
+> > >
+> > > +     /*
+> > > +      * If a consumer device is not on a bus (i.e. a driver will never bind
+> > > +      * to it), it doesn't make sense for fw_devlink to create device links
+> > > +      * for it.
+> > > +      */
+> > > +     if (con->bus == NULL)
+> > > +             return -EINVAL;
+> > > +
+> >
+> > Why would a device not be on a bus that has to do with a driver needing
+> > it?  What types of devices are these?
+> 
+> I'm not sure what you are asking, because it seems like a question
+> you'd know the answer to. What I'm trying to say is that
+> bus_probe_device() is obviously only possible if the device is on a
+> bus. And fw_devlink creates managed device links that track if a
+> device is bound to a driver. So it doesn't make sense to create the
+> device link if the device is not on a bus.
+> 
+> There are plenty of examples for this -- like all the devices that get
+> added to a class? For example the platform bus or the mdio bus itself
+> are devices that are added to a class instead of a bus.
+> 
+> Not sure if I answered your question. Let me know.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Sorry, that was a vague question.
 
-Gr{oetje,eeting}s,
+I was trying to say, "how can a device that is not attached to a bus at
+all even be called for this?"  Who would be making that type of
+connection, what subsystem is causing this to happen?
 
-                        Geert
+thanks,
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+greg k-h
