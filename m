@@ -2,179 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 229E03FD0DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 03:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69D73FD0E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 03:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241668AbhIABqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 21:46:11 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:39659 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241525AbhIABqJ (ORCPT
+        id S241679AbhIABqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 21:46:46 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:37634 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241525AbhIABqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 21:46:09 -0400
-Received: by mail-ot1-f47.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so1620851otf.6;
-        Tue, 31 Aug 2021 18:45:13 -0700 (PDT)
+        Tue, 31 Aug 2021 21:46:45 -0400
+Received: by mail-oi1-f176.google.com with SMTP id y128so1794077oie.4;
+        Tue, 31 Aug 2021 18:45:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=R+w5H4hqR7bCzxkDrQvvanVcO/c0P/Ht6rgu3iuxeTc=;
-        b=d2469sHLLKaBsf2O1ORcwqgAtO15TMJRYtSRGqMMKJIEljt3cndIbAYnIWw4cb144F
-         LdRPbAM+6kwl8bqHBUSI4fZWPa6uzs189EW/8vNPopa0ErUVj2vRrYE/jPOc0eVrf82M
-         7L6CuYjbFgLlIM51XsFLDy+0y5JqFcZi+f2sMWMZZoQ1LM0yOoip77KpjXWVtzLUbSDW
-         bse0ryh0hnXtkZQwVLJrfwXBDXHY3aZWSwS3xZ15aNFFtkqqj/QAvV7X5aseGdh2oEs3
-         9o/kSG2utDmz0uJrmmw/P53Gw813Efp81209oC2eEw9fyQuCla88Tt8kWMW41qRa0iif
-         j0NA==
-X-Gm-Message-State: AOAM5319LQm673CNlKCGdiOAIB763M3hG8kwtp/Q1NXvJvRTepKj5Kzr
-        OgqkHkG/9DFqqV466ir3bQ==
-X-Google-Smtp-Source: ABdhPJwxH2BoXYA7RXSHBo3DaIPGy4hLKTZerlfI6niiZBghKr6R12bjiRkBN6kc49I2AcqQILIUZQ==
-X-Received: by 2002:a9d:721b:: with SMTP id u27mr20736478otj.214.1630460713197;
-        Tue, 31 Aug 2021 18:45:13 -0700 (PDT)
+        bh=WELW+t1VokhQBNo9UHiCqpi6VGFFmMKLQTAx9VOOrSY=;
+        b=Q2wDYjgas2KnmPQXsxY2r3THZVXG8NVKdWF0S9ufLlG6/ffeFih4D4G+zR4JZnlyPd
+         AGBLwddw4vk7uOWxIbLGu7JnAKkVvwQfBO6ku32JkjxxvldUHMOW0rVmfRHYmtSSZZvy
+         S1Gb3Mcer5kezhs/HdrvWZRkkhhf1S0mf9mtaCV2jlKKJgzV//o14QJA1IIHHYKzBSOS
+         0a8DN6RaeNn+XgYXoVJLabW2L1uvu4zuoZx29OwIPbjDSOrMc78rBkXfyalTDHiXE7jS
+         +KSklObxl7iPTcQZguY2XX/DCYUG1pvTpk86H00pqz2xIBEldjSxa5fs8FVwvqPuvlPt
+         y+fg==
+X-Gm-Message-State: AOAM533MM1yCnPmOekce4ppd2jp91lozabaywJvbONfr4LiJxE2HVXE3
+        tSoZrD/iwoLn75VS5QPYXA==
+X-Google-Smtp-Source: ABdhPJxRMtTtU+FFCOlalA/6lm6+SPrgutd1eQP5u0+++swh3v0wAY1IUEdG5qN9vfraBUJplHWO3Q==
+X-Received: by 2002:aca:c490:: with SMTP id u138mr5462429oif.150.1630460748994;
+        Tue, 31 Aug 2021 18:45:48 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id p64sm3994580oih.29.2021.08.31.18.45.12
+        by smtp.gmail.com with ESMTPSA id d10sm4042159ooj.24.2021.08.31.18.45.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 18:45:12 -0700 (PDT)
-Received: (nullmailer pid 1018238 invoked by uid 1000);
-        Wed, 01 Sep 2021 01:45:11 -0000
-Date:   Tue, 31 Aug 2021 20:45:11 -0500
+        Tue, 31 Aug 2021 18:45:48 -0700 (PDT)
+Received: (nullmailer pid 1019162 invoked by uid 1000);
+        Wed, 01 Sep 2021 01:45:47 -0000
+Date:   Tue, 31 Aug 2021 20:45:47 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Taniya Das <tdas@codeaurora.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette =?iso-8859-1?Q?=A0?= 
-        <mturquette@baylibre.com>, Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        linux-kernel@vger.kernel.org, Tomasz Figa <tomasz.figa@gmail.com>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] dt-bindings: clock: Add YAML schemas for LPASS
- clocks on SC7280
-Message-ID: <YS7bJ7bu6Ud2f+vB@robh.at.kernel.org>
-References: <1630406202-3919-1-git-send-email-tdas@codeaurora.org>
+Subject: Re: [PATCH] dt-bindings: clock: samsung: fix header path in example
+Message-ID: <YS7bS7YzI+UKHUtA@robh.at.kernel.org>
+References: <20210831130643.83249-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1630406202-3919-1-git-send-email-tdas@codeaurora.org>
+In-Reply-To: <20210831130643.83249-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 04:06:41PM +0530, Taniya Das wrote:
-> The LPASS(Low Power Audio Subsystem) clock provider have a bunch of generic
-> properties that are needed in a device tree. Add the LPASS clock IDs for
-> LPASS PIL client to request for the clocks.
+On Tue, 31 Aug 2021 15:06:43 +0200, Krzysztof Kozlowski wrote:
+> The proper header is exynos4.h:
 > 
-> Signed-off-by: Taniya Das <tdas@codeaurora.org>
+>     samsung,exynos4412-isp-clock.example.dts:19:18: fatal error: dt-bindings/clock/exynos4412.h: No such file or directory
+> 
+> Fixes: 7ac615780926 ("dt-bindings: clock: samsung: convert Exynos4 to dtschema")
+> Reported-by: Stephen Boyd <sboyd@kernel.org>
+> Reported-by: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> 
 > ---
->  .../bindings/clock/qcom,sc7280-lpasscc.yaml        | 69 ++++++++++++++++++++++
->  include/dt-bindings/clock/qcom,lpass-sc7280.h      | 16 +++++
->  2 files changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscc.yaml
->  create mode 100644 include/dt-bindings/clock/qcom,lpass-sc7280.h
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscc.yaml b/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscc.yaml
-> new file mode 100644
-> index 0000000..7b62763
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/qcom,sc7280-lpasscc.yaml
-> @@ -0,0 +1,69 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/qcom,sc7280-lpasscc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm LPASS Core Clock Controller Binding for SC7280
-> +
-> +maintainers:
-> +  - Taniya Das <tdas@codeaurora.org>
-> +
-> +description: |
-> +  Qualcomm LPASS core clock control module which supports the clocks and
-> +  power domains on SC7280.
-> +
-> +  See also:
-> +  - dt-bindings/clock/qcom,lpass-sc7280.h
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,sc7280-lpasscc
-> +
-> +  clocks:
-> +    items:
-> +      - description: gcc_cfg_noc_lpass_clk from GCC
-> +
-> +  clock-names:
-> +    items:
-> +      - const: iface
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +  reg:
-> +    minItems: 3
-
-Don't need minItems equal to 'items' length.
-
-> +    items:
-> +      - description: LPASS qdsp6ss register
-> +      - description: LPASS top-cc register
-> +      - description: LPASS cc register
-> +
-> +  reg-names:
-> +    items:
-> +      - const: qdsp6ss
-> +      - const: top_cc
-> +      - const: cc
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - '#clock-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,gcc-sc7280.h>
-> +    #include <dt-bindings/clock/qcom,lpass-sc7280.h>
-> +    clock-controller@3000000 {
-> +      compatible = "qcom,sc7280-lpasscc";
-> +      reg = <0x03000000 0x40>, <0x03c04000 0x4>, <0x03389000 0x24>;
-> +      reg-names = "qdsp6ss", "top_cc", "cc";
-> +      clocks = <&gcc GCC_CFG_NOC_LPASS_CLK>;
-> +      clock-names = "iface";
-> +      #clock-cells = <1>;
-> +    };
-> +...
-> diff --git a/include/dt-bindings/clock/qcom,lpass-sc7280.h b/include/dt-bindings/clock/qcom,lpass-sc7280.h
-> new file mode 100644
-> index 0000000..a259463
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/qcom,lpass-sc7280.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-
-Dual license.
-
-> +/*
-> + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#ifndef _DT_BINDINGS_CLK_QCOM_LPASS_SC7280_H
-> +#define _DT_BINDINGS_CLK_QCOM_LPASS_SC7280_H
-> +
-> +#define LPASS_Q6SS_AHBM_CLK				0
-> +#define LPASS_Q6SS_AHBS_CLK				1
-> +#define LPASS_TOP_CC_LPI_Q6_AXIM_HS_CLK			2
-> +#define LPASS_QDSP6SS_XO_CLK				3
-> +#define LPASS_QDSP6SS_SLEEP_CLK				4
-> +#define LPASS_QDSP6SS_CORE_CLK				5
-> +
-> +#endif
-> -- 
-> Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-> of the Code Aurora Forum, hosted by the  Linux Foundation.
+> The SHA in fixes tag is from linux-next. Might not be stable.
+> ---
+>  .../devicetree/bindings/clock/samsung,exynos4412-isp-clock.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> 
+
+Acked-by: Rob Herring <robh@kernel.org>
