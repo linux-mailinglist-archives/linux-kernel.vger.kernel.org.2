@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB71B3FDDCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9DB3FDDD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 16:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245176AbhIAO12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 10:27:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236539AbhIAO11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 10:27:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA93761056;
-        Wed,  1 Sep 2021 14:26:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630506391;
-        bh=Lr7NDxwN7fcf2Qff92CnluLy5KXUdI7ZL0G5scwyLMo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FtosxcBAOgGYvCDka6h0Kj0FQRvTy0uhfmVjC4W42cLSNKU1/qEMzhZERQN+FVLk+
-         yQ2mLaAmiN+HbDqCDZudfWakdIZmuky8nG8JSeVjTDFefx7en9YJN2J68NejJb2DeZ
-         +h53GB3iA4X85GzqNoAvjSAuMXDtNNlGyixq82wWJeK0XC71yEl0WIrGlxjVyZyxx3
-         DtPZEqaj3023pNfv3IkIpUYCxE0KZQYZJLYl2L4DlOP29ku8FkjdKgdLUkFIPEYXhI
-         wRQOKj60AqGzrJCpcx5FwlzoSOPrHRF7CEcFLsmU0jqS31U2DY37d7MIJuX0jytDL2
-         Z0d9jgz1mZt0g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 612134007E; Wed,  1 Sep 2021 11:26:28 -0300 (-03)
-Date:   Wed, 1 Sep 2021 11:26:28 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     James Clark <james.clark@arm.com>, jolsa@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tools build: Fix feature detect clean for out of source
- builds
-Message-ID: <YS+NlBGl1xMqHlgC@kernel.org>
-References: <20210816130705.1331868-1-james.clark@arm.com>
- <YS548qYreGLtabs4@krava>
+        id S236539AbhIAObu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 10:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233814AbhIAObt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 10:31:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71582C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 07:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=abSoqmL6UmYJk1xVljHxCr9/UeBUB47I3MqPPo8dZRU=; b=aKJMa9QPyXndZc+w43+OcTLROr
+        lTyNwExfN95Qc41Q2+it7K16pLO7ioscuvpbFdFYp2yxZrspEJDWHs9GyDsBK63u44ZJhJT8mstsN
+        F5CNVbMGfY0J0BQtywiM0PEeu6Ocf1U+HAUzrwINWb8LZhu+A4nDxVkHaVEDvHq5hnDEjVFEeK/rr
+        k/vQr0Vq/DiAi16fd/RF5wMlXXLdxUCqu0V7ygjS/KnFDBasXt47lW0ZN8k+n53toLmLcEoMc2vbw
+        Tm07t+rqgOeGUyCzaaAmIdZbYif9ILd+eb7MQRY4Vlv7ljnl05Al5MARlyDCukQFL7/n+HlzilmVn
+        jJwog0AQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mLRF0-002R6Y-7l; Wed, 01 Sep 2021 14:29:38 +0000
+Date:   Wed, 1 Sep 2021 15:29:26 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alex Elder <elder@kernel.org>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org
+Subject: Re: [greybus-dev] [PATCH v4] staging: greybus: Convert uart.c from
+ IDR to XArray
+Message-ID: <YS+ORkbD9NuEOl0D@casper.infradead.org>
+References: <20210829092250.25379-1-fmdefrancesco@gmail.com>
+ <6155058.TBsaUTXu4T@localhost.localdomain>
+ <794b3ff8-0240-ff14-8721-cdf510f52be3@linaro.org>
+ <8914101.vIO1HAjRha@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YS548qYreGLtabs4@krava>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <8914101.vIO1HAjRha@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Aug 31, 2021 at 08:46:10PM +0200, Jiri Olsa escreveu:
-> On Mon, Aug 16, 2021 at 02:07:05PM +0100, James Clark wrote:
-> > Currently the clean target when using O= isn't cleaning the feature
-> > detect output. This is because O= and OUTPUT= are set to canonical
-> > paths. For example in tools/perf/Makefile:
-> > 
-> >   FULL_O := $(shell cd $(PWD); readlink -f $(O) || echo $(O))
-> > 
-> > This means that OUTPUT ends in a / and most usages prepend it to a file
-> > without adding an extra /. This line that was changed adds an extra /
-> > before the 'feature' folder but not to the end, resulting in a clean
-> > command like this:
-> > 
-> >   rm -f /tmp/build//featuretest-all.bin ...
-> > 
-> > After the change the clean command looks like this:
-> > 
-> >   rm -f /tmp/build/feature/test-all.bin ...
-> > 
-> > Signed-off-by: James Clark <james.clark@arm.com>
-> 
-> nice catch!
-> 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
+On Wed, Sep 01, 2021 at 03:56:20PM +0200, Fabio M. De Francesco wrote:
+> Anyway I tried to reason about it. I perfectly know what is required to 
+> protect critical sections of code, but I don't know how drivers work; I mean 
+> I don't know whether or not different threads that run concurrently could 
+> really interfere in that specific section. This is because I simply reason in 
+> terms of general rules of protection of critical section but I really don't 
+> know how Greybus works or (more in general) how drivers work.
 
-Thanks, applied and added:
+From a quick look, it is indeed possible to get rid of the mutex.
+If this were a high-performance path which needed to have many threads
+simultaneously looking up the gb_tty, or it were core kernel code, I
+would say that you should use kfree_rcu() to free gb_tty and then
+you could replace the mutex_lock() on lookup with a rcu_read_lock().
 
-Fixes: 762323eb39a257c3 ("perf build: Move feature cleanup under tools/build")
+Since this is low-performance and driver code, I think you're better off
+simply doing this:
 
-- Arnaldo
+	xa_lock((&tty_minors);
+	gb_tty = xa_load(&tty_minors, minor);
+	... establish a refcount ...
+	xa_unlock(&tty_minors);
 
+EXCEPT ...
+
+establishing a refcount currently involves taking a mutex.  So you can't
+do that.  First, you have to convert the gb_tty mutex to a spinlock
+(which looks fine to me), and then you can do this.  But this is where
+you need to work with the driver authors to make sure it's OK.
