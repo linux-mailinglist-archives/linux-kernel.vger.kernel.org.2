@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B483FDB4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CBD3FDC2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345092AbhIAMko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:40:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40776 "EHLO mail.kernel.org"
+        id S1344099AbhIAMri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:47:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245698AbhIAMhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:37:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8050761153;
-        Wed,  1 Sep 2021 12:34:24 +0000 (UTC)
+        id S1345457AbhIAMoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:44:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EA9C610C9;
+        Wed,  1 Sep 2021 12:38:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499665;
-        bh=F0MW1db5OjgHtF2kTSOyksu1a1+W3Mq7CZ0qKIUJMMw=;
+        s=korg; t=1630499917;
+        bh=uFoGyHp9snzNt123frTbdjiDX9s2ycIlpFAozepiU4g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=khbJXpM5PK7w2h8L/3kqEuFyNSkBipdSysd2kDZuyZL2cAyQpFkOdZWqQ81eCPIa1
-         pUzgMo27D9VB0SjAEf97KxzoEOm88K8dYHMUb6WCCa7Ui90u6TmaFIhomdGCVcdbMO
-         pHvm9+kUhs7aFwHB+qLBOzHKwIOM3wE14jNdnw/4=
+        b=aqKhioCi+sUVrsLk4qVOr9cVbg4CbH9DaPmDRVv8QwoRSrfAQgRJysJfQhsQfGZIt
+         2aVef5liqHEUPyd+HuStgJtJ0aemXFrra7nhHubcgsssPt+HRTdbyUoUfJ6sbSujWG
+         CZ9OyPw3tWn2KKNzVUKaTVSLewCr3S5LyDfpLvaw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Keyu Man <kman001@ucr.edu>, Willy Tarreau <w@1wt.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 039/103] ipv4: use siphash instead of Jenkins in fnhe_hashfun()
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Li Jinlin <lijinlin3@huawei.com>,
+        Qiu Laibin <qiulaibin@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.13 034/113] scsi: core: Fix hang of freezing queue between blocking and running device
 Date:   Wed,  1 Sep 2021 14:27:49 +0200
-Message-Id: <20210901122301.873854687@linuxfoundation.org>
+Message-Id: <20210901122303.130577318@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
-References: <20210901122300.503008474@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +41,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Li Jinlin <lijinlin3@huawei.com>
 
-[ Upstream commit 6457378fe796815c973f631a1904e147d6ee33b1 ]
+commit 02c6dcd543f8f051973ee18bfbc4dc3bd595c558 upstream.
 
-A group of security researchers brought to our attention
-the weakness of hash function used in fnhe_hashfun().
+We found a hang, the steps to reproduce  are as follows:
 
-Lets use siphash instead of Jenkins Hash, to considerably
-reduce security risks.
+  1. blocking device via scsi_device_set_state()
 
-Also remove the inline keyword, this really is distracting.
+  2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
 
-Fixes: d546c621542d ("ipv4: harden fnhe_hashfun()")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Keyu Man <kman001@ucr.edu>
-Cc: Willy Tarreau <w@1wt.eu>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  3. echo none > /sys/block/sda/queue/scheduler
+
+  4. echo "running" >/sys/block/sda/device/state
+
+Step 3 and 4 should complete after step 4, but they hang.
+
+  CPU#0               CPU#1                CPU#2
+  ---------------     ----------------     ----------------
+                                           Step 1: blocking device
+
+                                           Step 2: dd xxxx
+                                                  ^^^^^^ get request
+                                                         q_usage_counter++
+
+                      Step 3: switching scheculer
+                      elv_iosched_store
+                        elevator_switch
+                          blk_mq_freeze_queue
+                            blk_freeze_queue
+                              > blk_freeze_queue_start
+                                ^^^^^^ mq_freeze_depth++
+
+                              > blk_mq_run_hw_queues
+                                ^^^^^^ can't run queue when dev blocked
+
+                              > blk_mq_freeze_queue_wait
+                                ^^^^^^ Hang here!!!
+                                       wait q_usage_counter==0
+
+  Step 4: running device
+  store_state_field
+    scsi_rescan_device
+      scsi_attach_vpd
+        scsi_vpd_inquiry
+          __scsi_execute
+            blk_get_request
+              blk_mq_alloc_request
+                blk_queue_enter
+                ^^^^^^ Hang here!!!
+                       wait mq_freeze_depth==0
+
+    blk_mq_run_hw_queues
+    ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
+
+                            blk_mq_unfreeze_queue
+                            ^^^^^ mq_freeze_depth--
+
+To fix this, we need to run queue before rescanning device when the device
+state changes to SDEV_RUNNING.
+
+Link: https://lore.kernel.org/r/20210824025921.3277629-1-lijinlin3@huawei.com
+Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
+Signed-off-by: Qiu Laibin <qiulaibin@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/route.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/scsi/scsi_sysfs.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index e15c1d8b7c8d..3d9946fd41f3 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -624,14 +624,14 @@ static struct fib_nh_exception *fnhe_oldest(struct fnhe_hash_bucket *hash)
- 	return oldest;
- }
+--- a/drivers/scsi/scsi_sysfs.c
++++ b/drivers/scsi/scsi_sysfs.c
+@@ -808,12 +808,15 @@ store_state_field(struct device *dev, st
+ 	ret = scsi_device_set_state(sdev, state);
+ 	/*
+ 	 * If the device state changes to SDEV_RUNNING, we need to
+-	 * rescan the device to revalidate it, and run the queue to
+-	 * avoid I/O hang.
++	 * run the queue to avoid I/O hang, and rescan the device
++	 * to revalidate it. Running the queue first is necessary
++	 * because another thread may be waiting inside
++	 * blk_mq_freeze_queue_wait() and because that call may be
++	 * waiting for pending I/O to finish.
+ 	 */
+ 	if (ret == 0 && state == SDEV_RUNNING) {
+-		scsi_rescan_device(dev);
+ 		blk_mq_run_hw_queues(sdev->request_queue, true);
++		scsi_rescan_device(dev);
+ 	}
+ 	mutex_unlock(&sdev->state_mutex);
  
--static inline u32 fnhe_hashfun(__be32 daddr)
-+static u32 fnhe_hashfun(__be32 daddr)
- {
--	static u32 fnhe_hashrnd __read_mostly;
--	u32 hval;
-+	static siphash_key_t fnhe_hash_key __read_mostly;
-+	u64 hval;
- 
--	net_get_random_once(&fnhe_hashrnd, sizeof(fnhe_hashrnd));
--	hval = jhash_1word((__force u32)daddr, fnhe_hashrnd);
--	return hash_32(hval, FNHE_HASH_SHIFT);
-+	net_get_random_once(&fnhe_hash_key, sizeof(fnhe_hash_key));
-+	hval = siphash_1u32((__force u32)daddr, &fnhe_hash_key);
-+	return hash_64(hval, FNHE_HASH_SHIFT);
- }
- 
- static void fill_route_from_fnhe(struct rtable *rt, struct fib_nh_exception *fnhe)
--- 
-2.30.2
-
 
 
