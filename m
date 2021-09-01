@@ -2,81 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF583FDEAB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3459C3FDEAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343708AbhIAPat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbhIAPas (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:30:48 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F80FC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 08:29:51 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id f4so5878276ybr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 08:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yEydQnCiiB9iy6pnOk/cAGg/1/rtBHcq3DPIzAFNphY=;
-        b=hSUaQDMK4O8Ut68DmSUoyerIq/HjsCLsDayNQWB1FJynMeNZXln0F3/aUTnbm8y39I
-         rkLW3LfODYhP3/b7uR5g4aNi1am0qJJ1VSfnjaVnJqN2Z7AWTZCmE+WqVDqdwAx903hl
-         Ed5BM1FRToqbl4PX3nY9E1zbR+/f/d5vrspqeSiHkFJFsSTBQPBLtblBZPTevVPdfOdU
-         1etEgYH91SZv7rIC++eZ4aDUo3AprLZt+EStIhc37YenTf4Az7k9ji2PO9JwU5UhOpeg
-         LlnVsEp7rlHJEzbFA8Q+uEBR1GW9ZS02cYBAhhkOrBT8I15H8lGRljTeyIMt6pwSm1EW
-         3gLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yEydQnCiiB9iy6pnOk/cAGg/1/rtBHcq3DPIzAFNphY=;
-        b=Tp3X3rvBk8K35zpsL/Rtftm8pkXxyk7/vA3P8gik690GDC0n9Hd6AiPKGSifs3Ir6M
-         thScOKOijjXfVnUbcsfuZ46lC8I77mmfaw9fp/D2tLxBG8rJjvovBwgc9zICVhFYBIBs
-         bj4tuUf1rQWXruOtRM0YXKfMQ3t1VTILkjm/hWyMNi1frDmViY3nnOM+XOyseQexCvuK
-         Dcy6sEkEZCSNvfAGwKt7xGvwK+d1p8pswM2RzkceBgzpIK8lLBC2KPNYniBqIMMJb03k
-         NLWW/5W3jFpj4NyuWrWkN+eu57Nf7Ww1hxBpUBQgc44Fa780kVd+xsLXeCKpPNmrrXui
-         czMA==
-X-Gm-Message-State: AOAM530hqbx/5Hv+ptpbjKUpr6IU5Do9mOp6MvYPWbj/3qgU5tyORBPL
-        7K5Mq/6oktLlGRHgx5XuTldJ3mMAByfK5vt22jK4UA==
-X-Google-Smtp-Source: ABdhPJz5awbgOKC0zlUDSKhgM3uohHZwxW/JsQQkEsstbjQi6yQpMmzZsV8j+DIAJEvOUGFfzNlU80svca6oG4UqIsI=
-X-Received: by 2002:a25:6994:: with SMTP id e142mr88133ybc.364.1630510190355;
- Wed, 01 Sep 2021 08:29:50 -0700 (PDT)
+        id S1343525AbhIAPbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:31:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244357AbhIAPbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 11:31:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67A2E61059;
+        Wed,  1 Sep 2021 15:30:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630510205;
+        bh=nCh6zNcho5BtR/i0GnEfEV1QeXQKLNeQ8tDuAktq0JE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lLqoLyzmpO2v8y46e4RXFml+xxeWOSTsXsoNUVaLYym2BbF7+yqAf2W0RIftnEs8l
+         DgsaKZ+bMWq5NL8fopxO1+ejhrqPTC/Rwg5EqxTGfUIl5QLat4R1oP4KGnjmKrp7n7
+         KVEhTbsrvMxrl1WOLWySD8kfgFtvBhnxOjePpaPA=
+Date:   Wed, 1 Sep 2021 17:30:03 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Krish Jain <krishjain02939@gmail.com>
+Cc:     Bryan Brattlof <hello@bryanbrattlof.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Declare the file_operations struct as const
+Message-ID: <YS+cexhuqldPaACs@kroah.com>
+References: <20210829144531.c2syu4vv4s22dlg7@h510>
+ <CAPGkw+wyH3Pj6DV_m8wqCV5yujhjRwTwVNs6dK4i9JO-Y3ys6w@mail.gmail.com>
+ <20210831133533.6aayzjghdakrhy56@h510>
+ <13366651.n50aozgL3V@localhost.localdomain>
+ <20210831230014.cp46vho2hnndacjp@h510>
+ <CAPGkw+zpYsovnXL_4GfjsQ60fqre+xyiwvwKuDj_fHPTKEfzeQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <1630492744-60396-1-git-send-email-linyunsheng@huawei.com>
- <9c9ef2228dfcb950b5c75382bd421c6169e547a0.camel@redhat.com>
- <CANn89iJFeM=DgcQpDbaE38uhxTEL6REMWPnVFt7Am7Nuf4wpMw@mail.gmail.com>
- <CANn89iKbgtb84Lb4UOxUCb_WGrfB6ZoD=bVH2O06-Mm6FBmwpg@mail.gmail.com> <c40a178110ee705b2be32272b9b3e512a40a4cae.camel@redhat.com>
-In-Reply-To: <c40a178110ee705b2be32272b9b3e512a40a4cae.camel@redhat.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 1 Sep 2021 08:29:39 -0700
-Message-ID: <CANn89iKxeD0sMe-Qp5dnQ_vX28SGeyW3M857ww4chVsPE-50uw@mail.gmail.com>
-Subject: Re: [PATCH net-next] tcp: add tcp_tx_skb_cache_key checking in sk_stream_alloc_skb()
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        MPTCP Upstream <mptcp@lists.linux.dev>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPGkw+zpYsovnXL_4GfjsQ60fqre+xyiwvwKuDj_fHPTKEfzeQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 8:25 AM Paolo Abeni <pabeni@redhat.com> wrote:
->
+On Wed, Sep 01, 2021 at 05:20:13PM +0200, Krish Jain wrote:
+> On Wed, Sep 1, 2021 at 1:00 AM Bryan Brattlof <hello@bryanbrattlof.com> wrote:
+> >
+> > On this day, August 31, 2021, thus sayeth Fabio M. De Francesco:
+> > >
+> > > I just want to *really* thank you for the hard work you got involved and that
+> > > you carried out with one of the highest levels of professionalism (and
+> > > patience :)) very few of us could ever equal (not I, for sure).
+> > >
+> > > I thank you also not for the technical hints you gave to Krish, instead for
+> > > your your choice "to not rob [you] Krish the opportunity to learn".
+> > >
+> > > Actually I was tempted to write something like "first do this, than that, and
+> > > finally run this tool". But I was able to desist, by learning from you how
+> > > people should be helped for real.
+> > >
+> > > Most of us here should learn by your attitude.
+> > >
+> > > Thanks again, seriously.
+> > >
+> >
+> > Thank you for such kind words, Fabio.
+> >
+> > I was very lucky to be, and still am, surrounded by people who
+> > demonstrated this idea to me when I was young. I am very happy to see
+> > others here see how beneficial and helpful (in the long term) learning
+> > this way can be.
+> >
+> > I'm grateful to have found and be a part of this community.
+> > ~Bryan
+> >
+> 
+> 
+> 
+> Interesting.
+> 
+> "make drivers/staging/android/ " works now (finally!) and shows me the
+> errors when I mess up in the file  ashmem.c for example.
+> Furthermore, " make CCFLAGS=-Werror W=1 drivers/staging/android/    "
+> outputs the same errors too just more verbose. So it works completely
+> now, However, "make CCFLAGS=-Werror W=1 M=drivers/staging/android/
+> " just takes to new prompt line and does not output anything. Do you
+> know why?
 
-> You are way too fast, I was still replying to your previous email,
-> asking if I could help :)
+"M=pathname" is different than "pathname", you are asking for different
+things to happen here, so depending on your kernel configuration,
+different things will be built (or not built).
 
-All I did was to resurrect this patch (rebase got no conflict) and send it :)
+And don't mes with CCFLAGS settings for building the kernel unless you
+_really_ know what you are doing.  For staging tree work, it's not
+advised at all.
 
->
-> I'll a look ASAP. Please, allow for some latency: I'm way slower!
+good luck!
 
-Thanks Paolo !
+greg k-h
