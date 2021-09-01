@@ -2,124 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C80673FE4FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B4F3FE504
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 23:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344893AbhIAVcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 17:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        id S1344897AbhIAVhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 17:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344756AbhIAVcy (ORCPT
+        with ESMTP id S245507AbhIAVhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 17:32:54 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB49C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 14:31:56 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id l3so519660pji.5
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 14:31:56 -0700 (PDT)
+        Wed, 1 Sep 2021 17:37:12 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3651C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 14:36:14 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id l10so2023349lfg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 14:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aaYeejJ6cOvT3NBo0uptkAHk+aIFXmuGOzaZeZUh/h0=;
-        b=QdJF/B3nnfskavWSI2ucIsQN8uE7AnobJT0PDR6nt9Au507gR+neX4sZYP5I7j7j55
-         dFxjEZjNRMDIalfc4ir4dnEx33E2zxU2rxwtng0b+8G3Tye40u8CeC5QPbd5cUwahwGd
-         rf1/T15e9Q51v3V5NuYyy3jMXsibgicAfvRHuzOVD0XoSXTbR6thDGg68rHD48BvU80g
-         Rp3N/eGLBcVFdm9iV79ribD2VdViPXkzdbxdOOdJGcpOTkwLEGwFWbJOzySuNwLop/Af
-         o5Uzmw97mXib9yezGGbs7qC/WtjuWguRrQMO5F0lZIz5jPPJ5A/NYiF+eNNYEImx1F19
-         1O7Q==
+        d=linuxfoundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IYemb+IVIGMJMpiffbPQhUFiWax0UjI4yymjBbO+x2M=;
+        b=L3OYKEs58Snx5mC+czL344+tZCIO7gfpz++GT7mAJJ9TkuGPjlXiYIOypkBLHsfxzx
+         ds+STBdb8Ysq9cPQg06QQe80hsqF++3uZ2kqZQdkxsBDjcVYbjIWPXjRsuzwUZsae9l9
+         mKlZ8KFBOIQgr5ExFEYl0ynTDLEaiIPke2C9g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aaYeejJ6cOvT3NBo0uptkAHk+aIFXmuGOzaZeZUh/h0=;
-        b=KylwG/qsXPRjELKtZ9wKgzuVLDGmV8n5aJjZmRvDIAc/3iV1jrrLJ7BNQxh1LSCfA4
-         LM4ZK5mBjuIu+EkmGTaYHJGmdKeVgk5uP66I4Q5FRAao6Sf8K7wwlG1zu8QRK/ga6F2D
-         0nMHj/e89ZkEyIsUNVZsBW/urQyfnbNRd0tqfbCZBBajk/1dsL2wkWKuHPzxFGdbqhFq
-         jJ0mEZVB48rcAqIlcNYFLegAmSnMXuHDwqxI9BHzZvortOLM9wC9Gn7I3c+J3mrJk/+Q
-         /xLm2iTSWDgaaqvKh5eIEu6gHlUbNDsQIL5SkFg5N6y+E2pSoQ4S9LkpXKu95t9hkfvA
-         iISw==
-X-Gm-Message-State: AOAM530Nx+C4UfTjYnR0vf5zQUtH0rgn/R5TBWXicC//Ur3RTQr8+JWH
-        audiesV/SOi7TqA2NWljjFGKjA==
-X-Google-Smtp-Source: ABdhPJwDukIRczVM4dnJcRc34WtWg8nUxyyJwAQ2lRZFN3Q2WzrKL1oCMCTwZJf87EdKtbvXRgjibA==
-X-Received: by 2002:a17:902:ce84:b0:138:9422:512e with SMTP id f4-20020a170902ce8400b001389422512emr1333007plg.12.1630531916126;
-        Wed, 01 Sep 2021 14:31:56 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id e16sm380850pfl.58.2021.09.01.14.31.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 14:31:55 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 21:31:52 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-coco@lists.linux.dev,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v2 1/4] KVM: SVM: Get rid of *ghcb_msr_bits() functions
-Message-ID: <YS/xSIvhS5GySXlQ@google.com>
-References: <20210722115245.16084-1-joro@8bytes.org>
- <20210722115245.16084-2-joro@8bytes.org>
- <YS/sqmgbS6ACRfSD@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IYemb+IVIGMJMpiffbPQhUFiWax0UjI4yymjBbO+x2M=;
+        b=YQB32z3OpDXZEpTfbhypDZ7jq+1j7aNwemuibjRGxoFhN4LwM78eRYGD3dtvHAPqiy
+         g3K3c385URKDLfnAiaZ1ms4QBWd8mdqu0a27pTKcE7WbMwXCdzicJiSzWxTpLJX5uGvq
+         ylT3ei2H9R1Ox9xT+SufZoizs7GXNz/nFL0mWOFWJh17QfcMn1MH/U6p0+IPMCIsLVV+
+         OiVVmMtzH7EhsKsVNLfE6Dqwlo7hm3yu8RRiN3TcnZ1ngUNqByweN0/cigxi+Jt4zkBe
+         Er6o3l6oVB3XRELI5nboQsxcQMGU7onRUg4BfVxchnvgtvKbh6yWTXCtjz6hiHZPz+uA
+         sgCA==
+X-Gm-Message-State: AOAM533QMY53zDqHGhM9s9mM0/lmHEKoG2bCo+NlR5OpJxyjVoyMqLWl
+        kkMXkYMqVJccE6fHWtoPPPofjwz48flqV0hG
+X-Google-Smtp-Source: ABdhPJxoDUV8D+lylJomKp/QPxM/1/XH1HPuAM4duQJJI+7xDxyHzypnB363caifM97wDKXvqZoXwQ==
+X-Received: by 2002:a05:6512:118b:: with SMTP id g11mr1056401lfr.205.1630532172689;
+        Wed, 01 Sep 2021 14:36:12 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id z25sm73302lfh.200.2021.09.01.14.36.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 14:36:12 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id j4so1973728lfg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 14:36:11 -0700 (PDT)
+X-Received: by 2002:a05:6512:128a:: with SMTP id u10mr1107687lfs.40.1630532171691;
+ Wed, 01 Sep 2021 14:36:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YS/sqmgbS6ACRfSD@google.com>
+References: <CAK7LNATrzUSQg8pnpG1cDbA0sRdAeQGyy7d3ZqFJ4HMZymB=xQ@mail.gmail.com>
+In-Reply-To: <CAK7LNATrzUSQg8pnpG1cDbA0sRdAeQGyy7d3ZqFJ4HMZymB=xQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linuxfoundation.org>
+Date:   Wed, 1 Sep 2021 14:35:55 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjbjVb5wNURa7-_PtvKqf96X-7a1OoUDPJjo9rz68YB=Q@mail.gmail.com>
+Message-ID: <CAHk-=wjbjVb5wNURa7-_PtvKqf96X-7a1OoUDPJjo9rz68YB=Q@mail.gmail.com>
+Subject: Re: [GIT PULL] Kbuild updates for v5.15-rc1
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021, Sean Christopherson wrote:
-> > -static u64 get_ghcb_msr_bits(struct vcpu_svm *svm, u64 mask, unsigned int pos)
-> > -{
-> > -	return (svm->vmcb->control.ghcb_gpa >> pos) & mask;
-> > +	msr  = GHCB_MSR_CPUID_RESP;
-> > +	msr |= (reg & GHCB_MSR_CPUID_REG_MASK) << GHCB_MSR_CPUID_REG_POS;
-> > +	msr |= (value & GHCB_MSR_CPUID_VALUE_MASK) << GHCB_MSR_CPUID_VALUE_POS;
-> > +
-> > +	svm->vmcb->control.ghcb_gpa = msr;
-> 
-> I would rather have the get/set pairs be roughly symmetric, i.e. both functions
-> or both macros, and both work on svm->vmcb->control.ghcb_gpa or both be purely
-> functional (that may not be the correct word).
-> 
-> I don't have a strong preference on function vs. macro.  But for the second one,
-> my preference would be to have the helper generate the value as opposed to taken
-> and filling a pointer, e.g. to yield something like:
-> 
-> 		cpuid_reg = GHCB_MSR_CPUID_REG(control->ghcb_gpa);
-> 
-> 		if (cpuid_reg == 0)
-> 			cpuid_value = vcpu->arch.regs[VCPU_REGS_RAX];
-> 		else if (cpuid_reg == 1)
-> 			cpuid_value = vcpu->arch.regs[VCPU_REGS_RBX];
-> 		else if (cpuid_reg == 2)
-> 			cpuid_value = vcpu->arch.regs[VCPU_REGS_RCX];
-> 		else
-> 			cpuid_value = vcpu->arch.regs[VCPU_REGS_RDX];
-> 
-> 		control->ghcb_gpa = MAKE_GHCB_MSR_RESP(cpuid_reg, cpuid_value);
-> 
-> 
-> The advantage is that it's obvious from the code that control->ghcb_gpa is being
-> read _and_ written.
+On Mon, Aug 30, 2021 at 6:34 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> After pulling this, you may see new warnings like this:
+>
+>     arch/x86/entry/vdso/Makefile:135: FORCE prerequisite is missing
+>
+> They are just trivial Makefile mistakes, and patches
+> already exist. So, they will be fixed sooner or later.
 
-Ah, but in the next path I see there's the existing ghcb_set_sw_exit_info_2().
-Hrm.  I think I still prefer open coding "control->ghcb_gpa = ..." with the right
-hand side being a macro.  That would gel with the INFO_REQ, e.g.
+I refuse to have new warnings in my tree, particularly during the merge window.
 
-	case GHCB_MSR_SEV_INFO_REQ:
-		control->ghcb_gpa = GHCB_MSR_SEV_INFO(GHCB_VERSION_MAX,
-						      GHCB_VERSION_MIN,
-						      sev_enc_bit));
-		break;
+So I will not be pulling this, since I do indeed see those warnings
+when doing my test builds.
 
-and drop set_ghcb_msr() altogether.
-
-Side topic, what about renaming control->ghcb_gpa => control->ghcb_msr so that
-the code for the MSR protocol is a bit more self-documenting?  The APM defines
-the field as "Guest physical address of GHCB", so it's not exactly prescribing a
-specific name.
+                Linus
