@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED983FDADB
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0753E3FDC5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245714AbhIAMfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:35:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35322 "EHLO mail.kernel.org"
+        id S1346050AbhIAMtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:49:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245019AbhIAMds (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:33:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2CCD610E8;
-        Wed,  1 Sep 2021 12:32:11 +0000 (UTC)
+        id S1345674AbhIAMoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:44:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A45261156;
+        Wed,  1 Sep 2021 12:39:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499532;
-        bh=Ic/Ihy9eXVn6k6FBv6Ds/quKV3DMcpKvOsGlNAjXx64=;
+        s=korg; t=1630499946;
+        bh=OAm03vm4hTKjAxOEVjAFVjlLbXz5uEbS8KvH8NpLo+E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E7ocuyZ/XqtSBMUz21gtuwK3xzmjyI8qZcC19Le8rBJFJKwuzrdRjEe/AU5yp8oNh
-         E0axbC95nJ1EtpJP3cS1amwdrMwZXPDLbSokkUxGLIBEhCd/22TjduK3AhmiavxwPu
-         lJfqDllHQwotSJXS6qTDgB7e2gBrOnLtLcay3qFQ=
+        b=Krt/kUd75XM57nAmU9tZ4uW95fY3vaDbAguZUyBVGtm77w1EjMYcrt0RBK3MK93xk
+         19fth9m7qJKAO30yzgz6mcUAhvidWLFfzCUh/vJ2lNZkk8fCpUHgEofsiM9N+8URB0
+         kxLQqaW5xNvCDXw2d8VvvOngHsemzNBGiiBnUAHg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Stefan=20M=C3=A4tje?= <stefan.maetje@esd.eu>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.4 08/48] can: usb: esd_usb2: esd_usb2_rx_event(): fix the interchange of the CAN RX and TX error counters
-Date:   Wed,  1 Sep 2021 14:27:58 +0200
-Message-Id: <20210901122253.672304297@linuxfoundation.org>
+        Toshiki Nishioka <toshiki.nishioka@intel.com>,
+        Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>,
+        Sasha Neftin <sasha.neftin@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 044/113] igc: Use num_tx_queues when iterating over tx_ring queue
+Date:   Wed,  1 Sep 2021 14:27:59 +0200
+Message-Id: <20210901122303.454088228@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Mätje <stefan.maetje@esd.eu>
+From: Toshiki Nishioka <toshiki.nishioka@intel.com>
 
-commit 044012b52029204900af9e4230263418427f4ba4 upstream.
+[ Upstream commit 691bd4d7761992914a0e83c27a4ce57d01474cda ]
 
-This patch fixes the interchanged fetch of the CAN RX and TX error
-counters from the ESD_EV_CAN_ERROR_EXT message. The RX error counter
-is really in struct rx_msg::data[2] and the TX error counter is in
-struct rx_msg::data[3].
+Use num_tx_queues rather than the IGC_MAX_TX_QUEUES fixed number 4 when
+iterating over tx_ring queue since instantiated queue count could be
+less than 4 where on-line cpu count is less than 4.
 
-Fixes: 96d8e90382dc ("can: Add driver for esd CAN-USB/2 device")
-Link: https://lore.kernel.org/r/20210825215227.4947-2-stefan.maetje@esd.eu
-Cc: stable@vger.kernel.org
-Signed-off-by: Stefan Mätje <stefan.maetje@esd.eu>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ec50a9d437f0 ("igc: Add support for taprio offloading")
+Signed-off-by: Toshiki Nishioka <toshiki.nishioka@intel.com>
+Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+Tested-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+Acked-by: Sasha Neftin <sasha.neftin@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/esd_usb2.c |    4 ++--
+ drivers/net/ethernet/intel/igc/igc_main.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/can/usb/esd_usb2.c
-+++ b/drivers/net/can/usb/esd_usb2.c
-@@ -224,8 +224,8 @@ static void esd_usb2_rx_event(struct esd
- 	if (id == ESD_EV_CAN_ERROR_EXT) {
- 		u8 state = msg->msg.rx.data[0];
- 		u8 ecc = msg->msg.rx.data[1];
--		u8 txerr = msg->msg.rx.data[2];
--		u8 rxerr = msg->msg.rx.data[3];
-+		u8 rxerr = msg->msg.rx.data[2];
-+		u8 txerr = msg->msg.rx.data[3];
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index 3db86daf3568..9b85fdf01297 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -5080,7 +5080,7 @@ static bool validate_schedule(struct igc_adapter *adapter,
+ 		if (e->command != TC_TAPRIO_CMD_SET_GATES)
+ 			return false;
  
- 		skb = alloc_can_err_skb(priv->netdev, &cf);
- 		if (skb == NULL) {
+-		for (i = 0; i < IGC_MAX_TX_QUEUES; i++) {
++		for (i = 0; i < adapter->num_tx_queues; i++) {
+ 			if (e->gate_mask & BIT(i))
+ 				queue_uses[i]++;
+ 
+@@ -5137,7 +5137,7 @@ static int igc_save_qbv_schedule(struct igc_adapter *adapter,
+ 
+ 		end_time += e->interval;
+ 
+-		for (i = 0; i < IGC_MAX_TX_QUEUES; i++) {
++		for (i = 0; i < adapter->num_tx_queues; i++) {
+ 			struct igc_ring *ring = adapter->tx_ring[i];
+ 
+ 			if (!(e->gate_mask & BIT(i)))
+-- 
+2.30.2
+
 
 
