@@ -2,120 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B683FE2EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E193FE2F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344545AbhIATXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbhIATXt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:23:49 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406EFC061575;
-        Wed,  1 Sep 2021 12:22:52 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id u21so679896qtw.8;
-        Wed, 01 Sep 2021 12:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id;
-        bh=PL6tMWt+pDh+s6ofmXVwfU83Mqm7g1Pf+LEmUoSo0nE=;
-        b=MFVo1MlXgegFbdtBSOiETpNBYM4IQQ/Ff6X+rjs+Eq58fO4mf/Wiv7Uc/yKVIBUC1K
-         lJW/NI5xXpeGODwGLYcAdon+jVqkQ1r42UdxA1KbptUsVNA43gXmXxs+YvFUxdBwvbar
-         cABlqJnFaD4QOS5iAD8SnCGsFv/cNJ53rKRT2lPBie9Rd5inQpVaKl2H58XqBPDJ4m1T
-         5r0ab2Etts14Nh7oH0G4m3Ut312Jq8jweEha4XlVMyxYqiF0K9iOBs8QqmTOpDEnMCab
-         TeZYgyMJYdBFsqIYgVM8WeMjTzphLSP77L5kvfsvTL9o88EWNN7qA+PGRE1sdD5cONcb
-         +ZlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=PL6tMWt+pDh+s6ofmXVwfU83Mqm7g1Pf+LEmUoSo0nE=;
-        b=d2aO3NrO4Dx5DYY0xU9XqXCcv+fEtp11GB9DUJGbTyvyJ4LQuUZPUnsbhUXgINbFn4
-         jzPootoLi8UH2B47rEgnJEkA+NRTN2+V44oeZCFAg/0sfwKPi/m3NewQhrGQdrIVtN9S
-         k8l8Zz2j+Cjp7pJVR7nwhelfUamOhAzvf+G9OAkt+R4s+fK9um9SGnJAOWwoOTNexuQq
-         78Uv/hojNbh7C6q06HA7YRwNidyBQvlzposQ6bdX1SikO2h/H7647Yr3OxBBe9eQW9qq
-         Z80VDvceiYSosEwmh9gZoWRn4GcZWapn1hPiP1nSJjOWM07pVIJx0juEYedFN2Yz5ZG3
-         5d3w==
-X-Gm-Message-State: AOAM532cvdHN2UmluiqCbNzGuK4uVJAqRCZ6PuhLmXgZ2HrxLXwesMCG
-        85gKKStJlAUUdyoUbDMOiFOlO8oS9ZU/7g==
-X-Google-Smtp-Source: ABdhPJw976UM26Pfk0skCJY438ClwwuIVQ7TdLcV+m0un5C/vkVSL3X08dIYNdq0wUzcdnALhgFN6Q==
-X-Received: by 2002:ac8:7483:: with SMTP id v3mr974432qtq.113.1630524171397;
-        Wed, 01 Sep 2021 12:22:51 -0700 (PDT)
-Received: from localhost.localdomain ([2804:14c:3b96:107a:e5b5:6e20:b715:596c])
-        by smtp.gmail.com with ESMTPSA id w18sm436883qto.91.2021.09.01.12.22.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 12:22:51 -0700 (PDT)
-From:   Rogerio Pimentel <rpimentel.silva@gmail.com>
-To:     dmitry.torokhov@gmail.com, rpimentel.silva@gmail.com,
-        hansemro@outlook.com, marex@denx.de, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: ili210x - Set the device name according to the device model
-Date:   Wed,  1 Sep 2021 16:22:29 -0300
-Message-Id: <20210901192229.29864-1-rpimentel.silva@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1344590AbhIATYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:24:00 -0400
+Received: from mga07.intel.com ([134.134.136.100]:7013 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344574AbhIATX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 15:23:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="282556826"
+X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
+   d="scan'208";a="282556826"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 12:23:01 -0700
+X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
+   d="scan'208";a="690852490"
+Received: from davidj-mobl1.amr.corp.intel.com (HELO [10.212.161.93]) ([10.212.161.93])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 12:23:00 -0700
+Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
+ restore_fpregs_from_user()
+To:     Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+References: <20210830154702.247681585@linutronix.de>
+ <20210830162545.374070793@linutronix.de> <YS0ylo9nTHD9NiAp@zn.tnic>
+ <87zgsyg0eg.ffs@tglx> <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
+ <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
+ <87r1e8cxp5.ffs@tglx> <87o89ccmyu.ffs@tglx> <YS+upEmTfpZub3s9@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <1adc3f68-f7b4-4c4c-c014-7037f3046a8c@intel.com>
+Date:   Wed, 1 Sep 2021 12:22:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <YS+upEmTfpZub3s9@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding the device model into the device name is useful when
-applications need to set different parameters according to the
-touchscreen being used, e.g. X11 calibration points.
+On 9/1/21 9:47 AM, Sean Christopherson wrote:
+> As for SGX consuming the trap number in general, it's correct.  For non-KVM usage,
+> it's nice to have but not strictly necessary.  Any fault except #PF on ENCLS is
+> guaranteed to be a kernel or hardware bug; SGX uses the trap number to WARN on a
+> !#PF exception, e.g. on #GP or #UD.  Not having the trap number would mean losing
+> those sanity checks, which have been useful in the past.
 
-Signed-off-by: Rogerio Pimentel <rpimentel.silva@gmail.com>
----
- drivers/input/touchscreen/ili210x.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/input/touchscreen/ili210x.c b/drivers/input/touchscreen/ili210x.c
-index 30576a5f2f04..ca7af4a6f588 100644
---- a/drivers/input/touchscreen/ili210x.c
-+++ b/drivers/input/touchscreen/ili210x.c
-@@ -19,6 +19,8 @@
- #define ILI251X_DATA_SIZE1	31
- #define ILI251X_DATA_SIZE2	20
- 
-+#define ILI_NAME_LEN		27
-+
- /* Touchscreen commands */
- #define REG_TOUCHDATA		0x10
- #define REG_PANEL_INFO		0x20
-@@ -394,6 +396,7 @@ static int ili210x_i2c_probe(struct i2c_client *client,
- 	struct input_dev *input;
- 	int error;
- 	unsigned int max_xy;
-+	char *model_name;
- 
- 	dev_dbg(dev, "Probing for ILI210X I2C Touschreen driver");
- 
-@@ -440,7 +443,11 @@ static int ili210x_i2c_probe(struct i2c_client *client,
- 	i2c_set_clientdata(client, priv);
- 
- 	/* Setup input device */
--	input->name = "ILI210x Touchscreen";
-+	input->name = "Ilitek         Touchscreen";
-+	model_name = (char *)input->name;
-+	snprintf(model_name, ILI_NAME_LEN, "Ilitek %s Touchscreen",
-+	id->name);
-+	input->name = model_name;
- 	input->id.bustype = BUS_I2C;
- 
- 	/* Multi touch */
-@@ -487,10 +494,10 @@ static int ili210x_i2c_probe(struct i2c_client *client,
- }
- 
- static const struct i2c_device_id ili210x_i2c_id[] = {
--	{ "ili210x", (long)&ili210x_chip },
--	{ "ili2117", (long)&ili211x_chip },
--	{ "ili2120", (long)&ili212x_chip },
--	{ "ili251x", (long)&ili251x_chip },
-+	{ .name = "ili210x", (long)&ili210x_chip },
-+	{ .name = "ili2117", (long)&ili211x_chip },
-+	{ .name = "ili2120", (long)&ili212x_chip },
-+	{ .name = "ili251x", (long)&ili251x_chip },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, ili210x_i2c_id);
--- 
-2.17.1
-
+Yeah, for bare-metal SGX, the trap number only determines if we get a
+warning or not.  There's no attempt at recovery or any consequential
+change in behavior due to the trap number (other than the warning).
