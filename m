@@ -2,158 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E793FE292
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4F23FE2A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244998AbhIASzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244827AbhIASzP (ORCPT
+        id S243202AbhIAS5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:57:15 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:34738 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243041AbhIAS5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:55:15 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FF1C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:54:17 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id a10so508529qka.12
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 11:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=itfac-mrt-ac-lk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yACBHeKeTEMDk9G3lLdGdDWvtaeZqYr0jQBUvqwglB4=;
-        b=Idwyh/ZOPXWdXddScG9pysT9Y1D20q4/aaYdSHfPuGvxdq8UBrqgS0gGKzb2RyhlFG
-         1ixEQaGyJhPCSvAIC9kVBRrsdpYew405vHVNIMYDMr2eCGTJT5aNsIennOISX/1fSbLB
-         vw0hxgb9xxUjp5BnURN8EsrzaTSVLcoqF18z4bqyAsWyeb4EZJdmVa1YIGjA5BKRW83M
-         c+R0ypRvgnYpol8jKW5URb6aIZ8R57CHUt66XSfw2GJe6RwKawG6pI8KBuT8dzCDAY1T
-         ++89cqPwwX4CefMn1INBz7ULDzTtB40xZ344utxHy1zRKa9QDMKQxLlZ87RofmhBTNE5
-         f3bA==
+        Wed, 1 Sep 2021 14:57:14 -0400
+Received: by mail-ot1-f53.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso1000330otp.1;
+        Wed, 01 Sep 2021 11:56:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yACBHeKeTEMDk9G3lLdGdDWvtaeZqYr0jQBUvqwglB4=;
-        b=d1wsJVDhpTEq/mik40CQPJNTUyIduBYzblY44mufdi4jAQDyvgy1dZ4b0Ksb3BldsZ
-         nM6GUH/KOmpBbjGBHOttZfXq5Fw3tangxi/+XIAvIYbxpywikDRmAchCGJ6eKC92sHkp
-         7U9YZwuKSBFKu0bab+gHemF/qOs5pWM07zE1samJ9d66Vq4xQRrLqfEQPG7QMnfXgt9A
-         tz3xGL9SL9Ev+Uq4Shixq5Sd7VR2x7fbxsUjlKCPfIvoIjpV3/fj0eTuWpr/DspRHNf4
-         fS6nnN/htKmX/OZPC+gXvcqzKh9qEnr6T5VdEMtEqxf9b2P2qdC4EU/2Hj6F2BrnSYgn
-         YpAg==
-X-Gm-Message-State: AOAM530tpd8MKcNPs0oyhF2Aid+ytNwzsiEKYXV+Ys0haH83vTBKHdUQ
-        bh2Mv3EC0ntUS3HlAFApPK2bzY7oSdV8VTZATRmRy5FcgwaV
-X-Google-Smtp-Source: ABdhPJwxUAWGvA4IBMn5mMg38sMi31Mre6YzUnRruh8cQT7hDfLAJ8Qn5kmdWmS5DDnWKzNCtLE9LtF6dBqjhJRtPZ8=
-X-Received: by 2002:a05:620a:1379:: with SMTP id d25mr1128331qkl.238.1630522456666;
- Wed, 01 Sep 2021 11:54:16 -0700 (PDT)
+        bh=E9bqJvVk7sefatZNeeY+ec6MRgFjX45AV2lWjhc9EJ0=;
+        b=Qsywx38aXHHz84MDPrJ90HpFxUU6HZjSSySKsTHWzABVp6qK75cqDLbvILsuK+9pOd
+         Af/QJyQ0hbOPVC0Xvd8PNsqMXaJzuV51r5T1LbtiPIApQE9D9Qvl906IQX141r+CdrFD
+         qw3QJk9hmI5xw/dy0qQagZt1kzCph+FoRQJ1Vjoa1HE6ds4iwJ9oWlMH4Je9pyXONWCB
+         lZ0YdLcNztwAnb+ArV5z7ZfHk96gqtUSd/p37sfeMkNcztgRBiT1aYx7Yv9Y/7k+IeAN
+         hfYQmb2dCRuyvq2znTDJsRG9MKDUz6mcMzv7wRF8/Al/06lWG00eE9Rn4sPHcP5QtZJt
+         I71g==
+X-Gm-Message-State: AOAM533jRcwcxbIDofxQmwpqQcI8tuLMMXJOsWqxTRdI9qY6KleNOUwF
+        mEid8eambNYIGqT/nASK+XmcN2AcDsWTOkPov4RZ30UF
+X-Google-Smtp-Source: ABdhPJzgMGwOX1BcY9pT+XeTDoymIb/6s7rE5aq1NTVs8WdEfv3qMDD+qdeRlVkTzECtzzclaOKoh3DlpRE2kyzBT24=
+X-Received: by 2002:a9d:7115:: with SMTP id n21mr766215otj.321.1630522576937;
+ Wed, 01 Sep 2021 11:56:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210830193355.11338-1-asha.16@itfac.mrt.ac.lk> <20210831084735.GL12231@kadam>
-In-Reply-To: <20210831084735.GL12231@kadam>
-From:   "F.A. SULAIMAN" <asha.16@itfac.mrt.ac.lk>
-Date:   Thu, 2 Sep 2021 00:24:05 +0530
-Message-ID: <CAHnw0NAMaByr5m5Ai2APBc6Az_Lbb=TyCWmSdotVWKBJLPfVqg@mail.gmail.com>
-Subject: Re: [PATCH] staging: rtl8723bs: fix memory leak error
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
+References: <20210824122054.29481-1-joro@8bytes.org> <20210824122054.29481-3-joro@8bytes.org>
+In-Reply-To: <20210824122054.29481-3-joro@8bytes.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 1 Sep 2021 20:56:05 +0200
+Message-ID: <CAJZ5v0gHEY1FW7A-rytBkSrxidusd3jNPJOke6QWxwoE5VXeiA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] PCI/ACPI: Move supported and control calculations
+ to separaten functions
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <jroedel@suse.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 2:18 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+On Tue, Aug 24, 2021 at 2:21 PM Joerg Roedel <joro@8bytes.org> wrote:
 >
-> On Tue, Aug 31, 2021 at 01:03:55AM +0530, F.A.Sulaiman wrote:
-> > Smatch reported memory leak bug in rtl8723b_FirmwareDownload function.
-> > The problem is pFirmware memory is not released in release_fw1.
-> > Instead of redirecting to release_fw1 we can turn it into exit
-> > and free the memory.
-> >
-> > Signed-off-by: F.A. SULAIMAN <asha.16@itfac.mrt.ac.lk>
-> > ---
-> >  drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-> > index de8caa6cd418..b59c2aa3a9d8 100644
-> > --- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-> > +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-> > @@ -436,7 +436,7 @@ s32 rtl8723b_FirmwareDownload(struct adapter *padapter, bool  bUsedWoWLANFw)
-> >       if (pFirmware->fw_length > FW_8723B_SIZE) {
-> >               rtStatus = _FAIL;
-> >               DBG_871X_LEVEL(_drv_emerg_, "Firmware size:%u exceed %u\n", pFirmware->fw_length, FW_8723B_SIZE);
-> > -             goto release_fw1;
-> > +             goto exit;
-> >       }
+> From: Joerg Roedel <jroedel@suse.de>
 >
-> The current tree doesn't have DBG_871X_LEVEL() so you must be working
-> against something old.  You need to work against linux-next or staging
-> next.
+> Move the calculations of supported and controled _OSC features out of
+> negotiate_os_control into separate functions.
 >
-> Your patch fixes a bug, but it would be better to just re-write the
-> error handling for this function.  There is another bug that a bunch
-> of error paths don't call release_firmware(fw).  Use the "Free the Last
-> Thing" method.
->
->         pFirmware = kzalloc(sizeof(struct rt_firmware), GFP_KERNEL);
->         if (!pFirmware)
->                 return _FAIL;
->
-> The last thing we allocated is "pFirmware" so free that if we have an
-> error.
->
->         pBTFirmware = kzalloc(sizeof(struct rt_firmware), GFP_KERNEL);
->         if (!pBTFirmware) {
->                 rtStatus = _FAIL;
->                 goto free_firmware;
->         }
->
-> Now the last thing is pBTFirmware.
->
->         rtStatus = request_firmware(&fw, fwfilepath, device);
->         if (rtStatus) {
->                 rtStatus = _FAIL;
->                 goto free_bt_firmware;
->         }
->
-> Now the last thing is "fw".  But this is a bit tricky because we're
-> going to release it as soon as possible and not wait until the end of
-> the function.  There isn't a reason for this...  We can change that or
-> keep it as-is.  If we keep it as is, then the we'll just call
-> release_firmware(fw); before the goto free_bt_firmware;  The current
-> code leaks fw on a bunch of error paths.
->
->         pFirmware->fw_buffer_sz = kmemdup(fw->data, fw->size, GFP_KERNEL);
->         if (!pFirmware->fw_buffer_sz) {
->                 rtStatus = _FAIL;
->                 release_firmware(fw);
->                 goto free_bt_firmware;
->         }
->
-> Or:
->
->         pFirmware->fw_buffer_sz = kmemdup(fw->data, fw->size, GFP_KERNEL);
->         if (!pFirmware->fw_buffer_sz) {
->                 rtStatus = _FAIL;
->                 goto release_fw;
->         }
->
-> Now the last thing is pFirmware->fw_buffer_sz.  Etc.
->
-> Then at the end it's just:
->
-> free_fw_buffer:
->         kfree(pFirmware->fw_buffer_sz);
-> release_fw:
->         release_firmware(fw);
-> free_bt_firmware:
->         kfree(pBTFirmware);
-> free_firmware:
->         kfree(pFirmware);
->
->         return rtStatus;
-> }
->
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
 
-Thank you! I'll do the changes and send you a v2 patch.
+Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
 
-Best Regards,
-Asha Sulaiman.
+> ---
+>  drivers/acpi/pci_root.c | 93 ++++++++++++++++++++++++-----------------
+>  1 file changed, 55 insertions(+), 38 deletions(-)
+>
+> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+> index 0c3030a58219..ed4e6b55e9bc 100644
+> --- a/drivers/acpi/pci_root.c
+> +++ b/drivers/acpi/pci_root.c
+> @@ -396,6 +396,59 @@ static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 r
+>         return AE_OK;
+>  }
+>
+> +static u32 calculate_support(void)
+> +{
+> +       u32 support;
+> +
+> +       /*
+> +        * All supported architectures that use ACPI have support for
+> +        * PCI domains, so we indicate this in _OSC support capabilities.
+> +        */
+> +       support = OSC_PCI_SEGMENT_GROUPS_SUPPORT;
+> +       support |= OSC_PCI_HPX_TYPE_3_SUPPORT;
+> +       if (pci_ext_cfg_avail())
+> +               support |= OSC_PCI_EXT_CONFIG_SUPPORT;
+> +       if (pcie_aspm_support_enabled())
+> +               support |= OSC_PCI_ASPM_SUPPORT | OSC_PCI_CLOCK_PM_SUPPORT;
+> +       if (pci_msi_enabled())
+> +               support |= OSC_PCI_MSI_SUPPORT;
+> +       if (IS_ENABLED(CONFIG_PCIE_EDR))
+> +               support |= OSC_PCI_EDR_SUPPORT;
+> +
+> +       return support;
+> +}
+> +
+> +static u32 calculate_control(void)
+> +{
+> +       u32 control;
+> +
+> +       control = OSC_PCI_EXPRESS_CAPABILITY_CONTROL
+> +               | OSC_PCI_EXPRESS_PME_CONTROL;
+> +
+> +       if (IS_ENABLED(CONFIG_PCIEASPM))
+> +               control |= OSC_PCI_EXPRESS_LTR_CONTROL;
+> +
+> +       if (IS_ENABLED(CONFIG_HOTPLUG_PCI_PCIE))
+> +               control |= OSC_PCI_EXPRESS_NATIVE_HP_CONTROL;
+> +
+> +       if (IS_ENABLED(CONFIG_HOTPLUG_PCI_SHPC))
+> +               control |= OSC_PCI_SHPC_NATIVE_HP_CONTROL;
+> +
+> +       if (pci_aer_available())
+> +               control |= OSC_PCI_EXPRESS_AER_CONTROL;
+> +
+> +       /*
+> +        * Per the Downstream Port Containment Related Enhancements ECN to
+> +        * the PCI Firmware Spec, r3.2, sec 4.5.1, table 4-5,
+> +        * OSC_PCI_EXPRESS_DPC_CONTROL indicates the OS supports both DPC
+> +        * and EDR.
+> +        */
+> +       if (IS_ENABLED(CONFIG_PCIE_DPC) && IS_ENABLED(CONFIG_PCIE_EDR))
+> +               control |= OSC_PCI_EXPRESS_DPC_CONTROL;
+> +
+> +       return control;
+> +}
+> +
+>  static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
+>                                  bool is_pcie)
+>  {
+> @@ -416,20 +469,7 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
+>                 return;
+>         }
+>
+> -       /*
+> -        * All supported architectures that use ACPI have support for
+> -        * PCI domains, so we indicate this in _OSC support capabilities.
+> -        */
+> -       support = OSC_PCI_SEGMENT_GROUPS_SUPPORT;
+> -       support |= OSC_PCI_HPX_TYPE_3_SUPPORT;
+> -       if (pci_ext_cfg_avail())
+> -               support |= OSC_PCI_EXT_CONFIG_SUPPORT;
+> -       if (pcie_aspm_support_enabled())
+> -               support |= OSC_PCI_ASPM_SUPPORT | OSC_PCI_CLOCK_PM_SUPPORT;
+> -       if (pci_msi_enabled())
+> -               support |= OSC_PCI_MSI_SUPPORT;
+> -       if (IS_ENABLED(CONFIG_PCIE_EDR))
+> -               support |= OSC_PCI_EDR_SUPPORT;
+> +       support = calculate_support();
+>
+>         decode_osc_support(root, "OS supports", support);
+>         status = acpi_pci_osc_support(root, support);
+> @@ -456,31 +496,8 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
+>                 return;
+>         }
+>
+> -       control = OSC_PCI_EXPRESS_CAPABILITY_CONTROL
+> -               | OSC_PCI_EXPRESS_PME_CONTROL;
+> -
+> -       if (IS_ENABLED(CONFIG_PCIEASPM))
+> -               control |= OSC_PCI_EXPRESS_LTR_CONTROL;
+> -
+> -       if (IS_ENABLED(CONFIG_HOTPLUG_PCI_PCIE))
+> -               control |= OSC_PCI_EXPRESS_NATIVE_HP_CONTROL;
+> -
+> -       if (IS_ENABLED(CONFIG_HOTPLUG_PCI_SHPC))
+> -               control |= OSC_PCI_SHPC_NATIVE_HP_CONTROL;
+> -
+> -       if (pci_aer_available())
+> -               control |= OSC_PCI_EXPRESS_AER_CONTROL;
+> -
+> -       /*
+> -        * Per the Downstream Port Containment Related Enhancements ECN to
+> -        * the PCI Firmware Spec, r3.2, sec 4.5.1, table 4-5,
+> -        * OSC_PCI_EXPRESS_DPC_CONTROL indicates the OS supports both DPC
+> -        * and EDR.
+> -        */
+> -       if (IS_ENABLED(CONFIG_PCIE_DPC) && IS_ENABLED(CONFIG_PCIE_EDR))
+> -               control |= OSC_PCI_EXPRESS_DPC_CONTROL;
+> +       requested = control = calculate_control();
+>
+> -       requested = control;
+>         status = acpi_pci_osc_control_set(handle, &control,
+>                                           OSC_PCI_EXPRESS_CAPABILITY_CONTROL);
+>         if (ACPI_SUCCESS(status)) {
+> --
+> 2.32.0
+>
