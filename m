@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FE43FE579
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1D33FE575
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 00:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244759AbhIAW0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 18:26:31 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:40384 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S244229AbhIAW02 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S244397AbhIAW02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 1 Sep 2021 18:26:28 -0400
-X-UUID: a5107c924ce94be992714e31f368bb15-20210902
-X-UUID: a5107c924ce94be992714e31f368bb15-20210902
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+Received: from mailgw01.mediatek.com ([60.244.123.138]:56422 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S242339AbhIAW01 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 18:26:27 -0400
+X-UUID: 7c58cbf48dae47b48052e2ae541640ff-20210902
+X-UUID: 7c58cbf48dae47b48052e2ae541640ff-20210902
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
         (envelope-from <miles.chen@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1082499189; Thu, 02 Sep 2021 06:25:28 +0800
+        with ESMTP id 1157302513; Thu, 02 Sep 2021 06:25:28 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 2 Sep 2021 06:25:26 +0800
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 2 Sep 2021 06:25:27 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
  Transport; Thu, 2 Sep 2021 06:25:26 +0800
@@ -33,11 +33,14 @@ CC:     Wendell Lin <wendell.lin@mediatek.com>,
         <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Miles Chen <miles.chen@mediatek.com>
-Subject: [PATCH v3 0/4] clk: mediatek: modularize COMMON_CLK_MT6779
-Date:   Thu, 2 Sep 2021 06:25:23 +0800
-Message-ID: <20210901222526.31065-1-miles.chen@mediatek.com>
+        Miles Chen <miles.chen@mediatek.com>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH v3 1/3] clk: composite: export clk_register_composite
+Date:   Thu, 2 Sep 2021 06:25:24 +0800
+Message-ID: <20210901222526.31065-2-miles.chen@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210901222526.31065-1-miles.chen@mediatek.com>
+References: <20210901222526.31065-1-miles.chen@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK:  N
@@ -45,55 +48,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set makes COMMON_CLK_MEDIATEK and COMMON_CLK_MT6779*
-be able to built as kernel modules. Necessary symbols are exported
-in this patch.
+To support module build of mediatek clk drivers,
+it is necessary to export clk_register_composite.
 
-In previous discussion [1], Stephen commented that there must
-be a user before exporting a symbol:
-
-"
-Is the mediatek driver compilable as a module? Last time I checked it
-wasn't a module. I want an upstream modular driver that uses the symbol.
-Otherwise we're exporting symbols when it doesn't need to be.
-"
-
-[1] https://lore.kernel.org/patchwork/patch/1278089/
-
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Hanks Chen <hanks.chen@mediatek.com>
+Cc: Wendell Lin <wendell.lin@mediatek.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Miles Chen <miles.chen@mediatek.com>
 ---
+ drivers/clk/clk-composite.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Change since v1:
-use module_platform_driver() instead of builtin_platform_driver()
-
-Change since v2:
-squash "bool to tristate" change
-
-
-Miles Chen (3):
-  clk: composite: export clk_register_composite
-  clk: mediatek: support COMMON_CLK_MEDIATEK module build
-  clk: mediatek: support COMMON_CLK_MT6779 module build
-
- drivers/clk/clk-composite.c            |  1 +
- drivers/clk/mediatek/Kconfig           | 20 ++++++++++----------
- drivers/clk/mediatek/clk-apmixed.c     |  3 +++
- drivers/clk/mediatek/clk-cpumux.c      |  3 +++
- drivers/clk/mediatek/clk-gate.c        |  8 ++++++++
- drivers/clk/mediatek/clk-mt6779-aud.c  |  4 +++-
- drivers/clk/mediatek/clk-mt6779-cam.c  |  4 +++-
- drivers/clk/mediatek/clk-mt6779-img.c  |  4 +++-
- drivers/clk/mediatek/clk-mt6779-ipe.c  |  4 +++-
- drivers/clk/mediatek/clk-mt6779-mfg.c  |  4 +++-
- drivers/clk/mediatek/clk-mt6779-mm.c   |  4 +++-
- drivers/clk/mediatek/clk-mt6779-vdec.c |  4 +++-
- drivers/clk/mediatek/clk-mt6779-venc.c |  4 +++-
- drivers/clk/mediatek/clk-mt6779.c      |  2 ++
- drivers/clk/mediatek/clk-mtk.c         |  8 ++++++++
- drivers/clk/mediatek/clk-mux.c         |  4 ++++
- drivers/clk/mediatek/clk-pll.c         |  4 ++++
- drivers/clk/mediatek/reset.c           |  2 ++
- 18 files changed, 69 insertions(+), 18 deletions(-)
-
+diff --git a/drivers/clk/clk-composite.c b/drivers/clk/clk-composite.c
+index 0506046a5f4b..c7b97fb0051b 100644
+--- a/drivers/clk/clk-composite.c
++++ b/drivers/clk/clk-composite.c
+@@ -362,6 +362,7 @@ struct clk *clk_register_composite(struct device *dev, const char *name,
+ 		return ERR_CAST(hw);
+ 	return hw->clk;
+ }
++EXPORT_SYMBOL_GPL(clk_register_composite);
+ 
+ struct clk *clk_register_composite_pdata(struct device *dev, const char *name,
+ 			const struct clk_parent_data *parent_data,
 -- 
 2.18.0
 
