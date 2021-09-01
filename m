@@ -2,94 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CDC3FE0EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E543FE0EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345551AbhIARJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
+        id S1345558AbhIARJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232491AbhIARJP (ORCPT
+        with ESMTP id S1345538AbhIARJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:09:15 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E4FC061575;
-        Wed,  1 Sep 2021 10:08:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=/eEATaSgxKUQuEI/VyWcCLd2zs8bwbYE3icsNkYYsmw=;
-        t=1630516098; x=1631725698; b=RtAtVXaduob7xiT7IHVqDf4yVm7hZDPfHF61IRzyCKEwmJX
-        mSK8vDdF7RHjaN0vmn/QjTZnro8PJfs3ruUBvowAJZ5Vo4AC4CQWoITgxNG1Gu45dSv5x1n/B6s5b
-        wnEa1PGC2XikPYykvpU1K79Z0UAeRNA5BIM8KuTxP8mgPn5YOar0Q+3bNG62yZOMF8uFvNSxL2Qe6
-        xTgYsnDsI9IKwEMoasdU1/l6SxvAdyZ5oh3Xckr9PXuhDvUEDt+WcjfHU9HkcluFjti2Q/C8sZokH
-        QRKOw4aWovo4GQmc1HNP3Y/LaU3OOtWD4jJsv2QpmrDMOjgLA01Bj0Fq/lv/0blA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94.2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mLTiS-001Fyv-Ur; Wed, 01 Sep 2021 19:08:01 +0200
-Message-ID: <f293c619399ba8bd60240879a20ee34db1248255.camel@sipsolutions.net>
-Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Jonas =?ISO-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Date:   Wed, 01 Sep 2021 19:07:58 +0200
-In-Reply-To: <985049b8-bad7-6f18-c94f-368059dd6f95@gmail.com>
-References: <20210830123704.221494-1-verdre@v0yd.nl>
-         <20210830123704.221494-2-verdre@v0yd.nl>
-         <CAHp75VeAKs=nFw4E20etKc3C_Cszyz9AqN=mLsum7F-BdVK5Rg@mail.gmail.com>
-         <7e38931e-2f1c-066e-088e-b27b56c1245c@v0yd.nl>
-         <20210901155110.xgje2qrtq65loawh@pali>
-         <985049b8-bad7-6f18-c94f-368059dd6f95@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Wed, 1 Sep 2021 13:09:35 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5D8C061764
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 10:08:37 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id gp20-20020a17090adf1400b00196b761920aso178577pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:08:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=v2XLK1vGEzZIOUNqlY1IqHLpN0ROAFUqn3UGHO+I7VY=;
+        b=XBA1O65n1gbN6cPrV9+41k+LTAxZPhtbxDBy0Fw52JYq0fkfVH/ULgkMybhenv1Fbe
+         OWmT5fPGUNXNOFCKPxdPryVD2wWXaOgXTniMM6GEVMKWbTZwhCha83BC0q2tidTZeihN
+         bLRdKI98ux6DRbs/QfKl/GhuepsqeURaJd2i8o4V0OUvmrYsHlqRBuhMv6cNansgfYsG
+         uBfoKqGidMO4wM8lRXOXNx6aRteVYMLbg1KAxKcXaTYyiR4GIMvHCFxC+EOY9eH7dbql
+         wMf9kC00jcAZ1mFjd87/VYI+7cJGB6el9GIO7jcXsowkHZoaxtdUByN/9IEilenErD3R
+         RWTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=v2XLK1vGEzZIOUNqlY1IqHLpN0ROAFUqn3UGHO+I7VY=;
+        b=gf/2M4C2k2TDlW4EZCAx44Ma/ZMKl0Wb4i7kY0gOrQtCgbK7m0jGbVOjlIZauoemKl
+         eDc7xuLDpxC0n4IHso+nAf+cjQ9SKal9im39rE+uweAWZzfHOfOymIoXxRpgpiTcZfkQ
+         4CqhGYV3ch17O9xE6JzkzDibUmGpV4WfrsndzTUyG/3B2cm3ylztxjQcpDgk3n1gOltq
+         H7EgmYshFvalsh2K2prKI9uMFs60XHIgatgsxmr6RPc49gYH2kBlxY2AFruGOI7aYUEf
+         T0+WXmO9xD/M6gDANH7x5IkTOszDS1d/27C59MxN/zdL6tAh/Mk+UvMxo66/udiP/w14
+         wQ9w==
+X-Gm-Message-State: AOAM532Udk/dD5MFWK3AZLmZZfnjLOa1xVA4wssiAJ31VP0LDTgrMvYP
+        C6/JjZgcTJ8Jm8sMHlHNnKI1iqDNFYdqD9+e1kGDAA==
+X-Google-Smtp-Source: ABdhPJzFS2Yz4XqYRzwEigrdW654194TKs8JtrS0A1uDukRefQWLrvwzu4krQD/ftL/oMNqO0O9vxaK3fbV1sRX0sOs=
+X-Received: by 2002:a17:90a:1991:: with SMTP id 17mr375005pji.149.1630516117376;
+ Wed, 01 Sep 2021 10:08:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
+References: <x49o8a3pu5i.fsf@segfault.boston.devel.redhat.com>
+In-Reply-To: <x49o8a3pu5i.fsf@segfault.boston.devel.redhat.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 1 Sep 2021 10:08:26 -0700
+Message-ID: <CAPcyv4hbwLjE599cKXKCOST1LF1NUhKv-YvNnU5jcV_xZbAzxg@mail.gmail.com>
+Subject: Re: [patch, v2] x86/pat: pass valid address to sanitize_phys()
+To:     Jeff Moyer <jmoyer@redhat.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Borislav Petkov <bp@alien8.de>, linux-edac@vger.kernel.org,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-01 at 18:51 +0200, Heiner Kallweit wrote:
-> On 01.09.2021 17:51, Pali Rohár wrote:
-> > On Wednesday 01 September 2021 16:01:54 Jonas Dreßler wrote:
-> > > On 8/30/21 2:49 PM, Andy Shevchenko wrote:
-> > > > On Mon, Aug 30, 2021 at 3:38 PM Jonas Dreßler <verdre@v0yd.nl> wrote:
-> > > > > 
-> > > > > On the 88W8897 card it's very important the TX ring write pointer is
-> > > > > updated correctly to its new value before setting the TX ready
-> > > > > interrupt, otherwise the firmware appears to crash (probably because
-> > > > > it's trying to DMA-read from the wrong place).
-> > > > > 
-> 
-> This sounds somehow like the typical case where you write DMA descriptors
-> and then ring the doorbell. This normally requires a dma_wmb().
-> Maybe something like that is missing here?
+On Wed, Aug 11, 2021 at 2:06 PM Jeff Moyer <jmoyer@redhat.com> wrote:
+>
+> The end address passed to memtype_reserve() is handed directly to
+> sanitize_phys().  However, end is exclusive and sanitize_phys() expects
+> an inclusive address.  If end falls at the end of the physical address
+> space, sanitize_phys() will return 0.  This can result in drivers
+> failing to load, and the following warning:
+>
+> [    9.999440] mpt3sas version 29.100.01.00 loaded
+> [    9.999817] mpt3sas_cm0: 64 BIT PCI BUS DMA ADDRESSING SUPPORTED, tota=
+l mem (65413664 kB)
+> [    9.999819] ------------[ cut here ]------------
+> [    9.999826] WARNING: CPU: 26 PID: 749 at arch/x86/mm/pat.c:354 reserve=
+_memtype+0x262/0x450
+> [    9.999828] reserve_memtype failed: [mem 0x3ffffff00000-0xffffffffffff=
+ffff], req uncached-minus
+> [    9.999828] Modules linked in: mpt3sas(+) bnxt_en(+) ahci(+) crct10dif=
+_pclmul crct10dif_common nvme crc32c_intel libahci nvme_core libata raid_cl=
+ass scsi_transport_sas devlink drm_panel_orientation_quirks nfit libnvdimm =
+dm_mirror dm_region_hash dm_log dm_mod
+> [    9.999840] CPU: 26 PID: 749 Comm: systemd-udevd Not tainted 3.10.0-10=
+77.el7_7.mpt3sas_test008.x86_64 #1
+> [    9.999842] Hardware name: Inspur SA5112M5/SA5112M5, BIOS 4.1.12 02/24=
+/2021
+> [    9.999843] Call Trace:
+> [    9.999851]  [<ffffffffa497c4e4>] dump_stack+0x19/0x1b
+> [    9.999857]  [<ffffffffa429bc08>] __warn+0xd8/0x100
+> [    9.999859]  [<ffffffffa429bc8f>] warn_slowpath_fmt+0x5f/0x80
+> [    9.999861]  [<ffffffffa427b1f2>] reserve_memtype+0x262/0x450
+> [    9.999867]  [<ffffffffa4276254>] __ioremap_caller+0xf4/0x330
+> [    9.999872]  [<ffffffffc04620a1>] ? mpt3sas_base_map_resources+0x151/0=
+xa60 [mpt3sas]
+> [    9.999875]  [<ffffffffa42764aa>] ioremap_nocache+0x1a/0x20
+> [    9.999879]  [<ffffffffc04620a1>] mpt3sas_base_map_resources+0x151/0xa=
+60 [mpt3sas]
+> [    9.999884]  [<ffffffffa442656b>] ? __kmalloc+0x1eb/0x230
+> [    9.999889]  [<ffffffffc0465555>] mpt3sas_base_attach+0xf5/0xa50 [mpt3=
+sas]
+> [    9.999894]  [<ffffffffc046af3c>] _scsih_probe+0x4ec/0xb00 [mpt3sas]
+> [    9.999901]  [<ffffffffa45d297a>] local_pci_probe+0x4a/0xb0
+> [    9.999903]  [<ffffffffa45d40c9>] pci_device_probe+0x109/0x160
+> [    9.999909]  [<ffffffffa46b7225>] driver_probe_device+0xc5/0x3e0
+> [    9.999910]  [<ffffffffa46b7623>] __driver_attach+0x93/0xa0
+> [    9.999912]  [<ffffffffa46b7590>] ? __device_attach+0x50/0x50
+> [    9.999914]  [<ffffffffa46b4dc5>] bus_for_each_dev+0x75/0xc0
+> [    9.999916]  [<ffffffffa46b6b9e>] driver_attach+0x1e/0x20
+> [    9.999918]  [<ffffffffa46b6640>] bus_add_driver+0x200/0x2d0
+> [    9.999920]  [<ffffffffa46b7cb4>] driver_register+0x64/0xf0
+> [    9.999922]  [<ffffffffa45d3905>] __pci_register_driver+0xa5/0xc0
+> [    9.999924]  [<ffffffffc049b000>] ? 0xffffffffc049afff
+> [    9.999928]  [<ffffffffc049b16e>] _mpt3sas_init+0x16e/0x1000 [mpt3sas]
+> [    9.999933]  [<ffffffffa420210a>] do_one_initcall+0xba/0x240
+> [    9.999940]  [<ffffffffa431e95a>] load_module+0x271a/0x2bb0
+> [    9.999946]  [<ffffffffa45b0600>] ? ddebug_proc_write+0x100/0x100
+> [    9.999948]  [<ffffffffa431eedf>] SyS_init_module+0xef/0x140
+> [    9.999954]  [<ffffffffa498fed2>] system_call_fastpath+0x25/0x2a
+> [    9.999955] ---[ end trace 6d6eea4438db89ef ]---
+> [    9.999957] ioremap reserve_memtype failed -22
+> [   10.000087] mpt3sas_cm0: unable to map adapter memory! or resource not=
+ found
+> [   10.000334] mpt3sas_cm0: failure at drivers/scsi/mpt3sas/mpt3sas_scsih=
+.c:10597/_scsih_probe()!
+>
+> (Note that this warning was from an older distribution kernel, so line
+> numbers and file names may not line up with the current tree.)
+>
+> Fix this by passing the inclusive end address to sanitize_phys().
+>
+> Fixes: 510ee090abc3 ("x86/mm/pat: Prepare {reserve, free}_memtype() for "=
+decoy" addresses")
+> Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
-But it looks like this "TX ring write pointer" is actually the register?
-
-However, I would agree that doing it in mwifiex_write_reg() is possibly
-too big a hammer - could be done only for reg->tx_wrptr, not all the
-registers?
-
-Actually, can two writes actually cross on PCI?
-
-johannes
-
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
