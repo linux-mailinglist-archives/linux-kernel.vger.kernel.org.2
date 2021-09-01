@@ -2,732 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3833FD019
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 02:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5033FD041
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 02:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243032AbhIAAIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 20:08:09 -0400
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:34597 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243004AbhIAAIH (ORCPT
+        id S243265AbhIAAPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 20:15:35 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:28702 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243593AbhIAAOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 20:08:07 -0400
-Received: by mail-lj1-f179.google.com with SMTP id f2so1817817ljn.1;
-        Tue, 31 Aug 2021 17:07:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=exNp7br8/tAnzzV7n9YWG/4+3q01x50SQvO0E7efDhw=;
-        b=mNxlprXUI80jTUtdpk5aSRyEQNAIjYwKsxnNhiNVZA8AerQvfMIAsWPwRcsW3dTnnX
-         r8BD2N17tMyNqHg+ds6lqzvo5VicliAUCaBLN4t/0++ONVs1ksr30BjVsDxpKMTH0lCM
-         BNuhyyg27xzPAHOqB3HidOUvhRrLrdyL4gTE3i/2+Jee1bSGroAfPjJoBskeBRVsx69f
-         T2pwF6DHZ93ILgPj1CbwKaOoU/Gdk4R62xXGj4eyRSYBz2l2wtPA9MIF4JPwGq39vsq5
-         Y2sjwI9PZD6OAQVdZM9nvmkBBe9vwRqZhkWCNTF/1Yl+YI2MIvI4ckQ7WwOOxfSv82je
-         4OKA==
-X-Gm-Message-State: AOAM532SK1ipD/Rq0UotN0gdkJYlRdcS4fswQIN8kOnHX4TqBn3JY1C3
-        x+7XrGOFCS+PYD5UczrpY9F+bhJSjdhQ4VE2
-X-Google-Smtp-Source: ABdhPJy83fsLixA3CmPVKLArbVzLS+cDMnLRFKUeeH5yLQdEJFmbu6eZATrMn6iE6TlaWbHBn4q7yQ==
-X-Received: by 2002:a05:651c:553:: with SMTP id q19mr26333781ljp.320.1630454828793;
-        Tue, 31 Aug 2021 17:07:08 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id f39sm1459682lfv.291.2021.08.31.17.07.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 17:07:08 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id m4so1737908ljq.8;
-        Tue, 31 Aug 2021 17:07:08 -0700 (PDT)
-X-Received: by 2002:a2e:3514:: with SMTP id z20mr27212437ljz.459.1630454827805;
- Tue, 31 Aug 2021 17:07:07 -0700 (PDT)
+        Tue, 31 Aug 2021 20:14:43 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17VNaoSr019802;
+        Wed, 1 Sep 2021 00:13:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=62YTA0ttGvq22kPIiBaz+LSbFDAMnJ6zoOcOhvW3BDM=;
+ b=H1ur/3KCkAgP5ZvQIZcyrChR/VzC5rDKbmCVPBhbp7bNzDVypxapbwwVAvWJlkIcrLAY
+ pXBTviZqnSafJjqEUAmNLNvkNw8Ca8sWlX7pIlig6ctbHmdqAgGo0/9+DEQaN2T9ksUS
+ B6QKbTaGo9ncfQ2vqWRYuWeNLhoOsxUohTle9HQVD0B97UxJ66WtFGmEWZl38MdyQJgz
+ mk69tpWIkFmPNbTgvEyFl2CgwIdddIozk46EckGrTF6H2wxhMX4yUDtUTin8zbaQV+8l
+ JQsGqa1E/iZ3YVw5npxY5vQTjfnsS32kJutKZK6Bk7htQcxMIU0GC4LjHijC82VCfc/L hA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=62YTA0ttGvq22kPIiBaz+LSbFDAMnJ6zoOcOhvW3BDM=;
+ b=TLC8qPwmkp24pbxEWlj111wbpf2hnoL51C5yp1AuU3RSizkIUsMXcM+gDtDLGOQKZk9A
+ +uMVO1aId8Bv05UyshCH4QXU+Ez7doHXrx+R5/cCe3HEbM+crEtQjiiQ7n2FwjdZl4kA
+ 180/wd6KifhQYqI6Th8PDOc9zGirgrmufu41cSsxVv1b1STkyNW9/0YUQdQVeSDRue4A
+ 9o274K83J1bpyme0mD7KUiU5PVf3BCNVdQ913P7Zjy4t2s6fxGcaesauCMqFceujW776
+ NOcbkZXCSRuXQKxlEtD9q95N1S6fDyMDvK8FtTVOq8Ieq3/XjxcqHO839ofT4VdxvhnD gA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3asf2mjpff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 01 Sep 2021 00:13:46 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18106L7v179912;
+        Wed, 1 Sep 2021 00:13:45 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
+        by userp3030.oracle.com with ESMTP id 3arpf5c82d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 01 Sep 2021 00:13:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EzXrqjamF/buFD0Zoj50PLqCt9BeodykLXB+SJl2UDO6oA+ApO+58mYRGqEWb6+y9a80hUTNnGGZWgOz9akbb/52T99okKh6iadP+/0jh/U3sAKv9VkkNg8df37kCjA3DKy/kuvEvCkmj1+V0rSvhGDo0vmNWXZsCYU7bU+O6U+LIr4mjcMMed7+0NRGYySD19mYnMKu0V2E8V2QjnTrJ/6VvoD9ScWqjzWG8p39b0WEC9b0ffTp82zuR1hpV5sw0y1whuQzb+CIh2obg19eyTTIv3Hf7URdJJVWzYRoVNakLb6qLTnOe5PGcM7zozoKJPe4G6aJHHSpl4RAJapNbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=62YTA0ttGvq22kPIiBaz+LSbFDAMnJ6zoOcOhvW3BDM=;
+ b=ebSdyaYIsHjQ40JkWN7bfS1PxE9hrG1uQ9Rh0CJAoVw7hA+4x7x/JbgzmwSsTJFJmmLPLT1gTR6fMY0h7+ysvK8uXIE6spsukqLYucM1NQfYJGDGbmAwoMkl5xiEsGC+aHrlp0JSf7rQebe6zAooH3KIB7izLq+G1AhQmpeVt14Vfk/ktH3vB3lOv306jJwVpeEBoAwcUuei+VKsFiJn1iBYaCtJeO/bGR7trJB2qk+b4g6P3xTWPZDwpuR3FqEvqFacqLgKprEZZUh0BjGbwsxNwV0K9lsuiuVfuJNmnh76kDHJFVNVIRBK9kMZV01w9hACRrDqHrjci56hkbRnsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=62YTA0ttGvq22kPIiBaz+LSbFDAMnJ6zoOcOhvW3BDM=;
+ b=nvEBLUPGBJZqLjnd9g6H7p73g2pa6qXliZ/FuINoUjEqRTBXCD2eUb/ShkGO71GtluITNg7YGlySl9oGxjQxAeXnM/fXpKbEg7v8KeE9RZZDLzyRlctUnW/0K4A4kQTFu+jG/gtnKtmcjpvmBrMjT7QNqxiD9KHlfC1MkWnj1yw=
+Authentication-Results: zeniv.linux.org.uk; dkim=none (message not signed)
+ header.d=none;zeniv.linux.org.uk; dmarc=none action=none
+ header.from=oracle.com;
+Received: from CH2PR10MB4166.namprd10.prod.outlook.com (2603:10b6:610:78::20)
+ by CH0PR10MB4955.namprd10.prod.outlook.com (2603:10b6:610:c2::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.20; Wed, 1 Sep
+ 2021 00:13:43 +0000
+Received: from CH2PR10MB4166.namprd10.prod.outlook.com
+ ([fe80::2c22:7eb8:a2f0:e027]) by CH2PR10MB4166.namprd10.prod.outlook.com
+ ([fe80::2c22:7eb8:a2f0:e027%7]) with mapi id 15.20.4457.024; Wed, 1 Sep 2021
+ 00:13:43 +0000
+From:   Stephen Brennan <stephen.s.brennan@oracle.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        Dmitry Kadashev <dkadashev@gmail.com>
+Cc:     Stephen Brennan <stephen.s.brennan@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] namei: Fix use after free in kern_path_locked
+Date:   Tue, 31 Aug 2021 17:13:41 -0700
+Message-Id: <20210901001341.79887-1-stephen.s.brennan@oracle.com>
+X-Mailer: git-send-email 2.30.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR13CA0161.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c7::16) To CH2PR10MB4166.namprd10.prod.outlook.com
+ (2603:10b6:610:78::20)
 MIME-Version: 1.0
-References: <20210831174822.83870-1-pedro@terraco.de> <YS6kmp9wxvIok5F3@pendragon.ideasonboard.com>
-In-Reply-To: <YS6kmp9wxvIok5F3@pendragon.ideasonboard.com>
-From:   Pedro Terra Delboni <pedro@terraco.de>
-Date:   Tue, 31 Aug 2021 21:06:56 -0300
-X-Gmail-Original-Message-ID: <CAHKDPP_n4RZhAqaUcGZc0Z7C+fc6jh72GSzbxQHoy47-msJqGw@mail.gmail.com>
-Message-ID: <CAHKDPP_n4RZhAqaUcGZc0Z7C+fc6jh72GSzbxQHoy47-msJqGw@mail.gmail.com>
-Subject: Re: [PATCH v7] media: vimc: Enable set resolution at the scaler src pad
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Gabriela Bittencourt <gabrielabittencourt00@gmail.com>,
-        Gabriel Francisco Mandaji <gfmandaji@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (148.87.23.11) by SJ0PR13CA0161.namprd13.prod.outlook.com (2603:10b6:a03:2c7::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.10 via Frontend Transport; Wed, 1 Sep 2021 00:13:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8dd2e87f-1492-4920-10d8-08d96cdd5b9d
+X-MS-TrafficTypeDiagnostic: CH0PR10MB4955:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CH0PR10MB4955DF2E1B6B9C943A63F482DBCD9@CH0PR10MB4955.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?F+u1dlyj3R40bfatzXZ/sA8l2vYKOkhmvQaPX7DY9oTmOYlMdw21LUBwNbJ1?=
+ =?us-ascii?Q?pf1PVgOd97SPeYs3qGNNcTXcOy/cvoxDcer9+N2bWcv81e4UGASE4efHmJRF?=
+ =?us-ascii?Q?2c8MawEkhNGqdWkmMwkwAtlz4Cbjcezj2v6nCtOYgzTSzv0U2gycCX6xhPob?=
+ =?us-ascii?Q?Vogq4QhsH8A4duF1P0jtE4Bcx3cdM37WXVUPe3HZbzKUWC6TxpWE+U44b9+P?=
+ =?us-ascii?Q?aaxHCFqs6h6B5eZCSEVisbJIqi5W2+xY9bcWvuplAZbgzzERccCnOe6+Ocab?=
+ =?us-ascii?Q?cFcO/ElgEn/IIrYzExPi2lgoLSKq4uRrr+EGFgw8rgJ47VgD4FzSfZaay2xE?=
+ =?us-ascii?Q?NJltAYKLnZWExDzdfD9csx3M+DSN939FMGOdjJJ3z+18WWcrWmTtG42bpQer?=
+ =?us-ascii?Q?tOzqpG56oqAu6dm+zn3Vgk/u7pmWMCHcyFhRYD7i0W/MNkPZyVN4Z2tcLeT3?=
+ =?us-ascii?Q?MZA0raRKAmx39VctB2JrK7j3OYHOkaWzsD5fAkwLu2YbLCiElJrMPWOKktd1?=
+ =?us-ascii?Q?MiwuxbBiKqb70qPymEsQoX+d/62WRoZpW98jWD7+EfRnL7+JXwoDovNN0AAo?=
+ =?us-ascii?Q?BeNf+oBaCJTXEhKYc0DqNPXPJQ0b4TvQS7cKje+HHefLoTT6zhF6sdBXkY/N?=
+ =?us-ascii?Q?qtltoaIez2Az66REahNm7JWm8afWWa9I7ck36iVKI+JMG1L0KqmbW/7AvTBw?=
+ =?us-ascii?Q?Rsi5nx8ve5Xa0C3aV4iwyV/djzZPfCgXwb57DprSy1gyaDOtiBm6DOaF1xMC?=
+ =?us-ascii?Q?g5TCT7p6ZqLTtNWiJFKeC0MCFnTcLkiKfeJmRo0Ii+8UpY00Bq4d6YsqO/7J?=
+ =?us-ascii?Q?K0OMpElzFxIvT0eXfYk2VTFojnQTNtCTXer8uGbDsvdVQKX4rGlyJVIqLNBP?=
+ =?us-ascii?Q?89LdqHddQSKajmC/4l7sewUfsXKP2e/r4MUJAPUngfo4Wc+pdgs1ab+hSZ6b?=
+ =?us-ascii?Q?H48l1Wk7pQSn/I5v9OsEpS60HnTpjbpIuKFeTU7Tam4DVlZYZFmRLHE8y6j3?=
+ =?us-ascii?Q?8vrCCk1H4rdcJ7B8oKl1EzmQIPznA/97L7t/rkf23uQMSuc=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:CH2PR10MB4166.namprd10.prod.outlook.com;PTR:;CAT:OSPM;SFS:(39860400002)(346002)(396003)(376002)(136003)(366004)(38100700002)(38350700002)(83380400001)(52116002)(956004)(316002)(1076003)(6486002)(2616005)(110136005)(26005)(8676002)(6496006)(66556008)(66946007)(36756003)(66476007)(86362001)(103116003)(5660300002)(8936002)(186003)(4326008)(478600001)(2906002)(23200700001);DIR:OUT;SFP:1501;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BhD5mT04watbGFKOICHu5HJYAszLm6BAznbVmiOmjEIQ+O5//BheDH/xX+1c?=
+ =?us-ascii?Q?T/X5L7MKzQjVQ53BL7H7U6gMuzZ4TF5/r6y1CGnno2+SpThxQ/aFIot17Lq4?=
+ =?us-ascii?Q?L1avgJ/xrcg/phxagxU/tdPbV+cZEc4FUsmzwCuxqJdB6yoAWMV8RpVbu3Iw?=
+ =?us-ascii?Q?sMw9vXJP2koTvq3cy/XABIIWonWZ0+blfFgb5TKzbo7o114Kc58agF9NodDU?=
+ =?us-ascii?Q?erIGqN50NjCZ05alTP3PePoqFcZUgUQL12k26YOZUQEtSM+nG/csoZeuPQPp?=
+ =?us-ascii?Q?W6eAZbK+MeLJDWKJOu9dmnYYp87MNWOvu3MMMYjQkR0LkR5NsZgZRPwvv/t3?=
+ =?us-ascii?Q?iq1rc+6RtNdQiDZlFzM5TYqi8QPV0meTPGQkgy6kPX0aY3vsFkW5CykYPP9b?=
+ =?us-ascii?Q?BkGN4wkVzNh2ovm2eNvDD3cTiVm8ap8o9ve957P8O3zBXtCvi/jyVRwPeJYz?=
+ =?us-ascii?Q?ssGdAGY6lV/FcIvU6cLyaoUkUSfsXuT/Pz4hxhdWVwYyZ97hSXk4F6ZOVcbe?=
+ =?us-ascii?Q?qka2HlIL7PVlB4q7DjFOoNJnFDGtnJCLsHWHXv2dFxYtfnOdSE4fe43DL1Sr?=
+ =?us-ascii?Q?Vpa+7RejwcaWiKkGcTZ3eq2RWzy+jcUvSAh7U5EWXAyBwVtAWnSiTmCuKuuf?=
+ =?us-ascii?Q?cgOGsLpwqGYhXFZf/Iah2H+J/hRBlXjPvuMYAQiYsePtXXFoUk0rBJsWhDBf?=
+ =?us-ascii?Q?nqX086uQVNbztp0CjyZIHK7XCLJgGrW9C5mhLYi4G8PUWsfGyuPi8ukvWz7I?=
+ =?us-ascii?Q?ukj6LFmnHFKmWti0RWPsFDz5bdaqlCb57PQt8Dv1hXDr2olRWyvUinsk9klo?=
+ =?us-ascii?Q?grNsZOzEicXV5COqHv4HJ3uCeHN8BUZerJWYxQKdXSC9oTW0RY2/LT8SWGJC?=
+ =?us-ascii?Q?tp/+4ygqhl/eM1j8xUYF8RqqBbp2Cwv8tFSfZ60s4gGze0GtLcVXM5qlYIpn?=
+ =?us-ascii?Q?leIrizFAbU4JB/ENzOIvjL7tVtyXUwnLmX0H8ufz/4VHTzrMA6pSuaXYLlDW?=
+ =?us-ascii?Q?w3EZuwCcdeGNwAMLGC8WYeN4rNs7NRNUcC2TlCKEJyufp5F0KiHLimR5FjOy?=
+ =?us-ascii?Q?GMUiIm+ooKiaQ9zb/MiJxlmehAdak3thTy63+vVOK1LEeap8o8nohhDo52Ot?=
+ =?us-ascii?Q?lj2fPzNDMBiN6FjkY5ejZHZplg3ETN21cV/lKpHj28lPRUWrUT26TfhyaWIS?=
+ =?us-ascii?Q?DRgGnbEco5Rz7f7ZjPWG4m8FO+2nEX31wjYZyEWQMSEHaBazIuNimo+ap3V6?=
+ =?us-ascii?Q?VI1XIl+RY5i5Ox26QXLuq0FLf0c0jA/sM0paOMifM3NFLdod/ip0XjXO+CnH?=
+ =?us-ascii?Q?UeO6xMXD3YuPkUIbWhD84E5h?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8dd2e87f-1492-4920-10d8-08d96cdd5b9d
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4166.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 00:13:43.1562
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ox1hypHzh5ECYHT11BpyKNVlpBhW6Wfwv7OVvAh87oWxI81SGbI0STPR6OBNNuUPUMigCywOoYTZ1lByC8vgPFTzl2x9aYJSrCN8/QIHc8U=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB4955
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10093 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 phishscore=0
+ spamscore=0 mlxlogscore=999 adultscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108310133
+X-Proofpoint-GUID: UUb1zLl70pB0zZ8eeNbITv2T_Hk5S-aL
+X-Proofpoint-ORIG-GUID: UUb1zLl70pB0zZ8eeNbITv2T_Hk5S-aL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+In 0ee50b47532a ("namei: change filename_parentat() calling
+conventions"), filename_parentat() was made to always put the struct
+filename before returning, and kern_path_locked() was migrated to this
+calling convention. However, kern_path_locked() uses the "last"
+parameter to lookup and potentially create a new dentry. The last
+parameter contains the last component of the path and points within the
+filename, which was recently freed at the end of filename_parentat().
+Thus, when kern_path_locked() calls __lookup_hash(), it is using the
+filename after it has already been freed.
 
-Thank you for all the help =)
+To avoid this, switch back to __filename_parentat() and place a putname
+at the end of the function, once all uses are completed.
 
-On Tue, Aug 31, 2021 at 6:52 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Pedro,
->
-> Thank you for the patch.
->
-> On Tue, Aug 31, 2021 at 02:48:22PM -0300, Pedro Terra wrote:
-> > Modify the scaler subdevice to accept setting the resolution of the source
-> > pad (previously the source resolution would always be 3 times the sink for
-> > both dimensions). Now any resolution can be set at src (even smaller ones)
-> > and the sink video will be scaled to match it.
-> >
-> > Test example: With the vimc module up (using the default vimc topology)
-> > media-ctl -d platform:vimc -V '"Sensor A":0[fmt:SBGGR8_1X8/640x480]'
-> > media-ctl -d platform:vimc -V '"Debayer A":0[fmt:SBGGR8_1X8/640x480]'
-> > media-ctl -d platform:vimc -V '"Scaler":0[fmt:RGB888_1X24/640x480]'
-> > media-ctl -d platform:vimc -V '"Scaler":0[crop:(100,50)/400x150]'
-> > media-ctl -d platform:vimc -V '"Scaler":1[fmt:RGB888_1X24/300x700]'
-> > v4l2-ctl -z platform:vimc -d "RGB/YUV Capture" -v width=300,height=700
-> > v4l2-ctl -z platform:vimc -d "Raw Capture 0" -v pixelformat=BA81
-> > v4l2-ctl --stream-mmap --stream-count=10 -z platform:vimc -d "RGB/YUV Capture" \
-> >       -stream-to=test.raw
->
-> That should be --stream-to, not -stream-to.
->
-> >
-> > The result will be a cropped stream that can be checked with the command
-> > ffplay -loglevel warning -v info -f rawvideo -pixel_format rgb24 \
-> >       -video_size "300x700" test.raw
-> >
-> > Co-developed-by: Gabriela Bittencourt <gabrielabittencourt00@gmail.com>
-> > Signed-off-by: Gabriela Bittencourt <gabrielabittencourt00@gmail.com>
-> > Co-developed-by: Gabriel Francisco Mandaji <gfmandaji@gmail.com>
-> > Signed-off-by: Gabriel Francisco Mandaji <gfmandaji@gmail.com>
-> > Signed-off-by: Pedro "pirate" Terra <pirate@terraco.de>
-> >
-> > ---
-> >
-> > Changes in V7:
-> > * Corrections proposed by Laurent:
-> >       - Fix commit message
-> >       - Fix .rst identation
-> >       - Properly initialize both pads in a loop
-> >       - Placed vimc_sca_get_fmt() before set_fmt to keep
-> >               the order they're set in v4l2_subdev_pad_ops structure.
-> >       - Renamed variables to avoid ambiguity.
-> >
-> > Changes in V6:
-> > * Corrections proposed by Laurent:
-> >       - Corrected commit example to become file independent.
-> >       - Cleaned unnecessary code inserted at vimc_sca_init_cfg
-> >       - s/__u32/u32/
-> >       - Refactored vimc_sca_(set/get)_fmt and vimc_sca_(get/set)_selection
-> >               as suggested to make it more readable.
-> >       - Corrected code alignment.
-> >       - Cleaned and optimized vimc_sca_fill_src_frame
-> >
-> > Changes in V5:
-> > * Fixed code aliment mistake
-> > * Renamed some variables to make the code more readable
-> > * Propagate sink pad formatting to src resetting the 1:1 scaling ratio.
-> >       (the crop is also reset when this is done).
-> >
-> > Changes in V4:
-> > * Rebased with media/master
-> > * Scaling is now compatible with crop
-> > * Updated test example at the commit message
-> > * Add vimc prefix to the pad enumeration
-> >
-> > Changes in V3:
-> > * Corrections suggested by Hans:
-> >       - Default scaling factor is now 1 (we removed the define and
-> >         set the source format equals the sink).
-> >       - Removed SCA_COUNT (enum that represents the number of pads)
-> >         as there always 2
-> >       - Swapped the per byte pixel copy to memcpy.
-> > * Corrections suggested by Dafna:
-> >       - Removed from the documentation the old scaler parameter which
-> >         isn't necessary anymore.
-> > * Added a thank you note at the end of the email
-> >
-> > Changes in V2:
-> > * Patch was not sent to media list mail for some reason (even though it
-> > was on the Cc list), trying again.
-> > * Updating documentation.
-> >
-> > Running
-> > /usr/local/bin/v4l2-compliance -m /dev/media0
-> > Gave the following result:
-> > v4l2-compliance SHA: c86aab9cc7f1 2021-07-28 11:52:45
-> > Grand Total for vimc device /dev/media0: 473, Succeeded: 473, Failed: 0, Warnings: 0
-> > ---
-> >  Documentation/admin-guide/media/vimc.rst      |  20 +-
-> >  drivers/media/test-drivers/vimc/vimc-scaler.c | 366 +++++++-----------
-> >  2 files changed, 148 insertions(+), 238 deletions(-)
-> >
-> > diff --git a/Documentation/admin-guide/media/vimc.rst b/Documentation/admin-guide/media/vimc.rst
-> > index 211cc8972410..4e5793db6651 100644
-> > --- a/Documentation/admin-guide/media/vimc.rst
-> > +++ b/Documentation/admin-guide/media/vimc.rst
-> > @@ -61,9 +61,10 @@ vimc-debayer:
-> >       * 1 Pad source
-> >
-> >  vimc-scaler:
-> > -     Scale up the image by a factor of 3. E.g.: a 640x480 image becomes a
-> > -        1920x1440 image. (this value can be configured, see at
-> > -        `Module options`_).
-> > +     Re-size the image to meet the source pad resolution. E.g.: if the sync pad
-> > +     is configured to 360x480 and the source to 1280x720, the image will be stretched
-> > +     to fit the source resolution. Works for any resolution within the vimc
-> > +     limitations (even shrinking the image if necessary).
->
-> Lines should be wrapped at 80 columns in the documentation.
->
-> Apart from that, it all looks good.
->
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->
-> If you're fine with it, I can fix the two issues above when applying the
-> patch to my tree, and I'll then send a pull request.
+Fixes: 0ee50b47532a ("namei: change filename_parentat() calling conventions")
+Reported-by: syzbot+fb0d60a179096e8c2731@syzkaller.appspotmail.com
+Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+---
+ fs/namei.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-I'm fine with it, but in any case I sent you a "v8" with the proposed
-changes, in case it makes things easier.
->
-> Would anyone else like to review this patch ?
->
-> >       Exposes:
-> >
-> >       * 1 Pad sink
-> > @@ -75,16 +76,3 @@ vimc-capture:
-> >
-> >       * 1 Pad sink
-> >       * 1 Pad source
-> > -
-> > -
-> > -Module options
-> > ---------------
-> > -
-> > -Vimc has a module parameter to configure the driver.
-> > -
-> > -* ``sca_mult=<unsigned int>``
-> > -
-> > -        Image size multiplier factor to be used to multiply both width and
-> > -        height, so the image size will be ``sca_mult^2`` bigger than the
-> > -        original one. Currently, only supports scaling up (the default value
-> > -        is 3).
-> > diff --git a/drivers/media/test-drivers/vimc/vimc-scaler.c b/drivers/media/test-drivers/vimc/vimc-scaler.c
-> > index 06880dd0b6ac..820b8f5b502f 100644
-> > --- a/drivers/media/test-drivers/vimc/vimc-scaler.c
-> > +++ b/drivers/media/test-drivers/vimc/vimc-scaler.c
-> > @@ -6,6 +6,7 @@
-> >   */
-> >
-> >  #include <linux/moduleparam.h>
-> > +#include <linux/string.h>
-> >  #include <linux/vmalloc.h>
-> >  #include <linux/v4l2-mediabus.h>
-> >  #include <media/v4l2-rect.h>
-> > @@ -13,11 +14,11 @@
-> >
-> >  #include "vimc-common.h"
-> >
-> > -static unsigned int sca_mult = 3;
-> > -module_param(sca_mult, uint, 0000);
-> > -MODULE_PARM_DESC(sca_mult, " the image size multiplier");
-> > -
-> > -#define MAX_ZOOM     8
-> > +/* Pad identifier */
-> > +enum vic_sca_pad {
-> > +     VIMC_SCA_SINK = 0,
-> > +     VIMC_SCA_SRC = 1,
-> > +};
-> >
-> >  #define VIMC_SCA_FMT_WIDTH_DEFAULT  640
-> >  #define VIMC_SCA_FMT_HEIGHT_DEFAULT 480
-> > @@ -25,19 +26,16 @@ MODULE_PARM_DESC(sca_mult, " the image size multiplier");
-> >  struct vimc_sca_device {
-> >       struct vimc_ent_device ved;
-> >       struct v4l2_subdev sd;
-> > -     /* NOTE: the source fmt is the same as the sink
-> > -      * with the width and hight multiplied by mult
-> > -      */
-> > -     struct v4l2_mbus_framefmt sink_fmt;
-> >       struct v4l2_rect crop_rect;
-> > +     /* Frame format for both sink and src pad */
-> > +     struct v4l2_mbus_framefmt fmt[2];
-> >       /* Values calculated when the stream starts */
-> >       u8 *src_frame;
-> > -     unsigned int src_line_size;
-> >       unsigned int bpp;
-> >       struct media_pad pads[2];
-> >  };
-> >
-> > -static const struct v4l2_mbus_framefmt sink_fmt_default = {
-> > +static const struct v4l2_mbus_framefmt fmt_default = {
-> >       .width = VIMC_SCA_FMT_WIDTH_DEFAULT,
-> >       .height = VIMC_SCA_FMT_HEIGHT_DEFAULT,
-> >       .code = MEDIA_BUS_FMT_RGB888_1X24,
-> > @@ -72,17 +70,6 @@ vimc_sca_get_crop_bound_sink(const struct v4l2_mbus_framefmt *sink_fmt)
-> >       return r;
-> >  }
-> >
-> > -static void vimc_sca_adjust_sink_crop(struct v4l2_rect *r,
-> > -                                   const struct v4l2_mbus_framefmt *sink_fmt)
-> > -{
-> > -     const struct v4l2_rect sink_rect =
-> > -             vimc_sca_get_crop_bound_sink(sink_fmt);
-> > -
-> > -     /* Disallow rectangles smaller than the minimal one. */
-> > -     v4l2_rect_set_min_size(r, &crop_rect_min);
-> > -     v4l2_rect_map_inside(r, &sink_rect);
-> > -}
-> > -
-> >  static int vimc_sca_init_cfg(struct v4l2_subdev *sd,
-> >                            struct v4l2_subdev_state *sd_state)
-> >  {
-> > @@ -90,19 +77,14 @@ static int vimc_sca_init_cfg(struct v4l2_subdev *sd,
-> >       struct v4l2_rect *r;
-> >       unsigned int i;
-> >
-> > -     mf = v4l2_subdev_get_try_format(sd, sd_state, 0);
-> > -     *mf = sink_fmt_default;
-> > -
-> > -     r = v4l2_subdev_get_try_crop(sd, sd_state, 0);
-> > -     *r = crop_rect_default;
-> > -
-> > -     for (i = 1; i < sd->entity.num_pads; i++) {
-> > +     for (i = 0; i < sd->entity.num_pads; i++) {
-> >               mf = v4l2_subdev_get_try_format(sd, sd_state, i);
-> > -             *mf = sink_fmt_default;
-> > -             mf->width = mf->width * sca_mult;
-> > -             mf->height = mf->height * sca_mult;
-> > +             *mf = fmt_default;
-> >       }
-> >
-> > +     r = v4l2_subdev_get_try_crop(sd, sd_state, VIMC_SCA_SINK);
-> > +     *r = crop_rect_default;
-> > +
-> >       return 0;
-> >  }
-> >
-> > @@ -144,112 +126,108 @@ static int vimc_sca_enum_frame_size(struct v4l2_subdev *sd,
-> >       fse->min_width = VIMC_FRAME_MIN_WIDTH;
-> >       fse->min_height = VIMC_FRAME_MIN_HEIGHT;
-> >
-> > -     if (VIMC_IS_SINK(fse->pad)) {
-> > -             fse->max_width = VIMC_FRAME_MAX_WIDTH;
-> > -             fse->max_height = VIMC_FRAME_MAX_HEIGHT;
-> > -     } else {
-> > -             fse->max_width = VIMC_FRAME_MAX_WIDTH * MAX_ZOOM;
-> > -             fse->max_height = VIMC_FRAME_MAX_HEIGHT * MAX_ZOOM;
-> > -     }
-> > +     fse->max_width = VIMC_FRAME_MAX_WIDTH;
-> > +     fse->max_height = VIMC_FRAME_MAX_HEIGHT;
-> >
-> >       return 0;
-> >  }
-> >
-> > +static struct v4l2_mbus_framefmt *
-> > +vimc_sca_pad_format(struct vimc_sca_device *vsca,
-> > +                 struct v4l2_subdev_state *sd_state, u32 pad,
-> > +                 enum v4l2_subdev_format_whence which)
-> > +{
-> > +     if (which == V4L2_SUBDEV_FORMAT_TRY)
-> > +             return v4l2_subdev_get_try_format(&vsca->sd, sd_state, pad);
-> > +     else
-> > +             return &vsca->fmt[pad];
-> > +}
-> > +
-> > +static struct v4l2_rect *
-> > +vimc_sca_pad_crop(struct vimc_sca_device *vsca,
-> > +               struct v4l2_subdev_state *sd_state,
-> > +               enum v4l2_subdev_format_whence which)
-> > +{
-> > +     if (which == V4L2_SUBDEV_FORMAT_TRY)
-> > +             return v4l2_subdev_get_try_crop(&vsca->sd, sd_state,
-> > +                                             VIMC_SCA_SINK);
-> > +     else
-> > +             return &vsca->crop_rect;
-> > +}
-> > +
-> >  static int vimc_sca_get_fmt(struct v4l2_subdev *sd,
-> >                           struct v4l2_subdev_state *sd_state,
-> >                           struct v4l2_subdev_format *format)
-> >  {
-> >       struct vimc_sca_device *vsca = v4l2_get_subdevdata(sd);
-> > -     struct v4l2_rect *crop_rect;
-> > -
-> > -     /* Get the current sink format */
-> > -     if (format->which == V4L2_SUBDEV_FORMAT_TRY) {
-> > -             format->format = *v4l2_subdev_get_try_format(sd, sd_state, 0);
-> > -             crop_rect = v4l2_subdev_get_try_crop(sd, sd_state, 0);
-> > -     } else {
-> > -             format->format = vsca->sink_fmt;
-> > -             crop_rect = &vsca->crop_rect;
-> > -     }
-> > -
-> > -     /* Scale the frame size for the source pad */
-> > -     if (VIMC_IS_SRC(format->pad)) {
-> > -             format->format.width = crop_rect->width * sca_mult;
-> > -             format->format.height = crop_rect->height * sca_mult;
-> > -     }
-> >
-> > +     format->format = *vimc_sca_pad_format(vsca, sd_state, format->pad,
-> > +                                           format->which);
-> >       return 0;
-> >  }
-> >
-> > -static void vimc_sca_adjust_sink_fmt(struct v4l2_mbus_framefmt *fmt)
-> > -{
-> > -     const struct vimc_pix_map *vpix;
-> > -
-> > -     /* Only accept code in the pix map table in non bayer format */
-> > -     vpix = vimc_pix_map_by_code(fmt->code);
-> > -     if (!vpix || vpix->bayer)
-> > -             fmt->code = sink_fmt_default.code;
-> > -
-> > -     fmt->width = clamp_t(u32, fmt->width, VIMC_FRAME_MIN_WIDTH,
-> > -                          VIMC_FRAME_MAX_WIDTH) & ~1;
-> > -     fmt->height = clamp_t(u32, fmt->height, VIMC_FRAME_MIN_HEIGHT,
-> > -                           VIMC_FRAME_MAX_HEIGHT) & ~1;
-> > -
-> > -     if (fmt->field == V4L2_FIELD_ANY)
-> > -             fmt->field = sink_fmt_default.field;
-> > -
-> > -     vimc_colorimetry_clamp(fmt);
-> > -}
-> > -
-> >  static int vimc_sca_set_fmt(struct v4l2_subdev *sd,
-> >                           struct v4l2_subdev_state *sd_state,
-> > -                         struct v4l2_subdev_format *fmt)
-> > +                         struct v4l2_subdev_format *format)
-> >  {
-> >       struct vimc_sca_device *vsca = v4l2_get_subdevdata(sd);
-> > -     struct v4l2_mbus_framefmt *sink_fmt;
-> > -     struct v4l2_rect *crop_rect;
-> > +     struct v4l2_mbus_framefmt *fmt;
-> >
-> > -     if (fmt->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
-> > -             /* Do not change the format while stream is on */
-> > -             if (vsca->src_frame)
-> > -                     return -EBUSY;
-> > +     /* Do not change the active format while stream is on */
-> > +     if (format->which == V4L2_SUBDEV_FORMAT_ACTIVE && vsca->src_frame)
-> > +             return -EBUSY;
-> >
-> > -             sink_fmt = &vsca->sink_fmt;
-> > -             crop_rect = &vsca->crop_rect;
-> > -     } else {
-> > -             sink_fmt = v4l2_subdev_get_try_format(sd, sd_state, 0);
-> > -             crop_rect = v4l2_subdev_get_try_crop(sd, sd_state, 0);
-> > +     fmt = vimc_sca_pad_format(vsca, sd_state, format->pad, format->which);
-> > +
-> > +     /*
-> > +      * The media bus code and colorspace can only be changed on the sink
-> > +      * pad, the source pad only follows.
-> > +      */
-> > +     if (format->pad == VIMC_SCA_SINK) {
-> > +             const struct vimc_pix_map *vpix;
-> > +
-> > +             /* Only accept code in the pix map table in non bayer format. */
-> > +             vpix = vimc_pix_map_by_code(format->format.code);
-> > +             if (vpix && !vpix->bayer)
-> > +                     fmt->code = format->format.code;
-> > +             else
-> > +                     fmt->code = fmt_default.code;
-> > +
-> > +             /* Clamp the colorspace to valid values. */
-> > +             fmt->colorspace = format->format.colorspace;
-> > +             fmt->ycbcr_enc = format->format.ycbcr_enc;
-> > +             fmt->quantization = format->format.quantization;
-> > +             fmt->xfer_func = format->format.xfer_func;
-> > +             vimc_colorimetry_clamp(fmt);
-> >       }
-> >
-> > +     /* Clamp and align the width and height */
-> > +     fmt->width = clamp_t(u32, format->format.width, VIMC_FRAME_MIN_WIDTH,
-> > +                          VIMC_FRAME_MAX_WIDTH) & ~1;
-> > +     fmt->height = clamp_t(u32, format->format.height, VIMC_FRAME_MIN_HEIGHT,
-> > +                           VIMC_FRAME_MAX_HEIGHT) & ~1;
-> > +
-> >       /*
-> > -      * Do not change the format of the source pad,
-> > -      * it is propagated from the sink
-> > +      * Propagate the sink pad format to the crop rectangle and the source
-> > +      * pad.
-> >        */
-> > -     if (VIMC_IS_SRC(fmt->pad)) {
-> > -             fmt->format = *sink_fmt;
-> > -             fmt->format.width = crop_rect->width * sca_mult;
-> > -             fmt->format.height = crop_rect->height * sca_mult;
-> > -     } else {
-> > -             /* Set the new format in the sink pad */
-> > -             vimc_sca_adjust_sink_fmt(&fmt->format);
-> > -
-> > -             dev_dbg(vsca->ved.dev, "%s: sink format update: "
-> > -                     "old:%dx%d (0x%x, %d, %d, %d, %d) "
-> > -                     "new:%dx%d (0x%x, %d, %d, %d, %d)\n", vsca->sd.name,
-> > -                     /* old */
-> > -                     sink_fmt->width, sink_fmt->height, sink_fmt->code,
-> > -                     sink_fmt->colorspace, sink_fmt->quantization,
-> > -                     sink_fmt->xfer_func, sink_fmt->ycbcr_enc,
-> > -                     /* new */
-> > -                     fmt->format.width, fmt->format.height, fmt->format.code,
-> > -                     fmt->format.colorspace, fmt->format.quantization,
-> > -                     fmt->format.xfer_func, fmt->format.ycbcr_enc);
-> > -
-> > -             *sink_fmt = fmt->format;
-> > -
-> > -             /* Do the crop, but respect the current bounds */
-> > -             vimc_sca_adjust_sink_crop(crop_rect, sink_fmt);
-> > +     if (format->pad == VIMC_SCA_SINK) {
-> > +             struct v4l2_mbus_framefmt *src_fmt;
-> > +             struct v4l2_rect *crop;
-> > +
-> > +             crop = vimc_sca_pad_crop(vsca, sd_state, format->which);
-> > +             crop->width = fmt->width;
-> > +             crop->height = fmt->height;
-> > +             crop->top = 0;
-> > +             crop->left = 0;
-> > +
-> > +             src_fmt = vimc_sca_pad_format(vsca, sd_state, VIMC_SCA_SRC,
-> > +                                           format->which);
-> > +             *src_fmt = *fmt;
-> >       }
-> >
-> > +     format->format = *fmt;
-> > +
-> >       return 0;
-> >  }
-> >
-> > @@ -259,24 +237,17 @@ static int vimc_sca_get_selection(struct v4l2_subdev *sd,
-> >  {
-> >       struct vimc_sca_device *vsca = v4l2_get_subdevdata(sd);
-> >       struct v4l2_mbus_framefmt *sink_fmt;
-> > -     struct v4l2_rect *crop_rect;
-> >
-> >       if (VIMC_IS_SRC(sel->pad))
-> >               return -EINVAL;
-> >
-> > -     if (sel->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
-> > -             sink_fmt = &vsca->sink_fmt;
-> > -             crop_rect = &vsca->crop_rect;
-> > -     } else {
-> > -             sink_fmt = v4l2_subdev_get_try_format(sd, sd_state, 0);
-> > -             crop_rect = v4l2_subdev_get_try_crop(sd, sd_state, 0);
-> > -     }
-> > -
-> >       switch (sel->target) {
-> >       case V4L2_SEL_TGT_CROP:
-> > -             sel->r = *crop_rect;
-> > +             sel->r = *vimc_sca_pad_crop(vsca, sd_state, sel->which);
-> >               break;
-> >       case V4L2_SEL_TGT_CROP_BOUNDS:
-> > +             sink_fmt = vimc_sca_pad_format(vsca, sd_state, VIMC_SCA_SINK,
-> > +                                            sel->which);
-> >               sel->r = vimc_sca_get_crop_bound_sink(sink_fmt);
-> >               break;
-> >       default:
-> > @@ -286,6 +257,17 @@ static int vimc_sca_get_selection(struct v4l2_subdev *sd,
-> >       return 0;
-> >  }
-> >
-> > +static void vimc_sca_adjust_sink_crop(struct v4l2_rect *r,
-> > +                                   const struct v4l2_mbus_framefmt *sink_fmt)
-> > +{
-> > +     const struct v4l2_rect sink_rect =
-> > +             vimc_sca_get_crop_bound_sink(sink_fmt);
-> > +
-> > +     /* Disallow rectangles smaller than the minimal one. */
-> > +     v4l2_rect_set_min_size(r, &crop_rect_min);
-> > +     v4l2_rect_map_inside(r, &sink_rect);
-> > +}
-> > +
-> >  static int vimc_sca_set_selection(struct v4l2_subdev *sd,
-> >                                 struct v4l2_subdev_state *sd_state,
-> >                                 struct v4l2_subdev_selection *sel)
-> > @@ -294,30 +276,18 @@ static int vimc_sca_set_selection(struct v4l2_subdev *sd,
-> >       struct v4l2_mbus_framefmt *sink_fmt;
-> >       struct v4l2_rect *crop_rect;
-> >
-> > -     if (VIMC_IS_SRC(sel->pad))
-> > +     /* Only support setting the crop of the sink pad */
-> > +     if (VIMC_IS_SRC(sel->pad) || sel->target != V4L2_SEL_TGT_CROP)
-> >               return -EINVAL;
-> >
-> > -     if (sel->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
-> > -             /* Do not change the format while stream is on */
-> > -             if (vsca->src_frame)
-> > -                     return -EBUSY;
-> > +     if (sel->which == V4L2_SUBDEV_FORMAT_ACTIVE && vsca->src_frame)
-> > +             return -EBUSY;
-> >
-> > -             crop_rect = &vsca->crop_rect;
-> > -             sink_fmt = &vsca->sink_fmt;
-> > -     } else {
-> > -             crop_rect = v4l2_subdev_get_try_crop(sd, sd_state, 0);
-> > -             sink_fmt = v4l2_subdev_get_try_format(sd, sd_state, 0);
-> > -     }
-> > -
-> > -     switch (sel->target) {
-> > -     case V4L2_SEL_TGT_CROP:
-> > -             /* Do the crop, but respect the current bounds */
-> > -             vimc_sca_adjust_sink_crop(&sel->r, sink_fmt);
-> > -             *crop_rect = sel->r;
-> > -             break;
-> > -     default:
-> > -             return -EINVAL;
-> > -     }
-> > +     crop_rect = vimc_sca_pad_crop(vsca, sd_state, sel->which);
-> > +     sink_fmt = vimc_sca_pad_format(vsca, sd_state, VIMC_SCA_SINK,
-> > +                                    sel->which);
-> > +     vimc_sca_adjust_sink_crop(&sel->r, sink_fmt);
-> > +     *crop_rect = sel->r;
-> >
-> >       return 0;
-> >  }
-> > @@ -344,16 +314,12 @@ static int vimc_sca_s_stream(struct v4l2_subdev *sd, int enable)
-> >                       return 0;
-> >
-> >               /* Save the bytes per pixel of the sink */
-> > -             vpix = vimc_pix_map_by_code(vsca->sink_fmt.code);
-> > +             vpix = vimc_pix_map_by_code(vsca->fmt[VIMC_SCA_SINK].code);
-> >               vsca->bpp = vpix->bpp;
-> >
-> > -             /* Calculate the width in bytes of the src frame */
-> > -             vsca->src_line_size = vsca->crop_rect.width *
-> > -                                   sca_mult * vsca->bpp;
-> > -
-> >               /* Calculate the frame size of the source pad */
-> > -             frame_size = vsca->src_line_size * vsca->crop_rect.height *
-> > -                          sca_mult;
-> > +             frame_size = vsca->fmt[VIMC_SCA_SRC].width
-> > +                        * vsca->fmt[VIMC_SCA_SRC].height * vsca->bpp;
-> >
-> >               /* Allocate the frame buffer. Use vmalloc to be able to
-> >                * allocate a large amount of memory
-> > @@ -382,77 +348,32 @@ static const struct v4l2_subdev_ops vimc_sca_ops = {
-> >       .video = &vimc_sca_video_ops,
-> >  };
-> >
-> > -static void vimc_sca_fill_pix(u8 *const ptr,
-> > -                           const u8 *const pixel,
-> > -                           const unsigned int bpp)
-> > -{
-> > -     unsigned int i;
-> > -
-> > -     /* copy the pixel to the pointer */
-> > -     for (i = 0; i < bpp; i++)
-> > -             ptr[i] = pixel[i];
-> > -}
-> > -
-> > -static void vimc_sca_scale_pix(const struct vimc_sca_device *const vsca,
-> > -                            unsigned int lin, unsigned int col,
-> > -                            const u8 *const sink_frame)
-> > -{
-> > -     const struct v4l2_rect crop_rect = vsca->crop_rect;
-> > -     unsigned int i, j, index;
-> > -     const u8 *pixel;
-> > -
-> > -     /* Point to the pixel value in position (lin, col) in the sink frame */
-> > -     index = VIMC_FRAME_INDEX(lin, col,
-> > -                              vsca->sink_fmt.width,
-> > -                              vsca->bpp);
-> > -     pixel = &sink_frame[index];
-> > -
-> > -     dev_dbg(vsca->ved.dev,
-> > -             "sca: %s: --- scale_pix sink pos %dx%d, index %d ---\n",
-> > -             vsca->sd.name, lin, col, index);
-> > -
-> > -     /* point to the place we are going to put the first pixel
-> > -      * in the scaled src frame
-> > -      */
-> > -     lin -= crop_rect.top;
-> > -     col -= crop_rect.left;
-> > -     index = VIMC_FRAME_INDEX(lin * sca_mult, col * sca_mult,
-> > -                              crop_rect.width * sca_mult, vsca->bpp);
-> > -
-> > -     dev_dbg(vsca->ved.dev, "sca: %s: scale_pix src pos %dx%d, index %d\n",
-> > -             vsca->sd.name, lin * sca_mult, col * sca_mult, index);
-> > -
-> > -     /* Repeat this pixel mult times */
-> > -     for (i = 0; i < sca_mult; i++) {
-> > -             /* Iterate through each beginning of a
-> > -              * pixel repetition in a line
-> > -              */
-> > -             for (j = 0; j < sca_mult * vsca->bpp; j += vsca->bpp) {
-> > -                     dev_dbg(vsca->ved.dev,
-> > -                             "sca: %s: sca: scale_pix src pos %d\n",
-> > -                             vsca->sd.name, index + j);
-> > -
-> > -                     /* copy the pixel to the position index + j */
-> > -                     vimc_sca_fill_pix(&vsca->src_frame[index + j],
-> > -                                       pixel, vsca->bpp);
-> > -             }
-> > -
-> > -             /* move the index to the next line */
-> > -             index += vsca->src_line_size;
-> > -     }
-> > -}
-> > -
-> >  static void vimc_sca_fill_src_frame(const struct vimc_sca_device *const vsca,
-> >                                   const u8 *const sink_frame)
-> >  {
-> > -     const struct v4l2_rect r = vsca->crop_rect;
-> > -     unsigned int i, j;
-> > -
-> > -     /* Scale each pixel from the original sink frame */
-> > -     /* TODO: implement scale down, only scale up is supported for now */
-> > -     for (i = r.top; i < r.top + r.height; i++)
-> > -             for (j = r.left; j < r.left + r.width; j++)
-> > -                     vimc_sca_scale_pix(vsca, i, j, sink_frame);
-> > +     const struct v4l2_mbus_framefmt *src_fmt = &vsca->fmt[VIMC_SCA_SRC];
-> > +     const struct v4l2_rect *r = &vsca->crop_rect;
-> > +     unsigned int snk_width = vsca->fmt[VIMC_SCA_SINK].width;
-> > +     unsigned int src_x, src_y;
-> > +     u8 *walker = vsca->src_frame;
-> > +
-> > +     /* Set each pixel at the src_frame to its sink_frame equivalent */
-> > +     for (src_y = 0; src_y < src_fmt->height; src_y++) {
-> > +             unsigned int snk_y, y_offset;
-> > +
-> > +             snk_y = (src_y * r->height) / src_fmt->height + r->top;
-> > +             y_offset = snk_y * snk_width * vsca->bpp;
-> > +
-> > +             for (src_x = 0; src_x < src_fmt->width; src_x++) {
-> > +                     unsigned int snk_x, x_offset, index;
-> > +
-> > +                     snk_x = (src_x * r->width) / src_fmt->width + r->left;
-> > +                     x_offset = snk_x * vsca->bpp;
-> > +                     index = y_offset + x_offset;
-> > +                     memcpy(walker, &sink_frame[index], vsca->bpp);
-> > +                     walker += vsca->bpp;
-> > +             }
-> > +     }
-> >  }
-> >
-> >  static void *vimc_sca_process_frame(struct vimc_ent_device *ved,
-> > @@ -492,8 +413,8 @@ static struct vimc_ent_device *vimc_sca_add(struct vimc_device *vimc,
-> >               return ERR_PTR(-ENOMEM);
-> >
-> >       /* Initialize ved and sd */
-> > -     vsca->pads[0].flags = MEDIA_PAD_FL_SINK;
-> > -     vsca->pads[1].flags = MEDIA_PAD_FL_SOURCE;
-> > +     vsca->pads[VIMC_SCA_SINK].flags = MEDIA_PAD_FL_SINK;
-> > +     vsca->pads[VIMC_SCA_SRC].flags = MEDIA_PAD_FL_SOURCE;
-> >
-> >       ret = vimc_ent_sd_register(&vsca->ved, &vsca->sd, v4l2_dev,
-> >                                  vcfg_name,
-> > @@ -508,7 +429,8 @@ static struct vimc_ent_device *vimc_sca_add(struct vimc_device *vimc,
-> >       vsca->ved.dev = vimc->mdev.dev;
-> >
-> >       /* Initialize the frame format */
-> > -     vsca->sink_fmt = sink_fmt_default;
-> > +     vsca->fmt[VIMC_SCA_SINK] = fmt_default;
-> > +     vsca->fmt[VIMC_SCA_SRC] = fmt_default;
-> >
-> >       /* Initialize the crop selection */
-> >       vsca->crop_rect = crop_rect_default;
->
-> --
-> Regards,
->
-> Laurent Pinchart
+diff --git a/fs/namei.c b/fs/namei.c
+index d049d3972695..a0122f0016a3 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2551,17 +2551,22 @@ static int filename_parentat(int dfd, struct filename *name,
+ /* does lookup, returns the object with parent locked */
+ struct dentry *kern_path_locked(const char *name, struct path *path)
+ {
++	struct filename *filename;
+ 	struct dentry *d;
+ 	struct qstr last;
+ 	int type, error;
+ 
+-	error = filename_parentat(AT_FDCWD, getname_kernel(name), 0, path,
++	filename = getname_kernel(name);
++	error = __filename_parentat(AT_FDCWD, filename, 0, path,
+ 				    &last, &type);
+-	if (error)
+-		return ERR_PTR(error);
++	if (error) {
++		d = ERR_PTR(error);
++		goto out;
++	}
+ 	if (unlikely(type != LAST_NORM)) {
+ 		path_put(path);
+-		return ERR_PTR(-EINVAL);
++		d = ERR_PTR(-EINVAL);
++		goto out;
+ 	}
+ 	inode_lock_nested(path->dentry->d_inode, I_MUTEX_PARENT);
+ 	d = __lookup_hash(&last, path->dentry, 0);
+@@ -2569,6 +2574,8 @@ struct dentry *kern_path_locked(const char *name, struct path *path)
+ 		inode_unlock(path->dentry->d_inode);
+ 		path_put(path);
+ 	}
++out:
++	putname(filename);
+ 	return d;
+ }
+ 
+-- 
+2.30.2
 
-Regards,
-Pedro
