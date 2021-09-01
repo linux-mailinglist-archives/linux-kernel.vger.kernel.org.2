@@ -2,115 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9AF3FDEF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1263FDF01
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343826AbhIAPtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
+        id S1343823AbhIAPvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232757AbhIAPtU (ORCPT
+        with ESMTP id S244935AbhIAPvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:49:20 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E529C061575;
-        Wed,  1 Sep 2021 08:48:23 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id x19so130470pfu.4;
-        Wed, 01 Sep 2021 08:48:23 -0700 (PDT)
+        Wed, 1 Sep 2021 11:51:53 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048DFC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 08:50:56 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id d5so2181703pjx.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 08:50:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vmclqQ0WSX1nYlOYWUqAexZ2LxQ9qNPAJcM+COYyC7M=;
-        b=XByNdOk3/cONjGR+FAVB++rBl97wKVkKZqE0ONlZpU6LHNjDaXfbw6xYGY6ah004aB
-         z9LmsUhR9wJjBYiq6DVKwYAWeuuULQQu0bRNF92+eJWQrHGlKY/0eEZy5KQHxPKkENWH
-         LZB7XbYPtt4yLzcqkaLT7zt8uxYIgd5w1cMdya53kcPdPY5WjfotUunAZ2S+QnWqwuBZ
-         i+iTtClpz1Fwvzg5w+l4v5dZDqtrey+5U1QQ81ayt2+UFdDWiJQ8h6u6JyWxU3TVqode
-         MsvPBWE4RfMgMFyPrZJqVDFIZhwQyRNC9IDWQMQBX3j9jPa0du9xVny5h75NFMdDKMmb
-         I3XA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qNB0tKe+YPZM3TdHiuuATVpTDN8fjKcxkbtEtf3WGZs=;
+        b=D2VIIJH1pwcPd9oP8vDlWrHD7vywgcZDjqNwZHeE1fAtg4vzhJj6cWQRlSBtSkFJdk
+         Ntq8DQXQgrmAeoxqmvrKRAvFQ7YduPAWOMeyjgN5U2Sc33oXmnvovWMi2mghrQqtvjDz
+         X3RFYvT5u/rElfqxXmSsUjyK7+uCTNQgId67dl18kVbrcIlTLnFrDn7KdK/2FygGgmxy
+         WHux9o83IwIT4sKzdRL7wrRS2/R+2vdHx+1Rv4ha8BCgWJ1lScOlu/Q8Xha7RAc78B6I
+         QwOxrvvbhJhU8XPTmrNZw0Oyqb+j4zBgjCRDgUk83ItXwXxPXaiP0vwgvV7xPNdMkAz/
+         NVEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vmclqQ0WSX1nYlOYWUqAexZ2LxQ9qNPAJcM+COYyC7M=;
-        b=RI7wLezZ8tUwapNgT6WZQ9oBFdI++oXd3uqx9FRrbjzJnrrDeCNFoD87F1OY1TEsB8
-         NmfbbkzA5ugFP3HOosGl3BY3AwRp8vnwITgdPPhA2Sw3R88kKc9sVf60eOw4AmpT8WG5
-         PhBZy2/Ql6bbMms9tYt0l4q5os9Qlzc6maa81uArW/W6ux7kjoDCH8TK3gx2In/1cm7G
-         yFlvKq+n+RVMNksvmT6RGkYxXHWFbehFA8mLx4f1SDu6MMbgIl8f2TRB3/OubSUEY6aq
-         +fhIiKNtszSY4sorMGqUl+WCtYDLMfBJP1XzK4pLbvs7oITsvXQruYUyP21Yxe9KcHde
-         r7Ww==
-X-Gm-Message-State: AOAM532OMIg+PhmtKxIUmH+oslhCZsUpFrAvNNLxBkn1Od4XmqEg0qwv
-        LkmzSKEcqjEKzZ4ILxKlsSBrrtB1d7tfa8oDGeo=
-X-Google-Smtp-Source: ABdhPJz9k2s+gvuJecOLz5VorZBzX4Ibo7UwKfkK9GaFwnjmCU6wfZQhw5cIiPNfzbt8gZhO1+KW+sZzYMCaA4/3tZs=
-X-Received: by 2002:aa7:875a:0:b0:3f1:c4c8:5f0d with SMTP id
- g26-20020aa7875a000000b003f1c4c85f0dmr155319pfo.40.1630511302856; Wed, 01 Sep
- 2021 08:48:22 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qNB0tKe+YPZM3TdHiuuATVpTDN8fjKcxkbtEtf3WGZs=;
+        b=Bx7qmzH+71Tudn9nnmZIGv1V7Px6iSaFluot8DhqgSdfA+pbFz26WiFOgymE9YA++k
+         hdak5yW1tAyL0wx4h+VCoKRWAZFJ/OOLieU0XP9iioXB/RmVpZWhlFqJXmVyR6NgPdn+
+         Q8acSZ75F+d7hSdajsVBtYsy8IYD39eO4tIH6UhSvQxKZFy9LQvSG1xbE/oWRA5hkVke
+         ihbTnCQC80vMMkvwRpMmozDxZzo0+BbWpBz6q6M3AW1762OpsMIm9x42IImXmpnMwooR
+         WRK6SIg6LS+FRJyI5X44+qIHS655ylZ1JPt5jWoPDa2XCDQQnpj+OexIArGfwtSkznOt
+         vMbg==
+X-Gm-Message-State: AOAM533C2fswvPLU83TNAbPSr7/ND9nEu9vBZgSLBM/fOkY1IEDqNVCT
+        94YgaSsvKxdIv5Jc3IcM1dXQSw==
+X-Google-Smtp-Source: ABdhPJxkyySCUKlwAICIssEef5Y7Lhbgx2xQ/jE8094p4LyKSF+NE/+JoJJe4ABG4D4FQZbcMydWCg==
+X-Received: by 2002:a17:902:a586:b0:132:6a9c:f8d9 with SMTP id az6-20020a170902a58600b001326a9cf8d9mr128494plb.3.1630511455840;
+        Wed, 01 Sep 2021 08:50:55 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id n41sm382751pfv.43.2021.09.01.08.50.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 08:50:54 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 09:50:51 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Ohad Ben Cohen <ohad@wizery.com>, bjorn.andersson@linaro.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-remoteproc@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] remoteproc: imx_dsp_rproc: add remoteproc driver
+ for dsp on i.MX
+Message-ID: <20210901155051.GA1033512@p14s>
+References: <1629876516-16513-1-git-send-email-shengjiu.wang@nxp.com>
+ <1629876516-16513-2-git-send-email-shengjiu.wang@nxp.com>
+ <20210831180156.GA981305@p14s>
+ <CAA+D8AO8hGoQEngq-7f7H9oFwQzoxNkCcEA5fpr5ifuVuEkyxQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210830123704.221494-1-verdre@v0yd.nl> <20210830123704.221494-2-verdre@v0yd.nl>
- <CAHp75VeAKs=nFw4E20etKc3C_Cszyz9AqN=mLsum7F-BdVK5Rg@mail.gmail.com> <7e38931e-2f1c-066e-088e-b27b56c1245c@v0yd.nl>
-In-Reply-To: <7e38931e-2f1c-066e-088e-b27b56c1245c@v0yd.nl>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 1 Sep 2021 18:47:46 +0300
-Message-ID: <CAHp75VeKws85JMG_GjYPzgcqu7pGf66bLbUowNi-4z_=uda+HQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mwifiex: Use non-posted PCI register writes
-To:     =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA+D8AO8hGoQEngq-7f7H9oFwQzoxNkCcEA5fpr5ifuVuEkyxQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 5:02 PM Jonas Dre=C3=9Fler <verdre@v0yd.nl> wrote:
-> On 8/30/21 2:49 PM, Andy Shevchenko wrote:
->  > On Mon, Aug 30, 2021 at 3:38 PM Jonas Dre=C3=9Fler <verdre@v0yd.nl> wr=
-ote:
+[...]
 
-...
+> 
+> >
+> > > +
+> > > +/* address translation table */
+> > > +struct imx_dsp_rproc_att {
+> > > +     u32 da; /* device address (From Cortex M4 view)*/
+> > > +     u32 sa; /* system bus address */
+> > > +     u32 size; /* size of reg range */
+> > > +     int flags;
+> > > +};
+> >
+> > This is already defined in imx_rproc.c - why do we need another definition here?
+> 
+> I just want to avoid to modify imx_rproc.c driver.
+> So with this comments, should I add imx_rproc.h for extracting the common
+> structure in it?
+> 
 
->  > Thanks for all this work!
->  >
->  > Nevertheless, do we have any commits that may be a good candidate to
->  > be in the Fixes tag here?
+Yes, that is probably the best way to proceed.
 
-> I don't think there's any commit we could point to, given that the bug
-> is probably somewhere in the firmware code.
+> >
+> > > +
+> > > +/* Remote core start/stop method */
+> > > +enum imx_dsp_rproc_method {
+> > > +     /* Through syscon regmap */
+> > > +     IMX_DSP_MMIO,
+> > > +     IMX_DSP_SCU_API,
+> > > +};
+> >
+> > From where I stand it would be worth merging the above with imx_rproc_method
+> > found in imx_rproc.c.  I don't see a need for duplication.
+> 
+> Should I add imx_rproc.h for extracting the common structure in it?
+> 
 
-Here (in the commit message)...
+See my comment above.
 
->  >> +       /* Do a read-back, which makes the write non-posted,
-> ensuring the
->  >> +        * completion before returning.
->  >
->  >> +        * The firmware of the 88W8897 card is buggy and this avoids
-> crashes.
->  >
->  > Any firmware version reference? Would be nice to have just for the
->  > sake of record.
+> >
+> > > +
+> > > +struct imx_dsp_rproc {
+> > > +     struct device                   *dev;
+> > > +     struct regmap                   *regmap;
+> > > +     struct rproc                    *rproc;
+> > > +     const struct imx_dsp_rproc_dcfg *dcfg;
+> > > +     struct clk                      *clks[DSP_RPROC_CLK_MAX];
+> > > +     struct mbox_client              cl;
+> > > +     struct mbox_client              cl_rxdb;
+> > > +     struct mbox_chan                *tx_ch;
+> > > +     struct mbox_chan                *rx_ch;
+> > > +     struct mbox_chan                *rxdb_ch;
+> > > +     struct device                   **pd_dev;
+> > > +     struct device_link              **pd_dev_link;
+> > > +     struct imx_sc_ipc               *ipc_handle;
+> > > +     struct work_struct              rproc_work;
+> > > +     struct workqueue_struct         *workqueue;
+> > > +     struct completion               pm_comp;
+> > > +     spinlock_t                      mbox_lock;    /* lock for mbox */
+> > > +     int                             num_domains;
+> > > +     u32                             flags;
+> > > +};
+> > > +
+> > > +struct imx_dsp_rproc_dcfg {
+> > > +     u32                             src_reg;
+> > > +     u32                             src_mask;
+> > > +     u32                             src_start;
+> > > +     u32                             src_stop;
+> > > +     const struct imx_dsp_rproc_att  *att;
+> > > +     size_t                          att_size;
+> > > +     enum imx_dsp_rproc_method       method;
+> >
+> > The above is similar to imx_rproc_cfg.  As such:
+> >
+> > struct imx_dsp_rproc_dcfg {
+> >         struct imx_rproc_cfg            *dcfg;
+> >         int (*reset)(struct imx_dsp_rproc *priv);
+> > };
+> >
+> 
+> Yes, seems need to add imx_rproc.h header file.
 >
-> Pretty sure the crash is present in every firmware that has been
-> released, I've tried most of them. FTR, the current firmware version is
-> 15.68.19.p21.
 
-...and here it would be nice to state this version, so in the future
-we will have a right landmark.
+[...]
 
->  >> +        */
+> > > +
+> > > +/* pm runtime */
+> > > +static int imx_dsp_runtime_resume(struct device *dev)
+> > > +{
+> > > +     struct rproc *rproc = dev_get_drvdata(dev);
+> > > +     struct imx_dsp_rproc *priv = rproc->priv;
+> > > +     const struct imx_dsp_rproc_dcfg *dcfg = priv->dcfg;
+> > > +     int ret;
+> > > +
+> > > +     ret = imx_dsp_rproc_mbox_init(priv);
+> >
+> > Why is the mailbox setup and destroyed with every PM cycle?  I find an overall
+> > lack of comments makes this driver difficult to review, resulting in having to
+> > spend more time to look at and understand the code.  I will have to continue
+> > tomorrow because, well, I ran out of time.
+> >
+> > Mathieu
+> >
+> 
+> There is power domain attached with mailbox, if request the mailbox
+> channel, the power is enabled. so if setup mailbox in probe(), then
+> the power is enabled always which is no benefit for saving power.
+> so setup mailbox in pm_runtime_resume().
 
---=20
-With Best Regards,
-Andy Shevchenko
+This is the kind of very useful information that should be in comments.
+
+> 
+> Sorry for lack of comments, I will add more in next version.
+
+That will be much appreciated.
+
+> 
+> Again, Thanks your time for reviewing this patch.
+
+More comments to come in a minute...
+
+> 
+> Best regards
+> Wang shengjiu
+> 
+> > > +     if (ret) {
+> > > +             dev_err(dev, "failed on imx_dsp_rproc_mbox_init\n");
+> > > +             return ret;
+> > > +     }
+> > > +
+> > > +     ret = imx_dsp_rproc_clk_enable(priv);
+> > > +     if (ret) {
+> > > +             dev_err(dev, "failed on imx_dsp_rproc_clk_enable\n");
+> > > +             return ret;
+> > > +     }
+> > > +
+> > > +     /* reset DSP if needed */
+> > > +     if (dcfg->reset)
+> > > +             dcfg->reset(priv);
+> > > +
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static int imx_dsp_runtime_suspend(struct device *dev)
+> > > +{
+> > > +     struct rproc *rproc = dev_get_drvdata(dev);
+> > > +     struct imx_dsp_rproc *priv = rproc->priv;
+> > > +
+> > > +     imx_dsp_rproc_clk_disable(priv);
+> > > +
+> > > +     imx_dsp_rproc_free_mbox(priv);
+> > > +
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static void imx_dsp_load_firmware(const struct firmware *fw, void *context)
+> > > +{
+> > > +     struct rproc *rproc = context;
+> > > +     int ret;
+> > > +
+> > > +     /* load the ELF segments to memory */
+> > > +     ret = rproc_load_segments(rproc, fw);
+> > > +     if (ret)
+> > > +             goto out;
+> > > +
+> > > +     /* power up the remote processor */
+> > > +     ret = rproc->ops->start(rproc);
+> > > +     if (ret)
+> > > +             goto out;
+> > > +
+> > > +     /* same flow as first start */
+> > > +     rproc->ops->kick(rproc, 0);
+> > > +
+> > > +out:
+> > > +     release_firmware(fw);
+> > > +}
+> > > +
+> > > +static int imx_dsp_suspend(struct device *dev)
+> > > +{
+> > > +     struct rproc *rproc = dev_get_drvdata(dev);
+> > > +     struct imx_dsp_rproc *priv = rproc->priv;
+> > > +     __u32 mmsg = RP_MBOX_SUSPEND_SYSTEM;
+> > > +     int ret;
+> > > +
+> > > +     if (rproc->state == RPROC_RUNNING) {
+> > > +             reinit_completion(&priv->pm_comp);
+> > > +
+> > > +             ret = mbox_send_message(priv->tx_ch, (void *)&mmsg);
+> > > +             if (ret < 0) {
+> > > +                     dev_err(dev, "PM mbox_send_message failed: %d\n", ret);
+> > > +                     return ret;
+> > > +             }
+> > > +
+> > > +             if (!wait_for_completion_timeout(&priv->pm_comp, msecs_to_jiffies(100)))
+> > > +                     return -EBUSY;
+> > > +     }
+> > > +
+> > > +     return pm_runtime_force_suspend(dev);
+> > > +}
+> > > +
+> > > +static int imx_dsp_resume(struct device *dev)
+> > > +{
+> > > +     struct rproc *rproc = dev_get_drvdata(dev);
+> > > +     int ret = 0;
+> > > +
+> > > +     ret = pm_runtime_force_resume(dev);
+> > > +     if (ret)
+> > > +             return ret;
+> > > +
+> > > +     if (rproc->state == RPROC_RUNNING) {
+> > > +             /*TODO: load firmware and start */
+> > > +             ret = request_firmware_nowait(THIS_MODULE,
+> > > +                                           FW_ACTION_UEVENT,
+> > > +                                           rproc->firmware,
+> > > +                                           dev,
+> > > +                                           GFP_KERNEL,
+> > > +                                           rproc,
+> > > +                                           imx_dsp_load_firmware);
+> > > +             if (ret < 0) {
+> > > +                     dev_err(dev, "load firmware failed: %d\n", ret);
+> > > +                     goto err;
+> > > +             }
+> > > +     }
+> > > +
+> > > +     return 0;
+> > > +
+> > > +err:
+> > > +     pm_runtime_force_suspend(dev);
+> > > +
+> > > +     return ret;
+> > > +}
+> > > +
+> > > +static const struct dev_pm_ops imx_dsp_rproc_pm_ops = {
+> > > +     SET_SYSTEM_SLEEP_PM_OPS(imx_dsp_suspend, imx_dsp_resume)
+> > > +     SET_RUNTIME_PM_OPS(imx_dsp_runtime_suspend,
+> > > +                        imx_dsp_runtime_resume, NULL)
+> > > +};
+> > > +
+> > > +static const struct of_device_id imx_dsp_rproc_of_match[] = {
+> > > +     { .compatible = "fsl,imx8qxp-hifi4", .data = &imx_dsp_rproc_cfg_imx8qxp },
+> > > +     { .compatible = "fsl,imx8qm-hifi4",  .data = &imx_dsp_rproc_cfg_imx8qm },
+> > > +     { .compatible = "fsl,imx8mp-hifi4",  .data = &imx_dsp_rproc_cfg_imx8mp },
+> > > +     { .compatible = "fsl,imx8ulp-hifi4", .data = &imx_dsp_rproc_cfg_imx8ulp },
+> > > +     {},
+> > > +};
+> > > +MODULE_DEVICE_TABLE(of, imx_dsp_rproc_of_match);
+> > > +
+> > > +static struct platform_driver imx_dsp_rproc_driver = {
+> > > +     .probe = imx_dsp_rproc_probe,
+> > > +     .remove = imx_dsp_rproc_remove,
+> > > +     .driver = {
+> > > +             .name = "imx-dsp-rproc",
+> > > +             .of_match_table = imx_dsp_rproc_of_match,
+> > > +             .pm = &imx_dsp_rproc_pm_ops,
+> > > +     },
+> > > +};
+> > > +module_platform_driver(imx_dsp_rproc_driver);
+> > > +
+> > > +MODULE_LICENSE("GPL v2");
+> > > +MODULE_DESCRIPTION("i.MX HiFi Core Remote Processor Control Driver");
+> > > +MODULE_AUTHOR("Shengjiu Wang <shengjiu.wang@nxp.com>");
+> > > --
+> > > 2.17.1
+> > >
