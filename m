@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDA33FDCBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474AD3FDC0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344200AbhIAMxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:53:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54204 "EHLO mail.kernel.org"
+        id S1344093AbhIAMqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:46:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346164AbhIAMt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:49:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 980B961216;
-        Wed,  1 Sep 2021 12:41:10 +0000 (UTC)
+        id S1345148AbhIAMkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:40:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D08BC611AF;
+        Wed,  1 Sep 2021 12:37:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630500071;
-        bh=TzDkHWbm1aqqP/QD0DwYRBsztmwOsXXIIpYLomeTdD0=;
+        s=korg; t=1630499830;
+        bh=iLQGVg6pHipjmn7NC187GwCpG6R5Mk5ybFqP+dJLqoM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rPAl6i4YTnnfN23q9f67KhfcYN11B0UJ3sDTd4L/PLpuZHeT7x+B8aTc9NT9oIBmU
-         TDWcS0kqf12eiHS3VPrjFAqYx0VwydCqz+j0ozqfIyxaJngpq5+q/h4L4YyIYVYSFf
-         Y8mbJHn7UhXVqv2mDrhso2M8TgVqxf5XA4BspmfQ=
+        b=xuyIdkd6KobYLsSET37d1+Y53yMLwb91t0m0QFhpX/ABqIPvY9RtcwX1898FTAZiK
+         9l43PL6dNamg13pP1svP8Jigu+Znp/zdxwP+TrguMIbWx8p2KR1HKhLoS13PHHGaf5
+         emIKLa9uNOBWTuTI7wKyuSge8NsmY8SouVDXuux8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Michel=20D=C3=A4nzer?= <mdaenzer@redhat.com>,
-        Mark Yacoub <markyacoub@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 090/113] drm: Copy drm_wait_vblank to user before returning
+        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 095/103] net: dsa: mt7530: fix VLAN traffic leaks again
 Date:   Wed,  1 Sep 2021 14:28:45 +0200
-Message-Id: <20210901122304.967675045@linuxfoundation.org>
+Message-Id: <20210901122303.730572047@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
+References: <20210901122300.503008474@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,67 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Yacoub <markyacoub@google.com>
+From: DENG Qingfang <dqfext@gmail.com>
 
-[ Upstream commit fa0b1ef5f7a694f48e00804a391245f3471aa155 ]
+commit 7428022b50d0fbb4846dd0f00639ea09d36dff02 upstream.
 
-[Why]
-Userspace should get back a copy of drm_wait_vblank that's been modified
-even when drm_wait_vblank_ioctl returns a failure.
+When a port leaves a VLAN-aware bridge, the current code does not clear
+other ports' matrix field bit. If the bridge is later set to VLAN-unaware
+mode, traffic in the bridge may leak to that port.
 
-Rationale:
-drm_wait_vblank_ioctl modifies the request and expects the user to read
-it back. When the type is RELATIVE, it modifies it to ABSOLUTE and updates
-the sequence to become current_vblank_count + sequence (which was
-RELATIVE), but now it became ABSOLUTE.
-drmWaitVBlank (in libdrm) expects this to be the case as it modifies
-the request to be Absolute so it expects the sequence to would have been
-updated.
+Remove the VLAN filtering check in mt7530_port_bridge_leave.
 
-The change is in compat_drm_wait_vblank, which is called by
-drm_compat_ioctl. This change of copying the data back regardless of the
-return number makes it en par with drm_ioctl, which always copies the
-data before returning.
-
-[How]
-Return from the function after everything has been copied to user.
-
-Fixes IGT:kms_flip::modeset-vs-vblank-race-interruptible
-Tested on ChromeOS Trogdor(msm)
-
-Reviewed-by: Michel Dänzer <mdaenzer@redhat.com>
-Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
-Signed-off-by: Sean Paul <seanpaul@chromium.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210812194917.1703356-1-markyacoub@chromium.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 474a2ddaa192 ("net: dsa: mt7530: fix VLAN traffic leaks")
+Fixes: 83163f7dca56 ("net: dsa: mediatek: add VLAN support for MT7530")
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/drm_ioc32.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/dsa/mt7530.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_ioc32.c b/drivers/gpu/drm/drm_ioc32.c
-index 33390f02f5eb..e41d3a69a02a 100644
---- a/drivers/gpu/drm/drm_ioc32.c
-+++ b/drivers/gpu/drm/drm_ioc32.c
-@@ -856,8 +856,6 @@ static int compat_drm_wait_vblank(struct file *file, unsigned int cmd,
- 	req.request.sequence = req32.request.sequence;
- 	req.request.signal = req32.request.signal;
- 	err = drm_ioctl_kernel(file, drm_wait_vblank_ioctl, &req, DRM_UNLOCKED);
--	if (err)
--		return err;
- 
- 	req32.reply.type = req.reply.type;
- 	req32.reply.sequence = req.reply.sequence;
-@@ -866,7 +864,7 @@ static int compat_drm_wait_vblank(struct file *file, unsigned int cmd,
- 	if (copy_to_user(argp, &req32, sizeof(req32)))
- 		return -EFAULT;
- 
--	return 0;
-+	return err;
- }
- 
- #if defined(CONFIG_X86)
--- 
-2.30.2
-
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -1161,11 +1161,8 @@ mt7530_port_bridge_leave(struct dsa_swit
+ 		/* Remove this port from the port matrix of the other ports
+ 		 * in the same bridge. If the port is disabled, port matrix
+ 		 * is kept and not being setup until the port becomes enabled.
+-		 * And the other port's port matrix cannot be broken when the
+-		 * other port is still a VLAN-aware port.
+ 		 */
+-		if (dsa_is_user_port(ds, i) && i != port &&
+-		   !dsa_port_is_vlan_filtering(dsa_to_port(ds, i))) {
++		if (dsa_is_user_port(ds, i) && i != port) {
+ 			if (dsa_to_port(ds, i)->bridge_dev != bridge)
+ 				continue;
+ 			if (priv->ports[i].enable)
 
 
