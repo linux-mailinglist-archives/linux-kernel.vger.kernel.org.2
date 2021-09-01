@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30883FE339
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0DE3FE336
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344350AbhIATmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344221AbhIATmh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:42:37 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA146C061575;
-        Wed,  1 Sep 2021 12:41:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vWlTtF1Q8Qb+H9Mh5Lyd8cot75BUAmc8fIIm40WTtmY=; b=QJpDbxhMM7k2u/aLZK7AJ5/A6k
-        Q2Hu2RuNltNyHzduekKTiEZSVz6hLOIkyWwcUuFc3o5HpS73E42l0WjHsFBSmNgX4nhddKyoTGXCY
-        qJ4uWBhNaJljPYqJw9svvfSaliCUIprE8jPp9DOY53OcXpPjCohmfEUFdrC9dtQ9yjSOvmtdN6TJt
-        jV+9UWZVPOgUSuRQClBs2WPEGHifPdTQnfIk2Up9ie5WLT4434KelFsys82JeT8WuqsxLCBz4I7qd
-        9oCPifEZvFaptipbkFitoghG/b4lZCR85oNvrBf0jCvvnZVJmChcJkOdHkXFd0OWD+3HZVTP2XNdo
-        RZWGZ5zw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLW6v-0077go-PV; Wed, 01 Sep 2021 19:41:25 +0000
-Date:   Wed, 1 Sep 2021 12:41:25 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, justin@coraid.com,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Hannes Reinecke <hare@suse.de>, Tejun Heo <tj@kernel.org>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        chris.obbard@collabora.com,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        YiFei Zhu <zhuyifei1999@gmail.com>, thehajime@gmail.com,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Tim Waugh <tim@cyberelk.net>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Lars Ellenberg <drbd-dev@lists.linbit.com>,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/15] z2ram: add error handling support for add_disk()
-Message-ID: <YS/XZeu3J3nAXUll@bombadil.infradead.org>
-References: <20210830221000.179369-1-mcgrof@kernel.org>
- <20210830221000.179369-2-mcgrof@kernel.org>
- <CAMuHMdUUrp-ktVmOPRs7KinykrVKEMx-dG42RapPc-egxODNnQ@mail.gmail.com>
+        id S1343549AbhIATmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:42:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343910AbhIATma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 15:42:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E7906109E;
+        Wed,  1 Sep 2021 19:41:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630525292;
+        bh=GOR5BBiV8PZB+4LKBqSj32exAyJJIY6VfspC9K7sPWk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hVX3A1Y1hANirLREwN29hmiEgyrzPkkO3UsaV4jx3ItVqvl6F06H6J8JBcdQbk1OR
+         q2i9OfCP8EmX2l06VjiDOQFhSteg9kcN52RVeIGu2gLxyodDIoZKerUh5+mr5ckW3M
+         iILFQcHvYggQZCsFylST1C6zH2cDi36iF41q1Afs88SOODKwjVQl3TxlPmqUJwhCvL
+         /t0zEhCKbIjrDHiu1QBXsAjWmvLb/uI5xzu5GN5SiiByhF4PqsDVCc3RjGbVP/nL2A
+         5vX2ZkOeYquyX2yUdgdBSs+5v48mVCn3XRgaMKKGyTyJQSMfCU+0ySSXJ4oeaBuy3+
+         9fv0GX2DakwKw==
+Date:   Wed, 1 Sep 2021 12:41:31 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        David Miller <davem@davemloft.net>,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-wireless@vger.kernel.org,
+        Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [GIT PULL] Networking for v5.15
+Message-ID: <20210901124131.0bc62578@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAHk-=wjB_zBwZ+WR9LOpvgjvaQn=cqryoKigod8QnZs=iYGEhA@mail.gmail.com>
+References: <20210831203727.3852294-1-kuba@kernel.org>
+        <CAHk-=wjB_zBwZ+WR9LOpvgjvaQn=cqryoKigod8QnZs=iYGEhA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUUrp-ktVmOPRs7KinykrVKEMx-dG42RapPc-egxODNnQ@mail.gmail.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 03:41:47PM +0200, Geert Uytterhoeven wrote:
-> > --- a/drivers/block/z2ram.c
-> > +++ b/drivers/block/z2ram.c
-> > @@ -333,8 +334,10 @@ static int z2ram_register_disk(int minor)
-> >                 sprintf(disk->disk_name, "z2ram");
+On Wed, 1 Sep 2021 12:00:57 -0700 Linus Torvalds wrote:
+> On Tue, Aug 31, 2021 at 1:37 PM Jakub Kicinski <kuba@kernel.org> wrote:
 > >
-> >         z2ram_gendisk[minor] = disk;
-> > -       add_disk(disk);
-> > -       return 0;
-> > +       err = add_disk(disk);
-> > +       if (err)
-> > +               blk_cleaup_disk(disk);
+> > No conflicts at the time of writing. There were conflicts with
+> > char-misc but I believe Greg dropped the commits in question.  
 > 
-> blk_cleanup_disk()?
+> Hmm. I already merged this earlier, but didn't notice a new warning on
+> my desktop:
 
-Fixed thanks.
+>   RTNL: assertion failed at net/wireless/core.c (61)
+>   WARNING: CPU: 60 PID: 1720 at net/wireless/core.c:61
+> wiphy_idx_to_wiphy+0xbf/0xd0 [cfg80211]
+>   Call Trace:
+>    nl80211_common_reg_change_event+0xf9/0x1e0 [cfg80211]
+>    reg_process_self_managed_hint+0x23d/0x280 [cfg80211]
+>    regulatory_set_wiphy_regd_sync+0x3a/0x90 [cfg80211]
+>    iwl_mvm_init_mcc+0x170/0x190 [iwlmvm]
+>    iwl_op_mode_mvm_start+0x824/0xa60 [iwlmvm]
+>    iwl_opmode_register+0xd0/0x130 [iwlwifi]
+>    init_module+0x23/0x1000 [iwlmvm]
+> 
+> They all seem to have that same issue, and it looks like the fix would
+> be to get the RTN lock in iwl_mvm_init_mcc(), but I didn't really look
+> into it very much.
+> 
+> This is on my desktop, and I actually don't _use_ the wireless on this
+> machine. I assume it still works despite the warnings, but they should
+> get fixed.
+> 
+> I *don't* see these warnings on my laptop where I actually use
+> wireless, but that one uses ath10k_pci, so it seems this is purely a
+> iwlwifi issue.
+> 
+> I can't be the only one that sees this. Hmm?
 
-  Luis
+Mm. Looking thru the recent commits there is a suspicious rtnl_unlock()
+in commit eb09ae93dabf ("iwlwifi: mvm: load regdomain at INIT stage").
+
+CC Miri, Johannes
