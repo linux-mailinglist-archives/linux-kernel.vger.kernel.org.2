@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654FC3FD702
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E31C3FD70C
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243721AbhIAJmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:42:01 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:34273 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232817AbhIAJmA (ORCPT
+        id S243742AbhIAJn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 05:43:28 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:49626
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243603AbhIAJnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:42:00 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Umv2hQ-_1630489260;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Umv2hQ-_1630489260)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 01 Sep 2021 17:41:01 +0800
-Subject: Re: [PATCH v2] net: fix NULL pointer reference in cipso_v4_doi_free
-To:     David Miller <davem@davemloft.net>
-Cc:     paul@paul-moore.com, kuba@kernel.org, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <84262e7b-fda6-9d7d-b0bd-1bb0e945e6f9@linux.alibaba.com>
- <CAHC9VhRPUa-oD_85j6RcAVvp7sLZQEAGGapYYP1fEt7Ax5LMfA@mail.gmail.com>
- <1ed31e79-809b-7ac9-2760-869570ac22ea@linux.alibaba.com>
- <20210901.103033.925382819044968737.davem@davemloft.net>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <6ca4a2d5-9a9c-1b14-85b4-1f4a0f743104@linux.alibaba.com>
-Date:   Wed, 1 Sep 2021 17:41:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Wed, 1 Sep 2021 05:43:24 -0400
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 2B8823F046
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:42:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630489345;
+        bh=Y3RQ54Zm5OFe9AQSuUGmYtHrFrafqN10VZzfx08OW4s=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=ptEwrW+rV4ihnJssfFSdhJjffO4KlZ3CErO5I2fNT3tkhVC/nek8aIRQEP4JMgZOv
+         LoreR12QX0VFgQhAw5Ex7ei7zG8yeEPQmYOt7OfColIUPDGIvkpqjyd+2JtcTJFQB4
+         UiAMRZ91Jv6ClulUOX3R4vZmXXwlBlS80lnM9yz6/H43onTRYY5GiT5rqyOnLUjeQ0
+         hT20eYMNBeRE8MqXRrmv8z7+OHzqWFvaipIlirOgSo3VPvv4YlhcLHYcYqO1EtLWQw
+         rFYGztgDiKx4gE1cxvXokwANYTKuaor2ZEkp1g0yXyk5JTLUQL0gpIXRnNreE6MSbF
+         h/x52xI7FI/uQ==
+Received: by mail-wm1-f72.google.com with SMTP id y24-20020a7bcd98000000b002eb50db2b62so808441wmj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 02:42:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y3RQ54Zm5OFe9AQSuUGmYtHrFrafqN10VZzfx08OW4s=;
+        b=maEdnpQhkKNmXiEMGrGaq+6Mc4Dx1MXRKZlg+T9G9B29ZMzZ3Q5q4kyAmfNyhlWPIT
+         6ZhYb8LnDNDBx4el1m/rEj/KqdeM8IlFOciEEI8w9qzZCKxBW7pdUaXJaTW8wP++phSh
+         QFn6WhWecb20GSPUdfClGSrFKAzKGmX82J8dNTEPiDqYQ5Zsl0eBq1gH8sMwG2jeD+Wc
+         plvfUkXIBYLjnKn8cmEMua2HCTfHBPfrdNag33a+qBm4zmwB/4clpndBDHUJjRSMom69
+         SsEhTWjXdv8FRhUKx9dAOfmMGSLM51o6DsikTvXFFVshJjlwxJeL6m3+E77jX8DtdwXU
+         QB0g==
+X-Gm-Message-State: AOAM533TlgqjyZCmJIT6xTUdys+4U6B156nxFYg41KGMkrHbMDxUfvKM
+        YLmEfpiLau5i7608t95RaQreENL3sxNhgB9z5W+HrBwH8jz9N6aEnoW1D8SjqfvXMtbLJ+W8ITb
+        021f4ZNhXZ7sJfMtbQLgQhaW6yYwJ2cU1L9ywpRgGOg==
+X-Received: by 2002:adf:d239:: with SMTP id k25mr9005597wrh.314.1630489344171;
+        Wed, 01 Sep 2021 02:42:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwR0Z0kzD+pLwVC4xGiQJns7caEYN8rRGrEFZPzMKL7gxFfjGtfCH/P6c84n/PyVciuzn525A==
+X-Received: by 2002:adf:d239:: with SMTP id k25mr9005583wrh.314.1630489344007;
+        Wed, 01 Sep 2021 02:42:24 -0700 (PDT)
+Received: from [192.168.3.211] ([79.98.113.172])
+        by smtp.gmail.com with ESMTPSA id y1sm5096157wmq.43.2021.09.01.02.42.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 02:42:23 -0700 (PDT)
+Subject: Re: [PATCH] pwm: samsung: Simplify using devm_pwmchip_add()
+To:     zhaoxiao <zhaoxiao@uniontech.com>, thierry.reding@gmail.com,
+        lee.jones@linaro.org
+Cc:     u.kleine-koenig@pengutronix.de,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210901054230.29678-1-zhaoxiao@uniontech.com>
+ <79e46f2f-c3ed-d187-2553-e64e0aac4c13@canonical.com>
+ <612f43cc.1c69fb81.205fc.d94bSMTPIN_ADDED_BROKEN@mx.google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <e4d04494-8c49-b1c5-c0f4-165fc59f516a@canonical.com>
+Date:   Wed, 1 Sep 2021 11:42:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210901.103033.925382819044968737.davem@davemloft.net>
-Content-Type: text/plain; charset=iso-2022-jp
+In-Reply-To: <612f43cc.1c69fb81.205fc.d94bSMTPIN_ADDED_BROKEN@mx.google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/9/1 $B2<8a(B5:30, David Miller wrote:
-> From: $B2&lV(B <yun.wang@linux.alibaba.com>
-> Date: Wed, 1 Sep 2021 09:51:28 +0800
+On 01/09/2021 11:11, zhaoxiao wrote:
+> Thanks for your advices, This patch is modified with reference to the 
+> patch that has been submitted，example:
 > 
->>
->>
->> On 2021/8/31 $B2<8a(B9:48, Paul Moore wrote:
->>> On Mon, Aug 30, 2021 at 10:42 PM $B2&lV(B <yun.wang@linux.alibaba.com> wrote:
->>>> On 2021/8/31 $B>e8a(B12:50, Paul Moore wrote:
->>>> [SNIP]
->>>>>>>> Reported-by: Abaci <abaci@linux.alibaba.com>
->>>>>>>> Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
->>>>>>>> ---
->>>>>>>>  net/netlabel/netlabel_cipso_v4.c | 4 ++--
->>>>>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>>>>>
->>>>>>> I see this was already merged, but it looks good to me, thanks for
->>>>>>> making those changes.
->>>>>>
->>>>>> FWIW it looks like v1 was also merged:
->>>>>>
->>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=733c99ee8b
->>>>>
->>>>> Yeah, that is unfortunate, there was a brief discussion about that
->>>>> over on one of the -stable patches for the v1 patch (odd that I never
->>>>> saw a patchbot post for the v1 patch?).  Having both merged should be
->>>>> harmless, but we want to revert the v1 patch as soon as we can.
->>>>> Michael, can you take care of this?
->>>>
->>>> As v1 already merged, may be we could just goon with it?
->>>>
->>>> Actually both working to fix the problem, v1 will cover all the
->>>> cases, v2 take care one case since that's currently the only one,
->>>> but maybe there will be more in future.
->>>
->>> No.  Please revert v1 and stick with the v2 patch.  The v1 patch is in
->>> my opinion a rather ugly hack that addresses the symptom of the
->>> problem and not the root cause.
->>>
->>> It isn't your fault that both v1 and v2 were merged, but I'm asking
->>> you to help cleanup the mess.  If you aren't able to do that please
->>> let us know so that others can fix this properly.
->>
->> No problem I can help on that, just try to make sure it's not a
->> meaningless work.
->>
->> So would it be fine to send out a v3 which revert v1 and apply v2?
+> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=66a03c4fd9e95e192c574811a1f4ea8f62992358
 > 
-> Please don't do things this way just send the relative change.
 
-Could you please check the patch:
+The patch there looks correct, but you cannot apply one code pattern to
+entirely different code and hope it works.
 
-Revert "net: fix NULL pointer reference in cipso_v4_doi_free"
+You reference a patch in a driver not using drvdata and having only
+pwmchip_remove() in its remove() callback.
 
-see if that's the right way?
+Now you apply it to other drivers and:
+1. Remove drvdata even though it is used,
+2. Delete additional code from remove() callback.
 
-Regards,
-Michael Wang
+Especially the point (2) is a proof that you don't understand the
+fundamental Linux driver model, so please do not convert code into
+devm-like() before learning it.
 
-> 
-> Thanks.
-> 
+
+Best regards,
+Krzysztof
