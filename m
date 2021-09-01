@@ -2,137 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E7B3FE1A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBEA3FE1A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344186AbhIASAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
+        id S236877AbhIASCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235904AbhIASAK (ORCPT
+        with ESMTP id S229560AbhIASCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:00:10 -0400
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8C6C061575;
-        Wed,  1 Sep 2021 10:59:13 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4H0BdW0VV4zQjbT;
-        Wed,  1 Sep 2021 19:59:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-language:content-type
-        :content-type:in-reply-to:mime-version:date:date:message-id:from
-        :from:references:subject:subject:received; s=mail20150812; t=
-        1630519147; bh=BMj3hHFHRab3vlCbBIFiLrtUb0q1SMSErlMPxYYkAjs=; b=u
-        9Im9+uznUf76xF68xyuBs6wbDnxO22FyxbuEJJSHD5m6Iu10WU8ckS8LvHbUgQ+H
-        UlyczrgAZjk6g8zRnvm7Df5qUIzcdKrOQiwraE8owPfVUvgFcrOL36dgXXlOlJ83
-        HQgtVdtefYHCrG5QIhb2CfN1U4GFje1FwCuWA13WVuqakZqbyfZAjNldYVGljAo7
-        13XaP3Lxb7YEDgvTBW9kdovxJ5ODwcdlBjyr+ezHwdZZie7JSM0vM3sToU8nalsF
-        zM1z8Tv+7jIlmj3GDeS9XDCo4uEh7z+OYgFg5yxVa3drt923zzdKwL9wi2ynEOn7
-        pcWlKDeQSmTDuAiYHpBHA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1630519149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MdLpmrxP2ooqH61k5jccYeKJaNQbe1umwKmOIiwgD1g=;
-        b=cEu9n+1FrejwgxjwN1NKTGOtD0LksEjqDQLPhzeaxAHu2TKW274qTkXiXxLxAf+CrLZDDS
-        3hgmMRpyYOBdwcEXY0OjvfeXzdAE4H9OyGZceBlHtaykkatQ9qscMw9981HQxc7jlpfmv1
-        rYyXrIIVhrLp7HLMQbKT1/g7Z1sANNIrmfnOqFc84IKRvovVb8dtQJIwaBq2aZaHWdREc5
-        xdT2MTgh2KfhFBJ0lSzN1EMr5xsUwBwpklIFaHQK89zdBi2fXnQ/3ipQLvISIRwMxBIyzM
-        n35sJA2eeotMZNZXDKGmjqU+iP+ojfI1dUm8OzfLVg8jIOtElJNPB/KqOeSh5w==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Subject: Re: [PATCH v4] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860
- and 870 SSD.
-To:     Hans de Goede <hdegoede@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hpa@redhat.com" <hpa@redhat.com>
-Cc:     "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>
-References: <1876334901.51676.1630481868266@office.mailbox.org>
- <e6f9921d-0fb6-da30-4dc5-53b4cb7b5270@redhat.com>
- <2df1c3d5-301d-dc46-7f9f-d28be2933bd3@redhat.com>
-From:   Tor Vic <torvic9@mailbox.org>
-Message-ID: <aee2ea3b-bd3f-7273-13dc-a0c231021421@mailbox.org>
-Date:   Wed, 1 Sep 2021 17:59:06 +0000
+        Wed, 1 Sep 2021 14:02:41 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9496BC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 11:01:44 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id s16so114872ilo.9
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 11:01:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j7RqTfIlND2syTvjqIu2Q5uS78m15882rXoX/dLksfk=;
+        b=ncSc4RkcmzknHFOy+NFnmoCd7Jjyra6USvWhhitwHBBK6BpCBq9WjKA57EH+7SoN4X
+         VWXPG2Gy8VIuV5RzMDNp/fAEijSL1eu0JEFOidC/OpCXFXMBmLYvmaGb3eiMQ6svaJMb
+         4hfIlaXz/nPF+IhigO8o+/qn9ccp1QxBDLu++FmzW1vH63sand1HoP9T8qoyEHQAAwZt
+         OikQFMvXS6u4io8Jz/0FczYZYKB7DKyD/PcmO3b8zhVQoWsgCDRUsJdp9I+NamHYKqs6
+         8Ic99AdNfkWLJKit8vTm3x3nV66L6Nbn2sDijeici/BlOsc/z1e4m9NH42d0jZ8WPJ4E
+         Ybrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j7RqTfIlND2syTvjqIu2Q5uS78m15882rXoX/dLksfk=;
+        b=gSqglRkUx8tDN8zpTTvMDP7DYezwLwxyh6qkYDHAS3XRgAqfTl8LwlUd3l54PGPQLU
+         +QCZrAe+01CEGIXvYefOYvovI9nEGlpfQiukqa7uxBQirDH8OyGDguV7aqa7EXwIr6YP
+         avqpjPYLrwNzHrJSh+5b2U+stlaM6MqGzwxHIvjd29UolU0jMi4MjUbrUKIIk5k5+J/r
+         znsGyBcElTLcqfg/Ak8qLeiyvXLKepZsHlb15HX+KaUZdDSbcUxDJI2Ojl3wq8+LXbnw
+         tQRWWa6k70aDtibru6D9rjWLs/Rraj1fxdOcckqx+OCioL3EnjgC/ewej08O6vM6yLIQ
+         O0OQ==
+X-Gm-Message-State: AOAM533MBcwljB9x5g7GqtdJUKkk8TFkPlW9gGDpG2V0YzNsHV7f730c
+        YQI4uuDbMBLYzD5DDLyl7k9ags97XJla3q54dyiB/A==
+X-Google-Smtp-Source: ABdhPJxUP05LARgCz56W2isH07n1NS5yhBorGo6KWnEaSil1/HJ8UDdK5HA/ea2y0JLJfdFVjsrvVgUTotv7Pje+6WU=
+X-Received: by 2002:a05:6e02:e53:: with SMTP id l19mr554302ilk.108.1630519303767;
+ Wed, 01 Sep 2021 11:01:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2df1c3d5-301d-dc46-7f9f-d28be2933bd3@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: E2446183C
+References: <20210826194601.3509717-1-pcc@google.com> <20210831093006.6db30672@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <bf0f47974d7141358d810d512d4b9a00@AcuMS.aculab.com> <20210901070356.750ea996@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210901070356.750ea996@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Peter Collingbourne <pcc@google.com>
+Date:   Wed, 1 Sep 2021 11:01:32 -0700
+Message-ID: <CAMn1gO5OmHg_10s698tNqf4X-hJ_gn17D8afyRhbW1nKpvLzWQ@mail.gmail.com>
+Subject: Re: [PATCH v2] net: don't unconditionally copy_from_user a struct
+ ifreq for socket ioctls
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 1, 2021 at 7:04 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Wed, 1 Sep 2021 08:22:42 +0000 David Laight wrote:
+> > From: Jakub Kicinski
+> > > Sent: 31 August 2021 17:30
+> > >
+> > > On Thu, 26 Aug 2021 12:46:01 -0700 Peter Collingbourne wrote:
+> > > > @@ -3306,6 +3308,8 @@ static int compat_ifr_data_ioctl(struct net *net, unsigned int cmd,
+> > > >   struct ifreq ifreq;
+> > > >   u32 data32;
+> > > >
+> > > > + if (!is_socket_ioctl_cmd(cmd))
+> > > > +         return -ENOTTY;
+> > > >   if (copy_from_user(ifreq.ifr_name, u_ifreq32->ifr_name, IFNAMSIZ))
+> > > >           return -EFAULT;
+> > > >   if (get_user(data32, &u_ifreq32->ifr_data))
+> > >
+> > > Hi Peter, when resolving the net -> net-next merge conflict I couldn't
+> > > figure out why this chunk is needed. It seems all callers of
+> > > compat_ifr_data_ioctl() already made sure it's a socket IOCTL.
+> > > Please double check my resolution (tip of net-next) and if this is
+> > > indeed unnecessary perhaps send a cleanup? Thanks!
+> >
+> > To stop the copy_from_user() faulting when the user buffer
+> > isn't long enough.
+> > In particular for iasatty() on arm with tagged pointers.
+>
+> Let me rephrase. is_socket_ioctl_cmd() is always true here. There were
+> only two callers, both check cmd is of specific, "sockety" type.
 
+I see, it looks like we don't need the check on the compat path then.
 
-On 01.09.21 09:38, Hans de Goede wrote:
-> Hi,
-> 
-> On 9/1/21 10:55 AM, Hans de Goede wrote:
->> Hi Tor,
->>
->> On 9/1/21 9:37 AM, torvic9@mailbox.org wrote:
->>> (Sorry for not doing a proper reply)
->>>
->>> Hello,
->>> Noob here.
->>> I have a Samsung 860 Pro connected to a AMD X570 chipset mainboard and
->>> it just works flawlessly on 5.13 and 5.14.
->>> Are you sure that *every* 860/870 is concerned by this problem on
->>> *every* AMD controller?
->>
->> I am pretty sure that every 860 / 870 EVO is affected,
->> I am not sure if the PRO is also affected.
-> 
-> So while reading https://bugzilla.kernel.org/show_bug.cgi?id=201693
-> again to add a comment asking if anyone was seeing this on a
-> pro to I found existing comments of both queued-trims being
-> an issue on the 860 pro, as well as the 860 pro having issues
-> with some AMD sata controllers.
-> 
-> So it seems safe to say that the 860 pro has the same issues
-> as the 860 and 870 evo models. Chances are you don't have
-> discard support enabled causing you to not see the queued-trim
-> issues (which means you also won't see any difference from
-> disabling support for queued-trim commands).
-> 
-> So this just leaves your question of:
-> 
-> "concerned by this problem on *every* AMD controller?"
-> 
-> Where "this problem" is needing to completely disable NCQ
-> and I guess the answer is no, not every AMD controller
-> is affected. Still the plan is to err on the safe side for now,
-> allowing overriding this from the kernel cmdline with:
-> 
-> libata.force=ncqamd
-> 
-> I will add a comment to:
-> 
-> https://bugzilla.kernel.org/show_bug.cgi?id=201693
-> 
-> Asking for PCI-ids of the controllers where people are seeing
-> this and then maybe we can narrow down the "AMD" check in a
-> future follow up patch.
+I can send a followup to clean this up but given that I got a comment
+from another reviewer saying that we should try to make the native and
+compat paths as similar as possible, maybe it isn't too bad to leave
+things as is?
 
-$ lspci -nn | grep -i sata
-
-
-06:00.0 SATA controller [0106]: Advanced Micro Devices, Inc. [AMD] FCH
-SATA Controller [AHCI mode] [1022:7901] (rev 51)
-07:00.0 SATA controller [0106]: Advanced Micro Devices, Inc. [AMD] FCH
-SATA Controller [AHCI mode] [1022:7901] (rev 51)
-
-Both Samsung 860 Pro and 860 Evo are connected to these.
-
-> 
-> Regards,
-> 
-> Hans
-> 
+Peter
