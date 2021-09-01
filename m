@@ -2,75 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5FC3FD1BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D563FD1D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241702AbhIAD1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 23:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240843AbhIAD1A (ORCPT
+        id S241775AbhIADbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 23:31:46 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:23537 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231660AbhIADbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 23:27:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20800C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 20:26:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oAgnfSvnfESWGAK8QHbbE4+c2ZjvA7X34fzLdM1J34s=; b=mHfxkE++4EOW/MVei3iNYDbj09
-        8oY7t0361fX7+XNPRVzdk5pASaQW4i/mGaxnnMTimsb85DO48cwCWrf59R3OkCpfFWEtcDbJh7kWE
-        vbHKS/rKP3XyUMHsQHKy5mxIL19iyqysuK1IX0v25/MhB4I1+YrVZWPzl5XZN3D/WkWL1SsLMkn0r
-        tdvO2KQPmP5pDGjRHyePO4Zc1bqVLkQuaJBURtGa+dNIeBj1Tx1LsPA0+FGex2egdSwVrVD33Aid1
-        IvSsvRt724M/NQiA8Z0286+VAf/0TzCih4w421nzdp1TsQogM/eccFaRallebMASVMyi27X+u7x/w
-        o3CL2g1g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLGs1-001pbg-I7; Wed, 01 Sep 2021 03:25:06 +0000
-Date:   Wed, 1 Sep 2021 04:25:01 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Shijie Huang <shijie@amperemail.onmicrosoft.com>
-Cc:     torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        song.bao.hua@hisilicon.com, linux-kernel@vger.kernel.org,
-        Frank Wang <zwang@amperecomputing.com>
-Subject: Re: Is it possible to implement the per-node page cache for
- programs/libraries?
-Message-ID: <YS7yjcqA6txFHd99@casper.infradead.org>
-References: <a2f423cf-9413-6bc8-e4d8-92374fc0449e@amperemail.onmicrosoft.com>
+        Tue, 31 Aug 2021 23:31:42 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1813BE3j043734;
+        Wed, 1 Sep 2021 11:11:14 +0800 (GMT-8)
+        (envelope-from chiawei_wang@aspeedtech.com)
+Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 1 Sep
+ 2021 11:30:15 +0800
+From:   Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ryan_chen@aspeedtech.com>
+Subject: [PATCH v4 0/4] arm: aspeed: Add eSPI support
+Date:   Wed, 1 Sep 2021 11:30:11 +0800
+Message-ID: <20210901033015.910-1-chiawei_wang@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2f423cf-9413-6bc8-e4d8-92374fc0449e@amperemail.onmicrosoft.com>
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.66]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1813BE3j043734
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 11:07:41AM +0800, Shijie Huang wrote:
->     In the NUMA, we only have one page cache for each file. For the
-> program/shared libraries, the
-> remote-access delays longer then the  local-access.
-> 
-> So, is it possible to implement the per-node page cache for
-> programs/libraries?
+This patch series add the driver support for the eSPI controller
+of Aspeed 5/6th generation SoCs. This controller is a slave device
+communicating with a master over Enhanced Serial Peripheral Interface (eSPI).
+It supports all of the 4 eSPI channels, namely peripheral, virtual wire,
+out-of-band, and flash, and operates at max frequency of 66MHz.
 
-At this point, we have no way to support text replication within a
-process.  So what you're suggesting (if implemented) would work for
-processes which limit themselves to a single node.  That is, if you
-have a system with CPUs 0-3 on node 0 and CPUs 4-7 on node 1, a process
-which only works on node 0 or only works on node 1 will get text on the
-appropriate node.
+v4:
+ - fix dt-bindgins error with patternProperties
+ - fix data type warning for ARM64 compilation
+ - replace header based implementation with .c files
+ - add more description for the ioctl interface
 
-If there's a process which runs on both nodes 0 and 1, there's no support
-for per-node PGDs.  So it will get a mix of pages from nodes 0 and 1,
-and that doesn't necessarily seem like a big win.  I haven't yet dived
-into how hard it would be to make mm->pgd a per-node allocation.
+v3:
+ - remove the redundant patch "clk: aspeed: Add eSPI reset bit"
+ - fix missing header inclusion reported by test bot
+ - fix dt-bindings error reported by yamllint
 
-I have been thinking about this a bit; one of our internal performance
-teams flagged the potential performance win to me a few months ago.
-I don't have a concrete design for text replication yet; there have been
-various attempts over the years, but none were particularly compelling.
+v2:
+ - remove irqchip implementation
+ - merge per-channel drivers into single one to avoid the racing issue
+   among eSPI handshake process and driver probing.
 
-By the way, the degree of performance win varies between different CPUs,
-but it's measurable on all the systems we've tested on (from three
-different vendors).
+Chia-Wei Wang (4):
+  dt-bindings: aspeed: Add eSPI controller
+  MAINTAINER: Add ASPEED eSPI driver entry
+  soc: aspeed: Add eSPI driver
+  ARM: dts: aspeed: Add eSPI node
+
+ .../devicetree/bindings/soc/aspeed/espi.yaml  | 162 +++++
+ MAINTAINERS                                   |   9 +
+ arch/arm/boot/dts/aspeed-g6.dtsi              |  17 +
+ drivers/soc/aspeed/Kconfig                    |  11 +
+ drivers/soc/aspeed/Makefile                   |   5 +
+ drivers/soc/aspeed/aspeed-espi-ctrl.c         | 214 +++++++
+ drivers/soc/aspeed/aspeed-espi-ctrl.h         | 308 ++++++++++
+ drivers/soc/aspeed/aspeed-espi-flash.c        | 352 +++++++++++
+ drivers/soc/aspeed/aspeed-espi-flash.h        |  45 ++
+ drivers/soc/aspeed/aspeed-espi-ioc.h          | 195 ++++++
+ drivers/soc/aspeed/aspeed-espi-oob.c          | 558 ++++++++++++++++++
+ drivers/soc/aspeed/aspeed-espi-oob.h          |  70 +++
+ drivers/soc/aspeed/aspeed-espi-perif.c        | 511 ++++++++++++++++
+ drivers/soc/aspeed/aspeed-espi-perif.h        |  45 ++
+ drivers/soc/aspeed/aspeed-espi-vw.c           | 137 +++++
+ drivers/soc/aspeed/aspeed-espi-vw.h           |  21 +
+ 16 files changed, 2660 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/aspeed/espi.yaml
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-ctrl.c
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-ctrl.h
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-flash.c
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-flash.h
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-ioc.h
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-oob.c
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-oob.h
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-perif.c
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-perif.h
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-vw.c
+ create mode 100644 drivers/soc/aspeed/aspeed-espi-vw.h
+
+-- 
+2.17.1
+
