@@ -2,61 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7483FD1D8
+	by mail.lfdr.de (Postfix) with ESMTP id C0A313FD1DA
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241774AbhIADfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 23:35:03 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:56295 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241452AbhIADfC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 23:35:02 -0400
-Received: by mail-il1-f200.google.com with SMTP id c16-20020a92cf500000b02902243aec7e27so914642ilr.22
-        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 20:34:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=Ruk1eNA61TEh1q3FM3cLWHsGyGqg/VpTBs16qFZP0nA=;
-        b=ZDjUgRjaJtzI2nrLKJfpW16rmUbtF5X5i6f4ROPNYop6/aANkZjWeJuoRxlX4FhVOQ
-         pyu2iSRXdccI4qoAKHIaZ65S+G4gT4xKdDwZ4rE3evxNKzwPwQOdC+aMDrEBbhEmLnWm
-         M2XIFA0qOlMHkcsC8OXJJmCQ5qcCETMOpWr1QHVWPUqR+2+hSA13VKEEkKvAQH0vTdpM
-         X+7BbeIItLLXWqBYyy0z6Pj50PL2c9UtZT73z9+VgsNzGGGO2NASnS/+Y220Vfj1Dl3D
-         sYKyCOClbwIAe+unz9eRDdExVKTBxV0r+3HngQ9IiaLeSyVU9m5eulGQXQ0wTCdinbb4
-         ycXQ==
-X-Gm-Message-State: AOAM533KPZ5aNMM6G6T2Jive84IRg3RYeMPAWW2k/+VaQYzBjkGfcHhq
-        tvbvupc8+lnG0VZNztN1ppvqYMjQvgMpoEQbhlpNY+Yg6B9d
-X-Google-Smtp-Source: ABdhPJxQOY9wix7ZpJL/KvZsxmj0PrK5sksw1XSgKwr6SC5NM7n0xv3FKu683GMXeJ7sEK2iB+oEduv9uMiPd3dXRDqifN6lcB5B
+        id S241791AbhIADfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 23:35:39 -0400
+Received: from mga02.intel.com ([134.134.136.20]:25251 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241452AbhIADfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 23:35:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="205836477"
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="205836477"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 20:34:41 -0700
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="531657052"
+Received: from zhibosun-mobl2.ccr.corp.intel.com (HELO localhost) ([10.255.31.93])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 20:34:32 -0700
+Date:   Wed, 1 Sep 2021 11:34:29 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
+ private memory
+Message-ID: <20210901033429.4c2dh5cwlppjvz2h@linux.intel.com>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+ <20210827023150.jotwvom7mlsawjh4@linux.intel.com>
+ <243bc6a3-b43b-cd18-9cbb-1f42a5de802f@redhat.com>
+ <765e9bbe-2df5-3dcc-9329-347770dc091d@linux.intel.com>
+ <4677f310-5987-0c13-5caf-fd3b625b4344@redhat.com>
+ <cf24c39e-2e87-f596-4375-9368ed8ef813@linux.intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9da4:: with SMTP id ay36mr10369641iob.153.1630467245981;
- Tue, 31 Aug 2021 20:34:05 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 20:34:05 -0700
-In-Reply-To: <b4305afc-ff25-8388-1ba2-e761129a509a@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000003c81405cae6bdfd@google.com>
-Subject: Re: [syzbot] general protection fault in __io_file_supports_nowait
-From:   syzbot <syzbot+e51249708aaa9b0e4d2c@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf24c39e-2e87-f596-4375-9368ed8ef813@linux.intel.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Aug 31, 2021 at 01:39:31PM -0700, Andi Kleen wrote:
+> 
+> On 8/31/2021 1:15 PM, David Hildenbrand wrote:
+> > On 31.08.21 22:01, Andi Kleen wrote:
+> > > 
+> > > > > Thanks a lot for this summary. A question about the requirement: do
+> > > > > we or
+> > > > > do we not have plan to support assigned device to the protected VM?
+> > > > 
+> > > > Good question, I assume that is stuff for the far far future.
+> > > 
+> > > It is in principle possible with the current TDX, but not secure. But
+> > > someone might decide to do it. So it would be good to have basic support
+> > > at least.
+> > 
+> > Can you elaborate the "not secure" part? Do you mean, making the device
+> > only access "shared" memory, not secure/encrypted/whatsoever?
+> 
+> 
+> Yes that's right. It can only access shared areas.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Thanks, Andy & David.
 
-Reported-and-tested-by: syzbot+e51249708aaa9b0e4d2c@syzkaller.appspotmail.com
+Actually, enabling of device assinment needs quite some effort, e.g.,
+to guarantee only shared pages are mapped in IOMMU page table (using
+shared GFNs). And the buffer copying inside TD is still unavoidable,
+thus not much performance benefit.
 
-Tested on:
+Maybe we should just *disable* VFIO device in TDX first. 
 
-commit:         a64296d7 io-wq: split bounded and unbounded work into ..
-git tree:       git://git.kernel.dk/linux-block for-5.15/io_uring
-kernel config:  https://syzkaller.appspot.com/x/.config?x=765eea9a273a8879
-dashboard link: https://syzkaller.appspot.com/bug?extid=e51249708aaa9b0e4d2c
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+As to the fd-based private memory, enventually we will have to tolerate
+its impact on any place where GUP is needed in virtualization. :)
 
-Note: testing is done by a robot and is best-effort only.
+B.R.
+Yu
