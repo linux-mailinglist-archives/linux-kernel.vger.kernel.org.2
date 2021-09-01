@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BF93FE615
+	by mail.lfdr.de (Postfix) with ESMTP id C93FF3FE617
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240346AbhIAX1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 19:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42000 "EHLO
+        id S242229AbhIAX3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 19:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbhIAX1y (ORCPT
+        with ESMTP id S230061AbhIAX3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 19:27:54 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28CEC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:26:56 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id b10so145365ioq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:26:56 -0700 (PDT)
+        Wed, 1 Sep 2021 19:29:48 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3E6C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:28:50 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id g184so8655pgc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:28:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=rOUt9lzL9h2nq8MizjgBr+LfkDuELuuwWbBlNJOQ814=;
-        b=jR/4VwVeeFqV1reopTHZE859VRG+CTWfBgJ8xN+yYGIx367PJ9Bws70Zg1EV1ucG2W
-         Y2lFJoMSCpZf0ZOBx+NjhIwk4yEFfXdTmKpLSNameuBcxm0f3b2xsZjDWWLkXQzioQzB
-         rdiu2pi+dfj/LlK0SlnX6FXxRO6MlVrubO0LNbHQ1f2H+r49vZAn5pbFbLXLrAIpkyvv
-         0mbcwbkA1+xfcqzsopbM8IzOFTKlUOVzRZtTJtxfRnE1RlJMRGD/lXwDFs9D701+M4E3
-         2garEAvPOF6McbV+BoD72/uphVFvhiZwvjqcrhncYz9MizgjNlM4Tikc2xVWnh6P+yPf
-         Hg+Q==
+        bh=xnO4j3l8wgJkh+udehwpdOizZik5cmOQlEavHkKD14I=;
+        b=cR3xbTcUYCXq2yoOsmEspRhLaJO0nhRFvKabyIOpQDKuImzIfWfB0ZS6A7fkLsSqvh
+         IqbsElaLQZagzefg295QvN3rHWXa8FNfpUz3Z6sYq+/NvtYmEPcqO4zOs2KYR2cPSLMq
+         poDNPxSc6wtpYpgY+vPI/Oe5oBaROvf1tBc4O2oHsnNacC8dCW/s5K7yEMrlUwrFpEv0
+         ForMquYnyLQGbyCbEam/KOl3jQUcSjZ8kmsOLacN6udbb9AVFNyz99MKyhUA6llS8dX0
+         55+YRa4wGvdy6Bo17uEeO5rsxxc9Wbti96oOw/CAeWfiUU/tKfcEO5fcIXoKgkvRV/EH
+         Useg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=rOUt9lzL9h2nq8MizjgBr+LfkDuELuuwWbBlNJOQ814=;
-        b=EbO+J1JireCNki9T565wy4pxWhXvJmsuRVTE0jn2k7sWj3GctIyLogf4ZyFb3GFH3J
-         uCuNslsGECajs99D73lBG+bs8APnB9wZ5ABF/tEh7/XwpYEJzdI3BMdiRFJfE8qjr3R4
-         wme+JGsM+zdm+ej8y06MZUMJaQYdVgCwTfr+zoFZ4zzzcTvrgec+zcI0dd4wRPGOAfLT
-         iiMHIEfSRQAs+/x9e/Eo1thNBTDX5hHVyS9dC6uOyVepfTHAavyyUiO9IpETGl64exbj
-         5Vam/epWoyTv5+bck4UbDkYTVKXkzOYlnCc5qH21wH+f1Y5+mY2u/RXATSRTSwrVOJHn
-         hyHQ==
-X-Gm-Message-State: AOAM532jHyLd2ho8gD0hCOA5quQ+S3KoYrIP3KmNZ63g0SrwUf41BZSp
-        v8qAImYsf2rduUEGz0auzxXneQ==
-X-Google-Smtp-Source: ABdhPJzCa6eAMWUaKvrSDwb4bW983RzCXex8DdL6ys7hZpXkcFNe3o+vWqlq6lWO9U5Kc26/5lS5Gw==
-X-Received: by 2002:a5d:9b99:: with SMTP id r25mr279115iom.104.1630538816261;
-        Wed, 01 Sep 2021 16:26:56 -0700 (PDT)
-Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
-        by smtp.gmail.com with ESMTPSA id q12sm14251ioh.20.2021.09.01.16.26.55
+        bh=xnO4j3l8wgJkh+udehwpdOizZik5cmOQlEavHkKD14I=;
+        b=dZu2GW90LIkgelgYfDMWaS/V8DnZ4PL8Jd0mKTLGhDbARNveNVM4ljSQcazyOtjcnu
+         6SMbxKKCTY8tpPkZsvnLyAs5XO8GC47/b/J8gAAHNG86CUOOJCqyMz+dHzhcy1Ebf75K
+         fRKucJagkusq0gTFoOHjQdsYorNM/N2tNmesUWWjs0WOP9xoe51rz7tie6TYs8UHUwl5
+         x5ER8j9KsUDRMF2mpWmzc7AzWrtb7q2pJcaz8u3qyXUDopfgWFeAeVulmgZff0xg050o
+         sSiviXE8T5KnTbQfUcIZNtSDdhwxgC8CXbfOBwVnvSBn6DdUAaoArsYC3NuXszpRkMjQ
+         6Bfg==
+X-Gm-Message-State: AOAM532PFc/SaqTJpPc2AKarF86AQPKx9nfU+Tklz6WyZu9WM6rrOiVi
+        36MC/0CXcEWG/gMpyIjDJe9JLAgmD1xO9Q==
+X-Google-Smtp-Source: ABdhPJwbswGfJrA4PG3wXfULuymMHcJiKrpLfjeLLLhrkD3tOw1DXq3hjqOyvTnJrbpAY0rwMaTEyA==
+X-Received: by 2002:a62:7c0d:0:b0:3fe:60d2:bce2 with SMTP id x13-20020a627c0d000000b003fe60d2bce2mr311221pfc.27.1630538930103;
+        Wed, 01 Sep 2021 16:28:50 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id ev12sm45651pjb.57.2021.09.01.16.28.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 16:26:55 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 23:26:52 +0000
-From:   Oliver Upton <oupton@google.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v3 06/12] KVM: arm64: selftests: Add support to disable
- and enable local IRQs
-Message-ID: <YTAMPIBDSl1rJHUR@google.com>
-References: <20210901211412.4171835-1-rananta@google.com>
- <20210901211412.4171835-7-rananta@google.com>
+        Wed, 01 Sep 2021 16:28:49 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 23:28:45 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@intel.com, David Matlack <dmatlack@google.com>,
+        peterx@redhat.com
+Subject: Re: [PATCH 16/16] KVM: MMU: change tracepoints arguments to
+ kvm_page_fault
+Message-ID: <YTAMrQDY3eXY9lYO@google.com>
+References: <20210807134936.3083984-1-pbonzini@redhat.com>
+ <20210807134936.3083984-17-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210901211412.4171835-7-rananta@google.com>
+In-Reply-To: <20210807134936.3083984-17-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 09:14:06PM +0000, Raghavendra Rao Ananta wrote:
-> Add functions local_irq_enable() and local_irq_disable() to
-> enable and disable the IRQs from the guest, respectively.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-
-Reviewed-by: Oliver Upton <oupton@google.com>
-
-> ---
->  .../testing/selftests/kvm/include/aarch64/processor.h  | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> index 78df059dc974..c35bb7b8e870 100644
-> --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
-> +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> @@ -241,4 +241,14 @@ static __always_inline u32 __raw_readl(const volatile void *addr)
->  #define writel(v,c)		({ __iowmb(); writel_relaxed((v),(c));})
->  #define readl(c)		({ u32 __v = readl_relaxed(c); __iormb(__v); __v; })
+On Sat, Aug 07, 2021, Paolo Bonzini wrote:
+> @@ -377,9 +377,9 @@ TRACE_EVENT(
+>  	),
 >  
-> +static inline void local_irq_enable(void)
-> +{
-> +	asm volatile("msr daifclr, #3" : : : "memory");
-> +}
-> +
-> +static inline void local_irq_disable(void)
-> +{
-> +	asm volatile("msr daifset, #3" : : : "memory");
-> +}
-> +
->  #endif /* SELFTEST_KVM_PROCESSOR_H */
-> -- 
-> 2.33.0.153.gba50c8fa24-goog
-> 
+>  	TP_fast_assign(
+> -		__entry->gfn = addr >> PAGE_SHIFT;
+> -		__entry->pfn = pfn | (__entry->gfn & (KVM_PAGES_PER_HPAGE(level) - 1));
+> -		__entry->level = level;
+> +		__entry->gfn = fault->addr >> PAGE_SHIFT;
+
+Eww.  The existing code also bastardizes addr vs. gpa, but this just looks even
+more wrong because we have fault->gfn.
+
+Maybe do this as a prep patch at the beginning of the series?  And then use
+fault->gfn directly.
+
+diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+index 7d03e9b7ccfa..b159749300b5 100644
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -725,7 +725,7 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, gpa_t addr,
+        level = kvm_mmu_hugepage_adjust(vcpu, gw->gfn, max_level, &pfn,
+                                        huge_page_disallowed, &req_level);
+
+-       trace_kvm_mmu_spte_requested(addr, gw->level, pfn);
++       trace_kvm_mmu_spte_requested(gw->gfn << PAGE_SHIFT, gw->level, pfn);
+
+        for (; shadow_walk_okay(&it); shadow_walk_next(&it)) {
+                clear_sp_write_flooding_count(it.sptep);
+
+> +		__entry->pfn = fault->pfn | (__entry->gfn & (KVM_PAGES_PER_HPAGE(fault->goal_level) - 1));
+
+Similar thing here, it could use fault->gfn directly.
+
+> +		__entry->level = fault->goal_level;
+>  	),
+>  
+>  	TP_printk("gfn %llx pfn %llx level %d",
