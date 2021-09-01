@@ -2,161 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3503FD607
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3613FD608
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243309AbhIAI5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241376AbhIAI5K (ORCPT
+        id S243318AbhIAI5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:57:17 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:47926
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243292AbhIAI5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:57:10 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EF8C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 01:56:14 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id d16so3637564ljq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:56:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0RkP4boPB+hwm43igbyjeBM2G7tQ31bVoeCGcwryyz0=;
-        b=t46HYZlq1rIsGdLMNDoBKZWl/E8RXSUWcuDx79JwCq4iW/EDBXUGSOa6t9becNEhH6
-         EJuBZc9hszqF9s15MyIJnQENEre/JyXTZc66MW/1oCbgBncTlMcsluJYAhUBitmboJUB
-         6Ycl0BcBsfloU3YN1FmoBmLBoS6B4P6fwBKyAz56T5IxTTPNq478rnenDRKbWuEd7lTj
-         66Bl9QbPKTdm0tQs1gcREbbNCmIe0sW/8vEfCKOWCsbJd4tgzRP2nGjHLJh4k9vIshQS
-         WAHcnBscC3oqkosnnp7hfgeVzCIRmxZLSUpRGSj/Z3/6bQpToQJIC+RDlyvhFH2XEpFg
-         MUYw==
+        Wed, 1 Sep 2021 04:57:14 -0400
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C647B3F325
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 08:56:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630486576;
+        bh=gwLLa2UOi6T+wtyiAz6ZhhzZsScQOUi/vsbQy5aqFIA=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=pRAcKYSICWmktF4fCJt9ypKrebUFlBZNaJaLPbKUDehkGwTGhhONrhElVGqGyO+vM
+         3SXcB8kxHo3YEF/Zf0s/xe1O8/hw/FBNYQtTzGpCp7k6yJwnDgpr5udpQu0xia2TP7
+         bu7+16VWHDgHSnuvfIqGlVld6/Qw7s6EZPfalXaNmrcrDb04qJNxqUQAt9DcwJDleT
+         9mc6BWe5KQJQv987/nVUaYQgV5/QzOFraCxJcd20Y7jTkGEuMFaotbdL4PeESVO3IY
+         NoXDdUI5DOG0MYzcrCksK7JBae0GAiPhMYxNPfCqTznwEC2mxPvmsqWqProJM/PMFC
+         +iHfMV3pgzUQA==
+Received: by mail-wr1-f70.google.com with SMTP id j1-20020adff541000000b001593715d384so179476wrp.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:56:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0RkP4boPB+hwm43igbyjeBM2G7tQ31bVoeCGcwryyz0=;
-        b=imARHrFsb8uAL9IP+s6YQrMyZ4L0XnAH63ANFI/mx/6N7pVxHmZ0/AdH6l6Xujsq4q
-         WYBmTGOCALHiPH//T2zGeIEEFLNIyBz9ghY6uIM55+gAUvZGNVFoV2GFnHsYtcCLSH+5
-         W0uxmlH1f9Y1K9Idl0XtlXaujl0orANoLkhDr6V1gfjZUmibO4f4sRvKnZZfH7IG8aXg
-         yaNH5K3lCPXHGiPjvX9u+kn7yYeCnVYahPJHlm9OSJyKJkhI9BlL18ByiCH+VDT/ztHP
-         guy2srRERVbTN3uYTSSktT7UitI+dBnEik7lGw92yW9nUuLzmWEBU69dNpThfZt4eXYH
-         aIZg==
-X-Gm-Message-State: AOAM530zSKDy8PFwS7FETS1+nv2HUsn8vct1R2ObSrDVwcZG6+8WLsrT
-        NxVilVYemBqoyF2UIXLPcAtjjw0HMVlc8w2ft7en2g==
-X-Google-Smtp-Source: ABdhPJzOLrom9w8R6tPJaewkr7Uo8YA704UR65WrPfKGn9ty9MGKcizq1Pva3OHpUhkOy7JekGI5W9f/nx7oj+qmp3c=
-X-Received: by 2002:a05:651c:3d9:: with SMTP id f25mr27885067ljp.334.1630486572194;
- Wed, 01 Sep 2021 01:56:12 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gwLLa2UOi6T+wtyiAz6ZhhzZsScQOUi/vsbQy5aqFIA=;
+        b=O1wk/RP34uVL3k5Zj35EgAp2I5SXmE/pVwm2Y/iZYOTHPWkK1FOaVwOvrwV02YD12v
+         hubakFcTQVfPZDG2yh+3knXh+hEHwyypUpd91FhJEsdRLptVpsXzZOqOa2YLlOxPsKX1
+         5UO607jO+gtMmOhGH5cpzkO6B3XPJFAaLQ5WOSZrp241I8O33QS4nEcLAYK2rw/MPCsd
+         B/OkECpLCLjKdEtr1vC6k7cy0CEw3E6+7ipkQsN2W2UyaTJzDJRQ1uOOsNTlnYX7XtLG
+         L2XYNG+xbWzy3rBNt0MkoXwuJjwM75euJfSnUnDHRWfRB0S2jZPYC4Gf2H+6Y1Fds9hN
+         UoHA==
+X-Gm-Message-State: AOAM530aoNUcgr7vBhsriC1Xpl+VcLLJJ3QK3UwmShdbv6+TPkAKRhsB
+        xdkHNapTCuq/7vjhL3kM52d9NKCEV0HcWe0dXVTH1CR/mZzU+GT6FsCvDEMIkaJVyPF/Hlfk5mg
+        8U/DqCRmNQNoIf0dlp6EtOAoK2LYi3scAWMNDIXTizw==
+X-Received: by 2002:a1c:21c3:: with SMTP id h186mr8626349wmh.186.1630486576012;
+        Wed, 01 Sep 2021 01:56:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyEaOo9BEZwzFqFpTCJEA4aMjN7D27ED7IHNXmy9KLSmHPPhFG2nBCpG9+r5QNlOXsLoAMZWg==
+X-Received: by 2002:a1c:21c3:: with SMTP id h186mr8626335wmh.186.1630486575883;
+        Wed, 01 Sep 2021 01:56:15 -0700 (PDT)
+Received: from [192.168.3.211] ([79.98.113.122])
+        by smtp.gmail.com with ESMTPSA id r10sm16036787wrc.85.2021.09.01.01.56.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 01:56:15 -0700 (PDT)
+Subject: Re: [PATCH] pwm: samsung: Simplify using devm_pwmchip_add()
+To:     zhaoxiao <zhaoxiao@uniontech.com>, thierry.reding@gmail.com,
+        lee.jones@linaro.org
+Cc:     u.kleine-koenig@pengutronix.de,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210901054230.29678-1-zhaoxiao@uniontech.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <79e46f2f-c3ed-d187-2553-e64e0aac4c13@canonical.com>
+Date:   Wed, 1 Sep 2021 10:56:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210826092854.58694-1-woodylin@google.com> <YSdjgnUwt76cknQ6@kroah.com>
- <CAHn4Deczc6gSSsxys6UeAMB99p1jHMZmLFj+KwZ2QhH7dx8E8w@mail.gmail.com>
- <YSdy1pAS1hkLVEH9@kroah.com> <CAHn4Dee0d+cdSmMCB4YVMp-9swo=0UQ5gm4kz43RVY11KFnM1w@mail.gmail.com>
- <YSiQxH5VehWoAcvO@kroah.com>
-In-Reply-To: <YSiQxH5VehWoAcvO@kroah.com>
-From:   Woody Lin <woodylin@google.com>
-Date:   Wed, 1 Sep 2021 16:56:00 +0800
-Message-ID: <CAHn4DeeTwCs0v8G8deLFzeoKFE=bNe3LFTG6ZAXT1YGNu-YCaw@mail.gmail.com>
-Subject: Re: [PATCH] ANDROID: staging: add userpanic-dev driver
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Todd Kjos <tkjos@android.com>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210901054230.29678-1-zhaoxiao@uniontech.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 3:14 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Aug 27, 2021 at 11:51:03AM +0800, Woody Lin wrote:
-> > On Thu, Aug 26, 2021 at 6:54 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Thu, Aug 26, 2021 at 06:23:53PM +0800, Woody Lin wrote:
-> > > > On Thu, Aug 26, 2021 at 5:48 PM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Thu, Aug 26, 2021 at 05:28:54PM +0800, Woody Lin wrote:
-> > > > > > Add char device driver 'userpanic-dev' that exposes an interface to
-> > > > > > userspace processes to request a system panic with customized panic
-> > > > > > message.
-> > > > > >
-> > > > > > Signed-off-by: Woody Lin <woodylin@google.com>
-> > > > > > ---
-> > > > > >  drivers/staging/android/Kconfig         |  12 +++
-> > > > > >  drivers/staging/android/Makefile        |   1 +
-> > > > > >  drivers/staging/android/userpanic-dev.c | 110 ++++++++++++++++++++++++
-> > > > >
-> > > > > Why is this in staging?  What is wrong with it that it can not just go
-> > > > > into the real part of the kernel?  A TODO file is needed explaining what
-> > > > > needs to be done here in order for it to be accepted.
-> > > >
-> > > > Got it. No more TODO for this driver and I will move it to drivers/android/.
-> > > >
-> > > > >
-> > > > > But why is this really needed at all?  Why would userspace want to panic
-> > > > > the kernel in yet-another-way?
-> > > >
-> > > > The idea is to panic the kernel with a panic message specified by the userspace
-> > > > process requesting the panic. Without this the panic handler can only collect
-> > > > panic message "sysrq triggered crash" for a panic triggered by user processes.
-> > > > Using this driver, user processes can put an informative description -
-> > > > process name,
-> > > > reason ...etc. - to the panic message.
-> > >
-> > > What custom userspace tool is going to use this new user/kernel api and
-> > > again, why is it needed?  Who needs to panic the kernel with a custom
-> > > message and where is that used?
-> >
-> > It's for Android's services. Currently there are usages like these:
-> >
-> > * init requests panic in InitFatalReboot (abort handler).
-> > https://android.googlesource.com/platform/system/core/+/master/init/reboot_utils.cpp#170
-> >   android::base::WriteStringToFile("c", PROC_SYSRQ);
-> >
-> > * llkd requests panic to recover kernel live-lock.
-> > https://android.googlesource.com/platform/system/core/+/master/llkd/libllkd.cpp#564
-> >   android::base::WriteStringToFd("c", sysrqTriggerFd);
-> >
-> > * Watchdog requests panic to recover timeout-loop.
-> > https://android.googlesource.com/platform/frameworks/base/+/master/services/core/java/com/android/server/Watchdog.java#847
-> >   doSysRq('c');
-> >
-> > So to improve the panic message from "sysrq triggered crash" to a more
-> > informative one (e.g.: "Watchdog break timeout-loop", "llkd panic
-> > live-lock"), we'd like to add this driver to expose a dedicated
-> > interface for userspace to panic the kernel with a custom message. Later
-> > the panic handler implemented per platform can collect the message and
-> > use it to build the crash report. A crash report with a more readable
-> > title (compared to the generic "sysrq triggered crash") will be easier
-> > to categorize, triage, etc.
->
-> But you can do that today from userspace, just write to the kernel log
-> before doing the sysrq call.  That way your tools can pick up what you
-> need later on, no kernel changes should be needed at all.
+On 01/09/2021 07:42, zhaoxiao wrote:
+> With devm_pwmchip_add() we can drop pwmchip_remove() from the device
+> remove callback. The latter can then go away, too and as this is the
+> only user of platform_get_drvdata(), the respective call to
+> platform_set_drvdata() can go, too.
+> 
+> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+> ---
+>  drivers/pwm/pwm-samsung.c | 18 +-----------------
+>  1 file changed, 1 insertion(+), 17 deletions(-)
+> 
+> diff --git a/drivers/pwm/pwm-samsung.c b/drivers/pwm/pwm-samsung.c
+> index f6c528f02d43..b860a7b8bbdf 100644
+> --- a/drivers/pwm/pwm-samsung.c
+> +++ b/drivers/pwm/pwm-samsung.c
+> @@ -560,9 +560,7 @@ static int pwm_samsung_probe(struct platform_device *pdev)
+>  	chip->tclk0 = devm_clk_get(&pdev->dev, "pwm-tclk0");
+>  	chip->tclk1 = devm_clk_get(&pdev->dev, "pwm-tclk1");
+>  
+> -	platform_set_drvdata(pdev, chip);
 
-Thanks for the idea. I actually need it in panic message because in our
-platforms, the message is saved in a specific buffer that can be
-accessed by a crash handler (not running in the same execution level as
-Linux) which is also used to build crash reports. So parsing log buffer
-can be too complex for it when compared to reading from the dedicated
-buffer. But I understand this may not be a good reason to phase in
-interfaces like this to the kernel? If so, I am starting from building it as
-a vendor module and giving up covering the early stage of "init" for now.
+The test looks untested because this should cause bug during resume.
+> -
+> -	ret = pwmchip_add(&chip->chip);
+> +	ret = devm_pwmchip_add(&pdev->dev, &chip->chip);
+>  	if (ret < 0) {
+>  		dev_err(dev, "failed to register PWM chip\n");
+>  		clk_disable_unprepare(chip->base_clk);
+> @@ -577,19 +575,6 @@ static int pwm_samsung_probe(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -static int pwm_samsung_remove(struct platform_device *pdev)
+> -{
+> -	struct samsung_pwm_chip *chip = platform_get_drvdata(pdev);
+> -	int ret;
+> -
+> -	ret = pwmchip_remove(&chip->chip);
+> -	if (ret < 0)
+> -		return ret;
+> -
+> -	clk_disable_unprepare(chip->base_clk);
 
-And also thanks for the suggestions on the patch, I will revise them
-accordingly when submitting it to the internal kernel modules repo.
+NAK, the patch looks bad. You cannot remove some code from remove()
+callback just "because".
 
->
-> > And the reason to submit this to upstream, instead of making it a vendor
-> > module, is that we'd like to enable it for the early stage of "init", where
-> > none of the kernel module has been mounted.
->
-> Helps if it would actually build :(
->
-> thanks,
->
-> greg k-h
+
+Best regards,
+Krzysztof
