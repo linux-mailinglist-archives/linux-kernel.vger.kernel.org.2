@@ -2,169 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8023FE67B
+	by mail.lfdr.de (Postfix) with ESMTP id 9F81D3FE67F
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244800AbhIAXoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 19:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
+        id S242593AbhIAXtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 19:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244517AbhIAXoP (ORCPT
+        with ESMTP id S242632AbhIAXtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 19:44:15 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22649C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:43:18 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id r13so185790pff.7
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:43:18 -0700 (PDT)
+        Wed, 1 Sep 2021 19:49:14 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39055C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:48:17 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id b10so194228ioq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:48:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SKq9FaM29beTFKHBuFsUutnwIAeKxNVhRiqi1gUUfqk=;
-        b=PzmK/+NUhZxG8Z+YuxmTpJb9O380IFK7e1wlHLXqZCa1XFyxfVnhpezGuyhZ1kjAoF
-         xxjSBwVxaM4uxKEzPeHweqkiVLEtiyo0Zt0xhddivh38U2sDftCITySNaIEc1dqIurxM
-         0TWMp/bKIm8hlLJykPTkJVGON+3mdvfQ8/p84=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7QLaqmuMdndaoDUoQKfj9TVz0nnnEHxweKe5hvBPXD0=;
+        b=vLoV3R33YLTSXudj2GKqaz2xUKTo/hFMiYfsqG/Fz3dT8teBjlT7VODVk8heJfB0JT
+         fUNhKoXkyn3UsIiwKTRMDEWo7nEJ4NVJX7SWhXurBTzziGFf2ls9a6cn6gBuqs85JPhL
+         Rp6yb0/UPwD/9pIrcSxGX8Qao0EVoBbvygNditKUMfFrRMOS/rlbZX4YK+8UgVFlPyC7
+         ItJyQLXmGmJlVEtJZvW6h8rYhkecCGKg9JxHNAqiRr4ylYCbedpzjIyn1ijclBeZ8/g2
+         TSIs0i6xJo5sWN0UDJfjSFrTC/sFJ9wOkdQftASbkiEMOoRPLXLrGgaw4on2KvuSb7nI
+         PX0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SKq9FaM29beTFKHBuFsUutnwIAeKxNVhRiqi1gUUfqk=;
-        b=OGUM9mbemuXkArVrPiNRsSbxqO3bKdZVh/nPOfkVHRlete4+TaarjfHnlkOF7K/iRl
-         1c6JPL5kuOUrUmv2XXKhqS4pJPV+BJ9b3nsBN0aXT1rtkhcm1x80A6JnhdtvadlnPSwQ
-         W5YTR8IIB5zr5rB9UgIa9waq7gVZojqpSSJ28sMayraCJfoJfJkiJcKH41jBs5U0QFqW
-         9QFXuJOOdqIx8ZIvD4tuQVGblPsWDwfmiExZ4lFVHJh8trB2GdqOJQS1oeib5ysdY2Xa
-         DKV+yUHZn00+F5AA942Amu1b2JLP1lpAOurVFmPMEw0QlivLYMG+tlNve4qo/50ino+b
-         xOLg==
-X-Gm-Message-State: AOAM530irmgZLBmn27IHNm8pUAHEMl/4bLpolGI4sOuboQ1sk2BVFswz
-        GSEnWyqjoTAnSUgTePxM/+HvOQ==
-X-Google-Smtp-Source: ABdhPJyKvnT+zbVm+OyNSiV0tbk4E8w3SgYbGSl4SqDh2XVYSBz4FJsZZOYUbxtYJOwjDXefvJQ2VQ==
-X-Received: by 2002:a05:6a00:230e:b029:3c4:24ff:969d with SMTP id h14-20020a056a00230eb02903c424ff969dmr380233pfh.44.1630539797625;
-        Wed, 01 Sep 2021 16:43:17 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n24sm37653pgv.60.2021.09.01.16.43.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7QLaqmuMdndaoDUoQKfj9TVz0nnnEHxweKe5hvBPXD0=;
+        b=h8MlWPNZVckRkW0+4AkxbQd8SEb2TnNcodqu5vMkbVM1c0Ex86p/RdhYTQY7m4fezm
+         PzRZ7eebPE1rwLVMC+5rkmW4q36hMekPZ77U6UkawLM18QvKf+8Dkc7NTH+iDcIiaPaO
+         rkLqmyQDYYJo+zuiKooioxCDVuAff+qyw0WPD1Tgsk5xvkOZUYM9vILlI6jrbD3MQ6QY
+         AcWtc0ie1rHZVCYm8wb/is7fL/b5Mi/osYXGSFoq12+KVjhczyqOHOgenXfNv2E9osOv
+         do9F8mzGPzpDlADIER7/G3uKlbL8CfCzdl261Dp4Ik903lUzN/sdAJvL+bjDJQBH78vw
+         5LSw==
+X-Gm-Message-State: AOAM533NRwr0IwS0ZdGgMT16hQZBTV8fBFhSQ7TuiZAQW5/gtJ5fBPdV
+        t1nZ8yv9EWEjAC28SgwCNegv5A==
+X-Google-Smtp-Source: ABdhPJz6cpuNWJjH26XrDJUo+kRNx4ojf/ksC3gj1/vmgDdieL8PaiWXNPxQsuZSqgO4P3XxcpmNHA==
+X-Received: by 2002:a02:cc53:: with SMTP id i19mr379146jaq.124.1630540096213;
+        Wed, 01 Sep 2021 16:48:16 -0700 (PDT)
+Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
+        by smtp.gmail.com with ESMTPSA id k21sm38569ioh.38.2021.09.01.16.48.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 16:43:16 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Michal Hocko <mhocko@suse.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] binfmt_elf: Reintroduce using MAP_FIXED_NOREPLACE
-Date:   Wed,  1 Sep 2021 16:43:14 -0700
-Message-Id: <20210901234314.2624109-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Wed, 01 Sep 2021 16:48:15 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 23:48:12 +0000
+From:   Oliver Upton <oupton@google.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v3 07/12] KVM: arm64: selftests: Add support to get the
+ vcpuid from MPIDR_EL1
+Message-ID: <YTARPBhMHXjgcPlg@google.com>
+References: <20210901211412.4171835-1-rananta@google.com>
+ <20210901211412.4171835-8-rananta@google.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4227; h=from:subject; bh=mwvE/gDRs6e5NxW4p+Kk0QNaEgjqTD4VySLc2KZdvDw=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhMBARowTodGVt/9YDPs4IjC58d4M0IDDsGnVkzR3B foKFAPqJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYTAQEQAKCRCJcvTf3G3AJluIEA Cd38ESBXKwortzq1h4eaJNKXI+JZlB8Ihl3WB4vg7A+ecCnsG2ZOz1BJAZhCsIHQ4wfKFylECGxLoO V2adQU117i+u6jhbZMMoL3hMRYQpPEe684WeiBrHhFRvt0epxz9T1SGWWYkyqEB9mnptqUbFI+VPQ1 wTMc++ZzZMufUt2AG17s+0gRSXiyznVoCZiZKtnvVOaAQy2XKjmrq7lEIxcp2UUxLlKzzWFZJuseby Fzln0RbCW3aKjqTTHwTv/8rt5ENbFwsOI3jf5J5rFqXhyYA2lzzlVvDYvcR/U8N2EOfExj9fKWgm/s I803h1/1F4j9/VNdZW+36lQMRsOKOuP88ogB+1+JxirbW0jaORfgWcZqhdkPNBDQ9IeheOrSb+rqWC d6cr12+FbjtuZ1RQqx1c0Ad0izk1d6tWVA2kWDNq0IGVqjeyl0H4oPz6uMwD4uifcM3QX6xEZCtJVJ PIL21XXJoCeg2wvt7hx6ni/hgKinu2/6/6UVCofRNtdwBEd2LRtp3cpz0Jx1qJFgFURztowHKjsj63 +OHMxAuVxTEznUewjivihW34ePYJeDtRQ6QbbPv0FgtwlJBoVfldEfKVHxnRHC8ZbRZL6y+XYeiXM2 31zO61UhfXd3LtZzgI7344SkvMkk3FG5+EYRMlJ+uLTk0mv0IF+Mk50hDPuw==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901211412.4171835-8-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit b212921b13bd ("elf: don't use MAP_FIXED_NOREPLACE for elf
-executable mappings") reverted back to using MAP_FIXED to map ELF
-LOAD segments because it was found that the segments in some binaries
-overlap and can cause MAP_FIXED_NOREPLACE to fail. The original intent of
-MAP_FIXED_NOREPLACE was to prevent the silent clobbering of an existing
-mapping (e.g. stack) by the ELF image. To achieve this, expand on the
-logic used when loading ET_DYN binaries which calculates a total size
-for the image when the first segment is mapped, maps the entire image,
-and then unmaps the remainder before remaining segments are mapped.
-Apply this to ET_EXEC binaries as well as ET_DYN binaries as is done
-now, and for both ET_EXEC and ET_DYN+INTERP use MAP_FIXED_NOREPLACE for
-the initial total size mapping and MAP_FIXED for remaining mappings.
-For ET_DYN w/out INTERP, continue to map at a system-selected address
-in the mmap region.
+On Wed, Sep 01, 2021 at 09:14:07PM +0000, Raghavendra Rao Ananta wrote:
+> At times, such as when in the interrupt handler, the guest wants to
+> get the vCPU-id that it's running on. As a result, introduce
+> get_vcpuid() that parses the MPIDR_EL1 and returns the vcpuid to the
+> requested caller.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  .../selftests/kvm/include/aarch64/processor.h | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
+> index c35bb7b8e870..8b372cd427da 100644
+> --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
+> +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
+> @@ -251,4 +251,23 @@ static inline void local_irq_disable(void)
+>  	asm volatile("msr daifset, #3" : : : "memory");
+>  }
+>  
+> +#define MPIDR_LEVEL_BITS 8
+> +#define MPIDR_LEVEL_SHIFT(level) (MPIDR_LEVEL_BITS * level)
+> +#define MPIDR_LEVEL_MASK ((1 << MPIDR_LEVEL_BITS) - 1)
+> +#define MPIDR_AFFINITY_LEVEL(mpidr, level) \
+> +	((mpidr >> MPIDR_LEVEL_SHIFT(level)) & MPIDR_LEVEL_MASK)
+> +
+> +static inline uint32_t get_vcpuid(void)
+> +{
+> +	uint32_t vcpuid = 0;
+> +	uint64_t mpidr = read_sysreg(mpidr_el1);
+> +
+> +	/* KVM limits only 16 vCPUs at level 0 */
+> +	vcpuid = mpidr & 0x0f;
+> +	vcpuid |= MPIDR_AFFINITY_LEVEL(mpidr, 1) << 4;
+> +	vcpuid |= MPIDR_AFFINITY_LEVEL(mpidr, 2) << 12;
+> +
+> +	return vcpuid;
+> +}
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Eric Biederman <ebiederm@xmission.com>
-Co-developed-by: Anthony Yznaga <anthony.yznaga@oracle.com>
-Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
-Link: https://lore.kernel.org/lkml/1595869887-23307-2-git-send-email-anthony.yznaga@oracle.com
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- fs/binfmt_elf.c | 31 ++++++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 9 deletions(-)
+Are we guaranteed that KVM will always compose vCPU IDs the same way? I
+do not believe this is guaranteed ABI.
 
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 439ed81e755a..ef00bf8bd6f4 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1074,20 +1074,26 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 
- 		vaddr = elf_ppnt->p_vaddr;
- 		/*
--		 * If we are loading ET_EXEC or we have already performed
--		 * the ET_DYN load_addr calculations, proceed normally.
-+		 * The first time through the loop, load_addr_set is false:
-+		 * layout will be calculated. Once set, use MAP_FIXED since
-+		 * we know we've already safely mapped the entire region with
-+		 * MAP_FIXED_NOREPLACE in the once-per-binary logic following.
- 		 */
--		if (elf_ex->e_type == ET_EXEC || load_addr_set) {
-+		if (load_addr_set) {
- 			elf_flags |= MAP_FIXED;
-+		} else if (elf_ex->e_type == ET_EXEC) {
-+			/*
-+			 * This logic is run once for the first LOAD Program
-+			 * Header for ET_EXEC binaries. No special handling
-+			 * is needed.
-+			 */
-+			elf_flags |= MAP_FIXED_NOREPLACE;
- 		} else if (elf_ex->e_type == ET_DYN) {
- 			/*
- 			 * This logic is run once for the first LOAD Program
- 			 * Header for ET_DYN binaries to calculate the
- 			 * randomization (load_bias) for all the LOAD
--			 * Program Headers, and to calculate the entire
--			 * size of the ELF mapping (total_size). (Note that
--			 * load_addr_set is set to true later once the
--			 * initial mapping is performed.)
-+			 * Program Headers.
- 			 *
- 			 * There are effectively two types of ET_DYN
- 			 * binaries: programs (i.e. PIE: ET_DYN with INTERP)
-@@ -1108,7 +1114,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 			 * Therefore, programs are loaded offset from
- 			 * ELF_ET_DYN_BASE and loaders are loaded into the
- 			 * independently randomized mmap region (0 load_bias
--			 * without MAP_FIXED).
-+			 * without MAP_FIXED nor MAP_FIXED_NOREPLACE).
- 			 */
- 			if (interpreter) {
- 				load_bias = ELF_ET_DYN_BASE;
-@@ -1117,7 +1123,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 				alignment = maximum_alignment(elf_phdata, elf_ex->e_phnum);
- 				if (alignment)
- 					load_bias &= ~(alignment - 1);
--				elf_flags |= MAP_FIXED;
-+				elf_flags |= MAP_FIXED_NOREPLACE;
- 			} else
- 				load_bias = 0;
- 
-@@ -1129,7 +1135,14 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 			 * is then page aligned.
- 			 */
- 			load_bias = ELF_PAGESTART(load_bias - vaddr);
-+		}
- 
-+		/*
-+		 * Calculate the entire size of the ELF mapping (total_size).
-+		 * (Note that load_addr_set is set to true later once the
-+		 * initial mapping is performed.)
-+		 */
-+		if (!load_addr_set) {
- 			total_size = total_mapping_size(elf_phdata,
- 							elf_ex->e_phnum);
- 			if (!total_size) {
--- 
-2.30.2
+For the base case, you could pass the vCPU ID as an arg to the guest
+function.
 
+I do agree that finding the vCPU ID is a bit more challenging in an
+interrupt context. Maybe use a ucall to ask userspace? But of course,
+every test implements its own run loop, so its yet another case that
+tests need to handle.
+
+Or, you could allocate an array at runtime of length KVM_CAP_MAX_VCPUS
+(use the KVM_CHECK_EXTENSION ioctl to get the value). Once all vCPUs are
+instantiated, iterate over them from userspace to populate the {MPIDR,
+VCPU_ID} map. You'd need to guarantee that callers initialize the vGIC
+*after* adding vCPUs to the guest.
+
+--
+Thanks,
+Oliver
+
+>  #endif /* SELFTEST_KVM_PROCESSOR_H */
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+> 
