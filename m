@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5753FDADA
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D69F3FDC50
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245659AbhIAMf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:35:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35196 "EHLO mail.kernel.org"
+        id S1345874AbhIAMsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:48:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343544AbhIAMdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:33:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B0EF610C8;
-        Wed,  1 Sep 2021 12:32:06 +0000 (UTC)
+        id S1345657AbhIAMoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:44:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4683610FB;
+        Wed,  1 Sep 2021 12:38:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499527;
-        bh=8eiPH0QrTbUcjG869cX9D61SXAiZw/qroZo5Tdn9KBk=;
+        s=korg; t=1630499935;
+        bh=GBWktodHJbzUILLX7upgQPvhEFnvldsn6m3ZrRH3NMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zFbSVDQnHNvLX5xXpSdIv6xHqmAuTy0/zYbxAXSEogUbT6lEY1lFWtQRi4BFIux5I
-         +2CFi0BpxuphiUuIO4TA9q/rzamC4vb6hhNx41pPQebGOLAE4qQVRAcjxmKREkSq+h
-         /tfNPxm9aGayXh9RDv5pp3joY4RUSed8Qgrm3shs=
+        b=vxodP0bhRvDnVSbVWiBDz/q+zpIDrFXH2eiJ9wMePd5RPp6FUVCR7R+imF0Tf9xGj
+         COFWPdXc/G1uqgZzYPYftQKHx/yS1OzFCnGW72wKTN6VprK3VmnO+kz0/74axUMlVP
+         CdzqJW5Wavj0LK8k8E8OCIi9BHHLHRTDqD9BQHfw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Jacob Keller <jacob.e.keller@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 06/48] mmc: sdhci-msm: Update the software timeout value for sdhc
+Subject: [PATCH 5.13 041/113] ice: do not abort devlink info if board identifier cant be found
 Date:   Wed,  1 Sep 2021 14:27:56 +0200
-Message-Id: <20210901122253.600200576@linuxfoundation.org>
+Message-Id: <20210901122303.363783048@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,92 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+From: Jacob Keller <jacob.e.keller@intel.com>
 
-[ Upstream commit 67b13f3e221ed81b46a657e2b499bf8b20162476 ]
+[ Upstream commit a8f89fa27773a8c96fd09fb4e2f4892d794f21f6 ]
 
-Whenever SDHC run at clock rate 50MHZ or below, the hardware data
-timeout value will be 21.47secs, which is approx. 22secs and we have
-a current software timeout value as 10secs. We have to set software
-timeout value more than the hardware data timeout value to avioid seeing
-the below register dumps.
+The devlink dev info command reports version information about the
+device and firmware running on the board. This includes the "board.id"
+field which is supposed to represent an identifier of the board design.
+The ice driver uses the Product Board Assembly identifier for this.
 
-[  332.953670] mmc2: Timeout waiting for hardware interrupt.
-[  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP ===========
-[  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  0x00007202
-[  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000001
-[  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 0x00000027
-[  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 0x0000001f
-[  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  0x00000000
-[  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
-[  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 0x00000000
-[  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 0x03ff100b
-[  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
-[  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x0000808f
-[  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 0x00000000
-[  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x00000000
-[  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
-[  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
-[  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
-0x0000000ffffff218
-[  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
------------
-[  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
-0x6000642c | DLL cfg2: 0x0020a000
-[  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
-0x00000000 | DDR cfg: 0x80040873
-[  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
-0xf88218a8 Vndr func3: 0x02626040
-[  333.102371] mmc2: sdhci: ============================================
+In some cases, the PBA is not present in the NVM. If this happens,
+devlink dev info will fail with an error. Instead, modify the
+ice_info_pba function to just exit without filling in the context
+buffer. This will cause the board.id field to be skipped. Log a dev_dbg
+message in case someone wants to confirm why board.id is not showing up
+for them.
 
-So, set software timeout value more than hardware timeout value.
-
-Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/1626435974-14462-1-git-send-email-sbhanu@codeaurora.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: e961b679fb0b ("ice: add board identifier info to devlink .info_get")
+Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Link: https://lore.kernel.org/r/20210819223451.245613-1-anthony.l.nguyen@intel.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-msm.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/net/ethernet/intel/ice/ice_devlink.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-index 8bed81cf03ad..8ab963055238 100644
---- a/drivers/mmc/host/sdhci-msm.c
-+++ b/drivers/mmc/host/sdhci-msm.c
-@@ -1589,6 +1589,23 @@ out:
- 	__sdhci_msm_set_clock(host, clock);
+diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/ethernet/intel/ice/ice_devlink.c
+index cf685eeea198..e256f70cf59d 100644
+--- a/drivers/net/ethernet/intel/ice/ice_devlink.c
++++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
+@@ -42,7 +42,9 @@ static int ice_info_pba(struct ice_pf *pf, struct ice_info_ctx *ctx)
+ 
+ 	status = ice_read_pba_string(hw, (u8 *)ctx->buf, sizeof(ctx->buf));
+ 	if (status)
+-		return -EIO;
++		/* We failed to locate the PBA, so just skip this entry */
++		dev_dbg(ice_pf_to_dev(pf), "Failed to read Product Board Assembly string, status %s\n",
++			ice_stat_str(status));
+ 
+ 	return 0;
  }
- 
-+static void sdhci_msm_set_timeout(struct sdhci_host *host, struct mmc_command *cmd)
-+{
-+	u32 count, start = 15;
-+
-+	__sdhci_set_timeout(host, cmd);
-+	count = sdhci_readb(host, SDHCI_TIMEOUT_CONTROL);
-+	/*
-+	 * Update software timeout value if its value is less than hardware data
-+	 * timeout value. Qcom SoC hardware data timeout value was calculated
-+	 * using 4 * MCLK * 2^(count + 13). where MCLK = 1 / host->clock.
-+	 */
-+	if (cmd && cmd->data && host->clock > 400000 &&
-+	    host->clock <= 50000000 &&
-+	    ((1 << (count + start)) > (10 * host->clock)))
-+		host->data_timeout = 22LL * NSEC_PER_SEC;
-+}
-+
- /*
-  * Platform specific register write functions. This is so that, if any
-  * register write needs to be followed up by platform specific actions,
-@@ -1753,6 +1770,7 @@ static const struct sdhci_ops sdhci_msm_ops = {
- 	.set_uhs_signaling = sdhci_msm_set_uhs_signaling,
- 	.write_w = sdhci_msm_writew,
- 	.write_b = sdhci_msm_writeb,
-+	.set_timeout = sdhci_msm_set_timeout,
- };
- 
- static const struct sdhci_pltfm_data sdhci_msm_pdata = {
 -- 
 2.30.2
 
