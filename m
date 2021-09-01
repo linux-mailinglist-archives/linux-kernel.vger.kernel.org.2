@@ -2,114 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233DB3FDFD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18143FDFDF
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245397AbhIAQ1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245325AbhIAQ13 (ORCPT
+        id S245407AbhIAQ21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:28:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32425 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245218AbhIAQ2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:27:29 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0D3C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:26:32 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id x16so241913pfh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:26:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hgzfNBuOob+Yb8is4RvbG2NjJQshRPX38LxF/VGR73E=;
-        b=hjGYmhkuWY9p0ENYWEopNp140TH9B5FMjY+n0w1oIusD4RUD6oAN4ZGD9T70Ydog6K
-         LCzTHkyO3acV7GZVFbLtiZH9tmsb7525x9O4jNMvDjhC1R69qUApcmnq1GSebE/mI5hf
-         8ZcZtaTs5+YtgJV6LJEpzib2qdydXqRz9VJFqX5IYHeGg/1gZ/dWsTi5Vg1gJnxi09r0
-         zEAWHdkS9nzdWrxpfMr8y+nUKKzSEGyQhWcNVrVbs1wm+XddtrzLfcbr0T1pKmayKir0
-         yth24sErPewPwQY9bE83MOgofDgqG5lnuhBbdohiEXxke21i8Tkr54wZ/eS4OVcyn0d5
-         P7bg==
+        Wed, 1 Sep 2021 12:28:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630513645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TCAH52YqS9JZQzJKa7DRR1Gpuc8EPZCmTZ5AQVbYtWA=;
+        b=CQSXfa1RsLb8cees6QT9Hv5mRreNLsW5HcBvOcAgXOXFdtnlUYIv8ZrxLTbUPb59GwkJUa
+        dQqvHNVvBvcGGvV7ZyRB9xOaw0ibOKu0yptS5I8P0cI5Pfvo0NXoPZ9BtKiknc2U695N7r
+        gFOSR/rywuYjLZE23EjnzDN9ifKSQEw=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-484-apohYhG0NAeahmusu-pLbQ-1; Wed, 01 Sep 2021 12:27:23 -0400
+X-MC-Unique: apohYhG0NAeahmusu-pLbQ-1
+Received: by mail-wm1-f72.google.com with SMTP id p11-20020a05600c204b00b002f05aff1663so36625wmg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:27:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hgzfNBuOob+Yb8is4RvbG2NjJQshRPX38LxF/VGR73E=;
-        b=q4MJd1VER93P7RBdPGZ4kyy6EIEMoFFOfqS/qrWemHIKB8WGRZSjfVqmNjnzsbjVZK
-         2r+Iz4qXNOhB1oVraD9I5OBJJn7wI10mJBoRrIhBHl/eN5SVE96FMbnkuEsoDFWCf8kr
-         QuDW72gafmpJsHaL/oVC+TYF1VDYnmrn9fYJtxez0lO5DgUL9GTgQT92e6GNMOlwsRMA
-         9lGKeh7AzAxwKxkt3aleg/kN5zZM4tiSMIHdc+DpH23CywJedU+egJdRJcrZZxP5hUJ/
-         4DWJvy7s6HiA9mcqU/79GS+r+wdEjcQiIhLag3Z87K3ztsSXiM6DiqCGm6+epOyH0Swq
-         XpzQ==
-X-Gm-Message-State: AOAM531BGtEZSBkFBKmxr/zSxk5tHISldODtzYYEB2WUZEuEO13JXMWp
-        RwE4dy0RpHGvYxu+4oa/RUYJbA==
-X-Google-Smtp-Source: ABdhPJz5cBWCm0fYq4ILWr+KSkCBVR7O+qKkiAsM27jiXTZ1ZujWlaT3uSrgc+RwyVmamJK0SlND2w==
-X-Received: by 2002:aa7:9f5e:0:b0:409:dbf2:88de with SMTP id h30-20020aa79f5e000000b00409dbf288demr341340pfr.14.1630513586842;
-        Wed, 01 Sep 2021 09:26:26 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id s31sm26564pfw.23.2021.09.01.09.26.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 09:26:24 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 10:26:21 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Tao Zhang <quic_taozha@quicinc.com>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=TCAH52YqS9JZQzJKa7DRR1Gpuc8EPZCmTZ5AQVbYtWA=;
+        b=fYGTR3UJdQEDiAK5Q8TlL9YPzZUAxeyJoFCTT2riGE9g6JuOwzv5xLz9htACruGxT/
+         ZuvTJuOKy+4QkWWRYgWh1J+4+nqoBpOxP8QVK46ogiR4A1gsc+Wd2cSCJnTyV8vSX/BB
+         7PK7UUidxaAX6ffQL/2kJZKVW29QRAgeov9PguY6CTWL/D59eXR6Q5zPBpFp22jBFObR
+         fHl36+n+a5B8L7Qe4vVX4dDsOY7OMlx8fC2v6zsIceo4SFayaIDeXH8RS7M6zNGA79xf
+         w18Pf2Ee3poSdO5qRRChXD22F02Y0llGtffuIq3gw9ApeiPf5Oa83DTvmgzpGohe5CGR
+         kWUg==
+X-Gm-Message-State: AOAM5320j+TC0HCr4a7ugNcwzeXM+FyYZZB5pm2y9gelWUMIFInBmeVv
+        2rsDIyhmgNMSTE2WBctNKrySNyfrhcKuPVLmYHEhYM8lZA6laoPeN0KUTaTSDkrJJ9+2U0OsDcy
+        GqCSunYgmXIFa8CoDm/r1Z8XZ
+X-Received: by 2002:adf:f9cb:: with SMTP id w11mr259292wrr.382.1630513642555;
+        Wed, 01 Sep 2021 09:27:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGHmzuvAvqEcnBZI7Y23pSv8aObIhsarRJKP+kEp6VN4fOLNmhGpMU3DYltGLE2gcg2FV3PQ==
+X-Received: by 2002:adf:f9cb:: with SMTP id w11mr259251wrr.382.1630513642352;
+        Wed, 01 Sep 2021 09:27:22 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
+        by smtp.gmail.com with ESMTPSA id k17sm225645wmj.0.2021.09.01.09.27.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 09:27:21 -0700 (PDT)
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
+ memory
+To:     Andy Lutomirski <luto@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>
-Subject: Re: [PATCH 0/2] Add Coresight support for RB5 board
-Message-ID: <20210901162621.GA1035558@p14s>
-References: <1629365324-5891-1-git-send-email-quic_taozha@quicinc.com>
- <CANLsYkxw9nXb=vsWhf8=Sf6Bnm23doTaYOS7WChxOGhudt23-w@mail.gmail.com>
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+ <20210827023150.jotwvom7mlsawjh4@linux.intel.com>
+ <8f3630ff-bd6d-4d57-8c67-6637ea2c9560@www.fastmail.com>
+ <20210901102437.g5wrgezmrjqn3mvy@linux.intel.com>
+ <f37a61ba-b7ef-c789-5763-f7f237ae41cc@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <2b2740ec-fa89-e4c3-d175-824e439874a6@redhat.com>
+Date:   Wed, 1 Sep 2021 18:27:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANLsYkxw9nXb=vsWhf8=Sf6Bnm23doTaYOS7WChxOGhudt23-w@mail.gmail.com>
+In-Reply-To: <f37a61ba-b7ef-c789-5763-f7f237ae41cc@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tao,
+On 01.09.21 18:07, Andy Lutomirski wrote:
+> On 9/1/21 3:24 AM, Yu Zhang wrote:
+>> On Tue, Aug 31, 2021 at 09:53:27PM -0700, Andy Lutomirski wrote:
+>>>
+>>>
+>>> On Thu, Aug 26, 2021, at 7:31 PM, Yu Zhang wrote:
+>>>> On Thu, Aug 26, 2021 at 12:15:48PM +0200, David Hildenbrand wrote:
+>>>
+>>>> Thanks a lot for this summary. A question about the requirement: do we or
+>>>> do we not have plan to support assigned device to the protected VM?
+>>>>
+>>>> If yes. The fd based solution may need change the VFIO interface as well(
+>>>> though the fake swap entry solution need mess with VFIO too). Because:
+>>>>
+>>>> 1> KVM uses VFIO when assigning devices into a VM.
+>>>>
+>>>> 2> Not knowing which GPA ranges may be used by the VM as DMA buffer, all
+>>>> guest pages will have to be mapped in host IOMMU page table to host pages,
+>>>> which are pinned during the whole life cycle fo the VM.
+>>>>
+>>>> 3> IOMMU mapping is done during VM creation time by VFIO and IOMMU driver,
+>>>> in vfio_dma_do_map().
+>>>>
+>>>> 4> However, vfio_dma_do_map() needs the HVA to perform a GUP to get the HPA
+>>>> and pin the page.
+>>>>
+>>>> But if we are using fd based solution, not every GPA can have a HVA, thus
+>>>> the current VFIO interface to map and pin the GPA(IOVA) wont work. And I
+>>>> doubt if VFIO can be modified to support this easily.
+>>>>
+>>>>
+>>>
+>>> Do you mean assigning a normal device to a protected VM or a hypothetical protected-MMIO device?
+>>>
+>>> If the former, it should work more or less like with a non-protected VM. mmap the VFIO device, set up a memslot, and use it.  I'm not sure whether anyone will actually do this, but it should be possible, at least in principle.  Maybe someone will want to assign a NIC to a TDX guest.  An NVMe device with the understanding that the guest can't trust it wouldn't be entirely crazy ether.
+>>>
+>>> If the latter, AFAIK there is no spec for how it would work even in principle. Presumably it wouldn't work quite like VFIO -- instead, the kernel could have a protection-virtual-io-fd mechanism, and that fd could be bound to a memslot in whatever way we settle on for binding secure memory to a memslot.
+>>>
+>>
+>> Thanks Andy. I was asking the first scenario.
+>>
+>> Well, I agree it is doable if someone really want some assigned
+>> device in TD guest. As Kevin mentioned in his reply, HPA can be
+>> generated, by extending VFIO with a new mapping protocol which
+>> uses fd+offset, instead of HVA.
+> 
+> I'm confused.  I don't see why any new code is needed for this at all.
+> Every proposal I've seen for handling TDX memory continues to handle TDX
+> *shared* memory exactly like regular guest memory today.  The only
+> differences are that more hole punching will be needed, which will
+> require lightweight memslots (to have many of them), memslots with
+> holes, or mappings backing memslots with holes (which can be done with
+> munmap() on current kernels).
+> 
+> So you can literally just mmap a VFIO device and expect it to work,
+> exactly like it does right now.  Whether the guest will be willing to
+> use the device will depend on the guest security policy (all kinds of
+> patches about that are flying around), but if the guest tries to use it,
+> it really should just work.
 
-On Mon, Aug 23, 2021 at 08:41:36AM -0600, Mathieu Poirier wrote:
-> Hi Tao,
-> 
-> On Thu, 19 Aug 2021 at 03:29, Tao Zhang <quic_taozha@quicinc.com> wrote:
-> >
-> > This series adds Coresight support for SM8250 Soc on RB5 board.
-> > It is composed of two elements.
-> > a) Add ETM PID for Kryo-5XX.
-> > b) Add coresight support to DTS for RB5.
-> >
-> > This series applies to coresight/next
-> > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> >
-> > Tao Zhang (2):
-> >   coresight: etm4x: Add ETM PID for Kryo-5XX
-> >   arm64: dts: qcom: sm8250: Add Coresight support
-> >
-> >  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts      | 442 +++++++++++++++++-
-> >  .../coresight/coresight-etm4x-core.c          |   1 +
-> >  2 files changed, 439 insertions(+), 4 deletions(-)
-> >
-> 
-> I have added your work to my patchset queue.  On the other hand I have
-> a lot of patches to review these days and as such won't be able to
-> look at it for 4 to 5 weeks.
-> 
+... but if you end up mapping private memory into IOMMU of the device 
+and the device ends up accessing that memory, we're in the same position 
+that the host might get capped, just like access from user space, no?
 
-I see that Suzuki has already provided comments on your work.  As such I will
-remove this patchset from my queue.
+Sure, you can map only the complete duplicate shared-memory region into 
+the IOMMU of the device, that would work. Shame vfio mostly always pins 
+all guest memory and you essentially cannot punch holes into the shared 
+memory anymore -- resulting in the worst case in a duplicate memory 
+consumption for your VM.
 
-> Thanks,
-> Mathieu
-> 
-> > --
-> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > a Linux Foundation Collaborative Project
-> >
+So you'd actually want to map only the *currently* shared pieces into 
+the IOMMU and update the mappings on demand. Having worked on something 
+related, I can only say that 64k individual mappings, and not being able 
+to modify existing mappings except completely deleting them to replace 
+with something new (!atomic), can be quite an issue for bigger VMs.
+
+-- 
+Thanks,
+
+David / dhildenb
+
