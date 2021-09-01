@@ -2,192 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAB93FE0F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6033FE0FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345577AbhIARJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:09:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30814 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236719AbhIARJ6 (ORCPT
+        id S1344344AbhIARM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231415AbhIARM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:09:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630516140;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ppU0WSH8L8u52xOzHa0kdyUHC+mfjhjRB8vBl5001vI=;
-        b=O4PHzFfj8MXC5JCdaPOTQQjzgCOg5atDHPAY2bZoE0wM6twwwi3HPIhk9cKl5mSo13XymS
-        nURldeDxiHH4STysRa2FaTQ4FDREXOtrVkd7yCJpriJyVBR7EvaFBrQT3abRXn4BoJs0cS
-        JP/ZOu3DLFo2Zf6CwUmo9HWekiB1OU4=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-kUXo5uLrPa26YirCzQWN1g-1; Wed, 01 Sep 2021 13:08:59 -0400
-X-MC-Unique: kUXo5uLrPa26YirCzQWN1g-1
-Received: by mail-wr1-f70.google.com with SMTP id q11-20020a5d61cb0000b02901550c3fccb5so121288wrv.14
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:08:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ppU0WSH8L8u52xOzHa0kdyUHC+mfjhjRB8vBl5001vI=;
-        b=sQjE+qem/9RPVCDTK9O/nPI8ASpt05HxEK0ghUDQ7DWBysiuYJUVpN8HNzLC7cxiZt
-         1XOyQowu/cMS99mzIdqD3NOu2PrDwjuZ+3fekv9hunH0L+r/ov54EEytWaBfzV1ci9AK
-         gH8zHUlXKq5+zVoNF5sUrXRWtKsRuySAOvbITHqwJUaU9ssEuZS8mavtXDFvcVDpb2Tm
-         rmdpJl9TelCkWR+ei5pDWXYJeYRKNwbymG44YAf6zDjeJgK0jaw7TR8pOF3xY7Q3yy3l
-         Lo/SfAKnm+OmI7xt+cnXTLqg6vQnzlKlh9MvzphAMOG5wSQDz4ZbMp41BwsOWCGvJiRZ
-         3NRA==
-X-Gm-Message-State: AOAM531qh2RrALjFPjlA4n3aCVJkMJ+X2T7JDRQXVzo6mlnqVelZTd5c
-        STorXreH9v85Rb3OTd2JseALRh13Jb+voVImtQkI2YOyX/wZ8GU/Yff8UzYnuSOZP2Tx2TdYV4o
-        HHJH7P5A9DKeaqav1u0nd8Fk6
-X-Received: by 2002:a1c:7e8a:: with SMTP id z132mr436980wmc.75.1630516138292;
-        Wed, 01 Sep 2021 10:08:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwtTx+lCLKYPuP/eNNEgNo/a72ut1zmit05cmxtndTEGk43A0rPKYZ+5URztN5SHWb3pXiUrA==
-X-Received: by 2002:a1c:7e8a:: with SMTP id z132mr436955wmc.75.1630516138034;
-        Wed, 01 Sep 2021 10:08:58 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
-        by smtp.gmail.com with ESMTPSA id t14sm133532wmi.12.2021.09.01.10.08.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 10:08:57 -0700 (PDT)
-To:     jejb@linux.ibm.com, Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Wed, 1 Sep 2021 13:12:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4241C061575;
+        Wed,  1 Sep 2021 10:11:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3sWXBY6NNcGhB2reOpiXBClc3engCHc7t+RgqJpOess=; b=R4QdXiCtGn0RosMhstl4lhe3jc
+        +zadhK+5SxXRN6NUvp4kIR6jLZ6/NfgO86tMfF91XKJocCmccC97Q0M3O2XrpxmMF9eIoE0O1h+LT
+        njJUZHXCe/ed5yLr+cV5ke5mffquRcndI1pmITwmUKKGXLxIqcDPrNyxXQ4IDOdgDnEP35tTLUOQg
+        yFTXvfG8uApChvvLlPZQ0l0I9Dqq0fbRTcKIfd5N59RZUER+SRtIIfjC0900eSSihcaeW+VXn1FDr
+        B+ejN7zA/cpFoaMAURd2FedJWjf9oA3yQgEdt2j48P9APaGExOVeINR6HnKi16TBP+TBIMYCCxc/K
+        /jbH/4/A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mLTjl-002aeU-VZ; Wed, 01 Sep 2021 17:09:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8C59E30018A;
+        Wed,  1 Sep 2021 19:09:21 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6F5FB2B83870A; Wed,  1 Sep 2021 19:09:21 +0200 (CEST)
+Date:   Wed, 1 Sep 2021 19:09:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
- <YSlkzLblHfiiPyVM@google.com>
- <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
- <YS6lIg6kjNPI1EgF@google.com>
- <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
- <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
- <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
- <a259e10d-39c9-c4a5-0ab4-f42a1b9bfaee@redhat.com>
- <0d6b2a7e22f5e27e03abc21795124ccd66655966.camel@linux.ibm.com>
- <1a4a1548-7e14-c2b4-e210-cc60a2895acd@redhat.com>
- <4b863492fd33dce28a3a61662d649987b7d5066d.camel@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
- memory
-Message-ID: <214ca837-3102-d6d1-764e-6b4cd1bab368@redhat.com>
-Date:   Wed, 1 Sep 2021 19:08:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        kajoljain <kjain@linux.ibm.com>, Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] perf: enable branch record for software
+ events
+Message-ID: <YS+zwVNMVBKWxGc3@hirez.programming.kicks-ass.net>
+References: <20210826221306.2280066-1-songliubraving@fb.com>
+ <20210826221306.2280066-2-songliubraving@fb.com>
+ <20210830102258.GI4353@worktop.programming.kicks-ass.net>
+ <F70BD5BE-C698-4C53-9ECD-A4805CB2D659@fb.com>
+ <YS0CBphTuIdTWEXF@hirez.programming.kicks-ass.net>
+ <106E85E3-D30C-48BC-8EB6-8DFEEECF2022@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <4b863492fd33dce28a3a61662d649987b7d5066d.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <106E85E3-D30C-48BC-8EB6-8DFEEECF2022@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>> Well not necessarily, but it depends how clever we want to get.  If
->>> you look over on the OVMF/edk2 list, there's a proposal to do guest
->>> migration via a mirror VM that invokes a co-routine embedded in the
->>> OVMF binary:
->>
->> Yes, I heard of that. "Interesting" design.
+On Mon, Aug 30, 2021 at 04:36:44PM +0000, Song Liu wrote:
+
+> > /*
+> > * Static call support
+> > *
+> > * Static calls use code patching to hard-code function pointers into direct
+> > * branch instructions. They give the flexibility of function pointers, but
+> > * with improved performance. This is especially important for cases where
+> > * retpolines would otherwise be used, as retpolines can significantly impact
+> > * performance.
+> > *
 > 
-> Heh, well what other suggestion do you have?  The problem is there
-> needs to be code somewhere to perform some operations that's trusted by
-> both the guest and the host.  The only element for a confidential VM
-> that has this shared trust is the OVMF firmware, so it seems logical to
-> use it.
-
-<offtopic>
-
-Let me put it this way: I worked with another architecture that doesn't 
-fault on access of a secure page, but instead automatically 
-exports/encrypts it so it can be swapped. It doesn't send a MCE and 
-kills the host. It doesn't require fancy code in the guest firmware to 
-export a page.
-
-The code runs in the ultravisor -- yes, I'm talking about s390x. Now, I 
-am not an expert on all of the glory details of TDX, SEV, ... to say 
-which attack surface they introduced with that design, and if it can't 
-be mitigated. I can only assume that there are real reasons (e.g., 
-supporting an ultravisor is problematic, patents? ;) ) why x86-64 is 
-different.
-
-So whenever I see something really complicated to work around such 
-issues, it feels to me like a hardware/platform limitation is making our 
-life hard and forces us to come up with such "interesting" designs.
-
-Sure, it's logical in this context, but it feels like "The house doesn't 
-have a door, so I'll have to climb through the window.". It gets the job 
-done but isn't ideally what you'd want to have. If you understand what I 
-am trying to say :)
-
-</offtopic>
-
+> [...]
 > 
->>
->>> https://patchew.org/EDK2/20210818212048.162626-1-tobin@linux.ibm.com/
->>>
->>> This gives us a page encryption mechanism that's provided by the
->>> host but accepted via the guest using attestation, meaning we have
->>> a mutually trusted piece of code that can use to extract encrypted
->>> pages. It does seem it could be enhanced to do swapping for us as
->>> well if that's a road we want to go down?
->>
->> Right, but that's than no longer ballooning, unless I am missing
->> something important. You'd ask the guest to export/import, and you
->> can trust it. But do we want to call something like that out of
->> random kernel context when swapping/writeback, ...? Hard to tell.
->> Feels like it won't win in a beauty contest.
+> > *
+> > * Notes on NULL function pointers:
+> > *
+> > *   Static_call()s support NULL functions, with many of the caveats that
+> > *   regular function pointers have.
+> > *
+> > *   Clearly calling a NULL function pointer is 'BAD', so too for
+> > *   static_call()s (although when HAVE_STATIC_CALL it might not be immediately
+> > *   fatal). A NULL static_call can be the result of:
+> > *
 > 
-> What I was thinking is that OVMF can emulate devices in this trusted
-> code ... another potential use for it is a trusted vTPM for SEV-SNP so
-> we can do measured boot.  To use it we'd give the guest kernel some
-> type of virtual swap driver that attaches to this OVMF device.  I
-> suppose by the time we've done this, it really does look like a
-> balloon, but I'd like to think of it more as a paravirt memory
-> controller since it might be used to make a guest more co-operative in
-> a host overcommit situation.
+> Probably add:
 > 
-> That's not to say we *should* do this, merely that it doesn't have to
-> look like a pig with lipstick.
+>  *     /* for function that returns NULL */
+> > *     DECLARE_STATIC_CALL_NULL(my_static_call, void (*)(int));
+> 
+> 
+>  *   or 
+>  *     /* for function that returns int */
+>  *     DECLARE_STATIC_CALL_RET0(my_static_call, int (*)(int));
+>  * 
 
-It's an interesting approach: it would essentially mean that the OVMF 
-would swap pages out to some virtual device and then essentially 
-"inflate" the pages like a balloon. Still, it doesn't sound like 
-something you want to trigger from actual kernel context when actually 
-swapping in the kernel. It would much rather be something like other 
-balloon implementations: completely controlled by user space.
+No, anything that uses static_call_cond() must have void return. Note
+that static_call_cond() replaces:
 
-So yes, "doesn't look like a pig with lipstick", but still compared to 
-proper in-kernel swapping, looks like a workaround.
+	if (func_ptr)
+		func_ptr(args);
 
--- 
-Thanks,
+which is a statement, not an expression, and as such can't function as
+an rvalue.
 
-David / dhildenb
+> So it is clear that we need two different macros. IIUC, the number and 
+> type of arguments doesn't matter? 
 
+Right, arguments are irrelevant, provided CDECL ABI, which mandates that
+arguments that are pushed on the stack are cleaned up by the caller, not
+the callee.
+
+> Also, the default return int function has to return 0, right? Can we let 
+> it return -EOPNOSUPP? 
+
+Difficult, in principle we can patch any value that fits in a single
+instruction, but the more variants we have, the harder it gets.
