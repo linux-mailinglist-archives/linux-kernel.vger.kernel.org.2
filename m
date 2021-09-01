@@ -2,170 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB0F3FE2AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284893FE2B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244153AbhIATCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:02:11 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:58402 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344147AbhIAS70 (ORCPT
+        id S244861AbhIATCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347659AbhIATBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:59:26 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 181I46Xb005715;
-        Wed, 1 Sep 2021 18:58:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=C/oq+oZWoqpgO0D5rKGS6XBGZO1jg3iCheHlsDvc0E8=;
- b=b9Ykzev6LRs59ZcXgl+N7b8mMRN2kb7NBwbNbxvCiFzpzkbAFsdq95qsv2nYDboBUgD/
- NLSeGK7bKoFrdFemKJJrC2Xo/LiqmoiY+n/SZUuhnBDmkQ2cBHxyt48G+b33IaKs8PBM
- YPalyM+/hRjJZy2LZe6QGoPBTjyuTxF0PzQvnMBMGdB/bu7rppS/K4hgkNO6n5TV3KoJ
- 1bq9fFcbbWYOUC8xFM7e8NSJMlkWl/poQ+enOu0wQO9bpDwE4T0j4d3wmI97nCmJ8fuo
- ZCyJb4LWYDGDX4jq/jnjQYO/poGQhCCrBcqjJpcX7kLxNqboXvk5F8jJeCLTbohjt2zt pg== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=C/oq+oZWoqpgO0D5rKGS6XBGZO1jg3iCheHlsDvc0E8=;
- b=V55cCXmRLV7jFcnKPlC4Fom+Gr4RtVTw93/o+biBbI4nboAI53tM9d5Ehnk/vgOG9GNR
- j37hz5sr71S0N5UgLI8l31+OCLqwtWKKSW6ptr0hjQGxJDeXnH3mpDdj/JNOxGDIYm0h
- L0/egJLcyPuMHTY9si0g87lSOXEPoQrYMSF+4SpwcviRY8AdHgxeqTtNosteqqprHIzT
- wc7V5Ojw+K1deh/Z7U6004i98ZP5rfzHN5YVF8bNq/JZZXVIR06G2UfnFFx0ekH83GZ6
- q8rhp/gqM5jmKHBt7mUJNnWeAdIOM9kyMGMKPy88ZSlq6rUt5JAMtsXDtkeQnesyqdtG EA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3atdw0g8a7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 01 Sep 2021 18:58:16 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 181Itd3m030848;
-        Wed, 1 Sep 2021 18:58:15 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
-        by aserp3020.oracle.com with ESMTP id 3atdyubjp1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 01 Sep 2021 18:58:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BmeE8GM9WTXg1HoEcdyfoXMBWX11OSMDWFS/kW2mmomQMEidLtXxLxkqoDR6H1xQsokYDS0tdQPPJROv0DEcPtCCVYaEoUYHeTzsHCweq0MRu3N3ipaCWd5lYI2R8N8jFi/3S2uUtBN6q0EixMZ6Yw/YZcbT7yOR6iLLv6jcwMun527j8ldT1ntSEtRZGRQV4vsTjaqybkXE87Ym2Bh113FHbVoNkt8TGoznZUJcf6uZmntDQ7pOjRPbem4K8zNbVNYLV1dIjBuMpwDgmvWSM3eO2HWdmsNfVTLshH4mg6jnAW6EhoaE9f5+vC63h2CDBcCBiaMIaZtIC4/Q9LLUtw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=C/oq+oZWoqpgO0D5rKGS6XBGZO1jg3iCheHlsDvc0E8=;
- b=KKTIlUwo5zU903E8zN/mEuNiLBtLQgVtkWffny+87/snDhBbmhIAYC5/NYgDQsMR5LTWETIQv2SkaM+uo9+jdiuj6cVA8HFoFsTFcCpKBzj/jxMAdTwp9CblK2Xl2faLMCI+splmxoHGCrBNQks4THEpnkh2scYTlfeU/YJUe0NHx3D83PnOTUnMjrmJOGzcZfV1TMNoQaz9afwlBcuxZfu4edvDRqDlvvatuHye0cCAbPNSaQOTlZkjLlTjuAAbPpKjjRBrYZmH4ReqA9yYoMiHQ8Sq/0gVxdApboszr9aDTOfzKVfr9FrOHMX6QyGN8q3WZVbzvcPQEjRI6H1F/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 1 Sep 2021 15:01:42 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E08C061575;
+        Wed,  1 Sep 2021 12:00:45 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id k65so541630yba.13;
+        Wed, 01 Sep 2021 12:00:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C/oq+oZWoqpgO0D5rKGS6XBGZO1jg3iCheHlsDvc0E8=;
- b=M46fDG8fk1ry5XlfQy1paxflSDwkCKV+x2Wez/lOMATcBklCBGqpyN5Rsvstzs8PnKK0vqw7jDBszBoCRZitKJC8JazryyCE0/XIzUqZ2xhjzrcsekcPHVxZY0u4Z6TQk5fkcHlvdv5oOJ5HtWhqTRNCCBmk2WSMNrYxhq0kyyo=
-Authentication-Results: mailbox.org; dkim=none (message not signed)
- header.d=none;mailbox.org; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5419.namprd10.prod.outlook.com (2603:10b6:510:d6::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.20; Wed, 1 Sep
- 2021 18:58:13 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc%7]) with mapi id 15.20.4478.020; Wed, 1 Sep 2021
- 18:58:13 +0000
-To:     Tor Vic <torvic9@mailbox.org>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hpa@redhat.com" <hpa@redhat.com>,
-        "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>
-Subject: Re: [PATCH v4] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung
- 860 and 870 SSD.
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq14kb45dut.fsf@ca-mkp.ca.oracle.com>
-References: <1876334901.51676.1630481868266@office.mailbox.org>
-        <DM6PR04MB708115B43C231444AFB22DC2E7CD9@DM6PR04MB7081.namprd04.prod.outlook.com>
-        <1e52352c-05e3-700a-58e7-462e1c0adbd1@mailbox.org>
-Date:   Wed, 01 Sep 2021 14:58:10 -0400
-In-Reply-To: <1e52352c-05e3-700a-58e7-462e1c0adbd1@mailbox.org> (Tor Vic's
-        message of "Wed, 1 Sep 2021 17:56:57 +0000")
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0279.namprd03.prod.outlook.com
- (2603:10b6:a03:39e::14) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rSQvSdNEB0WdYPKaFlNQd28Ylc/UkTwMjKACbNyZydg=;
+        b=crpOTMhXZ6DtUin5kX4I/74nObdvgvulsy9i1cF275A1w4UAGHJgN1/IpHk4FUtpjE
+         MpfFceTnvgneptUBSrzOSzGHDFkNWxlnzWUOhEfpNYYuqADqLJwLmbPVnhk4jSL5Y82U
+         3pr7sGU2BteRLfS8MTQnpf7NHcjR2178XJ/SPxTjR66J5KN2u3vhJQ1FHB7ypmk81eWR
+         iQLc96TAjU8YywNjDOo5g4KqogqHa/dLflVa0Vo78QJmMXEOstAU83C8cuL6tyUW7CqV
+         /HCHcaQ7RPtZj4WSxyVdqoIlq0L3G9aJRVB1cl3bIPH81geUwToIvXj5ndvb2dVgXYlY
+         NdnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rSQvSdNEB0WdYPKaFlNQd28Ylc/UkTwMjKACbNyZydg=;
+        b=rEGdO4rXTgEtQ+2RTQTaUh0ieDaQziBmWHTqmk7OaGFFtIkIMPY7Mf5CUlirdt5xin
+         CiWuZtIlgmcY3Y39CAat/I1BVNxdRQ/wET3W9tbfj1KjWgfPIrKdxrzOTv+m0a8dHV2m
+         pxSmQmqAROhtnB07MPu0JtssKVrwmBqnsq163OX09pknm1+81UqJtNjFUYp+/y7JhL8L
+         y5m1kr+cdoWZ1OnkCIK1uhRyOWh1kPA0XQ/vNr/iEqvQ3YFWpaBcItid4b1rVmAx1KhS
+         QWHBRxXFVdjW6kIhpXkm83axGBbtHxPAvnTHctXxbKBKxfmbNnvRJDShNMqmsSK1Zzcv
+         2sGQ==
+X-Gm-Message-State: AOAM531tmewDIcwCfU1KE4FwP2fZHVh1NZItVeevZHJPfVcjUZI93LuB
+        o5xvCM3xHJzXiqftnBOBf6Er/q074MtTjDnx7/0=
+X-Google-Smtp-Source: ABdhPJwbwFt3tEsWWSkU1jbRgG1p5Z2O7MqkQm8mPd16UuWi5zRxmXnfOYQF48IsEQl7/Zc3oh30ahQZccV/9LjOj/8=
+X-Received: by 2002:a05:6902:70b:: with SMTP id k11mr940462ybt.510.1630522844468;
+ Wed, 01 Sep 2021 12:00:44 -0700 (PDT)
 MIME-Version: 1.0
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR03CA0279.namprd03.prod.outlook.com (2603:10b6:a03:39e::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.20 via Frontend Transport; Wed, 1 Sep 2021 18:58:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c78fab20-cae0-4502-e4c3-08d96d7a7340
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5419:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB5419419EB60CD86D1740E0968ECD9@PH0PR10MB5419.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zCBtL9wxbzO7ncvaR4uSyjzl/z+fkKno13OVNB2YvJ2b8BycQhSLZRYBBhtiySFBJXzabTp/uCAO115/HbWc/ty2J9PN8NW4krtlYu+//LzK6Jvs1k7ebgA9LbcVGdg1Z0NFmCXxvu7QYRQ59z2DSumo0xL2sgdKW3ihtB5kDNVPYggU6ZGHntAXxuha80CqxTP/VwbZhiH164UT339ovOrrOizF/J41Tv7Q+v2w8j1yuA/d1uowa0Q8UHNxDjWP8hseSzTMyaVQBl/qwu8e61lk6mazyDXqk/ncwExeDNXVs3Ja/dFCjsr+Qu2U84tvVtaLPKu3obeddI0wQTR5YYzjwIanjIT+iDl1Yft1+ia2CaQt+lPF3cqKoKAtpq8e3vdOvxzKlafWNvl44gGl72hNumJk2WYq/6oCAYVTl/TaiO6XabyoBW/pZboHoMfnDPFDTjKrAbrH7Uehr9eH6LLPXFo3SJUmB72Gol9Pnx+Wi61Td8Z4Fa/OB6JjAAQkOUmotpqfa8Deo6BtCeKvIvgC43zxw03EXvYCLvCeMxl0n50iYikAezTYPjIsYbHhLGv1m7bteZgtQQWKfDsa9QOaAT96MhCQo6d5ZO12ZG2nuiqn9+TfcvsAoaSr9oZL1HyMjX1R0DTnakgHeYAKfbjhnD3H2Mn0gkusOmMXrJBwhC3ty+3/nFK2dA93/yvV6+xk9dMDORUprxyQ5t26Ug==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(396003)(346002)(376002)(6916009)(186003)(86362001)(7696005)(38100700002)(38350700002)(83380400001)(52116002)(956004)(558084003)(8936002)(54906003)(66946007)(4326008)(66556008)(66476007)(26005)(55016002)(478600001)(316002)(36916002)(8676002)(5660300002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?L7AcnbFD7K5ORXwTSjh9W5CW9moD7/IBmbYuEqeFEcHlJU3pYaGQkdifl/uY?=
- =?us-ascii?Q?kYgVivqnSoL9yH+2OLQCo/kKdzIhjJVW/2Np2LmEWo5Sr4hABIThvOBB7DT9?=
- =?us-ascii?Q?hxQ8/UXlgg1lT9qlSKFH/c1/EH62+7Br0OzSw/TCDH9HqJlcgQCUtepS6Ejq?=
- =?us-ascii?Q?2J78bGdR/OHjRswoeBvqnw6lRDDKKzbtZ/DrVohA2sySU4Z3nd+DSdR7PkxX?=
- =?us-ascii?Q?VpoTMO06Ctiyb8JS8oHdCI7cBoASkoIOBxPKcx0ezuQ+WvXxINoxMQ6/N1bt?=
- =?us-ascii?Q?azKK8JnSplCmzPq6Svm/13ne/DfLaLwEMBUrw9FxLFnKVlpE1+2ONx4UWtmz?=
- =?us-ascii?Q?loGCtH97J4chlSB5qz7eJbSBPpwusJXg2Ml5slQZITlZViHkEhhBB+rc1KN0?=
- =?us-ascii?Q?Csradsn4K8OYTw6RRj9sneKhAUQ1o2716tc+uXImUs5xiKkP+dU6h5DW+9Yv?=
- =?us-ascii?Q?A1RhugQQoSc74hTkW8E1qU4oZzQCBRev91SmyO/m+g9PcZLxzH0t4guJ9WNk?=
- =?us-ascii?Q?c+g0jWovsZQbAKBpJjjzIEAcKdFDbUUHVqLftR5bvKjKdvMzhS1CqDVlJGxL?=
- =?us-ascii?Q?LnkdMQIeIJiQjdzOmeNZPkJl7A+4yKPIPVgB1bIxk8wyeIS82dH3BQ/CBmql?=
- =?us-ascii?Q?JiyU1ucA6g7lJ1cG3+ZIWn+loaCn1OTWxKM9imLkmAodwVC2ogMkweGIS7XQ?=
- =?us-ascii?Q?gEQGLXsSj04/S7Aku0Onbj5SkEfaVUPUkfPMURT5lhfMr7QQc0zHzywSZ+Fe?=
- =?us-ascii?Q?dbQbunz+hpphohVXMn92A6y7h692YQo+9PCInOwl2Sybp6UaqQYNwzZ/j8NN?=
- =?us-ascii?Q?PnSW8tCMEIRuP9SsjLkwurBcpRCPU4apZHQYKjfqQzHrNwHF5IrE1U59WPaG?=
- =?us-ascii?Q?7PT2mvcaeQGB2VHE4B8PFU22AhSkn1oqC488gU4KQdCjQjY8laQgup/0CMKk?=
- =?us-ascii?Q?VVi2tQchV6t4TxSFedJxzk1mfjgR9C/ixqpnUaj7fERFzuvY0exfnF8ReerO?=
- =?us-ascii?Q?Qu4Q0TcD601HgGyq/ouxNEmiSFHrfhPYDuSDnC1LbElXvY6CxsvAYuzNi5lp?=
- =?us-ascii?Q?gvVCzcHytWjRnS553tnboqMuF3SoGvKuB1aeDOmcSmdlagzUgoxX420aQXYf?=
- =?us-ascii?Q?RKMxhUxscBXkaF9pHTzj4NRSjOEs7AxMdk2a+fKRr7sfq8+KdJqxOSWH7bgg?=
- =?us-ascii?Q?Bp/+zkDPa237zKTfaGD4Tt4BY3/XvqDfDHIRCloa/1wVrrftirGtTz47QmMO?=
- =?us-ascii?Q?SF6tnm9Rl2sf3DtGECM+yy+jq/zrWhXCCZc8Y5X0RHZ24/lB/geQfslA8MtU?=
- =?us-ascii?Q?agErgkYgGv18k4HyW5xCap7V?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c78fab20-cae0-4502-e4c3-08d96d7a7340
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 18:58:13.8000
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0NY3p5KqFB6V5fbfA1chfXmRqKLQ/Bv8pgGPWHOYF1UZWExFVl7brc1zXV34VEZ+Z0eG65cISMuujKISd8dfBkHbV6X1Ed2br7gO2UWwEqE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5419
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10094 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
- suspectscore=0 phishscore=0 adultscore=0 mlxscore=0 mlxlogscore=862
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2108310000
- definitions=main-2109010109
-X-Proofpoint-GUID: GvgaP9ptrSaD7qI3d2jPv8uAk0YveTfG
-X-Proofpoint-ORIG-GUID: GvgaP9ptrSaD7qI3d2jPv8uAk0YveTfG
+References: <20210901003517.3953145-1-songliubraving@fb.com>
+ <20210901003517.3953145-3-songliubraving@fb.com> <CAEf4BzaPuPJKnVJ+Bi4aNs57A2x0jRnM3V-ud37U6V=wThHAYQ@mail.gmail.com>
+ <0B76C4B1-F113-41F4-A141-163A2A71F4B8@fb.com>
+In-Reply-To: <0B76C4B1-F113-41F4-A141-163A2A71F4B8@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 1 Sep 2021 12:00:33 -0700
+Message-ID: <CAEf4BzbcbXD5jzpxMKi8_nnRBCfDCnb=Dst-Nk34xSPRuTacvw@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/3] bpf: introduce helper bpf_get_branch_snapshot
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Tor,
-
-> Samsung 860 Pro:
-> $ cat /sys/block/sda/device/queue_depth
+On Wed, Sep 1, 2021 at 8:41 AM Song Liu <songliubraving@fb.com> wrote:
 >
-> 32
 >
-> Samsung 860 Evo:
-> $ cat /sys/block/sdb/device/queue_depth
 >
-> 32
+> > On Aug 31, 2021, at 9:02 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, Aug 31, 2021 at 7:01 PM Song Liu <songliubraving@fb.com> wrote:
+> >>
+> >> Introduce bpf_get_branch_snapshot(), which allows tracing pogram to get
+> >> branch trace from hardware (e.g. Intel LBR). To use the feature, the
+> >> user need to create perf_event with proper branch_record filtering
+> >> on each cpu, and then calls bpf_get_branch_snapshot in the bpf function.
+> >> On Intel CPUs, VLBR event (raw event 0x1b00) can be use for this.
+> >>
+> >> Signed-off-by: Song Liu <songliubraving@fb.com>
+> >> ---
+> >> include/uapi/linux/bpf.h       | 22 +++++++++++++++++++
+> >> kernel/bpf/trampoline.c        |  3 ++-
+> >> kernel/trace/bpf_trace.c       | 40 ++++++++++++++++++++++++++++++++++
+> >> tools/include/uapi/linux/bpf.h | 22 +++++++++++++++++++
+> >> 4 files changed, 86 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> >> index 791f31dd0abee..c986e6fad5bc0 100644
+> >> --- a/include/uapi/linux/bpf.h
+> >> +++ b/include/uapi/linux/bpf.h
+> >> @@ -4877,6 +4877,27 @@ union bpf_attr {
+> >>  *             Get the struct pt_regs associated with **task**.
+> >>  *     Return
+> >>  *             A pointer to struct pt_regs.
+> >> + *
+> >> + * long bpf_get_branch_snapshot(void *entries, u32 size, u64 flags)
+> >> + *     Description
+> >> + *             Get branch trace from hardware engines like Intel LBR. The
+> >> + *             branch trace is taken soon after the trigger point of the
+> >> + *             BPF program, so it may contain some entries after the
+> >> + *             trigger point. The user need to filter these entries
+> >> + *             accordingly.
+> >> + *
+> >> + *             The data is stored as struct perf_branch_entry into output
+> >> + *             buffer *entries*. *size* is the size of *entries* in bytes.
+> >> + *             *flags* is reserved for now and must be zero.
+> >> + *
+> >> + *     Return
+> >> + *             On success, number of bytes written to *buf*. On error, a
+> >> + *             negative value.
+> >> + *
+> >> + *             **-EINVAL** if arguments invalid or **size** not a multiple
+> >> + *             of **sizeof**\ (**struct perf_branch_entry**\ ).
+> >> + *
+> >> + *             **-ENOENT** if architecture does not support branch records.
+> >>  */
+> >> #define __BPF_FUNC_MAPPER(FN)          \
+> >>        FN(unspec),                     \
+> >> @@ -5055,6 +5076,7 @@ union bpf_attr {
+> >>        FN(get_func_ip),                \
+> >>        FN(get_attach_cookie),          \
+> >>        FN(task_pt_regs),               \
+> >> +       FN(get_branch_snapshot),        \
+> >>        /* */
+> >>
+> >> /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> >> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> >> index fe1e857324e66..39eaaff81953d 100644
+> >> --- a/kernel/bpf/trampoline.c
+> >> +++ b/kernel/bpf/trampoline.c
+> >> @@ -10,6 +10,7 @@
+> >> #include <linux/rcupdate_trace.h>
+> >> #include <linux/rcupdate_wait.h>
+> >> #include <linux/module.h>
+> >> +#include <linux/static_call.h>
+> >>
+> >> /* dummy _ops. The verifier will operate on target program's ops. */
+> >> const struct bpf_verifier_ops bpf_extension_verifier_ops = {
+> >> @@ -526,7 +527,7 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
+> >> }
+> >>
+> >> #define NO_START_TIME 1
+> >> -static u64 notrace bpf_prog_start_time(void)
+> >> +static __always_inline u64 notrace bpf_prog_start_time(void)
+> >> {
+> >>        u64 start = NO_START_TIME;
+> >>
+> >> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> >> index 8e2eb950aa829..a8ec3634a3329 100644
+> >> --- a/kernel/trace/bpf_trace.c
+> >> +++ b/kernel/trace/bpf_trace.c
+> >> @@ -1017,6 +1017,44 @@ static const struct bpf_func_proto bpf_get_attach_cookie_proto_pe = {
+> >>        .arg1_type      = ARG_PTR_TO_CTX,
+> >> };
+> >>
+> >> +static DEFINE_PER_CPU(struct perf_branch_snapshot, bpf_perf_branch_snapshot);
+> >> +
+> >> +BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
+> >> +{
+> >> +#ifndef CONFIG_X86
+> >> +       return -ENOENT;
+> >
+> > nit: -EOPNOTSUPP probably makes more sense for this?
+>
+> I had -EOPNOTSUPP in earlier version. But bpf_read_branch_records uses
+> -ENOENT, so I updated here in v4. I guess -ENOENT also makes sense? I
+> won't insist if you think -EOPNOTSUPP is better.
 
-Please also provide the output of:
+Hm... ok, I guess consistency takes priority, let's keep -ENOENT then.
 
-# grep . /sys/class/ata_device/dev*/trim
+>
+> >
+> >> +#else
+> >> +       static const u32 br_entry_size = sizeof(struct perf_branch_entry);
+> >> +       u32 to_copy;
+> >> +
+> >> +       if (unlikely(flags))
+> >> +               return -EINVAL;
+> >> +
+> >> +       if (!buf || (size % br_entry_size != 0))
+> >> +               return -EINVAL;
+> >> +
+> >> +       static_call(perf_snapshot_branch_stack)(this_cpu_ptr(&bpf_perf_branch_snapshot));
+> >
+> > First, you have four this_cpu_ptr(&bpf_perf_branch_snapshot)
+> > invocations in this function, probably cleaner to store the pointer in
+> > local variable?
+> >
+> > But second, this still has the reentrancy problem, right? And further,
+> > we copy the same LBR data twice (to per-cpu buffer and into
+> > user-provided destination).
+> >
+> > What if we change perf_snapshot_branch_stack signature to this:
+> >
+> > int perf_snapshot_branch_stack(struct perf_branch_entry *entries, int
+> > max_nr_entries);
+> >
+> > with the semantics that it will copy only min(max_nr_entreis,
+> > PERF_MAX_BRANCH_RECORDS) * sizeof(struct perf_branch_entry) bytes.
+> > That way we can copy directly into a user-provided buffer with no
+> > per-cpu storage. Of course, perf_snapshot_branch_stack will return
+> > number of entries copied, either as return result, or if static calls
+> > don't support that, as another int *nr_entries output argument.
+>
+> I like this idea. Once we get feedback from Peter, I will change this
+> in v5.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Sounds good, thanks!
+
+>
+> Thanks,
+> Song
+>
