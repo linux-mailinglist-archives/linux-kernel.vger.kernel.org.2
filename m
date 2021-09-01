@@ -2,123 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097703FD4E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230D73FD4EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242923AbhIAIJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:09:13 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:28751 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242944AbhIAIJK (ORCPT
+        id S242946AbhIAIKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:10:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30468 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242887AbhIAIKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:09:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1630483694; x=1662019694;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=acPplmh0ZzLic81uLKmpts3O5q+lr1KahcYPlLs7V4k=;
-  b=DE+K/oK2jQzSGAimWE4+Xwq1MXpdIckGAx3srXcCxf2vHl0UHB8O8yiA
-   4R9CWPXdcpUBMIfyAIvGLNm/zeWTpaInDoEpA6lJ3baSaZ9PwkaTC+daG
-   TPLSLXsiMJf3yawVxRlylmLJHyS+ysUBnaLTkoJOPL9bFOIDpeZefeq1s
-   n/ALQ2afiIKb1xsfMSMlcZt5PYf5HgtZbJTfY3DiWnXxuJZ/lSB2IwS4V
-   xNIcUM+6HrfKzZuRp9Fxpl1VEd1XiKJ+inIcAswzaZm9T86wcRs4rfrwc
-   z4sDw3QgNmUUE3CxDdPGvQNIo8sqx8RjeDO5YB4Q0kWmO5NhE6rZeVqIw
-   w==;
-IronPort-SDR: kWMl6HsB5SgWyvu2N3W+ufhxksxZyoFQ8axuwNcDjIUF7M+7kjrnMO0jxZgjLoZefFOyl9B7lY
- tkg7wh0DO52PljrkzAYUZZYuIigt6lhoCE83LCF09X799GS+351+bVZqAdm1XJEjF+8fM6pxJX
- JgF1hAOFhGiyzzZFxSh9t3Ps76TMXFxHip3WO38/eJVaj0XHvLAjNi5J4twgY99TV0ZR/EN3L/
- TWPQ8lDCXchCRdMVC/OGCZGO2Ru0kM7VhsVj8VrsqEEfQTOryhOMZamENN3x/XOe+2ouMQGgch
- 8lxOziPK4PkpJqJPkAkHkwCg
-X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
-   d="scan'208";a="134402103"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Sep 2021 01:08:13 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 1 Sep 2021 01:08:12 -0700
-Received: from [10.12.72.234] (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Wed, 1 Sep 2021 01:08:10 -0700
-Subject: Re: [PATCH v3 0/4] mmc: pwrseq: sd8787: add support wilc1000 devices
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210820092803.78523-1-claudiu.beznea@microchip.com>
- <CAPDyKFrcBS2tf32H9+wsy7=TsHkaqtw0cZcSAgZc3XjnLzJ__w@mail.gmail.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <d8bf8840-4b13-7f95-8fe3-243c3d27a2e4@microchip.com>
-Date:   Wed, 1 Sep 2021 10:08:10 +0200
+        Wed, 1 Sep 2021 04:10:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630483751;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xehwNc5m+0VkuxXN2ywY3KTZndfyL4hPEsZFfPwosyo=;
+        b=Gqfb2DC+SIKh/b+m6HsvIL3HWsTUEAqJJSW2rK3DlHaTqe96lAqoF3Rq3eIYDM3KTx4fwW
+        E87coeCpedqZBVkRDI8yScIb8dwADF5OukhyJGyRtjVJ5eoE0fdITGv2uGDTVVYSA6K5xU
+        ML6wStMWTLjrZzsij1G2yqu12QwdPoc=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-twPHeTllOXeZG27KANVDuA-1; Wed, 01 Sep 2021 04:09:10 -0400
+X-MC-Unique: twPHeTllOXeZG27KANVDuA-1
+Received: by mail-wr1-f69.google.com with SMTP id r11-20020a5d4e4b000000b001575c5ed4b4so520605wrt.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:09:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=xehwNc5m+0VkuxXN2ywY3KTZndfyL4hPEsZFfPwosyo=;
+        b=IJJstv78L4eNXSDhkD2+sknZmXPLP3hF/kGrcHdjI6cRT+kqX24L8SiXU6qS3U9AJh
+         88QHgPIzBWfIRYZJbMTPn6VECsEbf1znHEPJbpj/IqmIjpkqyU8YOHkjHsj8mDogfJLq
+         5aQveKhxVId6R4JOuQxx/V2pdAZOaX1XFA0xI8VsvKg54BCmXOFM0bph1zg0iuiCw0nW
+         6JM++A3yeKcRXCZ6uKauay18wLosdoDFKn0iw8aivNdNLDdJ1K09wskOnj8hXOdpDLR5
+         7U6B37A0qQTTS/knjWV3g1YnWNVZJRH9lakyc/iYXUG9t/EBb5mjUaM87bg/gee8Dpjm
+         Mb4Q==
+X-Gm-Message-State: AOAM532uAmPdIy/c1ZFphl7Y4Lbu3D31J29Q2c/LLtp/avJOSPHKO+ZJ
+        t/ZWB0MyFVdUP+rTqsvTuHX2QJvDIR/stgSEjeyuBSLVycShkj3ZVhQtyXovVCpt2SI6PsPOMWI
+        yDhT+lBLwdubRCzga683fWfpl
+X-Received: by 2002:a1c:2684:: with SMTP id m126mr8402732wmm.65.1630483749483;
+        Wed, 01 Sep 2021 01:09:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxVg9SDEJVZUq3nbvsMK7CWfSbicB1cKUcx7fhtGFdGrRsx3YALb8TPN4qumsd3be+NY8b/Lw==
+X-Received: by 2002:a1c:2684:: with SMTP id m126mr8402689wmm.65.1630483749203;
+        Wed, 01 Sep 2021 01:09:09 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
+        by smtp.gmail.com with ESMTPSA id o7sm4481973wmc.46.2021.09.01.01.09.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 01:09:08 -0700 (PDT)
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+ <YSlkzLblHfiiPyVM@google.com>
+ <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
+ <YS6lIg6kjNPI1EgF@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
+ memory
+Message-ID: <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
+Date:   Wed, 1 Sep 2021 10:09:07 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFrcBS2tf32H9+wsy7=TsHkaqtw0cZcSAgZc3XjnLzJ__w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <YS6lIg6kjNPI1EgF@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2021 at 16:56, Ulf Hansson wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>> Do we have to protect from that? How would KVM protect from user space
+>> replacing private pages by shared pages in any of the models we discuss?
 > 
-> On Fri, 20 Aug 2021 at 11:30, Claudiu Beznea
-> <claudiu.beznea@microchip.com> wrote:
->>
->> Hi,
->>
->> This series adds support for WILC1000 devices on pwrseq-sd8787 driver.
->> WILC1000 devices needs a minimum delay of 5ms b/w reset and power lines.
->> Adapt the sd8787 driver for this by adding a new compatible for WILC1000
->> devices and specify the delay on .data field of struct of_device_id.
->>
->> Thank you,
->> Claudiu Beznea
->>
->> Changes in v3:
->> - fixed dt binding compilation
->>
->> Changes in v2:
->> - changed cover letter title (it was: mmc: pwrseq: sd8787: add support
->>    for selectable)
->> - use new compatible in pwrseq-sd8787 driver instead of adding a new
->>    binding for specifying the delay; with this, the patch 1/1 from v1 is
->>    not necessary
->> - adapt patch 3/3 from this version with the new compatible
->>
->>
->> Claudiu Beznea (3):
->>    dt-bindings: pwrseq-sd8787: add binding for wilc1000
->>    mmc: pwrseq: sd8787: add support for wilc1000
->>    mmc: pwrseq: add wilc1000_sdio dependency for pwrseq_sd8787
->>
->> Eugen Hristev (1):
->>    ARM: dts: at91: sama5d27_wlsom1: add wifi device
->>
->>   .../bindings/mmc/mmc-pwrseq-sd8787.yaml       |  4 +-
->>   arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi   | 71 +++++++++++++++++++
->>   drivers/mmc/core/Kconfig                      |  2 +-
->>   drivers/mmc/core/pwrseq_sd8787.c              | 11 ++-
->>   4 files changed, 84 insertions(+), 4 deletions(-)
->>
+> The overarching rule is that KVM needs to guarantee a given pfn is never mapped[*]
+> as both private and shared, where "shared" also incorporates any mapping from the
+> host.  Essentially it boils down to the kernel ensuring that a pfn is unmapped
+> before it's converted to/from private, and KVM ensuring that it honors any
+> unmap notifications from the kernel, e.g. via mmu_notifier or via a direct callback
+> as proposed in this RFC.
+
+Okay, so the fallocate(PUNCHHOLE) from user space could trigger the 
+respective unmapping and freeing of backing storage.
+
 > 
-> Applied patch1 -> patch3, thanks! I leave patch 4 for soc maintainers.
+> As it pertains to PUNCH_HOLE, the responsibilities are no different than when the
+> backing-store is destroyed; the backing-store needs to notify downstream MMUs
+> (a.k.a. KVM) to unmap the pfn(s) before freeing the associated memory.
 
-Perfect, we take care of patch 4 through at91 -> arm-soc trees for 5.16 
-kernel timeframe.
+Right.
 
-Best regards,
-   Nicolas
+> 
+> [*] Whether or not the kernel's direct mapping needs to be removed is debatable,
+>      but my argument is that that behavior is not visible to userspace and thus
+>      out of scope for this discussion, e.g. zapping/restoring the direct map can
+>      be added/removed without impacting the userspace ABI.
 
+Right. Removing it shouldn't also be requited IMHO. There are other ways 
+to teach the kernel to not read/write some online pages (filter 
+/proc/kcore, disable hibernation, strict access checks for /dev/mem ...).
+
+> 
+>>>> Define "ordinary" user memory slots as overlay on top of "encrypted" memory
+>>>> slots.  Inside KVM, bail out if you encounter such a VMA inside a normal
+>>>> user memory slot. When creating a "encryped" user memory slot, require that
+>>>> the whole VMA is covered at creation time. You know the VMA can't change
+>>>> later.
+>>>
+>>> This can work for the basic use cases, but even then I'd strongly prefer not to
+>>> tie memslot correctness to the VMAs.  KVM doesn't truly care what lies behind
+>>> the virtual address of a memslot, and when it does care, it tends to do poorly,
+>>> e.g. see the whole PFNMAP snafu.  KVM cares about the pfn<->gfn mappings, and
+>>> that's reflected in the infrastructure.  E.g. KVM relies on the mmu_notifiers
+>>> to handle mprotect()/munmap()/etc...
+>>
+>> Right, and for the existing use cases this worked. But encrypted memory
+>> breaks many assumptions we once made ...
+>>
+>> I have somewhat mixed feelings about pages that are mapped into $WHATEVER
+>> page tables but not actually mapped into user space page tables. There is no
+>> way to reach these via the rmap.
+>>
+>> We have something like that already via vfio. And that is fundamentally
+>> broken when it comes to mmu notifiers, page pinning, page migration, ...
+> 
+> I'm not super familiar with VFIO internals, but the idea with the fd-based
+> approach is that the backing-store would be in direct communication with KVM and
+> would handle those operations through that direct channel.
+
+Right. The problem I am seeing is that e.g., try_to_unmap() might not be 
+able to actually fully unmap a page, because some non-synchronized KVM 
+MMU still maps a page. It would be great to evaluate how the fd 
+callbacks would fit into the whole picture, including the current rmap.
+
+I guess I'm missing the bigger picture how it all fits together on the 
+!KVM side.
+
+> 
+>>> As is, I don't think KVM would get any kind of notification if userpaces unmaps
+>>> the VMA for a private memslot that does not have any entries in the host page
+>>> tables.   I'm sure it's a solvable problem, e.g. by ensuring at least one page
+>>> is touched by the backing store, but I don't think the end result would be any
+>>> prettier than a dedicated API for KVM to consume.
+>>>
+>>> Relying on VMAs, and thus the mmu_notifiers, also doesn't provide line of sight
+>>> to page migration or swap.  For those types of operations, KVM currently just
+>>> reacts to invalidation notifications by zapping guest PTEs, and then gets the
+>>> new pfn when the guest re-faults on the page.  That sequence doesn't work for
+>>> TDX or SEV-SNP because the trusteday agent needs to do the memcpy() of the page
+>>> contents, i.e. the host needs to call into KVM for the actual migration.
+>>
+>> Right, but I still think this is a kernel internal. You can do such
+>> handshake later in the kernel IMHO.
+> 
+> It is kernel internal, but AFAICT it will be ugly because KVM "needs" to do the
+> migration and that would invert the mmu_notifer API, e.g. instead of "telling"
+> secondary MMUs to invalidate/change a mappings, the mm would be "asking"
+> secondary MMus "can you move this?".  More below.
+
+In my thinking, the the rmap via mmu notifiers would do the unmapping 
+just as we know it (from primary MMU -> secondary MMU). Once 
+try_to_unmap() succeeded, the fd provider could kick-off the migration 
+via whatever callback.
+
+> 
+>> But I also already thought: is it really KVM that is to perform the
+>> migration or is it the fd-provider that performs the migration? Who says
+>> memfd_encrypted() doesn't default to a TDX "backend" on Intel CPUs that just
+>> knows how to migrate such a page?
+>>
+>> I'd love to have some details on how that's supposed to work, and which
+>> information we'd need to migrate/swap/... in addition to the EPFN and a new
+>> SPFN.
+> 
+> KVM "needs" to do the migration.  On TDX, the migration will be a SEAMCALL,
+> a post-VMXON instruction that transfers control to the TDX-Module, that at
+> minimum needs a per-VM identifier, the gfn, and the page table level.  The call
+
+The per-VM identifier and the GFN would be easy to grab. Page table 
+level, not so sure -- do you mean the general page table depth? Or if 
+it's mapped as 4k vs. 2M ... ? The latter could be answered by the fd 
+provider already I assume.
+
+Does the page still have to be mapped into the secondary MMU when 
+performing the migration via TDX? I assume not, which would simplify 
+things a lot.
+
+> into the TDX-Module would also need to take a KVM lock (probably KVM's mmu_lock)
+> to satisfy TDX's concurrency requirement, e.g. to avoid "spurious" errors due to
+> the backing-store attempting to migrate memory that KVM is unmapping due to a
+> memslot change.
+
+Something like that might be handled by fixing private memory slots 
+similar to in my draft, right?
+
+> 
+> The per-VM identifier may not apply to SEV-SNP, but I believe everything else
+> holds true.
+
+Thanks!
 
 -- 
-Nicolas Ferre
+Thanks,
+
+David / dhildenb
+
