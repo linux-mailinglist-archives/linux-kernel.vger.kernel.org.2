@@ -2,97 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDFC3FD875
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2C23FD878
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238988AbhIALK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 07:10:57 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46274 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237050AbhIALKc (ORCPT
+        id S239732AbhIALMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 07:12:01 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52086 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232841AbhIALL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 07:10:32 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 220871C0B76; Wed,  1 Sep 2021 13:09:30 +0200 (CEST)
-Date:   Wed, 1 Sep 2021 13:09:29 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     "hamza.farooq@siemens.com" <hamza.farooq@siemens.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "henning.schild@siemens.com" <henning.schild@siemens.com>,
-        "jan.kiszka@siemens.com" <jan.kiszka@siemens.com>,
-        "Haeussler, Gerd" <gerd.haeussler.ext@siemens.com>
-Subject: Re: Define LEDs with mixed colors
-Message-ID: <20210901110929.GA18522@duo.ucw.cz>
-References: <DBAPR10MB42195CA4E52FDD30F0598AE98ACD9@DBAPR10MB4219.EURPRD10.PROD.OUTLOOK.COM>
+        Wed, 1 Sep 2021 07:11:59 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2E5821FEE2;
+        Wed,  1 Sep 2021 11:11:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630494662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yHDDGd9NsYI954+uDyB4sPxqRmxrEfuI05uaWYAqUWA=;
+        b=uDnFR0VrJifGYhTWTuX7sNA6JM+dYSCJphfou1zA/px0j0uz0AlUUyzEMDEHJttcZQ0nVs
+        Q5g/VOVpcJWc/ojO1NLRn3TloBHyO5MuuDxnuEFBSMsrx3ESYiQ+zwz2f/W2mqFgCte4tg
+        VW61Kt/vQfdwiA+CXFu83yzBq8Ob3Ws=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 6617FA3B95;
+        Wed,  1 Sep 2021 11:11:01 +0000 (UTC)
+Date:   Wed, 1 Sep 2021 13:11:01 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [RFC PATCH 1/1] mm: provide one common K(x) macro
+Message-ID: <YS9fxXSl5vhs5a+X@dhcp22.suse.cz>
+References: <20210901092149.994791-1-oleksandr@natalenko.name>
+ <20210901092149.994791-2-oleksandr@natalenko.name>
+ <YS9WiF6enhSo8sYc@dhcp22.suse.cz>
+ <5529272.KFOknHQvy8@natalenko.name>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DBAPR10MB42195CA4E52FDD30F0598AE98ACD9@DBAPR10MB4219.EURPRD10.PROD.OUTLOOK.COM>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5529272.KFOknHQvy8@natalenko.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 01-09-21 12:50:40, Oleksandr Natalenko wrote:
+[...]
+> ```
+> 31 files changed, 104 insertions(+), 90 deletions(-)
+> ```
+> 
+> which is not that horrible.
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Still a lot of churn to my taste for something that is likely a matter
+of personal preferences and taste. Consider additional costs as well.
+E.g. go over additional git blame steps to learn why the code has been
+introduced, review bandwith etc...
 
-Hi!
-
-> I am toying with the idea of writing a multicolor LED GPIO driver. What w=
-ould be the right way to define mixed color LEDs (for leds-gpio), in device=
- tree or ACPI?
-> Consider the following:
->=20
-> leds {
-> 	compatible =3D "gpio-leds";
-> 	led0 {
-> 		gpios =3D <&mcu_pio 0 GPIO_ACTIVE_LOW>;
-> 		color =3D <LED_COLOR_ID_RED>;
-> 	};
->=20
-> 	led1 {
-> 		gpios =3D <&mcu_pio 1 GPIO_ACTIVE_HIGH>;
-> 		color =3D <LED_COLOR_ID_GREEN>;
-> 	};
-> 	led2 {
-> 		gpios =3D <&mcu_pio 0 GPIO_ACTIVE_LOW
-> 			&mcu_pio 1 GPIO_ACTIVE_LOW>;
-> 		color =3D <LED_COLOR_ID_AMBER>;
-> 	};
-> };
->=20
-> This probably won't work as "gpios" seem to be single object in gpio-leds=
- driver code, but what can I do to achieve something similar?
-> It is important to define this LED in DT/ACPI in order for the user app t=
-o see it in the /sys/class/led folder, without having to write platform-spe=
-cific driver.
->=20
-
-So you have one package with red and green LED, each connected to one
-GPIO?
-
-Can you take a look at Documentation/leds/leds-class-multicolor.rst?
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---EeQfGwPcQSOJBaQU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYS9faQAKCRAw5/Bqldv6
-8nVoAKCrWFL/Byw2H13dqN2vky8qfvlLnQCcD5X4J8/q3K060nGud0YOCgjvmt4=
-=TOrG
------END PGP SIGNATURE-----
-
---EeQfGwPcQSOJBaQU--
+And just be clear, I am not really opposing this patch I just do not see
+a justification and in general I am not super thrilled about cleanups
+which are not really necessary for a bigger goal - exactly because of
+the additional costs mentioned above.
+-- 
+Michal Hocko
+SUSE Labs
