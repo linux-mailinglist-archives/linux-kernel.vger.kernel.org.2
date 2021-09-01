@@ -2,108 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359FF3FE111
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C403FE119
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345012AbhIARU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
+        id S236315AbhIARZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234840AbhIARU5 (ORCPT
+        with ESMTP id S232491AbhIARZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:20:57 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDEEC061575;
-        Wed,  1 Sep 2021 10:20:00 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id 6so211048oiy.8;
-        Wed, 01 Sep 2021 10:20:00 -0700 (PDT)
+        Wed, 1 Sep 2021 13:25:50 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DE4C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 10:24:52 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id y34so485951lfa.8
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:24:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MQNYeLOlbF4CU5PfvC1DgnprS8pBMmOc+dOnuh+XI1k=;
-        b=esBUZIktOXnkxH7MHZWuyRuBrt/0OaHxjQAi1ayt+Dl36umGXGmzSQ+Sx/LAPlT3aT
-         LkA+BTaWsdGQJNoWzkP60NEmKvTEj93uAjnGU/HzGPK+Lq92+GaG71MqDk3auyBgEbXE
-         V0mTLqLfn9AXf2+ozir/0KZUzw6vm2Z5+jzgrktMtWhqonWBYO3tAyXT+GzGXKTp52pp
-         gc8r1OZ9z6YQ+uMu+t3hK433OJCkyJgjFxE+xhcYN/UhtHnBOHnk/DRSW/xg3jRAc1ue
-         gd4n/vR26V4WxDaf+KTC2SQU1zEaEBRlEXQmEcV9rj8x6qN+2XeFFhBf7UMagdghgviw
-         821g==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cYSskR1qeRze9m2i9qdO3oEtLqePzdlT8/5OwPr7ipE=;
+        b=USxu9L1bhF7jMLXIxHLM75peGmrT6vCWPVCsIEvdUlFz0JcMEEocWtOcBR0v1JBKO5
+         KCcsomHYd7LgwU8owuOqjW3N6TZrP8kiykgsZDSxatF+N3gqNhPh99DqwD+iiEyBDZfr
+         7IG0D+U9NO8Nt/wwlAVsgMVbOcCP7YI4QOjII=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=MQNYeLOlbF4CU5PfvC1DgnprS8pBMmOc+dOnuh+XI1k=;
-        b=BoxJ/QPNNm48oyfqB1xZ0Hk7nDFCImLbD0a7E9WTlud7dE9CkHFDJ754nlpq3Agjcy
-         ysQvrMdr0HOlQ9oVAfBHCNXA6vPse+Ji4Shm+X3DaKdMK4UT2WujI0LonjM/79RKkIwr
-         fNCUA+RVNhWdrcRyNd89ZgDmaRwx8pNC0VmvEeg1KOahPZaxFXOxwYSjSJa/OMXaGE3X
-         xIjM8Vs2O9RWhQOhM/C5iWN/0/OPe63cN8QkWXKDrTI676pGrbhrZPJSSpR2Kn9owp88
-         NIl7qT8jwBXmXOFNVTkRFyZwSmyEqjSc7sz6KctoWI/yUwUAFQdcuveKJMbOln0RAbnv
-         WUUQ==
-X-Gm-Message-State: AOAM531oQvo0P7U4hNL9QrwC7/U5EgqI0/GhSLbna6J1a23YDSpRv35P
-        N3MXZ1MPBGi7ve89b1xK0rk=
-X-Google-Smtp-Source: ABdhPJzrU8WAkpumxHlHzavN6WMqpEaXk7p+smulDC+w95FmkVcCbDcJYy1r45EYCpTBirX1Gq8XHA==
-X-Received: by 2002:aca:b6d5:: with SMTP id g204mr562584oif.29.1630516799738;
-        Wed, 01 Sep 2021 10:19:59 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d10sm71231ooj.24.2021.09.01.10.19.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 10:19:59 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 1 Sep 2021 10:19:57 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>, Andrii Nakryiko <andriin@fb.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Doug Berger <opendmb@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jakub Kicinski <kuba@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Sam Creasey <sammy@sammy.net>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [PATCH v2 05/14] [net-next] cs89x0: rework driver configuration
-Message-ID: <20210901171957.GA2882691@roeck-us.net>
-References: <20210803114051.2112986-1-arnd@kernel.org>
- <20210803114051.2112986-6-arnd@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cYSskR1qeRze9m2i9qdO3oEtLqePzdlT8/5OwPr7ipE=;
+        b=ukVBpkRabH5qYzX8JWOnZmLXCVOecIMwphW8UPZ2UmCwV8qVUtUGLX73BZlcwb7Muh
+         OStJiOAgoixR30OpRag2XFxMG6VlTR+HCQT6JtoKkKmv2EiSi4sSaFsdc6CVZpJASUH/
+         fq18z6ssV4musFIMKyzYbcCcg6j18miMZ+5jSoE/kf0g/GXZOnEYPW150KXj0xivmnfn
+         W5xxtA4cNCzZ6s3RR0MKfV1dY1WBhrmr3nPg9w2LfiJtb5LnEmaAXTVly3x1kIej3Mln
+         gO9HBBM71TX5P45zOKzJNv3i3/V5aBsP50WKGuWyzCWpUvzjs7Vi2Bg+g9ZRieIeLrCY
+         q07Q==
+X-Gm-Message-State: AOAM531zozw2bFhGzoLYDUeE3NVaZHbrhBzSC5NzV8f7JGdETUhELApb
+        sY9BowPsjSmuu9LrS298OdSMpjcxIdt2dJfH
+X-Google-Smtp-Source: ABdhPJxKTjNrcqb8szWiTdH3KT0pNve/Sb1xqM2k5v4p7l6zrSdJ/7tqYz30Uswy6UcbsaOwSkjT2Q==
+X-Received: by 2002:a05:6512:3987:: with SMTP id j7mr441559lfu.280.1630517090638;
+        Wed, 01 Sep 2021 10:24:50 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id c11sm10652lfb.76.2021.09.01.10.24.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 10:24:49 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id f2so329658ljn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:24:48 -0700 (PDT)
+X-Received: by 2002:a2e:84c7:: with SMTP id q7mr634325ljh.61.1630517088465;
+ Wed, 01 Sep 2021 10:24:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803114051.2112986-6-arnd@kernel.org>
+References: <a2f423cf-9413-6bc8-e4d8-92374fc0449e@amperemail.onmicrosoft.com> <YS8HpUz9FUcFWt0V@zeniv-ca.linux.org.uk>
+In-Reply-To: <YS8HpUz9FUcFWt0V@zeniv-ca.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 1 Sep 2021 10:24:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiwAC8L7UsRsd-sHNS8ZETbrTB0EELvYV1qMOUo86R7kg@mail.gmail.com>
+Message-ID: <CAHk-=wiwAC8L7UsRsd-sHNS8ZETbrTB0EELvYV1qMOUo86R7kg@mail.gmail.com>
+Subject: Re: Is it possible to implement the per-node page cache for programs/libraries?
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Shijie Huang <shijie@amperemail.onmicrosoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Frank Wang <zwang@amperecomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 01:40:42PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> There are two drivers in the cs89x0 file, with the CONFIG_CS89x0_PLATFORM
-> symbol deciding which one is getting built. This is somewhat confusing
-> and makes it more likely ton configure a driver that works nowhere.
-> 
-> Split up the Kconfig option into separate ISA and PLATFORM drivers,
-> with the ISA symbol explicitly connecting to the static probing in
-> drivers/net/Space.c
-> 
-> The two drivers are still mutually incompatible at compile time,
-> which could be lifted by splitting them into multiple files,
-> but in practice this will make no difference.
-> 
-> The platform driver can now be enabled for compile-testing on
-> non-ARM machines.
-> 
+On Tue, Aug 31, 2021 at 9:57 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> What do you mean, per-node page cache?  Multiple pages for the same
+> area of file?  That'd be bloody awful on coherency...
 
-powerpc:allmodconfig in mainline (I tested v5.14-3756-gd8b4266666c4 and
-v5.14-4526-gebf435d3b51b):
+You absolutely don't want to actually duplicate it in the cache.
 
-drivers/net/ethernet/cirrus/cs89x0.c: In function 'net_open':
-drivers/net/ethernet/cirrus/cs89x0.c:897:41: error: implicit declaration of function 'isa_virt_to_bus'
+But what you could do, if  you wanted to, would be to catch the
+situation where you have lots of expensive NUMA accesses either using
+our VM infrastructure or performance counters, and when the mapping is
+a MAP_PRIVATE you just do a COW fault on them.
 
-Guenter
+Honestly, I suspect it only makes sense when you have already bound
+your process to one particular NUMA node.
+
+Sounds entirely doable, and has absolutely nothing to do with the page
+cache. It would literally just be an "over-eager COW fault triggered
+by NUMA access counters".
+
+             Linus
