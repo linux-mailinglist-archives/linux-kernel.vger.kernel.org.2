@@ -2,39 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5C23FDC39
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F8A3FDC2B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344959AbhIAMsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:48:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43102 "EHLO mail.kernel.org"
+        id S1345285AbhIAMrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:47:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344774AbhIAMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345280AbhIAMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 1 Sep 2021 08:42:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AE25611F2;
-        Wed,  1 Sep 2021 12:37:58 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A24AA610F7;
+        Wed,  1 Sep 2021 12:38:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499879;
-        bh=zSNr8kFULbCxxpVnhaNXWL9K+ZPAtemFX4ANnza/kRE=;
+        s=korg; t=1630499884;
+        bh=qaVj7Tfy7kwr369CTRjzIxDtcj0W6lQgyKp/Xj7Ow14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EhcIOcgbybiIkcLfvnhDnyadhSYa802I3KQPnyi2JUTcI5nF3q+nzN5jteMFjrVkZ
-         h8S+hUdixGAKtx86w9qOSMfMbFXHoGOIKWXII4z3uaw+2RzmqyHMFtNmNfvpxCTUbT
-         aqFYyaJVAPSFJQntnkZc2r65eDTkoh+vyR8jeFM8=
+        b=oNZz3C6lgFotNOUqXYTfKjvR+MUJawWmIFVB8eErCnbkbngPm4UGB+44GTH/LNtj+
+         6Kyfo/loN57qQvLU6tJBiKyl9+sbpz8ZbTAfkUxAqZwpihmYmbEfPhuG+4Z68Wi5U1
+         eGbumgUo5kPmp8raWfjzmqTY5ikmifvCL9+ynYJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.13 019/113] mm/memory_hotplug: fix potential permanent lru cache disable
-Date:   Wed,  1 Sep 2021 14:27:34 +0200
-Message-Id: <20210901122302.620662880@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.13 020/113] Revert "btrfs: compression: dont try to compress if we dont have enough pages"
+Date:   Wed,  1 Sep 2021 14:27:35 +0200
+Message-Id: <20210901122302.657184917@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
 References: <20210901122301.984263453@linuxfoundation.org>
@@ -46,40 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Qu Wenruo <wqu@suse.com>
 
-commit 946746d1ad921e5f493b536533dda02ea22ca609 upstream.
+commit 4e9655763b82a91e4c341835bb504a2b1590f984 upstream.
 
-If offline_pages failed after lru_cache_disable(), it forgot to do
-lru_cache_enable() in error path.  So we would have lru cache disabled
-permanently in this case.
+This reverts commit f2165627319ffd33a6217275e5690b1ab5c45763.
 
-Link: https://lkml.kernel.org/r/20210821094246.10149-3-linmiaohe@huawei.com
-Fixes: d479960e44f2 ("mm: disable LRU pagevec during the migration temporarily")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[BUG]
+It's no longer possible to create compressed inline extent after commit
+f2165627319f ("btrfs: compression: don't try to compress if we don't
+have enough pages").
+
+[CAUSE]
+For compression code, there are several possible reasons we have a range
+that needs to be compressed while it's no more than one page.
+
+- Compressed inline write
+  The data is always smaller than one sector and the test lacks the
+  condition to properly recognize a non-inline extent.
+
+- Compressed subpage write
+  For the incoming subpage compressed write support, we require page
+  alignment of the delalloc range.
+  And for 64K page size, we can compress just one page into smaller
+  sectors.
+
+For those reasons, the requirement for the data to be more than one page
+is not correct, and is already causing regression for compressed inline
+data writeback.  The idea of skipping one page to avoid wasting CPU time
+could be revisited in the future.
+
+[FIX]
+Fix it by reverting the offending commit.
+
+Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Link: https://lore.kernel.org/linux-btrfs/afa2742.c084f5d6.17b6b08dffc@tnonline.net
+Fixes: f2165627319f ("btrfs: compression: don't try to compress if we don't have enough pages")
+CC: stable@vger.kernel.org # 4.4+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/memory_hotplug.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/btrfs/inode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1854,6 +1854,7 @@ failed_removal_isolated:
- 	undo_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
- 	memory_notify(MEM_CANCEL_OFFLINE, &arg);
- failed_removal_pcplists_disabled:
-+	lru_cache_enable();
- 	zone_pcp_enable(zone);
- failed_removal:
- 	pr_debug("memory offlining [mem %#010llx-%#010llx] failed due to %s\n",
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -603,7 +603,7 @@ again:
+ 	 * inode has not been flagged as nocompress.  This flag can
+ 	 * change at any time if we discover bad compression ratios.
+ 	 */
+-	if (nr_pages > 1 && inode_need_compress(BTRFS_I(inode), start, end)) {
++	if (inode_need_compress(BTRFS_I(inode), start, end)) {
+ 		WARN_ON(pages);
+ 		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
+ 		if (!pages) {
 
 
