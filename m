@@ -2,119 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FB13FD466
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6E33FD467
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242556AbhIAH2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:28:09 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:37646 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231739AbhIAH2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:28:08 -0400
-Received: from zn.tnic (p200300ec2f0f3000ff66408ba4c79392.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:3000:ff66:408b:a4c7:9392])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BF9E61EC051E;
-        Wed,  1 Sep 2021 09:27:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1630481226;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6p6hxtBn8gLHMzkoO0aM3iXU0A8QRJ+1AexPaqoZxP0=;
-        b=aBEpLFUNgs+kBXiS5AwC0yCDqg3DN5FnxwBqH+NRcVcw9mCi+OgzOhfIcxF7YLFtgHqzBB
-        /fuOcdGMdcS1AvVMZWNi9ynkGYuss7WmbFwInv158Vm0/mXEThvDpMrIC1SUmiBWgadeie
-        6YjaXvPwXGSZkOzqi3eC5A9KxMVwtYE=
-Date:   Wed, 1 Sep 2021 09:27:40 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Luck, Tony" <tony.luck@intel.com>
+        id S242579AbhIAH2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231739AbhIAH2w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 03:28:52 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95779C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 00:27:56 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d17so951215plr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 00:27:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fc6CZS+bGPvfj267sYMmDl3dI5YtuEsdV4q3SHhX8KQ=;
+        b=dw9Z2GXH5iuf/XyfZfnF+MROZm9z8E3oYsVWHmI1xh2af0q3zEEkeDvTPxm/md6SQT
+         OI4fi9Cryk3CcHCn1Qb6oahEQkesubljXKoIFac/ZoVu1ka2IZXUd/d7qhJzopQKN/LJ
+         oDrwxHPTWF0s7grJTAtiC47nQxcSyww8MmHuL0wXA27BtoYzQUp9pGkJ5UUEQV6X1qoV
+         M0DqR6+xlr5DtArHaHnzlz54RJVr9VJ0iDqvZrf+6cP+xVdH6XxHaD654Yw04zRIa2xz
+         x81McOXNngF4IZBAsbvSiSRcKa2uE7PcRqPZGhX70+ejLhSE7sBw+YZoELpRxvXaRK1/
+         AL4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fc6CZS+bGPvfj267sYMmDl3dI5YtuEsdV4q3SHhX8KQ=;
+        b=dRk2YxsPqkdgD02blLUhIUvy1zL/o4tLJYd6KVQDSWjUGAq1fDZvEdBWzH+FQADnP+
+         6sOS8DCMUmIuwL2FLv4Sj//5bZJ5yq5jy5v4bXMD+wvs4y8/16zvONnZldlkzN6pyzVv
+         m+FfOYwyW+SbukNmC2dCC4qm/lYd1CDYw/E+5qhP5FesSfg2O0bg5du+RH2XTgSGtOQ0
+         93zjNITTssS5z3BzcAFWMiqUk4sQswcCCswXbgFEIuw7fWDP45mTXnoMY0vQfQ0QsVEj
+         l8BnwwfvgtmX0SgLDsHNzWcicztAgOMhWN/nSrq4dypIQXgbJ/OUCfjpTKcq7MX3gfJi
+         Mdqg==
+X-Gm-Message-State: AOAM533cq7C6F46aVElJSEsZBuY5ZxNF1YSffE+L6Ut+P4pElAfcuthT
+        8nDHemmCW3SZzKvnLwOU0AlEdw==
+X-Google-Smtp-Source: ABdhPJyCM6tjHQsFwmJzpKUnu4VmsVjiRDRWhx+BvMKc/P1PEf79iogjeGuEDqhkhR36Qoz8DQypIQ==
+X-Received: by 2002:a17:90a:509:: with SMTP id h9mr10464679pjh.71.1630481276056;
+        Wed, 01 Sep 2021 00:27:56 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([213.173.35.225])
+        by smtp.gmail.com with ESMTPSA id x191sm13122164pfc.60.2021.09.01.00.27.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 00:27:55 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 15:27:51 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Marc Zyngier <maz@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
- restore_fpregs_from_user()
-Message-ID: <YS8rbA239gXOT6R6@zn.tnic>
-References: <20210830162545.374070793@linutronix.de>
- <YS0ylo9nTHD9NiAp@zn.tnic>
- <87zgsyg0eg.ffs@tglx>
- <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
- <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
- <YS1OE6FRi4ZwEF8j@zeniv-ca.linux.org.uk>
- <CAHk-=wh57tMaJxcH=kWE4xdKLjayKSDEVvMwHG4fKZ5tUHF6mg@mail.gmail.com>
- <87zgsye9kn.ffs@tglx>
- <YS3cskpK9Uoq3Wc4@zn.tnic>
- <20210831183921.GA1687448@agluck-desk2.amr.corp.intel.com>
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        Orito Takao <orito.takao@socionext.com>
+Subject: Re: [RFC PATCH] irqchip/gic, gic-v3: Ensure data visibility in
+ peripheral
+Message-ID: <20210901072751.GB303522@leoy-ThinkPad-X240s>
+References: <20210901063115.383026-1-leo.yan@linaro.org>
+ <87bl5cwzdz.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210831183921.GA1687448@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <87bl5cwzdz.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 11:39:21AM -0700, Luck, Tony wrote:
-> You can imagine all you want. And if your imagination is based
-> on experiences with very old systems like Haswell (launched in 2015)
-> then you'd be right to be skeptical of firmware capabilities.
+Hi Marc,
 
-I wish it were only Haswell boxes. Do you remember how many times I've
-talked to you in the past about boxes with broken einj? I don't think
-they were all Haswell but I haven't kept track.
+On Wed, Sep 01, 2021 at 08:03:52AM +0100, Marc Zyngier wrote:
+> On Wed, 01 Sep 2021 07:31:15 +0100,
+> Leo Yan <leo.yan@linaro.org> wrote:
+> > 
+> > When an interrupt line is assered, GIC handles interrupt with the flow
+> > (with EOImode == 1):
+> > 
+> >   gic_handle_irq()
+> >    `> do_read_iar()                          => Change int state to active
+> >    `> gic_write_eoir()                       => Drop int priority
+> >    `> handle_domain_irq()
+> >        `> generic_handle_irq_desc()
+> >        `> handle_fasteoi_irq()
+> >            `> handle_irq_event()             => Peripheral handler and
+> > 	                                        de-assert int line
+> >            `> cond_unmask_eoi_irq()
+> > 	       `> chip->irq_eoi()
+> > 	           `> gic_eoimode1_eoi_irq() => Change int state to inactive
+> > 
+> > In this flow, it has no explicit memory barrier between the functions
+> > handle_irq_event() and chip->irq_eoi(), it's possible that the
+> > outstanding data has not reached device in handle_irq_event() but the
+> > callback chip->irq_eoi() is invoked, this can lead to state transition
+> > for level triggered interrupt:
+> > 
+> >   Flow                             |  Interrupt state in GIC
+> >   ---------------------------------+-------------------------------------
+> >   Interrupt line is asserted       |  'inactive' -> 'pending'
+> >   do_read_iar()                    |  'pending'  -> 'pending & active'
+> >   handle_irq_event()               |  Write peripheral register but it's
+> >                                    |    not visible for device, so the
+> > 				   |    interrupt line is still asserted
+> >   chip->irq_eoi()                  |  'pending & active' -> 'pending'
+> >                                   ...
+> >   Produce spurious interrupt       |
+> >       with interrupt ID: 1024      |
+> 
+> 1024? Surely not.
 
-> Turn off eMCA in BIOS to avoid this.
+Sorry for typo, should be 1023.
 
-I'll try. That is, provided there even is such an option.
+> 
+> >                                    |  Finally the peripheral reigster is
+> > 				   |  updated and the interrupt line is
+> > 				   |  deasserted: 'pending' -> 'inactive'
+> > 
+> > To avoid this potential issue, this patch adds wmb() barrier prior to
+> > invoke EOI operation, this can make sure the interrupt line is
+> > de-asserted in peripheral before deactivating interrupt in GIC.  At the
+> > end, this can avoid spurious interrupt.
+> 
+> If you want to ensure completion of device-specific writes, why isn't
+> this the job of the device driver to implement whatever semantic it
+> desires?
 
-> The injection controls in the memory controller can only be accessed
-> in SMM mode. Some paranoia there that some ring0 attack could inject
-> errors at random intervals causing major costs to diagnose and replace
-> "failing" DIMMs. So documentation wouldn't help Linux because it just
-> can't twiddle the necessary bits in the h/w.
+Seems to me, it's a common requirement for all device drivers to
+ensure the outstanding transactions to the endpoint to de-assert the
+interrupt line before the GIC driver deactivates the interrupt line.
 
-Yah, that's why this thing needs a BIOS switch which controls injection.
-And probably they do that already.
+> What if the interrupt is (shock, horror!) driven by a system
+> register instead?
 
-> Downsides of ACPI/EINJ today:
-> 1) Availability on production machines. It is always disabled by default
-> in BIOS.
+Okay, this is good reason that it's not always to need barrier.
 
-That's ok.
+> I think this is merely papering over a driver bug, and adds a
+> significant cost to all interrupts for no good reasons.
 
-> OEMs may not provide a setup option to turn it on (or may have deleted
-> the code to support it completely).
+Understand.  The memory barrier can be added per device driver.
 
-Yeah, that's practically the same thing I'm complaining about - einj is
-just as useless as before in that case.
-
-> Intel's pre-production servers always have the code, and the setup
-> option to enable.
-
-Except that only you and a couple of partners have access to such
-boxes. I guess tglx has too and if so that at least answers his initial
-complaint about not having an injection method to test kernel code.
-
-> 2) Doesn't inject to 3D-Xpoint (that has its own injection method, but
-> it is annoying to have to juggle two methods).
-
-I guess that doesn't matter for our use case of wanting to test the MCE
-code, provided one can at least inject somewhere.
-
-> 3) Hard/impossible to inject into SGX memory (because BIOS is untrusted
-> and isn't allowed to do a store to push the poison data to DDR).
-
-Oh well.
-
-So, I really wanna believe you that injection capability has improved
-but until I see it with my own eyes, I will remain very much sceptical.
-And considering how firmware and OEMs are at play here, sceptical is
-just the right stance.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks for quick response,
+Leo
