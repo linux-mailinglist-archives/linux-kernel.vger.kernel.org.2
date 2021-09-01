@@ -2,115 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221433FD196
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAAC3FD17A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241758AbhIAC5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 22:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241648AbhIAC53 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 22:57:29 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F3EC061575;
-        Tue, 31 Aug 2021 19:56:33 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id q68so1273909pga.9;
-        Tue, 31 Aug 2021 19:56:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=P909qM3GriJXOMBE2UzD0eEKIV6Rucgk31rWOM3ko20=;
-        b=UJIdyRpj2VdZ31P6PGyQrLjENQu2wGCdFgwqHQyiL85KfvWsDfoMv/kdX36NGHxoQb
-         R86AqShbIlV8nUNDfIv7OBPpl8MIo+N7WXd/UEzK11AIq/p63KEYwuiyyU4WwfCwpn0e
-         ijpW3EXqIchb+bjVjQ7Xoj492BaDBMaqXCAIB9rnpAxy6YMoy5nBwO0MAp2sgH4nYrwm
-         Tb71jXbMj+x1MTPKI13BoX9CVuJS8kZlonHciOePA881OAM2GQxoqQI4a81D5Yo6wZeu
-         +SK60o6g7vA0JOeB/iHa5TAqMarNwcA68aMBrrwdQ6cmdielBbrN0PWHGwNZMNtpSmyG
-         ClBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=P909qM3GriJXOMBE2UzD0eEKIV6Rucgk31rWOM3ko20=;
-        b=gz47ShsG9YWWRm9s844H+MAaVpJVnXVWkBqOhlyfh4ZbVp/QG3QtRpF1aDmdsiru5c
-         kGFklAHqMhsPQvKBRnNQbyn5JlbeK9iemrbaL9Kg/WDWXK4dyD5a1TKbqPzaHdw02rjj
-         9pB1RwCU40zjYuc8doZAKR1Lt8r2bc+yLAgjlaBqbW2PvAM3zav6wofYqmo86PmqL1ma
-         a9uOqfEE521/M2Ms1haxzmXjfIb9bPxwhu1yLllNA8mUpfcR++2m2+4vqd2GmX1+vGiD
-         U6MEmsZ6N3LNFyDsYjJYtibAfGILto6VtfHKOGThV+dvOFQHq3BIxKcijAqpLd2OwibG
-         FU4Q==
-X-Gm-Message-State: AOAM5326AK7Mr5aJdI459ypnSScURCeRrhu0Im8rkvIy+/C8hWpu2q2L
-        Em5k+TnR1N9mqK9EcqNnFYLtHZ34Pupf+BJayaE=
-X-Google-Smtp-Source: ABdhPJyOPkYEgZTwYHXIkHbGdvtfffCDWg3vf3xDaA6Vrl3zhHvkyXYgbGNg6EC4zkTlxo+ISoQkK6Kx7aDV64y+MNc=
-X-Received: by 2002:a63:b59:: with SMTP id a25mr29469814pgl.373.1630464993271;
- Tue, 31 Aug 2021 19:56:33 -0700 (PDT)
+        id S241730AbhIACrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 22:47:19 -0400
+Received: from mga07.intel.com ([134.134.136.100]:43484 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231613AbhIACrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 22:47:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10093"; a="282323654"
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="282323654"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 19:46:21 -0700
+X-IronPort-AV: E=Sophos;i="5.84,368,1620716400"; 
+   d="scan'208";a="541298153"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.41])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2021 19:46:19 -0700
+Date:   Wed, 1 Sep 2021 11:03:57 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ltp@lists.linux.it
+Subject: Re: [fs]  f7e33bdbd6: ltp.ftruncate04_64.fail
+Message-ID: <20210901030357.GD14661@xsang-OptiPlex-9020>
+References: <20210825051710.GA5358@xsang-OptiPlex-9020>
+ <cf358b73cbda90fd6c023f3a59a8df94698cf0bc.camel@kernel.org>
 MIME-Version: 1.0
-References: <20210901023205.5049-1-wanjiabing@vivo.com>
-In-Reply-To: <20210901023205.5049-1-wanjiabing@vivo.com>
-From:   Geliang Tang <geliangtang@gmail.com>
-Date:   Wed, 1 Sep 2021 10:56:22 +0800
-Message-ID: <CA+WQbwvjzadxGi2yCs+PRdJpwYnj64jkXdgiYset8oX0PZX6xw@mail.gmail.com>
-Subject: Re: [PATCH] mptcp: Fix duplicated argument in protocol.h
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        MPTCP Upstream <mptcp@lists.linux.dev>,
-        "To: Phillip Lougher <phillip@squashfs.org.uk>, Andrew Morton
-        <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, Coly Li
-        <colyli@suse.de>, linux-fsdevel@vger.kernel.org," 
-        <linux-kernel@vger.kernel.org>, kael_w@yeah.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf358b73cbda90fd6c023f3a59a8df94698cf0bc.camel@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiabing,
+Hi Jeff,
 
-Wan Jiabing <wanjiabing@vivo.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=881=E6=97=
-=A5=E5=91=A8=E4=B8=89 =E4=B8=8A=E5=8D=8810:40=E5=86=99=E9=81=93=EF=BC=9A
->
-> ./net/mptcp/protocol.h:36:50-73: duplicated argument to & or |
->
-> The OPTION_MPTCP_MPJ_SYNACK here is duplicate.
-> Here should be OPTION_MPTCP_MPJ_ACK.
->
+On Wed, Aug 25, 2021 at 06:32:38AM -0400, Jeff Layton wrote:
+> On Wed, 2021-08-25 at 13:17 +0800, kernel test robot wrote:
+> > 
+> > Greeting,
+> > 
+> > FYI, we noticed the following commit (built with gcc-9):
+> > 
+> > commit: f7e33bdbd6d1bdf9c3df8bba5abcf3399f957ac3 ("fs: remove mandatory file locking support")
+> > https://git.kernel.org/cgit/linux/kernel/git/jlayton/linux.git locks-next
+> > 
+> > 
+> > in testcase: ltp
+> > version: ltp-x86_64-14c1f76-1_20210821
+> > with following parameters:
+> > 
+> > 	disk: 1HDD
+> > 	fs: ext4
+> > 	test: syscalls-07
+> > 	ucode: 0xe2
+> > 
+> > test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+> > test-url: http://linux-test-project.github.io/
+> > 
+> > 
+> > on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
+> > 
+> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > 
+> > 
+> > 
+> 
+> [...]
+> 
+> > <<<test_start>>>
+> > tag=ftruncate04_64 stime=1629792639
+> > cmdline="ftruncate04_64"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > tst_device.c:89: TINFO: Found free device 0 '/dev/loop0'
+> > tst_test.c:916: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+> > mke2fs 1.44.5 (15-Dec-2018)
+> > tst_test.c:1348: TINFO: Timeout per run is 0h 25m 00s
+> > ftruncate04.c:116: TINFO: Child locks file
+> > ftruncate04.c:49: TFAIL: ftruncate() offset before lock succeeded unexpectedly
+> > ftruncate04.c:49: TFAIL: ftruncate() offset in lock succeeded unexpectedly
+> > ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
+> > ftruncate04.c:127: TINFO: Child unlocks file
+> > ftruncate04.c:84: TPASS: ftruncate() offset in lock succeded
+> > ftruncate04.c:84: TPASS: ftruncate() offset before lock succeded
+> > ftruncate04.c:84: TPASS: ftruncate() offset after lock succeded
+> > 
+> > Summary:
+> > passed   4
+> > failed   2
+> > broken   0
+> > skipped  0
+> > warnings 0
+> 
+> I think this failed because of the above, which is expected now that we
+> ignore the "mand" mount option (and mandatory locking support is gone).
+> 
+> Oliver, you may need to update the expected test output for this test.
 
-Good catch!
+Thanks for the information! we will do the corresponding change ASAP
 
-Acked-by: Geliang Tang <geliangtang@gmail.com>
-
-Please add a Fixes-tag here in v2 like this:
-
-Fixes: 74c7dfbee3e18 ("mptcp: consolidate in_opt sub-options fields in
-a bitmask")
-
-Thanks,
--Geliang
-
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  net/mptcp/protocol.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
-> index d7aba1c4dc48..64c9a30e0871 100644
-> --- a/net/mptcp/protocol.h
-> +++ b/net/mptcp/protocol.h
-> @@ -34,7 +34,7 @@
->  #define OPTIONS_MPTCP_MPC      (OPTION_MPTCP_MPC_SYN | OPTION_MPTCP_MPC_=
-SYNACK | \
->                                  OPTION_MPTCP_MPC_ACK)
->  #define OPTIONS_MPTCP_MPJ      (OPTION_MPTCP_MPJ_SYN | OPTION_MPTCP_MPJ_=
-SYNACK | \
-> -                                OPTION_MPTCP_MPJ_SYNACK)
-> +                                OPTION_MPTCP_MPJ_ACK)
->
->  /* MPTCP option subtypes */
->  #define MPTCPOPT_MP_CAPABLE    0
-> --
-> 2.25.1
->
->
+> 
+> Thanks,
+> -- 
+> Jeff Layton <jlayton@kernel.org>
+> 
