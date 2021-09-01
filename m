@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0CE3FDF3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3903FDF3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343905AbhIAQAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:00:34 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:5286 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230129AbhIAQAc (ORCPT
+        id S1343836AbhIAP76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230129AbhIAP75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:00:32 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 181Bx9Fe031964;
-        Wed, 1 Sep 2021 17:58:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=dmswWeHE+9B8VOaL4IRd+83Q+HDkWTJFmrdLfyJESVU=;
- b=DvW5y29/oN0th7WqLDaVx5i0HPhr/ECi/nufq7qTY6+AkF2Wnj/kjuvutQOsvQnYz2Dw
- 6V53UdwqbFX/3Tr8Pa4I7UYtRnP07FpcvBk+Nvnjw55Qj1xqwb9T8fhege24Ct8iknj+
- p4+OjexJP6yzIuJiFDPiqBOMomOefKvZehwH0gn6tgtoHuyyNLljTvu54Rj0o0t165Ye
- X4hRaLucplUAG+IQ+ZAQGDM9ghBMdLoRHrezxaOPDwc611HiL36VS4qcRWMRMoEIzpWA
- p3BrjzVvQlptS2d1U7sHDfBTMlldXCdVQDzxhDg0ZyTiLufNPtOpd3iC71d+Hg0KNfwJ Kg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3at5y939y9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Sep 2021 17:58:41 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0735D10002A;
-        Wed,  1 Sep 2021 17:58:37 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A7E5B231DC7;
-        Wed,  1 Sep 2021 17:58:37 +0200 (CEST)
-Received: from lmecxl1094.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 1 Sep
- 2021 17:58:36 +0200
-Subject: Re: [Linux-stm32] [PATCH] mtd: rawnand: stm32_fmc2: Make use of the
- helper function devm_platform_ioremap_resource()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210901074222.9433-1-caihuoqing@baidu.com>
-From:   Christophe Kerello <christophe.kerello@foss.st.com>
-Message-ID: <a69d1484-fb7a-6da5-3d46-48c49b612d2a@foss.st.com>
-Date:   Wed, 1 Sep 2021 17:58:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 1 Sep 2021 11:59:57 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E90C061575;
+        Wed,  1 Sep 2021 08:59:00 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id l3so2174807pji.5;
+        Wed, 01 Sep 2021 08:59:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=q4NDRG4trDiOA+lVkleeHrHertW81intr4IAkddj2ko=;
+        b=m4OXwmWzSCjtlXGZZsbYbM+YGbicuLfDh9fLJI4HE45J8gAZjXFm7itPYuKzX3rImR
+         o8Jx2RQHPTLc2kbR20hfqU2DQJTvg5dIqf3MESxx3XU3BPoXCjP/KrU9erjSiJNSlYAb
+         XnDg3NHjYpkjm8SL3Dc9i7B0ipu2qY5WQp8R2cPPpbHqOn2p2QXyVRbK7vfr3WBBvq+W
+         KgBzKVKFXkbu22U0dajsyLk/l6oK2n/7rZuaHMrs0Hst/JiqQcIpR4aaoD+USOOAITPe
+         4SFeN/Asjg3C9c6b8CgG2EE21w7P3+DXdhygjd/DYBUX0OlNCHEV3kQsQnBZL7oEjoeN
+         csOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=q4NDRG4trDiOA+lVkleeHrHertW81intr4IAkddj2ko=;
+        b=r7e2f+ssh/8NRdLHNFmPeA0yx/5nA20Cvuk+7XE8l+KVWCl7I3kntfkUJ7FNSJ6y4Y
+         edI13NytiE46ZBGBpLRodRLaXcEQkkWf63prrH8NUm7fg9Uk9x3VQyZ+f2R9Ip4TzaBN
+         /ZAbCInqPUQ2e38ugEc6TiPy56uR7Z10wGWaCDz6UreItjT1O4gWRgDkR/50YBbKsDa0
+         MEby7OSxnA4s0kVPkN3FjAzLQjo7sYI7ElXyyzKgdG2xkIgHh8F4UznU6AN+fC3tgvMa
+         tdSkVRmAkSulem2HaaiWSeLFNqL4G7JOhnOggMpkJvEpG4BZ3lihuT3ruVciW+ugajy6
+         vsaA==
+X-Gm-Message-State: AOAM530BFOO2Nveh+RlBJsbH1BmhcdK0cmLT4zAnbFWDqk/ZynNi4u69
+        6LGi8xs7NdeEnfOb8bFskQw=
+X-Google-Smtp-Source: ABdhPJzySvSrexdKwntgxfluy5f845Z+amHvmWsxXHIEjdR4BUFz9tEob+k1XOLOIYmjuD7+oPv+vQ==
+X-Received: by 2002:a17:90a:a0a:: with SMTP id o10mr47264pjo.231.1630511940168;
+        Wed, 01 Sep 2021 08:59:00 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id n13sm340239pff.164.2021.09.01.08.58.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 08:58:59 -0700 (PDT)
+Message-ID: <0168539e-63b6-73ad-632a-841af1049a27@gmail.com>
+Date:   Wed, 1 Sep 2021 08:58:56 -0700
 MIME-Version: 1.0
-In-Reply-To: <20210901074222.9433-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH 5.4 00/48] 5.4.144-rc1 review
 Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210901122253.388326997@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-01_05,2021-09-01_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/1/21 9:42 AM, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
+On 9/1/2021 5:27 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.144 release.
+> There are 48 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->   drivers/mtd/nand/raw/stm32_fmc2_nand.c | 8 ++------
->   1 file changed, 2 insertions(+), 6 deletions(-)
+> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
+> Anything received after that time might be too late.
 > 
-> diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> index 1c277fbb91f2..97b4e02e43e4 100644
-> --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> @@ -1899,15 +1899,11 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
->   
->   		nfc->data_phys_addr[chip_cs] = res->start;
->   
-> -		res = platform_get_resource(pdev, IORESOURCE_MEM,
-> -					    mem_region + 1);
-> -		nfc->cmd_base[chip_cs] = devm_ioremap_resource(dev, res);
-> +		nfc->cmd_base[chip_cs] = devm_platform_ioremap_resource(pdev, mem_region + 1);
->   		if (IS_ERR(nfc->cmd_base[chip_cs]))
->   			return PTR_ERR(nfc->cmd_base[chip_cs]);
->   
-> -		res = platform_get_resource(pdev, IORESOURCE_MEM,
-> -					    mem_region + 2);
-> -		nfc->addr_base[chip_cs] = devm_ioremap_resource(dev, res);
-> +		nfc->addr_base[chip_cs] = devm_platform_ioremap_resource(pdev, mem_region + 2);
->   		if (IS_ERR(nfc->addr_base[chip_cs]))
->   			return PTR_ERR(nfc->addr_base[chip_cs]);
->   	}
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.144-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
 > 
+> thanks,
+> 
+> greg k-h
 
-Reviewed-by: Christophe Kerello <christophe.kerello@foss.st.com>
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
