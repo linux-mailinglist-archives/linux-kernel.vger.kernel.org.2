@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFC23FE236
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A0B3FE239
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 20:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344470AbhIASQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 14:16:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52508 "EHLO mail.kernel.org"
+        id S1344741AbhIASQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 14:16:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230063AbhIASQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 14:16:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76932610CA;
-        Wed,  1 Sep 2021 18:15:19 +0000 (UTC)
+        id S1344680AbhIASQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 14:16:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AEC3610CA;
+        Wed,  1 Sep 2021 18:15:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630520120;
-        bh=WeLEa/IQW8mZoaZdVjZki0IYsQTHhIvg0zU0r+hyVdM=;
+        s=k20201202; t=1630520122;
+        bh=hgwrdsFNp/PKcYjLFvMeJthQwTPWN5OLQPah0IlGyxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gm4r8awO2hKuC/ixokWZ72Mkm+I7VYkmMDItk/W1GV9bpjEO43UNKnbrvjYtVVBs8
-         s+aZeMkaq8E7PgR9D8tfeZ0bCddaC+G5wva2wvcll6Gm3o7ZtlFuOGKssOfV4NOZRl
-         rN6RzqRZkdWEDW89cDkaf2yJlZ6Jw+TK9YAtUswTmnl/QldtlMGZhVH4LN222YbKyo
-         loL8V0yA6lG9UJnAIx5if/Rx0z4pn/MeE6eQa4SMCq/9MM3oD7A4wUD6nSp8t2BsCO
-         GBrBp1JftctFTn7p4LIxhBEjYUtJAf9wIF8f1bgLBEgBZzxrcnozbA3FJkZuicYsOP
-         jL27X1pJg13OA==
+        b=J3oL5crXZty1r1iaWKhAvKkJ3zl/M6on1P4giuyK1suRYmEJGkTNVRzvYiemZxvut
+         SkN43mXNKPWahB4y+pzIm15lY9bBm0qVwtBS9jQ7JGkSNrHYdA/5lS8hZpbm/6naO0
+         qhgH7b6GPIWp3Q7c/LvhWeu8aXgVT6jz1lEZ5B9mdg5z1uxSr6Y/PgDVuC3OOz69Xh
+         zX8rFvqZAit12h+vRQHiZIUMhb5AfhretwGzl0tnJDD8LqXNQFRquAEki4W2w/H6+l
+         elp9IYrlEOVBAIrsWXbVYi2hTp85vURuTDws9b9fL3dGhTFathAngwZ0Em76hk3ahR
+         OUBX5D6GclxIw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] regulator: qcom-rpmh-regulator: fix pm8009-1 ldo7 resource name
-Date:   Wed,  1 Sep 2021 19:14:41 +0100
-Message-Id: <163051927361.21773.14106624092156452594.b4-ty@kernel.org>
+To:     robh+dt@kernel.org, matthias.bgg@gmail.com,
+        Trevor Wu <trevor.wu@mediatek.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] ASoC: dt-bindings: mt8195: remove dependent headers in the example
+Date:   Wed,  1 Sep 2021 19:14:42 +0100
+Message-Id: <163051912509.21630.10720008205041847225.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210901114350.1106073-1-dmitry.baryshkov@linaro.org>
-References: <20210901114350.1106073-1-dmitry.baryshkov@linaro.org>
+In-Reply-To: <20210831083956.9804-1-trevor.wu@mediatek.com>
+References: <20210831083956.9804-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,20 +43,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Sep 2021 14:43:50 +0300, Dmitry Baryshkov wrote:
-> Fix a typo in the pm8009 LDO7 declaration, it uses resource name ldo%s6
-> instead of ldo%s7.
+On Tue, 31 Aug 2021 16:39:56 +0800, Trevor Wu wrote:
+> Drop the use of the defines including clock and power id, so that
+> we can remove the headers which are not applied in the example.
 > 
 > 
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] regulator: qcom-rpmh-regulator: fix pm8009-1 ldo7 resource name
-      commit: 863580418bc82062083be854355f2213d3d804f5
+[1/1] ASoC: dt-bindings: mt8195: remove dependent headers in the example
+      commit: 222039a2503e0839f859e18e6f09acb9997480d1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
