@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7293FDA47
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910B43FDAAA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244347AbhIAMbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:31:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32948 "EHLO mail.kernel.org"
+        id S245068AbhIAMdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:33:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244636AbhIAMay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:30:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2253F610A2;
-        Wed,  1 Sep 2021 12:29:56 +0000 (UTC)
+        id S245025AbhIAMcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:32:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52A6C610CF;
+        Wed,  1 Sep 2021 12:31:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499397;
-        bh=N2VJGS70HEoaxWZv2YwyzanrpLLRlNj3BIJ5IL3trfw=;
+        s=korg; t=1630499483;
+        bh=v98xaDog+4rSDrwX6oStY+2c9IVmLIiXLQ0YS0Vilzo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uo6BxqWo/yxkZno+HSH/2l9m8Iwdr1ktSlEjtrQOHfBEBLsK+/S/WIAT7tM6m8mzw
-         8vzrAU1mN3To82oxDut5lRennjvoSvRP+J22GsFuQnNGjnnoc1wJHaZ5lpr8DgfGd4
-         8CjYS+DVgRochGn1P5OH7u1mxhW9Musj+s6Fe8CE=
+        b=Q3mME06qaTKOWY+jbwb6o4Apyzefrl7c3OuZ6bmWUSiN7SBIuYV2pnj26a6s85H3e
+         7ZjC7w1Ghjls4QRHlXbLWgINxNrtK4SebyLyrHlNKN/2AibuDVPVXnOp2SjAlkyhnb
+         O1EKfEhCiE/qk1ju5Q9TQV8uFIA5KwRXvuSuBDCs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Firas JahJah <firasj@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 18/33] net: hns3: fix get wrong pfc_en when query PFC configuration
+Subject: [PATCH 5.4 17/48] RDMA/efa: Free IRQ vectors on error flow
 Date:   Wed,  1 Sep 2021 14:28:07 +0200
-Message-Id: <20210901122251.391539266@linuxfoundation.org>
+Message-Id: <20210901122253.970935072@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
-References: <20210901122250.752620302@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+References: <20210901122253.388326997@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+From: Gal Pressman <galpress@amazon.com>
 
-[ Upstream commit 8c1671e0d13d4a0ba4fb3a0da932bf3736d7ff73 ]
+[ Upstream commit dbe986bdfd6dfe6ef24b833767fff4151e024357 ]
 
-Currently, when query PFC configuration by dcbtool, driver will return
-PFC enable status based on TC. As all priorities are mapped to TC0 by
-default, if TC0 is enabled, then all priorities mapped to TC0 will be
-shown as enabled status when query PFC setting, even though some
-priorities have never been set.
+Make sure to free the IRQ vectors in case the allocation doesn't return
+the expected number of IRQs.
 
-for example:
-$ dcb pfc show dev eth0
-pfc-cap 4 macsec-bypass off delay 0
-prio-pfc 0:off 1:off 2:off 3:off 4:off 5:off 6:off 7:off
-$ dcb pfc set dev eth0 prio-pfc 0:on 1:on 2:on 3:on
-$ dcb pfc show dev eth0
-pfc-cap 4 macsec-bypass off delay 0
-prio-pfc 0:on 1:on 2:on 3:on 4:on 5:on 6:on 7:on
-
-To fix this problem, just returns user's PFC config parameter saved in
-driver.
-
-Fixes: cacde272dd00 ("net: hns3: Add hclge_dcb module for the support of DCB feature")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: b7f5e880f377 ("RDMA/efa: Add the efa module")
+Link: https://lore.kernel.org/r/20210811151131.39138-2-galpress@amazon.com
+Reviewed-by: Firas JahJah <firasj@amazon.com>
+Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
+Signed-off-by: Gal Pressman <galpress@amazon.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c  | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ drivers/infiniband/hw/efa/efa_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-index a75d7c826fc2..dd935cd1fb44 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c
-@@ -204,21 +204,12 @@ static int hclge_ieee_getpfc(struct hnae3_handle *h, struct ieee_pfc *pfc)
- 	u64 requests[HNAE3_MAX_TC], indications[HNAE3_MAX_TC];
- 	struct hclge_vport *vport = hclge_get_vport(h);
- 	struct hclge_dev *hdev = vport->back;
--	u8 i, j, pfc_map, *prio_tc;
- 	int ret;
-+	u8 i;
+diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
+index 83858f7e83d0..75dfe9d1564c 100644
+--- a/drivers/infiniband/hw/efa/efa_main.c
++++ b/drivers/infiniband/hw/efa/efa_main.c
+@@ -340,6 +340,7 @@ static int efa_enable_msix(struct efa_dev *dev)
+ 	}
  
- 	memset(pfc, 0, sizeof(*pfc));
- 	pfc->pfc_cap = hdev->pfc_max;
--	prio_tc = hdev->tm_info.prio_tc;
--	pfc_map = hdev->tm_info.hw_pfc_map;
--
--	/* Pfc setting is based on TC */
--	for (i = 0; i < hdev->tm_info.num_tc; i++) {
--		for (j = 0; j < HNAE3_MAX_USER_PRIO; j++) {
--			if ((prio_tc[j] == i) && (pfc_map & BIT(i)))
--				pfc->pfc_en |= BIT(j);
--		}
--	}
-+	pfc->pfc_en = hdev->tm_info.pfc_en;
- 
- 	ret = hclge_pfc_tx_stats_get(hdev, requests);
- 	if (ret)
+ 	if (irq_num != msix_vecs) {
++		efa_disable_msix(dev);
+ 		dev_err(&dev->pdev->dev,
+ 			"Allocated %d MSI-X (out of %d requested)\n",
+ 			irq_num, msix_vecs);
 -- 
 2.30.2
 
