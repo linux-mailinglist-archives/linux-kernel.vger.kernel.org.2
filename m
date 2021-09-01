@@ -2,112 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5BD3FE11C
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234613FE11E
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344571AbhIAR1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344491AbhIAR1F (ORCPT
+        id S1344657AbhIAR1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:27:19 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:48834 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344419AbhIAR1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:27:05 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2610C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 10:26:08 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id e21so623364ejz.12
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sp7XBpDsEWktebv2KujX7GIfrROhmlrwow2+XWTBKgA=;
-        b=S8CnjdOpj1yWZxAPozi1aKqrUt6D2+mKIIRSpT8IaKG6MZnc566+G2YjaELRMbA/EF
-         8MH0AyCUuSminMsWPbEVWaGoQo5MCZihJcGoP81f0s72L26RhuJrdXLto/fR1JU2UCou
-         gfj3tI4JYQp1O3spGM+JjDbf2P/HOo6dzoYfF3ykrl+k/ijI7jEOyNvw+LpW4M1g9Ilu
-         lmX5yK6G9cHzmhLzJ8viNYPpEnB9ECc5CotfiOyP36zAlSAHsMYdDjloK4Cr+OVXzshs
-         P02GIa3xin37g3+iXJHpZbTHNbp8WmEuDvakWYJfpiV3qsvDp0UgWbwH124JEqDGfGSm
-         90PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sp7XBpDsEWktebv2KujX7GIfrROhmlrwow2+XWTBKgA=;
-        b=V3IF/7u+gsw++nchYeJ3MWonSoTjFB8c2ODrDf6bn+/UHYuwPCA73GPP9zgzECMd1h
-         tsBAb4KfasN4VEVNnFYnrUjQVUyP+LStTC/VKHmz0hr1Q1H4OoLYCsyJVvSlDmmrSaE2
-         VlBYB5KvIcPmc/eRqRGS+L/JR8vXxS66oW3WNQaj8aDG0GPJaj4P4SJ7f/x1Tb5bJhMy
-         kf77eGmaIG7JwMiQW6pVybOODZkviVilavOYsgzgEZHP0dSikzeZCZu8GsspnZFOgir9
-         oGKJIot3xno8/CpdJ+6uBQepTuSmDjbEct9V2fnJG8oGcm2GW2LkfL5zmPbGYq10NnyG
-         CGOA==
-X-Gm-Message-State: AOAM531bmdZHID9Z35b/zFZ7BlcG5veTufDm/xRIaJBnrnFdJ8iI79Iw
-        TJJCGNn3X24WpORUJfiaTRYOJ5fjm9BhbYmAd4ut+v6gGD0=
-X-Google-Smtp-Source: ABdhPJx1SUHv7MuyaoC+T7PFlhNvDfFhkTJJ6L2plSxYx0lYk02nP3kpVVQd7lSS6i++h7JLyOHc23F3u3RZZAansG4=
-X-Received: by 2002:a17:906:cc81:: with SMTP id oq1mr608346ejb.25.1630517166010;
- Wed, 01 Sep 2021 10:26:06 -0700 (PDT)
+        Wed, 1 Sep 2021 13:27:17 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:36124)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mLU0C-00BPFm-40; Wed, 01 Sep 2021 11:26:20 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:50202 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mLU0A-00E0Lo-Ry; Wed, 01 Sep 2021 11:26:19 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com,
+        Alexey Gladkov <legion@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+In-Reply-To: <YS+s+XL0xXKGwh9a@kroah.com> (Greg Kroah-Hartman's message of
+        "Wed, 1 Sep 2021 18:40:25 +0200")
+References: <20210901122300.503008474@linuxfoundation.org>
+        <20210901122301.773759848@linuxfoundation.org>
+        <87v93k4bl6.fsf@disp2133> <YS+s+XL0xXKGwh9a@kroah.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Wed, 01 Sep 2021 12:26:10 -0500
+Message-ID: <875yvk1a31.fsf@disp2133>
 MIME-Version: 1.0
-References: <20210817202146.3218-1-shy828301@gmail.com> <CAHbLzkpkDXyEZ2izMwpkwLg9fN7qsQ+soR+iu6sd8RfOSqhS-A@mail.gmail.com>
- <20210831233839.afaenhn32nx6m2fq@box.shutemov.name> <CAHbLzkrXOM0Ow3YbZnj9RyvTJ8fwaUCzAizOMR5MP=TkxeLywg@mail.gmail.com>
- <07fd6599-88cc-e353-26f0-5de3eeea5b9f@suse.cz>
-In-Reply-To: <07fd6599-88cc-e353-26f0-5de3eeea5b9f@suse.cz>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 1 Sep 2021 10:25:53 -0700
-Message-ID: <CAHbLzkoHghYQaqridYuWY=YUm4AB7sQDbCjbmGgr5iXx=nsETg@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: khugepaged: don't carry huge page to the next
- loop for !CONFIG_NUMA
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1mLU0A-00E0Lo-Ry;;;mid=<875yvk1a31.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19f0m9OYwI8n0/+ppm82Kvgc8OcOnANoWU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.2 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
+        XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.3799]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 416 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 11 (2.5%), b_tie_ro: 9 (2.2%), parse: 0.90 (0.2%),
+         extract_message_metadata: 10 (2.5%), get_uri_detail_list: 1.61 (0.4%),
+         tests_pri_-1000: 12 (2.9%), tests_pri_-950: 1.12 (0.3%),
+        tests_pri_-900: 0.87 (0.2%), tests_pri_-90: 79 (19.0%), check_bayes:
+        78 (18.7%), b_tokenize: 6 (1.4%), b_tok_get_all: 8 (1.8%),
+        b_comp_prob: 2.4 (0.6%), b_tok_touch_all: 59 (14.3%), b_finish: 0.76
+        (0.2%), tests_pri_0: 287 (69.1%), check_dkim_signature: 0.56 (0.1%),
+        check_dkim_adsp: 2.5 (0.6%), poll_dns_idle: 0.82 (0.2%), tests_pri_10:
+        2.1 (0.5%), tests_pri_500: 8 (1.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 5.10 036/103] ucounts: Increase ucounts reference counter before the security hook
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 3:26 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 9/1/21 05:46, Yang Shi wrote:
-> > On Tue, Aug 31, 2021 at 4:38 PM Kirill A. Shutemov <kirill@shutemov.name> wrote:
-> >>
-> >> On Mon, Aug 30, 2021 at 11:49:43AM -0700, Yang Shi wrote:
-> >> > Gently ping...
-> >> >
-> >> > Does this patch make sense? BTW, I have a couple of other khugepaged
-> >> > related patches in my queue. I plan to send them with this patch
-> >> > together. It would be great to hear some feedback before resending
-> >> > this one.
-> >>
-> >> I don't really care for !NUMA optimization. I believe that most of setups
-> >> that benefit from THP has NUMA enabled compile time.
-> >
-> > Agreed.
-> >
-> >>
-> >> But if you wanna to go this path, make an effort to cleanup other
-> >> artifacts for the !NUMA optimization: the ifdef has to be gone and all
-> >> callers of these helpers has to be revisited. There's more opportunities to
-> >> cleanup. Like it is very odd that khugepaged_prealloc_page() frees the
-> >> page.
-> >
-> > Yes, they are gone in this patch. The only remaining for !NUMA is
-> > khugepaged_find_target_node() which just returns 0.
->
-> As Kirill pointed out, there's also khugepaged_prealloc_page() where the
-> only remaining variant does actually no preallocation, just freeing of an
-> unused page and some kind of "sleep after first alloc fail, break after
-> second alloc fail" logic.
-> This could now be moved to khugepaged_do_scan() loop itself and maybe it
-> will be easier to follow.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
 
-Aha, I see. Misunderstood him. I'm supposed that you mean move into
-khugepaged_scan_mm_slot().
+> On Wed, Sep 01, 2021 at 09:25:25AM -0500, Eric W. Biederman wrote:
+>> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+>> 
+>> > From: Alexey Gladkov <legion@kernel.org>
+>> >
+>> > [ Upstream commit bbb6d0f3e1feb43d663af089c7dedb23be6a04fb ]
+>> >
+>> > We need to increment the ucounts reference counter befor security_prepare_creds()
+>> > because this function may fail and abort_creds() will try to decrement
+>> > this reference.
+>> 
+>> Has the conversion of the rlimits to ucounts been backported?
+>> 
+>> Semantically the code is an improvement but I don't know of any cases
+>> where it makes enough of a real-world difference to make it worth
+>> backporting the code.
+>> 
+>> Certainly the ucount/rlimit conversions do not meet the historical
+>> criteria for backports.  AKA simple obviously correct patches.
+>> 
+>> The fact we have been applying fixes for the entire v5.14 stabilization
+>> period is a testament to the code not quite being obviously correct.
+>> 
+>> Without backports the code only affects v5.14 so I have not been
+>> including a Cc stable on any of the commits.
+>> 
+>> So color me very puzzled about what is going on here.
+>
+> Sasha picked this for some reason, but if you think it should be
+> dropped, we can easily do so.
 
->
-> >>
-> >>
-> >> --
-> >>  Kirill A. Shutemov
-> >
->
+My question is what is the reason Sasha picked this up?
+
+If this patch even applies to v5.10 the earlier patches have been
+backported.  So we can't just drop this patch.  Either the earlier
+backports need to be reverted, or we need to make certain all of the
+patches are backported.
+
+I really am trying to understand what is going on and why.
+
+I work on a lot of stuff that has been imperfect for years.  Generally I
+clean up the code and the semantics so the old imperfect code does not
+impede new development (user or kernel).  Updating a couple of rlimits
+to the ucount infrastructure was one of those improvements to imperfect
+code.
+
+As I expect this situation to come up again and again, I am asking what
+is going on?  What are the rules under which code is backported?
+
+I am hoping to get a clear answer on why what looks to me like feature
+development has been backported into v5.10, and v5.13.
+
+
+If the answer is going to be random commits are going to be backported
+whenever the stable reviewers think it is a good idea, with no
+explanation of why they think so, can I please not be Cc'd during stable
+review as I have no basis on which to perform a review.
+
+Eric
