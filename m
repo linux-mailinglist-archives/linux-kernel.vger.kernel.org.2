@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBF33FD53F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673643FD52A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243181AbhIAIUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:20:40 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:25480 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243134AbhIAIU3 (ORCPT
+        id S243043AbhIAITz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:19:55 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14447 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243060AbhIAITw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:20:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1630484373; x=1662020373;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=/rJWYNLEshjtrC1IGOED6acbfsbHHmLBFIvrAeJEFiI=;
-  b=nON/LH16VDTRy4UL6lm41/dLIDG31OIYHzqdVChmsTUkiItXn4YcsSUW
-   cITe2FCzuV26IsPDblkchXTp5ZGgre6LadB6wIPWUop+VEp8aToOHirAu
-   WMQMBmb3Ugcf6ph4kxOiDwZVOZy6Anf54kU82J+ZfY7AwgAd6LHUo7eK2
-   s=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 01 Sep 2021 01:19:33 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 01:19:33 -0700
-Received: from fenglinw-gv.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Wed, 1 Sep 2021 01:19:29 -0700
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sboyd@kernel.org>
-CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
-        <quic_fenglinw@quicinc.com>
-Subject: [RESEND PATCH v1 9/9] spmi: pmic-arb: increase SPMI transaction timeout delay
-Date:   Wed, 1 Sep 2021 16:18:10 +0800
-Message-ID: <1630484290-28190-10-git-send-email-quic_fenglinw@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1630484290-28190-1-git-send-email-quic_fenglinw@quicinc.com>
-References: <1630484290-28190-1-git-send-email-quic_fenglinw@quicinc.com>
+        Wed, 1 Sep 2021 04:19:52 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GzxgR09kbzbg6S;
+        Wed,  1 Sep 2021 16:14:59 +0800 (CST)
+Received: from [10.174.178.75] (10.174.178.75) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Wed, 1 Sep 2021 16:18:53 +0800
+Subject: Re: [PATCH 5/6] mm/page_alloc.c: avoid accessing uninitialized pcp
+ page migratetype
+To:     David Hildenbrand <david@redhat.com>
+CC:     <akpm@linux-foundation.org>, <vbabka@suse.cz>,
+        <sfr@canb.auug.org.au>, <peterz@infradead.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+References: <20210830141051.64090-1-linmiaohe@huawei.com>
+ <20210830141051.64090-6-linmiaohe@huawei.com>
+ <20210831134311.GG4128@techsingularity.net>
+ <877b7043-65c3-5e08-ac89-ad6f10e354b3@redhat.com>
+ <f801cd23-6897-53c7-a689-2ade60578d7e@huawei.com>
+ <e7f834ec-5551-07d7-f439-7e20e4345389@redhat.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <bc14adc2-e688-1a46-be08-7626c69e6eb1@huawei.com>
+Date:   Wed, 1 Sep 2021 16:18:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+In-Reply-To: <e7f834ec-5551-07d7-f439-7e20e4345389@redhat.com>
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.75]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Collins <collinsd@codeaurora.org>
-
-Increase the SPMI transaction timeout delay from 100 us to
-1000 us in order to account for the slower execution time
-found on some simulator targets.
-
-Signed-off-by: David Collins <collinsd@codeaurora.org>
-Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
----
- drivers/spmi/spmi-pmic-arb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
-index 55fa981..08c2566 100644
---- a/drivers/spmi/spmi-pmic-arb.c
-+++ b/drivers/spmi/spmi-pmic-arb.c
-@@ -91,7 +91,7 @@ enum pmic_arb_channel {
- 
- /* Maximum number of support PMIC peripherals */
- #define PMIC_ARB_MAX_PERIPHS		512
--#define PMIC_ARB_TIMEOUT_US		100
-+#define PMIC_ARB_TIMEOUT_US		1000
- #define PMIC_ARB_MAX_TRANS_BYTES	(8)
- 
- #define PMIC_ARB_APID_MASK		0xFF
--- 
-2.7.4
-
+On 2021/9/1 16:10, David Hildenbrand wrote:
+> On 01.09.21 10:02, Miaohe Lin wrote:
+>> On 2021/8/31 22:23, David Hildenbrand wrote:
+>>> On 31.08.21 15:43, Mel Gorman wrote:
+>>>> On Mon, Aug 30, 2021 at 10:10:50PM +0800, Miaohe Lin wrote:
+>>>>> If it's not prepared to free unref page, the pcp page migratetype is
+>>>>> unset. Thus We will get rubbish from get_pcppage_migratetype() and
+>>>>> might list_del &page->lru again after it's already deleted from the
+>>>>> list leading to grumble about data corruption.
+>>>>>
+>>>>> Fixes: 3dcbe270d8ec ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
+>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>>
+>>>> Acked-by: Mel Gorman <mgorman@techsingularity.net>
+>>>>
+>>>> This fix is fairly important. Take this patch out and send it on its own
+>>>> so it gets picked up relatively quickly. It does not belong in a series
+>>>> that is mostly cosmetic cleanups.
+>>>
+>>> I think the commit id is wrong. Shouldn't that be
+>>>
+>>> df1acc856923 ("mm/page_alloc: avoid conflating IRQs disabled with zone->lock")
+>>>
+>>> ?
+>>>
+>>
+>> Many thanks for pointing this out.
+>>
+>> I used to save the git log in a file to make life easier. But it seems this leads
+>> to the old commit id above.
+>>
+>> commit 3dcbe270d8ec57e534f5c605279cdc3ceb1f044a
+>> Author: Mel Gorman <mgorman@techsingularity.net>
+>> Date:   Fri Jun 4 14:20:03 2021 +1000
+>>
+>>      mm/page_alloc: avoid conflating IRQs disabled with zone->lock
+>>
+>> git name-rev 3dcbe270d8ec
+>> 3dcbe270d8ec tags/next-20210604~2^2~196
+>>
+>> vs
+>>
+>> commit df1acc856923c0a65c28b588585449106c316b71
+>> Author: Mel Gorman <mgorman@techsingularity.net>
+>> Date:   Mon Jun 28 19:42:00 2021 -0700
+>>
+>>      mm/page_alloc: avoid conflating IRQs disabled with zone->lock
+>>
+>> git name-rev df1acc856923
+>> df1acc856923 tags/next-20210630~2^2~278
+>>
+>> Their contents are same but with different commit id. The previous one
+>> could have been git-rebased.
+>>
+> 
+> -mm tree commit ids keep changing until patches are upstream. Therefore, you can observe changing commit ids in -next. Always use the ones from Linus' tree, they are stable.
+> 
+Many thanks for your advice, David. :)
