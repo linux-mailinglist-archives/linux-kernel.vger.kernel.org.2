@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888BE3FDAE5
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E183FDCAC
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343624AbhIAMgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:36:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60574 "EHLO mail.kernel.org"
+        id S1345701AbhIAMwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:52:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343620AbhIAMeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:34:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4854560F56;
-        Wed,  1 Sep 2021 12:32:29 +0000 (UTC)
+        id S1345795AbhIAMsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:48:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 729C861179;
+        Wed,  1 Sep 2021 12:40:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499549;
-        bh=PzCgjfTuh/oMzoxhM2fp43PaR8VE2mLLNoVwKQnKsn0=;
+        s=korg; t=1630500037;
+        bh=3RyVr52Scbm+6zErqN/+kNzLJPXHXbPHyDQWw6xT7wc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fn68D24BXJSsZHhGWCdglE4+9J6ngjS6EHmMMN5X7n9nZM7qBez3JVcU+71ODqoy/
-         1B01Tht/F0p4ndGYBGxkHzLhMjW5M7F61h/x/N58D82qcMLDo3nL851v85NOhxJcfM
-         WK74/Ro3r61/PvENKAMZ2GuL/ZsdNWZENVEtylA4=
+        b=MNMrcqsW+LWTgdRs2QONbFojis8OGVUsaksQ4W1WJSELXg+c2qhXukEfJjMZuHFtv
+         cEl8Onj1OYGqMIfAJaRuDFdVw7bxHqyZPbVoRR5dRXXf8aOMO8uMY62drZrjwXI6QP
+         /sUR3HsDpm/BjEdkFpoeNq07zhl14/d7KohjHSKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Vorel <petr.vorel@gmail.com>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 5.4 43/48] arm64: dts: qcom: msm8994-angler: Fix gpio-reserved-ranges 85-88
-Date:   Wed,  1 Sep 2021 14:28:33 +0200
-Message-Id: <20210901122254.802140520@linuxfoundation.org>
+        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 079/113] virtio_pci: Support surprise removal of virtio pci device
+Date:   Wed,  1 Sep 2021 14:28:34 +0200
+Message-Id: <20210901122304.622864499@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Vorel <petr.vorel@gmail.com>
+From: Parav Pandit <parav@nvidia.com>
 
-commit f890f89d9a80fffbfa7ca791b78927e5b8aba869 upstream.
+[ Upstream commit 43bb40c5b92659966bdf4bfe584fde0a3575a049 ]
 
-Reserve GPIO pins 85-88 as these aren't meant to be accessible from the
-application CPUs (causes reboot). Yet another fix similar to
-9134586715e3, 5f8d3ab136d0, which is needed to allow angler to boot after
-3edfb7bd76bd ("gpiolib: Show correct direction from the beginning").
+When a virtio pci device undergo surprise removal (aka async removal in
+PCIe spec), mark the device as broken so that any upper layer drivers can
+abort any outstanding operation.
 
-Fixes: feeaf56ac78d ("arm64: dts: msm8994 SoC and Huawei Angler (Nexus 6P) support")
+When a virtio net pci device undergo surprise removal which is used by a
+NetworkManager, a below call trace was observed.
 
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Link: https://lore.kernel.org/r/20210415193913.1836153-1-petr.vorel@gmail.com
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+kernel:watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [kworker/1:1:27059]
+watchdog: BUG: soft lockup - CPU#1 stuck for 52s! [kworker/1:1:27059]
+CPU: 1 PID: 27059 Comm: kworker/1:1 Tainted: G S      W I  L    5.13.0-hotplug+ #8
+Hardware name: Dell Inc. PowerEdge R640/0H28RR, BIOS 2.9.4 11/06/2020
+Workqueue: events linkwatch_event
+RIP: 0010:virtnet_send_command+0xfc/0x150 [virtio_net]
+Call Trace:
+ virtnet_set_rx_mode+0xcf/0x2a7 [virtio_net]
+ ? __hw_addr_create_ex+0x85/0xc0
+ __dev_mc_add+0x72/0x80
+ igmp6_group_added+0xa7/0xd0
+ ipv6_mc_up+0x3c/0x60
+ ipv6_find_idev+0x36/0x80
+ addrconf_add_dev+0x1e/0xa0
+ addrconf_dev_config+0x71/0x130
+ addrconf_notify+0x1f5/0xb40
+ ? rtnl_is_locked+0x11/0x20
+ ? __switch_to_asm+0x42/0x70
+ ? finish_task_switch+0xaf/0x2c0
+ ? raw_notifier_call_chain+0x3e/0x50
+ raw_notifier_call_chain+0x3e/0x50
+ netdev_state_change+0x67/0x90
+ linkwatch_do_dev+0x3c/0x50
+ __linkwatch_run_queue+0xd2/0x220
+ linkwatch_event+0x21/0x30
+ process_one_work+0x1c8/0x370
+ worker_thread+0x30/0x380
+ ? process_one_work+0x370/0x370
+ kthread+0x118/0x140
+ ? set_kthread_struct+0x40/0x40
+ ret_from_fork+0x1f/0x30
+
+Hence, add the ability to abort the command on surprise removal
+which prevents infinite loop and system lockup.
+
+Signed-off-by: Parav Pandit <parav@nvidia.com>
+Link: https://lore.kernel.org/r/20210721142648.1525924-5-parav@nvidia.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/virtio/virtio_pci_common.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8994-angler-rev-101.dts
-@@ -30,3 +30,7 @@
- 		};
- 	};
- };
+diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+index 222d630c41fc..b35bb2d57f62 100644
+--- a/drivers/virtio/virtio_pci_common.c
++++ b/drivers/virtio/virtio_pci_common.c
+@@ -576,6 +576,13 @@ static void virtio_pci_remove(struct pci_dev *pci_dev)
+ 	struct virtio_pci_device *vp_dev = pci_get_drvdata(pci_dev);
+ 	struct device *dev = get_device(&vp_dev->vdev.dev);
+ 
++	/*
++	 * Device is marked broken on surprise removal so that virtio upper
++	 * layers can abort any ongoing operation.
++	 */
++	if (!pci_device_is_present(pci_dev))
++		virtio_break_device(&vp_dev->vdev);
 +
-+&msmgpio {
-+	gpio-reserved-ranges = <85 4>;
-+};
+ 	pci_disable_sriov(pci_dev);
+ 
+ 	unregister_virtio_device(&vp_dev->vdev);
+-- 
+2.30.2
+
 
 
