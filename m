@@ -2,156 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240C03FE180
+	by mail.lfdr.de (Postfix) with ESMTP id E2A1B3FE182
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344338AbhIARyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233691AbhIARy3 (ORCPT
+        id S1344493AbhIARyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:54:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38357 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230007AbhIARyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:54:29 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50786C061575;
-        Wed,  1 Sep 2021 10:53:32 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id o39-20020a05600c512700b002e74638b567so253272wms.2;
-        Wed, 01 Sep 2021 10:53:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=chmdazpsK/ePhDNWEYhOHO7k+euA1jvx99RRVmxt5Xw=;
-        b=ev+4Jb3gtl6J2AmbiJlIUA9wzrsPaIHIKYd19RqSAm17eEfhhfuOUNGPv2vZGsx1ok
-         GtbnpfsM1iN2nFTrdL/gAGfrn2z8Zz4at1Gw0AT3Zly3XOitdb0WA5ShDaByz8NiDVWE
-         uTh6rr4vlMjG5UxSA6HOdtkARHSnaPzpvY4/tdGczOzTdIiiZ352lWixEYtY35+IrUZu
-         fnuCpeCqg6KeyCQMTQVc5sVTU46iuugEqj9aL3qKTcZoaCbFXfaL/YlyRJJCiyW6NyF+
-         mqQg6NqShRS74lL2E95EGB888efv9kjkdjv01KyZjxC3jg8wriqnl4gckcoW2C2kHsIZ
-         W/dg==
+        Wed, 1 Sep 2021 13:54:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630518834;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GiGBsFuqRCBAADb2SjkWOZz2ABAMuafv28YaxO7HPu8=;
+        b=Y+EqcuQoQDB9DHPb4hvPP3kknmNJ/60ZTTPELczR1dwcTt2BvmeOmXz1ViyggnzL/kL9c7
+        58wo+f5S+EDs7YEePWxmfM+N2oLLnu+s3IYsPDBGWRo5mZ1IIJL04CCHwVxfOgFHYphOLO
+        fIWEoo8S5Le/PvuOzQyGQNB07jAmewI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-ZV-vdDmLNdesneW86zCglA-1; Wed, 01 Sep 2021 13:53:53 -0400
+X-MC-Unique: ZV-vdDmLNdesneW86zCglA-1
+Received: by mail-wm1-f71.google.com with SMTP id p5-20020a7bcc85000000b002e7563efc4cso112701wma.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:53:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=chmdazpsK/ePhDNWEYhOHO7k+euA1jvx99RRVmxt5Xw=;
-        b=ZibfwSb2AQM/AXXJLUp/Q/9NP9kz8ADxYogAu1isgb4OpVAgu8Meu/oDxuo55uiZV/
-         gipTTabTT/wOgQgWD0YygG3HzVZIXvJcGZ3XkpxZ1gAifD1dnTn3nFNah3QGo+yj/06J
-         FUwuh23j2kOjBqtS6kvgd+XDjS8av7qNudGGtm3FS3CV1b+o/cg4JOEgtRAmLXMQ1LK3
-         DwrE5ElXnaNNBOQtLirwVroAxTrZcfeXf42FAJoF5SRXcBCQ9+m9F+CVjiVYjIwTS9gK
-         FSipachGG5WsaXC7LE/fORWNeFY0PWYXgdJT8U9IuCPmXifZOzjrBDhkWrwcnVLmYFBe
-         bLdQ==
-X-Gm-Message-State: AOAM5309o5oYk08RHg7VHHGo1ndW7Affb6nbhgAKj4Gis+cHER7QKSsz
-        Z5TFpSiWiAJa6MJ9x4NNamsKnxfRKZMKfw==
-X-Google-Smtp-Source: ABdhPJyEnn3hoRLrt2yqBJOdbjhyXBkwUK5Vp1DdABXWEUtH92aP7JoBC5cPyAElVm/xkKSaJ/C5Tg==
-X-Received: by 2002:a05:600c:5102:: with SMTP id o2mr641658wms.104.1630518810946;
-        Wed, 01 Sep 2021 10:53:30 -0700 (PDT)
-Received: from localhost.localdomain ([147.235.73.50])
-        by smtp.googlemail.com with ESMTPSA id 138sm258105wmb.7.2021.09.01.10.53.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 10:53:30 -0700 (PDT)
-From:   Ariel Marcovitch <arielmarcovitch@gmail.com>
-To:     masahiroy@kernel.org
-Cc:     arielmarcovitch@gmail.com, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH] kconfig: Create links to main menu items in search
-Date:   Wed,  1 Sep 2021 20:53:26 +0300
-Message-Id: <20210901175326.568535-1-arielmarcovitch@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=GiGBsFuqRCBAADb2SjkWOZz2ABAMuafv28YaxO7HPu8=;
+        b=NMQgOc98wVybzaXoF6UT2q7dVe+tklI/gvfVT443IBCaYK49i4zkdLi8EYFJY0c0O3
+         Un0oPYNHz5OqQiO2lqe8o0Pxcnm8lyWUQ7YApXSfJlAL3/YstYBfEDT0G7+lD5n+3gGN
+         iydPdKe30AnL0AbE/glzpvVLit03GVh6AoazbOzZcIcetV5bK+6nhJhP9Or6xhIy23lR
+         aTuqOTsiBpVC5nxo7fxEU0zjaLnW59SOzUTqyBUubuLmydq8MydMbMRe+to6u3o+zyRA
+         dvyn8N3sChSM8Jn3b+gZxRoA5gQHEHgF1J+9WziBC3SQ4bW/iW4AKtLxJTjAR9/6n342
+         B6xQ==
+X-Gm-Message-State: AOAM532KcnoqZUHVqAP6Zp55ZPYCSA0+M+6FPrwcUpEZDDx6BtmsKRwa
+        9xLDfPhtkkSE6V4/hOZG5sOD0UJ6R78UlUn7ZMJCs8Mc/ZLWxbx2cVpNa+v/fuFKVDRC8SS2yI/
+        lR92ppXSqf8sW9jE/nwQZBi/1
+X-Received: by 2002:a1c:20d7:: with SMTP id g206mr717775wmg.153.1630518832800;
+        Wed, 01 Sep 2021 10:53:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzId1EJQWuCXd4wDXaMAQVTM5bqXfZadYfJq5hfT4+k85e5baXrLRntNgIiFg9LFycxTroBXw==
+X-Received: by 2002:a1c:20d7:: with SMTP id g206mr717764wmg.153.1630518832630;
+        Wed, 01 Sep 2021 10:53:52 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
+        by smtp.gmail.com with ESMTPSA id r10sm127194wrc.85.2021.09.01.10.53.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 10:53:52 -0700 (PDT)
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
+ memory
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     jejb@linux.ibm.com, Andy Lutomirski <luto@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>
+References: <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
+ <YS6lIg6kjNPI1EgF@google.com>
+ <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
+ <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
+ <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
+ <a259e10d-39c9-c4a5-0ab4-f42a1b9bfaee@redhat.com>
+ <0d6b2a7e22f5e27e03abc21795124ccd66655966.camel@linux.ibm.com>
+ <1a4a1548-7e14-c2b4-e210-cc60a2895acd@redhat.com>
+ <4b863492fd33dce28a3a61662d649987b7d5066d.camel@linux.ibm.com>
+ <214ca837-3102-d6d1-764e-6b4cd1bab368@redhat.com>
+ <YS+9VHzC0XQF/9NK@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <3b63a5d9-30e4-2ae8-2f01-a92b758e81de@redhat.com>
+Date:   Wed, 1 Sep 2021 19:53:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YS+9VHzC0XQF/9NK@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When one searches for a main menu item, links aren't created for it like
-with the rest of the symbols.
+On 01.09.21 19:50, Sean Christopherson wrote:
+> On Wed, Sep 01, 2021, David Hildenbrand wrote:
+>>>>> Well not necessarily, but it depends how clever we want to get.  If
+>>>>> you look over on the OVMF/edk2 list, there's a proposal to do guest
+>>>>> migration via a mirror VM that invokes a co-routine embedded in the
+>>>>> OVMF binary:
+>>>>
+>>>> Yes, I heard of that. "Interesting" design.
+>>>
+>>> Heh, well what other suggestion do you have?  The problem is there
+>>> needs to be code somewhere to perform some operations that's trusted by
+>>> both the guest and the host.  The only element for a confidential VM
+>>> that has this shared trust is the OVMF firmware, so it seems logical to
+>>> use it.
+>>
+>> <offtopic>
+>>
+>> Let me put it this way: I worked with another architecture that doesn't
+>> fault on access of a secure page, but instead automatically exports/encrypts
+> 
+> I thought s390 does fault on insecure accesses to secure pages, and it's the
+> kernel's fault handler that "automatically" converts the page?  E.g. trap 0x3d
+> -> do_secure_storage_access() -> arch_make_page_accessible().
 
-This happens because we trace the item until we get to the rootmenu, but
-we don't include it in the path of the item. The rationale was probably
-that we don't want to show the main menu in the path of all items,
-because it is redundant.
+"automatic" as in "the kernel can do it easily automatically under the 
+hood when accessing such memory", yes that's what I meant :)
 
-However, when an item has only the rootmenu in its path it should be
-included, because this way the user can jump to its location.
-
-In case the item is a direct child of the rootmenu, show it in the
-'Location:' section as 'Main Menu'.
-
-This makes the 'if (i > 0)' superfluous because each item with prompt
-will have at least one menu in its path.
-
-Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
----
- scripts/kconfig/menu.c | 40 ++++++++++++++++++++++++++--------------
- 1 file changed, 26 insertions(+), 14 deletions(-)
-
-diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
-index 606ba8a63c24..8d7e3b07bf93 100644
---- a/scripts/kconfig/menu.c
-+++ b/scripts/kconfig/menu.c
-@@ -712,6 +712,7 @@ static void get_prompt_str(struct gstr *r, struct property *prop,
- 	int i, j;
- 	struct menu *submenu[8], *menu, *location = NULL;
- 	struct jump_key *jump = NULL;
-+	const char *prompt = NULL;
- 
- 	str_printf(r, "  Prompt: %s\n", prop->text);
- 
-@@ -735,6 +736,13 @@ static void get_prompt_str(struct gstr *r, struct property *prop,
- 		if (location == NULL && accessible)
- 			location = menu;
- 	}
-+
-+	/* If we have only the root menu, show it */
-+	if (i == 0) {
-+		location = &rootmenu;
-+		submenu[i++] = location;
-+	}
-+
- 	if (head && location) {
- 		jump = xmalloc(sizeof(struct jump_key));
- 
-@@ -758,21 +766,25 @@ static void get_prompt_str(struct gstr *r, struct property *prop,
- 		list_add_tail(&jump->entries, head);
- 	}
- 
--	if (i > 0) {
--		str_printf(r, "  Location:\n");
--		for (j = 4; --i >= 0; j += 2) {
--			menu = submenu[i];
--			if (jump && menu == location)
--				jump->offset = strlen(r->s);
--			str_printf(r, "%*c-> %s", j, ' ',
--				   menu_get_prompt(menu));
--			if (menu->sym) {
--				str_printf(r, " (%s [=%s])", menu->sym->name ?
--					menu->sym->name : "<choice>",
--					sym_get_string_value(menu->sym));
--			}
--			str_append(r, "\n");
-+	str_printf(r, "  Location:\n");
-+	for (j = 4; --i >= 0; j += 2) {
-+		menu = submenu[i];
-+		if (jump && menu == location)
-+			jump->offset = strlen(r->s);
-+
-+		/* The real rootmenu prompt is ugly */
-+		if (menu == &rootmenu)
-+			prompt = "Main Menu";
-+		else
-+			prompt = menu_get_prompt(menu);
-+
-+		str_printf(r, "%*c-> %s", j, ' ', prompt);
-+		if (menu->sym) {
-+			str_printf(r, " (%s [=%s])", menu->sym->name ?
-+				menu->sym->name : "<choice>",
-+				sym_get_string_value(menu->sym));
- 		}
-+		str_append(r, "\n");
- 	}
- }
- 
-
-base-commit: 087e856cfb76e9eef9a3a6e000854794f3c36e24
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
