@@ -2,78 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D90F3FE5E3
+	by mail.lfdr.de (Postfix) with ESMTP id B5E913FE5E4
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344783AbhIAWzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 18:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34594 "EHLO
+        id S1343880AbhIAW5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 18:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344242AbhIAWzf (ORCPT
+        with ESMTP id S230235AbhIAW5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 18:55:35 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F96BC061757
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 15:54:37 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id ot2-20020a17090b3b4200b0019127f8ed87so87413pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 15:54:37 -0700 (PDT)
+        Wed, 1 Sep 2021 18:57:30 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55693C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 15:56:33 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id e21so2514033ejz.12
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 15:56:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ys/Eh677oj62PecdD9ZwHONFeLZtbqRPJaW3J3Ece1o=;
-        b=vg3yTpngZs5HZQiRkVifcObEQTpyAyvzA/zZ8yp2Gulgdj9IScHSSc4wGvYo60cEzX
-         7sGDundDojYj9nHGzthxHQPtPRA+8cWwBHDqnSMHAMjnmqOFdR1DhIQKIIEd20gxRNcG
-         m+EcbwIyLmbjMTTyP3RKe5ifKTJ0uzek3ZKUOmV+OsR0sPQvnCh5OjvUpWOPcpzLQK26
-         QAiA1NtrfC6inBG4uMQiXJsAnQPg1uz2PDdLvKV/FP/WX4G6+q9ra/anUUINlJ4osb6e
-         f4tW8vJpHl9qUNWFCSxFclS2hyCm4z7R5ND2U/JLwKUD3QFk6HdtdtkNnXeKqR0sPIeU
-         XSiQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0c37HS5qGIQEDVteYJ2WQmPS4YgB8XOhpU0JZzYZ1Qo=;
+        b=gfp4E9dBC2tWKF9R7s3e22N9lHVXU87BJ5dwhu3XiXLxprxKEHSaI29Vm0i5OUt0UO
+         YgTrWTl0A8gLHo569dg4NGpFxPz8apW1J+wp3dHoNgabn0eSUPPB1NCTxNZtmFl727Rj
+         YQdKbVWl5SHRDKRkkKN4+XjPwPjXFrNvzCYhZEkRnHK285ZN+MZZ5mNfc/EW1ZOnRBrT
+         i0UmlIW1k0ki5Ma0UDTCwg3f5P97+f21ixpT/p0cloWiLSteW2zhBKPMz5nxYHR3WY+b
+         bGM4HUKZcMZg8e/CiopZ3HLPaFca/gy2cvMRW+4ocdlUm0V4xfX5civTULe2ZrojEdRK
+         I5fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ys/Eh677oj62PecdD9ZwHONFeLZtbqRPJaW3J3Ece1o=;
-        b=L5yPyR/V5PZn6DOAFnC66qW9oF7/sKlx3rYqfexiGKQTh6pxrU1QgQ4ehmRBFgsdzl
-         t4xtcICDf+UsMlFT8VZUrlvCJDulAETocaivkgdRAcQYpeSs7+jqCVZLI68Of6caPSDs
-         PMoAZgeafIkEeMkbSk/8TQDt8wc8J81PwRH+C02/NLOWAiVgYdArM91l8BGtVcjtMnVk
-         Rfi5EcyA+9P/DSZLHorVkzF/qAeYOug9Y/EspZ120gaq5gWxw2j7NGpp/dFFFMmyCm4a
-         7ao2yzFsB8NI/v0lyr+NeVKQWdXRXgCfR5CoP28Kr3V62NqOkKZwpMK01QT4MHALGTpl
-         t5KA==
-X-Gm-Message-State: AOAM533juskaKP2KVmGz2YJ2U+RNCZRrnG7xHJ8XkuyHMZU+Yl+nk6/0
-        GsQxikyHXK3pq1j4xmIp/k+Jig==
-X-Google-Smtp-Source: ABdhPJyAPr/zoXFcDNJA2ksI5bqpIYOTqFRLqamhMlC069ipW6fK2GVTQ1+MqZc4KH6L2RGmfHANmw==
-X-Received: by 2002:a17:902:e8ce:b0:132:b140:9540 with SMTP id v14-20020a170902e8ce00b00132b1409540mr75234plg.28.1630536877155;
-        Wed, 01 Sep 2021 15:54:37 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id e14sm2895pjg.40.2021.09.01.15.54.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 15:54:36 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 22:54:33 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@intel.com, David Matlack <dmatlack@google.com>,
-        peterx@redhat.com
-Subject: Re: [PATCH 01/16] KVM: MMU: pass unadulterated gpa to
- direct_page_fault
-Message-ID: <YTAEqXlvNOgY5hII@google.com>
-References: <20210807134936.3083984-1-pbonzini@redhat.com>
- <20210807134936.3083984-2-pbonzini@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0c37HS5qGIQEDVteYJ2WQmPS4YgB8XOhpU0JZzYZ1Qo=;
+        b=Lf6rqb1zuerJYq2OAwhYm+oFQSC1nsLzBRHinIJEgFpWA+IhzOCuj+byj90vxhVytJ
+         bnLWLx3QJBUUU3GoiGPRPkxp+Hbc/EA4AJL/ZARp0nG0/NK43bLuEOOOMwrMq2CnrNs2
+         Rv8ZqPRu9RLRHhyWnzh0VGhB8+TfoPxOSXdBsd7S39f3AgzuWeogjPYuk7XoPgW1/rcW
+         KlF5+I8L1PaHgStHTObYKTPKuAM0cb/V+PGaRZ9K/N7mMjsQQcYyLY/66KM9tKKJibIo
+         f+S+aGFlHhDzk8sao9zrXohAb0LmxzRyprMRo+2CBbihEWM3e863doCygB5OT/MXkC+d
+         0cFg==
+X-Gm-Message-State: AOAM531JR5EgNgHlJRCv5kk2nqfD3gpsO/EHBF/qHyBKSUC6w8ou79Qd
+        6iIHyjehmKs3hG18PEX3hhnH87ZgT+AStVFsryc=
+X-Google-Smtp-Source: ABdhPJyWNbS01BkhSLqOZqUJi5Tfwg15PEXXHHjA1v4ofvx9dCuJ3rJDgrkfSGWUZcPLKYjbHuqa3oP69fgncW82wvQ=
+X-Received: by 2002:a17:906:b14d:: with SMTP id bt13mr241919ejb.39.1630536991855;
+ Wed, 01 Sep 2021 15:56:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210807134936.3083984-2-pbonzini@redhat.com>
+References: <a2f423cf-9413-6bc8-e4d8-92374fc0449e@amperemail.onmicrosoft.com>
+ <YS8HpUz9FUcFWt0V@zeniv-ca.linux.org.uk> <CAHk-=wiwAC8L7UsRsd-sHNS8ZETbrTB0EELvYV1qMOUo86R7kg@mail.gmail.com>
+ <CAHk-=wjAPEs3HRGswJ-AE1R048j2MBsBtMfg3GOsaFykHoeKsg@mail.gmail.com>
+In-Reply-To: <CAHk-=wjAPEs3HRGswJ-AE1R048j2MBsBtMfg3GOsaFykHoeKsg@mail.gmail.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Thu, 2 Sep 2021 10:56:20 +1200
+Message-ID: <CAGsJ_4yLrGv2izZ2z4QWnBbDOhEjHygHDFBthfFqW0XEkMP-ag@mail.gmail.com>
+Subject: Re: Is it possible to implement the per-node page cache for programs/libraries?
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Shijie Huang <shijie@amperemail.onmicrosoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Frank Wang <zwang@amperecomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 07, 2021, Paolo Bonzini wrote:
-> Do not bother removing the low bits of the gpa.  This masking dates back
-> to the very first commit of KVM but it is unnecessary---or even
-> problematic, because the gpa is later used to fill in the MMIO page cache.
+On Thu, Sep 2, 2021 at 5:31 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Wed, Sep 1, 2021 at 10:24 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > But what you could do, if  you wanted to, would be to catch the
+> > situation where you have lots of expensive NUMA accesses either using
+> > our VM infrastructure or performance counters, and when the mapping is
+> > a MAP_PRIVATE you just do a COW fault on them.
+> >
+> > Sounds entirely doable, and has absolutely nothing to do with the page
+> > cache. It would literally just be an "over-eager COW fault triggered
+> > by NUMA access counters".
+>
+> Note how it would work perfectly fine for anonymous mappings too. Just
+> to reinforce the point that this has nothing to do with any page cache
+> issues.
+>
+> Of course, if you want to actually then *share* pages within a node
+> (rather than replicate them for each process), that gets more
+> exciting.
+>
+> But I suspect that this is mainly only useful for long-running big
+> processes (not least due to that node binding thing), so I question
+> the need for that kind of excitement.
 
-I don't disagree with the code change, but I don't see how stripping the offset
-can be problematic for the MMIO page cache.  I assume you're referring to
-handle_abnormal_pfn() -> vcpu_cache_mmio_info().  The "gva" is masked with
-PAGE_MASK, i.e. the offset is stripped anyways.  And fundamentally, that cache
-is tied to the granularity of the memslots, tracking the offset would be wrong.
+In Linux server scenarios, it would be quite common to have long-running big
+processes constantly running on one machine, for example, web, database
+etc. This kind of process can cross a couple of NUMA nodes using all CPUs
+in a server to achieve the maximum throughput.
+
+SGI/HPE has a numatool with command "dplace" to help deploy processes
+with replicated text in either libraries or binary (a.out) [1]:
+
+dplace [-e] [-c cpu_numbers] [-s skip_count] [-n process_name] \
+             [-x skip_mask] [-r [l|b|t]] [-o log_file] [-v 1|2] \
+             command [command-args]
+
+The dplace command accepts the following options:
+...
+-r: Specifies that text should be replicated on the node or nodes
+where the application is running.
+In some cases, replication will improve performance by reducing the
+need to make offnode memory
+references for code. The replication option applies to all programs
+placed by the dplace command.
+See the dplace man page for additional information on text
+replication. The replication options are
+a string of one or more of the following characters:
+l - Replicate library text
+b - Replicate binary (a.out) text
+t - Thread round-robin option
+
+On the other hand, it would be also interesting to investigate if
+kernel text replication can help
+improve performance. MIPS does have REPLICATE_KTEXT support in the kernel:
+config REPLICATE_KTEXT
+bool "Kernel text replication support"
+depends on SGI_IP27
+select MAPPED_KERNEL
+help
+ Say Y here to enable replicating the kernel text across multiple
+ nodes in a NUMA cluster.  This trades memory for speed.
+
+Not quite sure how it will benefit X86 and ARM64 though it seems concurrent-rt
+has some solution and benchmark data in RedHawk Linux[2].
+
+[1] http://www.nacad.ufrj.br/online/sgi/007-5646-002/sgi_html/ch05.html
+[2] https://www.concurrent-rt.com/wp-content/uploads/2016/11/kernel-page-replication.pdf
+
+>
+>                 Linus
+
+Thanks
+Barry
