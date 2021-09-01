@@ -2,124 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D1F3FD465
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FB13FD466
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242576AbhIAHXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:23:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55460 "EHLO mail.kernel.org"
+        id S242556AbhIAH2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:28:09 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:37646 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242494AbhIAHXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:23:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAB4B60E98;
-        Wed,  1 Sep 2021 07:22:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630480971;
-        bh=ROvubnIZ7CG7NtmC524Rg5/WiRX8ZoyaERotUEZbRL0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OwvGS0g9Rk3Sbnr9PqhqnIqsnpglwcimyj5PYWZl+ld0I8CY15MKMWHd3uVhtm18y
-         DXLWffZNKZCSjJ8MwZVNT4VI130Pw8HnmI1QDiG8OZafTNCe3l/J1Ck1ZXFGIrPrSU
-         iW5bZiqaaPZkiTXAqz3RcDIyqE2xSDcKxm57tPE83v8pIPwp2+xP3lRaYHWo4/M9na
-         i5AaXBZHxFAJdF4sv7rwX33WBPT6fOVKQJVlZXJJK8Jn9D8e/ml2Jhye3d88jqtHVw
-         qJ1ivQ9AhefJSJF9A5hafWAMdfJRsLXUNDadIIMh4dglT0cmfW1f8BVhpF1m9biuBY
-         +bKu2nmjT8KOg==
-Date:   Wed, 1 Sep 2021 10:22:44 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "kernel-hardening@lists.openwall.com" 
-        <kernel-hardening@lists.openwall.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "shakeelb@google.com" <shakeelb@google.com>
-Subject: Re: [RFC PATCH v2 11/19] mm/sparsemem: Use alloc_table() for table
- allocations
-Message-ID: <YS8qRHrGzevns32P@kernel.org>
-References: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
- <20210830235927.6443-12-rick.p.edgecombe@intel.com>
- <YS3uhdT88XFvP9n3@kernel.org>
- <f77f3312a1b17b8f8de2ccf0f40f9f19f4a9f151.camel@intel.com>
+        id S231739AbhIAH2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 03:28:08 -0400
+Received: from zn.tnic (p200300ec2f0f3000ff66408ba4c79392.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:3000:ff66:408b:a4c7:9392])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BF9E61EC051E;
+        Wed,  1 Sep 2021 09:27:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630481226;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=6p6hxtBn8gLHMzkoO0aM3iXU0A8QRJ+1AexPaqoZxP0=;
+        b=aBEpLFUNgs+kBXiS5AwC0yCDqg3DN5FnxwBqH+NRcVcw9mCi+OgzOhfIcxF7YLFtgHqzBB
+        /fuOcdGMdcS1AvVMZWNi9ynkGYuss7WmbFwInv158Vm0/mXEThvDpMrIC1SUmiBWgadeie
+        6YjaXvPwXGSZkOzqi3eC5A9KxMVwtYE=
+Date:   Wed, 1 Sep 2021 09:27:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
+ restore_fpregs_from_user()
+Message-ID: <YS8rbA239gXOT6R6@zn.tnic>
+References: <20210830162545.374070793@linutronix.de>
+ <YS0ylo9nTHD9NiAp@zn.tnic>
+ <87zgsyg0eg.ffs@tglx>
+ <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
+ <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
+ <YS1OE6FRi4ZwEF8j@zeniv-ca.linux.org.uk>
+ <CAHk-=wh57tMaJxcH=kWE4xdKLjayKSDEVvMwHG4fKZ5tUHF6mg@mail.gmail.com>
+ <87zgsye9kn.ffs@tglx>
+ <YS3cskpK9Uoq3Wc4@zn.tnic>
+ <20210831183921.GA1687448@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f77f3312a1b17b8f8de2ccf0f40f9f19f4a9f151.camel@intel.com>
+In-Reply-To: <20210831183921.GA1687448@agluck-desk2.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 06:25:23PM +0000, Edgecombe, Rick P wrote:
-> On Tue, 2021-08-31 at 11:55 +0300, Mike Rapoport wrote:
-> > On Mon, Aug 30, 2021 at 04:59:19PM -0700, Rick Edgecombe wrote:
-> <trim> 
-> > > -static void * __meminit vmemmap_alloc_block_zero(unsigned long
-> > > size, int node)
-> > > +static void * __meminit vmemmap_alloc_table(int node)
-> > >  {
-> > > -	void *p = vmemmap_alloc_block(size, node);
-> > > +	void *p;
-> > > +	if (slab_is_available()) {
-> > > +		struct page *page = alloc_table_node(GFP_KERNEL |
-> > > __GFP_ZERO, node);
-> > 
-> > This change removes __GFP_RETRY_MAYFAIL|__GFP_NOWARN from the
-> > original gfp
-> > vmemmap_alloc_block() used.
-> Oh, yea good point. Hmm, I guess grouped pages could be aware of that
-> flag too. Would be a small addition, but it starts to grow
-> unfortunately.
-> 
-> > Not sure __GFP_RETRY_MAYFAIL is really needed in
-> > vmemmap_alloc_block_zero()
-> > at the first place, though.
-> Looks like due to a real issue:
-> 055e4fd96e95b0eee0d92fd54a26be7f0d3bcad0
+On Tue, Aug 31, 2021 at 11:39:21AM -0700, Luck, Tony wrote:
+> You can imagine all you want. And if your imagination is based
+> on experiences with very old systems like Haswell (launched in 2015)
+> then you'd be right to be skeptical of firmware capabilities.
 
-I believe the issue was with memory map blocks rather than with page
-tables, but since sparse-vmemmap uses the same vmemmap_alloc_block() for
-both, the GFP flag got stick with both.
+I wish it were only Haswell boxes. Do you remember how many times I've
+talked to you in the past about boxes with broken einj? I don't think
+they were all Haswell but I haven't kept track.
 
-I'm not really familiar with reclaim internals to say if
-__GFP_RETRY_MAYFAIL would help much for order-0 allocation.
+> Turn off eMCA in BIOS to avoid this.
 
-Vlastimil, can you comment on this?
- 
-> I think it should not affect PKS tables for now, so maybe I can make
-> separate logic instead. I'll look into it. Thanks.
-> > 
-> > More broadly, maybe it makes sense to split boot time and memory
-> > hotplug
-> > paths and use pxd_alloc() for the latter.
-> > 
-> > > +
-> > > +		if (!page)
-> > > +			return NULL;
-> > > +		return page_address(page);
-> > > +	}
-> > >  
-> > > +	p = __earlyonly_bootmem_alloc(node, PAGE_SIZE, PAGE_SIZE,
-> > > __pa(MAX_DMA_ADDRESS));
-> > 
-> > Opportunistically rename to __earlyonly_memblock_alloc()? ;-)
-> > 
-> Heh, I can. Just grepping, there are several other instances of
-> foo_bootmem() only calling foo_memblock() pattern scattered about. Or
-> maybe I'm missing the distinction.
+I'll try. That is, provided there even is such an option.
 
-Heh, I didn't do s/bootmem/memblock/g, so foo_bootmem() are reminders we
-had bootmem allocator once.
-Maybe it's a good time to remove them :)
- 
-> <trim>
+> The injection controls in the memory controller can only be accessed
+> in SMM mode. Some paranoia there that some ring0 attack could inject
+> errors at random intervals causing major costs to diagnose and replace
+> "failing" DIMMs. So documentation wouldn't help Linux because it just
+> can't twiddle the necessary bits in the h/w.
+
+Yah, that's why this thing needs a BIOS switch which controls injection.
+And probably they do that already.
+
+> Downsides of ACPI/EINJ today:
+> 1) Availability on production machines. It is always disabled by default
+> in BIOS.
+
+That's ok.
+
+> OEMs may not provide a setup option to turn it on (or may have deleted
+> the code to support it completely).
+
+Yeah, that's practically the same thing I'm complaining about - einj is
+just as useless as before in that case.
+
+> Intel's pre-production servers always have the code, and the setup
+> option to enable.
+
+Except that only you and a couple of partners have access to such
+boxes. I guess tglx has too and if so that at least answers his initial
+complaint about not having an injection method to test kernel code.
+
+> 2) Doesn't inject to 3D-Xpoint (that has its own injection method, but
+> it is annoying to have to juggle two methods).
+
+I guess that doesn't matter for our use case of wanting to test the MCE
+code, provided one can at least inject somewhere.
+
+> 3) Hard/impossible to inject into SGX memory (because BIOS is untrusted
+> and isn't allowed to do a store to push the poison data to DDR).
+
+Oh well.
+
+So, I really wanna believe you that injection capability has improved
+but until I see it with my own eyes, I will remain very much sceptical.
+And considering how firmware and OEMs are at play here, sceptical is
+just the right stance.
 
 -- 
-Sincerely yours,
-Mike.
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
