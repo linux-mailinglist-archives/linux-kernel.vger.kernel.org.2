@@ -2,153 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541713FD296
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33CC3FD297
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234535AbhIAExj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 00:53:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54831 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230483AbhIAExh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 00:53:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630471960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=P3aBHLWZDnmUXAALkI/MtBHbtK557Aojjg+2/1MJnAU=;
-        b=eBlSydANyw3NzcOTj+Qm7IeI/1kyJKJOIKJbuflT4ttx44pI0QqR7BiDyRiyuOT8bdTn5g
-        gjowpXwtbyMFF9Aaof1sLd2NcqtUDaXDn4ZSqKNn3Ro0V366ldH2ZDOw6x5ZYN6YcQe9jq
-        1TLTjXqm60csCALCmor6RR8UbGCIWQQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-6WWXWk_SNlCTV2NEgJHwRQ-1; Wed, 01 Sep 2021 00:52:39 -0400
-X-MC-Unique: 6WWXWk_SNlCTV2NEgJHwRQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF4938799E0;
-        Wed,  1 Sep 2021 04:52:38 +0000 (UTC)
-Received: from fedora-t480.rhtw.internal (unknown [10.39.192.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CBE5F18A6A;
-        Wed,  1 Sep 2021 04:52:34 +0000 (UTC)
-From:   Kate Hsuan <hpa@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>, Hans de Goede <hdegoede@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kate Hsuan <hpa@redhat.com>
-Subject: [PATCH v4] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860 and 870 SSD.
-Date:   Wed,  1 Sep 2021 12:52:20 +0800
-Message-Id: <20210901045220.27746-1-hpa@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S241867AbhIAEyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 00:54:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230483AbhIAEyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 00:54:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E587B6101A;
+        Wed,  1 Sep 2021 04:53:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630472035;
+        bh=nJHxdGVB9MUzA7usFs/P6wCxX8aS0+2RcMRXbrMc4jU=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=NdgNEYZLRJsV8AN6Qx2bCbSg+7jy5uDS2x0o66RVxlSf2OnAe3jJROCgvUma4QdAs
+         Yu6M0xY8tCxzDybwqLcGml4U8URAen1hVcjyZPtOMpuPyuvX7agt8JrL/GQyoexKiS
+         dt7MRyFYOlEeqi0ePKj+tBjxZD2TCCytB63IDWIN5Bkv2tw1B/Fz1w+hPCy8H/ZxDn
+         lNpFFz1xTk4c/6AW48tXzBK+Aq4mLdCLP2a/y8ut/jAVCcp+lx++yUfirBaRaer6xH
+         jDBLWXHj1yPf98Cjtrdz5LGIvm0JIoirD5liMJ8hEI3Y3od0ac7nUrOuIElIr0/UON
+         eHXEWOqPJE3oQ==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id EF66527C0054;
+        Wed,  1 Sep 2021 00:53:52 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute6.internal (MEProxy); Wed, 01 Sep 2021 00:53:52 -0400
+X-ME-Sender: <xms:XQcvYVQQ-Avs7odMHzhmvRkPFHW0-4kI9hku0Lb9GRylUYSdCQodcw>
+    <xme:XQcvYeyHsCTgE0jTftfWt00a699-QAEg-StvDAMzKvxLkAL2jWpMlsIt-lpQ40mWa
+    MT9rJpLneqWQrLFwe4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvvddgkeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpeegjefghfdtledvfeegfeelvedtgfevkeeugfekffdvveeffeetieeh
+    ueetveekfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
+    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
+    drlhhuthhordhush
+X-ME-Proxy: <xmx:XQcvYa0_OCYZcn2wa7889GFR5e7zHXeo7G9r_5OJAsf_26QdK4HBtQ>
+    <xmx:XQcvYdD2h81Zk7wUjustzUVaxu7KE-G1rVYbn4Oc7aw532e7JrWlQQ>
+    <xmx:XQcvYei6ps7Y4_OPRaxqzC5u7GiyRhpsSxam0AbAOI2IB4ppNJmhSw>
+    <xmx:YAcvYZ2y1dLqpD-64Z3ZqvfMe2Qc-hNL1n79PDiRdZIPFpnklIMArXhGwnM>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 3F5B7A002E4; Wed,  1 Sep 2021 00:53:49 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1126-g6962059b07-fm-20210901.001-g6962059b
+Mime-Version: 1.0
+Message-Id: <8f3630ff-bd6d-4d57-8c67-6637ea2c9560@www.fastmail.com>
+In-Reply-To: <20210827023150.jotwvom7mlsawjh4@linux.intel.com>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+ <20210827023150.jotwvom7mlsawjh4@linux.intel.com>
+Date:   Tue, 31 Aug 2021 21:53:27 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Yu Zhang" <yu.c.zhang@linux.intel.com>,
+        "David Hildenbrand" <david@redhat.com>
+Cc:     "Sean Christopherson" <seanjc@google.com>,
+        "Paolo Bonzini" <pbonzini@redhat.com>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
+        "Wanpeng Li" <wanpengli@tencent.com>,
+        "Jim Mattson" <jmattson@google.com>,
+        "Joerg Roedel" <joro@8bytes.org>, "kvm list" <kvm@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Joerg Roedel" <jroedel@suse.de>,
+        "Andi Kleen" <ak@linux.intel.com>,
+        "David Rientjes" <rientjes@google.com>,
+        "Vlastimil Babka" <vbabka@suse.cz>,
+        "Tom Lendacky" <thomas.lendacky@amd.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Varad Gautam" <varad.gautam@suse.com>,
+        "Dario Faggioli" <dfaggioli@suse.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>, linux-mm@kvack.org,
+        linux-coco@lists.linux.dev,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        "Sathyanarayanan Kuppuswamy" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Dave Hansen" <dave.hansen@intel.com>
+Subject: =?UTF-8?Q?Re:_[RFC]_KVM:_mm:_fd-based_approach_for_supporting_KVM_guest_?=
+ =?UTF-8?Q?private_memory?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many users are reporting that the Samsung 860 and 870 SSD are having
-various issues when combined with AMD SATA controllers and only
-completely disabling NCQ helps to avoid these issues.
 
-Always disabling NCQ for Samsung 860/870 SSDs regardless of the host
-SATA adapter vendor will cause I/O performance degradation with well
-behaved adapters. To limit the performance impact to AMD adapters,
-introduce the ATA_HORKAGE_NO_NCQ_ON_AMD flag to force disable NCQ
-only for these adapters.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=201693
-Signed-off-by: Kate Hsuan <hpa@redhat.com>
----
-Changes in v4:
-* A function ata_dev_check_adapter() is added to check the vendor ID of
-  the adapter.
-* ATA_HORKAGE_NONCQ_ON_AMD was modified to ATA_HORKAGE_NO_NCQ_ON_AMD to
-  align with the naming convention.
-* Commit messages were improved according to reviewer comments.
+On Thu, Aug 26, 2021, at 7:31 PM, Yu Zhang wrote:
+> On Thu, Aug 26, 2021 at 12:15:48PM +0200, David Hildenbrand wrote:
 
-Changes in v3:
-* ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL was modified to
-  ATA_HORKAGE_NONCQ_ON_AMD.
-* Codes were fixed to completely disable NCQ on AMD controller.
+> Thanks a lot for this summary. A question about the requirement: do we or
+> do we not have plan to support assigned device to the protected VM?
+> 
+> If yes. The fd based solution may need change the VFIO interface as well(
+> though the fake swap entry solution need mess with VFIO too). Because:
+> 
+> 1> KVM uses VFIO when assigning devices into a VM.
+> 
+> 2> Not knowing which GPA ranges may be used by the VM as DMA buffer, all
+> guest pages will have to be mapped in host IOMMU page table to host pages,
+> which are pinned during the whole life cycle fo the VM.
+> 
+> 3> IOMMU mapping is done during VM creation time by VFIO and IOMMU driver,
+> in vfio_dma_do_map().
+> 
+> 4> However, vfio_dma_do_map() needs the HVA to perform a GUP to get the HPA
+> and pin the page. 
+> 
+> But if we are using fd based solution, not every GPA can have a HVA, thus
+> the current VFIO interface to map and pin the GPA(IOVA) wont work. And I
+> doubt if VFIO can be modified to support this easily.
+> 
+> 
 
----
- drivers/ata/libata-core.c | 32 ++++++++++++++++++++++++++++++--
- include/linux/libata.h    |  1 +
- 2 files changed, 31 insertions(+), 2 deletions(-)
+Do you mean assigning a normal device to a protected VM or a hypothetical protected-MMIO device?
 
-diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-index c861c93d1e84..49049cd713e4 100644
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -2186,6 +2186,25 @@ static void ata_dev_config_ncq_prio(struct ata_device *dev)
- 	dev->flags &= ~ATA_DFLAG_NCQ_PRIO;
- }
+If the former, it should work more or less like with a non-protected VM. mmap the VFIO device, set up a memslot, and use it.  I'm not sure whether anyone will actually do this, but it should be possible, at least in principle.  Maybe someone will want to assign a NIC to a TDX guest.  An NVMe device with the understanding that the guest can't trust it wouldn't be entirely crazy ether.
 
-+static bool ata_dev_check_adapter(struct ata_device *dev,
-+				  unsigned short vendor_id)
-+{
-+	struct pci_dev *pcidev = NULL;
-+	struct device *parent_dev = NULL;
-+
-+	for (parent_dev = dev->tdev.parent; parent_dev != NULL;
-+	     parent_dev = parent_dev->parent) {
-+		if (dev_is_pci(parent_dev)) {
-+			pcidev = to_pci_dev(parent_dev);
-+			if (pcidev->vendor == vendor_id)
-+				return true;
-+			break;
-+		}
-+	}
-+
-+	return false;
-+}
-+
- static int ata_dev_config_ncq(struct ata_device *dev,
- 			       char *desc, size_t desc_sz)
- {
-@@ -2204,6 +2223,13 @@ static int ata_dev_config_ncq(struct ata_device *dev,
- 		snprintf(desc, desc_sz, "NCQ (not used)");
- 		return 0;
- 	}
-+
-+	if (dev->horkage & ATA_HORKAGE_NO_NCQ_ON_AMD &&
-+	    ata_dev_check_adapter(dev, PCI_VENDOR_ID_AMD)) {
-+		snprintf(desc, desc_sz, "NCQ (not used)");
-+		return 0;
-+	}
-+
- 	if (ap->flags & ATA_FLAG_NCQ) {
- 		hdepth = min(ap->scsi_host->can_queue, ATA_MAX_QUEUE);
- 		dev->flags |= ATA_DFLAG_NCQ;
-@@ -3971,9 +3997,11 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
- 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "Samsung SSD 860*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
--						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+						ATA_HORKAGE_ZERO_AFTER_TRIM |
-+						ATA_HORKAGE_NO_NCQ_ON_AMD, },
- 	{ "Samsung SSD 870*",           NULL,   ATA_HORKAGE_NO_NCQ_TRIM |
--						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+						ATA_HORKAGE_ZERO_AFTER_TRIM |
-+						ATA_HORKAGE_NO_NCQ_ON_AMD, },
- 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-
-diff --git a/include/linux/libata.h b/include/linux/libata.h
-index 860e63f5667b..cdc248a15763 100644
---- a/include/linux/libata.h
-+++ b/include/linux/libata.h
-@@ -426,6 +426,7 @@ enum {
- 	ATA_HORKAGE_NOTRIM	= (1 << 24),	/* don't use TRIM */
- 	ATA_HORKAGE_MAX_SEC_1024 = (1 << 25),	/* Limit max sects to 1024 */
- 	ATA_HORKAGE_MAX_TRIM_128M = (1 << 26),	/* Limit max trim size to 128M */
-+	ATA_HORKAGE_NO_NCQ_ON_AMD = (1 << 27),	/* Disable NCQ on AMD chipset */
-
- 	 /* DMA mask for user DMA control: User visible values; DO NOT
- 	    renumber */
---
-2.31.1
-
+If the latter, AFAIK there is no spec for how it would work even in principle. Presumably it wouldn't work quite like VFIO -- instead, the kernel could have a protection-virtual-io-fd mechanism, and that fd could be bound to a memslot in whatever way we settle on for binding secure memory to a memslot.
