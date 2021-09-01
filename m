@@ -2,199 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD643FD0AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 03:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270F73FD0B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 03:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241601AbhIABZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 21:25:27 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:41482 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234036AbhIABZ0 (ORCPT
+        id S241559AbhIAB30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 21:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234036AbhIAB3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 21:25:26 -0400
-Received: by mail-oi1-f179.google.com with SMTP id 6so1701136oiy.8;
-        Tue, 31 Aug 2021 18:24:30 -0700 (PDT)
+        Tue, 31 Aug 2021 21:29:25 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7456FC061575;
+        Tue, 31 Aug 2021 18:28:29 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id e26so706956wmk.2;
+        Tue, 31 Aug 2021 18:28:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=46K35e876q2cK9iX0soFFYpDeEvjMOjqvdFjSiGDMSE=;
+        b=cMCA/xmE8LNwY1JgeJH0jBkUh/3pqn08cZpovec2KPHiNIdUBP2Fv+xqnYSPLvimN3
+         XY+ZV06MKRxBpinSYz8/cTD/Y6CC015IUCTkR64wYL8F72aHpJ46+RQud8y8iSJsHjSQ
+         6jOq7VgaZGwvdaMvMZtQtCFHVnfCQ842tnIxozQY3gLMbejCbTFyj7yNmqD+qbS5zBVp
+         P2aiGa3Q1Xa+I2+hCnnOXq7rBXpP47FdTx4F+Zs2mg++JJ0TS2XMPNStc7Lzab7rtMj/
+         Rp4qlnV4Ifw9OXstuXPDeUHhBovz1J/RIP7kerZaqyIQHtZLmGfey70MBl/oh0vVLQgk
+         f/Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=VJN6Yn8anNyePkxZIH0sbBuDiAsFTMzSe4iTlv6qQOw=;
-        b=UcF5h2S4wQ2ehCmS+UrKDubR6LFS2AlMwO11VYeTvh6xJ+o46bQj5yTTauQk/puFaF
-         jpi6xe8iEWIkx+YsqhNNPIUE3Pmu4flbLNbz/51QaJRZeHw5UQopR9cKO4zo+Y6huDzz
-         dkBlSbwMDWIlrQk+Ei4NGTfSREiVvyyOmIznDAboLxl3P8e5w5mQY5QbxoBSgLRRLuTQ
-         JlCbQQ0J9L1knB7dv8lrsUd7W1WW4hDX+Tqsmx2Z0MtRtER+fVlAOl3rZC54+dp/XYTw
-         dW1gKII0Ff+MdX16lS/0YNjGB5eCV48hUe27FFYzCh8kP5sOvUPOce4F02aK8Z9+9DO7
-         RAwQ==
-X-Gm-Message-State: AOAM5305g5o7fPtG40+FNRxtRmtlrrxN9FyDaM2coVEIKqhL8MKmQHRi
-        V0C11F7Iqo5LdFqZcUCdGQ==
-X-Google-Smtp-Source: ABdhPJyvzKX814iG5ZL8LMATnBzH0VmFI/oubUGGa/PHFQpVoPJj+dYVcpNcvUnZWp34KIDDfP1J1w==
-X-Received: by 2002:a05:6808:690:: with SMTP id k16mr5361611oig.152.1630459469893;
-        Tue, 31 Aug 2021 18:24:29 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id k23sm4055216ood.12.2021.08.31.18.24.28
+        bh=46K35e876q2cK9iX0soFFYpDeEvjMOjqvdFjSiGDMSE=;
+        b=KhTzapt04lUs2PU27KiaUIYOZrvnx3dZm7QaJ+eQPmNOWeqpxSNZwYmhyVRfMCnu4y
+         wOAypY6IQGGK9cBv0vz9LClO8LA1YuyNqYoT/ZXKz826kLxL3cArpTuMLoulGzDPxpkN
+         48I/iOSiL0S9iCAZk7XmO3lq9qLJ1ec0k47ycVn4qgBecw0PTG08WlvkyfJxLFUDvkU6
+         7S3vmpxvzaIGuzZaJox2D8ADYh1E+Et/QS7G5sHlkehZIVfDNNVgggL5Y4Xbhz5HkctG
+         q3hKokM30oxn/4Xo324ZcUiVoEKsGiWCRyrhchk3EMYJqU/aEctF7a73M616cy38Jfg6
+         Y+EA==
+X-Gm-Message-State: AOAM53272M0dqkh3zfgLdUUg03tz6KbURiVBbNjP3GjJnY7SSzPLmaRy
+        dgWlvAANFhxzMvcwsmFkmvLRWwrZ+5g=
+X-Google-Smtp-Source: ABdhPJyz0GaH2RV+t9w7U5Z4XYhi+CuIadX3ZCL1NRfRIpXSYkHGQUjtBtOM32QdeL7S1UftZFrE1w==
+X-Received: by 2002:a05:600c:3656:: with SMTP id y22mr6881744wmq.58.1630459707957;
+        Tue, 31 Aug 2021 18:28:27 -0700 (PDT)
+Received: from skbuf ([82.78.148.104])
+        by smtp.gmail.com with ESMTPSA id x9sm3779946wmi.30.2021.08.31.18.28.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 18:24:29 -0700 (PDT)
-Received: (nullmailer pid 990302 invoked by uid 1000);
-        Wed, 01 Sep 2021 01:24:28 -0000
-Date:   Tue, 31 Aug 2021 20:24:28 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Anup Patel <anup.patel@wdc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Bin Meng <bmeng.cn@gmail.com>
-Subject: Re: [RFC PATCH v3 05/11] dt-bindings: interrupt-controller: Add
- ACLINT MSWI and SSWI bindings
-Message-ID: <YS7WTPRYJWnPu2ii@robh.at.kernel.org>
-References: <20210830041729.237252-1-anup.patel@wdc.com>
- <20210830041729.237252-6-anup.patel@wdc.com>
+        Tue, 31 Aug 2021 18:28:27 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 04:28:26 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
+ FWNODE_FLAG_BROKEN_PARENT
+Message-ID: <20210901012826.iuy2bhvkrgahhrl7@skbuf>
+References: <YSlG4XRGrq5D1/WU@lunn.ch>
+ <CAGETcx-ZvENq8tFZ9wb_BCPZabpZcqPrguY5rsg4fSNdOAB+Kw@mail.gmail.com>
+ <YSpr/BOZj2PKoC8B@lunn.ch>
+ <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
+ <YS4rw7NQcpRmkO/K@lunn.ch>
+ <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
+ <YS6nxLp5TYCK+mJP@lunn.ch>
+ <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
+ <YS608fdIhH4+qJsn@lunn.ch>
+ <20210831231804.zozyenear45ljemd@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210830041729.237252-6-anup.patel@wdc.com>
+In-Reply-To: <20210831231804.zozyenear45ljemd@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 09:47:23AM +0530, Anup Patel wrote:
-> We add DT bindings documentation for the ACLINT MSWI and SSWI
-> devices found on RISC-V SOCs.
+On Wed, Sep 01, 2021 at 02:18:04AM +0300, Vladimir Oltean wrote:
+> On Wed, Sep 01, 2021 at 01:02:09AM +0200, Andrew Lunn wrote:
+> > Rev B is interesting because switch0 and switch1 got genphy, while
+> > switch2 got the correct Marvell PHY driver. switch2 PHYs don't have
+> > interrupt properties, so don't loop back to their parent device.
 > 
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
-> ---
->  .../riscv,aclint-swi.yaml                     | 95 +++++++++++++++++++
->  1 file changed, 95 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
-> new file mode 100644
-> index 000000000000..68563259ae24
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
-> @@ -0,0 +1,95 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/interrupt-controller/riscv,aclint-swi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: RISC-V ACLINT Software Interrupt Devices
-> +
-> +maintainers:
-> +  - Anup Patel <anup.patel@wdc.com>
-> +
-> +description:
-> +  RISC-V SOCs include an implementation of the M-level software interrupt
-> +  (MSWI) device and the S-level software interrupt (SSWI) device defined
-> +  in the RISC-V Advanced Core Local Interruptor (ACLINT) specification.
-> +
-> +  The ACLINT MSWI and SSWI devices are documented in the RISC-V ACLINT
-> +  specification located at
-> +  https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc.
-> +
-> +  The ACLINT MSWI and SSWI devices directly connect to the M-level and
-> +  S-level software interrupt lines of various HARTs (or CPUs) respectively
-> +  so the RISC-V per-HART (or per-CPU) local interrupt controller is the
-> +  parent interrupt controller for the ACLINT MSWI and SSWI devices.
-> +
-> +allOf:
-> +  - $ref: /schemas/interrupt-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +        - enum:
-> +          - riscv,aclint-mswi
-> +
-> +      - items:
-> +        - enum:
-> +          - riscv,aclint-sswi
+> This is interesting and not what I really expected to happen. It goes to
+> show that we really need more time to understand all the subtleties of
+> device dependencies before jumping on patching stuff.
 
-All this can be just:
+There is an even more interesting variation which I would like to point
+out. It seems like a very odd loophole in the device links.
 
-enum:
-  - riscv,aclint-mswi
-  - riscv,aclint-sswi
+Take the example of the mv88e6xxx DSA driver. On my board
+(arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts), even after I
+had to declare the switches as interrupt controller and add interrupts
+to their internal PHYs, I still need considerable force to 'break' this
+board in the way discussed in this thread. The correct PHY driver insists
+to probe, and not genphy. Let me explain.
 
-However...
+The automatic device links between the switch (supplier, as interrupt-controller)
+and PHYs (consumers) are added by fwnode_link_add, called from of_link_to_phandle.
 
-> +
-> +    description:
-> +      For ACLINT MSWI devices, it should be "riscv,aclint-mswi" OR
-> +      "<vendor>,<chip>-aclint-mswi".
-> +      For ACLINT SSWI devices, it should be "riscv,aclint-sswi" OR
-> +      "<vendor>,<chip>-aclint-sswi".
+Important note: fwnode_link_add does not link devices, it links OF nodes.
 
-s/OR/AND/
+Even more important node, in the form of a comment:
 
-There must be a compatible for the implementation. Unless RiscV 
-implementations of specs are complete describing all clocks, power 
-domains, resets, etc. and are quirk free.
+ * The driver core will use the fwnode link to create a device link between the
+ * two device objects corresponding to @con and @sup when they are created. The
+ * driver core will automatically delete the fwnode link between @con and @sup
+ * after doing that.
 
-But don't write free form constraints...
+Okay?!
 
+What seems to be omitted is that the DSA switch driver's probing itself
+can be deferred. For example:
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#interrupt-cells":
-> +    const: 0
-> +
-> +  interrupts-extended:
-> +    minItems: 1
-> +    maxItems: 4095
-> +
-> +  interrupt-controller: true
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts-extended
-> +  - interrupt-controller
-> +  - "#interrupt-cells"
-> +
-> +examples:
-> +  - |
-> +    // Example 1 (RISC-V MSWI device used by Linux RISC-V NoMMU kernel):
-> +
-> +    interrupt-controller@2000000 {
-> +      compatible = "riscv,aclint-mswi";
-> +      interrupts-extended = <&cpu1intc 3>,
-> +                            <&cpu2intc 3>,
-> +                            <&cpu3intc 3>,
-> +                            <&cpu4intc 3>;
-> +      reg = <0x2000000 0x4000>;
-> +      interrupt-controller;
-> +      #interrupt-cells = <0>;
-> +    };
-> +
-> +  - |
-> +    // Example 2 (RISC-V SSWI device used by Linux RISC-V MMU kernel):
-> +
-> +    interrupt-controller@2100000 {
-> +      compatible = "riscv,aclint-sswi";
-> +      interrupts-extended = <&cpu1intc 1>,
-> +                            <&cpu2intc 1>,
-> +                            <&cpu3intc 1>,
-> +                            <&cpu4intc 1>;
-> +      reg = <0x2100000 0x4000>;
-> +      interrupt-controller;
-> +      #interrupt-cells = <0>;
-> +    };
-> +...
-> -- 
-> 2.25.1
-> 
-> 
+dsa_register_switch
+-> dsa_switch_probe
+   -> dsa_switch_parse_of
+      -> dsa_switch_parse_ports_of
+         -> dsa_port_parse_of
+            -> of_find_net_device_by_node(of_parse_phandle(dn, "ethernet", 0));
+            -> not found => return -EPROBE_DEFER
+
+When dsa_register_switch() returns -EPROBE_DEFER, it is effectively
+an error path. So the reverse of initialization is performed.
+
+The mv88e6xxx driver calls mv88e6xxx_mdios_register() right _before_
+dsa_register_switch. So when dsa_register_switch returns error code,
+mv88e6xxx_mdios_unregister() will be called.
+
+When mv88e6xxx_mdios_unregister() is called, the MDIO buses with
+internal PHYs are destroyed. So the PHY devices themselves are destroyed
+too. And the device links between the DSA switch and the internal PHYs,
+those created based on the firmware node links created by fwnode_link_add,
+are dropped too.
+
+Now remember the comment that the device links created based on
+fwnode_link_add are not restored.
+
+So probing of the DSA switch finally resumes, and this time
+device_links_check_suppliers() is effectively bypassed, the PHYs no
+longer request probe deferral due to their supplier not being ready,
+because the device link no longer exists.
+
+Isn't this self-sabotaging?!
+
+Now generally, DSA drivers defer probing because they probe in parallel
+with the DSA master. This is typical if the switch is on a SPI bus, or
+I2C, or on an MDIO bus provided by a _standalone_ MDIO controller.
+
+If the MDIO controller is not standalone, but is provided by Ethernet
+controller that is the DSA master itself, then things change a lot,
+because probing can never be parallel. The DSA master probes,
+initializes its MDIO bus, and this triggers the probing of the MDIO
+devices on that bus, one of which is the DSA switch. So DSA can no
+longer defer the probe due to that reason.
+
+Secondly, in DSA we even have variation between drivers as to where they
+register their internal MDIO buses. The mv88e6xxx driver does this in
+mv88e6xxx_probe (the probe function on the MDIO bus). The rtl8366rb
+driver calls realtek_smi_setup_mdio() from rtl8366rb_setup(), and this
+is important. DSA provides drivers with a .setup() callback, which is
+guaranteed to take place after nothing can defer the switch's probe
+anymore.
+
+So putting two and two together, sure enough, if I move mv88e6xxx_mdios_register
+from mv88e6xxx_probe to mv88e6xxx_setup, then I can reliably break this
+setup, because the device links framework isn't sabotaging itself anymore.
+
+Conversely, I am pretty sure that if rtl8366rb was to call of_mdiobus_register()
+from the probe method and not the setup method, the entire design issue
+with interrupts on internal DSA switch ports would have went absolutely
+unnoticed for a few more years.
+
+I have not tested this, but it also seems plausible that DSA can
+trivially and reliably bypass any fw_devlink=on restrictions by simply
+moving all of_mdiobus_register() driver calls from the .setup() method
+to their respective probe methods (prior to calling dsa_register_switch),
+then effectively fabricate an -EPROBE_DEFER during the first probe attempt.
+I mean, who will know whether that probe deferral request was justified
+or not?
+
+Anyway, I'm not sure everyone agrees with this type of "solution" (even
+though it's worth pointing it out as a fw_devlink limitation). In any
+case, we need some sort of lightweight "fix" to the chicken-and-egg
+problem, which will give me enough time to think of something better.
+I hope it is at least clearer now that there are subtleties and nuances,
+and we cannot just assess how many boards are broken by looking at the
+device trees. By design, all are, sure, but they might still work, and
+that's better than nothing...
