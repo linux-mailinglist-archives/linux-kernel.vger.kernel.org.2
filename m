@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0B63FDCE8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCDC3FDCF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346820AbhIAMyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:54:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54214 "EHLO mail.kernel.org"
+        id S1347077AbhIAMzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:55:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346599AbhIAMuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:50:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DE51610A2;
-        Wed,  1 Sep 2021 12:42:04 +0000 (UTC)
+        id S1345344AbhIAMvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:51:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1640C61221;
+        Wed,  1 Sep 2021 12:42:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630500124;
-        bh=3Kq52ylVp0/PL8C3rzKcUQLbuu4uAnZ3NVmvuFniZU8=;
+        s=korg; t=1630500150;
+        bh=s3gyVITa2PR9fxfQHuANQGwIuSOn3PTmdB3yN6wvSzE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tB+OQoU4EAZYP4QrqciE2AfqDaJDEtzvlZg+uFuXWZukvSBrJLfV/o+R8dvEvHOy0
-         e0ugt5quqSs+7/JN1fi1Q1wXcIY++Sf/Wwo5nZ6U95ZJ4S0pDfgnB8aMBMIjzVqakP
-         6sLDFZ0tVq6lgYKfAG+PZsd0bOov0Emg9UXztrcw=
+        b=Sf5TJNhJvI8Lsqg8BLzepNwXVQeqMLRFeycTQwF6B8YEVxctIb2goGi0y14SPGdEU
+         91ItegHlKegOVewDTzEroNUc/r1DUVr2yYv9ll6CPFNkQxY2FaT8CxFEzy+627Mm30
+         qUy9UvtDubTNxefuheH9Vw3n6kGXFzPiyoptBYxA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Seiji Nishikawa <snishika@redhat.com>,
-        Richard Guy Briggs <rgb@redhat.com>,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.13 113/113] audit: move put_tree() to avoid trim_trees refcount underflow and UAF
-Date:   Wed,  1 Sep 2021 14:29:08 +0200
-Message-Id: <20210901122305.691703798@linuxfoundation.org>
+        stable@vger.kernel.org, Minh Yuan <yuanmingbuaa@gmail.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.14 01/11] vt_kdsetmode: extend console locking
+Date:   Wed,  1 Sep 2021 14:29:09 +0200
+Message-Id: <20210901122249.566147226@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
-References: <20210901122301.984263453@linuxfoundation.org>
+In-Reply-To: <20210901122249.520249736@linuxfoundation.org>
+References: <20210901122249.520249736@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,57 +42,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Guy Briggs <rgb@redhat.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 67d69e9d1a6c889d98951c1d74b19332ce0565af upstream.
+commit 2287a51ba822384834dafc1c798453375d1107c7 upstream.
 
-AUDIT_TRIM is expected to be idempotent, but multiple executions resulted
-in a refcount underflow and use-after-free.
+As per the long-suffering comment.
 
-git bisect fingered commit fb041bb7c0a9	("locking/refcount: Consolidate
-implementations of refcount_t") but this patch with its more thorough
-checking that wasn't in the x86 assembly code merely exposed a previously
-existing tree refcount imbalance in the case of tree trimming code that
-was refactored with prune_one() to remove a tree introduced in
-commit 8432c7006297 ("audit: Simplify locking around untag_chunk()")
-
-Move the put_tree() to cover only the prune_one() case.
-
-Passes audit-testsuite and 3 passes of "auditctl -t" with at least one
-directory watch.
-
-Cc: Jan Kara <jack@suse.cz>
-Cc: Will Deacon <will@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Seiji Nishikawa <snishika@redhat.com>
-Cc: stable@vger.kernel.org
-Fixes: 8432c7006297 ("audit: Simplify locking around untag_chunk()")
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-[PM: reformatted/cleaned-up the commit description]
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Reported-by: Minh Yuan <yuanmingbuaa@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/audit_tree.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/vt/vt_ioctl.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/kernel/audit_tree.c
-+++ b/kernel/audit_tree.c
-@@ -593,7 +593,6 @@ static void prune_tree_chunks(struct aud
- 		spin_lock(&hash_lock);
- 	}
- 	spin_unlock(&hash_lock);
--	put_tree(victim);
- }
- 
- /*
-@@ -602,6 +601,7 @@ static void prune_tree_chunks(struct aud
- static void prune_one(struct audit_tree *victim)
+--- a/drivers/tty/vt/vt_ioctl.c
++++ b/drivers/tty/vt/vt_ioctl.c
+@@ -246,6 +246,8 @@ int vt_waitactive(int n)
+  *
+  * XXX It should at least call into the driver, fbdev's definitely need to
+  * restore their engine state. --BenH
++ *
++ * Called with the console lock held.
+  */
+ static int vt_kdsetmode(struct vc_data *vc, unsigned long mode)
  {
- 	prune_tree_chunks(victim, false);
-+	put_tree(victim);
- }
+@@ -262,7 +264,6 @@ static int vt_kdsetmode(struct vc_data *
+ 		return -EINVAL;
+ 	}
  
- /* trim the uncommitted chunks from tree */
+-	/* FIXME: this needs the console lock extending */
+ 	if (vc->vc_mode == mode)
+ 		return 0;
+ 
+@@ -271,12 +272,10 @@ static int vt_kdsetmode(struct vc_data *
+ 		return 0;
+ 
+ 	/* explicitly blank/unblank the screen if switching modes */
+-	console_lock();
+ 	if (mode == KD_TEXT)
+ 		do_unblank_screen(1);
+ 	else
+ 		do_blank_screen(1);
+-	console_unlock();
+ 
+ 	return 0;
+ }
+@@ -378,7 +377,10 @@ static int vt_k_ioctl(struct tty_struct
+ 		if (!perm)
+ 			return -EPERM;
+ 
+-		return vt_kdsetmode(vc, arg);
++		console_lock();
++		ret = vt_kdsetmode(vc, arg);
++		console_unlock();
++		return ret;
+ 
+ 	case KDGETMODE:
+ 		return put_user(vc->vc_mode, (int __user *)arg);
 
 
