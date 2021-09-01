@@ -2,116 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFB53FD612
+	by mail.lfdr.de (Postfix) with ESMTP id 957E43FD613
 	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242790AbhIAI7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 04:59:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239509AbhIAI7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:59:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2674A61075
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 08:58:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630486693;
-        bh=ZcSl8QL3Am4u64j0N4jzg6z8iqyPZvH/GTxd9dmID44=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DzJxNfbO4d1POC9HiOg6GTVB2nb79d7u6Gk9zibLhwQ7FsfDg2hcRjjf2axLvu+a1
-         NKuHrWlmWwDsqfERS1v58hEYgNvotYdqf3IXmxNEVsMjWwZHv/a4kaWZJnwkuE0e/I
-         ErWiNd4Xv3XgeatW0ppkBrfsp8SLJyeUnval/M4Zy+wwoJtkmPZ3Joy8g7lok9YHN0
-         HbkFCEpW8J3aDEpMun+eZduhFcy+VgQ0ZhaNYMEQauTEtAo/yQdoJ4wcR4h2GoeUYs
-         0FXuZ2SPswV8DnogdWOjcirnKrnxcAiLgeSnvwAhhenUdfFGFyz2dJdB2+tDwI9Ht9
-         gWY/BqCtfdsPA==
-Received: by mail-pf1-f178.google.com with SMTP id m26so1521592pff.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:58:13 -0700 (PDT)
-X-Gm-Message-State: AOAM531rO5qCySD7mXcr6BtjKrtujvx7xS4kjjwo3PJmkptkjctcTwjS
-        aAMrPnCo2zjag9z5m0fYqtAN4NXaHZkUu77KfzI=
-X-Google-Smtp-Source: ABdhPJwpTPUpQdq5T0AR48YEzddc/vy9Z3Y2xoBz+84Jmlem+SOZYT8hVVX2SsREOlHS2AB4t3z71ndScuxOOBNtZSk=
-X-Received: by 2002:aa7:8116:0:b029:346:8678:ce26 with SMTP id
- b22-20020aa781160000b02903468678ce26mr32911123pfi.15.1630486692769; Wed, 01
- Sep 2021 01:58:12 -0700 (PDT)
+        id S243360AbhIAI7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:59:22 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51588 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243362AbhIAI7V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 04:59:21 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9C3D2224F7;
+        Wed,  1 Sep 2021 08:58:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630486704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XYk0l+EdwreY98ZhJQynz+aInvTJ1n/sBiNgZ6uBg9I=;
+        b=dyQ2tadrZ364NOrfIoza+rII+plniVQnP7o5fg5O8ngtD1M4I0kczC4pc3uUI2Yf/Twlx3
+        f1f7rJUyN/6lWX2G+Oi4QUJYG4dwDhmoMINQ5Jtqu9FVOOQRRmzQ7JNBqAAdu0dEfWoVZU
+        HCobDkoL/BH18ne/nkYHJYLQuZF6iTU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630486704;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XYk0l+EdwreY98ZhJQynz+aInvTJ1n/sBiNgZ6uBg9I=;
+        b=Mp875vo8Z7xDqBoOjqlZoAsTuRd/uTGeGsMhX0AFffQrABujV/y5XYoZIAEhGSy5YamCW7
+        ttRw5DLuinrs60Aw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7E80F13A41;
+        Wed,  1 Sep 2021 08:58:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 7GeqHbBAL2E3EwAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Wed, 01 Sep 2021 08:58:24 +0000
+Message-ID: <78d24243-9d92-43fd-92b5-17b88cc24314@suse.cz>
+Date:   Wed, 1 Sep 2021 10:58:24 +0200
 MIME-Version: 1.0
-References: <20210831125159.29282-1-zhaoxiao@uniontech.com>
-In-Reply-To: <20210831125159.29282-1-zhaoxiao@uniontech.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 1 Sep 2021 10:58:01 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfJFgg4ZkfW85mSg8+YaNFJ2G5OyRqJ=Hz-iZTpyNTndA@mail.gmail.com>
-Message-ID: <CAJKOXPfJFgg4ZkfW85mSg8+YaNFJ2G5OyRqJ=Hz-iZTpyNTndA@mail.gmail.com>
-Subject: Re: [PATCH] pwm: rockchip: Simplify using devm_pwmchip_add()
-To:     zhaoxiao <zhaoxiao@uniontech.com>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org, heiko@sntech.de,
-        u.kleine-koenig@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Content-Language: en-US
+To:     Imran Khan <imran.f.khan@oracle.com>, geert@linux-m68k.org,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Alexander Potapenko <glider@google.com>
+References: <20210901051914.971603-1-imran.f.khan@oracle.com>
+ <20210901051914.971603-2-imran.f.khan@oracle.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [RFC PATCH 1/2] lib, stackdepot: check stackdepot handle before
+ accessing slabs.
+In-Reply-To: <20210901051914.971603-2-imran.f.khan@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 at 14:52, zhaoxiao <zhaoxiao@uniontech.com> wrote:
->
-> With devm_pwmchip_add() we can drop pwmchip_remove() from the device
-> remove callback. The latter can then go away, too and as this is the
-> only user of platform_get_drvdata(), the respective call to
-> platform_set_drvdata() can go, too.
->
-> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
++CC linux-mm, Alex
+
+On 9/1/21 07:19, Imran Khan wrote:
+> stack_depot_save allocates slabs that will be used for storing
+> objects in future.If this slab allocation fails we may get to
+> a situation where space allocation for a new stack_record fails,
+> causing stack_depot_save to return 0 as handle.
+> If user of this handle ends up invoking stack_depot_fetch with
+> this handle value, current implementation of stack_depot_fetch
+> will end up using slab from wrong index.
+> To avoid this check handle value at the beginning.
+> Also issue a warning for nil handle values and when slab allocation
+> for stackdepot fails for the first time.
+> 
+> Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
+> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+
+Agree but without the warnings please, especially the "stack depot handle is
+absent" one. It's just something that can happen e.g. in GFP_NOWAIT contexts
+and no need to spam dmesg.
+
 > ---
->  drivers/pwm/pwm-rockchip.c | 29 +----------------------------
->  1 file changed, 1 insertion(+), 28 deletions(-)
->
-> diff --git a/drivers/pwm/pwm-rockchip.c b/drivers/pwm/pwm-rockchip.c
-> index cbe900877724..c22856916e63 100644
-> --- a/drivers/pwm/pwm-rockchip.c
-> +++ b/drivers/pwm/pwm-rockchip.c
-> @@ -347,8 +347,6 @@ static int rockchip_pwm_probe(struct platform_device *pdev)
->                 goto err_clk;
->         }
->
-> -       platform_set_drvdata(pdev, pc);
-> -
->         pc->data = id->data;
->         pc->chip.dev = &pdev->dev;
->         pc->chip.ops = &rockchip_pwm_ops;
-> @@ -358,7 +356,7 @@ static int rockchip_pwm_probe(struct platform_device *pdev)
->         ctrl = readl_relaxed(pc->base + pc->data->regs.ctrl);
->         enabled = (ctrl & enable_conf) == enable_conf;
->
-> -       ret = pwmchip_add(&pc->chip);
-> +       ret = devm_pwmchip_add(&pdev->dev, &pc->chip);
->         if (ret < 0) {
->                 dev_err(&pdev->dev, "pwmchip_add() failed: %d\n", ret);
->                 goto err_pclk;
-> @@ -380,37 +378,12 @@ static int rockchip_pwm_probe(struct platform_device *pdev)
->         return ret;
->  }
->
-> -static int rockchip_pwm_remove(struct platform_device *pdev)
-> -{
-> -       struct rockchip_pwm_chip *pc = platform_get_drvdata(pdev);
-> -
-> -       /*
-> -        * Disable the PWM clk before unpreparing it if the PWM device is still
-> -        * running. This should only happen when the last PWM user left it
-> -        * enabled, or when nobody requested a PWM that was previously enabled
-> -        * by the bootloader.
-> -        *
-> -        * FIXME: Maybe the core should disable all PWM devices in
-> -        * pwmchip_remove(). In this case we'd only have to call
-> -        * clk_unprepare() after pwmchip_remove().
-> -        *
-> -        */
-> -       if (pwm_is_enabled(pc->chip.pwms))
-> -               clk_disable(pc->clk);
-> -
-> -       clk_unprepare(pc->pclk);
-> -       clk_unprepare(pc->clk);
+>  lib/stackdepot.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index 0a2e417f83cb..1d42ef9ef766 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -232,6 +232,10 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
+>  	struct stack_record *stack;
+>  
+>  	*entries = NULL;
+> +	if (!handle) {
+> +		WARN(1, "stack depot handle is absent.\n");
+> +		return 0;
+> +	}
+>  	if (parts.slabindex > depot_index) {
+>  		WARN(1, "slab index %d out of bounds (%d) for stack id %08x\n",
+>  			parts.slabindex, depot_index, handle);
+> @@ -303,6 +307,8 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
+>  		page = alloc_pages(alloc_flags, STACK_ALLOC_ORDER);
+>  		if (page)
+>  			prealloc = page_address(page);
+> +		else
+> +			WARN_ONCE(1, "slab allocation for stack depot failed.\n");
+>  	}
+>  
+>  	raw_spin_lock_irqsave(&depot_lock, flags);
+> 
 
-NAK, for the same reason as pwm_samsung.
-
-Please test your patches.
-
-Best regards,
-Krzysztof
