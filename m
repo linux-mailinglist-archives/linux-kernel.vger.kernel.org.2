@@ -2,120 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2DB3FD10E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA863FD115
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 04:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241435AbhIACIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 22:08:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56746 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241020AbhIACIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 22:08:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DEFE61059;
-        Wed,  1 Sep 2021 02:07:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630462036;
-        bh=GJgqsB7rRak8BqGGWdDbZ+413X80t/wSs8Tzi9ePzkI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YFMb8GVmeR9zAxxQLVVRZdaigiNXEhiW83TLn8G4TuqW3+wKvfdpnj9cHuRGdG5Ld
-         z1+i6VkMqPmobycb8UjPrpa+79au/uu5pZOugDmHvmbHD5veHz/41gah/mvP3ukwpa
-         Bzs0qX7py9dmneoE2hfxSKtawnPEfZaBbGUlLir2FJHhjpQH3E0M1PcvzXiUyP1FN8
-         Mll1yKRx1tMjAaAwPdI1pvQUwUk9YPMs1xVNoGHSe9tBqkOT+uATWkvPUwD36PJ/+y
-         3S2TT8Gv9/PkuFCASowWYS4ABOHeHdP5T0JwbAcaLo+MWXzqODmYmGSTjC87WQnJ77
-         wZC13OWscBBZA==
-Date:   Wed, 1 Sep 2021 11:07:13 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: Re: [kbuild] [trace:ftrace/core 35/39]
- kernel/trace/trace_boot.c:420 trace_boot_init_histograms() warn: curly
- braces intended?
-Message-Id: <20210901110713.fed0ebd23c05033045953642@kernel.org>
-In-Reply-To: <202109010207.nUISBZUN-lkp@intel.com>
-References: <202109010207.nUISBZUN-lkp@intel.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S241465AbhIACJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 22:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231249AbhIACJz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 22:09:55 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930BDC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 19:08:59 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id j18so2098295ioj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 19:08:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=DqeBoaQQIFct7aXruk86G14fVVoUpCqFzdFy9Fwtbxo=;
+        b=Ln8KBFTKu/EwP60d9NwTTLlmc00MdEHhCPT1G1xuuXYF5BA2N623plmgTdPOPmKn2g
+         m/+EUuiSLohILFAGSWkXvTF3ZAESvwZblI5RmrEHR4vBFGLU3iwrPjbgP6RC8oClAGCH
+         r47//zH/EFXjuAOrCJMPPijMq94tiJ+RtVtdAy4KiFjYiUqiOrF8ZHgCQ8hJwxUZbKUi
+         nHfFnUca0YHMPum2KUSQLtVgamfgxzgHUAxuhlfU9emHUzWG/8RMH7FfKLx9FbreRSsL
+         FUkdus4WyJQDQgK+5ZQIuAZw0oeOZOAHQIA6ibxwgM7PzH0p2U+TsT5pfXNHFW501VFv
+         1AUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DqeBoaQQIFct7aXruk86G14fVVoUpCqFzdFy9Fwtbxo=;
+        b=LgqivHnECseoWq09GzM+IPdnTt1Av9BftNJdW4btVAZnqr4DNAwmBbUrGr1VhS1Ktm
+         rn3eyCDKZqzux8/DLlvLaVpyBPhCvhY7sCbbEX76cGBqY2ZSbL5Ij555O3BT5TuplF+0
+         QXZFfx8Vs4WU3iKmPN12JSsdvnbHhG33171I14ZUPBOLOneqU8WNEIiEwsO/P5nDw4eY
+         yahf94J7UNekr99MlaVCw+jJQWhxxdJdVFGSegK7cwlSgaH6JiWA6MdWfrA1wK5L69o4
+         F+Vz6ddKhEmkkpmiYylz68emIHA4LX7UEIaTnhIgEVgqHXRhAmMzdz64CmQHXWRWrOBh
+         x4Lg==
+X-Gm-Message-State: AOAM530E6VxA/h3shlJI5ADiYyrivqDUOlfmDz/SNgqSHfELwjRjVx3k
+        oL5LkHmC2pfcZjuLeV6KDnFgZoUq6fD5EQ==
+X-Google-Smtp-Source: ABdhPJwxhRlKF+u8FjsMGNAIDMscjy1XsjogD3fS1Uy2gpoWEZhImf7652ITaiNZLotesVyJFqiqgw==
+X-Received: by 2002:a6b:5819:: with SMTP id m25mr25003181iob.105.1630462138956;
+        Tue, 31 Aug 2021 19:08:58 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id p12sm11045963ilp.87.2021.08.31.19.08.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 19:08:58 -0700 (PDT)
+Subject: Re: [syzbot] general protection fault in __io_file_supports_nowait
+To:     syzbot <syzbot+e51249708aaa9b0e4d2c@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000f1f81105cae56d48@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b4305afc-ff25-8388-1ba2-e761129a509a@kernel.dk>
+Date:   Tue, 31 Aug 2021 20:08:57 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <000000000000f1f81105cae56d48@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+On 8/31/21 8:00 PM, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    b91db6a0b52e Merge tag 'for-5.15/io_uring-vfs-2021-08-30' ..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12718683300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=210537ff2ddcc232
+> dashboard link: https://syzkaller.appspot.com/bug?extid=e51249708aaa9b0e4d2c
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12615c35300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c57845300000
 
-On Tue, 31 Aug 2021 21:45:11 +0300
-Dan Carpenter <dan.carpenter@oracle.com> wrote:
-
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git  ftrace/core
-> head:   3dc65994e3c1c999be3d991cdc96705e167cb3b1
-> commit: 5d4648a0415efc239ffb377bce1d389723eda25d [35/39] tracing/boot: Show correct histogram error command
-> config: x86_64-randconfig-m001-20210831 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> smatch warnings:
-> kernel/trace/trace_boot.c:420 trace_boot_init_histograms() warn: curly braces intended?
-> kernel/trace/trace_boot.c:421 trace_boot_init_histograms() error: uninitialized symbol 'tmp'.
-> kernel/trace/trace_boot.c:421 trace_boot_init_histograms() warn: passing freed memory 'tmp'
-> kernel/trace/trace_boot.c:422 trace_boot_init_histograms() error: double free of 'tmp'
-> 
-> vim +420 kernel/trace/trace_boot.c
-> 
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  396  static void __init
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  397  trace_boot_init_histograms(struct trace_event_file *file,
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  398  			   struct xbc_node *hnode, char *buf, size_t size)
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  399  {
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  400  	struct xbc_node *node;
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  401  	const char *p;
-> 5d4648a0415efc2 Masami Hiramatsu 2021-08-06  402  	char *tmp;
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  403  
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  404  	xbc_node_for_each_subkey(hnode, node) {
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  405  		p = xbc_node_get_data(node);
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  406  		if (!isdigit(p[0]))
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  407  			continue;
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  408  		/* All digit started node should be instances. */
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  409  		if (trace_boot_compose_hist_cmd(node, buf, size) == 0) {
-> 5d4648a0415efc2 Masami Hiramatsu 2021-08-06  410  			tmp = kstrdup(buf, GFP_KERNEL);
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  411  			if (trigger_process_regex(file, buf) < 0)
-> 5d4648a0415efc2 Masami Hiramatsu 2021-08-06  412  				pr_err("Failed to apply hist trigger: %s\n", tmp);
-> 5d4648a0415efc2 Masami Hiramatsu 2021-08-06  413  			kfree(tmp);
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  414  		}
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  415  	}
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  416  
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  417  	if (xbc_node_find_child(hnode, "keys")) {
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  418  		if (trace_boot_compose_hist_cmd(hnode, buf, size) == 0)
-> 
-> The missing curly braces here trigger a ball of static checker warnings.
-> I'm so happy about that.  :)
-
-The ftrace/core branch has a wrong version of the patch. ftrae/for-next has
-correct one. I think Steve correct this mismatch after he comes back.
-
-Thank you,
-
-
-
-> 
-> 5d4648a0415efc2 Masami Hiramatsu 2021-08-06  419  			tmp = kstrdup(buf, GFP_KERNEL);
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06 @420  			if (trigger_process_regex(file, buf) < 0)
-> 5d4648a0415efc2 Masami Hiramatsu 2021-08-06 @421  				pr_err("Failed to apply hist trigger: %s\n", tmp);
-> 5d4648a0415efc2 Masami Hiramatsu 2021-08-06 @422  			kfree(tmp);
-> 30cb856e3067e5d Masami Hiramatsu 2021-08-06  423  	}
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
-> 
-> _______________________________________________
-> kbuild mailing list -- kbuild@lists.01.org
-> To unsubscribe send an email to kbuild-leave@lists.01.org
-> 
-
+#syz test git://git.kernel.dk/linux-block for-5.15/io_uring
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Jens Axboe
+
