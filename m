@@ -2,161 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7D23FD1A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15D03FD1AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 05:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241755AbhIADIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 31 Aug 2021 23:08:50 -0400
-Received: from mail-bn8nam11on2129.outbound.protection.outlook.com ([40.107.236.129]:57344
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240843AbhIADIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 31 Aug 2021 23:08:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oVIT82nN5jQYZb5z+BRfFr1gIm0UQ4+oBfLnMiIi60zfL8Muym1PONXSTgVf1KNGCxKm4O/Tk/KagtXELGA2XdwME9DVaOZLGmjQO8cg3FBld5m1AtBFutPwYq3cyQCuxD3ZA2+tDUPKMKZa/XKP/Qc/Z6w+DbVQ7PBe5OkHCAOlakMqzPMjy3Xof36s8SPVagaDvoDbhzPMzFW4WH5x6RkeY7/x1BLRjkIPCF05K9sfLFLMawJo234oxPORm0vD/GsTZqIDcQ9epr8a+MtPQzuDx6DZrA4y5hMCO7jwkb8RPlCC5AEr/MCOBZ6uu9Rv2526dHAVO0uUR5qUnV8tvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vf7Goqqt+zoHwhfJBFspaJ3whsb8WqOYIs4e6d6Qj8I=;
- b=Zv7TOCxQjemP1LT+giQnrKbSTx+laUETJ9Isv8tZ03kLZ6sQFI3DSx3Qg6wu8y2/8Y629MNveVeRisr6D3krXNksrMED4/lMLFE/ZA+WWm0AANVfgt5CqpRa5fxDrAi2koeiW7HAAnk5O6VgPBT3QKc3l36n6MQOBNRpIRPl/b4UE9h78KxqYI3jUF9qKTdedjGkB470n6YT4RgzEn1mo/gQ/CaXwE9CrNZNaHziH4GInYBX6zt1/F7Op5LpYDlw/l0L+1a7XjaRe07qLly6kI9nmAVsOJLFJyZtawPCYTZeZPCZ/bsTpYhnBA1PPEwDsDn3m91fAZXtorn1c+TFTA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=amperemail.onmicrosoft.com; dkim=pass
- header.d=amperemail.onmicrosoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vf7Goqqt+zoHwhfJBFspaJ3whsb8WqOYIs4e6d6Qj8I=;
- b=zdgXUKpoeJOAdFpTKBgBr+e0SZhnHqwwucc4iHei71IfMk1qpBYotliZrQa1It4hA1GQZeASjVQiOG2V2+MC2imm/8ktt6TidxAymzQtWOxNQt3xNsyXn85/nQ4nsbVrnvx0tFcsS4/TPONKbjFzx4IpD9DLV4Dz/kaGXeCRl6c=
-Authentication-Results: amperecomputing.com; dkim=none (message not signed)
- header.d=none;amperecomputing.com; dmarc=none action=none
- header.from=amperemail.onmicrosoft.com;
-Received: from MWHPR0101MB3165.prod.exchangelabs.com (2603:10b6:301:2f::19) by
- MW4PR01MB6132.prod.exchangelabs.com (2603:10b6:303:7f::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4457.23; Wed, 1 Sep 2021 03:07:50 +0000
-Received: from MWHPR0101MB3165.prod.exchangelabs.com
- ([fe80::ed89:1b21:10f4:ed56]) by MWHPR0101MB3165.prod.exchangelabs.com
- ([fe80::ed89:1b21:10f4:ed56%3]) with mapi id 15.20.4457.025; Wed, 1 Sep 2021
- 03:07:50 +0000
-From:   Shijie Huang <shijie@amperemail.onmicrosoft.com>
-Subject: Is it possible to implement the per-node page cache for
- programs/libraries?
-To:     torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        song.bao.hua@hisilicon.com
-Cc:     linux-kernel@vger.kernel.org,
-        Frank Wang <zwang@amperecomputing.com>
-Message-ID: <a2f423cf-9413-6bc8-e4d8-92374fc0449e@amperemail.onmicrosoft.com>
-Date:   Wed, 1 Sep 2021 11:07:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: HK2PR02CA0170.apcprd02.prod.outlook.com
- (2603:1096:201:1f::30) To MWHPR0101MB3165.prod.exchangelabs.com
- (2603:10b6:301:2f::19)
+        id S241706AbhIADLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 31 Aug 2021 23:11:44 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:18996 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231712AbhIADLm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 31 Aug 2021 23:11:42 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gzpqr6Y8fzbl8m;
+        Wed,  1 Sep 2021 11:06:48 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 1 Sep 2021 11:10:43 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 1 Sep 2021
+ 11:10:43 +0800
+Subject: Re: [PATCH net-next 2/2] skbuff: keep track of pp page when
+ __skb_frag_ref() is called
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Kevin Hao" <haokexin@gmail.com>, <nogikh@google.com>,
+        Marco Elver <elver@google.com>, <memxor@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>
+References: <1630286290-43714-1-git-send-email-linyunsheng@huawei.com>
+ <1630286290-43714-3-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0UfmcB93Hn1AS_o2a_h98xxZMouTiGzJfG09qsWf+O6L1Q@mail.gmail.com>
+ <9cf28179-0cd5-a8c5-2bfd-bd844315ad1a@huawei.com>
+ <CAKgT0UdheXoe3fK9yJLvj1TQcZLEa5utxV9E6Fn6EkdSabT=nQ@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <dcefe74d-40f0-fcbe-6cf1-fa003a2f4a30@huawei.com>
+Date:   Wed, 1 Sep 2021 11:10:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.30.33.15] (180.167.209.74) by HK2PR02CA0170.apcprd02.prod.outlook.com (2603:1096:201:1f::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Wed, 1 Sep 2021 03:07:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: df315fab-8baf-4746-f198-08d96cf5ae7c
-X-MS-TrafficTypeDiagnostic: MW4PR01MB6132:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW4PR01MB6132106706DAFBBCB651CB8CEDCD9@MW4PR01MB6132.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JyXwQvM9/bpr5eHQm+f0aMBd53ug3uH5NF4kBxJYwqhdTNJB2OR2rzx7vKajN2dpliT3hqu03LFCZLFH8yWumQxAv9F/fI1pKqd8qEQ8a72GAe6HSu/yT86q/uTOJyBfh6JB1U4mAWJZI5hlSGEy4IkUfgEU5HryXyyWfd6s6oWx70id7awWZHioG2eyBxBmyP5oL9oAjJ67lb5DtUqeVxYVBIDvOQ/L055JrtQubYbgLRZdsIay1E7pz48Ja4ax/gSv4zaitT0kAqMspbw5Z3PrBaz23REaItgcU4INp6gNVkhTKQmNeawr25yOUS1UD8GLRFEpPDAcYAvYMID+OZyvMffBoOB4YRsGJKbKG41mHxWqENGm57F+McQypmjAKU400ji27L0g6ajfjjn4Y6ESwG+ybqfC7MYlvn75nA4cMSQUNvM5gppKUe1sS6vPF3rg1v/4MaeaUNSuP/VuxuJmVdOqANg5Yf+JZFNf6G+pARHT5TqKOvMk0XmPLBZ8MwFJgxoq7YbK4siwKFs8w8Rx/p+RGjquDktorwFpG/Fkr59ygJgkxlbb1EIUYEjMLIUpuiytx0xHsWNVAnQdIo9cmSMYyZ5hwctTUk7tx0N9WTNuw9aG/FXCTbW47GGWGesj2Ij4nrQSuwOWLSiBsQF6odaPsmBnbOYJphVBten6iwuF/dzcAk+jkxgAXzpSW5gbNo9eEYmathPIQeZD6JlJ0FKVuSV0ilDXQKg6ViESXI1cqgSKpMwugBYOb4n8jztuOBFuNbuefOjnmQR4oQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR0101MB3165.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31696002)(6486002)(26005)(42882007)(83380400001)(5660300002)(83170400001)(186003)(66946007)(4744005)(316002)(16576012)(38350700002)(508600001)(38100700002)(66556008)(66476007)(8676002)(956004)(6666004)(2906002)(31686004)(107886003)(52116002)(2616005)(8936002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dXNqcTc1ci84YmRIYjh1SVZSbUlQYWNDQ3ppZTNuN0lMNEJmQzE4NVh6V3dZ?=
- =?utf-8?B?dXRSSHJ4SndiLytwdlh3cm80TWxycHcxZW5lRUhjWGNHVXVsTVFEMnVkYzhu?=
- =?utf-8?B?WW5OYzBiK2kxNmFWYjZuNEYxZXRDbnJsMCtVV3ZYTXNLQmFsMnp1U2wzM2RT?=
- =?utf-8?B?NFJFV2xQSkVuL1A0VlNmdFF1V0hSNkJ4ZVJ6d20wci91T3FQak9iNzhDK2Ix?=
- =?utf-8?B?Z3lDUjlBdU5BSGowNG9TeGhMZGtLMC9BS0hWaXFJcXh0MUFNQXp1ZjlQaFZP?=
- =?utf-8?B?czR1L1Ayek9PNEg2N3dvTk0yT1drdFFRUlMwV3liUHdQSHU2d05sUzlGN2xw?=
- =?utf-8?B?TXZuTS9rdEtKQ2dJbkRFTXZwM0tMTDFjVGdEUjJ4VUJXa24rVjVjN0hHLzcv?=
- =?utf-8?B?SXlpU3c3SEZHR3RoMlRsZCtTV0Q0TGtPSmM0eXkya0pnejViV1RoODYxRGQ0?=
- =?utf-8?B?c21Wb0N2VkJVcmpKdmFLR0JMZ3Q3cGtVZHhUVlNISWV6YnFMdXlCdWpoSUs3?=
- =?utf-8?B?N29WRkVHbnJJMmV3cEFPOWlMZCs3VVlleWt6UHM3dEkzT0FZcWdmck9SOXBQ?=
- =?utf-8?B?clo3VE9qTHd5SUN2Nm5iOERDTXlMWWs0YlozdDNJNGNCUXh2d2hoalRhS0s5?=
- =?utf-8?B?SllyNG5ING1yeXNDc1o1OWxLQ2dOVVRUaERyTGh5clJRUjZGaU1RSEpDekk2?=
- =?utf-8?B?SGZVU3FjT1FpZXdQaHpjK2tLdXdGZjZFV1QvZEFPdVJUdGNEdzhrRzYvbUZZ?=
- =?utf-8?B?aHVaczVQbDdKYitiLzNwVFNuak5XR21wUENpTjhiWnFrVEgzdHdZbEZRMllx?=
- =?utf-8?B?OXJhM0YyeWU3VzdVU0h4MHdQZThVbTlWVmFmVDF0WG9DSVpMbEVaeG1CNitW?=
- =?utf-8?B?cTFpMjFkOEFWVEJGZm1uUWtyZndiV3FSc2NNamtqdzAwQWJybzV6b0laQWdW?=
- =?utf-8?B?eDNwZko1YW9maCtFdzJPYTh6NjdJOGZaZWpSWStMT3RpTlhISHo2UFh3cE10?=
- =?utf-8?B?aFdkQm44RWpOQnRHbTRScFNSUXdNRmRKZmpseVpLZ2MyakZTZy9mNzR3V0g4?=
- =?utf-8?B?ZVdYam5zVUUvZGFLWWlBc2RWZnJTNDBXcEZ1cUpKNWhEdkFZMklFWDJGNzRm?=
- =?utf-8?B?dEhaa05pSlVpUnpXQmx6K0Vkb3ZUZ1hZank0NWdqV0RMN0ZXY1VPMGIvVVF6?=
- =?utf-8?B?dVNZeTlDa1VjMUtib29UNnRjdkJQcHk2bEFuaFo0MHJxRHAwZGFmWlNTQUR6?=
- =?utf-8?B?QjI2d25VeERUZzk0TFJOc0xSR3NHQkNBU3pUc0Y5bGkwWU1Yc2ZjdW5vL1Zq?=
- =?utf-8?B?Q215NjM5b0Y1OEtwV3VWcHlpcFJFeEp6NllJT04xMzQyZGoyNnREZFdKYkF0?=
- =?utf-8?B?c3BzSWRZdlNQSjN1SW45Qk1uTEdDTnV6SkFONzhGNVJFN09TZXlKUExWb3Ja?=
- =?utf-8?B?aUl2ZS83eTllMVVrM0hJUnc1ZnNsWklPNklrQTNpWmVHMy8vUG9SZVdzWnI0?=
- =?utf-8?B?WjlVNTlMdldjQWFmUitOUFNwRXg0QUdtVUVEZm5icm5tNGlCN1RyWkFHSk8w?=
- =?utf-8?B?c2prejFKU3lxOW9oTDRXNCtQalVhVVB6SzB5RHZnbHZVMk5aMWxvMnN1UDk0?=
- =?utf-8?B?NkkxVXFXWjE0TU4wM0hxSjkvWFR6MkhhZVVJWHpCOVJSZTVSV21CMDhWMWRB?=
- =?utf-8?B?VmR5dk1TcVFEL3c3UUVwbzgzN0I3NmkrWU4xMEdkTXJyR2pQQzVYbkRRalk4?=
- =?utf-8?Q?bdoQrc2WKft8NQSCpsDkGa84wEqFQUuPMjfWamq?=
-X-OriginatorOrg: amperemail.onmicrosoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: df315fab-8baf-4746-f198-08d96cf5ae7c
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR0101MB3165.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 03:07:50.2945
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sSnx1+1k7QJh+EK0FMGJo/1Oml5F0qMuBrFG9NxiTQBVTMoQVI1mNToIg56IX5jUG5kYI3SLYoYuLK0B/oSrDraW/oOwlFJzD4s4x7q1IJVX88FC2pgq3SJCQUPd3nZI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR01MB6132
+In-Reply-To: <CAKgT0UdheXoe3fK9yJLvj1TQcZLEa5utxV9E6Fn6EkdSabT=nQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Everyone,
+On 2021/8/31 22:30, Alexander Duyck wrote:
+> On Tue, Aug 31, 2021 at 12:20 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2021/8/30 23:14, Alexander Duyck wrote:
+>>> On Sun, Aug 29, 2021 at 6:19 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>
+>>>> As the skb->pp_recycle and page->pp_magic may not be enough
+>>>> to track if a frag page is from page pool after the calling
+>>>> of __skb_frag_ref(), mostly because of a data race, see:
+>>>> commit 2cc3aeb5eccc ("skbuff: Fix a potential race while
+>>>> recycling page_pool packets").
+>>>>
+>>>> There may be clone and expand head case that might lose the
+>>>> track if a frag page is from page pool or not.
+>>>>
+>>>> So increment the frag count when __skb_frag_ref() is called,
+>>>> and only use page->pp_magic to indicate if a frag page is from
+>>>> page pool, to avoid the above data race.
+>>>>
+>>>> For 32 bit systems with 64 bit dma, we preserve the orginial
+>>>> behavior as frag count is used to trace how many time does a
+>>>> frag page is called with __skb_frag_ref().
+>>>>
+>>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>>>
+>>> Is this really a common enough case to justify adding this extra overhead?
+>>
+>> I am not sure I understand what does extra overhead mean here.
+>> But it seems this patch does not add any explicit overhead?
+>> As the added page_pool_is_pp_page() checking in __skb_frag_ref() is
+>> neutralized by avoiding the recycle checking in __skb_frag_unref(),
+>> and the atomic operation is with either pp_frag_count or _refcount?
+> 
+> My concern is maintenance overhead. Specifically what you are doing is
+> forking the code path in __skb_frag_ref so there are cases where it
+> will increment the page reference count and there are others where it
+> will increment the frag count. Changing things like this means we have
+> to be certain that any paths that are expecting the reference count to
+> be updated have been addressed and it means that any code dealing with
+> the reference count in the future will be that much more complex.
 
-     In the NUMA, we only have one page cache for each file. For the 
-program/shared libraries, the
+But it seems we are already doing that(calling page_pool_put_full_page() or
+put_page() depends on skb->pp_recycle and page->pp_magic) in __skb_frag_unref(),
+it seems symmetric to do the similar thing in __skb_frag_ref()?
 
-remote-access delays longer then the  local-access.
+> 
+>>>
+>>>> ---
+>>>>  include/linux/skbuff.h  | 13 ++++++++++++-
+>>>>  include/net/page_pool.h | 17 +++++++++++++++++
+>>>>  net/core/page_pool.c    | 12 ++----------
+>>>>  3 files changed, 31 insertions(+), 11 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+>>>> index 6bdb0db..8311482 100644
+>>>> --- a/include/linux/skbuff.h
+>>>> +++ b/include/linux/skbuff.h
+>>>> @@ -3073,6 +3073,16 @@ static inline struct page *skb_frag_page(const skb_frag_t *frag)
+>>>>   */
+>>>>  static inline void __skb_frag_ref(skb_frag_t *frag)
+>>>>  {
+>>>> +       struct page *page = skb_frag_page(frag);
+>>>> +
+>>>> +#ifdef CONFIG_PAGE_POOL
+>>>> +       if (!PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
+>>>> +           page_pool_is_pp_page(page)) {
+>>>> +               page_pool_atomic_inc_frag_count(page);
+>>>> +               return;
+>>>> +       }
+>>>> +#endif
+>>>> +
+>>>>         get_page(skb_frag_page(frag));
+>>>>  }
+>>>>
+>>>
+>>> This just seems like a bad idea in general. We are likely increasing
+>>> the potential for issues with this patch instead of avoiding them. I
+>>
+>> Yes, I am agreed that calling the __skb_frag_ref() without calling the
+>> __skb_frag_unref() for the same page might be more likely to cause problem
+>> for this patch. But we are already depending on the calling of
+>> __skb_frag_unref() to free the pp page, making it more likely just enable
+>> us to catch the bug more quickly?
+> 
+> The problem is one of the things our earlier fix had changed is that
+> you could only have one skb running around with skb->pp_recycle after
+> cloning the head. So skb_frag_unref will not do the
+> page_pool_return_skb_page because it is cleared and it will likely
+> trigger a reference undercount since we incremented the frag count
+> instead of the reference count.
 
-So, is it possible to implement the per-node page cache for 
-programs/libraries?
+As the below change in this patch, the __skb_frag_unref() has been changed
+to bypass the skb->pp_recycle checking and always call page_pool_return_skb_page()
+for normal systems, page->pp_magic is the only checking to indicate if a page
+is from page pool, which is symmetric to the checking in __skb_frag_ref().
 
 
-    We can do it like this:
+@@ -3101,7 +3111,8 @@ static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
+        struct page *page = skb_frag_page(frag);
 
-         1.) Add a new system call to control specific files to 
-NUMA-aware, such as:
+#ifdef CONFIG_PAGE_POOL
+-       if (recycle && page_pool_return_skb_page(page))
++       if ((!PAGE_POOL_DMA_USE_PP_FRAG_COUNT || recycle) &&
++           page_pool_return_skb_page(page))
+                 return;
+#endif
+         put_page(page);
 
-                    set_numa_aware("/usr/lib/libc.so", enable);
+> 
+>> Or is there other situation that I am not awared of, which might cause
+>> issues?
+> 
+> I'm pretty sure this breaks the case that was already called out in
+> commit 2cc3aeb5eccc ("skbuff: Fix a potential race while recycling
+> page_pool packets"). The problem is the clone would then need to
+> convert over the frag count to page references in order to move
+> forward. What it effectively does is lock the pages into the skb and
+> prevent them from being used elsewhere.
 
-             After the system call, the page cache of libc.so has the 
-flags "NUMA_ENABLED"
+As my understanding, after this patch, the skb->pp_recycle is only used
+to indicate if a head page is a pp page, the frag page is decided using
+only the page->pp_magic(we might be able to do that for head page too,
+and remove the skb->pp_recycle completely).
+
+And cloning is happening in the netstack, it seems it is in our hand to
+make sure that won't break the page pool reference counting.
+
+So this patch does not seems to break the above commit?
+
+> 
+>>> really feel it would be better for us to just give up on the page and
+>>> kick it out of the page pool if we are cloning frames and multiple
+>>> references are being taken on the pages.
+>>
+>> For Rx, it seems fine for normal case.
+>> For Tx, it seems the cloning and multiple references happens when
+>> tso_fragment() is called in tcp_write_xmit(), and the driver need to
+>> reliable way to tell if a page is from the page pool, so that the
+>> dma mapping can be avoided for Tx too.
+> 
+> The problem is cloning and page pool do not play well together. We are
+
+Yes, this patch is trying to make sure cloning and page pool play well
+together.
+
+For skb_split() case in tso_fragment(), if there is a skb comming from
+the wire(supposing all frag pages of the skb is from a page pool) happens
+to retransmit back to the wire using the TCP, it seems we might have bug
+here?
+
+Supposing skb1 has 3 frag pages, all coming from the page pool, and is
+splitted to skb2 and skb3:
+skb2: first frag page + first half of second frag page
+skb3: second half of second frag page + third frag page
+
+How do we set the skb->pp_recycle of skb1 and skb2?
+1. If we set both of them to 1, then we may have a similar race as the
+   above commit for second frag page.
+2. If we set only one of them to 1, then we may have resouce leaking
+   problem as both first frag page and third frag page are indeed from
+   page pool.
+
+> better off just avoiding the page pool entirely for Tx. Now if we are
+> wanting to store the DMA for the page until it is freed that is one
+> thing, but the current page pool doesn't work well with cloning and
+> such because of all the refcount tricks that have to be played.
+
+Storing the DMA for the page until it is freed means we need to do
+mapping/unmapping every time a page is used, and not recycling?
+
+As disscussion with Eric in below thread, it seems:
+"So it seems the IOMMU overhead does not only related to how many
+frag does a skb have, but also related to the length of each frag,
+as the IOMMU mapping is based on 4K/2M granularity(for arm64), so it
+may still take a lot of time to write each 4K page entry to the page
+table when mapping and invalidate each 4K page entry when unmapping."
+
+https://www.spinics.net/lists/kernel/msg4053130.html
 
 
-         2.) When A new process tries to setup the MMU page table for 
-libc.so, it will check
+And my arm64 system:
+memcpy a buffer of 32768 bytes took ~2337 ns
 
-              if NUMA_ENABLED is set. If it set, the kernel will give a 
-page which is bind to the process's NUMA node.
+And doing mapping/unmapping for the same buffer took above the same time
+as memcpy for one thread case in strict mode(and IOMMU is known to scale
+poorly for multi threads case):
+root@(none):~# ./dma_map_benchmark -t 1 -s 10 -n 0 -g 8
+dma mapping benchmark: threads:1 seconds:10 node:0 dir:BIDIRECTIONAL granule: 8
+average map latency(us):0.7 standard deviation:0.1
+average unmap latency(us):1.6 standard deviation:0.4
 
-              By this way, we can eliminate the remote-access for 
-programs/shared library.
+So it seems the IOMMU overhead is still there even with reduing the number
+of mapping/unmapping or TX ZC?
 
+> 
+> The main issue is that page pool assumes single producer, single
+> consumer. In the Tx path that isn't necessarily guaranteed since for
+> things like TCP we end up having to hold onto clones of the packets
+> until the transmission is completed.
 
-Is this proposal ok?  Or do you have a better idea?
+The main bottleneck for page pool seems to be the scalablity of ptr_ring
+for multi threads.
+How about making ptr_ring support multi-producers and multi-consumers
+lockless?
 
+> 
+>>>
+>>>> @@ -3101,7 +3111,8 @@ static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
+>>>>         struct page *page = skb_frag_page(frag);
+>>>>
+>>>>  #ifdef CONFIG_PAGE_POOL
+>>>> -       if (recycle && page_pool_return_skb_page(page))
+>>>> +       if ((!PAGE_POOL_DMA_USE_PP_FRAG_COUNT || recycle) &&
+>>>> +           page_pool_return_skb_page(page))
+>>>>                 return;
+>>>>  #endif
+>>>>         put_page(page);
+>>>> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+>>>> index 2ad0706..8b43e3d9 100644
+>>>> --- a/include/net/page_pool.h
+>>>> +++ b/include/net/page_pool.h
+>>>> @@ -244,6 +244,23 @@ static inline void page_pool_set_frag_count(struct page *page, long nr)
+>>>>         atomic_long_set(&page->pp_frag_count, nr);
+>>>>  }
+>>>>
+>>>> +static inline void page_pool_atomic_inc_frag_count(struct page *page)
+>>>> +{
+>>>> +       atomic_long_inc(&page->pp_frag_count);
+>>>> +}
+>>>> +
+>>>> +static inline bool page_pool_is_pp_page(struct page *page)
+>>>> +{
+>>>> +       /* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
+>>>> +        * in order to preserve any existing bits, such as bit 0 for the
+>>>> +        * head page of compound page and bit 1 for pfmemalloc page, so
+>>>> +        * mask those bits for freeing side when doing below checking,
+>>>> +        * and page_is_pfmemalloc() is checked in __page_pool_put_page()
+>>>> +        * to avoid recycling the pfmemalloc page.
+>>>> +        */
+>>>> +       return (page->pp_magic & ~0x3UL) == PP_SIGNATURE;
+>>>> +}
+>>>> +
+>>>>  static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+>>>>                                                           long nr)
+>>>>  {
+>>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+>>>> index ba9f14d..442d37b 100644
+>>>> --- a/net/core/page_pool.c
+>>>> +++ b/net/core/page_pool.c
+>>>> @@ -24,7 +24,7 @@
+>>>>  #define DEFER_TIME (msecs_to_jiffies(1000))
+>>>>  #define DEFER_WARN_INTERVAL (60 * HZ)
+>>>>
+>>>> -#define BIAS_MAX       LONG_MAX
+>>>> +#define BIAS_MAX       (LONG_MAX / 2)
+>>>
+>>> This piece needs some explaining in the patch. Why are you changing
+>>> the BIAS_MAX?
+>>
+>> When __skb_frag_ref() is called for the pp page that is not drained yet,
+>> the pp_frag_count could be overflowed if the BIAS is too big.
+> 
+> Aren't we only checking against 0 though? We are calling LONG_MAX
+> which is already half the maximum possible value since it is dropping
+> the signed bit. If we are treating the value like it is unsigned and
+> only testing against 0 that would leave half the space still available
+> anyway.
 
-Thanks
+Yes, if we are treating the value like it is unsigned, LONG_MAX does not
+need changing.
 
-Huang Shijie
+But we are treating the value like it is signed now, and (LONG_MAX / 2)
+seems large enough for the number of page user and frag count?
 
-
-
-
-
-
+> .
+> 
