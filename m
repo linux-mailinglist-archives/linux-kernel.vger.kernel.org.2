@@ -2,209 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4263FD779
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A423FD77B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233653AbhIAKRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 06:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233327AbhIAKR0 (ORCPT
+        id S233620AbhIAKTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 06:19:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60537 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232662AbhIAKTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 06:17:26 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC8CC061764
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 03:16:29 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id f18so996668lfk.12
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 03:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=729GdT2MAhx/jAkVDNeGvCJtX9tbrZQ8mIDJwfE61ws=;
-        b=TsbNK53CZn8ef5BEtVqTZyY/QDW8Rq4bPoXqq311KEaLylPbm35GPM9rS4+xye8UcH
-         lIILdVPttftswk9PX0ZAsCjLZtKtqLoNdXChK9JCKAJm8Y/XoCjVdQHOqPO75UOli1ey
-         8KKDxOap/6WYDNgiMTqySf7cXWC/ufsRxAWdo=
+        Wed, 1 Sep 2021 06:19:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630491489;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pfADcfJ+X6OH5HhkKuNHIMe8xl+JwSPkUuOE45UHKJk=;
+        b=XY2qi/ppI4cW6wbjX6aYb302euGNH5x2vI6Tdm90wUnQvbRhfN3Ri74tSYy7XeGtRmXasY
+        4x7FLyeDJ1+SCDON+xx1m5RFhSCmWyx51tDbDAkYE5r+SrJPsff4cgv475mIqypeega/KI
+        /NjWoRVi1Vq5G8Y6igI5wgYalSUC5Bo=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-CSLu-RU0PPuqgTVi_GE7gA-1; Wed, 01 Sep 2021 06:18:08 -0400
+X-MC-Unique: CSLu-RU0PPuqgTVi_GE7gA-1
+Received: by mail-wm1-f71.google.com with SMTP id a201-20020a1c7fd2000000b002e748bf0544so2618375wmd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 03:18:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=729GdT2MAhx/jAkVDNeGvCJtX9tbrZQ8mIDJwfE61ws=;
-        b=k916rVMFoCfmv9V4K6DnVz6u/WdR4wIcYE3EESJ/PXIapLcHoTjpdUBl80xa5JMjoZ
-         iS3R/UTMgF46GnHBcIH1giQAgdXqf3eUuklwEur7hfjJIM7r+Qj5Dq+LfmeLKU2+zQLR
-         PmzivtgcOaTsrjxEhY9nf0ZIdyydputkAevMT5ofc2gxi9WVEVOGlNc/tYZt9Lh4f28s
-         T7XrhtbDJdrvLTmsF/etd0R+JgYHfkWP5Bl/sjdb/NhbbujcSMT3i7DSz4rfgZKPLhvJ
-         K8xx5h0aPnUmgh+/+vFQWsMTPFWiCVv2e7AWlaUB5ndQsvXwsGhPPiIL2wqhE/lgz/yc
-         QRfQ==
-X-Gm-Message-State: AOAM531jvwrZJY34UZQDOyWUvKgW+pFsNuNRBAYXfqlDxa2tZy1pNi4H
-        Sl5eRTV4ug9RCAOIvGq/fKb1i7KGXcgLg2/b2xcP+Q==
-X-Google-Smtp-Source: ABdhPJzaTQkdiTWOurV0MnyL5l8QjDiVDjzLfxezvLdsHxF6QsQIIMyf5M3YfDpHJWqLL0lbsbOs8FiJmtRBVKXRcv0=
-X-Received: by 2002:a05:6512:318a:: with SMTP id i10mr3805568lfe.444.1630491388108;
- Wed, 01 Sep 2021 03:16:28 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=pfADcfJ+X6OH5HhkKuNHIMe8xl+JwSPkUuOE45UHKJk=;
+        b=b0R5wjvKbGWet0D5Ix0RYgPai7zfEMD4s5eAiXYeZgXif2d8qgSeMoIRM8CAaLhb4G
+         XLLJhp4rQBzBJ2mR2GIKwMMICMiiq0UUK0kJiq68+9Rwj+6qMvLLZigePw5nrLuO8Mzi
+         DtO43RaOYmvonvqzRuen4n9wa6so49nmQzaUzVF1F/lJ/LVIgMU9jVR7/ydCE9l4JGlD
+         yDE0fQPZoqYJQAvMkXBOkPHkhMB1qIF9K+je2G7uduT2n04hgaxUXaUoAAsZbVvTRsGb
+         ItKkWg6N5yttLfef0PXCTki4aK+xkWf+huNPoKv/JTp21R4BQndrrbT4+7QQV66FBVxH
+         pkRA==
+X-Gm-Message-State: AOAM532oR66mKB7tWlJePpunFAPkWEDvBC7CenJnJzqyIYOW6DdHLKSl
+        3wG/0qCBMWYfIu7FLte4v4TXXdaLiq3I9oSfYyCykASWJQJ7uMcZuHcB9WJKn26WWQ3+ZQh3m2S
+        lnxS8ECYIwdBiyxKg3fciyurKyuc9QbhMRGVXAngXRBzoifjx2zs71/KQtIVB5BbFlN+KI38T
+X-Received: by 2002:a1c:2090:: with SMTP id g138mr8834537wmg.98.1630491487024;
+        Wed, 01 Sep 2021 03:18:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxl4CYnbiwwajv/e6oPH+L4f9i90VhhHOcBQshd70NAqISR3VMqozAHnGwKKB1AQuJpML/yRQ==
+X-Received: by 2002:a1c:2090:: with SMTP id g138mr8834484wmg.98.1630491486611;
+        Wed, 01 Sep 2021 03:18:06 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23f71.dip0.t-ipconnect.de. [79.242.63.113])
+        by smtp.gmail.com with ESMTPSA id g136sm4891862wmg.30.2021.09.01.03.18.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 03:18:06 -0700 (PDT)
+To:     David Howells <dhowells@redhat.com>, torvalds@linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <3285174.1630448147@warthog.procyon.org.uk>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: Folios: Can we resolve this please?
+Message-ID: <01ed765d-449d-fa5f-2f08-1b74e7f6a9c8@redhat.com>
+Date:   Wed, 1 Sep 2021 12:18:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210824100027.25989-1-moudy.ho@mediatek.com> <20210824100027.25989-4-moudy.ho@mediatek.com>
- <YSU0TrfFCsaI1TqV@robh.at.kernel.org> <0092244acd520acac81208b8863b15fba58f4193.camel@mediatek.com>
- <CAL_JsqJ_cProt35pdd2MjoHsSKtd+0n1Dwq6ooV+CJH5sfOFWg@mail.gmail.com> <39cec599a65eeb142cb7e729f954098a25652b2b.camel@mediatek.com>
-In-Reply-To: <39cec599a65eeb142cb7e729f954098a25652b2b.camel@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Wed, 1 Sep 2021 18:16:16 +0800
-Message-ID: <CAGXv+5GtDNwKpXEnont+UshVrSugQnTPyNF7VF3dVzTX9ruNdw@mail.gmail.com>
-Subject: Re: [PATCH v7 3/5] dt-binding: mt8183: Add Mediatek MDP3 dt-bindings
-To:     moudy ho <moudy.ho@mediatek.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Landley <rob@landley.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>, menghui.lin@mediatek.com,
-        Sj Huang <sj.huang@mediatek.com>, ben.lok@mediatek.com,
-        Randy Wu <randy.wu@mediatek.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3285174.1630448147@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 5:04 PM moudy ho <moudy.ho@mediatek.com> wrote:
->
-> On Mon, 2021-08-30 at 10:05 -0500, Rob Herring wrote:
-> > On Mon, Aug 30, 2021 at 2:58 AM moudy ho <moudy.ho@mediatek.com>
-> > wrote:
-> > >
-> > > On Tue, 2021-08-24 at 13:02 -0500, Rob Herring wrote:
-> > > > On Tue, Aug 24, 2021 at 06:00:25PM +0800, Moudy Ho wrote:
-> > > > > This patch adds DT binding document for Media Data Path 3
-> > > > > (MDP3)
-> > > > > a unit in multimedia system used for scaling and color format
-> > > > > convert.
-> > > > >
-> > > > > Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> > > > > ---
-> > > > >  .../bindings/media/mediatek,mdp3-ccorr.yaml   |  57 +++++
-> > > > >  .../bindings/media/mediatek,mdp3-rdma.yaml    | 207
-> > > > > ++++++++++++++++++
-> > > > >  .../bindings/media/mediatek,mdp3-rsz.yaml     |  65 ++++++
-> > > > >  .../bindings/media/mediatek,mdp3-wdma.yaml    |  71 ++++++
-> > > > >  .../bindings/media/mediatek,mdp3-wrot.yaml    |  71 ++++++
-> > > > >  5 files changed, 471 insertions(+)
-> > > > >  create mode 100644
-> > > > > Documentation/devicetree/bindings/media/mediatek,mdp3-
-> > > > > ccorr.yaml
-> > > > >  create mode 100644
-> > > > > Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
-> > > > >  create mode 100644
-> > > > > Documentation/devicetree/bindings/media/mediatek,mdp3-rsz.yaml
-> > > > >  create mode 100644
-> > > > > Documentation/devicetree/bindings/media/mediatek,mdp3-wdma.yaml
-> > > > >  create mode 100644
-> > > > > Documentation/devicetree/bindings/media/mediatek,mdp3-wrot.yaml
-> > > > >
-> > > > > diff --git
-> > > > > a/Documentation/devicetree/bindings/media/mediatek,mdp3-
-> > > > > ccorr.yaml
-> > > > > b/Documentation/devicetree/bindings/media/mediatek,mdp3-
-> > > > > ccorr.yaml
-> > > > > new file mode 100644
-> > > > > index 000000000000..59fd68b46022
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/devicetree/bindings/media/mediatek,mdp3-
-> > > > > ccorr.yaml
-> > > > > @@ -0,0 +1,57 @@
-> > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > +%YAML 1.2
-> > > > > +---
-> > > > > +$id:
-> > > > >
-> https://urldefense.com/v3/__http://devicetree.org/schemas/media/mediatek,mdp3-ccorr.yaml*__;Iw!!CTRNKA9wMg0ARbw!1C0ChLqzi7Zq8D2d4_S4IqCEei4GXdgy3_VCQg8MdsJP7n8TlxbGyajipusfH8hi$
-> > > > >
-> > > > > +$schema:
-> > > > >
-> https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml*__;Iw!!CTRNKA9wMg0ARbw!1C0ChLqzi7Zq8D2d4_S4IqCEei4GXdgy3_VCQg8MdsJP7n8TlxbGyajipi-OInix$
-> > > > >
-> > > > > +
-> > > > > +title: Mediatek Media Data Path 3 CCORR Device Tree Bindings
-> > > > > +
-> > > > > +maintainers:
-> > > > > +  - Daoyuan Huang <daoyuan.huang@mediatek.com>
-> > > > > +  - Moudy Ho <moudy.ho@mediatek.com>
-> > > > > +
-> > > > > +description: |
-> > > > > +  One of Media Data Path 3 (MDP3) components used to do color
-> > > > > correction with 3X3 matrix.
-> > > > > +
-> > > > > +properties:
-> > > > > +  compatible:
-> > > > > +    items:
-> > > > > +      - enum:
-> > > > > +        - mediatek,mt8183-mdp3-ccorr
-> > > > > +
-> > > > > +  mediatek,mdp3-id:
-> > > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > > > +    maxItems: 1
-> > > > > +    description: |
-> > > > > +      HW index to distinguish same functionality modules.
-> > > >
-> > > > If we wanted h/w indexes in DT, we'd have a standard property.
-> > > > Why
-> > > > do
-> > > > you need this?
-> > > >
-> > >
-> > > I'm sorry not quite sure what HW indexes means (something like
-> > > aliases?)
-> >
-> > It means whatever you said in your description.
-> >
-> > And no, I'm not suggesting you use aliases.
->
-> Sorry for the inaccuracy described here, the comment i mentioned before
-> should be "standard property" instead of "HW index".
->
-> > > It was originally used to mark multiple identical modules in the
-> > > MDP
-> > > data path algorithm, so that appropriate paths can be dynamically
-> > > dispatched.
-> >
-> > If they are identical, then why do you need to distinguish them in
-> > DT?
-> > If there's some difference you need to know about such as connections
-> > to other blocks, then describe that. Another common example is
-> > needing
-> > to know what bits/registers to access in a syscon phandle. For that,
-> > make the register offset or bits be args to the phandle property.
-> >
-> > Rob
->
-> Integrating the previous discussion, maybe I can revise the description
-> to the following:
->     description: |
->       There may be multiple blocks with the same function but different
->       addresses in MDP3. In order to distinguish the connection with
->       other blocks, a unique ID is needed to dynamically use one or
->       more identical blocks to implement multiple pipelines.
+On 01.09.21 00:15, David Howells wrote:
+> Hi Linus, Andrew, Johannes,
+> 
+> Can we come to a quick resolution on folios?  I'd really like this to be
+> solved in this merge window if at all possible as I (and others) have stuff
+> that will depend on and will conflict with Willy's folio work.  It would be
+> great to get this sorted one way or another.
+> 
+> As I see it, there are three issues, I think, and I think they kind of go like
+> this:
+> 
+>   (1) Johannes wants to get away from pages being used as the unit of memory
+>       currency and thinks that folios aren't helpful in this regard[1].  There
+>       seems to be some disagreement about where this is heading.
+> 
+>   (2) Linus isn't entirely keen on Willy's approach[2], with a bottom up
+>       approach hiding the page objects behind a new type from the pov of the
+>       filesystem, but would rather see the page struct stay the main API type
+>       and the changes be hidden transparently inside of that.
+> 
+>       I think from what Linus said, he may be in favour (if that's not too
+>       strong a word) of using a new type to make sure we don't miss the
+>       necessary changes[3].
+> 
+>   (3) Linus isn't in favour of the name 'folio' for the new type[2].  Various
+>       names have been bandied around and Linus seems okay with "pageset"[4],
+>       though it's already in minor(-ish) use[5][6].  Willy has an alternate
+>       patchset with "folio" changed to "pageset"[7].
+> 
+> With regard to (1), I think the folio concept could be used in future to hide
+> at least some of the paginess from filesystems.
+> 
+> With regard to (2), I think a top-down approach won't work until and unless we
+> wrap all accesses to struct page by filesystems (and device drivers) in
+> wrapper functions - we need to stop filesystems fiddling with page internals
+> because what page internals may mean may change.
+> 
+> With regard to (3), I'm personally fine with the name "folio", as are other
+> people[8][9][10][11], but I could also live with a conversion to "pageset".
+> 
+> Is it possible to take the folios patchset as-is and just live with the name,
+> or just take Willy's rename-job (although it hasn't had linux-next soak time
+> yet)?  Or is the approach fundamentally flawed and in need of redoing?
 
-With display pipelines it is common to describe the pipeline with an OF
-graph. With the pipeline drawn out, you also get ways to derive identifiers
-for otherwise identical blocks, such as from port IDs.
+Whatever we do, it would be great to get it out of -next one way (merge) 
+or the other (drop) ASAP, as it's a lot of code churn, affecting various 
+subsystems.
 
-See Documentation/devicetree/bindings/display/allwinner,sun4i-a10-display-engine.yaml
-and arch/arm/boot/dts/sun9i-a80.dtsi for such an example.
+But merging it in a (for some people) suboptimal state just to get it 
+out of -next might not necessarily be what we want.
 
+-- 
+Thanks,
 
-ChenYu
+David / dhildenb
+
