@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3921A3FDAD8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31A63FDA52
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245609AbhIAMfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:35:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34986 "EHLO mail.kernel.org"
+        id S244916AbhIAMbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:31:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343535AbhIAMdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:33:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A473610E6;
-        Wed,  1 Sep 2021 12:32:01 +0000 (UTC)
+        id S244665AbhIAMbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:31:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21C3F610CC;
+        Wed,  1 Sep 2021 12:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499522;
-        bh=3LtPGqVFszrceez7FmDhpht4gkC4FP08zQUorIghOx0=;
+        s=korg; t=1630499410;
+        bh=CqTbosjXnUtabwSkr9DsvgcHDiMzeeKQ2Y5yfOQoNQk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oAkwBOlVIiXuV3qSke5BzWXVZEHFzwoGwooHMicMsI2c/4MemzA40IC4ncgKRUJ6U
-         a5a7vH+6AdZPCYqmIwQTyn63MgJhXmB2uvRda5GKl/Xm7n7K/cNNbsQscQX3UwdHkP
-         7bwiMz3fhiJI2Urd0XqGqdC4l9/jVcvL2sG77vkI=
+        b=b4yec6S7NiWEt6isP1/V8oiBUbrjyqt9IJXu9sCCEePL42M4X3PPxUNjcIPy+XWus
+         Cgv+OQPcGoRmIMamr3pzVFdLukfvx1D24ujFkn2hxJOec20q+cjyCZdAjCVFEwCde+
+         XGIPFgrdvU9gM2mKdiY6rQCD6NdHRvP5cVTdglVM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Hannes Frederic Sowa <hannes@stressinduktion.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Minmin chen <chenmingmin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Vineet Gupta <vgupta@synopsys.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 04/48] once: Fix panic when module unload
+Subject: [PATCH 4.19 05/33] ARC: Fix CONFIG_STACKDEPOT
 Date:   Wed,  1 Sep 2021 14:27:54 +0200
-Message-Id: <20210901122253.538567848@linuxfoundation.org>
+Message-Id: <20210901122250.952319389@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
+References: <20210901122250.752620302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,121 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 1027b96ec9d34f9abab69bc1a4dc5b1ad8ab1349 ]
+[ Upstream commit bf79167fd86f3b97390fe2e70231d383526bd9cc ]
 
-DO_ONCE
-DEFINE_STATIC_KEY_TRUE(___once_key);
-__do_once_done
-  once_disable_jump(once_key);
-    INIT_WORK(&w->work, once_deferred);
-    struct once_work *w;
-    w->key = key;
-    schedule_work(&w->work);                     module unload
-                                                   //*the key is
-destroy*
-process_one_work
-  once_deferred
-    BUG_ON(!static_key_enabled(work->key));
-       static_key_count((struct static_key *)x)    //*access key, crash*
+Enabling CONFIG_STACKDEPOT results in the following build error.
 
-When module uses DO_ONCE mechanism, it could crash due to the above
-concurrency problem, we could reproduce it with link[1].
+arc-elf-ld: lib/stackdepot.o: in function `filter_irq_stacks':
+stackdepot.c:(.text+0x456): undefined reference to `__irqentry_text_start'
+arc-elf-ld: stackdepot.c:(.text+0x456): undefined reference to `__irqentry_text_start'
+arc-elf-ld: stackdepot.c:(.text+0x476): undefined reference to `__irqentry_text_end'
+arc-elf-ld: stackdepot.c:(.text+0x476): undefined reference to `__irqentry_text_end'
+arc-elf-ld: stackdepot.c:(.text+0x484): undefined reference to `__softirqentry_text_start'
+arc-elf-ld: stackdepot.c:(.text+0x484): undefined reference to `__softirqentry_text_start'
+arc-elf-ld: stackdepot.c:(.text+0x48c): undefined reference to `__softirqentry_text_end'
+arc-elf-ld: stackdepot.c:(.text+0x48c): undefined reference to `__softirqentry_text_end'
 
-Fix it by add/put module refcount in the once work process.
+Other architectures address this problem by adding IRQENTRY_TEXT and
+SOFTIRQENTRY_TEXT to the text segment, so do the same here.
 
-[1] https://lore.kernel.org/netdev/eaa6c371-465e-57eb-6be9-f4b16b9d7cbf@huawei.com/
-
-Cc: Hannes Frederic Sowa <hannes@stressinduktion.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Reported-by: Minmin chen <chenmingmin@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Acked-by: Hannes Frederic Sowa <hannes@stressinduktion.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/once.h |  4 ++--
- lib/once.c           | 11 ++++++++---
- 2 files changed, 10 insertions(+), 5 deletions(-)
+ arch/arc/kernel/vmlinux.lds.S | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/once.h b/include/linux/once.h
-index 9225ee6d96c7..ae6f4eb41cbe 100644
---- a/include/linux/once.h
-+++ b/include/linux/once.h
-@@ -7,7 +7,7 @@
- 
- bool __do_once_start(bool *done, unsigned long *flags);
- void __do_once_done(bool *done, struct static_key_true *once_key,
--		    unsigned long *flags);
-+		    unsigned long *flags, struct module *mod);
- 
- /* Call a function exactly once. The idea of DO_ONCE() is to perform
-  * a function call such as initialization of random seeds, etc, only
-@@ -46,7 +46,7 @@ void __do_once_done(bool *done, struct static_key_true *once_key,
- 			if (unlikely(___ret)) {				     \
- 				func(__VA_ARGS__);			     \
- 				__do_once_done(&___done, &___once_key,	     \
--					       &___flags);		     \
-+					       &___flags, THIS_MODULE);	     \
- 			}						     \
- 		}							     \
- 		___ret;							     \
-diff --git a/lib/once.c b/lib/once.c
-index 8b7d6235217e..59149bf3bfb4 100644
---- a/lib/once.c
-+++ b/lib/once.c
-@@ -3,10 +3,12 @@
- #include <linux/spinlock.h>
- #include <linux/once.h>
- #include <linux/random.h>
-+#include <linux/module.h>
- 
- struct once_work {
- 	struct work_struct work;
- 	struct static_key_true *key;
-+	struct module *module;
- };
- 
- static void once_deferred(struct work_struct *w)
-@@ -16,10 +18,11 @@ static void once_deferred(struct work_struct *w)
- 	work = container_of(w, struct once_work, work);
- 	BUG_ON(!static_key_enabled(work->key));
- 	static_branch_disable(work->key);
-+	module_put(work->module);
- 	kfree(work);
- }
- 
--static void once_disable_jump(struct static_key_true *key)
-+static void once_disable_jump(struct static_key_true *key, struct module *mod)
- {
- 	struct once_work *w;
- 
-@@ -29,6 +32,8 @@ static void once_disable_jump(struct static_key_true *key)
- 
- 	INIT_WORK(&w->work, once_deferred);
- 	w->key = key;
-+	w->module = mod;
-+	__module_get(mod);
- 	schedule_work(&w->work);
- }
- 
-@@ -53,11 +58,11 @@ bool __do_once_start(bool *done, unsigned long *flags)
- EXPORT_SYMBOL(__do_once_start);
- 
- void __do_once_done(bool *done, struct static_key_true *once_key,
--		    unsigned long *flags)
-+		    unsigned long *flags, struct module *mod)
- 	__releases(once_lock)
- {
- 	*done = true;
- 	spin_unlock_irqrestore(&once_lock, *flags);
--	once_disable_jump(once_key);
-+	once_disable_jump(once_key, mod);
- }
- EXPORT_SYMBOL(__do_once_done);
+diff --git a/arch/arc/kernel/vmlinux.lds.S b/arch/arc/kernel/vmlinux.lds.S
+index f35ed578e007..4d823d3f65bb 100644
+--- a/arch/arc/kernel/vmlinux.lds.S
++++ b/arch/arc/kernel/vmlinux.lds.S
+@@ -92,6 +92,8 @@ SECTIONS
+ 		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
++		IRQENTRY_TEXT
++		SOFTIRQENTRY_TEXT
+ 		*(.fixup)
+ 		*(.gnu.warning)
+ 	}
 -- 
 2.30.2
 
