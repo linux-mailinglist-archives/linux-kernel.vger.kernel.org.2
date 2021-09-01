@@ -2,121 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C67E3FD322
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 07:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FF33FD326
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 07:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242075AbhIAFmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 01:42:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40306 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231195AbhIAFmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 01:42:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F36AF60F92;
-        Wed,  1 Sep 2021 05:41:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630474874;
-        bh=4gWXBhemBdFlwxDdizi6NHE619J+0CTJJuMfC4VTIMw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=n4GfuipCLEKYaznqhsS+cNFZB/dq1ET+YDVLkPJjJrIhFDZthY6Wi3sZebGe7y/WE
-         8OrXR+UDw6pzsGNsPpJYXflmELjOrc/GxePKdmPaU5OrlAZrJXkFMW2tLscciAVPP4
-         W1+3Zxy1rDAJfD4HP15QvGMC/+W72aiNPC5JNh+Hut9zOvPxbldHDa2shEztVH0n4/
-         9uzqkZryrLR5948DiDCWCFORp9+WR9EeOIe3ty9sdyJDxqGniZCDcvqyZhd+N4kYoK
-         8vr4EGnIQTPXcmGhqUR4Kx9EAkBhQg8MTzDdFcmWACR2mGnj72EHpPtk3nd/unUvHv
-         4aoT8gbufyb4A==
-Message-ID: <6a9fccdb6a458960e43a63afcce87cc62184adf9.camel@kernel.org>
-Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Date:   Wed, 01 Sep 2021 08:41:12 +0300
-In-Reply-To: <20210901173322.78f94b694b4be6b1225bee98@intel.com>
-References: <20210825235234.153013-1-jarkko@kernel.org>
-         <20210825235234.153013-2-jarkko@kernel.org>
-         <20210826141959.5f13ff3c9c560c23b58443b1@intel.com>
-         <54923ac01fc303e5105cadca06b7c5cbd322d815.camel@kernel.org>
-         <20210828000335.1d40dfff0f408b2d91467491@intel.com>
-         <04b90a702328712204430db604b2a92ddfe8f990.camel@kernel.org>
-         <20210901173322.78f94b694b4be6b1225bee98@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S242002AbhIAFom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 01:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231289AbhIAFok (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 01:44:40 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F4CC061575;
+        Tue, 31 Aug 2021 22:43:44 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id t19so2116928lfe.13;
+        Tue, 31 Aug 2021 22:43:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gim4EuYzMPzECIPE9S4nR1nvyfAMSTvMIW6Rj/ZTiog=;
+        b=MghnCIi+9feXf3Ym2IHdbIQNq2BoX/1BOSuksrFLRXVxqO0hbDsdvifp/sDYElI7e4
+         krG4jqPIoxG0AmeRGwM/f8Yc1D4f8jsGOZNT5a8d+LHhYsk1A1z17oCFAdflTUKoJ9J+
+         7T0Sh28Lke9h6EVoUKk9/+NcgUnQD6vql7nTBxTioNJLwxWatlQ5blocEgHGs3NlLn/1
+         KO9ko60jW8N39T32cB/QIEw222exPt0z17ZfNJWR+2TTh60lUbKbJPTy4oYP5Spi/8pL
+         TOxOWplaOOiITsMRNiN9xwQy1/aC64GOOuI98/DZ80FcSontBZPa8eBKqW48o7typ8R9
+         A40g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gim4EuYzMPzECIPE9S4nR1nvyfAMSTvMIW6Rj/ZTiog=;
+        b=rOQVDlRVkR6AvwukMy+eG7oWGP00Az8qcOMDKg2HJz6wk7t46byuTq8iVRBacct0jB
+         8ApPV4eGsVGdCIBEWvorPpl3r273m3FGmGGkv+4qTNvbRcjmDU1sEF4LHxYMjeeAnIVO
+         ozAk9HB2kDGdibDEPfQnxU20EyQDXAXGpYdB84nMfpOZG6RNa1K5skqF0ppKqyeWzUER
+         jA5F/zfnHzRqFZW2qgEwaQkzT93sU9QurIRWK5aLCdeq8UbuMIN9J5h9QlVR/KhUvfEM
+         rtnmku2cqactkPSsVm9TBHZX19wsE5v+m6FMk0Ag2+0Fq/Sc/YFXdSPPQu/4dio6GjyK
+         qPVQ==
+X-Gm-Message-State: AOAM532tkieqSc33LGZ3MHW0/QP41HZoAmGOpSyGHGr2vSsmJtp8qLXG
+        OiRdKct8C/IhlwAychgCUMRSoO50gKY=
+X-Google-Smtp-Source: ABdhPJwwEJqgRkqTYsgfRUc5rrHS4adDnLusibuPc4BX5QwYuMNoyFrDbXSienq/vCNQI50ignlxlA==
+X-Received: by 2002:a05:6512:21b1:: with SMTP id c17mr24884557lft.34.1630475022240;
+        Tue, 31 Aug 2021 22:43:42 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-26-37.dynamic.spd-mgts.ru. [46.138.26.37])
+        by smtp.googlemail.com with ESMTPSA id z3sm1933374lfh.18.2021.08.31.22.43.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 22:43:41 -0700 (PDT)
+Subject: Re: [PATCH v10 1/8] opp: Add dev_pm_opp_get_current()
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210831135450.26070-1-digetx@gmail.com>
+ <20210831135450.26070-2-digetx@gmail.com>
+ <20210901043953.va4v3fwgs6ldtwar@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <e9d9f288-fe37-a6f5-2f5f-fba227dba0c7@gmail.com>
+Date:   Wed, 1 Sep 2021 08:43:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210901043953.va4v3fwgs6ldtwar@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-01 at 17:33 +1200, Kai Huang wrote:
-> On Wed, 01 Sep 2021 05:02:45 +0300 Jarkko Sakkinen wrote:
-> > On Sat, 2021-08-28 at 00:03 +1200, Kai Huang wrote:
-> > > > > > -/* The free page list lock protected variables prepend the loc=
-k. */
-> > > > > > +/* The number of usable EPC pages in the system. */
-> > > > > > +unsigned long sgx_nr_all_pages;
-> > > > > > +
-> > > > > > +/* The number of free EPC pages in all nodes. */
-> > > > > >  static unsigned long sgx_nr_free_pages;
-> > > > > > =20
-> > > > > >  /* Nodes with one or more EPC sections. */
-> > > > > > @@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_section(u6=
-4 phys_addr, u64 size,
-> > > > > >  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list)=
-;
-> > > > > >  	}
-> > > > > > =20
-> > > > > > +	sgx_nr_all_pages +=3D nr_pages;
-> > > > > > +
-> > > > >=20
-> > > > > EPC sections can be freed again in sgx_init() after they are succ=
-essfully
-> > > > > initialized, when any further initialization fails (i.e. when fai=
-ls to create
-> > > > > ksgxd, or fails to register /dev/sgx_provision).  In which case, =
-I think
-> > > > > sgx_nr_all_pages should also be cleared.  But current sgx_init() =
-seems doesn't
-> > > > > reset it.  Do you need to fix that too?
-> > > >=20
-> > > > sgx_nr_all_pages tells just the total pages in the system, i.e. it'=
-s a constant.
-> > > >=20
-> > > > Maybe a rename to "sgx_nr_total_pages" would be a good idea? Would =
-match with
-> > > > the meminfo field better too.
-> > >=20
-> > > I don't have preference on name.  I just think if there's no actual u=
-ser of
-> > > EPC (when both driver and KVM SGX cannot be enabled), it's pointless =
-to print
-> > > number of EPC pages.
-> >=20
-> > I'd presume that you refer to the code, which prints the number of *byt=
-es* in
-> > the system because code printing the number of pages does not exist in =
-this
-> > patch set.
-> >=20
-> > I have troubles the decipher your statement.
-> >=20
-> > You think that only if both the driver and KVM are *both* enabled, only=
- then
-> > it makes sense to have this information available for sysadmin?
->=20
-> Only if at least one of them is enabled.
+01.09.2021 07:39, Viresh Kumar пишет:
+> On 31-08-21, 16:54, Dmitry Osipenko wrote:
+>> Add dev_pm_opp_get_current() helper that returns OPP corresponding
+>> to the current clock rate of a device.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/opp/core.c     | 43 +++++++++++++++++++++++++++++++++++++++---
+>>  include/linux/pm_opp.h |  6 ++++++
+>>  2 files changed, 46 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+>> index 04b4691a8aac..dde8a5cc948c 100644
+>> --- a/drivers/opp/core.c
+>> +++ b/drivers/opp/core.c
+>> @@ -939,7 +939,7 @@ static int _set_required_opps(struct device *dev,
+>>  	return ret;
+>>  }
+>>  
+>> -static void _find_current_opp(struct device *dev, struct opp_table *opp_table)
+>> +static struct dev_pm_opp *_find_current_opp(struct opp_table *opp_table)
+>>  {
+>>  	struct dev_pm_opp *opp = ERR_PTR(-ENODEV);
+>>  	unsigned long freq;
+>> @@ -949,6 +949,18 @@ static void _find_current_opp(struct device *dev, struct opp_table *opp_table)
+>>  		opp = _find_freq_ceil(opp_table, &freq);
+>>  	}
+>>  
+>> +	return opp;
+>> +}
+>> +
+>> +static void _find_and_set_current_opp(struct opp_table *opp_table)
+>> +{
+>> +	struct dev_pm_opp *opp;
+>> +
+>> +	if (opp_table->current_opp)
+>> +		return;
+> 
+> Why move this from caller as well ?
 
-OK, thank you, that does make sense.
+To make code cleaner.
 
-What would happen if neither is enabled is that SGX_MemTotal would
-state that there is zero bytes of EPC. I'll add a note to the commit
-message. It's useful because it give is easy programmatic way to check
-if SGX is enabled in Linux or not.
+>> +
+>> +	opp = _find_current_opp(opp_table);
+>> +
+>>  	/*
+>>  	 * Unable to find the current OPP ? Pick the first from the list since
+>>  	 * it is in ascending order, otherwise rest of the code will need to
+> 
+> If we aren't able to find current OPP based on current freq, then this
+> picks the first value from the list. Why shouldn't this be done in
+> your case as well ?
 
-/Jarkko
+You will get OPP which corresponds to the lowest freq, while h/w runs on
+unsupported high freq. This may end with a tragedy.
+
+>> @@ -1002,8 +1014,7 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
+>>  		return _disable_opp_table(dev, opp_table);
+>>  
+>>  	/* Find the currently set OPP if we don't know already */
+>> -	if (unlikely(!opp_table->current_opp))
+>> -		_find_current_opp(dev, opp_table);
+>> +	_find_and_set_current_opp(opp_table);
+>>  
+>>  	old_opp = opp_table->current_opp;
+>>  
+>> @@ -2931,3 +2942,29 @@ int dev_pm_opp_sync_regulators(struct device *dev)
+>>  	return ret;
+>>  }
+>>  EXPORT_SYMBOL_GPL(dev_pm_opp_sync_regulators);
+>> +
+>> +/**
+>> + * dev_pm_opp_get_current() - Get current OPP
+>> + * @dev:	device for which we do this operation
+>> + *
+>> + * Get current OPP of a device based on current clock rate or by other means.
+>> + *
+>> + * Return: pointer to 'struct dev_pm_opp' on success and errorno otherwise.
+>> + */
+>> +struct dev_pm_opp *dev_pm_opp_get_current(struct device *dev)
+>> +{
+>> +	struct opp_table *opp_table;
+>> +	struct dev_pm_opp *opp;
+>> +
+>> +	opp_table = _find_opp_table(dev);
+>> +	if (IS_ERR(opp_table))
+>> +		return ERR_CAST(opp_table);
+>> +
+>> +	opp = _find_current_opp(opp_table);
+> 
+> This should not just go find the OPP based on current freq. This first
+> needs to check if curret_opp is set or not. If set, then just return
+> it, else run the _find_current_opp() function and update the
+> current_opp pointer as well.
+> 
+
+Alright, I'll change it.
