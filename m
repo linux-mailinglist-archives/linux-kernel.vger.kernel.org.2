@@ -2,56 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C546B3FD26E
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0161D3FD273
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 06:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241808AbhIAEkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 00:40:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237454AbhIAEkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 00:40:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE46960724;
-        Wed,  1 Sep 2021 04:39:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630471149;
-        bh=1yBJDx44Nya7xDZWygpeSnX032AHSUDSn5k/kmjUYjw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=cJz5MCwvixy3dZNyqhBPmcEFHUX1/m1Eb6agmQ/Zk3uBC3tdORyD12hQekvfS7lqH
-         SyIt2iybQoEbu9oyPk6OlQauD4r/JMBqIrubFrq3yd5NglJicQcLj7r2kJMkpEK3oE
-         oCQnutVUJNInq2uWxJEAnn6sVX1QaOE3aGdCSyEqtm2yWigK3u9pEWmitex/UN7FGl
-         AVevGKlqYEf3kuPlHu6B5h5zZncMVeNUFGH6jpoLp1HY86xPGaXV2QKly5eqri0pR8
-         1hRDPjy7gCfPsljQdll0kCbRaK/KKzgNZe/vRjk4I9gh7IDdP5y+pv8CTFQuvi5Jp7
-         y/a/FkipvajOA==
-Message-ID: <1dffe39c34dead9dd1a3782344b637757404d0c6.camel@kernel.org>
-Subject: Re: [PATCH 1/4] KVM: x86: Introduce .pcpu_is_idle() stub
- infrastructure
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Tianqiang Xu <skyele@sjtu.edu.cn>, x86@kernel.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        kvm@vger.kernel.org, hpa@zytor.com, dave.hansen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Date:   Wed, 01 Sep 2021 07:39:06 +0300
-In-Reply-To: <20210831015919.13006-1-skyele@sjtu.edu.cn>
-References: <20210831015919.13006-1-skyele@sjtu.edu.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S241850AbhIAEky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 00:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240774AbhIAEkw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 00:40:52 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B5FC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 21:39:56 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id gp20-20020a17090adf1400b00196b761920aso712016pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 31 Aug 2021 21:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=pvaBF9xrlfAeRbD51NELLwVWin4o3Iv3FXz6EIQpIrY=;
+        b=WaA1AzODpdKHlt9or5QsSCmV6Svr0Lh51m4LHfeE9MHJFPM8ol1Tshar4EURAFjwcN
+         UHny/pM4YZroosbRwESMY565MnwWmAdchphRtZ+QaNX785dr2kH01PuvRr584UyJ9RwB
+         UNV2pZzI+j3QlkEYkb0yY+JBmof9TCH1537zxMZiLS2vRMHszQrMBfFDt15g83UKqgFp
+         X8ed8VXo1Klg5hKA3mgZsEZPbA1PMrnOnHDCYpSc5J/ohzNyBXtQ9FSyEqSeVL3LfMEh
+         ex/LJ+HLlCu31kevfzzrqflfkavGuuM4fVaD1874UEV85ZvmWEYaXOdpkLWveGdjbhtC
+         W1FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pvaBF9xrlfAeRbD51NELLwVWin4o3Iv3FXz6EIQpIrY=;
+        b=bKSgZcM0TGugi2Fq7KIYQ2FoQgrBvlBe/AmQ/zzbkQEVeyDsLRYTGmt85qQ69LTweA
+         VsCHPM8QBHf7FMo3N1w2iBIRKSrdd+E7wxptiyJbQUnZOyQtJcZmGAZfppncerr2Ihea
+         WiNIFwHkHd0PfsayY8POVW05gk21fVKB0zZOMzFo2tGnS+1UAGClVmNWTwQe9Ya27XWB
+         OuV6hric8M5OZ77dnJhZlfTylQKv7JXtd2xHq2epyz2OHVbuFQeoP9HK3RJCtxCpVlds
+         UgeXnkhnNeSewR3WRSwj+UxhCeDjDthY5UJGio419KOMPdxZ/K0cndigTXt1P4qBO7lf
+         Sw3Q==
+X-Gm-Message-State: AOAM533VQq/rjMHxab7M9wkHLgIXmyYaqkY5jKOUfZJBCsL7XgCWt5/9
+        SVFipIrY8ISIXAXfug50i8pc5g==
+X-Google-Smtp-Source: ABdhPJy3ys78m+AC28oPozK6NBJEFTf3SBJ1vEM4cQTRLcxia5ml0Rorw4u1yBx8gm8l8EtB3N0/ZQ==
+X-Received: by 2002:a17:90a:6d47:: with SMTP id z65mr9457555pjj.62.1630471196057;
+        Tue, 31 Aug 2021 21:39:56 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id t15sm22028653pgk.13.2021.08.31.21.39.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 21:39:55 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 10:09:53 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v10 1/8] opp: Add dev_pm_opp_get_current()
+Message-ID: <20210901043953.va4v3fwgs6ldtwar@vireshk-i7>
+References: <20210831135450.26070-1-digetx@gmail.com>
+ <20210831135450.26070-2-digetx@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831135450.26070-2-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-31 at 09:59 +0800, Tianqiang Xu wrote:
-> This patch series aims to fix performance issue caused by current
-> para-virtualized scheduling design.
+On 31-08-21, 16:54, Dmitry Osipenko wrote:
+> Add dev_pm_opp_get_current() helper that returns OPP corresponding
+> to the current clock rate of a device.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/opp/core.c     | 43 +++++++++++++++++++++++++++++++++++++++---
+>  include/linux/pm_opp.h |  6 ++++++
+>  2 files changed, 46 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 04b4691a8aac..dde8a5cc948c 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -939,7 +939,7 @@ static int _set_required_opps(struct device *dev,
+>  	return ret;
+>  }
+>  
+> -static void _find_current_opp(struct device *dev, struct opp_table *opp_table)
+> +static struct dev_pm_opp *_find_current_opp(struct opp_table *opp_table)
+>  {
+>  	struct dev_pm_opp *opp = ERR_PTR(-ENODEV);
+>  	unsigned long freq;
+> @@ -949,6 +949,18 @@ static void _find_current_opp(struct device *dev, struct opp_table *opp_table)
+>  		opp = _find_freq_ceil(opp_table, &freq);
+>  	}
+>  
+> +	return opp;
+> +}
+> +
+> +static void _find_and_set_current_opp(struct opp_table *opp_table)
+> +{
+> +	struct dev_pm_opp *opp;
+> +
+> +	if (opp_table->current_opp)
+> +		return;
 
-Series?
+Why move this from caller as well ?
 
-This looks to me like a patch, not a cover letter.
+> +
+> +	opp = _find_current_opp(opp_table);
+> +
+>  	/*
+>  	 * Unable to find the current OPP ? Pick the first from the list since
+>  	 * it is in ascending order, otherwise rest of the code will need to
 
-If you want a cover letter, please make one.
+If we aren't able to find current OPP based on current freq, then this
+picks the first value from the list. Why shouldn't this be done in
+your case as well ?
 
-/Jarkko
+> @@ -1002,8 +1014,7 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
+>  		return _disable_opp_table(dev, opp_table);
+>  
+>  	/* Find the currently set OPP if we don't know already */
+> -	if (unlikely(!opp_table->current_opp))
+> -		_find_current_opp(dev, opp_table);
+> +	_find_and_set_current_opp(opp_table);
+>  
+>  	old_opp = opp_table->current_opp;
+>  
+> @@ -2931,3 +2942,29 @@ int dev_pm_opp_sync_regulators(struct device *dev)
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(dev_pm_opp_sync_regulators);
+> +
+> +/**
+> + * dev_pm_opp_get_current() - Get current OPP
+> + * @dev:	device for which we do this operation
+> + *
+> + * Get current OPP of a device based on current clock rate or by other means.
+> + *
+> + * Return: pointer to 'struct dev_pm_opp' on success and errorno otherwise.
+> + */
+> +struct dev_pm_opp *dev_pm_opp_get_current(struct device *dev)
+> +{
+> +	struct opp_table *opp_table;
+> +	struct dev_pm_opp *opp;
+> +
+> +	opp_table = _find_opp_table(dev);
+> +	if (IS_ERR(opp_table))
+> +		return ERR_CAST(opp_table);
+> +
+> +	opp = _find_current_opp(opp_table);
+
+This should not just go find the OPP based on current freq. This first
+needs to check if curret_opp is set or not. If set, then just return
+it, else run the _find_current_opp() function and update the
+current_opp pointer as well.
+
+-- 
+viresh
