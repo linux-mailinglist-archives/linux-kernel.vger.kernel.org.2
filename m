@@ -2,240 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293013FDE8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634FC3FDE95
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 17:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343698AbhIAPZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 11:25:42 -0400
-Received: from mail-4323.protonmail.ch ([185.70.43.23]:49618 "EHLO
-        mail-4323.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343673AbhIAPZl (ORCPT
+        id S1343709AbhIAP0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 11:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343529AbhIAPZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 11:25:41 -0400
-Date:   Wed, 01 Sep 2021 15:24:40 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1630509882;
-        bh=JM4uDiMJsApQbN3SvBBRU1K31XYBclLBZcIW1vSbVtk=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=KkJ6n9nT8J4FgWAH+gPcfiAF1jmryaH0oUkIajigLutkBcsD26LyCNvKqZ6XZEUrF
-         oQjIxB3611QDA7NcjGD1trcub4a/zBsjC2hK0J6NTHIEiaQq/CypT+/fuVMhM1Kwb0
-         MaV6IS6Vcl4/0kifp6S/fH5+l/dY+gL/QJ5Zsp2A=
-To:     Luke Jones <luke@ljones.dev>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     linux-kernel@vger.kernel.org, hdegoede@redhat.com,
-        linux@roeck-us.net, platform-driver-x86@vger.kernel.org
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH v7] asus-wmi: Add support for custom fan curves
-Message-ID: <Z3uTWHyeRPzaHU0iSW56m1ltGsYr5DOfRoJLyGlfnObU0ph-mVf9M6KCbSV66AeY_voEARTrP6bOtqXS1ZubuSj4Cu25VSRu0VMBIf3whow=@protonmail.com>
-In-Reply-To: <BLFOYQ.DC67MOSNFFNW2@ljones.dev>
-References: <20210830113137.1338683-1-luke@ljones.dev> <20210830113137.1338683-2-luke@ljones.dev> <1o94oJFiia_xvrFrSPI_zG1Xfv4FAlJNY96x39rg-zX3-3N5Czw4KmTiJtzCy1So7kYXLu0FTkRkmwUUudeuTyLHSsx5sJGhfsZaYrXKEic=@protonmail.com> <BLFOYQ.DC67MOSNFFNW2@ljones.dev>
+        Wed, 1 Sep 2021 11:25:57 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED55C061575;
+        Wed,  1 Sep 2021 08:25:00 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 8ECC91F43EF3
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org,
+        ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org,
+        philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+        jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
+        johannes.berg@intel.com, chris.obbard@collabora.com,
+        zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net,
+        jcmvbkbc@gmail.com, tim@cyberelk.net,
+        linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/15] um/drivers/ubd_kern: add error handling support
+ for add_disk()
+Organization: Collabora
+References: <20210830221000.179369-1-mcgrof@kernel.org>
+        <20210830221000.179369-6-mcgrof@kernel.org>
+Date:   Wed, 01 Sep 2021 11:24:55 -0400
+In-Reply-To: <20210830221000.179369-6-mcgrof@kernel.org> (Luis Chamberlain's
+        message of "Mon, 30 Aug 2021 15:09:50 -0700")
+Message-ID: <8735qotj20.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Luis Chamberlain <mcgrof@kernel.org> writes:
 
-
-> [...]
-> >>  --- a/drivers/platform/x86/asus-wmi.c
-> >>  +++ b/drivers/platform/x86/asus-wmi.c
-> >>  [...]
-> >>  +/*
-> >>  + * Returns as an error if the method output is not a buffer.
-> >> Typically this
-> >
-> > It seems to me it will simply leave the output buffer uninitialized
-> > if something
-> > other than ACPI_TYPE_BUFFER and ACPI_TYPE_INTEGER is encountered and
-> > return 0.
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
 >
-> Oops, see below inline reply:
+> ubd_disk_register() never returned an error, so just fix
+> that now and let the caller handle the error condition.
 >
-> >
-> >
-> >>  + * means that the method called is unsupported.
-> >>  + */
-> >>  +static int asus_wmi_evaluate_method_buf(u32 method_id,
-> >>  +=09=09u32 arg0, u32 arg1, u8 *ret_buffer)
-> >>  +{
-> >>  +=09struct bios_args args =3D {
-> >>  +=09=09.arg0 =3D arg0,
-> >>  +=09=09.arg1 =3D arg1,
-> >>  +=09=09.arg2 =3D 0,
-> >>  +=09};
-> >>  +=09struct acpi_buffer input =3D { (acpi_size) sizeof(args), &args };
-> >>  +=09struct acpi_buffer output =3D { ACPI_ALLOCATE_BUFFER, NULL };
-> >>  +=09acpi_status status;
-> >>  +=09union acpi_object *obj;
-> >>  +=09u32 int_tmp =3D 0;
-> >>  +
-> >>  +=09status =3D wmi_evaluate_method(ASUS_WMI_MGMT_GUID, 0, method_id,
-> >>  +=09=09=09=09     &input, &output);
-> >>  +
-> >>  +=09if (ACPI_FAILURE(status))
-> >>  +=09=09return -EIO;
-> >>  +
-> >>  +=09obj =3D (union acpi_object *)output.pointer;
-> >>  +
-> >>  +=09if (obj && obj->type =3D=3D ACPI_TYPE_INTEGER) {
-> >>  +=09=09int_tmp =3D (u32) obj->integer.value;
-> >>  +=09=09if (int_tmp =3D=3D ASUS_WMI_UNSUPPORTED_METHOD)
-> >>  +=09=09=09return -ENODEV;
-> >>  +=09=09return int_tmp;
-> >
-> > Is anything known about the possible values? You are later
-> > using it as if it was an errno (e.g. in `custom_fan_check_present()`).
-> >
-> > And `obj` is leaked in both of the previous two returns.
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+
+Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+
+> ---
+>  arch/um/drivers/ubd_kern.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
 >
-> The return for the method we're calling in this patch returns 0 if the
-> input arg has no match.
->
-> >
-> >
-> >>  +=09}
-> >>  +
-> >>  +=09if (obj && obj->type =3D=3D ACPI_TYPE_BUFFER)
-> >>  +=09=09memcpy(ret_buffer, obj->buffer.pointer, obj->buffer.length);
-> >
-> > I would suggest you add a "size_t size" argument to this function, and
-> > return -ENOSPC/-ENODATA depending on whether the returned buffer is
-> > too
-> > big/small. Maybe return -ENODATA if `obj` is NULL, too.
->
-> Got it. So something like this would be suitable?
->
-> =09if (obj && obj->type =3D=3D ACPI_TYPE_BUFFER)
-> =09=09if (obj->buffer.length < size)
-> =09=09=09err =3D -ENOSPC;
-> =09=09if (!obj->buffer.length)
-> =09=09=09err =3D -ENODATA;
-> =09=09if (err) {
-> =09=09=09kfree(obj);
-> =09=09=09return err;
-> =09=09}
-> =09=09memcpy(ret_buffer, obj->buffer.pointer, obj->buffer.length);
-> =09}
->
-> =09if (obj && obj->type =3D=3D ACPI_TYPE_INTEGER)
-> =09=09int_tmp =3D (u32) obj->integer.value;
->
-> =09kfree(obj);
->
-> =09if (int_tmp =3D=3D ASUS_WMI_UNSUPPORTED_METHOD)
-> =09=09return -ENODEV;
->
-> =09/* There is at least one method that returns a 0 with no buffer */
-> =09if (obj =3D=3D NULL || int_tmp =3D=3D 0)
-> =09=09return -ENODATA;
->
-> =09return 0;
->
+> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+> index cd9dc0556e91..81045c199c30 100644
+> --- a/arch/um/drivers/ubd_kern.c
+> +++ b/arch/um/drivers/ubd_kern.c
+> @@ -854,8 +854,8 @@ static const struct attribute_group *ubd_attr_groups[] = {
+>  	NULL,
+>  };
+>  
+> -static void ubd_disk_register(int major, u64 size, int unit,
+> -			      struct gendisk *disk)
+> +static int ubd_disk_register(int major, u64 size, int unit,
+> +			     struct gendisk *disk)
+>  {
+>  	disk->major = major;
+>  	disk->first_minor = unit << UBD_SHIFT;
+> @@ -872,7 +872,7 @@ static void ubd_disk_register(int major, u64 size, int unit,
+>  
+>  	disk->private_data = &ubd_devs[unit];
+>  	disk->queue = ubd_devs[unit].queue;
+> -	device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
+> +	return device_add_disk(&ubd_devs[unit].pdev.dev, disk, ubd_attr_groups);
+>  }
+>  
+>  #define ROUND_BLOCK(n) ((n + (SECTOR_SIZE - 1)) & (-SECTOR_SIZE))
+> @@ -919,10 +919,15 @@ static int ubd_add(int n, char **error_out)
+>  	blk_queue_write_cache(ubd_dev->queue, true, false);
+>  	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
+>  	blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
+> -	ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
+> +	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
+> +	if (err)
+> +		goto out_cleanup_disk;
+> +
+>  	ubd_gendisk[n] = disk;
+>  	return 0;
+>  
+> +out_cleanup_disk:
+> +	blk_cleanup_disk(disk);
+>  out_cleanup_tags:
+>  	blk_mq_free_tag_set(&ubd_dev->tag_set);
+>  out:
 
-I had something like the following in mind:
-
-  int err =3D 0;
-  /* ... */
-  obj =3D output.pointer;
-  if (!obj)
-    return -ENODATA;
-
-  switch (obj->type) {
-  case ACPI_TYPE_BUFFER:
-    if (obj->buffer.length < size)
-      err =3D -ENODATA;
-    else if (obj->buffer.length > size)
-      err =3D -ENOSPC;
-    else
-      memcpy(ret_buffer, obj->buffer.pointer, size);
-    break;
-  case ACPI_TYPE_INTEGER:
-    switch (obj->integer.value) {
-      case ASUS_WMI_UNSUPPORTED_METHOD:
-        err =3D -EOPNOTSUPP;
-=09break;
-      default:
-        err =3D -ENODATA;
-=09break;
-    }
-    break;
-  default:
-    err =3D -ENODATA;
-    break;
-  }
-
-  kfree(obj);
-
-  return err;
-
-
-> >
-> >
-> >>  +
-> >>  +=09kfree(obj);
-> >>  +
-> >>  +=09return 0;
-> >>  +}
-> [...]
-> >>  +/*
-> >>  + * Called only by throttle_thermal_policy_write()
-> >>  + */
-> >
-> > Am I correct in thinking that the firmware does not actually
-> > support specifying fan curves for each mode, only a single one,
-> > and the fan curve switching is done by this driver when
-> > the performance mode is changed?
->
-> I'm not 100% certain on this. The WMI method 0x00110024 takes an arg
-> 0,1,2 which then returns some factory stored fan profiles, these fit
-> the profiles of ASUS_THROTTLE_THERMAL_POLICY_*, but with 1 and 2
-> swapped.
->
-> Looking at the SET part, it seems to write to a different location than
-> where the GET is fetching information.
->
-
-The, unfortunately, that is not as simple as I initially thought...
-
-
-> Because of the fact there are three sets of curves to get, I thought it
-> would be good for users to be able to set per profile. I don't think
-> the set is retained in acpi if the profile is switched.
->
-> Do you think it would be best to not have the ability to store per
-> profile in kernel?
-
-If there was a method to set a fan curve, and one to retrieve it,
-I would suggest just exposing that via the pwmN_auto_pointM_{pwm,temp}
-attributes on a hwmon device, and that the profile-dependent switching
-be implemented somewhere else. As far as I see, there is already
-existing infrastructure for integrating such a feature [0]
-(but please correct me if I'm wrong).
-
-This would simplify the kernel code, add no new ABI, and
-potentially provide greater control over policy for the
-user space.
-
-
-> How would I choose which profile get to populate the
-> initial data with if so?
-
-I assume there isn't a method that can query
-the current fan curve (or it is unknown)?
-
-
-> [...]
-
-[0]: https://gitlab.com/asus-linux/asusctl
-
-
-Best regards,
-Barnab=C3=A1s P=C5=91cze
+-- 
+Gabriel Krisman Bertazi
