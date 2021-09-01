@@ -2,76 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7B73FE06B
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703DE3FE069
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344682AbhIAQyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 12:54:03 -0400
-Received: from mail-40140.protonmail.ch ([185.70.40.140]:25695 "EHLO
-        mail-40140.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344633AbhIAQx6 (ORCPT
+        id S1344623AbhIAQx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:53:56 -0400
+Received: from mail-pg1-f177.google.com ([209.85.215.177]:46897 "EHLO
+        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344563AbhIAQxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:53:58 -0400
-Date:   Wed, 01 Sep 2021 16:52:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1630515179;
-        bh=gt/cf6/XfcH/698kF86Uqsw0P7cStjMWQEnDsNGVdjI=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=O7naTcCmTTy1J+CUwMWFfRf+vufMPpWjRxudvOdVNN1yZrMbfFDektMJvI9jheArC
-         pkZDZ48pwxgflKKibqsAIAusmcWbZsL3rOZT0JhwguvhRqimg59/F5+/0rPQix9MRj
-         xFkaTwrckadigA1Inj48rmoExNVMntpNfCBsiQv0=
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH v3 0/2] Input: cypress-sf - Add support for Cypress Streetfighter touchkeys
-Message-ID: <20210901165231.236728-1-y.oudjana@protonmail.com>
+        Wed, 1 Sep 2021 12:53:47 -0400
+Received: by mail-pg1-f177.google.com with SMTP id w7so4662pgk.13;
+        Wed, 01 Sep 2021 09:52:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ftQGABx0xufp8pThD84BAjAZBtnCC/TxEXzAl+Vzi9Q=;
+        b=shAMK2u16f4hcOJhYDI0awv1NERXJtXNYmyzL+arz5x2r4curs+dZMIQyIHf1owcqZ
+         J4tqRxqpBHu3fRtQv8FzH4leMwiw+qoITCCxl+b19occSuw3dv4ifZ5TtNloxOd33Y80
+         fHkKx8lqFvXriCaEAd9CAZVTDb6PDhuOyqzI7DE5QYuV2MW0VUZv+rY5tjTa2VVV0wtJ
+         jjXmtovz4k44IICwi9IpUpw4H0opyvwX8HgtahQU4eyPV6BjatcT7o2o9rfrvAGYqyha
+         X35TxK6bK56bIJj/zewBILRNwepVgXnWFP9NHPQTNnHIIg0hZ89CJwOR/xhdDICzy8pR
+         ayMg==
+X-Gm-Message-State: AOAM530iQwchUX3PihpLPXy3HNfxtEi7FYhGhyYCpe8/Sh+ApjWr/oa3
+        VNETwfbpyQd6IBVe8wy0BVFtduUZIfc=
+X-Google-Smtp-Source: ABdhPJzTfATfDDP/9qrgWEdZJ+lfSK8CaykloWTE7YOyjPj+JC9x6ZVGc334DH4bP9a+JEH7pcihkQ==
+X-Received: by 2002:a63:2047:: with SMTP id r7mr59288pgm.398.1630515170171;
+        Wed, 01 Sep 2021 09:52:50 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:8a3b:44ab:b62:3ce2])
+        by smtp.gmail.com with ESMTPSA id z17sm54375pfa.125.2021.09.01.09.52.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 09:52:49 -0700 (PDT)
+Subject: Re: [PATCH 3/3] scsi: ufs-sysfs: Add sysfs entries for temperature
+ notification
+To:     Avri Altman <avri.altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>
+References: <20210901123707.5014-1-avri.altman@wdc.com>
+ <20210901123707.5014-4-avri.altman@wdc.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <0c547d74-481f-0c5e-9f7a-8c29218a0d3a@acm.org>
+Date:   Wed, 1 Sep 2021 09:52:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <20210901123707.5014-4-avri.altman@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset adds support for Cypress StreetFighter touchkeys.
+On 9/1/21 5:37 AM, Avri Altman wrote:
+> +What:		/sys/bus/platform/drivers/ufshcd/*/attributes/case_rough_temp
+> +Date:		September 2021
+> +Contact:	Avri Altman <avri.altman@wdc.com>
+> +Description:	The device case rough temperature (bDeviceCaseRoughTemperature
+> +		attribute). It is termed "rough" due to the inherent inaccuracy
+> +		of the temperature sensor inside a semiconductor device,
+> +		e.g. +- 10 degrees centigrade error range.
 
-Due to lack of documentation, this driver is entirely based on information
-gathered from a driver written for an old Android kernel fork[1][2].
+My understanding is that the word Celsius is more common than centigrade 
+so please use Celsius instead of centigrade. See also 
+https://www.brannan.co.uk/celsius-centigrade-and-fahrenheit/
 
-[1] https://github.com/LineageOS/android_kernel_xiaomi_msm8996/blob/lineage=
--18.1/drivers/input/touchscreen/cyttsp_button.c
-[2] https://github.com/LineageOS/android_kernel_xiaomi_msm8996/blob/lineage=
--18.1/arch/arm/boot/dts/qcom/a4-msm8996-mtp.dtsi#L291-L314
+> +		allowable range is [-79..170].
+> +		The temperature readings are in decimal degrees Celsius.
+> +
+> +		Please note that the Tcase validity depends on the state of the
+> +		wExceptionEventControl attribute: it is up to the user to
+> +		verify that the applicable mask (TOO_HIGH_TEMP_EN, and / or
+> +		TOO_LOW_TEMP_EN) is set for the exception handling control.
+> +		This can be either done by ufs-bsg or ufs-debugfs.
 
-Changes since v2:
- - Code style fixes.
- - Added copyright statement.
-Changes since v1:
- - Changed version variables in probe to int to allow storing error codes.
- - Fixed some issues in dt binding.
-=20
-Yassine Oudjana (2):
-  Input: cypress-sf - Add Cypress StreetFighter touchkey driver
-  dt-bindings: input: Add binding for cypress-sf
+Instead of making the user verify whether case_rough_temp is valid, 
+please modify the kernel code such that case_rough_temp only reports a 
+value if that value is valid. One possible approach is to make the show 
+method return an error code if case_rough_temp is not valid. Another and 
+probably better approach is to define a sysfs attribute group and to 
+make case_rough_temp visible only if it is valid.
 
- .../devicetree/bindings/input/cypress-sf.yaml |  61 +++++
- drivers/input/keyboard/Kconfig                |  10 +
- drivers/input/keyboard/Makefile               |   1 +
- drivers/input/keyboard/cypress-sf.c           | 223 ++++++++++++++++++
- 4 files changed, 295 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/input/cypress-sf.yaml
- create mode 100644 drivers/input/keyboard/cypress-sf.c
+> diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+> index 5c405ff7b6ea..a9abe33c40e4 100644
+> --- a/drivers/scsi/ufs/ufs-sysfs.c
+> +++ b/drivers/scsi/ufs/ufs-sysfs.c
+> @@ -1047,6 +1047,86 @@ static inline bool ufshcd_is_wb_attrs(enum attr_idn idn)
+>   		idn <= QUERY_ATTR_IDN_CURR_WB_BUFF_SIZE;
+>   }
+>   
+> +static inline bool ufshcd_is_temp_attrs(enum attr_idn idn)
+> +{
+> +	return idn >= QUERY_ATTR_IDN_CASE_ROUGH_TEMP &&
+> +	       idn <= QUERY_ATTR_IDN_LOW_TEMP_BOUND;
+> +}
 
---=20
-2.33.0
+Modern compilers are good at deciding when to inline a function so 
+please leave out the 'inline' keyword from the above function.
 
+> +static bool ufshcd_case_temp_legal(struct ufs_hba *hba)\
 
+Please use another word than "legal" since the primary meaning of 
+"legal" is "of or relating to law".
+
+> +	ufshcd_rpm_get_sync(hba);
+> +	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,
+> +				QUERY_ATTR_IDN_EE_CONTROL, 0, 0, &ee_mask);
+> +	ufshcd_rpm_put_sync(hba);
+
+Are there any ufshcd_query_attr() calls that are not surrounded by 
+ufshcd_rpm_{get,put}_sync()? If not, please move the 
+ufshcd_rpm_{get,put}_sync() calls into ufshcd_query_attr().
+
+Thanks,
+
+Bart.
