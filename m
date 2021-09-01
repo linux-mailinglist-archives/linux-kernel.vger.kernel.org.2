@@ -2,173 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7D63FD454
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04B03FD456
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 09:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242556AbhIAHRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 03:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242540AbhIAHRy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 03:17:54 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9401DC061764
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 00:16:58 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id y17so1290506pfl.13
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 00:16:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=fK1hxzGPP+bRHVx+JgiIY9qnUBt2WSwxa8uxIoUSUjk=;
-        b=rwa5g+l6jUuwr8ituGkSlLBoLGT07VYq2buj0bN8iLhrddET1atpcndaUqcz3llVYD
-         Xn3c/EGkgR7lHBQ9vU4yOcVTisK6aL1Ytl7pjwiLrh3HC6Rlvx8RCnlydidOO1IzKBCe
-         y5tkw3igDB+S1Kqu85tCapWzJsve6mopa5hy8bEGtveI55wxbQ/W4vd1I1ZrYR/Jm+dU
-         R8B+V4RtFErDjwGlDZUX/xzlSLPY6GZojQGXxanC2o+iMlVbHYUYPpp2DnpHg2mxmrHS
-         XaulLpTm7trS2CSdxakUTacmaWcEkXfEA61rX7L4T1dsfSGb4JyAyGApBhCgphtHbDRJ
-         WSWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=fK1hxzGPP+bRHVx+JgiIY9qnUBt2WSwxa8uxIoUSUjk=;
-        b=JIKcmcvHwF7+W9vo/Rr75y/jAjQpiXIECmXuPqnDIrFoBBcFD4P9fkEvYerANlQcPn
-         YXj78PadAzUNbLWe2y2uMWSJxlRwtyUiyS45H8b/8UE09uNnVnl5Ukr0rMxl9g8/IyYn
-         C4ULP+HKIy2rBe3mnyjSQg6NfTDCmnLC/zXLpZrcXFd86alGrj1l0LHTkHfpu9vFyzKQ
-         xBVniqHw7nFOY2TDvSlQe75lN3CmCJgPiih9U7Fk35OjzizrocohWZYhzqmvFOS51A7z
-         NihAPMkfMkpgyLr5+Dw5CURmk/iHvkUKR4OnjjJloNDNOPSpuxdrhSTyGtHbsmJJ2JfE
-         6o5w==
-X-Gm-Message-State: AOAM532RDWw/kzPCwMTL9af7qhF0sWeoR3ez1eMB6aZP/vUutvZ3yLVQ
-        wAzTrqRr2qaa6TZXtv7P8pX5/g==
-X-Google-Smtp-Source: ABdhPJymhkj8MgaZ1wwWze96evwPJrZV6MvOLCZbsHYlnr8SdHRIUnwaXQoRe8la8qscdqGhp/EICw==
-X-Received: by 2002:a62:920b:0:b0:3ec:7912:82be with SMTP id o11-20020a62920b000000b003ec791282bemr32461929pfd.34.1630480618067;
-        Wed, 01 Sep 2021 00:16:58 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id j16sm20731066pfi.165.2021.09.01.00.16.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 00:16:57 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 12:46:55 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v10 5/8] soc/tegra: pmc: Implement
- dev_get_performance_state() callback
-Message-ID: <20210901071655.gf6qg7piisddg2a3@vireshk-i7>
-References: <20210831135450.26070-1-digetx@gmail.com>
- <20210831135450.26070-6-digetx@gmail.com>
- <20210901061050.4x3t4cc434zdwx3a@vireshk-i7>
- <7f4f5ab0-cf23-3e27-211e-4dcd8903f96f@gmail.com>
+        id S242540AbhIAHUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 03:20:31 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:54098 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238494AbhIAHU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 03:20:29 -0400
+Received: from BC-Mail-Ex14.internal.baidu.com (unknown [172.31.51.54])
+        by Forcepoint Email with ESMTPS id 404D5CC1F41059D58116;
+        Wed,  1 Sep 2021 15:19:31 +0800 (CST)
+Received: from BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) by
+ BC-Mail-Ex14.internal.baidu.com (172.31.51.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Wed, 1 Sep 2021 15:19:31 +0800
+Received: from BJHW-Mail-Ex15.internal.baidu.com ([100.100.100.38]) by
+ BJHW-Mail-Ex15.internal.baidu.com ([100.100.100.38]) with mapi id
+ 15.01.2308.014; Wed, 1 Sep 2021 15:19:30 +0800
+From:   "Li,Rongqing" <lirongqing@baidu.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     "mingo@redhat.com" <mingo@redhat.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?tPC4tDogW1Jlc2VuZF1bUEFUQ0hdIHNjaGVkL2ZhaXI6IG1pY3JvLW9wdGlt?=
+ =?gb2312?B?aXplIHBpY2tfbmV4dF9lbnRpdHkoKQ==?=
+Thread-Topic: [Resend][PATCH] sched/fair: micro-optimize pick_next_entity()
+Thread-Index: AQHXmXpTtX+GjcL/s0yQXbsQCHGtUquNKpuAgAGiQpA=
+Date:   Wed, 1 Sep 2021 07:19:30 +0000
+Message-ID: <73a9c4c3a3d94f06ab90129c4e4a9152@baidu.com>
+References: <1629872869-19829-1-git-send-email-lirongqing@baidu.com>
+ <YS44IzVARx2ZaEUo@hirez.programming.kicks-ass.net>
+In-Reply-To: <YS44IzVARx2ZaEUo@hirez.programming.kicks-ass.net>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.194.62]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7f4f5ab0-cf23-3e27-211e-4dcd8903f96f@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-09-21, 09:57, Dmitry Osipenko wrote:
-> 01.09.2021 09:10, Viresh Kumar пишет:
-> > So you create the OPP table and just after that you remove it ? Just
-> > to get the current OPP and pstate ? This doesn't look okay.
-> > 
-> > Moreover, this routine must be implemented with the expectation that
-> > the genpd core can call it anytime it wants, not just at the
-> > beginning. And so if the table is already setup by someone else then,
-> > then this all will just fail.
-> 
-> This is not doable using the current OPP API, it doesn't allow to
-> re-use initialized OPP table.
-
-That isn't correct, you can call dev_pm_opp_of_add_table() as many
-times as you want. It will just increase the refcount and return the
-next time.
-
-Yes, you can call the APIs like set-clk-name or supported-hw, since
-they are supposed to be set only once.
-
-> The current limitation is okay because genpd core doesn't call
-> routine anytime.
-
-Yeah, but is broken by design. People can make changes to genpd core
-later on to call it as many times and they aren't required to have a
-look at all the users to see who abused the API and who didn't.
-
-> > Can you give the sequence in which the whole thing works out with
-> > respect to the OPP core? who calls
-> > devm_tegra_core_dev_init_opp_table() and when, and when exactly will
-> > this routine get called, etc ?
-> > 
-> 
-> gr3d_probe(struct platform_device *pdev)
-
-Thanks for this.
-
-> {
-> 	gr3d_init_power(dev)
-> 	{
-> 		static const char * const opp_genpd_names[] = { "3d0", "3d1", NULL };
-> 
-> 		devm_pm_opp_attach_genpd(dev, opp_genpd_names)
-> 		{
-> 			dev_pm_opp_attach_genpd(dev, names, virt_devs)
-> 			{
-> 				// takes and holds table reference
-> 				opp_table = _add_opp_table(dev, false);
-> 
-> 				while (*name) {
-> 					// first attachment succeeds, 
-> 					// second fails with "tegra-gr3d 54180000.gr3d: failed to set OPP clk: -EBUSY"
-> 					dev_pm_domain_attach_by_name(dev, *name)
-> 					{
-> 						tegra_pmc_pd_dev_get_performance_state(dev)
-> 						{
-> 							dev_pm_opp_set_clkname(dev, NULL);
-> 							dev_pm_opp_of_add_table(dev);
-
-What you end up doing here is pretty much like
-devm_tegra_core_dev_init_opp_table_simple(), right ?
-
-> 							opp = dev_pm_opp_get_current(dev);
-> 							dev_pm_opp_of_remove_table(dev);
-> 							dev_pm_opp_put_clkname(opp_table);
-
-You shouldn't be required to do this at all.
-
-> 							...
-> 						}
-> 						// opp_table->clk = ERR_PTR(-EINVAL) after the first attachment
-> 					}
-> 				}
-> 			}
-> 		}
-> 	}
-> 
-> 	devm_tegra_core_dev_init_opp_table_simple(&pdev->dev);
-
-Can we make the call at the beginning ? before calling
-gr3d_init_power() ? I mean you should only be required to initialize
-the OPP table just once.
-
-If not, then what about calling
-devm_tegra_core_dev_init_opp_table_simple() from here and from
-tegra_pmc_pd_dev_get_performance_state() as well ?
-
-And update devm_tegra_core_dev_init_opp_table_simple() to call
-dev_pm_opp_get_opp_table() first and return early if the OPP table is
-already initialized ?
-
--- 
-viresh
+DQoNCj4gLS0tLS3Tyrz+1K28/i0tLS0tDQo+ILeivP7IyzogUGV0ZXIgWmlqbHN0cmEgPHBldGVy
+ekBpbmZyYWRlYWQub3JnPg0KPiC3osvNyrG85DogMjAyMcTqONTCMzHI1SAyMjoxMA0KPiDK1bz+
+yMs6IExpLFJvbmdxaW5nIDxsaXJvbmdxaW5nQGJhaWR1LmNvbT4NCj4gs63LzTogbWluZ29AcmVk
+aGF0LmNvbTsganVyaS5sZWxsaUByZWRoYXQuY29tOyB2aW5jZW50Lmd1aXR0b3RAbGluYXJvLm9y
+ZzsNCj4gZGlldG1hci5lZ2dlbWFubkBhcm0uY29tOyByb3N0ZWR0QGdvb2RtaXMub3JnOyBic2Vn
+YWxsQGdvb2dsZS5jb207DQo+IG1nb3JtYW5Ac3VzZS5kZTsgYnJpc3RvdEByZWRoYXQuY29tOyBs
+aW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+INb3zOI6IFJlOiBbUmVzZW5kXVtQQVRDSF0g
+c2NoZWQvZmFpcjogbWljcm8tb3B0aW1pemUgcGlja19uZXh0X2VudGl0eSgpDQo+IA0KPiBPbiBX
+ZWQsIEF1ZyAyNSwgMjAyMSBhdCAwMjoyNzo0OVBNICswODAwLCBMaSBSb25nUWluZyB3cm90ZToN
+Cj4gPiBPbmx5IGNoZWNrIHRoZSBza2lwIGJ1ZGR5IHdoZW4gbmV4dCBidWRkeSBhbmQgbGFzdCBi
+dWRkeSBhcmUgbm90DQo+ID4gcGlja2VkIHVwLCB0aGlzIGNhbiBzYXZlIHRoZSBjeWNsZXMgb2Yg
+Y2hlY2tpbmcgdGhlIHNraXAgYnVkZHkgYW5kDQo+ID4gY29tcHV0YXRpb24gb2YgdGhlIHNlY29u
+ZCBidWRkeSwgd2hlbiBuZXh0IGFuZCBsYXN0IGJ1ZGR5IHdpbGwgYmUNCj4gPiBwaWNrZWQgdXAg
+Zm9yIGV4YW1wbGUsIHlpZWxkX3RvX3Rhc2tfZmFpcigpIHNldCBib3RoIG5leHQgYW5kIHNraXAN
+Cj4gPiBidWRkeQ0KPiANCj4gSXMgdGhhdCBhY3R1YWxseSBtZWFzdXJhYmxlPw0KPiANCk5vIG1l
+YXN1cmFibGUNCg0KDQo+IEJ1dCBsb29raW5nIGF0IGl0LCBzaG91bGQgd2Ugbm90LCBpbnN0ZWFk
+LCBtb3ZlIHRoZSB3aG9sZSAtPnNraXAgdGhpbmcgdG8gdGhlDQo+IGJvdHRvbSwgc28gd2UgdW5j
+b25kaXRpb25hbGx5IGNoZWNrIGl0IHZzIHRoZSByZXN1bHQgb2YNCj4gLT5uZXh0Ly0+bGFzdCA/
+DQo+IA0KPiBJbWFnaW5lIC0+bmV4dCA9PSAtPnNraXAsIHRoZW4gd2Ugd2FudCB0byBhdm9pZCBy
+dW5uaW5nIGl0IGFuZCBub3QgaGF2ZQ0KPiAtPm5leHQgd2luLg0KDQpUcnVlLCBuZXh0L2xhc3Qg
+bWF5IGJlIGVxdWFsIHRvIHNraXAgIA0KDQotTGkNCg0K
