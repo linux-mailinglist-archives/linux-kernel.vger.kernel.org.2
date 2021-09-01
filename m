@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106FE3FE198
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E51A3FE19B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 19:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344802AbhIAR6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 13:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50116 "EHLO
+        id S1344953AbhIAR6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 13:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235811AbhIAR6P (ORCPT
+        with ESMTP id S235811AbhIAR6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 13:58:15 -0400
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8581C061575;
-        Wed,  1 Sep 2021 10:57:18 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4H0BbH2L3szQjbT;
-        Wed,  1 Sep 2021 19:57:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-language:content-type
-        :content-type:in-reply-to:mime-version:date:date:message-id:from
-        :from:references:subject:subject:received; s=mail20150812; t=
-        1630519032; bh=iiFuur+l1J/KhtNF4tWXIjcm5al7+tE31ONOdSHYhFA=; b=W
-        Ucl38QZkuNwOmjivRpl2Cw2BZY6AsWXuQq0LlrHRfjcnCdZjz04Sfa6fDUpWB3PB
-        XnyeEAo9F/yg17NOPt3np30Dmj1mdTCEUIIV7v0ZqFa6eqi7sq9QTaN25DKToYa1
-        bWlrgOr5e8aZk4/Q07kgRiNYalpO8LNNV0vI/LWK9rOur/zTzWRMysITj8TWoccT
-        xuh0YIiXFHfrIQ8xDmOoHfJGSxUDWRo0Pr/ZA/Wm5fJFmdYMCBYhjm4rNEYxnZAR
-        ZuD4ThNcjPhBT4vgNEYEhlGsk76+p7e2tz3QV/51HVS0hdDuSnMkIhULeiR8jwPD
-        FrOMhAalDsvdqtCsqkdOQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1630519033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FM1G0FVwaL8AnIvDuofXr9fZVFPakaZvOfxqNvVWMHE=;
-        b=cU9AGLR/+v2+rsGl/tn2zoiJpFLHdPEU6Xawx80W0uVQ1c9NUNSCb1zx8qxPpq57c9CJuU
-        8RguYsttycJ/gV2iI9elU1HGvaZOzmYAKzHRnzUXvKUQtuQ9JJ9QYyS53movMWfxAv1/ad
-        cRvm3L/NeS7r5HE7YNxkAVrwGes+EngY0to1dXarhcOMvCmJ3CsFVwQkEEWDON0R7mvajS
-        8IDvOddv3IZk4sja8YKvk+R/vgViI6ACj/QQHOiuGOGQjHW/u5mZUuXAvXfcnkfYAFCWfO
-        iz15Y07pcihW8dHIU1i+GbDVEjcTNcvFBh8TvMi02amyDr/xBIiDMylHyqCb9Q==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Subject: Re: [PATCH v4] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860
- and 870 SSD.
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hpa@redhat.com" <hpa@redhat.com>
-Cc:     "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>
-References: <1876334901.51676.1630481868266@office.mailbox.org>
- <DM6PR04MB708115B43C231444AFB22DC2E7CD9@DM6PR04MB7081.namprd04.prod.outlook.com>
-From:   Tor Vic <torvic9@mailbox.org>
-Message-ID: <1e52352c-05e3-700a-58e7-462e1c0adbd1@mailbox.org>
-Date:   Wed, 1 Sep 2021 17:56:57 +0000
+        Wed, 1 Sep 2021 13:58:49 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7CAC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 10:57:52 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id s12so557835ljg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:57:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e56BZ5hXZwdZQAhiBk+g+d3p7hy50ZxnDyqlFRLPbEM=;
+        b=RQ09MJkGQrhwqn/8fWS6q3ZRok81XPPuE9PHGsJAPyM9/fsl7dQy8cQDsJzGPFWqOI
+         TW2C/QFJL9uWMi6kMns1ljR6PA1iLPxony2Q4uzq4iH0xlbwuya43BLSz2XR4OP2tRA5
+         LX91IISfhrJsw0PoemGcrYNwtU7KOuq7Vkx+Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e56BZ5hXZwdZQAhiBk+g+d3p7hy50ZxnDyqlFRLPbEM=;
+        b=JLFwScuHixeJv2Z0PaS8JU1WwlW5tSk9lHB/zO9LByF7UpxHiQ15tEMDumNWqqW9nD
+         pEG4urgIgpBXccDFnW/QXZ9zoBpYaVOHZfGX6BjDKPaJU4LrvD9ddfxA5NdOx9ADNJ2J
+         /abwKdgsqN+tm354oZy5OV7y2R4Spy/V62tn3VGIKUTQ2y5VB3+mHM53Sd/ynFzgcK7s
+         3TB7ZvVm9ADpjqr1HTOGkHa503bONyYQpv9hjwMUfs2GzTzW49+ezc9Rjz3td5m3hrtx
+         wxcKp1f7kEEHgjFExlOmChHjWx+MBck+dfl/PZdPILEkivmn0gf+mA2OSWh5WKmPJIRV
+         n3Lg==
+X-Gm-Message-State: AOAM5304Ms3wAEw0J/qPDHGAqpyFlNZ1zyNvuZ2cy7ZlyoNkvMLXXBcc
+        602L7bw4U0JYi/RLAR4fDZomjQxZVr/amSnc
+X-Google-Smtp-Source: ABdhPJx0LFreWgVml0Up9cWK/8S4XmVrYKlUkOb8ekWf2Y8YNLKn1RObODLsXpCBhU+cGCJYx66GYg==
+X-Received: by 2002:a05:651c:490:: with SMTP id s16mr743783ljc.214.1630519070436;
+        Wed, 01 Sep 2021 10:57:50 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id u20sm39985ljl.76.2021.09.01.10.57.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 10:57:49 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id m4so437887ljq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 10:57:49 -0700 (PDT)
+X-Received: by 2002:a2e:84c7:: with SMTP id q7mr737503ljh.61.1630519069193;
+ Wed, 01 Sep 2021 10:57:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <DM6PR04MB708115B43C231444AFB22DC2E7CD9@DM6PR04MB7081.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 6200D1898
+References: <CAPM=9txeN-qCRJvYV552zdo2H9iVy1ruVrq=YdZBP5Dmpc3Jmg@mail.gmail.com>
+In-Reply-To: <CAPM=9txeN-qCRJvYV552zdo2H9iVy1ruVrq=YdZBP5Dmpc3Jmg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 1 Sep 2021 10:57:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whP_v5nrK9B5vefnZS6Xz3-vZDFxUvSmW8W82hhNh67sA@mail.gmail.com>
+Message-ID: <CAHk-=whP_v5nrK9B5vefnZS6Xz3-vZDFxUvSmW8W82hhNh67sA@mail.gmail.com>
+Subject: Re: [git pull] drm for 5.15-rc1
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 30, 2021 at 10:53 PM Dave Airlie <airlied@gmail.com> wrote:
+>
+> There are a bunch of conflicts with your tree, but none of them seem
+> too serious, but I might have missed something.
 
+No worries. I enjoyed seeing the AMD code-names in the conflicts, they
+are using positively kernel-level naming.
 
-On 01.09.21 08:13, Damien Le Moal wrote:
-> On 2021/09/01 16:38, torvic9@mailbox.org wrote:
->> (Sorry for not doing a proper reply)
->>
->> Hello,
->> Noob here.
->> I have a Samsung 860 Pro connected to a AMD X570 chipset mainboard and
->> it just works flawlessly on 5.13 and 5.14.
->> Are you sure that *every* 860/870 is concerned by this problem on
->> *every* AMD controller? Isn't this too restrictive?
->> Or am I simply missing something?
-> 
-> Is you drive being initialized with NCQ enabled ?
-> 
-> cat /sys/block/sdX/device/queue_depth ?
+That said, I wonder why AMD people can't use consistent formatting,
+mixing ALL-CAPS with underscores, spaces, whatever:
 
-Samsung 860 Pro:
-$ cat /sys/block/sda/device/queue_depth
+        /* Sienna_Cichlid */
+        /* Yellow Carp */
+        /* Navy_Flounder */
+        /* DIMGREY_CAVEFISH */
+        /* Aldebaran */
+        /* CYAN_SKILLFISH */
+        /* BEIGE_GOBY */
 
+which shows a distinct lack of professionalism and caring in the silly naming.
 
-32
-
-Samsung 860 Evo:
-$ cat /sys/block/sdb/device/queue_depth
-
-
-32
-
-> 
->>
->> Thanks,
->> Tor
->>
-> 
-> 
+             Linus
