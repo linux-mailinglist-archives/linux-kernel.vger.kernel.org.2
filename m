@@ -2,153 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199CE3FDF61
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849443FDF62
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 18:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234245AbhIAQIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S241586AbhIAQIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 12:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234050AbhIAQIn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 1 Sep 2021 12:08:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231492AbhIAQIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 12:08:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3AD561057;
-        Wed,  1 Sep 2021 16:07:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630512465;
-        bh=vCp3shOw7IIqsOF2fkoTgOPVWqissksWmSC8jGsDz4Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E2KKSvTX5GtZhEQb6/fTSpMLPxAZEahz2HAcCUu+vxckKH59wxdYiogEdOEYZjFN3
-         Zq4VqTJTWIvjU0I12Zs67qqUOekBMgbU3YMX5M6sqR76YHGAnr7p3BGun3QL1oHe2w
-         +E/mB8wjdWjy3GGwIwPSsgzBWc75qIoSsi3KcpwzaQ5+QqEf67jnl+W4vkZs/skNqp
-         OV2wN+RFWdwd3dDrQt/alx5xREAMfyLZ6cmwg1Zc4wKC0nMI6AU6oGcb++MCRebCgB
-         Vv/4t+UWQKiICuf4Qcx9m9WQaqMfGfQMPSy2xQ5LxQIbOxOmDognJC7/9gQlXNx/TJ
-         PqMSvn7tJuToQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D0CD84007E; Wed,  1 Sep 2021 13:07:41 -0300 (-03)
-Date:   Wed, 1 Sep 2021 13:07:41 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
-        mike.leach@linaro.org, suzuki.poulose@arm.com,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] perf cs-etm: Show a warning for an unknown magic
- number
-Message-ID: <YS+lTXyuC+9VTrxd@kernel.org>
-References: <20210806134109.1182235-1-james.clark@arm.com>
- <20210806134109.1182235-10-james.clark@arm.com>
- <20210824083615.GF204566@leoy-ThinkPad-X240s>
- <YS+iOrcPTzQfmbqU@kernel.org>
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CE7C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 09:07:46 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id z2so23904qvl.10
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 09:07:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ENgS5NCsCBTF4mXrUN4mnxvn/rv2h7hXBulk866gSRk=;
+        b=hUCCyobyzgyt/MRFzTijqMgOUI5qzMd1zgeqqthZmmgaEZ13QzRtAuChF2YAwYBViL
+         OwSZ0+kn5VbJDrgWQKqPTHHF+QFSQUthIa62T+cst+BeZc4frqUyqsaoQ6r2bZoeSibT
+         ttQnvFKqtontOT0prIiNBo+ig80AiTewp8Sxqxo5jvmfcDH+BfCfhl/8VoSrl4I+UfIN
+         UkUOEiNvGUpTjOP3JprYUaqODoJ3vCQsdOnfQPrjzzj5viJdBD+XGLvl716LSxB0dUWr
+         7LSOULkdURoi9VJP2mle9GvVXI8FL/GKx/EFefDkDfKr/XP++rxCoW3J/3yz4n6iOnRL
+         RJjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ENgS5NCsCBTF4mXrUN4mnxvn/rv2h7hXBulk866gSRk=;
+        b=agOEX3hiJFEpBY0o5KJ1GaZXjYRdktW0qjoLr8P68rnxLM+duvS3NP+3iEgv3/KpYs
+         2WSSXfSei6SpIpGh/vuiYHFmQ9+50PjnrjdrCRfcL5TM++619GfX533GwwyqqW3peYIt
+         5yDP5N8ffZu+JBVVDjRG6tsdlk4l3cwEKl0PZEaS2owhctC7qX/3B7C/59okbjNW6Qb/
+         vM3I0fOW2wQZRmnQDIlxJyjCJY6TUoJeRbuaRcfPxEZwX8T4W2c7e4eYCpewKtM6yj/d
+         5sZmMnSjQGrz5rXITflQ5bu8SqDGrVj8L821fRrIAcuod2s+zCFtm4kxhb6sYV03jqX0
+         pnXw==
+X-Gm-Message-State: AOAM531B+4mAV1JJJeNyACJ1T7wWvKLeYJv2RlZ4h2SWj614oZkEdOjo
+        jRbX8aMNNHeNhC0P4Ty5eGGaDw==
+X-Google-Smtp-Source: ABdhPJx+hJCNSdfKSSiAqLRegfFOCASpINnQ9G2ySwHo5jZJlX3gLxTbwzYUSXoTG+CL9BzmhPqrLg==
+X-Received: by 2002:a0c:e042:: with SMTP id y2mr413898qvk.21.1630512463956;
+        Wed, 01 Sep 2021 09:07:43 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id h6sm117587qtn.51.2021.09.01.09.07.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 09:07:43 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mLSm7-007sE0-0B; Wed, 01 Sep 2021 13:07:43 -0300
+Date:   Wed, 1 Sep 2021 13:07:42 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
+        mika.penttila@nextfour.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        songmuchun@bytedance.com
+Subject: Re: [PATCH v2 0/9] Free user PTE page table pages
+Message-ID: <20210901160742.GR1200268@ziepe.ca>
+References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
+ <5b9348fc-95fe-5be2-e9df-7c906e0c9b81@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YS+iOrcPTzQfmbqU@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <5b9348fc-95fe-5be2-e9df-7c906e0c9b81@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 01, 2021 at 12:54:34PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Tue, Aug 24, 2021 at 04:36:15PM +0800, Leo Yan escreveu:
-> > On Fri, Aug 06, 2021 at 02:41:09PM +0100, James Clark wrote:
-> > > Currently perf reports "Cannot allocate memory" which isn't very helpful
-> > > for a potentially user facing issue. If we add a new magic number in
-> > > the future, perf will be able to report unrecognised magic numbers.
-> > > 
-> > > Signed-off-by: James Clark <james.clark@arm.com>
-> > 
-> > Reviewed-by: Leo Yan <leo.yan@linaro.org>
-> 
-> Applies cleanly to my tree, test building it now, holler if there is
-> something that prevents it from being merged.
+On Wed, Sep 01, 2021 at 02:32:08PM +0200, David Hildenbrand wrote:
+ 
+> b) pmd_trans_unstable_or_pte_try_get() and friends are really ugly.
 
-I´m now trying to fix this up, I applied it using 'b4', so no patch
-should have gone missing...
+I suspect the good API here is really more like:
 
-⬢[acme@toolbox perf]$ time make -C tools/perf build-test
-make: Entering directory '/var/home/acme/git/perf/tools/perf'
-- tarpkg: ./tests/perf-targz-src-pkg .
-                 make_static: cd . && make LDFLAGS=-static NO_PERF_READ_VDSO32=1 NO_PERF_READ_VDSOX32=1 NO_JVMTI=1 -j24  DESTDIR=/tmp/tmp.tw23W3JC1W
-              make_with_gtk2: cd . && make GTK2=1 -j24  DESTDIR=/tmp/tmp.F7gN4e98pK
-                 make_tags_O: cd . && make tags FEATURES_DUMP=/var/home/acme/git/perf/tools/perf/BUILD_TEST_FEATURE_DUMP -j24 O=/tmp/tmp.tQVbhFdXKU DESTDIR=/tmp/tmp.1vbvWgUYUv
-             make_no_slang_O: cd . && make NO_SLANG=1 FEATURES_DUMP=/var/home/acme/git/perf/tools/perf/BUILD_TEST_FEATURE_DUMP -j24 O=/tmp/tmp.2L0POmKIip DESTDIR=/tmp/tmp.0qTYEQTY8e
-          make_no_demangle_O: cd . && make NO_DEMANGLE=1 FEATURES_DUMP=/var/home/acme/git/perf/tools/perf/BUILD_TEST_FEATURE_DUMP -j24 O=/tmp/tmp.Wh3kRYOFJo DESTDIR=/tmp/tmp.ih1nESGU6N
-               make_no_sdt_O: cd . && make NO_SDT=1 FEATURES_DUMP=/var/home/acme/git/perf/tools/perf/BUILD_TEST_FEATURE_DUMP -j24 O=/tmp/tmp.zw3NugHqvZ DESTDIR=/tmp/tmp.li1bxbfYOZ
-         make_no_backtrace_O: cd . && make NO_BACKTRACE=1 FEATURES_DUMP=/var/home/acme/git/perf/tools/perf/BUILD_TEST_FEATURE_DUMP -j24 O=/tmp/tmp.66VxfiD04f DESTDIR=/tmp/tmp.PIgwBwGEZz
-       make_install_prefix_O: cd . && make install prefix=/tmp/krava FEATURES_DUMP=/var/home/acme/git/perf/tools/perf/BUILD_TEST_FEATURE_DUMP -j24 O=/tmp/tmp.s6u85zKKjU DESTDIR=/tmp/tmp.2FJoF1mCRB
-       make_with_coresight_O: cd . && make CORESIGHT=1 FEATURES_DUMP=/var/home/acme/git/perf/tools/perf/BUILD_TEST_FEATURE_DUMP -j24 O=/tmp/tmp.kQs4YxWFpL DESTDIR=/tmp/tmp.z93leAThcc
-cd . && make CORESIGHT=1 FEATURES_DUMP=/var/home/acme/git/perf/tools/perf/BUILD_TEST_FEATURE_DUMP -j24 O=/tmp/tmp.kQs4YxWFpL DESTDIR=/tmp/tmp.z93leAThcc
-  BUILD:   Doing 'make -j24' parallel build
-  HOSTCC  /tmp/tmp.kQs4YxWFpL/fixdep.o
-  HOSTLD  /tmp/tmp.kQs4YxWFpL/fixdep-in.o
-  LINK    /tmp/tmp.kQs4YxWFpL/fixdep
-Makefile.config:1038: No openjdk development package found, please install JDK package, e.g. openjdk-8-jdk, java-1.8.0-openjdk-devel
-  GEN     /tmp/tmp.kQs4YxWFpL/common-cmds.h
-  CC      /tmp/tmp.kQs4YxWFpL/exec-cmd.o
-  CC      /tmp/tmp.kQs4YxWFpL/help.o
-  <SNIP>
-  CC      /tmp/tmp.kQs4YxWFpL/util/auxtrace.o
-  MKDIR   /tmp/tmp.kQs4YxWFpL/util/intel-pt-decoder/
-  CC      /tmp/tmp.kQs4YxWFpL/util/intel-pt-decoder/intel-pt-pkt-decoder.o
-  MKDIR   /tmp/tmp.kQs4YxWFpL/util/arm-spe-decoder/
-  MKDIR   /tmp/tmp.kQs4YxWFpL/util/arm-spe-decoder/
-  CC      /tmp/tmp.kQs4YxWFpL/util/arm-spe-decoder/arm-spe-pkt-decoder.o
-  CC      /tmp/tmp.kQs4YxWFpL/util/arm-spe-decoder/arm-spe-decoder.o
-  MKDIR   /tmp/tmp.kQs4YxWFpL/util/intel-pt-decoder/
-  GEN     /tmp/tmp.kQs4YxWFpL/util/intel-pt-decoder/inat-tables.c
-  MKDIR   /tmp/tmp.kQs4YxWFpL/util/cs-etm-decoder/
-  CC      /tmp/tmp.kQs4YxWFpL/util/cs-etm-decoder/cs-etm-decoder.o
-  CC      /tmp/tmp.kQs4YxWFpL/util/intel-pt-decoder/intel-pt-log.o
-  MKDIR   /tmp/tmp.kQs4YxWFpL/util/scripting-engines/
-  CC      /tmp/tmp.kQs4YxWFpL/util/scripting-engines/trace-event-perl.o
-  CC      /tmp/tmp.kQs4YxWFpL/util/intel-bts.o
-  MKDIR   /tmp/tmp.kQs4YxWFpL/util/scripting-engines/
-  CC      /tmp/tmp.kQs4YxWFpL/util/intel-pt.o
-  CC      /tmp/tmp.kQs4YxWFpL/util/scripting-engines/trace-event-python.o
-  CC      /tmp/tmp.kQs4YxWFpL/util/arm-spe.o
-  CC      /tmp/tmp.kQs4YxWFpL/util/s390-cpumsf.o
-util/cs-etm-decoder/cs-etm-decoder.c:161:44: error: unknown type name ‘ocsd_ete_cfg’; did you mean ‘ocsd_stm_cfg’?
-  161 |                                            ocsd_ete_cfg *config)
-      |                                            ^~~~~~~~~~~~
-      |                                            ocsd_stm_cfg
-util/cs-etm-decoder/cs-etm-decoder.c: In function ‘cs_etm_decoder__create_etm_decoder’:
-util/cs-etm-decoder/cs-etm-decoder.c:620:9: error: unknown type name ‘ocsd_ete_cfg’; did you mean ‘ocsd_stm_cfg’?
-  620 |         ocsd_ete_cfg trace_config_ete;
-      |         ^~~~~~~~~~~~
-      |         ocsd_stm_cfg
-util/cs-etm-decoder/cs-etm-decoder.c:639:17: error: implicit declaration of function ‘cs_etm_decoder__gen_ete_config’; did you mean ‘cs_etm_decoder__gen_etmv4_config’? [-Werror=implicit-function-declaration]
-  639 |                 cs_etm_decoder__gen_ete_config(t_params, &trace_config_ete);
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |                 cs_etm_decoder__gen_etmv4_config
-cc1: all warnings being treated as errors
-make[7]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:97: /tmp/tmp.kQs4YxWFpL/util/cs-etm-decoder/cs-etm-decoder.o] Error 1
-make[6]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:139: cs-etm-decoder] Error 2
-make[6]: *** Waiting for unfinished jobs....
-  CC      /tmp/tmp.kQs4YxWFpL/util/intel-pt-decoder/intel-pt-decoder.o
-  CC      /tmp/tmp.kQs4YxWFpL/util/intel-pt-decoder/intel-pt-insn-decoder.o
-  LD      /tmp/tmp.kQs4YxWFpL/util/arm-spe-decoder/perf-in.o
-  LD      /tmp/tmp.kQs4YxWFpL/util/scripting-engines/perf-in.o
-  LD      /tmp/tmp.kQs4YxWFpL/util/intel-pt-decoder/perf-in.o
-make[5]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:139: util] Error 2
-make[4]: *** [Makefile.perf:658: /tmp/tmp.kQs4YxWFpL/perf-in.o] Error 2
-rm /tmp/tmp.kQs4YxWFpL/dlfilters/dlfilter-test-api-v0.o
-make[3]: *** [Makefile.perf:238: sub-make] Error 2
-make[2]: *** [Makefile:70: all] Error 2
-make[1]: *** [tests/make:337: make_with_coresight_O] Error 1
-make: *** [Makefile:103: build-test] Error 2
-make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+  ptep = pte_try_map(pmdp, &pmd_value)
+  if (!ptep) {
+     // pmd_value is guarenteed to not be a PTE table pointer.
+     if (pmd_XXX(pmd_value))
+  }
 
-real	1m23.257s
-user	13m37.871s
-sys	2m53.438s
-⬢[acme@toolbox perf]$
-⬢[acme@toolbox perf]$
+Ie the core code will do whatever stuff, including the THP data race
+avoidance, to either return the next level page table or the value of
+a pmd that is not a enxt level page table. Callers are much clearer in
+this way.
 
+Eg this is a fairly representative sample user:
 
+static int smaps_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
+			   struct mm_walk *walk)
+{
+	if (pmd_trans_unstable(pmd))
+		goto out;
+	pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
+
+And it is obviously pretty easy to integrate any refcount into
+pte_try_map and pte_unmap as in my other email.
+
+Jason
