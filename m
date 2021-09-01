@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647ED3FE378
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1AC3FE37A
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 21:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239646AbhIAT62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 15:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbhIAT61 (ORCPT
+        id S240444AbhIAT7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 15:59:17 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:37127 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231279AbhIAT7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 15:58:27 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9A3C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 12:57:30 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so531031pjx.5
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 12:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tMTG80t3wz+BbsYt7/vMbgUKt2cALKcGrfxmvyDVycI=;
-        b=GDxzDHx6y4t2OpIpS+RJgk1VtJMeiB8knpDgvYQPSsFfHb9myS2i8Y8zKivTuXuXjD
-         80WQ7dy0hlk1NsTkOvIPxXdqWLOvHI003J78+jnvMmt2AHjFlmWer9qGm5PPsff+b2qd
-         aOvfuEe5agrtLAxrPIEsh+gBgAiw95ASoDg+uPHtcGd0X5xUl+uFpwYV5yGFPfy3nYSe
-         X7GTPNiKRIHN5GQzk78FQkxMTyXT4uS5O8MwskFj3Q3faG/t/NUqScAQalxcqTeIbxdC
-         r6CJv4p/DQwb/7mJW/KCjNyL/lqHQmBPjT5leuOBgEo6MdmgGRm0IRJ3pJtpXO6I5Yni
-         WUCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tMTG80t3wz+BbsYt7/vMbgUKt2cALKcGrfxmvyDVycI=;
-        b=S65gT+Q0KCYt4QHCtBcBBYEJ136IBUrzs+o7FDOzIii5C1vfI9LLiGqhgkMvnRxA8+
-         bcQkmO9bYie/LtVIPY1yWsBLN8RvsTBmdaYu0d7Vr7ghm0NmZb8XyoJYQQgGo5BRwgUS
-         BP71JClpBpelQKj9TaMJEOLW7yQWKdE6L/xFIWunS4B3UXUSNu8AzDE3fLlVxRKbQS4y
-         zwd6oTsLJ4mjdZ8Gc4cXJrhWlw0m9fF4k53z8i3RWfSn9U8YQKyVkrtSJrjzZ3LuEY5a
-         +XYwQeaxCtMMOlT9f02R0tkLPYKE+f4VaJaHkCUG3j5K8oBZgEBOF/z7CEclQNQWafa+
-         id2Q==
-X-Gm-Message-State: AOAM533pVrrYNSu9iO/I6baYcQyc6iw7CvB/ovZB49EH/01/sPq510u8
-        aOZpKQ49//5vxx8FXZH84W+xYA==
-X-Google-Smtp-Source: ABdhPJyjE7jv9C7nQQ332L+GGCxxc0l51kKj4TvBYL6j4Mk0NOTmNP6mrLfjZrAOXlarJRfAETU5Gg==
-X-Received: by 2002:a17:90b:88e:: with SMTP id bj14mr1067223pjb.115.1630526249849;
-        Wed, 01 Sep 2021 12:57:29 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id z7sm306742pjr.42.2021.09.01.12.57.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 12:57:29 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 19:57:25 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86/mmu: Remove unused field mmio_cached in struct
- kvm_mmu_page
-Message-ID: <YS/bJbzgG+pasIxu@google.com>
-References: <20210830145336.27183-1-justin.he@arm.com>
+        Wed, 1 Sep 2021 15:59:14 -0400
+Received: from leknes.fjasle.eu ([92.116.70.90]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1M1HqM-1mIlDi0VIo-002pWJ; Wed, 01 Sep 2021 21:58:12 +0200
+Received: by leknes.fjasle.eu (Postfix, from userid 1000)
+        id F1FC63C07C; Wed,  1 Sep 2021 21:58:09 +0200 (CEST)
+From:   Nicolas Schier <nicolas@fjasle.eu>
+To:     David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     Nicolas Schier <nicolas@fjasle.eu>
+Subject: [PATCH] fscache: re-match MODULE_PARM_DESC() calls to module parameters
+Date:   Wed,  1 Sep 2021 21:57:59 +0200
+Message-Id: <20210901195759.2166674-1-nicolas@fjasle.eu>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830145336.27183-1-justin.he@arm.com>
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:rDCCjeLjAJM3z5VvVIexmAD/bY3AKKzjqSzuTrUTtirjUuMw1eC
+ wwLNRcAtKKm7PqL6iqdIFFIiT7O+AeLSqfPbhrZBS0Ko9k/aYxeztZGZxxiBzVNctz6b88B
+ VrxpIoDzGQUs106nftIu3h/TmWYMCtwBFEEV52+5szAi+pdcD1wT+7QUmuftM7tiXkCbLPr
+ ynHb5pnVv+e/9PMAInveQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tXDixzSUFrk=:HfRr3slyXCLkUhXFDjNLEH
+ Frdyh9BcrtfDG4xBvvSGMSXWBfAK+cDMOxGBO9RDpn2uHVykxSjgJl983n5cUrbf/YfoGovG3
+ Dgl8JvQgMweTVqThPUfTob+6Omf2JshyXkn1tGXJ4srEuUc8NOghI33iDFJghxncW7bcik1rU
+ kmEtnT52Vmkqmvs2GdO+5+XVLeLI4YYhA+gmRIpoocFhUkgIvJUVsRcPXOjFTr+cuINwlfZ4H
+ UrgBNAyI4BXOjKq8M2LH+/lDUwHwfI4+l9eJhZK0wRHU2UBVG6hAsXf45akgndJaJi0/H5fjY
+ brBNe8LDtJHmWDZdxU8QTCEjRvvyStA72LsAZd18GXsAQhSd2AwRAU7m0rBedRGQQ9TRfXHTP
+ S8Ymah0Kgo1crxMhU5sRXCPnFwUZwm5w8p7O+/iVKNDIo1tkQU2cQ7L5e3gsPNCvxwo09mgjK
+ vtqlKgQkKlnpNaYNIzfuGMwjlndMP0KgLD2xWQNQI2/AR84WWdvYc01IUVRJws0kER7CucSA1
+ iImyO+oYNTOYksOsxfVm2iZPr/4+dKjS3Io4tEp6+FuAYDpZYzVtgGq1V4EUkya4la7iCx6IT
+ gq7CCwkGtLatInwTXsTihw4fD75WkaIT/iyFVcEI5wQKa/bloiA6enNACD5sqnQmIEcCpC8d4
+ AbZszZk7UlSQ3irG7dWRUflJY5jQvwit2iu9fEFp1FCZWQWjKfm2lApaqztDd2K6uUzqkRBRB
+ /h26KMjHs5tBmj6MDVDaF77WDMkHCpj+mrULVg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021, Jia He wrote:
-> After reverting and restoring the fast tlb invalidation patch series,
-> the mmio_cached is not removed. Hence a unused field is left in
-> kvm_mmu_page.
-> 
-> Cc: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Jia He <justin.he@arm.com>
+Fix calls of MODULE_PARM_DESC() such that the first argument matches the
+actual module parameter name.  This changes the 'parm' section in the
+output of `modinfo fscache` from:
 
-Reviewed-by: Sean Christopherson <seanjc@google.com> 
+    parm: defer_lookup:uint
+    parm: fscache_defer_lookup:Defer cookie lookup to background thread
+    parm: defer_create:uint
+    parm: fscache_defer_create:Defer cookie creation to background thread
+    parm: debug:uint
+    parm: fscache_debug:FS-Cache debugging mask
 
-There's also additional cleanup we can do to take advantage of the free byte.
-I'll include this patch in a follow-up mini-series to hopefully make life a bit
-easier for Paolo.
+into:
 
-Thanks!
+    parm: defer_lookup:Defer cookie lookup to background thread (uint)
+    parm: defer_create:Defer cookie creation to background thread (uint)
+    parm: debug:FS-Cache debugging mask (uint)
+.
+
+Signed-off-by: Nicolas Schier <nicolas@fjasle.eu>
+---
+ fs/fscache/main.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/fscache/main.c b/fs/fscache/main.c
+index c1e6cc9091aa..ccb06dc0a6e9 100644
+--- a/fs/fscache/main.c
++++ b/fs/fscache/main.c
+@@ -22,19 +22,19 @@ MODULE_LICENSE("GPL");
+ unsigned fscache_defer_lookup = 1;
+ module_param_named(defer_lookup, fscache_defer_lookup, uint,
+ 		   S_IWUSR | S_IRUGO);
+-MODULE_PARM_DESC(fscache_defer_lookup,
++MODULE_PARM_DESC(defer_lookup,
+ 		 "Defer cookie lookup to background thread");
+ 
+ unsigned fscache_defer_create = 1;
+ module_param_named(defer_create, fscache_defer_create, uint,
+ 		   S_IWUSR | S_IRUGO);
+-MODULE_PARM_DESC(fscache_defer_create,
++MODULE_PARM_DESC(defer_create,
+ 		 "Defer cookie creation to background thread");
+ 
+ unsigned fscache_debug;
+ module_param_named(debug, fscache_debug, uint,
+ 		   S_IWUSR | S_IRUGO);
+-MODULE_PARM_DESC(fscache_debug,
++MODULE_PARM_DESC(debug,
+ 		 "FS-Cache debugging mask");
+ 
+ struct kobject *fscache_root;
+-- 
+2.30.1
+
