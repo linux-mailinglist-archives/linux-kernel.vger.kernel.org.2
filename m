@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B205C3FE646
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292C53FE648
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242763AbhIAXjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 19:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44506 "EHLO
+        id S243230AbhIAXjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 19:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242537AbhIAXjA (ORCPT
+        with ESMTP id S240154AbhIAXj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 19:39:00 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3CEC061796
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:38:02 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id m26so188452pff.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:38:02 -0700 (PDT)
+        Wed, 1 Sep 2021 19:39:29 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CB2C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:38:31 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id l24so61119qtj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:38:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=np9yXpAi1Pec3CPMJHXf2bgsvhEwG3KDrK8xe6dniXY=;
-        b=XrDUvfaSRPhHFu6OiKJ+27rYlUA0tUaReZeBT55d/ORmDSKJaTXk91lZY+JNJlUOJb
-         +PJv1QNbBU7vYs5ti8mCSoRW/wDEeasD9IobeBp76vkrymBFbimOgJpu27INFRTPdLiz
-         rNFK8xucPOAXRSmJiaopBLC6ZNIBSBdUEdaBM=
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Tir4KIBG3dCXrYCogu3jCVBol3D5m4vSoqwXylYsFiE=;
+        b=ZFxopLROBmPnRktluWCNeHM7I+tzgt0S8c+smEH9kAmM90pFOCGKf1cIwwgMHSu538
+         x5dpxPKToHQXd0jahsEVexq7B6Euqq7HxA4T2jVYJ5etI5BOYslvB2TBtBiDxFWQvCHb
+         N866HjIeeEcbl66YkNwyWYGXv+Qhb1lb9lu2g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=np9yXpAi1Pec3CPMJHXf2bgsvhEwG3KDrK8xe6dniXY=;
-        b=EhrwkbuQNzqgiANpSzm9IiFujOTbRbJUe1tPBhw+/Ne+JQRKDIPFdK1lmtKsepsNHH
-         Rwhu9MjDAVRjioDa2m94KwEJ31XU0wtQmTULPG76sx6F2CQyIFbCQmPEJ7ygEqP5hhxu
-         sklQjhmZ5zYNa3LUv/kkv8XM+PAdx3ivXmdp5sLwDXx3rk4VvaYsey3D1/FDWWKD/khr
-         ZkMxKccCFCIB6DZSzzlRyrXONBw9rHykubfZPVWGWmbEkba63UAGT/rRV/ssfTuMtfYG
-         AqrhyLIK3prxjmkd0hb1Rj2o8lCN3/x/qDawpWqA7DSQbNLQkkDIAQLztG//Q0nXAFEV
-         ZQzg==
-X-Gm-Message-State: AOAM530aDxbMRjEF9V5nsIT3Dp0UG/d6xReuznvA/rlsieBGF2Q9oA2e
-        VVudsqyrdw/r160PvM09VhHcqQ==
-X-Google-Smtp-Source: ABdhPJx4jrm3+NKpnau+9R6qA75ParitjlgXKNplEdsHenp19e3xfX1dbfLz0+I+njbB3AyLDuvPYg==
-X-Received: by 2002:a63:a517:: with SMTP id n23mr208818pgf.412.1630539482268;
-        Wed, 01 Sep 2021 16:38:02 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a10sm81784pfo.75.2021.09.01.16.37.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 16:37:59 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>, Jessica Yu <jeyu@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH 4/4] module: Include .static_call_sites in module ro_after_init
-Date:   Wed,  1 Sep 2021 16:37:57 -0700
-Message-Id: <20210901233757.2571878-5-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210901233757.2571878-1-keescook@chromium.org>
-References: <20210901233757.2571878-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Tir4KIBG3dCXrYCogu3jCVBol3D5m4vSoqwXylYsFiE=;
+        b=FgnAQEpFyErvPNhn2EY6cqYz8etKWWodfF2IpJ3/0/ckQ+qTgZZadD0018GAfyEU5+
+         kpqTD25QyPRm+wNvH+TnAybN5W04lq7TInll3Ohm3Q2RkVN68OYKaURN1IVOVkQPCrCH
+         LpLHV2bQ0Zjv4y7wW76ws5u2ODGqip2wz9K8QoKgbNDkqaS07Qf9aZ0gL5IGeLNXjL6e
+         QC1RhoTSb53ulX0qDSGunDDG38e6AtxV2g08MHRzscQK4Op8tTag7Lt9lmVpC7LhwDPJ
+         QfPHabPv0NX3zYc658wIcv2mNJ6BkfkkLwyyUBsceZTxTIiNE4xggD9gN+/7ptEU3wEY
+         54GA==
+X-Gm-Message-State: AOAM530NRrpQeXbIjkcEFz+sCqluOz6l8Qeg5RIjV+4/q8CNP/dCOYqk
+        rJuCjdDuQhdhZM466OLGHMwKJ0cYrwXINz337vE=
+X-Google-Smtp-Source: ABdhPJw4rt3vP9gie32nN5C+iz/ULYfm2ZiAjfhjp74z/tLXhYHPnoYnZ9vD90CRNhS0kAuMkT9jEuH1l7bvLU5cdzo=
+X-Received: by 2002:ac8:4684:: with SMTP id g4mr322134qto.290.1630539510944;
+ Wed, 01 Sep 2021 16:38:30 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=794; h=from:subject; bh=4jSl5dHsXqTpG4oJluProg2yWmW/Ve+LsdCZEC6e1Dw=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhMA7VAXOzsg3zZLmJUMu5Lg5kAnuK37eBljxDh1gM k8eqI7iJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYTAO1QAKCRCJcvTf3G3AJgzgEA CGmpZ6bb2D5q7shwYr1JAXzYhtqCHxJNX7EJneeUy97bxESmDfaxW1AlZ2Ouv9CgYRQ/56ddioBKcH ytiVv/2ldJYkGni7UJGjrrqEZqcfogWk5Rgc9pkNMomcMy8YzaExDVTsFngO5uUVMmxPZh9pFCmYPF 739g20bAf/lei3iNuofJeBkeZvLPxPr1bEG4eoTZYFlG7nY2MAs4azGi9c7TdgckdRQxp39qR/WciA zOlE1iScu/DjIeLFgKcRf+sBCRQMF5PZGGAwfZCym53bEA8WCDZ4VX0MVPwvkNlBpaY+Wfe+D8C60S J0BLAHR3CLfLQorVgbgsGw8uSUDiGeZgM+nvHE2+WdC6OD8MSkM9LfVu0fafzNG3CKCuqXymGUwSv3 ik6nygeHYenOM95zwzzIEggz3OnFUXtarqKuBroLjaP4qAjeI9O19Ki1pjyrrgMP0Yxn0l1cMoHXD/ dMXp31CKkiwuQTl+Rppha4bpx4A8SHfu419J0M9//Z5xwGUO32tVISPwMppxQhs2sqdAAj2WVle+Hk J67cHnId7+fDQoxVe9SkYBrz7IbtBlysGNgSi4jzjDT12EWR5xUfpVb8Ac9ELjgxngvR16PBbDxGhm 3bVi4RZDN1E/FGGKtkQf9hx7lLArSYIpkT4GXvA8mcDwYLQZZWY4uOG9chVQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <20210724224424.2085404-1-linus.walleij@linaro.org>
+ <20210724224424.2085404-2-linus.walleij@linaro.org> <20210821042010.GA1759866@roeck-us.net>
+ <CACRpkdYObGTWni3sSa21iNsgikzj7t9MA6y4TNgkBTTYQt+coA@mail.gmail.com>
+ <4d87c7af-d2e3-9456-130a-b35b507ff3a2@roeck-us.net> <567a65a8-077b-7394-c8e2-dbd9f063e02c@kaod.org>
+In-Reply-To: <567a65a8-077b-7394-c8e2-dbd9f063e02c@kaod.org>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 1 Sep 2021 23:38:19 +0000
+Message-ID: <CACPK8Xfu7K0FosjnfaiETXVP+QX9fOtUE5PymegvHc3MaWy52A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] clocksource/drivers/fttmr010: Be stricter on IRQs
+To:     =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RO_AFTER_INIT_DATA macro and module_sections_ro_after_init[] need
-to be kept in sync.
+On Sat, 28 Aug 2021 at 08:08, C=C3=A9dric Le Goater <clg@kaod.org> wrote:
 
-Cc: Jessica Yu <jeyu@kernel.org>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Fixes: 9183c3f9ed71 ("static_call: Add inline static call infrastructure")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- kernel/module.c | 1 +
- 1 file changed, 1 insertion(+)
+> AFAICT, the ast2600 does not use a fttmr010 clocksource.
 
-diff --git a/kernel/module.c b/kernel/module.c
-index b0ff82cc48fe..06410eb68dea 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3521,6 +3521,7 @@ core_param(module_blacklist, module_blacklist, charp, 0400);
- static const char * const module_sections_ro_after_init[] = {
- 	".data..ro_after_init",
- 	"__jump_table",
-+	".static_call_sites",
- 	NULL
- };
- 
--- 
-2.30.2
+Correct.
 
+When doing bringup of the ast2600, I updated this driver to support
+the new layout. Only once I'd submitted it did I learn that aspeed
+preferred to use only the Cortex A7's timer source, and only that
+source.
+
+The armv7 timer can be lost when a core goes into power save mode, but
+I am told the ast2600 does not implement power saving modes, so we set
+the always-on property for the arm,armv7-timer. This allows us to use
+the timer as a clocksource for hrtimers, removing the need to use the
+fttmr010 driver at all.
+
+Cheers,
+
+Joel
