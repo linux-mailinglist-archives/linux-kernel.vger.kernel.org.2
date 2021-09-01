@@ -2,132 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727633FE610
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BF93FE615
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345243AbhIAXVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 19:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
+        id S240346AbhIAX1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 19:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbhIAXVj (ORCPT
+        with ESMTP id S230061AbhIAX1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 19:21:39 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02643C061575;
-        Wed,  1 Sep 2021 16:20:41 -0700 (PDT)
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3CC3B24F;
-        Thu,  2 Sep 2021 01:20:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1630538438;
-        bh=+m+FMYnJYzRMCkZH9Bnprd6sDpe051YonvSHy1HVvf4=;
-        h=From:Subject:To:Cc:References:Date:In-Reply-To:From;
-        b=jtkDNJEWpK9zwGEyxdknyNoWXq0oMQDfwJOv63c7kP2A2rwQ6Z9Zm/CYBWnP81pJ5
-         oVty+vcnHPM+T/LU4e8fjHJnfXPjRR5ZgNwehxG+svOLEUFpjiJGUsvkFDnVpcAsR2
-         9Y495YgZz+E1xU7gHO9HcB6wRp1lLH35sAtME9XU=
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Subject: Re: [PATCH] dt-bindings: display: renesas,du: Provide bindings for
- r8a779a0
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVERS FOR RENESAS" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210622231146.3208404-1-kieran.bingham@ideasonboard.com>
- <CAMuHMdW8vYC3+gVCv5eG_vkX79vU8RQL-6fSJd9McetDzikzSA@mail.gmail.com>
- <22bf664e-4a28-3ae2-0106-5913a8643625@ideasonboard.com>
- <YS/7BlBvEsU+rkXP@pendragon.ideasonboard.com>
-Message-ID: <bd2f468b-40de-1fc6-bd97-3099c5d62f4e@ideasonboard.com>
-Date:   Thu, 2 Sep 2021 00:20:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 1 Sep 2021 19:27:54 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28CEC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 16:26:56 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id b10so145365ioq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 16:26:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rOUt9lzL9h2nq8MizjgBr+LfkDuELuuwWbBlNJOQ814=;
+        b=jR/4VwVeeFqV1reopTHZE859VRG+CTWfBgJ8xN+yYGIx367PJ9Bws70Zg1EV1ucG2W
+         Y2lFJoMSCpZf0ZOBx+NjhIwk4yEFfXdTmKpLSNameuBcxm0f3b2xsZjDWWLkXQzioQzB
+         rdiu2pi+dfj/LlK0SlnX6FXxRO6MlVrubO0LNbHQ1f2H+r49vZAn5pbFbLXLrAIpkyvv
+         0mbcwbkA1+xfcqzsopbM8IzOFTKlUOVzRZtTJtxfRnE1RlJMRGD/lXwDFs9D701+M4E3
+         2garEAvPOF6McbV+BoD72/uphVFvhiZwvjqcrhncYz9MizgjNlM4Tikc2xVWnh6P+yPf
+         Hg+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rOUt9lzL9h2nq8MizjgBr+LfkDuELuuwWbBlNJOQ814=;
+        b=EbO+J1JireCNki9T565wy4pxWhXvJmsuRVTE0jn2k7sWj3GctIyLogf4ZyFb3GFH3J
+         uCuNslsGECajs99D73lBG+bs8APnB9wZ5ABF/tEh7/XwpYEJzdI3BMdiRFJfE8qjr3R4
+         wme+JGsM+zdm+ej8y06MZUMJaQYdVgCwTfr+zoFZ4zzzcTvrgec+zcI0dd4wRPGOAfLT
+         iiMHIEfSRQAs+/x9e/Eo1thNBTDX5hHVyS9dC6uOyVepfTHAavyyUiO9IpETGl64exbj
+         5Vam/epWoyTv5+bck4UbDkYTVKXkzOYlnCc5qH21wH+f1Y5+mY2u/RXATSRTSwrVOJHn
+         hyHQ==
+X-Gm-Message-State: AOAM532jHyLd2ho8gD0hCOA5quQ+S3KoYrIP3KmNZ63g0SrwUf41BZSp
+        v8qAImYsf2rduUEGz0auzxXneQ==
+X-Google-Smtp-Source: ABdhPJzCa6eAMWUaKvrSDwb4bW983RzCXex8DdL6ys7hZpXkcFNe3o+vWqlq6lWO9U5Kc26/5lS5Gw==
+X-Received: by 2002:a5d:9b99:: with SMTP id r25mr279115iom.104.1630538816261;
+        Wed, 01 Sep 2021 16:26:56 -0700 (PDT)
+Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
+        by smtp.gmail.com with ESMTPSA id q12sm14251ioh.20.2021.09.01.16.26.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 16:26:55 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 23:26:52 +0000
+From:   Oliver Upton <oupton@google.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v3 06/12] KVM: arm64: selftests: Add support to disable
+ and enable local IRQs
+Message-ID: <YTAMPIBDSl1rJHUR@google.com>
+References: <20210901211412.4171835-1-rananta@google.com>
+ <20210901211412.4171835-7-rananta@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YS/7BlBvEsU+rkXP@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901211412.4171835-7-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-
-On 01/09/2021 23:13, Laurent Pinchart wrote:
-> Hi Kieran,
+On Wed, Sep 01, 2021 at 09:14:06PM +0000, Raghavendra Rao Ananta wrote:
+> Add functions local_irq_enable() and local_irq_disable() to
+> enable and disable the IRQs from the guest, respectively.
 > 
-> On Wed, Sep 01, 2021 at 11:01:11PM +0100, Kieran Bingham wrote:
->> On 23/06/2021 13:53, Geert Uytterhoeven wrote:
->>> On Wed, Jun 23, 2021 at 1:11 AM Kieran Bingham wrote:
->>>> From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
->>>>
->>>> Extend the Renesas DU display bindings to support the r8a779a0 V3U.
->>>>
->>>> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
->>>
->>> Thanks for your patch!
->>>
->>>> --- a/Documentation/devicetree/bindings/display/renesas,du.yaml
->>>> +++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
->>>> @@ -39,6 +39,7 @@ properties:
->>>>        - renesas,du-r8a77980 # for R-Car V3H compatible DU
->>>>        - renesas,du-r8a77990 # for R-Car E3 compatible DU
->>>>        - renesas,du-r8a77995 # for R-Car D3 compatible DU
->>>> +      - renesas,du-r8a779a0 # for R-Car V3U compatible DU
->>>>
->>>>    reg:
->>>>      maxItems: 1
->>>> @@ -774,6 +775,57 @@ allOf:
->>>>          - reset-names
->>>>          - renesas,vsps
->>>>
->>>> +  - if:
->>>> +      properties:
->>>> +        compatible:
->>>> +          contains:
->>>> +            enum:
->>>> +              - renesas,du-r8a779a0
->>>> +    then:
->>>> +      properties:
->>>> +        clocks:
->>>> +          items:
->>>> +            - description: Functional clock for DU0
->>>> +            - description: Functional clock for DU1
->>>> +
->>>> +        clock-names:
->>>> +          items:
->>>> +            - const: du.0
->>>> +            - const: du.1
->>>
->>> The hardware block has only a single function clock for both channels,
->>> like on R-Car H1.
->>
->> Indeed, but I believe both channels still need to set them, if they can
->> be operated independently, the driver looks up the clock based on the
->> du.%d, and so for DU1, it is simply expressed as the same clock in DT.
->>
->> Is this acceptable? or is there further issues there?
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+
+Reviewed-by: Oliver Upton <oupton@google.com>
+
+> ---
+>  .../testing/selftests/kvm/include/aarch64/processor.h  | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> Could we handle that on the driver side, like we do for H1 by not
-> setting RCAR_DU_FEATURE_CRTC_IRQ_CLOCK ? We would probably need to split
-> that flag in two, as there are two interrupts.
-
-Ok, that's not so bad to split, Done.
-
-
-> It's a bit annoying not knowing what the MSTP bits do exactly, we've
-> modelled them as gates for the functional clock, but maybe in cases like
-> this one the mapping isn't fully correct, I'm not sure.
-> 
->>> And what about DU_DOTCLKIN?
->>
->> This thread has already discussed this with Laurent, and I concur -
->> There doesn't appear to be any relevant reference to DU_DOTCLKIN on the
->> DU side.
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
+> index 78df059dc974..c35bb7b8e870 100644
+> --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
+> +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
+> @@ -241,4 +241,14 @@ static __always_inline u32 __raw_readl(const volatile void *addr)
+>  #define writel(v,c)		({ __iowmb(); writel_relaxed((v),(c));})
+>  #define readl(c)		({ u32 __v = readl_relaxed(c); __iormb(__v); __v; })
+>  
+> +static inline void local_irq_enable(void)
+> +{
+> +	asm volatile("msr daifclr, #3" : : : "memory");
+> +}
+> +
+> +static inline void local_irq_disable(void)
+> +{
+> +	asm volatile("msr daifset, #3" : : : "memory");
+> +}
+> +
+>  #endif /* SELFTEST_KVM_PROCESSOR_H */
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
 > 
