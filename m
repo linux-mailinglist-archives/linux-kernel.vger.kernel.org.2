@@ -2,122 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D99473FD74F
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 11:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818CB3FD75D
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 12:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbhIAJ7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 05:59:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:35330 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229662AbhIAJ7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 05:59:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 176E61042;
-        Wed,  1 Sep 2021 02:58:36 -0700 (PDT)
-Received: from [10.57.15.112] (unknown [10.57.15.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A5AC3F766;
-        Wed,  1 Sep 2021 02:58:34 -0700 (PDT)
-Subject: Re: [PATCH v4] iommu/of: Fix pci_request_acs() before enumerating PCI
- devices
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Wang Xingang <wangxingang5@huawei.com>, robh@kernel.org,
-        will@kernel.org, joro@8bytes.org, helgaas@kernel.org
-Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, xieyingtai@huawei.com,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <1621566204-37456-1-git-send-email-wangxingang5@huawei.com>
- <CGME20210901085937eucas1p2d02da65cac797706ca3a10b8a2eb8ba2@eucas1p2.samsung.com>
- <01314d70-41e6-70f9-e496-84091948701a@samsung.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <f3087045-1f0e-aa1a-d3f7-9e88bccca925@arm.com>
-Date:   Wed, 1 Sep 2021 10:58:26 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232091AbhIAKKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 06:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230257AbhIAKKd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 06:10:33 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38B2C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 03:09:36 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id me10so5374932ejb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 03:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=TrVtx3U2QpvsgE0FsR57CyQeiezj6FJ6Rth9MaRCEts=;
+        b=uAWAUjmcKXmZTpm8DxapCzUspI/qDjymaCV9CWEUyzZcNtk6saBZlBADwwYiyRzqa6
+         r2EK6c02bWa8XaTAt9B5qft591wxYQId0Lzjp+DifmqDrn0tHLRvOx5zE+GYEhafzXfS
+         JQ2RViiZuzKBy2pQG7BFKV13ymhBOZ53hlExEftMjIRCdwtC9ffVkWtx5SAFSivEG8VX
+         VNd6rUN9fSWbk4Vv33m/jMYzKurpA7lb0IO1p8aurT4j/fR1cvxQdCb5TwHKR99IfzBh
+         +bnj7UnYxlyYglMPNTCmVfwSTy4megUESOuwyE6kpqdix0Kt85k3Fh9DlwutHX+3pXCH
+         /Gww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TrVtx3U2QpvsgE0FsR57CyQeiezj6FJ6Rth9MaRCEts=;
+        b=AGzNh+YmIxo1lTXqsHaIkMZiIqyg1sVaLxJn4T7ey66eHsMfhyoE0MPe4AALrmZ3wn
+         FlDWvDVg+jkL8AdlJncqO7sr1zzCpCEya7+z7dF/EtuyBYPOFtHWzXckiDKWF3bDrXPa
+         +Y4yKJu6cTmpX6ieuq+DEl9kaB4HxhQ9SeT+Sn+sjvui8Fq+dSXn32WGq2Q0Jajjdids
+         9k1nwVrmbdoo1AH2R/S+ksLS4sdolOEFtYuXe9/CoD1UFKo9h3wXMhA15eo3wSnPsi5N
+         0mF0LPOWudEgo2QJymZfJrMl7vojqLBQAHAuu22ebbVQ3kObSPftDmqcI3hsN0UeefG/
+         FYuA==
+X-Gm-Message-State: AOAM531qOzqnbZ+uo17HT32gun30WcwoX2RE/8vfRlS2+g5JS/4MVCHd
+        ecfo73TrRaK9PXwCpelMTbSsuFxujHMdF+imlJ7TFEg33VhED1W3
+X-Google-Smtp-Source: ABdhPJzA3IjbHbXxcr1K2sV888cVO5o3JligdUX1Fqj1LpsSkVcqyR8Ya0CGbqlHeFyLfUT91sjvUnDJUlrN/WHd4z4=
+X-Received: by 2002:a17:906:36d6:: with SMTP id b22mr36572958ejc.387.1630490975520;
+ Wed, 01 Sep 2021 03:09:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <01314d70-41e6-70f9-e496-84091948701a@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <a2f423cf-9413-6bc8-e4d8-92374fc0449e@amperemail.onmicrosoft.com>
+In-Reply-To: <a2f423cf-9413-6bc8-e4d8-92374fc0449e@amperemail.onmicrosoft.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Wed, 1 Sep 2021 10:09:24 +0800
+Message-ID: <CAGsJ_4xtsaQL47D2D6PyW3vAr3+EwJqv-G-1V4-4GAYd2LnT3Q@mail.gmail.com>
+Subject: Re: Is it possible to implement the per-node page cache for programs/libraries?
+To:     Shijie Huang <shijie@amperemail.onmicrosoft.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        viro@zeniv.linux.org.uk, Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm@kvack.org, Barry Song <song.bao.hua@hisilicon.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frank Wang <zwang@amperecomputing.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-01 09:59, Marek Szyprowski wrote:
-> On 21.05.2021 05:03, Wang Xingang wrote:
->> From: Xingang Wang <wangxingang5@huawei.com>
->>
->> When booting with devicetree, the pci_request_acs() is called after the
->> enumeration and initialization of PCI devices, thus the ACS is not
->> enabled. And ACS should be enabled when IOMMU is detected for the
->> PCI host bridge, so add check for IOMMU before probe of PCI host and call
->> pci_request_acs() to make sure ACS will be enabled when enumerating PCI
->> devices.
->>
->> Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
->> configuring IOMMU linkage")
->> Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
-> 
-> This patch landed in linux-next as commit 57a4ab1584e6 ("iommu/of: Fix
-> pci_request_acs() before enumerating PCI devices"). Sadly it breaks PCI
-> operation on ARM Juno R1 board (arch/arm64/boot/dts/arm/juno-r1.dts). It
-> looks that the IOMMU controller is not probed for some reasons:
-> 
-> # cat /sys/kernel/debug/devices_deferred
-> 2b600000.iommu
+On Wed, Sep 1, 2021 at 11:09 AM Shijie Huang
+<shijie@amperemail.onmicrosoft.com> wrote:
+>
+> Hi Everyone,
+>
+>      In the NUMA, we only have one page cache for each file. For the
+> program/shared libraries, the
+>
+> remote-access delays longer then the  local-access.
+>
+> So, is it possible to implement the per-node page cache for
+> programs/libraries?
 
-That IOMMU belongs to the CoreSight debug subsystem and often gets stuck 
-waiting for a power domain (especially if you have a mismatch of 
-SCPI/SCMI expectations between the DT and SCP firmware). Unless you're 
-trying to use CoreSight trace that shouldn't matter.
+as far as i know, this is an very interesting topic, we do have some
+"solutions" on this.
+MIPS kernel supports kernel TEXT replication:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arc=
+h/mips/sgi-ip27/Kconfig
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arc=
+h/mips/sgi-ip27/ip27-klnuma.c
 
-The PCIe on Juno doesn't support ACS anyway, so I'm puzzled why this 
-should make any difference :/
+config REPLICATE_KTEXT
+bool "Kernel text replication support"
+depends on SGI_IP27
+select MAPPED_KERNEL
+help
+ Say Y here to enable replicating the kernel text across multiple
+ nodes in a NUMA cluster.  This trades memory for speed.
 
-Robin.
+for x86, RedHawk Linux=EF=BC=88https://www.concurrent-rt.com/solutions/linu=
+x/=EF=BC=89supports
+kernel text replication.
+here are some benchmark:
+https://www.concurrent-rt.com/wp-content/uploads/2016/11/kernel-page-replic=
+ation.pdf
 
-> Reverting this patch on top of current linux-next fixes this issue. If
-> you need more information to debug this issue, just let me know.
-> 
->> ---
->>    drivers/iommu/of_iommu.c | 1 -
->>    drivers/pci/of.c         | 8 +++++++-
->>    2 files changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
->> index a9d2df001149..54a14da242cc 100644
->> --- a/drivers/iommu/of_iommu.c
->> +++ b/drivers/iommu/of_iommu.c
->> @@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
->>    			.np = master_np,
->>    		};
->>    
->> -		pci_request_acs();
->>    		err = pci_for_each_dma_alias(to_pci_dev(dev),
->>    					     of_pci_iommu_init, &info);
->>    	} else {
->> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
->> index da5b414d585a..2313c3f848b0 100644
->> --- a/drivers/pci/of.c
->> +++ b/drivers/pci/of.c
->> @@ -581,9 +581,15 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
->>    
->>    int devm_of_pci_bridge_init(struct device *dev, struct pci_host_bridge *bridge)
->>    {
->> -	if (!dev->of_node)
->> +	struct device_node *node = dev->of_node;
->> +
->> +	if (!node)
->>    		return 0;
->>    
->> +	/* Detect IOMMU and make sure ACS will be enabled */
->> +	if (of_property_read_bool(node, "iommu-map"))
->> +		pci_request_acs();
->> +
->>    	bridge->swizzle_irq = pci_common_swizzle;
->>    	bridge->map_irq = of_irq_parse_and_map_pci;
->>    
-> 
-> Best regards
-> 
+For userspace, dplace from SGI can help replicate text:
+https://www.spec.org/cpu2006/flags/SGI-platform.html
+
+-r bl: specifies that text should be replicated on the NUMA node or
+nodes where the process is running.
+'b' indicates that binary (a.out) text should be replicated;
+'l' indicates that library text should be replicated.
+
+but all of the above except mips ktext replication are out of tree.
+
+Please count me in if you have any solution and any pending patch.
+I am interested in this topic.
+
+>
+>
+>     We can do it like this:
+>
+>          1.) Add a new system call to control specific files to
+> NUMA-aware, such as:
+>
+>                     set_numa_aware("/usr/lib/libc.so", enable);
+>
+>              After the system call, the page cache of libc.so has the
+> flags "NUMA_ENABLED"
+>
+>
+>          2.) When A new process tries to setup the MMU page table for
+> libc.so, it will check
+>
+>               if NUMA_ENABLED is set. If it set, the kernel will give a
+> page which is bind to the process's NUMA node.
+>
+>               By this way, we can eliminate the remote-access for
+> programs/shared library.
+>
+>
+> Is this proposal ok?  Or do you have a better idea?
+>
+>
+> Thanks
+>
+> Huang Shijie
+
+Thanks
+barry
