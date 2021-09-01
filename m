@@ -2,69 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C114C3FD8D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E343FD8CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 13:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243861AbhIALfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 07:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243805AbhIALfd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 07:35:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E4EC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 04:34:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+dQK5IdXVw1yYS5o1jTuz3XuwDlTgndYHGD+Wfsq0ms=; b=tJ7GqxWClGIuXimww6oVVwdOwZ
-        bEcpqk2eh+HJaRGutpm3ntp9EL7HJViLBto4AnIBKwTw5GW0I6i3HGgfIPBOrCHpl7Ycfvf1JLYu5
-        WK1/MvmCmy9cMxl8l9A2Xi8cB7ISZw+jm39i0uC2ehzoSvDrCStqQ1dxJwHZhDwlAVWbvBzd11jUh
-        YKrU3OA+mEi8rtu6FMi5YPygRmWqKXTIv+AeZ2zoT5WJJiZ2fLPu6aR+pOk9B+H6r8QSJHS30MTY/
-        mSDQ0mtOSzcCA4KxvP30fMSxsXs6jvncU96COKT48mXxEIUuI4O4rVVqmRiVW0NrJlra1otklChW5
-        tRNFgGqA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLOTj-002Ev2-Ni; Wed, 01 Sep 2021 11:32:38 +0000
-Date:   Wed, 1 Sep 2021 12:32:27 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Huang Shijie <shijie@os.amperecomputing.com>
-Cc:     Shijie Huang <shijie@amperemail.onmicrosoft.com>,
-        torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        song.bao.hua@hisilicon.com, linux-kernel@vger.kernel.org,
-        Frank Wang <zwang@amperecomputing.com>
-Subject: Re: Is it possible to implement the per-node page cache for
- programs/libraries?
-Message-ID: <YS9ky9XiR+JkqSDF@casper.infradead.org>
-References: <a2f423cf-9413-6bc8-e4d8-92374fc0449e@amperemail.onmicrosoft.com>
- <YS7yjcqA6txFHd99@casper.infradead.org>
- <YS+AhXJGsniaHTS4@hsj>
- <YS+NXmDO0yqDEBmD@hsj>
+        id S243858AbhIALeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 07:34:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243816AbhIALeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 07:34:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A6D560F42;
+        Wed,  1 Sep 2021 11:33:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630495994;
+        bh=5MiKDi8uZb8lcIaWPiVc2fEJkv1iyxMhULIUNb5ZKH8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KMGwuf0leYe/yOJfg99NtM5zLDyfqIsZ1b/TgVmIqWQigeeGdJSw+byVB2Vpvb83e
+         FyvhgtgmIzLSYLiPgpUZQPmBcSKWTmO7+ODvmeg+b76KPmGPDf8G2PwVWxBIllthwG
+         +gCveoaf2cdhWbl+iVXCtOj+SqrXYe2xNb/AnS8c=
+Date:   Wed, 1 Sep 2021 13:33:11 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     ebiggers@google.com, toybox@lists.landley.net,
+        stable-commits@vger.kernel.org
+Subject: Re: Patch "fscrypt: add fscrypt_symlink_getattr() for computing
+ st_size" has been added to the 5.4-stable tree
+Message-ID: <YS9k9wK5zPSL6VGn@kroah.com>
+References: <1630493566193250@kroah.com>
+ <YS9c4qZP9MeiEp2U@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YS+NXmDO0yqDEBmD@hsj>
+In-Reply-To: <YS9c4qZP9MeiEp2U@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 02:25:34PM +0000, Huang Shijie wrote:
-> On Wed, Sep 01, 2021 at 01:30:45PM +0000, Huang Shijie wrote:
-> > On Wed, Sep 01, 2021 at 04:25:01AM +0100, Matthew Wilcox wrote:
-> > > On Wed, Sep 01, 2021 at 11:07:41AM +0800, Shijie Huang wrote:
-> > > >     In the NUMA, we only have one page cache for each file. For the
-> > > > program/shared libraries, the
-> > > > remote-access delays longer then the  local-access.
-> > > > 
-> > > > So, is it possible to implement the per-node page cache for
-> > > > programs/libraries?
-> > > 
-> > > At this point, we have no way to support text replication within a
-> > > process.  So what you're suggesting (if implemented) would work for
+On Wed, Sep 01, 2021 at 12:58:42PM +0200, Greg KH wrote:
+> On Wed, Sep 01, 2021 at 12:52:46PM +0200, gregkh@linuxfoundation.org wrote:
 > > 
-> > I created a glibc patch which can do the text replication within a process.
-> The "text replication" means the shared libraries, not program itself.
+> > This is a note to let you know that I've just added the patch titled
+> > 
+> >     fscrypt: add fscrypt_symlink_getattr() for computing st_size
+> > 
+> > to the 5.4-stable tree which can be found at:
+> >     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+> 
+> Dropped from 5.4 as there is no need for it now that the other patches
+> failed :(
 
-Is it really worthwhile to do only the shared libraries?
+Same thing for 5.10, all 4 are now dropped from there as well as they do
+not build.
+
+thanks,
+
+greg k-h
