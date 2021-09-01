@@ -2,190 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A333FD552
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 808A53FD555
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 10:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243184AbhIAIZU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 1 Sep 2021 04:25:20 -0400
-Received: from mo-csw1516.securemx.jp ([210.130.202.155]:60654 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243208AbhIAIZP (ORCPT
+        id S243141AbhIAI2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 04:28:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44546 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232792AbhIAI2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 04:25:15 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 1818Njqh004816; Wed, 1 Sep 2021 17:23:45 +0900
-X-Iguazu-Qid: 34trDWJKTf2SiJPISB
-X-Iguazu-QSIG: v=2; s=0; t=1630484625; q=34trDWJKTf2SiJPISB; m=kn6fdyyjDWyL0Uhwj4t6ti3dxVxFCj4N2/4I9JTN0IM=
-Received: from CNN1EMTA01.test.kioxia.com ([202.248.33.144])
-        by relay.securemx.jp (mx-mr1513) id 1818NiFf032112;
-        Wed, 1 Sep 2021 17:23:44 +0900
-Received: from Switcher-Post_Send (gateway [10.232.20.1])
-        by CNN1EMTA01.test.kioxia.com (Postfix) with ESMTP id 2B8642F00E;
-        Wed,  1 Sep 2021 17:23:44 +0900 (JST)
-Received: from CNN1ESTR03.kioxia.com (localhost [127.0.0.1])
-        by Switcher-Post_Send (Postfix) with ESMTP id 12A2D1907AD217;
-        Wed,  1 Sep 2021 17:21:09 +0900 (JST)
-Received: from localhost [127.0.0.1] 
-         by CNN1ESTR03.kioxia.com with ESMTP id 0002TAAAAAA00JC2;
-         Wed, 1 Sep 2021 17:21:09 +0900
-Received: from CNN1EXMB03.r1.kioxia.com (CNN1EXMB03.r1.kioxia.com [10.232.20.152])
-        by Switcher-Pre_Send (Postfix) with ESMTP id 07AD1A0347641;
-        Wed,  1 Sep 2021 17:21:09 +0900 (JST)
-Received: from CNN1EXMB02.r1.kioxia.com (10.232.20.151) by
- CNN1EXMB03.r1.kioxia.com (10.232.20.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Wed, 1 Sep 2021 17:23:42 +0900
-Received: from CNN1EXMB02.r1.kioxia.com ([10.13.100.21]) by
- CNN1EXMB02.r1.kioxia.com ([10.13.100.21]) with mapi id 15.01.2242.010; Wed, 1
- Sep 2021 17:23:42 +0900
-From:   sasaki tatsuya <tatsuya6.sasaki@kioxia.com>
-To:     "kbusch@kernel.org" <kbusch@kernel.org>,
-        "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] nvme: update keep alive interval when kato is modified
-Thread-Topic: [PATCH v3] nvme: update keep alive interval when kato is
- modified
-Thread-Index: AdefCnVHT6aDpXBYTEKau30wTNdtIA==
-Date:   Wed, 1 Sep 2021 08:23:42 +0000
-Message-ID: <894db4eeb08a4622aa1b08425cad0133@kioxia.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.211.46.251]
-x-tm-as-product-ver: ISME-14.0.0.2080-8.5.1020-26380.000
-x-tm-as-result: No-10-1.468400-8.000000
-x-tmase-matchedrid: /nPNxfnsEhP5uyvfNjfPTxvgzEPRJaDEKQNhMboqZloTiSW9r3PknEfj
-        d+aXilyPRToGmkNUJwa4TDy5Lbm+t57ghrpuj+9i6s5dyYfDHehWy4+qD6wC2YB4XybRlTmEhL3
-        rCQ6U0+Qc+2+RgGf529PzWwTEpBnXu6Xs4AbfF8F+J3gtIe0gA7qoFakaELIgByGoU9ZSHrbFYx
-        BBONJAzQ4LQ4ivyVfr3W0MEVF2MTJfIZMaSDtuL4S/TV9k6ppAMVx/3ZYby79DlOm+558WVom99
-        KFCUKgfSqdra4WWujyPQi9XuOWoOHI/MxNRI7Uks0T0PE+KHuV7xIKEgZq/Aeffrtw9TYLh7fKx
-        aM2xqkADxZCHySssjFSCmfT2v3te9JykO4HIhnKtllqIt7O6XeRjZuXE0WlHvGAx/1ATZ5v6J9J
-        Pzr0FdcoLwUdWvzxRho9FZFW/cB2VH5Uhim9YYG/6CCblACLhZLeVqspIPked277WeIa5e1WGm7
-        GL6RCdngIgpj8eDcByZ8zcONpAscRB0bsfrpPINogTRkHigdygTkMzC2F9D9nbeNR4uIDN8RwA4
-        ZVylct4GSStKYzYmuWNmJGaCGf9lFOSU6PFPfQyBfFEI+ZKDwm1lnxnTxFMF8n+PiAiji0E2TM8
-        4EuTy0FgpjGVf2/bBUYQ6VBjSapyPw0xDpM2TfHHxQDHp3JrVlxr1FJij9s=
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10-1.468400-8.000000
-x-tmase-version: ISME-14.0.0.2080-8.5.1020-26380.000
-x-tm-snts-smtp: 52C2AE1A7D514335A88CFA192EDA386345EB4928B880FA4C60A19B3A92D850162000:8
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
+        Wed, 1 Sep 2021 04:28:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630484839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ovcjyG7IDaOy6ifWW+v+m6prcD2wZaK5/tKOHaPCRA8=;
+        b=HgJJqzg2OBdcKqXX7FOkcNExTFCpactQB3NctE7Wl+wLtLEfheEPW8+F6urTaYiV4ffOKv
+        c+nJtKZAJfExOBtoef+q+Uice04n1LKd0rmSfMwEp4yNc83UKpYA0xEQZXwwisIA21EmuD
+        7nfPi7nP/gpvAxmTwmZYQ65VCiYBzEQ=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-rfxIcQGiMRyA7IfMZ6NyPQ-1; Wed, 01 Sep 2021 04:27:18 -0400
+X-MC-Unique: rfxIcQGiMRyA7IfMZ6NyPQ-1
+Received: by mail-wm1-f69.google.com with SMTP id f19-20020a1c1f13000000b002e6bd83c344so744637wmf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 01:27:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=ovcjyG7IDaOy6ifWW+v+m6prcD2wZaK5/tKOHaPCRA8=;
+        b=jCRWTn/fzH0bZ+TnCvUQnuGH1NH2RoxvwHKCOR8qG6/TeREXeM61BOgzcHvoIRZsqK
+         1Z7Av98dDc5lT5WZMFl+qIG+hio6nQuusxrKtmuUeQeGzrbJCRcJ2pIbDpQGNjUaXpNq
+         m3/GNUSjaZI81PinNKo9gJRYdJBJGgnwGtcNoDg6AQe71BM3cAd7MYiNgdApB7H7+dZ9
+         DOiE7IEo9yMB06n5eCcSBcmsM4Hcm+O/ckKoxuuJeEttw3Zs6iwJgoOZI1EczKR7EjgU
+         AqzpmSdI++jmpwQWoFdK9RikBqTuX/gH8ZdyEViYJhkEw4Uwut8d3lj6fAqnU9bwaw1/
+         LIvw==
+X-Gm-Message-State: AOAM531x3BDacUBOu9/BX2e7PIFM45ilL9BIdz6H2wQTxpwk/uVloxUT
+        qCsF0erNI8UaGPDIlfHXqu1OAnW7iGxfk2VdtHr9wVKjVXxOupQlMbwLD1CGW9S1xhCiBCXpUge
+        Baosrn2YoJV2PIV8OD1/8168+
+X-Received: by 2002:a7b:c4cb:: with SMTP id g11mr8411413wmk.80.1630484836986;
+        Wed, 01 Sep 2021 01:27:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVHVGo8/2yaFqDLnkSXohfmFINaCXjLS/UevTrlJwzmeSr3ztn2rVI0RS4UIxlE57pxWngTg==
+X-Received: by 2002:a7b:c4cb:: with SMTP id g11mr8411397wmk.80.1630484836753;
+        Wed, 01 Sep 2021 01:27:16 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id u5sm20249739wrr.94.2021.09.01.01.27.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 01:27:16 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+200c08e88ae818f849ce@syzkaller.appspotmail.com
+Subject: Re: [PATCH 1/3] Revert "KVM: x86: mmu: Add guest physical address
+ check in translate_gpa()"
+In-Reply-To: <20210831164224.1119728-2-seanjc@google.com>
+References: <20210831164224.1119728-1-seanjc@google.com>
+ <20210831164224.1119728-2-seanjc@google.com>
+Date:   Wed, 01 Sep 2021 10:27:15 +0200
+Message-ID: <87pmtsog4c.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-X-CrossPremisesHeadersFilteredBySendConnector: CNN1EXMB03.r1.kioxia.com
-X-OrganizationHeadersPreserved: CNN1EXMB03.r1.kioxia.com
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the connection between host and NVMe-oF target gets
-disconnected by keep-alive timeout when a user connects to a target
-with a relatively large kato value and then sets the smaller kato
-with a set features command (e.g. connects with 60 seconds kato value
-and then sets 10 seconds kato value).
+Sean Christopherson <seanjc@google.com> writes:
 
-The cause is that keep alive command interval on the host, which is
-defined as unsigned int kato in nvme_ctrl structure, does not follow
-the kato value changes.
+> Revert a misguided illegal GPA check when "translating" a non-nested GPA.
+> The check is woefully incomplete as it does not fill in @exception as
+> expected by all callers, which leads to KVM attempting to inject a bogus
+> exception, potentially exposing kernel stack information in the process.
+>
+>  WARNING: CPU: 0 PID: 8469 at arch/x86/kvm/x86.c:525 exception_type+0x98/0xb0 arch/x86/kvm/x86.c:525
+>  CPU: 1 PID: 8469 Comm: syz-executor531 Not tainted 5.14.0-rc7-syzkaller #0
+>  RIP: 0010:exception_type+0x98/0xb0 arch/x86/kvm/x86.c:525
+>  Call Trace:
+>   x86_emulate_instruction+0xef6/0x1460 arch/x86/kvm/x86.c:7853
+>   kvm_mmu_page_fault+0x2f0/0x1810 arch/x86/kvm/mmu/mmu.c:5199
+>   handle_ept_misconfig+0xdf/0x3e0 arch/x86/kvm/vmx/vmx.c:5336
+>   __vmx_handle_exit arch/x86/kvm/vmx/vmx.c:6021 [inline]
+>   vmx_handle_exit+0x336/0x1800 arch/x86/kvm/vmx/vmx.c:6038
+>   vcpu_enter_guest+0x2a1c/0x4430 arch/x86/kvm/x86.c:9712
+>   vcpu_run arch/x86/kvm/x86.c:9779 [inline]
+>   kvm_arch_vcpu_ioctl_run+0x47d/0x1b20 arch/x86/kvm/x86.c:10010
+>   kvm_vcpu_ioctl+0x49e/0xe50 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3652
+>
+> The bug has escaped notice because practically speaking the GPA check is
+> useless.  The GPA check in question only comes into play when KVM is
+> walking guest page tables (or "translating" CR3), and KVM already handles
+> illegal GPA checks by setting reserved bits in rsvd_bits_mask for each
+> PxE, or in the case of CR3 for loading PTDPTRs, manually checks for an
+> illegal CR3.  This particular failure doesn't hit the existing reserved
+> bits checks because syzbot sets guest.MAXPHYADDR=1, and IA32 architecture
+> simply doesn't allow for such an absurd MAXPHADDR, e.g. 32-bit paging
 
-This patch updates the keep alive interval in the following steps when
-the kato is modified by a set features command: stops the keep alive
-work queue, then sets the kato as new timer value and re-start the queue.
+"MAXPHYADDR"
 
-Signed-off-by: Tatsuya Sasaki <tatsuya6.sasaki@kioxia.com>
----
-Changes since v1:
-- Add nvme_update_keep_alive to update keep alive timer in core routine.
-- Add nvme_user_cmd_post to call nvme_update_keep_alive in ioctl.c
-Changes since v2:
-- Remove unnecessary comment
-- Move DIV_ROUND_UP into nvme_update_keep_alive
-- Call nvme_update_keep_alive from nvme_passthru_end in core routine.
+> doesn't define any reserved PA bits checks, which KVM emulates by only
+> incorporating the reserved PA bits into the "high" bits, i.e. bits 63:32.
+>
+> Simply remove the bogus check.  There is zero meaningful value and no
+> architectural justification for supporting guest.MAXPHYADDR < 32, and
+> properly filling the exception would introduce non-trivial complexity.
+>
+> This reverts commit ec7771ab471ba6a945350353617e2e3385d0e013.
+>
+> Fixes: ec7771ab471b ("KVM: x86: mmu: Add guest physical address check in translate_gpa()")
+> Cc: stable@vger.kernel.org
+> Reported-by: syzbot+200c08e88ae818f849ce@syzkaller.appspotmail.com
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 6 ------
+>  1 file changed, 6 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 4853c033e6ce..4b7908187d05 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -334,12 +334,6 @@ static bool check_mmio_spte(struct kvm_vcpu *vcpu, u64 spte)
+>  static gpa_t translate_gpa(struct kvm_vcpu *vcpu, gpa_t gpa, u32 access,
+>                                    struct x86_exception *exception)
+>  {
+> -	/* Check if guest physical address doesn't exceed guest maximum */
+> -	if (kvm_vcpu_is_illegal_gpa(vcpu, gpa)) {
+> -		exception->error_code |= PFERR_RSVD_MASK;
+> -		return UNMAPPED_GVA;
+> -	}
+> -
+>          return gpa;
+>  }
 
-drivers/nvme/host/core.c | 39 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 37 insertions(+), 2 deletions(-)
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index dfd9dec0c1f6..5718e5898104 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -116,6 +116,8 @@ static struct class *nvme_ns_chr_class;
- static void nvme_put_subsystem(struct nvme_subsystem *subsys);
- static void nvme_remove_invalid_namespaces(struct nvme_ctrl *ctrl,
- 					   unsigned nsid);
-+static void nvme_update_keep_alive(struct nvme_ctrl *ctrl,
-+				   struct nvme_command *cmd);
- 
- /*
-  * Prepare a queue for teardown.
-@@ -1155,7 +1157,8 @@ static u32 nvme_passthru_start(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
- 	return effects;
+I'm, however, wondering if it would also make sense to forbid setting
+nonsensical MAXPHYADDR, something like (compile-only tested):
+
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index fe03bd978761..42e71ac8ff31 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -73,25 +73,6 @@ static inline struct kvm_cpuid_entry2 *cpuid_entry2_find(
+ 	return NULL;
  }
  
--static void nvme_passthru_end(struct nvme_ctrl *ctrl, u32 effects)
-+static void nvme_passthru_end(struct nvme_ctrl *ctrl, u32 effects,
-+			      struct nvme_command *cmd, int status)
+-static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
+-{
+-	struct kvm_cpuid_entry2 *best;
+-
+-	/*
+-	 * The existing code assumes virtual address is 48-bit or 57-bit in the
+-	 * canonical address checks; exit if it is ever changed.
+-	 */
+-	best = cpuid_entry2_find(entries, nent, 0x80000008, 0);
+-	if (best) {
+-		int vaddr_bits = (best->eax & 0xff00) >> 8;
+-
+-		if (vaddr_bits != 48 && vaddr_bits != 57 && vaddr_bits != 0)
+-			return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-
+ void kvm_update_pv_runtime(struct kvm_vcpu *vcpu)
  {
- 	if (effects & NVME_CMD_EFFECTS_CSE_MASK) {
- 		nvme_unfreeze(ctrl);
-@@ -1170,6 +1173,24 @@ static void nvme_passthru_end(struct nvme_ctrl *ctrl, u32 effects)
- 		nvme_queue_scan(ctrl);
- 		flush_work(&ctrl->scan_work);
- 	}
-+	switch (cmd->common.opcode) {
-+	case nvme_admin_set_features:
-+		switch (cmd->common.cdw10 & 0xFF) {
-+		case NVME_FEAT_KATO:
-+			/*
-+			 * Keep alive commands interval on the host should be updated
-+			 * when KATO is modified by Set Features commands.
-+			 */
-+			if (!status)
-+				nvme_update_keep_alive(ctrl, cmd);
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
+ 	struct kvm_cpuid_entry2 *best;
+@@ -208,20 +189,48 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ 	kvm_mmu_after_set_cpuid(vcpu);
  }
  
- int nvme_execute_passthru_rq(struct request *rq)
-@@ -1184,7 +1205,7 @@ int nvme_execute_passthru_rq(struct request *rq)
- 	effects = nvme_passthru_start(ctrl, ns, cmd->common.opcode);
- 	ret = nvme_execute_rq(disk, rq, false);
- 	if (effects) /* nothing to be done for zero cmd effects */
--		nvme_passthru_end(ctrl, effects);
-+		nvme_passthru_end(ctrl, effects, cmd, ret);
+-int cpuid_query_maxphyaddr(struct kvm_vcpu *vcpu)
++static int __cpuid_query_maxphyaddr(struct kvm_cpuid_entry2 *entries, int nent)
+ {
+ 	struct kvm_cpuid_entry2 *best;
  
- 	return ret;
- }
-@@ -1263,6 +1284,20 @@ static void nvme_start_keep_alive(struct nvme_ctrl *ctrl)
- 	nvme_queue_keep_alive_work(ctrl);
+-	best = kvm_find_cpuid_entry(vcpu, 0x80000000, 0);
++	best = cpuid_entry2_find(entries, nent, 0x80000000, 0);
+ 	if (!best || best->eax < 0x80000008)
+ 		goto not_found;
+-	best = kvm_find_cpuid_entry(vcpu, 0x80000008, 0);
++	best = cpuid_entry2_find(entries, nent, 0x80000008, 0);
+ 	if (best)
+ 		return best->eax & 0xff;
+ not_found:
+ 	return 36;
  }
  
-+static void nvme_update_keep_alive(struct nvme_ctrl *ctrl,
-+				   struct nvme_command *cmd)
++int cpuid_query_maxphyaddr(struct kvm_vcpu *vcpu)
 +{
-+	unsigned int new_kato = DIV_ROUND_UP(cmd->common.cdw11, 1000);
-+
-+	dev_info(ctrl->device,
-+		 "keep alive commands interval on the host is updated from %u ms to %u ms\n",
-+		 ctrl->kato * 1000 / 2, new_kato * 1000 / 2);
-+
-+	nvme_stop_keep_alive(ctrl);
-+	ctrl->kato = new_kato;
-+	nvme_start_keep_alive(ctrl);
++	return __cpuid_query_maxphyaddr(vcpu->arch.cpuid_entries, vcpu->arch.cpuid_nent);
 +}
 +
- void nvme_stop_keep_alive(struct nvme_ctrl *ctrl)
- {
- 	if (unlikely(ctrl->kato == 0))
--- 
-2.25.1
++static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
++{
++	struct kvm_cpuid_entry2 *best;
++
++	/* guest.MAXPHYADDR < 32 is completely nonsensical */
++	if (__cpuid_query_maxphyaddr(entries, nent) < 32)
++		return -EINVAL;
++
++	/*
++	 * The existing code assumes virtual address is 48-bit or 57-bit in the
++	 * canonical address checks; exit if it is ever changed.
++	 */
++	best = cpuid_entry2_find(entries, nent, 0x80000008, 0);
++	if (best) {
++		int vaddr_bits = (best->eax & 0xff00) >> 8;
++
++		if (vaddr_bits != 48 && vaddr_bits != 57 && vaddr_bits != 0)
++			return -EINVAL;
++	}
++
++	return 0;
++}
++
+ /*
+  * This "raw" version returns the reserved GPA bits without any adjustments for
+  * encryption technologies that usurp bits.  The raw mask should be used if and
 
+-- 
+Vitaly
 
