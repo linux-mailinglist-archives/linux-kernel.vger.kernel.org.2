@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C3E3FDB66
-	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288963FDC3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  1 Sep 2021 15:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343646AbhIAMlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 08:41:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43102 "EHLO mail.kernel.org"
+        id S1345110AbhIAMsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 08:48:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343687AbhIAMiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 08:38:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9E9D6113E;
-        Wed,  1 Sep 2021 12:34:36 +0000 (UTC)
+        id S1345274AbhIAMmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 08:42:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B27161131;
+        Wed,  1 Sep 2021 12:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630499677;
-        bh=Gq1uqw7EOpqM9jl39hUIj6+zhqPhG3mu8XA/ET/BxaE=;
+        s=korg; t=1630499886;
+        bh=6OFHSmKEKrDUREAXDz+Y8sOrmIDcdzmXzRIiyjy0UMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1iJgKube4LECWD4cjy4XWfoJlcDy0Di1D3byunB4qmPiuzGlnPdjz+qnlOp31bqyn
-         5mXxk+ufwNyq4bQ/OQzFXN4OhBm+KOvR/Hd0U34QFJSYzHaVKEGTNf9vA+CKRw3ge0
-         XCp3v2GB/nRNqNg2+YsE2iAdcVH+MYY438jBzZ5A=
+        b=bv6CqCHkHpbOKOt0bnDGPNoeUQsR4Ee9YorRNP8e+mpPS27S4KCRTO0YoJ4a2Dv1+
+         GOIzXehoqwhhYx2KTQJtOMP/+nirMLHfyrlGdnbI41Sxd0HFkGn/K0A8j2S4ph1LKN
+         OPxHzulgNrgntAt/81B+rdZRvVeGSaf1CILaX9aw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 025/103] RDMA/bnxt_re: Remove unpaired rtnl unlock in bnxt_re_dev_init()
-Date:   Wed,  1 Sep 2021 14:27:35 +0200
-Message-Id: <20210901122301.363670060@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Song Yoong Siang <yoong.siang.song@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.13 021/113] net: stmmac: fix kernel panic due to NULL pointer dereference of xsk_pool
+Date:   Wed,  1 Sep 2021 14:27:36 +0200
+Message-Id: <20210901122302.689964010@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
-References: <20210901122300.503008474@linuxfoundation.org>
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +40,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Song Yoong Siang <yoong.siang.song@intel.com>
 
-[ Upstream commit a036ad088306a88de87e973981f2b9224e466c3f ]
+commit a6451192da2691dcf39507bd758dde35d4606ee1 upstream.
 
-The fixed commit removes all rtnl_lock() and rtnl_unlock() calls in
-function bnxt_re_dev_init(), but forgets to remove a rtnl_unlock() in the
-error handling path of bnxt_re_register_netdev(), which may cause a
-deadlock. This bug is suggested by a static analysis tool.
+After free xsk_pool, there is possibility that napi polling is still
+running in the middle, thus causes a kernel crash due to kernel NULL
+pointer dereference of rx_q->xsk_pool and tx_q->xsk_pool.
 
-Fixes: c2b777a95923 ("RDMA/bnxt_re: Refactor device add/remove functionalities")
-Link: https://lore.kernel.org/r/20210816085531.12167-1-dinghao.liu@zju.edu.cn
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this by changing the XDP pool setup sequence to:
+ 1. disable napi before free xsk_pool
+ 2. enable napi after init xsk_pool
+
+The following kernel panic is observed without this patch:
+
+RIP: 0010:xsk_uses_need_wakeup+0x5/0x10
+Call Trace:
+stmmac_napi_poll_rxtx+0x3a9/0xae0 [stmmac]
+__napi_poll+0x27/0x130
+net_rx_action+0x233/0x280
+__do_softirq+0xe2/0x2b6
+run_ksoftirqd+0x1a/0x20
+smpboot_thread_fn+0xac/0x140
+? sort_range+0x20/0x20
+kthread+0x124/0x150
+? set_kthread_struct+0x40/0x40
+ret_from_fork+0x1f/0x30
+---[ end trace a77c8956b79ac107 ]---
+
+Fixes: bba2556efad6 ("net: stmmac: Enable RX via AF_XDP zero-copy")
+Cc: <stable@vger.kernel.org> # 5.13.x
+Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 1fadca8af71a..9ef6aea29ff1 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1410,7 +1410,6 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 	memset(&rattr, 0, sizeof(rattr));
- 	rc = bnxt_re_register_netdev(rdev);
- 	if (rc) {
--		rtnl_unlock();
- 		ibdev_err(&rdev->ibdev,
- 			  "Failed to register with netedev: %#x\n", rc);
- 		return -EINVAL;
--- 
-2.30.2
-
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
+@@ -34,18 +34,18 @@ static int stmmac_xdp_enable_pool(struct
+ 	need_update = netif_running(priv->dev) && stmmac_xdp_is_enabled(priv);
+ 
+ 	if (need_update) {
+-		stmmac_disable_rx_queue(priv, queue);
+-		stmmac_disable_tx_queue(priv, queue);
+ 		napi_disable(&ch->rx_napi);
+ 		napi_disable(&ch->tx_napi);
++		stmmac_disable_rx_queue(priv, queue);
++		stmmac_disable_tx_queue(priv, queue);
+ 	}
+ 
+ 	set_bit(queue, priv->af_xdp_zc_qps);
+ 
+ 	if (need_update) {
+-		napi_enable(&ch->rxtx_napi);
+ 		stmmac_enable_rx_queue(priv, queue);
+ 		stmmac_enable_tx_queue(priv, queue);
++		napi_enable(&ch->rxtx_napi);
+ 
+ 		err = stmmac_xsk_wakeup(priv->dev, queue, XDP_WAKEUP_RX);
+ 		if (err)
+@@ -72,10 +72,10 @@ static int stmmac_xdp_disable_pool(struc
+ 	need_update = netif_running(priv->dev) && stmmac_xdp_is_enabled(priv);
+ 
+ 	if (need_update) {
++		napi_disable(&ch->rxtx_napi);
+ 		stmmac_disable_rx_queue(priv, queue);
+ 		stmmac_disable_tx_queue(priv, queue);
+ 		synchronize_rcu();
+-		napi_disable(&ch->rxtx_napi);
+ 	}
+ 
+ 	xsk_pool_dma_unmap(pool, STMMAC_RX_DMA_ATTR);
+@@ -83,10 +83,10 @@ static int stmmac_xdp_disable_pool(struc
+ 	clear_bit(queue, priv->af_xdp_zc_qps);
+ 
+ 	if (need_update) {
+-		napi_enable(&ch->rx_napi);
+-		napi_enable(&ch->tx_napi);
+ 		stmmac_enable_rx_queue(priv, queue);
+ 		stmmac_enable_tx_queue(priv, queue);
++		napi_enable(&ch->rx_napi);
++		napi_enable(&ch->tx_napi);
+ 	}
+ 
+ 	return 0;
 
 
