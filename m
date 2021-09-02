@@ -2,141 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8913FF3F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B973FF3FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347310AbhIBTQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 15:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243525AbhIBTQM (ORCPT
+        id S1347319AbhIBTRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:17:47 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:46007 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhIBTRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:16:12 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D163C061575;
-        Thu,  2 Sep 2021 12:15:14 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 107-20020a9d0bf4000000b0051b8be1192fso3867382oth.7;
-        Thu, 02 Sep 2021 12:15:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2PHzwL7w/TXZhLdMTKwznQCN6/znjMeKZ/ixaiuLA0E=;
-        b=eT4hcfknQSnLb8CAelm9EJ3gz+TQxqLhE2fLG4nSGcLrIwfhq7cyL5X3wZpBAeTfwG
-         ur11NYfygInfw7+BaKOx7lPATgv//Dkcz/ksQrcGYW5K6R2ViFSY4K0Aqk5z0rGNh8Xk
-         fADQQZn218LmudEWvlzztzp4KCEz00hmTfAgPfeIzmYQyZwmcgFmtHeJSiiF+tH++hlt
-         4BqsCV5b+VXw7RdPyZM9UQhcfXHgL8cq3YpqnkJIJx6q14+2kAV5GkuQDk7DXU83gv4I
-         z3VO5HsSo9JT59zELAZZJH2I2q4PSQ+ldaBqFc9Xg+nCUFb+Xfb5CKLE9oPmx/LiCsWy
-         Kb8g==
+        Thu, 2 Sep 2021 15:17:44 -0400
+Received: by mail-ot1-f44.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso3850669otv.12;
+        Thu, 02 Sep 2021 12:16:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=2PHzwL7w/TXZhLdMTKwznQCN6/znjMeKZ/ixaiuLA0E=;
-        b=PBvDlHfpGo6/c5y2XmKeOadsDsJxJUdey+fLa/Gd01RGGk/KMTugfSzN9A33EGxegB
-         eqUuGXOyxNWcHRH86QNKytHnTr4cz4WcVpkVd8cl5OVOVnnLerL54dMshxtBsl7imIc9
-         LubHWxUjWPnOPUhOM9yYDWiBBEd/1eNxMxk64O7aCZ/XNeCW6VrkVL1pYbmw+N/4nRJB
-         aWkbSxPlH/8wpYNjwvRDcU9paL2PCRD/9F5sivomzaAryUcA/rtttqWpLNRhz6bNLGJ8
-         jNf4AO0AaN3FKvjyy4jLgV/X3RT8k+Pb9/Qsk7entd6mUbmjcfBKD6bcMdoUb3ubYsyD
-         ErGA==
-X-Gm-Message-State: AOAM5301lCFUC0QPGR7slDdWRRnAVAo4kRVRejH8uje46bUHdk7qp3uf
-        TUZJU6uMFrBm0Wl0ucdODXs=
-X-Google-Smtp-Source: ABdhPJzpR9WvJsa+I/KVFDvkAyxQ7094Jo5q4faWfdaBZ8/Ckft9vvWAblaml/ktcISq31+mGdI9xA==
-X-Received: by 2002:a9d:309:: with SMTP id 9mr4070215otv.365.1630610113546;
-        Thu, 02 Sep 2021 12:15:13 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k1sm511866otr.43.2021.09.02.12.15.12
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ovK23jw31tHHzYJHygiQckfwChmChzppFMTDWeKXBRI=;
+        b=oweKH9fzSv6DGrYI0T65IAym4s6vQZV/n/30Y3vnGD613t7RC7FOLes9MnNs80hTOq
+         TquhcS/AFJE3lmsAWFpcJYlZAUsVwI985dMi5umLUsjInu6oBNR9cpXoEHjuI1Ye9KKG
+         7Z2jLNHD3sbZIRX0Vdnw+RuEWlyRhy8s0H7y5rawfC0Ocg6YRAg0oWBtOfx4iV56JC0C
+         pjmtYcRdkFijPMbNC5X4KMIbYcznLjDrMaOWWXreMQQqZmfO8a7FX71LAK1mfwvFknCm
+         204Ssi6IIXXowJKdyU7POaV5Pwch7SNf3tK1RdJEWZ4zc1Hi1PeDSIsPzna+Tyzfo9rf
+         8+gg==
+X-Gm-Message-State: AOAM531XLp4HqPeM8edtkrLl+2e+GpO9RqdyyE1rttZOjPhWU/PI5k3v
+        PXEgRxIjPikv4oudwHESYg==
+X-Google-Smtp-Source: ABdhPJwL9T1ZSpeCfgUmexDbaoohVcg3Vhw3JPmY6MVMZVQDu1uIq6BQ4K5WGv8rH9Y07O0IMyc41Q==
+X-Received: by 2002:a05:6830:20c2:: with SMTP id z2mr3957625otq.285.1630610204847;
+        Thu, 02 Sep 2021 12:16:44 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id z18sm558960oib.27.2021.09.02.12.16.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 12:15:13 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 2 Sep 2021 12:15:11 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, bp@alien8.de, yazen.ghannam@amd.com,
-        mingo@redhat.com, nathan.fontenot@amd.com, lewis.carroll@amd.com,
-        suma hegde <suma.hegde@amd.com>
-Subject: Re: [PATCH 2/3] k10temp: Remove residues of current and voltage
-Message-ID: <20210902191511.GA1754521@roeck-us.net>
-References: <20210902174155.7365-1-nchatrad@amd.com>
- <20210902174155.7365-2-nchatrad@amd.com>
+        Thu, 02 Sep 2021 12:16:43 -0700 (PDT)
+Received: (nullmailer pid 1233714 invoked by uid 1000);
+        Thu, 02 Sep 2021 19:16:42 -0000
+Date:   Thu, 2 Sep 2021 14:16:42 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     bjorn.andersson@linaro.org, sboyd@kernel.org, vireshk@kernel.org,
+        agross@kernel.org, nm@ti.com, ilia.lin@kernel.org,
+        niklas.cassel@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 2/2] dt-bindings: opp: Add binding for qcom-cpu-opp
+Message-ID: <YTEjGv/NVj4Jm/fh@robh.at.kernel.org>
+References: <20210901155559.627491-1-angelogioacchino.delregno@somainline.org>
+ <20210901155559.627491-2-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210902174155.7365-2-nchatrad@amd.com>
+In-Reply-To: <20210901155559.627491-2-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 11:11:54PM +0530, Naveen Krishna Chatradhi wrote:
-> From: suma hegde <suma.hegde@amd.com>
+On Wed, Sep 01, 2021 at 05:55:59PM +0200, AngeloGioacchino Del Regno wrote:
+> This adds a binding documenting operating-points-v2-kryo-cpu in a
+> qcom-cpu-opp.yaml file. Logic is to add any new Qualcomm SoCs CPU
+> related OPP compatibles in here.
 > 
-> Commit id "b00647c46c9d7f6ee1ff6aaf335906101755e614",
-> adds reporting current and voltage to k10temp.c
-> 
-> The commit id "0a4e668b5d52eed8026f5d717196b02b55fb2dc6",
-> removed reporting current and voltage from k10temp.c
-> 
-> The curr and in(voltage) entries are not removed from
-> "k10temp_info" structure. Removing those residue entries.
-> while at it, update k10temp driver documentation
-> 
-> Signed-off-by: suma hegde <suma.hegde@amd.com>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-
-Applied.
-
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 > ---
-> This is an unrelated change, should we submit this seperately or drop this for now?
+>  .../devicetree/bindings/opp/qcom-cpu-opp.yaml | 68 +++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/opp/qcom-cpu-opp.yaml
 > 
-Guess the above answers your question.
+> diff --git a/Documentation/devicetree/bindings/opp/qcom-cpu-opp.yaml b/Documentation/devicetree/bindings/opp/qcom-cpu-opp.yaml
+> new file mode 100644
+> index 000000000000..b4d83b64228c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/opp/qcom-cpu-opp.yaml
+> @@ -0,0 +1,68 @@
+> +# SPDX-License-Identifier: GPL-2.0
 
-Thanks,
-Guenter
+As checkpatch says, dual license.
 
->  Documentation/hwmon/k10temp.rst | 17 -----------------
->  drivers/hwmon/k10temp.c         |  6 ------
->  2 files changed, 23 deletions(-)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/opp/qcom-cpu-opp.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies, Inc. CPU OPP bindings
+> +
+> +maintainers:
+> +  - Ilia Lin <ilia.lin@kernel.org>
+> +
+> +allOf:
+> +  - $ref: opp-v2-base.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: operating-points-v2-kryo-cpu
+> +
+> +  nvmem-cells:
+> +    description: |
+> +      A phandle pointing to a nvmem-cells node representing the efuse
+> +      registers that has information about the speedbin that is used
+> +      to select the right frequency/voltage value pair.
+> +    maxItems: 1
+> +
+> +  opp-shared: true
+> +
+> +required:
+> +  - compatible
+> +
+> +patternProperties:
+> +  '^opp-?[0-9]+$':
+> +    type: object
+> +
+> +    properties:
+> +      clock-latency-ns: true
+> +      opp-hz: true
+> +      opp-microvolt: true
+> +      opp-supported-hw: true
+> +      required-opps: true
+> +
+> +    required:
+> +      - opp-hz
+> +
+> +    unevaluatedProperties: false
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    cpu_opp_table: opp-table-cpu {
+> +        compatible = "operating-points-v2-kryo-cpu";
+> +        opp-shared;
+> +
+> +        opp-1094400000 {
+> +            opp-hz = /bits/ 64 <1094400000>;
+> +            required-opps = <&cpr_opp1>;
+> +        };
+> +        opp-1248000000 {
+> +            opp-hz = /bits/ 64 <1248000000>;
+> +            required-opps = <&cpr_opp2>;
+> +        };
+> +        opp-1401600000 {
+> +            opp-hz = /bits/ 64 <1401600000>;
+> +            required-opps = <&cpr_opp3>;
+> +        };
+> +    };
+> +...
+> -- 
+> 2.32.0
 > 
-> diff --git a/Documentation/hwmon/k10temp.rst b/Documentation/hwmon/k10temp.rst
-> index 8557e26281c3..91b99adc6c48 100644
-> --- a/Documentation/hwmon/k10temp.rst
-> +++ b/Documentation/hwmon/k10temp.rst
-> @@ -132,20 +132,3 @@ On Family 17h and Family 18h CPUs, additional temperature sensors may report
->  Core Complex Die (CCD) temperatures. Up to 8 such temperatures are reported
->  as temp{3..10}_input, labeled Tccd{1..8}. Actual support depends on the CPU
->  variant.
-> -
-> -Various Family 17h and 18h CPUs report voltage and current telemetry
-> -information. The following attributes may be reported.
-> -
-> -Attribute	Label	Description
-> -===============	=======	================
-> -in0_input	Vcore	Core voltage
-> -in1_input	Vsoc	SoC voltage
-> -curr1_input	Icore	Core current
-> -curr2_input	Isoc	SoC current
-> -===============	=======	================
-> -
-> -Current values are raw (unscaled) as reported by the CPU. Core current is
-> -reported as multiples of 1A / LSB. SoC is reported as multiples of 0.25A
-> -/ LSB. The real current is board specific. Reported currents should be seen
-> -as rough guidance, and should be scaled using sensors3.conf as appropriate
-> -for a given board.
-> diff --git a/drivers/hwmon/k10temp.c b/drivers/hwmon/k10temp.c
-> index 38bc35ac8135..3618a924e78e 100644
-> --- a/drivers/hwmon/k10temp.c
-> +++ b/drivers/hwmon/k10temp.c
-> @@ -362,12 +362,6 @@ static const struct hwmon_channel_info *k10temp_info[] = {
->  			   HWMON_T_INPUT | HWMON_T_LABEL,
->  			   HWMON_T_INPUT | HWMON_T_LABEL,
->  			   HWMON_T_INPUT | HWMON_T_LABEL),
-> -	HWMON_CHANNEL_INFO(in,
-> -			   HWMON_I_INPUT | HWMON_I_LABEL,
-> -			   HWMON_I_INPUT | HWMON_I_LABEL),
-> -	HWMON_CHANNEL_INFO(curr,
-> -			   HWMON_C_INPUT | HWMON_C_LABEL,
-> -			   HWMON_C_INPUT | HWMON_C_LABEL),
->  	NULL
->  };
->  
+> 
