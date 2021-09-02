@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C053FEC43
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC0A3FEC45
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244798AbhIBKkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 06:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233714AbhIBKkL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 06:40:11 -0400
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC9DC061575;
-        Thu,  2 Sep 2021 03:39:13 -0700 (PDT)
-Received: from localhost (unknown [149.11.102.75])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id E59C44D976A56;
-        Thu,  2 Sep 2021 03:39:09 -0700 (PDT)
-Date:   Thu, 02 Sep 2021 11:39:08 +0100 (BST)
-Message-Id: <20210902.113908.1070444215922235089.davem@davemloft.net>
-To:     luca@coelho.fi
-Cc:     torvalds@linux-foundation.org, johannes@sipsolutions.net,
-        kuba@kernel.org, kvalo@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        miriam.rachel.korenblitz@intel.com
-Subject: Re: [PATCH] iwlwifi: mvm: add rtnl_lock() in
- iwl_mvm_start_get_nvm()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20210902101101.383243-1-luca@coelho.fi>
-References: <635201a071bb6940ac9c1f381efef6abeed13f70.camel@intel.com>
-        <20210902101101.383243-1-luca@coelho.fi>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Thu, 02 Sep 2021 03:39:12 -0700 (PDT)
+        id S244800AbhIBKkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 06:40:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233714AbhIBKkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 06:40:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D5B060FC0;
+        Thu,  2 Sep 2021 10:39:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630579179;
+        bh=pskipErYG3yij3Nnbn/UFKHtIqoDLEsIIQwNdTzNC3w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fDU6p6Zgnta23vpi6z+mLMRJZ3jhS35PqWTjGaYFT1WkaatOwxRpopOq56GVtwRTO
+         O6AWwHFtIn8opjYQePBCiQRGkGYlAl4kO6GfQe0bTCUzIKbOoisotBW+WYPwjwAf33
+         3X0O2xSqekO6mZ5TiSQCE1uLP8YDvzNf2uCTBgCw=
+Date:   Thu, 2 Sep 2021 12:39:37 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] media: usb: fix memory leak in stk_camera_probe
+Message-ID: <YTCp6d1umr7AXRZW@kroah.com>
+References: <20210714032340.504836-1-mudongliangabcd@gmail.com>
+ <CAD-N9QXWHeNvR06wyg3Pym8xUb27TsuFKKKG=tZ0-x5ZGCr-Hw@mail.gmail.com>
+ <CAD-N9QWj8w-xVAni2cGHyEei78iKEX_V0a00r0x3We7tfFGZjw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD-N9QWj8w-xVAni2cGHyEei78iKEX_V0a00r0x3We7tfFGZjw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luca Coelho <luca@coelho.fi>
-Date: Thu,  2 Sep 2021 13:11:01 +0300
+On Thu, Sep 02, 2021 at 06:23:36PM +0800, Dongliang Mu wrote:
+> On Fri, Jul 23, 2021 at 6:11 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> >
+> > On Wed, Jul 14, 2021 at 11:23 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > >
+> > > stk_camera_probe mistakenly execute usb_get_intf and increase the
+> > > refcount of interface->dev.
+> > >
+> > > Fix this by removing the execution of usb_get_intf.
+> >
+> > Any idea about this patch?
+> 
+> +cc Dan Carpenter, gregkh
+> 
+> There is no reply in this thread in one month. Can someone give some
+> feedback on this patch?
 
-> From: Luca Coelho <luciano.coelho@intel.com>
-> 
-> Due to a rebase damage, we lost the rtnl_lock() when the patch was
-> sent out.  This causes an RTNL imbalance and failed assertions, due to
-> missing RTNL protection, for instance:
-> 
->   RTNL: assertion failed at net/wireless/reg.c (4025)
->   WARNING: CPU: 60 PID: 1720 at net/wireless/reg.c:4025 regulatory_set_wiphy_regd_sync+0x7f/0x90 [cfg80211]
->   Call Trace:
->    iwl_mvm_init_mcc+0x170/0x190 [iwlmvm]
->    iwl_op_mode_mvm_start+0x824/0xa60 [iwlmvm]
->    iwl_opmode_register+0xd0/0x130 [iwlwifi]
->    init_module+0x23/0x1000 [iwlmvm]
-> 
-> Fix this by adding the missing rtnl_lock() back to the code.
-> 
-> Fixes: eb09ae93dabf ("iwlwifi: mvm: load regdomain at INIT stage")
-> Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+This is the media developers domain, not much I can do here.
 
-Linus, please just take this directly, thanks.
+thanks,
 
-Acked-by: David S. Miller <davem@davemloft.net>
+greg k-h
