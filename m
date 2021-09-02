@@ -2,65 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C0B3FF2E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807FB3FF2EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346776AbhIBR5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 13:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40400 "EHLO
+        id S1346809AbhIBSAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346676AbhIBR5C (ORCPT
+        with ESMTP id S230120AbhIBSAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 13:57:02 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8762C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 10:56:03 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id mf2so6322067ejb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 10:56:03 -0700 (PDT)
+        Thu, 2 Sep 2021 14:00:05 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 300F7C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 10:59:07 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id c206so5436507ybb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 10:59:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=3ueauXDgDPUsJ8L0QbjPFVIq9EQzGpp/Ye3xqEcZ/uw=;
-        b=ZS2K47tr4H7dA7UpF19R6QozQneN/LB4UnRe9cy1As0pl3ocGKTCizrNYUZ616468n
-         p1L9nJx/d6xNG5XnV4IHhF/twzllNZURbX05GeCZKAdDSUkJXY5Aa+Rac1sfjBQNVtFs
-         vaQ8a6dTJ18nAf8HFBta1TMHdLLiiYEldicDd4xJJQCu+3Hh7PcP6sJyXZqzE7BS48JH
-         nazm9i9p0oTGQjvX2Lwss/I9cV0xPvUxgcbtBr8sthT/B0dc63RKX0lEUXskLyB+qJ1e
-         O+fq/5Oom6b5ehFuVDXTO/HtQ/Rro7k/sKS8xZsVD84Jyp5pFwaYyywh6+oAKmvz0LPb
-         +AEw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jjW6xdHTM5+s0n5Gr94VMOZzqZcFAl+XMK5rvNwK9j4=;
+        b=W9uW0mxtfIcS9be8lr+K8+Nbfvy+mMukhnBRlOizysy/Yd/Vbr6CXq9YHCzyqMQvg/
+         kHRRH70A7ymqkX7O9dve9kv6ImHrszcAYR+2A9tjJ6zomtEg2A7WfbIDyHjbyIJSfXnd
+         iNYGXe2BKR646sTqU5i58gXNs2GB+macRvilIrW/73gY2dnHfU0F/Aha253ghA5369Kt
+         7Y6KbqgkMGOcZ83P2mznnkCgQvxuFPcgd8YXcdfy7CVhyf9nBlJHkg1q5llUPQKyUUxv
+         FRVwZSDq28Jj/mOZwYgzsLohmmvpD8rRI0OfjkAbC3dciJj4ljJe392qmeXRdiykmhF6
+         gQHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=3ueauXDgDPUsJ8L0QbjPFVIq9EQzGpp/Ye3xqEcZ/uw=;
-        b=hrIGrAdnqFhWWhdD5JDu1KGvxNnOmSuIri315Pwmb57EMQsMjGd69ZijEchRABb9wc
-         NcngUbSfa3UJUBdWFTSsgRxvLTcQltNKvp5YgQU93I3n4KuEDSRiAGUOGs7gwDCL0xTz
-         81hgAm2Lfq4Bz1nqWuOjAS2/dvuQHpTpxwYKdPA2R/eLi7/Ngc/ttDsiNiNxCRnenR5W
-         4gLw7mjyuupRbP3ryzW/fykzhC8v9LBELszUd5YfHZpsJQaTgpjoLdME6CPsRZ1K2/lt
-         n4bVEGeKMc9wja1LqJ1GPiosB/e033NmSt4YyuwgUavfr0WgzMbDOSYaXyE2sWNXuArr
-         ZZzQ==
-X-Gm-Message-State: AOAM532lWffv2q2ZiVcwoSu68e8b/W+WMbYzrt7s6IpfGkPsizPBRUFt
-        sHWNaQv4umOz9cvFvJRBS2nLHPPqeoDqa6KlijA=
-X-Google-Smtp-Source: ABdhPJzUsXLozyFRarJG1aDpFwm2LwNYzt0sVsEvWvP+I1lyToYmQBVEUuUElqN8cIP2T8dCfXBJ3x7p+StFbmGIzGY=
-X-Received: by 2002:a17:906:abd7:: with SMTP id kq23mr5121407ejb.542.1630605362458;
- Thu, 02 Sep 2021 10:56:02 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jjW6xdHTM5+s0n5Gr94VMOZzqZcFAl+XMK5rvNwK9j4=;
+        b=kWXbP9wbWlCTs/K+7uUmKM43NYOe+UcO6l+2L43jOUGX2emk/0eHRbXp1lOaiHHmBc
+         /n5A1HNrZQDxn7yRglTv4mEDOcPR6GvLYLn7fKXuJf5o6Xb1JBrIDuQZxmAaXrllSZvt
+         E4G7i6Nfhh96rUm9DRCoaSMrct5g+T892yKC9EkYPODC5cZYkwEF1CIehftLDgnJLb+A
+         rdP2E5xH8gneWLmA8/YngPqJ/62pLV8oOuoJM3duP3tSrcQczel6qumo6xRb9wemaLrD
+         mtCu+bRCbWTz0desktav5pXU0L35nX4ygekonYdpSuoxTgccsqs2u07J3IdBI39kCSri
+         Uqbg==
+X-Gm-Message-State: AOAM530h/h751YouKLas80U7H/G/VgIj2trzVXw3Xi0dJEMilQO81NAJ
+        jC/pWk+YNUw3AOnt42iRawxHttGZpdpp84l5eYIlFw==
+X-Google-Smtp-Source: ABdhPJywXj+nljc4ROlXKw+RojrvVBHmblH2vd8rtBZiDkasl81c596R2ZD949ecUE3IwC4urBiaxNdrKciMbnr5MAg=
+X-Received: by 2002:a25:d213:: with SMTP id j19mr6450877ybg.20.1630605546131;
+ Thu, 02 Sep 2021 10:59:06 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a50:7798:0:0:0:0:0 with HTTP; Thu, 2 Sep 2021 10:56:02 -0700 (PDT)
-Reply-To: pmaurice335@gmail.com
-From:   peacemaurice <aziakalsoumi@gmail.com>
-Date:   Thu, 2 Sep 2021 17:56:02 +0000
-Message-ID: <CAG2r4eCcurj1ry0cS45YYM4_hR5WVcgX4YDqud93Z5wM7HXMQA@mail.gmail.com>
-Subject: Hallo
-To:     undisclosed-recipients:;
+References: <YSpr/BOZj2PKoC8B@lunn.ch> <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
+ <YS4rw7NQcpRmkO/K@lunn.ch> <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
+ <YS6nxLp5TYCK+mJP@lunn.ch> <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
+ <YS608fdIhH4+qJsn@lunn.ch> <20210831231804.zozyenear45ljemd@skbuf>
+ <CAGETcx-ktuU1RqXwj_qV8tCOLAg3DXU-wCAm6+NukyxRencSjw@mail.gmail.com>
+ <20210901084625.sqzh3oacwgdbhc7f@skbuf> <YTEMs1mMIT/Z0c4H@lunn.ch>
+In-Reply-To: <YTEMs1mMIT/Z0c4H@lunn.ch>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 2 Sep 2021 10:58:29 -0700
+Message-ID: <CAGETcx9gTEr6O2u0VwAgowaMynx=bGQpttw6dRHsud-kM0QmKg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pros=C3=ADm, mu=C5=BEeme mluvit?
-Neco se pr=C3=A1ve objevilo a je to velmi nal=C3=A9hav=C3=A9, pros=C3=ADm, =
-potrebuji va=C5=A1i pozornost.
+On Thu, Sep 2, 2021 at 10:41 AM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> >   How would this be avoided? Or are you thinking of some kind of two-level
+> >   component driver system:
+> >   - the DSA switch is a component master, with components being its
+> >     sub-devices such as internal PHYs etc
+> >   - the DSA switch is also a component of the DSA switch tree
+>
+> I think you might be missing a level. Think about the automotive
+> reference design system you posted the DT for a couple of days
+> ago. Don't you have cascaded switches, which are not members of the
+> same DSA tree. You might need a component for that whole group of
+> switches, above what you suggest here.
+>
+> Can you nest components? How deep can you nest them?
 
-pozdravy
-M=C3=ADr Maurice.
+As far as I know you can nest components.
+
+Also, technically you can make your own lightweight component model
+like behaviour using stateful device links or fwnode links (probably
+just a simple for loop). Just create a new "dsa_switch_tree" device
+and create device links between that and whatever other devices that
+need to probe first. And then you'll just have a common
+"dsa_switch_tree" driver that probes these types of devices.
+
+I'm waiting for [1] to land before I jump in and clean up the
+component model to be more flexible and cleaner by using device links.
+The current implementation does a lot of stuff that device links will
+take care of for free.
+
+[1] - https://lore.kernel.org/lkml/CAGETcx-mRrqC_sGiBk+wx8RtwjJjXf0KJo+ejU6SweEBiATaLw@mail.gmail.com/
+
+-Saravana
