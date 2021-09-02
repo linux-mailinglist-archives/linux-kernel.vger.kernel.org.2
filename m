@@ -2,176 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76733FEAFE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9503FEB12
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbhIBJQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 05:16:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44044 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233511AbhIBJQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:16:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC76060FE6;
-        Thu,  2 Sep 2021 09:15:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630574118;
-        bh=KuAjmVrOqdZCZCHcGGY4uTWopUeI1LXNwgvNJx+punw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1Ei+yj9vtdfT7NQi4xrKIDVy4Bci9D3wx67OaYdLo1TkXA7742ZId7nw6sWy53fTq
-         QH2GRbYcmH2ep2XL7ozqKNPyktB/k+L2wK1ZXEN9/cp8IBFKHz8wPSWdDD668GtKv9
-         1jQUhGudpI7vgjR0GEOv29Y0kmeGQ04BvkN3lT+4=
-Date:   Thu, 2 Sep 2021 11:15:15 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] staging: greybus: Convert uart.c from IDR to XArray
-Message-ID: <YTCWI5wID0pS9PMl@kroah.com>
-References: <20210816195000.736-1-fmdefrancesco@gmail.com>
+        id S245383AbhIBJRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 05:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245074AbhIBJQf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 05:16:35 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A589C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 02:15:37 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id e26so768437wmk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 02:15:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vg7ZILCVm0WdsNJvBlIPNdvE0ye3V6BoSn4aucYNsYo=;
+        b=qx6i39KsnL1YOrTEyVFio/UqtD2QgLh0GGQl23rNMuoI5Nj6C1yPFhcvoaWilGSKrk
+         kWGuXFYR4HWCLk7XlVd6jKK/NancaLBRWmjJKJXgrILY9e3UPSQE/qUEwibGRpGtPuzH
+         7SoYYh65Yy2VbeX7+WXONmwTLfGnE/K1Ua/SrTILgEI8aWhQ8T8Mh17rvcumgSpb4Gr3
+         t/uS4RLZ5/KeWRsYGCG+fOOU8PxIoN6k5nNVE2q9fcedrd3XGfqEi/s6T6gpmxY/6YYi
+         0Vj3rS/kGH0AbAy3d7nqNhvKbDLyWg+MZIQr8FREbYKBUwlpg8TL8cGtjAcCn5Y4i6mD
+         qWFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=vg7ZILCVm0WdsNJvBlIPNdvE0ye3V6BoSn4aucYNsYo=;
+        b=FbfDgFOLguiYGWJfsEYNn8AZGwZ5yGpSvIteQZ53QdzTEFJjJ2UyViM4DzuBixyj0C
+         UE6Nw9xKSKV4ftwgqcBA2bqbhPNvigdZCEO//9XxI25vFNSO0uBaKxB3pi/N21iW+dTf
+         fV6uplcqOq47VdE25sAU+udrX53qAFNijubWyPNouMfaRnWJHLwH1Yo4Fh8v/BDcssB8
+         spkq7c+Fntt8s8KsayiokPFKSot185Qoe245Gnxj3P+WRM+agd2H9IBGjp4lMo6rxmUz
+         sd0XrjEk8o+bVIsXjgigLN+GSCWTboCudZGgNSB+dMOqiWb8jG2GWR8K+HBkjFfrblha
+         i3LA==
+X-Gm-Message-State: AOAM530+jzirk+Wm209W8H0ydPKdIpFXCInK7Gomi6R5K4vkZO+NRQOX
+        ttBtOKxP7vX2u9tFz0Ct5Aex6w==
+X-Google-Smtp-Source: ABdhPJwfmc55TO0xRjie2C+BXLjFqLlXdgClBA9xOJkgqfYhXJeBZbLjk+pZkXtVtnHwraRH2m/78Q==
+X-Received: by 2002:a1c:4a:: with SMTP id 71mr2113921wma.87.1630574135690;
+        Thu, 02 Sep 2021 02:15:35 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:98:6312:3c8:6531? ([2001:861:44c0:66c0:98:6312:3c8:6531])
+        by smtp.gmail.com with ESMTPSA id o12sm1112263wmr.2.2021.09.02.02.15.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 02:15:35 -0700 (PDT)
+Subject: Re: [PATCH 2/5] drm/meson: Use common drm_fixed_16_16 helper
+To:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        dri-devel@lists.freedesktop.org
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+References: <20210901175431.14060-1-alyssa@rosenzweig.io>
+ <20210901175431.14060-2-alyssa@rosenzweig.io>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <32207beb-3d28-c858-4997-74725729e5a1@baylibre.com>
+Date:   Thu, 2 Sep 2021 11:15:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816195000.736-1-fmdefrancesco@gmail.com>
+In-Reply-To: <20210901175431.14060-2-alyssa@rosenzweig.io>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 09:50:00PM +0200, Fabio M. De Francesco wrote:
-> Convert greybus/uart.c from IDR to XArray. The abstract data type XArray
-> is more memory-efficient, parallelisable, and cache friendly. It takes
-> advantage of RCU to perform lookups without locking. Furthermore, IDR is
-> deprecated because XArray has a better (cleaner and more consistent) API.
+On 01/09/2021 19:54, Alyssa Rosenzweig wrote:
+> Replace our open-coded FRAC_16_16 with the common drm_fixed_16_16
+> helper to reduce code duplication between drivers.
 > 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> Cc: linux-amlogic@lists.infradead.org
 > ---
+>  drivers/gpu/drm/meson/meson_overlay.c | 7 +++----
+>  drivers/gpu/drm/meson/meson_plane.c   | 5 ++---
+>  2 files changed, 5 insertions(+), 7 deletions(-)
 > 
-> v2->v3:
-> 	Fix some issues according to a review by Alex Elder <elder@ieee.org>
-> 
-> v1->v2:
->         Fix an issue found by the kernel test robot. It is due to
->         passing to xa_*lock() the same old mutex that IDR used with
->         the previous version of the code.
-> 
->  drivers/staging/greybus/uart.c | 34 ++++++++++++++++------------------
->  1 file changed, 16 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
-> index 73f01ed1e5b7..815156c88005 100644
-> --- a/drivers/staging/greybus/uart.c
-> +++ b/drivers/staging/greybus/uart.c
-> @@ -22,7 +22,7 @@
->  #include <linux/serial.h>
->  #include <linux/tty_driver.h>
->  #include <linux/tty_flip.h>
-> -#include <linux/idr.h>
-> +#include <linux/xarray.h>
->  #include <linux/fs.h>
->  #include <linux/kdev_t.h>
->  #include <linux/kfifo.h>
-> @@ -32,8 +32,9 @@
+> diff --git a/drivers/gpu/drm/meson/meson_overlay.c b/drivers/gpu/drm/meson/meson_overlay.c
+> index dfef8afcc245..d8fc6bbb332f 100644
+> --- a/drivers/gpu/drm/meson/meson_overlay.c
+> +++ b/drivers/gpu/drm/meson/meson_overlay.c
+> @@ -15,6 +15,7 @@
+>  #include <drm/drm_gem_atomic_helper.h>
+>  #include <drm/drm_gem_cma_helper.h>
+>  #include <drm/drm_plane_helper.h>
+> +#include <drm/drm_fixed.h>
 >  
->  #include "gbphy.h"
->  
-> -#define GB_NUM_MINORS	16	/* 16 is more than enough */
-> -#define GB_NAME		"ttyGB"
-> +#define GB_NUM_MINORS		16	/* 16 is more than enough */
-> +#define GB_RANGE_MINORS		XA_LIMIT(0, GB_NUM_MINORS)
-> +#define GB_NAME			"ttyGB"
->  
->  #define GB_UART_WRITE_FIFO_SIZE		PAGE_SIZE
->  #define GB_UART_WRITE_ROOM_MARGIN	1	/* leave some space in fifo */
-> @@ -67,8 +68,7 @@ struct gb_tty {
+>  #include "meson_overlay.h"
+>  #include "meson_registers.h"
+> @@ -162,8 +163,6 @@ struct meson_overlay {
 >  };
+>  #define to_meson_overlay(x) container_of(x, struct meson_overlay, base)
 >  
->  static struct tty_driver *gb_tty_driver;
-> -static DEFINE_IDR(tty_minors);
-> -static DEFINE_MUTEX(table_lock);
-> +static DEFINE_XARRAY(tty_minors);
->  
->  static int gb_uart_receive_data_handler(struct gb_operation *op)
+> -#define FRAC_16_16(mult, div)    (((mult) << 16) / (div))
+> -
+>  static int meson_overlay_atomic_check(struct drm_plane *plane,
+>  				      struct drm_atomic_state *state)
 >  {
-> @@ -341,8 +341,8 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
->  {
->  	struct gb_tty *gb_tty;
+> @@ -181,8 +180,8 @@ static int meson_overlay_atomic_check(struct drm_plane *plane,
 >  
-> -	mutex_lock(&table_lock);
-> -	gb_tty = idr_find(&tty_minors, minor);
-> +	xa_lock(&tty_minors);
-> +	gb_tty = xa_load(&tty_minors, minor);
->  	if (gb_tty) {
->  		mutex_lock(&gb_tty->mutex);
->  		if (gb_tty->disconnected) {
-> @@ -353,19 +353,19 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
->  			mutex_unlock(&gb_tty->mutex);
->  		}
->  	}
-> -	mutex_unlock(&table_lock);
-> +	xa_unlock(&tty_minors);
->  	return gb_tty;
+>  	return drm_atomic_helper_check_plane_state(new_plane_state,
+>  						   crtc_state,
+> -						   FRAC_16_16(1, 5),
+> -						   FRAC_16_16(5, 1),
+> +						   drm_fixed_16_16(1, 5),
+> +						   drm_fixed_16_16(5, 1),
+>  						   true, true);
 >  }
 >  
->  static int alloc_minor(struct gb_tty *gb_tty)
+> diff --git a/drivers/gpu/drm/meson/meson_plane.c b/drivers/gpu/drm/meson/meson_plane.c
+> index 8640a8a8a469..4fae9ebbf178 100644
+> --- a/drivers/gpu/drm/meson/meson_plane.c
+> +++ b/drivers/gpu/drm/meson/meson_plane.c
+> @@ -19,6 +19,7 @@
+>  #include <drm/drm_gem_atomic_helper.h>
+>  #include <drm/drm_gem_cma_helper.h>
+>  #include <drm/drm_plane_helper.h>
+> +#include <drm/drm_fixed.h>
+>  
+>  #include "meson_plane.h"
+>  #include "meson_registers.h"
+> @@ -68,8 +69,6 @@ struct meson_plane {
+>  };
+>  #define to_meson_plane(x) container_of(x, struct meson_plane, base)
+>  
+> -#define FRAC_16_16(mult, div)    (((mult) << 16) / (div))
+> -
+>  static int meson_plane_atomic_check(struct drm_plane *plane,
+>  				    struct drm_atomic_state *state)
 >  {
->  	int minor;
-> +	int ret;
->  
-> -	mutex_lock(&table_lock);
-> -	minor = idr_alloc(&tty_minors, gb_tty, 0, GB_NUM_MINORS, GFP_KERNEL);
-> -	mutex_unlock(&table_lock);
-> -	if (minor >= 0)
-> -		gb_tty->minor = minor;
-> +	ret = xa_alloc(&tty_minors, &minor, gb_tty, GB_RANGE_MINORS, GFP_KERNEL);
-> +	if (ret)
-> +		return ret;
-> +	gb_tty->minor = minor;
->  	return minor;
+> @@ -92,7 +91,7 @@ static int meson_plane_atomic_check(struct drm_plane *plane,
+>  	 */
+>  	return drm_atomic_helper_check_plane_state(new_plane_state,
+>  						   crtc_state,
+> -						   FRAC_16_16(1, 5),
+> +						   drm_fixed_16_16(1, 5),
+>  						   DRM_PLANE_HELPER_NO_SCALING,
+>  						   false, true);
 >  }
->  
-> @@ -374,9 +374,7 @@ static void release_minor(struct gb_tty *gb_tty)
->  	int minor = gb_tty->minor;
->  
->  	gb_tty->minor = 0;	/* Maybe should use an invalid value instead */
-> -	mutex_lock(&table_lock);
-> -	idr_remove(&tty_minors, minor);
-> -	mutex_unlock(&table_lock);
-> +	xa_erase(&tty_minors, minor);
->  }
->  
->  static int gb_tty_install(struct tty_driver *driver, struct tty_struct *tty)
-> @@ -837,7 +835,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
->  
->  	minor = alloc_minor(gb_tty);
->  	if (minor < 0) {
-> -		if (minor == -ENOSPC) {
-> +		if (minor == -EBUSY) {
->  			dev_err(&gbphy_dev->dev,
->  				"no more free minor numbers\n");
->  			retval = -ENODEV;
-> @@ -982,7 +980,7 @@ static void gb_tty_exit(void)
->  {
->  	tty_unregister_driver(gb_tty_driver);
->  	put_tty_driver(gb_tty_driver);
-> -	idr_destroy(&tty_minors);
-> +	xa_destroy(&tty_minors);
->  }
->  
->  static const struct gbphy_device_id gb_uart_id_table[] = {
-> -- 
-> 2.32.0
-> 
 > 
 
-I'm going to drop this from my review queue as I do not see the need to
-do this type of conversion at this point in time.  Perhaps if "real"
-drivers in the kernel get converted over to this new api we should also
-do it here, but for now, there's much more "real" issues with the
-greybus drivers that should be done that is keeping them from being
-merged into the main part of the kernel tree, that the churn here is not
-necessary at this point in time (especially if you have not tested
-this.)
-
-thanks,
-
-greg k-h
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
