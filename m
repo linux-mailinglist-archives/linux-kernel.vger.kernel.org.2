@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8333FEE08
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902D23FEE03
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344848AbhIBMua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 08:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
+        id S1344741AbhIBMuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 08:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344751AbhIBMuU (ORCPT
+        with ESMTP id S1344720AbhIBMuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:50:20 -0400
+        Thu, 2 Sep 2021 08:50:17 -0400
 Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C132C061796
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FA2C061575
         for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 05:49:18 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:7822:25bf:8b52:7a36])
         by albert.telenet-ops.be with bizsmtp
-        id p0pF2500F13ssow060pFq8; Thu, 02 Sep 2021 14:49:16 +0200
+        id p0pF2500P13ssow060pFq9; Thu, 02 Sep 2021 14:49:16 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mLm9a-001Ldn-NY; Thu, 02 Sep 2021 14:49:14 +0200
+        id 1mLm9a-001Ldm-Sz; Thu, 02 Sep 2021 14:49:14 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mLm9a-00BK7c-B1; Thu, 02 Sep 2021 14:49:14 +0200
+        id 1mLm9a-00BK7i-Bq; Thu, 02 Sep 2021 14:49:14 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Sumit Semwal <sumit.semwal@linaro.org>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
@@ -36,45 +36,41 @@ Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
         linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 0/3] dma-buf: Add missing dependencies on DMA_SHARED_BUFFER
-Date:   Thu,  2 Sep 2021 14:49:10 +0200
-Message-Id: <20210902124913.2698760-1-geert@linux-m68k.org>
+Subject: [PATCH 1/3] dma-buf: DMABUF_MOVE_NOTIFY should depend on DMA_SHARED_BUFFER
+Date:   Thu,  2 Sep 2021 14:49:11 +0200
+Message-Id: <20210902124913.2698760-2-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210902124913.2698760-1-geert@linux-m68k.org>
+References: <20210902124913.2698760-1-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Hi Sumit, Christian,
+Move notify between drivers is an option of DMA-BUF.  Enabling
+DMABUF_MOVE_NOTIFY without DMA_SHARED_BUFFER does not have any impact,
+as drivers/dma-buf/ is not entered during the build when
+DMA_SHARED_BUFFER is disabled.
 
-This patch series adds missing dependencies on DMA_SHARED_BUFFER to
-various options of DMA-BUF, and drops a bogus select.
+Fixes: bb42df4662a44765 ("dma-buf: add dynamic DMA-buf handling v15")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/dma-buf/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-As drivers/dma-buf/Kconfig contains interleaved options that select or
-depend on DMA_SHARED_BUFFER, they can't be wrapped inside a big
-"if DMA_SHARED_BUFFER / endif" block.
-
-Thanks!
-
-Geert Uytterhoeven (3):
-  dma-buf: DMABUF_MOVE_NOTIFY should depend on DMA_SHARED_BUFFER
-  dma-buf: DMABUF_DEBUG should depend on DMA_SHARED_BUFFER
-  dma-buf: DMABUF_SYSFS_STATS should depend on DMA_SHARED_BUFFER
-
- drivers/dma-buf/Kconfig | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
+diff --git a/drivers/dma-buf/Kconfig b/drivers/dma-buf/Kconfig
+index 9561e3d2d4285d55..de5a17c40a33d336 100644
+--- a/drivers/dma-buf/Kconfig
++++ b/drivers/dma-buf/Kconfig
+@@ -42,6 +42,7 @@ config UDMABUF
+ config DMABUF_MOVE_NOTIFY
+ 	bool "Move notify between drivers (EXPERIMENTAL)"
+ 	default n
++	depends on DMA_SHARED_BUFFER
+ 	help
+ 	  Don't pin buffers if the dynamic DMA-buf interface is available on
+ 	  both the exporter as well as the importer. This fixes a security
 -- 
 2.25.1
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
