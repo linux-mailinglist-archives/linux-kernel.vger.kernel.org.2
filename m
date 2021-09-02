@@ -2,263 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FFC3FF352
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061523FF356
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347046AbhIBSki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241887AbhIBSkh (ORCPT
+        id S1347050AbhIBSmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:42:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31601 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241887AbhIBSmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:40:37 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A32C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 11:39:38 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id 2so2351702pfo.8
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 11:39:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9mAuR07OfJtECJWZylMyQMHOfdpdyw9F5Bfyp/4I0Fs=;
-        b=h51hmAcrxCY+OGzq8Gpj6/9Yl65jFqtCezp7R/OkM30OeH8UEYe/BQVn6LRCg9lP6z
-         CgqINfkgupRKGWlA9a79I+FCECGxz+NSn8xcDjILXnntFUgLXDBNAi8rz/SK5LLgIT6k
-         6DHjGNI/IcKN13c1IMTRLqdTvol5yjDsVSyxJXbOYbTJKauL+r7pf48kaZnZQcBPvfl9
-         2l6+7LZmbDlHMROXLBPJgykKLAMUnJGC+xkqHhTTkHo39LN9XUFsxxd7bheXOTyzulME
-         lOFMjSy6J6CBU1l5icvYXzyonlfveSl9xoTg81HPE6AfgDlJp/7O9fFcb/vHVo9/leHt
-         DnKQ==
+        Thu, 2 Sep 2021 14:42:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630608065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bj1YZCOICCuWhBGeiWp2KDW8cxmxWvm+507OpITl/f8=;
+        b=DQH/HJfwQtcnYPdFrBhl0Z2Ygp/76yFhtTdaTrsWViUvLiHYFedQZ0rc5RjOLeya9ElWNZ
+        R4bA9k0j+4OAxsBNvyKI/CUGrp5zCynved3glRvEveE1IQFUbIp5V77iE1HXukY3qheQGf
+        GzZigtCQHbTcxJ89F1PpCCvPBkWr3PY=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-140-wz9vbUERNEmhTOTbcWmZww-1; Thu, 02 Sep 2021 14:41:02 -0400
+X-MC-Unique: wz9vbUERNEmhTOTbcWmZww-1
+Received: by mail-qt1-f198.google.com with SMTP id c20-20020a05622a059400b002a0bb6f8d84so2611723qtb.15
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 11:41:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9mAuR07OfJtECJWZylMyQMHOfdpdyw9F5Bfyp/4I0Fs=;
-        b=ZScJwKavQFtzWMvr10DjRDotOto1hlAudWUkitvtVCZEJr4iNk9/lQiiicvQuJZDpR
-         BMc/h30nTYboRjcpDqw4ICJZdSj4zxqWz4Bw41I8X/p4PRhdgCt1ExUYx5I4SfPk5uWZ
-         M34CjJXHsgNhJ/GJei8P4lt2R5u5V83R6Bxta5KyruCjSiKFClr1w51MDqH2bRkNPp9K
-         aHCkw3piNZ0uL9dnEJTnXpaJdACc1wc6Gl/59KavcgEgWSC1bQTzhWyxGh0uPUWXt7+y
-         pw5VFFLFPXXAU4HX5MEEpN/i3huEmai9/EHcjwg3EbS+0KZzH8naGieTDt0A3MsAc1jP
-         yWuA==
-X-Gm-Message-State: AOAM530pUgLWcqST6J20KzGTZR8vqFKP/kb0x/SM9BVP1yW1QnYgQXha
-        mh2ISQeyRNgqaAUEufU1dLvGEw==
-X-Google-Smtp-Source: ABdhPJxIZp0aOCRkqfN3ew+CA1Ki3cu/Zx38LyC3RZHYa4MM78qK+lyZz0Dsir5Z+8WivY0brF/uGA==
-X-Received: by 2002:a63:4622:: with SMTP id t34mr4614406pga.293.1630607977806;
-        Thu, 02 Sep 2021 11:39:37 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id l12sm3376784pgc.41.2021.09.02.11.39.36
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=Bj1YZCOICCuWhBGeiWp2KDW8cxmxWvm+507OpITl/f8=;
+        b=sbE8nOUAIAw/VH3Mu6gbfNS2zkFgAvPg3E6xQ0u146Gbx6q/En3J/X6clUcAA4t93j
+         wxkEghWle3qZRbZ3EEIFITzfaKdoNz1/HZOG3+qGYNOOZlw40UAuYrXae2hfVoFePICZ
+         9qJaRDoPsCTBBtbEfO6NVKfQCKuigAhdFILoYMaNtBbbvvoOaZNEiSD97t4nOjv8/vgo
+         iLf+ZXOAiVIAPrNYOr9MhIJXdZ9Pvw/jn8Lk/aSAWsNJltTiSny6n4zb6ionBe8BsRr8
+         r+I7DcHOnxgqM7FeDGr7mw8ztJmQu33JWZFdF5rQe7QDWN99NwNVB5qWh6kdUrldloCu
+         CmOg==
+X-Gm-Message-State: AOAM532A6bIAmmxM8WwlZg5mh9sD+wqlC8dyUm2FW/EFGygA6wpaBwnE
+        ESWwM6mnZys3Fstb5kYJPXOV4NYwdhzCxK4TJxTtYOJzdUAS3NsZteAtQtSBgG+uSL35XyHYEoH
+        SXgc17m1H7EVobOg9iOPw/a+/
+X-Received: by 2002:ac8:7ef6:: with SMTP id r22mr4422750qtc.158.1630608061641;
+        Thu, 02 Sep 2021 11:41:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzER9U7aKRPWcbQbf6Y4ZH5pTc8T3UJYAdtuN5uesnicOA+1yjnC5jy8JOV95bM70GmgFDNcw==
+X-Received: by 2002:ac8:7ef6:: with SMTP id r22mr4422741qtc.158.1630608061430;
+        Thu, 02 Sep 2021 11:41:01 -0700 (PDT)
+Received: from [192.168.8.104] (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id p22sm1995353qkj.16.2021.09.02.11.41.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 11:39:37 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 18:39:33 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Edmondson <david.edmondson@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>,
-        David Matlack <dmatlack@google.com>, x86@kernel.org,
-        kvm@vger.kernel.org, Joao Martins <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v4 3/4] KVM: x86: On emulation failure, convey the exit
- reason, etc. to userspace
-Message-ID: <YTEaZVjZwhOD0gMi@google.com>
-References: <20210813071211.1635310-1-david.edmondson@oracle.com>
- <20210813071211.1635310-4-david.edmondson@oracle.com>
+        Thu, 02 Sep 2021 11:41:00 -0700 (PDT)
+Message-ID: <2d6784e3327cab7bfdc88ca1ef7c9c4c9cca113a.camel@redhat.com>
+Subject: Re: [PATCH] drm/msm: remove unneeded variable
+From:   Lyude Paul <lyude@redhat.com>
+To:     cgel.zte@gmail.com, robdclark@gmail.com
+Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        airlied@redhat.com, laurent.pinchart@ideasonboard.com,
+        chi.minghao@zte.com.cn, treding@nvidia.com,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Date:   Thu, 02 Sep 2021 14:40:59 -0400
+In-Reply-To: <20210831115127.18236-1-chi.minghao@zte.com.cn>
+References: <20210831115127.18236-1-chi.minghao@zte.com.cn>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210813071211.1635310-4-david.edmondson@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021, David Edmondson wrote:
-> -static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
-> +static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu, u64 *data,
-> +					   u8 ndata, u8 *insn_bytes, u8 insn_size)
->  {
-> -	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
-> -	u32 insn_size = ctxt->fetch.end - ctxt->fetch.data;
->  	struct kvm_run *run = vcpu->run;
-> +	u8 ndata_start;
-> +	u64 info[5];
-> +
-> +	/*
-> +	 * Zero the whole array used to retrieve the exit info, casting to u32
-> +	 * for select entries will leave some chunks uninitialized.
-> +	 */
-> +	memset(&info, 0, sizeof(info));
-> +
-> +	static_call(kvm_x86_get_exit_info)(vcpu, (u32 *)&info[0], &info[1],
-> +					   &info[2], (u32 *)&info[3],
-> +					   (u32 *)&info[4]);
->  
->  	run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
->  	run->emulation_failure.suberror = KVM_INTERNAL_ERROR_EMULATION;
-> -	run->emulation_failure.ndata = 0;
-> +
-> +	/*
-> +	 * There's currently space for 13 entries, but 5 are used for the exit
-> +	 * reason and info.  Restrict to 4 to reduce the maintenance burden
-> +	 * when expanding kvm_run.emulation_failure in the future.
-> +	 */
-> +	if (WARN_ON_ONCE(ndata > 4))
-> +		ndata = 4;
-> +
-> +	/* Always include the flags as a 'data' entry. */
-> +	ndata_start = 1;
->  	run->emulation_failure.flags = 0;
->  
->  	if (insn_size) {
-> -		run->emulation_failure.ndata = 3;
-> +		ndata_start += (sizeof(run->emulation_failure.insn_size) +
-> +				sizeof(run->emulation_failure.insn_bytes)) /
-> +			sizeof(u64);
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 
-Hrm, I like the intent, but the end result ends up being rather convoluted and
-unnecessarily scary, e.g. this would do the wrong thing if the combined size of
-the fields is not a multiple of 8.  That's obviously is not true, but relying on
-insn_size/insn_bytes being carefully selected while simultaneously obscuring that
-dependency is a bit mean.  What about a compile-time assertion with a more reader
-friendly literal for bumping the count?
+Do you need me to push this?
 
-		BUILD_BUG_ON((sizeof(run->emulation_failure.insn_size) +
-			      sizeof(run->emulation_failure.insn_bytes) != 16));
-		ndata_start += 2;
-
->  		run->emulation_failure.flags |=
->  			KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES;
->  		run->emulation_failure.insn_size = insn_size;
->  		memset(run->emulation_failure.insn_bytes, 0x90,
->  		       sizeof(run->emulation_failure.insn_bytes));
-> -		memcpy(run->emulation_failure.insn_bytes,
-> -		       ctxt->fetch.data, insn_size);
-> +		memcpy(run->emulation_failure.insn_bytes, insn_bytes, insn_size);
->  	}
-> +
-> +	memcpy(&run->internal.data[ndata_start], info, sizeof(info));
-
-Oof, coming back to this code after some time away, "ndata_start" is confusing.
-I believe past me thought that it would help convey that "info" is lumped into
-the arbitrary data, but for me at least it just ends up making the interaction
-with @data and @ndata more confusing.  Sorry for the bad suggestion :-/
-
-What about info_start?  IMO, that makes the memcpy more readable.  Another option
-would be to have the name describe the number of "ABI enries", but I can't come
-up with a variable name that's remotely readable.
-
-	memcpy(&run->internal.data[info_start], info, sizeof(info));
-	memcpy(&run->internal.data[info_start + ARRAY_SIZE(info)], data,
-	       ndata * sizeof(data[0]));
-
-
-> +	memcpy(&run->internal.data[ndata_start + ARRAY_SIZE(info)], data,
-> +	       ndata * sizeof(u64));
-
-Not that it really matters, but it's probably better to use sizeof(data[0]) or
-sizeof(*data).  E.g. if we do screw up the param in the future, we only botch the
-output formatting, as opposed to dumping kernel stack data to userspace.
-
-> +
-> +	run->emulation_failure.ndata = ndata_start + ARRAY_SIZE(info) + ndata;
->  }
->  
-> +static void prepare_emulation_ctxt_failure_exit(struct kvm_vcpu *vcpu)
-> +{
-> +	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
-> +
-> +	prepare_emulation_failure_exit(vcpu, NULL, 0, ctxt->fetch.data,
-> +				       ctxt->fetch.end - ctxt->fetch.data);
-> +}
-> +
-> +void __kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu, u64 *data,
-> +					  u8 ndata)
-> +{
-> +	prepare_emulation_failure_exit(vcpu, data, ndata, NULL, 0);
-> +}
-> +EXPORT_SYMBOL_GPL(__kvm_prepare_emulation_failure_exit);
-> +
-> +void kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
-> +{
-> +	__kvm_prepare_emulation_failure_exit(vcpu, NULL, 0);
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_prepare_emulation_failure_exit);
-> +
->  static int handle_emulation_failure(struct kvm_vcpu *vcpu, int emulation_type)
->  {
->  	struct kvm *kvm = vcpu->kvm;
-> @@ -7502,16 +7551,14 @@ static int handle_emulation_failure(struct kvm_vcpu *vcpu, int emulation_type)
->  
->  	if (kvm->arch.exit_on_emulation_error ||
->  	    (emulation_type & EMULTYPE_SKIP)) {
-> -		prepare_emulation_failure_exit(vcpu);
-> +		prepare_emulation_ctxt_failure_exit(vcpu);
->  		return 0;
->  	}
->  
->  	kvm_queue_exception(vcpu, UD_VECTOR);
->  
->  	if (!is_guest_mode(vcpu) && static_call(kvm_x86_get_cpl)(vcpu) == 0) {
-> -		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-> -		vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_EMULATION;
-> -		vcpu->run->internal.ndata = 0;
-> +		prepare_emulation_ctxt_failure_exit(vcpu);
->  		return 0;
->  	}
->  
-> @@ -12104,9 +12151,7 @@ int kvm_handle_memory_failure(struct kvm_vcpu *vcpu, int r,
->  	 * doesn't seem to be a real use-case behind such requests, just return
->  	 * KVM_EXIT_INTERNAL_ERROR for now.
->  	 */
-> -	vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-> -	vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_EMULATION;
-> -	vcpu->run->internal.ndata = 0;
-> +	kvm_prepare_emulation_failure_exit(vcpu);
->  
->  	return 0;
->  }
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 6c79c1ce3703..e86cc2de7b5c 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -397,6 +397,12 @@ struct kvm_run {
->  		 * "ndata" is correct, that new fields are enumerated in "flags",
->  		 * and that each flag enumerates fields that are 64-bit aligned
->  		 * and sized (so that ndata+internal.data[] is valid/accurate).
-> +		 *
-> +		 * Space beyond the defined fields may be used to
-
-Please run these out to 80 chars.  Even 80 is a soft limit, it's ok to run over
-a bit if the end result is (subjectively) prettier. 
-
-> +		 * store arbitrary debug information relating to the
-> +		 * emulation failure. It is accounted for in "ndata"
-> +		 * but otherwise unspecified and is not represented in
-
-Explicitly state the format is unspecified?
-
-> +		 * "flags".
-
-And also explicitly stating the debug info isn't ABI, e.g.
-
-		 * Space beyond the defined fields may be used to store arbitrary
-		 * debug information relating to the emulation failure. It is
-		 * accounted for in "ndata" but the format is unspecified and
-		 * is not represented in "flags".  Any such info is _not_ ABI!
-
->  		 */
->  		struct {
->  			__u32 suberror;
-> @@ -408,6 +414,7 @@ struct kvm_run {
->  					__u8  insn_bytes[15];
->  				};
->  			};
-> +			/* Arbitrary debug data may follow. */
->  		} emulation_failure;
->  		/* KVM_EXIT_OSI */
->  		struct {
-> -- 
-> 2.30.2
+On Tue, 2021-08-31 at 04:51 -0700, cgel.zte@gmail.com wrote:
+> From: Chi Minghao <chi.minghao@zte.com.cn>
 > 
+> Fix the following coccicheck REVIEW:
+> ./drivers/gpu/drm/msm/edp/edp_ctrl.c:1245:5-8 Unneeded variable
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Chi Minghao <chi.minghao@zte.com.cn>
+> ---
+>  drivers/gpu/drm/msm/edp/edp_ctrl.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/edp/edp_ctrl.c
+> b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+> index 4fb397ee7c84..3610e26e62fa 100644
+> --- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+> @@ -1242,8 +1242,6 @@ bool msm_edp_ctrl_panel_connected(struct edp_ctrl
+> *ctrl)
+>  int msm_edp_ctrl_get_panel_info(struct edp_ctrl *ctrl,
+>                 struct drm_connector *connector, struct edid **edid)
+>  {
+> -       int ret = 0;
+> -
+>         mutex_lock(&ctrl->dev_mutex);
+>  
+>         if (ctrl->edid) {
+> @@ -1278,7 +1276,7 @@ int msm_edp_ctrl_get_panel_info(struct edp_ctrl *ctrl,
+>         }
+>  unlock_ret:
+>         mutex_unlock(&ctrl->dev_mutex);
+> -       return ret;
+> +       return 0;
+>  }
+>  
+>  int msm_edp_ctrl_timing_cfg(struct edp_ctrl *ctrl,
+
+-- 
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
+
