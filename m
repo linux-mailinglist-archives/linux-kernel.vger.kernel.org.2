@@ -2,110 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEC53FF566
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1269D3FF569
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345929AbhIBVNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232087AbhIBVND (ORCPT
+        id S1346567AbhIBVPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:15:40 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:48245 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232087AbhIBVPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:13:03 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915EAC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:12:04 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id g14so2654079pfm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=Txn1oZJ1MZmkpCJOG+Tm0yfaGtr1VC7mq6fqUTut+Ko=;
-        b=GzTMiuL+QmxK8UlAEtb5m0CQN4bpLtZ+YfESXJlbQLFjU2t4LBatxhmSW/Y7VD3ylz
-         SWAygdhOpOAFGtZsrbnwqN6GH6SYeNqlsURavQ5x65++g35n1JCeieHNKrt43GKvCvlJ
-         fRhNt6kQR4V2pNYDSxSsY8VrW1i3J4xvLtGwpDmSWTJVFfoJ6mdxgMprX367btnKM0Ga
-         AEfSBmGSV+w7mQ0NiPJRGGBcMChjGT+ylgMYaFBguoFN+DYj4ZRTVlMosyjOOLN20rMW
-         Omn9kI3btvQjQaiXOZDpltOjkMoSyX0xfXJujbQp1uLKw0+5oHWfvpIIKFQ8g4QqYcgs
-         WLUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=Txn1oZJ1MZmkpCJOG+Tm0yfaGtr1VC7mq6fqUTut+Ko=;
-        b=lOVLo+4fHgZJxADe6WzsCFkyGU4nMVNAPCjovnCd9X9zrDIk1TfERUbZldpmOk2AX2
-         Zb2uwNfUPYMU2Cjs+Ubp1lXq4vUXgp99t9T2p2kCvn3+absmHDcOLd/zs9vJhajCPTke
-         WgggTXLyjqlHmeiLb5TKCzfVcVFch4vjLesZyeDqDrLJmfG0pER0/CrTFuBcekU+yeSx
-         w8F+KNm8k0TW5fxYZaaUxRjaOoadTPy+YIJOTaeyrpyBS7YtF95l8TOvVefFxOS0JAnY
-         ppuouug0wOJjhnukO3AVxnz87qJqRdtsvghPcNPSKEfTP1/ZCGTvr6GnQUWAnAUZGQ/X
-         X82Q==
-X-Gm-Message-State: AOAM531kp4Ny72axmQKw46at2fSa8UPYyCJSPRdhnfUbuOIgHRWLxU3R
-        VGoO5u7lg9LZIRIovgCkXOBNAF6b7AY=
-X-Google-Smtp-Source: ABdhPJxK59ChOqIb0khEwblgYuzFbJIGr60dbANf2fvPMx8FE5HinOdOVMXWTzJ+JfAqaIiZ0AIWfw==
-X-Received: by 2002:a63:4e45:: with SMTP id o5mr315096pgl.191.1630617124011;
-        Thu, 02 Sep 2021 14:12:04 -0700 (PDT)
-Received: from localhost (g163.222-224-165.ppp.wakwak.ne.jp. [222.224.165.163])
-        by smtp.gmail.com with ESMTPSA id z17sm3111442pfa.125.2021.09.02.14.12.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 14:12:03 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 06:12:01 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Openrisc <openrisc@lists.librecores.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] OpenRISC updates for 5.15
-Message-ID: <YTE+IdUiJ+k+bpDR@antec>
+        Thu, 2 Sep 2021 17:15:39 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 82BE5240002;
+        Thu,  2 Sep 2021 21:14:38 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Nuno Sa <Nuno.Sa@analog.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2 00/16] Bring external triggers support to MAX1027-like ADCs
+Date:   Thu,  2 Sep 2021 23:14:21 +0200
+Message-Id: <20210902211437.503623-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Until now the max1027.c driver, which handles 10-bit devices (max10xx)
+and 12-bit devices (max12xx), only supported hardware triggers. When a
+hardware trigger is not wired it is very convenient to trigger periodic
+conversions with timers or on userspace demand with a sysfs
+trigger. Overall, when several values are needed at the same time, using
+triggers and buffers improves quite a lot the performances.
 
-Please consider for pull:
+This series does a bit of cleaning/code reorganization before actually
+bringing more flexibility to the driver, up to the point where it is
+possible to use an external trigger (hardware or software) even without
+the IRQ line wired.
 
-The following changes since commit c500bee1c5b2f1d59b1081ac879d73268ab0ff17:
+This series is currently based on a v4.14-rc1 kernel and the external
+triggering mechanism has been tested on a custom board where the IRQ and
+the EOC lines have not been populated.
 
-  Linux 5.14-rc4 (2021-08-01 17:04:17 -0700)
+How to test sysfs triggers:
+    echo 0 > /sys/bus/iio/devices/iio_sysfs_trigger/add_trigger
+    cat /sys/bus/iio/devices/iio_sysfs_trigger/trigger0/name > \
+        /sys/bus/iio/devices/iio:device0/trigger/current_trigger
+    echo 1 > /sys/bus/iio/devices/iio:device0/scan_elements/in_voltageX_en
+    echo 1 > /sys/bus/iio/devices/iio:device0/scan_elements/in_voltageY_en
+    echo 1 > /sys/bus/iio/devices/iio:device0/buffer/enable
+    cat /dev/iio\:device0 > /tmp/data &
+    echo 1 > /sys/bus/iio/devices/trigger0/trigger_now
+    od -t x1 /tmp/data
 
-are available in the Git repository at:
+Cheers,
+Miquèl
 
-  git://github.com/openrisc/linux.git tags/for-linus
+Changes in v2:
+[All]
+* Overall quite a few changes, I'll try to list them here but I made
+  significant changes on the last few commits so it's hard to have an
+  exhaustive and detailed list.
+* Simplified the return statements as advised by Nuno.
+* Dropped useless debug messages.
+* Used iio_trigger_validate_own_device() instead of an internal
+  variable when possible.
+* Added Nuno's Reviewed-by's when relevant.
+[Created a new patch to fix the style]
+[Created a new patch to ensure st->buffer is DMA-safe]
+[Push only the requested samples]
+* Dropped a useless check over active_scan_mask mask in
+  ->set_trigger_state().
+* Dropped the st->buffer indirection with a missing __be16 type.
+* Do not push only the requested samples in the IIO buffers, rely on the
+  core to handle this by providing additional 'available_scan_masks'
+  instead of dropping this entry from the initial setup.
+[Create a helper to configure the trigger]
+* Avoided messing with new lines.
+* Dropped cnvst_trigger, used a function parameter instead.
+[Prevent single channel accesses during buffer reads]
+* Used iio_device_claim_direct_mode() when relevant.
+* Dropped the extra iio_buffer_enabled() call.
+* Prevented returning with a mutex held.
+[Introduce an end of conversion helper]
+* Moved the check against active scan mask to the very end of the series
+  where we actually make use of it.
+* Moved the Queue declaration to another patch.
+[Dropped the patch: Prepare re-using the EOC interrupt]
+[Consolidate the end of conversion helper]
+* Used a dynamic completion object instead of a static queue.
+* Reworded the commit message to actually describe what this commit
+  does.
+[Support software triggers]
+* Dropped the patch and replaced it with something hopefully close to
+  what Jonathan and Nuno described in their reviews.
+[Enable software triggers to be  used without IRQ]
+* Wrote a more generic commit message, not focusing on software
+  triggers.
 
-for you to fetch changes up to 1955d843efc3b5cf3ab4878986a87ad4972ff4e1:
 
-  openrisc/litex: Update defconfig (2021-08-31 22:41:46 +0900)
+Miquel Raynal (16):
+  iio: adc: max1027: Fix style
+  iio: adc: max1027: Drop extra warning message
+  iio: adc: max1027: Drop useless debug messages
+  iio: adc: max1027: Avoid device managed allocators for DMA purposes
+  iio: adc: max1027: Minimize the number of converted channels
+  iio: adc: max1027: Rename a helper
+  iio: adc: max1027: Create a helper to enable/disable the cnvst trigger
+  iio: adc: max1027: Simplify the _set_trigger_state() helper
+  iio: adc: max1027: Ensure a default cnvst trigger configuration
+  iio: adc: max1027: Create a helper to configure the channels to scan
+  iio: adc: max1027: Prevent single channel accesses during buffer reads
+  iio: adc: max1027: Separate the IRQ handler from the read logic
+  iio: adc: max1027: Introduce an end of conversion helper
+  iio: adc: max1027: Don't just sleep when the EOC interrupt is
+    available
+  iio: adc: max1027: Add support for external triggers
+  iio: adc: max1027: Don't reject external triggers when there is no IRQ
 
-----------------------------------------------------------------
-OpenRISC updates for 5.15
+ drivers/iio/adc/max1027.c | 300 ++++++++++++++++++++++++++++----------
+ 1 file changed, 219 insertions(+), 81 deletions(-)
 
-A few cleanups and compiler warning fixes for OpenRISC.  Also, this
-includes dts and defconfig updates to enable Ethernet on OpenRISC/Litex
-FPGA SoC's now that the LiteEth driver has gone upstream.
+-- 
+2.27.0
 
-----------------------------------------------------------------
-Joel Stanley (3):
-      openrisc/litex: Update uart address
-      openrisc/litex: Add ethernet device
-      openrisc/litex: Update defconfig
-
-Randy Dunlap (2):
-      openrisc: don't printk() unconditionally
-      openrisc: rename or32 code & comments to or1k
-
-Stafford Horne (1):
-      openrisc: Fix compiler warnings in setup
-
- arch/openrisc/boot/dts/or1klitex.dts      | 13 +++++++++++--
- arch/openrisc/configs/or1klitex_defconfig | 26 ++++++++++++++++----------
- arch/openrisc/include/asm/pgtable.h       |  6 +++---
- arch/openrisc/include/asm/setup.h         | 15 +++++++++++++++
- arch/openrisc/include/asm/thread_info.h   |  2 +-
- arch/openrisc/kernel/entry.S              |  6 ++++--
- arch/openrisc/kernel/head.S               |  6 +++---
- arch/openrisc/kernel/setup.c              | 20 +++-----------------
- arch/openrisc/lib/Makefile                |  2 +-
- arch/openrisc/mm/fault.c                  |  2 +-
- 10 files changed, 58 insertions(+), 40 deletions(-)
- create mode 100644 arch/openrisc/include/asm/setup.h
