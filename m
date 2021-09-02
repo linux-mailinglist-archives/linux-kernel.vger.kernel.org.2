@@ -2,87 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7BC3FEAC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9A53FEAD1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244443AbhIBImr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 04:42:47 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:35308 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233362AbhIBImq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 04:42:46 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Avw/ria3LZLj8maIxy2eP8gqjBIAkLtp133Aq?=
- =?us-ascii?q?2lEZdPUMSL38qyiv9M516faGskd0ZJhAo6H5BEDuewK+yXcY2+Qs1NSZLXLbUQ?=
- =?us-ascii?q?mTXeNfBOLZqlWKcREWndQy6U4USchD4arLbGSS4/yX3ODyKadG/DDOytHPuQ7x?=
- =?us-ascii?q?9QYVcT1X?=
-X-IronPort-AV: E=Sophos;i="5.84,371,1620662400"; 
-   d="scan'208";a="113896117"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 02 Sep 2021 16:41:46 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 8B52F4D0D9DC;
-        Thu,  2 Sep 2021 16:41:45 +0800 (CST)
-Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Thu, 2 Sep 2021 16:41:40 +0800
-Received: from localhost.localdomain (10.167.225.141) by
- G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Thu, 2 Sep 2021 16:41:39 +0800
-From:   Li Zhijian <lizhijian@cn.fujitsu.com>
-To:     <bamv2005@gmail.com>, <shuah@kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Li Zhijian <lizhijian@cn.fujitsu.com>,
-        Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] selftests/gpio: Fix gpio compiling error
-Date:   Thu, 2 Sep 2021 16:46:35 +0800
-Message-ID: <20210902084635.103622-1-lizhijian@cn.fujitsu.com>
-X-Mailer: git-send-email 2.31.1
+        id S244583AbhIBIua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 04:50:30 -0400
+Received: from mga12.intel.com ([192.55.52.136]:39751 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244443AbhIBIu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 04:50:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="198586495"
+X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
+   d="scan'208";a="198586495"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 01:49:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
+   d="scan'208";a="602243544"
+Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 02 Sep 2021 01:49:30 -0700
+Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mLiPZ-0008nA-R7; Thu, 02 Sep 2021 08:49:29 +0000
+Date:   Thu, 02 Sep 2021 16:49:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:smp/urgent] BUILD SUCCESS
+ 4b92d4add5f6dcf21275185c997d6ecb800054cd
+Message-ID: <6130900a.g+gh9Dl0uo2zjKqk%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-yoursite-MailScanner-ID: 8B52F4D0D9DC.AECA9
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[root@iaas-rpma gpio]# make
-gcc     gpio-mockup-cdev.c  -o /home/lizhijian/linux/tools/testing/selftests/gpio/gpio-mockup-cdev
-gpio-mockup-cdev.c: In function ‘request_line_v2’:
-gpio-mockup-cdev.c:24:30: error: storage size of ‘req’ isn’t known
-   24 |  struct gpio_v2_line_request req;
-      |                              ^~~
-gpio-mockup-cdev.c:32:14: error: ‘GPIO_V2_LINE_FLAG_OUTPUT’ undeclared (first use in this function); did you mean ‘GPIOLINE_FLAG_IS_OUT’?
-   32 |  if (flags & GPIO_V2_LINE_FLAG_OUTPUT) {
-      |              ^~~~~~~~~~~~~~~~~~~~~~~~
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp/urgent
+branch HEAD: 4b92d4add5f6dcf21275185c997d6ecb800054cd  drivers: base: cacheinfo: Get rid of DEFINE_SMP_CALL_CACHE_FUNCTION()
 
-Search headers from linux tree like others, such as sched
+elapsed time: 1452m
 
-CC: Philip Li <philip.li@intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+configs tested: 99
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210831
+arm                          moxart_defconfig
+sh                        edosk7760_defconfig
+riscv                            alldefconfig
+arm                          pxa168_defconfig
+sh                        edosk7705_defconfig
+mips                   sb1250_swarm_defconfig
+nios2                         3c120_defconfig
+sh                          urquell_defconfig
+mips                        maltaup_defconfig
+arm                          pxa910_defconfig
+powerpc                  iss476-smp_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20210831
+x86_64               randconfig-a001-20210831
+x86_64               randconfig-a003-20210831
+x86_64               randconfig-a002-20210831
+x86_64               randconfig-a004-20210831
+x86_64               randconfig-a006-20210831
+i386                 randconfig-a005-20210831
+i386                 randconfig-a002-20210831
+i386                 randconfig-a003-20210831
+i386                 randconfig-a006-20210831
+i386                 randconfig-a004-20210831
+i386                 randconfig-a001-20210831
+x86_64               randconfig-a016-20210901
+x86_64               randconfig-a011-20210901
+x86_64               randconfig-a012-20210901
+x86_64               randconfig-a015-20210901
+x86_64               randconfig-a014-20210901
+x86_64               randconfig-a013-20210901
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+s390                 randconfig-c005-20210901
+mips                 randconfig-c004-20210901
+x86_64               randconfig-c007-20210901
+powerpc              randconfig-c003-20210901
+i386                 randconfig-c001-20210901
+arm                  randconfig-c002-20210901
+riscv                randconfig-c006-20210901
+i386                 randconfig-a016-20210831
+i386                 randconfig-a011-20210831
+i386                 randconfig-a015-20210831
+i386                 randconfig-a014-20210831
+i386                 randconfig-a012-20210831
+i386                 randconfig-a013-20210831
+s390                 randconfig-r044-20210831
+hexagon              randconfig-r041-20210831
+hexagon              randconfig-r045-20210831
+riscv                randconfig-r042-20210831
+
 ---
- tools/testing/selftests/gpio/Makefile | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selftests/gpio/Makefile
-index 39f2bbe8dd3d..42ea7d2aa844 100644
---- a/tools/testing/selftests/gpio/Makefile
-+++ b/tools/testing/selftests/gpio/Makefile
-@@ -3,5 +3,6 @@
- TEST_PROGS := gpio-mockup.sh
- TEST_FILES := gpio-mockup-sysfs.sh
- TEST_GEN_PROGS_EXTENDED := gpio-mockup-cdev
-+CFLAGS += -I../../../../usr/include
- 
- include ../lib.mk
--- 
-2.31.1
-
-
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
