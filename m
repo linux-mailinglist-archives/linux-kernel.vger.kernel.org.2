@@ -2,92 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D393FE7E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818623FE7E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 05:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243381AbhIBC60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 22:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243308AbhIBC6Z (ORCPT
+        id S233150AbhIBDFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 23:05:10 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:44893 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231680AbhIBDFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 22:58:25 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93765C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 19:57:27 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id r4so980269ybp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 19:57:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=97bosaOR47TSvOBHg1mtJxPWJ+WtXwoG6aaniF3GCjg=;
-        b=EP77MXEjIeo0g3Jyrx6Gx1gON2t0Bdje9gVoQyT91G5uuqDnnSgvA6WZr9MW8SOV6k
-         MVQTDF0K1iTe1K+Hm8RzDEBhy58YNn+BLPgu7E4woPkbvXoj2/KlZTKSqpaT+j98wYVE
-         Il2YQQAJGH7fOMQB+Q6ifkPmgOw621SAl0nuuuV+g1vkZXpzb2WcMrH++sdXq0UMU8aD
-         s0PMncgFyUtwGwH0tAPRjNCc9GH4brxD4fTsnBTVLuNFBcDV3Bb/hngGWIJChugExis8
-         pHGca5k1W4mg0Ry4tjeRpsdguS9S9bfvGX8mFgjZy1gwa5GXBRJY+MU1b4miNVqmLhm1
-         QwSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=97bosaOR47TSvOBHg1mtJxPWJ+WtXwoG6aaniF3GCjg=;
-        b=b7pNxXonTjzeHbTM3CmuSvct49U92atiNsQzfDi51/3NSOsk7buTH07nwptdNF+JdK
-         mEuN4TIQGcpzgHQdzYN86C9pcE8+UeBYzTlGuUpkm9Vl9lQr1xZjqcstTKSfN5YrEm68
-         IGK5xomL/si9bZUiONAFy+GqUjb8R5Rq/jzJdngAyG+Tw4CL3GdeYylGz7zwQYa3bpXV
-         OvLEKr1DodHjA+jybx+jn5oGEyfDyv5vD2Rr3nnjlAzq9v027dhLhQiWV3l9ur+zVoaT
-         uo8OJMuR/CeXJzyMFtONjXVhMqenZ+ykl5VRdrkV7cydXZaaUL6uVD/STnl0wpvCu+2/
-         lfHg==
-X-Gm-Message-State: AOAM532cuoih0Z7Za14Ncz/4QbKa/CU1LDbZx/Qf33cCGVEEiWmS6J8p
-        aRZ38k5tR8hr1jo1FRt9o9rnYY8Y9QKRo+PcW6Dlug==
-X-Google-Smtp-Source: ABdhPJz/eqWmkNu6JsP6j13DHJHCb1FgSwoKWuV+H62/OsmvzdUWGrstQ7zzYU2YDzZVdxEcsQcurXwTHOINPNLeRYk=
-X-Received: by 2002:a25:804:: with SMTP id 4mr1340662ybi.346.1630551446791;
- Wed, 01 Sep 2021 19:57:26 -0700 (PDT)
+        Wed, 1 Sep 2021 23:05:08 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UmymB6c_1630551847;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UmymB6c_1630551847)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 02 Sep 2021 11:04:08 +0800
+Subject: Re: [PATCH v2] net: fix NULL pointer reference in cipso_v4_doi_free
+To:     David Miller <davem@davemloft.net>
+Cc:     paul@paul-moore.com, kuba@kernel.org, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1ed31e79-809b-7ac9-2760-869570ac22ea@linux.alibaba.com>
+ <20210901.103033.925382819044968737.davem@davemloft.net>
+ <6ca4a2d5-9a9c-1b14-85b4-1f4a0f743104@linux.alibaba.com>
+ <20210901.114500.1826347270421267882.davem@davemloft.net>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <7d43588d-1941-6887-46f7-1d76db64e568@linux.alibaba.com>
+Date:   Thu, 2 Sep 2021 11:04:07 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210902025528.1017391-1-saravanak@google.com>
-In-Reply-To: <20210902025528.1017391-1-saravanak@google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 1 Sep 2021 19:56:51 -0700
-Message-ID: <CAGETcx9N34RyrdKDR8dQ7ECyz7ZXBx-Ft16t033NjTiU8p=Y0g@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] Ulf reported an issue[1] with fw_devlink. This
- series tries to fix that issue.
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210901.114500.1826347270421267882.davem@davemloft.net>
+Content-Type: text/plain; charset=iso-2022-jp
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops, forgot to use a proper subject. Sorry.
 
--Saravana
 
-On Wed, Sep 1, 2021 at 7:55 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> Ulf, mind testing this?
->
-> Thanks,
-> Saravana
-> [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
->
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
->
-> Saravana Kannan (2):
->   driver core: Add support for FWNODE_FLAG_NEVER_PROBES
->   of: platform: Mark bus devices nodes with FWNODE_FLAG_NEVER_PROBES
->
->  drivers/base/core.c    |  8 ++++++++
->  drivers/of/platform.c  | 16 ++++++++++++++++
->  include/linux/fwnode.h |  8 +++++---
->  3 files changed, 29 insertions(+), 3 deletions(-)
->
-> --
-> 2.33.0.259.gc128427fd7-goog
->
+On 2021/9/1 下午6:45, David Miller wrote:
+[snip]
+>>>>>
+>>>>> It isn't your fault that both v1 and v2 were merged, but I'm asking
+>>>>> you to help cleanup the mess.  If you aren't able to do that please
+>>>>> let us know so that others can fix this properly.
+>>>>
+>>>> No problem I can help on that, just try to make sure it's not a
+>>>> meaningless work.
+>>>>
+>>>> So would it be fine to send out a v3 which revert v1 and apply v2?
+>>>
+>>> Please don't do things this way just send the relative change.
+>>
+>> Could you please check the patch:
+>>
+>> Revert "net: fix NULL pointer reference in cipso_v4_doi_free"
+>>
+>> see if that's the right way?
+> 
+> It is not. Please just send a patch against the net GIT tree which relatively changes the code to match v2 of your change.
+
+Sorry for my horrible reading comprehension... I checked netdev/net.git master branch
+and saw v2's change already applied, thus I've no idea how to change it again but pretty
+sure I still misunderstanding the suggestion, could please kindly provide more details?
+
+Regards,
+Michael Wang
+
+> 
+> Thank you.
+> 
