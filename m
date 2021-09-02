@@ -2,93 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E19C3FEBE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6423FEBE7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbhIBKMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 06:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
+        id S233589AbhIBKPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 06:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232600AbhIBKMw (ORCPT
+        with ESMTP id S231770AbhIBKPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 06:12:52 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F07C061575;
-        Thu,  2 Sep 2021 03:11:53 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id ia27so3046360ejc.10;
-        Thu, 02 Sep 2021 03:11:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=93MpCKBuP3PiexQORBIsa53hubF8PLlO4HrVUIuNKOY=;
-        b=W4mrHAsQAZm6hTEWuqNoH7IrlcWs3GowYJfXBRKliSrdb6gcq+O133JWaBwN4Ql98z
-         PCYW9krigql6ibTXgLPAGZEVjEQsbz9cDPWMgFD2DZmpBdeLLAYGHNKeW5YpKNK8RbSb
-         AZBsec0bQfPAMIgKzcXZqNY1/yhViw3l3BnL91K1knafSvsFxBhGfiXOcAzZqoLLBAR5
-         hNjt2Vhla2t4/K2nOMJG8hh/oluBUcNZYPJi0QXeqjuJEciHz4l9K9sXBCY7u2I64SRR
-         N2bH8zW/h2TzeNn/cLHWcNw/qkkghF0ac9UtkUOTrBWeo3eprhv42CaKToK+7yThQipp
-         tSwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=93MpCKBuP3PiexQORBIsa53hubF8PLlO4HrVUIuNKOY=;
-        b=arpHu0SmIbDhAjeZWVh67Gc1p+Yr20YxmAi2mEqK3ikHJjpt6asA5ToMk2qOCeY5g1
-         NFAo1etOn6l3+wt+FlO23ZBetK97c9wKBMbKQNsXT5ZptyQsTFIFw5C+f6sCzP6K5ORM
-         PHwxTOAL5zSo9Iyyh+r9gIie8iIz84DFaJ/VESGNSfgK1eY+Pfp6eCcyaOF64mmOybCK
-         t3yludpEmQ5aHjfu0Y3FeWahO48xP4jsrMmCqUKGdWXQwUDDoWIJlV31abnLsZ0wX9AT
-         Lpi9mQX2QZS4pSiMwrDAfXpzs4gXgnla5rN06SPqtpnSY/Elaq+8CCHXqPk2YIt2o7KU
-         oltw==
-X-Gm-Message-State: AOAM533l99IGouBJ/71FzUzw9/9xOKREUkVTC7gLBArjsMWsEpItoEVr
-        0F8FvQyOm0juI7YYBcZSJhk=
-X-Google-Smtp-Source: ABdhPJypP5dnegrqCjmAhKmewx4MmREZKkKZRYYtSh5CoKij1TP/x85/FZXRWAzsK3UDs5Qxzr7T5w==
-X-Received: by 2002:a17:906:26c4:: with SMTP id u4mr2830666ejc.511.1630577512412;
-        Thu, 02 Sep 2021 03:11:52 -0700 (PDT)
-Received: from skbuf ([82.78.148.104])
-        by smtp.gmail.com with ESMTPSA id j6sm876846edp.33.2021.09.02.03.11.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 03:11:51 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 13:11:50 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [RFC PATCH net-next 1/3] net: phy: don't bind genphy in
- phy_attach_direct if the specific driver defers probe
-Message-ID: <20210902101150.dnd2gycc7ekjwgc6@skbuf>
-References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
- <20210901225053.1205571-2-vladimir.oltean@nxp.com>
- <YTBkbvYYy2f/b3r2@kroah.com>
+        Thu, 2 Sep 2021 06:15:39 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70398C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 03:14:39 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mLjjv-0001on-58; Thu, 02 Sep 2021 12:14:35 +0200
+Received: from pengutronix.de (2a03-f580-87bc-d400-c982-e75e-2949-3ac4.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:c982:e75e:2949:3ac4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id D9ACB6753B1;
+        Thu,  2 Sep 2021 10:14:33 +0000 (UTC)
+Date:   Thu, 2 Sep 2021 12:14:32 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Rob Herring <robh@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
+        linux-mips@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PATCH v1] MIPS: Malta: fix alignment of the devicetree buffer
+Message-ID: <20210902101432.t3pmkb2od2j4kwth@pengutronix.de>
+References: <20210902071951.28722-1-o.rempel@pengutronix.de>
+ <20210902090324.GA6429@alpha.franken.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lf3qmsmn6tt4upjw"
 Content-Disposition: inline
-In-Reply-To: <YTBkbvYYy2f/b3r2@kroah.com>
+In-Reply-To: <20210902090324.GA6429@alpha.franken.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 07:43:10AM +0200, Greg Kroah-Hartman wrote:
-> Wait, no, this should not be a "special" thing, and why would the list
-> of deferred probe show this?
 
-Why as in why would it work/do what I want, or as in why would you want to do that?
+--lf3qmsmn6tt4upjw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> If a bus wants to have this type of "generic vs. specific" logic, then
-> it needs to handle it in the bus logic itself as that does NOT fit into
-> the normal driver model at all.  Don't try to get a "hint" of this by
-> messing with the probe function list.
+On 02.09.2021 11:03:24, Thomas Bogendoerfer wrote:
+> On Thu, Sep 02, 2021 at 09:19:51AM +0200, Oleksij Rempel wrote:
+> > Starting with following patch MIPS Malta is not able to boot:
+> > | commit 79edff12060fe7772af08607eff50c0e2486c5ba
+> > | Author: Rob Herring <robh@kernel.org>
+> > | scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9
 
-Where and how? Do you have an example?
+If the above patch broke malts, IMHO the fixes tag should be:
+
+Fixes: 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g18=
+3df9e9c2b9")
+
+> > The reason is the alignment test added to the fdt_ro_probe_(). To fix
+> > this issue, we need to make sure that fdt_buf is aligned.
+> >=20
+> > Since the dtc patch was designed to uncover potential issue, I handle
+> > initial MIPS Malta patch as initial bug.
+> >=20
+> > Fixes: e81a8c7dabac ("MIPS: Malta: Setup RAM regions via DT")
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > ---
+> >  arch/mips/mti-malta/malta-dtshim.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> applied to mips-next.
+
+Please add stable on Cc, as Malta is broken since v5.12
+(79edff12060f =3D=3D v5.12-rc1~104^2~10^2~3).
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--lf3qmsmn6tt4upjw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEwpAUACgkQqclaivrt
+76mTHQf7BWkpW1LghtAlZL3lTaWMOdO+5j5+RHC0mRF+Z6fySEUvztZYWmkzxp5a
+VgXDui8QA4injioyR+5PYVM8+ELVOi4FGcEpQcoAN48bhROu6iRxTFJvpTwfiRMh
+DA3ykNwCF7CIaKsus/TZvSqAHwLrEkj117S2YCId5whvTygYPe/jr4b7wW3bX6lV
+1Uqylkf0MA4BKXmJYldmuu5yAExOVWFw+nzbBcsekoVwTxLkQ+yaUVz62scG/UCS
++ZcTNuclOagUrYLKyieo8wp3YNqAU2avyPwsNq4T0dIBrR8I0Daa6oxVKw4Jrjjk
+sXMsM7g9ROp9yyt1A1T85aXDGMqP7A==
+=gyF1
+-----END PGP SIGNATURE-----
+
+--lf3qmsmn6tt4upjw--
