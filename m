@@ -2,152 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B973FF3FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02B53FF403
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347319AbhIBTRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 15:17:47 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:46007 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbhIBTRo (ORCPT
+        id S1347336AbhIBTSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhIBTSa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:17:44 -0400
-Received: by mail-ot1-f44.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso3850669otv.12;
-        Thu, 02 Sep 2021 12:16:45 -0700 (PDT)
+        Thu, 2 Sep 2021 15:18:30 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB76C061575;
+        Thu,  2 Sep 2021 12:17:31 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d17so1817920plr.12;
+        Thu, 02 Sep 2021 12:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WwZz/1yizfSUY1BCoUTiuDMnkJ0H5apB/ZZA5EC5KSM=;
+        b=o/ZqE6YHmasXWqfGlNp/FtLj3nHiNnj7ZxgxkCJyiEUP4BAhVegOT3GE3K5zBLbEPo
+         xwO36povG6waHmMNDagfxeNc7UxlO5X/KhhekLnXgGF1pKrNZ0vGbAQuScTNaB0bABLW
+         RdMlhIZ7V9GkwIpDJ1bGuA0XmtXkr2TkJHJ1dgI1FJM+UALsC5UEA+3vc5GJDoZ9q/8n
+         2AoJQvrtrhs2/9uhnJ6L8Is6kBPKQRoG3RR4skmcgImeYLBBv53n1A87Z1rR3N0sXgsU
+         J4n/BJvvX4HB4po1amaTw+TRubXYlDQp4+XHrPY/NwnDkbLgA6Q+RoFQxRcEfoZZcF6K
+         kX1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ovK23jw31tHHzYJHygiQckfwChmChzppFMTDWeKXBRI=;
-        b=oweKH9fzSv6DGrYI0T65IAym4s6vQZV/n/30Y3vnGD613t7RC7FOLes9MnNs80hTOq
-         TquhcS/AFJE3lmsAWFpcJYlZAUsVwI985dMi5umLUsjInu6oBNR9cpXoEHjuI1Ye9KKG
-         7Z2jLNHD3sbZIRX0Vdnw+RuEWlyRhy8s0H7y5rawfC0Ocg6YRAg0oWBtOfx4iV56JC0C
-         pjmtYcRdkFijPMbNC5X4KMIbYcznLjDrMaOWWXreMQQqZmfO8a7FX71LAK1mfwvFknCm
-         204Ssi6IIXXowJKdyU7POaV5Pwch7SNf3tK1RdJEWZ4zc1Hi1PeDSIsPzna+Tyzfo9rf
-         8+gg==
-X-Gm-Message-State: AOAM531XLp4HqPeM8edtkrLl+2e+GpO9RqdyyE1rttZOjPhWU/PI5k3v
-        PXEgRxIjPikv4oudwHESYg==
-X-Google-Smtp-Source: ABdhPJwL9T1ZSpeCfgUmexDbaoohVcg3Vhw3JPmY6MVMZVQDu1uIq6BQ4K5WGv8rH9Y07O0IMyc41Q==
-X-Received: by 2002:a05:6830:20c2:: with SMTP id z2mr3957625otq.285.1630610204847;
-        Thu, 02 Sep 2021 12:16:44 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id z18sm558960oib.27.2021.09.02.12.16.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 12:16:43 -0700 (PDT)
-Received: (nullmailer pid 1233714 invoked by uid 1000);
-        Thu, 02 Sep 2021 19:16:42 -0000
-Date:   Thu, 2 Sep 2021 14:16:42 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     bjorn.andersson@linaro.org, sboyd@kernel.org, vireshk@kernel.org,
-        agross@kernel.org, nm@ti.com, ilia.lin@kernel.org,
-        niklas.cassel@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH 2/2] dt-bindings: opp: Add binding for qcom-cpu-opp
-Message-ID: <YTEjGv/NVj4Jm/fh@robh.at.kernel.org>
-References: <20210901155559.627491-1-angelogioacchino.delregno@somainline.org>
- <20210901155559.627491-2-angelogioacchino.delregno@somainline.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WwZz/1yizfSUY1BCoUTiuDMnkJ0H5apB/ZZA5EC5KSM=;
+        b=GAyjztI2on2c3QLJC7Ww9ZR9jfOGyn2TpoVkA8KJr0TfnyaK/v5EyKBSqoGVgdzk9Q
+         sKV62ScrT45jM2sSdPCclOXDPbHGH7Q0Uzg63rvT9vhXlWnd9D3TJb7se3vAJnexNIcr
+         UAtRR7/Ddsx11YCSKPToXqhD/DnYtzXUvUHtrX7UD3bxivIxcHE3gA96miBSa6hiFtA5
+         DjNOoZrc5jilqShrqZFFhLRGBvua8kUPVopleO6yEwhkkCr/1rHLbn8s5jjoRY6cN04Y
+         0efy3SCmirWyz00MPGOHINnoQkLso01FRNGeptClgtmh1o6NJqlBKVapReMzxEw0E1LJ
+         /Kow==
+X-Gm-Message-State: AOAM530hf+G97ICYrsmQ/aaTd9Na4u23zoH6Y+eSx+K9LZocSf8YfNLL
+        5/ebVyJhwNRLIIEcIMWY6RkEwZ0v4ck=
+X-Google-Smtp-Source: ABdhPJyZO9QzHEGK390hD9YGFlClOSqChirFCFkE/aR96yCV6ig2OseyeT1bkFju/GC9J1I5BmHejQ==
+X-Received: by 2002:a17:902:f693:b0:134:924:1734 with SMTP id l19-20020a170902f69300b0013409241734mr4420205plg.8.1630610250935;
+        Thu, 02 Sep 2021 12:17:30 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id c4sm208554pji.51.2021.09.02.12.17.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 12:17:30 -0700 (PDT)
+Subject: Re: [PATCH v6 1/6] Bluetooth: schedule SCO timeouts with delayed_work
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, sudipm.mukherjee@gmail.com
+Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+References: <20210810041410.142035-1-desmondcheongzx@gmail.com>
+ <20210810041410.142035-2-desmondcheongzx@gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <0b33a7fe-4da0-058c-cff3-16bb5cfe8f45@gmail.com>
+Date:   Thu, 2 Sep 2021 12:17:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901155559.627491-2-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <20210810041410.142035-2-desmondcheongzx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 05:55:59PM +0200, AngeloGioacchino Del Regno wrote:
-> This adds a binding documenting operating-points-v2-kryo-cpu in a
-> qcom-cpu-opp.yaml file. Logic is to add any new Qualcomm SoCs CPU
-> related OPP compatibles in here.
+
+
+On 8/9/21 9:14 PM, Desmond Cheong Zhi Xi wrote:
+> struct sock.sk_timer should be used as a sock cleanup timer. However,
+> SCO uses it to implement sock timeouts.
 > 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> This causes issues because struct sock.sk_timer's callback is run in
+> an IRQ context, and the timer callback function sco_sock_timeout takes
+> a spin lock on the socket. However, other functions such as
+> sco_conn_del and sco_conn_ready take the spin lock with interrupts
+> enabled.
+> 
+> This inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} lock usage could
+> lead to deadlocks as reported by Syzbot [1]:
+>        CPU0
+>        ----
+>   lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+>   <Interrupt>
+>     lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+> 
+> To fix this, we use delayed work to implement SCO sock timouts
+> instead. This allows us to avoid taking the spin lock on the socket in
+> an IRQ context, and corrects the misuse of struct sock.sk_timer.
+> 
+> As a note, cancel_delayed_work is used instead of
+> cancel_delayed_work_sync in sco_sock_set_timer and
+> sco_sock_clear_timer to avoid a deadlock. In the future, the call to
+> bh_lock_sock inside sco_sock_timeout should be changed to lock_sock to
+> synchronize with other functions using lock_sock. However, since
+> sco_sock_set_timer and sco_sock_clear_timer are sometimes called under
+> the locked socket (in sco_connect and __sco_sock_close),
+> cancel_delayed_work_sync might cause them to sleep until an
+> sco_sock_timeout that has started finishes running. But
+> sco_sock_timeout would also sleep until it can grab the lock_sock.
+> 
+> Using cancel_delayed_work is fine because sco_sock_timeout does not
+> change from run to run, hence there is no functional difference
+> between:
+> 1. waiting for a timeout to finish running before scheduling another
+> timeout
+> 2. scheduling another timeout while a timeout is running.
+> 
+> Link: https://syzkaller.appspot.com/bug?id=9089d89de0502e120f234ca0fc8a703f7368b31e [1]
+> Reported-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+> Tested-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 > ---
->  .../devicetree/bindings/opp/qcom-cpu-opp.yaml | 68 +++++++++++++++++++
->  1 file changed, 68 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/opp/qcom-cpu-opp.yaml
+>  net/bluetooth/sco.c | 35 +++++++++++++++++++++++++++++------
+>  1 file changed, 29 insertions(+), 6 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/opp/qcom-cpu-opp.yaml b/Documentation/devicetree/bindings/opp/qcom-cpu-opp.yaml
-> new file mode 100644
-> index 000000000000..b4d83b64228c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/opp/qcom-cpu-opp.yaml
-> @@ -0,0 +1,68 @@
-> +# SPDX-License-Identifier: GPL-2.0
+> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+> index ffa2a77a3e4c..62e638f971a9 100644
+> --- a/net/bluetooth/sco.c
+> +++ b/net/bluetooth/sco.c
+> @@ -48,6 +48,8 @@ struct sco_conn {
+>  	spinlock_t	lock;
+>  	struct sock	*sk;
+>  
+> +	struct delayed_work	timeout_work;
+> +
+>  	unsigned int    mtu;
+>  };
+>  
+> @@ -74,9 +76,20 @@ struct sco_pinfo {
+>  #define SCO_CONN_TIMEOUT	(HZ * 40)
+>  #define SCO_DISCONN_TIMEOUT	(HZ * 2)
+>  
+> -static void sco_sock_timeout(struct timer_list *t)
+> +static void sco_sock_timeout(struct work_struct *work)
+>  {
+> -	struct sock *sk = from_timer(sk, t, sk_timer);
+> +	struct sco_conn *conn = container_of(work, struct sco_conn,
+> +					     timeout_work.work);
+> +	struct sock *sk;
+> +
+> +	sco_conn_lock(conn);
+> +	sk = conn->sk;
+> +	if (sk)
+> +		sock_hold(sk);
 
-As checkpatch says, dual license.
+syzbot complains here that sk refcount can be zero at this time.
 
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/opp/qcom-cpu-opp.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 0 PID: 10451 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+Modules linked in:
+CPU: 0 PID: 10451 Comm: kworker/0:8 Not tainted 5.14.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events sco_sock_timeout
+RIP: 0010:refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+Code: 09 31 ff 89 de e8 d7 c9 9e fd 84 db 0f 85 36 ff ff ff e8 8a c3 9e fd 48 c7 c7 20 8f e3 89 c6 05 e8 7f 81 09 01 e8 f0 98 16 05 <0f> 0b e9 17 ff ff ff e8 6b c3 9e fd 0f b6 1d cd 7f 81 09 31 ff 89
+RSP: 0018:ffffc9001766fce8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88802cea3880 RSI: ffffffff815d87a5 RDI: fffff52002ecdf8f
+RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815d25de R11: 0000000000000000 R12: ffff88806d23ce08
+R13: ffff8880712c8080 R14: ffff88802edf4500 R15: ffff8880b9c51240
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3748c20000 CR3: 0000000017644000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __refcount_add include/linux/refcount.h:199 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ sock_hold include/net/sock.h:702 [inline]
+ sco_sock_timeout+0x216/0x290 net/bluetooth/sco.c:88
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+
+
+> +	sco_conn_unlock(conn);
 > +
-> +title: Qualcomm Technologies, Inc. CPU OPP bindings
+> +	if (!sk)
+> +		return;
+>  
+>  	BT_DBG("sock %p state %d", sk, sk->sk_state);
+>  
+> @@ -91,14 +104,21 @@ static void sco_sock_timeout(struct timer_list *t)
+>  
+>  static void sco_sock_set_timer(struct sock *sk, long timeout)
+>  {
+> +	if (!sco_pi(sk)->conn)
+> +		return;
 > +
-> +maintainers:
-> +  - Ilia Lin <ilia.lin@kernel.org>
+>  	BT_DBG("sock %p state %d timeout %ld", sk, sk->sk_state, timeout);
+> -	sk_reset_timer(sk, &sk->sk_timer, jiffies + timeout);
+> +	cancel_delayed_work(&sco_pi(sk)->conn->timeout_work);
+> +	schedule_delayed_work(&sco_pi(sk)->conn->timeout_work, timeout);
+
+>  }
+>  
+>  static void sco_sock_clear_timer(struct sock *sk)
+>  {
+> +	if (!sco_pi(sk)->conn)
+> +		return;
 > +
-> +allOf:
-> +  - $ref: opp-v2-base.yaml#
+>  	BT_DBG("sock %p state %d", sk, sk->sk_state);
+> -	sk_stop_timer(sk, &sk->sk_timer);
+> +	cancel_delayed_work(&sco_pi(sk)->conn->timeout_work);
+
+
+>  }
+>  
+>  /* ---- SCO connections ---- */
+> @@ -179,6 +199,9 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
+>  		bh_unlock_sock(sk);
+>  		sco_sock_kill(sk);
+>  		sock_put(sk);
 > +
-> +properties:
-> +  compatible:
-> +    const: operating-points-v2-kryo-cpu
+> +		/* Ensure no more work items will run before freeing conn. */
+
+Maybe you should have done this cancel_delayed_work_sync() before the prior sock_put(sk) ?
+
+> +		cancel_delayed_work_sync(&conn->timeout_work);
+>  	}
+>  
+>  	hcon->sco_data = NULL;
+> @@ -193,6 +216,8 @@ static void __sco_chan_add(struct sco_conn *conn, struct sock *sk,
+>  	sco_pi(sk)->conn = conn;
+>  	conn->sk = sk;
+>  
+> +	INIT_DELAYED_WORK(&conn->timeout_work, sco_sock_timeout);
 > +
-> +  nvmem-cells:
-> +    description: |
-> +      A phandle pointing to a nvmem-cells node representing the efuse
-> +      registers that has information about the speedbin that is used
-> +      to select the right frequency/voltage value pair.
-> +    maxItems: 1
-> +
-> +  opp-shared: true
-> +
-> +required:
-> +  - compatible
-> +
-> +patternProperties:
-> +  '^opp-?[0-9]+$':
-> +    type: object
-> +
-> +    properties:
-> +      clock-latency-ns: true
-> +      opp-hz: true
-> +      opp-microvolt: true
-> +      opp-supported-hw: true
-> +      required-opps: true
-> +
-> +    required:
-> +      - opp-hz
-> +
-> +    unevaluatedProperties: false
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    cpu_opp_table: opp-table-cpu {
-> +        compatible = "operating-points-v2-kryo-cpu";
-> +        opp-shared;
-> +
-> +        opp-1094400000 {
-> +            opp-hz = /bits/ 64 <1094400000>;
-> +            required-opps = <&cpr_opp1>;
-> +        };
-> +        opp-1248000000 {
-> +            opp-hz = /bits/ 64 <1248000000>;
-> +            required-opps = <&cpr_opp2>;
-> +        };
-> +        opp-1401600000 {
-> +            opp-hz = /bits/ 64 <1401600000>;
-> +            required-opps = <&cpr_opp3>;
-> +        };
-> +    };
-> +...
-> -- 
-> 2.32.0
-> 
+>  	if (parent)
+>  		bt_accept_enqueue(parent, sk, true);
+>  }
+> @@ -500,8 +525,6 @@ static struct sock *sco_sock_alloc(struct net *net, struct socket *sock,
+>  
+>  	sco_pi(sk)->setting = BT_VOICE_CVSD_16BIT;
+>  
+> -	timer_setup(&sk->sk_timer, sco_sock_timeout, 0);
+> -
+>  	bt_sock_link(&sco_sk_list, sk);
+>  	return sk;
+>  }
 > 
