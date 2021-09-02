@@ -2,111 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A87D3FE98D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 08:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0B23FE990
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 08:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242366AbhIBGzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 02:55:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
+        id S242508AbhIBG4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 02:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233363AbhIBGzD (ORCPT
+        with ESMTP id S242126AbhIBG4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 02:55:03 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC60AC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 23:54:05 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id e7so572373plh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 23:54:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=Gjsbot1Ioib4U7AgvUadDJqCoxn0LGYzazPWjhiFe6A=;
-        b=E3ouvM0ynVSTIUIqv7WlfcuLv7HFqUAlSQpDXOp9Hxbpq8gdlW9eTQw9XctxC0StvE
-         kVzh3iVDyHB0lHCqASPPabxBWhTOXi7Dp7Qc2O/RHUfsetZzhMXdr1gedzUqbxfHwX6j
-         LLgWQF90UCcPawQ115M+8DzGAotfDwmPuQXPrpqU330j1lOxHGXCWbSefY0zZgL8gLeA
-         mf7kL7nm0rU4b6pfim3HmjCiZRWAISzh0KRyySgKjU2ySFlkBphYlPeCKDPp6v/xDtDV
-         gPS/L48Qnr+bFH38DKNYPDBjl63nDmXBqkyeSqm0gESKa4YIZ8ggOiJbNLJC4REoEGET
-         LT8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=Gjsbot1Ioib4U7AgvUadDJqCoxn0LGYzazPWjhiFe6A=;
-        b=gky/CnvX5z0cVBZulN+DAiw0cqqfzfZH177BLregU/5Swy6O4Xmcd04cK4Zi5FW21V
-         ylFtVi+KeIAeb2Ma1VoIxXgJnMjeM/DLlgUqyReTgnWbvBjpPlU8VltlfaTYttNNO6eG
-         sPi9tIUoBKaivIpjt+wXczfXHyJNsTgSxIvYLCVvOt1gnYq9O/tUe0YQ/16EMrEWGvfx
-         qb5cfBobKQ09DRtpzpFyVIVYJyXNrGXb3ipmJO+BtO9f489/Fqdl2vILS0UbNdSNzhsT
-         x5hHk6rfYm4Iv24o7+cGV3+3Q0LNBeSrZiAoAL3/lokN0KltyQVuZhb0Ndr8SUx75Rlq
-         I7Sg==
-X-Gm-Message-State: AOAM532cke31z35svakpm6a922qEmoxho2Mx559Fb1qRLSp4V5X1bKRd
-        8vY6tHOtGMruy8BCcTw1ZRGf9Q==
-X-Google-Smtp-Source: ABdhPJw/aXZFpocogFeOr+q7ffvqB6cKQ+CRK4Ar6aPpZ/QDffD0XV0dhsYUFP+Ciy6Ir9IubMEEEw==
-X-Received: by 2002:a17:90a:3f83:: with SMTP id m3mr2106262pjc.46.1630565644875;
-        Wed, 01 Sep 2021 23:54:04 -0700 (PDT)
-Received: from [10.254.207.253] ([139.177.225.243])
-        by smtp.gmail.com with ESMTPSA id p34sm1354810pgb.14.2021.09.01.23.54.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 23:54:04 -0700 (PDT)
-Subject: Re: [PATCH v2 6/9] mm: free user PTE page table pages
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        David Hildenbrand <david@redhat.com>
-Cc:     akpm@linux-foundation.org, tglx@linutronix.de, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com
-References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
- <20210819031858.98043-7-zhengqi.arch@bytedance.com>
- <20210901135314.GA1859446@nvidia.com>
- <0c9766c9-6e8b-5445-83dc-9f2b71a76b4f@redhat.com>
- <20210901153247.GJ1721383@nvidia.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-Message-ID: <47c7d6fd-056b-0e40-ae30-e2f099a97a95@bytedance.com>
-Date:   Thu, 2 Sep 2021 14:53:58 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Thu, 2 Sep 2021 02:56:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284DBC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 23:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Mh8OchEd6FmGVIr9IY/rauTsPqFSK4QQAj2HctJHOu4=; b=J7gbN5uh8SlTASWpJ8YSA/TxVp
+        lRefSwd0KAjIrpx1kPoz69y1TgfsjptLpjnJhJjVCNoq4eLwgV/iU4LLKroQEzsRRIV4Inn2yRl/L
+        ugMpGLIjN2S0kQE2XT2wxm/typgyWvsbF/YlAETUK69H3vZiuvlp7aT2oykWDvWdisTh0/3ZuIcY4
+        5rMX90ZC0EhcOVMDYtEHLqQqREiPJU16Zdvr3/93rVTJWGzem6aYyq49AUGjQ9ect9XpVT9rgFoDY
+        vEZu9ETLADTmtAa37kANnFDsc3RABHwM9ZwGKcS7nb5m1bNvbQHXEBEvtSg04DtDQeHPmUa076fxh
+        gNSWBQ6Q==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mLgc3-003BxP-Er; Thu, 02 Sep 2021 06:54:28 +0000
+Date:   Thu, 2 Sep 2021 07:54:15 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 3/5] signal: Add unsafe_copy_siginfo_to_user()
+Message-ID: <YTB1F7o15FrxmmP1@infradead.org>
+References: <fd7938d94008711d441551c06b25a033669a0618.1629732940.git.christophe.leroy@csgroup.eu>
+ <a94be61f008ab29c231b805e1a97e9dab35cb0cc.1629732940.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <20210901153247.GJ1721383@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a94be61f008ab29c231b805e1a97e9dab35cb0cc.1629732940.git.christophe.leroy@csgroup.eu>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/9/1 PM11:32, Jason Gunthorpe wrote:
+On Mon, Aug 23, 2021 at 03:35:53PM +0000, Christophe Leroy wrote:
+> In the same spirit as commit fb05121fd6a2 ("signal: Add
+> unsafe_get_compat_sigset()"), implement an 'unsafe' version of
+> copy_siginfo_to_user() in order to use it within user access blocks.
 > 
->>> Also, I don't really understand how this scheme works with
->>> get_user_pages_fast.
->>
->> With the RCU change it in #8 it should work just fine, because RCU
->> synchronize has to wait either until all other CPUs have left the RCU read
->> section, or re-enabled interrupts.
-> 
-> So at this point in the series fast gup is broken, that does mean the
-> series presentation really needs to be reworked. The better
-> presentation is to add the API changes, with a
-> no-functional-difference implementation, push the new API in well
-> split patches to all the consumption sites, then change the API to
-> have the new semantics.
-> 
-> RCU and refcount to free the page levels seems like a reasonable
-> approach, but I have to say I haven't thought it through fully - are
-> all the contexts that have the pte deref safe to do call_rcu?
+> For that, also add an 'unsafe' version of clear_user().
 
-See Documentation/RCU/rcubarrier.rst:
-
-"Since call_rcu() never blocks, this code can safely be used from within
-IRQ context."
-
-So I think call_rcu() can be safely run in any context.
-
-Thinks,
-Qi
+I'm a little worried about all these unsafe helper in powerpc and the
+ever increasing scope of the unsafe sections.  Can you at least at
+powerpc support to objtool to verify them?  objtool verifications has
+helped to find quite a few bugs in unsafe sections on x86.
 
 > 
-> Jason
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  include/linux/signal.h  | 15 +++++++++++++++
+>  include/linux/uaccess.h |  1 +
+>  kernel/signal.c         |  5 -----
+>  3 files changed, 16 insertions(+), 5 deletions(-)
 > 
+> diff --git a/include/linux/signal.h b/include/linux/signal.h
+> index 3454c7ff0778..659bd43daf10 100644
+> --- a/include/linux/signal.h
+> +++ b/include/linux/signal.h
+> @@ -35,6 +35,21 @@ static inline void copy_siginfo_to_external(siginfo_t *to,
+>  int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from);
+>  int copy_siginfo_from_user(kernel_siginfo_t *to, const siginfo_t __user *from);
+>  
+> +static __always_inline char __user *si_expansion(const siginfo_t __user *info)
+> +{
+> +	return ((char __user *)info) + sizeof(struct kernel_siginfo);
+> +}
+> +
+> +#define unsafe_copy_siginfo_to_user(to, from, label) do {		\
+> +	siginfo_t __user *__ucs_to = to;				\
+> +	const kernel_siginfo_t *__ucs_from = from;			\
+> +	char __user *__ucs_expansion = si_expansion(__ucs_to);		\
+> +									\
+> +	unsafe_copy_to_user(__ucs_to, __ucs_from,			\
+> +			    sizeof(struct kernel_siginfo), label);	\
+> +	unsafe_clear_user(__ucs_expansion, SI_EXPANSION_SIZE, label);	\
+> +} while (0)
+> +
+>  enum siginfo_layout {
+>  	SIL_KILL,
+>  	SIL_TIMER,
+> diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+> index c05e903cef02..37073caac474 100644
+> --- a/include/linux/uaccess.h
+> +++ b/include/linux/uaccess.h
+> @@ -398,6 +398,7 @@ long strnlen_user_nofault(const void __user *unsafe_addr, long count);
+>  #define unsafe_put_user(x,p,e) unsafe_op_wrap(__put_user(x,p),e)
+>  #define unsafe_copy_to_user(d,s,l,e) unsafe_op_wrap(__copy_to_user(d,s,l),e)
+>  #define unsafe_copy_from_user(d,s,l,e) unsafe_op_wrap(__copy_from_user(d,s,l),e)
+> +#define unsafe_clear_user(d, l, e) unsafe_op_wrap(__clear_user(d, l), e)
+>  static inline unsigned long user_access_save(void) { return 0UL; }
+>  static inline void user_access_restore(unsigned long flags) { }
+>  #endif
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index a3229add4455..83b5971e4304 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -3261,11 +3261,6 @@ enum siginfo_layout siginfo_layout(unsigned sig, int si_code)
+>  	return layout;
+>  }
+>  
+> -static inline char __user *si_expansion(const siginfo_t __user *info)
+> -{
+> -	return ((char __user *)info) + sizeof(struct kernel_siginfo);
+> -}
+> -
+>  int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from)
+>  {
+>  	char __user *expansion = si_expansion(to);
+> -- 
+> 2.25.0
 > 
+---end quoted text---
