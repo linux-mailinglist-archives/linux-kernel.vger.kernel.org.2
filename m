@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87B93FEBEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 023073FEBF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237513AbhIBKRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 06:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
+        id S239574AbhIBKRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 06:17:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233760AbhIBKRj (ORCPT
+        with ESMTP id S236227AbhIBKRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 06:17:39 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD59C061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 03:16:40 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id h16so262048lfk.10
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 03:16:40 -0700 (PDT)
+        Thu, 2 Sep 2021 06:17:40 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B162C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 03:16:42 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id g14so2556330ljk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 03:16:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TywneFOHqk/q2lDRXrfDY/E+kQPlWfGyGjEe/NIEHS0=;
-        b=M8h86JEIQRSZsTCGeR6pJ1N/QzA6dqeytHrr1+dBQeZWjNPOTfftT1ZYil39lLRzuI
-         /+Mky0RdvsbyLL56yPCl536D0WeL6Ge+/lZDCk/exQAWqKxd9H+o0c01eHWWwglrUpRP
-         T6rYxeocRQZ2uxuTa8X72ndaRdn68a92qloDdxFsAlvY20Bty0tO/O4xi8qRis2n3Uyj
-         xn7vV44D7K9e9DDVNFJGpwAFpNChcqJ05ELDkXzVr7LS4MsxrnJlysoa9m4Jne+TX+2S
-         n+rhCEQYf762oGA3FnjWzLpElbBMOKWMDCywomJ+uxGYYqNIm+KR9x2U1gRDD2z1NdW6
-         QERA==
+        bh=XZIDc5dNGmZMEuNI+q0RXZg7TDaDyQay2EJwpX2HagA=;
+        b=tJEyqv27c0M36cBiuxle+CZcejlnP42BqHYMsy3HH6riiEJsG+YpXDhRCks2ozu/0a
+         YuXG3Fxzldz55lhNT71K7+qRshz8IyqqVyz2HmYf9jTDKw0jCy3PgRM96IBxbT8uJCDb
+         FQVEoXVjv2YkFdPzs8JyfoTvs9cqJ3lQ7T21yNoEulElXLMqg5O1cNT1JvuikDEN+XGW
+         hmX8t8qOEAbSrLsXUqtGNgo0+zISQLbbiCO2S5f/X3qavwykZZwIrxOhKUcfqe0n/Ljl
+         YUMPiD+oIuf656o4snFxWRQSvao9oyutvr3Jb/HwWKASY4i/vU8L9O3bhDBhVe6+oxeF
+         IdBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TywneFOHqk/q2lDRXrfDY/E+kQPlWfGyGjEe/NIEHS0=;
-        b=SyF6Z3Ri1hDs86FH9Q4peA/Ui94wthvLRysXx1r3I+7SrTowo4f06c1WsTpmvIxx3G
-         Wv2VQE5880SL3w0KxMikbfefkaGza15IyOClHb1UUSrB02q32930htw9rkzKcaN1LDTC
-         AeyGy2+H3dm4+WhexAlLG0mGcRMMQWsX07Mv82cJr4120QJiWVcBLnWgjYav8Co2kjtQ
-         5HBPGPwHp3rAVAkTL8mXzHiFJcT3+vSz/W5sqj1QcOByOeie5YR0EcQfXnj//bxP9ZMf
-         GJyDOonCwFB48uAB4Yrz7srh568UBmeXuCiXo7Y7mZx5TjxnM/NmJk75AJpq/oY7j3WK
-         TNgw==
-X-Gm-Message-State: AOAM53229dTTEZ4FTtUmJvuXuKiC6AxZSaJNvItU2GiOSZEhrS6RGIIq
-        xvcagFkElXTmMK3fmGJ8Q3anxg==
-X-Google-Smtp-Source: ABdhPJz03CxOy2DhzYQaRQsDsXZhX9SfdHEpc+fmAhDjGziDxiaA2v5/+BLy2btECx3VnNmdVU+HUQ==
-X-Received: by 2002:a05:6512:3091:: with SMTP id z17mr1987212lfd.418.1630577799097;
-        Thu, 02 Sep 2021 03:16:39 -0700 (PDT)
+        bh=XZIDc5dNGmZMEuNI+q0RXZg7TDaDyQay2EJwpX2HagA=;
+        b=aFSk8oHZzqy9ROmn9Izx/zTbZyPo3kvn9LFp6pU1xzZFxQC15UpJK5w2MJTtfJ2iXC
+         UPswS77rpkkzdWVDgmS5cYVBhnT34+7o48NkAFBjL7CSw3jhS//Uh1XVSUcpCtNx4x/s
+         KEfxd8nlUBP8ap2DmrrBisBQGlSsQrmlEm1EXP1u+ZsQbwe0NMxO+RKK+fqCmWeXEc0m
+         xCcoVUMvXx81Sb7IxNZ70/LE2XzEkUTj+NkZV0ZC1R8U8g8BqZjUen1aABpHSMRifpnP
+         Uo7SH7NrM/P9Qu/UjA0W3D5+nHSCG6cENT8LFLZ9EAb8dYC8AqtHBGtaEy/ie0oGWcM+
+         NTEA==
+X-Gm-Message-State: AOAM531+VcRITZHe5i59Ers77+uSrpLT7pHAil1LsfNbWhg4AOtBMaPI
+        p8plfPAYEBElx5FcVXuFZCQCQw==
+X-Google-Smtp-Source: ABdhPJzNXuvX9XDTeaJ02yQt2BdTC2X0ZlUZgbJYnh+m6n9auTpgMAN6FyCEd7d8q4RZ8DQBiAQ5Aw==
+X-Received: by 2002:a2e:b53a:: with SMTP id z26mr1803113ljm.95.1630577800779;
+        Thu, 02 Sep 2021 03:16:40 -0700 (PDT)
 Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id s4sm155897lfd.53.2021.09.02.03.16.37
+        by smtp.gmail.com with ESMTPSA id s4sm155897lfd.53.2021.09.02.03.16.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 03:16:38 -0700 (PDT)
+        Thu, 02 Sep 2021 03:16:39 -0700 (PDT)
 From:   Ulf Hansson <ulf.hansson@linaro.org>
 To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
         Viresh Kumar <viresh.kumar@linaro.org>,
@@ -60,9 +60,9 @@ Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 1/3] PM: domains: Drop the performance state vote for a device at detach
-Date:   Thu,  2 Sep 2021 12:16:32 +0200
-Message-Id: <20210902101634.827187-2-ulf.hansson@linaro.org>
+Subject: [PATCH 2/3] PM: domains: Restructure some code in __genpd_dev_pm_attach()
+Date:   Thu,  2 Sep 2021 12:16:33 +0200
+Message-Id: <20210902101634.827187-3-ulf.hansson@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210902101634.827187-1-ulf.hansson@linaro.org>
 References: <20210902101634.827187-1-ulf.hansson@linaro.org>
@@ -72,66 +72,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a device is detached from its genpd, genpd loses track of the device,
-including its performance state vote that may have been requested for it.
-
-Rather than relying on the consumer driver to drop the performance state
-vote for its device, let's do it internally in genpd when the device is
-getting detached. In this way, we makes sure that the aggregation of the
-votes in genpd becomes correct.
+To slightly improve readability of the code, but also to prepare for a
+subsequent change on top, let's move the code that calls
+of_get_required_opp_performance_state() into a new separate function.
 
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- drivers/base/power/domain.c | 9 ++-------
- include/linux/pm_domain.h   | 1 -
- 2 files changed, 2 insertions(+), 8 deletions(-)
+ drivers/base/power/domain.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 5db704f02e71..278e040f607f 100644
+index 278e040f607f..800adf831cae 100644
 --- a/drivers/base/power/domain.c
 +++ b/drivers/base/power/domain.c
-@@ -1665,6 +1665,8 @@ static int genpd_remove_device(struct generic_pm_domain *genpd,
- 		goto out;
- 	}
+@@ -2640,6 +2640,17 @@ static void genpd_dev_pm_sync(struct device *dev)
+ 	genpd_queue_power_off_work(pd);
+ }
  
-+	genpd_set_performance_state(dev, 0);
++static int genpd_get_default_performance_state(struct device *dev,
++					       unsigned int index)
++{
++	int pstate = of_get_required_opp_performance_state(dev->of_node, index);
 +
- 	genpd->device_count--;
- 	genpd->max_off_time_changed = true;
- 
-@@ -2604,12 +2606,6 @@ static void genpd_dev_pm_detach(struct device *dev, bool power_off)
- 
- 	dev_dbg(dev, "removing from PM domain %s\n", pd->name);
- 
--	/* Drop the default performance state */
--	if (dev_gpd_data(dev)->default_pstate) {
--		dev_pm_genpd_set_performance_state(dev, 0);
--		dev_gpd_data(dev)->default_pstate = 0;
--	}
--
- 	for (i = 1; i < GENPD_RETRY_MAX_MS; i <<= 1) {
- 		ret = genpd_remove_device(pd, dev);
- 		if (ret != -EAGAIN)
-@@ -2702,7 +2698,6 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
- 		ret = dev_pm_genpd_set_performance_state(dev, pstate);
- 		if (ret)
- 			goto err;
--		dev_gpd_data(dev)->default_pstate = pstate;
++	if (pstate == -ENODEV || pstate == -EOPNOTSUPP)
++		return 0;
++
++	return pstate;
++}
++
+ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+ 				 unsigned int index, bool power_on)
+ {
+@@ -2690,8 +2701,8 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
  	}
- 	return 1;
  
-diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-index 67017c9390c8..21a0577305ef 100644
---- a/include/linux/pm_domain.h
-+++ b/include/linux/pm_domain.h
-@@ -198,7 +198,6 @@ struct generic_pm_domain_data {
- 	struct notifier_block *power_nb;
- 	int cpu;
- 	unsigned int performance_state;
--	unsigned int default_pstate;
- 	unsigned int rpm_pstate;
- 	ktime_t	next_wakeup;
- 	void *data;
+ 	/* Set the default performance state */
+-	pstate = of_get_required_opp_performance_state(dev->of_node, index);
+-	if (pstate < 0 && pstate != -ENODEV && pstate != -EOPNOTSUPP) {
++	pstate = genpd_get_default_performance_state(dev, index);
++	if (pstate < 0) {
+ 		ret = pstate;
+ 		goto err;
+ 	} else if (pstate > 0) {
 -- 
 2.25.1
 
