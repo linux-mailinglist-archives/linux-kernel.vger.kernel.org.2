@@ -2,81 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE9F3FF545
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80EB03FF547
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345768AbhIBVF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
+        id S1346155AbhIBVGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234242AbhIBVFz (ORCPT
+        with ESMTP id S234242AbhIBVGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:05:55 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D568C061575;
-        Thu,  2 Sep 2021 14:04:56 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id l3so2241589pji.5;
-        Thu, 02 Sep 2021 14:04:56 -0700 (PDT)
+        Thu, 2 Sep 2021 17:06:09 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963C3C061575;
+        Thu,  2 Sep 2021 14:05:10 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id b10so4290891ioq.9;
+        Thu, 02 Sep 2021 14:05:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=idJuIcevWkqCRRn4+icscBWsB2SnJKWNGgO1oxC6Tc0=;
-        b=HN5adWYYIpI2LVvWr6lnonO4zJlEjQKD9RBaqjmuoRrtbY2vsMiYqLx7x0f7Kqte0Y
-         dsr4SFxUQ43+5n+HuxAQnOON+r9AQu/VNoZ146G6yzzx477X05kV+Kotu5Ww8/CQfptN
-         OckYeOVp1fi6UipsI7GRhLBsPhw86bm/nVntdQFYatoqiJ9Puhrmi6k9aVduyyO/sleZ
-         Jsj3WBFHJyc08NhtwT2Xw/PqrpifEzcne8tRGHxX1SiH+jylGro77EXl73fxmHPa5PMh
-         SMIvVQzZl8rW9HtJexGPCU8u6hSaCa9HV3dv5TXtURj5+dyyKoxRdNbRvfHUeAgqfUsh
-         9q0A==
+        bh=Rki0Xa8doRs4Csl7X3HY7teBc3htHoj8qmA3lDoXuaw=;
+        b=I/Zb+qO1RFB66XF5xSjmYnWVrg33UJrahZqeDLi5NEG5s+Nlmu6Jr9Gcq7d0HwYx20
+         zZ09WlYaOxnjf4fWbWQX4z4CGeqAPXxt9rqV0RFIF2zNugFlfcFEFzUfNPUQA1FpYrvL
+         EnqH1p+BHHyeD032Bga9dhfRnNrOyWrO8CK+ZvETTySnCiAoZyK9co86MQ1TiUEerun4
+         dar1yB4G7RouUQllRtBvXV26bAgJch/FNG0427ZBgQAP3hwVTlHoh5hU0AYtIYazXe6r
+         zNPHw6PtboUndjJYmLhcRqnKmesjX/ilJ+Ad4Fu1ZlpCC4HstZe0dKH+KTJCA2fLkXDW
+         WQBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=idJuIcevWkqCRRn4+icscBWsB2SnJKWNGgO1oxC6Tc0=;
-        b=Nwq8/FnhrSeTrK25cw06j4jkIyDMicHK+LIPQbdjlXoIXLXKC0h8KOq0aq0hixMSYw
-         F8yYObYHMFz+gmg5u0Fkgj5swyB5cYKJcK+nfQV6NgGdVHqLFtdvAoriDjn9e1ivKdsd
-         qsW491a8r6XXUx/UYzJ/UYn2rzfrIZCmGQFrvfgEcXXwpOUQxbDkr/Ibk/T9c+yQLkZD
-         7PlVCMqCI7MIErlv5aEq0acrtdPAc3TM34RflLXfzyqnxK6umItf0HIj7Zbq1/FEC28q
-         pxAKHw2V2CM2uN/ARICeRESe+bRVSzQarQZnZS8vHGVw7fDq3MN+J1t0HsNVMQSjrpNo
-         ryeA==
-X-Gm-Message-State: AOAM532kcVfeN0BFDVWskzef+8JfCji2i00h6FzUx8MILt1hedkL5pGS
-        1SNVcSIzkCjKpsE2RTLPcPQ=
-X-Google-Smtp-Source: ABdhPJx1U+TwaPyWVd/XGRdcuucmF9VhgxJohkTd0Uy9fqQSVpJECKcBTm4ARInlpH12Jfm7la9PVQ==
-X-Received: by 2002:a17:902:714a:b0:139:25b:3996 with SMTP id u10-20020a170902714a00b00139025b3996mr4657043plm.25.1630616696068;
-        Thu, 02 Sep 2021 14:04:56 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o14sm2635527pjp.1.2021.09.02.14.04.54
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Rki0Xa8doRs4Csl7X3HY7teBc3htHoj8qmA3lDoXuaw=;
+        b=AqkcELkzjFz7OCNbbI7nszn12pfbFMKptFNz8F8MnqT92ZtIwbk3dQ3x+xs+oBuGiC
+         QQy7BVnyTEqHLEPCYE3McLlOG3/l+hBwrWzIjJdntPEkAMBYHIXOzuEAjUNzh4yNQTx2
+         cmsgo+gYfoa/TS1slMnG/c0RBqzMJGNB7uyOJCVfGuO0kolCluOvNLw9u2OscoC3vrMd
+         9z9fdgG2a14OK06JvCdtMARIYZCZLOF0xx/PlH0zYVqnSnQWBALc+3Mehyl7v0ioXK5s
+         113/THdkhA6c1kLGABwIND78321eJcTUT+9gzny6cTtTu4vQGKlmQa9e3GIZp/oTE1yW
+         32iA==
+X-Gm-Message-State: AOAM5334AKsPkxb1sr3kXdkvwm5MavnvC17a8rPNzQBXga+t0Db0OHHJ
+        rs+f9giyTAI89X+zaG93j7w=
+X-Google-Smtp-Source: ABdhPJyhVJBVLeACV9vJagTAi+U0OV47ef9Pm69G9DQJki8KoLF1GIdUk9yYbDyFZ7msSA4lDpjHvQ==
+X-Received: by 2002:a05:6602:2cc5:: with SMTP id j5mr279545iow.156.1630616710040;
+        Thu, 02 Sep 2021 14:05:10 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id c25sm1596362iom.9.2021.09.02.14.05.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 14:04:55 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thu, 02 Sep 2021 14:05:09 -0700 (PDT)
+Date:   Thu, 02 Sep 2021 14:05:02 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] ARM: dts: NSP: Add bcm958623hr board name to dts
-Date:   Thu,  2 Sep 2021 14:04:54 -0700
-Message-Id: <20210902210454.3102738-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210829223752.2748091-1-mnhagan88@gmail.com>
-References: <20210829223752.2748091-1-mnhagan88@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        kjain@linux.ibm.com, kernel-team@fb.com,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Message-ID: <61313c7eb16ba_2c56f208d9@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210902165706.2812867-4-songliubraving@fb.com>
+References: <20210902165706.2812867-1-songliubraving@fb.com>
+ <20210902165706.2812867-4-songliubraving@fb.com>
+Subject: RE: [PATCH v5 bpf-next 3/3] selftests/bpf: add test for
+ bpf_get_branch_snapshot
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Aug 2021 22:37:47 +0000, Matthew Hagan <mnhagan88@gmail.com> wrote:
-> This board was previously added to
-> Documentation/devicetree/bindings/arm/bcm/brcm,nsp.yaml
-> however the dts file was not updated to reflect this change. This patch
-> corrects bcm958623hr.dts by adding the board name to the compatible.
+Song Liu wrote:
+> This test uses bpf_get_branch_snapshot from a fexit program. The test uses
+> a target function (bpf_testmod_loop_test) and compares the record against
+> kallsyms. If there isn't enough record matching kallsyms, the test fails.
 > 
-> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
 > ---
+>  .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  19 +++-
+>  .../selftests/bpf/prog_tests/core_reloc.c     |  14 +--
+>  .../bpf/prog_tests/get_branch_snapshot.c      | 100 ++++++++++++++++++
+>  .../selftests/bpf/prog_tests/module_attach.c  |  39 -------
+>  .../selftests/bpf/progs/get_branch_snapshot.c |  40 +++++++
+>  tools/testing/selftests/bpf/test_progs.c      |  39 +++++++
+>  tools/testing/selftests/bpf/test_progs.h      |   2 +
+>  tools/testing/selftests/bpf/trace_helpers.c   |  37 +++++++
+>  tools/testing/selftests/bpf/trace_helpers.h   |   5 +
+>  9 files changed, 243 insertions(+), 52 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot.c
+> 
 
-Applied to https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
---
-Florian
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/progs/get_branch_snapshot.c b/tools/testing/selftests/bpf/progs/get_branch_snapshot.c
+> new file mode 100644
+> index 0000000000000..a1b139888048c
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/get_branch_snapshot.c
+> @@ -0,0 +1,40 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Facebook */
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +__u64 test1_hits = 0;
+> +__u64 address_low = 0;
+> +__u64 address_high = 0;
+> +int wasted_entries = 0;
+> +long total_entries = 0;
+> +
+> +#define ENTRY_CNT 32
+> +struct perf_branch_entry entries[ENTRY_CNT] = {};
+
+It looks like perf_branch_entry has never changed, but it could grow?
+Then size check in helper would fail. I'm not sure its worth it, but
+this could be done with CO-RE so the size is correct even if the
+struct grows.
+
+> +
+> +static inline bool in_range(__u64 val)
+> +{
+> +	return (val >= address_low) && (val < address_high);
+> +}
+> +
+> +SEC("fexit/bpf_testmod_loop_test")
+> +int BPF_PROG(test1, int n, int ret)
+> +{
+> +	long i;
+> +
+> +	total_entries = bpf_get_branch_snapshot(entries, sizeof(entries), 0);
+> +	total_entries /= sizeof(struct perf_branch_entry);
+> +
+> +	for (i = 0; i < ENTRY_CNT; i++) {
+> +		if (i >= total_entries)
+> +			break;
+> +		if (in_range(entries[i].from) && in_range(entries[i].to))
+> +			test1_hits++;
+> +		else if (!test1_hits)
+> +			wasted_entries++;
+> +	}
+> +	return 0;
+> +}
+
+Other than small comment LGTM.
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
