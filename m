@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD14F3FE9C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2223FE9C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243065AbhIBHLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 03:11:03 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:41836 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242504AbhIBHLA (ORCPT
+        id S243112AbhIBHLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 03:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242504AbhIBHLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 03:11:00 -0400
-Received: from [192.168.254.32] (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E8C3220B71D5;
-        Thu,  2 Sep 2021 00:10:01 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E8C3220B71D5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1630566602;
-        bh=Gm7mDHFy4xsNam3X90cB6VLAwXc244muiywxwcxc5AM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=AKZ78sIeyyFosHBcUapsnPcDOwYmBWVj5KPX0ePT2j71QU2tRfgXeU11TTrduE0mY
-         bFScIuyDUGp5Qlw91QIlec1KFRVt/7i9VENeBcHFzUtOO48PPNooX6shHO6Xea1zia
-         sBV+Sq/qdNlNpIL96hflImYaSJ1iLMP5feid79MI=
-Subject: Re: [RFC PATCH v8 2/4] arm64: Reorganize the unwinder code for better
- consistency and maintenance
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <b45aac2843f16ca759e065ea547ab0afff8c0f01>
- <20210812190603.25326-1-madvenka@linux.microsoft.com>
- <20210812190603.25326-3-madvenka@linux.microsoft.com>
- <YSe3WogpFIu97i/7@sirena.org.uk>
- <ecf0e4d1-7c47-426e-1350-fe5dc8bd88a5@linux.microsoft.com>
- <20210901162005.GH5976@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <dbd7f035-ad4e-1b92-3f09-d4fddb21f5a3@linux.microsoft.com>
-Date:   Thu, 2 Sep 2021 02:10:01 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 2 Sep 2021 03:11:30 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1F5C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 00:10:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=wsEUpJDilSHKQhB8V4biJ9qqXdXIwzngZTn7EDF2jGE=;
+        t=1630566632; x=1631776232; b=QTk7gxor1qd3aki0bN5ixnuRNBKDEvG6xMIp9MOWb4GUSJl
+        nIOiNHAWdFsGkAqdjrTBC11h5Reln9QFEfyfXjazS2AaDH4kVuD7puFgQs6GcEI5s1YXWmx3iVdiG
+        cvsbfj9Yy7dH1vhAkvJ68ZbUPs/azJk0jPOC5KWX5TSeXestGxntk+7yKeWsjLfRlSJIEkVZy5uiT
+        VRlGur/LZLdMdFHSJKDxiiP9rIgWjYduch/w6Lt9jFj8NzaHnmv+hER1VQnZGni52lhxw5ex4qsmG
+        +sWX/tAdBVzEpyWaZqUddy7wymSPdZZmObB7hsA3/XiS5phYiswIv2rmoo1vYPjw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mLgrd-001VVH-8J; Thu, 02 Sep 2021 09:10:21 +0200
+Message-ID: <626cc3f828c2dab14cd66e8cac0c8ea84e7ba088.camel@sipsolutions.net>
+Subject: Re: [PATCH] drm/r128: fix build for UML
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+Date:   Thu, 02 Sep 2021 09:10:20 +0200
+In-Reply-To: <20210902021721.27274-1-rdunlap@infradead.org>
+References: <20210902021721.27274-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <20210901162005.GH5976@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/1/21 11:20 AM, Mark Brown wrote:
-> On Thu, Aug 26, 2021 at 06:19:07PM -0500, Madhavan T. Venkataraman wrote:
+On Wed, 2021-09-01 at 19:17 -0700, Randy Dunlap wrote:
+> Fix a build error on CONFIG_UML, which does not support (provide)
+> wbinvd(). UML can use the generic mb() instead.
 > 
->> Mark Rutland,
+> ../drivers/gpu/drm/r128/ati_pcigart.c: In function ‘drm_ati_pcigart_init’:
+> ../drivers/gpu/drm/r128/ati_pcigart.c:218:2: error: implicit declaration of function ‘wbinvd’ [-Werror=implicit-function-declaration]
+>   wbinvd();
+>   ^~~~~~
 > 
->> Do you also approve the idea of placing unreliable functions (from an unwind
->> perspective) in a special section and using that in the unwinder for
->> reliable stack trace?
-> 
-> Rutland is on vacation for a couple of weeks so he's unlikely to reply
-> before the merge window is over I'm afraid.
-> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") # pre-git
 
-OK. I am pretty sure he is fine with the special sections idea. So, I will
-send out version 8 with the changes you requested and without the "RFC".
+Arguably, that could be
 
-Thanks.
+Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
 
-Madhavan
+because prior to that, Kconfig options depending on PCI couldn't be
+selected on ARCH=um.
+
+johannes
+
