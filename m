@@ -2,84 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A543FF365
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E013FF368
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347120AbhIBSrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51896 "EHLO
+        id S1347126AbhIBSr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:47:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347119AbhIBSrF (ORCPT
+        with ESMTP id S1347042AbhIBSr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:47:05 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF69CC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 11:46:06 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id gp20-20020a17090adf1400b00196b761920aso2165103pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 11:46:06 -0700 (PDT)
+        Thu, 2 Sep 2021 14:47:58 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40A1C061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 11:46:59 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id f6so3837203iox.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 11:46:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RJjkaPdtlOJqSnXq7mSfygXQwnXxIuqzSEg1pz6exPQ=;
-        b=ZpI1yhXR+45fjWE0xmOeixih8mfZWvoCQJ950wnl9c6F5HOyWnGWRXEY13r5MD1Cev
-         /PQbgo3Dpy8odQrqlAelZ5FL2JM4oCbOK6dpoa/BNTR+0G87Ria0fTzTwoYPcivJxFjj
-         5Fkn2zNT/ut5L4xg92jy49CufilFKpHPv8bOOFKlxAmjPYKGgQVALuaYCqz9JAQWtFB0
-         UV236/fTllWub8Hk/eAcc7P6EpBcTGHG3Y1Vih7x7C0x644fGAyx18Z0A1xdDaje5zO9
-         i4e5ncIMgqwt8cGqj/6pX4Nt6rmoXAmXoNAEkicAXJTF2eWXtJ0ZNCz9m7wAK/xhrTln
-         TxEg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=TEMn00oSA5VYih8Aj6llExK+pHCELiSyvXRfGxuQgtg=;
+        b=M0t8YfCc3DPykzulolmKugxNkSSE+yp6TNd0DwVndokt+ji1gH39MApX7kWigVy2a7
+         mLFTGmhcmgF1hUVycCVaDtjrslWVw0jknkajoU0GCZDftQ35fhjZJtNxbPEEH9rtsrna
+         30101gIMxT2LpN1dtJG+lhj06nh8nlXay+SvDQoKH4xuTKcCkKp34ZGjHapbW35knXr6
+         il4x35GDHoRoESAzDbRbGZ9dpRDCBjErR9NIYC+3o+4wWBg8DF4wmHT+xx4KWPcp9fOg
+         63JVpuz5BjMyq7kUSSA80Yh6WOQwy4bs8ueVAVuS+FfN2SiH+76IxnoD7OItvGo9Hj6X
+         5JqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RJjkaPdtlOJqSnXq7mSfygXQwnXxIuqzSEg1pz6exPQ=;
-        b=AGz6Db3TgKk145DAN4alrROlWMz/Wx7LPq0R7MOOnOU2L8eXtKjiPDkAzptAcFAkqS
-         HvwqPnSJO8R1FszeBO4kxgQS41SVp9MBUtz1V+GMBmLx/A3wSHzwG/5Z5WsHY1o+TTpf
-         Ujlb+UYW9UED4bar+TfjexAVHaDiIRZLoS7K1EDCsKAR7E7XJldXPgJ26JpEJNvczepL
-         YEwmy9Ld9IB1jdkKW/EBfcLyL0msR4Q1eH16ANhf6u33lXFlanIx18peDREnEbDXSDPH
-         50+Lc5eToAPODjA5Db+DCuRZzKYTkO/bW5lC/ywA8MboEBtmgMVdoFGijg+RHuEvi1/Z
-         D8rA==
-X-Gm-Message-State: AOAM533EBplv3bX6Hpd5C3lWGOs7EKm8EptDujc1KNpSRZnEwxxdNg30
-        Wx/CLht6pV0f0DjlAfAzP+7wLZyaRG+0fA==
-X-Google-Smtp-Source: ABdhPJysE0pwFVDH+n/51jkpkpP0kO/tfMSYjNw0tg1hfaQRf2QKFlJKY5DHFmD1B//lKRPNavK9nA==
-X-Received: by 2002:a17:90a:c293:: with SMTP id f19mr5526581pjt.106.1630608366158;
-        Thu, 02 Sep 2021 11:46:06 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id v190sm3100825pfv.166.2021.09.02.11.46.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 11:46:05 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 18:46:01 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Edmondson <david.edmondson@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>,
-        David Matlack <dmatlack@google.com>, x86@kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] KVM: x86: SGX must obey the
- KVM_INTERNAL_ERROR_EMULATION protocol
-Message-ID: <YTEb6f7rvrbNU2j7@google.com>
-References: <20210813071211.1635310-1-david.edmondson@oracle.com>
- <20210813071211.1635310-5-david.edmondson@oracle.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TEMn00oSA5VYih8Aj6llExK+pHCELiSyvXRfGxuQgtg=;
+        b=RfQnqIoH8/NI0aQCp+ePeVC+MrlYQqs0RDIhu8U2sHz9xNXmsD1Bsod8gm59NMDjd6
+         iZ57701xqSpYfXzwaCrpvWX6/Y7oSB66qhaCvelScF+liAq4Fzz9oN9cYRnxALPntR/P
+         OfBEFfKwIRWc5Z+Fnq2Jyw7TF8ZbP6stkfX2Yc6TuTKPoS5T7JFjLh3SkGGKV3GPTDO5
+         XU0JIxQuE09exuQmNZjIviRV+nrylU+AQ7k9fLIZo2S9xXpf/QqM6tQK6hMX6OfaYfk5
+         MKB2G0ADQBjiPVDm52nzGF1ElVmp3MpY1lhuHfVaP2LiQ5koOu3OILI1zXnvEpKnskVe
+         Zlsg==
+X-Gm-Message-State: AOAM5326WPwM+KOfNE2yw5WCMwq7NTfWBPRgOAVZoYX/QgD+tKsUyoZZ
+        1Xbj++OgJ/YgSbgWtu7EXGcLmfLYrpgFKQ==
+X-Google-Smtp-Source: ABdhPJwEENDZCzMS2wo7XGLnmumoKKIphww7ANHv2U9Uph2cWXlYSFQYSMTNKjzxaRbID+o2vAaamA==
+X-Received: by 2002:a05:6638:38aa:: with SMTP id b42mr4110120jav.6.1630608418936;
+        Thu, 02 Sep 2021 11:46:58 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id b18sm1381194iln.8.2021.09.02.11.46.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 11:46:58 -0700 (PDT)
+Subject: Re: [syzbot] general protection fault in io_issue_sqe
+To:     syzbot <syzbot+de67aa0cf1053e405871@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, haoxu@linux.alibaba.com,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <0000000000001ae8cc05cb075852@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <3d956ccb-8f2d-e3aa-eee3-254185314915@kernel.dk>
+Date:   Thu, 2 Sep 2021 12:46:57 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210813071211.1635310-5-david.edmondson@oracle.com>
+In-Reply-To: <0000000000001ae8cc05cb075852@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021, David Edmondson wrote:
-> When passing the failing address and size out to user space, SGX must
-> ensure not to trample on the earlier fields of the emulation_failure
-> sub-union of struct kvm_run.
+On 9/2/21 12:28 PM, syzbot wrote:
+> Hello,
 > 
-> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
-> ---
+> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> general protection fault in io_ring_ctx_wait_and_kill
+> 
+> general protection fault, probably for non-canonical address 0xdffffc0000000016: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x00000000000000b0-0x00000000000000b7]
+> CPU: 0 PID: 10163 Comm: syz-executor.2 Not tainted 5.14.0-rc7-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:io_ring_ctx_wait_and_kill+0x24d/0x450 fs/io_uring.c:9180
+> Code: ff 48 89 df e8 c4 fb ff ff e8 6f a8 94 ff 48 8b 04 24 48 8d b8 b0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d3 01 00 00 48 8b 04 24 48 8b a8 b0 00 00 00 48
+> RSP: 0018:ffffc9000a8b7a60 EFLAGS: 00010202
+> RAX: dffffc0000000000 RBX: ffff888046aa6000 RCX: 0000000000000000
+> RDX: 0000000000000016 RSI: ffffffff81e10061 RDI: 00000000000000b0
+> RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888046aa6643
+> R10: ffffffff81e1004b R11: 0000000000000000 R12: ffff888046aa63f8
+> R13: ffffc9000a8b7a90 R14: ffff8881453f4000 R15: ffff888046aa6040
+> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000561b3ede9400 CR3: 000000000b68e000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  io_uring_release+0x3e/0x50 fs/io_uring.c:9198
+>  __fput+0x288/0x920 fs/file_table.c:280
+>  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+>  exit_task_work include/linux/task_work.h:32 [inline]
+>  do_exit+0xbae/0x2a30 kernel/exit.c:825
+>  do_group_exit+0x125/0x310 kernel/exit.c:922
+>  get_signal+0x47f/0x2160 kernel/signal.c:2808
+>  arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
+>  handle_signal_work kernel/entry/common.c:148 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x4665f9
+> Code: Unable to access opcode bytes at RIP 0x4665cf.
+> RSP: 002b:00007faa595bc218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+> RAX: fffffffffffffe00 RBX: 000000000056c040 RCX: 00000000004665f9
+> RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056c040
+> RBP: 000000000056c038 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c044
+> R13: 00007fff98399dff R14: 00007faa595bc300 R15: 0000000000022000
+> Modules linked in:
+> ---[ end trace 641488e48828d1de ]---
+> RIP: 0010:io_ring_ctx_wait_and_kill+0x24d/0x450 fs/io_uring.c:9180
+> Code: ff 48 89 df e8 c4 fb ff ff e8 6f a8 94 ff 48 8b 04 24 48 8d b8 b0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d3 01 00 00 48 8b 04 24 48 8b a8 b0 00 00 00 48
+> RSP: 0018:ffffc9000a8b7a60 EFLAGS: 00010202
+> RAX: dffffc0000000000 RBX: ffff888046aa6000 RCX: 0000000000000000
+> RDX: 0000000000000016 RSI: ffffffff81e10061 RDI: 00000000000000b0
+> RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888046aa6643
+> R10: ffffffff81e1004b R11: 0000000000000000 R12: ffff888046aa63f8
+> R13: ffffc9000a8b7a90 R14: ffff8881453f4000 R15: ffff888046aa6040
+> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000561b3ede9400 CR3: 000000003cbf0000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> ----------------
+> Code disassembly (best guess), 1 bytes skipped:
+>    0:	48 89 df             	mov    %rbx,%rdi
+>    3:	e8 c4 fb ff ff       	callq  0xfffffbcc
+>    8:	e8 6f a8 94 ff       	callq  0xff94a87c
+>    d:	48 8b 04 24          	mov    (%rsp),%rax
+>   11:	48 8d b8 b0 00 00 00 	lea    0xb0(%rax),%rdi
+>   18:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+>   1f:	fc ff df
+>   22:	48 89 fa             	mov    %rdi,%rdx
+>   25:	48 c1 ea 03          	shr    $0x3,%rdx
+> * 29:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+>   2d:	0f 85 d3 01 00 00    	jne    0x206
+>   33:	48 8b 04 24          	mov    (%rsp),%rax
+>   37:	48 8b a8 b0 00 00 00 	mov    0xb0(%rax),%rbp
+>   3e:	48                   	rex.W
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+That's unrelated, but probably my fault. Let's rerun:
+
+#syz test git://git.kernel.dk/linux-block for-5.15/io_uring
+
+-- 
+Jens Axboe
+
