@@ -2,147 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD0F3FF1F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53A03FF1FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346471AbhIBQ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
+        id S1346429AbhIBRCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 13:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346545AbhIBQ6v (ORCPT
+        with ESMTP id S1346410AbhIBRCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:58:51 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03160C06179A
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:57:53 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id v26so5108747ybd.9
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:57:52 -0700 (PDT)
+        Thu, 2 Sep 2021 13:02:22 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA5AC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 10:01:21 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id v26so5128612ybd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 10:01:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6CdoDsPx4iZ3TYUBbTyYxIiN1dx31m8cBOT+Ft8CmZg=;
-        b=rLceyf8D0TrrwOWDocXtLORSpkXNOrPp19+SVh/W9DnhzcB0sVabWKqLehGnRXQR24
-         GbDFm2wVJLpjWDjLd6Kx7X48yzGknBT94TiXlqyDZMSzHDeHMBzfRCZtHAty/xUpOgcq
-         1Vb1df0K+NqGdjpmCHewWPlGfYO9QvN4Oozs6sJXQUSiJ6ocSKoSkVcb6YV1EmRu0y2l
-         kyeyTHX48FR7OMMXB7XD2BnUtMDCT0pTsdgeqgcfM0rW0JU3J5QtcumgH10ifmfFmuwU
-         U4GflpcIPuuGNqA3mD1IozdGsJqkRQ+qganoPYEfIGNFlBUQ66IWGqxQs5aGqtY2M6xr
-         uaaA==
+        bh=PpysPmik57x5vnDmjTrZwtUlMx9bD37Da+iZfWbm5qg=;
+        b=MjoPmyE65znm1D0n+HXu82MDj+gi8kUK0hXr1O6+Bjv/0XAG2S5ahgwzwBD+Cnu3oO
+         mCweJVAtssAovQojoUmS6Ci++Uti7Ht6PYH1jWKKoI5eVjR67tdebUj2PCrXVlmfg8tM
+         GyiQeXcN+v9qtEiprBzVjjzZ7yQjO3B3RB0RjTjVFZec+EtnhvmuxQV6HzPf1Ce4rVYk
+         Gy9f0zlDrqqWd5K0smV29f3g4eEijuq462wK6TYG45R1D1Ize7UGrVUTJ2rR8JN5ILQ9
+         GYAjv/Mfjox9wtbxaEeHdHUz20MaTDkDSEcwV5fAbMdjTM64pRm6mNidTYDDG6UJo3t6
+         KbhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6CdoDsPx4iZ3TYUBbTyYxIiN1dx31m8cBOT+Ft8CmZg=;
-        b=rvv4nlMGN2a39J1Fzn/d6O+DczKtkEIjKomDiEbdxvG1vIbVsoQ847nwaaDMIGKAQY
-         Y9Lub5PK4Ji2HOhmmgnvih70hplO7hpyGVHSMURQcgDwZPZSsV52ADTmxvhfiLQf/Ekq
-         YCgcYV5NvatmVtgbDQYgM6E+hsCDUkZfHFFjfdR7tN/khq9IU9piea1C2lWl3c1wO1VB
-         agwDkOg6K1pZxFtXarEZpEv4kqDpYhdKMEl2fLpFlE9HDX7L5ulqfrCHVP7eWwjCD0/i
-         3O5ggWLbUGl6lX0o0NAo109WMwTBWUoCwIeeFwd4Hr9CXnprvvxSMEhLVohEQjBzFj6p
-         nDPg==
-X-Gm-Message-State: AOAM5332OK0MLh05LUe8d4fpleZtPNswn4X+O4IkTVupdNdM1B8CCLUg
-        EkyF54G5T2UZj5KDCUoa8ttDgSBQj54EO5LulYw+7g==
-X-Google-Smtp-Source: ABdhPJyUB3nxok2NTKDn/g8+SXd4RmBib0Bt4hhmNlzH6hQptjNBzGzivM76xyWw6wPbcBIZt9BCUsZhKaEsG7ahXdI=
-X-Received: by 2002:a25:d2c8:: with SMTP id j191mr5833153ybg.412.1630601871177;
- Thu, 02 Sep 2021 09:57:51 -0700 (PDT)
+        bh=PpysPmik57x5vnDmjTrZwtUlMx9bD37Da+iZfWbm5qg=;
+        b=GCNaJHQfkpeR8OA5l03VknbEjK4Di3ziUxxEHWqFX87vCkhoPNR8rTTKhpDOJ4t5MI
+         FXPWW0E3EE91xjGHGmRXrNvTiImYsrrQ0pXZALGTC+8pP+WCCC55mDYMmU8e3oS2g9fb
+         ANAcC81DoYHJO6rjF7JZLk72t7Gt8Ca4sX1qcrUhV5Zmvl4/vDAB/C5MC5P2gS65qUO0
+         I0+IFnSCMUVLhlVsgPnCn12WkGSeRnGkDz6BaGGCu4CrWZ2gCTRGE+vuyVd5UXgF54Nl
+         NNnf94OqyYnk2vw3Xes1NNZAIgqqVXEKwoy8JopIIDuuIg1MOWDrPLKbAnyOi01SAI//
+         y9TA==
+X-Gm-Message-State: AOAM533LfXfd5Hvla/VQ+6yuP52PVyx4n9/ani9lRRAdfFdCsFj6W4Ao
+        v2ESpdyqpTll+BNY3j4GbjG8/qKizCxZLo/tzE5Yfg==
+X-Google-Smtp-Source: ABdhPJyt8C3Ru+98FAhkc1VPkGvpkiogD6mUaNAdSCekNWLAzApbq4a2RvTAF9sHto1glvhd7SJ6dQ+62d8ugoff0lE=
+X-Received: by 2002:a25:6746:: with SMTP id b67mr6335807ybc.96.1630602080287;
+ Thu, 02 Sep 2021 10:01:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902025528.1017391-1-saravanak@google.com>
- <20210902025528.1017391-3-saravanak@google.com> <CAL_JsqJOv7D5nHteGPDKC2+ns1caVNs-NFFJppLuK0OEB8dztQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqJOv7D5nHteGPDKC2+ns1caVNs-NFFJppLuK0OEB8dztQ@mail.gmail.com>
+References: <20210902134914.176986-1-narmstrong@baylibre.com> <20210902134914.176986-2-narmstrong@baylibre.com>
+In-Reply-To: <20210902134914.176986-2-narmstrong@baylibre.com>
 From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 2 Sep 2021 09:57:15 -0700
-Message-ID: <CAGETcx-rOakAX_apu2ecu6jWCwzO0RgMkwdfzyF+UaxQfVj4CA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] of: platform: Mark bus devices nodes with FWNODE_FLAG_NEVER_PROBES
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>
+Date:   Thu, 2 Sep 2021 10:00:44 -0700
+Message-ID: <CAGETcx9KYWmmSYjXGPW6awmVYcKr6sdmxhc_tP=hf149=8Pm6A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build as
+ a module
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     maz@kernel.org, tglx@linutronix.de, jbrunet@baylibre.com,
+        khilman@baylibre.com, lee.jones@linaro.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 7:24 AM Rob Herring <robh+dt@kernel.org> wrote:
+On Thu, Sep 2, 2021 at 6:49 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
 >
-> On Wed, Sep 1, 2021 at 9:55 PM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > We don't want fw_devlink creating device links for bus devices as
-> > they'll never probe. So mark those device node with this flag.
-> >
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > ---
-> >  drivers/of/platform.c | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
-> >
-> > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-> > index 74afbb7a4f5e..42b3936d204a 100644
-> > --- a/drivers/of/platform.c
-> > +++ b/drivers/of/platform.c
-> > @@ -392,6 +392,22 @@ static int of_platform_bus_create(struct device_node *bus,
-> >         if (!dev || !of_match_node(matches, bus))
-> >                 return 0;
-> >
-> > +       /*
-> > +        * If the bus node has only one compatible string value and it has
-> > +        * matched as a bus node, it's never going to get probed by a device
-> > +        * driver. So flag it as such so that fw_devlink knows not to create
-> > +        * device links with this device.
-> > +        *
-> > +        * This doesn't catch all devices that'll never probe, but this is good
-> > +        * enough for now.
-> > +        *
-> > +        * This doesn't really work for PPC because of how it uses
-> > +        * of_platform_bus_probe() to add normal devices. So ignore PPC cases.
-> > +        */
-> > +       if (!IS_ENABLED(CONFIG_PPC) &&
-> > +           of_property_count_strings(bus, "compatible") == 1)
-> > +               bus->fwnode.flags |= FWNODE_FLAG_NOT_DEVICE;
+> In order to reduce the kernel Image size on multi-platform distributions,
+> make it possible to build the Amlogic GPIO IRQ controller as a module
+> by switching it to a platform driver.
 >
-> This looks fragile relying on 1 compatible string, and the DT flags in
-> this code have been fragile too. I'm pretty sure we have cases of
-> simple-bus or simple-mfd that also have another compatible.
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  drivers/irqchip/Kconfig          |  5 +++--
+>  drivers/irqchip/irq-meson-gpio.c | 15 +++++++++------
+>  2 files changed, 12 insertions(+), 8 deletions(-)
 >
-> Couldn't we solve this with a simple driver?
+> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> index 4d5924e9f766..2aba485025fd 100644
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+> @@ -400,8 +400,9 @@ config IRQ_UNIPHIER_AIDET
+>           Support for the UniPhier AIDET (ARM Interrupt Detector).
+>
+>  config MESON_IRQ_GPIO
+> -       bool "Meson GPIO Interrupt Multiplexer"
+> -       depends on ARCH_MESON
+> +       tristate "Meson GPIO Interrupt Multiplexer"
+> +       depends on ARCH_MESON || COMPILE_TEST
+> +       default ARCH_MESON
+>         select IRQ_DOMAIN_HIERARCHY
+>         help
+>           Support Meson SoC Family GPIO Interrupt Multiplexer
+> diff --git a/drivers/irqchip/irq-meson-gpio.c b/drivers/irqchip/irq-meson-gpio.c
+> index e50676ce2ec8..d90ff0b92480 100644
+> --- a/drivers/irqchip/irq-meson-gpio.c
+> +++ b/drivers/irqchip/irq-meson-gpio.c
+> @@ -436,8 +436,7 @@ static const struct irq_domain_ops meson_gpio_irq_domain_ops = {
+>         .translate      = meson_gpio_irq_domain_translate,
+>  };
+>
+> -static int __init meson_gpio_irq_parse_dt(struct device_node *node,
+> -                                         struct meson_gpio_irq_controller *ctl)
+> +static int meson_gpio_irq_parse_dt(struct device_node *node, struct meson_gpio_irq_controller *ctl)
+>  {
+>         const struct of_device_id *match;
+>         int ret;
+> @@ -463,8 +462,7 @@ static int __init meson_gpio_irq_parse_dt(struct device_node *node,
+>         return 0;
+>  }
+>
+> -static int __init meson_gpio_irq_of_init(struct device_node *node,
+> -                                        struct device_node *parent)
+> +static int meson_gpio_irq_of_init(struct device_node *node, struct device_node *parent)
+>  {
+>         struct irq_domain *domain, *parent_domain;
+>         struct meson_gpio_irq_controller *ctl;
+> @@ -521,5 +519,10 @@ static int __init meson_gpio_irq_of_init(struct device_node *node,
+>         return ret;
+>  }
+>
+> -IRQCHIP_DECLARE(meson_gpio_intc, "amlogic,meson-gpio-intc",
+> -               meson_gpio_irq_of_init);
+> +IRQCHIP_PLATFORM_DRIVER_BEGIN(meson_gpio_intc)
+> +IRQCHIP_MATCH("amlogic,meson-gpio-intc", meson_gpio_irq_of_init)
+> +IRQCHIP_PLATFORM_DRIVER_END(meson_gpio_intc)
+> +
+> +MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_ALIAS("platform:meson-gpio-intc");
+> --
 
-Oh, I didn't think you'd like that. I'd lean towards that option too
-if we can address some of the other concerns below.
+Acked-by: Saravana Kannan <saravanak@google.com>
 
-> Make 'simple-pm-bus'
-> driver work for other cases?
-
-> BTW, this patch doesn't even work for
-> simple-pm-bus.
-
-How do you mean? Because simple-pm-bus already has a driver and
-doesn't set "matches" param when it calls of_platform_populate() and
-this flag won't be set. So at least for simple-pm-bus I don't see any
-issue.
-
-I was trying to reuse of_default_bus_match_table without explicitly
-referring to it, but if it's confusing I can add a separate list of
-compatible strings and use those here instead of using "matches".
-
-> A driver for simple-bus may cause issues if there's a
-> more specific driver to bind to as we don't handle that. It's simply
-> whichever matches first.
-
-Right, this is my worry. Especially for devices like this (there are
-plenty of cases like this) which have a driver that probes them but
-also lists simple-bus
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/arm-realview-pb11mp.dts?id=73f3af7b4611d77bdaea303fb639333eb28e37d7#n299
-
-So as long as there's a compatible string that's not one of the
-"transparent" busses, this driver shouldn't match. So, I don't think I
-can get away from checking the compatible strings.
-
-How about I check here to make sure all the "compatible" strings are
-from an approved transparent bus list, and if it's true, I use
-driver_override to force match it to a transparent bus driver? Would
-you be okay with that?
+Marc, my mdio-mux patches have landed.
 
 -Saravana
