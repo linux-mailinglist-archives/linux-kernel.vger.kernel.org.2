@@ -2,171 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B9D3FF16C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7453FF16F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346326AbhIBQcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:32:10 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:46764 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346324AbhIBQcJ (ORCPT
+        id S1346340AbhIBQc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:32:27 -0400
+Received: from mail-oo1-f50.google.com ([209.85.161.50]:40638 "EHLO
+        mail-oo1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346333AbhIBQc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:32:09 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 705B21D99;
-        Thu,  2 Sep 2021 19:31:09 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1630600269;
-        bh=0PEs+2tQ7ZmF73BqpIRvwTSI41YUXcuWRwtZTt/Qn28=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=tz27rhaHmItyR6Lkxnwqq/S/fZ9+iwCXsW7woLRSuA7nDqSeASdXncFLfQ1ad6D7h
-         eFKD2vFh4yRKHIj1FCMOE/Sw8yneF1Qb2vu9UWLCs98K2P7/H3+ZN+Y3j1aZIfyFeM
-         8TdNtKTKcz/SZn7DehY7Bonw8uwUwWtLVarDVwQ0=
-Received: from [192.168.211.59] (192.168.211.59) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 2 Sep 2021 19:31:09 +0300
-Subject: Re: [PATCH] fs/ntfs3: Remove GPL boilerplates from decompress lib
- files
-To:     Kari Argillander <kari.argillander@gmail.com>,
-        <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, Eric Biggers <ebiggers@kernel.org>
-References: <20210826214441.1614837-1-kari.argillander@gmail.com>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Message-ID: <e90b9068-2b23-0a6d-944b-c8eab7cf5107@paragon-software.com>
-Date:   Thu, 2 Sep 2021 19:31:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 2 Sep 2021 12:32:26 -0400
+Received: by mail-oo1-f50.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so708439ooh.7;
+        Thu, 02 Sep 2021 09:31:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bVfG6I1rLgPXzfK5MWdtxixJnWlk2BTbcuZB+XVnrts=;
+        b=K7jhT/FLS0nnDVk03KZ0wGokhwll25Vzxxa0GboFSUvwEcHlNFlgErtIBRrhaXbunV
+         bUmzQClUrnsxd3rhr/G8PUVpue6ATNznI2iagdKzUyy4fLy2T6C7hMtiFS6ShQ/BB3/F
+         KPRmYoiUSI78hOuWX3XfP0YYTtfBt3cHuZhk3GjvmN4rX7w17omQfWnmpxpOMv/KI+I9
+         GI04IO3WuXWMKLedWDMNTtWbQmL1Sze6o5+O0AX6kFMdMhli9CXBljV9dj/HSW4ebo92
+         ic4VU3ZQ4c26kqTu0sH42bDOl5J1K+TECGaK/4r6k0zpXdztP9rmRyUGxh/ayiIxciNZ
+         mLJQ==
+X-Gm-Message-State: AOAM532Cf87Z9OVDXKSSqoK2XuqB93gJQ+XCRhp7MI2EBjeYLlyGoekM
+        5qgLsZKn3tA5CAtebsmk2wN5UUM5PcaIjZT0T/A=
+X-Google-Smtp-Source: ABdhPJwMvJFIZ8AQs1kfhMrLw7Lo27Oc2Tw/XnzWPWaYPVc5aTbVjO0gHUee0XIh1SWP1pVWvZzx+L9DNwjPEVBge1U=
+X-Received: by 2002:a4a:ca83:: with SMTP id x3mr3336445ooq.2.1630600285972;
+ Thu, 02 Sep 2021 09:31:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210826214441.1614837-1-kari.argillander@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.59]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+References: <20210902025528.1017391-1-saravanak@google.com>
+ <CAGETcx9N34RyrdKDR8dQ7ECyz7ZXBx-Ft16t033NjTiU8p=Y0g@mail.gmail.com>
+ <CAJZ5v0gt_1vKQXxSY6HoHRPR9O_e1f7VwcBnSjeMgCdCibrwgQ@mail.gmail.com> <CAGETcx_dvpFKZnz2w43h=ybp-8YF=OdpW0f2mK+jvDPURDFQJQ@mail.gmail.com>
+In-Reply-To: <CAGETcx_dvpFKZnz2w43h=ybp-8YF=OdpW0f2mK+jvDPURDFQJQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 2 Sep 2021 18:31:14 +0200
+Message-ID: <CAJZ5v0iDU9aCGaF2FfCXmHjQ2qPH7KmF46rmaPAsPaxOT1yPDg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Ulf reported an issue[1] with fw_devlink. This
+ series tries to fix that issue.
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Len Brown <lenb@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 2, 2021 at 6:27 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Thu, Sep 2, 2021 at 8:56 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Thu, Sep 2, 2021 at 4:57 AM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > Oops, forgot to use a proper subject. Sorry.
+> >
+> > Is this a replacement for the "Fix rtl8366rb issues with fw_devlink=on " series?
+>
+> No. This is unrelated to that. This is the issue I'm trying to fix:
+> https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+
+Allright, thanks!
+
+> This is kind of a replacement to, but the patch below might be needed
+> in general (needs more thought):
+> https://lore.kernel.org/lkml/CAGETcx9U2M5i1CAx605fG3Qwm1xwjH2uy4kY4vrAF7YSRSSg+w@mail.gmail.com/
+
+I see.
 
 
-On 27.08.2021 00:44, Kari Argillander wrote:
-> Files already have SDPX identifier so no reason to keep boilerplates in
-> these files anymore.
-> 
-> CC: Eric Biggers <ebiggers@kernel.org>
-> Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
-> ---
-> This is probably ok to you Eric just wanted to make sure and be polite.
-> ---
->  fs/ntfs3/lib/decompress_common.c | 13 -------------
->  fs/ntfs3/lib/decompress_common.h | 14 --------------
->  fs/ntfs3/lib/lzx_decompress.c    | 13 -------------
->  fs/ntfs3/lib/xpress_decompress.c | 13 -------------
->  4 files changed, 53 deletions(-)
-> 
-> diff --git a/fs/ntfs3/lib/decompress_common.c b/fs/ntfs3/lib/decompress_common.c
-> index 83c9e93aea77..09e9e6544946 100644
-> --- a/fs/ntfs3/lib/decompress_common.c
-> +++ b/fs/ntfs3/lib/decompress_common.c
-> @@ -3,19 +3,6 @@
->   * decompress_common.c - Code shared by the XPRESS and LZX decompressors
->   *
->   * Copyright (C) 2015 Eric Biggers
-> - *
-> - * This program is free software: you can redistribute it and/or modify it under
-> - * the terms of the GNU General Public License as published by the Free Software
-> - * Foundation, either version 2 of the License, or (at your option) any later
-> - * version.
-> - *
-> - * This program is distributed in the hope that it will be useful, but WITHOUT
-> - * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-> - * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-> - * details.
-> - *
-> - * You should have received a copy of the GNU General Public License along with
-> - * this program.  If not, see <http://www.gnu.org/licenses/>.
->   */
->  
->  #include "decompress_common.h"
-> diff --git a/fs/ntfs3/lib/decompress_common.h b/fs/ntfs3/lib/decompress_common.h
-> index 66297f398403..2d70ae42f1b5 100644
-> --- a/fs/ntfs3/lib/decompress_common.h
-> +++ b/fs/ntfs3/lib/decompress_common.h
-> @@ -1,22 +1,8 @@
->  /* SPDX-License-Identifier: GPL-2.0-or-later */
-> -
->  /*
->   * decompress_common.h - Code shared by the XPRESS and LZX decompressors
->   *
->   * Copyright (C) 2015 Eric Biggers
-> - *
-> - * This program is free software: you can redistribute it and/or modify it under
-> - * the terms of the GNU General Public License as published by the Free Software
-> - * Foundation, either version 2 of the License, or (at your option) any later
-> - * version.
-> - *
-> - * This program is distributed in the hope that it will be useful, but WITHOUT
-> - * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-> - * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-> - * details.
-> - *
-> - * You should have received a copy of the GNU General Public License along with
-> - * this program.  If not, see <http://www.gnu.org/licenses/>.
->   */
->  
->  #include <linux/string.h>
-> diff --git a/fs/ntfs3/lib/lzx_decompress.c b/fs/ntfs3/lib/lzx_decompress.c
-> index 77a381a693d1..6b16f07073c1 100644
-> --- a/fs/ntfs3/lib/lzx_decompress.c
-> +++ b/fs/ntfs3/lib/lzx_decompress.c
-> @@ -6,19 +6,6 @@
->   * this is the only size used in System Compression.
->   *
->   * Copyright (C) 2015 Eric Biggers
-> - *
-> - * This program is free software: you can redistribute it and/or modify it under
-> - * the terms of the GNU General Public License as published by the Free Software
-> - * Foundation, either version 2 of the License, or (at your option) any later
-> - * version.
-> - *
-> - * This program is distributed in the hope that it will be useful, but WITHOUT
-> - * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-> - * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-> - * details.
-> - *
-> - * You should have received a copy of the GNU General Public License along with
-> - * this program.  If not, see <http://www.gnu.org/licenses/>.
->   */
->  
->  #include "decompress_common.h"
-> diff --git a/fs/ntfs3/lib/xpress_decompress.c b/fs/ntfs3/lib/xpress_decompress.c
-> index 3d98f36a981e..769c6d3dde67 100644
-> --- a/fs/ntfs3/lib/xpress_decompress.c
-> +++ b/fs/ntfs3/lib/xpress_decompress.c
-> @@ -5,19 +5,6 @@
->   * based on the code from wimlib.
->   *
->   * Copyright (C) 2015 Eric Biggers
-> - *
-> - * This program is free software: you can redistribute it and/or modify it under
-> - * the terms of the GNU General Public License as published by the Free Software
-> - * Foundation, either version 2 of the License, or (at your option) any later
-> - * version.
-> - *
-> - * This program is distributed in the hope that it will be useful, but WITHOUT
-> - * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-> - * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-> - * details.
-> - *
-> - * You should have received a copy of the GNU General Public License along with
-> - * this program.  If not, see <http://www.gnu.org/licenses/>.
->   */
->  
->  #include "decompress_common.h"
-> 
-
-Hi, Kari, Eric!
-
-Applied, thanks!
+> > > On Wed, Sep 1, 2021 at 7:55 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > >
+> > > > Ulf, mind testing this?
+> > > >
+> > > > Thanks,
+> > > > Saravana
+> > > > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+> > > >
+> > > > Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> > > >
+> > > > Saravana Kannan (2):
+> > > >   driver core: Add support for FWNODE_FLAG_NEVER_PROBES
+> > > >   of: platform: Mark bus devices nodes with FWNODE_FLAG_NEVER_PROBES
+> > > >
+> > > >  drivers/base/core.c    |  8 ++++++++
+> > > >  drivers/of/platform.c  | 16 ++++++++++++++++
+> > > >  include/linux/fwnode.h |  8 +++++---
+> > > >  3 files changed, 29 insertions(+), 3 deletions(-)
+> > > >
+> > > > --
+> > > > 2.33.0.259.gc128427fd7-goog
+> > > >
