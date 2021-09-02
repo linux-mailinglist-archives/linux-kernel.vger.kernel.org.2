@@ -2,85 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9C23FED99
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 198283FED9D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344276AbhIBMPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 08:15:11 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:63952 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344299AbhIBMPI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:15:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1630584850; x=1662120850;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=MG3sKygk/maATxNJEqPcS3fl+Si0b2i4QKAdEI9EZ8M=;
-  b=b4PUZM0GgO4S9tYU7PtWEZtOMnPA+0dsfFS56qt3fDYjjpi7zGLPQGpL
-   uuTuYA2jW1Muugnz/L/nsK/p/XAKGkOUFrNoZuizZB7OSm9sCEq2f3gef
-   PcDuDS3UYM2LqGS+2ecr1Ujh87j4PNjV4qqYNPtKhDzJbZl+KlQ0jXks3
-   nWJrac9m2qNxrPT33c1TutYZiseXVG508SP5hDfxi4uerVzc/lYxCU9P4
-   q3iKj4QfHdxP7+y1zWwlFFHVF+C8+ro4CmJMrBYvQPmWH6F+f09Sy9rgV
-   xUsUico5AaT7HHBj9sF09vPTNKrPZkF1gKisM2A8mFqwQGBmgtRbBHuU1
-   g==;
-IronPort-SDR: xeysCxn2FRD7bughla++Hb2lLUvxz89uZXoDFm9deDFlQqxozbxUaX28ommepqiGW4iL3VvS7X
- ON7ozwvmTqqwRrW5aIP1di4h9ogNtldrLzuluROcUAlY5d5+fs4Xu9dqrFo1ahkMHylr7O4hpr
- 6ZhVqFl0ZSIqrwYQOWRCO9OYpzYZO4f7z0WNgDVzc7pzQBrDkm7msRD2l039rK1s7/06AMdCcg
- VGqFP1b38/mTgSGLyrdIQuUsbU7DNb0dFhirBNxzmJ/EZv3w9jfA+PH5NIH6fCvlyRb9o72NEk
- RpoIKspcmGydk7u8Z5h93N/C
-X-IronPort-AV: E=Sophos;i="5.84,372,1620716400"; 
-   d="scan'208";a="68014599"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Sep 2021 05:14:08 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 2 Sep 2021 05:14:08 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 2 Sep 2021 05:14:06 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <nicolas.ferre@microchip.com>
-CC:     <robh+dt@kernel.org>, <ludovic.desroches@microchip.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>
-Subject: [PATCH] ARM: dts: at91: sama5d2_som1_ek: disable ISC node by default
-Date:   Thu, 2 Sep 2021 15:13:58 +0300
-Message-ID: <20210902121358.503589-1-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        id S1344295AbhIBMQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 08:16:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343984AbhIBMQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 08:16:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A954A60F90;
+        Thu,  2 Sep 2021 12:15:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630584954;
+        bh=hr+t/bJ+QD4jlEcI9TsTp6H1aIJD4dtF+RqEdbB6Hrs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Xcn+mpNutq0ztqFE9/Cl8RHOuDeLeYGfQIxYWM8uTCKRAnO9OgXIp/UtD3YBcAaYO
+         lrHqhjB2UHFKzm1grkYptjY250P7pYtuOlo9fX8QnAx+Hl6fdLEPyyHKxwIVa7pD6J
+         iLXQSXrMjBnOoGt0BIpDVkd8b9j1Z7EQY7H7ZwKzKLgczpFnHXacS28g624cq1QPfI
+         klu8+iKpyeCMe1Uiv8ZKQXgLZeCGLWtBwj4dtIfoG6zOUGbBIl04i7KoKajRwwiqaj
+         nQQ9Tt/CMCCMzcmJqq5IgRbF+QfI36ipK/MOMDLX65kothi8gWb4ZAnqiwE6Ts+CR6
+         Rq0Civj3ajWhQ==
+Message-ID: <41e9b099f6492c389b3ed3bbe107d61804a307e9.camel@kernel.org>
+Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Thu, 02 Sep 2021 15:15:51 +0300
+In-Reply-To: <20210901174705.3b1a943ef8c4bb09323c6d76@intel.com>
+References: <20210825235234.153013-1-jarkko@kernel.org>
+         <20210825235234.153013-2-jarkko@kernel.org>
+         <20210826141959.5f13ff3c9c560c23b58443b1@intel.com>
+         <54923ac01fc303e5105cadca06b7c5cbd322d815.camel@kernel.org>
+         <20210828000335.1d40dfff0f408b2d91467491@intel.com>
+         <04b90a702328712204430db604b2a92ddfe8f990.camel@kernel.org>
+         <20210901173322.78f94b694b4be6b1225bee98@intel.com>
+         <6a9fccdb6a458960e43a63afcce87cc62184adf9.camel@kernel.org>
+         <20210901174705.3b1a943ef8c4bb09323c6d76@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Without a sensor node, the ISC will simply fail to probe, as the
-corresponding port node is missing.
-It is then logical to disable the node in the devicetree.
-If we add a port with a connection to a sensor endpoint, ISC can be enabled.
+On Wed, 2021-09-01 at 17:47 +1200, Kai Huang wrote:
+> On Wed, 01 Sep 2021 08:41:12 +0300 Jarkko Sakkinen wrote:
+> > On Wed, 2021-09-01 at 17:33 +1200, Kai Huang wrote:
+> > > On Wed, 01 Sep 2021 05:02:45 +0300 Jarkko Sakkinen wrote:
+> > > > On Sat, 2021-08-28 at 00:03 +1200, Kai Huang wrote:
+> > > > > > > > -/* The free page list lock protected variables prepend the=
+ lock. */
+> > > > > > > > +/* The number of usable EPC pages in the system. */
+> > > > > > > > +unsigned long sgx_nr_all_pages;
+> > > > > > > > +
+> > > > > > > > +/* The number of free EPC pages in all nodes. */
+> > > > > > > >  static unsigned long sgx_nr_free_pages;
+> > > > > > > > =20
+> > > > > > > >  /* Nodes with one or more EPC sections. */
+> > > > > > > > @@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_sectio=
+n(u64 phys_addr, u64 size,
+> > > > > > > >  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_l=
+ist);
+> > > > > > > >  	}
+> > > > > > > > =20
+> > > > > > > > +	sgx_nr_all_pages +=3D nr_pages;
+> > > > > > > > +
+> > > > > > >=20
+> > > > > > > EPC sections can be freed again in sgx_init() after they are =
+successfully
+> > > > > > > initialized, when any further initialization fails (i.e. when=
+ fails to create
+> > > > > > > ksgxd, or fails to register /dev/sgx_provision).  In which ca=
+se, I think
+> > > > > > > sgx_nr_all_pages should also be cleared.  But current sgx_ini=
+t() seems doesn't
+> > > > > > > reset it.  Do you need to fix that too?
+> > > > > >=20
+> > > > > > sgx_nr_all_pages tells just the total pages in the system, i.e.=
+ it's a constant.
+> > > > > >=20
+> > > > > > Maybe a rename to "sgx_nr_total_pages" would be a good idea? Wo=
+uld match with
+> > > > > > the meminfo field better too.
+> > > > >=20
+> > > > > I don't have preference on name.  I just think if there's no actu=
+al user of
+> > > > > EPC (when both driver and KVM SGX cannot be enabled), it's pointl=
+ess to print
+> > > > > number of EPC pages.
+> > > >=20
+> > > > I'd presume that you refer to the code, which prints the number of =
+*bytes* in
+> > > > the system because code printing the number of pages does not exist=
+ in this
+> > > > patch set.
+> > > >=20
+> > > > I have troubles the decipher your statement.
+> > > >=20
+> > > > You think that only if both the driver and KVM are *both* enabled, =
+only then
+> > > > it makes sense to have this information available for sysadmin?
+> > >=20
+> > > Only if at least one of them is enabled.
+> >=20
+> > OK, thank you, that does make sense.
+> >=20
+> > What would happen if neither is enabled is that SGX_MemTotal would
+> > state that there is zero bytes of EPC.=20
+>=20
+> This is the problem I pointed out at the beginning, that (if I read code
+> correctly), it seems your current patch doesn't clear sgx_nr_all_pages wh=
+en
+> neither is enabled (in sgx_init() in sgx/main.c).
 
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
----
- arch/arm/boot/dts/at91-sama5d27_som1_ek.dts | 1 -
- 1 file changed, 1 deletion(-)
+It's initialized to zero, so are you talking about fallback when something
+fails?
 
-diff --git a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
-index 614999dcb990..cd4672501add 100644
---- a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
-+++ b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
-@@ -71,7 +71,6 @@ apb {
- 			isc: isc@f0008000 {
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&pinctrl_isc_base &pinctrl_isc_data_8bit &pinctrl_isc_data_9_10 &pinctrl_isc_data_11_12>;
--				status = "okay";
- 			};
- 
- 			qspi1: spi@f0024000 {
--- 
-2.25.1
-
+/Jarkko
