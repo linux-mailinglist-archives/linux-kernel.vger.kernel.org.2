@@ -2,222 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2103FF06E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913373FF075
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345918AbhIBPqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 11:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234405AbhIBPqK (ORCPT
+        id S1345922AbhIBPsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 11:48:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27671 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345873AbhIBPsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 11:46:10 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FAFC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 08:45:12 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id v10so3672412wrd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 08:45:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rDNftNGmU54xsGRS67zsRu7m0uNE4X5v/MoeNFVfn7E=;
-        b=sDw++GMRrMyzpeH1bwkM+FYPVg6fxrVV0LN1kGCn4YN+vcSZbmpwOKB4KWRrH4PWzF
-         tplhblDAyL2RdW+Ojd3dMWXFs2O8dskVrgRaQw6rYDu3d21HyGhW2c9qOWLRe4bz8B6i
-         cyaCcddl/Sqvj49yDnQyEXtu/D8DBfXbMOXgd2/IebWbFgSpslUPSbYQtpxBr0flFAg3
-         VoEYbRI5+J/DxzgpC3s2PCyLmjQpPoRg9WVFh9sc1Xm8ZKxAKAe+kUVsnNZTO2l5TLdD
-         EOko/woKE+VkWyg9+PV9wbXM+hb11rL9RZGyx4LMfgz8v5ab/VJ7gXtmNZdSq0bWr1DD
-         +YPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rDNftNGmU54xsGRS67zsRu7m0uNE4X5v/MoeNFVfn7E=;
-        b=Alg6cWcGZVDOgRer+qeaFtu+UMLuaoVhsTk2NSAjMcaktSqsD7xXyu/UOS89efryJp
-         aq+nSivncbl5ZxJiRVBnmPCiZ79dRyMeDlpY1Ly5TgSkw/83pMgBxqwdg2VEV+tXk1pm
-         CGSwiZEdXviGn4R2iRPBiqgqpClZSC5MFggcmqmV/YWhgtL3N0L2zoUyrpeOH6CVp6oI
-         vvZosgPeDwjYaUbvT2Szqv52IOCsW3tS3ztwM/EQyTfLIzwNfnYdj3QcVcIgnXvwS/0u
-         cJG6NrLV5lDNEgTecGcx9zxnCLRMg9KYX02K0ov5pM3f0gCjn68pY1s7RcpXhMKGld5+
-         dzCA==
-X-Gm-Message-State: AOAM531Azi7BjI0x/rdj0FS4EAyKl7ulxbMbjwWTFMnS10e1Q70Qcq7A
-        JwNvOUZaJ8qrMQubzx4Y/mrSi0ycyyuE7+TwSRaIOA==
-X-Google-Smtp-Source: ABdhPJzrEuwh9wgaE+IJ9h+uXMRqJBofSl0PNBOp35s9vzEP0/FozcYSj/LHKR3v8LJwVerCjPOjjlIAbzBATeDztN8=
-X-Received: by 2002:adf:e4ce:: with SMTP id v14mr4523745wrm.49.1630597510045;
- Thu, 02 Sep 2021 08:45:10 -0700 (PDT)
+        Thu, 2 Sep 2021 11:48:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630597657;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WDx0PcjIEi7aaYT5qenMJpXUhrm6VH0waiqiPfuyEm4=;
+        b=M3IH4uuXgfc44RHpXwZO0oCk19dQrEquY1Es7GhPF1G7iMsaHOcuThBgrvVVkHqzbbtZ4v
+        9zV2aZN2oArWKv3Jjwqrr6fLVju7az+hy9fHivF3BbT6NbwDK8HkjK7OVANUEDZXWu5Yp9
+        JWsn27NfrbPEQfgf8URDhldDJvx0QuM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-300-WcbQxMzvPqGQVG_21Zq6JA-1; Thu, 02 Sep 2021 11:47:36 -0400
+X-MC-Unique: WcbQxMzvPqGQVG_21Zq6JA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F03C0189C454;
+        Thu,  2 Sep 2021 15:47:34 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.8.149])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A37B719C46;
+        Thu,  2 Sep 2021 15:47:31 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 38BED220257; Thu,  2 Sep 2021 11:47:31 -0400 (EDT)
+Date:   Thu, 2 Sep 2021 11:47:31 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, dwalsh@redhat.com, dgilbert@redhat.com,
+        christian.brauner@ubuntu.com, casey.schaufler@intel.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
+        bfields@redhat.com, stephen.smalley.work@gmail.com,
+        agruenba@redhat.com, david@fromorbit.com, viro@zeniv.linux.org.uk
+Subject: [PATCH 3/1] xfstests: generic/062: Do not run on newer kernels
+Message-ID: <YTDyE9wVQQBxS77r@redhat.com>
+References: <20210902152228.665959-1-vgoyal@redhat.com>
 MIME-Version: 1.0
-References: <20210902093358.28345-1-yan2228598786@gmail.com>
-In-Reply-To: <20210902093358.28345-1-yan2228598786@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 2 Sep 2021 08:44:57 -0700
-Message-ID: <CANn89iLHg8cjLFKVzO+CkewLs_NkjEjQGetwARVnkuKRS9iUfQ@mail.gmail.com>
-Subject: Re: [PATCH] net: tcp_drop adds `reason` and SNMP parameters for
- tracing v3
-To:     Zhongya Yan <yan2228598786@gmail.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, hengqi.chen@gmail.com,
-        Yonghong Song <yhs@fb.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>, 2228598786@qq.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902152228.665959-1-vgoyal@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 2:34 AM Zhongya Yan <yan2228598786@gmail.com> wrote:
->
-> I used the suggestion from `Brendan Gregg`. In addition to the
-> `reason` parameter there is also the `field` parameter pointing
-> to `SNMP` to distinguish the `tcp_drop` cause. I know what I
-> submitted is not accurate, so I am submitting the current
-> patch to get comments and criticism from everyone so that I
-> can submit better code and solutions.And of course to make me
-> more familiar and understand the `linux` kernel network code.
-> Thank you everyone!
->
-> Signed-off-by: Zhongya Yan <yan2228598786@gmail.com>
-> ---
->  include/trace/events/tcp.h |  39 +++---------
->  net/ipv4/tcp_input.c       | 126 ++++++++++++++-----------------------
->  2 files changed, 57 insertions(+), 108 deletions(-)
->
-> diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
-> index 699539702ea9..80892660458e 100644
-> --- a/include/trace/events/tcp.h
-> +++ b/include/trace/events/tcp.h
-> @@ -371,28 +371,10 @@ DEFINE_EVENT(tcp_event_skb, tcp_bad_csum,
->         TP_ARGS(skb)
->  );
->
-> -// from author @{Steven Rostedt}
-> -#define TCP_DROP_REASON                                                        \
-> -       REASON_STRING(TCP_OFO_QUEUE,            ofo_queue)                      \
-> -       REASON_STRING(TCP_DATA_QUEUE_OFO,               data_queue_ofo)                 \
-> -       REASON_STRING(TCP_DATA_QUEUE,           data_queue)                     \
-> -       REASON_STRING(TCP_PRUNE_OFO_QUEUE,              prune_ofo_queue)                \
-> -       REASON_STRING(TCP_VALIDATE_INCOMING,    validate_incoming)              \
-> -       REASON_STRING(TCP_RCV_ESTABLISHED,              rcv_established)                \
-> -       REASON_STRING(TCP_RCV_SYNSENT_STATE_PROCESS, rcv_synsent_state_process) \
-> -       REASON_STRINGe(TCP_RCV_STATE_PROCESS,   rcv_state_proces)
 
-??? On which tree / branch this patch is based on ?
+xfstests: generic/062: Do not run on newer kernels
 
-> -
-> -#undef REASON_STRING
-> -#undef REASON_STRINGe
-> -
-> -#define REASON_STRING(code, name) {code , #name},
-> -#define REASON_STRINGe(code, name) {code, #name}
-> -
-> -
->  TRACE_EVENT(tcp_drop,
-> -               TP_PROTO(struct sock *sk, struct sk_buff *skb, __u32 reason),
-> +               TP_PROTO(struct sock *sk, struct sk_buff *skb, int field, const char *reason),
->
-> -               TP_ARGS(sk, skb, reason),
-> +               TP_ARGS(sk, skb, field, reason),
->
->                 TP_STRUCT__entry(
->                         __array(__u8, saddr, sizeof(struct sockaddr_in6))
-> @@ -409,9 +391,8 @@ TRACE_EVENT(tcp_drop,
->                         __field(__u32, srtt)
->                         __field(__u32, rcv_wnd)
->                         __field(__u64, sock_cookie)
-> -                       __field(__u32, reason)
-> -                       __field(__u32, reason_code)
-> -                       __field(__u32, reason_line)
-> +                       __field(int, field)
-> +                       __string(reason, reason)
->                         ),
->
->                 TP_fast_assign(
-> @@ -437,21 +418,19 @@ TRACE_EVENT(tcp_drop,
->                                 __entry->ssthresh = tcp_current_ssthresh(sk);
->                                 __entry->srtt = tp->srtt_us >> 3;
->                                 __entry->sock_cookie = sock_gen_cookie(sk);
-> -                               __entry->reason = reason;
-> -                               __entry->reason_code = TCP_DROP_CODE(reason);
-> -                               __entry->reason_line = TCP_DROP_LINE(reason);
-> +                               __entry->field = field;
-> +
-> +                               __assign_str(reason, reason);
->                 ),
->
->                 TP_printk("src=%pISpc dest=%pISpc mark=%#x data_len=%d snd_nxt=%#x snd_una=%#x \
->                                 snd_cwnd=%u ssthresh=%u snd_wnd=%u srtt=%u rcv_wnd=%u \
-> -                               sock_cookie=%llx reason=%d reason_type=%s reason_line=%d",
-> +                               sock_cookie=%llx field=%d reason=%s",
->                                 __entry->saddr, __entry->daddr, __entry->mark,
->                                 __entry->data_len, __entry->snd_nxt, __entry->snd_una,
->                                 __entry->snd_cwnd, __entry->ssthresh, __entry->snd_wnd,
->                                 __entry->srtt, __entry->rcv_wnd, __entry->sock_cookie,
-> -                               __entry->reason,
-> -                               __print_symbolic(__entry->reason_code, TCP_DROP_REASON),
-> -                               __entry->reason_line)
-> +                               field, __get_str(reason))
->  );
->
->  #endif /* _TRACE_TCP_H */
-> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> index b2bc49f1f0de..bd33fd466e1e 100644
-> --- a/net/ipv4/tcp_input.c
-> +++ b/net/ipv4/tcp_input.c
-> @@ -100,7 +100,6 @@ int sysctl_tcp_max_orphans __read_mostly = NR_FILE;
->  #define FLAG_UPDATE_TS_RECENT  0x4000 /* tcp_replace_ts_recent() */
->  #define FLAG_NO_CHALLENGE_ACK  0x8000 /* do not call tcp_send_challenge_ack()  */
->  #define FLAG_ACK_MAYBE_DELAYED 0x10000 /* Likely a delayed ACK */
-> -#define FLAG_DSACK_TLP         0x20000 /* DSACK for tail loss probe */
->
->  #define FLAG_ACKED             (FLAG_DATA_ACKED|FLAG_SYN_ACKED)
->  #define FLAG_NOT_DUP           (FLAG_DATA|FLAG_WIN_UPDATE|FLAG_ACKED)
-> @@ -455,12 +454,11 @@ static void tcp_sndbuf_expand(struct sock *sk)
->   */
->
->  /* Slow part of check#2. */
-> -static int __tcp_grow_window(const struct sock *sk, const struct sk_buff *skb,
-> -                            unsigned int skbtruesize)
-> +static int __tcp_grow_window(const struct sock *sk, const struct sk_buff *skb)
+This test has been written with assumption that setting user.* xattrs will
+fail on symlink and special files. When newer kernels support setting
+user.* xattrs on symlink and special files, this test starts failing.
 
-???
+Found it hard to change test in such a way that it works on both type of
+kernels. Primary problem is 062.out file which hardcodes the output and
+output will be different on old and new kernels.
 
->  {
->         struct tcp_sock *tp = tcp_sk(sk);
->         /* Optimize this! */
-> -       int truesize = tcp_win_from_space(sk, skbtruesize) >> 1;
-> +       int truesize = tcp_win_from_space(sk, skb->truesize) >> 1;
+So instead, do not run this test if kernel is new and is expected to
+exhibit new behavior. Next patch will create a new test and run that
+test on new kernel.
 
-???
+IOW, on old kernels run 062 and on new kernels run new test.
 
->         int window = tcp_win_from_space(sk, sock_net(sk)->ipv4.sysctl_tcp_rmem[2]) >> 1;
->
->         while (tp->rcv_ssthresh <= window) {
-> @@ -473,27 +471,7 @@ static int __tcp_grow_window(const struct sock *sk, const struct sk_buff *skb,
->         return 0;
->  }
->
-> -/* Even if skb appears to have a bad len/truesize ratio, TCP coalescing
-> - * can play nice with us, as sk_buff and skb->head might be either
-> - * freed or shared with up to MAX_SKB_FRAGS segments.
-> - * Only give a boost to drivers using page frag(s) to hold the frame(s),
-> - * and if no payload was pulled in skb->head before reaching us.
-> - */
-> -static u32 truesize_adjust(bool adjust, const struct sk_buff *skb)
-> -{
-> -       u32 truesize = skb->truesize;
-> -
-> -       if (adjust && !skb_headlen(skb)) {
-> -               truesize -= SKB_TRUESIZE(skb_end_offset(skb));
-> -               /* paranoid check, some drivers might be buggy */
-> -               if (unlikely((int)truesize < (int)skb->len))
-> -                       truesize = skb->truesize;
-> -       }
-> -       return truesize;
-> -}
+This is a proposed patch. Will need to be fixed if corresponding
+kernel changes are merged upstream.
 
-It seems clear you are doing wrong things.
+Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+---
+ tests/generic/062 |   20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-Have you silently reverted a prior patch ?
+Index: xfstests-dev/tests/generic/062
+===================================================================
+--- xfstests-dev.orig/tests/generic/062	2021-08-31 15:51:08.160307982 -0400
++++ xfstests-dev/tests/generic/062	2021-08-31 16:27:41.678307982 -0400
+@@ -55,6 +55,26 @@ _require_attrs
+ _require_symlinks
+ _require_mknod
+ 
++user_xattr_allowed()
++{
++	local kernel_version kernel_patchlevel
++
++	kernel_version=`uname -r | awk -F. '{print $1}'`
++	kernel_patchlevel=`uname -r | awk -F. '{print $2}'`
++
++	# Kernel version 5.14 onwards allow user xattr on symlink/special files.
++	[ $kernel_version -lt 5 ] && return 1
++	[ $kernel_patchlevel -lt 14 ] && return 1
++	return 0;
++}
++
++
++# Kernel version 5.14 onwards allow user xattr on symlink/special files.
++# Do not run this test on newer kernels. Instead run the new test
++# which has been written with the assumption that user.* xattr
++# will succeed on symlink and special files.
++user_xattr_allowed && _notrun "Kernel allows user.* xattrs on symlinks and special files. Skipping this test. Run newer test instead."
++
+ rm -f $tmp.backup1 $tmp.backup2 $seqres.full
+ 
+ # real QA test starts here
+
