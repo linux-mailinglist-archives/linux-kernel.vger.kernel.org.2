@@ -2,167 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60B53FF487
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807893FF48E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345288AbhIBUEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344200AbhIBUEQ (ORCPT
+        id S1343948AbhIBUFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:05:07 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:41813 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S236589AbhIBUFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:04:16 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046B4C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 13:03:18 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id r2so3143156pgl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 13:03:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TAAe1Qk4hJTsBo1P0uuQjp0FfLmalTA5KfOdOLqGMEU=;
-        b=VLuQZeLiU+Uont5QUkBVe7CHel3fR6ufQoDQMRfZaU8eiAC9AYXY2DL2jMLjVu/aes
-         Wf439FrimgzlNZa7hhbZk+rpkwvp3G+d9RPvGKsDGlkUzHe+Oclvo2t3CjPDUN+PPpqo
-         ksKyMUECQY+9Cc0KGnnthu0X93CWvMtzsTKM8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TAAe1Qk4hJTsBo1P0uuQjp0FfLmalTA5KfOdOLqGMEU=;
-        b=oG2gmiImraiCMrw+t04WkN5YoIYaBzXUGFBvpBllq5Zh9GvWeodzQ4HcmF7aL31b7w
-         4Z7+4L4YTdL33Aqm92BV7oK4k6Z84zvBBdtyGX/91fFgqNtRwsquVzMzPa9onnax+gm0
-         hgs07omBlT2QClFnVXIayVi74wgK5DXSjLZuEO0pID2dTrTR/BQnj73rksCdS93Ox7Jl
-         Up4dsCO+fTVat59Kr+YOIiV0mG+03XcQS1Ub06WiP4wH7GeoYkBn6htVavHT9ghCx7jT
-         4tXmC11JDqS3vqLembMpCXHESLg8gL0+fxz1QVUiQ3+LFU7lDJTcAHCYccfuIy7FBudk
-         NPmg==
-X-Gm-Message-State: AOAM532XuVVbejP9jjxf0qU32Ch6SfjSNzSDYdKFi+EFByrRDwDqyRUY
-        pDyvgHiYOJlLapdGGhuvxH1ttQ==
-X-Google-Smtp-Source: ABdhPJwAbVH81plXjNNTw1ct4J4G+xuEXQ/WfFTZK2D7zZZU7HnEvdrrUDyF4ktfc18SoCjX5DLqdQ==
-X-Received: by 2002:a63:af12:: with SMTP id w18mr55891pge.221.1630612997438;
-        Thu, 02 Sep 2021 13:03:17 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:76ac:d178:a633:4fb5])
-        by smtp.gmail.com with UTF8SMTPSA id u8sm3626275pgc.69.2021.09.02.13.03.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 13:03:16 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 13:03:15 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, Arnd Bergmann <arnd@arndb.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: Re: [PATCH v3 2/4] misc: hisi_hikey_usb: change the DT schema
-Message-ID: <YTEuA+Z3f50RVGgX@google.com>
-References: <cover.1630581434.git.mchehab+huawei@kernel.org>
- <d990e75f28c443c0c5a5fc857b87acc4be3f9464.1630581434.git.mchehab+huawei@kernel.org>
- <YTC4LPDem9uKXyMd@kroah.com>
- <20210902151053.7ddfbe3a@coco.lan>
- <20210902153820.5624b57f@coco.lan>
- <YTDYFCH/DbK1SFVv@kroah.com>
- <20210902163529.734b8e0e@coco.lan>
- <YTEJuK50e5PBBJfO@google.com>
- <CALAqxLUxgRCUweDcE1WWV1gTsstZAvjUT6ZuTij5Mro8MHKi8Q@mail.gmail.com>
+        Thu, 2 Sep 2021 16:05:06 -0400
+Received: (qmail 444108 invoked by uid 1000); 2 Sep 2021 16:04:06 -0400
+Date:   Thu, 2 Sep 2021 16:04:06 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+ada0f7d3d9fd2016d927@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] INFO: task hung in do_proc_bulk
+Message-ID: <20210902200406.GB442125@rowland.harvard.edu>
+References: <000000000000a83c6a05caa09572@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALAqxLUxgRCUweDcE1WWV1gTsstZAvjUT6ZuTij5Mro8MHKi8Q@mail.gmail.com>
+In-Reply-To: <000000000000a83c6a05caa09572@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 11:29:49AM -0700, John Stultz wrote:
-> On Thu, Sep 2, 2021 at 10:28 AM Matthias Kaehlcke <mka@chromium.org> wrote:
-> > On Thu, Sep 02, 2021 at 04:35:29PM +0200, Mauro Carvalho Chehab wrote:
-> > > Em Thu, 2 Sep 2021 15:56:36 +0200
-> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> > > > On Thu, Sep 02, 2021 at 03:38:20PM +0200, Mauro Carvalho Chehab wrote:
-> > > > > While I'm not sure how generic this driver can be, I'm thinking that
-> > > > > maybe a future patch could rename it to 'generic-usb-hub' or
-> > > > > something similar - finding a good name is always the hardest
-> > > > > part :-)
-> > > >
-> > > > Try looking at:
-> > > >     https://lore.kernel.org/r/20210813195228.2003500-1-mka@chromium.org
-> > > > for another example of this.
-> > >
-> > > (C/C Matthias here).
-> > >
-> > > Interesting to know that someone else is also needing to add support
-> > > for USB chips.
-> >
-> > Yeah, there were several attempts over the years, but so far none of
-> > them landed upstream ...
-> >
-> > > Yet, the approach took there won't work with HiKey 960/970, as
-> > > it needs to control not only the regulator, but it should also
-> > > work as as usb-role-switch.
-> > >
-> > > So, besides controlling the regulator, which seems to be basically what
-> > > the onboard_usb_hub_driver does, but it should also be able to:
-> > >
-> > >       - (optionally) reset the HUB;
-> > >       - control its OTG switch;
-> > >       - control power on/off for an USB type-C connector;
-> > >       - set USB role as host or device.
-> >
-> > > Perhaps it would be possible to merge both approaches by modifying
-> > > hisi_hikey_usb in order to add the extra bits required by the boards that
-> > > Matthias is currently working, and requiring the GPIOs for OTG and
-> > > type-C connectors only if DT contains usb-role-switch.
-> >
-> > I'm not convinced that a hub driver should be in charge of role switching.
-> > I wonder if the hub part could remain separate, and the role switching be
-> > done by a dedicated driver that interacts with the hub driver through
-> > some interface. From the above list the hub driver could still be in charge
-> > of:
-> >
-> > - (optionally) reset the HUB;
-> > - control power on/off for an USB type-C connector;
-> >
-> > Maybe the hub driver could implement a reset controller to allow the role
-> > switching driver to switch it on and off (including type-C power).
-> >
-> > The role switch driver (a leaner version of hisi_hikey_usb) could model
-> > the mux and switch the hub on and off, without being concerned about all
-> > the details.
-> 
-> Apologies, I may be misunderstanding you, but I think the missing
-> issue there is: "what triggers the hub driver to switch it on or off?"
-> 
-> For the hikey960/970 boards, removing/plugging in the usb-c cable is
-> what we use to enable/disable the mux/hub.
-> 
-> The current iteration (of which there have been many) of hikey hub
-> driver uses the role switch notification as its trigger. It's not
-> really controlling the role switching, just using that signal. That's
-> why the driver works as an intermediary/relay of the roleswitch
-> notification.
+Let's see if making the wait killable rather than interruptible fixes the 
+issue.  This patch avoids modifying the regular usb_start_wait_urb(), 
+creating a separate usbfs_start_wait_urb() just for this purpose.
 
-Apologies too, my terminology wasn't very clear, I had little exposure to
-OTG so far.
+Alan Stern
 
-The hisi_hikey_usb driver doesn't control the role of the USB controller,
-however it deals with platform specific role switching stuff, like muxing
-the USB PHY to the hub (host mode) or directly to the type-C port (device
-mode), or controlling the power of the type-C port.
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git d5ae8d7f85b7
 
-> We had earlier efforts that had hacks to specific drivers as well as
-> attempts to add notifiers on role switches (but those were terribly
-> racy), so the intermediary/relay approach has been a great improvement
-> on reliability with little impact to other drivers.
-
-I can see how raciness can be a problem. I'm not proprosing to use
-notifiers in the driver that deals with the hub, from the hub's
-perspective it is connected to a host port and it shouldn't have to care
-about OTG.
-
-But the 'hub driver' could expose a synchronous interface that allows the
-hisi_hikey_usb driver to power the hub on and off (or keep it in reset).
-That would maintain the relay approach, but without having a driver that
-tries to do too many things at once. For example the onboard_usb_hub driver
-has the option to power the hub down during suspend if no wakeup capable
-devices are connected downstream, I'm not convinced that this and the
-handling of the mux should be done by the same driver.
+Index: usb-devel/drivers/usb/core/devio.c
+===================================================================
+--- usb-devel.orig/drivers/usb/core/devio.c
++++ usb-devel/drivers/usb/core/devio.c
+@@ -32,6 +32,7 @@
+ #include <linux/usb.h>
+ #include <linux/usbdevice_fs.h>
+ #include <linux/usb/hcd.h>	/* for usbcore internals */
++#include <linux/usb/quirks.h>
+ #include <linux/cdev.h>
+ #include <linux/notifier.h>
+ #include <linux/security.h>
+@@ -1102,14 +1103,55 @@ static int usbdev_release(struct inode *
+ 	return 0;
+ }
+ 
++static void usbfs_blocking_completion(struct urb *urb)
++{
++	complete((struct completion *) urb->context);
++}
++
++/*
++ * Much like usb_start_wait_urb, but returns status separately from
++ * actual_length and uses a killable wait.
++ */
++static int usbfs_start_wait_urb(struct urb *urb, int timeout,
++		unsigned int *actlen)
++{
++	DECLARE_COMPLETION_ONSTACK(ctx);
++	unsigned long expire;
++	int rc;
++
++	urb->context = &ctx;
++	urb->complete = usbfs_blocking_completion;
++	*actlen = 0;
++	rc = usb_submit_urb(urb, GFP_KERNEL);
++	if (unlikely(rc))
++		return rc;
++
++	expire = (timeout ? msecs_to_jiffies(timeout) : MAX_SCHEDULE_TIMEOUT);
++	rc = wait_for_completion_killable_timeout(&ctx, expire);
++	if (rc <= 0) {
++		usb_kill_urb(urb);
++		*actlen = urb->actual_length;
++		if (urb->status != -ENOENT)
++			;	/* Completed before it was killed */
++		else if (rc < 0)
++			return -EINTR;
++		else
++			return -ETIMEDOUT;
++	}
++	*actlen = urb->actual_length;
++	return urb->status;
++}
++
+ static int do_proc_control(struct usb_dev_state *ps,
+ 		struct usbdevfs_ctrltransfer *ctrl)
+ {
+ 	struct usb_device *dev = ps->dev;
+ 	unsigned int tmo;
+ 	unsigned char *tbuf;
+-	unsigned wLength;
++	unsigned wLength, actlen;
+ 	int i, pipe, ret;
++	struct urb *urb = NULL;
++	struct usb_ctrlrequest *dr = NULL;
+ 
+ 	ret = check_ctrlrecip(ps, ctrl->bRequestType, ctrl->bRequest,
+ 			      ctrl->wIndex);
+@@ -1122,51 +1164,63 @@ static int do_proc_control(struct usb_de
+ 			sizeof(struct usb_ctrlrequest));
+ 	if (ret)
+ 		return ret;
++
++	ret = -ENOMEM;
+ 	tbuf = (unsigned char *)__get_free_page(GFP_KERNEL);
+-	if (!tbuf) {
+-		ret = -ENOMEM;
++	if (!tbuf)
+ 		goto done;
+-	}
++	urb = usb_alloc_urb(0, GFP_NOIO);
++	if (!urb)
++		goto done;
++	dr = kmalloc(sizeof(struct usb_ctrlrequest), GFP_NOIO);
++	if (!dr)
++		goto done;
++
++	dr->bRequestType = ctrl->bRequestType;
++	dr->bRequest = ctrl->bRequest;
++	dr->wValue = cpu_to_le16(ctrl->wValue);
++	dr->wIndex = cpu_to_le16(ctrl->wIndex);
++	dr->wLength = cpu_to_le16(ctrl->wLength);
++
+ 	tmo = ctrl->timeout;
+ 	snoop(&dev->dev, "control urb: bRequestType=%02x "
+ 		"bRequest=%02x wValue=%04x "
+ 		"wIndex=%04x wLength=%04x\n",
+ 		ctrl->bRequestType, ctrl->bRequest, ctrl->wValue,
+ 		ctrl->wIndex, ctrl->wLength);
+-	if ((ctrl->bRequestType & USB_DIR_IN) && ctrl->wLength) {
++
++	if ((ctrl->bRequestType & USB_DIR_IN) && wLength) {
+ 		pipe = usb_rcvctrlpipe(dev, 0);
+-		snoop_urb(dev, NULL, pipe, ctrl->wLength, tmo, SUBMIT, NULL, 0);
++		usb_fill_control_urb(urb, dev, pipe, (unsigned char *) dr, tbuf,
++				wLength, NULL, NULL);
++		snoop_urb(dev, NULL, pipe, wLength, tmo, SUBMIT, NULL, 0);
+ 
+ 		usb_unlock_device(dev);
+-		i = usb_control_msg(dev, pipe, ctrl->bRequest,
+-				    ctrl->bRequestType, ctrl->wValue, ctrl->wIndex,
+-				    tbuf, ctrl->wLength, tmo);
++		i = usbfs_start_wait_urb(urb, tmo, &actlen);
+ 		usb_lock_device(dev);
+-		snoop_urb(dev, NULL, pipe, max(i, 0), min(i, 0), COMPLETE,
+-			  tbuf, max(i, 0));
+-		if ((i > 0) && ctrl->wLength) {
+-			if (copy_to_user(ctrl->data, tbuf, i)) {
++		snoop_urb(dev, NULL, pipe, actlen, i, COMPLETE, tbuf, actlen);
++		if (!i && actlen) {
++			if (copy_to_user(ctrl->data, tbuf, actlen)) {
+ 				ret = -EFAULT;
+-				goto done;
++				goto recv_fault;
+ 			}
+ 		}
+ 	} else {
+-		if (ctrl->wLength) {
+-			if (copy_from_user(tbuf, ctrl->data, ctrl->wLength)) {
++		if (wLength) {
++			if (copy_from_user(tbuf, ctrl->data, wLength)) {
+ 				ret = -EFAULT;
+ 				goto done;
+ 			}
+ 		}
+ 		pipe = usb_sndctrlpipe(dev, 0);
+-		snoop_urb(dev, NULL, pipe, ctrl->wLength, tmo, SUBMIT,
+-			tbuf, ctrl->wLength);
++		usb_fill_control_urb(urb, dev, pipe, (unsigned char *) dr, tbuf,
++				wLength, NULL, NULL);
++		snoop_urb(dev, NULL, pipe, wLength, tmo, SUBMIT, tbuf, wLength);
+ 
+ 		usb_unlock_device(dev);
+-		i = usb_control_msg(dev, pipe, ctrl->bRequest,
+-				    ctrl->bRequestType, ctrl->wValue, ctrl->wIndex,
+-				    tbuf, ctrl->wLength, tmo);
++		i = usbfs_start_wait_urb(urb, tmo, &actlen);
+ 		usb_lock_device(dev);
+-		snoop_urb(dev, NULL, pipe, max(i, 0), min(i, 0), COMPLETE, NULL, 0);
++		snoop_urb(dev, NULL, pipe, actlen, i, COMPLETE, NULL, 0);
+ 	}
+ 	if (i < 0 && i != -EPIPE) {
+ 		dev_printk(KERN_DEBUG, &dev->dev, "usbfs: USBDEVFS_CONTROL "
+@@ -1174,8 +1228,15 @@ static int do_proc_control(struct usb_de
+ 			   current->comm, ctrl->bRequestType, ctrl->bRequest,
+ 			   ctrl->wLength, i);
+ 	}
+-	ret = i;
++	ret = (i < 0 ? i : actlen);
++
++ recv_fault:
++	/* Linger a bit, prior to the next control message. */
++	if (dev->quirks & USB_QUIRK_DELAY_CTRL_MSG)
++		msleep(200);
+  done:
++	kfree(dr);
++	usb_free_urb(urb);
+ 	free_page((unsigned long) tbuf);
+ 	usbfs_decrease_memory_usage(PAGE_SIZE + sizeof(struct urb) +
+ 			sizeof(struct usb_ctrlrequest));
+@@ -1195,10 +1256,11 @@ static int do_proc_bulk(struct usb_dev_s
+ 		struct usbdevfs_bulktransfer *bulk)
+ {
+ 	struct usb_device *dev = ps->dev;
+-	unsigned int tmo, len1, pipe;
+-	int len2;
++	unsigned int tmo, len1, len2, pipe;
+ 	unsigned char *tbuf;
+ 	int i, ret;
++	struct urb *urb = NULL;
++	struct usb_host_endpoint *ep;
+ 
+ 	ret = findintfep(ps->dev, bulk->ep);
+ 	if (ret < 0)
+@@ -1206,14 +1268,17 @@ static int do_proc_bulk(struct usb_dev_s
+ 	ret = checkintf(ps, ret);
+ 	if (ret)
+ 		return ret;
++
++	len1 = bulk->len;
++	if (len1 < 0 || len1 >= (INT_MAX - sizeof(struct urb)))
++		return -EINVAL;
++
+ 	if (bulk->ep & USB_DIR_IN)
+ 		pipe = usb_rcvbulkpipe(dev, bulk->ep & 0x7f);
+ 	else
+ 		pipe = usb_sndbulkpipe(dev, bulk->ep & 0x7f);
+-	if (!usb_maxpacket(dev, pipe, !(bulk->ep & USB_DIR_IN)))
+-		return -EINVAL;
+-	len1 = bulk->len;
+-	if (len1 >= (INT_MAX - sizeof(struct urb)))
++	ep = usb_pipe_endpoint(dev, pipe);
++	if (!ep || !usb_endpoint_maxp(&ep->desc))
+ 		return -EINVAL;
+ 	ret = usbfs_increase_memory_usage(len1 + sizeof(struct urb));
+ 	if (ret)
+@@ -1223,17 +1288,29 @@ static int do_proc_bulk(struct usb_dev_s
+ 	 * len1 can be almost arbitrarily large.  Don't WARN if it's
+ 	 * too big, just fail the request.
+ 	 */
++	ret = -ENOMEM;
+ 	tbuf = kmalloc(len1, GFP_KERNEL | __GFP_NOWARN);
+-	if (!tbuf) {
+-		ret = -ENOMEM;
++	if (!tbuf)
+ 		goto done;
++	urb = usb_alloc_urb(0, GFP_KERNEL);
++	if (!urb)
++		goto done;
++
++	if ((ep->desc.bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) ==
++			USB_ENDPOINT_XFER_INT) {
++		pipe = (pipe & ~(3 << 30)) | (PIPE_INTERRUPT << 30);
++		usb_fill_int_urb(urb, dev, pipe, tbuf, len1,
++				NULL, NULL, ep->desc.bInterval);
++	} else {
++		usb_fill_bulk_urb(urb, dev, pipe, tbuf, len1, NULL, NULL);
+ 	}
++
+ 	tmo = bulk->timeout;
+ 	if (bulk->ep & 0x80) {
+ 		snoop_urb(dev, NULL, pipe, len1, tmo, SUBMIT, NULL, 0);
+ 
+ 		usb_unlock_device(dev);
+-		i = usb_bulk_msg(dev, pipe, tbuf, len1, &len2, tmo);
++		i = usbfs_start_wait_urb(urb, tmo, &len2);
+ 		usb_lock_device(dev);
+ 		snoop_urb(dev, NULL, pipe, len2, i, COMPLETE, tbuf, len2);
+ 
+@@ -1253,12 +1330,13 @@ static int do_proc_bulk(struct usb_dev_s
+ 		snoop_urb(dev, NULL, pipe, len1, tmo, SUBMIT, tbuf, len1);
+ 
+ 		usb_unlock_device(dev);
+-		i = usb_bulk_msg(dev, pipe, tbuf, len1, &len2, tmo);
++		i = usbfs_start_wait_urb(urb, tmo, &len2);
+ 		usb_lock_device(dev);
+ 		snoop_urb(dev, NULL, pipe, len2, i, COMPLETE, NULL, 0);
+ 	}
+ 	ret = (i < 0 ? i : len2);
+  done:
++	usb_free_urb(urb);
+ 	kfree(tbuf);
+ 	usbfs_decrease_memory_usage(len1 + sizeof(struct urb));
+ 	return ret;
