@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE0A3FE707
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 03:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491673FE708
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 03:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbhIBBKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 21:10:45 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15379 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhIBBKo (ORCPT
+        id S232529AbhIBBMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 21:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229606AbhIBBMb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 21:10:44 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H0N5m6dfTzbgKx;
-        Thu,  2 Sep 2021 09:05:48 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 2 Sep 2021 09:09:44 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Thu, 2 Sep 2021 09:09:44 +0800
-Subject: Re: [PATCH 4.19 00/33] 4.19.206-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210901122250.752620302@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <a87f3c01-18a5-cfd5-59d8-16082463a1fb@huawei.com>
-Date:   Thu, 2 Sep 2021 09:09:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 1 Sep 2021 21:12:31 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F262C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 18:11:33 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id c17so253480pgc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 18:11:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m3voo91uzOxXIcUs3YqHapqLBsaBb1w98Fw4+HjYy7k=;
+        b=FZlcsVMoLCFzTcJQJaIGzmQF7rFEGFND+MjdAitHH87hvTp5ZO+fdT8bi22uBIFndT
+         FU6buFUwCcNkfZFx8MKGujovwXBHDzeT2IQ4d6ANZ2ip38BDM2THY2j3RUvnPX6lbBe8
+         ITcWc6U4/195g27SaN4ehU6N/2xAhM7MEt4Ho7xcVgb0kNwJW8PmnYi6eN0nNHyYIa4E
+         UQbOG0tyHFiny8lOJtE3QuzDvHGAY5Sye6vZWxq9+lCoYrIFFIj36LVsRKTSCnJgBHqJ
+         GDiReH1fleKQtdsFAZ0QLYEdlDCbSDAjmfhKvSJUQ/hYFmihhE0WKy0gPvym83DdgUq7
+         5m0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m3voo91uzOxXIcUs3YqHapqLBsaBb1w98Fw4+HjYy7k=;
+        b=Pr3KtxL70Xif2+duIzMA+H2lumu7Kbx8v33OyR2OvobGBbjYqRFH1EUWLdmFyzMewn
+         v519/Vxu+TyxwDFDoHLOv57rJ89um6DEQNr30YFMqwdDv3mUb2hl0aZYIsnK3k3s5p6W
+         9VKKbB+g/UoxJqop7m+erfLsdraTehuANlSwgtQleo6ZlIvBJmKq9Cn5RpqUUUpDXk9g
+         FZPgW0fOCJJhSRapHBzE1kbwZ2pPeplOLgiFCKGpXQ7HOANYxjpxgaCikoQ/PeNSqkd1
+         GSOCImFUEBLfkFRSHM1+YK1lBNZJpHmHuyJgWJvjTJp+RmoQdMaMZo5M2hXQ4SSYc0Hm
+         /GYA==
+X-Gm-Message-State: AOAM530Ew3J84ovEgNJL1JiCpUUdpYJHHCCRVA4dQ0v4xKjGLt1BBxWZ
+        xl5R/OMnQGStLFdEVGdsEyqwUTjvSlI=
+X-Google-Smtp-Source: ABdhPJxiNuk1mugjNkOgnG2h+gHEa7x+6WNTEhKPHy8acyDVnPAK9cqX09SNc8bVBqOOAPkAaPzynA==
+X-Received: by 2002:a05:6a00:22ca:b0:3f1:d51d:d14d with SMTP id f10-20020a056a0022ca00b003f1d51dd14dmr784121pfj.10.1630545093002;
+        Wed, 01 Sep 2021 18:11:33 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id e3sm169221pfi.189.2021.09.01.18.11.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 18:11:32 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: lv.ruyi@zte.com.cn
+To:     catalin.marinas@arm.com
+Cc:     will@kernel.org, mark.rutland@arm.com, pcc@google.com,
+        maz@kernel.org, peterz@infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lv Ruyi <lv.ruyi@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] arm64/kernel: remove duplicate include in process.c
+Date:   Wed,  1 Sep 2021 18:11:26 -0700
+Message-Id: <20210902011126.29828-1-lv.ruyi@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Lv Ruyi <lv.ruyi@zte.com.cn>
 
+Remove all but the first include of linux/sched.h from process.c
 
-On 2021/9/1 20:27, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.206 release.
-> There are 33 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.206-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+---
+ arch/arm64/kernel/process.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Tested on arm64 and x86 for 4.19.206-rc1,
+diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+index 19100fe8f7e4..1a1213cca173 100644
+--- a/arch/arm64/kernel/process.c
++++ b/arch/arm64/kernel/process.c
+@@ -18,7 +18,6 @@
+ #include <linux/mman.h>
+ #include <linux/mm.h>
+ #include <linux/nospec.h>
+-#include <linux/sched.h>
+ #include <linux/stddef.h>
+ #include <linux/sysctl.h>
+ #include <linux/unistd.h>
+-- 
+2.25.1
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.19.y
-Version: 4.19.206-rc1
-Commit: 0ec64a47cbb11f5919e47cdab83f201ea5ca6076
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8859
-passed: 8859
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8859
-passed: 8859
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
