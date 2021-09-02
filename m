@@ -2,262 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383D73FF313
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C9F3FF310
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346959AbhIBSP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:15:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46302 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346936AbhIBSPw (ORCPT
+        id S1346932AbhIBSPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:15:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346837AbhIBSPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:15:52 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 182I4CL5003960;
-        Thu, 2 Sep 2021 14:14:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=WDQr9prZoZvK59wo4XINd3RoiSuTOWHFB4TBVQYAJOY=;
- b=aVWrF5kZt3r/P+S+uC7LXvVAF38bHgornZGrnaqCZI5U5vRIw5Fz0yDAN6NnkXfAbQNv
- FS5R2JBvvafjjW0pz6ifNaNaxLWlc+FFhQzF5/CjQ0rJRGpmP+P6B0NpUqLqQmqKuiBk
- ZmxrkPz1Tn228THoY7yP4Nf9fQ/6UFwoW4UQs0msAQPe/nMbkKcv3P37HW9M6b/cMnXS
- hlZKo64GnXiFOCwJT1FNsLgSENFzApYr0gNiHZGFIkP0A1aHgvzXS6RJzzOg7Pt3TOjk
- IcC4tT6j1ZYiw/z/yrad2FY0mebxOgb75vOq/58zEkGCb0ThawEPCdlpa8al8jNb69Ib Mg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3au2mdcakp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Sep 2021 14:14:40 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 182I4wcj007749;
-        Thu, 2 Sep 2021 14:14:40 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3au2mdcak8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Sep 2021 14:14:40 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 182ICxUS029580;
-        Thu, 2 Sep 2021 18:14:39 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma04wdc.us.ibm.com with ESMTP id 3atdxehyxp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Sep 2021 18:14:39 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 182IEaKR34799968
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Sep 2021 18:14:37 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D7C8BC607F;
-        Thu,  2 Sep 2021 18:14:36 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 100F4C605A;
-        Thu,  2 Sep 2021 18:14:31 +0000 (GMT)
-Received: from [9.65.84.185] (unknown [9.65.84.185])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  2 Sep 2021 18:14:31 +0000 (GMT)
-Subject: Re: [PATCH 3/3] virt: Add sev_secret module to expose confidential
- computing secrets
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-efi@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Jim Cadden <jcadden@ibm.com>, linux-coco@lists.linux.dev,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Dov Murik <dovmurik@linux.ibm.com>
-References: <20210809190157.279332-1-dovmurik@linux.ibm.com>
- <20210809190157.279332-4-dovmurik@linux.ibm.com> <YTDKtr+W7wBTn/96@kroah.com>
-From:   Dov Murik <dovmurik@linux.ibm.com>
-Message-ID: <35be128e-52a4-b463-8ad7-8047810002f9@linux.ibm.com>
-Date:   Thu, 2 Sep 2021 21:14:29 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 2 Sep 2021 14:15:50 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DE8C061575;
+        Thu,  2 Sep 2021 11:14:51 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id x27so6282701lfu.5;
+        Thu, 02 Sep 2021 11:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=e2Q8mzLJmaOQ5im2dSD47/Lcv42ZClmztK2gVopfMNc=;
+        b=do1S4nqRBIe45s4tAP4RN7n1VcujfAHWgYN0cQ4aA09uolZnaSLUd2NKRJ7vXcrW+1
+         HCpWjlhGWtH/NU8+TcXBa3r0apx0mNhM4BHmKhu/SDX+0xS/6aY5IF7U+Ye1tgJDtq5v
+         HBHAz+L0Py3n9XqJS5LqXVZe0EdkxEwBpn/cb4oa71Bfmqu9v9XTuUo/jFXXq0xvq7C2
+         w8Jvk9QRUlxjzGGMgvsqdpSXdgGBXZEw4Bgp1iA5PEvQ+m1uROTu3upIghkLDu5fDwHy
+         hLtcDnkA6DfjoKKfzDpPaYEKi+6Hteogs0GdwaI3PVBZZeB0q+xY7jFFBy/O8uUIvJeu
+         jaeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=e2Q8mzLJmaOQ5im2dSD47/Lcv42ZClmztK2gVopfMNc=;
+        b=dLYMJGEe50qjzIGMMwM4IUn/gccQEogeaxE/YXbUVYKCnYA+Xx4wDE13x8YN+rSkPP
+         8wwSI6978QQ9Lr1Ot44Dz4sOpHawGsh4LxU1eo+uDeuHWtSMhMgdvewlI7pRXdz9j3Be
+         xyLaR05F6lokcGBe9s676X8C4q5CnGF4r8lT93fYgONPhEsjwYTP/eDQss5DLu8nhZ7K
+         e6jLVfqfFMJFxxZUxa49LBjdRiphI/IYFjlR+/XwupbpVak7ux+KMsj1qOBiL+vqHbbe
+         9cQuNgvQK69xvLP3FyfAHBd3soo6ejKNRyxcTt7/Z16o7+1davqtrJYLFzCnlm/uI3CH
+         +A5Q==
+X-Gm-Message-State: AOAM531BG5qBICKPQwQd2a9GuTKa5lCW9fDMTYS+gNImEo44snlm9fjr
+        Clbv9J+FKpHnSffP5KtGNaU=
+X-Google-Smtp-Source: ABdhPJxFzowEWoxhqXvXPhobhAK+wh5g1VLoIKlLS87iZ9ZhGGGaLOvltmcW825+t/oeky1zp0Z4/w==
+X-Received: by 2002:a05:6512:2207:: with SMTP id h7mr3728727lfu.44.1630606490093;
+        Thu, 02 Sep 2021 11:14:50 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.67.70])
+        by smtp.gmail.com with UTF8SMTPSA id p14sm306413lji.56.2021.09.02.11.14.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 11:14:49 -0700 (PDT)
+Message-ID: <90aa8c94-da50-7023-0f1a-8df58449bd6d@gmail.com>
+Date:   Thu, 2 Sep 2021 21:14:49 +0300
 MIME-Version: 1.0
-In-Reply-To: <YTDKtr+W7wBTn/96@kroah.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH] media: usb: fix memory leak in stk_camera_probe
 Content-Language: en-US
+To:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <20210714032340.504836-1-mudongliangabcd@gmail.com>
+ <CAD-N9QXWHeNvR06wyg3Pym8xUb27TsuFKKKG=tZ0-x5ZGCr-Hw@mail.gmail.com>
+ <CAD-N9QWj8w-xVAni2cGHyEei78iKEX_V0a00r0x3We7tfFGZjw@mail.gmail.com>
+ <YTCp6d1umr7AXRZW@kroah.com> <20210902125416.1ad73fad@coco.lan>
+ <CAD-N9QVZQo+YPjNwAUqg-kQ_fEwicLR=1am1E99h8oHi0aXocA@mail.gmail.com>
+ <CAD-N9QXPJz60jKfHg1Yh6tnzJRBFAwkmV+LUoSY+f7cZ_5kYww@mail.gmail.com>
+ <2c3e496a-fdc7-020b-4234-58441e766f7d@xs4all.nl>
+ <CAD-N9QX7q3wTdTUC_b2fEn1txjEjdgmtx2eaX9ymxAp_vUfxiA@mail.gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <CAD-N9QX7q3wTdTUC_b2fEn1txjEjdgmtx2eaX9ymxAp_vUfxiA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: EWRQJtOpxFqvh5K6RGLEe9ngnfz2w3Fq
-X-Proofpoint-GUID: kvvKWqCSqtdLcqoV8X3iZ3jgXpZ0VGey
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-02_04:2021-09-02,2021-09-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- malwarescore=0 impostorscore=0 mlxscore=0 spamscore=0 adultscore=0
- phishscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109020102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 02/09/2021 15:59, Greg KH wrote:
-> On Mon, Aug 09, 2021 at 07:01:57PM +0000, Dov Murik wrote:
->> The new sev_secret module exposes the confidential computing (coco)
->> secret area via securityfs interface.
+On 9/2/21 14:22, Dongliang Mu wrote:
+> On Thu, Sep 2, 2021 at 7:15 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
 >>
->> When the module is loaded (and securityfs is mounted, typically under
->> /sys/kernel/security), a "coco/sev_secret" directory is created in
->> securityfs.  In it, a file is created for each secret entry.  The name
->> of each such file is the GUID of the secret entry, and its content is
->> the secret data.
+>> On 02/09/2021 13:10, Dongliang Mu wrote:
+>> > On Thu, Sep 2, 2021 at 6:59 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>> >>
+>> >> On Thu, Sep 2, 2021 at 6:54 PM Mauro Carvalho Chehab <mchehab@kernel.org> wrote:
+>> >>>
+>> >>> Em Thu, 2 Sep 2021 12:39:37 +0200
+>> >>> Greg KH <gregkh@linuxfoundation.org> escreveu:
+>> >>>
+>> >>>> On Thu, Sep 02, 2021 at 06:23:36PM +0800, Dongliang Mu wrote:
+>> >>>>> On Fri, Jul 23, 2021 at 6:11 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>> >>>>>>
+>> >>>>>> On Wed, Jul 14, 2021 at 11:23 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>> >>>>>>>
+>> >>>>>>> stk_camera_probe mistakenly execute usb_get_intf and increase the
+>> >>>>>>> refcount of interface->dev.
+>> >>>>>>>
+>> >>>>>>> Fix this by removing the execution of usb_get_intf.
+>> >>>>>>
+>> >>>>>> Any idea about this patch?
+>> >>>>>
+>> >>>>> +cc Dan Carpenter, gregkh
+>> >>>>>
+>> >>>>> There is no reply in this thread in one month. Can someone give some
+>> >>>>> feedback on this patch?
+>> >>>>
+>> >>>> This is the media developers domain, not much I can do here.
+>> >>>
+>> >>> There is a high volume of patches for the media subsystem. Anyway,
+>> >>> as your patch is at our patchwork instance:
+>> >>>
+>> >>>         https://patchwork.linuxtv.org/project/linux-media/patch/20210714032340.504836-1-mudongliangabcd@gmail.com/
+>> >>>
+>> >>> It should be properly tracked, and likely handled after the end of
+>> >>> the merge window.
+>> >
+>> > Hi Mauro,
+>> >
+>> > I found there is another fix [1] for the same memory leak from Pavel
+>> > Skripkin (already cc-ed in this thread).
+>> >
+>> > [1] https://www.spinics.net/lists/stable/msg479628.html
 >>
->> This allows applications running in a confidential computing setting to
->> read secrets provided by the guest owner via a secure secret injection
->> mechanism (such as AMD SEV's LAUNCH_SECRET command).
->>
->> Removing (unlinking) files in the "coco/sev_secret" directory will zero
->> out the secret in memory, and remove the filesystem entry.  If the
->> module is removed and loaded again, that secret will not appear in the
->> filesystem.
->>
->> Signed-off-by: Dov Murik <dovmurik@linux.ibm.com>
->> ---
->>  drivers/virt/Kconfig                      |   3 +
->>  drivers/virt/Makefile                     |   1 +
->>  drivers/virt/coco/sev_secret/Kconfig      |  11 +
->>  drivers/virt/coco/sev_secret/Makefile     |   2 +
->>  drivers/virt/coco/sev_secret/sev_secret.c | 313 ++++++++++++++++++++++
->>  5 files changed, 330 insertions(+)
->>  create mode 100644 drivers/virt/coco/sev_secret/Kconfig
->>  create mode 100644 drivers/virt/coco/sev_secret/Makefile
->>  create mode 100644 drivers/virt/coco/sev_secret/sev_secret.c
->>
->> diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
->> index 8061e8ef449f..6f73672f593f 100644
->> --- a/drivers/virt/Kconfig
->> +++ b/drivers/virt/Kconfig
->> @@ -36,4 +36,7 @@ source "drivers/virt/vboxguest/Kconfig"
->>  source "drivers/virt/nitro_enclaves/Kconfig"
->>  
->>  source "drivers/virt/acrn/Kconfig"
->> +
->> +source "drivers/virt/coco/sev_secret/Kconfig"
->> +
->>  endif
->> diff --git a/drivers/virt/Makefile b/drivers/virt/Makefile
->> index 3e272ea60cd9..2a7d472478bd 100644
->> --- a/drivers/virt/Makefile
->> +++ b/drivers/virt/Makefile
->> @@ -8,3 +8,4 @@ obj-y				+= vboxguest/
->>  
->>  obj-$(CONFIG_NITRO_ENCLAVES)	+= nitro_enclaves/
->>  obj-$(CONFIG_ACRN_HSM)		+= acrn/
->> +obj-$(CONFIG_AMD_SEV_SECRET)	+= coco/sev_secret/
->> diff --git a/drivers/virt/coco/sev_secret/Kconfig b/drivers/virt/coco/sev_secret/Kconfig
->> new file mode 100644
->> index 000000000000..76cfb4f405e0
->> --- /dev/null
->> +++ b/drivers/virt/coco/sev_secret/Kconfig
->> @@ -0,0 +1,11 @@
->> +# SPDX-License-Identifier: GPL-2.0-only
->> +config AMD_SEV_SECRET
->> +	tristate "AMD SEV secret area securityfs support"
->> +	depends on AMD_MEM_ENCRYPT && EFI
->> +	select SECURITYFS
->> +	help
->> +	  This is a driver for accessing the AMD SEV secret area via
->> +	  securityfs.
->> +
->> +	  To compile this driver as a module, choose M here.
->> +	  The module will be called sev_secret.
->> diff --git a/drivers/virt/coco/sev_secret/Makefile b/drivers/virt/coco/sev_secret/Makefile
->> new file mode 100644
->> index 000000000000..dca0ed3f8f94
->> --- /dev/null
->> +++ b/drivers/virt/coco/sev_secret/Makefile
->> @@ -0,0 +1,2 @@
->> +# SPDX-License-Identifier: GPL-2.0-only
->> +obj-$(CONFIG_AMD_SEV_SECRET) += sev_secret.o
->> diff --git a/drivers/virt/coco/sev_secret/sev_secret.c b/drivers/virt/coco/sev_secret/sev_secret.c
->> new file mode 100644
->> index 000000000000..d9a60166b142
->> --- /dev/null
->> +++ b/drivers/virt/coco/sev_secret/sev_secret.c
->> @@ -0,0 +1,313 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * sev_secret module
->> + *
->> + * Copyright (C) 2021 IBM Corporation
->> + * Author: Dov Murik <dovmurik@linux.ibm.com>
->> + */
->> +
->> +/**
->> + * DOC: sev_secret: Allow reading confidential computing (coco) secret area via
->> + * securityfs interface.
->> + *
->> + * When the module is loaded (and securityfs is mounted, typically under
->> + * /sys/kernel/security), a "coco/sev_secret" directory is created in
->> + * securityfs.  In it, a file is created for each secret entry.  The name of
->> + * each such file is the GUID of the secret entry, and its content is the
->> + * secret data.
->> + */
->> +
->> +#include <linux/seq_file.h>
->> +#include <linux/fs.h>
->> +#include <linux/kernel.h>
->> +#include <linux/init.h>
->> +#include <linux/module.h>
->> +#include <linux/io.h>
->> +#include <linux/security.h>
->> +#include <linux/efi.h>
->> +
->> +#define SEV_SECRET_NUM_FILES 64
->> +
->> +#define EFI_SEVSECRET_TABLE_HEADER_GUID \
->> +	EFI_GUID(0x1e74f542, 0x71dd, 0x4d66, 0x96, 0x3e, 0xef, 0x42, 0x87, 0xff, 0x17, 0x3b)
->> +
->> +struct sev_secret {
->> +	struct dentry *coco_dir;
->> +	struct dentry *fs_dir;
->> +	struct dentry *fs_files[SEV_SECRET_NUM_FILES];
->> +	struct linux_efi_coco_secret_area *secret_area;
->> +};
->> +
->> +/*
->> + * Structure of the SEV secret area
->> + *
->> + * Offset   Length
->> + * (bytes)  (bytes)  Usage
->> + * -------  -------  -----
->> + *       0       16  Secret table header GUID (must be 1e74f542-71dd-4d66-963e-ef4287ff173b)
->> + *      16        4  Length of bytes of the entire secret area
->> + *
->> + *      20       16  First secret entry's GUID
->> + *      36        4  First secret entry's length in bytes (= 16 + 4 + x)
->> + *      40        x  First secret entry's data
->> + *
->> + *    40+x       16  Second secret entry's GUID
->> + *    56+x        4  Second secret entry's length in bytes (= 16 + 4 + y)
->> + *    60+x        y  Second secret entry's data
->> + *
->> + * (... and so on for additional entries)
+>> Ah, that's why I marked it as Obsoleted :-)
 > 
-> Why isn't all of this documented in Documentation/ABI/ which is needed
-> for any new user/kernel api that you come up with like this.  We have to
-> have it documented somewhere, otherwise how will you know how to use
-> these files?
+> Oh, I see. If that patch is already merged, please remark my patch as Obsoleted.
+> 
+> Curiously, I did not get an email notification to mark my patch as
+> Obsoleted before. Why?
+> 
+>>
 
-Yes, you're right, I'll add such documentation.
+Hi, Dongliang!
 
-Note that the ABI (for userspace programs) is the filesystem paths and
-usage (read + unlink), and not the GUIDed table explained above your
-comment.  That GUIDed table is passed from the Guest Owner via SEV
-secret injection into OVMF and from there to the kernel memory (patches
-1+2 in this series).  So userspace doesn't see this GUIDed table
-structure at all.
+Yep my patch has been merged already (1 month ago, I guess).
 
-I should probably add this story to this file's header comment, or some
-other place which will document this module (suggestions welcome).
 
--Dov
+
+
+With regards,
+Pavel Skripkin
