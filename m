@@ -2,137 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F32F3FEB04
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76733FEAFE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245036AbhIBJQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 05:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233624AbhIBJQR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:16:17 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6CEC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 02:15:19 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id s3so2264083ljp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 02:15:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b7w0R6VDMHv6UT6JVPqf/kPPNWm6Bp4/tXYIQLznWTU=;
-        b=k1YBKmWEwL6N9mTcLBnnh9GXkTMM6CzZR88O0IWOtw1nWLcAZ73gDLxqtcTBWTtiyB
-         qbhxJjU4nHODlJYbvWegWLmzBsHnWZrVEjLUO0RbEmuHzI8C4gwPuYD5ak6btJdmnDGo
-         GKRyY3efJIqpC1MF3zaxCuTZ1MJEfK2DGCpdM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b7w0R6VDMHv6UT6JVPqf/kPPNWm6Bp4/tXYIQLznWTU=;
-        b=VOyCcuVemGR9OtD+0tYhdW2cD/hjpmhEMrRsG1W50VfkLeKislfzdVlOenr1areG5n
-         4boxuES6yivoGrBAdrDsiJhvXVaDU2+F/vCDYd+4gjFd6+cOxWQlXRfbNW9KZrZv9Etu
-         liL9jwb4omb7WCBuk5YFUF2mFMk3MsBJtPdZK4KmJ+z/zAZSbNxO/Y2q7m8HJi1AJdQR
-         QxqySJssbw0bJau/vNIdn0qPXUqteG9KfmlAB3sy0GA50KdtUZg0bKUaSpA7mSEIpv37
-         7/aoD3bbYt41BpUqpM57WA+x+bQAojVGWylkTLfCkj7lcpjgFy7ms59It3MWOolzAPwc
-         ylYg==
-X-Gm-Message-State: AOAM533poOeiDVmQUKOpYUgjiBqwsY0En1SbH9VjXROqDUCZjAMnLftN
-        lqQB2LDZ2Uxlj+LM6RcnmsuJZYZpthP+JDIwMDzDWA==
-X-Google-Smtp-Source: ABdhPJwVjOpDQBYigzY6w6VwefwZ+wyf8d0BezP9x8Aknsr+qgTjHr7dO/m7wLJWzzH4RENiT2Uh7fAV4c8H0EpokpU=
-X-Received: by 2002:a2e:b16a:: with SMTP id a10mr1736095ljm.18.1630574117548;
- Thu, 02 Sep 2021 02:15:17 -0700 (PDT)
+        id S233607AbhIBJQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 05:16:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233511AbhIBJQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 05:16:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC76060FE6;
+        Thu,  2 Sep 2021 09:15:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630574118;
+        bh=KuAjmVrOqdZCZCHcGGY4uTWopUeI1LXNwgvNJx+punw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1Ei+yj9vtdfT7NQi4xrKIDVy4Bci9D3wx67OaYdLo1TkXA7742ZId7nw6sWy53fTq
+         QH2GRbYcmH2ep2XL7ozqKNPyktB/k+L2wK1ZXEN9/cp8IBFKHz8wPSWdDD668GtKv9
+         1jQUhGudpI7vgjR0GEOv29Y0kmeGQ04BvkN3lT+4=
+Date:   Thu, 2 Sep 2021 11:15:15 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] staging: greybus: Convert uart.c from IDR to XArray
+Message-ID: <YTCWI5wID0pS9PMl@kroah.com>
+References: <20210816195000.736-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-References: <20210901181740.3a0a69f2@canb.auug.org.au> <3ee0b878-b78c-2483-1a0b-7570bda0132b@infradead.org>
- <299c7f0a7b1dede1e2f704a0133f4045e85641b5.camel@mediatek.com>
- <CAMuHMdXVxNfQYwP7+iMq+CbuDx3wjHgG2xsr9jP4WwL4OLLL-Q@mail.gmail.com> <43d231a765a2106b6ef0cbbe842ba3ec37b45878.camel@mediatek.com>
-In-Reply-To: <43d231a765a2106b6ef0cbbe842ba3ec37b45878.camel@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Thu, 2 Sep 2021 17:15:06 +0800
-Message-ID: <CAGXv+5HPCUBziGoW9gbtHYGvF9_Pt6JPAFY2CuX05jOnoQUcnw@mail.gmail.com>
-Subject: Re: linux-next: Tree for Sep 1 [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko]
-To:     Trevor Wu <trevor.wu@mediatek.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Bicycle Tsai <bicycle.tsai@mediatek.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816195000.736-1-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 4:52 PM Trevor Wu <trevor.wu@mediatek.com> wrote:
->
-> On Thu, 2021-09-02 at 10:22 +0200, Geert Uytterhoeven wrote:
-> > Hi Trevor,
-> >
-> > On Thu, Sep 2, 2021 at 4:37 AM Trevor Wu <trevor.wu@mediatek.com>
-> > wrote:
-> > > On Wed, 2021-09-01 at 13:55 -0700, Randy Dunlap wrote:
-> > > > On 9/1/21 1:17 AM, Stephen Rothwell wrote:
-> > > > > Please do not add any v5.16 related code to your linux-next
-> > > > > included
-> > > > > branches until after v5.15-rc1 has been released.
-> > > > >
-> > > > > Changes since 20210831:
-> > > > >
-> > > >
-> > > >
-> > > > on x86_64:
-> > > >
-> > > > ERROR: modpost: "clkdev_add" [sound/soc/mediatek/mt8195/snd-soc-
-> > > > mt8195-afe.ko] undefined!
-> > > > ERROR: modpost: "clkdev_drop" [sound/soc/mediatek/mt8195/snd-soc-
-> > > > mt8195-afe.ko] undefined!
-> > > > ERROR: modpost: "clk_unregister_gate"
-> > > > [sound/soc/mediatek/mt8195/snd-
-> > > > soc-mt8195-afe.ko] undefined!
-> > > > ERROR: modpost: "clk_register_gate"
-> > > > [sound/soc/mediatek/mt8195/snd-
-> > > > soc-mt8195-afe.ko] undefined!
-> > > >
-> > > > Full randconfig file is attached.
-> > > >
-> > >
-> > > Hi Randy,
-> > >
-> > > The problem is caused by the dependency declaration, because it's
-> > > not a
-> > > driver for x86_64.
-> > > The dependency declaration has been added in the following patch.
-> > >
-> > >
-> https://urldefense.com/v3/__https://patchwork.kernel.org/project/alsa-devel/patch/7e628e359bde04ceb9ddd74a45931059b4a4623c.1630415860.git.geert*renesas@glider.be/__;Kw!!CTRNKA9wMg0ARbw!wMq130mAo-s45pP6ShQ1S8UIRuJLhwOnCbQNAQHIE2zvNhjAd67h1rlqkIDxJvC5_g$
-> > >
-> >
-> > That is not sufficient, if COMPILE_TEST is enabled.
-> >
-> > Looks like it needs a dependency on COMMON_CLK, too.
-> >
-> > Gr{oetje,eeting}s,
-> >
-> >                         Geert
-> >
->
-> Hi Geert,
->
-> Because it's a ARM64 driver, ARM64 will select COMMON_CLK.
-> It seems that some dependency should be checked if COMPILE_TEST is
-> enabled and the driver is compiled on non-ARM64 environment.
-> We don't expect the driver can be used on non-ARM64 environment,may I
-> remove COMPILE_TEST to solve the problem?
-> If the driver only depends on ARCH_MEDIATEK, it must be compiled on
-> ARM64.
+On Mon, Aug 16, 2021 at 09:50:00PM +0200, Fabio M. De Francesco wrote:
+> Convert greybus/uart.c from IDR to XArray. The abstract data type XArray
+> is more memory-efficient, parallelisable, and cache friendly. It takes
+> advantage of RCU to perform lookups without locking. Furthermore, IDR is
+> deprecated because XArray has a better (cleaner and more consistent) API.
+> 
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+> 
+> v2->v3:
+> 	Fix some issues according to a review by Alex Elder <elder@ieee.org>
+> 
+> v1->v2:
+>         Fix an issue found by the kernel test robot. It is due to
+>         passing to xa_*lock() the same old mutex that IDR used with
+>         the previous version of the code.
+> 
+>  drivers/staging/greybus/uart.c | 34 ++++++++++++++++------------------
+>  1 file changed, 16 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
+> index 73f01ed1e5b7..815156c88005 100644
+> --- a/drivers/staging/greybus/uart.c
+> +++ b/drivers/staging/greybus/uart.c
+> @@ -22,7 +22,7 @@
+>  #include <linux/serial.h>
+>  #include <linux/tty_driver.h>
+>  #include <linux/tty_flip.h>
+> -#include <linux/idr.h>
+> +#include <linux/xarray.h>
+>  #include <linux/fs.h>
+>  #include <linux/kdev_t.h>
+>  #include <linux/kfifo.h>
+> @@ -32,8 +32,9 @@
+>  
+>  #include "gbphy.h"
+>  
+> -#define GB_NUM_MINORS	16	/* 16 is more than enough */
+> -#define GB_NAME		"ttyGB"
+> +#define GB_NUM_MINORS		16	/* 16 is more than enough */
+> +#define GB_RANGE_MINORS		XA_LIMIT(0, GB_NUM_MINORS)
+> +#define GB_NAME			"ttyGB"
+>  
+>  #define GB_UART_WRITE_FIFO_SIZE		PAGE_SIZE
+>  #define GB_UART_WRITE_ROOM_MARGIN	1	/* leave some space in fifo */
+> @@ -67,8 +68,7 @@ struct gb_tty {
+>  };
+>  
+>  static struct tty_driver *gb_tty_driver;
+> -static DEFINE_IDR(tty_minors);
+> -static DEFINE_MUTEX(table_lock);
+> +static DEFINE_XARRAY(tty_minors);
+>  
+>  static int gb_uart_receive_data_handler(struct gb_operation *op)
+>  {
+> @@ -341,8 +341,8 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
+>  {
+>  	struct gb_tty *gb_tty;
+>  
+> -	mutex_lock(&table_lock);
+> -	gb_tty = idr_find(&tty_minors, minor);
+> +	xa_lock(&tty_minors);
+> +	gb_tty = xa_load(&tty_minors, minor);
+>  	if (gb_tty) {
+>  		mutex_lock(&gb_tty->mutex);
+>  		if (gb_tty->disconnected) {
+> @@ -353,19 +353,19 @@ static struct gb_tty *get_gb_by_minor(unsigned int minor)
+>  			mutex_unlock(&gb_tty->mutex);
+>  		}
+>  	}
+> -	mutex_unlock(&table_lock);
+> +	xa_unlock(&tty_minors);
+>  	return gb_tty;
+>  }
+>  
+>  static int alloc_minor(struct gb_tty *gb_tty)
+>  {
+>  	int minor;
+> +	int ret;
+>  
+> -	mutex_lock(&table_lock);
+> -	minor = idr_alloc(&tty_minors, gb_tty, 0, GB_NUM_MINORS, GFP_KERNEL);
+> -	mutex_unlock(&table_lock);
+> -	if (minor >= 0)
+> -		gb_tty->minor = minor;
+> +	ret = xa_alloc(&tty_minors, &minor, gb_tty, GB_RANGE_MINORS, GFP_KERNEL);
+> +	if (ret)
+> +		return ret;
+> +	gb_tty->minor = minor;
+>  	return minor;
+>  }
+>  
+> @@ -374,9 +374,7 @@ static void release_minor(struct gb_tty *gb_tty)
+>  	int minor = gb_tty->minor;
+>  
+>  	gb_tty->minor = 0;	/* Maybe should use an invalid value instead */
+> -	mutex_lock(&table_lock);
+> -	idr_remove(&tty_minors, minor);
+> -	mutex_unlock(&table_lock);
+> +	xa_erase(&tty_minors, minor);
+>  }
+>  
+>  static int gb_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+> @@ -837,7 +835,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+>  
+>  	minor = alloc_minor(gb_tty);
+>  	if (minor < 0) {
+> -		if (minor == -ENOSPC) {
+> +		if (minor == -EBUSY) {
+>  			dev_err(&gbphy_dev->dev,
+>  				"no more free minor numbers\n");
+>  			retval = -ENODEV;
+> @@ -982,7 +980,7 @@ static void gb_tty_exit(void)
+>  {
+>  	tty_unregister_driver(gb_tty_driver);
+>  	put_tty_driver(gb_tty_driver);
+> -	idr_destroy(&tty_minors);
+> +	xa_destroy(&tty_minors);
+>  }
+>  
+>  static const struct gbphy_device_id gb_uart_id_table[] = {
+> -- 
+> 2.32.0
+> 
+> 
 
-The whole point of COMPILE_TEST is that it gets compile-tested. It doesn't
-have to actually run.
+I'm going to drop this from my review queue as I do not see the need to
+do this type of conversion at this point in time.  Perhaps if "real"
+drivers in the kernel get converted over to this new api we should also
+do it here, but for now, there's much more "real" issues with the
+greybus drivers that should be done that is keeping them from being
+merged into the main part of the kernel tree, that the churn here is not
+necessary at this point in time (especially if you have not tested
+this.)
 
-Since the driver is using parts of the common clk framework, it should
-declare an explicit dependency, instead of implicitly depending on
-other symbols to enable it.
+thanks,
 
-ChenYu
+greg k-h
