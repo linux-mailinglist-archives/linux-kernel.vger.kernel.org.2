@@ -2,133 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BF93FF15F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A2E3FF163
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346280AbhIBQ3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:29:33 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:34537 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346312AbhIBQ3Y (ORCPT
+        id S1346294AbhIBQab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235316AbhIBQaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:29:24 -0400
-Received: by mail-oi1-f174.google.com with SMTP id p2so3295690oif.1;
-        Thu, 02 Sep 2021 09:28:25 -0700 (PDT)
+        Thu, 2 Sep 2021 12:30:30 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10CFC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:29:31 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id k17so1551030pls.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:29:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
+        bh=QLAsHUWiHUoR30E0hI8bhnsUA1KEyzqg8wNQea4W3og=;
+        b=GKh+qaiaGfL//iSZ+ukPmTJLsUPZU6MwFnsBs383+uUMwt2M3hnFC3aFvbaf+D+DmW
+         T/V0YCNQ9E7ZGZtaXlpR5iaMKx75Ij7vppp2XMDKSxm2gcE/Eymg+dsnUAU+ES2OEda3
+         DjLouSXxOq0GRzjcfP6ak4IM0vuE27Bo0YNwxdjhHrIPjlxEXjiWvKPpwWidsv6p5uZs
+         Yngtk94ZsTHSwb68653zk0f9e+Q0Ldxvmr6yEm0jpA4KnT/w6SnclQyHicn0fTdpAybK
+         zY0y3V03bBJkUNyrBG5IBCGtIXsEo0P2Klnk88UvY90E39CKI9vwMmpAbjq4m66Zz2HX
+         Zvww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yAfF6voZMV5HL2emobgman82UwdzTl9MjI3NYiAvvY8=;
-        b=CvSdputKjf5THPrzwpFEzM7yPK+xb2OENDZHJS3JFjnA8OvXjHsAPEp/LmPpUIMdto
-         xNGi39vhtMJzsYAe3qMY2YztYw2akklDxJrmHa64yaPegF8+eZu44+HkHcpXrJfnKBw8
-         nRkkP+TPD2YBC5NI0rgiJvBM1/QwWajnBvWiCejdrpQNSc7AafLJvurMzs+Urc25R7YX
-         thTj8rq4nH8hoAYXX9ZVoGB0w8cp/5mUXFyEmodBjbiMehh/DzK4ZCbag+7NyxJ0vDsO
-         +p6zornnbmWc0EFOO91Fx4RuIkbhP26kpH6zygXUzx08+8i9AfwxXb03b2pw7vWIIN6r
-         daeg==
-X-Gm-Message-State: AOAM533KKwMzhu7yH7mZnMwGGNSySpPFVH7X5WfuscK4ExJYmcrhI/Vy
-        KVtOpUKuvU1szL79Xh7v89Hi73aK5hm164Cs0lQ=
-X-Google-Smtp-Source: ABdhPJwg0lvNr/QwsNhFe4IobRTfilUwoaE+FI69nZyCe2YopZSoRjuvrS/SxUVf8ud4LCqA44b+ACTfkChQgkY6tt4=
-X-Received: by 2002:aca:afcd:: with SMTP id y196mr2831372oie.71.1630600104769;
- Thu, 02 Sep 2021 09:28:24 -0700 (PDT)
+         :message-id:subject:cc;
+        bh=QLAsHUWiHUoR30E0hI8bhnsUA1KEyzqg8wNQea4W3og=;
+        b=RA8JiOJABqcu0Yl62LY51IBAfk/sTs4Mn+r/IN4awvBdl5V00Y+18GQ06SPCGgEOJt
+         Xm3KEDyGc1bbVLn6KtfX2VVWr9GYyZpdjbj1HF2wDQthS3ob1hYbNrHgIpFdX7wdQV+Z
+         8QPDoMC7uyCqa0JLN2p0Dc1ysY1zw1Mzdf4AZIRniepqCro5H8duq2lJFTnVRTDER+JF
+         8rfSfqiWnCbIf6saI6ercfkp8bbi93T7t9fmndclQxxQylH/1BRZbAW/IwcLOBw/CO0O
+         dkIDcPdt2a04MmN3ZLOZVCfogQXgMkwO/ih6KLhFrnlw+KrRmC4b0sNldJVXRL5/aUmx
+         EueQ==
+X-Gm-Message-State: AOAM533MmoJ4D+8X8JxYdd1pG/ivQ9gpqCEnJivR5UjVec9i7nefHoUn
+        duOUWWMnM3gBD10lL9GAUlfQSqMuzQeEd8PFQoM7RA==
+X-Received: by 2002:a17:90a:6b83:: with SMTP id w3mt3834386pjj.114.1630600170838;
+ Thu, 02 Sep 2021 09:29:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210901083442.210230-1-sean@geanix.com>
-In-Reply-To: <20210901083442.210230-1-sean@geanix.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 2 Sep 2021 18:28:14 +0200
-Message-ID: <CAJZ5v0j5dMDSDjhuXaZd=_J5JOP4Z09WUXfjWX_iCcT4RDisCg@mail.gmail.com>
-Subject: Re: [PATCH] PM / suspend: move userspace freeze before disk sync
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Richard Weinberger <richard@nod.at>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Len Brown <len.brown@intel.com>, linux-mtd@lists.infradead.org
+References: <20210831170233.1409537-1-kaleshsingh@google.com>
+In-Reply-To: <20210831170233.1409537-1-kaleshsingh@google.com>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Thu, 2 Sep 2021 09:29:19 -0700
+Message-ID: <CAC_TJvdW6wMn5yMYpG37NiYmr7tLBNb57N_-6FxTSgndmnjqZg@mail.gmail.com>
+Subject: Re: [RESEND v2] tracing/gpu: Add imported size to gpu_mem_imported tracepoint
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        John Reitan <john.reitan@arm.com>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Mark Underwood <mark.underwood@arm.com>,
+        Gary Sweet <gary.sweet@broadcom.com>,
+        Stephen Mansfield <stephen.mansfield@imgtec.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 10:35 AM Sean Nyekjaer <sean@geanix.com> wrote:
+On Tue, Aug 31, 2021 at 10:02 AM Kalesh Singh <kaleshsingh@google.com> wrote:
 >
-> This fixes an issue where data remains unwritten before suspend.
-
-Well, it doesn't make the issue go away, it just hides it for you and
-it may very well expose it for someone else.
-
-In particular, note that you can compile the kernel with
-CONFIG_SUSPEND_SKIP_SYNC set which makes it not sync at all during
-system-wide suspend and this is a valid case expected to work.  It
-looks like this case doesn't work for you.
-
-> UBI tried to write data, before the mtd device had been unsuspended.
-
-Well, that's the real problem and it can happen regardless of whether
-or not this patch is there.
-
-> Seen on an iMX6ULL board fitted with rawnand flash.
+> The existing gpu_mem_total tracepoint provides GPU drivers a uniform way
+> to report the per-process and system-wide GPU memory usage. This
+> tracepoint reports a single total of the GPU private allocations and the
+> imported memory. [1]
 >
-> Before:
-> PM: suspend entry (deep)
-> Filesystems sync: 0.088 seconds
-> Freezing user space processes ... (elapsed 0.000 seconds) done.
-> OOM killer disabled.
-> Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-> printk: Suspending console(s) (use no_console_suspend to debug)
-> PM: suspend devices took 0.030 seconds
-> Disabling non-boot CPUs ...
-> ubi0 error: ubi_io_write: error -16 while writing 4096 bytes to PEB 1762:94208, written 0 bytes
+> To allow distinguishing GPU private vs imported memory, add an
+> imported_size field to the gpu_mem_total tracepoint. GPU drivers can use
+> this new field to report the per-process and global GPU-imported memory
+> in a uniform way.
 >
-> After:
-> PM: suspend entry (deep)
-> Freezing user space processes ... (elapsed 0.001 seconds) done.
-> OOM killer disabled.
-> Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-> Filesystems sync: 0.060 seconds
-> printk: Suspending console(s) (use no_console_suspend to debug)
-> PM: suspend devices took 0.040 seconds
-> Disabling non-boot CPUs ...
-> PM: resume devices took 0.100 seconds
+> User space tools can detect and handle the old vs new gpu_mem_total
+> format via the gpu_mem/gpu_mem_total/format file.
 >
-> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> [1] https://lore.kernel.org/r/20200302234840.57188-1-zzyiwei@google.com/
+>
+> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+
+Friendly ping on this one, since Steve was out of office :)
+
+If there are no other concerns, I would like to have it considered for merge.
+
+Thanks,
+Kalesh
+
 > ---
+>  include/trace/events/gpu_mem.h | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
 >
-> Some explanation/discussion here:
-> http://lists.infradead.org/pipermail/linux-mtd/2021-July/087390.html
+> diff --git a/include/trace/events/gpu_mem.h b/include/trace/events/gpu_mem.h
+> index 26d871f96e94..ae6fab6bab7b 100644
+> --- a/include/trace/events/gpu_mem.h
+> +++ b/include/trace/events/gpu_mem.h
+> @@ -15,7 +15,7 @@
 >
->  kernel/power/suspend.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  /*
+>   * The gpu_memory_total event indicates that there's an update to either the
+> - * global or process total gpu memory counters.
+> + * global or process total and imported gpu memory counters.
+>   *
+>   * This event should be emitted whenever the kernel device driver allocates,
+>   * frees, imports, unimports memory in the GPU addressable space.
+> @@ -24,31 +24,36 @@
+>   *
+>   * @pid: Put 0 for global total, while positive pid for process total.
+>   *
+> - * @size: Size of the allocation in bytes.
+> + * @size: Total size of allocated and imported memory in bytes.
+> + *
+> + * @imported_size: Total size of imported memory in bytes.
+>   *
+>   */
+>  TRACE_EVENT(gpu_mem_total,
 >
-> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
-> index 87331565e505..4ee3fcbb0e7a 100644
-> --- a/kernel/power/suspend.c
-> +++ b/kernel/power/suspend.c
-> @@ -562,6 +562,12 @@ static int enter_state(suspend_state_t state)
->         if (state == PM_SUSPEND_TO_IDLE)
->                 s2idle_begin();
+> -       TP_PROTO(uint32_t gpu_id, uint32_t pid, uint64_t size),
+> +       TP_PROTO(uint32_t gpu_id, uint32_t pid, uint64_t size, uint64_t imported_size),
 >
-> +       pm_pr_dbg("Preparing system for sleep (%s)\n", mem_sleep_labels[state]);
-> +       pm_suspend_clear_flags();
-> +       error = suspend_prepare(state);
-> +       if (error)
-> +               goto Unlock;
-> +
->  #ifndef CONFIG_SUSPEND_SKIP_SYNC
->         trace_suspend_resume(TPS("sync_filesystems"), 0, true);
->         pr_info("Syncing filesystems ... ");
-> @@ -570,12 +576,6 @@ static int enter_state(suspend_state_t state)
->         trace_suspend_resume(TPS("sync_filesystems"), 0, false);
->  #endif
+> -       TP_ARGS(gpu_id, pid, size),
+> +       TP_ARGS(gpu_id, pid, size, imported_size),
 >
-> -       pm_pr_dbg("Preparing system for sleep (%s)\n", mem_sleep_labels[state]);
-> -       pm_suspend_clear_flags();
-> -       error = suspend_prepare(state);
-> -       if (error)
-> -               goto Unlock;
-> -
->         if (suspend_test(TEST_FREEZER))
->                 goto Finish;
+>         TP_STRUCT__entry(
+>                 __field(uint32_t, gpu_id)
+>                 __field(uint32_t, pid)
+>                 __field(uint64_t, size)
+> +               __field(uint64_t, imported_size)
+>         ),
 >
+>         TP_fast_assign(
+>                 __entry->gpu_id = gpu_id;
+>                 __entry->pid = pid;
+>                 __entry->size = size;
+> +               __entry->imported_size = imported_size;
+>         ),
+>
+> -       TP_printk("gpu_id=%u pid=%u size=%llu",
+> +       TP_printk("gpu_id=%u pid=%u size=%llu imported_size=%llu",
+>                 __entry->gpu_id,
+>                 __entry->pid,
+> -               __entry->size)
+> +               __entry->size,
+> +               __entry->imported_size)
+>  );
+>
+>  #endif /* _TRACE_GPU_MEM_H */
+>
+> base-commit: 9c849ce86e0fa93a218614eac562ace44053d7ce
 > --
-> 2.33.0
+> 2.33.0.259.gc128427fd7-goog
 >
