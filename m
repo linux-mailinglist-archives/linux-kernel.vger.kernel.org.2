@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31C43FF0F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3923FF0F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346175AbhIBQQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44622 "EHLO
+        id S1346200AbhIBQQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233599AbhIBQQh (ORCPT
+        with ESMTP id S1346169AbhIBQQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:16:37 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929ACC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:15:38 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id y34so5468516lfa.8
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:15:38 -0700 (PDT)
+        Thu, 2 Sep 2021 12:16:38 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA6AC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:15:39 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id s3so4536547ljp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:15:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TFcTQJKSbXDRLP9mWB7XxD8YdU1LWh59xr03hi/9bMs=;
-        b=Ncbaywy50BWV9K53Lja0oOK+hE2NJc3JWDDWmDuJkBmZFH3dJuRUQhFel0fj8Oie3/
-         Iib1SN4j3zZkSg/U13+RuASbw9thH/kaiaR9DbbwMJh5lyS2abh7XOGUvTsLVtNIOLPC
-         i/JbMPIpRx1zY+3diKLAWqMUq2DLX/O64A7H0x3dwDs89DK4vm0+iQZF/mpljg45gpZx
-         idAkOeUndYt0yWcqoNe22CrXa9Gymjy2YIG+rkf+CzKMtVcfTeIjHRec1cLDxDbGvvVj
-         2eDryjk02v3/0vu7oIclQxktr1j0G37wH7B/1noKm4FfZA+psBcMuqUlsf+0TOba290V
-         KucA==
+        bh=ob2HCfLbexy1luGulrKway4plF2/kkuH1W1saHNOCQo=;
+        b=pBCxKSVw9Ji4JYB5OCdXI+l/dHNLz3ePATOIic0bMy2s5V1v1K7+nJuX+gJ9McOrFL
+         +y40utIyAcTazzv0nwWgFvKYak5VSSfbWPc06wD6eDnYR7S+0DtOsUj90gmrjUevQeRR
+         NxKzJzah5fFZXFgLTek90NBWN5ppDC3qHVGU/nK9BwnoEh+GFmpDexeEhwu6BfOJAEkA
+         rKVyQJ+fqhXNXlgomeR326ZuS7nWIkQRwHLm7lBDC2W7iZfZZtO/1EI+RF3PW2bPtGQk
+         YGDKuNEZtnarz69TTUHP7456py1We+6cUXuMVf0vvnvm4yovuQmogJlXiGRF5a/epk8C
+         SEvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TFcTQJKSbXDRLP9mWB7XxD8YdU1LWh59xr03hi/9bMs=;
-        b=uHl1RNVBlnmfbkJO20t5T+WwA76fTgwv6B2rg9Jk6/UsdE0lMaS5zAb1HOIRQXroEi
-         QieMaqJbuc+DP+5CfUZiWXaPNxZeoTpElHH4E3frUpTAiVTKgr7DKpGie6NctHOZH30l
-         5Jy/XagWCIh/PsdWoI52namLhr+h3IPpOYsHWnpFvb8MXLpC7zC4FbDn0JCqYOqtRuPC
-         4583XdPr+V6PzGSWbs/iNL/iidN98mkBSFDXJPo42iCwMw6bySA6AvPwnnA/VGlyN6Zo
-         BMma2pF4rSqGy/5Wu2W6ZLabS1IRuo01RJ3SOvLU9w1yNF+jbgscGHBmJ1mN3/oZ14Li
-         WXSQ==
-X-Gm-Message-State: AOAM532O9dboVsrftDMgSRVa4We3YQSZOXhaRM96EgE2OUPFLsfGy6cl
-        YrPqWilFa6zr7XTinT/W+us=
-X-Google-Smtp-Source: ABdhPJyNOOMEs/bXSH41xnWiO4/nVy+dtMoDUlM/uXEKQkHzOL69XPmqEPxeEsAd5vv85Z3jWJ+SNw==
-X-Received: by 2002:a19:4853:: with SMTP id v80mr3147164lfa.365.1630599336951;
-        Thu, 02 Sep 2021 09:15:36 -0700 (PDT)
+        bh=ob2HCfLbexy1luGulrKway4plF2/kkuH1W1saHNOCQo=;
+        b=dIrjHBdQ+rU8xGfouBVl0s2XMBpbwosM6H70KPkkv/Yt/XAE0tI4xBMajuoCy1CWS5
+         kpdsnMHSBrvE7hgz3VDe5XUoHdBrYAvIoNlgB1vdsLMxlHNCmmPH3qvv1gzYtoCpI7EO
+         oYSYNFEG3y9Ukaeo7uGdchpVFy84FuzS9vYQeUFjCtmlSXd4HcLPAQFEVLb9YtdckbTt
+         zX+paeFQNJY/4zt+hiLQ1QUEf6MjTljKDUzgmlXm8G7D5PCVcmwN4+8gMAvNImOsNc0d
+         B4RrXv49IIxaObx0549wbFe36jcBc+f6FVnJnD3tybgL/WCFRmY007TcexGUKEy+drq5
+         euQQ==
+X-Gm-Message-State: AOAM530/cHDXzdQIL1Gax+mkmgzukCx7QGUrFUbMdcbHgI9cCMhmkP/O
+        08YmXKxjSAUW0ljWw7KtnqnPfdhQ1g4qTA==
+X-Google-Smtp-Source: ABdhPJyUWIfCl011zCkaBs+2pmSQuInn2PxqJd8IYtR8wyl/+dBK3vvWaVV6Tp6YsYo9hRx1az3E+w==
+X-Received: by 2002:a05:651c:98c:: with SMTP id b12mr3248586ljq.83.1630599338250;
+        Thu, 02 Sep 2021 09:15:38 -0700 (PDT)
 Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id m7sm267811ljj.58.2021.09.02.09.15.36
+        by smtp.gmail.com with ESMTPSA id m7sm267811ljj.58.2021.09.02.09.15.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 09:15:36 -0700 (PDT)
+        Thu, 02 Sep 2021 09:15:37 -0700 (PDT)
 From:   Kari Argillander <kari.argillander@gmail.com>
 To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
         ntfs3@lists.linux.dev
 Cc:     Kari Argillander <kari.argillander@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/8] fs/ntfs3. Add forward declarations for structs to debug.h
-Date:   Thu,  2 Sep 2021 19:15:21 +0300
-Message-Id: <20210902161528.6262-2-kari.argillander@gmail.com>
+Subject: [PATCH v2 2/8] fs/ntfs3: Add missing header files to ntfs.h
+Date:   Thu,  2 Sep 2021 19:15:22 +0300
+Message-Id: <20210902161528.6262-3-kari.argillander@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210902161528.6262-1-kari.argillander@gmail.com>
 References: <20210902161528.6262-1-kari.argillander@gmail.com>
@@ -65,28 +65,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add forward declarations for structs so that we can include this file
-without warnings even without linux/fs.h
+We do not have header files at all in this file. Add following headers
+and there is also explanation which for it was added. Note that
+explanation might not be complete, but it just proofs it is needed.
+
+<linux/blkdev.h> // SECTOR_SHIFT
+<linux/build_bug.h> // static_assert()
+<linux/kernel.h> // cpu_to_le64, cpu_to_le32, ALIGN
+<linux/stddef.h> // offsetof()
+<linux/string.h> // memcmp()
+<linux/types.h> //__le32, __le16
+
+"debug.h" // PtrOffset(), Add2Ptr()
 
 Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
 ---
- fs/ntfs3/debug.h | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/ntfs3/ntfs.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/fs/ntfs3/debug.h b/fs/ntfs3/debug.h
-index 31120569a87b..53ef7489c75f 100644
---- a/fs/ntfs3/debug.h
-+++ b/fs/ntfs3/debug.h
-@@ -11,6 +11,9 @@
- #ifndef _LINUX_NTFS3_DEBUG_H
- #define _LINUX_NTFS3_DEBUG_H
+diff --git a/fs/ntfs3/ntfs.h b/fs/ntfs3/ntfs.h
+index 6bb3e595263b..695b684bce20 100644
+--- a/fs/ntfs3/ntfs.h
++++ b/fs/ntfs3/ntfs.h
+@@ -10,6 +10,15 @@
+ #ifndef _LINUX_NTFS3_NTFS_H
+ #define _LINUX_NTFS3_NTFS_H
  
-+struct super_block;
-+struct inode;
++#include <linux/blkdev.h>
++#include <linux/build_bug.h>
++#include <linux/kernel.h>
++#include <linux/stddef.h>
++#include <linux/string.h>
++#include <linux/types.h>
 +
- #ifndef Add2Ptr
- #define Add2Ptr(P, I)		((void *)((u8 *)(P) + (I)))
- #define PtrOffset(B, O)		((size_t)((size_t)(O) - (size_t)(B)))
++#include "debug.h"
++
+ /* TODO: Check 4K MFT record and 512 bytes cluster. */
+ 
+ /* Activate this define to use binary search in indexes. */
 -- 
 2.25.1
 
