@@ -2,114 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC4F3FEFB6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 16:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F843FEFB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 16:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345653AbhIBOxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 10:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345545AbhIBOxA (ORCPT
+        id S1345681AbhIBOxQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Sep 2021 10:53:16 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:43819 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345637AbhIBOxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 10:53:00 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B05BC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 07:52:02 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so1627053pjc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 07:52:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5pN7v4ea6JVRwcYbzT57F/Ba7bm6wPYHneE0JrKsfnw=;
-        b=C48iHpr9pk3IoBBMVMEBx2Bu9bbVIVnxI7aTRrg216+oElP2+iRKLXWaxvQZkD9gKQ
-         68XH8arQbIKh3eBwMlttfSZ3FdVccNrTtRSu8NpEVwQCz391nA0bNW2HiJiK/UwUld8t
-         q6wRUyv/otnHJkTPlToE8wHDy6463hid0O+nRgP7toC2pFymBUu+A/q3EXb2+42bICkd
-         3KiNGU0SAYhocJXy6XBTDmMYBQ1Ulr6yNsq+OlOMK6WNi/EarQE01atkJYpQMnSoG3Jd
-         lSgcGY2oNa3WmMkNxKOOk7b0DmldYiEWAzoGSZexF2IspMIihP1gOi89ct2JFi+yXFdQ
-         dC+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5pN7v4ea6JVRwcYbzT57F/Ba7bm6wPYHneE0JrKsfnw=;
-        b=YjNE3WHClyg/gJf7AeKGWZk2ZgLJul3lTioNT3RnKsP4LwIHo60LtTqeDX+1nUvyHq
-         cIkZysk9O/NRsxPOOzRg1rvm6yOaQG+xU3KahuxY3gBEP/DcKO67DeNs7oliVsuPYFmb
-         RKu+X7aYpY/SNEbgv6ij5PzRjfaiqJUo8uSnBzriLTOFSAJh1WPl7AYO9m4RDVXvGDf3
-         OjtA16FoYLwN/3Kgb9tknZ6hET5JbN5mCuKZYuxE6huuOKFFBKtkugOjqCwo5HJit72P
-         wTdQbhLKczCPZlySUU05LmSCjcIJAAostXFlDLAoOAIVr2USg7VFlLOnuFpWU5NlIsxR
-         emBQ==
-X-Gm-Message-State: AOAM531EPZp1C6CaEQbE4ZGbEAXKjviplunnO8AmUv/GBYypbAjyVlZv
-        OJcDhJRO3iXnZgb+AGk4Ozo=
-X-Google-Smtp-Source: ABdhPJz2/G7LEhOrRZn6jyYAddm5ciJMDPjIESVGasISc9KGr3JWIAEQfc8xYpRX79JHbpYKduKD6w==
-X-Received: by 2002:a17:90a:194a:: with SMTP id 10mr4406460pjh.176.1630594321634;
-        Thu, 02 Sep 2021 07:52:01 -0700 (PDT)
-Received: from octofox.cadence.com ([2601:641:401:1d20:49eb:5986:4393:7ed3])
-        by smtp.gmail.com with ESMTPSA id o14sm3189746pgl.85.2021.09.02.07.52.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 07:52:00 -0700 (PDT)
-From:   Max Filippov <jcmvbkbc@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PULL 0/7] xtensa updates for 5.15
-Date:   Thu,  2 Sep 2021 07:51:36 -0700
-Message-Id: <20210902145136.21967-1-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 2 Sep 2021 10:53:14 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-35-e_78ceilNiO6G38l3rSPfg-1; Thu, 02 Sep 2021 15:52:13 +0100
+X-MC-Unique: e_78ceilNiO6G38l3rSPfg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Thu, 2 Sep 2021 15:52:12 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Thu, 2 Sep 2021 15:52:12 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Michal Hocko' <mhocko@suse.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: RE: [RFC PATCH 1/1] mm: provide one common K(x) macro
+Thread-Topic: [RFC PATCH 1/1] mm: provide one common K(x) macro
+Thread-Index: AQHXnyIP1W4iwzBh3EWPGmS1HjslO6uQ1R3w
+Date:   Thu, 2 Sep 2021 14:52:12 +0000
+Message-ID: <986271f68d114a7daeacae620e3a6fdf@AcuMS.aculab.com>
+References: <20210901092149.994791-1-oleksandr@natalenko.name>
+ <20210901092149.994791-2-oleksandr@natalenko.name>
+ <YS9WiF6enhSo8sYc@dhcp22.suse.cz> <5529272.KFOknHQvy8@natalenko.name>
+ <YS9fxXSl5vhs5a+X@dhcp22.suse.cz>
+In-Reply-To: <YS9fxXSl5vhs5a+X@dhcp22.suse.cz>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+From: Michal Hocko
+> Sent: 01 September 2021 12:11
+> 
+> On Wed 01-09-21 12:50:40, Oleksandr Natalenko wrote:
+> [...]
+> > ```
+> > 31 files changed, 104 insertions(+), 90 deletions(-)
+> > ```
+> >
+> > which is not that horrible.
+> 
+> Still a lot of churn to my taste for something that is likely a matter
+> of personal preferences and taste. Consider additional costs as well.
+> E.g. go over additional git blame steps to learn why the code has been
+> introduced, review bandwith etc...
 
-please pull the following Xtensa architecture updates for v5.15:
+Not to mention the time taken by someone scan-reading the
+code who has to go and find the definition of K() just
+to see what it does.
 
-The following changes since commit 36a21d51725af2ce0700c6ebcb6b9594aac658a6:
+A more descriptive name (eg PAGES_TO_KB) might save that.
+but is it worth it?
 
-  Linux 5.14-rc5 (2021-08-08 13:49:31 -0700)
+	David
 
-are available in the Git repository at:
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-  git://github.com/jcmvbkbc/linux-xtensa.git tags/xtensa-20210902
-
-for you to fetch changes up to 7b7cec477fc3cd42ce565dfc3e53f144504fc95c:
-
-  xtensa: move core-y in arch/xtensa/Makefile to arch/xtensa/Kbuild (2021-08-11 11:37:13 -0700)
-
-----------------------------------------------------------------
-Xtensa updates for v5.15
-
-- fix kconfig unmet dependency warning for HAVE_FUTEX_CMPXCHG
-- add fairness to handling IRQs of the same priority
-- fix pointer usage before NULL check in ISS console driver
-- build system cleanups
-
-----------------------------------------------------------------
-Masahiro Yamada (4):
-      xtensa: remove unneeded exports
-      xtensa: do not build variants directory
-      xtensa: build platform directories unconditionally
-      xtensa: move core-y in arch/xtensa/Makefile to arch/xtensa/Kbuild
-
-Max Filippov (2):
-      xtensa: add fairness to IRQ handling
-      xtensa: ISS: don't use string pointer before NULL check
-
-Randy Dunlap (1):
-      xtensa: fix kconfig unmet dependency warning for HAVE_FUTEX_CMPXCHG
-
- arch/xtensa/Kbuild                  |  1 +
- arch/xtensa/Kconfig                 |  2 +-
- arch/xtensa/Makefile                | 12 ------------
- arch/xtensa/kernel/traps.c          |  7 +++++++
- arch/xtensa/platforms/Makefile      |  4 ++++
- arch/xtensa/platforms/iss/console.c |  6 +++---
- 6 files changed, 16 insertions(+), 16 deletions(-)
- create mode 100644 arch/xtensa/platforms/Makefile
-
--- 
-Thanks.
--- Max
