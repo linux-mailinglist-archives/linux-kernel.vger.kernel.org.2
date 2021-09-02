@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C0E3FF4E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C3E3FF4E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346400AbhIBU1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:27:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346294AbhIBU1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:27:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 575E06056B;
-        Thu,  2 Sep 2021 20:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630614396;
-        bh=4Mzm0ZnE9uA7xCnmfbYNt3yjRLo8E84ptUXOhxGYFKA=;
-        h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=iVTBMv1kDM0KvZ0p4lmNpIJjfmlICLE66FRMUBuxhRFgRs03Sr6SrrzLKEtE9187J
-         O8Zc20pDbsOSw6ZVUaDgY2Zpf1nQLIeCi082lpPSnZkfg8gipVaiC+IuuicvcokN+I
-         AMzjIrV35VxaZJAmA6aMgk1OY2JyBW2ibmJin1xEhmdsxflOWWlXxffoPxz/lXOaMd
-         F8DHTALoWy/UK5w9qMBKvi9K4pRRlhkI0JRBLV1B1zRTmNMd54ayOtmf3rU3nxaLOr
-         +288W65c9wKHJWFmsq8/WHPicMnXAtIi6NteAv/FaiEZfCGnPADL++3TsGPHQx4FaO
-         TGZxfuYKZcLZw==
-From:   zanussi@kernel.org
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Clark Williams <williams@redhat.com>,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: [PATCH RT 2/2] Linux 5.4.143-rt64-rc1
-Date:   Thu,  2 Sep 2021 15:26:31 -0500
-Message-Id: <bbc4e4f132b2674a0f26c1860da184785e8cb72f.1630614380.git.zanussi@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1630614380.git.zanussi@kernel.org>
-References: <cover.1630614380.git.zanussi@kernel.org>
-In-Reply-To: <cover.1630614380.git.zanussi@kernel.org>
-References: <cover.1630614380.git.zanussi@kernel.org>
+        id S1346418AbhIBU3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346378AbhIBU27 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 16:28:59 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B676BC061575;
+        Thu,  2 Sep 2021 13:28:00 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id h1so5856765ljl.9;
+        Thu, 02 Sep 2021 13:28:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L/XPe5J/UPsh6FybYM/Na2gfn+TiWBfcKQ0DWNm4GDE=;
+        b=DRAYiVS6k7GXaomHZuO4boBpJDM/ZklXBMTv2eQWD+k8g6BIEPM0c7rDTIqEN9koLM
+         +LjPYm/JhB0aU7D8417a4tXRBphgIiU5Oy6M1xiascEWzQUBnlleihFUeKhBA7gwY9FW
+         ZjiFF76QKojm8vaQYhLALPgpF8ctE6ngoKuhNvxkj6JCn4aNkiZXxn4GhSfPQ+iK/LFW
+         mjc0kH7ti9wEgPYX7J0XrKDHDaWq+l3aoUzsCgfA1KyP/20g3tIjIq4/9Sd2vWPYYQbP
+         yZTrz/KB2qAwyFUQXwfUerdaXNmKxuxO0qAAN2P9OT3kIm5quADsOEn/a/Gycb/6gJs7
+         GYew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L/XPe5J/UPsh6FybYM/Na2gfn+TiWBfcKQ0DWNm4GDE=;
+        b=KT76v/21mWDpv+mo7w3KPk8koYLkoZCSGjX/u6azeU8lIo8BP0RTMNxeQ1qmr8NwYv
+         1GOBnabP+daQIZkvGs+h1o7aoxoDXm0HLmELHNhqEp6g1Tomy+59CIZdnhWu+Kgy/LaH
+         k9iLfgUBZo12EZasfp9Y2Qf828Y7mh/LeiwiO7wniJCQiKC4XasKAPgKFCYc0EqCfOgG
+         Q51VOs5bAgSAPYeYszzT8U8akqkLFr7X4OCI1TK7+LP9BBCs0kFe6fV60h2BLUvEzpe6
+         Q88FXcCgl1Tmj+xS8kBmgwD/t3uMBorqulIx18fuARGuGRG7NPZfvxEMVpc8dzfUCQcT
+         NavQ==
+X-Gm-Message-State: AOAM531AWUyhKwDNAUVDzgpVgtoS3JBnLsYKpw1XLne4DMpIqBrKXb9e
+        JHHOFvWOVWcTSD32xFIMvkY=
+X-Google-Smtp-Source: ABdhPJwcCXq8s0tHEocKg+g0IBec+6NSz2wfODR1zY7p9BtXuMoQeJ1lR24lw5CzpmTGiX7rddpXFA==
+X-Received: by 2002:a2e:9b8e:: with SMTP id z14mr54334lji.411.1630614478802;
+        Thu, 02 Sep 2021 13:27:58 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.67.70])
+        by smtp.gmail.com with ESMTPSA id x6sm290990lfd.208.2021.09.02.13.27.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 13:27:58 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     apusaka@chromium.org, abhishekpandit@chromium.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+7d41312fe3f123a6f605@syzkaller.appspotmail.com
+Subject: [PATCH] Bluetooth: hci: fix GPF in h5_recv
+Date:   Thu,  2 Sep 2021 23:27:56 +0300
+Message-Id: <20210902202756.25378-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Zanussi <zanussi@kernel.org>
+Syzbot hit general protection fault in h5_recv(). The problem was in
+missing NULL check.
 
-v5.4.143-rt64-rc1 stable review patch.
-If anyone has any objections, please let me know.
+hu->serdev can be NULL and we cannot blindly pass &serdev->dev
+somewhere, since it can cause GPF.
 
------------
-
-
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+Fixes: d9dd833cf6d2 ("Bluetooth: hci_h5: Add runtime suspend")
+Reported-and-tested-by: syzbot+7d41312fe3f123a6f605@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
- localversion-rt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/bluetooth/hci_h5.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/localversion-rt b/localversion-rt
-index b0e8dd7bd707..c64934cc5dfa 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt63
-+-rt64-rc1
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index 0c0dedece59c..eb0099a21288 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -587,9 +587,11 @@ static int h5_recv(struct hci_uart *hu, const void *data, int count)
+ 		count -= processed;
+ 	}
+ 
+-	pm_runtime_get(&hu->serdev->dev);
+-	pm_runtime_mark_last_busy(&hu->serdev->dev);
+-	pm_runtime_put_autosuspend(&hu->serdev->dev);
++	if (hu->serdev) {
++		pm_runtime_get(&hu->serdev->dev);
++		pm_runtime_mark_last_busy(&hu->serdev->dev);
++		pm_runtime_put_autosuspend(&hu->serdev->dev);
++	}
+ 
+ 	return 0;
+ }
 -- 
-2.17.1
+2.33.0
 
