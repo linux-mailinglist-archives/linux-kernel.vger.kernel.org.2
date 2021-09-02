@@ -2,175 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB0F3FEF91
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 16:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DB33FEF96
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 16:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345435AbhIBOig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 10:38:36 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:39875 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345637AbhIBOib (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 10:38:31 -0400
-Received: by mail-ot1-f41.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so2763804otf.6;
-        Thu, 02 Sep 2021 07:37:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2rl17F8ZLBnG5Isa+rmWjX2SNqghsw0qlnTGMKBisZ0=;
-        b=h6acscH9YzN7mudrVnga/dMRI8dWQQsLCC0TAEa7y58n4i2u7YbR/ZXP1fymmI/Jd7
-         avMJozazwugwGRkVG498Kj5ope1tnccMWA5DCNADPqatJ1U97R+iNJITVh+ove3Cj86N
-         CjpM9Ah04avjDqfIQvoFoonHKg2+1UPsnylrYhKPnsJkN4mG4PhaGmxK5mZ4YbVfFr6M
-         Mot6RghEKw3resvqqD2+WySdHg8Pdolns3wkiN6Lc+NSSu0OcF5S4A4pWoSpZcGbO2bh
-         uOEI38KeD4QPQgNyKfFLx3ur1sl/0nqav7KN0vTMnKB7ENjLCiqTYYurGdy6vNzD9eDN
-         vuWw==
-X-Gm-Message-State: AOAM533wLQCvzR7sxHm2QQWhZhne1gS+EQVEN/kKu6/DHUgGdUxty9Y3
-        wier6UK7pCk741q0RqRkrD2JGIaX4ozFsmefjtM=
-X-Google-Smtp-Source: ABdhPJyrp2UQgnC/bMjq5FEMaYHKwQw/CGCD4kMAVeIwn6tfTR+Oa80W/Q25Kga3HOIYpu8ch3KhznvFoaPPcUbuTPI=
-X-Received: by 2002:a9d:7115:: with SMTP id n21mr2928384otj.321.1630593452296;
- Thu, 02 Sep 2021 07:37:32 -0700 (PDT)
+        id S1345546AbhIBOlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 10:41:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345405AbhIBOlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 10:41:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3D6860BD3;
+        Thu,  2 Sep 2021 14:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630593619;
+        bh=ecmU1nlRZYPspOA+dcNklCLT1a4QmdQBNB1z1TKgWEY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DkqYaudVpge5kJGtjRZNK2il+wSV0t9N1blFY0XtjhMXlb6c5CQPhbvPcjvR3dxXp
+         zVnys4zJPCJtKV/MKyNNcMw9NWedpzV9nHvQ0vdJ5bSF1qJC7sqWvV8lUTIo+dh4Td
+         EqvrNoJjRfuWrqSEBFXZ1kMDTMd6iAE2i164pil59RqerwGWGfWnvJAaDWSZodSKj5
+         XHKgQrCVedRG0Bz0v890uiw23IB507Z2pSEd0I1S4TdPlhplzVZot2CwnW1tfbjwXl
+         jPujoEKIVLgbXONgUwuzBudM8cRxpE8zLKAokTOBOLVufmRqt1/df7rp4fh1aepzFG
+         vxafYeG2CyV+g==
+Date:   Thu, 2 Sep 2021 15:39:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Parshuram Thombare <pthombar@cadence.com>
+Cc:     lukas@wunner.de, p.yadav@ti.com, robh+dt@kernel.org,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jpawar@cadence.com,
+        mparab@cadence.com, Konrad Kociolek <konrad@cadence.com>
+Subject: Re: [PATCH v3 2/2] spi: cadence: add support for Cadence XSPI
+ controller
+Message-ID: <20210902143947.GC11164@sirena.org.uk>
+References: <1630499755-18751-1-git-send-email-pthombar@cadence.com>
+ <1630499858-20456-1-git-send-email-pthombar@cadence.com>
 MIME-Version: 1.0
-References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
- <20210901225053.1205571-2-vladimir.oltean@nxp.com> <YTBkbvYYy2f/b3r2@kroah.com>
-In-Reply-To: <YTBkbvYYy2f/b3r2@kroah.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 2 Sep 2021 16:37:21 +0200
-Message-ID: <CAJZ5v0jfdE4RTR=71a6eGDoOF5jvr0ReM27WME+owmPLkXuU5w@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next 1/3] net: phy: don't bind genphy in
- phy_attach_direct if the specific driver defers probe
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev <netdev@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tqI+Z3u+9OQ7kwn0"
+Content-Disposition: inline
+In-Reply-To: <1630499858-20456-1-git-send-email-pthombar@cadence.com>
+X-Cookie: Famous last words:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 7:43 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Sep 02, 2021 at 01:50:51AM +0300, Vladimir Oltean wrote:
-> > There are systems where the PHY driver might get its probe deferred due
-> > to a missing supplier, like an interrupt-parent, gpio, clock or whatever.
-> >
-> > If the phy_attach_direct call happens right in between probe attempts,
-> > the PHY library is greedy and assumes that a specific driver will never
-> > appear, so it just binds the generic PHY driver.
-> >
-> > In certain cases this is the wrong choice, because some PHYs simply need
-> > the specific driver. The specific PHY driver was going to probe, given
-> > enough time, but this doesn't seem to matter to phy_attach_direct.
-> >
-> > To solve this, make phy_attach_direct check whether a specific PHY
-> > driver is pending or not, and if it is, just defer the probing of the
-> > MAC that's connecting to us a bit more too.
-> >
-> > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > ---
-> >  drivers/base/dd.c            | 21 +++++++++++++++++++--
-> >  drivers/net/phy/phy_device.c |  8 ++++++++
-> >  include/linux/device.h       |  1 +
-> >  3 files changed, 28 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> > index 1c379d20812a..b22073b0acd2 100644
-> > --- a/drivers/base/dd.c
-> > +++ b/drivers/base/dd.c
-> > @@ -128,13 +128,30 @@ static void deferred_probe_work_func(struct work_struct *work)
-> >  }
-> >  static DECLARE_WORK(deferred_probe_work, deferred_probe_work_func);
-> >
-> > +static bool __device_pending_probe(struct device *dev)
-> > +{
-> > +     return !list_empty(&dev->p->deferred_probe);
-> > +}
-> > +
-> > +bool device_pending_probe(struct device *dev)
-> > +{
-> > +     bool pending;
-> > +
-> > +     mutex_lock(&deferred_probe_mutex);
-> > +     pending = __device_pending_probe(dev);
-> > +     mutex_unlock(&deferred_probe_mutex);
-> > +
-> > +     return pending;
-> > +}
-> > +EXPORT_SYMBOL_GPL(device_pending_probe);
-> > +
-> >  void driver_deferred_probe_add(struct device *dev)
-> >  {
-> >       if (!dev->can_match)
-> >               return;
-> >
-> >       mutex_lock(&deferred_probe_mutex);
-> > -     if (list_empty(&dev->p->deferred_probe)) {
-> > +     if (!__device_pending_probe(dev)) {
-> >               dev_dbg(dev, "Added to deferred list\n");
-> >               list_add_tail(&dev->p->deferred_probe, &deferred_probe_pending_list);
-> >       }
-> > @@ -144,7 +161,7 @@ void driver_deferred_probe_add(struct device *dev)
-> >  void driver_deferred_probe_del(struct device *dev)
-> >  {
-> >       mutex_lock(&deferred_probe_mutex);
-> > -     if (!list_empty(&dev->p->deferred_probe)) {
-> > +     if (__device_pending_probe(dev)) {
-> >               dev_dbg(dev, "Removed from deferred list\n");
-> >               list_del_init(&dev->p->deferred_probe);
-> >               __device_set_deferred_probe_reason(dev, NULL);
-> > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> > index 52310df121de..2c22a32f0a1c 100644
-> > --- a/drivers/net/phy/phy_device.c
-> > +++ b/drivers/net/phy/phy_device.c
-> > @@ -1386,8 +1386,16 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
-> >
-> >       /* Assume that if there is no driver, that it doesn't
-> >        * exist, and we should use the genphy driver.
-> > +      * The exception is during probing, when the PHY driver might have
-> > +      * attempted a probe but has requested deferral. Since there might be
-> > +      * MAC drivers which also attach to the PHY during probe time, try
-> > +      * harder to bind the specific PHY driver, and defer the MAC driver's
-> > +      * probing until then.
->
-> Wait, no, this should not be a "special" thing, and why would the list
-> of deferred probe show this?
->
-> If a bus wants to have this type of "generic vs. specific" logic, then
-> it needs to handle it in the bus logic itself as that does NOT fit into
-> the normal driver model at all.
 
-Well, I think that this is a general issue and it appears to me to be
-present in the driver core too, at least to some extent.
+--tqI+Z3u+9OQ7kwn0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Namely, if there are two drivers matching the same device and the
-first one's ->probe() returns -EPROBE_DEFER, that will be converted to
-EPROBE_DEFER by really_probe(), so driver_probe_device() will pass it
-to __device_attach_driver() which then will return 0.  This
-bus_for_each_drv() will call __device_attach_driver()  for the second
-matching driver even though the first one may still probe successfully
-later.
+On Wed, Sep 01, 2021 at 02:37:38PM +0200, Parshuram Thombare wrote:
 
-To me, this really is a variant of "if a driver has failed to probe,
-try another one" which phy_attach_direct() appears to be doing and in
-both cases the probing of the "alternative" is premature if the
-probing of the original driver has been deferred.
+> +++ b/drivers/spi/spi-cadence-xspi.c
+> @@ -0,0 +1,837 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Cadence XSPI flash controller driver
 
-> Don't try to get a "hint" of this by messing with the probe function list.
+Please make the entire comment a C++ so things look more intentional.
 
-I agree that this doesn't look particularly clean, but then I'm
-wondering how to address this cleanly.
+> +static int cdns_xspi_setup(struct spi_device *spi_dev)
+> +{
+> +	if (spi_dev->chip_select > spi_dev->master->num_chipselect) {
+> +		dev_err(&spi_dev->dev,
+> +			"%d chip-select is out of range\n",
+> +			spi_dev->chip_select);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+
+The core already validates this, are you seeing it happen?  If so we
+should fix the core and either way just remove setup() entirely.
+
+> +	if (irq_status) {
+> +		writel(irq_status,
+> +		       cdns_xspi->iobase + CDNS_XSPI_INTR_STATUS_REG);
+> +
+> +		if (irq_status & CDNS_XSPI_SDMA_ERROR) {
+> +			dev_err(cdns_xspi->dev,
+> +				"Slave DMA transaction error\n");
+> +			cdns_xspi->sdma_error = true;
+> +			complete(&cdns_xspi->sdma_complete);
+> +		}
+> +
+> +		if (irq_status & CDNS_XSPI_SDMA_TRIGGER)
+> +			complete(&cdns_xspi->sdma_complete);
+> +
+> +		if (irq_status & CDNS_XSPI_STIG_DONE)
+> +			complete(&cdns_xspi->cmd_complete);
+> +
+> +		result = IRQ_HANDLED;
+> +	}
+
+We will just silently ignore any unknown interrupts here.  It would be
+better to either only ack known interrupts (so genirq can notice if
+there's a problem with other interrupts) or at least log that we're
+seeing unexpected interrupts.  The current code will cause trouble if
+this is deployed in a system with the interrupt line shared (which the
+driver claims to support), or if something goes wrong and the IP starts
+asserting some interrupt that isn't expected.
+
+> +	master->mode_bits = SPI_3WIRE | SPI_TX_DUAL  | SPI_TX_QUAD  |
+> +		SPI_RX_DUAL | SPI_RX_QUAD | SPI_TX_OCTAL | SPI_RX_OCTAL |
+> +		SPI_MODE_0  | SPI_MODE_3;
+
+I don't see any handling of these in the code?
+
+--tqI+Z3u+9OQ7kwn0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEw4jIACgkQJNaLcl1U
+h9AeUQf6AvUcJyMqWKj/l9liaSVcRZB8sz8grFHG9p3vohD8YWJt4amXrdROzZnh
+teF3YX3NNdwkwiETqbzGyrC3qtcRr+AfC9xMIT2FmBVqlJ+o+g12tR1PFbGh8EBC
+NqlakHDEordBCGefUf+aZ9PQcXviyH2fU1xxzlrUNKh9OTMY1GeOB5sFebTg+hRi
+De59eLn6ArWy9NmQvPvl4R99/AlwvoWiQ92AM2ymCt6PFCTxc8ujNKUU/xfx9XmK
+ov6Fmt8FAUN/baGLqn27rpByXUZDC6I5knFc433K+aiilr0jFka6g05iEvcs2/H3
+2AfVv0MV7appwxAgIRJCQ+tN+BiugQ==
+=ypa/
+-----END PGP SIGNATURE-----
+
+--tqI+Z3u+9OQ7kwn0--
