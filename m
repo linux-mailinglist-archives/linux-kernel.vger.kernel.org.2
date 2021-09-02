@@ -2,57 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A31FE3FE831
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 05:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175533FE811
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 05:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242376AbhIBD4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 23:56:07 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:34604 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233122AbhIBD4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 23:56:05 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 562C3201E2D;
-        Thu,  2 Sep 2021 05:55:02 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 263BE2015C0;
-        Thu,  2 Sep 2021 05:55:00 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 8AE26183AD07;
-        Thu,  2 Sep 2021 11:54:56 +0800 (+08)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: dt-bindings: fsl_rpmsg: Add compatible string for i.MX8ULP
-Date:   Thu,  2 Sep 2021 11:32:05 +0800
-Message-Id: <1630553525-25655-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S242376AbhIBDgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 23:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233205AbhIBDgN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 23:36:13 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2732C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 20:35:15 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id bq28so1083651lfb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 20:35:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7gL2ilJvS9thJPKxvfAwKwluP8VS/DzvajJ4jaGSJwc=;
+        b=IRTZFjZoogEmBBaugLy0pzf0q5DcgA5uSZSobTaya5fjXwJUzC/oaRDfW2PJI57wq1
+         ZBLPCOC8jN6KWXUZfsU6pMwRya5y/VUp/Qzh6O//ItwBo9cnEW868KU+FCAlMdkIbxuT
+         gGGKlCW3txze91xJPv10X0akUda4/uNz21Xoc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7gL2ilJvS9thJPKxvfAwKwluP8VS/DzvajJ4jaGSJwc=;
+        b=O7Ghk/psY7jLOA7CHKYdkspAkfb7MjOmFQTqxBEv7+iwBkFJ5dwNKTURezFPvQ3F42
+         88fBBH8bRD4Ftwg6S9Xy5cwtJOA09dfbJGBnFEMnjhLR/HAf30ofN0yeA5SULlWNonvz
+         0wl6gzhBsB92Hq4c+1vv+U+CG1IJf+hCEmEZNUhNaK/+dLB8pgJ1P0y3NKog1DalZrqk
+         7Dnu2+7JtpiUz92UK56zhpUWU6nSVhVeitqO+qZrzBeIP2yH6KRkZ220pQIdVKfeYXvA
+         CS/QiaFpScA8DcXILi6H/iyYZ85vPFq2mv61WYzUGYb/ohXB7XjSmIrRJzApT2Xtuuon
+         D3hQ==
+X-Gm-Message-State: AOAM532kezPhpv8rjUteQ1fb76R7Y3V6NizrMHXsjsoUMXd4l+cDiPym
+        GPZ9JqcXdMpHQf20M1wqQ3DQheTN4NIsLRYKbGyMAQ==
+X-Google-Smtp-Source: ABdhPJwp8Zka/IVZHD5rJYhSAvF9EYBibqi1JlXlE5eSLcADyhgkokl5Wumq+rdTbEutCChOFvC3Elh8L79u+yN5V5g=
+X-Received: by 2002:ac2:4116:: with SMTP id b22mr894820lfi.587.1630553713975;
+ Wed, 01 Sep 2021 20:35:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210830003603.31864-1-zhiyong.tao@mediatek.com>
+ <20210830003603.31864-2-zhiyong.tao@mediatek.com> <CAGXv+5HeNj2Ly-T1bWMvnYXv6nP-Q1kv+D9QEd+5u4xfNVibOg@mail.gmail.com>
+ <1630551265.2247.11.camel@mhfsdcap03>
+In-Reply-To: <1630551265.2247.11.camel@mhfsdcap03>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Thu, 2 Sep 2021 11:35:02 +0800
+Message-ID: <CAGXv+5E2pmS7Og5bRH8Q8yvXPHkJuL6EXKORkq1-Ye+2qNYQpg@mail.gmail.com>
+Subject: Re: [PATCH v11 1/4] dt-bindings: pinctrl: mt8195: add rsel define
+To:     "zhiyong.tao" <zhiyong.tao@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
+        Light Hsieh <light.hsieh@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible string for i.MX8ULP platform which support audio
-function through rpmsg audio channel on M core.
+On Thu, Sep 2, 2021 at 10:54 AM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
+>
+> On Wed, 2021-09-01 at 12:35 +0800, Chen-Yu Tsai wrote:
+> > On Mon, Aug 30, 2021 at 8:36 AM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
+> > >
+> > > This patch adds rsel define for mt8195.
+> > >
+> > > Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+> > > ---
+> > >  include/dt-bindings/pinctrl/mt65xx.h | 9 +++++++++
+> > >  1 file changed, 9 insertions(+)
+> > >
+> > > diff --git a/include/dt-bindings/pinctrl/mt65xx.h b/include/dt-bindings/pinctrl/mt65xx.h
+> > > index 7e16e58fe1f7..f5934abcd1bd 100644
+> > > --- a/include/dt-bindings/pinctrl/mt65xx.h
+> > > +++ b/include/dt-bindings/pinctrl/mt65xx.h
+> > > @@ -16,6 +16,15 @@
+> > >  #define MTK_PUPD_SET_R1R0_10 102
+> > >  #define MTK_PUPD_SET_R1R0_11 103
+> > >
+> > > +#define MTK_PULL_SET_RSEL_000  200
+> > > +#define MTK_PULL_SET_RSEL_001  201
+> > > +#define MTK_PULL_SET_RSEL_010  202
+> > > +#define MTK_PULL_SET_RSEL_011  203
+> > > +#define MTK_PULL_SET_RSEL_100  204
+> > > +#define MTK_PULL_SET_RSEL_101  205
+> > > +#define MTK_PULL_SET_RSEL_110  206
+> > > +#define MTK_PULL_SET_RSEL_111  207
+> >
+> > Could you keep the spacing between constants tighter, or have no spacing
+> > at all? Like having MTK_PULL_SET_RSEL_000 defined as 104 and so on. This
+> > would reduce the chance of new macro values colliding with actual resistor
+> > values set in the datasheets, plus a contiguous space would be easy to
+> > rule as macros.
+> >
+> > ChenYu
+>
+> Hi chenyu,
+> By the current solution, it won't be mixed used by MTK_PULL_SET_RSEL_XXX
+> and real  resistor value.
+> If user use MTK_PULL_SET_RSEL_XXX, They don't care the define which
+> means how much resistor value.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml | 1 +
- 1 file changed, 1 insertion(+)
+What I meant was that by keeping the value space tight, we avoid the
+situation where in some new chip, one of the RSEL resistors happens to
+be 200 or 300 ohms. 100 is already taken, so there's nothing we can
+do if new designs actually do have 100 ohm settings.
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-index 61802a11baf4..d370c98a62c7 100644
---- a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-+++ b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-@@ -21,6 +21,7 @@ properties:
-       - fsl,imx8mn-rpmsg-audio
-       - fsl,imx8mm-rpmsg-audio
-       - fsl,imx8mp-rpmsg-audio
-+      - fsl,imx8ulp-rpmsg-audio
- 
-   model:
-     $ref: /schemas/types.yaml#/definitions/string
--- 
-2.17.1
+> We think that we don't contiguous macro space for different register.
+> It may increase code complexity to make having MTK_PULL_SET_RSEL_000
+> defined as 104.
 
+Can you elaborate? It is a simple range check and offset handling. Are
+you concerned that a new design would have R2R1R0 and you would like
+the macros to be contiguous?
+
+BTW I don't quite get why decimal base values (100, 200, etc.) were
+chosen. One would think that binary bases are easier to handle in code.
+
+
+ChenYu
+
+> Thanks.
+>
+> >
+> > >  #define MTK_DRIVE_2mA  2
+> > >  #define MTK_DRIVE_4mA  4
+> > >  #define MTK_DRIVE_6mA  6
+> > > --
+> > > 2.18.0
+> > > _______________________________________________
+> > > Linux-mediatek mailing list
+> > > Linux-mediatek@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-mediatek
+>
