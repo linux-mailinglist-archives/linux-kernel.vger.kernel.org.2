@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FDD3FF740
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFADF3FF745
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347739AbhIBWhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 18:37:46 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:33242
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347586AbhIBWho (ORCPT
+        id S1347743AbhIBWjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 18:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347701AbhIBWjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 18:37:44 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id AA6B53F22D;
-        Thu,  2 Sep 2021 22:36:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630622203;
-        bh=ItSWBKpEcyPhijBkfmewmMxSZj7fC2HDkvdQMHVWVXY=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=uR1lXjluYE0eoxPlx0MmQ9y2le+SsrE78vD06IEMJQiWh9Zoi4probJ6CV+WuSXTU
-         lmpAHoLmUitY5bVav6OWa8Ar2jWeyaoGAWq1Fd19u3A3pjgU/VOhkVQK2rUNBu/jXZ
-         OdR5wKBgDWyKQ1FAaDfD6M2DlB72hqXOJ/jDo3CgyZ82iLgp3yFWOnwgpMeypBC1lh
-         TR3ekeqR7Hd9Lh1qaLYHQXm3eYxORkME6K0yrTXm7B8sFtob/9fUffCL+F9V1nGLqy
-         Wrcf6FZ6ThN6ivNo538EDtTCiUBprT4KEliXbkJOv+xCu/GGWiOsggWn/h2YSaWU+u
-         T5cym8AzZgFrQ==
-From:   Colin King <colin.king@canonical.com>
-To:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: megaraid: clean up some inconsistent indenting
-Date:   Thu,  2 Sep 2021 23:36:43 +0100
-Message-Id: <20210902223643.56979-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 2 Sep 2021 18:39:19 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0933BC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 15:38:20 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id g14so6434071ljk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 15:38:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E3bDRRGamHQKrcPLswNiJqifcyyJaRoHVapcNrMpIBg=;
+        b=TELzSBJxOmBC5S0WOFI/aa7wb9vGW6scfdZvQuva6oYyVCKQ9V28bh0Yh46K/1iriY
+         jxEb4rGfTI2L+rMplSI20e3MqbSX5Nj4Zv7iqAEY+rgAClrR2yQh/5ziz4oTTAhaM0m7
+         BhsJqOd30mNyZlbDS8SH2qhM4TlbGsU7l3f/w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E3bDRRGamHQKrcPLswNiJqifcyyJaRoHVapcNrMpIBg=;
+        b=JAthHwEMqn62443QwerIAOMCjwazD0x36+Xt4O7XJmLmRDPgnp0BS9NEvcqrSWQomM
+         pMNe4IH3H7IOtURhV/7/+u4tN5dE1OG/23V+7jtifI8ddRahZBeAOQ2VP/T9sZMhZ1G2
+         jMOsDE/i14hBzoScsNqlLep6HmHQTZNHCa/Qh1J6PLR5pXNHh0nGPLsvti2TN+B2uyem
+         74YPhBE90JyWhpNx4ICi3P5zaAZ6hFoecFO4o4xciwidD7FlTNBVTTClOTOyo2RzimHO
+         rAdylArDOPOBOQFy37HSuVTPP1jC7YmCBnjrCXy+0GY8lighKORW/ehwCbKSj2S17LZg
+         xIDA==
+X-Gm-Message-State: AOAM531/HJSAE4x+DqhBJgDeHusAFo7qrIYfdDoPPHh1XZLVL1rO5Vm6
+        HIJczm5XvAg7Wnss2wIlftII00woNBRMsdldBUI=
+X-Google-Smtp-Source: ABdhPJwERsV0kh5xUgewC16gXygMKNIzMZzwSeUAguK15w0c3kSJ4Oa9uj+zezpD0/6Ds9vWmgfdsQ==
+X-Received: by 2002:a2e:bd02:: with SMTP id n2mr444178ljq.141.1630622298076;
+        Thu, 02 Sep 2021 15:38:18 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id bi7sm313398lfb.86.2021.09.02.15.38.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 15:38:17 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id w4so6392489ljh.13
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 15:38:17 -0700 (PDT)
+X-Received: by 2002:a2e:7d0e:: with SMTP id y14mr438741ljc.251.1630622297342;
+ Thu, 02 Sep 2021 15:38:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <fc14fbbf0d7c27b7356bc6271ba2a5599d46af58.camel@HansenPartnership.com>
+In-Reply-To: <fc14fbbf0d7c27b7356bc6271ba2a5599d46af58.camel@HansenPartnership.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 2 Sep 2021 15:38:01 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi99u+xj93-pLG0Na7SZmjvWg6n60Pq9Wt9PgO6=exdUA@mail.gmail.com>
+Message-ID: <CAHk-=wi99u+xj93-pLG0Na7SZmjvWg6n60Pq9Wt9PgO6=exdUA@mail.gmail.com>
+Subject: Re: [GIT PULL] first round of SCSI updates for the 5.14+ merge window
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Sep 2, 2021 at 9:50 AM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> We also picked up a non trivial conflict with the already upstream
+> block tree in st.c
 
-There are a few statements where the indentation is not correct,
-clean these up.
+Hmm. Resolving that conflict, I just reacted to how the st.c code
+passes in a NULL gendisk to scsi_ioctl() and then on to
+blk_execute_rq().
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/scsi/megaraid/megaraid_sas_base.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Just checking that was fine, and I notice how *many* places do that.
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-index e4298bf4a482..880b51a6f7dd 100644
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -1916,7 +1916,7 @@ void megasas_set_dynamic_target_properties(struct scsi_device *sdev,
- 		raid = MR_LdRaidGet(ld, local_map_ptr);
- 
- 		if (raid->capability.ldPiMode == MR_PROT_INFO_TYPE_CONTROLLER)
--		blk_queue_update_dma_alignment(sdev->request_queue, 0x7);
-+			blk_queue_update_dma_alignment(sdev->request_queue, 0x7);
- 
- 		mr_device_priv_data->is_tm_capable =
- 			raid->capability.tmCapable;
-@@ -8033,7 +8033,7 @@ static void megasas_detach_one(struct pci_dev *pdev)
- 
- 	if (instance->adapter_type != MFI_SERIES) {
- 		megasas_release_fusion(instance);
--			pd_seq_map_sz = sizeof(struct MR_PD_CFG_SEQ_NUM_SYNC) +
-+		pd_seq_map_sz = sizeof(struct MR_PD_CFG_SEQ_NUM_SYNC) +
- 				(sizeof(struct MR_PD_CFG_SEQ) *
- 					(MAX_PHYSICAL_DEVICES - 1));
- 		for (i = 0; i < 2 ; i++) {
--- 
-2.32.0
+Should the blk_execute_rq() function even take that "struct gendisk
+*bd_disk" argument at all?
 
+Maybe the right thing to do would be for the people who care to just
+set rq->rq_disk before starting the request..
+
+But I guess it's traditional, and nobody cares.
+
+            Linus
