@@ -2,102 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161BF3FF2DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5843FF2DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346764AbhIBRxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 13:53:55 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:35017 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234387AbhIBRxx (ORCPT
+        id S1346797AbhIBRx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 13:53:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21156 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346712AbhIBRxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 13:53:53 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6EA8D5C0057;
-        Thu,  2 Sep 2021 13:52:54 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute1.internal (MEProxy); Thu, 02 Sep 2021 13:52:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=YqDG6FELYXKOGx05z2N/f04eEjXw
-        REvo5E6aqK66880=; b=q6R1LZrgITJyno+YBkcW47H7CzcRy60u3A0I4+7Ed5YG
-        /1Sz3ghd5vCygyZ0FL+0huY07SLqPAIyuI+Wfs4bSdOI3lwy0ODdFQhTU8MeLPb7
-        66PQJd4CVci/xaYSryfUaENVbRm4Oli3d6B2hp6+d8XRim75OLV/0TWs8vzg3cDV
-        mCgFdOEFIeae5ceTCVduNA4Wd4kh95ToMKxz2PWit7o8BBCPVRXj9SS4073APCFE
-        n1Dp00VP3dynE9BoRSwvclG3tQ7Fchv1Md9TucGaC7QwMku9kfYTd9n/1r6642JQ
-        BfqS5EUjPnarZaMm7ClPqGAxRAkl+Kkn79p4c7SfJg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=YqDG6F
-        ELYXKOGx05z2N/f04eEjXwREvo5E6aqK66880=; b=fllLqPk7Y/NEmuGNhK6J9A
-        Sqcz3flkEw1h0/403vZ3VE4zRIU2uY1e3VNwIM1m1TTZXA2vYj8Vn4jYxOS2eHpj
-        eUIMQvElR1D+Qx+bW+XZLwuQShgKhiN8WwHpf3vap0n0/pDPCkIXYexT1pndODoY
-        U02q1nFoMpvvUlZrMJgnsDKXQ4KoLwu+jzzVYgWjHY83bgRw0Pf0pU6AL43eIUrl
-        Ky1Guy5njJi9eKvCBoyS+iY3hWp8Sws63LSdldS/ZMzg8izXfAOJJaRCsWdzXeGN
-        eLX+oi+13ckJlkdDngnx4N1weHZ0DiqWmTxKH6v1s4iacYnIAUX4LM0wfLN18UYw
-        ==
-X-ME-Sender: <xms:dQ8xYZplhU5NzFW68vwwfbm6s4Wf0rc1hdhwwa2wvNKyeaSRuNezbw>
-    <xme:dQ8xYbq6Asajt_nFqbfezG-UJhcUi1qi7ICleG0dN7Qbu4Q6aJWTkaqdN68a-H6_E
-    VR_iSMYC342WZcReJo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvhedguddukecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhv
-    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
-    grthhtvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudeh
-    vdefkeffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:dQ8xYWP1xCmWVwRKARG9YgfO0sbtT6GSteHyhBQ279AeoeZhZsWjWw>
-    <xmx:dQ8xYU7ZehOYkVdKKo8puXNS3EV7faEKwyjMf2-5KnnD6L9yVztv_Q>
-    <xmx:dQ8xYY5ett60duLk3x73Jty1z7vSKza9FUJrRvI7K9EmrcQIGr50_Q>
-    <xmx:dg8xYYFvjZOtmAOfMAlE9LosLCvnQvGiu-PTExwVTMa3paov2tSW-w>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 1CE8F51C0060; Thu,  2 Sep 2021 13:52:53 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1126-g6962059b07-fm-20210901.001-g6962059b
-Mime-Version: 1.0
-Message-Id: <3baeca4e-70b5-4fa3-9f79-92d716d2af47@www.fastmail.com>
-In-Reply-To: <cd7a9bc2-4993-4a14-c17c-d838351f9396@marcan.st>
-References: <20210823151738.6273-1-alyssa@rosenzweig.io>
- <3112bc2c-7c6a-3190-26cd-a873b4029429@marcan.st> <YS/p7Omw+IeyHeaR@sunset>
- <cd7a9bc2-4993-4a14-c17c-d838351f9396@marcan.st>
-Date:   Thu, 02 Sep 2021 19:52:31 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Hector Martin" <marcan@marcan.st>,
-        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "Arnd Bergmann" <arnd@kernel.org>
-Subject: Re: [PATCH] maintainers: Add Alyssa Rosenzweig as M1 reviewer
-Content-Type: text/plain
+        Thu, 2 Sep 2021 13:53:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630605175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IGgz/DAvR7xRFawq5YYv7/qKBT6IhTR9s5xg+w37MzM=;
+        b=CiQaEVtFmf2ZzRCQF08sk+lu1KXCD5C4wlnGekPPbU87KELbaXVrmOTyGbHG31tYZvjmlp
+        Sc2wxSVHeRt+RFmvRhTtEQK61d291DiMD0Z0RHudfJvqO1rio0w62OxqJhcnVkmHsf+gu+
+        DSgSp87a6kGQ2/59nbqTcKoKyTQYv/k=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-6rwjpAtkOXq86itGybhOSg-1; Thu, 02 Sep 2021 13:52:54 -0400
+X-MC-Unique: 6rwjpAtkOXq86itGybhOSg-1
+Received: by mail-wr1-f70.google.com with SMTP id 102-20020adf82ef000000b001576e345169so819981wrc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 10:52:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IGgz/DAvR7xRFawq5YYv7/qKBT6IhTR9s5xg+w37MzM=;
+        b=re8cvp8k6myLQDS2JCgZ9kvmRbhn4DbR/9259zAPHb3mQuhahVIYDG6KO1OY3xxfCh
+         Tpw17yvJO/jyQD01Hd64IAUS3AhbvYW0HMG6w/jdINsnittYz9mVpjmF+St55dIXz/kO
+         KSL4fYxFzS0k6WI3kPL3QsejuLictgtkxQFQKEF4cEKNKHxFLINDe12N9r9n9wBC3ORT
+         iq95lqtkG5oTp9enomAOKzTIPOzDTYw4iRm4RfqJSma91yjLAOWG5yt2k90fneulKiq7
+         rn3Hw25kmEgw2AEzgw5lNS+afhWjWtlM05N6qbH7nbd5vOY9HNmKkWBlWiuRkzMIdVG3
+         un5Q==
+X-Gm-Message-State: AOAM531CKdNFmnK205Srmj65tUjYnEf/WVzjVbT+JJ7CXK97+9J/DMFy
+        DnpykzS1X118QVtNuLYnU5t5ziUkigOCmqs9esrnauWoRSAo9gI+xqgbkiDwX+XRk1AGahhOxFt
+        WlD7gR0+8GQCP06br56ECmY4ICfHMawC9+3xvl1pF
+X-Received: by 2002:a05:6000:1150:: with SMTP id d16mr4393832wrx.357.1630605173422;
+        Thu, 02 Sep 2021 10:52:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyh60vnYnPsananb52FqQ9yBDe+vklZykFx/lhJt9v1VzExu90P4TAUbNHWr44MGvno31emeutULtDXbJmfXOo=
+X-Received: by 2002:a05:6000:1150:: with SMTP id d16mr4393813wrx.357.1630605173219;
+ Thu, 02 Sep 2021 10:52:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210902152228.665959-1-vgoyal@redhat.com>
+In-Reply-To: <20210902152228.665959-1-vgoyal@redhat.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Thu, 2 Sep 2021 19:52:41 +0200
+Message-ID: <CAHc6FU4foW+9ZwTRis3DXSJSMAvdb4jXcq7EFFArYgX7FQ1QYg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, virtio-fs@redhat.com,
+        dwalsh@redhat.com, dgilbert@redhat.com,
+        christian.brauner@ubuntu.com, casey.schaufler@intel.com,
+        LSM <linux-security-module@vger.kernel.org>,
+        selinux@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Miklos Szeredi <miklos@szeredi.hu>, gscrivan@redhat.com,
+        "Fields, Bruce" <bfields@redhat.com>,
+        stephen.smalley.work@gmail.com, Dave Chinner <david@fromorbit.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On Thu, Sep 2, 2021 at 5:22 PM Vivek Goyal <vgoyal@redhat.com> wrote:
+> This is V3 of the patch. Previous versions were posted here.
+>
+> v2: https://lore.kernel.org/linux-fsdevel/20210708175738.360757-1-vgoyal@redhat.com/
+> v1: https://lore.kernel.org/linux-fsdevel/20210625191229.1752531-1-vgoyal@redhat.com/
+>
+> Changes since v2
+> ----------------
+> - Do not call inode_permission() for special files as file mode bits
+>   on these files represent permissions to read/write from/to device
+>   and not necessarily permission to read/write xattrs. In this case
+>   now user.* extended xattrs can be read/written on special files
+>   as long as caller is owner of file or has CAP_FOWNER.
+>
+> - Fixed "man xattr". Will post a patch in same thread little later. (J.
+>   Bruce Fields)
+>
+> - Fixed xfstest 062. Changed it to run only on older kernels where
+>   user extended xattrs are not allowed on symlinks/special files. Added
+>   a new replacement test 648 which does exactly what 062. Just that
+>   it is supposed to run on newer kernels where user extended xattrs
+>   are allowed on symlinks and special files. Will post patch in
+>   same thread (Ted Ts'o).
+>
+> Testing
+> -------
+> - Ran xfstest "./check -g auto" with and without patches and did not
+>   notice any new failures.
+>
+> - Tested setting "user.*" xattr with ext4/xfs/btrfs/overlay/nfs
+>   filesystems and it works.
+>
+> Description
+> ===========
+>
+> Right now we don't allow setting user.* xattrs on symlinks and special
+> files at all. Initially I thought that real reason behind this
+> restriction is quota limitations but from last conversation it seemed
+> that real reason is that permission bits on symlink and special files
+> are special and different from regular files and directories, hence
+> this restriction is in place. (I tested with xfs user quota enabled and
+> quota restrictions kicked in on symlink).
+>
+> This version of patch allows reading/writing user.* xattr on symlink and
+> special files if caller is owner or priviliged (has CAP_FOWNER) w.r.t inode.
 
-On Thu, Sep 2, 2021, at 04:38, Hector Martin wrote:
-> On 02/09/2021 06.00, Alyssa Rosenzweig wrote:
-> >>> Add myself as a reviewer for Asahi Linux (Apple M1) patches.
-> >>>
-> >>> I would like to be CC'ed on Asahi Linux patches for review and testing.
-> >>> I am also collecting Asahi Linux patches downstream, rebasing on
-> >>> linux-next periodically, and would like to be notified of what to
-> >>> cherry-pick from lists.
-> >>>
-> >>> Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
-> >>> Cc: Hector Martin <marcan@marcan.st>
-> >>> Cc: Sven Peter <sven@svenpeter.dev>
-> >>
-> >> Acked-by: Hector Martin <marcan@marcan.st>
-> > 
-> > Do you have commit rights to the kernel? If so, could you push it?
-> > Otherwise, could someone else?
-> 
-> You need an ack from Sven too, since he's the maintainer of DART.
-> 
+the idea behind user.* xattrs is that they behave similar to file
+contents as far as permissions go. It follows from that that symlinks
+and special files cannot have user.* xattrs. This has been the model
+for many years now and applications may be expecting these semantics,
+so we cannot simply change the behavior. So NACK from me.
 
-Ugh, sorry, completely forgot about this.
+> Who wants to set user.* xattr on symlink/special files
+> -----------------------------------------------------
+> I have primarily two users at this point of time.
+>
+> - virtiofs daemon.
+>
+> - fuse-overlay. Giuseppe, seems to set user.* xattr attrs on unpriviliged
+>   fuse-overlay as well and he ran into similar issue. So fuse-overlay
+>   should benefit from this change as well.
+>
+> Why virtiofsd wants to set user.* xattr on symlink/special files
+> ----------------------------------------------------------------
+> In virtiofs, actual file server is virtiosd daemon running on host.
+> There we have a mode where xattrs can be remapped to something else.
+> For example security.selinux can be remapped to
+> user.virtiofsd.securit.selinux on the host.
+>
+> This remapping is useful when SELinux is enabled in guest and virtiofs
+> as being used as rootfs. Guest and host SELinux policy might not match
+> and host policy might deny security.selinux xattr setting by guest
+> onto host. Or host might have SELinux disabled and in that case to
+> be able to set security.selinux xattr, virtiofsd will need to have
+> CAP_SYS_ADMIN (which we are trying to avoid). Being able to remap
+> guest security.selinux (or other xattrs) on host to something else
+> is also better from security point of view.
+>
+> But when we try this, we noticed that SELinux relabeling in guest
+> is failing on some symlinks. When I debugged a little more, I
+> came to know that "user.*" xattrs are not allowed on symlinks
+> or special files.
+>
+> So if we allow owner (or CAP_FOWNER) to set user.* xattr, it will
+> allow virtiofs to arbitrarily remap guests's xattrs to something
+> else on host and that solves this SELinux issue nicely and provides
+> two SELinux policies (host and guest) to co-exist nicely without
+> interfering with each other.
 
-Acked-by: Sven Peter <sven@svenpeter.dev>
+The fact that user.* xattrs don't work in this remapping scenario
+should have told you that you're doing things wrong; the user.*
+namespace seriously was never meant to be abused in this way.
+
+You may be able to get away with using trusted.* xattrs which support
+roughly the kind of daemon use I think you're talking about here, but
+I'm not sure selinux will be happy with labels that aren't fully under
+its own control. I really wonder why this wasn't obvious enough.
+
+Thanks,
+Andreas
+
+> Thanks
+> Vivek
+>
+> Vivek Goyal (1):
+>   xattr: Allow user.* xattr on symlink and special files
+>
+>  fs/xattr.c | 23 ++++++++++++++++++-----
+>  1 file changed, 18 insertions(+), 5 deletions(-)
+>
+> --
+> 2.31.1
+>
 
