@@ -2,411 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90B73FE889
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 06:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BDB3FE88E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 06:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhIBE0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 00:26:24 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:25278 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhIBE0X (ORCPT
+        id S233768AbhIBEdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 00:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhIBEdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 00:26:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630556725; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=47uVus/VpOxPsQQSLX2hDTAuxB4AXs1JINYnGygzRGc=; b=SmxxG/HnAraps/I91kypFy7mzjZ8rwKpgF8j5GU30Xr5x/9wk8NmsNxePR6Szg4ExJcw8qCH
- d9ssL5cyE7+1nXJuFAQIn8LCcopPYbtfAXR42so4MLUmLeYkYCE0XbNbeuwF/Z+jaq9TI1tX
- 0K7DraCdo4d/XCTWlszmrTtewAs=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 6130522b40d2129ac120082f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 02 Sep 2021 04:25:15
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 56F8CC4360D; Thu,  2 Sep 2021 04:25:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.100] (unknown [49.207.193.119])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 023C7C4338F;
-        Thu,  2 Sep 2021 04:25:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 023C7C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Base dynamic CPU power
- coefficients in reality
-To:     Douglas Anderson <dianders@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     mka@chromium.org, swboyd@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210830135904.1.I049b30065f3c715234b6303f55d72c059c8625eb@changeid>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <0a865b6e-be34-6371-f9f2-9913ee1c5608@codeaurora.org>
-Date:   Thu, 2 Sep 2021 09:55:08 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        Thu, 2 Sep 2021 00:33:51 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB88C061575;
+        Wed,  1 Sep 2021 21:32:53 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id v1so388611plo.10;
+        Wed, 01 Sep 2021 21:32:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qICEXTbMnqniKGGEwRU1mHpu4eQoOz55fI0slfOAWC4=;
+        b=O68xAklZDL3yTI8T6JpcVH7GitXwNDuIYawgTeB4DsIR2IXFxXQ2N9Ug3C0HoiTnDv
+         JNk6S+l1fx0nh+NgHClbh75KupXfsdHMmTPYrBJmFXfpiywS/TBrTlddMy7+HpmYICEt
+         UpIqOlMrQNswjplpFPSIdm1XtQGyulRrvZXXf79C6wCscA/Wdgf4zACnv3Xii/mrpby/
+         MZ9yJHjHplnwbUoFHaADB/kvVaLWC9Ye201EQnEOR+9jxYO79YNy+Rvp4do41pASrnMJ
+         Mkt4GwU+RU2KVV+aIcCkzpbiHWm0z7Xr1roOdVXn4eie4I7taHEe4Bf92nVOzZo+vLYT
+         4lwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qICEXTbMnqniKGGEwRU1mHpu4eQoOz55fI0slfOAWC4=;
+        b=qS822NtTyuqiR6oCnq71pQNTj7sc3sF/H/Gjr0MXnHw0ZNS6CJIrtaspwH7BNy6z27
+         Mb1gIuA3ZJmEEtjchwEZl5VPUHXV+2WwHtHg0EWVsL1+BzKktMgEif906Snqx8h/ySqL
+         70NWwFakh1wzqW30IcuF7sh3f/UKGuJqho7WIfoFOtRklt3NwxGKjnHs/+K835A3dGTw
+         MmVfyi5VjQDD4ERJ7I1aeaUWuNp2zNjwWo3EZ4kZOu04MlF7zYbLjBCDFXDcIio0/934
+         wseEyITP+AMV4Lfq9Z3qtzzpHzIY+ax8CoOcoh+PXwimnVLoiLBenI1poMl7fxFoTZKY
+         yKHA==
+X-Gm-Message-State: AOAM5302vHdAByeAKGiSpH1LLNWigaLG7Cttls/5ON846I2OAIftx6y9
+        AATBMjaWf4brZlI8qSYYouY=
+X-Google-Smtp-Source: ABdhPJygZaKbn28P9Pdqg5kqmKlPYy4cOt9VcIYXbNi8vEZnRWPpUZZTPtUfoxho/8llK3zVj/5Xeg==
+X-Received: by 2002:a17:90b:4b4d:: with SMTP id mi13mr1634950pjb.160.1630557172095;
+        Wed, 01 Sep 2021 21:32:52 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id d81sm588747pfd.17.2021.09.01.21.32.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 21:32:51 -0700 (PDT)
+Subject: Re: [PATCH net-next v4] skb_expand_head() adjust skb->truesize
+ incorrectly
+To:     Vasily Averin <vvs@virtuozzo.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Christoph Paasch <christoph.paasch@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@openvz.org, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Julian Wiedmann <jwi@linux.ibm.com>
+References: <b653692b-1550-e17a-6c51-894832c56065@virtuozzo.com>
+ <ee5b763a-c39d-80fd-3dd4-bca159b5f5ac@virtuozzo.com>
+ <ce783b33-c81f-4760-1f9e-90b7d8c51fd7@gmail.com>
+ <b7c2cb05-7307-f04e-530e-89fc466aa83f@virtuozzo.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <ef7ccff8-700b-79c2-9a82-199b9ed3d95b@gmail.com>
+Date:   Wed, 1 Sep 2021 21:32:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210830135904.1.I049b30065f3c715234b6303f55d72c059c8625eb@changeid>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <b7c2cb05-7307-f04e-530e-89fc466aa83f@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Doug,
 
-On 8/31/2021 2:29 AM, Douglas Anderson wrote:
-> The sc7180's dynamic-power-coefficient violates the device tree bindings.
-> The bindings (arm/cpus.yaml) say that the units for the
-> dynamic-power-coefficient are supposed to be "uW/MHz/V^2". The ones for
-> sc7180 aren't this. Qualcomm arbitrarily picked 100 for the "little" CPUs
-> and then picked a number for the big CPU based on this.
-> 
-> At the time, there was a giant dicussion about this. Apparently Qualcomm
-> Engineers were instructed not to share the actual numbers here. As part
-> of the discussion, I pointed out [1] that these numbers shouldn't really
-> be secret since once a device is shipping anyone can just run a script
-> and produce them. This patch is the result of running the script I posted
-> in that discussion on sc7180-trogdor-coachz, which is currently available
-> for purchase by consumers.
-> 
-> [1] https://lore.kernel.org/r/CAD=FV=U1FP0e3_AVHpauUUZtD-5X3XCwh5aT9fH_8S_FFML2Uw@mail.gmail.com/
-> 
-> I ran the script four times, measuring little, big, little, big. I used
-> the 64-bit version of dhrystone 2.2 in my test. I got these results:
-> 
-> 576 kHz, 596 mV, 20 mW, 88 Cx
-> 768 kHz, 596 mV, 32 mW, 122 Cx
-> 1017 kHz, 660 mV, 45 mW, 97 Cx
-> 1248 kHz, 720 mV, 87 mW, 139 Cx
-> 1324 kHz, 756 mV, 109 mW, 148 Cx
-> 1516 kHz, 828 mV, 150 mW, 148 Cx
-> 1612 kHz, 884 mV, 182 mW, 147 Cx
-> 1708 kHz, 884 mV, 192 mW, 146 Cx
-> 1804 kHz, 884 mV, 207 mW, 149 Cx
-> Your dynamic-power-coefficient for cpu 0: 132
-> 
-> 825 kHz, 596 mV, 142 mW, 401 Cx
-> 979 kHz, 628 mV, 183 mW, 427 Cx
-> 1113 kHz, 656 mV, 224 mW, 433 Cx
-> 1267 kHz, 688 mV, 282 mW, 449 Cx
-> 1555 kHz, 812 mV, 475 mW, 450 Cx
-> 1708 kHz, 828 mV, 566 mW, 478 Cx
-> 1843 kHz, 884 mV, 692 mW, 476 Cx
-> 1900 kHz, 884 mV, 722 mW, 482 Cx
-> 1996 kHz, 916 mV, 814 mW, 482 Cx
-> 2112 kHz, 916 mV, 862 mW, 483 Cx
-> 2208 kHz, 916 mV, 962 mW, 521 Cx
-> 2323 kHz, 940 mV, 1060 mW, 517 Cx
-> 2400 kHz, 956 mV, 1133 mW, 518 Cx
-> Your dynamic-power-coefficient for cpu 6: 471
-> 
-> 576 kHz, 596 mV, 26 mW, 103 Cx
-> 768 kHz, 596 mV, 40 mW, 147 Cx
-> 1017 kHz, 660 mV, 54 mW, 114 Cx
-> 1248 kHz, 720 mV, 97 mW, 151 Cx
-> 1324 kHz, 756 mV, 113 mW, 150 Cx
-> 1516 kHz, 828 mV, 154 mW, 148 Cx
-> 1612 kHz, 884 mV, 194 mW, 155 Cx
-> 1708 kHz, 884 mV, 203 mW, 152 Cx
-> 1804 kHz, 884 mV, 219 mW, 155 Cx
-> Your dynamic-power-coefficient for cpu 0: 142
-> 
-> 825 kHz, 596 mV, 148 mW, 530 Cx
-> 979 kHz, 628 mV, 189 mW, 475 Cx
-> 1113 kHz, 656 mV, 230 mW, 461 Cx
-> 1267 kHz, 688 mV, 287 mW, 466 Cx
-> 1555 kHz, 812 mV, 469 mW, 445 Cx
-> 1708 kHz, 828 mV, 567 mW, 480 Cx
-> 1843 kHz, 884 mV, 699 mW, 482 Cx
-> 1900 kHz, 884 mV, 719 mW, 480 Cx
-> 1996 kHz, 916 mV, 814 mW, 484 Cx
-> 2112 kHz, 916 mV, 861 mW, 483 Cx
-> 2208 kHz, 916 mV, 963 mW, 522 Cx
-> 2323 kHz, 940 mV, 1063 mW, 520 Cx
-> 2400 kHz, 956 mV, 1135 mW, 519 Cx
-> Your dynamic-power-coefficient for cpu 6: 489
-> 
-> As you can see, the calculations aren't perfectly consistent but
-> roughly you could say about 480 for big and 137 for little.
-> 
-> The ratio between these numbers isn't quite the same as the
-> ratio between the two numbers that Qualcomm used. Presumably
-> this is because Qualcomm measured something slightly different
-> than the 64-bit version of dhrystone 2.2, though it might also
-> be that they fudged the numbers a little. In any case, these
-> numbers don't need to be perfectly exact. In fact, they can't
-> be since the CPU power depends a lot on what's being run on
-> the CPU and the big/little CPUs are each more or less efficient
-> in different operations. Historically running the 32-bit vs.
-> 64-bit versions of dhrystone produced notably different numbers,
-> though I didn't test this time. In any case, let's keep the
-> existing ratio but scale it based on the above so we're at
 
-I am not sure that's really needed, we could perhaps go with the
-new ratios that you got, since the existing ratios are perhaps
-tuned (more usecases run than just dhrystone) for the downstream
-Android scheduler.
-One other thing that's perhaps tuned is the capacity-dmips-mhz,
-and if the same argument applies to that (that they can't be
-scaled and need to be measured with just dhrystone)
-then those might need an update along with this as well, else it
-just throws the power/perf balance out.
+On 9/1/21 8:59 PM, Vasily Averin wrote:
+> On 9/1/21 10:17 PM, Eric Dumazet wrote:
+>>
+>>
+>> On 9/1/21 1:11 AM, Vasily Averin wrote:
+>>> Christoph Paasch reports [1] about incorrect skb->truesize
+>>> after skb_expand_head() call in ip6_xmit.
+>>> This may happen because of two reasons:
+>>> - skb_set_owner_w() for newly cloned skb is called too early,
+>>> before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
+>>> - pskb_expand_head() does not adjust truesize in (skb->sk) case.
+>>> In this case sk->sk_wmem_alloc should be adjusted too.
+>>>
+>>> [1] https://lkml.org/lkml/2021/8/20/1082
+>>>
+>>> Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
+>>> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
+>>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+>>> ---
+>>> v4: decided to use is_skb_wmem() after pskb_expand_head() call
+>>>     fixed 'return (EXPRESSION);' in os_skb_wmem according to Eric Dumazet
+>>> v3: removed __pskb_expand_head(),
+>>>     added is_skb_wmem() helper for skb with wmem-compatible destructors
+>>>     there are 2 ways to use it:
+>>>      - before pskb_expand_head(), to create skb clones
+>>>      - after successfull pskb_expand_head() to change owner on extended skb.
+>>> v2: based on patch version from Eric Dumazet,
+>>>     added __pskb_expand_head() function, which can be forced
+>>>     to adjust skb->truesize and sk->sk_wmem_alloc.
+>>> ---
+>>>  include/net/sock.h |  1 +
+>>>  net/core/skbuff.c  | 35 ++++++++++++++++++++++++++---------
+>>>  net/core/sock.c    |  8 ++++++++
+>>>  3 files changed, 35 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/include/net/sock.h b/include/net/sock.h
+>>> index 95b2577..173d58c 100644
+>>> --- a/include/net/sock.h
+>>> +++ b/include/net/sock.h
+>>> @@ -1695,6 +1695,7 @@ struct sk_buff *sock_wmalloc(struct sock *sk, unsigned long size, int force,
+>>>  			     gfp_t priority);
+>>>  void __sock_wfree(struct sk_buff *skb);
+>>>  void sock_wfree(struct sk_buff *skb);
+>>> +bool is_skb_wmem(const struct sk_buff *skb);
+>>>  struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
+>>>  			     gfp_t priority);
+>>>  void skb_orphan_partial(struct sk_buff *skb);
+>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+>>> index f931176..09991cb 100644
+>>> --- a/net/core/skbuff.c
+>>> +++ b/net/core/skbuff.c
+>>> @@ -1804,28 +1804,45 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
+>>>  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+>>>  {
+>>>  	int delta = headroom - skb_headroom(skb);
+>>> +	int osize = skb_end_offset(skb);
+>>> +	struct sk_buff *oskb = NULL;
+>>> +	struct sock *sk = skb->sk;
+>>>  
+>>>  	if (WARN_ONCE(delta <= 0,
+>>>  		      "%s is expecting an increase in the headroom", __func__))
+>>>  		return skb;
+>>>  
+>>> -	/* pskb_expand_head() might crash, if skb is shared */
+>>> +	delta = SKB_DATA_ALIGN(delta);
+>>> +	/* pskb_expand_head() might crash, if skb is shared.
+>>> +	 * Also we should clone skb if its destructor does
+>>> +	 * not adjust skb->truesize and sk->sk_wmem_alloc
+>>> + 	 */
+>>>  	if (skb_shared(skb)) {
+>>>  		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+>>>  
+>>> -		if (likely(nskb)) {
+>>> -			if (skb->sk)
+>>> -				skb_set_owner_w(nskb, skb->sk);
+>>> -			consume_skb(skb);
+>>> -		} else {
+>>> +		if (unlikely(!nskb)) {
+>>>  			kfree_skb(skb);
+>>> +			return NULL;
+>>>  		}
+>>> +		oskb = skb;
+>>>  		skb = nskb;
+>>>  	}
+>>> -	if (skb &&
+>>> -	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
+>>> +	if (pskb_expand_head(skb, delta, 0, GFP_ATOMIC)) {
+>>>  		kfree_skb(skb);
+>>> -		skb = NULL;
+>>> +		kfree_skb(oskb);
+>>> +		return NULL;
+>>> +	}
+>>> +	if (oskb) {
+>>> +		if (sk)
+>>
+>> if (is_skb_wmem(oskb))
+>> Again, it is not valid to call skb_set_owner_w(skb, sk) on all kind of sockets.
+> 
+> I'm disagree.
 
-thanks,
-Rajendra
+:/ :/ :/
 
-> least _somewhat_ based in the correct units. I'll pick:
-> * little: 130
-> * big:    527
-> ...which basically means we're scaling the old numbers by 30%.
 > 
-> We also need to scale all of the sustainable-power numbers by
-> the same amount.
-> 
-> Fixes: 71f873169a80 ("arm64: dts: qcom: sc7180: Add dynamic CPU power coefficients")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
->   .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi  |  2 +-
->   .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  |  8 ++---
->   arch/arm64/boot/dts/qcom/sc7180.dtsi          | 36 +++++++++----------
->   3 files changed, 23 insertions(+), 23 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-> index a758e4d22612..4ba687dc850f 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-> @@ -33,7 +33,7 @@ skin_temp_thermal: skin-temp-thermal {
->   			polling-delay = <0>;
->   
->   			thermal-sensors = <&pm6150_adc_tm 1>;
-> -			sustainable-power = <814>;
-> +			sustainable-power = <1058>;
->   
->   			trips {
->   				skin_temp_alert0: trip-point0 {
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-> index a246dbd74cc1..e066bce768c7 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-> @@ -44,7 +44,7 @@ &cpu6_alert1 {
->   };
->   
->   &cpu6_thermal {
-> -	sustainable-power = <948>;
-> +	sustainable-power = <1232>;
->   };
->   
->   &cpu7_alert0 {
-> @@ -56,7 +56,7 @@ &cpu7_alert1 {
->   };
->   
->   &cpu7_thermal {
-> -	sustainable-power = <948>;
-> +	sustainable-power = <1232>;
->   };
->   
->   &cpu8_alert0 {
-> @@ -68,7 +68,7 @@ &cpu8_alert1 {
->   };
->   
->   &cpu8_thermal {
-> -	sustainable-power = <948>;
-> +	sustainable-power = <1232>;
->   };
->   
->   &cpu9_alert0 {
-> @@ -80,7 +80,7 @@ &cpu9_alert1 {
->   };
->   
->   &cpu9_thermal {
-> -	sustainable-power = <948>;
-> +	sustainable-power = <1232>;
->   };
->   
->   &gpio_keys {
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> index 47b20ba69057..e2c92dae580a 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> @@ -138,7 +138,7 @@ CPU0: cpu@0 {
->   					   &LITTLE_CPU_SLEEP_1
->   					   &CLUSTER_SLEEP_0>;
->   			capacity-dmips-mhz = <1024>;
-> -			dynamic-power-coefficient = <100>;
-> +			dynamic-power-coefficient = <130>;
->   			operating-points-v2 = <&cpu0_opp_table>;
->   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
->   					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
-> @@ -163,7 +163,7 @@ CPU1: cpu@100 {
->   					   &LITTLE_CPU_SLEEP_1
->   					   &CLUSTER_SLEEP_0>;
->   			capacity-dmips-mhz = <1024>;
-> -			dynamic-power-coefficient = <100>;
-> +			dynamic-power-coefficient = <130>;
->   			next-level-cache = <&L2_100>;
->   			operating-points-v2 = <&cpu0_opp_table>;
->   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> @@ -185,7 +185,7 @@ CPU2: cpu@200 {
->   					   &LITTLE_CPU_SLEEP_1
->   					   &CLUSTER_SLEEP_0>;
->   			capacity-dmips-mhz = <1024>;
-> -			dynamic-power-coefficient = <100>;
-> +			dynamic-power-coefficient = <130>;
->   			next-level-cache = <&L2_200>;
->   			operating-points-v2 = <&cpu0_opp_table>;
->   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> @@ -207,7 +207,7 @@ CPU3: cpu@300 {
->   					   &LITTLE_CPU_SLEEP_1
->   					   &CLUSTER_SLEEP_0>;
->   			capacity-dmips-mhz = <1024>;
-> -			dynamic-power-coefficient = <100>;
-> +			dynamic-power-coefficient = <130>;
->   			next-level-cache = <&L2_300>;
->   			operating-points-v2 = <&cpu0_opp_table>;
->   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> @@ -229,7 +229,7 @@ CPU4: cpu@400 {
->   					   &LITTLE_CPU_SLEEP_1
->   					   &CLUSTER_SLEEP_0>;
->   			capacity-dmips-mhz = <1024>;
-> -			dynamic-power-coefficient = <100>;
-> +			dynamic-power-coefficient = <130>;
->   			next-level-cache = <&L2_400>;
->   			operating-points-v2 = <&cpu0_opp_table>;
->   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> @@ -251,7 +251,7 @@ CPU5: cpu@500 {
->   					   &LITTLE_CPU_SLEEP_1
->   					   &CLUSTER_SLEEP_0>;
->   			capacity-dmips-mhz = <1024>;
-> -			dynamic-power-coefficient = <100>;
-> +			dynamic-power-coefficient = <130>;
->   			next-level-cache = <&L2_500>;
->   			operating-points-v2 = <&cpu0_opp_table>;
->   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> @@ -273,7 +273,7 @@ CPU6: cpu@600 {
->   					   &BIG_CPU_SLEEP_1
->   					   &CLUSTER_SLEEP_0>;
->   			capacity-dmips-mhz = <1740>;
-> -			dynamic-power-coefficient = <405>;
-> +			dynamic-power-coefficient = <527>;
->   			next-level-cache = <&L2_600>;
->   			operating-points-v2 = <&cpu6_opp_table>;
->   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> @@ -295,7 +295,7 @@ CPU7: cpu@700 {
->   					   &BIG_CPU_SLEEP_1
->   					   &CLUSTER_SLEEP_0>;
->   			capacity-dmips-mhz = <1740>;
-> -			dynamic-power-coefficient = <405>;
-> +			dynamic-power-coefficient = <527>;
->   			next-level-cache = <&L2_700>;
->   			operating-points-v2 = <&cpu6_opp_table>;
->   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> @@ -3592,7 +3592,7 @@ cpu0_thermal: cpu0-thermal {
->   			polling-delay = <0>;
->   
->   			thermal-sensors = <&tsens0 1>;
-> -			sustainable-power = <768>;
-> +			sustainable-power = <998>;
->   
->   			trips {
->   				cpu0_alert0: trip-point0 {
-> @@ -3641,7 +3641,7 @@ cpu1_thermal: cpu1-thermal {
->   			polling-delay = <0>;
->   
->   			thermal-sensors = <&tsens0 2>;
-> -			sustainable-power = <768>;
-> +			sustainable-power = <998>;
->   
->   			trips {
->   				cpu1_alert0: trip-point0 {
-> @@ -3690,7 +3690,7 @@ cpu2_thermal: cpu2-thermal {
->   			polling-delay = <0>;
->   
->   			thermal-sensors = <&tsens0 3>;
-> -			sustainable-power = <768>;
-> +			sustainable-power = <998>;
->   
->   			trips {
->   				cpu2_alert0: trip-point0 {
-> @@ -3739,7 +3739,7 @@ cpu3_thermal: cpu3-thermal {
->   			polling-delay = <0>;
->   
->   			thermal-sensors = <&tsens0 4>;
-> -			sustainable-power = <768>;
-> +			sustainable-power = <998>;
->   
->   			trips {
->   				cpu3_alert0: trip-point0 {
-> @@ -3788,7 +3788,7 @@ cpu4_thermal: cpu4-thermal {
->   			polling-delay = <0>;
->   
->   			thermal-sensors = <&tsens0 5>;
-> -			sustainable-power = <768>;
-> +			sustainable-power = <998>;
->   
->   			trips {
->   				cpu4_alert0: trip-point0 {
-> @@ -3837,7 +3837,7 @@ cpu5_thermal: cpu5-thermal {
->   			polling-delay = <0>;
->   
->   			thermal-sensors = <&tsens0 6>;
-> -			sustainable-power = <768>;
-> +			sustainable-power = <998>;
->   
->   			trips {
->   				cpu5_alert0: trip-point0 {
-> @@ -3886,7 +3886,7 @@ cpu6_thermal: cpu6-thermal {
->   			polling-delay = <0>;
->   
->   			thermal-sensors = <&tsens0 9>;
-> -			sustainable-power = <1202>;
-> +			sustainable-power = <1563>;
->   
->   			trips {
->   				cpu6_alert0: trip-point0 {
-> @@ -3927,7 +3927,7 @@ cpu7_thermal: cpu7-thermal {
->   			polling-delay = <0>;
->   
->   			thermal-sensors = <&tsens0 10>;
-> -			sustainable-power = <1202>;
-> +			sustainable-power = <1563>;
->   
->   			trips {
->   				cpu7_alert0: trip-point0 {
-> @@ -3968,7 +3968,7 @@ cpu8_thermal: cpu8-thermal {
->   			polling-delay = <0>;
->   
->   			thermal-sensors = <&tsens0 11>;
-> -			sustainable-power = <1202>;
-> +			sustainable-power = <1563>;
->   
->   			trips {
->   				cpu8_alert0: trip-point0 {
-> @@ -4009,7 +4009,7 @@ cpu9_thermal: cpu9-thermal {
->   			polling-delay = <0>;
->   
->   			thermal-sensors = <&tsens0 12>;
-> -			sustainable-power = <1202>;
-> +			sustainable-power = <1563>;
->   
->   			trips {
->   				cpu9_alert0: trip-point0 {
+> In this particular case we have new skb with skb->sk = NULL,
+> In this case skb_orphan() called inside skb_set_owner_w(() will do nothing,
+> we just properly set destructor to sock_wfree and adjust sk->sk_wmem_alloc,
 > 
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+We can not adjust sk_wmem_alloc if this is already 0
+
+The only way you can guarantee this is :
+
+to look at is_skb_wmem(oskb)
+
+Because then you are certain that _at_ least this skb owns a reference on sk->sk_wmem_alloc
+
+If another kind of destructor is held by oskb, then you can not assume this.
+
+Otherwise we need a new refcount_add_if_not_zero() function, and make skb_set_owner_w()
+more expensive for a very corner case.
+
+> It is 100% equivalent of code used with skb_realloc_headroom(),
+> and there was no claims on this.
+> Cristoph's reproducer do not use shared skb and to not check this path,
+> so it cannot be the reason of troubles in his experiments.
+> 
+> Old destructor (sock_edemux?) can be calleda bit later, for old skb, inside consume_skb().
+> It can decrement last refcount and can trigger sk_free(). However in this case
+> adjusted sk_wmem_alloc did not allow to free sk.
+> 
+> So I'm sure it is safe.
+
+It is not safe.
+
+> 
+>>> +			skb_set_owner_w(skb, sk);
+>>> +		consume_skb(oskb);
+>>> +	} else if (sk) {
+>>
+>> && (skb->destructor != sock_edemux)
+>> (Because in this case , pskb_expand_head() already adjusted skb->truesize)
+> 
+> Agree, thank you, my fault, I've missed it.
+> I think it was the reason of the troubles in last Cristoph's experiment.
+> 
+>>> +		delta = osize - skb_end_offset(skb);
+>>
+>>> +		if (!is_skb_wmem(skb))
+>>> +			skb_set_owner_w(skb, sk);
+>>
+>> This is dangerous, even if a socket is there, its sk->sk_wmem_alloc could be zero.
+>> We can not add skb->truesize to a refcount_t that already reached 0 (sk_free())
+>>
+>> If is_skb_wmem() is false, you probably should do nothing, and leave
+>> current destructor as it is.
+> 
+> I;m still not sure and think it is tricky too.
+
+
+
+> I've found few destructors called sock_wfree inside, they require sk_wmem_alloc adjustement.
+> sctp_wfree, unix_destruct_scm and tpacket_destruct_skb
+> 
+> In the same time another ones do not use sk_wmem_alloc and I do not know how to detect proper ones.
+> Potentially there are some 3rd party protocols out-of-tree, and I cannot list all of them here.
+
+I think you missed netem case, in particular
+skb_orphan_partial() which I already pointed out.
+
+You can setup a stack of virtual devices (tunnels),
+with a qdisc on them, before ip6_xmit() is finally called...
+
+Socket might have been closed already.
+
+To test your patch, you could force a skb_orphan_partial() at the beginning
+of skb_expand_head() (extending code coverage)
+
+> 
+> However I think I can use the same trick as one described above:
+> I can increase sk_wmem_alloc before skb_orphan(), so sk_free() called by old destuctor 
+> cannot call __sk_free() and release sk.
+
+
+You can not change sk_wmem_alloc if this is already 0.
+
+refcount_add() will trigger a warning (panic under KASAN)
+
+> 
+> I hope this should work, 
+> otherwise we'll need to clone skb for !is_skb_wmem(skb) before pskb_expand_head() call.
+> 
+> Thank you,
+> 	Vasily Averin
+> 
+
