@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DED43FEC61
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B083FEC86
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244285AbhIBKun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 06:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
+        id S242421AbhIBK4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 06:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236263AbhIBKuj (ORCPT
+        with ESMTP id S233761AbhIBK4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 06:50:39 -0400
-Received: from lb2-smtp-cloud9.xs4all.net (lb2-smtp-cloud9.xs4all.net [IPv6:2001:888:0:108::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA7BC061575;
-        Thu,  2 Sep 2021 03:49:40 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id LkHpmiwTclQKhLkHqmKOn7; Thu, 02 Sep 2021 12:49:38 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1630579778; bh=z8S8PBTuuy6W8YvwKgx9nMDnBhYR8E+ca6ZFT8GLcmg=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=SH0liSzmKgUoL0hI9UUZqzASA/gjwWlwQooMG9aktGrU1uGMgl84kJDu1NAguBx4V
-         E9Eqv+9kC3J+R752P4lryn3ehBdGF4b3iJZb3uNRKpQbzvs9bG1MvnReYNPc//pwO6
-         5yI2iVZiwECDthkWxzdvnUZ37YUIOq86Arw7KwZo7WSc6DlWeQiEbk88gKYOfCqx6N
-         gt5yQUfgnt/Z5Gz24FoIk8NWvWZif9R8id5qs+Q/PzJZkC2S6epM8ftzmOAfMR9pcA
-         93hraVwjiNjALm9m8IZS/NTHgMB0PUgkZHTr6g/aaj23VILwgkAbi7A+XKeXitIUEa
-         uP9Yvei7/Iv/A==
-Subject: Re: [PATCH] media: usb: fix memory leak in stk_camera_probe
-To:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-References: <20210714032340.504836-1-mudongliangabcd@gmail.com>
- <CAD-N9QXWHeNvR06wyg3Pym8xUb27TsuFKKKG=tZ0-x5ZGCr-Hw@mail.gmail.com>
- <CAD-N9QWj8w-xVAni2cGHyEei78iKEX_V0a00r0x3We7tfFGZjw@mail.gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <911af8f1-d654-b4e1-1aac-c8a7ff94f6da@xs4all.nl>
-Date:   Thu, 2 Sep 2021 12:49:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 2 Sep 2021 06:56:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CFAC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 03:55:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xRZI+EF7Bb02HlmhwHew/8U98K28CzYAN65inQkPbLA=; b=qgwUZG/cFtFFmCiMx1IAFICojh
+        7f+SYg96TVtEcKoLz294qVnFHbDWbjrJd2j+kqW133UQ+BxcHU2Au9HHWps9azq2TRqXcezFZ7Y5/
+        08FUDzdXgjuyfo+hnflXXnTPqJfmqjxjJLo0SyuIuyhRsKkxdqtlZGiFJD/DTGrTQYNjgj0qTCUaK
+        pHq3Vv9yJxKZAT147cfr5AFOtbjWgQ6HkB9UeGlsW0BprwWDk1WlyrQQSFkbZsuJkscbbTIPodzXA
+        PXO7c2bR9km4keuJe333Kh3qIyfyojkCSiz1r6WuiDnf74Vf313kNBUfBO8aTfryLvkrKzwx4bwJ3
+        DpsGReSw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mLkIG-003OPI-OB; Thu, 02 Sep 2021 10:50:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 20D6B30029F;
+        Thu,  2 Sep 2021 12:50:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 054722B1DE8E8; Thu,  2 Sep 2021 12:50:02 +0200 (CEST)
+Date:   Thu, 2 Sep 2021 12:50:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <laijs@linux.alibaba.com>
+Cc:     Joerg Roedel <jroedel@suse.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Chester Lin <clin@suse.com>, Juergen Gross <jgross@suse.com>,
+        andrew.cooper3@citrix.com
+Subject: Re: [PATCH 02/24] x86/traps: Move arch/x86/kernel/traps.c to
+ arch/x86/entry/
+Message-ID: <YTCsWpSmPYvXa1xz@hirez.programming.kicks-ass.net>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210831175025.27570-3-jiangshanlai@gmail.com>
+ <YTCGov+vvAMvso7q@suse.de>
+ <1f327579-e62a-df65-0763-e88243829db3@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD-N9QWj8w-xVAni2cGHyEei78iKEX_V0a00r0x3We7tfFGZjw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfMtG5773DVqMm00i2M9TjNm6lyyWSRkJZUlCS9i7Xgy8HAYiw1GYfZx9ltiiX9UpndCkRJZpsATVre9Rj9KHnQ+xJqm2KSm6t8edndVXEQxjhe06pbaV
- c5jNiYaiumt4ot483fjLZoxsDyrRbopSSalT8TY+0pWubTLpfWSAgKTGwqSM5/ccgmuiRFHuTrNRucYHkVTfVh5F5TNYquh0fuyIDhGTQdO5DEY+1TPhsKiJ
- HS4HP4/i7kjRiwaLlGX+ke4xgaLX65C6aPaRynUQkzA/3g3dCf0jNQbc+B0M716KKhFIGX+2pb+zM1STp6yrs7WcQiXvZznnT4K55USyyXl9BsEEjeHVEEj1
- 6hBJnR7sOn6sLQTuUMPV8oGVrPgj81+zckrVq4JLc/QxS99HVLhYdWxZe2s311N753y9WcWdjr3AhZEz1kSjnXFwf3MxUarvMPPNF3ICg/l77H19iRMQ8edy
- tEjWIISdJBFXd2jJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f327579-e62a-df65-0763-e88243829db3@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dongliang,
-
-On 02/09/2021 12:23, Dongliang Mu wrote:
-> On Fri, Jul 23, 2021 at 6:11 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->>
->> On Wed, Jul 14, 2021 at 11:23 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->>>
->>> stk_camera_probe mistakenly execute usb_get_intf and increase the
->>> refcount of interface->dev.
->>>
->>> Fix this by removing the execution of usb_get_intf.
->>
->> Any idea about this patch?
+On Thu, Sep 02, 2021 at 05:21:51PM +0800, Lai Jiangshan wrote:
 > 
-> +cc Dan Carpenter, gregkh
 > 
-> There is no reply in this thread in one month. Can someone give some
-> feedback on this patch?
-
-I saw that it was marked as Obsoleted in patchwork, but I might have confused
-this patch with similar, but not identical, patches for this driver.
-
-I've moved the state back to New.
-
-Comments follow below:
-
+> On 2021/9/2 16:09, Joerg Roedel wrote:
+> > On Wed, Sep 01, 2021 at 01:50:03AM +0800, Lai Jiangshan wrote:
+> > >   arch/x86/entry/Makefile            | 5 ++++-
+> > >   arch/x86/{kernel => entry}/traps.c | 0
+> > >   arch/x86/kernel/Makefile           | 5 +----
+> > >   3 files changed, 5 insertions(+), 5 deletions(-)
+> > >   rename arch/x86/{kernel => entry}/traps.c (100%)
+> > 
+> >  From looking over the patch-set I didn't spot the reason for putting the
+> > entry C code into traps.c. Can you explain that please? Otherwise I'd
+> > prefer to create a new file, like arch/x86/entry/entry64.c.
 > 
->>
->>>
->>> Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
->>> Fixes: 0aa77f6c2954 ("[media] move the remaining USB drivers to drivers/media/usb")
->>> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
->>> ---
->>>  drivers/media/usb/stkwebcam/stk-webcam.c | 1 -
->>>  1 file changed, 1 deletion(-)
->>>
->>> diff --git a/drivers/media/usb/stkwebcam/stk-webcam.c b/drivers/media/usb/stkwebcam/stk-webcam.c
->>> index a45d464427c4..5bd8e85b9452 100644
->>> --- a/drivers/media/usb/stkwebcam/stk-webcam.c
->>> +++ b/drivers/media/usb/stkwebcam/stk-webcam.c
->>> @@ -1311,7 +1311,6 @@ static int stk_camera_probe(struct usb_interface *interface,
->>>
->>>         dev->udev = udev;
->>>         dev->interface = interface;
->>> -       usb_get_intf(interface);
+> 
+> I agree, and I think Peter is handling it.
 
-Even though this increments the refcount (which might well be unnecessary),
-it is also decremented with usb_put_intf. So is there actually a bug here?
+I don't think I said that. I said I like the patches but there's a lot
+of scary code and details to review, which takes time.
 
-And if this is changed, then I expect that both get_intf and put_intf should be
-removed, and not just the get.
+I've now done a second reading of the patches and provided some more
+feedback, but I'm very sure I didn't get to the scary details yet.
 
-Regards,
+One thing that got pointed out (by Andrew Cooper) is that by moving the
+whole SWAPGS trainwreck to C it becomes entirely 'trivial' to sneak in
+an 'accidental' per-cpu reference before having done the SWAPGS dance.
 
-	Hans
-
->>>
->>>         if (hflip != -1)
->>>                 dev->vsettings.hflip = hflip;
->>> --
->>> 2.25.1
->>>
-
+I'm myself not (yet) convinced that's a good enough reason to leave it
+in ASM, but it does certainly need consideration.
