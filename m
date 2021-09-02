@@ -2,58 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F1E3FEC9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487743FECA0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233970AbhIBLEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 07:04:51 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:39710 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232113AbhIBLEu (ORCPT
+        id S237438AbhIBLGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 07:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhIBLGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 07:04:50 -0400
-X-UUID: 86b3d324245c45f1b14f9e8fb3201383-20210902
-X-UUID: 86b3d324245c45f1b14f9e8fb3201383-20210902
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <yp.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1238895030; Thu, 02 Sep 2021 19:03:49 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 2 Sep 2021 19:03:47 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 2 Sep 2021 19:03:47 +0800
-From:   YP WU <yp.wu@mediatek.com>
-To:     <mchehab@kernel.org>
-CC:     <Jason-BF.Huang@mediatek.com>, <Lecopzer.Chen@mediatek.com>,
-        <francis.lee@mediatek.com>, <gustavoars@kernel.org>,
-        <hverkuil-cisco@xs4all.nl>, <leo.hsiao@mediatek.com>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <yp.wu@mediatek.com>
-Subject: Re: How to use "DTV_FE_CAPABILITY" command for Frontend.h of Linux DVB
-Date:   Thu, 2 Sep 2021 19:03:47 +0800
-Message-ID: <20210902110347.14939-1-yp.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210715095933.63dbcd31@coco.lan>
-References: <20210715095933.63dbcd31@coco.lan>
+        Thu, 2 Sep 2021 07:06:15 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74F2C061575;
+        Thu,  2 Sep 2021 04:05:16 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ed100d115725f57e7001c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:d100:d115:725f:57e7:1c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 400421EC0528;
+        Thu,  2 Sep 2021 13:05:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630580711;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=qrih5nOxCt8KX8+xxQwcW009cmgk6NbkNVdkRjjSG0s=;
+        b=Uo+t/oIfbI8rJlB3MWNOvzZBGwQz2x6Er54vJvC277hf/75pt4jxpEm/nVpzSFsIiiCVRj
+        X+1ltV5NAxwh0jq60Oy/XIYQGVQJUYNxs/WGRGxHh4CvYPmfUojTxRx0jeCLu0+AMj3jyX
+        TFzVyb8+6qw4WI6Pkct1YFlXl2Gfz4w=
+Date:   Thu, 2 Sep 2021 13:05:45 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 32/38] x86/sev: enable SEV-SNP-validated CPUID
+ in #VC handlers
+Message-ID: <YTCwCZr5KZXd8bsG@zn.tnic>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-33-brijesh.singh@amd.com>
+ <YSkCWVTd0ZEvphlx@zn.tnic>
+ <20210827183240.f7zvo3ujkeohmlrt@amd.com>
+ <YS5XVBNrASp7Zrig@zn.tnic>
+ <20210901011658.s4hgmvbptgseqcm3@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210901011658.s4hgmvbptgseqcm3@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Mr.Mauro,
-      Frist of all, thanks for your reply and Sorry to reply late.
+On Tue, Aug 31, 2021 at 08:16:58PM -0500, Michael Roth wrote:
+> What did you think of the suggestion of defining it in sev-shared.c
+> as a static buffer/struct as __ro_after_init? It would be nice to
+> declare/reserve the memory in one place. Another benefit is it doesn't
+> need to be exported, and could just be local with all the other
+> snp_cpuid* helpers that access it in sev-shared.c
 
-We know that everything is controlled by /dev/dvb/frontend.
+Yap.
 
-It is assumed that the device node "dvb/frontend0", "dvb/frontend1" and "dvb/frontend2" use the input signal from the same satellite antenna. In addition, "dvb/frontend0", "dvb/frontend1", and "dvb/frontend2" are premised on receiving broadcast signals at the same time under the condition that the same voltage is always supplied to the satellite antenna.
+-- 
+Regards/Gruss,
+    Boris.
 
-Therefore, Our TV uses an HW circuit equipped with only one LNB IC.
-
-Since only one LNB IC is installed, the design policy of including and controlling the same LNB IC in "dvb/frontend0", "dvb/frontend1" and "dvb/frontend2" is complicated and difficult to understand. It is more simpler and easier to design to separate the LNB IC into "dvb/frontend3" and control the LNB IC from "dvb0.frontend3". Therefore, we want to separate LNB to different device node.
-
-BRs,
-YP
+https://people.kernel.org/tglx/notes-about-netiquette
