@@ -2,159 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49973FE6AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF7A3FE6AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243506AbhIBA1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 20:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239492AbhIBA1K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 20:27:10 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2835EC061757
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 17:26:13 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id f4so403876ybr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 17:26:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CptstpGZORRU3IsYIloJqbWhHikn1ckNwph+iIdtJfc=;
-        b=KJjMgyWgDPZNVmsiSfXPstCqx7Cv6leimA38DXhaRdLHgyAnsFQrjHt5ji8iOVTbaA
-         K/+uGl//sF7mIvLXtsuE92k6eG5U+dy3GZ+oVW5XzrjScobDwvvsiSrtBO9GXNkewxjN
-         Wb4kAJ1sQkkdxizNHuKxTPyi0oh7Ccc+XWqK44z7O7FrhKmQrhHa6y/+XZxEWgi71gLK
-         LFPjnoZfSqrcj5rPjIszQqV6/+V975nET3m3NtDKJeGpVm2ZfhjlPazmkz5SxlSwwBBy
-         pLV1HyflZQcD1QY6xA9bQAplBzgYykH1koRMFXZHxiYlYOREMG2We6WDhMRhloCJDn4Y
-         6EzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CptstpGZORRU3IsYIloJqbWhHikn1ckNwph+iIdtJfc=;
-        b=rk/8psieJ5m6Gk1LpvWn0zzxa2oJ/J5XE8g4P5bkiuMzJejEGTZhr4UeEyJ2F7PZq0
-         3gqQtrAbSD/qwSLmN10QYwMCQakYuhSnytn6iuMa2+Q6kjWp8VH14UJY+EiCUdiPqLs8
-         Y50XAIvf3iaxlZPRpsPEcF6LIbkCpxTpHc7tZNc3XJSYtza38Sq5L2YoB/ir2U3MaWtz
-         iTZgzsQCdNasdCYaI7bBX3Yn+ihTcYBN4OtlqKT3aNNkZD6eOXq+PKqyJSxuXyCmhiSC
-         a9UWdbrt5C9uNSozQcQUEmhyZRi5koiNli486Fpu4vco204f73U18MCZ8hXBwiwxeifx
-         roDA==
-X-Gm-Message-State: AOAM533uEle50V8xJU0ps57H9e6Qz9JnHeffoGrjBpy5h9qh5PeJEwil
-        +ru8kQ47NV/t+tms/NkwCZKibuPjgbLS4ihWW6bqag==
-X-Google-Smtp-Source: ABdhPJw0MkZntzwLYBweF0Y7lXR0WTz8ODY0CF4jq3sidmXEVfKh7AZHfVBv/CowSJpHE/7wcb+BsIsyLaB/P+vFGA8=
-X-Received: by 2002:a25:804:: with SMTP id 4mr733936ybi.346.1630542372170;
- Wed, 01 Sep 2021 17:26:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210831102125.624661-1-ulf.hansson@linaro.org>
- <CAGETcx868QWj0jMJ+U-eL62jT-LO_LTOw5EcwEKptfFOVa=A5A@mail.gmail.com>
- <CAPDyKFopTW=ZoB9FYJ-ozRZTnJDTT_gFtz0XDiU-weYb1Q9bkQ@mail.gmail.com>
- <CAGETcx_e7kCQ_0yC9=k1jzjJJEqdOMuA=JkD81=2-Nb4fcS0+w@mail.gmail.com>
- <CAPDyKFranX4Yz8546C1E3Gq_ZkQi34Xb=Rxi5mPtw-s_J1QPoQ@mail.gmail.com>
- <CAGETcx_DXQyaH2te1cxV+yCS+kdfjWOFbxQkhEKCbXtU0FWS1g@mail.gmail.com> <CAPDyKFpd1OCiSX-g4sJNjHhLs41AVzyE=O7gw7+YQ7RUOOk6rQ@mail.gmail.com>
-In-Reply-To: <CAPDyKFpd1OCiSX-g4sJNjHhLs41AVzyE=O7gw7+YQ7RUOOk6rQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 1 Sep 2021 17:25:36 -0700
-Message-ID: <CAGETcx8MPy-4v2KFtZ6vrrtnkd07gsL3iEKjQjyLL8i2fYycqA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] of: property: fw_devlink: Rename 'node_not_dev' to 'optional_con_dev'
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, DTML <devicetree@vger.kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S244843AbhIBA3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 20:29:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:43230 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244344AbhIBA3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 20:29:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B1121063;
+        Wed,  1 Sep 2021 17:28:16 -0700 (PDT)
+Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2CAB63F766;
+        Wed,  1 Sep 2021 17:28:10 -0700 (PDT)
+From:   Jia He <justin.he@arm.com>
+To:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, Jia He <justin.he@arm.com>
+Subject: [PATCH 1/2] KVM: arm64: vgic: Add memcg accounting to vgic allocations
+Date:   Thu,  2 Sep 2021 08:28:00 +0800
+Message-Id: <20210902002801.32618-1-justin.he@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 3:24 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Thu, 2 Sept 2021 at 00:06, Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Wed, Sep 1, 2021 at 2:27 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > >
-> > > On Wed, 1 Sept 2021 at 22:56, Saravana Kannan <saravanak@google.com> wrote:
-> > > >
-> > > > On Wed, Sep 1, 2021 at 12:45 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > >
-> > > > > On Tue, 31 Aug 2021 at 19:31, Saravana Kannan <saravanak@google.com> wrote:
-> > > > > >
-> > > > > > On Tue, Aug 31, 2021 at 3:21 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > > > >
-> > > > > > > In the struct supplier_bindings the member 'node_not_dev' is described as
-> > > > > > > "The consumer node containing the property is never a device.", but that
-> > > > > > > doesn't match the behaviour of the code in of_link_property().
-> > > > > > >
-> > > > > > > To make the behaviour consistent with the description, let's rename the
-> > > > > > > member to "optional_con_dev" and clarify the corresponding comment.
-> > > > > > >
-> > > > > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > > > > > ---
-> > > > > > >  drivers/of/property.c | 9 +++++----
-> > > > > > >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > > > > > index 6c028632f425..2babb1807228 100644
-> > > > > > > --- a/drivers/of/property.c
-> > > > > > > +++ b/drivers/of/property.c
-> > > > > > > @@ -1249,7 +1249,8 @@ static struct device_node *parse_##fname(struct device_node *np,       \
-> > > > > > >   * @parse_prop.index: For properties holding a list of phandles, this is the
-> > > > > > >   *                   index into the list
-> > > > > > >   * @optional: Describes whether a supplier is mandatory or not
-> > > > > > > - * @node_not_dev: The consumer node containing the property is never a device.
-> > > > > > > + * @optional_con_dev: The consumer node containing the property may not be a
-> > > > > > > + *                   device, then try finding one from an ancestor node.
-> > > > > >
-> > > > > > Nak. This flag is not about "may not be". This is explicitly for
-> > > > > > "never a device". It has to do with stuff like remote-endpoint which
-> > > > > > is never listed under the root node of the device node. Your
-> > > > > > documentation change is changing the meaning of the flag.
-> > > > >
-> > > > > Okay, fair enough.
-> > > > >
-> > > > > Although, as stated in the commit message this isn't the way code
-> > > > > behaves. Shouldn't we at least make the behaviour consistent with the
-> > > > > description of the 'node_not_dev' flag?
-> > > >
-> > > > I know what you mean, but if you use the flag correctly (where the
-> > > > phandle pointed to will never be a device with compatible property),
-> > > > the existing code would work correctly. And since the flag is relevant
-> > > > only in this file, it's easy to keep it correct. I'd just leave it as
-> > > > is.
-> > >
-> > > Sorry, but that just sounds lazy to me, I am sure we can do better.
-> > > The current code and the name of the flag is confusing, at least to me
-> > > (and I bet to others as well).
-> > >
-> > > Moreover, I don't quite understand your objections to changing this.
-> > > Why leave this to be inconsistent when it can be easily fixed?
-> >
-> > If you feel so strong about it, go for it. No strong objections. Just
-> > double check the refcounts are done correctly.
->
-> The refcounts should be okay, I think.
->
-> I am fine with either of the two suggestions I have made.
+Inspired by commit 254272ce6505 ("kvm: x86: Add memcg accounting to KVM
+allocations"), it would be better to make arm64 vgic consistent with
+common kvm codes.
 
-The one I Nak-ed earlier is not okay. So I think we have only one other option.
+The memory allocations of VM scope should be charged into VM process
+cgroup, hence change GFP_KERNEL to GFP_KERNEL_ACCOUNT.
 
-> But another
-> option could be to come up with an alternative name (and a
-> description) for the flag, instead of "optional_con_dev", if you
-> perhaps have a better suggestion?
+There remained a case in vgic_set_kvm_info() since this allocation is
+global, not in VM scope.
 
-It's not fully clear to me what part of node_not_dev is confusing, but
-I'll take a stab at it. How about:
-- * @node_not_dev: The consumer node containing the property is never a device.
-+ * @con_node_never_dev: The consumer node containing the property is never
-+ *                     converted to a struct device. The struct device will be
-+ *                     created for one of the ancestor nodes, which fw_devlink
-+ *                     assumes would an ancestor with the compatible property.
+Signed-off-by: Jia He <justin.he@arm.com>
+---
+ arch/arm64/kvm/vgic/vgic-debug.c   |  2 +-
+ arch/arm64/kvm/vgic/vgic-init.c    |  2 +-
+ arch/arm64/kvm/vgic/vgic-irqfd.c   |  2 +-
+ arch/arm64/kvm/vgic/vgic-its.c     | 14 +++++++-------
+ arch/arm64/kvm/vgic/vgic-mmio-v3.c |  2 +-
+ arch/arm64/kvm/vgic/vgic-v4.c      |  2 +-
+ 6 files changed, 12 insertions(+), 12 deletions(-)
 
-If you are happy with this, then go ahead and use this name/comment
-with the last code suggestion you made and send out a patch?
+diff --git a/arch/arm64/kvm/vgic/vgic-debug.c b/arch/arm64/kvm/vgic/vgic-debug.c
+index f38c40a76251..e6a01f210df9 100644
+--- a/arch/arm64/kvm/vgic/vgic-debug.c
++++ b/arch/arm64/kvm/vgic/vgic-debug.c
+@@ -92,7 +92,7 @@ static void *vgic_debug_start(struct seq_file *s, loff_t *pos)
+ 		goto out;
+ 	}
+ 
+-	iter = kmalloc(sizeof(*iter), GFP_KERNEL);
++	iter = kmalloc(sizeof(*iter), GFP_KERNEL_ACCOUNT);
+ 	if (!iter) {
+ 		iter = ERR_PTR(-ENOMEM);
+ 		goto out;
+diff --git a/arch/arm64/kvm/vgic/vgic-init.c b/arch/arm64/kvm/vgic/vgic-init.c
+index 340c51d87677..0a06d0648970 100644
+--- a/arch/arm64/kvm/vgic/vgic-init.c
++++ b/arch/arm64/kvm/vgic/vgic-init.c
+@@ -134,7 +134,7 @@ static int kvm_vgic_dist_init(struct kvm *kvm, unsigned int nr_spis)
+ 	struct kvm_vcpu *vcpu0 = kvm_get_vcpu(kvm, 0);
+ 	int i;
+ 
+-	dist->spis = kcalloc(nr_spis, sizeof(struct vgic_irq), GFP_KERNEL);
++	dist->spis = kcalloc(nr_spis, sizeof(struct vgic_irq), GFP_KERNEL_ACCOUNT);
+ 	if (!dist->spis)
+ 		return  -ENOMEM;
+ 
+diff --git a/arch/arm64/kvm/vgic/vgic-irqfd.c b/arch/arm64/kvm/vgic/vgic-irqfd.c
+index 79f8899b234c..475059bacedf 100644
+--- a/arch/arm64/kvm/vgic/vgic-irqfd.c
++++ b/arch/arm64/kvm/vgic/vgic-irqfd.c
+@@ -139,7 +139,7 @@ int kvm_vgic_setup_default_irq_routing(struct kvm *kvm)
+ 	u32 nr = dist->nr_spis;
+ 	int i, ret;
+ 
+-	entries = kcalloc(nr, sizeof(*entries), GFP_KERNEL);
++	entries = kcalloc(nr, sizeof(*entries), GFP_KERNEL_ACCOUNT);
+ 	if (!entries)
+ 		return -ENOMEM;
+ 
+diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
+index 61728c543eb9..b99f47103056 100644
+--- a/arch/arm64/kvm/vgic/vgic-its.c
++++ b/arch/arm64/kvm/vgic/vgic-its.c
+@@ -48,7 +48,7 @@ static struct vgic_irq *vgic_add_lpi(struct kvm *kvm, u32 intid,
+ 	if (irq)
+ 		return irq;
+ 
+-	irq = kzalloc(sizeof(struct vgic_irq), GFP_KERNEL);
++	irq = kzalloc(sizeof(struct vgic_irq), GFP_KERNEL_ACCOUNT);
+ 	if (!irq)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -332,7 +332,7 @@ int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
+ 	 * we must be careful not to overrun the array.
+ 	 */
+ 	irq_count = READ_ONCE(dist->lpi_list_count);
+-	intids = kmalloc_array(irq_count, sizeof(intids[0]), GFP_KERNEL);
++	intids = kmalloc_array(irq_count, sizeof(intids[0]), GFP_KERNEL_ACCOUNT);
+ 	if (!intids)
+ 		return -ENOMEM;
+ 
+@@ -985,7 +985,7 @@ static int vgic_its_alloc_collection(struct vgic_its *its,
+ 	if (!vgic_its_check_id(its, its->baser_coll_table, coll_id, NULL))
+ 		return E_ITS_MAPC_COLLECTION_OOR;
+ 
+-	collection = kzalloc(sizeof(*collection), GFP_KERNEL);
++	collection = kzalloc(sizeof(*collection), GFP_KERNEL_ACCOUNT);
+ 	if (!collection)
+ 		return -ENOMEM;
+ 
+@@ -1029,7 +1029,7 @@ static struct its_ite *vgic_its_alloc_ite(struct its_device *device,
+ {
+ 	struct its_ite *ite;
+ 
+-	ite = kzalloc(sizeof(*ite), GFP_KERNEL);
++	ite = kzalloc(sizeof(*ite), GFP_KERNEL_ACCOUNT);
+ 	if (!ite)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -1150,7 +1150,7 @@ static struct its_device *vgic_its_alloc_device(struct vgic_its *its,
+ {
+ 	struct its_device *device;
+ 
+-	device = kzalloc(sizeof(*device), GFP_KERNEL);
++	device = kzalloc(sizeof(*device), GFP_KERNEL_ACCOUNT);
+ 	if (!device)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -1847,7 +1847,7 @@ void vgic_lpi_translation_cache_init(struct kvm *kvm)
+ 		struct vgic_translation_cache_entry *cte;
+ 
+ 		/* An allocation failure is not fatal */
+-		cte = kzalloc(sizeof(*cte), GFP_KERNEL);
++		cte = kzalloc(sizeof(*cte), GFP_KERNEL_ACCOUNT);
+ 		if (WARN_ON(!cte))
+ 			break;
+ 
+@@ -1888,7 +1888,7 @@ static int vgic_its_create(struct kvm_device *dev, u32 type)
+ 	if (type != KVM_DEV_TYPE_ARM_VGIC_ITS)
+ 		return -ENODEV;
+ 
+-	its = kzalloc(sizeof(struct vgic_its), GFP_KERNEL);
++	its = kzalloc(sizeof(struct vgic_its), GFP_KERNEL_ACCOUNT);
+ 	if (!its)
+ 		return -ENOMEM;
+ 
+diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+index a09cdc0b953c..d3fd8a6c0c9a 100644
+--- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
++++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+@@ -834,7 +834,7 @@ static int vgic_v3_alloc_redist_region(struct kvm *kvm, uint32_t index,
+ 	if (vgic_v3_rdist_overlap(kvm, base, size))
+ 		return -EINVAL;
+ 
+-	rdreg = kzalloc(sizeof(*rdreg), GFP_KERNEL);
++	rdreg = kzalloc(sizeof(*rdreg), GFP_KERNEL_ACCOUNT);
+ 	if (!rdreg)
+ 		return -ENOMEM;
+ 
+diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
+index c1845d8f5f7e..772dd15a22c7 100644
+--- a/arch/arm64/kvm/vgic/vgic-v4.c
++++ b/arch/arm64/kvm/vgic/vgic-v4.c
+@@ -246,7 +246,7 @@ int vgic_v4_init(struct kvm *kvm)
+ 	nr_vcpus = atomic_read(&kvm->online_vcpus);
+ 
+ 	dist->its_vm.vpes = kcalloc(nr_vcpus, sizeof(*dist->its_vm.vpes),
+-				    GFP_KERNEL);
++				    GFP_KERNEL_ACCOUNT);
+ 	if (!dist->its_vm.vpes)
+ 		return -ENOMEM;
+ 
+-- 
+2.17.1
 
-Thanks,
-Saravana
