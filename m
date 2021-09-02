@@ -2,114 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B903FF6AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D323FF6B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347913AbhIBV46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347569AbhIBV4n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:56:43 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8024BC0612A5
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:55:39 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id l18so6234949lji.12
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:55:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1OGY0A1bmZf1fxvWkbRm6Nt7GcmJzJ4PCA9tMxUQzJU=;
-        b=L34pszxLvaK1/ThKDYqV097bwVi8n2QR0jDIHeafcSSoPQ9z8W+i4niPigybjSIJqH
-         dFiDtYwNyV56xL39aIJBQy+mTx3awcN1DVNd15K9XDNl52+jJzM/lNcR26w39F121YK1
-         e7Vu0mceRcUbTfqKirHJsqCLxbSujeusdES90=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1OGY0A1bmZf1fxvWkbRm6Nt7GcmJzJ4PCA9tMxUQzJU=;
-        b=VRF9Lr8zDij+P+2n9y1epMN35NFkVuGmxR0hc2lBFYAgpxHBHqCJ2fmenqRSmCYLYw
-         nRQRy/Pts4K8R9hjsyPzjJBweQwYtVNZV+0wzAmMcw40MoAr9GEvenTsrLfteU2Ljtd9
-         BqSbgmMqiAJekTv2LK1Qqt0H2kV0SuVd7y0pwmZtBjFkYgTfDP7aoW6GzzuaYlXDf1Sw
-         N5H/vFGBpBvdoM7K/vLYXd11vH/8Xn/9wNsrjMEv8fBws+iF2hU0cTWSQqIzzY298hTI
-         uEIEbcY2tyjA/D2aHGHX+HU2wuE3OjBOedb5C2Vx2e7sJFAXjKAsJl2l9wyDGRz9a9m2
-         mrLQ==
-X-Gm-Message-State: AOAM530KOpJlFCdvXkahMU6JpWa7p5cf8MdGLZwC03/iD/gtwFyJJD0A
-        FwCMMazhtBNtfR4SsvDkIE1Z7TPf09p9MID1NhQ=
-X-Google-Smtp-Source: ABdhPJyqtT4p8sEm07vIxTBEzPeAlBuSiQW0KM8pjqzI9688Cr9eEO+3rjnMmLXKqxIeOb00hVormg==
-X-Received: by 2002:a2e:86cc:: with SMTP id n12mr347472ljj.384.1630619737097;
-        Thu, 02 Sep 2021 14:55:37 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id d8sm308620lfm.67.2021.09.02.14.55.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 14:55:36 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id k13so7486863lfv.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:55:36 -0700 (PDT)
-X-Received: by 2002:a05:6512:128a:: with SMTP id u10mr229751lfs.40.1630619736152;
- Thu, 02 Sep 2021 14:55:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
- <20210716114635.14797-1-papadakospan@gmail.com> <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com>
- <afd62ae457034c3fbc4f2d38408d359d@paragon-software.com> <CAHk-=wjn4W-7ZbHrw08cWy=12DgheFUKLO5YLgG6in5TA5HxqQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wjn4W-7ZbHrw08cWy=12DgheFUKLO5YLgG6in5TA5HxqQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 2 Sep 2021 14:55:20 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg7GMGD1YNM7WgPAU3nwHhMAvQ8yvdwvJtuwe9J1pBgvg@mail.gmail.com>
-Message-ID: <CAHk-=wg7GMGD1YNM7WgPAU3nwHhMAvQ8yvdwvJtuwe9J1pBgvg@mail.gmail.com>
-Subject: Re: Paragon NTFSv3 (was Re: [GIT PULL] vboxsf fixes for 5.14-1)
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Leonidas P. Papadakos" <papadakospan@gmail.com>,
-        "zajec5@gmail.com" <zajec5@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1347862AbhIBV5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:57:36 -0400
+Received: from mga14.intel.com ([192.55.52.115]:41290 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347809AbhIBV5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 17:57:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="218963659"
+X-IronPort-AV: E=Sophos;i="5.85,263,1624345200"; 
+   d="scan'208";a="218963659"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 14:56:21 -0700
+X-IronPort-AV: E=Sophos;i="5.85,263,1624345200"; 
+   d="scan'208";a="500007646"
+Received: from mmijoce-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.255.94.151])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 14:56:18 -0700
+Date:   Fri, 3 Sep 2021 09:56:16 +1200
+From:   Kai Huang <kai.huang@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
+Message-Id: <20210903095616.9806a6dd4938c021aa204b33@intel.com>
+In-Reply-To: <41e9b099f6492c389b3ed3bbe107d61804a307e9.camel@kernel.org>
+References: <20210825235234.153013-1-jarkko@kernel.org>
+        <20210825235234.153013-2-jarkko@kernel.org>
+        <20210826141959.5f13ff3c9c560c23b58443b1@intel.com>
+        <54923ac01fc303e5105cadca06b7c5cbd322d815.camel@kernel.org>
+        <20210828000335.1d40dfff0f408b2d91467491@intel.com>
+        <04b90a702328712204430db604b2a92ddfe8f990.camel@kernel.org>
+        <20210901173322.78f94b694b4be6b1225bee98@intel.com>
+        <6a9fccdb6a458960e43a63afcce87cc62184adf9.camel@kernel.org>
+        <20210901174705.3b1a943ef8c4bb09323c6d76@intel.com>
+        <41e9b099f6492c389b3ed3bbe107d61804a307e9.camel@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 10:23 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Well, I won't pull until the next merge window opens anyway (about a
-> month away). But it would be good to have your tree in linux-next for
-> at least a couple of weeks before that happens.
->
-> Added Stephen to the participants list as a heads-up for him - letting
-> him know where to fetch the git tree from will allow that to happen if
-> you haven't done so already.
+On Thu, 02 Sep 2021 15:15:51 +0300 Jarkko Sakkinen wrote:
+> On Wed, 2021-09-01 at 17:47 +1200, Kai Huang wrote:
+> > On Wed, 01 Sep 2021 08:41:12 +0300 Jarkko Sakkinen wrote:
+> > > On Wed, 2021-09-01 at 17:33 +1200, Kai Huang wrote:
+> > > > On Wed, 01 Sep 2021 05:02:45 +0300 Jarkko Sakkinen wrote:
+> > > > > On Sat, 2021-08-28 at 00:03 +1200, Kai Huang wrote:
+> > > > > > > > > -/* The free page list lock protected variables prepend the lock. */
+> > > > > > > > > +/* The number of usable EPC pages in the system. */
+> > > > > > > > > +unsigned long sgx_nr_all_pages;
+> > > > > > > > > +
+> > > > > > > > > +/* The number of free EPC pages in all nodes. */
+> > > > > > > > >  static unsigned long sgx_nr_free_pages;
+> > > > > > > > >  
+> > > > > > > > >  /* Nodes with one or more EPC sections. */
+> > > > > > > > > @@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+> > > > > > > > >  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
+> > > > > > > > >  	}
+> > > > > > > > >  
+> > > > > > > > > +	sgx_nr_all_pages += nr_pages;
+> > > > > > > > > +
+> > > > > > > > 
+> > > > > > > > EPC sections can be freed again in sgx_init() after they are successfully
+> > > > > > > > initialized, when any further initialization fails (i.e. when fails to create
+> > > > > > > > ksgxd, or fails to register /dev/sgx_provision).  In which case, I think
+> > > > > > > > sgx_nr_all_pages should also be cleared.  But current sgx_init() seems doesn't
+> > > > > > > > reset it.  Do you need to fix that too?
+> > > > > > > 
+> > > > > > > sgx_nr_all_pages tells just the total pages in the system, i.e. it's a constant.
+> > > > > > > 
+> > > > > > > Maybe a rename to "sgx_nr_total_pages" would be a good idea? Would match with
+> > > > > > > the meminfo field better too.
+> > > > > > 
+> > > > > > I don't have preference on name.  I just think if there's no actual user of
+> > > > > > EPC (when both driver and KVM SGX cannot be enabled), it's pointless to print
+> > > > > > number of EPC pages.
+> > > > > 
+> > > > > I'd presume that you refer to the code, which prints the number of *bytes* in
+> > > > > the system because code printing the number of pages does not exist in this
+> > > > > patch set.
+> > > > > 
+> > > > > I have troubles the decipher your statement.
+> > > > > 
+> > > > > You think that only if both the driver and KVM are *both* enabled, only then
+> > > > > it makes sense to have this information available for sysadmin?
+> > > > 
+> > > > Only if at least one of them is enabled.
+> > > 
+> > > OK, thank you, that does make sense.
+> > > 
+> > > What would happen if neither is enabled is that SGX_MemTotal would
+> > > state that there is zero bytes of EPC. 
+> > 
+> > This is the problem I pointed out at the beginning, that (if I read code
+> > correctly), it seems your current patch doesn't clear sgx_nr_all_pages when
+> > neither is enabled (in sgx_init() in sgx/main.c).
+> 
+> It's initialized to zero, so are you talking about fallback when something
+> fails?
+> 
+> /Jarkko
 
-Ok, so I've merged the biggest pieces of this merge window, and I
-haven't actually seen a NTFSv3 pull request yet.
+Yes, shouldn't you have something similar to below?
 
-I wonder if you expected that being in linux-next just "automatically"
-causes the pull to happen, because that's not the case. We often have
-things "brewing" in linux-next for a while, and it's there for testing
-but not necessarily ready for prime time.
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 63d3de02bbcc..270f6103b6c0 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -836,6 +836,7 @@ static int __init sgx_init(void)
+                vfree(sgx_epc_sections[i].pages);
+                memunmap(sgx_epc_sections[i].virt_addr);
+        }
++       sgx_nr_all_pages = 0;
+ 
+        return ret;
+ }
 
-So linux-next is a preparatory thing, not a "this will get merged"
-
-So to actually merge things, I will expect to get an explicit pull
-request with the usual diffstat and shortlog, to show that yes, you
-really think it's all good, and it's ready to merge.
-
-Don't worry about - and don't try to fix - merge conflicts with
-possible other work that has been going on. Stephen fixes it for
-linux-next and makes people aware of it, and I want to _know_ about
-them, but I will then handle and re-do the merge conflicts myself
-based on what I have actually merged up to that point.
-
-And of course, the other side of that is that if linux-next uncovered
-other issues, or if there are things holding things up, please _don't_
-feel obligated to send me a pull request. There is always the next
-merge window.
-
-            Linus
