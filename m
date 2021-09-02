@@ -2,247 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1403FEA8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94D03FEA89
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244400AbhIBIUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 04:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244339AbhIBIUd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S244378AbhIBIUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 04:20:34 -0400
+Received: from mga09.intel.com ([134.134.136.24]:14140 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244184AbhIBIUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Sep 2021 04:20:33 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9022C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 01:19:35 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id h9so2439309ejs.4
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 01:19:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gFiQ6i9XW7BIqSyRN+BbO3nnGGXqz7dQGc3ivcA8ZM0=;
-        b=J8Hh0yoSoutPTJOlF3mT/vZj7ZkbPd8U5Hpb2hor+g29NYFcysNpxj/1pVF/mLsR2k
-         45XbOCXcW5n24AkudS1WKqVwAGjRTekWuT31NXEOb9k2rqweTJUC4sOfNE6mN0IQ+Zfq
-         8HRmlqw2sWuT9P/HsG9QNzvdJDkLcH9ayd3OeEx66TFIQkNv8fUYmu6sC8NBHnIXBeom
-         RKrGeuyKa6u4csCCrSbarPuqlLyYfAFLGjzpLMrJBjYsAckyF/QxFu15R3gBXVtd02jp
-         yHVCY90fzsFnTSzxtaHrF/zTK+43cl+XpEtcwFRCe1QZXOX77mIHrvEWQLJFNJMeV/hC
-         LWsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gFiQ6i9XW7BIqSyRN+BbO3nnGGXqz7dQGc3ivcA8ZM0=;
-        b=To+dohnRMbEZGdT95ZFgFXQQRozJVZglNto4tU3t2OKKuHwqM137UrLzUznK4VuhYP
-         rPDPdPna8Zm6PzR9VQzuzKSZ6pfD24Ru1ZR5hZ6c4VRjDHAJMwnup0Ma3ptHvo5PrDH6
-         sSqLGR5oWtJM0xxmCpntaKBKWzbRPrZZtX/G2DfqzvcabFgm5viPLj+li5PR11vawtvg
-         opLkEFWGFyL1UU83Qc7tF7y1z7joDKvacQRc1XGqUhV3ieCtdC4qWnb/YWdrU0dMU5cE
-         P+7e4xUW0ad6wf7dfhwh7Be2pTM6JXAPEyOl9eaAoXPeCyYn6QbFBNTVIhL+/FMIw9kf
-         r3bA==
-X-Gm-Message-State: AOAM531d4UBkllYkb+b8d3+KTmqRD4EKA/yidP6O0riPCRgoIdWjQ2IC
-        1ijpiM+2AyvrJvMpMwBUF+T8YMzI42aWcxFbMpMCjg==
-X-Google-Smtp-Source: ABdhPJyPGWlZQFIEgh0z0b2eeHHYfQlymOjK/g3vv+0lGumbd+mmG/bsgb+vLQXEr76gPIYLDJ0VHnnnVX+G6mPwM7E=
-X-Received: by 2002:a17:906:32ce:: with SMTP id k14mr2436793ejk.503.1630570774121;
- Thu, 02 Sep 2021 01:19:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210901122253.388326997@linuxfoundation.org>
-In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 2 Sep 2021 13:49:22 +0530
-Message-ID: <CA+G9fYvJqppD8xKCnmLvt=BZ=Y4BJp0Ld1DikjoT5yJh7nFG2A@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/48] 5.4.144-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="219035747"
+X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
+   d="scan'208";a="219035747"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 01:19:34 -0700
+X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
+   d="scan'208";a="532831032"
+Received: from liuj4-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.173.176])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 01:19:25 -0700
+Date:   Thu, 2 Sep 2021 16:19:23 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
+ private memory
+Message-ID: <20210902081923.lertnjsgnskegkmn@linux.intel.com>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+ <20210827023150.jotwvom7mlsawjh4@linux.intel.com>
+ <8f3630ff-bd6d-4d57-8c67-6637ea2c9560@www.fastmail.com>
+ <20210901102437.g5wrgezmrjqn3mvy@linux.intel.com>
+ <f37a61ba-b7ef-c789-5763-f7f237ae41cc@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f37a61ba-b7ef-c789-5763-f7f237ae41cc@kernel.org>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Sept 2021 at 18:02, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.144 release.
-> There are 48 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.144-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Wed, Sep 01, 2021 at 09:07:59AM -0700, Andy Lutomirski wrote:
+> On 9/1/21 3:24 AM, Yu Zhang wrote:
+> > On Tue, Aug 31, 2021 at 09:53:27PM -0700, Andy Lutomirski wrote:
+> >>
+> >>
+> >> On Thu, Aug 26, 2021, at 7:31 PM, Yu Zhang wrote:
+> >>> On Thu, Aug 26, 2021 at 12:15:48PM +0200, David Hildenbrand wrote:
+> >>
+> >>> Thanks a lot for this summary. A question about the requirement: do we or
+> >>> do we not have plan to support assigned device to the protected VM?
+> >>>
+> >>> If yes. The fd based solution may need change the VFIO interface as well(
+> >>> though the fake swap entry solution need mess with VFIO too). Because:
+> >>>
+> >>> 1> KVM uses VFIO when assigning devices into a VM.
+> >>>
+> >>> 2> Not knowing which GPA ranges may be used by the VM as DMA buffer, all
+> >>> guest pages will have to be mapped in host IOMMU page table to host pages,
+> >>> which are pinned during the whole life cycle fo the VM.
+> >>>
+> >>> 3> IOMMU mapping is done during VM creation time by VFIO and IOMMU driver,
+> >>> in vfio_dma_do_map().
+> >>>
+> >>> 4> However, vfio_dma_do_map() needs the HVA to perform a GUP to get the HPA
+> >>> and pin the page. 
+> >>>
+> >>> But if we are using fd based solution, not every GPA can have a HVA, thus
+> >>> the current VFIO interface to map and pin the GPA(IOVA) wont work. And I
+> >>> doubt if VFIO can be modified to support this easily.
+> >>>
+> >>>
+> >>
+> >> Do you mean assigning a normal device to a protected VM or a hypothetical protected-MMIO device?
+> >>
+> >> If the former, it should work more or less like with a non-protected VM. mmap the VFIO device, set up a memslot, and use it.  I'm not sure whether anyone will actually do this, but it should be possible, at least in principle.  Maybe someone will want to assign a NIC to a TDX guest.  An NVMe device with the understanding that the guest can't trust it wouldn't be entirely crazy ether.
+> >>
+> >> If the latter, AFAIK there is no spec for how it would work even in principle. Presumably it wouldn't work quite like VFIO -- instead, the kernel could have a protection-virtual-io-fd mechanism, and that fd could be bound to a memslot in whatever way we settle on for binding secure memory to a memslot.
+> >>
+> > 
+> > Thanks Andy. I was asking the first scenario.
+> > 
+> > Well, I agree it is doable if someone really want some assigned
+> > device in TD guest. As Kevin mentioned in his reply, HPA can be
+> > generated, by extending VFIO with a new mapping protocol which
+> > uses fd+offset, instead of HVA. 
+> 
+> I'm confused.  I don't see why any new code is needed for this at all.
+> Every proposal I've seen for handling TDX memory continues to handle TDX
+> *shared* memory exactly like regular guest memory today.  The only
+> differences are that more hole punching will be needed, which will
+> require lightweight memslots (to have many of them), memslots with
+> holes, or mappings backing memslots with holes (which can be done with
+> munmap() on current kernels).
 
+Thanks for pointing this out. And yes, for DMAs not capable of encryption(
+which is the case in current TDX). GUP shall work as it is in VFIO. :)
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> 
+> So you can literally just mmap a VFIO device and expect it to work,
+> exactly like it does right now.  Whether the guest will be willing to
+> use the device will depend on the guest security policy (all kinds of
+> patches about that are flying around), but if the guest tries to use it,
+> it really should just work.
+> 
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+But I think there's still problem. For now,
 
-## Build
-* kernel: 5.4.144-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.4.y
-* git commit: fa7f9f53436ea73ba28358d682e08577f20c1342
-* git describe: v5.4.143-49-gfa7f9f53436e
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-43-49-gfa7f9f53436e
+1> Qemu mmap()s all GPAs into its HVA space, when the VM is created.
+2> With no idea which part of guest memory shall be shared, VFIO will just
+set up the IOPT, by mapping whole GPA ranges in IOPT. 
+3> And those GPAs are actually private ones, with no shared-bit set.
 
-## No regressions (compared to v5.4.143-28-g66b6adc3ce6e)
+Later when guest tries to perform a DMA(using a shared GPA), IO page fault
+shall happen.
 
-## No fixes (compared to v5.4.143-28-g66b6adc3ce6e)
+> > 
+> > Another issue is current TDX does not support DMA encryption, and
+> > only shared GPA memory shall be mapped in the VT-d. So to support
+> > this, KVM may need to work with VFIO to dynamically program host
+> > IOPT(IOMMU Page Table) when TD guest notifies a shared GFN range(e.g.,
+> > with a MAP_GPA TDVMCALL), instead of prepopulating the IOPT at VM
+> > creation time, by mapping entire GFN ranges of a guest.
+> 
+> Given that there is no encrypted DMA support, shouldn't the only IOMMU
+> mappings (real host-side IOMMU) that point at guest memory be for
+> non-encrypted DMA?  I don't see how this interacts at all.  If the guest
+> tries to MapGPA to turn a shared MMIO page into private, the host should
+> fail the hypercall because the operation makes no sense.
+> 
+> It is indeed the case that, with a TDX guest, MapGPA shared->private to
+> a page that was previously used for unencrypted DMA will need to avoid
+> having IOPT entries to the new private page, but even that doesn't seem
+> particularly bad.  The fd+special memslot proposal for private memory
+> means that shared *backing store* pages never actually transition
+> between shared and private without being completely freed.
+> 
+> As far as I can tell, the actual problem you're referring to is:
+> 
+> >>> 2> Not knowing which GPA ranges may be used by the VM as DMA buffer, all
+> >>> guest pages will have to be mapped in host IOMMU page table to host
+> pages,
+> >>> which are pinned during the whole life cycle fo the VM.
 
-## Test result summary
-total: 82537, pass: 67479, fail: 741, skip: 12958, xfail: 1359
+Yes. That's the primary concern. :)
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 257 total, 257 passed, 0 failed
-* arm64: 35 total, 35 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 16 total, 16 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 51 total, 51 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 27 total, 27 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 35 total, 35 passed, 0 failed
+> 
+> In principle, you could actually initialize a TDX guest with all of its
+> memory shared and all of it mapped in the host IOMMU.  When a guest
+> turns some pages private, user code could punch a hole in the memslot,
+> allocate private memory at that address, but leave the shared backing
+> store in place and still mapped in the host IOMMU.  The result would be
+> that guest-initiated DMA to the previously shared address would actually
+> work but would hit pages that are invisible to the guest.  And a whole
+> bunch of memory would be waste, but the whole system should stll work.
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
+Do you mean to let VFIO & IOMMU to treat all guest memory as shared first,
+and then just allocate the private pages in another backing store? I guess
+that could work, but with the cost of allocating roughly 2x physical pages
+of the guest RAM size. After all, the shared pages shall be only a small
+part of guest memory.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+If device assignment is desired in current TDX. My understanding of the 
+enabling work would be like this:
+1> Change qemu to not trigger VFIO_IOMMU_MAP_DMA for the TD, thus no IOPT
+prepopulated, and no physical page allocated.
+2> KVM forwards MapGPA(private -> shared) request to Qemu.
+3> Qemu asks VFIO to pin and map the shared GPAs.
+
+For private -> shared transitions, the memslot punching, IOPT unmapping,
+and iotlb flushing are necessary. Possibly new interface between VFIO and
+KVM is needed.
+
+But actually I am not sure if people really want assigned device in current
+TDX. Bottleneck of the performance should be the copying to/from swiotlb
+buffers.
+
+B.R.
+Yu
