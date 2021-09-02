@@ -2,391 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA393FEB1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95303FEB1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245145AbhIBJTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 05:19:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244800AbhIBJSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:18:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A3FA60FE6;
-        Thu,  2 Sep 2021 09:17:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630574274;
-        bh=XcjuWNHNg72jc2BjgjpnK+K0p5wILwqvfRXfeGoYcFg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DdzrcNKtMQZuZ2NOZ5qdD74UmVcjLoK6akJGwgWot+kesFYDF44CE4rpp8cn8pH5Q
-         8S1yooVPkIK/8B+SvkpZsb2cqtGM5ct7+QfBYNzB8UVLrkCY9nePf/RosDqED02wE/
-         Ky1SETj0yPYk4d7WpDUvmoUzp43/g4b/8VFsYk0E=
-Date:   Thu, 2 Sep 2021 11:17:52 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        Michael Straube <straube.linux@gmail.com>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Martin Kaiser <martin@kaiser.cx>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: remove possible deadlock when
- disconnect
-Message-ID: <YTCWwLSX0I3Ica2e@kroah.com>
-References: <20210830141645.3646-1-fabioaiuto83@gmail.com>
+        id S245221AbhIBJVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 05:21:07 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49294 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245168AbhIBJVE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 05:21:04 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DC3B020320;
+        Thu,  2 Sep 2021 09:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630574405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=mCLKxbu6H+gkdS0vBCZqNAhLeUSXY2O0pR+5uorc2Nw=;
+        b=JGF7G2OHkGr0sf/v0m6TDelhbrvh4KOEC7hFWe5P59cDLhEA1aEklrx1qysiYXZtXBWtBH
+        GhyIRC3MQpEcDddcAUaF0F8n6pe70Up3S6aPDkWFd2JxAFMPNTYzEEkk+GTeuZbVMSfWcB
+        ytcYx87TF6x3qLvIWIjI/NGTizWJJIE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630574405;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=mCLKxbu6H+gkdS0vBCZqNAhLeUSXY2O0pR+5uorc2Nw=;
+        b=DguZ15XQXGjXoPokT0nFdDs7FBrn0b7Se0GxWqm0Ui+n3W+t6g6SfpH+Krux6Jhir5xq1X
+        FGTZiVVVgCefKDAg==
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id 56DE9A3B8D;
+        Thu,  2 Sep 2021 09:20:00 +0000 (UTC)
+Received: by adalid.arch.suse.de (Postfix, from userid 17828)
+        id C55C1518DECC; Thu,  2 Sep 2021 11:20:05 +0200 (CEST)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Daniel Wagner <dwagner@suse.de>,
+        Hannes Reinecke <hare@suse.de>, Keith Busch <kbusch@kernel.org>
+Subject: [PATCH v2] nvme: avoid race in shutdown namespace removal
+Date:   Thu,  2 Sep 2021 11:20:02 +0200
+Message-Id: <20210902092002.67614-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210830141645.3646-1-fabioaiuto83@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 04:16:45PM +0200, Fabio Aiuto wrote:
-> when turning off a connection, lockdep complains with the
-> following warning (a modprobe has been done but the same
-> happens with a disconnection from NetworkManager,
-> it's enough to trigger a cfg80211_disconnect call):
-> 
-> [  682.855867] ======================================================
-> [  682.855877] WARNING: possible circular locking dependency detected
-> [  682.855887] 5.14.0-rc6+ #16 Tainted: G         C OE
-> [  682.855898] ------------------------------------------------------
-> [  682.855906] modprobe/1770 is trying to acquire lock:
-> [  682.855916] ffffb6d000332b00 (&pxmitpriv->lock){+.-.}-{2:2},
-> 		at: rtw_free_stainfo+0x52/0x4a0 [r8723bs]
-> [  682.856073]
->                but task is already holding lock:
-> [  682.856081] ffffb6d0003336a8 (&pstapriv->sta_hash_lock){+.-.}-{2:2},
-> 		at: rtw_free_assoc_resources+0x48/0x110 [r8723bs]
-> [  682.856207]
->                which lock already depends on the new lock.
-> 
-> [  682.856215]
->                the existing dependency chain (in reverse order) is:
-> [  682.856223]
->                -> #1 (&pstapriv->sta_hash_lock){+.-.}-{2:2}:
-> [  682.856247]        _raw_spin_lock_bh+0x34/0x40
-> [  682.856265]        rtw_get_stainfo+0x9a/0x110 [r8723bs]
-> [  682.856389]        rtw_xmit_classifier+0x27/0x130 [r8723bs]
-> [  682.856515]        rtw_xmitframe_enqueue+0xa/0x20 [r8723bs]
-> [  682.856642]        rtl8723bs_hal_xmit+0x3b/0xb0 [r8723bs]
-> [  682.856752]        rtw_xmit+0x4ef/0x890 [r8723bs]
-> [  682.856879]        _rtw_xmit_entry+0xba/0x350 [r8723bs]
-> [  682.856981]        dev_hard_start_xmit+0xee/0x320
-> [  682.856999]        sch_direct_xmit+0x8c/0x330
-> [  682.857014]        __dev_queue_xmit+0xba5/0xf00
-> [  682.857030]        packet_sendmsg+0x981/0x1b80
-> [  682.857047]        sock_sendmsg+0x5b/0x60
-> [  682.857060]        __sys_sendto+0xf1/0x160
-> [  682.857073]        __x64_sys_sendto+0x24/0x30
-> [  682.857087]        do_syscall_64+0x3a/0x80
-> [  682.857102]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  682.857117]
->                -> #0 (&pxmitpriv->lock){+.-.}-{2:2}:
-> [  682.857142]        __lock_acquire+0xfd9/0x1b50
-> [  682.857158]        lock_acquire+0xb4/0x2c0
-> [  682.857172]        _raw_spin_lock_bh+0x34/0x40
-> [  682.857185]        rtw_free_stainfo+0x52/0x4a0 [r8723bs]
-> [  682.857308]        rtw_free_assoc_resources+0x53/0x110 [r8723bs]
-> [  682.857415]        cfg80211_rtw_disconnect+0x4b/0x70 [r8723bs]
-> [  682.857522]        cfg80211_disconnect+0x12e/0x2f0 [cfg80211]
-> [  682.857759]        cfg80211_leave+0x2b/0x40 [cfg80211]
-> [  682.857961]        cfg80211_netdev_notifier_call+0xa9/0x560 [cfg80211]
-> [  682.858163]        raw_notifier_call_chain+0x41/0x50
-> [  682.858180]        __dev_close_many+0x62/0x100
-> [  682.858195]        dev_close_many+0x7d/0x120
-> [  682.858209]        unregister_netdevice_many+0x416/0x680
-> [  682.858225]        unregister_netdevice_queue+0xab/0xf0
-> [  682.858240]        unregister_netdev+0x18/0x20
-> [  682.858255]        rtw_unregister_netdevs+0x28/0x40 [r8723bs]
-> [  682.858360]        rtw_dev_remove+0x24/0xd0 [r8723bs]
-> [  682.858463]        sdio_bus_remove+0x31/0xd0 [mmc_core]
-> [  682.858532]        device_release_driver_internal+0xf7/0x1d0
-> [  682.858550]        driver_detach+0x47/0x90
-> [  682.858564]        bus_remove_driver+0x77/0xd0
-> [  682.858579]        rtw_drv_halt+0xc/0x678 [r8723bs]
-> [  682.858685]        __x64_sys_delete_module+0x13f/0x250
-> [  682.858699]        do_syscall_64+0x3a/0x80
-> [  682.858715]        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  682.858729]
->                other info that might help us debug this:
-> 
-> [  682.858737]  Possible unsafe locking scenario:
-> 
-> [  682.858744]        CPU0                    CPU1
-> [  682.858751]        ----                    ----
-> [  682.858758]   lock(&pstapriv->sta_hash_lock);
-> [  682.858772]                                lock(&pxmitpriv->lock);
-> [  682.858786]                                lock(&pstapriv->sta_hash_lock);
-> [  682.858799]   lock(&pxmitpriv->lock);
-> [  682.858812]
->                 *** DEADLOCK ***
-> 
-> [  682.858820] 5 locks held by modprobe/1770:
-> [  682.858831]  #0: ffff8d870697d980 (&dev->mutex){....}-{3:3},
-> 		at: device_release_driver_internal+0x1a/0x1d0
-> [  682.858869]  #1: ffffffffbdbbf1c8 (rtnl_mutex){+.+.}-{3:3},
-> 		at: unregister_netdev+0xe/0x20
-> [  682.858906]  #2: ffff8d87054ee5e8 (&rdev->wiphy.mtx){+.+.}-{3:3},
-> 		at: cfg80211_netdev_notifier_call+0x9e/0x560 [cfg80211]
-> [  682.859131]  #3: ffff8d870f2bc8f0 (&wdev->mtx){+.+.}-{3:3},
-> 		at: cfg80211_leave+0x20/0x40 [cfg80211]
-> [  682.859354]  #4: ffffb6d0003336a8 (&pstapriv->sta_hash_lock){+.-.}-{2:2},
-> 		at: rtw_free_assoc_resources+0x48/0x110 [r8723bs]
-> [  682.859482]
->                stack backtrace:
-> [  682.859491] CPU: 1 PID: 1770 Comm: modprobe Tainted: G
-> 		C OE     5.14.0-rc6+ #16
-> [  682.859507] Hardware name: LENOVO 80NR/Madrid, BIOS DACN25WW 08/20/2015
-> [  682.859517] Call Trace:
-> [  682.859531]  dump_stack_lvl+0x56/0x6f
-> [  682.859551]  check_noncircular+0xdb/0xf0
-> [  682.859579]  __lock_acquire+0xfd9/0x1b50
-> [  682.859606]  lock_acquire+0xb4/0x2c0
-> [  682.859623]  ? rtw_free_stainfo+0x52/0x4a0 [r8723bs]
-> [  682.859752]  ? mark_held_locks+0x48/0x70
-> [  682.859769]  ? rtw_free_stainfo+0x4a/0x4a0 [r8723bs]
-> [  682.859898]  _raw_spin_lock_bh+0x34/0x40
-> [  682.859914]  ? rtw_free_stainfo+0x52/0x4a0 [r8723bs]
-> [  682.860039]  rtw_free_stainfo+0x52/0x4a0 [r8723bs]
-> [  682.860171]  rtw_free_assoc_resources+0x53/0x110 [r8723bs]
-> [  682.860286]  cfg80211_rtw_disconnect+0x4b/0x70 [r8723bs]
-> [  682.860397]  cfg80211_disconnect+0x12e/0x2f0 [cfg80211]
-> [  682.860629]  cfg80211_leave+0x2b/0x40 [cfg80211]
-> [  682.860836]  cfg80211_netdev_notifier_call+0xa9/0x560 [cfg80211]
-> [  682.861048]  ? __lock_acquire+0x4dc/0x1b50
-> [  682.861070]  ? lock_is_held_type+0xa8/0x110
-> [  682.861089]  ? lock_is_held_type+0xa8/0x110
-> [  682.861104]  ? find_held_lock+0x2d/0x90
-> [  682.861120]  ? packet_notifier+0x173/0x300
-> [  682.861141]  ? lock_release+0xb3/0x250
-> [  682.861160]  ? packet_notifier+0x192/0x300
-> [  682.861184]  raw_notifier_call_chain+0x41/0x50
-> [  682.861205]  __dev_close_many+0x62/0x100
-> [  682.861224]  dev_close_many+0x7d/0x120
-> [  682.861245]  unregister_netdevice_many+0x416/0x680
-> [  682.861264]  ? find_held_lock+0x2d/0x90
-> [  682.861284]  unregister_netdevice_queue+0xab/0xf0
-> [  682.861306]  unregister_netdev+0x18/0x20
-> [  682.861325]  rtw_unregister_netdevs+0x28/0x40 [r8723bs]
-> [  682.861434]  rtw_dev_remove+0x24/0xd0 [r8723bs]
-> [  682.861542]  sdio_bus_remove+0x31/0xd0 [mmc_core]
-> [  682.861615]  device_release_driver_internal+0xf7/0x1d0
-> [  682.861637]  driver_detach+0x47/0x90
-> [  682.861656]  bus_remove_driver+0x77/0xd0
-> [  682.861674]  rtw_drv_halt+0xc/0x678 [r8723bs]
-> [  682.861782]  __x64_sys_delete_module+0x13f/0x250
-> [  682.861801]  ? lockdep_hardirqs_on_prepare+0xf3/0x170
-> [  682.861817]  ? syscall_enter_from_user_mode+0x20/0x70
-> [  682.861836]  do_syscall_64+0x3a/0x80
-> [  682.861855]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  682.861873] RIP: 0033:0x7f6dbe85400b
-> [  682.861890] Code: 73 01 c3 48 8b 0d 6d 1e 0c 00 f7 d8 64 89
-> 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa
-> b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 3d
-> 1e 0c 00 f7 d8 64 89 01 48
-> [  682.861906] RSP: 002b:00007ffe7a82f538 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
-> [  682.861923] RAX: ffffffffffffffda RBX: 000055a64693bd20 RCX: 00007f6dbe85400b
-> [  682.861935] RDX: 0000000000000000 RSI: 0000000000000800 RDI: 000055a64693bd88
-> [  682.861946] RBP: 000055a64693bd20 R08: 0000000000000000 R09: 0000000000000000
-> [  682.861957] R10: 00007f6dbe8c7ac0 R11: 0000000000000206 R12: 000055a64693bd88
-> [  682.861967] R13: 0000000000000000 R14: 000055a64693bd88 R15: 00007ffe7a831848
-> 
-> This happens because when we enqueue a frame for
-> transmission we do it under xmit_priv lock, then calling
-> rtw_get_stainfo (needed for enqueuing) takes sta_hash_lock
-> and this leads to the following lock dependency:
-> 
-> xmit_priv->lock -> sta_hash_lock
-> 
-> Turning off a connection will bring to call
-> rtw_free_assoc_resources which will set up
-> the inverse dependency:
-> 
-> sta_hash_lock -> xmit_priv_lock
-> 
-> This could lead to a deadlock as lockdep complains.
-> 
-> Fix it by removing the xmit_priv->lock around
-> rtw_xmitframe_enqueue call inside rtl8723bs_hal_xmit
-> and put it in a smaller critical section inside
-> rtw_xmit_classifier, the only place where
-> xmit_priv data are actually accessed.
-> 
-> Replace spin_{lock,unlock}_bh(pxmitpriv->lock)
-> in other tx paths leading to rtw_xmitframe_enqueue
-> call with spin_{lock,unlock}_bh(psta->sleep_q.lock)
-> - it's not clear why accessing a sleep_q was protected
-> by a spinlock on xmitpriv->lock.
-> 
-> This way is avoided the same faulty lock nesting
-> order.
-> 
-> CC: Larry Finger <Larry.Finger@lwfinger.net>
-> Tested-on: Lenovo Ideapad MiiX 300-10IBY
-> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c  |  6 ++----
->  drivers/staging/rtl8723bs/core/rtw_recv.c      | 10 +++-------
->  drivers/staging/rtl8723bs/core/rtw_xmit.c      | 13 +++++++------
->  drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c |  2 --
->  4 files changed, 12 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> index 375d2a742dd2..b15e38fd433e 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> @@ -5930,8 +5930,7 @@ u8 chk_bmc_sleepq_hdl(struct adapter *padapter, unsigned char *pbuf)
->  	if ((pstapriv->tim_bitmap&BIT(0)) && (psta_bmc->sleepq_len > 0)) {
->  		msleep(10);/*  10ms, ATIM(HIQ) Windows */
->  
-> -		/* spin_lock_bh(&psta_bmc->sleep_q.lock); */
-> -		spin_lock_bh(&pxmitpriv->lock);
-> +		spin_lock_bh(&psta_bmc->sleep_q.lock);
->  
->  		xmitframe_phead = get_list_head(&psta_bmc->sleep_q);
->  		list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
-> @@ -5954,8 +5953,7 @@ u8 chk_bmc_sleepq_hdl(struct adapter *padapter, unsigned char *pbuf)
->  			rtw_hal_xmitframe_enqueue(padapter, pxmitframe);
->  		}
->  
-> -		/* spin_unlock_bh(&psta_bmc->sleep_q.lock); */
-> -		spin_unlock_bh(&pxmitpriv->lock);
-> +		spin_unlock_bh(&psta_bmc->sleep_q.lock);
->  
->  		/* check hi queue and bmc_sleepq */
->  		rtw_chk_hi_queue_cmd(padapter);
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_recv.c b/drivers/staging/rtl8723bs/core/rtw_recv.c
-> index 105fe0e3482a..41bfca549c64 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_recv.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_recv.c
-> @@ -957,10 +957,8 @@ static signed int validate_recv_ctrl_frame(struct adapter *padapter, union recv_
->  		if ((psta->state&WIFI_SLEEP_STATE) && (pstapriv->sta_dz_bitmap&BIT(psta->aid))) {
->  			struct list_head	*xmitframe_plist, *xmitframe_phead;
->  			struct xmit_frame *pxmitframe = NULL;
-> -			struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
->  
-> -			/* spin_lock_bh(&psta->sleep_q.lock); */
-> -			spin_lock_bh(&pxmitpriv->lock);
-> +			spin_lock_bh(&psta->sleep_q.lock);
->  
->  			xmitframe_phead = get_list_head(&psta->sleep_q);
->  			xmitframe_plist = get_next(xmitframe_phead);
-> @@ -991,12 +989,10 @@ static signed int validate_recv_ctrl_frame(struct adapter *padapter, union recv_
->  					update_beacon(padapter, WLAN_EID_TIM, NULL, true);
->  				}
->  
-> -				/* spin_unlock_bh(&psta->sleep_q.lock); */
-> -				spin_unlock_bh(&pxmitpriv->lock);
-> +				spin_unlock_bh(&psta->sleep_q.lock);
->  
->  			} else {
-> -				/* spin_unlock_bh(&psta->sleep_q.lock); */
-> -				spin_unlock_bh(&pxmitpriv->lock);
-> +				spin_unlock_bh(&psta->sleep_q.lock);
->  
->  				if (pstapriv->tim_bitmap&BIT(psta->aid)) {
->  					if (psta->sleepq_len == 0) {
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
-> index 3eb6db2f26bb..878264f46980 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
-> @@ -1797,6 +1797,7 @@ s32 rtw_xmit_classifier(struct adapter *padapter, struct xmit_frame *pxmitframe)
->  	struct sta_info *psta;
->  	struct tx_servq	*ptxservq;
->  	struct pkt_attrib	*pattrib = &pxmitframe->attrib;
-> +	struct xmit_priv *xmit_priv = &padapter->xmitpriv;
->  	struct hw_xmit	*phwxmits =  padapter->xmitpriv.hwxmits;
->  	signed int res = _SUCCESS;
->  
-> @@ -1814,12 +1815,14 @@ s32 rtw_xmit_classifier(struct adapter *padapter, struct xmit_frame *pxmitframe)
->  
->  	ptxservq = rtw_get_sta_pending(padapter, psta, pattrib->priority, (u8 *)(&ac_index));
->  
-> +	spin_lock_bh(&xmit_priv->lock);
->  	if (list_empty(&ptxservq->tx_pending))
->  		list_add_tail(&ptxservq->tx_pending, get_list_head(phwxmits[ac_index].sta_queue));
->  
->  	list_add_tail(&pxmitframe->list, get_list_head(&ptxservq->sta_pending));
->  	ptxservq->qcnt++;
->  	phwxmits[ac_index].accnt++;
-> +	spin_unlock_bh(&xmit_priv->lock);
->  
->  exit:
->  
-> @@ -2202,11 +2205,10 @@ void wakeup_sta_to_xmit(struct adapter *padapter, struct sta_info *psta)
->  	struct list_head *xmitframe_plist, *xmitframe_phead, *tmp;
->  	struct xmit_frame *pxmitframe = NULL;
->  	struct sta_priv *pstapriv = &padapter->stapriv;
-> -	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
->  
->  	psta_bmc = rtw_get_bcmc_stainfo(padapter);
->  
-> -	spin_lock_bh(&pxmitpriv->lock);
-> +	spin_lock_bh(&psta->sleep_q.lock);
->  
->  	xmitframe_phead = get_list_head(&psta->sleep_q);
->  	list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
-> @@ -2307,7 +2309,7 @@ void wakeup_sta_to_xmit(struct adapter *padapter, struct sta_info *psta)
->  
->  _exit:
->  
-> -	spin_unlock_bh(&pxmitpriv->lock);
-> +	spin_unlock_bh(&psta->sleep_q.lock);
->  
->  	if (update_mask)
->  		update_beacon(padapter, WLAN_EID_TIM, NULL, true);
-> @@ -2319,9 +2321,8 @@ void xmit_delivery_enabled_frames(struct adapter *padapter, struct sta_info *pst
->  	struct list_head *xmitframe_plist, *xmitframe_phead, *tmp;
->  	struct xmit_frame *pxmitframe = NULL;
->  	struct sta_priv *pstapriv = &padapter->stapriv;
-> -	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
->  
-> -	spin_lock_bh(&pxmitpriv->lock);
-> +	spin_lock_bh(&psta->sleep_q.lock);
->  
->  	xmitframe_phead = get_list_head(&psta->sleep_q);
->  	list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
-> @@ -2374,7 +2375,7 @@ void xmit_delivery_enabled_frames(struct adapter *padapter, struct sta_info *pst
->  		}
->  	}
->  
-> -	spin_unlock_bh(&pxmitpriv->lock);
-> +	spin_unlock_bh(&psta->sleep_q.lock);
->  }
->  
->  void enqueue_pending_xmitbuf(struct xmit_priv *pxmitpriv, struct xmit_buf *pxmitbuf)
-> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c b/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c
-> index 156d6aba18ca..5f5c4719b586 100644
-> --- a/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c
-> +++ b/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c
-> @@ -507,9 +507,7 @@ s32 rtl8723bs_hal_xmit(
->  			rtw_issue_addbareq_cmd(padapter, pxmitframe);
->  	}
->  
-> -	spin_lock_bh(&pxmitpriv->lock);
->  	err = rtw_xmitframe_enqueue(padapter, pxmitframe);
-> -	spin_unlock_bh(&pxmitpriv->lock);
->  	if (err != _SUCCESS) {
->  		rtw_free_xmitframe(pxmitpriv, pxmitframe);
->  
-> -- 
-> 2.20.1
-> 
-> 
+When we remove the siblings entry, we update ns->head->list, hence we
+can't separate the removal and test for being empty. They have to be
+in the same critical section to avoid a race.
 
-With this patch applied, I get the following build warning:
+To avoid breaking the refcounting imbalance again, add a list empty
+check to nvme_find_ns_head.
 
-drivers/staging/rtl8723bs/core/rtw_mlme_ext.c: In function ‘chk_bmc_sleepq_hdl’:
-drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:5922:27: warning: unused variable ‘pxmitpriv’ [-Wunused-variable]
- 5922 |         struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
-      |                           ^~~~~~~~~
+Fixes: 5396fdac56d8 ("nvme: fix refcounting imbalance when all paths are down")
+Cc: Hannes Reinecke <hare@suse.de>
+Cc: Keith Busch <kbusch@kernel.org>
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+v2:
+ - added nvme_find_ns_head fix as suggested by hch
+v1:
+ - https://lore.kernel.org/linux-nvme/20210830093618.97657-1-dwagner@suse.de/
 
+ drivers/nvme/host/core.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-Please fix up and resend it, we can not add build warnings to the tree
-at any time.
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 4a3a33f5f11c..ac9a61d1d011 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -3524,7 +3524,9 @@ static struct nvme_ns_head *nvme_find_ns_head(struct nvme_subsystem *subsys,
+ 	lockdep_assert_held(&subsys->lock);
+ 
+ 	list_for_each_entry(h, &subsys->nsheads, entry) {
+-		if (h->ns_id == nsid && nvme_tryget_ns_head(h))
++		if (h->ns_id != nsid)
++			continue;
++		if (!list_empty(&h->list) && nvme_tryget_ns_head(h))
+ 			return h;
+ 	}
+ 
+@@ -3836,6 +3838,10 @@ static void nvme_ns_remove(struct nvme_ns *ns)
+ 
+ 	mutex_lock(&ns->ctrl->subsys->lock);
+ 	list_del_rcu(&ns->siblings);
++	if (list_empty(&ns->head->list)) {
++		list_del_init(&ns->head->entry);
++		last_path = true;
++	}
+ 	mutex_unlock(&ns->ctrl->subsys->lock);
+ 
+ 	/* guarantee not available in head->list */
+@@ -3856,13 +3862,6 @@ static void nvme_ns_remove(struct nvme_ns *ns)
+ 	list_del_init(&ns->list);
+ 	up_write(&ns->ctrl->namespaces_rwsem);
+ 
+-	/* Synchronize with nvme_init_ns_head() */
+-	mutex_lock(&ns->head->subsys->lock);
+-	if (list_empty(&ns->head->list)) {
+-		list_del_init(&ns->head->entry);
+-		last_path = true;
+-	}
+-	mutex_unlock(&ns->head->subsys->lock);
+ 	if (last_path)
+ 		nvme_mpath_shutdown_disk(ns->head);
+ 	nvme_put_ns(ns);
+-- 
+2.29.2
 
-thanks,
-
-greg k-h
