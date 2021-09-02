@@ -2,101 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5946E3FEE91
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DC03FEE93
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344945AbhIBNWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:22:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234516AbhIBNWA (ORCPT
+        id S1344990AbhIBNWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:22:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26983 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344959AbhIBNWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:22:00 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9338EC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 06:21:01 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id s25so2907835edw.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 06:21:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PeIryWcCeZkXTwiSf9pQ7jls9/EfRS26Sz5/IPcRxMk=;
-        b=ljxvfTa06S/BzW+viuyp6s4kI4jkFrYai1dI1vsA8OajVAXAa5IaEUOGrgvriBsqHv
-         Hs/n0BTurHPWza7sEX/CzRQjH78wrCYxI5ZyyP65Y9Y1gu4iLvtTkwFlpc9/qGDWFu58
-         bD/7fYZFiBx1l3qPg2GQYfwt9noEuTAgVOQTZGoriXpVCuOmfR6FFOk4otYD5vexfo3+
-         moLx+IWovjGmQPhnreDwewWygSuV7lhophne+mL3XOmPYgSbRgsoYwmMxkssDa5VJfzr
-         XsIakbUOVG24yFSd2grGR5S162uJA1k4VhxNR/PR8iL4SU9kXCI23hq4J7CXDDG8JLju
-         R8kQ==
+        Thu, 2 Sep 2021 09:22:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630588878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6tJf5xIvKDCnRwuvzEhUuuc4fd9eQkxx1PjNi93Vu3s=;
+        b=SnzWriVvL1J/4ZPJ06qeAlQl33FEpWh9jdCEPiw9zTq8pOJ7Y6W2+DQZAr/Uw+0tVj6GPH
+        m+Ll5hv+zguwNMRcQ7NjAK+z6iDs9LuIks9uLmWlcbN366y8VKl5zTZBgR9AgzcUnfGTcf
+        7k62Rd/2GOiRK8t40gG/ZtjYAWL30UM=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-600-HnkKsZhAOgmFocP9Dur1_w-1; Thu, 02 Sep 2021 09:21:17 -0400
+X-MC-Unique: HnkKsZhAOgmFocP9Dur1_w-1
+Received: by mail-qv1-f72.google.com with SMTP id ib9-20020a0562141c8900b003671c3a1243so1479135qvb.21
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 06:21:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PeIryWcCeZkXTwiSf9pQ7jls9/EfRS26Sz5/IPcRxMk=;
-        b=DWveXmOKTOV/dUlclhgrdeh8dVihB0Twb8B/FST+a3tiuMsAS39y/0q2ZBEcfnSUI/
-         SVuE7MwFhBFOibbEXDE+/tve0SpCSfDDpPy0vqAICjhJ6nU2ZlKn7jVZvNiBur2WOfjg
-         5Hf8T6Z5VvVAQVQagbinSvuYTjpzsdMn9AqOwFJewb8iq5t9Jt1wE7HvNy4zbXyyoPdO
-         r24sHuhTeS4+3qL2sLpC0vF5W9756P53BVRenbjHHl7AIwZq1bIjkppGM2YqVVRrvafy
-         47OT/Bz655sEkgZCA8KIv3gpbMbCTwN5HLfttMQR1YTLsLPhLxCowKyodahgIcoel6tr
-         gV9g==
-X-Gm-Message-State: AOAM531dX39kjxskh0jF+EmldwQeBkP9kW8bBgx9kn+uI7vIooJi7oBd
-        J1FMk1V0+5pWrVj5PM87v7kgD0+m4IKwOXCTsIKPZw==
-X-Google-Smtp-Source: ABdhPJwpok/HKYNNaoKpcQK/BFFcLzrSloesjj1IAvo70hlTRvP2+339Mbs+wIXWPV6q9zbGTTTln8keb8RIEm2pAtI=
-X-Received: by 2002:a05:6402:152:: with SMTP id s18mr3460597edu.221.1630588859954;
- Thu, 02 Sep 2021 06:20:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6tJf5xIvKDCnRwuvzEhUuuc4fd9eQkxx1PjNi93Vu3s=;
+        b=UaBwWEKIwM14hAn4jkm0IQ8iM2by8lBzm1W6zPzZVhLuT5taH7tVXFWU66cCZXPEQI
+         OMv3t7COokBoTY5mFtGQAWdI7ccE1DO8yQaX1sctCYELkrlgUSHW88uteA0IjYyDbiXX
+         LYuPvnHdxYxP/vx4dbCL2b8Y6zJFgKPt3cIz9SKv8KQDZ0m0pyO3kncRsNavWBY0e0SD
+         WXhAtZUz/WKJkiFJXTQaYmxAPwEJMEQGeAbqb/VhSDXqxwDnhlrgPVnpa5zu3MVS9JN/
+         XQ3UtJSvfOZuwP3hZFE2+gHyaDeuYo2X7uHgoV47eiI6RJ2yxbkXG+Jg8B2eS4e2fDEL
+         ZOvQ==
+X-Gm-Message-State: AOAM533OzdppUKqcO/78ShZfzup3jYtRactHPHDEJv/ymqhzBqeLEM31
+        DWd6mg/8oTvOr26YCLq4DaWhRDja/KC49BHO3JQxJZbLNC/dFJi9AqN32GsPj2q6aY8zG75DwWw
+        tbqsHTABhw3n/swz/3WTUi+8M
+X-Received: by 2002:ad4:562c:: with SMTP id cb12mr1587969qvb.6.1630588877099;
+        Thu, 02 Sep 2021 06:21:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxG9JfvU8t2EsYROxxRPXPNKTs00M8PoYMUrrQVfghePFKxWKnhmt6JBf3fCTGn9rsZbouzrg==
+X-Received: by 2002:ad4:562c:: with SMTP id cb12mr1587947qvb.6.1630588876898;
+        Thu, 02 Sep 2021 06:21:16 -0700 (PDT)
+Received: from gator (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id g8sm1319814qkm.25.2021.09.02.06.21.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 06:21:16 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 15:21:12 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 01/12] KVM: arm64: selftests: Add MMIO readl/writel
+ support
+Message-ID: <20210902132112.yyz7iiqims3nlmmi@gator>
+References: <20210901211412.4171835-1-rananta@google.com>
+ <20210901211412.4171835-2-rananta@google.com>
 MIME-Version: 1.0
-References: <20210824165607.709387-1-sashal@kernel.org> <20210824165607.709387-127-sashal@kernel.org>
-In-Reply-To: <20210824165607.709387-127-sashal@kernel.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 2 Sep 2021 18:50:48 +0530
-Message-ID: <CA+G9fYveOoHUydWRjRWtKcF3smTXt3F3ChxuZuDSoxCkDA1rPw@mail.gmail.com>
-Subject: Re: [PATCH 5.13 126/127] fs: warn about impending deprecation of
- mandatory locks
-To:     Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Jeff Layton <jlayton@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901211412.4171835-2-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 at 22:35, Sasha Levin <sashal@kernel.org> wrote:
->
-> From: Jeff Layton <jlayton@kernel.org>
->
-> [ Upstream commit fdd92b64d15bc4aec973caa25899afd782402e68 ]
->
-> We've had CONFIG_MANDATORY_FILE_LOCKING since 2015 and a lot of distros
-> have disabled it. Warn the stragglers that still use "-o mand" that
-> we'll be dropping support for that mount option.
->
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+On Wed, Sep 01, 2021 at 09:14:01PM +0000, Raghavendra Rao Ananta wrote:
+> Define the readl() and writel() functions for the guests to
+> access (4-byte) the MMIO region.
+> 
+> The routines, and their dependents, are inspired from the kernel's
+> arch/arm64/include/asm/io.h and arch/arm64/include/asm/barrier.h.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
 > ---
->  fs/namespace.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index caad091fb204..03770bae9dd5 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -1716,8 +1716,12 @@ static inline bool may_mount(void)
->  }
->
->  #ifdef CONFIG_MANDATORY_FILE_LOCKING
-> -static inline bool may_mandlock(void)
-> +static bool may_mandlock(void)
->  {
-> +       pr_warn_once("======================================================\n"
-> +                    "WARNING: the mand mount option is being deprecated and\n"
-> +                    "         will be removed in v5.15!\n"
-> +                    "======================================================\n");
+>  .../selftests/kvm/include/aarch64/processor.h | 45 ++++++++++++++++++-
+>  1 file changed, 44 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
+> index c0273aefa63d..3cbaf5c1e26b 100644
+> --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
+> +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
+> @@ -130,6 +130,49 @@ void vm_install_sync_handler(struct kvm_vm *vm,
+>  	val;								  \
+>  })
+>  
+> -#define isb()	asm volatile("isb" : : : "memory")
+> +#define isb()		asm volatile("isb" : : : "memory")
+> +#define dsb(opt)	asm volatile("dsb " #opt : : : "memory")
+> +#define dmb(opt)	asm volatile("dmb " #opt : : : "memory")
+> +
+> +#define dma_wmb()	dmb(oshst)
+> +#define __iowmb()	dma_wmb()
+> +
+> +#define dma_rmb()	dmb(oshld)
+> +
+> +#define __iormb(v)							\
+> +({									\
+> +	unsigned long tmp;						\
+> +									\
+> +	dma_rmb();							\
+> +									\
+> +	/*								\
+> +	 * Courtesy of arch/arm64/include/asm/io.h:			\
+> +	 * Create a dummy control dependency from the IO read to any	\
+> +	 * later instructions. This ensures that a subsequent call	\
+> +	 * to udelay() will be ordered due to the ISB in __delay().	\
 
-We are getting this error on all devices while running LTP syscalls
-ftruncate test cases
-on all the stable-rc branches.
+We don't have udelay or __delay yet, but I assume they're coming soon.
 
-- Naresh
+> +	 */								\
+> +	asm volatile("eor	%0, %1, %1\n"				\
+> +		     "cbnz	%0, ."					\
+> +		     : "=r" (tmp) : "r" ((unsigned long)(v))		\
+> +		     : "memory");					\
+> +})
+> +
+> +static __always_inline void __raw_writel(u32 val, volatile void *addr)
+> +{
+> +	asm volatile("str %w0, [%1]" : : "rZ" (val), "r" (addr));
+> +}
+> +
+> +static __always_inline u32 __raw_readl(const volatile void *addr)
+> +{
+> +	u32 val;
+> +	asm volatile("ldr %w0, [%1]" : "=r" (val) : "r" (addr));
+> +	return val;
+> +}
+> +
+> +#define writel_relaxed(v,c)	((void)__raw_writel((__force u32)cpu_to_le32(v),(c)))
+> +#define readl_relaxed(c)	({ u32 __r = le32_to_cpu((__force __le32)__raw_readl(c)); __r; })
+
+Might want to explicitly include linux/types.h for these __force symbols.
+
+> +
+> +#define writel(v,c)		({ __iowmb(); writel_relaxed((v),(c));})
+> +#define readl(c)		({ u32 __v = readl_relaxed(c); __iormb(__v); __v; })
+>  
+>  #endif /* SELFTEST_KVM_PROCESSOR_H */
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+
+
+Reviewed-by: Andrew Jones <drjones@redhat.com>
+
+Thanks,
+drew
+
+> 
+> _______________________________________________
+> kvmarm mailing list
+> kvmarm@lists.cs.columbia.edu
+> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
+> 
+
